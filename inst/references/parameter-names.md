@@ -893,6 +893,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Ferl_2018_mosunetuzumab_cyno.R` (founding example; `lvmax_exp_kdes = log(0.144)`, a 4.8-day half-life of the saturable elimination of an anti-CD20/CD3 T-cell-dependent bispecific antibody in cynomolgus monkeys, alongside a separate `cl_exp_kdes = 10.1 1/day` on the decaying linear clearance), `Ferl_2018_mosunetuzumab_cyno_covariates.R`, `Ferl_2018_mosunetuzumab_human.R`.
 - **Notes:** Third member of the `_exp_kdes` role-token family after `cl_exp_kdes` and `kel_exp_kdes`, ratified by the maintainers 2026-09-22. Distinct from `kel_exp_kdes`, which relaxes a rate *constant* toward a non-zero asymptote; here a maximum *rate* (amount / time) falls to zero, so the model needs no `_inf` / `_component` split and keeps the bare `vmax` as the value at t = 0. A model can carry `cl_exp_kdes` and `vmax_exp_kdes` together, as the founding example does, which is why the two decay constants must not share a name.
 
+### lvmax_exp_finf (**canonical log-transformed asymptote-to-baseline ratio of a time-varying Michaelis-Menten Vmax**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale fraction of the baseline Michaelis-Menten maximum elimination velocity that remains as t -> infinity, in the form `vmax(t) = vmax * (vmax_exp_finf + (1 - vmax_exp_finf) * exp(-vmax_exp_kdes * t))`, the closed-form solution of `dVmax/dt = -vmax_exp_kdes * (Vmax - vmax_exp_finf * vmax)` with `Vmax(0) = vmax` (unitless).
+- **Source aliases:**
+  - `Rv`, `FV` -- Bravo Padros 2026 Table 2 ('Asymptotic Vmax (Vmax,asym) to Vmax,0 ratio, Rv') and Appendix S1 control stream (`FV = EXP(THETA(8) + COV_FV)`, `VMAXSS = FV * VMAXBL`).
+- **Example models:** `BravoPadros_2026_odronextamab.R` (founding example; `lvmax_exp_finf = log(0.262)`, so the target-mediated Vmax of odronextamab falls to 26% of baseline, with fractional covariate effects -0.133 for follicular lymphoma and -0.292 for other B-NHL histologies applied as `(1 + e)`).
+- **Notes:** The multiplicative counterpart of the signed `_exp_famp` role (`finf = 1 + famp`). Use `_exp_finf` when the source estimates the asymptote as a positive ratio on the log scale with multiplicative covariate effects, which `_exp_famp` cannot carry without re-parameterising the published estimates; use `_exp_famp` when the source estimates a signed fractional change. Unlike `lvmax_exp_kdes` alone (Ferl 2018), where Vmax decays to zero, this form keeps a non-zero asymptote while still leaving the bare `vmax` as the value at t = 0. The stem transposes to other parameters (`lcl_exp_finf`) by the same rule.
+
 ### lvc_pna_kdes (**canonical log-transformed postnatal-age decay-rate constant of a birth excess in volume**)
 - **Type:** log-transformed-pk
 - **Role:** Log-scale first-order rate constant, per unit of POSTNATAL AGE, at which a fractional excess of the central volume present at birth decays toward the mature value: `vc(PNA) = vc * (1 + vc_pna_famp * exp(-vc_pna_kdes * PNA))` (1 / day of postnatal age in the founding model). `log(2) / vc_pna_kdes` is the half-time of the birth effect.
@@ -1773,6 +1781,14 @@ it is valid only over the time span the source studied.
   - `lambda1` -- used in `Ferl_2018_mosunetuzumab_cyno.R`.
 - **Example models:** `Ferl_2018_mosunetuzumab_cyno.R` (`vmax_exp_kdes = exp(lvmax_exp_kdes) = 0.144 1/day`).
 - **Notes:** Bare counterpart of `lvmax_exp_kdes`; see that entry for the functional form.
+
+### vmax_exp_finf (**canonical bare asymptote-to-baseline ratio of a time-varying Michaelis-Menten Vmax**)
+- **Type:** bare-pk
+- **Role:** Bare (natural-scale) form of `lvmax_exp_finf`: the fraction of the baseline Vmax remaining as t -> infinity, `vmax(t) = vmax * (vmax_exp_finf + (1 - vmax_exp_finf) * exp(-vmax_exp_kdes * t))` (unitless).
+- **Source aliases:**
+  - `Rv` -- Bravo Padros 2026.
+- **Example models:** `BravoPadros_2026_odronextamab.R` (`vmax_exp_finf = exp(lvmax_exp_finf) = 0.262` for the DLBCL reference).
+- **Notes:** Bare counterpart of `lvmax_exp_finf`; see that entry for the functional form.
 
 ### vc_pna_kdes (**canonical bare postnatal-age decay-rate constant of a birth excess in volume**)
 - **Type:** bare-pk

@@ -1,0 +1,522 @@
+---
+title: "Odronextamab (Bravo Padros 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Odronextamab (Bravo Padros 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("BravoPadros_2026_odronextamab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("BravoPadros_2026_odronextamab"))$description`
+* Article: <https://doi.org/10.1002/psp4.70162> (open access; Appendix S1
+  holds the NONMEM control stream of the fit-for-purpose model and the
+  supplementary tables and figures)
+
+Odronextamab is a CD20xCD3 bispecific IgG4 T-cell-engaging antibody.
+Bravo Padros 2026 pooled 14,618 serum concentrations from 507 adults with
+relapsed or refractory B-cell non-Hodgkin lymphoma (B-NHL) in the Phase I
+ELM-1 and Phase II ELM-2 studies, dosed IV from 0.03 to 320 mg.
+
+Structure (Equations 1-3): a two-compartment model with parallel linear
+and Michaelis-Menten elimination from the central compartment. The
+maximum velocity of the Michaelis-Menten (target-mediated) pathway
+declines over time toward an asymptote, which the authors relate to
+treatment-induced B-cell depletion:
+
+\[
+\frac{dV_{\max}}{dt} = -K_v\, V_{\max}\left(1 - \frac{V_{\max,\mathrm{asym}}}{V_{\max}}\right),
+\qquad V_{\max}(0) = V_{\max,0}, \qquad V_{\max,\mathrm{asym}} = R_v\, V_{\max,0}
+\]
+
+which the packaged model uses in closed form,
+\(V_{\max}(t) = V_{\max,0}\,[R_v + (1 - R_v)\,e^{-K_v t}]\), with
+\(t\) the time since the first dose. The Michaelis-Menten elimination
+rate constant is \(K_{MM} = V_{\max}(t) / (k_m + C)\).
+
+The model reports three parameterisations (base, full, and
+fit-for-purpose); the fit-for-purpose model is the one the authors used
+for all simulations and is the one packaged here.
+
+# Population
+
+Table 1: 507 patients (ELM-1 n = 167, ELM-2 n = 340). Histology: DLBCL
+CAR T naive 39.8%, DLBCL after CAR T failure 11.6%, follicular lymphoma
+(FL) 32.7%, mantle cell lymphoma 4.9%, marginal zone lymphoma 4.9%,
+other B-NHL 5.9%. Median age 65 years (IQR 55-72), body weight 72.6 kg
+(IQR 61.4-84.0), 38.3% female, 62% White, Ann Arbor stage IV 61.5%,
+prior CAR T therapy 13.0%. Median baseline albumin 38.7 g/L, IgG
+38.2 umol/L, lymphocytes 0.792 x 10^9/L, IL-10 3.02 ng/L, IFN gamma
+3.66 ng/L and tumour size (sum of products of perpendicular diameters)
+2930 mm^2.
+
+The same information is available programmatically via
+`readModelDb("BravoPadros_2026_odronextamab")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source in
+`inst/modeldb/specificDrugs/BravoPadros_2026_odronextamab.R`. Final
+estimates come from Table 2 (fit-for-purpose column); equation forms and
+reference covariate values come from the Appendix S1 control stream,
+whose `$THETA` / `$OMEGA` blocks carry initial estimates from an earlier
+run and are not used for values.
+
+| Parameter / equation | Value | Source |
+|---|---|---|
+| `lcl` (CL) | log(0.189 L/day) | Table 2 |
+| `lq` (Q) | log(1.21 L/day) | Table 2 |
+| `lvc` (Vc) | log(4.99 L) | Table 2 |
+| `lvp` (Vp) | log(4.42 L) | Table 2 |
+| `lvmax` (Vmax,0) | log(2.93 mg/L/day) | Table 2 |
+| `lkm` (km) | log(1.95 mg/L) | Table 2 |
+| `lvmax_exp_kdes` (Kv) | log(1.09 1/day) | Table 2 |
+| `lvmax_exp_finf` (Rv) | log(0.262) | Table 2 |
+| `e_wt_cl` | 0.854 | Table 2 |
+| `e_alb_cl` (time-varying albumin) | -0.933 | Table 2 |
+| `e_igg_cl` | 0.118 | Table 2 |
+| `e_ifng_cl` | 0.0274 | Table 2 |
+| `e_il10_cl` | -0.0717 | Table 2 |
+| `e_wt_vc_vp` | 0.372 | Table 2 |
+| `e_alb_base_vc_vp` | -0.561 | Table 2 |
+| `e_sexf_vc_vp` | -0.186 | Table 2 |
+| `e_lymph_abs_vc_vp` | 0.0895 | Table 2 |
+| `e_ann_arbor_lt4_vmax` | -0.285 | Table 2 |
+| `e_lymph_abs_vmax` | 0.313 | Table 2 |
+| `e_tumtp_fl_vmax` | -0.252 | Table 2 |
+| `e_prior_cart_vmax` | -0.201 | Table 2 |
+| `e_tumsz_vmax` | 0.0601 | Table 2 |
+| `e_tumtp_fl_vmax_exp_kdes`, `e_tumtp_other_nhl_vmax_exp_kdes` | -0.891, -0.844 | Table 2 |
+| `e_tumtp_fl_vmax_exp_finf`, `e_tumtp_other_nhl_vmax_exp_finf` | -0.133, -0.292 | Table 2 |
+| `etalvc`, `etalvmax`, `etalvp` (variances) | 0.0983, 0.403, 0.709 | Table 2 |
+| `expSd` | sqrt(0.136) | Table 2 (residual variance, ln mg/L) |
+| Reference covariates (72.6 kg, 38.7 g/L, 38.2 umol/L, 3.01 and 3.66 ng/L, 0.792 x 10^9/L, 2930 mm^2) | -- | Appendix S1 `$PK` (`MED_*`); Table 2 footnote |
+| Power forms `(cov / median)^theta`; `(1 + theta)` forms for categorical effects | -- | Appendix S1 `$PK` |
+| One covariate factor shared by Vc and Vp (`COV_V`) | -- | Appendix S1 `$PK` |
+| Two-compartment ODEs with \(K_{MM} = V_{\max} / (k_m + C)\) | -- | Equations 1-2; Appendix S1 `$DES` |
+| Vmax time course | -- | Equation 3; Appendix S1 `$DES` `DADT(3)` |
+| Residual error additive on log concentration | -- | Appendix S1 `$ERROR` |
+
+# Dosing regimen and virtual cohort
+
+The simulations follow the 0.7/4/20/160 mg QW / 320 mg Q2W regimen of
+Table 3 and Figure 3: step-up doses of 0.7, 4 and 20 mg in weeks 1-3,
+160 mg QW to week 12, then 320 mg Q2W. All doses are 1-h infusions.
+Steady state is evaluated over weeks 42-43 (days 294-308), as in the
+paper.
+
+The observed data are not public. A virtual cohort of 200 patients is
+drawn from the Table 1 marginal summaries: continuous covariates are
+log-normal (albumin normal) with the published median and a spread set
+from the interquartile range, truncated to the extreme quantile bins of
+Table 3; histology, sex, Ann Arbor stage and prior CAR T therapy follow
+the Table 1 proportions (prior CAR T only within DLBCL). Albumin is held
+at its baseline value over time (`ALB = ALB_BASE`).
+
+```{r cohort}
+set.seed(2026)
+rxode2::rxSetSeed(2026)
+n_sub <- 200
+
+# log-normal draw from a median and an interquartile range, truncated
+draw_ln <- function(n, med, q1, q3, lo, hi) {
+  pmin(pmax(rlnorm(n, log(med), log(q3 / q1) / 1.349), lo), hi)
+}
+
+hist_p <- c(
+  "DLBCL, CAR T naive" = 0.398, "DLBCL, CAR T failure" = 0.116,
+  "FL" = 0.327, "Other B-NHL" = 0.159
+)
+alb <- pmin(pmax(rnorm(n_sub, 38.7, (42 - 34) / 1.349), 16), 56)
+subjects <- tibble(
+  id = seq_len(n_sub),
+  histology = sample(names(hist_p), n_sub, replace = TRUE, prob = hist_p),
+  WT = draw_ln(n_sub, 72.6, 61.4, 84.0, 31.8, 165),
+  ALB_BASE = alb,
+  ALB = alb,
+  # Table 1 IgG is in umol/L; the model column is g/L (150 kDa)
+  IGG = draw_ln(n_sub, 38.2, 25.4, 53.8, 4.07, 300) * 0.15,
+  # Table 1 lymphocytes are 10^9/L; the model column is cells/uL
+  LYMPH_ABS = draw_ln(n_sub, 0.792, 0.49, 1.30, 0.03, 44.3) * 1000,
+  IL10 = draw_ln(n_sub, 3.02, 0.93, 11.0, 0.6, 9750),
+  IFNG = draw_ln(n_sub, 3.66, 1.68, 12.1, 0.022, 2040),
+  TUMSZ = draw_ln(n_sub, 2930, 1480, 5220, 75, 46100),
+  SEXF = rbinom(n_sub, 1, 0.383),
+  ANN_ARBOR_LT4 = rbinom(n_sub, 1, 1 - 0.615)
+) |>
+  mutate(
+    PRIOR_CART = as.integer(histology == "DLBCL, CAR T failure"),
+    TUMTP_FL = as.integer(histology == "FL"),
+    TUMTP_OTHER_NHL = as.integer(histology == "Other B-NHL"),
+    sex = ifelse(SEXF == 1, "Female", "Male")
+  )
+
+dose_tab <- tibble(
+  time = c(0, 7, 14, seq(21, 77, by = 7), seq(84, 294, by = 14)),
+  amt = c(0.7, 4, 20, rep(160, 9), rep(320, 16))
+)
+stopifnot(max(dose_tab$time) == 294, sum(dose_tab$amt == 160) == 9)
+inf_dur <- 1 / 24
+
+obs_times <- sort(unique(c(
+  seq(0, 21, by = 0.5),
+  seq(21, 28, by = 0.125), 21 + inf_dur,
+  seq(28, 77, by = 1),
+  seq(77, 84, by = 0.125), 77 + inf_dur,
+  seq(84, 294, by = 2),
+  seq(294, 308, by = 0.125), 294 + inf_dur
+)))
+
+make_events <- function(subj) {
+  doses <- tidyr::crossing(subj, dose_tab) |>
+    mutate(evid = 1L, dur = inf_dur, cmt = "central")
+  obs <- tidyr::crossing(subj, time = obs_times) |>
+    mutate(evid = 0L, amt = 0, dur = 0, cmt = "central")
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid)) |>
+    select(id, time, evid, amt, dur, cmt, everything()) |>
+    as.data.frame()
+}
+events <- make_events(subjects)
+```
+
+# Simulation
+
+Table 3 summarises individual predictions from post hoc parameter
+estimates, so the comparison uses the simulated individual prediction
+`Cc` (between-subject variability included, residual error excluded).
+
+```{r simulate}
+mod <- readModelDb("BravoPadros_2026_odronextamab")
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep = c("histology", "sex"),
+  returnType = "data.frame"
+)
+stopifnot(!anyNA(sim$Cc), all(sim$Cc >= 0))
+```
+
+## Concentration-time profiles
+
+```{r profile-plot, fig.width = 7, fig.height = 4.5}
+sim |>
+  filter(time > 0) |>
+  group_by(time) |>
+  summarise(
+    med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time / 7, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  scale_y_log10() +
+  labs(
+    x = "Time since first dose (week)",
+    y = "Odronextamab concentration (mg/L)",
+    title = "0.7/4/20/160 mg QW / 320 mg Q2W: median and 90% interval",
+    caption = "Individual predictions of 200 virtual patients (compare Figure S4)."
+  ) +
+  theme_bw()
+```
+
+## Time course of Vmax by histology
+
+Replicates Figure 4E of Bravo Padros 2026 for the typical DLBCL and FL
+patient: the Michaelis-Menten Vmax falls toward its asymptote within the
+first weeks of treatment, faster in DLBCL than in FL (Kv 1.09 vs.
+0.119 1/day).
+
+```{r vmax-time, fig.width = 6, fig.height = 4}
+mod_typ <- rxode2::zeroRe(mod)
+# Typical-value solves of several patients at once; rxode2 warns that no
+# omega is left after zeroRe(), which is the intent here.
+solve_typ <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod_typ, ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+ref_pat <- tibble(
+  WT = 72.6, ALB_BASE = 38.7, ALB = 38.7, IGG = 38.2 * 0.15,
+  LYMPH_ABS = 792, IL10 = 3.01, IFNG = 3.66, TUMSZ = 2930,
+  SEXF = 0, ANN_ARBOR_LT4 = 0, PRIOR_CART = 0, TUMTP_FL = 0, TUMTP_OTHER_NHL = 0
+)
+typ_hist <- bind_rows(
+  ref_pat |> mutate(id = 1L, histology = "DLBCL"),
+  ref_pat |> mutate(id = 2L, histology = "FL", TUMTP_FL = 1)
+)
+sim_hist <- solve_typ(
+  events = make_events(typ_hist) |> filter(time <= 63),
+  keep = "histology",
+  returnType = "data.frame"
+)
+ggplot(sim_hist, aes(time / 7, vmax_t, colour = histology)) +
+  geom_line() +
+  labs(
+    x = "Time since first dose (week)",
+    y = "Vmax (mg/L/day)",
+    colour = NULL,
+    caption = "Typical reference patient; replicates Figure 4E."
+  ) +
+  theme_bw()
+
+# Closed form of Equation 3 against its own definition: at day 63 Vmax has
+# reached Rv * Vmax,0 for DLBCL (0.262 * 2.93) and for FL
+# (0.262 * 0.867 * 2.93 * 0.748).
+v63 <- sim_hist |> filter(time == 63)
+stopifnot(
+  abs(v63$vmax_t[v63$histology == "DLBCL"] / (0.262 * 2.93) - 1) < 1e-3,
+  abs(v63$vmax_t[v63$histology == "FL"] / (0.262 * (1 - 0.133) * 2.93 * (1 - 0.252)) - 1) < 0.01
+)
+```
+
+The figure uses the typical DLBCL and FL patients. In FL the decline is
+about nine-fold slower (Kv reduced by 89.1%), which is why FL patients
+have lower exposure than DLBCL patients during the step-up weeks
+(Figure 4A-D).
+
+## Michaelis-Menten clearance at baseline and at the asymptote
+
+The paper reports a median modified Michaelis-Menten clearance
+\(CL_{MM} = K_{MM} V_c\) of 5.43 L/day (DLBCL) and 4.67 L/day (FL) at
+baseline, and 0.0296 and 0.025 L/day at the asymptote. The table gives
+the same summaries for the virtual cohort: at time 0 (no drug present)
+and at the steady-state trough.
+
+```{r clmm}
+clmm <- sim |>
+  filter(time %in% c(0, 308), histology != "Other B-NHL") |>
+  mutate(
+    hist2 = ifelse(histology == "FL", "FL", "DLBCL"),
+    clmm = kel_mm * vc,
+    when = ifelse(time == 0, "Baseline", "Steady-state trough")
+  ) |>
+  group_by(hist2, when) |>
+  summarise(sim_median = format(signif(median(clmm), 3)), .groups = "drop") |>
+  mutate(paper = c(5.43, 0.0296, 4.67, 0.025))
+clmm |>
+  dplyr::rename(
+    Histology = hist2, Time = when,
+    "Simulated median CLMM (L/day)" = sim_median,
+    "Paper median CLMM (L/day)" = paper
+  ) |>
+  knitr::kable(caption = "Median Michaelis-Menten clearance, virtual cohort vs. Results text.")
+```
+
+The paper does not say at which time or concentration its asymptotic
+CLMM was computed; at the steady-state trough the saturable pathway is
+almost fully saturated (concentrations of about 85 mg/L against a km
+of 1.95 mg/L), so CLMM is close to zero either way. The simulated
+medians lie within about 15% of the reported ones, which come from the
+post hoc estimates of the real patients.
+
+# PKNCA: steady-state exposure (Table 3) and accumulation
+
+```{r pknca}
+conc <- sim |>
+  filter(!is.na(Cc)) |>
+  mutate(regimen = "0.7/4/20/160 mg QW / 320 mg Q2W") |>
+  select(id, time, Cc, regimen, sex)
+dose_df <- events |>
+  filter(evid == 1) |>
+  mutate(regimen = "0.7/4/20/160 mg QW / 320 mg Q2W") |>
+  select(id, time, amt, regimen, sex)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | regimen + sex + id, concu = "mg/L", timeu = "day")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + sex + id, doseu = "mg")
+intervals <- data.frame(
+  start = c(21, 77, 294),
+  end = c(28, 84, 308),
+  auclast = TRUE,
+  cmax = c(FALSE, FALSE, TRUE),
+  cmin = c(FALSE, FALSE, TRUE)
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_res <- as.data.frame(nca$result)
+```
+
+Steady-state Cmin, Cmax and AUC over the dosing interval at weeks 42-43,
+overall and by sex, against the Table 3 medians:
+
+```{r nca-compare}
+ss <- nca_res |> filter(start == 294, PPTESTCD %in% c("cmin", "cmax", "auclast"))
+ss_sim <- bind_rows(
+  ss |> mutate(subgroup = "Overall"),
+  ss |> mutate(subgroup = sex)
+) |>
+  select(subgroup, PPTESTCD, PPORRES)
+
+# Table 3, median steady-state exposure (0.7/4/20/160 mg QW / 320 mg Q2W)
+ss_ref <- tibble::tribble(
+  ~subgroup, ~cmin, ~cmax, ~auclast,
+  "Overall", 84.6, 156, 1470,
+  "Female", 99.8, 189, 1750,
+  "Male", 76.5, 141, 1350
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = ss_sim,
+  reference = ss_ref,
+  by = "subgroup",
+  units = c(cmin = "mg/L", cmax = "mg/L", auclast = "day*mg/L")
+)
+knitr::kable(cmp, caption = "Simulated vs. Table 3 median steady-state exposure (weeks 42-43).")
+if (!is.null(attr(cmp, "footnote"))) cat(attr(cmp, "footnote"))
+
+pct <- ss_sim |>
+  group_by(subgroup, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop") |>
+  inner_join(
+    tidyr::pivot_longer(ss_ref, -subgroup, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("subgroup", "PPTESTCD")
+  ) |>
+  mutate(pct_diff = 100 * (sim / ref - 1))
+stopifnot(nrow(pct) == 9L)
+# Assert on the overall medians only: the by-sex rows depend on the
+# weight-sex correlation, which the independent covariate draws do not
+# carry (see below). A mis-transcribed CL, volume or unit moves the
+# overall medians by tens of percent.
+pct_overall <- pct |> filter(subgroup == "Overall")
+stopifnot(abs(median(pct_overall$pct_diff)) < 10)
+```
+
+The overall steady-state medians agree within about 5%. The female and
+male rows are closer together than in Table 3, because the
+model's sex effect acts only on the volumes; most of the exposure
+difference between the sexes in the real data comes from the lower body
+weight of the women, and the virtual cohort draws weight independently
+of sex.
+
+Accumulation of the full 160 mg QW dose, as the ratio of the AUC over
+week 12 (days 77-84) to the AUC over week 4 (days 21-28, the first
+160 mg dose); the paper reports a median of 3.87 (IQR 3.56-4.25):
+
+```{r accumulation}
+acc <- nca_res |>
+  filter(PPTESTCD == "auclast", start %in% c(21, 77)) |>
+  select(id, start, PPORRES) |>
+  tidyr::pivot_wider(names_from = start, values_from = PPORRES, names_prefix = "auc_") |>
+  mutate(ratio = auc_77 / auc_21)
+acc_q <- quantile(acc$ratio, c(0.25, 0.5, 0.75))
+knitr::kable(
+  tibble(
+    Statistic = c("Q1", "Median", "Q3"),
+    Simulated = signif(unname(acc_q), 3),
+    Paper = c(3.56, 3.87, 4.25)
+  ),
+  caption = "Accumulation ratio AUC(week 12) / AUC(week 4), 160 mg QW."
+)
+stopifnot(abs(acc_q[["50%"]] / 3.87 - 1) < 0.15)
+```
+
+The ratio combines accumulation from the roughly five-week terminal
+half-life with the decline in target-mediated clearance between weeks 4
+and 12, so it exercises both the linear and the time-varying parts of
+the model.
+
+# Marginal covariate effects on steady-state Cmin (Figure 3C)
+
+Figure 3 varies one covariate at a time from the reference patient
+(fixed effects only) and reports the fold change in steady-state Cmin;
+the Results text quotes body weight, albumin and IL-10. Albumin is
+changed in both the baseline (volume) and the time-varying (CL) column.
+
+```{r marginal}
+scen <- tibble::tribble(
+  ~scenario, ~cov, ~value, ~paper,
+  "Reference", "none", NA, 1,
+  "Weight 49.8 kg", "WT", 49.8, 1.47,
+  "Weight 111 kg", "WT", 111, 0.632,
+  "Albumin 28.3 g/L", "ALB", 28.3, 0.689,
+  "Albumin 46 g/L", "ALB", 46, 1.22,
+  "IL-10 0.6 ng/L", "IL10", 0.6, 0.871,
+  "IL-10 79 ng/L", "IL10", 79, 1.30
+)
+marg_subj <- bind_rows(lapply(seq_len(nrow(scen)), function(i) {
+  p <- ref_pat |> mutate(id = i, scenario = scen$scenario[i])
+  if (scen$cov[i] == "WT") p$WT <- scen$value[i]
+  if (scen$cov[i] == "ALB") {
+    p$ALB <- scen$value[i]
+    p$ALB_BASE <- scen$value[i]
+  }
+  if (scen$cov[i] == "IL10") p$IL10 <- scen$value[i]
+  p
+}))
+sim_marg <- solve_typ(
+  events = make_events(marg_subj),
+  keep = "scenario",
+  returnType = "data.frame"
+)
+marg <- sim_marg |>
+  filter(time >= 294, time <= 308) |>
+  group_by(scenario) |>
+  summarise(cmin = min(Cc), .groups = "drop") |>
+  mutate(fold = cmin / cmin[scenario == "Reference"]) |>
+  inner_join(scen, by = "scenario") |>
+  mutate(pct_diff = 100 * (fold / paper - 1))
+marg |>
+  arrange(match(scenario, scen$scenario)) |>
+  transmute(
+    Scenario = scenario,
+    "Simulated fold change" = signif(fold, 3),
+    "Paper fold change" = paper,
+    "% diff" = round(pct_diff, 1)
+  ) |>
+  knitr::kable(caption = "Fold change in steady-state Cmin relative to the reference patient.")
+stopifnot(all(abs(marg$pct_diff) < 5))
+```
+
+These are deterministic typical-value predictions, so the tolerance is
+tight. The paper's fold changes are medians over simulations with
+parameter uncertainty, which explains the small residual differences.
+
+# Assumptions and deviations
+
+- **Final estimates.** The `$THETA`, `$OMEGA` and `$SIGMA` blocks of the
+  Appendix S1 control stream are labelled as taken from an earlier run
+  and differ from Table 2 (e.g. initial Vmax,0 exp(1.02) = 2.77 vs.
+  final 2.93 mg/L/day); the packaged values are the Table 2
+  fit-for-purpose estimates.
+- **Vmax state.** The control stream integrates Vmax as a third ODE
+  state starting at Vmax,0. The packaged model uses the exact closed-form
+  solution in `t`, so the first dose must be given at time 0.
+- **Covariate units.** IgG is a g/L column in the package and is
+  converted to umol/L inside the model at an assumed IgG molar mass of
+  150 kDa (the paper reports IgG in umol/L without a conversion factor).
+  Lymphocytes are a cells/uL column, converted to 10^9/L.
+- **Missing covariates.** The source analysis imputed missing baseline
+  covariates (5.3% for IL-10 and IFN gamma) with the cohort median.
+  Supply the median (3.01 and 3.66 ng/L) for a missing value.
+- **Other B-NHL effect on Vmax,0.** The control stream keeps a commented
+  effect of MCL/MZL/other B-NHL on Vmax,0, which was dropped from the
+  fit-for-purpose model (Results); it is not encoded.
+- **Covariates screened but not retained** (age, ALT, race, bulky
+  disease, CRP, creatinine clearance and renal function, ECOG, IgG on the
+  volumes, IL-2, IL-6, IL-8, TNF alpha, LDH; Methods and Table S3) are not
+  part of the model.
+- **No variability on CL.** The paper reports that between-subject
+  variability on CL could not be estimated; time-varying albumin carries
+  part of the CL variability.
+- **Dosing details.** The paper does not state infusion durations beyond
+  "over 1-4 h" or the exact step-up days; the vignette uses 1-h infusions
+  given on the weekly schedule above.
+- **Virtual cohort.** Covariates are drawn independently from marginal
+  distributions anchored at the Table 1 medians and interquartile ranges;
+  the joint covariate structure of the real patients is not reproduced.
+  Albumin is held at baseline over time.
