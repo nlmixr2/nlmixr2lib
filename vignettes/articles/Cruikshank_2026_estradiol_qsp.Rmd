@@ -1,0 +1,570 @@
+---
+title: "Estradiol and hepatic oxidative stress QSP model (Cruikshank 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estradiol and hepatic oxidative stress QSP model (Cruikshank 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+```{r load-model}
+mod <- rxode2::rxode(readModelDb("Cruikshank_2026_estradiol_qsp"))
+states <- mod$state
+```
+
+# Model and source
+
+* Citation: `r mod$reference`
+* Description: `r mod$description`
+* Article: <https://doi.org/10.1002/psp4.70243>
+
+Cruikshank, Nijhout and Reed built a mechanistic model of hydrogen peroxide
+(H2O2) metabolism in the hepatocyte that couples the three H2O2-scavenging
+systems -- glutathione peroxidase (GPX) with glutathione reductase (GR),
+thioredoxin peroxidase (TPX) with thioredoxin reductase (TR), and catalase
+(CAT) -- to the transsulfuration pathway that makes glutathione (GSH) from
+homocysteine (Hcy). Serum estradiol (E2) stimulates cystathionine
+beta-synthase (CBS), glutamate-cysteine ligase (GCL) and GPX; progesterone
+(P4) inhibits GPX. Homocysteine inhibits cytosolic GPX and CAT. The paper uses
+the model to explain why premenopausal women have lower oxidative stress than
+men and postmenopausal women, why studies of estradiol supplementation and of
+the menstrual cycle report conflicting oxidative-stress markers, and why the
+sex differences in these metabolites shrink in cystathionine beta-synthase
+deficiency (CBSD, classical homocystinuria).
+
+The model has 17 mass-balance ODEs (Data S1 section 1): Hcy, cystathionine,
+cysteine, gamma-glutamylcysteine, GSH and GSSG in the cytosol; GSH, GSSG and
+cysteine in blood; GSH, GSSG and H2O2 in the mitochondria; cytosolic H2O2; and
+reduced and oxidised thioredoxin in the cytosol and mitochondria. Glutamate,
+glycine and NADPH are held constant. Each compartment's velocities are in uM/h
+of that compartment, and fluxes between compartments are scaled by the
+relative volumes (cytosol 0.85, mitochondria 0.15, blood 0.85).
+
+## Covariates
+
+`ESTRADIOL` and `PROGESTERONE` are serum concentrations in nmol/L. Every
+hormone term is written as the excess over the male / postmenopausal level
+(0.09 nM for E2, 0.318 nM for P4), so with those values the model reduces to
+the hormone-free pathway. The paper uses constant values for the steady-state
+analyses (0.09 / 0.318 nM for men and postmenopausal women; 0.4368 / 12.4859
+nM, the 28-day averages, for premenopausal women) and time-varying
+menstrual-cycle profiles (Figure 5A/B) for the cycle simulations. CBSD is
+simulated by setting `f_cbs = 0.025` (CBS at 2.5% of normal activity).
+
+# Population
+
+The model is not fitted to individual data. Michaelis constants come from the
+enzyme literature; maximal velocities and the mitochondrial H2O2 transport
+rate were chosen so that metabolites stay in physiological ranges and so that
+the mitochondrial submodel reproduces H2O2-removal experiments in rat liver
+mitochondria (Data S1 section 2, Figure S1). For the variability analyses the
+authors generated a virtual population of 20,000 individuals (Table S3) with a
+plausible-patient algorithm: the 15 parameters with the largest total-order
+Sobol indices for cytosolic H2O2, plus five estradiol-regulation parameters,
+were varied within 50-150% of nominal (Table S2), and individuals were kept
+when all 17 steady-state concentrations fell inside physiological ranges
+(Table S2, "States"). The progesterone parameters were held at nominal.
+
+# Source trace
+
+| Element | Source location |
+|---|---|
+| 17 ODEs and compartment volumes | Data S1 section 1 (differential equations); SBML export (Data S2) compartments |
+| CBS, CTGL, GS, GR, TR, CAT and transport rate laws | SBML export (Data S2) kinetic laws, checked against the Data S1 equations |
+| GCL, GPX (cytosol, mitochondria), TPX (cytosol, mitochondria) rate laws | Data S1 equations (the SBML kinetic laws for these five reactions are empty) |
+| Estradiol activation `1 + V_E2 (E2 - 0.09)/(K_E2 + E2 - 0.09)` on CBS, GCL, GPX | Data S1 CBS, GCL, GPX equations |
+| Progesterone inhibition `1 - V_P4 (P4 - 0.318)/(K_P4 + P4 - 0.318)` on GPX | Data S1 GPX equations |
+| All parameter values | SBML export parameter list; Data S1 parameter tables (Tables B and C and the per-enzyme tables) |
+| GPX `V_E2` 25.7716, `K_E2` 10.8 | SBML export and Table S2 nominal values |
+| Hormone reference and premenopausal levels | Methods, "Hormone Concentrations at Steady State and During the Menstrual Cycle" |
+| CBSD as 2.5% CBS activity | Results, "CBS Deficiency" |
+| Initial conditions | SBML export species initial concentrations |
+| Menstrual-cycle hormone profiles | Figure 5A/B, digitised by the maintainers |
+
+The in-file comment on every `ini()` line names the SBML parameter and the
+Data S1 table that prints the same value.
+
+# Steady states for men and premenopausal women (Figure 2)
+
+Figure 2 prints the steady-state concentration of every species for a typical
+man or postmenopausal woman (panel A) and a typical premenopausal woman
+(panel B). Running the model to steady state with the nominal parameters
+reproduces every printed value to the printed number of digits.
+
+```{r ss-helper}
+# Solve each row of `pars` (an `id` column plus parameter columns) to steady
+# state under constant hormone levels and return the final row per id.
+steady_state <- function(pars, e2, p4, t_end = 5000) {
+  n <- nrow(pars)
+  ev <- data.frame(
+    id = rep(pars$id, each = 2), time = rep(c(0, t_end), n), evid = 0,
+    cmt = "hcy", ESTRADIOL = rep(rep_len(e2, n), each = 2),
+    PROGESTERONE = rep(rep_len(p4, n), each = 2)
+  )
+  out <- rxode2::rxSolve(mod, ev, params = pars, atol = 1e-9, rtol = 1e-9,
+                         maxsteps = 1e6, returnType = "data.frame")
+  out[out$time == t_end, , drop = FALSE]
+}
+```
+
+```{r fig2}
+typ <- data.frame(id = 1:2, f_cbs = 1)
+ss_typ <- steady_state(typ, e2 = c(0.09, 0.4368), p4 = c(0.318, 12.4859))
+
+fig2 <- tibble::tribble(
+  ~state, ~label, ~paper_male, ~paper_female, ~digits,
+  "hcy", "Homocysteine (cytosol)", 2.3, 1.6, 1,
+  "cyst", "Cystathionine", 42.7, 54.7, 1,
+  "ccys", "Cysteine (cytosol)", 201, 127, 0,
+  "glutcys", "Glutamyl-cysteine", 8.5, 10.7, 1,
+  "cgsh", "GSH (cytosol)", 4914, 8405, 0,
+  "cgssg", "GSSG (cytosol)", 38, 58, 0,
+  "bgsh", "GSH (blood)", 13, 15, 0,
+  "bgssg", "GSSG (blood)", 0.3, 0.5, 1,
+  "bcys", "Cysteine (blood)", 229.7, 247.0, 1,
+  "ch2o2", "H2O2 (cytosol)", 0.010, 0.006, 3,
+  "mh2o2", "H2O2 (mitochondria)", 0.0054, 0.0049, 4,
+  "mgsh", "GSH (mitochondria)", 7292, 9108, 0,
+  "mgssg", "GSSG (mitochondria)", 49, 114, 0,
+  "ctrxred", "Reduced Trx (cytosol)", 1.19, 1.21, 2,
+  "ctrxox", "Oxidised Trx (cytosol)", 0.09, 0.06, 2,
+  "mtrxred", "Reduced Trx (mitochondria)", 1.20, 1.21, 2,
+  "mtrxox", "Oxidised Trx (mitochondria)", 0.08, 0.07, 2
+)
+fig2$sim_male <- unlist(ss_typ[1, fig2$state])
+fig2$sim_female <- unlist(ss_typ[2, fig2$state])
+
+fig2 |>
+  mutate(across(c(paper_male, paper_female), as.character),
+         across(c(sim_male, sim_female), \(x) formatC(x, digits = 4, format = "fg"))) |>
+  select(label, paper_male, sim_male, paper_female, sim_female) |>
+  rename(
+    "Species (uM)" = label,
+    "Figure 2A (male / postmenopausal)" = paper_male,
+    "Simulated (E2 0.09, P4 0.318 nM)" = sim_male,
+    "Figure 2B (premenopausal)" = paper_female,
+    "Simulated (E2 0.4368, P4 12.4859 nM)" = sim_female
+  ) |>
+  knitr::kable()
+
+# Deterministic solve with nominal parameters: every value must round to the
+# figure's printed digits.
+stopifnot(
+  all(abs(round(fig2$sim_male, fig2$digits) - fig2$paper_male) < 1e-9),
+  all(abs(round(fig2$sim_female, fig2$digits) - fig2$paper_female) < 1e-9)
+)
+```
+
+The headline result of the paper follows: cytosolic H2O2 is about 40% lower
+and mitochondrial H2O2 about 10% lower in the premenopausal state, because GSH
+is higher in both compartments.
+
+```{r fig2-ratio}
+round(c(
+  cH2O2 = ss_typ$ch2o2[2] / ss_typ$ch2o2[1],
+  mH2O2 = ss_typ$mh2o2[2] / ss_typ$mh2o2[1],
+  cGSH = ss_typ$cgsh[2] / ss_typ$cgsh[1]
+), 3)
+```
+
+# Virtual population
+
+Table S3 lists the authors' 20,000 individuals, but the supplement is licensed
+for non-commercial reuse only, so this article draws its own population with
+the authors' scheme instead: the same 20 parameters sampled uniformly within
+the Table S2 ranges (50-150% of nominal), solved to steady state at E2 0.09 nM
+and P4 0.318 nM, and kept when all 17 species fall inside the Table S2
+physiological ranges. The plausible-patient algorithm of the paper also
+optimises rejected candidates towards the ranges; this article simply rejects
+them. 900 candidates are drawn (about one in four is accepted) and the first
+200 accepted individuals are used.
+
+```{r vpop}
+vp_ranges <- tibble::tribble(
+  ~param, ~nominal,
+  "h2o2prod_cyto", 3026, "vmax_tpx_cyto", 3e5, "km_tpx_cyto_h2o2", 0.7,
+  "km_gpx_cyto_h2o2", 6.8, "vmax_gpx_cyto", 1.8e6, "h2o2prod_mito", 12000,
+  "vmax_gr_mito", 5300, "km_gpx_mito_h2o2", 6.8, "vmax_gpx_mito", 2.5e6,
+  "trxred_prod_cyto", 0.1, "km_cat_mito_h2o2", 32300, "vmax_cat_mito", 5.5e10,
+  "km_tpx_cyto_trxred", 2.4, "k_trxred_removal_cyto", 0.08, "vmax_gcl", 3600,
+  "ke2_cbs", 0.67, "ke2_gcl", 10.8, "ke2_gpx", 10.8, "ve2_gcl", 25.7716,
+  "ve2_gpx", 25.7716
+)
+state_ranges <- tibble::tribble(
+  ~state, ~lo, ~hi,
+  "mh2o2", 1e-3, 0.1, "mgsh", 1000, 10000, "mgssg", 20, 150,
+  "mtrxred", 1, 10, "mtrxox", 0.01, 1, "bgssg", 0.1, 0.5, "bgsh", 2, 20,
+  "bcys", 110, 325, "hcy", 1, 4, "cyst", 10, 100, "ccys", 90, 250,
+  "glutcys", 4.17, 41.7, "cgsh", 1000, 10000, "cgssg", 20, 150,
+  "ch2o2", 1e-3, 0.1, "ctrxred", 1, 10, "ctrxox", 0.01, 1
+)
+
+set.seed(70243)
+n_cand <- 900
+cand <- as.data.frame(lapply(vp_ranges$nominal, function(v) v * runif(n_cand, 0.5, 1.5)))
+names(cand) <- vp_ranges$param
+cand$id <- seq_len(n_cand)
+
+ss_cand <- steady_state(cand, e2 = 0.09, p4 = 0.318)
+in_range <- Reduce(`&`, Map(
+  function(s, lo, hi) ss_cand[[s]] >= lo & ss_cand[[s]] <= hi,
+  state_ranges$state, state_ranges$lo, state_ranges$hi
+))
+accepted <- ss_cand$id[in_range]
+vpop <- cand[cand$id %in% head(accepted, 200), ]
+vpop$id <- seq_len(nrow(vpop))
+c(candidates = n_cand, accepted = length(accepted), used = nrow(vpop))
+```
+
+# Estradiol at steady state (Figures 3 and 4)
+
+Figure 3B-D shows the steady-state fold change, relative to E2 = 0.09 nM, of
+cytosolic H2O2, cytosolic GSH and the cytosolic GSH/GSSG ratio as E2 rises to
+2.5 nM, with P4 held at 0.318 nM. GSH rises at low E2 (GCL stimulation) and
+then falls as the estradiol stimulation of GPX overtakes synthesis, which is
+feedback-inhibited by GSH; H2O2 mirrors it.
+
+```{r fig3-sim}
+e2_grid <- c(0.09, 0.15, 0.25, 0.35, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5)
+grid <- tidyr::crossing(vpop |> rename(subject = id), ESTRADIOL = e2_grid) |>
+  mutate(id = row_number())
+ss_grid <- steady_state(grid |> select(-subject, -ESTRADIOL),
+                        e2 = grid$ESTRADIOL, p4 = 0.318)
+
+fc3 <- ss_grid |>
+  select(id, ch2o2, cgsh, cgsh_cgssg_ratio) |>
+  left_join(grid |> select(id, subject, ESTRADIOL), by = "id") |>
+  group_by(subject) |>
+  mutate(
+    cH2O2 = ch2o2 / ch2o2[ESTRADIOL == 0.09],
+    cGSH = cgsh / cgsh[ESTRADIOL == 0.09],
+    `cGSH/cGSSG` = cgsh_cgssg_ratio / cgsh_cgssg_ratio[ESTRADIOL == 0.09]
+  ) |>
+  ungroup() |>
+  pivot_longer(c(cH2O2, cGSH, `cGSH/cGSSG`), names_to = "output", values_to = "fc")
+
+band3 <- fc3 |>
+  group_by(output, ESTRADIOL) |>
+  summarise(
+    p10 = quantile(fc, 0.10), p25 = quantile(fc, 0.25), median = median(fc),
+    p75 = quantile(fc, 0.75), p90 = quantile(fc, 0.90), mean = mean(fc),
+    .groups = "drop"
+  ) |>
+  mutate(output = factor(output, c("cH2O2", "cGSH", "cGSH/cGSSG")))
+```
+
+```{r fig3-plot, fig.height = 3.6, fig.cap = "Replicates Figure 3B-D of Cruikshank 2026: steady-state fold change relative to E2 = 0.09 nM in the virtual population (bands 10th-90th and 25th-75th percentiles; coloured line median, black line mean)."}
+ggplot(band3, aes(ESTRADIOL)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), fill = "steelblue", alpha = 0.2) +
+  geom_ribbon(aes(ymin = p25, ymax = p75), fill = "steelblue", alpha = 0.4) +
+  geom_line(aes(y = median), colour = "steelblue4", linewidth = 0.8) +
+  geom_line(aes(y = mean), colour = "black") +
+  facet_wrap(~output, scales = "free_y") +
+  labs(x = "Estradiol (nM)", y = "Relative level") +
+  theme_bw()
+```
+
+```{r fig3-table}
+band3 |>
+  filter(ESTRADIOL %in% c(0.5, 1.25, 2.5)) |>
+  mutate(across(p10:mean, \(x) round(x, 2))) |>
+  select(output, ESTRADIOL, median, mean, p10, p90) |>
+  rename("Output" = output, "E2 (nM)" = ESTRADIOL, "Median" = median,
+         "Mean" = mean, "10th pct" = p10, "90th pct" = p90) |>
+  knitr::kable()
+```
+
+Read from Figure 3, the paper's median curves are about 1.4 for cGSH at
+0.5 nM falling to about 0.27 at 2.5 nM, and about 0.55 for cH2O2 near 1.25 nM
+rising to about 0.67 at 2.5 nM; the median GSH/GSSG ratio falls to about 0.2 at
+2.5 nM. The redrawn population reproduces these shapes, with medians within
+about 0.1 of the figure; its tails differ somewhat because it skips the
+optimisation step of the plausible-patient algorithm. Solving the
+model on a random 200-row subset of the authors' own Table S3 parameter sets
+gave medians of 1.39 (cGSH, 0.5 nM), 0.29 (cGSH, 2.5 nM), 0.51 (cH2O2,
+1.25 nM) and 0.62 (cH2O2, 2.5 nM).
+
+```{r fig3-check}
+med <- function(o, e) band3$median[band3$output == o & band3$ESTRADIOL == e]
+stopifnot(
+  # GSH first rises, then falls below baseline at high E2.
+  med("cGSH", 0.5) > 1.1, med("cGSH", 2.5) < 0.6,
+  # H2O2 falls with E2 and turns upwards again at high E2.
+  med("cH2O2", 1.25) < 0.75, med("cH2O2", 2.5) > med("cH2O2", 1.25)
+)
+```
+
+```{r fig4-plot, fig.height = 3.4, fig.cap = "Replicates the layout of Figure 4 of Cruikshank 2026: steady-state fold changes for seven individuals of the virtual population (same colour = same individual)."}
+set.seed(4)
+pick <- sample(unique(fc3$subject), 7)
+fc3 |>
+  filter(subject %in% pick, output != "cGSH/cGSSG") |>
+  ggplot(aes(ESTRADIOL, fc, colour = factor(subject))) +
+  geom_line() +
+  facet_wrap(~output, scales = "free_y") +
+  labs(x = "Estradiol (nM)", y = "Relative level", colour = "Individual") +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+# Menstrual cycle (Figures 5 and 6)
+
+The paper drives the model with the mean 28-day estradiol and progesterone
+profiles of Figure 5A/B (spline interpolations of published cycle data). The
+maintainers digitised both curves from Figure 5 every half day by extracting
+the curve pixels; the digitised curves average 0.4365 nM (E2) and 12.21 nM
+(P4) over the cycle, against the paper's 0.4368 and 12.4859 nM. Each
+individual starts from its steady state at the cycle-average hormone levels
+and is simulated for two cycles; the second cycle is shown, as fold change
+relative to day 0. (The fold change returns to 1 at day 28 because the
+solution is periodic.)
+
+```{r cycle-inputs}
+cycle_day <- seq(0, 28, by = 0.5)
+e2_cycle <- c(
+  0.133, 0.133, 0.133, 0.136, 0.142, 0.143, 0.149, 0.162, 0.175, 0.175, 0.179,
+  0.206, 0.234, 0.247, 0.257, 0.284, 0.310, 0.331, 0.376, 0.483, 0.600, 0.687,
+  0.807, 0.997, 1.140, 1.110, 0.939, 0.715, 0.508, 0.360, 0.298, 0.332, 0.408,
+  0.453, 0.486, 0.536, 0.572, 0.556, 0.535, 0.549, 0.593, 0.631, 0.647, 0.642,
+  0.629, 0.613, 0.585, 0.529, 0.466, 0.429, 0.395, 0.359, 0.311, 0.257, 0.205,
+  0.167, 0.143
+)
+p4_cycle <- c(
+  1.60, 1.56, 1.34, 1.22, 1.07, 0.936, 0.936, 0.936, 0.936, 0.936, 0.936,
+  0.936, 0.856, 0.802, 0.802, 0.802, 0.802, 0.535, 0.535, 0.535, 0.668, 0.668,
+  0.535, 0.535, 0.535, 0.535, 0.802, 1.22, 1.87, 2.59, 3.61, 5.64, 8.77, 12.7,
+  17.6, 22.0, 26.7, 31.6, 34.8, 36.1, 36.4, 37.6, 39.3, 41.1, 40.5, 36.9, 34.4,
+  35.5, 34.6, 27.1, 19.8, 17.2, 16.8, 14.5, 10.9, 8.62, 8.96
+)
+hormones <- data.frame(day = cycle_day, Estradiol = e2_cycle, Progesterone = p4_cycle)
+```
+
+```{r fig5-hormones, fig.height = 3, fig.cap = "Hormone inputs digitised from Figure 5A/B of Cruikshank 2026."}
+hormones |>
+  pivot_longer(-day, names_to = "hormone", values_to = "nM") |>
+  ggplot(aes(day, nM)) +
+  geom_line(colour = "forestgreen") +
+  facet_wrap(~hormone, scales = "free_y") +
+  labs(x = "Day of menstrual cycle", y = "Concentration (nM)") +
+  theme_bw()
+```
+
+```{r cycle-sim}
+# Start every individual (and the nominal individual, id 0) at its steady
+# state for the cycle-average hormone levels.
+cyc_pars <- bind_rows(data.frame(id = 0L), vpop)
+for (p in vp_ranges$param) {
+  cyc_pars[[p]][is.na(cyc_pars[[p]])] <- vp_ranges$nominal[vp_ranges$param == p]
+}
+ss_avg <- steady_state(cyc_pars, e2 = 0.4368, p4 = 12.4859)
+for (s in states) cyc_pars[[paste0("bl_", s)]] <- ss_avg[[s]][match(cyc_pars$id, ss_avg$id)]
+
+t_h <- seq(0, 2 * 28 * 24, by = 4)
+d_cyc <- (t_h / 24) %% 28
+ev_cyc <- data.frame(
+  time = t_h, evid = 0, cmt = "hcy",
+  ESTRADIOL = approx(cycle_day, e2_cycle, d_cyc)$y,
+  PROGESTERONE = approx(cycle_day, p4_cycle, d_cyc)$y
+)
+ev_cyc <- tidyr::crossing(id = cyc_pars$id, ev_cyc) |> arrange(id, time)
+sim_cyc <- rxode2::rxSolve(mod, ev_cyc, params = cyc_pars, atol = 1e-8, rtol = 1e-8,
+                           maxsteps = 1e6, covsInterpolation = "linear",
+                           returnType = "data.frame")
+
+cyc2 <- sim_cyc |>
+  filter(time >= 28 * 24) |>
+  mutate(day = time / 24 - 28) |>
+  group_by(id) |>
+  mutate(
+    cH2O2 = ch2o2 / first(ch2o2), cGSH = cgsh / first(cgsh),
+    `cGSH/cGSSG` = cgsh_cgssg_ratio / first(cgsh_cgssg_ratio)
+  ) |>
+  ungroup()
+
+# Periodicity of the nominal individual: day 28 of cycle 2 equals day 0.
+nom <- cyc2 |> filter(id == 0)
+stopifnot(abs(last(nom$cH2O2) - 1) < 0.01, abs(last(nom$cGSH) - 1) < 0.01)
+```
+
+```{r fig5-plot, fig.height = 3.6, fig.cap = "Replicates Figure 5D-F of Cruikshank 2026: fold change relative to day 0 over the menstrual cycle in the virtual population (bands 10th-90th and 25th-75th percentiles; coloured line median, black line mean; dashed line nominal parameters)."}
+band5 <- cyc2 |>
+  filter(id != 0) |>
+  pivot_longer(c(cH2O2, cGSH, `cGSH/cGSSG`), names_to = "output", values_to = "fc") |>
+  group_by(output, day) |>
+  summarise(
+    p10 = quantile(fc, 0.10), p25 = quantile(fc, 0.25), median = median(fc),
+    p75 = quantile(fc, 0.75), p90 = quantile(fc, 0.90), mean = mean(fc),
+    .groups = "drop"
+  ) |>
+  mutate(output = factor(output, c("cH2O2", "cGSH", "cGSH/cGSSG")))
+nom_long <- nom |>
+  pivot_longer(c(cH2O2, cGSH, `cGSH/cGSSG`), names_to = "output", values_to = "fc") |>
+  mutate(output = factor(output, levels(band5$output)))
+
+ggplot(band5, aes(day)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), fill = "tomato", alpha = 0.2) +
+  geom_ribbon(aes(ymin = p25, ymax = p75), fill = "tomato", alpha = 0.4) +
+  geom_line(aes(y = median), colour = "firebrick", linewidth = 0.8) +
+  geom_line(aes(y = mean), colour = "black") +
+  geom_line(data = nom_long, aes(y = fc), linetype = "dashed") +
+  facet_wrap(~output, scales = "free_y") +
+  labs(x = "Day of menstrual cycle", y = "Fold change") +
+  theme_bw()
+```
+
+In Figure 5D the median cytosolic H2O2 falls to about 0.55-0.6 at the
+pre-ovulatory estradiol peak (day 12), recovers to about 0.85 at day 15 and
+sits near 0.7 in the luteal phase; the GSH/GSSG ratio dips to about 0.5 at day
+12; median GSH is comparatively stable, dipping to about 0.85 near day 13 and
+rising to about 1.25 by day 24.
+
+```{r fig5-check}
+nadir <- band5 |>
+  filter(day >= 10, day <= 14) |>
+  group_by(output) |>
+  summarise(min_median = min(median), day_of_min = day[which.min(median)])
+knitr::kable(nadir |> rename("Output" = output, "Minimum median (days 10-14)" = min_median,
+                             "Day" = day_of_min), digits = 2)
+stopifnot(
+  with(nadir, min_median[output == "cH2O2"] < 0.75),
+  with(nadir, min_median[output == "cGSH/cGSSG"] < 0.75)
+)
+```
+
+```{r fig6-plot, fig.height = 3.4, fig.cap = "Replicates the layout of Figure 6 of Cruikshank 2026: menstrual-cycle fold changes for seven individuals (same colour = same individual)."}
+cyc2 |>
+  filter(id %in% pick) |>
+  pivot_longer(c(cH2O2, cGSH), names_to = "output", values_to = "fc") |>
+  ggplot(aes(day, fc, colour = factor(id))) +
+  geom_line() +
+  facet_wrap(~output, scales = "free_y") +
+  labs(x = "Day of menstrual cycle", y = "Relative level") +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+# CBS deficiency (Figure 7)
+
+CBSD is simulated with CBS at 2.5% of normal activity (`f_cbs = 0.025`). Figure
+7A/B shows the CBSD-to-healthy fold change at E2 0.09 nM and Figure 7C the
+premenopausal-to-male ratio with and without CBSD, both as virtual-population
+medians.
+
+```{r fig7}
+conds <- tidyr::crossing(
+  sex = c("male", "female"), f_cbs = c(1, 0.025)
+)
+pars7 <- tidyr::crossing(vpop |> rename(subject = id), conds) |> mutate(id = row_number())
+ss7 <- steady_state(
+  pars7 |> select(-subject, -sex),
+  e2 = ifelse(pars7$sex == "male", 0.09, 0.4368),
+  p4 = ifelse(pars7$sex == "male", 0.318, 12.4859)
+) |>
+  left_join(pars7 |> select(id, subject, sex, f_cbs), by = "id") |>
+  select(subject, sex, f_cbs, hcy, ccys, cgsh, ch2o2) |>
+  pivot_longer(c(hcy, ccys, cgsh, ch2o2), names_to = "species")
+
+ratio7 <- ss7 |>
+  pivot_wider(names_from = c(sex, f_cbs), values_from = value) |>
+  mutate(
+    cbsd_vs_healthy = male_0.025 / male_1,
+    female_vs_male_healthy = female_1 / male_1,
+    female_vs_male_cbsd = female_0.025 / male_0.025
+  ) |>
+  group_by(species) |>
+  summarise(across(c(cbsd_vs_healthy, female_vs_male_healthy, female_vs_male_cbsd), median))
+
+fig7_paper <- tibble::tribble(
+  ~species, ~paper_cbsd, ~paper_fm_healthy, ~paper_fm_cbsd,
+  "hcy", 12.5, 0.71, 1.00,
+  "ccys", 0.40, 0.61, 0.37,
+  "cgsh", 0.79, 1.49, 0.88,
+  "ch2o2", 1.49, 0.66, 0.86
+)
+ratio7 |>
+  left_join(fig7_paper, by = "species") |>
+  mutate(species = recode(species, hcy = "Hcy", ccys = "cCys", cgsh = "cGSH", ch2o2 = "cH2O2")) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2))) |>
+  select(species, paper_cbsd, cbsd_vs_healthy, paper_fm_healthy,
+         female_vs_male_healthy, paper_fm_cbsd, female_vs_male_cbsd) |>
+  rename(
+    "Species" = species,
+    "CBSD/healthy, Fig 7A-B" = paper_cbsd, "CBSD/healthy, sim" = cbsd_vs_healthy,
+    "Female/male healthy, Fig 7C" = paper_fm_healthy, "Female/male healthy, sim" = female_vs_male_healthy,
+    "Female/male CBSD, Fig 7C" = paper_fm_cbsd, "Female/male CBSD, sim" = female_vs_male_cbsd
+  ) |>
+  knitr::kable()
+```
+
+The Figure 7 values are bar heights read from the figure by the maintainers
+(about +/-0.05). With the nominal parameters the CBSD fold changes are 10.7
+(Hcy), 0.50 (cCys), 0.89 (cGSH) and 1.39 (cH2O2), and the Results text gives
+"approximately 60%" lower cCys and "~20%" lower GSH. The model reproduces the
+qualitative findings: Hcy rises more than ten-fold, cysteine and GSH fall, H2O2
+rises because Hcy inhibits CAT and GPX, and the premenopausal-to-male ratios of
+Hcy, GSH and H2O2 move towards 1 under CBSD while the cysteine ratio falls.
+
+```{r fig7-check}
+r7 <- function(s, col) ratio7[[col]][ratio7$species == s]
+stopifnot(
+  r7("hcy", "cbsd_vs_healthy") > 8,
+  r7("ch2o2", "cbsd_vs_healthy") > 1.1,
+  r7("cgsh", "female_vs_male_healthy") > 1.2,
+  r7("cgsh", "female_vs_male_cbsd") < 1.1,
+  abs(r7("hcy", "female_vs_male_cbsd") - 1) < abs(r7("hcy", "female_vs_male_healthy") - 1)
+)
+```
+
+# Assumptions and deviations
+
+* **Rate-law source.** The authors' SimBiology SBML export (Data S2) holds all
+  parameter values and 38 of the 43 rate laws. The GCL, cytosolic and
+  mitochondrial GPX, and cytosolic and mitochondrial TPX kinetic laws are empty
+  in the export and were written from the Data S1 equations.
+* **GCL H2O2 factor.** Data S1 prints the GCL H2O2 term as
+  `(sscH2O2 + Ka)/(cH2O2 + Ka)`, an inhibition. The model uses the activation
+  form `(Ka + cH2O2)/(Ka + sscH2O2)`, the form Data S1 uses for CBS and CTGL and
+  the one implied by the SBML parameter name `Ka_GCL_H2O2`. With the printed
+  form the premenopausal steady state is far from Figure 2B (cytosolic GSH about
+  17,180 uM against 8,405) and the male state is 6% off; with the activation
+  form every Figure 2 value is reproduced to its printed digits, and the
+  virtual-population curves match Figure 3.
+* **GS denominator.** The GS rate law follows the SBML export. The Data S1
+  version divides by `cGSH/Ki` with no `Ki` given for GS and gives
+  glutamyl-cysteine 12.9 uM against 8.5 in Figure 2A.
+* **GPX estradiol constants.** `V_E2` = 25.7716 and `K_E2` = 10.8 (SBML export
+  and Table S2 nominal values). The Data S1 GPX tables print the rounded 27 and
+  11, which give premenopausal cytosolic GSH 8,261 uM against 8,405.
+* **Smaller discrepancies.** The cysteine input into blood is 105 uM/h (Data S1
+  text and SBML; one Data S1 table prints 100), and the second-order cytosolic
+  cysteine loss constant is 0.0017 (SBML; Data S1 prints 0.35/200 = 0.00175).
+  The mitochondrial TPX overoxidation term uses mitochondrial H2O2: Data S1
+  writes `cH2O2` in that term but lists the rate as a function of mitochondrial
+  H2O2, and the two are numerically indistinguishable at steady state.
+* **Hormones as covariates.** Serum E2 and P4 are data covariates (`ESTRADIOL`,
+  `PROGESTERONE`, nmol/L) so that both the constant and the menstrual-cycle
+  scenarios run from the same model. The reference levels 0.09 and 0.318 nM
+  are fixed parameters (`e2_ref`, `p4_ref`).
+* **No variability terms.** The authors' virtual population is a set of
+  accepted parameter vectors, not a parametric distribution, so the model has
+  no IIV or residual error. This article redraws a population with the Table
+  S2 sampling ranges and acceptance ranges, without the optimisation step of the
+  plausible-patient algorithm, rather than redistributing Table S3.
+* **Menstrual-cycle inputs.** Digitised from Figure 5A/B by the maintainers and
+  linearly interpolated between half-day points; the paper used Matlab spline
+  interpolation of the underlying published data.
+* **Steady states** are taken as the solution at 5,000 h from the SBML initial
+  conditions (or from the individual's own steady state for the cycle runs).
+* **No PKNCA.** There is no drug dosing; validation is against the published
+  steady states and population summaries instead of non-compartmental
+  analysis.
