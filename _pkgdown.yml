@@ -3784,6 +3784,8 @@ navbar:
         href: articles/Pandey_2023_hydroxyurea.html
       - text: "Hydroxyurea (Paule 2011)"
         href: articles/Paule_2011_hydroxyurea.html
+      - text: "Hydroxyurea (Sabo 2026)"
+        href: articles/Sabo_2026_hydroxyurea.html
       - text: "Hyperoside rat (Chen 2024)"
         href: articles/Chen_2024_guhongInjection.html
       - text: "Iadademstat invitro (Bouhaddou 2020)"
@@ -11543,6 +11545,7 @@ articles:
   - articles/Ruiz_2025_thrombin_generation
   - articles/Rymut_2023_anti_tryptase
   - articles/Ryu_2021_hyaluronicAcid_fillers_mouse
+  - articles/Sabo_2026_hydroxyurea
   - articles/Sadaf_2024_glutamine
   - articles/Sadiq_2017_ciprofloxacin
   - articles/Sadiq_2024_tozorakimab
