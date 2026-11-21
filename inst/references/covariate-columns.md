@@ -26179,6 +26179,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Chen_2021b_tacrolimus.R` (switches the log-scale residual SD between `expSd_changhai = sqrt(0.0606)` and `expSd_huashan = sqrt(0.0887)`).
 - **Notes:** Member of the auto-approved `STUDY_<id>` family, keyed on a recruiting centre like [[STUDY_VANCO_CENTER2]]; the paper names the centres, so the indicator is anchored to the hospital name. Subject-level (time-fixed). It carries no structural effect, but in the source data it is confounded with Wuzhi capsule use (no Huashan patient received it) and with the assay (EMIT converted to CMIA), so it must not be read as a proxy for either.
 
+### STUDY_SHANGHAI_FIRST (**canonical for Wu 2026 contezolid Shanghai First People's Hospital recruiting-site indicator**)
+- **Description:** 1 = patient recruited at Shanghai First People's Hospital; 0 = patient recruited at Zhongshan Hospital Affiliated to Fudan University (Shanghai). The two sites of the Wu 2026 oral contezolid pneumonia study. Selects between the site-specific plasma proportional residual errors.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Zhongshan Hospital).
+- **Source aliases:** `site` -- Wu 2026 supplement Methods residual-error equation 'Plasma: Y = F+F*ERR1*(1-site)+F*ERR2*site', 'site is an indicator variable (0 for Zhongshan Hospital, 1 for First Hospital)'.
+- **Example models:** `Wu_2026_contezolid.R` (switches the plasma proportional residual SD between `propSd_zhongshan = sqrt(0.26)` and `propSd_firsthosp = sqrt(0.13)`, Table S1).
+- **Notes:** Member of the auto-approved `STUDY_<id>` family, keyed on a recruiting centre like [[STUDY_HUASHAN]] and [[STUDY_VANCO_CENTER2]]. Subject-level (time-fixed). Residual error only, with no structural effect. ELF concentrations came from Zhongshan only, so the ELF residual error does not depend on it. The paper does not report how many patients each site enrolled.
+
 ### STUDY_SPD555303 (**canonical for van Schaick 2016 prucalopride SPD555-303 phase 3 study cohort indicator**)
 - **Description:** 1 = subject enrolled in SPD555-303, the phase 3 multiple-dose trial of prucalopride in children with functional constipation (NCT01330381; 137 patients in the PK dataset, sparse sampling of one post-first-dose and two steady-state concentrations); 0 = subject enrolled in PRU-USA-12, the phase 1 richly sampled single-dose study (38 patients, mean 12.6 samples each). Selects among the study-specific typical clearance, the study-specific clearance IIV, and the study-specific log-scale residual-error magnitude that van Schaick 2016 estimated separately for the two pooled studies.
 - **Units:** (binary)
