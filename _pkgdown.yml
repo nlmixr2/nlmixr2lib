@@ -6384,6 +6384,8 @@ navbar:
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Phosphocreatine (He 2020)"
         href: articles/He_2020_phosphocreatine.html
+      - text: "Piflufolastat pbpk (vanderGaag 2026)"
+        href: articles/vanderGaag_2026_piflufolastat_pbpk.html
       - text: "Pinatuzumab polatuzumab (Lu 2016)"
         href: articles/Lu_2016_pinatuzumab_polatuzumab.html
       - text: "Pioglitazone alt mbma (Tran 2026)"
@@ -12559,6 +12561,7 @@ articles:
   - articles/vandenBerg_2025_natalizumab
   - articles/vandenMaagdenberg_2025_a2ar_tme_qsp
   - articles/vanderGaag_2025_osimertinib_pbpk
+  - articles/vanderGaag_2026_piflufolastat_pbpk
   - articles/vanderHeijden_2023_alectinib
   - articles/vanderLaan_2023_levofloxacin
   - articles/vanderMeijden_2023_polymyxinB
