@@ -1,0 +1,525 @@
+---
+title: "Sertraline (Gandara Mireles 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sertraline (Gandara Mireles 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("GandaraMireles_2026_sertraline"))$reference`
+* Description: `r rxode2::rxode(readModelDb("GandaraMireles_2026_sertraline"))$description`
+* Article: <https://doi.org/10.3389/fphar.2026.1862275> (open access)
+* Supplement: Supplementary Tables S1-S3 and Supplementary Figure S1, linked from
+  the article page.
+
+Gandara Mireles et al. characterised sertraline population pharmacokinetics in
+pediatric patients with anxiety disorders and related the individual exposure
+(post hoc CL/F, Cmax and steady-state average concentration Cavg) to anxiety
+severity and adverse events. The exposure-response part of the paper is
+descriptive (t-tests and logistic regressions on post hoc exposure); the
+authors state that the data were not sufficient for a formal PK/PD model, so
+only the PK model is packaged.
+
+# Population
+
+85 pediatric patients from two centres in Durango, Mexico, on sertraline
+monotherapy for anxiety disorders diagnosed by DSM-5 (Table 1). Mean age was
+about 12.2 years (12.22 +/- 4.01 in the 59 patients without adverse events,
+12.08 +/- 3.99 in the 26 with), weight 47.76 +/- 15.02 and 51.87 +/- 13.22 kg,
+height about 1.50 +/- 0.10 m and BMI 21.2 +/- 4.5 and 23.9 +/- 4.2 kg/m^2; 48
+were male and 37 female. Treatment started at 25 mg/day and was titrated, for
+a mean of 35 +/- 15 mg/day. Each patient gave 1-3 steady-state samples at
+predose and 1-25 h post-dose, 218 concentrations in total, measured by HPLC with
+fluorescence detection (LLOQ 2 ng/mL).
+
+The same information is available programmatically via
+`readModelDb("GandaraMireles_2026_sertraline")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment, first-order absorption with lag, linear elimination | n/a | Results 3.2; Supplementary Table S1 (Model 4, final) |
+| `lka` | log(0.7) | Table 2, Ka final model |
+| `ltlag` | log(0.30) | Table 2, Tlag final model |
+| `lcl` | log(59.7) | Table 2, CL/F final model |
+| `lvc` | log(1200) | Table 2, V1/F final model |
+| `lq` | log(161) | Table 2, Q/F final model |
+| `lvp` | log(1350) | Table 2, V2/F final model |
+| `e_wt_cl` | 0.635 | Back-solved from Supplementary Figure S1 (below) |
+| `e_bmi_cl` | 0.303 | Back-solved from Supplementary Figure S1 (below) |
+| `e_wt_vc` | 0.847 | Back-solved from Supplementary Figure S1 (below) |
+| `e_bmi_vc` | 0.417 | Least-squares back-solve from Supplementary Figure S1 (below) |
+| Reference covariate values 47.8 kg, 22.0 kg/m^2 | n/a | Supplementary Figure S1 caption ('typical patient') |
+| `etalka`, `etaltlag`, `etalcl`, `etalvc`, `etalq`, `etalvp` | log(1 + CV^2) for CV 25, 30, 28, 35, 40, 38% | Table 2, IIV column; log-normal per Methods 2.7 |
+| `addSd` | 0.882 ng/mL | Table 2, model error parameter a |
+| `propSd` | 0.723 | Table 2, model error parameter B |
+| `Cc = 1000 * central / vc` | n/a | mg dose / L volume to ng/mL |
+
+# Covariate exponents from Supplementary Figure S1
+
+The Results name body weight and BMI as retained covariates on CL/F and V1/F
+and refer to Supplementary Figure S1 for "the magnitude and direction of
+covariate effects". No equation or coefficient is printed anywhere. The figure
+is a forest plot with, for each effect, an open (low) and a filled (high)
+circle giving the percentage change relative to the typical patient
+(47.8 kg, BMI 22.0 kg/m^2); the covariate values of the circles are not given.
+
+The maintainers digitised the circle centres from the figure's pixels (the
+gridlines at -30% to +30% fix the scale to about 0.035% per pixel):
+
+```{r s1-digitised}
+s1 <- tibble::tribble(
+  ~effect,          ~covariate, ~parameter, ~ref, ~low_pct, ~high_pct,
+  "Weight -> CL/F", "WT",       "cl",       47.8, -20.85,   18.595,
+  "BMI -> CL/F",    "BMI",      "cl",       22.0,  -5.85,    5.154,
+  "Weight -> V1/F", "WT",       "vc",       47.8, -26.78,   25.525,
+  "BMI -> V1/F",    "BMI",      "vc",       22.0,  -6.79,    8.810
+)
+knitr::kable(s1, caption = "Digitised Supplementary Figure S1 (percent change).")
+```
+
+Monolix's usual continuous-covariate form, a power function
+`(COV / ref)^e`, evaluated at endpoints `ref * (1 - x)` and `ref * (1 + x)`,
+has two unknowns (`x`, `e`) and two points per effect, so each effect solves
+exactly when such a pair exists:
+
+```{r s1-solve}
+solve_power <- function(low_pct, high_pct) {
+  target <- log(1 + high_pct / 100) / log(1 + low_pct / 100)
+  f <- function(x) log(1 + x) / log(1 - x) - target
+  x <- stats::uniroot(f, c(1e-4, 0.9), tol = 1e-10)$root
+  c(x = x, e = log(1 + high_pct / 100) / log(1 + x))
+}
+solved <- t(mapply(solve_power, s1$low_pct[1:3], s1$high_pct[1:3]))
+solved <- cbind(s1[1:3, c("effect", "ref")], solved) |>
+  mutate(offset = x * ref)
+knitr::kable(solved, digits = 4,
+             caption = "Exact power-model solution for the three solvable effects.")
+```
+
+Both weight effects come out at the same offset, `x` = 0.3079, which is
+47.8 +/- 14.72 kg, close to the pooled Table 1 weight SD (about 14.5 kg).
+Two independently drawn effects agreeing to four decimals is good evidence that
+the figure plots the typical value +/- a fixed weight step and that the effect
+is a power function (an exponential `exp(e * (WT - ref))` form would need
+different steps for the two). BMI on CL/F gives 22.0 +/- 3.97 kg/m^2.
+
+BMI on V1/F cannot be solved this way: its upward change (+8.81%) is larger
+than its downward one (-6.79%), and no power or exponential model gives that at
+symmetric endpoints. The maintainers used the BMI step found for CL/F and took
+the least-squares exponent of both points on the log scale:
+
+```{r s1-bmi-vc}
+x_bmi <- solved$x[solved$effect == "BMI -> CL/F"]
+a <- log(c(1 - x_bmi, 1 + x_bmi))
+y <- log(1 + c(s1$low_pct[4], s1$high_pct[4]) / 100)
+c(e_low_point = y[1] / a[1], e_high_point = y[2] / a[2],
+  e_least_squares = sum(a * y) / sum(a^2))
+```
+
+The packaged exponents are the solutions rounded to three decimals. The check
+below evaluates the packaged model (not the arithmetic above) at the inferred
+endpoints and compares its CL/F and V1/F changes with the digitised figure.
+
+```{r s1-model-check}
+mod <- readModelDb("GandaraMireles_2026_sertraline")
+mod_typ <- rxode2::zeroRe(mod, "omega")
+
+# Typical-value solves over several covariate or dose rows are multi-subject
+# solves without omega by design; muffle only that rxode2 warning.
+solve_typical <- function(events, keep) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod_typ, events = events, keep = keep),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+x_wt <- solved$x[solved$effect == "Weight -> CL/F"]
+cov_grid <- tibble::tibble(
+  id = 1:5,
+  case = c("typical", "WT low", "WT high", "BMI low", "BMI high"),
+  WT = c(47.8, 47.8 * (1 - x_wt), 47.8 * (1 + x_wt), 47.8, 47.8),
+  BMI = c(22, 22, 22, 22 * (1 - x_bmi), 22 * (1 + x_bmi))
+)
+cov_ev <- cov_grid |>
+  dplyr::mutate(time = 1, evid = 0, amt = 0, cmt = "central")
+cov_sim <- solve_typical(cov_ev, keep = "case") |>
+  as.data.frame()
+base <- cov_sim[cov_sim$case == "typical", ]
+pct <- function(case, par) {
+  100 * (cov_sim[[par]][cov_sim$case == case] / base[[par]] - 1)
+}
+s1_check <- s1 |>
+  dplyr::mutate(
+    low_model = c(pct("WT low", "cl"), pct("BMI low", "cl"),
+                  pct("WT low", "vc"), pct("BMI low", "vc")),
+    high_model = c(pct("WT high", "cl"), pct("BMI high", "cl"),
+                   pct("WT high", "vc"), pct("BMI high", "vc")),
+    low_err = low_model - low_pct,
+    high_err = high_model - high_pct
+  )
+s1_check |>
+  dplyr::select(effect, low_pct, low_model, high_pct, high_model) |>
+  dplyr::rename(
+    "Effect" = effect,
+    "Low, figure (%)" = low_pct,
+    "Low, model (%)" = low_model,
+    "High, figure (%)" = high_pct,
+    "High, model (%)" = high_model
+  ) |>
+  knitr::kable(digits = 2, caption = "Replicates Supplementary Figure S1.")
+
+# Typical values are the Table 2 final estimates.
+stopifnot(
+  abs(base$cl - 59.7) < 1e-6,
+  abs(base$vc - 1200) < 1e-6,
+  # The three exactly-solved effects reproduce the digitised points to
+  # within the three-decimal rounding of the exponents.
+  all(abs(c(s1_check$low_err[1:3], s1_check$high_err[1:3])) < 0.1),
+  # BMI -> V1/F is a compromise fit; each point misses by 1.2-1.7 points.
+  all(abs(c(s1_check$low_err[4], s1_check$high_err[4])) < 2)
+)
+```
+
+```{r s1-plot, fig.height = 3.5, fig.width = 7}
+s1_check |>
+  tidyr::pivot_longer(c(low_pct, high_pct, low_model, high_model),
+                      names_to = c("end", "source"), names_sep = "_") |>
+  dplyr::mutate(source = ifelse(source == "pct", "Digitised figure", "Packaged model")) |>
+  ggplot(aes(value, effect, shape = source, colour = source)) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_point(size = 3) +
+  scale_shape_manual(values = c(1, 4)) +
+  labs(x = "Change relative to typical patient (%)", y = NULL,
+       shape = NULL, colour = NULL,
+       caption = "Replicates Supplementary Figure S1 of Gandara Mireles 2026.") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+# Virtual cohort
+
+Observed data are not available. The cohort below matches Table 1: height from
+N(1.50, 0.10) m, BMI from N(22.0, 4.6) kg/m^2 (the pooled Table 1 mean and SD)
+and weight derived as BMI x height^2, which keeps weight and BMI jointly
+consistent. Doses are 25, 50 or 75 mg once daily with probabilities 0.65,
+0.30 and 0.05, which gives the reported mean (SD) of 35 (15) mg/day. Each
+subject receives 21 daily doses (about 15 terminal half-lives) and is
+observed every 15 minutes over the last dosing interval.
+
+```{r cohort}
+set.seed(20261862)
+n_sub <- 200
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  HT = pmin(pmax(rnorm(n_sub, 1.50, 0.10), 1.20), 1.85),
+  BMI = pmin(pmax(rnorm(n_sub, 22.0, 4.6), 14), 36),
+  dose = sample(c(25, 50, 75), n_sub, replace = TRUE, prob = c(0.65, 0.30, 0.05))
+) |>
+  dplyr::mutate(WT = BMI * HT^2, dose_grp = paste(dose, "mg QD"))
+
+cohort |>
+  dplyr::summarise(
+    `Weight mean (kg)` = mean(WT), `Weight SD` = sd(WT),
+    `BMI mean (kg/m^2)` = mean(BMI), `BMI SD` = sd(BMI),
+    `Dose mean (mg/day)` = mean(dose), `Dose SD` = sd(dose)
+  ) |>
+  knitr::kable(digits = 1, caption = "Virtual cohort vs Table 1 (pooled weight about 49.0 +/- 14.5 kg, BMI 22.0 +/- 4.6 kg/m^2, dose 35 +/- 15 mg/day).")
+
+t_last <- 20 * 24
+doses <- cohort |>
+  dplyr::mutate(time = 0, evid = 1, amt = dose, cmt = "depot", ii = 24, addl = 20)
+obs <- cohort |>
+  tidyr::crossing(time = t_last + seq(0, 24, by = 0.25)) |>
+  dplyr::mutate(evid = 0, amt = 0, cmt = "central", ii = 0, addl = 0)
+events <- dplyr::bind_rows(doses, obs) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::select(id, time, evid, amt, cmt, ii, addl, WT, BMI, dose_grp)
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
+```
+
+# Simulation
+
+```{r simulate}
+rxode2::rxSetSeed(20261862)
+sim <- rxode2::rxSolve(mod, events = events, keep = c("dose_grp", "WT", "BMI")) |>
+  as.data.frame() |>
+  dplyr::mutate(tad = time - t_last)
+```
+
+## Typical-patient steady-state profile (Figure 1)
+
+Figure 1 shows a population-prediction curve over the steady-state dosing
+interval without stating its dose. Its time axis places the peak at about
+3.7 h post-dose. Its concentration axis cannot be read: the 150, 100 and 50
+ng/mL labels sit on evenly spaced major gridlines and the "10" label sits on
+the next one, where 0 would be on a linear scale.
+
+```{r figure-1, fig.height = 4, fig.width = 7}
+typ_ev <- tibble::tibble(dose = c(25, 35, 50)) |>
+  dplyr::mutate(id = dplyr::row_number(), WT = 47.8, BMI = 22,
+                dose_grp = paste(dose, "mg QD"))
+typ_events <- dplyr::bind_rows(
+  typ_ev |> dplyr::mutate(time = 0, evid = 1, amt = dose, cmt = "depot", ii = 24, addl = 20),
+  typ_ev |> tidyr::crossing(time = t_last + seq(0, 24, by = 0.05)) |>
+    dplyr::mutate(evid = 0, amt = 0, cmt = "central", ii = 0, addl = 0)
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+typ <- solve_typical(typ_events, keep = "dose_grp") |>
+  as.data.frame() |>
+  dplyr::mutate(tad = time - t_last)
+
+band <- sim |>
+  dplyr::group_by(tad) |>
+  dplyr::summarise(lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95), .groups = "drop")
+ggplot() +
+  geom_ribbon(data = band, aes(tad, ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line(data = typ, aes(tad, Cc, linetype = dose_grp)) +
+  geom_hline(yintercept = c(10, 150), colour = "red", linetype = "dashed") +
+  labs(x = "Post-dose time (h)", y = "Sertraline concentration (ng/mL)",
+       linetype = "Typical patient",
+       caption = paste("Replicates Figure 1 of Gandara Mireles 2026: typical",
+                       "steady-state profiles and the 5th-95th percentile band",
+                       "of the virtual cohort.")) +
+  theme_bw()
+
+typ_tmax <- typ |>
+  dplyr::group_by(dose_grp) |>
+  dplyr::summarise(tmax = tad[which.max(Cc)], cmax = max(Cc), cmin = min(Cc),
+                   .groups = "drop")
+typ_tmax |>
+  dplyr::rename("Dose" = dose_grp, "Tmax (h)" = tmax, "Cmax (ng/mL)" = cmax,
+                "Cmin (ng/mL)" = cmin) |>
+  knitr::kable(digits = 2, caption = "Typical-patient (47.8 kg, BMI 22) steady-state Cmax, Cmin and tmax.")
+```
+
+The typical steady-state peak falls at about `r round(typ_tmax$tmax[1], 1)` h,
+somewhat earlier than the 3.7 h of the Figure 1 curve, whose dose and
+covariates are not stated.
+
+## Visual predictive check (Figure 3)
+
+```{r figure-3, fig.height = 4, fig.width = 7}
+sim |>
+  dplyr::group_by(tad) |>
+  dplyr::summarise(
+    Q05 = quantile(sim, 0.05), Q50 = quantile(sim, 0.50), Q95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  tidyr::pivot_longer(-tad, names_to = "percentile") |>
+  ggplot(aes(tad, value, linetype = percentile)) +
+  geom_line() +
+  labs(x = "Time after dose (h)", y = "Plasma sertraline (ng/mL)", linetype = NULL,
+       caption = paste("Replicates the simulated percentiles of Figure 3 of",
+                       "Gandara Mireles 2026 (virtual cohort, with residual error).")) +
+  theme_bw()
+```
+
+Figure 3 of the paper draws a VPC whose percentiles fall to near zero at time
+0 and peak at about 50, 73 and 105 ng/mL at 1-1.5 h. Neither feature is what a
+steady-state model with these parameters can produce: CL/F of 59.7 L/h at
+35 mg/day gives an average concentration of about 24 ng/mL, and a model with a
+33 h terminal half-life cannot fall to zero within the dosing interval. The
+published VPC therefore does not serve as a quantitative target.
+
+# PKNCA validation
+
+```{r pknca}
+nca_conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, tad, Cc, dose_grp)
+nca_dose <- cohort |>
+  dplyr::transmute(id, tad = 0, amt = dose, dose_grp)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ tad | dose_grp + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ tad | dose_grp + id)
+intervals <- data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE,
+                        cmin = TRUE, cav = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_tab <- as.data.frame(nca_res$result)
+nca_tab |>
+  dplyr::group_by(dose_grp, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename(
+    "Dose" = dose_grp, "Cmax (ng/mL)" = cmax, "Tmax (h)" = tmax,
+    "Cmin (ng/mL)" = cmin, "Cavg (ng/mL)" = cav, "AUC0-24 (ng*h/mL)" = auclast
+  ) |>
+  knitr::kable(digits = 1, caption = "Median steady-state NCA by dose group (virtual cohort).")
+```
+
+At steady state the average concentration is fixed by the individual
+clearance, `Cavg = dose / (CL/F x 24 h)`. PKNCA's trapezoidal `cav` is checked
+against that closed form for every subject, using each subject's own CL/F from
+the solve:
+
+```{r cavg-closed-form}
+cl_i <- sim |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cl = dplyr::first(cl), .groups = "drop")
+chk <- nca_tab |>
+  dplyr::filter(PPTESTCD == "cav") |>
+  dplyr::left_join(cl_i, by = "id") |>
+  dplyr::left_join(cohort |> dplyr::select(id, dose), by = "id") |>
+  dplyr::mutate(closed = 1000 * dose / (cl * 24),
+                pct_diff = 100 * (PPORRES / closed - 1))
+summary(chk$pct_diff)
+stopifnot(
+  # Same drawn parameters on both sides: only trapezoid error and the
+  # remaining approach to steady state separate them.
+  abs(median(chk$pct_diff)) < 1,
+  quantile(abs(chk$pct_diff), 0.9) < 2
+)
+```
+
+## Comparison against published exposure
+
+Table 2 reports a mean post hoc Cmax of 67.19 ng/mL and Supplementary Table S3
+a median Cavg of 41.5 ng/mL (mean 43.8) over all 85 patients. The comparison
+pools the virtual cohort over dose groups.
+
+```{r nca-compare}
+sim_all <- nca_tab |>
+  dplyr::mutate(cohort = "All patients")
+published <- tibble::tribble(
+  ~cohort,        ~cmax, ~cav,
+  "All patients", 67.19, 41.5
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_all,
+  reference = published,
+  by = "cohort",
+  params = c("cmax", "cav"),
+  units = c(cmax = "ng/mL", cav = "ng/mL"),
+  tolerance_pct = 20
+)
+cmp |>
+  knitr::kable(caption = "Simulated (median) vs published. * differs by more than 20%.")
+```
+
+Both simulated medians are about half the published values. The model is not the cause: the paper's
+own numbers do not satisfy `Cavg = dose / (CL/F x tau)`. At the reported mean
+dose of 35 mg/day and the typical CL/F of 59.7 L/h, Cavg is 24.4 ng/mL. The
+subgroup tables imply daily doses that differ from the reported 35 +/- 15
+mg/day in both adverse-event groups (Table 1):
+
+```{r implied-dose}
+tibble::tribble(
+  ~subgroup,                                   ~source,     ~cl,  ~cavg,
+  "Without AEs (n = 59)",                      "Table 3/S3", 62.7, 33.7,
+  "With AEs (n = 26)",                         "Table 3/S3", 38.4, 68.2,
+  "Minimal/mild, without AEs (n = 38)",        "Table 4",    38.9, 41.2,
+  "Moderate/moderately severe, without AEs (n = 21)", "Table 4", 51.1, 27.2,
+  "Minimal/mild, with AEs (n = 20)",           "Table 4",    41.5, 76.6,
+  "Moderate/moderately severe, with AEs (n = 6)", "Table 4", 64.7, 25.1
+) |>
+  dplyr::mutate(implied_dose = cavg * cl * 24 / 1000) |>
+  dplyr::rename("Subgroup" = subgroup, "Source" = source, "Mean CL/F (L/h)" = cl,
+                "Mean Cavg (ng/mL)" = cavg, "Implied dose (mg/day)" = implied_dose) |>
+  knitr::kable(digits = 1, caption = "Daily dose implied by each published subgroup mean (Cavg x CL/F x 24 h).")
+```
+
+The implied doses run from 33 to 76 mg/day, and Table 3 gives a mean CL/F of
+62.7 L/h for the patients without adverse events while the two Table 4
+subgroups that make up the same 59 patients average 38.9 and 51.1 L/h. The
+published Cavg and Cmax summaries are therefore not reproducible from the
+published CL/F and doses with any parameter set, and the comparison is shown
+for information rather than as a gate. The terminal half-life gives a further
+cross-check:
+
+```{r half-life}
+thalf <- sim |>
+  dplyr::group_by(id) |>
+  dplyr::slice(1) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(
+    s = kel + k12 + k21,
+    beta = (s - sqrt(s^2 - 4 * kel * k21)) / 2,
+    thalf = log(2) / beta
+  )
+quantile(thalf$thalf, c(0.1, 0.5, 0.9))
+```
+
+The typical-value terminal half-life is about 33 h (virtual-cohort median
+`r round(median(thalf$thalf))` h), against a post hoc mean of 27.56 h (95% CI
+7.56-74.52 h) in Table 2.
+
+## Exposure window
+
+The paper proposes a Cavg window of 27.85-57.91 ng/mL (the IQR of patients
+with minimal/mild anxiety and no adverse events, Table 5). The share of the
+virtual cohort inside it at each dose:
+
+```{r window}
+chk |>
+  dplyr::group_by(dose_grp) |>
+  dplyr::summarise(
+    n = dplyr::n(),
+    below = mean(PPORRES < 27.85), within = mean(PPORRES >= 27.85 & PPORRES <= 57.91),
+    above = mean(PPORRES > 57.91), .groups = "drop"
+  ) |>
+  dplyr::rename("Dose" = dose_grp, "N" = n, "Below window" = below,
+                "Within window" = within, "Above window" = above) |>
+  knitr::kable(digits = 2, caption = "Fraction of simulated Cavg below, within and above 27.85-57.91 ng/mL.")
+```
+
+# Assumptions and deviations
+
+- **Covariate exponents are not published values.** The paper retains body
+  weight and BMI on CL/F and V1/F but prints neither the equation nor the
+  coefficients. The maintainers digitised Supplementary Figure S1 and
+  back-solved power exponents as shown above (`e_wt_cl` 0.635, `e_wt_vc`
+  0.847, `e_bmi_cl` 0.303, `e_bmi_vc` 0.417). The weight exponents are the
+  best supported: both solve exactly at one shared step of 14.72 kg. The BMI
+  exponent on CL/F rests on the same symmetric-step reading. The BMI exponent
+  on V1/F is the least certain: its two forest-plot points are not consistent
+  with any power or exponential model at symmetric steps, and the packaged
+  value is a least-squares compromise that misses each point by 1.2-1.7
+  percentage points.
+- **Power form and centring.** The power form follows Monolix's usual
+  log-transformed covariate parameterisation and is supported by the
+  shared weight step; the centring values are the typical patient of
+  Supplementary Figure S1 (47.8 kg, 22.0 kg/m^2).
+- **Body surface area statement not encoded.** Methods 2.7 says the PK
+  parameters were "scaled according to body surface area using linear
+  normalization, with a reference value of 1.24 m2". BSA appears nowhere
+  else, and the Results, Table 2 and Supplementary Figure S1 describe the
+  weight + BMI model, whose typical patient has a BSA of about 1.41 m^2. The
+  Table 2 values are taken as the typical-patient values of that model.
+- **IIV.** Table 2 gives CV%; variances are `log(1 + CV^2)` for the
+  log-normal random effects. The ETA_CL-ETA_V1 correlation of 0.73 is
+  reported only as a post hoc diagnostic, so the omega matrix is diagonal.
+- **Residual error.** Table 2 reports "model error parameters" a = 0.882 and
+  B = 0.723, read as Monolix's combined error with additive a (ng/mL) and
+  proportional b, combined linearly (`combined1`). The table's SE and RSE
+  for B are inconsistent with each other (0.0077 is about 1% of 0.723, not
+  7.82%), and a 72% proportional error is large; the value is used as printed.
+- **Published exposure summaries.** The Table 2 Cmax and the Table 3, Table 4
+  and Supplementary Table S3 Cavg means are not consistent with the
+  published CL/F and doses (see the implied-dose table), and the Figure 1
+  concentration axis and the Figure 3 VPC cannot be read quantitatively. No
+  parameter was adjusted to approach them.
+- **Virtual cohort.** Height and BMI are drawn as independent normals
+  matching Table 1 and weight is derived from them; the dose mix of 25, 50
+  and 75 mg is chosen to reproduce the reported 35 +/- 15 mg/day. Age and sex
+  are not model covariates and are not simulated.
+- No erratum or correction notice was found for the article as of
+  2026-11-21.
