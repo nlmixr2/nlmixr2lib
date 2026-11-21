@@ -139,7 +139,7 @@ checks <- data.frame(
   ),
   value = c(
     shrink(0), shrink(200) / shrink(50), log(2) / thaz_high, log(2) / thaz_low,
-    1 - exp(th[["lhaz_nonmeasurable"]]) / exp(th[["lhaz"]]),
+    1 - exp(th[["llam_haz_nonmeasurable"]]) / exp(th[["llam_haz"]]),
     1 + th[["e_lmet_haz"]], 1 + th[["e_ecog_ge1_haz"]]
   )
 )

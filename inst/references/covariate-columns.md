@@ -13609,6 +13609,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Cerou_2024_amcenestrant_ameera12.R` (additive effect on logit RE = Ks/Kg: `-0.90 * MET_LYMPHNODE`, i.e. faster tumor regrowth with lymph-node metastases).
 - **Notes:** Site-specific metastasis indicator, sibling of `LMET` (liver). The columns are not mutually exclusive, and both are independent of the metastatic-site count indicators `MET_GE1` ... `MET_GE4`. A future site indicator should take the same spelled-out `MET_<SITE>` form (e.g. `MET_BONE`).
 
+### RECIST_NONMEASURABLE (**canonical for non-measurable (no RECIST target lesion) disease indicator**)
+- **Description:** Binary indicator that the patient has no RECIST-measurable target lesion at baseline, 1 = non-measurable disease only (in metastatic breast cancer typically bone-only disease), 0 = at least one measurable target lesion, so tumor-size (sum of longest diameters) data exist. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (measurable disease).
+- **Source aliases:**
+  - `NO_MEASR` -- Chigutsa 2026 (doi:10.1002/cpt.70212) Data S1 control stream (`IF(NO_MEASR.EQ.1) HBASE=THETA(2)*COV*ECOV ; NO MEASUREABLE DISEASE`); Results: 'The remaining 186 patients had "non-measurable" disease (bone metastases) and were included in the PFS analysis'.
+- **Example models:** `Chigutsa_2026_abemaciclib.R` (selects the non-measurable baseline PFS hazard, 0.0103 vs 0.0157 per week, removes the change-from-baseline tumor-size term from the hazard, and stops the drug effect on the hazard from waning).
+- **Notes:** Orientation follows the source (1 = non-measurable); a model whose source codes measurable disease as 1 uses `1 - RECIST_NONMEASURABLE`. Names the RECIST measurability status rather than the anatomical phenotype, so it also covers non-measurable disease that is not bone-only. Distinct from `MET_BONE`-style site indicators (presence of bone metastases, which a patient with measurable visceral disease may also have) and from the `RESP_*` response indicators.
+
 ## Laboratory / disease-activity
 
 ### ALBR (**canonical for serum albumin normalized to the laboratory's upper limit of normal**)
@@ -20460,6 +20471,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Zhou_2022_alisertib.R` (relative bioavailability of the tablet 0.671, applied as `f(transit1) <- e_form_ect_fdepot^FORM_ALISERTIB_ECT` -- founding example), `Zhou_2018_alisertib.R` (screened on KTR and F and not retained; documented in `covariatesDataExcluded`).
 - **Notes:** Member of the `FORM_<drug>_<formulation>` family. In the paediatric analysis each formulation was used in only one study (capsule in ADVL0812, tablet in ADVL0921), so the effect is confounded with study and sampling design; the adult analysis found no formulation difference.
 
+### FORM_ABEMACICLIB_C2 (**canonical for abemaciclib 50% w/w capsule (C2) formulation indicator**)
+- **Description:** 1 = abemaciclib 50 mg capsule with 50% w/w drug load (formulation C2), 0 = any other formulation. Per-dose-record property.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (drug-in-capsule C1 or oral solution).
+- **Source aliases:**
+  - `FORMU` -- Chigutsa 2020 (doi:10.1002/psp4.12544) supplementary control stream, `FORMU == 3`.
+- **Example models:** `Chigutsa_2026_abemaciclib.R` (multiplies the absorption lag time by (1 + 0.822); Chigutsa 2020 Table S2 THETA19).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family; sibling of `FORM_ABEMACICLIB_C3`, the two are mutually exclusive.
+
+### FORM_ABEMACICLIB_C3 (**canonical for abemaciclib 25% w/w capsule (C3, commercial-equivalent) formulation indicator**)
+- **Description:** 1 = abemaciclib 50 mg capsule with 25% w/w drug load (formulation C3, used in MONARCH 2), 0 = any other formulation. Per-dose-record property.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (drug-in-capsule C1 or oral solution).
+- **Source aliases:**
+  - `FORMU` -- Chigutsa 2020 supplementary control stream, `FORMU == 4`.
+- **Example models:** `Chigutsa_2026_abemaciclib.R` (multiplies the absorption lag time by (1 + 1.06) and the maximum saturable absorption rate by (1 - 0.16); Chigutsa 2020 Table S2 THETA20 and THETA21).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family; sibling of `FORM_ABEMACICLIB_C2`.
+
 ### FORM_RTV_TABLET (**canonical for ritonavir tablet vs soft-gel capsule formulation indicator**)
 - **Description:** 1 = ritonavir (Norvir) film-coated tablet, 0 = ritonavir (Norvir) soft-gel capsule. A per-dose-record property of the ritonavir booster dose, for models that embed ritonavir PK to drive a CYP3A4-inhibition term on a victim drug.
 - **Units:** (binary)
@@ -21900,6 +21933,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `DRUG` -- Chen 2017 (PMC5376397) Electronic Supplementary Material S2 control stream (`IF(DRUG.EQ.0) TVAF = THETA(8)`, selecting the untreated-mouse inoculum).
 - **Example models:** `Chen_2017_TB_MTP_rifampicin_mouse.R` (selects the initial fast-multiplying bacterial inoculum F0: 331000 CFU/lungs in rifampicin-treated mice vs 8340 CFU/lungs in untreated mice). The rifampicin drug effects themselves are concentration-driven in this model and need no indicator; the indicator only switches the baseline inoculum.
 - **Notes:** Specific scope. Well-formed member of the `TRT_<INN>` family established by `TRT_EPHEDRINE`: use `TRT_<INN>` when the drug is the study treatment under investigation, `CONMED_<INN>` when it is background co-medication, and a bare INN only for MBMA trial-arm indicators. Here the indicator is needed because the baseline inoculum (not a drug effect) differs between the treated and untreated groups.
+
+### TRT_ABEMACICLIB (**canonical for abemaciclib treatment-arm indicator**)
+- **Description:** Binary randomized treatment-arm indicator: 1 = abemaciclib arm (abemaciclib + fulvestrant in MONARCH 2), 0 = control arm (placebo + fulvestrant). A per-subject property of the randomization, independent of the abemaciclib dose actually taken.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (placebo + fulvestrant).
+- **Source aliases:**
+  - `TRT` -- Chigutsa 2026 Data S1 control stream (arm-specific half-life of the waning tumor drug effect).
+- **Example models:** `Chigutsa_2026_abemaciclib.R` (selects the half-life of the waning tumor drug effect, 8.44 weeks in the abemaciclib arm vs 2.51 weeks in the control arm, Table 1). Abemaciclib exposure itself comes from the dosing records.
+- **Notes:** Well-formed member of the `TRT_<INN>` family (see `TRT_RIFAMPICIN`). The indicator is needed because a structural parameter differs by arm rather than by concentration.
 
 ### TRT_DEXTROMETHORPHAN, TRT_DEXTRORPHAN (**canonical for dextromethorphan / dextrorphan crossover treatment-period indicators**)
 - **Description:** Binary treatment-period indicators of a three-period crossover: `TRT_DEXTROMETHORPHAN` = 1 in the period in which the subject received oral dextromethorphan hydrobromide; `TRT_DEXTRORPHAN` = 1 in the period in which the subject received oral dextrorphan (the dextromethorphan metabolite) on its own. Both are 0 in the placebo period; the two are mutually exclusive within a period.
@@ -25180,6 +25224,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** `MIXTURE` -- NONMEM `$MIXTURE` block class index; in the Feng 2019 estimation run component 2 is the no-growth subpopulation, so `MIX_NO_GROW = as.integer(MIXTURE == 2)`.
 - **Example models:** `Feng_2019_ipilimumab.R` (selects the no-growth anchors for baseline tumor burden, tumor-shrinkage rate constant, and the steady-state tumor-burden plateau `TBss`, forces the linear growth term to zero, and selects the no-growth diagonal IIVs `etalts_nogrow` / `etaltbss_nogrow`).
 - **Notes:** The structural signature of this class is that the linear growth term is fixed to zero and a steady-state plateau parameter (`ltbss`, the asymptote the decaying tumor burden approaches) is estimated in its place -- an immunotherapy-specific response pattern that the pre-immunotherapy Wang-type tumor-dynamics models cannot express (Feng 2019 Methods, "TGD model": "This model was modified to improve the description of TB time profiles that asymptotically approach a steady-state value"). Population probability of `MIX_NO_GROW = 1` is recorded per-model in `covariateData[[MIX_NO_GROW]]$notes`; in Feng 2019 it is `1 / (1 + TP1 + TP2) = 1 / 3.078 = 0.325` (Table 2 footnote e). General scope for the same reason as `MIX_FAST_GROW`: a durable-response / no-progression latent class is a recurring feature of immune-checkpoint-inhibitor tumor-dynamics models. Distinct from `MIX_VAC_RELAPSE`, which indexes a cure-vs-relapse dichotomy in a preclinical single-dose vaccine model and gates a signal-degradation rate rather than a growth term.
+
+### MIX_HIGH_TS_HAZARD (**canonical for latent mixture-model class indicator: stronger tumor-size-change effect on the hazard**)
+- **Description:** Per-subject latent mixture-model class indicator in a joint tumor-size / time-to-event model. 1 = subject classified to the subpopulation in which the change from baseline in tumor size has the stronger effect on the event hazard; 0 = the other class (reference). Not a measured clinical covariate -- the assignment is the per-subject latent-class index from a NONMEM `$MIXTURE` block. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (class with the baseline tumor-size coefficient).
+- **Source aliases:** `MIXNUM` -- Chigutsa 2026 Data S1 control stream (`$MIX NSPOP=2; P(1)=THETA(7)` and `IF(MIXNUM.EQ.1) HHAZ=1+THETA(5)`), so `MIX_HIGH_TS_HAZARD = as.integer(MIXNUM == 1)`.
+- **Example models:** `Chigutsa_2026_abemaciclib.R` (multiplies the change-from-baseline tumor-size coefficient on the log PFS hazard by (1 + 13.6); Table 2 'Fraction of patient with higher impact of tumor size on hazard' 0.479).
+- **Notes:** Population probability of `MIX_HIGH_TS_HAZARD = 1` is recorded per model in `covariateData[[MIX_HIGH_TS_HAZARD]]$notes`; draw it as Bernoulli(p) per subject for population simulation. Distinct from the tumor-growth phenotype classes `MIX_FAST_GROW` / `MIX_NO_GROW`, which act on the tumor-dynamics model itself rather than on the link between tumor size and the hazard.
 
 ### MIX_RAMP_REL (**canonical for binary mixture-model class indicator: linearly time-ramping vs constant first-order slow depot release**)
 - **Description:** Per-subject latent mixture-model class indicator for which slow-release kinetics a long-acting depot follows in a subject. 1 = the slow-release depot empties with a first-order rate constant that grows linearly with time after the first dose, `k(t) = ka_slope * t`; 0 = the slow-release depot empties with a constant first-order rate `ka_slow`. Not a measured clinical covariate -- the assignment is the per-subject latent-class index from a NONMEM `$MIXTURE` block. Time-fixed per subject. The dichotomy concerns the SLOW release route only; a fast first-order route running in parallel is shared by both classes.

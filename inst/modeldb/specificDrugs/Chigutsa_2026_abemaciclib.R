@@ -230,16 +230,16 @@ Chigutsa_2026_abemaciclib <- function() {
     etald1 + etalmtt ~ c(2.78995, 0.381398, 0.46459) # Table S2: D BSV 390.9%, MTT BSV 76.9%, correlation 0.335
     etalvc ~ 0.401597 # Table S2: central volume BSV 70.3%
     etalclint ~ 0.180674 # Table S2: total CLint BSV in patients 44.5%
-    etalogitfa ~ fixed(0.005) # Table S2: Fa 7.1% (OMEGA fixed to 0.005)
-    etalogitfdepot ~ fixed(0.005) # Table S2: transit fraction 7.1% (OMEGA fixed to 0.005)
-    etalkt_abs ~ fixed(0.005) # Table S2: Km 7.1% (OMEGA fixed to 0.005)
-    etalq ~ fixed(0.005) # Table S2: Q 7.1% (OMEGA fixed to 0.005)
-    etalvp ~ fixed(0.005) # Table S2: peripheral volume 7.1% (OMEGA fixed to 0.005)
-    etaltlag ~ fixed(0.005) # Table S2: lag time 7.1% (OMEGA fixed to 0.005)
-    etalkgutex_m2 ~ fixed(0.005) # Table S2: gut M2 formation 7.1% (OMEGA fixed to 0.005)
-    etalkgutex_m20 ~ fixed(0.005) # Table S2: gut M20 formation 7.1% (OMEGA fixed to 0.005)
-    etalclint_m2 ~ fixed(0.005) # Chigutsa 2020 control stream: ETA5 on CLint forming M2, OMEGA 0.005 FIX
-    etalclint_m20 ~ fixed(0.005) # Chigutsa 2020 control stream: ETA8 on CLint forming M20, OMEGA 0.005 FIX
+    etalogitfa ~ fixed(0.005) # Table S2: Fa 7.1% (OMEGA 0.005, not estimated)
+    etalogitfdepot ~ fixed(0.005) # Table S2: transit fraction 7.1% (OMEGA 0.005, not estimated)
+    etalkt_abs ~ fixed(0.005) # Table S2: Km 7.1% (OMEGA 0.005, not estimated)
+    etalq ~ fixed(0.005) # Table S2: Q 7.1% (OMEGA 0.005, not estimated)
+    etalvp ~ fixed(0.005) # Table S2: peripheral volume 7.1% (OMEGA 0.005, not estimated)
+    etaltlag ~ fixed(0.005) # Table S2: lag time 7.1% (OMEGA 0.005, not estimated)
+    etalkgutex_m2 ~ fixed(0.005) # Table S2: gut M2 formation 7.1% (OMEGA 0.005, not estimated)
+    etalkgutex_m20 ~ fixed(0.005) # Table S2: gut M20 formation 7.1% (OMEGA 0.005, not estimated)
+    etalclint_m2 ~ fixed(0.005) # Chigutsa 2020 control stream: ETA5 on CLint forming M2, OMEGA 0.005, not estimated
+    etalclint_m20 ~ fixed(0.005) # Chigutsa 2020 control stream: ETA8 on CLint forming M20, OMEGA 0.005, not estimated
 
     expSd <- 0.170; label("Residual error of log abemaciclib concentration (log-scale SD)") # Chigutsa 2020 Table S2: proportional error parent (oral) 17.0%
 
@@ -255,7 +255,7 @@ Chigutsa_2026_abemaciclib <- function() {
 
     # Tumor IIV: omega^2 = log(1 + CV^2) (Table 1 footnote a); correlations from Table 1.
     etalrbase + etalkgl ~ c(0.484954, 0.567973, 9.47247) # Table 1: BSV 79.0% and 11400%, correlation 0.265
-    etalktr ~ fixed(0.0225) # Table 1: 15.1% (fixed to OMEGA 0.0225, footnote b)
+    etalktr ~ fixed(0.0225) # Table 1: 15.1% (OMEGA 0.0225, not estimated; footnote b)
     etalkkill + etalkkill_slope + etalthalf_res + etalthalf_res_abemaciclib + etaltdelay_res ~ c(
       2.10199,
       -0.305151, 2.26019,
@@ -268,8 +268,8 @@ Chigutsa_2026_abemaciclib <- function() {
     propSd_tumor_size <- 0.0904; label("Proportional residual error on tumor size (fraction)") # Table 1: 9.04%
 
     # ---- PFS hazard layer: Chigutsa 2026 Table 2 ----
-    lhaz <- log(0.0157); label("Baseline PFS hazard, measurable disease (1/week)") # Table 2: 0.0157
-    lhaz_nonmeasurable <- log(0.0103); label("Baseline PFS hazard, non-measurable disease (1/week)") # Table 2: 0.0103
+    llam_haz <- log(0.0157); label("Baseline PFS hazard, measurable disease (1/week)") # Table 2: 0.0157
+    llam_haz_nonmeasurable <- log(0.0103); label("Baseline PFS hazard, non-measurable disease (1/week)") # Table 2: 0.0103
     e_cfb_haz <- 0.0156; label("Coefficient of change-from-baseline tumor size on the log hazard (1/mm)") # Table 2: 0.0156
     e_mix_high_ts_hazard_cfb <- 13.6; label("Fractional increase in the tumor-size coefficient in the mixture subpopulation (unitless)") # Table 2: 13.6
     slope_haz <- 1.42; label("Coefficient of the non-tumor-size drug effect on the log hazard (L/umol)") # Table 2: 1.42
@@ -366,7 +366,7 @@ Chigutsa_2026_abemaciclib <- function() {
 
     # ---- PFS hazard layer ----
     measurable <- 1 - RECIST_NONMEASURABLE
-    hbase <- (exp(lhaz) * measurable + exp(lhaz_nonmeasurable) * RECIST_NONMEASURABLE) *
+    hbase <- (exp(llam_haz) * measurable + exp(llam_haz_nonmeasurable) * RECIST_NONMEASURABLE) *
       (1 + e_lmet_haz * LMET) * (1 + e_ecog_ge1_haz * ECOG_GE1)
     thaz <- e_cfb_haz * (1 + e_mix_high_ts_hazard_cfb * MIX_HIGH_TS_HAZARD) * measurable
     cfb <- (tumor_size - rbase) * measurable
