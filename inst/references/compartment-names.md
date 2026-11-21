@@ -2501,6 +2501,14 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Khan_2015_ciprofloxacin.R`, `Mohamed_2016_colistin_meropenem.R`, `Sadouki_2025_meropenem_gentamicin_ciprofloxacin.R`, `Svensson_2016_rifampicin.R`, `Wicha_2018_rifampicin.R`.
 - **Notes:** Transform base (ln vs log10) is paper-dependent and documented in each source file.
 
+### auc_log_cfu (**canonical area under the log CFU curve output**)
+- **Type:** compartment
+- **Role:** Area under the log10 CFU/mL-versus-time curve over a stated window (the area under the bacterial kill curve, AUBKC), units log10 CFU/mL*h. Used as the observation of a PK/PD-index model whose endpoint is the AUBKC itself, a single value per experiment, so the output is algebraic rather than an ODE state.
+- **Source aliases:**
+  - `AUBKC` -- Qi 2026 Methods (PK/PD index and targets) and Table 2, over 0-24 h.
+- **Example models:** `Qi_2026_nemonoxacin_camhb_aucmic_aubkc.R` and the other eight Qi 2026 `_aubkc` files.
+- **Notes:** The area under the `log_cfu` curve, not under the linear CFU curve, and not baseline-subtracted: Qi 2026 drug-free controls sit near 200 log10 CFU/mL*h over 24 h, a mean of about 8.6 log10 CFU/mL. Document the integration window per model.
+
 ### MBL (**canonical mean bacterial load**)
 - **Type:** compartment
 - **Role:** Mean bacterial load PD output (Svensson 2017 bedaquiline). Capitalised form; lowercase `mbl` is a registered bare alias.
