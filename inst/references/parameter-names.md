@@ -3942,6 +3942,30 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
 - **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_brain`); the spinal-cord counterpart of `lv_brain`. Wrap in `fixed()` when the source fixes it from anatomy.
 
+### ratio_cord_central (**canonical bare umbilical-cord : central (maternal plasma) concentration ratio**)
+- **Type:** paper-named-param
+- **Role:** Unitless fetal-to-maternal concentration ratio that derives the umbilical-cord venous concentration algebraically from the maternal central compartment when the fetus has no ODE state of its own: `Ccord <- ratio_cord_central * Cc`.
+- **Source aliases:**
+  - `FMR` -- Krzyzanski 2026 Eq 25 and Table 3 ('fetal-to-maternal DEX concentration ratio').
+- **Example models:** `Krzyzanski_2026_dexamethasone_1cohort.R` and `Krzyzanski_2026_dexamethasone_3cohort.R` (founding examples; 0.329, RSE 7%, in both fits, estimated from one paired maternal and cord sample per woman at birth, no IIV).
+- **Notes:** A bare member of the `lratio_<numerator>_<denominator>` family founded by `lratio_pbmc_central`, written bare like `ratio_isf_peripheral1` because the source estimates it on the natural scale with no random effect; a paper reporting an exponential typical value or IIV uses `lratio_cord_central`. Pair with the `Ccord` observable and its residual (`expSd_Ccord` / `propSd_Ccord`). Distinct from a cord compartment with its own transfer rate constants (`Muller_2009_amoxicillin.R`, `cord_venous` state), which models placental transfer kinetics rather than assuming instantaneous proportionality.
+
+### p_cohort1, p_cohort2 (**canonical fixed mixing probabilities of a discrete cohort (mixture) population**)
+- **Type:** paper-named-param
+- **Role:** Probability (fraction) that a subject belongs to cohort 1, 2, ... of a finite mixture population, passed to rxode2's `mix()` as `cl <- mix(cl_cohort1, p_cohort1, cl_cohort2, p_cohort2, cl_cohort3)`; the last cohort takes the remainder, so an N-cohort model declares N - 1 of them. Cohorts are numbered in the order the source numbers its subpopulations (NONMEM `MIXNUM`).
+- **Source aliases:**
+  - `P(1)`, `P(2)`, `W1`, `W2` -- Krzyzanski 2026 Appendix 1 `$MIX` block (Gauss-Hermite weights `w_i / sqrt(pi)`).
+- **Example models:** `Krzyzanski_2026_dexamethasone_3cohort.R` (founding example; fixed at the N = 3 Gauss-Hermite weights 0.2954089751509 / sqrt(pi) = 1/6 and 1.181635900604 / sqrt(pi) = 2/3, the third cohort 1/6).
+- **Notes:** Ratified by the maintainers 2026-11-20 with the Krzyzanski 2026 extraction, the first library model to use native `mix()`. Wrap in `fixed()` when the source fixes the weights (Gauss-Hermite cohort populations always do); an estimated mixing fraction uses the same names unfixed. A `mixest` data column (1, 2, ...) pins a subject to a cohort at simulation time. Distinct from the latent-class covariate idiom (`MIX_FAST_ABS`, `lka_fastabs`), where the user supplies the class in the data, and from the generic `frac`.
+
+### omega_cohort_lcl (**canonical between-cohort SD of log clearance in a Gauss-Hermite cohort population**)
+- **Type:** paper-named-param
+- **Role:** Standard deviation of log clearance across the cohorts of a Gauss-Hermite cohort population, estimated as a fixed effect: the cohort clearances are `exp(lcl + sqrt(2) * xi_i * omega_cohort_lcl)` at the quadrature nodes `xi_i`, and the cohort distribution has the mean and variance of a log-normal with variance `omega_cohort_lcl^2`. It stands in for between-subject variability, which the source fixes at zero.
+- **Source aliases:**
+  - `omega`, `OM1`, `THETA(5)` -- Krzyzanski 2026 Eq 26, Table 3 and Appendix 1.
+- **Example models:** `Krzyzanski_2026_dexamethasone_3cohort.R` (founding example; 0.30, RSE 11%, giving cohort CL/F of 23.1 / 38.8 / 65.2 L/h).
+- **Notes:** Ratified by the maintainers 2026-11-20 with the Krzyzanski 2026 extraction. Shape `omega_cohort_<param>`: a cohort SD on another log-scale parameter takes that parameter's name (`omega_cohort_lvc`). Distinct from an OMEGA variance (`etalcl ~ var`), which is a random-effect variance, not an `ini()` fixed effect.
+
 ## Nested (multi-level) random effects
 
 model in this library to carry a second hierarchical level of random effects.

@@ -2222,6 +2222,10 @@ navbar:
         href: articles/Swierczek_2023_dexamethasone.html
       - text: "Dexamethasone (Szederkenyi 2024)"
         href: articles/Szederkenyi_2024_transdermal_skinonachip.html
+      - text: "Dexamethasone 1cohort (Krzyzanski 2026)"
+        href: articles/Krzyzanski_2026_dexamethasone.html
+      - text: "Dexamethasone 3cohort (Krzyzanski 2026)"
+        href: articles/Krzyzanski_2026_dexamethasone.html
       - text: "Dexamethasone rabbit (Toffoletto 2023)"
         href: articles/Toffoletto_2023_dexamethasone_rabbit.html
       - text: "Dexamethasone rat (Li 2012)"
@@ -10744,6 +10748,7 @@ articles:
   - articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin
   - articles/Kruizinga_2022_clonazepam
   - articles/Krzyzanski_2021_corticosteroids
+  - articles/Krzyzanski_2026_dexamethasone
   - articles/Ku_2018_diazepam
   - articles/Kuan_2023_flipflop
   - articles/Kubota_2018_naldemedine

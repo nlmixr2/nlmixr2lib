@@ -1,0 +1,468 @@
+---
+title: "Dexamethasone in mother and fetus (Krzyzanski 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dexamethasone in mother and fetus (Krzyzanski 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Krzyzanski_2026_dexamethasone_3cohort"))$reference`
+* Article: <https://doi.org/10.1007/s10928-026-10048-5> (open access, CC BY 4.0)
+
+Krzyzanski (2026) introduces *cohort population* estimation: the
+distribution of a random parameter is replaced by a small number of point
+masses ("cohorts") placed at the nodes of a Gauss-Hermite quadrature rule,
+with the quadrature weights as the probabilities of belonging to each
+cohort. In NONMEM this is a `$MIX` mixture model whose subpopulation
+variances are fixed at zero. The paper has two parts. Study I is a
+simulation study on a synthetic one-compartment IV drug that compares the
+method with FOCE, IMP and SAEM; it has no real drug and is not packaged.
+Study II applies the method to dexamethasone in parturient women, and
+gives the two models packaged here:
+
+* `Krzyzanski_2026_dexamethasone_1cohort` -- the naive-pooled (1-cohort)
+  fit, with no between-subject variability.
+  `r rxode2::rxode(readModelDb("Krzyzanski_2026_dexamethasone_1cohort"))$description`
+* `Krzyzanski_2026_dexamethasone_3cohort` -- the Gauss-Hermite 3-cohort
+  fit.
+  `r rxode2::rxode(readModelDb("Krzyzanski_2026_dexamethasone_3cohort"))$description`
+
+# Population
+
+Fourteen near-term pregnant women delivering by caesarean section received
+8 mg dexamethasone phosphate (equivalent to 6.67 mg dexamethasone)
+intramuscularly at noon on the day before delivery and a second 8 mg dose at
+10 am on the day of delivery, 22 h later. One maternal peripheral-venous and
+one umbilical-cord venous plasma sample were drawn from each mother-infant
+pair at birth, 0.78-4.42 h after the second dose (Krzyzanski 2026, Study II
+Data, Table S2 and Appendix 1). The data come from Tsuei et al. (Clin
+Pharmacol Ther 1980;28:88-98). The paper does not report age, body weight,
+gestational age or race. The same information is available programmatically
+via `readModelDb("Krzyzanski_2026_dexamethasone_3cohort")()$population`.
+
+The 28 observations are printed in the paper (Appendix 1, file `DEX.csv`;
+Table S2), and are reproduced below under the article's CC BY 4.0 licence.
+Time is hours after the first dose, which is 22 h plus the time after the
+last dose.
+
+```{r observed}
+obs <- data.frame(
+  id = 1:14,
+  time = c(
+    22.78, 22.83, 23.08, 23.85, 24.45, 24.72, 24.72,
+    25.00, 25.00, 25.25, 25.60, 25.62, 25.73, 26.42
+  ),
+  Cm = c(45.0, 117.0, 70.6, 35.3, 41.5, 30.6, 66.6, 31.3, 15.6, 23.7, 29.7, 39.4, 21.6, 13.6),
+  Cf = c(9.8, 23.7, 17.8, 14.5, 11.4, 7.6, 23.3, 11.7, 5.5, 8.6, 12.7, 16.9, 9.0, 6.0)
+)
+obs_long <- dplyr::bind_rows(
+  dplyr::transmute(obs, id, time, conc = Cm, matrix = "Maternal (Cc)"),
+  dplyr::transmute(obs, id, time, conc = Cf, matrix = "Umbilical cord (Ccord)")
+)
+knitr::kable(obs, caption = "Observed dexamethasone concentrations (ng/mL), Krzyzanski 2026 Appendix 1.")
+```
+
+# Source trace
+
+Per-parameter origins are also recorded as in-file comments next to each
+`ini()` entry in the two model files.
+
+| Equation / parameter | 1-cohort | 3-cohort | Source location |
+|---|---|---|---|
+| `lcl` (CL/F, L/h) | log(34.7) | log(38.8) | Table 3; THETA(1) |
+| `lvc` (V/F, L) | log(103) | log(79.6) | Table 3; THETA(2) |
+| `lka` (ka, 1/h) | log(2.92) | log(1.63) | Table 3; THETA(3) |
+| `ratio_cord_central` (FMR) | 0.329 | 0.329 | Table 3; THETA(4); Eq 25 |
+| `omega_cohort_lcl` (between-cohort SD of log CL/F) | -- | 0.30 | Table 3; THETA(5) = OM1 |
+| `p_cohort1`, `p_cohort2` (cohort probabilities) | -- | fixed 0.2954089751509 / sqrt(pi), 1.181635900604 / sqrt(pi) | Appendix 1 `$MIX`; Table S1b |
+| `etalcl` | -- | fixed 0 | Appendix 1 `$OMEGA 0.0 FIX` |
+| `expSd` (maternal) | sqrt(0.145) | sqrt(0.0611) | Table 3, sigma_m^2; Eq 28 |
+| `expSd_Ccord` (cord) | sqrt(0.161) | sqrt(0.0695) | Table 3, sigma_f^2; Eq 29 |
+| Cohort clearances `exp(lcl + sqrt(2) * xi_i * omega)` | -- | xi = -1.2247, 0, 1.2247 | Eq 26; Table S1a; Appendix 1 `ksi1`-`ksi3` |
+| `d/dt(depot)`, `d/dt(central)` | | | Eqs 22-23 |
+| `Cc <- central / vc` | | | Eq 24 |
+| `Ccord <- ratio_cord_central * Cc` | | | Eq 25 |
+| `Cc ~ lnorm(expSd)`, `Ccord ~ lnorm(expSd_Ccord)` | | | Eqs 28-29; Appendix 1 `Y = IPRED + EPS` |
+
+# Model set-up
+
+The dose is entered as 8000 ug of dexamethasone phosphate on `depot`, as the
+paper codes it (`DOSE = 8000.0`). Observation rows sit on the `central`
+state with a `dvid` column: `dvid = 1` returns the maternal endpoint and
+`dvid = 2` the cord endpoint in the `sim` column, and both `Cc` and `Ccord`
+are returned on every observation row. For the 3-cohort model the optional
+`mixest` column (1 = low, 2 = middle, 3 = high clearance) pins a subject to a
+cohort; without it, `mix()` draws the cohort with the fixed probabilities.
+
+```{r setup-models}
+mod1 <- rxode2::rxode2(readModelDb("Krzyzanski_2026_dexamethasone_1cohort"))
+mod3 <- rxode2::rxode2(readModelDb("Krzyzanski_2026_dexamethasone_3cohort"))
+est1 <- setNames(mod1$iniDf$est, mod1$iniDf$name)
+est3 <- setNames(mod3$iniDf$est, mod3$iniDf$name)
+
+dose_amt <- 8000 # ug dexamethasone phosphate per injection
+dose_times <- c(0, 22)
+
+# One dose pair and observation rows (both endpoints) per subject.
+make_events <- function(ids, obs_time, mixest = NA_integer_) {
+  obs_time <- rep_len(obs_time, length(ids))
+  dose <- expand.grid(id = ids, time = dose_times)
+  dose$evid <- 1L
+  dose$amt <- dose_amt
+  dose$cmt <- "depot"
+  dose$dvid <- NA_integer_
+  ob <- dplyr::bind_rows(lapply(seq_along(ids), function(i) {
+    expand.grid(id = ids[i], time = obs_time[[i]], dvid = 1:2)
+  }))
+  ob$evid <- 0L
+  ob$amt <- 0
+  ob$cmt <- "central"
+  ev <- dplyr::bind_rows(dose, ob[, names(dose)])
+  # rxSolve does not return dvid; this copy rides through `keep`.
+  ev$endpoint <- ev$dvid
+  # Without a mixest column, mix() draws each subject's cohort.
+  if (!all(is.na(mixest))) {
+    ev$mixest <- rep_len(as.integer(mixest), length(ids))[match(ev$id, ids)]
+  }
+  dplyr::arrange(ev, id, time, dplyr::desc(evid))
+}
+solve <- function(mod, ev) {
+  out <- rxode2::rxSolve(mod, ev, keep = "endpoint", returnType = "data.frame")
+  # A single-subject solve returns no id column.
+  if (!"id" %in% names(out)) out$id <- ev$id[1]
+  out
+}
+```
+
+## Cohort clearances
+
+The paper reports the three allowable individual CL/F values as 23.1, 38.8
+and 65.2 L/h (Results, Study II).
+
+```{r cohort-cl}
+ev_coh <- make_events(1:3, 23, mixest = 1:3)
+cl_coh <- solve(mod3, ev_coh) |>
+  dplyr::distinct(id, cl)
+knitr::kable(
+  cl_coh |> dplyr::mutate(cohort = c("low", "middle", "high")) |>
+    dplyr::rename("Cohort (mixest)" = id, "CL/F (L/h)" = cl),
+  digits = 2
+)
+stopifnot(max(abs(cl_coh$cl - c(23.1, 38.8, 65.2))) < 0.05)
+```
+
+# Replicate Figure 3: typical maternal and cord profiles
+
+Figure 3 of the paper overlays the observed data with the population
+predictions of both models. For the 3-cohort model the population
+prediction is the middle cohort (`mixest = 2`), whose clearance is the
+typical value THETA(1). As in the paper, the figure shows the window after
+the second dose on a log axis; the first-dose profile has the same shape,
+22 h earlier.
+
+```{r figure-3, fig.width = 7, fig.height = 4.5}
+grid <- seq(0, 30, by = 0.05)
+typ1 <- solve(mod1, make_events(1L, list(grid))) |>
+  dplyr::filter(endpoint == 1) |>
+  dplyr::mutate(model = "1-cohort")
+typ3 <- solve(mod3, make_events(1L, list(grid), mixest = 2L)) |>
+  dplyr::filter(endpoint == 1) |>
+  dplyr::mutate(model = "3-cohort")
+typ <- dplyr::bind_rows(typ1, typ3)
+typ_long <- dplyr::bind_rows(
+  dplyr::transmute(typ, time, model, conc = Cc, matrix = "Maternal (Cc)"),
+  dplyr::transmute(typ, time, model, conc = Ccord, matrix = "Umbilical cord (Ccord)")
+)
+
+typ_long |>
+  dplyr::filter(time >= 22.05, time <= 27) |>
+  ggplot(aes(time, conc, colour = matrix)) +
+  geom_line(aes(linetype = model)) +
+  geom_point(data = obs_long, aes(time, conc, colour = matrix), inherit.aes = FALSE) +
+  scale_colour_manual(values = c("Maternal (Cc)" = "black", "Umbilical cord (Ccord)" = "red")) +
+  scale_linetype_manual(values = c("1-cohort" = "dashed", "3-cohort" = "solid")) +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(2, 200)) +
+  labs(
+    x = "Time after first dose (h)", y = "Dexamethasone (ng/mL)",
+    colour = NULL, linetype = NULL,
+    caption = "Replicates Figure 3 of Krzyzanski 2026."
+  ) +
+  theme_bw()
+```
+
+# Objective function and cohort assignment
+
+The strongest available check of the transcription is to evaluate the
+likelihood of the published data under the packaged models and compare it
+with the objective function values in Table 3 (1-cohort -24.6; 3-cohort
+-31.7). The OFV is -2 log-likelihood of the log-transformed observations
+without the `N log(2 pi)` constant, as NONMEM reports it. For the mixture
+model each woman's likelihood is the probability-weighted sum over the
+three cohorts. Every structural, cohort and residual parameter enters this
+number, so a mis-transcribed value moves it by far more than the rounding
+of Table 3.
+
+The same per-subject likelihoods give each woman's most probable cohort,
+which is how the paper assigned the individual clearances shown in Figure 5
+(2 women in the low, 10 in the middle and 2 in the high clearance cohort).
+
+```{r ofv}
+# Predictions at each woman's birth time; `mixest` pins the cohort.
+pred_at_obs <- function(mod, mixest = NA_integer_) {
+  solve(mod, make_events(obs$id, obs$time, mixest = mixest)) |>
+    dplyr::distinct(id, Cc, Ccord) |>
+    dplyr::arrange(id)
+}
+# Likelihood of each woman's maternal + cord pair (log scale, NONMEM form).
+subject_lik <- function(pred, est) {
+  stats::dnorm(log(obs$Cm), log(pred$Cc), est[["expSd"]]) *
+    stats::dnorm(log(obs$Cf), log(pred$Ccord), est[["expSd_Ccord"]])
+}
+n_obs <- 2 * nrow(obs)
+
+lik1 <- subject_lik(pred_at_obs(mod1), est1)
+ofv1 <- -2 * sum(log(lik1)) - n_obs * log(2 * pi)
+
+p3 <- c(est3[["p_cohort1"]], est3[["p_cohort2"]])
+p3 <- c(p3, 1 - sum(p3))
+lik3 <- sapply(1:3, function(k) subject_lik(pred_at_obs(mod3, k), est3))
+ofv3 <- -2 * sum(log(lik3 %*% p3)) - n_obs * log(2 * pi)
+best <- apply(sweep(lik3, 2, p3, `*`), 1, which.max)
+
+ofv_tab <- data.frame(
+  Model = c("1-cohort", "3-cohort"),
+  `OFV (packaged model)` = round(c(ofv1, ofv3), 2),
+  `OFV (Table 3)` = c(-24.6, -31.7),
+  check.names = FALSE
+)
+knitr::kable(ofv_tab)
+table(cohort = factor(best, 1:3, c("low", "middle", "high")))
+
+stopifnot(
+  abs(ofv1 - (-24.6)) < 0.15,
+  abs(ofv3 - (-31.7)) < 0.15,
+  identical(as.integer(table(factor(best, 1:3))), c(2L, 10L, 2L))
+)
+```
+
+Both objective function values reproduce Table 3 to its printed precision,
+and the most-probable-cohort assignment reproduces Figure 5 exactly.
+
+```{r figure-5, fig.width = 5, fig.height = 3.5}
+data.frame(cl = cl_coh$cl[best]) |>
+  dplyr::count(cl) |>
+  ggplot(aes(factor(round(cl, 1)), n)) +
+  geom_col(fill = "grey60", colour = "black") +
+  labs(
+    x = "Individual CL/F (L/h)", y = "Number of women",
+    caption = "Replicates Figure 5 of Krzyzanski 2026."
+  ) +
+  theme_bw()
+```
+
+# Visual predictive check
+
+Figure 4 of the paper shows the observed medians against the 95% confidence
+interval of the simulated median from 1000 replicate data sets. With one
+sample per woman the observed percentiles cannot be computed, so here each
+model is instead simulated for 200 virtual women with residual error, and
+the 95% prediction interval of individual concentrations over the sampling
+window is overlaid on the observations. For the 3-cohort model each virtual
+woman's cohort is drawn by `mix()` with probabilities 1/6, 2/3, 1/6.
+
+```{r vpc}
+rxode2::rxSetSeed(20261121)
+n_vpc <- 200
+vpc_grid <- seq(22.5, 26.75, by = 0.25)
+ev_vpc <- make_events(seq_len(n_vpc), list(vpc_grid))
+sim_vpc <- dplyr::bind_rows(
+  solve(mod1, ev_vpc) |>
+    dplyr::mutate(model = "1-cohort"),
+  solve(mod3, ev_vpc) |>
+    dplyr::mutate(model = "3-cohort")
+) |>
+  dplyr::mutate(matrix = ifelse(endpoint == 1, "Maternal (Cc)", "Umbilical cord (Ccord)"))
+
+# Cohort frequencies realised by mix() in the 3-cohort simulation.
+sim_vpc |>
+  dplyr::filter(model == "3-cohort") |>
+  dplyr::distinct(id, cl) |>
+  dplyr::count(cl = round(cl, 1)) |>
+  dplyr::mutate(fraction = n / n_vpc)
+
+vpc_q <- sim_vpc |>
+  dplyr::group_by(model, matrix, time) |>
+  dplyr::summarise(
+    lo = stats::quantile(sim, 0.025),
+    med = stats::median(sim),
+    hi = stats::quantile(sim, 0.975),
+    .groups = "drop"
+  )
+```
+
+```{r figure-4, fig.width = 7, fig.height = 5}
+obs_both <- dplyr::bind_rows(
+  dplyr::mutate(obs_long, model = "1-cohort"),
+  dplyr::mutate(obs_long, model = "3-cohort")
+)
+ggplot(vpc_q, aes(time)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "steelblue", alpha = 0.25) +
+  geom_line(aes(y = med), colour = "steelblue") +
+  geom_point(data = obs_both, aes(time, conc)) +
+  facet_grid(matrix ~ model, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time after first dose (h)", y = "Dexamethasone (ng/mL)",
+    caption = paste(
+      "Shaded: 95% prediction interval of 200 simulated women; line: median.",
+      "Compare Figure 4 of Krzyzanski 2026."
+    )
+  ) +
+  theme_bw()
+```
+
+```{r vpc-coverage}
+# Fraction of the observations inside the simulated 95% prediction interval,
+# with the band interpolated to each woman's sampling time. A well-specified
+# model covers about 95%; a mis-transcribed clearance, volume, dose or ratio
+# shifts the band by tens of percent and drops coverage far below the bound.
+coverage <- obs_both |>
+  dplyr::group_by(model, matrix) |>
+  dplyr::group_modify(function(d, key) {
+    q <- dplyr::filter(vpc_q, model == key$model, matrix == key$matrix)
+    lo <- stats::approx(q$time, q$lo, d$time)$y
+    hi <- stats::approx(q$time, q$hi, d$time)$y
+    data.frame(inside = mean(d$conc >= lo & d$conc <= hi))
+  }) |>
+  dplyr::ungroup()
+knitr::kable(coverage, digits = 2)
+stopifnot(all(coverage$inside >= 0.75))
+```
+
+# PKNCA validation
+
+The paper reports no NCA parameters, so the NCA check is against the closed
+form of the one-compartment first-order-absorption model for a single 8000 ug
+dose: AUC0-inf = Dose / (CL/F), terminal half-life = log(2) V / CL (ka > CL/V
+for every cohort), and tmax = log(ka / kel) / (ka - kel). The groups are the
+1-cohort model and the three cohorts of the 3-cohort model.
+
+```{r pknca}
+nca_grid <- seq(0, 24, by = 0.05)
+groups <- data.frame(
+  id = 1:4,
+  treatment = c("1-cohort", "3-cohort low", "3-cohort middle", "3-cohort high"),
+  mixest = c(NA, 1L, 2L, 3L)
+)
+make_single <- function(ids, mixest) {
+  d <- make_events(ids, list(nca_grid), mixest = mixest)
+  d[!(d$evid == 1L & d$time > 0), ]
+}
+ev_nca1 <- make_single(1L, NA_integer_)
+ev_nca3 <- make_single(2:4, 1:3)
+sim_nca <- dplyr::bind_rows(
+  solve(mod1, ev_nca1),
+  solve(mod3, ev_nca3)
+) |>
+  dplyr::filter(endpoint == 1, !is.na(Cc)) |>
+  dplyr::left_join(groups[, c("id", "treatment")], by = "id") |>
+  dplyr::select(id, treatment, time, Cc, cl, vc, ka)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_df <- data.frame(id = groups$id, treatment = groups$treatment, time = 0, amt = dose_amt)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+# Closed-form reference values from each group's parameters.
+closed <- sim_nca |>
+  dplyr::distinct(treatment, cl, vc, ka) |>
+  dplyr::mutate(
+    kel = cl / vc,
+    tmax = log(ka / kel) / (ka - kel),
+    cmax = dose_amt / vc * ka / (ka - kel) * (exp(-kel * tmax) - exp(-ka * tmax)),
+    aucinf.obs = dose_amt / cl,
+    half.life = log(2) / kel
+  ) |>
+  dplyr::select(treatment, cmax, tmax, aucinf.obs, half.life)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = closed,
+  by = "treatment",
+  units = c(cmax = "ng/mL", tmax = "h", aucinf.obs = "ng*h/mL", half.life = "h"),
+  tolerance_pct = 5
+)
+knitr::kable(cmp, caption = "PKNCA on the packaged models vs. the closed form. * differs by >5%.")
+
+nca_wide <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "half.life")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  dplyr::left_join(
+    dplyr::bind_rows(
+      dplyr::transmute(closed, treatment, PPTESTCD = "aucinf.obs", ref = aucinf.obs),
+      dplyr::transmute(closed, treatment, PPTESTCD = "half.life", ref = half.life)
+    ),
+    by = c("treatment", "PPTESTCD")
+  )
+# The solve feeds the identity directly, so only numerical error separates
+# the two sides.
+stopifnot(all(abs(nca_wide$PPORRES / nca_wide$ref - 1) < 0.03))
+```
+
+# Assumptions and deviations
+
+* **Dose amount.** The paper codes the dose as 8000 ug of dexamethasone
+  phosphate (`DOSE = 8000.0`), not the 6.67 mg of dexamethasone it is
+  equivalent to (the Discussion lists this among the reasons V/F exceeds the
+  plasma volume). CL/F and V/F are therefore apparent values relative to the
+  phosphate dose; dose the models with the phosphate amount in ug, or scale
+  CL/F and V/F by 6.67 / 8 to dose in dexamethasone base.
+* **ODE instead of the closed form.** The paper's closed-form solution
+  (Eq 30, and `A2` in the Appendix 1 control stream) adds the first-dose
+  concentration at t2 = 22 h as a constant after the second dose instead of
+  letting it decay. The packaged models solve the ODEs of Eqs 22-23 by
+  superposition, which is the system Eq 30 is meant to solve. The
+  difference is the first-dose residual at 22 h: about 0.05 ng/mL for the
+  1-cohort model and 0.003 / 0.2 ng/mL for the middle / low 3-cohort
+  cohorts, against observations of 5.5-117 ng/mL. The objective function
+  values above, computed with the ODE solution, still match Table 3.
+* **Mixture encoding.** The 3-cohort model uses rxode2's native `mix()` with
+  the fixed Gauss-Hermite weights as mixing probabilities and the
+  between-cohort SD `omega_cohort_lcl` as a fixed effect, exactly as in the
+  `$MIX` control stream. A zero-variance `etalcl ~ fixed(0)` mirrors the
+  stream's `$OMEGA 0.0 FIX` and is kept because `mix()` requires an eta; it
+  makes rxode2 print a "simulation without 'omega'" message, which is
+  harmless. The maintainers ratified the names `p_cohort1`, `p_cohort2` and
+  `omega_cohort_lcl` for this first library use of `mix()`.
+* **1-cohort model has no eta.** The paper fixes the 1-cohort IIV at zero, so
+  the model carries no random effect; simulations vary only through the
+  residual error.
+* **Fetal-to-maternal ratio name.** FMR is a natural-scale THETA with no
+  random effect, so it is written bare as `ratio_cord_central`, following
+  `ratio_isf_peripheral1`.
+* **VPC form.** The paper's Figure 4 shows the confidence interval of the
+  simulated median from 1000 replicate data sets; the check above uses a
+  95% prediction interval from 200 virtual women per model, which carries
+  the same information about calibration within the per-arm cohort limit
+  used for these articles.
+* **Study I not packaged.** Study I is a simulation study on a synthetic drug
+  with arbitrary parameter values; it has no real-drug model.
+* **Errata.** No correction notice is linked to the article's PubMed record
+  (PMID 42406183) as of 2026-11-21.
