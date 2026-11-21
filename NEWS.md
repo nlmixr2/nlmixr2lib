@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Yan 2026 rilzabrutinib BTK occupancy ([doi:10.1038/s41598-026-50990-5](https://doi.org/10.1038/s41598-026-50990-5)) -- healthy adult men (BTK-binding layer of a PK-Sim PBPK model).
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

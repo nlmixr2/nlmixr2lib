@@ -7122,6 +7122,8 @@ navbar:
         href: articles/Tan_2025_cabotegravir_rilpivirine.html
       - text: "Rilpivirine (Thoueille 2024)"
         href: articles/Thoueille_2024_rilpivirine.html
+      - text: "Rilzabrutinib qsp (Yan 2026)"
+        href: articles/Yan_2026_rilzabrutinib.html
       - text: "Rimegepant (Comisar 2025)"
         href: articles/Comisar_2025_rimegepant.html
       - text: "Riociguat (Michalickova 2020)"
@@ -12269,6 +12271,7 @@ articles:
   - articles/Yan_2022_inebilizumab
   - articles/Yan_2023_tafolecimab
   - articles/Yan_2024_amisulpride
+  - articles/Yan_2026_rilzabrutinib
   - articles/Yang_2010_rosuvastatin_mbma
   - articles/Yang_2013_losmapimod
   - articles/Yang_2016_dilmapimod
