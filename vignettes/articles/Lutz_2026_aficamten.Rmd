@@ -1,0 +1,700 @@
+---
+title: "Aficamten exposure-response for LVOT gradient and LVEF (Lutz 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Aficamten exposure-response for LVOT gradient and LVEF (Lutz 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Lutz 2026 related the average aficamten plasma concentration over the 24 h
+before an echocardiogram (Cavg,24) to the two echocardiographic endpoints that
+guide aficamten dose titration in obstructive hypertrophic cardiomyopathy
+(oHCM): the post-Valsalva left ventricular outflow tract gradient (LVOT-G,
+efficacy) and the left ventricular ejection fraction (LVEF, safety). Both are
+log-linear direct-effect models with the observed baseline value and the
+reading source (clinical-site read vs central core-laboratory read) as
+covariates. Cavg,24 comes from the aficamten population PK model of Xu 2025,
+packaged as `Xu_2025_aficamten`.
+
+* Citation: `r rxode2::rxode(readModelDb("Lutz_2026_aficamten_lvot_gradient_valsalva"))$reference`
+* Efficacy model: `r rxode2::rxode(readModelDb("Lutz_2026_aficamten_lvot_gradient_valsalva"))$description`
+* Safety model: `r rxode2::rxode(readModelDb("Lutz_2026_aficamten_lvef"))$description`
+* Article: <https://doi.org/10.1002/psp4.70237> (open access)
+
+The two models are separate files because the authors fitted them separately
+(one `nlme()` call per endpoint in Data S2). For simulation the paper linked
+them through a correlation of 0.31 between their slope random effects,
+computed from the post hoc estimates; that correlation is applied in the
+simulations below.
+
+# Population
+
+The models were fitted to the 183 aficamten-treated participants with oHCM of
+the phase 2 REDWOOD-HCM (41 participants, 10 weeks) and phase 3 SEQUOIA-HCM
+(142 participants, 24 weeks) trials who had PK parameters from the population
+PK analysis: 2880 LVOT-G and 2876 LVEF measurements, each echocardiogram read
+both at the clinical site and by the central core laboratory. Echocardiograms
+were taken pre-dose on day 1 and 2-2.5 h after dosing at later visits. Dosing
+started at 5 mg once daily and was titrated at weeks 2, 4 and 6 to a maximum
+of 15, 20 or 30 mg once daily on site-read LVOT-G and LVEF. The paper does not
+tabulate the demographics or the baseline echocardiographic values of the
+analysis set.
+
+The same information is available programmatically via
+`readModelDb("Lutz_2026_aficamten_lvef")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value (LVOT-G; LVEF) | Source location |
+|---|---|---|
+| `log(Y) = th1 + th3 * (log(BASE) - log(MEDBASE)) + th4 * site - exp(th2 + eta2 + th5 * site) * Cavg24 / 1000 + eps` | -- | Data S2 nlme code; Results equation (image) |
+| `lrbase` (th1) | 4.49; 4.32 | Table 1, 'Log intercept' |
+| `lslope` (th2) | 1.44; -1.16 | Table 1, 'Log slope' |
+| `e_lvot_gradient_valsalva_bl_rbase`, `e_lvef_bl_rbase` (th3) | 0.63; 0.56 | Table 1, 'Base on intercept' |
+| `e_read_site_rbase` (th4) | 0.12; -0.08 | Table 1, 'Type on log intercept' |
+| `e_read_site_slope` (th5) | 0.07; -0.12 | Table 1, 'Type on log slope' |
+| `etalslope` | omega 0.596; 0.759 | Table 1, 'Between-subject CV on slope' and note (%CV = 100 x omega) |
+| `expSd_lvot_gradient_valsalva`, `expSd_lvef` | 0.496; 0.076 | Table 1, 'Within-subject CV' and note (%CV = 100 x sigma) |
+| MEDBASE (centring value) | 90 mmHg; 75% | Not reported; rounded typical baseline (Table 1 'InterceptTypical' 89.4; 75.5) |
+| Correlation of the two slope random effects | 0.31 | Results, 'Key Steps in PKPD Model Development' |
+| Cavg,24 from the Xu 2025 population PK model | -- | Methods, 'Analysis Endpoints and Exposure Metrics' |
+
+# Typical exposure-response curves
+
+With the random effects removed, both models are evaluated over a grid of
+Cavg,24 for a participant whose baseline equals the centring value, for the
+core-laboratory and the site read (compare with the median lines of
+Figure 1).
+
+```{r typical-curves, fig.width = 8, fig.height = 4}
+mod_g <- readModelDb("Lutz_2026_aficamten_lvot_gradient_valsalva")
+mod_f <- readModelDb("Lutz_2026_aficamten_lvef")
+
+cav_grid <- seq(0, 800, by = 10)
+typ_grid <- tidyr::expand_grid(READ_SITE = c(0, 1), CAV = cav_grid) |>
+  mutate(
+    id = 1L, evid = 0L, time = seq_len(n()),
+    LVOT_GRADIENT_VALSALVA_BL = 90, LVEF_BL = 75
+  ) |>
+  as.data.frame()
+
+# Time does not enter either model, so the grid is one typical participant
+# observed at successive nominal times.
+typ_g <- rxode2::rxSolve(rxode2::zeroRe(mod_g), typ_grid, keep = c("CAV", "READ_SITE")) |>
+  as.data.frame()
+typ_f <- rxode2::rxSolve(rxode2::zeroRe(mod_f), typ_grid, keep = c("CAV", "READ_SITE")) |>
+  as.data.frame()
+
+typ_long <- bind_rows(
+  typ_g |> transmute(CAV, READ_SITE, value = lvot_gradient_valsalva,
+    endpoint = "Post-Valsalva LVOT-G (mmHg)"),
+  typ_f |> transmute(CAV, READ_SITE, value = lvef, endpoint = "LVEF (%)")
+) |>
+  mutate(read = ifelse(READ_SITE == 1, "Site read", "Core laboratory"))
+
+ggplot(typ_long, aes(CAV, value, linetype = read)) +
+  geom_line() +
+  facet_wrap(~endpoint, scales = "free_y") +
+  labs(x = "Cavg,24 (ng/mL)", y = NULL, linetype = NULL,
+       caption = "Typical-value analogue of the median lines of Lutz 2026 Figure 1.") +
+  theme(legend.position = "bottom")
+```
+
+## Closed-form checks against Table 1 and the Results text
+
+Table 1 prints each log-scale estimate to two decimals and its back-transform
+to three significant figures; the Results restate the slopes as the Cavg,24
+that halves each endpoint (164 and 2219 ng/mL) and the LVEF slope as "an
+approximate 2% decrease ... for every 100 ng/mL" below 500 ng/mL.
+
+```{r closed-form}
+th_g <- rxode2::rxode(mod_g)$theta
+th_f <- rxode2::rxode(mod_f)$theta
+
+checks <- tibble::tribble(
+  ~Check, ~Model, ~Paper,
+  "LVOT-G typical intercept (mmHg)", exp(th_g[["lrbase"]]), 89.4,
+  "LVEF typical intercept (%)", exp(th_f[["lrbase"]]), 75.5,
+  "LVOT-G typical slope (1/(ug/mL))", exp(th_g[["lslope"]]), 4.23,
+  "LVEF typical slope (1/(ug/mL))", exp(th_f[["lslope"]]), 0.31,
+  "LVOT-G site/core intercept ratio", exp(th_g[["e_read_site_rbase"]]), 1.13,
+  "LVEF site/core intercept ratio", exp(th_f[["e_read_site_rbase"]]), 0.92,
+  "LVOT-G site/core slope ratio", exp(th_g[["e_read_site_slope"]]), 1.07,
+  "LVEF site/core slope ratio", exp(th_f[["e_read_site_slope"]]), 0.88,
+  "Cavg,24 halving core LVOT-G (ng/mL)", 1000 * log(2) / exp(th_g[["lslope"]]), 164,
+  "Cavg,24 halving core LVEF (ng/mL)", 1000 * log(2) / exp(th_f[["lslope"]]), 2219,
+  "Core LVEF drop from 0 to 100 ng/mL (points)",
+  typ_f$lvef[typ_f$CAV == 0 & typ_f$READ_SITE == 0] -
+    typ_f$lvef[typ_f$CAV == 100 & typ_f$READ_SITE == 0], 2
+) |>
+  mutate(`Model / paper` = Model / Paper)
+
+checks |>
+  mutate(across(c(Model, Paper, `Model / paper`), \(x) signif(x, 4))) |>
+  knitr::kable(caption = "Typical values implied by the packaged Table 1 log-scale estimates against the paper's back-transformed values.")
+
+# Model output against the hand-written Data S2 formula: same parameters on
+# both sides, so the difference is floating-point only.
+hand_g <- exp(th_g[["lrbase"]] + th_g[["e_read_site_rbase"]] * typ_g$READ_SITE -
+  exp(th_g[["lslope"]] + th_g[["e_read_site_slope"]] * typ_g$READ_SITE) * typ_g$CAV / 1000)
+hand_f <- exp(th_f[["lrbase"]] + th_f[["e_read_site_rbase"]] * typ_f$READ_SITE -
+  exp(th_f[["lslope"]] + th_f[["e_read_site_slope"]] * typ_f$READ_SITE) * typ_f$CAV / 1000)
+
+stopifnot(
+  all(abs(typ_g$lvot_gradient_valsalva / hand_g - 1) < 1e-10),
+  all(abs(typ_f$lvef / hand_f - 1) < 1e-10),
+  # A two-decimal log estimate carries up to +/-0.005 of rounding, i.e. up to
+  # 0.5% on its back-transform; the printed back-transforms add their own
+  # 3-significant-figure rounding (0.31 is printed to two). 2% catches any
+  # transcription error and no rounding.
+  all(abs(checks$`Model / paper`[1:10] - 1) < 0.02),
+  # "Approximate 2%": the typical drop is between 1.5 and 3 points.
+  checks$Model[11] > 1.5, checks$Model[11] < 3
+)
+```
+
+The LVEF slope back-transform printed as 0.31 is consistent with the log
+estimate -1.16 (0.313) to its two printed figures, and the halving
+concentrations agree with the log slopes to within 0.5%.
+
+# Linking to the PK model
+
+## Virtual cohort
+
+The paper simulated 10,000 virtual participants with SEQUOIA-HCM PK
+covariates and PD baselines sampled from the SEQUOIA-HCM population. Neither
+distribution is tabulated in the paper, so 200 virtual participants are built
+as follows (see Assumptions and deviations):
+
+* Body weight and sex follow the oHCM column of the Xu 2025 PK population
+  (median weight 80 kg, range 47-156 kg; 42.6% female), as in the
+  `Xu_2025_aficamten` article; the phase 3 tablet, oHCM status and "with or
+  without food" dosing select the PK reference arm.
+* Baseline post-Valsalva LVOT-G is log-normal. Its log-scale mean and SD are
+  back-calculated from the paper's own 0 mg core-laboratory row of Table 2
+  (mean 99.8 mmHg, 3.6% below 30 mmHg), which under the model is a log-normal
+  with variance `th3^2 * var(log BASE) + sigma^2`.
+* Baseline LVEF is log-normal with a log-scale SD of 0.08 (about 6 points),
+  an assumption, and a log-scale mean back-calculated from the 0 mg
+  core-laboratory LVEF row of Table 2 (mean 75.7%).
+* The two slope random effects are drawn jointly with correlation 0.31.
+
+```{r cohort}
+set.seed(20260521)
+n_sub <- 200L
+
+# Table 2, 0 mg core-laboratory row: mean LVOT-G and percent below 30 mmHg.
+mean0_g <- 99.8
+p30_0 <- 0.036
+z30 <- qnorm(p30_0)
+sd_tot_g <- z30 + sqrt(z30^2 - 2 * (log(30) - log(mean0_g)))
+mu_tot_g <- log(30) - z30 * sd_tot_g
+sdlog_bl_g <- sqrt(sd_tot_g^2 - th_g[["expSd_lvot_gradient_valsalva"]]^2) /
+  th_g[["e_lvot_gradient_valsalva_bl_rbase"]]
+meanlog_bl_g <- log(90) + (mu_tot_g - th_g[["lrbase"]]) / th_g[["e_lvot_gradient_valsalva_bl_rbase"]]
+
+# Table 2, 0 mg core-laboratory row: mean LVEF; spread assumed.
+mean0_f <- 75.7
+sdlog_bl_f <- 0.08
+meanlog_bl_f <- log(75) + (log(mean0_f) - th_f[["lrbase"]] -
+  (th_f[["e_lvef_bl_rbase"]]^2 * sdlog_bl_f^2 + th_f[["expSd_lvef"]]^2) / 2) /
+  th_f[["e_lvef_bl_rbase"]]
+
+tibble::tibble(
+  Baseline = c("Post-Valsalva LVOT-G (mmHg)", "LVEF (%)"),
+  `Median` = c(exp(meanlog_bl_g), exp(meanlog_bl_f)),
+  `Log-scale SD` = c(sdlog_bl_g, sdlog_bl_f)
+) |>
+  mutate(across(-Baseline, \(x) signif(x, 3))) |>
+  knitr::kable(caption = "Baseline distributions of the virtual cohort.")
+
+omega_g <- rxode2::rxode(mod_g)$omega[1, 1]
+omega_f <- rxode2::rxode(mod_f)$omega[1, 1]
+rho_gf <- 0.31
+z1 <- rnorm(n_sub)
+z2 <- rnorm(n_sub)
+
+omega_pk <- rxode2::rxode(readModelDb("Xu_2025_aficamten"))$omega
+
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  WT = pmin(pmax(rlnorm(n_sub, log(80), 0.21), 47), 156),
+  SEXF = rbinom(n_sub, 1L, 0.426),
+  DIS_HEALTHY = 0, FORM_CAPSULE = 0, FED = 1, FED_HIGHFAT = 0,
+  LVOT_GRADIENT_VALSALVA_BL = rlnorm(n_sub, meanlog_bl_g, sdlog_bl_g),
+  LVEF_BL = rlnorm(n_sub, meanlog_bl_f, sdlog_bl_f),
+  eta_g = sqrt(omega_g) * z1,
+  eta_f = sqrt(omega_f) * (rho_gf * z1 + sqrt(1 - rho_gf^2) * z2),
+  etalcl = rnorm(n_sub, 0, sqrt(omega_pk["etalcl", "etalcl"])),
+  etalvc = rnorm(n_sub, 0, sqrt(omega_pk["etalvc", "etalvc"])),
+  etalvp = rnorm(n_sub, 0, sqrt(omega_pk["etalvp", "etalvp"])),
+  etalka = rnorm(n_sub, 0, sqrt(omega_pk["etalka", "etalka"]))
+)
+pk_cov <- c("WT", "SEXF", "DIS_HEALTHY", "FORM_CAPSULE", "FED", "FED_HIGHFAT")
+pk_eta <- cohort |> select(id, etalcl, etalvc, etalvp, etalka)
+```
+
+The random effects of both the PK and the PD models are drawn here and passed
+to `rxSolve()` as per-participant parameters, so that one virtual participant
+keeps the same PK and PD random effects across dose levels and visits.
+rxode2 then warns that a multi-subject simulation has no `omega`, which is the
+intended behaviour; the helper below silences only that warning.
+
+```{r helpers}
+solve_fixed_eta <- function(model, events, params, keep = NULL) {
+  withCallingHandlers(
+    rxode2::rxSolve(model, events, params = params, keep = keep,
+      returnType = "data.frame", maxsteps = 1e6),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  ) |>
+    mutate(id = as.integer(as.character(id)))
+}
+
+# Echocardiographic records for a set of visits: one site read and one core
+# read per participant and visit, with the visit's Cavg,24.
+pd_records <- function(cav) {
+  cav |>
+    tidyr::crossing(READ_SITE = c(0, 1)) |>
+    left_join(cohort |> select(id, LVOT_GRADIENT_VALSALVA_BL, LVEF_BL), by = "id") |>
+    arrange(id, visit, READ_SITE) |>
+    group_by(id) |>
+    mutate(time = seq_len(n()), evid = 0L) |>
+    ungroup() |>
+    as.data.frame()
+}
+
+simulate_pd <- function(cav) {
+  recs <- pd_records(cav)
+  keep <- c("visit", "READ_SITE", "CAV")
+  g <- solve_fixed_eta(mod_g, recs,
+    params = cohort |> select(id, etalslope = eta_g), keep = keep)
+  f <- solve_fixed_eta(mod_f, recs,
+    params = cohort |> select(id, etalslope = eta_f), keep = keep)
+  g |>
+    select(id, visit, READ_SITE, CAV, lvot = sim) |>
+    left_join(f |> select(id, visit, READ_SITE, lvef = sim),
+      by = c("id", "visit", "READ_SITE"))
+}
+```
+
+## Steady-state Cavg,24 with PKNCA
+
+Each participant receives 5, 10, 15 or 20 mg once daily to steady state
+(`ss = 1`). At steady state any 24-h window has the same average, so Cavg,24
+is the dosing-interval average from PKNCA, and for this linear PK model it
+must equal `F * dose / (CL/F * 24 h)`.
+
+```{r pk-steady-state}
+mod_pk <- readModelDb("Xu_2025_aficamten")
+doses <- c(5, 10, 15, 20)
+ss_grid <- sort(unique(c(seq(0, 4, by = 0.05), seq(4, 24, by = 0.5))))
+
+ss_ids <- cohort |>
+  select(id, all_of(pk_cov)) |>
+  tidyr::crossing(dose = doses) |>
+  mutate(sim_id = (match(dose, doses) - 1L) * n_sub + id)
+ss_events <- bind_rows(
+  ss_ids |> mutate(time = 0, amt = dose, evid = 1L, cmt = "depot", ss = 1L, ii = 24),
+  ss_ids |> tidyr::crossing(time = ss_grid) |>
+    mutate(amt = 0, evid = 0L, cmt = "central", ss = 0L, ii = 0)
+) |>
+  mutate(id = sim_id) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+# rxSolve() pairs `params` rows with subjects by position, so sort by the
+# simulation id.
+ss_params <- ss_ids |>
+  left_join(pk_eta, by = "id") |>
+  transmute(id = sim_id, etalcl, etalvc, etalvp, etalka) |>
+  arrange(id)
+
+sim_ss <- solve_fixed_eta(mod_pk, ss_events, params = ss_params, keep = "dose") |>
+  left_join(ss_ids |> select(sim_id, subject = id), by = c("id" = "sim_id"))
+
+nca_conc <- sim_ss |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, dose_mg = dose)
+nca_dose <- ss_events |>
+  filter(evid == 1) |>
+  select(id, time, amt, dose_mg = dose)
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | dose_mg + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | dose_mg + id)
+nca_ss <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+  intervals = data.frame(start = 0, end = 24, cav = TRUE, cmax = TRUE, cmin = TRUE)))
+
+cav_ss <- as.data.frame(nca_ss$result) |>
+  filter(PPTESTCD == "cav") |>
+  select(id, dose = dose_mg, cav = PPORRES) |>
+  left_join(sim_ss |> distinct(id, subject, cl), by = "id") |>
+  mutate(cav_closed = 1000 * dose / (cl * 24))
+
+nca_wide <- as.data.frame(nca_ss$result) |>
+  filter(PPTESTCD %in% c("cav", "cmax", "cmin")) |>
+  select(id, dose = dose_mg, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  mutate(fluct = 100 * (cmax / cmin - 1))
+
+nca_wide |>
+  group_by(dose) |>
+  summarise(across(c(cav, cmax, cmin, fluct), median), .groups = "drop") |>
+  mutate(across(-dose, \(x) signif(x, 3))) |>
+  rename(
+    "Dose (mg)" = dose,
+    "Median Cavg,24 (ng/mL)" = cav,
+    "Median Cmax (ng/mL)" = cmax,
+    "Median Cmin (ng/mL)" = cmin,
+    "Median Cmax / Cmin - 1 (%)" = fluct
+  ) |>
+  knitr::kable(caption = "Steady-state PKNCA results for 200 virtual participants per dose.")
+
+# Each participant keeps the same PK random effects at every dose, so
+# Cavg,24 per mg must be identical across the four doses.
+per_mg <- cav_ss |>
+  group_by(subject) |>
+  summarise(spread = max(cav / dose) / min(cav / dose) - 1, .groups = "drop")
+
+stopifnot(
+  # Trapezoid AUC on a 0.05/0.5-h grid against the closed form: numerical
+  # error only.
+  all(abs(cav_ss$cav / cav_ss$cav_closed - 1) < 0.005),
+  # Linear PK: only the ODE solver tolerance separates the doses (~1e-6).
+  all(per_mg$spread < 1e-4)
+)
+```
+
+The paper chose a 24-h average because aficamten exposure fluctuates little
+over a once-daily dosing interval; it quotes a steady-state maximum only 16%
+above the minimum from the Xu 2025 PK analysis. The median per-participant
+fluctuation in this virtual cohort is
+`r signif(median(nca_wide$fluct), 2)`%, larger than 16% because the cohort
+carries the 308% CV between-subject variability of the central volume (see
+Assumptions and deviations); the 24-h average itself does not depend on the
+central volume.
+
+# Steady-state dose-response (Table 2)
+
+Table 2 gives the mean LVOT-G and LVEF and the percentages below the safety
+and efficacy thresholds if every participant took a fixed dose to steady
+state. Its "0 mg" row is the baseline (Cavg,24 = 0). The same 200 virtual
+participants are simulated at every dose, with residual error, for both
+reading types.
+
+```{r table2}
+rxode2::rxSetSeed(20260522)
+cav_table2 <- bind_rows(
+  cohort |> transmute(id, dose = 0, CAV = 0),
+  cav_ss |> transmute(id = subject, dose, CAV = cav)
+) |>
+  mutate(visit = match(dose, c(0, doses))) |>
+  select(id, visit, dose, CAV)
+
+pd_table2 <- simulate_pd(cav_table2 |> select(id, visit, CAV)) |>
+  left_join(cav_table2 |> distinct(visit, dose), by = "visit")
+
+sim_table2 <- pd_table2 |>
+  group_by(READ_SITE, dose) |>
+  summarise(
+    lvot_mean = mean(lvot),
+    lvot_lt30 = 100 * mean(lvot < 30),
+    lvef_mean = mean(lvef),
+    lvef_lt50 = 100 * mean(lvef < 50),
+    .groups = "drop"
+  )
+
+# Lutz 2026 Table 2 medians across the 200 bootstrap models.
+paper_table2 <- tibble::tribble(
+  ~READ_SITE, ~dose, ~lvot_mean, ~lvot_lt30, ~lvef_mean, ~lvef_lt50,
+  0, 0, 99.8, 3.6, 75.7, 0.0,
+  0, 5, 66.9, 16.8, 72.9, 0.1,
+  0, 10, 47.6, 37.1, 70.3, 0.8,
+  0, 15, 35.2, 54.6, 67.9, 2.8,
+  0, 20, 27.0, 67.2, 65.6, 5.9,
+  1, 0, 118.6, 2.0, 70.1, 0.0,
+  1, 5, 77.5, 12.9, 67.7, 0.2,
+  1, 10, 54.3, 32.6, 65.5, 1.6,
+  1, 15, 39.6, 50.5, 63.4, 4.6,
+  1, 20, 29.9, 63.9, 61.4, 9.1
+)
+
+cmp_table2 <- sim_table2 |>
+  left_join(paper_table2, by = c("READ_SITE", "dose"), suffix = c("_sim", "_paper")) |>
+  mutate(read = ifelse(READ_SITE == 1, "Site", "Core"))
+
+cmp_table2 |>
+  transmute(
+    read, dose,
+    lvot = sprintf("%.1f / %.1f", lvot_mean_sim, lvot_mean_paper),
+    lvot30 = sprintf("%.1f / %.1f", lvot_lt30_sim, lvot_lt30_paper),
+    lvef = sprintf("%.1f / %.1f", lvef_mean_sim, lvef_mean_paper),
+    lvef50 = sprintf("%.1f / %.1f", lvef_lt50_sim, lvef_lt50_paper)
+  ) |>
+  rename(
+    "Read" = read,
+    "Dose (mg)" = dose,
+    "Mean LVOT-G, mmHg (sim / paper)" = lvot,
+    "% LVOT-G < 30 mmHg (sim / paper)" = lvot30,
+    "Mean LVEF, % (sim / paper)" = lvef,
+    "% LVEF < 50% (sim / paper)" = lvef50
+  ) |>
+  knitr::kable(caption = "Replicates Table 2 of Lutz 2026: 200 simulated participants per dose against the paper's 10,000.")
+```
+
+```{r table2-checks}
+tested <- cmp_table2 |>
+  # The 0 mg core row calibrated the baseline distributions; it is not a test.
+  filter(!(READ_SITE == 0 & dose == 0)) |>
+  mutate(
+    pct_lvot = 100 * (lvot_mean_sim / lvot_mean_paper - 1),
+    pct_lvef = 100 * (lvef_mean_sim / lvef_mean_paper - 1)
+  )
+
+stopifnot(
+  # Mean gradient: a mis-transcribed slope, intercept or type effect moves
+  # these by tens of percent. 200 participants give a standard error of about
+  # 4% on the mean, and the baseline distribution is reconstructed.
+  abs(median(tested$pct_lvot)) < 8,
+  quantile(abs(tested$pct_lvot), 0.9) < 15,
+  # Mean LVEF has a small spread (residual CV 7.6%), so it is tight.
+  abs(median(tested$pct_lvef)) < 2,
+  quantile(abs(tested$pct_lvef), 0.9) < 4,
+  # Responder percentages: binomial standard error up to 3.5 points.
+  median(abs(tested$lvot_lt30_sim - tested$lvot_lt30_paper)) < 8
+)
+```
+
+The means agree with Table 2 across dose and reading type, within the
+sampling error of 200 participants for an endpoint with a 50% residual CV.
+One difference is structural rather than random: under the maintainers'
+choice of one baseline for both reading types (see Assumptions and
+deviations), the site/core LVOT-G ratio at 0 mg is `exp(th4) = 1.13`, while
+Table 2 implies 118.6 / 99.8 = 1.19. The corresponding LVEF ratio, 70.1 / 75.7
+= 0.926, matches `exp(th4) = 0.923`. The percentages of LVEF below 50%
+depend on the assumed spread of baseline LVEF and are only compared
+descriptively.
+
+# SEQUOIA-HCM titration (Tables S2 and S3)
+
+The phase 3 clinical trial simulation started every participant at 5 mg once
+daily and assessed site-read LVEF and post-Valsalva LVOT-G at weeks 2, 4 and
+6 with the SEQUOIA-HCM rules: LVEF below 50%, reduce by 5 mg; LVEF 50% to
+below 55%, no change; LVEF at least 55% with LVOT-G below 30 mmHg, no change;
+LVEF at least 55% with LVOT-G at least 30 mmHg, increase by 5 mg up to 20 mg.
+Echocardiograms are 2.25 h after the dose of the visit day, so Cavg,24 is the
+PKNCA average over the preceding 24 h of the simulated time course, and a new
+dose starts with the next day's dose.
+
+```{r titration-setup}
+visits <- c(0, 2, 4, 6, 8, 12, 16, 20, 24)
+titration_visits <- c(2, 4, 6)
+t_visit <- function(week) 168 * week + 2.25
+
+titrate <- function(dose, lvef, lvot) {
+  dplyr::case_when(
+    lvef < 50 ~ pmax(dose - 5, 0),
+    lvef < 55 ~ dose,
+    lvot < 30 ~ dose,
+    TRUE ~ pmin(dose + 5, 20)
+  )
+}
+
+# Daily doses (days 0 to 167) for a plan holding the dose after each
+# titration visit; a decision at week w applies from day 7 * w + 1.
+daily_doses <- function(plan) {
+  plan |>
+    tidyr::crossing(day = 0:167) |>
+    mutate(amt = case_when(
+      day <= 14 ~ 5,
+      day <= 28 ~ dose_w2,
+      day <= 42 ~ dose_w4,
+      TRUE ~ dose_w6
+    )) |>
+    filter(amt > 0) |>
+    transmute(id, time = 24 * day, amt, evid = 1L, cmt = "depot")
+}
+
+cavg24 <- function(plan, weeks) {
+  obs <- tidyr::crossing(id = plan$id, visit = weeks) |>
+    tidyr::crossing(offset = seq(-24, 0, by = 0.5)) |>
+    transmute(id, time = t_visit(visit) + offset, amt = 0, evid = 0L, cmt = "central") |>
+    distinct()
+  ev <- bind_rows(daily_doses(plan), obs) |>
+    left_join(cohort |> select(id, all_of(pk_cov)), by = "id") |>
+    arrange(id, time, desc(evid)) |>
+    as.data.frame()
+  pk <- solve_fixed_eta(mod_pk, ev, params = pk_eta) |>
+    filter(!is.na(Cc)) |>
+    transmute(id, time, Cc, regimen = "SEQUOIA-HCM titration")
+  dose_rows <- ev |>
+    filter(evid == 1) |>
+    transmute(id, time, amt, regimen = "SEQUOIA-HCM titration")
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(pk, Cc ~ time | regimen + id),
+    PKNCA::PKNCAdose(dose_rows, amt ~ time | regimen + id),
+    intervals = data.frame(start = t_visit(weeks) - 24, end = t_visit(weeks), cav = TRUE)
+  ))
+  as.data.frame(res$result) |>
+    filter(PPTESTCD == "cav") |>
+    transmute(id, visit = round((end - 2.25) / 168), CAV = PPORRES)
+}
+```
+
+```{r titration-run}
+rxode2::rxSetSeed(20260523)
+plan <- cohort |> transmute(id, dose_w2 = 5, dose_w4 = 5, dose_w6 = 5)
+pd_visits <- list(simulate_pd(cohort |> transmute(id, visit = 0, CAV = 0)))
+
+for (w in titration_visits) {
+  pd_w <- simulate_pd(cavg24(plan, w))
+  pd_visits[[length(pd_visits) + 1]] <- pd_w
+  current <- if (w == 2) 5 else plan[[paste0("dose_w", w - 2)]]
+  site <- pd_w |> filter(READ_SITE == 1) |> arrange(id)
+  new_dose <- titrate(current, site$lvef, site$lvot)
+  for (later in titration_visits[titration_visits >= w]) {
+    plan[[paste0("dose_w", later)]] <- new_dose
+  }
+}
+pd_visits[[length(pd_visits) + 1]] <- simulate_pd(cavg24(plan, visits[visits > 6]))
+pd_sequoia <- bind_rows(pd_visits)
+```
+
+```{r titration-table}
+sim_s2s3 <- pd_sequoia |>
+  group_by(READ_SITE, visit) |>
+  summarise(lvot_lt30 = 100 * mean(lvot < 30), lvef_lt50 = 100 * mean(lvef < 50),
+    .groups = "drop")
+
+# Lutz 2026 Tables S2 and S3, simulated medians of 1000 trials of 142.
+paper_s2s3 <- tibble::tibble(
+  visit = rep(visits, 2),
+  READ_SITE = rep(c(0, 1), each = length(visits)),
+  lvot_lt30_paper = c(4.3, 15.3, 31.7, 45.2, 54.8, 54.8, 54.7, 54.5, 54.1,
+    1.5, 11.4, 26.7, 40.2, 50.3, 51.5, 50.3, 50.2, 49.9),
+  lvef_lt50_paper = c(0.0, 0.0, 0.3, 0.7, 1.0, 0.9, 0.6, 0.5, 0.5,
+    0.0, 0.2, 0.8, 1.5, 1.9, 1.6, 1.3, 1.3, 1.2)
+)
+
+cmp_s2s3 <- sim_s2s3 |>
+  left_join(paper_s2s3, by = c("READ_SITE", "visit")) |>
+  mutate(read = ifelse(READ_SITE == 1, "Site", "Core"))
+
+cmp_s2s3 |>
+  transmute(read, visit,
+    lvot = sprintf("%.1f / %.1f", lvot_lt30, lvot_lt30_paper),
+    lvef = sprintf("%.1f / %.1f", lvef_lt50, lvef_lt50_paper)) |>
+  rename(
+    "Read" = read,
+    "Week" = visit,
+    "% LVOT-G < 30 mmHg (sim / Table S2)" = lvot,
+    "% LVEF < 50% (sim / Table S3)" = lvef
+  ) |>
+  knitr::kable(caption = "Replicates the simulated columns of Tables S2 and S3 of Lutz 2026 with 200 virtual participants.")
+
+dose_dist <- plan |>
+  count(dose_w6) |>
+  mutate(pct = 100 * n / sum(n))
+dose_dist |>
+  rename("Maintenance dose after week 6 (mg)" = dose_w6, "N" = n, "%" = pct) |>
+  knitr::kable(digits = 1, caption = "Simulated dose distribution after the last titration visit (compare Figure S4).")
+
+after_titration <- cmp_s2s3 |> filter(visit >= 8)
+stopifnot(
+  # After titration the proportion below 30 mmHg is about 50-55%; 200
+  # participants give a binomial standard error of about 3.5 points per visit.
+  abs(median(after_titration$lvot_lt30 - after_titration$lvot_lt30_paper)) < 10,
+  # LVEF below 50% stays rare (Table S3: at most 1.9%).
+  median(after_titration$lvef_lt50) < 5
+)
+```
+
+The proportions below 30 mmHg follow Table S2 through titration and
+maintenance for both reading types. The proportions of LVEF below 50% stay at
+a few percent, as in Table S3, but depend on the assumed spread of baseline
+LVEF and on which few participants fall below the threshold.
+
+```{r figure-2, fig.width = 8, fig.height = 6}
+pd_sequoia |>
+  pivot_longer(c(lvot, lvef), names_to = "endpoint") |>
+  mutate(
+    endpoint = ifelse(endpoint == "lvot", "Post-Valsalva LVOT-G (mmHg)", "LVEF (%)"),
+    read = ifelse(READ_SITE == 1, "Site read", "Core laboratory")
+  ) |>
+  group_by(read, endpoint, visit) |>
+  summarise(
+    median = median(value),
+    p05 = quantile(value, 0.05),
+    p95 = quantile(value, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(visit, median)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  facet_grid(endpoint ~ read, scales = "free_y") +
+  labs(x = "Study week", y = NULL,
+       caption = "Replicates the simulated median and 5th-95th percentiles of Lutz 2026 Figure 2 (200 virtual participants).")
+```
+
+# Assumptions and deviations
+
+- **Centring value of the baseline covariate.** Data S2 centres the log
+  baseline at `log(MEDBASE)`, the median baseline of the analysis set, which
+  the paper does not report. The maintainers use 90 mmHg for LVOT-G and 75%
+  for LVEF, the rounded typical core-laboratory baselines of Table 1
+  ('InterceptTypical' 89.4 mmHg and 75.5%), which the Results call the
+  estimated baseline measurements. A different centring value rescales the
+  typical intercept by `(MEDBASE / 90)^0.63` or `(MEDBASE / 75)^0.56`.
+- **Baseline on site-read records.** The paper does not say whether the
+  baseline covariate of a site-read record is the site-read or the
+  core-laboratory baseline. The maintainers supply one baseline per endpoint
+  (the core-laboratory value) on both reading types, so the reading difference
+  is carried by `READ_SITE` alone. Table 2 supports this for LVEF (site/core
+  0 mg ratio 0.926 against `exp(th4)` 0.923) but less well for LVOT-G (1.19
+  against 1.13), which a site-read baseline above the core-laboratory one
+  would explain.
+- **Equation as printed.** The Results equation image writes the baseline term
+  as `log[(Base) - (Base_median)]` and the site effect on the slope with
+  `theta4`; the Data S2 code, which the models follow, has
+  `log(BASE) - log(MEDBASE)` and `type_effect_slope` (theta5).
+- **Variability terms.** The Table 1 note defines %CV = 100 x omega and
+  100 x sigma, so the variance of `etalslope` is 0.596^2 and 0.759^2 and the
+  log-normal residual SDs are 0.496 and 0.076. Within-subject variability
+  includes inter-occasion variability (Methods), so `expSd_*` is drawn
+  independently for each record; the site and core reads of one
+  echocardiogram are drawn independently as well.
+- **Correlated slopes.** The 0.31 correlation between the LVOT-G and LVEF
+  slope random effects was derived after fitting and used only for
+  simulation; it is applied in this article and cannot be expressed in two
+  separately packaged models.
+- **Virtual cohort.** The paper resampled the SEQUOIA-HCM participants. Body
+  weight and sex follow the Xu 2025 oHCM population; the baseline LVOT-G
+  distribution is back-calculated from the 0 mg core-laboratory row of
+  Table 2 (so that row is not a test), and the baseline LVEF log-scale SD of
+  0.08 is an assumption.
+- **PK random effects.** The paper drew the central volume from a post hoc
+  distribution rather than from the 308% CV of the population PK model; that
+  distribution is not reported, so the packaged `Xu_2025_aficamten` IIV is
+  used. Steady-state Cavg,24 does not depend on the central volume.
+- **Titration simulation.** Titration decisions are made at weeks 2, 4 and 6
+  only, a dose reduced from 5 mg stops treatment, and the new dose starts the
+  day after the visit. The paper's 10,000-participant simulation with
+  bootstrap uncertainty is replaced by 200 participants with the final
+  estimates. The 3-year commercial-regimen simulations (Tables S4 and S5,
+  Figures 3 and 4) and the bootstrap confidence intervals of Table 2 are not
+  reproduced.
+- **No erratum** for Lutz 2026 was found on Europe PMC (checked 2026-11-21).

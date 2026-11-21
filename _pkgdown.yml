@@ -206,6 +206,10 @@ navbar:
         href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Aficamten (Xu 2025)"
         href: articles/Xu_2025_aficamten.html
+      - text: "Aficamten lvef (Lutz 2026)"
+        href: articles/Lutz_2026_aficamten.html
+      - text: "Aficamten lvot gradient valsalva (Lutz 2026)"
+        href: articles/Lutz_2026_aficamten.html
       - text: "Aflibercept (Bihorel 2026)"
         href: articles/Bihorel_2026_aflibercept.html
       - text: "Aflibercept (Thai 2011)"
@@ -10996,6 +11000,7 @@ articles:
   - articles/Luo_2021_daratumumab
   - articles/Luo_2023_tigecycline
   - articles/Luo_2024_CES1_cirrhosis
+  - articles/Lutz_2026_aficamten
   - articles/Luu_2001_d4_siloxane
   - articles/Luu_2017_nusinersen
   - articles/Luu_2022_antiVegf
