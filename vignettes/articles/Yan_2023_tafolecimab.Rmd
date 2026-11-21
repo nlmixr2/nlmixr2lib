@@ -1,0 +1,529 @@
+---
+title: "Tafolecimab PK and LDL-C (Yan 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tafolecimab PK and LDL-C (Yan 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Yan_2023_tafolecimab"))$reference`
+* Article: [Clin Transl Sci 16:2791-2803 (2023)](https://doi.org/10.1111/cts.13674) (open access)
+
+Tafolecimab is a fully human IgG2 monoclonal antibody against PCSK9. Yan et
+al. 2023 fitted a sequential population model to six Chinese studies (phase I
+in healthy volunteers, phase IIa and four phase III studies). The PK layer is
+a two-compartment model with first-order subcutaneous absorption, a fixed
+bioavailability of 58%, and parallel linear and Michaelis-Menten elimination
+from the central compartment (a Michaelis-Menten approximation of
+target-mediated drug disposition). The LDL cholesterol (LDL-C) layer is a type
+IV indirect response model in which free tafolecimab stimulates the
+first-order loss of LDL-C through a hyperbolic Emax function. The LDL-C
+parameters were estimated with the PK parameters fixed (two-step procedure).
+
+```{r model}
+mod <- readModelDb("Yan_2023_tafolecimab")
+ui <- rxode2::rxode2(mod)
+ui
+```
+
+# Population
+
+The analysis data set held 9527 tafolecimab concentrations from 1153
+participants and 12,007 LDL-C values from 1149 participants (Results). By
+Table S1: median age 57 (18-76) years, median body weight 70.7
+(41.2-123) kg, 35.9% female, median baseline LDL-C 112.13 (57.22-586.93)
+mg/dL and median baseline unbound PCSK9 775.76 (64.71-2454.06) ng/mL. 904
+(78.4%) had non-familial hypercholesterolemia (non-FH), 187 (16.2%)
+heterozygous familial hypercholesterolemia (HeFH), 18 (1.6%) homozygous
+familial hypercholesterolemia (HoFH), and 44 (3.8%) were healthy volunteers.
+95.6% of participants received a statin and 12.3% ezetimibe. Doses were 25-600
+mg SC (single dose, or every 2, 4, 6 or 8 weeks) and 75 or 450 mg IV (single
+dose, phase I) (Table 1). All participants were Chinese.
+
+The same information is available as `ui$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its location in the
+paper.
+
+| Element | Value | Source |
+|---|---|---|
+| ka | 0.01 1/h | Table 2 |
+| V (central) | 3.31 L | Table 2 |
+| CL (linear) | 0.0061 L/h | Table 2 |
+| Vm | 0.045 mg/h | Table 2; amount rate in Equation 1 |
+| Km | 0.2 mg/L (fixed) | Table 2 |
+| Q | 0.011 L/h (fixed) | Table 2 |
+| V2 (peripheral) | 1.74 L (fixed) | Table 2 |
+| F (SC) | 0.58 (fixed) | Table 2 |
+| WT on ka / V / CL | (WT/70.7)^-0.74 / ^1.15 / ^1.4 | Table 2 and its note |
+| Female sex on ka / V / CL | exp(-0.73) / exp(0.24) / exp(0.3) | Table 2, Equation 5 |
+| Baseline PCSK9 on V | (PCSK9/775.762)^0.22 | Table 2 and its note |
+| R0 | 109.8 mg/dL, x (LDLC/112.1285)^0.94 | Table 2 and its note |
+| kout | 0.006 1/h, x (LDLC/112.1285)^-1.63 | Table 2 and its note |
+| Emax | 2.38; x exp(-0.15) female, exp(-0.081) HV, exp(-0.37) HeFH, exp(-3.07) HoFH | Table 2 and its note |
+| EC50 | 0.54 mg/L (fixed) | Table 2 |
+| Hill coefficient | 1 (fixed) | Table 2 |
+| IIV (SD) ka, V, Vm, CL, R0, kout, Emax | 0.55, 0.34, 0.2, 0.33, 0.046, 0.74, 0.51 (squared for the variances) | Table 2 |
+| Proportional residual error | PK 0.35; LDL-C 0.2 | Table 2 |
+| PK ODEs (depot, central, peripheral, L = A/V) | -- | Equation 1 |
+| LDL-C ODE | dR/dt = kin - kout (1 + Emax L^gamma / (L^gamma + EC50^gamma)) R | Equation 2 |
+| kin = kout R0 (drug-free steady state), R(0) = R0 | -- | Equation 2, Figure 1 |
+
+# Closed-form checks against the paper's reported numbers
+
+These quantities follow from the printed parameters without simulation, and
+the paper quotes them in its Results. They are asserted.
+
+```{r closed-form}
+p <- ui$theta
+
+# Emax by sex and disease type, Results ('Final PopPK/LDL-C model').
+emax_tbl <- tibble::tribble(
+  ~group, ~paper,
+  "male non-FH", 2.38,
+  "female non-FH", 2.04,
+  "male HV", 2.19,
+  "male HeFH", 1.64,
+  "male HoFH", 0.11
+) |>
+  mutate(
+    model = exp(p[["lemax"]]) *
+      c(
+        1,
+        exp(p[["e_sexf_emax"]]),
+        exp(p[["e_dis_healthy_emax"]]),
+        exp(p[["e_dis_hefh_emax"]]),
+        exp(p[["e_dis_hofh_emax"]])
+      )
+  )
+knitr::kable(emax_tbl |> dplyr::rename("Group" = group, "Paper Emax" = paper, "Model Emax" = model), digits = 3)
+
+# kout at the 5th and 95th baseline LDL-C percentiles vs the median, Results.
+kout_tbl <- tibble::tibble(
+  BLDLC = c(76.6, 202.7),
+  paper_pct = c(83.3, -61.7)
+) |>
+  mutate(model_pct = 100 * ((BLDLC / 112.1285)^p[["e_ldlc_kout"]] - 1))
+knitr::kable(kout_tbl |> dplyr::rename("Baseline LDL-C (mg/dL)" = BLDLC, "Paper change in kout (%)" = paper_pct, "Model change in kout (%)" = model_pct), digits = 1)
+
+# Typical terminal half-life of the linear part (two-compartment beta phase).
+kel <- exp(p[["lcl"]]) / exp(p[["lvc"]])
+k12 <- exp(p[["lq"]]) / exp(p[["lvc"]])
+k21 <- exp(p[["lq"]]) / exp(p[["lvp"]])
+ssum <- kel + k12 + k21
+beta <- (ssum - sqrt(ssum^2 - 4 * kel * k21)) / 2
+thalf_d <- log(2) / beta / 24
+c(typical_terminal_half_life_days = thalf_d, paper_geomean_days = 26.1)
+
+stopifnot(
+  all(abs(emax_tbl$model / emax_tbl$paper - 1) < 0.01),
+  all(abs(kout_tbl$model_pct - kout_tbl$paper_pct) < 5),
+  abs(thalf_d / 26.1 - 1) < 0.05
+)
+```
+
+The typical linear terminal half-life (`r round(thalf_d, 1)` days for a 70.7
+kg male) agrees with the paper's geometric-mean half-life of 26.1 days. The
+model's change in kout at the 5th baseline LDL-C percentile is a few
+percentage points above the paper's 83.3%; the 95th-percentile value
+matches.
+
+## Linear and non-linear clearance (Figure S6)
+
+Figure S6 of the supplement plots the linear, non-linear and total clearance
+against tafolecimab concentration. With Vm as an amount rate (Equation 1), the
+non-linear clearance is Vm / (Km + C).
+
+```{r fig-s6}
+conc <- 10^seq(-1, 2, length.out = 200)
+clr <- tibble(
+  conc = conc,
+  Linear = exp(p[["lcl"]]),
+  `Non-linear` = exp(p[["lvmax"]]) / (exp(p[["lkm"]]) + conc)
+) |>
+  mutate(Total = Linear + `Non-linear`) |>
+  pivot_longer(-conc, names_to = "component", values_to = "cl")
+ggplot(clr, aes(conc, cl, colour = component)) +
+  geom_line() +
+  scale_x_log10() +
+  labs(
+    x = "Free tafolecimab (ug/mL)", y = "Clearance (L/h)", colour = NULL,
+    title = "Typical clearance components (70.7 kg male)",
+    caption = "Replicates Figure S6 of Yan 2023."
+  )
+```
+
+# Virtual cohort
+
+Covariates are drawn to resemble the pivotal phase III population (studies
+4-6 of Table S1). Table S1 reports only medians and ranges, so log-normal
+spreads were chosen by the maintainers and truncated to the observed ranges:
+body weight median 70.7 kg, baseline unbound PCSK9 median 775.76 ng/mL,
+baseline LDL-C median 112.13 mg/dL; 35.9% female; 18% HeFH and the rest
+non-FH (the pivotal-study split in Table S1). The nine regimens are those of
+Figure 2, each given for 48 weeks, 150 participants per regimen.
+
+```{r cohort}
+set.seed(20231024)
+rxode2::rxSetSeed(20231024)
+n_per_arm <- 150
+
+regimens <- tibble::tribble(
+  ~treatment, ~amt, ~ii_wk,
+  "75 mg Q2W", 75, 2,
+  "150 mg Q2W", 150, 2,
+  "300 mg Q2W", 300, 2,
+  "150 mg Q4W", 150, 4,
+  "300 mg Q4W", 300, 4,
+  "450 mg Q4W", 450, 4,
+  "300 mg Q6W", 300, 6,
+  "450 mg Q6W", 450, 6,
+  "600 mg Q6W", 600, 6
+) |>
+  mutate(
+    treatment = factor(treatment, levels = treatment),
+    ii = ii_wk * 168,
+    ndose = 48 / ii_wk,
+    tlast = (ndose - 1) * ii
+  )
+
+rlnorm_trunc <- function(n, median, sdlog, lo, hi) {
+  pmin(pmax(rlnorm(n, log(median), sdlog), lo), hi)
+}
+
+cov <- tibble(id = seq_len(n_per_arm * nrow(regimens))) |>
+  mutate(
+    treatment = rep(regimens$treatment, each = n_per_arm),
+    WT = rlnorm_trunc(n(), 70.7, 0.17, 41.2, 123),
+    SEXF = rbinom(n(), 1, 0.359),
+    PCSK9 = rlnorm_trunc(n(), 775.76, 0.4, 64.71, 2454.06),
+    LDLC = rlnorm_trunc(n(), 112.13, 0.3, 57.22, 305.07),
+    DIS_HEFH = rbinom(n(), 1, 0.18),
+    DIS_HEALTHY = 0L,
+    DIS_HOFH = 0L
+  )
+
+# Six-hourly sampling over the first dosing interval and from week 36 to the
+# end of dosing at 8064 h (48 weeks), daily in between, plus a pre-dose sample
+# at week 12.
+wk12 <- 12 * 168
+obs_times <- sort(unique(c(
+  seq(0, 1008, by = 6),
+  seq(1008, 6048, by = 24),
+  seq(6048, 8064, by = 6),
+  wk12 - 0.01
+)))
+
+doses <- cov |>
+  inner_join(regimens, by = "treatment") |>
+  group_by(id) |>
+  reframe(time = seq(0, by = ii[1], length.out = ndose[1]), amt = amt[1]) |>
+  mutate(evid = 1L, cmt = "depot", dvid = NA_integer_)
+obs <- tidyr::crossing(id = cov$id, time = obs_times) |>
+  mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+events <- bind_rows(doses, obs) |>
+  left_join(cov, by = "id") |>
+  arrange(id, time, desc(evid))
+```
+
+Observation rows sit on the `central` state with `dvid = 1`; rxode2 returns
+both `Cc` and the LDL-C state `ldl` on every row.
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events, returnType = "data.frame", keep = "treatment") |>
+  mutate(treatment = factor(treatment, levels = levels(regimens$treatment))) |>
+  group_by(id) |>
+  mutate(ldl_pct = 100 * ldl / ldl[time == 0][1]) |>
+  ungroup()
+```
+
+## Figure 2: LDL-C percent of baseline
+
+```{r fig-2, fig.height = 7}
+fig2 <- sim |>
+  group_by(treatment, time) |>
+  summarise(
+    med = median(ldl_pct),
+    lo = quantile(ldl_pct, 0.05),
+    hi = quantile(ldl_pct, 0.95),
+    .groups = "drop"
+  )
+ggplot(fig2, aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "steelblue", alpha = 0.3) +
+  geom_line() +
+  geom_hline(yintercept = c(50, 70), colour = "red") +
+  facet_wrap(~treatment, ncol = 3) +
+  coord_cartesian(ylim = c(20, 100)) +
+  labs(
+    x = "Time (h)", y = "LDL-C ratio from baseline (%)",
+    title = "Simulated LDL-C, median and 5th-95th percentiles",
+    caption = "Replicates Figure 2 of Yan 2023."
+  )
+```
+
+The model as printed gives near-maximal LDL-C suppression at trough for every
+regimen. Figure 2 of the paper shows clear rebound at trough for 75 mg Q2W
+(median about 57%), 150 mg Q4W (about 77%), 300 mg Q6W (about 80%) and 450 mg
+Q6W (about 55%). See "Errata" below.
+
+## Target attainment at week 12 (Table 3)
+
+```{r target}
+target <- sim |>
+  filter(abs(time - (wk12 - 0.01)) < 1e-6) |>
+  group_by(treatment) |>
+  summarise(model_pct = 100 * mean(ldl_pct <= 50), .groups = "drop") |>
+  inner_join(
+    tibble::tibble(
+      treatment = c("150 mg Q2W", "450 mg Q4W", "600 mg Q6W"),
+      paper_pred = c(85, 85, 70),
+      observed = c(63.64, 89.1, 64.61)
+    ),
+    by = "treatment"
+  )
+knitr::kable(
+  target |>
+    dplyr::rename(
+      "Regimen" = treatment,
+      "Simulated, >= 50% reduction (%)" = model_pct,
+      "Paper predicted (%)" = paper_pred,
+      "Observed (%)" = observed
+    ),
+  digits = 1
+)
+```
+
+## Figure 3: trough concentration and LDL-C at week 12
+
+```{r fig-3}
+wk12_pts <- sim |>
+  filter(abs(time - (wk12 - 0.01)) < 1e-6, treatment %in% c("150 mg Q2W", "450 mg Q4W", "600 mg Q6W"))
+ggplot(wk12_pts, aes(Cc, ldl_pct / 100, colour = treatment)) +
+  geom_point(alpha = 0.4) +
+  geom_vline(xintercept = 5, linetype = "dashed") +
+  scale_x_log10() +
+  labs(
+    x = "Week-12 trough tafolecimab (ug/mL)", y = "LDL-C ratio to baseline",
+    colour = NULL,
+    caption = "Compare with Figure 3 of Yan 2023 (nadir reached near 5 ug/mL)."
+  )
+```
+
+# PKNCA: first-dose and steady-state exposure (Table S2)
+
+Table S2 reports exposures simulated from the individual (EBE) parameters of
+the pivotal-study participants for 150 mg Q2W, 450 mg Q4W and 600 mg Q6W.
+Here the first dosing interval and the second-to-last dosing interval (ending
+on the last dose, after 42-46 weeks of dosing) are taken as first-dose and
+steady state; the paper's Cmin is compared with the trough at
+the end of each interval (`ctrough`).
+
+```{r pknca}
+pk_regs <- regimens |> filter(treatment %in% c("150 mg Q2W", "450 mg Q4W", "600 mg Q6W"))
+conc <- sim |>
+  filter(!is.na(Cc), treatment %in% pk_regs$treatment) |>
+  mutate(treatment = as.character(treatment)) |>
+  select(id, time, Cc, treatment)
+dose <- doses |>
+  left_join(cov |> select(id, treatment), by = "id") |>
+  filter(treatment %in% pk_regs$treatment) |>
+  mutate(treatment = as.character(treatment)) |>
+  select(id, time, amt, treatment)
+intervals <- bind_rows(
+  pk_regs |> transmute(treatment = as.character(treatment), start = 0, end = ii),
+  pk_regs |> transmute(treatment = as.character(treatment), start = tlast - ii, end = tlast)
+) |>
+  mutate(cmax = TRUE, ctrough = start == 0, cmin = start > 0, tmax = TRUE, auclast = TRUE)
+
+o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(dose, amt ~ time | treatment + id)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+
+# PKNCA returns NA for ctrough in an interval that does not start at time 0,
+# so the steady-state trough is taken as the interval minimum (cmin), which at
+# steady state is the pre-dose concentration.
+nca_res <- as.data.frame(nca$result) |>
+  mutate(
+    interval = ifelse(start == 0, "first dose", "steady state"),
+    PPTESTCD = ifelse(PPTESTCD == "cmin", "ctrough", PPTESTCD)
+  )
+ar <- nca_res |>
+  filter(PPTESTCD == "auclast") |>
+  select(treatment, id, interval, PPORRES) |>
+  pivot_wider(names_from = interval, values_from = PPORRES) |>
+  transmute(treatment, id, interval = "steady state", PPTESTCD = "accumulation", PPORRES = `steady state` / `first dose`)
+geomean <- function(x) exp(mean(log(x)))
+sim_sum <- bind_rows(nca_res |> select(treatment, id, interval, PPTESTCD, PPORRES), ar) |>
+  filter(!(PPTESTCD == "tmax" & interval == "steady state")) |>
+  group_by(treatment, interval, PPTESTCD) |>
+  summarise(PPORRES = if (PPTESTCD[1] == "tmax") median(PPORRES) else geomean(PPORRES), .groups = "drop")
+
+ref <- tibble::tribble(
+  ~treatment, ~interval, ~PPTESTCD, ~PPORRES,
+  "150 mg Q2W", "first dose", "auclast", 1434.8,
+  "150 mg Q2W", "first dose", "cmax", 6.33,
+  "150 mg Q2W", "first dose", "ctrough", 1.13,
+  "150 mg Q2W", "first dose", "tmax", 113,
+  "150 mg Q2W", "steady state", "auclast", 3438,
+  "150 mg Q2W", "steady state", "cmax", 13.1,
+  "150 mg Q2W", "steady state", "ctrough", 4.79,
+  "150 mg Q2W", "steady state", "accumulation", 2.4,
+  "450 mg Q4W", "first dose", "auclast", 11314.9,
+  "450 mg Q4W", "first dose", "cmax", 26.5,
+  "450 mg Q4W", "first dose", "ctrough", 4.03,
+  "450 mg Q4W", "first dose", "tmax", 162,
+  "450 mg Q4W", "steady state", "auclast", 16832,
+  "450 mg Q4W", "steady state", "cmax", 36.6,
+  "450 mg Q4W", "steady state", "ctrough", 8.32,
+  "450 mg Q4W", "steady state", "accumulation", 1.49,
+  "600 mg Q6W", "first dose", "auclast", 18992.5,
+  "600 mg Q6W", "first dose", "cmax", 37.1,
+  "600 mg Q6W", "first dose", "ctrough", 0.618,
+  "600 mg Q6W", "first dose", "tmax", 174,
+  "600 mg Q6W", "steady state", "auclast", 21236.2,
+  "600 mg Q6W", "steady state", "cmax", 40.3,
+  "600 mg Q6W", "steady state", "ctrough", 0.91,
+  "600 mg Q6W", "steady state", "accumulation", 1.12
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  sim_sum, ref,
+  by = c("treatment", "interval"),
+  units = c(auclast = "ug*h/mL", cmax = "ug/mL", ctrough = "ug/mL", tmax = "h")
+)
+knitr::kable(cmp, caption = "Geometric means (Tmax: median). Reference: Yan 2023 Table S2.")
+
+ss_trough <- sim_sum |>
+  filter(PPTESTCD == "ctrough", interval == "steady state") |>
+  with(setNames(PPORRES, treatment))
+```
+
+```{r footnote, echo = FALSE, results = "asis"}
+fn <- attr(cmp, "footnote")
+if (!is.null(fn)) cat(fn, "\n")
+```
+
+The model as printed predicts higher exposure than the paper's own EBE-based
+simulation in every row. The gap is smallest for the first-dose Cmax and Tmax
+of the higher doses and grows with time below the Michaelis-Menten Km range:
+troughs, steady-state AUC and accumulation are several-fold higher, most of
+all the 600 mg Q6W steady-state trough. These rows are not asserted; see
+"Errata".
+
+# Sensitivity: reading Vm as a concentration rate
+
+Table 2 labels Vm in mg/h and Equation 1 subtracts `Vm * (A/V) / (Km + A/V)`
+from the amount, so Vm is an amount rate, and that is how the model encodes
+it. If Vm were instead a concentration rate (mg/L/h, amount rate Vm x V), the
+typical non-linear elimination would be 3.31-fold faster. The comparison
+below, for a typical 70.7 kg male non-FH patient, shows that this reading
+reproduces the trough rebound of Figure 2; it is shown only to document the
+discrepancy, and the packaged model keeps the printed form.
+
+```{r sensitivity}
+typ <- rxode2::zeroRe(mod)
+typ_events <- function(amt, ii_wk, label) {
+  ii <- ii_wk * 168
+  n <- 48 / ii_wk
+  bind_rows(
+    tibble(time = seq(0, by = ii, length.out = n), amt = amt, evid = 1L, cmt = "depot", dvid = NA_integer_),
+    tibble(time = seq(0, 8064, by = 24), amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  ) |>
+    arrange(time, desc(evid)) |>
+    mutate(id = 1L, treatment = label, WT = 70.7, SEXF = 0, PCSK9 = 775.762, LDLC = 112.1285, DIS_HEALTHY = 0, DIS_HEFH = 0, DIS_HOFH = 0)
+}
+run_typ <- function(ev, vm_label, lvmax) {
+  rxode2::rxSolve(typ, ev, params = c(lvmax = lvmax), returnType = "data.frame", keep = "treatment") |>
+    mutate(ldl_pct = 100 * ldl / ldl[time == 0][1], reading = vm_label)
+}
+sens <- bind_rows(lapply(
+  list(typ_events(150, 4, "150 mg Q4W"), typ_events(300, 6, "300 mg Q6W")),
+  function(ev) {
+    bind_rows(
+      run_typ(ev, "Vm 0.045 mg/h (printed)", log(0.045)),
+      run_typ(ev, "Vm x V = 0.149 mg/h", log(0.045 * 3.31))
+    )
+  }
+))
+knitr::kable(
+  sens |>
+    filter(time >= 6048) |>
+    group_by(treatment, reading) |>
+    summarise(trough = max(ldl_pct), nadir = min(ldl_pct), .groups = "drop") |>
+    dplyr::rename(
+      "Regimen" = treatment, "Vm reading" = reading,
+      "Week 36-48 maximum LDL-C (% of baseline)" = trough,
+      "Week 36-48 minimum LDL-C (% of baseline)" = nadir
+    ),
+  digits = 1
+)
+ggplot(sens, aes(time, ldl_pct, colour = reading)) +
+  geom_line() +
+  geom_hline(yintercept = c(50, 70), colour = "red", linetype = "dotted") +
+  facet_wrap(~treatment) +
+  labs(x = "Time (h)", y = "LDL-C ratio from baseline (%)", colour = NULL)
+```
+
+# Assumptions and deviations
+
+* Covariate distributions of the virtual cohort are assumed log-normal with
+  spreads chosen by the maintainers (Table S1 gives median and range only),
+  truncated to the observed ranges. Healthy volunteers and HoFH patients are
+  excluded, as in the pivotal studies.
+* Baseline LDL-C (`LDLC`) enters twice, as in the paper: it scales the
+  individual baseline R0 (which is the initial condition of the LDL-C state
+  and anchors kin = kout x R0) and kout.
+* Figure 2 and Table S2 were produced in the paper from the individual (EBE)
+  parameters of the trial participants; here they come from a virtual cohort
+  drawn from the population model, so the spread of the two is not directly
+  comparable. The centre should be.
+* SC doses go to `depot` with bioavailability 0.58; an IV dose (phase I only)
+  would go to `central`.
+* The four-level disease covariate (HV, non-FH, HeFH, HoFH; non-FH reference)
+  is encoded as the three indicators `DIS_HEALTHY`, `DIS_HEFH` and `DIS_HOFH`.
+
+# Errata
+
+The printed PK parameters (Table 2, Equation 1, Figure S6) are mutually
+consistent, and the closed-form checks above (Emax by group, the kout
+percentile changes, the 26-day half-life) reproduce the paper. However,
+everything the paper simulated from its final model shows faster saturable
+elimination than the printed Michaelis-Menten term gives:
+
+* Table S2 steady-state troughs and accumulation ratios are well below the
+  values the printed model predicts (for example 450 mg Q4W steady-state
+  trough 8.32 ug/mL in the paper against `r signif(ss_trough[["450 mg Q4W"]], 3)`
+  ug/mL here; 600 mg Q6W 0.91 ug/mL against
+  `r signif(ss_trough[["600 mg Q6W"]], 3)` ug/mL).
+* Figure 2 shows LDL-C rebound at trough for the lower-frequency and
+  lower-dose regimens; the printed model keeps the trough concentration far
+  above the 0.54 ug/mL EC50 and gives near-maximal suppression throughout.
+* The proportion reaching >= 50% LDL-C reduction at week 12 is higher here
+  than the paper's predicted 85%, 85% and 70% (Table 3), most clearly for
+  600 mg Q6W.
+
+The class precedent points the same way: the Vm of alirocumab and evolocumab
+is about 0.18 mg/h, four-fold the printed tafolecimab value, while Vm x V
+(0.149 mg/h) sits with the class. Reading Vm as a concentration rate moves the
+typical-subject LDL-C profiles towards Figure 2 (sensitivity section above)
+but contradicts the printed Equation 1 and Figure S6. No erratum to the paper
+was found (checked 2026-11-07). The packaged model therefore keeps Table 2 and
+Equation 1 as printed, and the exposure and target-attainment comparisons
+above are reported without assertion.

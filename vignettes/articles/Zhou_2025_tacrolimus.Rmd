@@ -883,9 +883,12 @@ integrator (Gate 2 used a hand-rolled trapezoid on the typical-value profile;
 this repeats it per subject across the covariate-matched cohort).
 
 ```{r pknca-setup}
+# 0.05 h through the absorption phase: the trapezoid error of AUC(tau,ss) on a
+# 0.25 h grid reaches 0.7% for a fast-absorbing subject, which is too close to the
+# 0.5% bound of the per-subject identity below.
+nca_grid <- sort(unique(c(seq(0, 4, by = 0.05), seq(4, 12, by = 0.25))))
 sim_nca_src <- solve_model(
-  ui, make_ss_events(cohort_mix, amt_q12h = dose_q12h,
-                     obs_times = seq(0, 12, by = 0.25)),
+  ui, make_ss_events(cohort_mix, amt_q12h = dose_q12h, obs_times = nca_grid),
   keep = c("genotype", "azole")
 ) |>
   assert_all_solved(expected_ids = cohort_mix$id)
