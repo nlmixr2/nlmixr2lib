@@ -180,6 +180,20 @@ ggplot(wane, aes(time, frac, colour = arm)) +
 mod <- rxode2::rxode2(mod_fun)
 mod_typ <- rxode2::zeroRe(mod)
 
+# A zero-variability solve over several ids makes rxode2 warn that no omega is
+# used; that is the intent here, so only that warning is muffled.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+solve_typical <- function(model, events) {
+  withCallingHandlers(
+    rxode2::rxSolve(model, events, returnType = "data.frame"),
+    warning = muffle_no_omega
+  )
+}
+
 base_cov <- data.frame(
   WT = 70, HT = 164, AE_DIARRHEA = 0, FORM_ABEMACICLIB_C2 = 0,
   FORM_ABEMACICLIB_C3 = 1, TRT_ABEMACICLIB = 1, RECIST_NONMEASURABLE = 0,
@@ -218,9 +232,9 @@ ev_typ <- rbind(
   dose_rows(1, 150, 0), dose_rows(2, 200, 0),
   obs_rows(1:2, sd_hours / 168)
 ) |>
-  cbind(base_cov[rep(1, 1), ]) |>
+  cross_join(base_cov) |>
   arrange(id, time, desc(evid))
-sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, returnType = "data.frame") |>
+sim_typ <- solve_typical(mod_typ, ev_typ) |>
   mutate(dose = ifelse(id == 1, "150 mg", "200 mg"), time_h = time * 168)
 ggplot(filter(sim_typ, time_h <= 96), aes(time_h, Cc, colour = dose)) +
   geom_line() +
@@ -251,7 +265,7 @@ ev_pk <- rbind(
   obs_rows(pk_cov$id, sd_hours / 168)
 ) |>
   left_join(pk_cov, by = "id") |>
-  cbind(base_cov[, setdiff(names(base_cov), c("WT", "HT"))]) |>
+  cross_join(select(base_cov, -WT, -HT)) |>
   arrange(id, time, desc(evid))
 sim_pk <- rxode2::rxSolve(mod, ev_pk, returnType = "data.frame") |>
   mutate(treatment = paste(pk_dose[id], "mg"), time_h = time * 168)
