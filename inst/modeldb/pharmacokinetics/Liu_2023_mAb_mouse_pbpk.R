@@ -221,11 +221,12 @@ Liu_2023_mAb_mouse_pbpk <- function() {
 
     # Lung. Volumes and reflection coefficient from Table 1 / text p.73. The lung
     # plasma flow is derived below as the sum of the arterial supplies to the
-    # other 14 tissues (see sum_q_X) rather than taken as Table 1's 373 mL/h:
-    # 373 mL/h includes the 1.65 mL/h perfusing the lymph node, which is not a
-    # mAb-transport path in this model, and using it directly opens a 0.4%
-    # arterial leak that is an order of magnitude larger than the antibodies'
-    # true clearance (2.6-29 uL/h, Supplementary Table S1).
+    # other 14 tissues (see sum_q_X, 371.51 mL/h) rather than taken as Table 1's
+    # 373 mL/h. The 1.49 mL/h difference is the lymph node's perfusion (1.65 mL/h
+    # in Table 1, within the table's rounding), which is not a mAb-transport path
+    # in this model; using 373 mL/h directly opens a 0.4% arterial leak that is an
+    # order of magnitude larger than the antibodies' true clearance (2.6-29 uL/h,
+    # Supplementary Table S1).
     v_lu_vp <- 0.0295 / 1000; v_lu_e <- 0.00102 / 1000; v_lu_is <- 0.0384 / 1000
     sv_lu   <- 0.95
 

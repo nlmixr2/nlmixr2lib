@@ -1,0 +1,512 @@
+---
+title: "mRNA COVID-19 vaccine neutralizing antibody response (de Pillis 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mRNA COVID-19 vaccine neutralizing antibody response (de Pillis 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+de Pillis et al. (2025) analysed SARS-CoV-2 neutralizing antibody (NAb)
+activity after a two-dose mRNA COVID-19 primary series in COVID-19-naive and
+convalesced adults with two models, both packaged here:
+
+* `dePillis_2025_covid19Vaccine` -- the nonlinear mixed-effects (NLME) model.
+  Its structural part is the two-state ODE model of NAb dynamics from
+  de Pillis et al. (2023, J Theor Biol), fitted in Monolix to the whole NAb
+  course from the first dose to the first booster or breakthrough infection.
+* `dePillis_2025_covid19Vaccine_lme` -- the linear mixed-effects (LME) model of
+  the decay region only (day 37 onward): a cubic polynomial in time on the
+  logit NAb scale.
+
+```{r model-load}
+nlme <- rxode2::rxode(readModelDb("dePillis_2025_covid19Vaccine"))
+lme <- rxode2::rxode(readModelDb("dePillis_2025_covid19Vaccine_lme"))
+```
+
+* Citation: `r nlme$reference`
+* Article: <https://doi.org/10.1038/s41598-025-18673-9>
+* Correction (author name only, no model content): <https://doi.org/10.1038/s41598-025-26404-3>
+* Data and Monolix project deposited by the authors: <https://github.com/depillis/Covid_AntibodyResponse_Analysis>
+
+# Population
+
+The analysis used 324 NAb measurements from 92 adults in the Aditxt
+prospective cohort (NCT05379478), sampled November 2020 to April 2022: 68
+COVID-19-naive subjects (244 observations) and 24 convalesced subjects, that
+is, subjects with COVID-19 before their first vaccine dose (80 observations;
+mean 110.7 days from symptom onset to the first dose). Every subject received a
+two-dose mRNA primary series: mRNA-1273 (Moderna; 27 naive, 14 convalesced) or
+BNT162b2 (Pfizer-BioNTech; 41 naive, 10 convalesced). Mean age was 53.6 years
+(naive) and 53.7 years (convalesced); 52.9% of naive and 33.3% of convalesced
+subjects were female. Observations after a booster dose or a breakthrough
+infection were excluded (Table 1 and Methods of de Pillis 2025).
+
+NAb activity is the percent neutralization of the AditxtScore flow-cytometry
+assay, carried in the models as a 0-1 fraction.
+
+```{r population}
+str(nlme$population)
+```
+
+# Source trace
+
+Values for the NLME model come from Table 3 and Equations 5-8; values for the
+LME model come from Table 2 and Equations 3-4. The two Michaelis-Menten
+constants of the vaccine compartment are described in the paper as fixed for
+the whole population but are not printed; their values (10 and 50) are taken
+from the Monolix structural model the authors deposited with the paper.
+
+| Model | Equation / parameter | Value | Source location |
+|-------|----------------------|-------|-----------------|
+| NLME | `d/dt(antibody) = r1 V + r2 A V + A (r3 - r4 A)` | -- | Eq. 5 |
+| NLME | `d/dt(depot_antigen) = u(t) - k1 V / (k2 + V)`, `V(0) = 0` | -- | Eq. 6; dose as a 1-day unit pulse per the deposited model (`Tk0 = 1`, `p = 1`) |
+| NLME | `vmax` (k1) | 10 mL/day (fixed) | Deposited `4ParamModel.txt` |
+| NLME | `km` (k2) | 50 mL (fixed) | Deposited `4ParamModel.txt` |
+| NLME | `r1`, `r2`, `r3`, `r4` typical (naive, mRNA-1273) | 0.089, 0.028, 0.002, 0.010 | Table 3 r10, r20, r30, r40 |
+| NLME | A0 typical (naive) | 0.00003 | Table 3 A00 |
+| NLME | Convalesced effects on logit r1, r2, r3, r4, A0 | -3.670, -5.860, -1.440, -2.100, 16.500 | Table 3 beta11, beta21, beta31, beta41, beta01 |
+| NLME | BNT162b2 effects on logit r1, r2, r3 | -0.905, 1.760, -0.862 | Table 3 beta12, beta22, beta32 |
+| NLME | IIV SD on logit r1, r2, r3, r4, A0 | 0.345, 0.611, 0.323, 0.675, 3.630 | Table 3 omega1-omega4, omega0 |
+| NLME | Correlations r2-r1, r3-r1, r4-r1, r3-r2, r4-r2, r4-r3 | -0.260, 0.662, -0.145, 0.151, 0.841, 0.346 | Table 3 |
+| NLME | Residual error `a`, `b` (combined1, logit scale) | 0.348, 0.206 | Table 3; Eq. 7 |
+| NLME | Logit bounds m, M | -0.00954434, 1.01970 | Results text after Eq. 7 |
+| LME | `logit(y) = beta0 + beta1 tc + beta2 tc^2 + beta3 tc^3`, `tc = (t - 178)/365` | -- | Eqs. 3-4; tbar approx 178 days in Results |
+| LME | beta00, beta01, beta10, beta20, beta21, beta30 | -0.082, 1.535, -4.015, 5.711, 4.890, -5.715 | Table 2 |
+| LME | SD of random intercept and slope; correlation | 1.032, 2.103; -0.420 | Table 2 |
+| LME | Residual SD on the logit scale | 0.327 | Table 2 |
+
+Table 3 and Table 2 label each row with a symbol only; the mapping of the
+first covariate coefficient (`beta_k1`) to convalesced status and the second
+(`beta_k2`) to the BNT162b2 vaccine follows Eq. 8, and is confirmed below by
+reproducing the per-group medians of Figure 3.
+
+# NLME model: typical NAb courses
+
+Doses enter `depot_antigen` as `amt = 1` infused over 1 day. The second dose is
+given on day 21 for BNT162b2 and day 28 for mRNA-1273, the labelled schedules.
+
+```{r nlme-events}
+make_events <- function(ids, seropos, tozinameran, obs_times) {
+  bind_rows(lapply(seq_along(ids), function(i) {
+    t2 <- if (tozinameran[i] == 1) 21 else 28
+    doses <- data.frame(
+      id = ids[i], time = c(0, t2), amt = 1, rate = 1, evid = 1,
+      cmt = "depot_antigen"
+    )
+    obs <- data.frame(
+      id = ids[i], time = obs_times, amt = NA_real_, rate = NA_real_,
+      evid = 0, cmt = "antibody"
+    )
+    out <- bind_rows(doses, obs)
+    out$SARS_SEROPOS <- seropos[i]
+    out$TRT_TOZINAMERAN <- tozinameran[i]
+    out
+  })) |>
+    arrange(id, time, desc(evid))
+}
+
+# Typical-value solve. With all random effects zeroed, rxode2 warns that a
+# multi-subject simulation has no omega; that is the intent here.
+solve_typical <- function(model, events) {
+  withCallingHandlers(
+    rxode2::rxSolve(rxode2::zeroRe(model), events, returnType = "data.frame"),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+groups <- expand.grid(SARS_SEROPOS = 0:1, TRT_TOZINAMERAN = 0:1)
+groups$id <- seq_len(nrow(groups))
+groups$label <- paste(
+  ifelse(groups$SARS_SEROPOS == 1, "Convalesced", "Naive"),
+  ifelse(groups$TRT_TOZINAMERAN == 1, "BNT162b2", "mRNA-1273"),
+  sep = ", "
+)
+ev_typ <- make_events(groups$id, groups$SARS_SEROPOS, groups$TRT_TOZINAMERAN, seq(0, 455, by = 1))
+typ <- solve_typical(nlme, ev_typ) |>
+  left_join(groups[, c("id", "label")], by = "id")
+```
+
+```{r nlme-typical-plot}
+ggplot(typ, aes(time, nab_activity, colour = label)) +
+  geom_line(linewidth = 0.8) +
+  labs(
+    x = "Days since first dose", y = "NAb activity (fraction neutralization)",
+    colour = NULL,
+    title = "Typical NLME NAb courses by convalesced status and vaccine"
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The typical naive subject starts near zero, rises after each dose and peaks a
+few weeks after the second dose; the typical convalesced subject starts near
+full neutralization and decays more slowly, the paper's main conclusion.
+
+```{r nlme-typical-check}
+typ_summary <- typ |>
+  group_by(label) |>
+  summarise(
+    nab_day0 = nab_activity[time == 0],
+    peak = max(nab_activity),
+    tpeak = time[which.max(nab_activity)],
+    nab_day365 = nab_activity[time == 365],
+    .groups = "drop"
+  )
+knitr::kable(typ_summary, digits = 3)
+
+naive_mod <- typ_summary[typ_summary$label == "Naive, mRNA-1273", ]
+conv_mod <- typ_summary[typ_summary$label == "Convalesced, mRNA-1273", ]
+stopifnot(
+  # Naive start equals the typical A0 of 0.00003 (Table 3).
+  abs(naive_mod$nab_day0 - 0.00003) < 1e-6,
+  # Convalesced start equals expit(logit(0.00003) + 16.5) (Table 3).
+  abs(conv_mod$nab_day0 - plogis(qlogis(0.00003) + 16.5)) < 1e-6,
+  # Naive peak comes after the second dose, within 3 weeks of it.
+  naive_mod$tpeak > 28, naive_mod$tpeak < 49,
+  # Convalesced NAb stays above naive at one year (Results, Fig. 5).
+  conv_mod$nab_day365 > naive_mod$nab_day365
+)
+```
+
+# NLME model: individual parameters (Figure 3)
+
+Figure 3 shows boxplots of the logit of the empirical-Bayes individual
+parameters by convalesced status. Each group mixes the two vaccines (Table 1),
+so the model's group median of a logit parameter is the median of a two-
+component normal mixture: the typical logit value for each vaccine, weighted by
+the Table 1 split, with the Table 3 IIV SD. That median is computed exactly
+below and compared with the Figure 3 medians, which were read from the figure
+by the maintainers. A simulated cohort is plotted alongside for illustration.
+
+```{r fig3-cohort}
+set.seed(20251006)
+rxode2::rxSetSeed(20251006)
+n_per_arm <- 200
+cohort <- data.frame(
+  id = seq_len(2 * n_per_arm),
+  SARS_SEROPOS = rep(0:1, each = n_per_arm)
+)
+# Table 1: naive 27 mRNA-1273 / 41 BNT162b2; convalesced 14 / 10.
+cohort$TRT_TOZINAMERAN <- c(
+  rbinom(n_per_arm, 1, 41 / 68),
+  rbinom(n_per_arm, 1, 10 / 24)
+)
+obs_grid <- c(0, 3, 7, 14, 21, 28, 35, 42, 60, 90, 120, 160, 200, 250, 300, 365, 455)
+ev_coh <- make_events(cohort$id, cohort$SARS_SEROPOS, cohort$TRT_TOZINAMERAN, obs_grid)
+sim <- rxode2::rxSolve(nlme, ev_coh, returnType = "data.frame") |>
+  left_join(cohort, by = c("id", "SARS_SEROPOS", "TRT_TOZINAMERAN"))
+```
+
+```{r fig3-compare}
+indiv <- sim |>
+  distinct(id, SARS_SEROPOS, r1, r2, r3, r4, nab0) |>
+  mutate(group = ifelse(SARS_SEROPOS == 1, "Convalesced", "Naive")) |>
+  pivot_longer(c(nab0, r1, r2, r3, r4), names_to = "parameter", values_to = "value") |>
+  mutate(logit_value = qlogis(value))
+
+fig3_ref <- data.frame(
+  group = rep(c("Naive", "Convalesced"), each = 5),
+  parameter = rep(c("nab0", "r1", "r2", "r3", "r4"), 2),
+  fig3_median = c(-10.5, -2.9, -2.3, -7.0, -4.6, 7.0, -6.3, -8.7, -8.2, -6.65)
+)
+
+th <- nlme$theta
+iiv_sd <- sqrt(diag(nlme$omega))
+typical_logit <- function(parameter, seropos, tozinameran) {
+  base <- th[[paste0("logit", parameter)]]
+  e_c <- th[[paste0("e_sars_seropos_", parameter)]]
+  e_d_name <- paste0("e_trt_tozinameran_", parameter)
+  e_d <- if (e_d_name %in% names(th)) th[[e_d_name]] else 0
+  base + e_c * seropos + e_d * tozinameran
+}
+mixture_median <- function(parameter, seropos) {
+  w <- if (seropos == 1) 10 / 24 else 41 / 68
+  mu0 <- typical_logit(parameter, seropos, 0)
+  mu1 <- typical_logit(parameter, seropos, 1)
+  s <- iiv_sd[[paste0("etalogit", parameter)]]
+  f <- function(m) (1 - w) * pnorm(m, mu0, s) + w * pnorm(m, mu1, s) - 0.5
+  uniroot(f, c(-60, 60), tol = 1e-8)$root
+}
+fig3_cmp <- fig3_ref |>
+  rowwise() |>
+  mutate(
+    model_median = mixture_median(parameter, as.integer(group == "Convalesced")),
+    diff = model_median - fig3_median
+  ) |>
+  ungroup()
+
+fig3_cmp |>
+  dplyr::rename(
+    "Group" = group, "Parameter (logit)" = parameter,
+    "Model median" = model_median, "Figure 3 median" = fig3_median,
+    "Difference" = diff
+  ) |>
+  knitr::kable(digits = 2)
+
+stopifnot(
+  # Central agreement across all ten group x parameter medians. A swapped
+  # covariate column (convalesced vs vaccine) or a misread coefficient moves
+  # a median by 2-6 logit units.
+  median(abs(fig3_cmp$diff)) < 0.5,
+  # The loosest is convalesced A0 (model 6.1 vs Figure 3 7.0): its
+  # coefficient is poorly determined (SE 72.5 on 16.5), so the empirical-Bayes
+  # estimates in Figure 3 lean toward the data rather than the typical value.
+  max(abs(fig3_cmp$diff)) < 1.5
+)
+```
+
+```{r fig3-plot}
+ggplot(indiv, aes(factor(group, c("Naive", "Convalesced")), logit_value)) +
+  geom_boxplot(fill = "grey80", outlier.size = 0.6) +
+  geom_point(
+    data = fig3_ref, aes(group, fig3_median),
+    colour = "red", shape = 4, size = 3, inherit.aes = FALSE
+  ) +
+  facet_wrap(~parameter, scales = "free_y") +
+  labs(
+    x = NULL, y = "logit(parameter)",
+    title = "Replicates Figure 3 of de Pillis 2025",
+    caption = "Boxes: simulated individual parameters. Red crosses: Figure 3 medians."
+  ) +
+  theme_bw()
+```
+
+# NLME model: simulated NAb distribution against the observations
+
+The authors deposited the NLME analysis dataset with the paper. Its observed
+NAb distribution by convalesced status and time bin (summarised by the
+maintainers and hard-coded below; the deposited dataset holds 100 subjects,
+slightly more than the 92 analysed in the article) is compared with simulated
+observations including residual error. Bins with fewer than 10 observations are
+shown but not used in the check.
+
+The structural model does not bound NAb activity at 1: in subjects with large
+r1 and r2 the vaccine-driven terms push A above full neutralization for a few
+weeks after the second dose. The logit residual model is undefined above the
+upper bound M = 1.0197, so those simulated observations are returned as `NaN`.
+They are set to 1 (the assay ceiling) before summarising.
+
+```{r above-bound}
+above <- sim |>
+  mutate(group = ifelse(SARS_SEROPOS == 1, "Convalesced", "Naive")) |>
+  group_by(group) |>
+  summarise(
+    pct_rows_above_M = 100 * mean(nab_activity > 1.01970),
+    pct_subjects_ever_above_M = 100 * mean(tapply(nab_activity > 1.01970, id, any)),
+    .groups = "drop"
+  )
+knitr::kable(above, digits = 1)
+sim <- sim |> mutate(sim = ifelse(is.na(sim) & nab_activity > 1.01970, 1, sim))
+stopifnot(!anyNA(sim$sim))
+```
+
+```{r vpc}
+obs_ref <- data.frame(
+  group = rep(c("Naive", "Convalesced"), each = 7),
+  bin = rep(c("[0,10)", "[10,30)", "[30,60)", "[60,120)", "[120,200)", "[200,300)", "[300,500)"), 2),
+  n_obs = c(11, 32, 35, 42, 39, 59, 26, 6, 14, 14, 15, 10, 12, 7),
+  obs_q10 = c(0.038, 0.150, 0.310, 0.393, 0.223, 0.208, 0.080, 0.538, 0.414, 0.921, 0.800, 0.588, 0.345, 0.286),
+  obs_median = c(0.142, 0.375, 0.870, 0.689, 0.470, 0.350, 0.235, 0.985, 0.990, 0.975, 0.920, 0.787, 0.728, 0.499),
+  obs_q90 = c(0.170, 0.892, 0.981, 0.934, 0.764, 0.587, 0.452, 0.996, 0.996, 0.995, 0.992, 0.947, 0.901, 0.921)
+)
+
+sim_bins <- sim |>
+  mutate(
+    group = ifelse(SARS_SEROPOS == 1, "Convalesced", "Naive"),
+    bin = as.character(cut(time, c(0, 10, 30, 60, 120, 200, 300, 500), right = FALSE))
+  ) |>
+  group_by(group, bin) |>
+  summarise(
+    sim_q10 = quantile(sim, 0.1), sim_median = median(sim), sim_q90 = quantile(sim, 0.9),
+    .groups = "drop"
+  )
+vpc_cmp <- left_join(obs_ref, sim_bins, by = c("group", "bin"))
+
+vpc_cmp |>
+  dplyr::select(group, bin, n_obs, obs_median, sim_median, obs_q10, sim_q10, obs_q90, sim_q90) |>
+  dplyr::rename(
+    "Group" = group, "Days" = bin, "N obs" = n_obs,
+    "Obs median" = obs_median, "Sim median" = sim_median,
+    "Obs P10" = obs_q10, "Sim P10" = sim_q10,
+    "Obs P90" = obs_q90, "Sim P90" = sim_q90
+  ) |>
+  knitr::kable(digits = 3)
+
+vpc_gate <- vpc_cmp |> filter(n_obs >= 10)
+stopifnot(
+  median(abs(vpc_gate$sim_median - vpc_gate$obs_median)) < 0.1,
+  quantile(abs(vpc_gate$sim_median - vpc_gate$obs_median), 0.9) < 0.25
+)
+```
+
+```{r vpc-plot}
+bin_mid <- c(
+  "[0,10)" = 5, "[10,30)" = 20, "[30,60)" = 45, "[60,120)" = 90,
+  "[120,200)" = 160, "[200,300)" = 250, "[300,500)" = 375
+)
+vpc_long <- vpc_cmp |>
+  mutate(time = bin_mid[bin], group = factor(group, c("Naive", "Convalesced")))
+ggplot(vpc_long, aes(time)) +
+  geom_ribbon(aes(ymin = sim_q10, ymax = sim_q90), fill = "steelblue", alpha = 0.2) +
+  geom_line(aes(y = sim_median), colour = "steelblue", linewidth = 0.8) +
+  geom_point(aes(y = obs_median, size = n_obs), colour = "black") +
+  geom_errorbar(aes(ymin = obs_q10, ymax = obs_q90), width = 8) +
+  facet_wrap(~group) +
+  labs(
+    x = "Days since first dose", y = "NAb activity (fraction neutralization)",
+    size = "N obs",
+    title = "Simulated (blue: median, P10-P90) vs observed (black) NAb by time bin"
+  ) +
+  theme_bw()
+```
+
+# LME model: decay-region mean curves (Figure 2(i))
+
+The LME model applies only from day 37 after the first dose. Its population
+curve is the back-transformed fixed-effect polynomial (random effects at zero).
+
+```{r lme-curves}
+lme_ev <- bind_rows(lapply(0:1, function(c) {
+  data.frame(id = c + 1, time = seq(37, 455, by = 1), evid = 0, SARS_SEROPOS = c)
+}))
+lme_typ <- solve_typical(lme, lme_ev) |>
+  mutate(group = ifelse(SARS_SEROPOS == 1, "Convalesced", "Naive"))
+
+# Values read from the Figure 2(i) mean curves by the maintainers.
+fig2_ref <- data.frame(
+  group = c("Naive", "Naive", "Convalesced", "Convalesced", "Convalesced"),
+  time = c(37, 455, 37, 280, 455),
+  fig2 = c(0.92, 0.07, 0.98, 0.74, 0.88)
+)
+fig2_cmp <- fig2_ref |>
+  left_join(lme_typ[, c("group", "time", "nab_activity")], by = c("group", "time")) |>
+  mutate(diff = nab_activity - fig2)
+fig2_cmp |>
+  dplyr::rename(
+    "Group" = group, "Day" = time, "Figure 2(i)" = fig2,
+    "LME model" = nab_activity, "Difference" = diff
+  ) |>
+  knitr::kable(digits = 3)
+
+stopifnot(max(abs(fig2_cmp$diff)) < 0.05)
+```
+
+```{r lme-plot}
+lme_sim_ev <- bind_rows(lapply(seq_len(2 * n_per_arm), function(i) {
+  data.frame(
+    id = i, time = seq(37, 455, by = 14), evid = 0,
+    SARS_SEROPOS = as.integer(i > n_per_arm)
+  )
+}))
+lme_sim <- rxode2::rxSolve(lme, lme_sim_ev, returnType = "data.frame") |>
+  mutate(group = ifelse(SARS_SEROPOS == 1, "Convalesced", "Naive")) |>
+  group_by(group, time) |>
+  summarise(q10 = quantile(sim, 0.1), q90 = quantile(sim, 0.9), .groups = "drop")
+
+ggplot() +
+  geom_ribbon(
+    data = lme_sim, aes(time, ymin = q10, ymax = q90, fill = group),
+    alpha = 0.15
+  ) +
+  geom_line(data = lme_typ, aes(time, nab_activity, colour = group), linewidth = 0.9) +
+  geom_point(data = fig2_ref, aes(time, fig2, colour = group), shape = 4, size = 3) +
+  scale_colour_manual(values = c(Convalesced = "red", Naive = "steelblue")) +
+  scale_fill_manual(values = c(Convalesced = "red", Naive = "steelblue")) +
+  labs(
+    x = "Days since first dose", y = "NAb activity (fraction neutralization)",
+    colour = NULL, fill = NULL,
+    title = "Replicates Figure 2(i) of de Pillis 2025",
+    caption = "Lines: LME population curves. Ribbons: simulated P10-P90. Crosses: values read from Figure 2(i)."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# Agreement between the two models in the decay region
+
+Both models were fitted to the same observations, so the NLME typical course
+for the cohort should lie close to the LME population curve after day 37. The
+NLME median below is over the simulated cohort without residual error.
+
+```{r cross-model}
+nlme_med <- sim |>
+  filter(time >= 60) |>
+  mutate(group = ifelse(SARS_SEROPOS == 1, "Convalesced", "Naive")) |>
+  group_by(group, time) |>
+  summarise(nlme_median = median(nab_activity), .groups = "drop") |>
+  left_join(lme_typ[, c("group", "time", "nab_activity")], by = c("group", "time")) |>
+  dplyr::rename(lme_population = nab_activity)
+knitr::kable(nlme_med, digits = 3)
+stopifnot(median(abs(nlme_med$nlme_median - nlme_med$lme_population)) < 0.15)
+```
+
+# Non-compartmental analysis
+
+Not applicable. Neither model describes a drug concentration; the output is a
+bounded (0-1) antibody activity driven by unit vaccine pulses, so NCA
+parameters such as Cmax or AUC have no published counterpart. Validation
+instead uses the reported individual-parameter distributions (Figure 3), the
+LME mean curves (Figure 2(i)), the deposited observations and the agreement
+between the two models.
+
+# Assumptions and deviations
+
+* **Fixed vaccine-cell kinetics.** The paper states that k1 and k2 are fixed
+  for the whole population without printing them. The values `vmax = 10`
+  mL/day and `km = 50` mL are taken from the authors' deposited Monolix
+  structural model, which says they align with the earlier de Pillis 2023 model.
+* **Vaccine dose.** The paper describes u(t) as a unit pulse on each vaccination
+  day. The deposited Monolix model implements it as an amount of 1 delivered
+  zero-order over 1 day into V, reproduced here with `amt = 1, rate = 1`.
+  V(0) = 0.
+* **Second-dose timing.** Not stated in the paper. The vignette uses the labelled
+  schedules, day 21 (BNT162b2) and day 28 (mRNA-1273); the deposited data have
+  median second-dose days of 21 and 29.
+* **Logit-normal residual error.** Eq. 7 applies Monolix's combined1 error
+  `a + b * f` to the logit-transformed prediction with bounds m and M. This is
+  encoded with `add() + propT() + combined1() + logitNorm(NA, m, M)`, where
+  `propT()` scales with the transformed prediction. Monolix computed the upper
+  bound as 1.01970 (Results); the deposited project file prints 1.01979, and
+  the paper's value is used.
+* **Predictions above full neutralization.** Eq. 5 has no term that holds A
+  below 1, and the logistic carrying capacity r3/r4 only pulls A back after
+  the vaccine pulse has cleared. For simulated subjects drawn from the IIV
+  distribution, A can briefly exceed the upper logit bound M; their simulated
+  observations are undefined there and are set to the assay ceiling of 1 in
+  this vignette. Users simulating observations should do the same.
+* **Deposited Monolix estimates differ from Table 3.** The deposited project's
+  exported population parameters come from a later run (for example
+  `r1_pop` 0.0954 and correlation r3-r1 -0.109 against 0.089 and 0.662 in
+  Table 3). The published Table 3 estimates are used throughout.
+* **LME centring.** Results gives tbar as approximately 178 days; the deposited
+  decay-region data give 178.04 days. The rounded published value is used.
+* **LME vaccine-type and sex models.** The paper also fitted LME variants with
+  vaccine type (Eq. 9, Figure 2(ii)-(iii)) and sex; their coefficients are not
+  reported, so only the convalesced-status model (Eqs. 3-4, Table 2) is
+  packaged.
+* **Observation variable.** Both models name the output `nab_activity` (NAb
+  activity as a 0-1 fraction). The maintainers registered it as a new
+  observation name rather than the bare `nab`, which is already the suffix for
+  an anti-drug neutralizing-antibody species in monoclonal-antibody models.
+* **Covariates.** The paper's convalesced indicator C is carried as
+  `SARS_SEROPOS`. Subjects were vaccine-naive at baseline and naive subjects with
+  nucleocapsid antibodies before vaccination were excluded, so within this
+  population convalesced status coincides with baseline seropositivity from
+  prior infection. The paper's Pfizer indicator D is `TRT_TOZINAMERAN`
+  (reference mRNA-1273).

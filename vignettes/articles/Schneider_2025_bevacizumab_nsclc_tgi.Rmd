@@ -1,0 +1,462 @@
+---
+title: "Bevacizumab + chemotherapy tumor growth inhibition in NSCLC (Schneider 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bevacizumab + chemotherapy tumor growth inhibition in NSCLC (Schneider 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Schneider 2025 pooled individual lesion measurements from 11 bevacizumab
+trials in non-small cell lung cancer (NSCLC) and fitted one semi-mechanistic
+tumor growth inhibition model covering every agent in those trials. It then
+used the model to ask whether giving bevacizumab some hours before
+pemetrexed-cisplatin, instead of concomitantly, would shrink tumors further.
+
+* Citation: `r rxode2::rxode(readModelDb("Schneider_2025_bevacizumab_nsclc_tgi"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Schneider_2025_bevacizumab_nsclc_tgi"))$description`
+* Article: <https://doi.org/10.1002/psp4.70079> (open access, PMC12521054)
+* Supplement: Data S1 (supplementary methods, diagnostic figures and the
+  Monolix Mlxtran model file `PSP-2024-0266-s03.txt`).
+
+The packaged model is a transcription of the deposited Mlxtran file, with the
+pharmacodynamic estimates of Table 3 and the pharmacokinetic values of Table 2.
+
+## Structure
+
+* **Pharmacokinetics.** Each drug has a literature PK model held fixed, with
+  no between-subject variability (Table 2): two-compartment models for
+  bevacizumab, cisplatin, pemetrexed, drozitumab (apomab, PRO95780),
+  carboplatin, gemcitabine and docetaxel, a three-compartment model for
+  paclitaxel and a one-compartment oral model for erlotinib. Concentrations
+  that drive the tumor model are in mg/mL (the deposited code uses volumes in
+  mL); the model reports them as `Cc_<drug>`.
+* **Tumor.** The proliferating volume `cycling_cells` grows by Gompertz growth
+  scaled to the lesion's own baseline, `(alpha - beta * log(v / v0)) * v`
+  (Equation 2). Cytotoxic drugs move cells at rate `Q_gamma` into a
+  three-compartment death chain (`damaged_cells1..3`, rate `kk`). Microtubule
+  agents and the direct bevacizumab effect move cells at rate `Q_rho` into a
+  reversibly injured pool (`injured_cells`), which empties at rate `kkinj`; a
+  fraction `p` repairs and returns to proliferation and the rest enters the
+  death chain.
+* **Drug effects.** Every mechanism of action contributes a weighted
+  concentration attenuated by acquired resistance, `w * C * exp(-lambda * AUC)`
+  (Equations 4 and 6). Cisplatin and carboplatin share one platinum term, and
+  paclitaxel and docetaxel share one microtubule term, each with the second
+  drug weighted relative to the first.
+* **Vascular normalisation.** A second copy of the bevacizumab PK, lagged by
+  `tau`, multiplies both kill rates by `1 + w * C_bev(t - tau)`.
+* **Observation.** The lesion longest diameter (mm) is that of a sphere holding
+  the total volume (Equation 3), with Monolix `combined1` residual error.
+
+## Dosing the packaged model
+
+* **Bevacizumab** has to be dosed twice per administration, with identical
+  records into `central_bevacizumab` and `central_bevacizumab_lagged`. In
+  Monolix one administration feeds both compartments; in rxode2 each dose
+  record targets one compartment.
+* **Erlotinib** is dosed orally into `depot_erlotinib`. All other drugs are
+  given as infusions into `central_<drug>`.
+* **Carboplatin dosed to a target AUC.** The deposited code has a second
+  carboplatin compartment for AUC-targeted doses, with bioavailability equal
+  to carboplatin clearance. Its kinetics are identical to the mg-dosed
+  compartment, and both feed the same carboplatin concentration, so here an
+  AUC-targeted dose is given as an amount: `amt = AUC_target * 177.12` mg,
+  with `AUC_target` in mg*day/L.
+* **Baseline.** Each lesion is a subject. `TUM_VOL` is the volume of the lesion
+  at time 0 computed from its baseline longest diameter `D0` (mm),
+  `pi / 6 * D0^3`.
+
+```{r model}
+mod <- readModelDb("Schneider_2025_bevacizumab_nsclc_tgi")
+ui <- rxode2::rxode2(mod)
+mod_typ <- rxode2::zeroRe(ui)
+```
+
+# Population
+
+The model was fitted to 4450 lesions from 1963 patients (26,515 longest
+diameter measurements) in 11 phase 2-4 trials shared through the CSDR and
+Vivli platforms (Table 1). Of 3686 candidate patients, 2586 had complete
+dosing and tumor records; the analysis then kept lesions with at least three
+measurements and removed monotonic non-responders. About 85% of lesions were
+used for estimation and 15% kept for external validation (Figures 2 and 3).
+Every lesion was treated as a separate subject. The paper does not report
+demographics. The regimens combined bevacizumab with cisplatin or carboplatin
+plus pemetrexed, paclitaxel, gemcitabine or docetaxel, with erlotinib, or with
+drozitumab.
+
+```{r population}
+str(readModelDb("Schneider_2025_bevacizumab_nsclc_tgi")()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. The
+table below gathers them.
+
+| Quantity | Value | Source |
+|---|---|---|
+| Equations (growth, injury, death chain, observation) | -- | Equations 1-3; deposited Mlxtran `EQUATION:` block |
+| Effect weights and resistance (Equations 4, 6) | -- | Equations 4 and 6; deposited code (`plat_eff` ... `anti_vegf_eff`) |
+| Bevacizumab PK: CL, V1, k12, k21 | 0.216291 L/day, 2.80412 L, 0.223, 0.215 /day | Table 2; code `cl_bev`, `v1_bev`, `k12_bev`, `k21_bev` |
+| Cisplatin PK: CL, V1, Q, V2 | 6.48, 22.3, 456, 77 | Table 2; code `*_cis` |
+| Pemetrexed PK: CL, V1, Q, V2 | 131.904, 12.9, 20.736, 3.38 | Table 2; code `*_pem` |
+| Drozitumab PK: CL, V1, Q, V2 | 0.328, 3.97, 0.793, 3.84 | Table 2 (apomab); code `*_apo` |
+| Paclitaxel PK: CL, V1, Q1, V2, Q2, V3 | 10296, 229, 3216, 856, 5112, 30.3 | Table 2; code `*_pac` |
+| Carboplatin PK: CL, V1, Q, V2 | 177.12, 11.9, 2172, 8.23 | Table 2; code `*_car` |
+| Gemcitabine PK: CL, V1, Q, V2 | 3888, 15, 1008, 15 | Table 2; code `*_gem` |
+| Docetaxel PK: CL, V1, k12, k21 | 723.12, 7.9, 27.12, 3.6 | Table 2; code `*_doc` |
+| Erlotinib PK: ka, CL, V, F | 21.36 /day, 102.96, 210, 0.6 | Table 2 and footnote; code `*_erl` |
+| alpha, beta | 0.00304, 0.0398 /day | Table 3 |
+| tau | 0.254 day | Table 3 |
+| kk | 28 /day | Table 3 |
+| w: cisplatin (rel.), carboplatin, pemetrexed, apomab, erlotinib, gemcitabine, paclitaxel (rel.), docetaxel | 0.917, 0.257, 23.8, 0.75, 0.62, 1, 0.758, 0.939 | Table 3 |
+| w bevacizumab (direct), w bevacizumab gamma, w bevacizumab rho | 4.14, 0.727, 1.39 | Table 3 (the two rows printed as 'w bevacizumab,rho' and the 'gamma' row, mapped through the code's input order) |
+| lambda: cisplatin (rel.), carboplatin, pemetrexed, apomab, erlotinib, gemcitabine, paclitaxel (rel.), docetaxel, bevacizumab | 0.00101, 0.000995, 0.000796, 0.000656, 0.00119, 0.00152, 0.00111, 0.00134, 0.0164 | Table 3 |
+| kkinj, p | 0.0746 /day, 0.364 | Table 3 |
+| IIV (SD of each random effect; variance = SD^2) | 0.0877 to 3.59 | Table 3 'IIV' column and footnote |
+| Residual error a, b | 0.0457 mm, 0.105 | Table 3; 'combined 1' in Model Building |
+
+Table 3 lists its rows in the same order as the parameter inputs of the
+deposited code (`alpha, beta, tau, kk, w_cis_rel, w_car, ..., kk_i,
+imv_r_perc`; `v0_err` is the per-lesion baseline, not an estimate). That order
+fixes which of the two rows printed 'w bevacizumab,rho' is the direct
+anti-VEGF weight (`w_bev` = 4.14) and which multiplies the reversible-injury
+rate (`w_bev_rho` = 1.39).
+
+# Pharmacokinetic sanity check with PKNCA
+
+The PK models are fixed, so a PKNCA check confirms the transcription: after a
+single infusion the area under the curve to infinity must equal dose / CL for
+every drug.
+
+```{r pk-sim}
+pk_drugs <- tibble::tribble(
+  ~drug,         ~cmt,                  ~amt, ~dur_min, ~cl,
+  "bevacizumab", "central_bevacizumab", 795,  30,       0.216291,
+  "cisplatin",   "central_cisplatin",   135,  30,       6.48,
+  "pemetrexed",  "central_pemetrexed",  945,  10,       131.904,
+  "drozitumab",  "central_drozitumab",  1000, 60,       0.328,
+  "paclitaxel",  "central_paclitaxel",  350,  180,      10296,
+  "carboplatin", "central_carboplatin", 700,  30,       177.12,
+  "gemcitabine", "central_gemcitabine", 1800, 30,       3888,
+  "docetaxel",   "central_docetaxel",   140,  60,       723.12,
+  "erlotinib",   "depot_erlotinib",     150,  0,        102.96
+)
+obs_times <- sort(unique(c(seq(0, 0.5, by = 0.001), seq(0.5, 3, by = 0.05), seq(3, 200, by = 1))))
+
+pk_ev <- bind_rows(lapply(seq_len(nrow(pk_drugs)), function(i) {
+  d <- pk_drugs[i, ]
+  dose <- data.frame(
+    id = i, time = 0, evid = 1, amt = d$amt, cmt = d$cmt,
+    dur = if (d$dur_min > 0) d$dur_min / 1440 else 0
+  )
+  obs <- data.frame(id = i, time = obs_times, evid = 0, amt = 0, cmt = d$cmt, dur = 0)
+  bind_rows(dose, obs)
+})) |>
+  mutate(TUM_VOL = pi / 6 * 40^3)
+
+# One typical-value solve per drug (one subject each).
+pk_sim <- bind_rows(lapply(split(pk_ev, pk_ev$id), function(e) {
+  rxode2::rxSolve(mod_typ, e, returnType = "data.frame", addDosing = FALSE) |>
+    mutate(id = e$id[1])
+}))
+
+conc_cols <- c(
+  bevacizumab = "Cc_bevacizumab", cisplatin = "Cc_cisplatin",
+  pemetrexed = "Cc_pemetrexed", drozitumab = "Cc_drozitumab",
+  paclitaxel = "Cc_paclitaxel", carboplatin = "Cc_carboplatin",
+  gemcitabine = "Cc_gemcitabine", docetaxel = "Cc_docetaxel",
+  erlotinib = "Cc_erlotinib"
+)
+sim_id <- as.integer(pk_sim$id)
+pk_conc <- data.frame(
+  id = sim_id,
+  drug = pk_drugs$drug[sim_id],
+  time = pk_sim$time,
+  # Each subject's own drug column, converted from mg/mL to mg/L
+  Cc = as.matrix(pk_sim[, conc_cols[pk_drugs$drug]])[cbind(seq_along(sim_id), sim_id)] * 1000
+) |>
+  # Rapidly cleared drugs decay to solver round-off, which can be slightly
+  # negative; PKNCA's log-down AUC needs non-negative concentrations.
+  mutate(Cc = pmax(Cc, 0))
+```
+
+```{r pk-plot, fig.height = 5}
+ggplot(pk_conc |> filter(time <= 21, Cc > 0), aes(time, Cc)) +
+  geom_line() +
+  facet_wrap(~drug, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "Concentration (mg/L)",
+       title = "Single-dose concentration profiles of the fixed PK models")
+```
+
+```{r pknca}
+conc_obj <- PKNCA::PKNCAconc(
+  pk_conc |> filter(!is.na(Cc)), Cc ~ time | drug + id
+)
+dose_obj <- PKNCA::PKNCAdose(
+  pk_drugs |> mutate(id = seq_len(n()), time = 0), amt ~ time | drug + id
+)
+intervals <- data.frame(start = 0, end = 200, cmax = TRUE, auclast = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_res <- as.data.frame(nca$result) |>
+  filter(PPTESTCD %in% c("auclast", "cmax")) |>
+  select(drug, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(pk_drugs |> select(drug, amt, cl), by = "drug") |>
+  mutate(
+    f = ifelse(drug == "erlotinib", 0.6, 1),
+    auc_expected = f * amt / cl,
+    pct_diff = 100 * (auclast - auc_expected) / auc_expected
+  )
+nca_res |>
+  dplyr::rename(
+    "Drug" = drug, "Cmax (mg/L)" = cmax,
+    "AUC0-200 day PKNCA (mg*day/L)" = auclast, "F * dose / CL (mg*day/L)" = auc_expected,
+    "Difference (%)" = pct_diff
+  ) |>
+  select(-amt, -cl, -f) |>
+  knitr::kable(digits = 3)
+stopifnot(all(abs(nca_res$pct_diff) < 2))
+```
+
+Every drug's exposure is cleared well within 200 days, so the AUC to day 200
+equals the AUC to infinity. The paclitaxel PK of Table 2 is the linear
+model used by the paper.
+
+# Untreated growth against the closed form
+
+Without drugs, `d log(v) / dt = alpha - beta * log(v / v0)`, so
+`v(t) = v0 * exp(alpha / beta * (1 - exp(-beta * t)))`. A typical untreated
+lesion therefore grows only by the factor `exp(alpha / beta)` =
+`r signif(exp(0.00304 / 0.0398), 3)` in volume.
+
+```{r untreated}
+tt <- seq(0, 200, by = 5)
+d0 <- 40
+untreated <- rxode2::rxSolve(
+  mod_typ,
+  rxode2::et(tt, cmt = "cycling_cells"),
+  params = data.frame(TUM_VOL = pi / 6 * d0^3),
+  returnType = "data.frame"
+)
+closed <- d0 * exp(0.00304 / 0.0398 * (1 - exp(-0.0398 * untreated$time)))^(1 / 3)
+stopifnot(max(abs(untreated$tumor_size - closed) / closed) < 1e-5)
+```
+
+Because every tumor term is proportional to volume and growth is scaled to the
+baseline, the relative time course does not depend on `TUM_VOL`:
+
+```{r scale-invariance}
+reg <- function(gap = 0, horizon = 154) {
+  rbind(
+    data.frame(time = 0, amt = 795, dur = 30 / 1440, ii = 22, addl = 6,
+               cmt = c("central_bevacizumab", "central_bevacizumab_lagged"), evid = 1),
+    data.frame(time = gap, amt = c(945, 135), dur = c(10, 30) / 1440, ii = 22,
+               addl = c(6, 2), cmt = c("central_pemetrexed", "central_cisplatin"), evid = 1),
+    data.frame(time = seq(0, horizon, by = 1), amt = NA, dur = NA, ii = NA, addl = NA,
+               cmt = "cycling_cells", evid = 0)
+  )
+}
+rel <- sapply(c(10, 40, 80), function(d) {
+  s <- rxode2::rxSolve(mod_typ, reg(), params = data.frame(TUM_VOL = pi / 6 * d^3),
+                       returnType = "data.frame", addDosing = FALSE)
+  s$tumor_size / d
+})
+stopifnot(max(abs(rel[, 1] - rel[, 3])) < 1e-4)
+```
+
+# Typical response to bevacizumab plus pemetrexed-cisplatin
+
+The clinical trial simulation of the paper used pemetrexed 945 mg over 10 min
+every 22 days for 7 cycles, cisplatin 135 mg over 30 min every 22 days for 3
+cycles, and bevacizumab 795 mg over 30 min every 22 days for 7 cycles. The
+figure shows a typical 40 mm lesion with concomitant dosing and with
+bevacizumab given 0.4 day before the chemotherapy, and an untreated lesion.
+
+```{r typical-course}
+typ <- bind_rows(
+  rxode2::rxSolve(mod_typ, reg(0), params = data.frame(TUM_VOL = pi / 6 * 40^3),
+                  returnType = "data.frame", addDosing = FALSE) |>
+    mutate(scenario = "concomitant"),
+  rxode2::rxSolve(mod_typ, reg(0.4), params = data.frame(TUM_VOL = pi / 6 * 40^3),
+                  returnType = "data.frame", addDosing = FALSE) |>
+    mutate(scenario = "bevacizumab 0.4 day before chemotherapy"),
+  untreated |> filter(time <= 154) |> mutate(scenario = "untreated")
+)
+ggplot(typ, aes(time, tumor_size, colour = scenario)) +
+  geom_line() +
+  labs(x = "Time (day)", y = "Lesion longest diameter (mm)", colour = NULL,
+       title = "Typical lesion (baseline 40 mm)") +
+  theme(legend.position = "bottom")
+```
+
+# Replicating Figure 4: the bevacizumab-chemotherapy gap
+
+The paper simulated 5000 virtual lesions for gaps of 0 to 3 days in steps of
+0.1 day and found the largest benefit at 0.4 day (9.6 h). Both the typical
+lesion and the stochastic cohort below reproduce that optimum. The Methods text
+says that bevacizumab *followed* the chemotherapy, but the Results and
+Discussion describe bevacizumab given *before* pemetrexed-cisplatin, and only
+the latter reproduces an optimum near 0.4 day: the delayed vascular
+normalisation (`tau` = 0.254 day) then coincides with the short pemetrexed
+exposure. The chemotherapy is therefore delayed by the gap here.
+
+```{r gap-typical}
+gaps <- round(seq(0, 3, by = 0.1), 1)
+final_typ <- sapply(gaps, function(g) {
+  s <- rxode2::rxSolve(mod_typ, reg(g), params = data.frame(TUM_VOL = pi / 6 * 40^3),
+                       returnType = "data.frame", addDosing = FALSE)
+  s$tumor_size[s$time == 154]
+})
+best_gap_typ <- gaps[which.min(final_typ)]
+best_gap_typ
+stopifnot(best_gap_typ >= 0.3, best_gap_typ <= 0.5)
+```
+
+For the cohort, 200 virtual lesions (all starting at 40 mm, which does not
+change relative results) receive the same random effects at every gap. Each
+gap is compared with concomitant dosing on the final (day 154) lesion volume;
+lesions eradicated under concomitant dosing (final diameter below 1 mm, the
+paper's limit of detection) are excluded, as the paper restricted the
+comparison to patients without complete remission.
+
+```{r gap-cohort}
+n_sub <- 200
+cohort_ev <- function(gap) {
+  e <- reg(gap, horizon = 154)
+  e <- e[e$evid == 1 | e$time == 154, ]
+  bind_rows(lapply(seq_len(n_sub), function(i) mutate(e, id = i))) |>
+    mutate(TUM_VOL = pi / 6 * 40^3)
+}
+cohort <- bind_rows(lapply(gaps, function(g) {
+  rxode2::rxSetSeed(20251006)
+  # The large IIV of kk (SD 3.41 on the log scale) draws death-chain transit
+  # rates above 10,000 /day for a few lesions; the stiff solve needs more
+  # steps than the default to finish.
+  s <- rxode2::rxSolve(ui, cohort_ev(g), returnType = "data.frame", addDosing = FALSE,
+                       maxsteps = 5e5)
+  data.frame(gap = g, id = s$id, d_final = s$tumor_size)
+}))
+# Keep only lesions solved at every gap, so each gap compares the same lesions.
+solved_ids <- cohort |>
+  group_by(id) |>
+  filter(all(!is.na(d_final))) |>
+  pull(id) |>
+  unique()
+gap_cmp <- cohort |>
+  filter(id %in% solved_ids) |>
+  left_join(cohort |> filter(gap == 0) |> select(id, d_conc = d_final), by = "id") |>
+  filter(gap > 0, d_conc >= 1) |>
+  mutate(improvement = 1 - (d_final / d_conc)^3)
+
+gap_summary <- gap_cmp |>
+  group_by(gap) |>
+  summarise(
+    pct_improved = 100 * mean(improvement > 0),
+    mean_improvement_if_improved = 100 * mean(improvement[improvement > 0]),
+    pct_over_33 = 100 * mean(improvement > 0.33),
+    .groups = "drop"
+  )
+gap_summary |>
+  filter(gap %in% c(0.1, 0.2, 0.3, 0.4, 0.5, 1, 2, 3)) |>
+  dplyr::rename(
+    "Gap (day)" = gap, "Lesions improved (%)" = pct_improved,
+    "Mean volume improvement among improved (%)" = mean_improvement_if_improved,
+    "Improvement > 33% (%)" = pct_over_33
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+```{r gap-figure, fig.height = 4.5}
+gap_cmp |>
+  mutate(category = cut(improvement, c(0, 0.33, 0.66, 0.95, 1),
+                        labels = c("low", ">33%", ">66%", ">95%"))) |>
+  filter(!is.na(category)) |>
+  count(gap, category) |>
+  mutate(pct = 100 * n / n_distinct(gap_cmp$id)) |>
+  mutate(category = factor(category, levels = rev(levels(category)))) |>
+  ggplot(aes(gap, pct, fill = category)) +
+  geom_col(width = 0.1, position = "stack") +
+  labs(x = "Gap (days)", y = "Simulated lesions (%)",
+       fill = "Improvement over no gap",
+       title = "Replicates Figure 4 of Schneider 2025 (volume-based improvement)") +
+  theme(legend.position = "bottom")
+```
+
+```{r gap-checks}
+best_gap_cohort <- gap_summary$gap[which.max(gap_summary$mean_improvement_if_improved)]
+best_gap_cohort
+imp <- setNames(gap_summary$mean_improvement_if_improved, gap_summary$gap)
+stopifnot(
+  # Nearly every lesion must solve; a solver failure must not shrink the cohort.
+  length(solved_ids) >= 0.95 * n_sub,
+  # Benefit rises steeply once the gap exceeds tau and then falls slowly.
+  imp[["0.4"]] > 2 * imp[["0.1"]],
+  imp[["0.4"]] > imp[["3"]],
+  # The share of improved lesions falls from short to long gaps (Figure 4).
+  gap_summary$pct_improved[gap_summary$gap == 0.4] >
+    gap_summary$pct_improved[gap_summary$gap == 3]
+)
+```
+
+The packaged model reproduces the location of the optimal gap and the shape of
+Figure 4: a sharp rise between 0.1 and 0.3 day, a maximum near 0.4 day and a
+slow decline to 3 days, with the share of improved lesions falling as the gap
+lengthens. The share of improved lesions is higher than the paper's (about
+93.5% at 0.4 day falling to about 84% at 3 days), and the size of the
+improvement is smaller than the paper's 20.7% mean. The paper does not
+define its improvement metric beyond "reduction in final tumor size", it drew
+individual parameters from the conditional distributions of the fitted
+lesions rather than from the population distribution, and it does not state
+the baseline sizes or the time of the final assessment.
+
+# Assumptions and deviations
+
+* **Model taken from the deposited code.** Where the equations printed in the
+  paper and the deposited Mlxtran code differ, the code is followed. In
+  particular, the paired-drug effects are
+  `w_cis_rel * (C_cis + w_car * C_car) * exp(-lambda_cis_rel * (AUC_cis +
+  lambda_car * AUC_car))` (and the same form for paclitaxel and docetaxel),
+  and the inverse-logit bound of Equation 5 is not part of the final model.
+* **Table 3 labelling.** Two rows are printed as 'w bevacizumab,rho'; the
+  mapping to the code's inputs is set by the row order (see Source trace).
+  Table 3 also lists `kkinj` as unitless and `p` in day^-1; in the code
+  `kkinj` is a rate constant (1/day) and `p` is a fraction, and the model uses
+  those units.
+* **Units.** The deposited PK block uses mL and mL/day, so drug
+  concentrations, AUCs and the effect weights are on the mg/mL scale. The
+  model keeps volumes in L (Table 2) and divides by 1000 when forming
+  concentrations. Doses are in mg, as in the paper's clinical trial
+  simulation.
+* **Growth reference.** The code writes the Gompertz term with a scaling
+  constant `Vc = 1e-3` that cancels exactly; the model uses the equivalent
+  `log(v / v0)` form of Equation 2.
+* **Placebo and AUC-dosed carboplatin compartments.** The code's placebo
+  compartment has no effect and is omitted. Its separate carboplatin
+  compartment for AUC-targeted doses has the same kinetics as the mg-dosed
+  one and is replaced by converting the target AUC to an amount (see Dosing).
+* **Negative volumes.** After eradication the solver can return a slightly
+  negative total volume; the observed diameter is then 0, which is what the
+  code's `max(D, 0)` gives for the real cube root.
+* **No covariates.** The paper tested none; weight, body surface area and sex
+  are not in the model.
+* **Below-quantification data.** The paper used a 1 mm limit of detection
+  for the diameter; the model's observation is not censored.
+* **Simulation of Figure 4.** The cohort uses 200 lesions instead of 5000 and
+  random effects from the population distribution. The improvement is
+  computed on the final lesion volume relative to concomitant dosing.
