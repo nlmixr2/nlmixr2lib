@@ -367,9 +367,11 @@ Lindauer_2026_copper <- function() {
     # at 0 and is set by a bolus of the activity factor at vector injection
     # (Data S2 model.campsis: TRT state, A_TRT; Bolus(amount = 0.4,
     # compartment = 'TRT')).
+    # trt_af is clamped at 0 because the stiff solver's trial values can dip
+    # just below 0, where the non-integer power is NaN.
     healthy <- 1 - DIS_WILSON - ATP7B_HET
-    af_wd_cp <- trt_af
-    af_wd_bil <- trt_af^e_af_bil
+    af_wd_cp <- max(trt_af, 0)
+    af_wd_bil <- af_wd_cp^e_af_bil
     af_cp <- healthy + ATP7B_HET * af_het_cp + DIS_WILSON * af_wd_cp
     af_bil <- healthy + ATP7B_HET * af_het_bil + DIS_WILSON * af_wd_bil
 

@@ -474,7 +474,10 @@ stopifnot(all(abs(ss$out_per_day - 1.4) < 0.01))
   patient; biliary activity follows as `trt_af^2.28`, the power function of
   the campsis model (the exponent reproduces the heterozygote pair:
   0.369^2.28 = 0.103 vs 0.101). Only WD patients use it; in healthy subjects
-  and carriers a `trt_af` dose has no effect.
+  and carriers a `trt_af` dose has no effect. The model reads `trt_af`
+  through `max(trt_af, 0)`: the state is mathematically constant, but the
+  default stiff solver's trial values can dip to about -1e-21 in an untreated
+  patient, and a negative number raised to 2.28 is `NaN`.
   The mouse dose-response model that links vector dose to AF (Table S2) is not
   part of this model.
 * **Figure 6 changes from baseline are not reproduced.** The baselines of
