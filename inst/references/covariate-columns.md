@@ -6506,6 +6506,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Sakares_2025_deferasirox.R` (drives `kon * cfe * (CP_DEFERASIROX_UM * fu)^2` with fu = 0.004).
 - **Notes:** Specific scope; deferasirox-specific. Follows the `CP_<drug>_<units>` family (`CP_RIF_UM`, `CP_AMITRIPTYLINE_UM`), as `CP_MGL`'s Notes prescribe for a new drug. TOTAL, not unbound: the founding model applies fu itself, so supplying an unbound concentration understates the driver by about 250-fold. The founding source generated the profile with a Simcyp V22 whole-body PBPK model that is not reproducible from the publication. Distinct from `CSS_DFO` (deferoxamine steady-state average, ug/mL) and from the `Cc` output of the deferiprone PK models.
 
+### CP_ZIDOVUDINE_UM (**canonical for instantaneous total zidovudine plasma concentration as a time-varying intracellular-uptake driver**)
+- **Description:** Instantaneous total plasma concentration of zidovudine (AZT, ZDV), supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Drives first-order uptake of zidovudine into an intracellular pool (PBMCs), where it is phosphorylated to the mono-, di- and triphosphate.
+- **Units:** umol/L (= uM; zidovudine MW = 267.2 g/mol, so 1 umol/L = 267.2 ng/mL).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters linearly as `kinf_pbmc * CP_ZIDOVUDINE_UM`. Set to 0 for drug-free periods, at which uptake stops. Reference values observed: Tang 2026 Figure 4 mean plasma Cmax about 3000 ng/mL (11 umol/L) at 0.5 h after a single 600 mg oral dose in healthy Chinese adults, declining to about 55 ng/mL (0.2 umol/L) by 10 h.
+- **Source aliases:**
+  - `X1` / `C1` -- Tang 2026 Eqs. 1-3, "the concentration of AZT in plasma".
+- **Example models:** `Tang_2026_zidovudine.R` (uptake coefficient kin = 1.22 ng/10^6 cells/uM/h drives the PBMC zidovudine pool `pbmc`, which is phosphorylated reversibly through `pbmc_zdvmp`, `pbmc_zdvdp` and `pbmc_zdvtp`).
+- **Notes:** Specific scope; zidovudine-specific. Follows the `CP_<drug>_<units>` family (`CP_RIF_UM`, `CP_AMITRIPTYLINE_UM`, `CP_DEFERASIROX_UM`), as `CP_MGL`'s Notes prescribe for a new drug. The founding paper fitted its intracellular layer with each subject's observed plasma profile as the input function and does not print the parameters of its plasma two-compartment model, so users supply the trajectory; `Fauchet_2013_zidovudine.R` (paediatric, mg/L) is the only zidovudine plasma model in the registry, and its `Cc` must be divided by 0.2672 (mg/L per umol/L) before being supplied here.
+
 ### CP_CARBAMAZEPINE_UM (**canonical for instantaneous carbamazepine concentration as a time-varying CYP-perpetrator covariate**)
 - **Description:** Instantaneous concentration of carbamazepine supplied directly as a time-varying covariate column rather than computed from a coupled PK model, used as the perpetrator-drug input to a CYP3A4 induction Emax term. Founding use is an in-vitro hepatocyte culture-medium concentration; the column is defined generally so that a plasma or unbound site-of-interaction concentration can use the same name, with the per-model `covariateData` entry stating which sense is required.
 - **Units:** umol/L (= uM; carbamazepine MW = 236.3 g/mol so 1 umol/L = 0.2363 mg/L).

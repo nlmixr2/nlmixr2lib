@@ -1,0 +1,443 @@
+---
+title: "Zidovudine (Tang 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Zidovudine (Tang 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Tang_2026_zidovudine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Tang_2026_zidovudine"))$description`
+* Article: <https://doi.org/10.1038/s41598-026-49905-1> (open access)
+
+Tang 2026 links plasma zidovudine (AZT) to its intracellular
+phosphorylated anabolites in peripheral blood mononuclear cells (PBMCs).
+Plasma AZT is taken up into the cell, effluxes back, and is phosphorylated
+stepwise and reversibly to the mono-, di- and triphosphate (AZT-MP, AZT-DP
+and AZT-TP; Figure 1 of the paper). All transfers are first order. The
+authors fitted this intracellular layer to each volunteer's PBMC data in
+ADAPT II, using that volunteer's observed plasma AZT profile as the input
+function. They say plasma AZT follows a two-compartment model but print
+none of its parameters. The packaged model therefore takes plasma AZT as
+the time-varying covariate `CP_ZIDOVUDINE_UM` (umol/L) and has no dosing
+compartment.
+
+# Population
+
+Six healthy Chinese adult volunteers took part: two men and four women,
+aged 22-26 years, weighing 49-80 kg and 158-180 cm tall (Methods
+"Volunteer recruitment" and the opening of the clinical Results). Each
+received one 600 mg oral dose of zidovudine after an overnight fast.
+Plasma and PBMC samples were taken before dosing and at 0.5, 1, 1.5, 2,
+2.5, 3, 3.5, 4, 5, 6, 8 and 10 h. AZT, AZT-MP, AZT-DP and AZT-TP were
+quantified in PBMCs by HPLC-MS/MS and are reported in ng per 10^6 cells.
+
+The same information is available programmatically via
+`readModelDb("Tang_2026_zidovudine")()$population`.
+
+# Source trace
+
+Each value's origin is also recorded as an in-file comment beside its
+`ini()` entry in `inst/modeldb/specificDrugs/Tang_2026_zidovudine.R`.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lkinf_pbmc` (paper `kin`) | 1.22 ng/10^6 cells/uM/h | Table 2 |
+| `lkeff_pbmc` (paper `kout`) | 3.76 1/h | Table 2 |
+| `lkmet_zdvmp` (paper `kO-MP`) | 0.478 1/h | Table 2 |
+| `lkicv` (paper `kMP-O`) | 0.792 1/h | Table 2 |
+| `lkmet_zdvdp` (paper `kMP-DP`) | 0.659 1/h | Table 2 |
+| `lkicv_zdvmp` (paper `kDP-MP`) | 1.72 1/h | Table 2 |
+| `lkmet_zdvtp` (paper `kDP-TP`) | 3.18 1/h | Table 2 |
+| `lkicv_zdvdp` (paper `kTP-DP`) | 4.62 1/h | Table 2 |
+| `eta` variances | `log(1 + CV^2)` with CV 39, 72, 45, 62, 81, 76, 79, 88 % | Table 2 `%CV` column |
+| `propSd_*` | `fixed(0)` | not reported (see Assumptions) |
+| `d/dt(pbmc)` | uptake `kin * Cp`, loss `(kout + kO-MP)`, return `kMP-O * MP` | Figure 1; Eqs. 1-2 (transport and first phosphorylation) |
+| `d/dt(pbmc_zdvmp)`, `d/dt(pbmc_zdvdp)`, `d/dt(pbmc_zdvtp)` | reversible first-order chain | Figure 1; Methods "Transportation and phosphorylation pathway model" |
+| Plasma input `CP_ZIDOVUDINE_UM` | umol/L | units of `kin` in Table 2; Eqs. 1-3 |
+
+# Plasma input function
+
+The packaged model needs a plasma AZT profile. The paper's own input
+functions were each volunteer's observed plasma data, which are not
+published individually. The maintainers digitised the mean profile of
+Figure 4 (marker centres, calibrated on the axis labels) and convert it
+from ng/mL to umol/L with the zidovudine molecular weight 267.2 g/mol.
+
+```{r plasma-input}
+mw_zdv <- 267.2 # g/mol, as used by Fauchet_2013_zidovudine
+plasma <- tibble::tibble(
+  time = c(0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 8, 10),
+  cp_ngml = c(0, 3003, 2793, 2143, 1478, 1045, 777, 705, 474, 358, 207, 98, 55)
+) |>
+  mutate(CP_ZIDOVUDINE_UM = cp_ngml / mw_zdv)
+
+ggplot(plasma, aes(time, cp_ngml)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    x = "Time (h)", y = "Plasma AZT (ng/mL)",
+    title = "Figure 4 - mean plasma AZT after 600 mg orally (digitised)",
+    caption = "Replicates Figure 4 of Tang 2026 (digitised mean; the input function for every simulation below)."
+  )
+```
+
+```{r event-helper}
+# One observation row every 0.05 h over the paper's 0-10 h sampling window.
+# CP_ZIDOVUDINE_UM is interpolated linearly between the digitised samples.
+# The model has four declared endpoints and no dose, so every observation row
+# carries a real ODE state as cmt plus dvid = 1L.
+grid <- seq(0, 10, by = 0.05)
+make_events <- function(n, id_offset = 0L) {
+  one <- tibble::tibble(
+    time = grid,
+    evid = 0L,
+    amt = NA_real_,
+    cmt = "pbmc",
+    dvid = 1L,
+    CP_ZIDOVUDINE_UM = approx(plasma$time, plasma$CP_ZIDOVUDINE_UM, grid)$y
+  )
+  tidyr::crossing(id = id_offset + seq_len(n), one) |>
+    arrange(id, time)
+}
+```
+
+# Simulation
+
+## Typical value
+
+```{r simulate-typical}
+mod <- readModelDb("Tang_2026_zidovudine")
+mod_typical <- rxode2::zeroRe(mod, which = "omega")
+
+sim_typ <- rxode2::rxSolve(
+  mod_typical,
+  events = make_events(1L),
+  covsInterpolation = "linear",
+  returnType = "data.frame"
+)
+
+analyte_cols <- c(
+  "AZT" = "Cpbmc", "AZT-MP" = "Cpbmc_zdvmp",
+  "AZT-DP" = "Cpbmc_zdvdp", "AZT-TP" = "Cpbmc_zdvtp"
+)
+typ_long <- sim_typ |>
+  select(time, all_of(analyte_cols)) |>
+  pivot_longer(-time, names_to = "analyte", values_to = "conc") |>
+  mutate(analyte = factor(analyte, levels = names(analyte_cols)))
+```
+
+## Between-subject variability
+
+Two hundred virtual subjects share the mean plasma input; only the eight
+intracellular rate constants vary, with the Table 2 coefficients of
+variation.
+
+```{r simulate-vpc}
+rxode2::rxSetSeed(20260424)
+sim_vpc <- rxode2::rxSolve(
+  mod,
+  events = make_events(200L),
+  covsInterpolation = "linear",
+  returnType = "data.frame"
+)
+vpc_long <- sim_vpc |>
+  select(id, time, all_of(analyte_cols)) |>
+  pivot_longer(c(-id, -time), names_to = "analyte", values_to = "conc") |>
+  mutate(analyte = factor(analyte, levels = names(analyte_cols)))
+```
+
+# Replicate published figures
+
+The mean PBMC profiles of Figure 5 were digitised by the maintainers from
+the published figure (marker centres calibrated on the axis labels; the
+AZT-MP peak at 1.5 h was read from an enlarged crop because its error bar
+merges with the marker).
+
+```{r figure-5}
+obs_fig5 <- tibble::tribble(
+  ~time, ~AZT,    ~`AZT-MP`, ~`AZT-DP`, ~`AZT-TP`,
+  0.5,   0.105,   0.172,     0.0399,    0.0244,
+  1,     0.133,   0.313,     0.0647,    0.0244,
+  1.5,   0.118,   0.876,     0.0754,    0.0638,
+  2,     0.0843,  0.453,     0.0501,    0.0558,
+  2.5,   0.0501,  0.321,     0.0357,    0.0377,
+  3,     0.0354,  0.214,     0.0336,    0.0295,
+  3.5,   0.0305,  0.197,     0.0376,    0.0310,
+  4,     0.0256,  0.169,     0.0334,    0.0238,
+  5,     0.0203,  0.174,     0.0353,    0.0201,
+  6,     0.0196,  0.164,     0.0258,    0.0185,
+  8,     0.0098,  0.152,     0.0223,    0.0144,
+  10,    0.0060,  0.162,     0.0237,    0.0102
+) |>
+  pivot_longer(-time, names_to = "analyte", values_to = "conc") |>
+  mutate(analyte = factor(analyte, levels = names(analyte_cols)))
+
+vpc_summary <- vpc_long |>
+  group_by(analyte, time) |>
+  summarise(
+    q05 = quantile(conc, 0.05),
+    q50 = quantile(conc, 0.50),
+    q95 = quantile(conc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot() +
+  geom_ribbon(data = vpc_summary, aes(time, ymin = q05, ymax = q95), alpha = 0.2) +
+  geom_line(data = vpc_summary, aes(time, q50), linetype = "dashed") +
+  geom_line(data = typ_long, aes(time, conc), colour = "steelblue") +
+  geom_point(data = obs_fig5, aes(time, conc), colour = "firebrick") +
+  facet_wrap(~analyte, scales = "free_y") +
+  labs(
+    x = "Time (h)", y = "PBMC concentration (ng/10^6 cells)",
+    title = "Figure 5 - PBMC AZT and anabolites after 600 mg orally",
+    caption = paste(
+      "Replicates Figure 5 of Tang 2026. Red points: digitised observed means.",
+      "Blue: typical-value prediction. Dashed line and band: median and 90% interval of 200 virtual subjects."
+    )
+  )
+```
+
+Only AZT-MP is close to the observed means. Its typical-value peak
+height and its 10 h level agree to within about 5%, but the predicted
+peak is broader: it stays near 0.7-0.9 ng/10^6 cells from 1.5 to 4 h,
+while the observed mean falls back to about 0.2 by 3 h. Intracellular AZT
+is over-predicted about 17-fold at its 1 h peak. AZT-DP and AZT-TP are
+over-predicted about 3- to 4-fold at their peaks, and their predicted
+peaks come about 2 h later than observed. The section on deviations
+below discusses this mismatch.
+
+```{r figure-5-checks}
+typ_at <- function(col, t) sim_typ[[col]][which.min(abs(sim_typ$time - t))]
+obs_at <- function(a, t) obs_fig5$conc[obs_fig5$analyte == a & obs_fig5$time == t]
+
+mp_peak_ratio <- max(sim_typ$Cpbmc_zdvmp) / 0.922 # Table 1 AZT-MP Cmax
+mp_10h_ratio <- typ_at("Cpbmc_zdvmp", 10) / obs_at("AZT-MP", 10)
+azt_peak_ratio <- max(sim_typ$Cpbmc) / 0.175 # Table 1 AZT Cmax
+
+knitr::kable(
+  tibble::tibble(
+    Check = c(
+      "AZT-MP peak, typical / Table 1 Cmax",
+      "AZT-MP at 10 h, typical / Figure 5 mean",
+      "AZT peak, typical / Table 1 Cmax"
+    ),
+    Ratio = signif(c(mp_peak_ratio, mp_10h_ratio, azt_peak_ratio), 3)
+  ),
+  caption = "Typical-value predictions against the published means."
+)
+
+stopifnot(
+  # The typical-value solve uses no random draws, so these ratios are
+  # deterministic (measured 1.01 and 0.96). A mis-transcribed rate constant
+  # in the MP formation / loss balance moves them by tens of percent.
+  abs(log(mp_peak_ratio)) < log(1.25),
+  abs(log(mp_10h_ratio)) < log(1.25)
+)
+```
+
+# PKNCA validation
+
+Table 1 of the paper gives the non-compartmental parameters of the four
+PBMC species (mean of the six volunteers). The simulated cohort is
+analysed the same way, one PKNCA analysis per analyte over the 0-10 h
+sampling window. There is no dose in this model (plasma is the input), so
+no dose object is passed.
+
+```{r pknca}
+nca_conc <- vpc_long |>
+  filter(!is.na(conc)) |>
+  # LSODA can undershoot zero by ~atol in the first step; floor it.
+  mutate(conc = pmax(conc, 0)) |>
+  filter(time %in% c(0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 8, 10)) |>
+  mutate(analyte = as.character(analyte))
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, conc ~ time | analyte + id)
+# AUC0-t, Cmax and Tmax over the 0-10 h sampling window as in Table 1;
+# AUC0-inf and the terminal half-life extrapolated from the same samples.
+intervals <- data.frame(
+  start = c(0, 0),
+  end = c(10, Inf),
+  cmax = c(TRUE, FALSE),
+  tmax = c(TRUE, FALSE),
+  auclast = c(TRUE, FALSE),
+  aucinf.obs = c(FALSE, TRUE),
+  half.life = c(FALSE, TRUE)
+)
+# Some virtual subjects' AZT-DP / AZT-TP profiles are still near their peak
+# at 10 h, leaving fewer than three post-peak points; PKNCA then warns and
+# returns NA for that half-life. Muffle only that warning and count the NAs.
+nca_res <- withCallingHandlers(
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, intervals = intervals)),
+  warning = function(w) {
+    if (grepl("Too few points for half-life", conditionMessage(w))) {
+      invokeRestart("muffleWarning")
+    }
+  }
+)
+hl_missing <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "half.life") |>
+  group_by(analyte) |>
+  summarise(n_missing = sum(is.na(PPORRES)), .groups = "drop")
+knitr::kable(
+  hl_missing,
+  caption = "Virtual subjects (of 200) without a terminal half-life over 0-10 h."
+)
+```
+
+## Comparison against published NCA
+
+```{r nca-compare}
+# Tang 2026 Table 1 (means of the six volunteers; AUC0-t is over 0-10 h).
+published <- tibble::tribble(
+  ~analyte, ~cmax, ~tmax, ~auclast, ~aucinf.obs, ~half.life,
+  "AZT",    0.175, 1.083, 0.371,    0.396,       2.493,
+  "AZT-MP", 0.922, 1.500, 2.548,    6.343,       13.428,
+  "AZT-DP", 0.076, 1.417, 0.345,    0.615,       8.285,
+  "AZT-TP", 0.062, 1.583, 0.223,    0.279,       4.240
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "analyte",
+  units = c(
+    cmax = "ng/10^6 cells", tmax = "h", auclast = "ng*h/10^6 cells",
+    aucinf.obs = "ng*h/10^6 cells", half.life = "h"
+  ),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Simulated (median of 200 virtual subjects) vs. Tang 2026 Table 1 (mean of 6). * differs from reference by >20%."
+)
+```
+
+The comparison mirrors the figure. AZT-MP Cmax and AUC0-inf agree with
+Table 1 to within about 5%, but the broader simulated peak makes AUC0-10
+about 1.9-fold the published value. Intracellular AZT is about 17-fold
+higher than published in Cmax and about 25-fold higher in AUC. AZT-DP
+and AZT-TP are 3- to 5-fold higher, with Tmax about 2 h later. The published terminal half-lives (13.4 h for
+AZT-MP, 8.3 h for AZT-DP) come from profiles that are still flat at 10 h,
+whereas the model, with efflux of parent AZT as the only exit, gives a
+common terminal phase. Half-lives fitted over a 10 h window are therefore
+not well determined on either side.
+
+# Steady state under constant exposure
+
+The paper's in-vitro experiments (Figures 2 and 3) held the medium
+concentration constant. The model then has a closed-form steady state:
+every phosphorylation step is reversible and efflux of parent AZT is the
+only exit, so each pair of forward and backward fluxes balances.
+`AZT = kin * Cp / kout`, `MP = AZT * kO-MP / kMP-O`,
+`DP = MP * kMP-DP / kDP-MP` and `TP = DP * kDP-TP / kTP-DP`. A long
+constant-input solve has to reach these values.
+
+```{r steady-state}
+cp_const <- 100 # umol/L, the Figure 3 medium concentration
+ev_ss <- tibble::tibble(
+  id = 1L, time = c(0, 50, 100), evid = 0L, amt = NA_real_,
+  cmt = "pbmc", dvid = 1L, CP_ZIDOVUDINE_UM = cp_const
+)
+sim_ss <- rxode2::rxSolve(mod_typical,
+  events = ev_ss, rtol = 1e-10, atol = 1e-12,
+  returnType = "data.frame"
+)
+theta <- rxode2::rxode(mod)$theta
+p <- exp(theta[c(
+  "lkinf_pbmc", "lkeff_pbmc", "lkmet_zdvmp", "lkicv",
+  "lkmet_zdvdp", "lkicv_zdvmp", "lkmet_zdvtp", "lkicv_zdvdp"
+)])
+azt_ss <- p[["lkinf_pbmc"]] * cp_const / p[["lkeff_pbmc"]]
+mp_ss <- azt_ss * p[["lkmet_zdvmp"]] / p[["lkicv"]]
+dp_ss <- mp_ss * p[["lkmet_zdvdp"]] / p[["lkicv_zdvmp"]]
+tp_ss <- dp_ss * p[["lkmet_zdvtp"]] / p[["lkicv_zdvdp"]]
+closed <- c(azt_ss, mp_ss, dp_ss, tp_ss)
+solved <- unlist(sim_ss[sim_ss$time == 100, unname(analyte_cols)])
+
+knitr::kable(
+  tibble::tibble(
+    Analyte = names(analyte_cols),
+    `Closed form (ng/10^6 cells)` = signif(closed, 4),
+    `Solved at 100 h` = signif(solved, 4)
+  ),
+  caption = "Steady state at a constant 100 umol/L plasma (medium) concentration."
+)
+# Same parameters on both sides, so the difference is integrator error only
+# (measured ~1e-9 at rtol 1e-10).
+stopifnot(max(abs(solved / closed - 1)) < 1e-6)
+```
+
+These steady-state levels are the same order of magnitude as the plateaus
+in Figure 3, where intracellular AZT reached about 20-30 ng/10^6 cells in
+Molt-4 cells and 70-80 in HUVECs, and AZT-MP about 40-60 and 100-130. The
+model, fitted to PBMCs, predicts 32 and 20. The in-vitro data were not
+used to fit the model and are shown for context only.
+
+# Assumptions and deviations
+
+- **No plasma PK layer.** The paper describes plasma AZT with a
+  two-compartment model but prints none of its parameters (only the NCA
+  Tmax of 0.62 +/- 0.20 h and half-life of 1.95 +/- 0.20 h). The
+  intracellular layer was fitted with each volunteer's observed plasma
+  data as the input function, so the packaged model takes plasma AZT as
+  the covariate `CP_ZIDOVUDINE_UM` and users supply the trajectory. This
+  vignette uses the digitised mean of Figure 4. The paediatric
+  `Fauchet_2013_zidovudine` model is the only zidovudine plasma model in
+  nlmixr2lib; its `Cc` (mg/L) divided by 0.2672 gives umol/L.
+- **Units of the plasma input.** Table 2 gives `kin` in ng/10^6 cells per
+  uM per h, so the input is in umol/L. The MW of 267.2 g/mol used to
+  convert the digitised ng/mL profile is the value `Fauchet_2013_zidovudine`
+  uses; Tang 2026 does not state one.
+- **Mass, not molar, intracellular amounts.** Each PBMC species is carried
+  in ng/10^6 cells, the unit in which Table 1 and Figure 5 report it, and
+  the first-order constants act on those amounts directly. That is
+  presumably how the ADAPT fit was set up, but the paper does not say.
+  Because the four species have different molecular weights (267, 347,
+  427 and 507 g/mol), a mass-based chain does not conserve moles.
+- **Reversible steps from Figure 1.** Eq. 2 writes the AZT balance without
+  the AZT-MP -> AZT return term. The model follows Figure 1 and Table 2,
+  which give a backward rate constant for every phosphorylation step.
+- **IIV from %CV.** Table 2 reports the mean and %CV of the six individual
+  MAP-Bayesian estimates. The %CV was converted to a log-normal variance,
+  `omega^2 = log(1 + CV^2)`, with no correlations because none are
+  reported.
+- **Residual error.** The text before Table 2 says the table presents
+  residual error variances, but none is printed and the ADAPT variance
+  model is not described. All four proportional residual SDs are
+  `fixed(0)`, so simulations are of the true intracellular concentration.
+- **Typical values are means of individual estimates.** With six subjects
+  and CVs of 39-88%, the arithmetic mean of each rate constant need not
+  reproduce the mean profile.
+- **Mismatch with the published means.** With the Table 2 means and the
+  Figure 4 mean plasma profile as input, only the AZT-MP peak height, 10 h
+  level and AUC0-inf are reproduced, and its peak is too broad (AUC0-10
+  about 1.9-fold). Intracellular AZT is over-predicted about 17-fold at
+  Cmax and 25-fold in AUC, and AZT-DP and AZT-TP 3- to 5-fold. The maintainers checked whether a different unit for the plasma
+  input could explain this: reading `kin` per (ug/mL) instead of per uM
+  shrinks the AZT miss to about 6-fold but makes AZT-MP 3.5-fold too low,
+  so the uM reading printed in Table 2 is retained. The values were not
+  tuned. The model ratio `kin / kout` (0.32 ng/10^6 cells per uM) agrees
+  with the in-vitro plateaus (about 0.2-0.8), which suggests the clinical
+  PBMC AZT data, not the transport constants, sit apart. The source of the
+  discrepancy could not be identified from the paper.
+- **In-vitro medium concentration.** The Methods give 50 uM for the
+  time-course experiment, while the Results and the Figure 3 caption give
+  100 uM. The steady-state check above uses 100 uM; it is a property of
+  the model and does not depend on this choice.
+- **No corrections.** No erratum or correction notice was found for the
+  article as of 2026-11-13. It has no supplementary material, and its data
+  availability statement says all data are in the published article.

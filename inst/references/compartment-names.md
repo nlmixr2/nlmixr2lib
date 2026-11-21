@@ -7905,6 +7905,30 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Chen_2016_tenofovir_emtricitabine.R`, `Leung_2023_emtricitabine.R` (`vagina_ftctp`, `cervix_ftctp`, `rectum_ftctp`, one per mucosal tissue).
 
+### zdvmp (**canonical zidovudine monophosphate suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Zidovudine 5'-monophosphate (AZT-MP, ZDV-MP), the first intracellular anabolite of zidovudine, formed by cytosolic thymidine kinase 1. Because the next step (thymidylate kinase) is rate-limiting, it is by far the most abundant intracellular zidovudine species in lymphocytes and PBMCs. Charged, so it exists only as an intracellular pool.
+- **Source aliases:**
+  - `AZT-MP`, `ZDV-MP`, `MP` -- Tang 2026 text, Table 1 and Figure 1.
+- **Example models:** `Tang_2026_zidovudine.R` (`pbmc_zdvmp` in ng per 10^6 PBMCs; formation `kmet_zdvmp` from intracellular zidovudine, dephosphorylation back to zidovudine `kicv`, observation `Cpbmc_zdvmp`).
+- **Notes:** Built as parent token + phosphorylation state, following `tfvdp` / `ftctp` / `gs441524mp`. The parent token is `zdv` (the INN-derived abbreviation already used in `Fauchet_2013_zidovudine.R`) rather than `azt`, which collides visually with aztreonam (`Zhang_2023_aztreonam.R`). Qualify the state with its matrix (`pbmc_zdvmp`) and give rate constants a single suffix, as for `tfvdp`.
+
+### zdvdp (**canonical zidovudine diphosphate suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Zidovudine 5'-diphosphate (AZT-DP, ZDV-DP), formed from the monophosphate by thymidylate kinase (the rate-limiting step) and phosphorylated onward to the triphosphate by nucleoside diphosphate kinase. Intracellular only.
+- **Source aliases:**
+  - `AZT-DP`, `ZDV-DP`, `DP` -- Tang 2026 text, Table 1 and Figure 1.
+- **Example models:** `Tang_2026_zidovudine.R` (`pbmc_zdvdp`; formation `kmet_zdvdp`, dephosphorylation back to the monophosphate `kicv_zdvmp`, observation `Cpbmc_zdvdp`).
+- **Notes:** Same construction as [[zdvmp]]. In a reversible phosphorylation chain the dephosphorylation constants are `kicv_<species formed>` (see `kicv` in `parameter-names.md`), so `kicv_zdvmp` is DP -> MP, not MP -> something.
+
+### zdvtp (**canonical zidovudine triphosphate suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Zidovudine 5'-triphosphate (AZT-TP, ZDV-TP), the pharmacologically active anabolite that inhibits HIV reverse transcriptase. Intracellular only.
+- **Source aliases:**
+  - `AZT-TP`, `ZDV-TP`, `TP` -- Tang 2026 text, Table 1 and Figure 1.
+- **Example models:** `Tang_2026_zidovudine.R` (`pbmc_zdvtp`; formation `kmet_zdvtp`, dephosphorylation back to the diphosphate `kicv_zdvdp`, observation `Cpbmc_zdvtp`).
+- **Notes:** Same construction as [[zdvmp]]. Sibling of the other NRTI triphosphate suffixes `ftctp` and `faraatp` and of the diphosphate `tfvdp`.
+
 ### snk (**canonical S-norketamine suffix**)
 - **Type:** metabolite-suffix
 - **Role:** S-norketamine metabolite of S-ketamine.
