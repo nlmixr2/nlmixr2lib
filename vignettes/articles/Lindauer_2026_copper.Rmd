@@ -129,6 +129,18 @@ af_dose <- function(ids, af, time = 0) {
 sort_events <- function(df) {
   arrange(df, id, time, desc(evid))
 }
+
+# Typical-value solve. With the etas zeroed, rxode2 notes that a multi-subject
+# solve has no omega; that is intended here, so only that warning is muffled.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+}
+solve_typical <- function(model, events) {
+  withCallingHandlers(
+    rxSolve(rxode2::zeroRe(model), events, returnType = "data.frame"),
+    warning = muffle_no_omega
+  )
+}
 ```
 
 # Mass balance
@@ -149,7 +161,7 @@ mb_ev <- bind_rows(
   cov_cols(iv_tracer_events(2, c(0.1, 1, 3, 30, 300)), wd = 1),
   cov_cols(iv_tracer_events(3, c(0.1, 1, 3, 30, 300)), het = 1, chel = 1, zinc = 1)
 )
-mb <- rxSolve(rxode2::zeroRe(mod_ui), mb_ev, returnType = "data.frame")
+mb <- solve_typical(mod_ui, mb_ev)
 mb$total <- rowSums(mb[, states])
 knitr::kable(mb[, c("id", "time", "total")], digits = 6)
 stopifnot(all(abs(mb$total - 100) < 1e-3))
@@ -248,7 +260,7 @@ ev5a <- bind_rows(lapply(seq_along(af_grid), function(i) {
     sort_events() |>
     cov_cols(wd = 1)
 }))
-sim5a <- rxSolve(rxode2::zeroRe(mod_resp), ev5a, returnType = "data.frame") |>
+sim5a <- solve_typical(mod_resp, ev5a) |>
   mutate(AF = af_grid[id], pct_id = Cc * 2.8)
 ggplot(sim5a, aes(time * 24, pct_id, colour = factor(AF))) +
   geom_line() +
@@ -340,7 +352,7 @@ ev_s8 <- bind_rows(lapply(seq_len(nrow(s8_arms)), function(i) {
   ev$CONMED_ZINC <- ifelse(on, a$zinc, 0)
   ev
 }))
-sim_s8 <- rxSolve(rxode2::zeroRe(mod_ui), ev_s8, returnType = "data.frame") |>
+sim_s8 <- solve_typical(mod_ui, ev_s8) |>
   mutate(arm = factor(s8_arms$arm[id], levels = s8_arms$arm), urine_ug_day = 1000 * urine_rate)
 
 s8_long <- sim_s8 |>
