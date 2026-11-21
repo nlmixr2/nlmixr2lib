@@ -4018,6 +4018,10 @@ navbar:
         href: articles/vanderZeeuw_2026_immunoglobulin.html
       - text: "Immunoglobulin (Zhang 2020)"
         href: articles/vanderZeeuw_2026_immunoglobulin.html
+      - text: "Immunoglobulin allometryEstimated (Dumas 2026)"
+        href: articles/Dumas_2026_immunoglobulin.html
+      - text: "Immunoglobulin allometryFixed (Dumas 2026)"
+        href: articles/Dumas_2026_immunoglobulin.html
       - text: "Imr687 (Byrne 2022)"
         href: articles/Byrne_2022_imr687.html
       - text: "Inclisiran renalmild (Sten 2023)"
@@ -10007,6 +10011,7 @@ articles:
   - articles/Duffull_2025_tmdd_model_instability
   - articles/Duflot_2022_morphine
   - articles/Duke_2024_cefazolin
+  - articles/Dumas_2026_immunoglobulin
   - articles/Dumond_2017_unbound_antiretrovirals
   - articles/Dumortier_2025_secukinumab
   - articles/Dunlap_2025_tacrolimus

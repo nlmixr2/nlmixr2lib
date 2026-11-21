@@ -23556,6 +23556,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Tomita_2022_imeglimin.R` (Tomita 2022 Table 3: log-scale residual SD 0.505 for pre-dose samples vs 0.359 for post-dose phase II / III samples and 0.190 for post-dose phase I samples; the pre-dose magnitude takes precedence over the phase I one, an assumption because the paper does not state the precedence)., `Ooi_2023_bevurogant.R` (Ooi 2023 Table 2: the whole combined residual SD is multiplied by 1.27 for trough samples).
 - **Notes:** Member of the `SAMPLE_*` family (`SAMPLE_INTENSIVE`, `SAMPLE_CAPILLARY`). Distinct from `SAMPLE_INTENSIVE`, which partitions intensive vs sparse sampling DESIGN: a sparse phase IIb / III sample can be post-dose, and an intensive phase I profile includes day-N pre-dose draws, so the two partitions differ. Distinct from the meal-timing `MEAL_PREDOSE_*` indicators and from the `CTROUGH` concentration value.
 
+### SAMPLE_CENTRAL_LAB (**canonical for per-observation routine central-laboratory sample indicator**)
+- **Description:** 1 = the observation is a result from a routine clinical-monitoring blood draw assayed by the trial's clinical central laboratory (CDISC SDTM LB domain); 0 = a dedicated PK sample assayed by the bioanalytical laboratory (SDTM PC domain). Per-observation (record-level) indicator used to switch the residual-error magnitude when a source paper pools the same analyte from both data sources and estimates a separate residual error for each.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (dedicated PK sample, SDTM PC).
+- **Source aliases:**
+  - `DVID` -- Dumas 2026 Listing S1 (1 = 'Source SDTM.PC - PK draws/ba lab', 2 = 'Source SDTM.LB - Routine monitoring draws/central lab'); `SAMPLE_CENTRAL_LAB = DVID - 1`.
+- **Example models:** `Dumas_2026_immunoglobulin_allometryEstimated.R`, `Dumas_2026_immunoglobulin_allometryFixed.R` (total serum IgG; proportional SD 0.119 for SDTM PC vs 0.0808 / 0.0820 for SDTM LB).
+- **Notes:** Member of the `SAMPLE_*` family. Distinct from `SAMPLE_INTENSIVE`: the PK-sample stream can itself contain both rich profiles and sparse draws, so the contrast is the laboratory / data source, not the sampling design. Typical for analytes that are also routine safety or efficacy labs (immunoglobulins, albumin, electrolytes). Distinct from the assay-method indicators (`ELISA`, `IMMUNOASSAY`), which contrast analytical methods rather than the laboratory stream.
+
 ### LLOQ (**canonical for per-observation assay lower limit of quantification**)
 - **Description:** Lower limit of quantification of the bioanalytical assay that measured the observation, in the model's concentration units. Per-observation (record-level) value used to scale a residual-error component when a source paper expresses the additive residual SD in units of the assay LLOQ, so that one estimate covers several assays with different sensitivities.
 - **Units:** model concentration units (document per model; nmol/L in the founding model)
