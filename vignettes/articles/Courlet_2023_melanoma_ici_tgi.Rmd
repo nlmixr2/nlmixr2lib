@@ -1,0 +1,499 @@
+---
+title: "Melanoma tumor burden under immune checkpoint inhibitors (Courlet 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Melanoma tumor burden under immune checkpoint inhibitors (Courlet 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5,
+  error = FALSE
+)
+```
+
+```{r libraries, message = FALSE, warning = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Courlet_2023_melanoma_ici_tgi"))$reference`
+* Description (clinical-covariate model): `r rxode2::rxode(readModelDb("Courlet_2023_melanoma_ici_tgi"))$description`
+* Description (radiomics substudy model): `r rxode2::rxode(readModelDb("Courlet_2023_melanoma_ici_tgi_radiomics"))$description`
+* Article: <https://doi.org/10.1002/psp4.12983> (open access; PMC10431051)
+
+Courlet and colleagues (2023) built a tumor growth inhibition (TGI) model
+from real-world data: electronic health records and routine PET/CT or CT
+images of 91 patients with advanced cutaneous melanoma who received
+ipilimumab, nivolumab or pembrolizumab (alone or in combination) as first-line
+therapy at the Lausanne University Hospital. Every malignant lesion was
+segmented on every image and the lesion volumes were summed into a total
+tumor burden (TTB, cm^3).
+
+The total tumor burden `tumor_vol` obeys
+
+`d/dt(tumor_vol) = kgrowth * tumor_vol - TRT_PHASE * kkill * tumor_vol`,
+`tumor_vol(0) = TTB0`,
+
+where `kgrowth` is an exponential growth rate fixed to a literature value,
+`kkill` a log-kill rate shared by the three drugs, and `TRT_PHASE` the
+paper's ON/OFF regressor (0 for baseline images, 1 from the start of
+treatment onward, including after treatment discontinuation). The model has
+no pharmacokinetics: a model in which the drug effect depended linearly on
+dose fitted worse (Results, Base model).
+
+The paper reports two final models, and both are packaged:
+
+* `Courlet_2023_melanoma_ici_tgi` -- the model including clinical covariates
+  (Table 2; n = 91). Serum albumin, the neutrophil-to-lymphocyte ratio (NLR)
+  and ECOG > 0 act on TTB0, and NRAS mutation on `kgrowth`.
+* `Courlet_2023_melanoma_ici_tgi_radiomics` -- the exploratory substudy model
+  including PET radiomics features (Supplementary Material S5; n = 38). Two
+  baseline texture features act on TTB0, and one baseline and two delta
+  (first follow-up minus baseline) features on `kgrowth`.
+
+The base models (Table 2 and Supplementary Material S5, without covariates)
+are model-development steps and are not packaged; their omega values are used
+below to check the variance-explained statements.
+
+Because there is no drug input and no drug concentration, the PKNCA section
+of a usual validation is replaced by checks against the closed-form solution,
+the covariate effect sizes the paper reports (Figure 2 and Results) and the
+variance-explained statements of the Results.
+
+# Population
+
+The clinical-covariate model was fitted to 311 TTB measurements (240 PET/CT,
+71 CT) from 91 patients, a median of 3 per patient (range 2-10); baseline TTB
+was missing for 27 patients (Results, Data). Table 1 of the paper describes
+the cohort: 65% male, median age 68 years (IQR 60-76), median BMI 26 kg/m^2.
+Treatments were ipilimumab + nivolumab (n = 20), ipilimumab + nivolumab then
+nivolumab maintenance (n = 18), ipilimumab alone (n = 23), nivolumab alone
+(n = 3) and pembrolizumab (n = 27). Median albumin was 42.5 g/L (IQR
+40.0-45.0; 30% missing), median NLR 3.4 (IQR 2.4-4.3); ECOG was 0 / 1 / 2 / 4
+/ missing in 51 / 18 / 4 / 1 / 17 patients; 34 tumors carried an NRAS mutation
+(including 3 at an unknown position), 56 were wild type and 1 unknown.
+Missing covariates were imputed to the median (continuous) or the most
+frequent category (categorical).
+
+The radiomics substudy model used the 38 patients of the PET/CT cohort with
+radiomics features at baseline and first follow-up. The paper does not
+tabulate their characteristics.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Structural model (both files) | `d/dt(TTB) = kgrowth*TTB - trt*kkill*TTB`; derivative 0 when TTB > 1e12 | Table 2 footnote; Supplementary Material S6 (Monolix model file) |
+| ON/OFF regressor `TRT_PHASE` | 0 baseline images; 1 on treatment and after discontinuation | Supplementary Material S6 |
+| Residual error | log-normal, `constant(a)` | Supplementary Material S7 (Monolix project) |
+| IIV | log-normal; omega reported as CV% | Table 2 and Table S5 footnotes; Supplementary Material S7 |
+| **Clinical-covariate model** | | |
+| `lrbase` | log(7.78) cm^3 | Table 2 |
+| `lkgrowth` | log(0.0081) 1/day, fixed | Table 2; derivation in Supplementary Material S1 |
+| `lkkill` | log(0.008) 1/day | Table 2 |
+| `e_alb_rbase` | -5.27 on (ALB/42) | Table 2; footnote equation |
+| `e_nlr_rbase` | 0.76 on (NLR/3.14) | Table 2; footnote equation |
+| `e_ecog_ge1_rbase` | 0.65 | Table 2; footnote equation |
+| `e_tum_nras_mut_kgrowth` | -1.22 | Table 2; footnote equation |
+| `etalrbase`, `etalkgrowth`, `etalkkill` | CV 123%, 49%, 185% | Table 2 |
+| `expSd` | 1.13 | Table 2 |
+| **Radiomics substudy model** | | |
+| `lrbase` | log(0.18) cm^3 | Table S5 |
+| `lkgrowth` | log(0.0081) 1/day, fixed | Table S5 |
+| `lkkill` | log(0.0044) 1/day | Table S5 |
+| `e_gldm_de_bl_rbase` | 3.32 on (feature/6.29) | Table S5; footnote equation |
+| `e_glrlm_gln_bl_rbase` | 0.66 on (feature/74.87) | Table S5; footnote equation |
+| `e_gldm_sdlgle_bl_kgrowth` | -1.04 on (feature/0.013) | Table S5; footnote equation |
+| `e_gldm_de_delta_kgrowth` | 0.20 on (feature/0.11) | Table S5; footnote equation |
+| `e_shape_elong_delta_kgrowth` | 0.07 on (feature/-0.028) | Table S5; footnote equation |
+| `etalrbase`, `etalkgrowth`, `etalkkill` | CV 30%, 11%, 505% | Table S5 |
+| `expSd` | 0.78 | Table S5 |
+| Radiomics covariate form | `P = Ppop * (exp(RAD / RAD_mean))^beta` | Supplementary Material S1, Pharmacometric covariates assessment |
+
+```{r load-models}
+mod <- readModelDb("Courlet_2023_melanoma_ici_tgi")
+mod_rad <- readModelDb("Courlet_2023_melanoma_ici_tgi_radiomics")
+ui <- rxode2::rxode(mod)
+ui_rad <- rxode2::rxode(mod_rad)
+```
+
+# Closed-form check of the ON/OFF structure
+
+With the random effects set to zero, a patient whose treatment starts at day
+`t_on` has `TTB = TTB0 * exp(kgrowth * t)` before `t_on` and
+`TTB = TTB0 * exp(kgrowth * t_on) * exp((kgrowth - kkill) * (t - t_on))`
+after it. The solve below starts treatment 30 days after the baseline image
+(the paper accepted baseline images up to 3 months before treatment start)
+and switches `TRT_PHASE` on through the time-varying covariate column. Both
+sides use the same parameters, so the difference is pure integration error
+and a tight bound is correct.
+
+```{r closed-form}
+t_on <- 30
+cf_events <- data.frame(
+  id = 1L,
+  time = sort(unique(c(seq(0, 400, by = 5), t_on))),
+  evid = 0L,
+  cmt = "tumor_vol",
+  ALB = 42,
+  NLR = 3.14,
+  ECOG_GE1 = 0L,
+  TUM_NRAS_MUT = 0L
+) |>
+  mutate(TRT_PHASE = as.integer(time >= t_on))
+
+cf_sim <- rxode2::rxSolve(
+  rxode2::zeroRe(ui),
+  events = cf_events,
+  atol = 1e-12,
+  rtol = 1e-10
+) |>
+  as.data.frame()
+
+ttb0 <- exp(ui$theta[["lrbase"]])
+kg <- exp(ui$theta[["lkgrowth"]])
+kk <- exp(ui$theta[["lkkill"]])
+cf_sim <- cf_sim |>
+  mutate(
+    closed = ifelse(
+      time <= t_on,
+      ttb0 * exp(kg * time),
+      ttb0 * exp(kg * t_on) * exp((kg - kk) * (time - t_on))
+    ),
+    rel_err = abs(tumor_vol / closed - 1)
+  )
+max(cf_sim$rel_err)
+stopifnot(max(cf_sim$rel_err) < 1e-6)
+```
+
+```{r closed-form-plot, fig.cap = "Typical TTB with treatment starting at day 30 (reference covariates: albumin 42 g/L, NLR 3.14, ECOG 0, NRAS wild type). Line: rxode2 solution; points: closed form."}
+ggplot(cf_sim, aes(time, tumor_vol)) +
+  geom_line() +
+  geom_point(aes(y = closed), data = cf_sim[seq(1, nrow(cf_sim), by = 6), ], shape = 1) +
+  geom_vline(xintercept = t_on, linetype = "dashed") +
+  labs(x = "Time since baseline image (days)", y = "Total tumor burden (cm^3)")
+```
+
+For the typical patient `kgrowth` (0.0081/day) and `kkill` (0.008/day) almost
+cancel, so the typical tumor burden is nearly flat on treatment; the response
+heterogeneity of the cohort comes from the large IIV on `kkill` (CV 185%).
+
+# Covariate effect sizes (Figure 2 and Results)
+
+The Results report the median effect of each covariate on TTB0 at the 2.5th
+and 97.5th percentiles of its distribution (Figure 2): +527% at albumin 30
+g/L, -47% at 48 g/L, -50% at NLR 1.36, +116% at NLR 9.38, and +92% for
+ECOG > 0, plus a 70% lower `kgrowth` for NRAS-mutated tumors. These numbers
+are reproduced exactly when the reference patient carries the cohort medians
+of Table 1 (albumin 42.5 g/L, NLR 3.4) rather than the normalization values
+of the equation (42 and 3.14); the normalization constant cancels from such a
+ratio, so the check below tests the exponents themselves.
+
+```{r forest}
+forest_events <- data.frame(
+  id = 1:6,
+  time = 0,
+  evid = 0L,
+  cmt = "tumor_vol",
+  ALB = c(42.5, 30, 48, 42.5, 42.5, 42.5),
+  NLR = c(3.4, 3.4, 3.4, 1.36, 9.38, 3.4),
+  ECOG_GE1 = c(0L, 0L, 0L, 0L, 0L, 1L),
+  TUM_NRAS_MUT = 0L,
+  TRT_PHASE = 1L
+)
+forest_sim <- rxode2::rxSolve(rxode2::zeroRe(ui), events = forest_events) |>
+  as.data.frame()
+ref_ttb0 <- forest_sim$tumor_vol[forest_sim$id == 1]
+forest_tab <- data.frame(
+  covariate = c(
+    "Albumin 30 g/L", "Albumin 48 g/L", "NLR 1.36", "NLR 9.38",
+    "ECOG > 0"
+  ),
+  published = c(527, -47, -50, 116, 92),
+  simulated = 100 * (forest_sim$tumor_vol[forest_sim$id != 1] / ref_ttb0 - 1)
+)
+
+nras_events <- data.frame(
+  id = 1:2,
+  time = 0,
+  evid = 0L,
+  cmt = "tumor_vol",
+  ALB = 42.5,
+  NLR = 3.4,
+  ECOG_GE1 = 0L,
+  TUM_NRAS_MUT = c(0L, 1L),
+  TRT_PHASE = 0L
+)
+nras_sim <- rxode2::rxSolve(rxode2::zeroRe(ui), events = nras_events) |>
+  as.data.frame()
+forest_tab <- rbind(
+  forest_tab,
+  data.frame(
+    covariate = "NRAS mutated (effect on kgrowth)",
+    published = -70,
+    simulated = 100 * (nras_sim$kgrowth[2] / nras_sim$kgrowth[1] - 1)
+  )
+)
+
+forest_tab |>
+  mutate(simulated = round(simulated, 1)) |>
+  dplyr::rename(
+    "Covariate value" = covariate,
+    "Published change (%)" = published,
+    "Packaged model change (%)" = simulated
+  ) |>
+  kable(caption = "Change in TTB0 (or kgrowth) relative to a patient with albumin 42.5 g/L, NLR 3.4, ECOG 0 and NRAS wild type.")
+
+# The paper rounds to whole percentages.
+stopifnot(all(abs(forest_tab$simulated - forest_tab$published) < 1))
+```
+
+# Variance explained by the covariates
+
+The paper states that the clinical covariates explained 24% and 16% of the
+IIV on TTB0 and `kgrowth` (Results, Model evaluation), and that the radiomics
+features explained 75% and 71% of the variability on TTB0 and `kgrowth` while
+the variability on `kkill` increased by 35%. These statements hold for the
+change in the SD of the random effect (omega), with omega derived from the
+reported CV as `omega = sqrt(log(1 + CV^2))`; they do not hold if the reported
+CV were read as `omega * 100` (TTB0: 38% instead of 24%). This is why the
+packaged variances use `log(1 + CV^2)`.
+
+```{r iiv-explained}
+omega_from_cv <- function(cv) sqrt(log(1 + cv^2))
+omega_pkg <- function(u, eta) sqrt(u$omega[eta, eta])
+
+iiv_tab <- data.frame(
+  model = c(rep("Clinical covariates", 2), rep("Radiomics substudy", 3)),
+  parameter = c("TTB0", "kgrowth", "TTB0", "kgrowth", "kkill"),
+  # Base-model CVs: Table 2 (base model) and Table S5 (substudy base model).
+  base_cv = c(2.00, 0.59, 1.69, 0.39, 2.24),
+  final_omega = c(
+    omega_pkg(ui, "etalrbase"), omega_pkg(ui, "etalkgrowth"),
+    omega_pkg(ui_rad, "etalrbase"), omega_pkg(ui_rad, "etalkgrowth"),
+    omega_pkg(ui_rad, "etalkkill")
+  ),
+  published = c(-24, -16, -75, -71, 35)
+) |>
+  mutate(
+    change = 100 * (final_omega / omega_from_cv(base_cv) - 1)
+  )
+
+iiv_tab |>
+  mutate(change = round(change, 1), final_omega = signif(final_omega, 3)) |>
+  dplyr::rename(
+    "Model" = model,
+    "Parameter" = parameter,
+    "Base-model CV" = base_cv,
+    "Final omega (packaged)" = final_omega,
+    "Published change in IIV (%)" = published,
+    "Change in omega (%)" = change
+  ) |>
+  kable()
+
+stopifnot(all(abs(iiv_tab$change - iiv_tab$published) < 1))
+```
+
+# Virtual cohort and visual predictive check (Figure 3)
+
+Figure 3 of the paper is a prediction-corrected VPC of the clinical-covariate
+model over 1100 days. The cohort below has 200 virtual patients with the
+Table 1 covariate distributions: albumin normal with median 42.5 g/L and SD
+3.7 g/L (from the IQR 40-45), NLR log-normal with median 3.4 and the IQR
+2.4-4.3, ECOG > 0 in 23 of 91 patients (missing ECOG counted as 0, as in the
+model), and NRAS mutation in 34 of 91. Treatment starts at the baseline image
+(time 0) and `TRT_PHASE` stays 1 throughout, including after the last dose.
+
+```{r vpc-cohort}
+set.seed(20230612)
+rxode2::rxSetSeed(20230612)
+n_sub <- 200
+cohort <- data.frame(
+  id = seq_len(n_sub),
+  ALB = pmin(pmax(rnorm(n_sub, 42.5, 3.7), 25), 55),
+  NLR = exp(rnorm(n_sub, log(3.4), (log(4.3) - log(2.4)) / 1.349)),
+  ECOG_GE1 = rbinom(n_sub, 1, 23 / 91),
+  TUM_NRAS_MUT = rbinom(n_sub, 1, 34 / 91)
+)
+obs_times <- c(0, 30, 60, 90, 120, 180, 240, 300, 360, 450, 540, 720, 900, 1100)
+vpc_events <- tidyr::crossing(cohort, time = obs_times) |>
+  mutate(evid = 0L, cmt = "tumor_vol", TRT_PHASE = 1L) |>
+  arrange(id, time)
+
+vpc_sim <- rxode2::rxSolve(ui, events = vpc_events, nStud = 1) |>
+  as.data.frame()
+
+vpc_sum <- vpc_sim |>
+  group_by(time) |>
+  summarise(
+    p10 = quantile(sim, 0.10),
+    p50 = quantile(sim, 0.50),
+    p90 = quantile(sim, 0.90),
+    .groups = "drop"
+  )
+kable(vpc_sum, digits = 3, caption = "Percentiles of simulated observed TTB (cm^3), 200 virtual patients.")
+```
+
+```{r vpc-plot, fig.cap = "Replicates Figure 3 of Courlet 2023 (not prediction-corrected): 10th, 50th and 90th percentiles of simulated TTB observations."}
+ggplot(vpc_sum, aes(time)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), alpha = 0.25, fill = "steelblue") +
+  geom_line(aes(y = p50), colour = "red") +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Total tumor burden (cm^3)")
+```
+
+The simulated median starts near 8 cm^3 and the 10th-90th percentile band
+widens in both directions over time, driven by the large IIV on `kkill`, as
+in Figure 3, where the observed median starts near 8 cm^3 and the prediction
+intervals of the 10th and 90th percentiles spread over several orders of
+magnitude after day 300. The paper's VPC is prediction
+corrected, includes the observed covariates and imputes TTB = 0.001 cm^3
+after a durable complete response, so only its central tendency is compared
+here.
+
+```{r vpc-check}
+med0 <- vpc_sum$p50[vpc_sum$time == 0]
+med0
+# Figure 3: median of the prediction-corrected observations at day 0 is
+# about 8 cm^3; a mis-transcribed TTB0 or covariate exponent moves it by a
+# large factor.
+stopifnot(med0 > 4, med0 < 16)
+```
+
+# Radiomics substudy model
+
+The radiomics features enter as `exp(beta * feature / feature mean)`, so at
+the substudy feature means every factor equals `exp(beta)`. The typical TTB0
+at the means, `0.18 * exp(3.32 + 0.66)` = `r signif(0.18 * exp(3.32 + 0.66), 3)`
+cm^3, is close to the TTB0 of the substudy base model (8.61 cm^3, Table S5),
+and the typical `kgrowth` at the means is
+`0.0081 * exp(-1.04 + 0.20 + 0.07)` =
+`r signif(0.0081 * exp(-1.04 + 0.20 + 0.07), 3)` per day. The feature
+distributions are shown only graphically (Supplementary Material S4), so the
+simulation below uses the means and then moves one feature at a time.
+
+```{r radiomics}
+feat_mean <- c(
+  RADIOMIC_PET_GLDM_DEPENDENCE_ENTROPY_BL = 6.29,
+  RADIOMIC_PET_GLRLM_GRAY_LEVEL_NONUNIFORMITY_BL = 74.87,
+  RADIOMIC_PET_GLDM_SMALL_DEPENDENCE_LOW_GRAY_LEVEL_EMPHASIS_BL = 0.013,
+  RADIOMIC_PET_GLDM_DEPENDENCE_ENTROPY_DELTA = 0.11,
+  RADIOMIC_PET_SHAPE_ELONGATION_DELTA = -0.028
+)
+scen <- data.frame(
+  scenario = c(
+    "All features at their means",
+    "Delta shape elongation 3x its mean (-0.084)",
+    "Delta shape elongation 0 (no change in shape)"
+  ),
+  elong = c(-0.028, -0.084, 0)
+)
+rad_events <- tidyr::crossing(
+  data.frame(id = seq_len(nrow(scen)), elong = scen$elong),
+  time = seq(0, 720, by = 10)
+) |>
+  mutate(
+    evid = 0L,
+    cmt = "tumor_vol",
+    TRT_PHASE = 1L,
+    RADIOMIC_PET_GLDM_DEPENDENCE_ENTROPY_BL = feat_mean[[1]],
+    RADIOMIC_PET_GLRLM_GRAY_LEVEL_NONUNIFORMITY_BL = feat_mean[[2]],
+    RADIOMIC_PET_GLDM_SMALL_DEPENDENCE_LOW_GRAY_LEVEL_EMPHASIS_BL = feat_mean[[3]],
+    RADIOMIC_PET_GLDM_DEPENDENCE_ENTROPY_DELTA = feat_mean[[4]],
+    RADIOMIC_PET_SHAPE_ELONGATION_DELTA = elong
+  ) |>
+  select(-elong) |>
+  arrange(id, time)
+rad_sim <- rxode2::rxSolve(rxode2::zeroRe(ui_rad), events = rad_events) |>
+  as.data.frame() |>
+  mutate(scenario = scen$scenario[id])
+
+rad_typ <- rad_sim |>
+  filter(time == 0) |>
+  select(scenario, tumor_vol, kgrowth, kkill)
+kable(rad_typ, digits = 4, caption = "Typical TTB0 (cm^3), kgrowth and kkill (1/day) of the radiomics model.")
+
+# Every radiomics factor is exp(beta) at the feature means.
+stopifnot(
+  abs(rad_typ$tumor_vol[1] / (0.18 * exp(3.32 + 0.66)) - 1) < 1e-6,
+  abs(rad_typ$kgrowth[1] / (0.0081 * exp(-1.04 + 0.20 + 0.07)) - 1) < 1e-6,
+  # A more negative delta elongation (a lesion becoming more elongated)
+  # gives a higher kgrowth (Results, Radiomic features inclusion).
+  rad_typ$kgrowth[2] > rad_typ$kgrowth[1],
+  rad_typ$kgrowth[3] < rad_typ$kgrowth[1]
+)
+```
+
+```{r radiomics-plot, fig.cap = "Typical TTB in the radiomics substudy model on continuous treatment, by delta shape elongation."}
+ggplot(rad_sim, aes(time, tumor_vol, colour = scenario)) +
+  geom_line() +
+  labs(x = "Time (days)", y = "Total tumor burden (cm^3)", colour = NULL) +
+  theme(legend.position = "bottom", legend.direction = "vertical")
+```
+
+# Assumptions and deviations
+
+* **Covariate normalization values.** The packaged clinical-covariate model
+  uses the normalization values printed in the Table 2 footnote equation,
+  albumin 42 g/L and NLR 3.14. The Monolix project (Supplementary Material
+  S7) normalizes to the weighted means 42.2266 g/L and 3.14052. With the
+  printed values the predicted TTB0 is 2.8% lower for every patient
+  (`(42.2266/42)^-5.27 = 0.972`); the NLR difference is negligible. The
+  printed equation is followed because it is the published specification;
+  a user who needs the fitted Monolix configuration can multiply TTB0 by
+  `(42/42.2266)^-5.27`.
+* **Missing covariates.** The Monolix project pools missing ECOG with ECOG 0
+  and missing NRAS status with wild type, so a patient with unknown status
+  should be given `ECOG_GE1 = 0` and `TUM_NRAS_MUT = 0`. Missing albumin and
+  NLR were imputed to the cohort median in the paper.
+* **NRAS mutations at an unknown position** count as mutated
+  (`TUM_NRAS_MUT = 1`), per Supplementary Material S1.
+* **Treatment regressor after discontinuation.** `TRT_PHASE` stays 1 after
+  the last dose; the paper found that the same parameters described the
+  tumor dynamics during and after treatment. Setting it back to 0 after
+  discontinuation simulates a different model from the published one.
+* **Time origin.** The Monolix model sets TTB(0) = TTB0 at the first record
+  of each patient (the baseline image, kept with a missing value when the
+  baseline TTB was missing); treatment can start later and is switched on
+  through `TRT_PHASE`, carried forward from the preceding record as Monolix
+  carries regressors. The simulations above start treatment at the baseline
+  image except in the closed-form check.
+* **kgrowth.** The fixed 0.0081/day follows Table 2. Supplementary Material
+  S1 derives it by multiplying the linear (sum of longest diameters) growth
+  rate of Chatterjee 2017 by 3 to convert it to a volume rate. The KL of the
+  Chatterjee 2017 mixture model packaged in this library
+  (`Chatterjee_2017_pembrolizumab_mixture`, 2.76e-3/day) would give
+  0.0083/day; the packaged value is the paper's.
+* **Saturation.** The Monolix model sets the derivative to 0 above 1e12 cm^3
+  to avoid overflow; the packaged model keeps this guard. It is never reached
+  at realistic tumor burdens.
+* **Durable complete responders.** In the data, TTB after the first
+  lesion-free image of a durable complete responder was removed and that
+  image was imputed to 0.001 cm^3 (Supplementary Material S1). This is data
+  handling, not part of the model.
+* **Radiomics covariate form.** Supplementary Material S1 says the radiomics
+  features were "centered on their mean" but writes the relationship as
+  `(exp(RAD / RAD_mean))^beta`, and the Table S5 footnote equations divide by
+  the means; the packaged model follows the equations. The feature means
+  (6.29, 74.87, 0.013, 0.11, -0.028) are available only as these divisors.
+  The radiomics features depend on the image processing (SUV map, 1 mm
+  isotropic resampling, bin width 0.2, TTB-weighted aggregation over
+  lesions); features computed with other settings are not interchangeable.
+* **No PKNCA.** The model has no drug input or drug concentration, so a
+  noncompartmental analysis does not apply.
+* **IIV.** Both tables report omega as a CV of a log-normal parameter; the
+  variances are `log(1 + CV^2)`, which reproduces the paper's
+  variance-explained statements (see above). The omega matrices are
+  diagonal, as in the Monolix project.
