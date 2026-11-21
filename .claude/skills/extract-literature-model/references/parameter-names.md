@@ -697,6 +697,19 @@ appropriate token at the end:
   to: `clq` → `cl_q`; `vss` → `vc_vp` (Vss = Vc + Vp); `vcvp` → `vc_vp`.
 - **Multi-component CL**: `e_<cov>_cl_ss` or `e_<cov>_cl_time` or `e_<cov>_cl_renal`. Examples: `e_wt_cl_ss`, `e_alb_cl_time`. Source-paper terms `clinf` / `clss` → `cl_ss`; `clt` → `cl_time`.
 
+### Hyperbolic covariate half-points (`<cov>50_<param>`)
+
+When a continuous covariate changes a parameter through a hill = 1 (or
+sigmoid) Emax term, `param <- exp(lparam) * (1 +/- e_<cov>_<param> * COV^hill / (<cov>50_<param>^hill + COV^hill))`,
+name the maximal fractional change with the ordinary covariate-effect
+grammar (`e_<cov>_<param>`, log form `le_<cov>_<param>`, IIV
+`etale_<cov>_<param>`) and the half-point `<cov>50_<param>` (log form
+`l<cov>50_<param>`). Registered members: `age50_kel` (chronological age in
+years; `Ogungbenro_2019_simvastatin.R`) and `vload50_cl` (plasma viral load
+on the linear scale; `Smith_2026_VRC07523LS.R`, with `e_vload_cl` and a
+time-varying `HIV_VLOAD`). Do not name these as PD `ec50` / `emax`: the
+driver is a covariate, not a drug concentration.
+
 ### Compound covariate names
 
 Some canonical covariates contain underscores (e.g., `RACE_BLACK`,
