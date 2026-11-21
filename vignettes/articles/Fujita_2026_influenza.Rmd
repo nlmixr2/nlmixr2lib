@@ -1,0 +1,438 @@
+---
+title: "Influenza A and B viral shedding in oseltamivir challenge trials (Fujita 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Influenza A and B viral shedding in oseltamivir challenge trials (Fujita 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Fujita_2026_influenza"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Fujita_2026_influenza"))$description`
+* Article: <https://doi.org/10.1371/journal.pone.0342676> (open access; S8 Table
+  holds the population parameters and S9 Table the individual empirical Bayes
+  estimates with the daily viral loads computed from them)
+
+Fujita et al. re-analysed individual participant data from three Roche
+oseltamivir challenge trials in which healthy adults were inoculated
+intranasally with influenza A/Texas/91 (H1N1) or influenza B/Yamagata/16/88 and
+randomised to oseltamivir or placebo. Daily nasal-wash viral titres were fitted
+in Monolix with the target-cell-limited model of Equation 1, in which free virus
+is in quasi-steady state with infected cells:
+
+$$
+\frac{df}{dt} = -\beta f V, \qquad
+\frac{dV}{dt} = \gamma f V - \delta V,
+$$
+
+where $f$ is the fraction of target cells remaining relative to inoculation and
+$V$ is the viral titre (TCID50/mL). The four individual parameters
+$\beta$, $\gamma$, $\delta$ and $V(0)$ are log-normally distributed, and the
+virus type (influenza B versus A) is a covariate on all four.
+
+Oseltamivir is **not** part of the model. The authors fitted it to titres from
+day 1 after inoculation onward, after treatment had started, and looked for a
+drug effect in the individual estimates by treatment arm (they found no
+dose-dependent effect). The typical values therefore describe the pooled
+placebo and oseltamivir cohort.
+
+Model time is **days since inoculation**: $f(0) = 1$ and $V(0)$ is the
+estimated titre at inoculation. Treatment started on day 1 (24 h after
+inoculation for influenza B, 28 h for influenza A). The model output
+`log10_viral_load` is $\log_{10} V$.
+
+# Population
+
+Of 257 inoculated participants, the 103 with at least three viral titres above
+the detection limit were modelled: 44 infected with influenza A (Flu A study,
+protocol PV15616) and 59 with influenza B (Flu B studies A and B, protocols
+NP15717 and NP15827). From S7 Table, the modelled participants were 17-64
+years old (mean 25.9 years; 22.0 years for influenza A and 28.8 years for
+influenza B) and 56.3% female (58 of 103). Arms among the modelled
+participants were: influenza A placebo 9, 20 mg BID 8, 100 mg BID 8, 200 mg BID
+10 and 200 mg QD 9; influenza B placebo 28, 75 mg BID 26 and 150 mg BID 5.
+Inocula were $10^6$ TCID50 (influenza A) and $10^7$ TCID50 (influenza B).
+
+The same information is available programmatically via
+`readModelDb("Fujita_2026_influenza")` and its `population` metadata.
+
+# Source trace
+
+| Element | Value | Source location |
+|---|---|---|
+| Structure: $df/dt = -\beta f V$, $dV/dt = \gamma f V - \delta V$ | target-cell-limited, quasi-steady-state free virus | Materials and methods, Equation 1 |
+| `lbeta` | log(5.55e-4) (TCID50/mL)^-1 day^-1 | S8 Table, beta population value |
+| `lgamma` | log(14.7) day^-1 | S8 Table, gamma population value |
+| `ldelta` | log(5.18) day^-1 | S8 Table, delta population value |
+| `lV0` | log(0.492) TCID50/mL | S8 Table, V(0) population value |
+| `e_influenza_b_beta` | 1.65 | S8 Table, covariate for genotype B on beta |
+| `e_influenza_b_gamma` | -0.739 | S8 Table, covariate for genotype B on gamma |
+| `e_influenza_b_delta` | -0.595 | S8 Table, covariate for genotype B on delta |
+| `e_influenza_b_V0` | 0.959 | S8 Table, covariate for genotype B on V(0) |
+| `etalbeta` | 2.68^2 = 7.18 | S8 Table, 'Variance of individual parameters' read as SD (see Assumptions) |
+| `etalgamma` | 0.0955^2 = 0.00912 | as above |
+| `etaldelta` | 0.411^2 = 0.169 | as above |
+| `etalV0` | 1.96^2 = 3.84 | as above |
+| `addSd` | fixed(0) | not reported |
+| Initial conditions | $f(0) = 1$, $V(0)$ estimated | Materials and methods, Equation 1 and parameter estimation |
+| Time origin | days since inoculation | Materials and methods; confirmed by the S9 Table reproduction below |
+| Detection limit for derived features | 1 TCID50/mL | Materials and methods, viral load-related outcomes |
+
+# Individual-parameter reproduction (S9 Table)
+
+The article distributes the empirical Bayes estimates (EBEs) of
+$\log\beta$, $\log\gamma$, $\log\delta$ and $\log V(0)$ for all 103 modelled
+participants, together with the viral load computed from those EBEs on days 1-8
+and four derived features. The table is shipped beside this article as
+`data/Fujita_2026_S9_individual.csv` (verbatim, CC BY 4.0). Each participant's
+random effects are recovered as the EBE minus the typical value and the
+virus-type shift, then solved through the packaged model.
+
+```{r s9-load}
+s9_csv <- file.path("data", "Fujita_2026_S9_individual.csv")
+s9 <- read.csv(s9_csv, stringsAsFactors = FALSE)
+
+mod <- rxode2::rxode(readModelDb("Fujita_2026_influenza"))
+th <- mod$theta
+
+indiv <- s9 |>
+  mutate(
+    id = seq_len(n()),
+    INFLUENZA_B = as.integer(genotype == "B"),
+    virus_type = ifelse(INFLUENZA_B == 1, "Influenza B", "Influenza A"),
+    etalbeta = beta_log - (th[["lbeta"]] + th[["e_influenza_b_beta"]] * INFLUENZA_B),
+    etalgamma = gamma_log - (th[["lgamma"]] + th[["e_influenza_b_gamma"]] * INFLUENZA_B),
+    etaldelta = delta_log - (th[["ldelta"]] + th[["e_influenza_b_delta"]] * INFLUENZA_B),
+    etalV0 = v0_log - (th[["lV0"]] + th[["e_influenza_b_V0"]] * INFLUENZA_B)
+  )
+table(indiv$virus_type)
+eta_cols <- c("id", "etalbeta", "etalgamma", "etaldelta", "etalV0")
+```
+
+## Daily viral loads
+
+```{r s9-daily}
+ev_daily <- expand.grid(id = indiv$id, time = 1:8) |>
+  mutate(evid = 0L, amt = 0, cmt = "virus") |>
+  left_join(indiv |> select(id, INFLUENZA_B), by = "id") |>
+  arrange(id, time)
+
+sim_daily <- rxode2::rxSolve(
+  mod, ev_daily,
+  params = indiv[, eta_cols],
+  returnType = "data.frame"
+)
+
+pub_daily <- indiv |>
+  select(id, starts_with("viralload_")) |>
+  pivot_longer(-id, names_to = "time", names_prefix = "viralload_",
+               values_to = "virus_pub") |>
+  mutate(time = as.numeric(time))
+
+chk_daily <- sim_daily |>
+  select(id, time, virus) |>
+  left_join(pub_daily, by = c("id", "time")) |>
+  mutate(log10_ratio = log10(virus / virus_pub))
+
+summary(chk_daily$log10_ratio)
+```
+
+The solve uses the same parameters as the published values, so the two sides
+differ only by numerical error and a tight bound is appropriate:
+
+```{r s9-daily-check}
+stopifnot(
+  nrow(chk_daily) == 103 * 8,
+  max(abs(chk_daily$log10_ratio)) < 1e-4
+)
+```
+
+## Peak, time to peak, duration and AUC (PKNCA)
+
+The S9 Table features are computed from the individual curves with a
+detection limit of 1 TCID50/mL: the peak titre (log10), the time of the peak
+measured from treatment start (day 1; negative when the peak came before
+treatment), the duration of shedding from day 1 until the titre falls below
+1 TCID50/mL, and the log10 area under the titre curve over that same window.
+The individual curves are solved on a 0.01-day grid and the features computed
+with PKNCA: `cmax` and `tmax` over days 0-16, and `aucint.last` from day 1 to
+the time the titre first falls below 1 TCID50/mL after the peak.
+
+```{r s9-fine}
+ev_fine <- expand.grid(id = indiv$id, time = seq(0, 16, by = 0.01)) |>
+  mutate(evid = 0L, amt = 0, cmt = "virus") |>
+  left_join(indiv |> select(id, INFLUENZA_B), by = "id") |>
+  arrange(id, time)
+
+sim_fine <- rxode2::rxSolve(
+  mod, ev_fine,
+  params = indiv[, eta_cols],
+  returnType = "data.frame"
+) |>
+  select(id, time, virus) |>
+  left_join(indiv |> select(id, virus_type), by = "id")
+
+end_shed <- sim_fine |>
+  group_by(id) |>
+  summarise(
+    tend = time[which(time > time[which.max(virus)] & virus < 1)[1]],
+    .groups = "drop"
+  )
+stopifnot(!anyNA(end_shed$tend))
+
+intervals <- bind_rows(
+  indiv |> transmute(id, virus_type, start = 0, end = 16, cmax = TRUE, tmax = TRUE),
+  end_shed |>
+    left_join(indiv |> select(id, virus_type), by = "id") |>
+    transmute(id, virus_type, start = 1, end = tend, aucint.last = TRUE)
+)
+
+conc_obj <- PKNCA::PKNCAconc(
+  sim_fine |> filter(!is.na(virus)),
+  virus ~ time | virus_type + id
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, intervals = intervals))
+
+nca_wide <- as.data.frame(nca$result) |>
+  select(id, virus_type, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(end_shed, by = "id") |>
+  left_join(
+    indiv |> select(id, peak_model, peaktime_model, duration_model, auc_model),
+    by = "id"
+  ) |>
+  mutate(
+    d_peak = log10(cmax) - peak_model,
+    d_peaktime = (tmax - 1) - peaktime_model,
+    d_duration = (tend - 1) - duration_model,
+    d_auc = log10(aucint.last) - auc_model
+  )
+
+nca_wide |>
+  summarise(across(starts_with("d_"), ~ max(abs(.x)))) |>
+  dplyr::rename(
+    "Peak (log10)" = d_peak,
+    "Time to peak (day)" = d_peaktime,
+    "Duration (day)" = d_duration,
+    "AUC (log10)" = d_auc
+  ) |>
+  knitr::kable(digits = 4, caption = "Largest absolute difference from S9 Table over the 103 participants.")
+```
+
+The time-based features are limited by the 0.01-day grid, and the AUC by the
+trapezoidal rule:
+
+```{r s9-features-check}
+stopifnot(
+  max(abs(nca_wide$d_peak)) < 1e-3,
+  max(abs(nca_wide$d_peaktime)) <= 0.01,
+  max(abs(nca_wide$d_duration)) <= 0.01,
+  max(abs(nca_wide$d_auc)) < 0.01
+)
+```
+
+The per-virus-type medians, compared with the S9 Table medians:
+
+```{r s9-nca-table}
+reference <- indiv |>
+  group_by(virus_type) |>
+  summarise(
+    cmax = median(10^peak_model),
+    tmax = median(peaktime_model + 1),
+    aucint.last = median(10^auc_model),
+    .groups = "drop"
+  )
+
+ncaComparisonTable(
+  simulated = nca,
+  reference = reference,
+  by = "virus_type",
+  params = c("cmax", "tmax", "aucint.last"),
+  units = c(cmax = "TCID50/mL", tmax = "day", aucint.last = "TCID50*day/mL")
+) |>
+  knitr::kable(caption = "Median viral-load features by virus type: packaged model versus S9 Table. Time to peak is from inoculation.")
+```
+
+## Individual curves (Figure 2A)
+
+```{r fig2a, fig.cap = "Replicates Figure 2A of Fujita 2026: individual viral load curves from the S9 Table EBEs (grey = placebo, coloured = oseltamivir) with the typical-value curve for each virus type (black)."}
+typ_ev <- expand.grid(INFLUENZA_B = 0:1, time = seq(0, 12, by = 0.02)) |>
+  mutate(id = INFLUENZA_B + 1L, evid = 0L, amt = 0, cmt = "virus") |>
+  arrange(id, time)
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod, "omega"), typ_ev,
+                       returnType = "data.frame", keep = "INFLUENZA_B") |>
+  mutate(virus_type = ifelse(INFLUENZA_B == 1, "Influenza B", "Influenza A"))
+
+curves <- sim_fine |>
+  filter(time <= 12) |>
+  left_join(indiv |> select(id, dose), by = "id") |>
+  mutate(arm = ifelse(dose == "Placebo", "Placebo", "Oseltamivir"))
+
+ggplot(curves, aes(time, log10(virus), group = id)) +
+  geom_line(aes(colour = arm), alpha = 0.5) +
+  geom_line(data = typ, aes(time, log10_viral_load, group = NULL),
+            colour = "black", linewidth = 1.2) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~virus_type) +
+  scale_colour_manual(values = c(Placebo = "grey60", Oseltamivir = "steelblue")) +
+  coord_cartesian(ylim = c(-2, 8)) +
+  labs(x = "Days since inoculation", y = "log10 viral titre (TCID50/mL)",
+       colour = NULL)
+```
+
+# Typical-value behaviour
+
+```{r typical-features}
+typ_feat <- typ |>
+  group_by(virus_type) |>
+  summarise(
+    peak_log10 = max(log10_viral_load),
+    peak_day = time[which.max(log10_viral_load)],
+    shedding_ends_day = time[which(time > time[which.max(log10_viral_load)] &
+                                     log10_viral_load < 0)[1]],
+    target_left = min(target),
+    .groups = "drop"
+  )
+typ_feat |>
+  dplyr::rename(
+    "Virus type" = virus_type,
+    "Peak (log10 TCID50/mL)" = peak_log10,
+    "Peak time (day)" = peak_day,
+    "Titre < 1 TCID50/mL (day)" = shedding_ends_day,
+    "Target cells left (fraction)" = target_left
+  ) |>
+  knitr::kable(digits = 3)
+```
+
+Influenza B has the lower typical peak, the later peak and the longer shedding,
+the same direction as the comparisons the authors report from the individual
+estimates (S3 Fig):
+
+```{r typical-check}
+stopifnot(
+  typ_feat$peak_log10[typ_feat$virus_type == "Influenza B"] <
+    typ_feat$peak_log10[typ_feat$virus_type == "Influenza A"],
+  typ_feat$peak_day[typ_feat$virus_type == "Influenza B"] >
+    typ_feat$peak_day[typ_feat$virus_type == "Influenza A"],
+  typ_feat$shedding_ends_day[typ_feat$virus_type == "Influenza B"] >
+    typ_feat$shedding_ends_day[typ_feat$virus_type == "Influenza A"]
+)
+```
+
+# Between-participant variability
+
+S8 Table heads the random-effect column 'Variance of individual parameters',
+but Monolix reports the random-effect standard deviation $\omega$. The S9 EBEs
+show which reading applies: the EBE variance cannot exceed the population
+variance (that would be negative shrinkage), and it is typically smaller.
+
+```{r omega-reading}
+eta_var <- vapply(indiv[, eta_cols[-1]], var, numeric(1))
+printed <- c(etalbeta = 2.68, etalgamma = 0.0955, etaldelta = 0.411, etalV0 = 1.96)
+omega_tab <- data.frame(
+  eta = names(printed),
+  printed = printed,
+  ebe_var = eta_var[names(printed)],
+  shrink_if_variance = 1 - eta_var[names(printed)] / printed,
+  shrink_if_sd = 1 - eta_var[names(printed)] / printed^2
+)
+omega_tab |>
+  dplyr::rename(
+    "Random effect" = eta,
+    "S8 value" = printed,
+    "Variance of EBEs" = ebe_var,
+    "Shrinkage if S8 = variance" = shrink_if_variance,
+    "Shrinkage if S8 = SD" = shrink_if_sd
+  ) |>
+  knitr::kable(digits = 3, row.names = FALSE)
+stopifnot(
+  # Read as a variance, beta would have negative shrinkage.
+  eta_var[["etalbeta"]] > printed[["etalbeta"]],
+  # Read as an SD, every parameter shows non-negative shrinkage.
+  all(eta_var[names(printed)] < printed^2)
+)
+```
+
+The package therefore squares the S8 values. The diagonal of the packaged
+$\Omega$:
+
+```{r omega-packaged}
+diag(mod$omega)
+```
+
+A stochastic simulation with these variances, 200 participants per virus type,
+spans the individual EBE curves:
+
+```{r vpc, fig.cap = "5th, 50th and 95th percentiles of 200 simulated participants per virus type (ribbon and line) with the S9 Table EBE curves (grey)."}
+rxode2::rxSetSeed(20260221)
+vpc_ev <- expand.grid(id = 1:400, time = seq(0, 12, by = 0.1)) |>
+  mutate(INFLUENZA_B = as.integer(id > 200), evid = 0L, amt = 0, cmt = "virus") |>
+  arrange(id, time)
+vpc <- rxode2::rxSolve(mod, vpc_ev, returnType = "data.frame", keep = "INFLUENZA_B") |>
+  mutate(virus_type = ifelse(INFLUENZA_B == 1, "Influenza B", "Influenza A")) |>
+  group_by(virus_type, time) |>
+  summarise(
+    q05 = quantile(log10_viral_load, 0.05),
+    q50 = median(log10_viral_load),
+    q95 = quantile(log10_viral_load, 0.95),
+    .groups = "drop"
+  )
+
+ggplot() +
+  geom_line(data = curves, aes(time, log10(virus), group = id),
+            colour = "grey70", alpha = 0.5) +
+  geom_ribbon(data = vpc, aes(time, ymin = q05, ymax = q95),
+              fill = "steelblue", alpha = 0.3) +
+  geom_line(data = vpc, aes(time, q50), colour = "steelblue", linewidth = 1) +
+  facet_wrap(~virus_type) +
+  coord_cartesian(ylim = c(-4, 9)) +
+  labs(x = "Days since inoculation", y = "log10 viral titre (TCID50/mL)")
+```
+
+# Assumptions and deviations
+
+* **Random-effect column read as SD.** S8 Table labels the column 'Variance of
+  individual parameters' (beta 2.68, gamma 0.0955, delta 0.411, V(0) 1.96).
+  Read as variances, the EBE variance of $\log\beta$ (about 6.2) would exceed
+  the population variance; read as Monolix standard deviations, all four
+  parameters show plausible shrinkage (table above). The maintainers ratified
+  the SD reading, and the packaged $\Omega$ holds the squared values.
+* **Residual error not reported.** S8 Table gives no error-model parameter,
+  so `addSd` (additive on log10 titre) is `fixed(0)`. Simulated `log10_viral_load`
+  is therefore the individual prediction.
+* **Oseltamivir not modelled.** The authors fitted the model to post-treatment
+  data and compared individual estimates between arms; no drug effect is
+  part of the published model, so none is packaged. The typical values describe
+  placebo and treated participants pooled.
+* **Virus type is collinear with study.** `INFLUENZA_B` separates the Flu A study
+  from the two Flu B studies, so the covariate also absorbs their protocol
+  differences (inoculum $10^6$ vs $10^7$ TCID50; treatment start 28 h vs 24 h).
+  The V(0) shift (Wald p = 0.659) is retained as published.
+* **Units of beta.** S8 Table prints the unit of beta as
+  (RNA copies/mL)^-1 day^-1, but the viral load is in TCID50/mL (V(0) is in
+  TCID50/mL and the S9 Table daily loads are titres). The packaged beta is in
+  (TCID50/mL)^-1 day^-1; the S9 reproduction above confirms the scale.
+* **Time origin.** The Methods define the inoculation time as the first half of
+  day 0 and, in a later sentence, call the time 24 h after inoculation day 0.
+  The S9 Table daily loads are reproduced exactly with day $k$ at $k$ days after
+  $V(0)$, so the packaged time is days since inoculation and treatment starts on
+  day 1.
+* **Wald p-value for gamma.** The Results give the genotype-B effect on gamma a
+  Wald p-value of 2.47 x 10^-23; S8 Table gives 2.47 x 10^-13. The p-value is not
+  part of the model.
+* **Observed titres not available.** The S2 Fig data file distributed with the
+  article contains the S2 Table laboratory data rather than the observed viral
+  titres, so the validation uses the S9 Table EBEs and model-derived loads,
+  not the raw observations.
