@@ -163,8 +163,18 @@ ev_tv <- dplyr::bind_rows(lapply(seq_len(nrow(scen)), function(i) {
   make_events(scen[i, setdiff(names(scen), "dose")], scen$dose[i])
 }))
 
+# Typical-value solve. With the random effects zeroed, rxode2 warns that a
+# multi-subject simulation has no omega; that is the intent here, so only that
+# warning is muffled.
 tv <- rxode2::zeroRe(mod)
-sim_tv <- rxode2::rxSolve(tv, events = ev_tv, keep = "scenario") |>
+sim_tv <- withCallingHandlers(
+  rxode2::rxSolve(tv, events = ev_tv, keep = "scenario"),
+  warning = function(w) {
+    if (grepl("multi-subject simulation without", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+) |>
   as.data.frame()
 ```
 
