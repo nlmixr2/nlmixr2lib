@@ -27,6 +27,10 @@ OlssonGisleskog_2021_nicotine_lozenge <- function() {
     sep = " "
   )
   vignette <- "OlssonGisleskog_2021_nicotine"
+  # Each lozenge is two records, depot (in the mouth) and depot_oral (the
+  # swallowed share); central takes only the virtual pre-washout bolus.
+  dosing <- c("depot", "depot_oral", "central")
+
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(

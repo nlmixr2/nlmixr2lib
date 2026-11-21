@@ -216,15 +216,19 @@ stopifnot(!anyDuplicated(unique(events_ss[, c("id", "time", "evid")])))
 
 ```{r simulate}
 rxode2::rxSetSeed(20241029)
-sim_ss <- rxode2::rxSolve(mod, events = events_ss, keep = c("scenario")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_ss <- rxode2::rxSolve(mod, events = events_ss, keep = c("scenario"),
+                          maxsteps = 1e6) |>
   as.data.frame()
+# A subject whose steady-state search fails comes back NA and would silently leave
+# every summary below.
+stopifnot(!anyNA(sim_ss$Cc), dplyr::n_distinct(sim_ss$id) == nrow(subjects))
 ```
 
 ## PKNCA over the steady-state dosing interval
 
 ```{r pknca}
 nca_conc <- sim_ss |>
-  filter(!is.na(Cc)) |>
   select(id, time, Cc, scenario)
 nca_dose <- events_ss |>
   filter(evid == 1) |>

@@ -28,6 +28,10 @@ OlssonGisleskog_2021_nicotine_transdermal <- function() {
     sep = " "
   )
   vignette <- "OlssonGisleskog_2021_nicotine"
+  # Each patch is two records, a bolus into depot_td and a zero-order record
+  # into transit1; central takes only the virtual pre-washout bolus.
+  dosing <- c("depot_td", "transit1", "central")
+
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
