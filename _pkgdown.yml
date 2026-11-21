@@ -1466,6 +1466,8 @@ navbar:
         href: articles/Capparelli_2005_cefepime.html
       - text: "Cefepime (Fouad 2025)"
         href: articles/Fouad_2025_cefepime_taniborbactam_crrt.html
+      - text: "Cefepime (Hambrick 2026)"
+        href: articles/Hambrick_2026_cefepime.html
       - text: "Cefepime (Jonckheere 2019)"
         href: articles/Jonckheere_2019_cefepime.html
       - text: "Cefepime (Liu 2020)"
@@ -10278,6 +10280,7 @@ articles:
   - articles/Hall_2017_dapsone
   - articles/Hallik_2020_dobutamine
   - articles/Hamberg_2007_warfarin_pkpd_pgx
+  - articles/Hambrick_2026_cefepime
   - articles/Hammer_2020_acetaminophen
   - articles/Hamren_2008_tesaglitazar
   - articles/Hamuro_2017_DMD_6MWT
