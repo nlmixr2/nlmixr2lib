@@ -592,6 +592,18 @@ Three boundaries to respect:
   `kp_bound`, `kp_preg`) or index a loop (`kp_i`) are local `model()`
   intermediates, not canonicals.
 
+## Linear drug-drug coupling slopes
+
+`ddi_ka`, `ddi_k12`, `ddi_k21`, `ddi_kel` are signed slopes (1 / (amount *
+time)) that shift one drug's micro rate constant linearly with a
+co-administered drug's amount in the compartment the process leaves
+(`kel_X = kel + ddi_kel * central_Y`; negative = inhibition). The bare name
+modifies the unsuffixed drug; `ddi_<param>_<drug>` modifies the drug carrying
+that registered suffix. Keep them untransformed. Founding examples:
+`Huang_2026_metoprolol_captopril.R`, `Huang_2026_imeglimin_metformin.R`. Not
+the same as `slope_drug` / `slope_placebo` (PD slopes) or `ka_slope` (time
+ramp).
+
 ## Transform prefixes
 
 - `l` — natural log (`lka`, `lcl`, `lfdepot`)

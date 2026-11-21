@@ -8238,6 +8238,22 @@ concentration output, and the `propSd_<drug>` / `addSd_<drug>` residuals.
 - **Example models:** `Melillo_2023_gadoxetate_rat_pbpk.R` (doi:10.3390/pharmaceutics15030896; a two-compartment model, `central_bosentan` / `peripheral1_bosentan`, drives `cu_bosentan` into the gadoxetate active-uptake inhibition term; bosentan does not inhibit rMrp2 and so has no biliary term).
 - **Notes:** Distinct from the covariate canonicals `CONMED_BOSENTAN` and `BOSENTAN` (treatment-arm indicator). The informal `_bos` fragment elsewhere (e.g. `Aoki_2024_bosentan_pbpk.R`) is a standalone-drug parameter name, not a coupled-perpetrator compartment suffix.
 
+### captopril (**canonical captopril perpetrator drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Captopril drug suffix for a model that carries captopril's own PK as coupled ODE states next to a co-administered drug whose rate constants it modifies (and which modifies captopril's in turn). It covers `depot_captopril` / `central_captopril` / `peripheral1_captopril`, the rate constants `lka_captopril` / `lk12_captopril` / `lk21_captopril` / `lkel_captopril`, the coupling slopes `ddi_<param>_captopril`, and the observation `Cc_captopril`.
+- **Source aliases:**
+  - `Cap`, `Y` -- Huang 2026 abbreviation and drug label (`y0`, `y1`, `y2`, `beta`).
+- **Example models:** `Huang_2026_metoprolol_captopril.R` (doi:10.1371/journal.pone.0339052; linearly coupled two-compartment PK, every metoprolol rate constant shifted by a slope times the captopril amount in the compartment the process leaves, and vice versa).
+- **Notes:** Ratified by the maintainers 2026-11-20 (oasweep_PMC12890151). Spelled out per the new-canonical policy and the `ciclosporin` / `pioglitazone` / `bosentan` precedent. Both drugs are victim and perpetrator in the founding model; the drug the paper labels X (metoprolol) keeps the bare canonical names and drug Y takes this suffix. Standalone captopril models use bare names and must not be retrofitted.
+
+### metformin (**canonical metformin perpetrator drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Metformin drug suffix for a model that carries metformin's own PK as coupled ODE states next to a co-administered drug whose rate constants it modifies (and which modifies metformin's in turn). It covers `depot_metformin` / `central_metformin` / `peripheral1_metformin`, the rate constants `lka_metformin` / `lk12_metformin` / `lk21_metformin` / `lkel_metformin`, the coupling slopes `ddi_<param>_metformin`, and the observation `Cc_metformin`.
+- **Source aliases:**
+  - `Met` (imeglimin/metformin pair), `Y` -- Huang 2026 Supplementary S1 File drug label.
+- **Example models:** `Huang_2026_imeglimin_metformin.R` (doi:10.1371/journal.pone.0339052, S7-S9 Tables; same linearly coupled structure as `Huang_2026_metoprolol_captopril.R`).
+- **Notes:** Ratified by the maintainers 2026-11-20 (oasweep_PMC12890151). Spelled out, as for `captopril`. Distinct from the covariate canonical `CONMED_METFORMIN` (co-administration indicator) and the cocktail indicator `CONMED_DIGOXIN_METFORMIN_PITAVASTATIN_SITAGLIPTIN`: use the suffix only when metformin's PK is carried as ODE states in the model file. Standalone metformin models (e.g. `Yoon_2013_metformin.R`) use bare names and must not be retrofitted.
+
 ## TB-treatment drug suffixes (combination antibiotic)
 
 TB-treatment drug suffixes used in combination-antibiotic `central_<drug>` / `depot_<drug>` / `peripheral1_<drug>` PK subsystems. Each suffix is the canonical drug INN lowercase abbreviation.
