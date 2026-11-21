@@ -172,6 +172,8 @@ bands <- tibble::tribble(
 sdlog <- sqrt(log(1 + (17.2 / 77.7)^2))
 meanlog <- log(77.7) - sdlog^2 / 2
 
+# set.seed() seeds the base-R draws of the cohort below; rxSetSeed() seeds rxode2.
+set.seed(20220401)
 rxode2::rxSetSeed(20220401)
 cohort <- bands |>
   dplyr::rowwise() |>
@@ -233,8 +235,9 @@ sim_first <- rxode2::rxSolve(mod_no_study, ev_first, keep = "band",
 # silently. A larger step limit solves them all; the gate below fails loudly
 # if any subject is still missing.
 rxode2::rxSetSeed(20220402)
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_ss <- rxode2::rxSolve(mod_no_study, ev_ss, keep = "band",
-                          maxsteps = 500000L, returnType = "data.frame") |>
+                          maxsteps = 1e6, returnType = "data.frame") |>
   dplyr::mutate(regimen = "Steady state")
 sim <- dplyr::bind_rows(sim_first, sim_ss)
 stopifnot(!anyNA(sim$Cc), dplyr::n_distinct(sim_ss$id) == nrow(cohort))

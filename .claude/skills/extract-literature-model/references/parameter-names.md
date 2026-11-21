@@ -137,11 +137,22 @@ fm_m3g, fm_m6g                    # routes named by the metabolite formed
   parent clearance reaching that metabolite). Use it only for that case.
 - Papers that parameterise a nested split **positionally** keep the
   paper's own `fm1` / `fm2` names; those are not `fm_<pathway>` members.
+- When the same anabolite forms in several **tissues**, the tissue is the
+  route: `fm_vagina`, `fm_cervix`, `fm_rectum` (`Leung_2023_tenofovir.R`).
 
 Adding a new pathway that follows these rules needs **no sidecar** — add
 it to the `### fm_...` heading in `inst/references/parameter-names.md`.
 Anything else is a build error: `buildModelDb()` fails on an `fm_`-prefixed
 name bound in `ini()` or `model()` that is not in that heading.
+
+### Mucosal-tissue compartments (`vagina`, `cervix`, `rectum`)
+
+Per-state volumes `lv_<tissue>` / `lv_<tissue>_<metab>`; clearance out of the
+tissue `lcl_<tissue>` (parent, total) / `lcl_<tissue>_<metab>` (anabolite);
+fraction of total plasma clearance routed into the tissue `lfcl_<tissue>`;
+gut-lumen-to-rectal-tissue transfer `lka_rectum` and loss from the end of the
+transit chain `lkel_gut`. Founding examples: `Leung_2023_tenofovir.R`,
+`Leung_2023_emtricitabine.R`.
 
 ### DAR-explicit mechanistic ADCs
 
@@ -196,6 +207,15 @@ These describe the *measurement* process, so they belong with the residual-error
 block, not with the structural PK. Founding examples:
 `Siebinga_2023_lu177psma617.R` (`cal_slope_spect`, fixed) and
 `Lu_2016_pinatuzumab_polatuzumab.R` (the paper's `CORR`, estimated).
+### Urine collection-volume correction (`corr_urine_vol`)
+
+Unitless estimated multiplier on the *measured* urine volume of a collection
+interval, `Curine <- urine / (URINE_VOL_INTERVAL / 1000 * corr_urine_vol)`,
+for under-recovered volumes (urine lost in a diaper, incomplete voiding).
+Log form `lcorr_urine_vol`, per-sample IIV `etalcorr_urine_vol`. Not a
+`cal_slope_<assay>`: it divides a covariate volume rather than rescaling an
+assay. Founding example: `Wu_2023_paracetamol.R` (3.62, 138.4% CV).
+
 ## Absorption: transit and lag-time
 
 ### Transit-absorption chain (Savic parameterisation)
@@ -876,6 +896,7 @@ clearance expression references `t` / `time` without one of these.
 | Sigmoidal in time: `cl <- cl_base * exp(max * t^g / (t50^g + t^g))` | `cl_time_` | `cl_time_max`, `cl_t50`, `cl_time_hill` |
 | Exponential decay to a constant: `cl <- cl_exp_inf + cl_exp_component * exp(-k * t)` | `cl_exp_` | `cl_exp_inf`, `cl_exp_component`, `cl_exp_kdes` |
 | Exponential change by a fraction of the baseline: `cl <- cl * (1 + cl_exp_famp * (1 - exp(-cl_exp_kdes * t)))` | `cl_exp_` | `cl_exp_famp` (signed, linear; negative = decline), `cl_exp_kdes`. Founding example: `Yang_2021_unecritinib.R` |
+| Exponential recovery of a fractional deficit below the asymptote: `cl <- cl * (1 - cl_exp_fdef * exp(-cl_exp_kdes * t))` | `cl_exp_` | `cl_exp_fdef` (linear; `cl` is the ASYMPTOTE, not the t = 0 value), `lcl_exp_kdes`. Founding example: `OHanlon_2024_milrinone.R` |
 | Concentration-driven autoinduction: `cl <- cl_base * exp(max * C^g/(ec50^g + C^g) * t/(t50 + t))` | `cl_time_` + `cl_conc_` | `cl_time_max`, `cl_t50`, `cl_ec50`, `cl_conc_hill` |
 | Linear in time: `cl <- cl_base * (1 + slope * t)` | `cl_time_` | `cl_time_slope` (1/time; a percent per unit time is divided by 100). Founding example: `Cloesmeijer_2020_clonidine.R` |
 | Piecewise-constant step: `cl <- cl * (t < tclchange) + cl_late * (t >= tclchange)` | `tclchange` | `ltclchange`, `lcl_late` |
@@ -939,6 +960,20 @@ so the curve runs from `cl_pna0` at PNA 0 to the asymptote
 | Absolute amount gained between birth and full maturation | `cl_matspan` | The *span*, not the plateau: the plateau is `cl_pna0 + cl_matspan`. Named so it cannot be mistaken for a total clearance. |
 | Postnatal age at half of the maturation span | `pna50` | Carries the PNA anchor in the name, so it is distinct from the bare `t50` that `cl_time_` forbids and from a PD `ec50`. |
 | Sigmoidicity of the maturation | `lhill` | Already canonical -- see "Sigmoidal PD shape parameters". No separate maturation-specific spelling. |
+
+A different postnatal-age form describes the *decay of an excess present at
+birth* rather than a rise toward maturity (O'Hanlon 2024 milrinone, where
+neonatal volume is twice its size-standardised mature value at birth):
+
+```
+vc <- vc * (1 + vc_pna_famp * exp(-vc_pna_kdes * PNA))
+```
+
+`vc_pna_famp` is the linear fractional excess at PNA 0 and `lvc_pna_kdes` the
+log-scale decay rate per unit of postnatal age (a half-time `TVOL` gives
+`log(log(2) / TVOL)`). Swap the stem for another parameter
+(`<param>_pna_famp`, `l<param>_pna_kdes`). Founding example:
+`OHanlon_2024_milrinone.R`.
 
 Substitute the maturing parameter's own stem for `cl_` when the model matures
 something other than clearance (`gfr_pna0` / `gfr_matspan` for a glomerular

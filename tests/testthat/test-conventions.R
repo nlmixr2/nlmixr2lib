@@ -228,3 +228,33 @@ test_that("BDE shape tokens are disjoint from the other third-token sets", {
     0
   )
 })
+
+test_that("the memoised covariate alias map equals one built alias by alias", {
+  # Reference semantics: walk the register in order and let a later canonical
+  # overwrite an alias an earlier one claimed, keeping the alias's position.
+  conv <- nlmixr2lib:::.loadCanonicalCovariates()
+  ref <- character()
+  for (canon in names(conv)) {
+    for (a in conv[[canon]]$aliases) {
+      ref[a] <- canon
+    }
+  }
+  expect_gt(length(ref), 1000)
+  expect_identical(nlmixr2lib:::.nlmixr2libCovariateAliasMap(), ref)
+  # Memoised beside the register, and dropped when the register is re-parsed.
+  expect_identical(nlmixr2lib:::.covariateRegisterCache$aliasMap, ref)
+  nlmixr2lib:::.loadCanonicalCovariates(force = TRUE)
+  expect_null(nlmixr2lib:::.covariateRegisterCache$aliasMap)
+  expect_identical(nlmixr2lib:::.nlmixr2libCovariateAliasMap(), ref)
+})
+
+test_that("an alias claimed twice maps to the later canonical, at its first position", {
+  conv <- list(
+    A = list(aliases = c("x", "y")),
+    B = list(aliases = character()),
+    C = list(aliases = c("y", "z"))
+  )
+  expect_identical(nlmixr2lib:::.buildCovariateAliasMap(conv), c(x = "A", y = "C", z = "C"))
+  expect_identical(nlmixr2lib:::.buildCovariateAliasMap(list()), character())
+  expect_identical(nlmixr2lib:::.buildCovariateAliasMap(conv["B"]), character())
+})
