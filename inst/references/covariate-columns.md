@@ -6939,7 +6939,7 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Scope:** specific
 - **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_MEM_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
 - **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
-- **Example models:** `LopezArguello_2023_meropenem_qsp.R` (static 1 mg/L, 2x the MIC of 0.5 mg/L; Lopez-Arguello 2023 Table 1).
+- **Example models:** `LopezArguello_2023_meropenem_qsp.R` (static 1 mg/L, 2x the MIC of 0.5 mg/L; Lopez-Arguello 2023 Table 1), `Soeorg_2026_meropenem_colistin_polymyxinB.R` (pooled A. baumannii time-kill model of meropenem with colistin or polymyxin B).
 - **Notes:** Specific scope because the value is bound to meropenem and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`).
 
 ### CONC_ETP_MGL (**canonical for static in-vitro ertapenem concentration driving a receptor-binding or antibacterial PD model**)
@@ -7049,7 +7049,7 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Scope:** specific
 - **Reference category:** n/a -- 0 mg/L is the drug-free growth control. Aubry 2023 studied 0.03-8 mg/L across four *Klebsiella pneumoniae* isolates (colistin MICs 0.125-0.25 mg/L); Aubry 2025 studied 0.06-8 mg/L against isolate NARA864.
 - **Source aliases:** `CST_CONC` (Aubry 2023, 2025 NONMEM `$INPUT`, Supplementary Codes); `CST` is the American Society for Microbiology abbreviation for colistin and the papers' notation.
-- **Example models:** `Aubry_2023_ceftazidime_avibactam_colistin_NARA1295.R`, `Aubry_2023_ceftazidime_avibactam_colistin_NARA1584.R`, `Aubry_2023_ceftazidime_avibactam_colistin_NARA1182.R`, `Aubry_2023_ceftazidime_avibactam_colistin_NARA864.R` (founding examples; static colistin per time-kill tube driving a sigmoidal Emax kill, a two-state adaptive resistance, and as GPDI perpetrator a reduction of the ceftazidime/avibactam EC50 or Emax), `Aubry_2025_ceftazidime_avibactam_colistin_inoculumEffect.R`, `Aubry_2025_ceftazidime_avibactam_colistin_noInoculumEffect.R` (the inoculum-effect extension of the same combination against NARA864, and its no-inoculum-effect comparator).
+- **Example models:** `Aubry_2023_ceftazidime_avibactam_colistin_NARA1295.R`, `Aubry_2023_ceftazidime_avibactam_colistin_NARA1584.R`, `Aubry_2023_ceftazidime_avibactam_colistin_NARA1182.R`, `Aubry_2023_ceftazidime_avibactam_colistin_NARA864.R` (founding examples; static colistin per time-kill tube driving a sigmoidal Emax kill, a two-state adaptive resistance, and as GPDI perpetrator a reduction of the ceftazidime/avibactam EC50 or Emax), `Aubry_2025_ceftazidime_avibactam_colistin_inoculumEffect.R`, `Aubry_2025_ceftazidime_avibactam_colistin_noInoculumEffect.R` (the inoculum-effect extension of the same combination against NARA864, and its no-inoculum-effect comparator), `Soeorg_2026_meropenem_colistin_polymyxinB.R` (pooled A. baumannii time-kill model of meropenem with colistin or polymyxin B).
 - **Notes:** Specific scope because the value is bound to colistin and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family, whose drug tokens follow the American Society for Microbiology antibiotic abbreviations (siblings `CONC_CAZ_MGL`, `CONC_AVI_MGL`, `CONC_PMB_MGL`, `CONC_MEM_MGL`, `CONC_FOF_MGL`); hence `CST` rather than the `col` drug suffix used on parameter and compartment names. The founding models assume the concentration constant over the 30-h experiment and carry it without a PK ODE state; their adaptive-resistance rate switches on only while the concentration is above zero. In the Aubry 2025 clinical-concentration simulation the covariate is instead driven time-varying by a plasma PK profile.
 
 ### CONC_REL_MGL (**canonical for static in-vitro relebactam concentration driving a receptor-binding or antibacterial PD model**)
@@ -11802,6 +11802,50 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
   - `MIC` -- Troisi 2024 Results, Table 3 ('MIC on IC50') and ESM covariate equation `IC50 = IC50pop x e^(beta_MIC x MIC)`; meropenem MIC against the Gram-negative isolate from the bronchoalveolar lavage / blood culture.
 - **Example models:** `Troisi_2024_meropenem.R` (exponential effect on the meropenem IC50 for inhibition of C-reactive protein production: `ic50 = 0.79 * exp(0.44 * MIC) * exp(2.46 * CONMED_ANTIMRSA)`; Table 2 cohort median MIC 0.25 mg/L, IQR 0.12-4, range 0.12-64 -- founding example).
 - **Notes:** Distinct from the ratio PK/PD-index canonicals `AUCMIC_<DRUG>`, `CMAXMIC_<DRUG>` and `FTMIC_<DRUG>`, which carry an exposure already divided by an MIC; `MIC` is the bare susceptibility value, and the model computes any exposure ratio itself. MIC values are reported on the two-fold dilution scale and are often censored at the panel limits (Troisi 2024 reports 0.12 mg/L, the lowest dilution tested, for most Enterobacterales isolates); supply the reported value as-is. With an uncentered exponential effect the covariate dominates at high MIC (`exp(0.44 * 16)` is about 1100-fold in the founding model), so simulations should stay within the source cohort's MIC range.
+
+### MIC_MEM (**canonical for the meropenem MIC of the isolate in a multi-drug antibacterial PK/PD model**)
+- **Description:** Minimum inhibitory concentration (MIC) of meropenem against the bacterial isolate, supplied as a per-isolate (time-fixed) covariate. Member of the drug-qualified `MIC_<DRUG>` family, which carries each drug's MIC when a model needs the MICs of more than one antibacterial; the drug token follows the American Society for Microbiology antibiotic abbreviations used by the `CONC_<DRUG>_MGL` family (`MEM` = meropenem, `CST` = colistin, `PMB` = polymyxin B).
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous. In the founding model the meropenem EC50 is EC50_MERO x MIC_MEM, with EC50_MERO fixed to 1.
+- **Source aliases:**
+  - `MIC_MERO` -- Soeorg 2026 Eq 9 subscript (`EC50_MERO MIC_MERO`).
+- **Example models:** `Soeorg_2026_meropenem_colistin_polymyxinB.R` (founding example; MIC-scaled meropenem EC50 for 60 pooled A. baumannii isolates, 57 of them meropenem-resistant).
+- **Notes:** Use the bare `MIC` when a model has a single antibacterial (the drug is implied by the model); use `MIC_<DRUG>` when a model needs the MICs of two or more drugs, as combination time-kill models do. Supply the reported two-fold-dilution value as-is.
+
+### MIC_CST (**canonical for the colistin MIC of the isolate in a multi-drug antibacterial PK/PD model**)
+- **Description:** Colistin MIC of the bacterial isolate, as a per-isolate (time-fixed) covariate. Member of the `MIC_<DRUG>` family (see `MIC_MEM`).
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous. In the founding model the colistin/polymyxin B EC50 and the interaction potency are multiples of this MIC whenever the polymyxin in use is colistin.
+- **Source aliases:**
+  - `MIC_COLPMB` -- Soeorg 2026 Eq 10-11 subscript (colistin and polymyxin B pooled).
+- **Example models:** `Soeorg_2026_meropenem_colistin_polymyxinB.R` (founding example).
+- **Notes:** Colistin activity as colistin base from colistin sulfate, matching `CONC_CST_MGL`.
+
+### MIC_PMB (**canonical for the polymyxin B MIC of the isolate in a multi-drug antibacterial PK/PD model**)
+- **Description:** Polymyxin B MIC of the bacterial isolate, as a per-isolate (time-fixed) covariate. Member of the `MIC_<DRUG>` family (see `MIC_MEM`).
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous. In the founding model it replaces `MIC_CST` whenever the polymyxin in use is polymyxin B (`CONC_PMB_MGL` above 0).
+- **Source aliases:**
+  - `MIC_COLPMB` -- Soeorg 2026 Eq 10-11 subscript (colistin and polymyxin B pooled).
+- **Example models:** `Soeorg_2026_meropenem_colistin_polymyxinB.R` (founding example).
+- **Notes:** Pairs with `CONC_PMB_MGL`.
+
+### CARBAPENEMASE_POS (**canonical for an acquired carbapenemase carried by the bacterial isolate**)
+- **Description:** Binary isolate characteristic: 1 = the isolate carries an acquired carbapenem-hydrolysing beta-lactamase, 0 = none reported. In Acinetobacter baumannii this means the acquired class D OXA carbapenemases (OXA-23, OXA-24/40, OXA-58, OXA-72) and the metallo-beta-lactamases (VIM, NDM); the intrinsic chromosomal OXA-51-like enzymes (OXA-51, OXA-69) do not count.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no acquired carbapenemase)
+- **Source aliases:**
+  - `BL` -- Soeorg 2026 Eq 9 and Table 1 (`thetaBL`, 'Change in Emax_MER, if beta-lactamase present'), defined in Methods as OXA-23, OXA-24/40, OXA-58, OXA-72, VIM-1 or NDM-1.
+- **Example models:** `Soeorg_2026_meropenem_colistin_polymyxinB.R` (founding example; multiplies the meropenem Emax by 0.83; 30 of 60 isolates positive).
+- **Notes:** A property of the isolate, not the patient. Record the source's enzyme list in the model's `covariateData` notes, because what counts as "acquired" is species-specific. Distinct from `CONMED_CARBAPENEM` (carbapenem co-administration).
 
 ## Vaccine immunogenicity (placebo-corrected `_RATIO` family)
 
@@ -21585,7 +21629,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** general -- the starting inoculum is a universal in-vitro time-kill design input and the natural driver of any inoculum-effect model.
 - **Reference category:** n/a -- in the founding inoculum-effect model it enters as the ratio `INOC_LOG10CFU / log10(5e5)` raised to a power, where the standard inoculum log10(5e5) = 5.699 log10 CFU/mL gives a ratio of 1 (no effect).
 - **Source aliases:** `INOC` (Aubry 2025 NONMEM `$INPUT` and Supplementary Code S1).
-- **Example models:** `Aubry_2025_ceftazidime_avibactam_colistin_inoculumEffect.R` (founding example; estimated inocula 3.86, 5.54, 6.65 and 7.76 log10 CFU/mL for nominal 10^4, 5e5, 10^7 and 10^8 CFU/mL, driving a power-model reduction of the ceftazidime/avibactam Emax and increase of the colistin EC50, and setting the initial `cfu` state).
+- **Example models:** `Aubry_2025_ceftazidime_avibactam_colistin_inoculumEffect.R` (founding example; estimated inocula 3.86, 5.54, 6.65 and 7.76 log10 CFU/mL for nominal 10^4, 5e5, 10^7 and 10^8 CFU/mL, driving a power-model reduction of the ceftazidime/avibactam Emax and increase of the colistin EC50, and setting the initial `cfu` state), `Soeorg_2026_meropenem_colistin_polymyxinB.R` (pooled A. baumannii time-kill model of meropenem with colistin or polymyxin B).
 - **Notes:** General scope. Stored on the log10 CFU/mL scale because the founding model uses the log10 value directly in the inoculum-effect power function; a model consuming a linear starting count should register `INOC_CFU` rather than fold a different scale into this name. Inter-experimental variability around the inoculum is a separate (fixed) random effect in the founding model, not part of this covariate.
 
 ### FLARE (**canonical for flare-design study-arm indicator**)
@@ -26338,7 +26382,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** specific
 - **Reference category:** n/a -- 0 mg/L is the drug-free growth control. Lacroix 2025 studied total PMB 0.5 to 128 mg/L for A. baumannii AB121-D0 and 8 to 512 mg/L for AB122-D12.
 - **Source aliases:** none standardized (Lacroix 2025 writes `C` in Eq 1 and `C_T` in Fig. S2).
-- **Example models:** `Lacroix_2025_polymyxinB_AB121D0.R`, `Lacroix_2025_polymyxinB_AB122D12.R` (founding examples; static total PMB per time-kill tube, converted to the unbound concentration Cu = C_T x fu that drives the Emax / sigmoidal-Emax kill rate).
+- **Example models:** `Lacroix_2025_polymyxinB_AB121D0.R`, `Lacroix_2025_polymyxinB_AB122D12.R` (founding examples; static total PMB per time-kill tube, converted to the unbound concentration Cu = C_T x fu that drives the Emax / sigmoidal-Emax kill rate), `Soeorg_2026_meropenem_colistin_polymyxinB.R` (pooled A. baumannii time-kill model of meropenem with colistin or polymyxin B).
 - **Notes:** Specific scope because the value is bound to polymyxin B and to the in-vitro time-kill assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_DOR_MGL`, `CONC_MEM_MGL`, `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). PMB was shown stable over the 30-h time-kill experiment, so the concentration is genuinely time-invariant and needs no PK ODE state. Pairs with `MUCIN_PRESENT`, which selects whether the medium binds PMB at all.
 
 ### MUCIN_PRESENT (**canonical for mucin supplementation of the in-vitro growth medium**)
