@@ -37,6 +37,10 @@ Thorsted_2023_neutrophil_mouse <- function() {
     sep = " "
   )
   vignette <- "Thorsted_2023_neutrophil_bacterial_killing"
+  # depot: intraperitoneal cyclophosphamide; bact_susceptible: the bacterial
+  # inoculum, whose time tafd() reads.
+  dosing <- c("depot", "bact_susceptible")
+
   units <- list(
     time = "h",
     dosing = "mg (cyclophosphamide, intraperitoneal); CFU/g lung (bacterial inoculum)",

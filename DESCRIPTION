@@ -43,7 +43,7 @@ Suggests:
     rmarkdown,
     scales,
     survival,
-    testthat (>= 3.0.0),
+    testthat (>= 3.1.7),
     tibble,
     tidyr,
     withr,
