@@ -27,6 +27,10 @@ OlssonGisleskog_2021_nicotine_mouthspray <- function() {
     sep = " "
   )
   vignette <- "OlssonGisleskog_2021_nicotine"
+  # Each spray is two records, depot_buccal and depot_oral (the swallowed
+  # share); central takes only the virtual pre-washout bolus.
+  dosing <- c("depot_buccal", "depot_oral", "central")
+
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
