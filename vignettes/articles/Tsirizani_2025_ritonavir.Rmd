@@ -399,8 +399,18 @@ rxode2::rxSetSeed(20250926)
 #  - Between the two paths, over the 170 simulated twice-daily children:
 #    up to 36% at single time points and 5.5% in AUC; the arm medians move
 #    by 0.01%.
-sim_solve <- rxode2::rxSolve(mod, events, addDosing = FALSE,
-                             addlKeepsCov = FALSE, covsInterpolation = "locf")
+# dur(depot) is NONMEM's D1: each dose keeps the duration read at the dose.
+# rxode2 builds with `durAtDoseTime` re-read a modeled duration at every record
+# until the dose is delivered unless told otherwise, and in the twice-daily arm
+# a dose's zero-order input can run past the next occasion's first record.
+dose_time_dur <- if ("durAtDoseTime" %in% names(formals(rxode2::rxSolve))) {
+  list(durAtDoseTime = TRUE)
+} else {
+  list()
+}
+solve_d1 <- function(...) do.call(rxode2::rxSolve, c(list(...), dose_time_dur))
+sim_solve <- solve_d1(mod, events, addDosing = FALSE,
+                      addlKeepsCov = FALSE, covsInterpolation = "locf")
 sim <-
   sim_solve |>
   as.data.frame() |>
@@ -441,7 +451,7 @@ mod_typ_sup <- rxode2::zeroRe(mod)
 # Solved on the cohort simulation's own ODE path, so the check covers the
 # event-table and covariate pairing that the simulation uses.
 solve_sup <- function(ev) {
-  rxode2::rxSolve(mod_typ_sup, dplyr::filter(ev, id %in% twice_daily),
+  solve_d1(mod_typ_sup, dplyr::filter(ev, id %in% twice_daily),
                   params = sup_par, addDosing = FALSE,
                   addlKeepsCov = FALSE, covsInterpolation = "locf") |>
     as.data.frame()
@@ -603,7 +613,7 @@ f2_sim <-
   # lopinavir), duration and bioavailability act at the dose. Measured: with
   # ka equal on both occasions, linCmt() and the ODE path agree to 2.6e-6
   # over the simulated cohort (the ODE tolerance).
-  rxode2::rxSolve(mod_typ, f2_events, addDosing = FALSE, useLinCmt = TRUE,
+  solve_d1(mod_typ, f2_events, addDosing = FALSE, useLinCmt = TRUE,
                   addlKeepsCov = FALSE, covsInterpolation = "locf") |>
   as.data.frame() |>
   dplyr::mutate(tnca = time - T0)
@@ -1191,6 +1201,13 @@ is deliberately not encoded.
   from the morning samples inside its lag window. Its bioavailability, and so
   the AUC, stays its own;
   only the shape of its input changes.
+* **Each dose keeps the zero-order duration read at the dose.** That is how
+  NONMEM's `D1` behaves. rxode2 builds that have the `durAtDoseTime` argument of
+  `rxSolve()` instead re-read a modeled duration at every record until the dose
+  is delivered, so a morning dose still being absorbed at the first evening
+  sample would switch to the evening occasion's duration. Every simulation
+  here passes `durAtDoseTime = TRUE` on those builds; without it, 11 of the 164
+  twice-daily children checked in the `superposition` chunk miss by up to 24%.
 * **Covariate interpolation.** Each record carries the `OCC` value in force
   from that record until the next, so every solve in which it changes within a
   subject states `covsInterpolation = "locf"`, the `rxSolve()` default; solving
