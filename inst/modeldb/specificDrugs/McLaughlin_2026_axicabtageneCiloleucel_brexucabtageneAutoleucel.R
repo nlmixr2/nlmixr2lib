@@ -61,12 +61,12 @@ McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel <- function() {
       notes = "Exponential effect on the maximum expansion rate centred on the overall median 40 g/L: exp(0.0163 * (ALB - 40)).",
       source_name = "Baseline albumin"
     ),
-    CART_TEFF_PCT = list(
+    CART_EFFECTOR_T_PCT = list(
       description = "Effector T cells (CD45RA+ CCR7-) as a percentage of viable CD3+ cells in the infused CAR-T product",
       units = "%",
       type = "continuous",
       reference_category = NULL,
-      notes = "Exponential effect on the maximum expansion rate centred on the overall median 24.7%: exp(-0.00619 * (CART_TEFF_PCT - 24.7)).",
+      notes = "Exponential effect on the maximum expansion rate centred on the overall median 24.7%: exp(-0.00619 * (CART_EFFECTOR_T_PCT - 24.7)).",
       source_name = "Product TEFF (% of viable CD3+ cells)"
     ),
     PRIOR_BENDAMUSTINE = list(
@@ -121,7 +121,7 @@ McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel <- function() {
     lvc <- log(3.14e4); label("Scaling factor linking central CAR-T amount to blood concentration (L)") # Table 2 'Scaling factor' = 3.14 x 10^4 L (RSE 12.0%)
 
     e_wt_kel <- 0.781; label("Exponent of log(WT/82.7) on kel (unitless)") # Table 2 'Baseline body weight on k el' = 0.781 (RSE 27.6%; footnote a log-transformed)
-    e_cart_teff_pct_kexp_max <- -0.00619; label("Exponential effect of product %TEFF on rho (per %)") # Table 2 'Product % TEFF on rho' = -0.00619 (RSE 24.2%)
+    e_cart_effector_t_pct_kexp_max <- -0.00619; label("Exponential effect of product %TEFF on rho (per %)") # Table 2 'Product % TEFF on rho' = -0.00619 (RSE 24.2%)
     e_prior_bendamustine_kexp_max <- -0.241; label("Fractional change in rho with prior bendamustine (unitless)") # Table 2 'Prior bendamustine therapy on rho' = -0.241 (RSE 18.7%)
     e_alb_kexp_max <- 0.0163; label("Exponential effect of baseline albumin on rho (per g/L)") # Table 2 'Baseline albumin on rho' = 0.0163 (RSE 26.3%)
     e_tumtp_mcl_kkill <- -0.617; label("Fractional change in kkill for brexu-cel product type / MCL disease type (unitless)") # Table 2 'Brexu-cel product type/MCL disease type on k kill' = -0.617 (RSE 12.3%)
@@ -143,7 +143,7 @@ McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel <- function() {
     # overall medians (Methods 'Covariate analysis'); body weight entered on
     # the log scale; categorical effects are fractional changes.
     kexp_max <- exp(lkexp_max + etalkexp_max) *
-      exp(e_cart_teff_pct_kexp_max * (CART_TEFF_PCT - 24.7)) *
+      exp(e_cart_effector_t_pct_kexp_max * (CART_EFFECTOR_T_PCT - 24.7)) *
       exp(e_alb_kexp_max * (ALB - 40)) *
       (1 + e_prior_bendamustine_kexp_max * PRIOR_BENDAMUSTINE)
     kel <- exp(lkel + etalkel) * exp(e_wt_kel * (log(WT) - log(82.7)))
