@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gao 2026 hydromorphone ([doi:10.1111/cts.70666](https://doi.org/10.1111/cts.70666)) -- critically ill adults on veno-venous or veno-arterial ECMO.
+- Add Gao 2026 hydromorphone ([doi:10.1111/cts.70666](https://doi.org/10.1111/cts.70666)) -- critically ill adults on veno-venous or veno-arterial ECMO (ratifies the new `ECMO_VA_STATUS` covariate canonical).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
