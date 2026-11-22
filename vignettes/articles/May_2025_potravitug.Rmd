@@ -265,7 +265,10 @@ make_mad <- function(dose, id) {
     dplyr::mutate(id = id, dose = dose)
 }
 mad_ev <- dplyr::bind_rows(lapply(seq_along(mad_doses), function(i) make_mad(mad_doses[i], i)))
-mad <- as.data.frame(rxode2::rxSolve(ui, mad_ev, keep = "dose")) |>
+# Tight tolerances: at rxSolve()'s defaults the kidney occupancy overshoots
+# 100% by up to 0.08 points, and that integration error, which differs between
+# machines, is larger than the quasi-steady-state residual checked below.
+mad <- as.data.frame(rxode2::rxSolve(ui, mad_ev, keep = "dose", rtol = 1e-10, atol = 1e-12)) |>
   dplyr::mutate(
     treatment = factor(paste(dose, "mg"), levels = paste(mad_doses, "mg")),
     week = time / 168
@@ -346,8 +349,9 @@ ro_eq <- mad |>
 max_dev <- max(abs(ro_eq$ro_kidney - ro_eq$ro_qss))
 max_dev
 # Same solve on both sides; the residual is the short lag while free drug
-# rises during each infusion.
-stopifnot(max_dev < 0.15)
+# rises during each infusion (0.0029 percentage points at the tolerances
+# above, on rxode2 5.1.8 and on the 2026-11-22 development build alike).
+stopifnot(max_dev < 0.01)
 ```
 
 ## PKNCA against paper Table 3 (MAD, Day 85)
