@@ -222,7 +222,15 @@ test_that("rxode2 shares the draw when every subject has one level, and the help
   )
   # One record that gives subject 1 a third level makes rxode2 draw per subject
   # and level.
-  extra <- rbind(events, data.frame(id = 1L, time = 3, evid = 2L, OCC = 3L))
+  # Built from literals: CRAN rxode2 5.1.8 turns `events$OCC` into a factor in
+  # place during the solve above, so an rbind() onto `events` would read the
+  # new level 3 as NA.
+  extra <- data.frame(
+    id = c(rep(1:6, each = 2L), 1L),
+    time = c(rep(c(1, 2), 6L), 3),
+    evid = c(rep(0L, 12L), 2L),
+    OCC = c(rep(1:2, each = 6L), 3L)
+  )
   extra <- extra[order(extra$id, extra$time), ]
   per_level <- as.data.frame(rxode2::rxSolve(mod, extra))
   expect_silent(assertDrawsPerLevel(per_level, "etaiov", "OCC"))
