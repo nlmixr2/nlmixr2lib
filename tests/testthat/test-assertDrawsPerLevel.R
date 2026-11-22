@@ -623,7 +623,9 @@ test_that("a model file of a source tree is checked against that tree's articles
 test_that("a source tree without vignettes/articles skips the rule, says so in an info issue, and checks nothing", {
   skip_if_not_installed("nlmixr2est")
   ui <- .nestFixtureUi()
-  pkg <- .nestFixtureTree(NULL)
+  # Normalized as .packageDirOfModelFile() returns it, so the note of the
+  # direct call and of the file-row path name the same directory.
+  pkg <- normalizePath(.nestFixtureTree(NULL), winslash = "/")
   res <- .checkNestingAssertion(ui, "Fixture_occ_model", packageDir = pkg)
   expect_equal(nrow(res), length(.nestedEtaRows(ui)$eta))
   expect_identical(unique(res$category), "nesting_assertion")

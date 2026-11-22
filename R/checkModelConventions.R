@@ -3252,7 +3252,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
     return(NULL)
   }
   dir <- sub("^(.*)/inst/modeldb/.*$", "\\1", path)
-  if (file.exists(file.path(dir, "DESCRIPTION"))) dir else NULL
+  if (!file.exists(file.path(dir, "DESCRIPTION"))) {
+    return(NULL)
+  }
+  # normalizePath() leaves a file that does not exist as given, so the tree is
+  # normalized again once it is known to exist (macOS: /var -> /private/var).
+  normalizePath(dir, winslash = "/")
 }
 
 # The directory of the internal articles of the package source tree `packageDir`,
