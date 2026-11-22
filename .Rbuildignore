@@ -5,6 +5,7 @@
 ^codecov\.yml$
 ^_pkgdown\.yml$
 ^docs$
+^pkgdown-failure-state$
 ^pkgdown$
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
