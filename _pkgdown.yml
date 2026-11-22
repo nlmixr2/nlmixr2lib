@@ -1792,8 +1792,12 @@ navbar:
         href: articles/Zhao_2024_ciprofloxacin_colistin.html
       - text: "Ciprofloxacin colistin plasma (Zhao 2024)"
         href: articles/Zhao_2024_ciprofloxacin_colistin.html
+      - text: "Ciprofloxacin isf dog (Mag 2026)"
+        href: articles/Mag_2026_enrofloxacin_ciprofloxacin_dog.html
       - text: "Ciprofloxacin pbpk (Sadiq 2017)"
         href: articles/Sadiq_2017_ciprofloxacin.html
+      - text: "Ciprofloxacin plasma dog (Mag 2026)"
+        href: articles/Mag_2026_enrofloxacin_ciprofloxacin_dog.html
       - text: "Ciprofol (Liu 2024)"
         href: articles/Liu_2024_ciprofol.html
       - text: "Ciprofol (Wang 2026)"
@@ -2784,6 +2788,8 @@ navbar:
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
       - text: "Enrofloxacin ciprofloxacin cat (Foster 2023)"
         href: articles/Foster_2023_enrofloxacin_cat.html
+      - text: "Enrofloxacin isf dog (Mag 2026)"
+        href: articles/Mag_2026_enrofloxacin_ciprofloxacin_dog.html
       - text: "Enrofloxacin largemouthBass iv (Xu 2025)"
         href: articles/Xu_2025_enrofloxacin_largemouthBass.html
       - text: "Enrofloxacin largemouthBass oral (Xu 2025)"
@@ -2792,6 +2798,8 @@ navbar:
         href: articles/Zhou_2021a_enrofloxacin_pig_pbpk.html
       - text: "Enrofloxacin pig pbpk (Zhou 2021b)"
         href: articles/Zhou_2021b_enrofloxacin_pig_pbpk.html
+      - text: "Enrofloxacin plasma dog (Mag 2026)"
+        href: articles/Mag_2026_enrofloxacin_ciprofloxacin_dog.html
       - text: "Enrofloxacin rainbowTrout pbpk (Yang 2020)"
         href: articles/Yang_2020_enrofloxacin_rainbowTrout_pbpk.html
       - text: "Enrofloxacin totalFluoroquinolone cat (Foster 2023)"
@@ -11015,6 +11023,7 @@ articles:
   - articles/Machavaram_2013_interleukin6_cyp3a_pbpk
   - articles/Maciel_2024_quinine
   - articles/Macpherson_2015_rosuvastatin
+  - articles/Mag_2026_enrofloxacin_ciprofloxacin_dog
   - articles/Mahadevan_2026_polymyxinB_combination_CRKP
   - articles/Mahar_2025_daprodustat
   - articles/Mahomed_2025_CAP256V2LS

@@ -8,7 +8,10 @@ Mag_2026_ciprofloxacin_plasma_dog <- function() {
     "absorb the unknown fraction of enrofloxacin converted to ciprofloxacin and are not intrinsic ",
     "ciprofloxacin disposition parameters (Mag 2026 Section 3.3). Dose enrofloxacin into depot; Cc is ",
     "the ciprofloxacin plasma concentration. No covariates. The additive residual error magnitude ",
-    "is not reported and is fixed to zero. Sibling models: Mag_2026_enrofloxacin_plasma_dog, ",
+    "is not reported and is fixed to zero. ",
+    "The printed Table 3 CL/F and V/F give about half the exposure observed and simulated by the ",
+    "authors at 225 mg (see the vignette Errata). ",
+    "Sibling models: Mag_2026_enrofloxacin_plasma_dog, ",
     "Mag_2026_enrofloxacin_isf_dog and Mag_2026_ciprofloxacin_isf_dog."
   )
   reference <- paste(

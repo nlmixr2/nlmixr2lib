@@ -8,7 +8,10 @@ Mag_2026_ciprofloxacin_isf_dog <- function() {
     "(mg) is the input, and CL/F and V/F absorb both the unknown fraction converted to ciprofloxacin ",
     "and the plasma-to-ISF distribution, so they are descriptive only. Dose enrofloxacin into depot; ",
     "Cc is the ciprofloxacin ISF concentration, not a plasma concentration. No covariates. Residual ",
-    "error magnitudes are not reported by the source and are fixed to zero. Sibling models: ",
+    "error magnitudes are not reported by the source and are fixed to zero. ",
+    "The printed Table 3 CL/F and V/F give about half the exposure observed and simulated by the ",
+    "authors at 225 mg (see the vignette Errata). ",
+    "Sibling models: ",
     "Mag_2026_enrofloxacin_plasma_dog, Mag_2026_enrofloxacin_isf_dog and Mag_2026_ciprofloxacin_plasma_dog."
   )
   reference <- paste(

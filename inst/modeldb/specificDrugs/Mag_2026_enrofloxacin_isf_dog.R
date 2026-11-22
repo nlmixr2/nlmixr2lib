@@ -8,7 +8,10 @@ Mag_2026_enrofloxacin_isf_dog <- function() {
     "directly into a compartment whose concentration is the ISF concentration, so CL/F and V/F are ",
     "descriptive and the slow Ka (flip-flop) and long lag carry the delayed distribution into ISF. ",
     "The output Cc is the ISF concentration, not a plasma concentration. No covariates. Residual ",
-    "error magnitudes are not reported by the source and are fixed to zero. Sibling models: ",
+    "error magnitudes are not reported by the source and are fixed to zero. ",
+    "The printed Table 3 CL/F and V/F give about half the exposure observed and simulated by the ",
+    "authors at 225 mg (see the vignette Errata). ",
+    "Sibling models: ",
     "Mag_2026_enrofloxacin_plasma_dog, Mag_2026_ciprofloxacin_plasma_dog and Mag_2026_ciprofloxacin_isf_dog."
   )
   reference <- paste(
