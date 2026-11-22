@@ -12986,7 +12986,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Source aliases:**
   - `DIS` (Gibiansky 2014; integer code with `DIS == 4` flagging MCL) -- decompose into `TUMTP_MCL = as.integer(DIS == 4)`.
   - `Brexu-cel product type/MCL disease type` (Mc Laughlin 2026 Table 2) -- the composite indicator of brexucabtagene autoleucel in MCL; maps directly to `TUMTP_MCL` (see Notes).
-- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; separate effect on CL_T and CL_inf via the standalone MCL indicator (ratio 1.75, i.e., 75% higher CL than CLL)); `McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel.R` (fractional change -0.617 on the CAR-T-cell tumour-killing rate constant kkill, i.e. 62% lower kkill and about 2.6-fold higher Cmax and AUC0-28d for brexu-cel in MCL than axi-cel in other lymphomas; 67 of 473 patients).
+- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; separate effect on CL_T and CL_inf via the standalone MCL indicator (ratio 1.75, i.e., 75% higher CL than CLL)); `McLaughlin_2026_axicabtagene_brexucabtagene.R` (fractional change -0.617 on the CAR-T-cell tumour-killing rate constant kkill, i.e. 62% lower kkill and about 2.6-fold higher Cmax and AUC0-28d for brexu-cel in MCL than axi-cel in other lymphomas; 67 of 473 patients).
 - **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (broader lymphoma pool). The Gibiansky 2014 cohort had only 20 MCL patients (2.9%); the paper reports the highest obinutuzumab CL among the four B-cell-malignancy histologies for MCL, consistent with the highest CD20 expression density on MCL B-cells relative to the other histologies. In Mc Laughlin 2026 every brexucabtagene autoleucel patient had MCL and no axicabtagene ciloleucel patient did, so the effect is an inseparable product-type / disease-type composite: `TUMTP_MCL = 1` simulates brexu-cel in MCL, and the model cannot predict either product in the other disease.
 
 ### TUMTP_FL (**canonical for follicular lymphoma indicator**)
@@ -13584,7 +13584,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** n/a -- continuous; the founding model centres on the overall median 24.7%.
 - **Source aliases:**
   - `Product TEFF (% of viable CD3+ cells)` -- Mc Laughlin 2026 Table 1; `Product % TEFF on rho` in Table 2.
-- **Example models:** `McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel.R` (exponential effect on the maximum CAR-T-cell expansion rate constant: `exp(-0.00619 * (CART_EFFECTOR_T_PCT - 24.7))`; range 1.3-87.6% across 473 axi-cel and brexu-cel patients).
+- **Example models:** `McLaughlin_2026_axicabtagene_brexucabtagene.R` (exponential effect on the maximum CAR-T-cell expansion rate constant: `exp(-0.00619 * (CART_EFFECTOR_T_PCT - 24.7))`; range 1.3-87.6% across 473 axi-cel and brexu-cel patients).
 - **Notes:** First member of a product-phenotype family spelled out in full. The other T-cell memory phenotypes that CAR-T exposure-response and PK papers report use the same form and are reserved for them: `CART_NAIVE_T_PCT` (TN, CD45RA+ CCR7+), `CART_CENTRAL_MEMORY_T_PCT` (TCM, CD45RA- CCR7+) and `CART_EFFECTOR_MEMORY_T_PCT` (TEM, CD45RA- CCR7-), each as a percentage of viable CD3+ cells in the product. Register each one, with its own founding example, when a model first uses it. Distinct from `FCD8TDP` (a CD8 fraction of the dose, 0-1, used to split the dose rather than as an effect) and from the per-patient circulating `CD8_*` / `CD4_*` counts.
 
 ### TUM_NRAS_MUT (**canonical for tumour NRAS mutation indicator**)
@@ -15888,7 +15888,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** 0 (no prior bendamustine).
 - **Source aliases:**
   - `Prior bendamustine treatment` -- Mc Laughlin 2026 Table 1; `Prior bendamustine therapy on rho` in Table 2.
-- **Example models:** `McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel.R` (fractional change -0.241 on the maximum CAR-T-cell expansion rate constant, giving 29% lower Cmax and 25% lower AUC0-28d for the reference patient; 22 of 406 axi-cel and 36 of 67 brexu-cel patients).
+- **Example models:** `McLaughlin_2026_axicabtagene_brexucabtagene.R` (fractional change -0.241 on the maximum CAR-T-cell expansion rate constant, giving 29% lower Cmax and 25% lower AUC0-28d for the reference patient; 22 of 406 axi-cel and 36 of 67 brexu-cel patients).
 - **Notes:** Member of the `PRIOR_<drug or class>` prior-therapy family. Distinct from `CONMED_BENDAMUSTINE`, which marks bendamustine as part of the CURRENT regimen; this column marks earlier exposure, which in CAR-T-cell therapy is thought to impair the T-cell fitness of the apheresis material and so the expansion of the product. A patient with `PRIOR_BENDAMUSTINE = 1` is also 1 on `PRIOR_CHEMO`, `PRIOR_SYSTEMIC` and `PRIOR_ANTICANCER`.
 
 ### PRIOR_STATIN (**canonical for prior (pre-study) statin therapy indicator**)
@@ -19569,7 +19569,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Reference category:** 0 (ZUMA-1, ZUMA-2 and ZUMA-5 pooled).
 - **Source aliases:**
   - `Study ZUMA-7` -- Mc Laughlin 2026 Table 2 ('Study ZUMA-7 on RUV').
-- **Example models:** `McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel.R` (multiplies the log-scale residual-error SD by 1.719; no effect on any kinetic parameter; 161 of 473 patients).
+- **Example models:** `McLaughlin_2026_axicabtagene_brexucabtagene.R` (multiplies the log-scale residual-error SD by 1.719; no effect on any kinetic parameter; 161 of 473 patients).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Acts on the residual error only (the source attributes it to ZUMA-7's very low censoring threshold, 0.0001624 cells/uL), so simulations of a new population set it to 0.
 
 ### STUDY_DREAMM1 (**canonical for the DREAMM-1 belantamab mafodotin phase I study indicator**)

@@ -760,8 +760,8 @@ navbar:
         href: articles/Yang_2025_axatilimab_exposure_response.html
       - text: "Axatilimab teae grade3 (Yang 2025)"
         href: articles/Yang_2025_axatilimab_exposure_response.html
-      - text: "AxicabtageneCiloleucel brexucabtageneAutoleucel (McLaughlin 2026)"
-        href: articles/McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel.html
+      - text: "Axicabtagene brexucabtagene (McLaughlin 2026)"
+        href: articles/McLaughlin_2026_axicabtagene_brexucabtagene.html
       - text: "Axitinib (Garrett 2014)"
         href: articles/Garrett_2014_axitinib.html
       - text: "Axitinib (Rini 2013)"
@@ -11074,7 +11074,7 @@ articles:
   - articles/McKnite_2026_midazolam_crrt
   - articles/McLachlan_1996_fluconazole
   - articles/McLaughlin_2024_tld_1
-  - articles/McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel
+  - articles/McLaughlin_2026_axicabtagene_brexucabtagene
   - articles/Mead_2023_colistin_chicken
   - articles/MedellinGaribay_2015_gentamicin
   - articles/Meenks_2023_flucloxacillin

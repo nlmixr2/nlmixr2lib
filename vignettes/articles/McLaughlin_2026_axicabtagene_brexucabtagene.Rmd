@@ -19,8 +19,8 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r rxode2::rxode(readModelDb("McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel"))$reference`
-* Description: `r rxode2::rxode(readModelDb("McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel"))$description`
+* Citation: `r rxode2::rxode(readModelDb("McLaughlin_2026_axicabtagene_brexucabtagene"))$reference`
+* Description: `r rxode2::rxode(readModelDb("McLaughlin_2026_axicabtagene_brexucabtagene"))$description`
 * Article (open access): <https://doi.org/10.1002/cpt.70395>
 
 Axicabtagene ciloleucel (axi-cel) and brexucabtagene autoleucel (brexu-cel)
@@ -40,7 +40,7 @@ The blood concentration is the central amount divided by an estimated scaling
 factor (`vc`, 3.14 x 10^4 L; 10^6 cells/L = 1 cell/uL).
 
 ```{r load-model}
-mod <- readModelDb("McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel")
+mod <- readModelDb("McLaughlin_2026_axicabtagene_brexucabtagene")
 mod_ui <- rxode2::rxode(mod)
 mod_typical <- rxode2::zeroRe(mod_ui)
 ```
@@ -69,7 +69,7 @@ str(mod_ui$population)
 
 The per-parameter origin is recorded as an in-file comment next to each
 `ini()` entry in
-`inst/modeldb/specificDrugs/McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel.R`.
+`inst/modeldb/specificDrugs/McLaughlin_2026_axicabtagene_brexucabtagene.R`.
 
 | Equation / parameter | Value | Source location |
 |---|---|---|

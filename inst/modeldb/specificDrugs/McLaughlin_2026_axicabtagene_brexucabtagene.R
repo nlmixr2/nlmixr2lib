@@ -1,4 +1,4 @@
-McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel <- function() {
+McLaughlin_2026_axicabtagene_brexucabtagene <- function() {
   description <- "Mechanism-based population PK model of anti-CD19 CAR-T-cell kinetics for axicabtagene ciloleucel and brexucabtagene autoleucel in relapsed/refractory B-cell lymphomas: central and peripheral CAR-T-cell compartments with tumour-burden-driven first-order expansion after a lag, and a latent tumour (SPD) compartment depleted by second-order CAR-T killing (Mc Laughlin 2026)"
   reference <- paste(
     "Mc Laughlin AM, Bergstrand M, Ruiz-Garcia A, Filosto S, Shen R.",
@@ -8,7 +8,7 @@ McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel <- function() {
     "doi:10.1002/cpt.70395.",
     sep = " "
   )
-  vignette <- "McLaughlin_2026_axicabtageneCiloleucel_brexucabtageneAutoleucel"
+  vignette <- "McLaughlin_2026_axicabtagene_brexucabtagene"
   units <- list(
     time = "day",
     dosing = "10^6 CAR-T cells",
