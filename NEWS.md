@@ -2,6 +2,8 @@
 
 # development version
 
+- Add You 2026 moxifloxacin-regimen time-to-positivity EBA models, 14-day and 28-day ([doi:10.1111/cts.70694](https://doi.org/10.1111/cts.70694)) -- adults with drug-sensitive pulmonary tuberculosis in the REMoxTB trial.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

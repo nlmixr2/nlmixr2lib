@@ -5482,6 +5482,10 @@ navbar:
         href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
       - text: "Moxifloxacin rabbit pbpk (Karakitsios 2024)"
         href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
+      - text: "Moxifloxacin ttp14d (You 2026)"
+        href: articles/You_2026_moxifloxacin_tb_ttp.html
+      - text: "Moxifloxacin ttp28d (You 2026)"
+        href: articles/You_2026_moxifloxacin_tb_ttp.html
       - text: "Mrna1273 qsp (Dasti 2025)"
         href: articles/Dasti_2025_mrna_vaccines.html
       - text: "Mt107 cyclosporine mouse pbpk (Taddio 2018)"
@@ -12342,6 +12346,7 @@ articles:
   - articles/Yoshikado_2025_grazoprevir_pbpk
   - articles/Yoshioka_2018_FXa_inhibitors_mbma
   - articles/You_2013_hCG_GTN
+  - articles/You_2026_moxifloxacin_tb_ttp
   - articles/Youssef_2024_bepirovirsen
   - articles/Yu_2015_sunitinib
   - articles/Yu_2017_mycophenolic_acid
