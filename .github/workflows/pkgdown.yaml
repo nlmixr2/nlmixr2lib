@@ -120,6 +120,23 @@ jobs:
           extra-repositories: https://nlmixr2.r-universe.dev
           use-public-rspm: true
 
+      # The site renders on the r-universe builds of the nlmixr2 family, the
+      # stack the macOS and Windows checks resolve: CRAN rxode2 5.1.8 lacks the
+      # lagged-dose covariate fix (rxode2 issue 1584) that
+      # Tsirizani_2025_ritonavir checks. r-universe serves Linux binaries from
+      # a separate path; listed first, it wins over RSPM for every package
+      # both carry, equal versions included. The PACKAGES fetch fails the step
+      # when r-universe has no binaries for this distro and R version.
+      - name: Prefer the r-universe binaries of the nlmixr2 family
+        shell: bash
+        run: |
+          codename=$(. /etc/os-release && echo "$VERSION_CODENAME")
+          rver=$(Rscript -e 'cat(R.version$major, sub("[.].*", "", R.version$minor), sep = ".")')
+          url="https://nlmixr2.r-universe.dev/bin/linux/${codename}-$(uname -m)/${rver}"
+          curl -fsSL --max-time 30 -o /dev/null "$url/src/contrib/PACKAGES"
+          echo "options(repos = c(nlmixr2bin = \"$url\", getOption(\"repos\")))" >> ~/.Rprofile
+          Rscript -e 'print(getOption("repos"))'
+
       # r-universe rebuilds rxode2 under a FIXED version string, and
       # setup-r-dependencies keys its cache on the resolved versions, so a
       # restored cache can carry a build days older than the one pak resolved
@@ -222,6 +239,23 @@ jobs:
         with:
           extra-repositories: https://nlmixr2.r-universe.dev
           use-public-rspm: true
+
+      # The site renders on the r-universe builds of the nlmixr2 family, the
+      # stack the macOS and Windows checks resolve: CRAN rxode2 5.1.8 lacks the
+      # lagged-dose covariate fix (rxode2 issue 1584) that
+      # Tsirizani_2025_ritonavir checks. r-universe serves Linux binaries from
+      # a separate path; listed first, it wins over RSPM for every package
+      # both carry, equal versions included. The PACKAGES fetch fails the step
+      # when r-universe has no binaries for this distro and R version.
+      - name: Prefer the r-universe binaries of the nlmixr2 family
+        shell: bash
+        run: |
+          codename=$(. /etc/os-release && echo "$VERSION_CODENAME")
+          rver=$(Rscript -e 'cat(R.version$major, sub("[.].*", "", R.version$minor), sep = ".")')
+          url="https://nlmixr2.r-universe.dev/bin/linux/${codename}-$(uname -m)/${rver}"
+          curl -fsSL --max-time 30 -o /dev/null "$url/src/contrib/PACKAGES"
+          echo "options(repos = c(nlmixr2bin = \"$url\", getOption(\"repos\")))" >> ~/.Rprofile
+          Rscript -e 'print(getOption("repos"))'
 
       # r-universe rebuilds rxode2 under a FIXED version string, and
       # setup-r-dependencies keys its cache on the resolved versions, so a
