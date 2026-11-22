@@ -797,6 +797,21 @@ test_that("the probe falls back to dop853 when liblsoda cannot solve a model", {
   expect_identical(probeSolveModel("PK_1cmt", db, useLinCmt = FALSE)$method, "default")
 })
 
+test_that("the probe moves the dosed solve and its control to dop853 when liblsoda fails only the control", {
+  skip_on_cran()
+  skip_if_not_installed("rxode2")
+  db <- nlmixr2lib::modeldb
+  # liblsoda solves the dosed run but leaves the drug-free bacterial growth NaN
+  # after 6 h (older rxode2) or stops with "could not solve the system" (newer).
+  for (n in c("Zazo_2024_ceftazidime_avibactam_control", "Zazo_2024_ceftazidime_avibactam_icu")) {
+    r <- probeSolveModel(n, db, useLinCmt = FALSE)
+    expect_identical(r$status, "ok", info = n)
+    expect_identical(r$method, "dop853", info = n)
+    expect_identical(r$nonFiniteStates, character(0), info = n)
+    expect_gt(r$doseEffect, 0)
+  }
+})
+
 test_that("a model mixing an algebraic endpoint with ODE-state endpoints probes with the `first` form", {
   skip_on_cran()
   skip_if_not_installed("rxode2")

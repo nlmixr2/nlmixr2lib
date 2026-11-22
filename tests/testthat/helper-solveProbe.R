@@ -886,6 +886,30 @@ probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100, solverArgs = 
 }
 
 # The dosed and no-dose solves on one time grid, and what the dose changed.
+# The dosed solve and its drug-free control from the first solver after `skip`
+# that gives finite states in both, as list(attempt, undosed), or NULL when none
+# does. A stiff time-kill model can defeat liblsoda in the drug-free control
+# only (Zazo_2024_ceftazidime_avibactam: the control goes NaN after 6 h, which
+# newer rxode2 builds refuse as "could not solve the system"), and the two
+# solves are compared, so they must come from one solver.
+.probeFinitePair <- function(ui, doseCmt, amt, times, covValues, useLinCmt, solverArgs, forms, skip) {
+  for (m in setdiff(names(.probeSolverMethods), skip)) {
+    args <- utils::modifyList(.probeSolverMethods[[m]], solverArgs)
+    attempt <- .probeSolveWithAnyForm(ui, doseCmt, amt, times, covValues, useLinCmt, args, forms)
+    if (inherits(attempt$result, "try-error") || length(probeNonFiniteStates(ui, attempt$result))) {
+      next
+    }
+    undosed <- try(.probeSolveOnce(ui, doseCmt, 0, times, covValues, useLinCmt, attempt$form, args), silent = TRUE)
+    if (inherits(undosed, "try-error") || length(probeNonFiniteStates(ui, undosed))) {
+      next
+    }
+    attempt$method <- m
+    attempt$solverArgs <- args
+    return(list(attempt = attempt, undosed = undosed))
+  }
+  NULL
+}
+
 .probeSolveGrid <- function(ui, doseCmt, amt, times, cov, useLinCmt, solverArgs, forms = .probeEventForms) {
   out <- list(status = "error", message = NA_character_, covWhy = cov$why)
   attempt <- .probeSolveDosed(ui, doseCmt, amt, times, cov$values, useLinCmt, solverArgs, forms)
@@ -894,12 +918,20 @@ probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100, solverArgs = 
     out$message <- paste("solve failed:", conditionMessage(attr(dosed, "condition")))
     return(out)
   }
-  out$eventForm <- attempt$form
-  out$method <- attempt$method
   undosed <- try(
     .probeSolveOnce(ui, doseCmt, 0, times, cov$values, useLinCmt, attempt$form, attempt$solverArgs),
     silent = TRUE
   )
+  if (inherits(undosed, "try-error") || length(probeNonFiniteStates(ui, undosed))) {
+    pair <- .probeFinitePair(ui, doseCmt, amt, times, cov$values, useLinCmt, solverArgs, forms, attempt$method)
+    if (!is.null(pair)) {
+      attempt <- pair$attempt
+      dosed <- attempt$result
+      undosed <- pair$undosed
+    }
+  }
+  out$eventForm <- attempt$form
+  out$method <- attempt$method
   if (inherits(undosed, "try-error")) {
     out$message <- paste("control solve failed:", conditionMessage(attr(undosed, "condition")))
     return(out)
