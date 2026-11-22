@@ -1062,7 +1062,10 @@ checkModelConventions <- function(model, verbose = TRUE) {
         "error",
         nm,
         sprintf(
-          "Template reads '%s', which it never defines: it is not assigned in model(), not a state and not an ini() parameter.",
+          paste0(
+            "Template reads '%s', which it never defines: ",
+            "it is not assigned in model(), not a state and not an ini() parameter."
+          ),
           nm
         ),
         "Define it in ini() or model(), or correct the name; a template's `depends` does not declare it."
@@ -3351,7 +3354,10 @@ checkModelConventions <- function(model, verbose = TRUE) {
   if (is.null(packageDir)) {
     return(.nestingNotChecked(
       nested,
-      "the model is not in the inst/modeldb of a package source tree, so the article that asserts its draws cannot be found"
+      paste0(
+        "the model is not in the inst/modeldb of a package source tree, ",
+        "so the article that asserts its draws cannot be found"
+      )
     ))
   }
   articleDir <- .nestingArticleDir(packageDir)

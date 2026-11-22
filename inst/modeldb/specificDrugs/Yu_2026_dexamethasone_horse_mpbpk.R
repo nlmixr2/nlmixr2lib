@@ -21,9 +21,18 @@ Yu_2026_dexamethasone_horse_mpbpk <- function() {
   )
   vignette <- "Yu_2026_dexamethasone_horse_mpbpk"
   dosing <- c(
-    "a_blood", "depot_im", "blood_pho", "depot_im_pho", "blood_iso",
-    "depot_im_iso", "depot_oral_solid", "depot_oral_liquid", "joint_pho",
-    "joint_inflamed1", "joint_inflamed2", "joint_inflamed3"
+    "a_blood",
+    "depot_im",
+    "blood_pho",
+    "depot_im_pho",
+    "blood_iso",
+    "depot_im_iso",
+    "depot_oral_solid",
+    "depot_oral_liquid",
+    "joint_pho",
+    "joint_inflamed1",
+    "joint_inflamed2",
+    "joint_inflamed3"
   )
   units <- list(
     time = "h",

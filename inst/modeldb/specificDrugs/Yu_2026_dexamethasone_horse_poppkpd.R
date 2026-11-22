@@ -23,7 +23,12 @@ Yu_2026_dexamethasone_horse_poppkpd <- function() {
   )
   vignette <- "Yu_2026_dexamethasone_horse_poppkpd"
   dosing <- c(
-    "a_blood", "blood_iso", "blood_pho", "depot_im", "depot_im_iso", "joint_pho"
+    "a_blood",
+    "blood_iso",
+    "blood_pho",
+    "depot_im",
+    "depot_im_iso",
+    "joint_pho"
   )
   units <- list(
     time = "h",

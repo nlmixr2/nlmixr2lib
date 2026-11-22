@@ -227,7 +227,12 @@ test_that(".unpipe() gives the value magrittr gives, for every form it rewrites"
 })
 
 test_that("a chunk that pipes into a form the reader does not rewrite is reported, and still returned", {
-  for (code in c("y <- x %>% pkg::f", "y <- x %>% {f(.)}", "y <- x %>% (function(d) f(d))", "z <- x %>% h() %>% {k(.)}")) {
+  for (code in c(
+    "y <- x %>% pkg::f",
+    "y <- x %>% {f(.)}",
+    "y <- x %>% (function(d) f(d))",
+    "z <- x %>% h() %>% {k(.)}"
+  )) {
     path <- .readerArticle(c("```{r ok}", "ok()", "```", "```{r p}", code, "```"))
     read <- .articleExprs(path)
     expect_identical(

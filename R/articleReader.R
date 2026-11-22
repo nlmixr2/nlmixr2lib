@@ -34,7 +34,12 @@
 # then decides which of the later chunks run, which the reader cannot follow.
 .setsEvalOption <- function(e) {
   head <- e[[1L]]
-  if (!(is.call(head) && length(head) == 3L && identical(head[[1L]], as.name("$")) && identical(head[[3L]], as.name("set")))) {
+  if (
+    !(is.call(head) &&
+      length(head) == 3L &&
+      identical(head[[1L]], as.name("$")) &&
+      identical(head[[3L]], as.name("set")))
+  ) {
     return(FALSE)
   }
   target <- head[[2L]]

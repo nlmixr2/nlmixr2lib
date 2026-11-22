@@ -47,7 +47,10 @@ test_that("a draw shared by the subjects of a level is an error naming the count
   sim <- .drawsSim(shared = TRUE)
   expect_error(
     assertDrawsPerLevel(sim, eta = "etaiov", by = "OCC"),
-    "`etaiov` is shared: 6 (subject, `OCC`) pairs carry 2 distinct draws; level 1: 1 distinct of 3 subject(s); level 2: 1 distinct of 3 subject(s)",
+    paste0(
+      "`etaiov` is shared: 6 (subject, `OCC`) pairs carry 2 distinct draws; ",
+      "level 1: 1 distinct of 3 subject(s); level 2: 1 distinct of 3 subject(s)"
+    ),
     fixed = TRUE,
     class = "nlmixr2lib_drawsPerLevel"
   )
@@ -437,7 +440,13 @@ test_that("an article whose chunks the reader cannot take at face value fails th
     fixed = TRUE
   )
   # A pipe into a form that is not rewritten may hide the call.
-  piped <- .nestFixtureArticles(c(.callOk, "```", "", "```{r later}", "res <- sim %>% {assertDrawsPerLevel(., eta = \"x\", by = \"OCC\")}"))
+  piped <- .nestFixtureArticles(c(
+    .callOk,
+    "```",
+    "",
+    "```{r later}",
+    "res <- sim %>% {assertDrawsPerLevel(., eta = \"x\", by = \"OCC\")}"
+  ))
   v <- .nestRuleIssues(ui, piped)
   expect_equal(nrow(v), 1L)
   expect_match(
@@ -457,7 +466,7 @@ test_that("an article in vignettes/ beside articles/ is found", {
   expect_equal(nrow(.nestRuleIssues(.nestFixtureUi(vignette = "Fixture_top"), pkg)), 0L)
 })
 
-test_that("the rule does nothing outside a source tree, without a nested eta, or for an evidenced above-subject group", {
+test_that("the rule is silent outside a source tree, without a nested eta, or for an evidenced above-subject group", {
   skip_if_not_installed("nlmixr2est")
   outside <- .nestRuleIssues(.nestFixtureUi(), NULL)
   expect_identical(outside$severity, "info")

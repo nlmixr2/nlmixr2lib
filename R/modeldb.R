@@ -632,7 +632,15 @@ addFileToModelDb <- function(dir, file, modeldb) {
 # Result for one parsed file: its cache key and hash, and either the row (with
 # any error-severity convention issues) or `failure`, the message of the R
 # error that stopped it loading.
-.modeldbFileResult <- function(file, hash, row = NULL, errors = NULL, failure = NULL, volatile = FALSE, notes = character()) {
+.modeldbFileResult <- function(
+  file,
+  hash,
+  row = NULL,
+  errors = NULL,
+  failure = NULL,
+  volatile = FALSE,
+  notes = character()
+) {
   list(file = file, hash = hash, row = row, errors = errors, failure = failure, volatile = volatile, notes = notes)
 }
 
