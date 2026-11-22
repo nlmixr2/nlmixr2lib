@@ -1,0 +1,483 @@
+---
+title: "Semaglutide combination therapy and aging QSP (Goryanin 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Semaglutide combination therapy and aging QSP (Goryanin 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.width = 7, fig.height = 4.5, dpi = 90
+)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Goryanin I, Damms B, Goryanin I. A Systems Pharmacology Model of
+  Aging Identifies Optimal Combination Therapies With Secondary Benefits on
+  Weight Loss and Metabolic Health. *CPT Pharmacometrics Syst Pharmacol*.
+  2026;15:e70322.
+* Article: <https://doi.org/10.1002/psp4.70322> (PMCID PMC13454951)
+* Model code: the authors deposit the model as an SBML Level 3 Version 2 file
+  (model `IQANOVA_GLP1_Ageing_QSP`, Supporting Information S2), together with
+  the digitised calibration data (S3, `all_synthetic_data.csv`), an
+  identifiability report (S6) and a model-informed drug development report
+  (S7) whose Eqs. 1-10 restate the SBML.
+
+The paper builds a deterministic quantitative systems pharmacology model in
+which aging is a pharmacologically modifiable endpoint. A semaglutide exposure
+term drives body-weight loss, HbA1c reduction and transient nausea; two
+time-averaged scenario scalars stand in for a drug combination and drive four
+aging states (damage, repair capacity, frailty, biological age gap); and five
+biomarkers are read out from production-degradation equations. The authors
+compare GLP-1 receptor agonist + SGLT2 inhibitor + metformin (the "metabolic"
+combination) with GLP-1 receptor agonist + SGLT2 inhibitor + rapamycin (the
+"aging" combination).
+
+**Read this first.** The packaged model is a verbatim translation of the
+deposited SBML, and that SBML does not reproduce the paper's own results. It
+falls short of the calibration fit in Figure 2. It cannot give dose-dependent
+plateaus or a nausea peak. It matches one of the twelve bars of the Figure 6
+bar chart. Its cystatin C and leptin states settle below -100% change. The
+sections below quantify each gap. The model is packaged so that the published
+equations and values can be inspected and simulated. It is not a validated
+predictor of any of the paper's endpoints.
+
+```{r model}
+mod <- readModelDb("Goryanin_2026_semaglutide_aging_qsp")
+```
+
+# Population
+
+The model represents a single typical adult with obesity and/or type 2
+diabetes; there is no between-subject or residual variability and no virtual
+population. The semaglutide layer was calibrated to arm-level mean
+trajectories digitised from STEP 1 (2.4 mg) and STEP 2 (1.0 and 2.4 mg) at
+weeks 0, 4, 12, 24, 36/40, 52 and 68. The aging and biomarker layers were
+anchored to literature-derived population targets rather than to individual
+data (Methods, "Staged Calibration Strategy and Provenance"). The same
+information is available as `readModelDb("Goryanin_2026_semaglutide_aging_qsp")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `expo = D / (1 + D / ed50)` | n/a | SBML assignment rule `E_sema`; S7 Eq. 1 (the main text prints `D / (EC50 + D)`; see Assumptions) |
+| `d/dt(bwloss) = kbwloss * expo * (1 - bwloss / emax_bwloss)` | n/a | SBML R01; S7 Eq. 2; Methods "Metabolic and Pharmacodynamic Layer" |
+| `d/dt(hba1cred) = khba1cred * expo * (1 - hba1cred / emax_hba1cred)` | n/a | SBML R02; S7 Eq. 3 |
+| `d/dt(nausea) = knausea * expo * (1 - moderator1) - kout_nausea * nausea` | n/a | SBML R03; S7 Eq. 4; Methods |
+| `d/dt(moderator1) = ktol * nausea * (1 - moderator1)` | n/a | SBML R04; S7 Eq. 5; Methods |
+| `d/dt(damage) = kdam * (1 - drug_d) - krep_clear * repair * damage` | n/a | SBML R05; S7 Eq. 6; Layer Coupling equations |
+| `d/dt(repair) = krapa * drug_r - krep_deg * repair` | n/a | SBML R06; S7 Eq. 7; Layer Coupling equations |
+| `d/dt(frailty) = kfra * damage - kfra_rep * repair` | n/a | SBML R07; S7 Eq. 8; Layer Coupling equations |
+| `d/dt(bioagegap) = kbag * (damage - 0.5 * repair)` | n/a | SBML R08; S7 Eq. 9 (the main text prints `k_B * DAM - 0.5 * REP`) |
+| `d/dt(cysc) = kin_cysc * 1 * (-11) - kout_cysc * cysc` | n/a | SBML R09_CysC kinetic law, verbatim |
+| `d/dt(leptin) = kin_leptin * 1 * (-11) - kout_leptin * leptin` | n/a | SBML R09_LEP kinetic law, verbatim |
+| `nausea(0)`, `repair(0)` | 2, 0.1 | SBML species `initialAmount` |
+| `ed50` | 2.0 mg | Table 2 `EC50`; SBML `EC50` |
+| `kbwloss`, `emax_bwloss` | 0.20 /week, 15.0% | Table 2 `k_W`, `Emax_W`; SBML |
+| `khba1cred`, `emax_hba1cred` | 0.15 /week, 1.80% points | Table 2 `k_A`, `Emax_A`; SBML |
+| `knausea`, `ktol` | 0.35, 0.04 /week | Table 2 `k_N`, `k_T`; SBML |
+| `kout_nausea` | 0.15 /week | Methods nausea equation; SBML R03 literal |
+| `kdam`, `krep_clear`, `krep_deg`, `krapa` | 0.10, 0.80, 0.25, 0.45 | Table 2 `k_dam`, `k_rep`, `k_Rdeg`, `k_Rap`; SBML |
+| `kfra`, `kfra_rep`, `kbag` | 0.30, 0.50, 0.40 /week | S6 aging-layer RSE table `k_F`, `k_Frep`, `k_B`; S7 R5 (`k_F`); SBML |
+| `drug_d`, `drug_r` | 0.50, 0.60 (aging); 0.40, 0.10 (metabolic) | Methods "Layer Coupling Architecture"; SBML `drug_D_ageing`, `drug_R_ageing` |
+| `kin_cysc`, `kout_cysc` | 6.8, 0.48 /week | SBML `k_CysC_prod`, `k_CysC_deg` |
+| `kin_leptin`, `kout_leptin` | 14.1, 0.55 /week | SBML `k_Leptin_prod`, `k_Leptin_deg` |
+
+Units of every ODE term, time in weeks: `expo` is in mg, as the SBML
+declares no unit for it. `kbwloss * expo` is then in % per week only if
+`kbwloss` is read as % per (week x mg). The paper and the SBML give it as
+1/week, and the same reading applies to `khba1cred` and `knausea`. `ktol *
+nausea` must be in 1/week, so `ktol` is 1/(week x % prevalence). `krep_clear *
+repair * damage` is in a.u. per week with `krep_clear` in 1/(week x a.u.).
+The authors state every rate constant only as wk^-1, so these unit readings
+are the maintainers' dimensional bookkeeping, not values from the source.
+
+# Simulation
+
+The two calibration arms are semaglutide 1.0 mg and 2.4 mg once weekly for 68
+weeks. The dose reaches the model as the covariate `DOSE_SEMAGLUTIDE_INJ_MG`
+because the model has no PK. The combination scenarios differ only in
+`drug_d` and `drug_r`, which are overridden per solve.
+
+```{r simulate}
+obs_times <- sort(unique(c(seq(0, 68, by = 0.5), 4, 12, 24, 36, 40, 52)))
+make_arm <- function(dose_mg, arm, id) {
+  data.frame(
+    id = id, time = obs_times, evid = 0, cmt = "bwloss",
+    DOSE_SEMAGLUTIDE_INJ_MG = dose_mg, arm = arm
+  )
+}
+ev_cal <- dplyr::bind_rows(
+  make_arm(1.0, "1.0 mg", 1L),
+  make_arm(2.4, "2.4 mg", 2L)
+)
+stopifnot(!anyDuplicated(ev_cal[, c("id", "time")]))
+
+# Tight step tolerances so the closed-form checks below test the equations,
+# not LSODA's default 1e-6 relative error.
+sim_cal <- rxode2::rxSolve(
+  mod, events = ev_cal, keep = "arm", rtol = 1e-10, atol = 1e-12
+) |> as.data.frame()
+
+scenarios <- data.frame(
+  combo = c("Metabolic (GLP-1 RA + SGLT2i + metformin)",
+            "Aging (GLP-1 RA + SGLT2i + rapamycin)",
+            "Untreated aging layer"),
+  drug_d = c(0.40, 0.50, 0),
+  drug_r = c(0.10, 0.60, 0)
+)
+sim_combo <- dplyr::bind_rows(lapply(seq_len(nrow(scenarios)), function(i) {
+  rxode2::rxSolve(
+    mod, events = make_arm(2.4, "2.4 mg", 1L),
+    params = c(drug_d = scenarios$drug_d[i], drug_r = scenarios$drug_r[i]),
+    rtol = 1e-10, atol = 1e-12
+  ) |>
+    as.data.frame() |>
+    dplyr::mutate(combo = scenarios$combo[i])
+}))
+```
+
+# Internal consistency of the translation
+
+These checks show that the rxode2 file integrates the SBML equations as
+written. Each compares the numerical solution with the closed form of the
+same equations and the same parameter values, so a tight tolerance is
+correct.
+
+```{r closed-form}
+ini_val <- function(nm) {
+  df <- rxode2::rxode2(mod)$iniDf
+  df$est[df$name == nm]
+}
+ed50 <- ini_val("ed50")
+
+# Weight and HbA1c: d/dt(x) = k E (1 - x / Emax), x(0) = 0, so
+# x(t) = Emax (1 - exp(-k E t / Emax)).
+cf <- sim_cal |>
+  dplyr::mutate(
+    E = DOSE_SEMAGLUTIDE_INJ_MG / (1 + DOSE_SEMAGLUTIDE_INJ_MG / ed50),
+    bw_cf = ini_val("emax_bwloss") *
+      (1 - exp(-ini_val("kbwloss") * E * time / ini_val("emax_bwloss"))),
+    a_cf = ini_val("emax_hba1cred") *
+      (1 - exp(-ini_val("khba1cred") * E * time / ini_val("emax_hba1cred")))
+  )
+err_bw <- max(abs(cf$bwloss - cf$bw_cf))
+err_a <- max(abs(cf$hba1cred - cf$a_cf))
+# Measured ~1e-9 % points with rtol = 1e-10.
+stopifnot(err_bw < 1e-6, err_a < 1e-6)
+
+# Repair: d/dt(R) = krapa drug_r - krep_deg R, R(0) = 0.1.
+# Cystatin C / leptin: d/dt(B) = -11 kin - kout B, B(0) = 0, steady state
+# -11 kin / kout.
+aging <- sim_combo |>
+  dplyr::filter(combo == scenarios$combo[2]) |>
+  dplyr::mutate(
+    rep_ss = ini_val("krapa") * 0.60 / ini_val("krep_deg"),
+    rep_cf = rep_ss + (0.1 - rep_ss) * exp(-ini_val("krep_deg") * time),
+    cysc_cf = -11 * ini_val("kin_cysc") / ini_val("kout_cysc") *
+      (1 - exp(-ini_val("kout_cysc") * time)),
+    leptin_cf = -11 * ini_val("kin_leptin") / ini_val("kout_leptin") *
+      (1 - exp(-ini_val("kout_leptin") * time))
+  )
+stopifnot(
+  max(abs(aging$repair - aging$rep_cf)) < 1e-6,
+  max(abs(aging$cysc - aging$cysc_cf)) < 1e-5,
+  max(abs(aging$leptin - aging$leptin_cf)) < 1e-5
+)
+```
+
+The exposure term saturates at `ed50` = 2 mg, which the identifiability report
+calls "analytically bounded in [0, 1)". With the SBML form `D / (1 + D /
+EC50)`, E is 0.67 at 1.0 mg and 1.09 at 2.4 mg. It tends to 2, not 1, as the
+dose grows.
+
+# Comparison with the calibration fit (Figure 2)
+
+The calibration data deposited in S3 (`all_synthetic_data.csv`, column
+`mean`) are transcribed below. The Figure 2 model curves themselves were read
+from the figure by the maintainers: a 68-week weight loss of about 10.9% and
+15.2%, an HbA1c reduction of about 1.3 and 1.6 points, and a nausea peak of
+about 25% and 30% near week 12, for 1.0 and 2.4 mg.
+
+```{r figure-2, fig.height = 6}
+calib <- tibble::tribble(
+  ~arm,     ~time, ~bw,   ~hba1c, ~nausea,
+  "1.0 mg",  0,     0.0,  0.0,    2,
+  "1.0 mg",  4,    -2.1, -0.3,   17,
+  "1.0 mg", 12,    -5.8, -0.7,   21,
+  "1.0 mg", 24,    -8.2, -1.1,   16,
+  "1.0 mg", 40,    -9.4, -1.3,   10,
+  "1.0 mg", 52,    -9.9, -1.4,    6,
+  "1.0 mg", 68,   -10.4, -1.5,    2,
+  "2.4 mg",  0,     0.0,  0.0,    2,
+  "2.4 mg",  4,    -3.1, -0.4,   21,
+  "2.4 mg", 12,    -7.5, -0.9,   25,
+  "2.4 mg", 24,   -11.0, -1.4,   19,
+  "2.4 mg", 40,   -13.3, -1.6,   12,
+  "2.4 mg", 52,   -14.2, -1.7,    7,
+  "2.4 mg", 68,   -14.9, -1.8,    2
+)
+
+long_sim <- sim_cal |>
+  dplyr::transmute(
+    arm, time,
+    `Body-weight change (%)` = -bwloss,
+    `HbA1c change (% points)` = -hba1cred,
+    `Nausea prevalence (%)` = nausea
+  ) |>
+  tidyr::pivot_longer(-c(arm, time), names_to = "endpoint")
+long_dat <- calib |>
+  dplyr::transmute(
+    arm, time,
+    `Body-weight change (%)` = bw,
+    `HbA1c change (% points)` = hba1c,
+    `Nausea prevalence (%)` = nausea
+  ) |>
+  tidyr::pivot_longer(-c(arm, time), names_to = "endpoint")
+
+ggplot(long_sim, aes(time, value, colour = arm)) +
+  geom_line() +
+  geom_point(data = long_dat, shape = 21, size = 2) +
+  facet_wrap(~endpoint, scales = "free_y", ncol = 3) +
+  labs(
+    x = "Week", y = NULL, colour = "Semaglutide",
+    caption = paste(
+      "Lines: packaged model (deposited SBML). Points: calibration data (S3).",
+      "Compare Figure 2 of Goryanin 2026."
+    )
+  ) +
+  theme(legend.position = "bottom")
+```
+
+```{r figure-2-table}
+at68 <- sim_cal |>
+  dplyr::filter(time == 68) |>
+  dplyr::select(arm, bwloss, hba1cred, nausea)
+peak <- sim_cal |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(nausea_peak = max(nausea), .groups = "drop")
+cmp2 <- at68 |>
+  dplyr::left_join(peak, by = "arm") |>
+  dplyr::left_join(
+    calib |>
+      dplyr::group_by(arm) |>
+      dplyr::summarise(
+        bw_data = -bw[time == 68], a_data = -hba1c[time == 68],
+        nausea_peak_data = max(nausea), .groups = "drop"
+      ),
+    by = "arm"
+  ) |>
+  dplyr::mutate(bw_fig2 = c(10.9, 15.2), a_fig2 = c(1.3, 1.6),
+                nausea_fig2 = c(25, 30))
+
+cmp2 |>
+  dplyr::transmute(
+    arm,
+    "Weight loss 68 wk, model (%)" = round(bwloss, 2),
+    "Weight loss 68 wk, S3 data (%)" = bw_data,
+    "Weight loss 68 wk, Figure 2 curve (%)" = bw_fig2,
+    "HbA1c reduction 68 wk, model" = round(hba1cred, 2),
+    "HbA1c reduction 68 wk, S3 data" = a_data,
+    "HbA1c reduction 68 wk, Figure 2 curve" = a_fig2,
+    "Nausea peak, model (%)" = round(nausea_peak, 2),
+    "Nausea peak, S3 data (%)" = nausea_peak_data,
+    "Nausea peak, Figure 2 curve (%)" = nausea_fig2
+  ) |>
+  dplyr::rename(Arm = arm) |>
+  knitr::kable(caption = "Deposited model against the paper's calibration targets.")
+
+# Pin the documented non-reproduction. The model is deterministic, so these
+# values are fixed by the equations; if a future edit moves them, either the
+# translation changed or the source was corrected.
+stopifnot(
+  abs(cmp2$bwloss - c(6.80, 9.42)) < 0.01,
+  abs(cmp2$hba1cred - c(1.76, 1.80)) < 0.01,
+  # Nausea never rises above its 2% starting value by more than 0.1 point.
+  cmp2$nausea_peak < 2.1,
+  # Gap to the calibration data: more than 3 points of weight loss short.
+  cmp2$bw_data - cmp2$bwloss > 3
+)
+```
+
+The packaged model reaches about two thirds of the calibrated 68-week weight
+loss. The HbA1c reduction is close to `emax_hba1cred` = 1.8 in both arms. It
+comes out slightly above the data at 1.0 mg and at the data at 2.4 mg. Nausea
+never shows the peak at all: it falls monotonically from its 2% start. Two
+features of Figure 2 cannot be produced by these equations at any parameter
+values. First, the logistic term `(1 - x / Emax)` sends every dose to the
+same plateau `Emax`, so the two arms cannot plateau at different levels as the
+figure shows for weight (about 10.9 vs 15.2) and HbA1c (about 1.3 vs 1.6).
+Second, the steady-state nausea input `knausea * E` is below 0.4% per week, so
+no rescaling of time can produce a 25-30% peak. The S3 data and the Figure 2
+points also disagree with each other. At 68 weeks HbA1c is 1.5 in S3 and about
+1.3 in the figure (1.0 mg), and nausea at week 0 is 2% in S3 and 0% in the
+figure.
+
+# Comparison with the combination scenarios (Figure 6)
+
+The bar chart of 52-week changes (Figure 6) reports, for the metabolic and
+aging combinations respectively: body weight -16 / -13%, HbA1c -1.35 / -0.95
+points, DAM -12 / -22, REP +8 / +22, FRA -8 / -13 and BAG -11 / -20. The
+deposited model-calibration table (S7 R7.1) gives the aging-layer states in
+"a.u. x 100". The table below therefore shows the model's 52-week change from
+baseline multiplied by 100.
+
+```{r figure-6}
+fig6 <- tibble::tribble(
+  ~combo, ~state, ~published,
+  scenarios$combo[1], "bwloss", -16,
+  scenarios$combo[2], "bwloss", -13,
+  scenarios$combo[1], "hba1cred", -1.35,
+  scenarios$combo[2], "hba1cred", -0.95,
+  scenarios$combo[1], "damage", -12,
+  scenarios$combo[2], "damage", -22,
+  scenarios$combo[1], "repair", 8,
+  scenarios$combo[2], "repair", 22,
+  scenarios$combo[1], "frailty", -8,
+  scenarios$combo[2], "frailty", -13,
+  scenarios$combo[1], "bioagegap", -11,
+  scenarios$combo[2], "bioagegap", -20
+)
+wk52 <- sim_combo |>
+  dplyr::filter(time %in% c(0, 52)) |>
+  dplyr::select(combo, time, bwloss, hba1cred, damage, repair, frailty, bioagegap) |>
+  tidyr::pivot_longer(-c(combo, time), names_to = "state") |>
+  tidyr::pivot_wider(names_from = time, values_from = value, names_prefix = "t") |>
+  dplyr::mutate(
+    model = dplyr::case_when(
+      state == "bwloss" ~ -t52,
+      state == "hba1cred" ~ -t52,
+      TRUE ~ 100 * (t52 - t0)
+    )
+  )
+cmp6 <- fig6 |>
+  dplyr::left_join(wk52 |> dplyr::select(combo, state, model), by = c("combo", "state"))
+
+cmp6 |>
+  dplyr::mutate(model = signif(model, 3)) |>
+  dplyr::rename(
+    Combination = combo, State = state,
+    "Figure 6 bar" = published, "Model, 52-week change" = model
+  ) |>
+  knitr::kable(caption = paste(
+    "52-week changes. Weight and HbA1c in % and % points (sign as in",
+    "Figure 6); aging states as change from baseline x 100 (a.u.)."
+  ))
+
+rep_met <- cmp6$model[cmp6$state == "repair" & cmp6$combo == scenarios$combo[1]]
+rep_age <- cmp6$model[cmp6$state == "repair" & cmp6$combo == scenarios$combo[2]]
+stopifnot(
+  # The one bar that reproduces: metabolic-combination REP +8.
+  abs(rep_met - 8) < 0.5,
+  # Aging-combination REP is about four times the +22 bar.
+  rep_age > 90,
+  # Weight loss does not depend on drug_d / drug_r in the deposited model.
+  abs(diff(cmp6$model[cmp6$state == "bwloss"])) < 1e-6
+)
+```
+
+Only the metabolic-combination REP bar is reproduced. In the deposited
+equations, body weight and HbA1c depend on the semaglutide dose alone, so the
+two combinations cannot differ on them. The model gives about 8% weight loss
+at 2.4 mg in both, against -16 and -13 in the figure. `damage` starts at zero,
+so it can only rise from baseline. `frailty` and `bioagegap` have no
+first-order loss, so they drift linearly for as long as the damage-repair
+balance is non-zero. In the aging combination, frailty falls by about 25 a.u.
+over 52 weeks.
+
+```{r aging-trajectories}
+sim_combo |>
+  dplyr::select(time, combo, damage, repair, frailty, bioagegap) |>
+  tidyr::pivot_longer(-c(time, combo), names_to = "state") |>
+  ggplot(aes(time, value, colour = combo)) +
+  geom_line() +
+  facet_wrap(~state, scales = "free_y") +
+  labs(x = "Week", y = "State (a.u.)", colour = NULL,
+       caption = "Aging-layer states of the deposited model under the three scenarios.") +
+  theme(legend.position = "bottom", legend.direction = "vertical")
+```
+
+# Biomarker layer (Figure 5)
+
+The paper writes the biomarkers as `dB_i/dt = k_prod_i * pot_drug * sigma_i *
+(1 + gamma_i * DAM) - k_deg_i * B_i`; S7 Eq. 10 drops the `gamma_i` term.
+Neither `sigma_i` nor `gamma_i` is reported, and neither is the rule that
+combines `pot_drug` across a three-drug combination. In the SBML, the GDF15,
+adiponectin and eGDR reactions have empty kinetic laws, so they are not
+packaged. The cystatin C and leptin reactions read `k_prod * pot_semaglutide *
+(-11) - k_deg * B`. They are packaged verbatim, and they settle at changes
+that no serum concentration can reach.
+
+```{r biomarkers}
+bm <- sim_cal |>
+  dplyr::filter(arm == "2.4 mg", time == 52) |>
+  dplyr::select(cysc, leptin)
+knitr::kable(
+  data.frame(
+    Biomarker = c("Cystatin C", "Leptin"),
+    "Model 52-week change (%)" = round(c(bm$cysc, bm$leptin), 1),
+    "S3 semaglutide arm, 52 weeks (%)" = c(-7, -15),
+    "Figure 5, 52 weeks (normalised, metabolic / aging)" = c("0.91 / 0.84", "0.66 / 0.72"),
+    check.names = FALSE
+  ),
+  caption = "Biomarker states of the deposited model against the published trajectories."
+)
+stopifnot(bm$cysc < -100, bm$leptin < -100)
+```
+
+These two states should not be used for prediction. They are included so the
+deposited model is complete as published.
+
+# Assumptions and deviations
+
+- **Source of truth.** The model follows the deposited SBML (S2). Its parameter
+  values equal Table 2 of the paper and the S6 / S7 tables. Three rate
+  constants, `kfra` (k_F), `kfra_rep` (k_Frep) and `kbag` (k_B), are not in
+  the main text; they come from the S6 identifiability table and the SBML.
+  The biomarker constants come from the SBML only.
+- **Exposure function.** The main text prints `E = D / (EC50 + D)`, while
+  the SBML assignment rule and S7 Eq. 1 use `D / (1 + D / EC50)`. The two
+  differ by a factor of EC50. The code's form is used; the printed form gives
+  even less weight loss (3.9% and 5.9% at 68 weeks).
+- **Biological age gap.** The main text prints `k_B * DAM - 0.5 * REP`. The
+  SBML and S7 Eq. 9 use `k_B * (DAM - 0.5 * REP)`, and the code's form is used.
+- **Scenario scalars.** The SBML wires `drug_D_ageing` = 0.50 and
+  `drug_R_ageing` = 0.60 into the damage and repair reactions, so these are
+  the defaults of `drug_d` and `drug_r`. The metabolic combination (0.40 /
+  0.10, Methods) is simulated by overriding them. Both are `fixed()`, since
+  they are scenario inputs, not estimates. `ed50` is also `fixed()`: Table 2
+  says it was held at a literature value in the scenario simulations. The
+  nausea loss rate 0.15 /week is a literal constant in the equations, so it
+  is `fixed()` too. The remaining constants are the authors' calibrated
+  values and are left unfixed.
+- **Non-reproduction.** The deposited model does not reproduce Figure 2, the
+  S3 calibration data or eleven of the twelve Figure 6 bars, and the
+  quantified gaps are pinned above. The maintainers found no reading of the
+  equations, units or scenario scalars that closes them. That includes
+  rescaling the nausea rate constants by 10 or 100 and normalising against an
+  untreated reference. The parameter-table spreadsheet and the equations
+  document that S7 (section R13) lists as part of the submission package are
+  not among the published supporting files. No correction notice for the
+  article was found as of 2026-11-22.
+- **Biomarkers.** GDF15, adiponectin and eGDR are omitted because their SBML
+  kinetic laws are empty. Their SBML constants are listed here for
+  completeness: GDF15 production 10.2 and degradation 0.52 /week, adiponectin
+  28.3 and 0.60, eGDR 48.5 and 0.58. The SBML drug potencies are semaglutide
+  1, metformin 0.5, SGLT2 inhibitor 0.8 and rapamycin 0.6. Only the
+  semaglutide potency enters a non-empty kinetic law, and it is written into
+  the cystatin C and leptin equations as the factor 1.
+- **Dose.** Semaglutide is a constant maintenance dose with no titration and
+  no PK. It enters as `DOSE_SEMAGLUTIDE_INJ_MG`, and the SBML default is
+  2.4 mg.
+- **Variability.** The paper reports no between-subject or residual
+  variability; none is added.

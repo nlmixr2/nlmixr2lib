@@ -5327,7 +5327,7 @@ Two distinct decompositions of the reticulocyte pool are registered, and a model
   - `TOL_n` / `M1`, `M2` -- used in `Rognas_2025_bitopertin.R` (Fig. 2; `$MODEL` comps 14-15).
   - `M_n` -- used in `Ahlstrom_2010_nicotinicAcid_rat.R` (Eq. 4).
   - `A_t` -- used in `SchaedeliStark_2024_balovaptan.R` (Fig. 3), a single-element pool starting at 1 that gates a gut-extraction *loss* rate constant and is suppressed by the amount in the depot via `smod`.
-- **Example models:** `Rognas_2025_bitopertin.R` (`moderator1`, `moderator2`), `SchaedeliStark_2024_balovaptan.R` (`moderator1`).
+- **Example models:** `Rognas_2025_bitopertin.R` (`moderator1`, `moderator2`), `SchaedeliStark_2024_balovaptan.R` (`moderator1`), `Goryanin_2026_semaglutide_aging_qsp.R` (`moderator1`, nausea tolerance `T` rising as `ktol * nausea * (1 - moderator1)` and gating nausea induction by `(1 - moderator1)`).
 - **Notes:** Numbered variants `moderator1`, `moderator2`,... are accepted via `compartmentRegex`. New models should use `moderator<n>`; per rule 5 of "How to use this register", `Ahlstrom_2010_nicotinicAcid_rat.R` is not retrofitted here.
 
 ---
@@ -8949,3 +8949,77 @@ Clinician-rated ordinal scores of eyebrow and eyelash hair loss used in alopecia
 - **Notes:** One item of the 15-item GSRS. The other items, and the GSRS diarrhea syndrome sub-score (the mean of Questions 11, 12 and 14), are different scales and should get their own `gsrs_<item>` names rather than reuse this one. Some GSRS versions score 0-6 instead of 1-7; say which range a model uses in its `units`, and do not mix ranges under one name. A threshold probability such as P(score >= 4) is a derived quantity of the same model, not a separate output.
 
 ---
+
+## Semaglutide response and aging-layer QSP states (Goryanin 2026)
+
+### bwloss (**canonical percent body-weight loss PD state**)
+- **Type:** compartment
+- **Role:** Body-weight loss from baseline in percent of baseline weight, signed so that a positive value is a loss. Used when a model integrates the loss itself (for example a logistic approach to a maximal loss) rather than the body weight in kg.
+- **Source aliases:**
+  - `W` -- Goryanin 2026 SBML species 'Body weight change (%)' and Layer 1 equations.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; `d/dt(bwloss) = kbwloss * E * (1 - bwloss / emax_bwloss)`).
+- **Notes:** Distinct from `bw` and `weight`, which hold body weight itself (kg or g). The trial data the founding model was calibrated to report weight change as a negative number; compare against `-bwloss`.
+
+### hba1cred (**canonical absolute HbA1c reduction PD state**)
+- **Type:** compartment
+- **Role:** Absolute reduction of HbA1c from baseline in percentage points, signed so that a positive value is an improvement.
+- **Source aliases:**
+  - `A` -- Goryanin 2026 SBML species 'HbA1c change (%)' and Layer 1 equations.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; logistic approach to `emax_hba1cred`).
+- **Notes:** Distinct from `Hba1c` (the HbA1c level itself, %) and from the MBMA arm outputs `hba1c_placebo` / `hba1c_drug`. Compare against a reported HbA1c change with the sign reversed.
+
+### nausea (**canonical nausea-prevalence PD state**)
+- **Type:** compartment
+- **Role:** Percentage of a treated population reporting nausea at a given time, modelled as a continuous state (induction by drug exposure, first-order resolution, and gating by a tolerance state).
+- **Source aliases:**
+  - `N` -- Goryanin 2026 SBML species 'Nausea prevalence (%)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; tolerance carried by `moderator1`).
+- **Notes:** A population prevalence, not an individual's probability. Individual-level adverse-event probabilities use `prob_nausea` or `p_nausea`.
+
+### damage (**canonical accumulated-damage aging state**)
+- **Type:** compartment
+- **Role:** Dimensionless accumulated molecular and cellular damage in a damage-repair aging model; accrues at a constant rate reduced by treatment and is cleared in proportion to repair capacity.
+- **Source aliases:**
+  - `DAM` -- Goryanin 2026 SBML species 'Damage accumulation (a.u.)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example).
+- **Notes:** Arbitrary units. Not a tissue-injury biomarker such as a troponin or a liver enzyme; those have their own analyte names.
+
+### repair (**canonical repair-capacity aging state**)
+- **Type:** compartment
+- **Role:** Dimensionless repair (resilience) capacity in a damage-repair aging model; induced by treatment, decays first order, clears `damage` and suppresses `frailty`.
+- **Source aliases:**
+  - `REP` -- Goryanin 2026 SBML species 'Repair capacity (a.u.)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; starts at 0.1 a.u.).
+- **Notes:** Arbitrary units.
+
+### frailty (**canonical frailty-index aging state**)
+- **Type:** compartment
+- **Role:** Frailty index in the deficit-accumulation sense, driven up by `damage` and down by `repair`.
+- **Source aliases:**
+  - `FRA` -- Goryanin 2026 SBML species 'Frailty index (a.u.)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example).
+- **Notes:** Arbitrary units in the founding model, not the 0-1 Rockwood deficit fraction; a model on that scale should say so in its `units`.
+
+### bioagegap (**canonical biological-age-gap aging state**)
+- **Type:** compartment
+- **Role:** Biological age minus chronological age, as a net balance of `damage` over `repair`.
+- **Source aliases:**
+  - `BAG` -- Goryanin 2026 SBML species 'Biological age gap (a.u.)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; dimensionless, not calibrated to years or to an epigenetic clock).
+- **Notes:** A model expressing the gap in years should state that in its `units`.
+
+### cysc (**canonical cystatin C biomarker state**)
+- **Type:** compartment
+- **Role:** Serum cystatin C as a model state, either as a concentration or as a change from baseline; the model's `units` say which.
+- **Source aliases:**
+  - `CysC` -- Goryanin 2026 SBML species 'Cystatin C change (%)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; % change from baseline, production-degradation turnover).
+- **Notes:** Follows the bare lower-case analyte form of other biomarker states (`vegf`, `igf1`, `shbg`). Distinct from a cystatin-C-based eGFR covariate.
+
+### leptin (**canonical leptin biomarker state**)
+- **Type:** compartment
+- **Role:** Serum leptin as a model state, either as a concentration or as a change from baseline; the model's `units` say which.
+- **Source aliases:**
+  - `LEP` -- Goryanin 2026 SBML species 'Leptin change (%)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; % change from baseline, production-degradation turnover).
+- **Notes:** Follows the bare lower-case analyte form of other biomarker states (`vegf`, `igf1`, `shbg`).
