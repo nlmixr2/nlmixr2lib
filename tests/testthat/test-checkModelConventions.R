@@ -1533,6 +1533,58 @@ test_that("the per-dosing-day compounded clearance form is accepted with cl_time
   expect_equal(sum(res$category == "time_varying_clearance"), 0L)
 })
 
+test_that("the hyperbolic time-decline clearance form is accepted with cl_time_hyp", {
+  # Founding example: Liu_2026_sunitinib, CL/F = CL0/F / (1 + beta * week).
+  hypStyle <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+    ini({
+      lcl <- 1;             label("Clearance at the first dose (CL, L/h)")
+      lvc <- 1;             label("Central volume (Vc, L)")
+      cl_time_hyp <- 2e-5;  label("Rate of the hyperbolic decline of CL with time (1/h)")
+      propSd <- 0.1;        label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) / (1 + cl_time_hyp * t)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(hypStyle, verbose = FALSE))
+  expect_equal(sum(res$category == "time_varying_clearance"), 0L)
+})
+
+test_that("a hyperbolic time-decline clearance with a paper-style name is flagged", {
+  # The paper's `beta` hides the time-varying structure; the suggestion must
+  # name `cl_time_hyp`.
+  paperStyle <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+    ini({
+      lcl <- 1;         label("Clearance at the first dose (CL, L/h)")
+      lvc <- 1;         label("Central volume (Vc, L)")
+      betacl <- 2e-5;   label("Rate of the hyperbolic decline of CL with time (1/h)")
+      propSd <- 0.1;    label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) / (1 + betacl * t)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(paperStyle, verbose = FALSE))
+  hit <- res[res$category == "time_varying_clearance", ]
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$name, "cl")
+  expect_match(hit$suggestion, "cl_time_hyp", fixed = TRUE)
+})
+
 test_that("a per-dosing-day compounded clearance with a paper-style name is flagged", {
   # The paper's own `Ind_factor` hides the time-varying structure; the
   # suggestion must point at `cl_time_fday`.
