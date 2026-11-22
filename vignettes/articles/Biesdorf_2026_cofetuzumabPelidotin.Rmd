@@ -486,7 +486,7 @@ check of the transcribed coefficients (and, for CBR6, of the back-solve).
 ```{r check-table3}
 solve_prob <- function(model, output, cav, target = NULL) {
   ev <- data.frame(id = seq_along(cav), time = 0, amt = 0, evid = 0L, CAV = cav)
-  if (!is.null(target)) ev$TARGET_POPULATION <- target
+  if (!is.null(target)) ev$PTK7_HIGH_NONSQUAMOUS_EGFR_WT <- target
   as.data.frame(solve_quiet(model, events = ev, returnType = "data.frame"))[[output]]
 }
 cav_t3 <- c(10.1, 11.6, 13.5, 15.4)

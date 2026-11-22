@@ -47,7 +47,7 @@ Biesdorf_2026_cofetuzumabPelidotin_clinical_benefit_6mo <- function() {
   )
 
   covariatesDataExcluded <- list(
-    TARGET_POPULATION = list(
+    PTK7_HIGH_NONSQUAMOUS_EGFR_WT = list(
       description = "1 = PTK7-high (>= 90% of cells at >= 2+), non-squamous, EGFR wild-type NSCLC; 0 = other NSCLC.",
       units = "(binary)",
       type = "binary",

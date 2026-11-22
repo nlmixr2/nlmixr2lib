@@ -6,8 +6,8 @@ Biesdorf_2026_cofetuzumabPelidotin_orr <- function() {
     "treated with cofetuzumab pelidotin (Cofe-P, ABBV-647) 2.8 mg/kg ",
     "every 3 weeks (Biesdorf 2026, n = 60, phase 1b study M19-611). The ",
     "probability of response is expit(a + (b + b_target * ",
-    "TARGET_POPULATION) * CAV), linear in CAV, the individual average ",
-    "Cofe-P CONJUGATE serum concentration up to the time of best overall ",
+    "PTK7_HIGH_NONSQUAMOUS_EGFR_WT) * CAV), linear in CAV, the individual ",
+    "average Cofe-P CONJUGATE serum concentration up to the time of best overall ",
     "response, in ug/mL. Membership of the target population ",
     "(PTK7-high, >= 90% of tumour cells at >= 2+ staining intensity; ",
     "non-squamous histology; EGFR wild-type) steepens the exposure ",
@@ -43,8 +43,8 @@ Biesdorf_2026_cofetuzumabPelidotin_orr <- function() {
       notes = "Biesdorf 2026 Methods: 'The Cavg values were estimated from the cumulative exposure up to the time to occurrence of event (time of best overall response [BOR], last scan, or start of TEAE) divided by the time to the occurrence of respective efficacy or safety event', using empirical Bayes estimates from the conjugate popPK model (modellib('Biesdorf_2026_cofetuzumabPelidotin')). For dose projections Biesdorf 2026 Table 3 substitutes the steady-state Cavg (AUCtau / tau), equal to cycle-1 Cavg because the conjugate does not accumulate: median 10.1, 11.6, 13.5 and 15.4 ug/mL at 2.1, 2.4, 2.8 and 3.2 mg/kg Q3W in the phase 1b target population. Figure 1a quartile boundaries 5.74, 8.73, 12, 15.6 and 39.3 ug/mL. Enters LINEARLY and uncentred.",
       source_name = "Cofe-P (ADC) Cavg up to BOR"
     ),
-    TARGET_POPULATION = list(
-      description = "1 = patient in the predefined target population of the trial; 0 = any other patient in the analysis. For this model: NSCLC with PTK7 expression in >= 90% of tumour cells at >= 2+ immunohistochemistry staining intensity, non-squamous histology and EGFR wild-type.",
+    PTK7_HIGH_NONSQUAMOUS_EGFR_WT = list(
+      description = "1 = patient in the trial's predefined target population, NSCLC with PTK7 expression in >= 90% of tumour cells at >= 2+ immunohistochemistry staining intensity, non-squamous histology and EGFR wild-type; 0 = any other NSCLC patient in the analysis.",
       units = "(binary)",
       type = "binary",
       reference_category = "0 (non-target NSCLC)",
@@ -92,7 +92,7 @@ Biesdorf_2026_cofetuzumabPelidotin_orr <- function() {
     # ==================================================================
     logit_ref <- -6.56; label("Logit of the response probability at zero conjugate Cavg (unitless logit)") # Table S4 'Intercept' -6.56, RSE 28.4, p 0.0004
     e_cav_logit <- 0.35; label("Log-odds of response per ug/mL of conjugate Cavg outside the target population (per ug/mL)") # Table S4 'Slope Non-Target' 0.35, RSE 35.1, p 0.004
-    e_target_population_cav_logit <- 0.03; label("Additional log-odds of response per ug/mL of conjugate Cavg in the target population (per ug/mL)") # Table S4 'Slope Target' 0.03, RSE 156, p 0.521
+    e_ptk7_high_nonsquamous_egfr_wt_cav_logit <- 0.03; label("Additional log-odds of response per ug/mL of conjugate Cavg in the target population (per ug/mL)") # Table S4 'Slope Target' 0.03, RSE 156, p 0.521
 
     # ==================================================================
     # The source likelihood is Bernoulli: no random effect and no
@@ -104,7 +104,7 @@ Biesdorf_2026_cofetuzumabPelidotin_orr <- function() {
   })
 
   model({
-    logit_orr <- logit_ref + (e_cav_logit + e_target_population_cav_logit * TARGET_POPULATION) * CAV
+    logit_orr <- logit_ref + (e_cav_logit + e_ptk7_high_nonsquamous_egfr_wt_cav_logit * PTK7_HIGH_NONSQUAMOUS_EGFR_WT) * CAV
     prob_orr <- expit(logit_orr)
 
     # Downstream callers can sample binary outcomes with

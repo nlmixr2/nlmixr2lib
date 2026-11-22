@@ -13346,15 +13346,15 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Chatterjee_2016_pembrolizumab.R` (additive effect `+1.66` on the logit of the treatment-sensitive tumour fraction `f`, relative to the EGFR wild-type reference; 26 of 505 subjects, supplementary Table S3).
 - **Notes:** Follows the missing-data-indicator pattern established by `ADA_MISSING`, `CYP2C9_MISSING` and `HEPIMP_MOD_OR_MISSING`; sibling of `PDL1_TUM_MISSING`. Use only when the source paper explicitly fits a separate coefficient for the EGFR-unknown subgroup. As with every missingness coefficient, the estimate describes who was left ungenotyped rather than any tumour biology -- Chatterjee 2016's `+1.66` implies a HIGHER responding tumour fraction in the unknown stratum than in wild type, which is a selection artefact of which patients were sent for genotyping and must not be extrapolated.
 
-### TARGET_POPULATION (**canonical for membership of a trial's predefined biomarker-selected target population**)
-- **Description:** Binary indicator, 1 = patient belongs to the target (enrichment) population that the source trial predefined by a combination of selection criteria; 0 = any other patient in the same analysis. The defining criteria are paper-specific and must be spelled out in `covariateData[[TARGET_POPULATION]]$description` and `$notes`.
+### PTK7_HIGH_NONSQUAMOUS_EGFR_WT (**canonical for the PTK7-high, non-squamous, EGFR wild-type NSCLC target population**)
+- **Description:** Binary indicator, 1 = non-small cell lung cancer with PTK7 expression in >= 90% of tumour cells at >= 2+ immunohistochemistry staining intensity, non-squamous histology and EGFR wild-type (all three criteria met); 0 = any other NSCLC patient in the same analysis. Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (patients outside the target population).
-- **Source aliases:** `Target population eligibility`, `Target` / `Non-Target` -- Biesdorf 2026 Table S2 and Table S4 (PTK7 expression in >= 90% of tumour cells at >= 2+ immunohistochemistry intensity, non-squamous histology and EGFR wild-type NSCLC).
-- **Example models:** `Biesdorf_2026_cofetuzumabPelidotin_orr.R` (adds 0.03 per ug/mL to the 0.35 per ug/mL logit-scale conjugate-Cavg slope of confirmed objective response).
-- **Notes:** Use this name when the source fits the COMPOSITE eligibility as a single covariate; when it fits the components separately, use the component canonicals instead (for example `TUM_EGFR_MUT` for EGFR status). The composite is not decomposable after the fact: Biesdorf 2026 tested the PTK7 cut-off, histology and EGFR status individually and none was significant, while the composite was. Because the meaning is tied to one trial's selection rule, the scope is specific and every model using it states its own definition.
+- **Reference category:** 0 (NSCLC outside the PTK7-high, non-squamous, EGFR wild-type population).
+- **Source aliases:** `Target population eligibility`, `Target` / `Non-Target` -- Biesdorf 2026 Table S2 and Table S4 (the predefined target population of the cofetuzumab pelidotin phase 1b study M19-611).
+- **Example models:** `Biesdorf_2026_cofetuzumabPelidotin_orr.R` (effect `e_ptk7_high_nonsquamous_egfr_wt_cav_logit` adds 0.03 per ug/mL to the 0.35 per ug/mL logit-scale conjugate-Cavg slope of confirmed objective response).
+- **Notes:** A composite of three criteria fitted as ONE covariate. Use it only when the source fits the composite; when a paper fits the components separately, use the component canonicals instead (for example `TUM_EGFR_MUT` for EGFR status). The composite is not decomposable after the fact: Biesdorf 2026 tested the PTK7 cut-off, histology and EGFR status individually and none was significant, while the composite was. A different trial's biomarker-selected target population gets its own spelled-out name built the same way (biomarker and cut-off, histology, mutation status), not this one.
 
 ### TUM_BCL2_IHC_HIGH (**canonical for tumour BCL-2 protein high-expression indicator by immunohistochemistry**)
 - **Description:** 1 = tumour BCL-2 protein expression high by immunohistochemistry (IHC 2+ or 3+, the "BCL-2 IHC positive" call), 0 = IHC 0 or 1+. Time-fixed per subject, assessed on the diagnostic biopsy.
