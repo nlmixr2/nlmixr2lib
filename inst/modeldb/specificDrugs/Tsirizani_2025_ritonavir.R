@@ -143,7 +143,10 @@ Tsirizani_2025_ritonavir <- function() {
         "(or nonmem = TRUE) from the record before the dose. Give every",
         "record, observations included, the OCC of the dose that opened its",
         "interval and use addlKeepsCov = FALSE; each dose then takes its own",
-        "occasion.",
+        "occasion. rxode2 builds whose rxSolve() has durAtDoseTime re-read the",
+        "duration at every record until the dose is delivered; pass",
+        "durAtDoseTime = TRUE there, so each dose keeps the duration read at",
+        "the dose, as NONMEM's D1 does.",
         sep = " "
       ),
       source_name = "OCC"
