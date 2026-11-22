@@ -208,18 +208,25 @@ knownLinCmtFormModels <- c(
 # because under rxSolve()'s defaults it would fail or give NaN states, and an
 # entry that no longer needs its fallback fails until it is removed.
 #
-# liblsoda, rxSolve()'s default solver, cannot solve these (6), while dop853
+# liblsoda, rxSolve()'s default solver, cannot solve these (9), while dop853
 # can. Ho 2025 and the four Mahadevan 2026 time-kill models hold an undosed
 # drug at exactly 0 inside `c^hill` with hill < 1: liblsoda returned NaN
 # states without a warning before rxode2 PR 1542, and fails the subject since.
 # Their vignettes pass `method`. Svensson 2016 fails under liblsoda outright.
+# Courlet 2023 and the two Zazo 2024 models fail only in the probe's drug-free
+# control: liblsoda leaves every state NaN from 1 h (Courlet) or after about
+# 6 h (Zazo) on rxode2 5.1.8, and stops with "could not solve the system" on
+# later builds; the probe moves the dosed solve and the control to dop853.
 knownLsodaFailModels <- c(
+  "Courlet_2023_cabamiquine",
   "Ho_2025_betalactam_pbp78_CRAB",
   "Mahadevan_2026_polymyxinB_meropenem_fosfomycin_BRKP28",
   "Mahadevan_2026_polymyxinB_meropenem_fosfomycin_BRKP61",
   "Mahadevan_2026_polymyxinB_meropenem_fosfomycin_BRKP67",
   "Mahadevan_2026_polymyxinB_meropenem_fosfomycin_KP00521",
-  "Svensson_2016_rifampicin"
+  "Svensson_2016_rifampicin",
+  "Zazo_2024_ceftazidime_avibactam_control",
+  "Zazo_2024_ceftazidime_avibactam_icu"
 )
 
 # An absorption lag longer than the probe's default grid (3): the dose changes
