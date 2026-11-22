@@ -9,6 +9,10 @@ Hosawi_2026_hydroxyurea <- function() {
     "and central volume are allometrically scaled to body weight (fixed",
     "exponents 0.75 and 1, reference 70 kg). Proportional residual error on",
     "plasma and additive residual error on breast-milk concentrations.",
+    "As printed, milk AUC equals plasma AUC, so milk concentrations run",
+    "about 25-40% above the paper's own milk VPC and infant doses 10-25%",
+    "above its Table 2; the paper does not report the term that would",
+    "close the gap (see the vignette).",
     sep = " "
   )
   reference <- paste(
@@ -120,6 +124,8 @@ Hosawi_2026_hydroxyurea <- function() {
 
     # Figure 1: depot -> central (KA, lag, F); central <-> peripheral (Q);
     # central <-> breast milk (CL plasma-milk); elimination (CL) from central.
+    # No partition coefficient or milk loss is reported, so milk AUC equals
+    # plasma AUC; the paper's figures imply milk at ~0.8-0.85 x plasma.
     d/dt(depot) <- -ka * depot
     d/dt(central) <- ka * depot - cl * Cc - q * (Cc - Cp) - q_milk * (Cc - Cmilk)
     d/dt(peripheral1) <- q * (Cc - Cp)

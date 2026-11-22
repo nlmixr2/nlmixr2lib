@@ -153,12 +153,15 @@ vpc_cmp |>
   knitr::kable(digits = 1)
 ```
 
-From 1 h onward the simulated medians fall within the scatter of the observed
-medians in Figure 4. The largest differences are at the first time point of
-each matrix (0.5 h for plasma, 1 h for milk), on the steep rising limb, where
-the lag time and the 114% CV on KA make the median very sensitive to the
-exact sampling time. The model also places the milk peak slightly earlier
-and higher than the observed median.
+From 1 h onward the simulated plasma medians fall within the scatter of the
+observed medians in Figure 4. The largest plasma differences are at 0.5 h, on
+the steep rising limb, where the lag time and the 114% CV on KA make the
+median very sensitive to the exact sampling time. Milk is different: from
+2 h onward the simulated milk median runs 30-40% above the observed medians
+(plasma: within about 10%), and above the model-predicted median band that the
+paper draws in Figure 4, which sits at roughly 0.8-0.85 times plasma. The printed structure cannot put
+milk below plasma (see "Milk concentrations run above the paper's" under
+Assumptions and deviations).
 
 # PKNCA: clearance and the milk-plasma mass balance
 
@@ -392,12 +395,14 @@ stopifnot(
 )
 ```
 
-The simulated medians run about 10-20% above Table 2 in every month. The
+The simulated medians run about 10-25% above Table 2 in every month. The
 month-to-month pattern matches closely, including the drop each time the
 number of feeds per day falls: with fewer, more widely spaced feeds, the feed
-times miss more of the milk concentration peak. The constant offset points to
-the virtual cohort, which this vignette had to assume (see below), rather than
-to the model parameters.
+times miss more of the milk concentration peak. The constant offset is the
+same milk over-prediction seen in the VPC above; it comes from the printed
+model structure, not from the virtual cohort (see "Milk concentrations run
+above the paper's" under Assumptions and deviations). Every month stays well
+below the 2 mg/kg/day threshold, so the paper's conclusion is unchanged.
 
 ```{r fig5, fig.width = 7, fig.height = 4}
 ages <- c(0, 2, 4, 7, seq(10, 40, by = 5), seq(50, 270, by = 10))
@@ -416,6 +421,25 @@ ggplot(fig5, aes(factor(age_days), dose_mgkg)) +
 
 # Assumptions and deviations
 
+* **Milk concentrations run above the paper's.** The model is transcribed
+  exactly as printed: Figure 1 draws one bidirectional plasma-milk clearance
+  between central and the milk compartment, with elimination from central
+  only, and Table 1 gives that clearance (2.3 L/h) and the milk volume
+  (0.79 L) but no milk:plasma partition coefficient, no second (asymmetric)
+  transfer clearance and no loss from milk. With symmetric exchange and no
+  loss, milk AUC0-inf must equal plasma AUC0-inf (the PKNCA check above
+  confirms it) and milk sits at or above plasma after its peak. The paper's
+  own outputs imply milk at about 0.8-0.85 times plasma: the model-predicted
+  milk median in Figure 4 is about 11, 9.6, 7.9 and 5.4 ug/mL at 2, 3, 4 and
+  6 h (read off the figure), while this model gives about 17.0, 13.7, 10.6
+  and 6.9 ug/mL for a typical 70 kg woman; and the Table 2 infant doses imply
+  a mean milk concentration about 15-20% below this model's. The authors'
+  NONMEM implementation therefore probably contains a term that the paper
+  does not report. No such term was added here, because its value would have
+  to be tuned to the figures rather than taken from the paper. Plasma is
+  unaffected. Infant doses from this model are 10-25% higher than Table 2,
+  and the paper's conclusion (every age below the 10% relative infant dose
+  threshold of 2 mg/kg/day) holds either way.
 * **Allometric scaling applies to CL and V only.** The Methods say body
   weight was evaluated with theoretical exponents on CL and Q (0.75) and on V
   and V2 (1). Table 1, however, reports CL and V per 70 kg and Q, V2, the
