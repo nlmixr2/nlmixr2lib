@@ -8,9 +8,9 @@
 # Strategy: render every vignette in parallel via a hand-rolled scheduler over
 # parallel::mcparallel + mccollect (Linux fork), with FAIL-FAST cancellation
 # on the first vignette failure (sends SIGTERM to all in-flight siblings).
-# PKGDOWN_KEEP_GOING (non-empty) renders every article instead and stops at the
-# end, listing all failures. Either way a failed article's objects are written
-# out by dump_failure_state() below.
+# PKGDOWN_KEEP_GOING (non-empty), or a run started by a PR comment, renders
+# every article instead and stops at the end, listing all failures. Either way
+# a failed article's objects are written out by dump_failure_state() below.
 # After the parallel pass, call pkgdown::build_site_github_pages(lazy = TRUE,
 # clean = FALSE) so pkgdown handles the non-article sections (reference, news,
 # search, ...) and skips already-rendered articles via its mtime lazy check.
@@ -59,7 +59,11 @@ sharded <- nshards > 1L
 # entire benefit of sharding and still exits 0. Observed 2026-08-22: the
 # assemble job was still re-rendering an hour in.
 assemble_only <- nzchar(Sys.getenv("PKGDOWN_ASSEMBLE", ""))
-keep_going <- nzchar(Sys.getenv("PKGDOWN_KEEP_GOING", ""))
+# A /ci run is an issue_comment event, and GitHub runs it from the default
+# branch's copy of the workflow, so a PR cannot set PKGDOWN_KEEP_GOING for its
+# own /ci run; the script, which comes from the PR's checkout, can decide.
+keep_going <- nzchar(Sys.getenv("PKGDOWN_KEEP_GOING", "")) ||
+  identical(Sys.getenv("GITHUB_EVENT_NAME"), "issue_comment")
 failure_dir <- "pkgdown-failure-state"
 if (assemble_only && sharded) {
   stop("PKGDOWN_ASSEMBLE and PKGDOWN_SHARDS>1 are mutually exclusive")
@@ -107,7 +111,8 @@ t0 <- Sys.time()
 # What a failed article left in the global environment, where pkgdown renders
 # it (pkgdown:::rmarkdown_render_with_seed() passes envir = globalenv()), so a
 # check that fails only on the runner can be read off its values. Vectors of
-# up to 20 elements and data frames of up to 20 rows go to the log; every
+# up to 20 elements and data frames of up to 20 rows (6000 characters at most
+# each) go to the log; every
 # non-function object up to 50 MB goes to <failure_dir>/<article>.rds, which
 # the workflow uploads. `before` is the global environment's names before the
 # render.
@@ -119,11 +124,11 @@ dump_failure_state <- function(name, before) {
   for (nm in names(objs)) {
     x <- objs[[nm]]
     small <- (is.atomic(x) && length(x) <= 20L) ||
-      (is.data.frame(x) && nrow(x) <= 20L && ncol(x) <= 15L)
+      (is.data.frame(x) && nrow(x) <= 20L)
     if (small) {
       # 15 digits: the checks that fail only on the runner compare at 1e-8.
       txt <- paste(utils::capture.output(print(x, digits = 15)), collapse = "\n")
-      cat(sprintf("STATE %s $ %s\n%s\n", name, nm, substr(txt, 1L, 3000L)),
+      cat(sprintf("STATE %s $ %s\n%s\n", name, nm, substr(txt, 1L, 6000L)),
           file = stderr())
     }
   }

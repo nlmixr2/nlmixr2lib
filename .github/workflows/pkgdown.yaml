@@ -88,10 +88,6 @@ jobs:
       PKGDOWN_WORKERS: ""
       # PKGDOWN_SHARDS is inherited from the workflow-level env above.
       PKGDOWN_SHARD: ${{ matrix.shard }}
-      # A /ci run renders every article of its shard and reports all failures,
-      # with the values the failed articles left behind; other runs stop at
-      # the first failure.
-      PKGDOWN_KEEP_GOING: ${{ github.event_name == 'issue_comment' && '1' || '' }}
     steps:
       - name: Report /ci run to the PR (pending)
         if: github.event_name == 'issue_comment'
