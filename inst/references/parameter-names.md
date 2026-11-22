@@ -2469,7 +2469,7 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:**
   - `FLOOR` -- Chudasama 2026 Table S9 and control stream ('Residual treatment effect at time infinity').
 - **Example models:** `Chudasama_2026_enfortumab.R` (founding example; `kill_floor = 0.149`, with `kkill = 0.0327` 1/day and `res = 0.0278` 1/day, enfortumab vedotin in urothelial cancer).
-- **Notes:** Distinct from `res` (the decay rate of the time-dependent part) and from `kkill` (the maximum kill rate it multiplies). Not a fraction of the initial effect: the initial multiplier is `1 + kill_floor`, so the long-run share of the initial effect is `kill_floor / (1 + kill_floor)`.
+- **Notes:** Distinct from `res` (the decay rate of the time-dependent part) and from `kkill` (the maximum kill rate it multiplies). Not a fraction of the initial effect: the initial multiplier is `1 + kill_floor`, so the long-run share of the initial effect is `kill_floor / (1 + kill_floor)`. Ratified by the maintainers 2026-11-20.
 
 ### vd (**canonical apparent volume of distribution**)
 - **Type:** paper-named-param
