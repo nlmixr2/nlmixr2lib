@@ -9699,39 +9699,6 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Santavy_2022_cefazolin.R` (exponential effect on the peripheral volume, `exp(-0.79 * SURG_CPB_MINI)`, reference = off-pump).
 - **Notes:** Mutually exclusive with `SURG_CPB_STD`; see that entry for the distinction from the `CPB_` phase windows, `T_CPB` and the ECMO family. Record the circuit hardware and temperature management in `covariateData[[SURG_CPB_MINI]]$notes`.
 
-### SURG_TOF (**canonical for tetralogy of Fallot total-correction surgery indicator**)
-- **Description:** 1 = the subject underwent total (complete) surgical correction of tetralogy of Fallot during the modelled admission; 0 = otherwise. Subject-level and time-fixed. Member of the congenital-heart-surgery procedure-type set `SURG_TOF` / `SURG_VSD_AVSD` / `SURG_GLENN`, whose members are mutually exclusive; the reference category is whatever cohort the source left un-indicated, and each model states it in `covariateData[[...]]$reference_category`.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (in `Rantanen_2026_methylprednisolone.R`, the neonatal cardiac-surgery cohort when `SURG_VSD_AVSD` and `SURG_GLENN` are also 0).
-- **Source aliases:**
-  - `OPER = 1` -- used in `Rantanen_2026_methylprednisolone.R` (Rantanen 2026 four-level operation-group covariate; `SURG_TOF = as.integer(OPER == 1)`).
-- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.404 * SURG_TOF)`, and an operation-group-specific proportional residual error).
-- **Notes:** Records the procedure, not the diagnosis: a patient with tetralogy of Fallot who had a palliative shunt rather than total correction is 0. In pooled paediatric datasets the procedure type is usually confounded with age at surgery and with the source trial, so the fitted effect is an empirical cohort descriptor; say so in the model's notes. Distinct from `SURG_CPB_STD` / `SURG_CPB_MINI` (circuit type) and from `RACHS1` (surgical risk category).
-
-### SURG_VSD_AVSD (**canonical for ventricular or atrioventricular septal defect repair surgery indicator**)
-- **Description:** 1 = the subject underwent surgical repair of a ventricular septal defect (VSD) or an atrioventricular septal defect (AVSD) during the modelled admission; 0 = otherwise. Subject-level and time-fixed. Member of the mutually exclusive procedure-type set `SURG_TOF` / `SURG_VSD_AVSD` / `SURG_GLENN`.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (in `Rantanen_2026_methylprednisolone.R`, the neonatal cardiac-surgery cohort when `SURG_TOF` and `SURG_GLENN` are also 0).
-- **Source aliases:**
-  - `OPER = 2` -- used in `Rantanen_2026_methylprednisolone.R` (`SURG_VSD_AVSD = as.integer(OPER == 2)`).
-- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.475 * SURG_VSD_AVSD)`, and an operation-group-specific proportional residual error).
-- **Notes:** Pools VSD and AVSD repair because the founding source does. A paper that separates them should register `SURG_VSD` and `SURG_AVSD` siblings rather than reuse this pooled indicator. See `SURG_TOF` for the confounding caveat.
-
-### SURG_GLENN (**canonical for bidirectional Glenn (superior cavopulmonary anastomosis) surgery indicator**)
-- **Description:** 1 = the subject underwent a bidirectional Glenn procedure (bidirectional superior cavopulmonary anastomosis; stage-2 single-ventricle palliation) during the modelled admission; 0 = otherwise. Subject-level and time-fixed. Member of the mutually exclusive procedure-type set `SURG_TOF` / `SURG_VSD_AVSD` / `SURG_GLENN`.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (in `Rantanen_2026_methylprednisolone.R`, the neonatal cardiac-surgery cohort when `SURG_TOF` and `SURG_VSD_AVSD` are also 0).
-- **Source aliases:**
-  - `OPER = 3` -- used in `Rantanen_2026_methylprednisolone.R` (Rantanen 2026 'GLENN, procedure for patients with tricuspid atresia'; `SURG_GLENN = as.integer(OPER == 3)`).
-- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.884 * SURG_GLENN)`, and an operation-group-specific proportional residual error).
-- **Notes:** Records the procedure. A hemi-Fontan is a different stage-2 operation and is 0 here. Related to, but distinct from, `ICSHUNT_R2L` (a physiology indicator, right-to-left shunt with Qp:Qs < 1), which a post-Glenn patient may also carry. See `SURG_TOF` for the confounding caveat.
-
 ### T_CPB (**canonical for total cardiopulmonary bypass duration during the most recent cardiac surgery**)
 - **Description:** Total time the patient spent on cardiopulmonary bypass (CPB) during their most recent cardiac-surgery operation. Time-fixed per subject (the duration of the bypass run is a single scalar set at the close of surgery). Captures composite physiological / pharmacological effects of CPB on post-operative drug disposition (hemodilution from priming volume, systemic inflammatory response, transient hepatic / renal hypoperfusion).
 - **Units:** minutes
@@ -20204,6 +20171,39 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `ASY` -- the Wu 2022 ESM control stream column "Dataset identification. 0 for dataset 1 and 1 for dataset 2", where dataset 2 is DINO. Same orientation as the canonical, no value transformation.
 - **Example models:** `Wu_2022_fentanyl.R` (selects the residual-error magnitudes only: additive 0.0297 ug/L and proportional 0.361 for DINO against 0.246 ug/L and 0.23 for the Helsinki dataset), `Wu_2023_paracetamol.R` (selects the plasma residual-error magnitudes only, against the reference Flint et al. single-dose dataset: log-scale SDs for paracetamol and its three metabolites, plus the additive SD2 terms on sulfate and the oxidative metabolites that apply to the Flint dataset alone; source column `ASY`, same orientation).
 - **Notes:** The indicator identifies the study, not the assay: in `Wu_2022_fentanyl.R` the two datasets also differ in bioanalysis (DINO LC-MS/MS vs Helsinki radioimmunoassay), sampling route and BLOQ handling, and the paper attributes the residual split to the dataset. Use `RIA_ASSAY` / `IMMUNOASSAY` instead when a paper attributes a residual split specifically to the analytical method. The DINO cohort also underlies `Voller_2019_midazolam.R`, which retains no study term.
+
+### STUDY_2008_007413_76_TOF (**canonical for the tetralogy of Fallot cohort of the Helsinki paediatric cardiac-surgery methylprednisolone trials (EudraCT 2008-007413-76) indicator**)
+- **Description:** 1 = record from the randomized 5 vs 30 mg/kg methylprednisolone trial in infants undergoing total correction of tetralogy of Fallot (Keski-Nisula 2016, Ann Thorac Surg 102:870); 0 = record from another cohort of the pooled analysis. Subject-level (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other cohorts of the pooled analysis; in `Rantanen_2026_methylprednisolone.R`, all three `STUDY_2008_007413_76_*` at 0 is the neonatal cardiac-surgery cohort of Keski-Nisula 2013, operation group `OPER = 0`).
+- **Source aliases:**
+  - `OPER = 1` -- Rantanen 2026 four-level operation-group covariate (Table 2 footnote); `STUDY_2008_007413_76_TOF = as.integer(OPER == 1)`.
+- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.404 * STUDY_2008_007413_76_TOF)`, and the cohort's proportional residual error 0.423).)
+- **Notes:** Member of the auto-approved `STUDY_<id>` family. All four Helsinki trials pooled by Rantanen 2026 were registered under the single EudraCT number 2008-007413-76 (sponsor protocol code 'steroiditutkimus'), so the id is that number with the cohort label as the suffix; the three `STUDY_2008_007413_76_*` indicators are mutually exclusive. Each cohort is defined by its operation, but because each is also one trial, the fitted effects are cohort descriptors rather than procedure effects (Rantanen 2026 Discussion); do not reuse these indicators as procedure-type covariates.
+
+### STUDY_2008_007413_76_VSD_AVSD (**canonical for the ventricular / atrioventricular septal defect cohort of the Helsinki paediatric cardiac-surgery methylprednisolone trials (EudraCT 2008-007413-76) indicator**)
+- **Description:** 1 = record from the randomized intravenous vs CPB-prime methylprednisolone trial in infants undergoing VSD or AVSD repair (Keski-Nisula 2015, Ann Thorac Surg 99:180); 0 = record from another cohort of the pooled analysis. Subject-level (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other cohorts of the pooled analysis; in `Rantanen_2026_methylprednisolone.R`, all three `STUDY_2008_007413_76_*` at 0 is the neonatal cardiac-surgery cohort of Keski-Nisula 2013, operation group `OPER = 0`).
+- **Source aliases:**
+  - `OPER = 2` -- Rantanen 2026 four-level operation-group covariate (Table 2 footnote); `STUDY_2008_007413_76_VSD_AVSD = as.integer(OPER == 2)`.
+- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.475 * STUDY_2008_007413_76_VSD_AVSD)`, and the cohort's proportional residual error 0.207).)
+- **Notes:** Member of the auto-approved `STUDY_<id>` family. All four Helsinki trials pooled by Rantanen 2026 were registered under the single EudraCT number 2008-007413-76 (sponsor protocol code 'steroiditutkimus'), so the id is that number with the cohort label as the suffix; the three `STUDY_2008_007413_76_*` indicators are mutually exclusive. Each cohort is defined by its operation, but because each is also one trial, the fitted effects are cohort descriptors rather than procedure effects (Rantanen 2026 Discussion); do not reuse these indicators as procedure-type covariates. The route contrast within the cohort (intravenous vs CPB prime) was screened and not retained.
+
+### STUDY_2008_007413_76_GLENN (**canonical for the bidirectional Glenn cohort of the Helsinki paediatric cardiac-surgery methylprednisolone trials (EudraCT 2008-007413-76) indicator**)
+- **Description:** 1 = record from the 30 mg/kg methylprednisolone trial in children with tricuspid atresia undergoing the bidirectional Glenn procedure (Keski-Nisula 2020, J Cardiothorac Vasc Anesth 34:1542); 0 = record from another cohort of the pooled analysis. Subject-level (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other cohorts of the pooled analysis; in `Rantanen_2026_methylprednisolone.R`, all three `STUDY_2008_007413_76_*` at 0 is the neonatal cardiac-surgery cohort of Keski-Nisula 2013, operation group `OPER = 0`).
+- **Source aliases:**
+  - `OPER = 3` -- Rantanen 2026 four-level operation-group covariate (Table 2 footnote); `STUDY_2008_007413_76_GLENN = as.integer(OPER == 3)`.
+- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.884 * STUDY_2008_007413_76_GLENN)`, and the cohort's proportional residual error 0.140).)
+- **Notes:** Member of the auto-approved `STUDY_<id>` family. All four Helsinki trials pooled by Rantanen 2026 were registered under the single EudraCT number 2008-007413-76 (sponsor protocol code 'steroiditutkimus'), so the id is that number with the cohort label as the suffix; the three `STUDY_2008_007413_76_*` indicators are mutually exclusive. Each cohort is defined by its operation, but because each is also one trial, the fitted effects are cohort descriptors rather than procedure effects (Rantanen 2026 Discussion); do not reuse these indicators as procedure-type covariates.
 
 ### REGI_BID (**canonical for twice-daily dosing-regimen indicator**)
 - **Description:** 1 = subject's dosing regimen is BID (twice daily), 0 = QD (once daily) or other non-BID regimen. Per-subject (regimen-fixed) categorical indicator for population analyses that pool QD and BID arms and test regimen as a covariate.

@@ -74,9 +74,9 @@ in-file comment giving its source. They are collected here.
 | `e_wt_cl` | 0.75, fixed | Table 2, fixed scaling parameters; Methods "Covariate analysis" |
 | `e_wt_vc` | 1, fixed | Table 2, fixed scaling parameters; Methods "Covariate analysis" |
 | `e_page_cl` | 0.503 | Table 2, THETA(3) |
-| `e_surg_tof_vc` | -0.404 | Table 2, THETA(4) |
-| `e_surg_vsd_avsd_vc` | -0.475 | Table 2, THETA(5) |
-| `e_surg_glenn_vc` | -0.884 | Table 2, THETA(6) |
+| `e_study_2008_007413_76_tof_vc` | -0.404 | Table 2, THETA(4) |
+| `e_study_2008_007413_76_vsd_avsd_vc` | -0.475 | Table 2, THETA(5) |
+| `e_study_2008_007413_76_glenn_vc` | -0.884 | Table 2, THETA(6) |
 | `etalcl` variance | 0.208 | Table 2, OMEGA(1,1) |
 | `etalvc` variance | 0.0388 | Table 2, OMEGA(2,2) |
 | `propSd_neonate` | sqrt(0.0851) = 0.2917 | Table 2, SIGMA(1,1) |
@@ -113,9 +113,9 @@ derived <- tibble::tibble(
   ),
   Packaged = c(
     exp(th[["lcl"]]) * 60,
-    exp(th[["e_surg_tof_vc"]]),
-    exp(th[["e_surg_vsd_avsd_vc"]]),
-    exp(th[["e_surg_glenn_vc"]]),
+    exp(th[["e_study_2008_007413_76_tof_vc"]]),
+    exp(th[["e_study_2008_007413_76_vsd_avsd_vc"]]),
+    exp(th[["e_study_2008_007413_76_glenn_vc"]]),
     100 * sqrt(exp(om["etalcl", "etalcl"]) - 1),
     100 * sqrt(exp(om["etalvc", "etalvc"]) - 1),
     100 * th[["propSd_neonate"]],
@@ -158,11 +158,11 @@ draw_pna <- function(n, median, lo, hi) {
 n_per <- 100L
 
 groups <- tibble::tribble(
-  ~group,           ~wt_mean, ~wt_sd, ~pna_med, ~pna_lo, ~pna_hi, ~SURG_TOF, ~SURG_VSD_AVSD, ~SURG_GLENN,
-  "Neonates",       3.6,      0.41,   7,        1,       27,      0,         0,              0,
-  "TOF",            7.0,      1.9,    164,      71,      311,     1,         0,              0,
-  "VSD/AVSD",       5.8,      1.5,    144,      98,      574,     0,         1,              0,
-  "Glenn",          6.7,      1.1,    180,      94,      371,     0,         0,              1
+  ~group,           ~wt_mean, ~wt_sd, ~pna_med, ~pna_lo, ~pna_hi, ~tof, ~vsd_avsd, ~glenn,
+  "Neonates",       3.6,      0.41,   7,        1,       27,      0,    0,         0,
+  "TOF",            7.0,      1.9,    164,      71,      311,     1,    0,         0,
+  "VSD/AVSD",       5.8,      1.5,    144,      98,      574,     0,    1,         0,
+  "Glenn",          6.7,      1.1,    180,      94,      371,     0,    0,         1
 )
 
 make_group <- function(row, id_offset) {
@@ -181,9 +181,9 @@ make_group <- function(row, id_offset) {
     dose_mgkg = dose_mgkg,
     WT = draw_trunc_norm(n_per, row$wt_mean, row$wt_sd, 2.5, 13),
     PAGE = pma_days / 30.4375,
-    SURG_TOF = row$SURG_TOF,
-    SURG_VSD_AVSD = row$SURG_VSD_AVSD,
-    SURG_GLENN = row$SURG_GLENN
+    STUDY_2008_007413_76_TOF = row$tof,
+    STUDY_2008_007413_76_VSD_AVSD = row$vsd_avsd,
+    STUDY_2008_007413_76_GLENN = row$glenn
   )
 }
 
@@ -396,9 +396,9 @@ closed <- subjects |>
   mutate(
     cl = exp(th[["lcl"]]) * (WT / 5.7)^0.75 * (PAGE * 30.4375 / 424)^th[["e_page_cl"]],
     vc = exp(th[["lvc"]] +
-      th[["e_surg_tof_vc"]] * SURG_TOF +
-      th[["e_surg_vsd_avsd_vc"]] * SURG_VSD_AVSD +
-      th[["e_surg_glenn_vc"]] * SURG_GLENN) * (WT / 5.7),
+      th[["e_study_2008_007413_76_tof_vc"]] * STUDY_2008_007413_76_TOF +
+      th[["e_study_2008_007413_76_vsd_avsd_vc"]] * STUDY_2008_007413_76_VSD_AVSD +
+      th[["e_study_2008_007413_76_glenn_vc"]] * STUDY_2008_007413_76_GLENN) * (WT / 5.7),
     aucinf.obs = 1000 * amt / cl,
     half.life = log(2) * vc / cl
   ) |>
@@ -438,11 +438,16 @@ postmenstrual age).
 
 * **Operation-group indicators.** The source covariate `OPER` (0 = neonates,
   1 = tetralogy of Fallot, 2 = VSD/AVSD, 3 = Glenn) is carried as three
-  binary indicators, `SURG_TOF`, `SURG_VSD_AVSD` and `SURG_GLENN`, with the
+  binary study indicators, `STUDY_2008_007413_76_TOF`,
+  `STUDY_2008_007413_76_VSD_AVSD` and `STUDY_2008_007413_76_GLENN`, with the
   neonatal cohort as the reference when all three are 0. Each operation group
-  is also one source trial, and the authors caution that the group effects
-  on V mix developmental, anatomical and perioperative differences
-  (Discussion).
+  is one source trial, and the authors caution that the group effects on V
+  mix developmental, anatomical and perioperative differences (Discussion),
+  so the maintainers carry them as study indicators rather than as
+  procedure-type covariates. All four trials were registered under the one
+  EudraCT number 2008-007413-76 (Methods; EU Clinical Trials Register,
+  sponsor protocol code "steroiditutkimus", checked 2026-11-22), so the
+  indicator names combine that number with the cohort label.
 * **Per-group residual error.** The paper estimated "separate residual error
   models ... for each study"; Table 2 labels the four sigmas by operation
   group. Because each study is one operation group, the residual SD is

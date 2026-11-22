@@ -21,28 +21,28 @@ Rantanen_2026_methylprednisolone <- function() {
       notes = "Canonical PAGE is carried in months; the source expresses PMA in DAYS and centres it on the 424-day median, so model() recovers days as PAGE * 30.4375 (the Bijleveld_2017_gentamicin convention) before forming (PMA_days / 424)^0.503 on CL. For the tetralogy of Fallot, VSD/AVSD and Glenn cohorts the authors assumed a gestational age of 280 days when calculating PMA (Table 1 footnote a), i.e. PMA_days = 280 + postnatal age in days. Observed range 270-854 days (8.9-28.1 months).",
       source_name = "PMA"
     ),
-    SURG_TOF = list(
-      description = "Tetralogy of Fallot total-correction cohort indicator (operation group OPER 1)",
+    STUDY_2008_007413_76_TOF = list(
+      description = "Tetralogy of Fallot cohort (Keski-Nisula 2016 trial) indicator, EudraCT 2008-007413-76 (operation group OPER 1)",
       units = "(binary)",
       type = "binary",
-      reference_category = "0 (neonatal cardiac-surgery cohort, OPER 0, when all three SURG_ indicators are 0)",
-      notes = "Time-fixed. 1 = infant undergoing total correction of tetralogy of Fallot (Keski-Nisula 2016 study, n = 28). Multiplies V by exp(-0.404) = 0.668 and selects the OPER 1 proportional residual error. SURG_TOF, SURG_VSD_AVSD and SURG_GLENN are mutually exclusive. Each operation group is also one source study, so the authors caution that the group effects are empirical descriptors of the pooled data, combining developmental, anatomical and perioperative differences, not isolated effects of the procedure (Discussion).",
+      reference_category = "0 (neonatal cardiac-surgery cohort, OPER 0, when all three STUDY_2008_007413_76_* indicators are 0)",
+      notes = "Time-fixed study-cohort indicator. 1 = subject of the tetralogy of Fallot total-correction trial (Keski-Nisula 2016, n = 28). All four pooled trials were registered under the single EudraCT number 2008-007413-76 (sponsor protocol code 'steroiditutkimus'; Methods 'Ethics and informed consent'), so the cohort label distinguishes them. Multiplies V by exp(-0.404) = 0.668 and selects the OPER 1 proportional residual error. STUDY_2008_007413_76_TOF, STUDY_2008_007413_76_VSD_AVSD and STUDY_2008_007413_76_GLENN are mutually exclusive. Each operation group is one source trial, and the authors caution that the group effects are empirical descriptors of the pooled data, combining developmental, anatomical and perioperative differences, not isolated effects of the procedure (Discussion).",
       source_name = "OPER = 1"
     ),
-    SURG_VSD_AVSD = list(
-      description = "Ventricular or atrioventricular septal defect repair cohort indicator (operation group OPER 2)",
+    STUDY_2008_007413_76_VSD_AVSD = list(
+      description = "VSD/AVSD cohort (Keski-Nisula 2015 trial) indicator, EudraCT 2008-007413-76 (operation group OPER 2)",
       units = "(binary)",
       type = "binary",
-      reference_category = "0 (neonatal cardiac-surgery cohort, OPER 0, when all three SURG_ indicators are 0)",
-      notes = "Time-fixed. 1 = infant undergoing VSD or AVSD repair (Keski-Nisula 2015 study, n = 30). Multiplies V by exp(-0.475) = 0.622 and selects the OPER 2 proportional residual error. Half of this cohort received the dose into the CPB-circuit priming solution rather than intravenously; the source model treats both routes as an intravenous bolus (Methods 'Pharmacometric analysis'), and route was screened but not retained.",
+      reference_category = "0 (neonatal cardiac-surgery cohort, OPER 0, when all three STUDY_2008_007413_76_* indicators are 0)",
+      notes = "Time-fixed study-cohort indicator. 1 = subject of the VSD/AVSD repair trial (Keski-Nisula 2015, n = 30). Multiplies V by exp(-0.475) = 0.622 and selects the OPER 2 proportional residual error. Half of this cohort received the dose into the CPB-circuit priming solution rather than intravenously; the source model treats both routes as an intravenous bolus (Methods 'Pharmacometric analysis'), and route was screened but not retained.",
       source_name = "OPER = 2"
     ),
-    SURG_GLENN = list(
-      description = "Bidirectional Glenn procedure cohort indicator (operation group OPER 3)",
+    STUDY_2008_007413_76_GLENN = list(
+      description = "Bidirectional Glenn cohort (Keski-Nisula 2020 trial) indicator, EudraCT 2008-007413-76 (operation group OPER 3)",
       units = "(binary)",
       type = "binary",
-      reference_category = "0 (neonatal cardiac-surgery cohort, OPER 0, when all three SURG_ indicators are 0)",
-      notes = "Time-fixed. 1 = infant with tricuspid atresia undergoing the bidirectional Glenn procedure (Keski-Nisula 2020 study, n = 15). Multiplies V by exp(-0.884) = 0.413 and selects the OPER 3 proportional residual error.",
+      reference_category = "0 (neonatal cardiac-surgery cohort, OPER 0, when all three STUDY_2008_007413_76_* indicators are 0)",
+      notes = "Time-fixed study-cohort indicator. 1 = subject of the bidirectional Glenn trial in tricuspid atresia (Keski-Nisula 2020, n = 15). Multiplies V by exp(-0.884) = 0.413 and selects the OPER 3 proportional residual error.",
       source_name = "OPER = 3"
     )
   )
@@ -114,9 +114,9 @@ Rantanen_2026_methylprednisolone <- function() {
 
     # Covariate effects
     e_page_cl <- 0.503; label("Power exponent of postmenstrual age on CL (unitless)") # Table 2 THETA(3) = 0.503 (RSE 45.0%)
-    e_surg_tof_vc <- -0.404; label("Log-scale effect of the tetralogy of Fallot cohort on V (unitless)") # Table 2 THETA(4) = -0.404 (V ratio 0.668)
-    e_surg_vsd_avsd_vc <- -0.475; label("Log-scale effect of the VSD/AVSD cohort on V (unitless)") # Table 2 THETA(5) = -0.475 (V ratio 0.622)
-    e_surg_glenn_vc <- -0.884; label("Log-scale effect of the Glenn cohort on V (unitless)") # Table 2 THETA(6) = -0.884 (V ratio 0.413)
+    e_study_2008_007413_76_tof_vc <- -0.404; label("Log-scale effect of the tetralogy of Fallot cohort on V (unitless)") # Table 2 THETA(4) = -0.404 (V ratio 0.668)
+    e_study_2008_007413_76_vsd_avsd_vc <- -0.475; label("Log-scale effect of the VSD/AVSD cohort on V (unitless)") # Table 2 THETA(5) = -0.475 (V ratio 0.622)
+    e_study_2008_007413_76_glenn_vc <- -0.884; label("Log-scale effect of the Glenn cohort on V (unitless)") # Table 2 THETA(6) = -0.884 (V ratio 0.413)
 
     # Interindividual variability (variances; Table 2 footnote 2 gives
     # CV% = 100 * sqrt(exp(omega^2) - 1))
@@ -139,9 +139,9 @@ Rantanen_2026_methylprednisolone <- function() {
     vc <- exp(
       lvc +
         etalvc +
-        e_surg_tof_vc * SURG_TOF +
-        e_surg_vsd_avsd_vc * SURG_VSD_AVSD +
-        e_surg_glenn_vc * SURG_GLENN
+        e_study_2008_007413_76_tof_vc * STUDY_2008_007413_76_TOF +
+        e_study_2008_007413_76_vsd_avsd_vc * STUDY_2008_007413_76_VSD_AVSD +
+        e_study_2008_007413_76_glenn_vc * STUDY_2008_007413_76_GLENN
     ) *
       (WT / 5.7)^e_wt_vc
 
@@ -154,10 +154,10 @@ Rantanen_2026_methylprednisolone <- function() {
 
     # Operation-group-specific proportional residual error
     sd_prop <- propSd_neonate *
-      (1 - SURG_TOF - SURG_VSD_AVSD - SURG_GLENN) +
-      propSd_tof * SURG_TOF +
-      propSd_vsd_avsd * SURG_VSD_AVSD +
-      propSd_glenn * SURG_GLENN
+      (1 - STUDY_2008_007413_76_TOF - STUDY_2008_007413_76_VSD_AVSD - STUDY_2008_007413_76_GLENN) +
+      propSd_tof * STUDY_2008_007413_76_TOF +
+      propSd_vsd_avsd * STUDY_2008_007413_76_VSD_AVSD +
+      propSd_glenn * STUDY_2008_007413_76_GLENN
     Cc ~ prop(sd_prop)
   })
 }
