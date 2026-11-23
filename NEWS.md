@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Rebello 2026 inhaled fluticasone propionate ([doi:10.1007/s13318-026-00989-0](https://doi.org/10.1007/s13318-026-00989-0)) -- healthy adult men given 1000 ug by metered-dose inhaler; the published estimates overpredict the paper's own exposure about fourfold (see the article).
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

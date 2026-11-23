@@ -3308,6 +3308,8 @@ navbar:
         href: articles/Yao_2025_flurbiprofen.html
       - text: "Flurbiprofen s (Yao 2025)"
         href: articles/Yao_2025_flurbiprofen.html
+      - text: "Fluticasone (Rebello 2026)"
+        href: articles/Rebello_2026_fluticasone.html
       - text: "Fluticasone 1500ug (Rosenborg 2025)"
         href: articles/Rosenborg_2025_fluticasone_salmeterol.html
       - text: "Fluticasone 300ug (Rosenborg 2025)"
@@ -11466,6 +11468,7 @@ articles:
   - articles/Ravva_2010_varenicline_exposure_response
   - articles/Ravva_2015_varenicline
   - articles/Rayner_2013_oseltamivir_exposure_response
+  - articles/Rebello_2026_fluticasone
   - articles/Reddy_2015_oseltamivir_ferret
   - articles/Reed_2025_meropenem_vaborbactam
   - articles/Reeder_2025_piperacillin_tazobactam
