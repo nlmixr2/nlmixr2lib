@@ -389,8 +389,8 @@ days 50-180 in Figure 1A.
   loss, "drastically worse model fit"). Both are model-development candidates
   and are not packaged; the paper's final model is Table 2.
 - **Parameter name.** The paper's `kdeg` (L/(day*mg)) is packaged as
-  `kirrev`, the name already used in nlmixr2lib for a second-order
-  irreversible drug-by-target loss term (`Papasouliotis_2022_evobrutinib`).
+  `kirrev`, the canonical nlmixr2lib name for a second-order irreversible
+  drug-dependent loss term (also used by `Papasouliotis_2022_evobrutinib`).
   The value is unchanged.
 - **Equation 8 typesetting.** The printed simplified PK equation (Eq. 8)
   shows `Q/V2 * P` as the return term of the central compartment, whereas
