@@ -4938,6 +4938,8 @@ navbar:
         href: articles/Sun_2025_maribavir.html
       - text: "Maribavir vomiting (Sun 2025)"
         href: articles/Sun_2025_maribavir.html
+      - text: "Marstacimab (Nayak 2026)"
+        href: articles/Nayak_2026_marstacimab.html
       - text: "MarzeptacogAlfa (Faraj 2022)"
         href: articles/Faraj_2022_marzeptacogAlfa.html
       - text: "Matrine pig pbpk (Yang 2025)"
@@ -11216,6 +11218,7 @@ articles:
   - articles/Nava_2018_busulfan
   - articles/Navid_2016_theophylline_pbpk
   - articles/Nayak_2021_rivipansel
+  - articles/Nayak_2026_marstacimab
   - articles/Ndzamba_2025_ethambutol
   - articles/Neant_2023_covid19_news2
   - articles/Nel_2026_ceftriaxone

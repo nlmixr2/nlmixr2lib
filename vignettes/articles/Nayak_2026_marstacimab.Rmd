@@ -1,0 +1,466 @@
+---
+title: "Marstacimab (Nayak 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Marstacimab (Nayak 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Nayak_2026_marstacimab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Nayak_2026_marstacimab"))$description`
+* Article: <https://doi.org/10.1007/s40262-026-01695-5> (open access; the
+  supplementary appendix holds the IIV, residual-error, covariate and Emax
+  equations)
+
+Marstacimab is a human IgG1 monoclonal antibody against the Kunitz-2 domain of
+tissue factor pathway inhibitor (TFPI), given subcutaneously once weekly for
+prophylaxis in hemophilia A or B. The final model (Fig. 1 of the paper) is a
+two-compartment target-mediated drug disposition (TMDD) model with the
+quasi-steady-state (QSS) approximation. Free drug is cleared by a linear
+clearance and by an additional Michaelis-Menten pathway, and soluble TFPI is
+synthesised at a constant rate, degraded as free TFPI (`kdeg`) and eliminated as
+the marstacimab-TFPI complex (`kcom`). Total marstacimab and total TFPI were
+both fitted. A sequential sigmoid Emax model then relates the model-predicted
+free TFPI to peak thrombin from the thrombin generation assay (TGA), in
+participants with hemophilia only.
+
+# Population
+
+The analysis pooled 213 male participants from six studies (Table 1 of the
+paper): 63 healthy volunteers (phase I studies NCT02531815 and NCT04832139) and
+150 participants with hemophilia (phase I NCT04878731 in China, phase Ib/II
+NCT02974855, its phase II extension NCT03363321, and the non-inhibitor cohort of
+phase III NCT03938792). Of the participants with hemophilia, 121 had severe
+hemophilia A and 29 moderately severe to severe hemophilia B; 19 were
+adolescents aged 13 to 17 years. Median (range) age was 33 (13-66) years and
+median (range) body weight 71.1 (35-120) kg (Table 3). By race, 33.3% were
+White, 32.4% Asian, 26.3% Native Hawaiian and 7.5% Black (Table 4); 23.6% were
+ADA positive and 21.6% had mild renal impairment. Doses ranged from 30 to
+450 mg SC, single or once weekly, plus 150 and 440 mg IV single doses in
+healthy volunteers. The phase III regimen was a 300 mg SC loading dose followed
+by 150 mg SC once weekly (QW), with escalation to 300 mg QW allowed.
+
+The same information is available programmatically via
+`readModelDb("Nayak_2026_marstacimab")()$population`.
+
+# Source trace
+
+Each `ini()` value carries a comment in
+`inst/modeldb/specificDrugs/Nayak_2026_marstacimab.R` naming its source; the
+table below collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL) | 0.0188 L/h | Table 5 |
+| `lvc` (Vc) | 3.61 L | Table 5 |
+| `lq` (Q) | 0.00489 L/h | Table 5 |
+| `lvp` (Vp) | 4.99 L | Table 5 |
+| `lvmax` (Vmax, nonlinear drug clearance) | 0.53 nM/h | Table 5 |
+| `lkm` (Km, nonlinear drug clearance) | 4.31 nM | Table 5 |
+| `lfdepot` (F) | 0.705 | Table 5 |
+| `lka` (ka) | 0.00742 1/h | Table 5 |
+| `ltlag` (lag time) | 2 h | Table 5 |
+| `lrbase_target` (baseline total TFPI) | 3.75 nM | Table 5 |
+| `lkdeg` (kdeg, free TFPI) | 0.0161 1/h | Table 5 |
+| `lkint` (kcom, complex) | 0.000754 1/h | Table 5 |
+| `lkss` (KSS) | 72.2 nM | Table 5 |
+| `e_wt_cl_q` | 1.14 | Table 5 (weight exponent on CL); also applied to Q, see Assumptions |
+| `e_wt_vc_vp` | 1.86 | Table 5 (weight exponent on Vc); also applied to Vp, see Assumptions |
+| `e_dis_healthy_cl` | 0.199 | Table 5 |
+| `e_race_asian_cl` | 0.346 | Table 5 |
+| `e_ada_pos_cl` | 0.229 | Table 5 |
+| `e_renalimp_mild_cl` | -0.168 | Table 5 |
+| `e_dis_hemophilia_b_cl` | 0.118 | Table 5 |
+| `le0` (PBASE) | 37.8 nM | Table 8 |
+| `lrmax_peak_thrombin` (PMAX) | 91.4 nM | Table 8 |
+| `lec50` (EC50) | 2.92 nM | Table 8 |
+| `hill` | 5 (fixed) | Table 8 |
+| IIV variances, CL-Vc correlation -0.527 | see model file | Table 5 (PK), Table 8 (PD) |
+| `expSd`, `expSd_total_target` | 0.392, 0.158 | Table 5 (additive on the log scale) |
+| `addSd_peak_thrombin` | 26.3 nM | Table 8 |
+| `exp(eta)` IIV on every parameter | n/a | Supplementary eq 1 |
+| Log-scale residual error, `ln(Y) = ln(F) + W * eps` | n/a | Supplementary eq 3 |
+| Peak thrombin `PBASE + (PMAX - PBASE) / (1 + (FTFPI / EC50)^HILL)` | n/a | Supplementary eq 5 |
+| Categorical covariates `COV = 1 + theta * f` | n/a | Supplementary eq 7.1-7.2 |
+| Weight `(WT / 71.1)^thetaWT` | n/a | Supplementary eq 8.1-8.2; 71.1 kg is the median of Table 3 |
+| TMDD-QSS structure, nonlinear clearance of free drug | n/a | Fig. 1; Methods 'PopPK Model' |
+| Marstacimab molecular weight 146 kDa | n/a | Hympavzi US prescribing information, section 11 (not stated in the paper) |
+
+The QSS equations follow the standard Gibbiansky form. With total drug
+`Ctot = central / Vc` and total TFPI `Rtot`, both in nM, free drug is
+`C = 0.5 * ((Ctot - Rtot - KSS) + sqrt((Ctot - Rtot - KSS)^2 + 4 * KSS * Ctot))`.
+The complex is `Ctot - C`, and free TFPI is `Rtot - (Ctot - C)`. Linear,
+inter-compartmental and Michaelis-Menten fluxes act on free drug, and the
+complex is eliminated at `kcom`.
+
+# Structural checks
+
+These checks use typical values (no random effects) and assert on
+model-internal identities, so they are deterministic.
+
+```{r structural-checks}
+mod <- readModelDb("Nayak_2026_marstacimab")
+mod_typ <- rxode2::zeroRe(mod)
+
+covs_ref <- data.frame(
+  WT = 71.1, DIS_HEALTHY = 0, RACE_ASIAN = 0, ADA_POS = 0,
+  RENALIMP_MILD = 0, DIS_HEMOPHILIA_B = 0
+)
+
+# The model has three `~` endpoints, so observation rows carry an ODE-state
+# cmt plus dvid; a forward solve returns every endpoint column regardless.
+make_events <- function(id, dose_time, dose_amt, dose_cmt, obs_time, covs) {
+  doses <- data.frame(
+    id = id, time = dose_time, amt = dose_amt, evid = 1L,
+    cmt = dose_cmt, dvid = NA_integer_
+  )
+  obs <- data.frame(
+    id = id, time = obs_time, amt = 0, evid = 0L,
+    cmt = "central", dvid = 1L
+  )
+  ev <- dplyr::bind_rows(doses, obs)
+  ev <- ev[order(ev$time, -ev$evid), ]
+  cbind(ev, covs[rep(1, nrow(ev)), , drop = FALSE], row.names = NULL)
+}
+
+# 1. Without drug, total TFPI holds at its baseline and free TFPI equals it.
+ev_nodose <- make_events(1, 0, 0, "depot", c(0, 168, 1344), covs_ref)
+sim_nodose <- as.data.frame(rxode2::rxSolve(mod_typ, ev_nodose))
+peak_at_baseline <- 37.8 + (91.4 - 37.8) / (1 + (3.75 / 2.92)^5)
+stopifnot(
+  max(abs(sim_nodose$total_target - 3.75)) < 1e-6,
+  max(abs(sim_nodose$free_target - 3.75)) < 1e-6,
+  max(abs(sim_nodose$peak_thrombin - peak_at_baseline)) < 1e-6
+)
+
+# 2. Immediately after a 440 mg IV bolus to a 71.1 kg healthy volunteer,
+#    total concentration is dose / Vc (ug/mL = mg/L).
+ev_iv <- make_events(
+  1, 0, 440, "central", c(0.001, 24, 168, 672),
+  transform(covs_ref, DIS_HEALTHY = 1)
+)
+sim_iv <- as.data.frame(rxode2::rxSolve(mod_typ, ev_iv))
+stopifnot(abs(sim_iv$Cc[1] / (440 / 3.61) - 1) < 0.01)
+sim_iv[, c("time", "Cc", "total_target", "free_target")]
+```
+
+Before dosing, the predicted peak thrombin for a participant with hemophilia is
+`r round(peak_at_baseline, 1)` nM. Because PBASE is the response at saturating
+free TFPI, the drug-free value lies above PBASE: baseline free TFPI (3.75 nM)
+is already close to EC50 (2.92 nM).
+
+# Peak thrombin versus free TFPI (Figure 4)
+
+Figure 4 of the paper plots peak thrombin against model-predicted free TFPI in
+ng/mL, with the population Emax curve in blue. The maintainers digitised that
+curve. To convert the model's nM to the figure's ng/mL they used 35.3 ng/mL per
+nM, the ratio of the paper's mean baseline total TFPI (132.5 ng/mL, Table 3) to
+the model's baseline total TFPI (3.75 nM, Table 5). The figure's half-maximal
+point lies at about 102 ng/mL, i.e. 2.9 nM, which confirms both this factor and
+the Table 8 EC50.
+
+```{r figure-4}
+ng_per_nm_tfpi <- 132.5 / 3.75
+fig4_digitised <- data.frame(
+  free_tfpi_ngml = c(47.7, 64, 80.4, 96.7, 113.1, 129.4, 145.8, 162.1, 178.5, 194.8, 219.3),
+  peak_thrombin = c(94.3, 89.2, 80, 67.8, 57.3, 50, 45.7, 43.5, 41.9, 41.1, 40.3)
+)
+emax_curve <- function(free_nm) 37.8 + (91.4 - 37.8) / (1 + (free_nm / 2.92)^5)
+fig4_digitised$model <- emax_curve(fig4_digitised$free_tfpi_ngml / ng_per_nm_tfpi)
+fig4_digitised$pct_diff <- 100 * (fig4_digitised$model / fig4_digitised$peak_thrombin - 1)
+
+# The plateaus of the printed curve sit about 4% above Table 8's PBASE and PMAX
+# (see Assumptions); a mis-transcribed EC50, Hill or plateau moves this far more.
+stopifnot(max(abs(fig4_digitised$pct_diff)) < 10)
+
+curve_df <- data.frame(free_tfpi_ngml = seq(45, 225, by = 1))
+curve_df$peak_thrombin <- emax_curve(curve_df$free_tfpi_ngml / ng_per_nm_tfpi)
+
+ggplot(curve_df, aes(free_tfpi_ngml, peak_thrombin)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  geom_point(data = fig4_digitised, shape = 21, size = 2) +
+  coord_cartesian(ylim = c(0, 120)) +
+  labs(
+    x = "Free TFPI (ng/mL)", y = "Peak thrombin (nM)",
+    title = "Peak thrombin vs free TFPI, typical values",
+    caption = "Line: Table 8 parameters. Points: curve digitised from Figure 4 of Nayak 2026."
+  )
+
+knitr::kable(fig4_digitised, digits = 1,
+  caption = "Digitised Figure 4 curve vs the Table 8 Emax equation.")
+```
+
+# Virtual cohort
+
+Table 7 of the paper summarises steady-state exposure from the empirical Bayes
+estimates of the participants with hemophilia, simulated on 150 mg or 300 mg SC
+QW. The virtual cohorts below approximate those participants. Covariate
+proportions are computed from Table 4. Adults have 43.5% Asian, 19% hemophilia
+B, 20.6% ADA positive and 16% mild renal impairment. Adolescents have 36.8%
+Asian, 21% hemophilia B, 10.5% ADA positive and no renal impairment. Body
+weight is drawn from a normal distribution truncated to the observed range,
+using the Table 3 phase III moments: adults 71.6 (SD 15.6) kg, 43.2-120 kg, and
+adolescents 54.7 (SD 12.8) kg, 35-74.1 kg. The 300 mg adolescent group of
+Table 7 had two participants and is not simulated.
+
+```{r cohort}
+set.seed(20261123)
+rxode2::rxSetSeed(20261123)
+
+n_per_arm <- 200
+tau <- 168
+n_doses <- 30
+ss_start <- (n_doses - 1) * tau
+
+draw_truncnorm <- function(n, mean, sd, lower, upper) {
+  x <- rnorm(n, mean, sd)
+  bad <- x < lower | x > upper
+  while (any(bad)) {
+    x[bad] <- rnorm(sum(bad), mean, sd)
+    bad <- x < lower | x > upper
+  }
+  x
+}
+
+make_cohort <- function(n, cohort, dose, wt, p_asian, p_hb, p_ada, p_renal, id_offset) {
+  subj <- data.frame(
+    id = id_offset + seq_len(n),
+    cohort = cohort,
+    WT = draw_truncnorm(n, wt[1], wt[2], wt[3], wt[4]),
+    DIS_HEALTHY = 0L,
+    RACE_ASIAN = rbinom(n, 1, p_asian),
+    DIS_HEMOPHILIA_B = rbinom(n, 1, p_hb),
+    ADA_POS = rbinom(n, 1, p_ada),
+    RENALIMP_MILD = rbinom(n, 1, p_renal)
+  )
+  obs_time <- sort(unique(c(
+    seq(0, n_doses * tau, by = 24),
+    seq(0, tau, by = 6),
+    seq(ss_start, ss_start + tau, by = 6)
+  )))
+  doses <- tidyr::crossing(subj, time = (seq_len(n_doses) - 1) * tau) |>
+    dplyr::mutate(amt = dose, evid = 1L, cmt = "depot", dvid = NA_integer_)
+  obs <- tidyr::crossing(subj, time = obs_time) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- dplyr::bind_rows(
+  make_cohort(n_per_arm, "150 mg (adults)", 150, c(71.6, 15.6, 43.2, 120),
+              0.435, 0.19, 0.206, 0.16, id_offset = 0L),
+  make_cohort(n_per_arm, "300 mg (adults)", 300, c(71.6, 15.6, 43.2, 120),
+              0.435, 0.19, 0.206, 0.16, id_offset = n_per_arm),
+  make_cohort(n_per_arm, "150 mg (adolescents)", 150, c(54.7, 12.8, 35, 74.1),
+              0.368, 0.21, 0.105, 0, id_offset = 2L * n_per_arm)
+)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events, keep = c("cohort")) |>
+  as.data.frame()
+sim$cohort <- factor(sim$cohort,
+  levels = c("150 mg (adults)", "300 mg (adults)", "150 mg (adolescents)"))
+```
+
+# Concentration, total TFPI and peak thrombin over time
+
+The paper's Figure 7 overlays the phase III observations on predictions for
+adolescents from the earlier phase I/II model, not the model packaged here. The
+panels below show the packaged model's median and 90% prediction interval
+(individual predictions, no residual error) for each regimen. Observed phase III
+values for comparison are steady-state total TFPI of about 100-600 ng/mL (about
+3-17 nM), with medians near 300 ng/mL, and peak thrombin of about 30-130 nM with
+medians near 55-65 nM (Figure 7C-D).
+
+```{r figure-time-course, fig.height = 7}
+sim |>
+  dplyr::select(id, time, cohort, Cc, total_target, peak_thrombin) |>
+  tidyr::pivot_longer(c(Cc, total_target, peak_thrombin), names_to = "output") |>
+  dplyr::mutate(output = factor(output,
+    levels = c("Cc", "total_target", "peak_thrombin"),
+    labels = c("Total marstacimab (ug/mL)", "Total TFPI (nM)", "Peak thrombin (nM)"))) |>
+  dplyr::group_by(cohort, output, time) |>
+  dplyr::summarise(
+    q05 = quantile(value, 0.05), q50 = median(value), q95 = quantile(value, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time / 24, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.25) +
+  geom_line() +
+  facet_grid(output ~ cohort, scales = "free_y") +
+  labs(x = "Time (days)", y = NULL,
+       caption = "Median and 5th-95th percentiles of individual predictions, 200 virtual participants per regimen.")
+```
+
+# PKNCA validation against Table 7
+
+Table 7 reports steady-state Cmin, Cmax, Cavg and AUC over the 168 h dosing
+interval, and the accumulation ratio (AUC over the steady-state interval divided
+by AUC over the first interval). The simulation gives 30 weekly doses with no
+loading dose, matching Table 7's '150 mg or 300 mg SC QW', and takes the last
+interval as steady state.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, cohort)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, cohort) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, cohort, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, cohort, time)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, cohort)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | cohort + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | cohort + id)
+intervals <- data.frame(
+  start = c(0, ss_start),
+  end = c(tau, ss_start + tau),
+  auclast = TRUE,
+  cmin = c(FALSE, TRUE),
+  cmax = c(FALSE, TRUE),
+  cav = c(FALSE, TRUE)
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_df <- as.data.frame(nca_res$result)
+
+ss_long <- nca_df |>
+  dplyr::filter(start == ss_start, PPTESTCD %in% c("cmin", "cmax", "cav", "auclast")) |>
+  dplyr::select(id, cohort, PPTESTCD, PPORRES)
+accumulation <- nca_df |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::mutate(interval = ifelse(start == 0, "first", "ss")) |>
+  dplyr::select(id, cohort, interval, PPORRES) |>
+  tidyr::pivot_wider(names_from = interval, values_from = PPORRES) |>
+  dplyr::transmute(id, cohort, PPTESTCD = "accumulation", PPORRES = ss / first)
+sim_long <- dplyr::bind_rows(ss_long, accumulation) |>
+  dplyr::mutate(cohort = as.character(cohort))
+
+# Table 7 medians; concentrations converted from ng/mL to ug/mL
+published <- tibble::tribble(
+  ~cohort,                ~cmin, ~cmax, ~cav, ~auclast, ~accumulation,
+  "150 mg (adults)",      9.40,  13.6,  12.6, 2110,     4.37,
+  "300 mg (adults)",      47.3,  57.3,  54.7, 9200,     3.90,
+  "150 mg (adolescents)", 28.0,  32.4,  31.3, 5260,     4.46
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_long,
+  reference = published,
+  by = "cohort",
+  units = c(cmin = "ug/mL", cmax = "ug/mL", cav = "ug/mL", auclast = "ug*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp,
+  caption = "Simulated vs Table 7 medians (AUClast is AUC over the steady-state dosing interval). * differs from the reference by >20%.")
+```
+
+```{r pknca-assert}
+med_sim <- sim_long |>
+  dplyr::group_by(cohort, PPTESTCD) |>
+  dplyr::summarise(med = median(PPORRES), .groups = "drop")
+med_cav <- setNames(
+  med_sim$med[med_sim$PPTESTCD == "cav"],
+  med_sim$cohort[med_sim$PPTESTCD == "cav"]
+)
+ref_cav <- setNames(published$cav, published$cohort)
+cav_pct <- 100 * (med_cav[names(ref_cav)] / ref_cav - 1)
+
+stopifnot(
+  # Structural: a wrong molecular weight, a missing mg-to-nmol conversion or a
+  # mis-transcribed CL / Vmax moves every median by far more than this.
+  # Authored at -6% / -15% / -13%; the median of 200 draws has a sampling SE
+  # of roughly 7%, so 30% leaves room for any cohort the model can produce.
+  all(abs(cav_pct) < 30),
+  # Weight scaling: adolescents (median about 55 kg) reach more than twice the
+  # adult exposure on the same dose in both the paper and the model.
+  med_cav[["150 mg (adolescents)"]] / med_cav[["150 mg (adults)"]] > 1.5
+)
+```
+
+Steady-state Cmax, Cavg and AUC lie within 15% of the Table 7 medians for all
+three regimens, as does Cmin for adults. Adolescent Cmin is 25% lower than
+published. Table 7 summarises the 17 adolescents' own empirical Bayes estimates,
+while the virtual cohort draws covariates independently from the study
+summaries. The accumulation ratio matches for 300 mg but is about 30% lower than
+published for both 150 mg regimens. The paper does not say how the first-dose
+AUC was obtained for participants who started on a 300 mg loading dose, which
+is most of the 150 mg group. A nonlinear model's first-interval AUC also
+depends strongly on which dose came first. The accumulation ratio is therefore
+reported, not asserted.
+
+The effective half-life follows from the accumulation ratio through
+`t1/2 = tau * ln(2) / ln(Rac / (Rac - 1))` (Supplementary eq 9). For the
+simulated median Rac of the 150 mg adult regimen,
+`r round(med_sim$med[med_sim$cohort == "150 mg (adults)" & med_sim$PPTESTCD == "accumulation"], 2)`,
+this gives
+`r round(tau * log(2) / log((function(r) r / (r - 1))(med_sim$med[med_sim$cohort == "150 mg (adults)" & med_sim$PPTESTCD == "accumulation"])) / 24, 1)`
+days. The paper reports a median of 18.7 days; the gap follows directly from
+the lower accumulation ratio discussed above.
+
+# Assumptions and deviations
+
+- **Weight exponents on Q and Vp.** The Methods, the Fig. 1 caption and the EMA
+  assessment report (EMA/464842/2024) all state that weight enters CL, Vc, Q
+  and Vp. Table 5 and the base-model Table S3 report only two exponents, 1.14
+  on CL and 1.86 on Vc. The maintainers pair Q with the CL exponent and Vp with
+  the Vc exponent, the usual clearance-type / volume-type pairing; the paper
+  does not say which exponent Q and Vp used. The authors have been asked.
+- **Molecular weight.** Converting mg doses to nmol (Vmax, Km and KSS are in nM)
+  needs the antibody's molecular weight, which the paper does not state. The
+  model uses the 146 kDa of the Hympavzi US prescribing information
+  (section 11). Total marstacimab is returned as `Cc` in ug/mL; total TFPI
+  (`total_target`), free TFPI (`free_target`) and peak thrombin are in nM.
+- **KSS units.** Table 5 prints KSS without a unit; it is taken as nM, the
+  concentration unit of the TMDD system (Km, Vmax and baseline TFPI are all
+  in nM).
+- **Healthy-volunteer and hemophilia-type coding.** The reference population is
+  hemophilia A (Table 5 footnote). Healthy volunteers take `DIS_HEALTHY = 1`
+  and `DIS_HEMOPHILIA_B = 0`, so the two linear effects never apply together.
+  Native Hawaiian participants, listed separately in Table 4, are non-Asian
+  (`RACE_ASIAN = 0`). Mild renal impairment is eGFR below 90 mL/min/1.73 m^2;
+  the data set had no moderate or severe impairment.
+- **Bioavailability IIV.** Supplementary eq 1 places exponential IIV on F, as
+  on every other parameter, so an individual F can exceed 1. This happens for
+  about 3% of draws (variance 0.0332 around 0.705). The model reproduces the
+  paper's form without truncation.
+- **Peak thrombin applies to hemophilia.** The Emax model was fitted to
+  participants with hemophilia only (Methods, 'Emax PK/PD Model'). The model
+  computes `peak_thrombin` for any participant, but for healthy volunteers it is
+  an extrapolation.
+- **Figure 4 plateaus.** The curve printed in Figure 4 levels off near 40 nM
+  and 94 nM, about 4% above Table 8's PBASE (37.8 nM) and PMAX (91.4 nM), while
+  its midpoint matches EC50. The model uses the Table 8 values.
+- **Injection site.** The secondary injection-site analysis (Table S6: F
+  multiplied by 0.951 for the arm and 0.959 for the thigh, with the other
+  parameters fixed) is a separate re-fit and is not part of the packaged model.
+- **Accumulation ratio for 150 mg QW.** The simulated median accumulation
+  ratio (about 3) and the effective half-life derived from it fall about 30%
+  below Table 7 (4.37 for adults and 4.46 for adolescents), although the
+  steady-state exposure matches. The parameters were not adjusted.
+- **Virtual cohort.** Covariates are drawn independently from the Table 3 and
+  Table 4 summaries; the paper's Table 7 uses the participants' own empirical
+  Bayes estimates, so medians can differ by more than sampling error.
+- Europe PMC listed no erratum or correction notice for this article (PMID
+  42698050) as of 2026-11-23.
