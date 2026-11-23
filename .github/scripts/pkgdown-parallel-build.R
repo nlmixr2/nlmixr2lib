@@ -8,6 +8,9 @@
 # Strategy: render every vignette in parallel via a hand-rolled scheduler over
 # parallel::mcparallel + mccollect (Linux fork), with FAIL-FAST cancellation
 # on the first vignette failure (sends SIGTERM to all in-flight siblings).
+# PKGDOWN_KEEP_GOING (non-empty), or a run started by a PR comment, renders
+# every article instead and stops at the end, listing all failures. Either way
+# a failed article's objects are written out by dump_failure_state() below.
 # After the parallel pass, call pkgdown::build_site_github_pages(lazy = TRUE,
 # clean = FALSE) so pkgdown handles the non-article sections (reference, news,
 # search, ...) and skips already-rendered articles via its mtime lazy check.
@@ -56,6 +59,12 @@ sharded <- nshards > 1L
 # entire benefit of sharding and still exits 0. Observed 2026-08-22: the
 # assemble job was still re-rendering an hour in.
 assemble_only <- nzchar(Sys.getenv("PKGDOWN_ASSEMBLE", ""))
+# A /ci run is an issue_comment event, and GitHub runs it from the default
+# branch's copy of the workflow, so a PR cannot set PKGDOWN_KEEP_GOING for its
+# own /ci run; the script, which comes from the PR's checkout, can decide.
+keep_going <- nzchar(Sys.getenv("PKGDOWN_KEEP_GOING", "")) ||
+  identical(Sys.getenv("GITHUB_EVENT_NAME"), "issue_comment")
+failure_dir <- "pkgdown-failure-state"
 if (assemble_only && sharded) {
   stop("PKGDOWN_ASSEMBLE and PKGDOWN_SHARDS>1 are mutually exclusive")
 }
@@ -98,6 +107,38 @@ if (sharded) {
   log_line("Rendering ", length(articles), " articles in parallel...")
 }
 t0 <- Sys.time()
+
+# What a failed article left in the global environment, where pkgdown renders
+# it (pkgdown:::rmarkdown_render_with_seed() passes envir = globalenv()), so a
+# check that fails only on the runner can be read off its values. Vectors of
+# up to 20 elements and data frames of up to 20 rows (6000 characters at most
+# each) go to the log; every
+# non-function object up to 50 MB goes to <failure_dir>/<article>.rds, which
+# the workflow uploads. `before` is the global environment's names before the
+# render.
+dump_failure_state <- function(name, before) {
+  env <- globalenv()
+  new <- setdiff(ls(env, all.names = TRUE), before)
+  objs <- mget(new, envir = env)
+  objs <- objs[!vapply(objs, is.function, logical(1))]
+  for (nm in names(objs)) {
+    x <- objs[[nm]]
+    small <- (is.atomic(x) && length(x) <= 20L) ||
+      (is.data.frame(x) && nrow(x) <= 20L)
+    if (small) {
+      # 15 digits: the checks that fail only on the runner compare at 1e-8.
+      txt <- paste(utils::capture.output(print(x, digits = 15)), collapse = "\n")
+      cat(sprintf("STATE %s $ %s\n%s\n", name, nm, substr(txt, 1L, 6000L)),
+          file = stderr())
+    }
+  }
+  sizes <- vapply(objs, function(x) as.numeric(utils::object.size(x)), numeric(1))
+  dir.create(failure_dir, showWarnings = FALSE)
+  saveRDS(objs[sizes <= 50e6], file.path(failure_dir, paste0(basename(name), ".rds")))
+  cat(sprintf("STATE %s: %d object(s) saved, %d over 50 MB left out\n",
+              name, sum(sizes <= 50e6), sum(sizes > 50e6)),
+      file = stderr())
+}
 
 # Spawn a forked worker rendering one article. Returns the mcparallel job.
 launch_one <- function(name) {
@@ -161,6 +202,7 @@ launch_one <- function(name) {
     ), silent = TRUE)
 
     t_start <- Sys.time()
+    before <- ls(globalenv(), all.names = TRUE)
     tryCatch({
       pkgdown::build_article(name = name, pkg = pkg,
                              new_process = FALSE, quiet = TRUE)
@@ -169,6 +211,7 @@ launch_one <- function(name) {
     }, error = function(e) {
       out <- pkg$vignettes$file_out[match(name, pkg$vignettes$name)]
       try(unlink(file.path(pkg$dst_path, out)), silent = TRUE)
+      try(dump_failure_state(name, before), silent = TRUE)
       list(ok = FALSE, name = name, err = conditionMessage(e))
     })
   }, name = name)
@@ -181,6 +224,8 @@ pending <- articles
 # the same way lets us simply do `running[[result_name]] <- NULL` to deregister
 # a finished worker.
 running <- list()
+# Failures recorded under PKGDOWN_KEEP_GOING: article name -> message.
+failures <- list()
 
 # Kill all in-flight workers and stop the script with a clear error.
 abort_with <- function(failed_name, err) {
@@ -217,7 +262,11 @@ while (length(running) > 0) {
              else if (is.list(r) && !is.null(r$err)) r$err
              else "(silent crash)"
       log_line("FAIL  ", article_name, "  -- ", err)
-      abort_with(article_name, err)
+      if (!keep_going) {
+        abort_with(article_name, err)
+      }
+      failures[[article_name]] <- err
+      next
     }
     log_line("DONE  ", article_name, "  (", sprintf("%.1fs", r$secs), ")")
   }
@@ -231,6 +280,11 @@ while (length(running) > 0) {
 }
 
 log_line("Parallel article render finished in ", format(Sys.time() - t0))
+if (length(failures) > 0) {
+  stop(length(failures), " article(s) failed to build:\n",
+       paste0("  ", names(failures), " -- ", unlist(failures), collapse = "\n"),
+       call. = FALSE)
+}
 
 # Build remaining sections (reference, home, news, sitemap, search, navbar,
 # GitHub-pages metadata). lazy = TRUE makes build_articles() short-circuit on
