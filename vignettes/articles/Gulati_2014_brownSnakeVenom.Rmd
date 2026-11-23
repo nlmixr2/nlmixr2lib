@@ -109,7 +109,16 @@ ev_typ <- dplyr::bind_rows(
 )
 
 mod_typ <- rxode2::zeroRe(mod)
-sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, keep = "arm", returnType = "data.frame")
+# Two typical-value arms are two ids with no omega; rxode2 warns about that
+# deliberately chosen design, so only that message is muffled.
+sim_typ <- withCallingHandlers(
+  rxode2::rxSolve(mod_typ, ev_typ, keep = "arm", returnType = "data.frame"),
+  warning = function(w) {
+    if (grepl("multi-subject simulation without", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+)
 ```
 
 ```{r typical-plot, fig.height = 6}
