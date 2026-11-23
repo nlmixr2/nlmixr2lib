@@ -148,7 +148,7 @@ refOs <- data.frame(
 )
 refPfs <- data.frame(
   AUC_DATODXD_TAU = 13.9 * 1000 / 24, AGE = 63, ALB = 38,
-  TUMTP_NSCLC_SQUAM = 0, LAST_PRIOR_IO = 0, LMET = 0, SEXF = 0
+  TUMTP_NSCLC_SQUAM = 0, LAST_PRIOR_CHECKPOINT_INHIBITOR = 0, LMET = 0, SEXF = 0
 )
 hrTable <- function(modelName, ref, changes) {
   rows <- lapply(changes, function(ch) {
@@ -191,7 +191,7 @@ hrPfs <- hrTable("Hong_2026_datopotamab_pfs", refPfs, list(
   list(label = "4 mg/kg median AUCtau 10.2", set = list(AUC_DATODXD_TAU = mghml(10.2)), printed = 1.29),
   list(label = "8 mg/kg median AUCtau 18.0", set = list(AUC_DATODXD_TAU = mghml(18.0)), printed = 0.805),
   list(label = "Liver metastasis", set = list(LMET = 1), printed = 1.71),
-  list(label = "Last prior line IO", set = list(LAST_PRIOR_IO = 1), printed = 0.752),
+  list(label = "Last prior line IO", set = list(LAST_PRIOR_CHECKPOINT_INHIBITOR = 1), printed = 0.752),
   list(label = "Squamous histology", set = list(TUMTP_NSCLC_SQUAM = 1), printed = 1.78),
   list(label = "Female sex", set = list(SEXF = 1), printed = 0.729),
   list(label = "Age 43 vs 63 y", set = list(AGE = 43), printed = 1.37),
@@ -317,7 +317,7 @@ cohort <- tibble::tibble(
   SEXF = rbinom(3 * nPerArm, 1, 0.458),
   LMET = rbinom(3 * nPerArm, 1, 0.23),
   TUMTP_NSCLC_SQUAM = rbinom(3 * nPerArm, 1, 0.15),
-  LAST_PRIOR_IO = rbinom(3 * nPerArm, 1, 0.54)
+  LAST_PRIOR_CHECKPOINT_INHIBITOR = rbinom(3 * nPerArm, 1, 0.54)
 ) |>
   mutate(
     AUC_DATODXD = mghml(auc1Med * exp(0.374 * z)),

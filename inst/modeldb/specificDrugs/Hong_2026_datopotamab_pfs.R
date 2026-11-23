@@ -91,8 +91,8 @@ Hong_2026_datopotamab_pfs <- function() {
       notes = "Hong 2026 Table S4 'Squamous histology on the baseline hazard'; the reference patient has nonsquamous histology (Figure S2).",
       source_name = "Histology"
     ),
-    LAST_PRIOR_IO = list(
-      description = "Last prior line of therapy contained an immuno-oncology agent (1 = yes, 0 = no)",
+    LAST_PRIOR_CHECKPOINT_INHIBITOR = list(
+      description = "Last prior line of therapy contained an immune checkpoint inhibitor (1 = yes, 0 = no; the source calls it immuno-oncology, LPIO)",
       units = "(binary)",
       type = "binary",
       reference_category = 0,
@@ -143,7 +143,7 @@ Hong_2026_datopotamab_pfs <- function() {
     e_age_haz <- -0.0156; label("Log-hazard slope per year of age above 63 years (1/year)") # Table S4 'Age on the base hazard' = -0.0156 year-1 (RSE 30.9%)
     e_alb_haz <- -0.0266; label("Log-hazard slope per unit of baseline albumin above 38 g/L (1/(g/L))") # Table S4 'Albumin at baseline on the base hazard' printed 0.0266 (RSE 37.1%); sign applied as negative per Table 1, Figure S2 and Results (see covariateData ALB notes)
     e_tumtp_nsclc_squam_haz <- 0.598; label("Log-hazard shift for squamous histology (unitless)") # Table S4 'Squamous histology on the baseline hazard' = 0.598 (RSE 22.6%)
-    e_last_prior_io_haz <- -0.303; label("Log-hazard shift for immuno-oncology therapy in the last prior line (unitless)") # Table S4 'Last prior line of IO on the base hazard' = -0.303 (RSE 34.3%)
+    e_last_prior_checkpoint_inhibitor_haz <- -0.303; label("Log-hazard shift for an immune checkpoint inhibitor in the last prior line (unitless)") # Table S4 'Last prior line of IO on the base hazard' = -0.303 (RSE 34.3%)
     e_lmet_haz <- 0.537; label("Log-hazard shift for liver metastasis (unitless)") # Table S4 'Liver metastasis on the base hazard' = 0.537 (RSE 23.4%)
     e_sexf_haz <- -0.312; label("Log-hazard shift for female sex (unitless)") # Table S4 'Female sex on the baseline hazard' = -0.312 (RSE 34.0%)
   })
@@ -157,7 +157,7 @@ Hong_2026_datopotamab_pfs <- function() {
       e_age_haz * (AGE - 63) +
       e_alb_haz * (ALB - 38) +
       e_tumtp_nsclc_squam_haz * TUMTP_NSCLC_SQUAM +
-      e_last_prior_io_haz * LAST_PRIOR_IO +
+      e_last_prior_checkpoint_inhibitor_haz * LAST_PRIOR_CHECKPOINT_INHIBITOR +
       e_lmet_haz * LMET +
       e_sexf_haz * SEXF)
 

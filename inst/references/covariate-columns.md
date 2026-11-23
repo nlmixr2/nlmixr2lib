@@ -15665,8 +15665,8 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Wu_2025_idecabtageneVicleucel_pfs.R` (log hazard ratio -0.32 for progression-free survival; in the published full model, removed by backward elimination from the final model).
 - **Notes:** See `LAST_PRIOR_CORTICOSTEROID`.
 
-### LAST_PRIOR_IO (**canonical for an immuno-oncology agent in the last prior line of therapy indicator**)
-- **Description:** 1 = the subject's last prior line of anticancer therapy before the study treatment contained an immuno-oncology agent (in the founding paper an immune checkpoint inhibitor, i.e. PD-1 or PD-L1 blockade); 0 = it did not. Time-fixed per subject.
+### LAST_PRIOR_CHECKPOINT_INHIBITOR (**canonical for an immune checkpoint inhibitor in the last prior line of therapy indicator**)
+- **Description:** 1 = the subject's last prior line of anticancer therapy before the study treatment contained an immune checkpoint inhibitor (anti-PD-1, anti-PD-L1 or anti-CTLA-4 monoclonal antibody); 0 = it did not. Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
@@ -15674,7 +15674,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Source aliases:**
   - `LPIO`, `Last prior line therapy of IO` -- Hong 2026 Table S3, Table S4 and Figure S2.
 - **Example models:** `Hong_2026_datopotamab_pfs.R` (log hazard ratio -0.303 for progression-free survival; 54% of the analysis set).
-- **Notes:** Member of the `LAST_PRIOR_<class>` pattern with `LAST_PRIOR_CORTICOSTEROID` and `LAST_PRIOR_ANTICD38`. Distinct from `PRIOR_CHECKPOINT_INHIBITOR` (ANY prior checkpoint-inhibitor therapy): this flag describes only the most recent line, which is the clinically distinct question of whether the study drug follows directly after immunotherapy. In Hong 2026 it was strongly study-dependent (18% in TROPION-Lung05, 78% in TROPION-Lung01) and enriched in patients with actionable genomic alterations.
+- **Notes:** Member of the `LAST_PRIOR_<class>` pattern with `LAST_PRIOR_CORTICOSTEROID` and `LAST_PRIOR_ANTICD38`. Distinct from `PRIOR_CHECKPOINT_INHIBITOR` (ANY prior checkpoint-inhibitor therapy): this flag describes only the most recent line, which is the clinically distinct question of whether the study drug follows directly after immunotherapy. Spelled out to match `PRIOR_CHECKPOINT_INHIBITOR` rather than the source's `LPIO` ('immuno-oncology'), because the Hong 2026 Discussion identifies the last-line agents as checkpoint inhibitors. In Hong 2026 it was strongly study-dependent (18% in TROPION-Lung05, 78% in TROPION-Lung01) and enriched in patients with actionable genomic alterations.
 
 ### PRIOR_ANTHRACYCLINE_DOSE (**canonical for prior cumulative anthracycline dose**)
 - **Description:** Cumulative dose of anthracycline chemotherapy received by the subject prior to the first dose analysed in the current popPK / popPK-PD model, expressed in doxorubicin-equivalent body-surface-area-normalised mg/m^2. Time-fixed per subject for the analysis window (the running cumulative anthracycline dose at the first observed dose).
@@ -15877,7 +15877,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `CPI` -- Sathe 2025b, one level of a four-level prior-treatment factor ('Others', 'CPI', 'platinum based', 'CPI + platinum based'); decompose with `PRIOR_PLATIN` into two indicators, and carry a separate coefficient for the combined cell when the source reports the three non-reference levels as independent contrasts.
   - `ICI`, `prior immunotherapy` -- common literature spellings of the same class indicator.
 - **Example models:** `Sathe_2025b_sacituzumab_pfs.R` (Cox exposure-efficacy model for progression-free survival after sacituzumab govitecan in metastatic triple-negative breast cancer; relative to the 'Others' prior-treatment category, the log hazard ratio is 0.495 for prior checkpoint inhibitor without platinum, 0.736 for prior platinum without checkpoint inhibitor and 1.01 for both -- not additive, so the model applies each printed coefficient to its own cell).
-- **Notes:** Class-level indicator. Use the narrower `PRIOR_IPI` when a source tests prior ipilimumab specifically; a source that tests any checkpoint inhibitor takes this name. Spelled out per the register's policy for new canonicals rather than the paper's `CPI` abbreviation. Sibling of `PRIOR_PLATIN`, `PRIOR_TAXANE` and `PRIOR_VINCA` (prior-therapy class indicators) and narrower than `PRIOR_BIO` and `PRIOR_ANTICANCER`.
+- **Notes:** Class-level indicator. Use the narrower `PRIOR_IPI` when a source tests prior ipilimumab specifically; a source that tests any checkpoint inhibitor takes this name. Spelled out per the register's policy for new canonicals rather than the paper's `CPI` abbreviation. Sibling of `PRIOR_PLATIN`, `PRIOR_TAXANE` and `PRIOR_VINCA` (prior-therapy class indicators) and narrower than `PRIOR_BIO` and `PRIOR_ANTICANCER`. Use `LAST_PRIOR_CHECKPOINT_INHIBITOR` when the source restricts the flag to the most recent line of therapy.
 
 ### PRIOR_CART (**canonical for prior chimeric antigen receptor (CAR) T cell therapy indicator**)
 - **Description:** 1 = subject received CAR T cell therapy (any autologous or allogeneic CAR T product) before the start of the current treatment, 0 = CAR-T-naive. Time-fixed per subject.
