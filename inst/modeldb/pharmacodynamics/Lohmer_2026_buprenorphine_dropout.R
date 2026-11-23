@@ -42,12 +42,12 @@ Lohmer_2026_buprenorphine_dropout <- function() {
   )
 
   covariateData <- list(
-    OCVAS_CAT = list(
+    OPIOID_CRAVING_CAT = list(
       description = "Last observed current-craving category on the 0-100 mm Opioid Craving VAS, carried forward: 1 = 0 mm, 2 = 1-5 mm, 3 = 6-20 mm, 4 = >20 mm.",
       units = "(category 1-4)",
       type = "categorical",
       reference_category = "1 (0 mm, no craving)",
-      notes = "Time-varying, last observation carried forward from the start of the trial (Methods, 'Modeling efficacy outcomes'). Same coding as the `ocvas_cat` endpoint of Lohmer_2026_buprenorphine_craving, so a simulated craving category can be fed in directly. Multiplies the hazard by 0.897, 1.04 and 2.28 for categories 2, 3 and 4 (Table 4).",
+      notes = "Time-varying, last observation carried forward from the start of the trial (Methods, 'Modeling efficacy outcomes'). Same coding as the `opioid_craving_cat` endpoint of Lohmer_2026_buprenorphine_craving, so a simulated craving category can be fed in directly. Multiplies the hazard by 0.897, 1.04 and 2.28 for categories 2, 3 and 4 (Table 4).",
       source_name = "Craving LOCF"
     ),
     AGE = list(
@@ -96,9 +96,9 @@ Lohmer_2026_buprenorphine_dropout <- function() {
     lkhaz_placebo <- log(0.00906); label("Rate of exponential decrease of the hazard with placebo (1/day)") # Table 4 'ke Placebo' = 0.00906 1/day (RSE 36%)
 
     # Covariate effects on the hazard
-    e_ocvas_cat2_haz <- 0.897; label("Hazard multiplier for last-observed craving 1-5 mm vs 0 mm (unitless)") # Table 4 'beta1 craving=1-5' = 0.897 (RSE 13%)
-    e_ocvas_cat3_haz <- 1.04; label("Hazard multiplier for last-observed craving 6-20 mm vs 0 mm (unitless)") # Table 4 'beta1 craving=6-20' = 1.04 (RSE 15%)
-    e_ocvas_cat4_haz <- 2.28; label("Hazard multiplier for last-observed craving >20 mm vs 0 mm (unitless)") # Table 4 'beta1 craving >20' = 2.28 (RSE 12%)
+    e_opioid_craving_cat2_haz <- 0.897; label("Hazard multiplier for last-observed craving 1-5 mm vs 0 mm (unitless)") # Table 4 'beta1 craving=1-5' = 0.897 (RSE 13%)
+    e_opioid_craving_cat3_haz <- 1.04; label("Hazard multiplier for last-observed craving 6-20 mm vs 0 mm (unitless)") # Table 4 'beta1 craving=6-20' = 1.04 (RSE 15%)
+    e_opioid_craving_cat4_haz <- 2.28; label("Hazard multiplier for last-observed craving >20 mm vs 0 mm (unitless)") # Table 4 'beta1 craving >20' = 2.28 (RSE 12%)
     e_age_haz_drug <- -0.581; label("Power exponent of AGE/40 on the hazard with BUP-XR (unitless)") # Table 4 'beta2 age, BUP-XR' = -0.581 (RSE 32%)
     e_age_haz_placebo <- -1.70; label("Power exponent of AGE/40 on the hazard with placebo (unitless)") # Table 4 'beta2 age, Placebo' = -1.70 (RSE 27%)
     e_race_black_haz <- 0.663; label("Hazard multiplier for Black/African American participants (unitless)") # Table 4 'beta3 race' = 0.663 (RSE 13%)
@@ -111,9 +111,9 @@ Lohmer_2026_buprenorphine_dropout <- function() {
 
     # beta1^(Craving LOCF): one multiplier per category, category 1 = 1
     hr_craving <- 1
-    if (OCVAS_CAT == 2) hr_craving <- e_ocvas_cat2_haz
-    if (OCVAS_CAT == 3) hr_craving <- e_ocvas_cat3_haz
-    if (OCVAS_CAT == 4) hr_craving <- e_ocvas_cat4_haz
+    if (OPIOID_CRAVING_CAT == 2) hr_craving <- e_opioid_craving_cat2_haz
+    if (OPIOID_CRAVING_CAT == 3) hr_craving <- e_opioid_craving_cat3_haz
+    if (OPIOID_CRAVING_CAT == 4) hr_craving <- e_opioid_craving_cat4_haz
 
     hazard <- haz0 * hr_craving * (AGE / 40)^e_age *
       e_race_black_haz^RACE_BLACK * exp(-khaz * t)

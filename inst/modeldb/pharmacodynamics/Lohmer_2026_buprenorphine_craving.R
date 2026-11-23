@@ -179,20 +179,20 @@ Lohmer_2026_buprenorphine_craving <- function() {
     fplacebo <- emax_placebo * (1 - exp(-ke0 * t))
 
     lp <- fc + fplacebo + etalogite0
-    logit_ocvas_le0 <- alpha1 + lp
-    logit_ocvas_le5 <- alpha1 + delta1 + lp
-    logit_ocvas_le20 <- alpha1 + delta1 + delta2 + lp
-    prob_ocvas_le0 <- expit(logit_ocvas_le0)
-    prob_ocvas_le5 <- expit(logit_ocvas_le5)
-    prob_ocvas_le20 <- expit(logit_ocvas_le20)
+    logit_opioid_craving_le0 <- alpha1 + lp
+    logit_opioid_craving_le5 <- alpha1 + delta1 + lp
+    logit_opioid_craving_le20 <- alpha1 + delta1 + delta2 + lp
+    prob_opioid_craving_le0 <- expit(logit_opioid_craving_le0)
+    prob_opioid_craving_le5 <- expit(logit_opioid_craving_le5)
+    prob_opioid_craving_le20 <- expit(logit_opioid_craving_le20)
 
-    prob_ocvas0 <- prob_ocvas_le0
-    prob_ocvas1_5 <- prob_ocvas_le5 - prob_ocvas_le0
-    prob_ocvas6_20 <- prob_ocvas_le20 - prob_ocvas_le5
-    prob_ocvas_gt20 <- 1 - prob_ocvas_le20
+    prob_opioid_craving_0 <- prob_opioid_craving_le0
+    prob_opioid_craving_1_5 <- prob_opioid_craving_le5 - prob_opioid_craving_le0
+    prob_opioid_craving_6_20 <- prob_opioid_craving_le20 - prob_opioid_craving_le5
+    prob_opioid_craving_gt20 <- 1 - prob_opioid_craving_le20
 
     # Ordinal endpoint: category 1 = 0 mm, 2 = 1-5 mm, 3 = 6-20 mm and the
     # unlisted category 4 = >20 mm (the paper's Y = 1..4).
-    ocvas_cat ~ c(prob_ocvas0, prob_ocvas1_5, prob_ocvas6_20)
+    opioid_craving_cat ~ c(prob_opioid_craving_0, prob_opioid_craving_1_5, prob_opioid_craving_6_20)
   })
 }
