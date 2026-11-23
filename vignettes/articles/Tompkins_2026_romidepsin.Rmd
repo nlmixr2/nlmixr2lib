@@ -193,13 +193,15 @@ stopifnot(
 
 # Simulation helper
 
-Each model is static, so a "simulation" is one row per concentration at
-`time = 0`. None of the models declares an eta, so no `omega` argument is
-passed.
+Each model is static, so a "simulation" is one row per concentration. The
+concentrations are laid out as successive observation times of a single
+subject, which is equivalent for an algebraic model with no state and avoids
+asking rxode2 for a multi-subject simulation from a model that declares no
+eta.
 
 ```{r solve_helper}
 solveStatic <- function(model, conc) {
-  ev <- data.frame(id = seq_along(conc), time = 0, CONC_ROMIDEPSIN_NGML = conc)
+  ev <- data.frame(id = 1L, time = seq_along(conc) - 1, CONC_ROMIDEPSIN_NGML = conc)
   rxode2::rxSolve(model, ev, returnType = "data.frame")
 }
 
@@ -476,10 +478,11 @@ frac <- dplyr::bind_rows(
     curve = "Viable-cell loss (RFU)"
   )
 )
+frac <- dplyr::filter(frac, conc >= 0.5, conc <= 50)
 ggplot2::ggplot(frac, ggplot2::aes(conc, frac, colour = curve)) +
   ggplot2::annotate("rect", xmin = ck1$p90, xmax = ck3$p90, ymin = -Inf, ymax = Inf, alpha = 0.15) +
   ggplot2::geom_line(linewidth = 0.8) +
-  ggplot2::scale_x_log10(limits = c(0.5, 50)) +
+  ggplot2::scale_x_log10() +
   ggplot2::labs(x = "Romidepsin concentration (ng/mL)", y = "Fraction of maximal effect", colour = NULL) +
   ggplot2::theme_bw() +
   ggplot2::theme(legend.position = "bottom")
