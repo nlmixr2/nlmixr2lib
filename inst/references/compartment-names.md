@@ -7891,6 +7891,14 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Example models:** `Chen_2016_tenofovir_emtricitabine.R` (bare `tfvdp` state, declared through that file's `paper_specific_compartments` escape hatch); `Yu_2026_tenofovir.R` (`pbmc_tfvdp` and `rbc_tfvdp`, one per assayed cell type); `Burns_2015_tenofovir.R` (`pbmc_tfvdp`, with `kmet_tfvdp` / `kel_tfvdp` naming the formation and elimination rate constants); `Leung_2023_tenofovir.R` (`vagina_tfvdp`, `cervix_tfvdp`, `rectum_tfvdp`, one per mucosal tissue).
 - **Notes:** Prefer the matrix-qualified `pbmc_tfvdp` / `rbc_tfvdp` form over the bare `tfvdp`: tenofovir diphosphate is assayed in more than one cell type, the two compartments have materially different kinetics, and `pbmc` / `rbc_<analyte>` are themselves canonical so the qualified name validates natively without a per-model escape hatch. The paired rate-constant names take a SINGLE suffix (`kmet_tfvdp`, `kel_tfvdp`) rather than repeating the matrix, because `.isPkParam()` strips only one suffix and a two-layer `kel_pbmc_tfvdp` would pass compartment validation but fail parameter validation.
 
+### tfvmp (**canonical tenofovir monophosphate suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Tenofovir monophosphate, the intracellular intermediate formed from tenofovir by adenylate kinase and phosphorylated on to tenofovir diphosphate ([[tfvdp]]) by nucleoside diphosphate kinase. Used as the metabolite suffix on a matrix-qualified intracellular state (`pbmc_tfvmp`) and its observation (`Cpbmc_tfvmp`).
+- **Source aliases:**
+  - `TFV-MP` -- the standard antiretroviral-literature abbreviation (Madrasi 2014 Figure 1, Supplement Eq. S2d `Z_mp`).
+- **Example models:** `Madrasi_2014_tenofovir_qsp.R` (`pbmc_tfvmp`, between `pbmc` tenofovir and `pbmc_tfvdp` in the two-step Michaelis-Menten phosphorylation chain).
+- **Notes:** Follows the `tfvdp` pattern (parent token plus phosphorylation state) and its advice to qualify the state with the cell type, because the monophosphate is cell-type specific in the same way the diphosphate is.
+
 ### faraatp (**canonical fludarabine triphosphate suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Fludarabine triphosphate (f-ara-ATP, 9-beta-D-arabinofuranosyl-2-fluoroadenine 5'-triphosphate), the cytotoxic intracellular active anabolite of fludarabine. Intravenous fludarabine phosphate (f-ara-AMP) is dephosphorylated in plasma to the nucleoside f-ara-a, which enters cells through nucleoside transporters and is phosphorylated to f-ara-ATP. In fludarabine models the dosed and circulating species, f-ara-a, keeps the unsuffixed `central` / `Cc`, and this suffix names the intracellular triphosphate pool and its rate constants.
