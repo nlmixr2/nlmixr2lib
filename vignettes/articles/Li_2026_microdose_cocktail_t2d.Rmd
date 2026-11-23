@@ -116,7 +116,7 @@ with 100 subjects per group:
   (type 2 diabetes).
 * Serum urea is normal with the pooled Table 1 mean and SD (4.67 +/- 1.3
   mmol/L), sex follows the pooled 18/27 female fraction, and the BCRP
-  rs2231142 GT fraction is the pooled 12/25 of Table S6.
+  rs2231142 GT fraction is the pooled 12/26 of Table S6.
 * *Clostridium* XIVb abundance is not tabulated; it is drawn log-normal
   with median 0.0628% (the model's reference value) and a log-SD of 1.2,
   which spans the 0-0.42% range of Figure 3e/f. Its exponent (-0.0847) is
@@ -146,7 +146,7 @@ rlnorm_meansd <- function(n, m, s) {
 shared <- tibble(
   BUN = pmax(rnorm(n_per_arm, 4.67, 1.3), 1.5),
   SEXF = rbinom(n_per_arm, 1, 18 / 27),
-  SNP_ABCG2_RS2231142_HET = rbinom(n_per_arm, 1, 12 / 25),
+  SNP_ABCG2_RS2231142_HET = rbinom(n_per_arm, 1, 12 / 26),
   GUT_CLOSTRIDIUM_XIVB_PCT = rlnorm(n_per_arm, log(0.0628), 1.2)
 )
 subjects <- bind_rows(
@@ -309,6 +309,19 @@ covariates at their group means, AUC0-24 ratios follow directly from the
 diabetes indicator and the *Salmonella* shift.
 
 ```{r typical-ratio}
+# zeroRe() removes the random effects on purpose; rxode2 warns on every
+# multi-subject solve without omega, so muffle that one warning only.
+solve_typical <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
 typical_subj <- tibble(
   id = 1:2, group = c("HV", "T2D"), DIS_DIAB = c(0L, 1L),
   GUT_SALMONELLA_PCT = c(0.619, 0.0880), BUN = c(4.63, 4.72),
@@ -317,7 +330,7 @@ typical_subj <- tibble(
 typical <- lapply(c("MDZ", "DAB", "ATV"), function(d) {
   i <- match(d, drugs$drug)
   ev <- make_events(typical_subj, drugs$dose_ug[i], drugs$route[i])
-  rxode2::rxSolve(
+  solve_typical(
     rxode2::zeroRe(rxode2::rxode2(readModelDb(drugs$model[i]))),
     events = ev, keep = "group"
   ) |>
