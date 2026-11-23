@@ -1,0 +1,601 @@
+---
+title: "Piperacillin (Felton 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Piperacillin (Felton 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-load}
+ui <- rxode2::rxode(readModelDb("Felton_2014_piperacillin"))
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.1128/AAC.02664-14>
+
+Felton 2014 fitted four two-compartment structural models to pooled
+piperacillin data from 146 critically ill adults with the nonparametric
+adaptive grid (NPAG) algorithm of Pmetrics 1.1.1 (Fig. 2, equations 1a-1d):
+linear clearance, Michaelis-Menten clearance, parallel linear and
+Michaelis-Menten clearance, and linear clearance with creatinine clearance on
+clearance and body weight on central volume. The Michaelis-Menten model had the
+best likelihood (Table 2), but all four fitted well and the authors carried the
+**linear model with covariates** into the BestDose dose-optimisation software
+as "the most clinically relevant model". That model is the only one whose
+parameter estimates are published (Table 3), and it is the one packaged here.
+The other three appear in Table 2 only as fit statistics, with no parameter
+values, so they cannot be reconstructed.
+
+**Solve this model with `useLinCmt = FALSE`.** Its `model()` block exposes the
+micro-constants `k12` and `k21` and no `q` / `vp` pair, so the default
+ODE-to-`linCmt()` conversion has no two-compartment macro-parameterisation to
+build and would drop `peripheral1`.
+
+# Population
+
+The estimation data set pooled three previously published studies (Felton 2014
+Materials and Methods and Table 1): 94 surgical patients from Lodise et al.
+(76 given 2 g over 30 min with sampling in the first dosing interval, and 18
+colorectal-surgery patients given 4 g over 30 min every 6 h with sampling in the
+first two intervals), 12 hospitalised patients from Felton et al. given 3 g over
+4 h every 8 h and sampled mainly on day 3, and 40 ventilated patients with
+ventilator-associated pneumonia from Boselli et al. given 12 or 16 g/day by
+continuous infusion and sampled during the second 24 h. In total 803 plasma
+concentrations (2 to 10 per patient) were available.
+
+Across the combined cohort (Table 1), mean age was 55.8 years (range 18 to 88),
+mean weight 71.7 kg (median 69.0, range 38.1 to 122.5), mean Cockcroft-Gault
+creatinine clearance 85.9 mL/min (median 81.0, range 14.0 to 245.7), and 59 of
+146 patients (40.4%) were female.
+
+The external validation cohort of Roberts et al. (8 critically ill patients,
+4 g over 20 min every 6 or 8 h) had markedly higher renal function (mean
+creatinine clearance 165.5 mL/min, range 58.8 to 256.6) and weight (mean 86.8
+kg, range 72 to 132); it was not used for estimation.
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+Every `ini()` entry in `inst/modeldb/specificDrugs/Felton_2014_piperacillin.R`
+carries an in-file comment pointing at its source location; they are collected
+here.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `d/dt(central)` | n/a | Fig. 2, equation 1d: `dX1/dt = R(1) - ((Cli + Cr_cl * Cls) / (Vi + Wt * Vs) + kcp) * X1 + kpc * X2` |
+| `d/dt(peripheral1)` | n/a | Fig. 2, equation 2: `dX2/dt = kcp * X1 - kpc * X2` |
+| `cl` | n/a | Fig. 2, equation 1d numerator: `Cli + Cr_cl * Cls` |
+| `vc` | n/a | Fig. 2, equation 1d denominator: `Vi + Wt * Vs` |
+| `Cc` | n/a | Fig. 2 legend: X1 in mg, Vc in L, concentrations in mg/L |
+| `lcl_nonren` | `log(3.83)` | Table 3, `Cli` mean 3.83 [median 2.79] +/- 3.35 |
+| `e_crcl_cl_renal` | `0.11` | Table 3, `Cls` mean 0.11 [0.10] +/- 0.07 |
+| `lvc` | `log(4.54)` | Table 3, `Vi` mean 4.54 [1.83] +/- 4.43 |
+| `e_wt_vc` | `0.12` | Table 3, `Vs` mean 0.12 [0.06] +/- 0.12 |
+| `lk12` | `log(6.74)` | Table 3, `kcp` mean 6.74 [0.85] +/- 11.38 |
+| `lk21` | `log(9.14)` | Table 3, `kpc` mean 9.14 [1.65] +/- 13.13 |
+| `etalcl_nonren` | `0.568181` | Table 3, `Cli`: `log(1 + (3.35/3.83)^2)` |
+| `etae_crcl_cl_renal` | `0.340008` | Table 3, `Cls`: `log(1 + (0.07/0.11)^2)` |
+| `etalvc` | `0.668921` | Table 3, `Vi`: `log(1 + (4.43/4.54)^2)` |
+| `etae_wt_vc` | `0.693147` | Table 3, `Vs`: `log(1 + (0.12/0.12)^2)` |
+| `etalk12` | `1.348277` | Table 3, `kcp`: `log(1 + (11.38/6.74)^2)` |
+| `etalk21` | `1.119609` | Table 3, `kpc`: `log(1 + (13.13/9.14)^2)` |
+| `addSd`, `propSd` | `1.04`, `0.14` | Materials and Methods, "Development of a population pharmacokinetic model": assay error polynomial `SD = 1.04 + (0.14 x C)` |
+| `CRCL` | covariate | Table 1, estimated creatinine clearance (Cockcroft-Gault, mL/min) |
+| `WT` | covariate | Table 1, weight (kg) |
+
+The printed constants are restated once here and every check below uses them,
+so that the checks are driven by numbers transcribed from the paper rather than
+by the model's own variables.
+
+```{r paper-constants}
+paper_mean <- list(cli = 3.83, cls = 0.11, vi = 4.54, vs = 0.12, kcp = 6.74, kpc = 9.14) # Table 3 means
+paper_median <- list(cli = 2.79, cls = 0.10, vi = 1.83, vs = 0.06, kcp = 0.85, kpc = 1.65) # Table 3 medians
+
+paper_cl <- function(crcl, p = paper_mean) p$cli + p$cls * crcl
+paper_vc <- function(wt, p = paper_mean) p$vi + p$vs * wt
+
+ui_typ <- rxode2::zeroRe(ui)
+```
+
+# Deterministic structural checks
+
+## Clearance and central volume versus the covariates
+
+Clearance and central volume are additive linear functions of creatinine
+clearance and body weight (Fig. 2, equation 1d). The intercepts are the values
+extrapolated to zero creatinine clearance or zero weight, not typical-patient
+values, and nothing is centred on a reference value.
+
+```{r check-covariates}
+grid <- tidyr::crossing(CRCL = c(14, 50, 81, 120, 165.5, 245.7), WT = c(38.1, 69, 122.5)) |>
+  mutate(id = row_number())
+ev_grid <- grid |>
+  tidyr::crossing(time = c(0, 1)) |>
+  mutate(evid = 0L, amt = NA_real_, cmt = "central")
+
+chk_cov <- withCallingHandlers(
+  rxode2::rxSolve(ui_typ, events = as.data.frame(ev_grid), keep = c("CRCL", "WT"), useLinCmt = FALSE, returnType = "data.frame"),
+  # A multi-subject solve of the zeroRe() model warns that it has no omega;
+  # that is intended for a typical-value grid.
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+) |>
+  distinct(id, CRCL, WT, cl, vc) |>
+  mutate(cl_paper = paper_cl(CRCL), vc_paper = paper_vc(WT))
+
+# Deterministic algebra: the model must reproduce equation 1d exactly.
+stopifnot(
+  max(abs(chk_cov$cl - chk_cov$cl_paper) / chk_cov$cl_paper) < 1e-8,
+  max(abs(chk_cov$vc - chk_cov$vc_paper) / chk_cov$vc_paper) < 1e-8
+)
+
+chk_cov |>
+  filter(WT == 69) |>
+  select(CRCL, cl_paper, cl) |>
+  dplyr::rename(
+    "Creatinine clearance (mL/min)" = CRCL,
+    "CL, equation 1d (L/h)" = cl_paper,
+    "CL, model (L/h)" = cl
+  ) |>
+  knitr::kable(digits = 3, caption = "Typical clearance across the observed creatinine-clearance range.")
+```
+
+```{r figure-covariates}
+tibble(CRCL = seq(14, 245.7, length.out = 100)) |>
+  mutate(CL = paper_cl(CRCL)) |>
+  ggplot(aes(CRCL, CL)) +
+  geom_line() +
+  labs(
+    x = "Cockcroft-Gault creatinine clearance (mL/min)", y = "Typical clearance (L/h)",
+    title = "Clearance versus creatinine clearance",
+    caption = "Fig. 2 equation 1d with the Table 3 means over the observed range (Table 1)."
+  ) +
+  theme_bw()
+```
+
+## Whole-ODE check against an independent biexponential
+
+The two-compartment infusion system has a closed-form solution. The function
+below is written from the paper's printed constants and is independent of the
+packaged model, so agreement exercises the ODEs, the infusion route and the
+observation equation together. It also detects a dropped peripheral
+compartment, which leaves `Dose / CL` intact while changing the curve.
+
+```{r closed-form}
+biexp_conc <- function(times, crcl, wt, dose, tinf, p = paper_mean) {
+  cl <- paper_cl(crcl, p)
+  vc <- paper_vc(wt, p)
+  k10 <- cl / vc
+  b <- k10 + p$kcp + p$kpc
+  alpha <- (b + sqrt(b^2 - 4 * k10 * p$kpc)) / 2
+  beta <- (b - sqrt(b^2 - 4 * k10 * p$kpc)) / 2
+  rate <- dose / tinf
+  ca <- (alpha - p$kpc) / ((alpha - beta) * alpha)
+  cb <- (p$kpc - beta) / ((alpha - beta) * beta)
+  # Central amount under a never-ending infusion started u ago; a finite
+  # infusion is that minus the same thing started tinf later.
+  step <- function(u) ifelse(u <= 0, 0, rate * (ca * (1 - exp(-alpha * pmax(u, 0))) + cb * (1 - exp(-beta * pmax(u, 0)))))
+  list(conc = (step(times) - step(times - tinf)) / vc, alpha = alpha, beta = beta, cl = cl)
+}
+
+t_grid <- seq(0, 24, by = 0.05)
+ref <- biexp_conc(t_grid, crcl = 81, wt = 69, dose = 4000, tinf = 0.5)
+
+ev_typ <- bind_rows(
+  tibble(id = 1L, time = 0, evid = 1L, amt = 4000, rate = 4000 / 0.5, cmt = "central"),
+  tibble(id = 1L, time = t_grid, evid = 0L, amt = NA_real_, rate = NA_real_, cmt = "central")
+) |>
+  mutate(CRCL = 81, WT = 69)
+
+sim_typ <- rxode2::rxSolve(ui_typ, events = as.data.frame(ev_typ), useLinCmt = FALSE, returnType = "data.frame")
+stopifnot("peripheral1" %in% names(sim_typ))
+
+cmp_typ <- tibble(time = t_grid, model = sim_typ$Cc, closed = ref$conc) |> filter(time > 0, time <= 12)
+rel_err <- max(abs(cmp_typ$model - cmp_typ$closed) / cmp_typ$closed)
+
+# Deterministic: two solutions of the same linear ODE.
+stopifnot(rel_err < 1e-4)
+
+# Mass balance: AUC from 0 to infinity equals Dose / CL.
+auc_model <- sum(diff(sim_typ$time) * (head(sim_typ$Cc, -1) + tail(sim_typ$Cc, -1)) / 2) +
+  tail(sim_typ$Cc, 1) / ref$beta
+stopifnot(abs(auc_model / (4000 / ref$cl) - 1) < 0.01)
+
+tibble(
+  Quantity = c(
+    "Typical CL at 81 mL/min (L/h)", "Typical Vc at 69 kg (L)",
+    "alpha half-life (h)", "beta half-life (h)", "Dose / CL (mg*h/L)", "Model AUC0-inf (mg*h/L)"
+  ),
+  Value = c(ref$cl, paper_vc(69), log(2) / ref$alpha, log(2) / ref$beta, 4000 / ref$cl, auc_model)
+) |>
+  knitr::kable(digits = 3, caption = "Typical patient (median creatinine clearance 81 mL/min, median weight 69 kg), 4 g over 30 min.")
+```
+
+# Mean or median as the typical value
+
+Table 3 reports, for each parameter, the mean, median and SD of its NPAG
+marginal distribution, and the means and medians differ several-fold for the
+volume and distribution terms (`kcp` 6.74 vs 0.85 1/h; `Vi` 4.54 vs 1.83 L).
+The paper does not say which column describes a typical patient. The only
+population-level data it shows are the observed first-dose concentrations of
+the 8 external validation patients in Fig. 4 (filled circles; 4 g over 20 min).
+Those points were digitised by the maintainers by eye from the published
+figure and are accurate to roughly 5-10 mg/L; they are used here only to
+choose between two columns that differ several-fold.
+
+```{r fig4-data}
+fig4 <- tribble(
+  ~patient, ~time, ~conc,
+  1, 0.5, 170, 1, 1, 110, 1, 2, 80, 1, 3, 62, 1, 4.5, 40, 1, 6.5, 15,
+  2, 0.5, 120, 2, 1.2, 40, 2, 2, 15, 2, 3, 8, 2, 5, 3, 2, 6, 2,
+  3, 0.5, 55, 3, 1, 18, 3, 1.5, 12, 3, 2, 8, 3, 2.5, 6, 3, 4.5, 3,
+  4, 0.5, 165, 4, 1, 75, 4, 1.5, 40, 4, 2, 30, 4, 4, 5, 4, 6, 2,
+  5, 0.5, 115, 5, 1, 45, 5, 2, 25, 5, 3, 20, 5, 4, 12, 5, 6, 7,
+  6, 0.5, 88, 6, 1, 43, 6, 1.5, 32, 6, 2, 25, 6, 2.5, 15, 6, 4, 8,
+  7, 0.5, 180, 7, 1, 100, 7, 1.5, 70, 7, 2, 50, 7, 4, 25, 7, 6, 12,
+  8, 0.5, 195, 8, 1, 85, 8, 2, 70, 8, 3, 50, 8, 4, 28, 8, 5.5, 15
+)
+roberts <- list(crcl = 165.5, wt = 86.8, dose = 4000, tinf = 20 / 60) # Table 1 and Methods
+```
+
+The typical-value profile at the validation cohort's mean covariates is
+computed once with the means (the packaged model) and once with the medians.
+
+```{r mean-vs-median}
+t_fine <- sort(unique(c(fig4$time, seq(0, 8, by = 0.05))))
+ev_rob <- bind_rows(
+  tibble(id = 1L, time = 0, evid = 1L, amt = roberts$dose, rate = roberts$dose / roberts$tinf, cmt = "central"),
+  tibble(id = 1L, time = t_fine, evid = 0L, amt = NA_real_, rate = NA_real_, cmt = "central")
+) |>
+  mutate(CRCL = roberts$crcl, WT = roberts$wt)
+
+ui_median <- rxode2::ini(
+  ui_typ,
+  lcl_nonren = log(paper_median$cli), e_crcl_cl_renal = paper_median$cls,
+  lvc = log(paper_median$vi), e_wt_vc = paper_median$vs,
+  lk12 = log(paper_median$kcp), lk21 = log(paper_median$kpc)
+)
+
+prof <- bind_rows(
+  rxode2::rxSolve(ui_typ, events = as.data.frame(ev_rob), useLinCmt = FALSE, returnType = "data.frame") |>
+    mutate(column = "Table 3 means (packaged)"),
+  rxode2::rxSolve(ui_median, events = as.data.frame(ev_rob), useLinCmt = FALSE, returnType = "data.frame") |>
+    mutate(column = "Table 3 medians")
+) |>
+  select(column, time, Cc)
+
+fit <- fig4 |>
+  mutate(
+    pred_mean = approx(prof$time[prof$column == "Table 3 means (packaged)"], prof$Cc[prof$column == "Table 3 means (packaged)"], time)$y,
+    pred_median = approx(prof$time[prof$column == "Table 3 medians"], prof$Cc[prof$column == "Table 3 medians"], time)$y
+  )
+
+late <- fit |> filter(time >= 2)
+lr_mean <- median(log(late$conc / late$pred_mean))
+lr_median <- median(log(late$conc / late$pred_median))
+
+# Deterministic (typical values against fixed digitised points). The means
+# miss the observed median by under 2-fold from 2 h on; the medians miss it by
+# more than 3-fold, because their small Vi, Vs and kcp give a half-life near
+# 0.7 h.
+stopifnot(
+  abs(lr_mean) < log(2),
+  lr_median > log(3),
+  abs(lr_mean) < abs(lr_median)
+)
+
+tibble(
+  Column = c("Table 3 means (packaged)", "Table 3 medians"),
+  "Median observed / predicted, t >= 2 h" = exp(c(lr_mean, lr_median))
+) |>
+  knitr::kable(digits = 2, caption = "Digitised Fig. 4 first-dose concentrations versus the typical-value profile at the validation cohort's mean covariates.")
+```
+
+```{r figure-mean-vs-median}
+ggplot() +
+  geom_line(data = filter(prof, time > 0), aes(time, Cc, colour = column), linewidth = 0.8) +
+  geom_point(data = fig4, aes(time, conc), shape = 16, alpha = 0.7) +
+  scale_y_log10() +
+  labs(
+    x = "Time after start of first dose (h)", y = "Piperacillin (mg/L)", colour = NULL,
+    title = "Typical-value profile, 4 g over 20 min",
+    caption = "Points: first-dose observations of the 8 validation patients, digitised from Fig. 4 of Felton 2014.\nLines: typical patient at creatinine clearance 165.5 mL/min and weight 86.8 kg."
+  ) +
+  theme_bw() +
+  theme(legend.position = "top")
+```
+
+The means were therefore taken as typical values. Even with them, the typical
+profile sits below most observations after 2 h; the validation patients'
+individual covariates are not published, so this is compared at the cohort
+means only, and the stochastic check below is the fairer test.
+
+# Virtual cohorts
+
+## Validation cohort (Fig. 4)
+
+A cohort of 200 virtual patients with covariates resembling the Roberts
+validation cohort receives one 4 g dose over 20 min. The 5th, 50th and 95th
+percentiles of the simulated individual concentrations are compared with the
+digitised Fig. 4 points.
+
+```{r vpc-validation}
+# set.seed() seeds R's RNG, which draws the covariates below. rxSetSeed()
+# seeds rxode2's eta sampler, whose draws can still differ across rxode2 builds
+# and thread counts, so the assertion is on a coverage fraction with headroom.
+set.seed(20140505)
+rxode2::rxSetSeed(20140505)
+n_sub <- 200L
+
+subj_rob <- tibble(
+  id = seq_len(n_sub),
+  CRCL = pmin(pmax(stats::rnorm(n_sub, 165.5, 50), 58.8), 256.6), # Table 1 Roberts: mean 165.5, range 58.8-256.6
+  WT = pmin(pmax(stats::rlnorm(n_sub, log(82.5), 0.15), 72), 132) # Table 1 Roberts: median 82.5, range 72-132
+)
+ev_vpc <- subj_rob |>
+  tidyr::crossing(bind_rows(
+    tibble(time = 0, evid = 1L, amt = roberts$dose, rate = roberts$dose / roberts$tinf),
+    tibble(time = seq(0.25, 8, by = 0.25), evid = 0L, amt = NA_real_, rate = NA_real_)
+  )) |>
+  mutate(cmt = "central") |>
+  arrange(id, time, desc(evid))
+
+sim_rob <- rxode2::rxSolve(ui, events = as.data.frame(ev_vpc), useLinCmt = FALSE, returnType = "data.frame")
+
+pi_rob <- sim_rob |>
+  group_by(time) |>
+  summarise(lo = quantile(Cc, 0.05), med = median(Cc), hi = quantile(Cc, 0.95), .groups = "drop")
+
+cover <- fig4 |>
+  mutate(tt = round(time * 4) / 4) |>
+  left_join(pi_rob, by = c(tt = "time")) |>
+  mutate(inside = conc >= lo & conc <= hi)
+
+# Robust envelope check: about 90% of the digitised points fall inside the
+# simulated 90% interval; 75% leaves room for cohort-to-cohort variation.
+stopifnot(mean(cover$inside) > 0.75)
+mean(cover$inside)
+```
+
+```{r figure-vpc-validation}
+ggplot(pi_rob, aes(time)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "steelblue", alpha = 0.25) +
+  geom_line(aes(y = med), colour = "steelblue4") +
+  geom_point(data = fig4, aes(time, conc), inherit.aes = FALSE) +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(0.5, 400)) +
+  labs(
+    x = "Time after start of first dose (h)", y = "Piperacillin (mg/L)",
+    title = "First dose in the validation cohort",
+    caption = "Band: simulated 5th-95th percentiles (200 virtual patients); line: median.\nPoints: digitised first-dose observations from Fig. 4 of Felton 2014."
+  ) +
+  theme_bw()
+```
+
+## Development-cohort regimens
+
+The four regimens of the estimation data set are simulated in a cohort whose
+creatinine clearance and weight follow the Table 1 combined column
+(log-normal around the medians, with spreads chosen so the means match, and
+truncated to the observed ranges).
+
+```{r cohort-dev}
+set.seed(20140701)
+rxode2::rxSetSeed(20140701)
+
+# Log-normal spread s chosen so that median * exp(s^2 / 2) equals the Table 1 mean.
+s_crcl <- sqrt(2 * log(85.9 / 81.0))
+s_wt <- sqrt(2 * log(71.7 / 69.0))
+
+regimens <- tribble(
+  ~treatment, ~amt, ~tinf, ~tau, ~ndose,
+  "2 g over 30 min, single dose", 2000, 0.5, 24, 1,
+  "4 g over 30 min q6h", 4000, 0.5, 6, 8,
+  "3 g over 4 h q8h", 3000, 4, 8, 6,
+  "16 g/day continuous infusion", 16000, 24, 24, 2
+)
+
+ev_dev <- bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  r <- regimens[i, ]
+  subj <- tibble(
+    id = (i - 1L) * n_sub + seq_len(n_sub),
+    CRCL = pmin(pmax(stats::rlnorm(n_sub, log(81.0), s_crcl), 14.0), 245.7),
+    WT = pmin(pmax(stats::rlnorm(n_sub, log(69.0), s_wt), 38.1), 122.5),
+    treatment = r$treatment
+  )
+  dose <- subj |>
+    tidyr::crossing(time = r$tau * seq(0, r$ndose - 1)) |>
+    mutate(evid = 1L, amt = r$amt, rate = r$amt / r$tinf)
+  obs <- subj |>
+    tidyr::crossing(time = seq(0, 48, by = 0.25)) |>
+    mutate(evid = 0L, amt = NA_real_, rate = NA_real_)
+  bind_rows(dose, obs)
+})) |>
+  mutate(cmt = "central") |>
+  arrange(id, time, desc(evid))
+
+sim_dev <- rxode2::rxSolve(
+  ui,
+  events = as.data.frame(ev_dev), keep = c("treatment", "CRCL"),
+  useLinCmt = FALSE, returnType = "data.frame"
+)
+```
+
+```{r figure-dev}
+sim_dev |>
+  group_by(treatment, time) |>
+  summarise(lo = quantile(Cc, 0.05), med = median(Cc), hi = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey70", alpha = 0.5) +
+  geom_line() +
+  facet_wrap(~treatment, scales = "free_y") +
+  labs(
+    x = "Time (h)", y = "Piperacillin (mg/L)",
+    title = "Simulated regimens of the estimation data set",
+    caption = "Median and 5th-95th percentiles of 200 virtual patients per regimen."
+  ) +
+  theme_bw()
+```
+
+## Continuous-infusion steady state
+
+At steady state a continuous infusion gives `Css = R0 / CL` exactly. The
+typical-value model is checked against that closed form, and the simulated
+cohort's median concentration at 48 h is checked against the cohort's own
+median `R0 / CL`, since clearance is linear and the per-subject ratio is exact
+once distribution has equilibrated.
+
+```{r check-css}
+r0 <- 16000 / 24
+ev_ci <- bind_rows(
+  tibble(id = 1L, time = c(0, 24), evid = 1L, amt = 16000, rate = 16000 / 24),
+  tibble(id = 1L, time = c(24, 48), evid = 0L, amt = NA_real_, rate = NA_real_)
+) |>
+  mutate(cmt = "central", CRCL = 81, WT = 69) |>
+  arrange(time, desc(evid))
+css_typ <- rxode2::rxSolve(ui_typ, events = as.data.frame(ev_ci), useLinCmt = FALSE, returnType = "data.frame") |>
+  filter(time == 48) |>
+  pull(Cc)
+css_closed <- r0 / paper_cl(81)
+stopifnot(abs(css_typ / css_closed - 1) < 0.01)
+
+ci48 <- sim_dev |>
+  filter(treatment == "16 g/day continuous infusion", time == 48) |>
+  mutate(css_cf = r0 / cl)
+# Every subject: concentration at 48 h within 5% of its own R0 / CL. The bound
+# covers subjects with slow distribution (small kpc) still approaching
+# steady state.
+stopifnot(quantile(abs(ci48$Cc / ci48$css_cf - 1), 0.9) < 0.05)
+
+tibble(
+  Quantity = c("Typical Css, closed form (mg/L)", "Typical Css, model at 48 h (mg/L)", "Cohort median Css at 48 h (mg/L)"),
+  Value = c(css_closed, css_typ, median(ci48$Cc))
+) |>
+  knitr::kable(digits = 2, caption = "16 g/day continuous infusion, typical patient at 81 mL/min and 69 kg.")
+```
+
+# PKNCA
+
+Felton 2014 reports no non-compartmental results, so the PKNCA summary below is
+a characterisation of the packaged model for each intermittent regimen of the
+estimation data set rather than a comparison. The single dose uses the full
+48 h; the multiple-dose regimens use the last simulated dosing interval.
+
+```{r pknca}
+# Subjects with very fast elimination reach concentrations at the level of the
+# ODE solver tolerance late in the 48 h window, which can come back as tiny
+# negative values; they are set to zero before NCA.
+conc_dev <- sim_dev |>
+  filter(!is.na(Cc), treatment != "16 g/day continuous infusion") |>
+  mutate(Cc = pmax(Cc, 0)) |>
+  select(id, time, Cc, treatment)
+dose_dev <- ev_dev |>
+  filter(evid == 1L, treatment != "16 g/day continuous infusion") |>
+  select(id, time, amt, treatment)
+
+intervals <- tribble(
+  ~treatment, ~start, ~end, ~cmax, ~tmax, ~auclast, ~aucinf.obs, ~half.life, ~cmin,
+  "2 g over 30 min, single dose", 0, 48, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE,
+  "4 g over 30 min q6h", 42, 48, TRUE, TRUE, TRUE, FALSE, FALSE, TRUE,
+  "3 g over 4 h q8h", 40, 48, TRUE, TRUE, TRUE, FALSE, FALSE, TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_dev, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_dev, amt ~ time | treatment + id),
+  intervals = as.data.frame(intervals)
+))
+
+nca_tab <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "aucinf.obs", "half.life", "cmin")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+
+# Robust centre check on the single dose: the median AUC0-inf must sit near
+# the cohort's median Dose / CL (CL is linear, so AUC0-inf = Dose / CL exactly
+# per subject).
+cl_sd <- sim_dev |>
+  filter(treatment == "2 g over 30 min, single dose") |>
+  distinct(id, cl)
+auc_sd <- nca_tab$aucinf.obs[nca_tab$treatment == "2 g over 30 min, single dose"]
+stopifnot(abs(auc_sd / median(2000 / cl_sd$cl) - 1) < 0.05)
+
+nca_tab |>
+  dplyr::rename(
+    Regimen = treatment, "Cmax (mg/L)" = cmax, "Tmax (h)" = tmax,
+    "AUCtau (mg*h/L)" = auclast, "AUC0-inf (mg*h/L)" = aucinf.obs,
+    "t1/2 (h)" = half.life, "Cmin (mg/L)" = cmin
+  ) |>
+  knitr::kable(digits = 2, caption = "Median simulated NCA parameters per regimen (200 virtual patients each).")
+```
+
+# Figures not replicated
+
+Figs. 3 to 6 of Felton 2014 show Bayesian forecasts made by the BestDose
+software for the 8 validation patients, each from that patient's posterior over
+the NPAG support points. The support points (the Pmetrics density file) and
+the validation patients' individual covariates and dosing records are not
+published, so those individual forecasts and the dose recommendations of
+Table 4 cannot be reproduced from a parametric model.
+
+# Assumptions and deviations
+
+* **Only the final model is packaged.** Table 2 lists four structural models,
+  but parameter estimates are published only for the linear model with
+  covariates (Table 3), the model the authors used in the dosing software.
+* **Mean column as typical values.** Table 3 gives the mean, median and SD of
+  each NPAG marginal without saying which describes a typical patient. The
+  means reproduce the Fig. 4 first-dose observations of the validation cohort
+  within 2-fold from 2 h on, whereas the medians fall more than 3-fold short,
+  so the means were used (section "Mean or median as the typical value").
+* **Log-normal IIV from the marginal SDs.** NPAG estimates a discrete joint
+  density. Each marginal is approximated by a log-normal centred on the
+  reported mean with `omega^2 = log(1 + (SD/mean)^2)`. The joint shape,
+  including any multimodality and any correlation between parameters, is not
+  reported and is not represented; the etas are independent. For `kcp` and
+  `kpc` the marginals are strongly skewed (mean several times the median), so
+  the log-normal is a coarse approximation.
+* **Each intercept and slope carries its own eta.** In a nonparametric fit
+  every one of the six parameters is a subject-level random quantity, so the
+  creatinine-clearance slope and the weight slope have their own IIV, as in
+  the Table 3 SDs.
+* **Creatinine clearance in mL/min.** The Fig. 2 legend gives `Cls` "in liters
+  per hour" without a covariate unit. Table 1 reports Cockcroft-Gault
+  creatinine clearance in mL/min, and only that reading gives a plausible
+  typical clearance (13.3 L/h at the cohort mean) and concentrations in line
+  with Fig. 4; reading it in L/h would leave 6-h concentrations near 50 mg/L
+  against observations of 2-15 mg/L. Rate constants are taken as 1/h, the
+  time unit of the data.
+* **Residual error.** The assay error polynomial `SD = 1.04 + 0.14 x C` was set
+  by the authors before fitting and is encoded with `combined1()`, the
+  linear sum that Pmetrics uses. Pmetrics also multiplied the variance by a
+  fitted scalar gamma whose value is not reported; the encoded error
+  corresponds to gamma = 1 and is likely an underestimate.
+* **Validation covariates.** The Roberts validation patients' individual
+  creatinine clearance and weight are not published, so the virtual validation
+  cohort was drawn from the Table 1 summary (mean, median and range), and the
+  Fig. 4 observations were digitised by eye from the published raster.
+* **Literature check.** No erratum or correction for Felton 2014 was found in
+  Europe PMC (checked November 2026), and the article has no supplementary
+  material.

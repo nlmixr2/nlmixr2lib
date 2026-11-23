@@ -6416,6 +6416,8 @@ navbar:
         href: articles/Dohmann_2025_piperacillin.html
       - text: "Piperacillin (Dong 2026)"
         href: articles/Dong_2026_piperacillin.html
+      - text: "Piperacillin (Felton 2014)"
+        href: articles/Felton_2014_piperacillin.html
       - text: "Piperacillin (Hahn 2021)"
         href: articles/Hahn_2021_piperacillin_tazobactam.html
       - text: "Piperacillin (Ishihara 2020)"
@@ -10075,6 +10077,7 @@ articles:
   - articles/Feillet_2008_sapropterin
   - articles/Feldmuller_2025_zabedosertib
   - articles/Felmlee_2010_ghb_rat
+  - articles/Felton_2014_piperacillin
   - articles/Feng_2006_enoxaparin
   - articles/Feng_2008_risperidone
   - articles/Feng_2011_escitalopram
