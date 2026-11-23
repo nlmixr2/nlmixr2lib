@@ -130,7 +130,17 @@ ev_typ <- bind_rows(
   mutate(cmt = "central") |>
   arrange(id, time, desc(evid))
 
-sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, keep = "group", returnType = "data.frame")
+# Each id is a typical patient of one Table 1 group, not a random subject, so
+# rxode2's warning about a multi-subject solve without omega is expected; only
+# that message is muffled.
+sim_typ <- withCallingHandlers(
+  rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, keep = "group", returnType = "data.frame"),
+  warning = function(w) {
+    if (grepl("multi-subject simulation without", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+)
 
 ggplot(sim_typ, aes(time, Cc, colour = group)) +
   geom_line() +
