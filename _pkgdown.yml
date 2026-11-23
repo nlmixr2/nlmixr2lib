@@ -5906,6 +5906,10 @@ navbar:
         href: articles/Patel_2015_oseltamivir.html
       - text: "Oseltamivir (Standing 2012)"
         href: articles/Standing_2012_oseltamivir.html
+      - text: "Oseltamivir amantadine noimmune qsp (Li 2014)"
+        href: articles/Li_2014_oseltamivir_amantadine_influenza.html
+      - text: "Oseltamivir amantadine qsp (Li 2014)"
+        href: articles/Li_2014_oseltamivir_amantadine_influenza.html
       - text: "Oseltamivir ferret (Reddy 2015)"
         href: articles/Reddy_2015_oseltamivir_ferret.html
       - text: "Oseltamivir pbpk (Luo 2024)"
@@ -10854,6 +10858,7 @@ articles:
   - articles/Li_2010_taranabant
   - articles/Li_2012_clozapine
   - articles/Li_2012_dexamethasone_rat
+  - articles/Li_2014_oseltamivir_amantadine_influenza
   - articles/Li_2014_penicillinG
   - articles/Li_2015_pomalidomide
   - articles/Li_2015_taspoglutide_mbma
