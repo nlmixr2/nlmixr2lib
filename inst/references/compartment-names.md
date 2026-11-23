@@ -6386,6 +6386,22 @@ The Frohlich 2018 multi-experiment NLME single-cell mRNA-transfection model (npj
 - **Example models:** `Frohlich_2018_mRNA_translation.R`.
 - **Notes:** Not a state in the ODE system (`logfluor` is derived inside `model()` from the `gfp` state and the `offset` parameter).
 
+### luminescence (**canonical raw luminescence assay signal (in-vitro reporter readout)**)
+- **Type:** compartment
+- **Role:** Single-output observation variable holding a raw luminescence plate-reader signal in relative light units (RLU) per culture well, typically from a luciferase reporter assay. The scale is specific to the instrument and assay chemistry, so values from two readouts are not interchangeable even for the same cells and drug. Used as the dependent variable of static in-vitro concentration-response curves, e.g. `luminescence = e0 + emax * C^hill / (ec50^hill + C^hill)`.
+- **Source aliases:**
+  - `RLU` -- Tompkins 2026 Methods 'Statistics' and the Figure 1b/1d y-axes.
+- **Example models:** `Tompkins_2026_romidepsin_rlu.R` (founding example; Luciferase Assay System readout), `Tompkins_2026_romidepsin_rlu_oneglo.R` (ONE-Glo readout).
+- **Notes:** An absolute assay signal, not a normalised one: distinct from `viability` (percent of an untreated control) and from `gfp` (a reporter-protein state). Record the readout's units (RLU, and which assay) in the model's `units` metadata. Not an ODE state.
+
+### fluorescence (**canonical raw fluorescence assay signal (in-vitro readout)**)
+- **Type:** compartment
+- **Role:** Single-output observation variable holding a raw fluorescence plate-reader signal in relative fluorescence units (RFU) per culture well, for example a protease-based viable-cell fluorescence readout. The scale is specific to the instrument and assay chemistry. Used as the dependent variable of static in-vitro concentration-response curves, e.g. `fluorescence = e0 - imax * C^hill / (ic50^hill + C^hill)`.
+- **Source aliases:**
+  - `RFU` -- Tompkins 2026 Methods 'Statistics' and the Figure 1f y-axis.
+- **Example models:** `Tompkins_2026_romidepsin_rfu.R` (founding example; CellTiter-Fluor viable-cell readout).
+- **Notes:** An absolute assay signal on a linear scale: distinct from `viability` (percent of an untreated control, even when the underlying readout is fluorescent), from `logfluor` (the log of a single-cell imaging intensity), and from `gfp` (a reporter-protein state). Record the readout's units (RFU, and which assay) in the model's `units` metadata. Not an ODE state.
+
 ---
 
 ## Muliaditan 2025 TfR-mediated brain mPBPK states

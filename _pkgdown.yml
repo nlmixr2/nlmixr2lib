@@ -7268,6 +7268,12 @@ navbar:
         href: articles/Lahu_2010_roflumilast.html
       - text: "Rolofylline (Stroh 2013)"
         href: articles/Stroh_2013_rolofylline.html
+      - text: "Romidepsin rfu (Tompkins 2026)"
+        href: articles/Tompkins_2026_romidepsin.html
+      - text: "Romidepsin rlu (Tompkins 2026)"
+        href: articles/Tompkins_2026_romidepsin.html
+      - text: "Romidepsin rlu oneglo (Tompkins 2026)"
+        href: articles/Tompkins_2026_romidepsin.html
       - text: "Romiplostim (Petrov 2024)"
         href: articles/Petrov_2024_romiplostim.html
       - text: "Romiplostim (Wang 2010)"
@@ -11937,6 +11943,7 @@ articles:
   - articles/Togawa_2016_bilastine
   - articles/Tohi_2023_nivolumab
   - articles/Tomita_2022_imeglimin
+  - articles/Tompkins_2026_romidepsin
   - articles/Tong_2026_vancomycin
   - articles/Tornoe_2006_HPG_axis
   - articles/Tortorici_2017_a1pi

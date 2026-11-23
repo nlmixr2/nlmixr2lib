@@ -7189,6 +7189,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Yu_2025_doxorubicin_trastuzumab_ac16.R`, `Yu_2025_doxorubicin_trastuzumab_bnp_ac16.R`.
 - **Notes:** Specific scope because the value is bound to trastuzumab and to the in-vitro culture design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family (nM siblings `CONC_FOY251_NM`, `CONC_CIBISATAMAB_NM`). The paper reports the levels in uM (25 uM, 12.5 uM, 13.3 / 23 / 28.4 uM); multiply by 1000 for this column.
 
+### CONC_ROMIDEPSIN_NGML (**canonical for static in-vitro romidepsin concentration applied to a cell culture**)
+- **Description:** Romidepsin concentration applied to the medium of an in-vitro cell culture and held constant over the incubation, supplied as an exogenous covariate that drives a static concentration-response curve. Applied experimental concentration in the in-vitro matrix; distinct from the `CP_<drug>` plasma PD-driver family.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- the driver `C` of the sigmoid Emax / Imax curves `e0 + emax * C^hill / (ec50^hill + C^hill)` and `e0 - imax * C^hill / (ic50^hill + C^hill)`; 0 for untreated control wells. Founding values: twofold dilutions from 0.78125 to 600 ng/mL over 24 hours.
+- **Source aliases:**
+  - `RMD concentration` / `C` -- Tompkins 2026 Methods 'Statistics' and the Figure 1 x-axes.
+- **Example models:** `Tompkins_2026_romidepsin_rlu.R`, `Tompkins_2026_romidepsin_rlu_oneglo.R`, `Tompkins_2026_romidepsin_rfu.R`.
+- **Notes:** Specific scope because the value is bound to romidepsin and to the in-vitro culture design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family (ng/mL siblings `CONC_ADA_NGML`, `CONC_VORI_NGML`). The founding paper also labels each level with `AUC0-24h = 24 * C` (ng*h/mL); that is a relabelling of the same static concentration and needs no separate column. The concentration is a nominal medium concentration in RPMI with 10% FBS, in which the founding paper estimates the unbound fraction at up to about 15%, so models driven by this column carry medium potencies, not unbound or human-plasma potencies.
+
 ### CONC_IPM_MGL (**canonical for in-vitro imipenem concentration driving an antibacterial PD or receptor-binding model**)
 - **Description:** Unbound imipenem concentration applied to an in-vitro bacterial system, supplied externally as an exogenous covariate. Applied experimental concentration in the in-vitro matrix; distinct from `Cc` and the `CP_<DRUG>` plasma-PD-driver family. Used both time-varying (hollow-fiber infection model growth medium, driving the bacterial-kill PD effect) and static (60-min whole-cell penicillin-binding-protein binding assay, scaling the rate of net influx and PBP access).
 - **Units:** mg/L
