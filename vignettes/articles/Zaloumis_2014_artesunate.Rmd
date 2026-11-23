@@ -1,0 +1,517 @@
+---
+title: "Artesunate (Zaloumis 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Artesunate (Zaloumis 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Zaloumis et al. (2014) pooled the dihydroartemisinin (DHA) concentrations of
+six studies of intravenous artesunate (ARS) in adults and children with severe
+malaria and fitted a one-compartment model to DHA alone, assuming that ARS is
+converted to DHA instantly and completely. The paper reports two final models
+side by side in Table 3, each with its NONMEM code in the supplement, and both
+are packaged:
+
+* `Zaloumis_2014_artesunate` -- fitted to all 266 patients, including those who
+  received IV ARS in period two of the three crossover trials. Covariates: body
+  weight, age (maturation) and sex.
+* `Zaloumis_2014_artesunate_period1` -- refitted to the 223 patients who
+  received IV ARS at baseline. Stepwise selection then also retained admission
+  hemoglobin and body temperature on clearance. The paper uses this model for
+  its dose simulations (Figure 2) and for the exposure-response analysis
+  (Table 4).
+
+* Citation: `r rxode2::rxode(readModelDb("Zaloumis_2014_artesunate"))$reference`
+* Article: <https://doi.org/10.1038/psp.2014.43> (open access, PMC4259998)
+
+```{r models}
+mod_all <- readModelDb("Zaloumis_2014_artesunate")
+mod_p1 <- readModelDb("Zaloumis_2014_artesunate_period1")
+```
+
+# Population
+
+The pooled data set holds 1,014 DHA concentrations from 266 patients (195
+African children from Gabon, Malawi and Ghana; 71 adults from Bangladesh,
+Thailand and Vietnam) with severe or moderately severe *Plasmodium falciparum*
+malaria (Zaloumis 2014 Tables 1 and 2). Children had a median age of 3.47 years
+(0.57-9.26) and weight of 13 kg (6-29), 52% male; adults a median age of 24
+years (16-65) and weight of 50 kg (33-75), 58% male. Median admission
+hemoglobin was 8.5 g/dL in children and 10.3 g/dL in adults, and median
+temperature 38.0 and 38.3 degC. Most patients received 2.4 mg/kg IV ARS; one
+arm of the largest study (Kremsner et al. 2012) received 4 mg/kg. Samples were
+taken within 12 h of the dose.
+
+The same information is available programmatically via
+`readModelDb("Zaloumis_2014_artesunate")()$population`.
+
+# Source trace
+
+Every value comes from Table 3 of the paper or the NONMEM code in the
+Supplementary Information.
+
+| Equation / parameter | All patients | Baseline IV only | Source location |
+|----------------------|-------------:|-----------------:|-----------------|
+| `lcl` (CL, 15-kg female, L/h) | log(13.0) | log(12.9) | Table 3, population mean CL |
+| `lvc` (V, 15-kg female, L) | log(11.56) | log(11.66) | Table 3, population mean V |
+| `e_male_vc` | -0.14 | -0.15 | Table 3, beta V,MALE |
+| `e_hgb_cl` (per g/dL from 8.8) | n/a | -0.04 | Table 3, beta CL,HB; centring value in footnote and code |
+| `e_bodytemp_cl` (per degC from 38.2) | n/a | 0.07 | Table 3, beta CL,TEMP; centring value in footnote and code |
+| `etalcl`, `etalvc` variances | 0.59^2, 0.44^2 | 0.55^2, 0.42^2 | Table 3, SD of eta_CL and eta_V |
+| `etalcl`-`etalvc` covariance | 0.61 x 0.59 x 0.44 | 0.60 x 0.55 x 0.42 | Table 3, correlation |
+| `expSd` (Kremsner 2012) | 0.34 | 0.35 | Table 3, sigma_1 |
+| `expSdKrishna2001` | 0.36 | 0.35 | Table 3, sigma_2 |
+| `expSdNealon2002` | 0.43 | 0.44 | Table 3, sigma_3 |
+| `expSdMaude2009` | 0.36 | 0.37 | Table 3, sigma_4 |
+| `expSdWhoSimpson2006` | 0.30 | 0.33 | Table 3, sigma_5 |
+| `expSdDavis2001` | 0.27 | 0.27 | Table 3, sigma_6 |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | 0.75, 1 (fixed) | Supplementary NONMEM code, `(WGT/WGTmed)**0.75`, `TVV*(WGT/WGTmed)`, `WGTmed = 15` |
+| `cl_pna_famp` | 1/3.1 - 1 (fixed) | 1/3.1 - 1 (fixed) | Supplementary NONMEM code, `TVCL/3.1` weight on `EXP(-0.082*AGEmth)` |
+| `lcl_pna_kdes` (1/month) | log(0.082) (fixed) | log(0.082) (fixed) | Supplementary NONMEM code, `EXP(-0.082*AGEmth)`, `AGEmth = AGE*12` |
+| `f(central) = 284/384` | -- | -- | Methods, Pharmacokinetic modeling: DHA dose = 284/384 x ARS dose |
+| `d/dt(central) = -cl/vc * central`; IV bolus | -- | -- | Results; NONMEM `ADVAN1` |
+| `Cc ~ lnorm(...)` | -- | -- | Results ("additive error on the natural log scale"); NONMEM `Y = IPRED + W*EPS(1)`, `IPRED = LOG(F)` |
+
+The clearance equation in the NONMEM code is
+
+```
+CL = ((TVCL/3.1) * (WGT/15)^0.75 * exp(-0.082*AGEmth) +
+       TVCL * (WGT/15)^0.75 * (1 - exp(-0.082*AGEmth))) * exp(ETA(1))
+```
+
+which is `TVCL * (WGT/15)^0.75 * (1 + (1/3.1 - 1) * exp(-0.082*AGEmth))`: a
+newborn has 1/3.1 of the mature clearance and the deficit decays at 0.082 per
+month of age (half-life about 8.5 months).
+
+# Typical-value profiles
+
+```{r typical}
+grid <- c(0, 0.083, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12)
+no_study <- c(
+  STUDY_KRISHNA2001 = 0, STUDY_NEALON2002 = 0, STUDY_MAUDE2009 = 0,
+  STUDY_WHO_SIMPSON2006 = 0, STUDY_DAVIS2001 = 0
+)
+
+make_events <- function(cov, times = grid) {
+  doses <- cov |>
+    mutate(time = 0, evid = 1L, amt = dose_mg, cmt = "central")
+  obs <- cov |>
+    tidyr::crossing(time = times) |>
+    mutate(evid = 0L, amt = 0, cmt = "central")
+  out <- bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid))
+  for (nm in names(no_study)) out[[nm]] <- 0
+  out
+}
+
+typ_cov <- tibble::tribble(
+  ~id, ~patient,                  ~WT, ~AGE, ~SEXF, ~HGB, ~BODYTEMP,
+  1L,  "child 8 kg, 1.5 years",    8,  1.5,    1,  8.8,     38.2,
+  2L,  "child 15 kg, 4 years",    15,  4.0,    1,  8.8,     38.2,
+  3L,  "adult 50 kg, 25 years",   50, 25.0,    1,  8.8,     38.2
+) |>
+  mutate(dose_mg = 2.4 * WT)
+
+# The residual SDs are thetas (study-specific), so zeroRe() finds no sigma to
+# zero and says so; the omegas are zeroed, which is what matters here.
+typ <- suppressWarnings(rxode2::rxSolve(
+  rxode2::zeroRe(mod_all),
+  make_events(typ_cov, times = seq(0, 12, by = 0.05)),
+  keep = "patient", returnType = "data.frame"
+))
+
+ggplot(typ, aes(time, Cc, colour = patient)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(
+    x = "Time after IV artesunate 2.4 mg/kg (h)", y = "DHA (ng/mL)",
+    colour = NULL,
+    title = "Typical DHA profiles, all-patients model (female)"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+The 15-kg typical patient has CL = 13.0 L/h and V = 11.56 L, a half-life of
+`r signif(log(2) * 11.56 / 13.0, 3)` h; the closed-form one-compartment bolus
+solution checks the solver exactly:
+
+```{r typical-check}
+chk <- typ |>
+  filter(patient == "child 15 kg, 4 years", time %in% c(0.5, 1, 2)) |>
+  mutate(
+    mat = 1 + (1 / 3.1 - 1) * exp(-0.082 * 48),
+    closed = 1000 * 2.4 * 15 * 284 / 384 / 11.56 *
+      exp(-13.0 * mat / 11.56 * time)
+  )
+stopifnot(all(abs(chk$Cc / chk$closed - 1) < 1e-4))
+knitr::kable(dplyr::select(chk, time, Cc, closed), digits = 1)
+```
+
+# Post hoc exposure in the pooled cohort (Table 3)
+
+Table 3 gives the median post hoc DHA Cmax, AUC0-12h, half-life, CL/kg and
+V/kg of the 266 patients for the all-patients model. The virtual cohort below
+mirrors Table 2: 195 children and 71 adults with the published medians and
+ranges. The paper does not tabulate the doses actually given; the cohort gives
+4 mg/kg to 81 children (the Kremsner 4 mg/kg arm, matching the 81 patients the
+exposure-response analysis excludes for a dose outside 2-3 mg/kg) and
+2.4 mg/kg to everyone else.
+
+```{r cohort}
+set.seed(2014)
+rxode2::rxSetSeed(2014)
+
+# Bounded log-normal draw around a median, clipped to the published range.
+draw <- function(z, med, sdlog, lo, hi) pmin(pmax(med * exp(sdlog * z), lo), hi)
+
+z_child <- rnorm(195)
+children <- tibble(
+  id = 1:195,
+  regimen = rep(c("child 2.4 mg/kg", "child 4 mg/kg"), c(114, 81)),
+  WT = draw(z_child, 13, 0.35, 6, 29),
+  AGE = draw(0.8 * z_child + 0.6 * rnorm(195), 3.47, 0.6, 0.57, 9.26),
+  SEXF = rbinom(195, 1, 0.48),
+  mg_per_kg = ifelse(regimen == "child 4 mg/kg", 4, 2.4)
+)
+adults <- tibble(
+  id = 195 + 1:71,
+  regimen = "adult 2.4 mg/kg",
+  WT = draw(rnorm(71), 50, 0.18, 33, 75),
+  AGE = draw(rnorm(71), 24, 0.35, 16, 65),
+  SEXF = rbinom(71, 1, 0.42),
+  mg_per_kg = 2.4
+)
+pooled_cov <- bind_rows(children, adults) |>
+  mutate(dose_mg = mg_per_kg * WT)
+pooled_events <- make_events(pooled_cov)
+stopifnot(!anyDuplicated(pooled_cov$id))
+
+# DHA falls by up to 2^-40 over 12 h in the fastest-clearing subjects, below
+# the default absolute tolerance, so the solver's noise would show up as
+# small negative concentrations; tighten the tolerances.
+sim_pooled <- rxode2::rxSolve(
+  mod_all, pooled_events,
+  keep = c("regimen", "WT"), returnType = "data.frame",
+  atol = 1e-16, rtol = 1e-10
+)
+```
+
+## Simulated concentration-time percentiles (cf. Figure 1a)
+
+Figure 1a is a visual predictive check against the observed data, which are not
+public. The plot shows the simulated percentiles of log DHA (with residual
+error, Kremsner residual SD) for the virtual pooled cohort.
+
+```{r figure-1}
+sim_pooled |>
+  filter(time > 0) |>
+  group_by(time) |>
+  summarise(
+    p025 = quantile(log(sim), 0.025),
+    p50 = quantile(log(sim), 0.5),
+    p975 = quantile(log(sim), 0.975),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time)) +
+  geom_ribbon(aes(ymin = p025, ymax = p975), alpha = 0.25) +
+  geom_line(aes(y = p50)) +
+  labs(
+    x = "Time (h)", y = "log DHA (ng/mL)",
+    title = "Simulated 2.5th, 50th and 97.5th percentiles",
+    caption = "Simulation counterpart of Figure 1a of Zaloumis 2014."
+  )
+```
+
+## PKNCA
+
+```{r pknca}
+# A handful of 12-h concentrations in the fastest-clearing subjects come back
+# as -1e-15 ng/mL of solver round-off; check that is all they are and set
+# them to zero so PKNCA does not warn about negative concentrations.
+stopifnot(min(sim_pooled$Cc, na.rm = TRUE) > -1e-6)
+nca_conc <- sim_pooled |>
+  filter(!is.na(Cc)) |>
+  mutate(Cc = pmax(Cc, 0)) |>
+  select(id, regimen, time, Cc)
+
+nca_dose <- pooled_events |>
+  filter(evid == 1) |>
+  select(id, regimen, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | regimen + id)
+dose_obj <- PKNCA::PKNCAdose(
+  nca_dose, amt ~ time | regimen + id,
+  route = "intravascular"
+)
+intervals <- data.frame(
+  start = 0, end = 12,
+  cmax = TRUE, auclast = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = intervals,
+  options = list(auc.method = "lin up/log down")
+))
+```
+
+The observation at time 0 is taken after the bolus, so `cmax` is the
+post-dose concentration `dose x F / V`, which is what the NONMEM post hoc Cmax
+of an `ADVAN1` bolus is. `lin up/log down` integrates the mono-exponential
+decline without the linear-trapezoid overestimate.
+
+```{r nca-compare}
+published <- tibble::tibble(
+  cmax = 2946.6,
+  auclast = 2560.3,
+  half.life = 0.63
+)
+nca_long <- as.data.frame(nca_res) |>
+  select(PPTESTCD, PPORRES)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_long,
+  reference = published,
+  units = c(cmax = "ng/mL", auclast = "h*ng/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Median post hoc DHA exposure, all-patients model: Table 3 of Zaloumis",
+    "2014 against the virtual pooled cohort. AUClast is AUC0-12h.",
+    "* differs by >20%."
+  )
+)
+
+indiv <- sim_pooled |>
+  filter(time == 12) |>
+  transmute(id, regimen, cl_kg = cl / WT, v_kg = vc / WT)
+param_cmp <- tibble::tibble(
+  Parameter = c("CL (L/h/kg)", "V (L/kg)"),
+  Published = c(0.76, 0.66),
+  Simulated = c(median(indiv$cl_kg), median(indiv$v_kg))
+) |>
+  mutate(`% diff` = round(100 * (Simulated / Published - 1), 1))
+knitr::kable(param_cmp, digits = 3, caption = "Median weight-normalised CL and V (Table 3 post hoc rows).")
+```
+
+```{r nca-assert}
+nca_med <- as.data.frame(nca_res) |>
+  group_by(PPTESTCD) |>
+  summarise(med = median(PPORRES, na.rm = TRUE))
+pct <- function(code, ref) 100 * (nca_med$med[nca_med$PPTESTCD == code] / ref - 1)
+stopifnot(
+  # The cohort is a reconstruction, and the published values are empirical
+  # Bayes estimates shrunk toward the typical value (eta shrinkage 8% on CL,
+  # 19% on V), so a 20% envelope on the centre is the right test: a
+  # mistranscribed CL, V or dose conversion moves these by far more.
+  abs(pct("cmax", 2946.6)) < 20,
+  abs(pct("auclast", 2560.3)) < 20,
+  abs(pct("half.life", 0.63)) < 20,
+  abs(param_cmp$`% diff`) < 20
+)
+```
+
+# Dose simulations in children and adults (Figure 2)
+
+Figure 2 repeats, for IV ARS, the weight-band simulation that Hendriksen et al.
+(2013) ran for IM ARS: AUC0-12h of DHA after the standard 2.4 mg/kg dose at
+each body weight from 6 to 25 kg, and after the weight-band doses Hendriksen
+proposed (Hendriksen 2013 Table 3). Supplementary Information 1 lists the
+covariate distributions: within each weight band, age and hemoglobin uniform
+over band-specific ranges, and temperature uniform on 35-40.1 degC. Those
+inputs only enter the baseline-IV model, so it is the one simulated here.
+
+For a one-compartment bolus, AUC0-12h is exactly
+`dose x F / CL x (1 - exp(-CL/V x 12))`, so each subject's AUC is computed from
+its simulated CL and V rather than from a concentration grid; 100 subjects per
+kilogram keeps the band medians to a few percent of Monte Carlo error.
+
+```{r figure-2-cohort}
+set.seed(20142)
+rxode2::rxSetSeed(20142)
+
+child_bands <- tibble::tibble(
+  band = c("6-10 kg", "11-15 kg", "16-20 kg", "21-25 kg"),
+  wt_lo = c(6, 11, 16, 21),
+  age_lo = c(0.57, 1.45, 2.41, 5.45), age_hi = c(2.89, 5.88, 9.26, 9.09),
+  hgb_lo = c(2.4, 4.33, 4.33, 8.6), hgb_hi = c(12.5, 13.3, 11.8, 11.3)
+)
+# Hendriksen 2013 Table 3: proposed IM dose (mg) by weight band.
+proposed_mg <- function(wt) {
+  dplyr::case_when(
+    wt <= 7 ~ 20, wt <= 9 ~ 25, wt <= 11 ~ 30, wt <= 13 ~ 35,
+    wt <= 16 ~ 40, wt <= 20 ~ 50, TRUE ~ 60
+  )
+}
+
+n_per_kg <- 100
+child_cov <- tidyr::crossing(WT = 6:25, rep = seq_len(n_per_kg)) |>
+  mutate(b = findInterval(WT, child_bands$wt_lo)) |>
+  mutate(
+    band = child_bands$band[b],
+    AGE = runif(n(), child_bands$age_lo[b], child_bands$age_hi[b]),
+    HGB = runif(n(), child_bands$hgb_lo[b], child_bands$hgb_hi[b]),
+    BODYTEMP = runif(n(), 35, 40.1),
+    SEXF = rbinom(n(), 1, 0.5)
+  ) |>
+  select(-b, -rep)
+
+adult_bands <- tibble::tibble(
+  wt_lo = c(33, 45, 51, 61),
+  age_lo = c(16, 16, 18, 21), age_hi = c(28, 27, 41, 65),
+  hgb_lo = c(2.9, 6, 5.1, 6.5), hgb_hi = c(13.8, 13.1, 13.2, 15)
+)
+adult_cov <- tidyr::crossing(WT = seq(33, 75, by = 3), rep = seq_len(n_per_kg)) |>
+  mutate(b = findInterval(WT, adult_bands$wt_lo)) |>
+  mutate(
+    band = "adults",
+    AGE = runif(n(), adult_bands$age_lo[b], adult_bands$age_hi[b]),
+    HGB = runif(n(), adult_bands$hgb_lo[b], adult_bands$hgb_hi[b]),
+    BODYTEMP = runif(n(), 36.6, 40),
+    SEXF = rbinom(n(), 1, 0.5)
+  ) |>
+  select(-b, -rep)
+
+fig2_cov <- bind_rows(
+  child_cov |> mutate(regimen = "Standard", dose_mg = 2.4 * WT),
+  child_cov |> mutate(regimen = "Proposed", dose_mg = proposed_mg(WT)),
+  adult_cov |> mutate(regimen = "Standard", dose_mg = 2.4 * WT)
+) |>
+  mutate(id = row_number())
+
+fig2 <- rxode2::rxSolve(
+  mod_p1, make_events(fig2_cov, times = 12),
+  keep = c("regimen", "band", "WT", "dose_mg"), returnType = "data.frame"
+) |>
+  mutate(auc012 = 1000 * dose_mg * 284 / 384 / cl * (1 - exp(-cl / vc * 12)))
+```
+
+```{r figure-2, fig.width = 7, fig.height = 7}
+fig2_sum <- fig2 |>
+  group_by(panel = ifelse(band == "adults", "Adults", "Children"), regimen, WT) |>
+  summarise(
+    med = median(auc012),
+    q25 = quantile(auc012, 0.25),
+    q75 = quantile(auc012, 0.75),
+    .groups = "drop"
+  )
+ref_25kg <- fig2_sum$med[fig2_sum$regimen == "Standard" & fig2_sum$WT == 25]
+
+ggplot(fig2_sum, aes(WT, med, colour = regimen)) +
+  geom_pointrange(
+    aes(ymin = q25, ymax = q75),
+    position = position_dodge(width = 0.5), size = 0.3
+  ) +
+  geom_hline(yintercept = ref_25kg, linetype = "dashed") +
+  facet_wrap(~ factor(panel, c("Children", "Adults")), ncol = 1, scales = "free_x") +
+  scale_colour_manual(values = c(Standard = "black", Proposed = "red")) +
+  labs(
+    x = "Body weight (kg)", y = "DHA AUC0-12h (h x ng/mL)", colour = NULL,
+    caption = "Replicates Figure 2 of Zaloumis 2014 (median and 25th-75th percentiles)."
+  )
+```
+
+The Results quote the median (25th-75th percentile) AUC0-12h after
+2.4 mg/kg in each child weight band:
+
+```{r figure-2-compare}
+pub_bands <- tibble::tibble(
+  band = c("6-10 kg", "11-15 kg", "16-20 kg", "21-25 kg"),
+  pub_med = c(2077, 2127, 2122, 2426),
+  pub_q25 = c(1403, 1442, 1443, 1669),
+  pub_q75 = c(3124, 3063, 3094, 3517)
+)
+band_cmp <- fig2 |>
+  filter(regimen == "Standard", band != "adults") |>
+  group_by(band) |>
+  summarise(
+    sim_med = median(auc012),
+    sim_q25 = quantile(auc012, 0.25),
+    sim_q75 = quantile(auc012, 0.75),
+    gm = exp(mean(log(auc012))),
+    .groups = "drop"
+  ) |>
+  inner_join(pub_bands, by = "band") |>
+  mutate(pct_diff = 100 * (sim_med / pub_med - 1)) |>
+  arrange(match(band, pub_bands$band))
+
+band_cmp |>
+  select(band, pub_med, sim_med, pct_diff, pub_q25, sim_q25, pub_q75, sim_q75) |>
+  rename(
+    "Weight band" = band, "Published median" = pub_med,
+    "Simulated median" = sim_med, "% diff" = pct_diff,
+    "Published Q25" = pub_q25, "Simulated Q25" = sim_q25,
+    "Published Q75" = pub_q75, "Simulated Q75" = sim_q75
+  ) |>
+  knitr::kable(digits = 0, caption = "AUC0-12h (h x ng/mL) after 2.4 mg/kg IV ARS by weight band.")
+
+gm_reduction <- 100 * (1 - band_cmp$gm[1] / band_cmp$gm[4])
+```
+
+The paper reports a 13.7% (95% CI 11.7-15.6%) lower geometric-mean AUC in
+6-10 kg than in 21-25 kg children; the simulation gives
+`r round(gm_reduction, 1)`%.
+
+```{r figure-2-assert}
+stopifnot(
+  # Band medians of 500 subjects each carry about 3% Monte Carlo error; a
+  # wrong maturation constant, centring value or dose conversion shifts them
+  # by tens of percent.
+  abs(median(band_cmp$pct_diff)) < 10,
+  all(abs(band_cmp$pct_diff) < 20),
+  gm_reduction > 5, gm_reduction < 25
+)
+```
+
+The proposed weight-band regimen lifts the small-child exposures to the level
+of the 25-kg children, and adults at 2.4 mg/kg sit at or above that level, as
+in the paper's lower panel. The paper does not tabulate the adult medians; read
+off its lower panel they rise from about 2,500 h x ng/mL at 33 kg to about
+3,400 at 75 kg, and the simulated medians run roughly 10% higher over the same
+range. The single-kilogram medians (100 subjects each) scatter by several
+percent, which is also why the dashed 25-kg reference line sits a little above
+the paper's.
+
+# Assumptions and deviations
+
+- **Two final models.** Table 3 reports the all-patients fit and the refit
+  without period-two crossover patients as parallel final models, each with
+  NONMEM code; both are packaged. The paper's own simulations (Figure 2) use
+  the baseline-IV model, since they draw hemoglobin and temperature.
+- **ARS is not modelled.** As in the paper, the dose enters the DHA
+  compartment as an IV bolus scaled by 284/384, the molecular-weight ratio the
+  authors used (dose in mg of artesunate). Supply artesunate doses; the model
+  converts them. The authors note this assumption overpredicts the DHA Cmax.
+- **Study-specific residual error.** The six residual SDs are selected by five
+  `STUDY_*` indicators with Kremsner et al. 2012 as the reference. They act on
+  the residual error only; leave them at 0 for new populations.
+- **Censoring.** The source analysis handled the 3.6% of samples below the
+  study-specific LLOQ with the M3 method; simulation needs no counterpart.
+- **Variance components.** Table 3 gives the IIV as SDs with a correlation.
+  The Supplementary Table S1 column for subgroup 1 prints the same quantities
+  as variances with the V variance (0.19) and the covariance (0.16)
+  transposed; Table 3 is used.
+- **Virtual cohorts.** The pooled cohort reconstructs Table 2 with bounded
+  log-normal draws (children's age correlated with weight). The doses actually
+  given are not tabulated; 81 children receive 4 mg/kg as described above.
+  Sex is drawn 50:50 in the Figure 2 simulation, which Supplementary
+  Information 1 does not specify; it only affects V. Study indicators are 0
+  (Kremsner residual SD) throughout.
+- **Table 1 dose for Davis et al.** Table 1 prints the Davis et al. regimens as
+  120 and 240 "mg/kg"; this does not affect the model.
+- **Errata.** Europe PMC lists no correction or erratum linked to this article
+  (PMID 25372510), checked 2026-11-23.

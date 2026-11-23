@@ -1114,7 +1114,7 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Source aliases:**
   - `TEMP` -- common short form in malaria / infectious-disease NONMEM control streams; used in `Kloprogge_2013_lumefantrine.R` and `Kloprogge_2014_quinine.R` (same orientation as the canonical, no value transformation).
   - `Temp` -- rearing-water temperature in `Yang_2020_enrofloxacin_rainbowTrout_pbpk.R` (acslXtreme code `constant Temp`). For a poikilothermic animal the body temperature is the ambient water temperature, so the water-temperature column is carried as `BODYTEMP` with no value transformation.
-- **Example models:** `Kloprogge_2013_lumefantrine.R` (linear-deviation effect on mean absorption transit time MTT: `MTT_indiv = TVMTT * (1 + e_bodytemp_mtt * (BODYTEMP - 36.9))` with `e_bodytemp_mtt = 0.165` per degC; mean transit time increases ~16.5% per degC over 36.0-39.8 degC, plausibly reflecting reduced gut motility / prolonged absorption in feverish malaria patients), `Kloprogge_2014_quinine.R` (exponential effect on elimination clearance: `CL_indiv = TVCL * exp(e_bodytemp_cl * (BODYTEMP - 37.2))` with `e_bodytemp_cl = -0.243` per degC, centered at the cohort median; clearance decreases ~21.6% per degC increase in admission body temperature over 36.0-38.9 degC, reflecting reduced metabolic CYP3A4 activity during acute febrile malaria), `Hahn_2019_sufentanil.R` (exponential effect on systemic clearance: `CL = 37.8 * exp(e_bodytemp_cl * (BODYTEMP - 36.9))` with `e_bodytemp_cl = +0.207` per degC, centered at the cohort median 36.9 degC; clearance INCREASES ~23.0% per degC over the 33-38.7 degC range observed in critically ill VA-ECMO patients -- the OPPOSITE sign to Kloprogge 2014, and the two are not in conflict: Kloprogge's range is febrile malaria at or above normothermia, whereas Hahn's is dominated by therapeutic and incidental hypothermia in ECMO patients, where reduced total hepatic blood flow and slowed CYP3A4 activity both cut the clearance of a high-extraction drug), `Yang_2020_enrofloxacin_rainbowTrout_pbpk.R` (rainbow trout; not centred -- drives cardiac output through the linear relationship `CO (mL/min/kg) = 3.95 * BODYTEMP - 12.9`, so every tissue blood flow rises with water temperature over the 5-17 degC calibration range; CO reaches zero at 3.27 degC, so the model cannot be used below about 3.3 degC).
+- **Example models:** `Kloprogge_2013_lumefantrine.R` (linear-deviation effect on mean absorption transit time MTT: `MTT_indiv = TVMTT * (1 + e_bodytemp_mtt * (BODYTEMP - 36.9))` with `e_bodytemp_mtt = 0.165` per degC; mean transit time increases ~16.5% per degC over 36.0-39.8 degC, plausibly reflecting reduced gut motility / prolonged absorption in feverish malaria patients), `Kloprogge_2014_quinine.R` (exponential effect on elimination clearance: `CL_indiv = TVCL * exp(e_bodytemp_cl * (BODYTEMP - 37.2))` with `e_bodytemp_cl = -0.243` per degC, centered at the cohort median; clearance decreases ~21.6% per degC increase in admission body temperature over 36.0-38.9 degC, reflecting reduced metabolic CYP3A4 activity during acute febrile malaria), `Hahn_2019_sufentanil.R` (exponential effect on systemic clearance: `CL = 37.8 * exp(e_bodytemp_cl * (BODYTEMP - 36.9))` with `e_bodytemp_cl = +0.207` per degC, centered at the cohort median 36.9 degC; clearance INCREASES ~23.0% per degC over the 33-38.7 degC range observed in critically ill VA-ECMO patients -- the OPPOSITE sign to Kloprogge 2014, and the two are not in conflict: Kloprogge's range is febrile malaria at or above normothermia, whereas Hahn's is dominated by therapeutic and incidental hypothermia in ECMO patients, where reduced total hepatic blood flow and slowed CYP3A4 activity both cut the clearance of a high-extraction drug), `Yang_2020_enrofloxacin_rainbowTrout_pbpk.R` (rainbow trout; not centred -- drives cardiac output through the linear relationship `CO (mL/min/kg) = 3.95 * BODYTEMP - 12.9`, so every tissue blood flow rises with water temperature over the 5-17 degC calibration range; CO reaches zero at 3.27 degC, so the model cannot be used below about 3.3 degC)., `Zaloumis_2014_artesunate_period1.R` (linear-deviation effect on dihydroartemisinin clearance after IV artesunate in severe malaria: `(1 + e_bodytemp_cl * (BODYTEMP - 38.2))` with `e_bodytemp_cl = 0.07` per degC, centred on the pooled median 38.2 degC)
 - **Notes:** General scope because body temperature is a universally applicable vital sign; the Kloprogge 2013 reference value 36.9 degC is cohort-specific (Ugandan malaria cohort median) and future models should document their own reference in `covariateData[[BODYTEMP]]$notes`. Units are degrees Celsius; convert from Fahrenheit (degF) at data-assembly time, not inside `model()`. Distinct from `BODYTEMP_FEBRILE` (not yet registered) which would be a binary fever indicator if a future paper dichotomises at the conventional 37.5 / 38.0 degC threshold. For fish and other poikilotherms, whose body temperature equals the water (or ambient) temperature, record that temperature as `BODYTEMP`; the physiological role is the same (temperature-dependent blood flow and enzyme activity), only the measurement differs.
 
 ### PACO2 (**canonical for arterial blood carbon dioxide tension (PaCO2)**)
@@ -2708,7 +2708,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(HGB / ref)^exponent`.
 - **Source aliases:** none; `HGB` is the common NONMEM / clinical-PK abbreviation.
-- **Example models:** `Yamada_2025_zolbetuximab.R` (g/L, reference 118; exponent -0.374 on V1), `Zou_2020_leuprorelin.R` (g/dL, reference 13.6; exponent 2.30 on the resistant-fraction parameter `rp` of a PSA disease-progression model).
+- **Example models:** `Yamada_2025_zolbetuximab.R` (g/L, reference 118; exponent -0.374 on V1), `Zou_2020_leuprorelin.R` (g/dL, reference 13.6; exponent 2.30 on the resistant-fraction parameter `rp` of a PSA disease-progression model)., `Zaloumis_2014_artesunate_period1.R` (g/dL; LINEAR-deviation multiplier `(1 + e_hgb_cl * (HGB - 8.8))` on dihydroartemisinin clearance with `e_hgb_cl = -0.04` per g/dL, centred on the pooled median 8.8 g/dL)
 - **Notes:** Unit varies by paper (SI g/L, US g/dL; 1 g/dL = 10 g/L). The per-model `covariateData[[HGB]]$units` field is load-bearing.
 
 ### HGB_BL (**canonical for per-subject baseline hemoglobin concentration (initial-condition use)**)
@@ -20171,6 +20171,61 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `ASY` -- the Wu 2022 ESM control stream column "Dataset identification. 0 for dataset 1 and 1 for dataset 2", where dataset 2 is DINO. Same orientation as the canonical, no value transformation.
 - **Example models:** `Wu_2022_fentanyl.R` (selects the residual-error magnitudes only: additive 0.0297 ug/L and proportional 0.361 for DINO against 0.246 ug/L and 0.23 for the Helsinki dataset), `Wu_2023_paracetamol.R` (selects the plasma residual-error magnitudes only, against the reference Flint et al. single-dose dataset: log-scale SDs for paracetamol and its three metabolites, plus the additive SD2 terms on sulfate and the oxidative metabolites that apply to the Flint dataset alone; source column `ASY`, same orientation).
 - **Notes:** The indicator identifies the study, not the assay: in `Wu_2022_fentanyl.R` the two datasets also differ in bioanalysis (DINO LC-MS/MS vs Helsinki radioimmunoassay), sampling route and BLOQ handling, and the paper attributes the residual split to the dataset. Use `RIA_ASSAY` / `IMMUNOASSAY` instead when a paper attributes a residual split specifically to the analytical method. The DINO cohort also underlies `Voller_2019_midazolam.R`, which retains no study term.
+
+### STUDY_KRISHNA2001 (**canonical for the Krishna 2001 Ghanaian paediatric artesunate crossover trial indicator**)
+- **Description:** 1 = record from the Krishna et al. 2001 crossover trial of intrarectal and intravenous artesunate in Ghanaian children with moderately severe malaria (conducted 1996); 0 = record from another study of the Zaloumis 2014 six-study pooled intravenous artesunate analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (in the founding models the reference study is Kremsner et al. 2012, the Gabon/Malawi paediatric trial, which has all five Zaloumis `STUDY_*` indicators equal to 0).
+- **Source aliases:**
+  - `STDY` (= 4) -- Zaloumis 2014 supplementary NONMEM code (`IF(STDY.EQ.4) ST4 = 1`); `STUDY_KRISHNA2001 = as.integer(STDY == 4)`.
+- **Example models:** `Zaloumis_2014_artesunate.R`, `Zaloumis_2014_artesunate_period1.R` (select the study-specific log-scale residual SD, sigma_2 in Table 3, only).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Acts on the residual error only, so simulations of a new population leave it at 0. Siblings: `STUDY_NEALON2002`, `STUDY_MAUDE2009`, `STUDY_WHO_SIMPSON2006`, `STUDY_DAVIS2001`.
+
+### STUDY_NEALON2002 (**canonical for the Nealon 2002 Gabonese paediatric artesunate crossover trial indicator**)
+- **Description:** 1 = record from the Nealon et al. 2002 crossover trial of intravenous and intramuscular artesunate in Gabonese children with severe malaria (conducted 2000-2001); 0 = record from another study of the Zaloumis 2014 pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (reference study Kremsner et al. 2012 in the founding models).
+- **Source aliases:**
+  - `STDY` (= 5) -- Zaloumis 2014 supplementary NONMEM code (`IF(STDY.EQ.5) ST5 = 1`); `STUDY_NEALON2002 = as.integer(STDY == 5)`.
+- **Example models:** `Zaloumis_2014_artesunate.R`, `Zaloumis_2014_artesunate_period1.R` (study-specific log-scale residual SD, sigma_3 in Table 3, only).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Residual error only; leave at 0 for new populations.
+
+### STUDY_MAUDE2009 (**canonical for the Maude 2009 Bangladeshi adult intravenous artesunate study indicator**)
+- **Description:** 1 = record from the Maude et al. 2009 study of intravenous artesunate in Bangladeshi adults with severe malaria (conducted 2006-2007); 0 = record from another study of the Zaloumis 2014 pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (reference study Kremsner et al. 2012 in the founding models).
+- **Source aliases:**
+  - `STDY` (= 6) -- Zaloumis 2014 supplementary NONMEM code (`IF(STDY.EQ.6) ST6 = 1`); `STUDY_MAUDE2009 = as.integer(STDY == 6)`.
+- **Example models:** `Zaloumis_2014_artesunate.R`, `Zaloumis_2014_artesunate_period1.R` (study-specific log-scale residual SD, sigma_4 in Table 3, only).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Residual error only; leave at 0 for new populations.
+
+### STUDY_WHO_SIMPSON2006 (**canonical for the WHO Thai adult intrarectal/intravenous artesunate crossover trial indicator**)
+- **Description:** 1 = record from the WHO crossover trial of intrarectal and intravenous artesunate in Thai adults with moderately severe malaria (Bangkok, conducted 1996; unpublished WHO report, a subset published in Simpson et al. 2006); 0 = record from another study of the Zaloumis 2014 pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (reference study Kremsner et al. 2012 in the founding models).
+- **Source aliases:**
+  - `STDY` (= 8) -- Zaloumis 2014 supplementary NONMEM code (`IF(STDY.EQ.8) ST8 = 1`); `STUDY_WHO_SIMPSON2006 = as.integer(STDY == 8)`. Zaloumis 2014 Tables 1-3 label the study simply "WHO".
+- **Example models:** `Zaloumis_2014_artesunate.R`, `Zaloumis_2014_artesunate_period1.R` (study-specific log-scale residual SD, sigma_5 in Table 3, only).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. The id carries both the sponsor and the partial publication because the trial has no registry number and the full data set was never published. Residual error only; leave at 0 for new populations.
+
+### STUDY_DAVIS2001 (**canonical for the Davis 2001 Vietnamese adult intravenous artesunate study indicator**)
+- **Description:** 1 = record from the Davis et al. 2001 study of intravenous artesunate in Vietnamese adults with severe or moderately severe malaria (conducted 1997); 0 = record from another study of the Zaloumis 2014 pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (reference study Kremsner et al. 2012 in the founding models).
+- **Source aliases:**
+  - `STDY` (= 9) -- Zaloumis 2014 supplementary NONMEM code (`IF(STDY.EQ.9) ST9 = 1`); `STUDY_DAVIS2001 = as.integer(STDY == 9)`.
+- **Example models:** `Zaloumis_2014_artesunate.R`, `Zaloumis_2014_artesunate_period1.R` (study-specific log-scale residual SD, sigma_6 in Table 3, only).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Residual error only; leave at 0 for new populations.
 
 ### REGI_BID (**canonical for twice-daily dosing-regimen indicator**)
 - **Description:** 1 = subject's dosing regimen is BID (twice daily), 0 = QD (once daily) or other non-BID regimen. Per-subject (regimen-fixed) categorical indicator for population analyses that pool QD and BID arms and test regimen as a covariate.
