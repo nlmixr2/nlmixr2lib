@@ -1,0 +1,259 @@
+---
+title: "Mefloquine (Jullien 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mefloquine (Jullien 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Jullien V, Valecha N, Srivastava B, Sharma B, Kiechel JR (2014). Population pharmacokinetics of mefloquine, administered as a fixed-dose combination of artesunate-mefloquine in Indian patients for the treatment of acute uncomplicated *Plasmodium falciparum* malaria. *Malaria Journal* **13**:187.
+* Article: <https://doi.org/10.1186/1475-2875-13-187>
+
+```{r load-model}
+mod <- rxode2::rxode2(readModelDb("Jullien_2014_mefloquine")())
+```
+
+# Population
+
+Jullien 2014 ran a single-arm, open-label, multicentre trial in India (December 2007 to November 2008; ISRCTN70618692) in 77 adults (74 men, 3 women) with acute uncomplicated *P. falciparum* malaria. Baseline characteristics (Table 1, mean (SD) [range]): age 28.1 (9.0) [18-45] years, body weight 53.3 (7.3) [40-70] kg, haemoglobin 13.1 (2.15), serum creatinine 0.96 (0.18); median parasite density 8356 /uL [1165-94693]. Each patient took two tablets of the artesunate-mefloquine fixed-dose combination (100 mg artesunate + 200 mg mefloquine base per tablet) once daily for 3 days, i.e. 400 mg mefloquine base per day and 1200 mg in total. Plasma mefloquine (LC-MS/MS, LLOQ 9.9 ng/mL) was sampled before dosing on day 0, on day 3 (72 h), on day 7, and once on day 28, 35 or 42; 355 concentrations were analysed with NONMEM VI (FOCE-I).
+
+The same information is in the model's `population` metadata.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka = log(0.163)` (ka, 1/h) | 0.163 | Table 2, final model |
+| `lcl = log(1.13)` (CL/F, L/h) | 1.13 | Table 2, final model |
+| `lvc = log(271)` (Vc/F, L) | 271 | Table 2, final model |
+| `lq = log(1.43)` (Q/F, L/h) | 1.43 | Table 2, final model |
+| `lvp = log(344)` (Vp/F, L) | 344 | Table 2, final model |
+| `e_wt_vc` | 0.87 | Table 2, final model (theta BW,Vc) |
+| `e_wt_vp` | 2.41 | Table 2, final model (theta BW,Vp) |
+| `etalka ~ 0.562` | omega^2 | Table 2, final model |
+| `etalcl ~ 0.0894` | omega^2 | Table 2, final model |
+| `etalvc ~ 0.0453` | omega^2 | Table 2, final model |
+| `etalvp ~ 0.295` | omega^2 | Table 2, final model |
+| no `etalq` | -- | Results: "Inter-individual variability of Q/F could not be estimated" |
+| `propSd = 0.2631` | sqrt(sigma^2 = 0.0692) | Table 2, final model; Results: proportional error model |
+| Two-compartment, first-order absorption and elimination | -- | Results paragraph 2; Methods (structural models) |
+| `P = TV(P) * (WT / 53)^theta` on Vc/F and Vp/F | -- | Methods, generalized allometric model equation; reference weight 53 kg from Figure 4 (see Assumptions) |
+| Exponential IIV, variances on the log scale | -- | Methods: "exponential model ... multivariate lognormal distribution" |
+
+# Virtual cohort
+
+Body weight is the only covariate. It is drawn from a normal distribution with the Table 1 mean and SD, truncated to the observed 40-70 kg range. The 200 virtual patients receive the trial regimen (400 mg mefloquine base at 0, 24 and 48 h).
+
+```{r cohort}
+set.seed(20141187L)
+rxode2::rxSetSeed(20141187L)
+n_subj <- 200L
+cohort <- data.frame(
+  id = seq_len(n_subj),
+  treatment = "AS-MQ FDC 400 mg/day x 3 days",
+  WT = pmin(pmax(rnorm(n_subj, mean = 53.3, sd = 7.3), 40), 70)
+)
+
+dose_times <- c(0, 24, 48)
+obs_times <- sort(unique(c(seq(0, 72, by = 2), seq(84, 24 * 120, by = 12), 168, 672)))
+
+make_events <- function(cohort) {
+  doses <- merge(cohort, data.frame(time = dose_times)) |>
+    dplyr::mutate(evid = 1L, amt = 400, cmt = "depot")
+  obs <- merge(cohort, data.frame(time = obs_times)) |>
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "central")
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+events <- make_events(cohort)
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events, keep = c("treatment", "WT")) |>
+  as.data.frame()
+
+typical <- make_events(data.frame(id = 1L, treatment = "typical", WT = 53))
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = typical) |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+## Figure 3: visual predictive check
+
+Figure 3 of Jullien 2014 plots plasma mefloquine (mg/L) against "time post-dose" with the simulated 5th, 50th and 95th percentiles. The x-axis is time after the most recent dose: the day-28, day-35 and day-42 samples sit at about 620, 790 and 960 h, i.e. the study day minus the 48 h of the last dose, and the day-3 samples sit near 24 h. The plot below therefore shows the post-regimen part of the simulation against time after the third dose. In Figure 3 the simulated median falls from about 2 mg/L shortly after the last dose to about 1.1 mg/L at 170 h and about 0.35 mg/L at 790 h.
+
+```{r figure-3}
+vpc <- sim |>
+  dplyr::filter(time >= 48, time <= 48 + 1450) |>
+  dplyr::mutate(time = time - 48) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05),
+    p50 = quantile(sim, 0.50),
+    p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(time)) +
+  geom_line(aes(y = p50), colour = "red") +
+  geom_line(aes(y = p05), colour = "blue", linetype = "dashed") +
+  geom_line(aes(y = p95), colour = "blue", linetype = "dashed") +
+  labs(
+    x = "Time after the last dose (h)", y = "Mefloquine concentration (mg/L)",
+    caption = "Replicates Figure 3 of Jullien 2014 (5th, 50th, 95th percentiles; 200 virtual patients)."
+  )
+```
+
+## Figure 4: terminal half-life against body weight
+
+Figure 4 shows individual terminal half-lives (from the Bayesian estimates) rising from about 15 days at 45 kg to about 38 days at 70 kg. Because body weight scales both volumes but not CL/F, the typical-value half-life rises with weight in the same way. The half-life uses the Methods formula, beta = 0.5 x (k12 + k21 + k10 - sqrt((k12 + k21 + k10)^2 - 4 k21 k10)).
+
+```{r figure-4}
+half_life_days <- function(wt, cl, vc, q, vp) {
+  k10 <- cl / vc
+  k12 <- q / vc
+  k21 <- q / vp
+  s <- k10 + k12 + k21
+  beta <- 0.5 * (s - sqrt(s^2 - 4 * k21 * k10))
+  log(2) / beta / 24
+}
+iv <- mod$theta
+fig4 <- data.frame(WT = seq(40, 70, by = 1)) |>
+  dplyr::mutate(
+    vc = exp(iv[["lvc"]]) * (WT / 53)^iv[["e_wt_vc"]],
+    vp = exp(iv[["lvp"]]) * (WT / 53)^iv[["e_wt_vp"]],
+    thalf = half_life_days(WT, exp(iv[["lcl"]]), vc, exp(iv[["lq"]]), vp)
+  )
+
+# Individual half-lives under the full IIV, for the scatter of Figure 4.
+indiv <- sim |>
+  dplyr::distinct(id, WT, cl, vc, q, vp) |>
+  dplyr::mutate(thalf = half_life_days(WT, cl, vc, q, vp))
+
+ggplot(indiv, aes(WT, thalf)) +
+  geom_point(shape = 1, colour = "grey40") +
+  geom_line(data = fig4, colour = "red", linewidth = 1) +
+  labs(
+    x = "Body weight (kg)", y = "Terminal half-life (days)",
+    caption = "Replicates Figure 4 of Jullien 2014; red line is the typical value."
+  )
+```
+
+```{r figure-4-check}
+knitr::kable(
+  fig4 |>
+    dplyr::filter(WT %in% c(45, 53, 60, 70)) |>
+    dplyr::transmute(WT, thalf = round(thalf, 1)) |>
+    dplyr::rename("Body weight (kg)" = WT, "Typical half-life (days)" = thalf),
+  caption = "Typical terminal half-life at selected body weights."
+)
+```
+
+The typical half-life at 53 kg is `r round(fig4$thalf[fig4$WT == 53], 1)` days, against the median individual value of 21.6 days in Table 3 of the paper; the median of the 200 simulated individual half-lives is `r round(median(indiv$thalf), 1)` days. The individual estimates are skewed upward by the large IIV on Vp/F (omega^2 = 0.295), which is why the median of individual half-lives exceeds the typical value.
+
+# PKNCA validation
+
+```{r pknca}
+conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+doses <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id, concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(doses, amt ~ time | treatment + id, doseu = "mg")
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+The paper reports, from the individual Bayesian estimates, a median AUC0-inf of 1055 mg.h/L (range 596-1741) and a median terminal half-life of 21.6 days (518 h; Table 3). Neither Cmax nor Tmax is reported.
+
+```{r nca-compare}
+nca_sim <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "half.life"))
+reference <- data.frame(
+  treatment = "AS-MQ FDC 400 mg/day x 3 days",
+  aucinf.obs = 1055,
+  half.life = 21.6 * 24
+)
+tbl <- nlmixr2lib::ncaComparisonTable(
+  nca_sim, reference,
+  by = "treatment",
+  units = c(aucinf.obs = "mg*h/L", half.life = "h")
+)
+knitr::kable(tbl, caption = "Simulated (median of 200 virtual patients) versus published NCA.")
+```
+
+The simulated median AUC0-inf is close to dose / typical CL/F = 1200 / 1.13 = 1062 mg.h/L. The half-life comparison sets PKNCA terminal half-lives on the simulated profiles against the paper's Bayesian-estimate half-lives (see Figure 4 above).
+
+## Day-7 and day-28 concentrations
+
+```{r c7-c28}
+landmarks <- sim |>
+  dplyr::filter(time %in% c(168, 672)) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    sim_median = median(Cc),
+    sim_p05 = quantile(Cc, 0.05),
+    sim_p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    landmark = c("C7 (day 7)", "C28 (day 28)"),
+    published = c("1.58 (1.08-2.90)", "0.29 (0.11-0.57)")
+  )
+knitr::kable(
+  landmarks |>
+    dplyr::transmute(
+      landmark,
+      published,
+      simulated = sprintf("%.2f (%.2f-%.2f)", sim_median, sim_p05, sim_p95)
+    ) |>
+    dplyr::rename(
+      "Concentration (mg/L)" = landmark,
+      "Published median (range)" = published,
+      "Simulated median (5th-95th percentile)" = simulated
+    ),
+  caption = "Day-7 and day-28 mefloquine concentrations, published (Results) versus simulated."
+)
+
+c7 <- landmarks$sim_median[landmarks$time == 168]
+c28 <- landmarks$sim_median[landmarks$time == 672]
+auc_med <- median(nca_sim$PPORRES[nca_sim$PPTESTCD == "aucinf.obs"])
+stopifnot(
+  abs(auc_med / 1055 - 1) < 0.10,
+  abs(c7 / 1.58 - 1) < 0.15,
+  # The published C28 median is not reproduced (see below); hold the
+  # simulated median inside the published individual range instead.
+  c28 > 0.11, c28 < 0.57
+)
+```
+
+The simulated C7 reproduces the published median. The simulated C28 median (`r sprintf("%.2f", c28)` mg/L) is above the published median of 0.29 mg/L, though inside its published range. The published value is also below the paper's own Figure 3, whose simulated and observed medians at the day-28 samples (about 620 h after the last dose) are about 0.5-0.6 mg/L, and the typical-value profile from the Table 2 estimates gives `r sprintf("%.2f", sim_typ$Cc[sim_typ$time == 672])` mg/L at 672 h. Since AUC0-inf, half-life and C7 all agree, the C28 difference is reported here and the parameters are left as published.
+
+# Assumptions and deviations
+
+* **Reference body weight.** The Methods centre the body-weight power functions on the cohort median, which is not printed. The maintainers digitised the 77 individual points of Figure 4 (body weight was recorded to the nearest kilogram): the median of the plotted weights is 53 kg, and their mean agrees with the Table 1 mean of 53.3 kg. 53 kg is used. Table 3 gives per-kilogram values (CL/F 0.022 L/h/kg, V/F 11.9 L/kg for V/F = 615 L) that would imply a divisor of about 51.5-51.9 kg if they were typical values divided by a single weight; they are more likely means of individual per-kilogram values and were not used for the centring. With the Vp/F exponent of 2.41, a 1 kg shift of the reference changes typical Vp/F by about 5%.
+* **Dosing times.** The three daily doses are placed at 0, 24 and 48 h; the paper gives "once daily over three consecutive days" without clock times.
+* **C7 and C28 timing.** Day 7 and day 28 are taken as 168 h and 672 h after the first dose. Measuring day 28 from the last dose (720 h) instead lowers the typical value only slightly and does not reach the published C28 median of 0.29 mg/L, which is lower than the paper's own Figure 3 at that time.
+* **Half-life comparison.** The paper's 21.6 days is a summary of individual Bayesian-estimate half-lives (Methods), not a non-compartmental estimate, so it is compared against PKNCA terminal half-lives on simulated individual profiles.
+* **Residual error.** The VPC percentiles use the `sim` column (with proportional residual error, as the paper's VPC does); PKNCA and the landmark concentrations use the individual prediction `Cc`.
+* No erratum or correction to the paper was found (Europe PMC, checked 2026-11-23). The efficacy and safety results of the same trial are reported separately by Valecha et al. (2013, J Vector Borne Dis; doi:10.4103/0972-9062.126232).
