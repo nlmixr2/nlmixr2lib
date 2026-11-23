@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lei 2026 meropenem ([doi:10.3390/pharmaceutics18091113](https://doi.org/10.3390/pharmaceutics18091113)) -- Chinese adults with sepsis or septic shock, with plasma 4-pyridoxic acid as an OAT1/OAT3 biomarker on clearance.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
