@@ -2,6 +2,8 @@
 
 # development version
 
+- Add van de Kreeke 2026 generic antibiotic with neutrophil and monocyte host-pathogen model ([doi:10.1007/s10928-026-10063-6](https://doi.org/10.1007/s10928-026-10063-6)) -- simulated adults with bacteremia across seven immune states (immune competent to fully immune compromised), calibrated in mice. Registers the `MONO_ABS` covariate.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

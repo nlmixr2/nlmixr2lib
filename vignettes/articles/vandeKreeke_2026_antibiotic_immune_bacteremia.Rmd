@@ -1,0 +1,608 @@
+---
+title: "Immune status and antibiotic PK/PD targets in bacteremia (van de Kreeke 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Immune status and antibiotic PK/PD targets in bacteremia (van de Kreeke 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-load}
+mod <- readModelDb("vandeKreeke_2026_antibiotic_immune_bacteremia")
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.1007/s10928-026-10063-6>
+* Open-access full text: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC13597578/>
+* Supplements: Online Resource 1 (Tables S1-S3, Figs. S1-S4), Online
+  Resources 2 and 3 (in vitro neutrophil and monocyte sub-fits) and Online
+  Resource 4 (mouse calibration).
+* Description: `r ui$description`
+
+The model is a generic host-pathogen model. No named drug or pathogen is
+modelled: the bacteria are a homogeneous population with MIC 1 mg/L, and the
+antibiotic is a hypothetical agent with one-compartment PK (V 5 L, half-life
+5 h). Four antibiotic types are produced by two parameters of the Regoes 2004
+growth-rate function: `kgmin` (-1 1/h bacteriostatic, -3 1/h bactericidal) and
+`hill` (0.5 time-dependent, 3 concentration-dependent). The packaged default is
+bacteriostatic time-dependent; the other types are selected by overriding
+`kgmin` and `lhill`.
+
+Three per-subject inputs are required:
+
+* `NEUT`: absolute neutrophil count (cells/mm^3), constant over time;
+* `MONO_ABS`: absolute monocyte count (cells/mm^3), constant over time;
+* `MIC`: the MIC of the antibiotic against the bacterium (mg/L).
+
+The bacterial inoculum is given as a dose (CFU/mL) into `bact_susceptible` at
+time zero, and the antibiotic dose (mg) into `central`. The output `cfu` is the
+extracellular bacterial density of Eq. 1, which is the quantity the paper plots
+(see "Bacterial density output" below); `cfu_total` adds the bacteria still held
+inside phagocytes.
+
+# Population
+
+No patient data were fitted. The phagocytosis and digestion parameters were
+estimated from digitised in vitro time-courses of bacteria incubated with
+neutrophils or monocytes (Online Resource 1, Table S2), and a single scaling
+factor on both maximum phagocytosis rates (0.227, RSE 2.77%) was estimated from
+24-h blood CFU counts in four immune-competent mice inoculated intravenously
+with *E. coli* (Table S3, Online Resource 4). The calibrated model was then used
+to simulate adults with bacteremia in seven immune states (Methods, Evaluation
+of immune status on PKPD targets):
+
+```{r immune-states}
+immune_states <- tibble::tribble(
+  ~state,                                 ~NEUT, ~MONO_ABS,
+  "Immune competent",                      5000,       600,
+  "Monocytopenia",                         5000,       200,
+  "Mild neutropenia",                      1250,       600,
+  "Moderate neutropenia",                   750,       600,
+  "Severe neutropenia",                     500,       600,
+  "Severe neutropenia & monocytopenia",     500,       200,
+  "Fully immune compromised",                 0,         0
+) |>
+  dplyr::mutate(state = factor(state, levels = state))
+
+antibiotic_types <- tibble::tribble(
+  ~type,                                      ~kgmin, ~hill,
+  "Bacteriostatic\ntime dependent",              -1,   0.5,
+  "Bactericidal\ntime dependent",                -3,   0.5,
+  "Bacteriostatic\nconcentration dependent",     -1,   3,
+  "Bactericidal\nconcentration dependent",       -3,   3
+) |>
+  dplyr::mutate(type = factor(type, levels = type))
+
+immune_states |>
+  dplyr::mutate(
+    "Neutrophils (cells/mL)" = NEUT * 1000,
+    "Monocytes (cells/mL)" = MONO_ABS * 1000
+  ) |>
+  dplyr::rename(
+    "Immune state" = state,
+    "NEUT (cells/mm^3)" = NEUT,
+    "MONO_ABS (cells/mm^3)" = MONO_ABS
+  ) |>
+  knitr::kable(caption = "Immune states simulated in the paper (Methods).")
+```
+
+# Source trace
+
+```{r source-trace, echo = FALSE}
+tibble::tribble(
+  ~Element, ~Value, ~Source,
+  "Eq. 1: extracellular bacteria", "kg * B * (1 - B / Bmax) - knp * B - kmp * B", "Methods, Eq. 1",
+  "Eq. 7: growth rate under antibiotic", "kgrw - (kgrw - kgmin) (C/MIC)^H / ((C/MIC)^H - kgmin/kgrw)", "Methods, Eq. 7 (Regoes 2004)",
+  "Eqs. 8-9: neutrophil phagocytosis and digestion", "Emax in N times 1 - (B_N/N) / (B_N/N50 + B_N/N)", "Results, Eqs. 8-9; Eq. 4 with gamma = 1",
+  "Eqs. 11-12: monocyte phagocytosis and digestion", "Emax in M times sigmoid capacity term, decay removed", "Results, Eqs. 11-12; Methods, Calibration",
+  "Intracellular pools B_N, B_M", "phagocytosis in, digestion out", "Fig. 1 (no printed equation)",
+  "kgrw (lkgrowth)", "0.9 1/h", "Table 1 (footnote a); Online Resource 1, Fig. S1",
+  "Bmax (lbmax)", "2.5e9 CFU/mL", "Table 1",
+  "knp,max (lknp_max)", "1.90 1/h", "Table 1; Online Resource 4 (8.35 x 0.227)",
+  "Np50 (ln50_phag)", "6.92e5 cells/mL", "Table 1",
+  "B_N/Np50 (lbn50_phag)", "3.92 CFU/cell", "Table 1",
+  "knd,max (lknd_max)", "5.61 1/h", "Table 1",
+  "Nd50 (ln50_dig)", "3.98e6 cells/mL", "Table 1",
+  "B_N/Nd50 (lbn50_dig)", "2.84 CFU/cell", "Table 1",
+  "kmp,max (lkmp_max)", "1.77 1/h", "Table 1; Online Resource 4 (7.78 x 0.227)",
+  "Mp50 (lm50_phag)", "2.73e5 cells/mL", "Table 1",
+  "B_M/Mp50 (lbm50_phag)", "1.25 CFU/cell", "Table 1",
+  "gamma_p (lhill_mono_phag)", "5.54", "Table 1",
+  "kmd,max (lkmd_max)", "6.23 1/h", "Table 1",
+  "Md50 (lm50_dig)", "3.98e6 cells/mL (= Nd50)", "Table 1; Results",
+  "B_M/Md50 (lbm50_dig)", "1.05 CFU/cell", "Table 1",
+  "gamma_d (lhill_mono_dig)", "14", "Table 1",
+  "Antibiotic V (lvc)", "5 L", "Methods",
+  "Antibiotic CL (lcl)", "5 x ln(2) / 5 = 0.693 L/h (half-life 5 h)", "Methods",
+  "kgmin", "-1 (bacteriostatic) or -3 (bactericidal) 1/h", "Methods, Eq. 7",
+  "H (lhill)", "0.5 (time dependent) or 3 (concentration dependent)", "Methods, Eq. 7",
+  "MIC (covariate)", "1 mg/L", "Methods, Eq. 7",
+  "Immune-cell counts (covariates)", "see the immune-state table", "Methods; Online Resource 1, Table S3"
+) |>
+  knitr::kable(caption = "Source location of every equation and parameter.")
+```
+
+# Simulation helpers
+
+Every simulation below is deterministic: the model has no between-subject
+variability and no residual error. Each row of a scenario grid becomes one
+subject; the scenario's covariates and antibiotic-type parameters are carried
+as data columns, which `rxSolve()` uses in place of the `ini()` values.
+
+```{r helpers}
+# One subject per scenario row. `dose` is the total daily antibiotic dose (mg),
+# split into `n_doses` equal boluses over 24 h; `b0` is the inoculum (CFU/mL).
+build_events <- function(scen, obs_times) {
+  scen$id <- seq_len(nrow(scen))
+  inoc <- data.frame(id = scen$id, time = 0, amt = scen$b0, cmt = "bact_susceptible", evid = 1L)
+  obs <- expand.grid(id = scen$id, time = obs_times)
+  obs <- data.frame(id = obs$id, time = obs$time, amt = 0, cmt = "bact_susceptible", evid = 0L)
+  ev <- rbind(inoc, obs)
+  abx <- scen[scen$dose > 0, c("id", "dose", "n_doses")]
+  if (nrow(abx) > 0) {
+    abx <- abx[rep(seq_len(nrow(abx)), abx$n_doses), ]
+    dose_index <- stats::ave(abx$id, abx$id, FUN = seq_along) - 1
+    ev <- rbind(ev, data.frame(
+      id = abx$id, time = dose_index * 24 / abx$n_doses,
+      amt = abx$dose / abx$n_doses, cmt = "central", evid = 1L
+    ))
+  }
+  covs <- scen[, c("id", "NEUT", "MONO_ABS", "MIC", "kgmin", "lhill", "lkgrowth")]
+  ev <- merge(ev, covs, by = "id")
+  ev <- ev[order(ev$id, ev$time, -ev$evid), ]
+  list(events = ev, scen = scen)
+}
+
+simulate_grid <- function(scen, obs_times) {
+  b <- build_events(scen, obs_times)
+  sim <- rxode2::rxSolve(mod, b$events, returnType = "data.frame", atol = 1e-10, rtol = 1e-10)
+  # rxSolve() omits the id column when there is only one subject.
+  if (!"id" %in% names(sim)) sim$id <- 1L
+  sim <- sim[, c("id", "time", "Cc", "cfu", "cfu_total")]
+  dplyr::left_join(sim, b$scen, by = "id")
+}
+
+# The paper's plots stop at about 10^-3.7 CFU/mL; values below are shown at
+# that floor.
+plot_floor <- 10^-3.7
+default_type <- data.frame(kgmin = -1, lhill = log(0.5))
+```
+
+# Antibiotic PK check
+
+The PK component is a one-compartment bolus model, so a single 100 mg dose has
+the closed form `C(t) = 20 * exp(-ln(2) t / 5)` mg/L.
+
+```{r pk-check}
+pk_scen <- data.frame(
+  NEUT = 0, MONO_ABS = 0, MIC = 1, dose = 100, n_doses = 1, b0 = 0,
+  lkgrowth = log(0.9), default_type, treatment = "100 mg IV bolus"
+)
+pk_sim <- simulate_grid(pk_scen, obs_times = seq(0, 48, by = 0.5))
+closed_form <- 100 / 5 * exp(-log(2) / 5 * pk_sim$time)
+stopifnot(max(abs(pk_sim$Cc - closed_form) / closed_form) < 1e-6)
+
+conc <- pk_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_df <- data.frame(id = 1L, time = 0, amt = 100, treatment = "100 mg IV bolus")
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, route = "intravascular")
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+simulated_nca <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "aucinf.obs", "half.life")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES)
+
+# Methods: V = 5 L and half-life 5 h, so Cmax = 100 / 5 mg/L and
+# AUCinf = dose / CL = 100 / (5 * ln(2) / 5) mg*h/L.
+published <- tibble::tribble(
+  ~treatment,        ~PPTESTCD,    ~PPORRES,
+  "100 mg IV bolus", "cmax",       100 / 5,
+  "100 mg IV bolus", "aucinf.obs", 100 / log(2),
+  "100 mg IV bolus", "half.life",  5
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulated_nca,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "mg/L", aucinf.obs = "mg*h/L", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "PKNCA on the simulated antibiotic profile against the PK stated in the Methods (V 5 L, half-life 5 h).")
+```
+
+# Bacterial dynamics without antibiotic (Online Resource 1, Fig. S1)
+
+Fig. S1 simulates each immune state with inocula of 10^5 to 10^9 CFU/mL and no
+antibiotic, for four growth rates. The two rows reproduced here are
+`kgrw = 0.9` 1/h (the value carried forward to the dose-fractionation
+simulations) and `kgrw = 0.5885` 1/h (the in vivo value used in the
+calibration).
+
+```{r fig-s1, fig.height = 5.5}
+s1_scen <- tidyr::expand_grid(
+  immune_states,
+  b0 = 10^(5:9),
+  kgrw = c(0.5885, 0.9)
+) |>
+  dplyr::mutate(MIC = 1, dose = 0, n_doses = 1, lkgrowth = log(kgrw), kgmin = -1, lhill = log(0.5)) |>
+  as.data.frame()
+s1_sim <- simulate_grid(s1_scen, obs_times = seq(0, 24, by = 0.25))
+
+ggplot(s1_sim, aes(time, pmax(cfu, plot_floor), colour = factor(b0), group = id)) +
+  geom_line(linewidth = 0.8) +
+  facet_grid(paste("kgrw", kgrw) ~ state, labeller = label_wrap_gen(14)) +
+  scale_y_log10(breaks = 10^seq(-3, 9, by = 2)) +
+  labs(
+    x = "Time (h)", y = "Bacterial density (CFU/mL)", colour = "Inoculum (CFU/mL)",
+    caption = "Replicates Online Resource 1, Fig. S1 (rows kgrw = 0.5885 and 0.9) of van de Kreeke 2026."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom", strip.text = element_text(size = 7))
+```
+
+The table compares the log10 density at 24 h for `kgrw = 0.9` 1/h with values
+read by the maintainers off Fig. S1 (bottom row). "cleared" means the curve
+reached the plot floor (about 10^-3.7 CFU/mL) before 24 h.
+
+```{r fig-s1-table}
+s1_paper <- tibble::tribble(
+  ~state,                                ~b0,  ~paper,
+  "Immune competent",                     1e5, "cleared (about 9.5 h)",
+  "Immune competent",                     1e6, "cleared (about 11 h)",
+  "Immune competent",                     1e7, "cleared (about 14 h)",
+  "Immune competent",                     1e8, "about -0.6",
+  "Immune competent",                     1e9, "about 9.2",
+  "Monocytopenia",                        1e6, "cleared (about 16 h)",
+  "Monocytopenia",                        1e7, "cleared (about 21 h)",
+  "Monocytopenia",                        1e8, "about 9.2",
+  "Mild neutropenia",                     1e6, "cleared (about 14 h)",
+  "Mild neutropenia",                     1e7, "cleared (about 23 h)",
+  "Moderate neutropenia",                 1e6, "cleared (about 18 h)",
+  "Moderate neutropenia",                 1e7, "about 4",
+  "Severe neutropenia",                   1e5, "cleared (about 19 h)",
+  "Severe neutropenia",                   1e6, "cleared (about 23 h)",
+  "Severe neutropenia & monocytopenia",   1e5, "about -1.2",
+  "Severe neutropenia & monocytopenia",   1e6, "about 3.5",
+  "Fully immune compromised",             1e5, "about 9.2"
+)
+
+# Time at which the density first falls to the plot floor.
+time_cleared <- s1_sim |>
+  dplyr::filter(kgrw == 0.9) |>
+  dplyr::group_by(state, b0) |>
+  dplyr::summarise(
+    t_floor = if (any(cfu <= plot_floor)) min(time[cfu <= plot_floor]) else NA_real_,
+    log10_24 = log10(max(cfu[time == 24], plot_floor)),
+    .groups = "drop"
+  )
+
+s1_cmp <- s1_paper |>
+  dplyr::mutate(state = factor(state, levels = levels(immune_states$state))) |>
+  dplyr::left_join(time_cleared, by = c("state", "b0")) |>
+  dplyr::mutate(
+    packaged = ifelse(
+      is.na(t_floor),
+      sprintf("%.1f", log10_24),
+      sprintf("cleared (%.1f h)", t_floor)
+    )
+  )
+s1_cmp |>
+  dplyr::select(state, b0, paper, packaged) |>
+  dplyr::rename(
+    "Immune state" = state,
+    "Inoculum (CFU/mL)" = b0,
+    "Paper Fig. S1: log10 CFU/mL at 24 h" = paper,
+    "Packaged model: log10 CFU/mL at 24 h" = packaged
+  ) |>
+  knitr::kable(caption = "Fig. S1, kgrw = 0.9 1/h: paper (read off the figure) against the packaged model.")
+
+# Low-inoculum immune clearance agrees: immune-competent 10^5 and 10^6 CFU/mL
+# reach the floor within about 1.5 h of the paper's curves.
+comp_low <- time_cleared |>
+  dplyr::filter(state == "Immune competent", b0 %in% c(1e5, 1e6))
+stopifnot(
+  !anyNA(comp_low$t_floor),
+  all(abs(comp_low$t_floor - c(9.5, 11)) < 1.5)
+)
+```
+
+At low inocula the packaged model clears bacteria on the paper's timescale. At
+high inocula it clears too little: for example, immune-competent 10^8 CFU/mL
+and mild neutropenia at 10^7 CFU/mL grow towards `Bmax` here but are cleared in
+Fig. S1. The mismatch is discussed under "Assumptions and deviations".
+
+# Dose fractionation (Fig. 3 and Online Resource 1, Fig. S2)
+
+Each immune state and antibiotic type is simulated with a 10^9 CFU/mL
+inoculum, `kgrw = 0.9` 1/h, and total daily doses of 0-100 mg given as 1, 2, 3
+or 6 boluses. The output is the bacterial density at 24 h.
+
+```{r fig-3, fig.height = 9}
+f3_scen <- tidyr::expand_grid(
+  immune_states,
+  antibiotic_types,
+  n_doses = c(1, 2, 3, 6),
+  dose = seq(0, 100, by = 5)
+) |>
+  dplyr::mutate(
+    MIC = 1, b0 = 1e9, lkgrowth = log(0.9), lhill = log(hill),
+    interval = factor(24 / n_doses, levels = c(4, 8, 12, 24))
+  ) |>
+  as.data.frame()
+f3_sim <- simulate_grid(f3_scen, obs_times = 24)
+
+ggplot(f3_sim, aes(dose, pmax(cfu, plot_floor), colour = interval)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 1e7, linetype = "dashed") +
+  facet_grid(state ~ type, labeller = label_wrap_gen(16)) +
+  scale_y_log10(breaks = 10^seq(-3, 9, by = 2)) +
+  scale_colour_manual(values = c("4" = "red", "8" = "blue", "12" = "orange", "24" = "darkgreen")) +
+  labs(
+    x = "Total dose (mg)", y = "Bacterial density at 24 h (CFU/mL)", colour = "Interval (h)",
+    caption = "Replicates Fig. 3 of van de Kreeke 2026 (all seven immune states, as in Online Resource 1, Fig. S2)."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom", strip.text = element_text(size = 7))
+```
+
+# Dose for a 2-log10 drop (Fig. 4a)
+
+The dose giving a 2-log10 reduction (10^9 to 10^7 CFU/mL at 24 h) is found here
+for a single dose (24-h interval) by interpolating log10 density over a 1-mg
+dose grid, as Fig. 4a does for doses given once.
+
+```{r fig-4a}
+f4_scen <- tidyr::expand_grid(
+  immune_states,
+  antibiotic_types,
+  dose = seq(0, 200, by = 1)
+) |>
+  dplyr::mutate(MIC = 1, b0 = 1e9, n_doses = 1, lkgrowth = log(0.9), lhill = log(hill)) |>
+  as.data.frame()
+f4_sim <- simulate_grid(f4_scen, obs_times = 24)
+
+dose_2log <- f4_sim |>
+  dplyr::mutate(l10 = log10(pmax(cfu, 1e-12))) |>
+  dplyr::group_by(state, type) |>
+  dplyr::summarise(
+    dose_2log = {
+      i <- which(l10 <= 7)[1]
+      if (is.na(i) || i == 1) NA_real_ else dose[i - 1] + (7 - l10[i - 1]) / (l10[i] - l10[i - 1]) * (dose[i] - dose[i - 1])
+    },
+    .groups = "drop"
+  ) |>
+  dplyr::group_by(type) |>
+  dplyr::mutate(fc = dose_2log / dose_2log[state == "Immune competent"]) |>
+  dplyr::ungroup()
+stopifnot(!anyNA(dose_2log$dose_2log))
+```
+
+The fully immune-compromised state has no immune clearance, so it isolates
+the antibiotic PK/PD half of the model. Its single-dose 2-log10 doses agree
+with those read off the bottom row of Fig. 3 (24-h curve crossing 10^7 CFU/mL):
+
+```{r fig-4a-pkpd}
+fig3_none <- tibble::tribble(
+  ~type,                                      ~paper_dose,
+  "Bacteriostatic\ntime dependent",            66,
+  "Bactericidal\ntime dependent",              42,
+  "Bacteriostatic\nconcentration dependent",   37,
+  "Bactericidal\nconcentration dependent",     19
+) |>
+  dplyr::mutate(type = factor(type, levels = levels(antibiotic_types$type)))
+
+none_cmp <- dose_2log |>
+  dplyr::filter(state == "Fully immune compromised") |>
+  dplyr::left_join(fig3_none, by = "type") |>
+  dplyr::mutate(pct_diff = 100 * (dose_2log - paper_dose) / paper_dose)
+
+none_cmp |>
+  dplyr::transmute(
+    type = gsub("\n", " ", type),
+    paper_dose, dose_2log = round(dose_2log, 1), pct_diff = round(pct_diff, 1)
+  ) |>
+  dplyr::rename(
+    "Antibiotic type" = type,
+    "Paper Fig. 3 (mg, read off the figure)" = paper_dose,
+    "Packaged model (mg)" = dose_2log,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Fully immune compromised, single dose: dose giving a 2-log10 drop at 24 h.")
+
+# Figure reading is good to a few mg on a 0-100 mg axis.
+stopifnot(all(abs(none_cmp$pct_diff) < 20))
+```
+
+With immune cells present the fold-changes against the immune-competent state
+differ from Fig. 4a. The packaged model needs a larger immune-competent dose
+than the paper (for example about 13 mg rather than about 5 mg for the
+bacteriostatic time-dependent type, Fig. 3 top row), because its immune
+clearance at a 10^9 CFU/mL load is weaker. As a result the fully
+immune-compromised and the severe neutropenia with monocytopenia fold-changes
+are smaller than published, monocytopenia has no effect at all (fold change 1),
+and adding monocytopenia to severe neutropenia changes nothing. For the
+concentration-dependent types the mild to severe neutropenia fold-changes come
+out somewhat larger than published. The published fold-changes below were read
+off Fig. 4a by the maintainers, except the two fully-immune-compromised values
+that the Results text states (25.5 and 5.7).
+
+```{r fig-4a-table}
+fig4a_paper <- tibble::tribble(
+  ~state,                                 ~type,                                      ~paper_fc,
+  "Monocytopenia",                         "Bacteriostatic\ntime dependent",            2.3,
+  "Mild neutropenia",                      "Bacteriostatic\ntime dependent",            4.2,
+  "Moderate neutropenia",                  "Bacteriostatic\ntime dependent",            4.8,
+  "Severe neutropenia",                    "Bacteriostatic\ntime dependent",            4.9,
+  "Severe neutropenia & monocytopenia",    "Bacteriostatic\ntime dependent",            11,
+  "Fully immune compromised",              "Bacteriostatic\ntime dependent",            25.5,
+  "Monocytopenia",                         "Bactericidal\ntime dependent",              1.9,
+  "Mild neutropenia",                      "Bactericidal\ntime dependent",              3.3,
+  "Moderate neutropenia",                  "Bactericidal\ntime dependent",              3.7,
+  "Severe neutropenia",                    "Bactericidal\ntime dependent",              3.8,
+  "Severe neutropenia & monocytopenia",    "Bactericidal\ntime dependent",              6.5,
+  "Fully immune compromised",              "Bactericidal\ntime dependent",              13.5,
+  "Monocytopenia",                         "Bacteriostatic\nconcentration dependent",   1.2,
+  "Mild neutropenia",                      "Bacteriostatic\nconcentration dependent",   2.0,
+  "Moderate neutropenia",                  "Bacteriostatic\nconcentration dependent",   2.55,
+  "Severe neutropenia",                    "Bacteriostatic\nconcentration dependent",   2.65,
+  "Severe neutropenia & monocytopenia",    "Bacteriostatic\nconcentration dependent",   4.2,
+  "Fully immune compromised",              "Bacteriostatic\nconcentration dependent",   5.7,
+  "Monocytopenia",                         "Bactericidal\nconcentration dependent",     1.1,
+  "Mild neutropenia",                      "Bactericidal\nconcentration dependent",     1.5,
+  "Moderate neutropenia",                  "Bactericidal\nconcentration dependent",     1.65,
+  "Severe neutropenia",                    "Bactericidal\nconcentration dependent",     1.7,
+  "Severe neutropenia & monocytopenia",    "Bactericidal\nconcentration dependent",     2.2,
+  "Fully immune compromised",              "Bactericidal\nconcentration dependent",     2.8
+) |>
+  dplyr::mutate(
+    state = factor(state, levels = levels(immune_states$state)),
+    type = factor(type, levels = levels(antibiotic_types$type))
+  )
+
+fc_cmp <- fig4a_paper |>
+  dplyr::left_join(dose_2log, by = c("state", "type"))
+
+fc_cmp |>
+  dplyr::transmute(
+    type = gsub("\n", " ", type), state, paper_fc,
+    fc = round(fc, 2), dose_2log = round(dose_2log, 1)
+  ) |>
+  dplyr::rename(
+    "Antibiotic type" = type,
+    "Immune state" = state,
+    "Paper fold change (Fig. 4a)" = paper_fc,
+    "Packaged fold change" = fc,
+    "Packaged single dose for 2-log10 drop (mg)" = dose_2log
+  ) |>
+  knitr::kable(caption = "Fold change in the single dose needed for a 2-log10 drop, against the immune-competent state.")
+
+fc_long <- dplyr::bind_rows(
+  dplyr::transmute(fc_cmp, state, type, fc = paper_fc, source = "Paper (Fig. 4a)"),
+  dplyr::transmute(fc_cmp, state, type, fc, source = "Packaged model")
+)
+ggplot(fc_long, aes(state, fc, fill = source)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~type, nrow = 2, scales = "free_y") +
+  scale_y_continuous(trans = "log2") +
+  labs(
+    x = NULL, y = "Fold change in dose", fill = NULL,
+    caption = "Replicates Fig. 4a of van de Kreeke 2026."
+  ) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7), legend.position = "bottom")
+```
+
+Fig. 4b (the change in %T>MIC or AUC/MIC targets) is not reproduced: those
+targets come from curves the authors fitted to bacterial density against the
+PK/PD index across all four dosing intervals (Online Resource 1, Fig. S3), and
+the functional form of those fits is not reported.
+
+# Mouse calibration (Online Resource 4)
+
+The calibration simulates immune-competent mice (neutrophils 1.7 x 10^5 and
+monocytes 1.4 x 10^6 cells/mL, Table S3), an inoculum of 1.6 x 10^7 CFU/mL and
+`kgrw = 0.5885` 1/h (Results, Calibration). In Online Resource 4, Figure 2 the
+calibrated model stays near 10^7 CFU/mL over 24 h (observed 24-h values
+about 2 x 10^6 to 2 x 10^7 CFU/mL).
+
+```{r mouse}
+mouse_scen <- data.frame(
+  NEUT = 170, MONO_ABS = 1400, MIC = 1, dose = 0, n_doses = 1, b0 = 1.6e7,
+  lkgrowth = log(0.5885), default_type
+)
+mouse_sim <- simulate_grid(mouse_scen, obs_times = seq(0, 24, by = 0.5))
+ggplot(mouse_sim, aes(time, cfu)) +
+  geom_line(linewidth = 0.8) +
+  annotate("rect", xmin = 23.5, xmax = 24.5, ymin = 2e6, ymax = 2.2e7, alpha = 0.3, fill = "red") +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Bacteria (CFU/mL)",
+    caption = paste(
+      "Packaged model for the calibration scenario; shaded: range of the four",
+      "observed 24-h values in Online Resource 4, Figure 1."
+    )
+  ) +
+  theme_bw()
+```
+
+The packaged model grows towards `Bmax` in this scenario (24-h density
+`r format(signif(mouse_sim$cfu[mouse_sim$time == 24], 2), scientific = TRUE)` CFU/mL) instead of staying
+near the observed values: it is the same high-load under-prediction of immune
+clearance seen in Fig. S1.
+
+# Bacterial density output
+
+```{r output-check}
+comp_tot <- f3_sim |>
+  dplyr::filter(state == "Immune competent", dose == 100, n_doses == 1) |>
+  dplyr::select(type, cfu, cfu_total)
+knitr::kable(comp_tot, caption = "Immune competent, 100 mg once: extracellular and total bacteria at 24 h (CFU/mL).")
+```
+
+The paper's Figs. 3 and S1 curves reach the plot floor in the immune-competent
+state. Only the extracellular bacteria do that here; the total including
+intracellular bacteria stays at a few times 10^6 CFU/mL because the monocyte pool
+saturates (B_M/M well above `B_M/Md50` with the steep `gamma_d = 14` digestion
+term), so the figures plot the extracellular `cfu`.
+
+# Assumptions and deviations
+
+* **Typographical errors corrected.** Eq. 9 prints `B/N` (extracellular
+  bacteria per neutrophil) in the last term of the capacity denominator, and
+  Eqs. 11 and 12 print `B/M`; the numerators and the half-maximum parameters
+  are intracellular ratios (B_N/N, B_M/M; Table 1 units CFU/cell). The packaged
+  model uses the intracellular ratio throughout, as in Eq. 8, the general form
+  Eq. 4 and the Thorsted 2023 neutrophil model the structure comes from. Taken
+  literally, the printed form lets intracellular bacteria accumulate above
+  `Bmax` and the solve fails.
+* **Intracellular-pool equations written from Fig. 1.** The paper prints no
+  equation for the intracellular bacteria. Each pool gains bacteria by
+  phagocytosis (`knp * B`, `kmp * B`) and loses them by digestion
+  (`knd * B_N`, `kmd * B_M`), as drawn in Fig. 1.
+* **Calibrated structure.** Neutrophil apoptosis, phagocytosis-induced death
+  and the monocyte time-driven decay (Eqs. 5, 6, 10 and the exponential factors
+  of Eqs. 11-12) were removed for the in vivo model (Methods, Calibration), so
+  the immune-cell counts are constant covariates.
+* **High-load immune clearance is under-predicted.** The antibiotic PK/PD half
+  of the model reproduces the paper (fully immune-compromised doses for a
+  2-log10 drop within 20% of Fig. 3), and so does immune clearance at low
+  inocula (Fig. S1, 10^5-10^6 CFU/mL). At high bacterial loads, where the
+  intracellular capacity terms saturate, the packaged model clears several-fold
+  fewer bacteria than the paper's own simulations: Fig. S1 (immune-competent
+  10^8, mild neutropenia 10^7, severe neutropenia with monocytopenia 10^6
+  CFU/mL), the mouse calibration (Online Resource 4) and the immune-competent
+  doses of Fig. 3. Consequently the Fig. 4a fold-changes are not reproduced
+  (most are smaller than published), and monocytopenia has no effect at a
+  10^9 CFU/mL load here whereas Fig. 4a shows a 1.1- to 2.3-fold dose
+  increase. No uniform change to
+  the printed capacity terms reproduces every panel, so the difference
+  presumably lies in the authors' code, which the paper states is available on
+  request. The model is shipped as printed (with the corrections above) and no
+  parameter has been tuned to the figures.
+* **Bacterial density output.** `cfu` is the extracellular density of Eq. 1;
+  see the previous section.
+* **Default antibiotic type.** The paper has no default; the packaged values
+  `kgmin = -1` and `hill = 0.5` (bacteriostatic, time dependent) are one of its
+  four types.
+* **knp,max and kmp,max.** Table 1 (1.90 and 1.77 1/h) is used; Online
+  Resource 4 gives 1.895 and 1.766 1/h from the in vitro values times the
+  scaling factor 0.227. Online Resource 4 prints the unit as CFU/mL/h; Table 1
+  gives 1/h, which is what first-order Eq. 1 requires.
+* **Published comparison values** for Figs. 3, 4a and S1 were read off the
+  figures by the maintainers and are approximate.
