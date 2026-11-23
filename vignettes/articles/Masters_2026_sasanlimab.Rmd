@@ -611,8 +611,7 @@ efs_sim |>
   reproduce the curves as plotted, which match the incidence of the
   non-NMIBC monotherapy studies (B8011001 + B8011007). They under-predict
   patients with NMIBC treated with sasanlimab + BCG, markedly so for the irAE
-  endpoints. The missing intercepts and covariate terms have been put to the
-  authors.
+  endpoints.
 - **Safety and CR likelihoods.** The source models are Bernoulli logistic
   regressions with no residual error and no random effect. Each packaged
   model carries a fixed additive residual SD of 0.001 on the probability
