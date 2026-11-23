@@ -25,7 +25,7 @@ vandeKreeke_2026_antibiotic_immune_bacteremia <- function() {
     "van de Kreeke M, Pham AD, Mehciz M, Jordens T, Uyterlinde MG, van Wijk",
     "RC, Aulin LBS, Knibbe CAJ, Krekels EHJ, Zwep LB, van Hasselt JGC. A",
     "mechanism-based model of immune status effects on antibiotic PK/PD",
-    "targets in bacteremia. J Pharmacokinet Pharmacodyn. 2026.",
+    "targets in bacteremia. J Pharmacokinet Pharmacodyn. 2026;53(6):53.",
     "doi:10.1007/s10928-026-10063-6. PMID: 42771197. PMCID: PMC13597578.",
     "Parameter values: Table 1; equations: Eqs. 1, 7, 8, 9, 11 and 12 and",
     "Fig. 1; in vitro values and calibration: Online Resources 1 and 4.",
