@@ -5,7 +5,7 @@ Morita_2026_pemetrexed <- function() {
     "pemetrexed-platinum (cisplatin or carboplatin) chemotherapy in Japanese",
     "adults with non-squamous non-small cell lung cancer (Morita 2026).",
     "ANC falls along one parabola from the patient's own pre-treatment",
-    "count to a nadir at tnadir weeks and recovers along a second parabola",
+    "count to a nadir at tnadir_anc weeks and recovers along a second parabola",
     "of different curvature. The decline curvature depends on blood urea",
     "nitrogen, the recovery curvature on concomitant renin-angiotensin",
     "system inhibitor use, and the nadir time on whether the PBPK-predicted",
@@ -142,21 +142,21 @@ Morita_2026_pemetrexed <- function() {
     label("Curvature of the ANC decline parabola, A1 (10^3 cells/uL/week^2)") # Table S7 Step 2 'A1' = 0.334; Equation 7
     lcurv_recovery <- log(0.0443)
     label("Curvature of the ANC recovery parabola, A2 (10^3 cells/uL/week^2)") # Table S7 Step 2 'A2' = 0.0443; Equation 8
-    ltnadir <- log(1.39)
+    ltnadir_anc <- log(1.39)
     label("Time of the ANC nadir and start of recovery, B (week)") # Table S7 Step 2 'B' = 1.39; Equation 9
 
     e_bun_curv_decline <- -0.975
     label("Power exponent of BUN/15.2 on the decline curvature (unitless)") # Table S7 Step 2 'BUN' = -0.975; Equation 7
     e_ras_curv_recovery <- 0.0451
     label("Multiplier on the recovery curvature with a concomitant RAS inhibitor (unitless)") # Table S7 Step 2 'RAS inhibitor' = 0.0451; Equation 8
-    e_auc_tnadir <- 1.44
+    e_auc_tnadir_anc <- 1.44
     label("Multiplier on the nadir time when pemetrexed AUC0-24 > 175 ug*h/mL (unitless)") # Table S7 Step 2 'AUC0-24' = 1.44; Equation 9
 
     # Table S7 reports omega as the SD of eta (Results 3.3: eta has variance omega^2);
     # the variances below are the squared SDs.
     etalcurv_decline ~ 0.697225 # Table S7 Step 2 'omega A1' = 0.835 (SD); 0.835^2
     etalcurv_recovery ~ 3.8416 # Table S7 Step 2 'omega A2' = 1.96 (SD); 1.96^2
-    etaltnadir ~ 0.021904 # Table S7 Step 2 'omega B' = 0.148 (SD); 0.148^2
+    etaltnadir_anc ~ 0.021904 # Table S7 Step 2 'omega B' = 0.148 (SD); 0.148^2
 
     propSd <- 0.271
     label("Proportional residual error (fraction)") # Table S7 Step 2 'epsilon' = 0.271; Text S1 Y = IPRED * exp(EPS(1))
@@ -170,16 +170,16 @@ Morita_2026_pemetrexed <- function() {
       (BUN / 15.2)^e_bun_curv_decline
     curv_recovery <- exp(lcurv_recovery + etalcurv_recovery) *
       e_ras_curv_recovery^CONMED_RAS_INHIBITOR
-    tnadir <- exp(ltnadir + etaltnadir) * e_auc_tnadir^auc_gt175
+    tnadir_anc <- exp(ltnadir_anc + etaltnadir_anc) * e_auc_tnadir_anc^auc_gt175
 
-    # Both parabolas share the vertex (tnadir, anc_nadir), so the decline starts
+    # Both parabolas share the vertex (tnadir_anc, anc_nadir), so the decline starts
     # at NEUT at time 0 and the two branches meet at the nadir (Text S1 N1, N2).
     # Nothing bounds the nadir below 0, as in the source.
-    anc_nadir <- NEUT - curv_decline * tnadir^2
-    if (time < tnadir) {
-      ANC <- curv_decline * (time - tnadir)^2 + anc_nadir
+    anc_nadir <- NEUT - curv_decline * tnadir_anc^2
+    if (time < tnadir_anc) {
+      ANC <- curv_decline * (time - tnadir_anc)^2 + anc_nadir
     } else {
-      ANC <- curv_recovery * (time - tnadir)^2 + anc_nadir
+      ANC <- curv_recovery * (time - tnadir_anc)^2 + anc_nadir
     }
     ANC ~ prop(propSd)
   })

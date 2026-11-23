@@ -79,13 +79,13 @@ Every `ini()` value carries its source in a trailing comment in
 |---|---|---|
 | `lcurv_decline` (A1) | log(0.334) 10^3/uL/week^2 | Table S7 Step 2; Equation 7 |
 | `lcurv_recovery` (A2) | log(0.0443) 10^3/uL/week^2 | Table S7 Step 2; Equation 8 |
-| `ltnadir` (B) | log(1.39) week | Table S7 Step 2; Equation 9 |
+| `ltnadir_anc` (B) | log(1.39) week | Table S7 Step 2; Equation 9 |
 | `e_bun_curv_decline` | -0.975 | Table S7 'BUN'; Equation 7; Text S1 `BUNP = (BUN/15.2)**THETA(4)` |
 | `e_ras_curv_recovery` | 0.0451 | Table S7 'RAS inhibitor'; Equation 8; Text S1 `rasP` |
-| `e_auc_tnadir` | 1.44 | Table S7 'AUC0-24'; Equation 9; Text S1 `AUCP` |
+| `e_auc_tnadir_anc` | 1.44 | Table S7 'AUC0-24'; Equation 9; Text S1 `AUCP` |
 | `etalcurv_decline` | 0.835^2 = 0.697 | Table S7 omega A1 = 0.835 (SD) |
 | `etalcurv_recovery` | 1.96^2 = 3.84 | Table S7 omega A2 = 1.96 (SD) |
-| `etaltnadir` | 0.148^2 = 0.0219 | Table S7 omega B = 0.148 (SD) |
+| `etaltnadir_anc` | 0.148^2 = 0.0219 | Table S7 omega B = 0.148 (SD) |
 | `propSd` | 0.271 | Table S7 epsilon; Text S1 `Y = (N1 + N2) * exp(EPS(1))` |
 | Piecewise parabola, shared vertex | n/a | Equations 2-3; Text S1 `N1`, `N2` |
 | BUN centring value 15.2 mg/dL | n/a | Equation 7; Text S1 |
