@@ -1,0 +1,396 @@
+---
+title: "MAB2 deamidation and Man5 quality attributes (Li 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MAB2 deamidation and Man5 quality attributes (Li 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Li et al. (2016) recovered the non-disclosed humanized IgG1 antibody MAB2
+(Biogen) from patient serum by anti-idiotypic affinity purification,
+profiled its post-translational modifications by peptide-mapping LC-MS, and
+fitted a mechanistic PK model to two of them: deamidation of a conserved Fc
+asparagine and the Man5 (mannose-5) Fc glycoform. The paper fits the same
+four-state framework (Figure 5, Equations 1-4) separately to each
+attribute, so the library carries two models that share this article:
+
+* `Li_2016_MAB2_deamidation` -- the original form converts first-order to
+  the deamidated form (`ktr`), in both the central and the peripheral
+  compartment, and both forms are cleared at the same rate.
+* `Li_2016_MAB2_man5` -- no conversion (`ktr = 0`); the Man5 glycoform is
+  cleared faster than the rest of MAB2.
+
+* Citation: `r rxode2::rxode(readModelDb("Li_2016_MAB2_deamidation"))$reference`
+* Article: <https://doi.org/10.1080/19420862.2016.1186322>
+
+```{r models}
+mod_deamid <- readModelDb("Li_2016_MAB2_deamidation")
+mod_man5 <- readModelDb("Li_2016_MAB2_man5")
+```
+
+Both models are typical-value models. The coefficients of variation printed
+in Table 1 are the precision of the parameter estimates (footnote to Table 1),
+not between-subject variability, and the paper reports no residual error
+model, so neither model carries an `eta` or a residual-error term.
+
+Each model takes the dose in two records at the same time, one into
+`central` and one into the modified-form central compartment
+(`central_deamid` or `central_man5`), each carrying the **full** dose amount.
+The bioavailability split `f(central) <- 1 - fdose_<attribute>` and
+`f(central_<attribute>) <- fdose_<attribute>` reproduces the paper's two
+inputs `AC0(0) = (1 - f) x Dose` and `ACmod(0) = f x Dose`. The initial
+level `100 x f` is a property of the drug-product batch, so it is a fixed
+`ini()` parameter that a user can override for another batch.
+
+# Population
+
+Three patients in a single-ascending-dose study each received the same
+single high intravenous dose of MAB2 from one drug-product batch; the dose
+amount, the indication and the patients' demographics are not reported.
+Serum was sampled pre-dose, at 10 min, 1, 4 and 12 h, and on days 2, 4, 7,
+14, 21 and 42 (Methods, "Clinical sample information"). Parameters were
+estimated with ADAPT.
+
+The same information is available programmatically via
+`readModelDb("Li_2016_MAB2_deamidation")()$population`.
+
+# Source trace
+
+| Equation / parameter | Deamidation model | Man5 model | Source location |
+|----------------------|-------------------|------------|-----------------|
+| `lk12` (kCP, 1/day)  | log(0.17)  | log(0.18)  | Table 1 |
+| `lk21` (kPC, 1/day)  | log(0.093) | log(0.096) | Table 1 |
+| `lkmet_deamid` (ktr, 1/day) | log(0.01) | not present (ktr = 0) | Table 1; Methods assumption 2 |
+| `lkel` (kcl0, 1/day) | log(0.13)  | log(0.127) | Table 1 |
+| `kel_deamid` / `lkel_man5` (kclmod, 1/day) | `kel_deamid <- kel` (0.13) | log(0.295) | Table 1; Methods assumption 1 (deamidation does not change clearance) |
+| `lvc` (V, L)          | log(3.34)  | log(3.32)  | Table 1 |
+| `fdose_deamid` / `fdose_man5` | 0.056 (fixed) | 0.030 (fixed) | Table 2 and Figure 6 (initial level of the clinical batch; see Assumptions) |
+| Central and peripheral ODEs, both forms | Eq. 1-4 | Eq. 1-4 with ktr = 0 | Methods, "Pharmacokinetic modeling"; Figure 5 |
+| Dose split into the two forms | `f()` on both central states | same | Methods: `AC0(t=0) = (1 - f) x Dose`, `ACmod(t=0) = f x Dose` |
+| Shared V, kCP, kPC for both forms | yes | yes | Methods assumption 4 and the V definition |
+
+# Simulation
+
+Table 2 and Figure 6 of the paper simulate one IV dose at several initial
+attribute levels over 42 days. The paper does not state the simulated dose,
+so it is recovered from Table 2: the total-MAB2 AUC from day 0 to 42 of the
+deamidation model is 209.7 h x mg/mL, which is 8737.5 day x mg/L. Because
+the model is linear, the dose is that AUC divided by the AUC per mg.
+
+```{r scenarios}
+grid <- sort(unique(c(0, 10 / 1440, 1 / 24, 4 / 24, 0.5, seq(0, 42, by = 0.05))))
+
+simulate_level <- function(mod, attribute, level_pct, dose) {
+  cmt_mod <- paste0("central_", attribute)
+  par <- setNames(level_pct / 100, paste0("fdose_", attribute))
+  ev <- rxode2::et(amt = dose, cmt = "central", time = 0) |>
+    rxode2::et(amt = dose, cmt = cmt_mod, time = 0) |>
+    rxode2::et(grid, cmt = "central")
+  sim <- as.data.frame(rxode2::rxSolve(mod, ev, params = par))
+  sim |>
+    dplyr::transmute(
+      attribute = attribute,
+      level_pct = level_pct,
+      time,
+      Cc,
+      Cc_attr = .data[[paste0("Cc_", attribute)]],
+      pct_attr = .data[[paste0("pct_", attribute)]]
+    )
+}
+
+auc_0_42 <- function(sim, conc_col) {
+  conc <- sim |>
+    dplyr::mutate(id = 1L, Cc = .data[[conc_col]]) |>
+    dplyr::filter(!is.na(Cc))
+  o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | id)
+  o_data <- PKNCA::PKNCAdata(
+    o_conc,
+    intervals = data.frame(start = 0, end = 42, auclast = TRUE)
+  )
+  res <- as.data.frame(PKNCA::pk.nca(o_data))
+  res$PPORRES[res$PPTESTCD == "auclast"]
+}
+
+# Dose anchor: total-MAB2 AUC(0-42) of the deamidation model at a 1 mg dose
+auc_per_mg <- auc_0_42(simulate_level(mod_deamid, "deamid", 0, 1), "Cc")
+published_total_auc <- 209.7 * 1000 / 24 # h x mg/mL -> day x mg/L
+dose_mg <- published_total_auc / auc_per_mg
+dose_mg
+```
+
+The recovered dose is about `r signif(dose_mg / 1000, 3)` g. It is used for
+every simulation below, of both models, so the only Table 2 cell used to set
+it is the deamidation 0% total AUC; every other cell is a check.
+
+```{r simulate}
+deamid_levels <- c(0, 5.6, 11.2, 16.7, 27.8, 100)
+man5_levels <- c(0, 3.0, 6.0, 8.9, 14.9, 100)
+
+sims <- dplyr::bind_rows(
+  lapply(deamid_levels, function(x) simulate_level(mod_deamid, "deamid", x, dose_mg)),
+  lapply(man5_levels, function(x) simulate_level(mod_man5, "man5", x, dose_mg))
+)
+```
+
+# Replicate published figures
+
+## Figure 6: concentration of the modified form
+
+```{r figure-6, fig.width = 8, fig.height = 4}
+# Replicates Figure 6 of Li 2016: concentration (ng/mL) of the deamidated
+# (A) and the Man5 (B) MAB2 form after one IV dose at several initial levels.
+fig6 <- sims |>
+  dplyr::filter(time > 0, !(attribute == "man5" & level_pct == 0)) |>
+  dplyr::mutate(
+    panel = ifelse(attribute == "deamid", "A) Deamidation", "B) Man5"),
+    level = factor(paste0(sprintf("%.1f", level_pct), "%"),
+      levels = unique(paste0(sprintf("%.1f", sort(unique(level_pct))), "%"))
+    )
+  )
+ggplot(fig6, aes(time, Cc_attr * 1000, colour = level)) +
+  geom_line() +
+  scale_y_log10(limits = c(1, 1e7)) +
+  facet_wrap(~panel) +
+  labs(
+    x = "Time (day)", y = "Concentration (ng/mL)", colour = "Initial level",
+    caption = "Replicates Figure 6 of Li 2016."
+  )
+```
+
+As in the paper, the deamidated form accumulates even when none is in the
+dose (the 0% curve rises to roughly 2 x 10^4 ng/mL and stays there), and the
+curves for the different initial levels converge over 42 days because
+conversion, not the initial level, dominates. The Man5 curves stay
+proportional to the initial level, since Man5 is not formed in circulation.
+
+## Figure 4: relative attribute level over time
+
+Figure 4 plots the relative level of each attribute in the three patients.
+The values below were digitised by the maintainers from Figure 4A and 4B as
+the approximate mean of the three patients at each sampling day (read to
+about 1 percentage point for deamidation and 0.1 point for Man5).
+
+```{r figure-4, fig.width = 8, fig.height = 4}
+# Replicates Figure 4A and 4B of Li 2016 with the clinical-batch levels.
+fig4_obs <- tibble::tribble(
+  ~attribute, ~time, ~pct_obs,
+  "deamid", 0, 5.5,
+  "deamid", 2, 6.2,
+  "deamid", 4, 8.7,
+  "deamid", 7, 12.0,
+  "deamid", 14, 18.8,
+  "deamid", 21, 25.0,
+  "deamid", 42, 36.0,
+  "man5", 0, 2.9,
+  "man5", 2, 2.3,
+  "man5", 4, 1.7,
+  "man5", 7, 1.37,
+  "man5", 14, 1.03,
+  "man5", 21, 0.88,
+  "man5", 42, 0.53
+)
+batch <- sims |>
+  dplyr::filter(
+    (attribute == "deamid" & level_pct == 5.6) |
+      (attribute == "man5" & level_pct == 3.0)
+  )
+ggplot(batch, aes(time, pct_attr)) +
+  geom_line() +
+  geom_point(data = fig4_obs, aes(y = pct_obs), shape = 1) +
+  facet_wrap(~attribute, scales = "free_y") +
+  labs(
+    x = "Time (day)", y = "Relative level (%)",
+    caption = "Line: model. Points: digitised mean of Figure 4 of Li 2016."
+  )
+
+fig4_cmp <- fig4_obs |>
+  dplyr::left_join(
+    batch |>
+      dplyr::transmute(attribute, time = round(time, 6), pct_model = pct_attr),
+    by = c("attribute", "time")
+  ) |>
+  dplyr::mutate(diff_points = pct_model - pct_obs)
+fig4_cmp |>
+  dplyr::rename(
+    "Attribute" = attribute,
+    "Day" = time,
+    "Figure 4 (%)" = pct_obs,
+    "Model (%)" = pct_model,
+    "Model - figure (points)" = diff_points
+  ) |>
+  knitr::kable(digits = 2)
+
+stopifnot(
+  !anyNA(fig4_cmp$pct_model),
+  # Deterministic model against figure readings: within the reading accuracy
+  # plus the fit residual of a three-patient mean.
+  all(abs(fig4_cmp$diff_points[fig4_cmp$attribute == "deamid"]) < 3),
+  all(abs(fig4_cmp$diff_points[fig4_cmp$attribute == "man5"]) < 0.4)
+)
+```
+
+# PKNCA validation
+
+Table 2 reports, for each initial level, the AUC from day 0 to 42 of the
+modified form ("attribute AUC") and of total MAB2, and their ratio. Both
+AUCs are computed here with PKNCA from the simulated profiles.
+
+```{r pknca}
+nca_input <- sims |>
+  dplyr::filter(level_pct < 100) |>
+  dplyr::select(attribute, level_pct, time, total = Cc, modified = Cc_attr) |>
+  tidyr::pivot_longer(c(total, modified), names_to = "analyte", values_to = "Cc") |>
+  dplyr::mutate(
+    treatment = paste0(attribute, " ", sprintf("%.1f", level_pct), "% | ", analyte)
+  ) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(id = as.integer(factor(treatment)))
+
+# Every profile has a post-dose time-zero row from the observation grid.
+stopifnot(all(tapply(nca_input$time, nca_input$id, min) == 0))
+
+o_conc <- PKNCA::PKNCAconc(nca_input, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(
+  nca_input |> dplyr::distinct(treatment, id) |> dplyr::mutate(time = 0, amt = dose_mg),
+  amt ~ time | treatment + id
+)
+o_data <- PKNCA::PKNCAdata(
+  o_conc, o_dose,
+  intervals = data.frame(start = 0, end = 42, auclast = TRUE)
+)
+nca_res <- PKNCA::pk.nca(o_data)
+```
+
+## Comparison against Table 2
+
+```{r nca-compare}
+# Table 2 of Li 2016, converted from h x mg/mL to day x mg/L (x 1000 / 24).
+table2 <- tibble::tribble(
+  ~attribute, ~level_pct, ~modified, ~total, ~relative,
+  "deamid", 0.0, 21.9, 209.7, 10.5,
+  "deamid", 5.6, 32.4, 209.7, 15.4,
+  "deamid", 11.2, 42.8, 209.7, 20.4,
+  "deamid", 27.8, 74.2, 209.7, 35.4,
+  "man5", 0.0, 0.0, 212.8, 0.0,
+  "man5", 3.0, 3.2, 209.6, 1.5,
+  "man5", 6.0, 6.4, 206.4, 3.1,
+  "man5", 14.9, 15.9, 196.9, 8.1
+)
+published <- table2 |>
+  tidyr::pivot_longer(c(modified, total), names_to = "analyte", values_to = "auc_h_mg_ml") |>
+  dplyr::filter(auc_h_mg_ml > 0) |>
+  dplyr::transmute(
+    treatment = paste0(attribute, " ", sprintf("%.1f", level_pct), "% | ", analyte),
+    auclast = auc_h_mg_ml * 1000 / 24
+  )
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(auclast = "day*mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "AUC(0-42 day): Table 2 of Li 2016 vs. simulated. * differs by >20%.",
+  digits = 1
+)
+```
+
+Every row agrees within a few percent. The deamidation total-AUC rows are not
+an independent check (the deamidation 0% total sets the dose, and the total
+does not depend on the initial level when both forms clear at the same rate),
+but the Man5 totals, including the Man5 0% row, and every attribute AUC are.
+
+```{r relative-auc}
+# Relative AUC = attribute AUC / total AUC x 100 (Table 2, last column, as
+# printed).
+# Dose-independent, so it checks the model without the dose anchor.
+sim_auc <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(treatment, PPORRES) |>
+  tidyr::separate(treatment, c("scenario", "analyte"), sep = " \\| ") |>
+  tidyr::pivot_wider(names_from = analyte, values_from = PPORRES) |>
+  dplyr::mutate(relative_sim = 100 * modified / total)
+
+rel <- table2 |>
+  dplyr::transmute(
+    scenario = paste0(attribute, " ", sprintf("%.1f", level_pct), "%"),
+    relative_pub = relative
+  ) |>
+  dplyr::left_join(sim_auc |> dplyr::select(scenario, relative_sim), by = "scenario") |>
+  dplyr::mutate(diff_points = relative_sim - relative_pub)
+rel |>
+  dplyr::rename(
+    "Scenario" = scenario,
+    "Table 2 relative AUC (%)" = relative_pub,
+    "Simulated relative AUC (%)" = relative_sim,
+    "Difference (points)" = diff_points
+  ) |>
+  knitr::kable(digits = 2)
+
+stopifnot(
+  !anyNA(rel$relative_sim),
+  # The deterministic model reproduces the Man5 column to its printed digit
+  # and the deamidation column to within the rounding of ktr (printed 0.01).
+  all(abs(rel$diff_points) < 0.5)
+)
+```
+
+The Man5 relative AUCs match Table 2 to the printed digit. The deamidation
+relative AUCs run 0.1-0.3 percentage points below Table 2, consistently
+across levels; Table 1 prints the conversion rate constant `ktr` to one
+significant figure (0.01 /day), and the unrounded estimate that produced
+Table 2 is not reported.
+
+# Assumptions and deviations
+
+- **Dose.** The paper does not report the MAB2 dose ("a single high dose").
+  The dose used in the simulations (about `r signif(dose_mg / 1000, 3)` g)
+  is back-solved from the deamidation 0% total AUC of Table 2. It is
+  consistent with the start of the 100% curve in Figure 6 (dose / V of about
+  1.4 x 10^6 ng/mL) and with the Man5 0% total AUC, which it reproduces
+  independently. The model files declare doses in mg and do not depend on
+  this value.
+- **AUC units.** Table 2 labels its AUCs "h x mg/mL". With the recovered
+  dose that label is consistent with Figure 6, and the values were converted
+  to day x mg/L (x 1000 / 24) for comparison.
+- **Initial levels.** `fdose_deamid = 0.056` and `fdose_man5 = 0.030` are
+  the lowest non-zero initial levels of Table 2 and Figure 6; the other
+  levels are 2, 3 and 5 times these, and the day-0 levels in Figure 4 (about
+  5.5% and 2.9%) agree, so they are taken to be the levels of the clinical
+  batch. The paper does not print the batch levels as model parameters.
+- **No between-subject variability or residual error.** Table 1 reports CVs
+  of the parameter estimates only, and no error model is given, so both
+  models are typical-value models.
+- **Deamidated-form clearance.** Table 1 prints `kclmod` = 0.13 /day with the
+  same CV as `kcl0`, which is Methods assumption 1 (`kclmod = kcl0`); the
+  model therefore computes `kel_deamid <- kel` instead of carrying a separate
+  estimate.
+- **Man5 conversion.** With `ktr = 0` (Table 1; Methods assumption 2) the
+  Man5 model has no conversion term, so the Man5 and Man5-free forms are two
+  independent two-compartment models that share V, kCP and kPC.
+- **Peripheral conversion.** Equations 2 and 4 and Figure 5 include
+  conversion of the original form in the peripheral compartment at the same
+  rate constant as in the central compartment; the deamidation model keeps
+  it.
+- **Concentrations.** `Cc` is total MAB2 (both forms), `Cc_deamid` /
+  `Cc_man5` the modified form, and `pct_deamid` / `pct_man5` the modified
+  form as a percentage of total MAB2, the quantity Figure 4 plots. Before
+  the first dose the percentage is undefined (0 / 0).
+- No correction notice for the article was found in PubMed (checked
+  2026-11-24).
