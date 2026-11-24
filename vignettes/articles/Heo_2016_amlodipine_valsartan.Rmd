@@ -97,10 +97,12 @@ to zero and appropriate dose combinations.
 
 ```{r sim-scenarios}
 sim_scenario <- function(mod_typical, amt_aml, amt_val, id = 1L) {
-  # dur values match the population D1 estimates (aml 5.28 h; val 4.39 h).
-  ev <- rxode2::et(amt = amt_aml, cmt = "central",     dur = 5.28, time = 0) |>
-        rxode2::et(amt = amt_val, cmt = "central_val", dur = 4.39, time = 0) |>
-        rxode2::et(seq(0, 24, by = 0.25), cmt = "Cc")
+  # dur values match the population D1 estimates (aml 5.28 h; val 4.39 h). A
+  # drug a scenario leaves out gets no dose record: rxode2 5.1.8.9000 fails the
+  # subject on a zero-amount infusion with a duration.
+  ev <- rxode2::et(seq(0, 24, by = 0.25), cmt = "Cc")
+  if (amt_aml > 0) ev <- rxode2::et(ev, amt = amt_aml, cmt = "central", dur = 5.28, time = 0)
+  if (amt_val > 0) ev <- rxode2::et(ev, amt = amt_val, cmt = "central_val", dur = 4.39, time = 0)
   ev$WT <- 70
   ev$id <- id
   rxode2::rxSolve(mod_typical, ev) |>

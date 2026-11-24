@@ -137,6 +137,9 @@ make_events <- function(dose, times, ii = 0, addl = 0, n = 1, cov = ref_cov) {
     rxode2::et(times) |>
     rxode2::et(id = seq_len(n)) |>
     as.data.frame()
+  # A zero dose gets no dose record: rxode2 5.1.8.9000 fails the subject on a
+  # zero-amount infusion with a duration.
+  if (dose == 0) ev <- ev[ev$evid == 0, ]
   # Multi-endpoint model: observation rows carry a dvid instead of a state name.
   ev$cmt[ev$evid == 0] <- NA_character_
   ev$dvid <- 1L
