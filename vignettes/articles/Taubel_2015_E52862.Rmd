@@ -1,0 +1,341 @@
+---
+title: "E-52862 concentration-QTc (Taubel 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{E-52862 concentration-QTc (Taubel 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Taubel_2015_E52862_ddQTcI")()$reference`
+* Article: <https://doi.org/10.1371/journal.pone.0136369>
+
+Taubel et al. (2015) re-analysed the electrocardiograms of a phase 1 single
+ascending dose study of E-52862 (S1RA), an oral sigma-1 receptor antagonist
+developed as an analgesic. Healthy adults received single oral doses of 500,
+600 and 800 mg and placebo in a four-period crossover, each period preceded by a
+placebo baseline day whose ECGs were time-matched to the dosing day. The paper
+fits two series of linear mixed-effects concentration-QTc models (R `nlme`):
+
+1. **Placebo-corrected change from baseline** (DeltaDeltaQTc) regressed on
+   plasma concentration, with period, sequence and sex as fixed factors
+   (Table 4).
+2. **Change from baseline** (DeltaQTc) regressed on concentration with
+   *nominal time* as an additional fixed factor and placebo entering at
+   concentration 0 (Table 5). The time factor captures the QTc shortening that
+   follows the standardised lunch at 5 h, which the authors use to demonstrate
+   assay sensitivity (Table 7).
+
+In both series the best model by AIC adds a random slope to the random
+intercept. Each series was fitted for the individual (QTcI) and the Fridericia
+(QTcF) correction, giving four packaged model files sharing this vignette:
+
+| Model file | Endpoint | Structure | Source |
+|------------|----------|-----------|--------|
+| `Taubel_2015_E52862_ddQTcI` | DeltaDeltaQTcI (ms) | `e0 + slope * C` | Table 4 (slope), Table 6 (e0) |
+| `Taubel_2015_E52862_ddQTcF` | DeltaDeltaQTcF (ms) | `e0 + slope * C` | Table 4 (slope), Table 6 (e0) |
+| `Taubel_2015_E52862_dQTcI`  | DeltaQTcI (ms) | `e0 + theta(NTIME) + slope * C` | Table 5 (slope), Figure 5 (time course) |
+| `Taubel_2015_E52862_dQTcF`  | change in DeltaQTcF from pre-dose (ms) | `theta(NTIME) + slope * C` | Table 5 (slope), Table 7 (6 h, 8 h) |
+
+`C` is the covariate `CP_E52862_NGML`, the E-52862 (parent) plasma concentration
+in ng/mL. The paper characterises the pharmacokinetics by non-compartmental
+analysis only (Table 3), so these are PD-only models: the user supplies the
+concentration. The same models were fitted for five metabolites (M1-M5), but
+the paper reports numerical results only for the parent compound.
+
+# Population
+
+```{r population}
+pop <- readModelDb("Taubel_2015_E52862_ddQTcI")()$population
+str(pop[c("n_subjects", "age_range", "weight_range", "sex_female_pct", "race_ethnicity")])
+```
+
+Thirty-two healthy White, non-Hispanic adults (15 women, 47%) aged 18-35 years
+with BMI 18-25 kg/m^2 were randomised; 31 completed all four periods (Taubel
+2015 Table 2: age 24.22 +/- 4.668 years, weight 67.39 +/- 9.654 kg, BMI
+22.41 +/- 1.643 kg/m^2). Triplicate ECGs and PK samples were taken at pre-dose
+and 0.25-96 h after dosing; lunch was served at 5 h and dinner at 9 h on both
+the baseline day and the dosing day.
+
+# Source trace
+
+| Quantity | Value | Source |
+|----------|-------|--------|
+| DeltaDeltaQTcI slope (model 2) | -0.00024 ms per ng/mL | Table 4, QTcI row 2 (best fit) |
+| DeltaDeltaQTcF slope (model 2) | 0.00051 ms per ng/mL | Table 4, QTcF row 2 (best fit) |
+| DeltaDeltaQTcI intercept `e0` | -1.53 ms | back-solved from Table 6, rows 1-3 |
+| DeltaDeltaQTcF intercept `e0` | -1.58 ms | back-solved from Table 6, rows 4-6 |
+| DeltaQTcI slope (model 2) | -0.00079 ms per ng/mL | Table 5, QTcI row 2 (best fit) |
+| DeltaQTcF slope (model 2) | -0.00007 ms per ng/mL | Table 5, QTcF row 2 (best fit) |
+| DeltaQTcI time course, 0-12 h | `e0` 0.9 ms and nine increments | digitised from Figure 5 |
+| DeltaQTcF time effect at 6 h | -8.1 ms vs pre-dose | Table 7 |
+| DeltaQTcF time effect at 8 h | -7.2 ms vs pre-dose | Table 7 |
+| Model equations | linear in `C`, time as factor | Methods 'Statistical Methods' |
+| IIV, residual error | not reported | typical-value models, `addSd = fixed(0)` |
+
+```{r load-models}
+mod_ddi <- readModelDb("Taubel_2015_E52862_ddQTcI")
+mod_ddf <- readModelDb("Taubel_2015_E52862_ddQTcF")
+mod_di <- readModelDb("Taubel_2015_E52862_dQTcI")
+mod_df <- readModelDb("Taubel_2015_E52862_dQTcF")
+
+# Typical-value prediction at a set of (concentration, nominal time) pairs.
+# All rows sit in one subject at successive solver times; the models are
+# algebraic, so solver time plays no role.
+predict_qtc <- function(mod, conc, ntime = 0) {
+  n <- max(length(conc), length(ntime))
+  ev <- data.frame(
+    id = 1L,
+    time = seq_len(n),
+    evid = 0L,
+    amt = 0,
+    CP_E52862_NGML = rep_len(conc, n),
+    NTIME = rep_len(ntime, n)
+  )
+  as.data.frame(rxode2::rxSolve(mod, events = ev))
+}
+```
+
+## Back-solving the DeltaDeltaQTc intercepts
+
+The first-series models contain a fixed intercept and period, sequence and sex
+effects that the paper does not print. Table 6, however, prints the model
+prediction at the geometric-mean Cmax of each dose group. Holding the printed
+slope, every intercept inside the interval below reproduces all three printed
+predictions to their 0.1 ms rounding; the packaged `e0` is the interval centre.
+
+```{r backsolve}
+table6 <- data.frame(
+  series = rep(c("DeltaDeltaQTc", "DeltaQTc"), each = 6),
+  qtc = rep(rep(c("QTcI", "QTcF"), each = 3), 2),
+  conc = rep(c(5464.0, 4302.4, 3859.6), 4),
+  pred = c(-2.8, -2.6, -2.5, 1.2, 0.6, 0.4, -4.3, -3.4, -3.1, -0.4, -0.3, -0.3)
+)
+
+e0_interval <- function(slope, conc, pred) {
+  c(lower = max(pred - 0.05 - slope * conc), upper = min(pred + 0.05 - slope * conc))
+}
+dd <- subset(table6, series == "DeltaDeltaQTc")
+iv_i <- with(subset(dd, qtc == "QTcI"), e0_interval(-0.00024, conc, pred))
+iv_f <- with(subset(dd, qtc == "QTcF"), e0_interval(0.00051, conc, pred))
+knitr::kable(
+  data.frame(
+    Endpoint = c("DeltaDeltaQTcI", "DeltaDeltaQTcF"),
+    `Lowest e0` = round(c(iv_i[["lower"]], iv_f[["lower"]]), 4),
+    `Highest e0` = round(c(iv_i[["upper"]], iv_f[["upper"]]), 4),
+    `Packaged e0` = c(-1.53, -1.58),
+    check.names = FALSE
+  ),
+  caption = "Intercepts consistent with Taubel 2015 Table 6 at the printed slopes."
+)
+stopifnot(
+  iv_i[["lower"]] < iv_i[["upper"]], iv_f[["lower"]] < iv_f[["upper"]],
+  -1.53 >= iv_i[["lower"]], -1.53 <= iv_i[["upper"]],
+  -1.58 >= iv_f[["lower"]], -1.58 <= iv_f[["upper"]]
+)
+```
+
+# Virtual cohort
+
+No virtual cohort is simulated. The paper reports neither the random-effect
+variances nor the residual error, so the packaged models are typical-value
+models and a stochastic cohort would add no information. The validation below
+evaluates the models at the concentrations and nominal times the paper reports.
+
+# Simulation and validation gate: Table 6
+
+Table 6 prints twelve model predictions at the geometric-mean Cmax of each dose
+group. This is a deterministic, zero-parameter gate: the only admissible
+difference is the rounding of the printed slope (half a unit in the fifth
+decimal, times the concentration), of the printed prediction (0.05 ms) and of
+the two-decimal `e0` (0.005 ms).
+
+```{r table6-gate}
+mods <- list(
+  DeltaDeltaQTc = list(QTcI = mod_ddi, QTcF = mod_ddf),
+  DeltaQTc = list(QTcI = mod_di, QTcF = mod_df)
+)
+# The second-series predictions are the drug effect (slope * C), so they are
+# evaluated as active minus placebo at the same nominal time.
+gate <- table6
+gate$model <- NA_real_
+for (i in seq_len(nrow(gate))) {
+  m <- mods[[gate$series[i]]][[gate$qtc[i]]]
+  out <- predict_qtc(m, conc = c(gate$conc[i], 0), ntime = 2)[[gate$qtc[i]]]
+  gate$model[i] <- if (gate$series[i] == "DeltaQTc") out[1] - out[2] else out[1]
+}
+gate$diff <- gate$model - gate$pred
+gate$tolerance <- 0.05 + 5e-6 * gate$conc + 0.005
+
+gate |>
+  dplyr::mutate(model = round(model, 3), diff = round(diff, 3), tolerance = round(tolerance, 3)) |>
+  dplyr::rename(
+    "Model series" = series, "QTc" = qtc, "Concentration (ng/mL)" = conc,
+    "Paper (ms)" = pred, "Packaged model (ms)" = model, "Difference (ms)" = diff,
+    "Rounding tolerance (ms)" = tolerance
+  ) |>
+  knitr::kable(caption = "Replicates Table 6 of Taubel 2015.")
+
+stopifnot(all(abs(gate$diff) <= gate$tolerance))
+```
+
+All twelve rows agree within rounding. The only row that does not re-round to
+the printed digit is the DeltaQTcI prediction at 3859.6 ng/mL (-3.05 vs -3.1
+ms): the printed slope -0.00079 is itself rounded, and any unrounded slope in
+[-0.000796, -0.000790] reproduces all three DeltaQTcI rows.
+
+# Replicate published figures
+
+## Figure 4 -- DeltaDeltaQTcI against concentration
+
+```{r figure4, fig.width = 6, fig.height = 4}
+conc_grid <- seq(0, 8000, by = 100)
+fig4 <- rbind(
+  data.frame(conc = conc_grid, value = predict_qtc(mod_ddi, conc_grid)$QTcI, endpoint = "DeltaDeltaQTcI"),
+  data.frame(conc = conc_grid, value = predict_qtc(mod_ddf, conc_grid)$QTcF, endpoint = "DeltaDeltaQTcF")
+)
+ggplot(fig4, aes(conc, value, linetype = endpoint)) +
+  geom_line() +
+  geom_hline(yintercept = c(0, 10), colour = "grey60") +
+  labs(
+    x = "E-52862 plasma concentration (ng/mL)", y = "Placebo-corrected change (ms)",
+    linetype = NULL,
+    caption = "Replicates the regression line of Figure 4 of Taubel 2015 (typical value)."
+  ) +
+  theme_bw()
+```
+
+Both lines stay within a few milliseconds of zero across the observed
+concentration range, far below the 10 ms threshold of regulatory concern.
+
+## Figure 5 -- drug-free DeltaQTcI time course
+
+Figure 5 overlays the time course estimated by six models (parent and the five
+metabolites) without a legend. The packaged `dQTcI` time course is the mean of
+the six curves at each nominal time; the band below is the range of the six
+digitised curves.
+
+```{r figure5, fig.width = 6, fig.height = 4}
+fig5_digitised <- data.frame(
+  ntime = c(0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12),
+  low = c(0.2, -1.4, 0.2, 0.3, 0.0, -1.3, -1.0, -7.8, -6.8, -4.6),
+  high = c(1.5, -0.3, 1.4, 1.9, 1.5, -0.1, 0.5, -6.0, -5.6, -3.1)
+)
+fig5_digitised$model <- predict_qtc(mod_di, conc = 0, ntime = fig5_digitised$ntime)$QTcI
+
+ggplot(fig5_digitised, aes(ntime)) +
+  geom_ribbon(aes(ymin = low, ymax = high), fill = "grey85") +
+  geom_line(aes(y = model)) +
+  geom_point(aes(y = model)) +
+  annotate("text", x = c(5, 9), y = 4, label = "meal") +
+  geom_vline(xintercept = c(5, 9), linetype = "dashed", colour = "grey50") +
+  labs(
+    x = "Nominal time after dose (h)", y = "DeltaQTcI at C = 0 (ms)",
+    caption = "Replicates Figure 5 of Taubel 2015; band = range of the six digitised curves."
+  ) +
+  theme_bw()
+
+stopifnot(all(fig5_digitised$model >= fig5_digitised$low - 1e-8 &
+  fig5_digitised$model <= fig5_digitised$high + 1e-8))
+```
+
+## Table 7 -- assay sensitivity from the lunch effect
+
+```{r table7}
+tab7 <- data.frame(ntime = c(6, 8), paper = c(-8.1, -7.2), lower = c(-10.4, -9.4), upper = c(-5.9, -5.0))
+tab7$dQTcF <- predict_qtc(mod_df, conc = 0, ntime = tab7$ntime)$QTcF
+pre_i <- predict_qtc(mod_di, conc = 0, ntime = 0)$QTcI
+tab7$dQTcI <- predict_qtc(mod_di, conc = 0, ntime = tab7$ntime)$QTcI - pre_i
+
+tab7 |>
+  dplyr::rename(
+    "Nominal time (h)" = ntime, "Paper QTcF (ms)" = paper, "95% CI lower" = lower,
+    "95% CI upper" = upper, "Packaged dQTcF (ms)" = dQTcF,
+    "Packaged dQTcI, digitised (ms)" = dQTcI
+  ) |>
+  knitr::kable(caption = "Replicates Table 7 of Taubel 2015 (change from pre-dose).")
+
+stopifnot(
+  all(abs(tab7$dQTcF - tab7$paper) < 1e-8),
+  # The QTcI contrasts are not printed; the digitised Figure 5 time course
+  # should still fall inside the QTcF confidence intervals.
+  all(tab7$dQTcI > tab7$lower & tab7$dQTcI < tab7$upper)
+)
+```
+
+The QTcF contrasts are the packaged parameters themselves. The QTcI contrasts
+implied by the digitised Figure 5 (-7.8 and -7.0 ms) are close to the QTcF
+values and inside their confidence intervals, consistent with the authors'
+statement that both corrections show the post-prandial shortening.
+
+## Illustrative day: placebo and 800 mg
+
+The second-series model separates the drug effect from the meal-driven time
+course. With the geometric-mean 800 mg Cmax held at every time point (a
+deliberately conservative exposure; the paper reports no PK model to generate a
+profile), the drug lowers QTcI by a further 4.3 ms at most.
+
+```{r illustrative-day, fig.width = 6, fig.height = 4}
+nt <- c(0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12)
+day <- rbind(
+  data.frame(ntime = nt, arm = "placebo", QTcI = predict_qtc(mod_di, 0, nt)$QTcI),
+  data.frame(ntime = nt, arm = "C = 5464 ng/mL", QTcI = predict_qtc(mod_di, 5464, nt)$QTcI)
+)
+ggplot(day, aes(ntime, QTcI, colour = arm)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Nominal time after dose (h)", y = "DeltaQTcI (ms)", colour = NULL) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+Not applicable. The packaged models are PD-only concentration-effect models
+with no dosing compartment or PK states; there is no simulated concentration-time
+profile on which to run NCA. The paper's own NCA results (Table 3: Cmax 3938.5,
+4357.9 and 5580.1 ng/mL; AUC0-inf 85754.7, 112069.7 and 155911.0 ng.h/mL after
+500, 600 and 800 mg) describe the observed concentrations that drove the fits
+and are recorded in the covariate notes.
+
+# Assumptions and deviations
+
+- **Intercepts of the DeltaDeltaQTc models are back-solved.** The paper prints
+  only the slopes (Table 4). The packaged `e0` (-1.53 ms QTcI, -1.58 ms QTcF)
+  is the population-averaged sum of the fixed intercept and the period,
+  sequence and sex effects, recovered from the Table 6 predictions as shown
+  above. Individual period, sequence and sex effects cannot be recovered and
+  are not represented.
+- **The DeltaQTcI time course is digitised and approximate.** Figure 5 does not
+  identify which of its six curves belongs to the parent model, so the
+  packaged time effects are the mean of the six curves; the parent curve may
+  differ by up to about 0.8 ms at any time point. Figure 5 shows only the
+  0-12 h levels at 0, 0.5, 1, 1.5, 2, 3, 4, 6, 8 and 12 h; the model bins other
+  `NTIME` values to the nearest plotted level and is not valid beyond 12 h.
+- **The DeltaQTcF model is partial.** The paper reports QTcF time effects only
+  as the 6 h and 8 h changes from pre-dose (Table 7). The file therefore
+  returns the change from pre-dose, and at every other nominal time the time
+  effect is set to zero; only the slope and the two meal contrasts are
+  reproducible.
+- **No random effects or residual error.** The best models include a random
+  intercept and random slope per subject, but no variance is reported, so the
+  models are typical-value models with `addSd = fixed(0)`.
+- **Dose labels in Table 6.** In the first nine rows of Table 6 the dose-group
+  labels are in reverse order: 5464.0 ng/mL is labelled 500 mg although it is
+  the 800 mg geometric-mean Cmax (Table 3 arithmetic means 3938.5, 4357.9 and
+  5580.1 ng/mL for 500, 600 and 800 mg; the last three rows are labelled
+  correctly). The gate above uses the concentrations, which are unaffected.
+- **Metabolites.** M1-M5 slopes are reported only qualitatively ("all the
+  slopes ... were negative"), so no metabolite model is packaged.
+- **Slope significance.** Only the DeltaQTcI slope (series 2) excludes zero; the
+  others are compatible with no concentration effect. The paper concludes that
+  E-52862 does not prolong QTc at single doses up to 800 mg.
