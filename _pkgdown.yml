@@ -3174,6 +3174,8 @@ navbar:
         href: articles/Bellon_2020_fibrinogen.html
       - text: "FidanacogeneElaparvovec (Wojciechowski 2025)"
         href: articles/Wojciechowski_2025_fidanacogeneElaparvovec.html
+      - text: "Filgotinib (Namour 2015)"
+        href: articles/Namour_2015_filgotinib.html
       - text: "Filgrastim (Harrold 2020)"
         href: articles/Harrold_2020_filgrastim_ars.html
       - text: "Filgrastim (Jiang 2025)"
@@ -11206,6 +11208,7 @@ articles:
   - articles/Nakamura_2024_linagliptin_pbpk
   - articles/Nakao_2019_afatinib
   - articles/Nakashima_2015_valproic_acid_seizure_control
+  - articles/Namour_2015_filgotinib
   - articles/Nanga_2019_tacrolimus_metaanalysis
   - articles/Narwal_2013_sifalimumab
   - articles/NassarSheikhRashid_2024_adalimumab

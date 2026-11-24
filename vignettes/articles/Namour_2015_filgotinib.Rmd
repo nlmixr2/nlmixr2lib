@@ -1,0 +1,609 @@
+---
+title: "Filgotinib (Namour 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Filgotinib (Namour 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Namour_2015_filgotinib"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Namour_2015_filgotinib"))$description`
+* Article: <https://doi.org/10.1007/s40262-015-0240-z> (open access, PMC4513223)
+
+Filgotinib (GLPG0634) is an oral selective JAK1 inhibitor. It is converted to
+an active metabolite whose plasma exposure is 16- to 20-fold higher than that of
+the parent but which is less potent. Namour 2015 fitted a joint population
+PK model for filgotinib and the metabolite. The pharmacodynamic biomarker was ex
+vivo IL-6-induced STAT1 phosphorylation (pSTAT1) in CD4+ lymphocytes, and the
+paper modelled it as a direct, complete inhibition driven by both moieties.
+Simulations of this model supported the 200 mg/day ceiling of the phase IIB
+DARWIN programme in rheumatoid arthritis.
+
+# Population
+
+The PK model was fitted to 56 healthy male volunteers (40-60 years, BMI
+18-30 kg/m^2) from two phase I studies (NCT01179581, NCT01419990). They took
+single doses of 25-200 mg or ten days of 25, 50 or 100 mg twice daily or
+200, 300 or 450 mg once daily, as capsules after a standard breakfast. Sparse
+samples from 24 methotrexate-inadequate-responder patients with rheumatoid
+arthritis (RA) were added. These patients took 100 mg twice daily or 200 mg once
+daily in a phase IIa study (NCT01384422; 33 of the 36 enrolled patients were
+female). The pSTAT1 PK/PD model uses only the phase I data. Study designs are in
+Namour 2015 Table 1. The paper does not tabulate body weight.
+
+The same information is available programmatically via
+`readModelDb("Namour_2015_filgotinib")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source; the
+table below collects them. Namour 2015 Tables 4 and 5 print the log-transformed
+parameters on the log scale and FRAC on the probit scale. The model stores
+those transformed values unchanged.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` | -0.733 (ka = 0.480 1/h) | Table 4, ka (log) |
+| `lcl` | 3.97 (CL_P/F = 53.0 L/h) | Table 4, CLP/F (log) |
+| `lvc` | 3.08 (V_C/F = 21.8 L) | Table 4, VC/F (log) |
+| `lq` | 2.02 (Q/F = 7.54 L/h) | Table 4, Q/F (log) |
+| `lvp` | 4.72 (V_P/F = 112 L) | Table 4, VP/F (log) |
+| `lcl_metab` | 1.04 (CL_M/F = 2.83 L/h) | Table 4, CLM/F (log) |
+| `lvc_metab` | 4.36 (V_M/F = 78.3 L) | Table 4, VM/F (log) |
+| `probitfm_dose300` | 0.375 (fm = 0.646) | Table 4, FRAC300 mg (probit) |
+| `probitfm_dose450` | 0.363 (fm = 0.642) | Table 4, FRAC450 mg (probit) |
+| `e_wt_cl` | 0.679 | Table 4, Effect of weight |
+| `e_sexf_vc` | 2.95 | Table 4, Effect of sex |
+| `e_dis_ra_fdepot` | 0.216 | Table 4, Relative increase in bioavailability in RA patients |
+| `etalcl`, `etalvc`, `etalcl_metab`, `etalvc_metab` | 0.102, 2.55, 0.0444, 0.0418 | Table 4, BSV variance column |
+| `propSd`, `propSd_metab` | sqrt(0.337), sqrt(0.0726) | Table 4, sigma2 P,prop and M,prop |
+| `rbase`, `etarbase` | 22.3 %, 117 %^2 (normal) | Table 5, pSTAT1BL |
+| `lic50`, `etalic50` | 5.68 (IC50_P = 293 ng/mL), 1.87 | Table 5, log IC50,P |
+| `lic50_metab`, `etalic50_metab` | 7.43 (IC50_M = 1686 ng/mL), 0.106 | Table 5, log IC50,M |
+| `lhill` | 0.680 (H = 1.97) | Table 5, log H |
+| `addSd_pstat1`, `propSd_pstat1` | sqrt(2.11), sqrt(0.198) | Table 5, residual variance rows |
+| PK ODEs | n/a | Eq. 1; Fig. 3 |
+| fm = 1 below 300 mg/day | n/a | Results: secondary pathway only at doses at and above 300 mg |
+| pSTAT1 = BL (1 - (C0P + C0M) / (1 + C0P + C0M)), C0x = (Cx/IC50x)^H | n/a | Eq. 2 |
+
+# Typical-value replication of the pSTAT1 simulations (Tables 6-8, Figure 8)
+
+Namour 2015 simulated steady-state pSTAT1 inhibition over a dosing interval for
+a typical 75 kg male healthy volunteer. Inhibition is expressed relative to the
+baseline: `100 * (1 - pSTAT1 / pSTAT1_BL)`. Table 6 gives the result with both
+moieties; Tables 7 and 8 give the hypothetical inhibition from filgotinib alone
+or from the metabolite alone. The same quantities are computed below from the
+typical-value model, with dosing for ten days so that the metabolite
+(half-life about 20 h) has reached steady state.
+
+```{r typical-sim}
+mod <- readModelDb("Namour_2015_filgotinib")
+mod_typ <- rxode2::zeroRe(mod)
+typ <- rxode2::rxode(mod)
+
+# Typical-value solves over several subjects (one per regimen or covariate
+# case) are intended here; mute only rxode2's notice that the multi-subject
+# solve has no between-subject variability.
+solve_typical <- function(events, ...) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod_typ, events, returnType = "data.frame", ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+regimens <- tibble::tribble(
+  ~regimen,  ~amt, ~ii,
+  "30 q.d.",   30,  24,
+  "50 q.d.",   50,  24,
+  "100 q.d.", 100,  24,
+  "100 b.i.d.", 100, 12,
+  "200 q.d.", 200,  24,
+  "300 q.d.", 300,  24
+) |>
+  mutate(id = seq_len(n()), daily = amt * 24 / ii)
+
+make_typical <- function(r) {
+  n_dose <- 240 / r$ii
+  last <- (n_dose - 1) * r$ii
+  doses <- tibble(time = seq(0, last, by = r$ii), amt = r$amt, evid = 1L,
+                  cmt = "depot", dvid = NA_integer_)
+  obs <- tibble(time = seq(last, last + r$ii, by = 0.05), amt = 0, evid = 0L,
+                cmt = "central", dvid = 1L)
+  bind_rows(doses, obs) |>
+    mutate(id = r$id, regimen = r$regimen, WT = 75, SEXF = 0, DIS_RA = 0,
+           DOSE_FILGOTINIB_MGD = r$daily, tau_start = last) |>
+    arrange(time, desc(evid))
+}
+ev_typ <- bind_rows(lapply(split(regimens, regimens$id), make_typical))
+
+sim_typ <- solve_typical(ev_typ, keep = c("regimen", "tau_start"))
+
+bl <- typ$theta[["rbase"]]
+ic50_p <- exp(typ$theta[["lic50"]])
+ic50_m <- exp(typ$theta[["lic50_metab"]])
+hill <- exp(typ$theta[["lhill"]])
+
+inh <- sim_typ |>
+  mutate(
+    both = 100 * (1 - pstat1 / bl),
+    parent_alone = 100 * (Cc / ic50_p)^hill / (1 + (Cc / ic50_p)^hill),
+    metab_alone = 100 * (Cc_metab / ic50_m)^hill / (1 + (Cc_metab / ic50_m)^hill)
+  )
+
+inh_summary <- inh |>
+  pivot_longer(c(both, parent_alone, metab_alone), names_to = "source", values_to = "inh") |>
+  group_by(regimen, source) |>
+  summarise(Minimum = min(inh), Maximum = max(inh), Mean = mean(inh), .groups = "drop")
+```
+
+```{r table-6}
+published <- tibble::tribble(
+  ~regimen,     ~source,        ~Minimum, ~Maximum, ~Mean,
+  "30 q.d.",    "both",           3.44,     27.6,    8.86,
+  "50 q.d.",    "both",           9.11,     50.9,    20.1,
+  "100 q.d.",   "both",           28.2,     80.1,    47.4,
+  "100 b.i.d.", "both",           71.6,     87.0,    78.5,
+  "200 q.d.",   "both",           61.8,     94.5,    77.6,
+  "300 q.d.",   "both",           60.3,     97.3,    77.1,
+  # Table 7 prints '<0.1' for the filgotinib-alone minimum of the q.d. arms;
+  # those cells are NA here.
+  "30 q.d.",    "parent_alone",     NA,     24.2,    2.31,
+  "50 q.d.",    "parent_alone",     NA,     46.4,    4.99,
+  "100 q.d.",   "parent_alone",     NA,     77.2,    10.6,
+  "100 b.i.d.", "parent_alone",  0.427,     78.0,    22.2,
+  "200 q.d.",   "parent_alone",  0.128,     93.6,    17.5,
+  "300 q.d.",   "parent_alone",  0.295,     97.1,    21.9,
+  "30 q.d.",    "metab_alone",    3.42,     9.25,    6.43,
+  "50 q.d.",    "metab_alone",    9.06,     21.9,    15.9,
+  "100 q.d.",   "metab_alone",    28.1,     53.5,    42.4,
+  "100 b.i.d.", "metab_alone",    71.5,     78.7,    75.9,
+  "200 q.d.",   "metab_alone",    61.8,     82.8,    75.0,
+  "300 q.d.",   "metab_alone",    60.3,     81.7,    73.5
+)
+
+cmp_pd <- published |>
+  pivot_longer(c(Minimum, Maximum, Mean), names_to = "statistic", values_to = "published") |>
+  left_join(
+    inh_summary |>
+      pivot_longer(c(Minimum, Maximum, Mean), names_to = "statistic", values_to = "simulated"),
+    by = c("regimen", "source", "statistic")
+  ) |>
+  mutate(
+    source = factor(source, c("both", "parent_alone", "metab_alone"),
+                    c("Both moieties (Table 6)", "Filgotinib alone (Table 7)",
+                      "Metabolite alone (Table 8)")),
+    regimen = factor(regimen, regimens$regimen),
+    statistic = factor(statistic, c("Minimum", "Maximum", "Mean")),
+    diff = simulated - published
+  ) |>
+  arrange(source, regimen, statistic)
+
+cmp_pd |>
+  mutate(published = ifelse(is.na(published), "<0.1", formatC(published, digits = 3, format = "fg")),
+         simulated = formatC(simulated, digits = 3, format = "fg"),
+         diff = ifelse(is.na(diff), "", sprintf("%+.2f", diff))) |>
+  rename(Source = source, Regimen = regimen, Statistic = statistic,
+         "Published (%)" = published, "Simulated (%)" = simulated,
+         "Difference (percentage points)" = diff) |>
+  knitr::kable(caption = "Steady-state pSTAT1 inhibition in a typical 75 kg male: Namour 2015 Tables 6-8 vs the packaged model.")
+```
+
+Every cell is within about one percentage point of the published value. The
+published values come from simulations that carried 1,000 bootstrap replicates
+of parameter uncertainty, so they need not equal a single typical-value
+solve exactly. The comparison is deterministic on both sides, so a tight bound
+applies:
+
+```{r table-6-check}
+stopifnot(
+  max(abs(cmp_pd$diff), na.rm = TRUE) < 2,
+  # The filgotinib-alone minimum is <0.1% in the q.d. arms (Table 7).
+  all(inh_summary$Minimum[inh_summary$source == "parent_alone" &
+                            inh_summary$regimen %in% c("30 q.d.", "50 q.d.", "100 q.d.")] < 0.1)
+)
+```
+
+```{r figure-8, fig.height = 6}
+# Replicates Figure 8 of Namour 2015: steady-state pSTAT1 inhibition over one
+# dosing interval, with the filgotinib and metabolite concentrations on a
+# common arbitrary scale (each divided by its maximum across regimens).
+fig8 <- inh |>
+  mutate(t = time - tau_start, regimen = factor(regimen, regimens$regimen),
+         `Filgotinib (scaled)` = 100 * Cc / max(Cc),
+         `Metabolite (scaled)` = 100 * Cc_metab / max(Cc_metab)) |>
+  select(regimen, t, `pSTAT1 inhibition (%)` = both, `Filgotinib (scaled)`, `Metabolite (scaled)`) |>
+  pivot_longer(-c(regimen, t), names_to = "quantity")
+
+ggplot(fig8, aes(t, value, colour = quantity)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~regimen) +
+  scale_colour_manual(values = c("pSTAT1 inhibition (%)" = "#B2182B",
+                                 "Filgotinib (scaled)" = "black",
+                                 "Metabolite (scaled)" = "grey55")) +
+  labs(x = "Time after dose at steady state (h)", y = "Inhibition (%) / scaled concentration",
+       colour = NULL, caption = "Replicates Figure 8 of Namour 2015 (typical subject; no uncertainty band).") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+```{r figure-7}
+# Replicates Figure 7 of Namour 2015: typical-subject pSTAT1 response against
+# each moiety's concentration with the other moiety absent; vertical lines at
+# the IC50 values (293 and 1686 ng/mL).
+conc <- 10^seq(0, 4.5, length.out = 200)
+fig7 <- bind_rows(
+  tibble(moiety = "Filgotinib", conc = conc, ic50 = ic50_p),
+  tibble(moiety = "Metabolite", conc = conc, ic50 = ic50_m)
+) |>
+  mutate(pstat1 = bl / (1 + (conc / ic50)^hill))
+
+ggplot(fig7, aes(conc, pstat1)) +
+  geom_line(linewidth = 0.8) +
+  geom_vline(aes(xintercept = ic50), linetype = 2) +
+  facet_wrap(~moiety) +
+  scale_x_log10() +
+  labs(x = "Plasma concentration (ng/mL)", y = "pSTAT1-positive CD4+ cells (%)",
+       caption = "Replicates Figure 7 of Namour 2015 (typical values; no confidence band).") +
+  theme_bw()
+```
+
+# Virtual cohort for the phase I studies
+
+The stochastic checks below simulate the phase I healthy-volunteer designs:
+single doses of 25-200 mg (Table 2) and ten days of 25, 50 or 100 mg b.i.d. or
+200, 300 or 450 mg q.d. (Table 3), with 100 virtual subjects per arm. All
+subjects are male healthy volunteers (`SEXF = 0`, `DIS_RA = 0`). The paper does
+not report body weight, so weight is drawn from a normal distribution with
+mean 75 kg and SD 10 kg, truncated to 55-100 kg. That range is consistent with
+the BMI 18-30 kg/m^2 inclusion window, and the mean matches the typical subject
+of the paper's simulations. Sampling follows the rich designs of Table 1. Below
+the assay LLOQ of 1.00 ng/mL, concentrations are set missing, as the paper
+excluded below-LLOQ samples.
+
+```{r cohort}
+set.seed(20150213)
+rxode2::rxSetSeed(20150213)
+n_per_arm <- 100L
+
+arms <- tibble::tribble(
+  ~treatment,      ~amt, ~ii, ~n_dose, ~design,
+  "SD 25 mg",        25,   0,      1, "single",
+  "SD 50 mg",        50,   0,      1, "single",
+  "SD 100 mg",      100,   0,      1, "single",
+  "SD 200 mg",      200,   0,      1, "single",
+  "25 mg b.i.d.",    25,  12,     20, "multiple",
+  "50 mg b.i.d.",    50,  12,     20, "multiple",
+  "100 mg b.i.d.",  100,  12,     20, "multiple",
+  "200 mg q.d.",    200,  24,     10, "multiple",
+  "300 mg q.d.",    300,  24,     10, "multiple",
+  "450 mg q.d.",    450,  24,     10, "multiple"
+) |>
+  mutate(arm = seq_len(n()),
+         daily = ifelse(ii == 0, amt, amt * 24 / ii),
+         last = ifelse(ii == 0, 0, (n_dose - 1) * ii))
+
+# Rich nominal sampling after a dose (h); 72 h follow-up after the last dose.
+rel_grid <- c(0, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10, 12,
+              16, 20, 24, 30, 36, 48, 60, 72)
+
+make_cohort <- function(a) {
+  ids <- (a$arm - 1L) * n_per_arm + seq_len(n_per_arm)
+  wt <- pmin(pmax(rnorm(n_per_arm, 75, 10), 55), 100)
+  dose_times <- if (a$ii == 0) 0 else seq(0, a$last, by = a$ii)
+  obs_times <- sort(unique(c(rel_grid[rel_grid <= 24], a$last + rel_grid)))
+  one <- bind_rows(
+    tibble(time = dose_times, amt = a$amt, evid = 1L, cmt = "depot", dvid = NA_integer_),
+    tibble(time = obs_times, amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  ) |>
+    arrange(time, desc(evid))
+  tidyr::crossing(tibble(id = ids, WT = wt), one) |>
+    mutate(treatment = a$treatment, last = a$last, tau_h = a$ii,
+           SEXF = 0, DIS_RA = 0, DOSE_FILGOTINIB_MGD = a$daily) |>
+    arrange(id, time, desc(evid))
+}
+events <- bind_rows(lapply(split(arms, arms$arm), make_cohort))
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events, keep = c("treatment", "last", "tau_h"),
+                       returnType = "data.frame")
+```
+
+```{r figure-5}
+# Replicates Figure 5 of Namour 2015: mean filgotinib and metabolite profiles
+# over the first and last dosing interval at 200 mg q.d. (population means of
+# the simulated individual predictions; the figure plots population predictions).
+sim |>
+  filter(treatment == "200 mg q.d.") |>
+  mutate(day = ifelse(time < 24, "Day 1", ifelse(time >= last & time <= last + 24, "Day 10", NA)),
+         t = ifelse(day == "Day 1", time, time - last)) |>
+  filter(!is.na(day)) |>
+  pivot_longer(c(Cc, Cc_metab), names_to = "analyte", values_to = "conc") |>
+  mutate(analyte = ifelse(analyte == "Cc", "Filgotinib", "Metabolite")) |>
+  group_by(analyte, day, t) |>
+  summarise(mean = mean(conc), lo = quantile(conc, 0.05), hi = quantile(conc, 0.95), .groups = "drop") |>
+  ggplot(aes(t, mean, colour = day, fill = day)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~analyte, scales = "free_y") +
+  labs(x = "Time after dose (h)", y = "Concentration (ng/mL)", colour = NULL, fill = NULL,
+       caption = "Replicates Figure 5 of Namour 2015: mean with 5th-95th percentile band, 200 mg q.d.") +
+  theme_bw()
+```
+
+# PKNCA validation
+
+The NCA is run separately for filgotinib and metabolite. It uses the individual
+predictions (no residual error), with values below the LLOQ set missing. The
+single-dose arms are analysed from 0 to infinity. The multiple-dose arms are
+analysed over the last dosing interval (AUC0-tau, Cmax, Cmin), and the
+half-life comes from the 72 h after the last dose. PKNCA warns when a
+subject's filgotinib profile falls below the LLOQ too soon to give the three
+points it needs for a half-life. Those subjects drop out of the half-life
+summary only, much as Table 2 reports the half-life for n = 4-5 of 6 subjects
+in several arms.
+
+```{r pknca}
+lloq <- 1
+run_nca <- function(conc_col) {
+  conc <- sim |>
+    transmute(id, time, treatment, conc = .data[[conc_col]]) |>
+    mutate(conc = ifelse(conc < lloq, NA_real_, conc)) |>
+    filter(!is.na(conc))
+  # Time-zero anchor: pre-dose concentration is 0 for the first dose.
+  conc <- bind_rows(conc, conc |> distinct(id, treatment) |> mutate(time = 0, conc = 0)) |>
+    distinct(id, treatment, time, .keep_all = TRUE) |>
+    arrange(id, treatment, time)
+
+  dose_df <- events |>
+    filter(evid == 1) |>
+    select(id, time, amt, treatment)
+
+  iv_sd <- arms |>
+    filter(design == "single") |>
+    transmute(treatment, start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+              aucinf.obs = TRUE, half.life = TRUE)
+  iv_md <- arms |>
+    filter(design == "multiple") |>
+    transmute(treatment, start = last, end = last + ii, cmax = TRUE, tmax = TRUE,
+              auclast = TRUE, cmin = TRUE)
+  iv_hl <- arms |>
+    filter(design == "multiple") |>
+    transmute(treatment, start = last, end = last + 72, half.life = TRUE)
+  intervals <- bind_rows(iv_sd, iv_md, iv_hl) |>
+    mutate(across(where(is.logical), ~ tidyr::replace_na(.x, FALSE)))
+
+  conc_obj <- PKNCA::PKNCAconc(conc, conc ~ time | treatment + id)
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+nca_parent <- run_nca("Cc")
+nca_metab <- run_nca("Cc_metab")
+```
+
+## Comparison against published NCA
+
+Published values are arithmetic means (median for tmax) of n = 6 per arm, from
+Namour 2015 Tables 2 and 3. Table 3's C_t is the minimum concentration, which is
+compared with PKNCA's `cmin`. The comparison table summarises the simulated
+cohort by its median.
+
+```{r nca-compare-parent}
+pub_parent <- tibble::tribble(
+  ~treatment,      ~cmax, ~tmax, ~aucinf.obs, ~auclast, ~cmin, ~half.life,
+  "SD 25 mg",       83.0,   2.5,        348,       NA,    NA,       5.72,
+  "SD 50 mg",        247,     2,        771,       NA,    NA,       5.28,
+  "SD 100 mg",       565,     2,       1743,       NA,    NA,       4.91,
+  "SD 200 mg",      1160,     3,       4844,       NA,    NA,       5.68,
+  "25 mg b.i.d.",    144,   0.5,         NA,      346,  3.75,       3.82,
+  "50 mg b.i.d.",    211,   1.5,         NA,      758,  9.52,       5.75,
+  "100 mg b.i.d.",   556,     3,         NA,     2380,  27.8,       5.87,
+  "200 mg q.d.",    1200,     2,         NA,     4450,  6.04,       5.17,
+  "300 mg q.d.",    1380,   1.5,         NA,     4400,  9.93,       10.9,
+  "450 mg q.d.",    2580,   2.5,         NA,    10200,  17.6,       7.09
+)
+nca_units <- c(cmax = "ng/mL", tmax = "h", aucinf.obs = "ng*h/mL",
+               auclast = "ng*h/mL", cmin = "ng/mL", half.life = "h")
+cmp_parent <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_parent, reference = pub_parent, by = "treatment",
+  units = nca_units, tolerance_pct = 20
+)
+knitr::kable(cmp_parent, caption = "Filgotinib: simulated (median) vs Namour 2015 Tables 2-3. * differs by >20%.")
+```
+
+```{r nca-compare-metab}
+pub_metab <- tibble::tribble(
+  ~treatment,      ~cmax, ~tmax, ~aucinf.obs, ~auclast, ~cmin, ~half.life,
+  "SD 25 mg",        238,     4,       7890,       NA,    NA,       19.9,
+  "SD 50 mg",        552,     3,      15600,       NA,    NA,       18.1,
+  "SD 100 mg",       957,     5,      30200,       NA,    NA,       22.5,
+  "SD 200 mg",      2290,     5,      63800,       NA,    NA,       20.0,
+  "25 mg b.i.d.",    835,     1,         NA,     8660,   612,       22.0,
+  "50 mg b.i.d.",   1460,     3,         NA,    15200,  1050,       23.8,
+  "100 mg b.i.d.",  4010,     5,         NA,    41100,  3000,       22.5,
+  "200 mg q.d.",    3540,     5,         NA,    69900,  2470,       27.3,
+  "300 mg q.d.",    3410,     5,         NA,    66100,  2193,       25.9,
+  "450 mg q.d.",    5250,     5,         NA,   102000,  3502,       25.8
+)
+cmp_metab <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_metab, reference = pub_metab, by = "treatment",
+  units = nca_units, tolerance_pct = 20
+)
+knitr::kable(cmp_metab, caption = "Metabolite: simulated (median) vs Namour 2015 Tables 2-3. * differs by >20%.")
+```
+
+```{r nca-check}
+# Exposure check on the centre of the distribution across arms: a mis-read
+# log-scale parameter (e.g. CL_P/F taken as 3.97 L/h instead of exp(3.97)) or
+# a wrong FRAC orientation moves every AUC by tens of percent or more.
+auc_pct <- function(res, pub) {
+  s <- as.data.frame(res) |>
+    filter(PPTESTCD %in% c("aucinf.obs", "auclast")) |>
+    group_by(treatment, PPTESTCD) |>
+    summarise(sim = median(PPORRES, na.rm = TRUE), .groups = "drop")
+  p <- pub |>
+    select(treatment, aucinf.obs, auclast) |>
+    pivot_longer(-treatment, names_to = "PPTESTCD", values_to = "pub") |>
+    filter(!is.na(pub))
+  inner_join(s, p, by = c("treatment", "PPTESTCD")) |>
+    mutate(pct = 100 * (sim - pub) / pub)
+}
+auc_parent <- auc_pct(nca_parent, pub_parent)
+auc_metab <- auc_pct(nca_metab, pub_metab)
+stopifnot(
+  nrow(auc_parent) == 10, nrow(auc_metab) == 10,
+  abs(median(auc_parent$pct)) < 25,
+  abs(median(auc_metab$pct)) < 15
+)
+# The empirical secondary pathway reproduces the plateau in metabolite
+# exposure between 200 and 300 mg q.d. (Table 3: 69,900 vs 66,100 ng*h/mL).
+m_auc <- setNames(auc_metab$sim, auc_metab$treatment)
+stopifnot(abs(m_auc[["300 mg q.d."]] / m_auc[["200 mg q.d."]] - 1) < 0.15)
+```
+
+Metabolite AUC, Cmax, Cmin and single-dose half-life match Tables 2 and 3
+closely, including the plateau in exposure between 200 and 300 mg q.d. The
+metabolite half-life after repeated q.d. dosing is shorter than observed
+(about 20 h against 26-27 h): a one-compartment metabolite with
+CL_M/F = 2.83 L/h and V_M/F = 78.3 L has a single half-life of 19 h.
+
+For filgotinib, Cmax and AUC are mostly within 20-40% of the published means,
+which is reasonable for six-subject arithmetic means against a simulated
+median. Three filgotinib quantities are starred systematically, and all three
+follow from the published parameter values rather than from the encoding:
+
+- **Tmax** is about 0.75 h against 2-3 h observed. With ka = 0.48 1/h and
+  CL_P/F / V_C/F = 2.4 1/h, the typical profile peaks within the first hour.
+  Namour 2015 reports that the model over-predicts "a number of samples ...
+  taken shortly after dosing" and attributes this to "the limited data
+  available in the absorption phase" (Results, discussion of Fig. 4).
+- **Half-life** is about 12 h against 5-6 h observed. The PK model is
+  two-compartmental, and its terminal phase (about 12 h for the typical
+  subject) stays above the LLOQ in the simulated profiles. The paper's NCA
+  half-lives used at least three points with adjusted R^2 >= 0.9 and vary
+  widely across arms (3.8-10.9 h).
+- **Cmin** is higher than observed (by up to about 85% at q.d. doses), as the
+  longer terminal phase implies.
+
+Table 6 is reproduced within about one percentage point (above), so the
+pSTAT1 predictions the paper used for dose selection are unaffected by these
+filgotinib NCA differences.
+
+# Covariate effects
+
+Two covariates change filgotinib exposure. Female sex (via V_C/F) changes only
+the early profile. RA patient status raises the relative bioavailability by
+21.6%, and body weight scales clearance. Typical steady-state exposures at
+200 mg q.d.:
+
+```{r covariates}
+cov_cases <- tibble::tribble(
+  ~case,                              ~WT, ~SEXF, ~DIS_RA,
+  "Male healthy volunteer, 75 kg",     75,     0,       0,
+  "Male healthy volunteer, 60 kg",     60,     0,       0,
+  "Female RA patient, 65 kg",          65,     1,       1
+) |>
+  mutate(id = seq_len(n()))
+ev_cov <- tidyr::crossing(
+  cov_cases,
+  bind_rows(
+    tibble(time = seq(0, 216, by = 24), amt = 200, evid = 1L, cmt = "depot", dvid = NA_integer_),
+    tibble(time = seq(216, 240, by = 0.1), amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  )
+) |>
+  mutate(DOSE_FILGOTINIB_MGD = 200) |>
+  arrange(id, time, desc(evid))
+sim_cov <- solve_typical(ev_cov, keep = "case")
+sim_cov |>
+  group_by(case) |>
+  summarise(
+    `Filgotinib Cmax (ng/mL)` = signif(max(Cc), 3),
+    `Filgotinib AUC0-24 (ng*h/mL)` = signif(sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2), 3),
+    `Metabolite AUC0-24 (ng*h/mL)` = signif(sum(diff(time) * (head(Cc_metab, -1) + tail(Cc_metab, -1)) / 2), 4),
+    `Mean pSTAT1 inhibition (%)` = signif(mean(100 * (1 - pstat1 / bl)), 3),
+    .groups = "drop"
+  ) |>
+  rename(Subject = case) |>
+  knitr::kable(caption = "Typical steady-state exposure and pSTAT1 inhibition at 200 mg q.d.")
+```
+
+# Assumptions and deviations
+
+- **FRAC orientation and scale.** The paper is internally inconsistent about
+  what FRAC multiplies. Eq. 1 forms the metabolite at
+  `FRAC * CL_P/F * C_P`, and the Table 4 legend defines FRAC as the "fraction
+  of filgotinib metabolized to its active metabolite at the respective doses".
+  The Results prose ("the fraction of filgotinib that is cleared through the
+  secondary pathway") and Figure 3 (metabolite formation at
+  `CL_P/V_C * (1 - FRAC)`) describe the complement. The model follows the
+  equation and the table legend. Table 4 footnote b marks FRAC as
+  "Probit-transformed", and the table prints the other transformed parameters
+  on their transformed (log) scale. So 0.375 and 0.363 are taken as probit
+  values, giving fm = pnorm(0.375) = 0.646 at 300 mg/day and 0.642 at
+  450 mg/day. The alternative reading (FRAC = 0.375 as a secondary-pathway
+  probability, fm = 0.625) gives almost the same exposure, but it reproduces
+  Table 6 slightly less well at 300 mg q.d. (minimum / mean inhibition 58.1 /
+  75.3% against the published 60.3 / 77.1%; this model gives 59.7 / 76.4%). The
+  data also support fm of about 0.64: dose-normalised metabolite AUC at 300 and
+  450 mg q.d. is 0.63 and 0.65 times that at 200 mg q.d. (Table 3).
+- **FRAC as a dose-level covariate.** FRAC was estimated for the 300 mg q.d. and
+  450 mg q.d. cohorts only, and every lower regimen has complete conversion.
+  The model selects it from the total daily dose (`DOSE_FILGOTINIB_MGD`):
+  fm = 1 below 300 mg/day, the 300 mg estimate from 300 to below 450 mg/day,
+  and the 450 mg estimate from 450 mg/day upwards. The paper gives no basis
+  for doses between the studied levels.
+- **Weight centring.** The paper used centred power functions but does not report
+  the centring weight. The maintainers used 75 kg, the weight of the typical
+  subject in all of the paper's simulations, so that the model returns the
+  published typical CL_P/F for that subject.
+- **Form of the categorical effects.** The paper entered binary covariates "as
+  factors" using PsN scm. The sex effect is encoded as
+  `V_C/F * (1 + 2.95 * SEXF)` (male reference), the same `(1 + theta)` form the
+  paper states for the RA effect on bioavailability. With these values,
+  females have a 3.95-fold larger V_C/F. The paper notes that sex is confounded
+  with study and patient status.
+- **Residual error.** Eq. 1 and Table 4 give proportional error for both
+  analytes. The Results text also says a combined additive/proportional error
+  was retained for the metabolite, but no additive variance is reported, so
+  the model follows the equation and table. The two proportional errors were
+  estimated as correlated (covariance 0.0684, correlation 0.44). nlmixr2
+  endpoints cannot share a correlated residual, so they are independent here.
+  This affects only simulated observations with residual error, not
+  individual predictions.
+- **Metabolite mass units.** Eq. 1 has no molecular-weight conversion between
+  parent and metabolite, so the metabolite is carried in filgotinib-mass
+  equivalents and the ratio is absorbed into CL_M/F and V_M/F. `Cc_metab` is
+  directly comparable with the measured metabolite ng/mL. The paper does not
+  name the metabolite.
+- **Virtual-cohort weights** are assumed (normal, mean 75 kg, SD 10 kg,
+  truncated to 55-100 kg); the paper reports only the BMI inclusion range.
+- **Errata and correspondence.** PubMed and Europe PMC list no erratum for this
+  article (checked 2026-11-24). It drew a letter (Srinivas, Clin Pharmacokinet
+  2015;54:1293-5, doi:10.1007/s40262-015-0335-6) and an author's reply
+  (Namour, Clin Pharmacokinet 2015;54:1297-8, doi:10.1007/s40262-015-0336-5).
+  The reply corrects no published value. It reports that a saturable
+  pre-systemic conversion of filgotinib to the metabolite, added on top of the
+  published secondary pathway, lowered the objective function by 14 points but
+  could not replace that pathway, and that it would not have changed the dose
+  selection. No parameter values are given for those alternative models, so
+  this page implements the published model. The reply describes the published
+  model as having a "dose-independent pre-systemic" conversion. Neither Eq. 1
+  nor Table 4 contains such a component, and Eq. 1 as printed reproduces the
+  paper's Table 6 simulations within about one percentage point (above).

@@ -8362,7 +8362,7 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Type:** metabolite-suffix
 - **Role:** Generic metabolite suffix used by template / placeholder models that track an unnamed metabolite.
 - **Source aliases:** none.
-- **Example models:** `NA_NA_sunitinib.R`, `Chou_2022_penicillinG_cattle_pbpk.R`, `Chou_2022_penicillinG_swine_pbpk.R` (the pooled, unnamed penicillin G metabolites of a whole-body PBPK model whose metabolite submodel only matters because its biliary excretion re-enters the gut as parent).
+- **Example models:** `NA_NA_sunitinib.R`, `Chou_2022_penicillinG_cattle_pbpk.R`, `Chou_2022_penicillinG_swine_pbpk.R` (the pooled, unnamed penicillin G metabolites of a whole-body PBPK model whose metabolite submodel only matters because its biliary excretion re-enters the gut as parent), `Namour_2015_filgotinib.R` (the active metabolite of filgotinib, which Namour 2015 never names: `central_metab`, `lcl_metab` / `lvc_metab`, `Cc_metab`, `propSd_metab`, and the PD potency `lic50_metab`).
 - **Notes:** Documented as "the active metabolite of the parent drug" without naming a specific INN. Use it only when the source does not name the metabolite; a named metabolite takes its own suffix.
 
 ### udca (**canonical ursodeoxycholic acid suffix**)
