@@ -158,11 +158,11 @@ typical_model <- function(drug) {
   mod
 }
 
-# The ODE solver underflows to non-finite values in the extreme tail (many orders
-# of magnitude below Cmax) and can return tiny negative excursions. Both are
-# numerical, not structural: clamp them so downstream NCA is well behaved.
+# Concentrations must be finite. Once a state has decayed to ~0 the solver can
+# return negative excursions far below atol; check they are negligible against
+# Cmax, then clamp them so downstream NCA is well behaved.
 clean_conc <- function(y) {
-  y[!is.finite(y)] <- 0
+  stopifnot(all(is.finite(y)), all(y >= -1e-9 * max(y)))
   pmax(y, 0)
 }
 
@@ -235,7 +235,11 @@ first-order oral / subcutaneous absorption, and quinidine's 101 min zero-order i
 rather than an artificial infusion.
 
 ```{r gate2-sim}
-obs_grid <- sort(unique(c(0, exp(seq(log(0.01), log(1e5), length.out = 3000)))))
+# Log-spaced to 3e4 min (~21 days): every AUC ratio below changes by < 0.001%
+# beyond it. Much longer is not representable: quinidine (plasma t1/2 ~44 min)
+# falls ~300 orders of magnitude by 5e4 min, to the bottom of the double range,
+# where the solver returns NaN.
+obs_grid <- sort(unique(c(0, exp(seq(log(0.01), log(3e4), length.out = 3000)))))
 
 sims <- lapply(drugs, function(d) {
   mod <- typical_model(d)

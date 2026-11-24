@@ -147,28 +147,29 @@ The baseline-ANC sanity check confirms numerical agreement between the model's c
 
 # Mechanistic sanity: virtual cohort
 
-Because the source PDFs were not available when this model was built and the bundle's CSV is a 1-subject regression dataset, validation extends to a synthetic 200-subject virtual cohort that exercises the full covariate-and-IIV machinery on a typical docetaxel infusion cycle. The cohort and the synthetic exposure curve serve a mechanistic-sanity role, not a quantitative cross-check against published trial data.
+Because the source PDFs were not available when this model was built and the bundle's CSV is a 1-subject regression dataset, validation extends to a synthetic 200-subject virtual cohort that exercises the full covariate-and-IIV machinery on a typical docetaxel infusion cycle. The cohort, driven by the bundle's docetaxel exposure curve, serves a mechanistic-sanity role, not a quantitative cross-check against published trial data.
 
 ```{r virtual_cohort}
 set.seed(20260506)
 
 n_sub <- 200L
 
-# Synthetic Bruno-style docetaxel exposure curve - 100 mg/m^2 IV over 1 h,
-# triexponential decay scaled to the bundle's peak Cmax ~3 mg/L. The exact
-# functional form mirrors the bundle's CSV, which already encodes a
-# Bruno-style trajectory.
+# Docetaxel exposure for one cycle: the CP column (mg/L) of the bundle's
+# Simulated_myelosuppression_dailyANC.csv, i.e. the docetaxel trajectory the
+# bundle feeds this PD model (Cmax 2.97 mg/L at the end of infusion, terminal
+# half-life ~11.7 h, zero from 72 h). Linear between records; every record time
+# is also an event row and the solve interpolates CP_MGL linearly, so the
+# model sees exactly this curve.
+cp_knots <- data.frame(
+  time   = c(0, 0.22, 0.44, 0.89, 1.33, 1.42, 1.52, 1.61, 1.66, 2, 2.33,
+             13, 24.7, 36.3, 48, 59.7, 72),
+  CP_MGL = c(0, 2.01, 2.55, 2.86, 2.97, 1.79, 1.15, 0.794, 0.665, 0.292, 0.17,
+             0.034, 0.017, 0.008, 0.004, 0.002, 0)
+)
 docetaxel_cp <- function(time_h) {
-  # Constant 3 mg/L during the 1-h infusion, then triexp with Cmax 3 mg/L
-  # at end of infusion and ~tail half-lives of 4 h / 36 h (typical docetaxel
-  # mean residence times). Set to 0 outside the cycle window of 504 h.
-  cp <- ifelse(time_h <= 1,
-               3 * time_h,        # linear ramp during 1-h infusion
-               3 * (0.4 * exp(-log(2) * (time_h - 1) / 0.5) +
-                    0.4 * exp(-log(2) * (time_h - 1) / 4) +
-                    0.2 * exp(-log(2) * (time_h - 1) / 36)))
-  ifelse(time_h <= 504, cp, 0)
+  approx(cp_knots$time, cp_knots$CP_MGL, xout = time_h, rule = 2)$y
 }
+trapz <- function(x, y) sum(diff(x) * (head(y, -1) + tail(y, -1)) / 2)
 
 # Covariate distribution loosely calibrated against the typical Kloft 2006
 # / Netterberg 2017 cancer-cohort demographics: ~50% female, ~30% with ECOG
@@ -183,7 +184,12 @@ subjects <- tibble(
   AAG              = exp(rnorm(n_sub, mean = log(1.34), sd = 0.40))
 )
 
-obs_times <- seq(0, 504, by = 6)  # ~3 weeks, every 6 h - enough to resolve nadir
+# ~3 weeks every 6 h (resolves the nadir) plus the exposure record times.
+obs_times <- sort(unique(c(seq(0, 504, by = 6), cp_knots$time)))
+
+# The event grid carries the whole exposure: its AUC equals the bundle curve's.
+auc_cp <- trapz(cp_knots$time, cp_knots$CP_MGL)
+stopifnot(isTRUE(all.equal(trapz(obs_times, docetaxel_cp(obs_times)), auc_cp)))
 
 events <- subjects |>
   tidyr::crossing(time = obs_times) |>
@@ -192,30 +198,30 @@ events <- subjects |>
   rename(ID = id, TIME = time)
 ```
 
+The exposure curve's AUC is `r sprintf("%.2f", auc_cp)` mg.h/L.
+
 ```{r virtual_simulate}
-sim_cohort <- rxode2::rxSolve(mod, events) |>
+sim_cohort <- rxode2::rxSolve(mod, events, covsInterpolation = "linear") |>
   as.data.frame()
 ```
 
 ```{r mechanistic_summary}
 # Per-subject summaries: baseline (TIME = 0), nadir (deepest ANC), time to
 # nadir, time to recovery to >= baseline, and minimum percent-of-baseline.
-# A small minority of IIV draws may produce extreme proliferation-feedback
-# excursions (the linear (1 - SL * CP_MGL) drug effect is unbounded above);
-# filter those out before summarizing.
+# The Friberg chain keeps every state positive, so every subject's ANC
+# trajectory must be finite and positive; none is dropped.
+stopifnot(all(is.finite(sim_cohort$ANC)), all(sim_cohort$ANC > 0))
 mech <- sim_cohort |>
   group_by(id) |>
   summarise(
     baseline    = ANC[time == 0],
-    nadir       = min(ANC, na.rm = TRUE),
+    nadir       = min(ANC),
     nadir_time  = time[which.min(ANC)],
-    finite_traj = all(is.finite(ANC)) && all(ANC > 0),
     .groups     = "drop"
   ) |>
   mutate(
     pct_of_base = nadir / baseline * 100
-  ) |>
-  filter(finite_traj)
+  )
 
 n_finite <- nrow(mech)
 
@@ -248,7 +254,7 @@ mech_summary <- mech |>
 knitr::kable(mech_summary, caption = "Virtual-cohort mechanistic summary (n = 200, 100 mg/m^2 IV docetaxel cycle).")
 ```
 
-```{r virtual_plot, fig.cap = "Virtual-cohort ANC trajectory: typical Friberg myelosuppression-and-recovery shape after a single 100 mg/m^2 IV docetaxel infusion. Median (solid) with 5-95th percentile band (shaded) over 200 simulated subjects (subjects with non-finite trajectories from extreme IIV draws are excluded). The horizontal dashed line marks ANC = 0.5 x 10^9 cells/L (Grade 4 neutropenia threshold)."}
+```{r virtual_plot, fig.cap = "Virtual-cohort ANC trajectory: typical Friberg myelosuppression-and-recovery shape after a single 100 mg/m^2 IV docetaxel infusion. Median (solid) with 5-95th percentile band (shaded) over 200 simulated subjects. The horizontal dashed line marks ANC = 0.5 x 10^9 cells/L (Grade 4 neutropenia threshold)."}
 sim_cohort |>
   filter(id %in% mech$id) |>
   group_by(time) |>
@@ -285,7 +291,7 @@ sim_cohort |>
        title = "Median ANC trajectory stratified by AAG quartile")
 ```
 
-The mechanistic-sanity panel reproduces the canonical chemotherapy-induced myelosuppression shape: a 24-48 h lag while transit pools propagate the drug effect, a deep nadir at days 7-10 with median ~80% reduction from baseline, and full recovery to baseline within ~3 weeks (the standard docetaxel cycle length). The AAG-stratified panel shows the published direction-of-effect: high-AAG subjects start at a higher baseline (the Kloft 2006 high-AAG slope `+0.495 / (g/L)` above the 1.34 g/L breakpoint dominates the BACOV factor) and show a relatively shallower percentage drop at nadir.
+The mechanistic-sanity panel reproduces the canonical chemotherapy-induced myelosuppression shape: a 24-48 h lag while transit pools propagate the drug effect, a deep nadir at a median of day `r sprintf("%.1f", median(mech$nadir_time) / 24)` with a median `r sprintf("%.0f", 100 - median(mech$pct_of_base))`% reduction from baseline, and recovery to baseline within ~3 weeks (the standard docetaxel cycle length) in `r sprintf("%.0f", mean(mech$recovered) * 100)`% of subjects. The AAG-stratified panel shows the published direction-of-effect: high-AAG subjects start at a higher baseline (the Kloft 2006 high-AAG slope `+0.495 / (g/L)` above the 1.34 g/L breakpoint dominates the BACOV factor) and show a relatively shallower percentage drop at nadir.
 
 # Why no PKNCA section
 

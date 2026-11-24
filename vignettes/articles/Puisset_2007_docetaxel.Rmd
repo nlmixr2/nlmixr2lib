@@ -98,18 +98,21 @@ The Puisset 2007 PD analysis used individual Bayesian-posthoc plasma docetaxel c
 ```{r exposure_curve}
 # Synthetic docetaxel CP curve scaled to a 1-h IV infusion of 150 mg (the
 # Figure 4 caption: "patient receiving a mean dose of 150 mg, 85 mg/m^2 for
-# a patient with BSA 1.77 m^2"). The functional form mirrors the Bruno 1996
-# / Friberg 2002 docetaxel population (triexponential decay; mean residence
-# times ~0.5 h, ~4 h, ~36 h). Cmax ~3.5 mg/L during infusion is consistent
-# with Bruno 1996 typical-subject concentrations.
+# a patient with BSA 1.77 m^2"). The post-infusion fractions and half-lives
+# (0.64 / 0.335 / 0.025 of Cmax; 0.086 h / 0.31 h / 11.4 h) are a log-scale
+# least-squares fit to the docetaxel CP trajectory in the DDMORE bundle of
+# DDMODEL00000224 (see the Netterberg 2017 article). Cmax 3.5 mg/L at the end
+# of infusion gives an AUC of ~4.0 mg.h/L, close to the paper's mean 4.1 (1.9-8.7)
+# mg.h/L (Results page 293).
 docetaxel_cp <- function(time_h, cmax = 3.5, cycle_len_h = 504) {
   cp_during <- cmax * pmin(time_h, 1)         # linear ramp during 1-h infusion
-  cp_post   <- cmax * (0.4 * exp(-log(2) * (time_h - 1) / 0.5) +
-                       0.4 * exp(-log(2) * (time_h - 1) / 4) +
-                       0.2 * exp(-log(2) * (time_h - 1) / 36))
+  cp_post   <- cmax * (0.64  * exp(-log(2) * (time_h - 1) / 0.086) +
+                       0.335 * exp(-log(2) * (time_h - 1) / 0.31) +
+                       0.025 * exp(-log(2) * (time_h - 1) / 11.4))
   cp <- ifelse(time_h <= 1, cp_during, cp_post)
   ifelse(time_h <= cycle_len_h, cp, 0)
 }
+trapz <- function(x, y) sum(diff(x) * (head(y, -1) + tail(y, -1)) / 2)
 
 cp_check <- tibble(time = c(seq(0, 1, by = 0.05), seq(1.1, 24, by = 0.5), seq(25, 504, by = 6)))
 cp_check$CP_MGL <- docetaxel_cp(cp_check$time)
@@ -121,15 +124,22 @@ ggplot(cp_check, aes(time, CP_MGL)) +
   labs(x = "Time post infusion start (h)",
        y = "Synthetic docetaxel CP_MGL (mg/L, log scale)",
        title = "Bruno-style synthetic exposure curve",
-       caption = "150 mg IV over 1 h; Cmax ~3.5 mg/L; triexponential decay with t_(1/2) ~0.5 / 4 / 36 h.")
+       caption = "150 mg IV over 1 h; Cmax 3.5 mg/L; triexponential decay with t_(1/2) 0.086 / 0.31 / 11.4 h.")
 ```
 
 ```{r build_events}
 # ANC observations: weekly the first 4 weeks (per Methods: 'complete blood
 # cell counts were performed weekly after the first cycle'), then sparser.
 # We add denser sampling in the first 14 days to resolve the nadir clearly.
+# The exposure rows (every 5 min to 3 h, then hourly to 24 h) let the solves
+# interpolate CP_MGL linearly through the infusion and the fast decay phases.
 t_anc <- sort(unique(c(seq(0, 14 * 24, by = 6),
-                       seq(15 * 24, 28 * 24, by = 24))))
+                       seq(15 * 24, 28 * 24, by = 24),
+                       seq(0, 3, by = 1 / 12), 4:24)))
+
+# The AUC the solves see matches the paper's mean docetaxel AUC 4.1 mg.h/L.
+auc_cp <- trapz(t_anc, docetaxel_cp(t_anc))
+stopifnot(abs(auc_cp / 4.1 - 1) < 0.05)
 
 events <- subjects |>
   tidyr::crossing(time = t_anc) |>
@@ -143,15 +153,19 @@ events <- subjects |>
 mod         <- readModelDb("Puisset_2007_docetaxel")
 mod_typical <- rxode2::zeroRe(mod)
 
-sim_typical <- rxode2::rxSolve(mod_typical, events = events,
+sim_typical <- rxode2::rxSolve(mod_typical, events = events, covsInterpolation = "linear",
                                keep = c("AAG", "PRIOR_CHEMO_LINES_GE2",
                                         "STUDY_TOULOUSE", "CP_MGL")) |>
   as.data.frame()
 
-sim_vpc <- rxode2::rxSolve(mod, events = events, nStud = 1L,
+sim_vpc <- rxode2::rxSolve(mod, events = events, nStud = 1L, covsInterpolation = "linear",
                            keep = c("AAG", "PRIOR_CHEMO_LINES_GE2",
                                     "STUDY_TOULOUSE", "CP_MGL")) |>
   as.data.frame()
+
+# The Friberg chain keeps every state positive, so every subject's ANC
+# trajectory must be finite and positive; none is dropped.
+stopifnot(all(is.finite(sim_vpc$ANC)), all(sim_vpc$ANC > 0))
 ```
 
 # Replicate published figures
@@ -174,7 +188,7 @@ events_ref <- ref_subjects |>
   mutate(CP_MGL = docetaxel_cp(time), evid = 0L) |>
   arrange(id, time)
 
-sim_ref <- rxode2::rxSolve(mod_typical, events = events_ref,
+sim_ref <- rxode2::rxSolve(mod_typical, events = events_ref, covsInterpolation = "linear",
                            keep = c("AAG", "PRIOR_CHEMO_LINES_GE2",
                                     "STUDY_TOULOUSE", "CP_MGL")) |>
   as.data.frame()
@@ -190,7 +204,7 @@ ggplot(sim_ref, aes(time / 24, ANC)) +
        caption = "Reference subject: AAG = 1.29 g/L (cohort mean), PRIOR_CHEMO_LINES_GE2 = 0, STUDY_TOULOUSE = 0; 150 mg IV over 1 h.")
 ```
 
-The trajectory exhibits the canonical Friberg myelosuppression-and-recovery shape: a 5-7 day lag while transit pools propagate the drug effect, a deep nadir around day 7-9 (~10-20% of baseline), and recovery toward baseline by 3 weeks driven by the (Circ0/circ)^gamma feedback term.
+The trajectory exhibits the canonical Friberg myelosuppression-and-recovery shape: a 5-7 day lag while transit pools propagate the drug effect, a nadir of `r sprintf("%.2f", min(sim_ref$ANC))` x 10^9 cells/L (`r sprintf("%.0f", 100 * min(sim_ref$ANC) / sim_ref$ANC[1])`% of baseline) on day `r sprintf("%.1f", sim_ref$time[which.min(sim_ref$ANC)] / 24)`, and recovery toward baseline by 3 weeks driven by the (Circ0/circ)^gamma feedback term. The published Figure 4 curve has its minimum near 2 x 10^9 cells/L around day 9 and is back near baseline by day 21.
 
 ## Figure 6A: covariate effect of AAG on the ANC profile
 
@@ -214,7 +228,7 @@ events_aag <- aag_strata |>
   mutate(CP_MGL = docetaxel_cp(time), evid = 0L) |>
   arrange(id, time)
 
-sim_aag <- rxode2::rxSolve(mod_typical, events = events_aag,
+sim_aag <- rxode2::rxSolve(mod_typical, events = events_aag, covsInterpolation = "linear",
                            keep = c("cohort", "AAG",
                                     "PRIOR_CHEMO_LINES_GE2",
                                     "STUDY_TOULOUSE", "CP_MGL")) |>
@@ -234,7 +248,7 @@ ggplot(sim_aag, aes(time / 24, ANC, colour = cohort)) +
        caption = "150 mg IV over 1 h; PRIOR_CHEMO_LINES_GE2 = 0, STUDY_TOULOUSE = 0.")
 ```
 
-The low-AAG profile (top curve at nadir) reaches a higher (less severe) nadir than the high-AAG profile in this PD-only model. Note: Puisset 2007's text reads the opposite direction once the simultaneous PK effect of AAG on CL is considered (high AAG decreases CL, raising AUC, which mostly offsets the AAG-on-Slope effect); the paper concludes from this near-cancellation that dose individualisation by baseline AAG is not warranted. The PD-only plot above isolates the slope effect without the PK feedback because `CP_MGL` here is held fixed across AAG strata; see Assumptions and deviations for the rationale.
+The high-AAG profile (top curve at nadir) reaches a higher (less severe) nadir than the low-AAG profile in this PD-only model. Note: Puisset 2007's text reads the opposite direction once the simultaneous PK effect of AAG on CL is considered (high AAG decreases CL, raising AUC, which mostly offsets the AAG-on-Slope effect); the paper concludes from this near-cancellation that dose individualisation by baseline AAG is not warranted. The PD-only plot above isolates the slope effect without the PK feedback because `CP_MGL` here is held fixed across AAG strata; see Assumptions and deviations for the rationale.
 
 ## Figure 6B: covariate effect of PRIOR_CHEMO_LINES_GE2 on the ANC profile
 
@@ -254,7 +268,7 @@ events_ptt <- ptt_strata |>
   mutate(CP_MGL = docetaxel_cp(time), evid = 0L) |>
   arrange(id, time)
 
-sim_ptt <- rxode2::rxSolve(mod_typical, events = events_ptt,
+sim_ptt <- rxode2::rxSolve(mod_typical, events = events_ptt, covsInterpolation = "linear",
                            keep = c("cohort", "AAG",
                                     "PRIOR_CHEMO_LINES_GE2",
                                     "STUDY_TOULOUSE", "CP_MGL")) |>
@@ -280,7 +294,6 @@ The PRIOR_CHEMO_LINES_GE2 = 1 curve (deeper nadir) reproduces the qualitative di
 
 ```{r virtual_vpc, fig.cap = "Virtual-cohort ANC trajectory: 200 simulated subjects with sampled AAG, PRIOR_CHEMO_LINES_GE2, and STUDY_TOULOUSE drawn from the Table 1 distribution. Median (solid) with 5-95th percentile band (shaded). Horizontal dashed line at ANC = 0.5 x 10^9 cells/L marks Grade 4 neutropenia."}
 sim_vpc |>
-  filter(is.finite(ANC), ANC > 0) |>
   group_by(time) |>
   summarise(
     Q05 = quantile(ANC, 0.05, na.rm = TRUE),
@@ -302,22 +315,20 @@ sim_vpc |>
 
 # Mechanistic summary
 
-Per-subject summaries on the virtual cohort: baseline (TIME = 0), nadir, time to nadir, recovery to baseline by 28 days. A small minority of IIV draws may produce extreme proliferation-feedback excursions (the linear Slope * CP_MGL drug effect is unbounded above); subjects with non-finite trajectories are excluded from the summary.
+Per-subject summaries on the virtual cohort: baseline (TIME = 0), nadir, time to nadir, recovery to baseline by 28 days. Every simulated subject has a finite, positive ANC trajectory (checked after the solve), so none is excluded.
 
 ```{r mechanistic_summary}
 mech <- sim_vpc |>
   group_by(id) |>
   summarise(
     baseline    = ANC[time == 0],
-    nadir       = min(ANC, na.rm = TRUE),
+    nadir       = min(ANC),
     nadir_time  = time[which.min(ANC)],
-    finite_traj = all(is.finite(ANC)) && all(ANC > 0),
     .groups     = "drop"
   ) |>
   mutate(
-    pct_of_base = ifelse(baseline > 0, nadir / baseline * 100, NA_real_)
-  ) |>
-  filter(finite_traj)
+    pct_of_base = nadir / baseline * 100
+  )
 
 n_finite <- nrow(mech)
 
@@ -359,11 +370,11 @@ A future companion vignette could pair this PD model with a docetaxel popPK upst
 
 - **Table 3 final-model "AGE" vs "AAG" typo.** Puisset 2007 Table 3's `Final model` row prints `Slope = theta1 * (AGE / 1.29)^theta2 * theta3^PTT2 * theta4^CEN`. The reference value 1.29 is the cohort-mean alpha-1 acid glycoprotein (Table 1: mean AAG 1.29 g/L; range 0.46-2.98), NOT age (cohort mean age 60.7 years). The intermediate-model row immediately above Table 3's final-model row carries both `(AGE / 60.7)^theta2` and `(AAG / 1.29)^theta3` separately. The Analysis-of-covariates section on page 293 states: "The absolute theta value corresponding to AGE was not significantly different from 0. The final covariate model was based on PTT2, AAG, and CEN since their corresponding CIs excluded the 0 value". The Discussion (page 293) confirms: "the figure for patients treated at the Toulouse Centre was 82%, and was nearly inversely proportional to the AAG level". The "AGE" in the Table 3 final-model row is therefore a typographical error for AAG. This model encodes the intended `(AAG / 1.29)^theta2` form. No formal corrigendum was published to BJC 2007; the typo is documented inline in the model file and here.
 
-- **PD-only model coupled with a synthetic docetaxel exposure curve in the vignette.** Puisset 2007 fitted the PK and PD layers in two sequential NONMEM runs: first a popPK analysis of docetaxel plasma concentrations using the Bayesian estimation method of Baille et al 1997 (which itself wraps the Bruno et al 1996 docetaxel popPK structural model), then a PD analysis of ANC vs time using each subject's individual Bayesian posthoc PK profile. The Baille 1997 and Bruno 1996 PK structural models were not available when this model was built, so the upstream docetaxel PK is not encoded inside `Puisset_2007_docetaxel.R`. The validation vignette substitutes a Bruno-style triexponential synthetic exposure curve (Cmax ~3.5 mg/L during a 150 mg / 1 h IV infusion; mean residence times ~0.5 / 4 / 36 h) calibrated to the paper's mean CL 40 L/h and mean AUC 4.1 mg.h/L. Users wishing to couple with a registered docetaxel popPK can use `modellib("Ozawa_2007_docetaxel")` (Japanese cohort, 3-compartment Bruno-derived PK plus a separate Friberg-extension PD) or `modellib("Netterberg_2017_docetaxel")` (PD-only DDMORE bundle), supplying the PK output Cc as the `CP_MGL` covariate column for this model.
+- **PD-only model coupled with a synthetic docetaxel exposure curve in the vignette.** Puisset 2007 fitted the PK and PD layers in two sequential NONMEM runs: first a popPK analysis of docetaxel plasma concentrations using the Bayesian estimation method of Baille et al 1997 (which itself wraps the Bruno et al 1996 docetaxel popPK structural model), then a PD analysis of ANC vs time using each subject's individual Bayesian posthoc PK profile. The Baille 1997 and Bruno 1996 PK structural models were not available when this model was built, so the upstream docetaxel PK is not encoded inside `Puisset_2007_docetaxel.R`. The validation vignette substitutes a Bruno-style triexponential synthetic exposure curve (Cmax 3.5 mg/L at the end of a 150 mg / 1 h IV infusion; post-infusion half-lives 0.086 / 0.31 / 11.4 h) calibrated to the paper's mean AUC 4.1 mg.h/L. Users wishing to couple with a registered docetaxel popPK can use `modellib("Ozawa_2007_docetaxel")` (Japanese cohort, 3-compartment Bruno-derived PK plus a separate Friberg-extension PD) or `modellib("Netterberg_2017_docetaxel")` (PD-only DDMORE bundle), supplying the PK output Cc as the `CP_MGL` covariate column for this model.
 
 - **AAG figure isolates only the PD effect, not the simultaneous PK effect.** Figure 6A's published interpretation in the paper accounts for both the AAG effect on Slope (which decreases ANC sensitivity when AAG increases) and the AAG effect on docetaxel CL (which decreases CL when AAG increases, raising AUC). These two effects partially cancel, so the net AAG effect on the observed ANC profile is small (Discussion page 294). The Figure 6A panel in this vignette holds CP_MGL fixed across AAG strata, isolating only the PD effect; the PK effect is intentionally not propagated because the upstream PK is supplied externally. Users coupling with a docetaxel popPK that re-encodes the AAG-on-CL effect will recover the paper's near-cancellation pattern.
 
-- **Synthetic exposure-curve calibration.** The triexponential `docetaxel_cp(time_h)` function in the cohort chunk is calibrated to Cmax ~3.5 mg/L at end of the 1-h infusion and to the Bruno 1996 / Friberg 2002 docetaxel population mean residence times of ~0.5 / 4 / 36 h. The actual cohort docetaxel AUC under this curve is ~4-5 mg.h/L, consistent with the paper's reported mean (range) AUC of 4.1 (1.9-8.7) mg.h/L. The synthetic curve does not include between-subject variability in PK; for a more realistic validation, couple with a registered docetaxel popPK as noted above.
+- **Synthetic exposure-curve calibration.** The triexponential `docetaxel_cp(time_h)` function in the cohort chunk is calibrated to Cmax 3.5 mg/L at the end of the 1-h infusion; its post-infusion fractions and half-lives (0.64 / 0.335 / 0.025 of Cmax; 0.086 / 0.31 / 11.4 h) are a log-scale fit to the docetaxel trajectory in the DDMODEL00000224 bundle (the exposure used in the Netterberg 2017 article). The AUC the solves see is `r sprintf("%.2f", auc_cp)` mg.h/L, asserted within 5% of the paper's reported mean (range) AUC of 4.1 (1.9-8.7) mg.h/L. With this exposure the typical-value profile tracks the published Figure 4 curve (nadir near 2 x 10^9 cells/L around day 8-9). The synthetic curve does not include between-subject variability in PK; for a more realistic validation, couple with a registered docetaxel popPK as noted above.
 
 - **STUDY_TOULOUSE is an analytical-bias covariate, not a clinical covariate.** The +82% Slope effect for `STUDY_TOULOUSE = 1` is acknowledged by the authors (Discussion page 293) as most likely reflecting an HPLC underestimation of plasma docetaxel in Toulouse plus a coarser PK sampling schedule (4 sampling times vs 3 in Paris). For typical-value simulation outside the Puisset 2007 cohort, leave `STUDY_TOULOUSE = 0` (Paris reference); a corresponding +70% CEN effect on docetaxel CL in the same paper's PK analysis (CL = 31.3 * (AAG/1.29)^(-0.412) * 1.7^CEN) is the PK-side companion of this PD-side effect, and one would normally couple both, but neither effect is generalisable.
 
