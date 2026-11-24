@@ -1,0 +1,395 @@
+---
+title: "Eculizumab (Gatault 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Eculizumab (Gatault 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Gatault_2015_eculizumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Gatault_2015_eculizumab"))$description`
+* Article: <https://doi.org/10.1080/19420862.2015.1086049> (open access, PMC4966484)
+
+Gatault et al. measured free serum eculizumab troughs in nine adults on
+maintenance therapy and fitted a one-compartment model with parallel linear
+and Michaelis-Menten elimination in Monolix 4.3.2. Clearance depends on body
+weight. A separate in vitro regression links free eculizumab to terminal
+complement activity (C9 neoantigen ELISA). The authors combined the two to
+project steady-state troughs and complement activity against body weight for
+1200 mg given every 14, 28 or 42 days (their Figure 4). Both parts are
+packaged here: `Cc` is free eculizumab (ug/mL) and `tca` is the predicted
+terminal complement activity (arbitrary units).
+
+# Population
+
+Nine adults (median age 40.9 years, range 23.9-67.0; 7 female; all Caucasian)
+treated at Tours University Hospital, France: seven with atypical
+hemolytic-uremic syndrome (aHUS; two kidney transplant recipients) and two with
+paroxysmal nocturnal hemoglobinuria (PNH) (Table 1). Weights were 50-92 kg,
+median 63 kg (Table 2). Dosing followed the label: aHUS 900 mg weekly for 4
+weeks, 1200 mg at week 5, then 1200 mg every 2 weeks; PNH 600 mg weekly for 4
+weeks, 900 mg at week 5, then 900 mg every 2 weeks. 97 stored pre-infusion
+samples were assayed, with a dense inter-infusion profile in Patient 6 and
+post-discontinuation samples in Patient 2.
+
+The same information is available programmatically via
+`readModelDb("Gatault_2015_eculizumab")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lvc` | log(3.2 L) | Results, 'Eculizumab clearance' (RSE 10%) |
+| `lcl` | log(0.18 L/day) at 63 kg | Results, 'Eculizumab clearance' (RSE 7%) |
+| `lvmax` | log(5.0 mg/day) | Results (printed '5.0 mg/L/day', RSE 4%); unit read as an amount rate, see Assumptions |
+| `lkm` | log(1.1 ug/mL) | Results (printed '1.1 mg/L', RSE 33%) |
+| `e_wt_cl` | 2.5 | Results: 'beta_WT = 2.5, p<0.0001'; covariate model in Methods, 'Pharmacokinetic study' |
+| Reference weight | 63 kg | Median of the Table 2 weights; Results call 63 kg 'medium-weight' |
+| `etalvc` | 0.150^2 = 0.0225 | Results: IIV SD of V 15.0% |
+| `etalcl` | 0.146^2 = 0.021316 | Results: IIV SD of CL 14.6% |
+| No IIV on Vm, Km | -- | Results; Supplement 'Results for the base model' (variances set to 0, shrinkage > 90%) |
+| `propSd` | 0.25 | Results: proportional SD 0.25 (RSE 1.6%); Supplement: proportional error retained |
+| `lrbase_tca` | log(20.6) | Methods: A = 20.6 x exp(-0.084 x C); Figure 5 |
+| `lslope_tca` | log(0.084 mL/ug) | Same equation |
+| `d/dt(central) = -CL/V * central - Vm * C/(Km + C)` | -- | Methods and Supplement 'Structural model' (one compartment, first-order + Michaelis-Menten elimination) |
+| `CL = 0.18 * (WT/63)^2.5` | -- | Methods covariate model; power form confirmed from Figure 4 (below) |
+| `tca = 20.6 * exp(-0.084 * Cc)` | -- | Methods, 'Measurement of eculizumab trough levels' |
+
+# Typical-value helpers
+
+```{r helpers}
+mod <- readModelDb("Gatault_2015_eculizumab")
+mod_typ <- rxode2::zeroRe(mod)
+
+# Steady-state trough: dose every `ii` days until `horizon`, observe just
+# before the next (omitted) dose. 2520 days is a common multiple of 14, 28 and
+# 42 and more than 30 linear half-lives at the lightest weight simulated.
+ss_trough <- function(model, wt, dose, ii, horizon = 2520) {
+  ev <- data.frame(
+    id = 1L, time = c(seq(0, horizon - ii, by = ii), horizon),
+    evid = c(rep(1L, horizon / ii), 0L),
+    amt = c(rep(dose, horizon / ii), 0), cmt = "central", WT = wt
+  )
+  s <- rxode2::rxSolve(model, events = ev, rtol = 1e-10, atol = 1e-10)
+  as.data.frame(s)[nrow(s), c("Cc", "tca")]
+}
+```
+
+# Replicate Figure 2: washout after discontinuation (Patient 2)
+
+Patient 2 (54 kg, aHUS) stopped eculizumab after more than three years of
+1200 mg every 14 days. The paper prints the concentrations 54 and 62 days
+after the last infusion (90 and 38 ug/mL); the other points were digitised by
+the maintainers from Figure 2.
+
+```{r figure-2}
+fig2_obs <- data.frame(
+  time = c(0, 25, 39, 54, 62, 67, 81, 95),
+  Cc = c(467, 255, 137, 90, 38, 0, 0, 0)
+)
+washout <- function(model) {
+  t_last <- 1400
+  ev <- rbind(
+    data.frame(time = seq(0, t_last, by = 14), evid = 1L, amt = 1200),
+    data.frame(time = t_last + seq(0.01, 100, by = 0.5), evid = 0L, amt = 0)
+  )
+  ev$id <- 1L
+  ev$cmt <- "central"
+  ev$WT <- 54
+  s <- as.data.frame(rxode2::rxSolve(model, events = ev))
+  s$time <- s$time - t_last
+  s
+}
+fig2_sim <- washout(mod_typ)
+
+ggplot(fig2_sim, aes(time, Cc)) +
+  geom_line() +
+  geom_point(data = fig2_obs, shape = 18, size = 3) +
+  geom_hline(yintercept = 50, linetype = "dashed") +
+  labs(
+    x = "Days after last eculizumab infusion", y = "Free eculizumab (ug/mL)",
+    title = "Figure 2: Patient 2 after discontinuation",
+    caption = "Line: typical 54-kg patient from the packaged model. Points: Figure 2."
+  )
+
+at <- function(s, t) approx(s$time, s$Cc, xout = t)$y
+fig2_cmp <- fig2_obs |>
+  filter(time %in% c(25, 39, 54, 62)) |>
+  mutate(sim = at(fig2_sim, time), pct_diff = 100 * (sim / Cc - 1))
+knitr::kable(fig2_cmp, digits = 1, caption = "Typical-value washout vs Figure 2.")
+# Deterministic typical-value solve against the observed points: about
+# +20 / +19 / -18 / +16 %. A Vm, V or CL slip moves these by far more.
+stopifnot(all(abs(fig2_cmp$pct_diff) < 30))
+```
+
+The typical 54-kg patient follows the observed decline within about 20%,
+including the accelerating fall below ~50 ug/mL where the saturable pathway
+dominates.
+
+# Steady-state troughs by patient (Table 2, Figure 1)
+
+Each Table 2 patient is simulated at their own weight and maintenance dose
+(1200 mg every 14 days for aHUS, 900 mg every 14 days for PNH) with 100
+virtual subjects carrying the model's IIV. Doses are given as IV bolus over
+50 intervals (700 days, at least 9 linear half-lives at every Table 2
+weight), and the last interval (day 686-700) goes to PKNCA. The induction
+phase does not affect steady state and is omitted.
+
+```{r cohort}
+tab2 <- data.frame(
+  patient = 1:9,
+  WT = c(63, 54, 50, 92, 59, 56, 81, 65, 87),
+  disease = c(rep("aHUS", 7), "PNH", "PNH"),
+  dose = c(rep(1200, 7), 900, 900),
+  obs_trough = c(468, 468, 733, 55, 376, 366, 107, 187, 161)
+) |>
+  mutate(treatment = sprintf("Pt %d (%s, %g kg, %g mg)", patient, disease, WT, dose))
+
+n_per <- 100L
+make_patient <- function(i) {
+  p <- tab2[i, ]
+  ids <- (i - 1L) * n_per + seq_len(n_per)
+  doses <- expand.grid(id = ids, time = seq(0, 686, by = 14))
+  doses$evid <- 1L
+  doses$amt <- p$dose
+  obs <- expand.grid(id = ids, time = 686:700)
+  obs$evid <- 0L
+  obs$amt <- 0
+  bind_rows(doses, obs) |>
+    mutate(cmt = "central", WT = p$WT, treatment = p$treatment)
+}
+events <- bind_rows(lapply(seq_len(nrow(tab2)), make_patient)) |>
+  arrange(id, time, desc(evid))
+stopifnot(!anyDuplicated(events[events$evid == 0, c("id", "time")]))
+
+rxode2::rxSetSeed(20151086)
+sim <- rxode2::rxSolve(mod, events = events, keep = c("treatment", "WT"))
+```
+
+```{r figure-1}
+typ_trough <- tab2 |>
+  rowwise() |>
+  mutate(typ = ss_trough(mod_typ, WT, dose, 14)$Cc) |>
+  ungroup()
+
+sim_trough <- as.data.frame(sim) |>
+  filter(time == 700) |>
+  group_by(treatment, WT) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  left_join(tab2[, c("treatment", "disease", "obs_trough")], by = "treatment")
+
+ggplot(sim_trough, aes(WT)) +
+  geom_errorbar(aes(ymin = Q05, ymax = Q95, colour = disease), width = 1.5) +
+  geom_point(aes(y = Q50, colour = disease), shape = 1, size = 2.5) +
+  geom_point(aes(y = obs_trough, colour = disease), shape = 4, size = 3) +
+  labs(
+    x = "Body weight (kg)", y = "Steady-state trough (ug/mL)",
+    title = "Steady-state troughs vs weight (cf. Figure 1, Table 2)",
+    caption = "Circles and bars: simulated median and 5th-95th percentiles. Crosses: Table 2 mean observed troughs."
+  )
+
+knitr::kable(
+  typ_trough |>
+    mutate(ratio = obs_trough / typ) |>
+    select(treatment, obs_trough, typ, ratio) |>
+    rename("Patient" = treatment, "Observed mean trough (ug/mL)" = obs_trough,
+           "Typical-value trough (ug/mL)" = typ, "Observed / typical" = ratio),
+  digits = 2, caption = "Table 2 mean troughs against the typical-value steady-state trough at each patient's weight and dose."
+)
+gm_ratio <- exp(mean(log(typ_trough$obs_trough / typ_trough$typ)))
+gm_ratio
+# Deterministic: 1.25 with the packaged model. Reading Vm as 5 mg/L/day
+# (16 mg/day) gives 1.83, and CL = 0.09 L/day gives 0.45.
+stopifnot(gm_ratio > 1.0, gm_ratio < 1.5)
+```
+
+The typical-value troughs reproduce the strong inverse weight dependence of
+Figure 1. The observed means sit on average 25% above the typical
+predictions, consistent with nine patients whose individual estimates were
+used in the fit (Figure 3) and with 15% IIV on CL and V. The two largest
+under-predictions are Patient 9 (PNH, 87 kg; observed 3.5-fold above the
+typical value) and Patient 1 (63 kg; 1.6-fold). At 87 kg and 900 mg the
+steep weight exponent puts the typical trough near the range where the
+saturable pathway takes over, so small differences in CL move it a lot.
+
+# PKNCA validation
+
+```{r pknca}
+sim_nca <- as.data.frame(sim) |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+dose_df <- events |>
+  filter(evid == 1, time == 686) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, route = "intravascular")
+intervals <- data.frame(start = 686, end = 700, cmax = TRUE, cmin = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published <- tab2 |>
+  transmute(treatment, cmin = obs_trough)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  params = "cmin",
+  units = c(cmin = "ug/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated median Cmin over the steady-state interval vs Table 2 mean observed trough. * differs by >20%.")
+
+summary(nca_res)
+```
+
+The paper reports only troughs. Seven of the nine patients are within 20%
+of the simulated median Cmin. Patients 1 and 9 sit well above it, as in the
+typical-value table above. The paper gives no per-patient estimates to
+compare against.
+
+# Replicate Figure 4: weight-based projections
+
+Figure 4 shows steady-state troughs and complement activity against body
+weight for 1200 mg every 14, 28 and 42 days. The trough values below were
+digitised by the maintainers from Figure 4.
+
+```{r figure-4}
+fig4_dig <- data.frame(
+  ii = c(rep(14, 8), rep(28, 6), rep(42, 5)),
+  WT = c(30, 40, 50, 60, 70, 80, 90, 100, 30, 40, 50, 60, 70, 100, 30, 40, 50, 60, 80),
+  Cc = c(6100, 2870, 1570, 920, 560, 350, 220, 130, 2750, 1250, 640, 340, 180, 21, 1650, 720, 340, 170, 26)
+)
+grid <- expand.grid(WT = seq(30, 140, by = 10), ii = c(14, 28, 42))
+proj <- function(model, label) {
+  out <- grid
+  r <- Map(function(w, i) ss_trough(model, w, 1200, i), grid$WT, grid$ii)
+  out$Cc <- vapply(r, function(x) x$Cc, numeric(1))
+  out$tca <- vapply(r, function(x) x$tca, numeric(1))
+  out$model <- label
+  out
+}
+mod_cl009 <- mod_typ |> rxode2::ini(lcl = log(0.09))
+fig4_sim <- bind_rows(
+  proj(mod_typ, "Packaged model (CL = 0.18 L/day)"),
+  proj(mod_cl009, "Diagnostic: CL = 0.09 L/day")
+)
+
+ggplot(fig4_sim, aes(WT, Cc, colour = factor(ii))) +
+  geom_line(aes(linetype = model)) +
+  geom_point(data = fig4_dig, shape = 1, size = 2.5) +
+  labs(
+    x = "Body weight (kg)", y = "Steady-state trough (ug/mL)", colour = "Interval (days)",
+    linetype = NULL, title = "Figure 4: steady-state trough vs body weight, 1200 mg",
+    caption = "Circles: digitised Figure 4."
+  ) +
+  theme(legend.position = "bottom", legend.box = "vertical")
+
+ggplot(fig4_sim, aes(WT, tca, colour = factor(ii))) +
+  geom_line(aes(linetype = model)) +
+  labs(
+    x = "Body weight (kg)", y = "Complement activity (arbitrary units)", colour = "Interval (days)",
+    linetype = NULL, title = "Figure 4: predicted complement activity at the steady-state trough"
+  ) +
+  theme(legend.position = "bottom", legend.box = "vertical")
+
+fig4_cmp <- fig4_dig |>
+  filter(Cc >= 20) |>
+  left_join(fig4_sim, by = c("WT", "ii"), suffix = c("_fig", "_sim")) |>
+  mutate(ratio = Cc_sim / Cc_fig) |>
+  group_by(model) |>
+  summarise(median_ratio = median(ratio), max_abs_log_ratio = max(abs(log(ratio))), .groups = "drop")
+knitr::kable(fig4_cmp, digits = 2, caption = "Simulated / digitised Figure 4 troughs (points >= 20 ug/mL).")
+stopifnot(
+  # Deterministic. The packaged model sits at about a third of the Figure 4
+  # troughs (median ratio 0.34) ...
+  with(fig4_cmp, median_ratio[model == "Packaged model (CL = 0.18 L/day)"] < 0.7),
+  # ... while halving CL alone reproduces the digitised points (median ratio
+  # 0.91, max |log ratio| 0.28), which pins the weight exponent and Vm unit.
+  with(fig4_cmp, abs(log(median_ratio[model == "Diagnostic: CL = 0.09 L/day"])) < 0.15)
+)
+```
+
+**Figure 4 is not reproduced by the published estimates.** The packaged model
+gives about one third of the Figure 4 troughs (median simulated / digitised
+ratio 0.34). Halving CL to 0.09 L/day, with nothing else changed, reproduces
+the nineteen digitised points (median ratio 0.91, every point within about
+30%). That CL is not used, for three reasons:
+
+* the paper's own half-life, 12.4 days at 63 kg, equals ln(2) x 3.2 / 0.18;
+* the observed troughs (Table 2) and the Patient 2 washout (Figure 2) agree
+  with CL = 0.18 L/day, while CL = 0.09 L/day over-predicts the Table 2
+  troughs about 2-fold and keeps Patient 2 above 350 ug/mL at day 62
+  (observed 38);
+* the estimates are printed in the text, while Figure 4 is a derived
+  projection.
+
+The packaged model therefore puts the weight thresholds for 4- and 6-weekly
+dosing at lower weights than the paper's 90 kg and 70 kg. The diagnostic
+curve still settles the structural questions: with Vm read as 5 mg/day and CL
+as a power of weight with exponent 2.5, the whole family of Figure 4 curves is
+matched by a single change of scale in CL.
+
+# Half-life against weight
+
+```{r half-life}
+hl <- data.frame(WT = c(40, 63, 100), paper = c(19.5, 12.4, 7.8)) |>
+  mutate(model = log(2) * 3.2 / (0.18 * (WT / 63)^2.5))
+knitr::kable(hl, digits = 1, caption = "Linear (target-independent) half-life, days.")
+```
+
+The paper states that the half-life falls from 19.5 days at 40 kg to 7.8 days
+at 100 kg. Those two values scale as weight to the power 1, not 2.5, so they
+contradict the reported exponent. The exponent of 2.5 is kept because Figure 4
+needs it: the typical CL back-solved from Figure 4 at each weight has a
+log-log slope of 2.44-2.56 across the three intervals.
+
+# Assumptions and deviations
+
+* **Vm unit.** The Results print Vm = 5.0 'mg/L/day'. The model is encoded
+  with Vm as an amount rate, 5.0 mg/day, in `d/dt(central) = ... - Vm * C/(Km + C)`.
+  This is the convention of Monolix's PK library, which the authors used, and
+  three checks support it. Read as 5.0 mg/L/day x 3.2 L = 16 mg/day, the model
+  (i) takes Patient 2 to zero by day 54 after the last dose, where 90 ug/mL
+  was observed (Figure 2); (ii) under-predicts the Table 2 troughs 1.8-fold
+  (geometric mean) against 1.25-fold for 5 mg/day; and (iii) cannot reproduce
+  Figure 4 for any CL, V or exponent (best sum of squared log errors 3.8,
+  against 0.014 for the amount reading with CL, V and exponent free).
+* **Covariate equation.** Methods print the covariate model as
+  'ln(theta_i) = ln(theta) = beta_WT . (WT/med(WT))', which is garbled. It is
+  read as the Monolix log-transformed covariate,
+  ln(CL_i) = ln(CL) + 2.5 x ln(WT/63), a power model. Fitting Figure 4 with a
+  linear-exponential form exp(beta x (WT/63 - 1)) instead gives a sum of
+  squared log errors about 90-fold worse.
+* **Reference weight.** 'med(WT)' is not printed. 63 kg is the median of the
+  nine Table 2 weights, and the Results call 63 kg the medium weight.
+* **Weight on V.** Only the CL effect is reported, so V has no weight effect.
+* **Figure 4 and the half-life text** disagree with the printed estimates, as
+  shown above. The printed estimates are packaged.
+* **IIV.** Monolix reports omega as a standard deviation. 15.0% and 14.6% are
+  read as omega = 0.150 (V) and 0.146 (CL), so the variances are 0.0225 and
+  0.021316. IIV on Vm and Km was set to zero by the authors and is omitted.
+* **Complement activity** comes from an in vitro regression on spiked pooled
+  sera (7 samples, 20-166 ug/mL) and has no reported residual error. It is
+  returned as a derived quantity, `tca`, not as a fitted endpoint. Complete
+  blockade (< 0.5 units) corresponds to Cc > 44 ug/mL.
+* **Infusion.** The paper does not give an infusion duration. Doses are
+  simulated as IV bolus, which has negligible effect on troughs given the
+  multi-day half-life.
+* **Errata.** No correction notice was found in Europe PMC (searched
+  2026-11-24).

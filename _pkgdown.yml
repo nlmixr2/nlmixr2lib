@@ -2582,6 +2582,8 @@ navbar:
         href: articles/Law_2017_teacatechins_pbpk.html
       - text: "Ecg rat pbpk (Law 2017)"
         href: articles/Law_2017_teacatechins_pbpk.html
+      - text: "Eculizumab (Gatault 2015)"
+        href: articles/Gatault_2015_eculizumab.html
       - text: "Eculizumab (Lee 2024)"
         href: articles/Lee_2024_eculizumab.html
       - text: "Edoxaban (Jonsson 2015)"
@@ -10187,6 +10189,7 @@ articles:
   - articles/Gasthuys_2018_desmopressin_piglet
   - articles/Gasthuys_2023_paracetamol
   - articles/Gastonguay_2005_efaproxiral
+  - articles/Gatault_2015_eculizumab
   - articles/Gatti_1996_dapsone
   - articles/Ge_2020_metoclopramide
   - articles/Gebhard_2023_leukemia_maintenance_therapy
