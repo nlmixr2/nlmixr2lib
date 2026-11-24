@@ -7636,6 +7636,8 @@ navbar:
         href: articles/Chen_2021_sirolimus.html
       - text: "Sirolimus (Cheng 2020)"
         href: articles/Cheng_2020_sirolimus.html
+      - text: "Sirolimus (Emoto 2016)"
+        href: articles/Emoto_2016_sirolimus.html
       - text: "Sirolimus (Fan 2024)"
         href: articles/Fan_2024_sirolimus.html
       - text: "Sirolimus (Golubovic 2019)"
@@ -7648,6 +7650,10 @@ navbar:
         href: articles/Wang_2019_sirolimus.html
       - text: "Sirolimus (Wu 2012)"
         href: articles/Wu_2012_sirolimus.html
+      - text: "Sirolimus 16odm ratio (Emoto 2016)"
+        href: articles/Emoto_2016_sirolimus.html
+      - text: "Sirolimus 25oh ratio (Emoto 2016)"
+        href: articles/Emoto_2016_sirolimus.html
       - text: "Sirukumab (Xu 2011)"
         href: articles/Xu_2011_sirukumab.html
       - text: "Sitafloxacin (Paiboonvong 2025)"
@@ -10039,6 +10045,7 @@ articles:
   - articles/Elishmereni_2011_il21
   - articles/Elkomy_2015_morphine
   - articles/Elmokadem_2023_mavoglurant_pbpk
+  - articles/Emoto_2016_sirolimus
   - articles/EudyByrne_2021_buprenorphine
   - articles/Eugene_2016a_metoprolol
   - articles/Eugene_2016b_metoprolol_gender_dose_equivalence
