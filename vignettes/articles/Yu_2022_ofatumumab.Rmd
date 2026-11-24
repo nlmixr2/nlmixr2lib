@@ -191,13 +191,7 @@ sim_one <- function(dose_mg, wt = 70, age = 38, bcell = 200,
   iCov <- data.frame(id = 1, WT = wt, AGE = age, BLBCELL = bcell,
                      ROUTE_IV = route_iv, DEVICE_AI = device_ai,
                      STUDY_APLIOS = study_aplios, STUDY_MIRROR = study_mirror)
-  # method = "dop853": where the quasi-steady-state free concentration nears
-  # zero (low doses, washout), the default liblsoda can step it slightly
-  # negative, where the B-cell Emax term's non-integer power is NaN and the
-  # solve fails. dop853 gives the same profiles (within 1e-5) without that
-  # failure.
-  s <- rxode2::rxSolve(mod_typical, ev, iCov = iCov, returnType = "data.frame",
-                       method = "dop853")
+  s <- rxode2::rxSolve(mod_typical, ev, iCov = iCov, returnType = "data.frame")
   s[!duplicated(s$time), ]
 }
 ```

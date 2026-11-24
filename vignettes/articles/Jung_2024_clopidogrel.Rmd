@@ -190,7 +190,7 @@ dSat$CYP2C19_IM <- 0
 dSat$CYP2C19_PM <- 0
 sSat <- rxode2::rxSolve(mod, dSat, omega = NA, returnType = "data.frame",
                         atol = 1e-9, rtol = 1e-9)
-sSat <- sSat[!is.na(sSat$PRU), ]
+stopifnot(!anyNA(sSat$PRU))
 
 data.frame(
   Quantity = c("Steady-state H4 concentration (ng/mL)",
@@ -311,7 +311,7 @@ simIn <- simIn[order(simIn$id, simIn$time, -simIn$evid), ]
 
 sim <- rxode2::rxSolve(mod, simIn, omega = NA, returnType = "data.frame",
                        atol = 1e-8, rtol = 1e-8, keep = "phenotype")
-sim <- sim[!is.na(sim$Cc), ]
+stopifnot(!anyNA(sim[c("Cc", "Cc_h4", "Cc_cloca", "PRU")]))
 nrow(sim)
 ```
 
@@ -397,22 +397,21 @@ ncaIn <- lapply(seq_len(3), function(i) {
 }) |>
   bind_rows()
 
-# method = "lsoda": after the parent washes out (beyond about 100 h) the H4
-# state sits below the absolute tolerance, and the default liblsoda lets it
-# dip below zero, where the PRU sigmoid's non-integer power of the H4
-# concentration is NaN and the subject's solve fails. lsoda keeps that tail
-# non-negative.
 ncaSim <- rxode2::rxSolve(mod, ncaIn, omega = NA, returnType = "data.frame",
-                          keep = "phenotype", atol = 1e-10, rtol = 1e-10,
-                          method = "lsoda")
-stopifnot(!anyNA(ncaSim$Cc))
+                          keep = "phenotype", atol = 1e-10, rtol = 1e-10)
+stopifnot(!anyNA(ncaSim[c("Cc", "Cc_h4", "Cc_cloca")]))
 ```
 
 ```{r pknca_run}
 runNca <- function(concCol, label) {
   conc <- ncaSim |>
     select(id, phenotype, time, conc = all_of(concCol)) |>
-    filter(!is.na(conc))
+    # Past the peak, drop the washed-out tail below 1e-6 * Cmax: there the
+    # integrator returns noise around zero, and one negative value makes
+    # PKNCA's log-linear terminal fit, and so AUCinf, NaN.
+    group_by(id, phenotype) |>
+    filter(time <= time[which.max(conc)] | conc >= 1e-6 * max(conc)) |>
+    ungroup()
   # Defensive time-zero record: PKNCA warns if the AUC interval starts before
   # the first measurement.
   conc <- conc |>
@@ -460,11 +459,15 @@ analytic <- fmTab |>
   select(-fm1, -fm2) |>
   pivot_longer(-phenotype, names_to = "analyte", values_to = "analytic")
 
-ncaOut |>
+aucCmp <- ncaOut |>
   filter(PPTESTCD == "aucinf.obs") |>
   select(phenotype, analyte, PKNCA = PPORRES) |>
   left_join(analytic, by = c("phenotype", "analyte")) |>
-  mutate(`Difference (%)` = round(100 * (PKNCA - analytic) / analytic, 3),
+  mutate(`Difference (%)` = 100 * (PKNCA - analytic) / analytic)
+stopifnot(nrow(aucCmp) == 9L, max(abs(aucCmp$`Difference (%)`)) < 0.1)
+
+aucCmp |>
+  mutate(`Difference (%)` = round(`Difference (%)`, 3),
          PKNCA = signif(PKNCA, 6), analytic = signif(analytic, 6)) |>
   arrange(analyte, phenotype) |>
   rename("CYP2C19 phenotype" = phenotype, "Analyte" = analyte,
@@ -473,7 +476,7 @@ ncaOut |>
   knitr::kable()
 ```
 
-All nine cells agree with the analytic identities to well under 1%, the residual
+All nine cells agree with the analytic identities to within 0.1%, the residual
 being AUC extrapolation and integration grid error rather than model
 mis-specification.
 
@@ -555,7 +558,8 @@ typRows <- lapply(seq_len(nrow(doseT4)), function(i) {
               "etalvp_cloca", "etalcl_cloca", "etalemax")) d[[e]] <- 0
   s <- rxode2::rxSolve(mod, d, omega = NA, returnType = "data.frame",
                        atol = 1e-8, rtol = 1e-8)
-  s <- s[!is.na(s$PRU) & s$time >= 20 * 24, ]
+  stopifnot(!anyNA(s$PRU))
+  s <- s[s$time >= 20 * 24, ]
   data.frame(stratum = doseT4$stratum[i], phenotype = ph,
              dose_mg = doseT4$dose_mg[i], baseline = base,
              typical = cycleAverage(s$time, s$PRU))
@@ -609,7 +613,8 @@ mcRows <- lapply(seq_len(nrow(doseT4)), function(i) {
   d$CYP2C19_PM <- as.integer(ph == "PM")
   s <- rxode2::rxSolve(mod, d, omega = NA, returnType = "data.frame",
                        atol = 1e-8, rtol = 1e-8)
-  s <- s[!is.na(s$PRU) & s$time >= 20 * 24, ]
+  stopifnot(!anyNA(s$PRU))
+  s <- s[s$time >= 20 * 24, ]
   ave <- vapply(split(seq_len(nrow(s)), s$id),
                 function(j) cycleAverage(s$time[j], s$PRU[j]), numeric(1))
   data.frame(stratum = doseT4$stratum[i], phenotype = ph,

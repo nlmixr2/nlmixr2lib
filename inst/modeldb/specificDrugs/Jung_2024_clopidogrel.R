@@ -497,11 +497,14 @@ Jung_2024_clopidogrel <- function() {
     # evaluate to zero inside a d/dt() expression, which would delete the
     # entire drug effect without any error. The *1000 is the mg/L ->
     # ng/mL conversion described at the observation block below, and it
-    # matters here because EC50 is reported in ng/mL.
+    # matters here because EC50 is reported in ng/mL. max(central_h4, 0):
+    # once the parent washes out the H4 amount sits below the solver's
+    # absolute tolerance and can step slightly negative, where the
+    # non-integer Hill power is NaN.
     # ------------------------------------------------------------------
     d/dt(pru) <- kin -
-                 kout * (1 + emax * (central_h4 / vc_h4 * 1000)^hill /
-                             (ec50^hill + (central_h4 / vc_h4 * 1000)^hill)) * pru
+                 kout * (1 + emax * (max(central_h4, 0) / vc_h4 * 1000)^hill /
+                             (ec50^hill + (max(central_h4, 0) / vc_h4 * 1000)^hill)) * pru
     pru(0)    <- kin / kout
 
     # ------------------------------------------------------------------

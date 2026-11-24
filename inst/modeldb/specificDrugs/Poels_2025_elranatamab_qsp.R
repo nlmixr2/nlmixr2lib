@@ -385,7 +385,10 @@ Poels_2025_elranatamab_qsp <- function() {
       (cyt_bar_pos^n_cytokine_tc / (ksat_tc^n_cytokine_tc + cyt_bar_pos^n_cytokine_tc)) *
       (trimer_pos^n_trimer_tc / (ksat_trimer_tc^n_trimer_tc + trimer_pos^n_trimer_tc))   # Suppl Eq 29
 
-    ih    <- cr_imax * cauc_pos^cr_n_ih / (cr_ic50^cr_n_ih + cauc_pos^cr_n_ih)           # Suppl Eq 38
+    # Imax * C^n / (IC50^n + C^n) divided through by C^n: cauc keeps growing
+    # over repeated cycles, and C^n overflows to Inf (Inf / Inf = NaN) once
+    # cauc passes about 1e123. At cauc_pos = 0, IC50 / 0 = Inf gives ih = 0.
+    ih    <- cr_imax / (1 + (cr_ic50 / cauc_pos)^cr_n_ih)                                # Suppl Eq 38
     r_syn <- cr_emax * trimer_pos^cr_n / (cr_ec50^cr_n + trimer_pos^cr_n)                # Suppl Eq 38
 
     # =================================================================
