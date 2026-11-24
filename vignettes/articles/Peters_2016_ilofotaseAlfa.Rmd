@@ -1,0 +1,463 @@
+---
+title: "Ilofotase alfa (Peters 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ilofotase alfa (Peters 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Peters_2016_ilofotaseAlfa"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Peters_2016_ilofotaseAlfa"))$description`
+* Article: <https://doi.org/10.1007/s40262-016-0399-y> (open access, PMC5021756)
+
+Ilofotase alfa is the human recombinant alkaline phosphatase (recAP), a
+chimeric enzyme built from the human intestinal alkaline phosphatase with the
+crown domain of the placental isoenzyme. It was developed for sepsis-associated
+acute kidney injury. Peters 2016 reports its first-in-human trial and the
+population PK model used to choose the doses for the phase IIa/b STOP-AKI trial.
+
+# Population
+
+The model was fitted to serum recAP concentrations from 36 healthy adult
+volunteers in a single-centre, randomised, double-blind, placebo-controlled
+phase I trial in the Netherlands (EudraCT 2013-002694-21). In part A, four
+groups received a single 1-h IV infusion of 200, 500, 1000 or 2000 U/kg (six
+PK-evaluable subjects per dose); in part B, two groups received 500 or
+1000 U/kg as a 1-h infusion on three consecutive days (six per dose). One
+subject in the 200 U/kg group was dosed short because the infusion set leaked
+and was excluded from the PK analysis (Peters 2016 Table 1).
+
+Eligibility was 18-55 years and BMI 18-30 kg/m^2. Across the active arms,
+group-mean age was 21-33 years and group-mean weight 69.4-73.8 kg; 18 of the
+37 actively dosed subjects were women and 35 were white (Table 2). The model
+has no covariates: age, weight, sex, height, lean body mass and BMI were
+screened on V1 and K10 and none improved the fit.
+
+The same information is available programmatically via
+`readModelDb("Peters_2016_ilofotaseAlfa")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lkel` (K10) | log(0.666) 1/h | Table 3 |
+| `lvc` (V1) | log(3.71) L | Table 3 |
+| `lk12`, `lk21` | log(0.311), log(0.0143) 1/h | Table 3 |
+| `lk13`, `lk31` | log(0.545), log(0.571) 1/h | Table 3 |
+| `lk14`, `lk41` | log(0.564), log(0.0795) 1/h | Table 3 |
+| `etalkel` variance | 0.026893 | Table 3, IIV on K10 16.51% CV |
+| `etalvc` variance | 0.078887 | Table 3, IIV on V1 28.65% CV |
+| `etalkel`-`etalvc` covariance | -0.036100 | Back-solved from Table 3 IIV on CL 18.48% CV (see Assumptions) |
+| `propSd` | sqrt(0.02) | Table 3, residual error 0.02 |
+| Four-compartment structure, IIV on V1 and K10 with covariance, proportional error | n/a | Results, Pharmacokinetic Modeling |
+| %CV = sqrt(exp(omega^2) - 1) x 100 | n/a | Methods (formula image in the online version) |
+| CL = K10 V1; Vx = K1x V1 / Kx1 (derived rows of Table 3) | n/a | Table 3; checked below |
+
+Paper compartments 2, 3 and 4 map to `peripheral1`, `peripheral2` and
+`peripheral3`.
+
+# Dose conversion: U/kg to micrograms
+
+The model works in mass: `central` holds micrograms, V1 is in litres and `Cc` is
+in ng/mL (ug/L), the unit the electrochemiluminescence assay reported. The
+trial dosed in activity units per kilogram of actual body weight, and Peters
+2016 does not state the specific activity used to convert the dose to mass for
+the fit.
+
+The phase IIa/b trial for which these doses were chosen (STOP-AKI,
+NCT02182440) gave the same three regimens, 250, 500 and 1000 U/kg, and its
+report expresses them as 0.4, 0.8 and 1.6 mg/kg (Pickkers et al., JAMA
+2018;320(19):1998-2009, PMID 30357272). That is 625 U/mg, which this vignette
+uses. Figure 4 of Peters 2016 checks it independently below: the median curve
+the authors simulated for 1000 U/kg implies 627-641 U/mg (see below).
+
+The paper also equates its target of 290 U/L with 170 ng/mL (about 1700 U per
+mg). That figure relates the serum AP activity measured by the clinical
+chemistry analyser to recAP mass; it is not the dose unit. Using it to convert
+the dose under-predicts every concentration in Figures 1, 3 and 4 by about
+2.7-fold.
+
+```{r dose-conversion}
+u_per_mg <- 625
+dose_ug <- function(dose_u_per_kg, wt) dose_u_per_kg * wt / u_per_mg * 1000
+```
+
+# Derived parameters
+
+Table 3 prints CL, V2, V3 and V4 next to the estimated rate constants. These are
+recomputed from the packaged values; agreement is to the rounding of the
+printed rate constants.
+
+```{r derived}
+mod <- readModelDb("Peters_2016_ilofotaseAlfa")
+ini_df <- rxode2::rxode(mod)$iniDf
+th <- setNames(exp(ini_df$est), ini_df$name)
+derived <- tibble::tibble(
+  parameter = c("CL (L/h)", "V2 (L)", "V3 (L)", "V4 (L)"),
+  packaged = c(
+    th[["lkel"]] * th[["lvc"]],
+    th[["lk12"]] * th[["lvc"]] / th[["lk21"]],
+    th[["lk13"]] * th[["lvc"]] / th[["lk31"]],
+    th[["lk14"]] * th[["lvc"]] / th[["lk41"]]
+  ),
+  table3 = c(2.47, 80.5, 3.54, 26.3)
+) |>
+  mutate(pct_diff = 100 * (packaged - table3) / table3)
+knitr::kable(derived, digits = c(0, 3, 2, 2))
+# K21 is printed to three significant figures (0.0143), which alone moves
+# V2 by up to 0.35%.
+stopifnot(all(abs(derived$pct_diff) < 1))
+```
+
+The back-solved covariance reproduces the IIV that Table 3 prints for CL and,
+since only V1 carries an eta, the identical 28.65% it prints for V2, V3 and V4.
+
+```{r derived-iiv}
+om <- rxode2::rxode(mod)$omega
+cv <- function(v) 100 * sqrt(exp(v) - 1)
+iiv <- c(
+  K10 = cv(om["etalkel", "etalkel"]),
+  V1 = cv(om["etalvc", "etalvc"]),
+  CL = cv(sum(om))
+)
+round(iiv, 2)
+stopifnot(abs(iiv - c(16.51, 28.65, 18.48)) < 0.01)
+```
+
+# Virtual cohort
+
+Observed data are not public. Subjects are simulated with body weight drawn
+from a normal distribution with the pooled mean and SD of the active arms in
+Table 2, as the authors did for their dose-selection simulations. Weight
+enters only through the U/kg dose.
+
+```{r cohort}
+set.seed(2016)
+rxode2::rxSetSeed(2016)
+
+tab2 <- tibble::tribble(
+  ~n, ~mean, ~sd,
+  7, 69.4, 10.6,
+  6, 72.9, 9.0,
+  6, 69.9, 16.3,
+  6, 69.4, 8.2,
+  6, 73.8, 13.0,
+  6, 69.8, 14.8
+)
+wt_mean <- sum(tab2$n * tab2$mean) / sum(tab2$n)
+wt_sd <- sqrt(
+  (sum((tab2$n - 1) * tab2$sd^2) + sum(tab2$n * (tab2$mean - wt_mean)^2)) /
+    (sum(tab2$n) - 1)
+)
+c(mean = wt_mean, sd = wt_sd)
+
+sad_times <- c(
+  0, 0.25, 0.5, 0.92, 1, 1.25, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 36, 48,
+  72, 120, 192
+)
+
+make_cohort <- function(n, dose_u_per_kg, n_doses, obs_times, label,
+                        id_offset = 0L) {
+  wt <- pmin(pmax(rnorm(n, wt_mean, wt_sd), 45), 110)
+  ids <- id_offset + seq_len(n)
+  dose_times <- 24 * (seq_len(n_doses) - 1)
+  doses <- tidyr::expand_grid(id = ids, time = dose_times) |>
+    mutate(
+      WT = wt[id - id_offset],
+      amt = dose_ug(dose_u_per_kg, WT),
+      rate = amt, # 1-h infusion
+      evid = 1L
+    )
+  obs <- tidyr::expand_grid(id = ids, time = obs_times) |>
+    mutate(WT = wt[id - id_offset], amt = 0, rate = 0, evid = 0L)
+  bind_rows(doses, obs) |>
+    mutate(cmt = "central", treatment = label) |>
+    arrange(id, time, desc(evid))
+}
+
+events_sad <- bind_rows(
+  make_cohort(200, 200, 1, sad_times, "200 U/kg", id_offset = 0L),
+  make_cohort(200, 500, 1, sad_times, "500 U/kg", id_offset = 200L),
+  make_cohort(200, 1000, 1, sad_times, "1000 U/kg", id_offset = 400L),
+  make_cohort(200, 2000, 1, sad_times, "2000 U/kg", id_offset = 600L)
+)
+stopifnot(!anyDuplicated(unique(events_sad[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+sim_sad <- rxode2::rxSolve(mod, events = events_sad, keep = c("treatment", "WT")) |>
+  as.data.frame() |>
+  mutate(treatment = factor(
+    treatment,
+    levels = c("200 U/kg", "500 U/kg", "1000 U/kg", "2000 U/kg")
+  ))
+```
+
+# Replicate published figures
+
+## Figure 1A: single ascending doses
+
+```{r figure-1a, fig.width = 7, fig.height = 4.5}
+sim_sad |>
+  filter(time > 0, time <= 24) |>
+  group_by(treatment, time) |>
+  summarise(gm = exp(mean(log(Cc))), .groups = "drop") |>
+  ggplot(aes(time, gm, colour = treatment)) +
+  geom_line() +
+  geom_point() +
+  scale_y_log10() +
+  labs(
+    x = "Time after start of infusion (h)",
+    y = "Serum recAP (ng/mL)",
+    colour = NULL,
+    title = "Single 1-h infusion, geometric mean of simulated subjects",
+    caption = "Replicates the upper panel of Figure 1A of Peters 2016."
+  )
+```
+
+Read approximately from the figure, Figure 1A peaks at about 1700, 6000,
+12000 and 26000 ng/mL for 200, 500, 1000 and 2000 U/kg; the text gives the
+range of mean peaks as 1715 to 26,253 ng/mL. The model is linear, so its peaks are dose-proportional; the
+observed 200 U/kg peak is lower than proportional, and the model
+over-predicts that group (see the NCA comparison below).
+
+The text states that about 10% of the maximum concentration remains 4 h after
+the start of the infusion and under 5% at 24 h. The typical subject reproduces
+both:
+
+```{r fraction-remaining}
+typ_amt <- dose_ug(1000, 70)
+typ_events <- rxode2::et(amt = typ_amt, rate = typ_amt, cmt = "central") |>
+  rxode2::et(sad_times)
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = typ_events) |>
+  as.data.frame()
+frac <- typ$Cc[typ$time %in% c(4, 24)] / max(typ$Cc)
+names(frac) <- c("4 h", "24 h")
+round(100 * frac, 1)
+stopifnot(frac[["4 h"]] > 0.05, frac[["4 h"]] < 0.15, frac[["24 h"]] < 0.05)
+```
+
+## Figure 3: visual predictive check at 500 U/kg
+
+The authors' VPC normalises every observation to 500 U/kg, once (left) or
+once daily for three days (right).
+
+```{r figure-3, fig.width = 7, fig.height = 4}
+vpc_times <- sort(unique(c(seq(0, 2, by = 0.25), seq(3, 200, by = 1))))
+mad_times <- sort(unique(c(
+  vpc_times[vpc_times <= 96],
+  24 + seq(0, 2, by = 0.25), 48 + seq(0, 2, by = 0.25)
+)))
+events_vpc <- bind_rows(
+  make_cohort(200, 500, 1, vpc_times, "Single dose", id_offset = 0L),
+  make_cohort(200, 500, 3, mad_times, "Once daily x 3", id_offset = 200L)
+)
+stopifnot(!anyDuplicated(unique(events_vpc[, c("id", "time", "evid")])))
+sim_vpc <- rxode2::rxSolve(mod, events = events_vpc, keep = "treatment") |>
+  as.data.frame()
+
+sim_vpc |>
+  filter(time > 0) |>
+  group_by(treatment, time) |>
+  summarise(
+    lo = quantile(Cc, 0.025), med = median(Cc), hi = quantile(Cc, 0.975),
+    .groups = "drop"
+  ) |>
+  mutate(treatment = factor(treatment, levels = c("Single dose", "Once daily x 3"))) |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line() +
+  facet_wrap(~treatment, scales = "free_x") +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Serum recAP (ng/mL)",
+    title = "500 U/kg 1-h infusion: median and 95% prediction interval",
+    caption = "Replicates Figure 3 of Peters 2016."
+  )
+```
+
+In the published single-dose panel the median falls to about 12 ng/mL by 200 h;
+in the multiple-dose panel the trough before the third dose is about 200 ng/mL.
+
+## Figure 4: 1000 U/kg once daily for three days
+
+Figure 4 is the authors' simulation of the high dose chosen for the patient
+trial. The maintainers read the median curve at its peak and at four
+later times from the published figure (log axis; about +/-10% reading
+error).
+
+```{r figure-4, fig.width = 7, fig.height = 4.5}
+fig4_times <- sort(unique(c(seq(0, 150, by = 0.5), 1, 23.99, 25, 47.99, 49, 147)))
+events_fig4 <- make_cohort(200, 1000, 3, fig4_times, "1000 U/kg x 3")
+sim_fig4 <- rxode2::rxSolve(mod, events = events_fig4) |>
+  as.data.frame()
+fig4_sum <- sim_fig4 |>
+  group_by(time) |>
+  summarise(
+    lo = quantile(Cc, 0.025), med = median(Cc), hi = quantile(Cc, 0.975),
+    .groups = "drop"
+  )
+
+fig4_digitised <- tibble::tribble(
+  ~label, ~time, ~published,
+  "End of first infusion", 1, 13500,
+  "Trough before dose 2", 23.99, 290,
+  "Trough before dose 3", 47.99, 450,
+  "End of third infusion", 49, 14000,
+  "147 h", 147, 170
+)
+
+ggplot(filter(fig4_sum, time > 0), aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line() +
+  geom_hline(yintercept = 170, linetype = "dashed") +
+  geom_point(data = fig4_digitised, aes(time, published), colour = "red") +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Serum recAP (ng/mL)",
+    title = "1000 U/kg 1-h infusion once daily for 3 days",
+    caption = paste(
+      "Replicates Figure 4 of Peters 2016. Red points: median read from the",
+      "published figure. Dashed line: 170 ng/mL target trough."
+    )
+  )
+
+fig4_cmp <- fig4_digitised |>
+  left_join(fig4_sum |> select(time, med), by = "time") |>
+  mutate(pct_diff = 100 * (med - published) / published)
+fig4_cmp |>
+  rename(
+    "Time point" = label, "Time (h)" = time,
+    "Figure 4 median (ng/mL)" = published, "Simulated median (ng/mL)" = med,
+    "% difference" = pct_diff
+  ) |>
+  knitr::kable(digits = 1)
+
+# A wrong dose conversion (the 290 U/L = 170 ng/mL equivalence) puts every
+# point about 63% low, and a mis-transcribed V1 or K10 moves the peak or the
+# troughs by tens of percent; reading error from the figure is about 10%.
+stopifnot(
+  abs(median(fig4_cmp$pct_diff)) < 15,
+  all(abs(fig4_cmp$pct_diff) < 30)
+)
+```
+
+The specific activity implied by Figure 4 alone, scaling the 625 U/mg
+conversion by the simulated-to-published ratio at each point:
+
+```{r implied-activity}
+round(u_per_mg * fig4_cmp$med / fig4_cmp$published)
+```
+
+# PKNCA validation
+
+NCA is run on the four single-dose groups at the trial's sampling times
+(0-192 h after the start of the infusion).
+
+```{r pknca}
+sim_nca <- sim_sad |>
+  filter(!is.na(Cc), time != 1) |>
+  select(id, time, Cc, treatment)
+
+dose_df <- events_sad |>
+  filter(evid == 1) |>
+  mutate(treatment = factor(treatment, levels = levels(sim_sad$treatment))) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(
+  sim_nca, Cc ~ time | treatment + id,
+  concu = "ng/mL", timeu = "h"
+)
+dose_obj <- PKNCA::PKNCAdose(
+  dose_df, amt ~ time | treatment + id,
+  doseu = "ug", route = "intravascular", duration = 1
+)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_res)
+```
+
+## Comparison against published values
+
+The paper reports the mean peak concentrations of the lowest and highest doses
+(1715 and 26,253 ng/mL; Results) and an apparent terminal half-life of 48 h
+(Discussion, dose not stated, so it is compared with every group). Simulated
+values are the medians over subjects.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~half.life,
+  "200 U/kg", 1715, 48,
+  "500 U/kg", NA, 48,
+  "1000 U/kg", NA, 48,
+  "2000 U/kg", 26253, 48
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  params = c("cmax", "half.life"),
+  units = c(cmax = "ng/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs. published NCA. * differs from the published value by >20%.")
+```
+
+The 2000 U/kg peak agrees. The 200 U/kg peak is over-predicted by about half:
+the observed peaks rise more than dose-proportionally between 200 and
+2000 U/kg (1715 x 10 = 17,150 against 26,253 observed), and the published model
+is linear, so it cannot match both ends.
+
+The simulated NCA half-life over 0-192 h, about 66 h, is longer than the 48 h
+the Discussion quotes. The packaged model's terminal phase is set mainly by
+K21 = 0.0143 1/h, and the authors' own model-based VPC in Figure 3 shows the
+same slow tail (about 25 ng/mL at 100 h and 12 ng/mL at 200 h after 500 U/kg,
+read from the figure), a halving time of roughly 80-90 h. The 48 h figure is
+the authors' NCA estimate from the observed profiles, not a model parameter,
+so the difference is reported rather than adjusted.
+
+# Assumptions and deviations
+
+- **Dose units.** The paper does not give the specific activity used to put
+  the U/kg doses into mass for the fit. The maintainers use 625 U/mg, from
+  the STOP-AKI report's equivalence of 1000 U/kg and 1.6 mg/kg for the same
+  regimens; Figure 4 of Peters 2016 independently implies 627-641 U/mg. The
+  paper's 290 U/L = 170 ng/mL equivalence relates measured serum AP activity to
+  mass and is not used for dosing.
+- **IIV covariance.** The text says the final model estimated a covariance
+  between the K10 and V1 etas, but Table 3 does not print it. Table 3 does
+  print the IIV on the derived CL (18.48% CV), and its identical 28.65% for V1
+  to V4 shows that the derived-parameter IIVs were computed from the omega
+  matrix. With CL = K10 x V1, var(eta_CL) = var(eta_K10) + var(eta_V1) +
+  2 cov, which gives cov = -0.036100 (correlation -0.78). This is used.
+- **%CV convention.** The Methods give %CV = sqrt(exp(omega^2) - 1) x 100,
+  so variances are log(1 + CV^2).
+- **Residual error.** Table 3's last row, labelled omega^2 with the footnote
+  "residual error", is read as the variance of the proportional error, so
+  `propSd = sqrt(0.02)` (14.1%). The text says a proportional error model was
+  selected.
+- **Body weight** for simulation is drawn from a normal distribution with the
+  pooled mean and SD of the active arms (Table 2), truncated to 45-110 kg.
+- **Simulated peak.** The infusion ends at 1 h, a time the trial did not
+  sample (0.92 and 1.25 h); the NCA uses the trial's sampling times only, so
+  the simulated Cmax is taken at the nearest sampled time as in the study.
+- No erratum or correction notice for Peters 2016 was found (checked
+  2026-11-24).
