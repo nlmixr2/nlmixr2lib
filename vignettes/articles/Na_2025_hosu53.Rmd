@@ -176,9 +176,13 @@ with_dvid <- function(ev) {
   d$dvid <- ifelse(d$evid == 0, 1L, NA_integer_)
   d
 }
+# Tight tolerances: the checks below are exact identities held to 1e-8 or
+# 1e-6. At rxSolve()'s defaults the integration error is about 1e-6 relative
+# and differs between machines; at these tolerances the undosed DHO stays
+# within 2e-15 of baseline and the dog dose-normalised AUC spread is 7e-11.
 solve_typical <- function(mod, ev) {
   out <- rxode2::rxSolve(mod, with_dvid(ev), omega = NA, sigma = NA,
-                         returnType = "data.frame")
+                         returnType = "data.frame", rtol = 1e-10, atol = 1e-12)
   out[!duplicated(out$time), , drop = FALSE]
 }
 trap_auc <- function(time, conc) {

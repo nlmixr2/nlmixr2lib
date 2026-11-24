@@ -397,9 +397,15 @@ ncaIn <- lapply(seq_len(3), function(i) {
 }) |>
   bind_rows()
 
+# method = "lsoda": after the parent washes out (beyond about 100 h) the H4
+# state sits below the absolute tolerance, and the default liblsoda lets it
+# dip below zero, where the PRU sigmoid's non-integer power of the H4
+# concentration is NaN and the subject's solve fails. lsoda keeps that tail
+# non-negative.
 ncaSim <- rxode2::rxSolve(mod, ncaIn, omega = NA, returnType = "data.frame",
-                          keep = "phenotype", atol = 1e-10, rtol = 1e-10)
-ncaSim <- ncaSim[!is.na(ncaSim$Cc), ]
+                          keep = "phenotype", atol = 1e-10, rtol = 1e-10,
+                          method = "lsoda")
+stopifnot(!anyNA(ncaSim$Cc))
 ```
 
 ```{r pknca_run}
