@@ -1552,6 +1552,10 @@ navbar:
         href: articles/Wei_2026_enrofloxacin_cefquinome.html
       - text: "Cefquinome foal (Gao 2025)"
         href: articles/Gao_2025_cefquinome.html
+      - text: "Cefquinome mouse aucmic (Yu 2016)"
+        href: articles/Yu_2016_cefquinome.html
+      - text: "Cefquinome mouse tmic (Yu 2016)"
+        href: articles/Yu_2016_cefquinome.html
       - text: "Cefquinome pbpk (Mi 2023)"
         href: articles/Mi_2023_cefquinome_pbpk.html
       - text: "Cefquinome pkpd index (Gao 2025)"
@@ -12344,6 +12348,7 @@ articles:
   - articles/You_2013_hCG_GTN
   - articles/Youssef_2024_bepirovirsen
   - articles/Yu_2015_sunitinib
+  - articles/Yu_2016_cefquinome
   - articles/Yu_2017_mycophenolic_acid
   - articles/Yu_2020_inotersen
   - articles/Yu_2022_colistinSulfate
