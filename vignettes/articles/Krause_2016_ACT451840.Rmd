@@ -1,0 +1,401 @@
+---
+title: "ACT-451840 (Krause 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ACT-451840 (Krause 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Krause_2016_ACT451840"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Krause_2016_ACT451840"))$description`
+* Article: <https://doi.org/10.1111/bcp.12962> (open access, PMC4972157)
+
+ACT-451840 (Actelion-451840) is an investigational antimalarial with a new
+mechanism of action. Krause 2016 fitted a joint PK/PD model to data from an
+induced blood-stage malaria (IBSM) challenge study and used it to predict the
+number of once-daily doses that cures an infection.
+
+# Population
+
+Eight healthy, malaria-naive men (mean age 24 years, range 19-38; mean body
+weight 77 kg, range 59-98; BMI 24, range 20-28 kg/m^2) were inoculated
+intravenously with about 1800 viable *Plasmodium falciparum* 3D7-infected
+erythrocytes. Four subjects were Caucasian, two Indian, one Asian and one
+Native Hawaiian. On day 7 (168 h after inoculation), when parasitaemia had
+reached about 1000 parasites/mL, every subject received a single 500 mg oral
+dose of ACT-451840 as a suspension after a high-fat breakfast. Plasma drug
+concentrations (LC-MS/MS, LLOQ 0.1 ng/mL) were sampled to 144 h after dosing and
+parasitaemia (qPCR, LOD 64 parasites/mL) to rescue treatment with
+artemether/lumefantrine on recrudescence. The study was run at Q-Pharm in
+Brisbane, Australia. Demographics are from the Results section 'Subject
+demographics' of Krause 2016; the paper has no demographics table.
+
+The same information is available programmatically via
+`readModelDb("Krause_2016_ACT451840")()$population`.
+
+# Source trace
+
+Every structural value comes from Krause 2016 Table 1 ('Final parameter
+estimates'); the structural equation is the single displayed equation in the
+Methods section 'PK/PD modelling'.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (ka) | 0.23 1/h | Table 1 |
+| `ltlag` (tlag) | 0.45 h | Table 1 |
+| `lkel` (k) | 0.31 1/h | Table 1 |
+| `lvc` (V/F) | 1337.89 L | Table 1 |
+| `lk12` (k12) | 0.11 1/h | Table 1 |
+| `lk21` (k21) | 0.03 1/h | Table 1 |
+| `lrbase_parasites` (P0) | 0.11 parasites/mL | Table 1 |
+| `lkgrow` (G) | 6.67 %/h = 0.0667 1/h | Table 1 (printed as 'unitless'; scale: see Assumptions) |
+| `lemax` (D) | 18.09 %/h = 0.1809 1/h | Table 1 (printed as 'unitless'; scale: see Assumptions) |
+| `lec50` (IC50) | 2.70 ng/mL | Table 1 |
+| `lhill` (gamma) | 2.46 | Table 1 |
+| IIV SDs: ka, tlag, k, V, k12, k21 | 0.14, 0.05, 0.29, 0.20, 0.06, 0.08 | Table 1, 'Random effects (standard deviations)'; variance = SD^2 |
+| IIV SDs: P0, G, D, IC50, gamma | 1.18, 0.03, 0.04, 0.25, 0.08 | Table 1, same block |
+| `addSd`, `propSd` (PK) | 4.38e-9 ng/mL, 0.265 | Table 1, 'Error terms' |
+| `addSd_parasites`, `propSd_parasites` (PD) | 26.1 parasites/mL, 0.558 | Table 1, 'Error terms' |
+| `d/dt(parasites) = parasites * (kgrow - emax * Cc^hill / (Cc^hill + ec50^hill))` | n/a | Methods, 'PK/PD modelling', displayed equation |
+| PK structure (2-compartment, first-order absorption with lag) | n/a | Results, 'PK/PD modelling' |
+| `parasites(0) = P0` at inoculation, 168 h before dosing | n/a | Methods (P0 definition) and Results (P0 'at time of inoculation, -168 h relative to drug administration') |
+| Cure threshold 0.003 parasites/mL (simulation rule only) | n/a | Methods, 'Pharmacodynamics and statistical assessments' |
+
+```{r model}
+mod <- readModelDb("Krause_2016_ACT451840")
+mod_typical <- rxode2::zeroRe(mod)
+```
+
+Model time 0 is the inoculation; the drug is dosed at 168 h, the study
+schedule. The figures below plot time relative to the first dose, as the paper
+does.
+
+```{r helpers}
+cure_threshold <- 0.003 # parasites/mL, Krause 2016 Methods
+t_dose1 <- 168
+
+# One subject-arm event table: `n_dose` once-daily doses of `dose_mg` starting
+# 168 h after inoculation, observed on the parasite state every `dt` hours.
+make_arm <- function(n_sub, n_dose, dose_mg, id_offset, dt = 2, t_end = t_dose1 + 300) {
+  ids <- id_offset + seq_len(n_sub)
+  doses <- tidyr::expand_grid(id = ids, time = t_dose1 + 24 * (seq_len(n_dose) - 1)) |>
+    dplyr::mutate(evid = 1L, amt = dose_mg, cmt = "depot")
+  obs <- tidyr::expand_grid(id = ids, time = seq(0, t_end, by = dt)) |>
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "parasites")
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(arm = sprintf("%d x %d mg", n_dose, dose_mg)) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+# The paper treats an infection as cured once parasitaemia falls below the
+# threshold; from then on the trajectory is held at the threshold, which is the
+# flat floor in Figures 5B and 6.
+apply_cure <- function(sim) {
+  sim |>
+    dplyr::group_by(id) |>
+    dplyr::arrange(time, .by_group = TRUE) |>
+    dplyr::mutate(
+      cured = cumsum(time >= t_dose1 & parasites < cure_threshold) > 0,
+      parasites_plot = ifelse(cured, cure_threshold, parasites)
+    ) |>
+    dplyr::ungroup()
+}
+```
+
+# Typical-value replication of Figure 5
+
+```{r fig5-sim}
+# One single-subject solve per regimen: the typical model has no omega, and
+# rxode2 warns about a multi-subject solve without one.
+sim_typ <- dplyr::bind_rows(lapply(1:4, function(n) {
+  ev <- make_arm(1, n, 500, id_offset = n - 1, dt = 0.5)
+  rxode2::rxSolve(mod_typical, events = ev, keep = "arm") |>
+    as.data.frame() |>
+    dplyr::mutate(id = n)
+})) |>
+  apply_cure() |>
+  dplyr::mutate(time_rel = time - t_dose1)
+```
+
+```{r fig5, fig.height = 4}
+p_pk <- ggplot(sim_typ, aes(time_rel, Cc, colour = arm)) +
+  geom_line() +
+  labs(x = "Time after first dose (h)", y = "ACT-451840 (ng/mL)", colour = NULL,
+       title = "Figure 5A: typical PK, 500 mg once daily")
+p_pd <- ggplot(sim_typ, aes(time_rel, log10(parasites_plot), colour = arm)) +
+  geom_line() +
+  labs(x = "Time after first dose (h)", y = "log10(parasites/mL)", colour = NULL,
+       title = "Figure 5B: typical parasite count",
+       caption = "Replicates Figure 5 of Krause 2016.")
+p_pk
+p_pd
+```
+
+The values below were read from Figure 5B. The typical solve is
+deterministic, so the tolerances only absorb the reading error of the figure.
+
+```{r fig5-check}
+typ_summary <- sim_typ |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    log10_at_dose = log10(parasites[time == t_dose1]),
+    log10_at_288h = log10(parasites[time == t_dose1 + 288]),
+    cmax_first_dose = max(Cc[time <= t_dose1 + 24]),
+    h_to_cure = (time[cured][1]) - t_dose1,
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    published_log10_at_288h = c(8.0, 4.6, 2.0, NA),
+    published_h_to_cure = c(NA, NA, NA, 135)
+  )
+knitr::kable(typ_summary, digits = 2,
+             caption = "Typical-value solve versus values read from Figure 5 of Krause 2016.")
+
+stopifnot(
+  # Pre-dose growth: log10 P rises from log10(0.11) to about 3.9 at dosing. A
+  # misread growth-rate scale (G per hour vs percent per hour) misses by
+  # hundreds of log units.
+  all(abs(typ_summary$log10_at_dose - 3.9) < 0.15),
+  # Figure 5A: first-dose peak just under 100 ng/mL.
+  all(abs(typ_summary$cmax_first_dose - 98) < 8),
+  # Figure 5B: log10 parasite count 288 h after the first dose for 1-3 doses.
+  all(abs(typ_summary$log10_at_288h[1:3] - typ_summary$published_log10_at_288h[1:3]) < 0.4),
+  # Figure 5B: only the four-dose regimen cures the typical subject, at
+  # about 120-150 h.
+  all(is.na(typ_summary$h_to_cure[1:3])),
+  abs(typ_summary$h_to_cure[4] - 135) < 20
+)
+```
+
+# Concentration-effect curve (Figure 3)
+
+```{r fig3}
+ini_vals <- rxode2::rxode(mod)$theta
+emax <- exp(ini_vals[["lemax"]])
+ec50 <- exp(ini_vals[["lec50"]])
+hill <- exp(ini_vals[["lhill"]])
+ce <- tibble::tibble(conc = seq(0, 100, by = 0.25)) |>
+  dplyr::mutate(effect_pct_per_h = 100 * emax * conc^hill / (conc^hill + ec50^hill))
+ggplot(ce, aes(conc, effect_pct_per_h)) +
+  geom_line(colour = "steelblue") +
+  geom_hline(yintercept = 100 * emax, colour = "darkred") +
+  geom_vline(xintercept = ec50, colour = "darkred") +
+  labs(x = "ACT-451840 (ng/mL)", y = "Drug effect (growth rate reduction, %/h)",
+       title = "Figure 3: concentration-effect curve",
+       caption = "Replicates Figure 3 of Krause 2016.")
+# The paper reports the effect as near-maximal from 10-15 ng/mL.
+stopifnot(ce$effect_pct_per_h[ce$conc == 15] / (100 * emax) > 0.98)
+```
+
+# Stochastic cure prediction (Figures 4 and 6)
+
+Figure 6 of Krause 2016 simulates 500 subjects for 1 to 6 once-daily doses of
+500 mg and reports that fewer than 10% of subjects are cured by one dose, more
+than half by four doses and more than 90% by six doses. The abstract adds that
+six once-daily doses of 300 mg cure 90% of subjects. Each arm below has 200
+virtual subjects.
+
+```{r stoch-sim}
+set.seed(4972157)
+rxode2::rxSetSeed(4972157)
+n_per_arm <- 200
+arms <- tibble::tribble(
+  ~n_dose, ~dose_mg,
+  1, 500, 2, 500, 3, 500, 4, 500, 5, 500, 6, 500, 6, 300
+)
+ev_stoch <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  make_arm(n_per_arm, arms$n_dose[i], arms$dose_mg[i], id_offset = (i - 1) * n_per_arm)
+}))
+sim_stoch <- rxode2::rxSolve(mod, events = ev_stoch, keep = "arm") |>
+  as.data.frame() |>
+  apply_cure() |>
+  dplyr::mutate(time_rel = time - t_dose1, arm = factor(arm, levels = unique(ev_stoch$arm)))
+```
+
+```{r fig6}
+sim_stoch |>
+  dplyr::group_by(arm, time_rel) |>
+  dplyr::summarise(
+    q10 = quantile(log10(parasites_plot), 0.1),
+    q50 = quantile(log10(parasites_plot), 0.5),
+    q90 = quantile(log10(parasites_plot), 0.9),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time_rel, q50)) +
+  geom_ribbon(aes(ymin = q10, ymax = q90), fill = "firebrick", alpha = 0.3) +
+  geom_line(colour = "navy") +
+  facet_wrap(~arm, nrow = 2) +
+  labs(x = "Time after first dose (h)", y = "log10(parasites/mL)",
+       title = "Figure 6: median and 10th-90th percentile parasite count",
+       caption = "Replicates Figure 6 of Krause 2016 (plus a 6 x 300 mg arm).")
+```
+
+```{r fig4}
+# Figure 4: single 500 mg dose, typical prediction and 80% interval.
+sim_stoch |>
+  dplyr::filter(arm == "1 x 500 mg") |>
+  dplyr::group_by(time_rel) |>
+  dplyr::summarise(
+    q10 = quantile(parasites, 0.1), q50 = quantile(parasites, 0.5),
+    q90 = quantile(parasites, 0.9), .groups = "drop"
+  ) |>
+  ggplot(aes(time_rel, q50)) +
+  geom_ribbon(aes(ymin = q10, ymax = q90), fill = "orchid", alpha = 0.4) +
+  geom_line(colour = "purple4") +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Parasites/mL",
+       title = "Figure 4: parasite count after a single 500 mg dose",
+       caption = "Replicates the model band of Figure 4 of Krause 2016 (observed data not available).")
+```
+
+```{r cure-table}
+cure <- sim_stoch |>
+  dplyr::group_by(arm, id) |>
+  dplyr::summarise(cured = any(cured), .groups = "drop") |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(pct_cured = 100 * mean(cured), .groups = "drop") |>
+  dplyr::mutate(published = c("< 10%", "", "", "> 50%", "", "> 90%", "90%"))
+cure |>
+  dplyr::rename("Regimen" = arm, "Simulated % cured" = pct_cured,
+                "Krause 2016 (Figure 6 text, abstract)" = published) |>
+  knitr::kable(digits = 1, caption = "Percentage of virtual subjects cured (parasitaemia below 0.003/mL).")
+
+pct <- setNames(cure$pct_cured, as.character(cure$arm))
+# The published statements are thresholds on a 500-subject simulation; the
+# bounds below leave several binomial standard errors (about 3.5 points at
+# n = 200) of headroom on each side.
+stopifnot(
+  pct[["1 x 500 mg"]] < 15,
+  pct[["4 x 500 mg"]] > 40,
+  pct[["6 x 500 mg"]] > 80,
+  pct[["6 x 300 mg"]] > 75
+)
+```
+
+The 500 mg arms meet every threshold the paper states. Six doses of 300 mg cure
+somewhat fewer virtual subjects than the 90% quoted in the abstract; the paper
+does not show that simulation, so its size and variability settings are unknown.
+
+# PKNCA validation
+
+The paper reports a non-compartmental analysis of the eight observed profiles
+after the single 500 mg dose (geometric mean AUC0-inf 1284.4 ng h/mL, Cmax
+121.7 ng/mL, t1/2 36.4 h; median tmax 4 h). The block below runs PKNCA on 200
+virtual subjects with the study's PK sampling times extended to 240 h.
+
+```{r pknca-sim}
+pk_times <- c(0, 0.5, 1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 20, 24, 48, 72, 96, 144, 192, 240)
+ev_pk <- dplyr::bind_rows(
+  tibble::tibble(id = 1:200, time = 0, evid = 1L, amt = 500, cmt = "depot"),
+  tidyr::expand_grid(id = 1:200, time = pk_times) |>
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "parasites")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+sim_pk <- rxode2::rxSolve(mod, events = ev_pk) |>
+  as.data.frame() |>
+  dplyr::mutate(treatment = "500 mg single dose")
+
+sim_nca <- sim_pk |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+
+dose_df <- tibble::tibble(id = 1:200, time = 0, amt = 500, treatment = "500 mg single dose")
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r pknca-compare}
+published <- data.frame(
+  treatment = "500 mg single dose",
+  cmax = 121.7, tmax = 4, aucinf.obs = 1284.4, half.life = 36.4
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ng/mL", tmax = "h", aucinf.obs = "ng*h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Treatment" = treatment) |>
+  knitr::kable(caption = paste(
+    "Simulated median NCA versus the observed NCA of Krause 2016 (geometric",
+    "means; median for tmax). * differs by more than 20%."
+  ))
+
+nca_med <- as.data.frame(nca_res) |>
+  dplyr::group_by(PPTESTCD) |>
+  dplyr::summarise(med = median(PPORRES, na.rm = TRUE))
+med <- setNames(nca_med$med, nca_med$PPTESTCD)
+stopifnot(
+  # Exposure: a mis-transcribed volume, rate constant or unit moves AUC by
+  # far more than this.
+  abs(med[["aucinf.obs"]] / 1284.4 - 1) < 0.2,
+  abs(med[["half.life"]] / 36.4 - 1) < 0.25,
+  abs(med[["cmax"]] / 121.7 - 1) < 0.3
+)
+```
+
+The simulated median Cmax is just under 20% below the observed geometric mean,
+and the half-life about 10% shorter, while AUC and tmax agree. The packaged model reproduces the paper's own
+typical-value simulation (Figure 5A peak just under 100 ng/mL), so the gap
+lies between the fitted model and the observed NCA, not in the extraction.
+
+# Assumptions and deviations
+
+* **Scale of G and D.** Table 1 prints the parasite growth rate G = 6.67 and
+  the maximum kill rate D = 18.09 as 'unitless', and the Methods text describes
+  G as a per-hour fraction (G = 0.1 is 10% per hour). Used as per-hour rate
+  constants, the tabulated values would grow the inoculum by thousands of log
+  units in 168 h. The values are percent per hour, so the model uses
+  G = 0.0667 1/h and D = 0.1809 1/h. Figure 5B confirms the scale: the typical
+  log10 parasite count rises from log10(0.11) = -0.96 at inoculation to about
+  3.9 at dosing (ln(10) x 4.87 / 168 h = 0.067 1/h), and the y-axis of
+  Figure 3, the drug effect expressed as growth-rate reduction, plateaus at 18.
+  The typical-value checks above reproduce Figure 5 with this scale.
+* **Random-effect distribution.** Table 1 gives the random effects as standard
+  deviations without naming their distribution. They are encoded as log-normal
+  (the Monolix default for positive parameters), with variance = SD^2.
+* **Residual error form.** Table 1 gives an additive and a multiplicative term
+  for each output. They are encoded as the Monolix 4.2 'combined1' form,
+  SD = a + b x f (`combined1()`). The PK additive term (4.38e-9 ng/mL, RSE
+  3.7e6%) is effectively zero, as the paper notes.
+* **Time origin.** The paper places the inoculation at -168 h relative to the
+  dose. The model starts at the inoculation (time 0, `parasites(0) = P0`), and
+  the study dose is given at 168 h.
+* **Cure threshold.** The 0.003 parasites/mL cure threshold is a simulation
+  rule, not part of the ODE system; the model itself lets parasites regrow from
+  any positive level. The vignette applies the rule after solving, holding a
+  cured trajectory at the threshold as Figures 5B and 6 do.
+* **Not modelled.** The ex vivo bioassay concentrations (antiparasitic activity
+  expressed in ACT-451840 equivalents) were reported descriptively only. BLQ
+  and below-LOD data were handled with the M3 method during estimation, which
+  does not affect simulation. The rescue artemether/lumefantrine treatment is
+  not part of the model.
+* **No covariates.** The paper tested none; all eight subjects were healthy men.
+* **Errata.** No erratum or correction for Krause 2016 was found in a Europe PMC
+  search on 2026-11-24.
