@@ -10,6 +10,7 @@ Barrett_2015_nitroprusside <- function() {
     sep = " "
   )
   vignette <- "Barrett_2015_nitroprusside"
+  dosing <- "depot_kpd"
 
   # Dose in ug and time in hours, so an infusion of R ug/kg/min enters as a
   # rate of R * WT * 60 ug/h. The effect-compartment concentration is ug/L and
