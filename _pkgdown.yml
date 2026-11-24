@@ -4752,6 +4752,8 @@ navbar:
         href: articles/Kloprogge_2018_lumefantrine.html
       - text: "Lumefantrine (LohyDas 2018)"
         href: articles/LohyDas_2018_artemether_lumefantrine.html
+      - text: "Lumefantrine (Maganda 2015)"
+        href: articles/Maganda_2015_lumefantrine.html
       - text: "Lumefantrine (Mosha 2014)"
         href: articles/Mosha_2014_artemether_lumefantrine.html
       - text: "Lumefantrine (Simpson 2013)"
@@ -11015,6 +11017,7 @@ articles:
   - articles/Machavaram_2013_interleukin6_cyp3a_pbpk
   - articles/Maciel_2024_quinine
   - articles/Macpherson_2015_rosuvastatin
+  - articles/Maganda_2015_lumefantrine
   - articles/Mahadevan_2026_polymyxinB_combination_CRKP
   - articles/Mahar_2025_daprodustat
   - articles/Mahomed_2025_CAP256V2LS
