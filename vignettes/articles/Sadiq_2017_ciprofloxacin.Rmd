@@ -425,7 +425,10 @@ auc_tau <- function(dose_mg, inf_dur_h) {
   ev <- rxode2::et(amt = dose_mg, rate = dose_mg / inf_dur_h,
                    ii = 12, addl = 9, cmt = "venous") |>
     rxode2::et(seq(0, 120, by = 0.1), cmt = "venous")
-  s <- rxode2::rxSolve(rxode2::zeroRe(ui), ev, typ_cov, returnType = "data.frame")
+  # The absolute tolerance does not scale with the dose, so the ratio is taken
+  # at tolerances far below the bound.
+  s <- rxode2::rxSolve(rxode2::zeroRe(ui), ev, typ_cov, returnType = "data.frame",
+                       rtol = 1e-10, atol = 1e-12)
   s <- s[s$time >= 108 & s$time <= 120, ]
   tad <- s$time - 108
   sum(diff(tad) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)

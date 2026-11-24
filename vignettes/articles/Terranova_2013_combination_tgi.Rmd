@@ -187,10 +187,13 @@ solveArm <- function(name, tmax, by = 0.1) {
   arm <- arms[[name]]
   mod <- armModel(arm)
   doses <- rbind(arm$a, arm$b)
+  # Tight tolerances: where the interaction vanishes (arm b2) the combination
+  # and zero-interaction curves differ by less than the default tolerances.
+  solve <- function(m, ev) rxode2::rxSolve(m, ev, rtol = 1e-10, atol = 1e-12)
   curves <- list(
-    combination = rxode2::rxSolve(mod, eventTable(doses, tmax, by)),
-    `zero interaction` = rxode2::rxSolve(rxode2::ini(mod, synergy = 0), eventTable(doses, tmax, by)),
-    control = rxode2::rxSolve(mod, eventTable(doses[0, ], tmax, by))
+    combination = solve(mod, eventTable(doses, tmax, by)),
+    `zero interaction` = solve(rxode2::ini(mod, synergy = 0), eventTable(doses, tmax, by)),
+    control = solve(mod, eventTable(doses[0, ], tmax, by))
   )
   bind_rows(lapply(names(curves), function(nm) {
     as.data.frame(curves[[nm]]) |>
