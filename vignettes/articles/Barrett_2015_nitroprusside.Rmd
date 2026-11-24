@@ -1,0 +1,553 @@
+---
+title: "Sodium nitroprusside (Barrett 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sodium nitroprusside (Barrett 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Barrett_2015_nitroprusside"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Barrett_2015_nitroprusside"))$description`
+* Article: <https://doi.org/10.3389/fphar.2015.00151> (open access)
+
+Sodium nitroprusside (SNP) cannot be measured in plasma, so Barrett et al.
+fitted a kinetic-pharmacodynamic (K-PD) model: the infused dose enters a single
+virtual effect compartment of nominal volume 1 L/70 kg, and mean arterial
+pressure (MAP) falls as an inhibitory sigmoid Emax function of the
+effect-compartment concentration. The packaged model carries the paper's final
+NONMEM estimates (Table 2, 'Model' column).
+
+# Population
+
+The model was built from the blinded, randomised dose-ranging phase of trial
+NICHD-2003-09-DR: 3038 MAP values from 202 children aged 0.01-17 years
+(median 11.3 years) weighing 2.8-112.2 kg (median 31.6 kg), 64% female and
+81% White (Table 1). All were under general anaesthesia and needed deliberate
+hypotension or controlled normotension. They were randomised to 0.3, 1, 2 or
+3 ug/kg/min for up to 30 min, with titration allowed; the doses actually given
+ranged 0.09-3.04 ug/kg/min. Four were neonates, 51 infants, 47 children and
+100 adolescents. The open-label titration phase (10303 MAP values in 197
+children) served for external evaluation.
+
+The same information is available programmatically:
+
+```{r population}
+str(rxode2::rxode(readModelDb("Barrett_2015_nitroprusside"))$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. They are
+collected here.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL, L/h/70 kg) | log(3.12) | Table 2, 'Model' column |
+| `lvc` (V, L/70 kg) | fixed(log(1)) | Table 2 (FIXED); Methods 'Structural K-PD model development' |
+| `e_wt_cl`, `e_wt_vc` | fixed 0.75, 1 | Equations 3-4 (theory-based allometry, 70 kg) |
+| `lrbase` (S0, mmHg) | log(76) | Table 2; Equation 5 |
+| `e_age_rbase` | 0.0333 | Table 2 'Power of age on S0' (Equation 5 prints 0.0338) |
+| `logitemax` | log(22.65 / (76 - 22.65)) | Table 2 'Emax (mm Hg)' 22.65 at S0 76; footnote e |
+| `lec50_high`, `lec50_low` (ug/L) | log(460), log(138) | Table 2 |
+| `lhill` | log(7.23) | Table 2 'Hill coefficient' |
+| `slope` (mmHg/h) | 12.3 | Table 2 'Disease-progression slope'; per-hour unit from Figures 4-5 |
+| `MIX_LOW_EC50` probability | 0.301 | 1 - Table 2 'Probability of high EC50 subpopulation' (0.699) |
+| BSV variances | (CV/100)^2 | Table 2 BSV column, footnote d |
+| `propSd` | 0.329 | Table 2 'Residual variability (%CV)' |
+| Clearance and volume | `cl = CL * (WT/70)^0.75`, `vc = V * (WT/70)` | Equations 3-4 |
+| Baseline | `rbase = S0 * (AGE/11.33)^e_age_rbase` | Equations 2, 5 |
+| MAP | `rbase - emax * Ce^hill / (ec50^hill + Ce^hill) + slope * t` | Equation 1 |
+| Emax bounded by baseline | `emax = rbase * expit(logitemax + eta)` | Methods 'PD model'; Table 2 footnote e |
+
+# Derived quantities reported in the paper
+
+The paper reports an effect-compartment half-life of 13.4 min and steady-state
+infusion rates giving half the maximal effect (ER50 = EC50 x CL) of 0.34 and
+0.103 ug/kg/min for the high- and low-EC50 groups. These follow from the
+typical values for a 70 kg subject.
+
+```{r derived}
+ui <- rxode2::rxode(readModelDb("Barrett_2015_nitroprusside"))
+th <- setNames(ui$iniDf$est, ui$iniDf$name)
+cl70 <- exp(th[["lcl"]])
+v70 <- exp(th[["lvc"]])
+derived <- tibble::tibble(
+  quantity = c(
+    "Effect-compartment half-life (min)",
+    "ER50, high EC50 (ug/kg/min)",
+    "ER50, low EC50 (ug/kg/min)"
+  ),
+  model = c(
+    log(2) * v70 / cl70 * 60,
+    exp(th[["lec50_high"]]) * cl70 / 70 / 60,
+    exp(th[["lec50_low"]]) * cl70 / 70 / 60
+  ),
+  paper = c(13.4, 0.34, 0.103)
+) |>
+  mutate(pct_diff = 100 * (model / paper - 1))
+derived |>
+  dplyr::rename(
+    "Quantity" = quantity,
+    "Packaged model" = model,
+    "Barrett 2015" = paper,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 3)
+# Deterministic arithmetic on the ini() values: a mis-transcribed CL or EC50
+# moves these by the transcription error. The half-life is 0.5% below 13.4 min
+# because the paper evidently computed it from a CL near 3.10 L/h.
+stopifnot(all(abs(derived$pct_diff) < 1.5))
+```
+
+# Typical-value simulations (Figures 4-5, Tables 3-4)
+
+The paper's dosing simulations use five hypothetical children at the median
+age and weight of the five enrolment strata. The baseline MAP of each follows
+from Equation 5.
+
+```{r patients}
+patients <- tibble::tibble(
+  pt = 1:5,
+  AGE = c(0.035, 0.58, 4.545, 10.93, 14.8),
+  WT = c(3.615, 7.955, 16.15, 34.2, 52.6),
+  base_paper = c(62.6, 68.8, 73.7, 75.9, 76.7) # Table 3
+) |>
+  mutate(base_model = exp(th[["lrbase"]]) * (AGE / 11.33)^th[["e_age_rbase"]])
+patients |>
+  dplyr::rename(
+    "Age (y)" = AGE, "Weight (kg)" = WT,
+    "Baseline MAP, Table 3 (mmHg)" = base_paper,
+    "Baseline MAP, model (mmHg)" = base_model
+  ) |>
+  dplyr::select(-pt) |>
+  knitr::kable(digits = 2)
+stopifnot(all(abs(patients$base_model - patients$base_paper) < 0.2))
+```
+
+The simulations evidently used the **bootstrap averages** of Table 2 rather
+than the final NONMEM estimates. The clearest sign is the ratio of the doses
+the two EC50 groups need: Table 3 gives a high/low ratio of 4.35-4.38 for
+every patient, matching the bootstrap EC50 ratio 458 / 104.3 = 4.39 and not the
+final-estimate ratio 460 / 138 = 3.33. The slope of the drift in Figure 5
+(about 11 mmHg/h) likewise matches the bootstrap 11.0 rather than 12.3. Both
+parameter sets are therefore simulated below; the packaged model keeps the
+final estimates.
+
+```{r param-sets}
+mod_final <- ui |> rxode2::zeroRe()
+mod_boot <- ui |>
+  rxode2::ini(
+    lcl = log(3.13),
+    e_age_rbase = 0.032,
+    logitemax = log(21.9 / (76 - 21.9)),
+    lec50_high = log(458),
+    lec50_low = log(104.3),
+    lhill = log(7.27),
+    slope = 11.0
+  ) |>
+  rxode2::zeroRe()
+
+# MAP at the given times after one or two consecutive infusions; rates in
+# ug/kg/min and durations in min, converted to the model's ug and hours.
+# The solve runs on a 0.25-min grid and the requested times are picked from
+# it: with a lone observation at the instant a short infusion ends, liblsoda
+# can stall at the first step for small doses ("excess work done").
+solve_map <- function(mod, AGE, WT, low, rates, durs, times_min) {
+  starts <- c(0, cumsum(durs))[seq_along(rates)]
+  grid <- sort(unique(c(seq(0, max(times_min, 0.25), by = 0.25), times_min)))
+  ev <- rbind(
+    data.frame(
+      time = starts / 60, evid = 1, amt = rates * WT * durs,
+      dur = durs / 60, cmt = "depot_kpd"
+    ),
+    data.frame(time = grid / 60, evid = 0, amt = 0, dur = 0, cmt = "depot_kpd")
+  )
+  ev <- ev[order(ev$time, -ev$evid), ]
+  out <- rxode2::rxSolve(
+    mod, ev,
+    params = data.frame(AGE = AGE, WT = WT, MIX_LOW_EC50 = low),
+    returnType = "data.frame"
+  )
+  out <- out[match(round(times_min, 6), round(out$time * 60, 6)), ]
+  stopifnot(nrow(out) == length(times_min), !anyNA(out$map))
+  out
+}
+```
+
+## Single 5-min infusion (Figure 4, Table 3)
+
+For each child and EC50 group, the 5-min infusion rate that lowers MAP by 10 or
+15 mmHg below its baseline at 5 min is found by root-finding on the packaged
+model, and compared with Table 3.
+
+```{r table3}
+table3 <- tibble::tribble(
+  ~pt, ~target, ~group, ~dose_paper,
+  1, 10, "low", 0.432, 2, 10, "low", 0.395, 3, 10, "low", 0.372,
+  4, 10, "low", 0.354, 5, 10, "low", 0.346,
+  1, 10, "high", 1.88, 2, 10, "high", 1.72, 3, 10, "high", 1.62,
+  4, 10, "high", 1.55, 5, 10, "high", 1.51,
+  1, 15, "low", 0.537, 2, 15, "low", 0.465, 3, 15, "low", 0.427,
+  4, 15, "low", 0.415, 5, 15, "low", 0.407,
+  1, 15, "high", 2.38, 2, 15, "high", 2.01, 3, 15, "high", 1.86,
+  4, 15, "high", 1.77, 5, 15, "high", 1.73
+) |>
+  left_join(patients, by = "pt")
+
+find_dose <- function(mod, AGE, WT, low, target) {
+  base <- solve_map(mod, AGE, WT, low, 1e-9, 5, 0)$map
+  f <- function(r) solve_map(mod, AGE, WT, low, r, 5, 5)$map - (base - target)
+  stats::uniroot(f, c(0.01, 20), tol = 1e-6)$root
+}
+
+table3 <- table3 |>
+  rowwise() |>
+  mutate(
+    dose_boot = find_dose(mod_boot, AGE, WT, group == "low", target),
+    dose_final = find_dose(mod_final, AGE, WT, group == "low", target)
+  ) |>
+  ungroup() |>
+  mutate(
+    pct_boot = 100 * (dose_boot / dose_paper - 1),
+    pct_final = 100 * (dose_final / dose_paper - 1)
+  )
+
+table3 |>
+  dplyr::select(AGE, WT, target, group, dose_paper, dose_boot, pct_boot, dose_final, pct_final) |>
+  dplyr::rename(
+    "Age (y)" = AGE, "Weight (kg)" = WT, "Target drop (mmHg)" = target,
+    "EC50 group" = group, "Table 3 (ug/kg/min)" = dose_paper,
+    "Bootstrap set" = dose_boot, "Diff., bootstrap (%)" = pct_boot,
+    "Final estimates" = dose_final, "Diff., final (%)" = pct_final
+  ) |>
+  knitr::kable(digits = 3)
+```
+
+With the bootstrap-average parameters the packaged model reproduces every
+Table 3 dose to within 7% (median about 3%), in both EC50 groups and at both
+targets, which supports the structure (allometry, age on baseline, Emax as a
+fraction of baseline, and the drift). The model consistently needs slightly
+less drug than the paper reports, most for the neonate; because the Hill
+coefficient is about 7, that gap is only 1-2 mmHg of MAP at the paper's doses.
+With the final estimates the high-EC50 doses also agree, while the low-EC50
+doses are 22-29% higher, because the final low EC50 (138 ug/L) is a third
+higher than its bootstrap average (104.3 ug/L).
+
+```{r table3-check}
+# Deterministic typical-value solves. Measured: bootstrap set -6.8% to -0.9%
+# (median -3.0%); final set, high EC50, -8.2% to -1.0%; final set, low EC50,
+# +22% to +29%. A mis-transcribed EC50, CL, Emax or allometric exponent moves
+# these doses by tens of percent, or moves the low/high ratio away from 4.4.
+stopifnot(
+  max(abs(table3$pct_boot)) < 8,
+  abs(median(table3$pct_boot)) < 4,
+  max(abs(table3$pct_final[table3$group == "high"])) < 9,
+  all(table3$pct_final[table3$group == "low"] > 18),
+  all(table3$pct_final[table3$group == "low"] < 33)
+)
+```
+
+The emax-as-a-fraction-of-baseline reading matters here: if Emax were instead
+a constant 22.65 mmHg for every child, a neonate (baseline 62.6 mmHg) would
+need a markedly lower dose than an adolescent for the same 10 mmHg drop, but
+Table 3 shows the dose-per-kg falling with age in a way only the
+baseline-proportional form reproduces.
+
+```{r figure-4, fig.width = 7, fig.height = 6}
+# Replicates Figure 4 of Barrett 2015 (bootstrap-average parameter set, the
+# Table 3 doses for a 10 mmHg drop).
+fig4 <- table3 |>
+  filter(target == 10) |>
+  rowwise() |>
+  reframe(
+    AGE = AGE, group = group, dose = dose_paper,
+    solve_map(mod_boot, AGE, WT, group == "low", dose_paper, 5, seq(0, 30, by = 0.25))
+  ) |>
+  mutate(age = factor(paste(AGE, "y"), levels = paste(patients$AGE, "y")), group = paste(group, "EC50"))
+targets <- patients |>
+  tidyr::crossing(group = c("low EC50", "high EC50")) |>
+  mutate(age = factor(paste(AGE, "y"), levels = levels(fig4$age)))
+ggplot(fig4, aes(time * 60, map, colour = age)) +
+  geom_line() +
+  geom_hline(data = targets, aes(yintercept = base_model - 10, colour = age), linetype = "dashed") +
+  facet_wrap(~group, ncol = 1) +
+  labs(
+    x = "Time (min)", y = "MAP (mmHg)", colour = "Age",
+    caption = "Replicates Figure 4 of Barrett 2015 (Table 3 doses); dashed lines are the targets (baseline - 10 mmHg)."
+  )
+```
+
+## Two-stage infusion (Figure 5, Table 4)
+
+The second scenario lowers MAP to 60 mmHg within 3 min and holds it there with
+a 30-min maintenance infusion. For the 7-month-old (0.58 y, 7.955 kg) Table 4
+gives 0.577 then 0.158 ug/kg/min (low EC50) and 2.472 then 0.691 ug/kg/min
+(high EC50).
+
+```{r figure-5, fig.width = 7, fig.height = 3.5}
+table4 <- tibble::tribble(
+  ~AGE, ~WT, ~group, ~first, ~second,
+  0.035, 3.615, "low", 0.479, 0.164,
+  0.58, 7.955, "low", 0.577, 0.158,
+  4.545, 16.15, "low", 0.617, 0.163,
+  10.93, 34.2, "low", 0.635, 0.195,
+  14.8, 52.6, "low", 0.640, 0.206,
+  0.035, 3.615, "high", 2.118, 0.718,
+  0.58, 7.955, "high", 2.472, 0.691,
+  4.545, 16.15, "high", 2.683, 0.722,
+  10.93, 34.2, "high", 2.778, 0.828,
+  14.8, 52.6, "high", 2.744, 0.951
+)
+fig5 <- table4 |>
+  rowwise() |>
+  reframe(
+    AGE = AGE, group = group,
+    solve_map(mod_boot, AGE, WT, group == "low", c(first, second), c(3, 30), seq(0, 60, by = 0.25))
+  ) |>
+  mutate(group = paste(group, "EC50"))
+ggplot(filter(fig5, AGE == 0.58), aes(time * 60, map)) +
+  annotate("rect", xmin = 0, xmax = 3, ymin = -Inf, ymax = Inf, alpha = 0.4) +
+  annotate("rect", xmin = 3, xmax = 33, ymin = -Inf, ymax = Inf, alpha = 0.15) +
+  geom_hline(yintercept = 60, linetype = "dashed") +
+  geom_line(colour = "red") +
+  facet_wrap(~group) +
+  labs(
+    x = "Time (min)", y = "MAP (mmHg)",
+    caption = "Replicates Figure 5 of Barrett 2015 (7-month-old, 7.955 kg); shaded areas are the infusions."
+  )
+
+stage <- fig5 |>
+  group_by(AGE, group) |>
+  summarise(
+    map_3min = map[which.min(abs(time * 60 - 3))],
+    min_maint = min(map[time * 60 >= 3 & time * 60 <= 33]),
+    max_maint = max(map[time * 60 >= 3 & time * 60 <= 33]),
+    .groups = "drop"
+  )
+stage |>
+  dplyr::rename(
+    "Age (y)" = AGE, "EC50 group" = group, "MAP at 3 min" = map_3min,
+    "Min MAP, 3-33 min" = min_maint, "Max MAP, 3-33 min" = max_maint
+  ) |>
+  knitr::kable(digits = c(3, 0, 1, 1, 1))
+# Figure 5 shows MAP reaching 60 mmHg at 3 min and staying within about
+# 58-61 mmHg through the maintenance infusion. Deterministic solves; measured
+# MAP at 3 min 59.0-60.8 mmHg and 57.0-60.8 mmHg over 3-33 min for all ten
+# Table 4 regimens.
+stopifnot(
+  all(abs(stage$map_3min - 60) < 1.5),
+  all(stage$min_maint > 56), all(stage$max_maint < 61.5)
+)
+```
+
+# PKNCA of the effect-compartment concentration
+
+SNP was never measured, so the only kinetic check available is on the virtual
+effect-compartment concentration. A typical 70 kg subject receives each of the
+four randomised rates for 30 min; PKNCA recovers the effect-compartment
+half-life, which the paper reports as 13.4 min.
+
+```{r pknca}
+rates <- c(0.3, 1, 2, 3)
+ev_nca <- lapply(seq_along(rates), function(i) {
+  r <- rates[i]
+  data.frame(
+    id = i, time = c(0, seq(0, 3, by = 1 / 30)), evid = c(1, rep(0, 91)),
+    amt = c(r * 70 * 30, rep(0, 91)), dur = c(0.5, rep(0, 91)),
+    cmt = "depot_kpd", WT = 70, AGE = 11.33, MIX_LOW_EC50 = 0,
+    treatment = paste(r, "ug/kg/min")
+  )
+}) |>
+  bind_rows()
+# omega = NA and sigma = NA give typical values for a multi-subject table.
+sim_nca <- rxode2::rxSolve(ui, ev_nca, omega = NA, sigma = NA, keep = "treatment", returnType = "data.frame")
+
+conc <- sim_nca |>
+  dplyr::filter(!is.na(Ce)) |>
+  dplyr::select(id, time, Ce, treatment)
+conc <- bind_rows(conc, conc |> distinct(id, treatment) |> mutate(time = 0, Ce = 0)) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, time)
+stopifnot(all(conc$Ce >= -1e-6 * max(conc$Ce)))
+conc <- conc |>
+  mutate(Ce = pmax(Ce, 0)) |>
+  group_by(id) |>
+  filter(time <= time[which.max(Ce)] | Ce >= 1e-6 * max(Ce)) |>
+  ungroup()
+
+conc_obj <- PKNCA::PKNCAconc(conc, Ce ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(
+  ev_nca |> filter(evid == 1) |> mutate(duration = 0.5) |> dplyr::select(id, time, amt, duration, treatment),
+  amt ~ time | treatment + id,
+  duration = "duration"
+)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published <- tibble::tibble(treatment = paste(rates, "ug/kg/min"), half.life = 13.4 / 60)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ug/L", tmax = "h", aucinf.obs = "h*ug/L", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated effect-compartment NCA (typical 70 kg subject) vs. the published half-life. * differs from the reference by >20%.")
+
+hl <- as.data.frame(nca_res) |> filter(PPTESTCD == "half.life")
+stopifnot(nrow(hl) == 4, all(abs(hl$PPORRES * 60 / 13.4 - 1) < 0.02))
+```
+
+# Stochastic simulation of the blinded phase (Figure 2)
+
+A virtual cohort of 200 children per randomised arm receives 0.3, 1, 2 or
+3 ug/kg/min for 30 min. Children are drawn across the five enrolment strata in
+the Table 1 proportions (2%, 25%, 6%, 21%, 46%), with age uniform within each
+stratum and weight interpolated on the log-log scale through the stratum
+median age/weight pairs of Simulation 1, with 15% log-normal scatter. Each
+child is assigned to the low-EC50 class with probability 0.301.
+
+```{r cohort}
+set.seed(20150728)
+strata <- tibble::tibble(
+  lo = c(0.003, 1 / 12, 2, 6, 12),
+  hi = c(1 / 12, 2, 6, 12, 17),
+  p = c(0.02, 0.25, 0.06, 0.21, 0.46)
+)
+med_age <- c(0.035, 0.58, 4.545, 10.93, 14.8)
+med_wt <- c(3.615, 7.955, 16.15, 34.2, 52.6)
+make_cohort <- function(n, rate, id_offset) {
+  s <- sample(seq_len(nrow(strata)), n, replace = TRUE, prob = strata$p)
+  age <- stats::runif(n, strata$lo[s], strata$hi[s])
+  wt <- exp(stats::approx(log(med_age), log(med_wt), log(age), rule = 2)$y) *
+    exp(stats::rnorm(n, 0, 0.15))
+  subj <- tibble::tibble(
+    id = id_offset + seq_len(n), AGE = age, WT = wt,
+    MIX_LOW_EC50 = stats::rbinom(n, 1, 0.301),
+    treatment = paste(rate, "ug/kg/min")
+  )
+  dose <- subj |> mutate(time = 0, evid = 1, amt = rate * WT * 30, dur = 0.5)
+  obs <- subj |>
+    tidyr::crossing(time = seq(0, 36, by = 2) / 60) |>
+    mutate(evid = 0, amt = 0, dur = 0)
+  bind_rows(dose, obs) |>
+    mutate(cmt = "depot_kpd") |>
+    arrange(id, time, desc(evid))
+}
+events <- bind_rows(lapply(seq_along(rates), function(i) make_cohort(200, rates[i], (i - 1) * 200)))
+stopifnot(!anyDuplicated(events[events$evid == 1, "id"]))
+```
+
+```{r simulate}
+rxode2::rxSetSeed(20150728)
+sim <- rxode2::rxSolve(ui, events = events, keep = c("treatment", "MIX_LOW_EC50"), returnType = "data.frame")
+```
+
+```{r figure-2, fig.width = 7, fig.height = 5}
+# Replicates the layout of Figure 2B-C of Barrett 2015 (by EC50 group). The
+# observed VPC pools the trial's titrated doses (median 0.66 ug/kg/min); here
+# the four randomised arms are shown separately and untitrated.
+vpc <- sim |>
+  mutate(group = ifelse(MIX_LOW_EC50 == 1, "low EC50", "high EC50")) |>
+  group_by(treatment, group, time) |>
+  summarise(
+    Q05 = quantile(sim, 0.05), Q50 = quantile(sim, 0.5), Q95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(time * 60, Q50, colour = group, fill = group)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.15, colour = NA) +
+  geom_line() +
+  facet_wrap(~treatment) +
+  labs(
+    x = "Time (min)", y = "MAP (mmHg)", colour = NULL, fill = NULL,
+    caption = "Simulated median and 90% interval (with residual error) by randomised arm and EC50 group."
+  )
+
+mid <- sim |>
+  filter(time * 60 >= 10, time * 60 <= 30) |>
+  group_by(treatment) |>
+  summarise(median_map = median(sim), .groups = "drop")
+knitr::kable(dplyr::rename(mid, "Arm" = treatment, "Median MAP, 10-30 min (mmHg)" = median_map), digits = 1)
+# Figure 2A: the observed median sits near 60-65 mmHg from 8 to 36 min.
+# The simulated median across arms brackets it: the 0.3 ug/kg/min arm stays
+# near baseline (mostly high-EC50 children, below their ER50), the 3 ug/kg/min
+# arm sits well below. Bounds are on cohort medians, far from their sampling
+# noise (a few tenths of a mmHg for 200 children x 11 times).
+stopifnot(
+  mid$median_map[mid$treatment == "0.3 ug/kg/min"] > 65,
+  mid$median_map[mid$treatment == "3 ug/kg/min"] < 62,
+  min(mid$median_map) < 63, max(mid$median_map) > 63
+)
+```
+
+# Assumptions and deviations
+
+- **Final estimates vs bootstrap averages.** The packaged model uses Table 2's
+  final NONMEM estimates. The paper's own dosing simulations (Tables 3-4,
+  Figures 4-5) were evidently run with the bootstrap averages, as shown above;
+  the largest difference is the low EC50 (138 vs 104.3 ug/L). The abstract's
+  ER50 values (0.34 and 0.103 ug/kg/min) are computed from the final
+  estimates, which the packaged model reproduces.
+- **Equation 5 vs Table 2.** Equation 5 prints the age exponent as 0.0338 and
+  Equation 3 the clearance as 3.13 L/h; Table 2 gives 0.0333 and 3.12 (model)
+  or 0.032 and 3.13 (bootstrap). The Table 2 final estimates are used; the
+  baselines in Table 3 are reproduced to 0.2 mmHg either way.
+- **Table 2 ER50 rows.** The bootstrap-average ER50 cells (0.33 and 1.42 in
+  'mg/h/70 kg') are transposed between the high and low rows and the 0.33
+  appears to be in ug/kg/min; neither enters the model.
+- **Emax as a fraction of baseline.** The paper states that Emax was
+  logit-transformed to lie between 0 and the baseline, and Table 2 prints it as
+  22.65 mmHg at the typical baseline of 76 mmHg. The maintainers encode the
+  typical fraction 22.65 / 76 on the logit scale with the random effect added
+  there, and scale it by each child's own baseline. A constant 22.65 mmHg
+  Emax for every child was rejected because it does not reproduce the
+  age-pattern of the Table 3 doses.
+- **Unit of the drift slope.** Table 2 gives the slope as '12.3 (mm Hg)'
+  without a time unit. The model works in hours (clearance in L/h), and
+  Figures 4-5 show MAP rising about 11 mmHg per hour, so the slope is in
+  mmHg/h. The drift is linear in time from the start of the infusion and
+  unbounded; the model was fitted to the first 30-36 min and should not be
+  extrapolated far beyond that.
+- **Proportional random effect on the slope.** 'Proportional random-effects
+  model permitting positive or negative individual slope values' is encoded
+  as `slope * (1 + eta)` with variance 2.11^2, which lets individual slopes
+  change sign.
+- **Between-subject variability.** Table 2 prints only the bootstrap averages
+  of the BSV magnitudes; these are used, converted with footnote d
+  (variance = (CV/100)^2). The V of the effect compartment is fixed but still
+  carries BSV, as in Table 2. No covariances are reported, so none are
+  encoded.
+- **Residual error.** 'Residual variability (%CV)' is encoded as proportional
+  error of 0.329 on MAP.
+- **Time zero.** The paper's data include baseline MAP values up to 6 min
+  before the infusion; the drift term uses time since the start of the
+  infusion, so a user simulating pre-infusion baseline values should place
+  time zero at the infusion start.
+- **Table 4.** Its header says 'sequential SNP infusions of 5 and 30 min',
+  while the Simulation 2 text and Figure 5 use a 3-min first infusion; 3 min
+  is used. The first low-EC50 dose for the 7-month-old is printed three ways
+  (0.577 ug/kg/min in Table 4, 0.566 in the text, 0.557 in the Figure 5
+  legend); the Table 4 value is simulated.
+- **Virtual cohort.** Individual ages and weights are not published. The
+  cohort is drawn from the Table 1 stratum proportions and interpolated
+  stratum medians (Simulation 1), with 15% log-normal scatter in weight.
+- **Mixture.** NONMEM's mixture is represented by the binary covariate
+  `MIX_LOW_EC50`; the paper found no characteristic that predicts the class,
+  so simulations draw it from Bernoulli(0.301).
+- **Figure 2.** The observed VPC pools the titrated doses actually given, which
+  are not published per child, so the comparison is qualitative.
+- No correction notice for this article was found in Europe PMC as of
+  2026-11-24.

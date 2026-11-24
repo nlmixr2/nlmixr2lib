@@ -5746,6 +5746,8 @@ navbar:
         href: articles/Sharma_2023_nitrofurantoin.html
       - text: "Nitrofurantoin rat pbpk (Sharma 2023)"
         href: articles/Sharma_2023_nitrofurantoin.html
+      - text: "Nitroprusside (Barrett 2015)"
+        href: articles/Barrett_2015_nitroprusside.html
       - text: "Nivolumab (Bajaj 2017)"
         href: articles/Bajaj_2017_nivolumab.html
       - text: "Nivolumab (Hu 2024)"
@@ -9499,6 +9501,7 @@ articles:
   - articles/Barnett_2018_rosuvastatin
   - articles/Baron_2016_empagliflozin
   - articles/Barras_2009_enoxaparin
+  - articles/Barrett_2015_nitroprusside
   - articles/Bartels_2021_indacaterol_glycopyrronium_mometasone
   - articles/Bartko_2018_sutimlimab
   - articles/Bastida_2018_tocilizumab

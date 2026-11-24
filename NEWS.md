@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Barrett 2015 sodium nitroprusside K-PD ([doi:10.3389/fphar.2015.00151](https://doi.org/10.3389/fphar.2015.00151)) -- children aged 0-17 years under anaesthesia needing deliberate hypotension (mean arterial pressure).
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
