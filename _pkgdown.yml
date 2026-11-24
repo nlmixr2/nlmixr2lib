@@ -1334,6 +1334,8 @@ navbar:
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Captopril rat (Kiriyama 2024)"
         href: articles/Kiriyama_2024_nifedipine_captopril_rat.html
+      - text: "Carbamazepine (Majid 2016)"
+        href: articles/Majid_2016_perampanel_concomitant_aeds.html
       - text: "Carbamazepine (Yip 2021)"
         href: articles/Yip_2021_carbamazepine.html
       - text: "Carbamazepine invitro (Almond 2016)"
@@ -1840,6 +1842,8 @@ navbar:
         href: articles/Michalon_2025_cliramitug.html
       - text: "Cliramitug rat (Michalon 2025)"
         href: articles/Michalon_2025_cliramitug.html
+      - text: "Clobazam (Majid 2016)"
+        href: articles/Majid_2016_perampanel_concomitant_aeds.html
       - text: "Clobazam (Tuo 2025)"
         href: articles/Tuo_2025_clobazam.html
       - text: "ClobetasolPropionate (Duong 2025)"
@@ -1856,6 +1860,8 @@ navbar:
         href: articles/Zingmark_2003_clomethiazole.html
       - text: "Clonazepam (Kruizinga 2022)"
         href: articles/Kruizinga_2022_clonazepam.html
+      - text: "Clonazepam (Majid 2016)"
+        href: articles/Majid_2016_perampanel_concomitant_aeds.html
       - text: "Clonazepam pediatric (Yukawa 2002)"
         href: articles/Yukawa_2002_clonazepam_pediatric.html
       - text: "Clonidine (Cloesmeijer 2020)"
@@ -4354,6 +4360,8 @@ navbar:
         href: articles/Huo_2025_lamotrigine.html
       - text: "Lamotrigine (Hussein 1997)"
         href: articles/Hussein_1997_lamotrigine.html
+      - text: "Lamotrigine (Majid 2016)"
+        href: articles/Majid_2016_perampanel_concomitant_aeds.html
       - text: "Lamotrigine (Milosheska 2016)"
         href: articles/Milosheska_2016_lamotrigine.html
       - text: "Lamotrigine (Wang 2019)"
@@ -4484,6 +4492,8 @@ navbar:
         href: articles/Damnjanovic_2023_pediatric_antiepileptics.html
       - text: "Levetiracetam (Johnson 2025)"
         href: articles/Johnson_2025_levetiracetam.html
+      - text: "Levetiracetam (Majid 2016)"
+        href: articles/Majid_2016_perampanel_concomitant_aeds.html
       - text: "Levetiracetam (Shin 2017)"
         href: articles/Shin_2017_levetiracetam.html
       - text: "Levetiracetam (Wang 2012)"
@@ -5962,6 +5972,8 @@ navbar:
         href: articles/Kobuchi_2021_oxaliplatin_rat.html
       - text: "Oxcarbazepine (Jang 2021)"
         href: articles/Jang_2021_oxcarbazepine.html
+      - text: "Oxcarbazepine (Majid 2016)"
+        href: articles/Majid_2016_perampanel_concomitant_aeds.html
       - text: "Oxcarbazepine (Rodrigues 2017)"
         href: articles/Rodrigues_2017_oxcarbazepine.html
       - text: "Oxcarbazepine (Sinha 2026)"
@@ -6366,6 +6378,8 @@ navbar:
         href: articles/Back_2019_pediatric_size_maturation.html
       - text: "Phenobarbital (Grasela 1985)"
         href: articles/Grasela_1985_phenobarbital.html
+      - text: "Phenobarbital (Majid 2016)"
+        href: articles/Majid_2016_perampanel_concomitant_aeds.html
       - text: "Phenobarbital (Stoschus 2025)"
         href: articles/Stoschus_2025_phenobarbital.html
       - text: "Phenobarbital invitro (Almond 2016)"
@@ -8370,6 +8384,8 @@ navbar:
         href: articles/Bamgboye_2026_topiramate.html
       - text: "Topiramate (Lee 2024)"
         href: articles/Lee_2024_topiramate.html
+      - text: "Topiramate (Majid 2016)"
+        href: articles/Majid_2016_perampanel_concomitant_aeds.html
       - text: "Topiramate dog (Vuu 2016)"
         href: articles/Vuu_2016_topiramate_dog.html
       - text: "Topiramate mbma (Boucher 2016)"
@@ -8690,6 +8706,8 @@ navbar:
         href: articles/Damnjanovic_2023_pediatric_antiepileptics.html
       - text: "Valproic acid (Guo 2020)"
         href: articles/Guo_2020_valproic_acid.html
+      - text: "Valproic acid (Majid 2016)"
+        href: articles/Majid_2016_perampanel_concomitant_aeds.html
       - text: "Valproic acid (Nakashima 2015)"
         href: articles/Nakashima_2015_valproic_acid_seizure_control.html
       - text: "Valproic acid (Ogusu 2014)"
@@ -9188,6 +9206,8 @@ navbar:
         href: articles/Izat_2025_aldehyde_oxidase_substrates.html
       - text: "Zonisamide (Hashimoto 1994)"
         href: articles/Hashimoto_1994_zonisamide.html
+      - text: "Zonisamide (Majid 2016)"
+        href: articles/Majid_2016_perampanel_concomitant_aeds.html
       # AUTOGEN:specific_drugs:END
     ddmore:
       text: DDMoRe models
@@ -11020,6 +11040,7 @@ articles:
   - articles/Mahomed_2025_CAP256V2LS
   - articles/Maizaud_2025_missed_mycophenolate_doses
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
+  - articles/Majid_2016_perampanel_concomitant_aeds
   - articles/Majid_2024_lecanemab
   - articles/Majid_2024_lenvatinib
   - articles/Maleki_2024_brepocitinib
