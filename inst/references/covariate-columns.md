@@ -4729,6 +4729,83 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Lee_2024_topiramate.R` (mild positive dose-dependence of topiramate apparent clearance, multiplying the additive enzyme-inducing-comedication clearance sum alongside the [[CRCL]] power term), `Boucher_2016_topiramate_mbma.R` (study-ARM-level assigned dose in a landmark MBMA, where the column is the dose-response driver itself -- it enters an Emax term `emax * DOSE_TPM_MGD / (ed50 + DOSE_TPM_MGD)` on the logit of the arm's paresthesia rate rather than acting on a structural PK parameter, and a value of 0 recovers the placebo intercept exactly).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings: [[DOSE_EMPA_MGD]] for empagliflozin, [[DOSE_LOR_MGD]] for lorlatinib, [[DOSE_PHT_MGKGD]] for phenytoin). Topiramate is dosed in flat mg/day for adults (no per-kg adjustment in the adult label), matching the `DOSE_EMPA_MGD` / `DOSE_LOR_MGD` pattern rather than the per-kg `DOSE_PHT_MGKGD` pattern; a future paediatric topiramate extraction dosing in mg/kg/day should register a sibling `DOSE_TPM_MGKGD` rather than reuse this name. Distinct from the rxode2 / nlmixr2 event column `amt`, which carries the amount of each individual administration; `DOSE_TPM_MGD` is a per-record covariate carrying the current daily-dose LEVEL used by the covariate model. Because the covariate is the daily dose while `amt` is the per-administration amount, the two must be kept consistent when simulating: for a b.i.d. regimen `amt` is half of `DOSE_TPM_MGD`. A dose-level covariate on clearance encodes a mild PK nonlinearity as a covariate rather than as a saturable elimination term, so simulations that vary the dose must update this column or the nonlinearity will be silently lost.
 
+### DOSE_ELETRIPTAN_MG (**canonical for single eletriptan dose**)
+- **Description:** Single oral eletriptan dose, in mg. In a model-based meta-analysis, the dose ASSIGNED TO A STUDY ARM rather than taken by an individual patient; set to 0 for any arm (placebo or another drug) that does not receive eletriptan. Record the aggregation grain in each model's `covariateData[[DOSE_ELETRIPTAN_MG]]$notes`.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- in the founding model it is divided by the eletriptan common dose of 40 mg (the single dose on the US label) and the standardized dose `x` enters an agent-specific Emax term `emax_eletriptan * x / (exp(led50_eletriptan) + x)` on the logit of the arm's headache-free-at-2-h rate; a value of 0 makes the term exactly 0.
+- **Source aliases:**
+  - `Dose1Txt`..`Dose4Txt` (with drug code for eletriptan) -- used in `Mawdsley_2016_triptans_mbma.R` (Mawdsley 2016 Supplementary Material trial table `TriptansReformatted.xlsx`; arm doses 20, 40 and 80 mg).
+- **Example models:** `Mawdsley_2016_triptans_mbma.R` (founding example; landmark logistic Emax model-based network meta-analysis of seven triptans, one dose column per agent).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. One column per triptan (`DOSE_ELETRIPTAN_MG`, `DOSE_SUMATRIPTAN_MG`, `DOSE_FROVATRIPTAN_MG`, `DOSE_ALMOTRIPTAN_MG`, `DOSE_ZOLMITRIPTAN_MG`, `DOSE_NARATRIPTAN_MG`, `DOSE_RIZATRIPTAN_MG`) rather than a single dose column plus an agent code, so that each agent's dose-response term reads its own column and a placebo arm is the all-zero row; a trial arm carries a non-zero value in at most one of them. The column holds the dose in mg, not the multiple of the common dose that the source analysis used; the common dose is applied inside `model()`.
+
+### DOSE_SUMATRIPTAN_MG (**canonical for single sumatriptan dose**)
+- **Description:** Single oral sumatriptan dose, in mg. In a model-based meta-analysis, the dose ASSIGNED TO A STUDY ARM rather than taken by an individual patient; set to 0 for any arm (placebo or another drug) that does not receive sumatriptan. Record the aggregation grain in each model's `covariateData[[DOSE_SUMATRIPTAN_MG]]$notes`.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- in the founding model it is divided by the sumatriptan common dose of 50 mg (the single dose on the US label) and the standardized dose `x` enters an agent-specific Emax term `emax_sumatriptan * x / (exp(led50_sumatriptan) + x)` on the logit of the arm's headache-free-at-2-h rate; a value of 0 makes the term exactly 0. The source states this common dose explicitly ('following Thorlund et al., a common dose of 50 mg was used'), as the exception to its US-label rule.
+- **Source aliases:**
+  - `Dose1Txt`..`Dose4Txt` (with drug code for sumatriptan) -- used in `Mawdsley_2016_triptans_mbma.R` (Mawdsley 2016 Supplementary Material trial table `TriptansReformatted.xlsx`; arm doses 25, 50, 85, 100 and 200 mg).
+- **Example models:** `Mawdsley_2016_triptans_mbma.R` (founding example; landmark logistic Emax model-based network meta-analysis of seven triptans, one dose column per agent).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. One column per triptan (`DOSE_ELETRIPTAN_MG`, `DOSE_SUMATRIPTAN_MG`, `DOSE_FROVATRIPTAN_MG`, `DOSE_ALMOTRIPTAN_MG`, `DOSE_ZOLMITRIPTAN_MG`, `DOSE_NARATRIPTAN_MG`, `DOSE_RIZATRIPTAN_MG`) rather than a single dose column plus an agent code, so that each agent's dose-response term reads its own column and a placebo arm is the all-zero row; a trial arm carries a non-zero value in at most one of them. The column holds the dose in mg, not the multiple of the common dose that the source analysis used; the common dose is applied inside `model()`.
+
+### DOSE_FROVATRIPTAN_MG (**canonical for single frovatriptan dose**)
+- **Description:** Single oral frovatriptan dose, in mg. In a model-based meta-analysis, the dose ASSIGNED TO A STUDY ARM rather than taken by an individual patient; set to 0 for any arm (placebo or another drug) that does not receive frovatriptan. Record the aggregation grain in each model's `covariateData[[DOSE_FROVATRIPTAN_MG]]$notes`.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- in the founding model it is divided by the frovatriptan common dose of 2.5 mg (the single dose on the US label) and the standardized dose `x` enters an agent-specific Emax term `emax_frovatriptan * x / (exp(led50_frovatriptan) + x)` on the logit of the arm's headache-free-at-2-h rate; a value of 0 makes the term exactly 0.
+- **Source aliases:**
+  - `Dose1Txt`..`Dose4Txt` (with drug code for frovatriptan) -- used in `Mawdsley_2016_triptans_mbma.R` (Mawdsley 2016 Supplementary Material trial table `TriptansReformatted.xlsx`; arm doses 2.5 and 5 mg).
+- **Example models:** `Mawdsley_2016_triptans_mbma.R` (founding example; landmark logistic Emax model-based network meta-analysis of seven triptans, one dose column per agent).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. One column per triptan (`DOSE_ELETRIPTAN_MG`, `DOSE_SUMATRIPTAN_MG`, `DOSE_FROVATRIPTAN_MG`, `DOSE_ALMOTRIPTAN_MG`, `DOSE_ZOLMITRIPTAN_MG`, `DOSE_NARATRIPTAN_MG`, `DOSE_RIZATRIPTAN_MG`) rather than a single dose column plus an agent code, so that each agent's dose-response term reads its own column and a placebo arm is the all-zero row; a trial arm carries a non-zero value in at most one of them. The column holds the dose in mg, not the multiple of the common dose that the source analysis used; the common dose is applied inside `model()`.
+
+### DOSE_ALMOTRIPTAN_MG (**canonical for single almotriptan dose**)
+- **Description:** Single oral almotriptan dose, in mg. In a model-based meta-analysis, the dose ASSIGNED TO A STUDY ARM rather than taken by an individual patient; set to 0 for any arm (placebo or another drug) that does not receive almotriptan. Record the aggregation grain in each model's `covariateData[[DOSE_ALMOTRIPTAN_MG]]$notes`.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- in the founding model it is divided by the almotriptan common dose of 12.5 mg (the single dose on the US label) and the standardized dose `x` enters an agent-specific Emax term `emax_almotriptan * x / (exp(led50_almotriptan) + x)` on the logit of the arm's headache-free-at-2-h rate; a value of 0 makes the term exactly 0.
+- **Source aliases:**
+  - `Dose1Txt`..`Dose4Txt` (with drug code for almotriptan) -- used in `Mawdsley_2016_triptans_mbma.R` (Mawdsley 2016 Supplementary Material trial table `TriptansReformatted.xlsx`; arm doses 6.25, 12.5 and 25 mg).
+- **Example models:** `Mawdsley_2016_triptans_mbma.R` (founding example; landmark logistic Emax model-based network meta-analysis of seven triptans, one dose column per agent).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. One column per triptan (`DOSE_ELETRIPTAN_MG`, `DOSE_SUMATRIPTAN_MG`, `DOSE_FROVATRIPTAN_MG`, `DOSE_ALMOTRIPTAN_MG`, `DOSE_ZOLMITRIPTAN_MG`, `DOSE_NARATRIPTAN_MG`, `DOSE_RIZATRIPTAN_MG`) rather than a single dose column plus an agent code, so that each agent's dose-response term reads its own column and a placebo arm is the all-zero row; a trial arm carries a non-zero value in at most one of them. The column holds the dose in mg, not the multiple of the common dose that the source analysis used; the common dose is applied inside `model()`.
+
+### DOSE_ZOLMITRIPTAN_MG (**canonical for single zolmitriptan dose**)
+- **Description:** Single oral zolmitriptan dose, in mg. In a model-based meta-analysis, the dose ASSIGNED TO A STUDY ARM rather than taken by an individual patient; set to 0 for any arm (placebo or another drug) that does not receive zolmitriptan. Record the aggregation grain in each model's `covariateData[[DOSE_ZOLMITRIPTAN_MG]]$notes`.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- in the founding model it is divided by the zolmitriptan common dose of 2.5 mg (the single dose on the US label) and the standardized dose `x` enters an agent-specific Emax term `emax_zolmitriptan * x / (exp(led50_zolmitriptan) + x)` on the logit of the arm's headache-free-at-2-h rate; a value of 0 makes the term exactly 0.
+- **Source aliases:**
+  - `Dose1Txt`..`Dose4Txt` (with drug code for zolmitriptan) -- used in `Mawdsley_2016_triptans_mbma.R` (Mawdsley 2016 Supplementary Material trial table `TriptansReformatted.xlsx`; arm doses 1, 2.5, 5, 10 and 25 mg).
+- **Example models:** `Mawdsley_2016_triptans_mbma.R` (founding example; landmark logistic Emax model-based network meta-analysis of seven triptans, one dose column per agent).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. One column per triptan (`DOSE_ELETRIPTAN_MG`, `DOSE_SUMATRIPTAN_MG`, `DOSE_FROVATRIPTAN_MG`, `DOSE_ALMOTRIPTAN_MG`, `DOSE_ZOLMITRIPTAN_MG`, `DOSE_NARATRIPTAN_MG`, `DOSE_RIZATRIPTAN_MG`) rather than a single dose column plus an agent code, so that each agent's dose-response term reads its own column and a placebo arm is the all-zero row; a trial arm carries a non-zero value in at most one of them. The column holds the dose in mg, not the multiple of the common dose that the source analysis used; the common dose is applied inside `model()`.
+
+### DOSE_NARATRIPTAN_MG (**canonical for single naratriptan dose**)
+- **Description:** Single oral naratriptan dose, in mg. In a model-based meta-analysis, the dose ASSIGNED TO A STUDY ARM rather than taken by an individual patient; set to 0 for any arm (placebo or another drug) that does not receive naratriptan. Record the aggregation grain in each model's `covariateData[[DOSE_NARATRIPTAN_MG]]$notes`.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- in the founding model it is divided by the naratriptan common dose of 2.5 mg (the single dose on the US label) and the standardized dose `x` enters an agent-specific Emax term `emax_naratriptan * x / (exp(led50_naratriptan) + x)` on the logit of the arm's headache-free-at-2-h rate; a value of 0 makes the term exactly 0.
+- **Source aliases:**
+  - `Dose1Txt`..`Dose4Txt` (with drug code for naratriptan) -- used in `Mawdsley_2016_triptans_mbma.R` (Mawdsley 2016 Supplementary Material trial table `TriptansReformatted.xlsx`; arm doses 2.5 and 5 mg).
+- **Example models:** `Mawdsley_2016_triptans_mbma.R` (founding example; landmark logistic Emax model-based network meta-analysis of seven triptans, one dose column per agent).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. One column per triptan (`DOSE_ELETRIPTAN_MG`, `DOSE_SUMATRIPTAN_MG`, `DOSE_FROVATRIPTAN_MG`, `DOSE_ALMOTRIPTAN_MG`, `DOSE_ZOLMITRIPTAN_MG`, `DOSE_NARATRIPTAN_MG`, `DOSE_RIZATRIPTAN_MG`) rather than a single dose column plus an agent code, so that each agent's dose-response term reads its own column and a placebo arm is the all-zero row; a trial arm carries a non-zero value in at most one of them. The column holds the dose in mg, not the multiple of the common dose that the source analysis used; the common dose is applied inside `model()`.
+
+### DOSE_RIZATRIPTAN_MG (**canonical for single rizatriptan dose**)
+- **Description:** Single oral rizatriptan dose, in mg. In a model-based meta-analysis, the dose ASSIGNED TO A STUDY ARM rather than taken by an individual patient; set to 0 for any arm (placebo or another drug) that does not receive rizatriptan. Record the aggregation grain in each model's `covariateData[[DOSE_RIZATRIPTAN_MG]]$notes`.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- in the founding model it is divided by the rizatriptan common dose of 10 mg (the single dose on the US label) and the standardized dose `x` enters an agent-specific Emax term `emax_rizatriptan * x / (exp(led50_rizatriptan) + x)` on the logit of the arm's headache-free-at-2-h rate; a value of 0 makes the term exactly 0.
+- **Source aliases:**
+  - `Dose1Txt`..`Dose4Txt` (with drug code for rizatriptan) -- used in `Mawdsley_2016_triptans_mbma.R` (Mawdsley 2016 Supplementary Material trial table `TriptansReformatted.xlsx`; arm doses 2.5, 5, 10 and 40 mg).
+- **Example models:** `Mawdsley_2016_triptans_mbma.R` (founding example; landmark logistic Emax model-based network meta-analysis of seven triptans, one dose column per agent).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. One column per triptan (`DOSE_ELETRIPTAN_MG`, `DOSE_SUMATRIPTAN_MG`, `DOSE_FROVATRIPTAN_MG`, `DOSE_ALMOTRIPTAN_MG`, `DOSE_ZOLMITRIPTAN_MG`, `DOSE_NARATRIPTAN_MG`, `DOSE_RIZATRIPTAN_MG`) rather than a single dose column plus an agent code, so that each agent's dose-response term reads its own column and a placebo arm is the all-zero row; a trial arm carries a non-zero value in at most one of them. The column holds the dose in mg, not the multiple of the common dose that the source analysis used; the common dose is applied inside `model()`.
+
 ### DOSE_ELAGOLIX_MGD (**canonical for total daily elagolix dose**)
 - **Description:** Total daily elagolix dose, in mg/day, summed across the day's administrations (150 mg once daily -> 150; 200 mg twice daily -> 400). Per-record, time-varying covariate: set to 0 mg/day for placebo and for off-treatment follow-up, and updated when a treatment sequence switches regimen (e.g. placebo followed by 150 mg once daily in an extension study).
 - **Units:** mg/day
