@@ -5702,6 +5702,12 @@ navbar:
         href: articles/OlssonGisleskog_2021_nicotine.html
       - text: "NicotinicAcid rat (Ahlstrom 2010)"
         href: articles/Ahlstrom_2010_nicotinicAcid_rat.html
+      - text: "NicotinicAcid rat (Tapani 2014)"
+        href: articles/Tapani_2014_nicotinicAcid_rat.html
+      - text: "NicotinicAcid rat normal (Tapani 2014)"
+        href: articles/Tapani_2014_nicotinicAcid_rat.html
+      - text: "NicotinicAcid rat obese (Tapani 2014)"
+        href: articles/Tapani_2014_nicotinicAcid_rat.html
       - text: "Nifedipine (Fu 2022)"
         href: articles/Fu_2022_nifedipine.html
       - text: "Nifedipine (Liu 2022)"
@@ -11876,6 +11882,7 @@ articles:
   - articles/Tanzawa_2022_fluconazole
   - articles/Tao_2025_meropenem
   - articles/Tao_2026_levofloxacin
+  - articles/Tapani_2014_nicotinicAcid_rat
   - articles/Tarning_2008_piperaquine
   - articles/Tarning_2012_artemether
   - articles/Tarning_2012_dihydroartemisinin_piperaquine
