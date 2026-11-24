@@ -120,8 +120,12 @@ navbar:
         href: articles/Sethi_2024_acetaminophen_diclofenac_mbma.html
       - text: "Acetaminophen food (Franke 2015)"
         href: articles/Franke_2015_oxycodone_acetaminophen.html
+      - text: "Acetaminophen hepatocyte qsp (Sluka 2016)"
+        href: articles/Sluka_2016_acetaminophen.html
       - text: "Acetaminophen microdialysis rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
+      - text: "Acetaminophen pbpk (Sluka 2016)"
+        href: articles/Sluka_2016_acetaminophen.html
       - text: "Acetaminophen periventricular rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Acetaminophen placentaperfusion (Mian 2020)"
@@ -11720,6 +11724,7 @@ articles:
   - articles/Sinha_2026_oxcarbazepine
   - articles/Sjogren_2021_malnutrition_physiology
   - articles/Sloan_2017_rifampicin
+  - articles/Sluka_2016_acetaminophen
   - articles/Smit_2020_vancomycin
   - articles/Smit_2021_vancomycin
   - articles/Smit_2022_moxidectin
