@@ -208,15 +208,15 @@ knownLinCmtFormModels <- c(
 # because under rxSolve()'s defaults it would fail or give NaN states, and an
 # entry that no longer needs its fallback fails until it is removed.
 #
-# liblsoda, rxSolve()'s default solver, cannot solve these (9), while dop853
+# liblsoda, rxSolve()'s default solver, cannot solve these (7), while dop853
 # can. Ho 2025 and the four Mahadevan 2026 time-kill models hold an undosed
 # drug at exactly 0 inside `c^hill` with hill < 1: liblsoda returned NaN
 # states without a warning before rxode2 PR 1542, and fails the subject since.
 # Their vignettes pass `method`. Svensson 2016 fails under liblsoda outright.
-# Courlet 2023 and the two Zazo 2024 models fail only in the probe's drug-free
-# control: liblsoda leaves every state NaN from 1 h (Courlet) or after about
-# 6 h (Zazo) on rxode2 5.1.8, and stops with "could not solve the system" on
-# later builds; the probe moves the dosed solve and the control to dop853.
+# Courlet 2023 fails only in the probe's drug-free control: liblsoda leaves
+# every state NaN from 1 h on rxode2 5.1.8, and stops with "could not solve the
+# system" on later builds; the probe moves the dosed solve and the control to
+# dop853.
 knownLsodaFailModels <- c(
   "Courlet_2023_cabamiquine",
   "Ho_2025_betalactam_pbp78_CRAB",
@@ -224,7 +224,15 @@ knownLsodaFailModels <- c(
   "Mahadevan_2026_polymyxinB_meropenem_fosfomycin_BRKP61",
   "Mahadevan_2026_polymyxinB_meropenem_fosfomycin_BRKP67",
   "Mahadevan_2026_polymyxinB_meropenem_fosfomycin_KP00521",
-  "Svensson_2016_rifampicin",
+  "Svensson_2016_rifampicin"
+)
+
+# liblsoda fails these in the probe's drug-free control on some platforms only,
+# so the probe may or may not fall back to dop853 and neither outcome is pinned.
+# The bacterial growth goes NaN after about 6 h, or "could not solve the
+# system", on Linux workstations and on Windows; on macOS both models solve
+# under liblsoda, and on the Ubuntu runners the control model does.
+platformLsodaFailModels <- c(
   "Zazo_2024_ceftazidime_avibactam_control",
   "Zazo_2024_ceftazidime_avibactam_icu"
 )
@@ -808,12 +816,19 @@ test_that("the probe moves the dosed solve and its control to dop853 when liblso
   skip_on_cran()
   skip_if_not_installed("rxode2")
   db <- nlmixr2lib::modeldb
-  # liblsoda solves the dosed run but leaves the drug-free bacterial growth NaN
-  # after 6 h (older rxode2) or stops with "could not solve the system" (newer).
-  for (n in c("Zazo_2024_ceftazidime_avibactam_control", "Zazo_2024_ceftazidime_avibactam_icu")) {
+  # liblsoda solves the dosed run but leaves the drug-free control NaN from 1 h
+  # (older rxode2) or stops with "could not solve the system" (newer).
+  r <- probeSolveModel("Courlet_2023_cabamiquine", db, useLinCmt = FALSE)
+  expect_identical(r$status, "ok")
+  expect_identical(r$method, "dop853")
+  expect_identical(r$nonFiniteStates, character(0))
+  expect_gt(r$doseEffect, 0)
+  # Whichever solver the platform needs, the compared pair comes from one solver
+  # and is finite.
+  for (n in platformLsodaFailModels) {
     r <- probeSolveModel(n, db, useLinCmt = FALSE)
     expect_identical(r$status, "ok", info = n)
-    expect_identical(r$method, "dop853", info = n)
+    expect_true(r$method %in% c("default", "dop853"), info = n)
     expect_identical(r$nonFiniteStates, character(0), info = n)
     expect_gt(r$doseEffect, 0)
   }
@@ -1042,7 +1057,7 @@ test_that("only the known models need the probe's solver or grid fallback", {
   solver <- names_[vapply(names_, function(n) .usedSolverFallback(res[[n]]), logical(1))]
   grid <- names_[vapply(names_, function(n) .usedLongGrid(res[[n]]), logical(1))]
   expect_equal(
-    setdiff(solver, knownLsodaFailModels),
+    setdiff(solver, c(knownLsodaFailModels, platformLsodaFailModels)),
     character(0),
     info = "Model(s) the probe solved only with dop853; add them to knownLsodaFailModels with the evidence."
   )
