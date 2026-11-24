@@ -1384,6 +1384,8 @@ navbar:
         href: articles/Lin_2024_casirivimab.html
       - text: "Caspofungin (AbdulAziz 2025)"
         href: articles/AbdulAziz_2025_caspofungin.html
+      - text: "Caspofungin (Martial 2016)"
+        href: articles/Martial_2016_caspofungin.html
       - text: "Caspofungin (Martson 2020)"
         href: articles/Martson_2020_caspofungin.html
       - text: "Caspofungin (Niu 2020)"
@@ -11050,6 +11052,7 @@ articles:
   - articles/Marques_2025_salbutamol
   - articles/MarquezMegias_2023_adalimumab
   - articles/Marsot_2017_rifampicin
+  - articles/Martial_2016_caspofungin
   - articles/Martial_2017_micafungin
   - articles/Martial_2021_tacrolimus
   - articles/MartinCerezuela_2024_isavuconazole
