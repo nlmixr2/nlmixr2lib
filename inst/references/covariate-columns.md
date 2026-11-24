@@ -4672,6 +4672,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Ooi_2023_bevurogant.R` (dose slopes on logit F of -0.00618 / mg fasted healthy, -0.00514 / mg fed healthy and -0.00517 / mg patients).
 - **Notes:** Member of the `DOSE_<drug>_<units>` family. The IV microtracer (100 ug) of study 1407-0033 is not a dose of this column; for a twice-daily regimen use the per-administration dose (200 mg for 200 mg BID).
 
+### DOSE_DRUGS_UNITS (**canonical for the per-administration dose of the anonymised Servier 'drug S', in the source's undisclosed dose units**)
+- **Description:** Amount of drug S per oral administration, carried as a covariate because both the bioavailability and the split of the dose between a zero-order and a first-order absorption route are functions of the dose. Set it to the `amt` of the administration's two dose records; per record in dose-escalation designs.
+- **Units:** units (Tessier 2016 reports every dose in an undisclosed 'units'; the drug and its unit are anonymised)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as `ffo = 0.45 * DOSE / (18.6 + DOSE)` and, above 20 units, `F = 1 - 0.8 * (DOSE - 20) / (41.7 + DOSE - 20)` (F = 1 at or below 20 units).
+- **Source aliases:**
+  - `DMG` -- the Monolix regressor column built in the Tessier 2016 simulation R code (Data S1), equal to the dose record amount divided by 1000.
+- **Example models:** `Tessier_2016_drugS.R` (single oral doses of 5-800 units in 78 phase I subjects).
+- **Notes:** Member of the `DOSE_<drug>_<units>` family; the `UNITS` suffix records that the source never names the unit, so this column must not be read as international units. The authors' code dosed `1000 x DOSE` per record, so concentrations are on a milliunits-per-volume scale; the model keeps `amt` in units and multiplies by 1000 in `Cc` instead.
+
 ### DOSE_PROGESTIN_UMOL (**canonical for daily progestin dose on a molar basis**)
 - **Description:** Daily dose of the progestin component of a combined oral contraceptive expressed on a MOLAR basis, in umol. Constant within a treatment arm / subject for a conventional 21/7 monophasic regimen. The molar scale is what makes a single column meaningful across chemically distinct progestins: it is the column that carries progestin identity in models that do not fit a separate per-progestin effect.
 - **Units:** umol (per day)
