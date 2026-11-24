@@ -267,7 +267,8 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Type:** compartment
 - **Role:** Brain / tumor extracellular-fluid compartment used by cerebral-microdialysis-based CNS-distribution popPK models. Carries unbound drug delivered via influx (`clin`) and efflux (`clef`) clearances.
 - **Source aliases:** none.
-- **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
+- **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`, `Daryani_2016_fluorouracil_mouse.R` (cerebral-microdialysis tumor ECF of an orthotopic ependymoma; fixed 0.001 L/kg volume, entered from the unbound plasma amount by `kin_ecf` and left by `kout_ecf`, with its own Michaelis-Menten elimination and an exchange with the intracellular tumor space `int_tumor` by `kin_int_tumor` / `kout_int_tumor`), `Daryani_2016_fluorouracil.R` and `Daryani_2016_fluorouracil_scaled_adult.R` (the same mouse tumor ECF model driven by human plasma PK).
+- **Notes:** A model that does resolve an intracellular tumor space alongside the ECF keeps `ecf` for the microdialysis-sampled fluid and uses `int_tumor` (the `pbpkSubCompartmentRegex` intracellular form) for the intracellular pool, as in the Daryani 2016 models.
 
 ### saliva (**canonical salivary-fluid compartment**)
 - **Type:** compartment
