@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Standing 2018 ceftriaxone and metronidazole/hydroxymetronidazole ([doi:10.1002/cpt.1078](https://doi.org/10.1002/cpt.1078)) -- Kenyan infants and young children with complicated severe acute malnutrition.
+- Add Taubert 2018 iohexol ([doi:10.1038/s41598-018-35989-x](https://doi.org/10.1038/s41598-018-35989-x)) -- elderly adults (70 years or older) of the Berlin Initiative Study.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

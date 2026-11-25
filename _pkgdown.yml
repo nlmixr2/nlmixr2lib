@@ -4716,6 +4716,8 @@ navbar:
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Iohexol (Asberg 2020)"
         href: articles/Asberg_2020_iohexol.html
+      - text: "Iohexol (Taubert 2018)"
+        href: articles/Taubert_2018_iohexol.html
       - text: "Iohexol creatinine (Chen 2025)"
         href: articles/Chen_2025_iohexol_creatinine.html
       - text: "Iohexol dog (Baklouti 2021)"
@@ -13405,6 +13407,7 @@ articles:
   - articles/Taubel_2015_E52862
   - articles/Taubert_2016_linezolid
   - articles/Taubert_2018_finafloxacin
+  - articles/Taubert_2018_iohexol
   - articles/Taylor_2020_methotrexate
   - articles/Taylor_2026_methotrexate
   - articles/Tchaparian_2016_lumefantrine
