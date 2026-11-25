@@ -92,6 +92,10 @@ navbar:
         href: articles/Pin_2026_intestinal_organoid_gi_toxicity.html
       - text: "Abemaciclib qsp (Zhang 2025)"
         href: articles/Zhang_2025_abemaciclib.html
+      - text: "Abrilumab cyno (Li 2015)"
+        href: articles/Li_2015_abrilumab.html
+      - text: "Abrilumab human (Li 2015)"
+        href: articles/Li_2015_abrilumab.html
       - text: "Abrocitinib (Wojciechowski 2022)"
         href: articles/Wojciechowski_2022_abrocitinib.html
       - text: "Abrocitinib HR (Wang 2022)"
@@ -11812,6 +11816,7 @@ articles:
   - articles/Li_2012_dexamethasone_rat
   - articles/Li_2014_oseltamivir_amantadine_influenza
   - articles/Li_2014_penicillinG
+  - articles/Li_2015_abrilumab
   - articles/Li_2015_pomalidomide
   - articles/Li_2015_taspoglutide_mbma
   - articles/Li_2017_CC292

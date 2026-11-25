@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tapani 2014 nicotinic acid / NEFA joint and separate feedback models ([doi:10.1002/jps.24077](https://doi.org/10.1002/jps.24077)) -- normal Sprague-Dawley and obese Zucker rats.
+- Add Li 2015 abrilumab (AMG 181) TMDD ([doi:10.1002/prp2.98](https://doi.org/10.1002/prp2.98)) -- cynomolgus monkeys, with the allometric projection to healthy humans used for first-in-human dose selection.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
