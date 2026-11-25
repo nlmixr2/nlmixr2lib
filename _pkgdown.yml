@@ -8206,6 +8206,8 @@ navbar:
         href: articles/Hu_2025_tepotinib.html
       - text: "Tepotinib (Xiong 2022)"
         href: articles/Xiong_2022_tepotinib.html
+      - text: "Terfenadine (McAleer 2019)"
+        href: articles/McAleer_2019_terfenadine.html
       - text: "Tesaglitazar (Hamren 2008)"
         href: articles/Hamren_2008_tesaglitazar.html
       - text: "Tesofensine (Lehr 2010)"
@@ -11067,6 +11069,7 @@ articles:
   - articles/Maximova_2022_acyclovir
   - articles/May_2025_potravitug
   - articles/Mazzocco_2015_temozolomide
+  - articles/McAleer_2019_terfenadine
   - articles/McBride_2025_radamts13_qsp
   - articles/McCann_2025_midazolam
   - articles/McKnite_2026_midazolam_crrt
