@@ -301,6 +301,10 @@ sim_vpc <- bind_rows(lapply(doses_fig2, function(d) {
   as.data.frame(rxode2::rxSolve(mod, ev, returnType = "data.frame")) |>
     mutate(dose = d)
 }))
+# Each of the eight doses is its own occasion, so every subject carries one draw
+# of the between-occasion eta per occasion (the dose groups reuse the subject
+# ids, so the check reads one group).
+nlmixr2lib:::assertDrawsPerLevel(dplyr::filter(sim_vpc, dose == doses_fig2[1]), eta = "etaiov_limax", by = "OCC")
 set.seed(42)
 vpc <- sim_vpc |>
   mutate(obs = egfr * (1 + 0.088 * rnorm(n()))) |>

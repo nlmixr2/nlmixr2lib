@@ -512,6 +512,9 @@ stopifnot(!anyDuplicated(unique(ev_pop[, c("id", "time", "evid")])))
 
 sim_pop <- rxode2::rxSolve(mod, ev_pop, keep = c("group", "WT"), returnType = "data.frame")
 stopifnot(!anyNA(sim_pop$Cc), !anyNA(sim_pop$IGF1))
+# Each weekly dose is its own occasion, so every subject carries one draw of the
+# between-occasion eta per occasion.
+nlmixr2lib:::assertDrawsPerLevel(sim_pop, eta = "etaiov_lvc", by = "OCC")
 ```
 
 ```{r vpc, fig.height = 6}

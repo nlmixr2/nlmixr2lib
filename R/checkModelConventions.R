@@ -3217,14 +3217,22 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # draw per level is the model; each with the evidence for it. Anything not
 # listed is below-subject.
 .nestingAboveSubjectGroups <- data.frame(
-  model = c("Qi_2024_vosoritide", "Rosenborg_2025_salmeterol"),
-  group = c("SIDN", "SIDN"),
+  model = c("Qi_2024_vosoritide", "Rosenborg_2025_salmeterol", "Saqr_2024_tacrolimus", "Jung_2026_pcab_mbma"),
+  group = c("SIDN", "SIDN", "SITEN", "DIDN"),
   evidence = c(
     paste(
       "Qi 2024 Sect. 3.2: SIDN is the study identity number; StudyCL and StudyV",
       "are an additional hierarchical level of effect above the subject"
     ),
-    "Rosenborg 2025: SIDN maps to the STUD column, studies 1 to 3, one study per subject"
+    "Rosenborg 2025: SIDN maps to the STUD column, studies 1 to 3, one study per subject",
+    paste(
+      "Saqr 2024 Table 3: inter-site variability of CL/F (18.9% CV); patients are",
+      "nested within transplant centres, one centre per patient"
+    ),
+    paste(
+      "Jung 2026 Table 2: inter-drug variability (IDV) of the P-CAB model-based",
+      "meta-analysis; each study arm (the subject) belongs to one drug"
+    )
   ),
   stringsAsFactors = FALSE
 )

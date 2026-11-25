@@ -262,6 +262,20 @@ sim <- bind_rows(lapply(drugs, function(d) {
   s <- rxode2::rxSolve(mods[[d]], ev, omega = mods[[d]]$omega, returnType = "data.frame")
   s |> mutate(drug = d)
 }))
+# Every lesion of a patient carries its own draw of the lesion-level etas (the
+# drugs reuse the patient ids, so each drug is checked on its own).
+nlmixr2lib:::assertDrawsPerLevel(
+  dplyr::filter(sim, drug == "dabrafenib"),
+  eta = c("etalrbase_lesion", "etaslope_shrink_lesion", "etaslope_regrow_lesion"), by = "LESION"
+)
+nlmixr2lib:::assertDrawsPerLevel(
+  dplyr::filter(sim, drug == "trametinib"),
+  eta = c("etalrbase_lesion", "etaslope_shrink_lesion", "etaslope_regrow_lesion"), by = "LESION"
+)
+nlmixr2lib:::assertDrawsPerLevel(
+  dplyr::filter(sim, drug == "vemurafenib"),
+  eta = c("etalrbase_lesion", "etaslope_shrink_lesion"), by = "LESION"
+)
 sim |>
   distinct(drug, id) |>
   count(drug, name = "patients") |>
