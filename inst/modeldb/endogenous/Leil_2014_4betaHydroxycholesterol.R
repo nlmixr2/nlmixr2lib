@@ -28,8 +28,18 @@ Leil_2014_4betaHydroxycholesterol <- function() {
     central_ketoconazole = list(analyte = "ketoconazole", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1_ketoconazole = list(analyte = "ketoconazole", units = "mg", specimen = "tissue", verified = TRUE),
     total_cholesterol = list(analyte = "total cholesterol", units = "umol/L", specimen = "plasma", verified = TRUE),
-    hc4beta = list(analyte = "4beta-hydroxycholesterol", units = "nmol/L", specimen = "plasma", verified = TRUE),
-    hc4alpha = list(analyte = "4alpha-hydroxycholesterol", units = "nmol/L", specimen = "plasma", verified = TRUE),
+    hydroxycholesterol_4beta = list(
+      analyte = "4beta-hydroxycholesterol",
+      units = "nmol/L",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    hydroxycholesterol_4alpha = list(
+      analyte = "4alpha-hydroxycholesterol",
+      units = "nmol/L",
+      specimen = "plasma",
+      verified = TRUE
+    ),
     enzyme_liver = list(
       analyte = "CYP3A4 (hepatic), relative to baseline",
       units = "(unitless)",
@@ -123,15 +133,15 @@ Leil_2014_4betaHydroxycholesterol <- function() {
     # ---------------------------------------------------------------
     # Endogenous cholesterol / hydroxycholesterol turnover -- Table 1.
     # ---------------------------------------------------------------
-    lrbase_hc4beta <- log(81.2)
+    lrbase_hydroxycholesterol_4beta <- log(81.2)
     label("Baseline 4beta-hydroxycholesterol B_BHCH (nmol/L)") # Table 1 B_BHCH 81.2 (4.7)
-    lthalf_hc4beta <- log(124)
+    lthalf_hydroxycholesterol_4beta <- log(124)
     label("Half-life of 4beta-hydroxycholesterol BHC_HL (h)") # Table 1 BHC_HL 124 (7.6)
     lthalf_total_cholesterol <- fixed(log(192))
     label("Half-life of total cholesterol CH_HL (h)") # Table 1 CH_HL 192 (0); THETA 192 FIX in the control stream
     lrbase_total_cholesterol <- log(4244)
     label("Baseline total cholesterol BCH (umol/L)") # Table 1 BCH 4,244 (127)
-    lrbase_hc4alpha <- log(10.6)
+    lrbase_hydroxycholesterol_4alpha <- log(10.6)
     label("Baseline 4alpha-hydroxycholesterol B_AHCH (nmol/L)") # Table 1 B_AHCH 10.6 (0.53)
 
     # ---------------------------------------------------------------
@@ -142,7 +152,7 @@ Leil_2014_4betaHydroxycholesterol <- function() {
     lki <- log(0.125)
     label("Ketoconazole unbound Ki for midazolam intrinsic clearance (nmol/L)")
     # Table 1 Ki 0.125 (0.226) nmol/L; Results text 'Ki = 0.125 nmol/l'.
-    lki_hc4beta <- log(50)
+    lki_hydroxycholesterol_4beta <- log(50)
     label("Ketoconazole unbound Ki for 4beta-hydroxycholesterol formation (nmol/L)")
     # Table 1 K_i4B 50 (17) nmol/L; Results text 'Ki = 50 nmol/l'.
     lfoldind_liver <- log(3.43)
@@ -176,14 +186,14 @@ Leil_2014_4betaHydroxycholesterol <- function() {
     etalvmax_ketoconazole ~ 0.001369 # Table 1 posterior ISV V_max 0.037 -> 0.037^2
     etalkm_ketoconazole ~ 0.001369 # Table 1 posterior ISV K_m 0.037 -> 0.037^2
     etalfu_ketoconazole ~ 0.001024 # Table 1 posterior ISV F_uk 0.032 -> 0.032^2
-    etalrbase_hc4beta ~ 0.1024 # Table 1 posterior ISV B_BHCH 0.32 -> 0.32^2
-    etalthalf_hc4beta ~ 0.04 # Table 1 posterior ISV BHC_HL 0.20 -> 0.20^2
+    etalrbase_hydroxycholesterol_4beta ~ 0.1024 # Table 1 posterior ISV B_BHCH 0.32 -> 0.32^2
+    etalthalf_hydroxycholesterol_4beta ~ 0.04 # Table 1 posterior ISV BHC_HL 0.20 -> 0.20^2
     etalthalf_total_cholesterol ~ fixed(0.001) # $OMEGA 0.001 FIX; Table 1 posterior ISV CH_HL 0.031
     etalrbase_total_cholesterol ~ 0.0225 # Table 1 posterior ISV BCH 0.15 -> 0.15^2
-    etalrbase_hc4alpha ~ 0.0484 # Table 1 posterior ISV B_AHCH 0.22 -> 0.22^2
+    etalrbase_hydroxycholesterol_4alpha ~ 0.0484 # Table 1 posterior ISV B_AHCH 0.22 -> 0.22^2
     etalthalf_enzyme ~ fixed(0.001) # $OMEGA 0.001 FIX; Table 1 posterior ISV CYP_HL 0.032
     etalki ~ 4.84 # Table 1 posterior ISV Ki 2.2 -> 2.2^2
-    etalki_hc4beta ~ 0.49 # Table 1 posterior ISV K_i4B 0.70 -> 0.70^2
+    etalki_hydroxycholesterol_4beta ~ 0.49 # Table 1 posterior ISV K_i4B 0.70 -> 0.70^2
     etalfoldind_liver ~ 0.1764 # Table 1 posterior ISV FOLDINDS 0.42 -> 0.42^2
     etalfoldind_gut ~ 0.001024 # Table 1 posterior ISV FOLDINDG 0.032 -> 0.032^2
 
@@ -197,9 +207,9 @@ Leil_2014_4betaHydroxycholesterol <- function() {
     addSd_total_cholesterol <- 1170
     label("Additive residual SD, total cholesterol (umol/L)")
     # Table 1 sigma_3 1,170 (284); printed unit 'nmol/l' must be umol/L -- see vignette.
-    addSd_hc4beta <- 28.3
+    addSd_hydroxycholesterol_4beta <- 28.3
     label("Additive residual SD, 4beta-hydroxycholesterol (nmol/L)") # Table 1 sigma_4 28.3 (7.2)
-    addSd_hc4alpha <- 4.19
+    addSd_hydroxycholesterol_4alpha <- 4.19
     label("Additive residual SD, 4alpha-hydroxycholesterol (nmol/L)") # Table 1 sigma_5 4.19 (1.02)
   })
   model({
@@ -225,27 +235,27 @@ Leil_2014_4betaHydroxycholesterol <- function() {
     km_ketoconazole <- exp(lkm_ketoconazole + etalkm_ketoconazole)
     fu_ketoconazole <- exp(lfu_ketoconazole + etalfu_ketoconazole)
 
-    rbase_hc4beta <- exp(lrbase_hc4beta + etalrbase_hc4beta)
-    thalf_hc4beta <- exp(lthalf_hc4beta + etalthalf_hc4beta)
+    rbase_hydroxycholesterol_4beta <- exp(lrbase_hydroxycholesterol_4beta + etalrbase_hydroxycholesterol_4beta)
+    thalf_hydroxycholesterol_4beta <- exp(lthalf_hydroxycholesterol_4beta + etalthalf_hydroxycholesterol_4beta)
     thalf_total_cholesterol <- exp(lthalf_total_cholesterol + etalthalf_total_cholesterol)
     rbase_total_cholesterol <- exp(lrbase_total_cholesterol + etalrbase_total_cholesterol)
-    rbase_hc4alpha <- exp(lrbase_hc4alpha + etalrbase_hc4alpha)
+    rbase_hydroxycholesterol_4alpha <- exp(lrbase_hydroxycholesterol_4alpha + etalrbase_hydroxycholesterol_4alpha)
 
     thalf_enzyme <- exp(lthalf_enzyme + etalthalf_enzyme)
     ki <- exp(lki + etalki)
-    ki_hc4beta <- exp(lki_hc4beta + etalki_hc4beta)
+    ki_hydroxycholesterol_4beta <- exp(lki_hydroxycholesterol_4beta + etalki_hydroxycholesterol_4beta)
     foldind_liver <- exp(lfoldind_liver + etalfoldind_liver)
     foldind_gut <- exp(lfoldind_gut + etalfoldind_gut)
 
     # Turnover rates (the control stream uses 0.693 for log(2)) --------------
-    kout_hc4beta <- 0.693 / thalf_hc4beta
+    kout_hydroxycholesterol_4beta <- 0.693 / thalf_hydroxycholesterol_4beta
     kout_total_cholesterol <- 0.693 / thalf_total_cholesterol
     kin_total_cholesterol <- rbase_total_cholesterol * kout_total_cholesterol
     # The control stream sets the 4alphaHC elimination rate from the
     # cholesterol half-life (KELA = 0.693/CH_HL), not from AHC_HL.
-    kout_hc4alpha <- 0.693 / thalf_total_cholesterol
-    kform_hc4beta <- kout_hc4beta * rbase_hc4beta / rbase_total_cholesterol
-    kform_hc4alpha <- kout_hc4alpha * rbase_hc4alpha / rbase_total_cholesterol
+    kout_hydroxycholesterol_4alpha <- 0.693 / thalf_total_cholesterol
+    kform_hydroxycholesterol_4beta <- kout_hydroxycholesterol_4beta * rbase_hydroxycholesterol_4beta / rbase_total_cholesterol
+    kform_hydroxycholesterol_4alpha <- kout_hydroxycholesterol_4alpha * rbase_hydroxycholesterol_4alpha / rbase_total_cholesterol
     kdeg_enzyme <- 0.693 / thalf_enzyme
 
     # Ketoconazole concentrations and CYP3A4 inhibition ----------------------
@@ -253,7 +263,7 @@ Leil_2014_4betaHydroxycholesterol <- function() {
     # unbound ketoconazole in nmol/L (MW 531 g/mol)
     cu_ketoconazole <- Cc_ketoconazole * 1000 / 531 * fu_ketoconazole * 1000
     inh <- 1 + cu_ketoconazole / ki
-    inh_hc4beta <- 1 - cu_ketoconazole / (cu_ketoconazole + ki_hc4beta)
+    inh_hydroxycholesterol_4beta <- 1 - cu_ketoconazole / (cu_ketoconazole + ki_hydroxycholesterol_4beta)
 
     # Rifampin induction drive on CYP3A4 synthesis --------------------------
     ind_liver <- 1 + foldind_liver * CONMED_RIFAMPICIN * (1 - exp(-kdeg_enzyme * tind))
@@ -288,16 +298,16 @@ Leil_2014_4betaHydroxycholesterol <- function() {
       q_ketoconazole / vp_ketoconazole * peripheral1_ketoconazole
 
     d/dt(total_cholesterol) <- kin_total_cholesterol - kout_total_cholesterol * total_cholesterol
-    d/dt(hc4beta) <- kform_hc4beta * enzyme_liver * inh_hc4beta * total_cholesterol - kout_hc4beta * hc4beta
-    d/dt(hc4alpha) <- kform_hc4alpha * total_cholesterol - kout_hc4alpha * hc4alpha
+    d/dt(hydroxycholesterol_4beta) <- kform_hydroxycholesterol_4beta * enzyme_liver * inh_hydroxycholesterol_4beta * total_cholesterol - kout_hydroxycholesterol_4beta * hydroxycholesterol_4beta
+    d/dt(hydroxycholesterol_4alpha) <- kform_hydroxycholesterol_4alpha * total_cholesterol - kout_hydroxycholesterol_4alpha * hydroxycholesterol_4alpha
     d/dt(enzyme_liver) <- kdeg_enzyme * ind_liver - kdeg_enzyme * enzyme_liver
     d/dt(enzyme_gut) <- kdeg_enzyme * ind_gut - kdeg_enzyme * enzyme_gut
 
     f(depot_ketoconazole) <- fdepot_ketoconazole
 
     total_cholesterol(0) <- rbase_total_cholesterol
-    hc4beta(0) <- rbase_hc4beta
-    hc4alpha(0) <- rbase_hc4alpha
+    hydroxycholesterol_4beta(0) <- rbase_hydroxycholesterol_4beta
+    hydroxycholesterol_4alpha(0) <- rbase_hydroxycholesterol_4alpha
     enzyme_liver(0) <- 1
     enzyme_gut(0) <- 1
 
@@ -305,7 +315,7 @@ Leil_2014_4betaHydroxycholesterol <- function() {
     Cc <- central / vc * 1000 / 0.326 # midazolam, nmol/L
     Cc ~ add(addSd) + prop(propSd)
     total_cholesterol ~ add(addSd_total_cholesterol)
-    hc4beta ~ add(addSd_hc4beta)
-    hc4alpha ~ add(addSd_hc4alpha)
+    hydroxycholesterol_4beta ~ add(addSd_hydroxycholesterol_4beta)
+    hydroxycholesterol_4alpha ~ add(addSd_hydroxycholesterol_4alpha)
   })
 }

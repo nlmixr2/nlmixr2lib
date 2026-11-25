@@ -4973,6 +4973,34 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
   - `Yin_2024_soticlestat.R` (indirect-response turnover with `kin = rbase * kout` and sigmoid-Imax inhibition of synthesis by the soticlestat effect-site concentration).
   - `Yin_2023_soticlestat.R` (the healthy-adult analysis that the 2024 patient model carries its enzyme-occupancy sub-model forward from; same turnover structure, with `hc24` as one of three endpoints alongside `Cc` and `occ`).
 
+### total_cholesterol (**canonical plasma total-cholesterol PD output**)
+- **Type:** compartment
+- **Role:** Plasma (or serum) total cholesterol concentration as a turnover state or PD output; the precursor pool from which the hydroxycholesterol biomarkers are formed in a cholesterol-oxidation model. Spelled out rather than abbreviated, following the `serum_phosphorus` ruling on output names.
+- **Source aliases:**
+  - `CHOL` -- NONMEM `$MODEL COMP=(CHOL)` in Leil 2014 Supplementary Data.
+  - `TC` -- Leil 2014 `$DES` derived variable.
+- **Example models:** `Leil_2014_4betaHydroxycholesterol.R` (zero-order synthesis, first-order elimination, umol/L; observed with additive error).
+- **Notes:** Distinct from `ldl` / `hdl` (lipoprotein fractions) and from the `TCHOL` covariate column, which is a baseline total-cholesterol value supplied as data rather than a modelled state.
+
+### hydroxycholesterol_4beta (**canonical 4beta-hydroxycholesterol PD output**)
+- **Type:** compartment
+- **Role:** Plasma 4beta-hydroxycholesterol (4betaHC), the CYP3A4/5-formed oxysterol used as an endogenous biomarker of hepatic CYP3A activity, as a turnover state or PD output. Spelled out in full rather than shortened on the `hc24` pattern.
+- **Source aliases:**
+  - `4BHC` -- NONMEM `$MODEL COMP=(4BHC)` in Leil 2014 Supplementary Data; a leading digit is not a legal R symbol.
+  - `BHC` -- Leil 2014 `$DES` derived variable.
+  - `4betaHC` / `4bHC` -- common paper abbreviations.
+- **Example models:** `Leil_2014_4betaHydroxycholesterol.R` (formation from `total_cholesterol` proportional to hepatic CYP3A4 `enzyme_liver`, reversibly inhibited by unbound ketoconazole; first-order elimination with a 124 h half-life).
+- **Notes:** Use with `hydroxycholesterol_4alpha` when a paper co-models the CYP3A-independent epimer to normalise for cholesterol turnover; do not fold the 4beta/4alpha ratio into this name.
+
+### hydroxycholesterol_4alpha (**canonical 4alpha-hydroxycholesterol PD output**)
+- **Type:** compartment
+- **Role:** Plasma 4alpha-hydroxycholesterol (4alphaHC), the CYP3A-independent epimer of 4beta-hydroxycholesterol (formed by cholesterol autoxidation), used as a reference for cholesterol turnover when interpreting `hydroxycholesterol_4beta`.
+- **Source aliases:**
+  - `4AHC` -- NONMEM `$MODEL COMP=(4AHC)` in Leil 2014 Supplementary Data.
+  - `AHC` -- Leil 2014 `$DES` derived variable.
+  - `4alphaHC` / `4aHC` -- common paper abbreviations.
+- **Example models:** `Leil_2014_4betaHydroxycholesterol.R` (formation from `total_cholesterol` independent of CYP3A4; first-order elimination).
+
 ### cox2 (**canonical COX-2 enzyme activity PD output**)
 - **Type:** compartment
 - **Role:** COX-2 enzyme activity PD output.
@@ -8237,6 +8265,15 @@ concentration output, and the `propSd_<drug>` / `addSd_<drug>` residuals.
 - **Source aliases:** none.
 - **Example models:** `Melillo_2023_gadoxetate_rat_pbpk.R` (doi:10.3390/pharmaceutics15030896; a two-compartment model, `central_bosentan` / `peripheral1_bosentan`, drives `cu_bosentan` into the gadoxetate active-uptake inhibition term; bosentan does not inhibit rMrp2 and so has no biliary term).
 - **Notes:** Distinct from the covariate canonicals `CONMED_BOSENTAN` and `BOSENTAN` (treatment-arm indicator). The informal `_bos` fragment elsewhere (e.g. `Aoki_2024_bosentan_pbpk.R`) is a standalone-drug parameter name, not a coupled-perpetrator compartment suffix.
+
+### ketoconazole (**canonical ketoconazole perpetrator drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Ketoconazole (strong CYP3A4 inhibitor) perpetrator drug suffix, used when a model carries ketoconazole's own PK as coupled ODE states so that its unbound concentration can drive a competitive CYP3A4 inhibition term on a co-modelled victim drug or endogenous biomarker. Listed here with the transporter perpetrators because the coupling pattern is the same; spelled out per the new-canonical policy.
+- **Source aliases:**
+  - `KET1` / `KET2` / `KET3` -- NONMEM `$MODEL` compartment names (absorption / central / peripheral) in Leil 2014 Supplementary Data.
+  - `Keto` -- Leil 2014 Figure 1 and `$DES` comments.
+- **Example models:** `Leil_2014_4betaHydroxycholesterol.R` (doi:10.1038/psp.2014.18; unmeasured two-compartment oral PK with saturable well-stirred hepatic clearance, `depot_ketoconazole` / `central_ketoconazole` / `peripheral1_ketoconazole`; `cu_ketoconazole` inhibits midazolam intrinsic clearance and 4beta-hydroxycholesterol formation).
+- **Notes:** Use the suffix only when the ketoconazole PK is carried as ODE states inside the model file; a paper that supplies ketoconazole exposure as data, or only its co-administration, uses a covariate column instead. Ketoconazole MW = 531.4 g/mol.
 
 ## TB-treatment drug suffixes (combination antibiotic)
 
