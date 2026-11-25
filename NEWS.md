@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Pene Dumitrescu 2016 topical umeclidinium ([doi:10.1111/cts.12406](https://doi.org/10.1111/cts.12406)) -- healthy men given [14C]umeclidinium to the occluded axilla, pooled with intravenous data.
+- Add Abdallah 2017 tocilizumab SC and IV ([doi:10.1002/jcph.826](https://doi.org/10.1002/jcph.826)) -- adults with rheumatoid arthritis (SUMMACTA and BREVACTA).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

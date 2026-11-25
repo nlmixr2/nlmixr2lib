@@ -1,0 +1,393 @@
+---
+title: "Tocilizumab SC and IV in rheumatoid arthritis (Abdallah 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tocilizumab SC and IV in rheumatoid arthritis (Abdallah 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Abdallah_2017_tocilizumab"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Abdallah_2017_tocilizumab"))$description`
+* Article: [J Clin Pharmacol. 2017;57(4):459-468](https://doi.org/10.1002/jcph.826)
+  (open access, PMC5363244). The supporting information holds the baseline
+  demographics (Table S1), the PK-substudy NCA (Tables S2 and S3) and
+  goodness-of-fit plots; it holds no model code and no variance estimates.
+
+# Population
+
+Abdallah 2017 pooled the 24-week double-blind periods of two phase 3 trials in
+adults with moderate-to-severe rheumatoid arthritis and an inadequate response
+to DMARDs, all on stable background non-biologic DMARDs:
+
+* **SUMMACTA** (NCT01194414): tocilizumab 162 mg SC every week (QW) versus
+  8 mg/kg IV every 4 weeks (Q4W; flat 800 mg for patients weighing >= 100 kg).
+* **BREVACTA** (NCT01232569): tocilizumab 162 mg SC every 2 weeks (Q2W) versus
+  placebo.
+
+The population PK dataset had 1759 patients and 13 642 serum samples, mostly
+predose, with intensive sampling in PK substudies. In the safety populations
+(Supplementary Table S1) about 83% were female, mean age was 52-53 years and
+mean body weight was 70.3-74.6 kg (SD 16.6-19.1 kg) by arm; 23-27% weighed
+less than 60 kg and 6-10% weighed 100 kg or more. The Results describe 40 and
+140 kg as close to the extremes of weight in the study population.
+
+The same information is available programmatically via
+`readModelDb("Abdallah_2017_tocilizumab")$population`.
+
+# Source trace
+
+The final model is a two-compartment model with first-order SC absorption, SC
+bioavailability and parallel linear and Michaelis-Menten elimination from the
+central compartment (Results, Pharmacokinetics; Discussion). Body weight was
+the only strong covariate.
+
+| Quantity | Value | Source |
+|---|---|---|
+| Structure: 2-compartment, first-order SC absorption, linear + Michaelis-Menten elimination | -- | Abstract; Results 'Pharmacokinetics'; Discussion |
+| CL (L/day) | 0.216 (216 mL/day) | Table 1A, theta1 |
+| V2, central volume (L) | 4.5 | Table 1A, theta2 |
+| Q (L/day) | 0.274 (274 mL/day) | Table 1A, theta3 |
+| V3, peripheral volume (L) | 2.8 | Table 1A, theta4 |
+| VM (mg/L/day) | 1.9 | Table 1A, theta5 |
+| KM (ug/mL) | 0.34 | Table 1A, theta6 |
+| ka (1/day) | 0.23 | Table 1A, theta7 |
+| FSC (fraction) | 0.795 | Results text '79.5%' (Table 1A rounds to 0.80) |
+| Weight exponent on CL and Q | 0.51 | Results, 'Effect of Body Weight ...' |
+| Weight exponent on V2 and V3 | 0.68 | Results, 'Effect of Body Weight ...' |
+| Reference weight | 70 kg | Results, 'CL ~ (WT/70)^CLWT' |
+| IIV, residual error | not reported | -- |
+
+# Virtual cohort
+
+The model carries no inter-individual variability, so the only between-subject
+difference is body weight. Weight is taken as a deterministic grid: 200
+equally spaced quantiles of a log-normal distribution with mean 73 kg and SD
+18.5 kg (the pooled Table S1 values), restricted to the 40-150 kg range by
+spacing the quantiles inside that range rather than clamping. The same weight
+grid is used for all three regimens. The grid reproduces the Table S1 weight
+bands (about 25% below 60 kg and 8% at or above 100 kg).
+
+```{r cohort}
+n_per_arm <- 200
+wt_mean <- 73
+wt_sd <- 18.5
+sdlog <- sqrt(log(1 + (wt_sd / wt_mean)^2))
+meanlog <- log(wt_mean) - sdlog^2 / 2
+p_lo <- plnorm(40, meanlog, sdlog)
+p_hi <- plnorm(150, meanlog, sdlog)
+p <- p_lo + (seq_len(n_per_arm) - 0.5) / n_per_arm * (p_hi - p_lo)
+wt_grid <- qlnorm(p, meanlog, sdlog)
+
+wt_band <- function(wt) {
+  cut(wt, c(-Inf, 60, 100, Inf), right = FALSE,
+      labels = c("<60 kg", "60 to <100 kg", ">=100 kg"))
+}
+knitr::kable(
+  as.data.frame(table(wt_band(wt_grid))) |>
+    mutate(pct = round(100 * Freq / n_per_arm, 1)) |>
+    rename("Weight band" = Var1, "n" = Freq, "%" = pct),
+  caption = "Weight-band composition of the virtual cohort."
+)
+```
+
+# Simulation
+
+Each regimen is dosed for 24 weeks (to day 168), as in the double-blind
+periods. The IV dose is 8 mg/kg, capped at a flat 800 mg for patients weighing
+100 kg or more, given as a 1-hour infusion.
+
+```{r simulate}
+mod <- rxode2::rxode2(readModelDb("Abdallah_2017_tocilizumab"))
+
+arms <- tibble::tribble(
+  ~treatment,       ~route, ~tau,
+  "162 mg SC QW",   "SC",   7,
+  "162 mg SC Q2W",  "SC",   14,
+  "8 mg/kg IV Q4W", "IV",   28
+)
+
+obs_times <- sort(unique(c(
+  seq(0, 168, by = 0.25),
+  seq(0, 1, by = 1 / 48),
+  140 + seq(0, 1, by = 1 / 48)
+)))
+
+make_arm <- function(i) {
+  a <- arms[i, ]
+  dose_times <- seq(0, 168 - a$tau, by = a$tau)
+  id <- (i - 1) * n_per_arm + seq_len(n_per_arm)
+  subj <- tibble(id = id, WT = wt_grid)
+  doses <- tidyr::crossing(subj, time = dose_times) |>
+    mutate(
+      evid = 1L,
+      cmt = if (a$route == "SC") "depot" else "central",
+      amt = if (a$route == "SC") 162 else ifelse(WT >= 100, 800, 8 * WT),
+      dur = if (a$route == "SC") 0 else 1 / 24
+    )
+  obs <- tidyr::crossing(subj, time = obs_times) |>
+    mutate(evid = 0L, cmt = "central", amt = 0, dur = 0)
+  bind_rows(doses, obs) |>
+    mutate(treatment = a$treatment) |>
+    arrange(id, time, desc(evid))
+}
+events <- bind_rows(lapply(seq_len(nrow(arms)), make_arm))
+# rate is only meaningful for the IV infusion; SC doses are boluses into depot.
+events <- events |>
+  mutate(rate = ifelse(evid == 1 & dur > 0, amt / dur, 0)) |>
+  select(-dur)
+
+sim <- rxode2::rxSolve(mod, events, keep = c("treatment", "WT"),
+                       returnType = "data.frame")
+sim <- sim |> mutate(treatment = factor(treatment, levels = arms$treatment))
+```
+
+## Steady-state profiles (Figure 2)
+
+```{r fig2, fig.cap = "Replicates Figure 2 of Abdallah 2017: cohort-mean tocilizumab concentration over weeks 20-24 for each regimen."}
+fig2 <- sim |>
+  filter(time >= 140, time <= 168) |>
+  group_by(treatment, time) |>
+  summarise(Cc = mean(Cc), .groups = "drop")
+ggplot(fig2, aes(time / 7, Cc, colour = treatment)) +
+  geom_line() +
+  scale_colour_manual(values = c("blue", "darkgreen", "black")) +
+  labs(x = "Time (weeks)", y = "Tocilizumab concentration (ug/mL)", colour = NULL)
+```
+
+Figure 2 of the paper shows an IV peak of about 150 ug/mL at week 20 falling
+to about 17 ug/mL at week 24, an SC QW profile oscillating between about 42
+and 48 ug/mL, and an SC Q2W profile between about 3 and 10 ug/mL.
+The simulated cohort means are close for the SC QW and IV regimens; the SC
+Q2W trough is lower, for the reason discussed under Table 2 below.
+
+## Week-24 trough by weight band (Table 2)
+
+```{r table2}
+trough_wk24 <- sim |>
+  filter(abs(time - 168) < 1e-6) |>
+  mutate(band = wt_band(WT)) |>
+  group_by(treatment, band) |>
+  summarise(sim_median = median(Cc), n = n(), .groups = "drop")
+
+published_t2 <- tibble::tribble(
+  ~treatment,       ~band,           ~pub_median,
+  "162 mg SC QW",   "<60 kg",        59.8,
+  "162 mg SC QW",   "60 to <100 kg", 40.5,
+  "162 mg SC QW",   ">=100 kg",      19.7,
+  "162 mg SC Q2W",  "<60 kg",        10.6,
+  "162 mg SC Q2W",  "60 to <100 kg", 2.6,
+  "162 mg SC Q2W",  ">=100 kg",      0.2,
+  "8 mg/kg IV Q4W", "<60 kg",        10.6,
+  "8 mg/kg IV Q4W", "60 to <100 kg", 16.4,
+  "8 mg/kg IV Q4W", ">=100 kg",      24.3
+)
+t2 <- trough_wk24 |>
+  mutate(treatment = as.character(treatment), band = as.character(band)) |>
+  left_join(published_t2, by = c("treatment", "band")) |>
+  mutate(pct_diff = 100 * (sim_median - pub_median) / pub_median)
+
+t2 |>
+  mutate(sim_median = signif(sim_median, 3), pct_diff = round(pct_diff, 1)) |>
+  rename(
+    "Regimen" = treatment, "Weight band" = band, "n (sim)" = n,
+    "Simulated median Ctrough (ug/mL)" = sim_median,
+    "Published model-predicted median (ug/mL)" = pub_median,
+    "% difference" = pct_diff
+  ) |>
+  knitr::kable(caption = "Median steady-state trough by baseline weight band: simulated vs Table 2 of Abdallah 2017 (model-predicted).")
+```
+
+The SC QW and IV Q4W medians agree with the published model predictions. The
+SC Q2W medians do not, and the gap is expected: at Q2W the trough falls into
+the range of KM (0.34 ug/mL), where the Michaelis-Menten pathway makes the
+trough very sensitive to each subject's clearance and volume. The published
+values come from simulations with inter-individual variability, which this
+typical-value model cannot reproduce because the variance estimates were not
+reported. The checks below therefore assert only on the QW and IV arms.
+
+```{r table2-check}
+chk_t2 <- t2 |> filter(treatment != "162 mg SC Q2W")
+stopifnot(
+  # The QW regimen is far above KM, so its trough is set by the linear
+  # clearance and the weight exponents; a mis-transcribed CL, F, V or exponent
+  # moves these medians by tens of percent.
+  all(abs(chk_t2$pct_diff[chk_t2$treatment == "162 mg SC QW"]) < 20),
+  # IV troughs are smaller and closer to the nonlinear range; allow 30%.
+  all(abs(chk_t2$pct_diff[chk_t2$treatment == "8 mg/kg IV Q4W"]) < 30)
+)
+```
+
+# PKNCA validation
+
+NCA over the first dosing interval and over the week-20 dosing interval (the
+paper's steady state), by regimen.
+
+```{r pknca}
+conc_df <- sim |>
+  filter(!is.na(Cc)) |>
+  mutate(treatment = as.character(treatment)) |>
+  select(id, time, Cc, treatment)
+
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+tau_tbl <- arms |> select(treatment, tau)
+intervals <- bind_rows(
+  tau_tbl |> mutate(start = 0, end = tau, interval = "First dosing interval"),
+  tau_tbl |> mutate(start = 140, end = 140 + tau, interval = "Steady state (week 20)")
+) |>
+  mutate(cmax = TRUE, tmax = TRUE, auclast = TRUE) |>
+  select(-tau)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = as.data.frame(select(intervals, -interval))
+))
+
+nca_res <- as.data.frame(nca$result) |>
+  left_join(intervals |> select(treatment, start, interval),
+            by = c("treatment", "start"))
+# The trough is the concentration at the end of each interval, read from the
+# simulation (PKNCA's ctrough matches `end` against interval-relative times and
+# returns NA for an interval that does not start at time 0).
+trough <- intervals |>
+  select(treatment, interval, end) |>
+  left_join(conc_df, by = "treatment", relationship = "many-to-many") |>
+  filter(abs(time - end) < 1e-6) |>
+  transmute(treatment, interval, PPTESTCD = "ctrough", PPORRES = Cc)
+nca_mean <- nca_res |>
+  select(treatment, interval, PPTESTCD, PPORRES) |>
+  bind_rows(trough) |>
+  group_by(treatment, interval, PPTESTCD) |>
+  summarise(value = mean(PPORRES), n = n(), .groups = "drop")
+stopifnot(all(nca_mean$n == n_per_arm))
+```
+
+## Comparison against the published secondary parameters (Table 1B)
+
+Table 1B reports mean values from a 5000-subject simulation that included
+inter-individual variability; AUC is converted from ug*h/mL to ug*day/mL.
+
+```{r nca-compare}
+published_t1b <- tibble::tribble(
+  ~treatment,       ~interval,                 ~cmax, ~ctrough, ~auclast,
+  "162 mg SC QW",   "First dosing interval",   9.3,   7.0,   1243 / 24,
+  "162 mg SC QW",   "Steady state (week 20)",  51.3,  45.3,  8254 / 24,
+  "162 mg SC Q2W",  "First dosing interval",   5.8,   1.0,   1210 / 24,
+  "162 mg SC Q2W",  "Steady state (week 20)",  13,    5.9,   3460 / 24,
+  "8 mg/kg IV Q4W", "First dosing interval",   136,   7.7,   28824 / 24,
+  "8 mg/kg IV Q4W", "Steady state (week 20)",  154,   18.7,  39216 / 24
+) |>
+  mutate(group = paste(treatment, "-", interval))
+
+sim_wide <- nca_mean |>
+  filter(PPTESTCD %in% c("cmax", "ctrough", "auclast")) |>
+  select(-n) |>
+  pivot_wider(names_from = PPTESTCD, values_from = value) |>
+  mutate(group = paste(treatment, "-", interval)) |>
+  select(group, cmax, ctrough, auclast)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_wide,
+  reference = published_t1b |> select(group, cmax, ctrough, auclast),
+  by = "group",
+  units = c(cmax = "ug/mL", ctrough = "ug/mL", auclast = "ug*day/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Cohort-mean NCA of the simulated cohort vs the mean secondary parameters of Abdallah 2017 Table 1B. Ctrough is the concentration at the end of the dosing interval. * marks rows differing by >20%.")
+```
+
+The SC QW and IV Q4W Cmax and AUC agree with Table 1B within 14% in both
+intervals, as do the SC QW troughs. The IV first-interval trough (-25%) and
+the SC Q2W troughs (about -67%) are lower than published, for the reason given
+under Table 2: when concentrations approach KM, a typical-value solve of a
+Michaelis-Menten model underpredicts the mean concentration of a population
+with variability.
+
+The first-interval SC Q2W column of Table 1B cannot be matched by a model in
+which both SC arms receive the same first dose. After the same first 162 mg SC
+dose, its AUC over 14 days (1210 ug*h/mL) is smaller than the SC QW AUC over
+7 days (1243 ug*h/mL), and its Cmax (5.8 ug/mL) is lower than the SC QW Cmax
+(9.3 ug/mL). The two columns must therefore describe differently composed
+populations; the Methods compute secondary parameters from each patient's
+Bayesian post hoc estimates, while the table footnote describes a 5000-subject
+simulation. In the simulation here the first SC dose is identical in the two
+SC arms by construction, so the Q2W first-interval Cmax and AUC are flagged.
+
+```{r nca-check}
+# Cmax and AUC of the QW and IV regimens, both intervals. These sit well above
+# KM, where the typical-value solve and the population mean nearly coincide.
+ss <- nca_mean |>
+  filter(PPTESTCD %in% c("cmax", "auclast"), treatment != "162 mg SC Q2W") |>
+  left_join(
+    published_t1b |>
+      select(treatment, interval, cmax, auclast) |>
+      pivot_longer(c(cmax, auclast), names_to = "PPTESTCD", values_to = "published"),
+    by = c("treatment", "interval", "PPTESTCD")
+  ) |>
+  mutate(pct_diff = 100 * (value - published) / published)
+stopifnot(nrow(ss) == 8, all(abs(ss$pct_diff) < 20))
+
+# SC Tmax at steady state: the QW substudy median was 70 h (Supplementary
+# Table S2) and the Q2W week-12 median 72 h (Table S3), i.e. about 3 days.
+tmax_sc <- nca_mean |>
+  filter(interval == "Steady state (week 20)", PPTESTCD == "tmax",
+         treatment != "8 mg/kg IV Q4W")
+knitr::kable(tmax_sc |> select(-n) |> rename("Regimen" = treatment, "Interval" = interval,
+                               "Parameter" = PPTESTCD, "Mean simulated (day)" = value))
+stopifnot(all(tmax_sc$value > 1.5 & tmax_sc$value < 4.5))
+```
+
+# Assumptions and deviations
+
+* **No inter-individual variability or residual error.** The article and its
+  supplement report neither the OMEGA nor the SIGMA estimates. The model is
+  therefore a typical-value model with body weight as the only source of
+  between-subject difference; `propSd` is fixed to 0. Mean and SD values in
+  Tables 1B and 2 come from simulations with variability and cannot be
+  reproduced exactly; this mostly affects the SC Q2W regimen, whose troughs
+  fall near KM.
+* **Units of VM.** Table 1A reports VM as 1.9 mg/L/day, a concentration rate.
+  The amount eliminated through the Michaelis-Menten pathway is therefore
+  `VM * V2 * C / (KM + C)` (8.6 mg/day for a 70-kg patient). This matches the
+  coding of the later model from the same group (`Jamois_2025_tocilizumab_ra`,
+  `vmax * central / (km + Cc)`).
+* **Which parameters scale with weight.** The Results say that "clearances and
+  volumes" increase with weight, with one exponent for clearance terms and one
+  for volume terms. Both clearances (CL and Q) take the 0.51 exponent and both
+  volumes (V2 and V3) take 0.68. VM, KM and ka are not weight-scaled.
+* **Weight exponent cross-check.** The Results state that clearance at 140 kg
+  is 47% higher than at 70 kg. With an exponent of 0.51 the increase is
+  (140/70)^0.51 = 1.42, i.e. 42%; 47% would need an exponent of about 0.56,
+  the upper confidence limit. The published point estimate 0.51 is used. The
+  40-kg clearance (-25%) and both volume statements (-32% and +61%) agree with
+  the printed exponents.
+* **Table 1B first-interval SC Q2W values.** These are lower than the SC QW
+  first-interval values even though the first dose is the same, so they are
+  not used as a check (see the NCA comparison above).
+* **SC bioavailability.** Table 1A rounds FSC to 0.80; the Results text gives
+  79.5% (95% CI 77.9-81.1%). The more precise 0.795 is used.
+* **IV infusion duration.** The paper does not state the infusion duration;
+  the labelled 1-hour infusion is assumed.
+* **Weight distribution.** The virtual cohort uses a deterministic log-normal
+  weight grid matched to the pooled Table S1 mean and SD within 40-150 kg; the
+  paper's simulations used the observed weights.
+* **Weight as baseline.** The paper does not say whether weight was time
+  varying in the model; Table 2 stratifies by baseline weight, and the cohort
+  here holds weight constant.
