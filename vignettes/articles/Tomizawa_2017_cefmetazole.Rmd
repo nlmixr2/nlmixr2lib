@@ -1,0 +1,423 @@
+---
+title: "Cefmetazole (Tomizawa 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cefmetazole (Tomizawa 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Tomizawa_2017_cefmetazole"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Tomizawa_2017_cefmetazole"))$description`
+* Article: <https://doi.org/10.1186/s40780-016-0071-6> (open access)
+
+A literature check on 2026-11-25 (Europe PMC, the article's PMC record)
+found no erratum or correction for this article, and the article has no
+supplementary material.
+
+# Population
+
+Tomizawa 2017 studied 23 Japanese adults (18 men, 5 women; age 41-84
+years, mean 69) who received cefmetazole as intraoperative antimicrobial
+prophylaxis during elective surgery for colorectal cancer (colon 14,
+rectum 9; laparoscopic 13, open 10) at Kitasato University Hospital
+between November 2008 and December 2010 (Table 1). Body weight was
+47.5-89.0 kg (mean 63.7) and Cockcroft-Gault creatinine clearance was
+47.2-126.3 mL/min (mean 73.9). Cefmetazole 1 g was infused IV over 5-10
+min after the induction of anaesthesia and within 60 min before incision,
+then 1 g every 3 h; 86 serum concentrations were measured by HPLC.
+Emergency surgery, ileus and dialysis were exclusions.
+
+The same information is available programmatically via
+`readModelDb("Tomizawa_2017_cefmetazole")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| One-compartment IV model (ADVAN1 TRANS2) | -- | Methods, Pharmacokinetics model |
+| `cl = theta1 * CRCL` (no intercept) | -- | Table 3 'CLCMZ = theta1 x Ccr (L/h)'; Results text |
+| `vc = theta2 * WT` (no intercept) | -- | Table 3 'VdCMZ = theta2 x BW (L)'; Results text |
+| `lcl` | `log(0.0704)` L/h per mL/min | Table 3 theta1; Table 4 0.0704 +/- 0.0029 |
+| `lvc` | `log(0.163)` L/kg | Table 3 theta2; Table 4 0.163 +/- 0.0054 |
+| Exponential IIV `P_j = P x exp(eta_j)` | -- | Eq. 1 |
+| `etalcl` | 0.0441 (= 0.210^2) | Table 3 omegaCL 21.0%; Table 4 omegaCL 0.210 |
+| `etalvc` | 0.007056 (= 0.084^2) | Table 3 omegaVd 8.4%; Table 4 omegaVd 0.084 |
+| Proportional residual `C = Cpred x (1 + eps)` | -- | Eq. 2 |
+| `propSd` | 0.135 | Table 3 sigma 13.5%; Table 4 sigma 0.135 |
+| Dose 1 g IV over 5-10 min, then 1 g every 3 h | -- | Methods, Data source |
+
+# Typical-value check against the paper's own numbers
+
+The Discussion states CL = 7.04 L/h at a creatinine clearance of 100
+mL/min and a volume of 10.4 +/- 1.6 L across the cohort's 47.5-89.0 kg
+body weights. The typical values from the packaged model reproduce both:
+at the cohort mean weight (63.7 kg) V = 0.163 x 63.7 = 10.38 L.
+
+```{r typical}
+mod <- readModelDb("Tomizawa_2017_cefmetazole")
+ini_df <- rxode2::rxode(mod)$iniDf
+theta <- setNames(ini_df$est, ini_df$name)
+cl_100 <- exp(theta[["lcl"]]) * 100
+v_mean <- exp(theta[["lvc"]]) * 63.7
+knitr::kable(
+  data.frame(
+    Quantity = c("CL at CrCl 100 mL/min (L/h)", "V at 63.7 kg (L)"),
+    Model = signif(c(cl_100, v_mean), 4),
+    Paper = c("7.04 (Discussion)", "10.4 (Discussion, cohort mean)")
+  )
+)
+stopifnot(
+  abs(cl_100 / 7.04 - 1) < 1e-3,
+  abs(v_mean / 10.4 - 1) < 0.01
+)
+```
+
+# Virtual cohort and simulation of the study regimen
+
+The virtual cohort draws body weight and creatinine clearance from
+normal distributions with the Table 1 means and SDs, redrawing any value
+outside the observed range (a range is a definition, not a clamp). Each
+subject receives the study regimen: 1 g over 7.5 min at time 0 (after
+induction) and 1 g every 3 h, for three doses in total (Figure 1 shows
+up to three doses).
+
+```{r cohort}
+rtrunc_norm <- function(n, mean, sd, lo, hi) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- rnorm(2 * n, mean, sd)
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
+
+set.seed(20170101)
+rxode2::rxSetSeed(20170101)
+n_sub <- 200
+cohort <- data.frame(
+  id = seq_len(n_sub),
+  WT = rtrunc_norm(n_sub, 63.7, 9.9, 47.5, 89.0),
+  CRCL = rtrunc_norm(n_sub, 73.9, 21.7, 47.2, 126.3)
+)
+
+obs_times <- sort(unique(c(seq(0, 9, by = 0.1), 3 - 1e-3, 6 - 1e-3)))
+dose_rows <- data.frame(
+  time = c(0, 3, 6), amt = 1000, rate = 1000 / (7.5 / 60),
+  evid = 1, cmt = "central"
+)
+obs_rows <- data.frame(
+  time = obs_times, amt = NA_real_, rate = NA_real_,
+  evid = 0, cmt = "central"
+)
+events <- tidyr::crossing(cohort, bind_rows(dose_rows, obs_rows)) |>
+  arrange(id, time, desc(evid))
+
+sim <- rxode2::rxSolve(mod, events = events, keep = c("WT", "CRCL")) |>
+  as.data.frame()
+```
+
+```{r vpc, fig.cap = "Simulated serum cefmetazole (median and 5th-95th percentiles, 200 virtual patients) under the study regimen of 1 g every 3 h. Compare with Figure 1 of Tomizawa 2017, which plots the observed concentrations against time after incision (dosing preceded incision by up to 60 min)."}
+vpc <- sim |>
+  filter(!is.na(Cc)) |>
+  group_by(time) |>
+  summarise(
+    p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  labs(
+    x = "Time after first dose (h)",
+    y = "Serum cefmetazole (ug/mL)"
+  ) +
+  theme_bw()
+```
+
+```{r vpc-check}
+vpc_peak <- vpc[which.min(abs(vpc$time - 0.2)), ]
+vpc_trough <- vpc[which.min(abs(vpc$time - (3 - 1e-3))), ]
+# Figure 1 first-dose observations: about 80-145 ug/mL in the first hour
+# after incision and 10-45 ug/mL at 2-3.5 h. Assert on the simulated
+# median only (robust to which subjects land in the tails).
+stopifnot(
+  vpc_peak$p50 > 70, vpc_peak$p50 < 130,
+  vpc_trough$p50 > 10, vpc_trough$p50 < 45
+)
+```
+
+Just after the first infusion (0.2 h) the simulated median is
+`r round(vpc_peak$p50)` ug/mL (5th-95th percentile
+`r round(vpc_peak$p05)`-`r round(vpc_peak$p95)`), and just before the
+second dose at 3 h it is `r round(vpc_trough$p50)` ug/mL
+(`r round(vpc_trough$p05)`-`r round(vpc_trough$p95)`). Both sit in the
+range of the first-dose observations in Figure 1 (about 80-145 ug/mL
+early, 10-45 ug/mL at 2-3.5 h after incision).
+
+# Replicate Table 5 (MIC target attainment)
+
+Table 5 gives the percentage of simulated patients whose serum
+cefmetazole stayed above the MIC80 of *Bacteroides fragilis* 2-6 h after
+a single 1 g dose, by body-weight band and creatinine-clearance band
+(Monte Carlo, 1000 replicates, run in Excel). The paper does not print
+the MIC80 value or how weight and creatinine clearance were drawn inside
+each band. The maintainers took the draws as uniform within each band,
+treated the dose as a bolus, and back-solved the MIC from the table:
+16 ug/mL reproduces all 45 cells (lattice check below), whereas 12 and 20 ug/mL
+are far worse. The simulation below uses the packaged model's
+between-subject variability (`Cc`, without residual error).
+
+```{r table5-published}
+table5 <- tibble::tribble(
+  ~wt_band, ~crcl_band, ~`2`, ~`3`, ~`4`, ~`5`, ~`6`,
+  "40-50", "90-130", 52.87, 3.39, 0.00, 0.00, 0.00,
+  "40-50", "50-90", 91.24, 57.89, 19.42, 3.45, 0.37,
+  "40-50", "10-50", 98.66, 96.67, 92.96, 81.20, 66.08,
+  "50-60", "90-130", 72.44, 8.56, 0.14, 0.00, 0.00,
+  "50-60", "50-90", 92.17, 72.40, 33.66, 8.28, 2.33,
+  "50-60", "10-50", 98.19, 96.71, 93.43, 88.53, 74.18,
+  "60-70", "90-130", 82.16, 15.57, 1.58, 0.00, 0.00,
+  "60-70", "50-90", 92.69, 81.51, 44.25, 15.74, 4.78,
+  "60-70", "10-50", 97.27, 96.06, 93.16, 90.56, 79.45
+) |>
+  pivot_longer(`2`:`6`, names_to = "time", values_to = "paper_pct") |>
+  mutate(time = as.numeric(time))
+band_lo <- function(x) as.numeric(sub("-.*", "", x))
+band_hi <- function(x) as.numeric(sub(".*-", "", x))
+cells <- distinct(table5, wt_band, crcl_band)
+```
+
+```{r table5-sim}
+mic <- 16
+n_cell <- 200
+rxode2::rxSetSeed(5219696)
+set.seed(5219696)
+mc_cohort <- cells |>
+  mutate(cell = row_number()) |>
+  slice(rep(seq_len(n()), each = n_cell)) |>
+  mutate(
+    id = row_number(),
+    WT = runif(n(), band_lo(wt_band), band_hi(wt_band)),
+    CRCL = runif(n(), band_lo(crcl_band), band_hi(crcl_band))
+  )
+mc_events <- bind_rows(
+  mc_cohort |> mutate(time = 0, amt = 1000, evid = 1),
+  tidyr::crossing(mc_cohort, time = c(2, 3, 4, 5, 6)) |>
+    mutate(amt = NA_real_, evid = 0)
+) |>
+  mutate(cmt = "central") |>
+  arrange(id, time, desc(evid))
+mc_sim <- rxode2::rxSolve(
+  mod,
+  events = mc_events,
+  keep = c("wt_band", "crcl_band")
+) |>
+  as.data.frame()
+pta <- mc_sim |>
+  group_by(wt_band, crcl_band, time) |>
+  summarise(sim_pct = 100 * mean(Cc > mic), .groups = "drop") |>
+  left_join(table5, by = c("wt_band", "crcl_band", "time")) |>
+  mutate(diff = sim_pct - paper_pct)
+
+pta |>
+  mutate(
+    cell = sprintf("%.1f (%.1f)", sim_pct, paper_pct),
+    time = paste0(time, " h")
+  ) |>
+  select(wt_band, crcl_band, time, cell) |>
+  pivot_wider(names_from = time, values_from = cell) |>
+  rename(
+    "Weight (kg)" = wt_band,
+    "CrCl (mL/min)" = crcl_band
+  ) |>
+  knitr::kable(
+    caption = "Percentage above MIC 16 ug/mL: simulated (Tomizawa 2017 Table 5)."
+  )
+
+# 200 subjects per cell gives a binomial SE of at most 3.5 percentage
+# points. The largest gap between the model and the table on a 40000-point
+# eta/covariate lattice is about 7 points (the 2-h cells near 92%, which the
+# paper's Excel run puts lower than the model), so the envelope bound of 12
+# sits above model error + 1.5 SE; the median gap is about 2.
+stopifnot(
+  median(abs(pta$diff)) < 5,
+  quantile(abs(pta$diff), 0.9) < 12
+)
+```
+
+## Variability scale and MIC, settled by Table 5
+
+Table 3 prints the variabilities as CV% and Table 4 prints them as 0.210,
+0.084 and 0.135. The packaged model reads these as standard deviations
+of eta (variance = 0.210^2). The alternative reading, that 0.210 is
+itself the variance, more than doubles the SD of log-clearance
+(0.458 instead of 0.210). A deterministic
+lattice over eta and the within-band covariates (no random numbers)
+shows that only the standard-deviation reading reproduces Table 5, and
+that the minimum lies at an MIC of 16 ug/mL.
+
+```{r omega-scale}
+lattice_pta <- function(sd_cl, sd_v, mic) {
+  z_cl <- qnorm((seq_len(40) - 0.5) / 40)
+  z_v <- qnorm((seq_len(10) - 0.5) / 10)
+  u <- (seq_len(10) - 0.5) / 10
+  grid <- expand.grid(z_cl = z_cl, z_v = z_v, u_wt = u, u_cr = u)
+  res <- lapply(seq_len(nrow(cells)), function(i) {
+    wt <- band_lo(cells$wt_band[i]) + 10 * grid$u_wt
+    cr <- band_lo(cells$crcl_band[i]) +
+      (band_hi(cells$crcl_band[i]) - band_lo(cells$crcl_band[i])) * grid$u_cr
+    cl <- 0.0704 * cr * exp(sd_cl * grid$z_cl)
+    v <- 0.163 * wt * exp(sd_v * grid$z_v)
+    data.frame(
+      wt_band = cells$wt_band[i], crcl_band = cells$crcl_band[i],
+      time = 2:6,
+      lat_pct = sapply(2:6, function(t) 100 * mean(1000 / v * exp(-cl / v * t) > mic))
+    )
+  })
+  bind_rows(res) |>
+    left_join(table5, by = c("wt_band", "crcl_band", "time"))
+}
+scan <- tidyr::crossing(
+  reading = c("SD (packaged)", "variance"),
+  mic = c(8, 12, 16, 20, 24)
+) |>
+  rowwise() |>
+  mutate(
+    rms = {
+      sds <- if (reading == "variance") sqrt(c(0.210, 0.084)) else c(0.210, 0.084)
+      lp <- lattice_pta(sds[1], sds[2], mic)
+      sqrt(mean((lp$lat_pct - lp$paper_pct)^2))
+    }
+  ) |>
+  ungroup()
+scan |>
+  mutate(rms = round(rms, 1)) |>
+  pivot_wider(names_from = mic, values_from = rms) |>
+  rename("Omega reading" = reading) |>
+  knitr::kable(
+    caption = "RMS difference (percentage points) from Table 5 over 45 cells, by MIC (ug/mL)."
+  )
+
+best <- scan[which.min(scan$rms), ]
+var_best <- min(scan$rms[scan$reading == "variance"])
+stopifnot(
+  best$reading == "SD (packaged)",
+  best$mic == 16,
+  best$rms < 4,
+  var_best > 2 * best$rms
+)
+```
+
+# PKNCA validation
+
+The paper reports no NCA. The check below runs PKNCA on typical-value
+single-dose profiles (1 g over 7.5 min) at the cohort mean weight and at
+creatinine clearances of 50, 73.9 (cohort mean) and 100 mL/min, and
+compares against the closed-form one-compartment values implied by the
+Table 3 estimates: CL = 0.0704 x CrCl, V = 0.163 x 63.7,
+AUC0-inf = 1000 / CL and t1/2 = ln 2 x V / CL.
+
+```{r pknca}
+nca_groups <- data.frame(
+  id = 1:3,
+  treatment = c("CrCl 50", "CrCl 73.9", "CrCl 100"),
+  CRCL = c(50, 73.9, 100),
+  WT = 63.7
+)
+nca_events <- bind_rows(
+  nca_groups |> mutate(time = 0, amt = 1000, rate = 1000 / (7.5 / 60), evid = 1),
+  tidyr::crossing(nca_groups, time = c(0, seq(0.05, 0.5, by = 0.05), seq(0.75, 24, by = 0.25))) |>
+    mutate(amt = NA_real_, rate = NA_real_, evid = 0)
+) |>
+  mutate(cmt = "central") |>
+  arrange(id, time, desc(evid))
+# Three typical-value subjects; rxode2 warns that a multi-subject solve
+# has no omega, which is the intent of zeroRe().
+nca_sim <- suppressWarnings(rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  events = nca_events,
+  keep = "treatment"
+)) |>
+  as.data.frame()
+
+conc_df <- nca_sim |>
+  filter(!is.na(Cc)) |>
+  select(id, treatment, time, Cc)
+dose_df <- nca_events |>
+  filter(evid == 1) |>
+  select(id, treatment, time, amt)
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id, concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "mg")
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+reference <- nca_groups |>
+  mutate(
+    cl = 0.0704 * CRCL,
+    v = 0.163 * WT,
+    aucinf.obs = 1000 / cl,
+    half.life = log(2) * v / cl
+  ) |>
+  select(treatment, aucinf.obs, half.life)
+
+tbl <- ncaComparisonTable(
+  nca_res, reference,
+  by = "treatment",
+  params = c("aucinf.obs", "half.life"),
+  units = c(aucinf.obs = "mg*h/L", half.life = "h")
+)
+knitr::kable(tbl, caption = "Simulated (PKNCA) vs closed form from Table 3.")
+
+nca_wide <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("aucinf.obs", "half.life")) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(reference, by = "treatment", suffix = c("_sim", "_ref"))
+stopifnot(
+  all(abs(nca_wide$aucinf.obs_sim / nca_wide$aucinf.obs_ref - 1) < 0.01),
+  all(abs(nca_wide$half.life_sim / nca_wide$half.life_ref - 1) < 0.01)
+)
+```
+
+# Assumptions and deviations
+
+- **Through-origin covariate models.** Table 2 screened clearance as
+  `theta1 + theta2 x Ccr` and volume as `theta1 + theta2 x BW`, but the
+  final model (Table 3, Results text, abstract) is `CL = theta1 x Ccr`
+  and `Vd = theta2 x BW` with no intercept. The packaged model follows
+  the final model.
+- **Creatinine clearance is raw Cockcroft-Gault mL/min.** The paper
+  states the Cockcroft-Gault equation but not which body weight it used;
+  total body weight is assumed. Values are not normalized to 1.73 m^2.
+- **Variability scale.** The Table 4 omegas (0.210, 0.084) are taken as
+  standard deviations of eta, so the variances are 0.0441 and 0.007056;
+  this is the reading that reproduces Table 5 (see above). The residual
+  error 0.135 is the SD of the proportional epsilon in Eq. 2.
+- **Table 5 inputs not printed by the paper.** The MIC80 of
+  *B. fragilis* (16 ug/mL) was back-solved by the maintainers from
+  Table 5; the paper cites a 2004 Japanese surveillance report that is
+  not in its reference list. Weight and creatinine clearance were drawn
+  uniformly within each band and the dose was treated as a bolus.
+  Table 5 lists weight bands up to 70 kg only.
+- **Infusion duration.** The study infused each 1 g dose over 5-10 min;
+  simulations here use 7.5 min.
+- **Race.** Not tabulated; the single-centre Japanese cohort is recorded
+  as Japanese.
+- Only one patient had a creatinine clearance below 50 mL/min, so the
+  model is weakly informed below that range (Discussion).
