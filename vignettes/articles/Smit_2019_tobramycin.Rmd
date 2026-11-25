@@ -1,0 +1,550 @@
+---
+title: "Tobramycin (Smit 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tobramycin (Smit 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Smit_2019_tobramycin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Smit_2019_tobramycin"))$description`
+* Article: [Pharm Res 2019;36(8):112](https://doi.org/10.1007/s11095-019-2651-2)
+  (open access, PMC6542779)
+* Correction: [Pharm Res 2020;37(2):27](https://doi.org/10.1007/s11095-020-2756-7)
+  (PMC7050552), which reprints Table 2 with corrected units and formula.
+
+# Population
+
+Smit 2019 enrolled 20 morbidly obese adults (BMI > 40 kg/m^2, or > 35
+kg/m^2 with comorbidities) scheduled for laparoscopic gastric sleeve or
+bypass surgery and 8 non-obese healthy volunteers (BMI 18-25 kg/m^2) at
+St. Antonius Hospital, Nieuwegein, The Netherlands (Table I). Obese
+patients had a median total body weight of 137.8 kg (range 103-194),
+median BMI 41.9 kg/m^2 and median age 43.0 years; non-obese volunteers had
+a median weight of 66.3 kg (range 57-91), BMI 22.2 kg/m^2 and age 22.5
+years. 15 of the 28 participants were female. Everyone had normal renal
+function (eGFR >= 60 mL/min); the de-indexed MDRD eGFR had medians of 127.5
+mL/min (range 77-171) in the obese and 102.6 mL/min (91-120) in the
+non-obese group.
+
+Obese patients received a single 5 mg/kg dose of tobramycin based on
+lean body weight (Janmahasatian), and non-obese volunteers 5 mg/kg based
+on total body weight, both as 0.5-h IV infusions. Ten plasma samples per
+participant were taken over 24 h (280 in total, 23 below the 0.3 mg/L
+LLOQ and handled with the M3 method).
+
+The same information is available programmatically via
+`readModelDb("Smit_2019_tobramycin")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to the source.
+All values come from the final-model column of Table 2 as reprinted in the
+2020 correction, which supersedes the original Table II.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL at MDRD 115 mL/min) | log(6.33) L/h | Corrected Table 2, CL_MDRD115 |
+| `e_crcl_cl` (Z) | 0.0099 per mL/min | Corrected Table 2, Z; Fig. 5 nomogram equation |
+| `lvc` (Vc at 70 kg) | log(10.6) L | Corrected Table 2, Vc70kg |
+| `lq` | log(6.69) L/h | Corrected Table 2, Q |
+| `lvp` | log(4.34) L | Corrected Table 2, Vp |
+| `etalcl` | 0.014297 | Corrected Table 2, IIV CL 12.0% -> log(1 + 0.12^2) |
+| `etalvc` | 0.060142 | Corrected Table 2, IIV Vc 24.9% -> log(1 + 0.249^2) |
+| `propSd` | 0.116 | Corrected Table 2, proportional error |
+| `addSd` | 0.346 mg/L | Corrected Table 2, additive error |
+| `cl = CL115 * (1 + Z * (CRCL - 115))` | n/a | Corrected Table 2 row header; Methods Eq. 4 |
+| `vc = Vc70kg * (WT / 70)` | n/a | Corrected Table 2 row header; Methods Eq. 3 with X = 1 |
+| Two-compartment, first-order elimination from central | n/a | Results, Pharmacokinetic Analysis |
+| IIV exponential on CL and Vc | n/a | Methods Eq. 1; Results |
+| Combined additive and proportional error | n/a | Methods Eq. 2; Results |
+
+```{r model}
+mod <- readModelDb("Smit_2019_tobramycin")
+mod_typical <- rxode2::zeroRe(mod)
+```
+
+# Covariate: de-indexed MDRD
+
+The clearance covariate is the 4-variable MDRD eGFR multiplied by the
+individual's body surface area / 1.73, so it is in mL/min, **not** mL/min/1.73
+m^2. Supplying the usual BSA-normalized eGFR would understate clearance in
+obese patients, whose BSA is well above 1.73 m^2. The helper below follows
+the equations in the paper's supplement (MDRD with creatinine in umol/L and
+the Du Bois BSA).
+
+```{r mdrd-helper}
+mdrd_deindexed <- function(creat_umol, age, female, black, wt, height_cm) {
+  mdrd <- 186.3 * (creat_umol / 88.4)^-1.154 * age^-0.203 *
+    ifelse(female == 1, 0.742, 1) * ifelse(black == 1, 1.210, 1)
+  bsa <- 0.007184 * wt^0.425 * height_cm^0.725
+  mdrd * bsa / 1.73
+}
+# A 140 kg, 175 cm, 40-year-old woman with creatinine 70 umol/L
+mdrd_deindexed(70, 40, 1, 0, 140, 175)
+```
+
+# Replication of the study design
+
+A virtual cohort of 200 obese and 200 non-obese participants reproduces the
+study's dosing and sampling. Weight, height and renal function were not
+reported per participant, so they are drawn to match the Table I medians
+and ranges (out-of-range draws are rejected and redrawn, never clamped).
+Obese doses use the Janmahasatian lean body weight, which needs sex and BMI,
+so height is drawn from sex-specific normal distributions and BMI is
+computed.
+
+```{r cohort-helpers}
+draw_in_range <- function(n, draw, lo, hi) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- draw(2 * n)
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
+
+lbw_janmahasatian <- function(wt, bmi, female) {
+  ifelse(
+    female == 1,
+    9270 * wt / (8780 + 244 * bmi),
+    9270 * wt / (6680 + 216 * bmi)
+  )
+}
+
+make_study_cohort <- function(n, obese, id_offset) {
+  female <- rbinom(n, 1, if (obese) 11 / 20 else 4 / 8)
+  if (obese) {
+    # Reject-and-redraw on both weight and BMI ranges of Table I.
+    wt <- numeric(n)
+    ht <- numeric(n)
+    for (i in seq_len(n)) {
+      repeat {
+        w <- exp(rnorm(1, log(137.8), 0.15))
+        h <- rnorm(1, if (female[i] == 1) 168 else 181, 7)
+        b <- w / (h / 100)^2
+        if (w >= 103 && w <= 194 && b >= 36 && b <= 53) break
+      }
+      wt[i] <- w
+      ht[i] <- h
+    }
+    bmi <- wt / (ht / 100)^2
+    crcl <- draw_in_range(n, function(m) rnorm(m, 127.5, 22), 77, 171)
+    dose <- 5 * lbw_janmahasatian(wt, bmi, female)
+  } else {
+    wt <- draw_in_range(n, function(m) exp(rnorm(m, log(66.3), 0.12)), 57, 91)
+    crcl <- draw_in_range(n, function(m) rnorm(m, 102.6, 7), 91, 120)
+    dose <- 5 * wt
+  }
+  tibble(
+    id = id_offset + seq_len(n),
+    group = if (obese) "Morbidly obese" else "Non-obese",
+    WT = wt,
+    CRCL = crcl,
+    amt = dose
+  )
+}
+```
+
+```{r study-cohort}
+set.seed(2019)
+rxode2::rxSetSeed(2019)
+n_arm <- 200
+subj_study <- bind_rows(
+  make_study_cohort(n_arm, obese = TRUE, id_offset = 0L),
+  make_study_cohort(n_arm, obese = FALSE, id_offset = n_arm)
+)
+
+subj_study |>
+  group_by(group) |>
+  summarise(
+    "Median WT (kg)" = median(WT),
+    "Median de-indexed MDRD (mL/min)" = median(CRCL),
+    "Median dose (mg)" = median(amt),
+    .groups = "drop"
+  ) |>
+  rename("Group" = group) |>
+  knitr::kable(digits = 1, caption = "Virtual study cohort; compare Table I (dose medians 340 and 320 mg).")
+
+# Paper sampling: 5 min after the end of the 0.5-h infusion, then 1, 1.5, 2,
+# 2.5, 3.5, 4.5, 6, 12 and 24 h after the start of infusion.
+study_times <- c(0, 0.5 + 5 / 60, 1, 1.5, 2, 2.5, 3.5, 4.5, 6, 12, 24)
+fine_times <- sort(unique(c(study_times, seq(0, 24, by = 0.25))))
+
+study_events <- bind_rows(
+  subj_study |> mutate(time = 0, evid = 1L, cmt = "central", rate = amt / 0.5),
+  subj_study |>
+    select(id, group, WT, CRCL) |>
+    tidyr::crossing(time = fine_times) |>
+    mutate(evid = 0L, amt = 0, cmt = "central", rate = 0)
+) |>
+  arrange(id, time, desc(evid))
+```
+
+Each dose row carries an explicit infusion rate of `amt / 0.5` mg/h, so the
+dose runs over 0.5 h.
+
+```{r study-sim}
+sim_study <- rxode2::rxSolve(
+  mod,
+  events = study_events,
+  keep = c("group", "WT", "CRCL")
+) |>
+  as.data.frame()
+```
+
+## Concentration-time profiles (cf. Figure 1)
+
+```{r figure-1}
+sim_study |>
+  filter(time > 0) |>
+  group_by(group, time) |>
+  summarise(
+    mean = mean(sim),
+    sd = sd(sim),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, mean, colour = group, fill = group)) +
+  geom_ribbon(aes(ymin = pmax(mean - sd, 0.05), ymax = mean + sd), alpha = 0.2, colour = NA) +
+  geom_line() +
+  geom_hline(yintercept = 0.3, linetype = "dotted", colour = "grey40") +
+  scale_y_log10() +
+  labs(
+    x = "Time after start of infusion (h)",
+    y = "Tobramycin concentration (mg/L)",
+    colour = NULL, fill = NULL,
+    title = "Simulated mean +/- SD tobramycin concentrations",
+    caption = "Compare with Figure 1 of Smit 2019. Dotted line: 0.3 mg/L LLOQ."
+  )
+```
+
+## PKNCA against the observed AUC24 and Cmax
+
+The paper computed AUC24 per participant with the trapezoidal rule on the
+observed samples, and defined Cmax as the concentration 1 h after the start
+of infusion (Methods, Pharmacokinetic Analysis). To compare like with like,
+PKNCA is run here on the same ten sampling times with the linear trapezoidal
+rule, which overestimates the AUC of an exponential decline across the
+6-12-24 h gaps just as the paper's calculation did.
+
+```{r pknca-study}
+conc_study <- sim_study |>
+  filter(!is.na(Cc), time %in% study_times) |>
+  select(id, group, time, Cc)
+stopifnot(all(table(conc_study$id) == length(study_times)))
+
+dose_study <- subj_study |>
+  mutate(time = 0, duration = 0.5) |>
+  select(id, group, time, amt, duration)
+
+conc_obj <- PKNCA::PKNCAconc(conc_study, Cc ~ time | group + id)
+dose_obj <- PKNCA::PKNCAdose(
+  dose_study, amt ~ time | group + id,
+  route = "intravascular", duration = "duration"
+)
+intervals_study <- data.frame(start = 0, end = 24, auclast = TRUE, cmax = TRUE)
+nca_study <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = intervals_study,
+  options = list(auc.method = "linear")
+))
+
+c1h <- conc_study |>
+  filter(time == 1) |>
+  transmute(id, group, PPTESTCD = "c1h", PPORRES = Cc)
+
+sim_ind <- as.data.frame(nca_study) |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, group, PPTESTCD, PPORRES) |>
+  bind_rows(c1h)
+
+# The paper reports arithmetic means, so the simulation is summarised the
+# same way before the comparison.
+sim_mean <- sim_ind |>
+  group_by(group, PPTESTCD) |>
+  summarise(PPORRES = mean(PPORRES), .groups = "drop")
+
+reference <- data.frame(
+  group = c("Morbidly obese", "Non-obese"),
+  auclast = c(56.1, 70.0),
+  c1h = c(11.8, 18.3)
+)
+
+cmp_study <- ncaComparisonTable(
+  sim_mean, reference,
+  by = "group",
+  units = c(auclast = "mg*h/L", c1h = "mg/L")
+)
+knitr::kable(
+  cmp_study,
+  caption = paste(
+    "Mean AUC0-24 (linear trapezoidal, study sampling times) and",
+    "concentration 1 h after start of infusion (the paper's Cmax definition),",
+    "simulated vs. Smit 2019 Results."
+  )
+)
+```
+
+```{r pknca-study-check}
+pct <- sim_mean |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(reference, by = "group", suffix = c("_sim", "_ref")) |>
+  mutate(
+    auc_pct = 100 * (auclast_sim - auclast_ref) / auclast_ref,
+    c1h_pct = 100 * (c1h_sim - c1h_ref) / c1h_ref
+  )
+# The simulated means sit a few percent below the observed means (see
+# Assumptions and deviations); a transcription error in CL, Z, Vc or a dose
+# unit would move them by far more than 25%.
+stopifnot(
+  all(abs(pct$auc_pct) < 25),
+  all(abs(pct$c1h_pct) < 25)
+)
+```
+
+## AUC0-inf self-consistency
+
+For a single IV dose AUC0-inf must equal the dose divided by each subject's
+individual clearance. Both sides use the same drawn parameters, so the only
+differences are trapezoidal error and the lambda-z extrapolation on the
+dense grid.
+
+```{r pknca-aucinf}
+conc_dense <- sim_study |>
+  filter(!is.na(Cc)) |>
+  select(id, group, time, Cc)
+nca_dense <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_dense, Cc ~ time | group + id),
+  dose_obj,
+  intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE, half.life = TRUE)
+))
+chk <- as.data.frame(nca_dense) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  select(id, group, aucinf = PPORRES) |>
+  left_join(sim_study |> group_by(id) |> summarise(cl = first(cl)), by = "id") |>
+  left_join(subj_study |> select(id, amt), by = "id") |>
+  mutate(pct_diff = 100 * (aucinf - amt / cl) / (amt / cl))
+
+chk |>
+  group_by(group) |>
+  summarise(
+    "Median AUC0-inf (mg*h/L)" = median(aucinf),
+    "Median % diff vs dose/CL" = median(pct_diff),
+    "90th pct |% diff|" = quantile(abs(pct_diff), 0.9),
+    .groups = "drop"
+  ) |>
+  rename("Group" = group) |>
+  knitr::kable(digits = 2)
+
+stopifnot(
+  abs(median(chk$pct_diff)) < 2,
+  quantile(abs(chk$pct_diff), 0.9) < 5
+)
+```
+
+# Dosing simulations (Figure 4, Table S1)
+
+The paper's Monte Carlo simulation used 9,993 individuals with weights
+uniformly distributed between 60 and 190 kg, and de-indexed MDRD drawn from
+normal distributions with mean 137 mL/min (SD 34) for obese and 112 mL/min
+(SD 23) for non-obese individuals (Methods, Model-Based Simulations). Those
+up to 100 kg are the non-obese group. Here 200 individuals per weight group
+are simulated for each regimen, each as a single 0.5-h infusion, and AUC24
+is computed by PKNCA on a dense grid (linear-up/log-down).
+
+* **Nomogram**: Dose (mg) = 75 x 6.33 x (1 + 0.0099 x (MDRD - 115))
+  (Figure 5 caption).
+* **5 mg/kg TBW**.
+* **5 mg/kg scaled TBW**: 5 x 70 x (TBW/70)^0.42 mg (Figure S2C caption).
+
+The fourth regimen of Table S1, 5 mg/kg adjusted body weight, needs height
+and sex for the ideal body weight, and the paper does not give their
+simulated distributions, so it is not reproduced.
+
+```{r mc-cohort}
+set.seed(75)
+mc_subj <- bind_rows(
+  tibble(group = "Non-obese", WT = runif(n_arm, 60, 100), CRCL = rnorm(n_arm, 112, 23)),
+  tibble(group = "Obese", WT = runif(n_arm, 100, 190), CRCL = rnorm(n_arm, 137, 34))
+)
+stopifnot(min(mc_subj$CRCL) > 20)
+
+regimens <- list(
+  "Nomogram (MDRD-based)" = function(d) 75 * 6.33 * (1 + 0.0099 * (d$CRCL - 115)),
+  "5 mg/kg TBW" = function(d) 5 * d$WT,
+  "5 mg/kg TBW^0.42" = function(d) 5 * 70 * (d$WT / 70)^0.42
+)
+mc_subj_all <- bind_rows(lapply(names(regimens), function(r) {
+  mc_subj |> mutate(regimen = r, amt = regimens[[r]](mc_subj))
+})) |>
+  mutate(id = row_number())
+
+mc_times <- c(seq(0, 2, by = 0.1), seq(2.5, 24, by = 0.5))
+mc_events <- bind_rows(
+  mc_subj_all |> mutate(time = 0, evid = 1L, cmt = "central", rate = amt / 0.5),
+  mc_subj_all |>
+    select(id, group, regimen, WT, CRCL) |>
+    tidyr::crossing(time = mc_times) |>
+    mutate(evid = 0L, amt = 0, cmt = "central", rate = 0)
+) |>
+  arrange(id, time, desc(evid))
+```
+
+```{r mc-sim}
+rxode2::rxSetSeed(75)
+sim_mc <- rxode2::rxSolve(
+  mod,
+  events = mc_events,
+  keep = c("group", "regimen", "WT", "CRCL")
+) |>
+  as.data.frame()
+```
+
+```{r mc-nca}
+conc_mc <- sim_mc |>
+  filter(!is.na(Cc)) |>
+  select(id, group, regimen, time, Cc)
+dose_mc <- mc_subj_all |>
+  mutate(time = 0, duration = 0.5) |>
+  select(id, group, regimen, time, amt, duration)
+nca_mc <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_mc, Cc ~ time | regimen + group + id),
+  PKNCA::PKNCAdose(dose_mc, amt ~ time | regimen + group + id,
+    route = "intravascular", duration = "duration"
+  ),
+  intervals = data.frame(start = 0, end = 24, auclast = TRUE),
+  options = list(auc.method = "lin up/log down")
+))
+auc_mc <- as.data.frame(nca_mc) |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, group, regimen, AUC24 = PPORRES)
+
+table_s1 <- tribble(
+  ~regimen, ~group, ~paper_median, ~paper_lo, ~paper_hi, ~paper_within,
+  "Nomogram (MDRD-based)", "Non-obese", 75.0, 57.4, 93.5, 93.4,
+  "Nomogram (MDRD-based)", "Obese", 74.2, 56.9, 92.8, 93.6,
+  "5 mg/kg TBW", "Non-obese", 65.0, 23.3, 116.8, 48.0,
+  "5 mg/kg TBW", "Obese", 94.6, 22.2, 184.1, 40.4,
+  "5 mg/kg TBW^0.42", "Non-obese", 60.9, 24.1, 105.7, 44.6,
+  "5 mg/kg TBW^0.42", "Obese", 61.6, 18.8, 115.5, 41.8
+)
+
+mc_summary <- auc_mc |>
+  group_by(regimen, group) |>
+  summarise(
+    sim_median = median(AUC24),
+    sim_lo = quantile(AUC24, 0.025),
+    sim_hi = quantile(AUC24, 0.975),
+    sim_within = 100 * mean(AUC24 >= 0.8 * 75 & AUC24 <= 1.25 * 75),
+    .groups = "drop"
+  ) |>
+  left_join(table_s1, by = c("regimen", "group")) |>
+  mutate(pct_diff_median = 100 * (sim_median - paper_median) / paper_median)
+
+mc_summary |>
+  select(
+    "Regimen" = regimen, "Group" = group,
+    "Median (paper)" = paper_median, "Median (sim)" = sim_median,
+    "% diff median" = pct_diff_median,
+    "2.5th pct (paper)" = paper_lo, "2.5th pct (sim)" = sim_lo,
+    "97.5th pct (paper)" = paper_hi, "97.5th pct (sim)" = sim_hi,
+    "% within 60-93.75 (paper)" = paper_within, "% within (sim)" = sim_within
+  ) |>
+  knitr::kable(digits = 1, caption = "AUC24 (mg*h/L) by regimen and weight group, simulated vs. Table S1.")
+```
+
+The medians are the structural check: they depend only on the typical
+clearance, the MDRD slope and the dose rule. The percentiles and the
+fraction within 80-125% of target also depend on which subjects land in
+the tails and are shown for comparison only.
+
+```{r mc-check}
+stopifnot(all(abs(mc_summary$pct_diff_median) < 10))
+```
+
+```{r figure-4}
+auc_mc |>
+  filter(regimen != "5 mg/kg TBW^0.42") |>
+  left_join(mc_subj_all |> select(id, WT, CRCL), by = "id") |>
+  filter(
+    (group == "Non-obese" & regimen == "5 mg/kg TBW") |
+      (group == "Obese" & regimen == "Nomogram (MDRD-based)")
+  ) |>
+  mutate(wt_band = cut(WT, breaks = seq(60, 190, by = 10), include.lowest = TRUE)) |>
+  ggplot(aes(wt_band, AUC24)) +
+  geom_jitter(aes(colour = CRCL), width = 0.2, size = 0.8) +
+  geom_boxplot(outlier.shape = NA, fill = NA, coef = 0) +
+  geom_hline(yintercept = 75, linetype = "dashed", colour = "grey50") +
+  geom_hline(yintercept = c(0.8, 1.25) * 75, linetype = "dashed") +
+  scale_colour_gradient(low = "darkblue", high = "darkred") +
+  labs(
+    x = "Total body weight (kg)",
+    y = "AUC24 (mg*h/L)",
+    colour = "De-indexed\nMDRD (mL/min)",
+    title = "5 mg/kg TBW below 100 kg, MDRD nomogram above 100 kg",
+    caption = "Replicates Figure 4 of Smit 2019 (200 simulated individuals per weight group)."
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+# Assumptions and deviations
+
+* **Correction applied.** The original Table II printed CL and Q in L/min,
+  Vp as 4.35 L and the CL formula with an unbalanced parenthesis. The 2020
+  correction reprints the table with CL and Q in L/h, Vp 4.34 L and
+  `CL = CL_MDRD115 * (1 + Z * (MDRD - 115))`; the model uses the corrected
+  values. The Figure 5 nomogram, `Dose = AUC24 x 6.33 x (1 + 0.0099 x
+  (MDRD - 115))`, confirms CL in L/h.
+* **Central volume is linear in weight.** Table 2 writes `Vc = Vc70kg *
+  (TBW/70)` with no exponent, and Table III lists 8 parameters for the base
+  model with TBW on Vc (4 structural, 2 IIV, 2 residual), so no exponent was
+  estimated.
+* **Residual error entries are standard deviations.** The additive error is
+  printed in mg/L, so both residual entries are read as SDs, entering as
+  Eq. 2 `Y = Cpred + Cpred * eps1 + eps2`.
+* **IIV as CV%.** The IIV percentages are converted with
+  `omega^2 = log(1 + CV^2)`, which matches the exponential model of Eq. 1.
+* **No IIV on Q or Vp**, as reported.
+* **BLQ handling.** The M3 method used in estimation does not affect
+  simulation.
+* **Virtual study cohort.** Individual weights, heights, sex and MDRD values
+  are not published; they are drawn to the Table I medians and ranges, with
+  sex-specific heights (168 cm female, 181 cm male, SD 7 cm) chosen by the
+  maintainers to produce the Table I BMI range. The simulated median doses
+  are about 320 mg (obese) and 340 mg (non-obese) against Table I medians
+  of 340 and 320 mg: the virtual obese lean body weights come out slightly
+  below the Table I median of 69.3 kg, and the non-obese weights slightly
+  above 66.3 kg.
+* **Observed AUC24 and Cmax.** The simulated means fall a few percent
+  below the observed means of Smit 2019 Results (56.1 and 70.0 mg*h/L; 11.8
+  and 18.3 mg/L), with the larger gap in the non-obese group. This matches
+  the paper's own statement that all covariate models "seemed to slightly
+  underpredict tobramycin concentrations below 10 mg/l in the non-obese
+  individuals". The parameters are not tuned to close this gap.
+* **Lower tail of Table S1.** The simulated medians, upper percentiles and
+  within-target fractions match Table S1, as do both percentiles for the
+  nomogram. The lower 2.5th percentiles that Table S1 gives for the two
+  weight-based regimens (18.8-24.1 mg*h/L) are not reproduced (simulated
+  about 36-54). They cannot be reached with the stated MDRD distributions:
+  an AUC24 of 22 mg*h/L for a 100-kg patient on 5 mg/kg TBW needs a clearance
+  of about 23 L/h, i.e. a de-indexed MDRD near 375 mL/min, about seven SDs
+  above the stated obese mean of 137 mL/min. The paper does not give
+  enough detail of its simulation to explain the difference.
+* **Monte Carlo cohort.** The paper drew MDRD from untruncated normal
+  distributions; the same is done here, with an assertion that no simulated
+  MDRD falls low enough to make clearance non-positive. The 5 mg/kg
+  adjusted-body-weight regimen of Table S1 is not reproduced (height and sex
+  distributions not reported).
