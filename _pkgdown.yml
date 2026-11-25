@@ -6882,6 +6882,8 @@ navbar:
         href: articles/Patel_2025_radamts13_exposure_response.html
       - text: "Radiation radiosensitizer mouse (Cardilin 2018)"
         href: articles/Cardilin_2018_radiation_radiosensitizer_mouse.html
+      - text: "Radiation radiosensitizer mouse (Cardilin 2019)"
+        href: articles/Cardilin_2019_radiation_radiosensitizer_mouse.html
       - text: "Radiotherapy antipdl1 olaparib azd0156 mouse (Hodson 2023)"
         href: articles/Hodson_2023_radiotherapy_antipdl1_olaparib_azd0156_mouse.html
       - text: "Radotinib (Kang 2025)"
@@ -9689,6 +9691,7 @@ articles:
   - articles/Cao_2026_lecanemab
   - articles/Capparelli_2005_cefepime
   - articles/Cardilin_2018_radiation_radiosensitizer_mouse
+  - articles/Cardilin_2019_radiation_radiosensitizer_mouse
   - articles/CarlssonPetri_2015_liraglutide
   - articles/CarlssonPetri_2018_semaglutide
   - articles/CarlssonPetri_2021_liraglutide

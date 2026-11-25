@@ -1,0 +1,560 @@
+---
+title: "Radiation + radiosensitizer long-term tumor model (Cardilin 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Radiation + radiosensitizer long-term tumor model (Cardilin 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+rxode2::rxSetSeed(2019)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Cardilin_2019_radiation_radiosensitizer_mouse"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Cardilin_2019_radiation_radiosensitizer_mouse"))$description`
+* Article (open access): <https://doi.org/10.1007/s00280-019-03829-y>
+
+This is a preclinical tumor model for fractionated ionizing radiation combined
+with a radiosensitizer (an anonymized small-molecule targeted therapy that
+interferes with DNA-damage repair), fit to FaDu head-and-neck xenograft data in
+mice. It extends the authors' earlier model
+(`Cardilin_2018_radiation_radiosensitizer_mouse`, also in this library) to
+long-term dynamics after treatment stops: tumor regrowth at a reduced rate,
+and eradication.
+
+* Untreated growth is **exponential**: proliferating cells `V1`
+  (`cycling_cells`) grow at `kg` and leave at `kk` into a three-stage
+  natural-death transit chain `V2`-`V4` (`damaged_cells1`-`damaged_cells3`).
+* At each radiation fraction a fraction
+  `F(D, C) = 1 - exp[-(1 + a C)(alpha D + beta D^2)]` of the proliferating cells
+  is lethally irradiated and moved to `U1` (`irrad1`), which may divide once
+  more into `U2` (`irrad2`, factor 2) before both die through the transit
+  chain.
+* The **accumulated effective radiation dose** `IR_Tot` (`irtot`) increases by
+  `(1 + b C) D` at each fraction and permanently inhibits growth,
+  `kg * exp(-gamma IR_Tot)`.
+* `C` is the radiosensitizer plasma concentration at the time of irradiation,
+  from a one-compartment model.
+
+The tumor-static exposure (TSE) is the set of total radiation doses `D` and
+radiosensitizer concentrations `C` at which the long-term net growth rate
+`kg exp(-gamma (1 + b C) D) - kk` is zero.
+
+# Population
+
+Female CD1 nu/nu or NMRI nu/nu mice (five to six weeks old) carried
+subcutaneous FaDu xenografts. Treatment started at a mean tumor volume of about
+50-110 mm^3. Forty mice, ten per arm, received vehicle, radiation (2 Gy per
+fraction), or radiation combined with 25 or 100 mg/kg of the oral
+radiosensitizer 30 minutes before each fraction. Every arm was treated five
+days a week (Mon-Fri) for six weeks, which is 30 fractions and 60 Gy in total.
+Tumors were measured twice a week for up to 12 weeks after treatment stopped.
+Radiosensitizer PK came from eight further mice (four at 25 and four at
+100 mg/kg, sampled 1, 2 and 6 h after dosing). The source is the Methods
+section, "Experimental data". The model was fit by mixed effects (FOCE) in a
+Mathematica framework.
+
+The same information is available programmatically via
+`readModelDb("Cardilin_2019_radiation_radiosensitizer_mouse")$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lkg` (growth rate kg) | 0.40 1/day | Table 1 |
+| `lkk` (kill rate kk) | 0.26 1/day | Table 1 |
+| `lv0` (V1(0) = V0) | 27.0 mm^3 | Table 1 |
+| `lgammaRad` (gamma) | 4.0 kGy^-1 = 0.0040 1/Gy | Table 1 |
+| `lalpha` (LQ alpha) | 54.0 kGy^-1 = 0.054 1/Gy | Table 1 |
+| `abratio` (alpha/beta, fixed) | 10 Gy | Methods, "Computational methods" |
+| `lbRad` (enhancement of LQ kill; Eq. 3 symbol a) | 0.15 mL/ug | Table 1 row "b" (letters swapped; see Assumptions) |
+| `lbRadTot` (enhancement of IR_Tot; Eq. 7 symbol b) | 0.42 mL/ug | Table 1 row "a"; Figs. 5 and 6 |
+| `lke` (radiosensitizer elimination, fixed) | ln(2)/3 h^-1 = 5.55 1/day | Results, "Exposure to radiosensitizer" (half-life 3 h) |
+| `lvf` (radiosensitizer V/F, fixed) | 11.95 L/kg | Fig. 3 peaks 2.09 / 8.39 ug/mL (digitized); text: 2 and 8 ug/mL |
+| `radDose` (per fraction) | 2 Gy | Methods |
+| `etalv0`, `etalgammaRad`, `etalalpha` | BSV 50%, 46%, 42% | Table 1 |
+| `propSd`, `addSd` | 24%, 6.9 mm^3 | Table 1 (sigma a, sigma b) |
+| PK `dC/dt = -ke C`, `C(0) = D F / V` | n/a | Eq. 1 |
+| V1 growth and LQ transfer | n/a | Eqs. 2-3 |
+| Growth inhibition `I = exp(-gamma IR_Tot)` | n/a | Eq. 4 |
+| Transit chain V2-V4 | n/a | Eq. 5 |
+| U1, U2 (one more division) | n/a | Eq. 6 |
+| IR_Tot accumulation | n/a | Eq. 7 |
+| Initial conditions | n/a | Eq. 8 |
+| Net growth rate `knet` | n/a | Eq. 9 |
+
+# Simulation set-up
+
+Each radiation fraction is a unit bolus (`amt = 1`) into `rad_depot`. The
+per-fraction radiation dose (Gy) is the model parameter `radDose` (default 2).
+The radiosensitizer is dosed (mg/kg) into `central`. The observation
+`tumor_vol` is total tumor volume (mm^3), and `knet` is the Eq. 9 net growth
+rate.
+
+The treatment schedule follows the paper's simulated figures (Figs. 3 and 5):
+Monday to Friday for six weeks, starting on day 2. The paper's own simulations
+evaluate the radiosensitizer effect at the peak concentration, so irradiation
+here coincides with the radiosensitizer dose. In the experiment irradiation
+came 30 minutes after dosing, when the concentration had fallen to 89% of the
+peak.
+
+```{r model}
+mod <- readModelDb("Cardilin_2019_radiation_radiosensitizer_mouse")
+mod_typ <- rxode2::zeroRe(mod)
+
+# Typical-value solve for several animals at once. rxode2 warns that a
+# multi-subject solve has no omega; that is intended here (each id is a
+# different treatment arm, not a random draw).
+solve_typ <- function(events, ...) {
+  suppressWarnings(as.data.frame(rxode2::rxSolve(mod_typ, events, ...)))
+}
+
+# Typical values used by the closed-form checks below
+kg <- 0.40
+kk <- 0.26
+gam <- 0.0040
+alpha <- 0.054
+beta <- alpha / 10
+bRad <- 0.15
+bRadTot <- 0.42
+vf <- 11.95
+ke <- log(2) / 3 * 24
+
+tx_days <- unlist(lapply(0:5, function(w) 2 + 7 * w + 0:4))
+
+make_arm <- function(id, rs_dose, irradiate, obs = seq(0, 130, by = 1),
+                     rad_offset = 0) {
+  ev <- data.frame(id = id, time = obs, evid = 0, amt = 0, cmt = "cycling_cells")
+  if (irradiate) {
+    ev <- bind_rows(ev, data.frame(
+      id = id, time = tx_days + rad_offset, evid = 1, amt = 1, cmt = "rad_depot"
+    ))
+  }
+  if (rs_dose > 0) {
+    ev <- bind_rows(ev, data.frame(
+      id = id, time = tx_days, evid = 1, amt = rs_dose, cmt = "central"
+    ))
+  }
+  arrange(ev, id, time, desc(evid))
+}
+
+arms <- tibble::tribble(
+  ~arm, ~label, ~rs_dose, ~irradiate,
+  "A", "A: vehicle", 0, FALSE,
+  "B", "B: radiation 2 Gy", 0, TRUE,
+  "C", "C: 2 Gy + 25 mg/kg", 25, TRUE,
+  "D", "D: 2 Gy + 100 mg/kg", 100, TRUE
+)
+```
+
+# Radiosensitizer exposure (Figure 3)
+
+```{r figure-3}
+ev_pk <- bind_rows(
+  make_arm(1, 25, FALSE, obs = seq(0, 60, by = 0.01)),
+  make_arm(2, 100, FALSE, obs = seq(0, 60, by = 0.01))
+)
+pk <- solve_typ(ev_pk) |>
+  mutate(dose = ifelse(id == 1, "25 mg/kg", "100 mg/kg"))
+
+ggplot(pk, aes(time, Cc, colour = dose)) +
+  geom_line(linewidth = 0.4) +
+  labs(
+    x = "Time (day)", y = "Radiosensitizer concentration (ug/mL)", colour = NULL,
+    title = "Replicates Figure 3 of Cardilin et al. (2019)"
+  ) +
+  theme_bw()
+```
+
+## PKNCA check of the single-dose PK
+
+The paper reports a 3 h half-life and peaks of about 2 and 8 ug/mL after 25
+and 100 mg/kg. Fig. 3 draws these peaks at 2.09 and 8.39 ug/mL. The PK model
+has no absorption phase (Eq. 1), so the peak is the time-zero concentration.
+
+```{r pknca}
+ev_sd <- bind_rows(lapply(seq_len(2), function(i) {
+  dose <- c(25, 100)[i]
+  data.frame(
+    id = i, time = c(0, 0, 10^seq(-4, log10(1), length.out = 60)),
+    evid = c(1, rep(0, 61)), amt = c(dose, rep(0, 61)),
+    cmt = c("central", rep("cycling_cells", 61))
+  )
+}))
+sd <- solve_typ(ev_sd, addDosing = FALSE) |>
+  mutate(
+    time_h = time * 24,
+    treatment = ifelse(id == 1, "25 mg/kg", "100 mg/kg")
+  ) |>
+  distinct(id, time_h, .keep_all = TRUE) |>
+  filter(!is.na(Cc))
+
+conc_obj <- PKNCA::PKNCAconc(sd, Cc ~ time_h | treatment + id)
+dose_df <- data.frame(
+  id = 1:2, time_h = 0, dose = c(25, 100),
+  treatment = c("25 mg/kg", "100 mg/kg")
+)
+dose_obj <- PKNCA::PKNCAdose(dose_df, dose ~ time_h | treatment + id, route = "intravascular")
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~half.life,
+  "25 mg/kg", 2.09, 3,
+  "100 mg/kg", 8.39, 3
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ug/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Radiosensitizer single-dose NCA: model vs paper (Cmax from Fig. 3, half-life from Results).")
+
+nca_wide <- as.data.frame(nca_res) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+stopifnot(
+  all(abs(nca_wide$half.life - 3) < 0.05),
+  all(abs(nca_wide$cmax / c(`100 mg/kg` = 8.39, `25 mg/kg` = 2.09)[nca_wide$treatment] - 1) < 0.02)
+)
+```
+
+# Net growth rate over time (Figure 5)
+
+The long-term net growth rate of the proliferating cells,
+`knet = kg exp(-gamma IR_Tot) - kk` (Eq. 9), drops in steps at each fraction.
+After the 30 fractions it has the closed form
+`kg exp(-gamma * 60 * (1 + b C)) - kk`, where `C` is the concentration at
+irradiation.
+
+```{r figure-5}
+ev_all <- bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  make_arm(i, arms$rs_dose[i], arms$irradiate[i], obs = seq(0, 130, by = 0.25))
+}))
+typ <- solve_typ(ev_all, addDosing = FALSE) |>
+  mutate(label = arms$label[id], arm = arms$arm[id])
+
+ggplot(filter(typ, time <= 50), aes(time, knet, colour = label)) +
+  geom_step(linewidth = 0.7) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(
+    x = "Time (day)", y = "Net growth rate (1/day)", colour = NULL,
+    title = "Replicates Figure 5 of Cardilin et al. (2019)"
+  ) +
+  theme_bw()
+
+end_knet <- typ |>
+  filter(time == 50) |>
+  select(arm, knet)
+c_peak <- c(A = 0, B = 0, C = 25 / vf, D = 100 / vf)
+irr <- c(A = 0, B = 1, C = 1, D = 1)
+closed <- kg * exp(-gam * 60 * irr * (1 + bRadTot * c_peak)) - kk
+fig5 <- tibble::tibble(
+  arm = names(closed),
+  simulated = end_knet$knet[match(names(closed), end_knet$arm)],
+  closed_form = unname(closed),
+  figure_5 = c(0.14, 0.054, -0.006, -0.127)
+)
+fig5 |>
+  mutate(across(where(is.numeric), \(x) round(x, 4))) |>
+  dplyr::rename(
+    "Arm" = arm,
+    "Simulated knet at day 50 (1/day)" = simulated,
+    "Closed form (1/day)" = closed_form,
+    "Fig. 5, digitized (1/day)" = figure_5
+  ) |>
+  knitr::kable(caption = "End-of-treatment net growth rate by arm.")
+
+stopifnot(
+  # The solve against its own closed form: only the finite width of the
+  # radiation spike separates them.
+  all(abs(fig5$simulated - fig5$closed_form) < 0.002),
+  # Against the published figure, read to about +/- 0.003 1/day.
+  all(abs(fig5$simulated - fig5$figure_5) < 0.006)
+)
+```
+
+Radiation alone (B) leaves a positive net growth rate, so the tumor regrows.
+With 25 mg/kg (C) the rate only just turns negative, and with 100 mg/kg (D) it
+is clearly negative. These match the paper's narrative and Figure 5. The
+agreement also confirms which Table 1 potency belongs to the long-term effect
+(see Assumptions).
+
+# Tumor static exposure curve (Figure 6)
+
+Setting `knet = 0` gives the TSE curve `D = log(kg / kk) / (gamma (1 + b C))`
+(Eqs. 10-11, with the long-term parameters `gamma` and `b`). The points below
+were digitized from the curve in Fig. 6 (left).
+
+```{r figure-6}
+tse <- function(C) log(kg / kk) / (gam * (1 + bRadTot * C))
+fig6 <- tibble::tibble(
+  C = c(1, 2, 3, 4, 6, 8, 10, 12, 14.5),
+  D_fig6 = c(74.6, 57.2, 46.7, 39.3, 30.0, 24.1, 20.0, 17.3, 14.7)
+) |>
+  mutate(D_model = tse(C), pct_diff = 100 * (D_model - D_fig6) / D_fig6)
+
+ggplot(data.frame(C = seq(0, 15, by = 0.05)), aes(C, tse(C))) +
+  geom_line(colour = "steelblue", linewidth = 0.8) +
+  geom_point(data = fig6, aes(C, D_fig6), shape = 1, size = 2) +
+  labs(
+    x = "Radiosensitizer concentration at irradiation (ug/mL)",
+    y = "Total radiation dose (Gy)",
+    title = "Replicates Figure 6 (left) of Cardilin et al. (2019)",
+    caption = "Line: model TSE curve. Circles: digitized from Fig. 6."
+  ) +
+  coord_cartesian(ylim = c(0, 120)) +
+  theme_bw()
+
+knitr::kable(
+  fig6 |>
+    mutate(across(c(D_model, pct_diff), \(x) round(x, 1))) |>
+    dplyr::rename(
+      "C (ug/mL)" = C, "D, Fig. 6 (Gy)" = D_fig6,
+      "D, model (Gy)" = D_model, "% diff" = pct_diff
+    ),
+  caption = "TSE curve: model vs digitized Fig. 6."
+)
+stopifnot(all(abs(fig6$pct_diff) < 6))
+```
+
+For radiation alone the model needs `r round(tse(0), 1)` Gy in total. The
+abstract and Discussion give 110 Gy, and Fig. 6 crosses the dose axis at about
+107 Gy.
+
+The simulation below checks that the ODE solution sits on this curve. The
+radiosensitizer is dosed so that its concentration at each fraction is
+`C = 4` ug/mL, and the 30 fractions together deliver exactly the TSE dose at
+that concentration. Once the last fraction is given, the net growth rate
+should be zero and the tumor should stop changing (the "B" trajectory of
+Fig. 6, right).
+
+```{r tse-stasis}
+C_target <- 4
+d_tse <- tse(C_target)
+ev_stasis <- make_arm(1, C_target * vf, TRUE, obs = seq(0, 160, by = 0.5))
+st <- as.data.frame(rxode2::rxSolve(mod_typ, ev_stasis,
+  params = c(radDose = d_tse / 30), addDosing = FALSE
+))
+
+ggplot(st, aes(time, tumor_vol)) +
+  geom_line(linewidth = 0.7) +
+  labs(
+    x = "Time (day)", y = expression("Tumor volume (mm"^3 * ")"),
+    title = "Exposure on the TSE curve gives tumor stasis (cf. Figure 6, right)",
+    caption = sprintf("%.1f Gy total in 30 fractions with C = %g ug/mL at each fraction.", d_tse, C_target)
+  ) +
+  theme_bw()
+
+knet_after <- st$knet[st$time == 60]
+v_late <- st$tumor_vol[st$time %in% c(120, 160)]
+stopifnot(
+  abs(knet_after) < 1e-3,
+  abs(v_late[2] / v_late[1] - 1) < 0.02
+)
+```
+
+# Kill per radiation fraction
+
+The Results section reports the percentage of proliferating cells killed by
+one 2 Gy fraction. The table compares the simulated drop in `cycling_cells`
+across a single fraction with the closed form `F(D, C)` and with the paper's
+text.
+
+```{r kill-fractions}
+kill_one <- function(rs_dose) {
+  ev <- data.frame(
+    id = 1, time = c(0.999, 1.004), evid = 0, amt = 0, cmt = "cycling_cells"
+  )
+  ev <- bind_rows(ev, data.frame(id = 1, time = 1, evid = 1, amt = 1, cmt = "rad_depot"))
+  if (rs_dose > 0) {
+    ev <- bind_rows(ev, data.frame(id = 1, time = 1, evid = 1, amt = rs_dose, cmt = "central"))
+  }
+  ev <- arrange(ev, time, desc(evid))
+  s <- as.data.frame(rxode2::rxSolve(mod_typ, ev, addDosing = FALSE, atol = 1e-10, rtol = 1e-10))
+  100 * (1 - s$cycling_cells[2] / s$cycling_cells[1])
+}
+f_closed <- function(C) 100 * (1 - exp(-(1 + bRad * C) * (alpha * 2 + beta * 4)))
+kill_tab <- tibble::tibble(
+  scenario = c("2 Gy alone", "2 Gy + 25 mg/kg", "2 Gy + 100 mg/kg"),
+  dose = c(0, 25, 100)
+) |>
+  mutate(
+    simulated = sapply(dose, kill_one),
+    closed_form = f_closed(dose / vf),
+    paper_text = c(15, 19, 25)
+  )
+kill_tab |>
+  select(-dose) |>
+  mutate(across(where(is.numeric), \(x) round(x, 1))) |>
+  dplyr::rename(
+    "Scenario" = scenario,
+    "Simulated kill (%)" = simulated,
+    "Closed form F(D, C) (%)" = closed_form,
+    "Paper text (%)" = paper_text
+  ) |>
+  knitr::kable(caption = "Proliferating cells killed per 2 Gy fraction.")
+stopifnot(all(abs(kill_tab$simulated - kill_tab$closed_form) < 0.5))
+```
+
+The model reproduces the 25% quoted for 100 mg/kg. It falls below the 15% and
+19% quoted for radiation alone and for 25 mg/kg, which the text derives from an
+alpha of 0.082 1/Gy that does not match Table 1 (see Assumptions).
+
+# Visual predictive check (Figure 9)
+
+For each arm, 100 virtual mice were simulated with between-subject variability
+on `V0`, `gamma` and `alpha`. The plot shows the 10th, 50th and 90th
+percentiles of tumor volume (individual predictions, no residual error).
+
+```{r vpc}
+n_per_arm <- 100
+ev_vpc <- bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  bind_rows(lapply(seq_len(n_per_arm), function(j) {
+    make_arm((i - 1) * n_per_arm + j, arms$rs_dose[i], arms$irradiate[i],
+      obs = seq(0, 130, by = 2)
+    )
+  }))
+}))
+vpc <- as.data.frame(rxode2::rxSolve(mod, ev_vpc, addDosing = FALSE)) |>
+  mutate(
+    arm_i = (id - 1) %/% n_per_arm + 1,
+    label = arms$label[arm_i], arm = arms$arm[arm_i]
+  )
+
+vpc_sum <- vpc |>
+  group_by(label, time) |>
+  summarise(
+    p10 = quantile(tumor_vol, 0.1), p50 = median(tumor_vol),
+    p90 = quantile(tumor_vol, 0.9), .groups = "drop"
+  )
+ggplot(vpc_sum, aes(time)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = p50), colour = "steelblue4", linewidth = 0.8) +
+  facet_wrap(~label, scales = "free_y") +
+  coord_cartesian(ylim = c(0, NA)) +
+  labs(
+    x = "Time (day)", y = expression("Tumor volume (mm"^3 * ")"),
+    title = "Simulated percentiles by arm (cf. Figures 4, 8 and 9)",
+    caption = "Median and 10th-90th percentile band of individual predictions; n = 100 per arm."
+  ) +
+  theme_bw()
+```
+
+## Eradication by arm
+
+A tumor is eventually eradicated when its net growth rate after treatment is
+negative, `gamma_i > log(kg / kk) / IR_Tot`. Only `gamma` carries
+between-subject variability in this condition (log-normal, standard deviation
+0.46), so the expected eradicated fraction has a closed form. The table
+compares it with the simulated cohort and with the outcomes the paper reports
+(Results: regrowth in 7/9 irradiated mice, eradication in 6/9 at 25 mg/kg and
+in all mice at 100 mg/kg).
+
+```{r eradication}
+ir_tot <- c(B = 60, C = 60 * (1 + bRadTot * 25 / vf), D = 60 * (1 + bRadTot * 100 / vf))
+p_erad <- 1 - pnorm(log(log(kg / kk) / ir_tot / gam) / 0.46)
+sim_erad <- vpc |>
+  filter(time == 60, arm != "A") |>
+  group_by(arm) |>
+  summarise(simulated = mean(knet < 0), .groups = "drop")
+erad <- tibble::tibble(
+  arm = names(p_erad), expected = unname(p_erad),
+  observed = c(2 / 9, 6 / 9, 1)
+) |>
+  left_join(sim_erad, by = "arm")
+erad |>
+  mutate(across(where(is.numeric), \(x) round(100 * x))) |>
+  select(arm, expected, simulated, observed) |>
+  dplyr::rename(
+    "Arm" = arm,
+    "Expected (%), closed form" = expected,
+    "Simulated cohort (%)" = simulated,
+    "Observed (%)" = observed
+  ) |>
+  knitr::kable(caption = "Fraction of mice with eventual tumor eradication.")
+stopifnot(
+  all(abs(erad$simulated - erad$expected) < 0.15),
+  p_erad[["B"]] < 0.3, p_erad[["C"]] > 0.4, p_erad[["D"]] > 0.9
+)
+```
+
+The model matches the observed pattern: most irradiated tumors regrow, about
+half to two-thirds are eradicated at 25 mg/kg, and nearly all at 100 mg/kg.
+
+# Assumptions and deviations
+
+- **Radiosensitizer potency letters.** Eq. 3 calls the potency on the
+  LQ kill `a` and Eq. 7 calls the potency on the accumulated dose `b`.
+  Table 1 lists `a = 0.42` and `b = 0.15` mL/ug, and the TSE derivation
+  (Eqs. 10-13) uses `a` for the long-term effect. The model's simulated
+  figures settle which value goes where. Only 0.42 on the accumulated dose
+  reproduces the TSE curve of Fig. 6 (about 58 Gy at 2 ug/mL and 15 Gy at
+  15 ug/mL) and the end-of-treatment net growth rates of Fig. 5. With 0.15
+  there, curve C would stay at about +0.03 1/day instead of turning slightly
+  negative. The packaged model therefore uses 0.42 mL/ug on `IR_Tot`
+  (`lbRadTot`) and 0.15 mL/ug on the LQ kill (`lbRad`). This also matches
+  the reported 25% kill per fraction at 100 mg/kg. The same Table 1 letter
+  swap occurs in the authors' 2018 paper.
+- **Eqs. 9-13 typography.** Eq. 9 prints `exp(-alpha IR_Tot)` and Eq. 13
+  prints `alpha`. By Eq. 4 the long-term inhibition uses `gamma`, and only
+  `gamma` reproduces the 107.7 Gy radiation-alone TSE (110 Gy in the abstract
+  and Discussion). Eq. 11 also has a misplaced fraction bar.
+- **Results-section prose disagrees with Table 1.** The Results text quotes
+  `alpha = 0.082 1/Gy` and a long-term parameter of `0.0034 1/Gy`. It also
+  quotes a TSE of 120 Gy for radiation alone and 80 / 30 Gy for 25 / 100 mg/kg,
+  and per-fraction kills of 15 / 19 / 25%. Table 1 gives `alpha = 54 kGy^-1`
+  (0.054 1/Gy) and `gamma = 4.0 kGy^-1` (0.004 1/Gy). These Table 1 values
+  reproduce the abstract (110 Gy) and Figs. 5 and 6, so the packaged model
+  uses Table 1. The prose values seem to come from a different parameter set,
+  and they disagree with each other as well as with the figures.
+- **Median initial tumor volume.** The text gives a median initial volume of
+  81 mm^3. With Eq. 8 and Table 1 (`V0 = 27`, `kk / kg = 0.65`) the initial
+  total volume is 63.4 mm^3, which agrees with the starting point of the
+  simulated trajectories in Fig. 6 (right). The packaged model follows Eq. 8
+  and Table 1.
+- **Radiosensitizer PK.** The paper gives no PK parameter estimates, only the
+  one-compartment form without absorption (Eq. 1), a 3 h half-life, and peaks
+  of about 2 and 8 ug/mL. `ke` is ln(2)/3 per hour. `V/F` = 11.95 L/kg comes
+  from the peaks drawn in Fig. 3 (2.09 and 8.39 ug/mL, digitized by the
+  maintainers; their ratio is 4.0, consistent with linear PK). The text's
+  rounded peaks would give 12.5 L/kg. Both PK parameters are fixed, because
+  the tumor model used them as an input. No PK variability is reported, so
+  none is included.
+- **Concentration at irradiation.** In the experiment irradiation followed
+  dosing by 30 minutes. The paper's simulated figures (Figs. 5 and 6) evaluate
+  the radiosensitizer at its peak, so the vignette doses and irradiates at the
+  same time. To reproduce the experimental timing, offset the `rad_depot`
+  events by 30 min (`make_arm(..., rad_offset = 0.5 / 24)`). The paper does
+  not say which timing the estimation used.
+- **Between-subject variability scale.** Table 1 gives BSV as a percentage
+  without defining it. The model uses variance = (BSV/100)^2, the
+  `sqrt(omega^2) x 100` definition stated in the footnote of the same group's
+  2018 paper, which used the same Mathematica framework. Under the
+  alternative `log(1 + CV^2)` definition the variances would be about 10%
+  smaller.
+- **Residual error.** Table 1 lists a proportional (24%) and an additive
+  (6.9 mm^3) component without giving the combination rule. They are encoded
+  as nlmixr2's combined `add(addSd) + prop(propSd)`.
+- **Instantaneous radiation effects.** The jumps of Eqs. 2, 6 and 7 at each
+  fraction are implemented with a fast-decaying trigger compartment
+  (`rad_depot`, rate `krad = 5000` per day). Its integral is 1 per fraction,
+  so the kill hazard integrates to the LQ lethal-lesion number and `irtot`
+  rises by `(1 + b C) D`. The radiosensitizer concentration changes by about
+  0.1% during the spike. The closed-form checks above show the remaining
+  error.
+- **Schedule.** The paper's figures start treatment on day 2 and treat on
+  weekdays for six weeks. The vignette uses the same schedule. The observed
+  data in Figs. 4, 8 and 9 are plotted from the start of treatment.
