@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Saqr 2024 tacrolimus ([doi:10.1111/bcp.16172](https://doi.org/10.1111/bcp.16172)) -- adult kidney transplant recipients (steroid x CYP3A4/5 loss-of-function genotype interaction on CL/F).
+- Add Park 2026 tigecycline in vitro PK/PD ([doi:10.1128/aac.01025-25](https://doi.org/10.1128/aac.01025-25)) -- Mycobacterium abscessus ATCC 19977 dynamic time-kill and MIC-assay time courses in 7H9 and Mueller-Hinton II broth.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
