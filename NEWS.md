@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hayato 2018 lenvatinib ([doi:10.1007/s00280-018-3687-4](https://doi.org/10.1007/s00280-018-3687-4)) -- adults with radioiodine-refractory differentiated thyroid cancer (SELECT); tumor-size and dose-altering adverse-event exposure-response models.
+- Add Standing 2018 ceftriaxone and metronidazole/hydroxymetronidazole ([doi:10.1002/cpt.1078](https://doi.org/10.1002/cpt.1078)) -- Kenyan infants and young children with complicated severe acute malnutrition.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

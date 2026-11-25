@@ -1874,6 +1874,8 @@ navbar:
         href: articles/Nel_2026_ceftriaxone.html
       - text: "Ceftriaxone (RoubaudBaudron 2025)"
         href: articles/RoubaudBaudron_2025_ceftriaxone.html
+      - text: "Ceftriaxone (Standing 2018)"
+        href: articles/Standing_2018_ceftriaxone_metronidazole.html
       - text: "Ceftriaxone (Tsai 2023)"
         href: articles/Tsai_2023_ceftriaxone.html
       - text: "Cefuroxime (Alqahtani 2018)"
@@ -5960,6 +5962,8 @@ navbar:
         href: articles/CohenWolkowiez_2012_metronidazole.html
       - text: "Metronidazole (Randell 2024)"
         href: articles/Randell_2024_metronidazole.html
+      - text: "Metronidazole (Standing 2018)"
+        href: articles/Standing_2018_ceftriaxone_metronidazole.html
       - text: "Metronidazole (Suyagh 2011)"
         href: articles/Suyagh_2011_metronidazole.html
       - text: "Metronidazole pbpk (Chauzy 2022)"
