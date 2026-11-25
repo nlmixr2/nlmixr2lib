@@ -4160,29 +4160,21 @@ One member was added alongside the Maggs 2026 rifampicin extraction: `fm_desacet
 - **Example models:** `Ravva_2015_varenicline.R` (`slope_placebo = -3.32` and `slope_drug = -0.192`, both on the logit scale of a 0-100 craving score, each with an additive eta), `Hartmann_2026_nintedanib_fvcpp.R` (`slope_placebo = -4.74` percent predicted per year) and `Hartmann_2026_nintedanib_fvcz.R` (`slope_placebo = -0.308` Z-score per year), which use `slope_placebo` WITHOUT a `slope_drug` partner: the drug arm of those two models is a saturable `emax * CTROUGH / (ec50 + CTROUGH)` term rather than a second linear slope. That is the intended reading of the pair rule -- the qualified name is used because a distinct drug-effect term exists and the two must be told apart, not because the drug term is also linear. Both are disease-progression slopes acting on the *derivative* of the endpoint (`d/dt(fvcpp) <- slope_i + dreff`), so the units are endpoint per year and the accompanying eta is additive, exactly as the Notes below predict for a slope whose typical value is negative and small relative to its between-subject SD (-2.46 against 5.55 percent predicted per year, so an individual pediatric slope may take either sign). `vanEsdonk_2018_pregabalin_coldpressor.R` carries the pair in a THIRD shape, on a turnover model rather than an additive one: `slope_placebo = -0.07` s/h drifts the TARGET level of the cold pressor pain-tolerance threshold (`kin = kout * (rbase + slope_placebo * t) * (1 + slope_drug * Cc)`), and `slope_drug = 0.135` 1/(mg/L) is a linear FRACTIONAL stimulation of `kin` rather than an additive increment on the response. The units are the discriminator and are worth checking before assuming the additive form: a `slope_drug` whose units are reciprocal-concentration makes `slope_drug * C` dimensionless, so it must multiply, whereas one carrying endpoint-per-concentration adds. Both readings are in scope for this name -- what it denotes is a LINEAR drug-effect slope, not a particular placement.
 - **Notes:** Ratified 2026-09-03 alongside the Ravva 2015 varenicline craving extraction (PMC4832970; the maintainers chose `slope_drug`, with its partner spelled `slope_placebo` to match the full-token placebo convention). The two are registered as a pair because the naming only makes sense as a pair -- a model with a single linear drug slope and no placebo arm should use the plain canonical `slope`. An additive eta is load-bearing rather than incidental when the typical slope is negative but small relative to its IIV: it lets a subject's individual slope take either sign, which is what per-subject IPRED panels of such papers show. When a paper fits several parallel linear models of different endpoints, suffix by endpoint (`slope_drug_<endpoint>`) the same way multi-output residual SDs are suffixed.
 
-### tkchange (**canonical estimated switch time of the assimilation and elimination rate constants**)
+### slope_shrink, slope_regrow (**canonical linear shrinkage and regrowth slopes of a piecewise-linear tumour-size model**)
 - **Type:** paper-named-param
-- **Role:** Time from the start of exposure (time) at which the assimilation and elimination rate constants step together from their first-stage arms (`kassim`, `kel`) to their `_late` arms while exposure continues. Carried on the linear scale.
+- **Role:** The two arms of a piecewise-linear tumour-size time course in which a lesion diameter falls at a constant rate under treatment and, after a switch time `tregrow`, rises at a constant rate as resistance emerges (tumour-size units / time, e.g. mm/day). Kept on the bare, untransformed scale: the source fits them with additive (normal) random effects and places no sign restriction on them, so an individual lesion may shrink with a positive `slope_shrink` or keep shrinking with a negative `slope_regrow`. Inside `model()` the individual values are `slope_shrink_i` / `slope_regrow_i`.
 - **Source aliases:**
-  - `ts` -- Skip 2014 Table 1 ('switch time', estimated from the model) and Table 3.
-- **Example models:** `Skip_2014_nickel.R` (founding example; ts = 1.978 day, estimated).
-- **Notes:** Ratified by the maintainers 2026-11-25 with the Skip 2014 extraction. The rate-constant analogue of `tclchange` (a clearance-only step from treatment initiation) and of `tkacut` (an absorption-only switch measured from each dose). Use `ltkchange` if a future paper estimates the switch time on the log scale.
+  - `d` ("decay rate"), `g` ("re-growth rate") -- Mistry 2018 notation.
+- **Example models:** `Mistry_2018_vemurafenib_tumor.R`, `Mistry_2018_dabrafenib_tumor.R`, `Mistry_2018_trametinib_tumor.R`.
+- **Notes:** Zero-order (linear-in-time) slopes, distinct from the first-order Stein rate constants `kse` / `kge` (1/time), which act on an exponential. The linear form follows from Mayneord's argument that a tumour grows from a thin proliferating rim, so its radius, not its volume, changes linearly in time.
 
-### cfood_uptake, cfood_depur (**canonical external (food / medium) exposure concentrations of an uptake-depuration experiment**)
+### tregrow (**canonical switch time from tumour shrinkage to regrowth**)
 - **Type:** paper-named-param
-- **Role:** Measured concentration of the xenobiotic in the external medium (food, water or soil) during the uptake phase (`cfood_uptake`) and after transfer to uncontaminated medium (`cfood_depur`), in the model's concentration units. They are the exposure inputs of a `kassim * cfood - kel * central` model, not estimates, and are carried as `fixed()` scenario parameters so a user can override them to simulate another exposure.
+- **Role:** Time from treatment start at which a piecewise-linear tumour-size model switches from its shrinkage arm (`slope_shrink`) to its regrowth arm (`slope_regrow`) (time). Bare scale.
 - **Source aliases:**
-  - `CEu`, `CEd` -- Skip 2014 Table 1 ('external metal concentration in the uptake / decontamination phase').
-- **Example models:** `Skip_2014_cadmium.R` (founding example; 154.6 and 0.92 mg/kg), `Skip_2014_nickel.R` (2525 and 5.95 mg/kg).
-- **Notes:** Ratified 2026-11-25 with `lkassim`. The `food` token is kept even when the medium is water or soil, so that every exposure-concentration input of this model family shares one stem. A non-zero `cfood_depur` is what lets the body concentration settle at `cfood_depur * kassim_depur / kel_depur` instead of decaying to zero.
-
-### tdepur (**canonical time of transfer to uncontaminated medium**)
-- **Type:** paper-named-param
-- **Role:** Experimenter-defined time from the start of exposure (time) at which the organism is moved to uncontaminated food or medium, ending the uptake phase and starting depuration. Carried on the linear scale as a `fixed()` scenario input.
-- **Source aliases:**
-  - `tc` -- Skip 2014 Table 1 ('time of changing the food from contaminated to uncontaminated').
-- **Example models:** `Skip_2014_cadmium.R` (founding example; 90 day), `Skip_2014_nickel.R` (64 day).
-- **Notes:** Ratified 2026-11-25 with `lkassim`. A design value, not an estimate; contrast with the estimated `tkchange`.
+  - `sp` ("switching time-point") -- Mistry 2018 notation.
+- **Example models:** `Mistry_2018_vemurafenib_tumor.R`, `Mistry_2018_dabrafenib_tumor.R`, `Mistry_2018_trametinib_tumor.R` (`tregrow = fixed(63)` day for all three drugs, chosen by log-likelihood from the grid 63 / 116 / 179 days rather than estimated).
+- **Notes:** A population-level switch time, not an individual time to progression. Compare `ltclchange`, the breakpoint of a piecewise-constant clearance.
 
 ### lc0, c0 (**canonical log-transformed and bare baseline plasma concentration of the modelled analyte**)
 - **Type:** paper-named-param
