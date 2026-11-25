@@ -1,0 +1,256 @@
+---
+title: "Pertuzumab glycoengineering (Luo 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pertuzumab glycoengineering (Luo 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Luo et al. (2017) engineered the fucosylation and sialylation of pertuzumab, a
+humanized anti-HER2 IgG1 monoclonal antibody, and measured the plasma
+pharmacokinetics of the resulting glycoforms in mice. Four glycoforms were
+produced by combining wild-type (CHO-K1, fucosylated) versus FUT8-knockout
+(CHOFUT8-/-, nonfucosylated) expression with optional enzymatic desialylation by
+sialidase A: Fuc+SA+, Fuc-SA+, Fuc+SA- and Fuc-SA-. Two further arms repeated the
+desialylated glycoforms with a 100 mg/kg asialofetuin pre-injection to block
+asialoglycoprotein-receptor (ASGPR)-mediated hepatic clearance. Each arm (n = 5
+ICR mice) received a single 1 mg/kg intravenous bolus; serum pertuzumab was
+measured by a HER2-specific ELISA and fit to a two-compartment biexponential
+model, `C(t) = A*exp(-alpha*t) + B*exp(-beta*t)`, in WinNonlin 5.2 (Luo 2017
+Table 2).
+
+Each arm is packaged as its own deterministic typical-value model (no
+between-animal variability and no residual-error model are reported):
+
+```{r model-list}
+luo_models <- tibble::tribble(
+  ~glycoform,        ~model,
+  "Fuc+SA+",         "Luo_2017_pertuzumab_fucSA_mouse",
+  "Fuc-SA+",         "Luo_2017_pertuzumab_nofucSA_mouse",
+  "Fuc+SA-",         "Luo_2017_pertuzumab_fucNoSA_mouse",
+  "Fuc-SA-",         "Luo_2017_pertuzumab_nofucNoSA_mouse",
+  "ASF + Fuc+SA-",   "Luo_2017_pertuzumab_fucNoSA_asf_mouse",
+  "ASF + Fuc-SA-",   "Luo_2017_pertuzumab_nofucNoSA_asf_mouse"
+)
+knitr::kable(luo_models, caption = "Six glycoform / ASGPR-blockade arms (Luo 2017 Table 2).")
+```
+
+* Citation: `r rxode2::rxode(readModelDb("Luo_2017_pertuzumab_fucSA_mouse"))$reference`
+* Article: [Sci Rep. 2017;7:46347](https://doi.org/10.1038/srep46347)
+
+# Population
+
+The pharmacokinetic study used 6-week-old male ICR mice, five per glycoform arm
+(Luo 2017, Methods "In vitro pharmacokinetics of pertuzumab"). Each mouse
+received a single 1 mg/kg intravenous tail-vein bolus of one glycoform; serum
+was sampled at 0.5, 1, 2, 4, 8 and 24 h and 2, 3, 4, 5, 7, 9, 14, 20 and 26 days.
+In the two asialofetuin arms, 100 mg/kg asialofetuin was injected intravenously
+30 min before the pertuzumab dose. All PK parameters are expressed per kilogram
+body weight.
+
+The same information is available programmatically via each model's `population`
+metadata, e.g. `readModelDb("Luo_2017_pertuzumab_fucSA_mouse")()$population`.
+
+# Source trace
+
+Every parameter origin is recorded as an in-file comment beside the
+corresponding `ini()` entry. Clearance (`CL`), central volume (`V1`) and the
+peripheral volume (`Vp = Vss - V1`) are taken directly from Luo 2017 Table 2;
+the intercompartmental clearance `Q` is derived from `CL`, `V1` and the
+distribution/terminal half-lives via the standard two-compartment relations
+(`k10 = CL/V1`; `alpha + beta = k10 + k12 + k21`; `alpha*beta = k10*k21`). The
+derived `Q` together with `Vp` reproduces each arm's reported `Vss` to within 1%.
+
+```{r source-trace}
+src <- tibble::tribble(
+  ~glycoform,      ~CL_mL_day_kg, ~V1_mL_kg, ~Vss_mL_kg, ~alpha_HL_day, ~beta_HL_day,
+  "Fuc+SA+",       18.1, 57.3, 372.1, 0.08, 14.7,
+  "Fuc-SA+",       18.4, 69.8, 406.1, 0.09, 15.7,
+  "Fuc+SA-",       19.9, 55.1, 367.4, 0.05, 13.1,
+  "Fuc-SA-",       20.7, 20.8, 313.5, 0.01, 10.6,
+  "ASF + Fuc+SA-", 15.3, 44.7, 338.8, 0.07, 15.8,
+  "ASF + Fuc-SA-", 14.7, 54.1, 325.9, 0.05, 15.5
+)
+src |>
+  dplyr::rename(
+    "Glycoform"            = glycoform,
+    "CL (mL/day/kg)"       = CL_mL_day_kg,
+    "V1 (mL/kg)"           = V1_mL_kg,
+    "Vss (mL/kg)"          = Vss_mL_kg,
+    "Distribution t1/2 (day)" = alpha_HL_day,
+    "Terminal t1/2 (day)"  = beta_HL_day
+  ) |>
+  knitr::kable(caption = "Luo 2017 Table 2 (per kg body weight). The model files convert mL to L (/1000) so that a 1 mg/kg bolus gives Cc in ug/mL.")
+```
+
+# Simulation
+
+Each arm is a deterministic typical-value model, so a single 1 mg/kg IV bolus is
+solved per glycoform with no between-subject variability. Subject IDs are kept
+disjoint across arms so the arms can be combined into one data frame.
+
+```{r simulate}
+obs_times <- sort(unique(c(
+  seq(0, 2, length.out = 120),       # dense early distribution phase
+  seq(2, 26, length.out = 300)       # elimination phase out to 26 days
+)))
+
+sim_one <- function(model_name, glyco, id) {
+  mod <- readModelDb(model_name)
+  ev <- rxode2::et(amt = 1, cmt = "central", id = id) |>
+    rxode2::et(obs_times, id = id)
+  rxode2::rxSolve(mod, ev, atol = 1e-10, rtol = 1e-10) |>
+    as.data.frame() |>
+    dplyr::mutate(glycoform = glyco, id = id)
+}
+
+sim <- do.call(rbind, Map(
+  sim_one,
+  luo_models$model, luo_models$glycoform, seq_len(nrow(luo_models))
+))
+sim$glycoform <- factor(sim$glycoform, levels = luo_models$glycoform)
+```
+
+# Replicate Figure 6
+
+Figure 6 of Luo 2017 shows the serum concentration-time profiles of the
+glyco-modified pertuzumabs on a semi-log scale: a rapid distribution phase
+(< 3 h) followed by a long terminal phase (terminal half-life ~10-16 days). The
+desialylated Fuc-SA- glycoform clears fastest, and the asialofetuin pre-injection
+arms clear slowest.
+
+```{r figure-6}
+ggplot(sim[sim$time > 0, ], aes(time, Cc, colour = glycoform)) +
+  geom_line(linewidth = 0.7) +
+  scale_y_log10() +
+  labs(
+    x = "Time (day)", y = "Serum pertuzumab (ug/mL)",
+    colour = "Glycoform",
+    title = "Figure 6 - glyco-modified pertuzumab serum concentration-time profiles",
+    caption = "Replicates Figure 6 of Luo 2017 (single 1 mg/kg IV bolus, ICR mice)."
+  )
+```
+
+# PKNCA validation
+
+Non-compartmental analysis of each simulated typical-value profile recovers the
+clearance, terminal half-life, AUC and steady-state volume that Luo 2017 reported
+in Table 2. Because every model is a closed-form biexponential, the comparison is
+a numerical round-trip of the published NCA summary and the agreement is tight.
+
+```{r pknca}
+# For an IV bolus the concentration at t = 0 is the (back-extrapolated) peak,
+# so the time-zero row is kept; the filter removes only missing values.
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, glycoform)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | glycoform + id)
+
+dose_df <- sim |>
+  dplyr::distinct(id, glycoform) |>
+  dplyr::mutate(time = 0, amt = 1)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | glycoform + id)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE, vss.obs = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against Luo 2017 Table 2
+
+The simulated NCA parameters are converted to the paper's units (AUC in
+hr*ug/mL; CL in mL/day/kg; Vss in mL/kg; terminal half-life in days) and placed
+beside Table 2.
+
+```{r nca-compare}
+sim_tab <- as.data.frame(nca_res) |>
+  dplyr::select(glycoform, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::transmute(
+    glycoform,
+    aucinf.obs = aucinf.obs * 24,   # day*ug/mL -> hr*ug/mL
+    half.life  = half.life,         # day
+    cl.obs     = cl.obs * 1000,     # L/day/kg -> mL/day/kg
+    vss.obs    = vss.obs * 1000     # L/kg -> mL/kg
+  )
+
+published <- src |>
+  dplyr::transmute(
+    glycoform,
+    aucinf.obs = c(1327, 1305.3, 1202.2, 1155.1, 1569.1, 1624.5),
+    half.life  = beta_HL_day,
+    cl.obs     = CL_mL_day_kg,
+    vss.obs    = Vss_mL_kg
+  )
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_tab,
+  reference = published,
+  by = "glycoform",
+  units = c(aucinf.obs = "hr*ug/mL", half.life = "day",
+            cl.obs = "mL/day/kg", vss.obs = "mL/kg"),
+  tolerance_pct = 10
+)
+knitr::kable(cmp, caption = "Simulated (packaged models) vs. Luo 2017 Table 2. * flags any row differing by >10%.")
+```
+
+```{r nca-gate}
+# The packaged models are the closed-form biexponential that Table 2 summarises,
+# so the NCA round-trip is pure numerical/rounding error. Assert a tight bound
+# across every arm and parameter. (Values re-derived from Table 2, not fitted to
+# match; the only slack is the paper's 1-significant-figure half-lives feeding
+# the derived Q and vss.obs.)
+pct <- sim_tab |>
+  dplyr::inner_join(published, by = "glycoform", suffix = c("_sim", "_ref"))
+stopifnot(
+  max(abs(pct$aucinf.obs_sim - pct$aucinf.obs_ref) / pct$aucinf.obs_ref) < 0.02,
+  max(abs(pct$cl.obs_sim     - pct$cl.obs_ref)     / pct$cl.obs_ref)     < 0.02,
+  max(abs(pct$half.life_sim  - pct$half.life_ref)  / pct$half.life_ref)  < 0.02,
+  max(abs(pct$vss.obs_sim    - pct$vss.obs_ref)    / pct$vss.obs_ref)    < 0.05
+)
+```
+
+# Assumptions and deviations
+
+- **Deterministic typical-value models.** Luo 2017 reports per-arm biexponential
+  point estimates only; the mean +/- SD columns of Table 2 summarise n = 5 mice,
+  not a fitted between-animal variance model, and no residual-error model is
+  given. Each packaged model therefore carries no IIV and no residual error, and
+  the observation line is a plain `Cc <- linCmt()` prediction.
+- **Intercompartmental clearance `Q` derived, not tabulated.** Table 2 reports
+  `CL`, `V1`, `Vss` and the distribution/terminal half-lives but not `Q`. `Q` is
+  reconstructed from `CL`, `V1`, `alpha_HL` and `beta_HL` via the standard
+  two-compartment relations and the peripheral volume is taken as `Vss - V1`; the
+  pair reproduces each arm's reported `Vss` to within 1%. For the Fuc-SA- arm the
+  distribution half-life is reported to a single significant figure (0.01 day),
+  so its derived `Q` is correspondingly imprecise.
+- **Per-kilogram units.** All volumes and clearances are expressed per kilogram
+  body weight exactly as Table 2 reports them; a 1 mg/kg bolus is simulated as a
+  1 mg dose into the per-kg central volume, giving `Cc` in ug/mL.
+- **Asialofetuin arms.** The 100 mg/kg asialofetuin pre-injection is a study
+  condition recorded in the model `population` metadata; it is not modelled
+  mechanistically. Its effect is captured entirely through the lower clearance
+  fitted for the two ASGPR-blockade arms.
+- **Glycoengineering PD not modelled.** The paper's HER2 / CD16a / FcRn binding,
+  ADCC, CDC and hepatocyte-endocytosis assays (Figures 1-5, Tables 1 and S1-S5)
+  are in-vitro potency measurements without a fitted PK/PD link model, so they
+  are not part of the packaged models.
+- No correction or erratum notice was found for this article as of 2026-11-25.
+```

@@ -7086,6 +7086,18 @@ navbar:
         href: articles/Garg_2014_pertuzumab.html
       - text: "Pertuzumab (Wang 2021)"
         href: articles/Wang_2021_pertuzumab.html
+      - text: "Pertuzumab fucNoSA asf mouse (Luo 2017)"
+        href: articles/Luo_2017_pertuzumab_glycoengineering.html
+      - text: "Pertuzumab fucNoSA mouse (Luo 2017)"
+        href: articles/Luo_2017_pertuzumab_glycoengineering.html
+      - text: "Pertuzumab fucSA mouse (Luo 2017)"
+        href: articles/Luo_2017_pertuzumab_glycoengineering.html
+      - text: "Pertuzumab nofucNoSA asf mouse (Luo 2017)"
+        href: articles/Luo_2017_pertuzumab_glycoengineering.html
+      - text: "Pertuzumab nofucNoSA mouse (Luo 2017)"
+        href: articles/Luo_2017_pertuzumab_glycoengineering.html
+      - text: "Pertuzumab nofucSA mouse (Luo 2017)"
+        href: articles/Luo_2017_pertuzumab_glycoengineering.html
       - text: "Petesicatib (Kratochwil 2021)"
         href: articles/Kratochwil_2021_petesicatib.html
       - text: "Pevonedistat (Faessel 2019)"
@@ -12197,6 +12209,7 @@ articles:
   - articles/Lu_2022_patritumab
   - articles/Lu_2024_desflurane
   - articles/Luo_2016_efavirenz
+  - articles/Luo_2017_pertuzumab_glycoengineering
   - articles/Luo_2021_daratumumab
   - articles/Luo_2023_tigecycline
   - articles/Luo_2024_CES1_cirrhosis
