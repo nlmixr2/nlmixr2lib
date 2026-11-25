@@ -450,6 +450,8 @@ navbar:
         href: articles/Kletting_2015_antiCD66_pbpk.html
       - text: "AntiSarsCov2IgG (Huygens 2024)"
         href: articles/Huygens_2024_antiSarsCov2IgG.html
+      - text: "Antigen mouse 2cmt (Badhan 2017)"
+        href: articles/Badhan_2017_liposomal_vaccine.html
       - text: "Antipcsk9 qsp (Sokolov 2019)"
         href: articles/Sokolov_2019_antipcsk9_qsp.html
       - text: "Antipyrine periventricular rat pbpk (Hirasawa 2022)"
@@ -4630,6 +4632,8 @@ navbar:
         href: articles/Pohl_2022_linzagolix.html
       - text: "Linzagolix e2 (Pohl 2022)"
         href: articles/Pohl_2022_linzagolix.html
+      - text: "Liposome mouse 1cmt (Badhan 2017)"
+        href: articles/Badhan_2017_liposomal_vaccine.html
       - text: "Liraglutide (CarlssonPetri 2015)"
         href: articles/CarlssonPetri_2015_liraglutide.html
       - text: "Liraglutide (CarlssonPetri 2021)"
@@ -9476,6 +9480,7 @@ articles:
   - articles/Babel_2026_telisotuzumab
   - articles/Back_2018_fenofibrate
   - articles/Back_2019_pediatric_size_maturation
+  - articles/Badhan_2017_liposomal_vaccine
   - articles/Bae_2026_MIT001
   - articles/Baheti_2011_tenofovir
   - articles/Bai_2021_mkAsodnLiposome_pbpk
