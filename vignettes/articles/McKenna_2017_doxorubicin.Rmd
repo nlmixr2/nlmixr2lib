@@ -61,7 +61,7 @@ lines_tbl |>
    released (Eq 3), so CB,max is the bound concentration once the free pool
    has washed out. Simulate long enough for that (a day or two after removal;
    the slowest line, MDA-MB-453, washes out with a half-life of about 4 h).
-3. Simulate the PD model with `CBMAX_DOX_NM` set to that value, dosing the
+3. Simulate the PD model with `CONC_DNA_BOUND_MAX_DOXORUBICIN_NM` set to that value, dosing the
    initial cell number into both `cells_a` and `cells_b` at t = 0. The output
    `cells` is the cell number per well.
 
@@ -85,7 +85,7 @@ cells_of <- function(ui, cbmax, times, n_start, t_start = 0) {
     data.frame(time = times, evid = 0, amt = 0, cmt = "cells_a")
   )
   ev$id <- 1L
-  ev$CBMAX_DOX_NM <- cbmax
+  ev$CONC_DNA_BOUND_MAX_DOXORUBICIN_NM <- cbmax
   out <- rxode2::rxSolve(ui, ev, returnType = "data.frame")
   out <- out[!duplicated(out$time), ]
   out[match(times, out$time), c("time", "cells", "cells_a", "cells_b")]
@@ -395,7 +395,7 @@ shape matches the slow-exchange lines MDA-MB-453 and MDA-MB-468.
 grid <- bind_rows(lapply(names(pd_ui), function(l) {
   cb0 <- pd_ui[[l]]$theta[["cbmax_n00"]]
   cbs <- cb0 * 2^seq(0, 10, by = 0.05)
-  ev <- data.frame(id = seq_along(cbs), time = 0, evid = 0, amt = 0, cmt = "cells_a", CBMAX_DOX_NM = cbs)
+  ev <- data.frame(id = seq_along(cbs), time = 0, evid = 0, amt = 0, cmt = "cells_a", CONC_DNA_BOUND_MAX_DOXORUBICIN_NM = cbs)
   out <- rxode2::rxSolve(pd_ui[[l]], ev, returnType = "data.frame")
   tibble::tibble(
     line = l, cbmax = cbs, kda = out$kd_a, kdb = out$kd_b, ron = out$ron,
@@ -547,7 +547,7 @@ accurate at the highest concentrations (Table 1).
 
 ## Untreated growth (Fig S3)
 
-With `CBMAX_DOX_NM = 0` the model is the control logistic growth with the
+With `CONC_DNA_BOUND_MAX_DOXORUBICIN_NM = 0` the model is the control logistic growth with the
 printed kp and theta.
 
 ```{r control, fig.cap = "Untreated growth from 2,500 cells per well. Compare Fig S3."}
@@ -605,7 +605,7 @@ ggplot(ex, aes(time, cells, colour = line)) +
   SUM-149PT w_B at knot 5, where the 24 h fit selected Eq 5A and the 6 and
   12 h fits selected Eq 5B), the mean is a weight between 0 and 1.
 * **Outside the lattice.** CB,max values below knot 0 or above knot 10 are
-  clamped to the end knots. `CBMAX_DOX_NM = 0` is the untreated control (no
+  clamped to the end knots. `CONC_DNA_BOUND_MAX_DOXORUBICIN_NM = 0` is the untreated control (no
   drug effect, control carrying capacity), which is a discontinuity: the
   lowest tested exposure has a small negative kd (growth slightly faster than
   control) in SUM-149PT and MDA-MB-231.

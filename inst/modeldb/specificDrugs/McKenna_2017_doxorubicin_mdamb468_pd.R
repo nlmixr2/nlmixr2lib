@@ -1,12 +1,12 @@
 McKenna_2017_doxorubicin_mdamb468_pd <- function() {
-  description <- "In vitro (MDA-MB-468 human triple-negative breast cancer cell line). Doxorubicin treatment-response (pharmacodynamic) model for cell number over ~30 days after a timed exposure (McKenna 2017 Eqs 4, 5A, 5B and 10). Cells grow logistically at proliferation rate kp; after treatment at t = 0 the growth rate is reduced either by a constant death rate kd,A (Eq 5A, apoptosis-like, state cells_a) or by a transient death rate kd,B * r * t * exp(1 - r * t) that allows regrowth (Eq 5B, mitotic-catastrophe-like, state cells_b), each with its own carrying capacity. The reported cell number is the AIC-weighted average cells = w_A * cells_a + w_B * cells_b (Eq 10). The paper fitted kd,A, kd,B, r, theta_A, theta_B and the weights separately for each concentration x exposure condition and showed that they collapse onto one curve per cell line when plotted against the maximum bound intracellular concentration CB,max. Here each of them is a piecewise-linear function of log2(CBMAX_DOX_NM) through 11 knots on the two-fold dilution lattice, digitised from Fig 5, Fig S7 and Fig S8 and averaged across the 6, 12 and 24 h exposure series: the maintainers' stand-in for the paper's local linear regression and binomial logistic weight model, whose coefficients are not printed. CBMAX_DOX_NM is supplied by the user, computed with the companion PK model McKenna_2017_doxorubicin_mdamb468_pk. CBMAX_DOX_NM = 0 gives the untreated control (no drug effect, control carrying capacity). Initial cell number is set by dosing the same count into both cells_a and cells_b at t = 0. Deterministic; no residual error. Sibling cell lines: McKenna_2017_doxorubicin_sum149pt_pd, McKenna_2017_doxorubicin_mdamb231_pd, McKenna_2017_doxorubicin_mdamb453_pd."
+  description <- "In vitro (MDA-MB-468 human triple-negative breast cancer cell line). Doxorubicin treatment-response (pharmacodynamic) model for cell number over ~30 days after a timed exposure (McKenna 2017 Eqs 4, 5A, 5B and 10). Cells grow logistically at proliferation rate kp; after treatment at t = 0 the growth rate is reduced either by a constant death rate kd,A (Eq 5A, apoptosis-like, state cells_a) or by a transient death rate kd,B * r * t * exp(1 - r * t) that allows regrowth (Eq 5B, mitotic-catastrophe-like, state cells_b), each with its own carrying capacity. The reported cell number is the AIC-weighted average cells = w_A * cells_a + w_B * cells_b (Eq 10). The paper fitted kd,A, kd,B, r, theta_A, theta_B and the weights separately for each concentration x exposure condition and showed that they collapse onto one curve per cell line when plotted against the maximum bound intracellular concentration CB,max. Here each of them is a piecewise-linear function of log2(CONC_DNA_BOUND_MAX_DOXORUBICIN_NM) through 11 knots on the two-fold dilution lattice, digitised from Fig 5, Fig S7 and Fig S8 and averaged across the 6, 12 and 24 h exposure series: the maintainers' stand-in for the paper's local linear regression and binomial logistic weight model, whose coefficients are not printed. CONC_DNA_BOUND_MAX_DOXORUBICIN_NM is supplied by the user, computed with the companion PK model McKenna_2017_doxorubicin_mdamb468_pk. CONC_DNA_BOUND_MAX_DOXORUBICIN_NM = 0 gives the untreated control (no drug effect, control carrying capacity). Initial cell number is set by dosing the same count into both cells_a and cells_b at t = 0. Deterministic; no residual error. Sibling cell lines: McKenna_2017_doxorubicin_sum149pt_pd, McKenna_2017_doxorubicin_mdamb231_pd, McKenna_2017_doxorubicin_mdamb453_pd."
   reference <- "McKenna MT, Weis JA, Barnes SL, Tyson DR, Miga MI, Quaranta V, Yankeelov TE. A Predictive Mathematical Modeling Approach for the Study of Doxorubicin Treatment in Triple Negative Breast Cancer. Sci Rep. 2017;7:5725. doi:10.1038/s41598-017-05902-z"
   vignette <- "McKenna_2017_doxorubicin"
 
   units <- list(
     time = "h",
     dosing = "cells (initial cell number, dosed into both cells_a and cells_b at t = 0)",
-    concentration = "cells per well (cell number; CBMAX_DOX_NM is in nM)"
+    concentration = "cells per well (cell number; CONC_DNA_BOUND_MAX_DOXORUBICIN_NM is in nM)"
   )
 
   # cells_a / cells_b are the two candidate solutions N_TC,A and N_TC,B that
@@ -30,7 +30,7 @@ McKenna_2017_doxorubicin_mdamb468_pd <- function() {
   )
 
   covariateData <- list(
-    CBMAX_DOX_NM = list(
+    CONC_DNA_BOUND_MAX_DOXORUBICIN_NM = list(
       description = "Maximum DNA-bound intracellular doxorubicin concentration CB,max of the treatment",
       units = "nM",
       type = "continuous",
@@ -141,10 +141,10 @@ McKenna_2017_doxorubicin_mdamb468_pd <- function() {
     cellmax <- exp(lcellmax)
 
     # Position of the treatment on the knot lattice: knot n sits at
-    # cbmax_n00 * 2^n, so s_cb = log2(CBMAX_DOX_NM / cbmax_n00), clamped to the
+    # cbmax_n00 * 2^n, so s_cb = log2(CONC_DNA_BOUND_MAX_DOXORUBICIN_NM / cbmax_n00), clamped to the
     # digitised range [0, 10]. h01..h10 are the hinge fractions of each
-    # knot interval, giving a piecewise-linear interpolation in log2(CBMAX_DOX_NM).
-    s_cb <- log(max(CBMAX_DOX_NM, 1e-12) / cbmax_n00) / log(2)
+    # knot interval, giving a piecewise-linear interpolation in log2(CONC_DNA_BOUND_MAX_DOXORUBICIN_NM).
+    s_cb <- log(max(CONC_DNA_BOUND_MAX_DOXORUBICIN_NM, 1e-12) / cbmax_n00) / log(2)
     s_cb <- min(max(s_cb, 0), 10)
     h01 <- min(max(s_cb - 0, 0), 1)
     h02 <- min(max(s_cb - 1, 0), 1)
@@ -225,7 +225,7 @@ McKenna_2017_doxorubicin_mdamb468_pd <- function() {
       (wb_n10 - wb_n09) * h10
 
     # Untreated control: no drug effect and the control carrying capacity
-    if (CBMAX_DOX_NM <= 0) {
+    if (CONC_DNA_BOUND_MAX_DOXORUBICIN_NM <= 0) {
       kd_a    <- 0
       kd_b    <- 0
       theta_a <- cellmax
