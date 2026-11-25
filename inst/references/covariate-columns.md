@@ -14356,6 +14356,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Rosario_2015_vedolizumab.R` (reference 300; exponent -0.0515 on CLL gated by `IBD_CD` so the effect applies only to CD patients), `Yu_2022_crohns_cdai150_mbma.R`, `Yu_2022_crohns_cdai100_mbma.R`, `Yu_2022_crohns_cdai70_mbma.R`, `Yu_2022_crohns_dcdai_mbma.R` (study-arm MEAN baseline CDAI in a model-based meta-analysis; power form `(SCORE_CDAI / ref)^theta` on every drug effect with exponents -5.22, -3.21, -2.03 and -2.05 and references 303.19, 307.60, 301.56 and 306.285, each the arm mean of that endpoint's analysis dataset).
 - **Notes:** Mutually exclusive with `SCORE_PMAYO` in pooled UC+CD populations: each patient has exactly one disease-activity score (SCORE_CDAI for CD, partial Mayo for UC). Gate via the `IBD_CD` indicator when pooling.
 
+### SCORE_CDAI_DELTA (**canonical for change in Crohn's Disease Activity Index from baseline**)
+- **Description:** Signed change in the Crohn's Disease Activity Index from the subject's baseline, `SCORE_CDAI_DELTA = CDAI(t) - CDAI(baseline)`. **Negative values are improvement** (a CDAI-70 clinical response is `SCORE_CDAI_DELTA <= -70`, a CDAI-100 response `<= -100`). The assessment time is not part of the name and must be recorded per model in `covariateData[[SCORE_CDAI_DELTA]]$notes`.
+- **Units:** (CDAI points)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- entered uncentred as a linear term on a logit; `SCORE_CDAI_DELTA = 0` (no change from baseline) is the anchor at which the intercept is defined.
+- **Source aliases:**
+  - `CEOICDAI` -- Moein 2026 control-stream column, "CDAI change at the end of induction".
+- **Example models:** `Moein_2026_crohns_sescd.R` (change at the end of induction, week 14; slope 0.0607 per point on the logit of not entering maintenance, intercept 4.36, so the dropout probability is one half at about -72 points, the CDAI-70 entry rule of BERGAMOT).
+- **Notes:** The sign and suffix follow the `LDLC_DELTA` / `PGE2_DELTA` signed-change family. Distinct from `SCORE_CDAI`, which carries the score itself (usually the baseline); a model that needs both supplies both columns. Defined only for Crohn's disease patients.
+
 ### SCORE_SESCD (**canonical for Simple Endoscopic Score for Crohn's Disease**)
 - **Description:** Simple Endoscopic Score for Crohn's Disease (SES-CD), the standardised ileocolonoscopic severity instrument. Four variables (ulcer size, ulcerated surface, affected surface, presence of narrowing) are each scored 0-3 in each of five bowel segments, giving a total of 0-56. Higher values indicate more severe endoscopic disease. Baseline value unless a model states otherwise. Defined only for patients with a CD diagnosis; set to the reference value (or gate via the indicator) for UC patients.
 - **Units:** (score, 0-56)
