@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Goncalves 2017 primaquine ([doi:10.1128/AAC.02590-16](https://doi.org/10.1128/AAC.02590-16)) -- African children aged 2-14 years, with the carboxyprimaquine metabolite.
+- Add Doodnaught 2017 buprenorphine and norbuprenorphine PK with thermal-threshold PD ([doi:10.1371/journal.pone.0176443](https://doi.org/10.1371/journal.pone.0176443)) -- healthy conscious cats given i.v., s.c. or buccal buprenorphine.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
