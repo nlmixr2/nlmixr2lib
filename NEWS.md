@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yu 2016 cefquinome PK/PD ([doi:10.1371/journal.pone.0156273](https://doi.org/10.1371/journal.pone.0156273)) -- lactating mice with intramammary *Staphylococcus aureus* mastitis (AUC0-24/MIC and %T>MIC models).
+- Add Wiczling 2016 dexmedetomidine ([doi:10.1007/s10928-016-9474-0](https://doi.org/10.1007/s10928-016-9474-0)) -- critically ill children (1.4-189 months) on long-term ICU infusion.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

@@ -2474,6 +2474,8 @@ navbar:
         href: articles/Su_2016_dexmedetomidine.html
       - text: "Dexmedetomidine (Talke 2018)"
         href: articles/Talke_2018_dexmedetomidine.html
+      - text: "Dexmedetomidine (Wiczling 2016)"
+        href: articles/Wiczling_2016_dexmedetomidine.html
       - text: "Dexmedetomidine piglet (Ezzati 2014)"
         href: articles/Ezzati_2014_dexmedetomidine_piglet.html
       - text: "Dextroamphetamine (Castelli 2022)"
@@ -13277,6 +13279,7 @@ articles:
   - articles/Wicha_2018_rifampicin
   - articles/Wickramasinghe_2025_pamiparib
   - articles/Wickramasinghe_2025_spatial_cns_pbpk
+  - articles/Wiczling_2016_dexmedetomidine
   - articles/Wiebe_2020_midazolam
   - articles/Wijk_2024_first_line_tb_drugs
   - articles/Wilbaux_2014_ovarianCancer_ca125
