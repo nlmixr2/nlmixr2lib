@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ankrom 2016 apixaban and CPD1 factor IXa/Xa translational PK/PD ([doi:10.1002/prp2.207](https://doi.org/10.1002/prp2.207)) -- male Sprague-Dawley rats (arteriovenous-shunt thrombosis and cuticle-bleeding model).
+- Add Sharma 2016 doxycycline and minocycline anti-Wolbachia PK/PD ([doi:10.1038/srep23458](https://doi.org/10.1038/srep23458)) -- BALB/c SCID mice infected with *Brugia malayi*.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
