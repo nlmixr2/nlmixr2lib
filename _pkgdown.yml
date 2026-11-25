@@ -2194,6 +2194,8 @@ navbar:
         href: articles/Morcos_2023_copanlisib.html
       - text: "Copanlisib (Morcos 2023b)"
         href: articles/Morcos_2023b_copanlisib.html
+      - text: "Coptisine rat (Hu 2019)"
+        href: articles/Hu_2019_coptisine_rat.html
       - text: "Corifollitropin alfa (Zandvliet 2016)"
         href: articles/Zandvliet_2016_corifollitropin_alfa.html
       - text: "Cotadutide (Yu 2024)"
@@ -11808,6 +11810,7 @@ articles:
   - articles/Howden_2025_antisecretory_mbma
   - articles/Hu_2014_bapineuzumab
   - articles/Hu_2017_peginterferon_beta_1a
+  - articles/Hu_2019_coptisine_rat
   - articles/Hu_2023_voriconazole
   - articles/Hu_2024_nivolumab_ipilimumab_pediatric
   - articles/Hu_2025_tepotinib
