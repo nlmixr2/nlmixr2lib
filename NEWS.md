@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Huang 2019 tilmicosin ([doi:10.3389/fphar.2019.00670](https://doi.org/10.3389/fphar.2019.00670)) -- in vitro dynamic model of chicken lung PK against *Mycoplasma gallisepticum* (apparatus PK, static kill rate, and AUC24h/MIC and %T > MIC index models).
+- Add Ahlberg 2019 spesolimab (MAB92) translational TMDD ([doi:10.1080/19420862.2019.1615345](https://doi.org/10.1080/19420862.2019.1615345)) -- female mice (surrogate MAB04), Dedrick-scaled cynomolgus monkeys, and the predicted human model for healthy men.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
