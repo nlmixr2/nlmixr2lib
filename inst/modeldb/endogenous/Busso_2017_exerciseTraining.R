@@ -18,10 +18,10 @@ Busso_2017_exerciseTraining <- function() {
 
   covariateData <- list()
 
-  # Neither state is a drug-disposition compartment: `signal` is the latent
-  # secondary signal of the training stimulus and `perf` is physical
-  # performance itself, the modelled and observed endpoint.
-  paper_specific_compartments <- c("signal", "perf")
+  # `signal` is the latent secondary signal of the training stimulus, not a
+  # drug-disposition compartment. `perf` (physical performance, the modelled
+  # and observed endpoint) is a registered canonical.
+  paper_specific_compartments <- "signal"
 
   compartmentData <- list(
     signal = list(

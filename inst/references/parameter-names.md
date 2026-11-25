@@ -3942,6 +3942,30 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
 - **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_brain`); the spinal-cord counterpart of `lv_brain`. Wrap in `fixed()` when the source fixes it from anatomy.
 
+### lkon_signal, kon_signal (**canonical log-transformed rate constant transforming a secondary signal into response production**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) at which a latent secondary-signal pool (the `signal` state) is transformed into production of the response in a secondary-signal / indirect-response model: the response gains `kon_signal * signal` per unit time and the signal pool loses the same amount. Inside `model()` the bare name is `kon_signal`.
+- **Source aliases:**
+  - `kon_s` -- Busso 2017 Equations 2-3 and Table 2.
+- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; `lkon_signal = log(0.00739)` 1/day, the median of the six individual estimates).
+- **Notes:** Ratified by the maintainers 2026-11-25. Named after the pool it drains rather than as a bare `kon`, which is deliberately not canonicalised (see "Why `kon` is NOT canonicalised"): an on-rate of a binding model has other units and another meaning. Pairs with `lkout_signal`, the loss of the same pool that does not produce response.
+
+### lkout_signal, kout_signal (**canonical log-transformed first-order dissipation rate of a secondary-signal pool**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) at which a latent secondary-signal pool (the `signal` state) dissipates without producing response, so the pool's total loss rate is `kout_signal + kon_signal` (times any inhibition factor on the production leg). Inside `model()` the bare name is `kout_signal`.
+- **Source aliases:**
+  - `kout_s` -- Busso 2017 Equation 2 and Table 2.
+- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; `lkout_signal = log(0.2915)` 1/day).
+- **Notes:** Ratified by the maintainers 2026-11-25. Read as a member of the `kout_<compartment>` family ("rate of leaving the suffixed pool"; see the `kin` entry), here for a non-anatomical pool. Distinct from `kpout`, the loss rate of an `indirect_prec` precursor pool whose loss is the response's production; in a secondary-signal model the production leg is `kon_signal`, and `kout_signal` is the non-productive loss.
+
+### lkinhib, kinhib (**canonical log-transformed linear inhibition slope per unit of driver**)
+- **Type:** paper-named-param
+- **Role:** Slope of a linear inhibition (or arrest) term, `inhib = kinhib * driver`, in units of 1 / (driver units). The driver is whatever the model says it is -- a training dose, an unbound drug concentration, a drug-effect fraction -- and the product is the dimensionless fraction removed from the inhibited process (`(1 - inhib)`) or a rate added to an arrest flux. Inside `model()` the bare name is `kinhib`; the log-transformed `lkinhib` is used in `ini()` when the slope is strictly positive.
+- **Source aliases:**
+  - `kin_i` -- Busso 2017 Equations 5 and 12 and Table 2, inhibition of performance production per training unit of the same day (1/tu). Not carried as `kin_i`, because `kin` is the canonical indirect-response production rate.
+- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; `lkinhib = log(0.00206)` 1/tu). The bare form is also used by `Gall_2023_doxorubicin_mouse.R`, `Gall_2023_doxorubicin_human.R`, `Gall_2023_fluorouracil_mouse.R` and `Gall_2023_fluorouracil_human.R` (`arrest <- kinhib * <driver>`).
+- **Notes:** Ratified by the maintainers 2026-11-25. Distinct from `imax` / `ic50` (a saturable inhibition) and from a slope on a stimulation (`slope`-type effects): `kinhib` is linear and inhibitory. Read the model body to learn what the driver is and therefore what the units are.
+
 ## Nested (multi-level) random effects
 
 model in this library to carry a second hierarchical level of random effects.

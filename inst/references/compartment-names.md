@@ -1415,6 +1415,18 @@ A continuous-time Markov model (CTMM) of a categorical status written as ODEs ca
 
 ---
 
+## Exercise-training performance
+
+### perf (**canonical physical-performance PD output of a training-load model**)
+- **Type:** compartment
+- **Role:** Physical or athletic performance criterion driven by training load, carried as the modelled and observed state of a training dose-response model (Banister fitness-fatigue, variable dose-response and secondary-signal / indirect-response training models). Training doses enter the model in arbitrary training units; the performance state starts at a baseline and its turnover is stimulated or inhibited by the training input. The unit is that of the performance test and is carried by the model's `compartmentData` (power in W, a time, points, ...).
+- **Source aliases:**
+  - `Perf` -- Busso 2017 symbol for the response to training ascribed to a performance criterion; the criterion there is `Plim5'`, the mean power of a 5-min maximal cycle-ergometer test (W).
+- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; Model TI, an indirect-response model in which a secondary signal of each daily training dose stimulates performance production and same-day training inhibits it).
+- **Notes:** Ratified by the maintainers 2026-11-25. Deliberately generic rather than test-specific (not `plim5`): the same model family is fitted to performance measured in many units, and the unit belongs in `compartmentData`. Distinct from `walk_dist` (6-minute walk distance), a clinical disease-progression endpoint that is not driven by a training-load input.
+
+---
+
 ## Gastric / GI transit
 
 ### stomach (**canonical stomach compartment**)
