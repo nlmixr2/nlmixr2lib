@@ -1,0 +1,325 @@
+---
+title: "Tacrolimus in kidney-pancreas vs kidney transplantation (Kamp 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tacrolimus in kidney-pancreas vs kidney transplantation (Kamp 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+suppressPackageStartupMessages({
+  library(nlmixr2lib)
+  library(PKNCA)
+  library(rxode2)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+})
+```
+
+# Model and source
+
+Kamp et al. (2026) compared oral tacrolimus pharmacokinetics in simultaneous
+pancreas-kidney (SPK) and kidney-only (KT) transplant recipients. They reported
+three final models, all packaged here:
+
+| Model | Paper label | nlmixr2lib name |
+|-------|-------------|-----------------|
+| SPK recipients only | model 1 (Table 2, Supplementary Data S1) | `Kamp_2026_tacrolimus_kidneypancreas` |
+| KT recipients only | model 2 (Table 2, Supplementary Data S2) | `Kamp_2026_tacrolimus_kidney` |
+| SPK + KT pooled, transplant type on Ka | model 3 (Table S3, Supplementary Data S3) | `Kamp_2026_tacrolimus_combined` |
+
+* Citation: `r rxode2::rxode2(readModelDb("Kamp_2026_tacrolimus_combined"))$reference`
+* Article: <https://doi.org/10.1007/s40262-026-01689-3> (open access, PMC13623778)
+
+All three share one structure: oral bioavailability fixed at 0.23 (with
+between-subject variability), an absorption lag time, first-order absorption
+and two-compartment disposition with linear elimination. Because F is fixed
+and applied to the dose, CL, Vc, Q and Vp are systemic rather than apparent
+(/F) values.
+
+# Population
+
+The data are from a retrospective single-centre cohort at Leiden University
+Medical Center, transplanted 2005-2020 and on tacrolimus / mycophenolate /
+prednisolone triple therapy with twice-daily immediate-release tacrolimus
+(Kamp 2026 Table 1). The 85 SPK recipients (55 male / 30 female; median age
+45 years, range 24-56; median weight 73 kg, range 44-104) contributed 1275
+whole-blood samples and 76 of them had type 1 diabetes. The 94 KT recipients
+(54 male / 40 female; median age 44 years, range 19-76; median weight 68 kg,
+range 40-95) contributed 1073 samples and 4 had type 1 diabetes. Samples were
+a C0 from about day 4, a 7-point AUC (0-6 h) at week 1 and abbreviated 4-point
+AUCs (0-3 h) at 6 weeks, 6 months and 1 year. The per-model metadata are in
+`readModelDb("<name>")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The
+control streams in the supplement hold the final estimates (their `$THETA`
+values agree with Table 2 and Table S3 to the printed rounding, and their
+`$OMEGA` variances reproduce the tabulated CVs through
+CV = sqrt(exp(omega^2) - 1)); they are the only source for the IIV
+covariances.
+
+| Parameter | SPK (model 1) | KT (model 2) | Combined (model 3) | Source |
+|-----------|---------------|--------------|--------------------|--------|
+| F (`lfdepot`, held at its literature value) | 0.23 | 0.23 | 0.23 | Table 2 / Table S3; `THETA(1) 0.23 FIX` |
+| Lag time (h) (`ltlag`) | 0.766 | 0.533 | 0.546 | Table 2 / Table S3 (0.77 / 0.53 / 0.55); `THETA(7)` |
+| Ka (1/h) (`lka`) | 0.231 | 0.336 | 0.360 (KT) | Table 2 / Table S3 |
+| Ka SPK effect (`e_tx_kidney_pancreas_ka`) | - | - | -0.423 | Table S3 'Ka - SPK' 42.3%; S3 `THETA(9)` |
+| CL (L/h) (`lcl`) | 6.28 | 5.35 | 5.8 | Table 2 / Table S3 |
+| Vc (L) (`lvc`) | 10.9 | 11.8 | 14.0 | Table 2 / Table S3 |
+| Q (L/h) (`lq`) | 20.1 | 14.9 | 16.0 | Table 2 / Table S3 |
+| Vp (L) (`lvp`) | 125 | 177 | 154 | Table 2 / Table S3 |
+| omega^2 F (`etalfdepot`) | 0.209 | 0.252 | 0.231 | `$OMEGA`; CV 48.2 / 53.5 / 51.0% |
+| omega^2 Ka, Vc, CL block | 0.556; 0.161, 0.913; 0.0407, 0.155, 0.0272 | 0.378; 0.2, 1.12; 0.0994, 0.133, 0.0547 | 0.46; 0.163, 0.914; 0.0738, 0.124, 0.0414 | `$OMEGA BLOCK(3)` |
+| Proportional error (`propSd`) | 0.162 | 0.162 | 0.156 | Table 2 / Table S3; `THETA(8)` |
+| Ka covariate equation | - | - | KA = TVKA (1 + theta_SPK) | Methods eq. 2; S3 `$PK` |
+| Two-compartment ADVAN4 with ALAG1 and F1 on the depot | all | all | all | Supplementary Data S1-S3 |
+
+# Replicating the paper's simulation
+
+The paper simulated 500 subjects per model on 5 mg twice daily, sampled every
+0.1 h, and computed the AUC0-12h of the first dosing interval of day 4
+(72-84 h) and its ratio to the C0 of that interval (the pre-dose
+concentration at 72 h). The simulations used models 1 and 2. Here 200 subjects
+per model are simulated without residual error (the reported AUC/C0 range is
+too narrow to include a 16% proportional error on C0).
+
+```{r cohort}
+rxode2::rxSetSeed(20261118)
+n_per_arm <- 200L
+
+make_cohort <- function(n, id_offset, tx_kidney_pancreas) {
+  doses <- tibble(time = seq(0, 72, by = 12), evid = 1L, amt = 5, cmt = "depot")
+  obs <- tibble(
+    time = sort(unique(c(seq(0, 72, by = 1), seq(72, 84, by = 0.1)))),
+    evid = 0L, amt = 0, cmt = "central"
+  )
+  one <- bind_rows(doses, obs) |> arrange(time, desc(evid))
+  tidyr::crossing(id = id_offset + seq_len(n), one) |>
+    mutate(TX_KIDNEY_PANCREAS = tx_kidney_pancreas) |>
+    arrange(id, time, desc(evid))
+}
+
+ev_spk <- make_cohort(n_per_arm, 0L, 1L)
+ev_kt <- make_cohort(n_per_arm, n_per_arm, 0L)
+stopifnot(!anyDuplicated(unique(bind_rows(ev_spk, ev_kt)[, c("id", "time", "evid")])))
+```
+
+```{r simulate}
+mod_spk <- readModelDb("Kamp_2026_tacrolimus_kidneypancreas")
+mod_kt <- readModelDb("Kamp_2026_tacrolimus_kidney")
+mod_comb <- readModelDb("Kamp_2026_tacrolimus_combined")
+
+sim_sep <- bind_rows(
+  as.data.frame(rxode2::rxSolve(mod_spk, events = ev_spk)) |> mutate(cohort = "SPK"),
+  as.data.frame(rxode2::rxSolve(mod_kt, events = ev_kt)) |> mutate(cohort = "KT")
+) |>
+  select(id, time, Cc, cohort)
+```
+
+## Figure S4: typical concentration-time profiles
+
+```{r figure-s4}
+# Replicates Supplemental Figure S4 of Kamp 2026 (PRED profiles, 5 mg BID,
+# models 1 and 2); the combined model's typical profiles are overlaid.
+typ_ev <- function(tx) make_cohort(1L, 0L, tx) |> filter(time <= 84)
+typ <- bind_rows(
+  as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod_spk), events = typ_ev(1L))) |>
+    mutate(cohort = "SPK", model = "Separate models (1 and 2)"),
+  as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod_kt), events = typ_ev(0L))) |>
+    mutate(cohort = "KT", model = "Separate models (1 and 2)"),
+  as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod_comb), events = typ_ev(1L))) |>
+    mutate(cohort = "SPK", model = "Combined model (3)"),
+  as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod_comb), events = typ_ev(0L))) |>
+    mutate(cohort = "KT", model = "Combined model (3)")
+)
+
+ggplot(typ, aes(time, Cc, colour = cohort, linetype = model)) +
+  geom_line() +
+  scale_colour_manual(values = c(KT = "red", SPK = "blue")) +
+  labs(
+    x = "Time (h)", y = "Tacrolimus whole-blood concentration (ug/L)",
+    colour = NULL, linetype = NULL,
+    caption = "Replicates Supplemental Figure S4 of Kamp 2026 (5 mg twice daily)."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+The SPK profile has the lower and slightly later peak; after the first few
+doses the two populations differ little in trough, which is what drives the
+lower AUC0-12h / C0 ratio in SPK recipients.
+
+## Day-4 exposure by population
+
+```{r vpc-day4}
+sim_sep |>
+  filter(time >= 72) |>
+  group_by(cohort, time) |>
+  summarise(
+    q05 = quantile(Cc, 0.05), q50 = median(Cc), q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time - 72, q50, colour = cohort, fill = cohort)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.15, colour = NA) +
+  geom_line() +
+  scale_colour_manual(values = c(KT = "red", SPK = "blue")) +
+  scale_fill_manual(values = c(KT = "red", SPK = "blue")) +
+  labs(
+    x = "Time after the first day-4 dose (h)",
+    y = "Tacrolimus whole-blood concentration (ug/L)",
+    colour = NULL, fill = NULL,
+    caption = "Median and 5th-95th percentiles, 200 subjects per model."
+  )
+```
+
+# PKNCA validation
+
+```{r pknca}
+nca_conc <- sim_sep |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, cohort)
+
+nca_dose <- bind_rows(
+  ev_spk |> mutate(cohort = "SPK"),
+  ev_kt |> mutate(cohort = "KT")
+) |>
+  filter(evid == 1) |>
+  select(id, time, amt, cohort)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | cohort + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | cohort + id)
+intervals <- data.frame(start = 72, end = 84, auclast = TRUE, cmax = TRUE, tmax = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+auc <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "auclast") |>
+  select(cohort, id, auc = PPORRES)
+c0 <- sim_sep |>
+  filter(time == 72) |>
+  select(cohort, id, c0 = Cc)
+ratio <- inner_join(auc, c0, by = c("cohort", "id")) |>
+  mutate(ratio = auc / c0)
+stopifnot(nrow(ratio) == 2 * n_per_arm)
+```
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~cohort, ~auclast, ~auclast_min, ~auclast_max, ~ratio, ~ratio_min, ~ratio_max,
+  "SPK", 172.62, 49.23, 788.79, 15.55, 13.15, 19.31,
+  "KT", 191.37, 33.64, 783.09, 17.50, 13.43, 22.49
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published |> select(cohort, auclast),
+  by = "cohort",
+  units = c(auclast = "ug*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Day-4 AUC0-12h (72-84 h), simulated median vs Kamp 2026 Results. * differs by >20%."
+)
+
+ratio_summary <- ratio |>
+  group_by(cohort) |>
+  summarise(
+    sim_median = median(ratio), sim_min = min(ratio), sim_max = max(ratio),
+    .groups = "drop"
+  ) |>
+  inner_join(published |> select(cohort, ratio, ratio_min, ratio_max), by = "cohort")
+
+ratio_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 2))) |>
+  dplyr::rename(
+    "Population" = cohort,
+    "Simulated median" = sim_median,
+    "Simulated min" = sim_min,
+    "Simulated max" = sim_max,
+    "Published median" = ratio,
+    "Published min" = ratio_min,
+    "Published max" = ratio_max
+  ) |>
+  knitr::kable(caption = "AUC0-12h / C0 ratio on day 4 (Kamp 2026 Results).")
+```
+
+The paper compared the ratios with a gamma GLM (log link) and reported an SPK
+effect of 0.90 (95% CI 0.889-0.912) relative to KT (Table S4).
+
+```{r glm}
+fit <- glm(ratio ~ cohort, family = Gamma(link = "log"),
+           data = ratio |> mutate(cohort = factor(cohort, levels = c("KT", "SPK"))))
+glm_effect <- unname(exp(coef(fit)["cohortSPK"]))
+glm_kt <- unname(exp(coef(fit)["(Intercept)"]))
+c(KT_ratio = glm_kt, SPK_effect = glm_effect)
+
+auc_med <- auc |> group_by(cohort) |> summarise(m = median(auc), .groups = "drop") |>
+  inner_join(published, by = "cohort")
+stopifnot(
+  # Medians of a lognormal-like AUC over 200 subjects: Monte-Carlo SE about 5%.
+  all(abs(auc_med$m / auc_med$auclast - 1) < 0.15),
+  # The ratio distribution is narrow (CV about 10%), so its median is tight.
+  all(abs(ratio_summary$sim_median / ratio_summary$ratio - 1) < 0.05),
+  abs(glm_kt / 17.37 - 1) < 0.05,
+  abs(glm_effect - 0.90) < 0.04
+)
+```
+
+## Combined model: effect of transplant type
+
+The combined model attributes the whole SPK/KT difference to Ka. Its typical
+Ka is 0.360 1/h for KT and 0.360 x (1 - 0.423) = 0.208 1/h for SPK.
+
+```{r combined}
+ev_comb <- bind_rows(make_cohort(n_per_arm, 0L, 1L), make_cohort(n_per_arm, n_per_arm, 0L))
+sim_comb <- as.data.frame(rxode2::rxSolve(mod_comb, events = ev_comb, keep = "TX_KIDNEY_PANCREAS")) |>
+  mutate(cohort = ifelse(TX_KIDNEY_PANCREAS == 1, "SPK", "KT"))
+comb_ratio <- sim_comb |>
+  filter(time >= 72) |>
+  group_by(cohort, id) |>
+  summarise(
+    auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    c0 = Cc[time == 72],
+    .groups = "drop"
+  ) |>
+  mutate(ratio = auc / c0)
+comb_ratio |>
+  group_by(cohort) |>
+  summarise(median_auc = median(auc), median_ratio = median(ratio), .groups = "drop") |>
+  knitr::kable(digits = 2, caption = "Combined model, day-4 AUC0-12h (ug*h/L) and AUC0-12h / C0 ratio.")
+```
+
+# Assumptions and deviations
+
+- **Combined-model Ka.** Supplemental Table S3 gives Ka = 0.360 1/h (RSE 10%,
+  bootstrap median 0.361, 95% CI 0.308-0.513) for the KT reference group;
+  the `$THETA` record of Supplementary Data S3 prints 0.336, which is the KT
+  model's own estimate. Every other `$THETA` in that control stream equals
+  Table S3, so 0.336 looks like a value carried over from the KT model's
+  stream, and the bootstrap median supports 0.360. The table value is used.
+- **Precision.** Where the control stream carries more digits than the table
+  (lag times 0.766, 0.533 and 0.546 h vs 0.77, 0.53 and 0.55 h) the control
+  stream values are used; they round to the table values.
+- **Bioavailability variability.** NONMEM's `F1 = 0.23 * exp(ETA(1))` is
+  unbounded above, and so is the packaged `exp(lfdepot + etalfdepot)`. With
+  a 48-54% CV, fewer than 0.1% of simulated subjects exceed F = 1.
+- **Occasions.** The authors entered each sampling occasion as a separate ID
+  instead of estimating inter-occasion variability, so the IIV here also
+  absorbs occasion-to-occasion variability.
+- **Residual error in the simulation.** The reproduction of the day-4
+  AUC0-12h / C0 ratio uses the model predictions without residual error; with
+  a 16% proportional error on C0, the ratio range would be far wider than the
+  13-22 the paper reports.
+- **Covariates screened but not retained.** Time after transplantation (0-6,
+  6-26 and > 26 weeks) on Ka and on lag time was not retained in either
+  separate model (Tables S1 and S2) and is listed in
+  `covariatesDataExcluded`.
+- **Transplant-type covariate.** The control stream's `NPTX` (1 = SPK) is the
+  column `TX_KIDNEY_PANCREAS` here (1 = simultaneous pancreas-kidney,
+  0 = kidney only).
+- No erratum or correction notice was listed for this article in Europe PMC
+  as of 2026-11-18.

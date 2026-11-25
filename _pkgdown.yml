@@ -8648,6 +8648,8 @@ navbar:
         href: articles/Zhu_2014_tacrolimus.html
       - text: "Tacrolimus ckdstage (ElKhateeb 2023)"
         href: articles/ElKhateeb_2023_tacrolimus.html
+      - text: "Tacrolimus combined (Kamp 2026)"
+        href: articles/Kamp_2026_tacrolimus.html
       - text: "Tacrolimus cyp3a5 (Liu 2022)"
         href: articles/Liu_2022_tacrolimus.html
       - text: "Tacrolimus egfr (ElKhateeb 2023)"
@@ -8658,6 +8660,10 @@ navbar:
         href: articles/Xiang_2025_tacrolimus.html
       - text: "Tacrolimus industry meta (Lu 2019)"
         href: articles/Lu_2019_tacrolimus_industry_meta.html
+      - text: "Tacrolimus kidney (Kamp 2026)"
+        href: articles/Kamp_2026_tacrolimus.html
+      - text: "Tacrolimus kidneypancreas (Kamp 2026)"
+        href: articles/Kamp_2026_tacrolimus.html
       - text: "Tacrolimus metaanalysis (Nanga 2019)"
         href: articles/Nanga_2019_tacrolimus_metaanalysis.html
       - text: "Tacrolimus mm (Cai 2022)"
@@ -11429,6 +11435,7 @@ articles:
   - articles/Kamal_2017_oseltamivir
   - articles/Kamath_2012_antiOxLDL
   - articles/Kamp_2023_tacrolimus
+  - articles/Kamp_2026_tacrolimus
   - articles/KandadiMuralidharan_2022_aducanumab
   - articles/Kandala_2022_covid19Vaccine
   - articles/Kang_2020_adalimumab
