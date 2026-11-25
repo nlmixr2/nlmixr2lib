@@ -22421,6 +22421,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Chan_2020_fenebrutinib.R` (multiplier 0.049 on the number of Savic transit compartments: 14.9 for the capsule, 0.73 for the fasted tablet).
 - **Notes:** Member of the `FORM_<drug>_<formulation>` family. Distinct from the general `FORM_TABLET`, whose comparator is a non-tablet oral LIQUID; here the comparator is a powder-in-capsule. The capsule was given in phase 1 study GA29347 and one arm of GP29832; all other arms and the phase 2 ANDES trial used the tablet.
 
+### FORM_INSULIN_TI (**canonical for inhaled Technosphere insulin vs subcutaneous regular human insulin formulation indicator**)
+- **Description:** 1 = inhaled Technosphere insulin (TI, insulin human inhalation powder), 0 = subcutaneously injected regular human insulin (RHI). A per-record product selector for models that carry both insulin products in one equation.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (s.c. regular human insulin).
+- **Source aliases:**
+  - `TYPE` -- Ruppel 2017 dose-GIRAUC control stream column, `TYPE = 1` TI and `TYPE = 2` RHI; transform `FORM_INSULIN_TI = (TYPE == 1)`.
+- **Example models:** `Ruppel_2017_insulin_doseGIRAUC_TIRHI.R` (selects the formulation-specific ED50 of a common-Hill dose-GIRAUC Emax model: 245 U for TI, 48 IU for RHI).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family. The two products differ in route as well as formulation; a model that integrates PK by dosing compartment (as `Ruppel_2017_insulin.R` does, with `depot` for s.c. RHI and `depot_lung` for TI) needs no indicator, so reach for this column only when the formulation enters an algebraic expression. Doses keep each product's own unit: labelled TI units (U) for TI and international units (IU) for RHI.
+
 ### FORM_ALISERTIB_ECT (**canonical for alisertib enteric-coated tablet vs powder-in-capsule formulation indicator**)
 - **Description:** 1 = alisertib enteric-coated tablet, 0 = alisertib powder-in-capsule. Subject-level, time-fixed.
 - **Units:** (binary)

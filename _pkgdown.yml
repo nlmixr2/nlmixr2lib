@@ -4644,14 +4644,14 @@ navbar:
         href: articles/Garrett_2019_inotuzumab.html
       - text: "Inotuzumab (Wu 2024)"
         href: articles/Wu_2024_inotuzumab.html
-      - text: "InotuzumabOzogamicin tg32mouse adc (Nakagawa 2026)"
-        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
-      - text: "InotuzumabOzogamicin tg32mouse tab (Nakagawa 2026)"
-        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
-      - text: "InotuzumabOzogamicin wtmouse adc (Nakagawa 2026)"
-        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
-      - text: "InotuzumabOzogamicin wtmouse tab (Nakagawa 2026)"
-        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "Insulin (Ruppel 2017)"
+        href: articles/Ruppel_2017_insulin.html
+      - text: "Insulin doseGIRAUC RHI (Ruppel 2017)"
+        href: articles/Ruppel_2017_insulin.html
+      - text: "Insulin doseGIRAUC TI (Ruppel 2017)"
+        href: articles/Ruppel_2017_insulin.html
+      - text: "Insulin doseGIRAUC TIRHI (Ruppel 2017)"
+        href: articles/Ruppel_2017_insulin.html
       - text: "Interferon alfa 2b (Chatelut 1999)"
         href: articles/Chatelut_1999_interferon_alfa_2b.html
       - text: "InterferonAlfa2a (Jeon 2013)"
@@ -12850,6 +12850,7 @@ articles:
   - articles/Ruhs_2012_methotrexate
   - articles/RuizMartinez_2022_nivolumab_qsp
   - articles/Ruiz_2025_thrombin_generation
+  - articles/Ruppel_2017_insulin
   - articles/Rymut_2023_anti_tryptase
   - articles/Ryu_2021_hyaluronicAcid_fillers_mouse
   - articles/Sabo_2026_hydroxyurea
