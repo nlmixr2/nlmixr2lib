@@ -3470,6 +3470,8 @@ navbar:
         href: articles/VanWart_2004_garenoxacin.html
       - text: "Gatifloxacin (Smythe 2013)"
         href: articles/Smythe_2013_gatifloxacin.html
+      - text: "Gatifloxacin rabbit (Sarathy 2019)"
+        href: articles/Sarathy_2019_fluoroquinolones_rabbit.html
       - text: "Gcc4401c (Choi 2016)"
         href: articles/Choi_2016_gcc4401c_rivaroxaban.html
       - text: "Gefapixant (Chawla 2023)"
@@ -4520,6 +4522,8 @@ navbar:
         href: articles/Tao_2026_levofloxacin.html
       - text: "Levofloxacin (vanderLaan 2023)"
         href: articles/vanderLaan_2023_levofloxacin.html
+      - text: "Levofloxacin rabbit (Sarathy 2019)"
+        href: articles/Sarathy_2019_fluoroquinolones_rabbit.html
       - text: "Levofloxacin rat (Hurtado 2014)"
         href: articles/Hurtado_2014_levofloxacin_rat.html
       - text: "Levonorgestrel (Adeojo 2024)"
@@ -5480,6 +5484,8 @@ navbar:
         href: articles/Willmann_2019_moxifloxacin.html
       - text: "Moxifloxacin human fromRabbit pbpk (Karakitsios 2024)"
         href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
+      - text: "Moxifloxacin rabbit (Sarathy 2019)"
+        href: articles/Sarathy_2019_fluoroquinolones_rabbit.html
       - text: "Moxifloxacin rabbit pbpk (Karakitsios 2024)"
         href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
       - text: "Mrna1273 qsp (Dasti 2025)"
@@ -11589,6 +11595,7 @@ articles:
   - articles/Saporta_2024_afabicin
   - articles/Saporta_2026_meropenem
   - articles/Sarashina_2005_epinastine
+  - articles/Sarathy_2019_fluoroquinolones_rabbit
   - articles/Sasaki_2022_delamanid
   - articles/Sassen_2017_crisantaspase
   - articles/Sathe_2024_sacituzumab
