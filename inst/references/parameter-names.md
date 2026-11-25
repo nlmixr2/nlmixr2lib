@@ -2335,6 +2335,23 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `mDAR` -- Lu 2016 Figure 2 legend (3.585, hydrophobic interaction chromatography).
 - **Example models:** `Rathi_2021_belantamab.R` (`mdar <- fixed(3.93)`, back-solved from the paper's typical-patient cys-mcMMAF Cavg because the product DAR is not printed); `Lu_2016_pinatuzumab_polatuzumab.R` (3.585 as a `model()` constant applied through `f(central)`).
 
+### lkdec_wscale, lkdec_wshape, kdec_wamp (**canonical Weibull dependence of the per-payload ADC deconjugation rate on DAR**)
+- **Type:** paper-named-param
+- **Role:** The three parameters of a Weibull density that sets the per-payload deconjugation rate constant [[kdec]] of each DAR species as a smooth function of its drug load, instead of estimating `kdec1` ... `kdec8` separately: `kdecn = kdec_wamp * (kdec_wshape / kdec_wscale) * (x / kdec_wscale)^(kdec_wshape - 1) * exp(-(x / kdec_wscale)^kdec_wshape)` with `x = 8 - n`. `kdec_wscale` (lambda, unitless) is the scale on the DAR axis, `kdec_wshape` (kappa, unitless) the shape, both estimated and carried on the log scale; `kdec_wamp` (K, 1 / time) is the amplitude, carried bare because the source fixes it. The derived per-species rates keep the registered numbered `kdec<n>` form.
+- **Source aliases:**
+  - `lambda`, `kappa`, `K` -- Lu 2015 Eq. 11 and Table I ('Weibull scale parameter', 'Weibull shape parameter'; 'K is fixed to 1 h-1').
+- **Example models:** `Lu_2015_dcds5017a_cyno.R` (lambda 1.51, kappa 1.10, K fixed at 1 /h; the per-species rate falls from 8 * kdec8 = 3.52 /h for DAR8 to near zero for DAR1).
+- **Notes:** Not the `lwlambda_<stratum>` / `lwgamma_<stratum>` Weibull family, whose lambda multiplies *time* in a time-course decline; here the Weibull argument is the number of payloads already lost (`8 - n`), so lambda is a DAR-axis scale with no time units. The `kdec_` prefix ties the three to the deconjugation rate they generate. Ratified by the maintainers 2026-11-25.
+
+### fdar0 ... fdar8 (**canonical fraction of an ADC dose present as each DAR species**)
+- **Type:** paper-named-param
+- **Role:** Fraction (unitless, 0-1) of the administered antibody-drug-conjugate amount that is present as the DAR`n` species in the dosing solution, usually measured by hydrophobic interaction chromatography. A DAR-resolved model doses the total antibody amount into every `dar<n>_central` and splits it with `f(dar<n>_central) <- fdar<n>`, so the members of one model sum to 1. Carried bare on the linear scale and normally `fixed()`, because the composition is a measured product attribute; a species absent from the product is `fixed(0)` rather than omitted, so the batch composition can be changed through `ini()`.
+- **Source aliases:**
+  - `DAR = n, x%` -- Lu 2015 Methods 'Model Development' (HIC composition of the dosing solution, 'data on file').
+  - `F_DARn` -- Pouzin 2022 Table 4.
+- **Example models:** `Lu_2015_dcds5017a_cyno.R` (`fdar0` ... `fdar8` = 0.05235, 0.0061, 0.3051, 0, 0.4835, 0, 0.12755, 0, 0.02545). `Pouzin_2022_tusamitamab.R` carries the same quantity as bare `fdar1` ... `fdar8` derived in `model()` from fixed log ratios `lfrdar<n>` = log(F_DARn / F_DAR8), the form needed when the fractions carry IIV that must keep them summing to 1.
+- **Notes:** Distinct from [[mdar]], the drug product's *mean* payload load (`sum(n * fdar<n>)`), which a model that does not resolve DAR species uses in place of the full distribution. Ratified by the maintainers 2026-11-25.
+
 ### krel (**canonical release rate**)
 - **Type:** paper-named-param
 - **Role:** Release / liberation rate constant (e.g., drug release from a complex or depot reservoir).

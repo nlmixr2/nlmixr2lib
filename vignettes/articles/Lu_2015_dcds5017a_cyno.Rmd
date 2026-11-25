@@ -471,8 +471,16 @@ knitr::kable(
   The Results text ('decreased from 3.52 ...') and Figure 8 give 3.52 1/h for
   DAR8, and the other seven Figure 8 points match `n * KADCn` with
   `x = 8 - n`. The DAR8 term is evaluated at `x = 0.01`, the offset that
-  gives 3.51 1/h at the Table I lambda and kappa (3.52 published, a gap well inside the rounding of kappa = 1.10, since kappa from 1.095 to 1.105 spans 3.44-3.59 1/h); this offset was
-  back-solved by the maintainers and is not printed in the paper.
+  gives 3.51 1/h at the Table I lambda and kappa (3.52 published, a gap well
+  inside the rounding of kappa = 1.10, since kappa from 1.095 to 1.105 spans
+  3.44-3.59 1/h). The maintainers back-solved this offset in preference to
+  fixing the printed 3.52 1/h, so that the DAR8 rate still moves with lambda
+  and kappa; the paper does not say how DAR8 was evaluated.
+* **Parameter names.** The Weibull parameters lambda, kappa and K are
+  `lkdec_wscale`, `lkdec_wshape` and `kdec_wamp`; Fmp and Fmd are
+  `fm_proteolysis` and `fm_deconjugation`; the dosing-solution fractions are
+  `fdar0` ... `fdar8`, with the species absent from the product fixed at 0 so
+  a different batch composition can be set through `ini()`.
 * **Eq. 9 typographical errors.** As printed, Eq. 9 has `X7c` in the DAR8
   numerator, `X8c` in the DAR7 denominator and an unweighted DAR0 term. The
   text defines Amp as the total MMAE formed by proteolysis, so the model uses
