@@ -6634,6 +6634,10 @@ navbar:
         href: articles/Fang_2013_pramlintide.html
       - text: "Pravastatin (Ide 2009)"
         href: articles/Ide_2009_pravastatin.html
+      - text: "Pravastatin invitro him (Mao 2018)"
+        href: articles/Mao_2018_pravastatin_invitro.html
+      - text: "Pravastatin invitro plasma (Mao 2018)"
+        href: articles/Mao_2018_pravastatin_invitro.html
       - text: "Pravastatin rifampicin pbpk (Asaumi 2019)"
         href: articles/Asaumi_2019_rifampicin_ddi_pbpk.html
       - text: "Praziquantel (Bustinduy 2016)"
@@ -11029,6 +11033,7 @@ articles:
   - articles/Mandema_2011_biologicDMARDs_mbma
   - articles/MangasSanjuan_2016_axomadol
   - articles/Mao_2012_vernakalant
+  - articles/Mao_2018_pravastatin_invitro
   - articles/Mao_2021_linezolid_fosfomycin
   - articles/Mao_2022_methotrexate
   - articles/Mao_2024_sirolimus

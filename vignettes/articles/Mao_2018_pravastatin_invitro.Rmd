@@ -1,0 +1,364 @@
+---
+title: "Pravastatin in vitro OATP hepatic uptake kinetics (Mao 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pravastatin in vitro OATP hepatic uptake kinetics (Mao 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Mao J, Doshi U, Wright M, Hop CECA, Li AP, Chen Y. Prediction of
+  the Pharmacokinetics of Pravastatin as an OATP Substrate Using Plateable
+  Human Hepatocytes With Human Plasma Data and PBPK Modeling. CPT
+  Pharmacometrics Syst Pharmacol. 2018;7(4):251-258.
+* Article: <https://doi.org/10.1002/psp4.12283>
+* PubMed Central open-access copy: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5915609/>
+
+The paper measured the net active (OATP-mediated, rifampicin-sensitive) uptake
+of pravastatin into plated human hepatocytes in two incubation media and fitted
+each data set with a Michaelis-Menten model. It contributes two model files,
+one per medium:
+
+```{r models}
+mod_pl <- rxode2::rxode(readModelDb("Mao_2018_pravastatin_invitro_plasma"))
+mod_him <- rxode2::rxode(readModelDb("Mao_2018_pravastatin_invitro_him"))
+
+# Fixed and estimated ini() values are not returned as columns by rxSolve(), so
+# read them straight off the packaged model when a check needs one.
+ini_val <- function(mod, nm) {
+  stopifnot(nm %in% mod$iniDf$name)
+  mod$iniDf$est[mod$iniDf$name == nm]
+}
+```
+
+# Scope: what this paper does and does not contribute
+
+The paper has two layers.
+
+1. **In vitro uptake kinetics (packaged).** Plated cryopreserved hepatocytes
+   from one donor were incubated with ten pravastatin concentrations
+   (0.14-400 uM) for 0 and 3 minutes, with and without rifampicin. The
+   rifampicin-sensitive part of the 3-minute uptake was fitted by
+   Michaelis-Menten kinetics: Jmax 134.4 pmol/min/million cells and apparent
+   Km 76.77 uM in 100% human plasma (Figure 1), and Jmax 28.49
+   pmol/min/million cells and Km 11.72 uM in protein-free hepatocyte induction
+   medium (Discussion; Supplementary Figure S1).
+2. **Simcyp v15 full-PBPK simulation (not packaged).** Those constants replace
+   the OATP1B1 input of the Simcyp default pravastatin compound profile, which
+   is then used to simulate the intravenous (9.4 mg) and oral (0.0372-60 mg)
+   plasma profiles. Table 1 prints the compound-level inputs only. The tissue
+   partition coefficients come from the Rodgers and Rowland prediction method
+   (a named method, not values). Absorption uses the ADAM and MechPeff models,
+   renal clearance uses Simcyp's mechanistic kidney model, and hepatocellularity,
+   liver weight, organ volumes, blood flows and transporter abundances are
+   platform defaults that are printed nowhere. No Simcyp workspace was
+   deposited. The PBPK layer therefore cannot be reconstructed from the
+   publication and is described here only as context.
+
+# In vitro system
+
+```{r population}
+str(mod_pl$population)
+```
+
+Both assays used hepatocyte lot HH1057 (a 33-year-old Caucasian female donor)
+seeded at 350,000 cells/well on collagen-coated 24-well plates. The lot
+expressed OATP1B1 at 18.3 and OATP1B3 at 1.7 fmol/million cells. Because the
+hepatocyte assay cannot separate the two isoforms, the authors assigned all
+active uptake to OATP1B1. In plasma medium the inhibitor was 125 uM
+rifampicin (Methods). In induction medium it was 25 uM (Supplementary
+Methods).
+
+# Source trace
+
+| Element | Value | Source location |
+|---|---|---|
+| Net uptake = (3 min - 0 min, alone) - (3 min - 0 min, + rifampicin) | equation | Methods, 'Absolute intracellular pravastatin concentration' and 'Net pravastatin uptake calculation' |
+| Michaelis-Menten fit on nominal concentration | equation | Methods, 'Net pravastatin uptake calculation' (GraphPad Prism 7) |
+| `lvmax` (plasma) | log(134.4) pmol/min/million cells | Abstract; Results; Table 1 'Jmax, OATP' |
+| `lkm` (plasma) | log(76.77) uM | Abstract; Results; Table 1 'Km, OATP' |
+| `fu_inc` (plasma) | 0.485, fixed | Table 1 'fu,inc ... Same as fu,p'; Methods, 'Clearance' |
+| `lvmax` (HIM) | log(28.49) pmol/min/million cells | Discussion, paragraph 2; Supplementary Figure S2 and S3 captions |
+| `lkm` (HIM) | log(11.72) uM | Discussion, paragraph 2; Supplementary Figure S2 and S3 captions |
+| `fu_inc` (HIM) | 0.98, fixed | Supplementary Figure S2 and S3 captions (the Discussion prints 0.96) |
+| `addSd` | 0, fixed | not reported |
+| `km_u = km * fu_inc` | derived | Discussion: "the apparent Km was corrected with human plasma protein binding" |
+| `clint_uptake = vmax / km` | derived | linear limit of the Michaelis-Menten law |
+
+## Dimensional analysis
+
+`vmax` is in pmol/min/million cells and the medium concentration in uM, so
+`uptake = vmax * C / (km + C)` is in pmol/min/million cells and its integral
+`hep_pravastatin` is in pmol/million cells. `vmax / km` is in
+(pmol/min/million cells)/uM = uL/min/million cells, the unit of the Simcyp
+`CLint,T` inputs in Table 1 and Supplementary Table S1.
+
+# Simulation
+
+Each nominal concentration of the assay is placed in the medium at time 0 and
+the cells are followed for the 3-minute incubation. These are ten
+concentrations per medium, not subjects.
+
+```{r simulate}
+conc_nominal <- c(0.14, 0.4, 1.2, 3.7, 11.1, 33.3, 100, 200, 300, 400)
+
+make_events <- function(conc) {
+  dose <- data.frame(
+    id = seq_along(conc), time = 0, amt = conc, evid = 1,
+    cmt = "pravastatin", conc = conc
+  )
+  obs <- expand.grid(id = seq_along(conc), time = c(0, 1, 2, 3))
+  obs$amt <- 0
+  obs$evid <- 0
+  obs$cmt <- "hep_pravastatin"
+  obs$conc <- conc[obs$id]
+  dplyr::bind_rows(dose, obs) |> dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+# The models carry no inter-individual variability (one donor lot), so
+# rxode2's "multi-subject simulation without omega" notice is expected and
+# muffled; every other warning still surfaces.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+
+sim_medium <- function(mod, label, conc = conc_nominal) {
+  ev <- make_events(conc)
+  out <- withCallingHandlers(
+    rxode2::rxSolve(mod, ev, keep = "conc", returnType = "data.frame"),
+    warning = muffle_no_omega
+  )
+  out$medium <- label
+  out
+}
+
+sim <- dplyr::bind_rows(
+  sim_medium(mod_pl, "100% human plasma"),
+  sim_medium(mod_him, "Induction medium (HIM)")
+)
+
+# The assay's datum: 3-min accumulated net uptake divided by 3 min.
+rates <- sim |>
+  dplyr::filter(time == 3) |>
+  dplyr::mutate(rate_assay = hep_pravastatin / 3) |>
+  dplyr::select(medium, conc, rate_assay, uptake, km_u, clint_uptake, clint_uptake_u)
+knitr::kable(rates, digits = 3)
+```
+
+The accumulated state is exactly linear in time, because the fit treated the
+medium concentration as constant, so the 3-minute rate equals the
+instantaneous rate:
+
+```{r check-linear}
+stopifnot(max(abs(rates$rate_assay - rates$uptake) / rates$uptake) < 1e-6)
+```
+
+# Replicating Figure 1 and Supplementary Figure S1
+
+The maintainers digitised the plotted means from Figure 1 and Supplementary
+Figure S1 at native resolution, calibrating on the axis tick marks. The five
+lowest concentrations (0.14-3.7 uM) overlap at the origin and could not be
+resolved, so only the six highest are used.
+
+```{r digitised}
+digitised <- dplyr::bind_rows(
+  data.frame(
+    medium = "100% human plasma",
+    conc = c(11.1, 33.3, 100, 200, 300, 400),
+    rate = c(12.39, 34.81, 69.62, 120.35, 103.83, 102.06)
+  ),
+  data.frame(
+    medium = "Induction medium (HIM)",
+    conc = c(11.1, 33.3, 100, 200, 300, 400),
+    rate = c(13.44, 18.84, 37.31, 21.98, 21.23, 29.27)
+  )
+)
+```
+
+```{r fig1, fig.cap = "Net active hepatic uptake rate of pravastatin against nominal concentration. Replicates Figure 1 (100% human plasma) and Supplementary Figure S1 (induction medium) of Mao 2018. Points: digitised published means (N = 3); line: packaged model."}
+curve_grid <- expand.grid(
+  conc = seq(0, 500, by = 2.5),
+  medium = c("100% human plasma", "Induction medium (HIM)"),
+  stringsAsFactors = FALSE
+)
+mm_par <- data.frame(
+  medium = c("100% human plasma", "Induction medium (HIM)"),
+  vmax = exp(c(ini_val(mod_pl, "lvmax"), ini_val(mod_him, "lvmax"))),
+  km = exp(c(ini_val(mod_pl, "lkm"), ini_val(mod_him, "lkm")))
+)
+curve_grid <- dplyr::left_join(curve_grid, mm_par, by = "medium") |>
+  dplyr::mutate(rate = vmax * conc / (km + conc))
+
+ggplot(curve_grid, aes(conc, rate)) +
+  geom_line() +
+  geom_point(data = rates, aes(conc, rate_assay), shape = 1, size = 2) +
+  geom_point(data = digitised, aes(conc, rate), size = 2) +
+  facet_wrap(~medium, scales = "free_y") +
+  labs(
+    x = "Pravastatin concentration (uM)",
+    y = "Active hepatic uptake rate\n(pmol/min/million cells)"
+  ) +
+  theme_bw()
+```
+
+## Rate at Km is half of Jmax
+
+```{r check-half}
+# Solve each packaged model with the medium set to its own Km and read the
+# 3-min rate off the accumulated state.
+half <- dplyr::bind_rows(
+  sim_medium(mod_pl, "100% human plasma", conc = mm_par$km[1]),
+  sim_medium(mod_him, "Induction medium (HIM)", conc = mm_par$km[2])
+) |>
+  dplyr::filter(time == 3) |>
+  # Drop the solved `vmax`/`km` columns so the join does not suffix them.
+  dplyr::select(medium, conc, hep_pravastatin) |>
+  dplyr::left_join(mm_par, by = "medium") |>
+  dplyr::mutate(
+    rate_at_km = hep_pravastatin / 3,
+    ratio = rate_at_km / vmax
+  ) |>
+  dplyr::select(medium, conc, vmax, rate_at_km, ratio)
+knitr::kable(half, digits = 3)
+stopifnot(all(abs(half$ratio - 0.5) < 1e-6))
+```
+
+## Re-fitting the digitised means recovers the printed constants
+
+Fitting the Michaelis-Menten law to the digitised means reproduces the
+published Jmax and Km. This checks that each printed pair belongs to the
+figure it is attributed to, in particular that the Discussion's 28.49 / 11.72
+pair is the induction-medium fit of Supplementary Figure S1. The paper fitted
+the individual replicates and the five lowest concentrations as well, so an
+exact match is not expected.
+
+```{r check-refit}
+refit <- digitised |>
+  dplyr::group_by(medium) |>
+  dplyr::group_modify(function(d, key) {
+    f <- stats::nls(rate ~ jm * conc / (k + conc), data = d, start = list(jm = 100, k = 50))
+    data.frame(jmax_refit = unname(coef(f)["jm"]), km_refit = unname(coef(f)["k"]))
+  }) |>
+  dplyr::ungroup() |>
+  dplyr::left_join(mm_par, by = "medium") |>
+  dplyr::mutate(
+    jmax_pct_diff = 100 * (jmax_refit - vmax) / vmax,
+    km_pct_diff = 100 * (km_refit - km) / km
+  )
+refit |>
+  dplyr::rename(
+    "Medium" = medium,
+    "Jmax re-fit" = jmax_refit,
+    "Km re-fit (uM)" = km_refit,
+    "Jmax published" = vmax,
+    "Km published (uM)" = km,
+    "Jmax diff (%)" = jmax_pct_diff,
+    "Km diff (%)" = km_pct_diff
+  ) |>
+  knitr::kable(digits = 2)
+stopifnot(
+  all(abs(refit$jmax_pct_diff) < 10),
+  all(abs(refit$km_pct_diff) < 15)
+)
+```
+
+Jmax is recovered within a few percent in both media. Km is recovered within
+about 10%. Swapping the two pairs between media would miss Jmax by roughly
+fivefold.
+
+# Unbound uptake clearance against the published PBPK inputs
+
+The quantity that drives hepatic uptake at clinical concentrations, which are
+far below Km, is the unbound linear-range intrinsic clearance
+`vmax / (km * fu_inc)`. Supplementary Table S1 compares the OATP1B1 inputs of
+earlier pravastatin PBPK models.
+
+```{r check-clint}
+clint <- rates |>
+  dplyr::distinct(medium, km_u, clint_uptake, clint_uptake_u)
+knitr::kable(clint, digits = 3)
+
+# Supplementary Table S1 (uL/min/million cells): the Simcyp default value fitted
+# to in vivo data, and the sandwich-culture value of Varma 2012 / Jones 2012
+# after its empirical scaling factor of 31.
+table_s1 <- data.frame(
+  source = c("Simcyp default (fitted in vivo)", "Sandwich-cultured hepatocytes x SF 31"),
+  clint_t = c(14.057, 1.9 * 31)
+)
+knitr::kable(table_s1, digits = 1)
+
+# The two media should give similar unbound clearances: the paper reports that
+# both reproduce the in vivo profiles without a scaling factor.
+ratio_media <- clint$clint_uptake_u[clint$medium == "100% human plasma"] /
+  clint$clint_uptake_u[clint$medium == "Induction medium (HIM)"]
+ratio_media
+stopifnot(ratio_media > 1, ratio_media < 2)
+```
+
+The two media agree within 1.5-fold on the unbound uptake clearance
+(`r round(clint$clint_uptake_u[1], 2)` and
+`r round(clint$clint_uptake_u[2], 2)` uL/min/million cells). They differ
+almost fivefold in Jmax and more than threefold in unbound Km. This is
+consistent with the paper's finding that either pair, entered unscaled, lets
+the Simcyp model reproduce the intravenous profile. Both values are well below
+the 14.057 uL/min/million cells that the Simcyp default fitted to in vivo
+data. The PBPK layer is not packaged, so this vignette cannot test whether that
+difference is offset by the Km-dependent saturation, the higher hepatocyte
+scaling or other Simcyp inputs.
+
+# Published results not reproduced here
+
+* Figure 2 and Supplementary Figure S2: Simcyp simulations of the 9.4 mg
+  intravenous profile (mean predicted AUC 0.60 uM.h, against 0.43 uM.h with the
+  default profile).
+* Figure 3 and Supplementary Figure S3: Simcyp simulations of the 0.0372, 18.23,
+  20, 40 and 60 mg oral profiles, and the Cmax and AUC comparison of
+  Supplementary Table S2.
+* Supplementary Table S3: rifampicin and gemfibrozil AUC ratios simulated with
+  the Simcyp inhibitor library files.
+
+All of these are outputs of the platform PBPK layer (see Scope). There is no
+plasma concentration-time output to analyse, so no PKNCA non-compartmental
+analysis applies to this in vitro model.
+
+# Assumptions and deviations
+
+* **Medium concentration held constant.** The paper fitted the net uptake rate
+  against the nominal concentration, so `d/dt(pravastatin) <- 0`. The
+  incubation volume during uptake is not stated, so depletion of the medium
+  could not be modelled in any case.
+* **Observation is the accumulated net uptake** (`hep_pravastatin`,
+  pmol/million cells), not `Cc`. The paper's reported datum is this amount
+  divided by the 3-minute window. `checkModelConventions()` warns that the
+  observation variable is not canonical. The warning is accepted, because
+  renaming the state to `Cc` would misstate what is observed and its units.
+* **No residual error.** The paper reports no residual model for the
+  GraphPad fit, so `addSd` is fixed to 0. The +/- values printed with Jmax and
+  Km (14.3 and 27.4 in plasma; 3.11 and 6.83 in induction medium) are standard
+  errors of the regression, not between-donor variability. One donor lot was
+  used, so the models carry no inter-individual variability.
+* **fu,inc in induction medium: 0.98 vs 0.96.** The Discussion gives 0.96
+  (citing Menochet 2012), while both Supplementary Figure S2 and S3 captions,
+  which list the simulation inputs, give 0.98. The model carries 0.98. The
+  choice changes only the derived `km_u` and `clint_uptake_u`, by 2%.
+* **Rifampicin concentration differs by medium.** The main Methods give
+  125 uM rifampicin for the plasma-medium assay. The Supplementary Methods,
+  which describe the induction-medium incubation, give 25 uM. The model
+  describes the net rifampicin-sensitive uptake and has no inhibitor term, so
+  this difference is recorded here only.
+* **Digitised data.** The points in the figure are means digitised from the
+  published figures. The five lowest concentrations were not resolvable. They
+  are used only for the plot and the re-fit check, never to set a parameter.
+* **The Simcyp PBPK layer is not packaged** (see Scope).
