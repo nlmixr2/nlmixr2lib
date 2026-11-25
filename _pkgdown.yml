@@ -2276,6 +2276,8 @@ navbar:
         href: articles/Gao_2022_cyclosporine.html
       - text: "Cyclosporine (Li 2019)"
         href: articles/Li_2019_cyclosporine.html
+      - text: "Cyclosporine (Liu 2019)"
+        href: articles/Liu_2019_cyclosporine.html
       - text: "Cyclosporine (Philippe 2015)"
         href: articles/Philippe_2015_cyclosporine.html
       - text: "Cyclosporine (Umpierrez 2021)"
@@ -12459,7 +12461,7 @@ articles:
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2014_ironOxideNanoparticle
   - articles/Liu_2018_pneumocystis_qsp
-  - articles/Liu_2019_deuterium
+  - articles/Liu_2019_cyclosporine
   - articles/Liu_2020_cefepime
   - articles/Liu_2020_hydroxychloroquine_monkey
   - articles/Liu_2022_dabigatran

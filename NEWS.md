@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Homkham 2019 efavirenz HIV viral dynamics ([doi:10.1371/journal.pone.0216868](https://doi.org/10.1371/journal.pone.0216868)) -- HIV-infected Thai children starting first-line efavirenz.
+- Add Liu 2019 cyclosporine ([doi:10.3389/fphar.2019.00518](https://doi.org/10.3389/fphar.2019.00518)) -- healthy Chinese adults, alone and with baicalin.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
