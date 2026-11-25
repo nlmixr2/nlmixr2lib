@@ -1,0 +1,360 @@
+---
+title: "Subcutaneous infliximab (Vicente 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Subcutaneous infliximab (Vicente 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+library(PKNCA)
+```
+
+# Model and source
+
+* Citation: Vicente B, Zazo H, Sanchez-Hernandez JG, Revilla N,
+  Teixeira-da-Silva P. Population Pharmacokinetics of Subcutaneous
+  Infliximab: A Real-World Study of Naive and Switch Patients.
+  Pharmaceutics. 2026;18(9):1162.
+* Article: [doi:10.3390/pharmaceutics18091162](https://doi.org/10.3390/pharmaceutics18091162)
+  (open access)
+
+Vicente et al. developed a population PK model for subcutaneous
+infliximab (SC-IFX, CT-P13 SC) from routine therapeutic drug monitoring
+data in adults with inflammatory bowel disease treated at two Spanish
+hospitals. The cohort mixed anti-TNF-naive patients who started SC
+maintenance after IV induction with patients switched from IV
+maintenance; the IV records of both groups were part of the dataset.
+Because almost every sample was a pre-dose trough, the SC absorption
+rate constant was fixed to the value of the pivotal Hanzel 2021 model
+(see `Hanzel_2021_infliximab` in this package) after a sensitivity
+analysis (Table S1), and IIV on V and on F was held at zero.
+
+```{r model}
+mod <- readModelDb("Vicente_2026_infliximab")
+mod
+```
+
+# Population
+
+Vicente 2026 Table 1: 45 adults (31.1% female) contributing 250 serum
+infliximab concentrations (median 6 per patient). Median age 56 years
+(IQR 38-61), median total body weight 74 kg (IQR 65-82), BMI 26.1
+kg/m^2. Ulcerative colitis 64.4%, Crohn's disease 35.6%. Sixteen
+patients (35.5%) were anti-TNF-naive and 29 (64.5%) were switched from
+IV maintenance, most of them on intensified IV regimens (5-10 mg/kg
+every 4-8 weeks). SC maintenance was 120 mg every 2 weeks, with
+TDM-guided intervals (weekly, every 10 days or every 3 weeks) in six
+patients. Disease activity was low (median CRP 1 mg/L, fecal
+calprotectin 69 ug/g). Twelve patients (26.7%) had at least one
+observation coded as suspected immunogenicity.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure | 1 compartment, first-order absorption and elimination (ADVAN2 TRANS2) | Methods 2.3; Results 3.2.1 |
+| `lka` | log(0.0113) 1/h, fixed | Table 3 (Ka, fixed); Table S1 |
+| `lcl` | log(0.0170) L/h | Table 3 final model |
+| `lvc` | log(9.14) L | Table 3 final model |
+| `logitfdepot` | logit(0.750) | Table 3 F_SC; logit scale per Methods 2.3 |
+| `e_wt_cl` | 0.00888 per kg from 73 kg, linear | Table 3 CLTBW; Eq. 1 |
+| `e_ada_suspected_cl` | 0.700, proportional | Table 3 CLSUSP; Eq. 1 |
+| `etalcl` | log(1 + 0.257^2) = 0.06393 | Table 3 IIV_CL 25.7% |
+| `etalvc`, `etalogitfdepot` | 0, held constant | Table 3 IIV_V, IIV_F_SC; Results 3.2.1 |
+| `propSd` | 0.391 | Table 3 RUV 39.1%; proportional per Results 3.2.1 |
+| CL equation | CL = 0.017 (1 + 0.70 SUSP)(1 + 0.00888 (TBW - 73)) | Eq. 1 |
+| F applies to SC only | IV doses enter `central` with F = 1 | Methods 2.3 (F_SC); Figure 1 shows IV and SC observations in one fit |
+
+# Covariate column naming
+
+| Paper | Column | Notes |
+|---|---|---|
+| TBW | `WT` | kg; linear, centred on 73 kg |
+| SUSP | `ADA_SUSPECTED` | observation-level, time-varying 0/1; 1 = confirmed ADA, or an unexplained trough drop > 33% (Methods 2.2) |
+
+# Replicating Figure S1: steady-state profiles by body weight
+
+Figure S1 shows typical steady-state profiles after 120 mg SC every 2
+weeks for 65, 73 and 81 kg (the 25th, 50th and 75th weight
+percentiles). The model is solved for 12 doses (about 11 half-lives),
+and the last dosing interval is plotted.
+
+```{r figS1-sim}
+tau <- 14 * 24
+n_dose <- 12
+t_last <- (n_dose - 1) * tau
+obs_times <- sort(unique(c(seq(0, t_last, by = 24), seq(t_last, t_last + tau, by = 2))))
+
+make_sc_events <- function(id, wt, susp = 0) {
+  dose <- data.frame(
+    id = id, time = (seq_len(n_dose) - 1) * tau, amt = 120, evid = 1,
+    cmt = "depot"
+  )
+  obs <- data.frame(id = id, time = obs_times, amt = 0, evid = 0, cmt = "central")
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::arrange(time, dplyr::desc(evid)) |>
+    dplyr::mutate(WT = wt, ADA_SUSPECTED = susp)
+}
+
+wt_groups <- c(65, 73, 81)
+ev_typ <- dplyr::bind_rows(lapply(seq_along(wt_groups), function(i) {
+  make_sc_events(i, wt_groups[i])
+}))
+mod_typ <- rxode2::zeroRe(mod)
+# Typical-value solves use zeroRe(), for which rxode2's multi-subject
+# "without 'omega'" warning is expected; only that warning is muffled.
+solve_typical <- function(events, ...) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod_typ, events = events, ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+sim_typ <- solve_typical(ev_typ, keep = "WT") |>
+  as.data.frame() |>
+  dplyr::mutate(treatment = paste0(WT, " kg"))
+
+sim_typ |>
+  dplyr::filter(time >= t_last) |>
+  ggplot(aes((time - t_last) / 24, Cc, colour = treatment)) +
+  geom_line() +
+  labs(
+    x = "Time after dose (days)", y = "Infliximab concentration (mg/L)",
+    colour = "Total body weight",
+    caption = "Replicates Figure S1 of Vicente 2026."
+  ) +
+  theme_bw()
+```
+
+The model reproduces the digitised Figure S1 values (read by the
+maintainers from the supplementary figure at the dose time and at the
+peak of each curve):
+
+```{r figS1-check}
+fig_s1 <- data.frame(
+  treatment = c("65 kg", "73 kg", "81 kg"),
+  cmin = c(14.51, 13.32, 12.29),
+  cmax = c(18.40, 17.19, 16.17)
+)
+typ_ss <- sim_typ |>
+  dplyr::filter(time >= t_last) |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(cmin = Cc[time == t_last], cmax = max(Cc), .groups = "drop")
+chk_s1 <- dplyr::inner_join(typ_ss, fig_s1, by = "treatment", suffix = c("_sim", "_fig"))
+knitr::kable(chk_s1, digits = 2)
+# Digitising precision of the figure is about 0.05 mg/L on a 12-18 mg/L
+# axis; a wrong clearance, volume, bioavailability or weight slope moves
+# these values by several percent.
+stopifnot(
+  all(abs(chk_s1$cmin_sim / chk_s1$cmin_fig - 1) < 0.02),
+  all(abs(chk_s1$cmax_sim / chk_s1$cmax_fig - 1) < 0.02)
+)
+```
+
+# Covariate effects on clearance
+
+```{r cov-effects}
+cl_typ <- function(wt, susp) 0.0170 * (1 + 0.700 * susp) * (1 + 0.00888 * (wt - 73))
+cl_ratio_120_70 <- cl_typ(120, 0) / cl_typ(70, 0)
+cl_ratio_susp <- cl_typ(73, 1) / cl_typ(73, 0)
+cl_ratio_120_70
+cl_ratio_susp
+stopifnot(abs(cl_ratio_susp - 1.70) < 1e-12)
+```
+
+Under Eq. 1 a 120 kg patient has `r round(100 * (cl_ratio_120_70 - 1), 1)`%
+higher clearance than a 70 kg patient; the Discussion quotes 46.1%, a
+small difference that the printed equation does not reproduce (see
+Assumptions and deviations). Observations coded as suspected
+immunogenicity have 70% higher clearance, which at steady state lowers
+the typical trough by more than half:
+
+```{r susp-sim}
+ev_susp <- dplyr::bind_rows(make_sc_events(1, 73, 0), make_sc_events(2, 73, 1))
+sim_susp <- solve_typical(ev_susp, keep = "ADA_SUSPECTED") |>
+  as.data.frame()
+sim_susp |>
+  dplyr::filter(time == t_last) |>
+  dplyr::select(ADA_SUSPECTED, Cc) |>
+  dplyr::rename("Suspected immunogenicity" = ADA_SUSPECTED, "Steady-state trough (mg/L)" = Cc) |>
+  knitr::kable(digits = 2)
+```
+
+# IV-to-SC switch
+
+Switch patients carried IV records in the dataset; IV doses enter the
+central compartment without the SC bioavailability. A typical 73 kg
+patient on 5 mg/kg IV every 8 weeks who switches to 120 mg SC every 2
+weeks:
+
+```{r switch}
+iv_tau <- 8 * 7 * 24
+n_iv <- 6
+switch_time <- n_iv * iv_tau
+ev_switch <- dplyr::bind_rows(
+  data.frame(time = (seq_len(n_iv) - 1) * iv_tau, amt = 5 * 73, evid = 1, cmt = "central", rate = 5 * 73 / 2),
+  data.frame(time = switch_time + (0:12) * tau, amt = 120, evid = 1, cmt = "depot", rate = 0),
+  data.frame(time = seq(0, switch_time + 13 * tau, by = 24), amt = 0, evid = 0, cmt = "central", rate = 0)
+) |>
+  dplyr::mutate(id = 1, WT = 73, ADA_SUSPECTED = 0) |>
+  dplyr::arrange(time, dplyr::desc(evid))
+sim_switch <- solve_typical(ev_switch) |> as.data.frame()
+
+ggplot(sim_switch, aes(time / 24 / 7, Cc)) +
+  geom_line() +
+  geom_vline(xintercept = switch_time / 24 / 7, linetype = 2) +
+  labs(x = "Time (weeks)", y = "Infliximab concentration (mg/L)",
+       caption = "Dashed line: first SC dose (2-hour IV infusions before it).") +
+  theme_bw()
+```
+
+# Virtual cohort and observed troughs
+
+The paper reports a median observed steady-state SC trough of 14.3 mg/L
+(IQR 10.0-16.6) across the cohort, and mean troughs of 13.9 mg/L
+(naive) and 14.8 mg/L (switch) in Table 2. A virtual cohort of 200
+patients on the standard 120 mg every 2 weeks, with body weight drawn
+log-normally around the Table 1 median (74 kg, IQR 65-82) and no
+suspected immunogenicity, is simulated with IIV and residual error.
+
+```{r cohort}
+rxode2::rxSetSeed(20261162)
+n_sub <- 200
+wt_sd <- log(82 / 65) / (2 * qnorm(0.75))
+cohort_wt <- exp(rnorm(n_sub, log(74), wt_sd))
+ev_coh <- dplyr::bind_rows(lapply(seq_len(n_sub), function(i) make_sc_events(i, cohort_wt[i]))) |>
+  dplyr::mutate(treatment = "120 mg SC q2w")
+sim_coh <- rxode2::rxSolve(mod, events = ev_coh, keep = c("WT", "treatment")) |>
+  as.data.frame()
+
+troughs <- sim_coh |>
+  dplyr::filter(time == t_last)
+trough_summary <- data.frame(
+  source = c("Observed (Vicente 2026 Results)", "Simulated with residual error"),
+  median = c(14.3, median(troughs$sim)),
+  q25 = c(10.0, unname(quantile(troughs$sim, 0.25))),
+  q75 = c(16.6, unname(quantile(troughs$sim, 0.75)))
+)
+trough_summary |>
+  dplyr::rename("Source" = source, "Median (mg/L)" = median, "Q1" = q25, "Q3" = q75) |>
+  knitr::kable(digits = 1)
+# Centre-only check: the observed troughs mix dosing intervals and
+# include suspected-immunogenicity samples, so only the median is
+# compared, with a tolerance wide enough for 200 subjects.
+stopifnot(abs(median(troughs$sim) / 14.3 - 1) < 0.2)
+```
+
+```{r cohort-plot}
+sim_coh |>
+  dplyr::filter(time >= t_last) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes((time - t_last) / 24)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2) +
+  geom_line(aes(y = p50)) +
+  labs(x = "Time after dose (days)", y = "Infliximab concentration (mg/L)",
+       caption = "Median and 90% prediction interval at steady state, 120 mg SC every 2 weeks.") +
+  theme_bw()
+```
+
+# PKNCA validation
+
+Steady-state NCA over the last dosing interval of the typical-value
+solves, compared against the digitised Figure S1 values.
+
+```{r pknca}
+nca_conc <- sim_typ |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+nca_dose <- ev_typ |>
+  dplyr::filter(evid == 1) |>
+  dplyr::left_join(dplyr::distinct(sim_typ, id, treatment), by = "id") |>
+  dplyr::select(id, time, amt, treatment)
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = t_last, end = t_last + tau,
+  cmax = TRUE, cmin = TRUE, tmax = TRUE, auclast = TRUE, cav = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = fig_s1,
+  by = "treatment",
+  params = c("cmax", "cmin"),
+  units = c(cmax = "mg/L", cmin = "mg/L")
+)
+cmp |>
+  dplyr::rename("Weight" = treatment) |>
+  knitr::kable(caption = "Simulated steady-state NCA versus digitised Vicente 2026 Figure S1.")
+
+as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("tmax", "auclast", "cav")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::rename("Weight" = treatment, "Tmax (h)" = tmax, "AUCtau (mg*h/L)" = auclast, "Cavg (mg/L)" = cav) |>
+  knitr::kable(digits = 2)
+```
+
+The steady-state average concentration equals F x Dose / (CL x tau):
+for 73 kg, 0.75 x 120 / (0.0170 x 336) = 15.8 mg/L. No row of the
+comparison differs from Figure S1 by more than 20%.
+
+# Assumptions and deviations
+
+* **IIV conversion.** Table 3 reports IIV_CL as 25.7% without stating
+  whether it is a CV or the square root of the variance. It is
+  converted as a CV, omega^2 = log(1 + 0.257^2) = 0.0639; reading it as
+  sqrt(omega^2) would give 0.0660, a 3% difference in the variance.
+* **IIV on V and F.** The paper held both at zero (Results 3.2.1);
+  they are encoded as `fixed(0)` etas so that the model structure is
+  explicit.
+* **Weight centring.** Eq. 1 centres weight on 73 kg, described as the
+  population median, while Table 1 reports a median of 74 kg. The
+  equation value is used.
+* **Clearance ratio in the Discussion.** The Discussion states that
+  clearance rises by 46.1% from 70 to 120 kg; Eq. 1 gives 45.6%. The
+  difference is within rounding of the slope and the equation is
+  followed.
+* **IV infusion duration.** The paper does not state the IV infusion
+  duration; the switch illustration uses 2-hour infusions. Infusion
+  duration has a negligible effect on troughs for this model.
+* **Absorption rate.** Ka is fixed to the Hanzel 2021 estimate (0.27
+  1/day = 0.0113 1/h); Table S1 shows the other parameters change by
+  less than 10% when Ka is varied from 50% to 150% of this value.
+* **Suspected immunogenicity.** `ADA_SUSPECTED` is defined from
+  observed concentrations (a trough drop of more than 33%) as well as
+  from ADA assays, so the 70% clearance increase is partly circular
+  with the PK outcome; the authors describe the covariate as
+  exploratory. For prospective simulation it is best treated as a
+  scenario switch rather than a predicted quantity.
+* **Virtual cohort.** Body weight is drawn log-normally from the Table 1
+  median and IQR; all virtual patients receive the standard regimen and
+  have no suspected immunogenicity.
+
+# Reference
+
+Vicente B, Zazo H, Sanchez-Hernandez JG, Revilla N, Teixeira-da-Silva P.
+Population Pharmacokinetics of Subcutaneous Infliximab: A Real-World
+Study of Naive and Switch Patients. Pharmaceutics. 2026;18(9):1162.
+doi:10.3390/pharmaceutics18091162

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van de Kreeke 2026 generic antibiotic with neutrophil and monocyte host-pathogen model ([doi:10.1007/s10928-026-10063-6](https://doi.org/10.1007/s10928-026-10063-6)) -- simulated adults with bacteremia across seven immune states (immune competent to fully immune compromised), calibrated in mice. Registers the `MONO_ABS` covariate.
+- Add Vicente 2026 subcutaneous infliximab ([doi:10.3390/pharmaceutics18091162](https://doi.org/10.3390/pharmaceutics18091162)) -- Spanish real-world adults with inflammatory bowel disease, anti-TNF-naive or switched from IV infliximab.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
