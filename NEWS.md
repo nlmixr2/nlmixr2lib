@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Maganda 2015 lumefantrine ([doi:10.1186/s12936-015-0695-2](https://doi.org/10.1186/s12936-015-0695-2)) -- HIV-malaria co-infected Tanzanian adults on nevirapine- or efavirenz-based antiretroviral therapy or not yet on it.
+- Add Namour 2015 filgotinib and active metabolite PK with pSTAT1 PD ([doi:10.1007/s40262-015-0240-z](https://doi.org/10.1007/s40262-015-0240-z)) -- healthy male volunteers and patients with rheumatoid arthritis.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
