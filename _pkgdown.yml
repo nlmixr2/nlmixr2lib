@@ -120,6 +120,8 @@ navbar:
         href: articles/Sethi_2024_acetaminophen_diclofenac_mbma.html
       - text: "Acetaminophen food (Franke 2015)"
         href: articles/Franke_2015_oxycodone_acetaminophen.html
+      - text: "Acetaminophen human (Yamamoto 2017b)"
+        href: articles/Yamamoto_2017b_cns_distribution.html
       - text: "Acetaminophen microdialysis rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Acetaminophen periventricular rat pbpk (Hirasawa 2022)"
@@ -128,6 +130,8 @@ navbar:
         href: articles/Mian_2020_acetaminophen_placentaperfusion.html
       - text: "Acetaminophen placentaperfusion (Mian 2021)"
         href: articles/Mian_2021_acetaminophen_placentaperfusion.html
+      - text: "Acetaminophen rat (Yamamoto 2017b)"
+        href: articles/Yamamoto_2017b_cns_distribution.html
       - text: "Acetaminophen rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Acetaminophen rat pbpk (Westerhout 2012)"
@@ -630,6 +634,8 @@ navbar:
         href: articles/vanSteeg_2007_atenolol_isoprenaline_rat.html
       - text: "Atenolol qsp (Fu 2022)"
         href: articles/Fu_2022_atenolol_qsp.html
+      - text: "Atenolol rat (Yamamoto 2017b)"
+        href: articles/Yamamoto_2017b_cns_distribution.html
       - text: "Atenolol rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Atenolol rat pbpk (Kir 2025)"
@@ -5190,6 +5196,8 @@ navbar:
         href: articles/Jeong_2021_methotrexate_nanoformulations.html
       - text: "Methotrexate nonlinear (Arshad 2021)"
         href: articles/Arshad_2021_methotrexate.html
+      - text: "Methotrexate rat (Yamamoto 2017b)"
+        href: articles/Yamamoto_2017b_cns_distribution.html
       - text: "Methotrexate rat pbpk (Yamamoto 2017)"
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Methoxsalen blood (Billard 1995)"
@@ -5412,10 +5420,14 @@ navbar:
         href: articles/Groenendaal_2007_morphine_brain_rat.html
       - text: "Morphine bsc rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
+      - text: "Morphine human (Yamamoto 2017b)"
+        href: articles/Yamamoto_2017b_cns_distribution.html
       - text: "Morphine pbpk (Gulave 2025)"
         href: articles/Gulave_2025_morphine_pbpk.html
       - text: "Morphine pbpk (Verscheijden 2021)"
         href: articles/Verscheijden_2021_morphine.html
+      - text: "Morphine rat (Yamamoto 2017b)"
+        href: articles/Yamamoto_2017b_cns_distribution.html
       - text: "Morphine rat eeg (Groenendaal 2007)"
         href: articles/Groenendaal_2007_morphine_rat_eeg.html
       - text: "Morphine rat pbpk (Hirasawa 2022)"
@@ -6072,6 +6084,8 @@ navbar:
         href: articles/Yu_2025_paliperidone.html
       - text: "Paliperidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
+      - text: "Paliperidone rat (Yamamoto 2017b)"
+        href: articles/Yamamoto_2017b_cns_distribution.html
       - text: "Paliperidone rat pbpk (Yamamoto 2017)"
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Palivizumab (Robbie 2012)"
@@ -6380,6 +6394,8 @@ navbar:
         href: articles/Yukawa_1990_phenytoin.html
       - text: "Phenytoin invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
+      - text: "Phenytoin rat (Yamamoto 2017b)"
+        href: articles/Yamamoto_2017b_cns_distribution.html
       - text: "Phenytoin rat pbpk (Yamamoto 2017)"
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Phosphocreatine (He 2020)"
@@ -6810,6 +6826,8 @@ navbar:
         href: articles/Kervezee_2014_quinidine_rat.html
       - text: "Quinidine rat (Syvanen 2012)"
         href: articles/Syvanen_2012_quinidine_rat.html
+      - text: "Quinidine rat (Yamamoto 2017b)"
+        href: articles/Yamamoto_2017b_cns_distribution.html
       - text: "Quinidine rat pbpk (Yamamoto 2017)"
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Quinidine rifampicin pbpk (Asaumi 2022)"
@@ -6988,6 +7006,8 @@ navbar:
         href: articles/Colin_2025_remimazolam.html
       - text: "Remlifanserin (Darwish 2026)"
         href: articles/Darwish_2026_remlifanserin.html
+      - text: "Remoxipride rat (Yamamoto 2017b)"
+        href: articles/Yamamoto_2017b_cns_distribution.html
       - text: "Remoxipride rat pbpk (Yamamoto 2017)"
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Repaglinide rifampicin pbpk (Asaumi 2019)"
@@ -7152,6 +7172,8 @@ navbar:
         href: articles/Lindauer_2025_risperidone.html
       - text: "Risperidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
+      - text: "Risperidone rat (Yamamoto 2017b)"
+        href: articles/Yamamoto_2017b_cns_distribution.html
       - text: "Risperidone rat pbpk (Yamamoto 2017)"
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Risperidone rykindo (Wang 2024)"
@@ -12263,6 +12285,7 @@ articles:
   - articles/Yamada_2025_zolbetuximab
   - articles/Yamaguchi_2024_cefiderocol
   - articles/Yamamoto_2017_cns_pbpk_rat
+  - articles/Yamamoto_2017b_cns_distribution
   - articles/Yamamoto_2023_tominersen
   - articles/Yamazaki_2008_crizotinib_mouse
   - articles/Yan_2019_benralizumab
