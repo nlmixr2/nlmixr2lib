@@ -4060,8 +4060,8 @@ navbar:
         href: articles/Choi_2016_gcc4401c_rivaroxaban.html
       - text: "Gefapixant (Chawla 2023)"
         href: articles/Chawla_2023_gefapixant.html
-      - text: "Gefitinib (Qin 2026)"
-        href: articles/Qin_2026_acid_reducing_agent_ddi.html
+      - text: "Gefitinib (Kawata 2019)"
+        href: articles/Kawata_2019_gefitinib.html
       - text: "Gefitinib (Wanika 2024)"
         href: articles/Wanika_2024_tki_nsclc_invitro.html
       - text: "Gefitinib qsp (Wan 2025)"
@@ -12066,6 +12066,7 @@ articles:
   - articles/Kawaguchi_2018_cefiderocol
   - articles/Kawaguchi_2021_cefiderocol
   - articles/Kawamura_2018_eribulin
+  - articles/Kawata_2019_gefitinib
   - articles/Kawata_2024_propofol
   - articles/Kawuma_2023_dolutegravir
   - articles/Kawuma_2023_tenofovir

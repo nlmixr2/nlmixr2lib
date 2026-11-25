@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bins 2019 pazopanib with the CYP3A4*22 effect on clearance ([doi:10.1007/s40262-018-0719-5](https://doi.org/10.1007/s40262-018-0719-5)) -- adults with advanced solid tumours, alone or with docetaxel or ifosfamide.
+- Add Kawata 2019 gefitinib ([doi:10.1007/s00280-019-03788-4](https://doi.org/10.1007/s00280-019-03788-4)) -- Japanese adults with advanced or recurrent non-small-cell lung cancer.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
