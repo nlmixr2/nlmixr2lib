@@ -1,0 +1,648 @@
+---
+title: "Tenofovir PBMC uptake and phosphorylation QSP (Madrasi 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tenofovir PBMC uptake and phosphorylation QSP (Madrasi 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5,
+  message = FALSE
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Madrasi_2014_tenofovir_qsp"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Madrasi_2014_tenofovir_qsp"))$description`
+* Article: <https://doi.org/10.1038/psp.2014.46> (PMC4260001, open access)
+* Supplement: the supplementary text (assumptions and Equations S1a-S2f),
+  Supplementary Table S1 (parameter values), the authors' MATLAB code for the
+  single- and multiple-dose simulations, their NONMEM 7.2 control stream for
+  the population simulation, and Supplementary Figures S1-S4.
+
+Madrasi 2014 builds an exploratory mechanistic model of how plasma tenofovir
+(TFV), released from oral tenofovir disoproxil fumarate (TDF), gets into
+peripheral blood mononuclear cells (PBMCs) and is phosphorylated there to the
+active anabolite tenofovir diphosphate (TFV-DP). Plasma tenofovir follows a
+literature two-compartment model (Duwal 2012). Inside the PBMC the model
+resolves the uptake and efflux mechanisms that empirical popPK models lump
+into one rate constant: a saturable antiporter driven by the glutathione
+gradient across the cell membrane, a saturable transporter efflux, a fast
+first-order MRP4 leak back to plasma, optional passive diffusion of the
+unionised fraction, and two Michaelis-Menten phosphorylation steps (adenylate
+kinase 2, then nucleoside diphosphate kinase A).
+
+Nothing in the model was estimated. The authors took every value from the
+literature, then lowered the uptake Km 5000-fold and raised the leak about
+2000-fold until TFV-DP formation saturated above a 300 mg dose, which is the
+behaviour they set out to explain. The model was then taken to a 100-subject
+population, with between-subject variability on the plasma PK only, and
+compared with the oral arm of MTN-001.
+
+The paper reports three model variants, all sharing this file's structure:
+
+| Variant | Paper figures | `km_pbmc` (uM) | `keff_pbmc` (1/h) | `ps_pbmc` (L/h) |
+|---|---|---|---|---|
+| Diffusion + channel uptake | Figure 2, Figure S1 | 770 | 1.5e7 | 0.163 |
+| Channel uptake only | Figure 3, Figure S2 | 770 | 1.5e7 | 0 |
+| Saturable uptake (final; the packaged defaults) | Figures 4, 5, S3, S4; Table 1 | 0.154 | 3.4e10 | 0 |
+
+# Population
+
+The model was not fitted to data, so there is no estimation cohort. The
+deterministic simulations are of a single typical adult receiving 75, 150,
+300 or 600 mg TDF. The population simulation (Methods "Model validation") is
+of 100 subjects taking 300 mg TDF once daily for 14 days with full adherence,
+compared with steady-state plasma TFV and PBMC TFV-DP from the oral arm of
+MTN-001 (Hendrix 2013): healthy, HIV-negative women taking daily oral TDF for
+six weeks, sampled over 8 hours. The paper gives no demographics of its own,
+and the model has no covariates.
+
+```{r population}
+str(rxode2::rxode(readModelDb("Madrasi_2014_tenofovir_qsp"))$population)
+```
+
+# Source trace
+
+Every equation and every `ini()` value, with its location in the source. "Code"
+means the authors' supplementary MATLAB or NONMEM listing.
+
+| Item | Value in model | Source |
+|---|---|---|
+| Two-compartment plasma TFV PK with first-order absorption | `d/dt(depot)`, `d/dt(central)`, `d/dt(peripheral1)` | Figure 1; Supplement Eq. S2a, S2b, S2f; NONMEM `$DES` |
+| Bioavailability on the absorbed TDF dose | `f(depot) = 0.32` | Table S1 `Fbio`; code `FB=0.32` |
+| `lka` | log(1) 1/h | Table S1 `Ka`; code `KA=1` |
+| `lcl` | log(29.28) L/h | Table S1 `Cl`; NONMEM `$THETA(1)` |
+| `lvc` | log(244) L | Table S1 `Vc`; NONMEM `$THETA(2)` |
+| `lvp` | log(464.54) L | Table S1 `Vp`; NONMEM `$THETA(3)` |
+| `lq` | log(71.41) L/h | Table S1 `Q`; code `Q=71.41` |
+| `fu` | 0.93 | Table S1 `fu`; code `FU=0.93` |
+| `n_pbmc` | 0.9e6 cells/mL | Table S1 `N` |
+| `v_blood` | 5 L | Table S1 `Vbl` |
+| `v_pbmc_cell` | 0.28 pL | Table S1 `Vcell`; code `VC1` |
+| Total PBMC volume `v_pbmc = n_pbmc x v_blood x v_pbmc_cell` | 1.26e-3 L | Eq. S1i denominator; code `VC2 = VC1 * N` with `N = 4.5e9` |
+| Glutathione-driven saturable influx | `uptake` | Eq. S1h; code |
+| Saturable efflux | `efflux` | Eq. S1i; code |
+| `vmax_pbmc` | 1.77 g/(L h) | Table S1 `Vmax`; code `VMAX=1.77` |
+| `km_pbmc` | 0.154 uM | Table S1 `Km` (assumed for model); code `KM=0.000044229` g/L |
+| `keff_pbmc` (MRP4 leak, returns to plasma) | 3.4e10 1/h | Table S1 `kleak` (assumed for model); code `KL`; return term from Eq. S2a and MATLAB `dy(1)` |
+| `gsh_int`, `gsh_ext` | 3100, 20 uM | Table S1 `GSHi`, `GSHe`; code `GSHI`, `GSHO` |
+| Passive diffusion | `diffusion` | Eq. S1b, S2a, S2c |
+| `ps_pbmc` | 0 L/h | Supplement text ("choosing PS_PBMC as 0"); Table S1 `PScell` |
+| TFV -> TFV-MP (adenylate kinase 2) | `phos1` | Eq. S1f, S2c, S2d; code |
+| `kcat_ak2`, `km_ak2`, `enz_ak2` | 2.4 1/s, 3 mM, 56 nM | Table S1 `kcat1`, `Km1`, `E1`; code |
+| TFV-MP -> TFV-DP (NDPK-A) | `phos2` | Eq. S1g, S2d, S2e; code |
+| `kcat_ndpk`, `km_ndpk`, `enz_ndpk` | 0.12 1/s, 0.29 mM, 287.7 nM | Table S1 `kcat2`, `Km2`, `E2`; code |
+| `lkel_tfvdp` | log(0.0144375) 1/h | code `KO=0.0144375` (Table S1 `kout` = 0.0144, rounded) |
+| Molecular weights (`model()`) | 287.2, 367.2, 447.18 g/mol | Table S1 `M_TFV`, `M_TFV-MP`, `M_TFV-DP`; code `M1`-`M3` |
+| `etalcl`, `etalvc`, `etalvp` | 0.36, 0.79, 0.42 | NONMEM `$OMEGA` |
+| `propSd`, `propSd_Cpbmc_tfvdp` | sqrt(0.183), sqrt(0.567) | NONMEM `$SIGMA` |
+| `Cc` (ng/mL) | `1000 * central / vc` | MATLAB `CTFV`; NONMEM `C1` |
+| `Cpbmc_tfvmp` (ng/mL of PBMC volume) | `1000 * pbmc_tfvmp / v_pbmc` | MATLAB `TFVMP` |
+| `Cpbmc_tfvdp` ("fmol/10^6 cells") | `1e6 * pbmc_tfvdp / 447.18` | MATLAB `TFVDP`; NONMEM `C5` |
+
+## Units
+
+Amount states are carried in mg; the authors' code carried grams. Each rate law
+converts its literature constants explicitly in `model()`, so the equations
+are the authors' equations, not rescaled ones. One identity is worth checking
+here because it is the easiest to get wrong: the uptake Km is tabulated in
+micromolar, while the code carries it as a mass concentration.
+
+```{r unit-identities}
+mod <- rxode2::rxode(readModelDb("Madrasi_2014_tenofovir_qsp"))
+ini_df <- mod$iniDf
+theta <- setNames(ini_df$est, ini_df$name)
+
+# Code: KM = 0.000044229 g/L. 0.154 uM x 287.2 g/mol = 4.4229e-5 g/L.
+km_g_per_l <- theta[["km_pbmc"]] * 1e-6 * 287.2
+stopifnot(abs(km_g_per_l - 0.000044229) / 0.000044229 < 1e-4)
+
+# Code: VC2 = VC1 * N = 2.8e-13 L x 4.5e9 = 1.26e-3 L.
+v_pbmc <- theta[["n_pbmc"]] * theta[["v_blood"]] * 1000 *
+  theta[["v_pbmc_cell"]] * 1e-12
+stopifnot(abs(v_pbmc - 1.26e-3) < 1e-12)
+
+# Table S1 PScell = 36.3 pL/h per cell; total over all cells (Eq. S1b):
+ps_total <- 36.3e-12 * theta[["n_pbmc"]] * theta[["v_blood"]] * 1000
+ps_total
+```
+
+# Deterministic single-dose simulations (Figures 2-4)
+
+```{r single-dose}
+mod_typ <- rxode2::zeroRe(mod, "omega")
+
+scenarios <- list(
+  "Diffusion + channel (Figure 2)" = c(km_pbmc = 770, keff_pbmc = 1.5e7,
+                                       ps_pbmc = ps_total),
+  "Channel only (Figure 3)" = c(km_pbmc = 770, keff_pbmc = 1.5e7, ps_pbmc = 0),
+  "Saturable uptake (Figure 4)" = c(km_pbmc = 0.154, keff_pbmc = 3.4e10,
+                                    ps_pbmc = 0)
+)
+doses <- c(75, 150, 300, 600)
+
+make_events <- function(dose, dose_times, obs_times) {
+  dplyr::bind_rows(
+    data.frame(id = 1L, time = dose_times, amt = dose, evid = 1L,
+               cmt = "depot", dvid = NA_integer_),
+    data.frame(id = 1L, time = obs_times, amt = NA_real_, evid = 0L,
+               cmt = "central", dvid = 1L)
+  ) |>
+    dplyr::arrange(time, dplyr::desc(evid))
+}
+
+run_grid <- function(dose_times, obs_times) {
+  out <- list()
+  for (sc in names(scenarios)) {
+    for (d in doses) {
+      s <- rxode2::rxSolve(
+        mod_typ, make_events(d, dose_times, obs_times),
+        params = scenarios[[sc]], returnType = "data.frame",
+        useLinCmt = FALSE
+      )
+      out[[length(out) + 1L]] <- s |>
+        dplyr::select(time, Cc, Cpbmc_tfvmp, Cpbmc_tfvdp) |>
+        dplyr::mutate(scenario = sc, dose = d)
+    }
+  }
+  dplyr::bind_rows(out) |>
+    dplyr::mutate(scenario = factor(scenario, levels = names(scenarios)),
+                  dose = factor(paste(dose, "mg"), levels = paste(doses, "mg")))
+}
+
+sd_sim <- run_grid(0, seq(0, 240, by = 0.5))
+```
+
+```{r fig-single-dose, fig.height = 7.5}
+# Replicates Figures 2, 3 and 4 of Madrasi 2014 (one row per figure).
+sd_sim |>
+  tidyr::pivot_longer(c(Cc, Cpbmc_tfvdp, Cpbmc_tfvmp), names_to = "output") |>
+  dplyr::mutate(output = factor(output,
+    levels = c("Cc", "Cpbmc_tfvdp", "Cpbmc_tfvmp"),
+    labels = c("Plasma TFV (ng/mL)", "PBMC TFV-DP (fmol/1e6 cells)",
+               "PBMC TFV-MP (ng/mL)"))) |>
+  ggplot(aes(time, value, colour = dose)) +
+  geom_line() +
+  facet_grid(scenario ~ output, scales = "free_y") +
+  scale_x_continuous(breaks = seq(0, 240, 60)) +
+  labs(x = "Time (h)", y = NULL, colour = "TDF dose") +
+  theme_bw() +
+  theme(strip.text.y = element_text(size = 7))
+```
+
+The figure reproduces the paper's three panels-of-three. The checks below
+compare the peak of each curve with values the maintainers read off the
+published figures (axis-limited, so about 3-5 percent reading precision), and
+the 300 mg saturable peak with the number printed in Results.
+
+```{r single-dose-checks}
+peaks <- sd_sim |>
+  dplyr::group_by(scenario, dose) |>
+  dplyr::summarise(
+    plasma_cmax = max(Cc),
+    tfvdp_cmax = max(Cpbmc_tfvdp),
+    tfvdp_tmax = time[which.max(Cpbmc_tfvdp)],
+    tfvmp_cmax = max(Cpbmc_tfvmp),
+    .groups = "drop"
+  )
+
+published_peaks <- tibble::tribble(
+  ~scenario,                        ~dose,    ~tfvdp_pub, ~tfvmp_pub,
+  "Channel only (Figure 3)",        "75 mg",  3.0,        200,
+  "Channel only (Figure 3)",        "150 mg", 6.0,        410,
+  "Channel only (Figure 3)",        "300 mg", 12.0,       810,
+  "Channel only (Figure 3)",        "600 mg", 23.7,       1620,
+  "Saturable uptake (Figure 4)",    "75 mg",  4.8,        230,
+  "Saturable uptake (Figure 4)",    "150 mg", 7.7,        320,
+  "Saturable uptake (Figure 4)",    "300 mg", 11.35,      400,
+  "Saturable uptake (Figure 4)",    "600 mg", 15.7,       460
+)
+
+peak_cmp <- peaks |>
+  dplyr::mutate(scenario = as.character(scenario),
+                dose = as.character(dose)) |>
+  dplyr::inner_join(published_peaks, by = c("scenario", "dose")) |>
+  dplyr::mutate(
+    tfvdp_pct = 100 * (tfvdp_cmax - tfvdp_pub) / tfvdp_pub,
+    tfvmp_pct = 100 * (tfvmp_cmax - tfvmp_pub) / tfvmp_pub
+  )
+
+peak_cmp |>
+  dplyr::select(scenario, dose, tfvdp_cmax, tfvdp_pub, tfvdp_pct,
+                tfvmp_cmax, tfvmp_pub, tfvmp_pct) |>
+  dplyr::rename(
+    "Scenario" = scenario, "TDF dose" = dose,
+    "TFV-DP peak, model" = tfvdp_cmax, "TFV-DP peak, paper" = tfvdp_pub,
+    "TFV-DP % diff" = tfvdp_pct,
+    "TFV-MP peak, model (ng/mL)" = tfvmp_cmax,
+    "TFV-MP peak, paper (ng/mL)" = tfvmp_pub,
+    "TFV-MP % diff" = tfvmp_pct
+  ) |>
+  knitr::kable(digits = 2, caption = paste(
+    "Peak PBMC TFV-DP (fmol/1e6 cells) and TFV-MP after one TDF dose.",
+    "Paper values are read from Figures 3 and 4, except the 300 mg",
+    "saturable TFV-DP peak, which is printed in Results (11.35)."))
+
+# The model is deterministic and has no random draw, so these bounds only
+# have to absorb the figure-reading precision.
+stopifnot(
+  # Results: "The single-dose simulations of TDF dose at 300 mg reveal a
+  # TFV-DP peak of 11.35 fmol/10^6 cells".
+  abs(peaks$tfvdp_cmax[peaks$scenario == "Saturable uptake (Figure 4)" &
+                         peaks$dose == "300 mg"] - 11.35) / 11.35 < 0.01,
+  all(abs(peak_cmp$tfvdp_pct) < 10),
+  all(abs(peak_cmp$tfvmp_pct) < 10),
+  # Results "Impact of diffusion": "No difference was observed between the
+  # two scenarios".
+  max(abs(sd_sim$Cpbmc_tfvdp[sd_sim$scenario == "Diffusion + channel (Figure 2)"] -
+            sd_sim$Cpbmc_tfvdp[sd_sim$scenario == "Channel only (Figure 3)"])) < 0.01
+)
+```
+
+# Deterministic multiple-dose simulations (Figures S1-S3)
+
+The authors simulated repeated dosing in MATLAB by restarting the ODE solver
+once per dose (Supplement code): each restart takes its initial state from row
+23 of the previous segment's `0:1:23` time grid, which is t = 22 h, not 24 h.
+The first interval is therefore 23 h and every later one 22 h, although the
+supplementary figures are drawn on a 24-hour axis. The packaged model is
+simulated both ways below. Only the authors' 22-hour schedule reproduces the
+channel-only plateau in Figure S2. The saturable plateau barely depends on the
+interval, because its uptake runs near its maximum rate either way.
+
+```{r multi-dose}
+authors_times <- c(0, 23, 23 + 22 * (1:19))  # 20 doses, as in Figure S1-S3
+md_authors <- run_grid(authors_times,
+                       seq(0, max(authors_times) + 22, by = 0.5)) |>
+  dplyr::mutate(schedule = "authors' MATLAB loop (22 h)")
+md_daily <- run_grid(seq(0, 19 * 24, by = 24), seq(0, 480, by = 0.5)) |>
+  dplyr::mutate(schedule = "true once daily (24 h)")
+
+md_end <- dplyr::bind_rows(md_authors, md_daily) |>
+  dplyr::group_by(schedule, scenario, dose) |>
+  dplyr::summarise(tfvdp_end = dplyr::last(Cpbmc_tfvdp), .groups = "drop")
+```
+
+```{r fig-multi-dose}
+# Replicates panel B of Figures S2 and S3 of Madrasi 2014 (authors' schedule).
+md_authors |>
+  dplyr::filter(scenario != "Diffusion + channel (Figure 2)") |>
+  dplyr::mutate(scenario = sub("Figure 3", "Figure S2",
+                               sub("Figure 4", "Figure S3", scenario))) |>
+  ggplot(aes(time, Cpbmc_tfvdp, colour = dose)) +
+  geom_line() +
+  facet_wrap(~scenario) +
+  labs(x = "Time (h)", y = "PBMC TFV-DP (fmol/1e6 cells)", colour = "TDF dose") +
+  theme_bw()
+```
+
+```{r multi-dose-checks}
+published_end <- tibble::tribble(
+  ~scenario,                     ~dose,    ~tfvdp_end_pub,
+  "Channel only (Figure 3)",     "75 mg",  17,
+  "Channel only (Figure 3)",     "150 mg", 34,
+  "Channel only (Figure 3)",     "300 mg", 68,
+  "Channel only (Figure 3)",     "600 mg", 135,
+  "Saturable uptake (Figure 4)", "75 mg",  20,
+  "Saturable uptake (Figure 4)", "150 mg", 28,
+  "Saturable uptake (Figure 4)", "300 mg", 35,
+  "Saturable uptake (Figure 4)", "600 mg", 40
+)
+
+end_cmp <- md_end |>
+  dplyr::mutate(scenario = as.character(scenario), dose = as.character(dose)) |>
+  dplyr::inner_join(published_end, by = c("scenario", "dose")) |>
+  dplyr::mutate(pct = 100 * (tfvdp_end - tfvdp_end_pub) / tfvdp_end_pub)
+
+end_cmp |>
+  tidyr::pivot_wider(id_cols = c(scenario, dose, tfvdp_end_pub),
+                     names_from = schedule, values_from = c(tfvdp_end, pct)) |>
+  dplyr::rename(
+    "Scenario" = scenario, "TDF dose" = dose,
+    "Paper (Fig. S2/S3)" = tfvdp_end_pub,
+    "Model, 22 h" = `tfvdp_end_authors' MATLAB loop (22 h)`,
+    "% diff, 22 h" = `pct_authors' MATLAB loop (22 h)`,
+    "Model, 24 h" = `tfvdp_end_true once daily (24 h)`,
+    "% diff, 24 h" = `pct_true once daily (24 h)`
+  ) |>
+  knitr::kable(digits = 1, caption = paste(
+    "PBMC TFV-DP (fmol/1e6 cells) at the end of 20 doses. Paper values are",
+    "read from panel B of Figures S2 and S3; the 300 mg saturable value is",
+    "also printed in Results ('end TFV-DP amount of 35 fmol/10^6 cells')."))
+
+authors_cmp <- end_cmp[end_cmp$schedule == "authors' MATLAB loop (22 h)", ]
+daily_cmp <- end_cmp[end_cmp$schedule == "true once daily (24 h)", ]
+stopifnot(
+  all(abs(authors_cmp$pct) < 6),
+  # The 24 h schedule misses the linear (channel-only) plateau by about 9
+  # percent -- exactly the 24/22 dosing-rate ratio -- which is what
+  # identifies the 22 h restart in the authors' code.
+  all(abs(daily_cmp$pct[daily_cmp$scenario == "Channel only (Figure 3)"] + 9) < 3)
+)
+```
+
+# Population simulation (Figure 5)
+
+```{r population-sim}
+n_sub <- 200L  # the paper simulated 100
+pop_dose_times <- seq(0, 13 * 24, by = 24)
+pop_obs_times <- c(seq(0, 12, by = 0.5), 13 * 24 + seq(0, 12, by = 0.5))
+pop_events <- dplyr::bind_rows(
+  expand.grid(id = seq_len(n_sub), time = pop_dose_times) |>
+    dplyr::mutate(amt = 300, evid = 1L, cmt = "depot", dvid = NA_integer_),
+  expand.grid(id = seq_len(n_sub), time = pop_obs_times) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+rxode2::rxSetSeed(123456)  # the seed in the authors' $SIM record
+pop_sim <- rxode2::rxSolve(mod, pop_events, returnType = "data.frame",
+                           useLinCmt = FALSE) |>
+  dplyr::mutate(day = ifelse(time < 24, "Day 1", "Day 14"),
+                tad = ifelse(time < 24, time, time - 13 * 24))
+
+pop_q <- pop_sim |>
+  tidyr::pivot_longer(c(Cc, Cpbmc_tfvdp), names_to = "output") |>
+  dplyr::group_by(day, output, tad) |>
+  dplyr::summarise(p05 = quantile(value, 0.05), p50 = median(value),
+                   p95 = quantile(value, 0.95), .groups = "drop") |>
+  dplyr::mutate(output = factor(output, levels = c("Cc", "Cpbmc_tfvdp"),
+    labels = c("Plasma TFV (ng/mL)", "PBMC TFV-DP (fmol/1e6 cells)")))
+```
+
+```{r fig-population, fig.height = 6}
+# Replicates Figure 5 of Madrasi 2014: 5th, 50th and 95th percentiles of
+# individual predictions (black: 5th / 95th, red: median). The MTN-001
+# observations overlaid in the paper are not redistributable here.
+ggplot(pop_q, aes(tad)) +
+  geom_line(aes(y = p05)) +
+  geom_line(aes(y = p95)) +
+  geom_line(aes(y = p50), colour = "red") +
+  facet_wrap(output ~ day, scales = "free_y") +
+  labs(x = "Time after dose (h)", y = NULL) +
+  theme_bw()
+```
+
+```{r population-checks}
+pop_cmax14 <- pop_sim |>
+  dplyr::filter(day == "Day 14") |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(tfvdp_cmax = max(Cpbmc_tfvdp), .groups = "drop")
+
+pick_q <- function(o, d, t, col) {
+  v <- pop_q[[col]][pop_q$output == o & pop_q$day == d & pop_q$tad == t]
+  stopifnot(length(v) == 1L)
+  v
+}
+plasma <- "Plasma TFV (ng/mL)"
+tfvdp <- "PBMC TFV-DP (fmol/1e6 cells)"
+
+pop_tab <- tibble::tribble(
+  ~Quantity, ~Paper, ~Model,
+  "Day 14 median TFV-DP Cmax (fmol/1e6 cells; Discussion)", 38.5,
+    median(pop_cmax14$tfvdp_cmax),
+  "Day 1 median plasma TFV at 2 h (ng/mL; Figure 5a)", 195,
+    pick_q(plasma, "Day 1", 2, "p50"),
+  "Day 1 median TFV-DP at 12 h (fmol/1e6 cells; Figure 5b)", 4.5,
+    pick_q(tfvdp, "Day 1", 12, "p50"),
+  "Day 14 median plasma TFV at 1 h (ng/mL; Figure 5c)", 320,
+    pick_q(plasma, "Day 14", 1, "p50"),
+  "Day 14 5th percentile TFV-DP (fmol/1e6 cells; Figure 5d)", 8,
+    pick_q(tfvdp, "Day 14", 6, "p05"),
+  "Day 14 95th percentile TFV-DP (fmol/1e6 cells; Figure 5d)", 238,
+    pick_q(tfvdp, "Day 14", 6, "p95")
+) |>
+  dplyr::mutate("% diff" = 100 * (Model - Paper) / Paper)
+knitr::kable(pop_tab, digits = 1, caption = paste(
+  "Population simulation against the values printed in the Discussion and",
+  "read from Figure 5."))
+
+# Centre checks only: the paper's own percentiles come from 100 random
+# subjects, and rxode2's random stream differs across builds and thread
+# counts, so the extremes are not reproducible (see the 95th percentile row).
+stopifnot(
+  # TFV-DP spreads about 1 log unit between subjects, so a 200-subject median
+  # moves about +/-10 percent with the draw, and the paper's 38.5 is itself a
+  # 100-subject median (1000 subjects give 34). A unit or structural error
+  # moves this by orders of magnitude.
+  abs(median(pop_cmax14$tfvdp_cmax) - 38.5) / 38.5 < 0.40,
+  abs(pick_q(plasma, "Day 1", 2, "p50") - 195) / 195 < 0.25,
+  abs(pick_q(tfvdp, "Day 1", 12, "p50") - 4.5) / 4.5 < 0.35
+)
+```
+
+The day-1 percentiles and the day-14 TFV-DP median and 5th percentile agree
+with the paper. Two values do not:
+
+* The 95th percentile of day-14 TFV-DP in Figure 5d is drawn at about 238,
+  but the Discussion gives the simulated individual range as 4.715 to 139.5
+  fmol/10^6 cells. With 100 subjects the 95th percentile cannot exceed the
+  maximum, so the paper contradicts itself. This model's 95th percentile
+  (about `r round(pick_q(tfvdp, "Day 14", 6, "p95"))`) is of the order of the
+  printed maximum, not of the drawn line.
+* The day-14 plasma median is about 10-15 percent below the Figure 5c line.
+  On day 1 the medians match, and the typical-value accumulation is fixed by
+  the Duwal 2012 PK, so the gap is consistent with sampling noise in a
+  100-subject percentile plus figure-reading error.
+
+# PKNCA: single-dose plasma TFV and PBMC TFV-DP
+
+The paper reports a single-dose plasma tmax of 2 h ("as predicted before") and
+the 300 mg TFV-DP peak quoted above. PKNCA is run on the saturable single-dose
+profiles on the authors' 1-hour output grid (`tspan = 0:1:240`), with the dose
+as the treatment group. Plasma `cl.obs` checks the PK chain end to end: almost
+none of the absorbed tenofovir is lost to phosphorylation, so dose / AUC must
+recover CL/F = 29.28 / 0.32 = 91.5 L/h.
+
+```{r pknca}
+nca_conc <- sd_sim |>
+  dplyr::filter(scenario == "Saturable uptake (Figure 4)",
+                time == round(time)) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(id = 1L, treatment = as.character(dose),
+                dose_mg = as.numeric(sub(" mg", "", treatment))) |>
+  dplyr::select(id, treatment, dose_mg, time, Cc, Cpbmc_tfvdp)
+
+nca_conc <- dplyr::bind_rows(
+  nca_conc,
+  nca_conc |> dplyr::distinct(id, treatment, dose_mg) |>
+    dplyr::mutate(time = 0, Cc = 0, Cpbmc_tfvdp = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(treatment, time)
+
+dose_df <- nca_conc |>
+  dplyr::distinct(id, treatment, dose_mg) |>
+  dplyr::mutate(time = 0, amt = dose_mg)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+res_tfv <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id),
+  dose_obj,
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                         aucinf.obs = TRUE, half.life = TRUE)
+))
+res_dp <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_conc, Cpbmc_tfvdp ~ time | treatment + id),
+  dose_obj,
+  intervals = data.frame(start = 0, end = 240, cmax = TRUE, tmax = TRUE,
+                         auclast = TRUE)
+))
+
+nca_tfv <- as.data.frame(res_tfv) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::mutate(clf = as.numeric(sub(" mg", "", treatment)) * 1000 / aucinf.obs) |>
+  dplyr::arrange(as.numeric(sub(" mg", "", treatment)))
+nca_dp <- as.data.frame(res_dp) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+dplyr::inner_join(nca_tfv, nca_dp, by = "treatment", suffix = c("_tfv", "_dp")) |>
+  dplyr::select(treatment, cmax_tfv, tmax_tfv, aucinf.obs, half.life, clf,
+                cmax_dp, tmax_dp, auclast) |>
+  dplyr::rename(
+    "TDF dose" = treatment, "Plasma Cmax (ng/mL)" = cmax_tfv,
+    "Plasma Tmax (h)" = tmax_tfv, "Plasma AUC0-inf (ng*h/mL)" = aucinf.obs,
+    "Plasma t1/2 (h)" = half.life, "CL/F (L/h)" = clf,
+    "TFV-DP Cmax (fmol/1e6 cells)" = cmax_dp, "TFV-DP Tmax (h)" = tmax_dp,
+    "TFV-DP AUC0-240" = auclast
+  ) |>
+  knitr::kable(digits = 2)
+
+stopifnot(
+  # Dose / AUC recovers CL/F = 91.5 L/h. The 1-hour grid's trapezoids
+  # under-read the absorption peak, which biases CL/F up by about 1 percent
+  # (92.4 L/h here; a 0.05 h grid gives 91.5).
+  all(abs(nca_tfv$clf - 29.28 / 0.32) / (29.28 / 0.32) < 0.02),
+  # Plasma exposure is linear in dose; TFV-DP is not (saturable uptake).
+  diff(range(nca_tfv$cmax / as.numeric(sub(" mg", "", nca_tfv$treatment)))) /
+    mean(nca_tfv$cmax / as.numeric(sub(" mg", "", nca_tfv$treatment))) < 1e-3,
+  nca_dp$cmax[nca_dp$treatment == "600 mg"] /
+    nca_dp$cmax[nca_dp$treatment == "75 mg"] < 4
+)
+```
+
+## Comparison against published values
+
+```{r nca-compare}
+simulated_wide <- data.frame(
+  treatment = c("300 mg plasma TFV", "300 mg PBMC TFV-DP"),
+  tmax = c(nca_tfv$tmax[nca_tfv$treatment == "300 mg"], NA_real_),
+  cmax = c(NA_real_, nca_dp$cmax[nca_dp$treatment == "300 mg"])
+)
+published_wide <- data.frame(
+  treatment = c("300 mg plasma TFV", "300 mg PBMC TFV-DP"),
+  # Results: "The simulations for the single dose give a plasma TFV tmax of
+  # 2 h"; "a TFV-DP peak of 11.35 fmol/10^6 cells".
+  tmax = c(2, NA_real_),
+  cmax = c(NA_real_, 11.35)
+)
+knitr::kable(nlmixr2lib::ncaComparisonTable(
+  simulated = simulated_wide, reference = published_wide,
+  by = "treatment", units = c(tmax = "h", cmax = "fmol/1e6 cells"),
+  tolerance_pct = 20, label_first_column = "NCA parameter"
+), caption = "Simulated vs. published. * differs from the paper by >20%.")
+```
+
+On a 1-hour grid the simulated plasma tmax falls at 1 or 2 h, because the
+continuous-time peak lies between them (about 1.5 h). The paper's "2 h" is the
+same coarse-grid reading.
+
+# Sensitivity direction (Table 1)
+
+Table 1 reports Latin-hypercube regression coefficients for the single-dose
+300 mg TFV-DP Cmax and marks four as significant: kcat1 and E1 positive, Km1
+and kleak negative. A local one-at-a-time +10 percent perturbation of the
+packaged model gives the same signs.
+
+```{r sensitivity}
+base_ev <- make_events(300, 0, seq(0, 240, by = 0.5))
+cmax_with <- function(p) {
+  s <- rxode2::rxSolve(mod_typ, base_ev, params = p,
+                       returnType = "data.frame", useLinCmt = FALSE)
+  max(s$Cpbmc_tfvdp)
+}
+base_cmax <- cmax_with(c(ps_pbmc = 0))
+sens <- tibble::tibble(
+  parameter = c("kcat_ak2", "enz_ak2", "km_ak2", "keff_pbmc"),
+  paper_beta = c(1.4056, 1.3428, -0.4518, -1.1626)
+) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(local_elasticity = {
+    p <- setNames(1.1 * theta[[parameter]], parameter)
+    (cmax_with(p) / base_cmax - 1) / 0.1
+  }) |>
+  dplyr::ungroup()
+sens |>
+  dplyr::rename("Parameter" = parameter, "Paper beta (Table 1)" = paper_beta,
+                "Local elasticity (+10%)" = local_elasticity) |>
+  knitr::kable(digits = 3)
+stopifnot(all(sign(sens$local_elasticity) == sign(sens$paper_beta)))
+```
+
+The magnitudes need not agree: the paper's coefficients come from 50 joint
+random draws regressed together, not from local derivatives. Its non-significant
+coefficients (for example a negative kcat2) are not interpretable as
+directions.
+
+# Assumptions and deviations
+
+* **MRP4 leak returns tenofovir to plasma.** Supplement Eq. S2a and the MATLAB
+  code add `+ kleak * Z3` to the plasma equation; the printed NONMEM `$DES`
+  omits it. Without the return term the 3.4e10 1/h leak removes all plasma
+  tenofovir within seconds, which contradicts every published figure. The
+  model follows Eq. S2a and the MATLAB code.
+* **All-cell PBMC volume in the Michaelis-Menten denominators.** The MATLAB
+  listing divides the PBMC amounts by the volume of ONE cell (`Vcell`) in the
+  efflux and phosphorylation terms; the NONMEM listing, and Eq. S1i (`V_cell x
+  N x V_bl`), use the volume of all PBMCs. Only the all-cell volume reproduces
+  Figures 2-4, so the model uses it. The MATLAB listing also refers to an
+  undefined `Km3` in the TFV-DP equation, where `Km2` is meant.
+* **Uptake Km and unionised fraction.** The code expresses the uptake Km as a
+  mass concentration (0.154 uM x 287.2 g/mol) and omits the (1 - F) factor of
+  Eq. S1h-S1i; F = 4.2e-5 changes nothing. The model follows the code.
+* **TDF dosed as tenofovir.** As in the authors' code, the TDF dose in mg
+  enters plasma tenofovir scaled only by Fbio = 0.32, with no TDF-to-tenofovir
+  molecular-weight conversion (one 300 mg tablet carries 136 mg tenofovir).
+* **TFV-DP readout.** `Cpbmc_tfvdp` is the authors' reported quantity:
+  `A * 1e15 / (M3 * 1e6)` with the amount A in g (MATLAB `TFVDP`, NONMEM
+  `C5`). It is the total TFV-DP amount in all PBMCs, in fmol, divided by
+  10^6, not by the number of millions of cells (4500). It is therefore not a
+  physical per-cell amount, and the assumed kleak and Km, which the authors
+  chose to match clinical TFV-DP levels on this scale, are calibrated to it.
+  Keep the readout if you change the parameters.
+* **kout.** The code value 0.0144375 1/h is used; Table S1 rounds it to 0.0144.
+* **Passive diffusion term.** Its form follows Eq. S2a (`fu * PS / Vc * (Z1 -
+  Z3)`), with Table S1's per-cell PS (36.3 pL/h, which already includes the
+  unionised fraction) summed over all PBMCs. The paper ran nonzero PS only in
+  MATLAB with no listing, and it makes no visible difference (Figure 2 vs
+  Figure 3), so the form cannot be checked further. It is zero in the final
+  model.
+* **Between-subject variability.** The NONMEM `$OMEGA` values (0.36, 0.79,
+  0.42 on CL, Vc, Vp) are used as variances, as NONMEM reads them. The text
+  attributes them to Baheti 2011, whose published variances differ (see
+  `Baheti_2011_tenofovir`); the code is what was simulated.
+* **Residual error.** The NONMEM `$ERROR` attaches the first proportional
+  error to `CMT.EQ.1`, the absorption compartment, which is never observed; it
+  is taken to belong to plasma tenofovir. The paper's percentiles are of
+  individual predictions, so residual error does not enter any reproduced
+  figure.
+* **Multiple-dose schedule.** The supplementary figures come from a MATLAB
+  restart loop whose effective dosing interval is 22 h (23 h for the first);
+  see the multiple-dose section. The population simulation in NONMEM used true
+  24-hour dosing.
+* **Not reproduced.** The MTN-001 observations overlaid on Figure 5, and the
+  Latin-hypercube sensitivity analysis itself (Figure S4, Table 1
+  magnitudes), which depend on random draws the paper does not give.

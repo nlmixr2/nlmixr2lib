@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zaloumis 2014 intravenous artesunate (dihydroartemisinin) ([doi:10.1038/psp.2014.43](https://doi.org/10.1038/psp.2014.43)) -- adults and children with severe malaria in Africa and Asia.
+- Add Madrasi 2014 tenofovir PBMC uptake and phosphorylation QSP ([doi:10.1038/psp.2014.46](https://doi.org/10.1038/psp.2014.46)) -- simulated adults on oral tenofovir disoproxil fumarate, compared with healthy women in MTN-001.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
