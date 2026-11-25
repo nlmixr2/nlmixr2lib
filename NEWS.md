@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tang 2026 zidovudine intracellular phosphorylation ([doi:10.1038/s41598-026-49905-1](https://doi.org/10.1038/s41598-026-49905-1)) -- healthy Chinese adults (PBMC AZT, AZT-MP, AZT-DP and AZT-TP after a single 600 mg oral dose).
+- Add Sabo 2026 hydroxyurea ([doi:10.3390/pharmaceutics18060654](https://doi.org/10.3390/pharmaceutics18060654)) -- children and adults with sickle cell disease (OPTIMDREP trial), with the observed rapid/slow absorption phenotype as a covariate on ka.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
