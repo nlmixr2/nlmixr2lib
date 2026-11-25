@@ -1,0 +1,420 @@
+---
+title: "Sorafenib (Grevel 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sorafenib (Grevel 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Grevel_2019_sorafenib"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Grevel_2019_sorafenib"))$description`
+* Article: <https://doi.org/10.1111/cts.12634> (open access, PMC6742948)
+
+Grevel 2019 built a population PK model of sorafenib from ten pooled studies
+and used its post hoc clearances to derive exposure metrics (AUC12, AUC12AV)
+for parametric time-to-event models of progression-free survival and adverse
+events in the DECISION trial in radioiodine-refractory differentiated thyroid
+cancer (DTC). This library model is the population PK model. The time-to-event
+models are described in the last section; their parameter estimates are not
+published, so they are not part of the model.
+
+# Population
+
+The PK analysis pooled 3141 sorafenib concentrations from 859 individuals in
+10 phase I-IV studies (Grevel 2019 Results and Table S1): 39 healthy volunteers
+given single oral doses with dense sampling in two phase I studies, and
+patients with hepatocellular carcinoma (HCC, n = 332), renal cell carcinoma
+(RCC, n = 332) and DTC (DECISION, n = 156) given 400 mg twice daily with sparse
+sampling. Each DECISION patient contributed one PK sample, drawn after an
+unsupervised dose.
+
+Table S2 reports a median (range) age of 62 (21-97) years and body weight of
+70 (34-140) kg; 211 of 859 (25 percent) were women (46 percent in DECISION) and
+35 percent were Asian. The same information is available programmatically via
+`readModelDb("Grevel_2019_sorafenib")$population`.
+
+# Source trace
+
+Each `ini()` entry in `inst/modeldb/specificDrugs/Grevel_2019_sorafenib.R`
+carries its source location as an in-file comment. The table collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Three transit compartments (shared ktr) into a one-compartment model with linear elimination | n/a | Figure S2 (ODEs for A1-A4); Results, Population PK model |
+| CL_i = CL_TV x (1 + theta8 x female) x (1 + theta9 x DECISION) x exp(eta1) | n/a | Figure S2 |
+| V_i = V_TV x exp(eta2) | n/a | Figure S2 |
+| F1 = 1 (steady state), theta7 (single dose) | n/a | Figure S2 |
+| Ct = A4 / V1 x (1 + eps), SD theta4 or theta6 by number of samples on the occasion | n/a | Figure S2 |
+| CL/F (theta1) | 9.4 L/h | Table S3; Table 1 (male, HCC/RCC) |
+| V1/F (theta2) | 554 L | Table S3 |
+| ktr (theta3) | 1.0 1/h | Table S3 |
+| F1, phase I single dose (theta7) | 1.9 | Table S3 |
+| Female effect on CL/F (theta8) | -0.211 | Table 1 (-21.1 percent); Table S3 prints -0.2 |
+| DECISION effect on CL/F (theta9) | -0.506 | Table 1 (-50.6 percent); Table S3 prints -0.5 |
+| IIV CL (omega squared) | 0.2 | Table S3 |
+| IIV V1 (omega squared) | 0.4 | Table S3 |
+| Proportional SD, several samples per occasion (theta4) | 0.3 | Table S3 |
+| Additive SD (theta5) | 0 fixed (omitted) | Table S3 |
+| Proportional SD, single-sample occasion (theta6) | 0.5 | Table S3 |
+| sigma squared | 1 fixed (SDs carried by theta4 / theta6) | Table S3, Figure S2 |
+
+# Virtual cohort
+
+Patient data are not public. Four virtual arms cross sex with study (DECISION
+vs the other patient studies), all on the DECISION regimen of 400 mg twice
+daily for 35 days, long enough for the slowest arm (female DECISION, half-life
+about 105 h) to reach steady state. A fifth arm is a single 400 mg dose in a
+male phase I healthy volunteer.
+
+```{r cohort}
+rxode2::rxSetSeed(20190325)
+
+arms <- tibble::tribble(
+  ~treatment,                ~SEXF, ~STUDY_DECISION, ~STUDY_SORAFENIB_PHASE1, ~SAMPLE_INTENSIVE,
+  "Male, HCC/RCC",               0L,              0L,                      0L,                0L,
+  "Female, HCC/RCC",             1L,              0L,                      0L,                0L,
+  "Male, DTC (DECISION)",        0L,              1L,                      0L,                0L,
+  "Female, DTC (DECISION)",      1L,              1L,                      0L,                0L
+)
+
+tau <- 12
+n_doses <- 70L
+dose_times <- seq(0, by = tau, length.out = n_doses)
+t_last <- max(dose_times)
+obs_times <- sort(unique(c(
+  seq(0, t_last, by = 6),
+  seq(t_last, t_last + tau, by = 0.1)
+)))
+
+make_events <- function(arm_row, ids, amt, dose_times, obs_times) {
+  ev <- rxode2::et(amt = amt, time = dose_times, cmt = "depot") |>
+    rxode2::et(time = obs_times, cmt = "central") |>
+    as.data.frame()
+  ev <- ev[rep(seq_len(nrow(ev)), times = length(ids)), ]
+  ev$id <- rep(ids, each = nrow(ev) / length(ids))
+  for (nm in setdiff(names(arm_row), "treatment")) ev[[nm]] <- arm_row[[nm]]
+  ev$treatment <- arm_row$treatment
+  ev
+}
+```
+
+# Typical-value check against Table 1
+
+Table 1 of Grevel 2019 lists the model's apparent clearance and steady-state
+AUC over a 12-hour dosing interval (400 mg twice daily) for each sex in
+DECISION and in the HCC/RCC studies. These are typical-value quantities, so
+the comparison uses `rxode2::zeroRe()`.
+
+```{r typical}
+mod <- readModelDb("Grevel_2019_sorafenib")
+mod_typ <- rxode2::zeroRe(mod)
+
+ev_typ <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  make_events(arms[i, ], ids = i, amt = 400, dose_times = dose_times, obs_times = obs_times)
+}))
+
+sim_typ <- rxode2::rxSolve(mod_typ, events = ev_typ, keep = "treatment") |>
+  as.data.frame()
+```
+
+```{r pknca-typical}
+run_ss_nca <- function(sim, events, start, tau) {
+  conc <- sim |>
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::select(id, time, Cc, treatment)
+  conc <- dplyr::bind_rows(
+    conc,
+    conc |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+  ) |>
+    dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+    dplyr::arrange(id, time)
+  doses <- events |>
+    dplyr::filter(evid == 1) |>
+    dplyr::select(id, time, amt, treatment)
+  intervals <- data.frame(
+    start = start, end = start + tau,
+    auclast = TRUE, cmax = TRUE, tmax = TRUE, cmin = TRUE, cav = TRUE
+  )
+  PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id, concu = "mg/L", timeu = "h"),
+    PKNCA::PKNCAdose(doses, amt ~ time | treatment + id, doseu = "mg"),
+    intervals = intervals
+  ))
+}
+
+nca_typ <- run_ss_nca(sim_typ, ev_typ, start = t_last, tau = tau)
+
+table1 <- tibble::tribble(
+  ~treatment,                ~auclast,
+  "Male, HCC/RCC",               42.4,
+  "Female, HCC/RCC",             53.7,
+  "Male, DTC (DECISION)",        85.8,
+  "Female, DTC (DECISION)",     109
+)
+
+cmp_typ <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_typ,
+  reference = table1,
+  by = "treatment",
+  params = "auclast",
+  units = c(auclast = "mg*h/L"),
+  tolerance_pct = 5
+)
+knitr::kable(
+  cmp_typ,
+  caption = "Typical steady-state AUC0-12 for 400 mg twice daily vs Grevel 2019 Table 1. * differs by more than 5%."
+)
+```
+
+Each AUC is within 1 percent of Table 1. The small residual reflects the
+rounding of CL/F to 9.4 L/h in Table S3; the Table 1 AUCs imply 400 / 42.4 =
+9.43 L/h. Because the comparison solves the typical model against its own
+clearance, a tight bound is asserted, together with the closed form
+AUC0-12,ss = F x Dose / CL. (The female DECISION arm, with a half-life of
+about 105 h, is still 0.4 percent short of steady state on day 35.)
+
+```{r typical-assert}
+typ_auc <- as.data.frame(nca_typ) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::left_join(table1, by = "treatment") |>
+  dplyr::left_join(arms, by = "treatment") |>
+  dplyr::mutate(
+    cl_typ = 9.4 * (1 - 0.211 * SEXF) * (1 - 0.506 * STUDY_DECISION),
+    closed_form = 400 / cl_typ,
+    pct_table1 = 100 * (PPORRES / auclast - 1),
+    pct_closed = 100 * (PPORRES / closed_form - 1)
+  )
+
+typ_auc |>
+  dplyr::select(treatment, cl_typ, closed_form, PPORRES, pct_closed) |>
+  dplyr::rename(
+    "Arm" = treatment,
+    "Typical CL/F (L/h)" = cl_typ,
+    "F x Dose / CL (mg h/L)" = closed_form,
+    "PKNCA AUC0-12 (mg h/L)" = PPORRES,
+    "% diff" = pct_closed
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical CL/F (Table 1 reports 9.4, 7.5, 4.7 and 3.7 L/h) and closed-form AUC check.")
+
+stopifnot(
+  all(abs(typ_auc$pct_table1) < 2),
+  all(abs(typ_auc$pct_closed) < 1)
+)
+```
+
+# Simulated steady-state exposure with between-subject variability
+
+```{r stochastic}
+n_per_arm <- 100L
+ev_sto <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  make_events(
+    arms[i, ],
+    ids = (i - 1L) * n_per_arm + seq_len(n_per_arm),
+    amt = 400,
+    dose_times = dose_times,
+    obs_times = seq(t_last, t_last + tau, by = 0.25)
+  )
+}))
+sim_sto <- rxode2::rxSolve(mod, events = ev_sto, keep = "treatment") |>
+  as.data.frame()
+```
+
+```{r fig-ss-profile}
+# Simulated steady-state profiles over one dosing interval, the time window of
+# the pc-VPC in Grevel 2019 Figure S3 (which pools all studies and therefore
+# cannot be overlaid arm by arm).
+sim_sto |>
+  dplyr::mutate(tad = time - t_last) |>
+  dplyr::group_by(treatment, tad) |>
+  dplyr::summarise(
+    q05 = quantile(Cc, 0.05), q50 = median(Cc), q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, q50, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  labs(
+    x = "Time after dose at steady state (h)",
+    y = "Sorafenib plasma concentration (mg/L)",
+    colour = NULL, fill = NULL,
+    caption = "Median and 90% interval; 400 mg twice daily, day 35. Compare Grevel 2019 Figure S3."
+  ) +
+  theme_minimal()
+```
+
+```{r pknca-stochastic}
+nca_sto <- run_ss_nca(sim_sto, ev_sto, start = t_last, tau = tau)
+
+nca_sto_summary <- as.data.frame(nca_sto) |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax", "cmin")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(
+    median = median(PPORRES),
+    p05 = quantile(PPORRES, 0.05),
+    p95 = quantile(PPORRES, 0.95),
+    .groups = "drop"
+  )
+nca_sto_summary |>
+  dplyr::rename("Arm" = treatment, "Parameter" = PPTESTCD, "Median" = median, "5th pct" = p05, "95th pct" = p95) |>
+  knitr::kable(digits = 2, caption = "Steady-state NCA (400 mg twice daily) across 100 virtual subjects per arm.")
+
+auc_med <- nca_sto_summary |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(treatment, median) |>
+  tibble::deframe()
+ratio_dtc <- auc_med[["Male, DTC (DECISION)"]] / auc_med[["Male, HCC/RCC"]]
+ratio_dtc
+```
+
+The median AUC0-12 in DECISION is about twice that in the HCC/RCC studies,
+the "approximate twofold increase in sorafenib exposure in patients with DTC"
+of the Results (Table 1: 103 percent). The ratio of medians is checked against
+the typical ratio 1 / (1 - 0.506) = 2.02 with a margin for the sampling noise
+of two 100-subject medians.
+
+```{r stochastic-assert}
+stopifnot(abs(ratio_dtc / (1 / (1 - 0.506)) - 1) < 0.25)
+```
+
+# Single dose in the phase I studies
+
+The phase I healthy-volunteer studies were dosed once and have a relative
+bioavailability of 1.9 against the steady-state patient studies. The figure
+shows the typical profile after a single 400 mg dose with and without that
+factor.
+
+```{r single-dose}
+arms_sd <- tibble::tribble(
+  ~treatment,                         ~SEXF, ~STUDY_DECISION, ~STUDY_SORAFENIB_PHASE1, ~SAMPLE_INTENSIVE,
+  "Phase I healthy volunteer (F1 = 1.9)",  0L,              0L,                      1L,                1L,
+  "Patient reference (F1 = 1)",            0L,              0L,                      0L,                1L
+)
+ev_sd <- dplyr::bind_rows(lapply(seq_len(nrow(arms_sd)), function(i) {
+  make_events(arms_sd[i, ], ids = i, amt = 400, dose_times = 0, obs_times = seq(0, 168, by = 0.5))
+}))
+sim_sd <- rxode2::rxSolve(mod_typ, events = ev_sd, keep = "treatment") |>
+  as.data.frame()
+
+ggplot(sim_sd, aes(time, Cc, colour = treatment)) +
+  geom_line(linewidth = 0.8) +
+  labs(
+    x = "Time after a single 400 mg dose (h)",
+    y = "Sorafenib plasma concentration (mg/L)",
+    colour = NULL,
+    caption = "Typical male subject, non-DECISION clearance."
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+# Exposure under the simulated dosing regimens
+
+Grevel 2019 simulated progression-free survival and adverse events for
+continuous dosing at 800, 600 (400 mg am / 200 mg pm) and 400 mg/day in the
+DTC population (Figures 2 and 5) and for four dose-reduction schemes starting
+with two 28-day cycles at 800 mg/day (Figure 3, Figure S7). The hazard models
+that turn those regimens into event rates are not published (see below), but
+the PK model gives the exposure each regimen produces. The table shows the
+typical steady-state daily AUC in a male DECISION patient; AUC scales with the
+daily dose because elimination is linear.
+
+```{r regimens}
+regimens <- tibble::tribble(
+  ~treatment,     ~am, ~pm,
+  "800 mg/day",   400, 400,
+  "600 mg/day",   400, 200,
+  "400 mg/day",   200, 200
+)
+ev_reg <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  amts <- rep(c(regimens$am[i], regimens$pm[i]), length.out = n_doses)
+  ev_d <- data.frame(id = i, time = dose_times, amt = amts, evid = 1L, cmt = "depot")
+  ev_o <- data.frame(
+    id = i, time = seq(t_last - tau, t_last + tau, by = 0.1),
+    amt = 0, evid = 0L, cmt = "central"
+  )
+  ev <- dplyr::bind_rows(ev_d, ev_o) |> dplyr::arrange(time, dplyr::desc(evid))
+  ev$SEXF <- 0L
+  ev$STUDY_DECISION <- 1L
+  ev$STUDY_SORAFENIB_PHASE1 <- 0L
+  ev$SAMPLE_INTENSIVE <- 0L
+  ev$treatment <- regimens$treatment[i]
+  ev
+}))
+sim_reg <- rxode2::rxSolve(mod_typ, events = ev_reg, keep = "treatment") |>
+  as.data.frame()
+
+nca_reg <- run_ss_nca(sim_reg, ev_reg, start = t_last - tau, tau = 2 * tau)
+reg_auc <- as.data.frame(nca_reg) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::left_join(regimens, by = "treatment") |>
+  dplyr::mutate(closed_form = (am + pm) / (9.4 * (1 - 0.506)))
+reg_auc |>
+  dplyr::select(treatment, PPORRES, closed_form) |>
+  dplyr::rename("Regimen" = treatment, "AUC0-24,ss (mg h/L)" = PPORRES, "Daily dose / CL (mg h/L)" = closed_form) |>
+  knitr::kable(digits = 1, caption = "Typical steady-state AUC over 24 h in a male DECISION patient.")
+stopifnot(all(abs(reg_auc$PPORRES / reg_auc$closed_form - 1) < 0.01))
+```
+
+# Time-to-event models (not included)
+
+Table 2 of Grevel 2019 lists the hazard models fitted to DECISION: Weibull
+with AUC12AV for centrally assessed tumour progression; constant + Gompertz
+with average dose for grade 3 or higher adverse events and for grade 3
+hand-foot skin reactions; Gompertz with no exposure covariate for grade 4 or
+higher adverse events; Weibull with dose rate for grade 2 or higher diarrhoea;
+and a constant hazard with AUC12AV for grade 3 or higher hypertension. The
+exposure metrics are defined in Equations 1-4 (cycle-wise AUC12, the average
+AUC12 up to the event, average dose and dose rate). Neither the article nor
+its ten supplementary files report the hazard parameter estimates or the
+functional form of the exposure effects, so these models cannot be
+reproduced, and the Kaplan-Meier simulations of Figures 2, 3 and 5 are not
+replicated here. Back-calculating hazard parameters from the published
+Kaplan-Meier bands was not attempted: it would be a fit to digitised
+simulations, not the published model.
+
+# Assumptions and deviations
+
+- **Covariate effects from Table 1.** Table S3 prints theta8 = -0.2 and
+  theta9 = -0.5 to one decimal. The model uses -0.211 and -0.506, the
+  percentage differences in CL/F the paper reports in Table 1, which follow
+  directly from the linear covariate form of Figure S2 and reproduce the
+  Table 1 AUCs to within 1 percent. Table 1 prints the female CL/F in the
+  HCC/RCC studies as 7.5 L/h, which matches theta8 = -0.2 (9.4 x 0.8 = 7.52)
+  but not its own -21.1 percent row or its AUC of 53.7 mg h/L (400 / 53.7 =
+  7.45 L/h); the model gives 7.42 L/h.
+- **Other values as printed in Table S3**, mostly to one decimal: CL/F 9.4 L/h,
+  ktr 1.0 1/h, F1 1.9, IIV variances 0.2 and 0.4, proportional SDs 0.3 and 0.5.
+  The rounding of the variances is coarse (0.2 is 47 percent CV, but anything
+  from 0.15 to 0.25 rounds to it).
+- **IIV on V1/F retained.** The Methods state that between-patient variability
+  of V and ka "could not be estimated reliably", but Table S3 reports an
+  estimated IIV on V1 (0.4, 95% CI 0.2-0.7) and Figure S2 includes it, so the
+  model follows the table and the equation.
+- **Residual-error switch.** Figure S2 uses SD theta4 on occasions with several
+  observations and theta6 on occasions with a single observation. This is
+  carried by `SAMPLE_INTENSIVE` (1 = several samples on the occasion); the
+  additive component (theta5) was fixed to 0 and is omitted.
+- **Study indicators.** The DECISION effect is keyed on the study number in
+  Figure S2 and is encoded as `STUDY_DECISION`; the paper states it cannot be
+  separated from an effect of the DTC indication. The single-dose
+  bioavailability is encoded as `STUDY_SORAFENIB_PHASE1`, which in this pool
+  coincides with the healthy-volunteer and single-dose records. To simulate a
+  new non-DECISION population, set `STUDY_DECISION = 0`.
+- **Enterohepatic recirculation.** The multiple peaks seen in the dense phase I
+  profiles are not modelled; the three-transit absorption chain stands in for
+  them (Discussion). For a model with explicit recirculation see
+  `Jain_2011_sorafenib`.
+- **Time-to-event models omitted** for lack of published estimates (previous
+  section).

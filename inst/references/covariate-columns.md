@@ -19593,6 +19593,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Mahar_2025_daprodustat.R` (selects the 6.39 g/L additive residual SD; no structural effect).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family.
 
+### STUDY_DECISION (**canonical for the DECISION sorafenib phase III differentiated-thyroid-cancer study indicator**)
+- **Description:** 1 = subject from DECISION (Bayer study 14295, NCT00984282; sorafenib 400 mg b.i.d. vs placebo in radioiodine-refractory differentiated thyroid cancer); 0 = any other study in the pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the pooled HCC / RCC patient studies and the phase I healthy-volunteer studies).
+- **Source aliases:**
+  - `Study == 14295` -- Grevel 2019 Figure S2 (`CL_cov,study14295 = 1 + theta9 * (Study == 14295)`).
+- **Example models:** `Grevel_2019_sorafenib.R` (linear factor `(1 - 0.506 * STUDY_DECISION)` on apparent sorafenib clearance, i.e. CL/F 50.6% lower and AUC about twofold higher in DECISION).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Kept as a study indicator rather than `TUMTP_DTC` because Grevel 2019 states that the effect of enrolment in DECISION cannot be separated from an effect of the DTC indication (DECISION was the only DTC study in the pool); the paper's model equation (Figure S2) keys the effect on the study number.
+
+### STUDY_SORAFENIB_PHASE1 (**canonical for the sorafenib single-dose phase I healthy-volunteer study indicator**)
+- **Description:** 1 = record from one of the two single-dose phase I healthy-volunteer sorafenib studies pooled in Grevel 2019 (Bayer studies 100483, relative bioavailability, and 100484, food effect); 0 = record from a patient study dosed to steady state. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (patient studies at steady state, relative bioavailability F1 = 1).
+- **Source aliases:**
+  - Single-dose / phase 1 flag -- Grevel 2019 Figure S2 (`F1 = 1` steady state, `theta7` single-dose) and Table S3 (`F1, phase 1`).
+- **Example models:** `Grevel_2019_sorafenib.R` (relative bioavailability 1.9 in the phase I studies).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family, following the `STUDY_<DRUG>_PHASE1` form of `STUDY_IMEGLIMIN_PHASE1` / `STUDY_UPA_PHASE1`. In Grevel 2019 the phase I studies are exactly the healthy-volunteer and the single-dose records, so the indicator coincides with `DIS_HEALTHY`; the paper attributes the bioavailability difference to the single-dose-vs-steady-state design, so a study indicator is used.
+
 ### STUDY_NC003 (**canonical for the NC-003 pretomanid combination-regimen study cohort indicator**)
 - **Description:** 1 = subject enrolled in NC-003, a phase 2a study of pretomanid in combination regimens containing bedaquiline, clofazimine and/or pyrazinamide; 0 = subject from any other study in the pooled analysis. Subject-level (time-fixed).
 - **Units:** (binary)
@@ -23543,7 +23565,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** general
 - **Reference category:** 0 (sparse sampling).
 - **Source aliases:** derived per observation from the sampling-design label in the source dataset (intensive 24-h profiles / dense post-dose schedules -> 1; pre-dose troughs and steady-state population samples -> 0).
-- **Example models:** `Macpherson_2015_rosuvastatin.R` (Table 2 final model: 39.4% CV intensive vs 59.5% CV sparse residual error; switched per observation as `propSd <- propSdIntensive * SAMPLE_INTENSIVE + propSdSparse * (1 - SAMPLE_INTENSIVE)`).
+- **Example models:** `Macpherson_2015_rosuvastatin.R` (Table 2 final model: 39.4% CV intensive vs 59.5% CV sparse residual error; switched per observation as `propSd <- propSdIntensive * SAMPLE_INTENSIVE + propSdSparse * (1 - SAMPLE_INTENSIVE)`), `Grevel_2019_sorafenib.R` (Figure S2: proportional residual SD 0.3 on occasions with several samples, `SAMPLE_INTENSIVE = 1`, vs 0.5 on occasions with a single sample, `SAMPLE_INTENSIVE = 0`).
 - **Notes:** Conceptually similar to `STUDY1` / `STUDY5` / `PHASE1` / `ELISA` (per-record switches that select between estimated residual-error magnitudes) but the contrast is sampling design rather than study cohort or bioanalytical assay. The indicator is generally applicable: any pediatric / dense-vs-sparse pooled popPK design that estimates two residual errors can carry it. Within-subject variation is permitted (a single subject can have both intensive and sparse observations, as in the Macpherson 2015 CHARON PK-pilot cohort where 12 subjects had a Day-0 intensive profile followed by 2 years of sparse troughs).
 
 ### SAMPLE_PREDOSE (**canonical for per-observation pre-dose-sample indicator**)

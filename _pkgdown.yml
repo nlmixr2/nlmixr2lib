@@ -7688,6 +7688,8 @@ navbar:
         href: articles/Thorsted_2016_somatropin_rat.html
       - text: "Sonidegib (Goel 2016)"
         href: articles/Goel_2016_Sonidegib.html
+      - text: "Sorafenib (Grevel 2019)"
+        href: articles/Grevel_2019_sorafenib.html
       - text: "Sorafenib (Huh 2021)"
         href: articles/Huh_2021_sorafenib.html
       - text: "Sorafenib (Jain 2011)"
@@ -10237,6 +10239,7 @@ articles:
   - articles/Grasela_1985_phenobarbital
   - articles/Green_2003_enoxaparin
   - articles/Green_2005_enoxaparin
+  - articles/Grevel_2019_sorafenib
   - articles/Grimm_2023
   - articles/Grimsley_1999_vancomycin
   - articles/Groenendaal_2007_morphine_brain_rat
