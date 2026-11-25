@@ -1,0 +1,561 @@
+---
+title: "Lenvatinib tumor size and dose-altering adverse events (Hayato 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lenvatinib tumor size and dose-altering adverse events (Hayato 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Hayato 2018 built two exposure-response models from the phase 3 SELECT study of
+lenvatinib in radioiodine-refractory differentiated thyroid cancer (RR-DTC) and
+used them together to choose a lower starting dose for a follow-up trial:
+
+* a **tumor-growth-inhibition** model for the RECIST 1.1 sum of target-lesion
+  diameters, driven by the lenvatinib AUC computed from the average dose between
+  two tumor assessments, and
+* a weekly **cumulative-logit** model for dose-altering adverse events, graded
+  0 (none), 1 (an adverse event leading to dose interruption) and 2 (an adverse
+  event leading to dose reduction or withdrawal), driven by the AUC at the
+  highest dose taken that week.
+
+The two models were fitted separately, so the package ships them as two files.
+Neither has a PK layer: the individual AUCs came from the published population
+PK model of Gupta 2016, which is in the package as `Gupta_2016_lenvatinib`.
+
+* Citation: Hayato S, Shumaker R, Ferry J, Binder T, Dutcus CE, Hussein Z.
+  Exposure-response analysis and simulation of lenvatinib safety and efficacy in
+  patients with radioiodine-refractory differentiated thyroid cancer. Cancer
+  Chemother Pharmacol. 2018;82(6):971-978.
+* Article: <https://doi.org/10.1007/s00280-018-3687-4>
+
+```{r models}
+mod_tumor <- rxode2::rxode2(readModelDb("Hayato_2018_lenvatinib_tumor"))
+mod_ae <- rxode2::rxode2(readModelDb("Hayato_2018_lenvatinib_teae_dosemod"))
+mod_pk <- rxode2::rxode2(readModelDb("Gupta_2016_lenvatinib"))
+```
+
+# Population
+
+SELECT randomised 392 patients with RR-DTC 2:1 to lenvatinib 24 mg once daily or
+placebo. The tumor-size analysis used 2373 independent-review assessments from
+374 patients (248 lenvatinib, 126 placebo) with a baseline and at least one
+post-dose assessment; the adverse-event analysis used 7914 weekly reports over
+the first 24 weeks from 391 patients (260 lenvatinib, 131 placebo). Hayato 2018
+reports no demographics of its own (they are those of the SELECT publication)
+and performed no covariate analysis, so neither model carries a covariate other
+than exposure and, for the tumor model, the observed baseline tumor size.
+
+# Source trace
+
+| Item | Value | Source |
+|---|---|---|
+| Tumor ODE `dy/dt = KG*y - Emax*AVAUC/(AVAUC + EC50*R(t))*y`, `R(t) = exp(lambda*t)` | -- | Methods, "Exposure-response model for efficacy" |
+| `kgrow_pop` (KG) | 0.000932 /week | Table 1 |
+| `emax_pop` (Emax) | 0.0834 /week | Table 1 |
+| `lec50` (EC50) | 2.03 ug*h/mL = 2030 ng*h/mL | Table 1 |
+| `lam_pop` (lambda) | 0.170 /week | Table 1 |
+| `etakgrow`, `etaemax`, `etalam` (additive IIV) | SD 0.00858, 0.0508, 0.0791 /week | Table 1; additive form from Methods |
+| `etalec50` (exponential IIV) | CV 40.5% | Table 1; exponential form from Methods |
+| `propSd`, `addSd` | 3.89% CV, 1.74 mm | Table 1 |
+| AE model `EFF = Emax*AUC/(EC50 + AUC) + eta`, `A_i = B_i + EFF`, `P(AE >= i) = exp(A_i)/(1 + exp(A_i))` | -- | Methods, "Exposure-response model for safety" |
+| Per-grade probabilities `P(AE = 2) = P(AE >= 2)`, `P(AE = 1) = P(AE >= 1) - P(AE >= 2)`, `P(AE = 0) = 1 - P(AE >= 1)` | -- | Methods |
+| `logite0` (B1) | -5.64 | Table 2 |
+| `logitstep1` (B2 - B1) | -0.830 | Table 2 |
+| `emax` (Emax on the logit) | 6.55 | Table 2 |
+| `lec50` (EC50) | 2.95 ug*h/mL = 2950 ng*h/mL | Table 2 |
+| `etalogite0` (subject sensitivity) | SD 1.06 | Table 2 |
+| Dose-reduction ladders | 24-20-14-10; 20-14-10-8; 18-14-10-8; 14-10-8-4 mg, then stop | Online Resource Tables 1 and 2 |
+
+# Exposure
+
+Both models take lenvatinib exposure as the steady-state daily AUC
+`AUC_LEN = 1000 * F * dose / (CL/F)` in ng*h/mL, with `CL/F` and the capsule
+relative bioavailability `F` from Gupta 2016. The SELECT covariates that act on
+`CL/F` in that model are not published in Hayato 2018, so the virtual cohort
+below uses the Gupta 2016 reference patient (75 kg, normal albumin and alkaline
+phosphatase, no interacting co-medication) with its between-subject variability
+on `CL/F` and on `F`. The marketed product is a capsule.
+
+```{r cohort}
+pk_ini <- mod_pk$iniDf
+pk_est <- setNames(pk_ini$est, pk_ini$name)
+
+n_per_arm <- 200
+set.seed(20181)
+cohort <- data.frame(
+  sid = seq_len(n_per_arm),
+  cl = exp(pk_est[["lcl"]] + rnorm(n_per_arm, 0, sqrt(pk_est[["etalcl"]]))),
+  fcap = exp(pk_est[["lfcap"]] + rnorm(n_per_arm, 0, sqrt(pk_est[["etalfcap"]]))),
+  # Subject sensitivity of the adverse-event model (Table 2, SD 1.06), drawn
+  # here rather than by rxSolve so that the same patient keeps the same
+  # sensitivity in every week and every regimen.
+  eta_ae = rnorm(n_per_arm, 0, 1.06)
+)
+
+auc_len <- function(dose_mg, cl, fcap) 1000 * fcap * dose_mg / cl
+
+typical_auc_24 <- auc_len(24, exp(pk_est[["lcl"]]), exp(pk_est[["lfcap"]]))
+typical_auc_24
+summary(auc_len(24, cohort$cl, cohort$fcap))
+```
+
+## PKNCA check of the exposure definition
+
+The closed-form `AUC_LEN` is the steady-state AUC over one 24 h dosing interval.
+A typical-value solve of the Gupta 2016 model at 24 mg once daily, read by
+PKNCA, confirms it. Gupta 2016 splits each dose between a first-order depot and
+a zero-order input into the central compartment, so each daily dose is given to
+both (the model's `f()` statements apportion it).
+
+```{r pknca}
+n_days <- 28
+dose_times <- (seq_len(n_days) - 1) * 24
+ev_pk <- bind_rows(
+  data.frame(id = 1, time = dose_times, amt = 24, evid = 1, cmt = "depot", rate = 0),
+  data.frame(id = 1, time = dose_times, amt = 24, evid = 1, cmt = "central", rate = -2),
+  # Observations over the last dosing interval only (day 28, at steady state).
+  data.frame(id = 1, time = seq(648, 672, by = 0.25),
+             amt = 0, evid = 0, cmt = "central", rate = 0)
+) |>
+  distinct() |>
+  arrange(time, desc(evid)) |>
+  mutate(WT = 75, ALB = 40, ALP = 80, CONMED_CYP3A4_IND = 0,
+         CONMED_CYP3A4_INH = 0, DIS_HEALTHY = 0, FORM_CAPSULE = 1,
+         treatment = "24 mg QD capsule")
+
+# A single-subject solve returns no id column; add it back for PKNCA.
+sim_pk <- rxode2::rxSolve(rxode2::zeroRe(mod_pk), ev_pk, returnType = "data.frame") |>
+  mutate(id = 1, treatment = "24 mg QD capsule")
+
+conc <- sim_pk |>
+  filter(!is.na(Cc)) |>
+  mutate(time = time - 648) |>
+  distinct(id, time, .keep_all = TRUE) |>
+  select(id, time, Cc, treatment)
+dose_df <- data.frame(id = 1, time = 0, amt = 24, treatment = "24 mg QD capsule")
+
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = 24, auclast = TRUE, cmax = TRUE)
+))
+nca_res <- as.data.frame(nca$result)
+auc_ss_nca <- nca_res$PPORRES[nca_res$PPTESTCD == "auclast"]
+c(PKNCA_AUC0_24 = auc_ss_nca, closed_form = typical_auc_24)
+stopifnot(abs(auc_ss_nca / typical_auc_24 - 1) < 0.02)
+```
+
+# Tumor-growth-inhibition model
+
+## Closed-form check
+
+With a constant exposure `A` the tumor ODE integrates exactly:
+`y(t) = y0 * exp(KG*t - Emax*(t - log((A + EC50*exp(lambda*t)) / (A + EC50)) / lambda))`.
+The typical-value solve must agree with it to numerical precision, which
+verifies the transcription of the ODE, the time base and the EC50 units.
+
+```{r tumor-closed-form}
+tum_ini <- setNames(mod_tumor$iniDf$est, mod_tumor$iniDf$name)
+tum_closed <- function(t, a, y0) {
+  kg <- tum_ini[["kgrow_pop"]]
+  em <- tum_ini[["emax_pop"]]
+  c50 <- exp(tum_ini[["lec50"]])
+  lam <- tum_ini[["lam_pop"]]
+  y0 * exp(kg * t - em * (t - log((a + c50 * exp(lam * t)) / (a + c50)) / lam))
+}
+ev_typ <- data.frame(id = 1, time = seq(0, 24, by = 1), evid = 0, cmt = "tumor",
+                     AUC_LEN = typical_auc_24, TUM_SLD = 60)
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod_tumor), ev_typ, returnType = "data.frame")
+typ$closed <- tum_closed(typ$time, typical_auc_24, 60)
+stopifnot(max(abs(typ$tumor / typ$closed - 1)) < 1e-4)
+round(100 * typ$tumor[typ$time %in% c(8, 16, 24)] / 60, 1)
+
+# Placebo: with no exposure the tumor grows at KG = 0.000932 /week, i.e. about
+# 2% over 24 weeks.
+ev_pbo <- mutate(ev_typ, AUC_LEN = 0)
+pbo <- rxode2::rxSolve(rxode2::zeroRe(mod_tumor), ev_pbo, returnType = "data.frame")
+stopifnot(abs(pbo$tumor[pbo$time == 24] / (60 * exp(0.000932 * 24)) - 1) < 1e-6)
+```
+
+## Between-subject spread at constant 24 mg
+
+Companion to Figure 1 (the visual predictive check, which needs the SELECT data):
+the simulated 5th, 50th and 95th percentiles of tumor size for patients held at
+24 mg and for placebo, with the combined residual error included.
+
+```{r tumor-vpc}
+ev_vpc <- bind_rows(
+  data.frame(id = cohort$sid, arm = "Lenvatinib 24 mg",
+             AUC_LEN = auc_len(24, cohort$cl, cohort$fcap)),
+  data.frame(id = cohort$sid + n_per_arm, arm = "Placebo", AUC_LEN = 0)
+) |>
+  tidyr::crossing(time = seq(0, 24, by = 2)) |>
+  mutate(evid = 0, cmt = "tumor", TUM_SLD = 60) |>
+  arrange(id, time)
+rxode2::rxSetSeed(2018)
+sim_vpc <- rxode2::rxSolve(mod_tumor, ev_vpc, keep = "arm", returnType = "data.frame")
+sim_vpc |>
+  group_by(arm, time) |>
+  summarise(p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+            .groups = "drop") |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~arm) +
+  labs(x = "Time (weeks)", y = "Sum of target-lesion diameters (mm)",
+       title = "Simulated 90% interval, baseline 60 mm (cf. Figure 1 of Hayato 2018)")
+```
+
+# Dose-altering adverse-event model
+
+## Closed-form check
+
+The model's weekly probabilities are reproduced from Table 2 by hand. The
+check passes each simulated patient's sensitivity `eta` to the packaged model
+as a parameter so the same values can be recomputed independently.
+
+```{r ae-closed-form}
+# An ordinal endpoint has no sigma, so every solve warns 'No sigma parameters
+# in the model'; that one warning is muffled, any other still surfaces.
+muffle_no_sigma <- function(w) {
+  if (grepl("No sigma parameters", conditionMessage(w))) invokeRestart("muffleWarning")
+}
+ae_probs <- function(auc, eta) {
+  d <- data.frame(id = seq_along(auc), time = 0, evid = 0, AUC_LEN = auc)
+  withCallingHandlers(
+    rxode2::rxSolve(rxode2::zeroRe(mod_ae), d,
+                    params = data.frame(id = seq_along(auc), etalogite0 = eta),
+                    returnType = "data.frame"),
+    warning = muffle_no_sigma
+  )
+}
+
+auc_wk1 <- auc_len(24, cohort$cl, cohort$fcap)
+wk1 <- ae_probs(auc_wk1, cohort$eta_ae)
+by_hand_ge1 <- plogis(-5.64 + 6.55 * auc_wk1 / (2950 + auc_wk1) + cohort$eta_ae)
+by_hand_ge2 <- plogis(-5.64 - 0.830 + 6.55 * auc_wk1 / (2950 + auc_wk1) + cohort$eta_ae)
+stopifnot(
+  max(abs(wk1$prob_teae_dosemod - by_hand_ge1)) < 1e-10,
+  max(abs(wk1$prob_teae_dosered - by_hand_ge2)) < 1e-10,
+  max(abs(wk1$p0 + wk1$p1 + wk1$p2 - 1)) < 1e-12
+)
+```
+
+## Week 1 against Figure 2
+
+Figure 2 plots the weekly probability of a dose interruption (panel a) and of a
+dose reduction or withdrawal (panel b) among lenvatinib patients. In week 1
+every patient takes 24 mg, so the population average of the model's per-patient
+probabilities can be compared directly with the median simulated curve, read
+from the figure by the maintainers as about 0.073 (a) and 0.085 (b).
+
+```{r ae-week1}
+wk1_avg <- c(interruption = mean(wk1$p1), reduction_or_withdrawal = mean(wk1$p2))
+round(wk1_avg, 3)
+stopifnot(
+  abs(wk1_avg[["interruption"]] - 0.073) < 0.02,
+  abs(wk1_avg[["reduction_or_withdrawal"]] - 0.085) < 0.02
+)
+```
+
+# Dosing-regimen simulation
+
+Hayato 2018 simulated 24 weeks of dosing history for seven starting-dose
+regimens with the adverse-event model, then drove the tumor model with the
+resulting doses. The reduction ladders are those of Online Resource Tables 1
+and 2. The paper does not spell out how an interruption or an up-titration is
+executed, so the simulation below applies these rules (see Assumptions and
+deviations):
+
+* a grade-2 week lowers the dose one step on the current ladder from the next
+  week; a reduction beyond the fourth level withdraws the drug;
+* a grade-1 week takes the next week off drug, then the same dose resumes;
+* with up-titration, a patient who is still on the first level of the current
+  ladder and has never had a reduction moves to the next ladder at weeks 5, 9,
+  ... (every 4 weeks), up to 24 mg.
+
+The random draws for the adverse-event grades use R's generator with a fixed
+seed, so every regimen sees the same patients and the same uniform draws.
+
+```{r regimens}
+ladders <- list(
+  "24 mg" = list(c(24, 20, 14, 10)),
+  "20 mg" = list(c(20, 14, 10, 8)),
+  "18 mg" = list(c(18, 14, 10, 8)),
+  "14 mg" = list(c(14, 10, 8, 4)),
+  "20 mg + up" = list(c(20, 14, 10, 8), c(24, 20, 14, 10)),
+  "18 mg + up" = list(c(18, 14, 10, 8), c(24, 18, 14, 10)),
+  "14 mg + up" = list(c(14, 10, 8, 4), c(20, 14, 10, 8), c(24, 20, 14, 10))
+)
+
+ladder_dose <- function(ladder, row, lev) {
+  vapply(seq_along(row), function(i) ladder[[row[i]]][min(lev[i], 4L)], numeric(1))
+}
+
+simulate_regimen <- function(ladder, cohort, seed, n_weeks = 24) {
+  set.seed(seed)
+  n <- nrow(cohort)
+  row <- rep(1L, n)
+  lev <- rep(1L, n)
+  n_red <- rep(0L, n)
+  off <- rep(FALSE, n)
+  withdrawn <- rep(FALSE, n)
+  dose <- p_int <- p_red <- matrix(0, n, n_weeks)
+  for (w in seq_len(n_weeks)) {
+    if (length(ladder) > 1 && w > 1 && (w - 1) %% 4 == 0) {
+      up <- !withdrawn & lev == 1L & n_red == 0L & row < length(ladder)
+      row[up] <- row[up] + 1L
+    }
+    d <- ladder_dose(ladder, row, lev)
+    d[withdrawn | off] <- 0
+    dose[, w] <- d
+    pr <- ae_probs(auc_len(d, cohort$cl, cohort$fcap), cohort$eta_ae)
+    p_int[, w] <- pr$p1
+    p_red[, w] <- pr$p2
+    u <- runif(n)
+    grade <- ifelse(u < pr$p0, 0L, ifelse(u < pr$p0 + pr$p1, 1L, 2L))
+    on_drug <- d > 0
+    reduce <- grade == 2L & on_drug
+    off <- grade == 1L & on_drug
+    n_red[reduce] <- n_red[reduce] + 1L
+    lev[reduce] <- lev[reduce] + 1L
+    withdrawn <- withdrawn | lev > 4L
+  }
+  list(dose = dose, n_red = n_red, p_int = p_int, p_red = p_red)
+}
+
+sims <- lapply(ladders, simulate_regimen, cohort = cohort, seed = 101)
+```
+
+## Table 3: average dose and dose reductions
+
+```{r table3}
+table3_paper <- data.frame(
+  regimen = names(ladders),
+  avg_paper = c(19.23, 16.09, 15.13, 12.15, 18.35, 17.90, 16.90),
+  red1_paper = c(68.5, 60.8, 57.3, 46.9, 67.7, 67.7, 65.4),
+  red2_paper = c(33.8, 22.3, 20.8, 12.3, 30.4, 28.1, 23.8)
+)
+table3_sim <- data.frame(
+  regimen = names(sims),
+  avg_sim = vapply(sims, function(s) mean(s$dose), numeric(1)),
+  red1_sim = vapply(sims, function(s) 100 * mean(s$n_red >= 1), numeric(1)),
+  red2_sim = vapply(sims, function(s) 100 * mean(s$n_red >= 2), numeric(1))
+)
+table3 <- left_join(table3_paper, table3_sim, by = "regimen")
+table3 |>
+  mutate(across(where(is.numeric), \(x) round(x, 2))) |>
+  dplyr::rename(
+    "Regimen" = regimen,
+    "Average dose, paper (mg/day)" = avg_paper,
+    "Average dose, simulated (mg/day)" = avg_sim,
+    ">= 1 reduction, paper (%)" = red1_paper,
+    ">= 1 reduction, simulated (%)" = red1_sim,
+    ">= 2 reductions, paper (%)" = red2_paper,
+    ">= 2 reductions, simulated (%)" = red2_sim
+  ) |>
+  knitr::kable(caption = "Replicates Table 3 of Hayato 2018 (200 simulated patients per regimen).")
+
+stopifnot(
+  # The average dose integrates every week's draw; a wrong EC50 unit or a
+  # mis-signed threshold moves it by several mg/day.
+  max(abs(table3$avg_sim / table3$avg_paper - 1)) < 0.05,
+  max(abs(table3$red1_sim - table3$red1_paper)) < 8
+)
+```
+
+The average dose and the share of patients with at least one reduction match
+Table 3 closely for all seven regimens. The share with two or more reductions is
+higher in this simulation than in the paper (for example 43% against 33.8% at
+24 mg); it depends on the unpublished interruption and re-challenge rules, which
+the share with one or more reductions does not.
+
+## Figure 2 time course
+
+```{r fig2}
+sims[["24 mg"]][c("p_int", "p_red")] |>
+  lapply(colMeans) |>
+  as.data.frame() |>
+  mutate(week = seq_len(24)) |>
+  pivot_longer(c(p_int, p_red), names_to = "panel", values_to = "prob") |>
+  mutate(panel = recode(panel,
+    p_int = "(a) AE leading to dose interruption",
+    p_red = "(b) AE leading to dose reduction or withdrawal")) |>
+  ggplot(aes(week, prob)) +
+  geom_line(colour = "red") +
+  facet_wrap(~panel) +
+  coord_cartesian(ylim = c(0, 0.3)) +
+  labs(x = "Time (weeks)", y = "Mean weekly probability",
+       title = "Simulated 24 mg regimen (cf. Figure 2 of Hayato 2018)")
+```
+
+As in Figure 2, the probabilities peak in the first weeks and drift down as
+dose reductions accumulate.
+
+## Figure 3 and objective response
+
+The tumor model is driven by the AUC of the average dose over each 8-week
+interval between tumor assessments (weeks 0-8, 8-16 and 16-24).
+
+```{r tumor-regimens}
+tumor_events <- function(sim, cohort) {
+  avg <- cbind(rowMeans(sim$dose[, 1:8]), rowMeans(sim$dose[, 9:16]),
+               rowMeans(sim$dose[, 17:24]))
+  auc <- auc_len(avg, cohort$cl, cohort$fcap)
+  data.frame(
+    id = rep(cohort$sid, each = 4),
+    time = rep(c(0, 8, 16, 24), times = nrow(cohort)),
+    evid = 0, cmt = "tumor", TUM_SLD = 60,
+    AUC_LEN = as.vector(t(cbind(auc, auc[, 3])))
+  )
+}
+
+tumor_sims <- lapply(names(sims), function(reg) {
+  rxode2::rxSetSeed(2018)
+  rxode2::rxSolve(mod_tumor, tumor_events(sims[[reg]], cohort),
+                  returnType = "data.frame") |>
+    mutate(regimen = reg, rel = 100 * tumor / 60)
+}) |>
+  bind_rows()
+
+fig3_paper <- data.frame(
+  regimen = rep(c("24 mg", "20 mg", "18 mg", "14 mg", "20 mg + up", "18 mg + up", "14 mg + up"), each = 3),
+  time = rep(c(8, 16, 24), times = 7),
+  rel_paper = c(78.5, 69.7, 66.0, 80.2, 72.4, 68.7, 81.0, 73.4, 69.8, 83.3, 76.5, 73.6,
+                79.5, 71.0, 67.0, 79.8, 71.3, 67.3, 81.7, 73.0, 68.9)
+)
+fig3_sim <- tumor_sims |>
+  group_by(regimen, time) |>
+  summarise(rel_sim = median(rel), .groups = "drop")
+fig3 <- inner_join(fig3_paper, fig3_sim, by = c("regimen", "time"))
+
+fig3_sim |>
+  mutate(panel = ifelse(grepl("up", regimen) | regimen == "24 mg",
+                        "(b) with up-titration", "(a) without up-titration")) |>
+  bind_rows(filter(fig3_sim, regimen == "24 mg") |>
+              mutate(panel = "(a) without up-titration")) |>
+  distinct() |>
+  ggplot(aes(time, rel_sim, colour = regimen)) +
+  geom_line() +
+  geom_point(data = fig3 |>
+               mutate(panel = ifelse(grepl("up", regimen) | regimen == "24 mg",
+                                     "(b) with up-titration", "(a) without up-titration")),
+             aes(y = rel_paper), shape = 4) +
+  facet_wrap(~panel) +
+  labs(x = "Time (weeks)", y = "Median relative tumor size (%)",
+       title = "Replicates Figure 3 of Hayato 2018 (lines: simulated; crosses: read from the figure)")
+
+# Largest gap between the simulated and the published medians (percentage points).
+round(max(abs(fig3$rel_sim - fig3$rel_paper)), 1)
+stopifnot(
+  # The median of 200 patients is a robust centre; the figure was read to
+  # about 0.5 percentage points.
+  max(abs(fig3$rel_sim - fig3$rel_paper)) < 5
+)
+```
+
+The objective response rate (ORR) is the share of patients whose tumor is at
+least 30% below baseline at a tumor assessment (weeks 8, 16 or 24), computed on
+the individual predictions.
+
+```{r orr}
+orr <- tumor_sims |>
+  filter(time > 0) |>
+  group_by(regimen, id) |>
+  summarise(best = min(rel),
+            confirmed = any(rel[time == 8] <= 70 & rel[time == 16] <= 70) |
+              any(rel[time == 16] <= 70 & rel[time == 24] <= 70),
+            .groups = "drop") |>
+  group_by(regimen) |>
+  summarise(orr_sim = 100 * mean(best <= 70),
+            orr_confirmed = 100 * mean(confirmed), .groups = "drop")
+orr_paper <- data.frame(
+  regimen = names(ladders),
+  orr_paper = c(50.0, 43.5, 41.5, 30.2, 46.8, 46.0, 41.7)
+)
+orr_tab <- left_join(orr_paper, orr, by = "regimen")
+orr_tab |>
+  mutate(across(where(is.numeric), \(x) round(x, 1))) |>
+  dplyr::rename(
+    "Regimen" = regimen,
+    "ORR at 24 weeks, paper (%)" = orr_paper,
+    "ORR, simulated (%)" = orr_sim,
+    "ORR with a confirming assessment, simulated (%)" = orr_confirmed
+  ) |>
+  knitr::kable(caption = "ORR at 24 weeks, Hayato 2018 Results text against simulation.")
+
+stopifnot(
+  # Structural: the approved 24 mg regimen gives the highest response and
+  # 14 mg without up-titration the lowest, as in the paper.
+  orr_tab$orr_sim[orr_tab$regimen == "24 mg"] > orr_tab$orr_sim[orr_tab$regimen == "14 mg"]
+)
+```
+
+The simulated ORR runs 5 to 12 percentage points above the paper's values,
+while the median tumor-size curves of Figure 3 agree to within 2.5 points. ORR is a threshold count in the tail of the distribution, so it is more
+sensitive than the median to details the paper does not state: whether a
+response needed confirmation (requiring it brings the simulation within about
+five points of the paper), whether residual error was added to the simulated
+profiles, the reading of the EC50 variability as a CV, and the patients' real
+exposure distribution. As in the paper, 24 mg gives the highest response and
+14 mg without up-titration the lowest; the ranking of the regimens in between
+differs by a few points.
+
+# Assumptions and deviations
+
+* **No PK layer.** Exposure comes from the Gupta 2016 model
+  (`Gupta_2016_lenvatinib`) at its reference covariates (75 kg, normal albumin
+  and alkaline phosphatase, no interacting co-medication, capsule) with its
+  between-subject variability on `CL/F` and `F`. The SELECT covariate
+  distribution is not published in Hayato 2018.
+* **Exposure units.** Hayato 2018 reports AUC and both EC50s in ug*h/mL. The
+  models carry the package's canonical `AUC_LEN` in ng*h/mL and store the
+  EC50s multiplied by 1000 (2030 and 2950 ng*h/mL).
+* **EC50 variability of the tumor model.** Table 1 gives "CV %" = 40.5 for an
+  exponential random effect. It is read as `sqrt(omega^2)`, the convention of
+  the PDxPop software the authors used and of the same sponsor's later Majid
+  2024 lenvatinib tumor model, giving `omega^2 = 0.164`; the alternative
+  `log(1 + CV^2)` reading gives 0.152.
+* **Residual error of the tumor model.** The paper states a combined additive
+  and proportional error without saying how the parts combine. The model uses
+  `combined1()` (standard deviations added), the form in the deposited code of
+  the Majid 2024 successor model.
+* **Tumor initial condition.** Table 1 has no baseline parameter, so the
+  initial condition is the observed baseline sum of diameters (`TUM_SLD`). The
+  vignette uses 60 mm for every patient; because the ODE is first order in tumor
+  size, relative change does not depend on it.
+* **Adverse-event model sign convention.** The paper models the logits of
+  `P(grade >= i)`, so its threshold increment `B2 - B1 = -0.830` is negative.
+  The model keeps that orientation rather than converting to the
+  `P(grade <= m)` form used elsewhere in the package.
+* **Dose-history rules.** The interruption length (one week), the
+  re-challenge at the same dose after an interruption, withdrawal after the
+  fourth level, and the up-titration rule (only from the first level of the
+  current ladder and only before any reduction) are the maintainers' reading of
+  the Methods and Online Resource Table 2; the paper does not spell them out.
+  They reproduce Table 3's average dose and the share with one or more
+  reductions, but give more patients with two or more reductions than Table 3.
+* **ORR definition.** Response is a 30% decrease at week 8, 16 or 24 on the
+  individual predictions, without confirmation, as the Methods describe it.
+* **Figure 1.** The visual predictive check needs the SELECT data; the
+  vignette shows the simulated intervals only.
+* **Figure readings.** The Figure 2 week-1 values and the Figure 3 medians
+  were read from the published figures by the maintainers.
+
+## Errata
+
+No erratum or correction to Hayato 2018 was found (Europe PMC, checked
+2026-11-25).
