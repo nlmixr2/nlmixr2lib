@@ -4380,6 +4380,10 @@ navbar:
         href: articles/Fan_2025_antiCD4_nanobody_HIV.html
       - text: "Ibandronate (Pillai 2004)"
         href: articles/Pillai_2004_ibandronate.html
+      - text: "IbritumomabTiuxetan fraction1 (Morschhauser 2018)"
+        href: articles/Morschhauser_2018_ibritumomabTiuxetan.html
+      - text: "IbritumomabTiuxetan fraction2 (Morschhauser 2018)"
+        href: articles/Morschhauser_2018_ibritumomabTiuxetan.html
       - text: "Ibrutinib (OlssonGisleskog 2025)"
         href: articles/OlssonGisleskog_2025_ibrutinib.html
       - text: "Ibrutinib bp (Ibrahim 2025)"
@@ -12598,6 +12602,7 @@ articles:
   - articles/Morita_2026_pemetrexed
   - articles/Morris_2011_artesunate
   - articles/Morris_2011_telapristone
+  - articles/Morschhauser_2018_ibritumomabTiuxetan
   - articles/Morse_2012_ghb_rbc_invitro
   - articles/Morse_2022_acetaminophen_ibuprofen
   - articles/Mosha_2014_artemether_lumefantrine
