@@ -1,0 +1,483 @@
+---
+title: "Ribociclib (Samant 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ribociclib (Samant 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r load}
+mod <- readModelDb("Samant_2018_ribociclib")
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.1002/cpt.940>
+* Description: `r ui$description`
+
+Samant et al. (2018) asked whether gastric pH (proton-pump inhibitor, PPI,
+co-medication) or food changes ribociclib bioavailability. They combined four
+lines of evidence: biorelevant solubility, PBPK absorption modelling, a
+food-effect crossover study in healthy volunteers, and population PK (popPK)
+and NCA analyses of patient data. Only the popPK model is packaged here:
+
+* **Population PK model (packaged).** Two-compartment model with delayed
+  zero-order absorption, with dose and body weight as power covariates on CL, Q
+  and the peripheral volume V2. The final estimates are in Supplemental
+  Table S3. This is the registration popPK model of the Kisqali NDA (FDA NDA
+  209092 review, section 13.4.3.1 and Table 55, which prints the same table).
+  PPI use was tested on relative bioavailability and dropped (binary
+  F_rel = 0.95, 95% CI 0.82-1.09), so it does not appear in the final model.
+* **PBPK models (not packaged).** The GastroPlus v9.0 ACAT model
+  (Supplemental Table S4) and the Simcyp v13 ADAM model run on each
+  platform's built-in gut physiology (segment volumes, transit times, pH and
+  bile-salt profiles, and the platform dissolution and precipitation
+  equations), and neither the paper nor its supplement prints those. Table S4
+  lists only the drug-specific inputs, so the ACAT model cannot be rebuilt as
+  an ODE system from the publication.
+* **Food-effect study (A2103).** This is a noncompartmental bioequivalence
+  analysis (Table 2), with no model attached.
+
+# Population
+
+```{r population}
+str(ui$population)
+```
+
+The popPK data are 4,731 PK samples from 208 patients with advanced cancer,
+pooled from three studies (Methods "PopPK analysis"; Supplemental Table S1):
+
+* X2101, a phase 1 dose escalation (50-1200 mg once daily) in solid tumours or
+  lymphomas;
+* X1101, a phase 1 study in Japanese patients;
+* X2107, a phase 1b/2 combination study with letrozole in ER+ breast cancer.
+
+The paper gives no demographic table for the popPK cohort. Age (median 60
+years, range 23-84), body weight (median 72 kg, range 34-159), sex (134 female,
+74 male) and race (153 Caucasian, 23 Asian, 32 other) come from the FDA NDA
+209092 review of the same analysis. Sparse data from MONALEESA-2 (A2301) were
+used only for external qualification.
+
+# Source trace
+
+| Element | Value | Source location |
+|---------|-------|-----------------|
+| Structure: 2-cmt, delayed zero-order oral absorption, linear CL from central, dose as structural covariate | -- | Methods "PopPK analysis" |
+| Final covariates: dose and body weight on CL, Q, V2 | -- | Methods "PopPK analysis"; Table S3 rows 'Dose~' and 'BW~' |
+| `ltlag` | 0.405 h | Table S3 'ALAG1 (h)' |
+| `ld1` | 3.4 h (fixed) | Table S3 'D1 (h)' = 3.4 Fixed |
+| `lcl` | 26.433 L/h | Table S3 'CL (L/h)' |
+| `lq` | 81.5 L/h | Table S3 'Q (L/h)' |
+| `lvc` | 239.492 L | Table S3 'V1 (L)' |
+| `lvp` | 850.144 L | Table S3 'V2 (L)' |
+| `e_dose_cl`, `e_dose_q`, `e_dose_vp` | -0.308, -0.519, -0.344 | Table S3 'Dose~CL', 'Dose~Q', 'Dose~V2' |
+| `e_wt_cl`, `e_wt_q`, `e_wt_vp` | 0.652, 1.216, 0.773 | Table S3 'BW~CL', 'BW~Q', 'BW~V2' |
+| `etalvc` | 0.925 | Table S3 omega2 V1 |
+| `etalcl`, `etalq`, `etalvp` block | 0.263; 0.124, 0.259; 0.192, 0.213, 0.312 | Table S3 omega2 CL, CL-Q, Q, CL-V2, Q-V2, V2 |
+| `expSd` | sqrt(0.203) | Table S3 sigma2 'additive in log domain' = 0.203 |
+| Reference dose 600 mg, reference weight 70 kg | -- | not printed; see "Covariate reference values" below |
+
+The Table S3 footnote states that every omega2 and sigma2 is a variance. The
+FDA review quotes the IIV of CL as 51.3%, which is sqrt(0.263), so the omegas
+are log-scale variances of exponential random effects. The sigma2 is an
+additive error on log-transformed concentrations, which is encoded as
+`lnorm(expSd)`.
+
+# Covariate reference values
+
+Table S3 gives the dose and body-weight exponents but not the values they are
+normalised to, and the FDA review does not print them either. This model uses
+600 mg (the approved once-daily dose) and 70 kg. Supplemental Figure S4, a
+body-weight-stratified VPC on day 21 of 600 mg once daily, is a vector
+graphic, and its simulated percentile lines were digitized by the maintainers
+directly from the PDF path coordinates:
+
+```{r digitized}
+figS4 <- read.csv(text = '
+stratum,line,time_h,conc_ngmL
+"<= 60 kg",p50,0.39,894
+"<= 60 kg",p50,0.99,1238
+"<= 60 kg",p50,2.07,1721
+"<= 60 kg",p50,4.01,1966
+"<= 60 kg",p50,6.03,1405
+"<= 60 kg",p50,8.09,1163
+"<= 60 kg",p50,23.98,738
+"<= 60 kg",p50,24.84,738
+"<= 60 kg",p90,0.39,2050
+"<= 60 kg",p90,0.91,2810
+"<= 60 kg",p90,1.93,3566
+"<= 60 kg",p90,4.04,4103
+"<= 60 kg",p90,5.99,3035
+"<= 60 kg",p90,8.05,2713
+"<= 60 kg",p90,24.84,1833
+"<= 60 kg",p10,0.42,375
+"<= 60 kg",p10,1.01,574
+"<= 60 kg",p10,1.98,807
+"<= 60 kg",p10,3.99,950
+"<= 60 kg",p10,6.06,627
+"<= 60 kg",p10,8.07,501
+"<= 60 kg",p10,23.91,297
+"<= 60 kg",p10,24.77,293
+"60-80 kg",p90,0.44,1757
+"60-80 kg",p90,1.03,2477
+"60-80 kg",p90,1.98,3188
+"60-80 kg",p90,3.99,3566
+"60-80 kg",p90,6.03,2477
+"60-80 kg",p90,8.02,2278
+"60-80 kg",p90,23.88,1616
+"60-80 kg",p90,24.79,1605
+"60-80 kg",p50,0.39,738
+"60-80 kg",p50,0.98,1076
+"60-80 kg",p50,1.98,1475
+"60-80 kg",p50,4.03,1650
+"60-80 kg",p50,6.01,1107
+"60-80 kg",p50,8.00,957
+"60-80 kg",p50,23.88,631
+"60-80 kg",p50,24.84,627
+"60-80 kg",p10,0.44,314
+"60-80 kg",p10,1.01,476
+"60-80 kg",p10,2.05,694
+"60-80 kg",p10,4.01,774
+"60-80 kg",p10,6.03,480
+"60-80 kg",p10,8.02,399
+"60-80 kg",p10,23.88,238
+"60-80 kg",p10,24.82,237
+"> 80 kg",p50,0.44,630
+"> 80 kg",p50,1.03,910
+"> 80 kg",p50,2.03,1193
+"> 80 kg",p50,4.01,1279
+"> 80 kg",p50,6.03,850
+"> 80 kg",p50,8.07,747
+"> 80 kg",p50,23.98,524
+"> 80 kg",p50,24.82,517
+"> 80 kg",p90,0.42,1411
+"> 80 kg",p90,1.03,1990
+"> 80 kg",p90,1.95,2455
+"> 80 kg",p90,3.94,2708
+"> 80 kg",p90,5.99,1935
+"> 80 kg",p90,8.02,1717
+"> 80 kg",p90,23.93,1253
+"> 80 kg",p90,24.84,1235
+"> 80 kg",p10,0.39,272
+"> 80 kg",p10,0.94,398
+"> 80 kg",p10,1.95,576
+"> 80 kg",p10,3.99,588
+"> 80 kg",p10,6.03,385
+"> 80 kg",p10,8.09,313
+"> 80 kg",p10,23.93,208
+"> 80 kg",p10,24.82,204
+')
+figS4$stratum <- factor(figS4$stratum, levels = c("<= 60 kg", "60-80 kg", "> 80 kg"))
+```
+
+The typical-value steady-state profile of a 70 kg patient on 600 mg once daily
+matches the simulated median of the 60-80 kg stratum. With 600 mg / 70 kg as
+the reference, typical CL at 600 mg is exactly 26.433 L/h. The table below
+re-solves the profile as though the reference pair were different. The figure
+pins down a ridge of dose/weight pairs, not a single point: 400 mg / 60 kg and
+800 mg / 80 kg fit about as well. 600 mg / 70 kg lies on that ridge, and it is
+the natural pair (the approved dose and a standard adult weight).
+
+```{r reference-check}
+ssEvents <- function(dose = 600, obsTimes = 480 + seq(0, 24, by = 0.05)) {
+  ev <- rxode2::et(amt = dose, cmt = "central", rate = -2, ii = 24, addl = 20) |>
+    rxode2::et(obsTimes)
+  as.data.frame(ev)
+}
+typ <- rxode2::zeroRe(ui)
+med6080 <- figS4 |> filter(stratum == "60-80 kg", line == "p50", time_h < 24.5)
+
+refGrid <- expand.grid(refDose = c(400, 600, 800), refWt = c(60, 70, 80))
+refGrid$medianPctDiff <- NA_real_
+for (i in seq_len(nrow(refGrid))) {
+  d <- ssEvents()
+  # Evaluate a 70 kg patient on 600 mg under reference (refDose, refWt):
+  # (DOSE / 600) must equal 600 / refDose and (WT / 70) must equal 70 / refWt.
+  d$DOSE <- 600 * 600 / refGrid$refDose[i]
+  d$WT <- 70 * 70 / refGrid$refWt[i]
+  s <- suppressMessages(rxode2::rxSolve(typ, d, returnType = "data.frame")) |> filter(time >= 480)
+  pred <- approx(s$time - 480, s$Cc, xout = med6080$time_h)$y
+  refGrid$medianPctDiff[i] <- median(100 * (pred / med6080$conc_ngmL - 1))
+}
+refGrid |>
+  mutate(medianPctDiff = round(medianPctDiff, 1)) |>
+  rename(
+    "Reference dose (mg)" = refDose,
+    "Reference weight (kg)" = refWt,
+    "Median % diff vs Fig S4 60-80 kg median" = medianPctDiff
+  ) |>
+  knitr::kable()
+
+chosen <- refGrid$medianPctDiff[refGrid$refDose == 600 & refGrid$refWt == 70]
+# Deterministic typical-value solve against a digitized curve: the
+# 600 mg / 70 kg reference reproduces the stratum median to within 5%.
+stopifnot(abs(chosen) < 5)
+```
+
+# Virtual cohort
+
+The weight distribution is log-normal with median 72 kg and log-SD 0.25,
+redrawn until every value lies within the observed 34-159 kg range. The 0.25
+is an assumption chosen to match the reported range for n = 208. Every
+subject receives 600 mg once daily for 21 days (DOSE = 600). For the Figure
+S4 replication, each body-weight stratum is simulated as its own arm of 200
+patients, with weights drawn from the same distribution restricted to that
+stratum's band.
+
+```{r cohort}
+rxode2::rxSetSeed(20180201)
+
+drawWt <- function(n, lo = 34, hi = 159) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    w <- exp(rnorm(n, log(72), 0.25))
+    out <- c(out, w[w >= lo & w <= hi])
+  }
+  out[seq_len(n)]
+}
+
+buildCohort <- function(wt, idOffset = 0, arm = "600 mg QD") {
+  base <- ssEvents(obsTimes = 480 + c(0, 0.25, 0.5, seq(1, 8, by = 0.5), 10, 12, 16, 20, 24))
+  bind_rows(lapply(seq_along(wt), function(i) {
+    base |> mutate(id = idOffset + i, WT = wt[i], DOSE = 600, treatment = arm)
+  }))
+}
+
+nPerArm <- 200
+strata <- list(
+  "<= 60 kg" = c(34, 60),
+  "60-80 kg" = c(60, 80),
+  "> 80 kg" = c(80, 159)
+)
+vpcEvents <- bind_rows(lapply(seq_along(strata), function(k) {
+  b <- strata[[k]]
+  buildCohort(drawWt(nPerArm, b[1], b[2]), idOffset = (k - 1) * nPerArm, arm = names(strata)[k])
+}))
+vpcSim <- rxode2::rxSolve(mod, vpcEvents, keep = c("WT", "treatment"), returnType = "data.frame")
+```
+
+# Replicate Supplemental Figure S4
+
+Supplemental Figure S4 shows the day-21 VPC at 600 mg once daily, stratified
+by body weight. The lines below are the 10th, 50th and 90th percentiles of the
+simulated concentrations, including residual error. The digitized percentiles
+of the published VPC simulations are overlaid as points.
+
+```{r figS4, fig.height = 4}
+vpcPct <- vpcSim |>
+  mutate(tad = time - 480, stratum = factor(treatment, levels = names(strata))) |>
+  filter(tad >= 0) |>
+  group_by(stratum, tad) |>
+  summarise(
+    p10 = quantile(sim, 0.1), p50 = quantile(sim, 0.5), p90 = quantile(sim, 0.9),
+    .groups = "drop"
+  )
+
+ggplot(vpcPct, aes(tad)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), fill = "grey85") +
+  geom_line(aes(y = p50)) +
+  geom_point(data = figS4, aes(time_h, conc_ngmL, shape = line), colour = "firebrick") +
+  facet_wrap(~stratum) +
+  scale_y_log10() +
+  labs(
+    x = "Time after previous dose (h)", y = "Ribociclib (ng/mL)", shape = "Fig S4",
+    caption = "Replicates Supplemental Figure S4 of Samant 2018 (day 21, 600 mg QD)."
+  )
+```
+
+```{r figS4-check}
+cmpS4 <- figS4 |>
+  filter(time_h <= 24) |>
+  group_by(stratum, line) |>
+  group_modify(function(d, key) {
+    sim <- vpcPct |> filter(stratum == key$stratum)
+    d$sim <- approx(sim$tad, sim[[as.character(key$line)]], xout = d$time_h, rule = 2)$y
+    d
+  }) |>
+  ungroup() |>
+  mutate(pct_diff = 100 * (sim / conc_ngmL - 1))
+
+cmpS4 |>
+  group_by(stratum, line) |>
+  summarise(median_pct_diff = round(median(pct_diff), 1), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = line, values_from = median_pct_diff) |>
+  rename(
+    "Weight stratum" = stratum,
+    "10th pct, median % diff" = p10,
+    "Median, median % diff" = p50,
+    "90th pct, median % diff" = p90
+  ) |>
+  knitr::kable()
+
+medRows <- cmpS4 |> filter(line == "p50")
+stopifnot(
+  # Structural: a wrong exponent, reference value or volume shifts every
+  # stratum's median profile by tens of percent.
+  abs(median(medRows$pct_diff)) < 10,
+  # Envelope across strata and time points.
+  quantile(abs(medRows$pct_diff), 0.9) < 25
+)
+```
+
+# Dose nonlinearity
+
+Ribociclib exposure rises more than proportionally with dose. In this model
+the dose effect on CL makes steady-state AUC proportional to
+`DOSE^(1 - e_dose_cl)` = `DOSE^1.308`. The FDA review reports observed X2101
+power-model slopes of 1.415 for AUC0-24h and 1.360 for Cmax on day 18/21. The
+typical-value solves below confirm the model's slope; the numerical AUC and
+the closed form come from the same parameters, so the tolerance is tight.
+
+```{r dose-nonlinearity}
+doses <- c(50, 100, 200, 400, 600, 900, 1200)
+aucSS <- sapply(doses, function(dd) {
+  d <- ssEvents(dose = dd, obsTimes = 480 + seq(0, 24, by = 0.02))
+  d$DOSE <- dd
+  d$WT <- 70
+  s <- suppressMessages(rxode2::rxSolve(typ, d, returnType = "data.frame")) |> filter(time >= 480)
+  sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)
+})
+slope <- unname(coef(lm(log(aucSS) ~ log(doses)))[2])
+closedForm <- doses * 1000 / (26.433 * (doses / 600)^-0.308)
+data.frame(
+  `Dose (mg)` = doses,
+  `AUC0-24,ss (ng*h/mL)` = round(aucSS),
+  `Closed form Dose/CL` = round(closedForm),
+  check.names = FALSE
+) |>
+  knitr::kable()
+cat("log-log slope of AUC0-24,ss vs dose:", round(slope, 3), "\n")
+stopifnot(
+  abs(slope - 1.308) < 0.005,
+  all(abs(aucSS / closedForm - 1) < 0.005)
+)
+```
+
+# PKNCA validation at steady state
+
+This is a separate cohort of 200 patients, with weights drawn from the
+whole-population distribution, on 600 mg once daily for 21 days. NCA covers
+the day-21 dosing interval and uses the individual predictions (`Cc`,
+without residual error).
+
+```{r pknca}
+rxode2::rxSetSeed(20180202)
+ncaEvents <- buildCohort(drawWt(nPerArm), idOffset = 10000)
+ncaSim <- rxode2::rxSolve(mod, ncaEvents, keep = c("WT", "treatment"), returnType = "data.frame")
+
+# Time is re-based so the day-21 interval starts at 0: PKNCA shifts the
+# concentration times by the interval start but passes `end` to ctrough
+# unshifted, so ctrough is NA for any interval with start != 0.
+concDf <- ncaSim |>
+  filter(!is.na(Cc)) |>
+  mutate(time = time - 480) |>
+  select(id, time, Cc, treatment)
+doseDf <- ncaEvents |>
+  filter(evid == 1) |>
+  distinct(id, time, amt, treatment) |>
+  mutate(time = time - 480)
+
+concObj <- PKNCA::PKNCAconc(concDf, Cc ~ time | treatment + id)
+doseObj <- PKNCA::PKNCAdose(doseDf, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 24, cmax = TRUE, auclast = TRUE, ctrough = TRUE)
+ncaRes <- PKNCA::pk.nca(PKNCA::PKNCAdata(concObj, doseObj, intervals = intervals))
+
+geoMean <- function(x) exp(mean(log(x)))
+simGeo <- as.data.frame(ncaRes) |>
+  filter(PPTESTCD %in% c("cmax", "auclast", "ctrough")) |>
+  group_by(PPTESTCD) |>
+  summarise(PPORRES = geoMean(PPORRES), .groups = "drop")
+stopifnot(nrow(simGeo) == 3, all(is.finite(simGeo$PPORRES)))
+simGeo
+```
+
+## Comparison against published steady-state NCA
+
+Table 3 of the paper gives steady-state geometric means at 600 mg by study and
+PPI use. Patients without a PPI are the reference here, since PPI use was not
+retained in the model. A2301 contributed only a trough, and its patients were
+not in the popPK fit (external qualification only). X1101 (Japanese patients,
+n = 6 without PPI, AUC0-24h 55,100 h*ng/mL) is left out of the table because
+of its size; its higher exposure goes in the same direction as the model's
+weight effect.
+
+```{r nca-compare}
+published <- data.frame(
+  study   = c("X2101 (no PPI, n = 46-48)", "X2107 (no PPI, n = 10-13)", "A2301 (no PPI, n = 36)"),
+  auclast = c(23700, 21100, NA),
+  cmax    = c(1870, 1620, NA),
+  ctrough = c(NA, NA, 711)
+)
+simByStudy <- bind_rows(lapply(published$study, function(s) mutate(simGeo, study = s)))
+refLong <- published |>
+  tidyr::pivot_longer(-study, names_to = "PPTESTCD", values_to = "PPORRES") |>
+  filter(!is.na(PPORRES))
+simByStudy <- semi_join(simByStudy, refLong, by = c("study", "PPTESTCD"))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simByStudy,
+  reference = refLong,
+  by = "study",
+  units = c(cmax = "ng/mL", auclast = "h*ng/mL", ctrough = "ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs published (Samant 2018 Table 3) steady-state geometric means at 600 mg QD. * marks rows differing by >20%.")
+
+aucDiff <- 100 * (simGeo$PPORRES[simGeo$PPTESTCD == "auclast"] / 23700 - 1)
+stopifnot(abs(aucDiff) < 20)
+```
+
+The simulated steady-state AUC0-24h and Cmax fall between the X2101 and X2107
+geometric means. The typical-value AUC0-24h at 600 mg for a 70 kg patient is
+600 / 26.433 = 22,700 h*ng/mL. The simulated trough is within about 10-15% of
+the A2301 geometric mean (patients who were not in the fit and were taking
+letrozole). The simulated values vary by a few percent between rxode2 builds,
+which is why the checks above use tolerances rather than exact values.
+
+The healthy-volunteer food-effect study (A2103, Table 2) is not compared. Its
+single-dose AUCinf of 14,300 h*ng/mL is lower than this patient model
+predicts (Dose/CL = 22,700 h*ng/mL). The FDA review likewise notes lower
+ribociclib exposure in healthy subjects than in patients with cancer, and the
+model was not fitted to healthy volunteers.
+
+# Assumptions and deviations
+
+* **Covariate reference values.** Neither the paper, its supplement nor the
+  FDA review prints the dose or weight normalising values. The model uses
+  600 mg and 70 kg. The typical-value solve reproduces the digitized Figure
+  S4 median for the 60-80 kg stratum, and the steady-state AUC lies between
+  the published X2101 and X2107 geometric means, but the VPC alone cannot
+  separate 600 mg / 70 kg from neighbouring pairs on the same ridge (see
+  "Covariate reference values").
+* **Power covariate form.** Table S3 labels the effects 'Dose~CL' and
+  'BW~CL' without printing the equation. The power form
+  `(COV / ref)^theta` is assumed. It matches the Methods' "dose as a
+  structural covariate to account for nonlinearity" and the reported
+  more-than-proportional exposure.
+* **Time-varying dose.** The DOSE covariate is the dose of the current
+  dosing record. After a dose reduction, CL, Q and V2 change with it, and a
+  simulation of a dose-modified regimen must update the DOSE column.
+* **Residual error.** The sigma2 is "additive in log domain" (log-transform
+  both sides) and is encoded as `lnorm(expSd)` with `expSd = sqrt(0.203)`.
+* **No bioavailability term.** No F was estimated, so CL, Q, V1 and V2 are
+  apparent (CL/F etc.). PPI use was tested on relative bioavailability and
+  removed; it is listed in `covariatesDataExcluded`.
+* **Virtual cohort.** The weight distribution (log-normal, median 72 kg,
+  log-SD 0.25, truncated by redraw to 34-159 kg) is an assumption based on the
+  FDA review's median and range. The stratum bands are as labelled in Figure
+  S4; how the paper assigned the 60 and 80 kg boundaries is not stated.
+* **PBPK layers not packaged.** The GastroPlus ACAT and Simcyp ADAM models
+  depend on platform physiology the paper does not publish (see "Model and
+  source").

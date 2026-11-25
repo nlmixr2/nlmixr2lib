@@ -7038,6 +7038,8 @@ navbar:
         href: articles/Mulder_2025_ribavirin.html
       - text: "Ribociclib (Richardson 2025)"
         href: articles/Richardson_2025_automated_popPK.html
+      - text: "Ribociclib (Samant 2018)"
+        href: articles/Samant_2018_ribociclib.html
       - text: "Ribociclib mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Ribociclib qsp (Zhang 2026)"
@@ -11565,6 +11567,7 @@ articles:
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Salinger_2019_pretomanid
   - articles/Samant_2017_desipramine_pbpk
+  - articles/Samant_2018_ribociclib
   - articles/Samb_2022_gentamicin
   - articles/Samineni_2022_venetoclax
   - articles/Sampson_2014_azithromycin
