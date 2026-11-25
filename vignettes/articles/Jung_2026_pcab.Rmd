@@ -1,0 +1,610 @@
+---
+title: "Potassium-competitive acid blocker class PK/PD (Jung 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Potassium-competitive acid blocker class PK/PD (Jung 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+options(cli.progress_show_after = Inf)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Jung W, Lee J, Jeon H, Sung T, Yun H, Lee S, Chae JW. A Mechanism-Based
+Multi-Level Population PK/PD Model for Potassium-Competitive Acid Blockers.
+*CPT Pharmacometrics Syst Pharmacol.* 2026;15(1):e70181.
+[doi:10.1002/psp4.70181](https://doi.org/10.1002/psp4.70181)
+
+Jung 2026 fitted one semi-mechanistic PK/PD model to four
+potassium-competitive acid blockers (PCABs): tegoprazan, YH4808, fexuprazan
+and vonoprazan. The data are digitised arm-mean plasma concentrations and
+intragastric pH profiles from published studies. Drug identity is a NONMEM
+`$LEVEL` super-level random effect sitting above the study arms. The
+executable NONMEM control stream is in the paper's Data S2 and the final
+estimates are in Table 2.
+
+```{r load-model}
+mod <- readModelDb("Jung_2026_pcab_mbma")
+ui <- rxode2::rxode(mod)
+ui
+```
+
+**Scope of this model.** Table 2 reports only the across-drug centre of
+each drug-level parameter and its inter-drug variance. The paper prints
+drug-level empirical Bayes estimates for the pH of maximal absorption
+(SCALE) but not for ka, V or the drug-stimulus scaling factor Sd. The
+packaged model therefore describes a **typical PCAB** at the class centre,
+or a randomly drawn new PCAB when the inter-drug random effects are
+sampled. It cannot reproduce the named-drug simulations (Table 3, Figure 4)
+exactly. The amount entered per meal into the food compartment is also
+unreported (see [Assumptions and deviations](#assumptions-and-deviations)).
+
+# Population
+
+The analysis pooled 50 study arms from 13 studies in healthy volunteers
+(Jung 2026 Table 1):
+
+- YH4808: 9 arms, 30-600 mg (Chung 2022).
+- Fexuprazan: 10 arms, 10-320 mg (Sunwoo 2018).
+- Vonoprazan: 14 arms, 1-120 mg (Sakurai 2015; Jenkins 2015).
+- Tegoprazan: 17 arms, 50-400 mg (Han 2019, Hwang 2019, Ghim 2021, He 2021,
+  Yoon 2021, Jeon 2021, Han 2021, Sunwoo 2020, Yang 2022).
+
+The per-arm subject counts sum to 507. Each digitised arm-mean profile is
+one model individual, so the per-ID random effects describe **between-arm**
+variability, not between-subject variability (Jung 2026 Results: the eta variability
+"reflects inter-group or inter-study differences rather than true
+subject-level inter-individual variability"). Age, sex and body weight were
+collected where reported but were not tested as covariates because
+reporting was incomplete across studies.
+
+```{r population}
+str(mod()$population, give.attr = FALSE)
+```
+
+# Model structure
+
+From the Data S2 control stream (drug amounts in mg, volumes in L):
+
+- Absorption with pH feedback:
+  `d/dt(depot) = -ka * feed * depot`, where
+  `feed = exp(-(pH - SCALE)^2 / SHAPE^2)`.
+- One-compartment disposition: `d/dt(central) = ka * feed * depot - CL/V * central`
+  and `Cc = 1000 * central / V` (ng/mL).
+- Stimulus: `Scon = Sd * central^Sloped + Sf * food^Slopef`. The power
+  applies to the central drug **amount**, not the concentration.
+- Bounded pH stimulus: `PHS = pHmax * tanh(Scon) / Base`.
+- Circadian term: `CIR = AMP * cos(2 * pi * t / 24) / Base`.
+- Intragastric pH as an indirect response:
+  `d/dt(pH) = (1 + CIR + PHS) * kin - kout * pH`, with `kout = kin / Base`
+  and `pH(0) = Base + AMP`.
+- Food: `d/dt(food) = -Kg * food`. Meals enter as doses into `food`.
+
+With no stimulus the pH oscillates around `Base` with a 24-h period. A
+saturating stimulus drives the steady state to `Base + pHmax`.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| `lkin` (kin) | 0.435 1/h | Table 2 No. 3 |
+| `lrbase` (Base) | 1.090 | Table 2 No. 4 |
+| `lemax` (pHMax) | 5.570 | Table 2 No. 5 |
+| `lkst` (Kg) | 1.820 1/h | Table 2 No. 6 |
+| `lamp` (AMP) | 0.704 | Table 2 No. 7 |
+| `lph_ka_opt` (SCALE) | 4.080 | Table 2 No. 8 |
+| `lph_ka_width` (SHAPE) | 2.660 | Table 2 No. 9 |
+| `lka` (Ka) | 0.156 1/h | Table 2 No. 10 |
+| `lcl` (CL) | 98.700 L/h | Table 2 No. 11 (printed unit "1/h"; the control stream says L/h) |
+| `lvc` (Vd) | 56.600 L | Table 2 No. 12 |
+| `lstim_food` (Sf) | 0.043 | Table 2 No. 13 |
+| `lpow_food` (Slopef) | 1, held constant | Table 2 No. 14; Data S2 `SPH = SFOOD*A(4)` |
+| `lstim_central` (Sd) | 0.693 1/mg | Table 2 No. 15 |
+| `lpow_central` (Sloped) | 0.572 | Table 2 No. 16 |
+| `eta_arm_*` (between-arm) | CV 98.28 / 7.75 / 60.05 / 29.23 / 20.45 / 29.60 / 28.29 / 54.96 % | Table 2 'IIV, CV%' column (kin, Base, AMP, SCALE, Ka, CL, Vd, Sd) |
+| `eta*_drug` (inter-drug, nested on `DIDN`) | CV 10.98 / 31.56 / 161.14 / 89.36 / 31.56 % | Table 2 'IDV, CV%' column (SCALE, Ka, CL, Vd, Sd); Data S2 `$LEVEL DRUG=(9:13[4])` |
+| `expSd` | 0.545 | Table 2 No. 1; Data S2 `Y = LOG(CONC) + THETA(1)*EPS(1)` |
+| `addSd_gastric_ph` | 0.880 pH | Table 2 No. 2; Data S2 `W = THETA(2)/PH` on `LOG(PH)` |
+| Gaussian feedback, tanh stimulus, circadian term, ODEs, `pH(0)` | -- | Data S2 `$PK` / `$DES` |
+| `Cc = 1000 * central / V` | -- | Data S2 `S2 = V2/1000`, `CONC = A(2)/S2` |
+
+Variances are `log(CV^2 + 1)`. For the CL inter-drug variability, 161.14 %
+gives 1.280, which matches the Data S2 `$OMEGA` initial value of 1.284.
+
+# Structural checks
+
+These checks compare the model against analytic properties, so the two
+sides of each comparison share the same parameter values. They are kept
+tight.
+
+```{r helpers}
+# One event table for a typical-value or stochastic solve. Times are clock
+# hours (t = 0 is the circadian pH peak, see Assumptions). Observations sit
+# on the gastric_ph state, which is both an ODE state and an endpoint, and
+# every row returns Cc as well.
+make_events <- function(id, dose_times, dose_mg, meal_times = numeric(),
+                        meal_amt = 0, obs_times, didn = 1L) {
+  obs <- data.frame(
+    id = id, time = obs_times, amt = 0, evid = 0L, cmt = "gastric_ph"
+  )
+  out <- obs
+  if (length(dose_times) > 0 && dose_mg > 0) {
+    out <- rbind(out, data.frame(
+      id = id, time = dose_times, amt = dose_mg, evid = 1L, cmt = "depot"
+    ))
+  }
+  if (length(meal_times) > 0 && meal_amt > 0) {
+    out <- rbind(out, data.frame(
+      id = id, time = meal_times, amt = meal_amt, evid = 1L, cmt = "food"
+    ))
+  }
+  out$DIDN <- didn
+  out[order(out$time, -out$evid), ]
+}
+
+# rxode2 expands the DIDN-nested random effects into per-level terms and
+# needs at least two distinct DIDN values in every solve, even with the
+# random effects zeroed. A one-row placeholder subject on another DIDN level
+# satisfies that and is dropped from the result.
+solve_typical <- function(model, events, ...) {
+  pad <- data.frame(id = max(events$id) + 1L, time = 0, amt = 0, evid = 0L,
+                    cmt = "gastric_ph", DIDN = max(events$DIDN) + 1L)
+  out <- rxode2::rxSolve(model, rbind(events, pad),
+                         returnType = "data.frame", ...)
+  out[out$id != pad$id, ]
+}
+
+mod_typ <- rxode2::zeroRe(ui)
+```
+
+## Drug- and food-free baseline
+
+Without drug, food or circadian rhythm the pH must sit at `Base` = 1.09
+for all time.
+
+```{r check-baseline}
+flat <- rxode2::ini(mod_typ, lamp = log(1e-12))
+ev0 <- make_events(1L, numeric(), 0, obs_times = seq(0, 48, by = 1))
+s0 <- solve_typical(flat, ev0)
+stopifnot(max(abs(s0$gastric_ph - 1.090)) < 1e-8)
+range(s0$gastric_ph)
+```
+
+## Pharmacokinetics at a fixed pH: closed form
+
+With the circadian rhythm and the drug stimulus switched off, the pH stays
+at `Base`, so the pH feedback is a constant factor on ka and the model is a
+one-compartment first-order absorption model with
+`ka_eff = ka * exp(-(Base - SCALE)^2 / SHAPE^2)`.
+
+```{r check-closed-form}
+nopd <- rxode2::ini(flat, lstim_central = log(1e-14))
+ev1 <- make_events(1L, 0, 50, obs_times = seq(0, 96, by = 0.5))
+s1 <- solve_typical(nopd, ev1,
+                      atol = 1e-12, rtol = 1e-12)
+ka_eff <- 0.156 * exp(-(1.090 - 4.080)^2 / 2.660^2)
+kel <- 98.7 / 56.6
+cf <- 1000 * 50 * ka_eff / (56.6 * (ka_eff - kel)) *
+  (exp(-kel * s1$time) - exp(-ka_eff * s1$time))
+rel <- abs(s1$Cc - cf) / max(cf)
+stopifnot(max(rel) < 1e-6)
+c(ka_eff = ka_eff, max_rel_err = max(rel))
+```
+
+At the baseline pH of 1.09 the feedback slows absorption to
+`r signif(ka_eff, 3)` 1/h, a quarter of the typical ka. Absorption is
+therefore rate-limiting (flip-flop), and it speeds up as the drug raises
+the pH towards SCALE = 4.08.
+
+## Upper bound on pH
+
+The steady state under a saturating stimulus is `Base + pHmax = 6.66`. The
+pH can approach this ceiling but never exceed it.
+
+```{r check-ceiling}
+ev2 <- make_events(1L, 0, 600, obs_times = seq(0, 48, by = 0.25))
+s2 <- solve_typical(flat, ev2)
+ceiling_ph <- 1.090 + 5.570
+stopifnot(
+  max(s2$gastric_ph) <= ceiling_ph + 1e-6,
+  max(s2$gastric_ph) > 0.95 * ceiling_ph
+)
+max(s2$gastric_ph)
+```
+
+# Typical PCAB: fasted once-daily dosing (Table 3 analogue)
+
+Jung 2026 Table 3 simulates each drug once daily for 7 days and reports
+the Day 1 and Day 7 mean pH and the percentage of the day with pH >= 4
+(holding-time ratio, HTR). The packaged model holds the class-centre
+parameters, so the comparison below runs the typical PCAB at each of the
+four Table 3 doses. It is expected to fall inside the spread of the four
+drugs, not to match any one of them. Doses are given at 08:00 with no
+meals.
+
+```{r table3}
+doses <- c(20, 40, 50, 100)
+obs_grid <- seq(0, 7 * 24, by = 0.1)
+ev_t3 <- bind_rows(lapply(seq_along(doses), function(i) {
+  make_events(i, dose_times = 8 + 24 * (0:6), dose_mg = doses[i],
+              obs_times = obs_grid)
+}))
+s_t3 <- solve_typical(mod_typ, ev_t3) |>
+  mutate(dose = doses[id])
+
+htr <- s_t3 |>
+  mutate(day = floor(time / 24) + 1) |>
+  filter(day %in% c(1, 7)) |>
+  group_by(dose, day) |>
+  summarise(
+    mean_ph = mean(gastric_ph),
+    htr_pct = 100 * mean(gastric_ph >= 4),
+    .groups = "drop"
+  )
+
+published_t3 <- tibble::tribble(
+  ~drug, ~dose, ~day1_ph, ~day1_htr, ~day7_ph, ~day7_htr,
+  "Tegoprazan", 50, 4.10, 53.43, 4.38, 60.66,
+  "YH4808", 100, 3.42, 36.68, 3.64, 42.50,
+  "Fexuprazan", 40, 4.19, 56.09, 4.74, 69.60,
+  "Vonoprazan", 20, 4.42, 62.00, 5.03, 75.63
+)
+
+htr |>
+  pivot_wider(names_from = day, values_from = c(mean_ph, htr_pct)) |>
+  left_join(published_t3, by = "dose") |>
+  transmute(
+    "Dose (mg)" = dose,
+    "Typical PCAB Day 1 pH" = round(mean_ph_1, 2),
+    "Typical PCAB Day 1 HTR (%)" = round(htr_pct_1, 1),
+    "Typical PCAB Day 7 pH" = round(mean_ph_7, 2),
+    "Typical PCAB Day 7 HTR (%)" = round(htr_pct_7, 1),
+    "Table 3 drug at this dose" = drug,
+    "Table 3 Day 1 HTR (%)" = day1_htr,
+    "Table 3 Day 7 HTR (%)" = day7_htr
+  ) |>
+  knitr::kable(caption = "Typical-PCAB HTR against Jung 2026 Table 3.")
+```
+
+```{r table3-gate}
+h50 <- htr |> filter(dose == 50)
+# The class centre at 50 mg lies inside the range spanned by the four drugs'
+# Table 3 values on both days.
+stopifnot(
+  h50$htr_pct[h50$day == 1] >= min(published_t3$day1_htr),
+  h50$htr_pct[h50$day == 1] <= max(published_t3$day1_htr),
+  h50$htr_pct[h50$day == 7] >= min(published_t3$day7_htr),
+  h50$htr_pct[h50$day == 7] <= max(published_t3$day7_htr),
+  # Accumulation: the Day 7 mean pH exceeds Day 1 at every dose, as in
+  # Table 3, by a margin well clear of solver noise.
+  all(tapply(htr$mean_ph, htr$dose, function(x) x[2] - x[1]) > 0.2)
+)
+```
+
+Across Table 3, the Day 7 mean pH and HTR rise above Day 1 for every drug.
+The typical PCAB shows the same accumulation in mean pH at every dose. At
+20 mg its pH never reaches 4, so its HTR is zero on both days. Vonoprazan,
+the most potent of the four drugs, reaches 62% at that dose.
+
+```{r table3-plot, fig.height = 4}
+s_t3 |>
+  filter(time >= 6 * 24) |>
+  ggplot(aes(time / 24, gastric_ph, colour = factor(dose))) +
+  geom_line() +
+  geom_hline(yintercept = 4, linetype = "dashed") +
+  labs(x = "Day", y = "Intragastric pH", colour = "Dose (mg)",
+       title = "Typical PCAB, Day 7 (fasted, dose at 08:00)")
+```
+
+# Food effect: meal amount and time of dosing
+
+Food enters the model as a dose into the `food` compartment. Its effect on
+pH is `Sf * food` with `Sf = 0.043`. The amount recorded per meal is not
+reported, so `Sf` has no stated unit. The sweep below varies the meal
+amount over two orders of magnitude to show how much it matters.
+**These meal amounts are illustrative and are not the authors' encoding.**
+
+```{r meal-sweep, fig.height = 4}
+meal_amts <- c(0, 1, 10, 100)
+ev_meal <- bind_rows(lapply(seq_along(meal_amts), function(i) {
+  make_events(i, dose_times = 8, dose_mg = 50, meal_times = 8,
+              meal_amt = meal_amts[i], obs_times = seq(0, 24, by = 0.05))
+}))
+s_meal <- solve_typical(mod_typ, ev_meal) |>
+  mutate(meal = factor(meal_amts[id]))
+ggplot(s_meal, aes(time, gastric_ph, colour = meal)) +
+  geom_line() +
+  geom_hline(yintercept = 4, linetype = "dashed") +
+  labs(x = "Clock time (h)", y = "Intragastric pH",
+       colour = "Meal amount",
+       title = "Typical PCAB 50 mg at 08:00 with a meal at 08:00")
+```
+
+With a meal amount of 1, food barely moves the pH. With 100, the food term
+saturates the tanh and pins the pH near the ceiling for about two hours,
+until gastric emptying (Kg = 1.82 1/h) removes it.
+
+Jung 2026 Figure 4 maps the HTR over dose and time of dosing relative to a
+meal (TOD), using tegoprazan's drug-level parameters. The class-centre
+analogue below shows how the TOD response depends on the unreported meal
+amount. HTR is computed over the 24 h of the dosing day.
+
+```{r tod, fig.height = 4}
+tod <- seq(-2, 2, by = 0.5)
+grid <- expand.grid(tod = tod, meal = c(1, 10, 100))
+ev_tod <- bind_rows(lapply(seq_len(nrow(grid)), function(i) {
+  make_events(i, dose_times = 8 + grid$tod[i], dose_mg = 50,
+              meal_times = 8, meal_amt = grid$meal[i],
+              obs_times = seq(0, 24, by = 0.05))
+}))
+s_tod <- solve_typical(mod_typ, ev_tod)
+tod_htr <- s_tod |>
+  group_by(id) |>
+  summarise(htr_pct = 100 * mean(gastric_ph >= 4), .groups = "drop") |>
+  mutate(tod = grid$tod[id], meal = factor(grid$meal[id]))
+ggplot(tod_htr, aes(tod, htr_pct, colour = meal)) +
+  geom_line() + geom_point() +
+  labs(x = "Time of dosing relative to the meal (h)",
+       y = "Day-1 HTR, pH >= 4 (%)", colour = "Meal amount",
+       title = "Typical PCAB 50 mg, single dose")
+```
+
+# Class-level prediction interval
+
+A stochastic simulation samples both levels of random effects: 40 new
+"drugs" (distinct `DIDN` values), each with 5 study arms, given 50 mg once
+at 08:00 under fasted conditions. Residual error is excluded. The spread
+combines inter-drug and between-arm variability, so it is much wider than
+the paper's per-drug VPCs (Figure 3).
+
+```{r vpc}
+rxode2::rxSetSeed(20261)
+n_drug <- 40L
+n_arm <- 5L
+ev_vpc <- bind_rows(lapply(seq_len(n_drug * n_arm), function(i) {
+  make_events(i, dose_times = 8, dose_mg = 50,
+              obs_times = c(8, seq(8.25, 8 + 72, by = 0.25)),
+              didn = (i - 1L) %/% n_arm + 1L)
+}))
+stopifnot(length(unique(ev_vpc$DIDN)) >= 2L)
+s_vpc <- rxode2::rxSolve(ui, ev_vpc, omega = ui$omega,
+                         returnType = "data.frame") |>
+  mutate(tad = time - 8)
+```
+
+```{r vpc-plot, fig.height = 4}
+s_vpc |>
+  select(id, tad, Cc, gastric_ph) |>
+  pivot_longer(c(Cc, gastric_ph), names_to = "output") |>
+  group_by(output, tad) |>
+  summarise(
+    p05 = quantile(value, 0.05), p50 = median(value),
+    p95 = quantile(value, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(tad)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.3) +
+  geom_line(aes(y = p50)) +
+  facet_wrap(~output, scales = "free_y") +
+  labs(x = "Time after dose (h)", y = NULL,
+       title = "Random new PCABs, 50 mg: median and 90% interval")
+```
+
+# PKNCA validation
+
+PKNCA runs on the stochastic single-dose cohort above. Data S3 of
+Jung 2026 reports NCA of the authors' own per-drug simulations (single
+doses pooled within drug). The model centres the inter-drug random effects
+on the typical values (`LEVCENTER=1`), so the geometric mean of the four
+drugs' simulated values is the natural class-level reference.
+
+```{r pknca}
+conc <- s_vpc |>
+  filter(!is.na(Cc)) |>
+  select(id, tad, Cc) |>
+  mutate(treatment = "50 mg single dose")
+dose_df <- conc |>
+  distinct(id, treatment) |>
+  mutate(tad = 0, amt = 50)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ tad | treatment + id,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ tad | treatment + id,
+                             doseu = "mg")
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+```
+
+```{r pknca-compare}
+# Dose-normalised values per arm; cl.obs is mg / (ng*h/mL) = 1000 L/h.
+sim_wide <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs", "half.life", "cl.obs")) |>
+  select(treatment, id, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  transmute(
+    treatment,
+    cmax = cmax / 50,
+    aucinf.obs = aucinf.obs / 50,
+    half.life = half.life,
+    cl.obs = cl.obs * 1000
+  )
+
+# Data S3, simulated rows (mean per drug: tegoprazan, YH4808, fexuprazan,
+# vonoprazan); geometric mean across the four drugs.
+s3 <- list(
+  cmax = c(11.84, 0.93, 0.99, 1.04),
+  aucinf.obs = c(59.87, 2.84, 14.43, 8.32),
+  half.life = c(6.58, 16.54, 10.15, 8.16),
+  cl.obs = c(17.46, 481.72, 82.42, 128.42)
+)
+geo <- function(x) exp(mean(log(x)))
+reference <- data.frame(
+  treatment = "50 mg single dose",
+  cmax = geo(s3$cmax),
+  aucinf.obs = geo(s3$aucinf.obs),
+  half.life = geo(s3$half.life),
+  cl.obs = geo(s3$cl.obs)
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_wide,
+  reference = reference,
+  by = "treatment",
+  units = c(cmax = "(ng/mL)/mg", aucinf.obs = "(ng*h/mL)/mg",
+            half.life = "h", cl.obs = "L/h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = paste(
+  "Median of the simulated class cohort against the geometric mean of the",
+  "four drugs' simulated NCA in Jung 2026 Data S3.",
+  "* differs by more than 20%."
+))
+```
+
+```{r pknca-gate}
+med <- sapply(sim_wide[c("cmax", "aucinf.obs", "half.life", "cl.obs")],
+              median, na.rm = TRUE)
+# The CL/F centre is set directly by CL = 98.7 L/h, so a transcription error
+# in CL, V or the mg-to-ng/mL scaling moves it by tens of percent.
+stopifnot(
+  abs(med[["cl.obs"]] / 98.7 - 1) < 0.15,
+  abs(med[["aucinf.obs"]] / reference$aucinf.obs - 1) < 0.30
+)
+round(med, 3)
+```
+
+CL/F and AUC/Dose agree with the class reference. Both depend only on CL,
+which is centred on the typical value.
+
+Cmax/Dose and half-life are flagged, and neither difference indicates a
+transcription error:
+
+- **Cmax/Dose** depends on V and ka. Both differ between drugs, and their
+  drug-level estimates are not published. Tegoprazan's Cmax/Dose (11.8) is
+  more than ten times that of the other three drugs and pulls the
+  geometric mean upward.
+- **Half-life** is absorption-limited (flip-flop), and the absorption rate
+  follows the pH. While the drug holds the pH near SCALE, the decline has
+  a half-life near log(2)/ka = 4.4 h. Once the pH falls back to baseline,
+  absorption slows to `r signif(ka_eff, 2)` 1/h and the apparent half-life
+  lengthens to about 16 h. For the typical PCAB at 50 mg, log-linear fits
+  over 12-24, 36-48 and 72-120 h after the dose give 4.4, 9.3 and 17 h.
+  PKNCA's terminal-phase selection on a 72-h grid picks the early, fast
+  phase. The Data S3 simulations pooled doses up to 600 mg, which hold the
+  pH up for longer and shift the selected phase. The half-life of this
+  model is therefore a property of the sampling window and the dose, not a
+  single number.
+
+# Drug-level consistency checks
+
+Two pieces of drug-level information can be recovered from the paper and
+checked against the published inter-drug variances. Neither is a model
+parameter.
+
+**SCALE.** The Discussion prints the drug-level empirical Bayes estimates
+of SCALE: vonoprazan 0.147, fexuprazan 0.0585, YH4808 -0.0766 and
+tegoprazan -0.129.
+
+**CL.** Data S3 reports each drug's simulated mean CL/F and mean
+AUC/Dose. For a log-normal between-arm distribution, E[CL] = CL_d *
+exp(w^2/2) and E[1/CL] = exp(w^2/2) / CL_d. Since AUC/Dose = 1000/CL,
+CL_d = sqrt(E[CL] * 1000 / E[AUC/Dose]) recovers the drug-level CL
+exactly.
+
+```{r drug-level}
+drug_level <- tibble::tibble(
+  drug = c("Tegoprazan", "YH4808", "Fexuprazan", "Vonoprazan"),
+  scale_eta = c(-0.129, -0.0766, 0.0585, 0.147),
+  cl_drug = sqrt(s3$cl.obs * 1000 / s3$aucinf.obs)
+) |>
+  mutate(
+    scale_drug = 4.080 * exp(scale_eta),
+    cl_eta = log(cl_drug / 98.7)
+  )
+drug_level |>
+  transmute(
+    Drug = drug,
+    "SCALE EBE" = scale_eta,
+    "Drug-level SCALE (pH)" = round(scale_drug, 2),
+    "Back-solved CL (L/h)" = round(cl_drug, 1),
+    "Implied CL eta" = round(cl_eta, 2)
+  ) |>
+  knitr::kable(caption = "Drug-level SCALE (Discussion) and CL (Data S3).")
+
+spread <- c(
+  scale_sd_ebe = sd(drug_level$scale_eta),
+  scale_sd_idv = sqrt(0.011984),
+  cl_sd_implied = sd(drug_level$cl_eta),
+  cl_sd_idv = sqrt(1.2800)
+)
+round(spread, 3)
+stopifnot(
+  # LEVCENTER=1 centres the drug etas, so their mean is near zero.
+  abs(mean(drug_level$cl_eta)) < 0.25,
+  # The four implied CL etas have an SD of the same size as the IDV SD.
+  spread[["cl_sd_implied"]] / spread[["cl_sd_idv"]] > 0.5,
+  spread[["cl_sd_implied"]] / spread[["cl_sd_idv"]] < 2
+)
+```
+
+The four implied CL etas have mean `r round(mean(drug_level$cl_eta), 2)`
+and SD `r round(spread[["cl_sd_implied"]], 2)`. The published inter-drug SD
+is 1.13 (CV 161.14%). The SCALE EBEs have SD
+`r round(spread[["scale_sd_ebe"]], 3)`, against the inter-drug SD of 0.109.
+Both agree with the Table 2 inter-drug variances. A user who needs a
+drug-specific CL can set `lcl` to the log of the back-solved value in the
+table and set the `etalcl_drug` variance to zero. ka, V and Sd cannot be
+recovered this way.
+
+# Assumptions and deviations
+
+- **Class centre only.** Per-drug ka, V and Sd are not reported (only the
+  SCALE EBEs are printed), so the model cannot simulate any named PCAB.
+  It simulates a typical PCAB at the class centre, or a new PCAB drawn from
+  the inter-drug distribution through the `DIDN`-nested random effects.
+  Table 3 and Figure 4 use drug-specific parameters and are therefore
+  reproduced only as class-centre analogues.
+- **Meal amount unreported.** Data S2 enters food as dose records into
+  compartment 4 (`SPH = SFOOD*A(4)`), but the amount per meal record is
+  not stated. The `SMEAL` column in `$INPUT` is undefined. `Sf = 0.043` is
+  carried as printed, and the meal amount is left to the user. The sweep
+  above shows that the food effect on pH ranges from negligible (amount 1)
+  to saturating (amount 100).
+- **Activation function.** The Methods print
+  `PHS = pHmax x 1/(1 + Scon)`, which would lower the pH as the stimulus
+  rises. The Data S2 code computes `PHMAX * (2/(1 + EXP(-2*SCON)) - 1) / BASE`,
+  which is `tanh(Scon)` normalised by Base. The model follows the code.
+- **Clock time.** The circadian term is `cos(2 * pi * t / 24)`. The Methods
+  define Time as "the hour of the day", so model time is read as clock
+  hours, with t = 0 at the circadian pH peak, and `pH(0) = Base + AMP`
+  follows Data S2. Doses at 08:00 are placed at t = 8.
+- **Arm-level random effects.** Each model individual is a study arm, so
+  the per-ID etas are named `eta_arm_*`. They describe variability between
+  arm-mean profiles, not between subjects. The model is suited to arm-mean
+  predictions, not individual-patient concentrations.
+- **Diagonal arm-level omega.** Data S2 estimates kin, Base and AMP as an
+  `OMEGA BLOCK(3)`. Table 2 reports only the CVs, not the final
+  covariances, so the three etas are diagonal.
+- **Repeated 31.56% CV.** Table 2 prints 31.56% for both the Ka and the Sd
+  inter-drug CV, with different RSEs (124.3% and 66.7%). Both are carried
+  as printed.
+- **Final, not initial, estimates.** Table 2 values are used. The Data S2
+  `$THETA`/`$OMEGA` values are initial estimates that differ slightly.
+- **Residual error.** The PK error is additive on log concentration
+  (`lnorm`). The PD error in Data S2 is `W = THETA(2)/PH` on `LOG(PH)`,
+  which is the log-scale form of an additive pH error. Table 2 labels it
+  "Add err (PD)", and it is encoded as additive on pH.
+- **Food power.** Table 2 lists Slopef = 1 (fixed). The control stream
+  has no exponent on the food amount. The exponent is carried as a fixed
+  parameter for provenance and is numerically inert.
