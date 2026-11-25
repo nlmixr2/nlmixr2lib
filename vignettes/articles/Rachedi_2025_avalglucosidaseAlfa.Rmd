@@ -1,0 +1,532 @@
+---
+title: "Pompe disease motor function: GMFM-88 and QMFT (Rachedi 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pompe disease motor function: GMFM-88 and QMFT (Rachedi 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5,
+  dpi = 100
+)
+```
+
+```{r libraries, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+Rachedi F, Jreich R, Sparks S, Zaher A, An Haack K, Granados A, Meng Z.
+*Clinical modeling of motor function to predict treatment efficacy and enable
+in silico treatment comparisons in infantile-onset Pompe disease.* CPT
+Pharmacometrics Syst Pharmacol. 2025;14(11):1797.
+[doi:10.1002/psp4.13287](https://doi.org/10.1002/psp4.13287)
+
+Pompe disease is a lysosomal glycogen-storage disorder treated by enzyme
+replacement therapy (ERT) with alglucosidase alfa (ALGLU) or its successor
+avalglucosidase alfa (AVAL). Rachedi 2025 links the change in motor function to
+the change in urinary hexose tetrasaccharide (uHex4), a biomarker of glycogen
+burden, with two nonlinear random-coefficient (NLRC) models: one for the Gross
+Motor Function Measure-88 (GMFM-88) total percent score and one for the Quick
+Motor Function Test (QMFT) total raw score. Each was fitted jointly to
+infantile-onset (IOPD, Mini-COMET, n = 21) and late-onset (LOPD, COMET,
+n = 100) patients. Both are packaged here, one file per endpoint, as the
+authors fitted them.
+
+| Model | Output | Driver |
+|---|---|---|
+| `Rachedi_2025_avalglucosidaseAlfa_gmfm88` | `gmfm88cfb`, GMFM-88 total percent score change from baseline | relative change in uHex4 |
+| `Rachedi_2025_avalglucosidaseAlfa_qmft` | `qmftcfb`, QMFT total raw score change from baseline | relative change in uHex4 |
+
+The models have no ODE and no dose. Treatment acts only through the
+time-varying covariate `URINARY_HEXOSE_TETRASACCHARIDE_REL` (the relative
+change from baseline in uHex4, -0.5 = a 50% fall), which the user supplies from
+observed data or from a model of the biomarker. For patient *i* at visit *j*:
+
+$$
+\Delta \text{score}_{ij} = \text{shift}_i +
+  \text{max}_i \left(1 - e^{-\text{rate}_i \cdot (-\text{URINARY\_HEXOSE\_TETRASACCHARIDE\_REL}_{ij})}\right)
+  + \varepsilon_{ij}, \qquad \log \text{rate}_i \sim N(\text{mean}_r, \sigma_r^2)
+$$
+
+where `shift` collects the population-specific intercept and the
+median-centred baseline-covariate effects, and `max` is the population-specific
+asymptote of motor improvement.
+
+```{r load-models}
+mod_gmfm <- rxode2::rxode(readModelDb("Rachedi_2025_avalglucosidaseAlfa_gmfm88"))
+mod_qmft <- rxode2::rxode(readModelDb("Rachedi_2025_avalglucosidaseAlfa_qmft"))
+```
+
+# Population
+
+```{r population}
+pop <- mod_gmfm$population
+knitr::kable(
+  data.frame(Field = names(pop), Value = vapply(pop, as.character, character(1))),
+  row.names = FALSE
+)
+```
+
+Baseline characteristics by arm are in Supplementary Table S2 and the pooled
+distributions, with the medians used for centring, in Supplementary Figure S2.
+The IOPD patients had all been treated with ALGLU before entering Mini-COMET
+(prior treatment 4.2-7.4 years on average by arm); the LOPD patients in COMET
+were treatment-naive. GMFM-88 was scored on all five dimensions in Mini-COMET
+and on the standing and walking/running/jumping dimensions only in COMET.
+
+# Source trace
+
+| Element | Value (GMFM-88 / QMFT) | Source |
+|---|---|---|
+| Model structure (IOPD) | `shift + max * (1 - exp(-rate * (-%dUHex4 * 0.01)))` | Main text equations, GMFM-88 and QMFT results sections |
+| Model structure (LOPD) | same form, LOPD covariates | Supplementary Results equations (see Errata for QMFT) |
+| `lrate` (mean_r, shared) | -0.97 / -1.19 | Tables 2 and 3 (and S3, S4), footnote a "Same for IOPD and LOPD" |
+| `etalrate` = exp(log sigma_r)^2 | exp(0.34)^2 = 1.974 / exp(0.52)^2 = 2.829 | Tables 2 and 3 row "Log error of the log rate" |
+| `addSd` = exp(log sigma_e) | exp(1.20) = 3.320 / exp(1.02) = 2.773 | Tables 2 and 3 row "Log residual error" |
+| `int_iopd` | 2.24 / 1.51 | Tables 2 and 3 row "Intercept" |
+| baseline score effect, IOPD | -0.02 / -0.03 per point | Tables 2 and 3 |
+| log baseline uHex4 effect, IOPD | -2.30 / -3.34 | Tables 2 and 3 |
+| log age at diagnosis effect, IOPD | 1.55 / 1.66 | Tables 2 and 3 |
+| prior ALGLU duration effect, IOPD | -0.39 / -0.45 per year | Tables 2 and 3 |
+| female sex effect, IOPD | 2.56 / 2.81 | Tables 2 and 3 |
+| `lmax_iopd` (Max0, log) | 0.90 / 1.69 | Tables 2 and 3 |
+| prior ALGLU duration on log max, IOPD | -0.55 per year / (none) | Table 2 "Max [Duration of previous ALGLU experience in years]" |
+| `int_lopd` | -0.78 / 0.06 | Tables S3 and S4 |
+| baseline score effect, LOPD | -0.00 / -0.10 per point | Tables S3 and S4 |
+| log baseline uHex4 effect, LOPD | 0.69 / 0.35 | Tables S3 and S4 |
+| log age at diagnosis effect, LOPD | -3.37 / (none) | Table S3 |
+| log age at first infusion effect, LOPD | (none) / -3.78 | Table S4 |
+| log baseline creatine kinase effect, LOPD | -0.97 / -0.79 | Tables S3 and S4 |
+| log baseline creatinine effect, LOPD | -4.23 / (none) | Table S3 |
+| log baseline BMI effect, LOPD | (none) / -2.18 | Table S4 |
+| `lmax_lopd` (Max0, log) | 2.40 / 2.35 | Tables S3 and S4 |
+| Centring medians, IOPD | uHex4 53.81 mmol/mol; GMFM-88 67.74; QMFT 24; age at diagnosis 0.26 y | Figure S2 dashed lines |
+| Centring medians, LOPD | uHex4 8.03; GMFM-88 84.67; QMFT 41; age at diagnosis 46.63 y; age at first infusion 47.84 y; CK 550 IU/L; creatinine 52 umol/L; BMI 26.3 | Figure S2 dashed lines |
+| Centring value, prior ALGLU duration | 7 years | Not printed; see Assumptions |
+
+# Closed-form check
+
+The models are algebraic, so the solved output must equal the published
+equations evaluated by hand. With the random rate set to its median the check
+is deterministic, and the two sides differ only by floating-point error.
+
+```{r closed-form}
+typ_gmfm <- rxode2::zeroRe(mod_gmfm, "omega")
+typ_qmft <- rxode2::zeroRe(mod_qmft, "omega")
+
+# One observation row per grid point on a single subject; `time` is only an
+# index because the models have no time dimension.
+motor_eval <- function(model, output, covs) {
+  ev <- data.frame(id = 1L, time = seq_len(nrow(covs)), amt = 0, evid = 0L)
+  ev <- cbind(ev, covs)
+  s <- as.data.frame(rxode2::rxSolve(model, events = ev, returnType = "data.frame"))
+  stopifnot(nrow(s) == nrow(covs))
+  s[[output]]
+}
+
+hand_gmfm <- function(d) {
+  rate <- exp(-0.97)
+  with(d, ifelse(
+    DIS_INFANTILE_ONSET_POMPE == 1,
+    2.24 - 0.02 * (SCORE_GMFM88 - 67.74) -
+      2.30 * (log(URINARY_HEXOSE_TETRASACCHARIDE_BASE) - log(53.81)) +
+      1.55 * (log(AGE_DIAGNOSIS) - log(0.26)) -
+      0.39 * (T_PRIOR_ALGLUCOSIDASE_ALFA - 7) + 2.56 * SEXF +
+      exp(0.90 - 0.55 * (T_PRIOR_ALGLUCOSIDASE_ALFA - 7)) *
+        (1 - exp(-rate * (-URINARY_HEXOSE_TETRASACCHARIDE_REL))),
+    -0.78 - 0.00 * (SCORE_GMFM88 - 84.67) +
+      0.69 * (log(URINARY_HEXOSE_TETRASACCHARIDE_BASE) - log(8.03)) -
+      3.37 * (log(AGE_DIAGNOSIS) - log(46.63)) -
+      0.97 * (log(CPK) - log(550)) - 4.23 * (log(CREAT) - log(52)) +
+      exp(2.40) * (1 - exp(-rate * (-URINARY_HEXOSE_TETRASACCHARIDE_REL)))
+  ))
+}
+
+hand_qmft <- function(d) {
+  rate <- exp(-1.19)
+  with(d, ifelse(
+    DIS_INFANTILE_ONSET_POMPE == 1,
+    1.51 - 0.03 * (SCORE_QMFT - 24) -
+      3.34 * (log(URINARY_HEXOSE_TETRASACCHARIDE_BASE) - log(53.81)) +
+      1.66 * (log(AGE_DIAGNOSIS) - log(0.26)) -
+      0.45 * (T_PRIOR_ALGLUCOSIDASE_ALFA - 7) + 2.81 * SEXF +
+      exp(1.69) * (1 - exp(-rate * (-URINARY_HEXOSE_TETRASACCHARIDE_REL))),
+    0.06 - 0.10 * (SCORE_QMFT - 41) +
+      0.35 * (log(URINARY_HEXOSE_TETRASACCHARIDE_BASE) - log(8.03)) -
+      3.78 * (log(AGE) - log(47.84)) - 2.18 * (log(BMI) - log(26.3)) -
+      0.79 * (log(CPK) - log(550)) +
+      exp(2.35) * (1 - exp(-rate * (-URINARY_HEXOSE_TETRASACCHARIDE_REL)))
+  ))
+}
+
+# A grid that moves every covariate away from its centring value, in both
+# populations, so each term of the equations is exercised.
+set.seed(1)
+n_grid <- 40
+cov_grid <- data.frame(
+  DIS_INFANTILE_ONSET_POMPE = rep(c(1L, 0L), each = n_grid / 2),
+  URINARY_HEXOSE_TETRASACCHARIDE_REL = runif(n_grid, -0.9, 0.2),
+  URINARY_HEXOSE_TETRASACCHARIDE_BASE = c(runif(n_grid / 2, 15, 150), runif(n_grid / 2, 2, 30)),
+  SCORE_GMFM88 = runif(n_grid, 10, 100),
+  SCORE_QMFT = runif(n_grid, 2, 64),
+  AGE_DIAGNOSIS = c(runif(n_grid / 2, 0.02, 1), runif(n_grid / 2, 18, 75)),
+  AGE = c(runif(n_grid / 2, 1, 12), runif(n_grid / 2, 18, 78)),
+  T_PRIOR_ALGLUCOSIDASE_ALFA = c(runif(n_grid / 2, 0.5, 14), rep(0, n_grid / 2)),
+  SEXF = rbinom(n_grid, 1, 0.5),
+  CPK = runif(n_grid, 100, 3000),
+  CREAT = runif(n_grid, 15, 100),
+  BMI = runif(n_grid, 14, 40)
+)
+
+err_gmfm <- motor_eval(typ_gmfm, "gmfm88cfb", cov_grid) - hand_gmfm(cov_grid)
+err_qmft <- motor_eval(typ_qmft, "qmftcfb", cov_grid) - hand_qmft(cov_grid)
+c(gmfm88 = max(abs(err_gmfm)), qmft = max(abs(err_qmft)))
+# Same parameters on both sides, so only floating-point error separates them.
+stopifnot(max(abs(err_gmfm)) < 1e-8, max(abs(err_qmft)) < 1e-8)
+```
+
+A worked value: a typical IOPD patient at every centring value with a 50% fall
+in uHex4 has a GMFM-88 change of
+2.24 + exp(0.90) * (1 - exp(-exp(-0.97) * 0.5)) = 2.66 points.
+
+```{r worked-value}
+at_median_iopd <- data.frame(
+  DIS_INFANTILE_ONSET_POMPE = 1L, URINARY_HEXOSE_TETRASACCHARIDE_REL = -0.5,
+  URINARY_HEXOSE_TETRASACCHARIDE_BASE = 53.81, SCORE_GMFM88 = 67.74,
+  SCORE_QMFT = 24, AGE_DIAGNOSIS = 0.26, AGE = 6.85,
+  T_PRIOR_ALGLUCOSIDASE_ALFA = 7, SEXF = 0L, CPK = 1442, CREAT = 17.68, BMI = 17.05
+)
+worked <- motor_eval(typ_gmfm, "gmfm88cfb", at_median_iopd)
+worked
+stopifnot(abs(worked - 2.6647) < 1e-3)
+```
+
+# Motor response to the uHex4 decrease
+
+The asymptotes differ sharply between the populations: exp(0.90) = 2.5 GMFM-88
+points in IOPD against exp(2.40) = 11.0 in LOPD, and exp(1.69) = 5.4 against
+exp(2.35) = 10.5 QMFT points. The random rate is very wide (log-scale SD 1.40
+for GMFM-88, 1.68 for QMFT), so the population-mean response (averaged over
+200 simulated rates) rises faster than the response at the median rate.
+
+```{r response-curves}
+uhex_grid <- seq(0, -0.8, by = -0.02)
+n_rate <- 200
+
+curve_df <- function(model, typ_model, output, endpoint, iopd) {
+  covs <- data.frame(
+    DIS_INFANTILE_ONSET_POMPE = iopd,
+    URINARY_HEXOSE_TETRASACCHARIDE_REL = uhex_grid,
+    URINARY_HEXOSE_TETRASACCHARIDE_BASE = if (iopd == 1) 53.81 else 8.03,
+    SCORE_GMFM88 = if (iopd == 1) 67.74 else 84.67,
+    SCORE_QMFT = if (iopd == 1) 24 else 41,
+    AGE_DIAGNOSIS = if (iopd == 1) 0.26 else 46.63,
+    AGE = 47.84, T_PRIOR_ALGLUCOSIDASE_ALFA = if (iopd == 1) 7 else 0,
+    SEXF = 0L, CPK = 550, CREAT = 52, BMI = 26.3
+  )
+  typical <- motor_eval(typ_model, output, covs)
+  ev <- merge(data.frame(id = seq_len(n_rate)), cbind(time = seq_along(uhex_grid), covs))
+  ev <- ev[order(ev$id, ev$time), ]
+  ev$amt <- 0
+  ev$evid <- 0L
+  s <- as.data.frame(rxode2::rxSolve(model, events = ev, returnType = "data.frame"))
+  pop_mean <- as.numeric(tapply(s[[output]], s$time, mean))
+  rbind(
+    data.frame(endpoint = endpoint, population = if (iopd == 1) "IOPD" else "LOPD",
+               uhex4_pct = 100 * uhex_grid, change = typical, curve = "median rate"),
+    data.frame(endpoint = endpoint, population = if (iopd == 1) "IOPD" else "LOPD",
+               uhex4_pct = 100 * uhex_grid, change = pop_mean, curve = "population mean")
+  )
+}
+
+rxode2::rxSetSeed(2025)
+curves <- bind_rows(
+  curve_df(mod_gmfm, typ_gmfm, "gmfm88cfb", "GMFM-88 (percent score)", 1L),
+  curve_df(mod_gmfm, typ_gmfm, "gmfm88cfb", "GMFM-88 (percent score)", 0L),
+  curve_df(mod_qmft, typ_qmft, "qmftcfb", "QMFT (raw score)", 1L),
+  curve_df(mod_qmft, typ_qmft, "qmftcfb", "QMFT (raw score)", 0L)
+)
+
+ggplot(curves, aes(uhex4_pct, change, colour = population, linetype = curve)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~endpoint, scales = "free_y") +
+  scale_x_reverse() +
+  labs(
+    x = "uHex4 change from baseline (%)",
+    y = "Motor score change from baseline",
+    colour = NULL, linetype = NULL,
+    title = "Motor improvement as uHex4 falls, at the centring covariate values"
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The duration of prior ALGLU treatment lowers both the intercept and, for
+GMFM-88, the asymptote (Table 2): each extra year multiplies the IOPD
+improvement ceiling by exp(-0.55) = 0.58, the effect the Discussion attributes
+to patients who had been declining on ALGLU before entering Mini-COMET.
+
+```{r prior-duration}
+prior_grid <- expand.grid(prior = c(2.8, 7, 9), uhex = uhex_grid)
+prior_covs <- data.frame(
+  DIS_INFANTILE_ONSET_POMPE = 1L,
+  URINARY_HEXOSE_TETRASACCHARIDE_REL = prior_grid$uhex,
+  URINARY_HEXOSE_TETRASACCHARIDE_BASE = 53.81, SCORE_GMFM88 = 67.74,
+  SCORE_QMFT = 24, AGE_DIAGNOSIS = 0.26, AGE = 6.85,
+  T_PRIOR_ALGLUCOSIDASE_ALFA = prior_grid$prior,
+  SEXF = 0L, CPK = 1442, CREAT = 17.68, BMI = 17.05
+)
+prior_grid$change <- motor_eval(typ_gmfm, "gmfm88cfb", prior_covs)
+
+ggplot(prior_grid, aes(100 * uhex, change, colour = factor(prior))) +
+  geom_line(linewidth = 0.8) +
+  scale_x_reverse() +
+  labs(
+    x = "uHex4 change from baseline (%)",
+    y = "GMFM-88 change from baseline (points)",
+    colour = "Prior ALGLU (years)",
+    title = "IOPD typical patient: effect of prior ALGLU treatment duration"
+  ) +
+  theme_bw()
+```
+
+# Comparison against observed arm means (Figure S1)
+
+Supplementary Figure S1 plots, for every trial arm and visit, the observed mean
+motor change against the observed mean uHex4 change. The maintainers digitised
+both panels (circles: Mini-COMET, IOPD; triangles: COMET, LOPD). The uHex4 axis
+values read from the two panels agree to within 0.3 percentage points, which
+checks the digitisation. The models have no time dependence, so each point is
+predicted from its uHex4 change alone. Visit labels are not needed and are not
+carried for the COMET points.
+
+```{r figure-s1-data}
+fig_s1 <- bind_rows(
+  data.frame(endpoint = "gmfm88cfb", population = "IOPD", arm = "ALGLU then AVAL 40",
+             uhex4_pct = c(-8.6, -18.3, -56.6, -22.2, -50.3), observed = c(3.44, 6.20, 8.31, 9.41, 9.85)),
+  data.frame(endpoint = "gmfm88cfb", population = "IOPD", arm = "AVAL 20 then 40",
+             uhex4_pct = c(-10.9, 0.4, -22.9, -20.0, -35.0), observed = c(1.19, 2.62, 4.61, 3.98, 5.04)),
+  data.frame(endpoint = "gmfm88cfb", population = "IOPD", arm = "AVAL 40",
+             uhex4_pct = c(-11.9, -38.6, -26.1, -56.6, -54.0), observed = c(2.61, 3.82, 5.36, 8.17, 2.86)),
+  data.frame(endpoint = "gmfm88cfb", population = "LOPD", arm = "ALGLU 20 then AVAL 20",
+             uhex4_pct = c(-54.1, -46.2, -46.2, -25.7, -24.3, -19.4, -10.7),
+             observed = c(1.23, 2.40, 0.87, 1.55, 1.65, 1.12, 2.30)),
+  data.frame(endpoint = "gmfm88cfb", population = "LOPD", arm = "AVAL 20",
+             uhex4_pct = c(-62.1, -60.6, -58.0, -55.5, -53.8, -53.5, -35.9),
+             observed = c(3.77, 4.66, 4.02, 4.16, 4.70, 3.42, 2.38)),
+  data.frame(endpoint = "qmftcfb", population = "IOPD", arm = "ALGLU then AVAL 40",
+             uhex4_pct = c(-8.7, -18.3, -56.7, -22.2, -50.5), observed = c(3.34, 3.60, 6.80, 6.99, 7.16)),
+  data.frame(endpoint = "qmftcfb", population = "IOPD", arm = "AVAL 20 then 40",
+             uhex4_pct = c(-10.9, 0.3, -23.0, -20.0, -35.1), observed = c(-1.49, -0.16, 0.01, -1.66, 0.51)),
+  data.frame(endpoint = "qmftcfb", population = "IOPD", arm = "AVAL 40",
+             uhex4_pct = c(-12.1, -38.8, -26.2, -56.8, -54.1), observed = c(2.00, 3.67, 4.63, 5.29, 3.30)),
+  data.frame(endpoint = "qmftcfb", population = "LOPD", arm = "ALGLU 20 then AVAL 20",
+             uhex4_pct = c(-54.3, -46.4, -46.3, -25.5, -24.2, -19.5, -10.8),
+             observed = c(2.14, 2.26, 1.86, 1.46, 1.86, 0.94, 1.77)),
+  data.frame(endpoint = "qmftcfb", population = "LOPD", arm = "AVAL 20",
+             uhex4_pct = c(-62.4, -60.8, -58.2, -55.6, -53.9, -53.5, -36.0),
+             observed = c(3.94, 4.68, 4.18, 4.00, 4.29, 3.47, 2.14))
+)
+```
+
+Each arm is simulated as 200 virtual patients carrying the arm's mean baseline
+characteristics from Table S2. Sex is assigned in the arm's female proportion,
+and the random rate is drawn per patient. Creatine kinase, creatinine and BMI
+are not reported by arm, so the LOPD arms take the Figure S2 medians, which
+zeroes those terms.
+
+```{r arm-covariates}
+arm_covs <- data.frame(
+  population = c("IOPD", "IOPD", "IOPD", "LOPD", "LOPD"),
+  arm = c("ALGLU then AVAL 40", "AVAL 20 then 40", "AVAL 40", "ALGLU 20 then AVAL 20", "AVAL 20"),
+  frac_female = c(4 / 6, 1 / 6, 5 / 9, 24 / 49, 24 / 51),
+  AGE_DIAGNOSIS = c(5.1 / 12, 1.9 / 12, 2.3 / 12, 48.2, 44.7), # Table S2; IOPD in months
+  AGE = c(4.7, 7.7, 7.4, 50.4, 46.0),
+  T_PRIOR_ALGLUCOSIDASE_ALFA = c(4.2, 7.4, 7.1, 0, 0),
+  URINARY_HEXOSE_TETRASACCHARIDE_BASE = c(52.2, 80.2, 50.0, 8.7, 12.7),
+  SCORE_GMFM88 = c(50.4, 54.8, 72.4, 79.1, 80.8),
+  SCORE_QMFT = c(20.7, 23.3, 31.0, 42.3, 41.3)
+)
+knitr::kable(arm_covs, digits = 3)
+```
+
+```{r figure-s1-simulate}
+n_per_arm <- 200
+
+simulate_arm <- function(model, output, a, obs) {
+  ev <- expand.grid(time = seq_len(nrow(obs)), id = seq_len(n_per_arm))
+  ev <- ev[order(ev$id, ev$time), ]
+  ev$amt <- 0
+  ev$evid <- 0L
+  ev$URINARY_HEXOSE_TETRASACCHARIDE_REL <- obs$uhex4_pct[ev$time] / 100
+  ev$DIS_INFANTILE_ONSET_POMPE <- as.integer(a$population == "IOPD")
+  ev$SEXF <- as.integer(ev$id <= round(n_per_arm * a$frac_female))
+  for (nm in c("AGE_DIAGNOSIS", "AGE", "T_PRIOR_ALGLUCOSIDASE_ALFA",
+               "URINARY_HEXOSE_TETRASACCHARIDE_BASE", "SCORE_GMFM88", "SCORE_QMFT")) {
+    ev[[nm]] <- a[[nm]]
+  }
+  ev$CPK <- 550
+  ev$CREAT <- 52
+  ev$BMI <- 26.3
+  s <- as.data.frame(rxode2::rxSolve(model, events = ev, returnType = "data.frame"))
+  stopifnot(nrow(s) == nrow(ev))
+  obs$predicted <- as.numeric(tapply(s[[output]], s$time, mean))
+  obs
+}
+
+rxode2::rxSetSeed(20251)
+cmp <- list()
+for (ep in c("gmfm88cfb", "qmftcfb")) {
+  model <- if (ep == "gmfm88cfb") mod_gmfm else mod_qmft
+  for (k in seq_len(nrow(arm_covs))) {
+    a <- arm_covs[k, ]
+    obs <- fig_s1[fig_s1$endpoint == ep & fig_s1$population == a$population & fig_s1$arm == a$arm, ]
+    cmp[[length(cmp) + 1]] <- simulate_arm(model, ep, a, obs)
+  }
+}
+cmp <- bind_rows(cmp) |>
+  mutate(
+    endpoint = ifelse(endpoint == "gmfm88cfb", "GMFM-88", "QMFT"),
+    difference = predicted - observed
+  )
+
+ggplot(cmp, aes(uhex4_pct)) +
+  geom_point(aes(y = observed, colour = arm, shape = "observed (Figure S1)"), size = 2.2) +
+  geom_point(aes(y = predicted, colour = arm, shape = "predicted"), size = 2.2) +
+  geom_segment(aes(xend = uhex4_pct, y = observed, yend = predicted, colour = arm), alpha = 0.4) +
+  facet_grid(endpoint ~ population, scales = "free_y") +
+  scale_shape_manual(values = c("observed (Figure S1)" = 16, "predicted" = 4)) +
+  scale_x_reverse() +
+  labs(
+    x = "Mean uHex4 change from baseline (%)",
+    y = "Mean motor score change from baseline",
+    colour = NULL, shape = NULL,
+    title = "Arm-level observed vs predicted means (replicates Figure S1)"
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom", legend.box = "vertical")
+```
+
+```{r figure-s1-summary}
+cmp_summary <- cmp |>
+  group_by(endpoint, population) |>
+  summarise(
+    n_points = n(),
+    median_difference = median(difference),
+    median_abs_difference = median(abs(difference)),
+    .groups = "drop"
+  )
+cmp_summary |>
+  rename(
+    "Endpoint" = endpoint, "Population" = population, "Points" = n_points,
+    "Median (pred - obs)" = median_difference,
+    "Median |pred - obs|" = median_abs_difference
+  ) |>
+  knitr::kable(digits = 2)
+
+# The arm means of six to nine IOPD patients are noisy, and arm-mean covariates
+# pushed through log terms are not the mean of the per-patient terms, so the
+# check is on the centre of the differences. A wrong sign, a dropped "1 -" or a
+# mis-scaled asymptote moves these medians by several points.
+stopifnot(
+  all(abs(cmp_summary$median_difference) < 1.5),
+  all(cmp_summary$median_abs_difference < 2.5)
+)
+```
+
+The predictions follow the observed arm means in both populations. The
+largest misses are in the small IOPD arms. The AVAL 20 then 40 arm is
+under-predicted on GMFM-88 by about 3 points: its mean baseline uHex4 (80.2)
+is the highest of the three arms and carries a log effect of -2.30, and the
+arm's six patients improved more than that typical-value term implies.
+
+# Errata check: the printed LOPD QMFT equation
+
+The Supplementary Results print the LOPD QMFT model with
+`max * exp(-rate * (-%dUHex4 * 0.01))`, without the leading `1 -` that the
+Methods base model and every other printed equation carry. Read literally, a
+typical LOPD patient with no uHex4 change would show a QMFT gain of about
+exp(2.35) = 10.5 points. Figure S1 places every arm at 0 at baseline, and the
+COMET arms never exceed 5 points. The model therefore uses the `1 -` form.
+
+```{r lopd-errata}
+lopd_median <- data.frame(
+  DIS_INFANTILE_ONSET_POMPE = 0L, URINARY_HEXOSE_TETRASACCHARIDE_REL = 0,
+  URINARY_HEXOSE_TETRASACCHARIDE_BASE = 8.03, SCORE_GMFM88 = 84.67,
+  SCORE_QMFT = 41, AGE_DIAGNOSIS = 46.63, AGE = 47.84,
+  T_PRIOR_ALGLUCOSIDASE_ALFA = 0, SEXF = 0L, CPK = 550, CREAT = 52, BMI = 26.3
+)
+c(
+  packaged_form = motor_eval(typ_qmft, "qmftcfb", lopd_median),
+  printed_form = 0.06 + exp(2.35) * exp(-exp(-1.19) * 0)
+)
+```
+
+# Not reproduced: Figure 4 (in silico trials)
+
+Figure 4 drives these models with uHex4 profiles simulated by the Pompe
+quantitative systems pharmacology model of Kaddi et al. (Clin Pharmacol Ther
+2024, doi:10.1002/cpt.3498) for six ALGLU / AVAL regimens. That model is not in
+nlmixr2lib, so the regimen comparison cannot be regenerated here. Given a uHex4
+profile from any source, the comparison is a direct application of the models
+above.
+
+# Assumptions and deviations
+
+- **Prior ALGLU duration centring value.** The equations centre the duration at
+  the pooled IOPD median, but Figure S2 shows it only per Mini-COMET arm
+  (2.8, 7.9 and 8.3 years). The maintainers centred it at a rounded 7 years. A
+  different centring value shifts the IOPD intercept by -0.39 (GMFM-88) or
+  -0.45 (QMFT) points per year of difference and rescales the IOPD GMFM-88
+  asymptote by exp(-0.55) per year.
+- **Centring values are read from Figure S2.** The dashed lines annotated on
+  Figure S2 are taken as the medians named in the equations. They are not the
+  means: for the IOPD uHex4 line (53.81 mmol/mol) the n-weighted mean of the
+  Table S2 arm means would be 59.3.
+- **LOPD QMFT `Max0` is on the log scale.** Table S4 does not tag `Max0` with
+  "(log)" as the other three tables do. The Methods state that the motor
+  asymptotes were log-constrained, and exp(2.35) = 10.5 is in line with the
+  LOPD GMFM-88 asymptote exp(2.40) = 11.0.
+- **Log-scale baseline covariates.** The printed equations write every
+  baseline-covariate term as a plain deviation from the median, but Tables 2,
+  3, S3 and S4 label the uHex4, age, creatine kinase, creatinine and BMI rows
+  "(log)", and the Methods say log transformation was used for some continuous
+  baseline characteristics. Read on the linear scale the coefficients are
+  implausible: the LOPD creatine kinase term alone would subtract
+  0.97 * (1500 - 550) = 921 GMFM-88 points from a patient at 1500 IU/L. The
+  table labels are therefore followed, as differences of logs. The baseline
+  motor score and the prior ALGLU duration, which the tables do not mark
+  "(log)", stay linear.
+- **Variance parameters.** The tables report the log of the standard
+  deviations. The between-patient variance of the log rate is
+  `exp(log sigma_r)^2` and the additive residual SD is `exp(log sigma_e)`. The
+  residual error is shared by both populations.
+- **The paper's simulation summary.** For its in silico trials the paper
+  generated 1000 random rates per patient and summarised them by the mean
+  before computing the motor response. That is a simulation choice, not part
+  of the fitted model. The packaged models draw one rate per patient, as the
+  NLRC model specifies.
+- **Figure S1 arm-level check.** Arm-mean covariates from Table S2 stand in for
+  the individual baseline data. LOPD creatine kinase, creatinine and BMI, which
+  are not reported by arm, are set to their Figure S2 medians.
+- **Sensitivity model not packaged.** A lag variant linking the motor change to
+  the average uHex4 change over the current and previous visit (Figure S5) was
+  examined and not retained by the authors. Only the final models are packaged.
+
+# Errata
+
+- The Supplementary Results equation for the LOPD QMFT model omits the `1 -` of
+  the exponential-asymptote term (see the check above). The equation also
+  labels the age-at-infusion coefficient `beta_age at infusion,IOPD` although
+  it is an LOPD parameter (Table S4).
+- Table S2 labels the prior ALGLU duration row "n (%)" although it reports
+  means and SDs in years.

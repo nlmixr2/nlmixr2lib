@@ -1066,6 +1066,24 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## Pompe-disease motor-function scores
+
+### gmfm88cfb (**canonical GMFM-88 total percent score change-from-baseline output**)
+- **Type:** compartment
+- **Role:** Change from baseline in the Gross Motor Function Measure-88 total percent score (percentage points on the 0-100 scale), the observation of a model that fits the change score directly. Higher = improvement.
+- **Source aliases:** `dGMFM` -- Rachedi 2025 equation notation.
+- **Example models:** `Rachedi_2025_avalglucosidaseAlfa_gmfm88.R` (algebraic nonlinear random-coefficient model driven by the relative change in urinary hexose tetrasaccharide).
+- **Notes:** `cfb` suffix as in `das28cfb`. The baseline score itself is the covariate `SCORE_GMFM88`; a model of the absolute score should register a companion `gmfm88`.
+
+### qmftcfb (**canonical QMFT total raw score change-from-baseline output**)
+- **Type:** compartment
+- **Role:** Change from baseline in the Quick Motor Function Test total raw score (score points on the 0-64 scale), the observation of a model that fits the change score directly. Higher = improvement.
+- **Source aliases:** `dQMFT` -- Rachedi 2025 equation notation.
+- **Example models:** `Rachedi_2025_avalglucosidaseAlfa_qmft.R`.
+- **Notes:** `cfb` suffix as in `das28cfb`. The baseline score itself is the covariate `SCORE_QMFT`; a model of the absolute score should register a companion `qmft`.
+
+---
+
 ## PASI psoriasis-severity score
 
 ### pasi (**canonical PASI score output compartment**)

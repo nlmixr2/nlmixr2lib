@@ -3577,6 +3577,28 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Kim_2023_DMD_6MWD_FFSOL.R` (founding example; baseline FFSOL sets the FFSOL intercept with exponents near 1 and shortens the ages at half-maximal 6MWD decrease and FFSOL increase).
 - **Notes:** A fraction, not a percentage. Distinct from `FF_VL_BL` (vastus lateralis); further muscles extend the pattern as `FF_<MUSCLE>_BL`, paired with an `ff_<muscle>` output.
 
+### SCORE_GMFM88 (**canonical for Gross Motor Function Measure-88 total percent score**)
+- **Description:** Gross Motor Function Measure-88 (GMFM-88) total percent score: 88 observed items each scored 0-3, converted to a percent of the maximum attainable score within each assessed dimension, and averaged over the dimensions assessed. Range 0-100; higher values = better gross motor function.
+- **Units:** (percent score)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous; Rachedi 2025 enters it as a linear deviation from the population median, 67.74 (infantile-onset Pompe disease) or 84.67 (late-onset Pompe disease).
+- **Source aliases:**
+  - `GMFM-88 total percent score at baseline` -- Rachedi 2025 Table 2 row; same quantity, no value transformation.
+- **Example models:** `Rachedi_2025_avalglucosidaseAlfa_gmfm88.R` (baseline score; additive linear term on the change from baseline in the same score).
+- **Notes:** The number of dimensions averaged is study-specific (Rachedi 2025: all five dimensions in Mini-COMET, only standing and walking/running/jumping in COMET), so record it per model in `covariateData[["SCORE_GMFM88"]]$notes`. Baseline-only in the founding model; following the `SCORE_MGADL` / `SCORE_EASI` convention the canonical carries no `BL` marker. The paired change-from-baseline OUTPUT is the `gmfm88cfb` compartment in `compartment-names.md`.
+
+### SCORE_QMFT (**canonical for Quick Motor Function Test total raw score**)
+- **Description:** Quick Motor Function Test (QMFT) total raw score: sum of 16 Pompe-disease-specific motor items each scored 0-4 on an ordinal scale. Range 0-64; higher values = better motor function.
+- **Units:** (score)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous; Rachedi 2025 enters it as a linear deviation from the population median, 24 (infantile-onset Pompe disease) or 41 (late-onset Pompe disease).
+- **Source aliases:**
+  - `QMFT score at baseline` -- Rachedi 2025 Table 3 row; same quantity, no value transformation.
+- **Example models:** `Rachedi_2025_avalglucosidaseAlfa_qmft.R` (baseline score; additive linear term on the change from baseline in the same score).
+- **Notes:** Raw total, not a percent of maximum. Baseline-only in the founding model; following the `SCORE_MGADL` / `SCORE_EASI` convention the canonical carries no `BL` marker. The paired change-from-baseline OUTPUT is the `qmftcfb` compartment in `compartment-names.md`.
+
 ## Critical-illness severity
 
 ### DIS_CRITILL (**canonical for binary critical-illness / ICU-admission indicator**)
@@ -11313,6 +11335,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Mohanan_2017_fludarabine.R` (log-scale multiplicative effect on the BSA-normalised clearance of the fludarabine nucleoside F-ara-A, `exp(e_fanconi_cl * DIS_FANCONI)` with `e_fanconi_cl = log(2.90 / 7.12) = -0.898`, i.e. clearance in Fanconi anemia is 0.407 times that in aplastic anemia, equivalently the 2.46-fold higher aplastic-anemia clearance quoted in the Mohanan 2017 Abstract, P < 1e-6; reference category acquired aplastic anemia).
 - **Notes:** Member of the `DIS_<CONDITION>` family; the covariate-effect parameter form drops the `DIS_` prefix, giving `e_fanconi_<param>`, per the `DIS_CANCER -> e_cancer_<param>` and `DIS_CHF -> e_chf_<param>` precedents. **Fanconi anemia is registered as the indicator and aplastic anemia as the reference**, rather than the reverse, because the printed typical value that the source model quotes (7.12 L/h/m^2) belongs to the aplastic-anemia group; keeping the published orientation lets the source table's values be carried into the model file unchanged without a sign flip or re-baselining, following the rule recorded in the `DIS_OUD` and `DIS_CHB` notes. Register a separate `DIS_AA` sibling if a future paper needs an acquired-aplastic-anemia indicator against a different reference -- do not re-express this column as its complement, because the reference group is paper-defined and need not be aplastic anemia. Distinct from `DIS_FRDA` (Friedreich ataxia), whose abbreviation is deliberately spelled out for the same reason this entry is: a bare `DIS_FA` would be ambiguous against folic acid and fatty acid. Distinct also from `DIS_PNH` and `DIS_MDS`, the other non-malignant / pre-malignant marrow-failure states, which are separate diagnoses that a marrow-failure cohort may carry alongside this one. Scope: specific because the reference diagnosis is paper-defined; promote to general if a second paper contrasts Fanconi anemia against the same acquired-aplastic-anemia reference.
 
+### DIS_INFANTILE_ONSET_POMPE (**canonical for infantile-onset (vs late-onset) Pompe disease indicator**)
+- **Description:** 1 = infantile-onset Pompe disease (IOPD; acid alpha-glucosidase deficiency presenting in the first year of life); 0 = late-onset Pompe disease (LOPD). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (late-onset Pompe disease).
+- **Source aliases:**
+  - population `IOPD` / `LOPD` (Mini-COMET vs COMET) -- Rachedi 2025; IOPD = 1.
+- **Example models:** `Rachedi_2025_avalglucosidaseAlfa_gmfm88.R`, `Rachedi_2025_avalglucosidaseAlfa_qmft.R` (selects the population-specific intercept, baseline-covariate effects, centring medians and motor-improvement asymptote of the jointly fitted IOPD / LOPD motor-function models).
+- **Notes:** Spelled out rather than `DIS_IOPD`, following the `DIS_DILATED_CARDIOMYOPATHY` precedent (the acronym form was rejected there). The reference is the late-onset form because the two phenotypes partition a Pompe disease cohort; a model that contrasts Pompe disease against a non-Pompe population needs a separate `DIS_POMPE` indicator.
+
 ## Treatment-emergent adverse-event indicators
 
 Binary indicators flagging that a participant is currently experiencing a specific treatment-emergent adverse event, used where the event itself perturbs the drug's pharmacokinetics (most often gastrointestinal events altering oral absorption or bioavailability). Naming follows `AE_<EVENT>`, where `<EVENT>` is the MedDRA-style preferred term in upper case.
@@ -13962,6 +13995,28 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `ALKN` -- Thai 2023 Table 3 ("alkaline phosphatase normalized to the upper limit value").
 - **Example models:** `Cerou_2024_amcenestrant_ameera12.R` (log-linear effect on the PFS hazard: `exp(0.93 * log(ALPR / 0.89))`), `Thai_2023_isatuximab.R` (power effect `(ALPR / 1)^-0.233` on the baseline serum M-protein M0 of the isatuximab M-protein/PFS joint model).
 - **Notes:** Member of the `<analyte>R` ULN-ratio family with `ALBR` and `LDHR`. Distinct from `ALP` (absolute activity in U/L); never substitute one for the other, since a model calibrated on a ratio near 1 is badly wrong if fed a U/L value near 100. In Cerou 2024 the Japanese AMEERA-2 study had a raw median of 202.5 IU/L but a normalised median of 0.59, so raw ALP and ALPR are not proportional across sites.
+
+### URINARY_HEXOSE_TETRASACCHARIDE_BASE (**canonical for baseline urinary hexose tetrasaccharide**)
+- **Description:** Per-subject baseline urinary hexose tetrasaccharide (uHex4, the glucose tetrasaccharide Glc4 biomarker of glycogen storage), normalised to urinary creatinine. Time-fixed.
+- **Units:** mmol/mol creatinine
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous; Rachedi 2025 enters it as `log(URINARY_HEXOSE_TETRASACCHARIDE_BASE) - log(median)` with medians 53.81 (infantile-onset Pompe disease) and 8.03 (late-onset Pompe disease) mmol/mol.
+- **Source aliases:**
+  - `uHex4 (mmol/mol) at baseline` -- Rachedi 2025 Tables 2, 3, S3 and S4; same quantity and units, no value transformation.
+- **Example models:** `Rachedi_2025_avalglucosidaseAlfa_gmfm88.R`, `Rachedi_2025_avalglucosidaseAlfa_qmft.R`.
+- **Notes:** `_BASE` form (as `CRCL_BASE`) because it is the time-fixed baseline paired with the time-varying `URINARY_HEXOSE_TETRASACCHARIDE_REL` driver of the same analyte. Spelled out rather than `UHEX4` / `HEX4` so the analyte is unambiguous.
+
+### URINARY_HEXOSE_TETRASACCHARIDE_REL (**canonical for relative change from baseline in urinary hexose tetrasaccharide**)
+- **Description:** Relative (fractional) change from the per-subject baseline in urinary hexose tetrasaccharide (uHex4), unitless: `(uHex4(t) - uHex4_baseline) / uHex4_baseline`, so -0.50 = a 50% decrease. Time-varying; supplied per visit from observed uHex4 or from an upstream model of the biomarker.
+- **Units:** fraction (unitless; negative when uHex4 falls below baseline)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- 0 at baseline.
+- **Source aliases:**
+  - `%dUHex4` / `percentage change from baseline in uHex4` -- Rachedi 2025 equations; divide by 100 (the paper's `-%dUHex4 * 0.01` term becomes `-URINARY_HEXOSE_TETRASACCHARIDE_REL`).
+- **Example models:** `Rachedi_2025_avalglucosidaseAlfa_gmfm88.R`, `Rachedi_2025_avalglucosidaseAlfa_qmft.R` (drives the exponential-asymptote motor-function improvement `max * (1 - exp(-rate * (-URINARY_HEXOSE_TETRASACCHARIDE_REL)))`).
+- **Notes:** A fraction, not a percentage, following `DBP_REL`. Paired with the time-fixed `URINARY_HEXOSE_TETRASACCHARIDE_BASE`.
 
 ## Inflammatory-bowel-disease disease-activity covariates
 
@@ -18214,6 +18269,28 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
   - `disease duration (years)` -- Leil 2021 Table 2 column label (arm mean).
 - **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (additive `-0.133 * log(T_DIAG_RA / 8.2)` on the placebo Emax of the DAS28 change from baseline; longer-standing disease gives a smaller background-therapy response). Also documented (screened, not retained) in `Chen_2025_methotrexate_das28_mbma.R`, `Chen_2025_methotrexate_acr20_mbma.R` and `Chen_2025_methotrexate_acr50_mbma.R`.
 - **Notes:** Sibling of `T_DIAG_DIAB` and `T_DIAG_CANCER` under the canonical `T_<event>` family. Must be strictly positive where it enters through `log()`; supply a small floor for arms of newly diagnosed patients.
+
+### AGE_DIAGNOSIS (**canonical for age at diagnosis of the disease under study**)
+- **Description:** Subject's age when the disease under study was diagnosed. Time-fixed.
+- **Units:** years
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous; Rachedi 2025 enters it as `log(AGE_DIAGNOSIS) - log(median)` with medians 0.26 years (infantile-onset Pompe disease) and 46.63 years (late-onset Pompe disease).
+- **Source aliases:**
+  - `Age at diagnosis in years` -- Rachedi 2025 Tables 2, 3 and S3; same quantity and units, no value transformation (Table S2 reports the infantile-onset values in months).
+- **Example models:** `Rachedi_2025_avalglucosidaseAlfa_gmfm88.R`, `Rachedi_2025_avalglucosidaseAlfa_qmft.R`.
+- **Notes:** Disease-agnostic: the disease is the one the model's population is defined by, so record it in `covariateData[["AGE_DIAGNOSIS"]]$notes`. Distinct from `AGE` (age at the time of observation or first dose) and from the `T_DIAG_<disease>` family (time elapsed SINCE diagnosis). Must be strictly positive where it enters through `log()`; infantile cohorts have values well below one year, so keep years with decimals rather than rounding.
+
+### T_PRIOR_ALGLUCOSIDASE_ALFA (**canonical for duration of alglucosidase alfa treatment before study entry**)
+- **Description:** Duration of alglucosidase alfa enzyme-replacement therapy received before entry into the modelled study. Time-fixed; 0 for treatment-naive patients.
+- **Units:** years
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous; Rachedi 2025 enters it as a linear deviation `(T_PRIOR_ALGLUCOSIDASE_ALFA - 7)`, with 7 years a rounded value between the per-arm medians (2.8, 7.9 and 8.3 years, Figure S2) because the pooled median is not printed.
+- **Source aliases:**
+  - `Duration of previous ALGLU experience in years` -- Rachedi 2025 Tables 2 and 3; same quantity and units.
+- **Example models:** `Rachedi_2025_avalglucosidaseAlfa_gmfm88.R` (on the intercept and on the log motor-improvement asymptote), `Rachedi_2025_avalglucosidaseAlfa_qmft.R` (on the intercept); infantile-onset stratum only.
+- **Notes:** Member of the `T_<event>` family carrying a treatment DURATION, as `T_PEGIFN`; it is not elapsed time on the model's integration axis. Drug-specific by design: another agent's prior-treatment duration should be registered as its own `T_PRIOR_<drug>` canonical.
 
 ## Hypercholesterolemia biomarkers
 
