@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fujita 2026 influenza A and B viral shedding (target-cell-limited) model from oseltamivir challenge trials ([doi:10.1371/journal.pone.0342676](https://doi.org/10.1371/journal.pone.0342676)) -- healthy adults experimentally inoculated with influenza A (H1N1) or B.
+- Add Huang 2026 coupled two-compartment PK drug-drug-interaction models for metoprolol + captopril and imeglimin + metformin ([doi:10.1371/journal.pone.0339052](https://doi.org/10.1371/journal.pone.0339052)) -- healthy adult volunteers.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

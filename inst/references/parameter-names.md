@@ -4024,6 +4024,14 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
 - **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_brain`); the spinal-cord counterpart of `lv_brain`. Wrap in `fixed()` when the source fixes it from anatomy.
 
+### ddi_ka, ddi_k12, ddi_k21, ddi_kel (**canonical linear drug-drug coupling slopes of one drug's rate constants on another drug's amount**)
+- **Type:** paper-named-param
+- **Role:** Signed slopes (1 / (amount * time)) that make a drug's micro rate constant a linear function of a co-administered drug's AMOUNT in the compartment the process leaves: `ka_X = ka + ddi_ka * depot_Y`, `k12_X = k12 + ddi_k12 * central_Y`, `k21_X = k21 + ddi_k21 * peripheral1_Y`, `kel_X = kel + ddi_kel * central_Y`. Negative values inhibit the process and positive values promote it; with either drug absent the slope multiplies zero and the single-drug model is recovered. The bare name modifies the unsuffixed drug's parameter; `ddi_<param>_<drug>` (e.g. `ddi_kel_captopril`) modifies the parameter of the drug carrying that registered suffix, driven by the unsuffixed drug's amount. Untransformed, because the sign carries the direction of the interaction.
+- **Source aliases:**
+  - `alpha00'`, `alpha12'`, `alpha21'`, `alpha10'` (effect of Y on X) and `beta00'`, `beta12'`, `beta21'`, `beta10'` (effect of X on Y) -- Huang 2026 equation 1, Table 8 and Supplementary S9 Table.
+- **Example models:** `Huang_2026_metoprolol_captopril.R`, `Huang_2026_imeglimin_metformin.R` (founding examples; slopes in 1/(g*h) applied to amounts in g).
+- **Notes:** Ratified by the maintainers 2026-11-20 (oasweep_PMC12890151). Distinct from `slope_drug` / `slope_placebo` (PD effect slopes on a concentration), `ka_slope` (time ramp of ka) and concentration-driven inhibition terms such as Hadigol 2026's `theta_slope`. A coupling on another drug's CONCENTRATION, or on a parameter outside the micro-rate set, should extend this family with the matching `<param>` token and state the driving quantity in its label.
+
 ## Nested (multi-level) random effects
 
 model in this library to carry a second hierarchical level of random effects.
