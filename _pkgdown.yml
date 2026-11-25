@@ -2488,8 +2488,12 @@ navbar:
         href: articles/Yu_2025_trastuzumab_doxorubicin_cardiotoxicity.html
       - text: "Doxycycline (Hopkins 2017)"
         href: articles/Hopkins_2017_doxycycline.html
+      - text: "Doxycycline aucmic (Zhang 2019)"
+        href: articles/Zhang_2019_doxycycline.html
       - text: "Doxycycline chicken (Petkova 2022)"
         href: articles/Petkova_2022_doxycycline_chicken.html
+      - text: "Doxycycline cmaxmic (Zhang 2019)"
+        href: articles/Zhang_2019_doxycycline.html
       - text: "Doxycycline duck ff20 (Li 2025)"
         href: articles/Li_2025_doxycycline_florfenicol_ducks.html
       - text: "Doxycycline duck ff40 (Li 2025)"
@@ -2498,6 +2502,8 @@ navbar:
         href: articles/Li_2025_doxycycline_florfenicol_ducks.html
       - text: "Doxycycline duck lung (Li 2025)"
         href: articles/Li_2025_doxycycline_florfenicol_ducks.html
+      - text: "Doxycycline killrate (Zhang 2019)"
+        href: articles/Zhang_2019_doxycycline.html
       - text: "Doxycycline pig (Toutain 2025)"
         href: articles/Toutain_2025_doxycycline_pig.html
       - text: "Doxycycline rabbit (Mileva 2021)"
@@ -12391,6 +12397,7 @@ articles:
   - articles/Zhang_2016_rilotumumab
   - articles/Zhang_2018_flurbiprofen
   - articles/Zhang_2018_sunitinib
+  - articles/Zhang_2019_doxycycline
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2019b_nivolumab
   - articles/Zhang_2020_teicoplanin

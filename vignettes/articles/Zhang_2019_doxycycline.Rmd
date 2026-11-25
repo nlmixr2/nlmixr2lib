@@ -1,0 +1,536 @@
+---
+title: "Doxycycline PK/PD against Mycoplasma hyopneumoniae (Zhang 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Doxycycline PK/PD against Mycoplasma hyopneumoniae (Zhang 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Zhang 2019 is an in-vitro pharmacokinetic/pharmacodynamic integration study of
+**doxycycline** against *Mycoplasma hyopneumoniae* strain ATCC25934, the agent of
+porcine enzootic pneumonia. It has two quantitative pharmacodynamic layers -- a
+sigmoid Emax kill rate fitted to static time-kill curves, and an inhibitory
+sigmoid Emax fitted to PK/PD indices from a dynamic (dilution) apparatus that
+reproduces porcine plasma doxycycline PK. The package carries one file per
+fitted relationship.
+
+* Article: <https://doi.org/10.3389/fphar.2019.01088>
+
+```{r models}
+mods <- c(
+  "Zhang_2019_doxycycline_killrate",
+  "Zhang_2019_doxycycline_aucmic",
+  "Zhang_2019_doxycycline_cmaxmic"
+)
+for (m in mods) {
+  cat("##", m, "\n")
+  cat(rxode2::rxode2(readModelDb(m))$description, "\n\n")
+}
+```
+
+| Model file | Paper component | Source |
+|---|---|---|
+| `Zhang_2019_doxycycline_killrate` | Sigmoid Emax kill rate composed with the dynamic-apparatus PK | Table 1 (row 12-48 h) + Materials and Methods, Description of the in vitro dynamic model |
+| `Zhang_2019_doxycycline_aucmic` | Inhibitory sigmoid Emax on the AUC24h/MIC index | Table 2, AUC24h/MIC column |
+| `Zhang_2019_doxycycline_cmaxmic` | Inhibitory sigmoid Emax on the Cmax/MIC index | Table 2, Cmax/MIC column |
+
+```{r citation}
+cat(rxode2::rxode2(readModelDb("Zhang_2019_doxycycline_killrate"))$reference)
+```
+
+# Population
+
+All work is in vitro. *M. hyopneumoniae* standard strain ATCC25934 (Chinese
+Veterinary Microorganism Culture Collection Center) was grown at 37 C and 5% CO2
+in artificial medium base with 20% pig serum, cysteine and NADH. The doxycycline
+MIC by broth microdilution was **0.125 ug/mL** (Results, Minimum inhibitory
+concentration).
+
+* **Static time-kill:** constant doxycycline concentrations of 0, 0.5, 1, 2, 4, 6,
+  8, 16, 32 and 64 times MIC, starting inoculum about 10^6 CFU/mL, counted at 0, 1,
+  3, 6, 9, 12, 24, 36 and 48 h; at least three replicates on different days.
+* **Dynamic apparatus:** a 210 mL absorption chamber feeding a central chamber of
+  300 mL medium that holds a 10 mL dialysis tube with a 10^7 CFU/mL culture;
+  peristaltic pumps at 0.58 mL/min. Eight regimens labelled 1, 2.5, 5, 7.5, 10,
+  15, 20 and 30 mg/kg body weight were dosed into the absorption chamber once
+  daily for 3 days, in triplicate.
+
+The same information is available from each model's `population` metadata.
+
+```{r constants}
+MIC <- 0.125 # ug/mL, Zhang 2019 Results, Minimum inhibitory concentration
+regimens <- c(1, 2.5, 5, 7.5, 10, 15, 20, 30) # mg/kg labels of the dynamic study
+# Zhang 2019 Results (PK/PD modeling and analysis): reduction in log10 CFU/mL
+# over the whole experiment for each regimen.
+paper_reduction <- c(0.16, 1.29, 1.75, 2.94, 3.35, 3.91, 4.35, 5.77)
+```
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Kill-rate equation `E = Emax * C^N / (EC50^N + C^N)` | -- | Materials and Methods, Static time-kill curves fitting and analysis |
+| `lemax` (kill rate) | log(0.06) 1/h | Table 1, row 12-48 h |
+| `lec50` (kill rate) | log(0.78) ug/mL | Table 1, row 12-48 h |
+| `lhill` (kill rate) | log(2.98) | Table 1, row 12-48 h |
+| `lka` | log(log(2)/4.15) 1/h | Description of the in vitro dynamic model (absorption half-life 4.15 h) |
+| `lkel` | log(log(2)/5.9) 1/h | Description of the in vitro dynamic model (elimination 5.9 h) |
+| `lvc` | log(300) mL | Description of the in vitro dynamic model (300 mL central chamber) |
+| `log10_cfu0` | 7 | Exposure to dynamic antibiotic concentrations (10^7 CFU/mL inoculum) |
+| Index equation `E = Emax - (Emax - E0) * Ce^N / (EC50^N + Ce^N)` | -- | Materials and Methods, Intergration and modeling of PK/PD |
+| `e0` (AUC / Cmax) | -3e-05 / -5e-05 | Table 2, row 'E max' (the paper's label for the control change) |
+| `emax` (AUC / Cmax) | -2.13 / -3.14 | Table 2, row 'E 0' (the paper's label for the maximum effect) |
+| `lec50` (AUC / Cmax) | log(179) h / log(21) | Table 2, row EC50 |
+| `lhill` (AUC / Cmax) | log(1.38) / log(1.01) | Table 2, row Hill's slope |
+| `mic` | 0.125 ug/mL | Results, Minimum inhibitory concentration |
+| Residual SDs | 0 | Not reported (R2 only) |
+
+# Part 1 - Static time-kill curves and the kill-rate model
+
+Zhang 2019 regressed log10 CFU/mL on time over seven windows for each static
+concentration and fitted the resulting kill rates against concentration.
+
+```{r table-1}
+table1 <- tibble::tribble(
+  ~window, ~Emax, ~EC50, ~N, ~R2,
+  "0-24 h", 0.09, 2.82, 1.73, 0.974,
+  "0-36 h", 0.07, 1.62, 1.75, 0.970,
+  "0-48 h", 0.05, 1.09, 2.53, 0.975,
+  "3-24 h", 0.24, 13.04, 0.78, 0.947,
+  "3-36 h", 0.09, 1.18, 1.74, 0.985,
+  "3-48 h", 0.07, 0.98, 2.20, 0.985,
+  "12-48 h", 0.06, 0.78, 2.98, 0.986
+)
+table1 |>
+  dplyr::rename(
+    "Time window" = window, "Emax (1/h)" = Emax, "EC50 (ug/mL)" = EC50,
+    "Hill N" = N, "R2" = R2
+  ) |>
+  knitr::kable(caption = "Zhang 2019 Table 1. The 12-48 h row (highest R2) is packaged.")
+```
+
+```{r kill-rate-curves}
+kill_rate <- function(conc, Emax, EC50, N) Emax * conc^N / (EC50^N + conc^N)
+conc_grid <- 10^seq(log10(0.01), log10(8), length.out = 200)
+curves <- dplyr::bind_rows(lapply(seq_len(nrow(table1)), function(i) {
+  r <- table1[i, ]
+  tibble::tibble(window = r$window, conc = conc_grid,
+                 kill = kill_rate(conc_grid, r$Emax, r$EC50, r$N))
+}))
+ggplot(curves, aes(conc, kill, colour = window, linewidth = window == "12-48 h")) +
+  geom_line() +
+  scale_linewidth_manual(values = c(`TRUE` = 1.3, `FALSE` = 0.5), guide = "none") +
+  scale_x_log10() +
+  labs(x = "Doxycycline concentration (ug/mL, log scale)",
+       y = "Kill rate (log10 CFU/mL per h)", colour = "Window",
+       title = "Kill rate versus concentration, all Table 1 windows",
+       caption = "Zhang 2019 Table 1. The paper's figure of this relationship is not in the published article.")
+```
+
+## The ODE encoding reproduces the fitted kill rate
+
+Holding the concentration constant (elimination switched off) recovers the static
+experiment, and the decline in `log_cfu` must equal the Table 1 kill rate times
+the elapsed time.
+
+```{r static-check}
+mod_kr <- readModelDb("Zhang_2019_doxycycline_killrate")
+mic_mult <- c(0, 0.5, 1, 2, 4, 6, 8, 16, 32, 64)
+
+static_events <- dplyr::bind_rows(lapply(seq_along(mic_mult), function(i) {
+  dplyr::bind_rows(
+    data.frame(id = i, time = 0, evid = 1L, amt = mic_mult[i] * MIC * 300,
+               cmt = "central", dvid = NA_integer_),
+    data.frame(id = i, time = c(0, 12, 48), evid = 0L, amt = NA_real_,
+               cmt = "central", dvid = 1L)
+  ) |> dplyr::mutate(mic_mult = mic_mult[i])
+})) |>
+  dplyr::filter(!(evid == 1L & amt == 0)) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim_static <- rxode2::rxSolve(mod_kr, static_events, params = c(lkel = -60),
+                              keep = "mic_mult", returnType = "data.frame")
+
+static_tab <- sim_static |>
+  dplyr::group_by(mic_mult) |>
+  dplyr::summarise(
+    ode = log_cfu[time == 48] - log_cfu[time == 12],
+    conc = Cc[time == 12],
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(closed = -36 * kill_rate(conc, 0.06, 0.78, 2.98))
+
+stopifnot(max(abs(static_tab$ode - static_tab$closed)) < 1e-4)
+
+static_tab |>
+  dplyr::select(mic_mult, conc, ode, closed) |>
+  dplyr::rename(
+    "Multiple of MIC" = mic_mult, "Concentration (ug/mL)" = conc,
+    "ODE change 12-48 h (log10 CFU/mL)" = ode,
+    "Table 1 closed form (log10 CFU/mL)" = closed
+  ) |>
+  knitr::kable(digits = 3, caption = "Packaged ODE against the Table 1 row 12-48 h closed form at constant concentration.")
+```
+
+Against Figure 1 the 64 MIC arm fell from about 5.9 to 3.5 log10 CFU/mL between
+12 and 48 h (read from the figure), a change of about -2.4 against the model's
+-2.16. The low-concentration arms are less well represented: the kill-rate fit
+has no growth term, so it predicts no change for the untreated control, which in
+Figure 1 grew by roughly 0.85 log10 CFU/mL over the same window.
+
+# Part 2 - Pharmacokinetics in the dynamic apparatus
+
+The apparatus was built to reproduce oral doxycycline in pig plasma: absorption
+half-life 4.15 h and elimination half-life 5.9 h (Bousquet 1998). The packaged
+`ka` and `kel` are those design half-lives. The pump geometry implies nearly the
+same values:
+
+```{r geometry}
+flow <- 0.58 * 60 # mL/h
+geometry <- tibble::tibble(
+  Constant = c("ka (1/h)", "kel (1/h)"),
+  `From design half-life` = c(log(2) / 4.15, log(2) / 5.9),
+  `From pump geometry` = c(flow / 210, flow / 300)
+) |>
+  dplyr::mutate(`% difference` = 100 * (`From pump geometry` / `From design half-life` - 1))
+stopifnot(all(abs(geometry$`% difference`) < 2))
+knitr::kable(geometry, digits = 4)
+```
+
+## Dose scaling
+
+The paper labels its regimens in mg/kg body weight but does not state the
+amount of doxycycline placed in the absorption chamber. The maintainers scaled
+the regimens with a single factor, chosen so that the 10 mg/kg regimen reaches
+the 1.49 ug/mL peak the paper states for it (Results, Pharmacokinetics in the in
+vitro dynamic model). This is a simulation input, not a model parameter.
+
+```{r dose-scale}
+obs_t <- sort(unique(c(seq(0, 96, by = 0.25), 24, 48, 72)))
+
+dyn_events <- function(amt_ug, id) {
+  dplyr::bind_rows(
+    data.frame(id = id, time = c(0, 24, 48), evid = 1L, amt = amt_ug,
+               cmt = "depot", dvid = NA_integer_),
+    data.frame(id = id, time = obs_t, evid = 0L, amt = NA_real_,
+               cmt = "central", dvid = 1L)
+  ) |>
+    dplyr::arrange(time, dplyr::desc(evid))
+}
+
+unit_sim <- rxode2::rxSolve(mod_kr, dyn_events(1000, 1L), returnType = "data.frame")
+ug_per_mgkg <- 1000 * 1.49 / max(unit_sim$Cc) / 10
+ug_per_mgkg
+```
+
+```{r figure-4}
+# Zhang 2019 Figure 4 observed points for the 10 mg/kg regimen, read from the
+# figure by the maintainers (approximate).
+fig4 <- tibble::tribble(
+  ~time, ~conc,
+  0, 0, 1, 0.40, 2, 0.69, 4, 1.01, 6, 1.20, 8, 1.15, 12, 1.02, 24, 0.26,
+  30, 1.39, 36, 1.19, 48, 0.42, 54, 1.49, 60, 1.30, 72, 0.49, 84, 0.12, 96, 0.03
+)
+sim10 <- rxode2::rxSolve(mod_kr, dyn_events(10 * ug_per_mgkg, 1L),
+                         returnType = "data.frame")
+ggplot(sim10, aes(time, Cc)) +
+  geom_line(colour = "steelblue") +
+  geom_point(data = fig4, aes(time, conc), shape = 1, colour = "red", size = 2) +
+  scale_x_continuous(breaks = seq(0, 96, by = 12)) +
+  labs(x = "Time (h)", y = "Doxycycline (ug/mL)",
+       title = "10 mg/kg regimen in the dynamic apparatus",
+       caption = "Replicates Figure 4 of Zhang 2019 (points read from the figure; line = packaged model).")
+```
+
+The design constants reproduce the shape of Figure 4: the first-interval peak is
+`r round(max(sim10$Cc[sim10$time <= 24]), 2)` ug/mL at
+`r sim10$time[which.max(sim10$Cc[sim10$time <= 24])]` h (observed 1.20 ug/mL at
+6 h) and the 24 h trough is `r round(sim10$Cc[sim10$time == 24], 2)` ug/mL, close
+to the 0.42 ug/mL of the paper's own WinNonlin curve (the measured point is 0.26).
+
+```{r figure-3}
+dyn_all <- dplyr::bind_rows(lapply(seq_along(regimens), function(i) {
+  dyn_events(regimens[i] * ug_per_mgkg, i) |>
+    dplyr::mutate(regimen = factor(paste(regimens[i], "mg/kg"),
+                                   levels = paste(regimens, "mg/kg")))
+}))
+sim_dyn <- rxode2::rxSolve(mod_kr, dyn_all, params = c(log10_cfu0 = 7.8),
+                           keep = "regimen", returnType = "data.frame")
+
+ggplot(sim_dyn, aes(time, Cc, colour = regimen)) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(0, 96, by = 12)) +
+  labs(x = "Time (h)", y = "Doxycycline (ug/mL)", colour = "Regimen",
+       title = "Concentration-time curves in the dynamic apparatus",
+       caption = "Replicates Figure 3 of Zhang 2019.")
+```
+
+## PKNCA on the per-interval exposures
+
+The PK/PD indices are per dosing interval, so each 24 h interval is analysed
+separately with time re-expressed after its dose.
+
+```{r pknca}
+nca_conc <- dplyr::bind_rows(lapply(0:2, function(k) {
+  sim_dyn |>
+    dplyr::filter(time >= 24 * k, time <= 24 * (k + 1)) |>
+    dplyr::mutate(tad = time - 24 * k, interval = k)
+})) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = paste0(regimen, ", ", 24 * interval, "-", 24 * (interval + 1), " h")) |>
+  dplyr::select(id, tad, Cc, treatment)
+
+nca_dose <- nca_conc |>
+  dplyr::distinct(id, treatment) |>
+  dplyr::mutate(tad = 0, amt = 1)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ tad | treatment + id,
+                             concu = "ug/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ tad | treatment + id,
+                             route = "extravascular")
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = data.frame(start = 0, end = 24, cmax = TRUE, auclast = TRUE)
+))
+
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+```
+
+The paper reports only the range of each index across all regimens and
+intervals (Cmax 0.16-3.41 ug/mL, AUC24h 1.78-48.4 h*ug/mL). The maintainers
+assign the lower endpoint to the first interval of the 1 mg/kg regimen and the
+upper to the third interval of the 30 mg/kg regimen, the extremes in Figure 3.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~auclast,
+  "1 mg/kg, 0-24 h", 0.16, 1.78,
+  "10 mg/kg, 48-72 h", 1.49, NA,
+  "30 mg/kg, 48-72 h", 3.41, 48.4
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ug/mL", auclast = "h*ug/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs. published dynamic-apparatus exposures. * differs from reference by >20%. The 10 mg/kg Cmax is the dose-scaling anchor and matches by construction.")
+```
+
+Both ends of the range are starred, in opposite directions: the 1 mg/kg Cmax
+is about 21% low and the 30 mg/kg Cmax and AUC are 31% and 54% high. The model,
+which is linear, gives exactly one tenth and three times the 10 mg/kg exposure at
+1 and 30 mg/kg, whereas the measured curves in Figure 3 are not
+dose-proportional (the 30 mg/kg peaks are 2.3 to 2.8 times the 10 mg/kg peaks, and
+the 1 mg/kg peaks are higher than one tenth of them). No linear apparatus model
+can reproduce both ends of the published ranges, and the design constants were
+not tuned toward either.
+
+# Part 3 - Composing the static kill rate with the apparatus PK
+
+The kill-rate parameters were fitted to static concentrations; the dynamic
+experiment was separate. Composing them is therefore a prediction.
+
+```{r figure-5}
+ggplot(sim_dyn, aes(time, log_cfu, colour = regimen)) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(0, 96, by = 12)) +
+  labs(x = "Time (h)", y = "M. hyopneumoniae (log10 CFU/mL)", colour = "Regimen",
+       title = "Dynamic time-kill curves from the composed kill-rate model",
+       caption = "Compare Figure 5 of Zhang 2019 (start set to the observed 7.8 log10 CFU/mL).")
+```
+
+```{r compose-table}
+compose_tab <- sim_dyn |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(reduction = dplyr::first(log_cfu) - dplyr::last(log_cfu),
+                   .groups = "drop") |>
+  dplyr::mutate(paper = paper_reduction)
+compose_tab |>
+  dplyr::rename("Regimen" = regimen,
+                "Composed kill-rate model, 0-96 h (log10 CFU/mL)" = reduction,
+                "Zhang 2019 reported reduction (log10 CFU/mL)" = paper) |>
+  knitr::kable(digits = 2)
+```
+
+The composition reproduces the ordering of the regimens but under-predicts the
+reduction at every one of them: by 0.4 to 0.7 log10 CFU/mL at 10 to 20 mg/kg
+and by 0.8 to 1.3 log10 CFU/mL at 2.5 to 7.5 mg/kg and at 30 mg/kg. The static
+fit was not built for this use: its EC50 (0.78 ug/mL) sits at or above the peak
+concentrations of the 1 to 5 mg/kg regimens, so it predicts little killing there,
+and its maximum of 0.06 log10 CFU/mL per hour would give at most 5.8 log10
+CFU/mL over 96 h even at a constant saturating concentration, whereas the
+apparatus concentration falls well below EC50 between doses. The index models in Part 4,
+which were fitted to the dynamic experiment itself, track it more closely.
+
+# Part 4 - The PK/PD index models
+
+```{r table-2}
+table2 <- tibble::tribble(
+  ~index, ~e0, ~emax, ~EC50, ~N, ~R2, ~target,
+  "AUC24h/MIC", -3e-05, -2.13, 179, 1.38, 0.917, 164,
+  "Cmax/MIC", -5e-05, -3.14, 21, 1.01, 0.923, 9.89
+)
+table2 |>
+  dplyr::rename("PK/PD index" = index,
+                "e0 = paper 'Emax' (log10 CFU/mL)" = e0,
+                "emax = paper 'E0' (log10 CFU/mL)" = emax,
+                "Hill N" = N, "Published 1 log10 target" = target) |>
+  knitr::kable(caption = "Zhang 2019 Table 2, with the paper's Emax/E0 labels mapped to the package's e0/emax.")
+```
+
+## Back-solving the published targets
+
+The paper states that a 1 log10 reduction needs AUC24h/MIC = 164 h or
+Cmax/MIC = 9.89. Solving the printed equation with the Table 2 values for
+E = -1 is an independent check of the equation form and of the label mapping.
+
+```{r backsolve}
+inhib <- function(x, e0, emax, EC50, N) e0 - (e0 - emax) * x^N / (EC50^N + x^N)
+backsolve <- table2 |>
+  dplyr::rowwise() |>
+  dplyr::mutate(solved = stats::uniroot(
+    function(x) inhib(x, e0, emax, EC50, N) + 1, c(1e-3, 1e5)
+  )$root) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(pct = 100 * (solved / target - 1))
+stopifnot(all(abs(backsolve$pct) < 0.5))
+backsolve |>
+  dplyr::select(index, target, solved, pct) |>
+  dplyr::rename("PK/PD index" = index, "Published target" = target,
+                "Index giving exactly -1 log10" = solved, "% difference" = pct) |>
+  knitr::kable(digits = c(0, 2, 3, 2))
+```
+
+Both targets reproduce to within 0.2%. Swapping the labels back (using the
+paper's Emax as the asymptote) would make the effect vanish at high exposure, so
+the mapping is unambiguous.
+
+```{r figure-6}
+fig6 <- dplyr::bind_rows(
+  tibble::tibble(index = "AUC24h/MIC", x = seq(0, 500, length.out = 200)) |>
+    dplyr::mutate(E = inhib(x, -3e-05, -2.13, 179, 1.38)),
+  tibble::tibble(index = "Cmax/MIC", x = seq(0, 30, length.out = 200)) |>
+    dplyr::mutate(E = inhib(x, -5e-05, -3.14, 21, 1.01))
+)
+ggplot(fig6, aes(x, E)) +
+  geom_line(colour = "blue") +
+  geom_hline(yintercept = -1, linetype = "dotted") +
+  facet_wrap(~index, scales = "free_x") +
+  coord_cartesian(ylim = c(-2.5, 0.5)) +
+  labs(x = "PK/PD index", y = "Change over 24 h (log10 CFU/mL)",
+       title = "Inhibitory sigmoid Emax fits",
+       caption = "Replicates Figure 6A and 6B of Zhang 2019.")
+```
+
+## The packaged ODEs reproduce the per-interval change
+
+```{r ode-check}
+mod_auc <- readModelDb("Zhang_2019_doxycycline_aucmic")
+mod_cmax <- readModelDb("Zhang_2019_doxycycline_cmaxmic")
+
+ode_check <- dplyr::bind_rows(lapply(c(0, 50, 164, 400), function(v) {
+  s <- rxode2::rxSolve(mod_auc, data.frame(id = 1L, time = c(0, 24), evid = 0L,
+                                           AUC_DOXYCYCLINE = v * MIC),
+                       returnType = "data.frame")
+  tibble::tibble(model = "aucmic", index = v,
+                 ode = s$log_cfu[2] - s$log_cfu[1],
+                 closed = inhib(v, -3e-05, -2.13, 179, 1.38))
+}), lapply(c(0, 5, 9.89, 25), function(v) {
+  s <- rxode2::rxSolve(mod_cmax, data.frame(id = 1L, time = c(0, 24), evid = 0L,
+                                            CMAX_DOXYCYCLINE = v * MIC),
+                       returnType = "data.frame")
+  tibble::tibble(model = "cmaxmic", index = v,
+                 ode = s$log_cfu[2] - s$log_cfu[1],
+                 closed = inhib(v, -5e-05, -3.14, 21, 1.01))
+}))
+stopifnot(max(abs(ode_check$ode - ode_check$closed)) < 1e-4)
+ode_check |>
+  dplyr::rename("Model" = model, "Index value" = index,
+                "ODE change over 24 h" = ode, "Table 2 closed form" = closed) |>
+  knitr::kable(digits = 4)
+```
+
+## Closing the loop: apparatus PK into the index models
+
+Feeding the per-interval AUC24h and Cmax computed by PKNCA in Part 2 into the
+index models gives a predicted reduction for each regimen, summed over the three
+dosing intervals.
+
+```{r closed-loop}
+loop <- nca_wide |>
+  tidyr::separate(treatment, into = c("regimen", "interval"), sep = ", ") |>
+  dplyr::mutate(
+    E_auc = inhib(auclast / MIC, -3e-05, -2.13, 179, 1.38),
+    E_cmax = inhib(cmax / MIC, -5e-05, -3.14, 21, 1.01)
+  ) |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(auc = -sum(E_auc), cmax = -sum(E_cmax), .groups = "drop") |>
+  dplyr::mutate(regimen = factor(regimen, levels = paste(regimens, "mg/kg"))) |>
+  dplyr::arrange(regimen) |>
+  dplyr::mutate(paper = paper_reduction)
+
+# Deterministic: a mis-transcribed index parameter or a wrong MIC moves every
+# regimen at once.
+stopifnot(
+  abs(median(loop$auc - loop$paper)) < 0.3,
+  abs(median(loop$cmax - loop$paper)) < 0.3
+)
+
+loop |>
+  dplyr::rename("Regimen" = regimen,
+                "AUC24h/MIC model (log10 CFU/mL)" = auc,
+                "Cmax/MIC model (log10 CFU/mL)" = cmax,
+                "Zhang 2019 reported reduction (log10 CFU/mL)" = paper) |>
+  knitr::kable(digits = 2, caption = "Predicted total reduction over three dosing intervals against the paper's reported reduction over the whole experiment.")
+```
+
+Both index models track the reported reductions across the dose range,
+including the paper's statements that regimens above 10 mg/kg reach a
+bactericidal (3 log10) reduction over the 3-day course. The comparison is
+approximate: the paper's reductions cover 0-96 h whereas the index models cover
+the three dosing intervals, and the dose scaling is the maintainers'.
+
+# Assumptions and deviations
+
+* **Paper labels reversed.** Zhang 2019 calls the effect of the untreated
+  control "Emax" and the maximum anti-mycoplasma effect "E0". The index models
+  carry these as `e0` and `emax` respectively; the equation is unchanged in form,
+  and the published 1 log10 targets reproduce to within 0.2% under this mapping.
+* **Kill-rate window.** The 12-48 h row of Table 1 (highest R2, 0.986) is
+  packaged. It is applied from time zero, although the window excludes the first
+  12 h, in which the paper saw no marked change. The other six rows are tabulated
+  above. The Results text also mentions a "maximum kill rate of 0.11/h", which
+  matches no Table 1 entry; the table value is used.
+* **Missing kill-rate figure.** The Results refer to "Figure 2" for the kill
+  rate against concentration, but Figure 2 of the article is the apparatus
+  diagram; the relationship is redrawn above from Table 1.
+* **Apparatus PK.** No fitted PK parameters are printed (Figure 4 reports only
+  R2 = 0.994). The packaged `ka` and `kel` are the design half-lives the
+  apparatus was built to reproduce; the pump geometry agrees within 2%.
+* **Dose amounts.** The amount placed in the absorption chamber for each mg/kg
+  regimen is not stated. The vignette uses a single scaling factor anchored to
+  the stated 1.49 ug/mL peak of the 10 mg/kg regimen; users should dose the
+  killrate model in ug.
+* **%T>MIC.** Figure 6C shows a %T>MIC fit (R2 = 0.823) but Table 2 gives no
+  parameters for it, so it is not packaged.
+* **Variability.** No between-replicate variability or residual error was
+  reported; all residual SDs are 0.
+* **Literature check.** No erratum or correction was found for this article
+  (checked 2026-11-25).
