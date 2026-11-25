@@ -344,6 +344,8 @@ navbar:
         href: articles/Ideno_2026_scout.html
       - text: "Amikacin (Jin 2020)"
         href: articles/Jin_2020_amikacin.html
+      - text: "Amikacin (Kato 2017)"
+        href: articles/Kato_2017_amikacin.html
       - text: "Amikacin (Kato 2021)"
         href: articles/Kato_2021_amikacin.html
       - text: "Amikacin (Li 2025)"
@@ -11756,6 +11758,7 @@ articles:
   - articles/Kastrissios_2012_managlinatDialanetil
   - articles/Kata_2025_ganciclovir
   - articles/Kathman_2022_bentracimab
+  - articles/Kato_2017_amikacin
   - articles/Kato_2021_amikacin
   - articles/Kaufman_1999_phenylalanine
   - articles/Kaushal_2024_mRNA0184

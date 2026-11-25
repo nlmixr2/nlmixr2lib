@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dudkowski 2017 alogliptin PK/PD ([doi:10.1007/s00228-016-2175-1](https://doi.org/10.1007/s00228-016-2175-1)) -- children, adolescents and adults with type 2 diabetes mellitus.
+- Add Kato 2017 amikacin ([doi:10.1007/s40268-016-0165-5](https://doi.org/10.1007/s40268-016-0165-5)) -- hospitalized Japanese adults treated for infections.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
