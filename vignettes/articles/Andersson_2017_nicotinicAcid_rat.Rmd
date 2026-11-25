@@ -1,0 +1,618 @@
+---
+title: "Nicotinic acid, insulin and free fatty acids in lean and obese rats (Andersson 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nicotinic acid, insulin and free fatty acids in lean and obese rats (Andersson 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Andersson R, Kroon T, Almquist J, Jirstrand M, Oakes ND, Evans ND,
+  Chappell MJ, Gabrielsson J. Modeling of free fatty acid dynamics: insulin
+  and nicotinic acid resistance under acute and chronic treatments.
+  *J Pharmacokinet Pharmacodyn* 2017;44(3):203-222.
+* Article (open access): <https://doi.org/10.1007/s10928-017-9512-6>
+
+The paper fits the same nicotinic acid (NiAc) - insulin - free fatty acid (FFA)
+model separately to lean Sprague-Dawley and obese Zucker (fa/fa) rats, so it is
+packaged as two models:
+
+* `Andersson_2017_nicotinicAcid_lean_rat`: two-compartment NiAc disposition
+  with two Michaelis-Menten pathways; fixed NiAc efficacy on insulin; dynamic
+  (down-regulated) NiAc efficacy on FFA.
+* `Andersson_2017_nicotinicAcid_obese_rat`: one-compartment NiAc disposition
+  with one Michaelis-Menten pathway; dynamic NiAc efficacy on both insulin and
+  FFA.
+
+Both models use the same structure for insulin and FFA turnover. NiAc inhibits
+production (an Imax-Hill function). A moderator feedback acts on production
+(and, for insulin, a second moderator acts on loss). An insulin-driven integral
+controller, the regulator, acts on production; its set point is the baseline
+insulin I0.
+
+```{r load-models}
+mod_lean <- readModelDb("Andersson_2017_nicotinicAcid_lean_rat")
+mod_obese <- readModelDb("Andersson_2017_nicotinicAcid_obese_rat")
+ui_lean <- rxode2::rxode2(mod_lean)
+ui_obese <- rxode2::rxode2(mod_obese)
+typ_lean <- rxode2::zeroRe(ui_lean)
+typ_obese <- rxode2::zeroRe(ui_obese)
+```
+
+# Population
+
+Male lean Sprague-Dawley rats and obese Zucker (fa/fa) rats were studied at
+AstraZeneca, Gothenburg (Table 1 of the paper). There were seven protocols:
+
+* three conscious protocols with s.c. infusion from an implanted programmable
+  mini-pump: acute 5 h (NiAc naive), 5 h after 5 days of continuous infusion
+  (Cont. NiAc), and 5 h after 5 days of 12 h on / 12 h off infusion
+  (Inter. NiAc);
+* two anesthetized protocols with 1 h of i.v. infusion, followed by an
+  abrupt stop (Off 1 h) or a 3.5 h step-down (Stp-Dwn 1 h);
+* two anesthetized protocols with 12 h of s.c. infusion, followed by an
+  abrupt stop (Off 12 h) or a step-down (Stp-Dwn 12 h).
+
+The nominal rate was 170 nmol/min/kg (10.2 umol/kg/h). Table 1 lists 38 lean
+and 41 obese rats; saline-infused controls are given in parentheses there.
+Age and body weight were not reported. All parameters are per kg of body
+weight.
+
+```{r population}
+str(ui_lean$population[c("species", "n_subjects", "n_studies")])
+str(ui_obese$population[c("species", "n_subjects", "n_studies")])
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment that points to its source.
+Equations are from the Methods and Appendix 2 of the paper.
+
+| Equation / parameter | Lean | Obese | Source |
+|---|---|---|---|
+| NiAc disposition | 2-cmt, 2 MM pathways | 1-cmt, 1 MM pathway | Eqs. 1-2 (lean), Eq. 6 (obese) |
+| s.c. pump input `Pump rate = Inf.rate * erf(t delta / sqrt(t0))` | yes | yes | Eqs. 3-5, Appendix 1 |
+| Endogenous NiAc baseline | positive quadratic root | `Synt*Km1/(Vmax1-Synt)` | Appendix 2, Eqs. 33-37 |
+| Insulin turnover, moderators, regulator | Eqs. 7-14 | Eqs. 7-14 | Methods |
+| NiAc inhibition of insulin, `E_NI` | fixed `ImaxNI` | dynamic (Eqs. 16-17) | Eqs. 15-17 |
+| FFA turnover, moderator, regulator, dynamic efficacy | Eqs. 20-27 | Eqs. 20-27 | Methods |
+| `kinI = koutI*I0`, `kinF = koutF*F0`, `kinR = koutR*I0` | yes | yes | Appendix 2 Eqs. 39, 41; Eqs. 13, 24 |
+| `ka` (1/h) | 4.27 | 5.54 | Table 2 |
+| `delta` | 77.4 | 62.4 | Table 2 |
+| `Vmax1` (umol/kg/h) | 2.64 | 164 | Table 2 |
+| `Km1` (umol/L) | 0.235 (fixed) | 18.9 (fixed) | Table 2, from Tapani et al. |
+| `Vmax2`, `Km2` | 425, 74.5 (fixed) | n/a | Table 2, from Tapani et al. |
+| `Vp`, `Vt` (L/kg) | 0.393, 0.172 (fixed) | 0.323 (fixed) | Table 2, from Tapani et al. |
+| `Cld` (L/kg/h) | 0.0511 (fixed) | n/a | Table 2, from Tapani et al. |
+| `Synt` (umol/kg/h) | 0.213 (fixed) | 0.168 (fixed) | Table 2, from Tapani et al. |
+| `I0` (nM), `koutI` (1/h) | 0.188, 6.58 | 3.26, 10.8 | Table 2 |
+| `ImaxNI`, `IC50NI` (uM), `n` | 0.793, 0.338, 3.54 | 1 (fixed), 0.175, 0.840 | Table 2 |
+| `ktolI` (1/h), `koutRI` (1/nM/h) | 0.646, 3.94 | 0.125, 0.0612 | Table 2 |
+| `kNI`, `N50I`, `gamma`, `SNI` | n/a | 0.0242, 0.897, 18.9, 1 (fixed) | Table 2 |
+| `F0` (mM), `koutF` (1/h) | 0.707, 428 | 1.14, 173 | Table 2 |
+| `ImaxNF`, `IC50NF` (uM), `m` | 1 (fixed), 0.436, 1.24 | 1 (fixed), 0.456, 0.731 | Table 2 |
+| `ktolF` (1/h), `koutRF` (1/nM/h) | 1.21, 0.965 | 0.708, 0.0165 | Table 2 |
+| `kNF`, `N50F`, `phi`, `SNF` | 0.00654, 3.05, 1 (fixed), 0.807 | 0.0377, 0.854, 8.83, 1 (fixed) | Table 2 |
+| BSV (CV%, `omega^2 = (CV/100)^2`) | Table 2 | Table 2 | Table 2 footnote a |
+| Residual error | prop. 0.313; add. 0.0699 nM; add. 0.130 mM | prop. 0.483; add. 0.748 nM; add. 0.135 mM | Table 2 |
+
+# Protocols
+
+The helper below writes a NiAc infusion schedule as dose rows. s.c. doses go to
+the `pump` compartment and i.v. doses go to `central`. A schedule is a table of
+infusion segments with a start time, a duration and a rate (umol/kg/h).
+
+```{r protocols}
+rate_nom <- 170 * 60 / 1000 # 170 nmol/min/kg = 10.2 umol/kg/h
+
+# Step-down rates (nmol/min/kg), 0.5 h each (Methods)
+step_12h <- c(88.9, 58.3, 43.7, 34.0, 24.3, 17.0, 9.7) * 60 / 1000
+step_1h <- c(31.1, 20.4, 15.3, 11.9, 8.50, 5.95, 3.40) * 60 / 1000
+
+protocols <- list(
+  "Naive" = list(cmt = "pump", start = 1, dur = 5, rate = rate_nom, from = 0, to = 10),
+  "Inter." = list(
+    cmt = "pump", start = c(0, 24, 48, 72, 96, 120),
+    dur = c(12, 12, 12, 12, 12, 5), rate = rate_nom, from = 118, to = 128
+  ),
+  "Cont." = list(cmt = "pump", start = 0, dur = 125, rate = rate_nom, from = 118, to = 128),
+  "Off 12h" = list(cmt = "pump", start = 0, dur = 12, rate = rate_nom, from = 10, to = 18),
+  "Stp-Dwn 12h" = list(
+    cmt = "pump", start = c(0, 12 + 0.5 * (0:6)), dur = c(12, rep(0.5, 7)),
+    rate = c(rate_nom, step_12h), from = 10, to = 18
+  ),
+  "Off 1h" = list(cmt = "central", start = 0.5, dur = 1, rate = rate_nom, from = 0, to = 6.5),
+  "Stp-Dwn 1h" = list(
+    cmt = "central", start = c(0.5, 1.5 + 0.5 * (0:6)), dur = c(1, rep(0.5, 7)),
+    rate = c(rate_nom, step_1h), from = 0, to = 6.5
+  )
+)
+
+dose_rows <- function(p) {
+  data.frame(
+    time = p$start, amt = p$rate * p$dur, rate = p$rate,
+    cmt = p$cmt, evid = 1L, dvid = NA_integer_, ep = NA_integer_
+  )
+}
+
+# Observation rows on the ODE states (dvid 1 = NiAc Cc on central,
+# 2 = insulin, 3 = FFA); rxode2 returns every algebraic output on each row.
+# `ep` repeats the endpoint number so it can ride through rxSolve via `keep`.
+obs_rows <- function(times) {
+  data.frame(
+    time = rep(times, 3), amt = NA_real_, rate = NA_real_,
+    cmt = rep(c("central", "insulin", "nefa"), each = length(times)),
+    evid = 0L, dvid = rep(1:3, each = length(times)),
+    ep = rep(1:3, each = length(times))
+  )
+}
+
+protocol_events <- function(p, by = 0.02) {
+  times <- sort(unique(c(seq(p$from, p$to, by = by), p$start, p$start + p$dur)))
+  times <- times[times >= p$from & times <= p$to]
+  ev <- rbind(dose_rows(p), obs_rows(times))
+  ev[order(ev$time, -ev$evid), ]
+}
+
+solve_typical <- function(mod, ev) {
+  as.data.frame(rxode2::rxSolve(mod, ev,
+    keep = "ep", useLinCmt = FALSE,
+    atol = 1e-10, rtol = 1e-10
+  ))
+}
+```
+
+# Typical-value replication of Figures 7 and 8
+
+Figures 7 (lean) and 8 (obese) show visual predictive checks: the median
+individual and a 90% prediction interval for every protocol. The paper's
+medians include fixed study effects on the insulin and FFA baselines and on the
+moderator rates. Only their weighted summaries (the Table 2 estimates) are
+printed, so the typical-value curves below reproduce the shapes but not the
+exact per-protocol baselines.
+
+```{r typical-sims}
+typ_all <- lapply(names(protocols), function(nm) {
+  p <- protocols[[nm]]
+  ev <- protocol_events(p)
+  rbind(
+    solve_typical(typ_lean, ev) |> filter(ep == 1) |>
+      transmute(protocol = nm, strain = "lean", time, Cc, insulin, nefa),
+    solve_typical(typ_obese, ev) |> filter(ep == 1) |>
+      transmute(protocol = nm, strain = "obese", time, Cc, insulin, nefa)
+  )
+}) |> bind_rows()
+typ_all$protocol <- factor(typ_all$protocol, levels = names(protocols))
+stopifnot(all(is.finite(typ_all$Cc)), all(is.finite(typ_all$nefa)))
+```
+
+```{r fig7-8-pk, fig.height = 7}
+ggplot(typ_all, aes(time, Cc, colour = strain)) +
+  geom_line() +
+  scale_y_log10() +
+  facet_wrap(~protocol, scales = "free_x", ncol = 2) +
+  labs(x = "Time (h)", y = "NiAc (umol/L)", colour = NULL,
+       caption = "Typical-value NiAc; replicates the first column of Figures 7 and 8.")
+```
+
+```{r fig7-8-insulin, fig.height = 7}
+ggplot(typ_all, aes(time, insulin, colour = strain)) +
+  geom_line() +
+  facet_wrap(~protocol, scales = "free", ncol = 2) +
+  labs(x = "Time (h)", y = "Insulin (nmol/L)", colour = NULL,
+       caption = "Typical-value insulin; replicates the second column of Figures 7 and 8.")
+```
+
+```{r fig7-8-ffa, fig.height = 7}
+ggplot(typ_all, aes(time, nefa, colour = strain)) +
+  geom_line() +
+  facet_wrap(~protocol, scales = "free_x", ncol = 2) +
+  labs(x = "Time (h)", y = "FFA (mmol/L)", colour = NULL,
+       caption = "Typical-value FFA; replicates the third column of Figures 7 and 8.")
+```
+
+# Validation against the paper
+
+## NiAc exposure: Figures 7a and 8a
+
+Figures 7a and 8a are vector graphics in the article PDF. The maintainers
+extracted the median-individual curves for the NiAc naive protocol (s.c. pump
+on from 1 to 6 h) from the drawing coordinates, using the plot's own tick marks
+for calibration. The PK median carries no study effect, so a deterministic
+typical-value solve should match it.
+
+```{r pk-digitized}
+fig_pk <- tibble::tribble(
+  ~strain, ~time, ~Cc_fig,
+  "lean",  0.50, 0.01304,
+  "lean",  1.44, 0.187,
+  "lean",  1.73, 0.4116,
+  "lean",  1.97, 0.7225,
+  "lean",  2.27, 1.004,
+  "lean",  2.695, 1.19,
+  "lean",  5.00, 1.447,
+  "obese", 0.50, 0.0194,
+  "obese", 1.30, 0.131,
+  "obese", 1.635, 0.364,
+  "obese", 2.318, 0.887,
+  "obese", 2.747, 1.03,
+  "obese", 5.00, 1.276
+)
+
+pk_check <- function(tidle) {
+  p <- protocols[["Naive"]]
+  ev <- rbind(dose_rows(p), obs_rows(unique(fig_pk$time)))
+  ev <- ev[order(ev$time, -ev$evid), ]
+  prm <- c(tidle_pump = tidle)
+  bind_rows(
+    as.data.frame(rxode2::rxSolve(typ_lean, ev, params = prm, keep = "ep", useLinCmt = FALSE)) |>
+      filter(ep == 1) |> transmute(strain = "lean", time, Cc),
+    as.data.frame(rxode2::rxSolve(typ_obese, ev, params = prm, keep = "ep", useLinCmt = FALSE)) |>
+      filter(ep == 1) |> transmute(strain = "obese", time, Cc)
+  ) |>
+    inner_join(fig_pk, by = c("strain", "time")) |>
+    mutate(pct_diff = 100 * (Cc - Cc_fig) / Cc_fig)
+}
+
+pk_min <- pk_check(10080)
+pk_hour <- pk_check(168)
+
+pk_min |>
+  left_join(pk_hour |> select(strain, time, Cc_t0_168h = Cc), by = c("strain", "time")) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
+  rename(
+    "Strain" = strain, "Time (h)" = time,
+    "Model, t0 = 10080 min" = Cc, "Figure median" = Cc_fig,
+    "% difference" = pct_diff, "Model, t0 = 168 h" = Cc_t0_168h
+  ) |>
+  knitr::kable(caption = "NiAc (umol/L): typical-value solve vs the Figure 7a / 8a median.")
+
+# Baseline (endogenous NiAc) and plateau are set by Synt, Vmax and Km alone.
+base_plat <- pk_min |> filter(time %in% c(0.5, 5))
+stopifnot(all(abs(base_plat$pct_diff) < 3))
+# The rising limb is set by ka and the pump erf term.
+stopifnot(all(abs(pk_min$pct_diff) < 20))
+# Reading t0 = 7 days as 168 h makes the erf term negligible and the rise far
+# too fast, which the figure rules out.
+stopifnot(pk_hour$Cc[pk_hour$strain == "lean" & pk_hour$time == 1.44] > 3 * 0.187)
+```
+
+The endogenous baselines (0.0130 and 0.0194 umol/L) and the plateaus (1.45 and
+1.28 umol/L) agree with the figure within 3%. The text says the plateau is
+"about 1 umol/L". The rising limb fixes how the pump time in Eq. 5 is read. The
+text gives the pump inactivation time t0 as "7 days". Entered as 168 h, the
+erf term reaches 1 within minutes, and NiAc at 0.44 h after pump start is
+about 5 times the figure value. Entered as 10080 min (with t still in hours),
+the model reproduces the roughly 1.5 h dilution period that the Results
+describe ("the NiAc dosing solution was diluted during the first ~1.5 h"). The
+packaged models therefore use `tidle_pump = 10080`.
+
+## Model simulations of NiAc, insulin and moderator action: Figure 9
+
+Figure 9 shows typical-value simulations of a long NiAc infusion in lean and
+obese rats, which ends at 125 h. The plotted quantities are:
+
+* NiAc action on FFA turnover, `H_NF`;
+* insulin action, the FFA regulator `R_F`;
+* moderator action, `F0/M_F`;
+* the FFA response.
+
+It was also extracted from the vector PDF. The simulation below uses the
+nominal s.c. pump rate from t = 0 to 125 h.
+
+```{r fig9}
+ev9 <- rbind(
+  data.frame(
+    time = 0, amt = rate_nom * 125, rate = rate_nom, cmt = "pump",
+    evid = 1L, dvid = NA_integer_, ep = NA_integer_
+  ),
+  obs_rows(sort(unique(c(seq(0, 12, by = 0.02), 2.21, 2.45, 4.41, seq(118, 128, by = 0.02)))))
+)
+ev9 <- ev9[order(ev9$time, -ev9$evid), ]
+fig9_sim <- bind_rows(
+  solve_typical(typ_lean, ev9) |> filter(ep == 3) |> mutate(strain = "lean"),
+  solve_typical(typ_obese, ev9) |> filter(ep == 3) |> mutate(strain = "obese")
+) |>
+  transmute(strain, time,
+    `NiAc action (%)` = 100 * inh_nefa,
+    `Insulin action (%)` = 100 * regulator_nefa,
+    `Moderator action (%)` = 100 * rbase_nefa / moderator3,
+    `FFA (mM)` = nefa
+  ) |>
+  pivot_longer(-c(strain, time), names_to = "quantity")
+
+# Values read from Figure 9 (time 0, early infusion, and the chronic state at
+# 118-124 h, before the infusion stops at 125 h).
+fig9_dig <- tibble::tribble(
+  ~strain, ~quantity, ~time, ~fig,
+  "lean",  "NiAc action (%)", 0, 98.77,
+  "obese", "NiAc action (%)", 0, 90.06,
+  "lean",  "NiAc action (%)", 12, 20.53,
+  "obese", "NiAc action (%)", 12, 30.66,
+  "lean",  "NiAc action (%)", 120, 31.81,
+  "obese", "NiAc action (%)", 120, 97.9,
+  "lean",  "Insulin action (%)", 12, 151.8,
+  "obese", "Insulin action (%)", 12, 132.2,
+  "lean",  "Insulin action (%)", 120, 190.0,
+  "obese", "Insulin action (%)", 120, 104.1,
+  "lean",  "Moderator action (%)", 120, 129.1,
+  "obese", "Moderator action (%)", 120, 99.3,
+  "lean",  "FFA (mM)", 120, 0.551,
+  "obese", "FFA (mM)", 120, 1.145,
+  "lean",  "Moderator action (%)", 2.45, 118.0,
+  "obese", "Moderator action (%)", 4.41, 135.1,
+  "lean",  "FFA (mM)", 2.2, 0.184,
+  "obese", "FFA (mM)", 2.21, 0.459
+)
+fig9_cmp <- fig9_dig |>
+  mutate(time_key = round(time, 2)) |>
+  left_join(
+    fig9_sim |> mutate(time_key = round(time, 2)) |> select(-time),
+    by = c("strain", "quantity", "time_key")
+  ) |>
+  mutate(pct_diff = 100 * (value - fig) / fig)
+
+fig9_cmp |>
+  select(strain, quantity, time, fig, value, pct_diff) |>
+  mutate(across(c(fig, value, pct_diff), \(x) signif(x, 3))) |>
+  rename("Strain" = strain, "Quantity" = quantity, "Time (h)" = time,
+         "Figure 9" = fig, "Model" = value, "% difference" = pct_diff) |>
+  knitr::kable(caption = "Figure 9 values vs the typical-value solve.")
+
+# Time 0: the endogenous NiAc level already inhibits FFA production
+# (Appendix 2 assumes Cp(0) ~ 0); the figure shows the same offset.
+chk0 <- fig9_cmp |> filter(time == 0)
+stopifnot(all(abs(chk0$value - chk0$fig) < 1))
+# Plateau and chronic (118-124 h) state: independent of the moderator rate.
+chk_ss <- fig9_cmp |> filter(time %in% c(12, 120))
+stopifnot(all(abs(chk_ss$pct_diff) < 6))
+```
+
+```{r fig9-plot, fig.height = 6}
+fig9_sim |>
+  mutate(phase = ifelse(time <= 12, "0-12 h", "118-128 h")) |>
+  ggplot(aes(time, value, colour = strain)) +
+  geom_line() +
+  geom_point(data = fig9_dig |> mutate(value = fig, phase = ifelse(time <= 12, "0-12 h", "118-128 h")),
+             shape = 1, size = 2) +
+  facet_grid(quantity ~ phase, scales = "free") +
+  labs(x = "Time (h)", y = NULL, colour = NULL,
+       caption = "Lines: model. Circles: values read from Figure 9 of Andersson 2017.")
+```
+
+At time 0 the model and the figure agree within 1 percentage point. Both show
+that the endogenous NiAc level already lowers FFA turnover by 1% (lean) and 9%
+(obese). On the infusion plateau and in the chronic state at 120 h, `H_NF`,
+`R_F`, the moderator action and FFA all agree within 6%. That chronic state is
+where the paper's main claims sit. In lean rats, NiAc efficacy falls by about
+13% and insulin action rises to about 190%. In obese rats, NiAc action and
+insulin action return to baseline. The rebound after the infusion stops at
+125 h also appears in lean rats and not in obese rats.
+
+The acute moderator response does not match. In Figure 9 the moderator action
+rises several-fold more slowly than Table 2's `ktolF` allows (1.21 and
+0.708 1/h, half-lives of 0.57 and 0.98 h, which Table 3 repeats). Because of
+this, the FFA nadir in the figure is deeper: 0.18 vs 0.32 mM in lean rats, and
+0.46 vs 0.62 mM in obese rats. The figure behaves as if `ktolF` were about
+one-sixth of the Table 2 value in both strains. The NiAc naive VPC median in
+Figure 7c also reaches about 0.18 mM. The packaged models keep the Table 2
+estimates, which Table 3 confirms independently, and record the discrepancy
+here. They are not tuned to the figure.
+
+## Turnover half-lives: Table 3
+
+Table 3 lists `log(2)/k` for each turnover process. Recomputing it from the
+packaged parameters checks the transcription of every rate constant.
+
+```{r table3}
+hl <- function(ui, nm) log(2) / exp(ui$theta[[nm]])
+t3 <- tibble::tribble(
+  ~process, ~analyte, ~strain, ~paper, ~model,
+  "Biomarker", "Insulin", "lean", 0.105, hl(ui_lean, "lkout_insulin"),
+  "Biomarker", "FFA", "lean", 0.00162, hl(ui_lean, "lkout_nefa"),
+  "Biomarker", "Insulin", "obese", 0.0643, hl(ui_obese, "lkout_insulin"),
+  "Biomarker", "FFA", "obese", 0.00401, hl(ui_obese, "lkout_nefa"),
+  "Moderator", "Insulin", "lean", 1.07, hl(ui_lean, "lktol_insulin"),
+  "Moderator", "FFA", "lean", 0.570, hl(ui_lean, "lktol_nefa"),
+  "Moderator", "Insulin", "obese", 5.53, hl(ui_obese, "lktol_insulin"),
+  "Moderator", "FFA", "obese", 0.979, hl(ui_obese, "lktol_nefa"),
+  "Controller", "Insulin", "lean", 0.176, hl(ui_lean, "lkoutr_insulin"),
+  "Controller", "FFA", "lean", 0.719, hl(ui_lean, "lkoutr_nefa"),
+  "Controller", "Insulin", "obese", 11.3, hl(ui_obese, "lkoutr_insulin"),
+  "Controller", "FFA", "obese", 42.0, hl(ui_obese, "lkoutr_nefa"),
+  "NiAc action", "FFA", "lean", 106, hl(ui_lean, "lkn_nefa"),
+  "NiAc action", "Insulin", "obese", 28.7, hl(ui_obese, "lkn_insulin"),
+  "NiAc action", "FFA", "obese", 18.4, hl(ui_obese, "lkn_nefa")
+) |>
+  mutate(pct_diff = 100 * (model - paper) / paper)
+t3 |>
+  mutate(across(c(model, pct_diff), \(x) signif(x, 3))) |>
+  rename("Process" = process, "Analyte" = analyte, "Strain" = strain,
+         "Table 3 (h)" = paper, "Model (h)" = model, "% difference" = pct_diff) |>
+  knitr::kable()
+# Rounding of the printed rate constants only (0.125 1/h gives 5.55 h, not 5.53)
+stopifnot(all(abs(t3$pct_diff) < 1))
+```
+
+The controller half-life in Table 3 is `log(2)/koutR`. It treats the integral
+gain (1/nM/h) as a rate constant.
+
+The Results also give absorption half-lives of 0.16 and 0.13 h:
+
+```{r absorption-halflife}
+ka_hl <- c(lean = log(2) / exp(ui_lean$theta[["lka"]]), obese = log(2) / exp(ui_obese$theta[["lka"]]))
+signif(ka_hl, 3)
+stopifnot(abs(ka_hl[["lean"]] - 0.16) < 0.005, abs(ka_hl[["obese"]] - 0.13) < 0.005)
+```
+
+## NCA of the 1 h i.v. infusion (PKNCA)
+
+During the 1 h i.v. infusion, plasma NiAc approaches steady state within
+minutes. That steady state has a closed form (Appendix 2, Eqs. 33-37) with
+`alpha = Inf.rate + Synt`. For the lean rat it is the positive root of a
+quadratic. For the obese rat it is `alpha*Km1/(Vmax1 - alpha)`. PKNCA's
+`cmax` for the typical-value profile should match it within 1%. The small
+lean shortfall is the tissue compartment, which is still filling
+(`Vt/Cld` = 3.4 h).
+
+```{r pknca}
+p_iv <- protocols[["Off 1h"]]
+ev_iv <- rbind(dose_rows(p_iv), obs_rows(c(0, seq(0.5, 6.5, by = 0.01))))
+ev_iv <- ev_iv[order(ev_iv$time, -ev_iv$evid), ]
+conc_iv <- bind_rows(
+  solve_typical(typ_lean, ev_iv) |> filter(ep == 1) |> mutate(id = 1L, treatment = "lean"),
+  solve_typical(typ_obese, ev_iv) |> filter(ep == 1) |> mutate(id = 2L, treatment = "obese")
+) |>
+  select(id, treatment, time, Cc) |>
+  filter(!is.na(Cc))
+dose_iv <- data.frame(id = 1:2, treatment = c("lean", "obese"), time = 0.5, amt = rate_nom * 1)
+
+conc_obj <- PKNCA::PKNCAconc(conc_iv, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_iv, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0.5, end = 6.5, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res$result) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+th_lean <- exp(ui_lean$theta)
+alpha_lean <- rate_nom + th_lean[["lsynt"]]
+qa <- alpha_lean - th_lean[["lvmax"]] - th_lean[["lvmax2"]]
+qb <- alpha_lean * (th_lean[["lkm"]] + th_lean[["lkm2"]]) -
+  th_lean[["lvmax"]] * th_lean[["lkm2"]] - th_lean[["lvmax2"]] * th_lean[["lkm"]]
+qc <- alpha_lean * th_lean[["lkm"]] * th_lean[["lkm2"]]
+css_lean <- (-qb - sqrt(qb^2 - 4 * qa * qc)) / (2 * qa)
+
+th_obese <- exp(ui_obese$theta)
+alpha_obese <- rate_nom + th_obese[["lsynt"]]
+css_obese <- alpha_obese * th_obese[["lkm"]] / (th_obese[["lvmax"]] - alpha_obese)
+nca_tab$css_closed_form <- c(css_lean, css_obese)
+nca_tab |>
+  mutate(across(where(is.numeric), \(x) signif(x, 4))) |>
+  rename("Strain" = treatment, "Cmax (umol/L)" = cmax, "Tmax (h)" = tmax,
+         "AUClast (h*umol/L)" = auclast, "Closed-form Css (umol/L)" = css_closed_form) |>
+  knitr::kable()
+stopifnot(all(abs(nca_tab$cmax / nca_tab$css_closed_form - 1) < 0.01))
+```
+
+The paper reports no NCA. The Results do state the steady-state NiAc
+elimination rate ("~20 and ~25 umol/kg/h for lean and obese rats"). At steady
+state, elimination equals input, which is 10.2 umol/kg/h plus `Synt`. The
+stated values are about twice that, so they cannot be reproduced from the
+stated infusion rate and are not used as a check.
+
+# Stochastic simulation (NiAc naive protocol)
+
+The chunk below simulates 100 rats per strain on the NiAc naive protocol with
+between-subject variability and residual error. The obese model has very wide
+BSV on the insulin moderator rate (310% CV) and on `IC50NI` (190% CV), so its
+insulin interval is wide. The paper's figures show the same.
+
+```{r vpc}
+rxode2::rxSetSeed(20170301)
+n_per <- 100
+p_naive <- protocols[["Naive"]]
+ev_one <- protocol_events(p_naive, by = 0.1)
+ev_vpc <- bind_rows(lapply(seq_len(n_per), function(i) mutate(ev_one, id = i)))
+vpc <- bind_rows(
+  as.data.frame(rxode2::rxSolve(ui_lean, ev_vpc, keep = "ep", useLinCmt = FALSE)) |>
+    mutate(strain = "lean"),
+  as.data.frame(rxode2::rxSolve(ui_obese, ev_vpc, keep = "ep", useLinCmt = FALSE)) |>
+    mutate(strain = "obese")
+)
+endpoint_name <- c("NiAc (umol/L)", "Insulin (nmol/L)", "FFA (mmol/L)")
+vpc_sum <- vpc |>
+  filter(!is.na(ep)) |>
+  mutate(endpoint = endpoint_name[ep]) |>
+  group_by(strain, endpoint, time) |>
+  summarise(
+    p05 = quantile(sim, 0.05, na.rm = TRUE),
+    p50 = median(sim, na.rm = TRUE),
+    p95 = quantile(sim, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+ggplot(vpc_sum, aes(time, p50, colour = strain, fill = strain)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2, colour = NA) +
+  geom_line() +
+  facet_wrap(~endpoint, scales = "free_y", ncol = 1) +
+  labs(x = "Time (h)", y = NULL, colour = NULL, fill = NULL,
+       caption = "Median and 90% interval, 100 rats per strain; compare with Figures 7a-c and 8a-c.")
+
+# Pre-dose FFA medians sit near F0 (BSV 17.8% lean, 0.9% obese plus the
+# additive residual error); a mis-scaled F0 moves these by far more than 20%.
+pre_ffa <- vpc_sum |> filter(endpoint == "FFA (mmol/L)", time == 0)
+stopifnot(abs(pre_ffa$p50[pre_ffa$strain == "lean"] / 0.707 - 1) < 0.2)
+stopifnot(abs(pre_ffa$p50[pre_ffa$strain == "obese"] / 1.14 - 1) < 0.2)
+```
+
+# Assumptions and deviations
+
+* **Pump inactivation time t0.** Eq. 5 gives `t0` as "7 days", with no unit
+  for the formula. Only `t0 = 10080` (7 days in minutes) with `t` in hours
+  reproduces the rising limb of Figures 7a and 8a and the stated 1.5 h dilution
+  period, so the models use `tidle_pump = fixed(10080)`. Table 2 prints the
+  unit of `delta` as h^(1/2), and the Results as h^(-1/2). Under the reading
+  used here, `delta` is simply the estimated constant in
+  `erf(t[h] * delta / sqrt(10080))`.
+* **Pump compartment.** rxode2 cannot multiply an infusion rate by a
+  time-varying factor. So the programmed s.c. rate is dosed into a `pump`
+  compartment that empties into the s.c. depot with a fixed rate constant of
+  1000 1/h, a lag of about 4 s. The transfer is scaled by the erf factor of
+  Eq. 5. That rate constant is a numerical device, not a parameter of the
+  paper. `t` in the erf is the time since the first dose into `pump`
+  (`tafd(pump)`). This follows Appendix 1, which assumes the dilution only
+  matters before the pump first starts. For i.v. infusions, dose `central`
+  directly.
+* **Endogenous NiAc at baseline.** Appendix 2 derives `kinI = koutI*I0` and
+  `kinF = koutF*F0` assuming `Cp(0) ~ 0`. The endogenous NiAc level
+  (0.013 umol/L lean, 0.019 umol/L obese) still enters `H_NI` and `H_NF`. So
+  the obese insulin and FFA fall briefly at time 0 even without a dose,
+  before the integral controller restores them. Figures 8b, 8c and 9 show the
+  same initial dip, which confirms that the authors simulated it this way.
+  The models reproduce it as published.
+* **Appendix 2 typos.** Eq. 33 repeats the pathway-1 term where the
+  pathway-2 term belongs, and Eq. 34 prints the root `(-b + sqrt(...))/(2a)`.
+  With `a < 0 < c` that root is negative. The models use the positive root,
+  `(-b - sqrt(...))/(2a)`. Eq. 40 also mentions an insulin term
+  (`ImaxIF`, `IC50IF`) that is not part of the final FFA model.
+* **Parameters from the literature.** Table 2 marks literature values (from
+  Tapani et al.) in blue. The open-access PDF reproduces the table without
+  that colour. The Methods state that only `ka`, `delta` and `Vmax1` were
+  estimated among the PK parameters, so `Km1`, `Vmax2`, `Km2`, `Vp`, `Vt`,
+  `Cld` and `Synt` are `fixed()`. The BSV on `Synt` was estimated.
+* **BSV on obese `Synt`.** The Methods say `Synt` varied only in lean rats,
+  but Table 2 prints a BSV of 95% for obese rats. The table is followed.
+* **Fixed study effects.** `I0`, `ktolI`, `F0` and `ktolF` had a separate
+  fixed effect per study group. Only their weighted summaries (Table 2) and
+  the baseline ranges are printed: insulin 0.151-0.264 (lean) and
+  2.69-4.82 nM (obese); FFA 0.652-0.801 (lean) and 0.789-1.22 mM (obese). The
+  models carry the weighted summaries as typical values.
+* **Text vs table.** The Results quote median insulin baselines of 0.233 and
+  3.51 nM, and an FFA efficacy-loss Hill coefficient `phi` of 8.37 for obese
+  rats. Table 2 gives 0.188, 3.26 and 8.83. The table values are used.
+* **Figure 9 moderator kinetics.** See above: the acute FFA moderator response
+  in Figure 9 (and in the VPC median of Figure 7c) is slower than Table 2's
+  `ktolF` implies. The steady states agree.
+* **Figures 10 and 11, steady-state predictions.** With a constant
+  0.5 umol/L, the obese model's 24 h FFA lowering is largest near 0.5 umol/L,
+  as the paper reports. But its magnitude is smaller than the reported
+  7.40 mM h. The steady state depends on the history of the integral
+  controller, and the paper does not say how it computed that state. In
+  Figure 11, NiAc action at 0.5 umol/L is about 32%. Figure 9 shows the same
+  32% only at the 1.3 umol/L infusion plateau. So these predictions are not
+  used as checks.
+* **Residual error.** NiAc is proportional. Insulin and FFA are additive.
+  Each endpoint has its own `dvid` (1 = NiAc on `central`, 2 = `insulin`,
+  3 = `nefa`).
