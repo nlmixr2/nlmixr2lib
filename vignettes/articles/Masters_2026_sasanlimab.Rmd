@@ -1,0 +1,649 @@
+---
+title: "Sasanlimab population PK and exposure-response (Masters 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sasanlimab population PK and exposure-response (Masters 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5, error = FALSE
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+```
+
+# Model and source
+
+Masters 2026 characterises the population pharmacokinetics (PK) of
+**sasanlimab** (PF-06801591), a subcutaneously (SC) administered anti-PD-1
+IgG4 monoclonal antibody, and its exposure-response (ER) relationships for
+safety and efficacy. The work supports the flat 300 mg SC every-4-weeks (Q4W)
+dose in BCG-naive, high-risk non-muscle invasive bladder cancer (NMIBC).
+
+- Citation: Masters JC, Jermain B, Liu A, Cesari R, Calella AM, Michelon E,
+  Wei C, Liu S, Piscitelli J. Population Pharmacokinetics and
+  Exposure-Response of Sasanlimab, a Checkpoint Inhibitor, in Patients with
+  Non-Muscle Invasive Bladder Cancer and Other Solid Tumors. *J Clin
+  Pharmacol.* 2026;66(9):e70295.
+- Article: <https://doi.org/10.1002/jcph.70295>
+
+The paper reports seven models, packaged as seven files that share this
+article:
+
+```{r models}
+models <- tibble::tribble(
+  ~model,                                   ~endpoint,                                    ~source,
+  "Masters_2026_sasanlimab",                "Serum sasanlimab concentration (popPK)",     "Table 3; Equations S1, S2",
+  "Masters_2026_sasanlimab_teae_grade2",    "Any grade >= 2 TEAE",                        "Table 4 slope; Figure S2 intercept",
+  "Masters_2026_sasanlimab_teae_grade3",    "Any grade >= 3 TEAE",                        "Table 4 slope; Figure S2 intercept",
+  "Masters_2026_sasanlimab_irae",           "Any-grade immune-related AE",                "Table 4 slope; Figure S2 intercept",
+  "Masters_2026_sasanlimab_irae_grade3",    "Grade >= 3 immune-related AE",               "Table 4 slope; Figure S2 intercept",
+  "Masters_2026_sasanlimab_cr",             "Investigator-assessed complete response",    "Table S5",
+  "Masters_2026_sasanlimab_efs",            "Investigator-assessed event-free survival",  "Table S4"
+)
+mods <- lapply(
+  stats::setNames(models$model, models$model),
+  function(m) rxode2::rxode(readModelDb(m))
+)
+knitr::kable(models, caption = "Models contributed by Masters 2026.")
+```
+
+# Population
+
+The population PK and the ER-safety analyses pool the same 1007 participants
+from three studies (Masters 2026 Table 1): B8011001 (n = 146, phase 1 dose
+escalation with IV 0.5-10 mg/kg Q3W and SC 300 mg Q4W, plus NSCLC and
+urothelial carcinoma expansion cohorts), B8011006 (CREST, n = 706, NMIBC,
+sasanlimab 300 mg SC Q4W combined with BCG in 698) and B8011007 (n = 155,
+SC 300 mg Q4W or 600 mg Q6W). The pooled cohort's median age was 66 years
+(range 26-90) and its median weight 74 kg (range 38.2-173); 21.8% were
+female, and 70.1% had NMIBC, 19.7% NSCLC, 3.9% urothelial carcinoma and
+6.4% other solid tumors (Supporting Tables S1 and S2).
+
+The ER-efficacy analyses use CREST Cohort A only: 698 participants for
+event-free survival (EFS; arm A, sasanlimab + BCG induction + maintenance,
+n = 350; arm B, sasanlimab + BCG induction only, n = 348) and the 179 with
+carcinoma in situ (CIS) at randomization for complete response (CR).
+
+```{r population}
+pop_rows <- lapply(models$model, function(m) {
+  p <- readModelDb(m)()$population
+  tibble::tibble(
+    model = m,
+    n_subjects = p$n_subjects,
+    disease = substr(p$disease_state, 1, 90)
+  )
+})
+knitr::kable(dplyr::bind_rows(pop_rows), caption = "Analysis populations.")
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The table
+collects them.
+
+| Model | Parameter / equation | Value | Source |
+|---|---|---|---|
+| popPK | CL, V2, Q, V3 | 0.142 L/day, 3.67 L, 0.576 L/day, 2.19 L | Table 3 |
+| popPK | ka, F, D1 | 0.217 /day, 0.697, 0.116 day | Table 3 |
+| popPK | Weight exponents on CL, V2 (70 kg) | 0.980, 1.21 | Table 3; Equations S1, S2 |
+| popPK | Creatinine (0.90 mg/dL), albumin (4.3 g/dL) powers on CL | -0.129, -0.775 | Table 3; Equation S1 |
+| popPK | Alkaline phosphatase linear on CL (80 U/L) | 0.0005 per U/L | Table 3; Equation S1 |
+| popPK | (1 + Tumor Type): NSCLC, UC, other vs NMIBC | 0.332, 0.310, 0.108 | Table 3; Equation S1 |
+| popPK | omega^2 CL, cov(CL, V2), omega^2 V2 | 0.0972, 0.0625, 0.313 | Table 3 |
+| popPK | Additive residual SD on log concentration | 0.229 | Table 3; Methods |
+| popPK | Two compartments, zero-order input of duration D1 into the SC depot, then first-order absorption | -- | Methods; Results |
+| TEAE >= 2 | Slope on log(Cmax,sd) | 0.123 | Table 4 |
+| TEAE >= 2 | Intercept | 0.935 | Figure S2 (digitised) |
+| TEAE >= 3 | Slope on log(Cmax,ss) | -0.344 | Table 4 |
+| TEAE >= 3 | Intercept | 1.125 | Figure S2 (digitised) |
+| irAE any grade | Slope on log(Ctrough,ss) | -0.0788 | Table 4 |
+| irAE any grade | Intercept | -0.942 | Figure S2 (digitised) |
+| irAE >= 3 | Slope on Cmax,sd (linear) | 0.00713 per ug/mL | Table 4 |
+| irAE >= 3 | Intercept | -3.51 | Figure S2 (digitised) |
+| All four safety models | logit(P) = intercept + slope x exposure | -- | Methods Equation 1 |
+| CR | Intercept, slope on Cavg,sd | 3.72, -0.0670 per ug/mL | Table S5 |
+| EFS | Log-normal location mu, scale sigma | 5.56, 2.28 | Table S4 |
+| EFS | Age (linear, 67 y), weight (power, 76 kg), arm on mu | -0.0108, -0.336, -0.144 | Table S4; Methods (SCM forms); Results (sign of the arm effect) |
+
+# Population PK
+
+## Virtual NMIBC cohort
+
+The virtual cohort resembles the CREST participants (B8011006 column of
+Supporting Table S1): body weight log-normal with mean 78.1 kg and SD
+17.3 kg; serum creatinine log-normal around a median of 0.9 mg/dL; albumin
+normal with mean 4.4 g/dL and SD 0.3; alkaline phosphatase log-normal with
+median 76.2 U/L and mean 87.4 U/L. All tumor-type indicators are 0 (NMIBC is
+the reference). Albumin is supplied in the canonical g/L.
+
+```{r cohort}
+set.seed(20261123)
+rxode2::rxSetSeed(20261123)
+n_pk <- 200
+
+lnorm_from_mean_sd <- function(n, mean, sd) {
+  sdlog <- sqrt(log(1 + (sd / mean)^2))
+  stats::rlnorm(n, log(mean) - sdlog^2 / 2, sdlog)
+}
+clamp <- function(x, lo, hi) pmin(pmax(x, lo), hi)
+
+cohort <- tibble::tibble(
+  id = seq_len(n_pk),
+  WT = clamp(lnorm_from_mean_sd(n_pk, 78.07, 17.31), 40.5, 173),
+  CREAT = clamp(stats::rlnorm(n_pk, log(0.9), 0.22), 0.4, 2.0),
+  ALB = 10 * clamp(stats::rnorm(n_pk, 4.4, 0.3), 3.0, 5.5),
+  ALP = clamp(stats::rlnorm(n_pk, log(76.2), sqrt(2 * log(87.4 / 76.2))), 31, 1132),
+  TUMTP_NSCLC = 0, TUMTP_BLADDER = 0, TUMTP_OTHER = 0,
+  treatment = "300 mg SC Q4W"
+)
+summary(cohort[, c("WT", "CREAT", "ALB", "ALP")])
+```
+
+## Simulation: 300 mg SC Q4W for one year
+
+Twelve doses; half-day sampling over the first interval (single dose) and over
+the twelfth interval (days 308-336), by which point the 29-day half-life has
+elapsed more than ten times. The SC dose record carries `rate = -2` so the
+model's duration `D1` applies.
+
+```{r simulate-pk}
+dose_rows <- tidyr::expand_grid(id = cohort$id, time = seq(0, 308, by = 28)) |>
+  dplyr::mutate(amt = 300, evid = 1L, cmt = "depot", rate = -2)
+obs_times <- sort(unique(c(seq(0, 28, by = 0.5), seq(308, 336, by = 0.5))))
+obs_rows <- tidyr::expand_grid(id = cohort$id, time = obs_times) |>
+  dplyr::mutate(amt = 0, evid = 0L, cmt = "central", rate = 0)
+ev_pk <- dplyr::bind_rows(dose_rows, obs_rows) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::left_join(cohort, by = "id")
+
+sim_pk <- rxode2::rxSolve(
+  mods$Masters_2026_sasanlimab, events = ev_pk,
+  keep = "treatment", returnType = "data.frame"
+)
+```
+
+```{r fig-conc, fig.cap = "Simulated serum sasanlimab after the first dose and over the twelfth dose interval (median and 5th-95th percentiles of individual predictions). Compare with the Q4W panel of Figure 2 of Masters 2026."}
+sim_pk |>
+  dplyr::mutate(interval = ifelse(time <= 28, "Dose 1 (days 0-28)", "Dose 12 (days 308-336)")) |>
+  dplyr::group_by(interval, time) |>
+  dplyr::summarise(
+    med = stats::median(Cc), lo = stats::quantile(Cc, 0.05),
+    hi = stats::quantile(Cc, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25, fill = "steelblue") +
+  geom_line(colour = "steelblue4") +
+  facet_wrap(~interval, scales = "free_x") +
+  labs(x = "Time (day)", y = "Sasanlimab (ug/mL)")
+```
+
+## Half-life and volume at steady state
+
+Masters 2026 reports a mean elimination half-life of about 29 days and a
+geometric-mean steady-state volume of 6.34 L (Results).
+
+```{r half-life}
+indiv <- sim_pk |>
+  dplyr::filter(time == 0) |>
+  dplyr::distinct(id, cl, vc, q, vp) |>
+  dplyr::mutate(
+    k10 = cl / vc, k12 = q / vc, k21 = q / vp,
+    beta = 0.5 * ((k10 + k12 + k21) - sqrt((k10 + k12 + k21)^2 - 4 * k10 * k21)),
+    thalf = log(2) / beta,
+    vss = vc + vp
+  )
+hl_check <- tibble::tibble(
+  quantity = c("Mean terminal half-life (day)", "Geometric-mean Vss (L)"),
+  simulated = c(mean(indiv$thalf), exp(mean(log(indiv$vss)))),
+  published = c(29, 6.34)
+) |>
+  dplyr::mutate(pct_diff = 100 * (simulated / published - 1))
+knitr::kable(hl_check, digits = 2, caption = "Derived disposition vs Results text.")
+stopifnot(abs(hl_check$pct_diff) < 15)
+```
+
+## PKNCA: first-dose and steady-state exposure
+
+```{r pknca}
+conc_df <- sim_pk |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_df <- dose_rows |>
+  dplyr::mutate(treatment = "300 mg SC Q4W") |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+# PKNCA returns ctrough only when a dose follows the interval, so the
+# steady-state trough is taken as cmin: after an SC dose the interval minimum
+# is the end-of-interval concentration.
+intervals <- data.frame(
+  start = c(0, 308), end = c(28, 336),
+  cmax = TRUE, tmax = TRUE, cav = TRUE,
+  ctrough = c(TRUE, FALSE), cmin = c(FALSE, TRUE)
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_df <- as.data.frame(nca_res$result)
+```
+
+The published references are the Cohort A exposure summary (Supporting Table
+S3, NMIBC on 300 mg SC Q4W, n = 698) for the first-dose Cavg and Ctrough, and
+the median reference lines of Figure S2 (pooled ER-safety cohort, n = 1007,
+digitised) for the first-dose Cmax and the steady-state Cmax and Ctrough. The
+pooled cohort includes the higher-clearance non-NMIBC tumor types, the IV
+dose-escalation regimens and 600 mg Q6W, so its medians are only
+approximately comparable with the NMIBC cohort simulated here.
+
+```{r nca-compare}
+nca_sd <- nca_df |>
+  dplyr::filter(start == 0) |>
+  dplyr::mutate(treatment = "Dose 1 (days 0-28)")
+nca_ss <- nca_df |>
+  dplyr::filter(start == 308) |>
+  dplyr::mutate(
+    treatment = "Steady state (days 308-336)",
+    PPTESTCD = ifelse(PPTESTCD == "cmin", "ctrough", PPTESTCD)
+  )
+nca_both <- dplyr::bind_rows(nca_sd, nca_ss) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "cav", "ctrough"))
+
+published_nca <- tibble::tribble(
+  ~treatment,                     ~cmax, ~cav,  ~ctrough,
+  "Dose 1 (days 0-28)",           27.1,  21.8,  18.3,
+  "Steady state (days 308-336)",  53.8,  NA,    33.4
+)
+
+sim_wide <- nca_both |>
+  dplyr::select(treatment, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+nca_cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_wide |> dplyr::select(-id),
+  reference = published_nca,
+  by = "treatment",
+  units = c(cmax = "ug/mL", cav = "ug/mL", ctrough = "ug/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  nca_cmp,
+  caption = "Simulated median exposure vs Masters 2026 Table S3 and Figure S2. * differs by > 20%."
+)
+```
+
+```{r nca-gate}
+med_sim <- sim_wide |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(dplyr::across(c(cmax, cav, ctrough), stats::median), .groups = "drop")
+gate <- med_sim |>
+  tidyr::pivot_longer(-treatment, names_to = "param", values_to = "sim") |>
+  dplyr::inner_join(
+    tidyr::pivot_longer(published_nca, -treatment, names_to = "param", values_to = "pub"),
+    by = c("treatment", "param")
+  ) |>
+  dplyr::filter(!is.na(pub)) |>
+  dplyr::mutate(pct = 100 * (sim / pub - 1))
+# The NMIBC-only Table S3 values (Cavg,sd and Ctrough,sd) are the like-for-like
+# comparison; a mis-transcribed clearance, F or D1 moves them by tens of percent.
+stopifnot(
+  all(abs(gate$pct[gate$treatment == "Dose 1 (days 0-28)" & gate$param %in% c("cav", "ctrough")]) < 10),
+  all(abs(gate$pct) < 20)
+)
+```
+
+Supporting Table S3 also reports the Cavg,sd range in Cohort A (5.2-38.0
+ug/mL, SD 5.63) and Figure 4 the quartile medians 15.2, 19.9, 23.7 and 28.6
+ug/mL:
+
+```{r cavg-quartiles}
+cav_sd <- sim_wide |> dplyr::filter(treatment == "Dose 1 (days 0-28)")
+q_cut <- stats::quantile(cav_sd$cav, c(0, 0.25, 0.5, 0.75, 1))
+quart <- cav_sd |>
+  dplyr::mutate(quartile = cut(cav, q_cut, include.lowest = TRUE, labels = paste0("Q", 1:4))) |>
+  dplyr::group_by(quartile) |>
+  dplyr::summarise(simulated_median = stats::median(cav), .groups = "drop") |>
+  dplyr::mutate(published_median = c(15.2, 19.9, 23.7, 28.6))
+knitr::kable(quart, digits = 1, caption = "Cavg,sd quartile medians vs Figure 4 legend.")
+```
+
+## Body-weight effect and flat dosing (Figures 1 and 3)
+
+Figure 1 summarises steady-state Cavg by body-weight quartile relative to the
+overall median: 1.29, 1.10, 0.976 and 0.788 for quartiles 1-4. Figure 3
+compares flat 300 mg with weight-based 4 mg/kg dosing; because the PK is
+linear, the weight-based Cavg is the flat Cavg scaled by 4 x WT / 300.
+
+```{r weight-quartiles}
+cav_ss <- sim_wide |>
+  dplyr::filter(treatment == "Steady state (days 308-336)") |>
+  dplyr::left_join(cohort |> dplyr::select(id, WT), by = "id")
+wq <- stats::quantile(cav_ss$WT, c(0, 0.25, 0.5, 0.75, 1))
+wt_tab <- cav_ss |>
+  dplyr::mutate(wt_quartile = cut(WT, wq, include.lowest = TRUE, labels = paste0("Q", 1:4))) |>
+  dplyr::group_by(wt_quartile) |>
+  dplyr::summarise(simulated_ratio = stats::median(cav) / stats::median(cav_ss$cav), .groups = "drop") |>
+  dplyr::mutate(published_ratio = c(1.29, 1.10, 0.976, 0.788))
+knitr::kable(wt_tab, digits = 3, caption = "Cavg,ss by body-weight quartile relative to the median (Figure 1).")
+# The weight exponent on CL (0.980) fixes the spread between the outer
+# quartiles; a wrong reference weight or a dropped exponent collapses it.
+stopifnot(
+  wt_tab$simulated_ratio[1] > 1.1, wt_tab$simulated_ratio[4] < 0.9,
+  abs(wt_tab$simulated_ratio[1] / wt_tab$simulated_ratio[4] - 1.29 / 0.788) < 0.4
+)
+```
+
+```{r fig-flat-dose, fig.cap = "Steady-state Cavg by body-weight quartile for flat 300 mg and weight-based 4 mg/kg SC Q4W. Replicates the right panel of Figure 3 of Masters 2026."}
+cav_ss |>
+  dplyr::mutate(
+    wt_quartile = cut(WT, wq, include.lowest = TRUE, labels = c("0-25th", "25-50th", "50-75th", "75-100th")),
+    `Flat 300 mg` = cav,
+    `4 mg/kg` = cav * 4 * WT / 300
+  ) |>
+  tidyr::pivot_longer(c(`Flat 300 mg`, `4 mg/kg`), names_to = "regimen", values_to = "cavg") |>
+  ggplot(aes(wt_quartile, cavg, fill = regimen)) +
+  geom_boxplot(outlier.size = 0.6) +
+  labs(x = "Body-weight percentile", y = "Cavg,ss (ug/mL)", fill = NULL)
+```
+
+## Tumor type
+
+The (1 + Tumor Type) factor of Equation S1 raises CL by 33.2% (NSCLC), 31.0%
+(urothelial carcinoma) and 10.8% (other tumors) over NMIBC. For a linear
+model the steady-state Cavg of a typical patient scales as 1 / CL:
+
+```{r tumor-type}
+typ_cav <- function(nsclc, bladder, other) {
+  ev <- rxode2::et(amt = 300, cmt = "depot", rate = -2, ii = 28, addl = 11) |>
+    rxode2::et(seq(308, 336, by = 0.25), cmt = "central") |>
+    as.data.frame() |>
+    dplyr::mutate(
+      WT = 70, CREAT = 0.9, ALB = 43, ALP = 80,
+      TUMTP_NSCLC = nsclc, TUMTP_BLADDER = bladder, TUMTP_OTHER = other
+    )
+  s <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mods$Masters_2026_sasanlimab), events = ev))
+  s <- s[s$time >= 308, ]
+  sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2) / 28
+}
+tt <- tibble::tibble(
+  tumor = c("NMIBC", "NSCLC", "Urothelial carcinoma", "Other"),
+  cav_ss = c(typ_cav(0, 0, 0), typ_cav(1, 0, 0), typ_cav(0, 1, 0), typ_cav(0, 0, 1))
+) |>
+  dplyr::mutate(
+    ratio_vs_nmibc = cav_ss / cav_ss[1],
+    expected = 1 / (1 + c(0, 0.332, 0.310, 0.108))
+  )
+knitr::kable(tt, digits = 3, caption = "Typical-patient steady-state Cavg by tumor type.")
+# Same drawn parameters on both sides (typical values): pure numerical check.
+stopifnot(max(abs(tt$ratio_vs_nmibc - tt$expected)) < 0.005)
+```
+
+The forest plot of Figure 1 shows these ratios against the pooled median
+rather than against NMIBC, and folds in each group's own covariate
+distribution, so its values (NSCLC 0.872, UC 0.902, other 0.950, NMIBC 1.05)
+are compressed relative to the typical-patient ratios above.
+
+# Exposure-safety models
+
+## The intercepts are reconstructed from Figure S2
+
+Table 4 prints only the exposure slope of each final ER-safety model. No
+intercept and no covariate coefficient appears anywhere in the paper, yet the
+Methods describe a full-covariate model followed by backward elimination. The
+maintainers digitised the fitted curves of Supporting Figure S2 (500 curve
+points per panel, axes calibrated on the gridlines). With the slope left free
+the curves return slopes of 0.1233 (TEAE >= 2), -0.3444 (TEAE >= 3) and
+-0.0784 (irAE any grade) against the printed 0.123, -0.344 and -0.0788, so
+the figure is the published model; the intercepts were then estimated with
+the slope held at its printed value. The irAE grade >= 3 curve sits at
+probabilities 0.03-0.17, where one pixel moves the logit by up to 0.1; its
+free slope (0.0079) is within that resolution of the printed 0.00713.
+
+The table checks each packaged model against the curve at the 5th, 50th and
+95th percentile exposure lines of the same figure.
+
+```{r safety-curve-check}
+safety <- tibble::tribble(
+  ~model,                                 ~output,             ~cov,       ~log_axis,
+  "Masters_2026_sasanlimab_teae_grade2",  "prob_teae_grade2",  "CMAX",     TRUE,
+  "Masters_2026_sasanlimab_teae_grade3",  "prob_teae_grade3",  "CMAX",     TRUE,
+  "Masters_2026_sasanlimab_irae",         "prob_irae",         "CTROUGH",  TRUE,
+  "Masters_2026_sasanlimab_irae_grade3",  "prob_irae_grade3",  "CMAX",     FALSE
+)
+# Figure S2 axis value at the 5th / 50th / 95th percentile line and the
+# digitised curve probability there.
+digitised <- tibble::tribble(
+  ~model,                                 ~axis_x, ~p_fig,
+  "Masters_2026_sasanlimab_teae_grade2",  2.705,   0.779,
+  "Masters_2026_sasanlimab_teae_grade2",  3.300,   0.794,
+  "Masters_2026_sasanlimab_teae_grade2",  4.007,   0.807,
+  "Masters_2026_sasanlimab_teae_grade3",  3.348,   0.494,
+  "Masters_2026_sasanlimab_teae_grade3",  3.986,   0.439,
+  "Masters_2026_sasanlimab_teae_grade3",  4.488,   0.396,
+  "Masters_2026_sasanlimab_irae",         2.571,   0.241,
+  "Masters_2026_sasanlimab_irae",         3.507,   0.228,
+  "Masters_2026_sasanlimab_irae",         4.028,   0.222,
+  "Masters_2026_sasanlimab_irae_grade3",  15.22,   0.028,
+  "Masters_2026_sasanlimab_irae_grade3",  27.43,   0.031,
+  "Masters_2026_sasanlimab_irae_grade3",  55.15,   0.040
+)
+
+solve_prob <- function(model, output, cov, values) {
+  ev <- data.frame(id = seq_along(values), time = 0, amt = 0, evid = 0L)
+  ev[[cov]] <- values
+  as.data.frame(rxode2::rxSolve(mods[[model]], events = ev, returnType = "data.frame"))[[output]]
+}
+
+curve_chk <- digitised |>
+  dplyr::left_join(safety, by = "model") |>
+  dplyr::group_by(model) |>
+  dplyr::mutate(
+    exposure = ifelse(log_axis, exp(axis_x), axis_x),
+    p_model = solve_prob(model[1], output[1], cov[1], exposure)
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::select(model, exposure, p_fig, p_model)
+knitr::kable(curve_chk, digits = 3, caption = "Packaged models vs the digitised Figure S2 curves.")
+# Same curve on both sides (no cohort): a digitisation-resolution bound.
+stopifnot(max(abs(curve_chk$p_model - curve_chk$p_fig)) < 0.01)
+```
+
+```{r fig-safety, fig.cap = "Packaged exposure-safety models over the plotted exposure ranges, with the 5th, 50th and 95th percentile exposures as dashed lines. Replicates Figure S2 of Masters 2026 (axes as in the source: natural log of exposure, except irAE grade >= 3)."}
+ranges <- list(
+  Masters_2026_sasanlimab_teae_grade2 = c(1.1, 5.5),
+  Masters_2026_sasanlimab_teae_grade3 = c(2.1, 6.15),
+  Masters_2026_sasanlimab_irae = c(-0.45, 5.45),
+  Masters_2026_sasanlimab_irae_grade3 = c(3, 257)
+)
+curves <- lapply(seq_len(nrow(safety)), function(i) {
+  s <- safety[i, ]
+  x <- seq(ranges[[s$model]][1], ranges[[s$model]][2], length.out = 100)
+  tibble::tibble(
+    model = s$model, axis_x = x,
+    p = solve_prob(s$model, s$output, s$cov, if (s$log_axis) exp(x) else x)
+  )
+}) |> dplyr::bind_rows()
+ggplot(curves, aes(axis_x, p)) +
+  geom_line(colour = "blue") +
+  geom_vline(data = digitised, aes(xintercept = axis_x), linetype = "dashed") +
+  facet_wrap(~model, scales = "free_x") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(x = "Exposure (log ug/mL; ug/mL for irAE grade >= 3)", y = "Predicted probability")
+```
+
+## Which population the curves describe
+
+A logistic regression with an intercept reproduces the observed event rate of
+the data it was fitted to. The curves of Figure S2 do not reproduce the
+pooled incidence for the two irAE endpoints, so the final models contain
+covariate terms that are not printed, and the figure is drawn at their
+reference levels. The table compares each curve at its median exposure with
+the observed incidences of Supporting Table S6.
+
+```{r safety-strata}
+obs_inc <- tibble::tribble(
+  ~model,                                 ~pooled, ~non_nmibc, ~nmibc,
+  "Masters_2026_sasanlimab_teae_grade2",  0.846,   (117 + 123) / 301, 0.867,
+  "Masters_2026_sasanlimab_teae_grade3",  0.434,   (61 + 60) / 301,   0.448,
+  "Masters_2026_sasanlimab_irae",         0.546,   (47 + 30) / 301,   0.670,
+  "Masters_2026_sasanlimab_irae_grade3",  0.152,   (8 + 6) / 301,     0.197
+)
+strata <- curve_chk |>
+  dplyr::group_by(model) |>
+  dplyr::slice(2) |>
+  dplyr::ungroup() |>
+  dplyr::select(model, p_model_at_median = p_model) |>
+  dplyr::left_join(obs_inc, by = "model")
+knitr::kable(
+  strata, digits = 3,
+  caption = paste(
+    "Curve at the median exposure vs observed incidence: pooled (n = 1007),",
+    "B8011001 + B8011007 (non-NMIBC monotherapy, n = 301) and B8011006",
+    "(NMIBC + BCG, n = 706)."
+  )
+)
+```
+
+The curves track the non-NMIBC monotherapy incidence (B8011001 + B8011007)
+within a few points for every endpoint. For the irAE endpoints they sit far
+below the NMIBC + BCG incidence (0.23 vs 0.67; 0.03 vs 0.20), so the packaged
+irAE models apply to non-NMIBC monotherapy only. In this cohort tumor type
+NMIBC, study B8011006 and BCG combination coincide (706 / 706 / 698 of 1007),
+so the omitted term is most likely one of them, but its coefficient is not
+reported.
+
+# Exposure-efficacy: complete response
+
+The CR model (Supporting Table S5) is driven by Cavg,sd. Applied to the
+first-dose Cavg of the simulated NMIBC cohort, it should give close to the
+observed "nearly 90%" CR rate in the 179 participants with CIS.
+
+```{r cr}
+cr_ev <- data.frame(id = cav_sd$id, time = 0, amt = 0, evid = 0L, CAV = cav_sd$cav)
+cr_sim <- as.data.frame(rxode2::rxSolve(mods$Masters_2026_sasanlimab_cr, events = cr_ev))
+cr_tab <- tibble::tibble(
+  quantity = c("Mean predicted CR probability (simulated cohort)", "P(CR) at Cavg,sd = 21.8 ug/mL (Table S3 median)"),
+  value = c(mean(cr_sim$prob_cr_investigator), stats::plogis(3.72 - 0.0670 * 21.8))
+)
+knitr::kable(cr_tab, digits = 3)
+stopifnot(abs(mean(cr_sim$prob_cr_investigator) - 0.90) < 0.03)
+```
+
+```{r fig-cr, fig.cap = "Probability of investigator-assessed CR against Cavg,sd, with the simulated cohort's Cavg,sd distribution as a rug."}
+cr_curve <- data.frame(id = 1:100, time = 0, amt = 0, evid = 0L, CAV = seq(5, 40, length.out = 100))
+as.data.frame(rxode2::rxSolve(mods$Masters_2026_sasanlimab_cr, events = cr_curve)) |>
+  dplyr::mutate(CAV = cr_curve$CAV) |>
+  ggplot(aes(CAV, prob_cr_investigator)) +
+  geom_line() +
+  geom_rug(data = cav_sd, aes(x = cav), inherit.aes = FALSE, alpha = 0.4) +
+  coord_cartesian(ylim = c(0.5, 1)) +
+  labs(x = "Cavg,sd (ug/mL)", y = "P(complete response)")
+```
+
+# Exposure-efficacy: event-free survival
+
+The EFS model is a log-normal time-to-event model without an exposure term.
+The virtual Cohort A has 200 participants per arm, with age normal (mean 66.4
+years, SD 10.1, range 31-90) and weight log-normal (mean 78.1 kg, SD 17.3) as
+in the B8011006 column of Table S1. The population-averaged event-free
+probability is compared with the midpoints of the 95% simulation band of the
+visual predictive check in Supporting Figure S4 (digitised by the
+maintainers).
+
+```{r efs}
+n_arm <- 200
+efs_cohort <- tibble::tibble(
+  id = seq_len(2 * n_arm),
+  BCG_MAINT = rep(c(1, 0), each = n_arm),
+  AGE = clamp(stats::rnorm(2 * n_arm, 66.4, 10.1), 31, 90),
+  WT = clamp(lnorm_from_mean_sd(2 * n_arm, 78.07, 17.31), 40.5, 173)
+)
+efs_times <- c(0, 3, 6, 12, 18, 24, 30, 36, 42, 48)
+efs_ev <- tidyr::expand_grid(id = efs_cohort$id, time = efs_times) |>
+  dplyr::mutate(amt = 0, evid = 0L) |>
+  dplyr::left_join(efs_cohort, by = "id")
+efs_sim <- as.data.frame(rxode2::rxSolve(
+  mods$Masters_2026_sasanlimab_efs, events = efs_ev, keep = "BCG_MAINT"
+))
+
+efs_pop <- efs_sim |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(simulated = mean(sur), .groups = "drop") |>
+  dplyr::inner_join(
+    tibble::tibble(
+      time = c(3, 6, 12, 18, 24, 30, 36, 42, 48),
+      figure_s4_mid = c(0.958, 0.923, 0.873, 0.832, 0.800, 0.773, 0.741, 0.729, 0.711)
+    ),
+    by = "time"
+  )
+knitr::kable(efs_pop, digits = 3, caption = "Population-averaged EFS vs the Figure S4 simulation band (midpoint).")
+# Envelope on the population average: the band is +/- about 0.02 wide, and the
+# additive-on-mu reading of the covariates runs about 0.05 high.
+stopifnot(max(abs(efs_pop$simulated - efs_pop$figure_s4_mid)) < 0.03)
+```
+
+```{r fig-efs, fig.cap = "Population-averaged event-free probability by arm (arm A: BCG induction + maintenance; arm B: induction only), with the Figure S4 band midpoints as points."}
+efs_sim |>
+  dplyr::mutate(arm = ifelse(BCG_MAINT == 1, "Arm A (maintenance)", "Arm B (induction only)")) |>
+  dplyr::group_by(arm, time) |>
+  dplyr::summarise(sur = mean(sur), .groups = "drop") |>
+  ggplot(aes(time, sur, colour = arm)) +
+  geom_line() +
+  geom_point(data = efs_pop, aes(time, figure_s4_mid), inherit.aes = FALSE) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(x = "Time (months)", y = "P(event-free)", colour = NULL)
+```
+
+# Assumptions and deviations
+
+- **Safety-model intercepts are figure-derived.** Table 4 prints only the
+  exposure slope of each ER-safety model. The intercepts (0.935, 1.125,
+  -0.942, -3.51) were digitised by the maintainers from Supporting Figure S2
+  with the slope held at its printed value. The final models also contain
+  covariate terms whose coefficients are not reported; the packaged models
+  reproduce the curves as plotted, which match the incidence of the
+  non-NMIBC monotherapy studies (B8011001 + B8011007). They under-predict
+  patients with NMIBC treated with sasanlimab + BCG, markedly so for the irAE
+  endpoints.
+- **Safety and CR likelihoods.** The source models are Bernoulli logistic
+  regressions with no residual error and no random effect. Each packaged
+  model carries a fixed additive residual SD of 0.001 on the probability
+  only so that rxode2 has an error model; it is not a published quantity.
+- **EFS covariate forms.** Table S4 gives the coefficients but not the
+  equations. The Methods state that the stepwise covariate modelling tested
+  continuous covariates as linear, exponential or power functions and
+  categorical ones linearly. The packaged form is the multiplicative
+  parameterisation of PsN stepwise covariate modelling: age linear centred
+  at 67 years, weight as a power normalised to 76 kg (the B8011006 medians in
+  Table S1; the EFS-set medians are not reported), arm as 1 + theta x
+  indicator. With these forms and time in months the population-averaged
+  curve reproduces the Figure S4 band, while an additive-on-mu reading runs
+  about five points high.
+- **EFS arm direction.** The paper does not print the arm coding; the
+  Results state that receiving BCG induction + maintenance is beneficial to
+  EFS, so the -0.144 coefficient is applied to arm B (`BCG_MAINT = 0`).
+- **IIV covariance.** The Table 3 row 'wCL/V2 Correlation' (0.0625, 'CV'
+  25% = sqrt(0.0625)) is read as the CL-V2 covariance, consistent with the
+  squared notation of the other omega rows; the implied correlation is 0.36.
+- **Albumin units.** Equation S1 normalises albumin to 4.3 g/dL; the model
+  takes albumin in the canonical g/L and divides by 10 internally.
+- **Tumor-type coding.** NMIBC is the reference level. Participants with
+  NMIBC carry `TUMTP_BLADDER = 0`; that indicator marks the advanced
+  urothelial carcinoma cohort only.
+- **IV dosing.** The B8011001 IV doses (0.5-10 mg/kg over 60 minutes Q3W) go
+  to `central` as an infusion with the rate set in the data; F and D1 apply
+  to SC doses into `depot` only.
+- **Reference exposures in the PKNCA comparison.** The first-dose Cmax and
+  steady-state Cmax and Ctrough references are the median lines of Figure
+  S2, read from the pooled ER-safety cohort (all regimens and tumor types),
+  not from the NMIBC 300 mg Q4W cohort simulated here.
+- **Virtual-cohort covariates.** Distributions follow the B8011006 summary
+  statistics of Table S1 (log-normal weight, creatinine and alkaline
+  phosphatase; normal albumin and age), independent of each other.
