@@ -1,0 +1,369 @@
+---
+title: "Marbofloxacin PK/PD against Streptococcus suis in pigs (Lei 2017b)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Marbofloxacin PK/PD against Streptococcus suis in pigs (Lei 2017b)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Lei 2017b tests **marbofloxacin**, a veterinary fluoroquinolone, against
+*Streptococcus suis* serotype 2 in pigs. Serum was collected after a single
+8 mg/kg oral dose, and each serum sample was challenged ex vivo with the
+virulent strain HB2. The 24 h change in bacterial count was related to the
+PK/PD index AUC0-24h/MIC with an inhibitory sigmoid Emax model fitted in
+WinNonlin (equation 1, Table 3, Figure 6).
+
+| Model file | What it is | Source |
+|---|---|---|
+| `Lei_2017b_marbofloxacin_pkpd_index` | Ex vivo inhibitory sigmoid Emax model, 24 h change in log10 CFU/mL vs AUC0-24h/MIC, pig serum | Equation 1, Table 3, Figure 6 |
+
+The `b` suffix separates this paper from the same group's marbofloxacin
+study against *Escherichia coli* in pig ileum content (Lei 2017,
+doi:10.3389/fphar.2017.00542), which this paper cites as Lei et al. 2017a.
+
+The pharmacokinetics in the paper are non-compartmental only (Table 1), so no
+PK model file is packaged; see *Assumptions and deviations*.
+
+* Article: <https://doi.org/10.3389/fphar.2017.00856>
+
+```{r model}
+mod <- rxode2::rxode2(readModelDb("Lei_2017b_marbofloxacin_pkpd_index"))
+```
+
+# Population
+
+Eight healthy pigs (four male, four female) received marbofloxacin 8 mg/kg
+orally and, after a two-week washout, 8 mg/kg intravenously. Serum was sampled
+from 0.25 to 72 h after each dose. The paper gives two descriptions of the
+animals: 15-20 kg and 8-10 weeks old (Animals and Treatment) and 16-20 kg and
+5-6 weeks old (Animal Study). After the oral dose the serum Cmax was
+6.28 ug/mL at 0.75 h, AUC0-24h was 60.30 ug*h/mL and the bioavailability was
+94.21% (Table 1). Marbofloxacin was 92% unbound in serum.
+
+*S. suis* HB2 is a virulent serotype 2 pig isolate. Its marbofloxacin MIC is
+1 ug/mL in tryptone soya broth and 2 ug/mL in pig serum, which equals the
+MIC90 of 134 clinical isolates collected from Chinese pigs in 2016-2017
+(Figure 1). In the ex vivo time-kill assay 10^6 CFU/mL of HB2 were cultivated
+in each serum sample for 24 h (Figure 3B). The model takes no animal
+covariates, so no virtual cohort is needed; every simulation below is a
+deterministic typical-value solve.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Sigmoid Emax equation as printed | `E = Emax*(1 - C^N/(C^N + EC50^N))` | Equation 1 |
+| Sigmoid Emax equation as fitted | `E = Emax - (Emax - E0)*C^N/(C^N + EC50^N)` | Table 3 targets, Figure 6 |
+| Paper's Emax (drug-free change) -> `e0` | 1.67 log10 CFU/mL | Table 3 |
+| Lower plateau E0 -> `emax` | -6.66 log10 CFU/mL (back-solved) | Table 3 targets; Figure 6 |
+| EC50 | 33.82 h | Table 3 |
+| N (Hill coefficient) | 4.70 | Table 3 |
+| Targets for E = 0 / -3 / -4 | 25.23 / 35.64 / 39.71 h | Table 3 |
+| MIC of HB2 in serum (`mic`) | 2 ug/mL | Results, MIC/MBC/MPC section; Table 2 ratios |
+| Ex vivo inoculum (`log10_cfu0`) | 10^6 CFU/mL | Methods, killing-time curves ex vivo |
+| Ex vivo exposure `AUC_MARBOFLOXACIN` | 24 h x sample concentration | Equation 1 definition of C; Figure 6 x range |
+| Serum NCA, oral | Cmax 6.28 ug/mL, AUC0-24h 60.30 ug*h/mL, Clb 0.104 L/h, F 94.21% | Table 1 |
+| Unbound fraction | 92 +/- 4.3% | Results, PK analysis |
+| In vivo AUC0-24h/MIC | 30.06 h | Table 2 |
+| Dose equation | `Dose = (AUC/MIC) x MIC90 x CL / (fu x F)` | Methods, Dose Estimations |
+| MIC90 of 134 isolates | 2 ug/mL | Results, MIC distribution |
+| Predicted daily doses | 5.88 / 8.34 / 9.36 (50%), 8.16 / 11.31 / 12.35 (90%) mg/kg | Table 4, Figure 7 |
+
+# The lower plateau of the effect curve
+
+Equation 1 is printed as `E = Emax*(1 - C^N/(C^N + EC50^N))`. That curve falls
+from Emax at zero exposure to 0 at saturation, so it can never produce the
+net kill (E = -3 and -4) that Table 3 reports targets for, nor the curve of
+Figure 6, which falls from about +1.5 to about -7. The model WinNonlin fitted
+is the inhibitory sigmoid form with a lower plateau E0, which is not printed.
+With the printed Emax, EC50 and N fixed, each Table 3 target is one equation in
+that single unknown:
+
+```{r plateau}
+e0_paper <- 1.67
+ec50 <- 33.82
+hill <- 4.70
+tab3 <- data.frame(E = c(0, -3, -4), target = c(25.23, 35.64, 39.71))
+frac <- tab3$target^hill / (tab3$target^hill + ec50^hill)
+tab3$plateau <- e0_paper - (e0_paper - tab3$E) / frac
+plateau_ls <- sum(frac * (tab3$E - e0_paper * (1 - frac))) / sum(frac^2)
+tab3 |>
+  dplyr::mutate(plateau = round(plateau, 3)) |>
+  dplyr::rename(
+    "Target E (log10 CFU/mL)" = E,
+    "Published AUC0-24h/MIC (h)" = target,
+    "Lower plateau implied (log10 CFU/mL)" = plateau
+  ) |>
+  knitr::kable(caption = "Lower plateau of the sigmoid model implied by each Table 3 target.")
+round(plateau_ls, 3)
+stopifnot(
+  # Three independent targets agree on one plateau to within 0.05 log10,
+  # so the targets were computed from a single curve with this plateau.
+  diff(range(tab3$plateau)) < 0.06,
+  abs(plateau_ls - (-6.66)) < 0.005
+)
+```
+
+The three targets agree on a plateau of -6.62 to -6.67; the least-squares
+value, -6.66, is packaged as the fixed `emax`.
+
+# Table 3 target indices
+
+The packaged model is solved over a fine grid of exposures and the 24 h change
+is interpolated at each Table 3 target level.
+
+```{r targets}
+mic <- 2
+cfu0 <- 1e6
+grid_aucmic <- exp(seq(log(1), log(1000), length.out = 800))
+ex_events <- function(aucmic) {
+  data.frame(
+    id = seq_along(aucmic), time = 24, evid = 0, amt = 0, cmt = "bact",
+    AUC_MARBOFLOXACIN = aucmic * mic
+  )
+}
+sim_grid <- rxode2::rxSolve(mod, ex_events(grid_aucmic), returnType = "data.frame")
+# The 24 h change is read from the bacterial state itself; the `log_cfu`
+# output adds a 1 CFU/mL floor that biases it near the maximal kill.
+dE <- log10(sim_grid$bact) - log10(cfu0)
+
+targets <- data.frame(
+  E = c(0, -3, -4),
+  published = c(25.23, 35.64, 39.71)
+) |>
+  dplyr::mutate(
+    model = approx(dE, grid_aucmic, xout = E)$y,
+    pct_diff = 100 * (model - published) / published
+  )
+targets |>
+  dplyr::mutate(model = round(model, 2), pct_diff = round(pct_diff, 2)) |>
+  dplyr::rename(
+    "Target E (log10 CFU/mL)" = E,
+    "Published AUC0-24h/MIC (h)" = published,
+    "Model AUC0-24h/MIC (h)" = model,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Table 3 target indices, published versus solved from the packaged model.")
+```
+
+```{r targets-check}
+stopifnot(
+  # The plateau was solved from these targets, so they must come back;
+  # the residual is the rounding of the printed parameters.
+  all(abs(targets$pct_diff) < 0.5)
+)
+```
+
+# Ex vivo ODE versus the closed-form equation
+
+The model integrates the bacterial density so that its log10 changes by exactly
+the sigmoid value over 24 h. Both sides use the same parameters, so the
+difference is pure numerical error and is held to a tight bound.
+
+```{r ode-check}
+closed_form <- function(x, top = 1.67, bottom = -6.66, c50 = 33.82, n = 4.70) {
+  top - (top - bottom) * x^n / (x^n + c50^n)
+}
+stopifnot(
+  all(abs(dE - closed_form(grid_aucmic)) < 1e-3),
+  # Drug-free control and saturation.
+  abs(closed_form(0) - 1.67) < 1e-12,
+  abs(dE[length(dE)] - (-6.66)) < 1e-2
+)
+```
+
+# Effect curve (replicates Figure 6)
+
+Figure 6 is a small raster image. Its drawn curve was digitised by the
+maintainers (the blue pixels of each column, mapped through the axis ticks)
+and a sigmoid was fitted to the trace: Emax 1.35, lower plateau -7.04,
+EC50 33.81 h and N 4.72. EC50 and N match Table 3 to within 0.3%; the two
+plateaus do not, which is discussed below.
+
+```{r fig6, fig.cap = "Replicates Figure 6 of Lei 2017b: 24 h change in S. suis HB2 count versus ex vivo AUC0-24h/MIC. Solid: packaged model (Table 3 parameters with the back-solved plateau). Dashed: sigmoid fitted to the digitised Figure 6 curve. Points: Table 3 targets."}
+drawn <- c(top = 1.35, bottom = -7.04, c50 = 33.81, n = 4.72)
+curves <- data.frame(aucmic = grid_aucmic, model = dE) |>
+  dplyr::filter(aucmic <= 80) |>
+  dplyr::mutate(drawn = closed_form(aucmic, drawn[["top"]], drawn[["bottom"]], drawn[["c50"]], drawn[["n"]]))
+ggplot(curves, aes(aucmic)) +
+  geom_line(aes(y = model), linewidth = 1, colour = "navy") +
+  geom_line(aes(y = drawn), linetype = "dashed", colour = "grey30") +
+  geom_hline(yintercept = c(0, -3, -4), linetype = "dotted", colour = "grey50") +
+  geom_point(data = targets, aes(published, E), colour = "firebrick", size = 2.5) +
+  labs(x = "AUC0-24h/MIC (h)", y = "Change in log10 CFU/mL over 24 h") +
+  theme_bw()
+```
+
+```{r fig6-check}
+stopifnot(
+  # The digitised curve and Table 3 share the midpoint and steepness.
+  abs(drawn[["c50"]] / 33.82 - 1) < 0.01,
+  abs(drawn[["n"]] / 4.70 - 1) < 0.01,
+  # Largest index plotted in Figure 6 (about 75 h) is the mean serum Cmax.
+  abs(6.28 * 24 / mic - 75.4) < 0.1
+)
+```
+
+The packaged curve runs about 0.3 log10 above the drawn one on the drug-free
+plateau and 0.4 log10 above it at saturation, while crossing the half-way
+point at the same index. Using the drawn plateaus would move the Table 3
+targets 1-3% lower (24.90 / 34.88 / 38.62 h with Table 3 Emax and the drawn
+lower plateau), so the paper's targets and doses were not computed from the
+drawn curve.
+
+# Exposure after the 8 mg/kg oral dose
+
+Table 2 integrates the in vivo serum AUC0-24h with the serum MIC to give an
+AUC0-24h/MIC of 30.06 h (60.30 / 2 = 30.15 from the Table 1 mean). The paper
+concludes that the 8 mg/kg dose falls short of a bactericidal effect. The
+model places that exposure at about a 1.4 log10 kill, between the
+bacteriostatic (0) and bactericidal (-3) levels.
+
+```{r in-vivo-index}
+sim_iv <- rxode2::rxSolve(
+  mod,
+  data.frame(id = 1, time = 24, evid = 0, amt = 0, cmt = "bact", AUC_MARBOFLOXACIN = 60.12),
+  returnType = "data.frame"
+)
+change_iv <- log10(sim_iv$bact) - log10(cfu0)
+round(change_iv, 2)
+stopifnot(
+  abs(60.30 / mic - 30.06) < 0.1,
+  change_iv < -1.2, change_iv > -1.6
+)
+```
+
+# Predicted daily doses (Table 4)
+
+The dose equation `Dose = (AUC/MIC) x MIC90 x CL / (fu x F)` was evaluated with
+MIC90 = 2 ug/mL (Figure 1), the oral clearance Clb = 0.104 L/h per kg body
+weight (Table 1), fu = 0.92 and F = 0.9421. Evaluated at the mean inputs it
+gives doses 1.8-3% above the Table 4 50% column. Table 4 is the median and 90th
+percentile of a Crystal Ball Monte Carlo (Figure 7 shows the dose
+histograms). The paper does not state which inputs were sampled; drawing the
+target, Clb and fu from normal distributions with their printed SDs (Table 3,
+Table 1 and the protein-binding result) reproduces Table 4 closely. Base R's
+random number generator is used here, so the draw is the same on every
+machine.
+
+```{r doses}
+mic90 <- 2
+clb <- 0.104
+fu <- 0.92
+f_oral <- 0.9421
+model_targets <- targets$model
+target_sd <- c(4.25, 4.85, 6.45)
+set.seed(20171124)
+n_mc <- 1e5
+mc <- lapply(seq_along(model_targets), function(i) {
+  dose <- rnorm(n_mc, model_targets[i], target_sd[i]) * mic90 *
+    rnorm(n_mc, clb, 0.02) / (rnorm(n_mc, fu, 0.043) * f_oral)
+  stats::quantile(dose, c(0.5, 0.9), names = FALSE)
+})
+doses <- data.frame(
+  endpoint = c("Bacteriostatic (E = 0)", "Bactericidal (E = -3)", "Elimination (E = -4)"),
+  at_mean = model_targets * mic90 * clb / (fu * f_oral),
+  mc50 = vapply(mc, `[`, numeric(1), 1),
+  pub50 = c(5.88, 8.34, 9.36),
+  mc90 = vapply(mc, `[`, numeric(1), 2),
+  pub90 = c(8.16, 11.31, 12.35)
+) |>
+  dplyr::mutate(
+    pct50 = 100 * (mc50 - pub50) / pub50,
+    pct90 = 100 * (mc90 - pub90) / pub90
+  )
+doses |>
+  dplyr::mutate(dplyr::across(c(at_mean, mc50, mc90, pct50, pct90), \(x) round(x, 2))) |>
+  dplyr::select(endpoint, at_mean, pub50, mc50, pct50, pub90, mc90, pct90) |>
+  dplyr::rename(
+    "Endpoint" = endpoint,
+    "Dose at mean inputs" = at_mean,
+    "Monte Carlo 50%" = mc50, "Table 4 50%" = pub50, "Difference 50% (%)" = pct50,
+    "Monte Carlo 90%" = mc90, "Table 4 90%" = pub90, "Difference 90% (%)" = pct90
+  ) |>
+  knitr::kable(caption = "Table 4 daily doses (mg/kg) versus the dose equation driven by the model-solved targets.")
+```
+
+```{r doses-check}
+stopifnot(
+  # Mean inputs sit 1.8-3% above the Monte Carlo medians of Table 4.
+  all(doses$at_mean / doses$pub50 > 1.01 & doses$at_mean / doses$pub50 < 1.04),
+  # The Monte Carlo reproduces the medians and the 90th percentiles; a
+  # mis-read MIC90 (1 instead of 2) would halve every dose.
+  all(abs(doses$pct50) < 2.5),
+  all(abs(doses$pct90) < 5)
+)
+```
+
+# PKNCA
+
+There is no PKNCA section. The packaged model has no pharmacokinetic state: the
+paper reports only a non-compartmental analysis of the serum concentrations
+(Table 1) and no structural PK model, so there is no simulated
+concentration-time profile to analyse. The exposure that drives the model is
+supplied as the `AUC_MARBOFLOXACIN` covariate.
+
+# Assumptions and deviations
+
+* **Equation 1 and the lower plateau.** Equation 1 is printed without its lower
+  plateau, which makes the Table 3 net-kill targets unreachable. The model uses
+  the inhibitory sigmoid form with the plateau E0 back-solved from the three
+  Table 3 targets at the printed Emax, EC50 and N. The three targets agree to
+  within 0.05 log10 (-6.62, -6.65, -6.67) and the least-squares value -6.66 is
+  fixed in the model. It is not a published estimate.
+* **Emax and E0 naming.** The paper's Emax is the drug-free change (+1.67,
+  growth), and the curve falls with exposure. The model maps the paper's Emax
+  onto the canonical `e0` and the lower plateau onto the canonical `emax`. No
+  printed value is changed.
+* **Figure 6 versus Table 3.** A sigmoid fitted to the digitised Figure 6 curve
+  has the Table 3 EC50 and N but plateaus of about +1.35 and -7.04 rather than
+  +1.67 and -6.66. The Table 3 targets and the Table 4 doses follow the Table 3
+  parameters, not the drawn curve, so the model packages the Table 3
+  parameters. The drawn plateaus are shown for comparison only.
+* **No PK model.** Lei 2017b analysed the pharmacokinetics non-compartmentally
+  only and reports no volume or absorption rate. The intravenous clearance and
+  rate constant (0.085 L/h/kg and 0.046 1/h) imply an apparent volume of about
+  1.85 L/kg, and 8 mg/kg x 0.94 spread over that volume is about 4.1 ug/mL,
+  below the observed oral Cmax of 6.28 ug/mL even with instantaneous
+  absorption, so a one-compartment model cannot be reconstructed from Table 1.
+  The exposure is therefore supplied as a covariate, as in the paper's own
+  PK/PD integration.
+* **Clearance units.** Table 1 reports Clb in L/h. The Table 4 doses come out
+  in mg/kg only if it is per kg body weight, and 8 mg/kg / 88.94 ug*h/mL =
+  0.090 L/h/kg is of the same size, so per kg is assumed.
+* **MIC90.** The Abstract gives an MIC90 of 1 ug/mL for the 134 isolates; the
+  Results give MIC50 1 and MIC90 2 ug/mL. The Table 4 doses require MIC90 =
+  2 ug/mL (with 1 ug/mL every dose halves), so 2 is used in the dose check.
+  MIC90 does not enter the model.
+* **MIC of HB2.** The model uses the serum MIC, 2 ug/mL, because the index is
+  formed in serum; the Table 2 ratios (Cmax/MIC = 6.28/2 = 3.14,
+  AUC0-24h/MIC = 30.06, close to 60.30/2) and the Figure 6 x range require it.
+  The in vitro killing curves were set up on the broth MIC of 1 ug/mL.
+* **Bioavailability.** Results and Table 1 give 94.21%, which equals the ratio
+  of the oral and intravenous AUC0-inf (88.94 / 94.40); the Discussion gives
+  97.74%. The Table 1 value is used in the dose check.
+* **Animals.** The two Methods paragraphs describe the same eight pigs with
+  different weight and age ranges (15-20 kg, 8-10 weeks versus 16-20 kg,
+  5-6 weeks). Both are recorded; neither enters the model.
+* **Ex vivo inoculum.** The ex vivo time-kill design states 10^6 CFU/mL; that
+  value is used for `log10_cfu0`. The predicted 24 h change does not depend on
+  it.
+* **Variability.** Table 3 reports mean +/- SD of the estimates; no
+  between-animal variance or residual error was estimated, so the model has no
+  random effects and `addSd` is fixed at 0. The Monte Carlo check above uses
+  the printed SDs outside the model.
+* **Errata.** No erratum or correction to Lei 2017b was found, and the article
+  has no supplementary material beyond its figures (Europe PMC, checked
+  2026-11-25).
