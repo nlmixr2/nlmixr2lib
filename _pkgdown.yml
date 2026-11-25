@@ -8270,6 +8270,8 @@ navbar:
         href: articles/Liang_2024_rituximab.html
       - text: "Rituximab (Lioger 2017)"
         href: articles/Lioger_2017_rituximab.html
+      - text: "Rituximab (Pan 2019)"
+        href: articles/Pan_2019_rituximab.html
       - text: "Rituximab (Rozman 2017)"
         href: articles/Rozman_2017_rituximab.html
       - text: "Rituximab (Zhou 2026)"
@@ -12908,6 +12910,7 @@ articles:
   - articles/Palmer_2025_moxifloxacin
   - articles/Pan_2015_Hu714MuXHu_cyno
   - articles/Pan_2019_fentanyl_lumping
+  - articles/Pan_2019_rituximab
   - articles/Pan_2026_adalimumab
   - articles/Panday_2025_sert_tremor_mbma
   - articles/Pandey_2023_hydroxyurea

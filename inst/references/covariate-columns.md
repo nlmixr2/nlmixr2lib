@@ -15859,6 +15859,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Rancic_2024_meropenem.R` (additive shift `+1.28` L/h on meropenem clearance in critically ill adults; Rancic 2024 Table 3, 7 of 101 patients exposed).
 - **Notes:** Member of the `CONMED_<INN>` binary concomitant-medication family, and the direct sibling of `CONMED_VANCOMYCIN`: both are reserve antibiotics that Rancic 2024 retained as additive shifts on meropenem clearance, and the paper's own reading is that neither is a mechanistic drug-drug interaction -- they mark the augmented renal clearance of patients sick enough to need combination reserve therapy (Discussion). **The two indicators are not mutually exclusive**: 3 of the 101 patients received both, so a dataset must be able to set both to 1 and let the additive shifts sum. Named for the administered prodrug rather than for colistin because that is what is given intravenously and what a prescribing record captures; a future paper that instead flags *oral* or *inhaled* colistimethate, or that separates polymyxin B, should register its own name rather than overloading this one (`Ma_2026_colistinSulfate.R` and `Jacobs_2016_colistin.R` model colistin as the analyte, not as a comedication, and a model must never use this indicator for its own analyte). Distinct from the class-level `CONMED_ABX` composite, which is the right column only when a paper does not resolve individual agents.
 
+### CONMED_CYCLOPHOSPHAMIDE (**canonical for concomitant cyclophosphamide coadministration indicator**)
+- **Description:** 1 = the subject was receiving cyclophosphamide alongside the modelled drug, 0 = not. Cyclophosphamide is an alkylating immunosuppressant used with B-cell-depleting antibodies in paediatric and adult autoimmune disease (lupus, ANCA-associated vasculitis).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no concomitant cyclophosphamide).
+- **Source aliases:**
+  - `CTX` -- Pan 2019 NONMEM `$INPUT` / `$PK` (`IF (CTX .EQ. 1) CCOV = THETA(7)`); same binary, no transformation.
+- **Example models:** `Pan_2019_rituximab.R` (K-PD B-cell model; Emax multiplied by `1 + 0.381 * CONMED_CYCLOPHOSPHAMIDE`; 43.6% of 39 children received it).
+- **Notes:** Auto-approved `CONMED_<INN>` family member. Specific scope until a second model uses it. Distinct from the class composite `CONMED_ALKYLATOR` and from the `TRT_CYCLOPHOSPHAMIDE_*` regimen-backbone indicators, in which the cytotoxic regimen is itself the modelled treatment rather than a comedication.
+
 ### CONMED_CSA (**canonical for concomitant cyclosporine (CsA) coadministration indicator**)
 - **Description:** 1 = subject is receiving cyclosporine (CsA) as the concomitant calcineurin inhibitor at the PK observation; 0 = no concomitant cyclosporine (in mycophenolate mofetil studies the typical alternative comparator is tacrolimus). Cyclosporine inhibits the MRP2 (ABCC2) biliary efflux transporter, which decreases biliary excretion of MPAG into the gut lumen and therefore decreases enterohepatic recirculation (EHC) of mycophenolic acid; cyclosporine also displaces mycophenolic acid from plasma protein binding sites. Time-varying when cyclosporine starts / stops within the observation window; time-fixed when the source paper analyses subjects randomized to one CNI regimen for the entire study window (e.g., de Winter 2009).
 - **Units:** (binary)
@@ -16804,8 +16815,8 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (no concomitant methotrexate).
-- **Source aliases:** `MTX` -- used in `Rosario_2015_vedolizumab.R`.
-- **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 0.983^CONMED_MTX`).
+- **Source aliases:** `MTX` -- used in `Rosario_2015_vedolizumab.R` and `Pan_2019_rituximab.R`.
+- **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 0.983^CONMED_MTX`), `Pan_2019_rituximab.R` (K-PD B-cell model; Emax multiplied by `1 + 0.657 * CONMED_MTX`).
 - **Notes:** Immunomodulator used especially in CD maintenance. Generic concomitant-MTX indicator that may also appear in non-IBD models; start as scope: general.
 
 ### CONMED_NSAID (**canonical for concomitant NSAID use**)
