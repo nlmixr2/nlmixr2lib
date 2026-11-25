@@ -1,0 +1,291 @@
+---
+title: "Cyadox PK/PD against Clostridium perfringens in swine (Yan 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cyadox PK/PD against Clostridium perfringens in swine (Yan 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Yan 2017 sets a dose of **cyadox**, a quinoxaline-1,4-dioxide antibacterial
+developed for veterinary use, against *Clostridium perfringens*, the cause of
+necrotic enteritis in pigs. Free cyadox was sampled from the ileum lumen of
+pigs through implanted ultrafiltration probes after a single 30 mg/kg oral dose,
+and each ileum-fluid sample was then challenged ex vivo with the pathogenic
+strain CPFK122995. The 24 h change in bacterial count was related to the
+PK/PD index AUC0-24h/MIC with an inhibitory sigmoid Emax model (equation (1),
+fitted in WinNonlin 5.2).
+
+| Model file | What it is | Source |
+|---|---|---|
+| `Yan_2017_cyadox_pkpd_index` | Ex vivo inhibitory sigmoid Emax model, 24 h change in log10 CFU/mL vs AUC0-24h/MIC, ileum fluid | Equation (1), Table 4 |
+
+The pharmacokinetics in the paper are non-compartmental only (Table 2), so no
+PK model file is packaged; see *Assumptions and deviations*.
+
+* Article: <https://doi.org/10.1038/s41598-017-03970-9>
+
+```{r model}
+mod <- rxode2::rxode2(readModelDb("Yan_2017_cyadox_pkpd_index"))
+```
+
+# Population
+
+Six healthy castrated crossbred pigs (Duroc x Large White x Landrace,
+15-20 kg) had an ultrafiltration probe implanted in the ileum about 30 cm
+proximal to the ileocaecal orifice and were dosed orally with cyadox 30 mg/kg
+48 h after surgery. Ileum fluid and plasma were sampled from 0 to 24 h. The
+free ileum-fluid concentrations peaked at 23.66 ug/mL at 1.96 h and were
+roughly 500-fold higher than the plasma concentrations (Table 2).
+
+*C. perfringens* CPFK122995 is a pathogenic pig isolate whose cyadox MIC,
+2 ug/mL in both Brucella broth and ileum fluid, equals the MIC50 of 60 clinical
+isolates from Guangdong (Figure 2). In the ex vivo time-kill assay about
+10^6 CFU/mL of CPFK122995 were incubated anaerobically in each ileum-fluid
+sample and counted up to 24 h (limit of detection 10 CFU/mL). The model takes
+no animal covariates, so no virtual cohort is needed; every simulation below is
+a deterministic typical-value solve.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Sigmoid Emax equation | `E = Emax - (Emax - E0)*C^N/(C^N + EC50^N)` | Equation (1) |
+| Paper's Emax (drug-free change) -> `e0` | 2.71 log10 CFU/mL | Table 4 |
+| Paper's E0 (maximal kill) -> `emax` | -4.61 log10 CFU/mL | Table 4 |
+| Emax - E0 (consistency row) | 7.32 log10 CFU/mL | Table 4 |
+| EC50 | 30.07 h | Table 4 |
+| N (Hill coefficient) | 4.62 | Table 4 |
+| Targets for E = 0 / -3 / -4 | 26.72 / 39.54 / 50.69 h | Table 4 |
+| MIC of CPFK122995 (`mic`) | 2 ug/mL | Results, MIC/MBC/PAE section |
+| Ex vivo inoculum (`log10_cfu0`) | 10^6 CFU/mL | Methods, time-kill study |
+| Ex vivo exposure `AUC_CYADOX` | 24 h x sample concentration | Equation (1) definition of C |
+| Ileum-fluid NCA | Cmax 23.66 ug/mL, AUC0-inf 112.35 h*ug/mL | Table 2 |
+| MIC distribution of 60 isolates | 0.5-8 ug/mL | Figure 2 |
+| Dose equation | `Dose = CL x (AUC/MIC)BP x MIC / (F x fu)` | Equation (2) |
+| Predicted daily doses | 13.2 / 19.70 / 25.46 (50%), 29.3 / 42.56 / 54.50 (90%) mg/kg | Table 5 |
+
+# Table 4 target indices
+
+Table 4 prints the AUC0-24h/MIC that gives no net change (E = 0), a 3-log10
+kill (E = -3) and a 4-log10 kill (E = -4). These are an answer key for the
+equation form and for which Table 4 row is the drug-free effect. The packaged
+model is solved over a fine grid of exposures and the 24 h change is
+interpolated at each target.
+
+```{r targets}
+mic <- 2
+cfu0 <- 1e6
+grid_aucmic <- exp(seq(log(1), log(1000), length.out = 800))
+ex_events <- function(aucmic) {
+  data.frame(
+    id = seq_along(aucmic), time = 24, evid = 0, amt = 0, cmt = "bact",
+    AUC_CYADOX = aucmic * mic
+  )
+}
+sim_grid <- rxode2::rxSolve(mod, ex_events(grid_aucmic), returnType = "data.frame")
+# The 24 h change is read from the bacterial state itself; the `log_cfu`
+# output adds a 1 CFU/mL floor that biases it by up to 0.02 log10 near
+# the maximal kill.
+dE <- log10(sim_grid$bact) - log10(cfu0)
+
+targets <- data.frame(
+  E = c(0, -3, -4),
+  published = c(26.72, 39.54, 50.69)
+) |>
+  dplyr::mutate(
+    model = approx(dE, grid_aucmic, xout = E)$y,
+    pct_diff = 100 * (model - published) / published
+  )
+targets |>
+  dplyr::mutate(model = round(model, 2), pct_diff = round(pct_diff, 2)) |>
+  dplyr::rename(
+    "Target E (log10 CFU/mL)" = E,
+    "Published AUC0-24h/MIC (h)" = published,
+    "Model AUC0-24h/MIC (h)" = model,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Table 4 target indices, published versus solved from the packaged model.")
+```
+
+```{r targets-check}
+stopifnot(
+  # All three printed targets reproduce to better than 0.5%.
+  all(abs(targets$pct_diff) < 0.5)
+)
+```
+
+All three targets reproduce to within 0.4%. Reading the paper's Emax and E0 the
+conventional way round (Emax as the maximal kill) would make the curve rise from
+-4.61 to +2.71 with exposure, so the bacterial kill would weaken as the drug
+concentration increased and the elimination target would fall at the lowest
+index rather than the highest.
+
+# Ex vivo ODE versus the closed-form equation
+
+The model integrates the bacterial density so that its log10 changes by exactly
+the equation (1) value over 24 h. Both sides use the same parameters, so the
+difference is pure numerical error and is held to a tight bound.
+
+```{r ode-check}
+closed_form <- function(x) {
+  2.71 - (2.71 - (-4.61)) * x^4.62 / (x^4.62 + 30.07^4.62)
+}
+stopifnot(
+  all(abs(dE - closed_form(grid_aucmic)) < 1e-3),
+  # Drug-free control and saturation.
+  abs(closed_form(0) - 2.71) < 1e-12,
+  abs(dE[length(dE)] - (-4.61)) < 1e-2
+)
+```
+
+# Effect curve (replicates Figure 6)
+
+```{r fig6, fig.cap = "Replicates Figure 6 of Yan 2017: 24 h change in C. perfringens CPFK122995 count versus ex vivo AUC0-24h/MIC. Dashed lines mark the bacteriostatic (0), bactericidal (-3) and elimination (-4) levels; points mark the Table 4 targets."}
+data.frame(aucmic = grid_aucmic, change = dE) |>
+  dplyr::filter(aucmic <= 300) |>
+  ggplot(aes(aucmic, change)) +
+  geom_line(linewidth = 1, colour = "navy") +
+  geom_hline(yintercept = c(0, -3, -4), linetype = "dashed", colour = "grey50") +
+  geom_point(data = targets, aes(published, E), colour = "firebrick", size = 2.5) +
+  labs(x = "AUC0-24h/MIC (h)", y = "Change in log10 CFU/mL over 24 h") +
+  theme_bw()
+```
+
+The curve starts at +2.71 for drug-free ileum fluid and plateaus at -4.61, as
+in Figure 6. The largest index plotted in Figure 6, about 285 h, is the peak
+ileum-fluid sample: 23.66 ug/mL x 24 h / 2 ug/mL = 283.9 h.
+
+# Exposure after the 30 mg/kg oral dose
+
+Table 3 integrates the in vivo ileum-fluid AUC0-24h (106.40 h*ug/mL in
+Table 2) with the MIC to give an AUC0-24h/MIC of 66.39 h. The model places that
+exposure on the plateau, beyond the elimination target, which is the paper's
+basis for concluding that 30 mg/kg is efficacious against strains with an MIC of
+2 ug/mL.
+
+```{r in-vivo-index}
+sim_iv <- rxode2::rxSolve(
+  mod,
+  data.frame(id = 1, time = 24, evid = 0, amt = 0, cmt = "bact", AUC_CYADOX = 66.39 * mic),
+  returnType = "data.frame"
+)
+change_iv <- log10(sim_iv$bact) - log10(cfu0)
+round(change_iv, 2)
+stopifnot(change_iv < -4)
+```
+
+# Predicted daily doses (Table 5)
+
+Equation (2), `Dose = CL x (AUC/MIC)BP x MIC / (F x fu)` with F = fu = 1, was
+combined in a Monte Carlo simulation with the apparent clearance of the six
+pigs and the MIC distribution of the 60 isolates. The paper prints the mean
+apparent clearance (0.27 L/kg/h, which equals 30 mg/kg / 112.35 h*ug/mL) but not
+its spread, so the clearance is taken here as log-normal with the coefficient of
+variation of AUC0-inf in Table 2 (14.07 / 112.35 = 12.5%). The MIC distribution
+is read from Figure 2 as 2, 11, 25, 19 and 3 isolates at 0.5, 1, 2, 4 and
+8 ug/mL; those counts reproduce the plotted percentages (3.3, 18.3, 41.7, 31.7
+and 5.0%), the MIC50 of 2 and the MIC90 of 4 ug/mL. The dose that attains a
+target in a given fraction of the population is then a quantile of the
+required-dose distribution, computed exactly rather than by sampling.
+
+```{r doses}
+mic_tab <- data.frame(mic = c(0.5, 1, 2, 4, 8), n = c(2, 11, 25, 19, 3))
+stopifnot(sum(mic_tab$n) == 60)
+auc_m <- 112.35
+auc_sd <- 14.07
+sdlog <- sqrt(log(1 + (auc_sd / auc_m)^2))
+mu_cl <- log(30) - (log(auc_m) - sdlog^2 / 2)
+
+tar_dose <- function(target, p) {
+  cdf <- function(d) {
+    sum(mic_tab$n / 60 * pnorm((log(d / (target * mic_tab$mic)) - mu_cl) / sdlog)) - p
+  }
+  uniroot(cdf, c(0.1, 1000), tol = 1e-10)$root
+}
+doses <- expand.grid(endpoint = c("Bacteriostatic (E = 0)", "Bactericidal (E = -3)", "Elimination (E = -4)"), tar = c(0.5, 0.9)) |>
+  dplyr::mutate(
+    target = rep(targets$published, 2),
+    published = c(13.2, 19.70, 25.46, 29.3, 42.56, 54.50),
+    model = mapply(tar_dose, target, tar),
+    ratio = published / model
+  )
+doses |>
+  dplyr::mutate(tar = paste0(100 * tar, "%"), model = round(model, 2), ratio = round(ratio, 3)) |>
+  dplyr::select(endpoint, tar, published, model, ratio) |>
+  dplyr::rename(
+    "Endpoint" = endpoint, "Target attainment" = tar,
+    "Table 5 dose (mg/kg/day)" = published, "Recomputed dose (mg/kg/day)" = model,
+    "Published / recomputed" = ratio
+  ) |>
+  knitr::kable(caption = "Table 5 daily doses versus doses recomputed from equation (2), Table 2 and Figure 2.")
+```
+
+```{r doses-check}
+stopifnot(
+  # The six published doses sit a near-constant factor below the recomputed
+  # ones, so the targets and the MIC distribution are consistent with Table 5
+  # and the gap lies in the clearance input (see Assumptions and deviations).
+  diff(range(doses$ratio)) < 0.05,
+  all(doses$ratio > 0.83 & doses$ratio < 0.93)
+)
+```
+
+Every Table 5 dose is 0.87-0.90 times the recomputed value. Because the factor
+is the same for all three endpoints and both attainment levels, it does not come
+from the PK/PD targets, which enter the dose proportionally, nor from the MIC
+distribution, which would distort the 50% and 90% columns differently. It
+corresponds to a central apparent clearance of about 0.24 L/kg/h instead of the
+0.27 L/kg/h reported in the Abstract; the individual clearances the paper used
+are not printed, so this is noted and not adjusted.
+
+# PKNCA
+
+There is no PKNCA section. The packaged model has no pharmacokinetic state: the
+paper reports only a non-compartmental analysis of the ileum-fluid and plasma
+concentrations (Table 2) and no structural PK model, so there is no simulated
+concentration-time profile to analyse. The exposure that drives the model is
+supplied as the `AUC_CYADOX` covariate.
+
+# Assumptions and deviations
+
+* **Emax and E0 naming.** The Methods prose describes Emax as the maximal drug
+  effect and E0 as the effect in drug-free ileum fluid. Equation (1), however,
+  returns Emax at zero exposure, Table 4 gives Emax = +2.71 (net growth) and
+  E0 = -4.61 (net kill), Figure 6 starts near +2.7 and plateaus near -4.6, and
+  the three Table 4 targets reproduce only under that reading. The model
+  therefore maps the paper's Emax onto the canonical `e0` and the paper's E0
+  onto the canonical `emax`. No value is changed.
+* **No PK model.** Yan 2017 analysed the pharmacokinetics non-compartmentally
+  only. A one-compartment model with first-order absorption cannot be
+  reconstructed from Table 2: with CL/F = 30 / 112.35 = 0.267 L/kg/h, an
+  elimination rate of ln(2)/5.86 h and an absorption rate solved from
+  Tmax = 1.96 h, it predicts a peak of 10.5 ug/mL against the observed
+  23.66 ug/mL. The exposure is therefore supplied as a covariate, as in the
+  paper's own PK/PD integration.
+* **Ex vivo inoculum.** The ex vivo time-kill curves are stated to follow the
+  in vitro procedure, whose starting inoculum is 10^6 CFU/mL; that value is used
+  for `log10_cfu0`. The predicted 24 h change does not depend on it.
+* **Variability.** Table 4 reports mean +/- SD of the estimates; no
+  between-animal variance or residual error was estimated, so the model has no
+  random effects and `addSd` is fixed at 0.
+* **Clearance spread in the dose check.** The paper does not print the
+  individual or the SD of the apparent clearance used in its Monte Carlo
+  simulation; the dose check above assumes a log-normal clearance with the
+  coefficient of variation of AUC0-inf. The MIC counts are read from Figure 2.
+* **Conclusions versus Table 5.** The Conclusions give 17.90 mg/kg as the
+  bactericidal dose for 50% target attainment; Table 5 and the Results give
+  19.70 mg/kg. The Table 5 value is used above.
+* **Errata.** No erratum or correction to Yan 2017 was found (Europe PMC,
+  checked 2026-11-25).
