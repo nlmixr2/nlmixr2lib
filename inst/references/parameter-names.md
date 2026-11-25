@@ -3645,6 +3645,38 @@ One member was added alongside the Maggs 2026 rifampicin extraction: `fm_desacet
 - **Example models:** `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` (`k30 = 0.325 1/min`) and its `_oral_rawdata_`, `_intranasal_meandata_`, `_intranasal_rawdata_` and `_combined_` siblings.
 - **Notes:** Brain-compartment sibling of `lkeff_elf` / `lkeff_milk` in the `keff_<pool>` family. The founding paper adopts the lumped brain-elimination rate from Stevens et al. (2011), and notes the structure is the parent-metabolite one, in which only the ratio of the influx rate to the brain volume is identifiable unless the blood volume is fixed.
 
+### kinf_liver, keff_liver (**canonical first-order blood-to-liver influx and liver-to-blood efflux rate constants of a PET liver-tissue model**)
+- **Type:** paper-named-param
+- **Role:** Bare first-order rate constants (1 / time) of the reversible exchange between the hepatic blood space and the `liver` tissue state in a PET tissue-kinetics model driven by a measured input function. `kinf_liver` multiplies the tracer AMOUNT in the hepatic blood space (`fvasc_liver * ORGVOL_LIVER * C_in`), so `d/dt(liver) = kinf_liver * xblood - (keff_liver + ...) * liver`; `keff_liver` returns tracer from tissue to blood.
+- **Source aliases:**
+  - `k1`, `k2` -- Hernandez Lozano 2019 Eqs. 4 and 15 and Tables I-IV (the conventional PET K1 / k2 symbols; the registered `k1` is a binding association rate constant, which is why the PET symbol is not reused).
+- **Example models:** `HernandezLozano_2019_erlotinib_3c_aif.R`, `HernandezLozano_2019_erlotinib_3c_dif.R`, `HernandezLozano_2019_erlotinib_4c_aif.R`, `HernandezLozano_2019_erlotinib_4c_dif.R` (scan-condition means; e.g. 4C arterial input, erlotinib-study baseline k1 = 2.391 and k2 = 0.060 1/min).
+- **Notes:** Liver-pool members of the `kinf_<pool>` / `keff_<pool>` family (`kinf_rbc`, `keff_rbc`, `keff_brain`). Because `kinf_liver` acts on the blood AMOUNT rather than on a concentration, the hepatic uptake clearance is `kinf_liver * fvasc_liver * ORGVOL_LIVER` (Hernandez Lozano 2019 Eq. 13 divides it by body weight); a model whose influx acts on a concentration needs its own entry.
+
+### ktr_bile (**canonical first-order transfer rate constant out of a lumped bile-duct state**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) moving tracer or drug out of the bare lumped `bile_transit` state into the downstream biliary compartment (`gallbladder` or a gut lumen): `d/dt(bile_transit) = kbile * liver - ktr_bile * bile_transit`.
+- **Source aliases:**
+  - `k5` -- Hernandez Lozano 2019 Eq. 5-6 and Tables II / IV (intrahepatic bile duct to extrahepatic bile duct / gall bladder).
+- **Example models:** `HernandezLozano_2019_erlotinib_4c_aif.R`, `HernandezLozano_2019_erlotinib_4c_dif.R`.
+- **Notes:** The rate-constant counterpart of the residence time `mtt_bile` (`ktr_bile = 1 / mtt_bile` for a single lumped state); use `ktr_bile` when the source estimates and reports the rate constant, so the published value is carried without inversion. The hepatic efflux clearance of the founding model is `ktr_bile * V_ih` with the intrahepatic bile-duct volume fixed at 0.0032 mL per mL liver (Eq. 14).
+
+### fha, fpv (**canonical hepatic-artery and portal-vein fractions of the liver blood supply**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless fractions of the liver's blood supply delivered by the hepatic artery (`fha`) and the portal vein (`fpv`), used to build a dual input function `C_in = fha * C_HA + fpv * C_PV` for a liver tissue-kinetics model.
+- **Source aliases:**
+  - `f_HA`, `f_PV` -- Hernandez Lozano 2019 Eq. 3 (fixed at 0.25 and 0.75).
+- **Example models:** `HernandezLozano_2019_erlotinib_3c_dif.R`, `HernandezLozano_2019_erlotinib_4c_dif.R`.
+- **Notes:** Fractions of HEPATIC inflow, not of cardiac output; distinct from `fq_<organ>`. The two normally sum to 1, but both are registered because sources print and fix them separately.
+
+### beta_pv (**canonical portal-vein impulse-response parameter of a mathematically derived portal input**)
+- **Type:** paper-named-param
+- **Role:** Parameter (time) of the gut-passage impulse-response function `h(t) = beta_pv / (beta_pv + t)^2` that converts the arterial tracer curve into a portal-vein curve by convolution, `C_PV(t) = integral_0^t h(t - tau) C_HA(tau) dtau` (Winterdahl et al. 2011). Larger values delay and flatten the portal curve.
+- **Source aliases:**
+  - `beta` -- Hernandez Lozano 2019 Eq. 2 and Tables I-IV.
+- **Example models:** `HernandezLozano_2019_erlotinib_3c_dif.R`, `HernandezLozano_2019_erlotinib_4c_dif.R` (estimated per subject; scan-condition means 0.97-1.96 min).
+- **Notes:** Not a mean transit time and not `mtt`: the kernel integrates to 1 but its mean is infinite (the tail decays as `t^-2`). The founding models evaluate the convolution as a 14-term sum-of-exponentials ODE quadrature of the kernel.
+
 ### lvmax_rbc, vmax_rbc (**canonical saturable-influx maximum rate into the red-cell analyte pool**)
 - **Type:** paper-named-param
 - **Role:** Maximum rate (concentration / time, e.g. umol/L/day) of SATURABLE Michaelis-Menten influx from plasma into the intracellular red-cell pool: `d/dt(rbc_<analyte>) = vmax_rbc * Cc / (km_rbc + Cc) - keff_rbc * rbc_<analyte>`.
@@ -4571,6 +4603,15 @@ Vocabulary for permeability-limited whole-body PBPK models, in which each tissue
 - **Role:** Blood flow to the named organ as a fraction of cardiac output, so `qplasma_<organ> = fq_<organ> * (1 - hct) * qc`. One entry per organ; the set covering the organs that drain directly to venous blood is expected to sum to 1. Where an organ has a dual blood supply the arterial share is named explicitly (e.g. `fq_liver_arterial`) and the portal share is derived from the splanchnic organs it collects.
 - **Source aliases:** `% of total cardiac output`
 - **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fvasc_<organ> (**canonical in-vivo vascular (blood) volume fraction of an organ**)
+- **Type:** paper-named-param
+- **Role:** Volume of blood contained in the named organ in vivo, as a fraction of the organ volume (mL blood / mL organ). Weights the blood concentration in an organ-level signal (`C_organ_ROI = fvasc_<organ> * C_blood + tissue / V_organ`) or sets the organ's vascular sub-volume.
+- **Source aliases:**
+  - `Vb` -- Hernandez Lozano 2019 Eqs. 7, 11 and 19 (0.25 mL blood per mL liver).
+  - `vliver`, `vspleen` -- Vasalou 2023 S3 parameter vector.
+- **Example models:** `Vasalou_2023_dendriticNanoparticle_human.R` and its rat / dog / mouse siblings (`fvasc_liver`, `fvasc_spleen`), `HernandezLozano_2019_erlotinib_3c_aif.R`, `HernandezLozano_2019_erlotinib_3c_dif.R`, `HernandezLozano_2019_erlotinib_4c_aif.R`, `HernandezLozano_2019_erlotinib_4c_dif.R` (`fvasc_liver` = 0.25, the blood fraction of the liver PET region of interest).
+- **Notes:** Distinct from `frb_<organ>`, which is the blood REMAINING in an organ after exsanguination (a tissue-harvest correction), and from `fv_<organ>`, which is an organ volume as a fraction of BODY weight.
 
 ### frb_<organ> (**canonical residual blood volume fraction**)
 - **Type:** paper-named-param

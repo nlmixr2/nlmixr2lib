@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhu 2019 ipatasertib exposure-response ([doi:10.1002/psp4.12394](https://doi.org/10.1002/psp4.12394)) -- men with metastatic castration-resistant prostate cancer on abiraterone.
+- Add Hernandez Lozano 2019 [11C]erlotinib hepatobiliary PET models ([doi:10.1208/s12248-019-0323-0](https://doi.org/10.1208/s12248-019-0323-0)) -- healthy volunteers at baseline and after oral erlotinib or i.v. rifampicin.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
