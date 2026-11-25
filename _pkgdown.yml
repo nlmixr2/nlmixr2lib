@@ -2368,6 +2368,8 @@ navbar:
         href: articles/Wang_2019_cpx351.html
       - text: "Daunorubicin liposomal (Hempel 2003)"
         href: articles/Hempel_2003_daunorubicin_liposomal.html
+      - text: "Dcds5017a cyno (Lu 2015)"
+        href: articles/Lu_2015_dcds5017a_cyno.html
       - text: "Decitabine (Han 2015)"
         href: articles/Han_2015_decitabine.html
       - text: "Deferasirox (Sakares 2025)"
@@ -11979,6 +11981,7 @@ articles:
   - articles/Lowe_2009_omalizumab
   - articles/Lu_2014_sglt_qsp
   - articles/Lu_2014_trastuzumabemtansine
+  - articles/Lu_2015_dcds5017a_cyno
   - articles/Lu_2015_tacrolimus
   - articles/Lu_2015_vismodegib
   - articles/Lu_2016_meropenem

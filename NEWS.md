@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Weng 2015 PF-05231023 (long-acting FGF21 analogue) QSP models ([doi:10.1371/journal.pone.0119104](https://doi.org/10.1371/journal.pone.0119104)) -- ob/ob mice (OGTT) and diet-induced obese mice (body weight).
+- Add Lu 2015 anti-CD79b-MMAE antibody-drug conjugate DCDS5017A ([doi:10.1007/s11095-014-1585-y](https://doi.org/10.1007/s11095-014-1585-y)) -- cynomolgus monkeys (DAR-resolved conjugate, total antibody and unconjugated MMAE).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

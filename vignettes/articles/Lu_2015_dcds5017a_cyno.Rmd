@@ -1,0 +1,508 @@
+---
+title: "Anti-CD79b-MMAE ADC DCDS5017A in cynomolgus monkeys (Lu 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Anti-CD79b-MMAE ADC DCDS5017A in cynomolgus monkeys (Lu 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Lu_2015_dcds5017a_cyno"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Lu_2015_dcds5017a_cyno"))$description`
+* Article: <https://doi.org/10.1007/s11095-014-1585-y> (open access, PMC4422865)
+
+The model describes three analytes of an MMAE antibody-drug conjugate (ADC)
+at once: the antibody-conjugated MMAE (acMMAE, the conjugate), the total
+antibody (Tab, every DAR species including DAR0) and unconjugated MMAE. The
+conjugate is resolved into its nine DAR species. Every species shares the
+same two-compartment distribution and the same Michaelis-Menten proteolytic
+degradation; species with n > 0 MMAE also lose one MMAE at a time by
+deconjugation, at a per-MMAE rate constant that falls steeply with DAR
+following a Weibull function. Both catabolic pathways feed unconjugated MMAE,
+each through its own fraction (Fmp for proteolysis, Fmd for deconjugation).
+The MMAE parameters are identified by a separate IV MMAE study in the same
+species.
+
+# Population
+
+Lu 2015 fitted 52 cynomolgus monkeys. Thirty-two received DCDS5017A, the
+cynomolgus cross-reactive anti-CD79b surrogate ADC (mc-vc-PABC-MMAE, average
+DAR about 3.5): single IV doses of 0.3, 1 or 3 mg/kg (4 animals each) and
+3 or 5 mg/kg IV every three weeks for four doses (10 animals each). Twenty
+received unconjugated MMAE IV at 0.03 or 0.063 mg/kg (10 each). The data
+were 447 Tab, 132 acMMAE and 454 unconjugated MMAE concentrations. Body
+weights are not reported; the paper takes 2.5 kg as the typical body weight
+of a cynomolgus monkey. The model has no covariates, so every simulation
+below converts mg/kg doses to nmol at 2.5 kg.
+
+```{r population}
+str(readModelDb("Lu_2015_dcds5017a_cyno")()$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Nine DAR species, two compartments each, shared Vc / Vp / CLd | -- | Methods 'Model Development'; Fig. 4; Eq. 1-6 |
+| Per-species MM proteolysis `Emax * Xn / (Km * Vc + Xn)` | -- | Eq. 1, 3, 5 |
+| Sequential deconjugation `n * KADCn * Xn` from DARn to DARn-1 | -- | Eq. 1, 3, 5 |
+| MMAE two-compartment, input `Fmp * Amp + Fmd * Amd` | -- | Eq. 7, 8 |
+| `Amp = sum n * proteolysis_n`, `Amd = sum n * KADCn * Xn` | -- | Eq. 9, 10 and the text defining Amp and Amd as total MMAE formation |
+| `KADCn = K (kappa / lambda) (x / lambda)^(kappa - 1) exp(-(x / lambda)^kappa)`, `x = 8 - n` | -- | Eq. 11 and following text |
+| `lvmax` (Emax) | 0.0407 nmol/h | Table I (printed unit 1/h; see Assumptions) |
+| `lkm` (Km) | 0.959 nmol/L | Table I |
+| `lvc` (Vc) | 0.0996 L | Table I |
+| `lq` (CLd) | 0.00197 L/h | Table I |
+| `lvp` (Vp) | 0.183 L | Table I |
+| `lkdec_wscale` (lambda) | 1.51 | Table I |
+| `lkdec_wshape` (kappa) | 1.10 | Table I |
+| `kdec_wamp` (K) | 1 1/h, fixed | Text after Eq. 11 |
+| `lfm_proteolysis` (Fmp) | 0.783 | Table I |
+| `lfm_deconjugation` (Fmd) | 0.0242 | Table I |
+| `lcl_mmae` (CLm) | 2.27 L/h | Table I |
+| `lvc_mmae` (Vm) | 1.00 L | Table I |
+| `lq_mmae` (CLmd) | 23.0 L/h | Table I |
+| `lvp_mmae` (Vmp) | 88.4 L | Table I |
+| `fdar0` ... `fdar8` | 0.05235, 0.0061, 0.3051, 0, 0.4835, 0, 0.12755, 0, 0.02545 | Methods 'Model Development' (HIC composition of the dosing solution) |
+| IIV variances on Emax, Vc, Vp, Fmd, CLm, Vmp | 0.0945, 0.0118, 0.230, 1.78, 0.333, 0.0670 | Table I, 'Inter-individual variability' column |
+| `propSd`, `propSd_tab`, `propSd_mmae` | 0.257, 0.194, 0.327 | Table I residual errors |
+| MW of DCDS5017A and MMAE | 145239 and 718 g/mol | Methods 'Antibody Drug Conjugates' |
+
+# Simulation helpers
+
+```{r helpers}
+mod <- readModelDb("Lu_2015_dcds5017a_cyno")
+mod_ui <- rxode2::rxode(mod)
+mod_typ <- rxode2::zeroRe(mod_ui)
+
+bw <- 2.5 # kg, the paper's typical cynomolgus body weight
+mw_adc <- 145239
+mw_mmae <- 718
+adc_nmol <- function(mg_per_kg) mg_per_kg * bw * 1e6 / mw_adc
+mmae_nmol <- function(mg_per_kg) mg_per_kg * bw * 1e6 / mw_mmae
+
+# The model declares three endpoints (Cc, Cc_tab, Cc_mmae). Observation rows
+# name an ODE state plus dvid = 1, and every endpoint column is returned.
+# Each ADC dose is the total antibody amount given to every DAR compartment
+# that the dosing solution contains; the model's f() splits it by DAR.
+dar_cmts <- paste0("dar", c(0, 1, 2, 4, 6, 8), "_central")
+
+adc_events <- function(mg_per_kg, n_dose = 1, ii = 504, obs_times, id_offset = 0, n_id = 1) {
+  dose_rows <- expand.grid(
+    id = id_offset + seq_len(n_id),
+    time = (seq_len(n_dose) - 1) * ii,
+    cmt = dar_cmts,
+    stringsAsFactors = FALSE
+  )
+  dose_rows$amt <- adc_nmol(mg_per_kg)
+  dose_rows$evid <- 1L
+  obs_rows <- expand.grid(id = id_offset + seq_len(n_id), time = obs_times, stringsAsFactors = FALSE)
+  obs_rows$cmt <- "dar4_central"
+  obs_rows$amt <- 0
+  obs_rows$evid <- 0L
+  obs_rows$dvid <- 1L
+  bind_rows(dose_rows, obs_rows) |>
+    mutate(dose_mgkg = mg_per_kg) |>
+    arrange(id, time, desc(evid))
+}
+
+mmae_events <- function(mg_per_kg, obs_times, id_offset = 0, n_id = 1) {
+  dose_rows <- data.frame(
+    id = id_offset + seq_len(n_id), time = 0, cmt = "central_mmae",
+    amt = mmae_nmol(mg_per_kg), evid = 1L
+  )
+  obs_rows <- expand.grid(id = id_offset + seq_len(n_id), time = obs_times, stringsAsFactors = FALSE)
+  obs_rows$cmt <- "central_mmae"
+  obs_rows$amt <- 0
+  obs_rows$evid <- 0L
+  obs_rows$dvid <- 1L
+  bind_rows(dose_rows, obs_rows) |>
+    mutate(dose_mgkg = mg_per_kg) |>
+    arrange(id, time, desc(evid))
+}
+```
+
+# DAR-dependent deconjugation (Figure 8)
+
+Figure 8 of Lu 2015 plots the deconjugation rate of each DAR species, which
+is `n * KADCn` (the factor in Eq. 1-6), from 3.52 1/h for DAR8 down to below
+0.01 1/h for DAR1. The values below were read from Figure 8 by the
+maintainers (DAR8 is the Results text value). The printed Weibull evaluated
+at `x = 0` would give DAR8 a rate of exactly zero; the model evaluates the
+DAR8 term at `x = 0.01`, which gives 3.51 1/h against the published 3.52 1/h (see Assumptions).
+
+```{r fig8}
+rates <- rxSolve(mod_typ, adc_events(1, obs_times = 1), returnType = "data.frame")
+fig8 <- tibble(
+  DAR = 8:1,
+  published = c(3.52, 2.58, 1.15, 0.46, 0.18, 0.065, 0.02, 0.01),
+  model = unlist(rates[1, paste0("kdec", 8:1)]) * (8:1)
+)
+lam <- 1.51
+kap <- 1.10
+weib <- function(x) (kap / lam) * (x / lam)^(kap - 1) * exp(-(x / lam)^kap)
+fig8$printed_x0 <- (8:1) * weib(8 - (8:1))
+knitr::kable(
+  fig8 |>
+    rename(
+      "Figure 8 (1/h)" = published,
+      "Model n*KADCn (1/h)" = model,
+      "Printed Eq. 11, x = 8 - n (1/h)" = printed_x0
+    ),
+  digits = 4
+)
+stopifnot(all(abs(fig8$model[1:5] / fig8$published[1:5] - 1) < 0.1))
+
+ggplot(fig8, aes(DAR, model)) +
+  geom_line() +
+  geom_point(aes(y = published), shape = 1, size = 3) +
+  labs(
+    x = "Number of conjugated MMAE in ADC", y = "Deconjugation rate (1/h)",
+    caption = "Line: model; circles: values read from Figure 8 of Lu 2015."
+  )
+```
+
+# Unconjugated MMAE after IV MMAE (Figure 7)
+
+The paper reports typical distribution and elimination half-lives of 0.0272 h
+and 29.9 h for unconjugated MMAE. These follow from the two-compartment
+eigenvalues of the Table I values, and a PKNCA terminal half-life on the
+simulated typical profile agrees.
+
+```{r mmae-halflives}
+k10 <- 2.27 / 1.00
+k12 <- 23.0 / 1.00
+k21 <- 23.0 / 88.4
+s <- k10 + k12 + k21
+alpha <- (s + sqrt(s^2 - 4 * k10 * k21)) / 2
+beta <- (s - sqrt(s^2 - 4 * k10 * k21)) / 2
+hl <- c(distribution = log(2) / alpha, elimination = log(2) / beta)
+round(hl, 4)
+stopifnot(abs(hl[["distribution"]] / 0.0272 - 1) < 0.01, abs(hl[["elimination"]] / 29.9 - 1) < 0.01)
+```
+
+```{r fig7}
+mmae_times <- sort(unique(c(0, 2 / 60, 10 / 60, 0.5, 1, 3, 10, 24, 48, 168, 240, 504, seq(0, 60, by = 0.5))))
+ev_mmae <- bind_rows(
+  mmae_events(0.03, mmae_times, id_offset = 0),
+  mmae_events(0.063, mmae_times, id_offset = 1)
+)
+sim_mmae <- rxSolve(mod_typ, ev_mmae, keep = "dose_mgkg", returnType = "data.frame")
+
+# Representative animals of Figure 7, read by the maintainers (ng/mL)
+fig7_obs <- tibble(
+  dose_mgkg = rep(c(0.03, 0.063), each = 7),
+  time = rep(c(2 / 60, 10 / 60, 1, 3, 10, 24, 48), 2),
+  conc = c(28, 1.5, 0.6, 0.5, 0.4, 0.3, 0.09, 50, 3.2, 0.9, 0.85, 0.7, 0.65, 0.4)
+)
+
+ggplot(filter(sim_mmae, time > 0, time <= 60), aes(time, Cc_mmae)) +
+  geom_line() +
+  geom_point(data = fig7_obs, aes(y = conc), shape = 1) +
+  facet_wrap(~ paste(dose_mgkg, "mg/kg MMAE IV")) +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Unconjugated MMAE (ng/mL)",
+    caption = "Replicates Figure 7 of Lu 2015. Line: typical value; circles: one representative animal per dose."
+  )
+```
+
+```{r mmae-pknca}
+mmae_nca_in <- sim_mmae |>
+  filter(!is.na(Cc_mmae)) |>
+  mutate(treatment = paste(dose_mgkg, "mg/kg MMAE")) |>
+  select(id, time, Cc_mmae, treatment)
+dose_mmae <- ev_mmae |>
+  filter(evid == 1) |>
+  mutate(treatment = paste(dose_mgkg, "mg/kg MMAE")) |>
+  select(id, time, amt, treatment)
+conc_obj <- PKNCAconc(mmae_nca_in, Cc_mmae ~ time | treatment + id)
+dose_obj <- PKNCAdose(dose_mmae, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 504, half.life = TRUE, auclast = TRUE)
+nca_mmae <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+reference <- data.frame(
+  treatment = c("0.03 mg/kg MMAE", "0.063 mg/kg MMAE"),
+  half.life = c(29.9, 29.9)
+)
+tbl <- ncaComparisonTable(nca_mmae, reference, by = "treatment", params = "half.life", units = c(half.life = "h"))
+knitr::kable(tbl)
+```
+
+# Single doses of the ADC (Figures 6 and 9)
+
+Typical-value profiles of the three analytes at the three single-dose levels.
+Figure 6 shows one representative animal per dose (individual fits), so the
+typical curve is not expected to pass through every point; the 3 mg/kg points
+read from Figure 6c are overlaid.
+
+```{r fig6}
+adc_times <- sort(unique(c(0, 5 / 60, 4, 12, 24, 72, 168, 336, 504, 672, 840, 1008, seq(0, 2000, by = 4))))
+ev_adc <- bind_rows(
+  adc_events(0.3, obs_times = adc_times, id_offset = 0),
+  adc_events(1, obs_times = adc_times, id_offset = 1),
+  adc_events(3, obs_times = adc_times, id_offset = 2)
+)
+sim_adc <- rxSolve(mod_typ, ev_adc, keep = "dose_mgkg", returnType = "data.frame")
+
+long_adc <- sim_adc |>
+  filter(time > 0, time <= 1008) |>
+  select(dose_mgkg, time, Cc, Cc_tab, Cc_mmae) |>
+  pivot_longer(c(Cc, Cc_tab, Cc_mmae), names_to = "analyte", values_to = "conc") |>
+  mutate(analyte = recode(analyte,
+    Cc = "acMMAE (nmol/L)", Cc_tab = "Total antibody (ug/mL)", Cc_mmae = "Unconjugated MMAE (ng/mL)"
+  ))
+
+fig6c <- tibble(
+  analyte = rep(c("acMMAE (nmol/L)", "Total antibody (ug/mL)", "Unconjugated MMAE (ng/mL)"), c(7, 8, 5)),
+  time = c(5 / 60, 4, 12, 24, 168, 336, 504, 5 / 60, 4, 12, 24, 72, 168, 336, 504, 4, 12, 24, 72, 168),
+  conc = c(2000, 1300, 1000, 700, 90, 15, 0.6, 80, 60, 50, 40, 22, 9, 2, 0.06, 0.045, 0.06, 0.065, 0.07, 0.045),
+  dose_mgkg = 3
+)
+
+ggplot(long_adc, aes(time, conc, colour = factor(dose_mgkg))) +
+  geom_line() +
+  geom_point(data = fig6c, colour = "black", shape = 1) +
+  facet_wrap(~analyte, scales = "free_y") +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(1e-3, NA)) +
+  labs(
+    x = "Time (h)", y = "Concentration", colour = "Dose (mg/kg)",
+    caption = "Replicates Figure 6 of Lu 2015. Circles: the 3 mg/kg animal of Figure 6c."
+  )
+```
+
+The release of MMAE into the systemic circulation by each pathway (Figure 9)
+is the integral of `Fmp * Amp` and `Fmd * Amd`. Integrating the unweighted
+`Amp + Amd` instead must recover every conjugated MMAE in the dose, since
+each MMAE leaves the conjugate by exactly one of the two pathways.
+
+```{r fig9}
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+fine <- bind_rows(lapply(seq_along(c(0.3, 1, 3)), function(i) {
+  adc_events(c(0.3, 1, 3)[i], obs_times = seq(0, 3000, by = 0.25), id_offset = i - 1)
+}))
+sim_fine <- rxSolve(mod_typ, fine, keep = "dose_mgkg", returnType = "data.frame")
+fig9 <- sim_fine |>
+  group_by(dose_mgkg) |>
+  summarise(
+    proteolysis = trap(time, fm_proteolysis * amp),
+    deconjugation = trap(time, fm_deconjugation * amd),
+    released_total = trap(time, amp + amd),
+    .groups = "drop"
+  ) |>
+  mutate(
+    pct_proteolysis = 100 * proteolysis / (proteolysis + deconjugation),
+    conjugated_dose = adc_nmol(dose_mgkg) * sum(c(1, 2, 4, 6, 8) * c(0.0061, 0.3051, 0.4835, 0.12755, 0.02545)),
+    fig9_proteolysis = c(9.8, 25.5, 66),
+    fig9_deconjugation = c(1.0, 3.0, 3.0)
+  )
+knitr::kable(
+  fig9 |>
+    select(dose_mgkg, proteolysis, fig9_proteolysis, deconjugation, fig9_deconjugation, pct_proteolysis, released_total, conjugated_dose) |>
+    rename(
+      "Dose (mg/kg)" = dose_mgkg,
+      "Via proteolysis, model (nmol)" = proteolysis,
+      "Via proteolysis, Fig 9 (nmol)" = fig9_proteolysis,
+      "Via deconjugation, model (nmol)" = deconjugation,
+      "Via deconjugation, Fig 9 (nmol)" = fig9_deconjugation,
+      "% via proteolysis" = pct_proteolysis,
+      "Amp + Amd released (nmol)" = released_total,
+      "Conjugated MMAE dosed (nmol)" = conjugated_dose
+    ),
+  digits = 2
+)
+# Mass balance: a solve against its own dose, so a tight bound is correct.
+stopifnot(all(abs(fig9$released_total / fig9$conjugated_dose - 1) < 0.005))
+```
+
+The Figure 9 amounts are for one animal per dose, with that animal's own
+parameters and body weight; the typical 3 mg/kg animal (65 nmol by proteolysis,
+2.4 nmol by deconjugation) is close to the Figure 9c animal.
+
+Figure 9d summarises the percentage of systemic MMAE released by proteolysis
+across the studied animals after a single ADC dose: median 98%, mean 94%,
+range 61-99%. The spread comes mostly from the large between-animal variance
+of Fmd (1.78 on the log scale). A stochastic cohort of 200 animals per single
+dose level reproduces it.
+
+```{r fig9d}
+rxode2::rxSetSeed(20150601)
+n_per_arm <- 200
+ev_mc <- bind_rows(lapply(seq_along(c(0.3, 1, 3)), function(i) {
+  adc_events(c(0.3, 1, 3)[i], obs_times = seq(0, 2000, by = 2), id_offset = (i - 1) * n_per_arm, n_id = n_per_arm)
+}))
+sim_mc <- rxSolve(mod, ev_mc, keep = "dose_mgkg", returnType = "data.frame")
+pct_mc <- sim_mc |>
+  group_by(id, dose_mgkg) |>
+  summarise(
+    pct = 100 * trap(time, fm_proteolysis * amp) /
+      (trap(time, fm_proteolysis * amp) + trap(time, fm_deconjugation * amd)),
+    .groups = "drop"
+  )
+summ <- pct_mc |>
+  summarise(
+    median = median(pct), mean = mean(pct),
+    p05 = quantile(pct, 0.05), p95 = quantile(pct, 0.95)
+  )
+knitr::kable(
+  bind_rows(
+    summ |> mutate(source = "Model, 600 simulated animals"),
+    tibble(median = 98, mean = 94, p05 = NA, p95 = NA, source = "Lu 2015 Figure 9d (range 61-99%)")
+  ) |>
+    select(source, median, mean, p05, p95) |>
+    rename("Source" = source, "Median (%)" = median, "Mean (%)" = mean, "5th pct (%)" = p05, "95th pct (%)" = p95),
+  digits = 1
+)
+stopifnot(abs(summ$median - 98) < 3, abs(summ$mean - 94) < 5)
+
+ggplot(pct_mc, aes(factor(dose_mgkg), pct)) +
+  geom_boxplot() +
+  labs(
+    x = "Single ADC dose (mg/kg)", y = "% of systemic MMAE released by proteolysis",
+    caption = "Replicates Figure 9d of Lu 2015 (pooled there across doses)."
+  )
+```
+
+# Repeated dosing (Supplementary Figure 1)
+
+The supplementary visual predictive checks include the every-three-weeks
+regimens. A stochastic cohort of 200 animals per regimen gives the median and
+90% interval of the individual-predicted total antibody and unconjugated
+MMAE.
+
+```{r vpc}
+rxode2::rxSetSeed(20150602)
+vpc_times <- sort(unique(c(0, 0.25, 6, 24, 72, 168, 336, seq(0, 2016, by = 12), 504 + c(0.25, 6, 24, 72, 168, 336), 1512 + c(0.25, 6, 24, 72, 168, 336, 504))))
+ev_md <- bind_rows(
+  adc_events(3, n_dose = 4, obs_times = vpc_times, id_offset = 0, n_id = n_per_arm),
+  adc_events(5, n_dose = 4, obs_times = vpc_times, id_offset = n_per_arm, n_id = n_per_arm)
+)
+sim_md <- rxSolve(mod, ev_md, keep = "dose_mgkg", returnType = "data.frame")
+md_long <- sim_md |>
+  select(id, time, dose_mgkg, Cc_tab, Cc_mmae) |>
+  pivot_longer(c(Cc_tab, Cc_mmae), names_to = "analyte", values_to = "conc") |>
+  group_by(dose_mgkg, analyte, time) |>
+  summarise(
+    med = median(conc), lo = quantile(conc, 0.05), hi = quantile(conc, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(analyte = recode(analyte, Cc_tab = "Total antibody (ug/mL)", Cc_mmae = "Unconjugated MMAE (ng/mL)"))
+
+ggplot(filter(md_long, time > 0), aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.3) +
+  geom_line() +
+  facet_grid(analyte ~ paste(dose_mgkg, "mg/kg q3w x 4"), scales = "free_y") +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(1e-3, NA)) +
+  labs(
+    x = "Time (h)", y = "Concentration",
+    caption = "Compare Supplementary Figure 1 of Lu 2015. Between-animal variability only, no residual error."
+  )
+```
+
+# PKNCA of the single-dose ADC cohort
+
+Lu 2015 reports no non-compartmental parameters for the ADC, so this section
+documents the simulated exposure of the three analytes in 100 animals per
+single-dose level, sampled at the study's nominal times (pre-dose, 5 min and
+4, 12, 24, 72, 168, 336, 504, 672, 840 and 1008 h).
+
+```{r pknca-adc}
+rxode2::rxSetSeed(20150603)
+nominal <- c(0, 5 / 60, 4, 12, 24, 72, 168, 336, 504, 672, 840, 1008)
+ev_nca <- bind_rows(lapply(seq_along(c(0.3, 1, 3)), function(i) {
+  adc_events(c(0.3, 1, 3)[i], obs_times = nominal, id_offset = (i - 1) * 100, n_id = 100)
+}))
+sim_nca <- rxSolve(mod, ev_nca, keep = "dose_mgkg", returnType = "data.frame")
+adc_nca_in <- sim_nca |>
+  select(id, time, dose_mgkg, Cc, Cc_tab, Cc_mmae) |>
+  pivot_longer(c(Cc, Cc_tab, Cc_mmae), names_to = "analyte", values_to = "conc") |>
+  filter(!is.na(conc)) |>
+  mutate(treatment = paste(dose_mgkg, "mg/kg"))
+# Weeks after a 0.3 mg/kg dose some amounts fall to the ODE solver's absolute
+# tolerance and come back as tiny negative numbers; they are zero for NCA.
+stopifnot(all(adc_nca_in$conc > -1e-6))
+adc_nca_in$conc <- pmax(adc_nca_in$conc, 0)
+dose_adc <- ev_nca |>
+  filter(evid == 1, cmt == "dar4_central") |>
+  mutate(treatment = paste(dose_mgkg, "mg/kg"), amt = dose_mgkg) |>
+  select(id, time, amt, treatment)
+conc_obj <- PKNCAconc(adc_nca_in, conc ~ time | treatment + analyte + id)
+dose_obj <- PKNCAdose(dose_adc, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 1008, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_adc <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_summary <- as.data.frame(nca_adc) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "auclast")) |>
+  group_by(treatment, analyte, PPTESTCD) |>
+  summarise(median = signif(median(PPORRES), 3), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  mutate(analyte = recode(analyte,
+    Cc = "acMMAE (nmol/L)", Cc_tab = "Total antibody (ug/mL)", Cc_mmae = "Unconjugated MMAE (ng/mL)"
+  ))
+knitr::kable(
+  nca_summary |>
+    rename("Dose" = treatment, "Analyte" = analyte, "Cmax" = cmax, "Tmax (h)" = tmax, "AUC0-last (conc*h)" = auclast)
+)
+```
+
+# Assumptions and deviations
+
+* **Emax units.** Table I prints Emax in 1/h, but Eq. 1-6 use it as
+  `Emax * Xn / (Km * Vc + Xn)` with `Xn` an amount, so Emax must be an amount
+  per hour. With Emax = 0.0407 nmol/h, a 2.5 kg monkey and the HIC dose
+  composition, the typical profiles track the 3 mg/kg animal of Figure 6c
+  (acMMAE about 80 and 15 nmol/L at 168 and 336 h; total antibody about 9 and
+  2 ug/mL) and the cumulative MMAE release of Figure 9c (65 versus 66 nmol by
+  proteolysis), so the model takes the printed value in nmol/h.
+* **DAR8 deconjugation rate.** Eq. 11 with `x = 8 - n` gives exactly zero at
+  `x = 0` whenever kappa > 1, which would leave DAR8 with no deconjugation.
+  The Results text ('decreased from 3.52 ...') and Figure 8 give 3.52 1/h for
+  DAR8, and the other seven Figure 8 points match `n * KADCn` with
+  `x = 8 - n`. The DAR8 term is evaluated at `x = 0.01`, the offset that
+  gives 3.51 1/h at the Table I lambda and kappa (3.52 published, a gap well
+  inside the rounding of kappa = 1.10, since kappa from 1.095 to 1.105 spans
+  3.44-3.59 1/h). The maintainers back-solved this offset in preference to
+  fixing the printed 3.52 1/h, so that the DAR8 rate still moves with lambda
+  and kappa; the paper does not say how DAR8 was evaluated.
+* **Parameter names.** The Weibull parameters lambda, kappa and K are
+  `lkdec_wscale`, `lkdec_wshape` and `kdec_wamp`; Fmp and Fmd are
+  `fm_proteolysis` and `fm_deconjugation`; the dosing-solution fractions are
+  `fdar0` ... `fdar8`, with the species absent from the product fixed at 0 so
+  a different batch composition can be set through `ini()`.
+* **Eq. 9 typographical errors.** As printed, Eq. 9 has `X7c` in the DAR8
+  numerator, `X8c` in the DAR7 denominator and an unweighted DAR0 term. The
+  text defines Amp as the total MMAE formed by proteolysis, so the model uses
+  `sum_n n * Emax * Xn / (Km * Vc + Xn)` for n = 1-8 (DAR0 carries no MMAE),
+  matching the per-species terms of Eq. 1-5. The mass-balance check above
+  confirms that every conjugated MMAE is released by exactly one pathway.
+* **Eq. 2 sign.** Eq. 2 prints `+ (CLd / Vp) * X8p` for the DAR8 peripheral
+  compartment; Eq. 4 and 6 give the correct `-` sign, which is used for all
+  species.
+* **Variability scale.** The Table I 'Inter-individual variability (%CV)'
+  column is read as log-scale variances (omega^2), with the parenthetical
+  being the precision of the estimate, as in the population-mean column.
+  Read as standard deviations the Vc value (0.0118) would be a 1% CV; read as
+  variances it is 11%. The Fmd variance of 1.78 reproduces the 61-99% range
+  of Figure 9d; as a standard deviation it would push the lower end well
+  below 50%.
+* **Body weight.** The model uses absolute volumes and clearances. All
+  simulations here take the paper's typical 2.5 kg monkey to convert mg/kg
+  doses to nmol.
+* **Dosing.** A dose is the total antibody amount in nmol given to every
+  `darN_central` compartment present in the dosing solution; `f()` applies
+  the HIC fractions. DAR3, DAR5 and DAR7 were not detected in the dosing
+  solution and have fraction 0.
+* **Below-LLOQ handling** (censored likelihood) is an estimation detail and
+  has no counterpart in the simulation model.
