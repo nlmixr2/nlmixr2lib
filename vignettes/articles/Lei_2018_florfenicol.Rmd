@@ -1,0 +1,368 @@
+---
+title: "Florfenicol PK/PD against Streptococcus suis in pigs (Lei 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Florfenicol PK/PD against Streptococcus suis in pigs (Lei 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Lei 2018 is a veterinary pharmacokinetic/pharmacodynamic integration study of
+**florfenicol** against *Streptococcus suis* in pigs. Eight healthy pigs
+received 30 mg/kg intramuscularly and, after a two-week washout,
+intravenously. Plasma drawn after the intramuscular dose was then used *ex
+vivo* to build 24 h time-kill curves against *S. suis* serotype 2 strain
+WH-2, and the 24 h change in bacterial count was related to the PK/PD index
+AUC0-24h/MIC with an inhibitory sigmoid Emax model fitted in WinNonlin.
+
+The pharmacokinetics were analysed non-compartmentally only, so the paper's
+one quantitative model is the sigmoid PK/PD-integration curve, and that is
+what the package carries. Exposure enters as the covariate `AUC_FLOR`.
+
+* Article: <https://doi.org/10.3389/fphar.2018.00002>
+
+```{r model}
+mod_fun <- readModelDb("Lei_2018_florfenicol_pkpd_index")
+mod <- rxode2::rxode(mod_fun)
+cat(mod$reference, "\n")
+```
+
+```{r description, results = "asis"}
+cat(mod$description, "\n")
+```
+
+# Population
+
+Eight healthy pigs (four male, four female) weighing 15-20 kg were housed
+individually with antibiotic-free feed and water at Huazhong Agricultural
+University, Wuhan, China. The Animals section gives their age as 8-10 weeks
+and the PK design section as 4-5 weeks. Each received a single 30 mg/kg
+intramuscular dose of a 30% florfenicol injection and, after a 2-week washout,
+the same dose intravenously; plasma was sampled from 0.25 h to 196 h and
+assayed by HPLC (LLOQ 0.05 ug/mL). The free fraction in pooled plasma was
+85 +/- 3.3%.
+
+The challenge organism, *S. suis* serotype 2 strain WH-2, was chosen from 124
+clinical isolates collected across China in 2015-2017 (MIC50 = 1 ug/mL,
+MIC90 = 2 ug/mL, Figure 1) because its MIC equals the MIC90. Its florfenicol
+MIC is 2 ug/mL and MBC 4 ug/mL in both broth and pig plasma, and its mutant
+prevention concentration is 3.2 ug/mL. For the *ex vivo* curves about 10^6
+CFU/mL of WH-2 was incubated for 24 h in plasma drawn at 0-24 h after the
+intramuscular dose.
+
+```{r population}
+str(mod$population)
+```
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Model form | `E = e0 - (e0 - emax) * C^N / (C^N + EC50^N)`, `C = AUC0-24h/MIC` | Methods Equation 1 (garbled as printed; see Errata), Figure 6 |
+| `e0` | 2.36 log10 CFU/mL | Table 3, row 'Emax' (footnote: change in the blank sample) |
+| `emax` | -6.00 log10 CFU/mL | Not printed; lower asymptote of Figure 6 'Predicted' curve, digitised by the maintainers |
+| `lec50` | log(42.22 h) | Table 3, EC50 = 42.22 +/- 1.20 h |
+| `lhill` | log(9.89) | Table 3, N = 9.89 +/- 1.15 |
+| `mic` | 2 ug/mL (fixed) | Results, 'MIC, MBC, and MPC of WH-2' |
+| `log10_cfu0` | 6 (fixed) | Methods, ex vivo time-killing curves (10^6 CFU/ml) |
+| `addSd` | 0 (fixed) | Not reported (only R^2 = 0.999, Discussion) |
+| `AUC_FLOR` (covariate) | 88.85 h*ug/mL after 30 mg/kg IM | Table 1 (AUC0-24h, IM); Table 2 index 44.43 h = 88.85 / 2 |
+| `d/dt(bact)` | `ln(10) * (E / 24) * bact` | Library convention spreading the 24 h change uniformly; E is defined over 24 h (Methods) |
+
+# Back-solving the published targets
+
+Table 3 reports the AUC0-24h/MIC needed for three effect levels. Inverting the
+sigmoid with the packaged parameters gives the index at which each level is
+reached; this is the check that `e0`, `emax`, EC50 and N were transcribed and
+assembled correctly, and it uses no value that was itself derived from these
+targets.
+
+```{r targets}
+theta <- setNames(mod$iniDf$est, mod$iniDf$name)
+p <- list(
+  e0 = theta[["e0"]], emax = theta[["emax"]],
+  ec50 = exp(theta[["lec50"]]), hill = exp(theta[["lhill"]]), mic = theta[["mic"]]
+)
+sigmoid_inverse <- function(E, e0, emax, ec50, hill) {
+  f <- (e0 - E) / (e0 - emax)
+  ec50 * (f / (1 - f))^(1 / hill)
+}
+targets <- tibble::tibble(
+  activity = c("Bacteriostatic", "Bactericidal", "Eradication"),
+  E = c(0, -3, -4),
+  published = c(37.89, 44.02, 46.42)
+) |>
+  mutate(
+    model = sigmoid_inverse(E, p$e0, p$emax, p$ec50, p$hill),
+    pct_diff = 100 * (model / published - 1)
+  )
+targets |>
+  dplyr::rename(
+    "Activity" = activity, "E (log10 CFU/mL)" = E,
+    "Published AUC0-24h/MIC (h)" = published, "Model AUC0-24h/MIC (h)" = model,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2)
+
+# All three published targets are reproduced to within 2.5%; a mis-transcribed
+# EC50 or Hill coefficient, or the literal (garbled) Equation 1, moves them by
+# far more (the literal equation cannot reach E = -3 at all).
+stopifnot(all(abs(targets$pct_diff) < 2.5))
+```
+
+The model places every target 1.4-2.2% above the published value. The same
+small, same-signed offset appears whichever way the unprinted maximal effect is
+resolved (see Assumptions and deviations), so it is a property of how Lei 2018
+computed the targets rather than of the encoding.
+
+# The packaged ODE reproduces the 24 h change
+
+The model integrates the bacterial density so that `log10(bact)` changes by
+exactly the sigmoid effect over a 24 h incubation. One "subject" per index
+level checks the solved ODE against the closed form.
+
+```{r ode-check}
+idx_grid <- c(0, 10, 20, 30, 35, 38, 40, 42.22, 44, 46, 48, 50, 55, 60)
+ev <- tibble::tibble(id = seq_along(idx_grid), AUC_FLOR = idx_grid * p$mic)
+ev <- bind_rows(
+  mutate(ev, time = 0),
+  mutate(ev, time = 24)
+) |>
+  mutate(evid = 0, amt = 0, cmt = "bact") |>
+  arrange(id, time)
+sim <- rxode2::rxSolve(mod, events = ev, keep = "AUC_FLOR") |>
+  as.data.frame() |>
+  filter(time == 24) |>
+  mutate(
+    aucmic = AUC_FLOR / p$mic,
+    change_ode = log10(bact) - theta[["log10_cfu0"]],
+    change_closed = p$e0 - (p$e0 - p$emax) * aucmic^p$hill / (aucmic^p$hill + p$ec50^p$hill)
+  )
+# Both sides use the same parameters, so the difference is pure ODE solver
+# error and a tight bound is correct.
+stopifnot(max(abs(sim$change_ode - sim$change_closed)) < 1e-4)
+sim |>
+  select(aucmic, change_ode, change_closed) |>
+  dplyr::rename(
+    "AUC0-24h/MIC (h)" = aucmic, "24 h change, ODE" = change_ode,
+    "24 h change, closed form" = change_closed
+  ) |>
+  knitr::kable(digits = 3)
+```
+
+# Replicating Figure 6
+
+Figure 6 plots the observed 24 h change for each *ex vivo* plasma sample
+against its AUC0-24h/MIC, with the fitted curve. The observed points below were
+digitised by the maintainers from the published figure (about +/- 0.2 log10
+CFU/mL); the hollow markers and overlapping points near the lower plateau limit
+the precision.
+
+```{r figure6}
+# Digitised from Lei 2018 Figure 6 ('Observed').
+fig6_obs <- tibble::tibble(
+  aucmic = c(0, 16.0, 27.2, 36.5, 40.9, 45.4, 49.0, 49.7, 52.7, 53.2),
+  effect = c(2.78, 2.40, 1.95, 1.00, 0.28, -4.65, -4.80, -4.80, -4.80, -4.80)
+)
+curve <- tibble::tibble(aucmic = seq(0, 60, by = 0.25)) |>
+  mutate(effect = p$e0 - (p$e0 - p$emax) * aucmic^p$hill / (aucmic^p$hill + p$ec50^p$hill))
+
+# Replicates Figure 6 of Lei 2018: ex vivo AUC0-24h/MIC versus the 24 h
+# change in S. suis count in pig plasma.
+ggplot(curve, aes(aucmic, effect)) +
+  geom_line(colour = "blue") +
+  geom_point(data = fig6_obs, shape = 1, colour = "red", size = 2.5) +
+  geom_hline(yintercept = c(0, -3, -4), linetype = "dotted", colour = "grey50") +
+  labs(
+    x = "AUC0-24h/MIC (h)", y = "Change in log10 CFU/mL over 24 h",
+    caption = "Replicates Figure 6 of Lei 2018. Line: packaged model; points: digitised observations."
+  ) +
+  theme_bw()
+```
+
+The packaged curve sits close to the published one. Its zero-exposure plateau
+is the Table 3 value of 2.36, slightly below the published curve's plateau of
+about 2.55 (see Assumptions and deviations).
+
+# Probability of target attainment (Table 5)
+
+Lei 2018 Table 5 gives the probability that AUC0-24h/MIC reaches the
+bactericidal target after 30 mg/kg intramuscularly, at fixed MICs from 0.25 to
+4 ug/mL, from a Crystal Ball Monte Carlo simulation that treated AUC0-24h as
+log-normal with the Table 1 mean and SD (88.85 +/- 6.72 h*ug/mL). With a
+log-normal AUC the attainment has a closed form, so no random draws are
+needed.
+
+```{r pta}
+auc_mean <- 88.85
+auc_sd <- 6.72
+sdlog <- sqrt(log(1 + (auc_sd / auc_mean)^2))
+meanlog <- log(auc_mean) - sdlog^2 / 2
+pta <- function(target, mic) {
+  100 * stats::plnorm(target * mic, meanlog, sdlog, lower.tail = FALSE)
+}
+mics <- c(0.25, 0.5, 1, 2, 4)
+target_model <- targets$model[targets$activity == "Bactericidal"]
+pta_tab <- tibble::tibble(
+  mic = mics,
+  published = c(100, 100, 100, 53.25, 0),
+  pta_published_target = pta(44.02, mics),
+  pta_model_target = pta(target_model, mics)
+)
+pta_tab |>
+  dplyr::rename(
+    "MIC (ug/mL)" = mic, "Published PTA (%)" = published,
+    "PTA, published target 44.02 h (%)" = pta_published_target,
+    "PTA, model target (%)" = pta_model_target
+  ) |>
+  knitr::kable(digits = c(2, 2, 1, 1))
+
+# Structural cells: certain attainment at MIC <= 1 and none at MIC = 4, for
+# both targets. These hold regardless of where the target sits within a few
+# percent, so they are the robust part of the table.
+stopifnot(
+  all(pta_tab$pta_model_target[pta_tab$mic <= 1] > 99.9),
+  pta_tab$pta_model_target[pta_tab$mic == 4] < 0.1,
+  # The published target reproduces the MIC = 2 cell to about 1 point.
+  abs(pta_tab$pta_published_target[pta_tab$mic == 2] - 53.25) < 2
+)
+```
+
+The structural cells (100% at MIC <= 1 ug/mL, 0% at 4 ug/mL) reproduce
+exactly, and with the published target of 44.02 h the knife-edge MIC = 2 cell
+reproduces the published 53.25% to within about one point. That cell sits on
+the steep part of the attainment curve: the model's own bactericidal target is
+1.7% higher, which moves it to about 45%. The PK/PD cut-off of 1 ug/mL (the
+highest MIC with attainment of at least 90%) is the same either way.
+
+# Dose prediction (Table 4)
+
+Lei 2018 computes doses with
+`Dose = (AUC/MIC) * MIC90 * CL / (fu * F)`, using MIC90 = 2 ug/mL,
+fu = 0.85 and F = 0.9914. Table 4's 50% target-attainment column is the median
+of a Monte Carlo distribution, which for this equation is close to the point
+estimate. Using the intramuscular body clearance of 0.185 L/h/kg (Table 1):
+
+```{r doses}
+cl <- 0.185
+fu <- 0.85
+f_im <- 0.9914
+dose_tab <- targets |>
+  mutate(
+    published_dose50 = c(16.50, 19.17, 20.14),
+    dose_published_target = published * 2 * cl / (fu * f_im),
+    dose_model_target = model * 2 * cl / (fu * f_im),
+    pct_diff = 100 * (dose_model_target / published_dose50 - 1)
+  )
+dose_tab |>
+  select(activity, published_dose50, dose_published_target, dose_model_target, pct_diff) |>
+  dplyr::rename(
+    "Activity" = activity, "Published dose, 50% TAR (mg/kg)" = published_dose50,
+    "Equation with published target (mg/kg)" = dose_published_target,
+    "Equation with model target (mg/kg)" = dose_model_target,
+    "Model vs published (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2)
+stopifnot(all(abs(dose_tab$pct_diff) < 5))
+```
+
+The model-derived targets give doses 2-4% above the published 50%
+column. The published 90% column (21.55, 25.02 and 26.85 mg/kg) depends on
+the Monte Carlo spread of AUC, CL and fu, which Lei 2018 does not fully
+specify, and is not reproduced here.
+
+# Non-compartmental analysis
+
+Lei 2018 published only non-compartmental pharmacokinetics (Table 1), and this
+model contains no PK component, so there is no simulated concentration profile
+to analyse with PKNCA. The relevant Table 1 quantity, the intramuscular
+AUC0-24h of 88.85 h*ug/mL, enters the model directly as `AUC_FLOR`; Table 2's
+AUC0-24h/MIC of 44.43 h equals 88.85 / 2, which confirms that the index uses
+total plasma AUC and the 2 ug/mL MIC.
+
+```{r index-check}
+stopifnot(abs(88.85 / p$mic - 44.43) < 0.01)
+```
+
+# Assumptions and deviations
+
+* **No compartmental PK model.** Lei 2018 analysed plasma concentrations
+  non-compartmentally in WinNonlin 5.2.1. A one-compartment model cannot be
+  derived from Table 1 consistently: the intravenous terminal rate
+  (0.106 1/h) and clearance give V = 1.76 L/kg, but the intramuscular profile
+  is flip-flop (terminal half-life 14.46 h against 6.54 h intravenously). If
+  absorption is set to the intramuscular terminal rate, the predicted Tmax is
+  13.7 h, not the published 4 h, and AUC0-24h is 77.5, not 88.85 h*ug/mL. If
+  instead ka is set from the published Tmax, the intramuscular half-life becomes
+  6.54 h and AUC0-24h about 143 h*ug/mL. Figure 5B shows a fast rise to a broad
+  plateau followed by a slow decline, consistent with the sustained-release
+  behaviour the authors describe, which needs more than first-order
+  absorption. No PK file is therefore shipped; supply `AUC_FLOR` from Table 1
+  or from another florfenicol PK model.
+* **Maximal effect `emax` is not printed.** Table 3 lists 'Emax' (the
+  zero-exposure value), EC50 and N but no drug-saturated effect, although the
+  Results text says E0 was reported. It was digitised from the lower asymptote
+  of the fitted curve in Figure 6 (-6.00 log10 CFU/mL). A free four-parameter
+  sigmoid fitted to the digitised curve returns EC50 = 42.23 h and
+  N = 9.97 against Table 3's 42.22 h and 9.89, so the drawn curve is the
+  Table 3 fit.
+* **Zero-exposure plateau: Table 3 versus Figure 6.** The same digitisation
+  puts the drawn curve's plateau at about 2.55 log10 CFU/mL, against the
+  Table 3 value of 2.36. Table 3's footnote defines its value as the change in
+  the blank sample, and the blank curve in Figure 3B rises from about 6.4 to
+  8.75 log10 CFU/mL (+2.35), so 2.36 may be the observed blank change rather
+  than the fitted plateau. The printed table value is used. Using the
+  figure's 2.55 instead moves the three targets to 2.1-2.6% above the
+  published values, against 1.4-2.2% for the packaged choice.
+* **Alternative back-solve.** Fitting both `e0` and `emax` to the three
+  published targets alone (with Table 3's EC50 and N) gives e0 = 2.21 and
+  emax = -6.43 and reproduces all three to 0.03%. That pair matches neither
+  Table 3 nor Figure 6, so it was not adopted. The targets are reported as
+  mean +/- SD, which suggests they were computed from per-sample or simulated
+  values rather than from the mean curve.
+* **Starting inoculum.** Methods state 10^6 CFU/mL; Figure 3 starts near
+  6.4 log10 CFU/mL. The model predicts the change over 24 h, so only the
+  starting point of a simulated trajectory depends on this choice.
+* **Within-24 h shape.** The ODE spreads the 24 h change uniformly in log10
+  space. Lei 2018 fitted only the 24 h endpoint; the shapes of the
+  time-kill curves in Figure 3 are not part of the model.
+* **Variability.** No between-animal variability or residual error was
+  reported; the +/- values in Table 3 are uncertainties of the estimates.
+  The model has no etas and `addSd` is fixed at 0.
+
+# Errata
+
+* **Equation 1 is garbled.** As printed it reads
+  `E=Emax=(1-C^N/(C^N+EC50^N))`. Read as `E = Emax * (1 - f)` with
+  Emax = 2.36 it ranges from 0 to 2.36 and cannot reach the paper's own E = -3
+  or E = -4 targets. The standard inhibitory sigmoid form, whose fitted curve
+  is drawn in Figure 6, is used instead.
+* **Effect labels in the abstract and Methods.** The abstract assigns 37.89,
+  44.02 and 46.42 h to bactericidal, bacteriostatic and elimination activity,
+  and its doses 16.5, 19.17 and 20.14 mg/kg likewise. Tables 3 and 4 and the
+  Results assign them to bacteriostatic (E = 0), bactericidal (E = -3) and
+  eradication (E = -4); the tables are followed. Methods also describe
+  E = -1 as a 99.9% and E = -3 as a 99.99% reduction, which do not match the
+  Results' E = -3 and E = -4 definitions.
+* **Table 5 effect label.** Table 5 labels its row 'Eradication', but the text
+  states the bactericidal target of 44.02 h was used, and only that target
+  reproduces the published 53.25% at MIC = 2 ug/mL; the eradication target of
+  46.42 h gives about 27%. The text gives the same cell as 52.25%.
+* **PK/PD cut-off.** The Results and Conclusion give the cut-off as
+  1 ug/mL; the Discussion gives 0.5 ug/mL. Table 5 supports 1 ug/mL.
+* **Unbound versus total exposure.** The Discussion says free plasma
+  concentrations were integrated with the MIC, but Table 2's AUC0-24h/MIC of
+  44.43 h equals the total AUC0-24h of 88.85 h*ug/mL divided by the
+  2 ug/mL MIC. The model follows Table 2 and uses total exposure; the free
+  fraction enters only the dose equation.

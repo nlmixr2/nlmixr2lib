@@ -3216,6 +3216,8 @@ navbar:
         href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Florfenicol cattle pbpk (Chou 2022)"
         href: articles/Chou_2022_igpbpk.html
+      - text: "Florfenicol pkpd index (Lei 2018)"
+        href: articles/Lei_2018_florfenicol.html
       - text: "Florfenicol swine pbpk (Chou 2022)"
         href: articles/Chou_2022_igpbpk.html
       - text: "Flt3lfc cyno (Hosseini 2024)"
@@ -10841,6 +10843,7 @@ articles:
   - articles/Leegwater_2025_cotrimoxazole
   - articles/Leger_2004_topotecan
   - articles/Lehr_2010_tesofensine
+  - articles/Lei_2018_florfenicol
   - articles/Leil_2021_rheumatoidArthritis_das28_mbma
   - articles/Leroux_2016_cefotaxime
   - articles/Leroux_2018_fluconazole_micafungin
