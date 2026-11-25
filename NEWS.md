@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sturm 2017 sembragiline brain MAO-B inhibition ([doi:10.1007/s00259-016-3510-6](https://doi.org/10.1007/s00259-016-3510-6)) -- patients with Alzheimer's disease and healthy elderly controls.
+- Add Wahl 2017 tenofovir HIV-PrEP protection ([doi:10.1038/srep41098](https://doi.org/10.1038/srep41098)) -- preclinical BLT-humanized / BALB/c mice; five landmark exposure-response models (dose, plasma, FRT tissue and cervicovaginal-lavage TFV / TFVdp) for the fraction protected from vaginal HIV-1 acquisition.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

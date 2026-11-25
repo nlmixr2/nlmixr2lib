@@ -5501,6 +5501,17 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
 - **Example models:** `Beliveau_2026_tenofovir_alafenamide_implant.R` (founding example; a power effect with exponent 0.618 on apparent central TAF volume, the only covariate retained in the final model, significant at P < 0.001), `Beliveau_2026_tenofovir_alafenamide_implant_weibull.R`.
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. **This column is the mass delivered, not the implant payload and not the dosing amount on a record**, and the three differ by more than an order of magnitude here: each implant was manufactured with 110 +/- 10 mg of drug, but the estimated delivered dose ranged from 0.05 to 109 mg (Table 1), because most implants released only a small fraction of their payload. In the zero-order-release model the record-level dose is a release RATE in ug/h, so this cumulative mg quantity cannot be derived from it and must be carried on every record of a subject. Beliveau 2026 reads the effect as saturable absorption from the subcutaneous space rather than as a property of the device: doubling the delivered dose from 17.3 to 34.6 mg raises apparent volume by 54% (2^0.618 = 1.535), equivalent to a 35% fall in apparent bioavailability, and halving it to 8.65 mg lowers apparent volume by 36%. Use the generic `DOSE_TAF_MG` spelling, not an implant-specific one: the column names the drug and its unit, and a future oral or topical tenofovir-alafenamide model with a mg dose covariate belongs under the same canonical.
 
+### DOSE_TDF_MGKG (**canonical for the body-weight-normalized tenofovir disoproxil fumarate dose in mg/kg**)
+- **Description:** Daily systemic tenofovir disoproxil fumarate (TDF) dose that a subject received, in mg of TDF per kg body weight, used as the exposure driver of a landmark dose-response model rather than as a record-level dosing amount. A per-subject (per-cohort) constant that selects where the subject sits on the protection dose-response curve.
+- **Units:** mg/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the sigmoidal Hill dose-response `prob_protection = E0 + (Emax - E0) * DOSE^H / (EC50^H + DOSE^H)`; 0 is an untreated control, giving `prob_protection = E0`.
+- **Source aliases:**
+  - `TDF Dose (mg/kg)` -- Wahl 2017 Table S1 / Table S4 column and Figures 1, 3, 4.
+- **Example models:** `Wahl_2017_tenofovir_dose.R` (founding example; dose-response arm of a five-model HIV-PrEP PK-PD comparison in BLT-humanized mice, dose levels 20/50/140/300 mg/kg, EC50 = 38.7 mg/kg, H = 1.138).
+- **Notes:** Member of the `DOSE_<DRUG>_<UNITS>` auto-approve family. `TDF` is tenofovir disoproxil fumarate, the orally-dosed prodrug of tenofovir (TFV); distinct from `DOSE_TAF_MG`, which is the alafenamide prodrug, and the unit basis differs (mg/kg body-weight-normalized here versus total mg there). This is the only member of the family reported per kg body weight because the founding study is a preclinical mouse model dosed on a mg/kg basis; a future clinical TDF model with a fixed mg dose should register `DOSE_TDF_MG` rather than reuse this name, so the unit basis stays unambiguous.
+
 ### DOSE_ISLATRAVIR_MG (**canonical for the nominal islatravir oral dose or implant loading dose in milligrams**)
 - **Description:** Nominal islatravir amount of the subject's regimen, in mg: the oral dose per administration for a tablet regimen, or the drug load of the subcutaneous implant for an implant regimen. Constant within a subject; carried on every record because it selects dose-specific model parameters rather than scaling one.
 - **Units:** mg (per administration, or per implant)
@@ -8110,6 +8121,50 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
   - `intracellular TAC`, `PBMC TAC` -- Fontova 2023 Methods 2.2 and Figure 2 legends.
 - **Example models:** `Fontova_2023_tacrolimus.R` (direct inhibitory Imax model without baseline, IC50 = 43.9 pg/million cells, on the percentage by which calcineurin activity exceeds the patient's own nadir; steady-state geometric-mean intracellular C0 26.78 and Cmax 93.06 pg/million cells on twice-daily immediate-release tacrolimus, Table 2).
 - **Notes:** Member of the applied-drug-concentration `CONC_<DRUG>_<UNITS>` family with the drug spelled out. The unit token `PGMC` (picograms per million cells) reuses the `MC` (per million cells) token that `CONC_TFVDP_FMOLMC` introduced for cell-count-normalised intracellular concentrations, with the mass prefix changed from fmol to pg. The PBMC matrix is recorded here rather than in the name, as for `CONC_TFVDP_FMOLMC`; a future model driven by tacrolimus in a different cell population (a lymphocyte subset, erythrocytes) should register its own matrix-qualified name rather than reuse this one. Distinct from the `CP_<DRUG>_<UNITS>` family (plasma or systemic whole-blood concentration) and from a per-volume PBMC concentration such as the `Cpbmc` output of `Agergaard_2025_tacrolimus.R`, which is a whole-blood concentration multiplied by a unitless PBMC:whole-blood ratio; the two bases cannot be interconverted without a per-cell volume.
+
+### CONC_TFV_PLASMA_NGML (**canonical for plasma tenofovir concentration driving an HIV-PrEP protection landmark model**)
+- **Description:** Plasma tenofovir (TFV) concentration supplied externally as an exogenous covariate that drives a landmark (static, no time dimension) exposure-response model of the fraction of animals protected from vaginal HIV-1 acquisition. TFV has no PK compartment in the consuming model: the concentration is provided as data (a landmark value at the time of HIV challenge) rather than computed inside the model.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Reference category:** n/a -- enters the sigmoidal Hill protection model `prob_protection = E0 + (Emax - E0) * C^H / (EC50^H + C^H)`; 0 gives `prob_protection = E0`.
+- **Scope:** specific
+- **Source aliases:**
+  - `Plasma TFV (ng/ml)` -- Wahl 2017 Table 2 column header, Tables S2 / S4 and Figures 2-4.
+- **Example models:** `Wahl_2017_tenofovir_plasma.R` (plasma arm of a five-model HIV-PrEP PK-PD comparison in BLT-humanized mice; EC50 = 259 ng/mL, H = 0.7449; plasma TFV was judged the best predictor of protective efficacy).
+- **Notes:** Member of the applied-concentration `CONC_<DRUG>_<UNITS>` family (founding example `CONC_TFVDP_FMOLMC`, Jayachandran 2021), with the drug and matrix spelled out. The matrix (plasma) is carried **in the name** rather than only in this register, departing from the `CONC_TFVDP_FMOLMC` / `CONC_TACROLIMUS_PGMC` convention of recording the matrix in the register, because the founding paper (Wahl 2017) also drives a sibling model with a cervicovaginal-lavage TFV concentration of identical units (`CONC_TFV_CVL_NGML`); a bare `CONC_TFV_NGML` could not disambiguate the two matrices. No BLT-to-BALB/c conversion factor is applied to this driver (the two strains' plasma TFV differed by <9%). Distinct from the `CP_<DRUG>` plasma-PD-driver family, which carries a time-course concentration into a dynamic model; this is a single landmark value.
+
+### CONC_TFV_CVL_NGML (**canonical for cervicovaginal-lavage tenofovir concentration driving an HIV-PrEP protection landmark model**)
+- **Description:** Cervicovaginal lavage (CVL) fluid tenofovir (TFV) concentration supplied externally as an exogenous covariate driving the same landmark protection exposure-response model as `CONC_TFV_PLASMA_NGML`, but in the CVL matrix. No PK compartment in the consuming model.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Reference category:** n/a -- enters `prob_protection = E0 + (Emax - E0) * C^H / (EC50^H + C^H)`; 0 gives `prob_protection = E0`.
+- **Scope:** specific
+- **Source aliases:**
+  - `CVL TFV (ng/ml)` -- Wahl 2017 Table 2 column header, Tables S2 / S4 and Figures 2-3.
+- **Example models:** `Wahl_2017_tenofovir_cvl.R` (CVL arm of the Wahl 2017 five-model comparison; EC50 = 238.7 ng/mL, H fixed to 1; the least precise of the five fits, reflecting large CVL variability).
+- **Notes:** Member of the `CONC_<DRUG>_<UNITS>` family; the matrix (CVL) is carried in the name to distinguish it from the plasma TFV driver of the same paper (`CONC_TFV_PLASMA_NGML`), which has identical units. No BLT-to-BALB/c conversion factor was generated for CVL because of the large (expected) variability in sample concentrations, so the measured BALB/c value is used directly.
+
+### CONC_TFV_FRT_NGG (**canonical for female-reproductive-tract tissue tenofovir concentration driving an HIV-PrEP protection landmark model**)
+- **Description:** Female reproductive tract (FRT; uterus + cervix + vagina) tissue tenofovir (TFV) concentration, on the BLT-humanized-mouse scale, supplied externally as an exogenous covariate driving the landmark protection exposure-response model. No PK compartment in the consuming model.
+- **Units:** ng/g
+- **Type:** continuous
+- **Reference category:** n/a -- enters `prob_protection = E0 + (Emax - E0) * C^H / (EC50^H + C^H)`; 0 gives `prob_protection = E0`.
+- **Scope:** specific
+- **Source aliases:**
+  - `FRT TFV (ng/g)` -- Wahl 2017 Table 2 column header, Tables S2 / S4 and Figures 2-4.
+- **Example models:** `Wahl_2017_tenofovir_frt.R` (FRT-TFV arm of the Wahl 2017 comparison; EC50 = 4101 ng/g, H fixed to 1).
+- **Notes:** Member of the `CONC_<DRUG>_<UNITS>` family; the matrix (FRT tissue) is carried in the name to distinguish it from the plasma and CVL TFV drivers of the same paper, and the per-gram-of-tissue unit token `NGG` distinguishes it from the per-volume plasma/CVL `NGML`. **The model was fitted on BLT-equivalent concentrations**: Wahl 2017 multiplied the parallel BALB/c FRT TFV by the BLT:BALB/c median ratio 0.78 before relating it to BLT protection, so the covariate carries the BLT-scale concentration and a user reproducing a dose cohort from the BALB/c measurements in Table S4 must apply the 0.78 factor first.
+
+### CONC_TFVDP_FRT_FMOLG (**canonical for female-reproductive-tract tissue tenofovir-diphosphate concentration driving an HIV-PrEP protection landmark model**)
+- **Description:** Female reproductive tract (FRT) tissue tenofovir-diphosphate (TFVdp, the intracellular active anabolite) concentration, on the BLT-humanized-mouse scale, supplied externally as an exogenous covariate driving the landmark protection exposure-response model. No PK compartment in the consuming model.
+- **Units:** fmol/g
+- **Type:** continuous
+- **Reference category:** n/a -- enters `prob_protection = E0 + (Emax - E0) * C^H / (EC50^H + C^H)`; 0 gives `prob_protection = E0`.
+- **Scope:** specific
+- **Source aliases:**
+  - `FRT TFVdp (fmol/g)` -- Wahl 2017 Table 2 column header, Tables S2 / S4 and Figures 2-4.
+- **Example models:** `Wahl_2017_tenofovir_frt_tfvdp.R` (FRT-TFVdp arm of the Wahl 2017 comparison; EC50 = 6.052e5 fmol/g, H fixed to 1; FRT TFVdp was non-monotone in dose, so predicted efficacy does not rise from 140 to 300 mg/kg).
+- **Notes:** Member of the `CONC_<DRUG>_<UNITS>` family. Distinct from the registered `CONC_TFVDP_FMOLMC` (Jayachandran 2021) by **both** matrix (whole FRT tissue versus mucosal mononuclear cells) and unit basis (`FMOLG`, femtomoles per gram of tissue, versus `FMOLMC`, femtomoles per million cells); the two bases cannot be interconverted without a per-gram cell count, which is why this matrix-and-unit-qualified sibling name is registered rather than reusing that canonical, as its Notes direct. Like `CONC_TFV_FRT_NGG`, the model was fitted on BLT-equivalent concentrations obtained by scaling the parallel BALB/c FRT TFVdp by the BLT:BALB/c median ratio 0.62.
 
 ### CONMED_RTV_AUC (**canonical for ritonavir AUC over the 0-24 h dosing interval**)
 - **Description:** Per-subject (time-fixed within an evaluated regimen) ritonavir AUC over the 0-24 h once-daily dosing interval, used as a co-medication exposure covariate driving boosted-protease-inhibitor (atazanavir, lopinavir, darunavir, etc.) clearance in popPK models that account for ritonavir's CYP3A4-inhibition effect. In Dickinson 2009 the value is computed by non-compartmental methods on the observed ritonavir concentration-time profile (WinNonlin 5.2) and feeds the atazanavir CL/F power form `cl = exp(lcl) * (CONMED_RTV_AUC / 7.52)^e_aucrtv_cl`.
