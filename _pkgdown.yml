@@ -4890,6 +4890,8 @@ navbar:
         href: articles/Weatherley_2009_maraviroc_iv.html
       - text: "Maraviroc rcyp3a4 (Hyland 2008)"
         href: articles/Hyland_2008_maraviroc_invitro.html
+      - text: "Marbofloxacin pkpd index (Lei 2017b)"
+        href: articles/Lei_2017b_marbofloxacin.html
       - text: "Maribavir (Sun 2023)"
         href: articles/Sun_2023_maribavir.html
       - text: "Maribavir (Sun 2025)"
@@ -10841,6 +10843,7 @@ articles:
   - articles/Leegwater_2025_cotrimoxazole
   - articles/Leger_2004_topotecan
   - articles/Lehr_2010_tesofensine
+  - articles/Lei_2017b_marbofloxacin
   - articles/Leil_2021_rheumatoidArthritis_das28_mbma
   - articles/Leroux_2016_cefotaxime
   - articles/Leroux_2018_fluconazole_micafungin
