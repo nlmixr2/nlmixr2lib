@@ -1878,7 +1878,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Nikanjam_2019_siltuximab.R` (U/L, reference 19; small negative exponent -0.096 on CL), `Melhem_2022_dostarlimab.R` (U/L, reference 18; small negative exponent -0.0585 on CL, time-varying), `NA_NA_lidocaine.R` (source column `SGPT`; binary effects at threshold 11 on the GX rate constant K30 and on the 2,6-xylidide rate constant K40), `Nguyen_2022_cemiplimab.R` (IU/L, reference 19; baseline ALT, exponent -0.0729 on CL), `Xie_2022_colistinSulfate.R` (U/L, reference 37, cohort median 37.5, range 7-495 in critically ill adults; power exponent 0.635 on the PERIPHERAL volume of colistin sulfate rather than on a clearance, so it alters the time to steady state but not the steady-state average concentration); `Yang_2025_axatilimab_irr.R` (baseline ALT centred at 30 U/L, log-odds -0.0178 per U/L on infusion-related reactions), `Hughes_2025_ervogastat_clesacostat_liverfat.R` (log-linear additive effect on the shared latent liver-fat baseline, reference 40 IU/L).
 - **Notes:** Hepatic-function marker. Commonly reported alongside `AST` and `TBILI`. `SGPT` is the older lab-reporting name; values and units are identical to `ALT`.
 
-### TRANSAM_GT2ULN (**canonical for AST or ALT above twice the upper limit of normal**)
+### TRANSAMINASE_GT2ULN (**canonical for AST or ALT above twice the upper limit of normal**)
 - **Description:** 1 = aspartate aminotransferase OR alanine aminotransferase greater than 2 x the laboratory upper limit of normal at the observation, 0 = both at or below 2 x ULN.
 - **Units:** (binary)
 - **Type:** binary

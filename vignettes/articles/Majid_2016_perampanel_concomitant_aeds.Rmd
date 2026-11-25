@@ -126,7 +126,7 @@ published <- list(
   lamotrigine   = list(table = "S4", basal = 1.18,  effects = c(e_conmed_cbz_cl = 0.584, e_conmed_pb_cl = 0.742, e_conmed_vpa_cl = -0.51, e_dose_perampanel_cl = 0.037), iiv = 0.249, iov = 0.0296, prop = 0.0193),
   levetiracetam = list(table = "S5", basal = 2.28,  effects = c(e_sexf_cl = -0.244, e_wt_cl = 0.389, e_conmed_pht_cl = -0.252, e_conmed_vpa_cl = -0.154), iiv = 0.23, iov = 0.034, prop = 0.0717),
   oxcarbazepine = list(table = "S6", basal = 63.4,  effects = c(e_sexf_cl = -0.263, e_conmed_pht_cl = 0.823, e_conmed_perampanel_cl = -0.261), iiv = 0.305, iov = 0.195, prop = 0.407),
-  phenobarbital = list(table = "S7", basal = 0.243, effects = c(e_transam_gt2uln_cl = 0.24, e_conmed_lamotrigine_cl = -0.24, e_conmed_oxc_cl = -0.325), iiv = 0.281, iov = 0.0189, prop = 0.0112),
+  phenobarbital = list(table = "S7", basal = 0.243, effects = c(e_transaminase_gt2uln_cl = 0.24, e_conmed_lamotrigine_cl = -0.24, e_conmed_oxc_cl = -0.325), iiv = 0.281, iov = 0.0189, prop = 0.0112),
   topiramate    = list(table = "S9", basal = 0.953, effects = c(e_wt_cl = 0.878, e_conmed_pht_cl = 0.714, e_conmed_zns_cl = 1.12), iiv = 0.212, iov = 0.0292, prop = 0.0278),
   valproic_acid = list(table = "S10", basal = 0.401, effects = c(e_wt_cl = 0.490, e_dose_perampanel_cl = 0.00761), iiv = 0.316, iov = 0.0308, prop = 0.0259),
   zonisamide    = list(table = "S11", basal = 0.558, effects = c(e_conmed_pht_cl = 0.581, e_conmed_pb_cl = 0.491, e_conmed_clb_cl = -0.334), iiv = 0.235, iov = 0.0216, prop = 0.0141)
@@ -385,7 +385,7 @@ ref_covs <- function(aed, dose) {
                      CONMED_CLB = 0, CONMED_CBZ = 0, CONMED_PB = 0,
                      CONMED_LAMOTRIGINE = 0, CONMED_OXC = 0, CONMED_ZNS = 0,
                      CONMED_PERAMPANEL = 0, DOSE_PERAMPANEL_MGD = 0,
-                     CP_PERAMPANEL_NGML = 0, TRANSAM_GT2ULN = 0)
+                     CP_PERAMPANEL_NGML = 0, TRANSAMINASE_GT2ULN = 0)
   dose_col <- c(carbamazepine = "DOSE_CBZ_MGD", clobazam = "DOSE_CLB_MGD",
                 clonazepam = "DOSE_CZP_MGD", lamotrigine = "DOSE_LTG_MGD",
                 levetiracetam = "DOSE_LEV_MGD", oxcarbazepine = "DOSE_OXC_MGD",

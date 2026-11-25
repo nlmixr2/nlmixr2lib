@@ -29,7 +29,7 @@ Majid_2016_phenobarbital <- function() {
       notes = "Input rate R0 = DOSE_PB_MGD / 24 (mg/h) in Css = R0 / CL. Dose levels are not reported by the paper.",
       source_name = "phenobarbital daily dose (R0 x 24)"
     ),
-    TRANSAM_GT2ULN = list(
+    TRANSAMINASE_GT2ULN = list(
       description = "Transaminase-elevation indicator; 1 = AST or ALT greater than 2 x the upper limit of normal, 0 = otherwise.",
       units = "(binary)",
       type = "binary",
@@ -90,7 +90,7 @@ Majid_2016_phenobarbital <- function() {
   ini({
     # Majid 2016 Supplemental Table S7 (phenobarbital base/final model).
     lcl <- log(0.243); label("Basal phenobarbital CL/F (L/h)") # Table S7 'Phenobarbital basal clearance (L/h)' 0.243
-    e_transam_gt2uln_cl <- 0.24; label("Additive relative change in CL/F with AST or ALT > 2 x ULN (unitless)") # Table S7 'Effect of liver function enzymes' 0.24
+    e_transaminase_gt2uln_cl <- 0.24; label("Additive relative change in CL/F with AST or ALT > 2 x ULN (unitless)") # Table S7 'Effect of liver function enzymes' 0.24
     e_conmed_lamotrigine_cl <- -0.24; label("Additive relative change in CL/F with concomitant lamotrigine (unitless)") # Table S7 'Lamotrigine effect' -0.24
     e_conmed_oxc_cl <- -0.325; label("Additive relative change in CL/F with concomitant oxcarbazepine (unitless)") # Table S7 'Oxcarbazepine effect' -0.325
 
@@ -113,7 +113,7 @@ Majid_2016_phenobarbital <- function() {
     iov_cl <- oc1 * etaiov_cl_1 + oc2 * etaiov_cl_2 + oc3 * etaiov_cl_3 +
       oc4 * etaiov_cl_4 + oc5 * etaiov_cl_5
 
-    tvcl <- exp(lcl) * (1 + e_transam_gt2uln_cl * TRANSAM_GT2ULN +
+    tvcl <- exp(lcl) * (1 + e_transaminase_gt2uln_cl * TRANSAMINASE_GT2ULN +
       e_conmed_lamotrigine_cl * CONMED_LAMOTRIGINE + e_conmed_oxc_cl * CONMED_OXC)
     cl <- tvcl * exp(etalcl + iov_cl)
 
