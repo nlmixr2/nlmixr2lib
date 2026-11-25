@@ -13638,8 +13638,9 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** 0 = all other tumor types (in Gibiansky 2014 the implicit reference is CLL when paired with `TUMTP_BCL` and `TUMTP_DLBCL` all = 0).
 - **Source aliases:**
   - `DIS` (Gibiansky 2014; integer code with `DIS == 4` flagging MCL) -- decompose into `TUMTP_MCL = as.integer(DIS == 4)`.
-- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; separate effect on CL_T and CL_inf via the standalone MCL indicator (ratio 1.75, i.e., 75% higher CL than CLL)).
-- **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (broader lymphoma pool). The Gibiansky 2014 cohort had only 20 MCL patients (2.9%); the paper reports the highest obinutuzumab CL among the four B-cell-malignancy histologies for MCL, consistent with the highest CD20 expression density on MCL B-cells relative to the other histologies.
+  - `Brexu-cel product type/MCL disease type` (Mc Laughlin 2026 Table 2) -- the composite indicator of brexucabtagene autoleucel in MCL; maps directly to `TUMTP_MCL` (see Notes).
+- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; separate effect on CL_T and CL_inf via the standalone MCL indicator (ratio 1.75, i.e., 75% higher CL than CLL)); `McLaughlin_2026_axicabtagene_brexucabtagene.R` (fractional change -0.617 on the CAR-T-cell tumour-killing rate constant kkill, i.e. 62% lower kkill and about 2.6-fold higher Cmax and AUC0-28d for brexu-cel in MCL than axi-cel in other lymphomas; 67 of 473 patients).
+- **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (broader lymphoma pool). The Gibiansky 2014 cohort had only 20 MCL patients (2.9%); the paper reports the highest obinutuzumab CL among the four B-cell-malignancy histologies for MCL, consistent with the highest CD20 expression density on MCL B-cells relative to the other histologies. In Mc Laughlin 2026 every brexucabtagene autoleucel patient had MCL and no axicabtagene ciloleucel patient did, so the effect is an inseparable product-type / disease-type composite: `TUMTP_MCL = 1` simulates brexu-cel in MCL, and the model cannot predict either product in the other disease.
 
 ### TUMTP_FL (**canonical for follicular lymphoma indicator**)
 - **Description:** 1 = follicular lymphoma (FL), 0 = other tumor types. Time-fixed per subject. FL is the most common indolent non-Hodgkin lymphoma (NHL) subtype, derived from germinal-center B cells and characterized by the t(14;18) BCL2-IGH translocation in most cases.
@@ -14249,6 +14250,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `fCD8Tdp` -- column in the Minucci 2024 Supplementary Material `Table 1 (1).XLSX`, sheet `params-case-study-final`, derived from the per-patient CD4:CD8 ratio of the infused IM19 product reported in Ying 2021; used in `Minucci_2024_CART_qsp.R`.
 - **Example models:** `Minucci_2024_CART_qsp.R` (per-patient values 0.290 to 0.943 across the 13 IM19 patients; drives `amt_CD8 = FCD8TDP * WT * dose_per_kg` and `amt_CD4 = (1 - FCD8TDP) * WT * dose_per_kg` in the event table, and is exposed in `model()` as the `CD8_dose_frac` output).
 - **Notes:** A drug-product characterisation covariate, not a patient covariate -- the closest existing analogues are the `FORM_<drug>_<formulation>` formulation indicators, but those are categorical product selectors whereas this is a continuous composition fraction. Scope: specific because autologous cell-therapy product composition is measured per manufacturing run and has no analogue in small-molecule or monoclonal-antibody popPK. Note that Minucci 2024 assumes 100 percent product viability (`fViable = 1`), so `FCD8TDP` alone determines the CD8/CD4 dose split; a source reporting a viability below 1 would need that factor carried separately rather than folded into this column.
+
+### CART_EFFECTOR_T_PCT (**canonical for the effector-T-cell percentage of an infused CAR-T-cell product**)
+- **Description:** Effector T cells (TEFF; CD45RA+ CCR7-) as a percentage of viable CD3+ cells in the infused chimeric antigen receptor (CAR) T-cell product, measured at product release. Characterises the product, not the patient; time-fixed per subject.
+- **Units:** %
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous; the founding model centres on the overall median 24.7%.
+- **Source aliases:**
+  - `Product TEFF (% of viable CD3+ cells)` -- Mc Laughlin 2026 Table 1; `Product % TEFF on rho` in Table 2.
+- **Example models:** `McLaughlin_2026_axicabtagene_brexucabtagene.R` (exponential effect on the maximum CAR-T-cell expansion rate constant: `exp(-0.00619 * (CART_EFFECTOR_T_PCT - 24.7))`; range 1.3-87.6% across 473 axi-cel and brexu-cel patients).
+- **Notes:** First member of a product-phenotype family spelled out in full. The other T-cell memory phenotypes that CAR-T exposure-response and PK papers report use the same form and are reserved for them: `CART_NAIVE_T_PCT` (TN, CD45RA+ CCR7+), `CART_CENTRAL_MEMORY_T_PCT` (TCM, CD45RA- CCR7+) and `CART_EFFECTOR_MEMORY_T_PCT` (TEM, CD45RA- CCR7-), each as a percentage of viable CD3+ cells in the product. Register each one, with its own founding example, when a model first uses it. Distinct from `FCD8TDP` (a CD8 fraction of the dose, 0-1, used to split the dose rather than as an effect) and from the per-patient circulating `CD8_*` / `CD4_*` counts.
 
 ### TUM_NRAS_MUT (**canonical for tumour NRAS mutation indicator**)
 - **Description:** Binary indicator of tumour-cell NRAS (neuroblastoma RAS viral oncogene homolog) mutational status as assessed in the source paper. 1 = NRAS-mutant tumour (in melanoma cohorts mostly codon 61 substitutions such as Q61R / Q61K / Q61L, with fewer codon 12 / 13 substitutions); 0 = NRAS wild-type tumour. Time-fixed per subject. Member of the `TUM_<GENE>_MUT` somatic-genotype family alongside `TUM_BRAF_MUT`, `TUM_EGFR_MUT`, `TUM_ALK_MUT` and `TUM_TP53_MUT`.
@@ -16687,6 +16699,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `prior CAR T cell therapy (yes/no)` -- Li 2026 Table 1 and Table 2 ('Effect of prior CAR T cell therapy = yes'); no data-column name is printed.
 - **Example models:** `Li_2026_epcoritamab.R` (multiplies the maximum stimulated Grade >= 2 cytokine-release-syndrome hazard SMAX by exp(-0.964) = 0.382 in the epcoritamab repeated time-to-event model; 125 of 600 patients, 20.8%).
 - **Notes:** Member of the `PRIOR_<drug or class>` prior-therapy family (`PRIOR_IPI`, `PRIOR_TNF`, `PRIOR_BIO`, `PRIOR_SYSTEMIC`, ...). Common in models of T-cell-engaging bispecific antibodies and later-line lymphoma / myeloma therapies, where prior CAR T cell therapy marks a heavily pretreated population with altered T-cell fitness. Note the direction in the founding model: prior CAR T cell therapy LOWERED the CRS risk on epcoritamab, which the source describes as consistent with clinical observation, so do not assume a sign. Distinct from `PRIOR_ANTICANCER` (any modality) and `PRIOR_SYSTEMIC` (any systemic therapy); a patient with `PRIOR_CART = 1` is also 1 on both of those.
+
+### PRIOR_BENDAMUSTINE (**canonical for prior bendamustine therapy indicator**)
+- **Description:** 1 = subject received bendamustine in an earlier line of therapy before the current treatment, 0 = bendamustine-naive. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no prior bendamustine).
+- **Source aliases:**
+  - `Prior bendamustine treatment` -- Mc Laughlin 2026 Table 1; `Prior bendamustine therapy on rho` in Table 2.
+- **Example models:** `McLaughlin_2026_axicabtagene_brexucabtagene.R` (fractional change -0.241 on the maximum CAR-T-cell expansion rate constant, giving 29% lower Cmax and 25% lower AUC0-28d for the reference patient; 22 of 406 axi-cel and 36 of 67 brexu-cel patients).
+- **Notes:** Member of the `PRIOR_<drug or class>` prior-therapy family. Distinct from `CONMED_BENDAMUSTINE`, which marks bendamustine as part of the CURRENT regimen; this column marks earlier exposure, which in CAR-T-cell therapy is thought to impair the T-cell fitness of the apheresis material and so the expansion of the product. A patient with `PRIOR_BENDAMUSTINE = 1` is also 1 on `PRIOR_CHEMO`, `PRIOR_SYSTEMIC` and `PRIOR_ANTICANCER`.
 
 ### PRIOR_STATIN (**canonical for prior (pre-study) statin therapy indicator**)
 - **Description:** 1 = patient was on established statin (HMG-CoA reductase inhibitor) therapy before entering the study, 0 = statin-naive at study entry. Time-fixed per subject. Captures the pharmacological history that shapes the observed baseline lipid panel and the residual room for further LDL-C lowering, independent of whether a statin continues to be taken during the study.
@@ -20405,16 +20428,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Gibiansky_2022_tisotumab.R` (multiplies the ADC residual-error SD by 1.42; no effect on any PK parameter).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Acts on the residual error only, so simulations of a new population set it to 0.
 
-### STUDY_HELIOS_A (**canonical for the HELIOS-A vutrisiran phase III study indicator**)
-- **Description:** 1 = use the TTR-knockdown trajectory observed in HELIOS-A (NCT03759379), the phase III trial of vutrisiran in hereditary transthyretin amyloidosis with polyneuropathy; 0 = use the HELIOS-B (NCT04153149, ATTR cardiomyopathy) trajectory. A scenario-level selector, time-fixed.
+### STUDY_ZUMA7 (**canonical for the ZUMA-7 axicabtagene ciloleucel phase III study indicator**)
+- **Description:** 1 = record from ZUMA-7 (NCT03391466), the randomised phase III trial of axicabtagene ciloleucel versus standard care as second-line therapy for large B-cell lymphoma; 0 = any other study in the same pooled analysis. Subject-level (time-fixed).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (HELIOS-B trajectory).
+- **Reference category:** 0 (ZUMA-1, ZUMA-2 and ZUMA-5 pooled).
 - **Source aliases:**
-  - `drug = 'vutrisiran_heliosa'` (vs `'vutrisiran_heliosb'`) -- Methven Jeknic 2026 code deposit `ttr/physiological.py`.
-- **Example models:** `MethvenJeknic_2026_attrcm_qsp.R` (selects the HELIOS-A single-exponential silencing plateau 0.851, intercept 0.633, rate 0.183 /month and first-visit clamp 0.75 month instead of the HELIOS-B values 0.797, 0.571, 0.179 /month and 1.5 month; acts only when `TRT_VUTRISIRAN = 1`).
-- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. It selects which trial's observed TTR reduction drives the knockdown, not a cohort property: the paper uses HELIOS-B for its main comparison (Figure 5) and HELIOS-A as a sensitivity case (Figures S11-S12).
+  - `Study ZUMA-7` -- Mc Laughlin 2026 Table 2 ('Study ZUMA-7 on RUV').
+- **Example models:** `McLaughlin_2026_axicabtagene_brexucabtagene.R` (multiplies the log-scale residual-error SD by 1.719; no effect on any kinetic parameter; 161 of 473 patients).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Acts on the residual error only (the source attributes it to ZUMA-7's very low censoring threshold, 0.0001624 cells/uL), so simulations of a new population set it to 0.
 
 ### STUDY_DREAMM1 (**canonical for the DREAMM-1 belantamab mafodotin phase I study indicator**)
 - **Description:** 1 = record from DREAMM-1 (BMA117159, NCT02064387), the open-label two-part phase I dose-escalation / expansion study of belantamab mafodotin in relapsed/refractory multiple myeloma; 0 = record from DREAMM-2 (205678, NCT03525678). Subject-level (time-fixed).
