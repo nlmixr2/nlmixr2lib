@@ -7096,6 +7096,8 @@ navbar:
         href: articles/Li_2025_patritumabDeruxtecan_exposure_response.html
       - text: "PatritumabDeruxtecan teae grade3 (Li 2025)"
         href: articles/Li_2025_patritumabDeruxtecan_exposure_response.html
+      - text: "Pazopanib (Bins 2019)"
+        href: articles/Bins_2019_pazopanib.html
       - text: "Pazopanib (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib.html
       - text: "Pazopanib (Ozbey 2021)"
@@ -10916,6 +10918,7 @@ articles:
   - articles/Biliouris_2018_nusinersen
   - articles/Billard_1995_methoxsalen
   - articles/Bindellini_2025_cefazolin
+  - articles/Bins_2019_pazopanib
   - articles/Birgersson_2016_artemisinin
   - articles/Birgersson_2019_artesunate
   - articles/Bisaso_2014_albumin
