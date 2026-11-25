@@ -1114,6 +1114,40 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Example models:** `Cerou_2024_amcenestrant.R` (additive effect on log baseline tumor size: `0.34 * PREMENOPAUSAL`; AMEERA-1 and AMEERA-2 enrolled postmenopausal women only, AMEERA-3 also premenopausal women on a GnRH analogue).
 - **Notes:** Set to 0 for men. A model that separates peri- from premenopausal status should register a sibling rather than recode this indicator.
 
+### CONMED_ANTIVENOM (**canonical for antivenom-administered indicator (time-varying)**)
+- **Description:** Time-varying indicator that snake antivenom has been administered: `0` at records before the antivenom dose, `1` at and after it. Marks when antivenom starts neutralising circulating venom, not the antivenom dose or concentration.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (antivenom not yet given). Effect form in Gulati 2014 Eq 2 is a multiplier on the first-order elimination of plasma venom: `kel * (1 + 99 * CONMED_ANTIVENOM)`, i.e. venom elimination 100-fold faster once antivenom is given.
+- **Source aliases:**
+  - `antivenom` -- Gulati 2014 Eq 2 (1 if absent, 100 if present).
+  - `time_of_antivenom` -- the per-subject switch time in the authors' original_model.m (`if t>time_of_antivenom`); derive the column as `as.integer(time > time_of_antivenom)` per record.
+- **Example models:** `Gulati_2014_brownSnakeVenom.R` (founding example; brown snake envenoming, venom-induced consumption coagulopathy).
+- **Notes:** Member of the auto-approved `CONMED_<INN>` family, with the product class in place of an INN as in `CONMED_ABX` (antivenoms are animal-derived immunoglobulin products with no INN). General scope because any venom-kinetics or envenoming model with antivenom treatment needs the same switch. Distinct from a model of the antivenom's own pharmacokinetics (`Isbister_2015_snake_antivenom.R`), where antivenom is the dosed drug in the event table rather than a covariate, and from `SNAKEFAMILY_ELAPID`, which classifies the venom source. A model that resolves antivenom concentration (binding of venom by circulating antivenom) should carry the antivenom as a dosed state instead of this indicator.
+
+### CONMED_CLODRONATE (**canonical for clodronate-liposome macrophage-depletion pretreatment indicator**)
+- **Description:** 1 = the animal was pretreated with liposome-encapsulated clodronate (clodrosome) to deplete phagocytic macrophages before the modelled dose, 0 = not pretreated. Per-subject (per-group) covariate.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (saline, intact macrophages).
+- **Source aliases:**
+  - `Clodrosome +10 mg Fe/kg` -- Liu 2014 Table 3 column (clodrosome 50 mg/kg IV once daily for 2 days before the SPIO dose).
+- **Example models:** `Liu_2014_ironOxideNanoparticle_mouse.R` (selects the clodrosome column of Table 3 for Kin, Kout and Ke as log-ratio effects against the untreated 10 mg Fe/kg group).
+- **Notes:** Member of the auto-approved `CONMED_<INN>` family. The pretreatment is the clodronate liposome, not free clodronate: free bisphosphonate is not taken up by macrophages and does not deplete them, so do not reuse this column for systemic clodronate therapy. Distinct from `CONMED_PHOSPHATIDYLCHOLINE`, the blank-liposome blockade pretreatment, which saturates macrophage uptake without reducing macrophage number.
+
+### CONMED_PHOSPHATIDYLCHOLINE (**canonical for blank phosphatidylcholine-liposome RES-blockade pretreatment indicator**)
+- **Description:** 1 = the animal received a loading dose of drug-free phosphatidylcholine liposomes to saturate reticuloendothelial (RES) uptake before the modelled dose, 0 = not pretreated. Per-subject (per-group) covariate.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (saline, unsaturated RES).
+- **Source aliases:**
+  - `liposome +10 mg Fe/kg` -- Liu 2014 Table 3 column (376 mg L-alpha-phosphatidylcholine/kg encapsulated liposome IV 1.5 h before the SPIO dose).
+- **Example models:** `Liu_2014_ironOxideNanoparticle_mouse.R` (selects the liposome column of Table 3 for Kin, Kout and Ke as log-ratio effects against the untreated 10 mg Fe/kg group).
+- **Notes:** Member of the auto-approved `CONMED_<INN>` family, named for the liposome's lipid because a blank liposome carries no drug. Distinct from `CONMED_CLODRONATE` (macrophage depletion) and from the `FORM_<drug>_<formulation>` liposomal-formulation indicators, which describe the modelled drug's own carrier rather than a separate pretreatment.
+
 ## Vital signs
 
 ### HR (**canonical for heart rate**)
@@ -4610,6 +4644,72 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
   - `D_Pani` -- Baaz 2023 notation; the Monolix project in Data S1 uses a 0/1 regressor `Dose2` and a per-month rate, equal to `aPani * 6`.
 - **Example models:** `Baaz_2023_panitumumab_folfox.R`.
 - **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. A dose-per-cycle exposure surrogate used in place of a PK model; it is not an `amt` and should not be used to dose a PK compartment.
+
+### DOSE_IRONOXIDENANOPARTICLE_MGKG (**canonical for the superparamagnetic iron oxide nanoparticle dose level of the treatment group, in mg Fe/kg**)
+- **Description:** The IV bolus dose of superparamagnetic iron oxide (SPIO) nanoparticle given to the animal's group, expressed as iron per kilogram of body weight (mg Fe/kg). Per-subject (per-group) covariate.
+- **Units:** mg/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 10 mg Fe/kg -- enters as categorical dose-level log-ratio effects on the blood-to-liver, liver-to-blood and elimination rate constants (`e_dose05_*` and `e_dose3_*` for 0.5 and 3 mg Fe/kg). Any other value takes the 10 mg Fe/kg rate constants.
+- **Source aliases:**
+  - `0.5 / 3 / 10 mg Fe/kg` -- Liu 2014 Table 3 column headers. Same units, no value transformation.
+- **Example models:** `Liu_2014_ironOxideNanoparticle_mouse.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_DYP688_MGKG`). Carried as a covariate because the source reports one rate-constant set per dose group rather than a dose-exposure function, so the group cannot be recovered from the dose records by the model.
+
+### DOSE_AZ968_MGKG (**canonical for the AZ968 dose per administration of the treatment group, in mg/kg**)
+- **Description:** The dose per administration of the casein kinase 2 inhibitor AZ968 in the animal's treatment group, normalised to body weight and expressed in mg/kg. Per-subject (per-group) covariate.
+- **Units:** mg/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 10 mg/kg -- selects dose-specific PK parameters fitted to single 10, 20 and 30 mg/kg intraperitoneal doses (Mo 2014 Table 3: kel = 33.9 / 26.0 / 24.7 1/day and V = 2.70 / 2.07 / 1.97 L/kg). 20 and 30 mg/kg take their own values; any other value, including untreated controls, takes the 10 mg/kg values.
+- **Source aliases:**
+  - dose group -- Mo 2014 labels the groups "10 mg/kg", "20 mg/kg", "30 mg/kg". Same orientation and units, no value transformation.
+- **Example models:** `Mo_2014_az968_mouse.R`, `Mo_2014_az968_simeoni_mouse.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_DYP688_MGKG`). Needed because the per-dose-level PK is a categorical fit (the authors' handling of non-linear PK), not a function of the event-table amount, and must not be interpolated to other doses.
+
+### DOSE_TAK648_MGKG (**canonical for the once-daily TAK-648 dose of the treatment group, in mg/kg/day**)
+- **Description:** The once-daily oral dose of the PDE4 inhibitor TAK-648 received by the animal's treatment group, normalised to body weight. Per-subject (per-group) covariate, constant over the treatment period. 0 for animals that did not receive TAK-648.
+- **Units:** mg/kg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** none (continuous; 0 = no TAK-648).
+- **Source aliases:**
+  - dose group -- Plock 2017 Supplementary Table 1 (1, 3 or 10 mg/kg once daily). The published `$PRED` reads a precomputed exposure column (`TPDE`, total PDE4 inhibition) rather than the dose; the model rebuilds that exposure from this covariate.
+- **Example models:** `Plock_2017_TAK648_mouse.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. Converted inside the model to the steady-state AUC over one dosing interval as `1000 * DOSE / CL` (ug*h/L) with the apparent clearance in L/h/kg. Carried as a covariate because the model is algebraic in time and consumes no dose events.
+
+### DOSE_ROFLUMILAST_MGKG (**canonical for the once-daily roflumilast dose of the treatment group, in mg/kg/day**)
+- **Description:** The once-daily oral roflumilast dose received by the animal's treatment group, normalised to body weight. Per-subject (per-group) covariate. 0 for animals that did not receive roflumilast.
+- **Units:** mg/kg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** none (continuous; 0 = no roflumilast).
+- **Source aliases:**
+  - dose group -- Plock 2017 Supplementary Table 1 (0.3, 1 or 3 mg/kg once daily).
+- **Example models:** `Plock_2017_TAK648_mouse.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. Roflumilast dosing produces exposure to both roflumilast and its active metabolite roflumilast N-oxide; in the founding model each analyte's AUC is the dose divided by that analyte's apparent clearance after roflumilast dosing. Distinct from `CONMED_ROFLUMILAST_DOSE`, the human ug/day total-daily-dose column of a COPD meta-analysis.
+
+### DOSE_ROFLUMILASTNOXIDE_MGKG (**canonical for the once-daily roflumilast N-oxide dose of the treatment group, in mg/kg/day**)
+- **Description:** The once-daily oral dose of roflumilast N-oxide (the active metabolite of roflumilast, given as the administered compound) received by the animal's treatment group, normalised to body weight. Per-subject (per-group) covariate. 0 for animals that did not receive roflumilast N-oxide.
+- **Units:** mg/kg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** none (continuous; 0 = no roflumilast N-oxide).
+- **Source aliases:**
+  - dose group -- Plock 2017 Supplementary Table 1 (3 mg/kg once daily).
+- **Example models:** `Plock_2017_TAK648_mouse.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. N-oxide dosing yields mainly N-oxide exposure plus a small roflumilast exposure (2.6% of the N-oxide AUC in the founding source); the founding model uses the two apparent clearances estimated after N-oxide dosing.
+
+### DOSE_PP13_NGKG (**canonical for the placental protein 13 dose level of the treatment group, in ng/kg**)
+- **Description:** The recombinant placental protein 13 (PP13, galectin-13) dose level of the animal's treatment group, normalised to body weight and expressed in ng/kg. Per-subject (per-group) covariate.
+- **Units:** ng/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** none -- selects one of three dose-group parameter sets (1.3, 2.6 and 12.8 ng/kg), each the mean of individual two-compartment fits. Below 1.84 ng/kg takes the 1.3 ng/kg set, 1.84 to below 5.77 ng/kg the 2.6 ng/kg set, and 5.77 ng/kg or above the 12.8 ng/kg set (geometric midpoints between the studied levels).
+- **Source aliases:**
+  - `Group 1-4` -- Drobnjak 2018 dose groups (1.3, 2.6, 12.8 ng/kg IV; 12.8 ng/kg SC). Same units, no value transformation.
+- **Example models:** `Drobnjak_2018_pp13_rabbit.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_DYP688_MGKG`). Carried in ng/kg because the model's `amt` is the per-animal dose in pg, so the dose level cannot be recovered from the dose records without body weight. The paper gives no dose-exposure function, so this is a lookup of the nearest studied group, not an interpolation.
 
 ## Cardiometabolic / target biomarkers
 
@@ -9648,6 +9748,216 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
 - **Example models:** `Tang_2026_datopotamab_os.R` (Cox relative hazard for overall survival, log-hazard -0.0031 per ug*day/mL), `Tang_2026_datopotamab_dose_interruption.R`, `Tang_2026_datopotamab_dose_reduction.R`, `Tang_2026_datopotamab_stomatitis_grade2.R` (logistic, log-odds 0.002195, 0.002585 and 0.00288 per ug*day/mL).
 - **Notes:** Follows the `AUC_<DRUG>` family (`AUC_ATEZO`, `AUC_LUSP`, ...). Sibling Tang 2026 models that select an average concentration instead (intact Dato-DXd in ug/mL, or the DXd payload in ng/mL) use the generic [[CAV]] column; check the per-model units before supplying it, because the two analytes differ by roughly four orders of magnitude.
 
+### AUC_CEFEPIME (**canonical for cefepime plasma AUC over the first 24 h of treatment**)
+- **Description:** Per-subject (time-fixed) cefepime plasma area under the concentration-time curve from the first dose to 24 h, used as the exposure regressor of an exposure-toxicity model that carries no PK compartments. In Pais 2026 it is each rat's AUC0-24 computed from its empirical-Bayes concentration profile given its exact dosing, using the companion population PK model.
+- **Units:** `mg*h/L`. Document per-model via `covariateData[[AUC_CEFEPIME]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the logit linearly as `logit_slope * (AUC_CEFEPIME - tc50)`, with no centring value beyond the TC50. Pais 2026 cohort median (IQR) 28,314 (9,737-41,639) mg*h/L.
+- **Source aliases:**
+  - `AUC_plasma` -- Pais 2026 Figure 5a x-axis label.
+  - `AUC0-24` (plasma) -- Pais 2026 Results and Figure 4a.
+- **Example models:** `Pais_2026_cefepime_seizure_aucplasma_rat.R` (logistic probability of modified Racine seizure stage > 1, TC50 30,658.6 mg*h/L).
+- **Notes:** Member of the `AUC_<DRUG>` family (`AUC_RIF`, `AUC_PARACETAMOL`, ...). Specific scope because the 0-24 h window is the FIRST dosing day (from the first dose), not a steady-state interval; a model using a steady-state cefepime AUC should register a sibling canonical. Compute it from `modellib('Pais_2026_cefepime_rat')` by integrating `Cc` from 0 to 24 h. The brain-tissue siblings `AUC_CEFEPIME_BRAIN_CORTEX` and `AUC_CEFEPIME_BRAIN_HIPPOCAMPUS` carry the same window in tissue.
+
+### AUC_CEFEPIME_BRAIN_CORTEX (**canonical for cefepime cerebral-cortex tissue AUC over the first 24 h of treatment**)
+- **Description:** Per-subject (time-fixed) cefepime AUC in cerebral-cortex tissue from the first dose to 24 h, used as the exposure regressor of an exposure-toxicity model that carries no PK compartments. In Pais 2026 it is integrated from each rat's empirical-Bayes cortex concentration profile (total tissue concentration, ug/g treated as mg/L).
+- **Units:** `mg*h/L`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the logit linearly as `logit_slope * (AUC_CEFEPIME_BRAIN_CORTEX - tc50)`. Pais 2026 cohort median (IQR) 565 (161.5-1,346) mg*h/L.
+- **Source aliases:**
+  - `AUC_cortex` -- Pais 2026 Figure 5c x-axis label.
+- **Example models:** `Pais_2026_cefepime_seizure_auccortex_rat.R` (TC50 760.8 mg*h/L).
+- **Notes:** A tissue-matrix member of the `AUC_<DRUG>` family: the `_BRAIN_<region>` suffix follows the `brain_<region>` compartment namespace (`brain_cortex`), so the matrix is part of the name rather than a model-level note -- a plasma AUC and a brain-tissue AUC of the same drug differ about 50-fold here and are not interchangeable. Compute it from `modellib('Pais_2026_cefepime_rat')` by integrating `Cbrain_cortex` from 0 to 24 h.
+
+### AUC_CEFEPIME_BRAIN_HIPPOCAMPUS (**canonical for cefepime hippocampus tissue AUC over the first 24 h of treatment**)
+- **Description:** Per-subject (time-fixed) cefepime AUC in hippocampus tissue from the first dose to 24 h, used as the exposure regressor of an exposure-toxicity model that carries no PK compartments. In Pais 2026 it is integrated from each rat's empirical-Bayes hippocampus concentration profile (total tissue concentration, ug/g treated as mg/L).
+- **Units:** `mg*h/L`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the logit linearly as `logit_slope * (AUC_CEFEPIME_BRAIN_HIPPOCAMPUS - tc50)`. Pais 2026 cohort median (IQR) 694.8 (151.5-1,152) mg*h/L.
+- **Source aliases:**
+  - `AUC_hippocampus` -- Pais 2026 Figure 5e x-axis label.
+- **Example models:** `Pais_2026_cefepime_seizure_auchippocampus_rat.R` (TC50 838.2 mg*h/L).
+- **Notes:** Hippocampus sibling of `AUC_CEFEPIME_BRAIN_CORTEX`; see that entry for the naming. Compute it from `modellib('Pais_2026_cefepime_rat')` by integrating `Cbrain_hippocampus` from 0 to 24 h.
+
+### CMAX_CEFEPIME_BRAIN_CORTEX (**canonical for peak cefepime cerebral-cortex tissue concentration over the first 24 h of treatment**)
+- **Description:** Per-subject (time-fixed) maximum cefepime concentration in cerebral-cortex tissue over the first 24 h from the first dose, used as the exposure regressor of an exposure-toxicity model that carries no PK compartments. In Pais 2026 it is read from each rat's empirical-Bayes cortex profile on a 6-min grid (total tissue concentration, ug/g treated as mg/L).
+- **Units:** `mg/L`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the logit linearly as `logit_slope * (CMAX_CEFEPIME_BRAIN_CORTEX - tc50)`. Pais 2026 cohort median (IQR) 36.0 (16.3-75.6) mg/L.
+- **Source aliases:**
+  - `Cmax_cortex` -- Pais 2026 Figure 5d x-axis label.
+- **Example models:** `Pais_2026_cefepime_seizure_cmaxcortex_rat.R` (TC50 45.0 mg/L).
+- **Notes:** Member of the `CMAX_<DRUG>` family founded by `CMAX_APTM`, with the `_BRAIN_<region>` matrix suffix of `AUC_CEFEPIME_BRAIN_CORTEX` (see that entry). Because the cortex equilibrates slowly (peak about 6 h after an intravenous bolus), this peak is not the plasma Cmax and is not reached at the end of the infusion.
+
+### CMAX_CEFEPIME_BRAIN_HIPPOCAMPUS (**canonical for peak cefepime hippocampus tissue concentration over the first 24 h of treatment**)
+- **Description:** Per-subject (time-fixed) maximum cefepime concentration in hippocampus tissue over the first 24 h from the first dose, used as the exposure regressor of an exposure-toxicity model that carries no PK compartments. In Pais 2026 it is read from each rat's empirical-Bayes hippocampus profile on a 6-min grid (total tissue concentration, ug/g treated as mg/L).
+- **Units:** `mg/L`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the logit linearly as `logit_slope * (CMAX_CEFEPIME_BRAIN_HIPPOCAMPUS - tc50)`. Pais 2026 cohort median 41.9 mg/L; the IQR is printed as 31.7-62.8 in Results and 13.7-62.8 in the Abstract.
+- **Source aliases:**
+  - `Cmax_hippocampus` -- Pais 2026 Figure 5f x-axis label.
+- **Example models:** `Pais_2026_cefepime_seizure_cmaxhippocampus_rat.R` (TC50 48.2 mg/L).
+- **Notes:** Hippocampus sibling of `CMAX_CEFEPIME_BRAIN_CORTEX`; see that entry.
+
+### AUC_NEMONOXACIN (**canonical for 0-24 h nemonoxacin AUC in the medium of an in vitro dynamic infection model**)
+- **Description:** Nemonoxacin area under the concentration-time curve over 0-24 h, measured in the medium of an in vitro dynamic (dilution) infection model rather than in plasma, used as the numerator of the AUC0-24/MIC PK/PD index. Qi 2026 sampled the central flask of a one-compartment urinary-tract-infection model by LC-MS/MS and derived the value non-compartmentally in Phoenix WinNonlin; because that source publishes no structural PK model of the apparatus, the PD models consume AUC_NEMONOXACIN directly as a covariate and divide it by the isolate MIC (`MIC` for the standard CAMHB MIC, `MIC_SYNTHETIC_URINE` for the MIC measured in synthetic human urine).
+- **Units:** `mg*h/L` (equivalently `h*ug/mL`). Document per-model via `covariateData[[AUC_NEMONOXACIN]]$units` if a different exposure unit is reported.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free growth controls so the sigmoid term `Emax * X^H / (X^H + EC50^H)` vanishes and the prediction reduces to `E0`.
+- **Source aliases:**
+  - `AUC0-24` / `AUC0-24h` -- printed names in Qi 2026 Methods (PK/PD index and targets) and Table 2 (indices `AUC0-24h/MIC` and `AUC0-24h/MICSHU`). The flask reproduced day-10 urine concentrations after oral 500 mg once daily (Table 1); interval-weighting the Table 1 minimum and median interval concentrations gives about 1482 and 3823 mg*h/L for the low- and high-exposure arms.
+- **Example models:** `Qi_2026_nemonoxacin_camhb_aucmic_dlogcfu.R`, `Qi_2026_nemonoxacin_camhb_aucmic_aubkc.R`, `Qi_2026_nemonoxacin_shu_aucmic_dlogcfu.R`, `Qi_2026_nemonoxacin_shu_aucmic_aubkc.R`, `Qi_2026_nemonoxacin_shu_aucmicshu_aubkc.R` (Qi 2026 sigmoid Emax PK/PD-index fits against *Escherichia coli* in CAMHB and synthetic human urine).
+- **Notes:** Specific scope -- nemonoxacin-specific and tied to the 0-24 h interval. Split (absolute AUC plus a separate MIC column) rather than the ratio form `AUCMIC_<DRUG>`, because Qi 2026 reports every isolate's MIC (Table S3) and those MICs do reconstruct the paper's index axes: the low-exposure AUC of about 1482 mg*h/L over the lowest CAMHB MIC in that arm (8 mg/L) gives 185, against a Figure 6(a) AUC/MIC maximum of about 200, and the high-exposure AUC of about 3823 mg*h/L over NTU-001's CAMHB MIC of 1 mg/L gives about 3800, against a Figure 6(b) maximum of about 4100. Name ratified by the maintainers alongside the Qi 2026 extraction. Closest analogues: `AUC_AMPH` and `AUC_CEFQ`.
+
+### CMAX_NEMONOXACIN (**canonical for peak nemonoxacin concentration in the medium of an in vitro dynamic infection model**)
+- **Description:** Nemonoxacin peak concentration in the medium of an in vitro dynamic (dilution) infection model, used as the numerator of the Cmax/MIC PK/PD index. Qi 2026 read it non-compartmentally (Phoenix WinNonlin) from LC-MS/MS concentrations in the central flask of a one-compartment urinary-tract-infection model; the PD models consume it directly as a covariate and divide it by the isolate MIC (`MIC` or `MIC_SYNTHETIC_URINE`).
+- **Units:** `mg/L` (equivalently `ug/mL`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free growth controls so the sigmoid term vanishes and the prediction reduces to `E0`.
+- **Source aliases:**
+  - `Cmax` -- printed name in Qi 2026 Methods (PK/PD index and targets) and Table 2 (indices `Cmax/MIC` and `Cmax/MICSHU`). The simulated urine profile's 0-2 h interval concentration is 150.76 mg/L (Table 1 minimum, low exposure) and 535.34 mg/L (Table 1 median, high exposure).
+- **Example models:** `Qi_2026_nemonoxacin_camhb_cmaxmic_dlogcfu.R`, `Qi_2026_nemonoxacin_camhb_cmaxmic_aubkc.R`, `Qi_2026_nemonoxacin_shu_cmaxmic_dlogcfu.R`, `Qi_2026_nemonoxacin_shu_cmaxmic_aubkc.R`, `Qi_2026_nemonoxacin_shu_cmaxmicshu_dlogcfu.R`, `Qi_2026_nemonoxacin_shu_cmaxmicshu_aubkc.R`.
+- **Notes:** Specific scope -- nemonoxacin-specific. Peak-concentration twin of `AUC_NEMONOXACIN`; member of the `CMAX_<DRUG>` family founded by `CMAX_APTM`. Name ratified by the maintainers alongside the Qi 2026 extraction.
+
+### FTMIC_NEMONOXACIN (**canonical for the nemonoxacin percentage-of-interval-above-MIC PK/PD index**)
+- **Description:** Percentage of the 24 h interval during which the nemonoxacin concentration exceeds the standard CAMHB broth-microdilution MIC of the challenge isolate (%T > MIC), supplied to a sigmoid Emax PK/PD-index model. Carried whole, as for every `FTMIC_<DRUG>` member: it is a duration statistic with no ratio to split.
+- **Units:** percent (0-100).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free growth controls.
+- **Source aliases:**
+  - `%T > MIC` -- printed name in Qi 2026 Methods (PK/PD index and targets) and Table 2. Qi 2026 fits it on the 0-1 FRACTION scale (Figure 6 x-axes run 0-1; Table 2 EC50 values 0.487, 4.79, 1.29 and 1.28); the packaged models multiply those EC50 values by 100 so this column stays on the family's percent scale. The rescaling is exact because the sigmoid term depends only on the index divided by EC50.
+- **Example models:** `Qi_2026_nemonoxacin_camhb_tmic_dlogcfu.R`, `Qi_2026_nemonoxacin_camhb_tmic_aubkc.R`, `Qi_2026_nemonoxacin_shu_tmic_dlogcfu.R`, `Qi_2026_nemonoxacin_shu_tmic_aubkc.R`.
+- **Notes:** Specific scope -- nemonoxacin-specific. The threshold is the standard CAMHB MIC even in the synthetic-human-urine arm; the index against the MIC measured in synthetic urine is the separate column `FTMIC_SYNTHETIC_URINE_NEMONOXACIN`. Name ratified by the maintainers alongside the Qi 2026 extraction.
+
+### FTMIC_SYNTHETIC_URINE_NEMONOXACIN (**canonical for the nemonoxacin percentage-of-interval above the MIC measured in synthetic human urine**)
+- **Description:** Percentage of the 24 h interval during which the nemonoxacin concentration exceeds the MIC of the challenge isolate measured in synthetic human urine (`MIC_SYNTHETIC_URINE`), supplied to a sigmoid Emax PK/PD-index model.
+- **Units:** percent (0-100).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free growth controls.
+- **Source aliases:**
+  - `%T > MICSHU` -- printed name in Qi 2026 Methods (PK/PD index and targets) and Table 2, fitted on the 0-1 fraction scale (Figure 6(b); Table 2 EC50 values 1.68 and 1.09); the packaged EC50 values are multiplied by 100 to the percent scale.
+- **Example models:** `Qi_2026_nemonoxacin_shu_tmicshu_dlogcfu.R`, `Qi_2026_nemonoxacin_shu_tmicshu_aubkc.R`.
+- **Notes:** Specific scope -- nemonoxacin-specific. Distinct from `FTMIC_NEMONOXACIN` only in the MIC that defines the threshold. The token `SYNTHETIC_URINE` follows the spelled-out new-canonical naming policy and matches `MIC_SYNTHETIC_URINE`. Name ratified by the maintainers alongside the Qi 2026 extraction.
+
+### AUC_CIPARGAMIN (**canonical for cipargamin plasma AUC from the first dose to 48 h**)
+- **Description:** Cipargamin (KAE609, NITD609) TOTAL plasma area under the concentration-time curve from the first dose to 48 h (AUC0-48), the numerator of the AUC0-48/TRE antimalarial PK-PD index. In Lakshminarayana 2015 the window runs from the start of treatment (24 h after *Plasmodium berghei* inoculation) to the parasitemia readout (72 h after inoculation) whatever the number of doses in the regimen, and the value for each dose-fractionation regimen was a typical-value simulation of the companion naive-pooled PK model; the PD model consumes it as a covariate and forms the index by dividing by the model's threshold parameter `tre`.
+- **Units:** `ug*h/mL` (equivalently `mg*h/L`). Lakshminarayana 2015 tabulates only the ratio AUC0-48/TRE; multiply the Table 1 value by TRE = 0.048 ug/mL to recover the AUC. Document per-model via `covariateData[[AUC_CIPARGAMIN]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for vehicle-control records, so the sigmoid term vanishes and the predicted parasitemia equals Pmax.
+- **Source aliases:**
+  - `AUC0-48` -- Lakshminarayana 2015 Materials and Methods ('PK-PD relationship analysis of KAE609') and the Table 1 / Table 5 footnotes, where it appears as the numerator of `AUC0-48/TRE`.
+- **Example models:** `Lakshminarayana_2015_cipargamin_auctre.R` (sigmoid variable-slope model of day-4 log10 percent parasitemia in *P. berghei*-infected NMRI mice on log10 `AUC_CIPARGAMIN / tre`; EC50 52.72 h).
+- **Notes:** Specific scope -- cipargamin-specific, and tied to the 48 h treatment-to-readout window of the 4-day suppressive mouse model. Member of the `AUC_<DRUG>` family. Follows the `AUCMIC_TYLO` rule for choosing between the absolute and ratio forms: the paper's threshold (TRE = 2 x the *P. berghei* IC99 = 48 ng/mL) is reported and reproduces every Table 1 index from the companion PK model `modellib('Lakshminarayana_2015_cipargamin_mouse')`, so the absolute AUC plus a model `tre` parameter is used, which lets a user re-target the model to another threshold (for example the human-relevant 2 x the *P. falciparum* IC99 the source discusses). Compute it by integrating `Cc` of that PK model from the first dose to 48 h.
+
+### FTTRE_CIPARGAMIN (**canonical for the cipargamin percentage-of-48-h-above-threshold PK-PD index**)
+- **Description:** Percentage of the 48 h after the first cipargamin (KAE609) dose during which the TOTAL plasma concentration exceeds the efficacy threshold TRE, supplied to an antimalarial sigmoid PK-PD-index model. Founding member of the `FTTRE_<DRUG>` family: the threshold is a stated multiple of an in vitro inhibitory concentration against the parasite (Lakshminarayana 2015: TRE = 2 x the ex vivo *Plasmodium berghei* IC99 = 2 x 61.6 nM = 123 nM = 48 ng/mL) rather than an antimicrobial MIC, which is what separates it from the `FTMIC_<DRUG>` family. Like `FTMIC_<DRUG>` it is a duration statistic already expressed relative to the threshold, so it is always carried whole and has no absolute-plus-threshold alternative form.
+- **Units:** percent (0-100), not a fraction -- the fitted EC50 (32.06) is on the same scale, so a fraction-scaled column would silently mis-scale the sigmoid. Document per-model via `covariateData[[FTTRE_CIPARGAMIN]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for vehicle-control records. Note that the founding model enters the index UNTRANSFORMED (a logistic in x), so `FTTRE_CIPARGAMIN = 0` does not reach the fitted upper asymptote: the typical-value prediction there is about 31% against Pmax = 53.09% (vehicle controls observed 35.51%).
+- **Source aliases:**
+  - `%T>TRE` -- Lakshminarayana 2015 Abstract, Materials and Methods ('PK-PD relationship analysis of KAE609', defining it as "the percentage of the 48-h period during which the compound concentration exceeded the threshold") and Tables 1 and 5. Values span 0 to 99.9% across the 15 dose-fractionation regimens.
+- **Example models:** `Lakshminarayana_2015_cipargamin_ttre.R` (sigmoid variable-slope model of day-4 log10 percent parasitemia in *P. berghei*-infected NMRI mice on the untransformed index; EC50 32.06%, slope -0.031 per percentage point).
+- **Notes:** Specific scope -- cipargamin-specific, with the window fixed at 0-48 h after the first dose (start of treatment to the 72 h post-infection parasitemia readout). The values in the source were computed against TRE from typical-value simulations of the companion PK model `modellib('Lakshminarayana_2015_cipargamin_mouse')`; compute the column the same way, integrating the indicator `Cc > tre` over 0-48 h. The paired absolute-exposure indices of the same paper are `CMAX` and `AUC_CIPARGAMIN`, each divided by the model parameter `tre`.
+
+### AUC_AMIKACIN (**canonical for amikacin AUC over 0-24 h, as the numerator of the AUC0-24/MIC index**)
+- **Description:** Amikacin area under the concentration-time curve from 0 to 24 h (AUC0-24), supplied as a static exposure column to an exposure-response model that has no PK ODE of its own. In the founding model it is the AUC0-24 of the hollow-fiber central compartment, run to mimic amikacin concentration-time profiles in the lungs of tuberculosis patients; the model divides it by its own `mic` parameter to form the AUC0-24/MIC index.
+- **Units:** `mg*h/L`. Document per-model via `covariateData[[AUC_AMIKACIN]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for non-treated control records, where the sigmoid term vanishes and the burden equals the drug-free value. Founding-model exposures: AUC0-24/MIC 0 to about 800 against an MIC of 0.5 mg/L (about 0-400 mg*h/L).
+- **Source aliases:**
+  - `AUC0-24/MIC` (numerator) -- Srivastava 2016 Figure 5 x-axis and Results.
+- **Example models:** `Srivastava_2016_amikacin_hfs_aucmic.R` (Srivastava 2016 day-14 inhibitory sigmoid Emax exposure-response of amikacin against *M. tuberculosis* H37Ra in the hollow fiber system model of tuberculosis).
+- **Notes:** Member of the `AUC_<DRUG>` family; INN spelled out, as for `AUC_ETHAMBUTOL`. The absolute-AUC form rather than an `AUCMIC_<DRUG>` ratio follows the `AUCMIC_TYLO` rule because the source reports the challenge-strain MIC (0.5 mg/L). For an every-48-h schedule the founding paper still used the AUC over the first 24 h. Not a plasma AUC: a model that consumes a patient serum amikacin AUC should say in its notes how lung and serum exposure relate.
+
+### FTMIC_AMIKACIN (**canonical for the amikacin percentage-of-interval-above-MIC PK/PD index**)
+- **Description:** Percentage of the dosing interval during which the amikacin concentration exceeds the MIC of the challenge strain (%T>MIC), supplied to an inhibitory sigmoid Emax exposure-response model. A duration statistic already expressed relative to the MIC, so it is carried whole with no `mic` parameter.
+- **Units:** percent (0-100), the scale of the fitted EC50. Document per-model via `covariateData[[FTMIC_AMIKACIN]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for non-treated control records.
+- **Source aliases:**
+  - `%TMIC`, `% time amikacin concentration persisted above MIC` -- Srivastava 2016 Results and Figure 6A x-axis.
+- **Example models:** `Srivastava_2016_amikacin_hfs_tmic.R` (Srivastava 2016 day-14 inhibitory sigmoid Emax exposure-response of amikacin against *M. tuberculosis* H37Ra in the hollow fiber system model of tuberculosis).
+- **Notes:** Member of the `FTMIC_<DRUG>` family (`FTMIC_TZP`, `FTMIC_CEFQ`); INN spelled out. The founding threshold is the H37Ra MIC of 0.5 mg/L.
+
+### AUC_CYADOX (**canonical for the 24 h ex vivo exposure AUC of cyadox in ileum fluid**)
+- **Description:** Cyadox area under the free (ultrafiltered) ileum-fluid concentration-time curve over a 24 h exposure window (AUC0-24h), used as the numerator of the AUC0-24h/MIC index that drives an ex vivo inhibitory sigmoid Emax PK/PD-integration model. In Yan 2017's ex vivo design each ileum-fluid sample, collected through an implanted ultrafiltration probe after a single 30 mg/kg oral dose to pigs, holds one fixed concentration C for the whole 24 h incubation, so AUC0-24h = 24 h * C.
+- **Units:** `h*ug/mL` (equivalently `mg*h/L`). Document per-model via `covariateData[[AUC_CYADOX]]$units` if a different exposure unit is reported.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free control fluid so the sigmoid term vanishes and the predicted 24 h change in log10 CFU/mL reduces to the drug-free value `e0`.
+- **Source aliases:**
+  - `AUC0-24h` / `AUC24h` -- numerator of the PK/PD index `AUC0-24h/MIC` printed in Yan 2017 equation (1), Table 4 (target rows) and Figure 6 (x axis `AUC/MIC`).
+- **Example models:** `Yan_2017_cyadox_pkpd_index.R` (Yan 2017 ex vivo sigmoid Emax PK/PD integration against *Clostridium perfringens* CPFK122995 in pig ileum fluid; `AUC_CYADOX / mic` drives the signed 24 h change in log10 CFU/mL).
+- **Notes:** Specific scope -- cyadox-specific. Member of the `AUC_<DRUG>` family; the full name is spelled out because the short form `CYA` is the established abbreviation of ciclosporin (CsA/CyA). Follows the `AUCMIC_TYLO` entry's rule for choosing between the `AUC_<DRUG>` and ratio-carrying `AUCMIC_<DRUG>` families: Yan 2017 reports the challenge strain's MIC (2 ug/mL in both broth and ileum fluid), and 24 h times the mean ileum-fluid Cmax over that MIC reproduces the largest index in Figure 6, so the absolute-AUC form plus a model `mic` parameter is used. Like `AUC_CEFTIOFUR` and unlike `AUC_CEFQ`, the index is **not** divided by 24 h.
+
+### AUC_TULA (**canonical for the 24 h ex vivo exposure AUC of tulathromycin**)
+- **Description:** Tulathromycin area under the concentration-time curve over a 24 h exposure window (AUC0-24h), used as the numerator of the AUC(0-24 h)/MIC index that drives an ex vivo inhibitory sigmoid Emax PK/PD-integration model. In Zhou 2017's ex vivo design each serum, tissue-cage transudate or tissue-cage exudate sample, taken after a single 2.5 mg/kg intramuscular dose to piglets, holds one fixed concentration C for the whole 24 h incubation, and the paper estimates the AUC "by multiplying the average drug concentration at each time by the incubation period of 24 h", so AUC0-24h = 24 h * C.
+- **Units:** `h*ug/mL` (equivalently `mg*h/L`). Document per-model via `covariateData[[AUC_TULA]]$units` if a different exposure unit is reported.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free control records so the sigmoid term vanishes and the predicted 24 h change in log10 CFU/mL reduces to the control value `e0`.
+- **Source aliases:**
+  - `AUC(0-24 h)` / `AUC(0-24h)` -- numerator of the PK/PD index `AUC(0-24 h)/MIC` printed in Zhou 2017 Materials and Methods ('PK/PD Integration and Modeling', the sigmoid driver `Ce`) and Table 6 (EC50 and the bacteriostatic / bactericidal / eradication target rows).
+- **Example models:** `Zhou_2017_tulathromycin_pkpd_serum.R`, `Zhou_2017_tulathromycin_pkpd_transudate.R`, `Zhou_2017_tulathromycin_pkpd_exudate.R` (Zhou 2017 ex vivo sigmoid Emax PK/PD integration against *Pasteurella multocida* CVCC430 in pig serum and tissue-cage fluids; `AUC_TULA / mic` drives the signed 24 h change in log10 CFU/mL).
+- **Notes:** Specific scope -- tulathromycin-specific. Member of the `AUC_<DRUG>` family; `AUC_CEFTIOFUR` is the closest analogue (likewise a 24 h ex vivo static-sample exposure in pig fluids against *P. multocida*, index not divided by 24 h). Follows the `AUCMIC_TYLO` entry's rule for choosing between the `AUC_<DRUG>` and ratio-carrying `AUCMIC_<DRUG>` families, including the `AUCMIC_TILM` caveat that a reported MIC must actually reconstruct the paper's index: Zhou 2017 reports the challenge strain CVCC430's MIC (0.03 ug/mL in serum, transudate and exudate), and that value does reconstruct the ex vivo index -- the largest AUC(0-24 h)/MIC in Figure 4 (about 595 h) is 24 h times the Table 1 serum Cmax of 0.74 ug/mL divided by 0.03, and the serum concentrations of Figure 2 at 60 h and 96 h reproduce the Figure 5A kill and regrowth only with 0.03. The 0.04 ug/mL serum MIC that Table 5 divides by is the seven-strain average, not the CVCC430 value, and is not the ex vivo denominator.
+
+### FTMIC_LINEZOLID (**canonical for the linezolid percentage-of-interval-above-MIC PK/PD index**)
+- **Description:** Percentage of the 24 h dosing period during which the linezolid concentration exceeds the MIC of the challenge strain (%T>MIC), supplied to an exposure-response model with no PK ODE of its own. A duration statistic already expressed relative to the MIC, so it is carried whole with no `mic` parameter.
+- **Units:** percent (0-100), the scale of the fitted coefficients. Document per-model via `covariateData[[FTMIC_LINEZOLID]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for non-treated control records. Founding-model exposures: 0, about 29, 33, 54.5, 83 and 100% (hollow-fiber free concentrations against an MIC of 1 mg/L).
+- **Source aliases:**
+  - `%TMIC` -- Srivastava 2017 Figure 2C x-axis and Table 1.
+- **Example models:** `Srivastava_2017_linezolid_hfs_adr.R` (Srivastava 2017 day-specific quadratic model of the linezolid-resistant *M. tuberculosis* H37Rv subpopulation in the hollow fiber system model of tuberculosis).
+- **Notes:** Member of the `FTMIC_<DRUG>` family (`FTMIC_TZP`, `FTMIC_CEFQ`) and on the same PERCENT scale; a fraction-scaled column would silently mis-scale the quadratic, whose squared term makes the error grow with exposure.
+
+### AUC_ENRO (**canonical for the 24 h intestinal-content AUC of enrofloxacin**)
+- **Description:** Enrofloxacin area under the concentration-time curve over 24 h (AUC24h) in chicken intestinal contents, used as the numerator of the AUC24h/MIC index that drives an ex vivo inhibitory sigmoid Emax PK/PD-integration model against an enteric pathogen. Li 2017 dosed broilers 10 mg/kg orally, measured enrofloxacin in serum and intestinal contents by HPLC, derived AUC non-compartmentally in WinNonlin 5.2.1, and incubated *Salmonella* Typhimurium in the intestinal contents to build ex vivo time-kill curves; because that source publishes no structural PK model, the PD model consumes AUC_ENRO directly as a covariate.
+- **Units:** `h*ug/mL` (equivalently `mg*h/L`; Li 2017 also writes intestinal concentrations as ug/g). Document per-model via `covariateData[[AUC_ENRO]]$units` if a different exposure unit is reported.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free control records so the sigmoid term vanishes and the predicted 24 h change in log10 CFU/mL reduces to the zero-exposure value `e0`.
+- **Source aliases:**
+  - `AUC24h` / `AUC0-24` -- numerator of the PK/PD index `AUC24h/MIC` in Li 2017 Methods ("Design of dosage by PK/PD modeling", dose equation 1), Table 1 (row `AUC0-24`: 188.6 h*ug/mL healthy, 351.8 h*ug/mL infected, intestinal contents), Table 2 (target rows) and Supplementary Table S1 (row `AUC24h/MIC`: 1572 h healthy, 2932 h infected).
+- **Example models:** `Li_2017_enrofloxacin_chicken_healthy.R`, `Li_2017_enrofloxacin_chicken_infected.R` (Li 2017 ex vivo sigmoid Emax PK/PD integration against *S.* Typhimurium CVCC541 in intestinal contents of healthy and infected broilers; `AUC_ENRO / mic` drives the signed 24 h change in log10 CFU/mL).
+- **Notes:** Specific scope -- enrofloxacin-specific, and tied to a 24 h AUC convention and to the intestinal-content matrix of the founding models; a serum or tissue enrofloxacin AUC driving a different model should document its matrix in `covariateData[[AUC_ENRO]]$notes`. Member of the `AUC_<DRUG>` family. Follows the `AUCMIC_TYLO` entry's rule for choosing between the `AUC_<DRUG>` and ratio-carrying `AUCMIC_<DRUG>` families: Li 2017 reports the challenge strain's intestinal-content MIC (0.12 ug/mL), and that MIC reconstructs the paper's own index column exactly (188.6 / 0.12 = 1572 h and 351.8 / 0.12 = 2932 h, Supplementary Table S1), so the absolute-AUC form plus a model `mic` parameter is used. As in `AUC_CEFTIOFUR` and unlike `AUC_CEFQ`, the index is **not** divided by 24 h.
+
+### AUC_FLOR (**canonical for the 24 h total plasma AUC of florfenicol**)
+- **Description:** Florfenicol total (bound plus unbound) plasma area under the concentration-time curve over a 24 h window (AUC0-24h), used as the numerator of the AUC0-24h/MIC index that drives an ex vivo inhibitory sigmoid Emax PK/PD-integration model. In Lei 2018's ex vivo design each plasma sample, drawn after a single 30 mg/kg intramuscular dose to healthy pigs, holds one fixed concentration C for the whole 24 h incubation, so AUC0-24h = 24 h * C; for an in vivo regimen it is the 24 h AUC of the plasma profile (88.85 h*ug/mL after 30 mg/kg intramuscularly in Lei 2018 Table 1).
+- **Units:** `h*ug/mL` (equivalently `mg*h/L`). Document per-model via `covariateData[[AUC_FLOR]]$units` if a different exposure unit is reported.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free control records so the sigmoid term vanishes and the predicted 24 h change in log10 CFU/mL reduces to the drug-free value `e0`.
+- **Source aliases:**
+  - `AUC0-24h` -- numerator of the PK/PD index `AUC0-24h/MIC` printed in Lei 2018 Methods (Equation 1 and the dose equation), Table 1 (intramuscular and intravenous AUC0-24h), Table 2 and Table 3 (target rows).
+- **Example models:** `Lei_2018_florfenicol_pkpd_index.R` (Lei 2018 ex vivo sigmoid Emax PK/PD integration against *Streptococcus suis* WH-2 in pig plasma; `AUC_FLOR / mic` drives the signed 24 h change in log10 CFU/mL).
+- **Notes:** Specific scope -- florfenicol-specific. Member of the `AUC_<DRUG>` family; `FLOR` is used because the paper's own abbreviation `FF` is too short to be recognisable and `FFC` is not used in the source. Follows the `AUCMIC_TYLO` entry's rule for choosing between the `AUC_<DRUG>` and ratio-carrying `AUCMIC_<DRUG>` families: Lei 2018 reports the challenge strain's MIC (2 ug/mL in broth and plasma), and Table 2's AUC0-24h/MIC of 44.43 h equals the Table 1 AUC0-24h of 88.85 h*ug/mL divided by that MIC, so the absolute-AUC form plus a model `mic` parameter is used. The AUC is TOTAL plasma florfenicol: the 85% free fraction enters only the paper's dose equation, not the index. Like `AUC_CEFTIOFUR` and unlike `AUC_CEFQ`, the index is **not** divided by 24 h.
+
+### AUC_TILDIPIROSIN (**canonical for the per-24-h-interval serum AUC of tildipirosin**)
+- **Description:** Tildipirosin area under the serum concentration-time curve over the current 24 h interval (AUC24h), used as the numerator of the AUC24h/MIC index that drives an ex vivo inhibitory sigmoid Emax PK/PD-integration model in place of a PK ODE. Lei 2018 dosed pigs 4 mg/kg intravenously and intramuscularly, derived AUC non-compartmentally in WinNonlin, and incubated *Pasteurella multocida* in serum collected after the intramuscular dose; the PD model consumes the exposure directly as a covariate and divides it by its own `mic` parameter.
+- **Units:** `h*ug/mL` (equivalently `mg*h/L`). Document per-model via `covariateData[[AUC_TILDIPIROSIN]]$units` if a different exposure unit is reported.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free control records so the sigmoid term vanishes and the predicted 24 h change in log10 CFU/mL reduces to the zero-exposure value `e0`.
+- **Source aliases:**
+  - `AUC24 h` -- Lei 2018 Table 2 row (7.10 +/- 0.91 h*ug/mL intravenously, 3.94 +/- 0.62 h*ug/mL intramuscularly after 4 mg/kg) and numerator of the index `AUC24h/MIC` in eq 1, Table 3 and Table 4.
+- **Example models:** `Lei_2018_tildipirosin.R` (Lei 2018 ex vivo sigmoid Emax PK/PD integration against *P. multocida* PM04 in pig serum; `AUC_TILDIPIROSIN / mic` drives the signed 24 h change in log10 CFU/mL).
+- **Notes:** Specific scope -- tildipirosin-specific, tied to a 24 h interval-AUC convention. Member of the `AUC_<DRUG>` family; the full INN is spelled out (as in `AUC_CEFTIOFUR`) because the short forms collide with other names in this register (`TILM` is tilmicosin in `AUCMIC_TILM`; `TILD` reads as tildrakizumab, cf. `CONMED_TILDRAKIZUMAB_DOSE`). Follows the `AUCMIC_TYLO` entry's rule for choosing between the `AUC_<DRUG>` and ratio-carrying `AUCMIC_<DRUG>` families: Lei 2018 reports the challenge strain's serum MIC (0.5 ug/mL, Table 1), and that MIC splits the paper's own index exactly (Table 2 intramuscular AUC24h 3.94 / 0.5 = Table 3 AUC24h/MIC 7.88 h), so the absolute-AUC form plus a model `mic` parameter is used. The index is not divided by 24 h.
+
 ## Count / Markov-feedback PD covariates
 
 These columns are specific to count / Markov / time-to-event PD models that
@@ -13369,6 +13679,17 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
   - `BL` -- Soeorg 2026 Eq 9 and Table 1 (`thetaBL`, 'Change in Emax_MER, if beta-lactamase present'), defined in Methods as OXA-23, OXA-24/40, OXA-58, OXA-72, VIM-1 or NDM-1.
 - **Example models:** `Soeorg_2026_meropenem_colistin_polymyxinB.R` (founding example; multiplies the meropenem Emax by 0.83; 30 of 60 isolates positive).
 - **Notes:** A property of the isolate, not the patient. Record the source's enzyme list in the model's `covariateData` notes, because what counts as "acquired" is species-specific. Distinct from `CONMED_CARBAPENEM` (carbapenem co-administration).
+
+### MIC_SYNTHETIC_URINE (**canonical for the MIC of the modelled antibacterial measured in synthetic human urine**)
+- **Description:** Minimum inhibitory concentration of the modelled antibacterial against the challenge isolate, measured by broth microdilution with the standard medium (CAMHB) replaced by synthetic human urine. Carries the urine-matrix susceptibility, which can be several two-fold dilutions above the standard MIC, into a urinary PK/PD model as the denominator of an exposure index. The drug is implied by the model, as for `MIC`.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous; must be positive when it divides an exposure.
+- **Source aliases:**
+  - `MICSHU` -- Qi 2026 Methods (MIC determination in CAMHB and SHU) and Table 2 (indices `Cmax/MICSHU`, `AUC0-24h/MICSHU`, `%T > MICSHU`); the value used is the pH 6.5 column of Table S3 (0.5-512 mg/L for nemonoxacin), the pH of the PK/PD model medium.
+- **Example models:** `Qi_2026_nemonoxacin_shu_cmaxmicshu_dlogcfu.R`, `Qi_2026_nemonoxacin_shu_cmaxmicshu_aubkc.R`, `Qi_2026_nemonoxacin_shu_aucmicshu_aubkc.R`.
+- **Notes:** Distinct from `MIC`, which is the standardised broth-microdilution MIC; never overload `MIC` with a urine-matrix value. The urine MIC depends on pH (Qi 2026 reports nemonoxacin MICs 5 +/- 2, 4 +/- 2 and 2 +/- 1 log2 dilutions above CAMHB at pH 5.6, 6.0 and 6.5); record the pH in each model's `covariateData` notes. Name ratified by the maintainers alongside the Qi 2026 extraction.
 
 ## Vaccine immunogenicity (placebo-corrected `_RATIO` family)
 
@@ -19403,6 +19724,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `COMB` -- Shahraz 2026 (savolitinib monotherapy = 0, savolitinib plus osimertinib 80 mg once daily = 1; Data S1 equation for CL/F, Figure 2 label `W_Osimertinib`).
 - **Example models:** `Shahraz_2026_savolitinib.R` (multiplicative `1 + 0.119 * CONMED_OSIMERTINIB` on savolitinib CL/F, i.e. 11.9% higher apparent clearance with osimertinib; subject-level, 590 of 998 patients).
 - **Notes:** Auto-approved member of the `CONMED_<INN>` family. Osimertinib here is a combination-therapy partner (both drugs dosed continuously), not a single perpetrator dose; record per model whether the indicator is subject-level or time-varying. Distinct from `AUC_OSIMERTINIB` (the osimertinib exposure itself).
+
+### MIGRAINE_ORAL_PREVENTIVE_IR (**canonical for failed conventional oral migraine-preventive treatment indicator**)
+- **Description:** 1 = the patient has failed two to four classes of conventional oral migraine preventive treatments; 0 = not. The source does not list the classes or say whether failure means inadequate efficacy, intolerability or both; record the trial's definition in the per-model notes. Time-fixed per subject; usually an enrolment criterion of a dedicated difficult-to-treat migraine study rather than a randomisation stratum.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no prior failure of two to four oral preventive classes).
+- **Source aliases:**
+  - `TRTF` (`TRTF == 2` = yes) -- Schlachter 2026 (CPT Pharmacometrics Syst Pharmacol) Data S1 control stream; Table 1 / Table 4 row 'Previously failed treatments' ('patients for whom two to four classes of conventional oral preventive treatments failed').
+- **Example models:** `Schlachter_2026b_atogepant.R` (founding example; additive shift -0.410 on the shifted-logit combined placebo + atogepant effect on monthly migraine days, and a 0.628-fold multiplier on the time to half of that effect).
+- **Notes:** The migraine member of the `<therapy>_IR` treatment-FAILURE family started by `BIOLOGIC_IR`: it marks failure of a therapy class, not exposure to it. Distinct from an exposure indicator of the "prior preventive migraine medication (yes/no)" kind -- Schlachter 2026 screened such a column (`PRIMED`) separately and did not retain it, and in that cohort every failed-treatment patient was also exposed (Table 1) but most exposed patients had not failed. In Schlachter 2026 the indicator coincides exactly with one study (ELEVATE), so its effect cannot be separated from a study effect; record any such confounding in the per-model notes.
 
 ## Disease / treatment history
 
@@ -27391,6 +27723,106 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** study (van Dyk 2026 Table 1 'VirTUAL' column; Table 2 footnote e).
 - **Example models:** `vanDyk_2026_atazanavir.R` (selects only the fixed additive residual error, 20% of each laboratory's LLOQ: 0.021 mg/L for CHAPAS-4 at Radboud University Medical Center versus 0.006 mg/L for VirTUAL at the University of Cape Town; no study effect on structural parameters or proportional error was found).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` canonical family. Because it acts only on the residual-error model, it has no effect on typical-value or individual-prediction simulations.
+
+### DIDN (**canonical for the opaque drug-level nesting column**)
+- **Description:** Integer-valued grouping column identifying the drug a record belongs to, used as the **nesting level** for a drug-level (super-level) random effect in a class model fitted jointly across several drugs. Values `1`, `2`,..., `N`. Like `SIDN`, `DIDN` does not enter any typical-value covariate equation and has no reference category -- it only indexes which drug-level random-effect draw applies to a record. Use it when the source fits between-drug variability as a random effect (for example NONMEM `$LEVEL DRUG=(...)`) rather than as fixed per-drug parameters.
+- **Units:** (count)
+- **Type:** categorical
+- **Scope:** general
+- **Reference category:** n/a -- `DIDN` is a nesting level, not a covariate with a reference category.
+- **Source aliases:**
+  - `DRUG` -- Jung 2026 Data S2 control stream, `$LEVEL DRUG=(9:13[4])`; coded 1 tegoprazan, 2 YH4808, 3 fexuprazan, 4 vonoprazan (Results, Data Collection).
+- **Example models:** `Jung_2026_pcab_mbma.R` (Jung 2026 Table 2 inter-drug variability on Ka, CL, Vd, Sd and SCALE, encoded as `etalka_drug`, `etalcl_drug`, `etalvc_drug`, `etalstim_central_drug` and `etalph_ka_opt_drug` nested on `DIDN`; the drug-level empirical Bayes estimates are published only for SCALE, so a `DIDN` value does not select a named drug's parameters and each distinct value receives one draw from the inter-drug distribution).
+- **Notes:** The drug-level counterpart of `SIDN`. Distinct from the binary `TRT_<drug>` indicators, which switch a typical value: `DIDN` only groups records for a random effect. Because it is consumed by the `ini()` nesting syntax rather than by a `model()` expression, `covariateData[['DIDN']]` will not be referenced anywhere in `model()`.
+  Simulation caveat (as for `SIDN`): the event table must contain **at least two distinct `DIDN` values** or `rxSolve()` fails with an error naming `THETA[...]` parameters the model does not have, and `omega` must be passed explicitly (`omega = mod$omega`) because the nested omega is a list of matrices keyed by level.
+
+### FORM_ABEMACICLIB_C2 (**canonical for abemaciclib 50% w/w capsule (C2) formulation indicator**)
+- **Description:** 1 = abemaciclib 50 mg capsule with 50% w/w drug load (formulation C2), 0 = any other formulation. Per-dose-record property.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (drug-in-capsule C1 or oral solution).
+- **Source aliases:**
+  - `FORMU` -- Chigutsa 2020 (doi:10.1002/psp4.12544) supplementary control stream, `FORMU == 3`.
+- **Example models:** `Chigutsa_2026_abemaciclib.R` (multiplies the absorption lag time by (1 + 0.822); Chigutsa 2020 Table S2 THETA19).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family; sibling of `FORM_ABEMACICLIB_C3`, the two are mutually exclusive.
+
+### FORM_ABEMACICLIB_C3 (**canonical for abemaciclib 25% w/w capsule (C3, commercial-equivalent) formulation indicator**)
+- **Description:** 1 = abemaciclib 50 mg capsule with 25% w/w drug load (formulation C3, used in MONARCH 2), 0 = any other formulation. Per-dose-record property.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (drug-in-capsule C1 or oral solution).
+- **Source aliases:**
+  - `FORMU` -- Chigutsa 2020 supplementary control stream, `FORMU == 4`.
+- **Example models:** `Chigutsa_2026_abemaciclib.R` (multiplies the absorption lag time by (1 + 1.06) and the maximum saturable absorption rate by (1 - 0.16); Chigutsa 2020 Table S2 THETA20 and THETA21).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family; sibling of `FORM_ABEMACICLIB_C2`.
+
+### TRT_ABEMACICLIB (**canonical for abemaciclib treatment-arm indicator**)
+- **Description:** Binary randomized treatment-arm indicator: 1 = abemaciclib arm (abemaciclib + fulvestrant in MONARCH 2), 0 = control arm (placebo + fulvestrant). A per-subject property of the randomization, independent of the abemaciclib dose actually taken.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (placebo + fulvestrant).
+- **Source aliases:**
+  - `TRT` -- Chigutsa 2026 Data S1 control stream (arm-specific half-life of the waning tumor drug effect).
+- **Example models:** `Chigutsa_2026_abemaciclib.R` (selects the half-life of the waning tumor drug effect, 8.44 weeks in the abemaciclib arm vs 2.51 weeks in the control arm, Table 1). Abemaciclib exposure itself comes from the dosing records.
+- **Notes:** Well-formed member of the `TRT_<INN>` family (see `TRT_RIFAMPICIN`). The indicator is needed because a structural parameter differs by arm rather than by concentration.
+
+### READ_SITE (**canonical for the clinical-site-read vs central-read measurement-reading indicator**)
+- **Description:** 1 = the measurement was read (interpreted) at the clinical site by the local investigator or site staff; 0 = the same kind of measurement read by a central, independent reader (core laboratory or blinded central review). Per-observation (per-row) indicator for endpoints whose raw acquisition (an echocardiogram, a scan, an image) is read twice, once locally and once centrally, so the two reads of one acquisition share the subject's random effects but differ systematically.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (central core-laboratory / independent central read -- the standardized read that trials usually take as the primary endpoint).
+- **Source aliases:**
+  - `TYPE == 'LOCAL'` / 'Type' (site-read vs core laboratory-read) -- Lutz 2026 Data S2 nlme script and Table 1 ('Type on log intercept', 'Type on log slope'); `READ_SITE = as.integer(TYPE == 'LOCAL')`.
+- **Example models:** `Lutz_2026_aficamten_lvot_gradient_valsalva.R` (founding example; a site read shifts log post-Valsalva LVOT gradient by +0.12 and the log exposure-response slope by +0.07), `Lutz_2026_aficamten_lvef.R` (a site read shifts log LVEF by -0.08 and the log slope by -0.12).
+- **Notes:** General scope so that any locally-vs-centrally read endpoint can reuse it (investigator-assessed vs blinded-independent-central-review tumour response, site vs central ECG or imaging reads). Distinct from `ASSAY_OSA_LOCAL`, which contrasts the LABORATORY that ran a bioanalytical assay on a sample, not who interpreted an image, and from `OBSTYPE`, which is a two-level observer code tied to one VAS dataset. In Lutz 2026 dose titration was guided by site reads while core-laboratory reads were the trial endpoints, so a simulation of titration rules uses `READ_SITE = 1` for the decisions and `READ_SITE = 0` for the reported endpoints.
+
+### ASSAY_LAB_INTERTEK (**canonical for the Intertek-vs-other bioanalytical laboratory indicator**)
+- **Description:** 1 = drug concentrations quantified by the Intertek bioanalytical laboratory; 0 = quantified by the other laboratory used in the pooled analysis. Per-subject (per-sample in principle).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the non-Intertek laboratory).
+- **Source aliases:**
+  - `Analytic laboratory (Intertek)` -- Zuo 2024 (Clin Pharmacol Ther 116:1278) Table 1 row label.
+- **Example models:** `Chudasama_2026_enfortumab.R` (proportional change `(1 - 0.355 * ASSAY_LAB_INTERTEK)` on the second peripheral volume V3 of the conjugated ADC, inherited from the Zuo 2024 final population PK model).
+- **Notes:** A bioanalytical-site effect, not a patient property: simulations of new patients set it to 0. Distinct from the method-contrast `ASSAY_<method>` entries (`ASSAY_LCMSMS`, `ASSAY_OSA`) because the same ligand-binding assay is assumed at both sites, and from `ASSAY_OSA_LOCAL` (local versus central laboratory). Ratified by the maintainers 2026-11-20, founding the `ASSAY_LAB_<site>` family for named-laboratory indicators (the `LAB_` token separates site identity from the method-contrast members).
+
+### STUDY_2008_007413_76_TOF (**canonical for the tetralogy of Fallot cohort of the Helsinki paediatric cardiac-surgery methylprednisolone trials (EudraCT 2008-007413-76) indicator**)
+- **Description:** 1 = record from the randomized 5 vs 30 mg/kg methylprednisolone trial in infants undergoing total correction of tetralogy of Fallot (Keski-Nisula 2016, Ann Thorac Surg 102:870); 0 = record from another cohort of the pooled analysis. Subject-level (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other cohorts of the pooled analysis; in `Rantanen_2026_methylprednisolone.R`, all three `STUDY_2008_007413_76_*` at 0 is the neonatal cardiac-surgery cohort of Keski-Nisula 2013, operation group `OPER = 0`).
+- **Source aliases:**
+  - `OPER = 1` -- Rantanen 2026 four-level operation-group covariate (Table 2 footnote); `STUDY_2008_007413_76_TOF = as.integer(OPER == 1)`.
+- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.404 * STUDY_2008_007413_76_TOF)`, and the cohort's proportional residual error 0.423).)
+- **Notes:** Member of the auto-approved `STUDY_<id>` family. All four Helsinki trials pooled by Rantanen 2026 were registered under the single EudraCT number 2008-007413-76 (sponsor protocol code 'steroiditutkimus'), so the id is that number with the cohort label as the suffix; the three `STUDY_2008_007413_76_*` indicators are mutually exclusive. Each cohort is defined by its operation, but because each is also one trial, the fitted effects are cohort descriptors rather than procedure effects (Rantanen 2026 Discussion); do not reuse these indicators as procedure-type covariates.
+
+### STUDY_2008_007413_76_VSD_AVSD (**canonical for the ventricular / atrioventricular septal defect cohort of the Helsinki paediatric cardiac-surgery methylprednisolone trials (EudraCT 2008-007413-76) indicator**)
+- **Description:** 1 = record from the randomized intravenous vs CPB-prime methylprednisolone trial in infants undergoing VSD or AVSD repair (Keski-Nisula 2015, Ann Thorac Surg 99:180); 0 = record from another cohort of the pooled analysis. Subject-level (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other cohorts of the pooled analysis; in `Rantanen_2026_methylprednisolone.R`, all three `STUDY_2008_007413_76_*` at 0 is the neonatal cardiac-surgery cohort of Keski-Nisula 2013, operation group `OPER = 0`).
+- **Source aliases:**
+  - `OPER = 2` -- Rantanen 2026 four-level operation-group covariate (Table 2 footnote); `STUDY_2008_007413_76_VSD_AVSD = as.integer(OPER == 2)`.
+- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.475 * STUDY_2008_007413_76_VSD_AVSD)`, and the cohort's proportional residual error 0.207).)
+- **Notes:** Member of the auto-approved `STUDY_<id>` family. All four Helsinki trials pooled by Rantanen 2026 were registered under the single EudraCT number 2008-007413-76 (sponsor protocol code 'steroiditutkimus'), so the id is that number with the cohort label as the suffix; the three `STUDY_2008_007413_76_*` indicators are mutually exclusive. Each cohort is defined by its operation, but because each is also one trial, the fitted effects are cohort descriptors rather than procedure effects (Rantanen 2026 Discussion); do not reuse these indicators as procedure-type covariates. The route contrast within the cohort (intravenous vs CPB prime) was screened and not retained.
+
+### STUDY_2008_007413_76_GLENN (**canonical for the bidirectional Glenn cohort of the Helsinki paediatric cardiac-surgery methylprednisolone trials (EudraCT 2008-007413-76) indicator**)
+- **Description:** 1 = record from the 30 mg/kg methylprednisolone trial in children with tricuspid atresia undergoing the bidirectional Glenn procedure (Keski-Nisula 2020, J Cardiothorac Vasc Anesth 34:1542); 0 = record from another cohort of the pooled analysis. Subject-level (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other cohorts of the pooled analysis; in `Rantanen_2026_methylprednisolone.R`, all three `STUDY_2008_007413_76_*` at 0 is the neonatal cardiac-surgery cohort of Keski-Nisula 2013, operation group `OPER = 0`).
+- **Source aliases:**
+  - `OPER = 3` -- Rantanen 2026 four-level operation-group covariate (Table 2 footnote); `STUDY_2008_007413_76_GLENN = as.integer(OPER == 3)`.
+- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.884 * STUDY_2008_007413_76_GLENN)`, and the cohort's proportional residual error 0.140).)
+- **Notes:** Member of the auto-approved `STUDY_<id>` family. All four Helsinki trials pooled by Rantanen 2026 were registered under the single EudraCT number 2008-007413-76 (sponsor protocol code 'steroiditutkimus'), so the id is that number with the cohort label as the suffix; the three `STUDY_2008_007413_76_*` indicators are mutually exclusive. Each cohort is defined by its operation, but because each is also one trial, the fitted effects are cohort descriptors rather than procedure effects (Rantanen 2026 Discussion); do not reuse these indicators as procedure-type covariates.
 
 ## Occasion / period (IOV)
 
