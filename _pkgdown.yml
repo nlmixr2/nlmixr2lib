@@ -5150,6 +5150,10 @@ navbar:
         href: articles/Thomson_1989_lisinopril.html
       - text: "LisocabtageneMaraleucel qsp (Salem 2023)"
         href: articles/Salem_2023_CART_subsets_immunophenotypes.html
+      - text: "Lisofylline human pbpk (Wyska 2016)"
+        href: articles/Wyska_2016_lisofylline_pbpk.html
+      - text: "Lisofylline mouse pbpk (Wyska 2016)"
+        href: articles/Wyska_2016_lisofylline_pbpk.html
       - text: "Lithium (Jin 2022)"
         href: articles/Jin_2022_lithium.html
       - text: "Lithium (Yuan 2021)"
@@ -13349,6 +13353,7 @@ articles:
   - articles/Wurthwein_2013_caspofungin
   - articles/Wurthwein_2021_pegasparaginase
   - articles/Wurthwein_2025_pegasparaginase
+  - articles/Wyska_2016_lisofylline_pbpk
   - articles/Xia_2024_warfarin
   - articles/Xia_2025_pfuroylamphenmulin
   - articles/Xia_2025_sertraline

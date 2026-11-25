@@ -1,0 +1,475 @@
+---
+title: "Lisofylline PBPK in mice with human projection (Wyska 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lisofylline PBPK in mice with human projection (Wyska 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Wyska 2016 contributes two model files, both linked to this article:
+
+* `Wyska_2016_lisofylline_mouse_pbpk` -- the fitted mouse model.
+* `Wyska_2016_lisofylline_human_pbpk` -- the paper's projection of that model
+  to a 70 kg adult.
+
+* Citation: `r rxode2::rxode(readModelDb("Wyska_2016_lisofylline_mouse_pbpk"))$reference`
+* Description (mouse): `r rxode2::rxode(readModelDb("Wyska_2016_lisofylline_mouse_pbpk"))$description`
+* Description (human): `r rxode2::rxode(readModelDb("Wyska_2016_lisofylline_human_pbpk"))$description`
+* Article: <https://doi.org/10.1007/s13318-015-0260-y> (open access, PMC4954844)
+
+Lisofylline (LSF) is the R-(-) enantiomer of the pentoxifylline metabolite M1.
+The paper builds a flow-limited whole-body PBPK model from serum and six tissue
+profiles in mice, then rescales organ volumes, blood flows and hepatic
+intrinsic clearance to predict human serum and tissue profiles after a 3 mg/kg
+10-min intravenous infusion and a 6 mg/kg oral dose.
+
+# Population
+
+Male Crl:CD-1 mice (8-10 weeks, 30.25 +/- 2.11 g) were fasted overnight and
+given LSF 50 mg/kg into the tail vein. Groups of 3-4 mice were exsanguinated at
+time points up to 60 min, and serum, brain, muscle, kidneys, liver, gut and
+lungs were assayed by chiral HPLC-UV. The seven mean profiles were fitted
+simultaneously in ADAPT II (maximum likelihood). The total number of animals is
+not reported. Model physiology is for a 30 g mouse (Table 1 footnote b). The
+human file has no fitted population: it is a 70 kg reference adult (Table 2).
+
+```{r population}
+str(rxode2::rxode(readModelDb("Wyska_2016_lisofylline_mouse_pbpk"))$population)
+```
+
+# Source trace
+
+Every `ini()` entry carries an in-file comment with its source. Summary:
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Brain, muscle, kidney, gut ODEs | n/a | Eqs. 1, 2, 3, 5 |
+| Liver ODE (C_A x (Q_Li - Q_Gu) + gut outflow, MM metabolism) | n/a | Eq. 4 |
+| Lung, remainder, arterial, venous ODEs | n/a | Eqs. 6, 7, 8, 9 |
+| Residual error SD = sigma1 + sigma2 x Y | n/a | Eq. 10 |
+| `v_<organ>` (mouse) | 0.50, 11.40, 0.50, 1.65, 1.50, 0.22, 13.05, 0.24, 0.94 mL | Table 1 |
+| `q_<organ>` (mouse) | 0.47, 0.91, 1.27, 2.25, 1.50, 13.98, 7.58 mL/min | Table 1 |
+| `lkp_<organ>` (both) | P = 0.345, 0.640, 0.777, 0.859, 0.892, 0.758 | Table 1 |
+| `lvmax` | 9.644 ug/min | Table 3 |
+| `lkm` | 1.777 ug/mL | Table 3 |
+| `cl_renal` | 0 (fixed) | Table 3 |
+| `fu` (mouse) | 0.76 | Methods, after Eq. 9 |
+| `addSd`, `propSd` | 0.311 ug/mL, 0.250 | Table 3 (sigma1, sigma2) |
+| `v_<organ>` (human) | 1400, 35000, 310, 1800, 1650, 1000, 24290, 1000, 3550 mL | Table 2 |
+| `q_<organ>` (human) | 700, 750, 1240, 1450, 1100, 5600, 360 mL/min | Table 2 |
+| `lclint` (human) | 1545.24 mL/min | Results text (Eq. 11) |
+| `fu` (human) | 0.54 | Methods, after Eq. 12 |
+| `lka`, `lfdepot` (human oral) | 0.024 1/min, 0.16 | Methods, after Eq. 13 |
+| Oral input In(t) into venous blood | n/a | Eqs. 9 and 13 |
+
+# Mouse: simulation of the 50 mg/kg IV bolus
+
+The model is deterministic (fitted to mean profiles), so one typical animal is
+simulated. The dose is 50 mg/kg x 0.030 kg = 1500 ug into the venous blood.
+
+```{r mouse-sim}
+mod_mouse <- rxode2::rxode(readModelDb("Wyska_2016_lisofylline_mouse_pbpk"))
+ev_mouse <- rxode2::et(amt = 1500, cmt = "venous") |>
+  rxode2::et(seq(0, 60, by = 0.05)) |>
+  as.data.frame() |>
+  dplyr::mutate(id = 1L)
+sim_mouse <- as.data.frame(rxode2::rxSolve(mod_mouse, ev_mouse, returnType = "data.frame"))
+
+mouse_long <- sim_mouse |>
+  dplyr::select(time, Serum = Cc, Brain = Cbrain, Muscle = Cmuscle, Liver = Cliver,
+                Kidneys = Ckidney, Gut = Cgut, Lungs = Clung) |>
+  tidyr::pivot_longer(-time, names_to = "tissue", values_to = "conc")
+```
+
+## Figure 3: serum and tissue profiles
+
+The published model curves of Figure 3 were digitised by the maintainers from the
+article figure (points below); the lines are the packaged model.
+
+```{r fig3}
+fig3 <- tibble::tribble(
+  ~time, ~Serum, ~Brain, ~Muscle, ~Liver, ~Kidneys, ~Gut, ~Lungs,
+  1,  83.6, 46.4,  20.9, 89.7,  84.5,  NA,   NA,
+  4,  48.1, 17.6,  27.5, 50.6,  50.3,  50.4, 51.2,
+  10, 30.7, 10.6,  25.5, 23.7,  24.1,  28.7, 31.1,
+  20, 16.4, 5.67,  16.3, 11.1,  10.9,  15.2, 16.7,
+  40, 3.96, 1.38,  4.86, 1.93,  1.91,  3.80, NA,
+  50, 1.90, 0.681, 2.40, 0.822, 0.812, 1.83, 1.98,
+  59, 0.956, 0.341, 1.26, 0.409, 0.390, 0.922, 1.02
+) |>
+  tidyr::pivot_longer(-time, names_to = "tissue", values_to = "published") |>
+  dplyr::filter(!is.na(published))
+
+# the log axis cannot show the zero tissue concentrations at the dose time
+ggplot(dplyr::filter(mouse_long, time >= 0.05), aes(time, conc)) +
+  geom_line() +
+  geom_point(data = fig3, aes(time, published), colour = "firebrick") +
+  facet_wrap(~tissue, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time (min)", y = "Lisofylline (ug/mL or ug/g)",
+       caption = "Replicates Figure 3 of Wyska 2016. Red points: published model curves (digitised).")
+```
+
+```{r fig3-ratio}
+fig3_cmp <- fig3 |>
+  dplyr::left_join(mouse_long, by = c("time", "tissue")) |>
+  dplyr::mutate(ratio = conc / published)
+fig3_cmp |>
+  dplyr::select(tissue, time, ratio) |>
+  tidyr::pivot_wider(names_from = tissue, values_from = ratio) |>
+  dplyr::rename("Time (min)" = time) |>
+  knitr::kable(digits = 2, caption = "Packaged model / digitised Figure 3 curve.")
+```
+
+The packaged model runs below the published curves: about 0.6-0.8 of them in
+the first 10 min and about 0.35-0.65 at 60 min in every tissue except the
+kidneys, which converge on the published curve late (see Assumptions and
+deviations). The terminal serum half-life is close to the
+published curve's, which is what the following check pins.
+
+```{r fig3-check}
+thalf <- function(t, c) log(2) / (-coef(lm(log(c) ~ t))[[2]])
+sim_term <- sim_mouse |> dplyr::filter(time >= 40, time <= 59)
+pub_term <- fig3 |> dplyr::filter(tissue == "Serum", time >= 40)
+thalf_sim <- thalf(sim_term$time, sim_term$Cc)
+thalf_pub <- thalf(pub_term$time, pub_term$published)
+c(simulated = thalf_sim, published_curve = thalf_pub)
+stopifnot(
+  # Terminal serum half-life within 25% of the published curve.
+  abs(thalf_sim / thalf_pub - 1) < 0.25,
+  # The level gap is systematic, not a mis-transcribed parameter: every
+  # tissue sits between 0.3x and 1x of the published curve.
+  all(fig3_cmp$ratio > 0.3 & fig3_cmp$ratio < 1.05)
+)
+```
+
+## Figure 4: arterial blood and remainder
+
+```{r fig4}
+fig4 <- tibble::tribble(
+  ~time, ~Arterial, ~Remainder,
+  1,  73.4, 30.5,
+  2,  50.6, 34.2,
+  5,  31.2, 35.6,
+  10, 22.7, 30.9,
+  20, 14.6, 20.9,
+  50, 3.44, 5.34,
+  59, 2.18, 3.41
+) |>
+  tidyr::pivot_longer(-time, names_to = "tissue", values_to = "published")
+
+fig4_sim <- sim_mouse |>
+  dplyr::select(time, Arterial = Carterial, Remainder = Cother) |>
+  tidyr::pivot_longer(-time, names_to = "tissue", values_to = "conc")
+
+ggplot(dplyr::filter(fig4_sim, time >= 0.05), aes(time, conc)) +
+  geom_line() +
+  geom_point(data = fig4, aes(time, published), colour = "firebrick") +
+  facet_wrap(~tissue, ncol = 1) +
+  scale_y_log10() +
+  labs(x = "Time (min)", y = "Lisofylline (ug/mL or ug/g)",
+       caption = "Replicates Figure 4 of Wyska 2016. Red points: published curves (digitised).")
+```
+
+Figure 4 does not agree with Figure 3 of the same paper: its arterial curve
+reaches 2.2 ug/mL at 59 min where the Figure 3 serum curve reaches 0.96 ug/mL,
+and its terminal half-life is about 14 min against about 9 min, although the
+text says arterial and venous concentrations are similar. No single
+parameter set can reproduce both figures; the packaged model follows the
+printed equations and Table 1 / Table 3 values, and sits closer to Figure 3.
+
+## Closed-form checks of the reported clearances
+
+The paper reports an intrinsic clearance of 5.427 mL/min and a well-stirred
+hepatic clearance of 1.22 mL/min (Eq. 12, with fu 0.76 and blood-to-plasma
+ratio 0.77). Both follow directly from the packaged values.
+
+```{r mouse-clearance}
+ini_m <- rxode2::rxode(readModelDb("Wyska_2016_lisofylline_mouse_pbpk"))$theta
+clint_m <- exp(ini_m[["lvmax"]]) / exp(ini_m[["lkm"]])
+ws <- function(q, fu, clint, bp = 0.77) q * fu * clint / (q + fu * clint / bp)
+clh_m <- ws(ini_m[["q_liver"]], ini_m[["fu"]], clint_m)
+c(CLint = clint_m, CLH = clh_m)
+stopifnot(
+  abs(clint_m / 5.427 - 1) < 1e-3,
+  abs(clh_m / 1.22 - 1) < 5e-3
+)
+```
+
+## Mass balance: the remainder-flow leak
+
+Table 1 footnote a computes the remainder flow as the lung flow minus the sum
+of all other flows *including the gut*, but the gut blood drains into the liver
+(Eq. 4) and so already returns through the hepatic flow. Arterial outflow
+(Q_Lu = 13.98 mL/min) therefore exceeds the flow delivered to the tissues
+(12.48 mL/min) by Q_Gu = 1.5 mL/min, and the printed equations remove
+Q_Gu x C_A from the body in addition to hepatic metabolism. The check below
+confirms the packaged model reproduces that: the drug in all compartments plus
+the cumulative metabolised and cumulative "leaked" amounts equals the dose.
+
+```{r mass-balance}
+states <- c("venous", "lung", "arterial", "brain", "muscle", "kidney", "liver", "gut", "other")
+mb <- sim_mouse |>
+  dplyr::arrange(time) |>
+  dplyr::mutate(
+    body = rowSums(dplyr::across(dplyr::all_of(states))),
+    leak_rate = 1.5 * Carterial,
+    cum_metab = c(0, cumsum(diff(time) * (head(r_metab, -1) + tail(r_metab, -1)) / 2)),
+    cum_leak = c(0, cumsum(diff(time) * (head(leak_rate, -1) + tail(leak_rate, -1)) / 2)),
+    total = body + cum_metab + cum_leak
+  )
+mb |>
+  dplyr::filter(time %in% c(5, 15, 30, 60)) |>
+  dplyr::select(time, body, cum_metab, cum_leak, total) |>
+  dplyr::rename("Time (min)" = time, "In body (ug)" = body, "Metabolised (ug)" = cum_metab,
+                "Leaked Q_Gu x C_A (ug)" = cum_leak, "Sum (ug)" = total) |>
+  knitr::kable(digits = 1)
+stopifnot(max(abs(mb$total[mb$time > 0] / 1500 - 1)) < 0.01)
+```
+
+Over 60 min the leak carries away more drug than hepatic metabolism. It is
+what lets the model clear the dose within the hour: with mass-conserving flows
+(remainder flow 9.08 mL/min) the saturable hepatic pathway alone (at most
+9.6 ug/min) leaves a 60-min serum concentration near 37 ug/mL, far from the
+sub-1 ug/mL of Figure 3. The human projection of the paper (below) also only
+reproduces the reported oral Tmax with the leak in place, so the packaged
+models keep the equations as printed.
+
+## PKNCA of the simulated mouse serum profile
+
+```{r mouse-nca}
+mouse_conc <- sim_mouse |>
+  dplyr::filter(!is.na(Cc)) |>
+  # a single-subject solve returns no id column
+  dplyr::mutate(id = 1L, treatment = "50 mg/kg IV") |>
+  dplyr::select(id, time, Cc, treatment)
+mouse_dose <- ev_mouse |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt) |>
+  dplyr::mutate(treatment = "50 mg/kg IV")
+nca_mouse <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(mouse_conc, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(mouse_dose, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE,
+                         half.life = TRUE, cl.obs = TRUE)
+))
+nca_mouse_tab <- as.data.frame(nca_mouse) |>
+  dplyr::select(PPTESTCD, PPORRES)
+knitr::kable(nca_mouse_tab, digits = 3, caption = "PKNCA, simulated mouse serum (time in min, ug/mL).")
+```
+
+The paper reports a total clearance of 1.44 mL/min from a one-compartment fit
+of the observed serum data. The packaged model's serum clearance (dose /
+AUC0-inf) is about 1.9 mL/min, consistent with its lower concentrations
+against Figure 3.
+
+# Human projection
+
+## Closed-form checks
+
+Eq. 11 sums Vmax/KM over the four human-microsome pathways reported in the
+Results (lisofylline-diol: KM 0.0230 and 4.23 mM with Vmax 0.0565 and
+0.429 nmol/min/mg; pentoxifylline: KM 0.282 and 158 uM with Vmax 0.003 and
+0.928 nmol/min/mg), scaled by 45 mg microsomal protein per g liver and a
+1800 g liver. The paper reports 1,545.24 mL/min, and a well-stirred hepatic
+plasma clearance of 477.54 mL/min (fu 0.54, blood-to-plasma 0.77).
+
+```{r human-clearance}
+# Vmax (nmol/min/mg) / KM (nmol/mL) = mL/min/mg protein
+clint_mg <- 0.0565 / 23 + 0.429 / 4230 + 0.003 / 0.282 + 0.928 / 158
+clint_eq11 <- clint_mg * 45 * 1800
+ini_h <- rxode2::rxode(readModelDb("Wyska_2016_lisofylline_human_pbpk"))$theta
+clh_h <- ws(ini_h[["q_liver"]], ini_h[["fu"]], exp(ini_h[["lclint"]]))
+c(CLint_eq11 = clint_eq11, CLint_packaged = exp(ini_h[["lclint"]]), CLH = clh_h)
+stopifnot(
+  abs(clint_eq11 / 1545.24 - 1) < 2e-3,
+  abs(clh_h / 477.54 - 1) < 1e-3
+)
+```
+
+## Figure 5: 3 mg/kg IV infusion and 6 mg/kg oral
+
+```{r human-sim}
+mod_human <- rxode2::rxode(readModelDb("Wyska_2016_lisofylline_human_pbpk"))
+dose_iv <- 3 * 70 * 1000   # ug
+dose_po <- 6 * 70 * 1000   # ug
+times_h <- seq(0, 150, by = 0.1)
+ev_iv <- rxode2::et(amt = dose_iv, dur = 10, cmt = "venous") |>
+  rxode2::et(times_h) |> as.data.frame() |>
+  dplyr::mutate(id = 1L, treatment = "3 mg/kg IV (10 min)")
+ev_po <- rxode2::et(amt = dose_po, cmt = "depot") |>
+  rxode2::et(times_h) |> as.data.frame() |>
+  dplyr::mutate(id = 2L, treatment = "6 mg/kg oral")
+ev_human <- dplyr::bind_rows(ev_iv, ev_po)
+# Two deterministic subjects: rxode2 warns that a multi-subject solve has no
+# omega, which is expected for this typical-value projection.
+sim_human <- withCallingHandlers(
+  as.data.frame(rxode2::rxSolve(mod_human, ev_human, keep = "treatment",
+                                returnType = "data.frame")),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+  }
+)
+
+human_long <- sim_human |>
+  dplyr::select(treatment, time, Serum = Cc, Brain = Cbrain, Muscle = Cmuscle,
+                Liver = Cliver, Kidneys = Ckidney, Gut = Cgut, Lungs = Clung) |>
+  tidyr::pivot_longer(-c(treatment, time), names_to = "tissue", values_to = "conc") |>
+  dplyr::mutate(conc_ng = 1000 * conc)
+
+fig5 <- tibble::tribble(
+  ~tissue,   ~time, ~published,
+  "Serum",   5, 7670,  "Serum", 8, 8930,  "Serum", 15, 2600, "Serum", 45, 841,
+  "Serum",   60, 653,  "Serum", 120, 363, "Serum", 148, 183,
+  "Brain",   8, 3030,  "Brain", 15, 979,  "Brain", 30, 316,  "Brain", 60, 198,
+  "Brain",   148, 65.3,
+  "Liver",   10, 4940, "Liver", 15, 2490, "Liver", 30, 559,  "Liver", 60, 326,
+  "Liver",   148, 109,
+  "Kidneys", 10, 5410, "Kidneys", 15, 2700, "Kidneys", 30, 547, "Kidneys", 148, 113,
+  "Gut",     10, 8120, "Gut", 15, 3310,   "Gut", 30, 873,    "Gut", 60, 541,
+  "Gut",     148, 168,
+  "Lungs",   8, 6600,  "Lungs", 15, 2020, "Lungs", 30, 674,  "Lungs", 60, 427,
+  "Lungs",   148, 139,
+  "Muscle",  10, 1290, "Muscle", 15, 1580, "Muscle", 30, 1320, "Muscle", 59, 759
+)
+
+ggplot(dplyr::filter(human_long, conc_ng >= 1), aes(time, conc_ng, linetype = treatment)) +
+  geom_line() +
+  geom_point(data = fig5, aes(time, published), inherit.aes = FALSE, colour = "firebrick") +
+  facet_wrap(~tissue, scales = "free_y") +
+  scale_y_log10(limits = c(1, NA)) +
+  labs(x = "Time (min)", y = "Lisofylline (ng/mL or ng/g)", linetype = NULL,
+       caption = "Replicates Figure 5 of Wyska 2016. Red points: published IV curves (digitised).") +
+  theme(legend.position = "bottom")
+```
+
+```{r fig5-ratio}
+fig5_cmp <- fig5 |>
+  dplyr::left_join(
+    human_long |> dplyr::filter(treatment == "3 mg/kg IV (10 min)"),
+    by = c("tissue", "time")
+  ) |>
+  dplyr::mutate(ratio = conc_ng / published)
+fig5_cmp |>
+  dplyr::group_by(tissue) |>
+  dplyr::summarise(min_ratio = min(ratio), median_ratio = median(ratio), max_ratio = max(ratio)) |>
+  dplyr::rename("Tissue" = tissue, "Min" = min_ratio, "Median" = median_ratio, "Max" = max_ratio) |>
+  knitr::kable(digits = 2, caption = "Packaged model / digitised Figure 5 IV curve.")
+stopifnot(all(fig5_cmp$ratio > 0.3 & fig5_cmp$ratio < 1.2))
+```
+
+As in the mouse, the packaged human projection sits close to the published
+curves at the end of the infusion and about half of them in the terminal phase,
+with the same terminal slope.
+
+## PKNCA and the reported oral Cmax / Tmax
+
+The paper reports the simulated oral 6 mg/kg profile (mouse-derived ka and F)
+as Cmax 572.12 ng/mL at 10.6 min.
+
+```{r human-nca}
+human_conc <- sim_human |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, treatment, time, Cc)
+human_dose <- ev_human |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, treatment, time, amt)
+nca_human <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(human_conc, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(human_dose, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                         aucinf.obs = TRUE, half.life = TRUE)
+))
+
+published_po <- tibble::tribble(
+  ~treatment,     ~cmax,   ~tmax,
+  "6 mg/kg oral", 0.57212, 10.6
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_human,
+  reference = published_po,
+  by = "treatment",
+  units = c(cmax = "ug/mL", tmax = "min", aucinf.obs = "min*ug/mL", half.life = "min"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs. published (Results text). * differs by >20%.")
+
+po_res <- as.data.frame(nca_human) |>
+  dplyr::filter(treatment == "6 mg/kg oral")
+cmax_po <- po_res$PPORRES[po_res$PPTESTCD == "cmax"]
+tmax_po <- po_res$PPORRES[po_res$PPTESTCD == "tmax"]
+stopifnot(
+  abs(cmax_po / 0.57212 - 1) < 0.2,
+  abs(tmax_po - 10.6) < 3
+)
+```
+
+The simulated oral Cmax is about 12% below the reported 572 ng/mL and Tmax is
+about 1 min earlier. With mass-conserving flows the oral Tmax would move to
+about 36 min, which is why the remainder-flow leak is retained.
+
+The paper also projects the human hepatic clearance by blood-flow scaling of
+the mouse value, 766.89 mL/min. With the reported mouse CLH of 1.22 mL/min,
+1.22 x 1450 / 2.25 = 786 mL/min; the printed 766.89 corresponds to a mouse
+CLH of 1.19 mL/min. The model files do not use this number.
+
+# Assumptions and deviations
+
+* **Remainder-flow leak kept as printed.** Tables 1 and 2 compute the remainder
+  flow as cardiac output minus every other flow including the gut, while Eq. 4
+  routes the gut outflow through the liver. The arterial blood therefore loses
+  Q_Gu x C_A (1.5 mL/min in the mouse, 1100 mL/min in the human) that never
+  returns. Figure 2 could be read as giving the hepatic-artery flow the label
+  Q_Li, which would conserve mass, but Eq. 4 explicitly uses Q_Li - Q_Gu.
+  The mass-conserving alternative cannot clear the mouse dose within 60 min
+  and moves the human oral Tmax to about 36 min, so it is not what the authors
+  ran. The packaged models follow the equations.
+* **Residual gap to the published curves.** In both species the packaged model
+  lies at about 0.6-0.9 of the published curves near the peak and about
+  0.35-0.65 in the terminal phase, with similar terminal slopes. Discrete alternatives
+  (fuT = 1, fuT = fu / P_Li, Vmax per mL of liver) were checked and none closes
+  the gap. Figures 3 and 4 are also mutually inconsistent. No parameter was
+  adjusted.
+* **Unbound fraction in the liver term (fuT).** Eq. 4 uses fuT, defined as the
+  fraction unbound in the liver, with liver-water and serum unbound
+  concentrations assumed equal; no separate value is printed. The serum value
+  (0.76 mouse, 0.54 human) is used. This choice reproduces the paper's own
+  well-stirred clearances (1.22 and 477.54 mL/min) exactly.
+* **Human renal clearance.** The paper uses only the hepatic CLint for the human
+  simulations; CLR is kept at 0 as in the mouse. The paper itself notes that
+  hepatic clearance (477.54 mL/min) is well below the observed total clearance
+  in humans (1,282.88 mL/min).
+* **Human oral input.** Eqs. 9 and 13 send the absorbed oral dose directly into
+  the venous blood with ka 0.024 1/min and F 0.16 from a mouse study (the
+  dashed lines of Figure 5). The dotted lines of Figure 5 use human oral data
+  (F 5.9%) with an unreported ka, so they are not reproduced; the human F can
+  be set with `lfdepot = log(0.059)`.
+* **Residual error.** The paper fitted all seven mouse profiles with one shared
+  variance model, var = (sigma1 + sigma2 x Y)^2. The mouse file attaches it to
+  serum (`Cc`, `combined1`); tissue concentrations are returned as
+  noise-free outputs (`Cbrain`, `Cmuscle`, `Ckidney`, `Cliver`, `Cgut`,
+  `Clung`, plus `Carterial` and `Cother`). The human file is a deterministic
+  projection with a zero residual error.
+* **No between-animal variability.** The model was fitted to naive-pooled mean
+  profiles; no IIV is reported.
+* **`cl_renal` not log-transformed.** It is fixed at exactly zero (Table 3),
+  which has no log; the convention checker flags it.
+* **Body weight.** Organ volumes and flows are fixed at the 30 g mouse and
+  70 kg human values of Tables 1 and 2; the paper does not scale them with body
+  weight, and neither do the model files.
+* **Digitisation.** Published curves in Figures 3-5 were digitised by the
+  maintainers from the article figures; points where the curve crosses data
+  symbols, tick labels or panel titles were skipped.
