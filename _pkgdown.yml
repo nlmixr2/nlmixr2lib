@@ -8874,6 +8874,8 @@ navbar:
         href: articles/Li_2021_vancomycin_renal_function.html
       - text: "Vancomycin parametric (Hughes 2024)"
         href: articles/Hughes_2024_vancomycin.html
+      - text: "Vancomycin rat (Joshi 2017)"
+        href: articles/Joshi_2017_vancomycin_rat.html
       - text: "Vancomycin schwartz (Downes 2023)"
         href: articles/Downes_2023_vancomycin.html
       - text: "Vancomycin thomson (Tong 2026)"
@@ -10561,6 +10563,7 @@ articles:
   - articles/Jonsson_2015_edoxaban
   - articles/Jonsson_2016_tanezumab
   - articles/Jorga_2000_tolcapone
+  - articles/Joshi_2017_vancomycin_rat
   - articles/Jullien_2005_abacavir
   - articles/Jullien_2006_lopinavir
   - articles/Juma_2026_lumefantrine
