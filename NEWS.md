@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2018 sorafenib PK/PD with the N-oxide metabolite and FLT3 / ERK inhibition ([doi:10.1111/cts.12555](https://doi.org/10.1111/cts.12555)) -- adults with relapsed or refractory acute myeloid leukemia.
+- Add de Witte 2018 morphine EEG effect-compartment and target-binding models ([doi:10.1007/s10928-018-9593-x](https://doi.org/10.1007/s10928-018-9593-x)) -- male Wistar rats (plasma, brain ECF microdialysis and EEG).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
