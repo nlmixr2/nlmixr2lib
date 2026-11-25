@@ -1349,6 +1349,13 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Wattanakul_2026_paracetamol_creatinine.R` (exponential approach to a plateau, `crcfb = Plateau * (1 - exp(-kappa * t))`, with the plateau scaled by the enrollment KDIGO stage and the rate constant by log10 paracetamol AUC0-72h; additive residual 7.94%).
 - **Notes:** The `cfb` suffix follows the `ppsvcfb` / `tmccfb` / `das28cfb` precedent. This is a PERCENT change; a model of the absolute creatinine concentration or of an absolute (umol/L) change should register a sibling rather than overload this name.
 
+### egfrcfb (**canonical change in estimated glomerular filtration rate output**)
+- **Type:** compartment
+- **Role:** Absolute change in the estimated glomerular filtration rate, in mL/min/1.73 m^2, used as the modelled endpoint by exposure-response models whose structural equation targets the change score directly rather than the eGFR level. Signed: a NEGATIVE value is a decline in kidney function. The reference point of the change (pre-treatment baseline, start of an interval) must be stated in each model's `description`.
+- **Source aliases:** `change in eGFR`, `altered eGFR` -- Tang 2026 Methods and Results.
+- **Example models:** `Tang_2026_tacrolimus.R` (founding example; direct linear model with no intercept, `egfrcfb = slope_i * cauc`, where `cauc` is the paper's cumulative tacrolimus AUC in mg*h/L (running sum of daily dose / CL/F) and the slope depends on the pre-transplant eGFR category; change from the start of cAUC accumulation, so the change over a later interval is the difference of `egfrcfb` across that interval).
+- **Notes:** Formed by the library-wide `<state>cfb` change-from-baseline convention (see `bcvacfb`) on the registered `egfr` state. Distinct from `egfr` (the modelled eGFR level), from `crcfb` (a PERCENT change in serum creatinine) and from the covariate columns `CRCL` / `CRCL_BASE` (measured renal function a user supplies). A model of a PERCENT change in eGFR should register a sibling rather than overload this name.
+
 ### ugecfb (**canonical change from baseline in 24-hour urinary glucose excretion output**)
 - **Type:** compartment
 - **Role:** Drug-induced change from the pre-treatment value in the amount of glucose excreted in urine over 24 h, in g/24 h. The primary pharmacodynamic endpoint of SGLT2-inhibitor trials. **Sign convention: POSITIVE for drug effect**, because SGLT2 inhibition raises urinary glucose. Algebraic output in the founding model (no ODE state).
@@ -2685,6 +2692,13 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 
 One family in this section is validated by shape rather than by enumeration -- see `prob_<endpoint>` immediately below. Its per-endpoint entries are retained as documentation of what each endpoint means, but `checkModelConventions()` no longer requires an entry to exist before accepting the name.
 
+### gametocyte_density (**canonical circulating Plasmodium gametocyte density output**)
+- **Type:** compartment
+- **Role:** Density of circulating mature Plasmodium falciparum gametocytes in peripheral blood (gametocytes/uL), the observed output of a gametocyte-dynamics model; fitted on the log scale (`gametocyte_density ~ lnorm(expSd)`).
+- **Source aliases:** `G` / `G(t)` -- Bousema 2010 density-model equations ('expected gametocyte density in circulation'); Pfs25 QT-NASBA gametocyte density.
+- **Example models:** `Bousema_2010_malaria_gametocyte_density_kenya.R`, `Bousema_2010_malaria_gametocyte_density_tanzania.R` (equal to the circulating-gametocyte state, released from a sequestered pool and decaying at 1 / mean circulation time).
+- **Notes:** Linear scale; the log transform lives in the residual model. Distinct from asexual parasitaemia (the `PARA` covariate and models such as `Hietala_2010_artemether_parasitemia.R`) and from the binary carriage output `gametocyte_status`.
+
 ### Cbreath (**canonical exhaled-breath drug concentration output**)
 - **Type:** compartment
 - **Role:** Drug concentration measured in exhaled breath, as an algebraic output of a model that links plasma to breath through a lung (or other delay) state. Units are those of the breath assay, typically ppb (by volume) for a calibrated gas-phase reading. Not an ODE state: it is computed from the model's lung concentration through the paper's breath-to-lung relationship.
@@ -3884,7 +3898,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences diarrhea of CTCAE grade 3 or worse as a reported adverse event, in a static landmark exposure-safety logistic model. The grade >= 3 sibling of `prob_diarrhea` (ungraded) and `prob_diarrhea_grade2` (grade >= 2).
 - **Source aliases:** none.
-- **Example models:** `Brendel_2021_irinotecan_liposomal_diarrhea_irinotecan.R` and `Brendel_2021_irinotecan_liposomal_diarrhea_sn38.R` (univariable binomial logistic regressions of grade >= 3 diarrhea at first event on log10 of the steady-state average concentration of total irinotecan, odds ratio 8.70, or of SN-38, odds ratio 7.30, in 316 patients with metastatic pancreatic cancer receiving liposomal irinotecan; 17.7% event rate -- founding examples); `Sathe_2025b_sacituzumab_diarrhea.R` (grade >= 3 threshold of the same nonproportional-odds model as its `prob_diarrhea` output, odds ratio 1.01 per ug/mL, not significant; the intercept is approximated from a printed dataset-average prediction. The two thresholds have their own slopes and cross near 11 ug/mL); `Zhu_2019_ipatasertib_diarrhea_grade3.R` and `Zhu_2019_ipatasertib_diarrhea_grade3_nominal.R` (binomial logistic regressions on the ipatasertib daily AUC, `-4.56 + 0.000798 * AUC_IPAT_EVT` or `-4.38 + 0.000640 * AUC_IPAT_SS`).
+- **Example models:** `Brendel_2021_irinotecan_liposomal_diarrhea_irinotecan.R` and `Brendel_2021_irinotecan_liposomal_diarrhea_sn38.R` (univariable binomial logistic regressions of grade >= 3 diarrhea at first event on log10 of the steady-state average concentration of total irinotecan, odds ratio 8.70, or of SN-38, odds ratio 7.30, in 316 patients with metastatic pancreatic cancer receiving liposomal irinotecan; 17.7% event rate -- founding examples); `Sathe_2025b_sacituzumab_diarrhea.R` (grade >= 3 threshold of the same nonproportional-odds model as its `prob_diarrhea` output, odds ratio 1.01 per ug/mL, not significant; the intercept is approximated from a printed dataset-average prediction. The two thresholds have their own slopes and cross near 11 ug/mL); `Zhu_2019_ipatasertib_diarrhea_grade3.R` and `Zhu_2019_ipatasertib_diarrhea_grade3_nominal.R` (binomial logistic regressions on the ipatasertib daily AUC, `-4.56 + 0.000798 * AUC_IPAT_EVT` or `-4.38 + 0.000640 * AUC_IPAT_SS`); the six `Pin_2026_<drug>_human.R` models (grade >= 3, as 1 - P(grade <= 2) of the same cumulative-logit model as their `prob_diarrhea` output, with its own intercept and half-maximal injury).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Delayed diarrhea is the characteristic dose-limiting gastrointestinal toxicity of irinotecan, attributed to SN-38 exposure of the intestinal mucosa, which is why the founding paper fits the same endpoint against both the parent and the metabolite. The two founding models are alternative univariable fits of ONE endpoint, not competing risks and not additive: use one or the other. The `_grade3` suffix means "grade 3 or worse", matching the source convention "grade >= 3".
 
 ### prob_thrombocytopenia (**canonical thrombocytopenia adverse-event probability output**)
@@ -5344,6 +5358,13 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:**
   - `HDL` -- Krishna 2011 Eqs. 1, 2 and 8 output variable; casing only.
 - **Example models:** `Krishna_2011_anacetrapib_hdlc.R` (algebraic proportional-Emax output driven by the anacetrapib steady-state trough concentration; no ODE state).
+
+### thyroglobulin (**canonical serum thyroglobulin tumor-marker PD output**)
+- **Type:** compartment
+- **Role:** Serum thyroglobulin (Tg) concentration, the tumor marker of differentiated thyroid cancer after total thyroidectomy (ng/mL, equivalently ug/L). Carried as a turnover state produced by tumor cells and eliminated first order, and observed directly as the model output. Spelled out rather than abbreviated because `tg` and `TG` are ambiguous with triglycerides and tumor growth.
+- **Source aliases:**
+  - `Tg` -- Barbolosi 2017 and Fusella Giuntini 2026 state and output name; spelled out.
+- **Example models:** `Barbolosi_2017_radioiodine.R` (dTg/dt = lambda * N - ke * Tg, with N the tumor-cell state killed by radioiodine activity; stimulated Tg is the single observed endpoint with proportional residual error).
 
 ### hdlcfb (**canonical percentage change from baseline in HDL-cholesterol output**)
 - **Type:** compartment
@@ -9850,6 +9871,8 @@ Clinician-rated ordinal scores of eyebrow and eyelash hair loss used in alopecia
 - **Notes:** Follows the bare lower-case analyte form of other biomarker states (`vegf`, `igf1`, `shbg`).
 
 ## Subcutaneous insulin product suffixes
+
+Suffixes for models that carry several insulin products at once, each with its own absorption depot and, where the products differ in disposition, its own central compartment. A disposition suffix names an insulin molecule (`glar`, `hum`, `lis`); a formulation suffix names one product of that molecule whose absorption differs (`regu100`, `regu500`, `nph`, `ilps`). Founded by `Tham_2017_insulin.R`.
 
 ### glar (**canonical insulin glargine sibling-drug suffix**)
 - **Type:** metabolite-suffix
