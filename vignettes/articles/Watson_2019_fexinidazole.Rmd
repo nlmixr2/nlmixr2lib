@@ -136,6 +136,19 @@ corresponds to an AUlogC of about 300.
 mod <- readModelDb("Watson_2019_fexinidazole")
 mod_typ <- rxode2::zeroRe(mod)
 
+# Typical-value solves of several subjects at once; rxode2 warns that a
+# multi-subject solve has no omega, which is the intent of zeroRe().
+solve_typ <- function(events, ...) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod_typ, events = events, ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
 typ_cases <- bind_rows(
   make_regimen("g-HAT", "Adult regimen, 50 kg", 1, 50, ghat_adult, 1, 0, 0L),
   make_regimen("g-HAT", "Child regimen, 25 kg", 1, 25, ghat_child, 1, 0, 1L),
@@ -145,7 +158,7 @@ typ_cases <- bind_rows(
   make_regimen("Chagas", "1,200 mg x 8 weeks, 65 kg", 1, 65, rep(1200, 56), 0, 1, 5L),
   make_regimen("Chagas", "1,800 mg x 8 weeks, 65 kg", 1, 65, rep(1800, 56), 0, 1, 6L)
 )
-typ_sim <- rxode2::rxSolve(mod_typ, events = typ_cases, keep = c("study", "arm", "total_mgkg")) |>
+typ_sim <- solve_typ(typ_cases, keep = c("study", "arm", "total_mgkg")) |>
   as.data.frame()
 typ_auc <- typ_sim |>
   group_by(id, study, arm, total_mgkg) |>
@@ -178,7 +191,7 @@ ev_chk <- make_regimen("g-HAT", "adult", 1, 50, ghat_adult, 1, 0, 0L) |>
   bind_rows(tibble(id = 1L, time = seq(0, 24 * 60, by = 0.25), amt = 0, evid = 0L, cmt = "central")) |>
   mutate(WT = 50, DIS_HAT_GAMBIENSE = 1, DIS_CHAGAS_CHRONIC = 0) |>
   arrange(time, desc(evid))
-chk <- rxode2::rxSolve(mod_typ, events = ev_chk) |> as.data.frame()
+chk <- solve_typ(ev_chk) |> as.data.frame()
 y <- pmax(0, log(pmax(chk$Cc * 1000, 1e-300)))
 trap <- sum(diff(chk$time) * (head(y, -1) + tail(y, -1)) / 2) / 24
 c(ode = max(chk$auc_log_central), trapezoid = trap)
@@ -193,7 +206,7 @@ n_days <- c(7, 14, 21, 28, 35, 42, 56)
 thr_ev <- bind_rows(lapply(seq_along(n_days), function(i) {
   make_regimen("Chagas", paste(n_days[i], "days"), 1, 65, rep(1200, n_days[i]), 0, 1, i)
 }))
-thr <- rxode2::rxSolve(mod_typ, events = thr_ev, keep = c("arm", "total_mgkg")) |>
+thr <- solve_typ(thr_ev, keep = c("arm", "total_mgkg")) |>
   as.data.frame() |>
   group_by(arm, total_mgkg) |>
   summarise(AUlogC = max(auc_log_central), .groups = "drop") |>
@@ -341,7 +354,7 @@ prof_ev <- bind_rows(lapply(1:3, function(i) {
     DIS_HAT_GAMBIENSE = as.numeric(id == 2), DIS_CHAGAS_CHRONIC = as.numeric(id == 3)
   ) |>
   arrange(id, time, desc(evid))
-prof <- rxode2::rxSolve(mod_typ, events = prof_ev, keep = "population") |> as.data.frame()
+prof <- solve_typ(prof_ev, keep = "population") |> as.data.frame()
 ggplot(prof, aes(time / 24, Cc, colour = population)) +
   geom_line() +
   scale_y_log10() +
@@ -377,7 +390,7 @@ er_out <- c(
   "nadir_lymphocyte_count", "nadir_lymphocyte_pct_change",
   "nadir_hb", "nadir_hb_pct_change"
 )
-er <- rxode2::rxSolve(mod_typ, events = er_ev) |>
+er <- solve_typ(er_ev) |>
   as.data.frame() |>
   select(AUlogC = auc_log_central, all_of(er_out)) |>
   pivot_longer(-AUlogC, names_to = "output", values_to = "value") |>
@@ -590,7 +603,7 @@ nca_ev <- bind_rows(lapply(seq_along(c(600, 1200, 1800)), function(i) {
 })) |>
   mutate(WT = 70, DIS_HAT_GAMBIENSE = 0, DIS_CHAGAS_CHRONIC = 0) |>
   arrange(id, time, desc(evid))
-nca_sim <- rxode2::rxSolve(mod_typ, events = nca_ev, keep = "treatment") |> as.data.frame()
+nca_sim <- solve_typ(nca_ev, keep = "treatment") |> as.data.frame()
 
 conc_df <- nca_sim |>
   filter(!is.na(Cc)) |>
