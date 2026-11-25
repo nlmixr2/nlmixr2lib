@@ -1210,8 +1210,14 @@ navbar:
         href: articles/Kim_2024_borofalan.html
       - text: "Bortezomib (Hanley 2017)"
         href: articles/Hanley_2017_bortezomib.html
-      - text: "Bosentan (Miura 2026)"
-        href: articles/Miura_2026_pulmonary_arterial_hypertension.html
+      - text: "Bortezomib mm1s (Ramakrishnan 2019)"
+        href: articles/Ramakrishnan_2019_bortezomib_myeloma.html
+      - text: "Bortezomib ncih929 (Ramakrishnan 2019)"
+        href: articles/Ramakrishnan_2019_bortezomib_myeloma.html
+      - text: "Bortezomib rpmi8226 (Ramakrishnan 2019)"
+        href: articles/Ramakrishnan_2019_bortezomib_myeloma.html
+      - text: "Bortezomib u266 (Ramakrishnan 2019)"
+        href: articles/Ramakrishnan_2019_bortezomib_myeloma.html
       - text: "Bosentan pbpk (Aoki 2024)"
         href: articles/Aoki_2024_bosentan_pbpk.html
       - text: "Bosutinib (Wu 2026)"
@@ -12981,6 +12987,7 @@ articles:
   - articles/Quintairos_2021_tacrolimus_mycophenolic_acid
   - articles/Raigani_2017_mtpa
   - articles/Ramachandran_2023_tuberculosis_eptb_pbpk
+  - articles/Ramakrishnan_2019_bortezomib_myeloma
   - articles/Ramakrishnan_2023_amyloid_qsp
   - articles/Rambiritch_2016_glibenclamide
   - articles/Rambiritch_2016_glibenclamide_glucose_response

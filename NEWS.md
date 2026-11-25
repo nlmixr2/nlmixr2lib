@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Phee 2019 colistin + fusidic acid ([doi:10.1093/jac/dky524](https://doi.org/10.1093/jac/dky524)) -- in vitro time-kill experiments against six MDR *Acinetobacter baumannii* strains.
+- Add Ramakrishnan 2019 bortezomib signaling QSP ([doi:10.1002/psp4.12358](https://doi.org/10.1002/psp4.12358)) -- in vitro, U266, RPMI8226, MM.1S and NCI-H929 multiple myeloma cell lines (one model per cell line).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
