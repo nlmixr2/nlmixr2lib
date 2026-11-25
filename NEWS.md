@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hoch 2014 etirinotecan pegol tumor PK/PD ([doi:10.1007/s00280-014-2577-7](https://doi.org/10.1007/s00280-014-2577-7)) -- nude mice with HT29 colon and NCI-H460 lung xenografts.
+- Add Zaloumis 2014 intravenous artesunate (dihydroartemisinin) ([doi:10.1038/psp.2014.43](https://doi.org/10.1038/psp.2014.43)) -- adults and children with severe malaria in Africa and Asia.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
