@@ -26879,6 +26879,17 @@ sibling such as `AUC_BAST_FW`.
 - **Example models:** `Wu_2025_idecabtageneVicleucel_orr.R` (KarMMa-3; sigmoid Emax on the overall-response logit with E0 fixed at -5, increment 7.654, half-maximal at log(AUC0-28D) = 11.551, Hill 34), `Wu_2025_idecabtageneVicleucel_pfs.R` (log2(AUC0-28D / 1.3e6); log hazard ratio -0.43 per doubling for progression-free survival).
 - **Notes:** Assay sibling of `AUC_IDECEL` (same product, window and units, measured by quantitative PCR in KarMMa). Wu 2025 states that the two trials quantified cellular kinetics with different bioanalytical methods and that no direct comparison of the exposure values was made, so the two columns are kept apart: a qPCR AUC must not be fed to a ddPCR-fitted model, or the reverse.
 
+### AUC_STAMULUMAB (**canonical for steady-state weekly AUC(0-168 h) of stamulumab (MYO-029)**)
+- **Description:** Steady-state serum area under the concentration-time curve of stamulumab (MYO-029), a human IgG1 anti-myostatin (GDF-8) monoclonal antibody, over the weekly (0-168 h) dosing interval. Time-fixed per dose group; supplied as data to landmark exposure-response models of muscle growth. 0 for vehicle-treated animals.
+- **Units:** `ug*h/mL`
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters direct-effect Emax forms `E0 * (1 + Emax/100 * AUC_STAMULUMAB / (AUC50 + AUC_STAMULUMAB))`. Half-maximal values: 1152.6 (EDL), 1560.5 (gastrocnemius) and 1762.6 (quadriceps) ug*h/mL in mice; 32092 (day 135) and 32428 (day 271) ug*h/mL for female cynomolgus left-quadriceps circumference (Singh 2016 Table 2).
+- **Source aliases:**
+  - `AUC0-168hr`, `AUC0-168h` -- Singh 2016 Figure 3 axis label and Table 2 footnote. No value transformation.
+- **Example models:** `Singh_2016_stamulumab_mouse_muscle.R`, `Singh_2016_stamulumab_cyno_circumference.R`.
+- **Notes:** Specific scope; stamulumab-specific. Follows the `AUC_<DRUG>` sibling family (`AUC_FENEBRUTINIB`, `AUC_APREMILAST`, ...). Users can regenerate it from the species PK models `Singh_2016_stamulumab_mouse.R` and `Singh_2016_stamulumab_cyno.R` as the AUC over one weekly dosing interval at steady state. Singh 2016 Table 2 converts AUC50 to an average concentration as Cave50 = AUC50 / 168 / 145.4 (nM; molecular weight 145.4 kDa).
+
 ### EXPANSION_RATE_IDECEL (**canonical for idecabtagene vicleucel early expansion rate Cmax/Tmax**)
 - **Description:** Per-subject early expansion rate of the BCMA-directed CAR T-cell product idecabtagene vicleucel (ide-cel): the peak peripheral-blood transgene level divided by the time to that peak (Cmax/Tmax), from noncompartmental analysis of CAR transgene copies per microgram of genomic DNA. Time-fixed per subject; supplied as data to static exposure-safety models as an EARLY exposure measure (CRS starts within days of infusion, before most of the AUC0-28 accrues).
 - **Units:** `copies/ug/day`.
