@@ -1,0 +1,508 @@
+---
+title: "Rilzabrutinib BTK occupancy (Yan 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rilzabrutinib BTK occupancy (Yan 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Yan_2026_rilzabrutinib_qsp"))$reference`
+* Article (open access): <https://doi.org/10.1038/s41598-026-50990-5>
+* PMC record: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC13323760/>
+
+```{r load-model}
+mod <- readModelDb("Yan_2026_rilzabrutinib_qsp")
+ui <- rxode2::rxode2(mod)
+mod
+```
+
+Rilzabrutinib (RIL) is an oral reversible covalent inhibitor of Bruton's
+tyrosine kinase (BTK), approved for immune thrombocytopenia. Its plasma
+half-life is short (3-4 h), but it stays bound to BTK for much longer, so
+Yan 2026 uses BTK occupancy (BO), not plasma AUC, as the efficacy criterion
+for dose adjustment: BOmax above 90% and steady-state BOtrough at or above
+70%. The paper chains a whole-body PBPK model, which predicts plasma
+rilzabrutinib, with a binding equation that converts the free concentration
+into BO.
+
+# What is extracted, and what is not
+
+| Layer | Content | Extracted? | Why |
+|---|---|---|---|
+| 1 | Whole-body PBPK for rilzabrutinib in PK-Sim 12.1, with CYP3A4 drug-drug-interaction (DDI) and hepatic-impairment scenarios | **No** | A platform port. Table 1 gives only drug-specific inputs (physicochemical properties, fup, Rbp, CYP3A4 and microsomal intrinsic clearances, P-gp kinetics, an additional clearance of 4.0 L/h). Distribution used PK-Sim's standard Rodgers and Rowland method, and the paper publishes no organ volumes, blood flows or partition coefficients and deposits no project file. The DDI perpetrator models (Supplementary Table S2) and the hepatic-impairment physiology (Supplementary Table S3) act on this layer. |
+| 2 | BTK binding (Methods Eq. 1) | **Yes** | Eq. 1 is printed in full and its constants (Ki, koff, initial BTK, fup, MW) are all in Table 1. |
+
+The rilzabrutinib exposure is therefore supplied as the time-varying covariate
+`CP_RILZABRUTINIB_NGML` (total plasma concentration, ng/mL). The model
+multiplies it by the fraction unbound in plasma (0.025) to obtain the free
+concentration that drives binding. The same structure is used by
+`Zhang_2026_ribociclib_qsp`.
+
+# Population
+
+```{r population}
+pop <- ui$population
+tibble::tibble(
+  Field = names(pop),
+  Value = vapply(pop, function(x) paste(as.character(x), collapse = "; "), character(1))
+) |>
+  knitr::kable()
+```
+
+The BO data behind the model came from the multiple-dose part of the phase I
+study of Smith 2017 (Yan 2026 ref 25): 32 healthy men aged 23-27.5 years,
+72.8-91.4 kg, given 300 mg OD, 600 mg OD, 300 mg BID or 450 mg BID of an oral
+liquid formulation for 10 days (Yan 2026 Supplementary Table S1). BO was
+measured in whole blood.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Binding equation | `dN/dt = koff/Ki * BTK_free * C_RIL - koff * BTK_complex` | Methods, Eq. 1 (image `d33e319`; adapted from Wong 2019, ref 21) |
+| Free BTK | `BTK_free = BTK_0 - BTK_complex` | Eq. 1 has no BTK synthesis or degradation, so the pool is conserved |
+| Driver | `C_RIL = fup * CP_RILZABRUTINIB_NGML / MW * 1000` (nmol/L) | Methods text under Eq. 1: "CRIL represents the free RIL concentration" |
+| BO | `100 * BTK_complex / BTK_0` | Methods, "Efficacy and safety threshold": "the percentage of BTK targets bound by RIL" |
+| `mw_ril` | 665.77 g/mol | Table 1, MW |
+| `fup` | 0.025 | Table 1, fup |
+| `kd` | 1.30 nmol/L | Table 1, "Ki against BTK (nM)" |
+| `koff` | 1.2e-5 1/s = 0.0432 1/h | Table 1, "koff (x 10^-5 s^-1)"; Methods: optimised to fit the observed BO |
+| `btk0` | 0.10 umol/L = 100 nmol/L | Table 1, "Initial BTK (uM)"; Methods: default value from ref 15 |
+| Hepatic-impairment fup | `fup * PPSF`, `PPSF = 1 / (fup + (1 - fup) * Albumin_f)` | Methods, Eq. 2 (image `d33e846`); Albumin_f 0.9 / 0.8 / 0.6 from Supplementary Table S3 |
+
+# Mechanistic checks
+
+With no PK layer, the model is checked first against closed-form results that
+share its parameters, so these assertions are tight.
+
+## Drug-free baseline
+
+```{r baseline}
+ev_base <- data.frame(id = 1, time = seq(0, 240, by = 1), evid = 0, CP_RILZABRUTINIB_NGML = 0)
+sim_base <- as.data.frame(rxode2::rxSolve(ui, ev_base))
+stopifnot(max(abs(sim_base$complex)) < 1e-12)
+```
+
+Without drug the complex stays at zero and BO stays at 0%.
+
+## Constant concentration against the closed-form solution
+
+At a constant free concentration `Cu`, Eq. 1 is linear in the complex and has
+the solution `N(t) = BTK_0 * Cu / (Cu + Kd) * (1 - exp(-(kon * Cu + koff) * t))`
+with `kon = koff / Kd`, which tends to the Langmuir occupancy `Cu / (Cu + Kd)`.
+
+```{r plateau}
+p <- ui$theta
+const_cp <- c(20, 50, 100, 200, 400)
+ev_const <- tidyr::expand_grid(
+  CP_RILZABRUTINIB_NGML = const_cp,
+  time = c(0, 1, 4, 12, 24, 48, 96, 240)
+) |>
+  dplyr::mutate(id = match(CP_RILZABRUTINIB_NGML, const_cp), evid = 0) |>
+  dplyr::arrange(id, time)
+sim_const <- as.data.frame(rxode2::rxSolve(ui, ev_const, atol = 1e-12, rtol = 1e-10)) |>
+  dplyr::mutate(CP_RILZABRUTINIB_NGML = const_cp[id])
+closed <- sim_const |>
+  dplyr::mutate(
+    cu = CP_RILZABRUTINIB_NGML * p[["fup"]] / p[["mw_ril"]] * 1000,
+    kon = p[["koff"]] / p[["kd"]],
+    occ_closed = cu / (cu + p[["kd"]]) * (1 - exp(-(kon * cu + p[["koff"]]) * time))
+  )
+stopifnot(max(abs(closed$occ - closed$occ_closed)) < 1e-6)
+
+closed |>
+  dplyr::filter(time %in% c(4, 24, 240)) |>
+  dplyr::mutate(
+    langmuir = 100 * cu / (cu + p[["kd"]])
+  ) |>
+  dplyr::select(CP_RILZABRUTINIB_NGML, cu, time, bo, langmuir) |>
+  dplyr::rename(
+    "Total plasma (ng/mL)" = CP_RILZABRUTINIB_NGML,
+    "Free (nmol/L)" = cu,
+    "Time (h)" = time,
+    "BO (%)" = bo,
+    "Langmuir plateau (%)" = langmuir
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+Equilibration is slow: at 100 ng/mL total (3.8 nmol/L free) the approach rate
+`kon * Cu + koff` is about 0.17 1/h, so binding takes most of a day to reach
+its plateau. Because rilzabrutinib is cleared from plasma within a few hours,
+BO is set by the time integral of the free concentration rather than by its
+peak.
+
+## Washout at the dissociation rate
+
+```{r washout}
+ev_wash <- data.frame(
+  id = 1, evid = 0,
+  time = c(seq(0, 200, by = 1), seq(200.5, 300, by = 0.5)),
+  CP_RILZABRUTINIB_NGML = 0
+)
+ev_wash$CP_RILZABRUTINIB_NGML[ev_wash$time < 200] <- 200
+sim_wash <- as.data.frame(rxode2::rxSolve(ui, ev_wash, covsInterpolation = "locf", atol = 1e-12, rtol = 1e-10))
+w <- sim_wash |> dplyr::filter(time >= 201)
+k_obs <- -coef(stats::lm(log(complex) ~ time, data = w))[["time"]]
+c(koff_estimated = k_obs, koff = p[["koff"]], half_life_h = log(2) / k_obs)
+stopifnot(abs(k_obs / p[["koff"]] - 1) < 1e-4)
+```
+
+Once the drug is gone the complex decays with half-life `log(2) / koff` = 16 h,
+which matches the paper's predicted 300 mg OD decay from 74% at 220 h to 37% at
+240 h (Table 3; `74 * exp(-0.0432 * 20)` = 31%, the remainder being re-binding
+from residual drug).
+
+# Plasma exposure used to drive the model
+
+Yan 2026 does not publish a plasma profile in reusable form, and there is no
+rilzabrutinib PK model in nlmixr2lib. To exercise the binding model at the
+paper's own exposure, the maintainers built a simple surrogate: a linear
+two-compartment oral profile whose apparent clearance is set so that the
+day-10 AUC at 300 mg OD equals the paper's predicted 466 ng*h/mL (Table 2), and
+whose absorption and distribution rate constants were chosen by eye to give a
+peak about 1 h after the dose and a terminal decline from about 3 to about
+1 ng/mL between 12 and 24 h after the dose, as in Figure 1A. The surrogate is a
+vignette device only; it is not part of the model and was not fitted to data.
+Other regimens use the same parameters (dose-proportional exposure).
+
+```{r surrogate}
+pk_surrogate <- rxode2::rxode2({
+  d/dt(depot) <- -ka * depot
+  d/dt(central) <- ka * depot - (k10 + k12) * central + k21 * periph
+  d/dt(periph) <- k12 * central - k21 * periph
+  cp <- central / vc
+})
+cl_f <- 300 * 1000 / 466 # L/h; dose in ug over AUC in ng*h/mL (Table 2, 300 mg OD)
+surr_par <- c(ka = 1.5, k10 = 0.9, k12 = 0.15, k21 = 0.1, vc = cl_f / 0.9)
+
+regimens <- tibble::tribble(
+  ~treatment,   ~dose_mg, ~ii,
+  "300 mg OD",  300,      24,
+  "600 mg OD",  600,      24,
+  "300 mg BID", 300,      12,
+  "450 mg BID", 450,      12
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+grid <- sort(unique(c(seq(0, 250, by = 0.05), 4, 12, 24, 216, 220, 228, 240)))
+pk_events <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  r <- regimens[i, ]
+  n_dose <- 240 / r$ii
+  dplyr::bind_rows(
+    data.frame(
+      id = r$id, time = (seq_len(n_dose) - 1) * r$ii, evid = 1,
+      amt = r$dose_mg * 1000, cmt = "depot"
+    ),
+    data.frame(id = r$id, time = grid, evid = 0, amt = 0, cmt = "central")
+  )
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+pk_sim <- as.data.frame(rxode2::rxSolve(pk_surrogate, pk_events, params = surr_par)) |>
+  dplyr::left_join(regimens, by = "id")
+```
+
+## Surrogate exposure against Table 2 (PKNCA)
+
+```{r pknca}
+conc_df <- pk_sim |>
+  dplyr::filter(!is.na(cp)) |>
+  dplyr::select(id, treatment, time, cp)
+dose_df <- pk_events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::left_join(regimens, by = "id") |>
+  dplyr::select(id, treatment, time, amt)
+
+o_conc <- PKNCA::PKNCAconc(conc_df, cp ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- regimens |>
+  dplyr::transmute(
+    treatment,
+    start = ifelse(ii == 24, 216, 228),
+    end = 240,
+    cmax = TRUE,
+    auclast = TRUE
+  ) |>
+  as.data.frame()
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+
+published_pk <- tibble::tribble(
+  ~treatment,   ~cmax, ~auclast,
+  "300 mg OD",  192,   466,
+  "600 mg OD",  345,   1027,
+  "300 mg BID", 194,   465,
+  "450 mg BID", 292,   696
+)
+pk_cmp <- nlmixr2lib::ncaComparisonTable(
+  nca,
+  published_pk,
+  by = "treatment",
+  units = c(cmax = "ng/mL", auclast = "ng*h/mL")
+)
+knitr::kable(pk_cmp, caption = "Day-10 surrogate exposure against the PBPK predictions of Yan 2026 Table 2 (AUC over the last dosing interval).")
+
+nca_res <- as.data.frame(nca$result)
+auc_300od <- nca_res$PPORRES[nca_res$treatment == "300 mg OD" & nca_res$PPTESTCD == "auclast"]
+stopifnot(abs(auc_300od / 466 - 1) < 0.01)
+```
+
+The surrogate matches Table 2 AUC by construction at 300 mg OD and is within
+about 10% for the other regimens (the PBPK exposure is slightly more than
+dose-proportional at 600 mg). Its Cmax runs a few percent below the PBPK
+predictions.
+
+```{r surrogate-plot, fig.cap = "Surrogate day-10 plasma profiles used to drive the BO model (compare Yan 2026 Figure 1)."}
+pk_sim |>
+  dplyr::filter(time >= 215, time <= 240) |>
+  ggplot(aes(time, cp)) +
+  geom_line(colour = "steelblue") +
+  facet_wrap(~ factor(treatment, levels = regimens$treatment)) +
+  scale_y_log10(limits = c(1, 1000)) +
+  labs(x = "Time (h)", y = "Total rilzabrutinib (ng/mL)")
+```
+
+# BO time course against Table 3 and Figure 2
+
+```{r bo-sim}
+bo_events <- pk_sim |>
+  dplyr::select(id, time, CP_RILZABRUTINIB_NGML = cp) |>
+  dplyr::mutate(evid = 0)
+
+solve_bo <- function(fup_value) {
+  as.data.frame(rxode2::rxSolve(
+    ui, bo_events,
+    params = c(fup = fup_value),
+    covsInterpolation = "linear"
+  )) |>
+    dplyr::left_join(regimens, by = "id")
+}
+bo_printed <- solve_bo(p[["fup"]])
+
+table3 <- tibble::tribble(
+  ~treatment,   ~time, ~predicted, ~observed,
+  "300 mg OD",  4,     65,         79,
+  "300 mg OD",  12,    51,         57,
+  "300 mg OD",  24,    33,         31,
+  "300 mg OD",  216,   37,         29,
+  "300 mg OD",  220,   74,         84,
+  "300 mg OD",  228,   57,         62,
+  "300 mg OD",  240,   37,         27,
+  "600 mg OD",  4,     91,         90,
+  "600 mg OD",  12,    72,         78,
+  "600 mg OD",  24,    50,         60,
+  "600 mg OD",  216,   52,         58,
+  "600 mg OD",  220,   93,         93,
+  "600 mg OD",  228,   73,         80,
+  "600 mg OD",  240,   52,         59,
+  "300 mg BID", 4,     81,         78,
+  "300 mg BID", 12,    63,         59,
+  "300 mg BID", 24,    68,         62,
+  "300 mg BID", 216,   69,         74,
+  "300 mg BID", 220,   88,         77,
+  "300 mg BID", 228,   69,         60,
+  "300 mg BID", 240,   69,         60,
+  "450 mg BID", 4,     88,         81,
+  "450 mg BID", 12,    69,         73,
+  "450 mg BID", 24,    72,         75,
+  "450 mg BID", 216,   73,         76,
+  "450 mg BID", 220,   92,         91,
+  "450 mg BID", 228,   73,         75,
+  "450 mg BID", 240,   73,         54
+)
+
+cmp3 <- table3 |>
+  dplyr::left_join(
+    bo_printed |> dplyr::select(treatment, time, bo),
+    by = c("treatment", "time")
+  )
+stopifnot(nrow(cmp3) == 28, !anyNA(cmp3$bo))
+
+cmp3 |>
+  dplyr::mutate(bo = round(bo, 1)) |>
+  dplyr::rename(
+    "Regimen" = treatment,
+    "Time (h)" = time,
+    "Paper predicted BO (%)" = predicted,
+    "Observed BO (%)" = observed,
+    "This model, free plasma (%)" = bo
+  ) |>
+  knitr::kable(caption = "BO at the Table 3 sampling times. Driven by free plasma concentration (fup 0.025, as printed in Table 1).")
+```
+
+```{r gap}
+gap <- cmp3 |>
+  dplyr::summarise(
+    mean_diff_vs_predicted = mean(bo - predicted),
+    rmse_vs_predicted = sqrt(mean((bo - predicted)^2)),
+    mean_diff_vs_observed = mean(bo - observed),
+    rmse_vs_observed = sqrt(mean((bo - observed)^2))
+  )
+knitr::kable(gap, digits = 1)
+
+# Documented gap: the free-plasma driver sits well below the paper's BO.
+stopifnot(
+  gap$mean_diff_vs_predicted < -15,
+  gap$mean_diff_vs_predicted > -35
+)
+```
+
+**The model, driven by free plasma concentration at the paper's own exposure,
+runs about `r round(-gap$mean_diff_vs_predicted)` BO points below the paper's
+predicted values.** Everything else about the time course agrees: BO rises
+within hours of each dose, decays with the 16 h complex half-life, and the BID
+regimens sustain a higher trough than OD at the same daily dose.
+
+```{r ordering}
+trough_240 <- bo_printed |>
+  dplyr::filter(time == 240) |>
+  dplyr::select(treatment, bo)
+trough_240
+stopifnot(
+  trough_240$bo[trough_240$treatment == "300 mg BID"] >
+    trough_240$bo[trough_240$treatment == "600 mg OD"],
+  trough_240$bo[trough_240$treatment == "450 mg BID"] >
+    trough_240$bo[trough_240$treatment == "300 mg BID"]
+)
+```
+
+## How large a driver the paper's BO implies
+
+Because BO follows the time integral of the free concentration, the gap can be
+expressed as a single multiplier on the driver. Solving for the unbound
+fraction that makes the mean difference from the Table 3 predictions zero:
+
+```{r backsolve}
+mean_gap <- function(fu) {
+  b <- solve_bo(fu) |> dplyr::select(treatment, time, bo)
+  d <- dplyr::left_join(table3, b, by = c("treatment", "time"))
+  mean(d$bo - d$predicted)
+}
+fu_implied <- stats::uniroot(mean_gap, interval = c(0.03, 0.3), tol = 1e-4)$root
+c(fu_implied = fu_implied, ratio_to_printed_fup = fu_implied / p[["fup"]])
+stopifnot(fu_implied / p[["fup"]] > 2.5, fu_implied / p[["fup"]] < 4.5)
+
+bo_implied <- solve_bo(fu_implied)
+cmp_implied <- table3 |>
+  dplyr::left_join(bo_implied |> dplyr::select(treatment, time, bo), by = c("treatment", "time"))
+implied_fit <- c(
+  rmse_vs_predicted = sqrt(mean((cmp_implied$bo - cmp_implied$predicted)^2)),
+  max_abs_diff_vs_predicted = max(abs(cmp_implied$bo - cmp_implied$predicted)),
+  rmse_vs_observed = sqrt(mean((cmp_implied$bo - cmp_implied$observed)^2)),
+  n_within_15_of_observed = sum(abs(cmp_implied$bo - cmp_implied$observed) <= 15)
+)
+implied_fit
+stopifnot(implied_fit[["rmse_vs_predicted"]] < 8)
+```
+
+With an effective unbound fraction about `r round(fu_implied / p[["fup"]], 1)`
+times the printed 0.025, the model reproduces the paper's predicted BO with a
+root-mean-square difference of `r round(implied_fit[["rmse_vs_predicted"]], 1)`
+points (largest single difference
+`r round(implied_fit[["max_abs_diff_vs_predicted"]])` points), and comes within
+the paper's own 15-point acceptance limit of the observed BO at
+`r implied_fit[["n_within_15_of_observed"]]` of the 28 sampling times. Part of
+the remaining difference is internal to Table 3: the first 300 mg dose is the
+same under OD and BID, yet the paper predicts 65% at 4 h for 300 mg OD and 81%
+for 300 mg BID, which no single driver can reproduce. The paper does not say
+where in its PK-Sim model the BTK pool sits (plasma, blood cells or tissue
+intracellular water), and the unbound concentration at that site is a PBPK
+output the paper does not print; the multiplier most plausibly reflects that
+difference. The model keeps the printed fup; to reproduce the paper's figures
+set `fup` to the implied value in `ini()`, as done here.
+
+```{r fig2, fig.height = 6, fig.cap = "Replicates Figure 2 of Yan 2026: BO over 10 days for the four regimens. Solid: this model driven by free plasma (fup 0.025). Dashed: driver scaled to the implied unbound fraction. Points: Table 3 predicted (open) and observed (filled) means."}
+dplyr::bind_rows(
+  bo_printed |> dplyr::mutate(driver = "free plasma, fup 0.025"),
+  bo_implied |> dplyr::mutate(driver = sprintf("implied fu %.3f", fu_implied))
+) |>
+  dplyr::filter(time <= 248) |>
+  ggplot(aes(time, bo)) +
+  geom_line(aes(linetype = driver), colour = "firebrick") +
+  geom_point(
+    data = tidyr::pivot_longer(table3, c(predicted, observed), names_to = "source", values_to = "bo"),
+    aes(shape = source), size = 2
+  ) +
+  scale_shape_manual(values = c(observed = 15, predicted = 0)) +
+  facet_wrap(~ factor(treatment, levels = regimens$treatment)) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = "Time (h)", y = "BTK occupancy (%)", linetype = NULL, shape = "Table 3")
+```
+
+# Hepatic impairment: the protein-binding adjustment
+
+The paper's hepatic-impairment scenarios change the PBPK layer (liver volume,
+CYP3A4 activity, GFR and so on; Supplementary Table S3), which is not
+extracted. The one change that reaches the binding layer is the plasma
+protein scale factor of Eq. 2, which raises the unbound fraction as albumin
+falls. To use it, pass the impaired fup to the model:
+
+```{r hepatic}
+alb_f <- c(Healthy = 1, Mild = 0.9, Moderate = 0.8, Severe = 0.6)
+ppsf <- 1 / (p[["fup"]] + (1 - p[["fup"]]) * alb_f)
+hi <- tibble::tibble(
+  group = names(alb_f),
+  albumin_fraction = alb_f,
+  PPSF = ppsf,
+  fup = p[["fup"]] * ppsf
+)
+knitr::kable(hi, digits = 4)
+stopifnot(abs(hi$fup[hi$group == "Severe"] - 0.025 / 0.61) < 1e-10)
+```
+
+For example `rxode2::rxSolve(ui, events, params = c(fup = 0.0410))` gives the
+severe-impairment binding layer. The plasma exposure must come from a
+hepatic-impairment PK source; Yan 2026 Table 5 reports the PBPK-predicted
+exposure ratios (AUC 1.50, 5.19 and 9.55-fold for mild, moderate and severe at
+400 mg OD), and Supplementary Table S7 the resulting BO, both of which depend
+on the unextracted PBPK layer.
+
+# Assumptions and deviations
+
+* **PBPK layer not extracted.** The plasma concentration must be supplied as
+  `CP_RILZABRUTINIB_NGML`. The DDI (Table 4, Supplementary Tables S2, S5, S6)
+  and hepatic-impairment (Table 5, Supplementary Tables S3, S7) results are
+  outputs of that layer and are not reproduced here.
+* **Driver matrix.** Eq. 1 defines `C_RIL` as "the free RIL concentration"
+  without naming the matrix. Free plasma concentration (`fup * total`) is
+  used, which is the only free concentration the paper's printed inputs
+  define. At the paper's own predicted exposure this under-drives the
+  published BO by about 25 points; an unbound fraction about 3.8 times the
+  printed one reproduces the published predictions (see above). The
+  maintainers chose to keep the printed fup and document the gap rather than
+  carry an effective fu that the paper does not state.
+* **Ki recorded as `kd`.** Table 1 calls it an inhibition constant, but in
+  Eq. 1 `koff/Ki` is the association rate constant, so it is the equilibrium
+  dissociation constant.
+* **Constant BTK pool.** Eq. 1 has no BTK synthesis or degradation, so free
+  BTK is the initial 0.1 uM minus the complex. The paper notes the initial
+  BTK concentration is a default value and that BO is insensitive to it
+  (Supplementary Table S4). In this model that is exact: the drug
+  concentration is supplied externally and is not depleted by binding, so the
+  pool size cancels out of the occupancy fraction.
+* **Units.** Table 1 gives koff per second; it is converted to 0.0432 per
+  hour. Eq. 1's text calls the complex an "amount", but the initial BTK is a
+  concentration (0.1 uM), so the complex is carried as nmol/L.
+* **No variability.** The paper propagated variability through the PK-Sim
+  virtual population; no IIV or residual error is reported or encoded.
+* **Exposure surrogate.** The two-compartment oral profile used in this
+  vignette was built by the maintainers to reproduce the Table 2 AUC at
+  300 mg OD; it is a demonstration input, not a published model.
