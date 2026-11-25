@@ -4026,12 +4026,16 @@ navbar:
         href: articles/vanderVeer_2024_gentamicin.html
       - text: "Gentamicin bos (Duong 2022)"
         href: articles/Duong_2022_gentamicin.html
+      - text: "Gentamicin endocarditis (Gomes 2017)"
+        href: articles/Gomes_2017_gentamicin.html
       - text: "Gentamicin glasgow (Kelman 1984)"
         href: articles/Kelman_1984_gentamicin.html
       - text: "Gentamicin hodiamont2017ijaa (Duong 2022)"
         href: articles/Duong_2022_gentamicin.html
       - text: "Gentamicin hodiamont2017tdm (Duong 2022)"
         href: articles/Duong_2022_gentamicin.html
+      - text: "Gentamicin icu (Gomes 2017)"
+        href: articles/Gomes_2017_gentamicin.html
       - text: "Gentamicin manchester1 (Kelman 1984)"
         href: articles/Kelman_1984_gentamicin.html
       - text: "Gentamicin manchester2 (Kelman 1984)"
@@ -4040,6 +4044,8 @@ navbar:
         href: articles/Zazo_2022_gentamicin.html
       - text: "Gentamicin rea (Duong 2022)"
         href: articles/Duong_2022_gentamicin.html
+      - text: "Gentamicin standard (Gomes 2017)"
+        href: articles/Gomes_2017_gentamicin.html
       - text: "Gentamicin teigen (Lee 2024)"
         href: articles/Lee_2024_gentamicin.html
       - text: "Gentamicin term (Zazo 2022)"
@@ -11381,7 +11387,7 @@ articles:
   - articles/Goggin_2004_emfilermin
   - articles/Golubovic_2019_sirolimus
   - articles/Golzaryan_2025_lu177psmaIT_pbpk
-  - articles/Goncalves_2017_primaquine
+  - articles/Gomes_2017_gentamicin
   - articles/Gong_2023_pemigatinib
   - articles/Gong_2025_talquetamab
   - articles/GonzalezSales_2015_testosterone
