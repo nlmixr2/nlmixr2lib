@@ -7692,6 +7692,8 @@ navbar:
         href: articles/Huh_2021_sorafenib.html
       - text: "Sorafenib (Jain 2011)"
         href: articles/Jain_2011_sorafenib.html
+      - text: "Sorafenib (Liu 2018)"
+        href: articles/Liu_2018_sorafenib.html
       - text: "Sorafenib bcrp (Agarwal 2011)"
         href: articles/Agarwal_2011_sorafenib_transporters.html
       - text: "Sorafenib mouse (Choi 2021)"
@@ -10943,6 +10945,7 @@ articles:
   - articles/LiricRajlic_2024_mRNA6231
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2018_pneumocystis_qsp
+  - articles/Liu_2018_sorafenib
   - articles/Liu_2020_cefepime
   - articles/Liu_2020_hydroxychloroquine_monkey
   - articles/Liu_2022_dabigatran
