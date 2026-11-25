@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Al-Huniti 2017 naloxegol dose-response and dropout ([doi:10.1002/psp4.12229](https://doi.org/10.1002/psp4.12229)) -- adults with opioid-induced constipation and chronic noncancer pain (phase II). Registers the `prob_sbm_response` output.
+- Add Cagnardi 2017 meloxicam ([doi:10.1371/journal.pone.0187252](https://doi.org/10.1371/journal.pone.0187252)) -- male Mediterranean buffalo calves after surgical castration.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

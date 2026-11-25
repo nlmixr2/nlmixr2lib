@@ -1,0 +1,373 @@
+---
+title: "Meloxicam in buffalo calves (Cagnardi 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meloxicam in buffalo calves (Cagnardi 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Cagnardi_2017_meloxicam_buffalo"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Cagnardi_2017_meloxicam_buffalo"))$description`
+* Article: <https://doi.org/10.1371/journal.pone.0187252>
+* Supporting information S1 (raw data, including the Figure 2 mean profile):
+  <https://doi.org/10.1371/journal.pone.0187252.s001>
+
+Cagnardi 2017 studied the analgesic efficacy and pharmacokinetics of
+meloxicam given intravenously to Mediterranean buffalo calves after
+surgical castration. Only the pharmacokinetics were modelled: the clinical
+endpoints (respiratory rate, heart rate, rectal temperature, pain score and
+serum cortisol) were compared between treated and control calves by
+repeated-measures ANOVA and rank tests, with no concentration-effect model,
+so there is no pharmacodynamic layer to package.
+
+# Population
+
+Ten healthy male buffalo calves (3-4 months old in the Methods, median 3.65
+months; the abstract says 4-5 months; 127-135 kg, median 130 kg) from one
+farm in the Caserta district of southern Italy were castrated under
+dexmedetomidine sedation and lidocaine local anaesthesia. Six calves (the
+treated group) received a single intravenous bolus of meloxicam 0.5 mg/kg
+immediately after surgery; the other four were untreated controls.
+Meloxicam was measured in serum by HPLC-UV (LOQ 0.01 ug/mL) from 5 min to
+96 h after dosing. Each treated calf was fitted separately with a classical
+two-compartment model in WinNonlin, and Table 2 reports the mean and SD of
+the six individual estimates.
+
+```{r population}
+str(readModelDb("Cagnardi_2017_meloxicam_buffalo")()$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lvc` (V1) | log(40.51) mL/kg | Table 2, row 'V1' (mean of 6 individual fits; SD 15.16) |
+| `lcl` (ClB) | log(4.38) mL/h/kg | Table 2, row 'ClB' (SD 0.95) |
+| `lvp` (V2) | log(101.8) mL/kg | Table 2, row 'V2' (SD 67.31) |
+| `lq` | log(169.33) mL/h/kg | Derived: Table 2 'K12' 4.18 1/h x 'V1' 40.51 mL/kg |
+| `propSd` | fixed(0) | Methods 'Pharmacokinetic analysis': weights 1/Yhat^2 (proportional), magnitude not reported |
+| Two-compartment structure, IV bolus into central | n/a | Methods 'Pharmacokinetic analysis'; Results 'Meloxicam concentrations and pharmacokinetic analysis' |
+| Dose 0.5 mg/kg IV | 500 ug/kg | Methods 'Drugs administration and surgical procedure' |
+| Mean observed profile (validation target) | n/a | Figure 2; Supporting information S1, 'Meloxicam mean concentrations reported in Figure 2' |
+
+# Secondary parameters against Table 2
+
+The packaged model is deterministic (no between-animal variability), so its
+secondary parameters follow in closed form from the four disposition
+parameters. Table 2 is a table of means of individual estimates, which are
+not mutually consistent: the mean of each ratio is not the ratio of the
+means. The packaged set uses the means of the three parameters that
+determine exposure and the extent of distribution (V1, ClB and V2) and
+derives the intercompartmental clearance from mean K12 x mean V1.
+
+```{r secondary}
+mod <- readModelDb("Cagnardi_2017_meloxicam_buffalo")
+ui <- rxode2::rxode(mod)
+th <- setNames(ui$iniDf$est, ui$iniDf$name)
+
+two_cmt_secondary <- function(vc, cl, vp, q, dose = 500) {
+  k10 <- cl / vc
+  k12 <- q / vc
+  k21 <- q / vp
+  s <- k10 + k12 + k21
+  alpha <- (s + sqrt(s^2 - 4 * k10 * k21)) / 2
+  beta <- (s - sqrt(s^2 - 4 * k10 * k21)) / 2
+  c(
+    auc = dose / cl,
+    half_k10 = log(2) / k10,
+    half_alpha = log(2) / alpha,
+    half_beta = log(2) / beta,
+    k10 = k10,
+    k12 = k12,
+    k21 = k21,
+    c0 = dose / vc,
+    mrt = (vc + vp) / cl,
+    vss = vc + vp,
+    vz = cl / beta
+  )
+}
+
+pk <- two_cmt_secondary(
+  vc = exp(th[["lvc"]]),
+  cl = exp(th[["lcl"]]),
+  vp = exp(th[["lvp"]]),
+  q = exp(th[["lq"]])
+)
+
+table2 <- c(
+  auc = 118.81, half_k10 = 6.93, half_alpha = 0.09, half_beta = 21.51,
+  k10 = 0.13, k12 = 4.18, k21 = 1.75, c0 = 14.39, mrt = 32.89,
+  vss = 142.31, vz = 146.16
+)
+labels <- c(
+  auc = "AUC0-inf (h*ug/mL)", half_k10 = "t1/2 K10 (h)",
+  half_alpha = "t1/2 alpha (h, harmonic mean)",
+  half_beta = "t1/2 beta (h, harmonic mean)", k10 = "K10 (1/h)",
+  k12 = "K12 (1/h)", k21 = "K21 (1/h)", c0 = "C0 (ug/mL)", mrt = "MRT (h)",
+  vss = "Vdss (mL/kg)", vz = "Vz (mL/kg)"
+)
+
+secondary <- tibble(
+  parameter = labels[names(table2)],
+  model = signif(pk[names(table2)], 4),
+  table2 = table2,
+  pct_diff = round(100 * (pk[names(table2)] / table2 - 1), 1)
+)
+
+secondary |>
+  dplyr::rename(
+    "Parameter" = parameter,
+    "Packaged model" = model,
+    "Table 2 mean" = table2,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Secondary parameters implied by the packaged model vs. the Table 2 means of the six individual fits.")
+
+# Vdss = V1 + V2 holds exactly for the Table 2 means; AUC and MRT, which
+# depend only on V1, ClB and V2, land within 4% and 2%.
+stopifnot(
+  abs(pk[["vss"]] / 142.31 - 1) < 0.001,
+  abs(pk[["auc"]] / 118.81 - 1) < 0.05,
+  abs(pk[["mrt"]] / 32.89 - 1) < 0.03,
+  abs(pk[["vz"]] / 146.16 - 1) < 0.03,
+  abs(pk[["half_beta"]] / 21.51 - 1) < 0.10
+)
+```
+
+The rows that differ most are the ones Table 2 summarises from skewed
+individual values. Mean K10 (0.13 1/h, SD 0.09) is 20% above mean ClB /
+mean V1, and mean C0 (14.39 ug/mL, SD 7.13) is 17% above dose / mean V1;
+both are means of ratios whose individual values vary widely. The two
+half-lives are harmonic means, which sit below the half-life of the mean
+rate constant: the distribution half-life implied by the means (0.12 h,
+about 7 min) is 30% longer than the 0.09 h harmonic mean (pseudo-SD
+0.06 h), a difference confined to the first few minutes after the dose. With ClB = 4.38 mL/h/kg and Vdss = 142.31 mL/kg the
+terminal half-life can never be shorter than ln(2) x Vdss / ClB = 22.5 h,
+whatever the intercompartmental clearance, so the 21.51 h harmonic mean is
+not reachable from the other means and is not used as a fitting target.
+
+## Choice of intercompartmental clearance
+
+For each calf Q = K12 x V1 = K21 x V2 exactly, but the means of those
+products are not reported. The two available products of means are
+169.33 mL/h/kg (K12 x V1, packaged) and 178.15 mL/h/kg (K21 x V2). They
+differ only in the speed of the 6-7 minute distribution phase:
+
+```{r q-choice}
+t_obs <- c(0.08, 0.16, 0.25, 0.5, 0.75, 1, 1.5, 2, 4, 6, 8, 12, 24, 36, 48, 72, 96)
+ev_q <- rxode2::et(amt = 500, cmt = "central") |>
+  rxode2::et(t_obs, cmt = "central")
+
+sim_q169 <- rxode2::rxSolve(mod, events = ev_q)
+sim_q178 <- rxode2::rxSolve(mod, events = ev_q, params = c(lq = log(1.75 * 101.8)))
+q_diff <- 100 * (sim_q178$Cc / sim_q169$Cc - 1)
+knitr::kable(
+  tibble(time = sim_q169$time, Cc_q169 = signif(sim_q169$Cc, 4),
+         Cc_q178 = signif(sim_q178$Cc, 4), pct = round(q_diff, 1)) |>
+    dplyr::rename(
+      "Time (h)" = time,
+      "Cc, Q = 169.33 (ug/mL)" = Cc_q169,
+      "Cc, Q = 178.15 (ug/mL)" = Cc_q178,
+      "Difference (%)" = pct
+    ),
+  caption = "Typical-value concentrations under the two candidate intercompartmental clearances."
+)
+stopifnot(max(abs(q_diff)) < 3)
+```
+
+# Replicate Figure 2
+
+Supporting information S1 lists the mean and SD of the six calves'
+concentrations at each sampling time (the column header there reads
+'mg/mL'; the article text and Figure 2 give the same numbers in ug/mL).
+The packaged typical-value profile is overlaid.
+
+```{r figure-2}
+fig2 <- tibble::tribble(
+  ~time, ~mean, ~sd,
+  0.08, 9.392, 2.391,
+  0.16, 8.030, 2.549,
+  0.25, 6.164, 2.012,
+  0.5, 4.426, 1.976,
+  0.75, 3.806, 1.783,
+  1, 3.906, 2.030,
+  1.5, 3.718, 1.362,
+  2, 3.438, 0.741,
+  4, 3.330, 0.969,
+  6, 2.558, 0.522,
+  8, 2.266, 0.503,
+  12, 2.238, 0.712,
+  24, 1.878, 0.530,
+  36, 1.278, 0.291,
+  48, 0.916, 0.315,
+  72, 0.264, 0.151,
+  96, 0.184, 0.136
+)
+
+t_grid <- sort(unique(c(seq(0, 2, by = 0.02), seq(2, 96, by = 0.5), fig2$time)))
+ev_typ <- rxode2::et(amt = 500, cmt = "central") |>
+  rxode2::et(t_grid, cmt = "central")
+sim_typ <- rxode2::rxSolve(mod, events = ev_typ) |> as.data.frame()
+
+ggplot() +
+  geom_line(data = sim_typ, aes(time, Cc), colour = "steelblue") +
+  geom_pointrange(
+    data = fig2,
+    aes(time, mean, ymin = pmax(mean - sd, 0.01), ymax = mean + sd)
+  ) +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (h)", y = "Meloxicam serum concentration (ug/mL)",
+    title = "Figure 2 - mean (SD) observed profile and typical-value prediction",
+    caption = "Replicates Figure 2 of Cagnardi 2017 (points: S1 mean +/- SD; line: packaged model)."
+  )
+
+pred_at_obs <- sim_typ |>
+  dplyr::filter(time %in% fig2$time) |>
+  dplyr::select(time, Cc)
+fig2_cmp <- dplyr::inner_join(fig2, pred_at_obs, by = "time") |>
+  dplyr::mutate(pct_diff = 100 * (Cc / mean - 1))
+stopifnot(nrow(fig2_cmp) == nrow(fig2))
+
+fig2_cmp |>
+  dplyr::mutate(Cc = signif(Cc, 3), pct_diff = round(pct_diff, 1)) |>
+  dplyr::rename(
+    "Time (h)" = time,
+    "Observed mean (ug/mL)" = mean,
+    "Observed SD (ug/mL)" = sd,
+    "Typical prediction (ug/mL)" = Cc,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Typical-value prediction vs. the Figure 2 mean profile.")
+
+# The typical-value line is not a fit to the mean profile; it follows from the
+# means of the individual parameters. It sits within about 15% of the mean
+# observed concentration at most times; the 72 h mean (0.264 ug/mL) lies
+# below the log-linear trend through its neighbours and is the one large
+# outlier.
+stopifnot(
+  abs(median(fig2_cmp$pct_diff)) < 15,
+  median(abs(fig2_cmp$pct_diff)) < 15
+)
+```
+
+# PKNCA validation
+
+NCA of the typical-value profile, sampled on a fine grid out to 96 h (the
+last sampling time of the study). `cl.obs`, `vss.obs` and `mrt.obs` use the
+intravascular dose; the per-kg dose makes clearance mL/h/kg and volume
+mL/kg.
+
+```{r pknca}
+sim_nca <- sim_typ |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(id = 1L, treatment = "0.5 mg/kg IV") |>
+  dplyr::select(id, treatment, time, Cc)
+
+dose_df <- data.frame(id = 1L, treatment = "0.5 mg/kg IV", time = 0, amt = 500)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             route = "intravascular")
+intervals <- data.frame(
+  start = 0, end = Inf,
+  aucinf.obs = TRUE, half.life = TRUE,
+  cl.obs = TRUE, mrt.obs = TRUE, vss.obs = TRUE, vz.obs = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published <- tibble::tibble(
+  treatment = "0.5 mg/kg IV",
+  aucinf.obs = 118.81, half.life = 21.51,
+  cl.obs = 4.38, mrt.obs = 32.89, vss.obs = 142.31, vz.obs = 146.16
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(
+    aucinf.obs = "h*ug/mL", half.life = "h",
+    cl.obs = "mL/h/kg", mrt.obs = "h", vss.obs = "mL/kg", vz.obs = "mL/kg"
+  ),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "NCA of the typical-value profile vs. Table 2 (means of six individual fits). * differs from reference by >20%."
+)
+
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+# Deterministic checks: NCA of the solved profile must recover the model's own
+# closed-form AUC and clearance (the 96 h window leaves about 5% of the AUC to
+# extrapolation) and the half-life of the terminal phase.
+stopifnot(
+  abs(nca_wide$aucinf.obs / pk[["auc"]] - 1) < 0.01,
+  abs(nca_wide$cl.obs / exp(th[["lcl"]]) - 1) < 0.01,
+  abs(nca_wide$half.life / pk[["half_beta"]] - 1) < 0.02,
+  abs(nca_wide$aucinf.obs / 118.81 - 1) < 0.05
+)
+```
+
+No row differs from Table 2 by more than 20%. C0 is compared in the
+secondary-parameter table above, where it is the largest
+exposure difference (-14%): dose / mean V1 is 12.3 ug/mL against a mean
+individual C0 of 14.39 ug/mL (SD 7.13). A mean of individual C0 values
+exceeds the dose divided by the mean volume whenever the volumes vary
+(Jensen's inequality), and V1 varied with a CV of 37% across the six
+calves.
+
+# Assumptions and deviations
+
+- **Two-stage source, not a population fit.** Table 2 reports the mean and
+  SD of six individual WinNonlin fits. No population typical values,
+  between-animal variances or residual-error magnitude exist; the model is
+  packaged as a fixed-parameter typical calf with no random effects and the
+  proportional residual SD fixed at 0 (the individual fits were weighted by
+  1/Yhat^2, i.e. a proportional error structure). The Table 2 SDs (CV 37%
+  for V1, 22% for ClB, 66% for V2) describe the spread of six individual
+  estimates and are not encoded as between-animal variances.
+- **Which Table 2 means are used.** Means of individual estimates are not
+  mutually consistent, so not all can be reproduced at once. The packaged
+  model uses mean V1, ClB and V2, which reproduce the Table 2 Vdss exactly
+  and AUC, MRT and Vz within 4%. Mean K10 (which would give CL =
+  5.27 mL/h/kg and an AUC 20% low) and mean C0 are not used.
+- **Intercompartmental clearance derived.** Q is not printed. It is taken
+  as mean K12 x mean V1 = 169.33 mL/h/kg; the alternative mean K21 x mean
+  V2 = 178.15 mL/h/kg changes no concentration at the sampling times by more
+  than 3% (table above).
+- **Half-lives.** Table 2 gives harmonic means of the individual half-lives
+  (21.51 h terminal, 0.09 h distribution). The packaged model's terminal
+  half-life is 22.8 h; no choice of Q can bring it below 22.5 h with the
+  mean ClB and Vdss.
+- **Per-kg parameterisation.** All volumes and clearances are per kg body
+  weight as published, so doses are entered in ug/kg (0.5 mg/kg = 500
+  ug/kg). There is no body-weight covariate; the calves weighed 127-135 kg.
+- **Supplement unit label.** Supporting information S1 headers the mean
+  meloxicam concentrations as 'mg/mL'; the Results text gives the same
+  numbers (9.39, 3.81, 0.18) in ug/mL, which is also the unit of the assay
+  calibration range and of Figure 2. ug/mL is used.
+- **Age.** The abstract says 4-5 months; Methods say 3 and 4 months with a
+  median of 3.65 months. The Methods values are carried in the population
+  metadata.
+- **No pharmacodynamic model.** The clinical endpoints and serum cortisol
+  were analysed statistically only; no concentration-effect relationship
+  was estimated, so none is packaged.
+- **Errata.** No correction notice for this article was found in Europe PMC
+  or on the journal site (checked 2026-11-25).
