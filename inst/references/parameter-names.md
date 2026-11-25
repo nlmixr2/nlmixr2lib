@@ -925,6 +925,49 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Leung_2023_tenofovir.R`, `Leung_2023_emtricitabine.R` (founding examples; both fixed to 1 1/h).
 - **Notes:** Ratified by the maintainers 2026-11-06 with the Leung 2023 extraction (PMC10725258); pairs with `lka_rectum`. Distinct from `lkf`, the faecal excretion rate constant of a model without a transit chain.
 
+### lkassim (**canonical log-transformed assimilation rate constant from an external concentration**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant (1 / time) that multiplies an EXTERNAL exposure concentration (food, water or soil medium) to give the rate of increase of the internal (body) concentration, `d/dt(central) <- kassim * cfood - kel * central`, where the state is itself a body concentration. In a model whose rate constants step between stages, the plain `lkassim` is the FIRST stage, mirroring the `lcl` / `lcl_late` asymmetry.
+- **Source aliases:**
+  - `kA`, `kA1` -- Skip 2014 Table 1 ('assimilation rate constant', day^-1) and Tables 2-3.
+  - `k1` -- the bioconcentration / OECD 305 literature's uptake rate constant (not used as the canonical because it reads as an ordinal and collides visually with micro-constants such as `k12`).
+- **Example models:** `Skip_2014_cadmium.R` (founding example; kA1 = 0.0018 1/day), `Skip_2014_nickel.R` (kA1 = 0.0751 1/day).
+- **Notes:** Ratified by the maintainers 2026-11-25 with the Skip 2014 extraction (PMC4182553). Distinct from `lka`, which moves an AMOUNT out of a dosing depot that it empties; `kassim` acts on an external concentration that the organism does not deplete, so there is no depot and no dose. Because both the input and the state are concentrations, `kassim / kel` is the dimensionless bioaccumulation factor and the steady-state body concentration is `cfood * kassim / kel`. Stage arms are `lkassim_late` (after an estimated switch time `tkchange` within exposure) and `lkassim_depur` (after transfer to clean medium at `tdepur`).
+
+### lkassim_late (**canonical log-transformed assimilation rate constant after an estimated within-exposure switch**)
+- **Type:** log-transformed-pk
+- **Role:** Assimilation rate constant (1 / time) in force from the estimated switch time `tkchange` until the end of exposure. The pre-switch arm is the plain `lkassim`.
+- **Source aliases:**
+  - `kA2` -- Skip 2014 Table 3, model 3E2 (stage II).
+- **Example models:** `Skip_2014_nickel.R` (founding example; 0.0132 1/day).
+- **Notes:** Ratified 2026-11-25 with `lkassim`; see that entry.
+
+### lkassim_depur (**canonical log-transformed assimilation rate constant during the depuration phase**)
+- **Type:** log-transformed-pk
+- **Role:** Assimilation rate constant (1 / time) in force after the organism is moved to uncontaminated medium at `tdepur` (the decontamination / depuration phase), applied to `cfood_depur`.
+- **Source aliases:**
+  - `kA2` -- Skip 2014 Table 2 (two-stage Cd model, decontamination phase).
+  - `kA3` -- Skip 2014 Table 3, model 3E2 (stage III).
+- **Example models:** `Skip_2014_cadmium.R` (founding example; 0.1115 1/day), `Skip_2014_nickel.R` (0.1916 1/day).
+- **Notes:** Ratified 2026-11-25 with `lkassim`. The `_depur` arm is tied to the experimenter-defined phase boundary `tdepur`, whereas `_late` is tied to the estimated `tkchange`; a model with both switches carries all three arms.
+
+### lkel_late (**canonical log-transformed elimination rate constant after an estimated within-exposure switch**)
+- **Type:** log-transformed-pk
+- **Role:** First-order elimination rate constant (1 / time) in force from the estimated switch time `tkchange` until the next phase boundary. The pre-switch arm is the plain `lkel`.
+- **Source aliases:**
+  - `kE2` -- Skip 2014 Table 3, models 3E1 and 3E2 (stage II).
+- **Example models:** `Skip_2014_nickel.R` (founding example; 0.9497 1/day).
+- **Notes:** Ratified 2026-11-25 with `lkassim`. Same asymmetric naming as `lcl` / `lcl_late`: there is no `lkel_early`.
+
+### lkel_depur (**canonical log-transformed elimination rate constant during the depuration phase**)
+- **Type:** log-transformed-pk
+- **Role:** First-order elimination rate constant (1 / time) in force after the organism is moved to uncontaminated medium at `tdepur`.
+- **Source aliases:**
+  - `kE2` -- Skip 2014 Table 2 (two-stage Cd model, decontamination phase).
+  - `kE3` -- Skip 2014 Table 3, model 3E2 (stage III).
+- **Example models:** `Skip_2014_cadmium.R` (founding example; 0.321 1/day), `Skip_2014_nickel.R` (0.3311 1/day).
+- **Notes:** Ratified 2026-11-25 with `lkassim`; see `lkassim_depur` for the `_depur` versus `_late` distinction.
+
 ## Bare structural PK parameters
 
 The bare counterparts of the log-transformed parameters above. Used when the source paper estimates the parameter directly on the linear scale, or when the parameter appears in the `model` block as the exponentiated form `<base> <- exp(l<base> + eta_<base>)`.
@@ -1703,6 +1746,22 @@ it is valid only over the time span the source studied.
 - **Notes:** Some PBPK models compute these in place as `model()` literals rather than exponentiating an `ini()` entry; register them in `ini()` whenever the source paper reports them as optimised quantities.
 
 ---
+
+### kassim, kassim_late, kassim_depur (**canonical bare assimilation rate constants**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lkassim`, `lkassim_late` and `lkassim_depur`: first-order assimilation rate constants (1 / time) applied to an external exposure concentration.
+- **Source aliases:**
+  - `kA`, `kA1`, `kA2`, `kA3` -- Skip 2014.
+- **Example models:** `Skip_2014_cadmium.R`, `Skip_2014_nickel.R`.
+- **Notes:** See `lkassim`.
+
+### kel_late, kel_depur (**canonical bare stage-specific elimination rate constants**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lkel_late` and `lkel_depur`.
+- **Source aliases:**
+  - `kE2`, `kE3` -- Skip 2014.
+- **Example models:** `Skip_2014_cadmium.R`, `Skip_2014_nickel.R`.
+- **Notes:** See `lkel_late` and `lkel_depur`.
 
 ### tclchange (**canonical bare clearance-step breakpoint time**)
 - **Type:** bare-pk
@@ -3883,6 +3942,30 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Ravva_2015_varenicline.R` (`slope_placebo = -3.32` and `slope_drug = -0.192`, both on the logit scale of a 0-100 craving score, each with an additive eta), `Hartmann_2026_nintedanib_fvcpp.R` (`slope_placebo = -4.74` percent predicted per year) and `Hartmann_2026_nintedanib_fvcz.R` (`slope_placebo = -0.308` Z-score per year), which use `slope_placebo` WITHOUT a `slope_drug` partner: the drug arm of those two models is a saturable `emax * CTROUGH / (ec50 + CTROUGH)` term rather than a second linear slope. That is the intended reading of the pair rule -- the qualified name is used because a distinct drug-effect term exists and the two must be told apart, not because the drug term is also linear. Both are disease-progression slopes acting on the *derivative* of the endpoint (`d/dt(fvcpp) <- slope_i + dreff`), so the units are endpoint per year and the accompanying eta is additive, exactly as the Notes below predict for a slope whose typical value is negative and small relative to its between-subject SD (-2.46 against 5.55 percent predicted per year, so an individual pediatric slope may take either sign). `vanEsdonk_2018_pregabalin_coldpressor.R` carries the pair in a THIRD shape, on a turnover model rather than an additive one: `slope_placebo = -0.07` s/h drifts the TARGET level of the cold pressor pain-tolerance threshold (`kin = kout * (rbase + slope_placebo * t) * (1 + slope_drug * Cc)`), and `slope_drug = 0.135` 1/(mg/L) is a linear FRACTIONAL stimulation of `kin` rather than an additive increment on the response. The units are the discriminator and are worth checking before assuming the additive form: a `slope_drug` whose units are reciprocal-concentration makes `slope_drug * C` dimensionless, so it must multiply, whereas one carrying endpoint-per-concentration adds. Both readings are in scope for this name -- what it denotes is a LINEAR drug-effect slope, not a particular placement.
 - **Notes:** Ratified 2026-09-03 alongside the Ravva 2015 varenicline craving extraction (PMC4832970; the maintainers chose `slope_drug`, with its partner spelled `slope_placebo` to match the full-token placebo convention). The two are registered as a pair because the naming only makes sense as a pair -- a model with a single linear drug slope and no placebo arm should use the plain canonical `slope`. An additive eta is load-bearing rather than incidental when the typical slope is negative but small relative to its IIV: it lets a subject's individual slope take either sign, which is what per-subject IPRED panels of such papers show. When a paper fits several parallel linear models of different endpoints, suffix by endpoint (`slope_drug_<endpoint>`) the same way multi-output residual SDs are suffixed.
 
+### tkchange (**canonical estimated switch time of the assimilation and elimination rate constants**)
+- **Type:** paper-named-param
+- **Role:** Time from the start of exposure (time) at which the assimilation and elimination rate constants step together from their first-stage arms (`kassim`, `kel`) to their `_late` arms while exposure continues. Carried on the linear scale.
+- **Source aliases:**
+  - `ts` -- Skip 2014 Table 1 ('switch time', estimated from the model) and Table 3.
+- **Example models:** `Skip_2014_nickel.R` (founding example; ts = 1.978 day, estimated).
+- **Notes:** Ratified by the maintainers 2026-11-25 with the Skip 2014 extraction. The rate-constant analogue of `tclchange` (a clearance-only step from treatment initiation) and of `tkacut` (an absorption-only switch measured from each dose). Use `ltkchange` if a future paper estimates the switch time on the log scale.
+
+### cfood_uptake, cfood_depur (**canonical external (food / medium) exposure concentrations of an uptake-depuration experiment**)
+- **Type:** paper-named-param
+- **Role:** Measured concentration of the xenobiotic in the external medium (food, water or soil) during the uptake phase (`cfood_uptake`) and after transfer to uncontaminated medium (`cfood_depur`), in the model's concentration units. They are the exposure inputs of a `kassim * cfood - kel * central` model, not estimates, and are carried as `fixed()` scenario parameters so a user can override them to simulate another exposure.
+- **Source aliases:**
+  - `CEu`, `CEd` -- Skip 2014 Table 1 ('external metal concentration in the uptake / decontamination phase').
+- **Example models:** `Skip_2014_cadmium.R` (founding example; 154.6 and 0.92 mg/kg), `Skip_2014_nickel.R` (2525 and 5.95 mg/kg).
+- **Notes:** Ratified 2026-11-25 with `lkassim`. The `food` token is kept even when the medium is water or soil, so that every exposure-concentration input of this model family shares one stem. A non-zero `cfood_depur` is what lets the body concentration settle at `cfood_depur * kassim_depur / kel_depur` instead of decaying to zero.
+
+### tdepur (**canonical time of transfer to uncontaminated medium**)
+- **Type:** paper-named-param
+- **Role:** Experimenter-defined time from the start of exposure (time) at which the organism is moved to uncontaminated food or medium, ending the uptake phase and starting depuration. Carried on the linear scale as a `fixed()` scenario input.
+- **Source aliases:**
+  - `tc` -- Skip 2014 Table 1 ('time of changing the food from contaminated to uncontaminated').
+- **Example models:** `Skip_2014_cadmium.R` (founding example; 90 day), `Skip_2014_nickel.R` (64 day).
+- **Notes:** Ratified 2026-11-25 with `lkassim`. A design value, not an estimate; contrast with the estimated `tkchange`.
+
 ### lc0, c0 (**canonical log-transformed and bare baseline plasma concentration of the modelled analyte**)
 - **Type:** paper-named-param
 - **Role:** Baseline (time-zero, pre-first-dose) plasma concentration of the analyte the model predicts, carried in the model's own `units$concentration`. `lc0` is the log-transformed primary form in `ini()`; inside `model()` the bare name is `c0`. Distinct from `lrbase`, which is the baseline level of a PD / turnover / endogenous *state* in the units of that state and is explicitly not a concentration. Two applications are in use and the choice between them is a structural statement the model file must make explicit in a comment:
@@ -3891,7 +3974,7 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Source aliases:**
   - `C0` -- Qi 2014 Table 3 theta5, Muntau 2017 Table 3.
   - `ARI(0)`, `<ANALYTE>(0)` -- NONMEM `A_0(<cmt>)` initial-amount notation, used by Hard 2017 (CNS Drugs ESM Supplemental Table 7) and its predecessor Hard 2017 (J Clin Psychopharmacol Supplemental Table 2). Both tables report the value in ng/mL even though their abbreviation lists gloss it as an "amount", so read the units column, not the gloss.
-- **Example models:** `Qi_2014_sapropterin.R`, `Muntau_2017_sapropterin.R` (additive-offset form), `Hard_2017_aripiprazole_lauroxil.R` (initial-condition form), `Sun_2025_hydroxysafflorYellowA_calycosin_rat.R` (initial-condition form with no dose input: `central(0) <- c0` and `central_calycosin(0) <- c0_calycosin` are the fitted post-injection initial concentrations `C10`, `C20` of a model whose states are concentrations, so the injected dose is carried entirely by `c0`).
+- **Example models:** `Qi_2014_sapropterin.R`, `Muntau_2017_sapropterin.R` (additive-offset form), `Hard_2017_aripiprazole_lauroxil.R` (initial-condition form), `Sun_2025_hydroxysafflorYellowA_calycosin_rat.R` (initial-condition form with no dose input: `central(0) <- c0` and `central_calycosin(0) <- c0_calycosin` are the fitted post-injection initial concentrations `C10`, `C20` of a model whose states are concentrations, so the injected dose is carried entirely by `c0`). `Skip_2014_cadmium.R` and `Skip_2014_nickel.R` (initial-condition form, `central(0) <- c0`, for a state that is a whole-body metal concentration; `c0` is the measured pre-exposure concentration CI0, held `fixed()`).
 - **Notes:** Documented 2026-09-16 alongside the Hard 2017 aripiprazole lauroxil extraction; `lc0` / `c0` was already in consistent use in the two sapropterin models without a register entry. May carry IIV as `etalc0` and may be `fixed()` when the source holds it constant. A very large IIV is common and is not a transcription error -- the quantity is a nuisance term mopping up a handful of quantifiable pre-dose samples, so the log-normal it is fitted with has a long tail (Hard 2017 reports a CV of 1898%). Do not use this name for the `c0` of a QSP cytokine baseline that is a state rather than a plasma concentration of the dosed analyte; those models (`Anbari_2023_atezolizumab_cibisatamab_qsp.R` and siblings) carry a paper-specific `c0` documented in their own files.
 
 ### rpg0_<sub>, rpg1_<sub>, rpg2_<sub>, rpg3_<sub> (**canonical Royston-Parmar restricted-cubic-spline survival coefficients**)

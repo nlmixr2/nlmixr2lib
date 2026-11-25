@@ -31,6 +31,11 @@ Skip_2014_nickel <- function() {
     concentration = "mg/kg"
   )
 
+  # There is no dose: the metal enters through the food-concentration
+  # inputs cfood_uptake / cfood_depur, and central(0) is the measured
+  # pre-exposure body concentration. The model has no dosing compartment.
+  dosing <- character(0)
+
   covariateData <- list()
 
   compartmentData <- list(
