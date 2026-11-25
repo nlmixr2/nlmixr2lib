@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2016 doxycycline kill-rate and %T>MIC PK/PD ([doi:10.3389/fmicb.2016.00653](https://doi.org/10.3389/fmicb.2016.00653)) -- in vitro, *Mycoplasma gallisepticum* strain S6 (static time-kill and dynamic model).
+- Add Martial 2016 caspofungin ([doi:10.1007/s40262-015-0347-2](https://doi.org/10.1007/s40262-015-0347-2)) -- adult intensive care unit patients classified Child-Pugh B through hypoalbuminaemia.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
