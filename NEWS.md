@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yamamoto 2017b multi-compartmental CNS distribution models for acetaminophen, atenolol, methotrexate, morphine, paliperidone, phenytoin, quinidine, remoxipride and risperidone ([doi:10.1007/s11095-016-2065-3](https://doi.org/10.1007/s11095-016-2065-3)) -- male Wistar rats, with the allometric translation of acetaminophen and morphine to neurointensive-care patients.
+- Add Sturm 2017 sembragiline brain MAO-B inhibition ([doi:10.1007/s00259-016-3510-6](https://doi.org/10.1007/s00259-016-3510-6)) -- patients with Alzheimer's disease and healthy elderly controls.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
