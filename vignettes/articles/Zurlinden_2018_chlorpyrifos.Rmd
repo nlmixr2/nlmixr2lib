@@ -1,0 +1,288 @@
+---
+title: "Chlorpyrifos (Zurlinden 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Chlorpyrifos (Zurlinden 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zurlinden_2018_chlorpyrifos"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Zurlinden_2018_chlorpyrifos"))$description`
+* Article: [Environ Health Perspect 2018;126(4):047013](https://doi.org/10.1289/EHP1743)
+
+This model is the direct-effect dose-response relationship (Equation 1) from
+Zurlinden and Reisfeld (2018), a proof-of-concept framework for deriving
+environmental public health indicators (EPHIs) and benchmark doses (BMDs) for
+the organophosphate insecticide chlorpyrifos (CPF) using a **neurobehavioral**
+end point (spatial-memory cognitive deficit) rather than the conventional
+acetylcholinesterase-inhibition end point.
+
+Equation 1 is a sigmoidal Emax (Hill) function mapping the peak CPF
+concentration in the brain to a fractional cognitive deficit:
+
+$$ CD = \frac{100 \times C_B^{\gamma}}{E_{50}^{\gamma} + C_B^{\gamma}} $$
+
+where $C_B$ is the peak brain CPF concentration (umol/L), $CD$ is the percent
+cognitive deficit, the maximum effect is a structural 100% deficit, and
+$E_{50} = 0.035$ umol/L and $\gamma = 0.31$ were fit by nonlinear least squares
+to three once-daily oral rat doses.
+
+## What this model is and is not
+
+- **There is no pharmacokinetic layer in this paper.** The internal-dose driver
+  $C_B$ (peak brain CPF) is produced by the separate, well-validated CPF PBPK
+  model of Poet et al. (2014), which is not part of this package. In the
+  packaged model, $C_B$ is supplied as the dosed concentration of a single
+  bookkeeping state `central` (implied volume 1, no elimination), so the model
+  reads "given a peak brain CPF concentration, predict the cognitive deficit."
+- **The dose-response was calibrated in the rat** (Yan et al. 2012 Morris water
+  maze latency-to-platform). The same Equation 1 parameters are applied
+  cross-species to humans in the paper, using human PBPK internal doses.
+- **The paper's biomarker correlations (Equation 2) and exposure-space boundary
+  polynomials (Equation 4) are empirical risk-assessment regressions**, not
+  pharmacodynamic models; they are summarised below but are not shipped.
+
+# Population
+
+The dose-response was calibrated against a 4-week rat study (Yan et al. 2012) in
+which animals received 0, 1, 5, and 10 mg/kg/day CPF by once-daily oral gavage.
+Normalising the reported seconds-to-platform of each exposed group to control
+gave fractional cognitive deficits of 0.26, 0.34, and 0.40 for the 1, 5, and
+10 mg/kg/day groups. The corresponding simulated peak brain CPF concentrations
+(Zurlinden 2018 Table 2, from the Poet 2014 PBPK model) were 9.13e-4, 4.62e-3,
+and 1.02e-2 umol/L. There is no between-subject variability and no residual
+error: Equation 1 is a deterministic nonlinear least-squares fit, and the
+reported parameter CVs (0.47 for $E_{50}$, 0.18 for $\gamma$) are estimate
+uncertainties.
+
+The population metadata is available programmatically via
+`readModelDb("Zurlinden_2018_chlorpyrifos")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/pharmacodynamics/Zurlinden_2018_chlorpyrifos.R`. The
+table below collects them in one place.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lemax` (Emax) | 100% (structural) | Equation 1 literal "100 x"; "the maximum effect level represents a 100% deficit" |
+| `lec50` ($E_{50}$) | 0.035 umol/L | Results, "Dose-response curve": E50 = 0.035 (CV 0.47) |
+| `lhill` ($\gamma$) | 0.31 | Results, "Dose-response curve": gamma = 0.31 (CV 0.18) |
+| `lvc` (implied volume) | 1 (fixed) | no volume reported; brain concentration dosed directly |
+| `d/dt(central) <- 0` | n/a | driver state holds the imposed peak brain CPF (no PK in the paper) |
+| Peak brain CPF (1 mg/kg) | 9.13e-4 umol/L | Table 2 |
+| Peak brain CPF (5 mg/kg) | 4.62e-3 umol/L | Table 2 |
+| Peak brain CPF (10 mg/kg) | 1.02e-2 umol/L | Table 2 |
+| Observed deficits | 0.26, 0.34, 0.40 | Methods, "Rodent data"; normalised from Yan et al. 2012 |
+| BMD15 (human brain CPF) | 1.23e-4 umol/L | Table 3 (15% cognitive deficit) |
+| BMDL15 (human brain CPF) | 8.82e-6 umol/L | Table 3 (15% cognitive deficit) |
+
+# Evaluation inputs (Table 2)
+
+The driver concentration $C_B$ is supplied as a bolus into `central`. Each
+"subject" below is one exposure scenario: we dose the Table 2 peak brain CPF
+concentration and read the predicted cognitive deficit.
+
+```{r events}
+tab2 <- tibble::tribble(
+  ~dose_mg_kg, ~CB_uM,    ~observed_deficit,
+  1,           9.13e-4,   0.26,
+  5,           4.62e-3,   0.34,
+  10,          1.02e-2,   0.40
+)
+
+events <- do.call(rbind, lapply(seq_len(nrow(tab2)), function(i) {
+  et <- rxode2::et(amt = tab2$CB_uM[i], cmt = "central")
+  et <- rxode2::et(et, 1) # a single observation at t = 1 (direct effect; time-invariant)
+  et <- as.data.frame(et)
+  et$id <- i
+  et
+}))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Zurlinden_2018_chlorpyrifos")
+sim <- rxode2::rxSolve(mod, events = events)
+
+pred <- sim |>
+  dplyr::filter(time == 1) |>
+  dplyr::transmute(id, CB_uM = Cc, CD_pct = CD)
+
+cmp <- tab2 |>
+  dplyr::mutate(id = dplyr::row_number()) |>
+  dplyr::left_join(pred, by = "id") |>
+  dplyr::mutate(
+    predicted_deficit = CD_pct / 100,
+    abs_pct_point_diff = abs(100 * (predicted_deficit - observed_deficit))
+  )
+knitr::kable(
+  cmp |>
+    dplyr::select(
+      "Dose (mg/kg/day)" = dose_mg_kg,
+      "Peak brain CPF (umol/L)" = CB_uM.x,
+      "Observed deficit" = observed_deficit,
+      "Predicted deficit" = predicted_deficit,
+      "|diff| (pct points)" = abs_pct_point_diff
+    ),
+  digits = 4,
+  caption = "Equation 1 predictions vs. the observed Yan et al. (2012) deficits (Table 2 driver concentrations)."
+)
+```
+
+The fitted Emax curve reproduces the three calibration deficits to within about
+2 percentage points, as expected from a 2-parameter nonlinear least-squares fit
+to three points (Figure 3 of the paper).
+
+```{r check-fit}
+# Deterministic model (no IIV): the fit should sit within ~3 percentage points
+# of each observed deficit. A mis-transcribed E50 or gamma moves these by tens
+# of points.
+stopifnot(all(cmp$abs_pct_point_diff < 3))
+```
+
+# Replicate Figure 3 - dose-response curve
+
+```{r figure-3, fig.width = 6, fig.height = 4}
+# Replicates Figure 3 of Zurlinden 2018: cognitive deficit vs peak brain CPF.
+cb_grid <- 10^seq(-6, -1.5, length.out = 200)
+grid_events <- do.call(rbind, lapply(seq_along(cb_grid), function(i) {
+  et <- rxode2::et(amt = cb_grid[i], cmt = "central")
+  et <- rxode2::et(et, 1)
+  et <- as.data.frame(et)
+  et$id <- i
+  et
+}))
+curve <- rxode2::rxSolve(mod, events = grid_events) |>
+  dplyr::filter(time == 1) |>
+  dplyr::transmute(CB_uM = Cc, deficit = CD / 100)
+
+ggplot(curve, aes(CB_uM, deficit)) +
+  geom_line(linewidth = 1) +
+  geom_point(
+    data = tab2, aes(CB_uM, observed_deficit),
+    inherit.aes = FALSE, size = 2.5
+  ) +
+  scale_x_log10() +
+  labs(
+    x = "Peak brain CPF concentration (umol/L)",
+    y = "Fractional cognitive deficit",
+    title = "Figure 3 - spatial-memory dose-response",
+    caption = "Line: packaged Equation 1. Points: Yan et al. (2012) observed deficits."
+  )
+```
+
+# Benchmark dose (Table 3)
+
+The 15% cognitive-deficit point of departure, BMD15, is the peak brain CPF
+concentration at which Equation 1 predicts a 15% deficit. Inverting Equation 1,
+
+$$ C_B = E_{50}\left(\frac{CD}{100 - CD}\right)^{1/\gamma}. $$
+
+```{r bmd15}
+pars <- mod()$theta # log-scale fixed/estimated values
+e50 <- exp(pars[["lec50"]])
+gamma <- exp(pars[["lhill"]])
+
+cb_for_cd <- function(cd_pct) e50 * (cd_pct / (100 - cd_pct))^(1 / gamma)
+bmd15_model <- cb_for_cd(15)
+
+# Confirm by forward solve through the packaged model.
+chk <- rxode2::rxSolve(
+  mod,
+  events = as.data.frame(rxode2::et(
+    rxode2::et(amt = bmd15_model, cmt = "central"), 1
+  ))
+)
+cd_at_bmd15 <- chk$CD[chk$time == 1]
+
+bmd15_paper <- 1.23e-4 # Table 3, 15% cognitive deficit (human brain CPF)
+data.frame(
+  quantity = c("BMD15 (model, umol/L)", "BMD15 (paper Table 3, umol/L)", "CD at model BMD15 (%)"),
+  value = c(signif(bmd15_model, 4), bmd15_paper, round(cd_at_bmd15, 3))
+) |>
+  knitr::kable(caption = "Benchmark dose for a 15% cognitive deficit.")
+```
+
+```{r bmd15-check}
+# The analytic inverse must round-trip through the packaged model exactly.
+stopifnot(abs(cd_at_bmd15 - 15) < 1e-6)
+# The model BMD15 (point estimate) agrees with the paper's Table 3 value
+# (derived from the Monte-Carlo parameter distribution) to within 10%.
+stopifnot(abs(bmd15_model - bmd15_paper) / bmd15_paper < 0.10)
+# Structural bounds of the Emax form: a large driver approaches the 100%
+# ceiling. The Hill coefficient is shallow (gamma = 0.31), so the approach is
+# slow -- CD is only ~92% at CB = 100 umol/L and needs CB ~ 1e6 to clear 99%.
+edge <- rxode2::rxSolve(
+  mod,
+  events = as.data.frame(rxode2::et(
+    rxode2::et(amt = 1e6, cmt = "central"), 1
+  ))
+)
+stopifnot(edge$CD[edge$time == 1] > 99, edge$CD[edge$time == 1] < 100)
+```
+
+The point-estimate BMD15 (`r signif(bmd15_model, 3)` umol/L) is close to the
+paper's Monte-Carlo-derived value of 1.23e-4 umol/L (Table 3); the small
+difference reflects point estimates vs. the mean of the parameter distribution.
+As the paper notes, this neurobehavioral BMD15 is **lower** (more protective)
+than the benchmark doses based on 20% RBC AChE inhibition (1.91e-4 umol/L) and
+10% brain AChE inhibition (6.11e-4 umol/L).
+
+# Biomarkers of exposure and the exposure space (not shipped)
+
+For completeness, the paper's downstream risk-assessment steps are:
+
+- **Equation 2** relates the cognitive deficit to a measurable biomarker of
+  exposure $BM$ through a log-polynomial,
+  $CD = \alpha_1 + \alpha_2\log(BM) + \alpha_3[\log(BM)]^2 + \alpha_4[\log(BM)]^4$,
+  fit separately for peak plasma CPF, RBC AChE inhibition, and plasma BuChE
+  inhibition. These are empirical correlations (the functional form was found by
+  symbolic regression), used to turn a readily measured biomarker into a
+  predicted cognitive deficit.
+- **Equation 4** gives route-specific external-exposure cutoffs as a
+  second-order polynomial in the fraction of day exposed,
+  $TAD_r = \beta_1 + \beta_2(FOD) + \beta_3(FOD)^2$ (Table 4), mapping the
+  BMD15/BMDL15 internal doses back to oral/dermal/inhalation external doses.
+
+Both are empirical risk-assessment regressions rather than pharmacodynamic
+models and are documented here for reference only.
+
+# Assumptions and deviations
+
+- **No pharmacokinetic layer.** The paper's internal-dose driver is the Poet
+  et al. (2014) CPF PBPK model, which is not part of this package. The packaged
+  model takes the peak brain CPF concentration as an input, dosed directly into
+  a unit-volume `central` state held constant for the solve (`d/dt(central) <- 0`).
+  This mirrors the sanctioned `Schulthess_2017_directEffect_stim` idiom of
+  carrying a concentration in `central` with the volume fixed to 1.
+- **Species.** Equation 1 was calibrated in the rat (Yan et al. 2012). The paper
+  applies the same parameters cross-species to humans using human PBPK internal
+  doses; the packaged `population$species` records the rat calibration and the
+  cross-species application.
+- **No IIV, no residual error.** Equation 1 is a deterministic nonlinear
+  least-squares fit; the reported CVs are estimate uncertainties, not
+  between-subject variability. The model therefore has no random effects and no
+  residual-error endpoint.
+- **Emax is structural, not estimated.** Equation 1's "100 x" factor encodes a
+  100% maximum cognitive deficit; `lemax` is fixed at `log(100)` rather than
+  estimated.
+- **BMD15 comparison.** The paper's Table 3 BMD15 (1.23e-4 umol/L) comes from
+  the Monte-Carlo parameter distribution; the packaged model uses the reported
+  point estimates, so the two agree to within ~5-6%.
+- **Equations 2 and 4 are not shipped** (empirical biomarker and exposure-space
+  regressions; see the previous section).
+- No correction or erratum notice was found for this article as of 2026-11-25.
