@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Badhan 2017 cationic liposomal subunit-antigen TB vaccine (DDA:TDB:H1) ([doi:10.3390/pharmaceutics9040057](https://doi.org/10.3390/pharmaceutics9040057)) -- mouse IM injection-site compartmental models for the liposome and the antigen.
+- Add Lei 2018 florfenicol PK/PD index ([doi:10.3389/fphar.2018.00002](https://doi.org/10.3389/fphar.2018.00002)) -- ex vivo plasma from healthy pigs challenged with *Streptococcus suis*.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
