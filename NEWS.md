@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Rebello 2026 inhaled fluticasone propionate ([doi:10.1007/s13318-026-00989-0](https://doi.org/10.1007/s13318-026-00989-0)) -- healthy adult men given 1000 ug by metered-dose inhaler; the published estimates overpredict the paper's own exposure about fourfold (see the article).
+- Add Li 2026 microdose cocktail midazolam, dabigatran, pitavastatin, rosuvastatin and atorvastatin ([doi:10.3389/fphar.2026.1924307](https://doi.org/10.3389/fphar.2026.1924307)) -- Chinese healthy volunteers and type 2 diabetes patients.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

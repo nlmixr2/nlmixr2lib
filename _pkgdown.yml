@@ -736,6 +736,8 @@ navbar:
         href: articles/Kong_2025_microdose_cocktail_esrd.html
       - text: "Atorvastatin (Langeskov 2022)"
         href: articles/Langeskov_2022_semaglutide_ddi.html
+      - text: "Atorvastatin (Li 2026)"
+        href: articles/Li_2026_microdose_cocktail_t2d.html
       - text: "Atorvastatin (Stillemans 2022)"
         href: articles/Stillemans_2022_atorvastatin.html
       - text: "AtractylodesLancea group1day1 (Saeheng 2024)"
@@ -2176,6 +2178,8 @@ navbar:
         href: articles/Fuhr_2020_dabigatran.html
       - text: "Dabigatran (Kong 2025)"
         href: articles/Kong_2025_microdose_cocktail_esrd.html
+      - text: "Dabigatran (Li 2026)"
+        href: articles/Li_2026_microdose_cocktail_t2d.html
       - text: "Dabigatran (Liesenfeld 2013)"
         href: articles/Liesenfeld_2013_dabigatran.html
       - text: "Dabigatran (Liu 2022)"
@@ -5744,6 +5748,8 @@ navbar:
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
       - text: "Midazolam (Kong 2025)"
         href: articles/Kong_2025_microdose_cocktail_esrd.html
+      - text: "Midazolam (Li 2026)"
+        href: articles/Li_2026_microdose_cocktail_t2d.html
       - text: "Midazolam (McCann 2025)"
         href: articles/McCann_2025_midazolam.html
       - text: "Midazolam (Nassar 2022)"
@@ -7084,6 +7090,8 @@ navbar:
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Pitavastatin (Kong 2025)"
         href: articles/Kong_2025_microdose_cocktail_esrd.html
+      - text: "Pitavastatin (Li 2026)"
+        href: articles/Li_2026_microdose_cocktail_t2d.html
       - text: "Pixavir (Yang 2026)"
         href: articles/Yang_2026_pixavir.html
       - text: "Plazomicin (Trang 2019)"
@@ -7932,6 +7940,8 @@ navbar:
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Rosuvastatin (Kong 2025)"
         href: articles/Kong_2025_microdose_cocktail_esrd.html
+      - text: "Rosuvastatin (Li 2026)"
+        href: articles/Li_2026_microdose_cocktail_t2d.html
       - text: "Rosuvastatin (Macpherson 2015)"
         href: articles/Macpherson_2015_rosuvastatin.html
       - text: "Rosuvastatin ezetimibe (An 2025)"
@@ -11762,8 +11772,7 @@ articles:
   - articles/Li_2026_etranacogene
   - articles/Li_2026_isoniazid
   - articles/Li_2026_levonorgestrel
-  - articles/Li_2026_meropenem_vaborbactam
-  - articles/Li_2026_timolol
+  - articles/Li_2026_microdose_cocktail_t2d
   - articles/Liang_2023_polymyxinB
   - articles/Liang_2024_lenalidomide
   - articles/Liang_2024_osimertinib
