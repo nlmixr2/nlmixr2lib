@@ -7678,6 +7678,8 @@ navbar:
         href: articles/Clegg_2024_sodiumZirconiumCyclosilicate.html
       - text: "SodiumZirconiumCyclosilicate (Penland 2024)"
         href: articles/Penland_2024_sodiumZirconiumCyclosilicate.html
+      - text: "Somapacitan (Juul 2019)"
+        href: articles/Juul_2019_somapacitan.html
       - text: "Somatrogon (Wang 2025)"
         href: articles/Wang_2025_somatrogon.html
       - text: "Somatropin (Papathanasiou 2021)"
@@ -10568,6 +10570,7 @@ articles:
   - articles/Jung_2023_fractal_kinetics
   - articles/Jung_2024_clopidogrel
   - articles/Jung_2024_vancomycin
+  - articles/Juul_2019_somapacitan
   - articles/Kado_2020_benzathine_benzylpenicillin_g
   - articles/Kado_2023_benzathine_benzylpenicillin_g
   - articles/Kaikousidis_2023_donepezil_mouse
