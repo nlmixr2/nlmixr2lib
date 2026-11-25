@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Suzuoka 2026 high-dose methotrexate ([doi:10.1002/jcph.70310](https://doi.org/10.1002/jcph.70310)) -- Japanese children with acute lymphoblastic leukaemia, with the delivered IV hydration rate as a time-varying covariate.
+- Add Obert 2026 fentanyl and norfentanyl ([doi:10.1016/j.dmd.2026.100390](https://doi.org/10.1016/j.dmd.2026.100390)) -- male and female Sprague-Dawley rats given repeated high-dose intravenous fentanyl (ratifies the `norfentanyl` metabolite suffix).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
