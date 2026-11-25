@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Savic 2017 rifapentine and desacetyl rifapentine ([doi:10.1002/cpt.634](https://doi.org/10.1002/cpt.634)) -- adults with pulmonary tuberculosis.
+- Add Lei 2017 marbofloxacin ex vivo PK/PD ([doi:10.3389/fphar.2017.00542](https://doi.org/10.3389/fphar.2017.00542)) -- Escherichia coli in ileum content of healthy pigs after a 2 mg/kg oral dose.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

@@ -1,0 +1,323 @@
+---
+title: "Marbofloxacin PK/PD against Escherichia coli in pigs (Lei 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Marbofloxacin PK/PD against Escherichia coli in pigs (Lei 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Lei 2017 sets a dose of **marbofloxacin**, a veterinary fluoroquinolone,
+against *Escherichia coli* in the pig gut. Marbofloxacin was measured in plasma
+and in ileum content, sampled through an ileal cannula, after a single 2 mg/kg
+oral dose, and each ileum-content sample was then challenged ex vivo with the
+pathogenic strain HB197. The 24 h change in bacterial count was related to the
+PK/PD index AUC0-24h/MIC with an inhibitory sigmoid Emax model (equation 1,
+fitted in WinNonlin).
+
+| Model file | What it is | Source |
+|---|---|---|
+| `Lei_2017_marbofloxacin_pkpd_index` | Ex vivo inhibitory sigmoid Emax model, 24 h change in log10 CFU/mL vs AUC0-24h/MIC, ileum content | Equation 1, Table 3 |
+
+The pharmacokinetics in the paper are non-compartmental only (Table 1), so no
+PK model file is packaged; see *Assumptions and deviations*.
+
+* Article: <https://doi.org/10.3389/fphar.2017.00542>
+
+```{r model}
+mod <- rxode2::rxode2(readModelDb("Lei_2017_marbofloxacin_pkpd_index"))
+```
+
+# Population
+
+Eight healthy pigs (four male, four female; 15-20 kg, 4-5 weeks old) were
+fitted with an ileal cannula, allowed two weeks to recover, and dosed orally
+with marbofloxacin 2 mg/kg. Plasma and ileum content were sampled from 0.25 to
+72 h. Ileum-content concentrations peaked at 11.28 ug/g, about 20 times the
+plasma peak of 0.55 ug/mL (Table 1).
+
+*E. coli* HB197 is a pathogenic pig isolate whose marbofloxacin MIC, 2 ug/mL
+in both LB broth and ileum content, equals the MIC90 of the 142 susceptible
+isolates among 218 collected from five Chinese provinces (Figure 1). In the ex
+vivo time-kill assay about 10^6 CFU/mL of HB197 were incubated in each
+ileum-content sample and counted up to 24 h (Figure 3B). The model takes no
+animal covariates, so no virtual cohort is needed; every simulation below is a
+deterministic typical-value solve.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Sigmoid Emax equation | `E = Emax - (Emax - E0)*C^N/(C^N + EC50^N)` | Equation 1 |
+| Paper's Emax (drug-free change) -> `e0` | 2.56 log10 CFU/mL | Table 3 |
+| Paper's E0 (maximal kill) -> `emax` | -6.06 log10 CFU/mL | Table 3 |
+| Emax - E0 (consistency row) | 8.59 log10 CFU/mL | Table 3 |
+| EC50 | 19.93 h | Table 3 |
+| N (Hill coefficient) | 3.88 | Table 3 |
+| Targets for E = 0 / -3 / -4 | 16.26 / 23.54 / 27.18 h | Table 3 |
+| MIC of HB197 (`mic`) | 2 ug/mL | Results, MIC/MBC/MPC section; Table 2 ratios |
+| Ex vivo inoculum (`log10_cfu0`) | 10^6 CFU/mL | Methods, ex vivo time-killing curves |
+| Ex vivo exposure `AUC_MARBOFLOXACIN` | 24 h x sample concentration | Equation 1 definition of C; Figure 6 x range |
+| Ileum-content NCA | Cmax 11.28 ug/g, AUC0-24h 46.15 ug*h/g, Clb 0.026 kg/h | Table 1 |
+| In vivo AUC0-24h/MIC | 23.08 h | Table 2 |
+| Dose equation | `Dose = (AUC/MIC) x MIC90 x CL / (fu x F)` | Methods, Doses Estimation |
+| Monte Carlo target quantiles | 16.24/17.73, 23.49/25.59, 27.12/29.42 h | Figure 7 |
+| Predicted daily doses | 0.85 / 1.22 / 1.41 (50%), 0.92 / 1.33 / 1.53 (90%) mg/kg | Table 4 |
+
+# Table 3 target indices
+
+Table 3 prints the AUC0-24h/MIC that gives no net change (E = 0), a 3-log10
+kill (E = -3) and a 4-log10 kill (E = -4). These are an answer key for the
+equation form and for which Table 3 row is the drug-free effect. The packaged
+model is solved over a fine grid of exposures and the 24 h change is
+interpolated at each target.
+
+```{r targets}
+mic <- 2
+cfu0 <- 1e6
+grid_aucmic <- exp(seq(log(1), log(1000), length.out = 800))
+ex_events <- function(aucmic) {
+  data.frame(
+    id = seq_along(aucmic), time = 24, evid = 0, amt = 0, cmt = "bact",
+    AUC_MARBOFLOXACIN = aucmic * mic
+  )
+}
+sim_grid <- rxode2::rxSolve(mod, ex_events(grid_aucmic), returnType = "data.frame")
+# The 24 h change is read from the bacterial state itself; the `log_cfu`
+# output adds a 1 CFU/mL floor that biases it near the maximal kill.
+dE <- log10(sim_grid$bact) - log10(cfu0)
+
+targets <- data.frame(
+  E = c(0, -3, -4),
+  published = c(16.26, 23.54, 27.18)
+) |>
+  dplyr::mutate(
+    model = approx(dE, grid_aucmic, xout = E)$y,
+    pct_diff = 100 * (model - published) / published
+  )
+targets |>
+  dplyr::mutate(model = round(model, 2), pct_diff = round(pct_diff, 2)) |>
+  dplyr::rename(
+    "Target E (log10 CFU/mL)" = E,
+    "Published AUC0-24h/MIC (h)" = published,
+    "Model AUC0-24h/MIC (h)" = model,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Table 3 target indices, published versus solved from the packaged model.")
+```
+
+```{r targets-check}
+stopifnot(
+  # Every target sits 1-2% below the published value. The published
+  # targets are means of per-animal targets (they carry an SD in
+  # Table 3), so they need not lie exactly on the curve at the mean
+  # parameters; a mis-read parameter or a swapped Emax/E0 moves them by
+  # tens of percent.
+  all(targets$pct_diff < 0 & targets$pct_diff > -3)
+)
+```
+
+All three targets reproduce to within 2%, each slightly below the published
+value. Reading the paper's Emax and E0 the conventional way round (Emax as the
+maximal kill) would make the curve rise from -6.06 to +2.56 with exposure, so
+the kill would weaken as the drug concentration increased.
+
+# Ex vivo ODE versus the closed-form equation
+
+The model integrates the bacterial density so that its log10 changes by exactly
+the equation 1 value over 24 h. Both sides use the same parameters, so the
+difference is pure numerical error and is held to a tight bound.
+
+```{r ode-check}
+closed_form <- function(x) {
+  2.56 - (2.56 - (-6.06)) * x^3.88 / (x^3.88 + 19.93^3.88)
+}
+stopifnot(
+  all(abs(dE - closed_form(grid_aucmic)) < 1e-3),
+  # Drug-free control and saturation.
+  abs(closed_form(0) - 2.56) < 1e-12,
+  abs(dE[length(dE)] - (-6.06)) < 1e-2
+)
+```
+
+# Effect curve (replicates Figure 6)
+
+```{r fig6, fig.cap = "Replicates Figure 6 of Lei 2017: 24 h change in E. coli HB197 count versus ex vivo AUC0-24h/MIC. Dashed lines mark the bacteriostatic (0), bactericidal (-3) and elimination (-4) levels; points mark the Table 3 targets."}
+data.frame(aucmic = grid_aucmic, change = dE) |>
+  dplyr::filter(aucmic <= 140) |>
+  ggplot(aes(aucmic, change)) +
+  geom_line(linewidth = 1, colour = "navy") +
+  geom_hline(yintercept = c(0, -3, -4), linetype = "dashed", colour = "grey50") +
+  geom_point(data = targets, aes(published, E), colour = "firebrick", size = 2.5) +
+  labs(x = "AUC0-24h/MIC (h)", y = "Change in log10 CFU/mL over 24 h") +
+  theme_bw()
+```
+
+The curve starts at +2.56 for drug-free ileum content and plateaus at -6.06,
+as in Figure 6. The largest index plotted in Figure 6, about 136 h, is the peak
+ileum-content sample: 11.28 ug/g x 24 h / 2 ug/mL = 135.4 h.
+
+# Exposure after the 2 mg/kg oral dose
+
+Table 2 integrates the in vivo ileum-content AUC0-24h (46.15 ug*h/g in
+Table 1) with the MIC to give an AUC0-24h/MIC of 23.08 h, which the paper
+describes as close to its bactericidal target of 23.54 h. The model places that
+exposure at about a 3-log10 kill.
+
+```{r in-vivo-index}
+sim_iv <- rxode2::rxSolve(
+  mod,
+  data.frame(id = 1, time = 24, evid = 0, amt = 0, cmt = "bact", AUC_MARBOFLOXACIN = 46.15),
+  returnType = "data.frame"
+)
+change_iv <- log10(sim_iv$bact) - log10(cfu0)
+round(change_iv, 2)
+stopifnot(
+  abs(46.15 / mic - 23.08) < 0.01,
+  change_iv < -2.5, change_iv > -3.5
+)
+```
+
+# Predicted daily doses (Table 4)
+
+The dose equation `Dose = (AUC/MIC) x MIC90 x CL / (fu x F)` was evaluated with
+MIC90 = 2 ug/mL, F = fu = 1 (Discussion) and the ileum-content clearance
+Clb = 0.026 kg/h per kg body weight (Table 1; equal to 2 mg/kg / 77.81 ug*h/g).
+The Monte Carlo step in Crystal Ball sampled the target index, and Figure 7
+prints the 50% and 90% quantiles of each sampled target. Those quantiles times
+MIC90 times Clb give every Table 4 dose; so do the Table 3 targets for the 50%
+column. Feeding in the targets solved from the packaged model instead shifts the
+50% doses by the same 1-2% as the targets themselves.
+
+```{r doses}
+clb <- 0.026
+mic90 <- 2
+doses <- data.frame(
+  endpoint = rep(c("Bacteriostatic (E = 0)", "Bactericidal (E = -3)", "Elimination (E = -4)"), 2),
+  tar = rep(c("50%", "90%"), each = 3),
+  fig7_quantile = c(16.24, 23.49, 27.12, 17.73, 25.59, 29.42),
+  published = c(0.85, 1.22, 1.41, 0.92, 1.33, 1.53)
+) |>
+  dplyr::mutate(
+    from_fig7 = fig7_quantile * mic90 * clb,
+    from_model = c(targets$model * mic90 * clb, rep(NA_real_, 3)),
+    pct_fig7 = 100 * (from_fig7 - published) / published,
+    pct_model = 100 * (from_model - published) / published
+  )
+doses |>
+  dplyr::mutate(dplyr::across(c(from_fig7, from_model), \(x) round(x, 3))) |>
+  dplyr::select(endpoint, tar, published, fig7_quantile, from_fig7, from_model) |>
+  dplyr::rename(
+    "Endpoint" = endpoint, "Target attainment" = tar,
+    "Table 4 dose (mg/kg/day)" = published,
+    "Figure 7 target quantile (h)" = fig7_quantile,
+    "Dose from Figure 7 quantile" = from_fig7,
+    "Dose from model target (50% only)" = from_model
+  ) |>
+  knitr::kable(caption = "Table 4 daily doses versus doses recomputed from the dose equation.")
+```
+
+```{r doses-check}
+stopifnot(
+  # Figure 7 quantile x MIC90 x Clb reproduces Table 4 to its 2-decimal
+  # rounding (0.8445 is printed as 0.85, from the Table 3 target 16.26).
+  all(abs(doses$pct_fig7) < 1.5),
+  # Published Table 3 targets reproduce the 50% column exactly.
+  all(abs(c(16.26, 23.54, 27.18) * mic90 * clb - doses$published[1:3]) < 0.006),
+  # Model-solved targets carry their 1-2% offset into the doses.
+  all(abs(doses$pct_model[1:3]) < 3)
+)
+```
+
+The spread of the Monte Carlo is about half the between-animal SD printed for
+each target in Table 3: the distance from the 50% to the 90% quantile in
+Figure 7, divided by the normal 90th-percentile z-score, is compared below with
+half of each Table 3 SD.
+
+```{r mc-spread}
+spread <- data.frame(
+  endpoint = c("Bacteriostatic", "Bactericidal", "Elimination"),
+  sd_table3 = c(2.32, 3.15, 3.45),
+  sd_fig7 = (c(17.73, 25.59, 29.42) - c(16.24, 23.49, 27.12)) / qnorm(0.9)
+) |>
+  dplyr::mutate(ratio = sd_fig7 / sd_table3)
+spread |>
+  dplyr::mutate(dplyr::across(c(sd_fig7, ratio), \(x) round(x, 3))) |>
+  dplyr::rename(
+    "Endpoint" = endpoint, "Table 3 SD (h)" = sd_table3,
+    "SD implied by Figure 7 (h)" = sd_fig7, "Ratio" = ratio
+  ) |>
+  knitr::kable(caption = "Monte Carlo spread implied by Figure 7 versus the Table 3 SDs.")
+stopifnot(all(spread$ratio > 0.45 & spread$ratio < 0.56))
+```
+
+The ratio is 0.50-0.53 for all three targets, so the simulation appears to have
+sampled each target with half its Table 3 SD (for example the standard error of
+the mean of four animals). The paper does not state the distribution it used;
+this is noted and has no bearing on the packaged model.
+
+# PKNCA
+
+There is no PKNCA section. The packaged model has no pharmacokinetic state: the
+paper reports only a non-compartmental analysis of the plasma and ileum-content
+concentrations (Table 1) and no structural PK model, so there is no simulated
+concentration-time profile to analyse. The exposure that drives the model is
+supplied as the `AUC_MARBOFLOXACIN` covariate.
+
+# Assumptions and deviations
+
+* **Emax and E0 naming.** Equation 1 returns the paper's Emax at zero exposure,
+  Table 3 gives Emax = +2.56 (net growth) and E0 = -6.06 (net kill), and
+  Figure 6 starts near +2.6 and plateaus near -6. The model therefore maps the
+  paper's Emax onto the canonical `e0` and the paper's E0 onto the canonical
+  `emax`. No value is changed.
+* **Emax - E0 row.** Table 3 prints Emax - E0 = 8.59, whereas 2.56 + 6.06 =
+  8.62. The model uses the two printed parameters; the 0.03 log10 difference is
+  smaller than the 1-2% offset of the targets and does not affect any check.
+* **Target offsets.** The curve at the mean Table 3 parameters reaches E = 0, -3
+  and -4 at indices 1-2% below the printed targets. The printed targets carry an
+  SD and are means of per-animal fits, which explains a small offset; nothing is
+  tuned.
+* **No PK model.** Lei 2017 analysed the pharmacokinetics non-compartmentally
+  only and reports no volume or absorption rate. A one-compartment model cannot
+  be reconstructed from Table 1: the apparent clearance (2 mg/kg / 14.67
+  ug*h/mL = 0.136 L/h/kg) and the terminal rate constant (0.023 1/h) give an
+  apparent volume of about 6 L/kg, and 2 mg/kg spread over 6 L/kg is 0.33
+  ug/mL, below the observed plasma Cmax of 0.55 ug/mL even with instantaneous
+  absorption. Ileum content is a luminal matrix, not a disposition
+  compartment. The exposure is therefore supplied as a covariate, as in the
+  paper's own PK/PD integration.
+* **Units of ileum content.** Concentrations in ileum content are reported per
+  gram and the MIC per mL; the paper forms the ratio directly (Table 2), which
+  is equivalent to a density of 1 g/mL. The covariate follows the paper.
+* **MIC of HB197 in ileum content.** The Abstract gives the HB197 MIC as 2 and
+  4 ug/mL in broth and ileum fluid; the Results give MIC 2 and MBC 4 ug/mL in
+  both media. The Results value is used, because the Table 2 ratios
+  (Cmax/MIC = 11.28/2 = 5.64, AUC0-24h/MIC = 46.15/2 = 23.08) and the
+  Figure 6 x range both require MIC = 2 ug/mL.
+* **Target labels.** The Methods (Doses Estimation) label E = -1 as a 99.9%
+  reduction and E = -3 as 99.99%; Table 3, the Results and the Abstract use
+  E = 0, -3 and -4 for bacteriostatic, bactericidal and elimination. The
+  Table 3 levels are used.
+* **Table 1 ileum-content Ke.** Table 1 prints Ke = 0.001 1/h for ileum content
+  next to a half-life of 69.97 h, which implies 0.0099 1/h. This does not enter
+  the model.
+* **Ex vivo inoculum.** The ex vivo time-kill design states 10^6 CFU/mL; that
+  value is used for `log10_cfu0`. The predicted 24 h change does not depend on
+  it.
+* **Variability.** Table 3 reports mean +/- SD of the estimates; no
+  between-animal variance or residual error was estimated, so the model has no
+  random effects and `addSd` is fixed at 0.
+* **Errata.** No erratum or correction to Lei 2017 was found, and the article
+  has no supplementary material (Europe PMC, checked 2026-11-25).
