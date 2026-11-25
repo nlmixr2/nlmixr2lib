@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Masters 2026 sasanlimab popPK and exposure-response (safety, complete response, event-free survival) ([doi:10.1002/jcph.70295](https://doi.org/10.1002/jcph.70295)) -- adults with non-muscle invasive bladder cancer and other solid tumors.
+- Add Brooks 2026 thiotepa and TEPA ([doi:10.1002/jcph.70296](https://doi.org/10.1002/jcph.70296)) -- children and young adults undergoing allogeneic or autologous hematopoietic cell transplantation.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

@@ -7596,6 +7596,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Rhee_2022_sildenafil.R` (one-compartment metabolite formed by complete conversion of the parent's apparent clearance; `central_ndmsil`, `lcl_ndmsil` / `lvc_ndmsil`, `e_wt_cl_ndmsil`, `etalcl_ndmsil`, `Cc_ndmsil`, `expSd_ndmsil`; doi:10.1038/s41598-022-11038-6).
 - **Notes:** Follows the `ndm<drug>` contraction of `ndmsel`, `ndmima`, `ndmclb` and `ndmenz`, so the suffix reads as `n-desmethyl-sil`. The founding model assumes every sildenafil molecule eliminated forms the metabolite, on a molar basis; the metabolite volume and clearance are apparent with respect to that assumption (the paper's `F'`), so the predicted concentration is the measured one even if the true fraction metabolised is lower.
 
+### tepa (**canonical TEPA thiotepa metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** TEPA (N,N',N''-triethylenethiophosphoramide), the active alkylating metabolite formed from thiotepa by CYP2B6 / CYP3A4-mediated oxidative desulfuration. Use it as the compartment suffix (`central_tepa`), the observation suffix (`Cc_tepa`) and the parameter suffix (`lcl_tepa`, `lvc_tepa`, `propSd_tepa`) when a model carries plasma TEPA as its own species; thiotepa itself, as the parent, keeps the bare canonical names.
+- **Source aliases:**
+  - `METAB` / `CLM` / `VM` / `TEPA` -- Brooks 2026 Supporting Information NONMEM `$MODEL` compartment label and `$PK` parameter names.
+- **Example models:** `Brooks_2026_thiotepa.R` (founding example; saturable Michaelis-Menten conversion of thiotepa to a one-compartment TEPA metabolite whose volume is fixed to 1 L because it was not identifiable, the same device as `vc_dfcr` in `Urien_2005_capecitabine.R`).
+
 ### dfcr (**canonical 5'-DFCR capecitabine metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 5'-deoxy-5-fluorocytidine (5'-DFCR), formed in the liver by carboxylesterase from capecitabine.

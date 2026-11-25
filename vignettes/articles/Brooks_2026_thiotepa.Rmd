@@ -1,0 +1,544 @@
+---
+title: "Thiotepa (Brooks 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Thiotepa (Brooks 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Brooks_2026_thiotepa"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Brooks_2026_thiotepa"))$description`
+* Article: <https://doi.org/10.1002/jcph.70296> (open access; PMC13589261)
+
+The Supporting Information prints the NONMEM model file of the final model. Its
+structure, fixed constants, and parameter values are used here; the Table 2
+values that it disagrees with are listed under "Assumptions and deviations".
+
+# Population
+
+Brooks et al. (2026) studied 91 children and young adults receiving
+intravenous thiotepa (TT) as part of conditioning for allogeneic (n = 48) or
+autologous (n = 43) hematopoietic cell transplantation at four US centres and
+in the multi-centre PTCTC CSIDE infant SCID study (Table 1). Median age was 4.5
+years (range 0.23-22.5) and median weight 16.7 kg (4.6-110); 40 were female.
+Allogeneic patients received 4, 5 or 7.5 mg/kg (most often 5 mg/kg every 12 h
+for 2 doses) as 1-h infusions; autologous patients received 10 mg/kg or
+300 mg/m^2 (every 24 h for 3 doses) as 2-h infusions. Thiotepa and its active
+metabolite TEPA were measured in plasma after a single dose: 210 TT and 235
+TEPA concentrations.
+
+The same information is available programmatically via
+`readModelDb("Brooks_2026_thiotepa")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to the Supporting
+Information (SI) NONMEM model file and the matching Table 2 row.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (CL_TT) | log(6.665) L/h per 15 kg FFM | SI `$THETA(1)`; Table 2 |
+| `lvc` (Vc) | log(15.837) L per 15 kg FFM | SI `$THETA(2)`; Table 2 |
+| `lq` (Q) | log(1.876) L/h per 15 kg FFM | SI `$THETA(3)`; Table 2 |
+| `lvp` (Vp) | log(7.139) L per 15 kg FFM | SI `$THETA(4)`; Table 2 |
+| `lcl_tepa` (CL_TEPA) | log(2.034) L/h per 15 kg FFM | SI `$THETA(5)`; Table 2 prints 2.035 |
+| `lvmax` (Vmax) | log(3.3164) mg/h per 15 kg FFM | SI `$THETA(6)`; Table 2 prints 3.316 |
+| `lkm` (Km) | log(0.5056) mg/L | SI `$THETA(7)`; Table 2 |
+| `lvc_tepa` (Vm) | fixed log(1) L | SI `$PK` `VM = 1`; Table 2 '1-Fixed' |
+| `e_ffm_cl`, `e_ffm_vc` | fixed 0.75, 1 | SI `$PK` `wtcl`, `wtv`; Results 'Final Population PK Model' |
+| `lhill_cl`, `ltm50_cl` | log(1.056), log(0.370 y) | SI `$THETA(10-11)`; Table 2 |
+| `lhill_vc`, `ltm50_vc` | log(2.712), log(0.3067 y) | SI `$THETA(12-13)`; Table 2 |
+| `etalcl` | 0.08612 | SI `$OMEGA` '1 CL' |
+| `etalvmax` | 0.1755 | SI `$OMEGA` '2 VMAX' |
+| `propSd` | 0.2842 | SI `$THETA(8)` |
+| `propSd_tepa` | 0.2248 | SI `$THETA(9)`; Table 2 22.5% |
+| FFM (Al-Sallami) | equation | SI `$PK` FFM block; Methods 'Covariate Modeling' |
+| Maturation `AGE^h / (AGE^h + TM50^h)` on CL, Vmax, CL_TEPA | equation | SI `$PK` FMAT; Results CL_TT and CL_TEPA equations |
+| Maturation on Vc | equation | SI `$PK` FMAT2 |
+| `d/dt(central)`, `d/dt(peripheral1)`, `d/dt(central_tepa)` | ODEs | SI `$DES` `DADT(1)`-`DADT(3)` |
+
+# Virtual cohort
+
+The observed data are not public. Two virtual cohorts approximate the two
+conventional regimens of Table 3: allogeneic patients on 5 mg/kg every 12 h x 2
+(Table 1 allogeneic median age 8.4 years, weight 27.7 kg, 22/48 female) and
+autologous patients on 300 mg/m^2 every 24 h x 3 (median age 3.3 years, weight
+14.9 kg, 18/43 female). Weight and height are drawn around approximate
+sex-pooled WHO (under 2 years) and CDC (2 years and over) 50th-percentile
+growth anchors.
+
+```{r growth}
+# Approximate sex-pooled 50th-percentile weight (kg) and height (cm) by age
+# (years): WHO growth standards below 2 years, CDC charts from 2 years.
+growth <- tibble::tribble(
+  ~age, ~wt,  ~ht,
+  0,    3.4,  50.0,
+  0.1,  4.6,  55.0,
+  0.25, 6.0,  61.0,
+  0.5,  7.6,  66.5,
+  0.75, 8.6,  71.0,
+  1,    9.4,  74.5,
+  1.5,  10.8, 81.0,
+  2,    12.0, 86.5,
+  3,    14.2, 95.5,
+  4,    16.2, 102.5,
+  5,    18.3, 109.5,
+  6,    20.6, 116.0,
+  8,    25.6, 128.0,
+  10,   32.0, 138.5,
+  12,   40.5, 150.0,
+  14,   50.0, 161.0,
+  16,   58.0, 167.5,
+  18,   62.5, 170.0,
+  23,   66.0, 171.0
+)
+wt_for_age <- function(age) approx(growth$age, growth$wt, xout = age, rule = 2)$y
+ht_for_age <- function(age) approx(growth$age, growth$ht, xout = age, rule = 2)$y
+bsa_mosteller <- function(wt, ht) sqrt(wt * ht / 3600)
+```
+
+```{r cohort}
+set.seed(20261)
+rxode2::rxSetSeed(20261)
+n_per_arm <- 150L
+
+regimens <- tibble::tribble(
+  ~regimen,                ~age_median, ~age_lo, ~age_hi, ~age_sdlog, ~female_frac, ~ii, ~n_dose, ~dur,
+  "5 mg/kg q12h x2",       8.4,         0.23,    22.5,    0.8,        22 / 48,      12,  2L,      1,
+  "300 mg/m2 q24h x3",     3.3,         0.7,     14.5,    0.6,        18 / 43,      24,  3L,      2
+)
+
+draw_age <- function(n, med, lo, hi, sdlog) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- rlnorm(n, log(med), sdlog)
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
+
+make_cohort <- function(r, n, id_offset) {
+  age <- draw_age(n, r$age_median, r$age_lo, r$age_hi, r$age_sdlog)
+  subj <- tibble(
+    id = id_offset + seq_len(n),
+    regimen = r$regimen,
+    AGE = age,
+    SEXF = rbinom(n, 1, r$female_frac),
+    WT = wt_for_age(age) * exp(rnorm(n, 0, 0.15)),
+    HT = ht_for_age(age) * exp(rnorm(n, 0, 0.04))
+  ) |>
+    mutate(
+      dose_mg = if (grepl("mg/kg", r$regimen)) 5 * WT else 300 * bsa_mosteller(WT, HT)
+    )
+  t_end <- (r$n_dose - 1) * r$ii + 72
+  doses <- subj |>
+    tidyr::crossing(time = (seq_len(r$n_dose) - 1) * r$ii) |>
+    mutate(evid = 1L, amt = dose_mg, rate = dose_mg / r$dur, cmt = "central", dvid = NA_integer_)
+  obs <- subj |>
+    tidyr::crossing(time = sort(unique(c(seq(0, t_end, by = 0.5), (seq_len(r$n_dose) - 1) * r$ii + r$dur)))) |>
+    mutate(evid = 0L, amt = NA_real_, rate = NA_real_, cmt = "central", dvid = 1L)
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid))
+}
+
+events <- bind_rows(
+  make_cohort(regimens[1, ], n_per_arm, id_offset = 0L),
+  make_cohort(regimens[2, ], n_per_arm, id_offset = n_per_arm)
+)
+stopifnot(!anyDuplicated(unique(events[, c("id", "regimen")])$id))
+
+events |>
+  distinct(id, regimen, AGE, WT, HT) |>
+  group_by(regimen) |>
+  summarise(
+    n = n(),
+    `median age (y)` = median(AGE),
+    `median WT (kg)` = median(WT),
+    `WT range (kg)` = paste(round(range(WT), 1), collapse = "-"),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 1, caption = "Virtual cohorts (Table 1 medians: allogeneic 8.4 y / 27.7 kg; autologous 3.3 y / 14.9 kg).")
+```
+
+Truncating the log-normal ages to the Table 1 range pulls the allogeneic
+cohort's median slightly below the published one (about 7 years and 23 kg).
+The model takes `WT`, `HT`, `AGE` and `SEXF` and computes fat-free mass
+internally, so no FFM column is supplied.
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Brooks_2026_thiotepa")
+sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen")) |>
+  as.data.frame()
+```
+
+# Concentration-time profiles
+
+Figure 1 of the paper is a VPC of all observed concentrations against time
+after the start of the infusion. The panel below shows the 5th, 50th and 95th
+percentiles of individual predictions (without residual error) for each
+regimen over the whole course.
+
+```{r figure-1, fig.width = 7, fig.height = 5}
+sim |>
+  select(regimen, time, TT = Cc, TEPA = Cc_tepa) |>
+  pivot_longer(c(TT, TEPA), names_to = "analyte", values_to = "conc") |>
+  group_by(regimen, analyte, time) |>
+  summarise(
+    q05 = quantile(conc, 0.05), q50 = median(conc), q95 = quantile(conc, 0.95),
+    .groups = "drop"
+  ) |>
+  filter(q50 > 0) |>
+  ggplot(aes(time, q50)) +
+  geom_ribbon(aes(ymin = pmax(q05, 1e-4), ymax = q95), alpha = 0.25) +
+  geom_line() +
+  facet_grid(analyte ~ regimen, scales = "free_x") +
+  scale_y_log10() +
+  labs(
+    x = "Time since first dose (h)", y = "Plasma concentration (mg/L)",
+    caption = "Analogue of Figure 1 of Brooks 2026 (median and 90% interval of individual predictions)."
+  )
+```
+
+# PKNCA validation
+
+Table 3 of the paper reports, per regimen, the median (IQR) of the
+**cumulative** AUC of TT, of TEPA, and of their sum over the whole course,
+derived from post hoc estimates. Although its title says "single dose", the
+values are cumulative: Figure 4 gives the per-dose targets as 25.5 mg h/L for
+5 mg/kg x 2 and 47.0 mg h/L for 300 mg/m^2 x 3, and 2 x 25.5 = 51.0 and
+3 x 47.0 = 141 match the Table 3 totals. The simulated counterpart is AUC from
+the first dose to 72 h after the last dose, by which time both analytes are
+negligible.
+
+```{r pknca}
+conc_long <- sim |>
+  select(id, regimen, time, TT = Cc, TEPA = Cc_tepa) |>
+  pivot_longer(c(TT, TEPA), names_to = "analyte", values_to = "Cc") |>
+  filter(!is.na(Cc))
+
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, regimen, time, amt)
+
+intervals <- events |>
+  group_by(regimen) |>
+  summarise(end = max(time), .groups = "drop") |>
+  mutate(start = 0, auclast = TRUE, cmax = TRUE)
+
+run_nca <- function(an) {
+  conc_obj <- PKNCA::PKNCAconc(filter(conc_long, analyte == an), Cc ~ time | regimen + id)
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = as.data.frame(intervals)))
+  as.data.frame(res$result) |> mutate(analyte = an)
+}
+nca <- bind_rows(run_nca("TT"), run_nca("TEPA"))
+
+cauc <- nca |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, regimen, analyte, PPORRES) |>
+  pivot_wider(names_from = analyte, values_from = PPORRES) |>
+  mutate(`TT + TEPA` = TT + TEPA, ratio = TEPA / TT)
+```
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~regimen,             ~analyte,    ~auclast,
+  "5 mg/kg q12h x2",    "TT",        23.9,
+  "5 mg/kg q12h x2",    "TEPA",      27.3,
+  "5 mg/kg q12h x2",    "TT + TEPA", 51.0,
+  "300 mg/m2 q24h x3",  "TT",        90.2,
+  "300 mg/m2 q24h x3",  "TEPA",      52.6,
+  "300 mg/m2 q24h x3",  "TT + TEPA", 140.6
+)
+simulated <- cauc |>
+  select(id, regimen, TT, TEPA, `TT + TEPA`) |>
+  pivot_longer(c(TT, TEPA, `TT + TEPA`), names_to = "analyte", values_to = "auclast")
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = select(simulated, -id),
+  reference = published,
+  by = c("regimen", "analyte"),
+  units = c(auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Median cumulative AUC: simulated vs Brooks 2026 Table 3. * differs from the published median by more than 20%."
+)
+```
+
+```{r ratio}
+cauc |>
+  group_by(regimen) |>
+  summarise(
+    `simulated median (IQR)` = sprintf(
+      "%.2f (%.2f-%.2f)", median(ratio), quantile(ratio, 0.25), quantile(ratio, 0.75)
+    ),
+    .groups = "drop"
+  ) |>
+  mutate(`Table 3` = c("1.0 (0.7-1.4)", "0.5 (0.3-0.7)")[match(regimen, regimens$regimen)]) |>
+  knitr::kable(caption = "Cumulative AUC(TEPA)/AUC(TT).")
+```
+
+```{r nca-assert}
+med_total <- cauc |>
+  group_by(regimen) |>
+  summarise(m = median(`TT + TEPA`), r = median(ratio), .groups = "drop")
+total_5 <- med_total$m[med_total$regimen == "5 mg/kg q12h x2"]
+total_300 <- med_total$m[med_total$regimen == "300 mg/m2 q24h x3"]
+stopifnot(
+  # Total alkylating exposure: a mis-transcribed CL, Vmax or volume, or a wrong
+  # dose basis, moves these by tens of percent.
+  abs(total_5 / 51.0 - 1) < 0.2,
+  abs(total_300 / 140.6 - 1) < 0.2,
+  # Saturable conversion: the larger 300 mg/m^2 doses convert a smaller
+  # fraction of thiotepa to TEPA (Table 3: 1.0 vs 0.5).
+  med_total$r[med_total$regimen == "300 mg/m2 q24h x3"] <
+    0.8 * med_total$r[med_total$regimen == "5 mg/kg q12h x2"]
+)
+```
+
+The median total exposure is reproduced within 20% for both regimens and the
+TT and TEPA medians for 300 mg/m^2 agree closely. For 5 mg/kg the simulated
+cohort has more TT and less TEPA than Table 3, so its TEPA/TT ratio (about
+0.8) sits below the published 1.0 but inside the published IQR; the drop in the
+ratio at the higher 300 mg/m^2 doses, which is how the paper characterises the
+saturable conversion, is reproduced. The Table 3 values are medians of the
+study patients' post hoc estimates, so they carry each patient's covariates
+and individual random effects, which this virtual cohort only approximates.
+
+# Exposure in infants and in obesity (Figure 4)
+
+Figure 4 shows the typical per-dose cAUC(total) under conventional dosing
+across age 0.1-2 years (WHO 50th percentile growth) and across BMI 18-42
+kg/m^2 for a 16-year-old (177 cm male, 163 cm female). Per-dose AUC is taken
+from a single dose here and integrated exactly by adding two accumulator states
+to the packaged model.
+
+```{r figure-4-setup, message = FALSE, warning = FALSE}
+# zeroRe() typical-value solves over many covariate profiles: rxode2 notes that
+# the zeroed etas are treated as zero for every profile, which is the intent.
+mod_typ <- mod |>
+  rxode2::model({
+    d/dt(auc_tt) <- Cc
+    d/dt(auc_tepa) <- Cc_tepa
+  }, append = TRUE) |>
+  rxode2::zeroRe()
+
+# One row per subject profile: single dose, AUC read at 120 h.
+per_dose_auc <- function(cov, dur) {
+  cov <- mutate(cov, id = seq_len(n()))
+  ev <- bind_rows(
+    mutate(cov, time = 0, evid = 1L, amt = dose_mg, rate = dose_mg / dur, cmt = "central", dvid = NA_integer_),
+    mutate(cov, time = 120, evid = 0L, amt = NA_real_, rate = NA_real_, cmt = "central", dvid = 1L)
+  ) |>
+    arrange(id, time)
+  out <- as.data.frame(rxode2::rxSolve(mod_typ, events = select(ev, -dose_mg)))
+  cov$auc_total <- out$auc_tt + out$auc_tepa
+  cov
+}
+
+infants <- tidyr::crossing(AGE = seq(0.1, 2, by = 0.1), SEXF = c(0, 1)) |>
+  mutate(WT = wt_for_age(AGE), HT = ht_for_age(AGE))
+obese <- tidyr::crossing(BMI = seq(18, 42, by = 2), SEXF = c(0, 1)) |>
+  mutate(AGE = 16, HT = ifelse(SEXF == 1, 163, 177), WT = BMI * (HT / 100)^2)
+
+fig4 <- bind_rows(
+  per_dose_auc(mutate(infants, dose_mg = 5 * WT), dur = 1) |>
+    mutate(panel = "A: infants, 5 mg/kg", x = AGE, target = 25.5),
+  per_dose_auc(mutate(infants, dose_mg = 300 * bsa_mosteller(WT, HT)), dur = 2) |>
+    mutate(panel = "B: infants, 300 mg/m2", x = AGE, target = 47.0),
+  per_dose_auc(mutate(obese, dose_mg = 5 * WT), dur = 1) |>
+    mutate(panel = "C: 16 years, 5 mg/kg", x = BMI, target = 25.5),
+  per_dose_auc(mutate(obese, dose_mg = 300 * bsa_mosteller(WT, HT)), dur = 2) |>
+    mutate(panel = "D: 16 years, 300 mg/m2", x = BMI, target = 47.0)
+) |>
+  mutate(sex = ifelse(SEXF == 1, "female", "male"))
+```
+
+```{r figure-4, fig.width = 7, fig.height = 5.5}
+ggplot(fig4, aes(x, auc_total, linetype = sex)) +
+  geom_line() +
+  geom_hline(aes(yintercept = target), linetype = "dashed", colour = "grey40") +
+  facet_wrap(~panel, scales = "free") +
+  labs(
+    x = "Age (years) [A, B] or BMI (kg/m^2) [C, D]",
+    y = "Typical per-dose cAUC(TT + TEPA) (mg h/L)",
+    caption = "Replicates the conventional-dosing lines of Figure 4 of Brooks 2026; dashed = per-dose target."
+  )
+```
+
+```{r figure-4-assert}
+inf5 <- filter(fig4, panel == "A: infants, 5 mg/kg")
+ob5 <- filter(fig4, panel == "C: 16 years, 5 mg/kg")
+stopifnot(
+  # Maturation: the youngest infants are over-exposed relative to 2-year-olds
+  # on a per-kg dose.
+  all(inf5$auc_total[inf5$AGE == 0.1] > 1.3 * inf5$auc_total[inf5$AGE == 2]),
+  # FFM scaling: exposure rises with BMI on a per-kg dose.
+  all(ob5$auc_total[ob5$BMI == 42] > 1.3 * ob5$auc_total[ob5$BMI == 18])
+)
+```
+
+```{r figure-4-table}
+fig4 |>
+  filter(x %in% c(0.1, 1, 2, 18, 30, 42)) |>
+  select(panel, sex, x, auc_total) |>
+  pivot_wider(names_from = sex, values_from = auc_total) |>
+  rename("Age (y) or BMI" = x, "female AUC" = female, "male AUC" = male) |>
+  knitr::kable(digits = 1, caption = "Typical per-dose cAUC(total), mg h/L.")
+```
+
+Conventional mg/kg and mg/m^2 dosing over-shoots the per-dose target in the
+youngest infants, where the clearance maturation function (TM50 0.37 years) is
+far from mature, and the over-shoot grows with BMI because total weight
+outpaces fat-free mass; both patterns are the ones Figure 4 shows.
+
+# Model-based doses by weight band (Table 4)
+
+Table 4 lists the mean model-predicted dose (mg/kg) that attains the median
+cumulative cAUC(total) of each regimen, by weight band, in the paper's virtual
+population. The typical-value counterpart below solves for the per-dose amount
+that gives 51 mg h/L over 5 mg/kg-style dosing (two 1-h doses 12 h apart) and
+141 mg h/L over 300 mg/m^2-style dosing (three 2-h doses 24 h apart), for a
+subject at the 50th-percentile age, height and weight of each band midpoint
+(adults above 66 kg carry the extra weight at 170 cm and 18 years).
+
+```{r table-4}
+cum_auc <- function(dose_mg, cov, ii, n_dose, dur) {
+  ev <- bind_rows(
+    tibble(time = (seq_len(n_dose) - 1) * ii, evid = 1L, amt = dose_mg, rate = dose_mg / dur, cmt = "central", dvid = NA_integer_),
+    tibble(time = (n_dose - 1) * ii + 120, evid = 0L, amt = NA_real_, rate = NA_real_, cmt = "central", dvid = 1L)
+  ) |>
+    mutate(id = 1L, WT = cov$WT, HT = cov$HT, AGE = cov$AGE, SEXF = cov$SEXF)
+  out <- as.data.frame(rxode2::rxSolve(mod_typ, events = ev))
+  out$auc_tt + out$auc_tepa
+}
+
+age_for_wt <- function(wt) approx(growth$wt, growth$age, xout = wt, rule = 2)$y
+bands <- tibble::tribble(
+  ~band,       ~wt,
+  "0-9.9",     7,
+  "10-19.9",   15,
+  "20-39.9",   30,
+  "40-59.9",   50,
+  "60-79.9",   70,
+  ">80",       90
+) |>
+  mutate(AGE = age_for_wt(wt), HT = ht_for_age(AGE)) |>
+  tidyr::crossing(SEXF = c(0, 1))
+
+solve_dose <- function(cov, target, ii, n_dose, dur) {
+  uniroot(
+    function(d) cum_auc(d, cov, ii, n_dose, dur) - target,
+    lower = 0.5 * cov$WT, upper = 30 * cov$WT, tol = 1e-3
+  )$root / cov$WT
+}
+
+tab4 <- bands |>
+  rowwise() |>
+  mutate(
+    `5 mg/kg x2 (sim)` = solve_dose(list(WT = wt, HT = HT, AGE = AGE, SEXF = SEXF), 51, 12, 2, 1),
+    `300 mg/m2 x3 (sim)` = solve_dose(list(WT = wt, HT = HT, AGE = AGE, SEXF = SEXF), 141, 24, 3, 2)
+  ) |>
+  ungroup() |>
+  group_by(band, wt) |>
+  summarise(across(c(`5 mg/kg x2 (sim)`, `300 mg/m2 x3 (sim)`), mean), .groups = "drop") |>
+  arrange(wt) |>
+  mutate(
+    `5 mg/kg x2 (Table 4)` = c(5.17, 5.66, 5.27, 4.59, 4.21, 3.37),
+    `300 mg/m2 x3 (Table 4)` = c(10.96, 11.79, 10.72, 9.16, 8.27, 6.48)
+  )
+tab4 |>
+  select(band, `5 mg/kg x2 (sim)`, `5 mg/kg x2 (Table 4)`, `300 mg/m2 x3 (sim)`, `300 mg/m2 x3 (Table 4)`) |>
+  rename("Weight band (kg)" = band) |>
+  knitr::kable(digits = 2, caption = "Model-predicted per-dose amount (mg/kg) for the median cumulative cAUC(total): typical subject vs Table 4 mean.")
+```
+
+```{r table-4-assert}
+stopifnot(
+  # The model-predicted mg/kg dose falls in heavier patients (Table 4: 5.66 at
+  # 10-19.9 kg vs 3.37 above 80 kg).
+  tab4$`5 mg/kg x2 (sim)`[tab4$band == ">80"] < 0.8 * tab4$`5 mg/kg x2 (sim)`[tab4$band == "10-19.9"],
+  tab4$`300 mg/m2 x3 (sim)`[tab4$band == ">80"] < 0.8 * tab4$`300 mg/m2 x3 (sim)`[tab4$band == "10-19.9"]
+)
+```
+
+The typical-subject doses follow the Table 4 trend: highest in the 10-20 kg
+band and falling steadily in heavier, older patients, and from 20 kg upward
+they agree with the Table 4 means within about 7%. The 0-9.9 kg band is the
+exception (4.2 vs 5.17 mg/kg): its 7 kg midpoint corresponds to a 5-month-old,
+where clearance maturation changes steeply with age, so a single
+typical subject cannot stand in for the band mean. Table 4 averages over a
+virtual population with inter-individual variability (its SDs are about 30%),
+so the typical-subject values are expected to agree with the means only
+approximately.
+
+# Assumptions and deviations
+
+- **Inter-individual variability and thiotepa residual error follow the
+  Supporting Information model file, not Table 2.** The model file's thirteen
+  `$THETA` values equal the Table 2 final estimates, so it is the final run, but
+  its variability differs:
+
+  | Quantity | SI model file | Table 2 final model | Table 2 bootstrap mean |
+  |---|---|---|---|
+  | IIV on CL_TT | omega^2 0.08612 (29.3% CV) | 34.15% CV | 32.57% |
+  | IIV on Vmax | omega^2 0.1755 (41.9% CV) | 29.3% CV | 41.1% |
+  | IIV on Km | none (`KM = THETA(7)`) | 96.19% CV | 89.84% |
+  | TT proportional error | 0.2842 | 29.4% | 28.0% |
+  | TEPA proportional error | 0.2248 | 22.5% | 9.0% |
+
+  The model file's CL omega (29.3%) is the value Table 2 prints for Vmax, and
+  its Vmax omega (41.9%) is close to the Table 2 bootstrap mean for Vmax, which
+  suggests the Table 2 variability rows are shifted. The text agrees with the
+  model file: its CL_TT equation carries an eta and its CL_TEPA equation does
+  not, and the Discussion refers to "IIV on both Vmax and CLTT" with no mention
+  of Km variability. The maintainers therefore encode the model file's two etas
+  and its residual-error values; the Km variability row of Table 2 is not
+  implemented.
+- **CL_TEPA and Vmax** use the model file's 2.034 and 3.3164; Table 2 prints
+  2.035 and 3.316.
+- **Sex coding of the FFM equation.** The model file branches on `SEX.EQ.0`
+  for the Al-Sallami female equation (1.11, 7.1, -1.1; 8780 + 244 BMI) and on
+  the other value for the male equation; the paper does not state its SEX
+  coding. The packaged model assigns each equation to the sex Al-Sallami et
+  al. (2015) derived it for, through `SEXF` (1 = female).
+- **Residual error.** The Methods describe log-transformed data with an
+  additive error on the log scale; the model file (a simulation file with
+  `$SIGMA 1 FIX`) writes the same error as proportional on the linear scale.
+  Both are encoded as `prop()` here.
+- **Accumulator states.** The model file carries two AUC compartments
+  (`AUCP`, `AUCM`) used only for the paper's exposure summaries; they are not
+  part of the packaged model. The vignette adds equivalent states for the
+  Figure 4 and Table 4 replications.
+- **TEPA amount units.** The model file converts thiotepa to TEPA mass for
+  mass with no molecular-weight factor, and TEPA concentration is the
+  metabolite amount over a volume fixed to 1 L; the packaged model does the
+  same, so `Cc_tepa` is in mg/L on that basis.
+- **Table 3 ratio label.** The Results text calls the reported ratio
+  "TT-to-TEPA", but the Table 3 row and its values are AUC(TEPA)/AUC(TT); the
+  vignette reports TEPA/TT.
+- **Virtual cohorts** are drawn around approximate sex-pooled WHO/CDC
+  50th-percentile growth anchors with log-normal ages matched to the Table 1
+  medians and ranges; the study's individual covariates are not published.
+- **Maturation at birth.** Both maturation fractions are 0 at `AGE = 0`, so the
+  model must be given an age greater than zero (the youngest study patient was
+  0.23 years).
+- No erratum or correction notice was found for this article (checked
+  2026-11-23).
