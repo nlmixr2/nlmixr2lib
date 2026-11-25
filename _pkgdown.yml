@@ -280,6 +280,8 @@ navbar:
         href: articles/Wright_2013_allopurinol.html
       - text: "Allopurinol (Wright 2016)"
         href: articles/Wright_2016_allopurinol.html
+      - text: "Alogliptin (Dudkowski 2017)"
+        href: articles/Dudkowski_2017_alogliptin.html
       - text: "Alprazolam (Klein 2026)"
         href: articles/Klein_2026_alprazolam.html
       - text: "Alvespimycin (Aregbe 2012)"
@@ -10004,6 +10006,7 @@ articles:
   - articles/Du_2025_repotrectinib_exposure_response
   - articles/Dua_2015_tmdd_tutorial
   - articles/Duan_2024_linezolid
+  - articles/Dudkowski_2017_alogliptin
   - articles/Duffull_2025_tmdd_model_instability
   - articles/Duflot_2022_morphine
   - articles/Duke_2024_cefazolin
