@@ -901,6 +901,7 @@ clearance expression references `t` / `time` without one of these.
 | Linear in time: `cl <- cl_base * (1 + slope * t)` | `cl_time_` | `cl_time_slope` (1/time; a percent per unit time is divided by 100). Founding example: `Cloesmeijer_2020_clonidine.R` |
 | Piecewise-constant step: `cl <- cl * (t < tclchange) + cl_late * (t >= tclchange)` | `tclchange` | `ltclchange`, `lcl_late` |
 | Fractional exponential change: `cl <- cl_base * (1 + cl_exp_famp * (1 - exp(-cl_exp_kdes * t)))` | `cl_exp_` | `cl_exp_famp` (signed fraction, linear scale), `lcl_exp_kdes`. Founding example: `Wojciechowski_2022_abrocitinib.R` |
+| Exponential relaxation to a multiplicative fraction of the baseline: `vmax <- vmax * (vmax_exp_finf + (1 - vmax_exp_finf) * exp(-vmax_exp_kdes * t))` | `<p>_exp_` | `l<p>_exp_finf` (log scale, asymptote / baseline ratio; `finf = 1 + famp`, used when the source estimates the ratio with multiplicative covariate effects), `l<p>_exp_kdes`. Founding example: `BravoPadros_2026_odronextamab.R` (on `vmax`) |
 
 The third form carries two sigmoidicities and they sit on different axes:
 `cl_conc_hill` is the Hill coefficient on CONCENTRATION (the `C^g/(ec50^g +

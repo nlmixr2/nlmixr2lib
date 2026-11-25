@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Schlachter 2026 atogepant monthly-migraine-days exposure-response ([doi:10.1002/psp4.70154](https://doi.org/10.1002/psp4.70154)) -- adults with episodic or chronic migraine.
+- Add Bravo Padros 2026 odronextamab ([doi:10.1002/psp4.70162](https://doi.org/10.1002/psp4.70162)) -- adults with relapsed or refractory B-cell non-Hodgkin lymphoma.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
