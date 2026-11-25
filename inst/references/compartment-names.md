@@ -2294,7 +2294,7 @@ These are internationally standardised clinical abbreviations registered as cano
   - `TXB2` -- universal in the antiplatelet literature.
   - `thromboxane B2` -- expanded form used in figure axes and table headers.
   - `R` -- the generic turnover-state symbol used in the Koh 2025 Monolix source and its printed equation.
-- **Example models:** `Koh_2025_aspirin.R` (doi:10.2147/DDDT.S533428; `d/dt(txb2) = kin * (1 - Imax * Cc^hill / (Cc^hill + ic50^hill)) - kout * txb2`, `txb2(0) = rbase = 26.4 ug/L`, observed as `TXB2 <- txb2`).
+- **Example models:** `Koh_2025_aspirin.R` (doi:10.2147/DDDT.S533428; `d/dt(txb2) = kin * (1 - Imax * Cc^hill / (Cc^hill + ic50^hill)) - kout * txb2`, `txb2(0) = rbase = 26.4 ug/L`, observed as `TXB2 <- txb2`), `Aoyama_2017_meloxicam.R` and `Aoyama_2017_meloxicam_pkpd.R` (doi:10.1002/psp4.12259; serum TXB2 generation as a PERCENT of the basal value, `d/dt(txb2) = kin * (1 - Cc^gamma / (IC50^gamma + Cc^gamma)) - kout * txb2` with `kin = 100 * kout` and `txb2(0) = 100`, meloxicam IC50 1390 ng/mL).
 - **Notes:** `txb2` is the canonical LOWERCASE sibling for the ODE state -- the same split already registered for `PRU` / `pru` and `ANC` / `anc`, and required because `checkModelConventions()` enforces lowercase ODE-state names while the biomarker observables are uppercase. Distinct from `PRU`, which is platelet REACTIVITY on a P2Y12-pathway assay: the two are different pathways (COX-1 vs P2Y12), different assays, and not convertible.
 
 ### txb2 (**canonical lowercase thromboxane B2 ODE state**)

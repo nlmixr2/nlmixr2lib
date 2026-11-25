@@ -5646,14 +5646,16 @@ navbar:
         href: articles/Simpson_2013_mefloquine.html
       - text: "Mefloquine artesunate mouse (Mim 2026)"
         href: articles/Mim_2026_mefloquine_artesunate.html
-      - text: "Meloxicam buffalo (Cagnardi 2017)"
-        href: articles/Cagnardi_2017_meloxicam_buffalo.html
+      - text: "Meloxicam (Aoyama 2017)"
+        href: articles/Aoyama_2017_meloxicam.html
       - text: "Meloxicam cockatiel iv (Dhondt 2017)"
         href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
       - text: "Meloxicam cockatiel oral (Dhondt 2017)"
         href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
       - text: "Meloxicam dog (Teixeira 2026)"
         href: articles/Teixeira_2026_meloxicam_dog.html
+      - text: "Meloxicam pkpd (Aoyama 2017)"
+        href: articles/Aoyama_2017_meloxicam.html
       - text: "Melphalan (Choi 2026)"
         href: articles/Choi_2026_melphalan.html
       - text: "Melphalan (Nath 2007)"
@@ -10628,6 +10630,7 @@ articles:
   - articles/Aoki_2024_intratarget_microdosing_pbpk
   - articles/Aouri_2017_rilpivirine
   - articles/Aoyama_2012_sepantronium
+  - articles/Aoyama_2017_meloxicam
   - articles/Apgar_2018_ALXN1540
   - articles/ArabAlameddine_2012_raltegravir
   - articles/Araki_2022_TAS114
