@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dumond 2017 tenofovir and emtricitabine with their PBMC anabolites ([doi:10.1002/psp4.12150](https://doi.org/10.1002/psp4.12150)) -- HIV-infected adults aged 22-73 years, with p16INK4a senescence-marker expression on anabolite clearance.
+- Add Nguyen 2017 model-evaluation tutorial simulation models ([doi:10.1002/psp4.12161](https://doi.org/10.1002/psp4.12161)) -- a hypothetical IV two-compartment drug (methodology reference) and warfarin PK with a prothrombin-complex-activity turnover model in the O'Reilly study design.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

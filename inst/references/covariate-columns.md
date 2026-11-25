@@ -964,27 +964,16 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Example models:** `Hughes_2025_clesacostat.R` (clesacostat CL/F 27.4% higher with ervogastat, Table S4; an Emax form collapsed to an EC50 of about 0.001, hence the on/off indicator).
 - **Notes:** Member of the auto-approved `CONMED_<INN>` family.
 
-### CONMED_CLODRONATE (**canonical for clodronate-liposome macrophage-depletion pretreatment indicator**)
-- **Description:** 1 = the animal was pretreated with liposome-encapsulated clodronate (clodrosome) to deplete phagocytic macrophages before the modelled dose, 0 = not pretreated. Per-subject (per-group) covariate.
+### CONMED_DRUGX (**canonical for concomitant treatment with an unnamed hypothetical interacting drug in a methodology model**)
+- **Description:** 1 = subject receives the hypothetical concomitant treatment ("drug X"), 0 = not. For methodology / simulation models whose authors invent a binary co-medication covariate without naming a molecule. Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (saline, intact macrophages).
+- **Reference category:** 0 (no concomitant treatment).
 - **Source aliases:**
-  - `Clodrosome +10 mg Fe/kg` -- Liu 2014 Table 3 column (clodrosome 50 mg/kg IV once daily for 2 days before the SPIO dose).
-- **Example models:** `Liu_2014_ironOxideNanoparticle_mouse.R` (selects the clodrosome column of Table 3 for Kin, Kout and Ke as log-ratio effects against the untreated 10 mg Fe/kg group).
-- **Notes:** Member of the auto-approved `CONMED_<INN>` family. The pretreatment is the clodronate liposome, not free clodronate: free bisphosphonate is not taken up by macrophages and does not deplete them, so do not reuse this column for systemic clodronate therapy. Distinct from `CONMED_PHOSPHATIDYLCHOLINE`, the blank-liposome blockade pretreatment, which saturates macrophage uptake without reducing macrophage number.
-
-### CONMED_PHOSPHATIDYLCHOLINE (**canonical for blank phosphatidylcholine-liposome RES-blockade pretreatment indicator**)
-- **Description:** 1 = the animal received a loading dose of drug-free phosphatidylcholine liposomes to saturate reticuloendothelial (RES) uptake before the modelled dose, 0 = not pretreated. Per-subject (per-group) covariate.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (saline, unsaturated RES).
-- **Source aliases:**
-  - `liposome +10 mg Fe/kg` -- Liu 2014 Table 3 column (376 mg L-alpha-phosphatidylcholine/kg encapsulated liposome IV 1.5 h before the SPIO dose).
-- **Example models:** `Liu_2014_ironOxideNanoparticle_mouse.R` (selects the liposome column of Table 3 for Kin, Kout and Ke as log-ratio effects against the untreated 10 mg Fe/kg group).
-- **Notes:** Member of the auto-approved `CONMED_<INN>` family, named for the liposome's lipid because a blank liposome carries no drug. Distinct from `CONMED_CLODRONATE` (macrophage depletion) and from the `FORM_<drug>_<formulation>` liposomal-formulation indicators, which describe the modelled drug's own carrier rather than a separate pretreatment.
+  - `Sex` -- the column that carries the concomitant-treatment flag in the Nguyen 2017 deposited PK dataset and individual-parameter files (the paper text calls it "concomitant treatment"; Figure 1d labels it "co-administration with drug X").
+- **Example models:** `Nguyen_2017_iv2cmt.R` (founding example; `CL = CL_typ * exp(0.5 * CONMED_DRUGX)`).
+- **Notes:** Member of the `CONMED_<INN>` family with the placeholder `DRUGX` in place of an INN, because the source drug and its co-medication are both hypothetical. Never use it for a real, identifiable co-medication; register that molecule's own `CONMED_<INN>` instead.
 
 ### DIS_EOPE (**canonical for early-onset pre-eclampsia indicator**)
 - **Description:** Binary indicator of early-onset pre-eclampsia (eoPE); `1` = eoPE diagnosed before 34 weeks gestation, `0` = not eoPE. Time-fixed per subject within the gestational PK study window. Used by population PK models that compare drug disposition in pregnant women with vs without early-onset pre-eclampsia.

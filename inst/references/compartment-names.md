@@ -2342,7 +2342,7 @@ These are internationally standardised clinical abbreviations registered as cano
   - `PCA` -- the standard field abbreviation, used by Braem 2026.
   - `pca` -- the `dvid` level in the deposited `warfarin_pkpd_data.csv`.
   - `R` -- the generic response symbol in Braem 2026 Equation 16 and in the deposited `Warf_node.txt`; NOT usable as a canonical here because bare `R` is already registered as the resistant bacterial subpopulation.
-- **Example models:** `Bram_2026_warfarin_node.R`
+- **Example models:** `Bram_2026_warfarin_node.R`, `Nguyen_2017_warfarin.R` (mechanistic inhibitory turnover form, `d/dt(PCA) <- kin * (1 - imax * Cc / (Cc + ic50)) - kout * PCA`)
 - **Notes:** Uppercase, following the `PT` / `INR` / `aPTT` / `ECT` coagulation-test-output family rather than the lowercase biomarker convention. Beware the acronym: in other fields `PCA` reads as "principal component analysis", and the lowercase-a form `PCa` appears in the description of `osteoclast` as a placebo-calcium modulation term in the Post 2013 bone-remodelling model. Neither is a compartment, so there is no collision in the register, but a future entry must not reuse this name for either. A model that fits prothrombin *time* rather than complex *activity* uses `PT`; the two are different measurements and must not be conflated.
 
 ### ECT (**canonical ecarin clotting time**)
