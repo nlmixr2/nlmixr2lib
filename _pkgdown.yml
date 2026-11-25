@@ -4126,6 +4126,8 @@ navbar:
         href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
       - text: "Hydrocortisone (Stachanow 2023)"
         href: articles/Stachanow_2023_hydrocortisone.html
+      - text: "Hydromorphone (Gao 2026)"
+        href: articles/Gao_2026_hydromorphone.html
       - text: "Hydroxychloroquine (Alvarez 2022)"
         href: articles/Alvarez_2022_hydroxychloroquine.html
       - text: "Hydroxychloroquine (Carmichael 2003)"
@@ -10924,6 +10926,7 @@ articles:
   - articles/Gao_2020_teicoplanin
   - articles/Gao_2022_cyclosporine
   - articles/Gao_2025_cefquinome
+  - articles/Gao_2026_hydromorphone
   - articles/Gao_2026_trastuzumabRezetecan
   - articles/Gaohua_2012_pregnancy_pbpk
   - articles/Gaohua_2015_lung_pbpk
