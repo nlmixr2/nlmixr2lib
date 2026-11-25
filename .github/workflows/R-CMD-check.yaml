@@ -104,6 +104,24 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
 
+      # R-devel has no RSPM binaries, so pak compiles the nlmixr2 family from
+      # source and may mix CRAN rxode2 with r-universe's rxode2lincmt, whose
+      # headers track development rxode2: CRAN rxode2 5.1.8 then fails to
+      # compile (no member 'numLinCarry'). r-universe serves R-devel Linux
+      # binaries of the whole family; listed first, they win over CRAN, as in
+      # the pkgdown workflow. The PACKAGES fetch fails the step when
+      # r-universe has no binaries for this distro and R version.
+      - name: Prefer the r-universe binaries of the nlmixr2 family (R-devel)
+        if: matrix.config.r == 'devel'
+        shell: bash
+        run: |
+          codename=$(. /etc/os-release && echo "$VERSION_CODENAME")
+          rver=$(Rscript -e 'cat(R.version$major, sub("[.].*", "", R.version$minor), sep = ".")')
+          url="https://nlmixr2.r-universe.dev/bin/linux/${codename}-$(uname -m)/${rver}"
+          curl -fsSL --max-time 30 -o /dev/null "$url/src/contrib/PACKAGES"
+          echo "options(repos = c(nlmixr2bin = \"$url\", getOption(\"repos\")))" >> ~/.Rprofile
+          Rscript -e 'print(getOption("repos"))'
+
       # r-universe rebuilds rxode2 under a FIXED version string, and
       # setup-r-dependencies keys its cache on the resolved versions, so a
       # restored cache can carry a build days older than the one pak resolved
