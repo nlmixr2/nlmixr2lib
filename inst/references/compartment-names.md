@@ -6452,6 +6452,13 @@ The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for
 - **Example models:** `Walker_2023_efzofitimod_ksqlung_mcid.R` (founding example; logistic regression on the time-averaged efzofitimod AUC from Day 1 to Week 24 and `KSQ_LUNG_BL`, Week-24 landmark).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. `mcid` here means the validated 4-point KSQ-Lung threshold; the absolute score is the `ksqlung` output and the baseline is the covariate `KSQ_LUNG_BL`.
 
+### prob_sbm_response (**canonical weekly spontaneous-bowel-movement response probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with opioid-induced constipation has a responder WEEK: at least 3 spontaneous bowel movements (SBMs; bowel movements without rescue laxative in the previous 24 hours) in that week and at least 1 SBM per week more than baseline. Evaluated per week in a longitudinal mixed-effects logistic regression; the subject-level responder status used as a trial endpoint (responder weeks in at least 3 of 4, or 9 of 12, treatment weeks) is derived from it by simulation and is not itself the output.
+- **Source aliases:** `P` -- Al-Huniti 2017 Methods, logit(P) = E0 + alpha * Dose + eta.
+- **Example models:** `AlHuniti_2017_naloxegol.R` (founding example; linear in the daily naloxegol `DOSE` on the logit with an additive eta on E0, no time trend; fitted jointly with a Weibull dropout model whose output is `sur`).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Distinct from the `sbm` output of `AlHuniti_2016_naloxegol_sbm.R`, which is the ordinal daily SBM COUNT, not a weekly responder probability. The source likelihood is Bernoulli, so the model carries a fixed placeholder additive residual.
+
 ## Placebo kinetic-system compartments
 
 A recurring device in placebo-controlled PD modelling is to give the placebo response its own *hypothetical* kinetic system: a dimensionless dummy dose is administered at each dosing time into a depot, transferred at an onset rate constant into a second state, and lost from that state at an offset rate constant. The contents of the second state are the driver of the placebo term of the effect model. The pair below names those two states. They are amounts of a dimensionless dummy dose, not concentrations of anything measurable, so `compartmentData` records them with `specimen = "not applicable"`. Distinct from the MBMA `<endpoint>_placebo` arms above, which are *output* states holding a clinical endpoint in its own units; and distinct from a K-PD `depot_kpd`, which holds an amount of real administered drug.
