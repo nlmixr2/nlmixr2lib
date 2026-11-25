@@ -1,0 +1,529 @@
+---
+title: "Intravenous immune globulin 10% in children and adults with PID (Dumas 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Intravenous immune globulin 10% in children and adults with PID (Dumas 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Dumas 2026 pooled the Phase 3 study Nabi-7101 and the Phase 4 pediatric study
+994 of BIVIGAM (immune globulin intravenous [human], 10% liquid) to support
+extending the adult dosing recommendation to children aged 2 years and older.
+Total serum IgG was described by a two-compartment model with body-weight
+power scaling. Because only three children were younger than 6 years, the
+authors qualified two parameterisations and used both for simulation: one
+with the allometric exponents estimated (the preferred model) and one with
+them fixed to the standard 0.75 and 1 as a sensitivity analysis. Both are
+packaged:
+
+* `Dumas_2026_immunoglobulin_allometryEstimated` -- exponents 0.939 (CL, Q)
+  and 0.528 (Vc, Vp).
+* `Dumas_2026_immunoglobulin_allometryFixed` -- exponents 0.75 (CL) and
+  1 (Vc); Q and Vp are not scaled by weight.
+
+* Citation: `r rxode2::rxode(readModelDb("Dumas_2026_immunoglobulin_allometryEstimated"))$reference`
+* Article: <https://doi.org/10.1002/psp4.70275> (open access; the NONMEM
+  control stream is Listing S1 of the supporting information)
+
+```{r models}
+mod_est <- readModelDb("Dumas_2026_immunoglobulin_allometryEstimated")
+mod_fix <- readModelDb("Dumas_2026_immunoglobulin_allometryFixed")
+models <- list(Estimated = mod_est, Fixed = mod_fix)
+```
+
+The model has no endogenous IgG production term. Every subject entered the
+studies on stable replacement therapy, so the pre-treatment total IgG (`IGG`,
+g/L) initialises both compartments at a steady-state distribution
+(`central(0) = IGG * vc`, `peripheral1(0) = IGG * vp`) and the observed total
+IgG is `Cc = central / vc`. Setting `IGG = 0` gives the exogenous IgG from an
+empty system, which is what the steady-state simulations below use.
+
+The proportional residual error differs by data source: IgG results from
+dedicated PK samples (bioanalytical laboratory, SDTM PC domain; 11.9%) and
+from routine central-laboratory monitoring draws (SDTM LB domain; 8.08% and
+8.20%). The per-observation indicator `SAMPLE_CENTRAL_LAB` (1 = central
+laboratory) selects the magnitude.
+
+# Population
+
+The analysis set held 79 subjects with primary immunodeficiency (1243 total
+IgG observations): 3 aged 2 to <6 years, 9 aged 6 to <12, 13 aged 12 to 16
+and 54 older than 16 (Dumas 2026 Table 1). Ages ranged from 3 to 75 years and
+baseline body weight from 16.4 to 135 kg; 32 of the 79 subjects (40.5%) were
+female, all of them in the two oldest groups. Mean baseline total IgG was
+7.95 to 10.40 g/L by age group. Subjects received 300-800 mg/kg every 3 or 4
+weeks (265-1100 mg/kg after trough-guided adjustment) for about 1 year
+(Nabi-7101, n = 63) or 5 months (study 994, n = 16) (Table S1). Race and
+geographic region are not reported.
+
+```{r population}
+str(mod_est()$population)
+```
+
+# Source trace
+
+| Parameter / equation | Estimated allometry | Fixed allometry | Source |
+|---|---|---|---|
+| `lcl` CL (L/day, 70 kg) | 0.0969 | 0.0979 | Table 2 |
+| `lvc` Vc (L, 70 kg) | 3.25 | 3.36 | Table 2 |
+| `lvp` Vp (L, 70 kg) | 4.55 | 3.62 | Table 2 |
+| `lq` Q (L/day, 70 kg) | 0.432 | 0.4872 | Table 2 |
+| `e_wt_cl_q` exponent on CL and Q (estimated model) | 0.939 | -- | Table 2; Listing S1 THETA(7) on CL and Q |
+| `e_wt_vc_vp` exponent on Vc and Vp (estimated model) | 0.528 | -- | Table 2; Listing S1 THETA(8) on V1 and V2 |
+| `e_wt_cl` exponent on CL (fixed model) | -- | 0.75 (fixed) | Table 2; Methods 'applied to CL and Vc' |
+| `e_wt_vc` exponent on Vc (fixed model) | -- | 1 (fixed) | Table 2; Methods 'applied to CL and Vc' |
+| `etalcl` (variance) | 0.05469 (23.7% CV) | 0.06157 (25.2% CV) | Table 2, `log(1 + CV^2)` |
+| `etalvc` (variance) | 0.03085 (17.7% CV) | 0.05876 (24.6% CV) | Table 2, `log(1 + CV^2)` |
+| `etalvp` (variance) | 2.37339 (312% CV) | 1.73441 (216% CV) | Table 2, `log(1 + CV^2)` |
+| IIV on Q | none | none | Listing S1 `$OMEGA 0 FIX` |
+| `propSd` (PK samples, SDTM PC) | 0.119 | 0.119 | Table 2 |
+| `propSd_lb` (central laboratory, SDTM LB) | 0.0808 | 0.0820 | Table 2 |
+| Two-compartment ODEs, `k10 = CL/V1`, `k12 = Q/V1`, `k21 = Q/V2` | | | Listing S1 `$DES` |
+| `central(0) = IGG * vc`, `peripheral1(0) = IGG * vp` | | | Listing S1 `A_0(1) = BIGG*V1`, `A_0(2) = BIGG*V2` |
+| `Cc = central / vc`, proportional error by data source | | | Listing S1 `$ERROR` (`W = THETA * IPRED`, `$SIGMA 1 FIX`) |
+
+The `log(1 + CV^2)` conversion is confirmed by Listing S1, whose `$OMEGA`
+values (0.0549, 0.0308, 2.37) are exactly that conversion of the
+estimated-allometry %CVs. Listing S1 also carries the estimated-allometry
+structural values in its own units (CL 0.0404 dL/h = 0.0969 L/day, V1 32.4 dL,
+V2 45.5 dL, Q 0.18 dL/h = 0.432 L/day).
+
+# Typical profiles from the pre-treatment baseline
+
+The model is initialised at the observed pre-treatment IgG. The typical
+profiles below start a 70 kg adult at the adult mean baseline (10.40 g/L) and
+a 17.4 kg child at the 2 to <6 year mean (7.95 g/L; Table 1) and give
+500 mg/kg every 4 weeks for a year as 2-hour infusions.
+
+```{r typical}
+typical_subjects <- tibble(
+  id = 1:2,
+  subject = c("Adult, 70 kg", "Child 2 to <6 years, 17.4 kg"),
+  WT = c(70, 17.4),
+  IGG = c(10.40, 7.95)
+)
+inf_dur <- 2 / 24
+ev_typ <- typical_subjects |>
+  tidyr::crossing(time = seq(0, 12 * 28, by = 28)) |>
+  mutate(evid = 1L, amt = 0.5 * WT, rate = amt / inf_dur, cmt = "central") |>
+  bind_rows(
+    typical_subjects |>
+      tidyr::crossing(time = seq(0, 13 * 28, by = 0.5)) |>
+      mutate(evid = 0L, amt = 0, rate = 0, cmt = "central")
+  ) |>
+  mutate(SAMPLE_CENTRAL_LAB = 0) |>
+  arrange(id, time, desc(evid))
+
+sim_typ <- bind_rows(lapply(names(models), function(nm) {
+  rxode2::rxSolve(
+    rxode2::zeroRe(models[[nm]]()), events = ev_typ,
+    keep = "subject", returnType = "data.frame"
+  ) |>
+    mutate(model = nm)
+}))
+stopifnot(!anyNA(sim_typ$Cc))
+
+ggplot(sim_typ, aes(time, Cc, colour = model)) +
+  geom_line() +
+  geom_hline(yintercept = c(5, 7), linetype = "dotted") +
+  facet_wrap(~subject) +
+  labs(
+    x = "Time (day)", y = "Total IgG (g/L)", colour = "Allometry",
+    caption = "Typical-value profiles; dotted lines at 5 and 7 g/L."
+  )
+```
+
+The adult profile settles a little above its baseline, so 500 mg/kg every 4
+weeks roughly maintains the level the adults entered with. Because the model
+has no production term, the baseline IgG washes out with the terminal
+half-life (about 60 days for the typical adult) and is replaced by the
+dosing steady state.
+
+# Virtual cohort
+
+The paper simulated 1000 subjects per age group with body weight resampled
+from NHANES. NHANES records are not bundled here, so each age group draws age
+uniformly within the group and weight from an approximate median
+weight-for-age curve (sexes averaged) with 15% log-normal spread; adults
+(17-75 years) draw weight from a log-normal distribution with median 80 kg
+and 22% spread. 200 subjects are simulated per age group and regimen.
+
+```{r cohort}
+set.seed(2026)
+median_wt_for_age <- data.frame(
+  age = c(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17),
+  wt = c(12.5, 14.3, 16.2, 18.2, 20.4, 22.7, 25.4, 28.4, 32.0, 36.0, 40.5,
+         45.5, 50.5, 54.5, 58.0, 61.0)
+)
+age_groups <- tibble(
+  age_group = factor(
+    c("2 to <6", "6 to <12", "12 to 16", ">16"),
+    levels = c("2 to <6", "6 to <12", "12 to 16", ">16")
+  ),
+  age_lo = c(2, 6, 12, 17),
+  age_hi = c(6, 12, 17, 75)
+)
+n_per_arm <- 200L
+regimens <- tidyr::crossing(dose_mgkg = c(300, 500, 800), tau = c(21, 28))
+
+subjects <- age_groups |>
+  tidyr::crossing(regimens, rep = seq_len(n_per_arm)) |>
+  mutate(
+    id = row_number(),
+    AGE = runif(n(), age_lo, age_hi),
+    WT = ifelse(
+      age_group == ">16",
+      exp(rnorm(n(), log(80), 0.22)),
+      approx(median_wt_for_age$age, median_wt_for_age$wt, xout = AGE)$y *
+        exp(rnorm(n(), 0, 0.15))
+    ),
+    tau_wk = paste(tau / 7, "weeks"),
+    amt = dose_mgkg * WT / 1000 # g
+  )
+
+# One steady-state (ss = 1) infusion per subject and a grid over the dosing
+# interval; IGG = 0 so the profile is the dosing steady state alone.
+obs_times <- function(tau) c(seq(0, 1, by = 1 / 24), 2:tau)
+events <- bind_rows(
+  subjects |>
+    mutate(time = 0, evid = 1L, ss = 1L, ii = tau, rate = amt / inf_dur),
+  subjects |>
+    group_by(id) |>
+    reframe(time = obs_times(tau)) |>
+    left_join(subjects |> select(-amt), by = "id") |>
+    mutate(evid = 0L, ss = 0L, ii = 0, amt = 0, rate = 0)
+) |>
+  mutate(cmt = "central", IGG = 0, SAMPLE_CENTRAL_LAB = 0) |>
+  select(id, time, evid, amt, rate, ss, ii, cmt, WT, IGG, SAMPLE_CENTRAL_LAB,
+         age_group, dose_mgkg, tau, tau_wk) |>
+  arrange(id, time, desc(evid))
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
+subjects |>
+  distinct(id, age_group, WT) |>
+  group_by(age_group) |>
+  summarise(n = n(), median_WT = median(WT), min_WT = min(WT), max_WT = max(WT))
+```
+
+# Simulation
+
+The 312% (estimated) and 216% (fixed) CV IIV on Vp gives some subjects a very
+slow distribution phase, so the solves use `dop853` with a raised step budget
+and every subject is checked for a complete profile.
+
+```{r simulate}
+sim <- bind_rows(lapply(names(models), function(nm) {
+  rxode2::rxSetSeed(2026)
+  rxode2::rxSolve(
+    models[[nm]](), events = events,
+    keep = c("age_group", "dose_mgkg", "tau", "tau_wk"),
+    method = "dop853", maxsteps = 5e6, returnType = "data.frame"
+  ) |>
+    mutate(model = nm)
+}))
+stopifnot(
+  !anyNA(sim$Cc),
+  all(table(sim$model) == nrow(events[events$evid == 0, ]))
+)
+```
+
+# Replicate Figure 3: steady-state troughs by age group
+
+```{r figure-3}
+troughs <- sim |>
+  filter(time == tau) |>
+  mutate(dose = factor(paste(dose_mgkg, "mg/kg"), levels = paste(c(300, 500, 800), "mg/kg")))
+
+ggplot(troughs, aes(age_group, sim, fill = dose)) +
+  geom_boxplot(outlier.size = 0.4) +
+  geom_hline(yintercept = c(5, 7, 10), linetype = "dotted") +
+  facet_grid(tau_wk ~ model) +
+  labs(
+    x = "Age group (years)", y = "Steady-state trough total IgG (g/L)",
+    fill = "Dose",
+    caption = "Replicates Figure 3 of Dumas 2026 (residual error included)."
+  )
+```
+
+# Replicate Table 4: proportion of subjects above trough thresholds
+
+Table 4 of the paper gives, per model, age group, dose and dosing interval,
+the percentage of subjects whose steady-state trough (with residual error) is
+at least 5, 7 and 10 g/L.
+
+```{r table-4}
+pub_t4 <- tibble::tribble(
+  ~model, ~age_group, ~dose_mgkg, ~ge5_3, ~ge5_4, ~ge7_3, ~ge7_4, ~ge10_3, ~ge10_4, ~mean_3, ~mean_4,
+  "Fixed", ">16", 300, 92.3, 75.7, 71.4, 41.8, 31.6, 14.1, 11.1, 9.5,
+  "Fixed", ">16", 500, 99.7, 97.5, 97.9, 86.4, 83.5, 59.5, 18.5, 15.8,
+  "Fixed", ">16", 800, 100, 99.9, 99.9, 98.9, 99.3, 91.0, 29.8, 25.5,
+  "Fixed", "12 to 16", 300, 91.8, 72.1, 68.2, 37.6, 25.0, 8.4, 10.4, 8.8,
+  "Fixed", "12 to 16", 500, 99.6, 96.4, 97.4, 84.8, 82.6, 51.0, 17.2, 14.5,
+  "Fixed", "12 to 16", 800, 100, 99.7, 100, 98.0, 97.7, 90.5, 27.6, 23.7,
+  "Fixed", "6 to <12", 300, 85.6, 62.8, 52.3, 29.1, 14.5, 5.6, 9.0, 7.8,
+  "Fixed", "6 to <12", 500, 99.3, 94.7, 92.8, 78.6, 68.0, 42.6, 14.9, 13.1,
+  "Fixed", "6 to <12", 800, 100, 99.6, 100, 97.5, 96.4, 84.5, 23.8, 20.8,
+  "Fixed", "2 to <6", 300, 74.3, 54.5, 34.6, 18.7, 5.80, 2.60, 7.5, 6.8,
+  "Fixed", "2 to <6", 500, 98.7, 89.5, 89.4, 68.6, 54.2, 31.9, 12.7, 11.0,
+  "Fixed", "2 to <6", 800, 100, 98.9, 99.4, 93.5, 94.9, 76.5, 20.1, 17.7,
+  "Estimated", ">16", 300, 92.9, 74.9, 70.4, 42.6, 28.0, 12.9, 10.9, 9.43,
+  "Estimated", ">16", 500, 99.8, 97.4, 98.7, 87.1, 82.8, 60.0, 18.3, 15.7,
+  "Estimated", ">16", 800, 100, 99.9, 99.9, 99.2, 99.5, 91.4, 29.4, 25.2,
+  "Estimated", "12 to 16", 300, 95.0, 77.3, 72.8, 42.6, 29.3, 10.3, 10.8, 9.27,
+  "Estimated", "12 to 16", 500, 100, 98.3, 98.6, 89.4, 87.1, 58.3, 17.9, 15.2,
+  "Estimated", "12 to 16", 800, 100, 99.9, 100, 98.8, 98.7, 93.6, 28.7, 24.8,
+  "Estimated", "6 to <12", 300, 95.0, 81.4, 71.2, 45.6, 27.9, 12.3, 10.3, 9.04,
+  "Estimated", "6 to <12", 500, 100, 98.9, 98.5, 91.6, 84.6, 62.2, 17.1, 15.1,
+  "Estimated", "6 to <12", 800, 100, 99.9, 100, 99.6, 99.5, 95.7, 27.3, 24.1,
+  "Estimated", "2 to <6", 300, 94.2, 84.0, 70.3, 48.8, 25.1, 11.9, 9.75, 8.84,
+  "Estimated", "2 to <6", 500, 100, 99.1, 99.3, 91.3, 86.8, 64.3, 16.5, 14.4,
+  "Estimated", "2 to <6", 800, 100, 99.9, 100, 99.6, 99.5, 95.4, 26.1, 23.1
+)
+pub_long <- pub_t4 |>
+  pivot_longer(starts_with("ge"), names_to = c("threshold", "tau_w"),
+               names_pattern = "ge(\\d+)_(\\d)", values_to = "published") |>
+  mutate(threshold = as.numeric(threshold), tau = 7 * as.numeric(tau_w)) |>
+  select(model, age_group, dose_mgkg, tau, threshold, published)
+
+sim_pct <- troughs |>
+  tidyr::crossing(threshold = c(5, 7, 10)) |>
+  group_by(model, age_group, dose_mgkg, tau, threshold) |>
+  summarise(simulated = 100 * mean(sim >= threshold), .groups = "drop") |>
+  mutate(age_group = as.character(age_group))
+
+t4_cmp <- inner_join(pub_long, sim_pct,
+                     by = c("model", "age_group", "dose_mgkg", "tau", "threshold")) |>
+  mutate(diff = simulated - published)
+stopifnot(nrow(t4_cmp) == 2 * 4 * 3 * 2 * 3)
+
+t4_cmp |>
+  mutate(
+    cell = sprintf("%.1f / %.1f", published, simulated),
+    col = sprintf(">= %g g/L, %g wk", threshold, tau / 7)
+  ) |>
+  select(model, age_group, dose_mgkg, col, cell) |>
+  pivot_wider(names_from = col, values_from = cell) |>
+  arrange(model, factor(age_group, levels = levels(age_groups$age_group)), dose_mgkg) |>
+  rename("Model" = model, "Age group (years)" = age_group, "Dose (mg/kg)" = dose_mgkg) |>
+  knitr::kable(caption = "Percentage of subjects at or above each steady-state trough threshold: published (Dumas 2026 Table 4) / simulated.")
+```
+
+```{r table-4-summary}
+t4_cmp |>
+  group_by(model) |>
+  summarise(
+    median_abs_diff = median(abs(diff)),
+    p90_abs_diff = quantile(abs(diff), 0.9),
+    max_abs_diff = max(abs(diff))
+  ) |>
+  knitr::kable(digits = 1, caption = "Absolute difference, simulated minus published (percentage points), over the 72 cells per model.")
+```
+
+```{r table-4-gate}
+# A mis-transcribed clearance, exponent or unit moves trough proportions by
+# tens of percentage points across many cells at once. Binomial SE at n = 200
+# is at most 3.5 points per cell, so the centre and the 90th percentile of the
+# 72 cells are robust to which subjects land in the tails.
+gate <- t4_cmp |>
+  group_by(model) |>
+  summarise(med = median(abs(diff)), p90 = quantile(abs(diff), 0.9))
+stopifnot(all(gate$med < 6), all(gate$p90 < 20))
+
+# The paper's headline claim: at 500 mg/kg every 4 weeks about 90% of
+# subjects in every age group keep a trough of at least 5 g/L.
+headline <- t4_cmp |>
+  filter(dose_mgkg == 500, tau == 28, threshold == 5)
+stopifnot(all(headline$simulated > 80))
+```
+
+The simulated proportions reproduce Table 4 closely at the 5 and 7 g/L
+thresholds, including the paper's main result that at least about 90% of
+subjects in every age group keep a trough of 5 g/L or more on 500 mg/kg every
+4 weeks under either model. The largest differences are at the 10 g/L
+threshold for the lowest dose, where the published proportions sit in the
+upper tail of the trough distribution and are most sensitive to the
+simulated weight distribution and to how close to steady state the paper's
+simulation ran.
+
+Table 4 also lists a "mean total IgG concentration" per regimen. That column
+cannot be reproduced as a steady-state trough: it exceeds the steady-state
+average concentration (dose / CL / interval) that a linear model allows for
+any trough, by about 8% for the 3-week and 24% for the 4-week interval.
+
+```{r table-4-mean}
+sim |>
+  group_by(model, age_group, dose_mgkg, tau, id) |>
+  summarise(
+    trough = Cc[time == tau],
+    # Exact steady-state average: dose / (CL * tau).
+    cavg = (dose_mgkg[1] * WT[1] / 1000) / (cl[1] * tau[1]),
+    .groups = "drop"
+  ) |>
+  group_by(model, age_group, dose_mgkg, tau) |>
+  summarise(mean_trough = mean(trough), mean_cavg = mean(cavg), .groups = "drop") |>
+  mutate(age_group = as.character(age_group)) |>
+  inner_join(
+    pub_t4 |>
+      pivot_longer(c(mean_3, mean_4), names_to = "tau_w", values_to = "published_mean") |>
+      mutate(tau = ifelse(tau_w == "mean_3", 21, 28)) |>
+      select(model, age_group, dose_mgkg, tau, published_mean),
+    by = c("model", "age_group", "dose_mgkg", "tau")
+  ) |>
+  filter(age_group == ">16") |>
+  rename(
+    "Model" = model, "Age group (years)" = age_group, "Dose (mg/kg)" = dose_mgkg,
+    "Interval (day)" = tau, "Simulated mean trough (g/L)" = mean_trough,
+    "Simulated mean Cavg (g/L)" = mean_cavg,
+    "Published 'mean total IgG' (g/L)" = published_mean
+  ) |>
+  knitr::kable(digits = 2, caption = "Adults: published Table 4 mean column against simulated steady-state trough and average.")
+```
+
+# PKNCA validation against the post hoc clearance (Table 3)
+
+Table 3 reports the mean post hoc clearance and central volume per kg by age
+group. At steady state, dose / AUC over the dosing interval equals the
+clearance, so the PKNCA `cl.last` over one interval of the 500 mg/kg every-4-weeks
+arm, divided by body weight, is compared with the published means.
+
+```{r pknca}
+nca_arm <- sim |>
+  filter(dose_mgkg == 500, tau == 28) |>
+  mutate(group = paste(model, age_group, sep = " | ")) |>
+  select(id, time, Cc, group, WT)
+
+conc_obj <- PKNCA::PKNCAconc(nca_arm |> select(id, time, Cc, group), Cc ~ time | group + id)
+dose_obj <- PKNCA::PKNCAdose(
+  events |>
+    filter(evid == 1, dose_mgkg == 500, tau == 28) |>
+    select(id, time, amt) |>
+    inner_join(nca_arm |> distinct(id, group), by = "id"),
+  amt ~ time | group + id
+)
+intervals <- data.frame(
+  start = 0, end = 28,
+  cmax = TRUE, cmin = TRUE, cav = TRUE, auclast = TRUE, cl.last = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_res)
+```
+
+```{r nca-compare}
+wt_by_id <- nca_arm |> distinct(id, WT)
+sim_cl_kg <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "cl.last") |>
+  inner_join(wt_by_id, by = "id") |>
+  group_by(group) |>
+  summarise(cl.last = mean(10 * PPORRES / WT), .groups = "drop") # L/day -> dL/day/kg
+
+pub_t3 <- tibble::tribble(
+  ~group, ~cl.last,
+  "Estimated | 2 to <6", 0.0149,
+  "Estimated | 6 to <12", 0.0146,
+  "Estimated | 12 to 16", 0.0137,
+  "Estimated | >16", 0.0145,
+  "Fixed | 2 to <6", 0.0185,
+  "Fixed | 6 to <12", 0.0165,
+  "Fixed | 12 to 16", 0.0143,
+  "Fixed | >16", 0.0147
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_cl_kg,
+  reference = pub_t3,
+  by = "group",
+  units = c(cl.last = "dL/day/kg"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Mean clearance per kg: published post hoc (Dumas 2026 Table 3) vs. simulated steady-state dose / AUCtau. * differs from reference by >20%."
+)
+stopifnot(all(abs(sim_cl_kg$cl.last / pub_t3$cl.last[match(sim_cl_kg$group, pub_t3$group)] - 1) < 0.2))
+```
+
+The central volume per kg follows from the individual parameters directly:
+
+```{r vc-per-kg}
+pub_vc <- tibble::tribble(
+  ~model, ~age_group, ~published_vc,
+  "Estimated", "2 to <6", 0.88, "Estimated", "6 to <12", 0.63,
+  "Estimated", "12 to 16", 0.53, "Estimated", ">16", 0.46,
+  "Fixed", "2 to <6", 0.58, "Fixed", "6 to <12", 0.53,
+  "Fixed", "12 to 16", 0.50, "Fixed", ">16", 0.47
+)
+vc_cmp <- sim |>
+  filter(dose_mgkg == 500, tau == 28, time == 0) |>
+  group_by(model, age_group) |>
+  summarise(simulated_vc = mean(10 * vc / WT), .groups = "drop") |>
+  mutate(age_group = as.character(age_group)) |>
+  inner_join(pub_vc, by = c("model", "age_group")) |>
+  mutate(pct_diff = 100 * (simulated_vc / published_vc - 1))
+vc_cmp |>
+  rename("Model" = model, "Age group (years)" = age_group,
+         "Simulated mean Vc (dL/kg)" = simulated_vc,
+         "Published post hoc mean Vc (dL/kg)" = published_vc,
+         "% diff" = pct_diff) |>
+  knitr::kable(digits = 2, caption = "Mean central volume per kg vs. Dumas 2026 Table 3.")
+stopifnot(abs(median(vc_cmp$pct_diff)) < 15)
+```
+
+Clearance per kg is nearly flat across age groups under the estimated
+exponent (0.939) and rises in young children under the fixed 0.75 exponent,
+as in Table 3. Volume per kg rises steeply in young children under the
+estimated 0.528 exponent and stays flat under the fixed exponent of 1, again
+as published.
+
+# Assumptions and deviations
+
+- **Fixed-allometry scaling of Q and Vp.** The NONMEM control stream
+  (Listing S1) is printed only for the estimated model, where one exponent is
+  shared by CL and Q and another by Vc and Vp. For the fixed model the text
+  says twice that the standard exponents were applied only to CL and Vc
+  ("Fixed-allometry standard exponents were applied to CL and Vc"; "standard
+  exponents were applied to the central compartment"), so the packaged fixed
+  model leaves Q and Vp unscaled. The maintainers chose this reading because
+  it reproduces the fixed model's pediatric Table 4 proportions with the same
+  small offset the estimated model shows. Scaling Q and Vp with the shared
+  exponents instead under-predicted those proportions by a median of 5 to 14
+  percentage points in children (for example 2 to <6 years, 500 mg/kg every
+  4 weeks, trough at least 7 g/L: 68.6% published, about 34% with shared
+  exponents, about 54% with CL and Vc only). Adult results are the same under
+  either reading.
+- **Pre-treatment IgG as the initial condition.** Following Listing S1, both
+  compartments start at the baseline total IgG concentration, and the model
+  has no endogenous production. The source column `BIGG` was in mg/dL; the
+  packaged `IGG` column is in g/L (divide mg/dL by 100).
+- **Residual-error data source.** The source dataset coded the data source
+  as `DVID` (1 = PK sample, 2 = central laboratory); the packaged column is
+  `SAMPLE_CENTRAL_LAB = DVID - 1`. The steady-state simulations use the PK
+  sample residual error (11.9%), the larger of the two, since the paper does
+  not say which it used.
+- **Infusion duration.** The paper does not report it. Simulations use a
+  2-hour infusion; troughs and AUC are insensitive to this choice.
+- **Virtual cohort weights.** The paper resampled NHANES body weights; the
+  maintainers approximated them with a median weight-for-age curve
+  (2 to 17 years) with 15% log-normal spread, and a log-normal adult
+  distribution with median 80 kg and 22% spread. These weights are not from
+  the paper.
+- **Steady state.** The simulations use `ss = 1` dosing with no baseline IgG
+  (`IGG = 0`). The paper describes its Table 4 values as steady-state troughs
+  but does not say how steady state was reached.
+- **Table 4 mean column.** The published "mean total IgG concentration" is
+  higher than the simulated steady-state average concentration and could not
+  be reproduced; see the section on Table 4. The threshold proportions,
+  which the paper uses for its conclusions, are reproduced.
+- **Errata.** No correction notice was found for this article in Europe PMC
+  as of 2026-11-13.
