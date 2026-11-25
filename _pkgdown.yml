@@ -4596,6 +4596,8 @@ navbar:
         href: articles/Fan_2025_iron_wholebody_pbpk.html
       - text: "Iron mouse ironloaded pbpk (Fan 2025)"
         href: articles/Fan_2025_iron_wholebody_pbpk.html
+      - text: "IronOxideNanoparticle mouse (Liu 2014)"
+        href: articles/Liu_2014_ironOxideNanoparticle.html
       - text: "Iruplinalkib (Yang 2025)"
         href: articles/Yang_2025_iruplinalkib.html
       - text: "Iruplinalkib (Yang 2025b)"
@@ -11863,6 +11865,7 @@ articles:
   - articles/Lioger_2017_rituximab
   - articles/LiricRajlic_2024_mRNA6231
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
+  - articles/Liu_2014_ironOxideNanoparticle
   - articles/Liu_2018_pneumocystis_qsp
   - articles/Liu_2020_cefepime
   - articles/Liu_2020_hydroxychloroquine_monkey

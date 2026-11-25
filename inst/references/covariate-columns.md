@@ -964,17 +964,27 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Example models:** `Hughes_2025_clesacostat.R` (clesacostat CL/F 27.4% higher with ervogastat, Table S4; an Emax form collapsed to an EC50 of about 0.001, hence the on/off indicator).
 - **Notes:** Member of the auto-approved `CONMED_<INN>` family.
 
-### CONMED_ANTIVENOM (**canonical for antivenom-administered indicator (time-varying)**)
-- **Description:** Time-varying indicator that snake antivenom has been administered: `0` at records before the antivenom dose, `1` at and after it. Marks when antivenom starts neutralising circulating venom, not the antivenom dose or concentration.
+### CONMED_CLODRONATE (**canonical for clodronate-liposome macrophage-depletion pretreatment indicator**)
+- **Description:** 1 = the animal was pretreated with liposome-encapsulated clodronate (clodrosome) to deplete phagocytic macrophages before the modelled dose, 0 = not pretreated. Per-subject (per-group) covariate.
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (antivenom not yet given). Effect form in Gulati 2014 Eq 2 is a multiplier on the first-order elimination of plasma venom: `kel * (1 + 99 * CONMED_ANTIVENOM)`, i.e. venom elimination 100-fold faster once antivenom is given.
+- **Scope:** specific
+- **Reference category:** 0 (saline, intact macrophages).
 - **Source aliases:**
-  - `antivenom` -- Gulati 2014 Eq 2 (1 if absent, 100 if present).
-  - `time_of_antivenom` -- the per-subject switch time in the authors' original_model.m (`if t>time_of_antivenom`); derive the column as `as.integer(time > time_of_antivenom)` per record.
-- **Example models:** `Gulati_2014_brownSnakeVenom.R` (founding example; brown snake envenoming, venom-induced consumption coagulopathy).
-- **Notes:** Member of the auto-approved `CONMED_<INN>` family, with the product class in place of an INN as in `CONMED_ABX` (antivenoms are animal-derived immunoglobulin products with no INN). General scope because any venom-kinetics or envenoming model with antivenom treatment needs the same switch. Distinct from a model of the antivenom's own pharmacokinetics (`Isbister_2015_snake_antivenom.R`), where antivenom is the dosed drug in the event table rather than a covariate, and from `SNAKEFAMILY_ELAPID`, which classifies the venom source. A model that resolves antivenom concentration (binding of venom by circulating antivenom) should carry the antivenom as a dosed state instead of this indicator.
+  - `Clodrosome +10 mg Fe/kg` -- Liu 2014 Table 3 column (clodrosome 50 mg/kg IV once daily for 2 days before the SPIO dose).
+- **Example models:** `Liu_2014_ironOxideNanoparticle_mouse.R` (selects the clodrosome column of Table 3 for Kin, Kout and Ke as log-ratio effects against the untreated 10 mg Fe/kg group).
+- **Notes:** Member of the auto-approved `CONMED_<INN>` family. The pretreatment is the clodronate liposome, not free clodronate: free bisphosphonate is not taken up by macrophages and does not deplete them, so do not reuse this column for systemic clodronate therapy. Distinct from `CONMED_PHOSPHATIDYLCHOLINE`, the blank-liposome blockade pretreatment, which saturates macrophage uptake without reducing macrophage number.
+
+### CONMED_PHOSPHATIDYLCHOLINE (**canonical for blank phosphatidylcholine-liposome RES-blockade pretreatment indicator**)
+- **Description:** 1 = the animal received a loading dose of drug-free phosphatidylcholine liposomes to saturate reticuloendothelial (RES) uptake before the modelled dose, 0 = not pretreated. Per-subject (per-group) covariate.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (saline, unsaturated RES).
+- **Source aliases:**
+  - `liposome +10 mg Fe/kg` -- Liu 2014 Table 3 column (376 mg L-alpha-phosphatidylcholine/kg encapsulated liposome IV 1.5 h before the SPIO dose).
+- **Example models:** `Liu_2014_ironOxideNanoparticle_mouse.R` (selects the liposome column of Table 3 for Kin, Kout and Ke as log-ratio effects against the untreated 10 mg Fe/kg group).
+- **Notes:** Member of the auto-approved `CONMED_<INN>` family, named for the liposome's lipid because a blank liposome carries no drug. Distinct from `CONMED_CLODRONATE` (macrophage depletion) and from the `FORM_<drug>_<formulation>` liposomal-formulation indicators, which describe the modelled drug's own carrier rather than a separate pretreatment.
 
 ### DIS_EOPE (**canonical for early-onset pre-eclampsia indicator**)
 - **Description:** Binary indicator of early-onset pre-eclampsia (eoPE); `1` = eoPE diagnosed before 34 weeks gestation, `0` = not eoPE. Time-fixed per subject within the gestational PK study window. Used by population PK models that compare drug disposition in pregnant women with vs without early-onset pre-eclampsia.
@@ -4327,6 +4337,17 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
   - `Dose` -- Khera 2024 Monolix categorical covariate (levels 1.5, 3, 6). Same orientation and units, no value transformation.
 - **Example models:** `Khera_2024_dyp688_mouse_tgi.R`.
 - **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_CARBOPLATIN_MGKG`). Carried in mg/kg because the model's `amt` is in nmol of antibody, so the categorical level cannot be recovered from the dose records. The 3 mg/kg Q2W and Q4W groups share one level; the categorical effect is a per-dose-level fit and is not an exposure-response, so the authors used the reference (smallest) kkill for every simulation outside the fitted groups.
+
+### DOSE_IRONOXIDENANOPARTICLE_MGKG (**canonical for the superparamagnetic iron oxide nanoparticle dose level of the treatment group, in mg Fe/kg**)
+- **Description:** The IV bolus dose of superparamagnetic iron oxide (SPIO) nanoparticle given to the animal's group, expressed as iron per kilogram of body weight (mg Fe/kg). Per-subject (per-group) covariate.
+- **Units:** mg/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 10 mg Fe/kg -- enters as categorical dose-level log-ratio effects on the blood-to-liver, liver-to-blood and elimination rate constants (`e_dose05_*` and `e_dose3_*` for 0.5 and 3 mg Fe/kg). Any other value takes the 10 mg Fe/kg rate constants.
+- **Source aliases:**
+  - `0.5 / 3 / 10 mg Fe/kg` -- Liu 2014 Table 3 column headers. Same units, no value transformation.
+- **Example models:** `Liu_2014_ironOxideNanoparticle_mouse.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_DYP688_MGKG`). Carried as a covariate because the source reports one rate-constant set per dose group rather than a dose-exposure function, so the group cannot be recovered from the dose records by the model.
 
 ### CSF1 (**canonical for colony-stimulating factor 1 / macrophage-colony-stimulating factor concentration**)
 - **Description:** Plasma colony-stimulating factor 1 (CSF-1, also known as macrophage colony-stimulating factor, M-CSF) concentration (baseline or time-varying). The hematopoietic cytokine that signals through CSF-1R to drive monocyte / macrophage differentiation and survival; used as both a target-engagement biomarker (anti-CSF-1R mAbs increase circulating free CSF-1) and a baseline covariate on PK / PD parameters in CSF-1R-pathway PopPK/PD models.
