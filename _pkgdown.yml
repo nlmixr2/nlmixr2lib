@@ -764,8 +764,16 @@ navbar:
         href: articles/Garrett_2014_axitinib.html
       - text: "Axitinib (Rini 2013)"
         href: articles/Rini_2013_axitinib.html
+      - text: "Axitinib biomarkers sld (Schindler 2017)"
+        href: articles/Schindler_2017_axitinib.html
+      - text: "Axitinib dbp (Schindler 2017)"
+        href: articles/Schindler_2017_axitinib.html
+      - text: "Axitinib os (Schindler 2017)"
+        href: articles/Schindler_2017_axitinib.html
       - text: "Axitinib qsp (Wan 2025)"
         href: articles/Wan_2025_tki_cardiotoxicity.html
+      - text: "Axitinib skit (Schindler 2017)"
+        href: articles/Schindler_2017_axitinib.html
       - text: "Axomadol (MangasSanjuan 2016)"
         href: articles/MangasSanjuan_2016_axomadol.html
       - text: "Azd7648 mouse (DeJongh 2025)"
@@ -11607,6 +11615,7 @@ articles:
   - articles/Schalkwijk_2018_efavirenz
   - articles/Scheuher_2023_ADC_platform_qsp
   - articles/Schindler_2016_sunitinib
+  - articles/Schindler_2017_axitinib
   - articles/Schindler_2017_imatinib
   - articles/Schindler_2017_mCTMM
   - articles/Schipani_2011_nevirapine
