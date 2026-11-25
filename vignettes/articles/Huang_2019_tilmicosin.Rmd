@@ -1,0 +1,561 @@
+---
+title: "Tilmicosin against Mycoplasma gallisepticum in vitro (Huang 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tilmicosin against Mycoplasma gallisepticum in vitro (Huang 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Models and source
+
+Huang 2019 studied tilmicosin against *Mycoplasma gallisepticum* strain S6 in
+an in vitro dynamic model that reproduces the lung-tissue pharmacokinetics of
+tilmicosin in chickens. The paper fits four separate models, packaged here as
+four model files that share this vignette:
+
+| Model file | What it is | Source |
+|---|---|---|
+| `Huang_2019_tilmicosin_invitro_pk` | One-compartment PK with first-order absorption of the in vitro apparatus | Table 2 (mean column) |
+| `Huang_2019_tilmicosin_killrate`   | Sigmoid Emax kill rate from static time-kill curves | Table 1 |
+| `Huang_2019_tilmicosin_aucmic`     | Inhibitory sigmoid Emax PK/PD-index model, AUC24h/MIC driven | Table 4, AUC24h/MIC row |
+| `Huang_2019_tilmicosin_tmic`       | Inhibitory sigmoid Emax PK/PD-index model, %T > MIC driven | Table 4, T>MIC row |
+
+* Citation: `r rxode2::rxode(readModelDb("Huang_2019_tilmicosin_invitro_pk"))$reference`
+* Article: <https://doi.org/10.3389/fphar.2019.00670> (PMCID: PMC6598723, open access)
+
+The paper comes from the same laboratory (Ding H, South China Agricultural
+University) and uses the same challenge strain as `Wang_2024_amphenmulin_*`,
+`Xia_2025_pfuroylamphenmulin` and `Yang_2026_APTM_*`.
+
+```{r descriptions, results = "asis"}
+mods <- c(
+  "Huang_2019_tilmicosin_invitro_pk", "Huang_2019_tilmicosin_killrate",
+  "Huang_2019_tilmicosin_aucmic", "Huang_2019_tilmicosin_tmic"
+)
+for (m in mods) {
+  cat("**`", m, "`** -- ", rxode2::rxode(readModelDb(m))$description, "\n\n", sep = "")
+}
+```
+
+# Population (experimental system)
+
+There are no subjects: every model describes an in vitro system.
+
+* **Organism.** *M. gallisepticum* standard strain S6. Tilmicosin MIC 0.01 and
+  0.02 ug/mL by broth microdilution at 10^5 and 10^7 CFU/mL, and 0.02, 0.04
+  and 0.16 ug/mL by agar dilution at 10^5, 10^7 and 10^9 CFU (Results,
+  "Minimum Inhibitory Concentration").
+* **Static time-kill.** Penicillin bottles inoculated at 10^7 CFU/mL with
+  0.5 to 64 x MIC (MIC = 0.02 ug/mL) for 48 h, sampled at 0, 1, 3, 6, 9, 12,
+  24, 36 and 48 h, in triplicate (Methods, "Time-Kill Curve Studies").
+* **Dynamic model.** An absorption chamber (61.54 mL) drains into a central
+  chamber (500 mL external compartment holding a 10 mL dialysis-tube internal
+  compartment that carries the culture), with fresh medium pumped in and spent
+  medium out at 0.13 mL/min (Methods, "Description of the Model", Figure 1).
+  The target was the chicken lung PK of tilmicosin: absorption half-life
+  5.37 h and elimination half-life 42.83 h. Seven nominal dose groups (1, 2.5,
+  5, 7.5, 10, 15 and 20 mg) were realised as single in vitro doses of 0.089 to
+  1.786 mg (Table 2 row D). The internal compartment held 2 x 10^9 CFU/mL and
+  was sampled for 168 h.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| PK structure: one compartment, first-order absorption | -- | Abstract; Results, "In Vitro Simulated Pharmacokinetics" |
+| Absorption half-life (mean of 7 dose groups) | 5.25 h | Table 2, t1/2Ka mean |
+| Elimination half-life (mean) | 41.51 h | Table 2, t1/2Kel mean |
+| Central volume (mean) | 530.19 mL | Table 2, VCentral mean |
+| In vitro doses | 0.089-1.786 mg | Table 2, row D |
+| Kill-rate equation `E = E0 + (Emax - E0) C^N / (EC50^N + C^N)` | -- | Methods, "Time-Killing Curve Fitting and Analysis" |
+| Kill-rate Emax / EC50 / E0 / N | 0.53 / 0.12 ug/mL / -0.03 / 0.73 | Table 1 |
+| Kill-rate units: log10 CFU/mL per h; EC50 in ug/mL | -- | Figure 3 axes; slope of log10 counts (Methods) |
+| Index equation `E = Emax - (Emax - E0) Ce^N / (EC50^N + Ce^N)` | -- | Methods, "Pharmacokinetic-Pharmacodynamic Integration and Modeling" |
+| Paper's "Emax" = control change; "E0" = largest effect | -- | Same section, parameter definitions |
+| AUC24h/MIC: Emax / EC50 / E0 / N | 2.98e-4 / 849.68 / -3.35 / 0.33 | Table 4 |
+| %T > MIC: Emax / EC50 / E0 / N | 4.00e-6 / 46.93 / -1.07 / 9.66 | Table 4 |
+| AUC24h/MIC for a 1 log10 reduction | 62.58 h | Results, "Pharmacokinetic/Pharmacodynamic Modeling and Analysis" |
+| Time-kill inoculum | 10^7 CFU/mL | Methods, "Time-Kill Curve Studies" |
+| Dynamic-model inoculum | 2 x 10^9 CFU/mL | Methods, "In Vitro Pharmacokinetic and Pharmacodynamic Model and Dosing Regimens" |
+
+No between-replicate variability or residual error was reported for any of the
+four fits (only R^2), so every model is a typical-value model with its residual
+SD fixed at 0.
+
+# Part 1 - In vitro PK (`Huang_2019_tilmicosin_invitro_pk`)
+
+## Table 2 is internally consistent
+
+Table 2 prints a separate WinNonlin fit for every dose group. Substituting each
+group's own half-lives and volume into the closed-form one-compartment solution
+should return the printed Tmax and Cmax.
+
+```{r table-2}
+table2 <- tibble::tibble(
+  group_mg = c(1, 2.5, 5, 7.5, 10, 15, 20),
+  dose_mg  = c(0.089, 0.223, 0.446, 0.670, 0.893, 1.339, 1.786),
+  t12ka    = c(5.24, 4.71, 4.66, 5.63, 5.16, 5.80, 5.58),
+  t12kel   = c(40.18, 44.25, 43.11, 41.37, 41.99, 39.75, 39.92),
+  tmax_pub = c(17.72, 17.03, 16.77, 18.74, 17.79, 18.86, 18.41),
+  cmax_pub = c(0.11, 0.29, 0.60, 0.98, 1.29, 1.84, 2.67),
+  vc_ml    = c(574.95, 584.19, 563.50, 500.08, 515.99, 487.29, 485.34)
+)
+
+closed_form <- function(dose, t12ka, t12kel, vc_l) {
+  ka <- log(2) / t12ka
+  k <- log(2) / t12kel
+  tmax <- log(ka / k) / (ka - k)
+  cmax <- dose / vc_l * ka / (ka - k) * (exp(-k * tmax) - exp(-ka * tmax))
+  data.frame(tmax = tmax, cmax = cmax)
+}
+
+chk2 <- cbind(table2, with(table2, closed_form(dose_mg, t12ka, t12kel, vc_ml / 1000))) |>
+  mutate(cmax_pct = 100 * (cmax / cmax_pub - 1))
+
+chk2 |>
+  select(group_mg, tmax_pub, tmax, cmax_pub, cmax, cmax_pct) |>
+  rename(
+    "Dose group (mg)" = group_mg, "Tmax Table 2 (h)" = tmax_pub,
+    "Tmax closed form (h)" = tmax, "Cmax Table 2 (ug/mL)" = cmax_pub,
+    "Cmax closed form (ug/mL)" = cmax, "Cmax difference (%)" = cmax_pct
+  ) |>
+  knitr::kable(digits = 2, caption = "Per-group Table 2 parameters substituted into the closed-form solution.")
+
+stopifnot(
+  # Deterministic: same parameters on both sides, so only rounding differs.
+  all(abs(chk2$tmax - chk2$tmax_pub) < 0.05),
+  sum(abs(chk2$cmax_pct) < 5) >= 6
+)
+```
+
+Every Tmax is reproduced to within 0.01 h, and every Cmax to within 4% except
+the 15 mg group (1.98 vs a printed 1.84 ug/mL). Figure 5 shows an observed
+15 mg peak of about 1.85 ug/mL, so the printed Cmax row is probably the
+observed peak rather than the model value.
+
+## Simulation with the packaged (mean) parameters
+
+The packaged model uses the Table 2 mean column, so it carries one typical
+apparatus for all seven doses. The per-group volumes range from 485 to 584 mL
+around the 530 mL mean, so the per-group Cmax values differ from it by up to
+about 10%.
+
+```{r sim-pk}
+mod_pk <- rxode2::rxode(readModelDb("Huang_2019_tilmicosin_invitro_pk"))
+
+obs_times <- sort(unique(c(seq(0, 168, by = 0.5), 1, 3, 6, 9)))
+ev_pk <- bind_rows(lapply(seq_len(nrow(table2)), function(i) {
+  bind_rows(
+    data.frame(id = i, time = 0, amt = table2$dose_mg[i], evid = 1, cmt = "depot"),
+    data.frame(id = i, time = obs_times, amt = 0, evid = 0, cmt = "central")
+  )
+})) |>
+  mutate(group = factor(table2$group_mg[id], levels = table2$group_mg))
+
+sim_pk <- as.data.frame(rxode2::rxSolve(mod_pk, ev_pk, keep = "group"))
+
+ggplot(sim_pk, aes(time, Cc, colour = group)) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(0, 168, 24)) +
+  labs(
+    x = "Time (h)", y = "Tilmicosin (ug/mL)", colour = "Dose group (mg)",
+    caption = "Replicates Figure 5 of Huang 2019 (typical-value model, Table 2 mean parameters)."
+  )
+```
+
+## PKNCA
+
+```{r pknca}
+conc_obj <- PKNCA::PKNCAconc(
+  sim_pk |> filter(!is.na(Cc)) |> select(id, time, Cc, group),
+  Cc ~ time | group + id
+)
+dose_obj <- PKNCA::PKNCAdose(
+  ev_pk |> filter(evid == 1) |> select(id, time, amt, group),
+  amt ~ time | group + id
+)
+nca_pk <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = data.frame(start = 0, end = 168, cmax = TRUE, tmax = TRUE)
+))
+
+published_pk <- table2 |>
+  transmute(group = factor(group_mg, levels = table2$group_mg), cmax = cmax_pub, tmax = tmax_pub)
+
+cmp_pk <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_pk,
+  reference = published_pk,
+  by = "group",
+  units = c(cmax = "ug/mL", tmax = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp_pk,
+  caption = "Simulated (Table 2 mean parameters) vs. published per-group Cmax and Tmax (Huang 2019 Table 2). * differs from reference by >20%."
+)
+
+sim_nca <- as.data.frame(nca_pk) |>
+  filter(PPTESTCD == "cmax") |>
+  select(group, cmax_sim = PPORRES) |>
+  left_join(published_pk, by = "group")
+stopifnot(all(abs(sim_nca$cmax_sim / sim_nca$cmax - 1) < 0.15))
+```
+
+The mean-parameter model reproduces every published Cmax to within 15%. Its
+Tmax (17.9 h) is the same for every group because the mean rate constants are
+shared.
+
+# Part 2 - Static kill rate (`Huang_2019_tilmicosin_killrate`)
+
+Huang 2019 estimated a kill rate at each concentration as the slope of log10
+counts over five early windows (0-6, 0-9, 1-6, 1-9 and 3-9 h), averaged them,
+and fitted the sigmoid Emax curve. The kill rate is in log10 CFU/mL per hour
+(positive = killing).
+
+```{r killrate-curve}
+mod_kill <- rxode2::rxode(readModelDb("Huang_2019_tilmicosin_killrate"))
+p_kill <- mod_kill$theta
+kill_rate <- function(conc) {
+  e0 <- p_kill[["e0"]]
+  emax <- exp(p_kill[["lemax"]])
+  ec50 <- exp(p_kill[["lec50"]])
+  hill <- exp(p_kill[["lhill"]])
+  e0 + (emax - e0) * conc^hill / (ec50^hill + conc^hill)
+}
+
+# Points read from Figure 3 by the maintainers (observed average kill rate).
+fig3 <- tibble::tibble(
+  conc = c(0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.64, 1.28),
+  kill_fig3 = c(0.07, 0.04, 0.17, 0.22, 0.26, 0.34, 0.41, 0.44)
+) |>
+  mutate(kill_model = kill_rate(conc))
+
+knitr::kable(fig3, digits = 3, caption = "Observed kill rates read from Figure 3 and the Table 1 curve.")
+
+curve3 <- tibble::tibble(conc = 10^seq(log10(0.0015), log10(1.28), length.out = 200)) |>
+  mutate(kill = kill_rate(conc))
+ggplot(curve3, aes(conc, kill)) +
+  geom_line(colour = "blue") +
+  geom_point(data = fig3, aes(conc, kill_fig3), shape = 1, colour = "red", size = 3) +
+  scale_x_log10() +
+  labs(
+    x = "Tilmicosin (ug/mL)", y = "Kill rate (log10 CFU/mL per h)",
+    caption = "Replicates Figure 3 of Huang 2019. Points: values read from the figure."
+  )
+
+stopifnot(
+  # The printed curve in Figure 3 ends at about -0.01 at 0.0015 ug/mL
+  # and at about 0.44 at 1.28 ug/mL.
+  abs(kill_rate(0.0015) - (-0.01)) < 0.02,
+  abs(kill_rate(1.28) - 0.44) < 0.02,
+  # The Results call the maximum kill rate 0.53 h-1, which is the Table 1
+  # Emax, so Emax is the asymptote rather than an increment above E0.
+  abs(kill_rate(1e6) - 0.53) < 0.005
+)
+```
+
+The ODE in the model integrates the kill rate on the bacterial density, so over
+any window at constant concentration the log10 count must fall by exactly the
+kill rate times the window length. The check below simulates the static
+experiment for 9 h (the end of the fitting windows):
+
+```{r killrate-ode}
+mic_tk <- 0.02
+mult <- c(0, 0.5, 1, 2, 4, 8, 16, 32, 64)
+ev_kill <- bind_rows(lapply(seq_along(mult), function(i) {
+  bind_rows(
+    data.frame(id = i, time = 0, amt = mult[i] * mic_tk, evid = 1, cmt = "tilmicosin"),
+    data.frame(id = i, time = c(0, 1, 3, 6, 9), amt = 0, evid = 0, cmt = "bact")
+  )
+})) |>
+  mutate(xmic = mult[id])
+sim_kill <- as.data.frame(rxode2::rxSolve(mod_kill, ev_kill, keep = "xmic"))
+
+ode_chk <- sim_kill |>
+  filter(time == 9) |>
+  mutate(
+    decline_ode = 7 - log10(bact),
+    decline_closed = 9 * kill_rate(xmic * mic_tk)
+  )
+knitr::kable(
+  ode_chk |> select(xmic, decline_ode, decline_closed) |>
+    rename("x MIC" = xmic, "Decline 0-9 h, ODE" = decline_ode, "Decline 0-9 h, 9 x E" = decline_closed),
+  digits = 3
+)
+stopifnot(all(abs(ode_chk$decline_ode - ode_chk$decline_closed) < 1e-4))
+# Quoted in the text below: a 4.0 log10 decline at 64 x MIC over 9 h.
+stopifnot(abs(ode_chk$decline_ode[ode_chk$xmic == 64] - 4.0) < 0.05)
+
+ggplot(sim_kill, aes(time, log_cfu, colour = factor(xmic))) +
+  geom_line() +
+  labs(
+    x = "Time (h)", y = "log10 CFU/mL", colour = "x MIC",
+    caption = "Kill-rate model over the 0-9 h fitting window (compare the early part of Figure 2 of Huang 2019)."
+  )
+```
+
+At 64 x MIC the model predicts a 4.0 log10 decline in 9 h. In Figure 2 the
+64 x MIC count reached the 2 log10 detection limit by 9 h, a drop of at least
+5.2 log10. The kill rate is an average of slopes over five windows, some of
+which start after the steep first hour, so it is lower than the steepest
+observed decline. The model has no detection-limit floor
+and no carrying capacity, so it does not describe the plateaus in Figure 2 after
+the fitting window.
+
+# Part 3 - PK/PD-index models (`Huang_2019_tilmicosin_aucmic`, `Huang_2019_tilmicosin_tmic`)
+
+## Equation form and the 1 log10 target
+
+The paper names the parameters the other way round from the usual convention:
+its "Emax" is the control-group change and its "E0" the largest effect. The
+packaged models keep the values and use canonical roles (`e0` = effect at zero
+exposure, `emax` = maximal effect). The Results give one answer key: an
+AUC24h/MIC of 62.58 h for a 1 log10 CFU/mL reduction.
+
+```{r target}
+idx_effect <- function(ce, mod) {
+  th <- mod$theta
+  e0 <- th[["e0"]]
+  emax <- th[["emax"]]
+  ec50 <- exp(th[["lec50"]])
+  hill <- exp(th[["lhill"]])
+  e0 - (e0 - emax) * ce^hill / (ce^hill + ec50^hill)
+}
+mod_auc <- rxode2::rxode(readModelDb("Huang_2019_tilmicosin_aucmic"))
+mod_tmic <- rxode2::rxode(readModelDb("Huang_2019_tilmicosin_tmic"))
+
+target_1log <- uniroot(function(x) idx_effect(x, mod_auc) + 1, c(1, 1e4))$root
+target_1log
+stopifnot(abs(target_1log / 62.58 - 1) < 0.05)
+```
+
+The fitted curve gives 63.9 h against the printed 62.58 h, a 2% gap. That is
+consistent with the Hill coefficient being printed to two decimals (0.33): the
+target is sensitive to it because the curve is so shallow.
+
+```{r fig6}
+c6a <- tibble::tibble(x = seq(0, 400, length.out = 401)) |>
+  mutate(E = idx_effect(x, mod_auc), panel = "A: AUC24h/MIC (h)")
+c6b <- tibble::tibble(x = seq(0, 100, length.out = 401)) |>
+  mutate(E = idx_effect(x, mod_tmic), panel = "B: %T > MIC")
+ggplot(bind_rows(c6a, c6b), aes(x, E)) +
+  geom_line(colour = "blue") +
+  facet_wrap(~panel, scales = "free_x") +
+  labs(
+    x = "PK/PD index", y = "E (change in log10 CFU/mL per 24 h)",
+    caption = "Replicates the fitted curves of Figure 6 of Huang 2019."
+  )
+
+stopifnot(
+  # Figure 6A: the curve reaches about -1.47 at AUC24h/MIC = 400.
+  abs(idx_effect(400, mod_auc) - (-1.47)) < 0.05,
+  # Figure 6B: the curve plateaus at about -1.07 by 100%.
+  abs(idx_effect(100, mod_tmic) - (-1.07)) < 0.01
+)
+```
+
+## Which MIC formed the index?
+
+The paper reports four MICs for strain S6 and does not say which formed the
+indices, so both models take the index as an already-formed covariate. The PK
+model shows which MIC fits Figure 6. Per-interval AUC24h comes from PKNCA on
+the simulated PK, and %T > MIC is the fraction of the 0.5 h grid above the MIC.
+
+```{r index-from-pk}
+intervals_day <- data.frame(start = seq(0, 144, 24), end = seq(24, 168, 24), auclast = TRUE)
+nca_day <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals_day))
+auc_day <- as.data.frame(nca_day) |>
+  filter(PPTESTCD == "auclast") |>
+  select(group, start, auc24 = PPORRES)
+
+tmic_day <- function(mic) {
+  sim_pk |>
+    filter(time < 168) |>
+    mutate(start = 24 * floor(time / 24)) |>
+    group_by(group, start) |>
+    summarise(ftmic = 100 * mean(Cc > mic), .groups = "drop")
+}
+
+mic_cands <- c(0.02, 0.04, 0.16)
+range_tab <- bind_rows(lapply(mic_cands, function(m) {
+  tibble::tibble(
+    mic = m,
+    max_aucmic = max(auc_day$auc24) / m,
+    intervals_tmic_zero = sum(tmic_day(m)$ftmic == 0),
+    group1_tmic_zero = all(tmic_day(m)$ftmic[tmic_day(m)$group == "1"] == 0)
+  )
+}))
+knitr::kable(
+  range_tab |> rename(
+    "Candidate MIC (ug/mL)" = mic, "Largest AUC24h/MIC (h)" = max_aucmic,
+    "Intervals with %T > MIC = 0 (of 49)" = intervals_tmic_zero,
+    "%T > MIC = 0 throughout the 1 mg group" = group1_tmic_zero
+  ),
+  digits = c(2, 0, 0, 0)
+)
+```
+
+Figure 6A's AUC24h/MIC axis ends at 350 h with its largest points near 320 and
+350 h. Figure 6B has a cluster of points at %T > MIC = 0, which with the
+drug-free control fits one dose group with no time above the MIC. Only the
+agar-dilution MIC at the 10^9 CFU inoculum (0.16 ug/mL) gives both. The
+largest per-day AUC24h/MIC is about 310 h with the mean PK parameters (about
+340 h with the 20 mg group's own Table 2 parameters). The 1 mg group spends no
+time above the MIC because its Cmax is 0.11 ug/mL, and the late intervals of
+the 2.5 mg group are also at zero. The lower MICs put the largest index at
+1250-2500 h, far off the Figure 6A axis. It is also the
+MIC that matches the dynamic model's 2 x 10^9 CFU/mL inoculum. Neither model
+contains this MIC. It is used below only to build an example covariate series.
+
+```{r index-check}
+idx_016 <- auc_day |>
+  mutate(AUCMIC_TILM = auc24 / 0.16) |>
+  left_join(tmic_day(0.16) |> rename(FTMIC_TILM = ftmic), by = c("group", "start"))
+stopifnot(
+  max(idx_016$AUCMIC_TILM) > 300, max(idx_016$AUCMIC_TILM) < 360,
+  all(idx_016$FTMIC_TILM[idx_016$group == "1"] == 0)
+)
+```
+
+## Dynamic time-kill reconstruction
+
+Feeding the per-interval indices into the two index models gives the predicted
+counts in the internal compartment. Each model applies its 24 h effect evenly
+across the interval, so its predictions are exact only at the 24 h boundaries.
+
+```{r dynamic}
+make_ev <- function(idx, covname) {
+  idx |>
+    mutate(id = as.integer(group)) |>
+    select(id, group, time = start, value = all_of(covname)) |>
+    bind_rows(
+      idx |> filter(start == 144) |> mutate(id = as.integer(group), start = 168) |>
+        select(id, group, time = start, value = all_of(covname))
+    ) |>
+    arrange(id, time) |>
+    mutate(evid = 0, amt = 0, cmt = "bact") |>
+    rename(!!covname := value)
+}
+
+ev_auc <- make_ev(idx_016, "AUCMIC_TILM")
+ev_tmic <- make_ev(idx_016, "FTMIC_TILM")
+
+sim_auc <- as.data.frame(rxode2::rxSolve(mod_auc, ev_auc, keep = "group", covsInterpolation = "locf"))
+sim_tmic <- as.data.frame(rxode2::rxSolve(mod_tmic, ev_tmic, keep = "group", covsInterpolation = "locf"))
+
+# The ODE must move log10 counts by exactly the sigmoid effect per interval.
+closed <- idx_016 |>
+  arrange(group, start) |>
+  mutate(E = idx_effect(AUCMIC_TILM, mod_auc)) |>
+  group_by(group) |>
+  mutate(time = start + 24, log_closed = 9.30103 + cumsum(E)) |>
+  ungroup() |>
+  select(group, time, log_closed)
+chk_dyn <- sim_auc |>
+  inner_join(closed, by = c("group", "time")) |>
+  mutate(log_ode = log10(bact))
+stopifnot(all(abs(chk_dyn$log_ode - chk_dyn$log_closed) < 1e-4))
+
+bind_rows(
+  sim_auc |> mutate(model = "AUC24h/MIC"),
+  sim_tmic |> mutate(model = "%T > MIC")
+) |>
+  ggplot(aes(time, log_cfu, colour = group)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~model) +
+  scale_x_continuous(breaks = seq(0, 168, 24)) +
+  labs(
+    x = "Time (h)", y = "log10 CFU/mL", colour = "Dose group (mg)",
+    caption = "Compare Figure 4 of Huang 2019 (indices built with MIC = 0.16 ug/mL)."
+  )
+```
+
+```{r fig4-compare}
+# Mean counts read from Figure 4 by the maintainers at 120 h, the nadir
+# before regrowth.
+fig4_120 <- tibble::tibble(
+  group = factor(c(1, 2.5, 5, 7.5, 10, 15, 20), levels = table2$group_mg),
+  fig4 = c(5.2, 4.6, 4.5, 4.35, 3.95, 3.8, 2.6)
+)
+tab120 <- sim_auc |>
+  filter(time == 120) |>
+  select(group, model_auc = log_cfu) |>
+  left_join(sim_tmic |> filter(time == 120) |> select(group, model_tmic = log_cfu), by = "group") |>
+  left_join(fig4_120, by = "group")
+tab120 |>
+  rename(
+    "Dose group (mg)" = group, "AUC24h/MIC model" = model_auc,
+    "%T > MIC model" = model_tmic, "Figure 4 (read)" = fig4
+  ) |>
+  knitr::kable(digits = 2, caption = "log10 CFU/mL at 120 h.")
+
+stopifnot(
+  # AUC24h/MIC model: 20 mg nadir close to Figure 4, low doses
+  # under-predicted by no more than about 1 log10.
+  abs(tab120$model_auc[tab120$group == "20"] - tab120$fig4[tab120$group == "20"]) < 0.5,
+  all(tab120$model_auc - tab120$fig4 < 1.1),
+  # %T > MIC model: no killing at 1 mg, one common value from 7.5 mg up.
+  abs(tab120$model_tmic[tab120$group == "1"] - 9.30103) < 0.01,
+  diff(range(tab120$model_tmic[tab120$group %in% c("7.5", "10", "15", "20")])) < 0.05
+)
+```
+
+The AUC24h/MIC model reproduces the dose ordering and the 20 mg nadir (about
+2.9 vs 2.6 log10 CFU/mL), but under-predicts the killing at the lowest doses by
+up to about 1 log10. This follows from the very shallow fit (Hill 0.33,
+R^2 = 0.87) and the scatter in Figure 6A. The %T > MIC model predicts no killing
+at 1 mg (index 0 throughout) and the same count for every group from 7.5 mg up
+(index 100% in every interval). This is what its steep, poor fit (Hill 9.66,
+R^2 = 0.49) implies. Neither model can
+produce the regrowth after 120 h: the fitted curves never exceed the near-zero
+control effect.
+
+# Assumptions and deviations
+
+* **Typical values only.** No fit reported between-replicate variability or a
+  residual SD (only R^2), so the models have no etas and fix their residual
+  SDs at 0.
+* **PK parameters are the Table 2 means.** Table 2 fits each dose group
+  separately and the packaged model uses the mean column. The half-lives were
+  converted to rate constants as log(2)/t1/2 and the volume from mL to L. Two
+  summary values in Table 2 do not match their own rows: the mean Tmax is
+  printed as 18.41 h (the 20 mg value) where the row mean is 17.90 h, and the
+  "relative deviation" of the absorption half-life is printed as 6.18%,
+  whereas 5.25 h against the target 5.37 h is -2.2%. The elimination
+  half-life deviation (-3.08%) is consistent. Neither affects the packaged
+  parameters.
+* **In vitro dose.** Doses are the amounts injected into the apparatus (Table 2
+  row D), not the nominal clinical doses. Each equals 0.0893 x the nominal dose.
+  The paper does not explain the factor.
+* **Kill-rate units.** Table 1 gives no units. From the Methods and Figure 3,
+  the kill rate is in log10 CFU/mL per hour and EC50 in ug/mL.
+* **Kill-rate model scope.** The fit uses the 0-9 h slopes. The model has no
+  detection-limit floor (100 CFU/mL) or carrying capacity, so it should not be
+  used to extrapolate counts past that window.
+* **Inverted parameter names.** The paper's index-model "Emax" (control change)
+  and "E0" (largest effect) are packaged as `e0` and `emax` respectively. The
+  values are unchanged and the curve is the same.
+* **MIC not built in.** The paper never states which MIC formed its indices, so
+  the index models take AUC24h/MIC (`AUCMIC_TILM`) and %T > MIC (`FTMIC_TILM`)
+  as already-formed covariates. The 0.16 ug/mL value used above to build
+  example inputs is inferred from Figure 6 and the inoculum, not printed.
+* **Starting density of the dynamic model.** The index models start the
+  internal compartment at the nominal inoculum of 2 x 10^9 CFU/mL
+  (9.30 log10). Figure 4 shows about 9.0-9.2 log10 CFU/mL at 0 h.
+* **Per-interval effect.** The paper's effect is a change per 24 h interval.
+  The models spread it evenly across the interval, so intermediate times
+  (6, 12, 36 h ...) are interpolations, not model outputs of the paper.
+* **Not modelled.** The resistant strains selected in each dose group
+  (Table 3) and their 23S rRNA mutations (Table 5) are descriptive results
+  with no fitted model.

@@ -9528,14 +9528,20 @@ navbar:
         href: articles/Lei_2018_tildipirosin.html
       - text: "Tilmicosin (Chen 2023)"
         href: articles/Chen_2023_tilmicosin.html
+      - text: "Tilmicosin aucmic (Huang 2019)"
+        href: articles/Huang_2019_tilmicosin.html
+      - text: "Tilmicosin invitro pk (Huang 2019)"
+        href: articles/Huang_2019_tilmicosin.html
+      - text: "Tilmicosin killrate (Huang 2019)"
+        href: articles/Huang_2019_tilmicosin.html
       - text: "Tilmicosin pbpk (Sun 2026)"
         href: articles/Sun_2026_tilmicosin.html
       - text: "Tilmicosin pkpd pif (Sun 2026)"
         href: articles/Sun_2026_tilmicosin.html
       - text: "Tilmicosin pkpd plasma (Sun 2026)"
         href: articles/Sun_2026_tilmicosin.html
-      - text: "Timolol (Li 2026)"
-        href: articles/Li_2026_timolol.html
+      - text: "Tilmicosin tmic (Huang 2019)"
+        href: articles/Huang_2019_tilmicosin.html
       - text: "Tipifarnib (PerezRuixo 2006)"
         href: articles/PerezRuixo_2006_tipifarnib.html
       - text: "Tiropramide (Jeong 2020)"
@@ -11896,6 +11902,7 @@ articles:
   - articles/Hu_2026_utreloxastat
   - articles/Hua_2015_anrukinzumab
   - articles/Huang_2017_vrc01
+  - articles/Huang_2019_tilmicosin
   - articles/Huang_2021_cholecalciferol_pbpk
   - articles/Huang_2022_tacrolimus
   - articles/Huang_2025_colistinSulfate

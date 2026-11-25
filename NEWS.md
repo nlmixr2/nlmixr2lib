@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jamois 2019 obinutuzumab ([doi:10.1111/bcp.13920](https://doi.org/10.1111/bcp.13920)) -- adults with CD20+ B-cell malignancies, updated with previously untreated follicular lymphoma (GALLIUM).
+- Add Huang 2019 tilmicosin ([doi:10.3389/fphar.2019.00670](https://doi.org/10.3389/fphar.2019.00670)) -- in vitro dynamic model of chicken lung PK against *Mycoplasma gallisepticum* (apparatus PK, static kill rate, and AUC24h/MIC and %T > MIC index models).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
