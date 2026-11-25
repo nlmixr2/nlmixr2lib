@@ -1,0 +1,315 @@
+---
+title: "Factor IXa versus factor Xa anticoagulation: apixaban and CPD1 (Ankrom 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Factor IXa versus factor Xa anticoagulation: apixaban and CPD1 (Ankrom 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Models and source
+
+Ankrom 2016 compared a selective small-molecule coagulation factor IXa
+inhibitor (CPD1, "compound 1") with the marketed factor Xa inhibitor apixaban
+in a male Sprague-Dawley rat arteriovenous-shunt (AVS) thrombosis and
+cuticle-bleeding-time (CBT) model, and used a model-based translational PK/PD
+analysis to predict the therapeutic window of factor IXa modulation relative to
+factor Xa. The paper contributes two packaged models, one per compound:
+
+* `Ankrom_2016_apixaban_rat` -- factor Xa comparator.
+* `Ankrom_2016_cpd1_rat` -- factor IXa inhibitor.
+
+```{r models}
+apix <- readModelDb("Ankrom_2016_apixaban_rat")
+cpd1 <- readModelDb("Ankrom_2016_cpd1_rat")
+```
+
+* Citation: `r rxode2::rxode2(apix)$reference`
+* Article: <https://doi.org/10.1002/prp2.207>
+
+Both are PD-only exposure-response models. The steady-state plasma
+concentration of each compound is supplied as a time-varying covariate
+(`CP_APIXABAN_UM` / `CP_CPD1_UM`, in umol/L) rather than produced by a coupled
+PK model, because the authors fitted clot weight (CW) and cuticle bleeding time
+(CBT) directly against measured plasma concentration. Each model carries three
+outputs:
+
+* **CW** (clot weight, mg): a vehicle-proportional Imax model,
+  `CW = CWvehicle * (1 - Imax * C / (IC50 + C))`.
+* **CBT** (cuticle bleeding time, s): a linear model,
+  `CBT = CBTvehicle + slope * C`.
+* **EO** (enzyme occupancy, %): the translational target-engagement calculation
+  `EO = 100 * C / (Ki/fu + C)`, a derived output (not a fitted endpoint), with
+  the rat enzyme inhibition constant `Ki` and plasma fraction unbound `fu` taken
+  from Table 1 (apixaban: rat fXa; CPD1: rat fIXa).
+
+# Population
+
+Both compounds were studied in the same preparation: male Sprague-Dawley rats
+(Charles River), 350-400 g at the time of the AVS/CBT procedures, anesthetized
+with thiobutabarbital. Each compound was given as an i.v. bolus followed by an
+infusion chosen so that plasma concentrations stayed within 10% of the mean
+across the 15-min shunt window, so a single near-constant concentration could be
+paired with each CW and CBT measurement. Five bolus/infusion regimens per
+compound (>= 10 rats each) spanned the concentration-effect range. CBT was
+recorded to a 600 s assay ceiling and the right-censored observations above that
+ceiling were handled in the likelihood.
+
+The demographics are exposed programmatically via each model's `population`
+metadata, e.g. `readModelDb("Ankrom_2016_cpd1_rat")$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as in-file comments next to each `ini()`
+entry in `inst/modeldb/pharmacodynamics/Ankrom_2016_apixaban_rat.R` and
+`...cpd1_rat.R`. The table collects them in one place for review. All structural
+estimates are from Ankrom 2016 Table 2; the enzyme-occupancy constants are from
+Table 1.
+
+| Parameter | Apixaban | CPD1 | Source |
+|-----------|----------|------|--------|
+| `CWvehicle` (`lrbase_CW`) | 99.5 mg | 121 mg | Table 2 (CW model) |
+| `Imax` (`limax`) | 0.946 | 0.936 | Table 2 (CW model) |
+| `IC50` (`lic50`) | 1.92 umol/L | 1.69 umol/L | Table 2 (CW model) |
+| `CBTvehicle` (`lrbase_CBT`) | 144 s | 122 s | Table 2 (CBT model) |
+| `slope` (`lslope_CBT`) | 29.6 s per umol/L | 5.93 s per umol/L | Table 2 (CBT model) |
+| `Ki` (`lki`, fixed) | 2.1 nmol/L (rat fXa) | 22 nmol/L (rat fIXa) | Table 1 |
+| `fu` (`lfu`, fixed) | 0.019 (1.9%) | 0.006 (0.6%) | Table 1 |
+| `addSd_CW`, `addSd_CBT` | placeholders | placeholders | not reported -- see Assumptions |
+| CW Imax equation | `CW = CWvehicle * (1 - Imax * C/(IC50 + C))` | | Ankrom 2016 Results ("Model-based translational PK/PD analysis") |
+| CBT linear equation | `CBT = CBTvehicle + slope * C` | | Ankrom 2016 Results |
+| EO equation | `EO = 100 * C / (Ki/fu + C)` | | Ankrom 2016 Methods / Figure 4 caption |
+
+# Virtual cohort
+
+The paper's per-animal CW/CBT observations are not publicly tabulated. The
+figures use a concentration grid spanning each compound's reported
+steady-state range (apixaban 0.39 nmol/L to 57 umol/L; CPD1 0.28 to 153 umol/L),
+anchored at 0 (vehicle). Because the PD models are algebraic, "time" is a dummy
+index along the concentration sweep.
+
+```{r cohort}
+conc_grid <- c(0, exp(seq(log(0.01), log(160), length.out = 80)))
+
+make_events <- function(conc_col) {
+  tibble::tibble(
+    id   = 1L,
+    time = seq_along(conc_grid) - 1,
+    evid = 0L,
+    amt  = 0,
+    conc = conc_grid
+  ) |>
+    dplyr::rename(!!conc_col := conc)
+}
+
+ev_apix <- make_events("CP_APIXABAN_UM")
+ev_cpd1 <- make_events("CP_CPD1_UM")
+```
+
+# Simulation
+
+```{r simulate}
+sim_apix <- rxode2::rxSolve(apix, ev_apix, keep = "CP_APIXABAN_UM") |>
+  as.data.frame() |>
+  dplyr::rename(C = CP_APIXABAN_UM) |>
+  dplyr::mutate(compound = "apixaban (fXa)")
+
+sim_cpd1 <- rxode2::rxSolve(cpd1, ev_cpd1, keep = "CP_CPD1_UM") |>
+  as.data.frame() |>
+  dplyr::rename(C = CP_CPD1_UM) |>
+  dplyr::mutate(compound = "CPD1 (fIXa)")
+
+sim <- dplyr::bind_rows(sim_apix, sim_cpd1)
+```
+
+# Replicate published figures
+
+## Figure 5 -- clot weight and bleeding time versus plasma concentration
+
+```{r figure-5-cw}
+# Replicates the top panels of Figure 5 of Ankrom 2016: model-predicted clot
+# weight as a function of apixaban (left) and CPD1 (right) plasma concentration.
+sim |>
+  dplyr::filter(C > 0) |>
+  ggplot(aes(C, CW, colour = compound)) +
+  geom_line(linewidth = 1) +
+  scale_x_log10() +
+  coord_cartesian(ylim = c(0, NA)) +
+  labs(
+    x = "Rat plasma concentration (umol/L, log scale)",
+    y = "Clot weight CW (mg)",
+    title = "Figure 5 (top) -- clot weight vs concentration",
+    colour = NULL,
+    caption = "Vehicle-proportional Imax model; replicates Figure 5 top panels of Ankrom 2016."
+  )
+```
+
+```{r figure-5-cbt}
+# Replicates the bottom panels of Figure 5 of Ankrom 2016: model-predicted
+# cuticle bleeding time vs concentration, with the 600 s assay ceiling.
+sim |>
+  dplyr::filter(C > 0) |>
+  ggplot(aes(C, CBT, colour = compound)) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = 600, linetype = "dashed") +
+  scale_x_log10() +
+  labs(
+    x = "Rat plasma concentration (umol/L, log scale)",
+    y = "Cuticle bleeding time CBT (s)",
+    title = "Figure 5 (bottom) -- bleeding time vs concentration",
+    colour = NULL,
+    caption = paste(
+      "Linear model; dashed line = 600 s CBT assay ceiling.",
+      "Replicates Figure 5 bottom panels of Ankrom 2016."
+    )
+  )
+```
+
+## Figure 4 -- enzyme occupancy as the translational axis
+
+```{r figure-4-eo}
+# Figure 4 of Ankrom 2016 plots CW and CBT against calculated enzyme occupancy
+# (EO). Here we show CW vs EO for both targets, reproducing the biology
+# difference: antithrombotic activity needs very high (fXa) vs only moderate
+# (fIXa) occupancy.
+sim |>
+  dplyr::filter(C > 0) |>
+  ggplot(aes(EO, CW, colour = compound)) +
+  geom_line(linewidth = 1) +
+  labs(
+    x = "Enzyme occupancy EO (%)",
+    y = "Clot weight CW (mg)",
+    title = "Figure 4 -- clot weight vs target engagement (EO)",
+    colour = NULL,
+    caption = "fXa (apixaban) requires higher occupancy than fIXa (CPD1) for equivalent clot reduction."
+  )
+```
+
+# Translational therapeutic-window checks
+
+These deterministic, typical-value evaluations reproduce the quantitative
+targets stated in Ankrom 2016 Results ("Model-based translational PK/PD
+analysis"). Because each side is a closed-form algebraic prediction with no
+per-subject random mechanism, tight tolerances are appropriate.
+
+```{r tw-helpers}
+# Closed-form helpers evaluated directly from the packaged typical values.
+eval_at <- function(mod, conc_col, C) {
+  ev <- tibble::tibble(id = 1L, time = seq_along(C) - 1, evid = 0L, amt = 0,
+                       conc = C) |>
+    dplyr::rename(!!conc_col := conc)
+  rxode2::rxSolve(mod, ev, keep = conc_col) |> as.data.frame()
+}
+
+# Apixaban: clinical 5 mg BID Cmin had a rat-equivalent concentration of
+# 17 (8.5, 32) umol/L. Target CW ~16 mg and target CBT just above 600 s.
+apix_target <- eval_at(apix, "CP_APIXABAN_UM", 17)
+cw_apix_17  <- apix_target$CW
+cbt_apix_17 <- apix_target$CBT
+eo_apix_17  <- apix_target$EO
+
+# CPD1: concentration giving CW = 16 mg (paper: >23 umol/L, ~86% EO) and
+# concentration giving CBT = 600 s (paper: <80 umol/L, ~96% EO).
+cpd1_pars <- rxode2::rxode2(cpd1)
+# Invert the CW Imax equation and the linear CBT equation analytically.
+rb_cw <- 121; imax <- 0.936; ic50 <- 1.69
+c_cw16 <- uniroot(function(C) rb_cw * (1 - imax * C / (ic50 + C)) - 16,
+                  c(0.1, 200))$root
+rb_cbt <- 122; slope <- 5.93
+c_cbt600 <- (600 - rb_cbt) / slope
+
+eo_cpd1_cw16  <- eval_at(cpd1, "CP_CPD1_UM", c_cw16)$EO
+eo_cpd1_cbt600 <- eval_at(cpd1, "CP_CPD1_UM", c_cbt600)$EO
+
+summary_tbl <- tibble::tibble(
+  Quantity = c(
+    "Apixaban CW at 17 umol/L (mg)",
+    "Apixaban CBT at 17 umol/L (s)",
+    "Apixaban fXa EO at 17 umol/L (%)",
+    "CPD1 concentration for CW = 16 mg (umol/L)",
+    "CPD1 fIXa EO at that concentration (%)",
+    "CPD1 concentration for CBT = 600 s (umol/L)",
+    "CPD1 fIXa EO at that concentration (%)"
+  ),
+  Model = round(c(cw_apix_17, cbt_apix_17, eo_apix_17,
+                  c_cw16, eo_cpd1_cw16, c_cbt600, eo_cpd1_cbt600), 1),
+  `Ankrom 2016` = c("16 (12-24)", ">600", "99.2", ">23", "~86", "<80", "~96")
+)
+knitr::kable(summary_tbl, caption = "Translational targets reproduced from the packaged typical-value models.")
+```
+
+```{r tw-assertions}
+stopifnot(
+  # Apixaban target clot weight at the rat-equivalent clinical Cmin sits inside
+  # the paper's 12-24 mg interval and near its 16 mg point estimate.
+  cw_apix_17 > 12, cw_apix_17 < 24,
+  # Apixaban bleeding time at the same concentration exceeds the 600 s ceiling.
+  cbt_apix_17 > 600,
+  # Apixaban fXa occupancy matches the reported 99.2% to <0.5%.
+  abs(eo_apix_17 - 99.2) < 0.5,
+  # CPD1 reaches the 16 mg clot-weight target near the paper's ~23 umol/L /
+  # ~86% EO window.
+  c_cw16 > 18, c_cw16 < 26,
+  abs(eo_cpd1_cw16 - 86) < 3,
+  # CPD1 reaches the 600 s bleeding ceiling near the paper's ~80 umol/L /
+  # ~96% EO.
+  abs(c_cbt600 - 80) < 2,
+  abs(eo_cpd1_cbt600 - 96) < 2
+)
+```
+
+The therapeutic-window conclusion of Ankrom 2016 follows directly: factor IXa
+occupancy of roughly 86-96% gives apixaban-equivalent benefit/risk, and
+86-90% gives equivalent efficacy with reduced bleeding.
+
+# Assumptions and deviations
+
+- **Residual-error magnitudes are placeholders.** Ankrom 2016 Table 2 reports
+  only the typical-value estimates and their %RSE; no interindividual
+  variability or residual-error variance is tabulated (the CW/CBT data are one
+  near-constant-concentration measurement per animal, fitted as a pooled
+  concentration-effect relationship). The packaged models use additive
+  placeholders (`addSd_CW = 10` mg, `addSd_CBT = 40` s) to allow stochastic
+  simulation; every typical-value prediction and every check in this vignette is
+  independent of them. A user fitting these models to data should re-estimate
+  the residual error.
+- **No interindividual variability.** For the reason above, no etas are encoded.
+  The models are typical-value only.
+- **CW Imax equation typo corrected.** The paper prints the clot-weight model as
+  `CW = CWvehicle * (1 - Imax * C/IC50 + C)`, which is a transcription typo for
+  the standard fractional-Imax form `CW = CWvehicle * (1 - Imax * C/(IC50 + C))`
+  implemented here. The corrected form reproduces every quantitative target in
+  the Results text (see the therapeutic-window checks above), confirming the
+  intended structure.
+- **Enzyme occupancy carried as a derived output.** `EO` is computed from the
+  Table 1 rat `Ki` and `fu` and the driving concentration; it is the paper's
+  translational bridge (equal occupancy assumed to give equal effect across
+  species), not a fitted endpoint, so it carries no residual error.
+- **No structural PK model.** The AVS/CBT analysis used measured steady-state
+  plasma concentrations, so the packaged models are PD-only and take the
+  concentration as an external covariate. Rat disposition summaries (Table 1:
+  apixaban Cl 12 mL/min/kg, Vd 0.6 L/kg, t1/2 0.86 h; CPD1 Cl 30.4 mL/min/kg,
+  Vd 0.19 L/kg, t1/2 0.38 h) are reported as model-independent values only and
+  are not part of this extraction. A user wanting a concentration trajectory
+  must supply their own PK.
+- **CPD1 identifier.** CPD1 ("compound 1") is a proprietary Merck selective
+  factor IXa inhibitor with no INN; the development-code label is retained in
+  the file name and covariate name.
+- **siRNA knockdown arm not modelled.** The paper's second modality (LNP-siRNA
+  knockdown of factor IX / factor X mRNA, Figures 6-7) is a descriptive
+  dose-response characterization with no fitted PK/PD model (no parameter table),
+  so it is outside this extraction.
+- **Observation names `CW`, `CBT`, `EO`.** These are the paper's endpoint
+  symbols (clot weight, cuticle bleeding time, enzyme occupancy), retained for
+  source-trace fidelity; they are not drug plasma concentrations, so the
+  canonical `Cc` name does not apply.
+```

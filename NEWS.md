@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Pan 2015 Hu714MuXHu anti-IL-15 PK/PD ([doi:10.1002/prp2.199](https://doi.org/10.1002/prp2.199)) -- healthy cynomolgus monkeys, serum antibody and NK cell counts.
+- Add Ankrom 2016 apixaban and CPD1 factor IXa/Xa translational PK/PD ([doi:10.1002/prp2.207](https://doi.org/10.1002/prp2.207)) -- male Sprague-Dawley rats (arteriovenous-shunt thrombosis and cuticle-bleeding model).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
