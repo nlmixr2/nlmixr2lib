@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sluka 2016 acetaminophen whole-body PBPK and hepatocyte metabolism (QSP) modules ([doi:10.1371/journal.pone.0162428](https://doi.org/10.1371/journal.pone.0162428)) -- reference 70 kg adult man given a 1.4 g oral dose.
+- Add Miller 2016 bacteremia with extracorporeal bacterial separation ([doi:10.1371/journal.pone.0163167](https://doi.org/10.1371/journal.pone.0163167)) -- A. baumannii / K. pneumoniae bacteremia in mice, extrapolated to adult humans.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
