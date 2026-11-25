@@ -5104,6 +5104,8 @@ navbar:
         href: articles/He_2025_lidocaine.html
       - text: "Lidocaine (Osborne 2025)"
         href: articles/Osborne_2025_lidocaine.html
+      - text: "Lidocaine dog (Choquette 2017)"
+        href: articles/Choquette_2017_lidocaine_dog.html
       - text: "Ligelizumab (Bienczak 2025)"
         href: articles/Bienczak_2025_ligelizumab.html
       - text: "Linagliptin (Retlich 2015)"
@@ -10867,6 +10869,7 @@ articles:
   - articles/Choi_2025_denosumab
   - articles/Choi_2025_efpeglenatide
   - articles/Choi_2026_melphalan
+  - articles/Choquette_2017_lidocaine_dog
   - articles/Chotsiri_2017_dihydroartemisinin_piperaquine
   - articles/Chotsiri_2019_lumefantrine
   - articles/Chotsiri_2019_piperaquine
