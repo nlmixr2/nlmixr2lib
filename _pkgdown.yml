@@ -9576,6 +9576,8 @@ navbar:
         href: articles/Hennig_2008_tobramycin.html
       - text: "Tobramycin (Livio 2014)"
         href: articles/Livio_2014_tobramycin.html
+      - text: "Tobramycin (Smit 2019)"
+        href: articles/Smit_2019_tobramycin.html
       - text: "Tobramycin (VanWart 2025)"
         href: articles/VanWart_2025_tobramycin.html
       - text: "Tobramycin elf mouse (Fratoni 2025)"
@@ -13324,7 +13326,7 @@ articles:
   - articles/Sjogren_2021_malnutrition_physiology
   - articles/Skip_2014_metal_toxicokinetics
   - articles/Sloan_2017_rifampicin
-  - articles/Sluka_2016_acetaminophen
+  - articles/Smit_2019_tobramycin
   - articles/Smit_2020_vancomycin
   - articles/Smit_2021_vancomycin
   - articles/Smit_2022_moxidectin
