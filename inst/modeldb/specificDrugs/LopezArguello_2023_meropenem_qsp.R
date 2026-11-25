@@ -71,7 +71,7 @@ LopezArguello_2023_meropenem_qsp <- function() {
       notes = "When CELLS_INTACT = 1 the periplasm starts empty and fills at Rate_Influx/access; when CELLS_INTACT = 0 the influx term is zero and the periplasm is initialised to n_peri_lysed molecules per cell. Both assays were fit simultaneously.",
       source_name = "INTACT"
     ),
-    CONC_MEM_MGL = list(
+    CONC_MEROPENEM_MGL = list(
       description = "Static extracellular meropenem concentration applied in the PBP-binding assay. Scales the rate of net influx and PBP access (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x C_drug).",
       units = "mg/L",
       type = "continuous",
@@ -99,7 +99,7 @@ LopezArguello_2023_meropenem_qsp <- function() {
   ini({
     # --- Rate of net influx and PBP access (Eq 1; intact-cell assay only) ---
     rate_influx_scaled <- 35.1; label("Scaled rate of net influx and PBP access (drug molecules/min per mg/L)") # Table 1, meropenem: 35.1 (SE 48.1%)
-    # The studied extracellular concentration enters as the CONC_MEM_MGL covariate
+    # The studied extracellular concentration enters as the CONC_MEROPENEM_MGL covariate
     # (Table 1: meropenem studied at 1 mg/L = 2x the MIC of 0.5 mg/L).
 
     # --- Second-order acylation rate constants (Table S1; units 1e-3 /min) ---
@@ -162,7 +162,7 @@ LopezArguello_2023_meropenem_qsp <- function() {
     #    term is present only in the intact-cell assay; in lysed cells the outer
     #    membrane is absent and the periplasmic pool is instead initialised to a
     #    vast excess of drug molecules.
-    rate_influx <- CELLS_INTACT * rate_influx_scaled * CONC_MEM_MGL
+    rate_influx <- CELLS_INTACT * rate_influx_scaled * CONC_MEROPENEM_MGL
 
     # 2. Table S1 tabulates the acylation rate constants in 1e-3 /min; Fig. S8
     #    lines 75-80 rescale them to 1/min.

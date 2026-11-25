@@ -60,7 +60,7 @@ Each model has:
 * the observation `log_cfu` = log10 CFU/mL with an additive residual error.
 
 Drug concentrations are supplied as the covariates `CONC_CAZ_MGL` and
-`CONC_CST_MGL`. There is no PK and there are no dosing events: the solver
+`CONC_COLISTIN_MGL`. There is no PK and there are no dosing events: the solver
 integrates the bacterial and adaptation states from the inoculum. This is a
 pharmacodynamic model of an in vitro experiment, so PKNCA is not the right
 validation target; the checks below compare the model against the paper's
@@ -172,7 +172,7 @@ grid_events <- function(panels, times) {
   panels$id <- seq_len(nrow(panels))
   ev <- merge(panels, data.frame(time = times))
   ev$CONC_CAZ_MGL <- ev$caz
-  ev$CONC_CST_MGL <- ev$col
+  ev$CONC_COLISTIN_MGL <- ev$col
   # Observations on the bacterial ODE state; log_cfu is returned alongside.
   ev$evid <- 0
   ev$cmt <- "cfu"
@@ -561,7 +561,7 @@ Figure 6 and Figs. S6-S7 drive the NARA1295 model with typical patient
 concentration-time profiles from two external popPK models (ceftazidime from
 Sy et al. 2019, colistin from Kristoffersson et al. 2020) that are not in this
 library, so they are not reproduced here. The model accepts time-varying
-`CONC_CAZ_MGL` / `CONC_CST_MGL` columns for that purpose: rxode2 interpolates
+`CONC_CAZ_MGL` / `CONC_COLISTIN_MGL` columns for that purpose: rxode2 interpolates
 covariates between records, and the adaptation switch follows the
 instantaneous concentration exactly as `IF(A(1).GT.0)` does in Code S2. Note
 that avibactam is assumed throughout to be present at a fully inhibiting,

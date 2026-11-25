@@ -5518,6 +5518,8 @@ navbar:
         href: articles/Zyryanov_2023_meropenem.html
       - text: "Meropenem ciprofloxacin (Rees 2018)"
         href: articles/Rees_2018_meropenem_ciprofloxacin.html
+      - text: "Meropenem colistin polymyxinB (Soeorg 2026)"
+        href: articles/Soeorg_2026_meropenem_colistin_polymyxinB.html
       - text: "Meropenem elf mouse (Fratoni 2025)"
         href: articles/Fratoni_2025_humanized_exposures_mouse.html
       - text: "Meropenem pbpk (Yang 2024)"
@@ -12564,6 +12566,7 @@ articles:
   - articles/Snelder_2020_ASP8232
   - articles/Snelder_2020_finerenone
   - articles/Soehoel_2022_tralokinumab
+  - articles/Soeorg_2026_meropenem_colistin_polymyxinB
   - articles/Sokolov_2019_antipcsk9_qsp
   - articles/Sokolov_2020_sglt_qsp
   - articles/Sokolov_2023_dapagliflozin

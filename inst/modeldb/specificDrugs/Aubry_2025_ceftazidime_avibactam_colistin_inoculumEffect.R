@@ -51,7 +51,7 @@ Aubry_2025_ceftazidime_avibactam_colistin_inoculumEffect <- function() {
       notes = "Held constant for the 30-h experiment. The paper writes 'CZA' for the ceftazidime concentration and states that it always corresponds to ceftazidime with 4 mg/L avibactam; avibactam is assumed to inhibit the beta-lactamases fully without a bactericidal effect of its own, so it carries no covariate. Adaptive resistance develops only while the concentration is above zero (Code S1 $DES: IF(A(1).GT.0) ADAPT_CZA=KON_CZA). In the clinical-concentration simulation (Fig 7) this covariate is driven time-varying by the free ceftazidime PK profile.",
       source_name = "CAZ_CONC"
     ),
-    CONC_CST_MGL = list(
+    CONC_COLISTIN_MGL = list(
       description = "Static (time-invariant) colistin concentration in the time-kill tube. Drives the sigmoidal Emax kill by colistin, switches on adaptive resistance to it, and as the GPDI perpetrator lowers the ceftazidime/avibactam Emax.",
       units = "mg/L",
       type = "continuous",
@@ -146,21 +146,21 @@ Aubry_2025_ceftazidime_avibactam_colistin_inoculumEffect <- function() {
 
     # GPDI (Text S1): the victim parameter is the ceftazidime/avibactam Emax,
     # theta_INT = theta_mono * (1 + INT * C_perp^gINT / (EC50_INT^gINT + C_perp^gINT)).
-    fint_col_caz <- int_col_caz * CONC_CST_MGL^hillint_col_caz /
-      (ec50int_col_caz^hillint_col_caz + CONC_CST_MGL^hillint_col_caz)
+    fint_col_caz <- int_col_caz * CONC_COLISTIN_MGL^hillint_col_caz /
+      (ec50int_col_caz^hillint_col_caz + CONC_COLISTIN_MGL^hillint_col_caz)
     emax_caz_i <- emax_caz_ie * (1 + fint_col_caz)
 
     # Adaptation develops only while the drug is present (Code S1 $DES:
     # ADAPT_CZA = 0; IF(A(1).GT.0) ADAPT_CZA = KON_CZA, and likewise for colistin).
     kon_caz_i <- kon_caz * (CONC_CAZ_MGL > 0)
-    kon_col_i <- kon_col * (CONC_CST_MGL > 0)
+    kon_col_i <- kon_col * (CONC_COLISTIN_MGL > 0)
 
     # Sigmoidal Emax kill, Emax reduced in proportion to the adapted fraction;
     # the colistin EC50 carries the inoculum effect.
     kill_caz <- emax_caz_i * (1 - armax_caz * aron_caz) * CONC_CAZ_MGL^hill_caz /
       (ec50_caz^hill_caz + CONC_CAZ_MGL^hill_caz)
-    kill_col <- emax_col * (1 - armax_col * aron_col) * CONC_CST_MGL^hill_col /
-      (ec50_col_ie^hill_col + CONC_CST_MGL^hill_col)
+    kill_col <- emax_col * (1 - armax_col * aron_col) * CONC_COLISTIN_MGL^hill_col /
+      (ec50_col_ie^hill_col + CONC_COLISTIN_MGL^hill_col)
 
     # Bliss independence (Code S1 $DES): each kill rate is normalised by the
     # larger of the two typical (base) Emax values, combined as Ea + Eb - Ea*Eb,

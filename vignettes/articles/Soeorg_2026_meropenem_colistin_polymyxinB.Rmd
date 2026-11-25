@@ -1,0 +1,465 @@
+---
+title: "Meropenem + colistin/polymyxin B against Acinetobacter baumannii (Soeorg 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meropenem + colistin/polymyxin B against Acinetobacter baumannii (Soeorg 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Article: Soeorg H, Lyu S, Kloprogge F, Standing JF. Pharmacokinetic-pharmacodynamic
+  modeling using combined time-kill data for meropenem and colistin or polymyxin B
+  combination effects in *Acinetobacter baumannii*. Antimicrob Agents Chemother. 2026.
+  <https://doi.org/10.1128/aac.00274-26>
+* Supplementary material (`aac.00274-26-s0001.docx`): the pooled studies
+  (Table S1), the model-building steps (Table S2) and Figs. S1-S7. No erratum was
+  listed on Europe PMC when the model was added (November 2026).
+
+The authors pooled 369 published time-kill and hollow-fibre experiments and fitted
+one model to all of them. Bacteria grow logistically and each drug kills through an
+Emax term whose EC50 is a multiple of the isolate's MIC. Each drug's kill fades over
+time through a two-state attenuation, and the two kills combine under Bliss
+independence with a general pharmacodynamic interaction (GPDI): colistin/polymyxin B
+raises the meropenem Emax and lowers its EC50. Colistin and polymyxin B share one
+set of parameters.
+
+```{r model}
+mod <- rxode2::rxode2(readModelDb("Soeorg_2026_meropenem_colistin_polymyxinB"))
+mod
+```
+
+The model has no dosing events. The drug concentrations, MICs, starting inoculum and
+carbapenemase status are covariates on the observation rows, and a concentration can
+vary over time when the model is driven from a PK profile:
+
+| Covariate | Meaning |
+|---|---|
+| `CONC_MEROPENEM_MGL` | meropenem concentration (mg/L) |
+| `CONC_COLISTIN_MGL`, `CONC_POLYMYXINB_MGL` | colistin and polymyxin B concentrations (mg/L); summed into one polymyxin concentration, so set the unused one to 0 |
+| `MIC_MEROPENEM` | meropenem MIC of the isolate (mg/L) |
+| `MIC_COLISTIN`, `MIC_POLYMYXINB` | colistin and polymyxin B MICs (mg/L); `MIC_POLYMYXINB` is used when `CONC_POLYMYXINB_MGL > 0`, otherwise `MIC_COLISTIN` |
+| `CARBAPENEMASE_POS` | 1 = acquired carbapenemase (OXA-23, OXA-24/40, OXA-58, OXA-72, VIM-1, NDM-1) |
+| `INOC_LOG10CFU` | starting inoculum (log10 CFU/mL) |
+
+# Population (biological context)
+
+```{r population}
+str(readModelDb("Soeorg_2026_meropenem_colistin_polymyxinB")()$population)
+```
+
+The data come from 21 papers (Table S1): 18 ran static time-kill experiments and 5
+ran hollow-fibre infection models, mostly in cation-adjusted Mueller-Hinton broth at
+35-37 degrees C. The 369 experiments covered 70 growth controls, 104 meropenem,
+46 colistin, 37 polymyxin B, 53 meropenem + colistin and 59 meropenem + polymyxin B
+arms against 53 strains (60 strain-paper "isolates"). Of the 60 isolates, 57 were
+meropenem-resistant, 14 were colistin/polymyxin B-resistant and 30 carried an
+acquired carbapenemase (Fig. 1). Counts were digitised from the published figures,
+and values below each study's limit of quantification were handled with the M3
+method.
+
+# Source trace
+
+| Element | Value in the model | Source |
+|---|---|---|
+| Logistic growth with killing | `d/dt(cfu) <- (kg * (1 - cfu / 10^bmax) - kkill) * cfu` | Eq 1 |
+| Initial count | `cfu(0) <- 10^INOC_LOG10CFU` | Eq 2 |
+| Two-state attenuation, on only while drug is present | `aron_*`, `aroff_*` | Eq 3-6 |
+| Meropenem Emax inoculum effect | `emax_mero * (INOC/6)^e_inoc_emax_mero` | Eq 7 |
+| Colistin/polymyxin B Emax at 8 log10 inoculum | `emax_col * e_inoc8_emax_col^I(INOC = 8)` | Eq 8 |
+| Meropenem kill | Emax x thetaBL x (1 + Int_Emax) x (1 - R_on) x C / (EC50 x MIC x (1 - Int_EC50) + C) | Eq 9 |
+| Colistin/polymyxin B kill | Emax x (1 - R_on) x C / (EC50 x MIC + C) | Eq 10 |
+| GPDI terms | Delta x C_COLPMB / (EC50_INTER x MIC_COLPMB + C_COLPMB) | Eq 11 |
+| Bliss independence | `kkill = K_MERO + K_COLPMB - (K_MERO/Emax_MERO)(K_COLPMB/Emax_COLPMB) Eref`, `Eref = max(Emax)` | Eq 12-13 |
+| `lkg` | 0.33 (Kgrowth = exp(0.33) = 1.39 1/h) | Table 1 Kgrowth 0.33, read as the log-scale estimate (see below) |
+| `log10bmax` | 8.41 log10 CFU/mL | Table 1 Bmax |
+| `etalog10bmax` | 0.11^2 | Table 1, Bmax IIV SD 0.11 |
+| `emax_mero` | 3.47 1/h | Table 1 EmaxMERO |
+| `kon_mero` | 0.033 1/h | Table 1 Katten,MERO |
+| `e_inoc_emax_mero` | -0.63 | Table 1 gammaMERO |
+| `e_carbapenemase_emax_mero` | 0.83 | Table 1 thetaBL |
+| `lec50_mero` | log(1), fixed | Table 1 EC50MERO "Fixed to MIC" |
+| `etalec50_mero` | 1.13^2 | Table 1, EC50MERO IIV SD 1.13 |
+| `emax_col` | 3.62 1/h | Table 1 EmaxCOLPMB |
+| `kon_col` | 0.075 1/h | Table 1 Katten,COLPMB |
+| `e_inoc8_emax_col` | 0.005 | Table 1 gammaCOLPMB |
+| `lec50_col` | log(0.33) | Table 1 EC50COLPMB (x MIC; linear in the MIC, Table S2 model P6) |
+| `etalec50_col` | 1.35^2 | Table 1, EC50COLPMB IIV SD 1.35 |
+| `int_emax_col_mero` | 0.29 | Table 1 Delta_Emax |
+| `int_ec50_col_mero` | 1, fixed | Table 1 Delta_EC50 "1 (fix)" |
+| `ec50int_col_mero` | 1 x MIC, fixed | **Not reported**; see Assumptions |
+| `addSd` | 1.21 log10 CFU/mL | Table 1 residual SD 1.21 (additive on log10 CFU/mL; see Assumptions) |
+
+# Parameter table (paper vs. file)
+
+```{r param-table}
+th <- mod$theta
+om <- diag(mod$omega)
+paper <- tribble(
+  ~parameter,                  ~paper, ~file,
+  "lkg (Kgrowth, log scale)",   0.33,  th[["lkg"]],
+  "log10bmax",                  8.41,  th[["log10bmax"]],
+  "emax_mero",                  3.47,  th[["emax_mero"]],
+  "kon_mero",                   0.033, th[["kon_mero"]],
+  "e_inoc_emax_mero",          -0.63,  th[["e_inoc_emax_mero"]],
+  "e_carbapenemase_emax_mero",  0.83,  th[["e_carbapenemase_emax_mero"]],
+  "EC50_MERO (x MIC)",          1,     exp(th[["lec50_mero"]]),
+  "emax_col",                   3.62,  th[["emax_col"]],
+  "kon_col",                    0.075, th[["kon_col"]],
+  "e_inoc8_emax_col",           0.005, th[["e_inoc8_emax_col"]],
+  "EC50_COLPMB (x MIC)",        0.33,  exp(th[["lec50_col"]]),
+  "int_emax_col_mero",          0.29,  th[["int_emax_col_mero"]],
+  "int_ec50_col_mero",          1,     th[["int_ec50_col_mero"]],
+  "addSd",                      1.21,  th[["addSd"]],
+  "IIV SD, Bmax",               0.11,  sqrt(om[["etalog10bmax"]]),
+  "IIV SD, EC50_MERO",          1.13,  sqrt(om[["etalec50_mero"]]),
+  "IIV SD, EC50_COLPMB",        1.35,  sqrt(om[["etalec50_col"]])
+)
+knitr::kable(paper, digits = 4)
+# Every Table 1 value must be carried exactly.
+stopifnot(isTRUE(all.equal(paper$paper, unname(paper$file), tolerance = 1e-10)))
+```
+
+# Simulation helpers
+
+```{r helpers}
+mod_typ <- rxode2::zeroRe(mod)
+
+# Typical-value solve over several isolates. rxode2 warns that a multi-subject
+# simulation has no between-subject variability, which is the intent here.
+solve_typ <- function(events, ...) {
+  withCallingHandlers(
+    rxSolve(mod_typ, events, ...),
+    warning = function(w) {
+      if (grepl("omega", conditionMessage(w))) invokeRestart("muffleWarning")
+    }
+  )
+}
+
+# One observation row per time per isolate, on the bacterial state; the
+# covariates ride along on every row.
+kill_events <- function(times, ...) {
+  grid <- tidyr::expand_grid(...)
+  grid$id <- seq_len(nrow(grid))
+  defaults <- list(CONC_MEROPENEM_MGL = 0, CONC_COLISTIN_MGL = 0, CONC_POLYMYXINB_MGL = 0,
+                   MIC_MEROPENEM = 16, MIC_COLISTIN = 1, MIC_POLYMYXINB = 1,
+                   CARBAPENEMASE_POS = 0, INOC_LOG10CFU = 6)
+  for (nm in setdiff(names(defaults), names(grid))) grid[[nm]] <- defaults[[nm]]
+  tidyr::expand_grid(grid, time = times) |>
+    mutate(evid = 0, cmt = "cfu") |>
+    arrange(id, time) |>
+    as.data.frame()
+}
+covs <- c("CONC_MEROPENEM_MGL", "CONC_COLISTIN_MGL", "CONC_POLYMYXINB_MGL", "MIC_MEROPENEM", "MIC_COLISTIN",
+          "MIC_POLYMYXINB", "CARBAPENEMASE_POS", "INOC_LOG10CFU")
+```
+
+# Structural checks
+
+## Growth control against the closed-form logistic solution
+
+Without drug, Eq 1 is the logistic equation, whose solution is
+`B(t) = Bmax / (1 + (Bmax / B0 - 1) exp(-kg t))`. Both sides use the same
+parameters, so they must agree to solver precision.
+
+```{r growth-closed-form}
+ev_g <- kill_events(seq(0, 24, by = 1), INOC_LOG10CFU = c(4, 6, 8))
+sim_g <- as.data.frame(solve_typ(ev_g, keep = covs))
+kg <- exp(th[["lkg"]])
+bmax <- 10^th[["log10bmax"]]
+sim_g <- sim_g |>
+  mutate(closed = log10(bmax / (1 + (bmax / 10^INOC_LOG10CFU - 1) * exp(-kg * time))))
+stopifnot(max(abs(sim_g$log_cfu - sim_g$closed)) < 1e-4)
+ggplot(sim_g, aes(time, log_cfu, colour = factor(INOC_LOG10CFU))) +
+  geom_line() +
+  geom_point(aes(y = closed), shape = 1) +
+  labs(x = "Time (h)", y = "log10 CFU/mL", colour = "Inoculum\n(log10 CFU/mL)",
+       title = "Growth control: model (lines) vs closed-form logistic (circles)")
+```
+
+## Attenuation states
+
+With the drug present from time zero, `R_on(t) = 1 - exp(-katten t)` for each drug.
+
+```{r attenuation}
+ev_a <- kill_events(c(0, 6, 12, 24), CONC_MEROPENEM_MGL = 16, CONC_COLISTIN_MGL = 1)
+sim_a <- as.data.frame(solve_typ(ev_a))
+stopifnot(
+  max(abs(sim_a$aron_mero - (1 - exp(-th[["kon_mero"]] * sim_a$time)))) < 1e-6,
+  max(abs(sim_a$aron_col - (1 - exp(-th[["kon_col"]] * sim_a$time)))) < 1e-6,
+  max(abs(sim_a$aron_mero + sim_a$aroff_mero - 1)) < 1e-8
+)
+```
+
+## Kill rates at time zero against Eq 7-13
+
+At time zero both attenuation states are off, so the model's combined kill rate
+`kkill` can be recomputed by hand from Table 1 and Eq 7-13. This checks the
+inoculum, carbapenemase and interaction terms together.
+
+```{r kill-hand}
+ev_k <- kill_events(0,
+  CONC_MEROPENEM_MGL = c(0, 4, 16, 64), CONC_COLISTIN_MGL = c(0, 0.25, 1),
+  CARBAPENEMASE_POS = c(0, 1), INOC_LOG10CFU = c(5, 6, 8))
+sim_k <- as.data.frame(solve_typ(ev_k, keep = covs))
+hand <- with(sim_k, {
+  emax_m <- 3.47 * (INOC_LOG10CFU / 6)^-0.63
+  emax_c <- 3.62 * 0.005^(INOC_LOG10CFU >= 7.5)
+  fint <- CONC_COLISTIN_MGL / (1 * MIC_COLISTIN + CONC_COLISTIN_MGL)
+  k_m <- emax_m * 0.83^CARBAPENEMASE_POS * (1 + 0.29 * fint) * CONC_MEROPENEM_MGL /
+    (1 * MIC_MEROPENEM * (1 - 1 * fint) + CONC_MEROPENEM_MGL)
+  k_c <- emax_c * CONC_COLISTIN_MGL / (0.33 * MIC_COLISTIN + CONC_COLISTIN_MGL)
+  k_m + k_c - (k_m / emax_m) * (k_c / emax_c) * pmax(emax_m, emax_c)
+})
+stopifnot(max(abs(sim_k$kkill - hand)) < 1e-8)
+
+# Two readings of Table 1 the model must honour: meropenem alone at C = MIC gives
+# half its Emax, and colistin alone at C = 0.33 x MIC gives half its Emax.
+half <- as.data.frame(solve_typ(kill_events(0,
+  CONC_MEROPENEM_MGL = c(0, 16), CONC_COLISTIN_MGL = c(0, 0.33)), keep = covs))
+stopifnot(
+  abs(half$kkill[half$CONC_MEROPENEM_MGL == 16 & half$CONC_COLISTIN_MGL == 0] - 3.47 / 2) < 1e-8,
+  abs(half$kkill[half$CONC_MEROPENEM_MGL == 0 & half$CONC_COLISTIN_MGL == 0.33] - 3.62 / 2) < 1e-8
+)
+```
+
+# Typical static time-kill curves
+
+Typical-value curves for a strain with meropenem MIC 16 mg/L and colistin MIC
+1 mg/L at a 6 log10 CFU/mL inoculum, the strain the paper uses for its clinical
+simulations.
+
+```{r static-curves, fig.height = 6}
+regimens <- tribble(
+  ~regimen,                         ~CONC_MEROPENEM_MGL, ~CONC_COLISTIN_MGL,
+  "Control",                         0,             0,
+  "Colistin 0.5 x MIC",              0,             0.5,
+  "Meropenem 1 x MIC",              16,             0,
+  "Colistin 0.5 x + meropenem 1 x MIC", 16,         0.5,
+  "Colistin 0.5 x + meropenem 0.25 x MIC", 4,       0.5
+)
+ev_s <- tidyr::expand_grid(regimens, CARBAPENEMASE_POS = c(0, 1)) |>
+  mutate(id = row_number()) |>
+  tidyr::expand_grid(time = seq(0, 24, by = 0.25)) |>
+  mutate(evid = 0, cmt = "cfu", CONC_POLYMYXINB_MGL = 0, MIC_MEROPENEM = 16, MIC_COLISTIN = 1,
+         MIC_POLYMYXINB = 1, INOC_LOG10CFU = 6) |>
+  as.data.frame()
+sim_s <- as.data.frame(solve_typ(ev_s, keep = c("regimen", "CARBAPENEMASE_POS")))
+ggplot(sim_s, aes(time, log_cfu, colour = regimen)) +
+  geom_line() +
+  facet_wrap(~ ifelse(CARBAPENEMASE_POS == 1, "Acquired carbapenemase", "No acquired carbapenemase")) +
+  geom_hline(yintercept = 1, linetype = 2) +
+  coord_cartesian(ylim = c(-2, 9)) +
+  labs(x = "Time (h)", y = "log10 CFU/mL", colour = NULL) +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 2))
+```
+
+The combination kills faster than either drug alone, and the carbapenemase slows
+the meropenem kill. Attenuation lets the bacteria regrow late in the experiment.
+
+## Growth control against Figure 2
+
+The pcVPC in Figure 2 shows the growth controls. Read off the figure by the
+maintainers, the observed median at the 6 log10 CFU/mL inoculum rises from about
+6.3 to about 8.3 log10 CFU/mL within 4 h. The model reproduces that rise.
+
+```{r growth-fig2}
+g <- as.data.frame(solve_typ(kill_events(c(0, 4), INOC_LOG10CFU = 6.3)))
+g4 <- g$log_cfu[g$time == 4]
+g4
+# Kgrowth = 0.33 1/h as printed would give 6.86 log10 CFU/mL here; see Assumptions.
+stopifnot(abs(g4 - 8.3) < 0.5)
+```
+
+# Clinical regimen: Figure 3 and the OVERCOME probabilities
+
+The paper simulates the regimens of the OVERCOME trial: a colistin loading dose of
+5 mg/kg colistin base activity (CBA) then 1.67 mg/kg every 8 h, alone or with
+meropenem 1 g every 8 h. The patient is 67 years old, 60 kg, with serum creatinine
+1.5 mg/dL, and the target is epithelial lining fluid. The model is driven by unbound
+lung concentrations: colistin 44% unbound with 100% lung penetration, meropenem 62.5%
+unbound with 25% lung penetration. The strain has colistin MIC 1 mg/L and meropenem
+MIC 16 mg/L, and the inoculum is drawn from N(6, 0.25) log10 CFU/mL. The probability of
+target attainment (PTA) is the fraction of isolates below 10 CFU/mL (1 log10) at
+24 h, with interisolate and residual variability.
+
+The paper took its PK from Garonzik et al. (2011, colistin) and Lan et al. (2022,
+meropenem). Neither is in nlmixr2lib, so this vignette uses two packaged
+critically-ill models as stand-ins: `Mohamed_2012_colistin` (CMS converting to
+colistin) and `Zou_2026_meropenem` (clearance driven by creatinine clearance). Only
+their typical profiles are used. The comparison is therefore approximate, especially
+for meropenem.
+
+```{r clinical-pk}
+src_pk <- function(name) rxode2::zeroRe(rxode2::rxode2(readModelDb(name)))
+t_grid <- seq(0, 24, by = 0.25)
+
+# Colistin: 5 mg/kg CBA x 60 kg = 300 mg CBA = 720 mg CMS loading dose, then
+# 100 mg CBA = 240 mg CMS every 8 h (2.4 mg CMS per mg CBA), 0.5-h infusions.
+ev_cms <- rbind(
+  data.frame(id = 1, time = c(0, 8, 16), amt = c(720, 240, 240),
+             rate = c(1440, 480, 480), evid = 1, cmt = "central_cms", dvid = NA),
+  data.frame(id = 1, time = t_grid, amt = 0, rate = 0, evid = 0, cmt = NA, dvid = 2)
+)
+pk_col <- as.data.frame(rxSolve(src_pk("Mohamed_2012_colistin"), ev_cms))
+
+# Meropenem 1 g every 8 h as 0.5-h infusions; Cockcroft-Gault CrCL of the patient.
+crcl <- (140 - 67) * 60 / (72 * 1.5)
+ev_mem <- rxode2::et(amt = 1000, rate = 2000, cmt = "central", addl = 2, ii = 8) |>
+  rxode2::et(t_grid, cmt = "central")
+pk_mem <- as.data.frame(rxSolve(src_pk("Zou_2026_meropenem"), ev_mem,
+                                params = c(CRCL = crcl)))
+
+lung <- data.frame(time = t_grid,
+                   colistin = pk_col$Cc_col * 0.44,
+                   meropenem = pk_mem$Cc * 0.625 * 0.25)
+lung |>
+  pivot_longer(-time, names_to = "drug", values_to = "conc") |>
+  ggplot(aes(time, conc)) +
+  geom_line() +
+  facet_wrap(~drug, scales = "free_y") +
+  labs(x = "Time (h)", y = "Unbound lung concentration (mg/L)",
+       title = "Stand-in PK profiles driving the PD model")
+```
+
+```{r clinical-sim, fig.height = 5}
+n_iso <- 200 # isolates per regimen and carbapenemase arm
+set.seed(20261121)
+rxode2::rxSetSeed(20261121)
+arms <- tidyr::expand_grid(regimen = c("Colistin", "Combination"),
+                           CARBAPENEMASE_POS = c(0, 1)) |>
+  mutate(arm = row_number())
+iso <- arms[rep(seq_len(nrow(arms)), each = n_iso), ] |>
+  mutate(id = row_number(), INOC_LOG10CFU = rnorm(n(), 6, 0.25))
+ev_c <- tidyr::expand_grid(iso, lung) |>
+  mutate(CONC_MEROPENEM_MGL = ifelse(regimen == "Combination", meropenem, 0),
+         CONC_COLISTIN_MGL = colistin, CONC_POLYMYXINB_MGL = 0,
+         MIC_MEROPENEM = 16, MIC_COLISTIN = 1, MIC_POLYMYXINB = 1,
+         evid = 0, cmt = "cfu") |>
+  arrange(id, time) |>
+  as.data.frame()
+sim_c <- as.data.frame(rxSolve(mod, ev_c, keep = c("regimen", "CARBAPENEMASE_POS")))
+
+# Figure 3 medians, read off the figure by the maintainers.
+fig3 <- tribble(
+  ~CARBAPENEMASE_POS, ~time, ~Colistin, ~Combination,
+  0,  1, 6.23, 5.93,   0,  2, 6.10, 5.53,   0,  4, 5.66, 4.77,
+  0,  8, 5.19, 3.84,   0, 12, 5.36, 3.05,   0, 16, 6.06, 3.18,
+  0, 20, 6.80, 3.40,   0, 24, 7.32, 4.27,
+  1,  1, 6.32, 6.01,   1,  2, 6.19, 5.71,   1,  4, 5.75, 4.97,
+  1,  8, 5.36, 4.14,   1, 12, 5.53, 3.49,   1, 16, 6.19, 3.71,
+  1, 20, 6.93, 4.03,   1, 24, 7.40, 5.10
+) |>
+  pivot_longer(c(Colistin, Combination), names_to = "regimen", values_to = "fig3")
+
+bands <- sim_c |>
+  group_by(regimen, CARBAPENEMASE_POS, time) |>
+  summarise(med = median(ipredSim), lo = quantile(ipredSim, 0.1),
+            hi = quantile(ipredSim, 0.9), .groups = "drop")
+lab_bl <- function(x) ifelse(x == 1, "Acquired carbapenemase", "No acquired carbapenemase")
+ggplot(bands, aes(time, med, colour = regimen, fill = regimen)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line() +
+  geom_point(data = fig3, aes(y = fig3), shape = 1, size = 2) +
+  geom_hline(yintercept = 1, linetype = 2) +
+  facet_wrap(~ lab_bl(CARBAPENEMASE_POS)) +
+  coord_cartesian(ylim = c(-4, 9)) +
+  labs(x = "Time after the start of treatment (h)", y = "log10 CFU/mL",
+       colour = NULL, fill = NULL,
+       title = "Simulated median and 80% interval (lines, bands) vs Figure 3 medians (circles)") +
+  theme(legend.position = "bottom")
+```
+
+Replicates Figure 3 of Soeorg 2026 (with stand-in PK).
+
+```{r clinical-pta}
+pta <- sim_c |>
+  filter(time == 24) |>
+  group_by(regimen, CARBAPENEMASE_POS) |>
+  summarise(PTA_model = 100 * mean(sim < 1), median24_model = median(ipredSim),
+            .groups = "drop") |>
+  mutate(PTA_paper = c(0, 0, 22.7, 9.3)[match(paste(regimen, CARBAPENEMASE_POS),
+           c("Colistin 0", "Colistin 1", "Combination 0", "Combination 1"))]) |>
+  left_join(filter(fig3, time == 24) |> select(-time), by = c("regimen", "CARBAPENEMASE_POS")) |>
+  rename("Regimen" = regimen, "Carbapenemase" = CARBAPENEMASE_POS,
+         "PTA, model (%)" = PTA_model, "PTA, paper (%)" = PTA_paper,
+         "Median log10 CFU/mL at 24 h, model" = median24_model,
+         "Median at 24 h, Figure 3" = fig3)
+knitr::kable(pta, digits = 2)
+
+col24 <- bands$med[bands$regimen == "Colistin" & bands$time == 24]
+col_pta <- pta$`PTA, model (%)`[pta$Regimen == "Colistin"]
+# Colistin alone depends only on the growth, colistin kill and attenuation
+# parameters, and the stand-in colistin exposure is close to Garonzik's for
+# this patient, so it is the cleanest check of the model against Figure 3:
+# regrowth to about 7.3 log10 CFU/mL by 24 h and no target attainment.
+stopifnot(
+  all(abs(col24 - 7.35) < 1),
+  all(col_pta < 5)
+)
+```
+
+Colistin alone matches the paper: about 1 log10 of kill over the first 8 h, regrowth
+to above 7 log10 CFU/mL by 24 h, and 0% target attainment. The combination gives a
+higher PTA than the paper reports (22.7% without and 9.3% with an acquired
+carbapenemase), and a smaller difference between the two carbapenemase arms. Two things in this
+comparison are not from the paper. The meropenem stand-in PK and the 0.5-h infusion
+are assumptions. The interaction potency EC50_INTER is not reported, and the
+combination PTA is sensitive to it. The colistin-alone arm depends on neither.
+
+# PKNCA
+
+Not applicable. The model predicts bacterial counts in a time-kill system and has no
+drug PK of its own; drug concentrations are inputs.
+
+# Assumptions and deviations
+
+* **Kgrowth read as a log-scale estimate.** Table 1 prints Kgrowth = 0.33, and the
+  model uses Kgrowth = exp(0.33) = 1.39 1/h. A net growth rate of 0.33 1/h cannot
+  reproduce the paper's own simulations, whatever the colistin exposure. It gives
+  a growth-control rise of only 0.56 log10 in 4 h, where Figure 2 shows about 2. It
+  also gives about 80% colistin-alone target attainment for the OVERCOME regimen, where
+  the paper reports 0%, and no regrowth by 24 h, where Figure 3 shows regrowth to 7.3
+  log10 CFU/mL. With exp(0.33) all three agree. The maintainers read the printed 0.33
+  as the NONMEM log-scale estimate, the usual way a rate constant is estimated. The
+  authors have not confirmed this reading.
+* **EC50_INTER not reported.** Eq 11 needs the colistin/polymyxin B potency of the
+  interaction, EC50_INTER (a multiple of the polymyxin MIC). Table 1 gives no value,
+  and the "Supplementary text" with the final equations, cited in the Table 1
+  footnote, is not in the published supplement. The model fixes EC50_INTER to 1 x MIC.
+  Methods models each EC50 as a x MIC^b with a and b "estimated or fixed to 1", and
+  Table 1 likewise omits a value for EC50_MERO, which is fixed to the MIC. The
+  authors have not confirmed this value.
+* **Residual error.** Table 1 labels the residual error "proportional" with SD 1.21.
+  The dependent variable is log10 CFU/mL (Figs 2 and S3), so the model treats the
+  error as additive on the log10 scale, the usual meaning of "proportional" for
+  log-transformed data. A 121% proportional error on the log10 count would be
+  implausible.
+* **Interisolate variability on Bmax.** The paper uses exponential IIV, and Table 1
+  gives Bmax on the log10 scale (8.41), so the eta multiplies the log10 carrying
+  capacity: `log10bmax * exp(eta)`.
+* **Inoculum-8 indicator.** Eq 8 switches on at an inoculum of 8 log10 CFU/mL (the
+  intended inocula were 4, 5, 6, 7 and 8). The model codes it as
+  `INOC_LOG10CFU >= 7.5`.
+* **Colistin and polymyxin B.** The paper pools them (Table S2 found no potency
+  difference). The model sums the two concentration columns and takes the MIC of
+  whichever drug is present.
+* **Stand-in PK for Figure 3.** See the clinical section. The paper's colistin and
+  meropenem PK models are not in nlmixr2lib. The colistin maintenance dosing is
+  assumed to start 8 h after the loading dose, and all infusions to last 0.5 h.
+* **Inoculum in the paper's simulations.** The N(6, 0.25) inoculum draw is a
+  simulation choice, not part of the fitted model (no IIV on the inoculum was
+  retained, Table S2).
+* **Below-LOQ handling.** The fit used M3 censoring at each study's LOQ. The
+  packaged model returns the uncensored log10 count.

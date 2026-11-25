@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Qi 2026 nemonoxacin PK/PD indices ([doi:10.1128/aac.01368-25](https://doi.org/10.1128/aac.01368-25)) -- in vitro dynamic urinary tract infection model, *Escherichia coli* in broth and synthetic human urine (17 sigmoid Emax fits).
+- Add Soeorg 2026 meropenem + colistin/polymyxin B time-kill model ([doi:10.1128/aac.00274-26](https://doi.org/10.1128/aac.00274-26)) -- in vitro, *Acinetobacter baumannii* (60 isolates pooled from 21 published time-kill and hollow-fibre studies).
+
+- Rename the in-vitro concentration covariate columns `CONC_MEM_MGL`, `CONC_CST_MGL` and `CONC_PMB_MGL` to `CONC_MEROPENEM_MGL`, `CONC_COLISTIN_MGL` and `CONC_POLYMYXINB_MGL` (Aubry 2023, Aubry 2025, Lacroix 2025 and Lopez-Arguello 2023 models); the old names are kept as source aliases.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

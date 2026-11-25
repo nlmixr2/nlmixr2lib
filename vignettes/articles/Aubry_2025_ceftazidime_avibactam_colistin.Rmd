@@ -68,7 +68,7 @@ log10 CFU/mL. In the IE model the starting inoculum is the covariate
 parameter `log10inoc`.
 
 Drug concentrations are supplied as the covariates `CONC_CAZ_MGL` and
-`CONC_CST_MGL`. There is no PK and there are no dosing events: the solver
+`CONC_COLISTIN_MGL`. There is no PK and there are no dosing events: the solver
 integrates the bacterial and adaptation states from the inoculum. This is a
 pharmacodynamic model of an in vitro experiment, so PKNCA is not the right
 validation target; the checks below compare the models against the paper's own
@@ -187,7 +187,7 @@ fixed values are wrapped in `fixed()`.
 ```{r helpers}
 solve_ie <- function(inoc, caz, cst, times = seq(0, 30, by = 0.25)) {
   ev <- data.frame(id = 1, time = times,
-                   CONC_CAZ_MGL = caz, CONC_CST_MGL = cst,
+                   CONC_CAZ_MGL = caz, CONC_COLISTIN_MGL = cst,
                    INOC_LOG10CFU = inoc)
   rxode2::rxSolve(rxode2::zeroRe(mIE), ev, returnType = "data.frame")
 }
@@ -448,10 +448,10 @@ cst_pk <- c(0.008, 0.198, 0.464, 0.653, 0.774, 0.843, 0.918, 0.918, 0.918,
 
 sim_clin <- function(inoc) {
   ev_ie <- data.frame(id = 1, time = t_grid,
-                      CONC_CAZ_MGL = caz_pk, CONC_CST_MGL = cst_pk,
+                      CONC_CAZ_MGL = caz_pk, CONC_COLISTIN_MGL = cst_pk,
                       INOC_LOG10CFU = inoc)
   ev_no <- data.frame(id = 1, time = t_grid,
-                      CONC_CAZ_MGL = caz_pk, CONC_CST_MGL = cst_pk)
+                      CONC_CAZ_MGL = caz_pk, CONC_COLISTIN_MGL = cst_pk)
   rIE <- rxode2::rxSolve(rxode2::zeroRe(mIE), ev_ie, returnType = "data.frame")
   rNo <- rxode2::rxSolve(rxode2::zeroRe(rxode2::ini(mNo, log10inoc = inoc)),
                          ev_no, returnType = "data.frame")
