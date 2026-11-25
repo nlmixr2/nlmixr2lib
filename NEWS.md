@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dumas 2026 intravenous immune globulin 10% (BIVIGAM) ([doi:10.1002/psp4.70275](https://doi.org/10.1002/psp4.70275)) -- children (2-16 years) and adults with primary immunodeficiency.
+- Add Jakobsson 2026 velsecorat peak expiratory flow hidden Markov model ([doi:10.1002/psp4.70281](https://doi.org/10.1002/psp4.70281)) -- adults with asthma on low-dose inhaled corticosteroid; simulation-only.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

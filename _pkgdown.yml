@@ -9582,6 +9582,8 @@ navbar:
         href: articles/Niu_2017_veliparib.html
       - text: "Veliparib (Stodtmann 2021)"
         href: articles/Stodtmann_2021_veliparib.html
+      - text: "Velsecorat (Jakobsson 2026)"
+        href: articles/Jakobsson_2026_velsecorat.html
       - text: "Vemurafenib qsp (Wan 2025)"
         href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Venetoclax (Dave 2019)"
@@ -11211,6 +11213,7 @@ articles:
   - articles/Jager_2020_flucloxacillin
   - articles/Jain_2011_sorafenib
   - articles/Jaiswal_2025_dordaviprone
+  - articles/Jakobsson_2026_velsecorat
   - articles/James_2025_fepixnebart
   - articles/Jamois_2025_tocilizumab
   - articles/Jamsen_2011_dihydroartemisinin

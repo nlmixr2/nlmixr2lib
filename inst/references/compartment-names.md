@@ -2895,6 +2895,20 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Zhang_2025_dupilumab_fev1.R` (dual `Cc` + `FEV1` output; concentration-driven Emax; FEV1 in L), `Jin_2025_benralizumab_fev1.R` (single `FEV1` output; time-driven `Emax * t / (T50 + t)` because the FEV1 exposure-response relationship was flat over the studied dose range; FEV1 in mL), `Ambery_2015_batefenterol_fev1.R` (single `FEV1` output; a day-29 landmark Emax in TOTAL DAILY DOSE rather than in concentration or time, with the zero-dose intercept scaled by the patient's own baseline; FEV1 in L).
 - **Notes:** Registered with the uppercase paper spelling `FEV1`, which is how every source and both current models write it, so that a single-output FEV1 model is recognised as canonical without renaming the endpoint to `Cc`. Holds a **volume in whichever unit the source reports** -- mL in `Jin_2025_benralizumab_fev1`, L in `Zhang_2025_dupilumab_fev1` -- so the per-model `units` field, not this name, fixes the scale; never convert a source's FEV1 values to match a sibling model. Distinct from `fev1pp`, which is the same measurement expressed as a percentage of a reference-equation predicted value and is therefore dimensionless and not interconvertible without that reference equation. Residual error on this output uses the `<param>_FEV1` suffix form (`addSd_FEV1`, `propSd_FEV1`). A model that consumes the patient's own baseline FEV1 as an input column cannot name that column `FEV1` -- it would collide with this output state -- and must use the `FEV1_BL` covariate canonical instead (`inst/references/covariate-columns.md`); `Ambery_2015_batefenterol_fev1.R` is the founding case.
 
+### PEF (**canonical peak expiratory flow**)
+- **Type:** compartment
+- **Role:** Peak expiratory flow (L/min), typically home-measured once or twice daily with a peak-flow meter, as a lung-function PD output of asthma and COPD models. An algebraic output, not an ODE state.
+- **Source aliases:** `PEF`, `Y_i,t` (Jakobsson 2026 observation model).
+- **Example models:** `Jakobsson_2026_velsecorat.R` (two-state hidden Markov model; `PEF` is the mean of the current latent state and `PEF ~ add(sd_pef)` adds the subject-specific within-state SD).
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). Uppercase to match the sibling spirometric output `FEV1`. A flow rate, not a volume: not interconvertible with `FEV1`. A model that takes the patient's own baseline PEF as an input column must name it differently (e.g. `PEF_BL`) so it does not collide with this output.
+
+### state_low (**canonical latent low-state indicator of a two-state hidden Markov model**)
+- **Type:** compartment
+- **Role:** Simulated latent state of a two-state discrete-time hidden Markov chain, 1 when the subject is in the low (worsened) state at the record and 0 in the high state. Carried from record to record with `state_prev <- lag(state_low)` and switched with an `rxunif()` draw against the per-step transition probability. Not an ODE state and not observed; returned as an output column for inspecting simulated latent paths.
+- **Source aliases:** `Z_i,t` (Jakobsson 2026 Section 2.3; state 0 = high PEF, state 1 = low PEF).
+- **Example models:** `Jakobsson_2026_velsecorat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). A model carrying this state is simulation-only: the latent path is a random draw rather than being marginalised by the forward recursion, so an nlmixr2 fit of it would use the wrong likelihood. Distinct from the continuous-time `s_<state>` multistate namespace, whose states are probabilities solved as ODEs.
+
 ### fvcpp (**canonical FVC percent predicted**)
 - **Type:** compartment
 - **Role:** Forced vital capacity expressed as a percentage of a reference-equation predicted value -- the primary efficacy endpoint of the fibrosing interstitial-lung-disease trials (INPULSIS-1/2, SENSCIS, INBUILD, InPedILD) and the basis of nintedanib's approved labelling in adults and children.

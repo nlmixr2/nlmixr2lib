@@ -4066,13 +4066,53 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
 - **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_brain`); the spinal-cord counterpart of `lv_brain`. Wrap in `fixed()` when the source fixes it from anatomy.
 
-### ddi_ka, ddi_k12, ddi_k21, ddi_kel (**canonical linear drug-drug coupling slopes of one drug's rate constants on another drug's amount**)
+### lpef_high, pef_high (**canonical log-transformed high-state mean peak expiratory flow of a two-state hidden Markov model**)
 - **Type:** paper-named-param
-- **Role:** Signed slopes (1 / (amount * time)) that make a drug's micro rate constant a linear function of a co-administered drug's AMOUNT in the compartment the process leaves: `ka_X = ka + ddi_ka * depot_Y`, `k12_X = k12 + ddi_k12 * central_Y`, `k21_X = k21 + ddi_k21 * peripheral1_Y`, `kel_X = kel + ddi_kel * central_Y`. Negative values inhibit the process and positive values promote it; with either drug absent the slope multiplies zero and the single-drug model is recovered. The bare name modifies the unsuffixed drug's parameter; `ddi_<param>_<drug>` (e.g. `ddi_kel_captopril`) modifies the parameter of the drug carrying that registered suffix, driven by the unsuffixed drug's amount. Untransformed, because the sign carries the direction of the interaction.
+- **Role:** Mean PEF (L/min) of the high-PEF ("normal health") latent state of a two-state hidden Markov model of home-measured peak expiratory flow; `pef_high = exp(lpef_high + etalpef_high)` is the individual value used in `model()`.
 - **Source aliases:**
-  - `alpha00'`, `alpha12'`, `alpha21'`, `alpha10'` (effect of Y on X) and `beta00'`, `beta12'`, `beta21'`, `beta10'` (effect of X on Y) -- Huang 2026 equation 1, Table 8 and Supplementary S9 Table.
-- **Example models:** `Huang_2026_metoprolol_captopril.R`, `Huang_2026_imeglimin_metformin.R` (founding examples; slopes in 1/(g*h) applied to amounts in g).
-- **Notes:** Ratified by the maintainers 2026-11-20 (oasweep_PMC12890151). Distinct from `slope_drug` / `slope_placebo` (PD effect slopes on a concentration), `ka_slope` (time ramp of ka) and concentration-driven inhibition terms such as Hadigol 2026's `theta_slope`. A coupling on another drug's CONCENTRATION, or on a parameter outside the micro-rate set, should extend this family with the matching `<param>` token and state the driving quantity in its label.
+  - `m0`, `m_i,0`, `mu1` (transformed `log m0`) -- Jakobsson 2026 Section 2.3 and supplement Table S4.
+- **Example models:** `Jakobsson_2026_velsecorat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). The `_high` suffix names the latent state, so a future model with more states can add `pef_<state>`. Distinct from a PEF baseline of a continuous-time model, which is the value before treatment rather than the mean of one latent state.
+
+### logitd_low, d_low (**canonical logit-transformed low-to-high state ratio of a two-state hidden Markov model**)
+- **Type:** paper-named-param
+- **Role:** Ratio d in (0, 1) of the low-state mean to the high-state mean of a two-state hidden Markov model, `pef_low = d_low * pef_high`; `d_low = expit(logitd_low + ... + etalogitd_low)`. A larger value is a milder worsened state.
+- **Source aliases:**
+  - `d`, `d_i`, `mu2` (transformed `logit d`; "drop parameter") -- Jakobsson 2026 Section 2.3 and supplement Table S4.
+- **Example models:** `Jakobsson_2026_velsecorat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). Parameterising the low state as a fraction of the high state, rather than as a second free mean, keeps the states ordered.
+
+### lvar_pef, var_pef (**canonical log-transformed within-state PEF variance of a hidden Markov model**)
+- **Type:** paper-named-param
+- **Role:** Subject-specific within-state variance sigma^2 ((L/min)^2) of PEF measurements around the current latent state's mean; `sd_pef = sqrt(var_pef)` is passed to `PEF ~ add(sd_pef)`. It is a model parameter with IIV and a dose effect, which is why it is not encoded as the residual-error canonical `addSd`.
+- **Source aliases:**
+  - `sigma^2`, `sigma_i^2`, `mu3` (transformed `log sigma^2`; "inter-state variability" in Jakobsson 2026 Table 1 and Table S4).
+- **Example models:** `Jakobsson_2026_velsecorat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). Kept on the variance scale because the source estimates and reports the log variance.
+
+### logit2p_hl, logit2p_lh, p_hl, p_lh (**canonical half-capped transition probabilities of a two-state discrete-time hidden Markov model**)
+- **Type:** paper-named-param
+- **Role:** Per-step probabilities of leaving the high state for the low state (`p_hl`) and of leaving the low state for the high state (`p_lh`) in a two-state discrete-time hidden Markov chain. The `logit2p` transform is `logit(2 p)`, so `p = expit(logit2p + eta) / 2` is capped at 0.5.
+- **Source aliases:**
+  - `p0,1`, `p_i,0,1`, `mu4` (transformed `logit(2 p01)`) -> `logit2p_hl`; `p1,0`, `p_i,1,0`, `mu5` (transformed `logit(2 p10)`) -> `logit2p_lh` -- Jakobsson 2026 Section 2.3 and supplement Table S4.
+- **Example models:** `Jakobsson_2026_velsecorat.R` (one step = one twice-daily PEF measurement).
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). The probability is per record of the chain, not per unit time, so the step must be stated in the model's `description`. The `2` in the name records the 0.5 cap.
+
+### emax_lvar, led50_lvar, emax_logit2p_lh, led50_logit2p_lh (**canonical dose Emax and log ED50 acting on a transformed hidden-Markov parameter**)
+- **Type:** paper-named-param
+- **Role:** Additive dose Emax term on a transformed parameter, `phi = mu + emax_<param> * DOSE / (exp(led50_<param>) + DOSE) + eta`. `emax_<param>` is the maximal shift on the transformed scale (unitless, signed); `led50_<param>` is the log of the dose giving half of it (log of the dose units).
+- **Source aliases:**
+  - `Emax,3`, `log(ED50,3)` -> `emax_lvar`, `led50_lvar`; `Emax,5`, `log(ED50,5)` -> `emax_logit2p_lh`, `led50_logit2p_lh` -- Jakobsson 2026 supplement Table S4.
+- **Example models:** `Jakobsson_2026_velsecorat.R` (dose in ug).
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). The suffix names the transformed parameter the term is added to. `led50_<param>` reuses the dose-axis meaning of `led50`; `emax_<param>` is signed because the shift may lower the parameter (`emax_lvar` < 0 narrows the within-state spread).
+
+### e_active_logitd (**canonical constant shift on logit(d) for any active dose**)
+- **Type:** paper-named-param
+- **Role:** Additive shift on `logitd_low` applied when the subject receives any active dose (`DOSE > 0`), with no further dependence on dose level.
+- **Source aliases:**
+  - `beta2` (Jakobsson 2026 'Constant' dose-response, `beta(x) = beta 1(x > 0)`, supplement Table S4).
+- **Example models:** `Jakobsson_2026_velsecorat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). `active` is the indicator derived in `model()` from the dose covariate, not an input column.
 
 ## Nested (multi-level) random effects
 

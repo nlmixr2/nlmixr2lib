@@ -4703,6 +4703,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Lo_2021_revefenacin.R` (175 ug is absorbed 7% more than 88 ug, the paper's own Discussion figure).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings [[DOSE_EE_UG]], [[DOSE_AGT_UG]]). Distinct from [[CONMED_REVEFENACIN_DOSE]] in the COPD MBMA family, which is a per-arm total daily dose of revefenacin as one of 23 compared maintenance agents rather than the dose of a modelled PK input. In rxode2 5.1.8 place this column AFTER the event columns (`amt`, `evid`, `cmt`, `dur`) in the simulation data frame.
 
+### DOSE_VELSECORAT_UG (**canonical for the nominal once-daily inhaled velsecorat dose of the randomised arm in ug**)
+- **Description:** Nominal once-daily inhaled velsecorat (AZD7594) dry-powder dose of the subject's randomised arm, in ug; 0 for placebo. Constant within a subject.
+- **Units:** ug
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 (placebo) is the reference. Enters `Jakobsson_2026_velsecorat.R` as an indicator `DOSE_VELSECORAT_UG > 0` on logit(d) and as Emax terms `DOSE / (ED50 + DOSE)` on log(sigma^2) and logit(2 p10).
+- **Source aliases:**
+  - `x_i` -- Jakobsson 2026 Section 2.3 ("an active drug at some dose x_i"); trial arms 50, 90, 180, 360 and 720 ug (supplement Table S3).
+- **Example models:** `Jakobsson_2026_velsecorat.R`.
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings [[DOSE_REVEFENACIN_UG]], [[DOSE_EE_UG]]). The model consumes no dose events: the dose effect is applied from randomisation onward as a covariate.
+
 ### DOSE_CEFOTIAM_MG (**canonical for the administered cefotiam dose in milligrams**)
 - **Description:** Milligram dose of cefotiam administered in the current dosing interval, carried as a covariate so that a cumulative-urinary-recovery endpoint can be expressed as a PERCENT OF DOSE rather than as an amount. Time-varying across dosing intervals in a multiple-dose regimen; constant in the single-dose study that founds the name.
 - **Units:** mg
