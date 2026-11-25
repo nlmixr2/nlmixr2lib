@@ -1,0 +1,236 @@
+---
+title: "Danofloxacin against Mycoplasma gallisepticum in chickens (Zhang 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Danofloxacin against Mycoplasma gallisepticum in chickens (Zhang 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r load}
+stem <- "Zhang_2017_danofloxacin_chicken"
+mod <- readModelDb(stem)
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.3389/fmicb.2017.00926> (PMCID: PMC5447713, open access)
+
+```{r description, results = "asis"}
+cat(ui$description, "\n")
+```
+
+Zhang 2017 gave *Mycoplasma gallisepticum*-infected chickens oral danofloxacin
+once daily for three days, measured plasma and lung concentrations, and counted
+viable mycoplasmas in the air sacs and lungs 24 h after each dose. The
+pharmacokinetics were summarised by non-compartmental analysis only (Tables 4
+and 5); the one fitted model is the sigmoid Emax relationship between the
+lung-tissue AUC24/MIC index and the reduction in lung M. gallisepticum load
+(Table 6, Figure 5). That relationship is what this file packages. It has no
+ODE states: the observation `Cc` is the sigmoid itself, evaluated at the
+supplied lung AUC24 (`AUC_DANO`).
+
+# Population
+
+```{r population}
+str(ui$population)
+```
+
+The pharmacodynamic cohort was 210 chickens, infected intratracheally with
+0.2 mL of 10^9 CFU/mL M. gallisepticum S6 twice daily for 3 days, then dosed
+orally at 1, 2.5, 5, 7.5, 10, 15 or 20 mg/kg once daily for 3 days, with 10
+chickens sacrificed per group 24 h after each dose. A separate 840-chicken
+cohort supplied the non-compartmental PK at 1, 2.5, 5, 10 and 20 mg/kg
+(n = 8 per sampling time). Breed and age at infection are not reported.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Effect equation `E = Emax - (Emax - E0) * Ce^N / (EC50^N + Ce^N)` | -- | Materials and Methods, 'PK-PD Analysis' |
+| `e0` (paper's `Emax`, untreated-control reduction) | 0.72 log10 CFU/lung | Table 6 |
+| `emax` (paper's `E0`, maximal reduction) | 3.70 log10 CFU/lung | Table 6 |
+| `lec50` | log(115.02) h | Table 6 |
+| `lhill` | log(1.77) | Table 6 |
+| `mic` (fixed) | 0.15 mg/L | Table 2 (S6, danofloxacin); 'Dosage Calculation' |
+| `addSd` (fixed 0) | not reported | 'PK and PD Analysis' gives R^2 = 0.8901 only |
+| Index `Ce = AUC24 / MIC` | -- | 'PK-PD Analysis' |
+| Lung AUC24 by dose | 2.72 to 58.58 ug*h/g | Table 5 |
+| Index targets | 31.97 and 97.98 h | Results, 'PK and PD Analysis'; Abstract |
+| Dose equation and lung clearance | 0.373 kg/kg/h | Materials and Methods, 'Dosage Calculation' |
+| Recommended dose | 5.5 mg/kg once daily | Results, 'Dosage Calculation' |
+
+## The inverted Emax / E0 naming
+
+Zhang 2017 defines its `Emax` as the reduction for the untreated control and its
+`E0` as the maximum reduction, the reverse of the usual convention. The model
+maps the paper's `Emax = 0.72` to the canonical `e0` (effect at zero exposure)
+and the paper's `E0 = 3.70` to the canonical `emax`, and writes the
+algebraically identical `E = e0 - (e0 - emax) * Ce^N / (Ce^N + EC50^N)`. No
+value changes.
+
+```{r helper}
+# Evaluate the packaged model at a vector of lung AUC24 values.
+solve_auc <- function(auc) {
+  ev <- data.frame(id = seq_along(auc), time = 24, evid = 0, amt = NA_real_,
+                   AUC_DANO = auc)
+  # The model has no random effects by design; silence only rxode2's notice
+  # that a multi-row solve has no omega.
+  out <- withCallingHandlers(
+    rxode2::rxSolve(mod, ev, returnType = "data.frame"),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+    }
+  )
+  stopifnot(nrow(out) == length(auc), !anyNA(out$Cc))
+  out$Cc
+}
+mic <- 0.15
+ec50 <- 115.02
+
+# GATE 1: structure. At zero exposure the prediction is e0 = 0.72; at an index
+# equal to EC50 it is exactly halfway between e0 and emax; it rises
+# monotonically with exposure. Both sides use the same parameters, so the bound
+# is tight.
+chk <- solve_auc(c(0, ec50 * mic, ec50 * mic * 10))
+stopifnot(
+  abs(chk[1] - 0.72) < 1e-8,
+  abs(chk[2] - (0.72 + 3.70) / 2) < 1e-8,
+  chk[3] > chk[2], chk[2] > chk[1]
+)
+chk
+```
+
+# Replicating Figure 5
+
+```{r figure-5, fig.cap = "Replicates the fitted curve of Figure 5 of Zhang 2017: sigmoid Emax relationship between the lung AUC24/MIC index and the reduction in lung M. gallisepticum load. Points: the Table 5 lung AUC24 values for each PK dose, with the model prediction."}
+grid <- tibble(index = seq(0, 500, by = 2)) |>
+  mutate(E = solve_auc(index * mic))
+
+t5 <- tibble(
+  dose_mgkg = c(1, 2.5, 5, 10, 20),
+  auc24_lung = c(2.72, 4.56, 10.26, 21.99, 58.58)
+) |>
+  mutate(index = auc24_lung / mic, E = solve_auc(auc24_lung))
+
+ggplot(grid, aes(index, E)) +
+  geom_line(colour = "steelblue", linewidth = 0.8) +
+  geom_point(data = t5, colour = "firebrick", size = 2) +
+  geom_text(data = t5, aes(label = paste(dose_mgkg, "mg/kg")),
+            nudge_y = 0.18, size = 3) +
+  scale_y_continuous(limits = c(0, 4.5)) +
+  labs(x = "AUC24/MIC (h)", y = "E (log10 CFU/lung reduction vs control)",
+       title = "Figure 5 -- sigmoid Emax fit, lung") +
+  theme_minimal()
+```
+
+```{r table-5}
+t5 |>
+  mutate(index = round(index, 1), E = round(E, 2)) |>
+  dplyr::rename(
+    "Dose (mg/kg)" = dose_mgkg,
+    "Lung AUC24 (ug*h/g, Table 5)" = auc24_lung,
+    "AUC24/MIC (h)" = index,
+    "Predicted reduction (log10 CFU/lung)" = E
+  ) |>
+  knitr::kable()
+```
+
+# Validation gate: the published target indices
+
+The paper prints two AUC24/MIC targets, 31.97 and 97.98 h, in the Results and
+Abstract, a different place from the Table 6 parameters. Inverting the packaged
+model locates them on the fitted curve.
+
+```{r target-gate}
+invert <- function(target) {
+  f <- function(idx) solve_auc(idx * mic) - target
+  uniroot(f, c(1e-6, 1e5), tol = 1e-10)$root
+}
+targets <- tibble(E = c(1, 2, 3)) |>
+  mutate(index = vapply(E, invert, numeric(1)))
+targets |>
+  dplyr::rename("Reduction (log10 CFU/lung)" = E, "AUC24/MIC (h)" = index) |>
+  knitr::kable(digits = 2)
+```
+
+```{r target-assert}
+# GATE 2: the two printed targets are exactly the indices at which the fitted
+# curve reaches a reduction of 1 and 2 log10 CFU/lung. Both sides are
+# transcribed four-significant-figure numbers, so a mistyped digit in e0, emax,
+# EC50 or N moves these well outside the bound.
+stopifnot(
+  abs(targets$index[targets$E == 1] - 31.97) < 0.02,
+  abs(targets$index[targets$E == 2] - 97.98) < 0.02
+)
+```
+
+Zhang 2017 labels these the targets for a **2** and a **3** log10 CFU/lung
+reduction. On its own fitted curve they correspond to reductions of 1 and 2
+log10 CFU/lung; the index for a 3 log10 reduction on that curve is
+`r round(targets$index[targets$E == 3], 1)` h. See Errata.
+
+## Validation gate: the recommended dose
+
+The paper's dose equation is
+`Dose = (AUC/MIC) * MIC90 * CL / (fu * F)`, with MIC90 replaced by the S6 MIC
+(0.15 mg/L), lung clearance 0.373 kg/kg/h, and `fu` and `F` both set aside
+('Dosage Calculation': the free fraction is not needed for in vivo PD data, and
+bioavailability is already contained in the oral-dose AUC).
+
+```{r dose-gate}
+cl_lung <- 0.373
+dose_target <- targets$index[targets$E == 2] * mic * cl_lung
+dose_target
+# GATE 3: the 97.98 h target, recovered from the packaged model, gives the
+# paper's printed 5.5 mg/kg once-daily dose.
+stopifnot(abs(dose_target - 5.5) < 0.05)
+```
+
+# Assumptions and deviations
+
+* **No PK model.** Zhang 2017 reports only non-compartmental plasma and lung
+  PK (Tables 4 and 5), so the lung AUC24 is a user-supplied covariate
+  (`AUC_DANO`). Values for the five PK doses are in Table 5; Zhang 2017 also
+  fitted effects at 7.5 and 15 mg/kg and at each of the three dosing days
+  (Figure 5 shows 21 points), but does not print the AUC24 used for those.
+* **Absolute AUC plus `mic`, not a ratio covariate.** The S6 MIC of 0.15 mg/L
+  splits the paper's index, as GATE 3 shows, so the model carries the absolute
+  lung AUC24 and a fixed `mic`. Change `mic` to apply the curve to another
+  isolate.
+* **Residual error.** Table 6 gives each estimate as mean +/- SD and the
+  Results give R^2 = 0.8901; no residual SD is reported, so `addSd` is fixed
+  to 0 and the model is deterministic.
+* **Sign convention.** `Cc` is a positive reduction relative to the untreated
+  control, as Zhang 2017 defines E. Other library PK/PD-index models (for
+  example `Wei_2026_cefquinome_enrofloxacin_lung_aucmic`) use a signed change
+  where negative means kill.
+* **Air sac.** Viable counts in the air sac (Figure 3) were not modelled by the
+  paper and are not packaged.
+
+## Errata in the source
+
+* **Target labels.** The Abstract, Results and Conclusion give 31.97 and 97.98
+  as the AUC24/MIC for 2 and 3 log10 CFU reductions. With the Table 6
+  parameters they are the indices for 1 and 2 log10 CFU/lung reductions
+  (GATE 2); the 3 log10 index on the fitted curve is about 224 h. The printed
+  5.5 mg/kg dose follows from 97.98 h (GATE 3), so it achieves a 2 log10
+  CFU/lung reduction on the fitted curve; a 3 log10 reduction would need
+  about 224 * 0.15 * 0.373 = 12.5 mg/kg.
+* **Dose labels.** Tables 4 and 5 list a 2 mg/kg row where Methods and the
+  figures give 2.5 mg/kg; 2.5 mg/kg is used here.
+* **Units.** Table 5 prints lung AUC24 in ug*h/ml and Cmax in ug/ml although
+  the matrix is tissue (ug/g). Table 6 gives `Emax` and `E0` in log10 CFU/ml,
+  but the Methods define E in log10 CFU/lung and Figure 5 is plotted in
+  log10 CFU/lung. EC50 is in h in Table 6 and Figure 5 and in L*h/kg in the
+  Results text; these are the same index.
