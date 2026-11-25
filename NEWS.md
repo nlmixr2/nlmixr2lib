@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2026 sunitinib and SU12662 PK and multistate response/progression/survival model ([doi:10.1002/cpt.70447](https://doi.org/10.1002/cpt.70447)) -- adults with metastatic renal cell carcinoma.
+- Add Biesdorf 2026 cofetuzumab pelidotin conjugate, Aur0101 payload and exposure-response models ([doi:10.1002/cpt.70432](https://doi.org/10.1002/cpt.70432)) -- adults with advanced solid tumours, exposure-efficacy in PTK7-expressing NSCLC; ratifies the new `PTK7_HIGH_NONSQUAMOUS_EGFR_WT` covariate canonical.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

@@ -2016,6 +2016,20 @@ navbar:
         href: articles/Duong_2026_cobimetinib.html
       - text: "Codeine (Ashraf 2024)"
         href: articles/Ashraf_2024_codeine.html
+      - text: "CofetuzumabPelidotin (Biesdorf 2026)"
+        href: articles/Biesdorf_2026_cofetuzumabPelidotin.html
+      - text: "CofetuzumabPelidotin aur0101 (Biesdorf 2026)"
+        href: articles/Biesdorf_2026_cofetuzumabPelidotin.html
+      - text: "CofetuzumabPelidotin clinical benefit 6mo (Biesdorf 2026)"
+        href: articles/Biesdorf_2026_cofetuzumabPelidotin.html
+      - text: "CofetuzumabPelidotin neuropathy grade2 (Biesdorf 2026)"
+        href: articles/Biesdorf_2026_cofetuzumabPelidotin.html
+      - text: "CofetuzumabPelidotin neutropenia grade3 (Biesdorf 2026)"
+        href: articles/Biesdorf_2026_cofetuzumabPelidotin.html
+      - text: "CofetuzumabPelidotin orr (Biesdorf 2026)"
+        href: articles/Biesdorf_2026_cofetuzumabPelidotin.html
+      - text: "CofetuzumabPelidotin rash grade2 (Biesdorf 2026)"
+        href: articles/Biesdorf_2026_cofetuzumabPelidotin.html
       - text: "Colchicine (Wright 2025)"
         href: articles/Wright_2025_colchicine.html
       - text: "Colchicine mouse pbpk (Saleh 2023)"
@@ -10300,6 +10314,7 @@ articles:
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
   - articles/Bienert_2025_sufentanil
+  - articles/Biesdorf_2026_cofetuzumabPelidotin
   - articles/Bihorel_2017_LY2510924
   - articles/Bihorel_2021_BMS986166
   - articles/Bihorel_2023_molnupiravir
