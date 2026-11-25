@@ -2990,6 +2990,8 @@ navbar:
         href: articles/TerHeine_2018_everolimus.html
       - text: "Everolimus (deWit 2016)"
         href: articles/deWit_2016_everolimus.html
+      - text: "Everolimus (vanErp 2016)"
+        href: articles/vanErp_2016_everolimus.html
       - text: "Everolimus prior tacrolimus (Itohara 2022)"
         href: articles/Itohara_2022_everolimus.html
       - text: "Everolimus sheep (Leber 2023)"
@@ -12535,6 +12537,7 @@ articles:
   - articles/leNoble_2024_lormetazepam
   - articles/vanEijk_2022_paclitaxel
   - articles/vanErp_2010_sunitinib
+  - articles/vanErp_2016_everolimus
   - articles/vanEsdonk_2018_pregabalin_pain_models
   - articles/vanHasselt_2013_eribulin
   - articles/vanHasselt_2014_cefazolin
