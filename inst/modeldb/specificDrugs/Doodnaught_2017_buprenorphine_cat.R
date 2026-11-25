@@ -17,6 +17,7 @@ Doodnaught_2017_buprenorphine_cat <- function() {
   # assay') and of the EC50.
   units <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
 
+  dosing <- c("central", "depot_buccal", "depot_norbup", "depot_sc")
   compartmentData <- list(
     depot_buccal = list(analyte = "buprenorphine", units = "mg/kg", specimen = "administration site", verified = TRUE),
     depot_sc = list(analyte = "buprenorphine", units = "mg/kg", specimen = "administration site", verified = TRUE),

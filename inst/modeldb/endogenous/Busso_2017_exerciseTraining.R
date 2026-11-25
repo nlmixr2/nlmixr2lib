@@ -16,6 +16,7 @@ Busso_2017_exerciseTraining <- function() {
     concentration = "W (performance, mean power of a 5-min maximal cycle-ergometer test)"
   )
 
+  dosing <- "signal"
   covariateData <- list()
 
   # `signal` is the latent secondary signal of the training stimulus, not a

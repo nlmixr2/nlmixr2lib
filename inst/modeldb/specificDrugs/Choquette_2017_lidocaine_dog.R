@@ -4,6 +4,7 @@ Choquette_2017_lidocaine_dog <- function() {
   vignette <- "Choquette_2017_lidocaine_dog"
   units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
+  dosing <- c("depot", "depot2")
   covariateData <- list(
     WT = list(
       description = "Body weight",
