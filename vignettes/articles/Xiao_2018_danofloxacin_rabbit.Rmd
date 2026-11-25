@@ -1,0 +1,369 @@
+---
+title: "Danofloxacin against Salmonella Typhimurium in rabbits (Xiao 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Danofloxacin against Salmonella Typhimurium in rabbits (Xiao 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Models and source
+
+Xiao 2018 fitted the same inhibitory sigmoid Emax relationship between the
+danofloxacin AUC24h/MIC index and the change in *Salmonella* Typhimurium load
+separately in four matrices, and reports the four parameter sets side by side
+in Table 2. They are packaged as four model files that share this vignette:
+
+| Model file | Matrix | Source |
+|---|---|---|
+| `Xiao_2018_danofloxacin_rabbit_blood`  | Blood (log10 CFU/mL)  | Table 2, Blood column |
+| `Xiao_2018_danofloxacin_rabbit_liver`  | Liver (log10 CFU/g)   | Table 2, Liver column |
+| `Xiao_2018_danofloxacin_rabbit_spleen` | Spleen (log10 CFU/g)  | Table 2, Spleen column |
+| `Xiao_2018_danofloxacin_rabbit_lung`   | Lung (log10 CFU/g)    | Table 2, Lung column |
+
+* Citation: `r rxode2::rxode(readModelDb("Xiao_2018_danofloxacin_rabbit_blood"))$reference`
+* Article: <https://doi.org/10.3389/fphar.2018.00391> (PMCID: PMC5913287, open access)
+
+None of the four models has a PK component. Xiao 2018 analysed serum
+danofloxacin non-compartmentally (Table 1) and published no structural PK
+model, so exposure enters through the covariate `AUC_DANO` (serum AUC0-24h
+after one oral dose), which each model divides by its `mic` parameter to form
+the AUC24h/MIC index.
+
+```{r descriptions, results = "asis"}
+organs <- c("blood", "liver", "spleen", "lung")
+model_names <- paste0("Xiao_2018_danofloxacin_rabbit_", organs)
+cat("**`", model_names[1], "`** -- ",
+    rxode2::rxode(readModelDb(model_names[1]))$description, "\n\n", sep = "")
+```
+
+# Population
+
+115 *S.* Typhimurium-free New Zealand rabbits aged 5-6 weeks and weighing
+0.8-1.2 kg (sex not reported) were used at Yangzhou University, China. Systemic
+infection was induced by two injections, 12 h apart, of 0.5 mL of a 10^8 CFU/mL
+suspension of the virulent field strain HJ0310J into the ear marginal vein.
+Twelve hours after the last inoculation the loads were 6.51 +/- 0.32 (blood),
+6.56 +/- 0.26 (liver), 7.73 +/- 0.18 (spleen) and 7.32 +/- 0.32 (lung) log10
+CFU/mL or CFU/g; the limit of detection was 2 x 10^3 CFU/mL or CFU/g.
+
+* **Pharmacokinetics:** 30 infected rabbits, a single gavage dose of 1, 10 or
+  30 mg/kg (n = 10 per dose), serum sampled at 0.25-24 h and analysed by
+  HPLC-fluorescence (LOQ 0.02 ug/mL), non-compartmental analysis in WinNonlin
+  6.1 (Table 1, Figure 3).
+* **Efficacy:** 45 infected rabbits, 0.85% NaCl (control) or 1, 2.5, 5, 7.5,
+  10, 15, 20 and 30 mg/kg by gavage once daily for 3 days from 12 h after
+  infection (n = 5 per group); blood, liver, spleen and lung cultured 24 h
+  after the last dose. These are the animals the four models were fitted to.
+* **Susceptibility:** MIC 0.03 ug/mL and MBC 0.06 ug/mL in Mueller-Hinton
+  broth, 0.06 and 0.12 ug/mL in rabbit serum; MPC 0.25 ug/mL. The broth MIC is
+  the index denominator.
+
+The same information is available programmatically:
+
+```{r population}
+p <- readModelDb("Xiao_2018_danofloxacin_rabbit_blood")()$population
+str(p[c("species", "n_subjects", "age_range", "weight_range", "dose_range")],
+    max.level = 1, width = 78)
+```
+
+# Source trace
+
+Every `ini()` entry carries an in-file comment naming its source location. The
+table collects them, plus the model equations, in one place.
+
+| Equation / parameter | Value (blood / liver / spleen / lung) | Source location |
+|---|---|---|
+| `Cc = e0 - imax * aucmic^hill / (ec50^hill + aucmic^hill)` | n/a | Materials and Methods, 'Pharmacokinetics and Pharmacodynamics Analysis' (printed with `+ Emax`); inhibitory sign settled by Figure 4 and the Table 2 '3 Log10 cfu/mL reduction' targets, see below |
+| `aucmic = AUC_DANO / mic` | n/a | Materials and Methods, 'Pharmacokinetics and Pharmacodynamics Analysis' (AUC24h/MIC from the in vitro MIC and the PK) |
+| `e0` (E0) | 0.00 / 0.00 / 0.00 / 0.01 log10 | Table 2, row E0 |
+| `limax` (Emax) | 3.98 / 3.1 / 4.41 / 4.74 log10 | Table 2, row Emax |
+| `lec50` (EC50) | 66.54 / 89.84 / 145.66 / 148.18 h | Table 2, row EC50 |
+| `lhill` (N) | 1.86 / 2.47 / 1.90 / 1.26 | Table 2, row Slope (N) |
+| `mic` | 0.03125 ug/mL (FIXED) | Results, 'In Vitro Pharmacodynamics': printed 0.03 ug/mL; the dilution step 0.03125 is the value the Results AUC24h/MIC column was divided by (Gate 2) |
+| `addSd` | 0 (FIXED) | Not reported; the Results give only r^2 (0.8971 / 0.9186 / 0.9581 / 0.8708) |
+| `AUC_DANO` | covariate | Table 1, row AUC24 h (1.55 / 11.70 / 28.10 ug*h/mL at 1 / 10 / 30 mg/kg); other doses by the linear regression stated in the Results |
+
+# Gate 1 -- the inhibitory reading reproduces Table 2
+
+The printed equation is `E = E0 + Emax * Ce^N / (EC50^N + Ce^N)` and Table 2
+reports Emax as a positive number. Read literally, that makes E *increase* with
+exposure. Figure 4, however, plots E falling from 0 towards -3 to -4 in every
+organ, and Table 2 labels its last row the AUC24h/MIC 'for a 3 Log10 cfu/mL
+reduction'. The fit is WinNonlin's inhibitory form, `E = E0 - Emax * ...`. The
+Table 2 targets settle it: at each published target the inhibitory term must
+equal 3.
+
+```{r gate1}
+tab2 <- tibble::tribble(
+  ~organ,   ~e0,  ~imax, ~ec50,  ~hill, ~target, ~r2,
+  "blood",  0.00, 3.98,  66.54,  1.86,  121.30,  0.8971,
+  "liver",  0.00, 3.1,   89.84,  2.47,  354.28,  0.9186,
+  "spleen", 0.00, 4.41,  145.66, 1.90,  216.64,  0.9581,
+  "lung",   0.01, 4.74,  148.18, 1.26,  228.66,  0.8708
+)
+
+# The transcription above must equal what the packaged models carry.
+packaged <- bind_rows(lapply(organs, function(o) {
+  ini <- rxode2::rxode(readModelDb(paste0("Xiao_2018_danofloxacin_rabbit_", o)))$iniDf
+  v <- setNames(ini$est, ini$name)
+  tibble(organ = o, e0 = v[["e0"]], imax = exp(v[["limax"]]),
+         ec50 = exp(v[["lec50"]]), hill = exp(v[["lhill"]]), mic = v[["mic"]])
+}))
+stopifnot(
+  isTRUE(all.equal(packaged$e0, tab2$e0)),
+  isTRUE(all.equal(packaged$imax, tab2$imax)),
+  isTRUE(all.equal(packaged$ec50, tab2$ec50)),
+  isTRUE(all.equal(packaged$hill, tab2$hill)),
+  all(packaged$mic == 0.03125)
+)
+
+gate1 <- tab2 |>
+  mutate(term = imax * target^hill / (ec50^hill + target^hill),
+         E_inhibitory = e0 - term,
+         E_literal_plus = e0 + term)
+gate1 |>
+  select(organ, target, term, E_inhibitory, E_literal_plus) |>
+  dplyr::rename("Organ" = organ, "Table 2 target AUC24h/MIC" = target,
+                "Inhibitory term" = term, "E, inhibitory form" = E_inhibitory,
+                "E, literal '+' form" = E_literal_plus) |>
+  knitr::kable(digits = 3)
+
+# GATE 1: the inhibitory term equals 3 at all four published targets. The
+# parameters are printed to 3-4 significant figures, so the tolerance is 0.01.
+stopifnot(all(abs(gate1$term - 3) < 0.01))
+```
+
+All four targets are reproduced to within 0.003 log10. For the lung, where
+E0 = 0.01, the 3-log target is a 3.00 log10 reduction *from E0* (E = -2.99).
+
+# Gate 2 -- the exposure regression and the MIC
+
+The Results state that Cmax and AUC24h were linearly related to dose
+(r^2 = 0.9592 and 0.9935) and that the AUC24h of the unsampled doses "could be
+deduced according to a linear relationship". The regression coefficients are
+not printed; refitting Table 1 recovers both r^2 exactly.
+
+```{r gate2}
+tab1 <- tibble::tribble(
+  ~dose, ~cmax, ~tmax, ~thalf, ~auc24, ~clf, ~vzf,
+  1,     0.18,  1.60,  15.30,  1.55,   0.45, 9.36,
+  10,    1.80,  1.80,  14.01,  11.70,  0.76, 14.67,
+  30,    3.49,  1.40,  11.38,  28.10,  0.84, 13.65
+)
+fit_auc  <- lm(auc24 ~ dose, data = tab1)
+fit_cmax <- lm(cmax ~ dose, data = tab1)
+coef(fit_auc)
+c(r2_auc = summary(fit_auc)$r.squared, r2_cmax = summary(fit_cmax)$r.squared)
+
+# GATE 2a: both r^2 match the paper at its printed four-decimal precision.
+stopifnot(
+  abs(summary(fit_auc)$r.squared - 0.9935) < 1e-4,
+  abs(summary(fit_cmax)$r.squared - 0.9592) < 1e-4
+)
+
+results_index <- tibble::tribble(
+  ~dose, ~aucmic_published,
+  1,     76.42,
+  2.5,   119.60,
+  5,     191.56,
+  7.5,   263.54,
+  10,    335.50,
+  15,    479.44,
+  20,    623.38,
+  30,    911.24
+) |>
+  mutate(auc_regression = predict(fit_auc, data.frame(dose = dose)),
+         index_mic_003125 = auc_regression / 0.03125,
+         index_mic_003 = auc_regression / 0.03)
+results_index |>
+  dplyr::rename("Dose (mg/kg)" = dose, "Published AUC24h/MIC" = aucmic_published,
+                "Regression AUC24h (ug*h/mL)" = auc_regression,
+                "Index, MIC 0.03125" = index_mic_003125,
+                "Index, MIC 0.03" = index_mic_003) |>
+  knitr::kable(digits = 2)
+
+# GATE 2b: the published AUC24h/MIC column is the regression divided by
+# 0.03125 ug/mL at every dose (rounding of the printed index, 0.05) ...
+stopifnot(all(abs(results_index$index_mic_003125 - results_index$aucmic_published) < 0.05))
+# ... and NOT the regression divided by the printed 0.03 ug/mL.
+stopifnot(all(results_index$index_mic_003 - results_index$aucmic_published > 3))
+```
+
+The paper's index column is the regression divided by 0.03125 ug/mL, the
+two-fold dilution step that the Results print rounded as 0.03. The packaged
+`mic` is therefore 0.03125. Note that the published values at 1, 10 and 30
+mg/kg are the *regression* values, not the measured AUC24h of Table 1 divided
+by the MIC (49.6, 374.4 and 899.2); see the Errata for how Figure 4 plots them.
+
+# Replicating Figure 4 -- the fitted sigmoids
+
+```{r solve-helper}
+# Solve one static exposure per row and key the result by an explicit index
+# column, so comparisons join by value rather than trusting row order.
+solve_static <- function(organ, auc) {
+  mod <- readModelDb(paste0("Xiao_2018_danofloxacin_rabbit_", organ))
+  ev <- data.frame(id = seq_along(auc), time = 72, evid = 0, amt = NA_real_,
+                   AUC_DANO = auc, key = seq_along(auc))
+  out <- rxode2::rxSolve(mod, ev, keep = "key", returnType = "data.frame")
+  stopifnot(nrow(out) == length(auc), !anyNA(out$Cc))
+  out$Cc[order(out$key)]
+}
+
+sweep <- bind_rows(lapply(organs, function(o) {
+  aucmic <- seq(0, if (o == "lung") 700 else 1000, by = 5)
+  tibble(organ = o, aucmic = aucmic, E = solve_static(o, aucmic * 0.03125))
+}))
+```
+
+```{r figure-4, fig.height = 6, fig.cap = "Replicates the fitted curves of Figure 4 of Xiao 2018. Dashed lines mark the 3 log10 reduction and the Table 2 targets; x-axis ranges follow the published panels."}
+sweep$organ <- factor(sweep$organ, levels = organs)
+targets <- tab2 |> mutate(organ = factor(organ, levels = organs))
+ggplot(sweep, aes(aucmic, E)) +
+  geom_line() +
+  geom_hline(yintercept = -3, linetype = "dashed", colour = "grey50") +
+  geom_vline(data = targets, aes(xintercept = target), linetype = "dashed",
+             colour = "grey50") +
+  facet_wrap(~organ, scales = "free_x") +
+  labs(x = "AUC24h/MIC (h)", y = "E (change in log10 CFU/mL or CFU/g)") +
+  theme_bw()
+```
+
+```{r gate3}
+# GATE 3: the right-hand ends of the fitted curves, digitised by the
+# maintainers from the published Figure 4 raster by locating the curve's pixel
+# row against the axis ticks: -3.96 (blood), -3.08 (liver) and -4.30 (spleen)
+# at AUC24h/MIC of about 1000, and -4.14 (lung) at about 690. One pixel row is
+# 0.02-0.04 log10 and the drawn line is 1-2 pixels thick, so the tolerance is
+# 0.1 log10.
+ends <- sweep |> group_by(organ) |> filter(aucmic == max(aucmic)) |> ungroup()
+ends$digitised <- c(blood = -3.96, liver = -3.08, spleen = -4.30, lung = -4.14)[as.character(ends$organ)]
+ends
+stopifnot(all(abs(ends$E - ends$digitised) < 0.1))
+# The control (index 0) returns E0 exactly.
+stopifnot(all(abs(sweep$E[sweep$aucmic == 0] - tab2$e0) < 1e-12))
+```
+
+# Dose-response in each organ
+
+The predicted change in load at each efficacy-study dose, with exposure from
+the Results AUC24h/MIC column (control = 0).
+
+```{r dose-response}
+grid <- expand.grid(organ = organs, dose = c(0, results_index$dose),
+                    stringsAsFactors = FALSE) |>
+  left_join(results_index |> select(dose, aucmic_published), by = "dose") |>
+  mutate(aucmic_published = ifelse(dose == 0, 0, aucmic_published))
+stopifnot(!anyNA(grid$aucmic_published))
+grid$E <- NA_real_
+for (o in organs) {
+  i <- grid$organ == o
+  grid$E[i] <- solve_static(o, grid$aucmic_published[i] * 0.03125)
+}
+grid |>
+  select(organ, dose, E) |>
+  tidyr::pivot_wider(names_from = organ, values_from = E) |>
+  dplyr::rename("Dose (mg/kg/day)" = dose) |>
+  knitr::kable(digits = 2)
+```
+
+```{r dose-gate}
+# The predicted 3-log dose per organ from the inverted regression, for
+# orientation (the paper does not compute doses: 'because of a lack of MIC
+# data, we could not recommend the rational dose').
+dose_for_target <- (tab2$target * 0.03125 - coef(fit_auc)[[1]]) / coef(fit_auc)[[2]]
+setNames(round(dose_for_target, 2), tab2$organ)
+# The liver needs the highest exposure, the blood the lowest, as the paper
+# concludes from Table 2.
+stopifnot(which.max(dose_for_target) == 2, which.min(dose_for_target) == 1)
+```
+
+# Why there is no PKNCA section
+
+PKNCA validation does not apply. The four models are pharmacodynamic only: Xiao
+2018 published non-compartmental PK (Table 1) and no structural PK model, so
+there is no simulated concentration-time profile to integrate. The Table 1
+exposures are used instead as *inputs*, and Gate 2 checks them: the
+dose-exposure regression refitted from Table 1 reproduces both published r^2
+values and all eight published AUC24h/MIC values.
+
+A one-compartment model cannot be rebuilt from Table 1 either. With
+first-order absorption the peak concentration can never exceed
+`F * Dose / V`, yet the reported Cmax exceeds `Dose / (Vz/F)` at every dose:
+
+```{r cmax-feasibility}
+tab1 |>
+  mutate(ceiling = dose / vzf, ratio = cmax / ceiling) |>
+  select(dose, cmax, ceiling, ratio) |>
+  dplyr::rename("Dose (mg/kg)" = dose, "Cmax (ug/mL)" = cmax,
+                "Dose / (Vz/F) (ug/mL)" = ceiling, "Cmax / ceiling" = ratio) |>
+  knitr::kable(digits = 2)
+stopifnot(all(tab1$cmax > tab1$dose / tab1$vzf))
+```
+
+The profile is therefore at least biexponential, and no central volume,
+absorption rate or intercompartmental clearance is reported.
+
+# Assumptions, deviations and errata
+
+**Adjudicated readings**
+
+- **Sign of the effect.** The printed equation has `+ Emax` and Table 2 gives
+  Emax as a positive number, which would make E rise with exposure. Figure 4
+  and the '3 Log10 cfu/mL reduction' targets show a decline, and Gate 1
+  reproduces all four targets with the inhibitory form `e0 - imax * ...`. The
+  packaged models use that form, with `imax` = the Table 2 Emax. No value was
+  changed.
+- **The MIC is 0.03125 ug/mL, printed as 0.03.** Gate 2 shows the Results
+  AUC24h/MIC column is the AUC regression divided by 0.03125 (within 0.03 at
+  every dose), while dividing by 0.03 overshoots by 3.2-38. The broth MIC, not
+  the twofold-higher serum MIC (0.06 ug/mL), is the denominator.
+
+**Source inconsistencies (not resolved, no value adjusted)**
+
+- **Figure 4 places three dose groups at measured, not regression, exposures.**
+  Digitising the data columns of Figure 4 gives x-positions of about 50, 118,
+  191, 264, 374, 479, 624 and 899 for the eight dose groups. Five match the
+  Results column (119.60, 191.56, 263.54, 479.44, 623.38), but the 1, 10 and
+  30 mg/kg groups sit at the *measured* Table 1 AUC24h divided by the MIC
+  (49.6, 374.4, 899.2) rather than the listed 76.42, 335.50 and 911.24. Which x
+  values the WinNonlin fit used cannot be decided from the paper; the
+  packaged parameters are Table 2 verbatim either way, and a user can supply
+  either exposure through `AUC_DANO`.
+- **The lung fit has no 30 mg/kg group.** The published lung panel stops at
+  AUC24h/MIC = 700 and its highest data column is at about 624 (20 mg/kg).
+  The lung parameters should not be trusted beyond that exposure.
+- **Blood reductions exceed the detection floor implied by the baseline.** The
+  pre-treatment blood load reported for the infection model is 6.51 log10
+  CFU/mL and the detection limit is 3.30 log10 CFU/mL (2 x 10^3), which caps a
+  measurable reduction at about 3.2 log10. Figure 4 shows blood reductions
+  down to about 4.3 log10 and a fitted Emax of 3.98. The efficacy-study
+  baseline is not reported separately and the handling of counts below the
+  detection limit is not described, so this cannot be reconciled from the
+  paper.
+- **Single-dose exposure, three-dose treatment.** The index uses the AUC24h
+  after one dose, while the animals were dosed once daily for three days.
+  With an 11-15 h terminal half-life the daily exposure rises over the course;
+  the models carry the paper's single-dose definition.
+
+**Not reported by the paper**
+
+- **No residual error and no variability.** Only r^2 is given for each fit, so
+  `addSd` is FIXED at 0 and no eta parameters are present. The models are for
+  deterministic typical-value simulation and cannot produce a VPC.
+- **No structural PK model and no time course of bacterial load.** The
+  readout is a cross-sectional count per dose group 24 h after the last dose,
+  so the models predict the change directly rather than integrating a
+  bacterial density.
+- **The in vitro time-kill curves (Figure 1) were fitted in GraphPad Prism,
+  but no model form or parameters are reported,** so there is no time-kill
+  model to package.
+- No erratum or correction was found on Europe PMC (checked 2026-11-25).

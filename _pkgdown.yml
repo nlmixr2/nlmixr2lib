@@ -2074,6 +2074,14 @@ navbar:
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
       - text: "Danofloxacin carp (Song 2022)"
         href: articles/Song_2022_danofloxacin_carp.html
+      - text: "Danofloxacin rabbit blood (Xiao 2018)"
+        href: articles/Xiao_2018_danofloxacin_rabbit.html
+      - text: "Danofloxacin rabbit liver (Xiao 2018)"
+        href: articles/Xiao_2018_danofloxacin_rabbit.html
+      - text: "Danofloxacin rabbit lung (Xiao 2018)"
+        href: articles/Xiao_2018_danofloxacin_rabbit.html
+      - text: "Danofloxacin rabbit spleen (Xiao 2018)"
+        href: articles/Xiao_2018_danofloxacin_rabbit.html
       - text: "Danoprevir (Canini 2015)"
         href: articles/Canini_2015_danoprevir.html
       - text: "Dapagliflozin (Kobuchi 2025)"
@@ -12235,6 +12243,7 @@ articles:
   - articles/Xiang_2020_bemarituzumab
   - articles/Xiang_2021_bemarituzumab
   - articles/Xiang_2025_tacrolimus
+  - articles/Xiao_2018_danofloxacin_rabbit
   - articles/Xie_2000_m3g_rat
   - articles/Xie_2019_agomelatine
   - articles/Xie_2019_tofacitinib
