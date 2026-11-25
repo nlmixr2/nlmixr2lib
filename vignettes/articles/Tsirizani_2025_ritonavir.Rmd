@@ -378,12 +378,13 @@ obs <-
   dplyr::select(-pm_mg)
 
 # Records every 0.25 h through the run-in, dropped from the output after
-# solving. rxode2 builds since its PR 1637 lose the end of a lagged
-# zero-order dose that is still being delivered when the next dose record
-# arrives, unless another record falls inside the delivery; in the
-# twice-daily arm an evening dose's lag plus duration can pass 12 h. Each
-# record takes the occasion of the dose that opened its interval, as the
-# samples do, so the covariates every dose reads are unchanged.
+# solving. In rxode2 builds since its PR 1637, a lagged dose whose record
+# arrives while the previous dose's zero-order input is still running takes
+# that dose's modeled duration, unless another record falls between the
+# dose record and the end of that input; in the twice-daily arm an evening
+# dose's lag plus duration can pass 12 h. Each record takes the occasion of
+# the dose that opened its interval, as the samples do, so the covariates
+# every dose reads are unchanged.
 run_in <-
   cohort |>
   dplyr::select(id, dplyr::all_of(covs), pm_mg) |>
