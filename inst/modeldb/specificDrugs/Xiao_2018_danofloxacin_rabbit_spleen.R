@@ -11,7 +11,7 @@ Xiao_2018_danofloxacin_rabbit_spleen <- function() {
     "the inhibitory form E = e0 - imax * Ce^N / (EC50^N + Ce^N) with imax = Table 2 Emax; this ",
     "reproduces the Table 2 target (a 3.00 log10 reduction from e0 at AUC24h/MIC = 216.64) and the Figure 4 plateau. ",
     "There is NO PK component: Xiao 2018 analysed serum danofloxacin non-compartmentally (Table 1) ",
-    "and published no structural PK model, so exposure enters as the covariate AUC_DANO (serum ",
+    "and published no structural PK model, so exposure enters as the covariate AUC_DANOFLOXACIN_SERUM (serum ",
     "AUC0-24h after one oral dose) divided by the parameter mic. Xiao 2018 reports no residual SD ",
     "or between-animal variability for the fit, so no eta parameters are present and addSd is FIXED ",
     "at 0 (typical-value simulation only). Sibling models: Xiao_2018_danofloxacin_rabbit_liver, ",
@@ -38,10 +38,10 @@ Xiao_2018_danofloxacin_rabbit_spleen <- function() {
     concentration = "log10 CFU/g (observation; the signed change in spleen S. Typhimurium load over the 3-day treatment course)"
   )
 
-  depends <- c("AUC_DANO")
+  depends <- c("AUC_DANOFLOXACIN_SERUM")
 
   covariateData <- list(
-    AUC_DANO = list(
+    AUC_DANOFLOXACIN_SERUM = list(
       description = "Danofloxacin serum area under the concentration-time curve from 0 to 24 h after a single oral dose, the numerator of the AUC24h/MIC PK/PD index driving the in vivo effect",
       units = "ug*h/mL",
       type = "continuous",
@@ -122,7 +122,7 @@ Xiao_2018_danofloxacin_rabbit_spleen <- function() {
     hill <- exp(lhill)
 
     # PK/PD index AUC24h/MIC (units: h)
-    aucmic <- AUC_DANO / mic
+    aucmic <- AUC_DANOFLOXACIN_SERUM / mic
 
     # Signed change in spleen log10 CFU/g over the treatment course
     # (negative = reduction): e0 at zero exposure, e0 - imax at

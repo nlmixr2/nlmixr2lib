@@ -45,7 +45,7 @@ and in combination. The library ships the paper's two models:
   Fusidic acid was stable. The final CFU model does not use this loss, because
   it did not improve the fit (P > 0.05).
 
-The drug concentrations are static covariates (`CONC_CST_MGL`,
+The drug concentrations are static covariates (`CONC_COLISTIN_MGL`,
 `CONC_FUS_MGL`, mg/L) and the observed starting inoculum
 (`INOC_LOG10CFU`) sets the initial bacterial count. Each `id` in the
 simulations below is one time-kill condition, not a subject.
@@ -128,7 +128,7 @@ solve_typical <- function(model, events, ...) {
 
 default_cov <- function(col, fus, ab205 = 0, ab12 = 0, inoc = 6) {
   expand.grid(
-    CONC_CST_MGL = col, CONC_FUS_MGL = fus,
+    CONC_COLISTIN_MGL = col, CONC_FUS_MGL = fus,
     STRAIN_AB205 = ab205, STRAIN_AB12 = ab12, INOC_LOG10CFU = inoc
   )
 }
@@ -151,7 +151,7 @@ cond_ab14 <- rbind(
   data.frame(default_cov(col = 0, fus = c(0, 8, 32, 128, 512)), arm = "Fusidic acid alone"),
   data.frame(default_cov(col = c(0.25, 0.5, 2), fus = c(8, 32)), arm = "Combination")
 )
-cond_ab14$label <- paste0("col ", cond_ab14$CONC_CST_MGL, " + fus ", cond_ab14$CONC_FUS_MGL)
+cond_ab14$label <- paste0("col ", cond_ab14$CONC_COLISTIN_MGL, " + fus ", cond_ab14$CONC_FUS_MGL)
 sim_ab14 <- solve_typical(mod, make_events(cond_ab14, times))
 sim_ab14 <- merge(sim_ab14, transform(cond_ab14, id = seq_len(nrow(cond_ab14)))[, c("id", "arm", "label")], by = "id")
 
@@ -173,7 +173,7 @@ cond_205 <- rbind(
   data.frame(default_cov(col = c(0, 2, 8, 64), fus = 0, ab205 = 1), arm = "Colistin alone"),
   data.frame(default_cov(col = c(2, 8, 64), fus = 32, ab205 = 1), arm = "Colistin + fusidic acid 32 mg/L")
 )
-cond_205$label <- paste0("col ", cond_205$CONC_CST_MGL)
+cond_205$label <- paste0("col ", cond_205$CONC_COLISTIN_MGL)
 sim_205 <- solve_typical(mod, make_events(cond_205, times))
 sim_205 <- merge(sim_205, transform(cond_205, id = seq_len(nrow(cond_205)))[, c("id", "arm", "label")], by = "id")
 
@@ -239,7 +239,7 @@ sim_cf <- solve_typical(mod, make_events(cond_cf, cf_times), atol = 1e-12, rtol 
 cond_cf$id <- seq_len(nrow(cond_cf))
 sim_cf$closed <- unlist(lapply(cond_cf$id, function(i) {
   r <- cond_cf[i, ]
-  closed_form(cf_times, r$CONC_CST_MGL, r$CONC_FUS_MGL, r$STRAIN_AB205, r$STRAIN_AB12)
+  closed_form(cf_times, r$CONC_COLISTIN_MGL, r$CONC_FUS_MGL, r$STRAIN_AB205, r$STRAIN_AB12)
 }))
 cf_check <- dplyr::filter(sim_cf, closed > 1)
 max_abs <- max(abs(cf_check$log_cfu - cf_check$closed))
@@ -436,7 +436,7 @@ Figure 3 simulates free concentrations from a colistimethate PK model
 acid PK model (Bulitta 2013, *Antimicrob Agents Chemother* 57:498-507), with
 unbound fractions of 64% and 10%, through this PD model. The fusidic acid PK
 model is not in the package, so Figure 3 is not reproduced here. The
-packaged PD model accepts time-varying `CONC_CST_MGL` and `CONC_FUS_MGL`
+packaged PD model accepts time-varying `CONC_COLISTIN_MGL` and `CONC_FUS_MGL`
 for such simulations. Note that the CFU model's `t` is time since the start
 of drug exposure, because the loss-of-effect term was estimated in static
 24-h experiments; the paper itself did not extrapolate beyond 24 h.

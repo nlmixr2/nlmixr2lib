@@ -8,10 +8,10 @@ Zhang_2017_danofloxacin_chicken <- function() {
     "Zhang 2017 writes E = Emax - (Emax - E0) * Ce^N / (EC50^N + Ce^N) with INVERTED names: its Emax ",
     "(0.72) is the effect in the untreated control and its E0 (3.70) is the maximal reduction. This file ",
     "maps them to the canonical e0 (effect at zero exposure) and emax (maximal effect); no value is ",
-    "changed. Exposure enters as the lung AUC over the 24 h dosing interval (AUC_DANO) divided by the ",
+    "changed. Exposure enters as the lung AUC over the 24 h dosing interval (AUC_DANOFLOXACIN_LUNG) divided by the ",
     "fixed strain-S6 MIC of 0.15 mg/L, so the model can be re-targeted to another isolate by changing mic. ",
     "Zhang 2017 reports pharmacokinetics by non-compartmental analysis only (WinNonlin), so there is no ",
-    "PK model; supply AUC_DANO from the paper's Table 5 or another danofloxacin PK model."
+    "PK model; supply AUC_DANOFLOXACIN_LUNG from the paper's Table 5 or another danofloxacin PK model."
   )
   reference <- paste(
     "Zhang N, Wu Y, Huang Z, Yao L, Zhang L, Cai Q, Shen X, Jiang H, Ding H. (2017).",
@@ -32,7 +32,7 @@ Zhang_2017_danofloxacin_chicken <- function() {
   )
 
   covariateData <- list(
-    AUC_DANO = list(
+    AUC_DANOFLOXACIN_LUNG = list(
       description = "Danofloxacin area under the lung-tissue concentration-time curve over the 24 h dosing interval preceding the effect measurement (AUC24)",
       units = "ug*h/g",
       type = "continuous",
@@ -115,8 +115,8 @@ Zhang_2017_danofloxacin_chicken <- function() {
     ec50 <- exp(lec50)
     hill <- exp(lhill)
 
-    # Lung AUC24/MIC index (h); AUC_DANO in ug*h/g, mic in mg/L.
-    ce <- AUC_DANO / mic
+    # Lung AUC24/MIC index (h); AUC_DANOFLOXACIN_LUNG in ug*h/g, mic in mg/L.
+    ce <- AUC_DANOFLOXACIN_LUNG / mic
 
     # Zhang 2017 sigmoid Emax with canonical roles. Cc is the reduction
     # in lung M. gallisepticum load relative to the untreated control,

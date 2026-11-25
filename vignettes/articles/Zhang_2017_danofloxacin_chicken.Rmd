@@ -38,7 +38,7 @@ and 5); the one fitted model is the sigmoid Emax relationship between the
 lung-tissue AUC24/MIC index and the reduction in lung M. gallisepticum load
 (Table 6, Figure 5). That relationship is what this file packages. It has no
 ODE states: the observation `Cc` is the sigmoid itself, evaluated at the
-supplied lung AUC24 (`AUC_DANO`).
+supplied lung AUC24 (`AUC_DANOFLOXACIN_LUNG`).
 
 # Population
 
@@ -83,7 +83,7 @@ value changes.
 # Evaluate the packaged model at a vector of lung AUC24 values.
 solve_auc <- function(auc) {
   ev <- data.frame(id = seq_along(auc), time = 24, evid = 0, amt = NA_real_,
-                   AUC_DANO = auc)
+                   AUC_DANOFLOXACIN_LUNG = auc)
   # The model has no random effects by design; silence only rxode2's notice
   # that a multi-row solve has no omega.
   out <- withCallingHandlers(
@@ -201,7 +201,7 @@ stopifnot(abs(dose_target - 5.5) < 0.05)
 
 * **No PK model.** Zhang 2017 reports only non-compartmental plasma and lung
   PK (Tables 4 and 5), so the lung AUC24 is a user-supplied covariate
-  (`AUC_DANO`). Values for the five PK doses are in Table 5; Zhang 2017 also
+  (`AUC_DANOFLOXACIN_LUNG`). Values for the five PK doses are in Table 5; Zhang 2017 also
   fitted effects at 7.5 and 15 mg/kg and at each of the three dosing days
   (Figure 5 shows 21 points), but does not print the AUC24 used for those.
 * **Absolute AUC plus `mic`, not a ratio covariate.** The S6 MIC of 0.15 mg/L

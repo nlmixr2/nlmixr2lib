@@ -14,7 +14,7 @@ Phee_2019_colistin_fusidicAcid <- function() {
   )
 
   covariateData <- list(
-    CONC_CST_MGL = list(
+    CONC_COLISTIN_MGL = list(
       description = "Static (time-invariant) colistin concentration in the time-kill tube. Drives the sigmoidal Emax kill by colistin and its contribution to the time-dependent loss of effect; any colistin above zero also switches on the colistin-on-fusidic-acid Emax interaction.",
       units = "mg/L",
       type = "continuous",
@@ -122,7 +122,7 @@ Phee_2019_colistin_fusidicAcid <- function() {
     # Presence flags for the categorical interaction terms (Eq 7) and for the
     # choice of beta and residual SD.
     on_col <- 0
-    if (CONC_CST_MGL > 0) on_col <- 1
+    if (CONC_COLISTIN_MGL > 0) on_col <- 1
     on_fus <- 0
     if (CONC_FUS_MGL > 0) on_fus <- 1
     on_comb <- on_col * on_fus
@@ -146,12 +146,12 @@ Phee_2019_colistin_fusidicAcid <- function() {
     beta_i <- beta_col * on_col * (1 - on_fus) + beta_fus_i * on_fus * (1 - on_col) + beta_comb_i * on_comb
 
     # Sigmoidal Emax kill per drug (Eq 5), additive in combination.
-    eff_col <- emax_col * CONC_CST_MGL^hill_col / (ec50_col_i^hill_col + CONC_CST_MGL^hill_col)
+    eff_col <- emax_col * CONC_COLISTIN_MGL^hill_col / (ec50_col_i^hill_col + CONC_COLISTIN_MGL^hill_col)
     eff_fus <- emax_fus_i * CONC_FUS_MGL^hill_fus / (ec50_fus^hill_fus + CONC_FUS_MGL^hill_fus)
 
     # Time- and concentration-dependent loss of effect (Eq 8; reduces to the
     # Eq 5 factor for either drug alone).
-    tde <- 1 - beta_i * (1 - exp(-t * (tau_col * CONC_CST_MGL + tau_fus_i * CONC_FUS_MGL + tau_comb * CONC_CST_MGL * CONC_FUS_MGL)))
+    tde <- 1 - beta_i * (1 - exp(-t * (tau_col * CONC_COLISTIN_MGL + tau_fus_i * CONC_FUS_MGL + tau_comb * CONC_COLISTIN_MGL * CONC_FUS_MGL)))
     kill <- (eff_col + eff_fus) * tde
 
     # Logistic growth and kill on the linear CFU scale (Eq 6).

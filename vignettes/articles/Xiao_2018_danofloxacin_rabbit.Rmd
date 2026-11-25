@@ -34,7 +34,7 @@ in Table 2. They are packaged as four model files that share this vignette:
 
 None of the four models has a PK component. Xiao 2018 analysed serum
 danofloxacin non-compartmentally (Table 1) and published no structural PK
-model, so exposure enters through the covariate `AUC_DANO` (serum AUC0-24h
+model, so exposure enters through the covariate `AUC_DANOFLOXACIN_SERUM` (serum AUC0-24h
 after one oral dose), which each model divides by its `mic` parameter to form
 the AUC24h/MIC index.
 
@@ -83,14 +83,14 @@ table collects them, plus the model equations, in one place.
 | Equation / parameter | Value (blood / liver / spleen / lung) | Source location |
 |---|---|---|
 | `Cc = e0 - imax * aucmic^hill / (ec50^hill + aucmic^hill)` | n/a | Materials and Methods, 'Pharmacokinetics and Pharmacodynamics Analysis' (printed with `+ Emax`); inhibitory sign settled by Figure 4 and the Table 2 '3 Log10 cfu/mL reduction' targets, see below |
-| `aucmic = AUC_DANO / mic` | n/a | Materials and Methods, 'Pharmacokinetics and Pharmacodynamics Analysis' (AUC24h/MIC from the in vitro MIC and the PK) |
+| `aucmic = AUC_DANOFLOXACIN_SERUM / mic` | n/a | Materials and Methods, 'Pharmacokinetics and Pharmacodynamics Analysis' (AUC24h/MIC from the in vitro MIC and the PK) |
 | `e0` (E0) | 0.00 / 0.00 / 0.00 / 0.01 log10 | Table 2, row E0 |
 | `limax` (Emax) | 3.98 / 3.1 / 4.41 / 4.74 log10 | Table 2, row Emax |
 | `lec50` (EC50) | 66.54 / 89.84 / 145.66 / 148.18 h | Table 2, row EC50 |
 | `lhill` (N) | 1.86 / 2.47 / 1.90 / 1.26 | Table 2, row Slope (N) |
 | `mic` | 0.03125 ug/mL (FIXED) | Results, 'In Vitro Pharmacodynamics': printed 0.03 ug/mL; the dilution step 0.03125 is the value the Results AUC24h/MIC column was divided by (Gate 2) |
 | `addSd` | 0 (FIXED) | Not reported; the Results give only r^2 (0.8971 / 0.9186 / 0.9581 / 0.8708) |
-| `AUC_DANO` | covariate | Table 1, row AUC24 h (1.55 / 11.70 / 28.10 ug*h/mL at 1 / 10 / 30 mg/kg); other doses by the linear regression stated in the Results |
+| `AUC_DANOFLOXACIN_SERUM` | covariate | Table 1, row AUC24 h (1.55 / 11.70 / 28.10 ug*h/mL at 1 / 10 / 30 mg/kg); other doses by the linear regression stated in the Results |
 
 # Gate 1 -- the inhibitory reading reproduces Table 2
 
@@ -212,7 +212,7 @@ by the MIC (49.6, 374.4 and 899.2); see the Errata for how Figure 4 plots them.
 solve_static <- function(organ, auc) {
   mod <- readModelDb(paste0("Xiao_2018_danofloxacin_rabbit_", organ))
   ev <- data.frame(id = seq_along(auc), time = 72, evid = 0, amt = NA_real_,
-                   AUC_DANO = auc, key = seq_along(auc))
+                   AUC_DANOFLOXACIN_SERUM = auc, key = seq_along(auc))
   out <- rxode2::rxSolve(mod, ev, keep = "key", returnType = "data.frame")
   stopifnot(nrow(out) == length(auc), !anyNA(out$Cc))
   out$Cc[order(out$key)]
@@ -337,7 +337,7 @@ absorption rate or intercompartmental clearance is reported.
   (49.6, 374.4, 899.2) rather than the listed 76.42, 335.50 and 911.24. Which x
   values the WinNonlin fit used cannot be decided from the paper; the
   packaged parameters are Table 2 verbatim either way, and a user can supply
-  either exposure through `AUC_DANO`.
+  either exposure through `AUC_DANOFLOXACIN_SERUM`.
 - **The lung fit has no 30 mg/kg group.** The published lung panel stops at
   AUC24h/MIC = 700 and its highest data column is at about 624 (20 mg/kg).
   The lung parameters should not be trusted beyond that exposure.
