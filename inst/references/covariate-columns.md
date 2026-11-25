@@ -18004,6 +18004,28 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Yin_2021_mitotane.R` (multiplicative effect on apparent clearance of mitotane; G carriers have CL/F 0.601x the AA reference, i.e. 39.9% lower, Table 2 `CL_SNP2 (AG/GG)` = 0.601).
 - **Notes:** Dominant (carrier) encoding, pooling AG and GG because Yin 2021 combined the minor-homozygote group with the heterozygote group (fewer than four minor homozygotes). In the Yin 2021 cohort rs7311358 was in 100% linkage disequilibrium with `SLCO1B3` c.334G>T (rs4149117) and c.1557G>A (rs2053098); the authors retained rs7311358 as the variant with the strongest clinical annotation. Follows the `SNP_<GENE>_RS<rsid>_<allele>_CARRIER` pattern established by `SNP_CYP1A2_RS762551_C_CARRIER`. A future extraction that distinguishes AG from GG should add paired `_HET` / `_HOM` indicators.
 
+### SNP_SLCO1B3_RS4149117_T_CARRIER (**canonical for SLCO1B3 334T>G (rs4149117) T-allele carrier indicator**)
+- **Description:** Binary indicator for carriage of the T allele at *SLCO1B3* (OATP1B3 hepatic uptake transporter) c.334T>G (rs4149117, S112A): 1 = subject carries at least one T allele (TT or TG); 0 = GG. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (GG genotype).
+- **Source aliases:**
+  - `SLCO1B3` -- Kim 2019 Table 2 row `SLCO1B3 on V MPAG` ("SLCO1B3 rs4149117 T carrier").
+- **Example models:** `Kim_2019_tacrolimus.R` (multiplicative effect on the apparent volume of mycophenolic acid 7-O-glucuronide: `vc_mpag = 1.76 * 1.2^SNP_SLCO1B3_RS4149117_T_CARRIER`; Kim 2019 Table 2).
+- **Notes:** Dominant (carrier) encoding of the T allele, which in East-Asian cohorts is the minor allele at this position (Kim 2019: 15 of 32 Korean patients were T carriers). The allele is named in the column because the paper's comparison is "T carrier vs GG", and the direction of the "variant" differs between sources that write the SNP as 334T>G and as 334G>T. In the Yin 2021 cohort rs4149117 was in complete linkage disequilibrium with rs7311358 (see `SNP_SLCO1B3_RS7311358_G_CARRIER`); the two columns are kept separate because each records the SNP its source paper genotyped.
+
+### SNP_UGT2B7_RS7439366_T_CARRIER (**canonical for UGT2B7 802C>T (rs7439366, H268Y) T-allele carrier indicator**)
+- **Description:** Binary indicator for carriage of the T allele at *UGT2B7* c.802C>T (rs7439366, His268Tyr, the UGT2B7*2 allele): 1 = subject carries at least one T allele (CT or TT); 0 = CC. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (CC genotype).
+- **Source aliases:**
+  - `UGT2B7` -- Kim 2019 Table 2 row `UGT2B7 on k59` ("UGT2B7 rs7439366 T carrier").
+- **Example models:** `Kim_2019_tacrolimus.R` (multiplicative effect on the mycophenolic acid -> acyl glucuronide formation rate constant: `k59 = k59_typ * 0.812^SNP_UGT2B7_RS7439366_T_CARRIER`; Kim 2019 Table 2).
+- **Notes:** Dominant (carrier) encoding. Kim 2019 writes the SNP as 802T>C in its Results and as 802C>T in its Methods and Discussion, but both places compare T carriers against CC homozygotes, so the column names the T allele explicitly.
+
 ### SNP_SLCO1B1_RS2306283_HET (**canonical for SLCO1B1 c.388A>G heterozygous (388A/G) indicator**)
 - **Description:** Binary genotype indicator for the *SLCO1B1* (OATP1B1 hepatic uptake transporter) c.388A>G polymorphism (rs2306283, N130D / p.Asn130Asp): 1 = subject carries the heterozygous (388A/G) genotype; 0 = otherwise (the paired `SNP_SLCO1B1_RS2306283_HOM` flags the other variant stratum). Time-fixed per subject (germline genotype).
 - **Units:** (binary)

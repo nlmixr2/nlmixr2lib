@@ -1,0 +1,454 @@
+---
+title: "Tacrolimus and mycophenolate mofetil in kidney transplant recipients (Kim 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tacrolimus and mycophenolate mofetil in kidney transplant recipients (Kim 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Kim_2019_tacrolimus"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Kim_2019_tacrolimus"))$description`
+* Article: <https://doi.org/10.1038/s41598-019-47876-0>
+
+Kim et al. (2019) refitted the integrated tacrolimus (TAC) and mycophenolate
+mofetil (MMF) model of their earlier healthy-volunteer study (packaged as
+`Kim_2018_tacrolimus`) to steady-state data from stable kidney transplant
+recipients. The structure is unchanged: TAC is a two-compartment model with a
+lag time, MMF is described by mycophenolic acid (MPA) and its two glucuronides
+MPAG and AcMPAG with enterohepatic recirculation of MPAG, and MPA plasma
+concentration lowers TAC apparent clearance through an inverse-exponential
+term (Eq. 1). The transplant refit adds two genotype effects on the MMF
+metabolites and re-estimates the disposition parameters; the absorption, lag,
+and enterohepatic-circulation parameters were fixed to the healthy-volunteer
+values. This is the paper's final model (Table 2, "Final model" columns).
+
+# Population
+
+Thirty-two Korean kidney transplant recipients at a median 5.7 years
+(0.6-10.4) after transplantation took part (Table 1). Median age was 52 years
+(20-70), median weight 62.7 kg (43.9-102.4), and 20 (63%) were male. Graft
+function was near normal (MDRD eGFR 35.0-85.7 mL/min/1.73 m2). Patients took
+TAC (Prograf, median 2 mg/day, range 1-6) and MMF (CellCept, median
+1,000 mg/day, range 500-2,000) twice daily with prednisolone, on a dose that had
+been stable for at least two weeks. Blood was sampled before the morning dose
+and 1, 2, 3 and 4 h after it. Thirteen patients (40.6%) were CYP3A5 expressers
+(*1/*1 or *1/*3), and 15 (46.9%) each were T carriers of SLCO1B3 rs4149117 and
+UGT2B7 rs7439366.
+
+The same information is available programmatically via
+`readModelDb("Kim_2019_tacrolimus")$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its Table 2 row in
+`inst/modeldb/specificDrugs/Kim_2019_tacrolimus.R`.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL/F TAC) | 21.9 L/h | Table 2 CL TAC; Eq. 1 |
+| `lvc` (V/F TAC) | 103 L | Table 2 V TAC |
+| `lka` (Ka TAC, fixed) | 1.78 1/h | Table 2 Ka TAC (FIX) |
+| `lk23`, `lk32` | 0.803, 0.583 1/h | Table 2 k23, k32 |
+| `ltlag` (fixed) | 0.59 h | Table 2 Lag time (FIX) |
+| `e_cyp3a5_cl` | 1.49 | Table 2 CYP3A5 on CL TAC; Eq. 1 |
+| `e_cmpa_cl` | 0.06 mL/ug | Table 2 Interaction; Eq. 1 |
+| `lcl_mpa` (CL/F MPA) | 3.27 L/h | Table 2 CL MPA |
+| `lvc_mpa` (V/F MPA) | 23.2 L | Table 2 V MPA |
+| `lka_mpa` (fixed) | 2.29 1/h | Table 2 Ka MPA (FIX) |
+| `lk56`, `lk65` | 1.75, 0.0089 1/h | Table 2 k56, k65 |
+| `f_mpag` (fixed) | 0.85 | Table 2 f MPA (FIX) |
+| `e_ugt2b7_k59` | 0.812 | Table 2 UGT2B7 on k59 |
+| `lvc_mpag` | 1.76 L | Table 2 V MPAG |
+| `e_slco1b3_vc_mpag` | 1.2 | Table 2 SLCO1B3 on V MPAG |
+| `lk70` | 0.103 1/h | Table 2 k70 |
+| `lehc`, `lk84`, `lmtime1`, `lmtime2` (fixed) | 0.367, 18.4 1/h, 7.96 h, 1 h | Table 2 EHC, k84, MTIME1, MTIME2 (FIX) |
+| `lvc_acmpag`, `lk90` (fixed) | 13.9 L, 0.407 1/h | Table 2 V AcMPAG, k90 (FIX) |
+| IIV on CL and V of TAC and MPA | 24.4%, 45.5%, 25.8%, 42.9% CV | Table 2 IIV CV%; Methods (IIV on CL and V only) |
+| Residual error | see `ini()` | Table 2 sigma rows |
+| 9-compartment ODE structure | n/a | Figure 2 |
+| `k57 = fMPA*CL/V`, `k59 = (1-fMPA)*CL/V*0.812^UGT2B7` | derived | Figure 2 (MPA leaves only via k57 and k59) |
+| `k78 = EHC*k70/(1-EHC)` | derived | EHC defined as the biliary share of MPAG elimination (Figure 2) |
+
+# Virtual cohort and simulation
+
+The paper's simulation crossed TAC dose (1 or 2 mg bid), MMF dose (500 or
+1,000 mg bid), CYP3A5, SLCO1B3 and UGT2B7 genotype (32 populations of 1,000).
+Here four arms cross MMF dose with CYP3A5 status, 200 subjects each, and
+TAC dose, SLCO1B3 and UGT2B7 status are drawn 50:50 within each arm. A fifth
+arm mirrors the study cohort for the Figure 1 comparison: 1 mg TAC bid and
+500 mg MMF bid (the median doses) with genotypes at the Table 1 frequencies.
+
+Every subject receives 14 days of twice-daily dosing and is sampled over the
+last 12-h interval (doses at 0, 12, ..., 324 h; trough at 336 h). The reason
+for 14 days rather than a true steady state is set out in the next section.
+
+```{r cohort}
+set.seed(20190813)
+rxode2::rxSetSeed(20190813)
+
+n_per_arm <- 200L
+n_days <- 14L
+last_dose <- 24 * n_days - 12
+obs_times <- c(last_dose - 0.01, last_dose + seq(0.25, 12, by = 0.25))
+
+make_arm <- function(n, arm, mmf_mg, cyp, p_slco, p_ugt, tac_choices, id_offset) {
+  tac_mg <- sample(tac_choices, n, replace = TRUE)
+  cyp_i <- if (is.na(cyp)) stats::rbinom(n, 1L, 13 / 32) else rep(cyp, n)
+  slco <- stats::rbinom(n, 1L, p_slco)
+  ugt <- stats::rbinom(n, 1L, p_ugt)
+  dplyr::bind_rows(lapply(seq_len(n), function(i) {
+    ev <- rxode2::et(amt = tac_mg[i], cmt = "depot", ii = 12, addl = 2 * n_days - 1) |>
+      rxode2::et(amt = mmf_mg, cmt = "depot_mpa", ii = 12, addl = 2 * n_days - 1) |>
+      rxode2::et(obs_times, cmt = "central")
+    df <- as.data.frame(ev)
+    df$id <- id_offset + i
+    df$arm <- arm
+    df$tac_daily <- 2 * tac_mg[i]
+    df$CYP3A5_EXPR <- cyp_i[i]
+    df$SNP_SLCO1B3_RS4149117_T_CARRIER <- slco[i]
+    df$SNP_UGT2B7_RS7439366_T_CARRIER <- ugt[i]
+    df
+  }))
+}
+
+arms <- tibble::tribble(
+  ~arm,                                ~mmf_mg, ~cyp,
+  "CYP3A5 expresser, MMF 500 mg bid",       500,    1L,
+  "CYP3A5 expresser, MMF 1,000 mg bid",    1000,    1L,
+  "CYP3A5 non-expresser, MMF 500 mg bid",   500,    0L,
+  "CYP3A5 non-expresser, MMF 1,000 mg bid", 1000,   0L
+)
+
+events <- dplyr::bind_rows(
+  lapply(seq_len(nrow(arms)), function(k) {
+    make_arm(n_per_arm, arms$arm[k], arms$mmf_mg[k], arms$cyp[k],
+             p_slco = 0.5, p_ugt = 0.5, tac_choices = c(1, 2),
+             id_offset = (k - 1L) * n_per_arm)
+  }),
+  make_arm(n_per_arm, "Study cohort", 500, NA, p_slco = 15 / 32,
+           p_ugt = 15 / 32, tac_choices = 1, id_offset = 4L * n_per_arm)
+)
+# Two endpoints are declared, so observation rows carry dvid = 1 and every
+# endpoint is returned as a column.
+events$dvid <- ifelse(events$evid == 0, 1L, NA_integer_)
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid", "cmt")]))
+```
+
+```{r simulate}
+mod <- readModelDb("Kim_2019_tacrolimus")
+sim <- rxode2::rxSolve(
+  mod, events = events,
+  keep = c("arm", "tac_daily", "CYP3A5_EXPR"),
+  returnType = "data.frame", addDosing = FALSE, useLinCmt = FALSE,
+  maxsteps = 1e6
+)
+sim <- dplyr::mutate(sim, tad = time - last_dose)
+stopifnot(
+  length(unique(sim$id)) == 5L * n_per_arm,
+  all(is.finite(sim$Cc)), all(is.finite(sim$Cc_mpa)),
+  # 9 ODE states in Figure 2 order; an observable injected as a compartment
+  # would add a state and shift the slots.
+  identical(rxode2::rxode2(mod)$state,
+            c("depot", "central", "peripheral1", "depot_mpa", "central_mpa",
+              "peripheral1_mpa", "central_mpag", "gallbladder", "central_acmpag"))
+)
+```
+
+# How long a dosing history?
+
+The MPA peripheral return constant is small (k65 = 0.0089 1/h), so the MPA
+peripheral compartment fills over months. A typical patient's MPA trough on
+500 mg bid, and through Eq. 1 the TAC trough, keeps rising long after two
+weeks:
+
+```{r history}
+typical_trough <- function(days, mmf_mg, cyp) {
+  ev <- rxode2::et(amt = 1, cmt = "depot", ii = 12, addl = 2 * days - 1) |>
+    rxode2::et(amt = mmf_mg, cmt = "depot_mpa", ii = 12, addl = 2 * days - 1) |>
+    rxode2::et(24 * days, cmt = "central")
+  d <- as.data.frame(ev)
+  d$dvid <- ifelse(d$evid == 0, 1L, NA_integer_)
+  d$CYP3A5_EXPR <- cyp
+  d$SNP_SLCO1B3_RS4149117_T_CARRIER <- 0
+  d$SNP_UGT2B7_RS7439366_T_CARRIER <- 0
+  s <- rxode2::rxSolve(mod, d, omega = NA, sigma = NA, returnType = "data.frame",
+                       useLinCmt = FALSE, maxsteps = 1e6)
+  s[nrow(s), c("Cc", "Cc_mpa", "Cc_mpag", "Cc_acmpag")]
+}
+
+hist_tab <- dplyr::bind_rows(lapply(c(7, 14, 21, 28, 56), function(days) {
+  r <- typical_trough(days, 500, 0)
+  data.frame(days = days, tac_cd = r$Cc / 2, mpa = r$Cc_mpa,
+             mpag = r$Cc_mpag, acmpag = r$Cc_acmpag)
+}))
+hist_tab |>
+  dplyr::mutate(dplyr::across(-days, \(x) signif(x, 3))) |>
+  dplyr::rename(
+    "Days of bid dosing" = days,
+    "TAC C/D (ng/mL per mg/day)" = tac_cd,
+    "MPA trough (ug/mL)" = mpa,
+    "MPAG trough (ug/mL)" = mpag,
+    "AcMPAG trough (ug/mL)" = acmpag
+  ) |>
+  knitr::kable(caption = paste(
+    "Typical-value troughs (CYP3A5 non-expresser, TAC 1 mg bid, MMF 500 mg bid,",
+    "reference genotypes) after increasing lengths of dosing history."
+  ))
+stopifnot(all(diff(hist_tab$mpa) > 0), all(diff(hist_tab$tac_cd) > 0))
+```
+
+The paper's observed median troughs (Figure 1: MPA about 2 ug/mL, MPAG about
+22 ug/mL, AcMPAG about 0.25 ug/mL, in patients on a median 500 mg MMF bid)
+and its simulated C/D values sit near the 7-21-day rows, not near the
+months-long accumulation that years of maintenance therapy would imply under
+the printed parameters. The inclusion criterion required a dose that had been
+stable for at least two weeks, so the vignette simulates a 14-day history.
+This history is a simulation choice; the model parameters are as printed.
+
+# Replicate published figures
+
+## Figure 1 -- concentrations 0-4 h after the morning dose
+
+Figure 1 of Kim 2019 shows prediction-corrected VPCs of the four analytes over
+the 4-h sampling window. Without the observed data the panels below show the
+simulated median and 5th-95th percentiles of the study-like cohort.
+
+```{r figure-1, fig.height = 6}
+fig1 <- sim |>
+  dplyr::filter(arm == "Study cohort", tad <= 4) |>
+  dplyr::mutate(tad = pmax(tad, 0)) |>
+  dplyr::select(tad, TAC = Cc, MPA = Cc_mpa, MPAG = Cc_mpag, AcMPAG = Cc_acmpag) |>
+  tidyr::pivot_longer(-tad, names_to = "analyte", values_to = "conc") |>
+  dplyr::mutate(analyte = factor(analyte, levels = c("TAC", "MPA", "MPAG", "AcMPAG"))) |>
+  dplyr::group_by(analyte, tad) |>
+  dplyr::summarise(
+    Q05 = quantile(conc, 0.05), Q50 = median(conc), Q95 = quantile(conc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(fig1, aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~analyte, scales = "free_y") +
+  labs(x = "Time after dose (h)",
+       y = "Concentration (TAC: ng/mL; MPA, MPAG, AcMPAG: ug/mL)",
+       caption = "Replicates Figure 1 of Kim 2019 (simulated median and 90% interval).") +
+  theme_bw()
+```
+
+```{r figure-1-check}
+fig1_med <- fig1 |>
+  dplyr::filter(tad %in% c(0, 1, 2)) |>
+  dplyr::select(analyte, tad, Q50) |>
+  tidyr::pivot_wider(names_from = tad, values_from = Q50, names_prefix = "t")
+knitr::kable(dplyr::mutate(fig1_med, dplyr::across(-analyte, \(x) signif(x, 3))),
+             caption = "Simulated medians at 0, 1 and 2 h after the dose.")
+```
+
+The observed medians read from Figure 1 are about 4, 9 and 9.5 ng/mL for TAC
+(0, 1 and 2 h), 2, 9 and 4 ug/mL for MPA, 22, 38 and 44 ug/mL for MPAG and
+0.25, 0.42 and 0.40 ug/mL for AcMPAG. The simulated MPA, MPAG and AcMPAG
+medians agree with these readings to within about 25%. The simulated TAC
+medians are about 30% lower (2.6, 6.7 and 6.9 ng/mL). The virtual cohort takes
+1 mg TAC bid throughout, whereas the patients' doses ranged from 1 to 6 mg/day,
+and Figure 1 is prediction-corrected, so its observed values are scaled to the
+median population prediction rather than shown raw. The C/D comparison below
+removes the dose question and agrees more closely.
+
+```{r figure-1-gate}
+tac_trough <- fig1_med$t0[fig1_med$analyte == "TAC"]
+mpa_trough <- fig1_med$t0[fig1_med$analyte == "MPA"]
+mpag_trough <- fig1_med$t0[fig1_med$analyte == "MPAG"]
+stopifnot(
+  # Within a factor of two of the Figure 1 observed median troughs. A unit
+  # slip (ng vs ug, mg vs g) or a mis-transcribed clearance misses by far more.
+  tac_trough > 2, tac_trough < 8,
+  mpa_trough > 1, mpa_trough < 4,
+  mpag_trough > 11, mpag_trough < 44
+)
+```
+
+## Simulation -- trough per daily dose (C/D) by CYP3A5 and MMF dose
+
+The paper reports the steady-state TAC trough per total daily dose (C/D,
+ng/mL per mg) as mean +/- SD. Trough and the other exposure metrics of the last
+dosing interval are computed with PKNCA, grouped by arm.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc), arm != "Study cohort") |>
+  dplyr::mutate(time = pmax(tad, 0)) |>
+  dplyr::select(id, time, Cc, arm, tac_daily)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id,
+                             concu = "ng/mL", timeu = "hr")
+dose_df <- sim_nca |>
+  dplyr::distinct(id, arm, tac_daily) |>
+  dplyr::mutate(time = 0, amt = tac_daily / 2)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id, doseu = "mg")
+intervals <- data.frame(start = 0, end = 12, cmax = TRUE, tmax = TRUE,
+                        cmin = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+knitr::kable(summary(nca_res), caption = "Simulated TAC NCA over the last 12-h interval.")
+```
+
+```{r cd-compare}
+nca_df <- as.data.frame(nca_res)
+cd <- nca_df |>
+  dplyr::filter(PPTESTCD == "cmin") |>
+  dplyr::left_join(dplyr::distinct(sim_nca, id, tac_daily), by = "id") |>
+  dplyr::mutate(cd = PPORRES / tac_daily) |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(sim_mean = mean(cd), sim_sd = stats::sd(cd), .groups = "drop")
+
+published <- tibble::tribble(
+  ~arm,                                     ~pub_mean, ~pub_sd,
+  "CYP3A5 expresser, MMF 500 mg bid",            0.89,    0.44,
+  "CYP3A5 expresser, MMF 1,000 mg bid",          1.24,    0.59,
+  "CYP3A5 non-expresser, MMF 500 mg bid",        1.59,    0.67,
+  "CYP3A5 non-expresser, MMF 1,000 mg bid",      2.14,    0.88
+)
+cd_cmp <- dplyr::left_join(published, cd, by = "arm") |>
+  dplyr::mutate(pct_diff = 100 * (sim_mean - pub_mean) / pub_mean)
+
+cd_cmp |>
+  dplyr::mutate(dplyr::across(c(sim_mean, sim_sd, pct_diff), \(x) round(x, 2))) |>
+  dplyr::select(arm, pub_mean, pub_sd, sim_mean, sim_sd, pct_diff) |>
+  dplyr::rename(
+    "Arm" = arm,
+    "Published mean C/D" = pub_mean,
+    "Published SD" = pub_sd,
+    "Simulated mean C/D" = sim_mean,
+    "Simulated SD" = sim_sd,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = paste(
+    "TAC trough per daily dose (ng/mL per mg/day): Kim 2019 Results",
+    "(simulation of 1,000 per population) vs this simulation (200 per arm)."
+  ))
+
+mmf_effect <- cd_cmp |>
+  dplyr::mutate(cyp = sub(",.*", "", arm), mmf = ifelse(grepl("1,000", arm), "hi", "lo")) |>
+  dplyr::select(cyp, mmf, sim_mean, pub_mean) |>
+  tidyr::pivot_wider(names_from = mmf, values_from = c(sim_mean, pub_mean)) |>
+  dplyr::mutate(sim_increase = sim_mean_hi - sim_mean_lo,
+                pub_increase = pub_mean_hi - pub_mean_lo)
+knitr::kable(
+  dplyr::select(mmf_effect, cyp, sim_increase, pub_increase) |>
+    dplyr::mutate(dplyr::across(-cyp, \(x) round(x, 2))) |>
+    dplyr::rename("Genotype" = cyp, "Simulated increase in C/D" = sim_increase,
+                  "Published increase in C/D" = pub_increase),
+  caption = "Absolute increase in C/D from MMF 500 to 1,000 mg bid (abstract: 0.35 and 0.55)."
+)
+
+stopifnot(
+  # Group means of 200 subjects: a centre measure, not an extreme.
+  all(abs(cd_cmp$pct_diff) < 25),
+  # Direction of both covariate effects (each about 30-40%).
+  all(mmf_effect$sim_mean_hi > mmf_effect$sim_mean_lo),
+  mmf_effect$sim_mean_lo[mmf_effect$cyp == "CYP3A5 non-expresser"] >
+    mmf_effect$sim_mean_lo[mmf_effect$cyp == "CYP3A5 expresser"]
+)
+```
+
+The simulated C/D values reproduce the published ordering (non-expressers
+above expressers, MMF 1,000 mg above 500 mg). The simulated means run 4-10%
+below the published means and the increase with the MMF dose is slightly
+smaller (0.32 and 0.46 against 0.35 and 0.55); both are consistent with a
+somewhat shorter dosing history than the authors used, which the paper does not
+report. No parameter was adjusted to match them.
+
+## SLCO1B3 and UGT2B7 have no visible effect on TAC
+
+The paper reports that the two MMF-metabolite genotypes did not change TAC
+C/D. In the model they act only on MPAG volume and AcMPAG formation; the
+UGT2B7 effect lowers k59, which lowers total MPA metabolism by about 3% and so
+raises MPA, and through Eq. 1 TAC, very slightly.
+
+```{r genotype-check}
+geno_cd <- function(slco, ugt) {
+  ev <- rxode2::et(amt = 1, cmt = "depot", ii = 12, addl = 2 * n_days - 1) |>
+    rxode2::et(amt = 500, cmt = "depot_mpa", ii = 12, addl = 2 * n_days - 1) |>
+    rxode2::et(24 * n_days, cmt = "central")
+  d <- as.data.frame(ev)
+  d$dvid <- ifelse(d$evid == 0, 1L, NA_integer_)
+  d$CYP3A5_EXPR <- 0
+  d$SNP_SLCO1B3_RS4149117_T_CARRIER <- slco
+  d$SNP_UGT2B7_RS7439366_T_CARRIER <- ugt
+  s <- rxode2::rxSolve(mod, d, omega = NA, sigma = NA, returnType = "data.frame",
+                       useLinCmt = FALSE, maxsteps = 1e6)
+  s$Cc[nrow(s)] / 2
+}
+geno <- expand.grid(slco = 0:1, ugt = 0:1)
+geno$cd <- mapply(geno_cd, geno$slco, geno$ugt)
+geno$pct_vs_ref <- 100 * (geno$cd / geno$cd[1] - 1)
+knitr::kable(
+  geno |>
+    dplyr::mutate(cd = signif(cd, 3), pct_vs_ref = round(pct_vs_ref, 2)) |>
+    dplyr::rename("SLCO1B3 T carrier" = slco, "UGT2B7 T carrier" = ugt,
+                  "Typical C/D" = cd, "Change vs GG / CC (%)" = pct_vs_ref),
+  caption = "Typical TAC C/D by metabolite genotype (non-expresser, MMF 500 mg bid)."
+)
+# The two metabolite genotypes are deterministic inputs to the same solve,
+# so a tight bound is appropriate here.
+stopifnot(all(abs(geno$pct_vs_ref) < 5), geno$pct_vs_ref[geno$slco == 1 & geno$ugt == 0] == 0)
+```
+
+# Assumptions and deviations
+
+- **Dosing history of 14 days.** Under the printed parameters MPA accumulates
+  in its peripheral compartment for months (k65 = 0.0089 1/h), while the
+  paper's own observed troughs (Figure 1) and simulated C/D values match a
+  history of roughly one to three weeks. The paper does not say how prior
+  doses were entered in the NONMEM dataset or in the simulations it calls
+  "steady state". The vignette uses 14 days, the stable-dose period required
+  for inclusion. Users simulating long maintenance therapy should know that
+  MPA, MPAG and the TAC interaction keep rising past this point under the
+  model as published (see "How long a dosing history?").
+- **Gallbladder emptying window per dose.** MTIME1 (7.96 h) and MTIME2 (1 h)
+  are fixed values carried over from the single-dose healthy-volunteer model.
+  For twice-daily dosing the window is anchored to the most recent MMF dose,
+  so the gallbladder empties from 7.96 to 8.96 h after every dose. The paper
+  does not describe how the meal time was handled for repeated dosing.
+- **Derived rate constants.** `k57`, `k59` and `k78` are not tabulated. MPA
+  leaves the central compartment only by metabolism (Figure 2), so
+  `k57 + k59 = CL/F MPA / V/F MPA`, split by fMPA = 0.85, and EHC is the
+  biliary share of MPAG elimination, `EHC = k78 / (k70 + k78)`. The same
+  derivations are used in `Kim_2018_tacrolimus`.
+- **UGT2B7 effect on k59 only.** Table 2 places the UGT2B7 effect on k59. It is
+  applied to k59 after the fMPA split, so it also lowers total MPA metabolism
+  slightly (by 15% x 18.8% = 2.8% in T carriers) rather than shifting the split
+  at constant total clearance.
+- **Residual-error values as standard deviations.** Table 2 lists the sigma
+  values without saying whether they are variances or SDs. They are used as SDs
+  (0.211 = 21.1% proportional error for TAC), the same reading as in
+  `Kim_2018_tacrolimus`, and the additive TAC term (0.585) is in ng/mL.
+- **Dosing in apparent units.** TAC and MMF doses are entered in mg of the
+  administered drug; CL/F and V/F absorb bioavailability and the MMF to MPA
+  conversion. TAC (whole blood) is reported in ng/mL, MPA, MPAG and AcMPAG
+  (plasma) in ug/mL.
+- **Typo in the Simulation section.** The paper's Results list "SLCO1B1
+  genotype" among the simulated factors; the Methods and Table 2 make clear the
+  covariate is SLCO1B3 rs4149117. The paper also writes the UGT2B7 SNP as
+  802T>C in one place and 802C>T in others; both compare T carriers with CC.
+- **Virtual cohort.** The paper simulated 1,000 subjects in each of 32
+  populations; this vignette uses 200 per arm with TAC dose and the two
+  metabolite genotypes drawn within each arm. The model has no continuous
+  covariate, so weight and age are not simulated. Observed data are not
+  public, so Figure 1 is shown as simulated percentiles only.
+- **Errata.** No erratum or correction to Kim 2019 was found (Europe PMC
+  correction links and erratum search checked 2026-11-25). The supplement contains only goodness-of-fit
+  figures (Figures S1-S4) and no parameter values.
