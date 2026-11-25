@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hambrick 2026 cefepime ([doi:10.1016/j.ijantimicag.2026.107741](https://doi.org/10.1016/j.ijantimicag.2026.107741)) -- critically ill children and young adults at high risk of acute kidney injury, with admission urine NGAL as a clearance covariate.
+- Add Krzyzanski 2026 dexamethasone, 1-cohort and Gauss-Hermite 3-cohort ([doi:10.1007/s10928-026-10048-5](https://doi.org/10.1007/s10928-026-10048-5)) -- parturient women and their fetuses (umbilical cord) after antenatal IM dexamethasone phosphate.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

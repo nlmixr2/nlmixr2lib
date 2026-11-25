@@ -4066,53 +4066,29 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
 - **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_brain`); the spinal-cord counterpart of `lv_brain`. Wrap in `fixed()` when the source fixes it from anatomy.
 
-### lpef_high, pef_high (**canonical log-transformed high-state mean peak expiratory flow of a two-state hidden Markov model**)
+### ratio_cord_central (**canonical bare umbilical-cord : central (maternal plasma) concentration ratio**)
 - **Type:** paper-named-param
-- **Role:** Mean PEF (L/min) of the high-PEF ("normal health") latent state of a two-state hidden Markov model of home-measured peak expiratory flow; `pef_high = exp(lpef_high + etalpef_high)` is the individual value used in `model()`.
+- **Role:** Unitless fetal-to-maternal concentration ratio that derives the umbilical-cord venous concentration algebraically from the maternal central compartment when the fetus has no ODE state of its own: `Ccord <- ratio_cord_central * Cc`.
 - **Source aliases:**
-  - `m0`, `m_i,0`, `mu1` (transformed `log m0`) -- Jakobsson 2026 Section 2.3 and supplement Table S4.
-- **Example models:** `Jakobsson_2026_velsecorat.R`.
-- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). The `_high` suffix names the latent state, so a future model with more states can add `pef_<state>`. Distinct from a PEF baseline of a continuous-time model, which is the value before treatment rather than the mean of one latent state.
+  - `FMR` -- Krzyzanski 2026 Eq 25 and Table 3 ('fetal-to-maternal DEX concentration ratio').
+- **Example models:** `Krzyzanski_2026_dexamethasone_1cohort.R` and `Krzyzanski_2026_dexamethasone_3cohort.R` (founding examples; 0.329, RSE 7%, in both fits, estimated from one paired maternal and cord sample per woman at birth, no IIV).
+- **Notes:** A bare member of the `lratio_<numerator>_<denominator>` family founded by `lratio_pbmc_central`, written bare like `ratio_isf_peripheral1` because the source estimates it on the natural scale with no random effect; a paper reporting an exponential typical value or IIV uses `lratio_cord_central`. Pair with the `Ccord` observable and its residual (`expSd_Ccord` / `propSd_Ccord`). Distinct from a cord compartment with its own transfer rate constants (`Muller_2009_amoxicillin.R`, `cord_venous` state), which models placental transfer kinetics rather than assuming instantaneous proportionality.
 
-### logitd_low, d_low (**canonical logit-transformed low-to-high state ratio of a two-state hidden Markov model**)
+### p_cohort1, p_cohort2 (**canonical fixed mixing probabilities of a discrete cohort (mixture) population**)
 - **Type:** paper-named-param
-- **Role:** Ratio d in (0, 1) of the low-state mean to the high-state mean of a two-state hidden Markov model, `pef_low = d_low * pef_high`; `d_low = expit(logitd_low + ... + etalogitd_low)`. A larger value is a milder worsened state.
+- **Role:** Probability (fraction) that a subject belongs to cohort 1, 2, ... of a finite mixture population, passed to rxode2's `mix()` as `cl <- mix(cl_cohort1, p_cohort1, cl_cohort2, p_cohort2, cl_cohort3)`; the last cohort takes the remainder, so an N-cohort model declares N - 1 of them. Cohorts are numbered in the order the source numbers its subpopulations (NONMEM `MIXNUM`).
 - **Source aliases:**
-  - `d`, `d_i`, `mu2` (transformed `logit d`; "drop parameter") -- Jakobsson 2026 Section 2.3 and supplement Table S4.
-- **Example models:** `Jakobsson_2026_velsecorat.R`.
-- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). Parameterising the low state as a fraction of the high state, rather than as a second free mean, keeps the states ordered.
+  - `P(1)`, `P(2)`, `W1`, `W2` -- Krzyzanski 2026 Appendix 1 `$MIX` block (Gauss-Hermite weights `w_i / sqrt(pi)`).
+- **Example models:** `Krzyzanski_2026_dexamethasone_3cohort.R` (founding example; fixed at the N = 3 Gauss-Hermite weights 0.2954089751509 / sqrt(pi) = 1/6 and 1.181635900604 / sqrt(pi) = 2/3, the third cohort 1/6).
+- **Notes:** Ratified by the maintainers 2026-11-20 with the Krzyzanski 2026 extraction, the first library model to use native `mix()`. Wrap in `fixed()` when the source fixes the weights (Gauss-Hermite cohort populations always do); an estimated mixing fraction uses the same names unfixed. A `mixest` data column (1, 2, ...) pins a subject to a cohort at simulation time. Distinct from the latent-class covariate idiom (`MIX_FAST_ABS`, `lka_fastabs`), where the user supplies the class in the data, and from the generic `frac`.
 
-### lvar_pef, var_pef (**canonical log-transformed within-state PEF variance of a hidden Markov model**)
+### omega_cohort_lcl (**canonical between-cohort SD of log clearance in a Gauss-Hermite cohort population**)
 - **Type:** paper-named-param
-- **Role:** Subject-specific within-state variance sigma^2 ((L/min)^2) of PEF measurements around the current latent state's mean; `sd_pef = sqrt(var_pef)` is passed to `PEF ~ add(sd_pef)`. It is a model parameter with IIV and a dose effect, which is why it is not encoded as the residual-error canonical `addSd`.
+- **Role:** Standard deviation of log clearance across the cohorts of a Gauss-Hermite cohort population, estimated as a fixed effect: the cohort clearances are `exp(lcl + sqrt(2) * xi_i * omega_cohort_lcl)` at the quadrature nodes `xi_i`, and the cohort distribution has the mean and variance of a log-normal with variance `omega_cohort_lcl^2`. It stands in for between-subject variability, which the source fixes at zero.
 - **Source aliases:**
-  - `sigma^2`, `sigma_i^2`, `mu3` (transformed `log sigma^2`; "inter-state variability" in Jakobsson 2026 Table 1 and Table S4).
-- **Example models:** `Jakobsson_2026_velsecorat.R`.
-- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). Kept on the variance scale because the source estimates and reports the log variance.
-
-### logit2p_hl, logit2p_lh, p_hl, p_lh (**canonical half-capped transition probabilities of a two-state discrete-time hidden Markov model**)
-- **Type:** paper-named-param
-- **Role:** Per-step probabilities of leaving the high state for the low state (`p_hl`) and of leaving the low state for the high state (`p_lh`) in a two-state discrete-time hidden Markov chain. The `logit2p` transform is `logit(2 p)`, so `p = expit(logit2p + eta) / 2` is capped at 0.5.
-- **Source aliases:**
-  - `p0,1`, `p_i,0,1`, `mu4` (transformed `logit(2 p01)`) -> `logit2p_hl`; `p1,0`, `p_i,1,0`, `mu5` (transformed `logit(2 p10)`) -> `logit2p_lh` -- Jakobsson 2026 Section 2.3 and supplement Table S4.
-- **Example models:** `Jakobsson_2026_velsecorat.R` (one step = one twice-daily PEF measurement).
-- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). The probability is per record of the chain, not per unit time, so the step must be stated in the model's `description`. The `2` in the name records the 0.5 cap.
-
-### emax_lvar, led50_lvar, emax_logit2p_lh, led50_logit2p_lh (**canonical dose Emax and log ED50 acting on a transformed hidden-Markov parameter**)
-- **Type:** paper-named-param
-- **Role:** Additive dose Emax term on a transformed parameter, `phi = mu + emax_<param> * DOSE / (exp(led50_<param>) + DOSE) + eta`. `emax_<param>` is the maximal shift on the transformed scale (unitless, signed); `led50_<param>` is the log of the dose giving half of it (log of the dose units).
-- **Source aliases:**
-  - `Emax,3`, `log(ED50,3)` -> `emax_lvar`, `led50_lvar`; `Emax,5`, `log(ED50,5)` -> `emax_logit2p_lh`, `led50_logit2p_lh` -- Jakobsson 2026 supplement Table S4.
-- **Example models:** `Jakobsson_2026_velsecorat.R` (dose in ug).
-- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). The suffix names the transformed parameter the term is added to. `led50_<param>` reuses the dose-axis meaning of `led50`; `emax_<param>` is signed because the shift may lower the parameter (`emax_lvar` < 0 narrows the within-state spread).
-
-### e_active_logitd (**canonical constant shift on logit(d) for any active dose**)
-- **Type:** paper-named-param
-- **Role:** Additive shift on `logitd_low` applied when the subject receives any active dose (`DOSE > 0`), with no further dependence on dose level.
-- **Source aliases:**
-  - `beta2` (Jakobsson 2026 'Constant' dose-response, `beta(x) = beta 1(x > 0)`, supplement Table S4).
-- **Example models:** `Jakobsson_2026_velsecorat.R`.
-- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). `active` is the indicator derived in `model()` from the dose covariate, not an input column.
+  - `omega`, `OM1`, `THETA(5)` -- Krzyzanski 2026 Eq 26, Table 3 and Appendix 1.
+- **Example models:** `Krzyzanski_2026_dexamethasone_3cohort.R` (founding example; 0.30, RSE 11%, giving cohort CL/F of 23.1 / 38.8 / 65.2 L/h).
+- **Notes:** Ratified by the maintainers 2026-11-20 with the Krzyzanski 2026 extraction. Shape `omega_cohort_<param>`: a cohort SD on another log-scale parameter takes that parameter's name (`omega_cohort_lvc`). Distinct from an OMEGA variance (`etalcl ~ var`), which is a random-effect variance, not an `ini()` fixed effect.
 
 ## Nested (multi-level) random effects
 
