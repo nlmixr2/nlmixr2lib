@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cirincione 2017 exenatide glucose, heart-rate and QT model ([doi:10.1002/jcph.882](https://doi.org/10.1002/jcph.882)) -- healthy adults on a stepped continuous IV exenatide infusion.
+- Add Cirincione 2017 meal, glucose, heart rate and QT interval ([doi:10.1002/jcph.933](https://doi.org/10.1002/jcph.933)) -- healthy adults on a drug-free baseline day (breakfast-window and 24-hour models).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
