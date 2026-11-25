@@ -1,0 +1,472 @@
+---
+title: "Tenofovir + emtricitabine and their PBMC anabolites (Dumond 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tenofovir + emtricitabine and their PBMC anabolites (Dumond 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Dumond_2017_tenofovir"))$reference`
+* Article: <https://doi.org/10.1002/psp4.12150> (PMC5321809, open access)
+* Supplement: Supplementary Figures S1-S2 (diagnostic plots) and the two NONMEM
+  control streams (tenofovir/tenofovir diphosphate and
+  emtricitabine/emtricitabine triphosphate), available from the article's
+  landing page and from Europe PMC.
+
+Dumond 2017 asks whether markers of *biologic* ageing explain variability in
+the pharmacokinetics of tenofovir (TFV, given as tenofovir disoproxil fumarate,
+TDF) and emtricitabine (FTC) and of their active intracellular anabolites,
+tenofovir diphosphate (TFV-dp) and emtricitabine triphosphate (FTC-tp), in
+peripheral blood mononuclear cells (PBMCs). Two independently fitted models
+share one structure (Figure 1): first-order absorption into a two-compartment
+plasma model, linked by a unidirectional, linear process to a PBMC
+compartment whose volume is fixed to 1. The headline finding is that the
+first-order loss of both anabolites from PBMCs rises with log2 expression of
+**p16INK4a** in peripheral blood CD3+ T cells, a marker of cellular senescence,
+while chronologic age, frailty and background regimen do not affect clearance.
+
+The paper's two models are packaged as two files that share this article:
+
+| Model | Plasma analyte | PBMC analyte | Covariates |
+|-------|----------------|--------------|------------|
+| `Dumond_2017_tenofovir` | TFV | TFV-dp | CRCL on CLp; p16INK4a on CLpbmc |
+| `Dumond_2017_emtricitabine` | FTC | FTC-tp | CRCL on CL; AGE on Vc; p16INK4a on CLpbmc |
+
+The two models link plasma to the PBMC compartment differently. For TFV, an
+estimated clearance CLpbi multiplies the plasma concentration to form TFV-dp.
+For FTC, a fraction `FRAC` of the total plasma clearance leaves the body and
+the remainder `1 - FRAC` enters the PBMC compartment. The authors report that
+the FRAC form was unstable for TFV. Because the PBMC volume is fixed to 1 L,
+the tabulated PBMC clearances (L/h) enter the packaged models as the rate
+constants `kinf_pbmc` and `keff_pbmc` (1/h), with the same numeric values.
+
+# Population
+
+Ninety-one HIV-infected adults on once-daily TDF/FTC 300/200 mg with either
+efavirenz 600 mg (n = 60) or atazanavir/ritonavir 300/100 mg (n = 31), at
+steady state for at least 2 weeks, were recruited at two North Carolina clinics
+(NCT01180075). Seventy-nine contributed four samples over a dosing interval
+(predose, 2 h, 4-6 h and 10-14 h) and twelve older, non-frail participants
+contributed eleven samples. Table 1 reports median (range) age 49 (22-73)
+years, BMI 28.3 (17.3-44.3) kg/m^2, Cockcroft-Gault creatinine clearance 107
+(43-227) mL/min and log2 p16INK4a 2.0 (0.16-3.9); 33% were women, 58% African
+American and 35% White. Three participants were frail and nineteen prefrail.
+
+```{r population}
+str(rxode2::rxode(readModelDb("Dumond_2017_tenofovir"))$population, max.level = 1)
+```
+
+# Source trace
+
+All values are from Table 2, 'Final NONMEM estimate (RSE%)' column. The model
+structure is from Figure 1 and the two supplementary control streams.
+
+| Quantity | TFV model | FTC model | Source |
+|----------|-----------|-----------|--------|
+| `lka` | 0.623 1/h | 0.298 1/h | Table 2, 'ka (1/hr)' |
+| `lcl` (at CRCL 107.24 mL/min) | 43.2 L/h (CLp) | 15.6 L/h (total CL) | Table 2, 'CLp' / 'CL' |
+| `lvc` | 186 L | 19.7 L (at age 49) | Table 2, 'Vc (L)' |
+| `lq` | 176 L/h | 7.77 L/h | Table 2, 'CLd (L/hr)' |
+| `lvp` | 800 L | 98.5 L | Table 2, 'Vp (L)' |
+| `ltlag` | 0.472 h | -- | Table 2, 'Lag time (hr)' |
+| `lkinf_pbmc` | 2.27e-3 (CLpbi) | derived, `(1 - frac) * cl` | Table 2, 'CLpbi'; Figure 1 |
+| `frac` | -- | 0.986 | Table 2, 'FRAC' |
+| `lkeff_pbmc` (at log2 p16 = 2.04) | 2.20e-3 | 2.70e-2 | Table 2, 'CLpbmc (L/hr)' |
+| `e_crcl_cl` | 0.698 | 0.551 | Table 2, 'CrCL on CLp'; footnote b |
+| `e_age_vc` | -- | 2.47 | Table 2, 'Age on Vc'; footnote c |
+| `e_p16ink4a_tcell_keff_pbmc` | 0.460 | 0.495 | Table 2, 'p16INK4a on CLpmbc'; footnote a |
+| IIV CL / Vc | 37.4% / 136%, cov 0.22 | 34.6% / 67.8%, cov -0.07 | Table 2, IIV block |
+| IIV Vp | 34.6% | -- | Table 2 |
+| IIV CLpbmc | 33.2% | 53.8% (cov with Vc 0.13, with CL 0.05) | Table 2 |
+| IIV CLpbi | 44.7% | -- | Table 2 |
+| `propSd` plasma | 0.283 | 0.387 | Table 2, 'Plasma (proportional)' |
+| `propSd_Cpbmc_*` | 0.387 | 0.424 | Table 2, 'PBMC (proportional)' |
+| Covariate forms | `(CRCL/107.24)^theta`, `exp(theta * (log2 p16 - 2.04))` | the same plus `(AGE/49)^theta` | Table 2 footnotes a-c; control streams |
+| ODEs | plasma-concentration-driven TFV-dp formation, not subtracted from plasma | `FRAC * CL` out of the body, `(1 - FRAC) * CL` into PBMC | Figure 1; control-stream `$DES` / `$PK` |
+
+## Which scale is the IIV column on?
+
+Table 2 prints IIV as %CV. Two readings are possible: `omega^2 = (CV/100)^2`
+or the lognormal `omega^2 = log(1 + (CV/100)^2)`. For the TFV model, the
+table prints both the covariance (0.22) and the correlation (0.434) for CLp
+and Vc, which fixes the scale. The emtricitabine stream's initial `$OMEGA`
+values lie within 3% of the `(CV/100)^2` reading.
+
+```{r iiv-scale}
+cv_tfv <- c(cl = 0.374, vc = 1.36)
+r_sq <- 0.22 / sqrt(prod(cv_tfv^2))
+r_ln <- 0.22 / sqrt(prod(log(1 + cv_tfv^2)))
+
+cv_ftc <- c(vc = 0.678, cl = 0.346, keff = 0.538)
+init_ftc <- c(vc = 0.446, cl = 0.117, keff = 0.288) # control stream $OMEGA BLOCK(3) diagonal
+
+iiv_tab <- data.frame(
+  check = c("TFV corr(CLp, Vc) implied by cov 0.22", paste("FTC initial / final omega,", names(cv_ftc))),
+  printed = c(0.434, rep(NA, 3)),
+  sq_reading = c(r_sq, unname(init_ftc / cv_ftc^2)),
+  lognormal_reading = c(r_ln, unname(init_ftc / log(1 + cv_ftc^2)))
+)
+iiv_tab |>
+  dplyr::rename("Check" = check, "Printed" = printed, "(CV/100)^2 reading" = sq_reading,
+                "log(1 + CV^2) reading" = lognormal_reading) |>
+  knitr::kable(digits = 3,
+             caption = "The (CV/100)^2 reading reproduces the printed correlation and keeps the FTC initial-to-final omega shift near 1.")
+stopifnot(
+  abs(r_sq - 0.434) < 0.01, # (CV/100)^2 closes
+  abs(r_ln - 0.434) > 0.1, # the lognormal reading does not
+  all(abs(init_ftc / cv_ftc^2 - 1) < 0.05)
+)
+```
+
+Table 2 also prints the FTC correlations -0.397, 0.411 and 0.248. These are
+exactly the correlations of the stream's initial block
+(`-0.0908 / sqrt(0.446 * 0.117) = -0.397`, and so on), not of the printed
+final covariances. The packaged model uses the final covariances.
+
+# Virtual cohort
+
+Table 1 gives only median and range for each covariate, so the cohort below is
+drawn from truncated distributions centred on those medians. Values outside
+the observed range are rejected and redrawn, not clamped. Each participant
+receives both drugs, as in the study.
+
+```{r cohort}
+n_sub <- 200
+rxode2::rxSetSeed(20170201)
+
+draw_truncated <- function(n, rfun, lo, hi) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- rfun(2 * n)
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
+cohort <- data.frame(
+  id = seq_len(n_sub),
+  AGE = draw_truncated(n_sub, function(n) rnorm(n, 49, 11), 22, 73),
+  CRCL = draw_truncated(n_sub, function(n) rlnorm(n, log(107), 0.3), 43, 227),
+  LOG2P16 = draw_truncated(n_sub, function(n) rnorm(n, 2.0, 0.7), 0.16, 3.9)
+) |>
+  dplyr::mutate(P16INK4A_TCELL = 2^LOG2P16)
+
+summary(cohort[, c("AGE", "CRCL", "LOG2P16")])
+```
+
+# Steady-state simulation
+
+Both drugs are dosed once daily to steady state (`ss = 1`, as in the NONMEM
+analysis). Doses are molar, because the paper analysed all data in umol/L:
+300 mg TDF is 472.06 umol and 200 mg FTC is 808.93 umol.
+
+```{r simulate}
+tau <- 24
+doses <- c(tenofovir = 300 / 635.52 * 1000, emtricitabine = 200 / 247.24 * 1000)
+obs_times <- sort(unique(c(seq(0, 2, by = 0.1), seq(2.25, 24, by = 0.25))))
+
+make_events <- function(cov, dose) {
+  dosing <- cov |>
+    dplyr::mutate(time = 0, amt = dose, evid = 1L, cmt = "depot", ii = tau, ss = 1L, dvid = NA_integer_)
+  obs <- tidyr::crossing(cov, time = obs_times) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central", ii = 0, ss = 0L, dvid = 1L)
+  dplyr::bind_rows(dosing, obs) |> dplyr::arrange(id, time, dplyr::desc(evid)) |> as.data.frame()
+}
+
+mod_tfv <- rxode2::rxode(readModelDb("Dumond_2017_tenofovir"))
+mod_ftc <- rxode2::rxode(readModelDb("Dumond_2017_emtricitabine"))
+# Each model must integrate its own ODEs; a cl/vc pair must not be silently
+# replaced by a closed-form linear solution.
+stopifnot(is.null(mod_tfv$linCmt), is.null(mod_ftc$linCmt))
+
+sim_one <- function(mod, dose, drug, keep) {
+  rxode2::rxSolve(mod, make_events(cohort, dose), returnType = "data.frame",
+                  maxsteps = 1e6, addDosing = FALSE) |>
+    dplyr::select(id, time, dplyr::all_of(keep)) |>
+    dplyr::mutate(drug = drug)
+}
+keep_tfv <- c("Cc", "Cpbmc_tfvdp", "cl", "kinf_pbmc", "keff_pbmc")
+keep_ftc <- c("Cc", "Cpbmc_ftctp", "cl", "kinf_pbmc", "keff_pbmc")
+sim_tfv <- sim_one(mod_tfv, doses[["tenofovir"]], "tenofovir", keep_tfv) |>
+  dplyr::rename(Cpbmc = Cpbmc_tfvdp)
+sim_ftc <- sim_one(mod_ftc, doses[["emtricitabine"]], "emtricitabine", keep_ftc) |>
+  dplyr::rename(Cpbmc = Cpbmc_ftctp)
+sim <- dplyr::bind_rows(sim_tfv, sim_ftc)
+stopifnot(!anyNA(sim$Cc), !anyNA(sim$Cpbmc), dplyr::n_distinct(sim$id) == n_sub)
+```
+
+# Replicating Figures 2 and 3
+
+Figures 2 and 3 are visual predictive checks over the time after the last dose
+at steady state. The red solid line is the median of the model predictions.
+The maintainers digitised that line from the published raster figures,
+calibrating each panel on its axis ticks. Where observations cover the line,
+no points were read: the early plasma peak of FTC and part of the early TFV
+profile. Resolution is about 0.1 h and 3% in concentration.
+
+```{r digitised}
+digitised <- tibble::tribble(
+  ~drug, ~matrix, ~time, ~conc,
+  "tenofovir", "plasma", 2.5, 0.79,
+  "tenofovir", "plasma", 4.8, 0.59,
+  "tenofovir", "plasma", 6.9, 0.52,
+  "tenofovir", "plasma", 8.7, 0.46,
+  "tenofovir", "plasma", 10.7, 0.42,
+  "tenofovir", "plasma", 18.3, 0.39,
+  "tenofovir", "plasma", 23.8, 0.32,
+  "tenofovir", "PBMC", 6, 0.48,
+  "tenofovir", "PBMC", 12, 0.48,
+  "tenofovir", "PBMC", 18, 0.48,
+  "emtricitabine", "plasma", 13.8, 1.14,
+  "emtricitabine", "plasma", 16.2, 0.95,
+  "emtricitabine", "plasma", 19.9, 0.77,
+  "emtricitabine", "plasma", 23.3, 0.62,
+  "emtricitabine", "PBMC", 0.4, 14.7,
+  "emtricitabine", "PBMC", 2.7, 17.0,
+  "emtricitabine", "PBMC", 4.8, 18.5,
+  "emtricitabine", "PBMC", 10.9, 18.5,
+  "emtricitabine", "PBMC", 16.0, 17.6,
+  "emtricitabine", "PBMC", 20.2, 16.0,
+  "emtricitabine", "PBMC", 23.6, 14.1
+)
+```
+
+```{r vpc, fig.height = 6, fig.cap = "Replicates Figures 2 and 3 of Dumond 2017: steady-state 5th, 50th and 95th percentiles of the simulated cohort (lines, without residual error) against the median-prediction line digitised from the published figures (points)."}
+pct <- sim |>
+  tidyr::pivot_longer(c(Cc, Cpbmc), names_to = "matrix", values_to = "conc") |>
+  dplyr::mutate(matrix = ifelse(matrix == "Cc", "plasma", "PBMC")) |>
+  dplyr::group_by(drug, matrix, time) |>
+  dplyr::summarise(p05 = quantile(conc, 0.05), p50 = median(conc), p95 = quantile(conc, 0.95),
+                   .groups = "drop")
+
+ggplot(pct, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.2) +
+  geom_line(aes(y = p50), colour = "firebrick") +
+  geom_point(data = digitised, aes(y = conc), shape = 21, fill = "white") +
+  facet_wrap(~ drug + matrix, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time after last dose (h)", y = "Concentration (umol/L)")
+```
+
+```{r vpc-gate}
+cmp_fig <- digitised |>
+  dplyr::rowwise() |>
+  dplyr::mutate(simulated = {
+    p <- pct[pct$drug == drug & pct$matrix == matrix, ]
+    stats::approx(p$time, p$p50, xout = time)$y
+  }) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(ratio = simulated / conc)
+stopifnot(nrow(cmp_fig) == nrow(digitised), !anyNA(cmp_fig$simulated))
+
+cmp_fig |>
+  dplyr::mutate(ratio = round(ratio, 2), simulated = signif(simulated, 3)) |>
+  dplyr::rename("Drug" = drug, "Matrix" = matrix, "Time (h)" = time,
+                "Digitised median (umol/L)" = conc, "Simulated median (umol/L)" = simulated,
+                "Simulated / digitised" = ratio) |>
+  knitr::kable(caption = "Simulated cohort median against the digitised prediction median of Figures 2 and 3.")
+
+# Centre and robust envelope only: the cohort is a different draw from the
+# paper's, and the digitisation carries a few percent of reading error. Read in
+# mass rather than molar units, the TFV dose would move every plasma ratio by
+# a factor of 2.2. A mis-transcribed clearance, volume or PBMC rate constant
+# moves the affected panel by tens of percent.
+stopifnot(
+  abs(median(log(cmp_fig$ratio))) < log(1.15),
+  quantile(abs(log(cmp_fig$ratio)), 0.9) < log(1.4)
+)
+```
+
+The simulated medians follow the published prediction medians to within
+about 10% over most of the interval. The late plasma tails (18-24 h) of both
+drugs sit about 10-12% below the digitised lines, probably because the
+published cohort's actual dosing histories and covariates differ from the
+virtual cohort's. The anabolite panels are nearly flat over
+the dosing interval, as in the paper. The PBMC half-lives are
+`log(2) / 0.0022 = 315 h` for TFV-dp and `log(2) / 0.027 = 26 h` for FTC-tp
+at the median p16INK4a.
+
+# PKNCA validation
+
+Neither model's paper reports NCA parameters, so these checks are internal
+identities that the numerical solution must satisfy at steady state.
+
+* **Plasma.** `Dose / AUC0-24` must equal each participant's own total plasma
+  clearance (bioavailability 1; for FTC the total includes the `1 - FRAC`
+  fraction routed to PBMCs).
+* **PBMC.** At steady state the average PBMC concentration must equal
+  `kinf_pbmc / keff_pbmc * Cavg,plasma`, because input and loss balance over
+  one dosing interval.
+
+```{r pknca}
+conc_df <- sim |>
+  tidyr::pivot_longer(c(Cc, Cpbmc), names_to = "analyte", values_to = "conc") |>
+  dplyr::mutate(treatment = paste(drug, analyte)) |>
+  dplyr::filter(!is.na(conc))
+stopifnot(all(tapply(conc_df$time, conc_df$treatment, min) == 0))
+dose_df <- sim |>
+  dplyr::distinct(drug, id) |>
+  tidyr::crossing(analyte = c("Cc", "Cpbmc")) |>
+  dplyr::mutate(treatment = paste(drug, analyte), time = 0, amt = unname(doses[drug]))
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(conc_df), conc ~ time | treatment + id,
+                             concu = "umol/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(dose_df), amt ~ time | treatment + id, doseu = "umol")
+intervals <- data.frame(start = 0, end = tau, cmax = TRUE, tmax = TRUE, cmin = TRUE,
+                        auclast = TRUE, cav = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca <- as.data.frame(nca_res$result)
+if (is.list(nca$PPORRES)) {
+  nca$PPORRES <- vapply(nca$PPORRES, function(z) as.numeric(z)[1], numeric(1))
+}
+
+nca |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "cav")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(median = signif(median(PPORRES), 3), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename("Analyte" = treatment, "Cmax (umol/L)" = cmax, "Tmax (h)" = tmax,
+                "Cmin (umol/L)" = cmin, "Cavg (umol/L)" = cav) |>
+  knitr::kable(caption = "Cohort medians of steady-state NCA (Cc = plasma parent; Cpbmc = PBMC anabolite).")
+```
+
+```{r identities}
+indiv <- sim |>
+  dplyr::group_by(drug, id) |>
+  dplyr::summarise(cl = cl[1], kinf = kinf_pbmc[1], keff = keff_pbmc[1], .groups = "drop")
+nca_w <- nca |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cav")) |>
+  dplyr::mutate(drug = sub(" .*$", "", treatment), analyte = sub("^.* ", "", treatment)) |>
+  dplyr::select(drug, id, analyte, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = c(analyte, PPTESTCD), values_from = PPORRES) |>
+  dplyr::inner_join(indiv, by = c("drug", "id")) |>
+  dplyr::mutate(
+    pct_cl = 100 * (doses[drug] / Cc_auclast / cl - 1),
+    pct_pbmc = 100 * (Cpbmc_cav / (kinf / keff * Cc_cav) - 1)
+  )
+stopifnot(nrow(nca_w) == 2 * n_sub, !anyNA(nca_w$pct_cl), !anyNA(nca_w$pct_pbmc))
+
+nca_w |>
+  dplyr::group_by(drug) |>
+  dplyr::summarise(
+    `median |Dose/AUC vs CL| (%)` = signif(median(abs(pct_cl)), 2),
+    `90th pct |Dose/AUC vs CL| (%)` = signif(quantile(abs(pct_cl), 0.9), 2),
+    `median |PBMC balance| (%)` = signif(median(abs(pct_pbmc)), 2),
+    `90th pct |PBMC balance| (%)` = signif(quantile(abs(pct_pbmc), 0.9), 2)
+  ) |>
+  knitr::kable(caption = "Steady-state identities per participant (trapezoidal AUC on a 0.1-0.25 h grid).")
+
+# Each side of both identities uses the same drawn parameters, so the residual
+# is trapezoidal and steady-state-search error only. A mis-specified flux
+# (for example FTC influx not removed from plasma, or a PBMC volume other than
+# 1) moves these by whole percent or more.
+stopifnot(
+  median(abs(nca_w$pct_cl)) < 0.5, quantile(abs(nca_w$pct_cl), 0.9) < 1,
+  median(abs(nca_w$pct_pbmc)) < 0.5, quantile(abs(nca_w$pct_pbmc), 0.9) < 1
+)
+```
+
+# The p16INK4a effect
+
+At a fixed plasma exposure, the steady-state anabolite average scales with
+`1 / keff_pbmc`. Across the observed log2 p16INK4a range (0.16 to 3.9), the
+typical anabolite exposure therefore falls by a factor of
+`exp(0.460 * 3.74) = 5.6` for TFV-dp and `exp(0.495 * 3.74) = 6.4` for
+FTC-tp. The paper states this direction in its Discussion ("PBMC CL increases
+with higher expression of p16INK4a ... associated with lower TFV-dp and FTC-tp
+exposures").
+
+```{r p16, fig.cap = "Typical steady-state PBMC anabolite profile at the minimum, median and maximum log2 p16INK4a of Table 1 (CRCL 107.24 mL/min, age 49)."}
+p16_levels <- c(0.16, 2.04, 3.9)
+typ_cov <- data.frame(id = seq_along(p16_levels), AGE = 49, CRCL = 107.24,
+                      P16INK4A_TCELL = 2^p16_levels)
+typ <- dplyr::bind_rows(
+  rxode2::rxSolve(rxode2::zeroRe(mod_tfv), make_events(typ_cov, doses[["tenofovir"]]),
+                  returnType = "data.frame", maxsteps = 1e6, addDosing = FALSE) |>
+    dplyr::transmute(id, time, Cpbmc = Cpbmc_tfvdp, drug = "TFV-dp"),
+  rxode2::rxSolve(rxode2::zeroRe(mod_ftc), make_events(typ_cov, doses[["emtricitabine"]]),
+                  returnType = "data.frame", maxsteps = 1e6, addDosing = FALSE) |>
+    dplyr::transmute(id, time, Cpbmc = Cpbmc_ftctp, drug = "FTC-tp")
+) |>
+  dplyr::mutate(log2_p16 = factor(p16_levels[id]))
+
+ggplot(typ, aes(time, Cpbmc, colour = log2_p16)) +
+  geom_line() +
+  facet_wrap(~drug, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time after last dose (h)", y = "PBMC concentration (umol/L)", colour = "log2 p16INK4a")
+
+ratio <- typ |>
+  dplyr::group_by(drug, log2_p16) |>
+  dplyr::arrange(time, .by_group = TRUE) |>
+  dplyr::summarise(avg = sum(diff(time) * (head(Cpbmc, -1) + tail(Cpbmc, -1)) / 2) / tau,
+                   .groups = "drop") |>
+  dplyr::group_by(drug) |>
+  dplyr::summarise(fold = avg[log2_p16 == "0.16"] / avg[log2_p16 == "3.9"])
+expected <- c(`TFV-dp` = exp(0.460 * 3.74), `FTC-tp` = exp(0.495 * 3.74))
+knitr::kable(dplyr::mutate(ratio, expected = expected[drug]), digits = 3,
+             caption = "Fold change in mean steady-state anabolite concentration, lowest vs highest p16INK4a.")
+# Deterministic typical-value solves on a fixed plasma profile: the fold change
+# is the closed-form exp(coef * 3.74), up to grid-averaging error.
+# Realised agreement is better than 1e-4; 0.005 still fails on a wrong
+# coefficient or centring value, which moves the fold by tens of percent.
+stopifnot(nrow(ratio) == 2L, all(abs(ratio$fold / expected[ratio$drug] - 1) < 0.005))
+```
+
+# Assumptions and deviations
+
+* **TFV-dp formation does not remove drug from plasma.** Figure 1's printed
+  equation subtracts `CLpbi * Central` from the plasma central compartment.
+  The supplementary control stream, with which the estimates were made, does
+  not (`DADT(4)=KI*CP-K40*A(4)` with no matching term in `DADT(2)`). The
+  code's form is used. The difference is 2.27e-3 against 43.2 L/h, which is
+  0.005% of plasma clearance. For FTC, the figure and the code agree that the
+  PBMC influx `(1 - FRAC) * CL` leaves plasma.
+* **IIV on TFV peripheral volume.** The deposited TFV control stream fixes
+  that variance to 0.001 and its initial estimates differ from Table 2, so it
+  is not the final run. Table 2 reports an estimated IIV on Vp (34.6%, RSE 49%,
+  bootstrap CI 20.0-74.2%), and that is what is encoded. The structure
+  otherwise matches the stream.
+* **IIV scale.** `omega^2 = (CV/100)^2`, shown above. The FTC block uses the
+  printed covariances. The printed FTC correlations reproduce the stream's
+  initial block, not the final estimates.
+* **PBMC volume and units.** Vpbmc is fixed to 1 L, so the PBMC "concentration"
+  is the compartment amount on the umol/L axis of Figures 2 and 3. The paper
+  does not state how the assay's fmol per million cells were converted to
+  umol/L, so the packaged PBMC outputs are on the paper's analysis scale.
+* **Molar dosing.** The paper does not state the dose amount it entered.
+  472.06 umol of TFV per 300 mg TDF tablet (one tenofovir per TDF molecule)
+  and 808.93 umol per 200 mg FTC capsule reproduce the plasma medians of
+  Figures 2 and 3. Dosing 300 mg of TFV mass would double the TFV
+  concentrations.
+* **Centring value for creatinine clearance.** Table 2 footnote b ends "and
+  2.04 is the population median estimated creatinine clearance", copied from
+  footnote a. The equation in the same footnote and both control streams use
+  107.24 mL/min, which is used here.
+* **p16INK4a scale.** The paper's covariate is log2 expression. The packaged
+  models take the linear expression (`P16INK4A_TCELL = 2^log2 value`) and apply
+  `log2()` internally. Participants without a p16INK4a measurement (all
+  intensively sampled participants) were assigned the median in the analysis,
+  so supply `2^2.04` for such participants.
+* **FRAC prose.** Results says the FTC fraction to PBMCs "is 1.6%". Table 2's
+  `FRAC = 0.986` gives 1.4%; the control-stream initial value 0.984 gives
+  1.6%. The table value is used.
+* **Virtual cohort.** Age, creatinine clearance and log2 p16INK4a are drawn
+  independently from truncated normal (age, log2 p16INK4a) or lognormal
+  (creatinine clearance) distributions centred on the Table 1 medians. The
+  spreads are assumed; Table 1 gives only ranges. The age-creatinine-clearance
+  correlation is ignored.
+* **Errata.** Europe PMC lists no correction linked to this article (checked
+  2026-11-25).
