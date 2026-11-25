@@ -450,6 +450,8 @@ navbar:
         href: articles/Wang_2024_amphenmulin.html
       - text: "Amphenmulin pkpd index (Wang 2024)"
         href: articles/Wang_2024_amphenmulin.html
+      - text: "AmphotericinB deoxycholate (Le 2019)"
+        href: articles/Le_2019_amphotericinB_deoxycholate.html
       - text: "AmphotericinB deoxycholate (Stott 2018)"
         href: articles/Stott_2018_amphotericinB_deoxycholate.html
       - text: "AmphotericinB liposomal (Chu 2026)"
@@ -12234,6 +12236,7 @@ articles:
   - articles/LeTilly_2021_trastuzumab
   - articles/Le_2015_lampalizumab
   - articles/Le_2015_lampalizumab_cyno
+  - articles/Le_2019_amphotericinB_deoxycholate
   - articles/Le_2025_meropenem
   - articles/Lebedeva_2012_ErbB23signaling_qsp
   - articles/Leber_2023_immunosuppressants_hemoperfusion

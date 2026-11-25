@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Astrand 2019 ticagrelor PK/PD (platelet reactivity, PRU) ([doi:10.1111/bcp.13812](https://doi.org/10.1111/bcp.13812)) -- adults with stable coronary artery disease or a prior myocardial infarction.
+- Add Le 2019 amphotericin B deoxycholate PK/PD ([doi:10.1128/AAC.01739-18](https://doi.org/10.1128/AAC.01739-18)) -- Vietnamese adults with HIV-associated disseminated talaromycosis (Talaromyces marneffei fungaemia).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
