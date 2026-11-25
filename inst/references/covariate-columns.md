@@ -1308,6 +1308,17 @@ Do **not** collapse the two onto one column, and do not use a single `_PRE` suff
 - **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (additive baseline of the HR Emax equation, `hr = HR_BL + (rmax_hr - HR_BL) * conc/(conc + ec50_hr) + ...`; no covariate effect is estimated on it). `Sang_2021_doxorubicin_human_qsp.R` (initial condition of the HR turnover state; 70 beats/min typical, Sang 2021 Table 1).
 - **Notes:** General scope. Completes the `_BL` anchor set with `MAP_BL`, `SBP_BL` and `DBP_BL`. `HR_BL` was not in the ratified name list of, but Dings 2026 Eq. A12 requires the at-diagnosis heart-rate anchor as the additive baseline of the HR Emax term, so it is registered here as the mechanical fourth member of the same ratified family rather than as a new concept.
 
+### RR_DELTA (**canonical for baseline-adjusted, placebo-adjusted change in the RR interval**)
+- **Description:** Baseline-adjusted, time-matched placebo-adjusted change in the electrocardiographic RR interval (the "double-delta" DeltaDeltaRR): the change of RR from the subject's predose baseline in the active-treatment period, minus the change from baseline at the matching time in the same subject's placebo period, `RR_DELTA = (RR - RR_baseline)_active - (RR - RR_baseline)_placebo`. Positive values are relative RR lengthening (heart-rate slowing); `RR_DELTA = 0` means no drug-related change in heart rate. Time-varying. Consumed as a regressor in concentration-QTc models that correct for heart rate by regression rather than (or on top of) a formula-based QT correction.
+- **Units:** ms
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- entered uncentred as a linear term; `RR_DELTA = 0` is the heart-rate-neutral anchor at which the model intercept is defined.
+- **Source aliases:**
+  - `DeltaDeltaRR` / `DeltaDeltaRR_ij` -- Song 2016 Equation 1 and Table 2 (written with Greek capital deltas); RR = 60000 / heart rate in ms; baseline = mean of three predose values of the period; same orientation, no value transformation.
+- **Example models:** `Song_2016_olmesartan_QTc.R`, `Song_2016_olmesartan_QTcF.R`, `Song_2016_olmesartan_QTcP.R` (term `e_rr_delta_e0 * (1 + etae_rr_delta_e0) * RR_DELTA` added to the placebo-adjusted QT endpoint; coefficient 0.128 ms/ms for uncorrected QT, 0.000336 ms/ms for QTcF and 0.00646 ms/ms for QTcP).
+- **Notes:** Member of the signed, comparator-adjusted `<BIOMARKER>_DELTA` family (`LDLC_DELTA`, `PGE2_DELTA`), with the same sign convention (active minus comparator). Distinct from the PD output `d_rr`, which is the single-delta change from baseline observed as a model endpoint, and from `rr`, the absolute interval: `RR_DELTA` is a placebo-adjusted covariate column supplied to the model, on the order of -350 to +300 ms in the founding thorough QTc study (Song 2016 Figure 1). Supply it on the same scale as the endpoint: a model whose observation is placebo-adjusted (DeltaDeltaQTc) needs the placebo-adjusted RR, not the single-delta change.
+
 ### DBP_BL (**canonical for diastolic blood pressure at treatment baseline**)
 - **Description:** Diastolic blood pressure at the moment treatment starts. See the `_PRESURG` / `_BL` anchor-pair note above.
 - **Units:** mmHg
@@ -8819,6 +8830,17 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
   - `Conc_i,t` / `valemetostat plasma concentration` (Tachibana 2025 Methods equation and Table 2; observed concentration of a PK sample drawn within 0-15 min after the ECG; no value transformation) -- used in `Tachibana_2025_valemetostat_QTcF.R` and `Tachibana_2025_valemetostat_QTcP.R`.
 - **Example models:** `Tachibana_2025_valemetostat_QTcF.R`, `Tachibana_2025_valemetostat_QTcP.R` (PD-only linear mixed-effects concentration-DeltaQTc models in patients with relapsed/refractory NHL, AML or ALL).
 - **Notes:** Specific scope; plasma matrix; mass units. Member of the `CP_<drug>_<units>` family. The registry's valemetostat population PK model, `Inoue_2025_valemetostat.R`, works in nmol and nmol/L because its binding sub-model is parameterised in molar units; a user driving these QTc models from it must convert the total concentration `Cc` to ng/mL with the valemetostat molar mass, which neither paper states.
+
+### CP_OLMESARTAN_NGML (**canonical for instantaneous olmesartan plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of olmesartan (the active moiety of the prodrug olmesartan medoxomil; an angiotensin II type 1 receptor antagonist), supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in the PD-only linear mixed-effects concentration-QTc models of Song 2016.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the linear term `slope * (1 + etaslope) * CP_OLMESARTAN_NGML`; the slopes are reported in ms per ng/mL (Song 2016 Table 2), so no in-model unit rescaling is needed. Reference values observed: mean (SD) Cmax 863.3 (268.7) ng/mL after a single 40 mg dose and 2440 (678) ng/mL after 160 mg olmesartan medoxomil in healthy adults (Mendell 2016, doi:10.1002/jcph.610).
+- **Source aliases:**
+  - `OMconc` (Song 2016 Equation 1 and Table 2; LC-MS/MS plasma concentration at the ECG time points; no value transformation) -- used in `Song_2016_olmesartan_QTc.R`, `Song_2016_olmesartan_QTcF.R` and `Song_2016_olmesartan_QTcP.R`.
+- **Example models:** `Song_2016_olmesartan_QTc.R`, `Song_2016_olmesartan_QTcF.R`, `Song_2016_olmesartan_QTcP.R` (PD-only linear mixed-effects concentration-DeltaDeltaQTc models in a healthy-volunteer thorough QTc study).
+- **Notes:** Specific scope; plasma matrix; mass units of olmesartan (not of the medoxomil ester). Member of the `CP_<drug>_<units>` family. The registry's olmesartan population PK model, `Song_2013_olmesartan.R`, predicts `Cc` in ng/mL and can drive these models directly.
 
 ### AUCR (**canonical for the drug-drug-interaction AUC ratio of the modelled drug**)
 - **Description:** Dimensionless fold change in the *modelled* (victim) drug's own area under the plasma concentration-time curve caused by a co-administered interacting drug (perpetrator), relative to the same drug given alone: `AUCR = AUC(victim, with precipitant) / AUC(victim, without precipitant)`. Carries the *magnitude* of a pharmacokinetic drug-drug interaction as a continuous covariate rather than as a binary co-medication flag, so a model can be simulated across a graded range of interaction strengths (and can be inverted to answer "how strong an interaction is still acceptable at this dose?"). Typically enters apparent clearance as a divisor when the dose is fixed, since at constant dose and constant bioavailability `AUC` is inversely proportional to `CL/F`: `cl = exp(lcl) * <other covariate terms> / AUCR`. Values are usually taken from a drug-interaction compilation (e.g. the University of Washington Drug Interaction Database) rather than measured in the modelling dataset.

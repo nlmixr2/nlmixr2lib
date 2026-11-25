@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Xiao 2016 ceftolozane/tazobactam plasma and lung ELF ([doi:10.1002/jcph.566](https://doi.org/10.1002/jcph.566)) -- healthy adults, with the simulation model for nosocomial pneumonia patients.
+- Add Song 2016 olmesartan concentration-QTc (QT, QTcF and QTcP) ([doi:10.1002/jcph.572](https://doi.org/10.1002/jcph.572)) -- healthy adults in a thorough QTc study.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

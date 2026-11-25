@@ -6522,6 +6522,12 @@ navbar:
         href: articles/Mo_2018_olaratumab.html
       - text: "Olmesartan (Song 2013)"
         href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
+      - text: "Olmesartan QTc (Song 2016)"
+        href: articles/Song_2016_olmesartan_QTc.html
+      - text: "Olmesartan QTcF (Song 2016)"
+        href: articles/Song_2016_olmesartan_QTc.html
+      - text: "Olmesartan QTcP (Song 2016)"
+        href: articles/Song_2016_olmesartan_QTc.html
       - text: "Olmesartan amlodipine hydrochlorothiazide dbp (Song 2013)"
         href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
       - text: "Olmesartan amlodipine hydrochlorothiazide sbp (Song 2013)"
@@ -12919,6 +12925,7 @@ articles:
   - articles/Soliman_2025_omeprazole
   - articles/Solms_2020_BAY94_9027
   - articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide
+  - articles/Song_2016_olmesartan_QTc
   - articles/Song_2017_vancomycin
   - articles/Song_2019_dexmedetomidine
   - articles/Song_2022_danofloxacin_carp
