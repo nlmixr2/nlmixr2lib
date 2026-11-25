@@ -8566,6 +8566,8 @@ navbar:
         href: articles/Mehta_2018_fluticasoneFuroate_umeclidinium_vilanterol.html
       - text: "Umeclidinium (Mehta 2020)"
         href: articles/Mehta_2020_fluticasoneFuroate_umeclidinium_vilanterol.html
+      - text: "Umeclidinium (PeneDumitrescu 2016)"
+        href: articles/PeneDumitrescu_2016_umeclidinium.html
       - text: "Unecritinib (Yang 2021)"
         href: articles/Yang_2021_unecritinib.html
       - text: "UnfractionatedHeparin (AlSallami 2016)"
@@ -11379,6 +11381,7 @@ articles:
   - articles/Pejcic_2024_clopidogrel
   - articles/Pelligand_2016_robenacoxib_cat
   - articles/Pelligand_2020_torasemide_dog
+  - articles/PeneDumitrescu_2016_umeclidinium
   - articles/Peng_2014_MK3577
   - articles/Peng_2024_SAL003
   - articles/Peng_2025_meropenem

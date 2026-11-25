@@ -1,0 +1,444 @@
+---
+title: "Topical umeclidinium (Pene Dumitrescu 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Topical umeclidinium (Pene Dumitrescu 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Model: `PeneDumitrescu_2016_umeclidinium`
+* Description: `r rxode2::rxode(readModelDb("PeneDumitrescu_2016_umeclidinium"))$description`
+* Citation: `r rxode2::rxode(readModelDb("PeneDumitrescu_2016_umeclidinium"))$reference`
+* Article (open access): <https://doi.org/10.1111/cts.12406> (PMC5351336)
+
+Umeclidinium (UMEC), a long-acting muscarinic antagonist marketed as an inhaled
+COPD therapy, was studied as a topical treatment for primary hyperhidrosis.
+Healthy men received a single dose of [14C]UMEC solution on one axilla or palm
+for 8 h, and plasma [14C]UMEC was measured by accelerator mass spectrometry
+(AMS). Only the occluded-axilla cohort had enough quantifiable concentrations
+for modelling. Because UMEC kinetics after dermal dosing are absorption-rate
+limited, those data were pooled with 30-min intravenous infusion data from a
+prior study so that absorption and disposition could be separated. The final
+model (Figure 2 of the paper) is two-compartment with linear elimination and
+two sequential absorption processes: a fraction F1 of the bioavailable dermal
+dose enters the central compartment at a constant rate, and the remainder is
+absorbed first-order from a skin pool after the lag time Tlag.
+
+No correction notice for the article was registered with CrossRef, and none
+was found on Europe PMC, as of 2026-11-25.
+
+# Population
+
+```{r population}
+pop <- rxode2::rxode(readModelDb("PeneDumitrescu_2016_umeclidinium"))$population
+str(pop[c("species", "n_subjects", "n_studies", "age_range", "weight_mean", "sex_female_pct")])
+```
+
+The modelling dataset held 15 subjects: the 6 healthy men of the
+occluded-axilla cohort (Table 1: mean age 47.8 years, range 30-55; mean weight
+82.9 kg; mean BMI 26.0 kg/m2; all White) and 9 subjects given 65 ug UMEC as a
+30-min intravenous infusion in study NCT01110018, whose demographics the paper
+does not report. Each dermal subject received 165 mg of a 1.85% (w/w) solution
+(about 3.06 mg UMEC) over 40 cm2 of one axilla under an occlusive dressing,
+washed off after 8 h. Covariate effects were not investigated.
+
+# Source trace
+
+| Element | Value | Source location |
+|---|---|---|
+| Structure: 2-compartment, linear elimination | -- | Abstract; Results 'Population pharmacokinetic modeling'; Figure 2 |
+| Sequential zero-order (to central) + lagged first-order (from skin pool) absorption | -- | Figure 2; Supplementary Table S3 final row |
+| `lcl` | CL = 55.0 L/h | Table 3 |
+| `lvc` | V1 = 7.56 L | Table 3 |
+| `lq` | CL2 = 40.9 L/h | Table 3 |
+| `lvp` | V2 = 194.7 L | Table 3 |
+| `lka` | Ka = 0.0934 1/h | Table 3 |
+| `ltlag` | Tlag = 10.6 h (also the zero-order duration) | Table 3; see Assumptions |
+| `lfdepot` | F = 0.00275 | Table 3 |
+| `logitffo` | logit(1 - F1), F1 = 0.312 | Table 3 |
+| `etalcl` | CV 98.6% -> omega^2 = log(1 + 0.986^2) = 0.67915 | Table 3 |
+| `etalvc` | CV 50.2% -> 0.22475 | Table 3 |
+| `etalq` | CV 104% -> 0.73314 | Table 3 |
+| `etalka` | CV 139% -> 1.07572 | Table 3 |
+| `etaltlag` | CV 141% -> 1.09464 | Table 3 |
+| `propSd` | 0.406 | Table 3 'Residual error, CV%' 40.6%; Methods (proportional) |
+| Exponential IIV, Theta_i = Theta_TV exp(eta_i) | -- | Methods 'Population PK modeling' |
+| Dermal dose 3060 ug; i.v. 65 ug over 0.5 h | -- | Methods 'Treatments'; Results 'Population pharmacokinetic modeling' |
+
+# Dosing records
+
+A dermal administration is two records at the same time with the same amount:
+one into `depot` (the first-order part, `f(depot) = F * (1 - F1)`, starting
+after `tlag`) and one into `central` with `rate = -2`, so that rxode2 applies
+the modelled zero-order duration (`f(central) = F * F1`). The intravenous dose
+is one infusion into `central` with an explicit rate and `ROUTE_IV = 1`, which
+sets `f(central)` to 1.
+
+```{r events}
+mod <- rxode2::rxode(readModelDb("PeneDumitrescu_2016_umeclidinium"))
+mod_typ <- rxode2::zeroRe(mod)
+
+dose_derm <- 3060 # ug UMEC: 165 mg x 1.85% (Methods 'Treatments', ~3.06 mg)
+dose_iv <- 65 # ug over 0.5 h (Results)
+loq <- 0.348 # pg/mL (Methods 'Analytical methods')
+
+make_events <- function(ids, route, obs_times) {
+  if (route == "dermal") {
+    dose <- dplyr::bind_rows(
+      data.frame(id = ids, time = 0, amt = dose_derm, rate = 0, cmt = "depot", evid = 1L),
+      data.frame(id = ids, time = 0, amt = dose_derm, rate = -2, cmt = "central", evid = 1L)
+    )
+    route_iv <- 0L
+  } else {
+    dose <- data.frame(id = ids, time = 0, amt = dose_iv, rate = dose_iv / 0.5, cmt = "central", evid = 1L)
+    route_iv <- 1L
+  }
+  obs <- expand.grid(id = ids, time = obs_times)
+  obs <- data.frame(id = obs$id, time = obs$time, amt = 0, rate = 0, cmt = "central", evid = 0L)
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::mutate(ROUTE_IV = route_iv) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+```
+
+# Typical-value checks
+
+These checks compare deterministic typical-value solves against closed forms
+that share the same parameters, so tight tolerances are appropriate.
+
+```{r typical}
+th <- mod$theta
+CL <- exp(th[["lcl"]])
+V1 <- exp(th[["lvc"]])
+Q <- exp(th[["lq"]])
+V2 <- exp(th[["lvp"]])
+TLAG <- exp(th[["ltlag"]])
+FD <- exp(th[["lfdepot"]])
+F1 <- 1 - plogis(th[["logitffo"]])
+
+t_iv <- sort(unique(c(seq(0, 2, by = 0.02), seq(2, 400, by = 0.5))))
+t_derm <- sort(unique(c(seq(0, 30, by = 0.05), seq(30, 1000, by = 1))))
+sim_iv_typ <- rxode2::rxSolve(mod_typ, make_events(1L, "iv", t_iv), returnType = "data.frame")
+sim_derm_typ <- rxode2::rxSolve(mod_typ, make_events(1L, "dermal", t_derm), returnType = "data.frame")
+
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+# AUC(0-inf) * CL must equal the bioavailable dose. Doses are in ug, CL in L/h
+# and Cc in pg/mL, so AUC [pg*h/mL] / 1000 * CL [L/h] is in ug.
+recov_iv <- trap(sim_iv_typ$time, sim_iv_typ$Cc) / 1000 * CL / dose_iv
+recov_derm <- trap(sim_derm_typ$time, sim_derm_typ$Cc) / 1000 * CL / (FD * dose_derm)
+
+# Before Tlag only the zero-order input acts: a constant-rate infusion of
+# F * F1 * dose over Tlag into a two-compartment model, which has a closed form.
+k10 <- CL / V1
+k12 <- Q / V1
+k21 <- Q / V2
+s <- k10 + k12 + k21
+alpha <- (s + sqrt(s^2 - 4 * k10 * k21)) / 2
+beta <- (s - sqrt(s^2 - 4 * k10 * k21)) / 2
+R0 <- FD * F1 * dose_derm / TLAG
+c_inf <- function(t) {
+  1000 * R0 / V1 * ((alpha - k21) / ((alpha - beta) * alpha) * (1 - exp(-alpha * t)) +
+    (k21 - beta) / ((alpha - beta) * beta) * (1 - exp(-beta * t)))
+}
+early <- sim_derm_typ |> dplyr::filter(time > 0, time < TLAG)
+rel_err <- max(abs(early$Cc / c_inf(early$time) - 1))
+
+data.frame(
+  check = c(
+    "IV: AUC(0-inf) x CL / dose",
+    "Dermal: AUC(0-inf) x CL / (F x dose)",
+    "Dermal, t < Tlag: max relative error vs zero-order closed form"
+  ),
+  value = signif(c(recov_iv, recov_derm, rel_err), 4)
+) |> knitr::kable()
+
+stopifnot(
+  abs(recov_iv - 1) < 0.01,
+  abs(recov_derm - 1) < 0.01,
+  rel_err < 1e-3
+)
+```
+
+The intravenous check also confirms that the dermal bioavailability is not
+applied to the infusion (it would otherwise recover 0.3% of the dose), and the
+early-phase check confirms that the zero-order input runs over `tlag` rather
+than as a bolus.
+
+```{r typical-plot, fig.cap = "Typical-value profiles after the dermal dose (3.06 mg to the occluded axilla) and the 65 ug i.v. infusion."}
+dplyr::bind_rows(
+  dplyr::mutate(sim_derm_typ, route = "Dermal, occluded axilla (3.06 mg)"),
+  dplyr::mutate(sim_iv_typ, route = "IV 65 ug over 0.5 h")
+) |>
+  dplyr::filter(time > 0, time <= 96) |>
+  ggplot(aes(time, Cc)) +
+  geom_line() +
+  scale_y_log10() +
+  facet_wrap(~route, scales = "free") +
+  labs(x = "Time after dose (h)", y = "UMEC concentration (pg/mL)")
+```
+
+# Visual predictive check (Figure 3e)
+
+```{r vpc}
+rxode2::rxSetSeed(20160615)
+n_per_arm <- 200
+grid_iv <- c(seq(0.05, 1, by = 0.05), seq(1.25, 6, by = 0.25))
+grid_derm <- c(seq(0.5, 24, by = 0.5), seq(25, 80, by = 1))
+sim_vpc <- dplyr::bind_rows(
+  rxode2::rxSolve(mod, make_events(seq_len(n_per_arm), "iv", grid_iv), returnType = "data.frame") |>
+    dplyr::mutate(route = "IV"),
+  rxode2::rxSolve(mod, make_events(n_per_arm + seq_len(n_per_arm), "dermal", grid_derm), returnType = "data.frame") |>
+    dplyr::mutate(route = "Dermal")
+)
+vpc_q <- sim_vpc |>
+  dplyr::group_by(route, time) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05), p50 = quantile(sim, 0.5), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+```
+
+```{r vpc-plot, fig.cap = "Replicates Figure 3e of Pene Dumitrescu 2016: 5th, 50th and 95th percentiles of simulated concentrations (with residual error) after the i.v. infusion (left) and the dermal dose (right). The dotted line is the AMS LOQ."}
+vpc_q |>
+  tidyr::pivot_longer(c(p05, p50, p95), names_to = "pct", values_to = "conc") |>
+  ggplot(aes(time, conc, linetype = pct)) +
+  geom_line() +
+  geom_hline(yintercept = loq, linetype = "dotted", colour = "grey50") +
+  scale_y_log10() +
+  scale_linetype_manual(values = c(p05 = "dotted", p50 = "solid", p95 = "dashed")) +
+  facet_wrap(~ factor(route, levels = c("IV", "Dermal")), scales = "free") +
+  labs(x = "Time after dose (h)", y = "UMEC concentration (pg/mL)", linetype = "Percentile")
+```
+
+```{r vpc-table}
+vpc_q |>
+  dplyr::filter(
+    (route == "IV" & time %in% c(0.5, 1, 2, 6)) |
+      (route == "Dermal" & time %in% c(2, 8, 16, 24, 48, 72, 80))
+  ) |>
+  dplyr::mutate(dplyr::across(c(p05, p50, p95), \(x) formatC(x, format = "g", digits = 3))) |>
+  dplyr::rename(
+    "Route" = route, "Time (h)" = time,
+    "5th pct (pg/mL)" = p05, "Median (pg/mL)" = p50, "95th pct (pg/mL)" = p95
+  ) |>
+  knitr::kable(caption = "Simulated percentiles at selected times.")
+```
+
+In the published Figure 3e (dermal panel), the simulated median starts near
+2 pg/mL, declines to roughly 0.13 pg/mL at 80 h and the 95th percentile runs
+from about 15-20 pg/mL down to about 4-5 pg/mL; in the i.v. panel the median
+is about 1000-2000 pg/mL at the end of infusion and about 20 pg/mL at 6 h.
+The simulated percentiles above follow the same course.
+
+```{r vpc-check}
+med_at <- function(r, t) vpc_q$p50[vpc_q$route == r & vpc_q$time == t]
+stopifnot(
+  med_at("IV", 0.5) > 500, med_at("IV", 0.5) < 3000,
+  med_at("Dermal", 2) > 0.8, med_at("Dermal", 2) < 5,
+  med_at("Dermal", 80) > 0.04, med_at("Dermal", 80) < 0.4
+)
+```
+
+# Zero-order duration: why it equals Tlag
+
+Table 3 has no separate duration parameter for the zero-order input. The paper
+calls the absorption processes "sequential" (Abstract; Results), which with a
+single time parameter means the zero-order input lasts until the first-order
+input starts, i.e. for Tlag. A plausible alternative is that the zero-order
+input lasts for the 8-h application. The chunk below simulates both readings
+with the same virtual subjects and compares their dermal percentiles with
+Figure 3e.
+
+```{r duration-alt}
+mod_alt <- mod |> rxode2::model(dur(central) <- 8)
+grid_cmp <- c(2, 8, 16, 80)
+ev_cmp <- make_events(seq_len(n_per_arm), "dermal", grid_cmp)
+rxode2::rxSetSeed(20160616)
+sim_tlag <- rxode2::rxSolve(mod, ev_cmp, returnType = "data.frame")
+rxode2::rxSetSeed(20160616)
+sim_8h <- rxode2::rxSolve(mod_alt, ev_cmp, returnType = "data.frame")
+dur_cmp <- dplyr::bind_rows(
+  dplyr::mutate(sim_tlag, reading = "duration = Tlag (packaged)"),
+  dplyr::mutate(sim_8h, reading = "duration = 8 h")
+) |>
+  dplyr::group_by(reading, time) |>
+  dplyr::summarise(p05 = quantile(Cc, 0.05), p50 = median(Cc), .groups = "drop")
+dur_cmp |>
+  dplyr::mutate(dplyr::across(c(p05, p50), \(x) formatC(x, format = "g", digits = 3))) |>
+  dplyr::rename("Reading" = reading, "Time (h)" = time, "5th pct (pg/mL)" = p05, "Median (pg/mL)" = p50) |>
+  knitr::kable(caption = "Dermal percentiles (no residual error) under the two readings of the zero-order duration.")
+```
+
+```{r duration-check}
+q_of <- function(reading_lab, t, col) dur_cmp[[col]][dur_cmp$reading == reading_lab & dur_cmp$time == t]
+tl <- "duration = Tlag (packaged)"
+h8 <- "duration = 8 h"
+stopifnot(
+  # Tlag reading: no early peak, low 5th percentile early on (as in Figure 3e)
+  q_of(tl, 8, "p50") / q_of(tl, 2, "p50") < 1.3,
+  q_of(tl, 2, "p05") < 0.7,
+  # 8-h reading: a clear peak at 8 h and a high early 5th percentile
+  q_of(h8, 8, "p50") / q_of(h8, 2, "p50") > 1.4,
+  q_of(h8, 2, "p05") > 0.9
+)
+```
+
+With an 8-h duration the median rises to a peak at 8 h and the 5th
+percentile is about 1 pg/mL or more during the first hours, whereas the
+published Figure 3e shows a median with no peak (near 2 pg/mL early, then
+declining) and a 5th percentile near 0.3 pg/mL early on. The Tlag reading
+reproduces both features and is the one packaged.
+
+# Noncompartmental analysis (Table 2)
+
+The observed noncompartmental parameters come from six subjects with AMS
+sampling at 0, 2, 4, 5, 6, 8, 8.5, 9, 9.5, 10, 11, 12, 13, 14, 16, 24, 30,
+36, 48 and 72 h. The simulation uses the same schedule with residual error,
+drops concentrations below the 0.348 pg/mL LOQ (time zero is kept as 0) and
+summarises Cmax and AUC(0-t) by their geometric means and Tmax by its median,
+as Table 2 does.
+
+```{r nca}
+t_nca <- c(0, 2, 4, 5, 6, 8, 8.5, 9, 9.5, 10, 11, 12, 13, 14, 16, 24, 30, 36, 48, 72)
+rxode2::rxSetSeed(20160617)
+sim_nca <- rxode2::rxSolve(mod, make_events(seq_len(n_per_arm), "dermal", t_nca), returnType = "data.frame") |>
+  dplyr::mutate(
+    treatment = "Occluded axilla",
+    conc = dplyr::if_else(time == 0, 0, sim)
+  ) |>
+  dplyr::filter(!is.na(conc), time == 0 | conc >= loq) |>
+  dplyr::select(id, time, conc, treatment)
+
+dose_nca <- data.frame(id = seq_len(n_per_arm), time = 0, dose = dose_derm, treatment = "Occluded axilla")
+conc_obj <- PKNCA::PKNCAconc(sim_nca, conc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, dose ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_ind <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast"), !is.na(PPORRES))
+
+geo <- function(x) exp(mean(log(x[x > 0])))
+nca_sum <- nca_ind |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(
+    PPORRES = if (dplyr::first(PPTESTCD) == "tmax") median(PPORRES) else geo(PPORRES),
+    .groups = "drop"
+  )
+
+reference <- data.frame(treatment = "Occluded axilla", cmax = 7.92, tmax = 11.0, auclast = 113.7)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_sum,
+  reference = reference,
+  by = "treatment",
+  units = c(cmax = "pg/mL", tmax = "h", auclast = "pg*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = paste(
+  "Simulated (n = 200) vs. observed (Table 2, n = 6) noncompartmental parameters",
+  "after the occluded-axilla dose: geometric-mean Cmax and AUC(0-t), median Tmax.",
+  "* differs by >20%."
+))
+```
+
+```{r nca-check}
+sim_of <- function(p) nca_sum$PPORRES[nca_sum$PPTESTCD == p]
+stopifnot(
+  nrow(nca_sum) == 3,
+  # Geometric means of a 200-subject cohort: the envelope allows for the
+  # sampling error of the very variable simulated exposures.
+  abs(log(sim_of("cmax") / reference$cmax)) < log(1.5),
+  abs(log(sim_of("auclast") / reference$auclast)) < log(1.5)
+)
+```
+
+The simulated geometric-mean Cmax and AUC(0-t) and the median Tmax agree with
+Table 2. The observed values come from only six subjects with between-subject
+CVs of 333% (Cmax) and 407% (AUC(0-t)), so the agreement is closer than the
+data could guarantee. AUC(0-inf) and half-life were calculable in only one
+observed subject (702.5 pg*h/mL, 109 h) and are not compared.
+
+# Steady state after daily application to both axillae (Figure 4)
+
+Figure 4 simulates 14 daily applications of 2 mg/cm2 of the 1.85% solution to
+both occluded axillae of men and women, with axilla areas drawn from published
+measurements (Supplementary Information) and parameter uncertainty. Those area
+distributions are not printed, so Figure 4 cannot be replicated exactly. The
+chunk below uses the study's 40 cm2 template on each axilla
+(2 x 40 x 2 mg x 1.85% = 2.96 mg UMEC/day) as an illustration.
+
+```{r ss}
+dose_ss <- 2 * 40 * 2 * 0.0185 * 1000 # ug/day
+ids <- seq_len(n_per_arm)
+ev_ss <- dplyr::bind_rows(
+  data.frame(id = rep(ids, each = 14), time = rep(0:13 * 24, n_per_arm), amt = dose_ss, rate = 0, cmt = "depot", evid = 1L),
+  data.frame(id = rep(ids, each = 14), time = rep(0:13 * 24, n_per_arm), amt = dose_ss, rate = -2, cmt = "central", evid = 1L),
+  data.frame(id = rep(ids, each = 25), time = rep(13 * 24 + 0:24, n_per_arm), amt = 0, rate = 0, cmt = "central", evid = 0L)
+) |>
+  dplyr::mutate(ROUTE_IV = 0L) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+rxode2::rxSetSeed(20160618)
+sim_ss <- rxode2::rxSolve(mod, ev_ss, returnType = "data.frame") |>
+  dplyr::mutate(tad = time - 13 * 24) |>
+  dplyr::group_by(tad) |>
+  dplyr::summarise(p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95), .groups = "drop")
+typ_cavg <- 1000 * exp(th[["lfdepot"]]) * dose_ss / (CL * 24)
+# Figure 4 median ~10-14 pg/mL is roughly twice the typical Cavg of this dose.
+stopifnot(typ_cavg > 5, typ_cavg < 7.5)
+```
+
+```{r ss-plot, fig.cap = "Day-14 profile after daily application of 2 mg/cm2 to two 40-cm2 areas (illustrative dose); compare Figure 4 of Pene Dumitrescu 2016."}
+sim_ss |>
+  tidyr::pivot_longer(c(p05, p50, p95), names_to = "pct", values_to = "conc") |>
+  ggplot(aes(tad, conc, linetype = pct)) +
+  geom_line() +
+  scale_y_log10(limits = c(0.1, 1000)) +
+  scale_linetype_manual(values = c(p05 = "dashed", p50 = "solid", p95 = "dotted")) +
+  labs(x = "Time after the day-14 dose (h)", y = "UMEC concentration (pg/mL)", linetype = "Percentile")
+```
+
+The typical steady-state average concentration for this illustrative dose is
+`r signif(typ_cavg, 3)` pg/mL. Figure 4's median runs at about 10-14 pg/mL, so
+its simulated doses were on average about twice this one, which corresponds
+to roughly twice the 40 cm2 template area per axilla. The spread between the
+5th and 95th percentiles spans about two orders of magnitude in both, as the
+large between-subject variability in clearance and absorption implies.
+
+# Assumptions and deviations
+
+* **Zero-order duration.** Table 3 lists no duration for the zero-order input;
+  it is set equal to Tlag because the processes are described as sequential
+  and the published VPC (Figure 3e) is reproduced with this reading but not
+  with an 8-h duration (see the section above).
+* **Final estimates vs bootstrap medians.** The model uses the "Model
+  parameter estimates" column of Table 3. Several bootstrap medians differ
+  noticeably (Tlag 4.71 h, F1 0.171, F 0.00217); the Discussion's "absolute
+  bioavailability of 0.22%" is the bootstrap median of F, not the final
+  estimate of 0.275%.
+* **IIV scale.** Table 3 reports IIV as CV% of exponential random effects; the
+  variances are omega^2 = log(1 + CV^2). No covariances are reported, so the
+  random effects are independent. V2, F and F1 have no IIV.
+* **Bioavailability on the shared compartment.** The i.v. dose and the
+  zero-order dermal input both enter the central compartment (Figure 2). The
+  covariate `ROUTE_IV` sets the central-compartment bioavailability to 1 for
+  the infusion and to F x F1 for the dermal input.
+* **Dermal dose.** The modelled dose is the 3.06 mg of UMEC applied; the model
+  does not represent the removal of unabsorbed drug at 8 h, which the paper's
+  model also does not include.
+* **IV cohort demographics** (NCT01110018) are not reported in the paper.
+* **Below-LOQ handling.** The paper's population-model handling of
+  nonquantifiable data is in the Supplementary Information and is not part of
+  the packaged model; the NCA comparison above follows the Figure 1 rules
+  approximately by dropping simulated values below the LOQ.
