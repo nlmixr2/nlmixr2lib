@@ -7804,6 +7804,10 @@ navbar:
         href: articles/Maciel_2024_quinine.html
       - text: "Quinine rat (Sheng 2016)"
         href: articles/Sheng_2016_quinine_rat.html
+      - text: "Quinpirole rat brain (vandenBrink 2019)"
+        href: articles/vandenBrink_2019_quinpirole_rat.html
+      - text: "Quinpirole rat plasma (vandenBrink 2019)"
+        href: articles/vandenBrink_2019_quinpirole_rat.html
       - text: "Quizartinib (Kang 2020)"
         href: articles/Kang_2020_quizartinib.html
       - text: "Quizartinib (Vaddady 2024)"
@@ -14178,6 +14182,7 @@ articles:
   - articles/vandenBerg_2021_uprifosbuvir
   - articles/vandenBerg_2025_genericMab
   - articles/vandenBerg_2025_natalizumab
+  - articles/vandenBrink_2019_quinpirole_rat
   - articles/vandenMaagdenberg_2025_a2ar_tme_qsp
   - articles/vanderGaag_2025_osimertinib_pbpk
   - articles/vanderGaag_2026_piflufolastat_pbpk

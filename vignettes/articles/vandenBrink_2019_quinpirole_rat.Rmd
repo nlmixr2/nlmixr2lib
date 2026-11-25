@@ -1,0 +1,552 @@
+---
+title: "Quinpirole cluster-based metabolomic PK/PD in rat plasma and brain (van den Brink 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Quinpirole cluster-based metabolomic PK/PD in rat plasma and brain (van den Brink 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+van den Brink et al. (2019) measured 76 biogenic amines and amino acids in rat
+plasma and in striatal brain extracellular fluid (brain ECF, by microdialysis)
+after intravenous quinpirole, a dopamine D2/3 agonist, and summarised the
+responses with a *cluster-based* PK/PD model: biomarkers whose time courses
+look alike are grouped by k-means clustering and each cluster gets one PK/PD
+model. The authors fitted two separate NONMEM models -- one for the plasma
+clusters (driven by plasma quinpirole) and one for the brain ECF clusters
+(driven by brain ECF quinpirole) -- and both are packaged here:
+
+```{r models}
+mod_pl <- readModelDb("vandenBrink_2019_quinpirole_rat_plasma")
+mod_br <- readModelDb("vandenBrink_2019_quinpirole_rat_brain")
+```
+
+* Plasma model: `r rxode2::rxode(mod_pl)$description`
+* Brain model: `r rxode2::rxode(mod_br)$description`
+* Citation: `r rxode2::rxode(mod_pl)$reference`
+* Article: <https://doi.org/10.1002/psp4.12370> (open access; the NONMEM
+  control streams are Data S1, brain, and Data S2, plasma)
+* Quinpirole PK model: <https://doi.org/10.1111/bph.14452> (van den Brink 2018,
+  Table 1 and Supporting Information Equation S3)
+
+# Population
+
+Forty-four male Wistar rats with femoral artery and vein cannulas and
+microdialysis probes in both caudate putamina (striatum) received 0
+(n = 12), 0.17 (n = 16) or 0.86 (n = 16) mg/kg quinpirole intravenously on
+experiment day 1 and again on day 8, with the same dose given subcutaneously
+every day in between. Plasma was sampled at -5, 5, 7.5, 10, 15, 25, 45, 90, 120
+and 180 min and microdialysate in 20-min fractions. Body weight was not
+reported. The quinpirole PK model was developed in the parent study on
+0.17-2.14 mg/kg IV data from the same animals. Eight-day dosing did not change
+basal biomarker levels in a way the PK/PD models retained (Results), so the
+packaged models carry no experiment-day covariate.
+
+```{r population}
+str(rxode2::rxode(mod_pl)$population)
+```
+
+## Cluster membership and per-biomarker baselines
+
+Every cluster output is the biomarker level *relative to its typical pre-dose
+baseline*. The authors' code scales each cluster by a metabolite-specific
+baseline `BSL0 = exp(THETA(m) + ETA(1))`; because every cluster model is linear
+in its baseline, the absolute level of metabolite *m* is `exp(THETA(m))` times
+the output of its cluster. The cluster of each biomarker is read from the
+symbols of Figure 1 (grey symbols are biomarkers whose cluster model was not
+significant) and the counts agree with the facet labels of Figure 3. Units
+follow the platform: platform A (BrainsOnline, `[BO]`) reports nM, or uM for
+glutamate and glycine; platform B reports internal-standard response ratios.
+
+```{r baselines}
+baselines <- tibble::tribble(
+  ~site, ~biomarker, ~cluster, ~theta,
+  "plasma", "Citrulline", 3, -0.674265,
+  "plasma", "DL-3-aminoisobutyric acid", 1, -4.46278,
+  "plasma", "Gamma-glutamyl-alanine", 7, -4.92251,
+  "plasma", "Glutamic acid [BO] (uM)", 5, 1.76,
+  "plasma", "Glycine [BO] (uM)", 3, 5.59,
+  "plasma", "Glycine", 2, 1.01625,
+  "plasma", "Histamine", 7, -6.33359,
+  "plasma", "Homocysteine", 2, -2.33143,
+  "plasma", "Alanine", 3, 1.30901,
+  "plasma", "Alpha-aminobutyric acid", 1, -2.62872,
+  "plasma", "Arginine", 7, 1.18799,
+  "plasma", "Asparagine", 3, -0.0375879,
+  "plasma", "Glutamic acid", 5, -2.04,
+  "plasma", "Histidine", 5, -3.65097,
+  "plasma", "Homoserine", 3, -2.93081,
+  "plasma", "Isoleucine", 5, 1.66012,
+  "plasma", "Leucine", 5, 0.50999,
+  "plasma", "Methionine", 3, 1.22887,
+  "plasma", "Methionine sulfoxide", 7, -3.62355,
+  "plasma", "Phenylalanine", 5, 1.81522,
+  "plasma", "Serine", 2, 1.71727,
+  "plasma", "Threonine", 3, 2.11257,
+  "plasma", "Valine", 5, 1.95943,
+  "plasma", "Methionine sulfone", 3, -8.09995,
+  "plasma", "S-methylcysteine", 4, -3.46278,
+  "plasma", "Serotonin", 6, -9.04569,
+  "plasma", "Taurine", 4, -1.06407,
+  "plasma", "5-HIAA [BO] (nM)", 4, 2.52241,
+  "brain ECF", "Cystathionine", 2, -2.40212,
+  "brain ECF", "Dopamine [BO] (nM)", 6, -0.494728,
+  "brain ECF", "DOPAC [BO] (nM)", 5, 5.68253,
+  "brain ECF", "Gamma-aminobutyric acid", 2, -2.5624,
+  "brain ECF", "Homocitrulline", 2, -2.84722,
+  "brain ECF", "HVA [BO] (nM)", 7, 5.37974,
+  "brain ECF", "Hydroxylysine", 3, -4.09845,
+  "brain ECF", "2-aminoadipic acid", 2, -5.17901,
+  "brain ECF", "4-hydroxyproline", 2, -0.00367674,
+  "brain ECF", "Glutamine", 4, 4.77757,
+  "brain ECF", "Lysine", 2, 2.7573,
+  "brain ECF", "Proline", 3, 0.517788,
+  "brain ECF", "Tryptophan", 2, 1.12469,
+  "brain ECF", "Tyrosine", 2, 3.19618,
+  "brain ECF", "N6,N6,N6-trimethyllysine", 1, -3.40421,
+  "brain ECF", "Ornithine", 4, 1.87913,
+  "brain ECF", "Putrescine", 5, -2.04022,
+  "brain ECF", "Sarcosine", 4, -3.41541,
+  "brain ECF", "3-methoxytyramine", 3, -5.57598,
+  "brain ECF", "5-hydroxytryptophan", 2, -5.2588
+)
+# Cluster sizes must reproduce the facet labels of Figure 3.
+counts <- baselines |> count(site, cluster)
+stopifnot(
+  identical(counts$n[counts$site == "plasma"], c(2L, 3L, 8L, 3L, 7L, 1L, 4L)),
+  identical(counts$n[counts$site == "brain ECF"], c(1L, 9L, 3L, 3L, 2L, 1L, 1L))
+)
+baselines |>
+  mutate(baseline = signif(exp(theta), 3)) |>
+  arrange(site, cluster, biomarker) |>
+  rename(
+    "Site" = site, "Biomarker" = biomarker, "Cluster" = cluster,
+    "THETA (log baseline)" = theta, "Typical baseline" = baseline
+  ) |>
+  knitr::kable(caption = "Biomarker clusters (Figure 1) and baselines (Data S1 THETA(1-20), Data S2 THETA(1-28)).")
+```
+
+Brain cluster 1 (N6,N6,N6-trimethyllysine) showed no dose response; the
+authors excluded it from Table 3 and the brain model carries no cluster 1.
+
+# Source trace
+
+Values are from Table 3 of van den Brink 2019 unless stated; the PK block is
+from Table 1 and Supporting Information Equation S3 of van den Brink 2018.
+
+| Parameter / equation | Value | Source |
+|---|---|---|
+| `lcl` | log(0.71) L/h | 2018 Table 1, CL_PL,o |
+| `lqin` | log(2.5) L/h | 2018 Table 1, CL_PL,ECF |
+| `lqout` | log(0.52) L/h | 2018 Table 1, CL_ECF,PLASMA |
+| `lvc` | log(1.0) L | 2018 Table 1, V_CENTRAL |
+| `lvbr` | log(0.12) L | 2018 Table 1, V_ECF |
+| `etalcl` | 0.12 | 2018 Table 1, IIV CL_PL,o |
+| `expSd`, `expSd_Cbrain_striatum` | sqrt(0.08), sqrt(0.12) | 2018 Table 1, RUV C_QP,PL and C_QP,ECF |
+| `d/dt(central)`, `d/dt(brain_striatum)` | -- | 2018 Equation S3a-b; Data S1 / S2 `$DES` |
+| Plasma `lemax_c1`, `lec50_c1`, `lkout_c1`, `lktr_c1`, `lntr_c1` | 46.5, 383 nM, 0.035, 0.044 1/min, 8.3 | Table 3 plasma cluster 1 |
+| Plasma `limax_c23` | 0.20 | Table 3 plasma clusters 2 and 3 (Imax -20%) |
+| Plasma `lec50_c24` | 113 nM | Table 3 plasma cluster 2 IC50, cluster 4 EC50 |
+| Plasma `lec50_c37` | 17.2 nM | Table 3 plasma clusters 3 and 7 IC50 |
+| Plasma `lkout_c2`, `lkout_c3` | 0.057, 0.11 1/min | Table 3 plasma clusters 2, 3 |
+| Plasma `lemax_c4`, `lkout_c4`, `lktr_c4`, `lntr_c4` | 3.63, 9.58, 0.0052 1/min, 1.79 | Table 3 plasma cluster 4 |
+| Plasma `limax_c5`, `lec50_c5`, `lkout_c5`, `lkrel_c5` | 0.41, 339 nM, 0.11, 0.018 1/min | Table 3 plasma cluster 5 |
+| Plasma `limax_c6`, `lec50_c6`, `lkout_c6`, `lkrel_c6` | 0.90, 0.001 nM (fixed), 0.10, 0.89 1/min | Table 3 plasma cluster 6 |
+| Plasma `limax_c7`, `lkout_c7` | 0.41, 0.060 1/min | Table 3 plasma cluster 7 |
+| Plasma `etalrbase`, `expSd_resp_c1` ... `_c7` | 0.917; sqrt(0.0756) | Data S2 `$OMEGA`, `$SIGMA` |
+| Plasma transit term, turnover and pool ODEs | -- | Data S2 `$PK` (TRANSIT, KINTS, KINPOOL) and `$DES`; Supplementary Equations S4-S7 |
+| Brain `limax_c2` ... `limax_c7` | 0.20, 0.29, 0.15, 0.41, 0.67, 0.60 | Table 3 brainECF clusters 2-7 |
+| Brain `lec50_c234` | 0.001 nM (fixed) | Table 3 brainECF clusters 2-4 |
+| Brain `lec50_c567` | 122 nM | Table 3 brainECF clusters 5-7 |
+| Brain `lkout_c2`, `lkout_c35`, `lkout_c4`, `lkout_c6`, `lkout_c7` | 0.056, 0.13, 0.14, 0.44, 0.031 1/min | Table 3 brainECF |
+| Brain `etalrbase`, `expSd_resp_c2` ... `_c7` | 0.175; sqrt of 0.0904, 0.110, 0.0718, 0.0539, 0.0394, 0.0282 | Data S1 `$OMEGA`, `$SIGMA` |
+| Brain turnover ODEs, `eff = 1 - Imax C / (IC50 + C)` | -- | Data S1 `$PK` and `$DES` |
+| `mw` | 219.33 g/mol | quinpirole free base; Data S1 `exp(THETA(26))` = 26.8 ug/L against Table 3 122 nM |
+
+# Virtual cohort and simulation
+
+Each arm gets 100 virtual rats (the study had 12-16). Body weight was not
+reported, so every rat is assumed to weigh 0.25 kg; the dose in ug is
+`mg/kg x 0.25 x 1000`, given as an IV bolus into `central` at time 0. The
+observation rows sit on `central` with `dvid = 1`, which returns every endpoint
+column of these multi-endpoint models.
+
+```{r cohort}
+wt_kg <- 0.25
+arms <- c("0 mg/kg" = 0, "0.17 mg/kg" = 0.17, "0.86 mg/kg" = 0.86)
+obs_times <- sort(unique(c(seq(0, 180, by = 5), 7.5)))
+
+make_arm <- function(n, dose_mgkg, label, id_offset = 0L, times = obs_times) {
+  ids <- id_offset + seq_len(n)
+  dose <- tibble(
+    id = ids, time = 0, amt = dose_mgkg * wt_kg * 1000, evid = 1L,
+    cmt = "central", dvid = NA_integer_
+  )
+  obs <- tidyr::expand_grid(id = ids, time = times) |>
+    mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  bind_rows(dose, obs) |>
+    mutate(treatment = label) |>
+    arrange(id, time, desc(evid))
+}
+
+n_per_arm <- 100L
+events <- bind_rows(lapply(seq_along(arms), function(i) {
+  make_arm(n_per_arm, arms[[i]], names(arms)[i], id_offset = (i - 1L) * n_per_arm)
+}))
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+
+# One rat per arm for the typical-value solves
+events_typ <- bind_rows(lapply(seq_along(arms), function(i) {
+  make_arm(1L, arms[[i]], names(arms)[i], id_offset = i - 1L)
+}))
+```
+
+```{r simulate}
+rxode2::rxSetSeed(20190225)
+sim_pl <- rxode2::rxSolve(mod_pl, events, keep = "treatment", useLinCmt = FALSE) |>
+  as.data.frame()
+sim_br <- rxode2::rxSolve(mod_br, events, keep = "treatment", useLinCmt = FALSE) |>
+  as.data.frame()
+
+# Typical-value solves: omega = NA and sigma = NA drop the random effects
+typ_pl <- rxode2::rxSolve(mod_pl, events_typ,
+  keep = "treatment", omega = NA, sigma = NA, useLinCmt = FALSE
+) |> as.data.frame()
+typ_br <- rxode2::rxSolve(mod_br, events_typ,
+  keep = "treatment", omega = NA, sigma = NA, useLinCmt = FALSE
+) |> as.data.frame()
+```
+
+# Quinpirole PK (Figure S2)
+
+Figure S2 of the paper (reproduced from van den Brink 2018) is a visual
+predictive check of unbound quinpirole in plasma and brain ECF. With a 0.25 kg
+rat the typical plasma concentration is about 34 and 170 ng/mL at 5 min after
+0.17 and 0.86 mg/kg, and brain ECF concentrations run about five-fold above
+plasma once distribution is complete, as the figure shows.
+
+```{r figure-s2}
+sim_pl |>
+  filter(treatment != "0 mg/kg", time >= 5) |>
+  select(id, time, treatment, Plasma = Cc, BrainECF = Cbrain_striatum) |>
+  pivot_longer(c(Plasma, BrainECF), names_to = "matrix", values_to = "conc") |>
+  group_by(treatment, matrix, time) |>
+  summarise(
+    Q05 = quantile(conc, 0.05), Q50 = median(conc), Q95 = quantile(conc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2, colour = NA) +
+  geom_line() +
+  facet_wrap(~matrix) +
+  scale_y_log10() +
+  labs(
+    x = "Time (min)", y = "Unbound quinpirole (ng/mL)",
+    title = "Quinpirole in plasma and brain ECF (median, 90% interval)",
+    caption = "Replicates Figure S2 of van den Brink 2019 (0.17 and 0.86 mg/kg arms)."
+  )
+```
+
+# Concentration-effect relations (Figure 2)
+
+Figure 2 plots each cluster's drug-effect function `E(C)` against the
+concentration at its target site (for the two transit clusters the delay term
+is left out, as in the figure). The brain panel of the figure numbers the six
+responding clusters 1-6; they are Table 3's brain clusters 2-7.
+
+```{r figure-2}
+p_pl <- rxode2::rxode(mod_pl)$theta
+p_br <- rxode2::rxode(mod_br)$theta
+conc <- 10^seq(-6, 6, length.out = 241)
+emax_fun <- function(e, ec50) 1 + e * conc / (ec50 + conc)
+imax_fun <- function(i, ic50) 1 - i * conc / (ic50 + conc)
+curves <- bind_rows(
+  tibble(site = "Plasma", cluster = "1", conc = conc, eff = emax_fun(exp(p_pl[["lemax_c1"]]), exp(p_pl[["lec50_c1"]]))),
+  tibble(site = "Plasma", cluster = "2", conc = conc, eff = imax_fun(exp(p_pl[["limax_c23"]]), exp(p_pl[["lec50_c24"]]))),
+  tibble(site = "Plasma", cluster = "3", conc = conc, eff = imax_fun(exp(p_pl[["limax_c23"]]), exp(p_pl[["lec50_c37"]]))),
+  tibble(site = "Plasma", cluster = "4", conc = conc, eff = emax_fun(exp(p_pl[["lemax_c4"]]), exp(p_pl[["lec50_c24"]]))),
+  tibble(site = "Plasma", cluster = "5", conc = conc, eff = imax_fun(exp(p_pl[["limax_c5"]]), exp(p_pl[["lec50_c5"]]))),
+  tibble(site = "Plasma", cluster = "6", conc = conc, eff = imax_fun(exp(p_pl[["limax_c6"]]), exp(p_pl[["lec50_c6"]]))),
+  tibble(site = "Plasma", cluster = "7", conc = conc, eff = imax_fun(exp(p_pl[["limax_c7"]]), exp(p_pl[["lec50_c37"]]))),
+  tibble(site = "BrainECF", cluster = "2", conc = conc, eff = imax_fun(exp(p_br[["limax_c2"]]), exp(p_br[["lec50_c234"]]))),
+  tibble(site = "BrainECF", cluster = "3", conc = conc, eff = imax_fun(exp(p_br[["limax_c3"]]), exp(p_br[["lec50_c234"]]))),
+  tibble(site = "BrainECF", cluster = "4", conc = conc, eff = imax_fun(exp(p_br[["limax_c4"]]), exp(p_br[["lec50_c234"]]))),
+  tibble(site = "BrainECF", cluster = "5", conc = conc, eff = imax_fun(exp(p_br[["limax_c5"]]), exp(p_br[["lec50_c567"]]))),
+  tibble(site = "BrainECF", cluster = "6", conc = conc, eff = imax_fun(exp(p_br[["limax_c6"]]), exp(p_br[["lec50_c567"]]))),
+  tibble(site = "BrainECF", cluster = "7", conc = conc, eff = imax_fun(exp(p_br[["limax_c7"]]), exp(p_br[["lec50_c567"]])))
+)
+ggplot(curves, aes(conc, eff, colour = cluster)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~site, scales = "free_y") +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(
+    x = "Quinpirole concentration at the target site (nM)", y = "Effect",
+    colour = "Table 3 cluster",
+    caption = "Replicates Figure 2 of van den Brink 2019."
+  )
+
+# Plateaus of Figure 2: 1 + Emax or 1 - Imax at high concentration
+plateau <- curves |> filter(conc == max(conc)) |> select(site, cluster, eff)
+stopifnot(
+  abs(plateau$eff[plateau$site == "Plasma" & plateau$cluster == "1"] - 47.5) < 0.1,
+  abs(plateau$eff[plateau$site == "BrainECF" & plateau$cluster == "6"] - 0.33) < 0.01
+)
+```
+
+# Cluster responses (Figure 3)
+
+Figure 3 shows the geometric-mean cluster responses as change from baseline
+with the model predictions as dark lines. The typical-value predictions below
+are the packaged models' counterpart; the ribbons are the 5th-95th percentiles
+of the simulated rats, which include the between-rat baseline variability and
+the residual error.
+
+```{r figure-3, fig.height = 8}
+cluster_long <- function(sim, site) {
+  sim |>
+    select(id, time, treatment, starts_with("resp_c")) |>
+    pivot_longer(starts_with("resp_c"), names_to = "cluster", values_to = "rel") |>
+    mutate(site = site, cluster = sub("resp_c", "Cluster ", cluster))
+}
+vpc <- bind_rows(cluster_long(sim_pl, "Plasma"), cluster_long(sim_br, "BrainECF")) |>
+  group_by(site, cluster, treatment, time) |>
+  summarise(Q05 = quantile(rel, 0.05), Q95 = quantile(rel, 0.95), .groups = "drop")
+typ <- bind_rows(cluster_long(typ_pl, "Plasma"), cluster_long(typ_br, "BrainECF"))
+
+for (s in c("BrainECF", "Plasma")) {
+  print(
+    ggplot(filter(typ, site == s), aes(time, rel, colour = treatment)) +
+      geom_ribbon(
+        data = filter(vpc, site == s),
+        aes(x = time, ymin = Q05, ymax = Q95, fill = treatment),
+        inherit.aes = FALSE, alpha = 0.12
+      ) +
+      geom_line(linewidth = 0.9) +
+      facet_wrap(~cluster, scales = "free_y", ncol = 3) +
+      scale_colour_manual(values = c("red", "darkgreen", "blue")) +
+      scale_fill_manual(values = c("red", "darkgreen", "blue")) +
+      labs(
+        x = "Time (min)", y = "Change from baseline (ratio)",
+        title = s,
+        caption = "Replicates Figure 3 of van den Brink 2019 (lines: typical value)."
+      )
+  )
+}
+```
+
+The typical-value curves were compared with the prediction lines of Figure 3,
+read by the maintainers at the times below (to about +/- 0.05).
+
+```{r figure-3-compare}
+fig3 <- tibble::tribble(
+  ~site, ~cluster, ~treatment, ~time, ~figure,
+  "BrainECF", "Cluster 3", "0.86 mg/kg", 180, 0.71,
+  "BrainECF", "Cluster 5", "0.86 mg/kg", 180, 0.65,
+  "BrainECF", "Cluster 6", "0.17 mg/kg", 30, 0.47,
+  "BrainECF", "Cluster 6", "0.86 mg/kg", 180, 0.40,
+  "BrainECF", "Cluster 7", "0.17 mg/kg", 180, 0.63,
+  "BrainECF", "Cluster 7", "0.86 mg/kg", 180, 0.46,
+  "Plasma", "Cluster 1", "0.17 mg/kg", 180, 1.60,
+  "Plasma", "Cluster 1", "0.86 mg/kg", 180, 3.30,
+  "Plasma", "Cluster 2", "0.86 mg/kg", 180, 0.87,
+  "Plasma", "Cluster 3", "0.86 mg/kg", 180, 0.85,
+  "Plasma", "Cluster 4", "0.86 mg/kg", 180, 1.50,
+  "Plasma", "Cluster 5", "0.86 mg/kg", 25, 0.82,
+  "Plasma", "Cluster 6", "0.86 mg/kg", 10, 0.62,
+  "Plasma", "Cluster 7", "0.86 mg/kg", 180, 0.63
+)
+cmp3 <- fig3 |>
+  left_join(typ |> select(site, cluster, treatment, time, model = rel),
+    by = c("site", "cluster", "treatment", "time")
+  ) |>
+  mutate(pct_diff = 100 * (model - figure) / figure)
+cmp3 |>
+  mutate(model = signif(model, 3), pct_diff = round(pct_diff, 1)) |>
+  rename(
+    "Site" = site, "Cluster" = cluster, "Arm" = treatment, "Time (min)" = time,
+    "Figure 3" = figure, "Model" = model, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Typical-value cluster responses against Figure 3.")
+
+# Plasma cluster 1 is a known deviation (see Assumptions);
+# every other point is within the reading precision of the figure plus the
+# PK uncertainty from the unreported body weight.
+chk3 <- filter(cmp3, !(site == "Plasma" & cluster == "Cluster 1"))
+stopifnot(
+  !anyNA(chk3$model),
+  abs(median(chk3$pct_diff)) < 5,
+  max(abs(chk3$pct_diff)) < 12
+)
+```
+
+# Model checks
+
+These checks use the typical-value solves, where both sides of each comparison
+come from the same parameters, so the bounds are tight.
+
+```{r checks}
+# 1. Placebo: no drug, every cluster stays at its baseline of 1.
+pl0 <- typ |> filter(treatment == "0 mg/kg")
+stopifnot(max(abs(pl0$rel - 1)) < 1e-6)
+
+# 2. Brain clusters 2-4 have IC50 = 0.001 nM, so any dose saturates them and
+#    they settle at 1 - Imax (Table 3: 0.80, 0.71, 0.85) for both doses.
+sat <- typ |>
+  filter(site == "BrainECF", cluster %in% c("Cluster 2", "Cluster 3", "Cluster 4"),
+         treatment != "0 mg/kg", time == 180) |>
+  mutate(target = c("Cluster 2" = 0.80, "Cluster 3" = 0.71, "Cluster 4" = 0.85)[cluster])
+stopifnot(max(abs(sat$rel - sat$target)) < 1e-3)
+
+# 3. Plasma cluster 6 (serotonin, pool model): the pool refills while release
+#    is inhibited, so the response returns to baseline within the experiment.
+c6 <- typ |> filter(site == "Plasma", cluster == "Cluster 6", treatment == "0.86 mg/kg")
+stopifnot(min(c6$rel) < 0.7, abs(c6$rel[c6$time == 180] - 1) < 0.01)
+
+# 4. Unbound brain-to-plasma partitioning: for this linear PK model the ratio
+#    of brain ECF to plasma AUC is CL_PL,ECF / CL_ECF,PL = 2.5 / 0.52 (the
+#    Kp,uu of about 5 in van den Brink 2018 Table 1).
+long_ev <- make_arm(1L, 0.86, "0.86 mg/kg", times = seq(0, 3000, by = 5))
+long <- rxode2::rxSolve(mod_pl, long_ev,
+  omega = NA, sigma = NA, useLinCmt = FALSE, keep = "treatment"
+) |> as.data.frame()
+# rxSolve drops the id column for a single-subject solve
+if (!"id" %in% names(long)) long$id <- 1L
+auc_tz <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+kpuu <- auc_tz(long$time, long$Cbrain_striatum) / auc_tz(long$time, long$Cc)
+stopifnot(abs(kpuu / (2.5 / 0.52) - 1) < 0.01)
+kpuu
+```
+
+# PKNCA validation
+
+The paper reports no NCA, so PKNCA is used to summarise the simulated
+quinpirole exposure per arm and to check the terminal half-life against the
+closed form of the two-compartment model (smallest eigenvalue of the rate
+matrix), computed from the same typical parameters.
+
+```{r pknca}
+# Placebo rats have no quinpirole, so they are left out of the NCA
+sim_active <- subset(sim_pl, treatment != "0 mg/kg")
+sim_nca <- sim_active |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+dose_df <- subset(events, evid == 1 & treatment != "0 mg/kg") |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, route = "intravascular")
+intervals <- data.frame(start = 0, end = 180, cmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(median = signif(median(PPORRES), 3), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  rename("Arm" = treatment, "Cmax (ng/mL)" = cmax, "AUC0-180 (min*ng/mL)" = auclast) |>
+  knitr::kable(caption = "Simulated plasma quinpirole exposure (median over rats).")
+
+# Terminal half-life on the long typical profile
+long_nca <- long |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+hl <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(long_nca, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(filter(long_ev, evid == 1), amt ~ time | treatment + id, route = "intravascular"),
+  intervals = data.frame(start = 0, end = Inf, half.life = TRUE)
+))
+hl_pknca <- as.data.frame(hl) |> filter(PPTESTCD == "half.life") |> pull(PPORRES)
+
+k10 <- 0.71 / 60 / 1.0
+k12 <- 2.5 / 60 / 1.0
+k21 <- 0.52 / 60 / 0.12
+rate_mat <- matrix(c(-(k10 + k12), k12, k21, -k21), 2)
+hl_closed <- log(2) / min(abs(eigen(rate_mat)$values))
+stopifnot(abs(hl_pknca / hl_closed - 1) < 0.02)
+c(pknca = hl_pknca, closed_form = hl_closed)
+```
+
+The terminal half-life of about `r round(hl_closed)` min (about
+`r round(hl_closed / 60, 1)` h) agrees with the decline of the Figure S2
+plasma profiles between 25 and 180 min.
+
+# Assumptions and deviations
+
+- **Normalised cluster outputs.** The authors fitted each biomarker's own
+  level, `BSL0_m x exp(ETA) x R_c(t)`, on the log scale. Because every cluster
+  model is linear in the baseline, the packaged models output `R_c(t)` scaled
+  by the individual baseline factor `exp(etalrbase)` (typical baseline fixed
+  at 1); the per-biomarker baselines `exp(THETA(m))` from the authors' code are
+  listed in the table above so absolute levels can be recovered. The code uses
+  one `ETA(1)` for every metabolite and cluster, and the packaged models do the
+  same.
+- **Table 3 against the published plasma code.** The brain control stream
+  (Data S1) reproduces Table 3 exactly. The plasma control stream (Data S2)
+  carries estimates close to, but not the same as, Table 3: for example plasma
+  cluster 4 has Emax 405% against 363%, ktr 0.0044 against 0.0052 1/min and
+  kout 0.17 against 9.58 1/min, and the cluster 3 / 7 IC50 is 22 against
+  17.2 nM. Table 3 values (the final estimates) are used. Data S2 also shares
+  Imax between clusters 5 and 7 and kout between clusters 3 and 5, whereas
+  Table 3 reports these pairs with different standard errors (14.6% / 6.4%,
+  12.2% / 12.5%), so the packaged plasma model keeps them as separate
+  parameters with the Table 3 values (each pair has the same value).
+- **Residual error and IIV from the control streams.** Table 3 reports no
+  variability; `etalrbase` and the residual SDs come from the `$OMEGA` and
+  `$SIGMA` blocks of Data S1 / S2, read as variances. The plasma stream has a
+  single `$SIGMA` for all clusters, so its value is repeated on each plasma
+  output (nlmixr2 needs one residual parameter per endpoint). For the plasma
+  model, whose `$THETA` values differ from Table 3, these variances are those
+  of the published control stream.
+- **IC50 of 0.001 nM.** Table 3 reports the high-potency IC50 of brain clusters
+  2-4 and plasma cluster 6 as 0.001 nM, fixed; the control streams carry
+  smaller values (about 2.5e-6 and 1.4e-4 nM). Both make the effect maximal at
+  any quinpirole concentration; the Table 3 value is used.
+- **Quinpirole PK from the parent study.** The cluster models took individual
+  PK parameters from the parent study's fit (data items `CLPOP` ... `VECFPOP`).
+  The packaged models carry the population PK model of van den Brink 2018
+  (Table 1, Equation S3) instead, with its IIV on clearance and its residual
+  errors (read as variances). The bootstrap column of that table prints V_ECF
+  as 0.013 L against the 0.12 L estimate; the estimate is used.
+- **Body weight and dose administration.** Neither paper reports body weight
+  or the duration of the IV dose. The vignette assumes 0.25 kg and an IV bolus;
+  with these, the typical plasma and brain ECF concentrations fall within the
+  Figure S2 prediction intervals. The models themselves take the dose in ug and
+  do not depend on body weight.
+- **Plasma cluster 1.** At 180 min the typical value is about 2.6 against
+  about 3.3 in Figure 3 after 0.86 mg/kg, and about 1.4 against 1.6 after
+  0.17 mg/kg. This cluster rises late (its transit
+  delay peaks at ntr / ktr, about 190 min), so it is the most sensitive to
+  late quinpirole concentrations, which here depend on the assumed body
+  weight and on typical instead of individual PK. It is reported, not
+  tuned, and is excluded from the Figure 3 gate.
+- **Time after dose.** The transit term uses time after the experiment-day
+  dose (`TIM` in Data S2); the models use `tad(central)`, which equals it for
+  one IV dose per experiment day.
+- **Baseline drift data item.** The control streams multiply the baseline by
+  `(1 + BSLP)`, a data item that the paper does not describe; it is taken as 0.
+- **Molecular weight.** Table 3 reports potencies in nM while the control
+  streams work in ug/L. The conversion uses the free-base molecular weight of
+  quinpirole, 219.33 g/mol, which the code-to-table pair for the brain
+  cluster 5-7 IC50 (26.8 ug/L, 122 nM) confirms.
+- No erratum or correction notice was found for either paper (checked
+  2026-11-25).
