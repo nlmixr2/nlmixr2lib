@@ -5452,6 +5452,8 @@ navbar:
         href: articles/Elmokadem_2023_mavoglurant_pbpk.html
       - text: "Mavrilimumab (Stein 2018)"
         href: articles/Stein_2018_mAb_nonlinear_PK.html
+      - text: "Mazindol (Konofal 2014)"
+        href: articles/Konofal_2014_mazindol.html
       - text: "Mbq167 her2 mouse tgi (ReigLopez 2020)"
         href: articles/ReigLopez_2020_mbq167.html
       - text: "Mbq167 tnbc mouse tgi (ReigLopez 2020)"
@@ -11655,6 +11657,7 @@ articles:
   - articles/Kong_2025_piperacillin_tazobactam
   - articles/Kong_2025_sudapyridine
   - articles/Kong_2025b_piperacillin_tazobactam
+  - articles/Konofal_2014_mazindol
   - articles/Koo_2012_propofol
   - articles/Koolen_2010_docetaxel
   - articles/Koomen_2023_tacrolimus
