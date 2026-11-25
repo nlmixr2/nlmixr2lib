@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Morita 2026 pemetrexed neutrophil time course ([doi:10.3390/pharmaceutics18080946](https://doi.org/10.3390/pharmaceutics18080946)) -- Japanese adults with non-squamous NSCLC in their first cycle of pemetrexed-platinum chemotherapy.
+- Add Wang 2026 oseltamivir PK and influenza viral dynamics ([doi:10.1002/bcp.70623](https://doi.org/10.1002/bcp.70623)) -- infants and toddlers (0-23 months) with influenza.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

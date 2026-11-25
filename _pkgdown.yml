@@ -6452,6 +6452,8 @@ navbar:
         href: articles/Patel_2015_oseltamivir.html
       - text: "Oseltamivir (Standing 2012)"
         href: articles/Standing_2012_oseltamivir.html
+      - text: "Oseltamivir (Wang 2026)"
+        href: articles/Wang_2026_oseltamivir.html
       - text: "Oseltamivir ferret (Reddy 2015)"
         href: articles/Reddy_2015_oseltamivir_ferret.html
       - text: "Oseltamivir pbpk (Luo 2024)"
@@ -13040,6 +13042,7 @@ articles:
   - articles/Wang_2025_somatrogon
   - articles/Wang_2025_voriconazole
   - articles/Wang_2026_ciprofol
+  - articles/Wang_2026_oseltamivir
   - articles/Wang_2026_polymyxinB
   - articles/Wang_2026_serplulimab
   - articles/Wanika_2024_tki_nsclc_invitro
