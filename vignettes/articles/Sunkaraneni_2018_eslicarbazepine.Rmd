@@ -1,0 +1,421 @@
+---
+title: "Eslicarbazepine acetate in children (Sunkaraneni 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Eslicarbazepine acetate in children (Sunkaraneni 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5, error = FALSE
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+```
+
+# Model and source
+
+Sunkaraneni 2018 developed a pediatric population pharmacokinetic (PPK) model
+for **eslicarbazepine**, the active metabolite of the once-daily antiepileptic
+prodrug **eslicarbazepine acetate** (ESL), and used it to choose weight-banded
+ESL doses for children aged 4-17 years with partial-onset seizures by matching
+the steady-state trough concentration (Cmin,ss) of effective adult doses.
+
+* Article: Sunkaraneni S, et al. J Pharmacokinet Pharmacodyn.
+  2018;45(4):649-658. <https://doi.org/10.1007/s10928-018-9596-7>
+  (PMC6061080). The article has no supplementary material.
+* The final model is fully specified by Table 3 and the two typical-value
+  equations printed beneath it.
+
+ESL is converted to eslicarbazepine on first pass, so the model describes the
+metabolite only; clearance and volume are apparent quantities referenced to
+the ESL dose in mg, as in the adult model `Gidal_2018_eslicarbazepine`.
+
+```{r load-model}
+mod <- readModelDb("Sunkaraneni_2018_eslicarbazepine")
+mod_typ <- rxode2::zeroRe(mod)
+```
+
+# Population
+
+146 pediatric subjects (857 plasma concentrations) from two adjunctive-therapy
+studies (Table 1, Table 2):
+
+* **BIA-2093-202** (26 subjects in the analysis): ESL 5, 15 and 30 mg/kg/day
+  once daily in three consecutive 4-week periods (maximum 1800 mg/day), with
+  about 21 samples per subject from 0.5 to 24 h post-dose on the last day of
+  each period.
+* **BIA-2093-305** (120 subjects): titration at 10 then 20 mg/kg/day and
+  maintenance at 10, 20 or 30 mg/kg/day (maximum 1200 mg/day), with about 3
+  sparse samples per subject, mostly 12-24 h post-dose.
+
+Mean age 10.0 years (SD 4.0, range 2-18), mean weight 34.7 kg (SD 16.0,
+about 10-79 kg), 53.4% female, 93.2% White and 6.8% Asian (Table 2).
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Structure | one compartment, first-order absorption and elimination | Results, paragraph after Table 2 |
+| `lcl` | CL/F = 1.69 L/h at 33 kg | Table 3 and CL equation |
+| `lvc` | V/F = 32.8 L at 33 kg | Table 3 and V equation |
+| `e_wt_cl` | 0.75, fixed | CL equation; Discussion |
+| `e_wt_vc` | 1, fixed | V equation; Discussion |
+| `e_conmed_lev_cl` | -0.176 (CL multiplied by 1 - 0.176 LEVEF) | Table 3 and CL equation |
+| `e_pblike_cl` | 0.626 (CL multiplied by 1 + 0.626 PHENLF) | Table 3 and CL equation |
+| `lka_tablet` | KAT = 0.895 1/h, fixed | Table 3; Discussion (fixed from study 202) |
+| `lka_susp` | KAO = 4.18 1/h, fixed | Table 3; Discussion |
+| `e_conmed_cbz_fdepot` | F1 = 0.679 with carbamazepine | Table 3 |
+| `etalcl` | 25.0 %CV, variance log(1 + 0.25^2) = 0.0606 | Table 3 |
+| `etalvc` | 13.2 %CV, variance 0.0173 | Table 3 |
+| `etalka` | 83.8 %CV, fixed, variance 0.532; one eta shared by both formulations | Table 3; Results text |
+| `propSd` | sqrt(0.0543) = 0.233 | Table 3 and footnote a |
+| `addSd` | sqrt(107,000) = 327 ng/mL | Table 3 and footnote a |
+| PHENLF | phenobarbital, phenytoin or primidone | Text under the CL equation; Results |
+
+The residual footnote of Table 3 gives %CV = sqrt(F^2 x 0.0543 + 107,000) / F
+x 100 and evaluates it to 328% at F = 100 and 23.3% at F = 50,000. Both values
+reproduce only if 0.0543 and 107,000 are variances and F is in ng/mL, which
+fixes the concentration unit of the model.
+
+```{r residual-footnote}
+rv_cv <- function(f) sqrt(f^2 * 0.0543 + 107000) / f * 100
+rv <- c(at_100 = rv_cv(100), at_50000 = rv_cv(50000))
+rv
+stopifnot(abs(rv[["at_100"]] - 328) < 0.5, abs(rv[["at_50000"]] - 23.3) < 0.05)
+```
+
+# Covariate effects on steady-state exposure
+
+The Results quantify every covariate effect as a percentage change in
+AUC0-24,ss. These follow from the model structure alone, so they are checked
+on deterministic typical-value solves at steady state (ESL tablet once daily),
+with the NCA done by PKNCA.
+
+```{r ss-scenarios}
+scen <- tibble::tribble(
+  ~scenario,              ~WT, ~mgkg, ~CONMED_LEV, ~CONMED_PB, ~CONMED_CBZ,
+  "33 kg reference",       33,    20,           0,          0,           0,
+  "10 kg",                 10,    20,           0,          0,           0,
+  "79 kg",                 79,    20,           0,          0,           0,
+  "33 kg + levetiracetam", 33,    20,           1,          0,           0,
+  "33 kg + phenobarbital", 33,    20,           0,          1,           0,
+  "33 kg + carbamazepine", 33,    20,           0,          0,           1
+) |>
+  mutate(id = row_number(), dose = WT * mgkg)
+
+obs_times <- c(0, 0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24)
+
+make_ss_events <- function(sc, form_tablet = 1) {
+  dose_rows <- sc |>
+    transmute(id, time = 0, amt = dose, evid = 1, cmt = "depot", ss = 1, ii = 24)
+  obs_rows <- sc |>
+    select(id) |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(amt = 0, evid = 0, cmt = "central", ss = 0, ii = 0)
+  bind_rows(dose_rows, obs_rows) |>
+    left_join(select(sc, id, WT, CONMED_LEV, CONMED_PB, CONMED_CBZ), by = "id") |>
+    mutate(
+      CONMED_PHT = 0, CONMED_PRM = 0, FORM_TABLET = form_tablet
+    ) |>
+    arrange(id, time, desc(evid)) |>
+    as.data.frame()
+}
+
+sim_ss <- rxode2::rxSolve(
+  mod_typ, events = make_ss_events(scen), returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12, maxsteps = 1e6
+) |>
+  left_join(select(scen, id, scenario, dose), by = "id")
+```
+
+```{r ss-pknca}
+conc_ss <- sim_ss |>
+  filter(!is.na(Cc)) |>
+  mutate(Cc = pmax(Cc, 0)) |>
+  select(id, scenario, time, Cc)
+dose_ss <- scen |> transmute(id, scenario, time = 0, dose)
+
+nca_ss <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_ss, Cc ~ time | scenario + id),
+  PKNCA::PKNCAdose(dose_ss, dose ~ time | scenario + id),
+  intervals = data.frame(start = 0, end = 24, auclast = TRUE, cmax = TRUE, cmin = TRUE)
+))
+auc_ss <- as.data.frame(nca_ss) |>
+  filter(PPTESTCD == "auclast") |>
+  select(scenario, auc = PPORRES)
+```
+
+The weight comparisons use the same mg/kg dose, as in the paper.
+
+```{r ss-claims}
+ref_auc <- auc_ss$auc[auc_ss$scenario == "33 kg reference"]
+claims <- tibble::tribble(
+  ~scenario,               ~published_pct, ~statement,
+  "10 kg",                          -25.8, "25.8% lower AUC0-24,ss than 33 kg at the same mg/kg",
+  "79 kg",                           24.4, "24.4% higher AUC0-24,ss than 33 kg at the same mg/kg",
+  "33 kg + levetiracetam",           21.4, "21.4% higher AUC0-24,ss with levetiracetam",
+  "33 kg + phenobarbital",          -38.5, "38.5% lower AUC0-24,ss with phenobarbital-like AEDs",
+  "33 kg + carbamazepine",          -32.1, "32.1% lower AUC0-24,ss with carbamazepine"
+) |>
+  left_join(auc_ss, by = "scenario") |>
+  mutate(simulated_pct = 100 * (auc / ref_auc - 1))
+
+claims |>
+  select(
+    Scenario = scenario, `Published statement` = statement,
+    `Published change (%)` = published_pct,
+    `Simulated change (%)` = simulated_pct
+  ) |>
+  knitr::kable(digits = 1, caption = "AUC0-24,ss changes stated in the Results versus the packaged model.")
+
+# These are exact consequences of the printed equations; the only error is
+# the 1-decimal rounding of the published percentages.
+stopifnot(all(abs(claims$simulated_pct - claims$published_pct) < 0.15))
+```
+
+# Replicating Figure 4: typical Cmin,ss by body weight and dose
+
+Figure 4 plots the typical Cmin,ss of a child taking no concomitant AEDs over
+10-74 kg for ESL 100-1600 mg once daily, against target ranges derived from
+adults (titration 400 mg: mean 3.7 ug/mL; maintenance 800-1600 mg: 7.4, 11
+and 14.7 ug/mL). The paper computed Cmin,ss in closed form; here it is the
+24 h value of a steady-state ODE solve, checked against the same closed form.
+
+```{r fig4-sim}
+doses <- c(100, 200, 300, 400, 600, 800, 1200, 1600)
+wts <- seq(10, 74, by = 2)
+grid <- tidyr::crossing(dose = doses, WT = wts) |>
+  mutate(id = row_number())
+
+ev4 <- bind_rows(
+  grid |> transmute(id, time = 0, amt = dose, evid = 1, cmt = "depot", ss = 1, ii = 24),
+  grid |> transmute(id, time = 24, amt = 0, evid = 0, cmt = "central", ss = 0, ii = 0)
+) |>
+  left_join(select(grid, id, WT), by = "id") |>
+  mutate(
+    CONMED_LEV = 0, CONMED_PB = 0, CONMED_PHT = 0, CONMED_PRM = 0,
+    CONMED_CBZ = 0, FORM_TABLET = 1
+  ) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+sim4 <- rxode2::rxSolve(
+  mod_typ, events = ev4, returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12, maxsteps = 1e6
+) |>
+  filter(time == 24) |>
+  select(id, Cc) |>
+  left_join(grid, by = "id") |>
+  mutate(cmin_ugml = Cc / 1000)
+
+# Closed-form one-compartment oral Cmin,ss at t = tau.
+closed_cmin <- function(dose, wt, ka = 0.895, tau = 24) {
+  cl <- 1.69 * (wt / 33)^0.75
+  v <- 32.8 * wt / 33
+  k <- cl / v
+  dose * ka / (v * (ka - k)) *
+    (exp(-k * tau) / (1 - exp(-k * tau)) - exp(-ka * tau) / (1 - exp(-ka * tau)))
+}
+sim4 <- sim4 |> mutate(cmin_closed = closed_cmin(dose, WT))
+stopifnot(max(abs(sim4$cmin_ugml / sim4$cmin_closed - 1)) < 1e-5)
+```
+
+```{r fig4-plot, fig.cap = "Replicates Figure 4 of Sunkaraneni 2018: typical eslicarbazepine Cmin,ss (log scale) versus body weight for ESL 100-1600 mg once daily, with the adult titration (dark) and maintenance (light) target bands."}
+ggplot(sim4, aes(WT, cmin_ugml, group = dose)) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = 7.4, ymax = 14.7, alpha = 0.15) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = 2.7, ymax = 4.7, alpha = 0.3) +
+  geom_hline(yintercept = c(3.7, 7.4, 11, 14.7), linetype = "dotted") +
+  geom_line() +
+  geom_text(
+    data = filter(sim4, WT == 74), aes(label = paste(dose, "mg")),
+    hjust = -0.1, size = 3
+  ) +
+  scale_y_log10(breaks = c(1, 2, 3.7, 7.4, 11, 14.7, 33)) +
+  scale_x_continuous(limits = c(10, 84)) +
+  labs(x = "Body weight (kg)", y = "Eslicarbazepine Cmin,ss (ug/mL)") +
+  theme_bw()
+```
+
+The lower edge (2.7) and upper edge (4.7) of the titration band are drawn
+approximately from the published figure, which does not print them; only the
+3.7 ug/mL target is stated in the text.
+
+The Results give one worked reading of Figure 4: a typical 20 kg child needs
+400-600 mg once daily to match the adult 800-1200 mg exposures (7.4 and
+11 ug/mL).
+
+```{r fig4-check}
+at20 <- sim4 |>
+  filter(WT == 20, dose %in% c(400, 600)) |>
+  mutate(target = c(7.4, 11), pct_diff = 100 * (cmin_ugml / target - 1))
+at20 |>
+  select(Dose = dose, `Simulated Cmin,ss (ug/mL)` = cmin_ugml,
+         `Adult target (ug/mL)` = target, `% difference` = pct_diff) |>
+  knitr::kable(digits = 2)
+# The worked example is a reading off a plot, not a computed value: the
+# packaged model gives 7.0 and 10.5 ug/mL, within 6% of the targets. A wrong
+# CL, V or unit moves these by tens of percent.
+stopifnot(all(abs(at20$pct_diff) < 15))
+```
+
+The upper curves also reproduce the visible anchors of the figure: at 10 kg
+the 1600 mg curve sits above the 33 ug/mL tick (simulated
+`r round(sim4$cmin_ugml[sim4$WT == 10 & sim4$dose == 1600], 1)` ug/mL), and at
+74 kg it lies between the 11 and 14.7 ug/mL ticks (simulated
+`r round(sim4$cmin_ugml[sim4$WT == 74 & sim4$dose == 1600], 1)` ug/mL).
+
+```{r fig4-anchors}
+c10 <- sim4$cmin_ugml[sim4$WT == 10 & sim4$dose == 1600]
+c74 <- sim4$cmin_ugml[sim4$WT == 74 & sim4$dose == 1600]
+stopifnot(c10 > 33, c74 > 11, c74 < 14.7)
+```
+
+# Stochastic simulation of the study 305 maintenance design
+
+A virtual cohort of 200 children per arm (10, 20 and 30 mg/kg/day ESL tablet
+once daily, capped at 1200 mg/day as in study 305) is simulated at steady
+state without concomitant AEDs. Body weight is drawn from a normal
+distribution with the Table 2 mean and SD (34.7, 16.0 kg), redrawing values
+outside the observed 10-79 kg span.
+
+```{r cohort}
+set.seed(20180625)
+rxode2::rxSetSeed(20180625)
+draw_wt <- function(n, mean = 34.7, sd = 16.0, lo = 10, hi = 79) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- rnorm(n, mean, sd)
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
+n_arm <- 200
+cohort <- tibble(
+  arm = rep(c("10 mg/kg/day", "20 mg/kg/day", "30 mg/kg/day"), each = n_arm),
+  mgkg = rep(c(10, 20, 30), each = n_arm),
+  WT = draw_wt(3 * n_arm)
+) |>
+  mutate(id = row_number(), dose = pmin(round(WT * mgkg), 1200))
+
+vpc_times <- c(0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24)
+ev_vpc <- bind_rows(
+  cohort |> transmute(id, time = 0, amt = dose, evid = 1, cmt = "depot", ss = 1, ii = 24),
+  cohort |> select(id) |> tidyr::crossing(time = vpc_times) |>
+    mutate(amt = 0, evid = 0, cmt = "central", ss = 0, ii = 0)
+) |>
+  left_join(select(cohort, id, WT), by = "id") |>
+  mutate(
+    CONMED_LEV = 0, CONMED_PB = 0, CONMED_PHT = 0, CONMED_PRM = 0,
+    CONMED_CBZ = 0, FORM_TABLET = 1
+  ) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+sim_vpc <- rxode2::rxSolve(
+  mod, events = ev_vpc, returnType = "data.frame", maxsteps = 1e6
+) |>
+  left_join(select(cohort, id, arm, dose), by = "id")
+stopifnot(!anyNA(sim_vpc$Cc))
+```
+
+```{r vpc-plot, fig.cap = "Simulated steady-state eslicarbazepine profiles (median and 5th-95th percentiles of the individual predictions, without residual error) by maintenance dose. Shown for orientation only: Figure 2 of Sunkaraneni 2018 is a prediction-corrected VPC pooled over the 5-30 mg/kg/day doses and both formulations, so its concentration scale is not directly comparable."}
+sim_vpc |>
+  group_by(arm, time) |>
+  summarise(
+    p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~arm) +
+  labs(x = "Time since last dose (h)", y = "Eslicarbazepine (ng/mL)") +
+  theme_bw()
+```
+
+## PKNCA on the stochastic cohort
+
+```{r vpc-pknca}
+conc_vpc <- sim_vpc |>
+  filter(!is.na(Cc)) |>
+  mutate(Cc = pmax(Cc, 0)) |>
+  select(id, arm, time, Cc)
+dose_vpc <- cohort |> transmute(id, arm, time = 0, dose)
+nca_vpc <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_vpc, Cc ~ time | arm + id),
+  PKNCA::PKNCAdose(dose_vpc, dose ~ time | arm + id),
+  intervals = data.frame(start = 0, end = 24, auclast = TRUE, cmax = TRUE, cmin = TRUE, tmax = TRUE)
+))
+nca_tab <- as.data.frame(nca_vpc) |>
+  filter(PPTESTCD %in% c("cmax", "cmin", "auclast", "tmax")) |>
+  group_by(arm, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+nca_tab |>
+  dplyr::rename(
+    Arm = arm, `Cmax (ng/mL)` = cmax, `Cmin (ng/mL)` = cmin,
+    `AUC0-24,ss (ng*h/mL)` = auclast, `Tmax (h)` = tmax
+  ) |>
+  knitr::kable(digits = 0, caption = "Median steady-state NCA by maintenance arm (simulated).")
+```
+
+The paper reports no NCA table. As an internal check, the steady-state
+AUC0-24 of each subject must equal F x Dose / CL with that subject's own
+clearance (F = 1 here); the PKNCA trapezoid is compared against it.
+
+```{r vpc-auc-identity}
+ind_cl <- sim_vpc |> distinct(id, cl)
+auc_chk <- as.data.frame(nca_vpc) |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, auc = PPORRES) |>
+  left_join(ind_cl, by = "id") |>
+  left_join(select(cohort, id, dose), by = "id") |>
+  mutate(pct_diff = 100 * (auc / (1000 * dose / cl) - 1))
+summary(auc_chk$pct_diff)
+# Linear-up/log-down trapezoids on an 18-point grid; the error is set by
+# the absorption peak of the subjects with a high ka draw.
+stopifnot(
+  abs(median(auc_chk$pct_diff)) < 2,
+  quantile(abs(auc_chk$pct_diff), 0.9) < 5
+)
+```
+
+# Assumptions and deviations
+
+* **IIV scale.** Table 3 prints IIV as %CV; the log-scale variances are
+  omega^2 = log(CV^2 + 1), the same convention used for the adult model of the
+  same group (`Gidal_2018_eslicarbazepine`).
+* **One KA eta for both formulations.** The Results state the KA variance was
+  assumed the same for oral suspension and tablet; the model carries one
+  `etalka` and switches only the typical value with `FORM_TABLET`. If the
+  authors instead used two etas of equal variance, a subject switching
+  formulation would draw a new KA deviate in their model but not here; this
+  does not affect any steady-state trough.
+* **Phenobarbital-like flag.** The paper's PHENLF indicator is rebuilt from
+  three per-drug columns (`CONMED_PB`, `CONMED_PHT`, `CONMED_PRM`) as their
+  logical OR, matching the adult model.
+* **Carbamazepine.** Encoded as F = 0.679 with carbamazepine and 1 otherwise,
+  with no carbamazepine dose term (the adult model has one; this one does
+  not).
+* **Dose units.** Doses are ESL (prodrug) in mg with no molar conversion to
+  eslicarbazepine, because CL/F and V/F were estimated against the ESL dose.
+* **Figure 4.** The target-band edges other than 3.7, 7.4, 11 and 14.7 ug/mL
+  are read off the figure; the formulation used for Figure 4 is not stated,
+  and the tablet is assumed. The 24 h trough is insensitive to the choice
+  because exp(-0.895 x 24) is negligible.
+* **Virtual cohort.** The paper resampled observed covariate vectors; those
+  data are not available, so weights are drawn from a truncated normal with
+  the Table 2 moments. No figure of the paper is reproduced from the
+  stochastic cohort, which is shown for orientation only.
+* **Adult exposure targets** (3.7-14.7 ug/mL) come from the adult models
+  cited by the paper and are used here only as published constants.
+* No erratum to the article was found (PubMed / Europe PMC search,
+  2026-11-25).
