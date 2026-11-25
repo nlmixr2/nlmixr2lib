@@ -1,0 +1,628 @@
+---
+title: "Bacteremia with extracorporeal bacterial separation (Miller 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bacteremia with extracorporeal bacterial separation (Miller 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.2
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Miller_2016_bacteremia_mouse"))$reference`
+* Article: [PLoS One 11(9):e0163167](https://doi.org/10.1371/journal.pone.0163167)
+* Source code (MATLAB, S11 File): <https://doi.org/10.1371/journal.pone.0163167.s011>
+
+Miller et al. (2016) built a five-compartment kinetic model of symptomatic
+Gram-negative bacteremia (*Acinetobacter baumannii* or *Klebsiella
+pneumoniae*) to ask how fast an extracorporeal magnetic-nanoparticle
+bacterial-separation device would need to work to help. Bacterial
+concentrations (CFU/mL) in lungs (L), spleen (S), liver (H), blood (B) and the
+separation device (E) are linked by organ blood flow, organ volume and a
+bacterial blood:organ partition coefficient. Each organ has one net growth
+rate (proliferation minus immune clearance); immune status and colistin
+treatment change only these rates (and, as run, the partition coefficients).
+The model is deterministic: there is no between-subject variability and no
+residual error.
+
+Two model files share one structure:
+
+* `Miller_2016_bacteremia_mouse` -- the rodent model (Tables 7, 9, 10-13;
+  Figures 1-5).
+* `Miller_2016_bacteremia_human` -- the human extrapolation (Table 8;
+  Figures 6-7).
+
+Both default to the immunocompromised + colistin scenario with the device off
+(`fsep = 0`). Every other scenario in the paper is a set of parameter
+overrides, collected in the scenario table below.
+
+# Population
+
+No subject-level data were fitted. The physiological constants (organ
+volumes, specific blood flows, partition coefficients) come from the
+literature cited in Tables 7-9, and the net growth rates are slopes of
+published log10 CFU time courses after intratracheal challenge of
+immunonormal or neutropenic rodents with 1e7 CFU/mL bacteria, with or without
+colistin methanesulfonate 3 mg/kg (Tables 10-13; S5 Fig shows one
+calculation). The rodent is a 31 g mouse with 1.80 mL of blood; the human is
+an adult with 5000 mL of blood.
+
+```{r population}
+mod_mouse <- rxode2::rxode(readModelDb("Miller_2016_bacteremia_mouse"))
+mod_human <- rxode2::rxode(readModelDb("Miller_2016_bacteremia_human"))
+str(mod_mouse$population)
+str(mod_human$population)
+```
+
+# Model equations
+
+With flows Q in mL/h (the tabulated mL/min/g times the organ volume times
+60) and V the organ volumes, the packaged `model()` block is Equations 1-5
+of the paper:
+
+* dL/dt = G_L L + (Q_L/V_L) B - Q_L/(V_L x_L) L
+* dS/dt = G_S S + (Q_S/V_S) B - Q_S/(V_S x_S) S
+* dH/dt = G_H H + (Q_H/V_H) B + Q_S/(V_S x_S) S - (Q_H + Q_S)/(V_H x_H) H
+* dE/dt = (Q_E/V_E) B f - Q_E/(V_E x_E) E (1 - f)
+* dB/dt = G_B B + (Q_H + Q_S)/(V_H x_H) H + Q_L/(V_L x_L) L + Q_E/(V_E x_E) E (1 - f) - (Q_H/V_H + Q_S/V_S + Q_L/V_L + f Q_E/V_E) B
+
+where x is the partition coefficient (`kp_*`), G the net growth rate
+(`kgrow_*`) and f the separation efficiency (`fsep`). The equations and every
+constant were checked line by line against the authors' MATLAB code (S11
+File), which matches the printed equations.
+
+# Source trace
+
+| Parameter | Mouse | Human | Source location |
+|-----------|-------|-------|-----------------|
+| `kgrow_lung`, `kgrow_spleen`, `kgrow_liver`, `kgrow_blood` | -0.24, -0.07, -0.18, -0.05 | same | Table 12 (A. baumannii, immunocompromised + colistin) |
+| `lkp_lung`, `lkp_spleen`, `lkp_liver` | log(93), log(59), log(749) | log(3), log(28), log(79) | Table 9 (column choice: see Assumptions) |
+| `lkp_device` | log(1) | log(1) | Table 9 |
+| `v_lung`, `v_spleen`, `v_liver` (mL) | 2.10, 0.15, 1.99 | 1315, 127, 830 | Tables 7 and 8 |
+| `v_device` (mL) | 0.0324 | 90 | S11 code (Table 7 rounds the mouse value to 0.032); Table 8 |
+| `qperf_lung`, `qperf_spleen`, `qperf_liver` (mL/min/g) | 6.84, 1.20, 1.50 | 1.14, 1.97, 0.97 | Tables 7 and 8; S11 code `Q_x = qperf * V` |
+| `qbfr` (mL/min) | 0.36 | 1000 | S11 code `Q_E` (see Assumptions) |
+| `fsep` | 0 | 0 | Equations 4-5; default = device off |
+| `bact0_lung` (CFU/mL) | 1e7 | 1000 | Results (treatment starts at 1e7 CFU/mL in rodent lungs; symptomatic human bacteremia at 1e3 CFU/mL in lungs) |
+| `bact0_blood` (CFU/mL) | 6.4e4 | 10 | Mouse: digitised from Fig 3; human: Results (10 CFU/mL in blood) |
+| `bact0_spleen`, `bact0_liver` (CFU/mL) | 7.6e6, 1.1e7 | 757, 761 | Mouse: digitised from Fig 3; human: back-solved from Table 6 |
+| Equations 1-5 | | | Methods, Equations 1-5; S11 code `dydt(1:5)` |
+| Factor 60 on every Q/V term | | | S11 code (`* 60`) |
+
+## Scenario parameter sets
+
+```{r scenarios}
+growth <- tibble::tribble(
+  ~bacterium,       ~state,                        ~kgrow_lung, ~kgrow_spleen, ~kgrow_liver, ~kgrow_blood, ~source,
+  "A. baumannii",   "immunonormal",                -1.74,       -0.14,         -0.10,        -0.17,        "Table 10",
+  "A. baumannii",   "immunocompromised",            0.21,        0.14,          0.10,         0.08,        "Table 10",
+  "A. baumannii",   "immunocompromised + colistin",-0.24,       -0.07,         -0.18,        -0.05,        "Table 12",
+  "K. pneumoniae",  "immunonormal",                -1.50,       -0.11,         -0.15,        -0.10,        "Table 11",
+  "K. pneumoniae",  "immunocompromised",            0.10,        0.11,          0.13,         0.15,        "Table 11",
+  "K. pneumoniae",  "immunocompromised + colistin",-0.35,       -0.10,         -0.15,         0.02,        "Table 13"
+)
+knitr::kable(growth, caption = "Net bacterial growth rates (1/h), Tables 10-13.")
+
+kp_sets <- list(
+  immunocompromised = c(lkp_lung = log(3), lkp_spleen = log(28), lkp_liver = log(79)),
+  immunonormal = c(lkp_lung = log(93), lkp_spleen = log(59), lkp_liver = log(749))
+)
+```
+
+# Simulation helpers
+
+The rodent figures plot time after inoculation, and the simulation starts at
+3 h after inoculation (Results, "Model initial conditions were 3 hours
+post-inoculation"), so the figures below add 3 h to the simulation clock.
+Clearance times in Tables 2, 4 and S7 count from the simulation start.
+
+```{r helpers}
+growth_params <- function(bug, state) {
+  g <- growth[growth$bacterium == bug & growth$state == state, ]
+  c(
+    kgrow_lung = g$kgrow_lung,
+    kgrow_spleen = g$kgrow_spleen,
+    kgrow_liver = g$kgrow_liver,
+    kgrow_blood = g$kgrow_blood
+  )
+}
+
+solve_scenario <- function(mod, overrides = c(), t_end = 200, dt = 0.05) {
+  theta <- mod$theta
+  theta[names(overrides)] <- overrides
+  ev <- rxode2::et(seq(0, t_end, by = dt))
+  out <- as.data.frame(rxode2::rxSolve(mod, ev, params = theta))
+  out[, c("time", "bact_lung", "bact_spleen", "bact_liver", "bact_blood", "bact_device")]
+}
+
+to_long <- function(sim, scenario) {
+  sim |>
+    dplyr::select(-bact_device) |>
+    tidyr::pivot_longer(-time, names_to = "organ", values_to = "bact") |>
+    dplyr::mutate(
+      organ = factor(
+        sub("bact_", "", organ),
+        levels = c("lung", "spleen", "liver", "blood")
+      ),
+      scenario = scenario
+    )
+}
+
+clearance_time <- function(sim) {
+  vapply(
+    c(lung = "bact_lung", spleen = "bact_spleen", liver = "bact_liver", blood = "bact_blood"),
+    function(v) sim$time[which(sim[[v]] <= 1)[1]],
+    numeric(1)
+  )
+}
+
+organ_colours <- c(lung = "black", spleen = "blue", liver = "green4", blood = "red")
+
+plot_burden <- function(long, title, offset = 3, ylim = c(1, 1e8)) {
+  long <- dplyr::filter(long, bact >= ylim[1], bact <= ylim[2], time + offset >= 3)
+  ggplot(long, aes(time + offset, bact, colour = organ, linetype = scenario)) +
+    geom_line() +
+    scale_x_log10(limits = c(3, 200)) +
+    scale_y_log10(limits = ylim) +
+    scale_colour_manual(values = organ_colours) +
+    labs(
+      x = "Time after inoculation (h)",
+      y = "Bacterial burden (CFU/mL)",
+      title = title,
+      colour = NULL,
+      linetype = NULL
+    )
+}
+```
+
+# Rodent model
+
+## Immunonormal rodents (Figure 1)
+
+The initial conditions of Figure 1 are not printed; the values below were read
+off both panels at t = 3 h (about 1e7 CFU/mL in each organ and 7e4 CFU/mL in
+blood).
+
+```{r fig1}
+ic_fig1 <- c(bact0_lung = 1e7, bact0_spleen = 1e7, bact0_liver = 1e7, bact0_blood = 7e4)
+sim_f1a <- solve_scenario(
+  mod_mouse,
+  c(growth_params("A. baumannii", "immunonormal"), kp_sets$immunonormal, ic_fig1)
+)
+sim_f1b <- solve_scenario(
+  mod_mouse,
+  c(growth_params("K. pneumoniae", "immunonormal"), kp_sets$immunonormal, ic_fig1)
+)
+dplyr::bind_rows(
+  to_long(sim_f1a, "A. baumannii"),
+  to_long(sim_f1b, "K. pneumoniae")
+) |>
+  dplyr::filter(bact >= 1, bact <= 1e8, time > 0) |>
+  ggplot(aes(time + 3, bact, colour = organ)) +
+  geom_line() +
+  facet_wrap(~scenario) +
+  scale_x_log10(limits = c(3, 200)) +
+  scale_y_log10(limits = c(1, 1e8)) +
+  scale_colour_manual(values = organ_colours) +
+  labs(x = "Time after inoculation (h)", y = "Bacterial burden (CFU/mL)", colour = NULL)
+```
+
+Replicates Figure 1 of Miller 2016. The paper reports that blood clears first,
+followed by the spleen, lungs and liver; the simulated clearance times (h after
+the simulation start) keep that order.
+
+```{r fig1-check}
+ct_f1a <- clearance_time(sim_f1a)
+ct_f1a
+stopifnot(
+  ct_f1a[["blood"]] < ct_f1a[["spleen"]],
+  ct_f1a[["spleen"]] < ct_f1a[["lung"]],
+  ct_f1a[["lung"]] < ct_f1a[["liver"]]
+)
+```
+
+## Untreated neutropenic rodents (Figure 2)
+
+Initial conditions digitised from Figure 2 at t = 3 h.
+
+```{r fig2}
+ic_fig2 <- c(bact0_lung = 4.8e5, bact0_spleen = 6.2e6, bact0_liver = 2.16e7, bact0_blood = 1.59e5)
+sim_f2 <- solve_scenario(
+  mod_mouse,
+  c(growth_params("A. baumannii", "immunocompromised"), kp_sets$immunocompromised, ic_fig2),
+  t_end = 110
+)
+plot_burden(to_long(sim_f2, "untreated"), "Immunocompromised, untreated (A. baumannii)", ylim = c(1e4, 1e10)) +
+  guides(linetype = "none")
+```
+
+Replicates Figure 2 of Miller 2016. The paper places the lethal burden of
+1e10 CFU/mL at about 96 h after inoculation; in Figure 2 the lungs reach it at
+about 93 h.
+
+```{r fig2-check}
+t_lethal_lung <- sim_f2$time[which(sim_f2$bact_lung >= 1e10)[1]] + 3
+t_lethal_lung
+stopifnot(abs(t_lethal_lung - 95) < 5)
+```
+
+## Colistin-treated neutropenic rodents, with and without the device (Figures 3-4, Tables 1-3)
+
+```{r fig3-4}
+sim_abx <- solve_scenario(mod_mouse)
+sim_dev <- solve_scenario(mod_mouse, c(fsep = 1))
+dplyr::bind_rows(
+  to_long(sim_abx, "antibiotic"),
+  to_long(sim_dev, "separation (100%) + antibiotic")
+) |>
+  dplyr::filter(organ %in% c("lung", "blood")) |>
+  plot_burden("Immunocompromised + colistin (A. baumannii)")
+```
+
+Replicates Figures 3 and 4 of Miller 2016 (lungs and blood; the spleen and
+liver curves of Figure 3 are in the AUC table below).
+
+```{r table2}
+ct_abx <- clearance_time(sim_abx)
+ct_dev <- clearance_time(sim_dev)
+table2 <- data.frame(
+  row.names = NULL,
+  organ = names(ct_abx),
+  paper_abx = c(80, 77, 95, 55),
+  sim_abx = round(ct_abx, 1),
+  paper_dev = c(43, 43, 60, 28),
+  sim_dev = round(ct_dev, 1)
+)
+table2 |>
+  dplyr::rename(
+    "Compartment" = organ,
+    "Antibiotic, paper (h)" = paper_abx,
+    "Antibiotic, simulated (h)" = sim_abx,
+    "Separation + antibiotic, paper (h)" = paper_dev,
+    "Separation + antibiotic, simulated (h)" = sim_dev
+  ) |>
+  knitr::kable(caption = "Time to clearance (<= 1 CFU/mL) from the start of treatment, Table 2.")
+stopifnot(
+  all(abs(table2$sim_abx - table2$paper_abx) < 5),
+  all(abs(table2$sim_dev - table2$paper_dev) < 5)
+)
+```
+
+## K. pneumoniae (S2-S3 Figs, S7 Table)
+
+The supplementary *K. pneumoniae* runs start from the same initial conditions
+and differ only in the growth rates of Table 13.
+
+```{r kpneu}
+kp_abx <- growth_params("K. pneumoniae", "immunocompromised + colistin")
+sim_kp_abx <- solve_scenario(mod_mouse, kp_abx)
+sim_kp_dev <- solve_scenario(mod_mouse, c(kp_abx, fsep = 1))
+tableS7 <- data.frame(
+  row.names = NULL,
+  organ = c("lung", "spleen", "liver", "blood"),
+  paper_abx = c(88, 86, 106, 61),
+  sim_abx = round(clearance_time(sim_kp_abx), 1),
+  paper_dev = c(49, 48, 67, 32),
+  sim_dev = round(clearance_time(sim_kp_dev), 1)
+)
+tableS7 |>
+  dplyr::rename(
+    "Compartment" = organ,
+    "Antibiotic, paper (h)" = paper_abx,
+    "Antibiotic, simulated (h)" = sim_abx,
+    "Separation + antibiotic, paper (h)" = paper_dev,
+    "Separation + antibiotic, simulated (h)" = sim_dev
+  ) |>
+  knitr::kable(caption = "K. pneumoniae time to clearance, S7 Table.")
+stopifnot(
+  all(abs(tableS7$sim_abx - tableS7$paper_abx) < 5),
+  all(abs(tableS7$sim_dev - tableS7$paper_dev) < 5)
+)
+```
+
+# Human model (Figures 6-7, Table 6)
+
+The human runs use the rodent colistin growth rates and the immunocompromised
+partition coefficients. The multi-drug-resistant (MDR) scenario of Figure 7
+("50% less susceptible to antibiotic treatment") is the colistin growth rates
+halved.
+
+```{r human}
+sim_h_abx <- solve_scenario(mod_human, t_end = 60, dt = 0.01)
+sim_h_dev <- solve_scenario(mod_human, c(fsep = 1), t_end = 60, dt = 0.01)
+mdr <- 0.5 * mod_human$theta[c("kgrow_lung", "kgrow_spleen", "kgrow_liver", "kgrow_blood")]
+sim_h_mdr <- solve_scenario(mod_human, mdr, t_end = 60, dt = 0.01)
+sim_h_mdr_dev <- solve_scenario(mod_human, c(mdr, fsep = 1), t_end = 60, dt = 0.01)
+
+dplyr::bind_rows(
+  to_long(sim_h_abx, "antibiotic") |> dplyr::mutate(strain = "Figure 6: A. baumannii"),
+  to_long(sim_h_dev, "separation (100%) + antibiotic") |> dplyr::mutate(strain = "Figure 6: A. baumannii"),
+  to_long(sim_h_mdr, "antibiotic") |> dplyr::mutate(strain = "Figure 7: MDR A. baumannii"),
+  to_long(sim_h_mdr_dev, "separation (100%) + antibiotic") |> dplyr::mutate(strain = "Figure 7: MDR A. baumannii")
+) |>
+  dplyr::filter(organ %in% c("lung", "blood"), time >= 0.1, bact >= 1, bact <= 1e4) |>
+  ggplot(aes(time, bact, colour = organ, linetype = scenario)) +
+  geom_line() +
+  facet_wrap(~strain) +
+  scale_x_log10(limits = c(0.1, 100)) +
+  scale_y_log10(limits = c(1, 1e4)) +
+  scale_colour_manual(values = organ_colours) +
+  labs(x = "Time from presentation (h)", y = "Bacterial burden (CFU/mL)", colour = NULL, linetype = NULL)
+```
+
+Replicates Figures 6 and 7 of Miller 2016. Within the first hour the lungs
+fall from 1e3 to a plateau near 30 CFU/mL and the blood settles near
+10 CFU/mL, the levels at the left edge of both paper figures. The paper's
+time axis appears to run about 3 h ahead of the time from presentation used
+here (the antibiotic-arm lungs clear at about 24 h on the figure axis and at
+about 21 h here), while the caption times, checked below, count from
+presentation.
+
+```{r human-check}
+blood_clear <- c(
+  abx = clearance_time(sim_h_abx)[["blood"]],
+  dev = clearance_time(sim_h_dev)[["blood"]],
+  mdr_abx = clearance_time(sim_h_mdr)[["blood"]],
+  mdr_dev = clearance_time(sim_h_mdr_dev)[["blood"]]
+)
+data.frame(
+  row.names = NULL,
+  scenario = names(blood_clear),
+  paper = c(15, 1, 29, 1),
+  simulated = round(blood_clear, 2)
+) |>
+  dplyr::rename("Scenario" = scenario, "Paper (h)" = paper, "Simulated (h)" = simulated) |>
+  knitr::kable(caption = "Time to blood clearance (<= 1 CFU/mL), Figure 6 and 7 captions.")
+# Rejected MDR reading: halfway between the untreated and colistin rates.
+mdr_alt <- 0.5 * (mod_human$theta[names(mdr)] +
+  growth_params("A. baumannii", "immunocompromised")[names(mdr)])
+sim_h_mdr_alt <- solve_scenario(mod_human, mdr_alt, t_end = 200, dt = 0.05)
+t_mdr_alt <- clearance_time(sim_h_mdr_alt)[["blood"]]
+t_mdr_alt
+stopifnot(
+  t_mdr_alt > 60,
+  abs(blood_clear[["abx"]] - 15) < 1.5,
+  abs(blood_clear[["mdr_abx"]] - 29) < 1.5,
+  blood_clear[["dev"]] <= 1.5,
+  blood_clear[["mdr_dev"]] <= 1.5
+)
+```
+
+# AUC of bacterial burden with PKNCA (Tables 1, 3, 6, S6, S8)
+
+The paper summarises each scenario by the area under the bacterial-burden
+curve, (CFU/mL) x h. The simulated AUCs are computed with PKNCA (linear
+trapezoidal AUC from the start of treatment to 200 h in the rodent and 60 h in
+the human, by which time every compartment has cleared).
+
+```{r pknca}
+nca_input <- dplyr::bind_rows(
+  to_long(sim_abx, "mouse A. baumannii, antibiotic"),
+  to_long(sim_dev, "mouse A. baumannii, separation + antibiotic"),
+  to_long(sim_kp_abx, "mouse K. pneumoniae, antibiotic"),
+  to_long(sim_kp_dev, "mouse K. pneumoniae, separation + antibiotic"),
+  to_long(sim_h_abx, "human A. baumannii, antibiotic"),
+  to_long(sim_h_dev, "human A. baumannii, separation + antibiotic")
+) |>
+  dplyr::mutate(id = 1L, organ = as.character(organ)) |>
+  dplyr::filter(!is.na(bact))
+
+conc_obj <- PKNCA::PKNCAconc(nca_input, bact ~ time | scenario + organ / id)
+intervals <- data.frame(
+  start = 0,
+  end = Inf,
+  auclast = TRUE
+)
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, intervals = intervals, options = list(auc.method = "linear"))
+)
+
+reference <- tibble::tribble(
+  ~scenario,                                         ~organ,   ~auclast,
+  "mouse A. baumannii, antibiotic",                  "lung",   1.41e7,
+  "mouse A. baumannii, antibiotic",                  "spleen", 1.38e7,
+  "mouse A. baumannii, antibiotic",                  "liver",  1.27e8,
+  "mouse A. baumannii, antibiotic",                  "blood",  1.36e5,
+  "mouse A. baumannii, separation + antibiotic",     "lung",   3.94e6,
+  "mouse A. baumannii, separation + antibiotic",     "spleen", 7.33e6,
+  "mouse A. baumannii, separation + antibiotic",     "liver",  6.11e7,
+  "mouse A. baumannii, separation + antibiotic",     "blood",  2.03e4,
+  "mouse K. pneumoniae, antibiotic",                 "lung",   1.39e7,
+  "mouse K. pneumoniae, antibiotic",                 "spleen", 1.35e7,
+  "mouse K. pneumoniae, antibiotic",                 "liver",  1.33e8,
+  "mouse K. pneumoniae, antibiotic",                 "blood",  1.37e5,
+  "mouse K. pneumoniae, separation + antibiotic",    "lung",   3.89e6,
+  "mouse K. pneumoniae, separation + antibiotic",    "spleen", 7.19e6,
+  "mouse K. pneumoniae, separation + antibiotic",    "liver",  6.72e7,
+  "mouse K. pneumoniae, separation + antibiotic",    "blood",  2.08e4,
+  "human A. baumannii, antibiotic",                  "lung",   2.67e2,
+  "human A. baumannii, antibiotic",                  "spleen", 2.25e3,
+  "human A. baumannii, antibiotic",                  "liver",  1.28e4,
+  "human A. baumannii, antibiotic",                  "blood",  7.53e1,
+  "human A. baumannii, separation + antibiotic",     "lung",   5.30e1,
+  "human A. baumannii, separation + antibiotic",     "spleen", 2.66e2,
+  "human A. baumannii, separation + antibiotic",     "liver",  1.81e3,
+  "human A. baumannii, separation + antibiotic",     "blood",  3.26e0
+)
+
+nca_tbl <- nlmixr2lib::ncaComparisonTable(
+  nca_res,
+  reference,
+  by = c("scenario", "organ"),
+  tolerance_pct = 20,
+  units = c(auclast = "(CFU/mL)*h")
+)
+knitr::kable(nca_tbl, caption = "Bacterial-burden AUC: paper Tables 1, 3, 6, S6 and S8 against PKNCA.")
+```
+
+The human AUCs agree to within 2%. The rodent AUCs agree to within about
+11%, except the liver in the device arm, which is about 15% high for both
+bacteria; the rodent initial conditions were read off Figure 3, and the
+device arm of Figure 4 starts visibly lower than the antibiotic arm at 3 h,
+which suggests the device runs began from slightly different values.
+
+```{r pknca-check}
+auc_cmp <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::inner_join(reference, by = c("scenario", "organ")) |>
+  dplyr::mutate(
+    pct_diff = 100 * (PPORRES - auclast) / auclast,
+    species = sub(" .*", "", scenario)
+  )
+mouse_cmp <- auc_cmp[auc_cmp$species == "mouse", ]
+human_cmp <- auc_cmp[auc_cmp$species == "human", ]
+stopifnot(
+  nrow(mouse_cmp) == 16,
+  nrow(human_cmp) == 8,
+  # Mouse: initial conditions read off Figure 3, so a few percent of error
+  # carries into every AUC (the device-arm liver AUC is +15% for both
+  # bacteria). The rejected readings in "Assumptions and deviations" miss
+  # the blood AUC several-fold, so these bounds still separate the as-run
+  # model from them.
+  abs(median(mouse_cmp$pct_diff)) < 8,
+  all(abs(mouse_cmp$pct_diff) < 20),
+  all(abs(mouse_cmp$pct_diff[mouse_cmp$organ == "blood"]) < 12),
+  # Human: lung and blood initial conditions are printed and the spleen
+  # and liver ones were back-solved from these AUCs, so agreement is tight.
+  all(abs(human_cmp$pct_diff) < 2)
+)
+```
+
+# Separation efficiencies below 100% (Figure 5, Tables 4-5)
+
+Tables 4 and 5 report intermediate benefit at 60% efficiency (blood clears at
+35 h rather than 28 h or 55 h) and none at 20%. The printed device equation,
+which the source code reproduces exactly, cannot give that result: with
+f < 1 the device concentration reaches E = B f/(1 - f) within seconds, after
+which the return flux Q_E/V_E E (1 - f) equals the capture flux Q_E/V_E B f
+and the device removes nothing. Simulated with the packaged model, 60% and 20%
+efficiency are both indistinguishable from antibiotic alone.
+
+```{r partial-efficiency}
+sim_60 <- solve_scenario(mod_mouse, c(fsep = 0.6))
+sim_20 <- solve_scenario(mod_mouse, c(fsep = 0.2))
+eff_tbl <- data.frame(
+  row.names = NULL,
+  organ = c("lung", "spleen", "liver", "blood"),
+  paper_60 = c(51, 52, 67, 35),
+  sim_60 = round(clearance_time(sim_60), 1),
+  paper_20 = c(80, 78, 95, 55),
+  sim_20 = round(clearance_time(sim_20), 1),
+  sim_abx = round(ct_abx, 1)
+)
+eff_tbl |>
+  dplyr::rename(
+    "Compartment" = organ,
+    "60%, paper (h)" = paper_60,
+    "60%, simulated (h)" = sim_60,
+    "20%, paper (h)" = paper_20,
+    "20%, simulated (h)" = sim_20,
+    "Antibiotic alone, simulated (h)" = sim_abx
+  ) |>
+  knitr::kable(caption = "Time to clearance at partial separation efficiency, Table 4.")
+# Pins the documented deviation: partial efficiency is inert in the
+# printed structure. If this starts failing the device equation changed.
+stopifnot(all(abs(eff_tbl$sim_60 - eff_tbl$sim_abx) < 0.5))
+```
+
+The 60% column of Tables 4 and 5 is therefore not reproducible from the
+published equations or code, and the packaged model is meaningful only at
+`fsep = 0` (no device) and `fsep = 1` (complete capture).
+
+# Assumptions and deviations
+
+The two readings rejected below are simulated here against Tables 1-3.
+
+```{r rejected-readings}
+sim_alt_kp <- solve_scenario(mod_mouse, kp_sets$immunocompromised)
+sim_alt_flow <- solve_scenario(mod_mouse, c(fsep = 1, qbfr = 0.36 / 60))
+auc_trap <- function(sim, v) sum(diff(sim$time) * (head(sim[[v]], -1) + tail(sim[[v]], -1)) / 2)
+rejected <- data.frame(
+  row.names = NULL,
+  reading = c(
+    "'Immunocompromised' partition coefficients, antibiotic arm",
+    "device flow 0.36 mL/h (text), separation + antibiotic arm"
+  ),
+  paper_blood_auc = c(1.36e5, 2.03e4),
+  sim_blood_auc = signif(c(auc_trap(sim_alt_kp, "bact_blood"), auc_trap(sim_alt_flow, "bact_blood")), 3),
+  paper_blood_clear = c(55, 28),
+  sim_blood_clear = round(c(clearance_time(sim_alt_kp)[["blood"]], clearance_time(sim_alt_flow)[["blood"]]), 1)
+)
+rejected |>
+  dplyr::rename(
+    "Rejected reading" = reading,
+    "Blood AUC, paper" = paper_blood_auc,
+    "Blood AUC, simulated" = sim_blood_auc,
+    "Blood clearance, paper (h)" = paper_blood_clear,
+    "Blood clearance, simulated (h)" = sim_blood_clear
+  ) |>
+  knitr::kable(caption = "Readings of the paper that do not reproduce Tables 1-3.")
+stopifnot(
+  rejected$sim_blood_auc[1] / rejected$paper_blood_auc[1] > 4,
+  rejected$sim_blood_auc[2] / rejected$paper_blood_auc[2] > 4,
+  all(rejected$sim_blood_clear - rejected$paper_blood_clear > 15)
+)
+```
+
+* **Partition coefficients of the rodent colistin runs.** Table 9 gives a
+  column labelled "Immunocompromised" (3, 28, 79) and one labelled
+  "Non-Immunocompromised" (93, 59, 749). Figure 1 (immunonormal) and Figure 2
+  (untreated neutropenic) reproduce with the columns as labelled, but every
+  rodent colistin run -- Figures 3-5, Tables 1-5 and the *K. pneumoniae*
+  supplement -- reproduces only with the "Non-Immunocompromised" column; with
+  the "Immunocompromised" column the blood AUC and clearance time miss
+  Tables 1-2 several-fold (table above). The mouse model therefore defaults
+  to the column that was run. The human runs (Table 6) reproduce with the
+  "Immunocompromised" column, which the human model uses.
+* **Device flow units.** The text says the device processes one-fifth of the
+  blood volume per hour (0.36 mL/h in the mouse, 1000 mL/h in the human). The
+  source code sets `Q_E = 0.36` and `Q_E = 1000` and multiplies them by 60
+  like the per-minute organ flows, i.e. runs them as mL/min. Only the as-run
+  reading reproduces Tables 2-3 and 6 (the per-hour reading leaves the device
+  arm close to antibiotic alone; table above), so `qbfr` is in mL/min.
+* **Initial conditions** are not printed. Rodent: the lung value is the 1e7
+  CFU/mL treatment trigger stated in the Results; spleen, liver and blood
+  were digitised from Figure 3 at 3 h. Human: lungs 1e3 and blood 10 CFU/mL
+  are the stated presentation thresholds; spleen (757) and liver (761 CFU/mL)
+  were back-solved from the eight AUCs of Table 6, which then all reproduce to
+  three significant figures. Figures 1 and 2 use initial conditions read off
+  those figures.
+* **Human growth rates.** The paper says human net growth rates were
+  extrapolated from the rodent model but prints none, and the source code
+  has a single set of growth rates. The rodent colistin values reproduce
+  Table 6 and the Figure 6-7 captions, so they are used unchanged.
+* **MDR scenario.** "50% less susceptible to antibiotic treatment" is encoded
+  as half of each colistin growth rate. The alternative reading, halfway
+  between the untreated and colistin rates, delays blood clearance to
+  `r round(t_mdr_alt)` h, against the 29 h of the Figure 7 caption.
+* **Growth rates are log10 slopes.** S5 Fig computes each rate as the change
+  in log10 CFU per hour, and the code uses it as a natural-log first-order
+  rate constant. The packaged model keeps that as-run use.
+* **Partial separation efficiency** (60%, 20%; Figure 5, Tables 4-5) is not
+  reproducible, as shown above. The nanoparticle-size calculation of
+  f(rf) (Equations 6-18, Figure 9) is not packaged: the code that computes it
+  cannot run as deposited (it multiplies a 3-element and a 156-element
+  vector elementwise), and the paper uses its result only to label the
+  efficiencies.
+* **Cumulative device content.** The source code integrates the device
+  concentration as a sixth state that feeds back into nothing; it is not
+  packaged.
+* **Liver AUC in Table 1** is 1.27e8 (CFU/mL) x h, while the antibiotic-alone
+  scenario repeated as the 20% column of Table 5 gives 1.20e8. The
+  comparison above uses 1.27e8.
+* No erratum was found (EuropePMC search, 2026-11-25).
