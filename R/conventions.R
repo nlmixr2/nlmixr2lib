@@ -824,6 +824,11 @@
     "epithelial lining fluid",
     "bronchoalveolar lavage",
     "dialysate",
+    # Recirculating culture medium of an in-vitro microphysiological
+    # (organ-on-a-chip) system, the perfusate that bathes the cell chambers
+    # and in which drug / metabolite concentrations are assayed. Founding
+    # example: McAleer_2019_terfenadine.R (heart:liver MPS chip).
+    "culture medium",
     "administration site",
     "not applicable"
   ),

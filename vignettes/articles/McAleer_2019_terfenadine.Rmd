@@ -1,0 +1,290 @@
+---
+title: "Terfenadine heart:liver organ-chip PKPD (McAleer 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Terfenadine heart:liver organ-chip PKPD (McAleer 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("McAleer_2019_terfenadine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("McAleer_2019_terfenadine"))$description`
+* Article: [Sci Rep 2019;9:9619](https://doi.org/10.1038/s41598-019-45656-4)
+* Supplement (open access): the deposited Phoenix NLME model code and
+  Supplementary Table 1 accompany the article at the same DOI.
+
+This is an *in vitro* microphysiological-system (MPS, "organ-on-a-chip")
+pharmacokinetic-pharmacodynamic model, not a clinical population-PK model.
+McAleer and colleagues ran a pumpless, recirculating **heart:liver** chip (and a
+**heart-only** chip) built from human iPSC-derived cardiomyocytes and primary
+human hepatocytes, dosed 5 umol/L terfenadine into the 2 mL recirculating
+medium, and measured terfenadine and its metabolite fexofenadine (in the medium
+and in cell lysates) together with the cardiomyocyte field-potential duration
+(FPD, a surrogate of the QT interval) over 24 hours. A five-state terfenadine
+PK model with a saturable cardiac efflux, metabolism to fexofenadine in the
+cardiac and liver chambers, and an indirect-response FPD model (driven by the
+cardiac terfenadine concentration) was fit simultaneously across the two chips
+in Phoenix NLME 7.0.
+
+The heart-only chip is the same model with the liver-transfer rate constants
+(`kl1`, `kl2`, `kfl`) set to zero -- i.e. the liver chamber removed.
+
+# Population / biological context
+
+```{r population}
+readModelDb("McAleer_2019_terfenadine")()$population[c("species", "dose_range", "notes")]
+```
+
+The system is entirely *in vitro*: a human iPSC-cardiomyocyte chamber and a
+primary-human-hepatocyte chamber connected by a closed-loop recirculating medium
+in a PDMS microfluidic housing. There are no human subjects and no covariates;
+the replicate counts are n = 2 for the concentration measurements and n >= 3 for
+the FPD measurements, sampled at 0, 0.5, 1, 4, 12, 16 and 24 hours (McAleer 2019
+Figs 2-3).
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to the deposited Phoenix
+code (Supplementary Text 1). The structural rate / saturation estimates are
+taken from the Phoenix "Parameter values" block; see **Assumptions and
+deviations** for why that block, rather than the Supplementary Table 1 Estimate
+column, is the authoritative final-estimate source.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `d/dt(media)`, `d/dt(pdms)`, `d/dt(cardiac)`, `d/dt(liver)`, `d/dt(fexo)` | n/a | Supplementary Text 1 (deposited Phoenix `deriv()` block); main-text Eqs 1-2 for the saturable cardiac efflux |
+| `d/dt(effect)`, `FPD = 1 + effect` | n/a | Supplementary Text 1 (`deriv(AE) = kon*cardiac - koff*AE`; `FPD = 1 + AE`) |
+| `kp1` | 0.0035097 /min | Supp Text 1 `KP1` |
+| `kp2` | 0.000526081 /min | Supp Text 1 `KP2` |
+| `kc1` | 0.00185601 /min | Supp Text 1 `KC1` |
+| `kc2` | 0.0780807 /min | Supp Text 1 `KC2` |
+| `kl1` | 0.0256725 /min | Supp Text 1 `KL1` |
+| `kl2` | 0.0429636 /min | Supp Text 1 `KL2` |
+| `kfl` | 0.0167355 /min | Supp Text 1 `Kfl` |
+| `kfc` | 0.000912019 /min | Supp Text 1 `Kfc` |
+| `ic50` | 0.0699277 umol/L | Supp Text 1 `IC50` |
+| `kon` | 0.147464 /min | Supp Text 1 `kon` |
+| `koff` | 0.00413283 /min | Supp Text 1 `koff` |
+| `addSd_*` | see file | Supp Text 1 `error()` statements (heart:liver chip) |
+
+## Units of each ODE term
+
+All states are concentrations (umol/L) in medium-equivalent units; all rate
+constants are 1/min; `effect` and `FPD` are dimensionless (fold of vehicle
+control). Each transfer term is (1/min) x (umol/L) = umol/L/min, matching
+`d/dt(concentration)`. The saturable efflux multiplies `kc2 * cardiac` by the
+unitless fraction `1 / (1 + cardiac/ic50)`.
+
+# Deterministic simulation
+
+The model has no between-chip random effects, so a typical-value solve
+(`zeroRe()`) reproduces the published predicted profiles exactly. We solve both
+chip configurations on a 24-hour grid.
+
+```{r simulate}
+mod <- rxode2::zeroRe(rxode2::rxode(readModelDb("McAleer_2019_terfenadine")))
+
+tgrid <- sort(unique(c(seq(0, 1440, by = 5), c(0, 30, 60, 240, 360, 720, 960, 1440))))
+
+# One dose of 5 umol/L terfenadine into the recirculating medium. Observation
+# rows are tagged with one endpoint (CterfMedia) so rxode2 maps the multi-output
+# records unambiguously; rxSolve still returns every model output as a column.
+make_events <- function() {
+  dplyr::bind_rows(
+    data.frame(id = 1L, time = 0, amt = 5, evid = 1L, cmt = "media"),
+    data.frame(id = 1L, time = tgrid, amt = NA_real_, evid = 0L, cmt = "CterfMedia")
+  )
+}
+
+# Heart:liver chip = full model.
+sim_hl <- as.data.frame(rxode2::rxSolve(mod, make_events())) |>
+  dplyr::mutate(chip = "heart:liver")
+
+# Heart-only chip = liver-transfer rate constants set to zero.
+sim_ho <- as.data.frame(rxode2::rxSolve(mod, c(kl1 = 0, kl2 = 0, kfl = 0), make_events())) |>
+  dplyr::mutate(chip = "heart only")
+
+sim <- dplyr::bind_rows(sim_hl, sim_ho)
+```
+
+# Replicate published figures
+
+## Figure 4a -- medium terfenadine
+
+Replicates the medium (top-right) panel of McAleer 2019 Figure 4a: the predicted
+terfenadine concentration in the recirculating medium falls faster in the
+heart:liver chip, where the metabolically competent liver chamber provides an
+additional clearance route.
+
+```{r figure-4a-media}
+ggplot(sim, aes(time, CterfMedia, colour = chip)) +
+  geom_line(linewidth = 0.9) +
+  labs(
+    x = "Time (minutes)", y = "Medium terfenadine (umol/L)",
+    title = "Figure 4a -- medium terfenadine",
+    caption = "Replicates the medium panel of Figure 4a of McAleer 2019."
+  )
+```
+
+## Figure 4a -- FPD (field potential duration)
+
+Replicates the FPD (bottom) panel of McAleer 2019 Figure 4a. FPD is expressed as
+fold of vehicle control; it rises and peaks several hours *after* the medium
+terfenadine peak (hysteresis driven by cardiac bioaccumulation), and the peak is
+far larger in the heart-only chip because the liver detoxifies terfenadine
+before it reaches the cardiomyocytes.
+
+```{r figure-4a-fpd}
+ggplot(sim, aes(time, FPD, colour = chip)) +
+  geom_line(linewidth = 0.9) +
+  labs(
+    x = "Time (minutes)", y = "FPD (fold of vehicle control)",
+    title = "Figure 4a -- FPD response",
+    caption = "Replicates the FPD panel of Figure 4a of McAleer 2019."
+  )
+```
+
+## Supplementary Figure 2 -- fexofenadine
+
+Replicates Supplementary Figure 2: fexofenadine accumulates over the 24-hour
+window, reaching a far higher concentration in the heart:liver chip (where the
+hepatocytes metabolise terfenadine) than in the heart-only chip (where only the
+small cardiac metabolic route operates).
+
+```{r supp-fig-2-fexo}
+ggplot(sim, aes(time, Cfexo, colour = chip)) +
+  geom_line(linewidth = 0.9) +
+  labs(
+    x = "Time (minutes)", y = "Fexofenadine (umol/L)",
+    title = "Supplementary Figure 2 -- fexofenadine",
+    caption = "Replicates Supplementary Figure 2 of McAleer 2019."
+  )
+```
+
+# Mechanistic validation
+
+For a deterministic mechanistic model the informative checks are structural: the
+reproduction of the paper's reported fexofenadine concentrations, mass
+conservation, the PK/PD hysteresis, and the liver's detoxifying effect. We read
+the key quantities off the deterministic solve.
+
+```{r mech-values}
+last_of <- function(d, col) d[[col]][d$time == 1440][1]
+max_of <- function(d, col) max(d[[col]])
+tmax_of <- function(d, col) d$time[which.max(d[[col]])]
+
+summ <- tibble::tibble(
+  quantity = c(
+    "fexofenadine at 24 h (umol/L)",
+    "medium terfenadine at 24 h (umol/L)",
+    "FPD peak (fold of control)",
+    "FPD time-to-peak (min)"
+  ),
+  `heart only` = c(
+    last_of(sim_ho, "Cfexo"), last_of(sim_ho, "CterfMedia"),
+    max_of(sim_ho, "FPD"), tmax_of(sim_ho, "FPD")
+  ),
+  `heart:liver` = c(
+    last_of(sim_hl, "Cfexo"), last_of(sim_hl, "CterfMedia"),
+    max_of(sim_hl, "FPD"), tmax_of(sim_hl, "FPD")
+  )
+)
+knitr::kable(summ, digits = 3, caption = "Key deterministic model outputs.")
+```
+
+### 1. Fexofenadine reproduces the paper's reported concentrations
+
+McAleer 2019 reports (main-text Results) fexofenadine in the medium of
+**0.124 umol/L** in the heart-only chip and **3.8 umol/L** at 24 h in the
+heart:liver chip. The model reproduces both.
+
+```{r check-fexo}
+fexo_ho <- last_of(sim_ho, "Cfexo")
+fexo_hl <- last_of(sim_hl, "Cfexo")
+# Reported: 0.124 (heart only), 3.8 (heart:liver). Deterministic solve, so the
+# only slack is the rounding of the published parameters; bounds are tight.
+stopifnot(
+  abs(fexo_ho - 0.124) < 0.05,
+  abs(fexo_hl - 3.8) < 0.5,
+  fexo_hl > 20 * fexo_ho # far more metabolism when the liver is present
+)
+```
+
+### 2. Mass conservation (heart-only chip)
+
+In the heart-only chip terfenadine has no elimination route other than
+metabolism to fexofenadine, so the sum of all terfenadine states plus
+fexofenadine must equal the 5 umol/L dose at every time point.
+
+```{r check-mass}
+total_terf <- with(sim_ho, media + pdms + cardiac + fexo)
+stopifnot(max(abs(total_terf - 5)) < 1e-6)
+```
+
+### 3. PK/PD hysteresis and liver detoxification
+
+The FPD response peaks well after the medium terfenadine peak (hysteresis via
+cardiac bioaccumulation), and the heart-only FPD peak is several-fold larger
+than the heart:liver peak because the liver clears terfenadine before it reaches
+the cardiomyocytes.
+
+```{r check-hysteresis}
+stopifnot(
+  tmax_of(sim_ho, "CterfMedia") == 0, # medium peaks at the dose
+  tmax_of(sim_ho, "FPD") > 120, # FPD peaks hours later
+  max_of(sim_ho, "FPD") > 2 * max_of(sim_hl, "FPD"), # liver detoxifies
+  # Figure 4a: heart-only FPD peaks near 9-fold, heart:liver near 3-fold.
+  max_of(sim_ho, "FPD") > 8 && max_of(sim_ho, "FPD") < 10,
+  max_of(sim_hl, "FPD") > 2.5 && max_of(sim_hl, "FPD") < 3.5,
+  # Liver chamber adds a clearance route: lower residual medium terfenadine.
+  last_of(sim_hl, "CterfMedia") < last_of(sim_ho, "CterfMedia")
+)
+```
+
+# Assumptions and deviations
+
+- **Final parameter estimates were taken from the deposited Phoenix code
+  "Parameter values" block (Supplementary Text 1), not from the Supplementary
+  Table 1 "Estimate" column.** The two disagree. Checking each code-block value
+  against its Table 1 95% confidence interval, every code-block value falls
+  *inside* the tabulated CI, whereas several Table 1 point estimates (KP1, KL1,
+  KC2, IC50) fall *outside their own CIs* -- the Table 1 Estimate column is
+  partially misaligned. The code-block values are also the ones that reproduce
+  the paper's published figures and its reported fexofenadine concentrations, so
+  they are the true fitted estimates and are used here.
+- **`Kint` and `tvV_Liver` (Supplementary Table 1) are not encoded.** The paper
+  describes `Kint` as a fexofenadine-release delay and reports a fitted liver
+  volume `tvV_Liver`, but the deposited Phoenix `deriv()` transcript
+  (Supplementary Text 1) carries neither in its equations: fexofenadine is
+  produced directly as `kfl*liver + kfc*cardiac`, with no delay compartment and
+  no explicit compartment volumes. Following the maintainers' policy of trusting
+  the authors' published model code over the text, the model reproduces the
+  transcript exactly. The omission affects only the fine timing of the
+  fexofenadine rise; the 24-hour fexofenadine concentrations still match the
+  paper (checks above).
+- **The states are concentrations in medium-equivalent units.** Because the
+  published transcript carries no compartment volumes, the `cardiac` and `liver`
+  states are in the medium's concentration frame and are numerically below the
+  cell-lysate concentrations plotted in Figures 3-4 (which the authors scale by
+  the small chamber volumes for display). The medium terfenadine, the
+  fexofenadine and the FPD response -- the quantities the model is used to
+  predict -- are on the plotted scale and are reproduced directly.
+- **Residual-error SDs are the heart:liver chip values** from the deposited
+  `error()` statements. The heart-only chip used slightly different SDs (recorded
+  in the model-file comments); the heart:liver values are carried as the default.
+- **Heart-only chip simulation.** The heart-only configuration is obtained by
+  setting `kl1 = kl2 = kfl = 0`, exactly as the authors did ("In the heart only
+  case, the liver compartment was eliminated resulting in relevant parameters
+  being equal to 0", Methods).
+- No correction or erratum notice for this article was found as of 2026-11-25.

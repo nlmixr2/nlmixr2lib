@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ahlberg 2019 spesolimab (MAB92) translational TMDD ([doi:10.1080/19420862.2019.1615345](https://doi.org/10.1080/19420862.2019.1615345)) -- female mice (surrogate MAB04), Dedrick-scaled cynomolgus monkeys, and the predicted human model for healthy men.
+- Add McAleer 2019 terfenadine ([doi:10.1038/s41598-019-45656-4](https://doi.org/10.1038/s41598-019-45656-4)) -- in vitro human heart:liver microphysiological organ-chip PKPD (iPSC cardiomyocytes + primary hepatocytes).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
