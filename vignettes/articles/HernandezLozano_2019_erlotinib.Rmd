@@ -1,0 +1,544 @@
+---
+title: "[11C]erlotinib hepatobiliary PET kinetics (Hernandez Lozano 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{[11C]erlotinib hepatobiliary PET kinetics (Hernandez Lozano 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Hernandez Lozano I, Karch R, Bauer M, Blaickner M, Matsuda A,
+  Wulkersdorfer B, Hacker M, Zeitlinger M, Langer O. Towards Improved
+  Pharmacokinetic Models for the Analysis of Transporter-Mediated Hepatic
+  Disposition of Drug Molecules with Positron Emission Tomography. AAPS J.
+  2019;21(4):61.
+* Article: <https://doi.org/10.1208/s12248-019-0323-0> (open access,
+  PMC6488550, with an electronic supplementary document).
+
+The paper analyses dynamic abdominal PET scans of the radiolabelled tyrosine
+kinase inhibitor [11C]erlotinib in healthy volunteers. Tracer uptake from blood
+into the liver and its excretion into bile are described by two compartment
+models, each driven either by the sampled arterial blood curve (arterial input
+function, AIF) or by a dual input function (DIF) that adds a mathematically
+derived portal-vein curve. The four model variants were fitted to each subject
+and scan separately; the paper reports the per-subject estimates and their mean
++/- SD for four scan conditions. nlmixr2lib packages one file per model variant:
+
+| Model file | Structure | Input function | Source table |
+|---|---|---|---|
+| `HernandezLozano_2019_erlotinib_3c_aif` | 3C: liver tissue -> eBD/GB | AIF | Tables I, III |
+| `HernandezLozano_2019_erlotinib_3c_dif` | 3C | DIF | Tables I, III |
+| `HernandezLozano_2019_erlotinib_4c_aif` | 4C: hepatocytes -> intrahepatic bile duct -> eBD/GB | AIF | Tables II, IV |
+| `HernandezLozano_2019_erlotinib_4c_dif` | 4C | DIF | Tables II, IV |
+
+(eBD/GB: extrahepatic bile duct and gall bladder region of interest.) Each file
+carries the four scan-condition mean parameter sets and selects one through
+covariates:
+
+| Scan condition | `STUDY_BAUER2018RIF` | `CONMED_ERLOTINIB` | `CONMED_RIFAMPICIN_SD` |
+|---|---|---|---|
+| [11C]erlotinib + erlotinib study, baseline | 0 | 0 | 0 |
+| ... second scan 3 h after 300 mg oral erlotinib | 0 | 1 | 0 |
+| [11C]erlotinib + rifampicin study, baseline | 1 | 0 | 0 |
+| ... second scan after 600 mg i.v. rifampicin | 1 | 0 | 1 |
+
+The blood input is not modelled: the arterial whole-blood radioactivity
+concentration is supplied as the time-varying covariate `CP_ERLOTINIB_KBQML`
+(kBq/mL), together with the liver volume `ORGVOL_LIVER` and the eBD/GB region
+volume `ORGVOL_EBDGB` (mL). The outputs are the liver and eBD/GB region
+concentrations `Cliver` and `Cgallbladder` (kBq/mL).
+
+# Population
+
+Twelve healthy volunteers in two studies of six (Methods, Data Sets), each
+scanned twice about 7 days apart, previously published by Bauer et al. 2018
+(Clin Pharmacol Ther 104:139, erlotinib study; Mol Pharm 15:4589, rifampicin
+study). In the first study the second scan followed a 300 mg oral dose of
+unlabelled erlotinib by 3 h; in the second it followed a 30-min i.v. infusion of
+600 mg rifampicin. Arterial blood was sampled from the radial artery during each
+90-min scan. Age, sex and body-size data are not reported in this paper. Each
+subject and scan was fitted separately by weighted nonlinear least squares in
+MATLAB, so the packaged parameters are means of individual estimates (a
+two-stage summary), not population typical values.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| 4C ODEs (hepatocytes, intrahepatic bile duct, eBD/GB) | `d/dt(liver) = k1 Xblood - (k2 + k3) liver`; `d/dt(bile_transit) = k3 liver - k5 bile_transit`; `d/dt(gallbladder) = k5 bile_transit` | Eqs. 4-6 |
+| 3C ODEs (liver tissue, eBD/GB) | `d/dt(liver) = k1 Xblood - (k2 + k3) liver`; `d/dt(gallbladder) = k3 liver` | Eqs. 15-16 |
+| Blood amount in the liver | `Xblood = Vb * V_liver * C_in` | Eq. 7 and text |
+| Liver ROI concentration | `Vb * C_in + (X_hep + X_ih) / V_liver` (4C); `Vb * C_in + X_liv / V_liver` (3C) | Eqs. 11, 19 |
+| eBD/GB ROI concentration | `X_eBD/GB / V_eBD/GB` | Eq. 12 |
+| Portal-vein curve | convolution of `C_HA` with `h(t) = beta / (beta + t)^2` | Eqs. 1-2 |
+| Dual input | `C_in = fHA * C_HA + fPV * C_PV` | Eq. 3 |
+| `fvasc_liver` (Vb) | 0.25 (fixed) | Methods, after Eq. 7 and Eq. 11 |
+| `fha`, `fpv` | 0.25, 0.75 (fixed) | Methods, after Eq. 3 |
+| `kinf_liver_*` (k1), `keff_liver_*` (k2), `kbile_*` (k3) | four scan-condition means per model | Tables I-IV, Mean +/- SD rows |
+| `ktr_bile_*` (k5) | four scan-condition means (4C only) | Tables II, IV |
+| `beta_pv_*` (beta) | four scan-condition means (DIF only) | Tables I-IV |
+| Residual error | none reported (weighted least squares, Eqs. 21-24); fixed to 0 | Methods |
+
+# Source tables
+
+The per-subject estimates of Tables I-IV, their printed means, and the hepatic
+uptake clearances of Supplemental Tables II and IV are reproduced below
+verbatim (machine-read from the article and supplement).
+
+```{r source-tables}
+SUBJ_CSV <- "study,scan,subject,3c_aif_k1,3c_aif_k2,3c_aif_k3,3c_dif_k1,3c_dif_k2,3c_dif_k3,3c_dif_beta,4c_aif_k1,4c_aif_k2,4c_aif_k3,4c_aif_k5,4c_dif_k1,4c_dif_k2,4c_dif_k3,4c_dif_k5,4c_dif_beta
+erl,bl,p12,1.7,0.001,0.004,4.207,0.0001,0.007,0.899,3,0.052,0.088,0.006,4.748,0.015,0.103,0.01,0.827
+erl,bl,p13,1.989,0.032,0.003,4.501,0.033,0.004,0.812,2.3,0.05,0.013,0.007,4.899,0.05,0.021,0.008,0.799
+erl,bl,p14,1.599,0.012,0.005,4.178,0.011,0.01,0.801,2.102,0.028,0.01,0.039,4.038,0.134,0.339,0.009,2.152
+erl,bl,p15,2.212,0.01,0.006,4.683,0.003,0.006,1.72,2.092,0.089,0.285,0.008,4.587,0.113,0.777,0.007,1.899
+erl,bl,p24,1.888,0.018,0.002,4.553,0.017,0.004,1.753,2.686,0.069,0.028,0.005,5,0.055,0.05,0.007,1.807
+erl,bl,p30,1.238,0.01,0.006,3.124,0.006,0.01,1.714,2.164,0.07,0.037,0.011,4.301,0.139,0.189,0.012,1.482
+erl,post,p12,2.201,0.119,0.004,3.891,0.07,0.005,0.805,2.801,0.16,0.015,0.015,4.25,0.133,0.026,0.018,2.169
+erl,post,p13,2.299,0.15,0.001,3.349,0.103,0.002,1.649,1.907,0.168,0.009,0.006,3.439,0.131,0.012,0.007,0.787
+erl,post,p14,1.978,0.156,0.004,3.499,0.1,0.006,0.799,2.547,0.249,0.012,0.021,3.457,0.164,0.027,0.022,1.899
+erl,post,p15,2.81,0.201,0.003,3.394,0.094,0.005,0.899,2.205,0.19,0.012,0.018,3.956,0.158,0.022,0.022,1.889
+erl,post,p24,2.6,0.188,0.001,5.11,0.18,0.001,1.558,2.56,0.189,0.002,0.016,4.33,0.15,0.005,0.011,0.8
+erl,post,p30,2.08,0.137,0.0001,3.585,0.092,0.0002,2.154,2.606,0.189,0.002,0.003,4,0.14,0.006,0.002,1.05
+rif,bl,p37,1,0.021,0.004,2.711,0.023,0.005,2.17,2.1,0.15,0.035,0.008,3.463,0.102,0.076,0.011,0.879
+rif,bl,p38,2.024,0.02,0.005,4.202,0.009,0.008,0.608,2.339,0.072,0.057,0.009,3.579,0.083,0.724,0.009,1.755
+rif,bl,p39,1.346,0.003,0.008,3.643,0.002,0.014,0.802,2.264,0.075,0.066,0.016,3.378,0.023,0.759,0.014,1.157
+rif,bl,p40,1.994,0.001,0.007,4.456,0.0002,0.007,1.342,1.821,0.002,0.074,0.009,5.091,0.006,1.172,0.01,0.839
+rif,bl,p41,2.471,0.01,0.007,4.639,0.001,0.009,0.758,2.501,0.05,0.1,0.009,4.371,0.0003,0.622,0.01,1.708
+rif,bl,p42,1.485,0.01,0.01,4.008,0.007,0.015,0.8,1.211,0.001,0.044,0.027,3.376,0.061,0.603,0.014,1.678
+rif,post,p37,1.037,0.018,0.008,2.304,0.01,0.012,2.122,1.7,0.069,0.025,0.029,2.25,0.016,0.036,0.029,2.17
+rif,post,p38,1.082,0.014,0.002,2.589,0.015,0.004,0.823,1.062,0.035,0.029,0.007,2.752,0.043,0.046,0.008,1.626
+rif,post,p39,1.227,0.02,0.006,2.715,0.013,0.01,0.758,1.527,0.059,0.036,0.014,2.7,0.027,0.062,0.02,1.614
+rif,post,p40,2.016,0.012,0.003,4.422,0.009,0.004,0.797,1.77,0.008,0.003,0.224,4.399,0.008,0.004,0.179,1.993
+rif,post,p41,2.305,0.007,0.011,4.781,0.001,0.012,0.601,2.251,0.015,0.096,0.015,4.641,0.001,0.464,0.012,2.168
+rif,post,p42,1.197,0.012,0.009,2.462,0.005,0.012,0.727,1.135,0.008,0.014,0.18,3.452,0.15,0.408,0.021,2.167"
+MEAN_CSV <- "study,scan,subject,3c_aif_k1,3c_aif_k2,3c_aif_k3,3c_dif_k1,3c_dif_k2,3c_dif_k3,3c_dif_beta,4c_aif_k1,4c_aif_k2,4c_aif_k3,4c_aif_k5,4c_dif_k1,4c_dif_k2,4c_dif_k3,4c_dif_k5,4c_dif_beta
+erl,bl,Mean,1.771,0.016,0.004,4.208,0.012,0.007,1.283,2.391,0.06,0.077,0.013,4.596,0.084,0.247,0.009,1.494
+erl,post,Mean,2.328,0.159,0.002,3.805,0.107,0.003,1.311,2.438,0.191,0.009,0.013,3.905,0.146,0.016,0.014,1.432
+rif,bl,Mean,1.72,0.011,0.007,3.943,0.007,0.01,1.08,2.039,0.058,0.063,0.013,3.876,0.046,0.659,0.011,1.336
+rif,post,Mean,1.477,0.014,0.007,3.212,0.009,0.009,0.971,1.574,0.032,0.034,0.078,3.366,0.041,0.17,0.045,1.956"
+CL_CSV <- "study,scan,subject,3c_aif_up,3c_aif_eff,3c_dif_up,3c_dif_eff,4c_aif_up,4c_aif_eff,4c_dif_up,4c_dif_eff
+erl,bl,p12,9.598,0.067,23.707,0.104,16.939,0.001,26.817,0.001
+erl,bl,p13,10.556,0.037,23.878,0.063,12.2,0.001,25.998,0.001
+erl,bl,p14,8.778,0.074,22.875,0.151,11.528,0.003,21.944,0.001
+erl,bl,p15,12.112,0.086,25.316,0.093,11.552,0.001,25.201,0.001
+erl,bl,p24,9.371,0.032,22.672,0.052,12.95,0.0003,24.909,0.0004
+erl,bl,p30,6.3,0.09,16.375,0.138,11.338,0.001,22.575,0.001
+erl,post,p12,12.415,0.053,12.437,0.076,15.805,0.001,24,0.001
+erl,post,p13,12.2,0.014,17.778,0.033,10.08,0.0004,18.039,0.001
+erl,post,p14,10.861,0.057,19.194,0.09,13.722,0.002,19.208,0.002
+erl,post,p15,15.402,0.046,18.65,0.066,12.112,0.001,21.739,0.002
+erl,post,p24,12.95,0.008,25.417,0.013,12.95,0.001,21.415,0.001
+erl,post,p30,11.025,0.002,18.9,0.003,13.65,0.0002,21,0.0001
+rif,bl,p37,4.958,0.043,13.395,0.065,10.42,0.0005,17.16,0.001
+rif,bl,p38,11.4,0.077,23.938,0.116,13.338,0.001,20.413,0.001
+rif,bl,p39,7.798,0.131,20.984,0.216,13.172,0.001,19.703,0.0005
+rif,bl,p40,10.914,0.103,24.471,0.1,9.986,0.0007,27.929,0.001
+rif,bl,p41,13.867,0.107,26,0.136,14.044,0.0007,24.533,0.0007
+rif,bl,p42,8.507,0.155,22.685,0.227,6.863,0.002,19.164,0.001
+rif,post,p37,5.16,0.11,11.411,0.16,8.437,0.002,11.16,0.002
+rif,post,p38,6.163,0.031,14.763,0.055,6.038,0.0005,15.675,0.001
+rif,post,p39,7.406,0.091,15.859,0.158,8.922,0.001,15.734,0.002
+rif,post,p40,11.086,0.046,24.243,0.059,9.871,0.016,24.143,0.013
+rif,post,p41,12.918,0.166,26.844,0.178,12.673,0.001,26.044,0.001
+rif,post,p42,6.753,0.143,13.945,0.175,6.466,0.013,19.562,0.002"
+subj <- read.csv(text = SUBJ_CSV, check.names = FALSE)
+printed_mean <- read.csv(text = MEAN_CSV, check.names = FALSE)
+cl <- read.csv(text = CL_CSV, check.names = FALSE)
+param_cols <- setdiff(names(subj), c("study", "scan", "subject"))
+```
+
+## The packaged values are the printed means
+
+Every rate constant in the four model files must equal the corresponding
+printed mean. The check reads the `ini()` block of each model and compares it
+cell by cell with the means table above.
+
+```{r ini-equals-printed}
+models <- c("3c_aif", "3c_dif", "4c_aif", "4c_dif")
+stem <- function(m) paste0("HernandezLozano_2019_erlotinib_", m)
+ini_name <- c(k1 = "kinf_liver", k2 = "keff_liver", k3 = "kbile", k5 = "ktr_bile", beta = "beta_pv")
+cond_suffix <- c("erl.bl" = "erlbl", "erl.post" = "erlpost", "rif.bl" = "rifbl", "rif.post" = "rifpost")
+
+ini_check <- do.call(rbind, lapply(models, function(m) {
+  ini <- rxode2::rxode2(readModelDb(stem(m)))$iniDf
+  cols <- grep(paste0("^", m, "_"), param_cols, value = TRUE)
+  do.call(rbind, lapply(seq_len(nrow(printed_mean)), function(i) {
+    cond <- cond_suffix[[paste(printed_mean$study[i], printed_mean$scan[i], sep = ".")]]
+    do.call(rbind, lapply(cols, function(cc) {
+      p <- sub(paste0("^", m, "_"), "", cc)
+      nm <- paste0(ini_name[[p]], "_", cond)
+      data.frame(model = m, parameter = nm, printed = printed_mean[[cc]][i],
+                 packaged = ini$est[ini$name == nm])
+    }))
+  }))
+}))
+nrow(ini_check)
+stopifnot(
+  nrow(ini_check) == 64,
+  all(abs(ini_check$packaged - ini_check$printed) < 1e-12)
+)
+```
+
+## The printed means agree with the per-subject rows
+
+Recomputing each mean from the six per-subject estimates reproduces the printed
+value to the third decimal (difference at most half a unit in the last printed
+digit) in 63 of 64 cells. The exception is the 3C AIF k2 of the erlotinib-study
+baseline scan: Table I prints 0.016, whereas its six subject rows (0.001,
+0.032, 0.012, 0.010, 0.018, 0.010) average 0.0138. The packaged model keeps the
+printed mean.
+
+```{r means-vs-subjects}
+recomputed <- subj |>
+  group_by(study, scan) |>
+  summarise(across(all_of(param_cols), mean), .groups = "drop")
+diff_long <- recomputed |>
+  pivot_longer(all_of(param_cols), names_to = "column", values_to = "recomputed") |>
+  left_join(
+    printed_mean |>
+      select(-subject) |>
+      pivot_longer(all_of(param_cols), names_to = "column", values_to = "printed"),
+    by = c("study", "scan", "column")
+  ) |>
+  mutate(diff = recomputed - printed)
+diff_long |>
+  filter(abs(diff) > 0.00051) |>
+  knitr::kable(digits = 4)
+stopifnot(
+  sum(abs(diff_long$diff) > 0.00051) == 1,
+  with(
+    diff_long[abs(diff_long$diff) > 0.00051, ],
+    study == "erl" && scan == "bl" && column == "3c_aif_k2"
+  )
+)
+```
+
+## Eq. 13 holds with Vb = 0.25 and k1 acting on the blood amount
+
+Eq. 13 defines the hepatic uptake clearance as `k1 * V_blood / w_body` with
+`V_blood = Vb * V_liver`. Each subject's liver volume per kg can therefore be
+back-calculated from any of the four models as `CL_H,uptake / (0.25 * k1)`. If
+the packaged structure (k1 multiplying the blood AMOUNT, Vb = 0.25) is the one
+the authors used, the four models must return the same liver volume for every
+scan, since they share the subject's liver volume and weight.
+
+```{r eq13-identity}
+vw <- subj |>
+  inner_join(cl, by = c("study", "scan", "subject"))
+vliver_per_kg <- sapply(models, function(m) {
+  vw[[paste0(m, "_up")]] / (0.25 * vw[[paste0(m, "_k1")]])
+})
+rownames(vliver_per_kg) <- paste(vw$study, vw$scan, vw$subject)
+cv <- apply(vliver_per_kg, 1, function(z) sd(z) / mean(z))
+knitr::kable(
+  data.frame(vliver_per_kg, `CV (%)` = 100 * cv, check.names = FALSE),
+  digits = 2,
+  caption = "Liver volume per body weight (mL/kg) back-calculated from each model."
+)
+stopifnot(
+  median(cv) < 0.02,
+  # p12 after erlotinib, 3C DIF: Supplemental Table II prints CL_H,uptake = 12.437,
+  # about half of what its k1 = 3.891 and its other three models imply (~22 mL/kg).
+  sum(cv > 0.05) == 1,
+  names(which(cv > 0.05)) == "erl post p12",
+  abs(median(vliver_per_kg) - 22) < 1.5
+)
+```
+
+The liver volumes cluster at `r round(median(vliver_per_kg), 1)` mL/kg (median),
+a plausible adult liver volume per body weight for a volume computed from body
+size (the paper cites Vauthey et al. 2002). This also gives a realistic
+`ORGVOL_LIVER` for the simulations below: about 1650 mL for a 75 kg adult.
+
+# A representative arterial input function
+
+The per-subject arterial curves are not tabulated. Supplemental Fig. 15 plots the
+sampled arterial curve (assumed equal to the hepatic-artery curve), the derived
+portal-vein curve and the dual input for subject p30, whose estimated beta was
+1.050 min (the 4C DIF fit of the scan after oral erlotinib, Table II). The
+maintainers digitised all three curves from the 0-10 min inset (one value per
+plotted sample) and the arterial tail from the main panel (10-47.5 min; beyond
+48 min the arterial line is hidden under the other two). The tail beyond 47.5 min
+is extrapolated log-linearly for the illustrative simulations only.
+
+```{r aif}
+fig15 <- data.frame(
+  time = c(0, 0.354, 0.709, 1.063, 1.417, 1.772, 2.126, 2.48, 2.834, 3.189,
+           3.543, 3.897, 4.252, 4.606, 4.96, 5.314, 5.669, 6.023, 6.377, 6.732,
+           7.086, 7.44, 7.795, 8.149, 8.503, 8.858, 9.212, 9.566, 9.92, 10.275),
+  ha = c(0, 57.5, 101.7, 47.1, 29.1, 21.52, 16.65, 14.82, 12.99, 11.16, 9.63,
+         8.72, 8.11, 7.5, 6.89, 6.59, 6.28, 6.28, 5.98, 5.98, 5.37, 5.06, 5.06,
+         5.06, 4.76, 4.45, 4.45, 4.45, 4.45, 4.15),
+  pv = c(0, 10.2, 26.5, 27.9, 25.5, 24.57, 21.83, 20, 18.78, 17.26, 15.73, 14.51,
+         13.6, 12.68, 12.07, 11.16, 10.55, 10.24, 9.63, 9.63, 9.02, 8.72, 8.41,
+         8.41, 8.11, 7.8, 7.8, 7.5, 7.2, 6.89),
+  dif = c(0, 22.4, 45, 33.4, 27, 23.35, 20.3, 18.17, 16.65, 15.12, 13.9, 12.68,
+          11.77, 10.85, 10.24, 9.63, 9.33, 9.02, 8.41, 8.11, 7.8, 7.5, 7.2, 7.2,
+          7.2, 6.59, 6.59, 6.28, 5.98, 5.98)
+)
+fig15_tail <- data.frame(
+  time = c(12.5, 15, 17.5, 20, 22.5, 25, 27.5, 30, 32.5, 35, 37.5, 40, 45, 47.5),
+  ha = c(4.02, 3.65, 3.27, 2.91, 2.63, 2.55, 2.23, 2.18, 2.04, 1.82, 1.82, 1.82,
+         1.45, 1.45)
+)
+tail_fit <- lm(log(ha) ~ time, data = fig15_tail)
+extrap <- data.frame(time = seq(50, 95, by = 5))
+extrap$ha <- exp(predict(tail_fit, extrap))
+aif <- bind_rows(fig15[, c("time", "ha")], fig15_tail, extrap)
+aif_fun <- approxfun(aif$time, aif$ha, rule = 2)
+
+# The plotted dual input obeys Eq. 3 with fHA = 0.25 and fPV = 0.75.
+dif_identity <- 0.25 * fig15$ha + 0.75 * fig15$pv - fig15$dif
+stopifnot(max(abs(dif_identity)) < 1.2)
+
+ggplot(aif, aes(time, ha)) +
+  geom_line(colour = "firebrick") +
+  geom_point(data = bind_rows(fig15[, c("time", "ha")], fig15_tail), colour = "firebrick", size = 1) +
+  labs(x = "Time (min)", y = "Arterial blood (kBq/mL)",
+       title = "Digitised arterial input of subject p30 (Supplemental Fig. 15)")
+```
+
+# The portal-vein convolution
+
+The DIF models evaluate the convolution of Eqs. 1-2 inside the ODE system. The
+kernel `beta / (beta + t)^2` is a continuous mixture of exponentials,
+`(1/beta) * integral u exp(-u) exp(-u t / beta) du`, so a trapezoid rule in
+`log(u)` turns it into 14 exponential terms, each solved as one linear ODE
+(`pvconv1` ... `pvconv14`).
+
+```{r kernel-accuracy}
+x_nodes <- -9:4
+kernel_quad <- function(t, beta) {
+  sapply(t, function(tt) sum(exp(2 * x_nodes - exp(x_nodes)) / beta * exp(-exp(x_nodes) * tt / beta)))
+}
+t_grid <- c(0, 0.05, 0.2, 0.5, 1, 2, 5, 10, 20, 45, 90, 120)
+kernel_err <- sapply(c(0.5, 0.971, 1.05, 1.956, 2.5), function(b) {
+  max(abs(kernel_quad(t_grid, b) / (b / (b + t_grid)^2) - 1))
+})
+round(kernel_err, 5)
+stopifnot(max(kernel_err) < 0.005)
+```
+
+Solving the packaged 4C DIF model with p30's digitised arterial curve and
+beta = 1.050 min must give the same portal-vein curve as a direct numerical
+convolution of that arterial curve.
+
+```{r pv-check}
+obs_times <- sort(unique(c(aif$time[aif$time <= 90], seq(0, 90, by = 0.25))))
+make_events <- function(study, erl, rif, vliver = 1650, vebdgb = 40) {
+  data.frame(
+    id = 1, time = obs_times, evid = 0, dvid = 1,
+    CP_ERLOTINIB_KBQML = aif_fun(obs_times),
+    ORGVOL_LIVER = vliver, ORGVOL_EBDGB = vebdgb,
+    STUDY_BAUER2018RIF = study, CONMED_ERLOTINIB = erl, CONMED_RIFAMPICIN_SD = rif
+  )
+}
+mod_4c_dif <- rxode2::rxode2(readModelDb(stem("4c_dif")))
+mod_p30 <- rxode2::ini(mod_4c_dif, beta_pv_erlpost = 1.050)
+sim_pv <- rxSolve(mod_p30, make_events(0, 1, 0), returnType = "data.frame",
+                  atol = 1e-10, rtol = 1e-10)
+
+direct_conv <- function(t, beta, dt = 0.001) {
+  sapply(t, function(tt) {
+    if (tt == 0) return(0)
+    tau <- seq(0, tt, by = dt)
+    y <- beta / (beta + tt - tau)^2 * aif_fun(tau)
+    sum(y[-1] + y[-length(y)]) / 2 * dt
+  })
+}
+pv_cmp <- data.frame(time = fig15$time) |>
+  mutate(
+    model_cpv = approx(sim_pv$time, sim_pv$cpv, time)$y,
+    direct = direct_conv(time, 1.050),
+    published = fig15$pv
+  )
+stopifnot(max(abs(pv_cmp$model_cpv - pv_cmp$direct)) < 0.01 * max(pv_cmp$direct))
+knitr::kable(pv_cmp[c(2:8, 11, 16, 21, 30), ], digits = 2, row.names = FALSE,
+             caption = "Portal-vein curve (kBq/mL) for p30, beta = 1.050 min.")
+```
+
+The packaged convolution matches the direct numerical integral to within 1% of
+the peak. The published portal-vein curve of Supplemental Fig. 15 has the same
+shape and timing: it peaks at the same sample, 1.06 min. It differs in detail,
+though: its peak is about 17% lower (27.9 vs 33.5 kBq/mL) and from 3.5 to
+10 min it runs 7-30% higher than the convolution of the plotted arterial curve
+with the printed beta. The
+authors' MATLAB discretisation of Eq. 1 is not published, and the digitised
+arterial curve carries its own reading error, so this difference is documented
+rather than tuned away.
+
+```{r pv-plot}
+pv_cmp |>
+  select(time, `Packaged model` = model_cpv, `Published (Suppl. Fig. 15)` = published) |>
+  pivot_longer(-time, names_to = "source", values_to = "pv") |>
+  ggplot(aes(time, pv, colour = source)) +
+  geom_line() +
+  geom_point(size = 1) +
+  geom_line(data = fig15, aes(time, ha), inherit.aes = FALSE, colour = "grey50", linetype = 2) +
+  labs(x = "Time (min)", y = "Concentration (kBq/mL)", colour = NULL,
+       title = "Portal-vein input for p30 (dashed: arterial input)") +
+  theme(legend.position = "bottom")
+```
+
+# Simulated liver and eBD/GB curves for the four scan conditions
+
+The scan-condition means are summaries of individual fits, each obtained with
+that subject's own arterial curve. To compare the four conditions on a common
+footing, every model and condition below is driven by the same representative
+input (p30's digitised arterial curve), with `ORGVOL_LIVER` = 1650 mL and an
+illustrative `ORGVOL_EBDGB` of 40 mL (the eBD/GB volumes are not reported; the
+eBD/GB concentration scales with `ORGVOL_LIVER / ORGVOL_EBDGB`).
+
+```{r conditions}
+conditions <- data.frame(
+  condition = c("Erlotinib study: baseline", "Erlotinib study: after oral erlotinib",
+                "Rifampicin study: baseline", "Rifampicin study: after i.v. rifampicin"),
+  study = c(0, 0, 1, 1), erl = c(0, 1, 0, 0), rif = c(0, 0, 0, 1)
+)
+sims <- do.call(rbind, lapply(models, function(m) {
+  mod <- rxode2::rxode2(readModelDb(stem(m)))
+  do.call(rbind, lapply(seq_len(nrow(conditions)), function(i) {
+    s <- rxSolve(mod, make_events(conditions$study[i], conditions$erl[i], conditions$rif[i]),
+                 returnType = "data.frame")
+    data.frame(model = toupper(sub("_", " ", m)), condition = conditions$condition[i],
+               time = s$time, Cliver = s$Cliver, Cgallbladder = s$Cgallbladder)
+  }))
+}))
+sims$condition <- factor(sims$condition, levels = conditions$condition)
+
+ggplot(sims, aes(time, Cliver, colour = condition)) +
+  geom_line() +
+  facet_wrap(~model) +
+  labs(x = "Time (min)", y = "Liver ROI (kBq/mL)", colour = NULL) +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 2))
+ggplot(sims, aes(time, Cgallbladder, colour = condition)) +
+  geom_line() +
+  facet_wrap(~model, scales = "free_y") +
+  labs(x = "Time (min)", y = "eBD/GB ROI (kBq/mL)", colour = NULL) +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 2))
+```
+
+The paper's main finding for the erlotinib study is a significant rise of k2
+(liver-to-blood backflux) after oral erlotinib in every model, which lowers the
+late liver signal for a given blood input. Driven by the same input, every model
+reproduces that direction:
+
+```{r direction}
+late_liver <- sims |>
+  filter(time >= 60, time <= 90) |>
+  group_by(model, condition) |>
+  summarise(mean_late_liver = mean(Cliver), .groups = "drop") |>
+  pivot_wider(names_from = condition, values_from = mean_late_liver)
+knitr::kable(late_liver, digits = 1,
+             caption = "Mean liver ROI concentration, 60-90 min (kBq/mL).")
+stopifnot(all(late_liver[["Erlotinib study: after oral erlotinib"]] <
+                late_liver[["Erlotinib study: baseline"]]))
+```
+
+# Individual-subject check: p30 after oral erlotinib
+
+Supplemental Fig. 15 belongs to the same subject and scan as the fitted liver
+curves of Supplemental Fig. 5c (p30, scan after oral erlotinib). Substituting
+p30's own estimates (Tables I-II) and the digitised arterial curve gives the
+early liver peak, which is set by k1, Vb and the first two minutes of the input,
+where the digitised curve is most reliable. The published peaks of the fitted
+lines were digitised from Supplemental Fig. 5c.
+
+```{r p30}
+p30 <- list(
+  "3c_aif" = c(kinf_liver_erlpost = 2.080, keff_liver_erlpost = 0.137, kbile_erlpost = 0.0001),
+  "3c_dif" = c(kinf_liver_erlpost = 3.585, keff_liver_erlpost = 0.092, kbile_erlpost = 0.0002,
+               beta_pv_erlpost = 2.154),
+  "4c_aif" = c(kinf_liver_erlpost = 2.606, keff_liver_erlpost = 0.189, kbile_erlpost = 0.002,
+               ktr_bile_erlpost = 0.003),
+  "4c_dif" = c(kinf_liver_erlpost = 4.000, keff_liver_erlpost = 0.140, kbile_erlpost = 0.006,
+               ktr_bile_erlpost = 0.002, beta_pv_erlpost = 1.050)
+)
+published_peak <- c("3c_aif" = NA, "3c_dif" = 48.4, "4c_aif" = 56.1, "4c_dif" = 55.3)
+p30_tab <- do.call(rbind, lapply(models, function(m) {
+  mod <- do.call(rxode2::ini, c(list(rxode2::rxode2(readModelDb(stem(m)))), as.list(p30[[m]])))
+  s <- rxSolve(mod, make_events(0, 1, 0), returnType = "data.frame")
+  early <- s[s$time <= 15, ]
+  data.frame(
+    model = m,
+    simulated_peak = max(early$Cliver),
+    simulated_peak_time = early$time[which.max(early$Cliver)],
+    published_peak = published_peak[[m]],
+    simulated_88min = approx(s$time, s$Cliver, 88)$y
+  )
+}))
+knitr::kable(p30_tab, digits = 1, row.names = FALSE,
+             caption = "p30 after oral erlotinib: liver ROI (kBq/mL).")
+```
+
+The 4C AIF model reaches its early peak within about 5% of the published
+fitted line (`r round(p30_tab$simulated_peak[3], 1)` vs 56.1 kBq/mL at about
+2 min); the 3C AIF line cannot be separated from the observed circles in the
+figure. The DIF models peak later and higher than the published lines (3C DIF
+`r round(p30_tab$simulated_peak[2], 1)` vs 48.4, 4C DIF
+`r round(p30_tab$simulated_peak[4], 1)` vs 55.3 kBq/mL), and none of the four
+reproduces the late plateau of about 21 kBq/mL. With p30's 4C AIF constants the
+liver-to-blood ratio at quasi-equilibrium is about `k1 * Vb / (k2 + k3)` = 3.4, so
+the published plateau needs a late arterial concentration of about 6 kBq/mL,
+several times the 0.4-1.8 kBq/mL read from the plotted tail of Supplemental
+Fig. 15 (20-90 min). Decay correction is one possible explanation: the paper
+does not say whether the plotted input functions are decay-corrected, and
+multiplying the 20-40 min tail by `exp(log(2) / 20.4 * t)` gives 5.7-7.1 kBq/mL.
+These points are documented, not asserted; the whole-curve fits cannot be
+reproduced without the per-subject arterial data.
+
+# Assumptions and deviations
+
+* **Mean parameters, not population typical values.** Each subject and scan
+  was fitted separately (weighted least squares in MATLAB); the packaged values
+  are the printed means of the six individual estimates per condition. The
+  model output for a mean parameter set is not the mean of the individual
+  curves. The between-subject SDs are quoted in the `ini()` comments but no
+  random effects are encoded.
+* **Residual error.** The fits used weighted least squares with weights from
+  the frame length and the 11C decay (Eqs. 22-24); no residual-error magnitude
+  is reported, so `propSd_Cliver` and `propSd_Cgallbladder` are fixed to 0.
+* **Arterial input as a covariate.** The radial-artery whole-blood curve is
+  supplied as `CP_ERLOTINIB_KBQML` and interpolated linearly. It must be on the
+  same decay-correction basis as the PET data being modelled.
+* **Portal-vein convolution.** Eq. 1 is evaluated as a 14-term
+  sum-of-exponentials quadrature of the Eq. 2 kernel (maximum relative kernel
+  error below 0.5% for 0-120 min), solved as linear ODEs. The authors'
+  discretisation is not published (see the portal-vein comparison above).
+* **eBD/GB initial signal.** The printed equations start the eBD/GB amount at
+  zero, but the fitted eBD/GB lines in Figs. 2 and 4 and Supplemental Figs. 1-12
+  start at a non-zero concentration (about 35 kBq/mL at 2 min in Fig. 2b), which
+  can differ between the four models (about 28 kBq/mL for the 4C and 45 kBq/mL
+  for the 3C lines in the p30 baseline eBD/GB panel of Supplemental Fig. 5). The paper does not describe this offset, and the packaged models
+  follow the printed equations. A user who needs it can set the initial eBD/GB
+  amount through `rxSolve(..., inits = c(gallbladder = C0 * ORGVOL_EBDGB))`.
+* **Volumes.** `ORGVOL_LIVER` was computed by the authors from body surface
+  area (Vauthey 2002); the back-calculation above gives about 22 mL/kg.
+  `ORGVOL_EBDGB` was derived from the PET images and is not reported. The liver
+  ROI output does not depend on either volume; the eBD/GB output scales with
+  their ratio.
+* **Scan-condition covariates.** `STUDY_BAUER2018RIF` selects the cohort, and
+  `CONMED_ERLOTINIB` / `CONMED_RIFAMPICIN_SD` select the second scan within it.
+  Setting the second-scan indicator of the other study has no effect.
+* **Errata found in the source tables.** Table I prints the 3C AIF baseline k2
+  mean as 0.016, but its subject rows average 0.0138 (the printed value is kept).
+  Supplemental Table II prints `CL_H,uptake` = 12.437 mL/min/kg for p12 (3C DIF,
+  scan after erlotinib), about half of what its k1 implies (about 22 mL/kg x 0.25
+  x 3.891). The hepatic efflux clearances of Supplemental Tables II and IV are
+  derived quantities and are not part of the packaged models.
+* **No NCA.** There is no dose event (the tracer enters through the measured
+  blood curve) and the paper reports no non-compartmental parameters, so the
+  checks above replace the usual PKNCA comparison.

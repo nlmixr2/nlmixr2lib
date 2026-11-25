@@ -2846,6 +2846,14 @@ navbar:
         href: articles/Wanika_2024_tki_nsclc_invitro.html
       - text: "Erlotinib (Yin 2024)"
         href: articles/Yin_2024_erlotinib.html
+      - text: "Erlotinib 3c aif (HernandezLozano 2019)"
+        href: articles/HernandezLozano_2019_erlotinib.html
+      - text: "Erlotinib 3c dif (HernandezLozano 2019)"
+        href: articles/HernandezLozano_2019_erlotinib.html
+      - text: "Erlotinib 4c aif (HernandezLozano 2019)"
+        href: articles/HernandezLozano_2019_erlotinib.html
+      - text: "Erlotinib 4c dif (HernandezLozano 2019)"
+        href: articles/HernandezLozano_2019_erlotinib.html
       - text: "Erlotinib mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Erlotinib qsp (Wan 2025)"
@@ -10360,6 +10368,7 @@ articles:
   - articles/Henninger_2026_dndi6148
   - articles/Henthorn_2024_tetrahydrocannabinol
   - articles/Heo_2016_amlodipine_valsartan
+  - articles/HernandezLozano_2019_erlotinib
   - articles/HernandezLozano_2025_apramycin
   - articles/Heuberger_2018_salbutamol
   - articles/Hibma_2023_DMD_NSAA

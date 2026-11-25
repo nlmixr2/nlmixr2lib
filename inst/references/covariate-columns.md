@@ -6472,6 +6472,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Rao_2023_covid19_qsp.R` (Imax inhibition of viable-virus production from infected cells in the COVID-19 QSP model; the digitized 0-12 h profiles for the 50, 100, 200, 300, 400, 600 and 800 mg single doses ship with the authors' code release as `data/molnupiravir_PK.csv`).
 - **Notes:** Specific scope; bound to EIDD-1931 and to the plasma (rather than intracellular) compartment. Rao 2023 states explicitly that the intracellular active triphosphate was not modelled and that the IC50 was optimized against the reported *plasma* EIDD-1931 concentration, so this canonical must not be reused for an intracellular-metabolite driver. Named for the active metabolite rather than the prodrug because that is the moiety whose concentration drives the effect; a future model that drives an effect from molnupiravir parent concentrations should register a separate `CP_MOLNUPIRAVIR_NGML`. Follows the drug-specific `CP_<DRUG>_NGML` precedent established with Aksenov 2018 (`CP_OXY_NGML`, `CP_FBX_NGML`, `CP_LSN_NGML`) and Valitalo 2017 (`CP_MORPH_NGML`).
 
+### CP_ERLOTINIB_KBQML (**canonical for instantaneous arterial whole-blood [11C]erlotinib radioactivity concentration as a PET input-function forcing function**)
+- **Description:** Instantaneous radioactivity concentration of the PET tracer [11C]erlotinib in ARTERIAL WHOLE BLOOD, supplied directly as a time-varying covariate column (the measured arterial input function of a PET tissue-kinetics model) rather than computed from a coupled PK model. The model reads it as the tracer concentration presented to the tissue, both as the driver of tissue uptake and as the fixed blood-volume contribution to the observed tissue region-of-interest signal.
+- **Units:** kBq/mL (decay-corrected radioactivity concentration, as reported by the PET analysis).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used as a time-varying regressor declared `linear(CP_ERLOTINIB_KBQML)` so rxode2 interpolates linearly between the arterial sampling times; 0 at the tracer injection.
+- **Source aliases:**
+  - `C_HA(t)` / `C_in(t)` -- Hernandez Lozano 2019 Eqs. 1, 3, 7 (radial-artery concentration, assumed equal to the hepatic-artery concentration; the input function C_in(t) in the arterial-input-function models).
+- **Example models:** `HernandezLozano_2019_erlotinib_3c_aif.R`, `HernandezLozano_2019_erlotinib_3c_dif.R`, `HernandezLozano_2019_erlotinib_4c_aif.R`, `HernandezLozano_2019_erlotinib_4c_dif.R` (arterial input of the 3C / 4C hepatobiliary models; the dual-input variants also convolve it into a portal-vein input).
+- **Notes:** Specific scope; [11C]erlotinib-specific. Follows the drug-specific `CP_<DRUG>_<UNITS>` precedent, extended to a RADIOACTIVITY unit for an imaging tracer. **The matrix is arterial whole blood, not plasma** (the `CP_` stem is kept for the family, as `CP_GDC_UM` keeps it for unbound portal-vein drug); the founding paper samples radial-artery blood, and more than 95% of plasma radioactivity was unmetabolised [11C]erlotinib throughout the 90-min scans, so the radioactivity is treated as parent tracer. A tracer radioactivity concentration is not convertible to a mass concentration of erlotinib without the injected specific activity, and must not be supplied to a model that expects ng/mL.
+
 ### CP_RIF_UM (**canonical for instantaneous rifampicin plasma concentration as a time-varying OATP1B-perpetrator covariate**)
 - **Description:** Instantaneous plasma concentration of rifampicin supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used as the perpetrator-drug input to a competitive OATP1B inhibition term in DDI popPK models for OATP1B substrates and endogenous OATP1B biomarkers (e.g., coproporphyrin I, rosuvastatin). Set to 0 outside the rifampicin co-administration window so the inhibition term collapses to the baseline form.
 - **Units:** umol/L (= uM; rifampicin MW = 822.94 g/mol so 1 umol/L = 0.823 mg/L = 823 ng/mL).
@@ -12086,8 +12097,19 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** n/a -- used directly as a physiologic input that sets a compartment's sub-volumes, its perfusion and its permeability-surface-area product; not a covariate-effect coefficient.
 - **Source aliases:**
   - `Liver (measured volume)` -- Kletting 2016 J Nucl Med Table 1 column header; reported in mL, no value transformation.
-- **Example models:** `Budiansah_2025_dotatate_pbpk.R`.
+- **Example models:** `Budiansah_2025_dotatate_pbpk.R`. Also `HernandezLozano_2019_erlotinib_3c_aif.R` and its 3c_dif / 4c_aif / 4c_dif siblings, where the liver volume is not measured but computed from body surface area (Vauthey 2002) and sets the hepatic blood volume `fvasc_liver * ORGVOL_LIVER`.
 - **Notes:** Member of the `ORGVOL_<ORGAN>` family; see `ORGVOL_KIDNEY` for the family rationale. In the founding model the measured volume is split into vascular (8.5 %) and interstitial (20 %) sub-volumes and multiplies the fitted hepatic sst2 binding-site density. Cohort range 1500-4876 mL, the upper end being a patient whose liver was largely replaced by neuroendocrine metastases. Distinct from `LIVER_VOL_FRAC` or any tumour-burden covariate: this is the whole organ including any intrahepatic disease.
+
+### ORGVOL_EBDGB (**canonical for extrahepatic bile duct / gall bladder region-of-interest volume**)
+- **Description:** Volume of the region of interest drawn over the extrahepatic bile duct and gall bladder (eBD/GB) on PET or MR images, in which biliary-excreted tracer accumulates during a hepatobiliary PET scan.
+- **Units:** mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used directly as the volume that converts the eBD/GB tracer amount into the observed eBD/GB concentration; not a covariate-effect coefficient.
+- **Source aliases:**
+  - `V_eBD/GB` -- Hernandez Lozano 2019 Eq. 12, "derived from the PET images"; per-subject values not reported.
+- **Example models:** `HernandezLozano_2019_erlotinib_3c_aif.R`, `HernandezLozano_2019_erlotinib_3c_dif.R`, `HernandezLozano_2019_erlotinib_4c_aif.R`, `HernandezLozano_2019_erlotinib_4c_dif.R`.
+- **Notes:** Member of the `ORGVOL_<ORGAN>` family (see `ORGVOL_KIDNEY`); the "organ" here is the combined extrahepatic bile duct and gall bladder region, which hepatobiliary PET analyses delineate as one ROI because the two cannot be separated reliably. A region-of-interest volume, so it depends on the delineation (bile duct ROI drawn on early images, gall bladder on late images in the founding paper) and is not a physiological gall-bladder volume.
 
 ### ORGVOL_SPLEEN (**canonical for measured total spleen volume**)
 - **Description:** Measured total spleen volume, typically delineated on CT or the CT component of a SPECT/CT or PET/CT acquisition.
@@ -14202,6 +14224,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `ANTH_TYPE = 'doxorubicin'` -- used in `deVriesSchultink_2018_anthracycline_troponinT.R` (the source paper records anthracycline as a categorical with levels {'doxorubicin', 'epirubicin'}; the canonical register splits this into a pair of binary indicators following the `CONMED_<drug>` precedent rather than the categorical `ANTH_TYPE`).
 - **Example models:** `deVriesSchultink_2018_anthracycline_troponinT.R` (used jointly with `CONMED_EPIRUBICIN` to switch the K-PD SLOPE parameter for troponin T between doxorubicin (reference) and epirubicin; epirubicin = 0.524-fold of doxorubicin effect, per de Vries Schultink 2018 Table 2).
 - **Notes:** Specific scope until a second cardiotoxicity or anthracycline-effect model legitimately reuses this indicator. Distinct from `CONMED_PLDH` (PEGylated liposomal doxorubicin) and from `CONMED_AVD` (the doxorubicin component of the AVD backbone in Hodgkin lymphoma); use those canonicals for product-formulation or regimen-backbone semantics. When the source dataset's anthracycline column is categorical (`ANTH_TYPE`), derive the canonical indicators as `CONMED_DOXORUBICIN = (ANTH_TYPE == 'doxorubicin')`, `CONMED_EPIRUBICIN = (ANTH_TYPE == 'epirubicin')`.
+
+### CONMED_ERLOTINIB (**canonical for unlabelled therapeutic erlotinib given before an erlotinib-tracer study**)
+- **Description:** 1 = a therapeutic dose of unlabelled erlotinib was given before the observation interval; 0 = no unlabelled erlotinib. In the founding model the tracer is [11C]erlotinib itself, so the indicator marks the self-competition (carrier) condition: a 300 mg oral dose 3 h before the second [11C]erlotinib PET scan, which partially saturates erlotinib's own hepatic uptake and canalicular efflux transporters.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (tracer only).
+- **Source aliases:**
+  - `Second scan (after oral erlotinib)` -- Hernandez Lozano 2019 Tables I-II row heading.
+- **Example models:** `HernandezLozano_2019_erlotinib_3c_aif.R`, `HernandezLozano_2019_erlotinib_3c_dif.R`, `HernandezLozano_2019_erlotinib_4c_aif.R`, `HernandezLozano_2019_erlotinib_4c_dif.R` (selects the second-scan mean rate constants of the [11C]erlotinib + erlotinib study; e.g. the liver-to-blood rate constant k2 rises from 0.060 to 0.191 1/min in the 4C arterial-input model).
+- **Notes:** Auto-approved member of the `CONMED_<INN>` family (INN = erlotinib). The condition is categorical, not dose-graded: only one dose and one timing (300 mg, 3 h before the tracer) were studied, so the indicator does not support interpolation to other doses.
 
 ### CONMED_EPIRUBICIN (**canonical for concomitant epirubicin (anthracycline) chemotherapy backbone indicator**)
 - **Description:** 1 = subject is receiving (or has received during the relevant observation window) epirubicin as the anthracycline component of an adjuvant or neoadjuvant chemotherapy regimen; 0 = subject is receiving a different anthracycline (or no anthracycline at all). The pairing of `CONMED_EPIRUBICIN` with `CONMED_DOXORUBICIN` captures the cardiotoxicity-relevant choice within the anthracycline class; epirubicin is less cardiotoxic per mg than doxorubicin (lifetime cumulative dose threshold approximately 950 mg/m^2 vs 550 mg/m^2 for doxorubicin).
@@ -19493,6 +19526,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `STUD` (`ST2 = 1 if STUD = 25220 or 28117`) -- Jamois 2025 Table S6; Table S1 labels the effect 'ka, NA25220'.
 - **Example models:** `Jamois_2025_tocilizumab_ra.R` and `Jamois_2025_tocilizumab_crs.R` (multiplies the SC absorption rate ka by exp(theta16) = 0.807; inherited fixed in the CRS model, where it is always 0).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family; one indicator covers two studies because the model gives them a single shared effect, as `STUDY_DORZA_EARLY` does.
+
+### STUDY_BAUER2018RIF (**canonical for the Bauer 2018 [11C]erlotinib + rifampicin PET study cohort indicator**)
+- **Description:** 1 = subject belongs to the [11C]erlotinib + rifampicin PET study (Bauer et al. 2018, Mol Pharm 15:4589; six healthy volunteers, baseline scan and a scan after 600 mg i.v. rifampicin); 0 = the [11C]erlotinib + erlotinib PET study (Bauer et al. 2018, Clin Pharmacol Ther 104:139; six other healthy volunteers). Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 ([11C]erlotinib + erlotinib study).
+- **Source aliases:**
+  - `[11C]erlotinib + rifampicin data set` -- Hernandez Lozano 2019 Tables III-IV (subjects p37-p42).
+- **Example models:** `HernandezLozano_2019_erlotinib_3c_aif.R`, `HernandezLozano_2019_erlotinib_3c_dif.R`, `HernandezLozano_2019_erlotinib_4c_aif.R`, `HernandezLozano_2019_erlotinib_4c_dif.R` (selects the rifampicin-study baseline and post-rifampicin mean rate constants; the two studies were fitted and summarised separately, so each has its own baseline).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Both cohorts belong to one registered trial (EudraCT 2015-001593-18), so the id names the publication rather than a protocol number.
 
 ### STUDY_93NNBT007 (**canonical for the 93NNBT007 single-dose oral nicotine microtablet study indicator**)
 - **Description:** 1 = record from study 93NNBT007, in which nicotine microtablets were swallowed whole as a single dose; 0 = study 92NNBT005, in which the microtablets were chewed before swallowing and dosed repeatedly. Subject-level (time-fixed).
@@ -27123,7 +27167,7 @@ sibling such as `AUC_BAST_FW`.
 - **Reference category:** 0 for both (no concomitant rifampicin).
 - **Source aliases:**
   - `Rifampin after first dose` / `Rifampin following multiple doses` -- the Schlachter 2026 Table 2 row labels ("rifampin" is the US adopted name for the INN rifampicin).
-- **Example models:** `Schlachter_2026_atogepant.R` (founding example; four effects in total, two per phase, per Schlachter 2026 Table 2 and the Section 3.1 display equations. Single dose: CL/F x (1 - 0.128) and Frel x (1 + 1.42), i.e. 12.8% lower clearance and a 2.4-fold higher relative bioavailability. Multiple doses: CL/F x (1 + 0.818) and Frel x (1 - 0.248), i.e. a 1.82-fold higher clearance and a 24.8% lower relative bioavailability. The sign reversal on **both** parameters between the two phases is exactly what makes a single pooled indicator unable to express the model), `Scotcher_2021_gadoxetate_rat_pbpk.R` (preclinical rat PBPK; `CONMED_RIFAMPICIN_SD = 1` for gadoxetate given 1 h after a single 10 mg/kg intravenous rifampicin dose, selecting the separately estimated rifampicin-phase active hepatic uptake clearance 0.095 L/h (control 2.38 L/h, a 96% OATP inhibition) and biliary clearance 0.08 L/h (control 0.07 L/h) of Scotcher 2021 Table 4; `_MD` is not used).
+- **Example models:** `Schlachter_2026_atogepant.R` (founding example; four effects in total, two per phase, per Schlachter 2026 Table 2 and the Section 3.1 display equations. Single dose: CL/F x (1 - 0.128) and Frel x (1 + 1.42), i.e. 12.8% lower clearance and a 2.4-fold higher relative bioavailability. Multiple doses: CL/F x (1 + 0.818) and Frel x (1 - 0.248), i.e. a 1.82-fold higher clearance and a 24.8% lower relative bioavailability. The sign reversal on **both** parameters between the two phases is exactly what makes a single pooled indicator unable to express the model), `Scotcher_2021_gadoxetate_rat_pbpk.R` (preclinical rat PBPK; `CONMED_RIFAMPICIN_SD = 1` for gadoxetate given 1 h after a single 10 mg/kg intravenous rifampicin dose, selecting the separately estimated rifampicin-phase active hepatic uptake clearance 0.095 L/h (control 2.38 L/h, a 96% OATP inhibition) and biliary clearance 0.08 L/h (control 0.07 L/h) of Scotcher 2021 Table 4; `_MD` is not used). Also `HernandezLozano_2019_erlotinib_3c_aif.R` and its 3c_dif / 4c_aif / 4c_dif siblings (`CONMED_RIFAMPICIN_SD` = 1 for the [11C]erlotinib PET scan after a single 600 mg i.v. rifampicin infusion; selects the post-rifampicin mean rate constants).
 - **Notes:** Registered as a pair rather than as qualifiers on a single indicator because the two phases act in **opposite directions**: pooling them into one [[CONMED_RIFAMPICIN]] column would average a 1.82-fold induction against a 2.4-fold inhibition and destroy both effects. Use the unqualified [[CONMED_RIFAMPICIN]] when a paper reports only the steady-state induction effect (the common case) and reserve this pair for papers that resolve the acute inhibition phase separately, which requires a dedicated single-dose-plus-multiple-dose DDI design. Shape precedent: the [[CONMED_PANCRELIPASE_PRE30]] / `_POST30` / `_POST60` dose-timing qualifier family. The INN spelling `RIFAMPICIN` is used in preference to the US `rifampin` for consistency with the existing [[CONMED_RIFAMPICIN]] entry.
 
 ### DOSE_ATOGEPANT_MG (**canonical for the administered atogepant dose level**)
