@@ -6826,6 +6826,8 @@ navbar:
         href: articles/Zou_2026_pembrolizumab_qol.html
       - text: "Pemetrexed (Cao 2022)"
         href: articles/Cao_2022_pemetrexed.html
+      - text: "Pemetrexed (Morita 2026)"
+        href: articles/Morita_2026_pemetrexed.html
       - text: "Pemetrexed ckdepicr (deRouw 2024)"
         href: articles/deRouw_2024_pemetrexed.html
       - text: "Pemetrexed ckdepicrcys (deRouw 2024)"
@@ -12016,6 +12018,7 @@ articles:
   - articles/Morcos_2023b_copanlisib
   - articles/Morganroth_2015_moxifloxacin
   - articles/Mori_2018_zoledronicAcid
+  - articles/Morita_2026_pemetrexed
   - articles/Morris_2011_artesunate
   - articles/Morris_2011_telapristone
   - articles/Morse_2012_ghb_rbc_invitro

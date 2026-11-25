@@ -4100,52 +4100,21 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
 - **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_brain`); the spinal-cord counterpart of `lv_brain`. Wrap in `fixed()` when the source fixes it from anatomy.
 
-### kbwloss, khba1cred, knausea (**canonical exposure-driven rate constants of semaglutide response states**)
+### lcurv_decline, lcurv_recovery (**canonical log-transformed curvatures of a piecewise-quadratic decline-and-recovery time course**)
 - **Type:** paper-named-param
-- **Role:** First-order rate constants (1 / time per unit exposure) with which a drug exposure term drives the `bwloss`, `hba1cred` and `nausea` states: `d/dt(bwloss) = kbwloss * E * (1 - bwloss / emax_bwloss)`, `d/dt(hba1cred) = khba1cred * E * (1 - hba1cred / emax_hba1cred)`, `d/dt(nausea) = knausea * E * (1 - moderator1) - kout_nausea * nausea`. Pattern `k<state>`: the rate constant that fills the named state.
+- **Role:** Log-transformed curvatures (output units per time^2) of an empirical response that falls along one parabola from its baseline to a nadir at `tnadir_anc` and recovers along a second parabola sharing the same vertex: `y = curv_decline * (t - tnadir_anc)^2 + base - curv_decline * tnadir_anc^2` for `t < tnadir_anc`, and the same with `curv_recovery` afterwards. Inside `model()` the bare names are `curv_decline` and `curv_recovery`.
 - **Source aliases:**
-  - `k_W` / `k_weight`, `k_A` / `k_HbA1c`, `k_N` / `k_nausea` -- Goryanin 2026 Table 2 / SBML.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; 0.20, 0.15 and 0.35 /week).
-- **Notes:** The first-order loss of `nausea` is `kout_nausea`, a member of the `kin_<compartment>` / `kout_<compartment>` family.
+  - `A1`, `A2` -- Morita 2026 Equations 2-9 ("slopes" of neutrophil decline and recovery).
+- **Example models:** `Morita_2026_pemetrexed.R`.
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13516902). Distinct from a turnover `kout` or a linear slope: the parabola's depth at the nadir is `curv_decline * tnadir_anc^2`, so the two curvatures are not rates and their magnitudes are not comparable to first-order constants. Pairs with `ltnadir_anc`.
 
-### emax_bwloss, emax_hba1cred (**canonical plateau of a logistic approach-to-maximum response state**)
+### ltnadir_anc (**canonical log-transformed time of the absolute-neutrophil-count nadir**)
 - **Type:** paper-named-param
-- **Role:** Maximum attainable value of `bwloss` (% of baseline weight) and `hba1cred` (% points) in a logistic approach-to-maximum ODE `d/dt(x) = k * E * (1 - x / emax_x)`. The states start at zero, so the plateau level and the increment from baseline coincide, as for `lemax_elf`; that is why these are `emax_<output>` and not `lrmax_<output>`.
+- **Role:** Log-transformed time, since the start of the treatment cycle, at which the absolute neutrophil count of an empirical time-course model reaches its minimum. Inside `model()` the bare name is `tnadir_anc`; each model states the time unit in its `units` and labels.
 - **Source aliases:**
-  - `Emax_W` / `Emax_weight`, `Emax_A` / `Emax_HbA1c` -- Goryanin 2026 Table 2 / SBML.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; 15% and 1.80% points).
-- **Notes:** Positive by construction. The plateau does not depend on dose; only the approach rate does.
-
-### ktol (**canonical tolerance-development rate constant**)
-- **Type:** paper-named-param
-- **Role:** Rate constant of a tolerance (`moderator<n>`) pool. Two uses are recorded: the single symmetric turnover rate shared by every stage of a moderator chain (`Rognas_2025_bitopertin.R`, `Ahlstrom_2010_nicotinicAcid_rat.R`), and the build-up rate of a bounded tolerance state driven by the response it attenuates, `d/dt(moderator1) = ktol * nausea * (1 - moderator1)` (`Goryanin_2026_semaglutide_aging_qsp.R`).
-- **Source aliases:**
-  - `k_T` / `k_tolerance` -- Goryanin 2026 Table 2 / SBML.
-- **Example models:** `Rognas_2025_bitopertin.R`, `Ahlstrom_2010_nicotinicAcid_rat.R`, `Goryanin_2026_semaglutide_aging_qsp.R`.
-- **Notes:** Units follow the driver: 1/time for a chain, 1/(time x driver units) when the driver multiplies the rate. Read the model body.
-
-### kdam, krep_clear, krep_deg, krapa (**canonical damage-repair aging-layer rate constants**)
-- **Type:** paper-named-param
-- **Role:** Rate constants of the `damage` / `repair` pair of a damage-repair aging model: `d/dt(damage) = kdam * (1 - drug_d) - krep_clear * repair * damage` and `d/dt(repair) = krapa * drug_r - krep_deg * repair`. `kdam` is the zero-order damage accrual rate, `krep_clear` the second-order clearance of damage by repair capacity, `krep_deg` the first-order decay of repair capacity, and `krapa` the induction of repair capacity per unit of the repair-induction scalar `drug_r` (rapamycin / mTOR-inhibition in the founding model).
-- **Source aliases:**
-  - `k_dam` / `k_damage`, `k_rep` / `k_repair_clear`, `k_Rdeg` / `k_repair_decay`, `k_Rap` / `k_rapamycin` -- Goryanin 2026 Table 2 / SBML.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; 0.10, 0.80, 0.25 and 0.45).
-- **Notes:** Arbitrary-unit states, so only the ratios carry meaning.
-
-### kfra, kfra_rep, kbag (**canonical frailty and biological-age-gap rate constants**)
-- **Type:** paper-named-param
-- **Role:** Rate constants of the downstream aging states: `d/dt(frailty) = kfra * damage - kfra_rep * repair` and `d/dt(bioagegap) = kbag * (damage - 0.5 * repair)`. `kfra` is frailty induction by damage, `kfra_rep` frailty suppression by repair capacity, `kbag` the scale of the net damage-repair balance that drives the biological age gap.
-- **Source aliases:**
-  - `k_F` / `k_frailty`, `k_Frep` / `k_frailty_rep`, `k_B` / `k_BioAgeGap` -- Goryanin 2026 identifiability report S6 and SBML.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; 0.30, 0.50 and 0.40 /week).
-
-### drug_d, drug_r (**canonical time-averaged combination-therapy scenario scalars**)
-- **Type:** paper-named-param
-- **Role:** Constant, time-averaged effects of a drug combination on a damage-repair aging model: `drug_d` is the fractional suppression of damage accrual (enters as `1 - drug_d`), `drug_r` the repair-induction input (enters as `krapa * drug_r`). They stand in for PK and are set per scenario rather than estimated.
-- **Source aliases:**
-  - `drug_D`, `drug_R` -- Goryanin 2026 Methods; `drug_D_ageing` / `drug_D_baseline`, `drug_R_ageing` / `drug_R_baseline` -- SBML.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; 0.40 / 0.10 for GLP-1 RA + SGLT2 inhibitor + metformin, 0.50 / 0.60 for GLP-1 RA + SGLT2 inhibitor + rapamycin).
-- **Notes:** Wrap in `fixed()`: they are scenario inputs, not estimates. Override per scenario through `ini()`.
+  - `B` -- Morita 2026 Equations 2-3 and 9 (week after the pemetrexed dose at which neutrophil recovery starts).
+- **Example models:** `Morita_2026_pemetrexed.R` (weeks after the cycle-1 dose; vertex of the piecewise-quadratic neutrophil course).
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13516902). The `_anc` suffix is deliberate: the bare `ltnadir` is not canonical, because `GonzalezSales_2015_testosterone.R` uses it for a different quantity (the clock time of a circadian testosterone nadir), which gets its own disambiguated name when registered. A parameter of the response shape, not a covariate: compare the `t_nadir` covariate of `Srimani_2022_ixazomib_mprotein.R`, a per-patient nadir time derived before the PK/PD fit and supplied as data.
 
 ## Nested (multi-level) random effects
 
