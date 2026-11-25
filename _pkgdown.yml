@@ -7976,6 +7976,8 @@ navbar:
         href: articles/Francis_2019_rifapentine.html
       - text: "Rifapentine (Janssen 2025)"
         href: articles/Janssen_2025_rifapentine_isoniazid.html
+      - text: "Rifapentine (Savic 2017)"
+        href: articles/Savic_2017_rifapentine.html
       - text: "Rifapentine (Zvada 2010)"
         href: articles/Zvada_2010_rifapentine.html
       - text: "Rifapentine mouse (Chang 2023)"
@@ -12928,6 +12930,7 @@ articles:
   - articles/Savelieva_2015_panobinostat
   - articles/Savic_2010_warfarin
   - articles/Savic_2017_cladribine
+  - articles/Savic_2017_rifapentine
   - articles/Savic_2022_voxelotor
   - articles/Sawe_2025_levofloxacin
   - articles/Sayadi_2026_dalbavancin

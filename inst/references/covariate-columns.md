@@ -5427,6 +5427,17 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
 - **Notes:** Member of the `DOSE_<drug>_<units>` auto-approve family. Distinct from the rxode2/nlmixr2 event column `amt`, which carries the VICTIM drug's dose; this column carries the PERPETRATOR's dose and never appears on a dose record of its own. Distinct also from `CP_RIF_UM` (a time-varying rifampicin concentration feeding a mechanistic induction Emax term): use `CP_RIF_UM` when the source models the perpetrator's own pharmacokinetics and `DOSE_RIFAMPICIN_MG` when only the dose level is available and the induction magnitude is read off published exposure ratios. Because the number is a daily dose, a model consuming a divided regimen (e.g. 300 mg twice daily) must supply 600, not 300, and should say so in its `covariateData` note.
 
 
+### DOSE_RIFAPENTINE_MG (**canonical for the administered rifapentine dose in milligrams**)
+- **Description:** Rifapentine amount of the current oral administration, in mg, carried as a covariate where the model's bioavailability or metabolite formation depends on the dose level. Duplicates the dosing record's `amt` so `model()` can read it on every record without `podo()`.
+- **Units:** mg (per administration)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- the model bins the value into its own dose levels and documents the reference level.
+- **Source aliases:**
+  - `Dose` -- Savic 2017 Table 2 and Table 3 rows (450, 600, 900, 1200 and 1500 mg).
+- **Example models:** `Savic_2017_rifapentine.R` (dose-level relative bioavailability 1 / 0.91 / 0.83 / 0.74 for <= 450 / <= 600 / <= 900 / > 900 mg, and a 1.34-fold higher fraction metabolised to 25-O-desacetyl rifapentine above 600 mg).
+- **Notes:** Member of the `DOSE_<drug>_<units>` family. Distinct from `CONMED_RPT`, which flags rifapentine as a perpetrator co-medication in another drug's model.
+
 ### DOSE_ORFORGLIPRON_MG (**canonical for per-arm assigned orforglipron dose**)
 - **Description:** Assigned orforglipron (LY3502970, an oral non-peptide GLP-1 receptor agonist) dose in mg per once-daily tablet; 0 when the arm/subject did not receive orforglipron.
 - **Units:** mg (per once-daily tablet)
@@ -12716,7 +12727,7 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Reference category:** 0 (HIV-negative).
 - **Source aliases:**
   - `HIV` -- used in `Jonsson_2011_ethambutol.R` (DDMODEL00000220 NMTRAN `$INPUT` column with values 0 = HIV negative, 1 = HIV positive; same orientation as the canonical).
-- **Example models:** `Jonsson_2011_ethambutol.R` (multiplicative `1 + e_hiv_pos_f * HIV_POS` shift on bioavailability; HIV-positive patients exhibit a 15.5% reduction in ethambutol bioavailability versus HIV-negative reference), `Jonsson_2011_ethambutol_ddmore.R` (multiplicative `1 + e_hiv_pos_f * HIV_POS` shift on bioavailability; HIV-positive patients exhibit a 15.4% reduction in ethambutol bioavailability versus HIV-negative reference), `Francis_2019_rifapentine.R` (multiplicative `1 + e_hiv_pos_fdepot * HIV_POS` shift on bioavailability; HIV-positive patients exhibit a 21.9 percent reduction in rifapentine bioavailability versus the HIV-negative reference, in 59 of 326 southern African adults with pulmonary tuberculosis. The same "HIV as a comorbidity flag in a TB-treatment cohort, acting on bioavailability" semantics as the two ethambutol entries above, and a larger effect; Francis 2019 notes the data were not sufficient to identify interactions with the individual concomitant antiretrovirals, so the column carries the whole HIV contrast including any unresolved drug-drug interaction).
+- **Example models:** `Jonsson_2011_ethambutol.R` (multiplicative `1 + e_hiv_pos_f * HIV_POS` shift on bioavailability; HIV-positive patients exhibit a 15.5% reduction in ethambutol bioavailability versus HIV-negative reference), `Jonsson_2011_ethambutol_ddmore.R` (multiplicative `1 + e_hiv_pos_f * HIV_POS` shift on bioavailability; HIV-positive patients exhibit a 15.4% reduction in ethambutol bioavailability versus HIV-negative reference), `Francis_2019_rifapentine.R` (multiplicative `1 + e_hiv_pos_fdepot * HIV_POS` shift on bioavailability; HIV-positive patients exhibit a 21.9 percent reduction in rifapentine bioavailability versus the HIV-negative reference, in 59 of 326 southern African adults with pulmonary tuberculosis. The same "HIV as a comorbidity flag in a TB-treatment cohort, acting on bioavailability" semantics as the two ethambutol entries above, and a larger effect; Francis 2019 notes the data were not sufficient to identify interactions with the individual concomitant antiretrovirals, so the column carries the whole HIV contrast including any unresolved drug-drug interaction), `Savic_2017_rifapentine.R` (multiplicative `e_hiv_pos_fdepot^HIV_POS` = 0.85 on rifapentine bioavailability in adults with pulmonary tuberculosis).
 - **Notes:** Parallels the `_POS` suffix convention used by `ADA_POS`, `SARS_SEROPOS`, and other serostatus / antibody-positivity indicators. Distinct from a primary disease-state indicator like `DIS_HIV` (not yet registered) -- `HIV_POS` is a comorbidity flag in non-HIV-primary indications where HIV-vs-non-HIV is tested as a PK covariate.
 
 ### TB_POS (**canonical for active tuberculosis co-infection indicator**)

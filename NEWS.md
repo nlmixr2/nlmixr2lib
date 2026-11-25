@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2017 voriconazole ([doi:10.1097/FTD.0000000000000425](https://doi.org/10.1097/FTD.0000000000000425)) -- Chinese adult renal transplant recipients (trough TDM; AST on CL, CYP2C19 phenotype on V).
+- Add Savic 2017 rifapentine and desacetyl rifapentine ([doi:10.1002/cpt.634](https://doi.org/10.1002/cpt.634)) -- adults with pulmonary tuberculosis.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
