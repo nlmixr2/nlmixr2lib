@@ -1,0 +1,508 @@
+---
+title: "Lysergide (LSD) PK and subjective and autonomic effects (Dolder 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lysergide (LSD) PK and subjective and autonomic effects (Dolder 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Lysergic acid diethylamide (LSD, INN lysergide) is a serotonin 5-HT2A agonist
+psychedelic. Dolder 2017 analysed plasma LSD, three subjective-effect visual
+analog scales (VAS) and four vital signs from two placebo-controlled,
+double-blind crossover studies at the University Hospital Basel, in which
+healthy adults took a single oral dose of 100 ug (Study 1) or 200 ug (Study 2)
+LSD.
+
+The analysis is a **two-stage** one: every subject was fitted on their own in
+Phoenix WinNonlin, first with a one-compartment PK model (first-order
+absorption, no lag time, first-order elimination) and then, with the predicted
+concentrations held fixed, with an effect-compartment sigmoid-Emax PK-PD link
+model (Supplementary Figure S1). The paper reports summary statistics of the
+individual estimates (geometric means for PK, Table 1; arithmetic means for PD,
+Table 2), separately for each dose, not a population model. The PD model was
+fitted to each of seven endpoints separately, so the paper contributes eight
+model files; the covariate `DOSE_HIGH` selects the 100 ug (0) or the 200 ug (1)
+row of Tables 1 and 2.
+
+```{r models}
+endpoints <- c(
+  Dolder_2017_lysergide_anydrugeffect = "anydrugeffectvas",
+  Dolder_2017_lysergide_gooddrugeffect = "gooddrugeffectvas",
+  Dolder_2017_lysergide_baddrugeffect = "baddrugeffectvas",
+  Dolder_2017_lysergide_hr = "hrcfb",
+  Dolder_2017_lysergide_bodytemp = "bodytempcfb",
+  Dolder_2017_lysergide_dbp = "dbpcfb",
+  Dolder_2017_lysergide_sbp = "sbpcfb"
+)
+endpoint_label <- c(
+  anydrugeffectvas = "Any drug effect (%)",
+  gooddrugeffectvas = "Good drug effect (%)",
+  baddrugeffectvas = "Bad drug effect (%)",
+  hrcfb = "Heart rate (beats/min)",
+  bodytempcfb = "Body temperature (deg C)",
+  dbpcfb = "Diastolic BP (mmHg)",
+  sbpcfb = "Systolic BP (mmHg)"
+)
+lsd_models <- c("Dolder_2017_lysergide", names(endpoints))
+mods <- lapply(stats::setNames(lsd_models, lsd_models), function(m) {
+  rxode2::rxode(readModelDb(m))
+})
+```
+
+* Citation: `r mods[[1]]$reference`
+* Article: [Clin Pharmacokinet 2017;56:1219-1230](https://doi.org/10.1007/s40262-017-0513-9) (open access)
+* Supplement: Electronic Supplementary Material 1 (model schematic, individual
+  fits and diagnostic plots; no additional parameter tables)
+
+```{r description}
+cat(strwrap(mods[["Dolder_2017_lysergide"]]$description, 76), sep = "\n")
+```
+
+# Population
+
+Forty healthy adults took part (Methods, Participants). Study 1 (100 ug,
+NCT02308969): 24 subjects, 12 men and 12 women, age 33 +/- 11 years (25-60),
+weight 68 +/- 8 kg (55-85). Study 2 (200 ug, NCT01878942): 16 subjects, 8 men
+and 8 women, age 29 +/- 6 years (25-51), weight 72 +/- 12 kg (52-98). Eleven had
+used a hallucinogen before. Each study crossed LSD over with placebo, and every
+pharmacodynamic effect is the difference from placebo in the same subject at
+the same time point.
+
+```{r population}
+str(mods[["Dolder_2017_lysergide"]]$population)
+```
+
+# Source trace
+
+Each `ini()` value carries its source location as an in-file comment. The PK
+layer is identical in all eight files.
+
+| Parameter / equation | 100 ug (`DOSE_HIGH = 0`) | 200 ug (`DOSE_HIGH = 1`) | Source |
+|---|---|---|---|
+| `lka` / `lka_highdose` (k01) | 1.4 1/h | 1.2 1/h | Table 1 geometric mean |
+| `lcl` / `lcl_highdose` (CL/F) | 12.3 L/h | 9.9 L/h | Table 1 geometric mean |
+| `lvc` / `lvc_highdose` (Vd) | 46 L | 37 L | Table 1 geometric mean |
+| `emax`, `lec50`, `lhill`, `lke0` (each endpoint) | see below | see below | Table 2 mean of individual estimates |
+| `propSd`, `addSd_<endpoint>` | 0 (fixed) | 0 (fixed) | not reported |
+| One compartment, first-order absorption, no lag | n/a | n/a | Methods 'PK Analyses and PK-PD Modeling' |
+| `d/dt(effect) <- ke0 * (Cc - effect)`; `E = Emax Ce^gamma / (EC50^gamma + Ce^gamma)` | n/a | n/a | Methods; Supplementary Figure S1 |
+| Effect = drug minus placebo at the same time point (zero baseline) | n/a | n/a | Methods 'Statistical Analyses' |
+
+```{r pd-trace}
+pd_names <- c("emax", "lec50", "lhill", "lke0")
+pd_tab <- dplyr::bind_rows(lapply(names(endpoints), function(m) {
+  th <- mods[[m]]$theta
+  data.frame(
+    endpoint = endpoint_label[[endpoints[[m]]]],
+    dose = c("100 ug", "200 ug"),
+    Emax = c(th[["emax"]], th[["emax_highdose"]]),
+    EC50 = exp(c(th[["lec50"]], th[["lec50_highdose"]])),
+    gamma = exp(c(th[["lhill"]], th[["lhill_highdose"]])),
+    ke0 = exp(c(th[["lke0"]], th[["lke0_highdose"]]))
+  )
+}))
+pd_tab |>
+  dplyr::rename(
+    "Endpoint" = endpoint, "Dose" = dose, "Emax" = Emax,
+    "EC50 (ng/mL)" = EC50, "gamma" = gamma, "ke0 (1/h)" = ke0
+  ) |>
+  knitr::kable(digits = 2, caption = "PD parameters as packaged (Table 2 means).")
+```
+
+The PK layer is the same in every file:
+
+```{r pk-identical}
+pk_names <- c("lka", "lka_highdose", "lcl", "lcl_highdose", "lvc", "lvc_highdose")
+pk_vals <- sapply(mods, function(m) m$theta[pk_names])
+stopifnot(all(abs(pk_vals - pk_vals[, 1]) < 1e-12))
+exp(pk_vals[, 1])
+```
+
+# Dosing
+
+Doses are entered in ug of LSD as administered (d-lysergic acid diethylamide
+hydrate capsules, 100 or 200 ug), and plasma concentrations are in ng/mL. The
+Table 1 identity AUC = Dose / (CL/F) holds with the nominal doses
+(100 / 12.3 = 8.1 and 200 / 9.9 = 20.2 ng*h/mL against 8.1 and 20.3), so the
+nominal dose is the one the analysis used.
+
+```{r doses}
+doses <- data.frame(
+  dose_group = c("100 ug", "200 ug"),
+  id = 1:2,
+  amt = c(100, 200),
+  DOSE_HIGH = c(0L, 1L)
+)
+
+times <- sort(unique(c(seq(0, 1, by = 1 / 60), seq(1, 24, by = 1 / 12))))
+
+# Observation rows sit on the `central` state with dvid = 1: the PK-PD files
+# have two outputs (Cc and the effect), and rxode2 returns both at every
+# observation row.
+make_events <- function(cmt_dose = "depot") {
+  dplyr::bind_rows(lapply(seq_len(nrow(doses)), function(i) {
+    d <- doses[i, ]
+    dplyr::bind_rows(
+      data.frame(id = d$id, time = 0, amt = d$amt, evid = 1L, cmt = cmt_dose, dvid = NA_integer_),
+      data.frame(id = d$id, time = times, amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+    ) |>
+      dplyr::mutate(DOSE_HIGH = d$DOSE_HIGH)
+  }))
+}
+ev_oral <- make_events("depot")
+
+# The models have no between-subject variability, so rxode2's warning about a
+# multi-subject solve without omega is expected and muffled here only.
+solve_model <- function(m, ev = ev_oral) {
+  s <- withCallingHandlers(
+    rxode2::rxSolve(mods[[m]], ev, keep = "DOSE_HIGH"),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+  as.data.frame(s) |>
+    dplyr::mutate(dose_group = doses$dose_group[match(id, doses$id)])
+}
+```
+
+# Pharmacokinetics
+
+## Closed-form checks
+
+For a one-compartment model with first-order absorption, AUC = Dose / CL and
+t1/2 = ln 2 / (CL / V) exactly. Table 1 reports both, so a transcription error
+in CL/F, Vd or the dose units shows here directly.
+
+```{r closed-form}
+p <- exp(pk_vals[, 1])
+cf <- data.frame(
+  dose_group = doses$dose_group,
+  cl = c(p[["lcl"]], p[["lcl_highdose"]]),
+  vc = c(p[["lvc"]], p[["lvc_highdose"]]),
+  ka = c(p[["lka"]], p[["lka_highdose"]])
+) |>
+  dplyr::mutate(
+    kel = cl / vc,
+    auc = doses$amt / cl,
+    half.life = log(2) / kel,
+    tmax = log(ka / kel) / (ka - kel)
+  )
+cf
+# Table 1: lambda 0.27 1/h, t1/2 2.6 h, AUCinf 8.1 and 20.3 ng*h/mL.
+stopifnot(
+  all(abs(cf$kel - 0.27) < 0.005),
+  all(abs(cf$half.life - 2.6) < 0.05),
+  abs(cf$auc[1] / 8.1 - 1) < 0.01,
+  abs(cf$auc[2] / 20.3 - 1) < 0.01
+)
+```
+
+## PKNCA against Table 1
+
+```{r pknca}
+sim_pk <- solve_model("Dolder_2017_lysergide")
+
+conc <- sim_pk |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, dose_group)
+conc <- dplyr::bind_rows(
+  conc,
+  conc |> dplyr::distinct(id, dose_group) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, dose_group, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+dose_df <- doses |>
+  dplyr::mutate(time = 0) |>
+  dplyr::select(id, time, amt, dose_group)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | dose_group + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | dose_group + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+tab1 <- data.frame(
+  dose_group = c("100 ug", "200 ug"),
+  cmax = c(1.3, 3.1),
+  tmax = c(1.4, 1.5),
+  aucinf.obs = c(8.1, 20.3),
+  half.life = c(2.6, 2.6)
+)
+cmp_pk <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca,
+  reference = tab1,
+  by = "dose_group",
+  units = c(cmax = "ng/mL", tmax = "h", aucinf.obs = "h*ng/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp_pk,
+  caption = paste(
+    "Typical-value model vs Table 1 geometric means of the individual",
+    "compartmental estimates. * differs from the reference by more than 20%."
+  )
+)
+```
+
+```{r pknca-gate}
+nca_df <- as.data.frame(nca) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  dplyr::select(dose_group, PPTESTCD, PPORRES) |>
+  dplyr::left_join(
+    tidyr::pivot_longer(tab1, -dose_group, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("dose_group", "PPTESTCD")
+  ) |>
+  dplyr::mutate(pct_diff = 100 * (PPORRES / ref - 1))
+nca_df
+# AUC and t1/2 are exact functions of CL/F and Vd. Cmax and tmax depend on
+# k01, whose geometric mean does not commute with the Cmax / tmax formulas,
+# and the Table 1 values are geometric means of the individual Cmax / tmax.
+stopifnot(
+  all(abs(nca_df$pct_diff[nca_df$PPTESTCD == "aucinf.obs"]) < 2),
+  all(abs(nca_df$pct_diff[nca_df$PPTESTCD == "half.life"]) < 3),
+  all(abs(nca_df$pct_diff[nca_df$PPTESTCD %in% c("cmax", "tmax")]) < 20)
+)
+```
+
+The typical-value Cmax is about 13% above the Table 1 geometric mean at both
+doses (1.47 vs 1.3 and 3.5 vs 3.1 ng/mL). That is the expected gap between the
+curve at the geometric-mean parameters and the geometric mean of individual
+Cmax values: k01 varies more than ten-fold between subjects (0.27-10 1/h), and
+Cmax is concave in k01, so averaging individual Cmax values gives less than
+the Cmax of the averaged k01.
+
+## Concentration-time profiles (Figure 1a)
+
+```{r fig1a, fig.cap = "Replicates Figure 1a of Dolder 2017: plasma LSD after 100 and 200 ug orally, typical-value model. The published panel shows the mean +/- SEM of the observed concentrations."}
+ggplot(sim_pk, aes(time, Cc, colour = dose_group)) +
+  geom_line() +
+  labs(x = "Time (h)", y = "LSD (ng/mL)", colour = "Dose") +
+  theme_bw()
+```
+
+# Pharmacodynamics
+
+```{r pd-solve}
+sim_pd <- dplyr::bind_rows(lapply(names(endpoints), function(m) {
+  s <- solve_model(m)
+  data.frame(
+    id = s$id, time = s$time, Cc = s$Cc, Ce = s$effect,
+    value = s[[endpoints[[m]]]], endpoint = endpoints[[m]],
+    dose_group = s$dose_group
+  )
+}))
+```
+
+## Effect-time curves (Figures 1b, d, f and 2a, c, e, g)
+
+```{r fig-effects, fig.height = 8, fig.cap = "Replicates the effect-time panels of Figures 1 and 2 of Dolder 2017: typical-value predicted effect (difference from placebo) by dose. The published panels show the mean +/- SEM of the observed effects."}
+sim_pd |>
+  dplyr::mutate(endpoint = factor(endpoint_label[endpoint], levels = endpoint_label)) |>
+  ggplot(aes(time, value, colour = dose_group)) +
+  geom_line() +
+  facet_wrap(~endpoint, ncol = 2, scales = "free_y") +
+  labs(x = "Time (h)", y = "Effect (difference from placebo)", colour = "Dose") +
+  theme_bw()
+```
+
+## Hysteresis (Figure 1c)
+
+```{r fig1c, fig.cap = "Replicates Figure 1c of Dolder 2017: 'any drug effect' against plasma LSD, typical-value model. The loop runs counterclockwise because the effect site lags plasma (ke0 1.8 and 3.4 1/h)."}
+sim_pd |>
+  dplyr::filter(endpoint == "anydrugeffectvas") |>
+  ggplot(aes(Cc, value, colour = dose_group)) +
+  geom_path() +
+  labs(x = "LSD (ng/mL)", y = "Any drug effect (%)", colour = "Dose") +
+  theme_bw()
+```
+
+## Effect onset, peak and offset ('any drug effect')
+
+Dolder 2017 derived onset, offset, duration and time to peak from each
+subject's model-predicted 'any drug effect' curve, with a threshold of 10% of
+the maximal possible effect (10 VAS points), and reported their means (Results,
+Pharmacodynamics). The same quantities for the typical curve:
+
+```{r effect-metrics}
+any_metrics <- sim_pd |>
+  dplyr::filter(endpoint == "anydrugeffectvas") |>
+  dplyr::group_by(dose_group) |>
+  dplyr::summarise(
+    Emax_pred = max(value),
+    tmaxE = time[which.max(value)],
+    onset = min(time[value >= 10]),
+    offset = max(time[value >= 10]),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(duration = offset - onset)
+
+ref_metrics <- data.frame(
+  dose_group = c("100 ug", "200 ug"),
+  onset_ref = c(0.8, 0.4),
+  tmaxE_ref = c(2.8, 2.5),
+  offset_ref = c(9.0, 11.6),
+  duration_ref = c(8.2, 11.2)
+)
+any_cmp <- dplyr::left_join(any_metrics, ref_metrics, by = "dose_group")
+any_cmp |>
+  dplyr::transmute(
+    dose_group,
+    Emax_pred = round(Emax_pred),
+    onset = round(onset, 2), onset_ref,
+    tmaxE = round(tmaxE, 2), tmaxE_ref,
+    offset = round(offset, 1), offset_ref,
+    duration = round(duration, 1), duration_ref
+  ) |>
+  dplyr::rename(
+    "Dose" = dose_group, "Peak effect, typical (%)" = Emax_pred,
+    "Onset, typical (h)" = onset, "Onset, paper (h)" = onset_ref,
+    "Peak time, typical (h)" = tmaxE, "Peak time, paper (h)" = tmaxE_ref,
+    "Offset, typical (h)" = offset, "Offset, paper (h)" = offset_ref,
+    "Duration, typical (h)" = duration, "Duration, paper (h)" = duration_ref
+  ) |>
+  knitr::kable(caption = paste(
+    "Typical-value 'any drug effect' curve vs the means of the individual",
+    "predicted curves (Results, Pharmacodynamics)."
+  ))
+```
+
+The typical curve is one curve at the average parameters, whereas the paper
+reports means of 24 or 16 individual curves, so the two agree in shape and
+order of magnitude rather than exactly. The typical curve starts and peaks
+about half an hour earlier than the published means and ends about 2 h
+earlier, so its duration is about 20% shorter (6.7 vs 8.2 h at 100 ug, 8.9 vs
+11.2 h at 200 ug). A mean of individual curves is wider than the curve at the
+mean parameters: subjects with slow absorption or elimination, or a low
+EC50, stay above the 10-point threshold for longer, which pulls the mean
+offset and duration up. The checks below test what the typical curve must
+reproduce: an effect onset within the first hour, a peak delayed behind the
+plasma peak by the effect-site equilibration and within 1 h of the published
+mean, a longer effect after 200 ug than after 100 ug, and a duration within
+35% of the published mean.
+
+```{r effect-gates}
+tmax_pk <- cf$tmax
+stopifnot(
+  all(any_cmp$onset < 1),
+  all(any_cmp$tmaxE > tmax_pk),
+  all(abs(any_cmp$tmaxE - any_cmp$tmaxE_ref) < 1),
+  any_cmp$duration[2] > any_cmp$duration[1],
+  all(abs(any_cmp$duration / any_cmp$duration_ref - 1) < 0.35),
+  all(any_cmp$Emax_pred > 70)
+)
+```
+
+## Predicted effect peak after intravenous dosing (Discussion)
+
+The Discussion uses lambda and ke0 to predict the time of the peak 'any drug
+effect' after an intravenous bolus: about 70 min with the 100 ug parameters and
+50 min with the 200 ug parameters. After a bolus the effect-site concentration,
+and so the effect, peaks at ln(ke0 / lambda) / (ke0 - lambda). Dosing the same
+amounts into `central` must reproduce this, which checks lambda (through CL/F
+and Vd) and ke0 together.
+
+```{r iv-check}
+sim_iv <- solve_model("Dolder_2017_lysergide_anydrugeffect", make_events("central"))
+iv <- sim_iv |>
+  dplyr::group_by(dose_group) |>
+  dplyr::summarise(tmax_effect_min = 60 * time[which.max(anydrugeffectvas)], .groups = "drop")
+th <- mods[["Dolder_2017_lysergide_anydrugeffect"]]$theta
+ke0 <- exp(c(th[["lke0"]], th[["lke0_highdose"]]))
+iv$closed_form_min <- 60 * log(ke0 / cf$kel) / (ke0 - cf$kel)
+iv$discussion_min <- c(70, 50)
+iv
+stopifnot(
+  all(abs(iv$tmax_effect_min - iv$closed_form_min) < 1.5),
+  all(abs(iv$tmax_effect_min - iv$discussion_min) < 6)
+)
+```
+
+## Peak effects of the vital signs
+
+Figure 2 shows that LSD raised blood pressure, heart rate and body temperature
+to similar extents at both doses. The typical-value peaks:
+
+```{r vital-peaks}
+sim_pd |>
+  dplyr::group_by(endpoint, dose_group) |>
+  dplyr::summarise(peak = max(value), tpeak = time[which.max(value)], .groups = "drop") |>
+  dplyr::mutate(endpoint = endpoint_label[endpoint]) |>
+  tidyr::pivot_wider(names_from = dose_group, values_from = c(peak, tpeak)) |>
+  dplyr::rename(
+    "Endpoint" = endpoint,
+    "Peak, 100 ug" = `peak_100 ug`, "Peak, 200 ug" = `peak_200 ug`,
+    "Peak time, 100 ug (h)" = `tpeak_100 ug`, "Peak time, 200 ug (h)" = `tpeak_200 ug`
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical-value peak effects (difference from placebo).")
+```
+
+```{r temp-gate}
+# Body temperature equilibrates most slowly (Table 2 t1/2 ke0 107 and 136 min
+# against 13-53 min for the cardiovascular effects), so its typical peak must
+# come last among the vital signs at each dose.
+tpk <- sim_pd |>
+  dplyr::filter(endpoint %in% c("hrcfb", "bodytempcfb", "dbpcfb", "sbpcfb")) |>
+  dplyr::group_by(endpoint, dose_group) |>
+  dplyr::summarise(tpeak = time[which.max(value)], .groups = "drop")
+for (dg in doses$dose_group) {
+  x <- tpk[tpk$dose_group == dg, ]
+  stopifnot(x$tpeak[x$endpoint == "bodytempcfb"] == max(x$tpeak))
+}
+```
+
+# Assumptions and deviations
+
+* **Two-stage source, typical values only.** Dolder 2017 fitted each subject
+  individually and reported summaries of the individual estimates, so the
+  models carry no between-subject variability. PK parameters are the Table 1
+  geometric means and PD parameters the Table 2 arithmetic means. The 95%
+  confidence intervals, ranges and standard deviations of the individual
+  estimates were not converted into between-subject variances: an
+  individual-fit spread mixes true variability with estimation error and is
+  not a population-model omega. Combining a mean PD parameter set with the
+  geometric-mean PK gives a typical curve, which differs systematically from
+  the mean of individual curves the paper plots, as the tables above show.
+* **Per-dose parameter sets.** The paper gives no pooled estimate; each dose
+  was a separate study in different participants, with plasma LSD measured in
+  different laboratories (Discussion, limitations). `DOSE_HIGH` therefore
+  selects the published row for each dose. The authors concluded the PK is
+  dose proportional; the differences between the two PK rows (CL/F 12.3 vs
+  9.9 L/h, Vd 46 vs 37 L) are within the overlap of their confidence intervals
+  and are not a modelled dose effect. Other doses should not be simulated by
+  interpolating `DOSE_HIGH`.
+* **Responder subsets.** 'Bad drug effect' could not be estimated in subjects
+  who never rated it above 5% (8 of 24 at 100 ug, 5 of 16 at 200 ug), and each
+  vital sign in one to three subjects whose values did not change enough, so
+  those parameter means describe responders.
+* **Emax limits.** The fits bounded Emax to 0-100% for the VAS and to at most
+  100 beats/min, 2 deg C, 50 mmHg (diastolic) and 80 mmHg (systolic) for the
+  vital signs. The typical values lie inside these limits; the models do not
+  impose them.
+* **Residual errors fixed at zero.** The paper does not describe the residual
+  error models or report their magnitudes; `propSd` (PK) and
+  `addSd_<endpoint>` (PD) are fixed at 0 placeholders.
+* **Effects are placebo-corrected.** Every PD endpoint is the value after LSD
+  minus the value after placebo in the same subject at the same time, so each
+  model has zero baseline. The vital-sign outputs are named with the library's
+  change-score suffix (`hrcfb`, `dbpcfb`, `sbpcfb`, `bodytempcfb`); here the
+  change is from the time-matched placebo value, not from a pre-dose baseline.
+* **Dose units.** Doses are ug of LSD as given in the capsules (nominally 100
+  and 200 ug of d-lysergic acid diethylamide hydrate); Table 1 AUC equals the
+  nominal dose divided by CL/F.
