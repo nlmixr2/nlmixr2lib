@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hu 2019 coptisine PK/PD ([doi:10.1038/s41598-018-38164-4](https://doi.org/10.1038/s41598-018-38164-4)) -- male Sprague-Dawley rats challenged with LPS (the lung TNF-alpha/iNOS/NO cascade as published does not reproduce the paper's data; see the article).
+- Add Jones 2019 olaratumab exposure-survival (OS and PFS, Cmin1 and Cavg) ([doi:10.1007/s00280-018-3723-4](https://doi.org/10.1007/s00280-018-3723-4)) -- adults with advanced soft tissue sarcoma on doxorubicin with or without olaratumab.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
