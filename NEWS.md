@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Majid 2016 perampanel effect on ten concomitant antiepileptic drugs (carbamazepine, clobazam, clonazepam, lamotrigine, levetiracetam, oxcarbazepine, phenobarbital, topiramate, valproic acid, zonisamide) ([doi:10.1111/bcp.12951](https://doi.org/10.1111/bcp.12951)) -- adolescents and adults with refractory partial-onset seizures in the perampanel Phase III trials.
+- Add McCarthy 2016 artefenomel (OZ439) PK/PD ([doi:10.1093/jac/dkw174](https://doi.org/10.1093/jac/dkw174)) -- healthy adults in the induced blood-stage P. falciparum malaria challenge model.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

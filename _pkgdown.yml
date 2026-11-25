@@ -578,6 +578,8 @@ navbar:
         href: articles/Wang_2022_aripiprazole.html
       - text: "Armodafinil (Darwish 2012)"
         href: articles/Darwish_2012_armodafinil_modafinil_shift_work_disorder.html
+      - text: "Artefenomel (McCarthy 2016)"
+        href: articles/McCarthy_2016_artefenomel.html
       - text: "Artemether (Ding 2026)"
         href: articles/Ding_2026_artemether_lumefantrine_amodiaquine.html
       - text: "Artemether (Hietala 2010)"
@@ -12150,7 +12152,7 @@ articles:
   - articles/Mazzocco_2015_temozolomide
   - articles/McBride_2025_radamts13_qsp
   - articles/McCann_2025_midazolam
-  - articles/McCarthy_2026_vancomycin
+  - articles/McCarthy_2016_artefenomel
   - articles/McKnite_2026_midazolam_crrt
   - articles/McLachlan_1996_fluconazole
   - articles/McLaughlin_2024_tld_1

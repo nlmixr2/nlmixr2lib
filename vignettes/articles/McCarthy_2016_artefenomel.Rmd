@@ -1,0 +1,457 @@
+---
+title: "Artefenomel (McCarthy 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Artefenomel (McCarthy 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("McCarthy_2016_artefenomel"))$reference`
+* Description: `r rxode2::rxode(readModelDb("McCarthy_2016_artefenomel"))$description`
+* Article: <https://doi.org/10.1093/jac/dkw174> (open access, PMC4992851)
+
+Artefenomel (OZ439) is a synthetic ozonide antimalarial. McCarthy 2016
+gave single oral doses of 100, 200 or 500 mg to healthy volunteers who
+had been inoculated with *Plasmodium falciparum*-infected erythrocytes
+(the induced blood-stage malaria, or IBSM, challenge model), and fitted
+a population PK model followed by a parasite growth-and-kill PK/PD model.
+
+# Population
+
+Twenty-four healthy adults (eight per dose cohort) were enrolled and
+completed the study at QIMR Berghofer, Brisbane (ACTRN12612000814875).
+Supplementary Table S1: age 20-34 years (mean 25.5, SD 3.7), 12 male and
+12 female, all Caucasian, body weight 53.9-97.6 kg (mean 73.1, SD 12),
+BMI 19.1-28.2 kg/m^2. Volunteers were inoculated with about 1800 viable
+parasitised erythrocytes and dosed once qPCR parasitaemia (18S rRNA
+gene, all stages) reached 1000 parasites/mL. Artefenomel was given as a
+suspension of the mesylate after 200 mL of full-cream milk.
+
+The same information is available programmatically via
+`readModelDb("McCarthy_2016_artefenomel")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment in
+`inst/modeldb/specificDrugs/McCarthy_2016_artefenomel.R`; this table
+collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (ka) | 0.18 1/h | Table 2 'Ka' (= Table S5) |
+| `ltlag` (ALAG) | 0.40 h | Table 2 'ALAG' |
+| `lcl` (CL/F0, 500 mg reference) | 40.9 L/h | Table 2 'CL/F' |
+| `lvc` (Vc/F) | 189 L | Table 2 'Vc/F' |
+| `lvp` (Vp/F) | 1573 L | Table 2 'Vp/F' |
+| `lq` (Q/F) | 12.7 L/h | Table 2 'Q/F' |
+| `e_dose_cl` | -0.55 | Table 2 'Dose on CL/F' = 0.55; footnote c prints the exponent as -0.55 |
+| `lkgrow` (G) | 0.06 1/h, fixed | Table 3 'G' (= Table S6) |
+| `lemax` (D) | 0.20 1/h | Table 3 'D' |
+| `lec50` (EC50) | 6.19 ng/mL | Table 3 'EC50' |
+| `lhill` (H) | 2.03 | Table 3 'H' |
+| `etalvc`, `etalvp`, `etalcl`, `etaltlag` | 0.269, 0.071, 0.064, 0.001 | Table 2 IIV column (variances, footnote a) |
+| `etalemax`, `etalec50` | 0.017, 0.408 | Table 3 IIV column; Table S6 |
+| `propSd`, `propSd_parasites` | 0, fixed | not reported |
+| CL/F = CL/F0 x (dose/500)^-0.55 | -- | Table 2 footnote c |
+| Two-compartment PK, first-order absorption with lag | -- | Methods 'Pharmacometric analysis' |
+| dP/dt = P (G - D C^H / (C^H + EC50^H)) | -- | Supplementary data, Equation 1 |
+| MIC = EC50 (G / (D - G))^(1/H) | 4.08 ng/mL | Supplementary data, Equation 3 and text |
+| MPC_X = EC50 (X / (1 - X))^(1/H) | 60, 26 ng/mL | Supplementary data, Equation 2; Results (MPC99%, MPC95%) |
+
+# Closed-form checks of the PD parameters
+
+The supplement derives the MIC (the concentration at which growth and
+kill cancel, so dP/dt = 0) and the minimal parasiticidal concentrations
+MPC_X (the concentration reaching a fraction X of the maximum kill rate)
+from Equation 1, and the paper reports MIC = 4.08 ng/mL, MPC99% = 60
+ng/mL and MPC95% = 26 ng/mL. Recomputing them from the packaged `ini()`
+values confirms the PD parameters and the form of Equation 1.
+
+```{r closed_form}
+mod <- readModelDb("McCarthy_2016_artefenomel")
+ini_df <- rxode2::rxode(mod)$iniDf
+p <- setNames(ini_df$est, ini_df$name)
+
+g <- exp(p[["lkgrow"]])
+d <- exp(p[["lemax"]])
+ec50 <- exp(p[["lec50"]])
+h <- exp(p[["lhill"]])
+
+mic <- ec50 * (g / (d - g))^(1 / h)
+mpc <- function(x) ec50 * (x / (1 - x))^(1 / h)
+
+pd_check <- data.frame(
+  Quantity = c("MIC", "MPC99%", "MPC95%"),
+  Published = c(4.08, 60, 26),
+  Recomputed = c(mic, mpc(0.99), mpc(0.95))
+)
+knitr::kable(pd_check, digits = 2, caption = "Supplementary data Equations 2-3 vs. the reported values.")
+
+stopifnot(
+  abs(mic - 4.08) < 0.01,
+  abs(mpc(0.99) - 60) < 1,
+  abs(mpc(0.95) - 26) < 0.5
+)
+```
+
+# Typical-value checks
+
+The typical subject (`zeroRe()`) is solved for each dose with a dense
+grid. Two checks use the same parameters on both sides, so they hold to
+numerical precision:
+
+* mass balance: AUC(0-inf) x CL/F returns the dose, with CL/F the
+  dose-adjusted value 40.9 x (dose/500)^-0.55;
+* the parasitaemia nadir falls exactly where the falling concentration
+  crosses the MIC, because Equation 1 has dP/dt = 0 only at C = MIC.
+
+```{r typical}
+mod_typ <- rxode2::zeroRe(mod)
+doses <- c(100, 200, 500)
+para0 <- c(`100` = 2.6, `200` = 6.7, `500` = 4.3)
+
+grid <- sort(unique(c(seq(0, 48, by = 0.02), seq(48, 6000, by = 0.5))))
+
+make_typ_events <- function(dose) {
+  dplyr::bind_rows(
+    data.frame(id = 1L, time = 0, amt = dose, evid = 1L, cmt = "depot", dvid = NA_integer_),
+    data.frame(id = 1L, time = grid, amt = 0, evid = 0L, cmt = NA_character_, dvid = 1L)
+  ) |>
+    dplyr::mutate(
+      DOSE_ARTEFENOMEL_MG = dose,
+      PARA = para0[[as.character(dose)]]
+    )
+}
+
+typ <- dplyr::bind_rows(lapply(doses, function(dose) {
+  as.data.frame(rxode2::rxSolve(mod_typ, make_typ_events(dose), returnType = "data.frame")) |>
+    dplyr::mutate(dose = dose)
+}))
+
+trap <- function(x, y) sum(diff(x) * (head(y, -1) + tail(y, -1)) / 2)
+
+typ_chk <- typ |>
+  dplyr::group_by(dose) |>
+  dplyr::summarise(
+    auc = trap(time, Cc),
+    cl_model = 40.9 * (dose[1] / 500)^-0.55,
+    cmax = max(Cc),
+    tmax = time[which.max(Cc)],
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    mass_balance = auc * cl_model / (dose * 1000),
+    cl_apparent = dose * 1000 / auc
+  )
+
+knitr::kable(
+  typ_chk |>
+    dplyr::rename(
+      "Dose (mg)" = dose, "AUC0-inf (h*ng/mL)" = auc, "CL/F model (L/h)" = cl_model,
+      "Cmax (ng/mL)" = cmax, "Tmax (h)" = tmax, "AUC x CL / dose" = mass_balance,
+      "Dose / AUC (L/h)" = cl_apparent
+    ),
+  digits = 3,
+  caption = "Typical-subject exposure by dose."
+)
+
+stopifnot(all(abs(typ_chk$mass_balance - 1) < 0.01))
+
+# Nadir vs MIC crossing for the 200 mg typical subject.
+typ200 <- typ |> dplyr::filter(dose == 200, time <= 300)
+t_nadir <- typ200$time[which.min(typ200$parasites)]
+after_peak <- typ200 |> dplyr::filter(time > typ200$time[which.max(typ200$Cc)])
+t_mic <- after_peak$time[which(after_peak$Cc < mic)[1]]
+c(nadir_h = t_nadir, mic_crossing_h = t_mic)
+stopifnot(abs(t_nadir - t_mic) <= 0.5)
+```
+
+The dose-normalised apparent clearance falls with dose as the paper
+describes (Results 'PK', Figure S1C). The typical CL/F values (99, 68
+and 41 L/h) are 7-11% above the non-compartmental geometric means of
+Table 1 (91, 61 and 38 L/h):
+
+```{r typical_cl}
+cl_nca <- c(91, 61, 38)
+stopifnot(all(abs(typ_chk$cl_model / cl_nca - 1) < 0.2))
+```
+
+# Virtual cohort
+
+Each dose arm has 200 virtual subjects. The model needs two covariates:
+the dose itself (`DOSE_ARTEFENOMEL_MG`, which drives CL/F) and the
+parasitaemia at dosing (`PARA`, in parasites/uL; the model multiplies by
+1000 to work in parasites/mL). The paper does not tabulate the baseline
+parasitaemia, so each arm is started at its cohort median at t = 0 read
+by the maintainers from Figure 2 (about 2600, 6700 and 4300 parasites/mL
+for 100, 200 and 500 mg). The observation times are the paper's PK
+schedule (Methods 'Study plan'), with sampling to 456 h added for the
+500 mg cohort as in Figure 1, plus a denser grid for the plots.
+
+```{r cohort}
+rxode2::rxSetSeed(20160825)
+n_per_arm <- 200
+
+pk_times <- c(0, 2, 4, 8, 12, 24, 30, 36, 48, 60, 72, 84, 96, 108, 120, 132, 144)
+plot_times <- c(seq(0, 48, by = 1), seq(52, 456, by = 4))
+
+make_arm <- function(dose, arm_index) {
+  ids <- (arm_index - 1) * n_per_arm + seq_len(n_per_arm)
+  obs_times <- sort(unique(c(pk_times, plot_times, if (dose == 500) 456)))
+  dplyr::bind_rows(
+    data.frame(id = ids, time = 0, amt = dose, evid = 1L, cmt = "depot", dvid = NA_integer_),
+    tidyr::expand_grid(id = ids, time = obs_times) |>
+      dplyr::mutate(amt = 0, evid = 0L, cmt = NA_character_, dvid = 1L)
+  ) |>
+    dplyr::mutate(
+      DOSE_ARTEFENOMEL_MG = dose,
+      PARA = para0[[as.character(dose)]],
+      treatment = paste(dose, "mg")
+    )
+}
+
+events <- dplyr::bind_rows(lapply(seq_along(doses), function(i) make_arm(doses[i], i))) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim <- as.data.frame(rxode2::rxSolve(
+  mod, events,
+  keep = "treatment", returnType = "data.frame"
+))
+```
+
+# Replicate published figures
+
+## Figure 1 -- artefenomel concentration by dose
+
+Replicates Figure 1 of McCarthy 2016 (observed median concentrations by
+dose cohort). The lines are the simulated median and 5th-95th
+percentiles.
+
+```{r fig1}
+sim |>
+  dplyr::filter(time > 0) |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(
+    med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, med, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line() +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Artefenomel plasma concentration (ng/mL)",
+    colour = "Dose", fill = "Dose",
+    caption = "Replicates Figure 1 of McCarthy 2016."
+  ) +
+  theme_bw()
+```
+
+## Figure 2 -- parasitaemia by dose
+
+Replicates Figure 2 of McCarthy 2016 (median parasitaemia by dose
+cohort). The 100 mg cohort was rescued with artemether/lumefantrine at
+60 h, and all subjects eventually received rescue treatment; the
+simulation has no rescue, so it continues past the observed follow-up.
+The dashed line is the qPCR detection limit (10 parasites/mL).
+
+```{r fig2}
+sim |>
+  dplyr::filter(time <= 300) |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(
+    med = median(parasites), lo = quantile(parasites, 0.05), hi = quantile(parasites, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, med, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line() +
+  geom_hline(yintercept = 10, linetype = "dashed") +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(1e-3, 1e6)) +
+  labs(
+    x = "Time after artefenomel administration (h)", y = "Parasitaemia (parasites/mL)",
+    colour = "Dose", fill = "Dose",
+    caption = "Replicates Figure 2 of McCarthy 2016."
+  ) +
+  theme_bw()
+```
+
+For the typical subject the model gives:
+
+* 500 mg: parasitaemia falls below the 10 parasites/mL detection limit at
+  46 h, against about 42 h for the observed median.
+* 200 mg: parasitaemia reaches a nadir of about 160 parasites/mL at 36 h
+  and then regrows. The observed median reached about 55 parasites/mL at
+  48 h and recrudesced after 60 h.
+* 100 mg: the model diverges from the data. The typical subject falls
+  about 12-fold to a nadir at 24 h before regrowing. The observed median
+  instead rose to about 10 000 parasites/mL, and the cohort was rescued
+  at 60 h. The paper did no PD analysis of this cohort, so the PK/PD
+  parameters were informed mainly by the 200 and 500 mg data.
+
+With 500 mg the paper observed recrudescence between days 6 and 10 in
+four of eight volunteers. The table below gives the fraction of simulated
+subjects whose parasitaemia falls below the paper's cure threshold of
+0.003 parasites/mL within 456 h. About six in ten of the simulated
+500 mg subjects clear, close to the four of eight observed. This is for
+orientation only: the paper reports no such figure for this setting, and
+its Figure S4 cure probabilities came from a different, unpublished
+patient PK model.
+
+```{r cure}
+sim |>
+  dplyr::group_by(treatment, id) |>
+  dplyr::summarise(cleared = any(parasites < 0.003), .groups = "drop") |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(`Fraction below 0.003 parasites/mL` = mean(cleared), .groups = "drop") |>
+  knitr::kable(digits = 2)
+```
+
+# PKNCA validation
+
+Non-compartmental analysis of the simulated concentrations at the
+paper's sampling times (0-144 h for 100 and 200 mg; to 456 h for 500 mg,
+matching the Table 1 footnote).
+
+```{r pknca}
+# Sampling schedule per arm; pk_times starts at 0, so every subject keeps
+# its time-zero record.
+schedule <- dplyr::bind_rows(
+  tidyr::expand_grid(treatment = paste(doses, "mg"), time = pk_times),
+  data.frame(treatment = "500 mg", time = 456)
+)
+
+nca_conc <- sim |>
+  dplyr::inner_join(schedule, by = c("treatment", "time")) |>
+  dplyr::select(id, time, Cc, treatment) |>
+  dplyr::filter(!is.na(Cc))
+
+nca_dose <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published NCA (Table 1)
+
+Table 1 reports geometric means; the simulated column is the virtual-
+cohort median, which for log-normal exposure estimates the same central
+value. The dose is in mg and the concentration in ng/mL, so PKNCA's
+clearance (mg / (h*ng/mL)) is multiplied by 1000 to give L/h.
+
+```{r nca_compare}
+nca_tbl <- as.data.frame(nca_res$result) |>
+  dplyr::mutate(PPORRES = ifelse(PPTESTCD == "cl.obs", PPORRES * 1000, PPORRES))
+nca_res$result <- nca_tbl
+
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax, ~aucinf.obs, ~half.life, ~cl.obs,
+  "100 mg", 164, 4, 1100, 52, 91,
+  "200 mg", 448, 4, 3286, 51, 61,
+  "500 mg", 1263, 4, 13239, 260, 38
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(
+    cmax = "ng/mL", tmax = "h", aucinf.obs = "h*ng/mL",
+    half.life = "h", cl.obs = "L/h"
+  ),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated (virtual-cohort median) vs. McCarthy 2016 Table 1",
+    "(geometric means; Tmax is the reported average). * differs by >20%."
+  )
+)
+
+sim_auc <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "aucinf.obs") |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(med = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  dplyr::left_join(published |> dplyr::select(treatment, aucinf.obs), by = "treatment")
+
+# Structural check on the centre of the distribution: a mis-transcribed
+# clearance, volume or dose exponent moves the median AUC by far more.
+stopifnot(all(abs(sim_auc$med / sim_auc$aucinf.obs - 1) < 0.3))
+```
+
+AUC(0-inf) and CL/F agree with Table 1 within 7-13% at every dose,
+confirming the dose-dependent clearance.
+
+Cmax is under-predicted by 42-47% at all three doses, although the
+observed Tmax of 4 h is reproduced. With ka = 0.18 1/h, the published
+model absorbs too slowly to reach the observed peaks. The only visual
+predictive check in the paper (Figure S2) is on a log scale too coarse
+to resolve the peak. The shortfall is therefore reported here and left
+uncorrected.
+
+The NCA half-lives do not match either. The model gives about 100-120 h
+at every dose, while Table 1 gives 51-52 h for 100 and 200 mg and 260 h
+for 500 mg. Two things contribute. The terminal estimate depends on the
+sampling window, and the 100 and 200 mg cohorts were followed for only
+144 h. The paper's own half-lives also vary widely between subjects
+(coefficients of variation 63-84%).
+
+# Assumptions and deviations
+
+* **Residual error.** The paper reports no residual-error model for
+  either the PK or the PK/PD fit. Both residual SDs are fixed to zero, so
+  stochastic simulations carry between-subject variability only.
+* **Initial parasitaemia.** The paper does not say how the parasitaemia
+  at dosing entered the PK/PD fit (estimated, fixed to the observed
+  value, or otherwise). The model takes it as the per-subject covariate
+  `PARA` (parasites/uL, multiplied by 1000 inside the model). The cohort
+  medians used in this vignette were read from Figure 2 and are
+  approximate.
+* **Form of the random effects.** The IIV columns of Tables 2 and 3 are
+  variances of the random effects; they are implemented as exponential
+  (log-normal) effects, the usual NONMEM convention, which the paper does
+  not state explicitly. No covariances are reported, so all random
+  effects are independent.
+* **Dose effect only on clearance.** The Discussion mentions
+  "dose-dependent rates of absorption and clearance", but Table 2 and
+  its footnote give a dose effect on CL/F only, so only that effect is
+  implemented. The Table 2 row prints the dose coefficient as 0.55 and
+  the footnote prints the equation with exponent -0.55; the negative
+  sign matches the falling CL/F with dose in Table 1 and Figure S1C.
+* **Salt or base.** Artefenomel was given as the mesylate; the paper does
+  not say whether the 100/200/500 mg doses are salt or free-base masses.
+  The model is parameterised on the nominal doses as reported.
+* **Sequential PK/PD.** The authors fitted the PD model with the
+  subject-specific PK predictions fixed. The packaged model joins the two
+  so that simulated concentrations drive the parasite model directly,
+  which is equivalent for simulation.
+* **Rescue treatment and detection limit.** Artemether/lumefantrine
+  rescue and the 10 parasites/mL qPCR detection limit are not part of the
+  model; simulations continue the parasite dynamics without rescue.
+* **Errata.** A search of Europe PMC on 2026-11-24 found no correction or
+  erratum for this article.
