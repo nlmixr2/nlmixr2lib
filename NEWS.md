@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Eloot 2016 uremic toxins (urea, p-cresylglucuronide, hippuric acid, indole acetic acid, indoxyl sulfate, p-cresylsulfate) hemodialysis kinetics ([doi:10.1371/journal.pone.0147159](https://doi.org/10.1371/journal.pone.0147159)) -- adults on chronic high-flux hemodialysis.
+- Add Brill 2016 midazolam and 1-OH-midazolam semi-PBPK ([doi:10.1002/psp4.12048](https://doi.org/10.1002/psp4.12048)) -- morbidly obese adults before and one year after bariatric surgery.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

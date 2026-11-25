@@ -10295,8 +10295,9 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Scope:** general
 - **Reference category:** 0 (before bariatric surgery, typically a morbidly obese patient).
 - **Source aliases:**
-  - `bariatric surgery` -- Brill 2015 midazolam covariate (Methods Eq. 3, Table II 'Bariatric patients' rows); 0 = occasion 1 (day of surgery), 1 = occasion 2 (one year after).
-- **Example models:** `Brill_2015_midazolam.R` (factors 1.68 on CL and 3.22 on Q, a separately estimated transit rate constant, and body-weight effects on the volumes applied only before surgery; 20 morbidly obese patients studied before and 18 of them one year after Roux-en-Y gastric bypass or sleeve gastrectomy).
+  - `bariatric surgery` -- Brill 2015 midazolam covariate (doi:10.1007/s11095-015-1752-9; Methods Eq. 3, Table II 'Bariatric patients' rows); 0 = occasion 1 (day of surgery), 1 = occasion 2 (one year after).
+  - `OBES` -- Brill 2016 midazolam semi-PBPK NONMEM code (Supplementary Information S3), coded 1 = morbidly obese, 2 = after bariatric surgery; `PRIOR_BARIATRIC = OBES - 1`.
+- **Example models:** `Brill_2016_midazolam.R` (separate hepatic intrinsic clearance and transit rate constant after surgery, factor 3.22 on Q, and body-weight effects on the midazolam volumes applied only before surgery; 20 morbidly obese patients studied before and 18 of them one year after Roux-en-Y gastric bypass or sleeve gastrectomy).
 - **Notes:** Follows the `PRIOR_GAST` / `PRIOR_SPLEN` pattern for prior surgical history. Distinct from `PRIOR_GAST`: a Roux-en-Y gastric bypass partitions the stomach without resecting it, and the effects a bariatric-surgery covariate carries are usually systemic (weight loss, recovery of hepatic CYP3A activity) as well as gastrointestinal. Distinct from `DIS_OBESE` / `DIS_OBESE_MORBID` (cohort obesity status) and from `INTRAOP` (active-surgery period). Record body weight at each occasion in `WT` alongside it. The procedure type (bypass vs sleeve) is not separated unless the source paper does so.
 
 ### PRIOR_SPLEN (**canonical for prior splenectomy**)
