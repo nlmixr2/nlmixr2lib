@@ -1,0 +1,495 @@
+---
+title: "Topiramate pediatric and adult PK-PD (Smania 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Topiramate pediatric and adult PK-PD (Smania 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Smania_2016_topiramate_pediatric"))$reference`
+* Description (pediatric): `r rxode2::rxode(readModelDb("Smania_2016_topiramate_pediatric"))$description`
+* Description (adult): `r rxode2::rxode(readModelDb("Smania_2016_topiramate_adult"))$description`
+* Article (Part II, Bayesian designs): <https://doi.org/10.1002/psp4.12092>
+* Companion article (Part I, frequentist designs), whose supplement holds the
+  PK model and the NONMEM simulation code: <https://doi.org/10.1002/psp4.12083>
+* Original model: Girgis et al., Epilepsia 2010;51:1954-1962,
+  <https://doi.org/10.1111/j.1528-1167.2010.02598.x>
+
+Smania et al. compared alternative designs for a pediatric add-on trial of
+topiramate by clinical trial simulation. The simulations were driven by the
+topiramate PK-PD model of Girgis et al. (2010), which the two Smania articles
+reproduce in their supplements:
+
+* Part I Supplementary Table S1 tabulates the PK parameters and the pediatric
+  PD parameters, and Part I Supplementary Material 2 is the NONMEM control
+  stream Smania et al. ran to simulate steady-state trough concentrations.
+* Part II Supplementary Table S1 tabulates the PD parameters separately for
+  the pediatric (n = 115) and adult (n = 663) fits.
+* Part II Supplementary Material 5 deposits the R simulation scripts and the
+  1,000,000 simulated pediatric trough concentrations (2,000 virtual children
+  x 500 PK replicates) that fed the trial simulations.
+
+The PK model was fitted to pooled pediatric and adult data and is shared; the
+exposure-response was fitted separately in children and adults. The package
+therefore carries two models, `Smania_2016_topiramate_pediatric` and
+`Smania_2016_topiramate_adult`, identical except for the PD intercept and
+slope.
+
+**PD endpoint.** The exposure-response relates the steady-state trough
+concentration `Cmin` (mg/L) to the log-transformed translated percent change
+in seizure frequency from baseline,
+
+Y = log(100 (S - B) / B + 110) = b0 + b1 Cmin + eps,
+
+where S and B are the average 28-day seizure frequencies in the treatment and
+baseline phases (Part I Supplementary Material 1, equation 1). In the models
+`seizY` is Y computed from the current `Cc`; it reproduces the published
+endpoint on observation rows at a steady-state pre-dose trough, and equals
+`b0` for a placebo subject (no topiramate, `Cc = 0`). `seizPctChg` back-
+transforms Y to the percent change in seizure frequency (negative values are
+reductions).
+
+# Population
+
+The PD data came from eight clinical trials of adjunctive topiramate in
+treatment-refractory epilepsy (Part I Supplementary Material 1): 115 children
+aged 2 to <10 years with partial-onset or primary generalized tonic-clonic
+seizures and 663 adults (Part II Supplementary Table S1). The PK model was
+fitted to pooled pediatric and adult data with body weight and age as the only
+covariates, centred at 69.9 kg and 31.4 years. Further demographic detail
+(weight range, sex, race) is in Girgis et al. (2010) and is not reproduced in
+the Smania articles. Smania et al. simulated children aged 2-10 years
+receiving 7 mg/kg/day of topiramate in two divided doses on top of their
+current antiepileptic treatment.
+
+The same information is available programmatically via
+`readModelDb("Smania_2016_topiramate_pediatric")()$population`.
+
+# Source trace
+
+"Part I S1" is Supplementary Table S1 of Smania 2016 Part I; "NM" is the NONMEM
+control stream of Part I Supplementary Material 2; "Part II S1" is
+Supplementary Table S1 of Smania 2016 Part II; "BD.R" is the
+`BD_simulations.R` script of Part II Supplementary Material 5.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (monotherapy CL at 69.9 kg, 31.4 y) | log(1.21) L/h | Part I S1 CLSTM (theta1); NM THETA(1) |
+| `e_conmed_aed_cl` | 0.479 | Part I S1 CLSTA 'effect of adjuvant' (theta2); NM `CLST=THETA(1)*(1+ADJ*THETA(2))` |
+| `e_wt_cl` | 0.453 | Part I S1 FCWT (theta3); NM `FCWT=(BW/69.9)**THETA(3)` |
+| `e_age_cl` | -0.00306 1/year | Part I S1 FCAGE (theta4); NM `FCAGE=EXP(THETA(4)*(AGE-31.4))` |
+| `lvc` | log(4.61) L | Part I S1 VST (theta8); NM `V=THETA(8)*FVWT*EXP(ETA(2))` |
+| `e_wt_vc` | 1.14 | Part I S1 FVWT (theta9); NM `FVWT=(BW/69.9)**THETA(9)` |
+| `lka` | log(0.105) 1/h | Part I S1 Ka (theta10) |
+| `lk12` | log(0.577) 1/h | Part I S1 K23 (theta11); NM ADVAN4 TRANS1 |
+| `lk21` | log(0.0586) 1/h | Part I S1 K32 (theta12) |
+| `etalcl` | 0.07441984 | NM $OMEGA `(27.28/100)^2`; Part I S1 BSV 27.28% |
+| `etalvc` | 1.350244 | NM $OMEGA `(116.2/100)^2`; Part I S1 BSV 116.2% |
+| `etalka` | 0.04990756 | NM $OMEGA `(22.34/100)^2`; Part I S1 BSV 22.34% |
+| `propSd` | 0.2546 | Part I S1 CCV residual error 25.46%; NM $SIGMA |
+| `addSd` | 0.1797 mg/L | Part I S1 additive residual error; NM $SIGMA |
+| `e0_seizY` (pediatric / adult) | 4.4830 / 4.4469 | Part II S1 placebo effect beta0 |
+| `slope_seizY` (pediatric / adult) | -0.0579 / -0.0627 L/mg | Part II S1 concentration effect beta1; BD.R `beta1_p`, `beta1_a` |
+| `addSd_seizY` | 0.751664 | Part I S1 sigma_eps; Part II S1 sigma 0.7517; BD.R `sigma_epsilon` |
+| Two-compartment ODEs, first-order absorption | n/a | NM `$SUBROUTINE ADVAN4 TRANS1`; Part I Supplementary Material 1 |
+| `Cc ~ prop + add` | n/a | NM `Y = F*(1+EPS(1)) + EPS(2)` |
+| `seizY = b0 + b1 * Cmin` | n/a | Part I Supplementary Material 1, equation 1 |
+
+# Virtual cohort
+
+Smania et al. drew ages uniformly between 2 and 10 years and body weights from
+log-normal distributions fitted, per year of age, to the World Health
+Organization weight-for-age percentiles; sex was given equal probability. The
+cohort below uses the WHO sex-averaged median weight-for-age (the table used by
+the `Knebel_2011_pantoprazole` article) with 13% log-normal scatter.
+
+```{r cohort}
+set.seed(20160801)
+rxode2::rxSetSeed(20160801)
+
+wfa_age <- c(2, 3, 4, 5, 6, 8, 10)
+wfa_wt <- c(12.0, 14.2, 16.3, 18.3, 20.5, 25.5, 31.9)
+weight_for_age <- function(age_y) approx(wfa_age, wfa_wt, xout = age_y, rule = 2)$y
+
+n_child <- 200
+children <- tibble::tibble(
+  id = seq_len(n_child),
+  AGE = runif(n_child, 2, 10),
+  WT = weight_for_age(AGE) * exp(rnorm(n_child, 0, 0.13))
+)
+summary(children[, c("AGE", "WT")])
+```
+
+# Simulation
+
+Topiramate was simulated at steady state with a single `ss = 1` dose followed by
+one 12-hour dosing interval. The models declare two endpoints (`Cc` and
+`seizY`), so every observation row names its endpoint with `dvid` (1 = `Cc`,
+2 = `seizY`); both columns are returned on every row.
+
+```{r sim-helpers}
+mod_ped <- readModelDb("Smania_2016_topiramate_pediatric")
+mod_adult <- readModelDb("Smania_2016_topiramate_adult")
+
+obs_times <- c(0, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+
+# One steady-state dosing interval per subject. `dose_mg` may be 0 (placebo:
+# no dose row). Observation rows carry dvid 1 (Cc) and, at the 12 h trough,
+# dvid 2 (seizY).
+make_ss_events <- function(cohort, dose_mg, conmed_aed, treatment) {
+  dose <- cohort |>
+    dplyr::mutate(
+      time = 0, amt = dose_mg, evid = 1L, ss = 1L, ii = 12,
+      cmt = "depot", dvid = NA_integer_
+    ) |>
+    dplyr::filter(amt > 0)
+  obs_cc <- tidyr::expand_grid(cohort, time = obs_times) |>
+    dplyr::mutate(amt = 0, evid = 0L, ss = 0L, ii = 0, cmt = NA_character_, dvid = 1L)
+  obs_y <- cohort |>
+    dplyr::mutate(time = 12, amt = 0, evid = 0L, ss = 0L, ii = 0, cmt = NA_character_, dvid = 2L)
+  dplyr::bind_rows(dose, obs_cc, obs_y) |>
+    dplyr::mutate(CONMED_AED = conmed_aed, treatment = treatment) |>
+    dplyr::select(id, time, amt, evid, ss, ii, cmt, dvid, WT, AGE, CONMED_AED, treatment) |>
+    dplyr::arrange(id, time, dplyr::desc(evid), dvid)
+}
+```
+
+## Typical child
+
+```{r typical-child}
+typ_child <- tibble::tibble(id = 1L, AGE = 6, WT = weight_for_age(6))
+ev_typ <- make_ss_events(typ_child, 3.5 * typ_child$WT, 1L, "3.5 mg/kg q12h")
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod_ped), ev_typ,
+  keep = c("treatment", "WT", "AGE"), returnType = "data.frame"
+)
+sim_typ_cc <- sim_typ |> dplyr::filter(!is.na(Cc)) |> dplyr::distinct(time, .keep_all = TRUE)
+
+ggplot(sim_typ_cc, aes(time, Cc)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    x = "Time after dose at steady state (h)", y = "Topiramate (mg/L)",
+    title = "Typical 6-year-old (20.5 kg), 3.5 mg/kg every 12 h, adjunctive therapy"
+  )
+```
+
+## Pediatric cohort and placebo arm
+
+```{r cohort-sim}
+ev_child <- make_ss_events(children, 3.5 * children$WT, 1L, "TPM 3.5 mg/kg q12h")
+ev_placebo <- make_ss_events(
+  children |> dplyr::mutate(id = id + n_child), 0, 1L, "Placebo"
+)
+
+sim_child <- rxode2::rxSolve(mod_ped, dplyr::bind_rows(ev_child, ev_placebo),
+  keep = c("treatment", "WT", "AGE"), returnType = "data.frame"
+)
+
+# rxode2 numbers the two endpoints after the three ODE states, Cc first.
+# `ipredSim` is the row's own endpoint without residual error and `sim` adds
+# residual error: the trough concentration with the PK residual error (as in
+# the authors' simulated Cmin) on Cc rows, and Y with its residual error on
+# seizY rows.
+endpoint_of <- function(cmt) c("Cc", "seizY")[cmt - min(cmt) + 1]
+at_trough <- sim_child |>
+  dplyr::filter(time == 12) |>
+  dplyr::mutate(endpoint = endpoint_of(CMT))
+cmin_tbl <- at_trough |>
+  dplyr::filter(endpoint == "Cc", treatment != "Placebo") |>
+  dplyr::select(id, Cmin = Cc, Cmin_obs = sim)
+y_tbl <- at_trough |>
+  dplyr::filter(endpoint == "seizY") |>
+  dplyr::select(id, treatment, Cmin = Cc, seizY, Y_obs = sim)
+```
+
+# Replicating the published simulation outputs
+
+Smania et al. do not plot model concentrations or responses; their figures
+compare trial designs (sample sizes, error rates, credible-interval widths).
+The model is instead checked against the quantities the articles and their
+deposited code print.
+
+## Placebo response and the treatment-effect scale
+
+Both articles state that the placebo arm has an average seizure reduction of
+21.5% "obtained from the PK-PD model", and Part I states that a treatment
+difference of 0.2467 on the Y scale corresponds to an approximately 19%
+further decrease in seizures. Both follow from `b0` by the Y transformation
+alone, so they are exact checks of the transcribed intercept and of the
+endpoint definition.
+
+```{r placebo-scale}
+ped_ini <- rxode2::rxode2(mod_ped)$theta
+b0_ped <- unname(ped_ini["e0_seizY"])
+placebo_pct <- exp(b0_ped) - 110
+tpm_pct <- exp(b0_ped - 0.2467) - 110
+c(placebo_pct_change = placebo_pct, further_decrease_pct = placebo_pct - tpm_pct)
+stopifnot(
+  abs(placebo_pct - (-21.5)) < 0.05,
+  abs((placebo_pct - tpm_pct) - 19) < 0.5
+)
+```
+
+## Steady-state trough concentrations in children
+
+Part II Supplementary Material 5 deposits the 1,000,000 simulated trough
+concentrations (2,000 virtual children x 500 PK replicates, residual error
+included) that Smania et al. fed into every simulated trial. Their quantiles
+are reproduced below and compared with the trough concentrations of the
+virtual cohort at 3.5 mg/kg every 12 hours on adjunctive therapy.
+
+```{r answer-key}
+# Quantiles and mean of PK.csv (Part II Supplementary Material 5, column CONC).
+pkcsv_q <- c(`5%` = 1.5151, `25%` = 2.6451, `50%` = 3.8027, `75%` = 5.4073, `95%` = 8.7438)
+pkcsv_mean <- 4.2945
+
+sim_q <- quantile(cmin_tbl$Cmin_obs, c(0.05, 0.25, 0.5, 0.75, 0.95))
+tibble::tibble(
+  statistic = c(names(pkcsv_q), "mean"),
+  deposited = c(unname(pkcsv_q), pkcsv_mean),
+  simulated = c(unname(sim_q), mean(cmin_tbl$Cmin_obs))
+) |>
+  dplyr::mutate(pct_diff = round(100 * (simulated / deposited - 1), 1)) |>
+  dplyr::rename(
+    "Trough statistic" = statistic,
+    "Deposited simulation (mg/L)" = deposited,
+    "This model (mg/L)" = simulated,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2)
+
+# Centre and interquartile range only: the tails depend on which subjects of
+# a 200-child cohort draw extreme volumes (omega^2 on V is 1.35).
+stopifnot(
+  abs(median(cmin_tbl$Cmin_obs) / pkcsv_q[["50%"]] - 1) < 0.15,
+  abs(quantile(cmin_tbl$Cmin_obs, 0.25) / pkcsv_q[["25%"]] - 1) < 0.25,
+  abs(quantile(cmin_tbl$Cmin_obs, 0.75) / pkcsv_q[["75%"]] - 1) < 0.25
+)
+```
+
+```{r answer-key-plot, fig.cap = "Steady-state trough concentrations at 3.5 mg/kg every 12 h: virtual cohort (histogram) against the quartiles of the authors' deposited simulation (dashed lines)."}
+ggplot(cmin_tbl, aes(Cmin_obs)) +
+  geom_histogram(bins = 30, fill = "grey70", colour = "grey40") +
+  geom_vline(xintercept = pkcsv_q[c("25%", "50%", "75%")], linetype = "dashed") +
+  labs(x = "Steady-state trough topiramate (mg/L)", y = "Children")
+```
+
+### Which regimen and which adjunct status were simulated
+
+Part I states that the treated arm received "7 mg/kg b.i.d."; Part II calls the
+same regimen "TPM 7 mg/kg/day". The simulation dataset of the NONMEM run was
+not deposited, so neither the dose per administration nor the value of the
+adjunctive-therapy flag `ADJ` is printed. The deposited trough concentrations
+settle both: only 3.5 mg/kg every 12 hours (7 mg/kg/day) with `CONMED_AED = 1`
+reproduces them; the other three combinations miss the deposited median by a
+factor of 1.6 to 3.2.
+
+```{r regimen-discrimination}
+combos <- tidyr::expand_grid(mg_per_kg = c(3.5, 7), conmed_aed = c(0L, 1L))
+discrimination <- purrr::pmap_dfr(combos, function(mg_per_kg, conmed_aed) {
+  ev <- make_ss_events(children, mg_per_kg * children$WT, conmed_aed, "x") |>
+    dplyr::filter(evid == 1 | time == 12)
+  # Typical values per child (IIV removed); rxode2 warns that a
+  # multi-subject solve has no omega, which is the intent here.
+  s <- suppressWarnings(rxode2::rxSolve(rxode2::zeroRe(mod_ped), ev,
+    returnType = "data.frame"
+  ))
+  s <- s[s$time == 12 & endpoint_of(s$CMT) == "Cc", ]
+  tibble::tibble(
+    regimen = sprintf("%.1f mg/kg every 12 h", mg_per_kg),
+    CONMED_AED = conmed_aed,
+    median_cmin = median(s$Cc)
+  )
+}) |>
+  dplyr::mutate(ratio_to_deposited = median_cmin / pkcsv_q[["50%"]])
+discrimination |>
+  dplyr::rename(
+    "Regimen" = regimen,
+    "Median trough, no IIV (mg/L)" = median_cmin,
+    "Ratio to deposited median" = ratio_to_deposited
+  ) |>
+  knitr::kable(digits = 2)
+
+best <- discrimination[which.min(abs(log(discrimination$ratio_to_deposited))), ]
+stopifnot(best$regimen == "3.5 mg/kg every 12 h", best$CONMED_AED == 1L)
+```
+
+## Treatment effect in children and the adult prior
+
+Smania et al. computed the pediatric treatment difference as the mean, over
+simulated children, of `-b1 * Cmin`, giving 0.2467 (Part I Results; Part II
+Figure 5 caption; the `delta_p_bar` file of Part II Supplementary Material 5
+holds 0.24669). The virtual cohort gives the value below.
+
+```{r delta-p}
+b1_ped <- unname(ped_ini["slope_seizY"])
+delta_p_sim <- mean(-b1_ped * cmin_tbl$Cmin_obs)
+delta_p_sim
+stopifnot(abs(delta_p_sim / 0.2467 - 1) < 0.15)
+```
+
+The adult treatment effect was set to `-b1_adult * 8`, with 8 mg/L the adult
+population trough taken from Girgis et al. (`BD_simulations.R`), and the
+child-adult difference `nu = |delta_A - delta_P| / sqrt(2)`. Part II reports
+`nu = 0.18` (scenario 1), which pins the adult slope:
+
+```{r nu}
+adult_ini <- rxode2::rxode2(mod_adult)$theta
+delta_a <- -unname(adult_ini["slope_seizY"]) * 8
+nu <- abs(delta_a - 0.2467) / sqrt(2)
+c(delta_A = delta_a, nu = nu)
+stopifnot(abs(nu - 0.18) < 0.005)
+```
+
+For reference, the typical adult of the PK model (69.9 kg, 31.4 years) at the
+150 mg twice-daily regimen Smania et al. used for adults has the following
+steady-state trough:
+
+```{r adult-typical}
+typ_adult <- tibble::tibble(id = 1L, AGE = 31.4, WT = 69.9)
+adult_cmin <- dplyr::bind_rows(lapply(0:1, function(adj) {
+  ev <- make_ss_events(typ_adult, 150, adj, "150 mg q12h")
+  s <- rxode2::rxSolve(rxode2::zeroRe(mod_adult), ev, returnType = "data.frame")
+  s <- s[s$time == 12 & endpoint_of(s$CMT) == "Cc", ]
+  tibble::tibble(CONMED_AED = adj, Cmin = s$Cc[1], seizPctChg = s$seizPctChg[1])
+}))
+knitr::kable(adult_cmin, digits = 2)
+```
+
+The "8 mg/L" in the authors' script is not derived from this model in either
+article, and neither adjunct status reproduces it exactly (it lies between the
+monotherapy and adjunctive troughs), so it is reported here and not asserted.
+
+## Simulated response by arm
+
+```{r response-by-arm, fig.cap = "Simulated end-of-treatment response Y (with residual error) for the treated and placebo arms of the virtual cohort."}
+ggplot(y_tbl, aes(treatment, Y_obs)) +
+  geom_boxplot() +
+  geom_hline(yintercept = b0_ped, linetype = "dashed") +
+  labs(x = NULL, y = "Y = log(percent change in seizure frequency + 110)")
+
+y_tbl |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    median_Y = median(Y_obs),
+    median_pct_change = median(exp(Y_obs) - 110),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+# PKNCA validation
+
+PKNCA is run on the steady-state dosing interval of the virtual cohort. For a linear model with complete bioavailability the
+steady-state AUC over one dosing interval equals dose / CL, which checks the
+clearance covariate model against the ODE solution.
+
+```{r pknca}
+sim_nca <- sim_child |>
+  dplyr::filter(treatment != "Placebo", endpoint_of(CMT) == "Cc", !is.na(Cc)) |>
+  dplyr::distinct(id, time, .keep_all = TRUE) |>
+  dplyr::select(id, time, Cc, treatment)
+
+dose_df <- ev_child |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = 12,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_res)
+```
+
+```{r pknca-auc-identity}
+cl_ind <- sim_child |>
+  dplyr::filter(treatment != "Placebo") |>
+  dplyr::distinct(id, cl)
+auc_chk <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(id, auclast = PPORRES) |>
+  dplyr::inner_join(cl_ind, by = "id") |>
+  dplyr::inner_join(dose_df |> dplyr::select(id, amt), by = "id") |>
+  dplyr::mutate(pct_diff = 100 * (auclast * cl / amt - 1))
+summary(auc_chk$pct_diff)
+# Same drawn parameters on both sides; the only difference is trapezoidal
+# error over a 1-hour grid on a slowly absorbed drug.
+stopifnot(abs(median(auc_chk$pct_diff)) < 2, quantile(abs(auc_chk$pct_diff), 0.9) < 5)
+```
+
+## Comparison against published values
+
+Neither article reports NCA. The deposited trough concentrations are the only
+published exposure summary, and their median is compared below with the
+median steady-state `cmin` of the virtual cohort (model prediction without
+residual error).
+
+```{r nca-compare}
+published <- tibble::tibble(treatment = "TPM 3.5 mg/kg q12h", cmin = pkcsv_q[["50%"]])
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  params = "cmin",
+  units = c(cmin = "mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs. deposited median steady-state trough. * differs by >20%.")
+```
+
+# Assumptions and deviations
+
+- **Source of the values.** Girgis et al. (2010) is the primary publication of
+  the model and is not open access. Every value here is taken from the Smania
+  2016 supplements, which reproduce the Girgis model as Smania et al. ran it
+  ("adapted from Girgis et al."). The models should be re-verified against
+  Girgis et al. (2010) when that article is available.
+- **Concomitant-antiepileptic clearance factors removed, following the authors'
+  code.** The NONMEM stream of Part I Supplementary Material 2 carries three
+  further clearance factors labelled `FCIN` (1.94), `FCVP` (0.686) and `FCNE`
+  (0.635), each entered as `THETA(n)**0`, i.e. switched off. Part I Table S1
+  omits them and states that weight and age were the only significant PK
+  covariates. Their covariate definitions are not printed in either Smania
+  article, so they cannot be encoded; the models follow the code that produced
+  the published simulations.
+- **IIV as the authors entered it.** Part I Table S1 gives between-subject
+  variability as %CV, and the authors' `$OMEGA` enters each variance as
+  (CV/100)^2 rather than log(1 + CV^2). The code's values are used. The
+  difference is material only for Vc (1.350 versus 0.857).
+- **PD driven by the trough concentration.** The published PD model uses the
+  individual steady-state trough. `seizY` is computed from the current `Cc`,
+  so it equals the published endpoint only at a steady-state pre-dose trough.
+  Smania et al. fed the trough with residual error into the PD model; the
+  models use the residual-error-free `Cc` (the residual error on `Cc` has mean
+  zero, so mean responses are unaffected).
+- **Simulated regimen.** Part I prints the pediatric regimen as "7 mg/kg
+  b.i.d." and Part II as "7 mg/kg/day". The deposited trough concentrations
+  are reproduced by 3.5 mg/kg every 12 hours with `CONMED_AED = 1` and by no
+  other combination (see above), which the article uses throughout.
+- **Adjunctive-therapy covariate.** The NONMEM column `ADJ` is mapped to the
+  canonical `CONMED_AED` (1 = topiramate added to the current antiepileptic
+  treatment). The qualifying antiepileptic drugs are not listed in either
+  Smania article.
+- **Virtual cohort.** WHO sex-averaged median weight-for-age with 13%
+  log-normal scatter approximates the per-year log-normal fits Smania et al.
+  made to the WHO percentiles.
+- **Literature check.** No erratum or correction notice for either Smania
+  article was found as of 2026-11-24. The Part I article in PubMed Central is
+  a revised version noting that "some publisher errors were corrected"; its
+  supplement is the one used here.

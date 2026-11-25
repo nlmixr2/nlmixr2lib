@@ -9276,12 +9276,14 @@ navbar:
         href: articles/Bamgboye_2026_topiramate.html
       - text: "Topiramate (Lee 2024)"
         href: articles/Lee_2024_topiramate.html
-      - text: "Topiramate (Majid 2016)"
-        href: articles/Majid_2016_perampanel_concomitant_aeds.html
+      - text: "Topiramate adult (Smania 2016)"
+        href: articles/Smania_2016_topiramate.html
       - text: "Topiramate dog (Vuu 2016)"
         href: articles/Vuu_2016_topiramate_dog.html
       - text: "Topiramate mbma (Boucher 2016)"
         href: articles/Boucher_2016_landmark_mbma.html
+      - text: "Topiramate pediatric (Smania 2016)"
+        href: articles/Smania_2016_topiramate.html
       - text: "Topotecan (Leger 2004)"
         href: articles/Leger_2004_topotecan.html
       - text: "Topotecan (Roberts 2016)"
@@ -12852,6 +12854,7 @@ articles:
   - articles/Sjogren_2021_malnutrition_physiology
   - articles/Skip_2014_metal_toxicokinetics
   - articles/Sloan_2017_rifampicin
+  - articles/Smania_2016_topiramate
   - articles/Smit_2020_vancomycin
   - articles/Smit_2021_vancomycin
   - articles/Smit_2022_moxidectin

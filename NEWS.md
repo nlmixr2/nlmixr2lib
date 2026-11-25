@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mawdsley 2016 triptans model-based network meta-analysis ([doi:10.1002/psp4.12091](https://doi.org/10.1002/psp4.12091)) -- adults treating a migraine attack with one of seven oral triptans or placebo, across 70 trials.
+- Add Smania 2016 topiramate PK-PD, pediatric and adult ([doi:10.1002/psp4.12092](https://doi.org/10.1002/psp4.12092)) -- children aged 2 to <10 years and adults with treatment-refractory epilepsy on adjunctive topiramate (the Girgis 2010 model as reproduced in the Smania 2016 supplements).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
