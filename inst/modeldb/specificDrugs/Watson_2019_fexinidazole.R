@@ -36,7 +36,7 @@ Watson_2019_fexinidazole <- function() {
       ),
       source_name = "BW"
     ),
-    DIS_GHAT = list(
+    DIS_HAT_GAMBIENSE = list(
       description = paste(
         "Patient with human African trypanosomiasis caused by Trypanosoma",
         "brucei gambiense (g-HAT) indicator"
@@ -47,14 +47,14 @@ Watson_2019_fexinidazole <- function() {
       notes = paste(
         "1 = subject from the g-HAT field trials FEX004 (adults, late-stage)",
         "or FEX006 (children 6-14 years > 20 kg and adults, stage 1/2).",
-        "Scales the relative bioavailability as F = 1 + e_dis_ghat_fdepot",
+        "Scales the relative bioavailability as F = 1 + e_dis_hat_gambiense_fdepot",
         "(supplement code: F1 = TVF1 * (1 + TVHAT * HAT + TVCHAGAS * CHAGAS)).",
-        "DIS_GHAT and DIS_CHAGAS are mutually exclusive; both 0 = healthy",
+        "DIS_HAT_GAMBIENSE and DIS_CHAGAS_CHRONIC are mutually exclusive; both 0 = healthy",
         "volunteer (phase 1 FEX001-FEX003)."
       ),
       source_name = "HAT"
     ),
-    DIS_CHAGAS = list(
+    DIS_CHAGAS_CHRONIC = list(
       description = "Patient with chronic indeterminate Chagas disease indicator",
       units = "(binary)",
       type = "binary",
@@ -62,7 +62,7 @@ Watson_2019_fexinidazole <- function() {
       notes = paste(
         "1 = subject from the Bolivian dose-finding trial CH-FEX001",
         "(NCT02498782). Scales the relative bioavailability as",
-        "F = 1 + e_dis_chagas_fdepot."
+        "F = 1 + e_dis_chagas_chronic_fdepot."
       ),
       source_name = "CHAGAS"
     )
@@ -73,7 +73,12 @@ Watson_2019_fexinidazole <- function() {
     transit1 = list(analyte = "fexinidazole", units = "umol", specimen = "administration site", verified = TRUE),
     transit2 = list(analyte = "fexinidazole", units = "umol", specimen = "administration site", verified = TRUE),
     central = list(analyte = "fexinidazole sulfone (M2)", units = "umol", specimen = "plasma", verified = TRUE),
-    aulogc_central = list(analyte = "fexinidazole sulfone (M2)", units = "ln(nmol/L)*day", specimen = "not applicable", verified = TRUE)
+    auc_log_central = list(
+      analyte = "fexinidazole sulfone (M2)",
+      units = "ln(nmol/L)*day",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
@@ -123,8 +128,8 @@ Watson_2019_fexinidazole <- function() {
     lcl <- log(6.37); label("Apparent clearance of M2 at 50 kg, CL/F (L/h)") # Supplement Table 1 TH2 TVCL = 6.37 L/h/F (RSE 5.4%)
     lvc <- log(239); label("Apparent volume of M2 at 50 kg, V/F (L)") # Supplement Table 1 TH3 TVV1 = 239 L/F (RSE 6%)
     lfdepot <- fixed(log(1)); label("Relative bioavailability in healthy volunteers (unitless)") # Supplement Table 1 TH4 TVF1 = 1 FIX
-    e_dis_ghat_fdepot <- 0.956; label("Fractional increase in relative bioavailability in g-HAT patients (unitless)") # Supplement Table 1 TH5 TVHAT = 0.956 (RSE 11.7%)
-    e_dis_chagas_fdepot <- 1.55; label("Fractional increase in relative bioavailability in Chagas patients (unitless)") # Supplement Table 1 TH6 TVCHAGAS = 1.55 (RSE 14.6%)
+    e_dis_hat_gambiense_fdepot <- 0.956; label("Fractional increase in relative bioavailability in g-HAT patients (unitless)") # Supplement Table 1 TH5 TVHAT = 0.956 (RSE 11.7%)
+    e_dis_chagas_chronic_fdepot <- 1.55; label("Fractional increase in relative bioavailability in Chagas patients (unitless)") # Supplement Table 1 TH6 TVCHAGAS = 1.55 (RSE 14.6%)
     e_wt_cl <- fixed(0.75); label("Allometric exponent of body weight on CL/F (unitless)") # Supplement code: CL = TVCL * EXP(ETA(2)) * (BW/BWMED)**(0.75)
     e_wt_vc <- fixed(1); label("Allometric exponent of body weight on V/F (unitless)") # Supplement code: V1 = TVV1 * EXP(ETA(3)) * (BW/BWMED)**1
 
@@ -147,51 +152,51 @@ Watson_2019_fexinidazole <- function() {
     # intervals of ed50 (Table 2); every value below is a least-squares fit of
     # the sigmoid to the posterior-mean curve digitised from Figure 4 or 7.
     # Peak ALT / AST absolute models: log10(peak, U/L)
-    e0_log10_peak_alt <- 1.515; label("Peak ALT at zero exposure (log10 U/L)") # Fig 4 top-left mean curve, digitised (268 points)
+    e0_log10_peak_alt <- 1.515; label("Peak ALT, low-exposure asymptote (log10 U/L)") # Fig 4 top-left mean curve, digitised (268 points)
     emax_log10_peak_alt <- 0.8042; label("Maximal change in peak ALT (log10 U/L)") # Fig 4 top-left, digitised
     lauc50_log10_peak_alt <- log(261.4); label("AUlogC at half-maximal peak-ALT change (ln(nM)*day)") # Fig 4 top-left, digitised; Table 2 ALT absolute EC50 CI80 164-362
     lslope_log10_peak_alt <- -4.284; label("Log logistic slope of the peak-ALT curve (log of 1/(ln(nM)*day))") # Fig 4 top-left, digitised
-    e0_log10_peak_ast <- 1.540; label("Peak AST at zero exposure (log10 U/L)") # Fig 4 bottom-left mean curve, digitised (278 points)
+    e0_log10_peak_ast <- 1.540; label("Peak AST, low-exposure asymptote (log10 U/L)") # Fig 4 bottom-left mean curve, digitised (278 points)
     emax_log10_peak_ast <- 0.6182; label("Maximal change in peak AST (log10 U/L)") # Fig 4 bottom-left, digitised
     lauc50_log10_peak_ast <- log(307.4); label("AUlogC at half-maximal peak-AST change (ln(nM)*day)") # Fig 4 bottom-left, digitised; Table 2 AST absolute EC50 CI80 244-371
     lslope_log10_peak_ast <- -3.873; label("Log logistic slope of the peak-AST curve (log of 1/(ln(nM)*day))") # Fig 4 bottom-left, digitised
     # Peak ALT / AST relative models: log2(peak / baseline)
-    e0_log2_peak_alt_fold <- 0.01828; label("Peak ALT fold change at zero exposure (log2)") # Fig 4 top-right mean curve, digitised (246 points)
+    e0_log2_peak_alt_fold <- 0.01828; label("Peak ALT fold change, low-exposure asymptote (log2)") # Fig 4 top-right mean curve, digitised (246 points)
     emax_log2_peak_alt_fold <- 4.068; label("Maximal change in peak ALT fold change (log2)") # Fig 4 top-right, digitised
     lauc50_log2_peak_alt_fold <- log(275.9); label("AUlogC at half-maximal ALT fold change (ln(nM)*day)") # Fig 4 top-right, digitised; Table 2 ALT relative EC50 CI80 119-371
     lslope_log2_peak_alt_fold <- -4.942; label("Log logistic slope of the ALT fold-change curve (log of 1/(ln(nM)*day))") # Fig 4 top-right, digitised
-    e0_log2_peak_ast_fold <- 0.7527; label("Peak AST fold change at zero exposure (log2)") # Fig 4 bottom-right mean curve, digitised (251 points)
+    e0_log2_peak_ast_fold <- 0.7527; label("Peak AST fold change, low-exposure asymptote (log2)") # Fig 4 bottom-right mean curve, digitised (251 points)
     emax_log2_peak_ast_fold <- 2.378; label("Maximal change in peak AST fold change (log2)") # Fig 4 bottom-right, digitised
     lauc50_log2_peak_ast_fold <- log(351.5); label("AUlogC at half-maximal AST fold change (ln(nM)*day)") # Fig 4 bottom-right, digitised; Table 2 AST relative EC50 CI80 256-396
     lslope_log2_peak_ast_fold <- -3.848; label("Log logistic slope of the AST fold-change curve (log of 1/(ln(nM)*day))") # Fig 4 bottom-right, digitised
     # Nadir haematology absolute models
-    e0_nadir_neutrophil_count <- 2.293; label("Nadir neutrophil count at zero exposure (10^3/uL)") # Fig 7 row 1 left mean curve, digitised (237 points)
+    e0_nadir_neutrophil_count <- 2.293; label("Nadir neutrophil count, low-exposure asymptote (10^3/uL)") # Fig 7 row 1 left mean curve, digitised (237 points)
     emax_nadir_neutrophil_count <- -1.815; label("Maximal change in nadir neutrophil count (10^3/uL)") # Fig 7 row 1 left, digitised
     lauc50_nadir_neutrophil_count <- log(299.2); label("AUlogC at half-maximal nadir-neutrophil change (ln(nM)*day)") # Fig 7 row 1 left, digitised; Table 2 neutrophils absolute EC50 CI80 262-342
     lslope_nadir_neutrophil_count <- -3.676; label("Log logistic slope of the nadir-neutrophil curve (log of 1/(ln(nM)*day))") # Fig 7 row 1 left, digitised
-    e0_nadir_platelet_count <- 246.0; label("Nadir platelet count at zero exposure (10^3/uL)") # Fig 7 row 2 left mean curve, digitised (254 points)
+    e0_nadir_platelet_count <- 246.0; label("Nadir platelet count, low-exposure asymptote (10^3/uL)") # Fig 7 row 2 left mean curve, digitised (254 points)
     emax_nadir_platelet_count <- -115.0; label("Maximal change in nadir platelet count (10^3/uL)") # Fig 7 row 2 left, digitised
     lauc50_nadir_platelet_count <- log(310.7); label("AUlogC at half-maximal nadir-platelet change (ln(nM)*day)") # Fig 7 row 2 left, digitised; Table 2 platelets absolute EC50 CI80 146-240 (see vignette)
     lslope_nadir_platelet_count <- -4.611; label("Log logistic slope of the nadir-platelet curve (log of 1/(ln(nM)*day))") # Fig 7 row 2 left, digitised
-    e0_nadir_lymphocyte_count <- 1.491; label("Nadir lymphocyte count at zero exposure (10^3/uL)") # Fig 7 row 3 left mean curve, digitised (261 points)
+    e0_nadir_lymphocyte_count <- 1.491; label("Nadir lymphocyte count, low-exposure asymptote (10^3/uL)") # Fig 7 row 3 left mean curve, digitised (261 points)
     emax_nadir_lymphocyte_count <- -0.2232; label("Maximal change in nadir lymphocyte count (10^3/uL)") # Fig 7 row 3 left, digitised
     lauc50_nadir_lymphocyte_count <- log(829.6); label("AUlogC at half-maximal nadir-lymphocyte change (ln(nM)*day)") # Fig 7 row 3 left, digitised; Table 2 lymphocytes absolute EC50 CI80 74-1,304
     lslope_nadir_lymphocyte_count <- -6.096; label("Log logistic slope of the nadir-lymphocyte curve (log of 1/(ln(nM)*day))") # Fig 7 row 3 left, digitised
     e0_nadir_hb <- 14.03; label("Nadir hemoglobin, exposure-independent (g/dL)") # Fig 7 row 4 left mean curve, digitised (235 points), flat to within one pixel
     # Nadir haematology relative models: 100 * (nadir - baseline) / baseline
-    e0_nadir_neutrophil_pct_change <- 7.396; label("Nadir neutrophil change from baseline at zero exposure (%)") # Fig 7 row 1 right mean curve, digitised (237 points)
+    e0_nadir_neutrophil_pct_change <- 7.396; label("Nadir neutrophil change from baseline, low-exposure asymptote (%)") # Fig 7 row 1 right mean curve, digitised (237 points)
     emax_nadir_neutrophil_pct_change <- -45.53; label("Maximal change in nadir neutrophil percent change (%)") # Fig 7 row 1 right, digitised
     lauc50_nadir_neutrophil_pct_change <- log(273.7); label("AUlogC at half-maximal neutrophil percent change (ln(nM)*day)") # Fig 7 row 1 right, digitised; Table 2 neutrophils relative EC50 CI80 208-352
     lslope_nadir_neutrophil_pct_change <- -3.521; label("Log logistic slope of the neutrophil percent-change curve (log of 1/(ln(nM)*day))") # Fig 7 row 1 right, digitised
-    e0_nadir_platelet_pct_change <- -11.67; label("Nadir platelet change from baseline at zero exposure (%)") # Fig 7 row 2 right mean curve, digitised (248 points)
+    e0_nadir_platelet_pct_change <- -11.67; label("Nadir platelet change from baseline, low-exposure asymptote (%)") # Fig 7 row 2 right mean curve, digitised (248 points)
     emax_nadir_platelet_pct_change <- -31.03; label("Maximal change in nadir platelet percent change (%)") # Fig 7 row 2 right, digitised
     lauc50_nadir_platelet_pct_change <- log(219.0); label("AUlogC at half-maximal platelet percent change (ln(nM)*day)") # Fig 7 row 2 right, digitised; Table 2 platelets relative EC50 CI80 199-240
     lslope_nadir_platelet_pct_change <- -3.101; label("Log logistic slope of the platelet percent-change curve (log of 1/(ln(nM)*day))") # Fig 7 row 2 right, digitised
-    e0_nadir_lymphocyte_pct_change <- -20.50; label("Nadir lymphocyte change from baseline at zero exposure (%)") # Fig 7 row 3 right mean curve, digitised (227 points)
+    e0_nadir_lymphocyte_pct_change <- -20.50; label("Nadir lymphocyte change from baseline, low-exposure asymptote (%)") # Fig 7 row 3 right mean curve, digitised (227 points)
     emax_nadir_lymphocyte_pct_change <- -16.37; label("Maximal change in nadir lymphocyte percent change (%)") # Fig 7 row 3 right, digitised
     lauc50_nadir_lymphocyte_pct_change <- log(211.8); label("AUlogC at half-maximal lymphocyte percent change (ln(nM)*day)") # Fig 7 row 3 right, digitised; Table 2 lymphocytes relative EC50 CI80 163-396
     lslope_nadir_lymphocyte_pct_change <- -2.993; label("Log logistic slope of the lymphocyte percent-change curve (log of 1/(ln(nM)*day))") # Fig 7 row 3 right, digitised
-    e0_nadir_hb_pct_change <- -8.865; label("Nadir hemoglobin change from baseline at zero exposure (%)") # Fig 7 row 4 right mean curve, digitised (237 points)
+    e0_nadir_hb_pct_change <- -8.865; label("Nadir hemoglobin change from baseline, low-exposure asymptote (%)") # Fig 7 row 4 right mean curve, digitised (237 points)
     emax_nadir_hb_pct_change <- -5.093; label("Maximal change in nadir hemoglobin percent change (%)") # Fig 7 row 4 right, digitised
     lauc50_nadir_hb_pct_change <- log(303.8); label("AUlogC at half-maximal hemoglobin percent change (ln(nM)*day)") # Fig 7 row 4 right, digitised; Table 2 hemoglobin relative EC50 CI80 137-842
     lslope_nadir_hb_pct_change <- -3.752; label("Log logistic slope of the hemoglobin percent-change curve (log of 1/(ln(nM)*day))") # Fig 7 row 4 right, digitised
@@ -211,7 +216,7 @@ Watson_2019_fexinidazole <- function() {
     d/dt(central) <- ktr * transit2 - kel * central
 
     # F1 = TVF1 * (1 + TVHAT * HAT + TVCHAGAS * CHAGAS) * EXP(ETA(4))
-    f(depot) <- exp(lfdepot + etalfdepot) * (1 + e_dis_ghat_fdepot * DIS_GHAT + e_dis_chagas_fdepot * DIS_CHAGAS)
+    f(depot) <- exp(lfdepot + etalfdepot) * (1 + e_dis_hat_gambiense_fdepot * DIS_HAT_GAMBIENSE + e_dis_chagas_chronic_fdepot * DIS_CHAGAS_CHRONIC)
 
     Cc <- central / vc
 
@@ -221,22 +226,22 @@ Watson_2019_fexinidazole <- function() {
     # against Figure 2.
     cc_nmol <- Cc * 1000
     lncc_pos <- log(max(cc_nmol, 1))
-    d/dt(aulogc_central) <- lncc_pos / 24
+    d/dt(auc_log_central) <- lncc_pos / 24
 
     # Exposure-response curves (Methods Eq. 1); each output is the typical
     # (posterior-mean) summary outcome for the cumulative AUlogC reached so far.
-    log10_peak_alt <- e0_log10_peak_alt + emax_log10_peak_alt / (1 + exp(-exp(lslope_log10_peak_alt) * (aulogc_central - exp(lauc50_log10_peak_alt))))
-    log10_peak_ast <- e0_log10_peak_ast + emax_log10_peak_ast / (1 + exp(-exp(lslope_log10_peak_ast) * (aulogc_central - exp(lauc50_log10_peak_ast))))
-    log2_peak_alt_fold <- e0_log2_peak_alt_fold + emax_log2_peak_alt_fold / (1 + exp(-exp(lslope_log2_peak_alt_fold) * (aulogc_central - exp(lauc50_log2_peak_alt_fold))))
-    log2_peak_ast_fold <- e0_log2_peak_ast_fold + emax_log2_peak_ast_fold / (1 + exp(-exp(lslope_log2_peak_ast_fold) * (aulogc_central - exp(lauc50_log2_peak_ast_fold))))
-    nadir_neutrophil_count <- e0_nadir_neutrophil_count + emax_nadir_neutrophil_count / (1 + exp(-exp(lslope_nadir_neutrophil_count) * (aulogc_central - exp(lauc50_nadir_neutrophil_count))))
-    nadir_platelet_count <- e0_nadir_platelet_count + emax_nadir_platelet_count / (1 + exp(-exp(lslope_nadir_platelet_count) * (aulogc_central - exp(lauc50_nadir_platelet_count))))
-    nadir_lymphocyte_count <- e0_nadir_lymphocyte_count + emax_nadir_lymphocyte_count / (1 + exp(-exp(lslope_nadir_lymphocyte_count) * (aulogc_central - exp(lauc50_nadir_lymphocyte_count))))
+    log10_peak_alt <- e0_log10_peak_alt + emax_log10_peak_alt / (1 + exp(-exp(lslope_log10_peak_alt) * (auc_log_central - exp(lauc50_log10_peak_alt))))
+    log10_peak_ast <- e0_log10_peak_ast + emax_log10_peak_ast / (1 + exp(-exp(lslope_log10_peak_ast) * (auc_log_central - exp(lauc50_log10_peak_ast))))
+    log2_peak_alt_fold <- e0_log2_peak_alt_fold + emax_log2_peak_alt_fold / (1 + exp(-exp(lslope_log2_peak_alt_fold) * (auc_log_central - exp(lauc50_log2_peak_alt_fold))))
+    log2_peak_ast_fold <- e0_log2_peak_ast_fold + emax_log2_peak_ast_fold / (1 + exp(-exp(lslope_log2_peak_ast_fold) * (auc_log_central - exp(lauc50_log2_peak_ast_fold))))
+    nadir_neutrophil_count <- e0_nadir_neutrophil_count + emax_nadir_neutrophil_count / (1 + exp(-exp(lslope_nadir_neutrophil_count) * (auc_log_central - exp(lauc50_nadir_neutrophil_count))))
+    nadir_platelet_count <- e0_nadir_platelet_count + emax_nadir_platelet_count / (1 + exp(-exp(lslope_nadir_platelet_count) * (auc_log_central - exp(lauc50_nadir_platelet_count))))
+    nadir_lymphocyte_count <- e0_nadir_lymphocyte_count + emax_nadir_lymphocyte_count / (1 + exp(-exp(lslope_nadir_lymphocyte_count) * (auc_log_central - exp(lauc50_nadir_lymphocyte_count))))
     nadir_hb <- e0_nadir_hb
-    nadir_neutrophil_pct_change <- e0_nadir_neutrophil_pct_change + emax_nadir_neutrophil_pct_change / (1 + exp(-exp(lslope_nadir_neutrophil_pct_change) * (aulogc_central - exp(lauc50_nadir_neutrophil_pct_change))))
-    nadir_platelet_pct_change <- e0_nadir_platelet_pct_change + emax_nadir_platelet_pct_change / (1 + exp(-exp(lslope_nadir_platelet_pct_change) * (aulogc_central - exp(lauc50_nadir_platelet_pct_change))))
-    nadir_lymphocyte_pct_change <- e0_nadir_lymphocyte_pct_change + emax_nadir_lymphocyte_pct_change / (1 + exp(-exp(lslope_nadir_lymphocyte_pct_change) * (aulogc_central - exp(lauc50_nadir_lymphocyte_pct_change))))
-    nadir_hb_pct_change <- e0_nadir_hb_pct_change + emax_nadir_hb_pct_change / (1 + exp(-exp(lslope_nadir_hb_pct_change) * (aulogc_central - exp(lauc50_nadir_hb_pct_change))))
+    nadir_neutrophil_pct_change <- e0_nadir_neutrophil_pct_change + emax_nadir_neutrophil_pct_change / (1 + exp(-exp(lslope_nadir_neutrophil_pct_change) * (auc_log_central - exp(lauc50_nadir_neutrophil_pct_change))))
+    nadir_platelet_pct_change <- e0_nadir_platelet_pct_change + emax_nadir_platelet_pct_change / (1 + exp(-exp(lslope_nadir_platelet_pct_change) * (auc_log_central - exp(lauc50_nadir_platelet_pct_change))))
+    nadir_lymphocyte_pct_change <- e0_nadir_lymphocyte_pct_change + emax_nadir_lymphocyte_pct_change / (1 + exp(-exp(lslope_nadir_lymphocyte_pct_change) * (auc_log_central - exp(lauc50_nadir_lymphocyte_pct_change))))
+    nadir_hb_pct_change <- e0_nadir_hb_pct_change + emax_nadir_hb_pct_change / (1 + exp(-exp(lslope_nadir_hb_pct_change) * (auc_log_central - exp(lauc50_nadir_hb_pct_change))))
 
     Cc ~ lnorm(expSd)
   })

@@ -3166,6 +3166,8 @@ navbar:
         href: articles/Sano_2023_fesoterodine.html
       - text: "Fesoterodine mcc (Sano 2023)"
         href: articles/Sano_2023_fesoterodine.html
+      - text: "Fexinidazole (Watson 2019)"
+        href: articles/Watson_2019_fexinidazole.html
       - text: "Fexofenadine (Gaspar 2025)"
         href: articles/Gaspar_2025_fexofenadine.html
       - text: "Fexuprazan pbpk (Jeong 2021)"
@@ -12133,6 +12135,7 @@ articles:
   - articles/Wassef_2026_cefazolin
   - articles/Waterhouse_2024_vedolizumab
   - articles/Watson_2010_liraglutide
+  - articles/Watson_2019_fexinidazole
   - articles/Watson_2019_tapentadol
   - articles/Watt_2015_fluconazole
   - articles/Watt_2026_methadone

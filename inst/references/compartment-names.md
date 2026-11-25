@@ -69,6 +69,13 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Example models:** `Beguin_2024_carboplatin_dog.R`, `Beguin_2024_carboplatin_thrombocytopenia_dog.R`, `Cantillon_2018_brilaroxazine.R`, `Assmus_2025_benznidazole_qpcr.R`, `Aoki_2024_intratarget_microdosing_pbpk.R`, `Jones_2019_mab_human_pbpk.R`.
 - **Notes:** Record the units in `compartmentData` as concentration x time (`ug*h/L`, `umol*h/L`), never the dosing amount. An accumulator over a different concentration takes that concentration's qualifier (`auc_plasma`, `auc_free`, `auc_int_tumor`); a windowed AUC (`auc_0_24`, `auc_8_16`) is not cumulative from time zero and is not this state. Several models listed above declare `auc_central` in `paper_specific_compartments`, which predates this entry.
 
+### auc_log_central (**canonical cumulative area under the log-concentration curve accumulator**)
+- **Type:** compartment
+- **Role:** Integrator state carrying the cumulative area under the NATURAL-LOG central concentration curve from time zero, the "AUlogC" exposure metric: `d/dt(auc_log_central) <- log(max(Cc_conv, 1)) / tscale`, where `Cc_conv` is the central concentration in the unit the source takes the logarithm in and `tscale` converts the model time unit to the source's AUlogC time unit. The `max(..., 1)` truncation integrates only the positive part of `ln C`, so the accumulator never decreases and stops growing once the concentration falls below 1 unit. A bookkeeping output with no volume and no outflow, like `auc_central`.
+- **Source aliases:** `AUlogC`, "total cumulative AUlogC", "area under the log plasma concentration-time curve" (Watson 2019).
+- **Example models:** `Watson_2019_fexinidazole.R` (founding example; ln of the fexinidazole sulfone M2 concentration in nmol/L, integrated in days, so units ln(nmol/L)*day. Watson 2019 does not print the formula; the truncation at 1 nmol/L and the day time unit were reconstructed and checked against the paper's Figure 2 and its statement that 400 mg/kg corresponds to an AUlogC of about 300 -- see that model's vignette).
+- **Notes:** Distinct from `auc_central`, which integrates the LINEAR concentration: the two differ by orders of magnitude and are not interchangeable as the driver of an exposure-response curve. The value depends on the concentration unit inside the logarithm (changing from nmol/L to umol/L shifts every `ln C` by `ln 1000` and moves where the truncation bites), so record that unit and the time unit in `compartmentData` and in the model's comments. Named in the `auc_` family so it sorts beside `auc_central`; the `_log` qualifier names the transform of the integrand.
+
 ### presystemic (**canonical pre-systemic first-pass compartment**)
 - **Type:** compartment
 - **Role:** Pre-systemic (gut-wall / portal) compartment for oral models that resolve first-pass metabolism as an explicit structural step rather than folding it into bioavailability. Absorbed drug lands here first and then drains by two or more competing first-order routes -- typically intact parent onward to the parent's `central` compartment, and pre-systemically formed metabolite directly into the metabolite's `central_<metab>` compartment -- so the pre-systemic and systemic metabolite-formation pathways are separately identifiable. Every absorption arm (zero-order, first-order, transit) delivers into this state rather than into `central`.
@@ -2393,7 +2400,49 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Role:** Per-subject scalar endpoint: the lowest absolute lymphocyte count (ALC) observed at any time after the first dose, in 10^3 cells/uL. Used as the observation variable of exposure-response models that relate one exposure metric per subject (an average concentration on day 1 after a single dose, or on the last day of a repeated-dose regimen) to the lymphocyte sequestration produced by sphingosine-1-phosphate receptor modulators. One observation per subject and no ODE state.
 - **Source aliases:** `nALC` (Bihorel 2021) -- translate to `nadir_lymphocyte_count`.
 - **Example models:** `Bihorel_2021_BMS986166_nalc_sd.R`, `Bihorel_2021_BMS986166_nalc_md.R` (founding examples; ALC0 x (1 - Delta_placebo) x (1 - Imax x Cavg^h / (IC50^h + Cavg^h)) after a single dose and after 28 days of once-daily dosing).
-- **Notes:** A nadir summary, not a lymphocyte-count time course: a longitudinal circulating-lymphocyte state belongs in `circ` (or `circ_<celltype>`) or `lymph`-type turnover models. The maintainers ratified the spelled-out `lymphocyte_count` (2026-10-02) over the laboratory abbreviation `alc`, so the name reads without a lookup; it is still the ABSOLUTE count (10^3 cells/uL), not a percentage of white cells.
+- **Notes:** A nadir summary, not a lymphocyte-count time course: a longitudinal circulating-lymphocyte state belongs in `circ` (or `circ_<celltype>`) or `lymph`-type turnover models. The maintainers ratified the spelled-out `lymphocyte_count` (2026-10-02) over the laboratory abbreviation `alc`, so the name reads without a lookup; it is still the ABSOLUTE count (10^3 cells/uL), not a percentage of white cells. `Watson_2019_fexinidazole.R` also uses it, as one of twelve sigmoid exposure-response outputs of cumulative fexinidazole sulfone AUlogC (`auc_log_central`) in chronic Chagas patients; there the nadir is the lowest count over the whole follow-up rather than over a fixed window.
+
+### nadir_neutrophil_count (**canonical nadir absolute neutrophil count**)
+- **Type:** compartment
+- **Role:** Per-subject scalar endpoint: the lowest absolute neutrophil count observed after the start of treatment, in 10^3 cells/uL. The observation variable of an exposure-response model that relates one exposure summary per subject to delayed drug-induced neutropenia. One value per subject and no ODE state; when the model computes it as an algebraic function of an accumulating exposure state, the value at the end of the simulated course is the prediction.
+- **Source aliases:** `nadir_neutrophils` (Watson 2019 supplement Stan code), "nadir observed blood neutrophil counts".
+- **Example models:** `Watson_2019_fexinidazole.R` (founding example; four-parameter sigmoid of cumulative fexinidazole sulfone AUlogC).
+- **Notes:** Spelled out per the `nadir_lymphocyte_count` ruling rather than built on the registered `ANC` abbreviation. A nadir summary, not a neutrophil time course: longitudinal neutrophil states belong in the Friberg myelosuppression chain (`circ`, `prol`, `transit<n>`). Distinct from `nadir_neutrophil_pct_change`, the relative version.
+
+### nadir_platelet_count (**canonical nadir absolute platelet count**)
+- **Type:** compartment
+- **Role:** Per-subject scalar endpoint: the lowest absolute platelet count observed after the start of treatment, in 10^3 cells/uL. Observation variable of an exposure-response model of drug-induced thrombocytopenia; one value per subject, no ODE state.
+- **Source aliases:** `nadir_platelets` (Watson 2019 supplement Stan code).
+- **Example models:** `Watson_2019_fexinidazole.R` (founding example).
+- **Notes:** Spelled out per the `nadir_lymphocyte_count` ruling rather than built on the registered `PLT` abbreviation. A longitudinal platelet state belongs in a Friberg-type chain; this is the per-subject summary. Distinct from `nadir_platelet_pct_change`.
+
+### nadir_hb (**canonical nadir hemoglobin concentration**)
+- **Type:** compartment
+- **Role:** Per-subject scalar endpoint: the lowest blood hemoglobin concentration observed after the start of treatment, in g/dL. One value per subject, no ODE state.
+- **Source aliases:** `nadir_hb` (Watson 2019 supplement Stan code).
+- **Example models:** `Watson_2019_fexinidazole.R` (founding example; exposure-independent in the published fit, so it is a constant).
+- **Notes:** Built on the registered `hb` (hemoglobin) rather than spelled out, because `hb` is itself the registered canonical for the quantity. Distinct from `nadir_hb_pct_change`.
+
+### nadir_neutrophil_pct_change, nadir_platelet_pct_change, nadir_lymphocyte_pct_change, nadir_hb_pct_change (**canonical nadir percent change from baseline of a blood count**)
+- **Type:** compartment
+- **Role:** Per-subject scalar endpoint: the nadir value of a blood count expressed as a signed percent change from the subject's own baseline, `100 * (nadir - baseline) / baseline`, negative for a fall. One value per subject, no ODE state. Normalising by the individual baseline removes between-subject (and between-population, e.g. Duffy-null) differences in the steady-state count, which is why Watson 2019 used only these relative models when predicting toxicity in a second population.
+- **Source aliases:** `100*delta_nt/baseline_neut`, `100*delta_pl/baseline_plat`, `100*delta_ly/baseline_lypm`, `100*delta_hb/baseline_hb` (Watson 2019 supplement Stan code); "maximum observed relative percent decrease" (Watson 2019 Figure 7).
+- **Example models:** `Watson_2019_fexinidazole.R` (founding example; four sigmoid exposure-response curves of cumulative fexinidazole sulfone AUlogC; the baseline is the mean of the pre-treatment and day-0 values).
+- **Notes:** The sign convention is load-bearing: these are signed changes (`-40` = a 40% fall), not positive "percent reductions", even where a source labels its axis "relative reduction". Record in the model how the baseline was defined. The cell-type token follows the absolute siblings (`nadir_neutrophil_count`, `nadir_platelet_count`, `nadir_lymphocyte_count`, `nadir_hb`).
+
+### log10_peak_alt, log10_peak_ast (**canonical log10 peak liver transaminase**)
+- **Type:** compartment
+- **Role:** Per-subject scalar endpoint: base-10 logarithm of the highest serum alanine (ALT) or aspartate (AST) aminotransferase activity observed after the start of treatment, with the activity in U/L. Observation variable of an exposure-response model of drug-induced liver injury; one value per subject, no ODE state.
+- **Source aliases:** `log10(liver_summary$peak_ALT)`, `log10(liver_summary$peak_AST)` (Watson 2019 supplement Stan code).
+- **Example models:** `Watson_2019_fexinidazole.R` (founding example).
+- **Notes:** Kept on the log10 scale the source modelled, like `log10_viral_load`, so the sigmoid parameters keep their published meaning; `10^log10_peak_alt` gives U/L. Distinct from the registered time-varying transaminase states and from `lnalt` (a natural-log ALT time course): this is a per-subject peak.
+
+### log2_peak_alt_fold, log2_peak_ast_fold (**canonical log2 peak fold change from baseline of a liver transaminase**)
+- **Type:** compartment
+- **Role:** Per-subject scalar endpoint: base-2 logarithm of the ratio of the peak post-treatment ALT or AST activity to the subject's own baseline, `log2(peak / baseline)`, so 0 = no rise and 1 = a doubling. One value per subject, no ODE state.
+- **Source aliases:** `log2(liver_summary$peak_ALT/liver_summary$baseline_ALT)` and the AST equivalent (Watson 2019 supplement Stan code); "peak observed fold changes from the baseline" (Watson 2019 Figure 4).
+- **Example models:** `Watson_2019_fexinidazole.R` (founding example).
+- **Notes:** Kept on the log2 scale the source modelled. Distinct from `log10_peak_alt` / `log10_peak_ast`, the absolute peaks; the fold-change form removes between-subject baseline differences.
 
 ### calcineurin_pct_above_nadir (**canonical calcineurin activity relative to the within-subject nadir**)
 - **Type:** compartment

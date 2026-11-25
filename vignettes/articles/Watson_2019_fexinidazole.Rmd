@@ -1,0 +1,692 @@
+---
+title: "Fexinidazole (Watson 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fexinidazole (Watson 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Watson_2019_fexinidazole"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Watson_2019_fexinidazole"))$description`
+* Article: <https://doi.org/10.1128/AAC.02515-18> (open access, PMC6496162)
+* Supplement (NONMEM control stream, Table S1 final estimates, Stan code):
+  <https://doi.org/10.1128/AAC.02515-18>
+
+Fexinidazole is an oral nitroimidazole for Gambian sleeping sickness (g-HAT).
+It is metabolised to a sulfoxide (M1) and a slowly eliminated sulfone (M2),
+which carries most of the bioactive exposure. Watson et al. fitted a
+population PK model of M2 to 462 subjects and then related each subject's
+cumulative exposure, summarised as the area under the natural-log M2
+concentration-time curve (AUlogC), to the delayed neutropenia,
+thrombocytopenia and transaminase rises seen in a dose-finding trial in
+chronic Chagas disease. The packaged model carries both layers: the M2 PK
+model, an `auc_log_central` state that integrates AUlogC during the solve,
+and twelve four-parameter sigmoid exposure-response curves driven by that
+state.
+
+# Population
+
+The PK model was fitted to more than 4,500 M2 concentrations from six trials
+(Watson 2019 Table 1):
+
+* phase 1 healthy male volunteers of sub-Saharan African origin in France --
+  FEX001 (71; single doses of 100-3,600 mg and 14 daily doses of
+  1,200-3,600 mg), FEX002 (12; food effect) and FEX003 (22; 10-day loading
+  regimens);
+* g-HAT patients in the Democratic Republic of Congo and the Central African
+  Republic -- FEX004 (203 adults with late-stage disease; 1,800 mg daily for
+  4 days then 1,200 mg daily for 6 days) and FEX006 (114 children 6-14 years
+  weighing > 20 kg, on 1,200 then 600 mg below 35 kg, and the adult regimen
+  above);
+* chronic indeterminate Chagas disease patients in Bolivia -- CH-FEX001 (40;
+  1,200 or 1,800 mg daily for 2, 4 or 8 weeks).
+
+156 of the 462 subjects (34%) were female. Phase 1 samples were plasma; field
+samples were dried capillary blood spots (M2 blood:plasma ratio 0.97). The
+twelve exposure-response curves were fitted to the 40 fexinidazole-treated
+Chagas patients only.
+
+```{r population}
+str(readModelDb("Watson_2019_fexinidazole")()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment in
+`inst/modeldb/specificDrugs/Watson_2019_fexinidazole.R`. The table collects
+them.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lmtt` (MTT) | log(5.65 h) | Supplement Table 1, TH1 TVMT |
+| `lcl` (CL/F at 50 kg) | log(6.37 L/h) | Supplement Table 1, TH2 TVCL |
+| `lvc` (V/F at 50 kg) | log(239 L) | Supplement Table 1, TH3 TVV1 |
+| `lfdepot` | log(1), fixed | Supplement Table 1, TH4 TVF1 (FIX) |
+| `e_dis_hat_gambiense_fdepot` | 0.956 | Supplement Table 1, TH5 TVHAT |
+| `e_dis_chagas_chronic_fdepot` | 1.55 | Supplement Table 1, TH6 TVCHAGAS |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | Supplement section 2.1 `$PK` (`(BW/BWMED)**(0.75)`, `**1`, `BWMED = 50`) |
+| `etalmtt`, `etalcl`, `etalvc`, `etalfdepot` | 0.129, 0.0143, 0.0419, 0.152 | Supplement Table 1, OM1-OM4 |
+| `expSd` | 0.391 | Supplement Table 1, SI1, applied as an SD (see below) |
+| Depot -> 2 transits -> central, `ktr = 3 / mtt` | -- | Supplement section 2.1 (`ADVAN5`, `NN = 2`, `KTR = (NN+1)/MT`) |
+| `f(depot) = exp(lfdepot + eta) * (1 + 0.956 HAT + 1.55 CHAGAS)` | -- | Supplement section 2.1 `F1 = ...` |
+| `Cc ~ lnorm(expSd)` | -- | Supplement section 2.1 `$ERROR` (`Y = LOG(IPRED) + W*ERR(1)`) |
+| `d/dt(auc_log_central) = log(max(Cc_nM, 1)) / 24` | -- | Methods "AUlogC to quantify drug exposure"; definition reconstructed and checked against Figure 2 (below) |
+| Sigmoid outputs `e0 + emax / (1 + exp(-exp(lslope) * (AUlogC - auc50)))` | -- | Methods Eq. 1 and the supplement Stan `sigmoid()` function |
+| `e0_*`, `emax_*`, `lauc50_*`, `lslope_*` | 11 curves | Digitised by the maintainers from the posterior-mean curves of Figures 4 and 7; midpoints compared with Table 2 below |
+| `e0_nadir_hb` | 14.03 g/dL | Figure 7 hemoglobin nadir panel: the posterior-mean curve is flat |
+
+# Dosing helpers
+
+Doses are entered in micromoles of fexinidazole (MW 279.31 g/mol,
+C12H13N3O3S), because the NONMEM model was fitted to molar M2 concentrations
+with no scaling factor (`S2 = V1`); `Cc` is the M2 concentration in umol/L.
+
+```{r helpers}
+mw_fexinidazole <- 279.31
+mg_to_umol <- function(mg) mg * 1000 / mw_fexinidazole
+
+# One block of subjects on a once-daily regimen (`daily_mg`, one entry per
+# day). Observations at time 0 and 40 days after the last dose, by which
+# time M2 is far below 1 nmol/L and AUlogC has stopped accumulating.
+make_regimen <- function(study, arm, n, wt, daily_mg, ghat, chagas, id_offset) {
+  ids <- id_offset + seq_len(n)
+  t_end <- 24 * (length(daily_mg) - 1) + 24 * 40
+  doses <- tidyr::expand_grid(id = ids, k = seq_along(daily_mg)) |>
+    mutate(time = 24 * (k - 1), amt = mg_to_umol(daily_mg[k]), evid = 1L, cmt = "depot") |>
+    select(-k)
+  obs <- tidyr::expand_grid(id = ids, time = c(0, t_end)) |>
+    mutate(amt = 0, evid = 0L, cmt = "central")
+  covs <- tibble(
+    id = ids, WT = wt, DIS_HAT_GAMBIENSE = ghat, DIS_CHAGAS_CHRONIC = chagas,
+    study = study, arm = arm, total_mgkg = sum(daily_mg) / wt
+  )
+  bind_rows(doses, obs) |>
+    left_join(covs, by = "id") |>
+    arrange(id, time, desc(evid))
+}
+
+ghat_adult <- c(rep(1800, 4), rep(1200, 6))
+ghat_child <- c(rep(1200, 4), rep(600, 6))
+```
+
+# Typical-value exposure (AUlogC) and Figure 2
+
+Watson 2019 does not print the AUlogC formula. The packaged model integrates
+`ln(C)` with `C` in nmol/L, counts only the time the concentration is above
+1 nmol/L (where `ln C > 0`), and reports the area in days. Three anchors in
+the paper pin that reading down: the g-HAT cluster of Figure 2 sits at about
+195, the healthy-volunteer 100 mg single doses form the floor of Figure 2 at
+about 40, and the Discussion states that a total dose of about 400 mg/kg
+corresponds to an AUlogC of about 300.
+
+```{r typical-auc}
+mod <- readModelDb("Watson_2019_fexinidazole")
+mod_typ <- rxode2::zeroRe(mod)
+
+typ_cases <- bind_rows(
+  make_regimen("g-HAT", "Adult regimen, 50 kg", 1, 50, ghat_adult, 1, 0, 0L),
+  make_regimen("g-HAT", "Child regimen, 25 kg", 1, 25, ghat_child, 1, 0, 1L),
+  make_regimen("Healthy volunteer", "100 mg single dose, 70 kg", 1, 70, 100, 0, 0, 2L),
+  make_regimen("Healthy volunteer", "1,800/1,200 mg 10-day, 70 kg", 1, 70, ghat_adult, 0, 0, 3L),
+  make_regimen("Chagas", "1,200 mg x 2 weeks, 65 kg", 1, 65, rep(1200, 14), 0, 1, 4L),
+  make_regimen("Chagas", "1,200 mg x 8 weeks, 65 kg", 1, 65, rep(1200, 56), 0, 1, 5L),
+  make_regimen("Chagas", "1,800 mg x 8 weeks, 65 kg", 1, 65, rep(1800, 56), 0, 1, 6L)
+)
+typ_sim <- rxode2::rxSolve(mod_typ, events = typ_cases, keep = c("study", "arm", "total_mgkg")) |>
+  as.data.frame()
+typ_auc <- typ_sim |>
+  group_by(id, study, arm, total_mgkg) |>
+  summarise(AUlogC = max(auc_log_central), .groups = "drop")
+typ_auc |>
+  select(-id) |>
+  mutate(total_mgkg = round(total_mgkg), AUlogC = round(AUlogC)) |>
+  rename(Population = study, Regimen = arm, "Total dose (mg/kg)" = total_mgkg) |>
+  knitr::kable()
+
+auc_of <- function(lbl) {
+  v <- typ_auc$AUlogC[typ_auc$arm == lbl]
+  if (length(v) != 1L) stop("no unique typical case '", lbl, "'")
+  v
+}
+stopifnot(
+  # Figure 2: g-HAT adults cluster at about 195.
+  abs(auc_of("Adult regimen, 50 kg") - 195) < 15,
+  # Figure 2: the 100 mg single doses form the floor at about 40.
+  abs(auc_of("100 mg single dose, 70 kg") - 40) < 8
+)
+```
+
+The ODE accumulator is checked against an independent trapezoidal
+integration of the same solved concentrations on an hourly grid:
+
+```{r trapezoid}
+ev_chk <- make_regimen("g-HAT", "adult", 1, 50, ghat_adult, 1, 0, 0L) |>
+  filter(evid == 1) |>
+  bind_rows(tibble(id = 1L, time = seq(0, 24 * 60, by = 0.25), amt = 0, evid = 0L, cmt = "central")) |>
+  mutate(WT = 50, DIS_HAT_GAMBIENSE = 1, DIS_CHAGAS_CHRONIC = 0) |>
+  arrange(time, desc(evid))
+chk <- rxode2::rxSolve(mod_typ, events = ev_chk) |> as.data.frame()
+y <- pmax(0, log(pmax(chk$Cc * 1000, 1e-300)))
+trap <- sum(diff(chk$time) * (head(y, -1) + tail(y, -1)) / 2) / 24
+c(ode = max(chk$auc_log_central), trapezoid = trap)
+stopifnot(abs(max(chk$auc_log_central) / trap - 1) < 0.005)
+```
+
+To place the 400 mg/kg anchor, a 65 kg Chagas patient is given 1,200 mg
+daily for increasing numbers of days:
+
+```{r threshold}
+n_days <- c(7, 14, 21, 28, 35, 42, 56)
+thr_ev <- bind_rows(lapply(seq_along(n_days), function(i) {
+  make_regimen("Chagas", paste(n_days[i], "days"), 1, 65, rep(1200, n_days[i]), 0, 1, i)
+}))
+thr <- rxode2::rxSolve(mod_typ, events = thr_ev, keep = c("arm", "total_mgkg")) |>
+  as.data.frame() |>
+  group_by(arm, total_mgkg) |>
+  summarise(AUlogC = max(auc_log_central), .groups = "drop") |>
+  arrange(total_mgkg)
+mgkg_at_300 <- approx(thr$AUlogC, thr$total_mgkg, xout = 300)$y
+thr |> mutate(across(c(total_mgkg, AUlogC), round)) |> knitr::kable()
+round(mgkg_at_300)
+stopifnot(mgkg_at_300 > 300, mgkg_at_300 < 500)
+```
+
+# Virtual cohort and Figure 2
+
+The cohort approximates the six trials of Figure 2 with the body-weight
+distributions of its right-hand panels. FEX002 (a three-period food-effect
+crossover) is omitted because its per-period doses are not reported.
+
+```{r cohort}
+# Seeds rxode2's own RNG for the between-subject draws. The draw is
+# reproducible for a given rxode2 build and thread count, not across them,
+# so every assertion below is on a median of many subjects.
+set.seed(2019)
+rxode2::rxSetSeed(2019)
+clamp <- function(x, lo, hi) pmin(pmax(x, lo), hi)
+wt_hv <- function(n) clamp(rnorm(n, 72, 9), 55, 98)
+
+sd_levels <- c(100, 200, 400, 600, 1200, 1800, 2400, 3600)
+blocks <- list()
+off <- 0L
+for (d in sd_levels) {
+  blocks[[length(blocks) + 1]] <- make_regimen("Healthy volunteers (FEX001)", paste(d, "mg single"), 7, wt_hv(7), d, 0, 0, off)
+  off <- off + 7L
+}
+for (d in c(1200, 2400, 3600)) {
+  blocks[[length(blocks) + 1]] <- make_regimen("Healthy volunteers (FEX001)", paste(d, "mg x 14 d"), 6, wt_hv(6), rep(d, 14), 0, 0, off)
+  off <- off + 6L
+}
+blocks[[length(blocks) + 1]] <- make_regimen("Healthy volunteers (FEX003)", "1,800/1,200 mg", 11, wt_hv(11), ghat_adult, 0, 0, off)
+off <- off + 11L
+blocks[[length(blocks) + 1]] <- make_regimen("Healthy volunteers (FEX003)", "2,400/1,200 mg", 11, wt_hv(11), c(rep(2400, 4), rep(1200, 6)), 0, 0, off)
+off <- off + 11L
+blocks[[length(blocks) + 1]] <- make_regimen("g-HAT (FEX004)", "adult regimen", 150, clamp(rnorm(150, 50, 9), 30, 75), ghat_adult, 1, 0, off)
+off <- off + 150L
+blocks[[length(blocks) + 1]] <- make_regimen("g-HAT (FEX006)", "child regimen", 60, runif(60, 20, 35), ghat_child, 1, 0, off)
+off <- off + 60L
+for (d in c(1200, 1800)) {
+  for (w in c(2, 4, 8)) {
+    blocks[[length(blocks) + 1]] <- make_regimen("Chagas (CH-FEX001)", paste0(d, " mg x ", w, " wk"), 7, clamp(rnorm(7, 66, 10), 45, 105), rep(d, 7 * w), 0, 1, off)
+    off <- off + 7L
+  }
+}
+cohort <- bind_rows(blocks)
+stopifnot(!anyDuplicated(distinct(cohort, id, study, arm)$id))
+nrow(distinct(cohort, id))
+```
+
+```{r cohort-sim}
+cohort_sim <- rxode2::rxSolve(mod, events = cohort, keep = c("study", "arm", "total_mgkg")) |>
+  as.data.frame()
+cohort_auc <- cohort_sim |>
+  group_by(id, study, arm, total_mgkg) |>
+  summarise(AUlogC = max(auc_log_central), .groups = "drop")
+```
+
+```{r figure-2, fig.width = 7, fig.height = 5}
+ggplot(cohort_auc, aes(total_mgkg, AUlogC, colour = study, shape = study)) +
+  geom_point(alpha = 0.8) +
+  geom_hline(yintercept = 300, linetype = "dashed") +
+  geom_vline(xintercept = 400, linetype = "dashed") +
+  scale_colour_manual(values = c(
+    "Healthy volunteers (FEX001)" = "#E66100", "Healthy volunteers (FEX003)" = "#F5C26B",
+    "g-HAT (FEX004)" = "#1B7837", "g-HAT (FEX006)" = "#7FBF7B",
+    "Chagas (CH-FEX001)" = "#D01C8B"
+  )) +
+  labs(
+    x = "Total mg/kg dose", y = "AUlogC of fexinidazole sulfone",
+    colour = NULL, shape = NULL,
+    caption = "Replicates Figure 2 (left) of Watson 2019 with a simulated cohort."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r figure-2-check}
+fig2 <- cohort_auc |>
+  group_by(study) |>
+  summarise(
+    n = n(), median_mgkg = median(total_mgkg),
+    AUlogC_p05 = quantile(AUlogC, 0.05), AUlogC_median = median(AUlogC),
+    AUlogC_p95 = quantile(AUlogC, 0.95), .groups = "drop"
+  )
+fig2 |> mutate(across(where(is.numeric), round)) |> knitr::kable()
+med_of <- function(s) {
+  v <- fig2$AUlogC_median[fig2$study == s]
+  if (length(v) != 1L) stop("no study '", s, "'")
+  v
+}
+stopifnot(
+  # Figure 2: the FEX004 adults sit between about 150 and 230, centred near 195.
+  abs(med_of("g-HAT (FEX004)") - 195) < 20,
+  # Figure 2: the FEX006 children sit slightly below the adults.
+  med_of("g-HAT (FEX006)") < med_of("g-HAT (FEX004)") + 5
+)
+```
+
+The g-HAT clusters, the healthy-volunteer floor near 40 and the Chagas
+patients climbing past 300 above about 400 mg/kg match Figure 2. Two
+differences remain, and neither was tuned away:
+
+* **Chagas patients reach higher doses here than in the trial.** CH-FEX001
+  was interrupted after the toxicity signal, so most patients took less than
+  their planned course (Table 1: median 251 mg/kg, range 61-1,400). The
+  cohort here gives every patient the full planned course, so its 8-week
+  arms extend to about 1,500 mg/kg and an AUlogC of about 750, beyond the
+  1,400 mg/kg and 660 maximum of Figure 2. Below about 1,000 mg/kg the
+  simulated Chagas points follow the trend of the observed ones.
+* **Healthy volunteers on high or repeated doses sit below Figure 2.** The
+  typical 72 kg volunteer on 1,200-3,600 mg daily for 14 days (FEX001 part 3,
+  233-700 mg/kg) reaches an AUlogC of 220-254, whereas the corresponding
+  Figure 2 triangles lie at about 260-310; likewise the 3,600 mg single dose
+  gives 97 against a single-dose cluster that reaches about 150. The g-HAT
+  and low-dose anchors are matched, and the packaged PK model has no
+  study-specific term for the phase 1 volunteers beyond the shared
+  relative-bioavailability reference, so the gap is most likely carried by
+  those volunteers' individual (post hoc) random effects, which the paper
+  used to compute AUlogC and does not report. It is also possible that the
+  unprinted AUlogC definition differs from the reconstruction in a way that
+  only matters for long exposures in volunteers; see Assumptions and
+  deviations.
+
+# Typical M2 concentration-time profiles
+
+Figure 1 of the paper shows conditionally weighted residuals rather than a
+concentration profile, so there is no published profile to overlay. The
+typical profiles below show the effect of the population-specific relative
+bioavailability on the g-HAT adult regimen.
+
+```{r profiles, fig.width = 7, fig.height = 4}
+prof_ev <- bind_rows(lapply(1:3, function(i) {
+  tibble(id = i, time = 24 * (0:9), amt = mg_to_umol(ghat_adult), evid = 1L, cmt = "depot") |>
+    bind_rows(tibble(id = i, time = seq(0, 24 * 20, by = 1), amt = 0, evid = 0L, cmt = "central"))
+})) |>
+  mutate(
+    WT = 50,
+    population = c("Healthy volunteer", "g-HAT patient", "Chagas patient")[id],
+    DIS_HAT_GAMBIENSE = as.numeric(id == 2), DIS_CHAGAS_CHRONIC = as.numeric(id == 3)
+  ) |>
+  arrange(id, time, desc(evid))
+prof <- rxode2::rxSolve(mod_typ, events = prof_ev, keep = "population") |> as.data.frame()
+ggplot(prof, aes(time / 24, Cc, colour = population)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(
+    x = "Time (days)", y = "M2 concentration (umol/L)", colour = NULL,
+    caption = "Typical 50 kg subject, 1,800 mg daily x 4 days then 1,200 mg daily x 6 days."
+  ) +
+  theme_bw()
+```
+
+# Exposure-response curves (Figures 4 and 7)
+
+The twelve sigmoid outputs are algebraic functions of the `auc_log_central`
+state. To trace each curve over the published exposure range, the state is
+set directly by a bolus of the desired AUlogC into `auc_log_central` with no
+drug given, so the accumulator holds that value and every output is
+evaluated at it.
+
+```{r er-grid}
+er_x <- seq(0, 700, by = 5)
+er_grid <- tibble(id = seq_along(er_x), x = er_x)
+er_ev <- bind_rows(
+  mutate(er_grid, time = 0, amt = x, evid = 1L, cmt = "auc_log_central"),
+  mutate(er_grid, time = 1, amt = 0, evid = 0L, cmt = "central")
+) |>
+  select(-x) |>
+  mutate(WT = 65, DIS_HAT_GAMBIENSE = 0, DIS_CHAGAS_CHRONIC = 1) |>
+  arrange(id, time, desc(evid))
+er_out <- c(
+  "log10_peak_alt", "log2_peak_alt_fold", "log10_peak_ast", "log2_peak_ast_fold",
+  "nadir_neutrophil_count", "nadir_neutrophil_pct_change",
+  "nadir_platelet_count", "nadir_platelet_pct_change",
+  "nadir_lymphocyte_count", "nadir_lymphocyte_pct_change",
+  "nadir_hb", "nadir_hb_pct_change"
+)
+er <- rxode2::rxSolve(mod_typ, events = er_ev) |>
+  as.data.frame() |>
+  select(AUlogC = auc_log_central, all_of(er_out)) |>
+  pivot_longer(-AUlogC, names_to = "output", values_to = "value") |>
+  mutate(output = factor(output, levels = er_out))
+stopifnot(abs(range(er$AUlogC) - c(0, 700)) < 1e-6)
+```
+
+The reference points below were read by the maintainers from the
+posterior-mean (thick) curves of Figures 4 and 7 at fixed AUlogC values. The
+model parameters were fitted to the full digitised curves, so the comparison
+confirms the transcription (sign, scale and orientation of every curve)
+rather than providing independent validation.
+
+```{r er-reference}
+er_ref <- tribble(
+  ~output, ~AUlogC, ~value,
+  "log10_peak_alt", c(50, 150, 250, 350, 450, 600), c(1.558, 1.659, 1.889, 2.137, 2.263, 2.313),
+  "log2_peak_alt_fold", c(50, 150, 250, 350, 450, 600), c(0.7045, 1.195, 1.864, 2.573, 3.186, 3.718),
+  "log10_peak_ast", c(50, 150, 250, 350, 450, 600), c(1.542, 1.562, 1.682, 1.977, 2.127, 2.157),
+  "log2_peak_ast_fold", c(50, 150, 250, 350, 450, 600), c(0.7627, 0.7849, 0.9956, 1.905, 2.869, 3.113),
+  "nadir_neutrophil_count", c(50, 150, 250, 350, 450, 600), c(2.298, 2.269, 1.865, 0.8558, 0.5096, 0.4808),
+  "nadir_neutrophil_pct_change", c(50, 150, 250, 350, 450, 600), c(7.379, 6.214, -8.932, -34.56, -38.06, -38.06),
+  "nadir_platelet_count", c(50, 150, 250, 350, 450, 600), c(238.3, 225.9, 205.2, 178.3, 153.4, 134.8),
+  "nadir_platelet_pct_change", c(50, 150, 250, 350, 450, 600), c(-11.72, -12.66, -36.09, -42.66, -42.66, -42.66),
+  "nadir_lymphocyte_count", c(50, 150, 250, 350, 450, 600), c(1.457, 1.47, 1.443, 1.43, 1.43, 1.404),
+  "nadir_lymphocyte_pct_change", c(50, 150, 350, 450, 600), c(-20.56, -20.98, -36.5, -36.92, -36.92),
+  "nadir_hb", c(50, 150, 250, 350, 450, 600), c(14.06, 14.06, 14.06, 13.97, 14.01, 14.01),
+  "nadir_hb_pct_change", c(50, 150, 250, 350, 450, 600), c(-8.908, -8.908, -9.916, -12.61, -13.78, -13.95)
+) |>
+  unnest(c(AUlogC, value)) |>
+  mutate(output = factor(output, levels = er_out))
+
+model_at <- function(out, x) {
+  d <- er[er$output == out, ]
+  if (nrow(d) == 0L) stop("no model curve for '", out, "'")
+  approx(d$AUlogC, d$value, xout = x)$y
+}
+er_cmp <- er_ref |>
+  rowwise() |>
+  mutate(model = model_at(as.character(output), AUlogC)) |>
+  ungroup() |>
+  group_by(output) |>
+  mutate(panel_span = max(value) - min(value) + 1e-9)
+er_cmp |>
+  group_by(output) |>
+  summarise(max_abs_diff = max(abs(model - value)), .groups = "drop") |>
+  mutate(max_abs_diff = signif(max_abs_diff, 2)) |>
+  knitr::kable()
+# Each curve agrees with its digitised reference to well within one plotting
+# line width (2% of the figure's y-axis range is a few pixels).
+y_axis_span <- c(
+  log10_peak_alt = 1.5, log2_peak_alt_fold = 6, log10_peak_ast = 1.2, log2_peak_ast_fold = 5,
+  nadir_neutrophil_count = 3, nadir_neutrophil_pct_change = 120,
+  nadir_platelet_count = 300, nadir_platelet_pct_change = 60,
+  nadir_lymphocyte_count = 1.5, nadir_lymphocyte_pct_change = 60,
+  nadir_hb = 6, nadir_hb_pct_change = 20
+)
+stopifnot(
+  nrow(er_cmp) == 71,
+  all(abs(er_cmp$model - er_cmp$value) / y_axis_span[as.character(er_cmp$output)] < 0.02)
+)
+```
+
+```{r figure-4, fig.width = 7, fig.height = 5.5}
+ghat_band <- cohort_auc |>
+  filter(grepl("g-HAT", study)) |>
+  summarise(lo = quantile(AUlogC, 0.05), hi = quantile(AUlogC, 0.95))
+liver <- c("log10_peak_alt", "log2_peak_alt_fold", "log10_peak_ast", "log2_peak_ast_fold")
+ggplot(filter(er, output %in% liver), aes(AUlogC, value)) +
+  annotate("rect", xmin = ghat_band$lo, xmax = ghat_band$hi, ymin = -Inf, ymax = Inf, fill = "#7FBF7B", alpha = 0.4) +
+  geom_line(colour = "#0072B2", linewidth = 1) +
+  geom_point(data = filter(er_ref, output %in% liver), colour = "#D01C8B") +
+  facet_wrap(~output, scales = "free_y") +
+  labs(
+    x = "Cumulative M2 AUlogC", y = NULL,
+    caption = paste(
+      "Replicates the posterior-mean curves of Figure 4 of Watson 2019 (line: model;",
+      "points: digitised curve). Shading: 5th-95th percentile of simulated g-HAT AUlogC."
+    )
+  ) +
+  theme_bw()
+```
+
+```{r figure-7, fig.width = 7, fig.height = 9}
+heme <- setdiff(er_out, liver)
+ggplot(filter(er, output %in% heme), aes(AUlogC, value)) +
+  annotate("rect", xmin = ghat_band$lo, xmax = ghat_band$hi, ymin = -Inf, ymax = Inf, fill = "#7FBF7B", alpha = 0.4) +
+  geom_line(colour = "#0072B2", linewidth = 1) +
+  geom_point(data = filter(er_ref, output %in% heme), colour = "#D01C8B") +
+  facet_wrap(~output, scales = "free_y", ncol = 2) +
+  labs(
+    x = "Cumulative M2 AUlogC", y = NULL,
+    caption = paste(
+      "Replicates the posterior-mean curves of Figure 7 of Watson 2019 (line: model;",
+      "points: digitised curve). Shading: 5th-95th percentile of simulated g-HAT AUlogC."
+    )
+  ) +
+  theme_bw()
+```
+
+The green bands of Figures 4 and 7 span roughly 150-190; the simulated g-HAT
+range here is `r round(ghat_band$lo)`-`r round(ghat_band$hi)`, consistent
+with the spread of the g-HAT points in Figure 2.
+
+## Midpoints against Table 2
+
+Table 2 gives only the 80% credible interval of each EC50 (the `auc50`
+midpoint). The digitised curves place 10 of the 11 fitted midpoints inside
+those intervals:
+
+```{r table-2}
+theta <- rxode2::rxode2(mod)$theta
+tab2 <- tribble(
+  ~output, ~ci_lo, ~ci_hi,
+  "nadir_neutrophil_count", 262, 342,
+  "nadir_neutrophil_pct_change", 208, 352,
+  "nadir_platelet_count", 146, 240,
+  "nadir_platelet_pct_change", 199, 240,
+  "nadir_lymphocyte_count", 74, 1304,
+  "nadir_lymphocyte_pct_change", 163, 396,
+  "nadir_hb_pct_change", 137, 842,
+  "log10_peak_alt", 164, 362,
+  "log2_peak_alt_fold", 119, 371,
+  "log10_peak_ast", 244, 371,
+  "log2_peak_ast_fold", 256, 396
+) |>
+  mutate(
+    auc50 = exp(unname(theta[paste0("lauc50_", output)])),
+    inside = auc50 >= ci_lo & auc50 <= ci_hi
+  )
+stopifnot(!anyNA(tab2$auc50))
+tab2 |>
+  mutate(auc50 = round(auc50)) |>
+  rename(Output = output, "Table 2 CI80 low" = ci_lo, "Table 2 CI80 high" = ci_hi, "Model auc50" = auc50, "Inside CI80" = inside) |>
+  knitr::kable()
+stopifnot(
+  sum(tab2$inside) == 10,
+  !tab2$inside[tab2$output == "nadir_platelet_count"]
+)
+```
+
+The absolute platelet model is the exception: its plotted posterior-mean
+curve falls gently across the whole exposure range, and the sigmoid that
+reproduces that mean curve has its midpoint at about 311, above the
+146-240 credible interval. A posterior-mean curve averages sigmoids with
+different midpoints, which flattens it, so its apparent midpoint need not
+lie within the marginal credible interval of the midpoint parameter. The
+packaged curve follows the published mean curve. The hemoglobin nadir
+curve is flat, so its midpoint is not identifiable and the output is a
+constant; Table 2 gives a 73-1,383 interval with a 75% overlap coefficient,
+i.e. no exposure effect.
+
+## Predictions for the g-HAT regimen
+
+The Results apply the relative models to exposures distributed as in the
+g-HAT trials. The typical curves evaluated over the simulated g-HAT cohort
+give:
+
+```{r ghat-predictions}
+ghat_auc <- cohort_auc$AUlogC[grepl("g-HAT", cohort_auc$study)]
+pred <- tibble(
+  Outcome = c(
+    "Neutrophil nadir change (%)", "Platelet nadir change (%)",
+    "Peak ALT fold change", "Peak AST fold change"
+  ),
+  Model = c(
+    median(model_at("nadir_neutrophil_pct_change", ghat_auc)),
+    median(model_at("nadir_platelet_pct_change", ghat_auc)),
+    median(2^model_at("log2_peak_alt_fold", ghat_auc)),
+    median(2^model_at("log2_peak_ast_fold", ghat_auc))
+  ),
+  Paper = c(0, -20, 2.8, 2.0),
+  `Paper statement` = c(
+    "median relative decrease of 0%",
+    "median decrease of 20%",
+    "50% would have ALT > 2.8 x baseline",
+    "50% would have AST > 2 x baseline"
+  )
+)
+pred |> mutate(Model = signif(Model, 3)) |> knitr::kable()
+stopifnot(
+  abs(pred$Model[1] - 0) < 8,
+  abs(pred$Model[2] - (-20)) < 5,
+  abs(pred$Model[3] - 2.8) < 0.5
+)
+```
+
+Neutrophils, platelets and ALT reproduce the published predictions. The
+typical AST fold change is lower than the paper's "more than 2 times" for
+half the g-HAT patients: the posterior-mean AST curve of Figure 4 is still
+near its baseline in the g-HAT exposure range, so the paper's statement must
+draw on the posterior predictive spread (parameter uncertainty and residual
+error), which the typical curve does not carry.
+
+# PKNCA check of the PK layer
+
+Watson 2019 reports no non-compartmental summary of M2, so the PKNCA check
+is against the model's own closed form: for a typical subject after a single
+dose, AUC0-inf must equal `F * Dose / CL` and the terminal half-life
+`ln(2) * V / CL`.
+
+```{r pknca-typical}
+nca_ev <- bind_rows(lapply(seq_along(c(600, 1200, 1800)), function(i) {
+  d <- c(600, 1200, 1800)[i]
+  bind_rows(
+    tibble(id = i, time = 0, amt = mg_to_umol(d), evid = 1L, cmt = "depot"),
+    tibble(id = i, time = c(0, 0.5, 1, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24, 36, 48, 72, 96, 120, 144, 168, 216, 264, 336), amt = 0, evid = 0L, cmt = "central")
+  ) |>
+    mutate(treatment = paste(d, "mg"))
+})) |>
+  mutate(WT = 70, DIS_HAT_GAMBIENSE = 0, DIS_CHAGAS_CHRONIC = 0) |>
+  arrange(id, time, desc(evid))
+nca_sim <- rxode2::rxSolve(mod_typ, events = nca_ev, keep = "treatment") |> as.data.frame()
+
+conc_df <- nca_sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+conc_df <- bind_rows(conc_df, conc_df |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, time)
+dose_df <- nca_ev |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+o_conc <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+  aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+nca_wide <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+cl_70 <- 6.37 * (70 / 50)^0.75
+v_70 <- 239 * (70 / 50)
+nca_wide <- nca_wide |>
+  mutate(
+    dose_umol = mg_to_umol(as.numeric(sub(" mg", "", treatment))),
+    auc_closed = dose_umol / cl_70,
+    thalf_closed = log(2) * v_70 / cl_70
+  )
+nca_wide |>
+  mutate(across(where(is.numeric), \(x) signif(x, 4))) |>
+  select(treatment, cmax, tmax, aucinf.obs, auc_closed, half.life, thalf_closed) |>
+  rename(
+    Dose = treatment, "Cmax (umol/L)" = cmax, "Tmax (h)" = tmax,
+    "AUC0-inf (umol*h/L)" = aucinf.obs, "F*Dose/CL" = auc_closed,
+    "t1/2 (h)" = half.life, "ln(2)*V/CL" = thalf_closed
+  ) |>
+  knitr::kable()
+stopifnot(
+  nrow(nca_wide) == 3,
+  all(abs(nca_wide$aucinf.obs / nca_wide$auc_closed - 1) < 0.02),
+  all(abs(nca_wide$half.life / nca_wide$thalf_closed - 1) < 0.02)
+)
+```
+
+The Results text quotes a clearance of 3 L/h, a volume of 80 L and 14% IIV
+on the mean transit time, which disagree with supplement Table S1
+(6.37 L/h, 239 L, 36%). The model follows Table S1 and the NONMEM control
+stream, whose `$THETA` initial values (6.35 and 238) match it.
+
+# Assumptions and deviations
+
+* **Molar units.** The NONMEM model compares `log(A(2)/V1)` with the
+  natural log of the molar M2 concentration, so doses are in umol of
+  fexinidazole (MW 279.31) and `Cc` is M2 in umol/L. The unit was confirmed
+  by reproducing the AUlogC values of Figure 2.
+* **Residual error.** The `$ERROR` block multiplies `ERR(1) ~ N(0, SIGMA)`
+  by `W = SQRT(SIGMA(1,1))`, so the SD of log concentration is SIGMA itself,
+  0.391, not its square root. `expSd = 0.391`.
+* **Results text vs Table S1.** Where the Results text (CL 3 L/h, V 80 L)
+  disagrees with Table S1 and the code (6.37 L/h, 239 L), the model follows
+  Table S1 and the code.
+* **AUlogC definition.** Not printed. Reconstructed as the integral of
+  `max(0, ln C)` with `C` in nmol/L and time in days, which reproduces the
+  three anchors of Figure 2 and the Discussion (above). Other readings
+  (umol/L, pmol/L, hours, or no truncation) miss them by large factors. It
+  underpredicts the Figure 2 values of the FEX001 multiple-dose volunteers by
+  15-20% (typical 220-254 against about 260-310).
+* **Exposure-response parameters from figures.** The posterior summaries of
+  the Bayesian fits were not printed beyond the 80% credible intervals of
+  EC50 (Table 2). Every `e0`, `emax`, `lauc50` and `lslope` was obtained by
+  the maintainers by fitting the four-parameter sigmoid to the posterior-mean
+  curve digitised from Figure 4 or 7 (230-280 points per panel; root mean
+  squared error under one pixel). These parameters describe the mean curve,
+  not the posterior mean of each parameter.
+* **Absolute platelet midpoint outside Table 2.** See the Table 2 section:
+  311 versus a credible interval of 146-240, a consequence of matching the
+  flattened posterior-mean curve.
+* **Hemoglobin nadir** is encoded as the constant 14.03 g/dL, the flat
+  posterior-mean curve of Figure 7.
+* **No residual error on the exposure-response outputs.** The 90% posterior
+  prediction bands of Figures 4 and 7 combine parameter uncertainty with the
+  residual SD, and the residual SDs themselves are not reported, so the
+  outputs are typical-value predictions. For simulation the absolute models
+  used a log-normal error and the relative models an additive normal error
+  (Methods, supplement Stan code).
+* **`e0` is the low-exposure asymptote**, the Stan `max_effect`, not the
+  value at zero exposure; the two differ by less than 3% of `emax` for every
+  curve except absolute lymphocytes (13%), ALT fold change (12%) and
+  absolute platelets (4%).
+* **Scope of the exposure-response curves.** They were fitted to 40 chronic
+  Chagas patients, and the paper shows that the liver curves overpredict
+  transaminase rises in g-HAT patients. Each output is a per-subject summary
+  (nadir or peak over follow-up) of the cumulative AUlogC at the end of
+  treatment, so only its value after M2 has been eliminated is meaningful.
+* **Virtual cohort.** Body weights follow the histograms of Figure 2; FEX002
+  is omitted because its per-period doses are not reported.
