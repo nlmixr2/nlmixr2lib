@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2026 oseltamivir PK and influenza viral dynamics ([doi:10.1002/bcp.70623](https://doi.org/10.1002/bcp.70623)) -- infants and toddlers (0-23 months) with influenza.
+- Add Maggs 2026 fusidic acid and rifampicin / 25-desacetyl rifampicin ([doi:10.1093/jac/dkag293](https://doi.org/10.1093/jac/dkag293)) -- adults with staphylococcal bone, joint or endovascular infection taking both drugs together.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

@@ -7500,6 +7500,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
   - `desrbn` -- prior canonical name (pre-2026-06-19 readability standardization).
 - **Example models:** `Hennig_2015_rifabutin.R` (doi:10.1128/AAC.01195-15).
 
+### desacetylrif (**canonical 25-desacetyl rifampicin suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 25-desacetyl rifampicin (25-O-desacetyl rifampicin), the primary microbiologically active metabolite of rifampicin, formed by arylacetamide deacetylase / B-esterases. Used on `central_desacetylrif`, `lcl_desacetylrif` / `lvc_desacetylrif`, `fm_desacetylrif`, `Cc_desacetylrif` and `propSd_desacetylrif`.
+- **Source aliases:** `DesRif`, `des-acetylrifampicin` (Maggs 2026 Table 3 and Results).
+- **Example models:** `Maggs_2026_rifampicin.R` (doi:10.1093/jac/dkag293).
+- **Notes:** Follows the spelled-out `desacetylrbn` form of the 25-O-desacetyl rifabutin suffix, with `rif` as the rifampicin token already used by `CONMED_RIF` and `AUC_RIF`.
+
 ### desrpt (**canonical 25-O-desacetyl rifapentine suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 25-O-desacetyl rifapentine (25-DRFP), primary active metabolite of rifapentine, formed by enzymatic deacetylation; microbiologically active against Mycobacterium tuberculosis. Parallel naming to the registered `desrbn` (25-O-desacetyl rifabutin) suffix.
