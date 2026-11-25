@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhou 2017 tulathromycin ex vivo PK/PD ([doi:10.3389/fphar.2017.00392](https://doi.org/10.3389/fphar.2017.00392)) -- serum and tissue-cage fluids of piglets against *Pasteurella multocida*.
+- Add Schindler 2017 axitinib biomarker, tumour-size, blood-pressure, sKIT and overall-survival framework ([doi:10.1002/psp4.12193](https://doi.org/10.1002/psp4.12193)) -- Japanese adults with cytokine-refractory metastatic renal cell carcinoma.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

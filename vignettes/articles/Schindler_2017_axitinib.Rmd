@@ -1,0 +1,478 @@
+---
+title: "Axitinib biomarkers, tumour size, blood pressure and survival in mRCC (Schindler 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Axitinib biomarkers, tumour size, blood pressure and survival in mRCC (Schindler 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Schindler et al. (2017) built a pharmacometric framework linking daily axitinib
+exposure to circulating biomarkers (VEGF and soluble VEGF receptors 1-3, sKIT),
+tumour size (sum of longest diameters, SLD), diastolic blood pressure (dBP) and
+overall survival (OS) in Japanese patients with cytokine-refractory metastatic
+renal cell carcinoma. The authors fitted the pieces in separate NONMEM runs,
+and the library carries one model file per run:
+
+| Model | Content |
+|-------|---------|
+| `Schindler_2017_axitinib_biomarkers_sld` | Joint VEGF / sVEGFR-1 / sVEGFR-2 / sVEGFR-3 indirect-response model, the sVEGFR-3-driven tumour-size model, and the logistic tumour-assessment dropout model |
+| `Schindler_2017_axitinib_dbp` | Indirect-response model of the dBP increase in the first treatment cycle |
+| `Schindler_2017_axitinib_os` | Log-logistic OS hazard driven by the predicted SLD time course, with a competing censoring hazard |
+| `Schindler_2017_axitinib_skit` | Linear-in-time sKIT model (no axitinib effect) |
+
+* Citation: `r rxode2::rxode(readModelDb("Schindler_2017_axitinib_biomarkers_sld"))$reference`
+* Article: <https://doi.org/10.1002/psp4.12193> (open access, PMC5488123)
+* Supplementary Material 1 (sKIT, dropout and censoring models) and
+  Supplementary Material 2 (example datasets and the NONMEM control streams) are
+  available from the article page.
+
+All four models are driven by the daily axitinib AUC,
+`AUC_AXITINIB = Dose_daily / (CL/F)` in ug*h/L, which the authors computed from
+individual apparent clearances of the Rini 2013 axitinib popPK model
+(`modellib("Rini_2013_axitinib")`). Time is in days.
+
+# Population
+
+Sixty-four Japanese patients with cytokine-refractory mRCC from a single-arm,
+open-label phase II study (NCT00569946) received axitinib 5 mg twice daily in
+4-week cycles. The dose was titrated up by 2-3 mg twice daily to a maximum of
+10 mg twice daily in 5 patients and reduced to 2 mg twice daily in 41 patients.
+Patients were treated for a median of 51 weeks (range 1.7-104). Schindler 2017
+Table 1 summarises the available data: 436 observations of each biomarker
+(median follow-up 168 days), 476 SLD observations (median follow-up 337 days),
+308 first-cycle dBP observations, and 16 deaths among 64 patients over a median
+follow-up of 457 days. The paper does not tabulate age, weight or sex.
+
+```{r population}
+str(readModelDb("Schindler_2017_axitinib_biomarkers_sld")()$population[c("n_subjects", "disease_state", "dose_range", "regions")])
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. Table 2 and
+Table 3 of the paper print the final estimates; Supplement 2 holds the control
+streams, which fix the equation forms, the time units (days, with rate constants
+printed per week divided by 7) and the IIV convention.
+
+| Model | Parameter / equation | Value | Source |
+|-------|----------------------|-------|--------|
+| biomarkers_sld | `lrbase_vegf`, `lrbase_svegfr1/2/3` | log(65.0), log(83.5), log(8850), log(19500) pg/mL | Table 2 'Base' |
+| biomarkers_sld | `lmrt_vegf`, `lmrt_svegfr1/2/3` | log(0.722), log(0.624), log(19.7), log(5.76) day | Table 2 'MRT' |
+| biomarkers_sld | `limax` | fixed(log(1)) | Table 2 'Imax' 1 FIX |
+| biomarkers_sld | `lec50_vegf`, `lec50_svegfr1`, `lec50_svegfr23` | log(354), log(1380), log(717) ug*h/L | Table 2 'AUC50', footnote c (shared sVEGFR-2/3) |
+| biomarkers_sld | `lhill_svegfr2` | log(0.733) | Table 2 'gamma' |
+| biomarkers_sld | `ldp_slope_vegf` | log(0.00178) /day | Table 2 'alpha' 0.650 /year; Supplement 2 `SLOPE = THETA(18)/1000` |
+| biomarkers_sld | IIV variances | 0.184, 0.0296, 0.0232, 0.237, 0.565, 0.156, 0.206, 0.751 | Table 2 IIV %CV; Supplement 2 `$OMEGA` |
+| biomarkers_sld | `expSd_vegf/svegfr1/svegfr2/svegfr3`, `expSd_common` | 0.376, 0.193, 0.162, 0.263, 0.0593 | Table 2 'RUV', 'Common RUV' (log-scale SD) |
+| biomarkers_sld | `lkg`, `k_svegfr3`, `llambda` | log(0.00361), -0.174, log(0.101) /week | Table 3 'Tumor size model' |
+| biomarkers_sld | `propSd_tumor_size`; IIV KG, lambda, RUV | 0.105; 1.60^2, 0.72^2, 0.35^2 | Table 3 |
+| biomarkers_sld | `etarbase_tumor` | fixed(1) | Supplement 2 B2 baseline, `$OMEGA 1 FIX` |
+| biomarkers_sld | `dropout_int`, `e_pd_dropout`, `e_sld_dropout`, `e_auc_dropout`, `e_time_dropout` | -6.11, 1.22, 0.00282, -0.00529, 0.00371 | Table 3 'Dropout model'; Supplement 1 Eqs. S2-S4 |
+| biomarkers_sld | `d/dt(vegf)`, `d/dt(svegfr1/2/3)` | n/a | Eqs. 1-2; Supplement 2 `$DES` |
+| biomarkers_sld | `d/dt(tumor_size)` | n/a | Eq. 3; Supplement 2 `DADT(5)` |
+| dbp | `lrbase_dbp`, `boxcox_dbp`, `lmrt_dbp`, `lemax_dbp`, `lslope_dbp` | log(78.9), -5.42, log(4.92), log(0.197), log(0.00127) | Table 3 'Diastolic blood pressure model' |
+| dbp | `etalrbase_dbp`, `addSd_dbp` | 0.00453, 6.13 mmHg | Table 3; Supplement 2 dBP `$OMEGA`, `$SIGMA 37.6` |
+| dbp | `d/dt(dbp)`, Box-Cox eta | n/a | Eq. 4; Supplement 2 dBP `$PK` / `$DES` |
+| os | `beta0_os`, `lgamma_os`, `e_sld_os` | 7.09, log(0.298), 0.0115 /mm | Table 3 'Overall survival model'; Eqs. 5-6 |
+| os | `beta0_cens`, `lgamma_cens` | 6.21, log(0.162) | Supplement 2 OS control stream `$THETA` |
+| os | sVEGFR-3 / tumour sub-model (fixed) | as biomarkers_sld | Supplement 2 OS control stream `$PK` / `$DES` |
+| skit | `lrbase_skit`, `slope_skit`, IIV, `expSd_skit` | log(37700), 7.71 pg/mL/day, 0.21^2, 19^2, 0.124 | Supplement 1 'Final sKIT model', Eq. S1 |
+
+The paper reports IIV as %CV = 100 * sqrt(omega^2): every Table 2 value is
+reproduced exactly by the square root of the corresponding Supplement 2
+`$OMEGA` variance (for example sqrt(0.184) = 0.429 for the 43% CV on baseline
+VEGF), so the same convention is applied to Table 3 and Supplement 1.
+
+```{r derived-checks}
+# Derived quantities that the paper prints in the text.
+ini_dbp <- rxode2::rxode(readModelDb("Schindler_2017_axitinib_dbp"))$iniDf
+p_dbp <- setNames(ini_dbp$est, ini_dbp$name)
+auc50_dbp <- exp(p_dbp[["lemax_dbp"]]) / exp(p_dbp[["lslope_dbp"]])
+kout_dbp <- 1 / exp(p_dbp[["lmrt_dbp"]])
+ini_os <- rxode2::rxode(readModelDb("Schindler_2017_axitinib_os"))$iniDf
+p_os <- setNames(ini_os$est, ini_os$name)
+hr_10mm <- exp(10 * p_os[["e_sld_os"]])
+ini_bm <- rxode2::rxode(readModelDb("Schindler_2017_axitinib_biomarkers_sld"))$iniDf
+p_bm <- setNames(ini_bm$est, ini_bm$name)
+alpha_per_year <- exp(p_bm[["ldp_slope_vegf"]]) * 365.25
+knitr::kable(data.frame(
+  Quantity = c("AUC50,dBP (ug*h/L)", "kout,dBP (1/day)", "OS hazard ratio per 10 mm SLD", "VEGF slope alpha (1/year)"),
+  Packaged = signif(c(auc50_dbp, kout_dbp, hr_10mm, alpha_per_year), 3),
+  Paper = c(155, 0.203, 1.12, 0.650),
+  Where = c("Results 'Diastolic BP model'", "Discussion", "Results 'Overall survival model'", "Table 2")
+))
+stopifnot(
+  abs(auc50_dbp / 155 - 1) < 0.005,
+  abs(kout_dbp / 0.203 - 1) < 0.005,
+  abs(hr_10mm / 1.12 - 1) < 0.005,
+  abs(alpha_per_year / 0.650 - 1) < 0.005
+)
+```
+
+# Virtual cohort
+
+The observed data are not public. The cohort below takes 200 virtual patients
+on a constant 5 mg twice-daily dose (10 mg/day) for two years. Individual daily
+AUC comes from the Rini 2013 popPK model: typical CL 14.6 L/h reduced by 24.9%
+for Japanese ethnicity, bioavailability 0.457 (the Form IV fed reference), and
+log-normal IIV on CL with variance 0.3588 (59.9% CV). Baseline SLD is
+log-normal with median 75 mm and log-scale SD 0.9, read by the maintainers
+from the day-0 median and 5th / 95th percentiles of the observed data in
+Figure 3 (about 15, 75 and 300 mm).
+
+```{r cohort}
+rxode2::rxSetSeed(20170526)
+set.seed(20170526)
+n_sub <- 200
+cl_f_typ <- 14.6 * (1 - 0.249) / 0.457 # L/h, Rini 2013 Table 2
+cohort <- tibble(
+  id = seq_len(n_sub),
+  cl_f = cl_f_typ * exp(rnorm(n_sub, 0, sqrt(0.3588))),
+  AUC_AXITINIB = 10 / cl_f * 1000, # mg/day / (L/h) -> mg*h/L -> ug*h/L
+  TUM_SLD = 75 * exp(rnorm(n_sub, 0, 0.9))
+)
+summary(cohort$AUC_AXITINIB)
+```
+
+The simulated AUC range overlaps the observed AUCdaily range of
+31.95-1,861 ug*h/L. Because 41 of the 64 patients had their dose reduced to
+2 mg twice daily, the constant 10 mg/day cohort sits at the upper end of the
+study's exposure over time.
+
+# Biomarkers and tumour size
+
+```{r sim-bm}
+mod_bm <- readModelDb("Schindler_2017_axitinib_biomarkers_sld")
+times <- c(0, 1, 2, 4, 7, seq(14, 728, by = 14))
+ev_bm <- tidyr::crossing(cohort, time = times) |>
+  mutate(evid = 0L, cmt = "tumor_size") |>
+  arrange(id, time) |>
+  as.data.frame()
+sim_bm <- rxode2::rxSolve(mod_bm, ev_bm, keep = c("AUC_AXITINIB", "TUM_SLD")) |>
+  as.data.frame()
+```
+
+## Figure 2: biomarker time courses
+
+Replicates Figure 2 of Schindler 2017 (pcVPC of the joint biomarker model). The
+bands are the 5th, 50th and 95th percentiles of the individual model
+predictions without residual error over the first 180 days.
+
+```{r fig2}
+sim_bm |>
+  filter(time <= 180) |>
+  select(id, time, VEGF = vegf, `sVEGFR-1` = svegfr1, `sVEGFR-2` = svegfr2, `sVEGFR-3` = svegfr3) |>
+  pivot_longer(-c(id, time), names_to = "biomarker", values_to = "conc") |>
+  group_by(biomarker, time) |>
+  summarise(
+    p05 = quantile(conc, 0.05), p50 = median(conc), p95 = quantile(conc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25, fill = "steelblue") +
+  geom_line() +
+  facet_wrap(~biomarker, scales = "free_y") +
+  labs(x = "Time (days)", y = "Concentration (pg/mL)")
+```
+
+The shapes match Figure 2: VEGF roughly doubles from about 65 pg/mL within
+the first cycle (the typical patient reaches about 140 pg/mL by day 28) and
+keeps climbing through the drug-independent
+disease-progression term, while the three soluble receptors fall to a new
+steady state within the first month (sVEGFR-2 more slowly, with a 19.7-day
+mean residence time).
+
+## Typical-value steady states
+
+With a constant AUC each receptor has a linear one-compartment turnover whose
+exact solution is `R(t) = Rss + (Base - Rss) * exp(-kout * t)` with
+`Rss = Base * (1 - Imax * AUC^gamma / (AUC50^gamma + AUC^gamma))`. VEGF obeys
+`dV/dt = Rin (1 + alpha t) - k V` with `k = kout (1 - Imax * AUC / (AUC50 + AUC))`,
+whose exact solution is linear-plus-exponential. Both are checked against a
+typical-value solve.
+
+```{r typical-bm}
+auc_typ <- 10 / cl_f_typ * 1000
+ev_typ <- data.frame(id = 1L, time = c(0, 7, 28, 84, 168), evid = 0L, cmt = "tumor_size",
+                     AUC_AXITINIB = auc_typ, TUM_SLD = 75)
+typ <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod_bm), ev_typ))
+
+p <- function(nm) exp(p_bm[[nm]])
+recep_exact <- function(base, mrt, ec50, hill, t) {
+  rss <- base * (1 - auc_typ^hill / (ec50^hill + auc_typ^hill))
+  rss + (base - rss) * exp(-t / mrt)
+}
+vegf_exact <- function(t) {
+  rin <- p("lrbase_vegf") / p("lmrt_vegf")
+  k <- (1 / p("lmrt_vegf")) * (1 - auc_typ / (p("lec50_vegf") + auc_typ))
+  b <- rin * p("ldp_slope_vegf")
+  v_inf <- (rin - b / k) / k + b * t / k
+  v_inf + (p("lrbase_vegf") - (rin - b / k) / k) * exp(-k * t)
+}
+chk <- data.frame(
+  time = typ$time,
+  vegf = typ$vegf / vegf_exact(typ$time),
+  svegfr1 = typ$svegfr1 / recep_exact(p("lrbase_svegfr1"), p("lmrt_svegfr1"), p("lec50_svegfr1"), 1, typ$time),
+  svegfr2 = typ$svegfr2 / recep_exact(p("lrbase_svegfr2"), p("lmrt_svegfr2"), p("lec50_svegfr23"), p("lhill_svegfr2"), typ$time),
+  svegfr3 = typ$svegfr3 / recep_exact(p("lrbase_svegfr3"), p("lmrt_svegfr3"), p("lec50_svegfr23"), 1, typ$time)
+)
+knitr::kable(chk, digits = 6, caption = "Ratio of the ODE solution to the exact solution (typical patient, constant AUC).")
+# Same parameters on both sides: the difference is pure solver error.
+stopifnot(max(abs(as.matrix(chk[, -1]) - 1)) < 1e-4)
+```
+
+## Figure 3 (left): tumour size with dropout
+
+Replicates the left panel of Figure 3 of Schindler 2017 (VPC of SLD accounting
+for dropout). Tumour assessments are kept every 56 days (odd cycles, Table 1);
+at each assessment a subject drops out with probability
+`P = 1 - (1 - mu)^56`, where `mu = p_dropout_day` is the model's per-day dropout
+probability (Supplementary Material 1 Eq. S4). Observations include the
+proportional residual error.
+
+```{r fig3-sld}
+visits <- sim_bm |>
+  filter(time %% 56 == 0) |>
+  arrange(id, time) |>
+  group_by(id) |>
+  mutate(
+    p_drop = ifelse(time == 0, 0, 1 - (1 - p_dropout_day)^56),
+    dropped = cumsum(runif(n()) < p_drop) > 0
+  ) |>
+  ungroup()
+assessed <- filter(visits, !dropped)
+
+assessed |>
+  group_by(time) |>
+  summarise(
+    n = n(),
+    p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  filter(n >= 10) |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25, fill = "darkgreen") +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Sum of longest diameters (mm)")
+
+follow_up <- assessed |>
+  group_by(id) |>
+  summarise(last = max(time), .groups = "drop")
+sld_med <- assessed |>
+  group_by(time) |>
+  summarise(p50 = median(sim), .groups = "drop")
+knitr::kable(data.frame(
+  Quantity = c("Median SLD at day 0 (mm)", "Median SLD at day 336 (mm)", "Median SLD follow-up (days)"),
+  Simulated = round(c(sld_med$p50[sld_med$time == 0], sld_med$p50[sld_med$time == 336], median(follow_up$last))),
+  Paper = c("about 75 (Figure 3)", "about 35-40 (Figure 3)", "337 (Table 1)")
+))
+```
+
+The simulated median SLD shrinks from about 75 mm to the 40-50 mm range over
+the first year and then flattens as the resistance term `exp(-lambda t)` erodes
+the sVEGFR-3 effect, the shape of the observed median in Figure 3. The
+simulated median shrinkage is somewhat smaller than observed; the constant
+10 mg/day exposure and the figure-derived baseline distribution are both
+approximations of the trial. The simulated median assessment follow-up is
+longer than the observed 337 days because the dropout model is the only
+reason for leaving the virtual study; the trial also ended at a fixed date.
+
+```{r sld-gate}
+stopifnot(
+  # Tumour shrinkage: a sign or unit error in ksVEGFR-3 or KG reverses or
+  # removes it; this holds for any cohort the model can produce.
+  sld_med$p50[sld_med$time == 336] < 0.85 * sld_med$p50[sld_med$time == 0],
+  sld_med$p50[sld_med$time == 336] > 0.3 * sld_med$p50[sld_med$time == 0]
+)
+```
+
+# Diastolic blood pressure
+
+```{r sim-dbp}
+mod_dbp <- readModelDb("Schindler_2017_axitinib_dbp")
+ev_dbp <- tidyr::crossing(cohort, time = c(0, 1, 2, 4, 8, 11, 15, 18, 22, 25, 29)) |>
+  mutate(evid = 0L) |>
+  arrange(id, time) |>
+  as.data.frame()
+sim_dbp <- rxode2::rxSolve(mod_dbp, ev_dbp) |> as.data.frame()
+```
+
+## Figure 3 (right): dBP in the first cycle
+
+Replicates the right panel of Figure 3 (pcVPC of dBP); observations include the
+additive residual error.
+
+```{r fig3-dbp}
+dbp_sum <- sim_dbp |>
+  group_by(time) |>
+  summarise(p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95), .groups = "drop")
+ggplot(dbp_sum, aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25, fill = "orange") +
+  geom_line() +
+  labs(x = "Time (days)", y = "Diastolic blood pressure (mmHg)")
+knitr::kable(dbp_sum, digits = 1)
+```
+
+As in Figure 3, the median dBP rises from about 80 mmHg to about 90 mmHg and
+reaches a plateau after one to two weeks.
+
+The typical-value solve is compared with the exact solution
+`dBP(t) = dBPss + (dBP0 - dBPss) exp(-kout t)`, `dBPss = dBP0 (1 + Emax S0 AUC / (Emax + S0 AUC))`.
+
+```{r dbp-exact}
+ev_dbp_typ <- data.frame(id = 1L, time = c(0, 4, 8, 15, 29), evid = 0L, AUC_AXITINIB = auc_typ)
+typ_dbp <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod_dbp), ev_dbp_typ))
+emax <- exp(p_dbp[["lemax_dbp"]])
+s0 <- exp(p_dbp[["lslope_dbp"]])
+dbp0 <- exp(p_dbp[["lrbase_dbp"]])
+dbp_ss <- dbp0 * (1 + emax * s0 * auc_typ / (emax + s0 * auc_typ))
+dbp_exact <- dbp_ss + (dbp0 - dbp_ss) * exp(-kout_dbp * typ_dbp$time)
+knitr::kable(data.frame(time = typ_dbp$time, ode = typ_dbp$dbp, exact = dbp_exact), digits = 3)
+stopifnot(
+  max(abs(typ_dbp$dbp / dbp_exact - 1)) < 1e-5,
+  # Paper Discussion: Emax of 19.7%, i.e. at most a 19.7% rise over baseline.
+  dbp_ss / dbp0 < 1.197
+)
+```
+
+# Overall survival
+
+## Figure 4: OS
+
+Replicates Figure 4 of Schindler 2017 (Kaplan-Meier VPC of OS). The packaged
+model returns each subject's survival probability `sur_os`; the cohort survival
+curve is their mean. The observed Kaplan-Meier points were read by the
+maintainers from Figure 4.
+
+```{r sim-os}
+mod_os <- readModelDb("Schindler_2017_axitinib_os")
+ev_os <- tidyr::crossing(cohort, time = seq(0, 780, by = 10)) |>
+  mutate(evid = 0L) |>
+  arrange(id, time) |>
+  as.data.frame()
+sim_os <- rxode2::rxSolve(mod_os, ev_os) |> as.data.frame()
+
+# Every subject must solve, including the high-KG tail (see the numerical
+# guard under Assumptions and deviations).
+stopifnot(!anyNA(sim_os$sur_os), !anyNA(sim_os$sur_cens))
+
+os_curve <- sim_os |>
+  group_by(time) |>
+  summarise(surv = mean(sur_os), cens_free = mean(sur_cens), .groups = "drop")
+km_obs <- data.frame(
+  time = c(100, 300, 400, 450, 500, 550, 600, 650, 780),
+  surv = c(0.98, 0.98, 0.90, 0.84, 0.77, 0.71, 0.66, 0.54, 0.54)
+)
+ggplot(os_curve, aes(time, 100 * surv)) +
+  geom_line() +
+  geom_point(data = km_obs, colour = "firebrick") +
+  ylim(0, 100) +
+  labs(x = "Time (days)", y = "Overall survival (%)",
+       caption = "Line: mean model-predicted survival; points: observed Kaplan-Meier read from Figure 4")
+knitr::kable(filter(os_curve, time %in% c(200, 400, 600, 780)), digits = 3)
+```
+
+The mean predicted survival follows the observed Kaplan-Meier curve: close to
+100% for the first year, then a decline to about half at day 780 (54%
+observed), inside the 95% prediction interval of Figure 4.
+
+```{r os-gate}
+s780 <- os_curve$surv[os_curve$time == 780]
+stopifnot(
+  # Observed 54% at day 780; Figure 4's 95% prediction interval spans
+  # roughly 17-76%. A scale (day vs week) or sign error in beta0 or
+  # betaSLD moves this to ~0 or ~1.
+  s780 > 0.25, s780 < 0.85,
+  # Survival is near 1 over the first 200 days (log-logistic shape < 1
+  # gives a hazard that starts at zero).
+  os_curve$surv[os_curve$time == 200] > 0.9
+)
+```
+
+# sKIT
+
+```{r skit}
+mod_skit <- readModelDb("Schindler_2017_axitinib_skit")
+ev_skit <- data.frame(id = 1L, time = c(0, 28, 84, 168), evid = 0L)
+typ_skit <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod_skit), ev_skit))
+skit_exact <- 37700 + 7.71 * typ_skit$time
+knitr::kable(data.frame(time = typ_skit$time, model = typ_skit$skit, equation_S1 = skit_exact), digits = 1)
+stopifnot(max(abs(typ_skit$skit - skit_exact)) < 1e-6)
+```
+
+The typical sKIT rises by only about 3.5% over 24 weeks, consistent with the
+paper's conclusion that axitinib has no clear effect on sKIT (Supplementary
+Figure S1).
+
+# NCA
+
+The models describe biomarkers, blood pressure, tumour size and survival driven
+by a pre-computed daily AUC; there is no drug concentration to analyse, so no
+PKNCA table is produced. The exact-solution checks above take its place.
+
+# Assumptions and deviations
+
+* **One file per authors' run.** The joint biomarker and tumour-size models
+  share one file because the tumour-size run carried the biomarker models with
+  their population parameters fixed (Table 2 values) and their individual
+  parameters re-estimated together with the SLD parameters. The biomarker
+  parameters are not wrapped in `fixed()`: they are the estimates of the joint
+  biomarker model.
+* **Shared biomarker residual error.** The four biomarkers sampled at the same
+  time share one additive log-scale error term (NONMEM `L2` item). nlmixr2 has
+  no per-time-point shared epsilon, so each biomarker uses its marginal SD
+  `sqrt(specific^2 + common^2)`. The marginal variance is exact; the
+  correlation between biomarkers at the same visit is lost.
+* **IIV on the SLD residual error** is encoded as
+  `rsd_tumor_size = propSd_tumor_size * exp(etapropSd_tumor_size)`, matching
+  `W = IPRED * THETA(4) * EXP(ETA(5))` in the control stream.
+* **B2 baseline.** `etarbase_tumor` has variance fixed to 1 and scales the
+  residual error of the observed baseline; it has no paired fixed effect, by
+  construction of the B2 method.
+* **KG prior.** The tumour growth rate was estimated with an informative
+  `$PRIOR NWPRI` (3.74e-3 /week, 6.64% RSE, from Claret et al. 2015); the
+  packaged value is the posterior estimate in Table 3. The prior itself is not
+  part of the model file.
+* **Dropout PD flag.** Progressive disease is a 20% increase in SLD from its
+  nadir. The model tracks the running minimum of the predicted SLD with a
+  state that relaxes onto SLD whenever SLD falls below it; the paper evaluated
+  PD at the tumour assessment visits.
+* **OS model inputs.** The OS control stream reads the individual empirical
+  Bayes estimates of baseline sVEGFR-3, AUC50, baseline SLD, KG and lambda
+  from the tumour-size fit. The packaged OS model instead draws those
+  individual parameters from their population distribution (fixed typical
+  values and IIV from Tables 2-3) and starts the tumour at the baseline SLD
+  supplied in `TUM_SLD`, so it can be simulated without a prior fit.
+* **Numerical guard on the OS hazard.** With 160% CV on KG, a few percent of
+  simulated patients sit in a tail where the tumour grows without bound once
+  the drug effect wanes, and `exp(betaSLD * SLD(t))` overflows the ODE solver.
+  The packaged model caps the integrated death hazard at 1e6 per day; at that
+  rate survival falls by a factor `exp(-1000)` (exactly 0 in double
+  precision) within 0.001 day, so `sur_os` is unchanged wherever the unguarded
+  model can be solved.
+* **Censoring hazard.** Its parameters (beta0 = 6.21, gamma = 0.162) are
+  printed only in the Supplement 2 OS control stream.
+* **sKIT IIV.** Supplementary Material 1 reports 21% CV on baseline sKIT and an
+  additive SD of 19 pg/mL/day on the slope. The baseline IIV is taken as
+  exponential with variance 0.21^2, the convention that Table 2 follows.
+* **Virtual cohort.** Constant 10 mg/day dosing (no titration or reduction),
+  AUC from Rini 2013 typical values for a Japanese patient aged 60 or younger
+  with the Form IV bioavailability (the formulation used in the study is not
+  stated in Schindler 2017), and a baseline SLD distribution read from
+  Figure 3. Demographics are not reported in the paper.
+* **Errata.** No erratum or correction was found in a literature search on
+  2026-11-25.
