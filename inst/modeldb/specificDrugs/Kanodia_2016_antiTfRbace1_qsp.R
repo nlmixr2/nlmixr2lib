@@ -25,7 +25,7 @@ Kanodia_2016_antiTfRbace1_qsp <- function() {
     "Scearce-Levie K, Atwal JK, Ramanujan S, Joseph S (2016). Prospective",
     "Design of Anti-Transferrin Receptor Bispecific Antibodies for Optimal",
     "Delivery into the Human Brain. CPT Pharmacometrics Syst Pharmacol",
-    "5(6):283-291. doi:10.1002/psp4.12081. PMCID: PMC4879477.",
+    "5(5):283-291. doi:10.1002/psp4.12081. PMCID: PMC4879477.",
     "Parameter values from Table 2 (final estimates) and Table 3 (anti-TfR",
     "affinities); model equations from the Supplementary Material; reaction",
     "topology and the brain-module constants not tabulated in Table 2 from",
@@ -153,7 +153,7 @@ Kanodia_2016_antiTfRbace1_qsp <- function() {
     # --- Transferrin receptor turnover (central and brain) ---
     syn_tfr_c <- fixed(886) ; label("TfR synthesis rate, central (nM/day)")       # Table 2 SynC/bR central = 886 nM/day
     syn_tfr_b <- fixed(341) ; label("TfR synthesis rate, brain (nM/day)")         # Table 2 SynC/bR brain = 341 nM/day
-    deg_tfr_c <- fixed(2.1) ; label("TfR degradation rate, central (1/day)")      # Table 2 DegC/bR central; printed garbled as '2-1 / 7' -- read as 2.1 (see Errata; alternative 21)
+    deg_tfr_c <- fixed(2.1) ; label("TfR degradation rate, central (1/day)")      # Table 2 DegC/bR central; printed '2-1 / 7' in the published PDF too; 2.1, 21 or 2^-1 = 0.5 all possible -- provisional 2.1 pending author query (Errata)
     deg_tfr_b <- fixed(7) ; label("TfR degradation rate, brain (1/day)")          # Table 2 DegC/bR brain = 7 1/day
 
     # --- Complex degradation ---
