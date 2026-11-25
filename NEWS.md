@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kratochwil 2018 anti-IL17 IgG1 ([doi:10.1371/journal.pone.0205435](https://doi.org/10.1371/journal.pone.0205435)) -- male C57BL/6J mice given a single IV dose with a 14C nanotracer.
+- Add Innes 2018 intracellular stavudine triphosphate ([doi:10.1128/aac.00761-18](https://doi.org/10.1128/aac.00761-18)) -- HIV-positive prepubertal children and adults in South Africa.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

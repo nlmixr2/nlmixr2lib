@@ -8810,18 +8810,8 @@ navbar:
         href: articles/Lakshminarayana_2015_spiroindolones.html
       - text: "Spironolactone qsp (Meid 2024)"
         href: articles/Meid_2024_spironolactone_qsp.html
-      - text: "Stamulumab (Singh 2016)"
-        href: articles/Singh_2016_stamulumab.html
-      - text: "Stamulumab cyno (Singh 2016)"
-        href: articles/Singh_2016_stamulumab.html
-      - text: "Stamulumab cyno circumference (Singh 2016)"
-        href: articles/Singh_2016_stamulumab.html
-      - text: "Stamulumab mouse (Singh 2016)"
-        href: articles/Singh_2016_stamulumab.html
-      - text: "Stamulumab mouse muscle (Singh 2016)"
-        href: articles/Singh_2016_stamulumab.html
-      - text: "Stamulumab rat (Singh 2016)"
-        href: articles/Singh_2016_stamulumab.html
+      - text: "Stavudine (Innes 2018)"
+        href: articles/Innes_2018_stavudine.html
       - text: "Sucrose rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Sudapyridine (Kong 2025)"
@@ -11836,6 +11826,7 @@ articles:
   - articles/Ideno_2026_scout
   - articles/Idkaidek_2011_ibuprofen
   - articles/Iida_2008_nicorandil
+  - articles/Innes_2018_stavudine
   - articles/Inoue_2025_valemetostat_ptcl
   - articles/Ippolito_2024_pacmilimab_qsp
   - articles/Ippolito_2024b_pacmilimab_qsp
