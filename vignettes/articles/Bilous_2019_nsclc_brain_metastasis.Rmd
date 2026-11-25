@@ -1,0 +1,640 @@
+---
+title: "NSCLC brain metastasis dynamics (Bilous 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{NSCLC brain metastasis dynamics (Bilous 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Bilous M, Serdjebi C, Boyer A, Tomasini P, Pouypoudat C,
+  Barbolosi D, Barlesi F, Chomy F, Benzekry S. Quantitative mathematical
+  modeling of clinical brain metastasis dynamics in non-small cell lung
+  cancer. Sci Rep. 2019;9:13018.
+* Article: <https://doi.org/10.1038/s41598-019-49407-3> (open access, with
+  Supplementary Material: Table S1 and Figures S1-S9)
+
+Bilous 2019 is a mechanistic disease model with no drug input. The primary
+lung tumor grows from one cell by Gompertz kinetics until diagnosis, then
+follows a tumor growth inhibition (TGI) model while the patient is on
+systemic therapy. Brain metastases (BMs) are born at rate
+`d(Sp) = mu * Sp^gamma` (the Iwata size-structured framework), so the
+expected number born by time `t` is `N(t) = integral(mu * Sp^gamma)`. In the
+selected *dormancy* model a newborn metastasis stays at one cell for `tau`
+days and then grows by the untreated Gompertz law; metastases do not respond
+to therapy. The number of metastases larger than a size `s` at time `t` is
+then `N(t - t(s) - tau)`, where `t(s)` is the Gompertz time from one cell to
+`s`.
+
+The paper contributes four models:
+
+| Model | Data | Role in the paper |
+|-------|------|-------------------|
+| `Bilous_2019_nsclc_bm_probability_adenocarcinoma` | Mujoomdar 2007, 136 adenocarcinoma patients | Population probability of BM at diagnosis (Figure 1A) |
+| `Bilous_2019_nsclc_bm_probability_squamous` | Mujoomdar 2007, 47 squamous cell carcinoma patients | Population probability of BM at diagnosis (Figure 1B) |
+| `Bilous_2019_nsclc_bm_dormancy_patient1` | Patient 1 (adenocarcinoma) | Individual fit of the dormancy model (Figures 2, 4, 5; Table 2) |
+| `Bilous_2019_nsclc_bm_dormancy_patient2` | Patient 2 (squamous cell carcinoma) | Individual fit of the dormancy model (Figures S7, S8; Table 2) |
+
+The four candidate metastasis models that the dormancy model was selected
+over (basic, different growth, secondary dissemination and delay; Table 1 and
+Figures S3-S6) are not packaged.
+
+All four models run on a time axis in days from the first cancer cell
+(`t = 0`), because the dormancy model needs the number of metastases born
+before diagnosis. The diagnosis time `td` is computed inside each model from
+the primary tumor diameter at diagnosis (covariate `TUMSZ`, mm) and is
+returned as an output column, together with `time_after_diag = t - td` in the
+patient-level models.
+
+# Population
+
+The population-level models were fitted to the brain-metastasis frequency by
+primary tumor size reported by Mujoomdar et al. (Radiology 2007;242:882) for
+136 adenocarcinoma and 47 squamous cell carcinoma patients, taken from the
+literature. The individual-level models were each fitted to one patient with
+unresectable NSCLC: patient 1 had an EGFR-mutated adenocarcinoma (Institut
+Bergonie, Bordeaux; 10 primary tumor and 47 brain-metastasis size
+measurements over 6 MRI time points, treated with erlotinib, docetaxel, an
+erlotinib re-challenge and gemcitabine) and patient 2 had an EGFR wild-type
+squamous cell carcinoma (University Hospital of Marseille; 11 primary tumor and
+16 brain-metastasis size measurements over 4 MRI time points). The paper gives
+no demographics. The same information is in each model's `population`
+metadata (`readModelDb("Bilous_2019_nsclc_bm_dormancy_patient1")()$population`).
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. They are
+collected here.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Gompertz primary tumor growth before diagnosis | `dSp/dt = (alpha0p - betap ln Sp) Sp`, `Sp(0) = 1` | Materials and Methods, Primary tumor growth |
+| TGI after diagnosis (equation 1) | `dSp/dt = alpha1 Sp - kappa exp(-(t - Td) ln2 / t_res) Sp` | Materials and Methods, equation 1 |
+| Dissemination rate (equation 2) | `d = mu Sp^gamma` | Materials and Methods, equation 2 |
+| Number of metastases (equation 4) | `N(t) = integral_0^t d(Sp)` | Materials and Methods, equation 4 |
+| Dormancy model | `f_dorm(t, s) = N(t - t(s) - tau)`, `t(s) = -ln(1 - beta/alpha0 ln s)/beta` | Materials and Methods, Dormancy model and equation 5 |
+| Gompertz calibration | `exp(alpha0p/betap) = 1e12`, doubling-time equation for `DT(Sd)` | Materials and Methods, Pre-clinical primary tumor growth |
+| `ltsmax` | `log(1e12)` (fixed) | Methods, carrying capacity 10^12 cells |
+| `cell_density` | 1e6 cells/mm^3 (fixed) | Methods, '1 mm3 = 10^6 cells' |
+| `tdouble` adenocarcinoma | 201 day (fixed) | Supplementary Table S1 average; Methods text |
+| `tdouble` squamous | 104 day (fixed) | Supplementary Table S1 average |
+| `diam_ref` (population models) | 35 mm (fixed) | Results, 'diameter 35 mm (median value from ref.50)' |
+| `gamma` | 1 (fixed) | Table 2 (both patients); Methods, Population level 'set gamma = 1' |
+| `diam_vis` patient 1 | 3 mm (fixed) | Table 2 'Visibility threshold'; Figure 5A |
+| `diam_vis` patient 2 | 5 mm (fixed) | Methods 'S_vis ... 5 mm'; Figure S7A bins (Table 2 prints 3 mm; see Assumptions) |
+| `lp` (alpha1) patient 1 / 2 | 5.72e-4 / 0.0101 1/day | Table 2 |
+| `lkkill` (kappa) patient 1 / 2 | 4.46e-3 / 0.0439 1/day | Table 2 |
+| `lthalf_res` (t_res) patient 1 / 2 | 149 / 35.4 day | Table 2 |
+| `lmu` patient 1 / 2 | 2.00e-12 / 1.02e-12 1/(cell day) | Table 2 |
+| `ltau_dorm` patient 1 / 2 | 133 / 171 day | Table 2 |
+| `addSd_metastases_visible` patient 1 / 2 | 0.3347 / 0.3627 | Table 1 dormancy SSE 4.93 / 1.71, `sqrt(SSE / (N - P))` with N = 47 / 16, P = 3 |
+| `lmu`, `etalmu` adenocarcinoma | median 1.56e-13, omega^2 8.982 | Figure 1A legend mu_pop = 1.39e-11, mu_sigma = 1.24e-9 (mean and SD) |
+| `lmu`, `etalmu` squamous | median 2.79e-15, omega^2 8.289 | Figure 1B legend mu_pop = 1.76e-13, mu_sigma = 1.11e-11 (mean and SD) |
+
+```{r load-models}
+mod_p1 <- readModelDb("Bilous_2019_nsclc_bm_dormancy_patient1")
+mod_p2 <- readModelDb("Bilous_2019_nsclc_bm_dormancy_patient2")
+mod_adeno <- readModelDb("Bilous_2019_nsclc_bm_probability_adenocarcinoma")
+mod_squam <- readModelDb("Bilous_2019_nsclc_bm_probability_squamous")
+
+par_of <- function(mod, name) {
+  ini_df <- rxode2::rxode(mod)$iniDf
+  ini_df$est[ini_df$name == name]
+}
+
+days_per_month <- 365.25 / 12
+```
+
+# Patient-level dormancy models
+
+## Solving the models
+
+Each patient is solved on a one-day grid from the first cancer cell to 50
+months after diagnosis. The observation rows are on the
+`metastases_visible` state; `tumor`, `metastases` and the derived outputs
+(`tumor_diam`, `td`, `alpha_gomp`, `beta_gomp`) come back as columns.
+
+```{r solve-patients}
+solve_patient <- function(mod, tumsz, months_after = 50) {
+  ev0 <- data.frame(id = 1L, time = 0, evid = 0L, cmt = "metastases_visible", TUMSZ = tumsz)
+  td <- rxode2::rxSolve(mod, ev0, returnType = "data.frame")$td[1]
+  ev <- data.frame(
+    id = 1L,
+    time = sort(unique(c(seq(0, ceiling(td + months_after * days_per_month), by = 1), td))),
+    evid = 0L,
+    cmt = "metastases_visible",
+    TUMSZ = tumsz
+  )
+  sim <- rxode2::rxSolve(mod, ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-10, maxsteps = 1e6)
+  sim$month <- sim$time_after_diag / days_per_month
+  sim
+}
+
+sim_p1 <- solve_patient(mod_p1, tumsz = 36.0)
+sim_p2 <- solve_patient(mod_p2, tumsz = 53.7)
+```
+
+## Discrete brain metastases
+
+The paper simulates individual metastases with a discrete version of the
+model (Methods, Discrete versions of the models): the i-th metastasis is born
+at `T_i = inf{t : N(t) >= i}`, stays at one cell for `tau` and then grows by
+the Gompertz law. The helper below reconstructs these lesions from the solved
+`N(t)`.
+
+```{r discrete-bms}
+bm_lesions <- function(sim, mod) {
+  n_max <- floor(max(sim$metastases))
+  birth <- stats::approx(sim$metastases, sim$time, xout = seq_len(n_max), ties = "ordered")$y
+  data.frame(
+    bm = seq_len(n_max),
+    birth = birth,
+    tau = exp(par_of(mod, "ltau_dorm")),
+    alpha = sim$alpha_gomp[1],
+    beta = sim$beta_gomp[1],
+    td = sim$td[1],
+    density = par_of(mod, "cell_density")
+  )
+}
+
+bm_size_cells <- function(lesions, t) {
+  grow <- pmax(t - lesions$birth - lesions$tau, 0)
+  size <- exp(lesions$alpha / lesions$beta * (1 - exp(-lesions$beta * grow)))
+  ifelse(t >= lesions$birth, size, NA_real_)
+}
+
+cells_to_mm <- function(cells, density = 1e6) (6 * cells / (pi * density))^(1 / 3)
+
+les_p1 <- bm_lesions(sim_p1, mod_p1)
+les_p2 <- bm_lesions(sim_p2, mod_p2)
+```
+
+## Patient 1: diagnosis-time predictions (Table 2 and Results)
+
+```{r p1-claims}
+at <- function(sim, month, col) stats::approx(sim$month, sim[[col]], xout = month)$y
+first_month <- function(sim, col, k = 1) min(sim$month[sim[[col]] >= k])
+
+td1 <- sim_p1$td[1]
+size_td1 <- bm_size_cells(les_p1, td1)
+first_vis1 <- first_month(sim_p1, "metastases_visible")
+# T2 = 19 months, the model-predicted first visible BM in the Results; the
+# packaged parameters (rounded to three figures) put it at 19.7 months.
+t2_1 <- td1 + 19 * days_per_month
+size_t2_1 <- bm_size_cells(les_p1, t2_1)
+s30 <- 1e6 * pi / 6 * 30^3
+dt30 <- function(sim) {
+  a <- sim$alpha_gomp[1]
+  b <- sim$beta_gomp[1]
+  -log((b * log(2 * s30) - a) / (b * log(s30) - a)) / b
+}
+
+claims_p1 <- data.frame(
+  quantity = c(
+    "Age of the primary tumor at diagnosis (year)",
+    "alpha0p (1/day)",
+    "betap (1/day)",
+    "PT doubling time at 3 cm (day)",
+    "Dissemination rate at 3 cm (1/day)",
+    "BMs present at diagnosis",
+    "BM burden at diagnosis (cells)",
+    "Largest BM at diagnosis (cells)",
+    "First BM birth (months after diagnosis)",
+    "First BM visible (months after diagnosis)",
+    "BMs present at T2 = 19 months",
+    "Dormancy duration (months)"
+  ),
+  paper = c(5.3, 0.0284, 1.03e-3, 173, 0.0282, 10, 1167, 1046, -14, 19, 28, 4.4),
+  model = c(
+    td1 / 365.25,
+    sim_p1$alpha_gomp[1],
+    sim_p1$beta_gomp[1],
+    dt30(sim_p1),
+    exp(par_of(mod_p1, "lmu")) * s30^par_of(mod_p1, "gamma"),
+    floor(at(sim_p1, 0, "metastases")),
+    sum(size_td1, na.rm = TRUE),
+    max(size_td1, na.rm = TRUE),
+    (les_p1$birth[1] - td1) / days_per_month,
+    first_vis1,
+    sum(!is.na(size_t2_1)),
+    les_p1$tau[1] / days_per_month
+  ),
+  source = c(
+    "Table 2 T_d", "Table 2", "Table 2", "Table 2 DT_PT", "Table 2 d",
+    "Results ('10 occult BMs')", "Results ('1,167 cells')", "Results ('1,046 cells')",
+    "Results ('14 months before')", "Results; Figure 4C ('19 vs 20 months')",
+    "Results ('28 tumors')", "Discussion ('4.4 ... months')"
+  )
+)
+claims_p1$pct_diff <- 100 * (claims_p1$model / claims_p1$paper - 1)
+show_claims <- function(tab) {
+  tab |>
+    mutate(across(c(paper, model), function(x) formatC(x, digits = 4, format = "g"))) |>
+    knitr::kable(digits = 2)
+}
+show_claims(claims_p1)
+```
+
+Every reported quantity is reproduced to within a few percent, the
+rounding of the printed parameters; the first visible metastasis comes 0.7
+months after the reported 19 months. The model gives `r formatC(sum(size_t2_1, na.rm = TRUE), format = "e", digits = 1)`
+cells of total BM burden at T2 (19 months), against 1.7e7 in the Results.
+
+```{r p1-assert}
+# The model is deterministic and these quantities follow from the printed
+# (rounded) parameters. 3% admits the rounding of alpha0p, betap and mu to
+# three significant figures; a wrong doubling time, carrying capacity, cell
+# density or unit moves them by tens of percent.
+stopifnot(
+  nrow(claims_p1) == 12L,
+  all(abs(claims_p1$pct_diff[1:5]) < 3),
+  claims_p1$model[6] == 10,
+  abs(claims_p1$model[7] / 1167 - 1) < 0.05,
+  abs(claims_p1$model[8] / 1046 - 1) < 0.05,
+  abs(claims_p1$model[9] - (-14)) < 1,
+  abs(claims_p1$model[10] - 19) < 1,
+  abs(claims_p1$model[11] - 28) <= 2,
+  abs(sum(size_t2_1, na.rm = TRUE) / 1.7e7 - 1) < 0.1
+)
+```
+
+## Patient 1: primary tumor during treatment (Figure 2A)
+
+```{r p1-fig2a}
+sim_p1 |>
+  filter(month >= 0) |>
+  ggplot(aes(month, tumor_diam)) +
+  geom_line(colour = "steelblue") +
+  labs(
+    x = "Months after diagnosis", y = "Primary tumor diameter (mm)",
+    caption = "Replicates the TGI fit line of Figure 2A of Bilous 2019."
+  ) +
+  coord_cartesian(ylim = c(0, 40))
+```
+
+The fitted line of Figure 2A starts at 36 mm, reaches a nadir of about 30 mm
+around 15 to 20 months and returns to about 35 mm at 48 months.
+
+```{r p1-fig2a-assert}
+nadir_p1 <- sim_p1 |> filter(month >= 0, month <= 48)
+stopifnot(
+  abs(at(sim_p1, 0, "tumor_diam") - 36) < 0.1,
+  abs(min(nadir_p1$tumor_diam) - 30) < 1.5,
+  abs(at(sim_p1, 48, "tumor_diam") - 35) < 1.5
+)
+c(diagnosis = at(sim_p1, 0, "tumor_diam"), nadir = min(nadir_p1$tumor_diam), month48 = at(sim_p1, 48, "tumor_diam"))
+```
+
+## Patient 1: number of visible brain metastases (Figure 4)
+
+The model bars of Figure 4A give the number of visible metastases (3 mm or
+larger) at each MRI; the observed counts are those of Figure 2C. Both were
+read off the figures by the maintainers.
+
+```{r p1-fig4}
+fig4 <- data.frame(
+  month = c(19, 23, 28, 40, 43, 48),
+  paper_model = c(0, 1, 4, 17, 19, 23),
+  observed = c(1, 1, 1, 6, 18, 20)
+)
+fig4$model_continuous <- at(sim_p1, fig4$month, "metastases_visible")
+fig4$model_discrete <- vapply(
+  fig4$month,
+  function(m) sum(cells_to_mm(bm_size_cells(les_p1, td1 + m * days_per_month)) >= 3, na.rm = TRUE),
+  numeric(1)
+)
+knitr::kable(fig4, digits = 2)
+
+sim_p1 |>
+  filter(month >= 0) |>
+  ggplot(aes(month, metastases_visible)) +
+  geom_line() +
+  geom_point(data = fig4, aes(month, observed), colour = "grey40", shape = 8, size = 2) +
+  labs(
+    x = "Months after diagnosis", y = "Number of visible metastases",
+    caption = "Replicates Figure 4B of Bilous 2019 (line: model; stars: observed, Figure 2C)."
+  )
+```
+
+```{r p1-fig4-assert}
+# The discrete count is floor(N(t - t_vis - tau)), so it must equal the
+# floor of the continuous visible-count state exactly (up to a solver
+# rounding at an integer crossing).
+stopifnot(
+  all(abs(fig4$model_discrete - floor(fig4$model_continuous + 1e-6)) <= 1),
+  all(abs(fig4$model_discrete - fig4$paper_model) <= 2)
+)
+```
+
+## Patient 1: natural history of the disease (Figure 5)
+
+```{r p1-fig5, fig.height = 5}
+grid_t <- seq(les_p1$birth[1], td1 + 48 * days_per_month, length.out = 400)
+bm_paths <- lapply(seq_len(nrow(les_p1)), function(i) {
+  sz <- bm_size_cells(les_p1[i, ], grid_t)
+  data.frame(bm = i, month = (grid_t - td1) / days_per_month, cells = sz)
+}) |>
+  bind_rows() |>
+  filter(!is.na(cells)) |>
+  group_by(bm) |>
+  filter(max(cells) >= 1e6 * pi / 6 * 3^3) |>
+  ungroup()
+
+ggplot() +
+  geom_line(data = filter(sim_p1, month <= 48), aes(month, tumor), colour = "steelblue") +
+  geom_line(data = bm_paths, aes(month, cells, group = bm), colour = "firebrick", linewidth = 0.3) +
+  geom_hline(yintercept = 1e6 * pi / 6 * 3^3, linetype = "dashed") +
+  scale_y_log10() +
+  labs(
+    x = "Months after diagnosis", y = "Tumor size (cells)",
+    caption = "Replicates Figure 5A of Bilous 2019 (blue: primary tumor; red: brain metastases that become visible)."
+  )
+```
+
+## Patient 2 (Table 2, Figures S7 and S8)
+
+```{r p2-claims}
+td2 <- sim_p2$td[1]
+size_td2 <- bm_size_cells(les_p2, td2)
+claims_p2 <- data.frame(
+  quantity = c(
+    "Age of the primary tumor at diagnosis (year)",
+    "alpha0p (1/day)",
+    "betap (1/day)",
+    "PT doubling time at 3 cm (day)",
+    "Dissemination rate at 3 cm (1/day)",
+    "BMs present at diagnosis",
+    "BM burden at diagnosis (cells)",
+    "Dormancy duration (months)"
+  ),
+  paper = c(2.1, 0.0858, 3.10e-3, 57, 0.0144, 8, 8, 5.7),
+  model = c(
+    td2 / 365.25,
+    sim_p2$alpha_gomp[1],
+    sim_p2$beta_gomp[1],
+    dt30(sim_p2),
+    exp(par_of(mod_p2, "lmu")) * s30^par_of(mod_p2, "gamma"),
+    floor(at(sim_p2, 0, "metastases")),
+    sum(size_td2, na.rm = TRUE),
+    les_p2$tau[1] / days_per_month
+  ),
+  source = c(
+    "Table 2 T_d", "Table 2", "Table 2", "Table 2 DT_PT", "Table 2 d",
+    "Results ('8 predicted BMs')", "Results ('8 cells')", "Discussion ('5.7 months')"
+  )
+)
+claims_p2$pct_diff <- 100 * (claims_p2$model / claims_p2$paper - 1)
+show_claims(claims_p2)
+
+stopifnot(
+  nrow(claims_p2) == 8L,
+  all(abs(claims_p2$pct_diff[1:5]) < 3),
+  claims_p2$model[6] == 8,
+  claims_p2$model[7] == 8,
+  abs(claims_p2$model[8] - 5.7) < 0.1
+)
+```
+
+All eight metastases present at diagnosis are still dormant single cells, as
+the Results state. The first one is born
+`r round((les_p2$birth[1] - td2) / days_per_month, 1)` months before
+diagnosis, which matches the earliest initiation time in Figure S8B (about
+-5.5 months); the Results text says "45 months prior to diagnosis", which
+cannot hold for a primary tumor that is 2.1 years (25 months) old at
+diagnosis and is taken to be a misprint for 4.5 months.
+
+The steps of the visible-count curve in Figure S7B (model line, 5 mm
+threshold) were read off the figure by the maintainers.
+
+```{r p2-figS7}
+figS7 <- data.frame(k = 1:5, paper_month = c(11.5, 13.5, 14.0, 15.0, 15.8))
+figS7$model_month <- vapply(figS7$k, function(k) first_month(sim_p2, "metastases_visible", k), numeric(1))
+knitr::kable(figS7, digits = 2)
+stopifnot(all(abs(figS7$model_month - figS7$paper_month) < 1))
+
+sim_p2 |>
+  filter(month >= 0, month <= 20) |>
+  ggplot(aes(month, metastases_visible)) +
+  geom_line() +
+  geom_point(data = figS7, aes(paper_month, k), colour = "grey40", shape = 8) +
+  labs(
+    x = "Months after diagnosis", y = "Number of visible metastases (5 mm or larger)",
+    caption = "Replicates the model line of Figure S7B of Bilous 2019 (stars: steps read from the figure)."
+  )
+```
+
+# Population models: probability of brain metastasis at diagnosis (Figure 1)
+
+The probability that a patient whose primary tumor has diameter `D` at
+diagnosis already has a brain metastasis is `P(N(td) > 1)`, with `mu`
+log-normal between patients. Because `N(td)` is proportional to `mu`, the
+probability follows in closed form from one typical-value solve per diameter,
+`P = 1 - Phi(-log(N_typical(td)) / omega)`; a stochastic check on 200 virtual
+patients per histology confirms the closed form.
+
+```{r pop-typical}
+solve_n_at_td <- function(mod, diam_mm) {
+  ev0 <- data.frame(id = seq_along(diam_mm), time = 0, evid = 0L, cmt = "metastases", TUMSZ = diam_mm)
+  td <- rxode2::rxSolve(mod, ev0, omega = NA, returnType = "data.frame")$td
+  ev <- data.frame(
+    id = rep(seq_along(diam_mm), each = 2),
+    time = as.vector(rbind(0, td)),
+    evid = 0L,
+    cmt = "metastases",
+    TUMSZ = rep(diam_mm, each = 2)
+  )
+  sim <- rxode2::rxSolve(mod, ev, omega = NA, returnType = "data.frame", rtol = 1e-10, atol = 1e-12)
+  # rxSolve omits the id column when the event table has a single subject.
+  if (!"id" %in% names(sim)) sim$id <- 1L
+  sim |>
+    group_by(id) |>
+    slice_tail(n = 1) |>
+    ungroup() |>
+    mutate(TUMSZ = diam_mm, td = td)
+}
+
+prob_curve <- function(mod, diam_mm) {
+  ui <- rxode2::rxode(mod)
+  om <- sqrt(ui$omega["etalmu", "etalmu"])
+  typ <- solve_n_at_td(mod, diam_mm)
+  # The typical solve uses mu = exp(lmu), so N(td) = exp(lmu) * I(td) with
+  # I(td) the integral of the tumor size. For log(mu) ~ N(lmu, om^2),
+  # P(mu * I(td) > 1) = 1 - Phi((-log(I(td)) - lmu) / om)
+  #                   = 1 - Phi(-log(N_typical(td)) / om).
+  typ$prob <- 1 - stats::pnorm(-log(typ$metastases) / om)
+  typ
+}
+
+diam_grid <- seq(5, 90, by = 1)
+curve_adeno <- prob_curve(mod_adeno, diam_grid) |> mutate(histology = "Adenocarcinoma")
+curve_squam <- prob_curve(mod_squam, diam_grid) |> mutate(histology = "Squamous cell carcinoma")
+curves <- bind_rows(curve_adeno, curve_squam)
+```
+
+The model curves of Figure 1 were digitised by the maintainers from the
+figure pixels; the Mujoomdar 2007 data points were read off the same figure.
+
+```{r pop-fig1}
+fig1_model <- bind_rows(
+  data.frame(
+    histology = "Adenocarcinoma",
+    D_cm = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+    paper_pct = c(5.5, 20.5, 38.5, 51.7, 63.5, 71.0, 78.0, 83.0, 88.0)
+  ),
+  data.frame(
+    histology = "Squamous cell carcinoma",
+    D_cm = c(2, 3, 4, 5, 6, 7, 8),
+    paper_pct = c(2.0, 4.5, 8.5, 12.5, 20.3, 27.2, 34.8)
+  )
+)
+fig1_data <- bind_rows(
+  data.frame(histology = "Adenocarcinoma", D_cm = c(1.5, 2.5, 3.5, 4.5, 5.5, 7.5), pct = c(25, 41, 29, 76, 44, 79)),
+  data.frame(histology = "Squamous cell carcinoma", D_cm = c(1.5, 2.5, 3.5, 4.5, 5.5, 7.5), pct = c(0, 9, 0, 9, 20, 33))
+)
+fig1_model$model_pct <- mapply(
+  function(h, d) 100 * curves$prob[curves$histology == h & curves$TUMSZ == round(10 * d)],
+  fig1_model$histology, fig1_model$D_cm
+)
+fig1_model$diff_pct_points <- fig1_model$model_pct - fig1_model$paper_pct
+knitr::kable(fig1_model, digits = 1)
+
+ggplot(curves, aes(TUMSZ / 10, 100 * prob)) +
+  geom_line(colour = "steelblue") +
+  geom_point(data = fig1_model, aes(D_cm, paper_pct), shape = 3) +
+  geom_point(data = fig1_data, aes(D_cm, pct), colour = "darkorange", shape = 1, size = 2) +
+  facet_wrap(~histology) +
+  labs(
+    x = "Primary tumor diameter (cm)", y = "Metastasis probability (%)",
+    caption = "Replicates Figure 1 of Bilous 2019 (line: model; crosses: published model curve; circles: Mujoomdar 2007 data)."
+  ) +
+  coord_cartesian(ylim = c(0, 100))
+```
+
+```{r pop-fig1-assert}
+adeno_rows <- fig1_model$histology == "Adenocarcinoma"
+stopifnot(
+  sum(adeno_rows) == 9L,
+  # Adenocarcinoma reproduces the published curve within 2.5 percentage points.
+  all(abs(fig1_model$diff_pct_points[adeno_rows]) < 2.5),
+  # Squamous runs 1 to 7 points below the published curve (see Assumptions);
+  # the gate keeps it within 10 points so a wrong doubling time or mu fails.
+  all(abs(fig1_model$diff_pct_points[!adeno_rows]) < 10)
+)
+```
+
+## Stochastic check (200 virtual patients per histology)
+
+```{r pop-stochastic}
+rxode2::rxSetSeed(20190911)
+n_sub <- 200L
+check_prob <- function(mod, diam_mm, label) {
+  td <- solve_n_at_td(mod, diam_mm)$td
+  ev <- data.frame(
+    id = rep(seq_len(n_sub), each = 2),
+    time = rep(c(0, td), n_sub),
+    evid = 0L,
+    cmt = "metastases",
+    TUMSZ = diam_mm
+  )
+  sim <- rxode2::rxSolve(mod, ev, returnType = "data.frame")
+  at_td <- sim |> filter(abs(time - td) < 1e-8)
+  data.frame(
+    histology = label,
+    TUMSZ = diam_mm,
+    simulated = mean(at_td$bm_present),
+    closed_form = curves$prob[curves$histology == label & curves$TUMSZ == diam_mm],
+    n = nrow(at_td)
+  )
+}
+stoch <- bind_rows(
+  check_prob(mod_adeno, 40, "Adenocarcinoma"),
+  check_prob(mod_squam, 80, "Squamous cell carcinoma")
+)
+knitr::kable(stoch, digits = 3)
+# Binomial SE at n = 200 is at most 0.035; 0.15 is more than 4 SE, and a
+# mis-specified omega (for example the SD read as a log-scale SD) moves the
+# probability by more than 0.3.
+stopifnot(all(stoch$n == n_sub), all(abs(stoch$simulated - stoch$closed_form) < 0.15))
+```
+
+# Assumptions and deviations
+
+* **Time axis.** All models run from the first cancer cell. The diagnosis
+  time `td` is not a parameter: it is computed from the diameter at
+  diagnosis (`TUMSZ`) on the Gompertz curve, and the treatment effect in the
+  patient-level models switches on at `td`. Users simulate past `td` and read
+  `time_after_diag` (patient models) or evaluate the population models at
+  `t = td`.
+* **Gompertz parameters are computed, not tabulated.** The Methods doubling-time
+  equation has a closed-form solution once `alpha0p = betap * log(1e12)`, so
+  each model computes `alpha0p` and `betap` from the doubling time and the
+  calibration diameter. For the two patients this reproduces the Table 2
+  "Computed" values (0.0284 and 1.03e-3; 0.0858 and 3.10e-3 per day).
+* **Squamous doubling time.** The Methods text gives 104 days for "an
+  undifferentiated carcinoma", but Supplementary Table S1 gives 104 days as
+  the squamous cell carcinoma average (91 days for undifferentiated
+  carcinoma). 104 days reproduces Table 2 for the squamous patient, so it is
+  used for squamous cell carcinoma.
+* **Population mu distribution.** The Methods write
+  `ln(mu) ~ N(ln(mu_pop), mu_sigma)` and call `mu_pop` the median, but
+  `mu_sigma` (1.24e-9 and 1.11e-11) carries the units of `mu` and the text
+  reports coefficients of variation above 6000%, which is `mu_sigma / mu_pop`
+  (8921% and 6307%). Read as a log-scale SD, `mu_sigma` would remove all
+  variability; read with `mu_pop` as the median, the probability would exceed
+  50% at every diameter, contradicting Figure 1. Reading `mu_pop` and
+  `mu_sigma` as the mean and SD of the log-normal `mu` reproduces Figure 1A
+  to within 2.5 percentage points, so `lmu` is the log median
+  `log(mu_pop) - omega^2 / 2` with `omega^2 = log(1 + (mu_sigma / mu_pop)^2)`.
+* **Population growth calibration diameter.** The Methods fix the primary
+  tumor growth parameters "from the cohort histology" without naming the
+  diameter at which the doubling time applies. The models use 35 mm, the
+  median diameter the Results quote from the same data source; calibrating
+  at each patient's own diameter instead gives 72% rather than 88% at 9 cm
+  for adenocarcinoma. No squamous-specific diameter is printed and 35 mm is
+  used for both histologies. The squamous curve then runs 1 to 7 percentage
+  points below Figure 1B (35% against about 40% at 8.5-9 cm); this deviation
+  is reported, not tuned.
+* **Visibility threshold for patient 2.** Table 2 prints 3 mm for both
+  patients, while the Methods define the visible size as 5 mm. Patient 1's
+  results (first visible metastasis at 19 months; Figure 4A bins from 3 mm)
+  need 3 mm. Patient 2's fit (Figure S7A bins from 5 mm) needs 5 mm: with
+  5 mm the visible-count steps of Figure S7B are reproduced within 0.6 months,
+  with 3 mm each comes about 1.5 months early. Patient 2 therefore uses 5 mm.
+* **Residual error.** The paper fits the number of metastases larger than
+  each observed size with `y = f + sigma * eps` and estimates sigma a
+  posteriori as `l(theta) / (N - P)`, which it uses as a variance in its
+  covariance formula. The additive SD is therefore
+  `sqrt(SSE / (N - P))` from the Table 1 dormancy objective (4.93 with 47
+  points for patient 1; 1.71 with 16 points for patient 2; P = 3 parameters
+  `mu`, `tau`, `gamma`). It is attached to the visible-count output, which is
+  the cumulative size distribution at the visibility threshold. The paper
+  does not report the error model of the primary tumor TGI fit, so no
+  primary-tumor endpoint carries residual error; `tumor_diam` is an output
+  only.
+* **Observation name.** `metastases_visible` is not a registered output
+  name, so the convention check reports it for the two patient-level
+  models; there is no canonical output for a count of metastases.
+* **Cumulative size distributions.** The model returns `N(t)` and the
+  visible count; counts above any other size `s` are
+  `N(t - t(s) - tau)` and are computed from the solved `N(t)` as in this
+  article.
+* **Not packaged.** The basic, different-growth, secondary-dissemination
+  and delay models were candidates the dormancy model was selected over
+  (Table 1; Figures S3-S6). The secondary-dissemination model has no closed
+  `N(t)` and was fitted with a dedicated characteristics scheme.
+* **No erratum.** No correction to Bilous 2019 is registered in Crossref or
+  Europe PMC (checked 2026-11-25).
+* **No NCA.** The models have no drug and no concentration, so the
+  validation uses the paper's reported disease-course predictions instead of
+  PKNCA.
