@@ -2038,6 +2038,8 @@ navbar:
         href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Daclatasvir (Osawa 2018)"
         href: articles/Osawa_2018_daclatasvir_asunaprevir.html
+      - text: "Daclatasvir asunaprevir svr12 (Ueno 2018)"
+        href: articles/Ueno_2018_daclatasvir_asunaprevir.html
       - text: "Daclizumab (Othman 2014)"
         href: articles/Othman_2014_daclizumab.html
       - text: "Daclizumab cd25 (Diao 2016)"
@@ -11976,6 +11978,7 @@ articles:
   - articles/Tuffal_2023_avalglucosidase_alfa
   - articles/Tuo_2025_clobazam
   - articles/Tylutki_2018_amitriptyline
+  - articles/Ueno_2018_daclatasvir_asunaprevir
   - articles/Ueshima_2018_apixaban
   - articles/Ueshima_2025_edoxaban
   - articles/Ueshima_2025_remimazolam

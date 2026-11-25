@@ -1,0 +1,511 @@
+---
+title: "Daclatasvir + asunaprevir exposure-response for SVR12 in hepatitis C (Ueno 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Daclatasvir + asunaprevir exposure-response for SVR12 in hepatitis C (Ueno 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Source and model
+
+```{r models, include = FALSE}
+mod_er <- readModelDb("Ueno_2018_daclatasvir_asunaprevir_svr12")
+mod_dcv <- readModelDb("Osawa_2018_daclatasvir")
+mod_asv <- readModelDb("Osawa_2018_asunaprevir")
+meta_er <- rxode2::rxode2(mod_er)$meta
+```
+
+* Citation: `r meta_er$reference`
+* Article (open access): <https://doi.org/10.1002/jcph.1262>
+* PubMed Central: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6175176/>
+* Supporting Information (Supplementary Tables 1-4 and Figure 1): distributed
+  with the open-access article.
+
+Ueno 2018 relates the probability of sustained virologic response 12 weeks
+after the end of treatment (SVR12) to the average steady-state plasma
+concentrations (Cav,ss) of daclatasvir (DCV) and asunaprevir (ASV) in Japanese
+patients with chronic hepatitis C virus (HCV) genotype 1b infection treated with
+the all-oral DUAL regimen for 24 weeks. The model is a binary logistic
+regression fitted in NONMEM 7.2. The final logit is linear and uncentred in both
+exposures, has a product (interaction) term, has **no intercept**, and adds a
+shift for the baseline NS5A Y93H resistance-associated variant and another for
+a missing Y93H result:
+
+$$
+\mathrm{logit}\,P(\mathrm{SVR12}) = \beta_1 C_{av,ss,\mathrm{ASV}} +
+\beta_2 C_{av,ss,\mathrm{DCV}} + \beta_3 C_{av,ss,\mathrm{ASV}}
+C_{av,ss,\mathrm{DCV}} + \mathrm{CAT}_1 \cdot \mathrm{Y93H} +
+\mathrm{CAT}_2 \cdot \mathrm{Y93H}_{\mathrm{missing}}
+$$
+
+The exposures were not measured. Ueno 2018 predicted them from the companion
+population PK models of the same two studies, which this package carries as
+`Osawa_2018_daclatasvir` and `Osawa_2018_asunaprevir`. The exposure-response
+model therefore takes the two Cav,ss values as data columns
+(`CAV_DACLATASVIR`, `CAV_ASUNAPREVIR`, ng/mL). The last part of this article
+regenerates those columns from the PK models.
+
+# Population
+
+```{r population, echo = FALSE}
+pop <- meta_er$population
+tibble::tibble(
+  Field = c("Subjects", "Studies", "Age", "Weight", "Female", "Disease", "Dosing", "Region"),
+  Value = c(
+    pop$n_subjects, pop$n_studies, pop$age_range, pop$weight_range,
+    paste0(pop$sex_female_pct, "%"), pop$disease_state, pop$dose_range, pop$regions
+  )
+) |>
+  knitr::kable(caption = "Analysis population (Ueno 2018 Table 1 and Methods).")
+```
+
+All 265 patients were Japanese and had genotype 1b infection. 222 came from the
+phase 3 study AI447026 (DCV 60 mg tablet once daily with ASV 100 mg softgel
+capsule twice daily) and 43 from the phase 2 study AI447017 (DCV 60 mg once
+daily with ASV 600 mg or 200 mg tablet twice daily). The NS5A Y93H variant was
+present at baseline in 40 patients (15.1%) and unknown in 8 (3.0%). Observed
+SVR12 was 90.3% without and 47.5% with baseline Y93H.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Logistic link, no intercept | `logit P = b1 ASV + b2 DCV + b3 ASV DCV + ...` | Methods, logit equations; Results, Model Development ('without intercept, had the lowest BIC') |
+| `e_cav_asunaprevir_logit` | 0.0069 per ng/mL | Table 2, 'Slope of ASV (b1)' |
+| `e_cav_daclatasvir_logit` | 0.00368 per ng/mL | Table 2, 'Slope of DCV (b2)' |
+| `e_cav_asunaprevir_daclatasvir_logit` | -9.12e-6 per (ng/mL)^2 | Table 2, 'Interaction between ASV and DCV (b3) (b x 10^-3)', printed -0.00912 |
+| `e_hcv_ns5a_y93h_logit` | -2.53 | Table 2, 'Y93H (CAT1)' |
+| `e_hcv_ns5a_y93h_missing_logit` | -0.508 | Table 2, 'Y93H Missing (CAT2)' |
+| `addSd_prob_svr12` | 0.001, fixed | Not from the source (placeholder; see Assumptions) |
+| Exposure columns | Cav,ss in ng/mL | Methods; Table 1 (medians and ranges) |
+
+# Checks against the paper's printed numbers
+
+## The interaction coefficient carries a factor of 10^-3
+
+Table 2 prints the interaction row as '-0.00912' in a row headed
+'(b x 10^-3)'. The Discussion prints four model-based SVR12 rates at the
+analysis-set median exposures. They decide the reading: only the scaled value
+reproduces them.
+
+```{r scaling}
+cav_dcv_med <- 557.4 # Table 1, DCV 60 mg once daily
+cav_asv_med <- c(softgel_100 = 163.7, tablet_200 = 268.4) # Table 1
+
+typical_logit <- function(asv, dcv, b3) {
+  0.0069 * asv + 0.00368 * dcv + b3 * asv * dcv
+}
+data.frame(
+  reading = c("b3 = -0.00912e-3", "b3 = -0.00912 (as printed)"),
+  p_svr12_softgel = plogis(c(
+    typical_logit(cav_asv_med[["softgel_100"]], cav_dcv_med, -0.00912e-3),
+    typical_logit(cav_asv_med[["softgel_100"]], cav_dcv_med, -0.00912)
+  ))
+) |>
+  knitr::kable(digits = 4, caption = "SVR12 probability without Y93H at the softgel-regimen medians under the two readings of the interaction row. The paper reports 91.2%.")
+```
+
+## Model-based SVR12 rates (Discussion)
+
+The packaged model is solved at the four exposure / Y93H combinations the
+Discussion quotes. The probabilities are deterministic, so the check is tight.
+
+```{r discussion-rates}
+# The logistic model has no between-subject variability, so rxode2 warns that
+# a multi-subject solve has no omega. That is expected; only that warning is
+# muffled.
+muffle_no_omega <- function(expr) {
+  withCallingHandlers(expr, warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  })
+}
+
+solve_er <- function(asv, dcv, y93h, y93h_missing = 0) {
+  ev <- data.frame(
+    id = seq_along(asv),
+    time = 0,
+    amt = 0,
+    evid = 0L,
+    CAV_ASUNAPREVIR = asv,
+    CAV_DACLATASVIR = dcv,
+    HCV_NS5A_Y93H = y93h,
+    HCV_NS5A_Y93H_MISSING = y93h_missing
+  )
+  muffle_no_omega(as.data.frame(rxode2::rxSolve(
+    mod_er,
+    events = ev,
+    returnType = "data.frame"
+  )))$prob_svr12
+}
+
+disc <- tibble::tribble(
+  ~regimen, ~asv, ~y93h, ~published_pct,
+  "ASV 100 mg BID softgel", 163.7, 0, 91.2,
+  "ASV 100 mg BID softgel", 163.7, 1, 45.5,
+  "ASV 200 mg BID tablet", 268.4, 0, 92.7,
+  "ASV 200 mg BID tablet", 268.4, 1, 50.2
+) |>
+  mutate(
+    dcv = cav_dcv_med,
+    model_pct = 100 * solve_er(asv, dcv, y93h),
+    diff_pts = model_pct - published_pct
+  )
+
+disc |>
+  dplyr::rename(
+    "ASV regimen" = regimen,
+    "ASV Cav,ss (ng/mL)" = asv,
+    "DCV Cav,ss (ng/mL)" = dcv,
+    "Y93H" = y93h,
+    "Published SVR12 (%)" = published_pct,
+    "Model SVR12 (%)" = model_pct,
+    "Difference (points)" = diff_pts
+  ) |>
+  knitr::kable(digits = 2, caption = "Model-based SVR12 at the Table 1 median exposures against Ueno 2018 Discussion.")
+
+# Published to one decimal; 91.28% prints as 91.2 in the paper (truncated, not
+# rounded), so allow a 0.1-point margin beyond the half-unit rounding step.
+stopifnot(all(abs(disc$diff_pts) < 0.15))
+```
+
+All four rates agree to the printed decimal. The softgel rate without Y93H
+computes to 91.28%, which the paper prints as 91.2% (truncated rather than
+rounded); the other three round to the published values.
+
+## A flat relationship without Y93H
+
+The Discussion states that, without Y93H, doubling the median exposures of both
+drugs raised SVR12 by less than 10 percentage points.
+
+```{r doubling}
+p_med <- solve_er(cav_asv_med[["softgel_100"]], cav_dcv_med, 0)
+p_dbl <- solve_er(2 * cav_asv_med[["softgel_100"]], 2 * cav_dcv_med, 0)
+c(median = 100 * p_med, doubled = 100 * p_dbl, gain_pts = 100 * (p_dbl - p_med))
+stopifnot(p_dbl > p_med, 100 * (p_dbl - p_med) < 10)
+```
+
+# Replicating Figure 4
+
+Figure 4 of Ueno 2018 shows the predicted SVR12 probability against one drug's
+Cav,ss with the other held at its median (ASV 176 ng/mL in the upper panel, DCV
+557 ng/mL in the lower panel, per Results), with and without Y93H.
+
+```{r figure4, fig.height = 7}
+grid_dcv <- seq(150, 1600, by = 10)
+grid_asv <- seq(60, 1000, by = 10)
+fig4 <- bind_rows(
+  tidyr::crossing(x = grid_dcv, y93h = 0:1) |>
+    mutate(panel = "DCV Cav,ss (ASV fixed at 176 ng/mL)", asv = 176, dcv = x),
+  tidyr::crossing(x = grid_asv, y93h = 0:1) |>
+    mutate(panel = "ASV Cav,ss (DCV fixed at 557 ng/mL)", asv = x, dcv = 557)
+) |>
+  mutate(
+    p = solve_er(asv, dcv, y93h),
+    group = ifelse(y93h == 1, "Y93H at baseline", "No Y93H")
+  )
+
+ggplot(fig4, aes(x, 100 * p, linetype = group)) +
+  geom_line() +
+  facet_wrap(~panel, ncol = 1, scales = "free_x") +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(
+    x = "Cav,ss (ng/mL)", y = "Predicted SVR12 (%)", linetype = NULL,
+    caption = "Replicates the median curves of Figure 4 of Ueno 2018."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r figure4-ends}
+fig4_ends <- fig4 |>
+  group_by(panel, group) |>
+  dplyr::filter(x == min(x) | x == max(x)) |>
+  ungroup() |>
+  transmute(panel, group, x, p_pct = round(100 * p, 1))
+knitr::kable(fig4_ends, caption = "End points of the replicated Figure 4 curves.")
+```
+
+The end points match the published curves read by eye: in the upper panel about
+81% rising to 99% without Y93H and about 25% rising to 88% with it; in the lower
+panel about 90% rising to 98% without Y93H. The lower-panel Y93H curve ends near
+79% at 1000 ng/mL, a few points below where the published dotted line ends
+(about 82-83%). The published curves are the medians of bootstrap predictions,
+not the point-estimate curve, and the Y93H stratum (n = 40) has the widest
+bootstrap interval in the figure, so a small offset at the edge of the
+exposure range is expected.
+
+# Regenerating the exposures from the PK models
+
+## Virtual cohort
+
+Ueno 2018 derived Cav,ss from the post hoc estimates of the Osawa 2018 PK models.
+A virtual cohort is drawn from the demographics in Ueno 2018 Table 1 and passed
+through those models. Baseline AST, needed by the asunaprevir model but not
+tabulated by Ueno 2018, is drawn from the Osawa 2018 Table 1 distribution
+(median 52 U/L, 95th percentile 123.6 U/L), as in the Osawa 2018 article. The
+Y93H status is drawn at the observed frequencies.
+
+```{r cohort}
+rxode2::rxSetSeed(20180725)
+set.seed(20180725)
+
+rlnorm_pct <- function(n, m, p95, lo, hi) {
+  pmin(pmax(stats::rlnorm(n, log(m), log(p95 / m) / stats::qnorm(0.95)), lo), hi)
+}
+
+arms <- tibble::tribble(
+  ~arm, ~n, ~asv_dose, ~softgel,
+  "ASV 100 mg BID softgel", 200L, 100, 1L,
+  "ASV 200 mg BID tablet", 100L, 200, 0L,
+  "ASV 600 mg BID tablet", 50L, 600, 0L
+)
+
+cohort <- arms[rep(seq_len(nrow(arms)), arms$n), ] |>
+  mutate(
+    id = dplyr::row_number(),
+    WT_BASE = rlnorm_pct(dplyr::n(), 55, 75, 36, 93.4),
+    CRCL_BASE = rlnorm_pct(dplyr::n(), 84.6, 130, 39.5, 172.8),
+    SEXF = stats::rbinom(dplyr::n(), 1, 0.657),
+    CONMED_PEGIFN_RBV = 0L,
+    AST_BASE = rlnorm_pct(dplyr::n(), 52, 123.6, 13, 595),
+    AST = AST_BASE,
+    DIS_CIRRHOSIS = stats::rbinom(dplyr::n(), 1, 0.083),
+    FORM_ASV_SOFTGEL = softgel,
+    y93h_draw = stats::runif(dplyr::n()),
+    HCV_NS5A_Y93H = as.integer(y93h_draw < 0.151),
+    HCV_NS5A_Y93H_MISSING = as.integer(y93h_draw >= 0.151 & y93h_draw < 0.181)
+  ) |>
+  select(-y93h_draw, -n)
+```
+
+## Steady-state simulation and PKNCA
+
+Each subject is dosed to steady state (`ss = 1`) and observed over one dosing
+interval. Cav,ss is the PKNCA average concentration over that interval, with
+the `arm` as the grouping variable.
+
+```{r simulate}
+# Log-spaced early grid: both PK models carry wide IIV on absorption. The
+# grid ends on tau exactly: exp(log(24)) is a hair above 24 in floating point,
+# and PKNCA would drop that last sample from the [0, 24] interval.
+ss_events <- function(cohort, dose_col, tau) {
+  log_grid <- exp(seq(log(0.05), log(tau), length.out = 40))
+  obs_times <- c(0, utils::head(log_grid, -1), tau)
+  doses <- cohort |>
+    transmute(id, time = 0, amt = .data[[dose_col]], evid = 1L, cmt = "depot", ii = tau, ss = 1L)
+  obs <- cohort |>
+    select(id) |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", ii = 0, ss = 0L)
+  bind_rows(doses, obs) |>
+    left_join(cohort, by = "id") |>
+    arrange(id, time, dplyr::desc(evid))
+}
+
+cohort <- cohort |> mutate(dcv_dose = 60)
+sim_dcv <- as.data.frame(rxode2::rxSolve(
+  mod_dcv,
+  events = ss_events(cohort, "dcv_dose", 24),
+  returnType = "data.frame",
+  keep = "arm"
+))
+sim_asv <- as.data.frame(rxode2::rxSolve(
+  mod_asv,
+  events = ss_events(cohort, "asv_dose", 12),
+  returnType = "data.frame",
+  keep = "arm"
+))
+```
+
+```{r pknca}
+run_cav <- function(sim, cohort, dose_col, tau) {
+  conc <- sim |>
+    dplyr::filter(!is.na(Cc)) |>
+    select(id, arm, time, Cc)
+  doses <- cohort |>
+    transmute(id, arm, time = 0, dose = .data[[dose_col]])
+  intervals <- data.frame(start = 0, end = tau, cav = TRUE, cmax = TRUE)
+  o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | arm + id)
+  o_dose <- PKNCA::PKNCAdose(doses, dose ~ time | arm + id)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+  as.data.frame(res$result) |>
+    dplyr::filter(PPTESTCD == "cav") |>
+    transmute(id, arm, cav_ngml = 1000 * PPORRES)
+}
+
+cav_dcv <- run_cav(sim_dcv, cohort, "dcv_dose", 24)
+cav_asv <- run_cav(sim_asv, cohort, "asv_dose", 12)
+```
+
+The PKNCA average concentration must equal `Dose / (CL/F * tau)` for each
+subject's own clearance. This compares one solve against its own closed form,
+so the bound is tight.
+
+```{r mass-balance}
+cl_dcv <- sim_dcv |> distinct(id, cl)
+cl_asv <- sim_asv |> distinct(id, cl)
+mb <- bind_rows(
+  cav_dcv |> left_join(cl_dcv, by = "id") |>
+    mutate(drug = "daclatasvir", closed = 1000 * 60 / (cl * 24)),
+  cav_asv |> left_join(cl_asv, by = "id") |> left_join(select(cohort, id, asv_dose), by = "id") |>
+    mutate(drug = "asunaprevir", closed = 1000 * asv_dose / (cl * 12))
+) |>
+  mutate(rel_err = cav_ngml / closed - 1)
+mb |>
+  group_by(drug) |>
+  summarise(max_abs_rel_err = max(abs(rel_err)), .groups = "drop") |>
+  knitr::kable(digits = 5, caption = "PKNCA Cav,ss against Dose / (CL/F x tau).")
+stopifnot(all(abs(mb$rel_err) < 0.01))
+```
+
+```{r cav-compare}
+exposures <- cohort |>
+  select(id, arm, HCV_NS5A_Y93H, HCV_NS5A_Y93H_MISSING) |>
+  left_join(cav_dcv |> select(id, CAV_DACLATASVIR = cav_ngml), by = "id") |>
+  left_join(cav_asv |> select(id, CAV_ASUNAPREVIR = cav_ngml), by = "id")
+
+published <- tibble::tribble(
+  ~drug, ~arm, ~published_median,
+  "DCV", "All regimens", 557.4,
+  "ASV", "ASV 100 mg BID softgel", 163.7,
+  "ASV", "ASV 200 mg BID tablet", 268.4,
+  "ASV", "ASV 600 mg BID tablet", 590.2
+)
+sim_medians <- bind_rows(
+  exposures |> summarise(sim_median = median(CAV_DACLATASVIR)) |>
+    mutate(drug = "DCV", arm = "All regimens"),
+  exposures |> group_by(arm) |> summarise(sim_median = median(CAV_ASUNAPREVIR), .groups = "drop") |>
+    mutate(drug = "ASV")
+)
+cav_tbl <- published |>
+  left_join(sim_medians, by = c("drug", "arm")) |>
+  mutate(pct_diff = 100 * (sim_median / published_median - 1))
+cav_tbl |>
+  dplyr::rename(
+    "Drug" = drug, "Regimen" = arm,
+    "Ueno 2018 Table 1 median (ng/mL)" = published_median,
+    "Regenerated median (ng/mL)" = sim_median,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 1, caption = "Regenerated Cav,ss medians against Ueno 2018 Table 1.")
+```
+
+The regenerated medians are a check on the chain, not a gate: the Table 1
+medians are post hoc estimates for the actual patients, whereas the virtual
+cohort draws fresh random effects and an AST distribution borrowed from
+Osawa 2018. Daclatasvir lands within about 6% of Table 1. Asunaprevir lands
+roughly a third above it on the softgel and 200 mg tablet regimens and further
+above on the 600 mg tablet. Two documented causes push in that direction. First,
+the cohort holds the time-varying AST of the asunaprevir model at its baseline
+value, whereas AST falls as the infection is suppressed and a lower AST raises
+asunaprevir CL/F (exponent -0.382). Second, the Discussion of Ueno 2018 states
+that the popPK model under-predicted exposure in the 600 mg cohort, so the post
+hoc Table 1 value for that arm sits below what the typical model predicts. The
+exposure-response coefficients were estimated against the post hoc values, so
+when the model is fed regenerated exposures the predicted SVR12 is slightly
+optimistic. Because the curve is flat without Y93H, the effect on the
+predicted rate is small (next section).
+
+## Predicted against observed SVR12
+
+```{r svr-cohort}
+exposures <- exposures |>
+  mutate(p = solve_er(CAV_ASUNAPREVIR, CAV_DACLATASVIR, HCV_NS5A_Y93H, HCV_NS5A_Y93H_MISSING))
+
+svr_tbl <- exposures |>
+  mutate(stratum = case_when(
+    HCV_NS5A_Y93H == 1 ~ "Y93H at baseline",
+    HCV_NS5A_Y93H_MISSING == 1 ~ "Y93H missing",
+    TRUE ~ "No Y93H"
+  )) |>
+  group_by(stratum) |>
+  summarise(n = dplyr::n(), mean_pred_pct = 100 * mean(p), median_pred_pct = 100 * median(p), .groups = "drop") |>
+  left_join(tibble::tibble(stratum = c("No Y93H", "Y93H at baseline"), observed_pct = c(90.3, 47.5)), by = "stratum")
+svr_tbl |>
+  dplyr::rename(
+    "Stratum" = stratum, "N" = n,
+    "Mean predicted SVR12 (%)" = mean_pred_pct,
+    "Median predicted SVR12 (%)" = median_pred_pct,
+    "Observed SVR12 (%)" = observed_pct
+  ) |>
+  knitr::kable(digits = 1, caption = "Predicted SVR12 in the regenerated cohort against the observed rates (Ueno 2018 Results).")
+
+# Centre-only check, robust to which subjects land in the tails: the median
+# prediction in the no-Y93H stratum sits on a flat stretch of the curve.
+no_y93h <- svr_tbl$median_pred_pct[svr_tbl$stratum == "No Y93H"]
+stopifnot(abs(no_y93h - 90.3) < 5)
+```
+
+The median predicted SVR12 in the no-Y93H stratum sits a few points above the
+observed 90.3%, consistent with the higher regenerated asunaprevir exposures
+described above. The Y93H stratum is small, both in the trial (40 patients) and
+in the virtual cohort, and lies on the steep part of the curve, so its
+prediction moves with the draw; only the no-Y93H centre is asserted.
+
+```{r svr-plot}
+ggplot(exposures, aes(CAV_DACLATASVIR, 100 * p, colour = factor(HCV_NS5A_Y93H, labels = c("No Y93H", "Y93H")))) +
+  geom_point(alpha = 0.5) +
+  facet_wrap(~arm) +
+  labs(
+    x = "Regenerated DCV Cav,ss (ng/mL)", y = "Predicted SVR12 (%)", colour = NULL,
+    caption = "Individual predicted SVR12 in the regenerated cohort."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# Assumptions and deviations
+
+* **Placeholder residual error.** The source fits an exact Bernoulli likelihood
+  with no random effect and no residual error. rxode2 needs an observation
+  declaration, so `prob_svr12` carries a fixed additive SD of 0.001. Sample
+  binary outcomes with `rbinom(n, 1, prob_svr12)`.
+* **No intercept.** The logit is 0 (probability 0.5) at zero exposure. That
+  is an extrapolation far outside the observed range, not an untreated
+  response rate.
+* **Interaction scaling.** Table 2 prints the interaction as -0.00912 in a row
+  headed '(b x 10^-3)'. The packaged value is -9.12e-6, the only reading that
+  reproduces the Discussion's model-based rates (see above).
+* **Final model only.** The base model (Supplementary Table 2) and the full
+  model (Supplementary Table 3) are steps of the covariate search and are not
+  packaged; the screened covariates are documented in the model's
+  `covariatesDataExcluded`. Supplementary Table 4's refit without the 600 mg
+  cohort is a sensitivity analysis and is not packaged either.
+* **Printing inconsistencies in the source, none affecting the model.** Table 2's
+  bootstrap 95% CI for the interaction (-0.0122 to 0.0154) and for Y93H Missing
+  (-2.12 to 705) are not plausible as printed (the interaction's base-model CI
+  in Supplementary Table 2 is -0.0122 to -0.00363). The supplement numbers the
+  categorical effects differently from the main text (Supplementary Table 3 has
+  patient type as CAT1 and Y93H as CAT2; Table 2 has Y93H as CAT1). The
+  Results text quotes the softgel median ASV exposure as 164 ng/mL (Table 1:
+  163.7) and the Figure 4 fixing value as 176 ng/mL.
+* **Missing Y93H coding.** A patient with no baseline result has
+  `HCV_NS5A_Y93H = 0` and `HCV_NS5A_Y93H_MISSING = 1`, matching the paper's
+  separate missing category against the no-Y93H reference.
+* **Regenerated cohort.** Ueno 2018 does not tabulate AST. The baseline AST
+  distribution, and the choice to hold time-varying AST at baseline, are taken
+  from the Osawa 2018 article. Weight and creatinine-clearance 95th percentiles
+  are not printed in Ueno 2018 and were set to plausible values (75 kg and
+  130 mL/min) inside the published ranges; peginterferon / ribavirin
+  co-medication is 0 because the DUAL regimen does not include it. The
+  regenerated exposures use fresh random effects rather than the post hoc
+  estimates the authors used, so their medians need not match Table 1 exactly;
+  the asunaprevir medians come out about a third higher for the reasons given
+  in that section. This affects only the illustrative cohort, not the packaged
+  exposure-response model, which takes Cav,ss as data.
+* **Figure 4.** The packaged curves are point-estimate predictions. The
+  published median curves come from bootstrap replicates, which accounts for a
+  few points' offset at the upper end of the Y93H curve in the lower panel.

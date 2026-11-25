@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Ueno 2018 daclatasvir + asunaprevir SVR12 exposure-response ([doi:10.1002/jcph.1262](https://doi.org/10.1002/jcph.1262)) -- Japanese adults with chronic HCV genotype 1b infection.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

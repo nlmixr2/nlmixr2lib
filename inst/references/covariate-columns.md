@@ -8390,6 +8390,28 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Hughes_2025_ervogastat_clesacostat_liverfat.R` (hyperbolic Emax on the latent liver-fat variable, Emax 2.32 with EC50 389 ng/mL; as an on/off switch, `CAV_CLESACOSTAT > 0`, it also reduces the ervogastat treatment effect by 73.5%; values from `modellib('Hughes_2025_clesacostat')`).
 - **Notes:** Member of the self-extending `CAV_<full INN>` family; see `CAV_ERVOGASTAT`.
 
+### CAV_DACLATASVIR (**canonical for daclatasvir average plasma concentration in a model that also carries another drug's average concentration**)
+- **Description:** Individual average steady-state plasma concentration of daclatasvir (Cav,ss = AUC(tau,ss) / tau), supplied as a per-subject data column derived from a population PK model. Drug-suffixed member of the `CAV_<full INN>` family, used when a single model carries the average concentrations of two or more drugs.
+- **Units:** ng/mL (document per-model via `covariateData[[CAV_DACLATASVIR]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- an exposure term.
+- **Source aliases:**
+  - `Cavgss,DCV`, `DCV Cav,ss` -- Ueno 2018 logit equation and Table 1.
+- **Example models:** `Ueno_2018_daclatasvir_asunaprevir_svr12.R` (linear and uncentred, `0.00368` per ng/mL on the logit of SVR12, plus a `-9.12e-6` per (ng/mL)^2 product term with `CAV_ASUNAPREVIR`; values from `modellib('Osawa_2018_daclatasvir')`, 60 mg once daily, analysis-set median 557.4 ng/mL).
+- **Notes:** Member of the self-extending `CAV_<full INN>` family; see `CAV_ERVOGASTAT`.
+
+### CAV_ASUNAPREVIR (**canonical for asunaprevir average plasma concentration in a model that also carries another drug's average concentration**)
+- **Description:** Individual average steady-state plasma concentration of asunaprevir (Cav,ss = AUC(tau,ss) / tau), supplied as a per-subject data column derived from a population PK model. Drug-suffixed member of the `CAV_<full INN>` family.
+- **Units:** ng/mL (document per-model via `covariateData[[CAV_ASUNAPREVIR]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- an exposure term.
+- **Source aliases:**
+  - `Cavgss,ASV`, `ASV Cav,ss` -- Ueno 2018 logit equation and Table 1.
+- **Example models:** `Ueno_2018_daclatasvir_asunaprevir_svr12.R` (linear and uncentred, `0.0069` per ng/mL on the logit of SVR12, plus the product term with `CAV_DACLATASVIR`; values from `modellib('Osawa_2018_asunaprevir')`, analysis-set medians 163.7 ng/mL on the 100 mg twice-daily softgel capsule, 268.4 and 590.2 ng/mL on the 200 and 600 mg twice-daily tablets).
+- **Notes:** Member of the self-extending `CAV_<full INN>` family; see `CAV_ERVOGASTAT`. The formulation matters: the softgel capsule gives roughly twice the exposure of the same tablet dose, so state the formulation with the dose when deriving the column.
+
 ## Count / Markov-feedback PD covariates
 
 These columns are specific to count / Markov / time-to-event PD models that
@@ -11647,6 +11669,28 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
   - `Baseline HCV RNA` -- Riggs 2012 covariate-equation and Table I row label.
 - **Example models:** `Riggs_2012_albinterferon.R` (dichotomized inside `model()` at 800,000 IU/mL, giving multiplicative effects 0.988 on CL/F, 0.989 on V/F, and 1.09 on ka per Table I), `Riggs_2012_albinterferon_svr_gt1.R`, `Riggs_2012_albinterferon_svr_gt23.R` (the same column categorized into three levels -- below 400,000, the 400,000-to-800,000 reference band, and 800,000 or above -- driving two logit-scale coefficients in each genotype stratum's sustained-virologic-response logistic regression).
 - **Notes:** Distinct from `HCV_POS`, which is a binary HCV-coinfection indicator used when HCV status is a comorbidity of the modelled population rather than the treated disease. Populate with the continuous concentration and binarize inside `model()` (`hcvHigh <- (HCV_VLOAD >= 800000)`), the same pattern the `ALP` entry prescribes for above-ULN indicators; a pre-binarized dataset column silently loses the threshold. For subjects below the assay limit of quantitation, record the LOQ value and document the convention per model, as `SARS_VLOAD` and `HEV_VLOAD` require. Note that the reporting SCALE differs across the `<VIRUS>_VLOAD` family -- `SARS_VLOAD` is log10 copies/mL while `HEV_VLOAD` and `HCV_VLOAD` are linear IU/mL -- so never carry a log10 value in this column.
+
+### HCV_NS5A_Y93H (**canonical for baseline hepatitis C virus NS5A Y93H resistance-associated variant indicator**)
+- **Description:** 1 = the subject's hepatitis C virus carried the NS5A Y93H amino-acid substitution (tyrosine to histidine at NS5A position 93) at baseline, before the study treatment started; 0 = Y93H not detected. Time-fixed per subject. Y93H is the signature baseline resistance-associated variant (RAV) to NS5A inhibitors such as daclatasvir in genotype 1b; it is a pre-treatment characteristic of the infecting virus, not a treatment-emergent mutation.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no baseline Y93H). A subject with no baseline result is coded 0 here and carried in `HCV_NS5A_Y93H_MISSING` when the source fits a separate missing category.
+- **Source aliases:**
+  - `Y93H1`, `Y93H` -- Ueno 2018 logit equation and Table 2 ('Y93H (CAT1)').
+- **Example models:** `Ueno_2018_daclatasvir_asunaprevir_svr12.R` (additive logit shift `-2.53` on SVR12 under daclatasvir plus asunaprevir; Ueno 2018 Table 2; 40 of 265 Japanese genotype 1b patients).
+- **Notes:** Named for the virus, gene and substitution because NS5A RAVs are position-specific and differ in impact: L31M/V is the other signature daclatasvir RAV in genotype 1b and should register its own sibling (`HCV_NS5A_L31`, ...), and a pooled "any NS5A RAV" indicator would be a separate canonical again, not this one. The substitution is detected by population sequencing at a stated sensitivity threshold that may differ between studies; record it per model. Sits with `HCV_VLOAD` and `HCV_POS` in the `HCV_` prefix; compare `DIS_CMV_RES_BL`, the CMV analogue of a baseline viral resistance indicator.
+
+### HCV_NS5A_Y93H_MISSING (**canonical for baseline-NS5A-Y93H-result-missing indicator**)
+- **Description:** 1 = no baseline NS5A Y93H result is available for the subject; 0 = a result is available and carried in `HCV_NS5A_Y93H`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (result available). When `HCV_NS5A_Y93H_MISSING == 1`, set `HCV_NS5A_Y93H = 0` so the subject receives only the missing-category coefficient.
+- **Source aliases:**
+  - `Y93H2`, `Y93H Missing` -- Ueno 2018 logit equation and Table 2 ('Y93H Missing (CAT2)').
+- **Example models:** `Ueno_2018_daclatasvir_asunaprevir_svr12.R` (additive logit shift `-0.508`, RSE 217%, relative to the no-Y93H reference; 8 of 265 patients).
+- **Notes:** Member of the `<COV>_MISSING` missing-indicator family (`ADA_MISSING`, `AAG_MISSING`, `TUM_EGFR_MUT_MISSING`). Use only when the source fits a separate coefficient for the missing stratum; the estimate describes who was left unsequenced, not viral biology.
 
 ### HIV_VLOAD (**canonical for human immunodeficiency virus type 1 baseline plasma viral load**)
 - **Description:** Baseline (pre-treatment / Day 1) plasma HIV-1 RNA concentration, measured by a quantitative nucleic-acid assay. Carried as the CONTINUOUS concentration on the LINEAR scale even when a model consumes it log-transformed or dichotomized, so that one column can serve several transforms and so that the transform stays visible in `model()` rather than being baked into the dataset. The HIV-1 member of the `<VIRUS>_VLOAD` family, pre-named in the `HEV_VLOAD` notes ("viral-load canonicals for HCV / HBV / HIV that should be registered separately when first encountered").
