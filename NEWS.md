@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dorey 2017 florfenicol time-kill PK/PD-index models ([doi:10.1371/journal.pone.0177568](https://doi.org/10.1371/journal.pone.0177568)) -- porcine Pasteurella multocida and Actinobacillus pleuropneumoniae field isolates in broth and pig serum.
+- Add Zhang 2017 danofloxacin PK/PD index ([doi:10.3389/fmicb.2017.00926](https://doi.org/10.3389/fmicb.2017.00926)) -- chickens infected with *Mycoplasma gallisepticum*, lung AUC24/MIC sigmoid Emax.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
