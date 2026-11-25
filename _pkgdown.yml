@@ -7626,6 +7626,8 @@ navbar:
         href: articles/Kreuer_2014_propofol.html
       - text: "Propofol marsh (Kawata 2024)"
         href: articles/Kawata_2024_propofol.html
+      - text: "Propofol mouse (Shortal 2018)"
+        href: articles/Shortal_2018_propofol_mouse.html
       - text: "Propofol pbpk (Levitt 2005)"
         href: articles/Levitt_2005_propofol_pbpk.html
       - text: "Propofol rat (Knibbe 2005)"
@@ -13093,6 +13095,7 @@ articles:
   - articles/Shoji_2017_fosdagrocorat_oc
   - articles/Shoji_2017_fosdagrocorat_p1np
   - articles/Shoji_2021_vancomycin
+  - articles/Shortal_2018_propofol_mouse
   - articles/Shu_2024_posaconazole
   - articles/Shuai_2026_chikusetsusaponinIVa_rat
   - articles/Shulgin_2020_ici_adverse_events_mbma

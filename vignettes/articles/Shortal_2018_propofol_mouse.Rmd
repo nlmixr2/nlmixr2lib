@@ -1,0 +1,417 @@
+---
+title: "Propofol brain target-controlled infusion in mice (Shortal 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Propofol brain target-controlled infusion in mice (Shortal 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Shortal_2018_propofol_mouse"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Shortal_2018_propofol_mouse"))$description`
+* Article (open access): <https://doi.org/10.1371/journal.pone.0194949>
+* Authors' MATLAB TCI code: <https://doi.org/10.5281/zenodo.1205136>
+
+Shortal et al. (2018) infused propofol through a jugular catheter in adult
+male C57BL/6 mice and measured propofol by HPLC in serial cortical brain
+biopsies and in blood. A linear three-compartment model (Eq 1; Fig 1C) was
+fitted to all four infusion paradigms at once: compartment 1 is blood,
+compartment 2 is brain and compartment 3 lumps every other tissue. Drug enters
+and leaves only through blood. The fitted model then drove a brain
+target-controlled infusion (TCI) adapted from the STANPUMP algorithm, which
+was validated prospectively at brain targets of 10 and 15 ug/g.
+
+# Population
+
+The model was fitted to 241 samples (193 brain, 48 blood) from 21 adult male
+C57BL/6 mice aged 2.90 +/- 0.45 months and weighing 27.4 +/- 1.5 g (Methods,
+'Animals' and 'Surgery'). The four paradigms were a 15 mg/kg bolus given as
+150 mg/kg/min for 6 s (n = 4), a 2 mg/kg/min infusion for 1 h (n = 4), and two
+generations of TCI targeting 10 ug/g brain (n = 5 and n = 8; Results, Figs 3
+and 4). A further 10 mice (68 brain, 12 blood samples) were used only for
+validation (Fig 5). The mice were under isoflurane for surgery, reduced to a
+sub-anaesthetic 0.2 percent during propofol infusion.
+
+```{r population}
+str(rxode2::rxode2(readModelDb("Shortal_2018_propofol_mouse"))$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lk_central_brain` (paper `k12`, blood to brain) | log(1.55) 1/min | Table 1 |
+| `lk_brain_central` (paper `k21`, brain to blood) | log(2.71) 1/min | Table 1 |
+| `lk12` (paper `k13`, blood to other tissues) | log(0.22) 1/min | Table 1 |
+| `lk21` (paper `k31`, other tissues to blood) | log(0.04) 1/min | Table 1 |
+| `lkel` (paper `k10`, elimination from blood) | log(0.07) 1/min | Table 1 |
+| `lvc` (paper `sinf`, blood volume per kg) | log(0.35) L/kg | Table 1; Methods 'Three compartment model' |
+| `addSd`, `addSd_Cbrain` | fixed(0) | Methods 'Fitting procedure' (unweighted least squares; no residual variance reported) |
+| `d/dt(central)`, `d/dt(brain)`, `d/dt(peripheral1)` | n/a | Eq 1 (multiplied through by `vc = sinf * WT`) |
+| Input `I(t) / sinf` | n/a | Eq 1; `kInf * I(t)` in `TCIMaster2.m` of the authors' code |
+| `Cc = central / vc`, `Cbrain = brain / vc` | n/a | Eq 1 (`x1`, `x2` are the blood and brain concentrations) |
+
+The authors' code (`TCIMaster2.m`) carries the final constants in 1/s as
+`k = [0.0258 0.0452 0.0037 0.0007 0.0012 2.8373]` for `[k12 k21 k13 k31 k10 kInf]`.
+Converted to 1/min these are 1.548, 2.712, 0.222, 0.042 and 0.072, and
+`1 / kInf = 0.352` L/kg; Table 1 is the same set rounded to two decimals. The
+packaged model uses the published Table 1 values.
+
+```{r code-vs-table}
+code_k <- c(k12 = 0.0258, k21 = 0.0452, k13 = 0.0037, k31 = 0.0007, k10 = 0.0012) * 60
+table_k <- c(k12 = 1.55, k21 = 2.71, k13 = 0.22, k31 = 0.04, k10 = 0.07)
+cmp_k <- tibble::tibble(
+  constant = names(table_k),
+  table_1 = table_k,
+  code_per_min = code_k[names(table_k)]
+)
+knitr::kable(cmp_k, digits = 3, caption = "Table 1 vs the authors' code (1/min).")
+# Table 1 is the code's constant set rounded to 2 decimals.
+stopifnot(all(abs(cmp_k$table_1 - cmp_k$code_per_min) <= 0.005 + 1e-9))
+stopifnot(abs(0.35 - 1 / 2.8373) <= 0.005)
+```
+
+# Simulation helpers
+
+The model has no between-animal or residual variability, so every simulation
+below is the typical-value prediction for one mouse. Infusion rates are given
+by the paper in mg/kg/min; the event tables convert them to mg/min with the
+mouse's weight, which then cancels against `vc = sinf * WT`.
+
+The model declares two endpoints (blood `Cc` and brain `Cbrain`), so every
+observation row carries `dvid = 1`; the solve returns both concentrations as
+columns on every row.
+
+```{r helpers}
+mod <- readModelDb("Shortal_2018_propofol_mouse")
+wt <- 0.0274 # kg, mean body weight of the study mice
+
+# One subject; infusions in mg/kg/min with durations in min.
+make_events <- function(start, rate_mgkgmin, dur, obs_times, wt = 0.0274) {
+  doses <- tibble::tibble(
+    id = 1L, time = start, evid = 1L, cmt = "central",
+    amt = rate_mgkgmin * dur * wt, rate = rate_mgkgmin * wt, dvid = NA_integer_
+  )
+  obs <- tibble::tibble(
+    id = 1L, time = obs_times, evid = 0L, cmt = NA_character_,
+    amt = 0, rate = 0, dvid = 1L
+  )
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(time, dplyr::desc(evid)) |>
+    dplyr::mutate(WT = wt)
+}
+
+solve_typical <- function(events) {
+  # A one-subject solve returns no `id` column; add it back for PKNCA.
+  rxode2::rxSolve(mod, events = events, rtol = 1e-10, atol = 1e-12) |>
+    as.data.frame() |>
+    dplyr::mutate(id = 1L, .before = 1)
+}
+```
+
+# Replicate published figures
+
+## Figures 3A/4A and 3B/4B: bolus and fixed-rate infusion
+
+Figure 3A/4A starts the 6 s bolus (150 mg/kg/min) at 5 min; Figure 3B/4B runs
+2 mg/kg/min from 5 to 65 min. The thick lines in those figures are the final
+model's predictions.
+
+```{r figs-3-4}
+obs_a <- sort(unique(c(seq(0, 60, by = 0.02))))
+sim_a <- solve_typical(make_events(5, 150, 0.1, obs_a)) |>
+  dplyr::mutate(paradigm = "A: 15 mg/kg bolus (150 mg/kg/min x 6 s)")
+obs_b <- seq(0, 170, by = 0.25)
+sim_b <- solve_typical(make_events(5, 2, 60, obs_b)) |>
+  dplyr::mutate(paradigm = "B: 2 mg/kg/min x 60 min")
+
+dplyr::bind_rows(sim_a, sim_b) |>
+  dplyr::select(paradigm, time, Blood = Cc, Brain = Cbrain) |>
+  tidyr::pivot_longer(c(Blood, Brain), names_to = "matrix", values_to = "conc") |>
+  ggplot(aes(time, conc, colour = matrix)) +
+  geom_line(linewidth = 1) +
+  facet_wrap(~paradigm, scales = "free_x") +
+  scale_colour_manual(values = c(Blood = "darkred", Brain = "black")) +
+  labs(
+    x = "Time (min)", y = "Propofol concentration (ug/mL blood, ug/g brain)",
+    colour = NULL,
+    caption = "Replicates the model lines of Figures 3A, 3B, 4A and 4B of Shortal 2018."
+  ) +
+  theme_bw()
+```
+
+The values read off the published model lines are compared below with the
+packaged model. The figure values were read by the maintainers from the
+published raster figures, so agreement within about 10 percent is the most
+that can be expected.
+
+```{r figs-3-4-check}
+peak_a_blood <- max(sim_a$Cc)
+peak_a_brain <- max(sim_a$Cbrain)
+end_b <- sim_b[sim_b$time == 65, ]
+fig_check <- tibble::tibble(
+  quantity = c(
+    "Fig 4A: peak blood after bolus (ug/mL)",
+    "Fig 3A: peak brain after bolus (ug/g)",
+    "Fig 4B: blood at end of 1-h infusion (ug/mL)",
+    "Fig 3B: brain at end of 1-h infusion (ug/g)"
+  ),
+  figure = c(39, 13, 40, 23),
+  model = c(peak_a_blood, peak_a_brain, end_b$Cc, end_b$Cbrain)
+) |>
+  dplyr::mutate(pct_diff = 100 * (model / figure - 1))
+knitr::kable(fig_check, digits = 1)
+stopifnot(all(abs(fig_check$pct_diff) < 10))
+```
+
+## Figure 5: brain target-controlled infusion
+
+The TCI below re-implements the authors' algorithm (`NextStep()` in
+`TCIMaster2.m`, after Shafer and Gregg): the infusion rate is constant over
+10 s steps; the brain response to one unit step is pre-computed; and at each
+step the rate is chosen, by iterating on the time of the resulting brain peak,
+so that the predicted peak brain concentration after that step equals the
+target. The schedule is then solved through the packaged model as an
+independent check that the brain concentration is held at the target.
+
+```{r tci-kernel}
+dT <- 10 / 60 # min, TCI step
+grid_step <- 1 / 60 # min, 1-s resolution as in the authors' code
+horizon <- 90 # min
+tgrid <- seq(0, horizon, by = grid_step)
+
+# Brain response to 1 mg/kg/min for one 10-s step.
+kernel <- solve_typical(make_events(0, 1, dT, tgrid))$Cbrain
+ce_peak <- max(kernel)
+tpeak <- which.max(kernel)
+
+tci_schedule <- function(target, n_steps, tol = 0.01) {
+  n <- length(tgrid)
+  steps_per <- round(dT / grid_step)
+  pred <- numeric(n)
+  rate <- numeric(n_steps)
+  for (s in seq_len(n_steps)) {
+    i0 <- (s - 1) * steps_per + 1
+    idx <- i0:n
+    k <- kernel[seq_along(idx)]
+    tp <- tpeak
+    for (iter in 1:50) {
+      base_at <- pred[min(n, i0 + tp - 1)]
+      guess <- max(0, (target - base_at) / ce_peak)
+      trial <- pred[idx] + guess * k
+      pk <- max(trial)
+      tp <- which.max(trial)
+      if (guess == 0 || abs(pk - target) / target <= tol) break
+    }
+    rate[s] <- guess
+    pred[idx] <- pred[idx] + guess * k
+  }
+  tibble::tibble(start = (seq_len(n_steps) - 1) * dT, rate_mgkgmin = rate)
+}
+```
+
+```{r tci-solve}
+tci_duration <- 75 # min, as in Fig 5A/5B
+tci_obs <- seq(0, tci_duration, by = 0.1)
+run_tci <- function(target) {
+  sched <- tci_schedule(target, n_steps = round(tci_duration / dT))
+  ev <- make_events(sched$start, sched$rate_mgkgmin, dT, tci_obs)
+  ev <- ev[!(ev$evid == 1 & ev$amt == 0), ]
+  list(
+    schedule = sched |> dplyr::mutate(target = target),
+    sim = solve_typical(ev) |> dplyr::mutate(target = target)
+  )
+}
+tci <- lapply(c(10, 15), run_tci)
+tci_sched <- dplyr::bind_rows(lapply(tci, `[[`, "schedule"))
+tci_sim <- dplyr::bind_rows(lapply(tci, `[[`, "sim"))
+```
+
+```{r fig-5, fig.height = 6}
+p_conc <- tci_sim |>
+  dplyr::select(target, time, Blood = Cc, Brain = Cbrain) |>
+  tidyr::pivot_longer(c(Blood, Brain), names_to = "matrix", values_to = "conc") |>
+  ggplot(aes(time, conc, colour = matrix)) +
+  geom_line(linewidth = 1) +
+  geom_hline(aes(yintercept = target), linetype = "dashed") +
+  facet_wrap(~ paste("Brain target", target, "ug/g")) +
+  scale_colour_manual(values = c(Blood = "darkred", Brain = "black")) +
+  labs(x = "Time (min)", y = "Propofol (ug/mL blood, ug/g brain)", colour = NULL) +
+  theme_bw()
+p_rate <- tci_sched |>
+  ggplot(aes(start, rate_mgkgmin)) +
+  geom_step(colour = "grey40") +
+  scale_y_log10() +
+  facet_wrap(~ paste("Brain target", target, "ug/g")) +
+  labs(
+    x = "Time (min)", y = "Infusion rate (mg/kg/min)",
+    caption = "Replicates the model lines and infusion profiles of Figure 5A-C of Shortal 2018."
+  ) +
+  theme_bw()
+p_conc
+p_rate
+```
+
+While the brain concentration is held constant, `d/dt(brain) = 0` forces the
+blood concentration to `target * k21 / k12` (17.5 ug/mL for a 10 ug/g target,
+the plateau of the red line in Figure 5B). After the first minutes the brain
+stays within the algorithm's tolerance of the target, as in Figure 5A/5C. The
+maintenance rate at the end of the hour is read from the grey area of Figure
+5A/5C (log axis) at about 0.6 and 0.8 mg/kg/min.
+
+```{r fig-5-check}
+tci_summary <- tci_sim |>
+  dplyr::filter(time >= 5) |>
+  dplyr::group_by(target) |>
+  dplyr::summarise(
+    max_brain_dev_pct = 100 * max(abs(Cbrain / target - 1)),
+    blood_end = Cc[time == max(time)],
+    blood_expected = target[1] * 2.71 / 1.55,
+    .groups = "drop"
+  ) |>
+  dplyr::left_join(
+    tci_sched |>
+      dplyr::group_by(target) |>
+      dplyr::summarise(rate_last_5min = mean(rate_mgkgmin[start >= tci_duration - 5])),
+    by = "target"
+  ) |>
+  dplyr::mutate(rate_fig5 = c(0.6, 0.8))
+knitr::kable(tci_summary, digits = 2)
+stopifnot(
+  # The algorithm targets the post-step brain peak to 1 percent; between
+  # peaks the brain dips by a few percent at most.
+  all(tci_summary$max_brain_dev_pct < 5),
+  all(abs(tci_summary$blood_end / tci_summary$blood_expected - 1) < 0.05),
+  # Read from a log-scale raster axis; only the magnitude is checked.
+  all(abs(tci_summary$rate_last_5min / tci_summary$rate_fig5 - 1) < 0.3)
+)
+```
+
+# PKNCA validation
+
+The paper reports no NCA table. Because the model is linear and drug leaves
+only from blood, two exact identities hold for any input and serve as the
+check: the blood AUC from zero to infinity equals `dose / (sinf * k10)`, and,
+because brain exchanges only with blood, `k12 * AUC_blood = k21 * AUC_brain`.
+The terminal half-life equals `log(2)` over the smallest eigenvalue of the
+rate matrix in Eq 1. NCA is run per paradigm for both blood and brain, after
+a long washout so that the extrapolated fraction is small.
+
+```{r pknca}
+obs_nca <- sort(unique(c(seq(0, 10, by = 0.05), seq(10, 3000, by = 5))))
+nca_sim <- dplyr::bind_rows(
+  solve_typical(make_events(0, 150, 0.1, obs_nca)) |>
+    dplyr::mutate(treatment = "15 mg/kg bolus", dose_mgkg = 15),
+  solve_typical(make_events(0, 2, 60, obs_nca)) |>
+    dplyr::mutate(treatment = "2 mg/kg/min x 60 min", dose_mgkg = 120)
+)
+stopifnot(all(nca_sim$Cc >= -1e-6 * max(nca_sim$Cc)))
+
+nca_long <- nca_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, treatment, Cc, Cbrain) |>
+  tidyr::pivot_longer(c(Cc, Cbrain), names_to = "matrix", values_to = "conc") |>
+  dplyr::mutate(conc = pmax(conc, 0))
+
+doses <- tibble::tibble(
+  id = 1L, time = 0,
+  treatment = rep(c("15 mg/kg bolus", "2 mg/kg/min x 60 min"), each = 2),
+  matrix = rep(c("Cc", "Cbrain"), 2),
+  amt = rep(c(15, 120), each = 2) * wt
+)
+
+conc_obj <- PKNCA::PKNCAconc(nca_long, conc ~ time | treatment + matrix + id)
+dose_obj <- PKNCA::PKNCAdose(doses, amt ~ time | treatment + matrix + id)
+intervals <- data.frame(
+  start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+  aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  dplyr::select(treatment, matrix, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+nca_tab |>
+  dplyr::rename(
+    "Paradigm" = treatment, "Matrix" = matrix,
+    "Cmax" = cmax, "Tmax (min)" = tmax,
+    "AUC0-inf (obs, ug*min/mL)" = aucinf.obs, "t1/2 (min)" = half.life
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+```{r pknca-identities}
+k <- c(k12 = 1.55, k21 = 2.71, k13 = 0.22, k31 = 0.04, k10 = 0.07)
+sinf <- 0.35
+rate_matrix <- rbind(
+  c(-(k[["k12"]] + k[["k13"]] + k[["k10"]]), k[["k21"]], k[["k31"]]),
+  c(k[["k12"]], -k[["k21"]], 0),
+  c(k[["k13"]], 0, -k[["k31"]])
+)
+t_half_terminal <- log(2) / min(abs(eigen(rate_matrix)$values))
+
+identities <- nca_tab |>
+  dplyr::mutate(
+    dose_mgkg = ifelse(treatment == "15 mg/kg bolus", 15, 120),
+    auc_expected = dose_mgkg / (sinf * k[["k10"]]) *
+      ifelse(matrix == "Cbrain", k[["k12"]] / k[["k21"]], 1),
+    auc_pct_diff = 100 * (aucinf.obs / auc_expected - 1),
+    thalf_expected = t_half_terminal,
+    thalf_pct_diff = 100 * (half.life / thalf_expected - 1)
+  ) |>
+  dplyr::select(treatment, matrix, aucinf.obs, auc_expected, auc_pct_diff,
+                half.life, thalf_expected, thalf_pct_diff)
+knitr::kable(identities, digits = 2)
+stopifnot(
+  # Trapezoidal AUC on a 5-min tail grid after a 0.05-min early grid:
+  # measured within about 1 percent of the closed form.
+  all(abs(identities$auc_pct_diff) < 2),
+  all(abs(identities$thalf_pct_diff) < 2)
+)
+```
+
+# Assumptions and deviations
+
+* **No variability model.** The paper fitted the constants by unweighted
+  least squares on all blood and brain concentrations (Methods, 'Fitting
+  procedure') and reports no between-animal or residual variance. The model
+  therefore has no etas, and the additive residual SDs for blood and brain
+  are `fixed(0)` placeholders; simulations are deterministic.
+* **Concentration-scale states.** Eq 1 is written for the concentrations
+  `x1`, `x2`, `x3` with input `I(t) / sinf`. The packaged ODEs multiply every
+  equation by `vc = sinf * WT`, so each state equals its paper concentration
+  times `vc`, and `Cbrain = brain / vc`. The brain state is therefore a scaled
+  quantity, not the physical amount of propofol in the brain: the paper's
+  rate constants are defined on concentrations and do not identify a brain
+  volume.
+* **Body weight.** Because the input is in mg/kg/min and the blood volume is
+  `sinf` per kg, body weight cancels from every concentration. `WT` is kept
+  so doses can be given in mg; simulations use the study mean of 0.0274 kg.
+* **Units.** Time is in min, doses in mg and concentrations in mg/L, which
+  equals ug/mL. Blood concentrations are in ug/mL and brain concentrations in
+  ug/g; the model treats 1 mL of blood and 1 g of brain alike, as the paper
+  does when it fits both with the same equations and plots both in ug/g.
+* **Table 1 versus the authors' code.** The final constants in the authors'
+  TCI code agree with Table 1 to its two-decimal rounding (table above).
+  The packaged model uses Table 1; the larger relative rounding is on `k31`
+  (0.04 vs 0.042 1/min) and `k10` (0.07 vs 0.072 1/min).
+* **TCI re-implementation.** The TCI in this article follows the logic of the
+  authors' `NextStep()` function with a 10-s step and a 1 percent tolerance,
+  using the packaged model for the impulse response. It is a check of the
+  model, not a port of the pump-control software.
+* **Figure values.** The comparison values for Figures 3, 4 and 5 were read by
+  the maintainers from the published raster figures.
+* **Errata.** No correction notice for this article was found in Europe PMC
+  as of 2026-11-25.
