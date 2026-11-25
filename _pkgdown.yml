@@ -5616,6 +5616,8 @@ navbar:
         href: articles/Fan_2025_antiCD4_nanobody_HIV.html
       - text: "Nb457trimer mouse (Fan 2025)"
         href: articles/Fan_2025_antiCD4_nanobody_HIV.html
+      - text: "Nc6004 (Doi 2017)"
+        href: articles/Doi_2017_nc6004.html
       - text: "Necitumumab (Long 2017)"
         href: articles/Long_2017_necitumumab.html
       - text: "Nedosiran (Zhang 2024)"
@@ -9980,6 +9982,7 @@ articles:
   - articles/Dogra_2023_covid19vaccine
   - articles/Dogterom_2018_asenapine
   - articles/Dohmann_2025_piperacillin
+  - articles/Doi_2017_nc6004
   - articles/DoldanMartelli_2013_EGF_IFN_chimera
   - articles/DominguezMore_2024_rutin_physalis
   - articles/Dong_2014_mycophenolic_acid

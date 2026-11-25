@@ -1,0 +1,466 @@
+---
+title: "NC-6004 micellar cisplatin and eGFR (Doi 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{NC-6004 micellar cisplatin and eGFR (Doi 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Doi_2017_nc6004"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Doi_2017_nc6004"))$description`
+* Article: <https://doi.org/10.1007/s00280-017-3254-4> (open access,
+  PMC5344954). No supplementary material is published.
+
+NC-6004 is cisplatin incorporated into polymeric micelles. Doi 2017 pooled
+total and free (ultrafilterable) plasma platinum (Pt) from its Japanese
+phase I study (NC-6004-003, with gemcitabine from cycle 2) with the UK
+monotherapy phase I study NC-6004-001 (Plummer 2011,
+<https://doi.org/10.1038/bjc.2011.6>), and linked free Pt to the estimated
+glomerular filtration rate (eGFR) through an indirect-response model:
+
+* Micellar Pt: two compartments (`central_np`, `peripheral1_np`; V1, V2, Q),
+  eliminated by CL, with power body-weight effects on CL and V1 (Table 3).
+* Free Pt: two compartments (`central`, `peripheral1`; Vm1, Vm2, Qm),
+  eliminated by CLm. The micellar clearance is the only input to free Pt.
+* Total Pt (`Cc_np`) is reported on the ICP scale; samples assayed by atomic
+  absorption spectrometry (AAS, most of the UK study) read 1.69-fold higher
+  (`ASSAY_AAS = 1`).
+* eGFR (Methods Eq. 1): `d eGFR/dt = kin (1 - Imax Cf / (IC50 + Cf)) - kout
+  eGFR`, with `kin = eGFR0 kout` and Cf the free Pt concentration in ng/mL.
+* Methods Eq. 2: `Imax = Imax0 exp(-trend t) exp(eta_IOV)`, where t is the
+  time since the first dose and the inter-occasion variability (IOV) changes
+  at every administration (`OCC`).
+
+The model runs in hours. Kout and the Imax trend are printed per day in
+Table 4 and are divided by 24 in the model file.
+
+# Population
+
+Twelve Japanese patients (10 male, 2 female; age 34-72 years; 60 or 90
+mg/m^2; Table 1) and 17 UK patients (10 male, 7 female; age 40-80 years;
+10-120 mg/m^2; Plummer 2011 Table 2) with advanced solid tumours. The PK
+data set holds 546 concentrations (108 ICP total Pt from Japan, 42 ICP and
+144 AAS total Pt from the UK, 252 free Pt from 28 patients). The eGFR model
+used 8.1 (Japan) and 13.7 (UK) observations per patient on average. The
+typical-value body weight is 67.8 kg (Table 3 footnote); body weight and BSA
+distributions are not reported.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| `lvc_np` (V1 at 67.8 kg) | 2.69 L | Table 3, TV1 |
+| `e_wt_vc_np` | 0.763 | Table 3, Theta(V1-WT) |
+| `lvp_np` (V2) | 3.91 L | Table 3 (no IIV) |
+| `lcl_np` (CL at 67.8 kg) | 0.0687 L/h | Table 3 |
+| `e_wt_cl_np` | 0.731 | Table 3, Theta(CL-WT) |
+| `lq_np` (Q) | 0.0117 L/h | Table 3 |
+| `lvc`, `lvp` (Vm1, Vm2) | 81.6, 665 L | Table 3 |
+| `lcl`, `lq` (CLm, Qm) | 6.54, 9.30 L/h | Table 3 |
+| `e_assay_aas_cc` | 1.69 | Table 3, 'Difference by method [folds] (AA to ICP)' |
+| `e_assay_aas_propsd` | 0.316 / 0.170 | Table 3, residual CV of total Pt by AA and ICP |
+| IIV V1, CL, Q, Vm1, Vm2, CLm, Qm, fold | 13.9, 17.2, 20.1, 24.4, 42.4, 45.7, 54.4, 21.2 CV% | Table 3; omega = CV / 100 |
+| `propSd_np`, `propSd` | 0.170, 0.316 | Table 3, total Pt (ICP), free Pt (ICP) |
+| `lrbase` (GFR0) | 83.4 mL/min/1.73 m^2 | Table 4 |
+| `lkout` | 0.171 /day | Table 4 |
+| `lic50` | 35.3 ng/mL | Table 4 |
+| `limax` (Imax0) | 0.851 | Table 4 |
+| `limax_exp_kdes` (trend) | 0.0273 /day | Table 4 |
+| IIV GFR0, Kout, IC50 | 26.5, 48.7, 211.7 CV% | Table 4; omega = CV / 100 |
+| `etaiov_limax` | 53.1 CV% | Table 4, IOV (Imax) |
+| `propSd_egfrObs` | 0.088 | Table 4, intra-individual variance (CV%) |
+| eGFR ODE | Eq. 1 | Methods, 'Population PK/PD analysis' |
+| Imax time course and IOV | Eq. 2 | Methods, 'Population PK/PD analysis' |
+| Two-compartment micellar Pt, proportional IIV and residual error | text | Methods, 'Population PK analysis' |
+
+Every Table 3 90% confidence interval for an IIV is symmetric in CV^2 (for
+example Qm 54.4 (22.2-73.7): 0.544^2 = 0.2959 against a CI midpoint of
+(0.222^2 + 0.737^2) / 2 = 0.2962), which is the signature of an estimated
+variance reported as `CV% = 100 sqrt(omega^2)`. The same convention is used
+for Table 4, which prints no intervals.
+
+# Helpers
+
+```{r helpers}
+mod <- readModelDb("Doi_2017_nc6004")
+mod_typ <- rxode2::zeroRe(mod)
+pt_per_cis <- 195.08 / 300.05 # mg Pt per mg cisplatin
+
+# Virtual adults: body weight around the 67.8 kg reference, DuBois BSA.
+make_cohort <- function(n, seed) {
+  set.seed(seed)
+  wt <- exp(rnorm(n, log(67.8), 0.18))
+  ht <- rnorm(n, 168, 8)
+  data.frame(id = seq_len(n), WT = wt, BSA = 0.007184 * wt^0.425 * ht^0.725)
+}
+
+# NC-6004 every 21 days as a 1-h infusion, dose labelled as cisplatin
+# equivalent mg/m^2 and given to the model as mg of Pt. Observation rows
+# carry dvid = 1 so that every output is returned on them. OCC increments
+# with each dose; a trailing evid = 2 row on a further occasion gives every
+# subject at least two occasions, which rxode2 needs to draw the IOV per
+# subject and occasion.
+make_events <- function(cohort, dose_mgm2, n_dose, obs_h, assay_aas = 0) {
+  tau <- 21 * 24
+  bind_rows(lapply(seq_len(nrow(cohort)), function(i) {
+    amt <- dose_mgm2 * cohort$BSA[i] * pt_per_cis
+    dose <- data.frame(
+      time = (seq_len(n_dose) - 1) * tau, amt = amt, dur = 1, evid = 1L,
+      cmt = "central_np", dvid = NA_integer_, OCC = seq_len(n_dose)
+    )
+    obs <- data.frame(
+      time = obs_h, amt = 0, dur = 0, evid = 0L, cmt = NA_character_,
+      dvid = 1L, OCC = pmin(n_dose, floor(obs_h / tau) + 1L)
+    )
+    end <- data.frame(
+      time = max(obs_h) + 1, amt = 0, dur = 0, evid = 2L, cmt = NA_character_,
+      dvid = NA_integer_, OCC = n_dose + 1L
+    )
+    bind_rows(dose, obs, end) |>
+      mutate(id = cohort$id[i], WT = cohort$WT[i], ASSAY_AAS = assay_aas)
+  })) |>
+    arrange(id, time, desc(evid))
+}
+```
+
+# Structural checks
+
+```{r structure}
+ui <- rxode2::rxode(mod)
+# An explicit-ODE model; rxode2 must not have replaced it with a linCmt() solve.
+stopifnot(is.null(ui$linCmt))
+
+# Closed forms for one typical 67.8 kg subject after 100 mg of Pt: all
+# micellar Pt is cleared by CL, and all of it then passes through CLm, so
+# AUC(total, ICP) = Dose / CL and AUC(free) = Dose / CLm.
+ev <- make_events(data.frame(id = 1, WT = 67.8, BSA = 1), 100 / pt_per_cis, 1,
+  obs_h = sort(unique(c(seq(0, 48, 0.1), seq(48, 20000, 2))))
+)
+typ <- as.data.frame(rxode2::rxSolve(mod_typ, ev, returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12
+))
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+auc_np <- trap(typ$time, typ$Cc_np)
+auc_free <- trap(typ$time, typ$Cc)
+closed <- data.frame(
+  quantity = c("AUC total Pt (mg*h/L)", "AUC free Pt (mg*h/L)"),
+  simulated = c(auc_np, auc_free),
+  closed_form = c(100 / 0.0687, 100 / 6.54)
+)
+knitr::kable(closed, digits = 2)
+stopifnot(all(abs(closed$simulated / closed$closed_form - 1) < 0.01))
+
+# Derived half-lives the Results quote: eGFR recovers to half the damage in
+# about 4 days (ln 2 / Kout), and Imax halves by day 25.4 (ln 2 / trend).
+stopifnot(
+  abs(log(2) / 0.171 - 4.05) < 0.01,
+  abs(log(2) / 0.0273 - 25.4) < 0.05
+)
+```
+
+# Dose units: comparison with the UK study NCA (Plummer 2011 Table 5)
+
+NC-6004 doses are labelled in cisplatin-equivalent mg/m^2, but the model
+predicts Pt concentrations. Doi 2017 does not say which mass entered the data
+set as the dose. The UK study's published non-compartmental analysis
+(Plummer 2011 Table 5; total Pt by AAS, ultrafilterable Pt by ICP-MS) settles
+it: dosing the Pt mass (x 0.650) reproduces the reported total-Pt AUC, while
+dosing the cisplatin mass overpredicts it by about half at every dose level.
+
+```{r dose-units}
+plummer <- tribble(
+  ~dose, ~n, ~cmax_tot, ~auc_tot, ~cmax_uf, ~auc_uf,
+  10, 1, 5.70, 234, 0.009, 1.7,
+  20, 1, 12.20, 492, 0.022, 2.5,
+  40, 3, 25.9, 1135, 0.045, 4.7,
+  60, 3, 29.9, 1354, 0.096, 13.2,
+  90, 6, 60.8, 2836, 0.205, 22.6,
+  120, 3, 85.4, 4377, 0.131, 22.9
+)
+# Typical subject, 1.8 m^2 (BSA is not reported for the UK cohort), total Pt
+# on the AAS scale as in Plummer 2011.
+typ_auc <- function(dose_mgm2, mass_factor) {
+  ev <- make_events(data.frame(id = 1, WT = 67.8, BSA = 1.8), dose_mgm2, 1,
+    obs_h = sort(unique(c(seq(0, 48, 0.1), seq(48, 20000, 2)))), assay_aas = 1
+  )
+  ev$amt[ev$evid == 1] <- ev$amt[ev$evid == 1] / pt_per_cis * mass_factor
+  s <- as.data.frame(rxode2::rxSolve(mod_typ, ev, returnType = "data.frame"))
+  trap(s$time, s$Cc_np)
+}
+units_chk <- plummer |>
+  filter(n >= 3) |>
+  rowwise() |>
+  mutate(
+    ratio_pt = typ_auc(dose, pt_per_cis) / auc_tot,
+    ratio_cisplatin = typ_auc(dose, 1) / auc_tot
+  ) |>
+  ungroup()
+knitr::kable(units_chk |> select(dose, n, auc_tot, ratio_pt, ratio_cisplatin),
+  digits = 2,
+  caption = "Typical-value AUC(0-inf) of total Pt (AAS scale) divided by the Plummer 2011 mean."
+)
+gm <- function(x) exp(mean(log(x)))
+stopifnot(
+  # Pt-mass dosing is centred on the published AUCs ...
+  abs(log(gm(units_chk$ratio_pt))) < log(1.2),
+  # ... and cisplatin-mass dosing is not.
+  gm(units_chk$ratio_cisplatin) > 1.35
+)
+```
+
+# NCA against Plummer 2011 (PKNCA)
+
+```{r nca}
+nca_obs <- c(0, 0.5, 1, 2, 3, 4, 6, 8, 12, 24, 36, 48, 72, 96, 168, 240, 336, 504)
+cohort_uk <- make_cohort(60, seed = 2011)
+sim_nca <- bind_rows(lapply(plummer$dose, function(d) {
+  ev <- make_events(cohort_uk, d, 1, obs_h = nca_obs, assay_aas = 1)
+  rxode2::rxSetSeed(100 + d)
+  as.data.frame(rxode2::rxSolve(mod, ev, returnType = "data.frame")) |>
+    mutate(treatment = paste(d, "mg/m^2"), dose = d)
+}))
+
+nca_long <- sim_nca |>
+  select(id, time, treatment, Cc_np, Cc) |>
+  pivot_longer(c(Cc_np, Cc), names_to = "analyte", values_to = "conc") |>
+  mutate(analyte = ifelse(analyte == "Cc_np", "Total Pt (AAS)", "Ultrafilterable Pt")) |>
+  filter(!is.na(conc))
+conc_obj <- PKNCAconc(nca_long, conc ~ time | analyte + treatment / id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE)
+nca_res <- pk.nca(PKNCAdata(conc_obj, intervals = intervals))
+
+sim_mean <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs")) |>
+  group_by(analyte, treatment, PPTESTCD) |>
+  summarise(PPORRES = mean(PPORRES, na.rm = TRUE), .groups = "drop")
+ref_nca <- bind_rows(
+  plummer |> transmute(analyte = "Total Pt (AAS)", treatment = paste(dose, "mg/m^2"),
+    cmax = cmax_tot, aucinf.obs = auc_tot),
+  plummer |> transmute(analyte = "Ultrafilterable Pt", treatment = paste(dose, "mg/m^2"),
+    cmax = cmax_uf, aucinf.obs = auc_uf)
+)
+cmp <- ncaComparisonTable(sim_mean, ref_nca,
+  by = c("analyte", "treatment"),
+  units = c(cmax = "ug/mL", aucinf.obs = "h*ug/mL")
+)
+knitr::kable(cmp, caption = paste(
+  "Simulated cohort means (60 virtual patients per dose) against the",
+  "Plummer 2011 Table 5 means (1-6 patients per dose)."
+))
+```
+
+The 10 and 20 mg/m^2 cohorts of Plummer 2011 hold one patient each, and the
+ultrafilterable-Pt values at 120 mg/m^2 come from one valid profile, so
+starred rows at those doses compare a cohort mean with a single individual.
+At 40, 90 and 120 mg/m^2 the total-Pt Cmax and AUC agree within about 20%.
+The 60 mg/m^2 cohort is overpredicted (AUC by about a quarter, Cmax by about
+40%); its observed mean AUC per mg/m^2 is the lowest of the four cohorts with
+three or more patients. Ultrafilterable Pt agrees less well and without a
+consistent direction (over at 40 mg/m^2, under at 90 mg/m^2); the observed
+means themselves are not dose-proportional (AUC 4.7 at 40 and 13.2 h*ug/mL at
+60 mg/m^2). The UK patients' BSA and weights are not reported, so the cohort
+uses the 67.8 kg reference weight.
+
+```{r nca-check}
+chk <- sim_mean |>
+  filter(analyte == "Total Pt (AAS)", PPTESTCD == "aucinf.obs") |>
+  inner_join(ref_nca |> select(analyte, treatment, ref = aucinf.obs),
+    by = c("analyte", "treatment")) |>
+  filter(treatment %in% paste(c(40, 60, 90, 120), "mg/m^2")) |>
+  mutate(pct_diff = 100 * (PPORRES / ref - 1))
+stopifnot(abs(median(chk$pct_diff)) < 25)
+```
+
+# eGFR visual predictive check (Figure 2)
+
+Figure 2 shows the 10th, 50th and 90th percentiles of the simulated change
+in eGFR from baseline by dose level, over eight 21-day cycles. Simulated
+observations carry the 8.8% proportional residual error at baseline and at
+each time, as the change of an observed value from an observed baseline.
+
+```{r fig2, fig.height = 6}
+doses_fig2 <- c(10, 20, 40, 60, 90, 120)
+obs_days <- 0:170
+cohort_vpc <- make_cohort(100, seed = 2017)
+sim_vpc <- bind_rows(lapply(doses_fig2, function(d) {
+  ev <- make_events(cohort_vpc, d, 8, obs_h = obs_days * 24)
+  rxode2::rxSetSeed(2000 + d)
+  as.data.frame(rxode2::rxSolve(mod, ev, returnType = "data.frame")) |>
+    mutate(dose = d)
+}))
+set.seed(42)
+vpc <- sim_vpc |>
+  mutate(obs = egfr * (1 + 0.088 * rnorm(n()))) |>
+  group_by(dose, id) |>
+  mutate(pch = 100 * (obs / first(obs) - 1)) |>
+  ungroup() |>
+  mutate(day = time / 24)
+vpc_q <- vpc |>
+  group_by(dose, day) |>
+  summarise(
+    p10 = quantile(pch, 0.1), p50 = median(pch), p90 = quantile(pch, 0.9),
+    .groups = "drop"
+  )
+ggplot(vpc_q, aes(day)) +
+  geom_line(aes(y = p50)) +
+  geom_line(aes(y = p10), linetype = 2) +
+  geom_line(aes(y = p90), linetype = 2) +
+  geom_vline(xintercept = seq(0, 147, 21), linetype = 3, colour = "grey60") +
+  facet_wrap(~ paste(dose, "mg/m^2")) +
+  coord_cartesian(ylim = c(-60, 30)) +
+  labs(x = "Days", y = "Change in eGFR (%)",
+    caption = "Replicates Figure 2 of Doi 2017 (10th, 50th and 90th percentiles).")
+```
+
+Figure 2's median curve falls to about -15% to -25% within the first week at
+40-120 mg/m^2, recovers toward baseline over each cycle, and the dips shrink
+from cycle to cycle as Imax declines; its 10th percentile reaches about -40%
+to -50%. The simulation reproduces this shape. Its day-7 medians (table
+below) deepen from about -13% at 10 mg/m^2 to between -20% and -35% at
+60-120 mg/m^2, the deepest at 120 mg/m^2 somewhat below the figure, with 100
+virtual patients per dose level.
+
+```{r fig2-check}
+d7 <- vpc |> filter(day == 7)
+med_d7 <- d7 |> group_by(dose) |> summarise(p50 = median(pch))
+knitr::kable(med_d7, digits = 1, caption = "Median change in eGFR (%) on day 7.")
+stopifnot(
+  # Figure 2 at 90 mg/m^2: median about -20% in the first week.
+  with(med_d7, p50[dose == 90] < -10 && p50[dose == 90] > -40),
+  # Dose-response: the median dip deepens from 10 to 90 mg/m^2.
+  with(med_d7, p50[dose == 10] > p50[dose == 90])
+)
+```
+
+# Acute kidney injury at 100 mg/m^2 (Figure 4)
+
+Doi 2017 converted each simulated eGFR to serum creatinine (sCr) by assuming
+the sCr ratio to baseline is the inverse of the eGFR ratio, drew baseline sCr
+from N(0.772, 0.124) mg/dL, and graded KDIGO stages on day 7 (6 days after a
+single 100 mg/m^2 dose): stage 1 = sCr increase of 0.3 mg/dL or 1.5-1.9-fold,
+stage 2 = 2.0-2.9-fold, stage 3 = 3.0-fold or an increase above 4.0 mg/dL.
+
+```{r fig4}
+cohort_aki <- make_cohort(200, seed = 4)
+ev_aki <- make_events(cohort_aki, 100, 1, obs_h = 144)
+kdigo <- function(sim, seed) {
+  set.seed(seed)
+  scr0 <- rnorm(nrow(sim), 0.772, 0.124)
+  ratio <- ifelse(sim$egfr > 0, sim$rbase / sim$egfr, Inf)
+  scr <- scr0 * ratio
+  stage <- ifelse(ratio >= 3 | scr - scr0 > 4, 3,
+    ifelse(ratio >= 2, 2, ifelse(ratio >= 1.5 | scr - scr0 >= 0.3, 1, 0))
+  )
+  100 * as.numeric(table(factor(stage, 0:3))) / length(stage)
+}
+rxode2::rxSetSeed(44)
+aki_sim <- as.data.frame(rxode2::rxSolve(mod, ev_aki, returnType = "data.frame")) |>
+  filter(time == 144)
+
+# Sensitivity: the same model with Imax bounded at 1, the range the paper
+# states for Imax (0 < Imax < 1) but Eq. 2 does not enforce.
+mod_cap <- mod |>
+  rxode2::model(imax_t <- min(1, imax * exp(-imax_exp_kdes * tfirst) * exp(etaiov_limax)))
+rxode2::rxSetSeed(44)
+aki_cap <- as.data.frame(rxode2::rxSolve(mod_cap, ev_aki, returnType = "data.frame")) |>
+  filter(time == 144)
+
+aki <- data.frame(
+  stage = c("No AKI", "Stage 1", "Stage 2", "Stage 3"),
+  `Doi 2017 NC-6004 (Fig. 4)` = c(68, 22, 9, 1),
+  `Simulated, Eq. 2 as printed` = kdigo(aki_sim, 5),
+  `Simulated, Imax capped at 1` = kdigo(aki_cap, 5),
+  `Cisplatin, Bhat 2015` = c(32.2, 33.0, 23.6, 11.2),
+  check.names = FALSE
+)
+knitr::kable(aki, digits = 1, caption = paste(
+  "Replicates Figure 4 of Doi 2017 (percent of patients by KDIGO stage;",
+  "Doi 2017 values read from the figure, cisplatin values from the cited",
+  "observational cohort, 158 of 233 patients with AKI)."
+))
+aki |>
+  pivot_longer(-stage, names_to = "source", values_to = "pct") |>
+  ggplot(aes(stage, pct, fill = source)) +
+  geom_col(position = "dodge") +
+  labs(x = NULL, y = "Patients (%)", fill = NULL) +
+  theme(legend.position = "bottom") +
+  guides(fill = guide_legend(nrow = 2))
+```
+
+The simulated stage 1 and 2 fractions are close to Figure 4, and NC-6004
+produces far less AKI than cisplatin, as the paper concludes. Stage 3 is the
+exception: Eq. 2 as printed gives `r round(aki[4, 3], 1)`% against the
+paper's 1%, and correspondingly fewer patients without AKI. The excess comes
+from occasions on which the log-normal IOV pushes Imax above 1 (at the first
+dose this happens on `r round(100 * pnorm(-log(0.851), sd = 0.531, lower.tail = FALSE), 0)`%
+of occasions): the production term `kin (1 - Imax Cf / (IC50 + Cf))` then
+turns negative, and here `r round(100 * mean(aki_sim$egfr < 0), 1)`% of the
+simulated patients have a negative eGFR on day 7.
+Bounding Imax at 1, the range the paper states, lowers stage 3 to a few
+percent but does not reach 1% either, and neither variant matches all four
+bars, so the form the authors used for this simulation cannot be recovered
+from the paper. The model file keeps Eq. 2 as printed, the form that was
+estimated.
+
+```{r fig4-check}
+stopifnot(
+  # NC-6004 at 100 mg/m^2 leaves most patients without AKI ...
+  aki$`Simulated, Eq. 2 as printed`[1] > 45,
+  # ... and far more of them than cisplatin does.
+  aki$`Simulated, Eq. 2 as printed`[1] > aki$`Cisplatin, Bhat 2015`[1] + 10,
+  # The documented stage-3 excess of Eq. 2 as printed over Figure 4.
+  aki$`Simulated, Eq. 2 as printed`[4] > 3
+)
+```
+
+# Assumptions and deviations
+
+* **Dose mass.** The dose enters the model as mg of Pt: the labelled
+  cisplatin-equivalent dose times 195.08 / 300.05 = 0.650. The paper does not
+  state this; the Plummer 2011 NCA of the UK patients pooled in this analysis
+  fits Pt-mass dosing and rejects cisplatin-mass dosing (section "Dose units").
+* **Free-Pt input.** Table 3 has no release parameter other than CL, so all
+  micellar clearance enters the free-Pt central compartment. Any fraction of
+  CL not forming free Pt is absorbed into the apparent Vm1, Vm2, CLm and Qm.
+* **Total Pt.** Total Pt is predicted as micellar central Pt only, as the
+  two-compartment model fitted to total Pt describes it. Adding the free-Pt
+  concentration would change it by under 1% (free Pt peaks at about 0.3% of
+  total Pt), well inside the 17% residual
+  error.
+* **Imax above 1.** Eq. 2 multiplies Imax0 = 0.851 by `exp(eta_IOV)` with a
+  53.1% CV, so Imax exceeds 1 on about 38% of occasions at the first dose
+  (fewer later, as Imax declines), although the text and Table 4 state 0 < Imax < 1. The equation
+  is kept as printed; see the Figure 4 section for the consequence (negative
+  eGFR in a few percent of simulated subjects at 100 mg/m^2, and a stage-3
+  AKI fraction several times the published one). Users who need a bounded effect can replace the
+  `imax_t` line with `min(1, ...)` as in that section.
+* **Time base of Imax.** `t_j` in Eq. 2 is taken as the time since the first
+  NC-6004 dose (`tafd()`); occasions start at each administration.
+* **IIV scale.** CV% is read as `100 sqrt(omega^2)` for both tables, as the
+  Table 3 confidence intervals show (Source trace). Table 4 prints no
+  intervals, so its IC50 variance (211.7% CV, omega^2 = 4.48) carries the same
+  reading by assumption; the log-normal reading (omega^2 = 1.70) changes the
+  simulated AKI fractions by only a few percentage points.
+* **Covariates screened, not retained.** Ethnicity (Japanese vs Caucasian) on
+  CL, baseline eGFR on CL and volume, and prophylactic hydration on the eGFR
+  model are recorded in `covariatesDataExcluded`.
+* **Virtual cohorts.** Body weight is log-normal around the 67.8 kg reference
+  (18% CV) and BSA is computed by DuBois from a simulated height; neither
+  distribution is reported. The Figure 4 simulation in the paper does not
+  state its cohort; the same virtual adults are used here.
+* **Assay.** The paper describes the total-Pt AAS conversion as 'AA to ICP'
+  with a fold of 1.69 and states AAS values were about 70% higher than ICP;
+  the model therefore multiplies the ICP-scale prediction by 1.69 for AAS rows.
