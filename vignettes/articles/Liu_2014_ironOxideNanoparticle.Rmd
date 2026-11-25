@@ -1,0 +1,384 @@
+---
+title: "Superparamagnetic iron oxide nanoparticle, mouse (Liu 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Superparamagnetic iron oxide nanoparticle, mouse (Liu 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+**This model is a record of the publication and is not usable for
+prediction.** The rate constants printed in the paper's Table 3 cannot
+reproduce the paper's own fitted curve (Figure 1c) for any value of the
+unreported blood volume. The sections "Why the printed rate constants cannot
+reproduce Figure 1c" and "Assumptions and deviations" below give the
+details.
+
+- Citation: Liu T, Choi H, Zhou R, Chen I-W. Quantitative evaluation of the
+  reticuloendothelial system function with dynamic MRI. *PLoS One*
+  2014;9(8):e103576.
+- Article: <https://doi.org/10.1371/journal.pone.0103576>
+- Correction: *PLoS One* 2015;10(3):e0122323 (PMC4370671). It changes only the
+  Funding section; no model value is affected.
+
+Liu et al. imaged the blood (vena cava) and the liver of nude mice every 3.2 s
+with T2*-weighted MRI at 9.4 T during and after an IV bolus of a 25 nm
+lipid-coated superparamagnetic iron oxide (SPIO) nanoparticle. They converted
+the signal change to concentration through the particle's r2* relaxivity, and
+fitted each animal with a two-compartment model in MATLAB SimBiology.
+Compartment 1 is blood (volume `Vp`), compartment 2 is the liver Kupffer-cell
+space (volume `VL`, fixed at 1e-3 L/kg). `Kin` and `Kout` are the
+blood-to-liver association and liver-to-blood dissociation rate constants, and
+`Ke` is extrahepatic elimination from blood. All rates are in 1/s.
+
+```{r model}
+mod <- readModelDb("Liu_2014_ironOxideNanoparticle_mouse")
+mod
+```
+
+# Population
+
+Young adult male 01b74 athymic nude
+mice (Methods, "Animals"). Ten untreated mice received 0.5, 3 or 10 mg Fe/kg;
+one 10 mg Fe/kg mouse was excluded for a high `Ka`, leaving 3 per dose group
+(Figure 4). Four mice were pretreated with clodronate liposomes (clodrosome,
+50 mg/kg IV once daily for 2 days) to deplete macrophages, and four with blank
+phosphatidylcholine liposomes (376 mg/kg IV, 1.5 h before) to saturate RES
+uptake; both groups then received 10 mg Fe/kg. Body weights are not reported.
+The model's `population` metadata records the same facts.
+
+# Source trace
+
+| Element | Value in the model | Source |
+|---|---|---|
+| Blood mass balance | `d/dt(central) = -kel*central - k_central_liver*central + k_liver_central*liver` | Equation 1 (image e001), written on `Cp*Vp` |
+| Liver mass balance | `d/dt(liver) = k_central_liver*central - k_liver_central*liver` | Equation 2 (image e002), written on `CL*VL` |
+| Input `Ka*Dose` | IV bolus into `central`, `Ka` = 1 | Methods "Pharmacokinetic Modeling": `Ka` "should be approximately 1 for the intravenous bolus injection"; per-animal values not reported |
+| `Kin` 0.5 / 3 / 10 mg Fe/kg | 38.527 / 1750.480 / 378027.6 1/s | Table 3 |
+| `Kin` clodrosome / liposome + 10 mg Fe/kg | 4750.368 / 1770.913 1/s | Table 3 |
+| `Kout` 0.5 / 3 / 10 mg Fe/kg | 0.014 / 0.098 / 0.365 1/s | Table 3 |
+| `Kout` clodrosome / liposome + 10 mg Fe/kg | 0.128 / 5.875 1/s | Table 3 |
+| `Ke` 0.5 / 3 / 10 mg Fe/kg | 0.008 / 0.015 / 0.025 1/s | Table 3 |
+| `Ke` clodrosome / liposome + 10 mg Fe/kg | 0.015 / 0.015 1/s | Table 3 |
+| `VL` | 1e-3 L/kg, fixed | Methods "Pharmacokinetic Modeling" |
+| `Vp` | 0.1 L/kg, fixed | Not printed. Read by the maintainers from Figure 1c: Cp just after 10 mg Fe/kg is about 100 mg/L |
+| Units | time s, dose mg Fe/kg, concentration mg Fe/L | Methods "Data analysis" |
+
+In the model file the 10 mg Fe/kg untreated group is the reference, and each
+other group enters as a log-ratio effect written as `log(<group value> /
+<10 mg Fe/kg value>)`, so every group's rate constant equals its Table 3 mean.
+
+```{r group-check}
+groups <- data.frame(
+  group = c("0.5 mg Fe/kg", "3 mg Fe/kg", "10 mg Fe/kg",
+            "Clodrosome + 10 mg Fe/kg", "Liposome + 10 mg Fe/kg"),
+  DOSE_IRONOXIDENANOPARTICLE_MGKG = c(0.5, 3, 10, 10, 10),
+  CONMED_CLODRONATE = c(0, 0, 0, 1, 0),
+  CONMED_PHOSPHATIDYLCHOLINE = c(0, 0, 0, 0, 1),
+  kin_tab = c(38.527, 1750.480, 378027.6, 4750.368, 1770.913),
+  kout_tab = c(0.014, 0.098, 0.365, 0.128, 5.875),
+  ke_tab = c(0.008, 0.015, 0.025, 0.015, 0.015)
+)
+groups$id <- seq_len(nrow(groups))
+
+# One dose and one observation at t = 0 per group, to read back the
+# rate constants the model computes for each covariate combination.
+ev_check <- bind_rows(
+  groups |> mutate(time = 0, amt = DOSE_IRONOXIDENANOPARTICLE_MGKG, evid = 1),
+  groups |> mutate(time = 0, amt = 0, evid = 0)
+) |>
+  mutate(cmt = "central") |>
+  arrange(id, time, desc(evid))
+
+chk <- rxSolve(mod, ev_check, returnType = "data.frame") |>
+  left_join(groups, by = "id")
+
+stopifnot(
+  all(abs(chk$k_central_liver / chk$kin_tab - 1) < 1e-10),
+  all(abs(chk$k_liver_central / chk$kout_tab - 1) < 1e-10),
+  all(abs(chk$kel / chk$ke_tab - 1) < 1e-10)
+)
+```
+
+# Why the printed rate constants cannot reproduce Figure 1c
+
+Divided by the volumes, the two equations are a linear system in `Cp` and
+`CL` whose matrix has trace `-(Ke + Kin + Kout)` and determinant `Ke * Kout`.
+`Vp` and `VL` cancel from both, so the two disposition rates depend on Table 3
+alone, whatever the unreported blood volume is.
+
+```{r eigen}
+eig <- groups |>
+  mutate(
+    tr = ke_tab + kin_tab + kout_tab,
+    det = ke_tab * kout_tab,
+    lambda_fast = (tr + sqrt(tr^2 - 4 * det)) / 2,
+    # Stable form of the small root.
+    lambda_slow = 2 * det / (tr + sqrt(tr^2 - 4 * det)),
+    t_fast_s = 1 / lambda_fast,
+    thalf_slow_h = log(2) / lambda_slow / 3600,
+    # Steady liver:blood concentration ratio during the slow phase, with the
+    # paper's VL and the maintainers' Vp.
+    ratio_liver_blood = kin_tab * 0.1 / ((kout_tab - lambda_slow) * 1e-3)
+  )
+
+eig |>
+  select(group, t_fast_s, thalf_slow_h, ratio_liver_blood) |>
+  dplyr::rename(
+    "Group" = group,
+    "Fast time constant (s)" = t_fast_s,
+    "Slow half-life (h)" = thalf_slow_h,
+    "Liver:blood concentration ratio" = ratio_liver_blood
+  ) |>
+  knitr::kable(digits = 6, format.args = list(big.mark = ","))
+```
+
+With the printed values, blood and liver come to equilibrium within a
+fraction of a second in every group, and then decline together with a
+half-life of hours to about a year. Figure 1c (one untreated mouse at
+10 mg Fe/kg, the paper's only fitted-curve figure) instead shows blood falling
+from about 65 to about 6 mg/L over 1300 s (a half-life of about 5 min) while
+the liver concentration **rises** steadily to about 11 mg/L, below the blood
+concentration for most of the scan. That shape needs blood-to-liver exchange on
+a time scale of minutes, which no blood volume can give with these rate
+constants. Expressing the rates in other time units does not help either,
+because the fast-to-slow ratio and the liver:blood ratio do not depend on the
+time unit.
+
+`Ke` alone does not reproduce the figure either: `log(2) / 0.025` is 28 s,
+about ten times shorter than the blood decline in Figure 1c.
+
+```{r eigen-check}
+stopifnot(
+  # Every group equilibrates within 0.1 s ...
+  all(eig$t_fast_s < 0.1),
+  # ... and then declines with a half-life above 3 h, against about 5 min in
+  # Figure 1c.
+  all(eig$thalf_slow_h > 3)
+)
+```
+
+# Simulation and comparison with Figure 1c
+
+Typical-value solve of each group over the 0-1300 s imaging window. The model
+has no between-animal variability, so one subject per group is the whole
+prediction.
+
+```{r simulate}
+obs_times <- sort(unique(c(0, 10^seq(-6, log10(1300), length.out = 200))))
+
+ev_sim <- bind_rows(
+  groups |> mutate(time = 0, amt = DOSE_IRONOXIDENANOPARTICLE_MGKG, evid = 1),
+  tidyr::crossing(groups, time = obs_times) |> mutate(amt = 0, evid = 0)
+) |>
+  mutate(cmt = "central") |>
+  arrange(id, time, desc(evid))
+
+sim <- rxSolve(mod, ev_sim, returnType = "data.frame", atol = 1e-14,
+               rtol = 1e-10) |>
+  left_join(groups |> select(id, group), by = "id")
+```
+
+The Figure 1c points below are the maintainers' approximate reading by eye of
+the paper's fitted (solid) curves, not of the noisy observations, and are good
+to roughly 10-20%. The mismatch shown is several orders of magnitude.
+
+```{r figure-1c, fig.width = 7, fig.height = 4.5}
+fig1c <- data.frame(
+  time = c(20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100,
+           1200, 1300),
+  Cc = c(72, 63, 58, 50, 43, 37, 31, 26, 21, 17, 14, 11, 9, 7, 6),
+  Cliver = c(1, 2, 3, 5, 6, 7, 8, 8.5, 9.5, 10, 10.5, 10.5, 11, 11, 11)
+)
+
+sim10 <- sim |>
+  filter(group == "10 mg Fe/kg", time >= 1)
+
+plot_df <- bind_rows(
+  sim10 |> transmute(time, conc = Cc, tissue = "Blood", source = "Model (Table 3)"),
+  sim10 |> transmute(time, conc = Cliver, tissue = "Liver", source = "Model (Table 3)"),
+  fig1c |> transmute(time, conc = Cc, tissue = "Blood", source = "Figure 1c fit (read by eye)"),
+  fig1c |> transmute(time, conc = Cliver, tissue = "Liver", source = "Figure 1c fit (read by eye)")
+)
+
+ggplot(plot_df, aes(time, conc, colour = tissue, linetype = source)) +
+  geom_line() +
+  geom_point(data = filter(plot_df, source != "Model (Table 3)"), size = 1) +
+  scale_y_log10() +
+  labs(x = "Time after dose (s)", y = "SPIO concentration (mg Fe/L)",
+       colour = NULL, linetype = NULL,
+       title = "10 mg Fe/kg, untreated mouse",
+       caption = "Replicates Figure 1c of Liu 2014 (and shows that it cannot).") +
+  theme_bw()
+```
+
+The assertion below pins the failure, so that the mismatch is visible if
+anything about the model changes. If a later correction or the authors'
+model files make the model reproduce Figure 1c, this check fails and the
+model needs to be updated.
+
+```{r non-reproduction}
+at_fig <- data.frame(
+  time = fig1c$time,
+  Cc_model = approx(sim10$time, sim10$Cc, xout = fig1c$time)$y,
+  Cliver_model = approx(sim10$time, sim10$Cliver, xout = fig1c$time)$y
+) |>
+  left_join(fig1c, by = "time") |>
+  mutate(blood_ratio = Cc_model / Cc, liver_ratio = Cliver_model / Cliver)
+
+knitr::kable(
+  at_fig |>
+    select(time, Cc, Cc_model, Cliver, Cliver_model) |>
+    dplyr::rename(
+      "Time (s)" = time,
+      "Blood, Figure 1c" = Cc,
+      "Blood, model" = Cc_model,
+      "Liver, Figure 1c" = Cliver,
+      "Liver, model" = Cliver_model
+    ),
+  digits = 5
+)
+
+stopifnot(
+  # Model blood concentration is more than 1000-fold below the published fit
+  # at every time read from Figure 1c ...
+  all(at_fig$blood_ratio < 1e-3),
+  # ... and model liver concentration more than 100-fold above it.
+  all(at_fig$liver_ratio > 100)
+)
+```
+
+# Group profiles
+
+```{r groups-plot, fig.width = 7, fig.height = 4.5}
+sim |>
+  filter(time >= 1e-6) |>
+  tidyr::pivot_longer(c(Cc, Cliver), names_to = "output", values_to = "conc") |>
+  mutate(output = ifelse(output == "Cc", "Blood", "Liver")) |>
+  ggplot(aes(time, conc, colour = group)) +
+  geom_line() +
+  facet_wrap(~output) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "Time after dose (s)", y = "SPIO concentration (mg Fe/L)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# PKNCA validation
+
+The paper reports no NCA. PKNCA is used here as a mass-balance check of the
+solve: elimination is from blood only, so the blood AUC from zero to infinity
+must equal `Dose / (Ke * Vp)`, and the terminal half-life must equal the slow
+half-life computed above. The grid runs out to ten slow half-lives of each
+group, because the slow phase carries almost all of the blood AUC.
+
+```{r pknca}
+nca_ev <- bind_rows(lapply(seq_len(nrow(groups)), function(i) {
+  g <- groups[i, ]
+  t_end <- 10 * eig$thalf_slow_h[i] * 3600
+  tt <- sort(unique(c(0, 10^seq(-9, log10(t_end), length.out = 600))))
+  bind_rows(
+    g |> mutate(time = 0, amt = DOSE_IRONOXIDENANOPARTICLE_MGKG, evid = 1),
+    g[rep(1, length(tt)), ] |> mutate(time = tt, amt = 0, evid = 0)
+  )
+})) |>
+  mutate(cmt = "central") |>
+  arrange(id, time, desc(evid))
+
+nca_sim <- rxSolve(mod, nca_ev, returnType = "data.frame", atol = 1e-16,
+                   rtol = 1e-11) |>
+  left_join(groups |> select(id, group, DOSE_IRONOXIDENANOPARTICLE_MGKG), by = "id")
+
+conc_obj <- PKNCAconc(
+  nca_sim |> filter(!is.na(Cc)) |> select(id, group, time, Cc),
+  Cc ~ time | group + id
+)
+dose_obj <- PKNCAdose(
+  groups |> transmute(id, group, time = 0, dose = DOSE_IRONOXIDENANOPARTICLE_MGKG),
+  dose ~ time | group + id,
+  route = "intravascular"
+)
+intervals <- data.frame(start = 0, end = Inf, aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- as.data.frame(pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals)))
+
+nca_cmp <- nca_res |>
+  filter(PPTESTCD %in% c("aucinf.obs", "half.life")) |>
+  select(group, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(groups |> select(group, DOSE_IRONOXIDENANOPARTICLE_MGKG, ke_tab), by = "group") |>
+  left_join(eig |> select(group, thalf_slow_h), by = "group") |>
+  mutate(
+    auc_expected = DOSE_IRONOXIDENANOPARTICLE_MGKG / (ke_tab * 0.1),
+    thalf_expected = thalf_slow_h * 3600
+  )
+
+nca_cmp |>
+  select(group, aucinf.obs, auc_expected, half.life, thalf_expected) |>
+  dplyr::rename(
+    "Group" = group,
+    "Blood AUC0-inf, PKNCA (mg*s/L)" = aucinf.obs,
+    "Dose / (Ke * Vp) (mg*s/L)" = auc_expected,
+    "Terminal t1/2, PKNCA (s)" = half.life,
+    "Slow t1/2, closed form (s)" = thalf_expected
+  ) |>
+  knitr::kable(digits = 1, format.args = list(big.mark = ","))
+
+stopifnot(
+  all(abs(nca_cmp$aucinf.obs / nca_cmp$auc_expected - 1) < 0.02),
+  all(abs(nca_cmp$half.life / nca_cmp$thalf_expected - 1) < 0.02)
+)
+```
+
+# Assumptions and deviations
+
+- **The printed rate constants do not reproduce the paper's fitted curve.**
+  The maintainers packaged Table 3 exactly as printed and kept the mismatch
+  visible above, rather than adjusting any value. The failure does not depend
+  on the unreported blood volume or on the time unit. Table 3 is printed
+  identically in Figure 4. The 10,000-fold change in `Kin` between 0.5 and
+  10 mg Fe/kg is a further sign that the printed `Kin` is not the rate
+  constant the fitted curves used. The units or scaling of `Kin`, and the
+  values of `Vp` and `Ka`, are open questions for the authors.
+- **`Vp` is not reported.** The paper names the blood distribution volume
+  `Vp` but prints no value. The model fixes it at 0.1 L/kg, the maintainers'
+  reading of Figure 1c (about 100 mg/L just after 10 mg Fe/kg). Mouse blood
+  volume is about 0.07-0.08 L/kg, so the value is plausible, but it changes
+  only the concentration scale and none of the conclusions above.
+- **`Ka` is not reported and is taken as 1.** The equations scale the dose by
+  `Ka`, which the Methods describe as the relation between injected dose and
+  dose in blood, "approximately 1 for the intravenous bolus injection", and
+  which was fitted per animal (one animal was excluded for a high `Ka`). Figure
+  1b labels `Ka` in 1/s, but in the equations it multiplies a bolus dose, so the
+  model reads it as an input fraction and enters the bolus unscaled.
+- **The roughly 25 s manual injection is a bolus**, as in the paper.
+- **No between-animal variability or residual error.** Each animal was fitted
+  separately by least squares, and Table 3 gives the group mean +/- SD of
+  3-4 per-animal estimates. Those SDs are not a population variance and are not
+  encoded. The fit's sum of squared residuals (0.27 +/- 0.03) has no stated
+  scale or weighting and gives no usable residual-error model, so the model is
+  deterministic.
+- **Dose level and pretreatment are categorical.** The paper gives one set of
+  rate constants per group, not a function of dose. `DOSE_IRONOXIDENANOPARTICLE_MGKG`
+  selects the 0.5 or 3 mg Fe/kg set, and any other value takes the 10 mg Fe/kg
+  set. `CONMED_CLODRONATE` and `CONMED_PHOSPHATIDYLCHOLINE` select the two
+  pretreatment sets, which were measured at 10 mg Fe/kg, and override the dose
+  level.
+- **Concentrations are MRI-derived.** The observed quantity is
+  `Delta R2* / r2*` from vena cava and liver regions of interest, with r2*
+  = 320 1/(mM*s) for free particles and about 350 for particles inside cells;
+  the paper does not show how millimolar iron was converted to mg/L.
+- **Sources checked.** The six supplementary files are image renderings of
+  Tables 1-3 and contain no model code. The only correction notice (2015,
+  PMC4370671) changes the Funding section only; checked on 2026-11-25.
