@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Doi 2017 NC-6004 (micellar cisplatin) PK/PD with eGFR ([doi:10.1007/s00280-017-3254-4](https://doi.org/10.1007/s00280-017-3254-4)) -- Japanese and UK adults with advanced solid tumours.
+- Add Singh 2016 stamulumab (MYO-029) ([doi:10.1111/cts.12420](https://doi.org/10.1111/cts.12420)) -- mouse, rat, cynomolgus monkey and healthy-volunteer PK, with mouse muscle-weight and monkey muscle-circumference exposure-response.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

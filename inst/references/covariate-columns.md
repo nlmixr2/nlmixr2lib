@@ -29232,16 +29232,16 @@ sibling such as `AUC_BAST_FW`.
 - **Example models:** `Wu_2025_idecabtageneVicleucel_orr.R` (KarMMa-3; sigmoid Emax on the overall-response logit with E0 fixed at -5, increment 7.654, half-maximal at log(AUC0-28D) = 11.551, Hill 34), `Wu_2025_idecabtageneVicleucel_pfs.R` (log2(AUC0-28D / 1.3e6); log hazard ratio -0.43 per doubling for progression-free survival).
 - **Notes:** Assay sibling of `AUC_IDECEL` (same product, window and units, measured by quantitative PCR in KarMMa). Wu 2025 states that the two trials quantified cellular kinetics with different bioanalytical methods and that no direct comparison of the exposure values was made, so the two columns are kept apart: a qPCR AUC must not be fed to a ddPCR-fitted model, or the reverse.
 
-### AUC_PEGINTERFERON_ALFA_2B (**canonical for steady-state weekly AUCtau of peginterferon alfa-2b**)
-- **Description:** Area under the serum peginterferon alfa-2b concentration-time curve over the once-weekly (168 h) subcutaneous dosing interval at steady state (AUCtau), supplied as a static exposure column to an exposure-response model that carries no PK compartments.
-- **Units:** `pg*h/mL`. Document per-model via `covariateData[[AUC_PEGINTERFERON_ALFA_2B]]$units`. Must be on the same scale as the `auc50` of the consuming model.
+### AUC_STAMULUMAB (**canonical for steady-state weekly AUC(0-168 h) of stamulumab (MYO-029)**)
+- **Description:** Steady-state serum area under the concentration-time curve of stamulumab (MYO-029), a human IgG1 anti-myostatin (GDF-8) monoclonal antibody, over the weekly (0-168 h) dosing interval. Time-fixed per dose group; supplied as data to landmark exposure-response models of muscle growth. 0 for vehicle-treated animals.
+- **Units:** `ug*h/mL`
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a -- enters through an inhibitory Imax term `(rbase - imax) * AUC / (auc50 + AUC)`; set to 0 for no drug. Daud 2011 dose-group means: 462,000 (6 ug/kg/week, week 8) and 235,000 (3 ug/kg/week, week 12) pg*h/mL in melanoma.
+- **Reference category:** n/a -- enters direct-effect Emax forms `E0 * (1 + Emax/100 * AUC_STAMULUMAB / (AUC50 + AUC_STAMULUMAB))`. Half-maximal values: 1152.6 (EDL), 1560.5 (gastrocnemius) and 1762.6 (quadriceps) ug*h/mL in mice; 32092 (day 135) and 32428 (day 271) ug*h/mL for female cynomolgus left-quadriceps circumference (Singh 2016 Table 2).
 - **Source aliases:**
-  - `AUCtau`, `Mean AUC(tau)` -- Daud 2011 notation (Methods, Table 3, Fig. 2).
-- **Example models:** `Daud_2011_peginterferon_alfa_2b_anc_auc.R` (inhibitory Imax model of ANC as percent of baseline, pooled melanoma and solid-tumour dose-group means).
-- **Notes:** Member of the `AUC_<DRUG>` family, spelled out because the drug name has no established short form in the register. The assay measures pegylated plus free interferon (Daud 2011 supplementary Methods), so the AUC is of that total. Compute it as dose / (CL/F) at steady state from `modellib('Daud_2011_peginterferon_alfa_2b')` (CL/F = kel * V/F), or by integrating `Cc` over one 168 h interval at steady state.
+  - `AUC0-168hr`, `AUC0-168h` -- Singh 2016 Figure 3 axis label and Table 2 footnote. No value transformation.
+- **Example models:** `Singh_2016_stamulumab_mouse_muscle.R`, `Singh_2016_stamulumab_cyno_circumference.R`.
+- **Notes:** Specific scope; stamulumab-specific. Follows the `AUC_<DRUG>` sibling family (`AUC_FENEBRUTINIB`, `AUC_APREMILAST`, ...). Users can regenerate it from the species PK models `Singh_2016_stamulumab_mouse.R` and `Singh_2016_stamulumab_cyno.R` as the AUC over one weekly dosing interval at steady state. Singh 2016 Table 2 converts AUC50 to an average concentration as Cave50 = AUC50 / 168 / 145.4 (nM; molecular weight 145.4 kDa).
 
 ### EXPANSION_RATE_IDECEL (**canonical for idecabtagene vicleucel early expansion rate Cmax/Tmax**)
 - **Description:** Per-subject early expansion rate of the BCMA-directed CAR T-cell product idecabtagene vicleucel (ide-cel): the peak peripheral-blood transgene level divided by the time to that peak (Cmax/Tmax), from noncompartmental analysis of CAR transgene copies per microgram of genomic DNA. Time-fixed per subject; supplied as data to static exposure-safety models as an EARLY exposure measure (CRS starts within days of infusion, before most of the AUC0-28 accrues).
