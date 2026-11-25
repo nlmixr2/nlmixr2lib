@@ -4120,6 +4120,26 @@ navbar:
         href: articles/Wang_2024_rnaLipidNanoparticle.html
       - text: "Ipatasertib (Yoshida 2021)"
         href: articles/Yoshida_2021_ipatasertib.html
+      - text: "Ipatasertib diarrhea grade2 (Zhu 2019)"
+        href: articles/Zhu_2019_ipatasertib_exposure_response.html
+      - text: "Ipatasertib diarrhea grade2 nominal (Zhu 2019)"
+        href: articles/Zhu_2019_ipatasertib_exposure_response.html
+      - text: "Ipatasertib diarrhea grade3 (Zhu 2019)"
+        href: articles/Zhu_2019_ipatasertib_exposure_response.html
+      - text: "Ipatasertib diarrhea grade3 nominal (Zhu 2019)"
+        href: articles/Zhu_2019_ipatasertib_exposure_response.html
+      - text: "Ipatasertib rash grade2 (Zhu 2019)"
+        href: articles/Zhu_2019_ipatasertib_exposure_response.html
+      - text: "Ipatasertib rash grade2 nominal (Zhu 2019)"
+        href: articles/Zhu_2019_ipatasertib_exposure_response.html
+      - text: "Ipatasertib rash grade3 (Zhu 2019)"
+        href: articles/Zhu_2019_ipatasertib_exposure_response.html
+      - text: "Ipatasertib rash grade3 nominal (Zhu 2019)"
+        href: articles/Zhu_2019_ipatasertib_exposure_response.html
+      - text: "Ipatasertib rpfs (Zhu 2019)"
+        href: articles/Zhu_2019_ipatasertib_exposure_response.html
+      - text: "Ipatasertib rpfs nominal (Zhu 2019)"
+        href: articles/Zhu_2019_ipatasertib_exposure_response.html
       - text: "Ipilimumab (Feng 2014)"
         href: articles/Feng_2014_ipilimumab.html
       - text: "Ipilimumab (Feng 2019)"
@@ -12484,6 +12504,7 @@ articles:
   - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
   - articles/Zhu_2018_asunaprevir
+  - articles/Zhu_2019_ipatasertib_exposure_response
   - articles/Zhu_2021_ethanol
   - articles/Zhu_2021_ropeginterferon
   - articles/Zhu_2023_omalizumab_pediatric

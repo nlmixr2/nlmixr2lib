@@ -8069,6 +8069,28 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Gupta_2022_brigatinib_pfs_daily_tv.R` (hazard ratio 1.01 per `ug*h/mL/day`, p = 0.69).
 - **Notes:** Member of the `AUC_<DRUG>` family; see `AUC_BRIG_SCAN` for the sibling metrics. Distinct from `AUC_MBV_DAY`, which is a single per-subject value on the calendar day of an event rather than a daily time series.
 
+### AUC_IPAT_EVT (**canonical for ipatasertib steady-state daily AUC based on the average actual dose up to an event**)
+- **Description:** Per-subject ipatasertib steady-state AUC over the once-daily 24 h dosing interval, computed from the average ACTUAL daily dose up to and including the time of the event of interest (tumour progression or the adverse event), or over the whole treatment duration for a subject without the event, divided by the individual apparent clearance from the ipatasertib population PK model (Zhu 2019 Methods, Response and exposure data; source symbol `AUCss,event`). Dose interruptions and reductions are folded in, so the averaging window is endpoint- AND subject-specific. Used as the exposure driver of landmark logistic exposure-safety regressions and of a Cox exposure-efficacy regression.
+- **Units:** `ng*h/mL` (the x-axis label of Zhu 2019 Supporting Figure S3; a once-daily 24 h AUC, so equivalently `ng*h/mL/day`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters LINEARLY and uncentred (`logit_ref + slope * AUC_IPAT_EVT`, or `log(HR) = slope * AUC_IPAT_EVT`); placebo subjects carry 0 and are part of the fit, so the logistic intercept is the placebo log-odds. Zhu 2019 Supporting Figure S3 plots the observed values out to roughly 6600 `ng*h/mL`.
+- **Source aliases:**
+  - `AUCss,event` -- Zhu 2019 Methods, Tables S1 and S2, Figure S3 x-axis.
+- **Example models:** `Zhu_2019_ipatasertib_diarrhea_grade2.R`, `Zhu_2019_ipatasertib_diarrhea_grade3.R`, `Zhu_2019_ipatasertib_rash_grade2.R`, `Zhu_2019_ipatasertib_rash_grade3.R` (founding examples; logistic, slopes 0.000769 to 0.00118 per `ng*h/mL`), `Zhu_2019_ipatasertib_rpfs.R` (Cox, log hazard ratio -0.0000739 per `ng*h/mL`, not significant).
+- **Notes:** Member of the `AUC_<DRUG>` family. The closest analogues are `AUC_BRIG_EVT` and `AUC_ALIS` (treatment-course averages up to an event). Projecting a NOMINAL dose onto this metric requires the endpoint-specific dose-intensity model of Zhu 2019 (Eqs. 1-2: a logistic model for the probability of a dose intensity of at least 1 and a logit-normal model for the dose intensity below 1, both linear in nominal dose). Do not substitute the nominal-dose sibling `AUC_IPAT_SS`.
+
+### AUC_IPAT_SS (**canonical for ipatasertib steady-state daily AUC based on the nominal dose**)
+- **Description:** Per-subject ipatasertib steady-state AUC over the once-daily 24 h dosing interval at the NOMINAL (randomised) dose, i.e. nominal daily dose divided by the individual apparent clearance from the ipatasertib population PK model, ignoring dose interruptions and reductions (Zhu 2019 Methods, Additional exploratory E-R analysis; source symbol `AUCss`). Used as the exposure driver of the exploratory nominal-dose landmark exposure-response regressions.
+- **Units:** `ng*h/mL` (once-daily 24 h AUC).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters LINEARLY and uncentred; placebo subjects carry 0.
+- **Source aliases:**
+  - `AUCss` -- Zhu 2019 Methods, Tables S1 and S2, Figure 3 and Figure S4.
+- **Example models:** `Zhu_2019_ipatasertib_diarrhea_grade2_nominal.R`, `Zhu_2019_ipatasertib_diarrhea_grade3_nominal.R`, `Zhu_2019_ipatasertib_rash_grade2_nominal.R`, `Zhu_2019_ipatasertib_rash_grade3_nominal.R`, `Zhu_2019_ipatasertib_rpfs_nominal.R` (founding examples).
+- **Notes:** Member of the `AUC_<DRUG>` family; nominal-dose sibling of `AUC_IPAT_EVT`. Because it ignores dose modifications, the exposure-response fitted on it is flatter than the `AUC_IPAT_EVT` fit of the same endpoint (Zhu 2019 Figure 3), but it projects a dose directly with no dose-intensity model.
+
 ### DOSE_VGB_MGD (**canonical for total daily vigabatrin dose**)
 - **Description:** Patient's total daily vigabatrin dosage (mg/day), summed across the twice-daily administrations and NOT normalised by body weight. Per-record (time-varying) covariate: dosage was titrated in every contributing study, so the column is updated as the patient escalates. Set to 0 mg/day during a baseline run-in and for placebo subjects.
 - **Units:** mg/day
