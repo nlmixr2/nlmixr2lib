@@ -2834,10 +2834,14 @@ navbar:
         href: articles/Khera_2024_dyp688.html
       - text: "Dyp688 mouse tgi (Khera 2024)"
         href: articles/Khera_2024_dyp688.html
-      - text: "E2110 direct rat (Nakatani 2013)"
-        href: articles/Nakatani_2013_E2110_rat.html
-      - text: "E2110 rat (Nakatani 2013)"
-        href: articles/Nakatani_2013_E2110_rat.html
+      - text: "E52862 dQTcF (Taubel 2015)"
+        href: articles/Taubel_2015_E52862.html
+      - text: "E52862 dQTcI (Taubel 2015)"
+        href: articles/Taubel_2015_E52862.html
+      - text: "E52862 ddQTcF (Taubel 2015)"
+        href: articles/Taubel_2015_E52862.html
+      - text: "E52862 ddQTcI (Taubel 2015)"
+        href: articles/Taubel_2015_E52862.html
       - text: "E7820 human (Keizer 2011)"
         href: articles/Keizer_2011_E7820.html
       - text: "E7820 mouse (Keizer 2011)"
@@ -12952,6 +12956,7 @@ articles:
   - articles/Tarning_2014_piperaquine
   - articles/Tarning_2014b_piperaquine
   - articles/Tate_2018_abemaciclib
+  - articles/Taubel_2015_E52862
   - articles/Taubert_2016_linezolid
   - articles/Taubert_2018_finafloxacin
   - articles/Taylor_2020_methotrexate

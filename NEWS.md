@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Barrett 2015 sodium nitroprusside K-PD ([doi:10.3389/fphar.2015.00151](https://doi.org/10.3389/fphar.2015.00151)) -- children aged 0-17 years under anaesthesia needing deliberate hypotension (mean arterial pressure).
+- Add Taubel 2015 E-52862 concentration-QTc ([doi:10.1371/journal.pone.0136369](https://doi.org/10.1371/journal.pone.0136369)) -- healthy adults given single oral doses of 500-800 mg.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
