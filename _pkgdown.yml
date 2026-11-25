@@ -2950,8 +2950,10 @@ navbar:
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "Enalapril reference (Faisal 2019)"
         href: articles/Faisal_2019_enalapril.html
-      - text: "Encorafenib (Petermann 2026)"
-        href: articles/Petermann_2026_encorafenib_binimetinib.html
+      - text: "Enalaprilat angiotensin adult (Steichert 2025)"
+        href: articles/Steichert_2025_enalaprilat_angiotensin.html
+      - text: "Enalaprilat angiotensin pediatric (Steichert 2025)"
+        href: articles/Steichert_2025_enalaprilat_angiotensin.html
       - text: "Encorafenib (Yang 2026)"
         href: articles/Yang_2026_encorafenib.html
       - text: "Enflicoxib (Cendros 2025)"
@@ -12483,6 +12485,7 @@ articles:
   - articles/Staudt_2023_voriconazole_rat
   - articles/Steffens_2025_amikacin
   - articles/Steichert_2025_enalapril_enalaprilat_pediatric
+  - articles/Steichert_2025_enalaprilat_angiotensin
   - articles/Stein_2018_mAb_nonlinear_PK
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stemkens_2024_clofazimine
