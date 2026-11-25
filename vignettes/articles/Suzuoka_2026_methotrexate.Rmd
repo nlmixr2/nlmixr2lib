@@ -1,0 +1,560 @@
+---
+title: "Methotrexate (Suzuoka 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Methotrexate (Suzuoka 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Suzuoka_2026_methotrexate"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Suzuoka_2026_methotrexate"))$description`
+* Article: <https://doi.org/10.1002/jcph.70310>
+
+Suzuoka and colleagues developed a two-compartment population PK model for
+high-dose methotrexate (HD-MTX, 2-5 g/m^2 over 24 h) in Japanese children with
+acute lymphoblastic leukaemia (ALL), then compared its predictive performance
+with five published HD-MTX models on an external validation group and used it
+in a Monte Carlo study of dose and hydration rate. The paper's distinctive
+covariate is the **delivered intravenous hydration rate per body surface area**
+(`HYDR`, mL/m^2/h), a time-varying covariate on both clearance and
+intercompartmental clearance; it is packaged as `HYDRATION_RATE_BSA`.
+
+Only the authors' own final model is packaged. The five comparator models of
+Table 4 belong to their own publications. The sensitivity-analysis refit
+without the hydration effect on clearance (Table S1) is shown below through an
+`ini()` override, because the paper uses it only to motivate keeping that
+effect.
+
+# Population
+
+The model-development group comprised 27 Japanese children with ALL (14 male,
+13 female) treated with HD-MTX at Tokyo Medical and Dental University Hospital
+between 2013 and 2024 (Table 1): age 2-13 years (median 6), body weight
+11.4-57.9 kg (median 18.9), DuBois BSA 0.52-1.6 m^2 (median 0.74), serum
+creatinine 0.15-0.51 mg/dL (median 0.24), and 1-4 treatment courses per patient
+(each course was analysed as a separate individual). Doses were 1.88-5.08 g/m^2
+(median 3.04), given as 10% over the first 30 min and 90% over the following
+23.5 h with hyperhydration (started at 125 mL/m^2/h; delivered rates
+104-187 mL/m^2/h, median 129) and urine alkalinisation. A further 11 patients
+formed the external validation group. Concentrations were sampled 24-72 h after
+the start of the infusion and measured in umol/L; values below the
+0.04 umol/L LLOQ were discarded.
+
+```{r population}
+pop <- rxode2::rxode(readModelDb("Suzuoka_2026_methotrexate"))$population
+str(pop, max.level = 1)
+```
+
+# Source trace
+
+Every `ini()` entry in
+`inst/modeldb/specificDrugs/Suzuoka_2026_methotrexate.R` carries an in-file
+comment naming its origin; they are collected here. All values are from the
+Final column of Table 2, which Table S1 and Eqs 11-12 repeat.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (theta1) | 3.49 L/h | Table 2 Final; Table S1 |
+| `lvc` (theta2) | 10.4 L | Table 2 Final; Table S1 |
+| `lq` (theta3) | 0.0714 L/h | Table 2 Final; Table S1 |
+| `lvp` (theta4) | 1.07 L | Table 2 Final; Table S1 |
+| `e_bsa_cl` (theta5) | 0.357 | Table 2 Final; Eq 11 |
+| `e_hydration_rate_bsa_cl` (theta6) | 0.107 | Table 2 Final; Eq 11 |
+| `e_age_q` (theta7) | 0.753 | Table 2 Final; Eq 12; Table 4; Table S1 footnote |
+| `e_hydration_rate_bsa_q` (theta8) | 0.176 | Table 2 Final; Eq 12; Table 4; Table S1 footnote |
+| `etalcl` | log(1 + 0.164^2) = 0.02654 | Table 2 Final, omegaCL 16.4% CV |
+| `etalvp` | log(1 + 0.140^2) = 0.01941 | Table 2 Final, omegaVp 14.0% CV |
+| `propSd` | 0.312 | Table 2 Final, sigma 31.2% CV; Results "proportional error model" |
+| CL equation | `3.49 * (BSA/0.74)^0.357 * (HYDR/129)^0.107` | Table 2 footnote; Eq 11 |
+| Q equation | `0.0714 * (Age/6)^0.753 * (HYDR/129)^0.176` | Table 2 footnote; Eq 12 |
+| Two-compartment IV model | n/a | Methods "Development of a PPK Model" (ADVAN3 TRANS4) |
+| `HYDR` definition, time-varying handling | n/a | Methods Eq 1 and the paragraph on hydration |
+| Dosing (10% over 0.5 h, 90% over 23.5 h) | n/a | Methods, dosing schedule |
+| umol/L concentration units | MW 454.44 g/mol | Methods (all concentrations in uM); molecular weight of methotrexate |
+
+The model's amounts are in umol, so a dose in mg is converted with
+`umol = mg / 454.44 * 1000`.
+
+```{r helpers}
+mw_mtx <- 454.44
+mod <- rxode2::rxode(readModelDb("Suzuoka_2026_methotrexate"))
+mod_typ <- rxode2::zeroRe(mod)
+
+# One HD-MTX course: 10% of the dose over 0.5 h, 90% over the next 23.5 h, as
+# two zero-order infusions into the central compartment. Covariates are
+# carried on every row; `hydr` may be a function of time for a time-varying
+# hydration rate.
+make_course <- function(id, dose_gm2, bsa, age, hydr, obs_times) {
+  dose_umol <- dose_gm2 * 1000 * bsa / mw_mtx * 1000
+  doses <- data.frame(
+    id = id, time = c(0, 0.5), evid = 1L,
+    amt = c(0.1, 0.9) * dose_umol,
+    rate = c(0.1 * dose_umol / 0.5, 0.9 * dose_umol / 23.5),
+    cmt = "central"
+  )
+  obs <- data.frame(id = id, time = obs_times, evid = 0L, amt = 0, rate = 0, cmt = "central")
+  out <- rbind(doses, obs)
+  out <- out[order(out$time, -out$evid), ]
+  out$BSA <- bsa
+  out$AGE <- age
+  out$HYDRATION_RATE_BSA <- if (is.function(hydr)) hydr(out$time) else hydr
+  out$dose_umol <- dose_umol
+  out
+}
+```
+
+# Structural verification
+
+## Typical-value parameters at the reference patient
+
+Table S3 lists the final model's parameters for the representative patient
+(6 years, BSA 0.74 m^2, HYDR 129 mL/m^2/h): CL 3.49 L/h, Vc 10.4 L,
+Q 0.0714 L/h, Vp 1.07 L. At the reference covariates every covariate term is 1,
+so the packaged model must return the thetas exactly.
+
+```{r reference-patient}
+ref <- rxode2::rxSolve(
+  mod_typ,
+  make_course(1L, 3, 0.74, 6, 129, c(1, 24)),
+  returnType = "data.frame"
+)[1, c("cl", "vc", "q", "vp")]
+knitr::kable(ref, digits = 4, caption = "Typical parameters at the Table S3 reference patient.")
+stopifnot(
+  abs(ref$cl / 3.49 - 1) < 1e-8, abs(ref$vc / 10.4 - 1) < 1e-8,
+  abs(ref$q / 0.0714 - 1) < 1e-8, abs(ref$vp / 1.07 - 1) < 1e-8
+)
+```
+
+## End-of-infusion plateau
+
+The 23.5 h maintenance infusion is long against the alpha half-life, so the
+concentration at 24 h approaches `rate / CL`. For the reference patient at
+3 g/m^2 that is `0.9 * 4885 umol / 23.5 h / 3.49 L/h` = 53.6 umol/L, which is
+the plateau Figure S1B shows (digitised 50-56 umol/L across the three hydration
+rates).
+
+```{r plateau}
+pl <- rxode2::rxSolve(mod_typ, make_course(1L, 3, 0.74, 6, 129, 23.99), returnType = "data.frame")
+css <- 0.9 * (3 * 1000 * 0.74 / mw_mtx * 1000) / 23.5 / 3.49
+cat(sprintf("C(24 h) = %.1f umol/L; rate/CL = %.1f umol/L\n", pl$Cc, css))
+# The two-compartment approach to the plateau is within a few percent by 24 h;
+# both sides are deterministic.
+stopifnot(abs(pl$Cc / css - 1) < 0.05)
+```
+
+# Replicate Figure S1: hydration rate and the typical profile
+
+Figure S1 (Supplement 2) simulates the typical patient (age 6, BSA 0.74 m^2,
+3 g/m^2) at hydration rates of 104, 125 and 187 mL/m^2/h, (A) with the
+sensitivity refit that drops the hydration effect on CL (Table S1, right-hand
+column) and (B) with the final model. Its curves were digitised by the
+maintainers from the embedded plot images; the table below holds the read-offs
+from 36 h onward (the elimination phase that the figure is about).
+
+At age 6 the age term is 1, so only the hydration exponent on Q changes the
+spread of the three curves in the terminal phase. Two readings are simulated:
+
+* **As printed** (the packaged model): `Q = 0.0714 * (Age/6)^0.753 * (HYDR/129)^0.176`.
+* **Exponents swapped**: `Q = 0.0714 * (Age/6)^0.176 * (HYDR/129)^0.753`.
+
+```{r fig-s1}
+digitised <- tibble::tribble(
+  ~panel, ~time, ~`104`, ~`125`, ~`187`,
+  "A", 36, 1.16, 1.24, 1.39,
+  "A", 42, 0.429, 0.462, 0.521,
+  "A", 48, 0.260, 0.284, 0.278,
+  "A", 60, 0.131, 0.126, 0.0979,
+  "A", 66, 0.0947, 0.0859, 0.0594,
+  "A", 71.5, 0.0691, 0.0607, 0.0368,
+  "B", 36, 1.47, 1.36, 1.18,
+  "B", 42, 0.702, 0.492, 0.451,
+  "B", 48, 0.283, 0.286, 0.245,
+  "B", 60, 0.147, 0.132, 0.0885,
+  "B", 66, 0.107, 0.0915, 0.0538,
+  "B", 71.5, 0.0793, 0.0649, 0.0338
+) |>
+  tidyr::pivot_longer(-c(panel, time), names_to = "hydr", values_to = "Cc") |>
+  dplyr::mutate(hydr = as.numeric(hydr))
+
+hydr_levels <- c(104, 125, 187)
+ev_s1 <- do.call(rbind, lapply(seq_along(hydr_levels), function(i) {
+  make_course(i, 3, 0.74, 6, hydr_levels[i], sort(unique(c(seq(0.25, 72, by = 0.25), 71.5))))
+}))
+
+# Panel A model: Table S1 'Final model without HYDR on CL'.
+mod_a <- rxode2::ini(
+  mod_typ,
+  lcl = log(3.51), lq = log(0.0720), e_bsa_cl = 0.361,
+  e_hydration_rate_bsa_cl = 0, e_age_q = 0.723, e_hydration_rate_bsa_q = 0.176
+)
+variants <- list(
+  "A as printed" = mod_a,
+  "A swapped" = rxode2::ini(mod_a, e_age_q = 0.176, e_hydration_rate_bsa_q = 0.723),
+  "B as printed" = mod_typ,
+  "B swapped" = rxode2::ini(mod_typ, e_age_q = 0.176, e_hydration_rate_bsa_q = 0.753)
+)
+sim_s1 <- dplyr::bind_rows(lapply(names(variants), function(v) {
+  s <- rxode2::rxSolve(variants[[v]], ev_s1, returnType = "data.frame")
+  data.frame(variant = v, panel = substr(v, 1, 1),
+             reading = sub("^. ", "", v),
+             hydr = hydr_levels[s$id], time = s$time, Cc = s$Cc)
+}))
+
+ggplot(sim_s1, aes(time, Cc, colour = factor(hydr))) +
+  geom_line(aes(linetype = reading)) +
+  geom_point(data = digitised, shape = 1, size = 2, inherit.aes = FALSE,
+             aes(time, Cc, colour = factor(hydr))) +
+  facet_wrap(~panel, labeller = labeller(panel = c(
+    A = "A: without HYDR on CL (Table S1)", B = "B: final model"))) +
+  scale_y_log10() +
+  coord_cartesian(xlim = c(20, 72), ylim = c(0.02, 100)) +
+  labs(x = "Time since start of infusion (h)", y = "Methotrexate (umol/L)",
+       colour = "HYDR (mL/m^2/h)", linetype = "Q exponents",
+       caption = "Replicates Figure S1 of Suzuoka 2026; circles digitised from the figure.")
+```
+
+```{r fig-s1-table}
+s1_cmp <- sim_s1 |>
+  dplyr::filter(time %in% c(60, 66, 71.5)) |>
+  dplyr::select(panel, reading, hydr, time, Cc) |>
+  tidyr::pivot_wider(names_from = reading, values_from = Cc) |>
+  dplyr::left_join(dplyr::rename(digitised, figure = Cc), by = c("panel", "time", "hydr")) |>
+  dplyr::arrange(panel, hydr, time)
+
+s1_cmp |>
+  dplyr::rename("Panel" = panel, "HYDR (mL/m^2/h)" = hydr, "Time (h)" = time,
+                "As printed" = `as printed`, "Swapped" = swapped, "Figure S1" = figure) |>
+  knitr::kable(digits = 3, caption = "Terminal-phase concentrations (umol/L).")
+```
+
+The as-printed model reproduces the plateau and the 104 and 125 mL/m^2/h curves
+but not the spread of the 187 mL/m^2/h curve: at 71.5 h its concentration is
+about 50% above the figure in panel B. With the two Q exponents swapped every
+curve agrees with the figure to within a few percent. The checks below compare
+the 187-to-104 concentration ratio at 71.5 h, which is free of any digitisation
+offset common to both curves; all quantities are deterministic typical-value
+solves.
+
+```{r fig-s1-check}
+ratio_at <- function(d, col) {
+  x <- d[d$time == 71.5, ]
+  x[[col]][x$hydr == 187] / x[[col]][x$hydr == 104]
+}
+r_tab <- s1_cmp |>
+  dplyr::group_by(panel) |>
+  dplyr::group_modify(function(d, k) data.frame(
+    printed = ratio_at(d, "as printed"),
+    swapped = ratio_at(d, "swapped"),
+    figure = ratio_at(d, "figure")
+  ))
+knitr::kable(dplyr::rename(r_tab, "Panel" = panel, "As printed" = printed,
+                           "Swapped" = swapped, "Figure S1" = figure),
+             digits = 2, caption = "C(187)/C(104) at 71.5 h.")
+stopifnot(
+  # Panel B: printed 0.75, swapped 0.46, figure 0.43.
+  abs(r_tab$swapped[r_tab$panel == "B"] / r_tab$figure[r_tab$panel == "B"] - 1) < 0.15,
+  r_tab$printed[r_tab$panel == "B"] > 1.4 * r_tab$figure[r_tab$panel == "B"],
+  # Panel A: printed 0.88, swapped 0.55, figure 0.53.
+  abs(r_tab$swapped[r_tab$panel == "A"] / r_tab$figure[r_tab$panel == "A"] - 1) < 0.15,
+  r_tab$printed[r_tab$panel == "A"] > 1.4 * r_tab$figure[r_tab$panel == "A"]
+)
+```
+
+Both readings show the qualitative findings the paper draws from Figure S1: in
+panel A the curves cross (higher hydration gives higher concentrations at
+36-48 h and lower ones later), and in panel B higher hydration gives lower
+concentrations throughout the elimination phase.
+
+```{r fig-s1-shape}
+c_s1 <- function(v, h, tt) sim_s1$Cc[sim_s1$variant == v & sim_s1$hydr == h & sim_s1$time == tt]
+for (v in names(variants)) {
+  early <- c_s1(v, 187, 42) > c_s1(v, 104, 42)
+  late <- c_s1(v, 187, 71.5) < c_s1(v, 104, 71.5)
+  if (startsWith(v, "A")) stopifnot(early, late) else stopifnot(!early, late)
+}
+```
+
+# Replicate Table 6: Monte Carlo target attainment
+
+Table 6 reports the percentage of simulated courses meeting all four
+institutional targets (C24 <= 150, C42 <= 1, C48 <= 0.4 and
+C66 <= 0.25 umol/L) for 2, 3 and 5 g/m^2 at fixed hydration rates of 110, 125
+and 180 mL/m^2/h. Following the Methods, ages are uniform over the
+development-cohort range (2-13 years) and BSA follows Eq 10,
+`log10(BSA) = 0.0362 * Age - 0.3197 + eps`, `eps ~ N(0, 0.139^2)`.
+
+The paper simulated 10,000 virtual patients; this article uses 200, the same
+200 patients (and the same between-course random effects) in every cell, so
+that differences between cells and between the two Q readings are not
+sampling noise. The random effects are drawn with R's generator and passed to
+`rxSolve()`, so the result does not depend on rxode2's per-thread random
+streams. Success is evaluated on the individual predictions without residual
+error, which is the reading that reproduces the paper's numbers.
+
+```{r table-6}
+set.seed(20261125)
+n_mc <- 200L
+pts <- data.frame(p = seq_len(n_mc), AGE = stats::runif(n_mc, 2, 13))
+pts$BSA <- 10^(0.0362 * pts$AGE - 0.3197 + stats::rnorm(n_mc, 0, 0.139))
+pts$etalcl <- stats::rnorm(n_mc, 0, sqrt(0.026541))
+pts$etalvp <- stats::rnorm(n_mc, 0, sqrt(0.019410))
+
+cells <- expand.grid(dose = c(2, 3, 5), hydr = c(110, 125, 180))
+targets <- c(`24` = 150, `42` = 1, `48` = 0.4, `66` = 0.25)
+ev_mc <- do.call(rbind, lapply(seq_len(nrow(cells)), function(k) {
+  do.call(rbind, lapply(seq_len(n_mc), function(i) {
+    make_course((k - 1L) * n_mc + i, cells$dose[k], pts$BSA[i], pts$AGE[i],
+                cells$hydr[k], c(24, 42, 48, 66))
+  }))
+}))
+prm_mc <- data.frame(
+  id = seq_len(nrow(cells) * n_mc),
+  etalcl = rep(pts$etalcl, nrow(cells)),
+  etalvp = rep(pts$etalvp, nrow(cells))
+)
+stopifnot(!anyDuplicated(ev_mc[, c("id", "time", "evid", "amt")]))
+
+attain <- function(m) {
+  s <- rxode2::rxSolve(m, ev_mc, params = prm_mc, returnType = "data.frame")
+  s$cell <- (s$id - 1L) %/% n_mc + 1L
+  s$ok <- s$Cc <= targets[as.character(s$time)]
+  s |>
+    dplyr::group_by(cell, id) |>
+    dplyr::summarise(ok = all(ok), .groups = "drop") |>
+    dplyr::group_by(cell) |>
+    dplyr::summarise(rate = 100 * mean(ok), .groups = "drop") |>
+    dplyr::pull(rate)
+}
+mod_eta <- rxode2::zeroRe(mod, which = "sigma")
+cells$printed <- suppressWarnings(attain(mod_eta))
+cells$swapped <- suppressWarnings(attain(
+  rxode2::ini(mod_eta, e_age_q = 0.176, e_hydration_rate_bsa_q = 0.753)
+))
+cells$paper <- c(91.7, 72.5, 31.2, 92.0, 73.1, 32.2, 93.8, 78.2, 40.6)
+
+cells |>
+  dplyr::rename("Dose (g/m^2)" = dose, "HYDR (mL/m^2/h)" = hydr,
+                "As printed (%)" = printed, "Swapped (%)" = swapped,
+                "Table 6 (%)" = paper) |>
+  knitr::kable(digits = 1, caption = "Target attainment, simulated (n = 200 per cell) against Table 6.")
+```
+
+```{r table-6-check}
+cat(sprintf("Mean (simulated - Table 6): as printed %+.1f, swapped %+.1f points\n",
+            mean(cells$printed - cells$paper), mean(cells$swapped - cells$paper)))
+by_dose <- cells |>
+  dplyr::group_by(dose) |>
+  dplyr::summarise(printed = mean(printed), paper = mean(paper))
+stopifnot(
+  # Dose dominates attainment in the paper (about 92%, 75%, 35%); a
+  # transcription error in CL, a volume or the dose conversion moves these by
+  # tens of points. With 200 patients the sampling SE is about 3 points.
+  abs(by_dose$printed - by_dose$paper) < 10,
+  by_dose$printed[1] > by_dose$printed[2], by_dose$printed[2] > by_dose$printed[3],
+  # Same patients in both readings, so this difference is paired: at
+  # 180 mL/m^2/h the printed reading attains more often than the swapped one.
+  sum(cells$printed[cells$hydr == 180]) > sum(cells$swapped[cells$hydr == 180])
+)
+```
+
+With 200 patients per cell both readings are within sampling error of most
+cells of Table 6, and both reproduce the paper's conclusions: attainment falls
+steeply with dose and rises modestly with hydration, most at 5 g/m^2. Run with
+2,000 patients per cell (not shown, to keep this article fast), the swapped
+reading matches every cell of Table 6 to about one point while the printed
+reading is 3-5 points high at 3 and 5 g/m^2 with 180 mL/m^2/h, the same
+direction as the Figure S1 discrepancy. See the Errata.
+
+# Time-varying hydration
+
+The hydration rate is a time-varying covariate: when a concentration exceeds
+an institutional threshold the physician raises it, and the paper applies the
+new value to every record from the time of the change. Supply
+`HYDRATION_RATE_BSA` on every row of the dataset; rxode2 carries each value
+forward until the next record. Below, the reference patient's hydration is
+raised from 125 to 180 mL/m^2/h at 42 h (a C42 above 1 umol/L).
+
+```{r time-varying}
+tgrid <- seq(0, 96, by = 0.5)
+ev_tv <- rbind(
+  make_course(1L, 3, 0.74, 6, 125, tgrid),
+  make_course(2L, 3, 0.74, 6, function(t) ifelse(t < 42, 125, 180), tgrid)
+)
+sim_tv <- rxode2::rxSolve(mod_typ, ev_tv, returnType = "data.frame")
+sim_tv$scenario <- c("125 throughout", "raised to 180 at 42 h")[sim_tv$id]
+
+ggplot(dplyr::filter(sim_tv, time != 0), aes(time, Cc, colour = scenario)) +
+  geom_line() +
+  geom_vline(xintercept = 42, linetype = "dotted") +
+  scale_y_log10() +
+  labs(x = "Time since start of infusion (h)", y = "Methotrexate (umol/L)",
+       colour = "HYDR (mL/m^2/h)")
+
+c_at <- function(sc, tt) sim_tv$Cc[sim_tv$scenario == sc & sim_tv$time == tt]
+stopifnot(
+  # Identical before the change, lower after it (deterministic solves).
+  abs(c_at("125 throughout", 40) / c_at("raised to 180 at 42 h", 40) - 1) < 1e-8,
+  c_at("raised to 180 at 42 h", 66) < c_at("125 throughout", 66)
+)
+```
+
+# Virtual cohort and PKNCA validation
+
+The paper reports no NCA. The check here is internal: the NCA clearance
+`Dose / AUC0-inf` of a stochastic cohort must recover each subject's model
+clearance. The cohort is 200 children per dose arm with ages uniform over
+2-13 years and BSA from Eq 10, at a constant hydration rate of 125 mL/m^2/h,
+sampled to 168 h so that AUC extrapolation is small.
+
+```{r cohort}
+# set.seed() seeds R's draws (age, BSA). The between-course random effects are
+# drawn by rxode2, whose streams depend on the solver thread count, so the
+# assertions below are written on the centre and robust quantiles only.
+set.seed(20261126)
+n_arm <- 200L
+nca_times <- c(seq(0, 24, by = 1), 24.5, seq(26, 72, by = 2), seq(78, 168, by = 6))
+make_arm <- function(dose_gm2, id_offset) {
+  age <- stats::runif(n_arm, 2, 13)
+  bsa <- 10^(0.0362 * age - 0.3197 + stats::rnorm(n_arm, 0, 0.139))
+  out <- do.call(rbind, lapply(seq_len(n_arm), function(i) {
+    make_course(id_offset + i, dose_gm2, bsa[i], age[i], 125, nca_times)
+  }))
+  out$arm <- sprintf("%g g/m^2", dose_gm2)
+  out
+}
+events <- rbind(make_arm(3, 0L), make_arm(5, n_arm))
+stopifnot(dplyr::n_distinct(events$id) == 2L * n_arm)
+
+sim <- rxode2::rxSolve(mod, events, keep = "arm", returnType = "data.frame")
+stopifnot(all(c("Cc", "cl", "arm") %in% names(sim)), nrow(sim) == 2L * n_arm * length(nca_times))
+
+vpc <- sim |>
+  dplyr::filter(time != 0) |> # log-scale plotting only; PKNCA below keeps time 0
+  dplyr::group_by(arm, time) |>
+  dplyr::summarise(lo = quantile(ipredSim, 0.05), med = median(ipredSim),
+                   hi = quantile(ipredSim, 0.95), .groups = "drop")
+ggplot(vpc, aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25, fill = "steelblue") +
+  geom_line(colour = "steelblue4") +
+  geom_hline(yintercept = c(1, 0.4, 0.25), linetype = "dotted") +
+  facet_wrap(~arm) +
+  scale_y_log10() +
+  coord_cartesian(xlim = c(0, 96), ylim = c(0.01, 300)) +
+  labs(x = "Time since start of infusion (h)", y = "Methotrexate (umol/L)",
+       caption = "Median and 90% interval of individual predictions; dotted lines at the 42, 48 and 66 h targets.")
+```
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc = ipredSim, arm)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, arm) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, arm, time)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::mutate(dur = amt / rate) |>
+  dplyr::select(id, time, amt, dur, arm)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id, concu = "umol/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id, doseu = "umol",
+                             route = "intravascular", duration = "dur")
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life", "cl.obs")) |>
+  dplyr::group_by(arm, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::select(arm, cmax, tmax, aucinf.obs, half.life, cl.obs) |>
+  dplyr::rename("Arm" = arm, "Cmax (umol/L)" = cmax, "Tmax (h)" = tmax,
+                "AUC0-inf (umol*h/L)" = aucinf.obs, "t1/2 (h)" = half.life,
+                "CL (L/h)" = cl.obs) |>
+  knitr::kable(digits = 2, caption = "Median NCA parameters (simulated cohort, individual predictions).")
+```
+
+```{r nca-cl-check}
+cl_cmp <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "cl.obs") |>
+  dplyr::select(id, arm, cl_nca = PPORRES) |>
+  dplyr::left_join(dplyr::distinct(sim, id, cl), by = "id") |>
+  dplyr::mutate(pct_diff = 100 * (cl_nca - cl) / cl)
+stopifnot(nrow(cl_cmp) == 2L * n_arm, !anyNA(cl_cmp$pct_diff))
+cat(sprintf("NCA vs model CL: median %+.2f%%, 90th percentile |diff| %.2f%%\n",
+            median(cl_cmp$pct_diff), quantile(abs(cl_cmp$pct_diff), 0.9)))
+# Centre and robust envelope only; a mis-transcribed CL, volume or dose
+# conversion moves the whole distribution by tens of percent. Realised: median
+# +0.8%, 90th percentile 1.2% (linear-trapezoid error on the sampling grid).
+stopifnot(
+  abs(median(cl_cmp$pct_diff)) < 2,
+  quantile(abs(cl_cmp$pct_diff), 0.9) < 5
+)
+```
+
+# Assumptions and deviations
+
+- **Q exponents as printed.** The packaged model uses `e_age_q = 0.753` and
+  `e_hydration_rate_bsa_q = 0.176` exactly as Table 2, Eq 12, Table 4 and the
+  Table S1 footnote print them. The paper's own simulations behave as if the two
+  exponents were swapped (see Errata); the swapped reading is shown above
+  through `rxode2::ini()` overrides and can be used the same way.
+- **Between-course, not between-patient, variability.** Each treatment course
+  was analysed as an independent individual, so `etalcl` and `etalvp` describe
+  course-to-course variability; the paper fitted no separate inter-occasion
+  term.
+- **IIV and residual error from percent CV.** Table 2 gives omega as CV%,
+  converted with `omega^2 = log(1 + CV^2)`; sigma 31.2% is used as the
+  proportional SD.
+- **Dose units.** The model works in umol so that `Cc` is in umol/L, the unit of
+  every concentration and target in the paper; doses in mg are converted with
+  the methotrexate molecular weight 454.44 g/mol.
+- **Monte Carlo design.** Table 6 is replicated with 200 patients per cell
+  (the paper used 10,000) and success evaluated on individual predictions
+  without residual error. The Methods do not state whether residual error was
+  included; the individual-prediction reading is the one that reproduces the
+  table. Age range 2-13 years (development cohort) is assumed for "the age
+  range of the study population".
+- **Figure S1 digitised.** Curve values were digitised by the maintainers from
+  the embedded plot images in Supplement 2 and are used only for comparison,
+  never to set a parameter.
+- **Leucovorin, urine pH and renal function** are not in the model; serum
+  creatinine and eGFR were screened and not retained (Table 3).
+
+# Errata and internal inconsistencies in the source
+
+1. **The Q exponents conflict with the paper's simulations.** Every printed
+   statement of the final model has age^0.753 and HYDR^0.176 on Q (theta7 on
+   age, theta8 on HYDR in the Table S1 footnote; the Table 2 bootstrap medians
+   0.779 and 0.175 follow the same labels). Figure S1 and Table 6, the paper's
+   two simulation outputs, are reproduced only with the exponents exchanged
+   (HYDR^0.753, and HYDR^0.723 for the panel A refit): as printed, the
+   187 mL/m^2/h curve of Figure S1B is about 50% too high at 72 h, and Table 6
+   attainment at 3 and 5 g/m^2 with 180 mL/m^2/h is 3-5 points too high. The
+   paper does not show which side carries the swap, the estimation or the
+   simulation code, and no model code is published. The printed values are
+   kept pending clarification from the authors.
+2. **Figure S1 legend.** The overlay legend of Figure S1 gives the highest
+   hydration rate as 180 mL/m^2/h, while the plot's own legend, the caption and
+   the Methods give 187 mL/m^2/h (the cohort maximum). 187 is simulated here and
+   matches the digitised curve.
+
+No erratum or corrigendum for this article was located (checked November 2026).
