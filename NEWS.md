@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Doodnaught 2017 buprenorphine and norbuprenorphine PK with thermal-threshold PD ([doi:10.1371/journal.pone.0176443](https://doi.org/10.1371/journal.pone.0176443)) -- healthy conscious cats given i.v., s.c. or buccal buprenorphine.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

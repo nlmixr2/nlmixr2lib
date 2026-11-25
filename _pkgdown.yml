@@ -1182,6 +1182,8 @@ navbar:
         href: articles/Jones_2021_buprenorphine.html
       - text: "Buprenorphine (Kovar 2020)"
         href: articles/Kovar_2020_buprenorphine.html
+      - text: "Buprenorphine cat (Doodnaught 2017)"
+        href: articles/Doodnaught_2017_buprenorphine_cat.html
       - text: "Burosumab (Lee 2022)"
         href: articles/Lee_2022_burosumab.html
       - text: "Burosumab (Mehta 2025)"
@@ -9987,6 +9989,7 @@ articles:
   - articles/Dong_2016_hydroxyurea
   - articles/Dong_2024_adefovir
   - articles/Dong_2026_piperacillin
+  - articles/Doodnaught_2017_buprenorphine_cat
   - articles/Dorajoo_2019_vancomycin
   - articles/Dorlo_2008_miltefosine
   - articles/Dorlo_2017_miltefosine

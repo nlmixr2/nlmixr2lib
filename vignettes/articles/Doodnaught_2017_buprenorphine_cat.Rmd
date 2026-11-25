@@ -1,0 +1,571 @@
+---
+title: "Buprenorphine in cats (Doodnaught 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Buprenorphine in cats (Doodnaught 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Doodnaught_2017_buprenorphine_cat"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Doodnaught_2017_buprenorphine_cat"))$description`
+* Article: <https://doi.org/10.1371/journal.pone.0176443> (open access; the
+  model is described in S3 File, Appendix 3, and the individual data are in
+  S4 File).
+
+Doodnaught et al. gave a high-concentration buprenorphine formulation
+(Simbadol, 1.8 mg/mL) to six conscious cats by three routes in a crossover
+design and fitted one joint population model in Phoenix NLME to plasma
+buprenorphine and norbuprenorphine from all routes at once. The
+pharmacodynamic model for the thermal threshold was then fitted
+sequentially with the PK parameters held at their estimates.
+
+Structure (Figure 2 of the paper):
+
+* **Buprenorphine** -- two compartments (CL, V1, CL2, V2), shared by all
+  routes; doses and parameters are per kg body weight.
+* **Buccal (OTM) route** -- first-order absorption (kaOTM) with
+  bioavailability FOTM.
+* **Subcutaneous route** -- total bioavailability FSC split between an
+  inverse-Gaussian input (fraction BIO; mean input time MAT and relative
+  dispersion CV, S3 File eq 5) giving a sharp peak at about 5 minutes, and a
+  time-dependent first-order input (the remaining 1 - BIO) whose rate
+  constant rises logistically to kaSC with half-time T50 and a shape
+  parameter set equal to CL (S3 File eq 7).
+* **Norbuprenorphine** -- two compartments, formed from central
+  buprenorphine at the first-order rate KaMet; after a buccal dose it also
+  enters from a gut-norbuprenorphine (first-pass) depot at rate
+  Kafirst-pass.
+* **Thermal threshold** -- effect compartment (Ke0) driving a sigmoid Emax
+  model on top of a baseline T0 (equation 1).
+
+# Population
+
+Six healthy adult domestic short-haired cats (four males, two females; body
+weight 4.9 +/- 0.7 kg) from the Universite de Montreal received, in random
+order with at least 14 days of washout, Simbadol 0.12 mg/kg i.v., 0.24 mg/kg
+s.c. and 0.12 mg/kg buccally (Methods 'Animals' and 'Experimental design').
+Plasma was sampled from a jugular central venous catheter at 2 and 8 min and
+at 0.5, 1, 2, 4, 6, 8, 12, 24, 30, 36, 48, 60 and 72 h; the thermal threshold
+was measured at the same times from 0.5 h. A saline arm (Phase I) gave
+thermal thresholds only.
+
+The same information is available programmatically:
+
+```{r population}
+str(readModelDb("Doodnaught_2017_buprenorphine_cat")()$population)
+```
+
+# Source trace
+
+Every value is from the Results section of the paper unless stated; IIV
+percentages are converted with S3 File eq 3, omega^2 = log(CV^2 + 1).
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL) | log(0.98) L/kg/h, IIV 2.4% | Results 'Pharmacokinetic modeling and parameters' |
+| `lvc` (V1) | log(0.75) L/kg, IIV 11.3% | same paragraph |
+| `lq` (CL2) | log(0.70) L/kg/h, IIV 0% (no eta) | same paragraph |
+| `lvp` (V2) | log(7.15) L/kg, IIV 8.1% | same paragraph |
+| `logitfdepot_buccal` (FOTM) | logit(0.236), IIV 25% | OTM paragraph; logit scale per S3 File eq 2 |
+| `lka_buccal` (kaOTM) | log(1.67) 1/h, IIV 25.1% | OTM paragraph |
+| `logitfdepot_sc` (FSC) | logit(0.94), IIV 23.4% | SC paragraph |
+| `logitfrel` (BIO) | logit(0.101), IIV 113% | SC paragraph |
+| `lmat_invgauss` (MAT) | log(7.21) h, IIV 3.5% | SC paragraph; Figure 2 legend |
+| `lcv_invgauss` (CV) | log(5.46), IIV 0.5% | SC paragraph |
+| `lka_sc` (kaSC) | log(0.062) 1/h, IIV 14.9% | SC paragraph |
+| `lka_t50` (T50) | log(2.8) h, IIV 27% | SC paragraph |
+| `lkmet` (KaMet) | fixed(log(0.196)) 1/h, IIV 19% | norbuprenorphine paragraph ('then fixed') |
+| `lka_norbup` (Kafirst-pass) | log(0.626) 1/h, IIV 6.9% | norbuprenorphine paragraph |
+| `lcl_norbup` (CLMet) | log(0.42) L/kg/h, IIV 4.3% | norbuprenorphine paragraph |
+| `lvc_norbup` (V1Met) | log(0.323) L/kg, IIV 0.1% | norbuprenorphine paragraph |
+| `lq_norbup` (CL2Met) | log(7.662) L/kg/h, no eta | norbuprenorphine paragraph ('not estimated') |
+| `lvp_norbup` (V2Met) | log(4.69) L/kg, no eta | norbuprenorphine paragraph |
+| `lke0` (Ke0) | log(0.52) 1/h, IIV 0% | Results 'PK-PD modeling' |
+| `le0` (T0) | log(46.1) degrees C, IIV 0% | Results 'PK-PD modeling' |
+| `lemax` (Emax) | log(5.62) degrees C, IIV 0% | Results 'PK-PD modeling' |
+| `lec50` (EC50) | log(2.13) ng/mL, IIV 447% | Results 'PK-PD modeling' |
+| `lhill` (n) | log(1.54), IIV 91% | Results 'PK-PD modeling' |
+| `propSd`, `propSd_norbup`, `addSd_thermal_threshold` | fixed(0) | error models named (Figure 2; S3 File Table 2) but magnitudes not reported |
+| inverse-Gaussian input | n/a | S3 File eq 5; mode from eq 6 |
+| time-dependent input, gamma = CL | n/a | S3 File eq 7 and the sentence after it |
+| norbuprenorphine formation and first-pass depot | n/a | Figure 2; norbuprenorphine paragraph |
+| `d/dt(effect)`, sigmoid Emax | n/a | S3 File eq 8; equation 1 (S3 File eq 9) |
+
+# Derived quantities reported in the paper
+
+These are computed from the packaged parameters and must agree with the
+secondary values the paper prints.
+
+```{r derived}
+mod <- readModelDb("Doodnaught_2017_buprenorphine_cat")
+ui <- rxode2::rxode2(mod)
+th <- ui$theta
+
+cl <- exp(th[["lcl"]]); vc <- exp(th[["lvc"]]); q <- exp(th[["lq"]]); vp <- exp(th[["lvp"]])
+k10 <- cl / vc; k12 <- q / vc; k21 <- q / vp
+beta <- ((k10 + k12 + k21) - sqrt((k10 + k12 + k21)^2 - 4 * k10 * k21)) / 2
+mat <- exp(th[["lmat_invgauss"]]); cvig <- exp(th[["lcv_invgauss"]])
+
+derived <- tibble::tribble(
+  ~quantity, ~paper, ~model,
+  "Vdss = V1 + V2 (L/kg)", 7.89, vc + vp,
+  "Beta half-life (h)", 12.3, log(2) / beta,
+  "Mode of the inverse-Gaussian input (h)", 0.08,
+    mat * (sqrt(1 + 9 / 4 * cvig^4) - 3 / 2 * cvig^2),
+  "Buccal absorption half-life (h)", 0.42, log(2) / exp(th[["lka_buccal"]]),
+  "Late SC absorption half-life at kaSC (h)", 11.2, log(2) / exp(th[["lka_sc"]]),
+  "KaMet transformation half-life (h)", 3.5, log(2) / exp(th[["lkmet"]]),
+  "First-pass norbuprenorphine absorption half-life (h)", 1.1, log(2) / exp(th[["lka_norbup"]])
+) |>
+  mutate(pct_diff = 100 * (model - paper) / paper)
+
+knitr::kable(derived, digits = 3, caption = "Secondary quantities: paper vs packaged model.")
+
+# The paper rounds each quantity to two or three significant figures. The
+# inverse-Gaussian mode is printed to one significant figure (0.08 h), so its
+# tolerance is the half-unit of that last digit.
+stopifnot(
+  all(abs(derived$pct_diff[-3]) < 3),
+  abs(derived$model[3] - 0.08) < 0.005
+)
+```
+
+The mode check fixes the meaning of the printed CV: with CV = 5.46 entered
+squared in equation 5 the input peaks at 0.081 h, matching the paper's
+'initial peak of plasma concentration observed at 0.08 hours'. Reading 5.46
+as CV^2 instead would put the peak at 0.44 h.
+
+# Typical-value replication of Figure 1
+
+Figure 1 plots the mean plasma concentrations of the six cats. The means
+below were computed by the maintainers from the individual data in S4 File
+(concentrations below the limit of quantification are recorded there as 0).
+
+```{r observed}
+obs_pk <- tibble::tribble(
+  ~route, ~tmin, ~bup, ~nor,
+  "IV", 2, 239, 2.78,
+  "IV", 8, 106, 3,
+  "IV", 30, 37.7, 2.86,
+  "IV", 60, 16.4, 2.58,
+  "IV", 120, 6.67, 2.33,
+  "IV", 240, 3.04, 1.64,
+  "IV", 360, 2.37, 1.32,
+  "IV", 480, 1.9, 1.17,
+  "IV", 720, 1.58, 1.15,
+  "IV", 1440, 0.758, 0.783,
+  "IV", 1800, 0.513, 0.577,
+  "IV", 2160, 0.42, 0.423,
+  "IV", 2880, 0.227, 0.207,
+  "IV", 3600, 0.12, 0.102,
+  "IV", 4320, 0.0692, 0.0214,
+  "OTM", 2, 0.836, 0,
+  "OTM", 8, 12.8, 0.379,
+  "OTM", 30, 16.7, 3.2,
+  "OTM", 60, 9.47, 4.2,
+  "OTM", 120, 2.96, 3.72,
+  "OTM", 240, 0.981, 2.31,
+  "OTM", 360, 0.709, 1.63,
+  "OTM", 480, 0.551, 1.3,
+  "OTM", 720, 0.405, 1.05,
+  "OTM", 1440, 0.196, 0.535,
+  "OTM", 1800, 0.125, 0.273,
+  "OTM", 2160, 0.0988, 0.203,
+  "OTM", 2880, 0.0465, 0.1,
+  "OTM", 3600, 0.0268, 0.0321,
+  "OTM", 4320, 0.0124, 0,
+  "SC", 2, 1.57, 0,
+  "SC", 8, 5.92, 0.0112,
+  "SC", 30, 6.02, 0.101,
+  "SC", 60, 7.35, 0.419,
+  "SC", 120, 4.67, 0.336,
+  "SC", 240, 6.35, 0.478,
+  "SC", 360, 6.97, 0.72,
+  "SC", 480, 5.93, 1.04,
+  "SC", 720, 7.06, 1.5,
+  "SC", 1440, 5, 2.53,
+  "SC", 1800, 3.79, 2.14,
+  "SC", 2160, 3.04, 2.03,
+  "SC", 2880, 1.89, 1.39,
+  "SC", 3600, 1.09, 0.886,
+  "SC", 4320, 0.538, 0.388
+) |>
+  mutate(time = tmin / 60)
+
+# Table 2 of the paper: mean thermal threshold (degrees C).
+obs_tt <- tibble::tribble(
+  ~time, ~IV, ~SC, ~OTM,
+  0, 45.7, 45.6, 46.1,
+  0.5, 50.3, 49.4, 49.3,
+  1, 49.6, 49.7, 49.5,
+  2, 50.2, 49.2, 51.2,
+  4, 49.9, 50.2, 50.5,
+  6, 48.9, 50.9, 48.6,
+  8, 50.2, 51.1, 50.4,
+  12, 46.4, 49.7, 49.4,
+  24, 48.5, 49.7, 47.7,
+  30, 46.2, 49.3, 46.8,
+  36, 46.7, 49.0, 47.1,
+  48, 45.1, 48.0, 46.0,
+  60, 45.7, 45.1, 46.7,
+  72, 46.7, 45.8, 46.4
+) |>
+  pivot_longer(-time, names_to = "route", values_to = "TT")
+```
+
+A buccal dose is entered as two records of the same amount, one into
+`depot_buccal` and one into `depot_norbup`: the model applies FOTM to both,
+as the paper's 'FOTM (parent and metabolite OTM bioavailability)'
+describes. Observation rows carry `dvid = 1` because the model has three
+outputs.
+
+```{r events}
+route_dose <- c(IV = 0.12, OTM = 0.12, SC = 0.24)  # mg/kg
+
+make_route <- function(route, ids, times) {
+  dose_cmt <- switch(route,
+    IV = "central",
+    OTM = c("depot_buccal", "depot_norbup"),
+    SC = "depot_sc"
+  )
+  doses <- tidyr::expand_grid(id = ids, cmt = dose_cmt) |>
+    mutate(time = 0, amt = route_dose[[route]], evid = 1L, dvid = NA_integer_)
+  obs <- tidyr::expand_grid(id = ids, time = times) |>
+    mutate(cmt = NA_character_, amt = NA_real_, evid = 0L, dvid = 1L)
+  bind_rows(doses, obs) |>
+    mutate(route = route) |>
+    arrange(id, time, desc(evid))
+}
+
+sample_times <- sort(unique(c(0, obs_pk$time)))
+plot_times <- sort(unique(c(sample_times, seq(0, 1, by = 1 / 60), seq(1, 72, by = 0.25))))
+
+ev_typ <- bind_rows(
+  make_route("IV", 1L, plot_times),
+  make_route("OTM", 2L, plot_times),
+  make_route("SC", 3L, plot_times)
+)
+
+mod_typ <- rxode2::zeroRe(mod)
+sim_typ <- rxode2::rxSolve(mod_typ, events = ev_typ, keep = "route",
+                           atol = 1e-10, rtol = 1e-10) |>
+  as.data.frame()
+```
+
+```{r figure-1, fig.height = 6}
+# Replicates Figure 1 of Doodnaught 2017 (mean +/- SD plasma concentrations),
+# with the typical-value prediction as the line.
+typ_long <- sim_typ |>
+  select(route, time, buprenorphine = Cc, norbuprenorphine = Cc_norbup) |>
+  pivot_longer(c(buprenorphine, norbuprenorphine), names_to = "analyte", values_to = "conc")
+# Log axis: drop the pre-dose point and the BLQ zeros from the plots only.
+typ_long <- typ_long[typ_long$time > 0, ]
+obs_long <- obs_pk |>
+  select(route, time, buprenorphine = bup, norbuprenorphine = nor) |>
+  pivot_longer(c(buprenorphine, norbuprenorphine), names_to = "analyte", values_to = "conc")
+obs_long <- obs_long[obs_long$conc > 0, ]
+
+ggplot(typ_long, aes(time, conc, colour = route)) +
+  geom_line() +
+  geom_point(data = obs_long) +
+  facet_wrap(~analyte, ncol = 1, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Plasma concentration (ng/mL)", colour = "Route",
+       caption = "Lines: typical-value prediction. Points: mean of six cats (S4 File).\nReplicates Figure 1 of Doodnaught 2017.")
+```
+
+```{r figure-1-check}
+pk_cmp <- sim_typ |>
+  mutate(tmin = round(time * 60)) |>
+  select(route, tmin, Cc, Cc_norbup) |>
+  inner_join(obs_pk, by = c("route", "tmin")) |>
+  dplyr::filter(time >= 0.5)
+
+fit_summary <- pk_cmp[pk_cmp$nor > 0, ] |>
+  group_by(route) |>
+  summarise(median_abs_log_ratio_nor = median(abs(log(Cc_norbup / nor))), .groups = "drop") |>
+  left_join(
+    pk_cmp |> group_by(route) |>
+      summarise(median_abs_log_ratio_bup = median(abs(log(Cc / bup))), .groups = "drop"),
+    by = "route"
+  )
+knitr::kable(fit_summary, digits = 3,
+             caption = "Median |log(typical prediction / observed mean)| from 0.5 h on.")
+
+peak_nor_otm <- c(
+  model = max(sim_typ$Cc_norbup[sim_typ$route == "OTM"]),
+  observed = max(obs_pk$nor[obs_pk$route == "OTM"])
+)
+peak_nor_otm
+
+stopifnot(
+  # Buprenorphine: the typical curve tracks the mean data within about 20%
+  # at the median time point for every route (realised 0.08-0.19).
+  all(fit_summary$median_abs_log_ratio_bup < log(1.5)),
+  # Norbuprenorphine after IV and SC (realised 0.15 and 0.42).
+  all(fit_summary$median_abs_log_ratio_nor[fit_summary$route != "OTM"] < log(2)),
+  # Buccal norbuprenorphine peak: FOTM applied to the first-pass depot gives
+  # 4.4 ng/mL against an observed 4.2 ng/mL; a first-pass fraction of 1% of
+  # the dose would give about 0.6 ng/mL.
+  abs(log(peak_nor_otm[["model"]] / peak_nor_otm[["observed"]])) < log(1.3)
+)
+```
+
+The buccal norbuprenorphine curve peaks at the observed height but at about
+4 h instead of 1 h, and stays about twice the observed mean from 4 to 48 h;
+see Assumptions and deviations.
+
+## Bioavailability and clearance by mass balance
+
+With the typical values, `CL x AUC(0-inf) / dose` must return 1 for the
+i.v. dose, FSC = 0.94 for s.c. and FOTM = 0.236 for buccal. This checks that
+the two SC inputs together deliver exactly FSC of the dose (the
+inverse-Gaussian density integrates to 1) and that the buccal first-pass
+depot does not leak buprenorphine.
+
+```{r mass-balance}
+mb_times <- sort(unique(c(seq(0, 1, by = 1 / 120), seq(1, 24, by = 0.1), seq(24, 600, by = 1))))
+ev_mb <- bind_rows(
+  make_route("IV", 1L, mb_times),
+  make_route("OTM", 2L, mb_times),
+  make_route("SC", 3L, mb_times)
+)
+sim_mb <- rxode2::rxSolve(mod_typ, events = ev_mb, keep = "route",
+                          atol = 1e-12, rtol = 1e-12, hmax = 0.01, maxsteps = 1e6) |>
+  as.data.frame()
+
+auc_trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+mb <- sim_mb |>
+  group_by(route) |>
+  summarise(auc = auc_trap(time, Cc), .groups = "drop") |>
+  mutate(
+    dose = route_dose[route],
+    f_model = cl * auc / 1000 / dose,
+    f_paper = c(IV = 1, OTM = 0.236, SC = 0.94)[route]
+  )
+knitr::kable(mb, digits = 4, caption = "CL x AUC / dose against the published bioavailability.")
+stopifnot(all(abs(mb$f_model / mb$f_paper - 1) < 0.01))
+```
+
+# Virtual cohort and simulation
+
+The stochastic simulation uses 200 virtual cats per route. No covariates
+enter the model (all parameters are per kg). The residual errors are fixed to
+zero because the paper does not report their magnitudes, so the bands show
+between-cat variability only.
+
+```{r cohort}
+rxode2::rxSetSeed(2017)
+n_per_route <- 200L
+events <- bind_rows(
+  make_route("IV", seq_len(n_per_route), sample_times),
+  make_route("OTM", n_per_route + seq_len(n_per_route), sample_times),
+  make_route("SC", 2L * n_per_route + seq_len(n_per_route), sample_times)
+)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
+
+sim <- rxode2::rxSolve(mod, events = events, keep = "route") |>
+  as.data.frame()
+```
+
+```{r figure-s5, fig.height = 6}
+# Replicates the stratified VPCs of S3 File (Fig suppl. 5a-f) in summary form.
+vpc <- sim |>
+  select(id, route, time, buprenorphine = Cc, norbuprenorphine = Cc_norbup)
+vpc <- vpc[vpc$time > 0, ] |>
+  pivot_longer(c(buprenorphine, norbuprenorphine), names_to = "analyte", values_to = "conc") |>
+  group_by(route, analyte, time) |>
+  summarise(
+    q05 = quantile(conc, 0.05), q50 = median(conc), q95 = quantile(conc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(time, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.25) +
+  geom_line() +
+  geom_point(data = obs_long, aes(y = conc), colour = "firebrick") +
+  facet_grid(analyte ~ route, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Plasma concentration (ng/mL)",
+       caption = "Median and 90% interval of 200 virtual cats per route; points: observed means.\nReplicates Fig suppl. 5a-f of S3 File.")
+```
+
+```{r figure-s10}
+# Replicates the pharmacodynamic VPCs of S3 File (Fig suppl. 10a-c) and the
+# means of Table 2.
+tt_vpc <- sim |>
+  group_by(route, time) |>
+  summarise(
+    q05 = quantile(thermal_threshold, 0.05),
+    q50 = median(thermal_threshold),
+    q95 = quantile(thermal_threshold, 0.95),
+    .groups = "drop"
+  )
+ggplot(tt_vpc, aes(time, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.25) +
+  geom_line() +
+  geom_line(data = sim_typ, aes(y = thermal_threshold), linetype = 2) +
+  geom_point(data = obs_tt, aes(y = TT), colour = "firebrick") +
+  geom_hline(yintercept = 55, linetype = 3) +
+  facet_wrap(~route) +
+  labs(x = "Time after dose (h)", y = "Thermal threshold (degrees C)",
+       caption = "Solid: median of 200 virtual cats per route; dashed: typical value;\npoints: Table 2 means; dotted: 55 degrees C safety cut-off.")
+```
+
+```{r pd-check}
+pd_cmp <- sim_typ |>
+  select(route, time, thermal_threshold) |>
+  inner_join(obs_tt, by = c("route", "time"))
+pd_summary <- pd_cmp |>
+  group_by(route) |>
+  summarise(median_abs_diff_C = median(abs(thermal_threshold - TT)), .groups = "drop")
+knitr::kable(pd_summary, digits = 2,
+             caption = "Median |typical prediction - Table 2 mean| (degrees C).")
+stopifnot(
+  # Realised 0.6-1.2 degrees C; Table 2 SDs are 1-5 degrees C.
+  all(pd_summary$median_abs_diff_C < 2),
+  # Baseline before dosing is T0 for every route.
+  all(abs(sim_typ$thermal_threshold[sim_typ$time == 0] - 46.1) < 1e-6)
+)
+```
+
+# PKNCA validation
+
+NCA of the simulated buprenorphine and norbuprenorphine profiles at the
+study's sampling times, per route.
+
+```{r pknca}
+# PKNCAdose() reserves the argument name `route`, so the grouping column is
+# called `treatment` here.
+nca_one <- function(sim, conc_col) {
+  conc <- sim |>
+    select(id, treatment = route, time, conc = all_of(conc_col)) |>
+    filter(!is.na(conc))
+  conc <- bind_rows(conc, conc |> distinct(id, treatment) |> mutate(time = 0, conc = 0)) |>
+    distinct(id, treatment, time, .keep_all = TRUE) |>
+    arrange(id, treatment, time)
+  # One dose row per cat: the second buccal record (into depot_norbup) is the
+  # same administration.
+  doses <- events |>
+    filter(evid == 1, cmt != "depot_norbup") |>
+    mutate(dose_route = ifelse(route == "IV", "intravascular", "extravascular")) |>
+    select(id, treatment = route, time, amt, dose_route)
+  conc_obj <- PKNCA::PKNCAconc(conc, conc ~ time | treatment + id)
+  dose_obj <- PKNCA::PKNCAdose(doses, amt ~ time | treatment + id, route = "dose_route")
+  intervals <- data.frame(
+    start = 0, end = Inf,
+    cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+  )
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+nca_bup <- nca_one(sim, "Cc")
+nca_nor <- nca_one(sim, "Cc_norbup")
+
+summarise_nca <- function(res, analyte) {
+  as.data.frame(res) |>
+    filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+    group_by(treatment, PPTESTCD) |>
+    summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+    pivot_wider(names_from = PPTESTCD, values_from = median) |>
+    mutate(analyte = analyte)
+}
+nca_tab <- bind_rows(summarise_nca(nca_bup, "buprenorphine"), summarise_nca(nca_nor, "norbuprenorphine"))
+nca_tab |>
+  select(analyte, treatment, cmax, tmax, aucinf.obs, half.life) |>
+  rename(
+    "Analyte" = analyte, "Route" = treatment, "Cmax (ng/mL)" = cmax, "Tmax (h)" = tmax,
+    "AUC0-inf (ng*h/mL)" = aucinf.obs, "t1/2 (h)" = half.life
+  ) |>
+  knitr::kable(digits = 2, caption = "Median simulated NCA per route (200 virtual cats per route).")
+```
+
+## Comparison against published values
+
+The paper reports one elimination half-life for buprenorphine across routes
+(12.3 h, Table 3 'Current Study'). It is compared with the simulated
+i.v. terminal half-life.
+
+```{r nca_compare}
+published <- tibble::tribble(
+  ~treatment, ~half.life,
+  "IV", 12.3
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_bup,
+  reference = published,
+  by = "treatment",
+  units = c(half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs. published buprenorphine half-life. * differs by >20%.")
+
+hl_iv <- as.data.frame(nca_bup) |>
+  filter(treatment == "IV", PPTESTCD == "half.life") |>
+  pull(PPORRES)
+# The 24-72 h terminal slope sits close to beta.
+stopifnot(abs(median(hl_iv, na.rm = TRUE) / 12.3 - 1) < 0.2)
+```
+
+# Assumptions and deviations
+
+* **First-pass norbuprenorphine dose.** The paper says FOTM is the 'parent
+  and metabolite OTM bioavailability' and that the first-pass route was
+  added to explain the higher norbuprenorphine exposure after buccal
+  dosing, but it does not print the amount entering the gut-norbuprenorphine
+  depot. The model applies FOTM to a buccal dose of the same amount entering
+  that depot, which is the reading of 'parent and metabolite OTM
+  bioavailability'. The individual data in S4 File support it: this reading
+  reproduces the observed mean peak of buccal norbuprenorphine (4.4 vs 4.2
+  ng/mL), while a first-pass input of 1% of the dose would give about 0.6
+  ng/mL. The paper's sentence that the first-pass amount 'contributed to
+  approximately 1% out of the value of FOTM (23.6%)' could not be reconciled
+  with any structure the paper describes and is not used. With this reading
+  the typical buccal norbuprenorphine curve peaks later (about 4 h vs 1 h)
+  and stays about twice the observed mean from 4 to 48 h.
+* **Norbuprenorphine formation is part of CL.** KaMet x central forms
+  norbuprenorphine without an extra buprenorphine loss term, so CL is the
+  total buprenorphine clearance. The paper calls CL the 'total body
+  clearance', and its 12.3 h beta half-life is reproduced from CL, V1, CL2
+  and V2 alone (11.7 h if KaMet were an additional loss). Formation is in
+  mass units with no molecular-weight correction; nothing in the paper
+  indicates a molar model.
+* **Shape parameter of the time-dependent SC input.** S3 File states that
+  gamma 'was approximated by the value of clearance'; the model uses the
+  individual per-kg CL value read as hours.
+* **CV of the inverse-Gaussian input.** The paper prints 'variance of the
+  input time (CV) was 5.46'. The value is used as CV and squared in
+  equation 5; this reproduces the paper's 0.08 h input peak (see Derived
+  quantities).
+* **IIV conversion.** All IIV percentages are converted with S3 File eq 3,
+  including those of the logit-scale bioavailabilities FOTM, FSC and BIO.
+  Parameters with 'IIV 0%' (CL2, Ke0, T0, Emax) and those with no estimated
+  random effect (CL2Met, V2Met) carry no eta. The KaMet eta (19%) comes from
+  the IV + SC fit made before the typical KaMet was fixed.
+* **Residual error.** The paper names a proportional error for each analyte
+  (common to the three routes) and an additive error for the thermal
+  threshold, but does not report their magnitudes; all three are fixed to
+  zero.
+* **Inverse-Gaussian input with repeated doses.** The inverse-Gaussian term
+  reads the amount and time of the most recent s.c. dose only, so it is
+  exact for the single doses of the study but does not superpose earlier
+  s.c. doses.
+* **BIO complement.** The paper prints 1 - BIO as 89.1%; with BIO = 10.1% it
+  is 89.9%, which is what the model uses.
+* **Right censoring.** Thermal thresholds at the 55 degrees C cut-off were
+  fitted as observed values; the paper's attempt at a censored-data
+  likelihood did not converge, so the PD estimates are those of the
+  uncensored fit.
+* No correction notice for this article was found as of 2026-11-25.
