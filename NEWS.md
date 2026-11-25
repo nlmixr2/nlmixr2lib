@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mao 2018 pravastatin in vitro OATP hepatic uptake kinetics ([doi:10.1002/psp4.12283](https://doi.org/10.1002/psp4.12283)) -- plated human hepatocytes (single donor) in human plasma and in induction medium.
+- Add Mukherjee 2018 tofacitinib popPK and week-8 exposure-response for clinical remission, clinical response and mucosal healing ([doi:10.1111/bcp.13523](https://doi.org/10.1111/bcp.13523)) -- adults with moderately to severely active ulcerative colitis.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
