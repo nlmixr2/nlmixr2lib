@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wahl 2017 tenofovir HIV-PrEP protection ([doi:10.1038/srep41098](https://doi.org/10.1038/srep41098)) -- preclinical BLT-humanized / BALB/c mice; five landmark exposure-response models (dose, plasma, FRT tissue and cervicovaginal-lavage TFV / TFVdp) for the fraction protected from vaginal HIV-1 acquisition.
+- Add Dudkowski 2017 alogliptin PK/PD ([doi:10.1007/s00228-016-2175-1](https://doi.org/10.1007/s00228-016-2175-1)) -- children, adolescents and adults with type 2 diabetes mellitus.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

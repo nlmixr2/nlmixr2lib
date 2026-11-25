@@ -1,0 +1,488 @@
+---
+title: "Alogliptin (Dudkowski 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Alogliptin (Dudkowski 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Dudkowski_2017_alogliptin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Dudkowski_2017_alogliptin"))$description`
+* Article: <https://doi.org/10.1007/s00228-016-2175-1> (open access, PMC5306220)
+
+The final parameter estimates are in the paper's Electronic Supplementary
+Material (Supplemental Table 1); the model equations are in the Methods
+section "PK/PD modeling and simulations".
+
+# Population
+
+A phase 1, randomized, open-label, single-dose study (NCT00957268) in 46
+patients with type 2 diabetes mellitus: 9 children (10 to <14 years), 15
+adolescents (14 to <18 years) and 22 gender- and race-matched adults (18-65
+years). Children and adolescents were randomized 1:1 to a single oral dose of
+12.5 or 25 mg alogliptin; all adults received 25 mg. Most subjects were female
+(34/46) and Black or African American (32/46). Mean body weight was high in
+every arm (86.6-116.3 kg; Table 1), so pediatric and adult weights overlapped
+considerably. Most subjects took concomitant metformin. Subjects with renal
+impairment (CrCl < 50 mL/min) were excluded.
+
+The same information is available programmatically via
+`readModelDb("Dudkowski_2017_alogliptin")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (KA, adults) | log(1.66) 1/h | Supplemental Table 1 |
+| `lka_ped` (KA, pediatric) | log(0.590) 1/h | Supplemental Table 1 |
+| `lcl` (CL/F, adults) | log(13.0) L/h | Supplemental Table 1 |
+| `lcl_ped` (CL/F, pediatric) | log(14.4) L/h | Supplemental Table 1 |
+| `lvc` (V2/F) | log(125) L | Supplemental Table 1 |
+| `lvp` (V3/F) | log(117) L | Supplemental Table 1 |
+| `lq` (Q/F) | log(11.7) L/h | Supplemental Table 1 |
+| `e_wt_cl_q` | 0.75 (fixed) | Methods, PK/PD modeling equation (b = 0.75 for CL/F) |
+| `e_wt_vc_vp` | 1 (fixed) | Methods, PK/PD modeling equation (b = 1 for volume) |
+| Reference weight | 70 kg | Methods, PK/PD modeling |
+| `e0` | 0 (fixed) | Methods; Supplemental Table 1 |
+| `emax` | 99.3 % | Supplemental Table 1 |
+| `lec50` (EC50, adults) | log(5.45) ng/mL | Supplemental Table 1 |
+| `lec50_ped` (EC50, pediatric) | log(6.38) ng/mL | Supplemental Table 1 |
+| `lhill` (shape factor) | log(0.857) | Supplemental Table 1 |
+| `etalcl` | 0.185^2 (18.5 %CV) | Supplemental Table 1 |
+| `etalvc` | 0.301^2 (30.1 %CV) | Supplemental Table 1 |
+| `etalec50` | 0.246^2 (24.6 %CV) | Supplemental Table 1 |
+| `propSd` | sqrt(0.0820) = 0.286 | Supplemental Table 1 (PK proportional, 28.6 %CV) |
+| `addSd` | 0.1 ng/mL (fixed) | Supplemental Table 1 (PK additive variance 0.0100 FIXED) |
+| `addSd_Dpp4Inh` | sqrt(3.67) = 1.92 % | Supplemental Table 1 (PD additive) |
+| Two-compartment PK, first-order absorption | n/a | Results, PK/PD modeling and simulations |
+| `Dpp4Inh = E0 + Emax * Cc^g / (EC50^g + Cc^g)` | n/a | Methods, sigmoid Emax equation |
+
+# Virtual cohorts
+
+Two virtual populations are used.
+
+* **Single-dose study arms.** One cohort of 100 subjects for each of the five
+  arms of Table 1, with body weight drawn log-normally around the arm's mean
+  weight with the arm's coefficient of variation from Table 1. These are
+  compared with the observed non-compartmental results of Tables 2 and 3.
+* **Steady-state projection.** As in the paper's simulations, 100 subjects per
+  pediatric or adult group, each with body weight drawn from a log-normal
+  distribution centred on 95 kg, dosed 12.5 or 25 mg once daily to steady
+  state. These are compared with Table 4 and Figure 4.
+
+```{r cohort}
+set.seed(2017)
+
+obs_sd <- c(0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24, 30, 36, 48, 60, 72)
+
+arms <- tibble::tribble(
+  ~treatment, ~dose, ~CHILD, ~wt_mean, ~wt_sd,
+  "Children 12.5 mg", 12.5, 1, 86.62, 13.98,
+  "Adolescents 12.5 mg", 12.5, 1, 116.28, 33.16,
+  "Children 25 mg", 25, 1, 98.90, 11.96,
+  "Adolescents 25 mg", 25, 1, 103.71, 17.10,
+  "Adults 25 mg", 25, 0, 92.25, 16.45
+)
+
+# The model declares two residual-error endpoints (Cc and Dpp4Inh), so every
+# observation row must nominate one through `dvid`; both outputs are returned
+# as columns at every observation time whichever is nominated. `addl` repeats
+# the once-daily dose (addl = 0 is a single dose).
+make_cohort <- function(n, treatment, dose, CHILD, wt_mean, wt_cv, obs_times,
+                        id_offset = 0L, addl = 0L) {
+  sdlog <- sqrt(log(1 + wt_cv^2))
+  subj <- tibble(
+    id = id_offset + seq_len(n),
+    WT = exp(rnorm(n, log(wt_mean) - sdlog^2 / 2, sdlog)),
+    CHILD = CHILD,
+    treatment = treatment
+  )
+  dose_rows <- subj |>
+    mutate(time = 0, evid = 1L, amt = dose, cmt = "depot",
+           ii = if (addl > 0L) 24 else 0, addl = addl, dvid = NA_integer_)
+  obs_rows <- subj |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(evid = 0L, amt = 0, cmt = "central", ii = 0, addl = 0L, dvid = 1L)
+  bind_rows(dose_rows, obs_rows) |>
+    select(id, time, amt, evid, cmt, ii, addl, dvid, everything()) |>
+    arrange(id, time, desc(evid))
+}
+
+events_sd <- bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  make_cohort(
+    n = 100, treatment = arms$treatment[i], dose = arms$dose[i],
+    CHILD = arms$CHILD[i], wt_mean = arms$wt_mean[i],
+    wt_cv = arms$wt_sd[i] / arms$wt_mean[i], obs_times = obs_sd,
+    id_offset = (i - 1L) * 100L
+  )
+}))
+stopifnot(!anyDuplicated(unique(events_sd[, c("id", "time", "evid")])))
+```
+
+# Single-dose simulation
+
+```{r simulate-sd}
+mod <- readModelDb("Dudkowski_2017_alogliptin")
+sim_sd <- rxode2::rxSolve(mod, events = events_sd, keep = c("treatment", "WT"))
+sim_sd <- as.data.frame(sim_sd)
+```
+
+```{r figure-1-3, fig.width = 7, fig.height = 6}
+# Replicates Figures 1b and 3 of Dudkowski 2017 (mean alogliptin concentration
+# and mean DPP-4 inhibition vs time after a single dose), as simulated
+# medians with 90% prediction intervals.
+sim_sd |>
+  select(treatment, time, Cc, Dpp4Inh) |>
+  pivot_longer(c(Cc, Dpp4Inh), names_to = "output", values_to = "value") |>
+  group_by(treatment, output, time) |>
+  summarise(
+    Q05 = quantile(value, 0.05), Q50 = median(value), Q95 = quantile(value, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(output = recode(output, Cc = "Alogliptin (ng/mL)",
+                         Dpp4Inh = "DPP-4 inhibition (%)")) |>
+  ggplot(aes(time, Q50, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.1, colour = NA) +
+  geom_line() +
+  facet_wrap(~output, ncol = 1, scales = "free_y") +
+  labs(x = "Time after dose (h)", y = NULL, colour = NULL, fill = NULL,
+       caption = "Replicates Figures 1 and 3 of Dudkowski 2017.") +
+  theme(legend.position = "bottom")
+```
+
+## PKNCA: alogliptin (Table 2)
+
+```{r pknca-sd}
+nca_conc <- sim_sd |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+nca_conc <- bind_rows(
+  nca_conc,
+  nca_conc |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+dose_df <- events_sd |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published_pk <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax, ~aucinf.obs, ~half.life,
+  "Children 12.5 mg", 57.8, 4.00, 789.3, 16.75,
+  "Adolescents 12.5 mg", 44.2, 3.00, 689.0, 15.38,
+  "Children 25 mg", 101.4, 2.04, 1222.0, 18.09,
+  "Adolescents 25 mg", 96.7, 3.97, 1318.0, 17.15,
+  "Adults 25 mg", 136.5, 2.00, 1704.0, 19.33
+)
+
+cmp_pk <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published_pk,
+  by = "treatment",
+  units = c(cmax = "ng/mL", tmax = "h", aucinf.obs = "ng*h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp_pk,
+  caption = paste(
+    "Simulated (median of 100 virtual subjects) vs. observed (Table 2: mean,",
+    "median for Tmax) single-dose alogliptin NCA. * differs by >20%."
+  )
+)
+```
+
+The model reproduces `AUC` and half-life within about 16% in every arm and
+`Cmax` within 20%. The observed `Cmax` and `AUC` are arithmetic means of 4-22
+subjects, whereas the simulated values are medians, so the simulated `Cmax` sits
+15-20% below the observed means in every arm. The adolescent 12.5 mg arm has the
+highest mean weight (116 kg) and the lowest observed exposure, which the
+weight-scaled model also reproduces. The starred `Tmax` rows reflect sampling,
+not the model: the study sampled at 1, 2, 4 and 8 h, so observed `Tmax` can only
+take those values, while the simulated grid also contains 1.5 and 3 h.
+
+## PKNCA: DPP-4 inhibition (Table 3)
+
+```{r pknca-pd}
+nca_pd <- sim_sd |>
+  filter(!is.na(Dpp4Inh), time <= 24) |>
+  select(id, time, Dpp4Inh, treatment)
+nca_pd <- bind_rows(
+  nca_pd,
+  nca_pd |> distinct(id, treatment) |> mutate(time = 0, Dpp4Inh = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+pd_obj <- PKNCA::PKNCAconc(nca_pd, Dpp4Inh ~ time | treatment + id)
+pd_intervals <- data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_pd_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(pd_obj, dose_obj, intervals = pd_intervals))
+
+published_pd <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax, ~auclast,
+  "Children 12.5 mg", 83.7, 4.05, 1570,
+  "Adolescents 12.5 mg", 81.6, 4.00, 1558,
+  "Children 25 mg", 89.3, 2.08, 1699,
+  "Adolescents 25 mg", 90.4, 4.00, 1854,
+  "Adults 25 mg", 92.7, 2.00, 1890
+)
+
+cmp_pd <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_pd_res,
+  reference = published_pd,
+  by = "treatment",
+  units = c(cmax = "%", tmax = "h", auclast = "%*h"),
+  tolerance_pct = 20
+) |>
+  mutate(`NCA parameter` = sub("^Cmax", "Emax", `NCA parameter`),
+         `NCA parameter` = sub("^Tmax", "Time to Emax", `NCA parameter`),
+         `NCA parameter` = sub("^AUClast", "AUEC0-24", `NCA parameter`))
+knitr::kable(
+  cmp_pd,
+  caption = paste(
+    "Simulated (median) vs. observed (Table 3: mean, median for time to Emax)",
+    "DPP-4 inhibition. * differs by >20%."
+  )
+)
+
+e24 <- sim_sd |>
+  filter(time == 24) |>
+  group_by(treatment) |>
+  summarise(`Simulated median E24 (%)` = round(median(Dpp4Inh), 1)) |>
+  left_join(
+    tibble::tribble(
+      ~treatment, ~`Observed mean E24 (%)`,
+      "Children 12.5 mg", 52.0,
+      "Adolescents 12.5 mg", 55.4,
+      "Children 25 mg", 57.4,
+      "Adolescents 25 mg", 70.4,
+      "Adults 25 mg", 72.8
+    ),
+    by = "treatment"
+  )
+knitr::kable(e24, caption = "DPP-4 inhibition 24 h after a single dose (Table 3).")
+```
+
+The observed time to Emax is the first of the sparse PD samples (2, 4, 8, 12,
+24 h) at which the maximum was seen, so it is quantised to 2 or 4 h; the
+simulated value comes from a denser grid. Observed `Emax` is also taken over
+those sparse samples only. Simulated `Emax` and `AUEC0-24` agree with Table 3
+within about 12% in every arm. The 24 h inhibition agrees within about 8% in
+every arm except the children's 25 mg arm (4 subjects), where the model
+predicts about 68% against an observed mean of 57.4%. That observed value is
+well below the adolescents' 70.4% at the same dose despite similar exposure
+(Table 2), and the model, which pools children and adolescents, does not
+reproduce the difference.
+
+# Steady-state simulation (Table 4 and Figure 4)
+
+```{r cohort-ss}
+# Once-daily dosing for 14 days (about 17 terminal half-lives); the last
+# dosing interval (312-336 h) is analysed as steady state.
+t_ss <- 13 * 24
+obs_ss <- t_ss + seq(0, 24, by = 0.5)
+ss_groups <- tibble::tribble(
+  ~group, ~dose, ~CHILD,
+  "Pediatric 12.5 mg", 12.5, 1,
+  "Pediatric 25 mg", 25, 1,
+  "Adult 12.5 mg", 12.5, 0,
+  "Adult 25 mg", 25, 0
+)
+events_ss <- bind_rows(lapply(seq_len(nrow(ss_groups)), function(i) {
+  make_cohort(
+    n = 100, treatment = ss_groups$group[i], dose = ss_groups$dose[i],
+    CHILD = ss_groups$CHILD[i], wt_mean = 95, wt_cv = 0.20,
+    obs_times = obs_ss, id_offset = (i - 1L) * 100L, addl = 13L
+  )
+}))
+sim_ss <- as.data.frame(rxode2::rxSolve(mod, events = events_ss, keep = c("treatment"))) |>
+  mutate(time = time - t_ss)
+```
+
+```{r figure-4, fig.width = 8, fig.height = 5}
+# Replicates Figure 4 of Dudkowski 2017: steady-state alogliptin concentration
+# and DPP-4 inhibition over one 24 h dosing interval (median, 90% PI).
+sim_ss |>
+  filter(treatment != "Adult 12.5 mg") |>
+  select(treatment, time, Cc, Dpp4Inh) |>
+  pivot_longer(c(Cc, Dpp4Inh), names_to = "output", values_to = "value") |>
+  group_by(treatment, output, time) |>
+  summarise(
+    Q05 = quantile(value, 0.05), Q50 = median(value), Q95 = quantile(value, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(output = recode(output, Cc = "Alogliptin (ng/mL)",
+                         Dpp4Inh = "DPP-4 inhibition (%)")) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.3, fill = "red") +
+  geom_line(colour = "red", linewidth = 1) +
+  facet_grid(output ~ treatment, scales = "free_y") +
+  labs(x = "Time postdose (h)", y = NULL,
+       caption = "Replicates Figure 4 of Dudkowski 2017.")
+```
+
+```{r table-4}
+ss_conc <- sim_ss |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+# The last dose of the interval, at the shifted time 0
+ss_dose <- events_ss |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+ss_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(ss_conc, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(ss_dose, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = 24, cmax = TRUE, auclast = TRUE)
+))
+
+published_t4 <- tibble::tribble(
+  ~treatment, ~cmax, ~auclast,
+  "Pediatric 12.5 mg", 55.6, 729.5,
+  "Pediatric 25 mg", 112.2, 1400.2,
+  "Adult 12.5 mg", 73.4, 777.2,
+  "Adult 25 mg", 147.7, 1575.1
+)
+cmp_t4 <- nlmixr2lib::ncaComparisonTable(
+  simulated = ss_nca,
+  reference = published_t4,
+  by = "treatment",
+  units = c(cmax = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_t4, caption = "Steady-state Cmax and AUC0-tau vs. Table 4.")
+
+e24_ss <- sim_ss |>
+  filter(time == 24) |>
+  group_by(treatment) |>
+  summarise(sim = median(Dpp4Inh)) |>
+  left_join(
+    tibble::tribble(
+      ~treatment, ~pub,
+      "Pediatric 12.5 mg", 66.0,
+      "Pediatric 25 mg", 75.8,
+      "Adult 12.5 mg", 70.5,
+      "Adult 25 mg", 79.9
+    ),
+    by = "treatment"
+  ) |>
+  mutate(pct_diff = 100 * (sim - pub) / pub)
+e24_ss |>
+  mutate(sim = round(sim, 1), pct_diff = round(pct_diff, 1)) |>
+  rename(Group = treatment, `Simulated median E24 (%)` = sim,
+         `Table 4 E24 (%)` = pub, `% diff` = pct_diff) |>
+  knitr::kable(caption = "Steady-state trough DPP-4 inhibition vs. Table 4.")
+```
+
+## Typical-value check against Table 4
+
+The cohort medians above depend on the unpublished spread of the simulated
+weights. A deterministic check removes that: the typical subject at 95 kg
+(random effects set to zero) must land close to the paper's steady-state
+medians, because the paper's cohorts were centred on 95 kg.
+
+```{r typical-check}
+mod_typ <- rxode2::zeroRe(mod)
+ev_typ <- bind_rows(lapply(seq_len(nrow(ss_groups)), function(i) {
+  make_cohort(
+    n = 1, treatment = ss_groups$group[i], dose = ss_groups$dose[i],
+    CHILD = ss_groups$CHILD[i], wt_mean = 95, wt_cv = 0,
+    obs_times = t_ss + seq(0, 24, by = 0.05), id_offset = i - 1L, addl = 13L
+  )
+}))
+typ <- as.data.frame(rxode2::rxSolve(mod_typ, events = ev_typ, keep = "treatment")) |>
+  mutate(time = time - t_ss)
+typ_chk <- typ |>
+  group_by(treatment) |>
+  summarise(
+    cmax = max(Cc),
+    # dose / CL is the exact steady-state AUC over one dosing interval
+    auctau = 1000 * first(ss_groups$dose[match(treatment, ss_groups$group)]) / first(cl),
+    e24 = Dpp4Inh[time == 24]
+  ) |>
+  left_join(published_t4, by = "treatment") |>
+  left_join(select(e24_ss, treatment, pub), by = "treatment") |>
+  mutate(
+    d_cmax = 100 * (cmax.x / cmax.y - 1),
+    d_auc = 100 * (auctau / auclast - 1),
+    d_e24 = 100 * (e24 / pub - 1)
+  )
+typ_chk |>
+  transmute(
+    Group = treatment,
+    `Cmax (ng/mL)` = round(cmax.x, 1), `Table 4 Cmax` = cmax.y,
+    `AUCtau (ng*h/mL)` = round(auctau, 1), `Table 4 AUCtau` = auclast,
+    `E24 (%)` = round(e24, 1), `Table 4 E24` = pub
+  ) |>
+  knitr::kable(caption = "Typical 95 kg subject at steady state vs. Table 4 medians.")
+
+stopifnot(
+  # The typical subject is deterministic, so these hold on any machine. A
+  # mis-transcribed CL, V, KA or EC50, or a dropped weight scaling, moves at
+  # least one of them by well over 10%.
+  all(abs(typ_chk$d_cmax) < 10),
+  all(abs(typ_chk$d_auc) < 10),
+  all(abs(typ_chk$d_e24) < 10)
+)
+```
+
+The typical 95 kg subject reproduces Table 4 within about 6% for every group
+and metric. The pediatric-vs-adult difference in exposure comes mainly from the
+slower pediatric absorption (KA 0.59 vs 1.66 1/h), which lowers Cmax, and the
+slightly higher pediatric CL/F, which lowers AUC.
+
+# Assumptions and deviations
+
+- **Weight scaling of Q/F and V3/F.** The Methods give the allometric exponents
+  only for "CL/F" (0.75) and "Vz/F" (1), while the Results say body weight acts
+  on "clearance and volume parameters". The model applies 0.75 to both
+  clearances (CL/F, Q/F) and 1 to both volumes (V2/F, V3/F), the usual
+  allometric form. Applying the weight effect to CL/F and V2/F only changes the
+  Table 4 metrics of a 95 kg subject by less than 1%, so the published
+  simulations cannot distinguish the two readings.
+- **%CV to variance.** Supplemental Table 1 prints the inter-individual
+  variability as %CV. The model uses omega^2 = (%CV/100)^2, the convention the
+  same table uses for its proportional residual row (variance 0.0820 printed as
+  28.6 %CV). The alternative log(1 + CV^2) differs by under 2%.
+- **Shared random effects.** The pediatric and adult rows for CL/F and EC50
+  print the same IIV magnitude and %SEM, so one eta each is shared by both age
+  groups. KA has no IIV ("NE"); V3/F, Q/F, Emax and the shape factor have IIV
+  fixed to 0.
+- **Pediatric indicator.** The paper pools children (10 to <14 years) and
+  adolescents (14 to <18 years) into one pediatric group in the model; the
+  `CHILD` covariate is 1 for both.
+- **Residual error.** The PK residual error has a proportional and an additive
+  component (additive variance fixed at 0.01, i.e. SD 0.1 ng/mL); the PD
+  residual error is additive. The NONMEM coding of the combined error is not
+  published; the model uses the sum-of-variances form.
+- **Virtual weights.** The paper's simulations drew body weight "from a
+  log-normal distribution ... centered around 95 kg" without giving its spread;
+  a 20% coefficient of variation was assumed, in line with the arm-level CVs
+  of Table 1 (12-29%). The single-dose cohorts use each arm's Table 1 mean and
+  SD. Age, sex, race and renal function are not covariates in the final model.
+- **Figure 4 caption.** The caption of Figure 4 says "after a single dose", but
+  the Results text and the non-zero pre-dose concentrations in the figure show
+  that it is the steady state of once-daily dosing; it is replicated here at
+  steady state.
+- **Errata.** Europe PMC lists no correction or erratum linked to this
+  article, and none by the same authors on alogliptin (checked 2026-11-25).
