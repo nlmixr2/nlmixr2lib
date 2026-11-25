@@ -9758,8 +9758,10 @@ navbar:
         href: articles/Sheiner_1979_tubocurarine.html
       - text: "Tucatinib (Zhang 2024)"
         href: articles/Zhang_2024_tucatinib.html
-      - text: "Tulathromycin pkpd serum (Zhou 2017b)"
-        href: articles/Zhou_2017b_tulathromycin.html
+      - text: "Tulathromycin pkpd 10mgkg (Zhao 2018)"
+        href: articles/Zhao_2018_tulathromycin.html
+      - text: "Tulathromycin pkpd 1mgkg (Zhao 2018)"
+        href: articles/Zhao_2018_tulathromycin.html
       - text: "Tumor targeted bsab mpbpk (Spinosa 2026)"
         href: articles/Spinosa_2026_bispecific_mpbpk.html
       - text: "TuroctocogAlfa (Tiede 2021)"
@@ -14017,6 +14019,7 @@ articles:
   - articles/Zhao_2014_vancomycin
   - articles/Zhao_2015_teicoplanin
   - articles/Zhao_2018_omeprazole
+  - articles/Zhao_2018_tulathromycin
   - articles/Zhao_2021_vancomycin
   - articles/Zhao_2024_ciprofloxacin_colistin
   - articles/Zhao_2024_tacrolimus
