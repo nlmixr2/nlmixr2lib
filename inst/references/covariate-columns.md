@@ -964,6 +964,17 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Example models:** `Hughes_2025_clesacostat.R` (clesacostat CL/F 27.4% higher with ervogastat, Table S4; an Emax form collapsed to an EC50 of about 0.001, hence the on/off indicator).
 - **Notes:** Member of the auto-approved `CONMED_<INN>` family.
 
+### CONMED_DRUGX (**canonical for concomitant treatment with an unnamed hypothetical interacting drug in a methodology model**)
+- **Description:** 1 = subject receives the hypothetical concomitant treatment ("drug X"), 0 = not. For methodology / simulation models whose authors invent a binary co-medication covariate without naming a molecule. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no concomitant treatment).
+- **Source aliases:**
+  - `Sex` -- the column that carries the concomitant-treatment flag in the Nguyen 2017 deposited PK dataset and individual-parameter files (the paper text calls it "concomitant treatment"; Figure 1d labels it "co-administration with drug X").
+- **Example models:** `Nguyen_2017_iv2cmt.R` (founding example; `CL = CL_typ * exp(0.5 * CONMED_DRUGX)`).
+- **Notes:** Member of the `CONMED_<INN>` family with the placeholder `DRUGX` in place of an INN, because the source drug and its co-medication are both hypothetical. Never use it for a real, identifiable co-medication; register that molecule's own `CONMED_<INN>` instead.
+
 ### DIS_EOPE (**canonical for early-onset pre-eclampsia indicator**)
 - **Description:** Binary indicator of early-onset pre-eclampsia (eoPE); `1` = eoPE diagnosed before 34 weeks gestation, `0` = not eoPE. Time-fixed per subject within the gestational PK study window. Used by population PK models that compare drug disposition in pregnant women with vs without early-onset pre-eclampsia.
 - **Units:** (binary)
