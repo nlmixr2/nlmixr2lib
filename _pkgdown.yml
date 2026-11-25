@@ -5066,8 +5066,12 @@ navbar:
         href: articles/Tamai_2017_lenvatinib.html
       - text: "Lenvatinib biomarkers (Majid 2024)"
         href: articles/Majid_2024_lenvatinib.html
+      - text: "Lenvatinib teae dosemod (Hayato 2018)"
+        href: articles/Hayato_2018_lenvatinib.html
       - text: "Lenvatinib teae dosemod (Tamai 2017)"
         href: articles/Tamai_2017_lenvatinib.html
+      - text: "Lenvatinib tumor (Hayato 2018)"
+        href: articles/Hayato_2018_lenvatinib.html
       - text: "Lenvatinib tumor (Majid 2024)"
         href: articles/Majid_2024_lenvatinib.html
       - text: "Lenvatinib tumor asdeposited (Majid 2024)"
@@ -11687,6 +11691,7 @@ articles:
   - articles/Hawwa_2013_ranitidine
   - articles/Hayashi_1998_epoetinBeta
   - articles/Hayashi_2007_omalizumab
+  - articles/Hayato_2018_lenvatinib
   - articles/Hayato_2022_lecanemab
   - articles/Haynes_2025_cephalexin
   - articles/Haynes_2026_cephalexin
