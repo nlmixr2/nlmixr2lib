@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gulati 2014 brown snake venom and fibrinogen (reduced coagulation QSP) ([doi:10.1038/psp.2013.67](https://doi.org/10.1038/psp.2013.67)) -- Australian patients with brown snake envenoming and venom-induced consumption coagulopathy.
+- Add Zhang 2014 sunitinib VEGFR-network PK/ePD QSP model with bevacizumab, buparlisib, selumetinib and a PLC-gamma inhibitor ([doi:10.1038/psp.2013.65](https://doi.org/10.1038/psp.2013.65)) -- generic VEGFR2-driven tumor with human drug PK; base network and NF1-loss, PI3K-activating and PTEN-loss mutations.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
