@@ -23643,6 +23643,18 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Notes:** Distinct from the `STUDY_<id>` family (binary per-trial indicators that switch a typical value, a residual-error magnitude, or a covariate coefficient) and from `OCC` (integer occasion / period index for inter-occasion variability *within* a subject). `SIDN` groups *across* subjects: a subject belongs to one study level and all of that subject's records share the study-level draw. Because it is consumed by the `ini()` nesting syntax rather than by a `model()` expression, `covariateData[['SIDN']]` will not be referenced anywhere in `model()`.
   Simulation caveat: rxode2 expands nested random effects into per-level terms, so an event table must contain **at least two distinct `SIDN` values** or `rxSolve()` fails with `The following parameter(s) are required for solving: THETA[1]`, and `omega` must be passed explicitly (`omega = mod$omega`) because the nested omega is a list of matrices keyed by level. Ratified canonically alongside the Qi 2024 vosoritide extraction, the first nlmixr2lib model to use nested random effects.
 
+### DIDN (**canonical for the opaque drug-level nesting column**)
+- **Description:** Integer-valued grouping column identifying the drug a record belongs to, used as the **nesting level** for a drug-level (super-level) random effect in a class model fitted jointly across several drugs. Values `1`, `2`,..., `N`. Like `SIDN`, `DIDN` does not enter any typical-value covariate equation and has no reference category -- it only indexes which drug-level random-effect draw applies to a record. Use it when the source fits between-drug variability as a random effect (for example NONMEM `$LEVEL DRUG=(...)`) rather than as fixed per-drug parameters.
+- **Units:** (count)
+- **Type:** categorical
+- **Scope:** general
+- **Reference category:** n/a -- `DIDN` is a nesting level, not a covariate with a reference category.
+- **Source aliases:**
+  - `DRUG` -- Jung 2026 Data S2 control stream, `$LEVEL DRUG=(9:13[4])`; coded 1 tegoprazan, 2 YH4808, 3 fexuprazan, 4 vonoprazan (Results, Data Collection).
+- **Example models:** `Jung_2026_pcab_mbma.R` (Jung 2026 Table 2 inter-drug variability on Ka, CL, Vd, Sd and SCALE, encoded as `etalka_drug`, `etalcl_drug`, `etalvc_drug`, `etalstim_central_drug` and `etalph_ka_opt_drug` nested on `DIDN`; the drug-level empirical Bayes estimates are published only for SCALE, so a `DIDN` value does not select a named drug's parameters and each distinct value receives one draw from the inter-drug distribution).
+- **Notes:** The drug-level counterpart of `SIDN`. Distinct from the binary `TRT_<drug>` indicators, which switch a typical value: `DIDN` only groups records for a random effect. Because it is consumed by the `ini()` nesting syntax rather than by a `model()` expression, `covariateData[['DIDN']]` will not be referenced anywhere in `model()`.
+  Simulation caveat (as for `SIDN`): the event table must contain **at least two distinct `DIDN` values** or `rxSolve()` fails with an error naming `THETA[...]` parameters the model does not have, and `omega` must be passed explicitly (`omega = mod$omega`) because the nested omega is a list of matrices keyed by level.
+
 ### STUDY_M281_004 (**canonical for MOM-M281-004 (Vivacity-MG) study indicator**)
 - **Description:** 1 = subject enrolled in study MOM-M281-004 (Vivacity-MG; NCT03772587; phase 2 in generalized myasthenia gravis); 0 = any other study in the Valenzuela 2025 pooled analysis. Used to switch the IgG-baseline scaling factor.
 - **Units:** (binary)

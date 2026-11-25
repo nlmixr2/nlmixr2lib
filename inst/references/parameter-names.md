@@ -733,11 +733,12 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 
 ### lkst (**canonical log-transformed gastric emptying rate constant**)
 - **Type:** log-transformed-pk
-- **Role:** First-order rate constant for gastric emptying: transit of drug out of a `stomach` compartment into the first intestinal segment / intestinal lumen, in oral PBPK models that resolve the gastric and intestinal lumen as explicit states (1 / time). The bare counterpart inside `model` is `kst`. Founding member of the lumped gastrointestinal transit family below.
+- **Role:** First-order rate constant for gastric emptying (1 / time): transit of gastric contents out of the stomach. Usually the contents are drug, moving out of a `stomach` compartment into the first intestinal segment / intestinal lumen in oral PBPK models that resolve the gastric and intestinal lumen as explicit states. The same name covers the emptying of any other gastric contents, such as a meal emptying from a `food` state (`d/dt(food) <- -kst * food`, `Jung_2026_pcab_mbma.R`). The bare counterpart inside `model` is `kst`. Founding member of the lumped gastrointestinal transit family below.
 - **Source aliases:**
   - `Kst` -- used in `Ai_2024_ractopamine_goat_pbpk.R`; also Sun 2026 Table 2 ("gastric emptying rate constant", 0.8 /h) and the Supporting Information Berkeley Madonna listing (`RAST = RDOSEoral - Kst * AST`).
   - `kst`, `k_st`, `KST` -- generic acslX / Berkeley-Madonna spellings.
-- **Example models:** `Ai_2024_ractopamine_goat_pbpk.R` (`Kst` = 0.0910 1/h, gastric contents into gut lumen in goats; founding example), `Yang_2025_matrine_pig_pbpk.R` (`kst` = 0.8545 1/h, reconstructed gastric depot into the sampled intestinal lumen in pigs), `Sun_2026_tilmicosin_pbpk.R` (`Kst` = 0.8 1/h in swine), `Maskawa_2025_vancomycin_mouse_firstorder.R` (`k_a` = 0.32 1/h, mouse stomach into `cecum`).
+  - `Kg`, `KG` -- Jung 2026 Table 2 No. 6 ('K g (1/h)', gastric emptying of food) and the Data S2 control stream (`DADT(4) = -KG*A(4)`).
+- **Example models:** `Ai_2024_ractopamine_goat_pbpk.R` (`Kst` = 0.0910 1/h, gastric contents into gut lumen in goats; founding example), `Yang_2025_matrine_pig_pbpk.R` (`kst` = 0.8545 1/h, reconstructed gastric depot into the sampled intestinal lumen in pigs), `Sun_2026_tilmicosin_pbpk.R` (`Kst` = 0.8 1/h in swine), `Maskawa_2025_vancomycin_mouse_firstorder.R` (`k_a` = 0.32 1/h, mouse stomach into `cecum`), `Jung_2026_pcab_mbma.R` (`Kg` = 1.82 1/h, gastric emptying of a meal from the `food` state, which drives a food stimulus on intragastric pH).
 - **Notes:** Distinct from `lka`, which moves drug from a depot into the *systemic* circulation; `lkst` moves drug between two luminal compartments and is not an absorption term. Precedent existed in the repository before ratification -- `Ai_2024_ractopamine_goat_pbpk.R` already carried `lkst` in `ini()`, and `Luo_2024_*_pbpk.R`, `Back_2018_fenofibrate.R` and `Guiastrennec_2016_gastric_emptying.R` carried the same concept as `model()` literals named `kt_sto` / `kg`. Register the constant in `ini()` rather than burying it as a `model()` literal whenever the source paper optimised it, so that half of one optimisation is not hidden from the reader.
 
 ### lkt_duodenum (**canonical log-transformed duodenal transit rate constant**)
@@ -3096,6 +3097,54 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Kim_2024_niclosamide_hamster.R` (founding example -- `lpow_lung = log(0.753)`, RSE 1%, no IIV; intramuscular niclosamide in hamsters, with the lung volume and blood flow held at allometric values).
 - **Notes:** Unlike `pow_elf` and `pow_prostate`, the power acts inside a lung COMPARTMENT's exchange term rather than in an algebraic link, and has no separate ratio parameter: the equilibrium lung concentration is the power of the plasma concentration itself, so the value is tied to the source's concentration units (ng/mL in the founding example) and a model re-expressed in other units must convert the concentration before the power is taken. Not `h_lung`: `h_<process>` is the Kopelman fractal-kinetics exponent of a time-varying rate coefficient, whereas this exponent acts on concentration. The linear alternative of the same exchange uses the partition coefficient `kp_lung`, `q_lung * (Cc - Clung / kp_lung)` (`Kim_2024_niclosamide_hamster_linear.R`).
 
+### lph_ka_opt, ph_ka_opt (**canonical intragastric pH at which absorption is fastest**)
+- **Type:** paper-named-param
+- **Role:** Centre of a Gaussian pH-feedback function on the absorption rate constant, `feed <- exp(-(gastric_ph - ph_ka_opt)^2 / ph_ka_width^2)` with `ka_eff <- ka * feed`, so the effective absorption rate equals `ka` when the intragastric pH sits at `ph_ka_opt` and falls off on either side (pH units). Inside `model()` the bare name is `ph_ka_opt`; `lph_ka_opt` is used in `ini()` because the value is strictly positive and its between-arm and between-drug variability are reported as log-normal %CV.
+- **Source aliases:**
+  - `SCALE` -- Jung 2026 Table 2 No. 8 and the Data S2 control stream (`FEED = EXP(-( (A(3)-SCALE)**2 ) / (SHAPE**2) )`, where `A(3)` is the pH state).
+- **Example models:** `Jung_2026_pcab_mbma.R` (founding example -- `lph_ka_opt = log(4.080)`, potassium-competitive acid blockers, whose absorption the authors model as fastest near pH 4).
+- **Notes:** Paired with `ph_ka_width`. A pH optimum, not an Emax-type threshold: absorption slows both below and above `ph_ka_opt`. Distinct from `gastric_ph`, the pH state the function reads.
+
+### lph_ka_width, ph_ka_width (**canonical width of a Gaussian pH-absorption function**)
+- **Type:** paper-named-param
+- **Role:** Width (pH units) of the Gaussian pH-feedback function on absorption, `feed <- exp(-(gastric_ph - ph_ka_opt)^2 / ph_ka_width^2)`. A wider function makes absorption less sensitive to departures of the intragastric pH from `ph_ka_opt`. Note the source form divides by `ph_ka_width^2`, not `2 * sd^2`, so `ph_ka_width` is `sqrt(2)` times a Gaussian standard deviation. Inside `model()` the bare name is `ph_ka_width`; `lph_ka_width` is used in `ini()` because the value is strictly positive.
+- **Source aliases:**
+  - `SHAPE` -- Jung 2026 Table 2 No. 9 and the Data S2 control stream.
+- **Example models:** `Jung_2026_pcab_mbma.R` (founding example -- `lph_ka_width = log(2.660)`).
+- **Notes:** Paired with `ph_ka_opt`.
+
+### lstim_central, stim_central (**canonical scaling factor of a drug stimulus driven by the central amount**)
+- **Type:** paper-named-param
+- **Role:** Scaling factor applied to the central-compartment drug AMOUNT in a stimulus term, `stim_drug <- stim_central * central^pow_central`, which then feeds a bounded effect (in the founding example `emax * tanh(stim)` added to the production of intragastric pH). Units are `1 / amount^pow_central` (1/mg when `pow_central = 1`). Inside `model()` the bare name is `stim_central`; `lstim_central` is used in `ini()` because the value is strictly positive. The name is formed from the driver compartment (`stim_<driver>`), so a stimulus read from another state takes that state's name (see `stim_food`).
+- **Source aliases:**
+  - `Sd`, `SDRUG` -- Jung 2026 Table 2 No. 15 ('S d (1/mg)') and the Data S2 control stream (`SCP = SDRUG*(A(2)**SLOPE)`, summed with the food term into `SCON`).
+- **Example models:** `Jung_2026_pcab_mbma.R` (founding example -- `lstim_central = log(0.693)`, with between-arm and between-drug log-normal variability).
+- **Notes:** Not a member of the `sstim_<driver>_<target>` family, which is the LINEAR stimulus form `(1 + s * (driver - base))`; this is a scaling factor inside a power-and-saturation chain. Not an `ec50`: the stimulus has no half-maximal concentration of its own, the saturation coming from the outer `tanh`. Driven by the amount, not the concentration, because the source control stream reads `A(2)` directly.
+
+### lstim_food, stim_food (**canonical scaling factor of a food stimulus driven by a food compartment**)
+- **Type:** paper-named-param
+- **Role:** Scaling factor applied to the amount in a `food` compartment in a stimulus term, `stim_meal <- stim_food * food^pow_food`, summed with any drug stimulus before the bounded effect. Units are `1 / (meal amount)^pow_food`, so its numeric meaning depends on the amount a meal record doses into `food`. Inside `model()` the bare name is `stim_food`; `lstim_food` is used in `ini()` because the value is strictly positive. The `food` member of the `stim_<driver>` family founded by `stim_central`.
+- **Source aliases:**
+  - `Sf`, `SFOOD` -- Jung 2026 Table 2 No. 13 and the Data S2 control stream (`SPH = SFOOD*A(4)`).
+- **Example models:** `Jung_2026_pcab_mbma.R` (founding example -- `lstim_food = log(0.043)`; the meal-record amount is not reported by the source, so the unit of `stim_food` is undefined there).
+- **Notes:** A model using this parameter must state, in its `units` metadata or vignette, what amount one meal record doses into `food`.
+
+### lpow_central, pow_central (**canonical power exponent on the central amount in a stimulus term**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless exponent applied to the central-compartment drug amount in a power-form stimulus, `stim_drug <- stim_central * central^pow_central`. `pow_central = 1` makes the stimulus proportional to the amount; `pow_central < 1` flattens it at high amounts. Inside `model()` the bare name is `pow_central`; `lpow_central` is used in `ini()` because the exponent is strictly positive. Extends the `lpow_<x>` exponent family, whose other members (`pow_elf`, `pow_prostate`, `pow_lung`) are exponents of plasma-to-tissue links; here `<x>` names the DRIVER state of a stimulus.
+- **Source aliases:**
+  - `Sloped`, `SLOPE` -- Jung 2026 Table 2 No. 16 and the Data S2 control stream.
+- **Example models:** `Jung_2026_pcab_mbma.R` (founding example -- `lpow_central = log(0.572)`).
+- **Notes:** Not a Hill coefficient (`gamma`): there is no `ec50` and the exponent acts on the amount alone. The value is tied to the amount unit of the driver (mg in the founding example), because `stim_central` absorbs the unit.
+
+### lpow_food, pow_food (**canonical power exponent on the food amount in a stimulus term**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless exponent applied to the amount in a `food` compartment in a power-form stimulus, `stim_meal <- stim_food * food^pow_food`. The `food` member of the stimulus-exponent use of the `lpow_<x>` family founded by `pow_central`. Inside `model()` the bare name is `pow_food`; `lpow_food` is used in `ini()`.
+- **Source aliases:**
+  - `Slopef` -- Jung 2026 Table 2 No. 14 (1, fixed); the Data S2 control stream writes `SPH = SFOOD*A(4)` with no exponent.
+- **Example models:** `Jung_2026_pcab_mbma.R` (founding example -- `lpow_food = fixed(log(1))`).
+- **Notes:** When the source fixes the exponent at 1, keep it in `ini()` as `fixed(log(1))` so the fixed status is visible.
+
 ### lemax_elf, emax_elf (**canonical maximum attainable ELF concentration of a saturable plasma-to-ELF link**)
 - **Type:** paper-named-param
 - **Role:** Plateau (maximum attainable) concentration in the pulmonary epithelial lining fluid under a saturable, Michaelis-Menten-shaped direct-response plasma-to-ELF link, `Celf <- emax_elf * Cc / (km_elf + Cc)`, in the model's concentration units. Inside `model()` the bare name is `emax_elf`; `lemax_elf` is used in `ini()`. Because the link passes through the origin (`Celf = 0` at `Cc = 0`) the plateau level and the increment above baseline coincide, which is why this is an `lemax_<output>` member and not an `lrmax_<output>` one. The limiting ELF:plasma penetration ratio as plasma concentration approaches zero is `emax_elf / km_elf`.
@@ -3969,6 +4018,11 @@ cl <- exp(lcl + etalcl + etalcl_study) * (WT / ref_wt)^e_wt_cl
 
 Founding example: `Qi_2024_vosoritide.R` (`etalcl_study` and `etalvc_study`,
 nested on the `SIDN` study-identity column; Qi 2024 Sect. 2.4 eta6 / eta7).
+
+A drug-level super-level -- a class model fitted across several drugs whose
+NONMEM `$LEVEL` draws one random effect per drug -- uses the level token
+`drug` and the `DIDN` nesting column: `etalcl_drug ~ 1.28 | DIDN`
+(`Jung_2026_pcab_mbma.R`, `$LEVEL DRUG=(9:13[4])` on KA, CL, V, Sd and SCALE).
 
 **The grouping column is a covariate register entry of its own** (see `SIDN` in
 `covariate-columns.md`), not a parameter. It is consumed by the `ini()`
