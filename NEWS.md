@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nayak 2026 marstacimab TMDD PK/PD ([doi:10.1007/s40262-026-01695-5](https://doi.org/10.1007/s40262-026-01695-5)) -- healthy volunteers and adolescents and adults with hemophilia A or B.
+- Add Mohamed 2026 tacrolimus ([doi:10.1007/s11095-026-04152-x](https://doi.org/10.1007/s11095-026-04152-x)) -- adult allogeneic hematopoietic cell transplant recipients (IV and oral steady state, gut-microbiome covariates).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
