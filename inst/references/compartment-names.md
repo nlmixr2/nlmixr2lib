@@ -8949,3 +8949,50 @@ Clinician-rated ordinal scores of eyebrow and eyelash hair loss used in alopecia
 - **Notes:** One item of the 15-item GSRS. The other items, and the GSRS diarrhea syndrome sub-score (the mean of Questions 11, 12 and 14), are different scales and should get their own `gsrs_<item>` names rather than reuse this one. Some GSRS versions score 0-6 instead of 1-7; say which range a model uses in its `units`, and do not mix ranges under one name. A threshold probability such as P(score >= 4) is a derived quantity of the same model, not a separate output.
 
 ---
+
+## Subcutaneous insulin product suffixes
+
+Suffixes for models that carry several insulin products at once, each with its own absorption depot and, where the products differ in disposition, its own central compartment. A disposition suffix names an insulin molecule (`glar`, `hum`, `lis`); a formulation suffix names one product of that molecule whose absorption differs (`regu100`, `regu500`, `nph`, `ilps`). Founded by `Tham_2017_insulin.R`.
+
+### glar (**canonical insulin glargine sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Insulin glargine (long-acting basal insulin analogue). Drives `depot_glar` / `central_glar`, `lka_glar` / `lcl_glar` / `lvc_glar`, `Cc_glar` and `propSd_glar`.
+- **Source aliases:** `Glar` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+
+### hum (**canonical human-insulin disposition suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Exogenous human insulin, the shared disposition system of regular human insulin (any strength) and human insulin isophane suspension (NPH). Names the central state and its parameters (`central_hum`, `lcl_hum`, `lvc_hum`, `Cc_hum`); the products' own depots carry the formulation suffixes `regu100`, `regu500` and `nph`.
+- **Source aliases:** `Reg/NPH` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+
+### regu100 (**canonical regular human insulin U-100 formulation suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Regular (soluble) human insulin at 100 U/mL (Humulin R U-100), as an absorption depot feeding `central_hum`: `depot_regu100`, `lka_regu100`.
+- **Source aliases:** `RegU100` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+- **Notes:** Kept separate from `regu500` because the concentrated product is absorbed more slowly.
+
+### regu500 (**canonical regular human insulin U-500 formulation suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Regular human insulin at 500 U/mL (Humulin R U-500), as an absorption depot feeding `central_hum`: `depot_regu500`, `lka_regu500`.
+- **Source aliases:** `RegU500` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+
+### nph (**canonical NPH (human insulin isophane suspension) formulation suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Neutral protamine Hagedorn human insulin isophane suspension (intermediate-acting), as an absorption depot feeding `central_hum`: `depot_nph`, `lka_nph`, `ltlag_nph`.
+- **Source aliases:** `NPH` -- Tham 2017.
+- **Example models:** `Tham_2017_insulin.R`.
+
+### lis (**canonical insulin lispro sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Insulin lispro (rapid-acting analogue). Names both the lispro depot and the shared lispro disposition system that insulin lispro protamine suspension also feeds: `depot_lis`, `central_lis`, `lka_lis`, `lcl_lis`, `lvc_lis`, `Cc_lis`.
+- **Source aliases:** `Lispro` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+
+### ilps (**canonical insulin lispro protamine suspension formulation suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Insulin lispro protamine suspension (the intermediate-acting component of the lispro premixes), as an absorption depot feeding `central_lis`: `depot_ilps`, `lka_ilps`.
+- **Source aliases:** `ILPS` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.

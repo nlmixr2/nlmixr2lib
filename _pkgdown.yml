@@ -4098,6 +4098,8 @@ navbar:
         href: articles/Garrett_2019_inotuzumab.html
       - text: "Inotuzumab (Wu 2024)"
         href: articles/Wu_2024_inotuzumab.html
+      - text: "Insulin (Tham 2017)"
+        href: articles/Tham_2017_insulin.html
       - text: "Interferon alfa 2b (Chatelut 1999)"
         href: articles/Chatelut_1999_interferon_alfa_2b.html
       - text: "InterferonAlfa2a (Jeon 2013)"
@@ -11904,6 +11906,7 @@ articles:
   - articles/Thakkar_2018_tafenoquine
   - articles/Thakre_2022_risankizumab
   - articles/Thakre_2025_venetoclax
+  - articles/Tham_2017_insulin
   - articles/Themans_2019_meropenem
   - articles/Themans_2020_hydroxychloroquine
   - articles/Thiel_2018_cox2_pge2_painrelief
