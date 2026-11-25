@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kim 2018 doripenem ([doi:10.1097/FTD.0000000000000528](https://doi.org/10.1097/FTD.0000000000000528)) -- healthy Korean adults.
+- Add Samant 2018 ribociclib ([doi:10.1002/cpt.940](https://doi.org/10.1002/cpt.940)) -- adults with advanced solid tumours, lymphoma or ER+ breast cancer.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
