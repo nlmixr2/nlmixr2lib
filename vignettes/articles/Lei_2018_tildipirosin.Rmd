@@ -1,0 +1,378 @@
+---
+title: "Tildipirosin PK/PD against Pasteurella multocida in pigs (Lei 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tildipirosin PK/PD against Pasteurella multocida in pigs (Lei 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Lei Z, Liu Q, Qi Y, Yang B, Khaliq H, Xiong J, Moku GK, Ahmed S,
+  Li K, Zhang H, Zhang W, Cao J, He Q. (2018). Optimal Regimens and Cutoff
+  Evaluation of Tildipirosin Against *Pasteurella multocida*. Frontiers in
+  Pharmacology 9:765.
+* Article: <https://doi.org/10.3389/fphar.2018.00765>
+
+Lei 2018 gave eight pigs a single 4 mg/kg dose of tildipirosin intravenously
+and, after a washout of about two weeks, intramuscularly. Serum collected after
+the intramuscular dose was then used *ex vivo* as the growth medium for
+*P. multocida* PM04, and the change in bacterial count over 24 h of incubation
+was related to the PK/PD index AUC24h/MIC with an **inhibitory sigmoid Emax
+model**. The packaged model is that PK/PD-integration fit:
+
+$$E = e_0 - (e_0 - e_{max}) \frac{C^N}{C^N + EC_{50}^N}, \qquad C = \frac{AUC_{24h}}{MIC}$$
+
+where `E` is the signed change in log10 CFU/mL over 24 h, `e0` is that change
+in drug-free serum (net growth) and `emax` the change at saturating exposure
+(net kill).
+
+Three features of the source shape the packaged model.
+
+* **There is no PK model to package.** Lei 2018 analysed the plasma
+  concentrations non-compartmentally in Phoenix WinNonlin 6.1 and reports only
+  NCA summaries (Table 2). Drug exposure therefore enters as the externally
+  supplied covariate `AUC_TILDIPIROSIN` (serum AUC over a 24 h interval, in
+  h*ug/mL), which the model divides by the fixed serum MIC of PM04
+  (`mic = 0.5` ug/mL, Table 1). Because there is no simulated
+  concentration-time profile there is no PKNCA section; the validations below
+  are the checks appropriate to a PD-only model.
+* **The printed equation is incomplete.** Eq 1 is printed as
+  `E = Emax * (1 - C^N / (C^N + EC50^N))`, which can only run from `Emax`
+  (+2.54) down to 0. Yet Table 4 reports the index needed for E = -3 and
+  E = -4, and the fitted line in Figure 5 descends to about -5.3. The fit used
+  the standard inhibitory sigmoid form with a negative maximal-effect
+  asymptote, written above with the canonical roles: the paper's `Emax` row
+  (the drug-free change) is `e0` here.
+* **The maximal-effect asymptote is not printed.** No row of Table 4 gives it.
+  The maintainers digitized the eight observed points of Figure 5 and refitted
+  only that asymptote with the Table 4 values held fixed, giving
+  `emax = -5.62`. The checks below confirm this value against two independent
+  quantities the paper does print.
+
+# Population
+
+Eight healthy pigs of both sexes (the split is not reported), 4-5 weeks old
+and 15-20 kg, received 4 mg/kg tildipirosin intravenously and then
+intramuscularly (Methods, "Animals"). Plasma was sampled at 0.25, 0.5, 1, 2, 4,
+6, 8, 10, 12, 24, 48 and 72 h and assayed by HPLC; the unbound fraction was
+78.00 +/- 5.23%. For the *ex vivo* time-kill assay, serum taken before and at
+0.25, 0.5, 1, 2, 4, 12 and 24 h after the intramuscular dose was inoculated with
+PM04 at 10^6 CFU/mL and incubated for 24 h.
+
+PM04 is a *toxA*-positive clinical isolate from Anhui province, chosen from 112
+pig isolates collected across China in 2013-2016 (tildipirosin MIC50 0.5 ug/mL,
+MIC90 2 ug/mL) because its broth MIC equals the MIC90. Its MIC is 2 ug/mL in
+tryptic soy broth and 0.5 ug/mL in pig serum (Table 1).
+
+```{r population}
+mod_fn <- readModelDb("Lei_2018_tildipirosin")
+pop <- mod_fn()$population
+shown <- c("species", "n_subjects", "n_studies", "age_range", "weight_range",
+           "disease_state", "dose_range", "regions")
+data.frame(
+  Field = shown,
+  Value = vapply(pop[shown], function(x) paste(as.character(x), collapse = "; "), character(1))
+) |>
+  knitr::kable(row.names = FALSE)
+```
+
+# Source trace
+
+| Quantity | Symbol in file | Source location |
+|---|---|---|
+| Sigmoid Emax equation | `eff_log10 <- e0 - (e0 - emax) * ce^hill / (ce^hill + ec50^hill)` | Methods eq 1, completed with the negative asymptote demanded by Table 4 and Figure 5 |
+| PK/PD index | `ce <- AUC_TILDIPIROSIN / mic` | Methods eq 1 text: `C` is the AUC24/MIC ratio |
+| Drug-free 24 h change | `e0 = 2.54` | Table 4, row `Emax` (2.54 +/- 0.37 LgCFU/ml) |
+| Maximal 24 h change | `emax = -5.62` | Not printed; digitized from Figure 5 by the maintainers (checked below) |
+| Half-maximal index | `lec50 = log(23.52)` | Table 4, row `EC50` (23.52 +/- 1.80 h) |
+| Hill coefficient | `lhill = log(3.48)` | Table 4, row `N` (3.48 +/- 0.81) |
+| Serum MIC of PM04 | `mic = fixed(0.5)` | Table 1, row `Serum` |
+| Starting inoculum | `log10_cfu0 = fixed(6)` | Methods, "Time-Killing Curves in Vitro and ex Vivo" (10^6 CFU/ml) |
+| Residual SD | `addSd = fixed(0)` | Not reported; only R^2 = 0.988 (Discussion) |
+| Bacterial ODE | `d/dt(bact) <- log(10) * (eff_log10 / 24) * bact` | Encoding of the 24 h difference; checked below |
+
+## Parameter table (paper versus file)
+
+```{r params}
+ini_df <- as.data.frame(rxode2::rxode(mod_fn)$iniDf)
+val <- setNames(ini_df$est, ini_df$name)
+pars <- list(
+  e0   = val[["e0"]],
+  emax = val[["emax"]],
+  ec50 = exp(val[["lec50"]]),
+  hill = exp(val[["lhill"]]),
+  mic  = val[["mic"]]
+)
+paper <- c(e0 = 2.54, ec50 = 23.52, hill = 3.48, mic = 0.5)
+stopifnot(max(abs(unlist(pars[names(paper)]) - paper)) < 1e-12)
+data.frame(
+  Parameter = c("e0 (paper 'Emax')", "emax (not printed)", "EC50 (h)", "N", "MIC (ug/mL)"),
+  `Lei 2018` = c("2.54", "--", "23.52", "3.48", "0.5"),
+  `Model file` = signif(unlist(pars), 4),
+  check.names = FALSE
+) |>
+  knitr::kable(row.names = FALSE)
+```
+
+# Validation 1: the unprinted asymptote
+
+Figure 5 plots the eight *ex vivo* observations and the fitted line. The
+points below were digitized by the maintainers from the published raster image
+(axis ticks calibrated in pixels; the two overlapping points near
+AUC24h/MIC = 4 h were separated by eye, and the last point sits on the -6 axis
+floor). Refitting only the asymptote, with `e0`, `EC50` and `N` fixed at the
+Table 4 values, recovers the packaged `emax`. An independent route gives the
+same number: substituting the paper's own bactericidal target (E = -3 at
+AUC24h/MIC = 29.13 h, Table 4) into the equation and solving for the asymptote.
+
+```{r asymptote}
+effect_of <- function(ce, p = pars, emax = p$emax) {
+  p$e0 - (p$e0 - emax) * ce^p$hill / (ce^p$hill + p$ec50^p$hill)
+}
+fig5 <- data.frame(
+  aucmic = c(0, 3.6, 4.4, 10.75, 20.60, 23.22, 42.71, 47.14),
+  effect = c(2.82, 2.50, 2.33, 2.17, 0.21, -1.75, -3.84, -6.00)
+)
+refit <- stats::optimize(
+  function(em) sum((effect_of(fig5$aucmic, emax = em) - fig5$effect)^2),
+  c(-12, -2)
+)$minimum
+f_cidal <- 29.13^pars$hill / (29.13^pars$hill + pars$ec50^pars$hill)
+from_target <- pars$e0 - (pars$e0 - (-3)) / f_cidal
+
+stopifnot(
+  abs(refit - pars$emax) < 0.02,
+  abs(from_target - pars$emax) < 0.05
+)
+data.frame(
+  Route = c("Refit of the Figure 5 points", "Back-solved from the bactericidal target (29.13 h)", "Packaged value"),
+  `emax (log10 CFU/mL)` = round(c(refit, from_target, pars$emax), 3),
+  check.names = FALSE
+) |>
+  knitr::kable()
+```
+
+# Validation 2: PK/PD index targets (Table 4)
+
+Table 4 reports the AUC24h/MIC needed for bacteriostatic (E = 0), bactericidal
+(E = -3) and eradication (E = -4) activity. Solving the packaged equation for
+each effect level:
+
+```{r targets}
+solve_index <- function(E) {
+  stats::uniroot(function(x) effect_of(x) - E, c(1e-3, 500), tol = 1e-10)$root
+}
+tgt <- data.frame(
+  Activity = c("Bacteriostatic (E = 0)", "Bactericidal (E = -3)", "Eradication (E = -4)"),
+  E = c(0, -3, -4),
+  published = c(18.91, 29.13, 34.03)
+)
+tgt$model <- vapply(tgt$E, solve_index, numeric(1))
+tgt$pct_diff <- 100 * (tgt$model - tgt$published) / tgt$published
+stopifnot(all(abs(tgt$pct_diff) < 5))
+tgt |>
+  mutate(model = round(model, 2), pct_diff = round(pct_diff, 1)) |>
+  dplyr::rename(
+    "Target E (log10 CFU/mL)" = E,
+    "Lei 2018 AUC24h/MIC (h)" = published,
+    "Model AUC24h/MIC (h)" = model,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable()
+```
+
+The bacteriostatic and bactericidal targets agree within about 1%; the
+eradication target differs by about 3%. Table 4 prints each target as a mean
++/- SD, so the targets were probably averaged over replicate fits rather than
+read off the single curve built from the mean parameters; for a nonlinear model
+those are not the same. No parameter was tuned to close the gaps.
+
+# Validation 3: study exposure and the dose equation (Tables 3 and 6)
+
+The serum MIC splits the paper's own index exactly: the intramuscular AUC24h of
+Table 2 divided by 0.5 ug/mL is the AUC24h/MIC of Table 3. The 50%-target doses
+of Table 6 then follow from eq 2,
+`Dose = (AUC24h/MIC) x MIC x CL / (fu x F)`, using the Table 4 targets, the
+serum MIC, the intramuscular CLb of Table 2 (0.43 L/h/kg), the unbound fraction
+(0.78) and the intramuscular bioavailability (0.855).
+
+```{r dose-eq}
+auc24_im <- 3.94
+stopifnot(abs(auc24_im / pars$mic - 7.88) < 1e-12)
+
+dose <- tgt$published * pars$mic * 0.43 / (0.78 * 0.855)
+dose_tab <- data.frame(
+  Activity = tgt$Activity,
+  published = c(6.10, 9.41, 10.96),
+  recomputed = dose
+)
+dose_tab$pct_diff <- 100 * (dose_tab$recomputed - dose_tab$published) / dose_tab$published
+stopifnot(all(abs(dose_tab$pct_diff) < 1))
+dose_tab |>
+  mutate(recomputed = round(recomputed, 2), pct_diff = round(pct_diff, 2)) |>
+  dplyr::rename(
+    "Lei 2018 dose, 50% target (mg/kg)" = published,
+    "Eq 2 recomputed (mg/kg)" = recomputed,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable()
+```
+
+The 90%-target column of Table 6 comes from a Monte Carlo simulation whose
+input distributions are not reported, so it is not recomputed here.
+
+# Validation 4: probability of target attainment (Table 5)
+
+Table 5 gives the probability that a single 4 mg/kg intramuscular dose reaches
+the bactericidal target of 29.13 h at four fixed MICs. Treating AUC24h as
+normally distributed with the Table 2 mean and SD (3.94 +/- 0.62 h*ug/mL), the
+attainment probability has a closed form, which reproduces the published
+Monte Carlo result to within its sampling noise.
+
+```{r pta}
+mics <- c(0.0625, 0.125, 0.25, 0.5)
+pta <- 100 * (1 - pnorm(29.13 * mics, mean = 3.94, sd = 0.62))
+pta_pub <- c(100, 68.64, 0, 0)
+stopifnot(max(abs(pta - pta_pub)) < 2)
+data.frame(
+  `MIC (ug/mL)` = mics,
+  `Lei 2018 PTA (%)` = pta_pub,
+  `Closed form (%)` = round(pta, 2),
+  check.names = FALSE
+) |>
+  knitr::kable()
+```
+
+# Replicate Figure 5: the sigmoid curve
+
+```{r figure-5}
+grid <- data.frame(aucmic = seq(0, 50, length.out = 401))
+grid$effect <- effect_of(grid$aucmic)
+ggplot(grid, aes(aucmic, effect)) +
+  geom_hline(yintercept = c(0, -3, -4), linetype = "dotted", colour = "grey40") +
+  geom_line(linewidth = 0.8, colour = "steelblue") +
+  geom_point(data = fig5, shape = 21, colour = "firebrick", size = 2.5) +
+  labs(
+    x = "Ex vivo AUC24h/MIC (h)",
+    y = "E, change in log10 CFU/mL over 24 h",
+    title = "Replicates Figure 5 of Lei 2018",
+    subtitle = "Line: packaged model. Points: observations digitized from Figure 5.\nDotted lines: E = 0, -3 and -4"
+  ) +
+  theme_bw()
+```
+
+# Time-kill trajectories from the ODE
+
+The checks above exercise the `ini()` values and the algebra. This section
+solves the packaged model, which spreads each 24 h change uniformly over the
+incubation, at the study exposure (AUC24h = 3.94 h*ug/mL after 4 mg/kg
+intramuscularly) and at the exposures that reach the paper's three targets.
+
+```{r timekill}
+mod <- rxode2::rxode(mod_fn)
+solve_at <- function(auc, t_end = 24, by_h = 0.25) {
+  ev <- data.frame(id = 1L, time = seq(0, t_end, by = by_h),
+                   AUC_TILDIPIROSIN = auc, amt = 0, evid = 0)
+  as.data.frame(rxode2::rxSolve(mod, events = ev, keep = "AUC_TILDIPIROSIN"))
+}
+levels_ <- c(
+  `Drug-free control` = 0,
+  `4 mg/kg i.m. (Table 2)` = auc24_im,
+  `Bacteriostatic target` = 18.91 * pars$mic,
+  `Bactericidal target` = 29.13 * pars$mic,
+  `Eradication target` = 34.03 * pars$mic
+)
+traj <- do.call(rbind, lapply(names(levels_), function(lb) {
+  s <- solve_at(levels_[[lb]])
+  s$scenario <- factor(lb, levels = names(levels_))
+  s
+}))
+ggplot(traj, aes(time, log_cfu, colour = scenario)) +
+  geom_line(linewidth = 0.7) +
+  labs(x = "Ex vivo incubation time (h)", y = "log10 CFU/mL", colour = NULL,
+       title = "Ex vivo 24 h time-kill trajectories",
+       subtitle = "Starting inoculum 1 x 10^6 CFU/mL") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+At the study exposure (AUC24h/MIC = 7.88 h) the bacteria still grow by about
+2.5 logs, which is the paper's conclusion that 4 mg/kg does not reach the
+bactericidal target.
+
+## Encoding checks
+
+These read the ODE state `bact` rather than the observation `log_cfu`, because
+the observation carries a 1-CFU/mL floor (`log10(bact + 1)`) that is a
+numerical guard, not part of the paper's model.
+
+```{r encoding}
+end_change <- function(auc) {
+  s <- solve_at(auc, by_h = 24)
+  log10(s$bact[s$time == 24]) - log10(s$bact[s$time == 0])
+}
+probe <- 12
+c1 <- end_change(probe) - effect_of(probe / pars$mic)
+c2 <- end_change(0) - pars$e0
+c3 <- end_change(1e5) - pars$emax
+stopifnot(abs(c1) < 1e-5, abs(c2) < 1e-5, abs(c3) < 1e-4)
+data.frame(
+  Check = c("24 h change equals algebraic E (AUC24h = 12 h*ug/mL)",
+            "Drug-free control 24 h change equals e0",
+            "Saturating exposure 24 h change approaches emax"),
+  `Absolute deviation (log10 CFU/mL)` = signif(abs(c(c1, c2, c3)), 3),
+  check.names = FALSE
+) |>
+  knitr::kable()
+```
+
+# Assumptions and deviations
+
+* **Maximal-effect asymptote digitized.** `emax = -5.62` log10 CFU/mL is not
+  printed anywhere in the paper. It is the refit of the eight Figure 5
+  observations digitized by the maintainers, with `e0`, `EC50` and `N` held at
+  their Table 4 values. Back-solving the bactericidal target gives -5.63, and
+  the drawn line alone gives about -5.52. A free four-parameter fit of the
+  drawn line returns `e0` = 2.53 and `N` = 3.48, matching Table 4, but `EC50`
+  = 25.2 h rather than 23.52 h; the Table 4 value is used.
+* **Equation form.** The printed eq 1 omits the negative asymptote, so the
+  standard inhibitory sigmoid form was used (see *Model and source*). The
+  paper's `Emax` label is the drug-free change; it is `e0` in the file.
+* **No PK model.** Lei 2018 reports only non-compartmental PK, so exposure is a
+  covariate. `AUC_TILDIPIROSIN` is the serum AUC over the 24 h window; set it to
+  0 for drug-free records.
+* **Serum MIC.** The serum MIC (0.5 ug/mL) is used, not the broth MIC
+  (2 ug/mL), because the model was fitted *ex vivo* in serum and the serum MIC
+  reproduces Table 3. Change `mic` to apply the model to another isolate.
+* **No variability.** Table 4 gives mean +/- SD of the parameters but no
+  between-replicate variance model or residual SD, so there are no etas and
+  `addSd` is fixed at 0. The model is for typical-value simulation.
+
+# Errata and internal inconsistencies in the source
+
+* Eq 1 as printed cannot produce a negative effect, though Table 4 and
+  Figure 5 require one (see above).
+* The effect levels are labelled inconsistently. "Dose Estimations" in the
+  Methods gives E = -1 as a 99.9% reduction and E = -3 as a 99.99% reduction,
+  while the Results, Table 4 and Table 6 use E = 0, -3 and -4 for
+  bacteriostatic, bactericidal and eradication activity. The Table 4 levels are
+  used.
+* Eq 2 names `MIC90` (2 ug/mL), but the published doses are reproduced only
+  with the serum MIC of PM04 (0.5 ug/mL); with the MIC90 they would be four
+  times larger.
+* Table 5 labels its row "Eradication", but its percentages are reproduced with
+  the bactericidal target (29.13 h), as the surrounding text says.
+* The CLb row of Table 2 has units "L/h"; the Abstract gives "L/h*kg", which is
+  consistent with 4 mg/kg divided by AUC (4 / 7.94 = 0.50 L/h/kg intravenously).
+* The literature was checked on 2026-11-25 for errata and corrections to
+  Lei 2018 (Europe PMC); none were found.

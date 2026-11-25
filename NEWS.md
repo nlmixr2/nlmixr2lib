@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nakamura 2018 tamoxifen whole-body PBPK ([doi:10.1002/psp4.12307](https://doi.org/10.1002/psp4.12307)) -- virtual CYP2D6 genotype-guided dosing (virtual TARGET-1), tamoxifen plus its four metabolites in postmenopausal women with breast cancer.
+- Add Lei 2018 tildipirosin ([doi:10.3389/fphar.2018.00765](https://doi.org/10.3389/fphar.2018.00765)) -- ex vivo PK/PD against *Pasteurella multocida* in serum from healthy pigs.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
