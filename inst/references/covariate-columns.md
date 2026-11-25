@@ -3858,6 +3858,28 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Kong_2025_rosuvastatin.R` (founding example; same assay as `GUT_VEILLONELLA_PCT`; exponent -3.26 on CL/F; the paper does not report the observed range).
 - **Notes:** Scope `specific` until a second model ratifies it. Keep the cluster suffix: *Clostridium* clusters IV, XIVa, XIVb and XVIII are phylogenetically distinct groups that the RDP classifier reports as separate genus-level taxa (Kong 2025 also reports a `Clostridium_XVIII` association with dabigatran clearance in its regression analysis), so a future `GUT_CLOSTRIDIUM_XVIII_PCT` is a separate entry, not an alias.
 
+### STOOL_COMMUNITY_BACTEROIDES_UNIFORMIS_PCT (**canonical for the stool *Bacteroides uniformis*-dominant bacterial-community relative abundance**)
+- **Description:** Summed stool relative abundance (%) of the six species that make up the *Bacteroides uniformis*-dominant co-abundance community of Saqr 2025: *B. uniformis*, *B. thetaiotaomicron*, *B. faecis*, *Akkermansia muciniphila*, *Clostridium clostridioforme* and *Ruminococcus gnavus* (shotgun metagenomics; communities detected by Louvain clustering of a species co-abundance network, Supplementary File 4 and Supplementary Figure S3). Baseline (time-fixed); stool collected within 48 h of PK sampling.
+- **Units:** % (percent of classified shotgun metagenomic reads, 0-100)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a. Enters logit(FrEHC) as `theta * log(STOOL_COMMUNITY_BACTEROIDES_UNIFORMIS_PCT / 19.97)`, centred at the cohort median 19.97 % (observed range 0-73.44 %, Supplementary Table S4).
+- **Source aliases:**
+  - `Community 1` / `Bacterial community 1` -- Saqr 2025 main text Eq.3 and Table 3; used in `Saqr_2025_mycophenolic_acid.R`.
+- **Example models:** `Saqr_2025_mycophenolic_acid.R` (founding example; effect 0.19 on logit of the fraction of MPAG recirculated to MPA; 15 % of subjects had 0 % abundance, replaced by one tenth of the smallest non-zero abundance before log-transformation).
+- **Notes:** A multi-genus **community**, not a single genus, so it is not a member of the `GUT_<GENUS>_PCT` family above and is not interchangeable with a `GUT_BACTEROIDES_PCT`. It is defined by its member-species list, which comes from one paper's network analysis; a different study's "uniformis-dominant" community with other members needs its own entry. A zero abundance must be supplied as a small positive floor, as the log term is otherwise -Inf.
+
+### STOOL_COMMUNITY_BACTEROIDES_VULGATUS_PCT (**canonical for the stool *Bacteroides vulgatus*-dominant bacterial-community relative abundance**)
+- **Description:** Summed stool relative abundance (%) of the five species that make up the *Bacteroides vulgatus*-dominant co-abundance community of Saqr 2025: *B. vulgatus*, *B. ovatus*, *B. massiliensis*, *B. stercoris* and *B. finegoldii* (shotgun metagenomics; Louvain community detection, Supplementary File 4 and Supplementary Figure S3). Baseline (time-fixed); stool collected within 48 h of PK sampling.
+- **Units:** % (percent of classified shotgun metagenomic reads, 0-100)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a. Enters logit(FrEHC) as `theta * log(STOOL_COMMUNITY_BACTEROIDES_VULGATUS_PCT / 13.23)`, centred at the cohort median 13.23 % (observed range 0-89.23 %, Supplementary Table S4).
+- **Source aliases:**
+  - `Community 2` / `Bacterial community 2` -- Saqr 2025 main text Eq.3 and Table 3; used in `Saqr_2025_mycophenolic_acid.R`.
+- **Example models:** `Saqr_2025_mycophenolic_acid.R` (founding example; effect 0.10 on logit FrEHC; at least 25 % of subjects had 0 % abundance).
+- **Notes:** Same community-versus-genus distinction and zero-floor handling as `STOOL_COMMUNITY_BACTEROIDES_UNIFORMIS_PCT`.
+
 ## Inflammation markers
 
 ### EOS (**canonical for blood eosinophil count**)
