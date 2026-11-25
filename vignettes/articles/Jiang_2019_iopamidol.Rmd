@@ -1,0 +1,573 @@
+---
+title: "Iopamidol renal DCE-CT tracer kinetics (Jiang 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Iopamidol renal DCE-CT tracer kinetics (Jiang 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-load}
+mod <- readModelDb("Jiang_2019_iopamidol")
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.1371/journal.pone.0219605>
+* PubMed Central: <https://pmc.ncbi.nlm.nih.gov/articles/PMC6619810/>
+
+`r ui$description`
+
+Jiang 2019 adapts a two-compartment kidney model, first developed for
+gadolinium MRI in mice, to dynamic contrast-enhanced CT (DCE-CT) in patients.
+After a central venous bolus of iopamidol-370 (0.5 mL/kg), 45 CT acquisitions
+over about 145 s follow the contrast through the abdominal aorta, the renal
+parenchyma and the renal papilla. The increase in CT number above the
+pre-contrast baseline is used as the iodine concentration (CT enhancement is
+linear in iodine concentration). The model has no dose: the kidney is driven by
+two measured curves.
+
+| nlmixr2lib name | Paper symbol | Meaning |
+|---|---|---|
+| `CP_IOPAMIDOL_HU` (covariate) | `Ca(t)` | Aortic whole-blood enhancement (arterial input function), HU |
+| `cp_aif` | `Cp(t)` | Plasma input, `Ca(t) / (1 - Hct)` with `Hct = 0.45` |
+| `vp_kidney` (state) / `cv_kidney` | `Cv(t)` | Renal vascular plasma enhancement; `cv_kidney = delay(vp_kidney, Td)` |
+| `kidney` (state) | `Ct(t)` | Tubular enhancement per unit kidney volume |
+| `CPAPILLA_TUBULAR_IOPAMIDOL_HU` (covariate) | `Cout''(t)` | Tubular (filtration) component of the papilla curve, HU |
+| `Cc` | `Ctot(t)` | Whole-kidney enhancement, `f * Cv(t) + Ct(t)`, HU |
+| `gfr`, `perfusion_kidney`, `rbf_kidney` | GFR, perfusion, RBF | Derived single-kidney function (Eqs. 3-4) |
+
+# Population
+
+```{r population}
+str(ui$population)
+```
+
+Thirty-eight hypertensive adults (Jiang 2019 Table 1) studied as inpatients at
+the Mayo Clinic, Rochester, MN, on ACE-inhibitor or angiotensin-receptor-blocker
+therapy and a fixed 150 mEq/day sodium diet: 13 with essential hypertension (EH;
+26 kidneys) and 25 with atherosclerotic renal artery stenosis (ARAS; 30 stenotic
+and 20 contralateral kidneys, 5 patients with bilateral stenosis). Median age 67
+(EH) and 70 (ARAS) years; 22 of 38 were male. Serum creatinine had to be below
+2.5 mg/dL. The kidney, not the patient, is the unit of the model: every kidney
+was fitted separately.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Vascular equation | `dCv/dt = kperf (Cp(t - Td) - Cv)` | Eq. 1 |
+| Tubular equation | `dCt/dt = kGFR Cv - kout Cout''(t)` | Eq. 2 |
+| Plasma input | `Cp = Ca / (1 - Hct)`, `Hct = 0.45` | Methods, Compartment model |
+| Kidney signal | `Ctot = Cv f + Ct` | Methods, after Fig 2 |
+| GFR | `kGFR * V * 60` (mL/min) | Eq. 3 |
+| Perfusion | `kperf * f * 60 * 100 / (1 - Hct) * sigma` (mL/100 g/min), `sigma = 0.9` | Eq. 4 |
+| Renal blood flow | perfusion * V / 100 (mL/min) | Methods, after Eq. 4 |
+| `kperf` EH / stenotic / contralateral | 0.15 / 0.12 / 0.17 1/s (medians) | Table 2 |
+| `Td` EH / stenotic / contralateral | 0.68 / 0.58 / 1.02 s (medians) | Table 2 |
+| `f` EH / stenotic / contralateral | 0.22 / 0.19 / 0.18 (means) | Table 2 |
+| `kGFR` EH / stenotic / contralateral | 0.0048 / 0.0035 / 0.0041 1/s (means) | Table 2 |
+| `kout` EH / stenotic / contralateral | 0.004 / 0.005 / 0.007 1/s (medians) | Table 2 |
+| Residual error | none reported (least-squares fit); `addSd` fixed at 0 | Methods, Image analysis |
+
+```{r ini-table}
+ui$iniDf |>
+  dplyr::select(name, est, fix, label) |>
+  knitr::kable(digits = 4)
+```
+
+# The S1 Dataset
+
+The paper's S1 Dataset (an Excel workbook, CC BY) holds, for every kidney, the
+raw aortic, kidney and papilla time-attenuation curves and the fitted model
+parameters. Both are shipped next to this article as CSV files.
+
+```{r load-data}
+curves <- utils::read.csv(file.path("data", "Jiang_2019_iopamidol_curves.csv"))
+fits <- utils::read.csv(file.path("data", "Jiang_2019_iopamidol_fits.csv"))
+grp_levels <- c("EH", "stenotic", "contralateral")
+curves$group <- factor(curves$group, levels = grp_levels)
+fits$group <- factor(fits$group, levels = grp_levels)
+stopifnot(
+  identical(as.vector(table(fits$group)), c(26L, 30L, 20L)),
+  identical(as.vector(table(curves$group)) / 45, c(26, 30, 20))
+)
+```
+
+The workbook stores raw CT numbers with the scanner's +1024 offset. The
+enhancement is the CT number minus the mean of the first three scans
+(0-2 s, before the bolus reaches the aorta).
+
+```{r baseline}
+curves <- curves |>
+  dplyr::group_by(group, kidney) |>
+  dplyr::mutate(
+    ca = aorta_hu - mean(aorta_hu[time <= 2]),
+    ctot_obs = kidney_hu - mean(kidney_hu[time <= 2]),
+    cout = papilla_hu - mean(papilla_hu[time <= 2])
+  ) |>
+  dplyr::ungroup()
+```
+
+## Transcription check: Table 2 against the per-kidney fits
+
+Recomputing the Table 2 summaries from the per-kidney fits checks the
+packaged values. In the workbook the kidney-type column labels the last five
+stenotic kidneys `CLK`; they are counted here by the workbook section they sit
+in (30 stenotic, 20 contralateral), which matches the counts in the paper.
+
+```{r table2-check}
+med_iqr <- function(x, digits) {
+  sprintf(
+    paste0("%.", digits, "f (%.", digits, "f-%.", digits, "f)"),
+    median(x), quantile(x, 0.25), quantile(x, 0.75)
+  )
+}
+mean_sd <- function(x, digits) {
+  sprintf(paste0("%.", digits, "f +/- %.", digits, "f"), mean(x), sd(x))
+}
+recomputed <- fits |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(
+    `Volume (mL)` = mean_sd(volume_ml, 0),
+    `kperf (1/s)` = med_iqr(kperf, 2),
+    `Td (s)` = med_iqr(td, 2),
+    f = mean_sd(f, 2),
+    `kGFR (1/s)` = mean_sd(kgfr, 4),
+    `kout (1/s)` = med_iqr(kout, 3),
+    .groups = "drop"
+  )
+published <- tibble::tibble(
+  group = factor(grp_levels, levels = grp_levels),
+  `Volume (mL)` = c("148 +/- 33", "86 +/- 44", "170 +/- 50"),
+  `kperf (1/s)` = c("0.15 (0.11-0.19)", "0.12 (0.09-0.17)", "0.17 (0.11-0.18)"),
+  `Td (s)` = c("0.68 (0.34-1.16)", "0.58 (0.05-1.35)", "1.02 (0.47-1.57)"),
+  f = c("0.22 +/- 0.04", "0.19 +/- 0.06", "0.18 +/- 0.04"),
+  `kGFR (1/s)` = c("0.0048 +/- 0.0009", "0.0035 +/- 0.0013", "0.0041 +/- 0.0011"),
+  `kout (1/s)` = c("0.004 (0.003-0.011)", "0.005 (0.003-0.012)", "0.007 (0.002-0.009)")
+)
+dplyr::bind_rows(
+  dplyr::mutate(published, Source = "Table 2"),
+  dplyr::mutate(recomputed, Source = "S1 Dataset")
+) |>
+  dplyr::arrange(group, Source) |>
+  dplyr::relocate(Source, .after = group) |>
+  dplyr::rename(Kidney = group) |>
+  knitr::kable()
+```
+
+```{r table2-gate}
+pkg <- setNames(ui$iniDf$est, ui$iniDf$name)
+grp_sfx <- c(EH = "eh", stenotic = "sten", contralateral = "contra")
+gate <- fits |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(
+    kperf = median(kperf), td = median(td), f = mean(f), kgfr = mean(kgfr),
+    .groups = "drop"
+  )
+for (i in seq_len(nrow(gate))) {
+  s <- grp_sfx[[as.character(gate$group[i])]]
+  # kperf and f are printed to 2 decimals and kGFR to 4: the recomputed value
+  # must round to the packaged one (half a unit in the last printed place).
+  stopifnot(
+    abs(gate$kperf[i] - pkg[[paste0("kperf_kidney_", s)]]) <= 0.005 + 1e-9,
+    abs(gate$f[i] - pkg[[paste0("fvasc_kidney_", s)]]) <= 0.005 + 1e-9,
+    abs(gate$kgfr[i] - pkg[[paste0("kgfr_kidney_", s)]]) <= 0.00005 + 1e-9
+  )
+}
+```
+
+The central values of `kperf`, `f` and `kGFR` (the gated quantities) recompute
+to the printed values in all three groups, and so do the EH and contralateral
+volumes and `Td`. The remaining differences are recorded under Assumptions and
+deviations; the largest are the stenotic kidney volume (95 vs 86 mL printed),
+the stenotic `Td` median (0.52 vs 0.58 s) and the EH `kout` (median 0.003 with
+IQR 0.000-0.009, printed 0.004 (0.003-0.011)). The packaged model carries the
+printed Table 2 values.
+
+## Derived outputs: Eqs. 3 and 4
+
+The packaged model computes single-kidney GFR, perfusion and renal blood flow as
+algebraic outputs. Solving it once per kidney with that kidney's fitted
+parameters reproduces the workbook's own GFR and perfusion columns.
+
+```{r derived}
+fits$id <- seq_len(nrow(fits))
+derived_ev <- fits |>
+  dplyr::transmute(
+    id, time = 0, evid = 0, CP_IOPAMIDOL_HU = 0, CPAPILLA_TUBULAR_IOPAMIDOL_HU = 0,
+    DIS_RAS_STENOTIC = 0, DIS_RAS_CONTRALATERAL = 0, ORGVOL_KIDNEY = volume_ml
+  )
+# Every kidney is routed through the EH slot of the model, whose parameters are
+# overridden with that kidney's own fitted values.
+derived_par <- fits |>
+  dplyr::transmute(
+    id, kperf_kidney_eh = kperf, tdelay_kidney_eh = td, fvasc_kidney_eh = f,
+    kgfr_kidney_eh = kgfr, kout_tubule_eh = kout
+  )
+derived <- rxode2::rxSolve(
+  mod, events = derived_ev, params = derived_par, returnType = "data.frame"
+) |>
+  dplyr::left_join(fits, by = "id")
+derived <- derived |>
+  dplyr::mutate(
+    rel_gfr = gfr / gfr_ct - 1,
+    rel_perf = perfusion_kidney / perfusion - 1
+  )
+# Eq. 3 reproduces the workbook GFR for 69 of the 76 kidneys and Eq. 4 the
+# workbook perfusion for 70 (relative difference below 1e-5, the CSV carries 7
+# significant figures); the rest were evidently computed from a different
+# parameter set (differences of 1% to 74%), so the gate counts exact matches
+# rather than demanding all of them.
+stopifnot(
+  sum(abs(derived$rel_gfr) < 1e-5) >= 65,
+  sum(abs(derived$rel_perf) < 1e-5) >= 65
+)
+derived |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(
+    `GFR model (mL/min)` = med_iqr(gfr, 1),
+    `Perfusion model (mL/100 g/min)` = med_iqr(perfusion_kidney, 1),
+    `RBF model (mL/min)` = med_iqr(rbf_kidney, 1),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    `GFR text` = c("40.4 (36.1-50.9)", "20.0 (8.4-26.6)", "41.2 (28.3-50.9)"),
+    `Perfusion text` = c("308.1 (261.6-385.7)", "194.8 (162.0-290.2)", "280.8 (191.8-310.6)"),
+    `RBF text` = c("463.3 (398.1-639.0)", "182.0 (130.0-274.1)", "456.2 (282.3-579.6)")
+  ) |>
+  dplyr::rename(Kidney = group) |>
+  knitr::kable()
+```
+
+The EH GFR median matches the Results text (40.4 mL/min). The perfusion and
+RBF summaries differ from the text by up to about 8%, because seven workbook
+rows carry a perfusion value that does not follow Eq. 4 from that row's own
+`kperf` and `f`; the text was evidently computed from the workbook column (its
+EH perfusion median recomputes to exactly 308.1 mL/100 g/min). The stenotic and
+contralateral GFR medians differ slightly, in line with the per-kidney
+differences noted above.
+
+# Structural validation against the published curves
+
+The S1 curve rows and fitted-parameter rows are not in the same kidney order
+(a curve is fitted best by the parameters of a different row), so a kidney's
+published fit cannot be paired with its curve. Instead, the model structure is
+validated by re-fitting every curve and comparing the re-fitted parameters with
+Table 2.
+
+## The papilla tubular component
+
+`Cout''(t)` is not tabulated. Following the Methods, the papilla curve is split
+into a perfusion component, `a * Cvp(t)`, where `Cvp` solves Eq. 1 for the
+papilla with its own rate constant, and the remainder. `a` and the papilla rate
+constant are fitted to the papilla curve over 0-30 s (before filtered contrast
+arrives), the perfusion component is subtracted, negative values are set to 0,
+and the remainder is set to 0 before 20 s.
+
+The re-fit uses an independent reference implementation of Eqs. 1-2 on a
+0.1 s grid: the first-order equation is advanced exactly for a piecewise-linear
+input, the delay is applied by interpolation, and `Ct` is integrated by the
+trapezoidal rule.
+
+```{r reference-implementation}
+ref_h <- 0.1
+ref_grid <- seq(0, 146, by = ref_h)
+
+# Exact one-step update of dy/dt = k (u - y) for u linear within the step.
+first_order <- function(u, k, h = ref_h) {
+  e <- exp(-k * h)
+  a <- (1 - e) / (k * h)
+  inc <- u[-1] * (1 - a) + u[-length(u)] * (a - e)
+  c(0, as.numeric(stats::filter(inc, e, method = "recursive", init = 0)))
+}
+shift_delay <- function(y, td, grid = ref_grid) {
+  stats::approx(grid, y, grid - td, yleft = 0, rule = 2)$y
+}
+ref_predict <- function(kperf, td, f, kgfr, kout, cp_grid, cout2_grid, times,
+                        h = ref_h, grid = ref_grid) {
+  cv <- shift_delay(first_order(cp_grid, kperf, h), td, grid)
+  dct <- kgfr * cv - kout * cout2_grid
+  ct <- c(0, cumsum((dct[-1] + dct[-length(dct)]) / 2 * h))
+  stats::approx(grid, f * cv + ct, times)$y
+}
+# Papilla perfusion component (unit amplitude) for a papilla rate constant exp(lk).
+papilla_shape <- function(lk, cp_grid, times) {
+  stats::approx(ref_grid, first_order(cp_grid, exp(lk)), times)$y
+}
+# Least-squares amplitude of the perfusion component over the early window.
+papilla_amplitude <- function(v, cout, early) {
+  sum(v[early] * cout[early]) / sum(v[early]^2)
+}
+papilla_sse <- function(lk, cp_grid, times, cout, early) {
+  v <- papilla_shape(lk, cp_grid, times)
+  a <- papilla_amplitude(v, cout, early)
+  sum((cout[early] - a * v[early])^2)
+}
+papilla_tubular <- function(d, hct = 0.45) {
+  cp_grid <- stats::approx(d$time, d$ca / (1 - hct), ref_grid, rule = 2)$y
+  early <- d$time <= 30
+  lk <- stats::optimize(
+    papilla_sse, c(log(0.005), log(3)),
+    cp_grid = cp_grid, times = d$time, cout = d$cout, early = early
+  )$minimum
+  v <- papilla_shape(lk, cp_grid, d$time)
+  out <- pmax(d$cout - papilla_amplitude(v, d$cout, early) * v, 0)
+  out[d$time < 20] <- 0
+  out
+}
+curves <- curves |>
+  dplyr::group_by(group, kidney) |>
+  dplyr::group_modify(~ dplyr::mutate(.x, cout2 = papilla_tubular(.x))) |>
+  dplyr::ungroup()
+```
+
+## Packaged model against the reference implementation
+
+```{r model-vs-reference}
+sel_kidneys <- curves |>
+  dplyr::filter((group == "EH" & kidney == 1) | (group == "stenotic" & kidney == 1) |
+    (group == "contralateral" & kidney == 1)) |>
+  dplyr::mutate(id = as.integer(group))
+mvr_ev <- sel_kidneys |>
+  dplyr::transmute(
+    id, time, evid = 0,
+    CP_IOPAMIDOL_HU = ca, CPAPILLA_TUBULAR_IOPAMIDOL_HU = cout2,
+    DIS_RAS_STENOTIC = as.integer(group == "stenotic"),
+    DIS_RAS_CONTRALATERAL = as.integer(group == "contralateral"),
+    ORGVOL_KIDNEY = 150
+  )
+mvr <- rxode2::rxSolve(
+  mod, events = mvr_ev, covsInterpolation = "linear",
+  rtol = 1e-10, atol = 1e-10, returnType = "data.frame"
+)
+fine_h <- 0.005
+fine_grid <- seq(0, 146, by = fine_h)
+ref_typical <- sel_kidneys |>
+  dplyr::group_by(id, group) |>
+  dplyr::group_modify(function(d, key) {
+    s <- grp_sfx[[as.character(key$group)]]
+    cp_grid <- stats::approx(d$time, d$ca / (1 - pkg[["hct"]]), fine_grid, rule = 2)$y
+    c2_grid <- stats::approx(d$time, d$cout2, fine_grid, rule = 2)$y
+    tibble::tibble(
+      time = d$time,
+      ref = ref_predict(
+        pkg[[paste0("kperf_kidney_", s)]], pkg[[paste0("tdelay_kidney_", s)]],
+        pkg[[paste0("fvasc_kidney_", s)]], pkg[[paste0("kgfr_kidney_", s)]],
+        pkg[[paste0("kout_tubule_", s)]], cp_grid, c2_grid, d$time,
+        h = fine_h, grid = fine_grid
+      )
+    )
+  }) |>
+  dplyr::ungroup()
+mvr_cmp <- dplyr::inner_join(mvr, ref_typical, by = c("id", "time"))
+stopifnot(nrow(mvr_cmp) == nrow(mvr_ev))
+max_abs_diff <- max(abs(mvr_cmp$Cc - mvr_cmp$ref))
+max_abs_diff
+# Both sides use the same parameters and inputs, so the difference is numerical
+# only: the reference's trapezoid and grid interpolation at 0.005 s against the
+# ODE solver. The kidney signal peaks near 100-200 HU.
+stopifnot(max_abs_diff < 0.05)
+```
+
+## Re-fit of all 76 kidneys
+
+Each kidney curve is re-fitted over 0-120 s by least squares (the paper used
+Levenberg-Marquardt; `optim()` L-BFGS-B is used here) starting from the EH
+values of Table 2.
+
+```{r refit}
+# th = (log kperf, Td, f, log kGFR, kout)
+kidney_sse <- function(th, cp_grid, c2_grid, times, obs, win) {
+  p <- ref_predict(exp(th[1]), th[2], th[3], exp(th[4]), th[5], cp_grid, c2_grid, times)
+  sum((obs[win] - p[win])^2)
+}
+refit_one <- function(d, hct = 0.45) {
+  cp_grid <- stats::approx(d$time, d$ca / (1 - hct), ref_grid, rule = 2)$y
+  c2_grid <- stats::approx(d$time, d$cout2, ref_grid, rule = 2)$y
+  win <- d$time <= 121
+  o <- stats::optim(
+    c(log(0.15), 0.68, 0.22, log(0.0048), 0.004), kidney_sse, method = "L-BFGS-B",
+    lower = c(log(0.01), 0, 0.01, log(1e-5), 0), upper = c(log(2), 5, 0.6, log(0.05), 0.2),
+    cp_grid = cp_grid, c2_grid = c2_grid, times = d$time, obs = d$ctot_obs, win = win
+  )
+  sst <- sum((d$ctot_obs[win] - mean(d$ctot_obs[win]))^2)
+  tibble::tibble(
+    kperf = exp(o$par[1]), td = o$par[2], f = o$par[3], kgfr = exp(o$par[4]),
+    kout = o$par[5], R = sqrt(max(0, 1 - o$value / sst))
+  )
+}
+refit <- curves |>
+  dplyr::group_by(group, kidney) |>
+  dplyr::group_modify(~ refit_one(.x)) |>
+  dplyr::ungroup()
+refit_summary <- refit |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(
+    `kperf (1/s)` = med_iqr(kperf, 2),
+    `Td (s)` = med_iqr(td, 2),
+    f = mean_sd(f, 2),
+    `kGFR median (1/s)` = sprintf("%.4f", median(kgfr)),
+    `kout (1/s)` = med_iqr(kout, 3),
+    `R` = mean_sd(R, 2),
+    .groups = "drop"
+  )
+refit_summary |>
+  dplyr::mutate(
+    `Table 2 kGFR mean (1/s)` = c("0.0048", "0.0035", "0.0041"),
+    `Paper R` = c("0.94 +/- 0.06", "0.93 +/- 0.12", "0.95 +/- 0.07")
+  ) |>
+  dplyr::rename(Kidney = group) |>
+  knitr::kable()
+```
+
+```{r refit-gate}
+refit_gate <- refit |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(kgfr = median(kgfr), R = mean(R), .groups = "drop")
+for (i in seq_len(nrow(refit_gate))) {
+  s <- grp_sfx[[as.character(refit_gate$group[i])]]
+  stopifnot(
+    # The model structure applied to the published curves fits them as well as
+    # the paper reports (multiple correlation coefficient near 0.94).
+    refit_gate$R[i] > 0.9,
+    # The re-fitted median kGFR, the parameter GFR is computed from, lands
+    # within 20% of Table 2 (measured: within 10% in all three groups).
+    abs(refit_gate$kgfr[i] / pkg[[paste0("kgfr_kidney_", s)]] - 1) < 0.2
+  )
+}
+# The paper's main finding: stenotic kidneys filter less than EH kidneys.
+stopifnot(refit_gate$kgfr[refit_gate$group == "stenotic"] <
+  refit_gate$kgfr[refit_gate$group == "EH"])
+```
+
+The re-fit is deterministic (no random numbers). The structure fits the
+published curves with a multiple correlation coefficient at least as high as the
+paper's, and the re-fitted `kGFR`, the parameter GFR is derived from,
+reproduces Table 2. `kperf` and `Td` move more: they are traded off against
+each other on the sharp vascular peak, and they depend on the reconstructed
+papilla component and on the input interpolation, which the paper does not
+fully specify.
+
+# Typical-value simulation
+
+The three kidney groups are simulated with their Table 2 values, all driven by
+the same measured inputs (EH kidney 1 of the S1 Dataset), to separate the
+vascular and tubular components as in Fig 2c (right).
+
+```{r typical, fig.cap = "Typical kidneys of the three groups, all driven by the aortic and papilla curves of EH kidney 1 (S1 Dataset). Circles: that kidney's measured enhancement. Compare Fig 2c (right) of Jiang 2019."}
+drive <- curves |> dplyr::filter(group == "EH", kidney == 1)
+typ_ev <- dplyr::bind_rows(lapply(seq_along(grp_levels), function(i) {
+  tibble::tibble(
+    id = i, time = drive$time, evid = 0,
+    CP_IOPAMIDOL_HU = drive$ca, CPAPILLA_TUBULAR_IOPAMIDOL_HU = drive$cout2,
+    DIS_RAS_STENOTIC = as.integer(i == 2), DIS_RAS_CONTRALATERAL = as.integer(i == 3),
+    ORGVOL_KIDNEY = c(148, 86, 170)[i]
+  )
+}))
+typ <- rxode2::rxSolve(mod, events = typ_ev, covsInterpolation = "linear", returnType = "data.frame") |>
+  dplyr::mutate(
+    group = factor(grp_levels[id], levels = grp_levels),
+    vascular = fvasc_kidney * cv_kidney
+  )
+typ |>
+  dplyr::select(group, time, `Whole kidney` = Cc, Vascular = vascular, Tubular = kidney) |>
+  tidyr::pivot_longer(-c(group, time), names_to = "component", values_to = "hu") |>
+  ggplot(aes(time, hu, colour = component)) +
+  geom_line() +
+  geom_point(
+    data = drive |> dplyr::mutate(group = factor("EH", levels = grp_levels)),
+    aes(time, ctot_obs), inherit.aes = FALSE, shape = 1, size = 1
+  ) +
+  facet_wrap(~group) +
+  labs(
+    x = "Time (s)", y = "Kidney CT enhancement (HU)", colour = NULL
+  )
+```
+
+```{r typical-derived}
+typ |>
+  dplyr::filter(time == 0) |>
+  dplyr::transmute(
+    Kidney = group,
+    `GFR (mL/min)` = round(gfr, 1),
+    `Perfusion (mL/100 g/min)` = round(perfusion_kidney, 1),
+    `RBF (mL/min)` = round(rbf_kidney, 1)
+  ) |>
+  knitr::kable()
+```
+
+These typical-kidney values are computed from group summaries (and the Table 2
+mean volume), so they are not the medians of the per-kidney GFR, perfusion and
+RBF reported in the Results.
+
+```{r typical-gate}
+typ_end <- typ |> dplyr::group_by(group) |> dplyr::slice_max(time, n = 1) |> dplyr::ungroup()
+stopifnot(
+  # Filtration accumulates contrast in the tubules: the stenotic kidney, with
+  # the lowest kGFR, holds the least tubular contrast at the end of the scan.
+  typ_end$kidney[typ_end$group == "stenotic"] < typ_end$kidney[typ_end$group == "EH"],
+  # Eq. 3 for the typical EH kidney: 0.0048 * 148 * 60 = 42.6 mL/min.
+  abs(typ$gfr[typ$group == "EH"][1] - 0.0048 * 148 * 60) < 1e-6
+)
+```
+
+# PKNCA
+
+No NCA is performed. The model has no dose and no plasma concentration-time
+profile of its own: the kidney is driven by measured input curves, so Cmax, AUC
+and half-life describe the input the user supplies, not the model. The
+validation above (transcription check, derived-output check, solver check and
+re-fit) replaces it.
+
+# Assumptions and deviations
+
+* **Values are group summaries of individual fits.** Each kidney was fitted
+  separately. The packaged parameters are the Table 2 summaries, as printed:
+  medians for `kperf`, `Td` and `kout`, means for `f` and `kGFR`. No
+  between-kidney random effects were estimated, so none are included, and no
+  residual-error model was reported (`addSd` is fixed at 0).
+* **Transit delay.** rxode2 cannot delay a covariate, so the delay of Eq. 1 is
+  applied to the solution: because Eq. 1 is linear with a zero initial value,
+  `Cv(t)` equals the undelayed solution at `t - Td`. The state `vp_kidney` holds
+  the undelayed solution and `cv_kidney = delay(vp_kidney, tdelay_kidney)`. The
+  solver check above confirms the result against a direct implementation.
+* **Inputs are measured curves.** The model needs the aortic enhancement and the
+  tubular component of the papilla curve as time-varying covariates (`linear()`
+  interpolation, as the authors resampled the curves to 0.5 s linearly). The
+  paper does not report how the papilla perfusion component was fitted beyond
+  "from the early tubular phase (30 to 40 s) prior to contrast arrival using
+  Eq 1"; the reconstruction in this article (fit over 0-30 s, remainder set to 0
+  before 20 s) is the maintainers' choice.
+* **Baseline.** The enhancement is taken relative to the mean of the first three
+  scans (0-2 s). The paper states only that "the increase in CT signal from
+  baseline" was used.
+* **Table 2 against the S1 Dataset.** The stenotic kidney volume recomputes to
+  95 +/- 50 mL (printed 86 +/- 44), the stenotic `Td` median to 0.52 s (printed
+  0.58), the EH `kout` to a median of 0.0034 with IQR 0.0002-0.0095 (printed
+  0.004 (0.003-0.011)) and the contralateral `kout` to 0.006 (0.002-0.008)
+  (printed 0.007 (0.002-0.009)); a few SDs and IQR limits differ in the last
+  printed digit. The stenotic and contralateral GFR medians recompute to 20.4
+  and 42.5 mL/min (Results text 20.0 and 41.2). The printed Table 2 values are
+  packaged.
+* **S1 Dataset row order.** The curve rows and the fitted-parameter rows of the
+  workbook are not in the same kidney order, so published fits cannot be
+  replayed on their own curves; the structure is validated by re-fitting
+  instead. Seven GFR and six perfusion entries of the workbook do not follow
+  Eqs. 3-4 from their own row's parameters.
+* **Kidney volume.** `ORGVOL_KIDNEY` is the single-kidney volume. It is used only
+  by the derived GFR and renal blood flow outputs.
+* **Haematocrit and sigma.** Both are the paper's fixed constants (0.45 and
+  0.9 mL/g). A user with a measured haematocrit can override `hct`.
