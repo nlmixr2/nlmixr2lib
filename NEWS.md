@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ramos-Martin 2017 teicoplanin ([doi:10.1128/AAC.00707-17](https://doi.org/10.1128/AAC.00707-17)) -- neonates, infants and children (0.01-16 years) with suspected staphylococcal sepsis.
+- Add Zhou 2017b tulathromycin ex vivo PK/PD ([doi:10.3389/fphar.2017.00684](https://doi.org/10.3389/fphar.2017.00684)) -- serum of healthy piglets against *Streptococcus suis*.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
