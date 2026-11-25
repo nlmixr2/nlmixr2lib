@@ -143,7 +143,7 @@ sim_typ |>
   facet_wrap(~name, scales = "free_y", ncol = 1) +
   labs(
     x = "Time after dose (h)", y = NULL, colour = NULL,
-    caption = "Typical-value profiles; compare Supplementary Figures S1 (PK VPC) and S3 (PK-GIR VPC) of Ruppel 2017."
+    caption = "Typical-value profiles; compare Supplementary Figures S1 (PK VPC)\nand S3 (PK-GIR VPC) of Ruppel 2017."
   )
 ```
 
@@ -368,7 +368,8 @@ ggplot() +
     x = "Dose (U TI or IU RHI)", y = "GIRAUC, 0-20 h (g/kg)", colour = NULL, linetype = NULL,
     caption = paste(
       "Replicates Figure 4a of Ruppel 2017. Lines: typical-value dose-GIRAUC fits (Table 2);",
-      "points: median 0-20 h GIRAUC simulated from the PK-GIR model."
+      "points: median 0-20 h GIRAUC simulated from the PK-GIR model.",
+      sep = "\n"
     )
   )
 ```
