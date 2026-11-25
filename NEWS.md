@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Snowden 2018 linked PBPK and E. coli chemotaxis QSP models for hypothetical compounds parameterised as pindolol, midazolam and thiopental ([doi:10.1007/s10928-018-9584-y](https://doi.org/10.1007/s10928-018-9584-y)) -- methodology paper on model reduction; no patients, 70 kg reference adult physiology.
+- Add Nakamura 2018 tamoxifen whole-body PBPK ([doi:10.1002/psp4.12307](https://doi.org/10.1002/psp4.12307)) -- virtual CYP2D6 genotype-guided dosing (virtual TARGET-1), tamoxifen plus its four metabolites in postmenopausal women with breast cancer.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
