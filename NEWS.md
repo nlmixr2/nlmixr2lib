@@ -327,6 +327,8 @@
 - Add Zhou 2026 gabapentin PK and pain score ([doi:10.3389/fphar.2026.1760901](https://doi.org/10.3389/fphar.2026.1760901)) -- adults with chronic neuropathic pain; eGFR on clearance and SLC22A2 (OCT2) c.808G>T genotype on effect-site delivery.
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
+- Add Pais 2026 cefepime plasma-cortex-hippocampus PK and five exposure-seizure logistic models ([doi:10.1128/aac.01005-25](https://doi.org/10.1128/aac.01005-25)) -- male Sprague-Dawley rats with folic-acid-induced acute kidney injury.
+
 - Add Spinosa 2026 generalized bispecific-antibody minimal PBPK-PD models for BITS7201A, mosunetuzumab, a tumor-targeted bispecific and a bivalent comparator ([doi:10.1002/psp4.70167](https://doi.org/10.1002/psp4.70167)) -- healthy volunteers, cynomolgus monkeys, and simulated patients with solid tumors.
 
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.

@@ -2172,6 +2172,22 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Johnston_2019_empagliflozin.R` (`lauc50 = log(498)` nmol*h/L), `Pohl_2022_linzagolix_e2.R` (`lauc50 = log(1.68e5)` ng*h/mL with a Hill exponent), `Rognas_2025_bitopertin.R`, `Stringer_2014_sipoglitazar.R`, the `Ibrahim_2023_ibrutinib_*` and `Ibrahim_2025_ibrutinib_*` families, `Cantillon_2018_brilaroxazine.R` (`lauc50 = log(89.6)` ug*h/mL on CUMULATIVE AUC).
 - **Notes:** Registered 2026-09-19 during the Cantillon 2018 extraction; like `lrbase` and `lemax` before it, this records a convention already in consistent use across a dozen shipped models that had never been written into the register. **Distinct from `lec50`**, which is explicitly a half-maximal CONCENTRATION: substituting `lec50` for an AUC midpoint would falsify the parameter's units and mislead any reader who assumes the driver is a concentration. Note that the driving AUC is not always the same quantity -- most members use a steady-state or dosing-interval AUC supplied as an `AUC_<DRUG>` covariate column, whereas `Cantillon_2018_brilaroxazine.R` integrates an `auc_central` state to give CUMULATIVE AUC from the first dose, which keeps rising with treatment duration. Record which convention applies in the model's own label and in `covariateData` / `compartmentData`. Pairs with `lhill` when the source fits a sigmoidal exponent.
 
+### tc50 (**canonical exposure at a 50% modelled probability in a centred logistic exposure-response model**)
+- **Type:** paper-named-param
+- **Role:** Exposure at which a logistic exposure-toxicity or exposure-response model gives a probability of 0.5, in the centred form `prob_<endpoint> <- expit(logit_slope * (<EXPOSURE> - tc50))`. Linear scale, in the units of the exposure covariate (`mg*h/L` for an AUC, `mg/L` for a Cmax), so the printed value is carried in `ini()` unchanged. Pairs with `logit_slope`.
+- **Source aliases:**
+  - `TC50` -- Pais 2026 Results and Figure 5 legend ("toxic concentration 50").
+- **Example models:** `Pais_2026_cefepime_seizure_aucplasma_rat.R` (30,658.6 mg*h/L), `Pais_2026_cefepime_seizure_auccortex_rat.R` (760.8 mg*h/L), `Pais_2026_cefepime_seizure_cmaxcortex_rat.R` (45.0 mg/L), `Pais_2026_cefepime_seizure_auchippocampus_rat.R` (838.2 mg*h/L), `Pais_2026_cefepime_seizure_cmaxhippocampus_rat.R` (48.2 mg/L).
+- **Notes:** Use the centred form when the source reports the 50%-probability exposure as its result. When it reports an intercept and a slope (`logit = b0 + b1 * exposure`), keep the intercept form of the `Fukae_2024_valemetostat_*.R` family (`logit_ref` plus `e_<cov>_logit`) instead of converting. Distinct from the time-to-half-effect `tc50` / `ltc50` of a time-varying Emax (`Bulitta_2009_cefuroxime_axetil.R`, `Almquist_2022_anifrolumab.R`), which is a time in hours: the units in the `label()` tell the two apart. Distinct from `lauc50` / `auc50`, the midpoint of an Emax term rather than of a logistic probability.
+
+### logit_slope (**canonical exposure slope of a centred logistic exposure-response model**)
+- **Type:** paper-named-param
+- **Role:** Change in log-odds per unit of exposure in `prob_<endpoint> <- expit(logit_slope * (<EXPOSURE> - tc50))`, in reciprocal exposure units (per `mg*h/L`, per `mg/L`). Untransformed and signed: a negative value is a protective exposure.
+- **Source aliases:**
+  - none printed in Pais 2026, where the slopes were digitised from the Figure 5 predicted-probability markers.
+- **Example models:** the five `Pais_2026_cefepime_seizure_*_rat.R` models (slopes 1.96e-4 to 0.123); also used as a `model()`-level name in `Nakashima_2015_valproic_acid.R` and its two age-band siblings.
+- **Notes:** Pairs with `tc50`. Kept untransformed because it can take either sign; do not give it an `l` prefix.
+
 ### tvec50 (**canonical time-zero value of a time-varying EC50**)
 - **Type:** paper-named-param
 - **Role:** Value of a drifting potency `ec50t` at time zero, i.e. the intercept of the
