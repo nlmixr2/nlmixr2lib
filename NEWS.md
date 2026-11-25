@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gomes 2017 gentamicin endocarditis, ICU and standard MWPharm models ([doi:10.1371/journal.pone.0177324](https://doi.org/10.1371/journal.pone.0177324)) -- adults with infective endocarditis.
+- Add Plock 2017 TAK-648 HbA1c PK/PD ([doi:10.1111/cts.12436](https://doi.org/10.1111/cts.12436)) -- female db/db mice given TAK-648, roflumilast or roflumilast N-oxide, with the translation to a human efficacious dose.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

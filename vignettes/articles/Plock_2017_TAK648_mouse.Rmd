@@ -1,0 +1,381 @@
+---
+title: "TAK-648 HbA1c in db/db mice (Plock 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TAK-648 HbA1c in db/db mice (Plock 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Plock_2017_TAK648_mouse"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Plock_2017_TAK648_mouse"))$description`
+* Article (open access): <https://doi.org/10.1111/cts.12436>
+
+TAK-648 is a selective phosphodiesterase-4 (PDE4) inhibitor developed for type
+2 diabetes. Plock et al. compared it head-to-head with roflumilast and
+roflumilast N-oxide in db/db mice, related the HbA1c time course to an exposure
+surrogate (total PDE4 inhibition, tPDE4i), and translated the mouse result to a
+human efficacious dose using roflumilast's clinical tPDE4i as the bridge. This
+vignette reproduces the mouse PK/PD model and the translation arithmetic.
+
+# Population
+
+Female leptin-receptor-deficient db/db mice (BKS.Cg-m+/+Lepr db/BomTac), 7
+weeks old at the start of treatment, received once-daily oral gavage for 28
+days. Eight PD groups of 10 animals each (vehicle; TAK-648 1, 3, 10 mg/kg;
+roflumilast 0.3, 1, 3 mg/kg; roflumilast N-oxide 3 mg/kg) had HbA1c measured on
+study days -1, 14 and 28 and two sparse PK samples each. Three satellite PK
+groups of 6 animals provided richer PK sampling (Supplementary Methods and
+Supplementary Table 1). The PK/PD model was fitted to the 80 PD animals.
+
+The same information is available from the model's `population` metadata
+(`readModelDb("Plock_2017_TAK648_mouse")()$population`).
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| HbA1c = H0 + SLOPE * (1 - EMAX * tPDE4i / (PDE50 + tPDE4i)) * DAY | -- | Eq. 4; Supplementary PK/PD model code (`$PRED`) |
+| AUC = F * Dose / CL (F = 1) | -- | Eq. 2; Results ("Bioavailability was fixed to a typical value of 100%") |
+| tPDE4i = AUC * fu / (IC50 * tau), summed over roflumilast + N-oxide | -- | Eq. 3 and following text |
+| `lrbase` (H0) | 4.35 % | Table 2 |
+| `lslope` (SLOPE) | 0.138 %/day | Table 2 |
+| `lemax` (EMAX) | 1.00 | Table 2 |
+| `lec50_tak648` (PDE50, TAK-648) | 1.10 | Table 2 |
+| `lec50_roflumilast` (PDE50, roflumilast(-N-oxide)) | 27.1 | Table 2 |
+| `etalrbase` | 12.7 CV% | Table 2 BSV_H0 |
+| `etalslope` | 21.4 CV% | Table 2 BSV_slope |
+| `etalec50` (shared by both PDE50) | 79.8 CV% | Table 2 BSV_PDE50; `ETA(3)` on both PDE50 lines of the `$PRED` |
+| `propSd` | 3.87 CV% | Table 2 residual variability; `Y=A1C+A1C*EPS(1)` |
+| `lcl_tak648` | 2.97 L/h/kg | Results, "TAK-648 pharmacokinetic" |
+| `lcl_roflumilast`, `lcl_noxide` (roflumilast dosing) | 2.34, 3.52 L/h/kg | Results, "Pharmacokinetic of roflumilast and roflumilast-N-oxide" |
+| `lcl_roflumilast_noxidedose`, `lcl_noxide_noxidedose` (N-oxide dosing) | 41.8, 1.09 L/h/kg | Same paragraph |
+| `fu_*` (TAK-648, roflumilast, N-oxide) | 0.200, 0.037, 0.127 | Paragraph below Table 1 |
+| `ic50_*` (TAK-648, roflumilast, N-oxide) | 5.77, 0.282, 0.629 ug/L | Paragraph below Table 1 |
+| `tau` | 24 h | Once-daily dosing (Methods) |
+
+# Exposure link: tPDE4i against Table 1
+
+The model rebuilds each animal's exposure from its daily dose with the typical
+apparent clearances. Table 1 of the paper lists the geometric mean of the
+individual (post hoc) AUC and tPDE4i values of the PD animals, so agreement is
+expected to within a few percent, not exactly.
+
+```{r exposure}
+mod <- readModelDb("Plock_2017_TAK648_mouse")
+p <- rxode2::rxode(mod)$theta
+
+arms <- tibble::tribble(
+  ~arm,                    ~DOSE_TAK648_MGKG, ~DOSE_ROFLUMILAST_MGKG, ~DOSE_ROFLUMILASTNOXIDE_MGKG, ~tpde4i_table1,
+  "Vehicle",                0,                 0,                      0,                             0,
+  "TAK-648 1 mg/kg",        1,                 0,                      0,                             0.486,
+  "TAK-648 3 mg/kg",        3,                 0,                      0,                             1.41,
+  "TAK-648 10 mg/kg",       10,                0,                      0,                             4.70,
+  "Roflumilast 0.3 mg/kg",  0,                 0.3,                    0,                             1.49,
+  "Roflumilast 1 mg/kg",    0,                 1,                      0,                             4.55,
+  "Roflumilast 3 mg/kg",    0,                 3,                      0,                             13.8,
+  "N-oxide 3 mg/kg",        0,                 0,                      3,                             22.5
+)
+arms$arm <- factor(arms$arm, levels = arms$arm)
+
+tp <- function(auc, fu, ic50) auc * fu / (ic50 * p[["tau"]])
+exposure <- arms |>
+  mutate(
+    auc_tak = 1000 * DOSE_TAK648_MGKG / exp(p[["lcl_tak648"]]),
+    auc_rof = 1000 * DOSE_ROFLUMILAST_MGKG / exp(p[["lcl_roflumilast"]]) +
+      1000 * DOSE_ROFLUMILASTNOXIDE_MGKG / exp(p[["lcl_roflumilast_noxidedose"]]),
+    auc_nox = 1000 * DOSE_ROFLUMILAST_MGKG / exp(p[["lcl_noxide"]]) +
+      1000 * DOSE_ROFLUMILASTNOXIDE_MGKG / exp(p[["lcl_noxide_noxidedose"]]),
+    tpde4i_model = tp(auc_tak, p[["fu_tak648"]], p[["ic50_tak648"]]) +
+      tp(auc_rof, p[["fu_roflumilast"]], p[["ic50_roflumilast"]]) +
+      tp(auc_nox, p[["fu_noxide"]], p[["ic50_noxide"]]),
+    pct_diff = 100 * (tpde4i_model / tpde4i_table1 - 1)
+  )
+
+exposure |>
+  filter(arm != "Vehicle") |>
+  select(arm, tpde4i_model, tpde4i_table1, pct_diff) |>
+  rename(
+    "Treatment" = arm,
+    "tPDE4i (model, typical)" = tpde4i_model,
+    "tPDE4i (Table 1, geometric mean)" = tpde4i_table1,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = c(0, 3, 3, 1))
+
+stopifnot(all(abs(exposure$pct_diff[-1]) < 6))
+```
+
+The TAK-648 1 mg/kg row reproduces Table 1 exactly (1000 / 2.97 = 337 ug*h/L,
+tPDE4i 0.486), which also confirms that the printed clearances are per kg.
+
+# Typical HbA1c trajectories: Figure 2
+
+The model is algebraic in time, so a typical-value solve can be checked against
+the closed form directly, and then against the median lines of the paper's
+visual predictive check. The median and 90% prediction-interval lines of Figure
+2 were digitised by the maintainers from the published raster at study day 8
+(day 20 for the 10 mg/kg TAK-648 panel, whose lines overlap the observations at
+day 8).
+
+```{r typical}
+times <- c(0, 8, 14, 20, 28)
+ev_typ <- arms |>
+  mutate(id = seq_len(n())) |>
+  tidyr::crossing(time = times) |>
+  mutate(evid = 0, amt = 0) |>
+  as.data.frame()
+
+mod_typ <- rxode2::zeroRe(mod)
+typ <- rxode2::rxSolve(mod_typ, events = ev_typ, keep = "arm") |>
+  as.data.frame() |>
+  mutate(arm = factor(arm, levels = levels(arms$arm)))
+
+# Closed form of Eq. 4 with the typical values
+closed <- typ |>
+  left_join(select(exposure, arm, tpde4i_model), by = "arm") |>
+  mutate(
+    pde50 = ifelse(grepl("TAK", arm), exp(p[["lec50_tak648"]]), exp(p[["lec50_roflumilast"]])),
+    eff = exp(p[["lemax"]]) * tpde4i_model / (pde50 + tpde4i_model),
+    hba1c_closed = exp(p[["lrbase"]]) + exp(p[["lslope"]]) * (1 - eff) * time
+  )
+stopifnot(isTRUE(all.equal(closed$Hba1c, closed$hba1c_closed, tolerance = 1e-8)))
+
+# Digitised Figure 2 lines (5th percentile, median, 95th percentile).
+# Panels b-d are TAK-648 and e-g roflumilast; see "Assumptions and deviations".
+fig2 <- tibble::tribble(
+  ~arm,                    ~panel, ~day, ~p05, ~p50, ~p95,
+  "Vehicle",               "a",    8,    4.44, 5.47, 6.65,
+  "TAK-648 1 mg/kg",       "b",    8,    4.12, 5.06, 6.29,
+  "TAK-648 3 mg/kg",       "c",    8,    3.88, 4.85, 6.06,
+  "TAK-648 10 mg/kg",      "d",    20,   3.91, 4.94, 6.32,
+  "Roflumilast 0.3 mg/kg", "e",    8,    4.41, 5.35, 6.59,
+  "Roflumilast 1 mg/kg",   "f",    8,    4.32, 5.29, 6.50,
+  "Roflumilast 3 mg/kg",   "g",    8,    4.12, 5.09, 6.29,
+  "N-oxide 3 mg/kg",       "h",    8,    4.00, 4.97, 6.12
+) |>
+  mutate(arm = factor(arm, levels = levels(arms$arm)))
+
+cmp_median <- fig2 |>
+  left_join(select(typ, arm, time, Hba1c), by = c("arm", "day" = "time")) |>
+  mutate(diff = Hba1c - p50)
+
+cmp_median |>
+  select(arm, panel, day, p50, Hba1c, diff) |>
+  rename(
+    "Treatment" = arm, "Figure 2 panel" = panel, "Day" = day,
+    "Figure 2 median (%)" = p50, "Model typical (%)" = Hba1c,
+    "Difference (% HbA1c)" = diff
+  ) |>
+  knitr::kable(digits = 2)
+
+stopifnot(all(abs(cmp_median$diff) < 0.12))
+```
+
+```{r typical-plot, fig.width = 7, fig.height = 4.5}
+ggplot(typ, aes(time, Hba1c, colour = arm)) +
+  geom_line() +
+  geom_point(data = cmp_median, aes(day, p50, colour = arm), shape = 4, size = 3) +
+  labs(
+    x = "Time since pre-treatment HbA1c (day)", y = "HbA1c (%)", colour = NULL,
+    caption = "Lines: model typical values. Crosses: digitised medians of Plock 2017 Figure 2."
+  ) +
+  theme_bw()
+```
+
+# Visual predictive check: Figure 2 prediction intervals
+
+A stochastic simulation with 200 animals per arm draws the three random effects
+and the proportional residual error. Unlike the published check, it uses each
+arm's typical tPDE4i rather than every animal's individual value; the
+individual tPDE4i spread in Table 1 (68% range within about +/-15%) is small
+beside the 79.8% CV of PDE50.
+
+```{r vpc, fig.width = 8, fig.height = 6}
+rxode2::rxSetSeed(20170111)
+n_per_arm <- 200
+ev_sto <- arms |>
+  tidyr::crossing(rep = seq_len(n_per_arm)) |>
+  mutate(id = seq_len(n())) |>
+  tidyr::crossing(time = seq(0, 28, by = 2)) |>
+  mutate(evid = 0, amt = 0) |>
+  as.data.frame()
+
+sim <- rxode2::rxSolve(mod, events = ev_sto, keep = "arm") |>
+  as.data.frame() |>
+  mutate(arm = factor(arm, levels = levels(arms$arm)))
+
+vpc <- sim |>
+  group_by(arm, time) |>
+  summarise(
+    p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2) +
+  geom_line(aes(y = p50)) +
+  geom_point(
+    data = tidyr::pivot_longer(fig2, c(p05, p50, p95), values_to = "HbA1c"),
+    aes(day, HbA1c), colour = "red", shape = 4, size = 2.5
+  ) +
+  facet_wrap(~arm, ncol = 4) +
+  labs(
+    x = "Time since pre-treatment HbA1c (day)", y = "HbA1c (%)",
+    caption = paste(
+      "Grey band: simulated 90% prediction interval; line: simulated median.",
+      "Red crosses: digitised Plock 2017 Figure 2 lines."
+    )
+  ) +
+  theme_bw()
+
+cmp_pi <- fig2 |>
+  left_join(vpc, by = c("arm", "day" = "time"), suffix = c("_fig", "_sim")) |>
+  mutate(d05 = p05_sim - p05_fig, d50 = p50_sim - p50_fig, d95 = p95_sim - p95_fig)
+
+cmp_pi |>
+  select(arm, day, p05_fig, p05_sim, p50_fig, p50_sim, p95_fig, p95_sim) |>
+  rename(
+    "Treatment" = arm, "Day" = day,
+    "P5 Figure 2" = p05_fig, "P5 sim" = p05_sim,
+    "Median Figure 2" = p50_fig, "Median sim" = p50_sim,
+    "P95 Figure 2" = p95_fig, "P95 sim" = p95_sim
+  ) |>
+  knitr::kable(digits = 2)
+
+# Centre and robust spread, not single-cohort extremes: the median offset over
+# the eight arms catches a transposed parameter or an omega read as its square
+# root, and the per-arm bound allows for sampling noise in a 200-animal
+# percentile (standard error about 0.08 % HbA1c). With 400,000 animals per arm
+# the expected offsets are +0.03 (P5), -0.01 (median) and -0.06 (P95).
+stopifnot(
+  abs(median(cmp_pi$d50)) < 0.1,
+  abs(median(cmp_pi$d05)) < 0.25,
+  abs(median(cmp_pi$d95)) < 0.25,
+  all(abs(c(cmp_pi$d05, cmp_pi$d95)) < 0.5)
+)
+```
+
+# Half-maximal doses in db/db mice
+
+The paper states that the half-maximal effect would be reached with 2.3 mg/kg
+TAK-648 and 5.9 mg/kg roflumilast. With tPDE4i linear in dose, the dose that
+gives tPDE4i = PDE50 is PDE50 divided by the tPDE4i per mg/kg.
+
+```{r ed50}
+tp_per_mgkg <- exposure |>
+  filter(arm %in% c("TAK-648 1 mg/kg", "Roflumilast 1 mg/kg")) |>
+  pull(tpde4i_model)
+ed50 <- tibble::tibble(
+  Compound = c("TAK-648", "Roflumilast"),
+  `Model (mg/kg)` = c(exp(p[["lec50_tak648"]]), exp(p[["lec50_roflumilast"]])) / tp_per_mgkg,
+  `Plock 2017 (mg/kg)` = c(2.3, 5.9)
+) |>
+  mutate(`Difference (%)` = 100 * (`Model (mg/kg)` / `Plock 2017 (mg/kg)` - 1))
+knitr::kable(ed50, digits = 2)
+stopifnot(all(abs(ed50$`Difference (%)`) < 5))
+```
+
+The roflumilast value is 3% lower than printed because the paper scaled the
+Table 1 geometric-mean tPDE4i (4.55 per mg/kg gives 27.1 / 4.55 = 5.96 mg/kg),
+while the model uses the typical clearances (4.73 per mg/kg).
+
+# Human dose translation
+
+Eq. 5 carries the TAK-648 to roflumilast potency ratio from mice to humans, using
+the clinical tPDE4i of 1.03 for 500 ug roflumilast (cited by the paper from its
+reference 12). Eq. 6 converts the required tPDE4i to a plasma AUC with the human
+unbound fraction 0.667. The paper reports a required AUC of 8.74 ug*h/L and a
+therapeutic dose of 100 ug.
+
+```{r human}
+tpde4i_rof_human <- 1.03 # Plock 2017 Methods, Eq. 5 text
+fu_tak648_human <- 0.667 # Plock 2017 Results, 'Prediction of therapeutic exposure in humans'
+tpde4i_req <- exp(p[["lec50_tak648"]]) * tpde4i_rof_human / exp(p[["lec50_roflumilast"]])
+auc_req <- tpde4i_req * p[["ic50_tak648"]] * p[["tau"]] / fu_tak648_human
+c(required_tPDE4i = tpde4i_req, required_AUC = auc_req, published_AUC = 8.74)
+stopifnot(abs(auc_req / 8.74 - 1) < 0.02)
+
+# First-in-human dose-normalised AUCinf (Plock 2017 Table 4, means)
+fih <- tibble::tibble(
+  dose_mg = c(0.05, 0.15, 0.35, 0.7, 0.85),
+  aucinf = c(4.58, 16.81, 28.27, 75.77, 93.84)
+) |>
+  mutate(dose_for_target_ug = 1000 * dose_mg * 8.74 / aucinf)
+fih |>
+  rename(
+    "FIH dose (mg)" = dose_mg, "Mean AUCinf (ug*h/L)" = aucinf,
+    "Dose giving AUC 8.74 (ug)" = dose_for_target_ug
+  ) |>
+  knitr::kable(digits = 1)
+stopifnot(abs(median(fih$dose_for_target_ug) / 100 - 1) < 0.25)
+```
+
+Each first-in-human cohort's dose-normalised exposure puts the target AUC at
+about 80-110 ug, which the paper rounds to a predicted therapeutic dose of 100
+ug (0.1 mg) daily. The paper does not say which cohorts it pooled, so only the
+order of magnitude is checked here.
+
+# Non-compartmental analysis
+
+No PKNCA analysis is run. The packaged model has no concentration-time output:
+the mouse PK enters only through steady-state AUC = Dose / CL, checked against
+Table 1 above, and the human first-in-human data (Table 4) are a separate NCA
+with no population model in the paper.
+
+# Assumptions and deviations
+
+* **Figure 2 panel labels.** The caption lists panels (b)-(d) as roflumilast
+  0.3/1/3 mg/kg, (e) as roflumilast N-oxide and (f)-(h) as TAK-648 1/3/10 mg/kg.
+  The plotted medians match the model only in the order of Supplementary Table 1:
+  (a) vehicle, (b)-(d) TAK-648 1/3/10 mg/kg, (e)-(g) roflumilast 0.3/1/3 mg/kg,
+  (h) roflumilast N-oxide. Under the caption's order the 3 mg/kg roflumilast arm
+  (tPDE4i 13.8, typical day-28 HbA1c 6.9%) would be panel (d), whose median ends
+  near 5.2%; under the Supplementary Table 1 order every panel agrees to within
+  0.07 % HbA1c. The comparisons above use the Supplementary Table 1 order.
+* **Time axis.** The paper defines study day -1 as DAY = 0, and Figure 2 plots
+  the HbA1c samples at 0, 14 and 28. The model's time is days since the
+  pre-treatment measurement, with the drug effect acting from time 0, as in
+  Eq. 4.
+* **Exposure from dose.** The published `$PRED` reads each animal's tPDE4i from
+  the dataset, derived from its post hoc CL and F. The individual PK random
+  effects are not reported (only the 19% CV on TAK-648 F), so the model computes
+  a typical tPDE4i from the daily dose. Users with individual exposures can
+  reproduce the paper's input by adjusting the dose covariate in proportion.
+* **Clearance units.** The Results print the clearances as L/h; Eq. 2 and the
+  Table 1 AUC values (1000 / 2.97 = 337 ug*h/L for 1 mg/kg) show they are
+  L/h/kg.
+* **Mouse compartmental PK not packaged.** The TAK-648 one-compartment model
+  (dose-group-specific and day-1-specific absorption, day-1-specific clearance)
+  and the roflumilast / N-oxide two-compartment models report only apparent
+  clearances and the steady-state absorption half-lives of TAK-648 (74, 85 and
+  168 min); no volumes or roflumilast absorption rates are printed, so no
+  concentration-time model can be built. The PD model needs only the
+  steady-state AUC, which the clearances fully determine.
+* **Mixtures.** Every animal received a single compound. The model writes Eq. 4
+  through the potency-normalised exposure x = tPDE4i(TAK-648) / PDE50(TAK-648)
+  + tPDE4i(roflumilast) / PDE50(roflumilast), which equals the published
+  EMAX * CE / (PDE50 + CE) for any single compound. Behaviour for a mixture of
+  TAK-648 and roflumilast is an additive extension that the paper did not test.
+* **IIV scale.** Table 2 reports the between-animal variability as CV%; the
+  variances are taken as omega^2 = log(1 + CV^2). The alternative reading
+  omega^2 = CV^2 changes the simulated 90% intervals by at most about 0.1 %
+  HbA1c at day 28, and the median offset from the digitised Figure 2 lines by
+  about 0.01 % HbA1c at the comparison days, which is below what a 1-pixel
+  (0.06 % HbA1c) digitisation can resolve.
+* **Human translation constants.** The roflumilast clinical tPDE4i of 1.03 and
+  the human TAK-648 unbound fraction of 0.667 are human-side constants used only
+  in the translation section; they are not model parameters.
+* **Errata.** A search of Europe PMC on 2026-11-25 found no erratum or
+  correction for this article.

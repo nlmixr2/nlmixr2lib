@@ -8782,6 +8782,8 @@ navbar:
         href: articles/Zhang_2014_sunitinib_vegfr_qsp.html
       - text: "Sutimlimab (Bartko 2018)"
         href: articles/Bartko_2018_sutimlimab.html
+      - text: "TAK648 mouse (Plock 2017)"
+        href: articles/Plock_2017_TAK648_mouse.html
       - text: "TAS114 (Araki 2022)"
         href: articles/Araki_2022_TAS114.html
       - text: "TDI01 (Ji 2025)"
@@ -12676,6 +12678,7 @@ articles:
   - articles/Plan_2012_bmd_fracture
   - articles/Plan_2012_pain
   - articles/Plock_2014_ferumoxytol
+  - articles/Plock_2017_TAK648_mouse
   - articles/Poels_2025_elranatamab
   - articles/Pohl_2022_linzagolix
   - articles/Pokorna_2024_meropenem
