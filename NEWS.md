@@ -2,7 +2,7 @@
 
 # development version
 
-- Add McCarthy 2016 artefenomel (OZ439) PK/PD ([doi:10.1093/jac/dkw174](https://doi.org/10.1093/jac/dkw174)) -- healthy adults in the induced blood-stage P. falciparum malaria challenge model.
+- Add Mawdsley 2016 triptans model-based network meta-analysis ([doi:10.1002/psp4.12091](https://doi.org/10.1002/psp4.12091)) -- adults treating a migraine attack with one of seven oral triptans or placebo, across 70 trials.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
