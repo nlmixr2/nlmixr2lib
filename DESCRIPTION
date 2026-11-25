@@ -20,9 +20,8 @@ Depends:
 Imports:
     checkmate,
     cli,
-    methods,
     nlmixr2est,
-    rxode2 (>= 5.1.8)
+    rxode2 (>= 5.1.8.9000)
 License: GPL (>= 2)
 LazyData: true
 VignetteBuilder: knitr

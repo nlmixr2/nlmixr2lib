@@ -2,6 +2,8 @@
 
 # development version
 
+- The model-building piping functions (`addDepot()`, `addTransit()`, `addPeriph()`, `addEta()`, `addResErr()`, `addIndirect()`, `convertEmax()`, `pkTrans()`, `defaultCombine()` and the rest) moved to rxode2 and are re-exported from there, so existing code keeps working.  `addEta()` now also reads the `rxode2.etaCombineType` and `rxode2.priorEta` options, falling back to the `nlmixr2lib.*` ones.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

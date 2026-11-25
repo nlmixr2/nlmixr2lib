@@ -3,9 +3,6 @@
 S3method(createMarkovModelDataset,data.frame)
 S3method(createMarkovModelDataset,default)
 S3method(createMarkovModelDataset,factor)
-S3method(searchReplaceHelper,"function")
-S3method(searchReplaceHelper,call)
-S3method(searchReplaceHelper,default)
 export(Mann2022Equilibrate)
 export(Poels_2025_elranatamab_qsp_cauc_multiplier)
 export(Poels_2025_elranatamab_qsp_events)
@@ -89,6 +86,29 @@ export(simMarkov)
 export(snakeCombine)
 export(updateOncologyXenograftSimeoni2004)
 importFrom(rxode2,
+  addBaseline1exp,
+  addBaselineConst,
+  addBaselineExp,
+  addBaselineLin,
+  addBioavailability,
+  addCmtProp,
+  addDepot,
+  addDirectLin,
+  addDur,
+  addEffectCmtLin,
+  addEta,
+  addIndirect,
+  addIndirectLin,
+  addIni,
+  addLag,
+  addLogEstimates,
+  addPeriph,
+  addRate,
+  addResErr,
+  addSecondAbsorption,
+  addTransit,
+  addWeibullAbs,
+  addZeroOrderAbs,
   assertCompartmentExists,
   assertCompartmentName,
   assertParameterValue,
@@ -103,7 +123,31 @@ importFrom(rxode2,
   assertRxUiSingleEndpoint,
   assertRxUiTransformNormal,
   assertVariableName,
+  blankCombine,
+  camelCombine,
+  combinePaste2,
+  convertAbsForceLongerDelay,
+  convertAbsSequential,
+  convertEmax,
+  convertEmaxHill,
+  convertKinR0,
+  convertLogLin,
+  convertMM,
+  convertQuad,
+  defaultCombine,
+  dotCombine,
   expit,
-  logit
+  fakeCc,
+  logit,
+  pkTrans,
+  removeDepot,
+  removeLinesAndInis,
+  removePeriph,
+  removeTransit,
+  removeZeroOrderAbs,
+  searchReplace,
+  searchReplaceHelper,
+  setCombineType,
+  snakeCombine
 )
 importFrom(stats,setNames)

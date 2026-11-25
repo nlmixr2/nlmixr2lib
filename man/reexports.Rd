@@ -19,6 +19,53 @@
 \alias{assertCompartmentExists}
 \alias{assertVariableName}
 \alias{assertParameterValue}
+\alias{addBaseline1exp}
+\alias{addBaselineConst}
+\alias{addBaselineExp}
+\alias{addBaselineLin}
+\alias{addBioavailability}
+\alias{addCmtProp}
+\alias{addDepot}
+\alias{addDirectLin}
+\alias{addDur}
+\alias{addEffectCmtLin}
+\alias{addEta}
+\alias{addIndirect}
+\alias{addIndirectLin}
+\alias{addIni}
+\alias{addLag}
+\alias{addLogEstimates}
+\alias{addPeriph}
+\alias{addRate}
+\alias{addResErr}
+\alias{addSecondAbsorption}
+\alias{addTransit}
+\alias{addWeibullAbs}
+\alias{addZeroOrderAbs}
+\alias{blankCombine}
+\alias{camelCombine}
+\alias{combinePaste2}
+\alias{convertAbsForceLongerDelay}
+\alias{convertAbsSequential}
+\alias{convertEmax}
+\alias{convertEmaxHill}
+\alias{convertKinR0}
+\alias{convertLogLin}
+\alias{convertMM}
+\alias{convertQuad}
+\alias{defaultCombine}
+\alias{dotCombine}
+\alias{fakeCc}
+\alias{pkTrans}
+\alias{removeDepot}
+\alias{removeLinesAndInis}
+\alias{removePeriph}
+\alias{removeTransit}
+\alias{removeZeroOrderAbs}
+\alias{searchReplace}
+\alias{searchReplaceHelper}
+\alias{setCombineType}
+\alias{snakeCombine}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -26,6 +73,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{rxode2}{\code{\link[rxode2:assertCompartmentExists]{assertCompartmentExists()}}, \code{\link[rxode2:assertCompartmentName]{assertCompartmentName()}}, \code{\link[rxode2:assertParameterValue]{assertParameterValue()}}, \code{\link[rxode2:assertRxUi]{assertRxUi()}}, \code{\link[rxode2:assertRxUiEstimatedResiduals]{assertRxUiEstimatedResiduals()}}, \code{\link[rxode2:assertRxUiMixedOnly]{assertRxUiMixedOnly()}}, \code{\link[rxode2:assertRxUiMuRefOnly]{assertRxUiMuRefOnly()}}, \code{\link[rxode2:assertRxUiNormal]{assertRxUiNormal()}}, \code{\link[rxode2:assertRxUiPopulationOnly]{assertRxUiPopulationOnly()}}, \code{\link[rxode2:assertRxUiPrediction]{assertRxUiPrediction()}}, \code{\link[rxode2:assertRxUiRandomOnIdOnly]{assertRxUiRandomOnIdOnly()}}, \code{\link[rxode2:assertRxUiSingleEndpoint]{assertRxUiSingleEndpoint()}}, \code{\link[rxode2:assertRxUiTransformNormal]{assertRxUiTransformNormal()}}, \code{\link[rxode2:assertVariableName]{assertVariableName()}}, \code{\link[rxode2:expit]{expit()}}, \code{\link[rxode2:logit]{logit()}}}
+  \item{rxode2}{\code{\link[rxode2:addBaseline1exp]{addBaseline1exp()}}, \code{\link[rxode2:addBaselineConst]{addBaselineConst()}}, \code{\link[rxode2:addBaselineExp]{addBaselineExp()}}, \code{\link[rxode2:addBaselineLin]{addBaselineLin()}}, \code{\link[rxode2:addCmtProp]{addBioavailability()}}, \code{\link[rxode2:addCmtProp]{addCmtProp()}}, \code{\link[rxode2:addDepot]{addDepot()}}, \code{\link[rxode2:addDirectLin]{addDirectLin()}}, \code{\link[rxode2:addCmtProp]{addDur()}}, \code{\link[rxode2:addEffectCmtLin]{addEffectCmtLin()}}, \code{\link[rxode2:addEta]{addEta()}}, \code{\link[rxode2:addIndirect]{addIndirect()}}, \code{\link[rxode2:addIndirectLin]{addIndirectLin()}}, \code{\link[rxode2:addCmtProp]{addIni()}}, \code{\link[rxode2:addCmtProp]{addLag()}}, \code{\link[rxode2:addLogEstimates]{addLogEstimates()}}, \code{\link[rxode2:addPeriph]{addPeriph()}}, \code{\link[rxode2:addCmtProp]{addRate()}}, \code{\link[rxode2:addResErr]{addResErr()}}, \code{\link[rxode2:addSecondAbsorption]{addSecondAbsorption()}}, \code{\link[rxode2:addTransit]{addTransit()}}, \code{\link[rxode2:addWeibullAbs]{addWeibullAbs()}}, \code{\link[rxode2:addZeroOrderAbs]{addZeroOrderAbs()}}, \code{\link[rxode2:assertCompartmentExists]{assertCompartmentExists()}}, \code{\link[rxode2:assertCompartmentName]{assertCompartmentName()}}, \code{\link[rxode2:assertParameterValue]{assertParameterValue()}}, \code{\link[rxode2:assertRxUi]{assertRxUi()}}, \code{\link[rxode2:assertRxUiEstimatedResiduals]{assertRxUiEstimatedResiduals()}}, \code{\link[rxode2:assertRxUiMixedOnly]{assertRxUiMixedOnly()}}, \code{\link[rxode2:assertRxUiMuRefOnly]{assertRxUiMuRefOnly()}}, \code{\link[rxode2:assertRxUiNormal]{assertRxUiNormal()}}, \code{\link[rxode2:assertRxUiPopulationOnly]{assertRxUiPopulationOnly()}}, \code{\link[rxode2:assertRxUiPrediction]{assertRxUiPrediction()}}, \code{\link[rxode2:assertRxUiRandomOnIdOnly]{assertRxUiRandomOnIdOnly()}}, \code{\link[rxode2:assertRxUiSingleEndpoint]{assertRxUiSingleEndpoint()}}, \code{\link[rxode2:assertRxUiTransformNormal]{assertRxUiTransformNormal()}}, \code{\link[rxode2:assertVariableName]{assertVariableName()}}, \code{\link[rxode2:defaultCombine]{blankCombine()}}, \code{\link[rxode2:defaultCombine]{camelCombine()}}, \code{\link[rxode2:combinePaste2]{combinePaste2()}}, \code{\link[rxode2:convertAbsForceLongerDelay]{convertAbsForceLongerDelay()}}, \code{\link[rxode2:convertAbsSequential]{convertAbsSequential()}}, \code{\link[rxode2:convertEmax]{convertEmax()}}, \code{\link[rxode2:convertEmaxHill]{convertEmaxHill()}}, \code{\link[rxode2:convertKinR0]{convertKinR0()}}, \code{\link[rxode2:convertLogLin]{convertLogLin()}}, \code{\link[rxode2:convertMM]{convertMM()}}, \code{\link[rxode2:convertQuad]{convertQuad()}}, \code{\link[rxode2:defaultCombine]{defaultCombine()}}, \code{\link[rxode2:defaultCombine]{dotCombine()}}, \code{\link[rxode2:expit]{expit()}}, \code{\link[rxode2:fakeCc]{fakeCc()}}, \code{\link[rxode2:logit]{logit()}}, \code{\link[rxode2:pkTrans]{pkTrans()}}, \code{\link[rxode2:removeDepot]{removeDepot()}}, \code{\link[rxode2:removeLinesAndInis]{removeLinesAndInis()}}, \code{\link[rxode2:removePeriph]{removePeriph()}}, \code{\link[rxode2:removeTransit]{removeTransit()}}, \code{\link[rxode2:removeZeroOrderAbs]{removeZeroOrderAbs()}}, \code{\link[rxode2:searchReplace]{searchReplace()}}, \code{\link[rxode2:searchReplace]{searchReplaceHelper()}}, \code{\link[rxode2:setCombineType]{setCombineType()}}, \code{\link[rxode2:defaultCombine]{snakeCombine()}}}
 }}
 
