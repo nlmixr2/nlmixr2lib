@@ -1,0 +1,370 @@
+---
+title: "Relebactam plasma and ELF (Rizk 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Relebactam plasma and ELF (Rizk 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Rizk_2018_relebactam"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Rizk_2018_relebactam"))$description`
+* Article: <https://doi.org/10.1128/AAC.01411-17>
+
+Rizk and colleagues measured relebactam and imipenem in plasma, epithelial
+lining fluid (ELF) and alveolar cells (AC) of healthy volunteers who received
+five 30-minute infusions of relebactam 250 mg with imipenem-cilastatin 500 mg
+every 6 hours, followed by one bronchoscopy with bronchoalveolar lavage (BAL)
+per subject at 0.5, 1, 1.5 or 3 h after the last dose. Alongside a
+noncompartmental analysis of the mean profiles, they fitted a population PK
+model for relebactam only (imipenem lung penetration was modelled in a separate
+publication, reference 21 of the paper).
+
+Plasma disposition is a two-compartment model with linear clearance (Methods
+Eq. 1-2). Of the three ELF approaches the authors compared (a third,
+exchanging compartment; a time-invariant partition coefficient; an effect
+compartment), the partition coefficient fitted best. The ELF concentration is
+therefore algebraic (Eq. 3):
+
+```
+C_ELF = kELF * fu,REL * A1 / V1
+```
+
+with `kELF = 0.553` estimated and the unbound fraction in plasma `fu,REL`
+fixed at 0.8; ELF drug is taken as 100% unbound. The fit used a naive pooled
+approach, so the model has no between-subject variability: all variability is
+residual. The packaged model has two ODE states and two outputs: total plasma
+`Cc` and ELF `Celf` (both mg/L). The unbound plasma concentration is returned as
+`Cu`.
+
+# Population
+
+```{r population}
+mod_fun <- readModelDb("Rizk_2018_relebactam")
+str(rxode2::rxode(mod_fun)$population)
+```
+
+Seventeen healthy subjects (14 male, 3 female) aged 24-42 years entered the
+study; 16 completed it and form the per-protocol PK population (Results, first
+paragraph). Eligibility required age 18-45 years, BMI at most 32 kg/m^2 and
+creatinine clearance of at least 80 mL/min (Materials and Methods). Body weight
+is not reported and the model has no covariates, so the virtual population needs
+no covariate columns.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure: 2 compartments, IV infusion | -- | Methods Eq. 1-2 |
+| ELF partition on unbound plasma concentration | -- | Methods Eq. 3 |
+| `lcl` | log(9.17 L/h) | Table 4 (thetaCL) |
+| `lvc` | log(15.3 L) | Table 4 (thetaVc) |
+| `lvp` | log(10.6 L) | Table 4 (thetaVp) |
+| `lq` | log(2.64 L/h) | Table 4 (thetaQ2) |
+| `lfelf` | log(0.553) | Table 4 (thetakELF) |
+| `fu` | 0.8 (fixed) | Methods after Eq. 3 ('~80%'); Results ('80% unbound') |
+| ELF unbound fraction | 1 (implicit) | Methods ('free fraction in the ELF was assumed to be 100%') |
+| `addSd` | 0.01 mg/L (fixed) | Table 4 (sigma addi) |
+| `propSd` | 0.28 | Table 4 (sigma prop, 28.0% CV) |
+| `propSd_Celf` | 0.392 | Table 4 (sigma prop,kELF, 39.2% CV) |
+| Dosing | 250 mg IV over 0.5 h every 6 h x 5 | Abstract; Materials and Methods |
+
+# Typical-value checks
+
+```{r typical, warning = FALSE}
+mod <- rxode2::rxode(mod_fun)
+mod_typ <- rxode2::zeroRe(mod)
+
+dose_times <- (0:4) * 6
+last_dose <- 24
+dose_rows <- data.frame(
+  id = 1L, time = dose_times, evid = 1L, amt = 250, dur = 0.5,
+  cmt = "central", dvid = NA_integer_
+)
+obs_grid <- sort(unique(c(seq(0, 30, by = 0.01), last_dose + c(0, 0.5, 1, 1.5, 3))))
+ev_typ <- bind_rows(
+  dose_rows,
+  data.frame(
+    id = 1L, time = obs_grid, evid = 0L, amt = NA_real_, dur = NA_real_,
+    cmt = "central", dvid = 1L
+  )
+) |>
+  arrange(id, time, desc(evid))
+
+sim_typ <- as.data.frame(rxode2::rxSolve(mod_typ, ev_typ, useLinCmt = FALSE)) |>
+  mutate(tad = time - last_dose)
+
+# Linear disposition: AUC over the fifth dosing interval must equal Dose / CL.
+tau <- filter(sim_typ, time >= last_dose, time <= last_dose + 6)
+auc_tau <- sum(diff(tau$time) * (head(tau$Cc, -1) + tail(tau$Cc, -1)) / 2)
+# The ELF:total plasma ratio is time-invariant, kELF * fu.
+elf_ratio <- with(filter(sim_typ, Cc > 0), Celf / Cc)
+
+c(auc_tau = auc_tau, dose_over_cl = 250 / 9.17, elf_ratio_min = min(elf_ratio), elf_ratio_max = max(elf_ratio))
+stopifnot(
+  abs(auc_tau / (250 / 9.17) - 1) < 0.002,
+  all(abs(elf_ratio - 0.553 * 0.8) < 1e-8)
+)
+```
+
+The model's own diagnostic figure (Figure 4, top left) draws the population
+prediction for the fifth dose in mg/L. Its values at the peak and at 3 h, read
+from the figure by the maintainers, are compared with the typical-value solve.
+
+```{r fig4-pred}
+fig4 <- data.frame(
+  matrix = c("Plasma", "Plasma", "Plasma", "ELF", "ELF"),
+  tad = c(0, 0.5, 3, 0.5, 3),
+  pred_fig4 = c(1.0, 14.7, 3.0, 6.4, 1.35)
+)
+typ_at <- sim_typ |>
+  filter(round(tad, 2) %in% fig4$tad) |>
+  distinct(tad, .keep_all = TRUE) |>
+  select(tad, Plasma = Cc, ELF = Celf) |>
+  pivot_longer(-tad, names_to = "matrix", values_to = "pred_model")
+fig4_cmp <- inner_join(fig4, typ_at, by = c("matrix", "tad")) |>
+  mutate(pct_diff = 100 * (pred_model / pred_fig4 - 1))
+fig4_cmp |>
+  dplyr::rename(
+    Matrix = matrix, "Time after last dose (h)" = tad,
+    "Figure 4 PRED (mg/L)" = pred_fig4, "Model (mg/L)" = pred_model, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical-value prediction against the PRED curves of Rizk 2018 Figure 4 (read from the figure).")
+# The peak and 3-h values are read from a 0-20 mg/L axis; the trough at 1 mg/L
+# is too close to the axis to read better than about 20%.
+stopifnot(all(abs(fig4_cmp$pct_diff[fig4_cmp$tad > 0]) < 10))
+```
+
+# Simulation with residual error
+
+Because the fit was naive pooled, a simulated cohort differs from the typical
+profile only by residual error. 200 virtual subjects are sampled at the study's
+nominal BAL times (0.5, 1, 1.5 and 3 h after the fifth dose) and at the pre-dose
+trough. (rxode2 warns that the model has no omega parameters; that is expected
+here and the warning is suppressed.)
+
+```{r sim, warning = FALSE}
+n_sub <- 200
+samp <- last_dose + c(0, 0.5, 1, 1.5, 3)
+events <- bind_rows(
+  lapply(seq_len(n_sub), function(i) {
+    bind_rows(
+      mutate(dose_rows, id = i),
+      data.frame(
+        id = i, time = rep(samp, 2), evid = 0L, amt = NA_real_, dur = NA_real_,
+        cmt = "central", dvid = rep(1:2, each = length(samp))
+      )
+    )
+  })
+) |>
+  arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(20180301)
+sim <- as.data.frame(rxode2::rxSolve(mod, events, useLinCmt = FALSE)) |>
+  mutate(
+    tad = round(time - last_dose, 2),
+    matrix = ifelse(CMT == min(CMT), "Plasma", "ELF")
+  )
+```
+
+# Replicating Figure 1 and Table 3
+
+Figure 1 plots mean relebactam concentrations in micromolar. The model works in
+mg/L; concentrations are converted with the relebactam molecular weight of
+348.4 g/mol (C12H20N4O6S). The paper does not print the molecular weight, but
+its mass-spectrometric transition (m/z 349, the protonated molecule) and the
+four 0.5-h plasma observations of Figure 4 (mean about 16.7 mg/L against the
+47.9 micromolar of Table 2) both agree with it.
+
+```{r fig1, fig.cap = "Replicates Figure 1 (bottom) of Rizk 2018: relebactam in plasma and ELF after the fifth dose. Lines: typical-value prediction; ribbons: 5th-95th percentiles of 200 simulated observations with residual error; points: published means (plasma Cmax from Table 2, ELF geometric means from Table 3)."}
+mw <- 348.4
+to_um <- function(x) x / mw * 1000
+
+typ_long <- sim_typ |>
+  filter(tad >= 0, tad <= 3) |>
+  select(tad, Plasma = Cc, ELF = Celf) |>
+  pivot_longer(-tad, names_to = "matrix", values_to = "conc") |>
+  mutate(conc_um = to_um(conc))
+
+pi_sim <- sim |>
+  group_by(matrix, tad) |>
+  summarise(
+    lo = to_um(quantile(sim, 0.05)), hi = to_um(quantile(sim, 0.95)),
+    .groups = "drop"
+  )
+
+published <- data.frame(
+  matrix = c("Plasma", rep("ELF", 4)),
+  tad = c(0.5, 0.5, 1, 1.5, 3),
+  conc_um = c(47.9, 14.93, 10.93, 9.49, 4.27)
+)
+
+ggplot() +
+  geom_ribbon(data = pi_sim, aes(tad, ymin = pmax(lo, 0.1), ymax = hi, fill = matrix), alpha = 0.2) +
+  geom_line(data = typ_long, aes(tad, conc_um, colour = matrix)) +
+  geom_point(data = published, aes(tad, conc_um, colour = matrix), size = 2.5) +
+  scale_y_log10() +
+  labs(
+    x = "Time after last dose (h)", y = "Relebactam (micromolar)",
+    colour = NULL, fill = NULL
+  )
+```
+
+Table 1 of the paper reports ELF:plasma geometric-mean concentration ratios of
+0.32 to 0.51 across the four BAL times. Under the partition model the ratio of
+ELF to total plasma concentration is the constant `kELF * fu` = 0.442 at every
+time, which sits within that range; the paper attributes the agreement of this
+value (0.553 on an unbound basis) with the AUC-based penetration of 53.7% to the
+rapid, hysteresis-free equilibration of ELF with plasma.
+
+```{r table3}
+table3 <- data.frame(tad = c(0.5, 1, 1.5, 3), gm_pub = c(14.93, 10.93, 9.49, 4.27))
+elf_typ <- typ_long |>
+  filter(matrix == "ELF", round(tad, 2) %in% table3$tad) |>
+  distinct(tad, .keep_all = TRUE) |>
+  select(tad, conc_um)
+table3_cmp <- inner_join(table3, elf_typ, by = "tad") |>
+  mutate(pct_diff = 100 * (conc_um / gm_pub - 1))
+table3_cmp |>
+  dplyr::rename(
+    "Time after last dose (h)" = tad, "Table 3 ELF GM (micromolar)" = gm_pub,
+    "Model typical value (micromolar)" = conc_um, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical ELF concentration against the geometric means of Rizk 2018 Table 3 (4 subjects per time).")
+```
+
+The typical value runs about 20% above the observed geometric means at 0.5 and
+1 h and within 10% of them at 1.5 and 3 h. The model's own population prediction
+does the same in Figure 4, where three of the four 0.5-h ELF observations lie
+below the red PRED curve; the ELF residual error is 39% and each mean rests on
+four subjects.
+
+```{r table3-check}
+stopifnot(
+  # A transcription error in kELF, fu, CL or Vc moves every row by tens of percent.
+  abs(median(table3_cmp$pct_diff)) < 20
+)
+```
+
+# PKNCA: mean-profile NCA after the fifth dose
+
+The paper's NCA (Table 2) was run in Phoenix on the mean concentration at each
+nominal time, using the profile after the fifth dose. The same design is
+applied to the typical-value prediction: PKNCA runs on the pre-dose trough and
+the four BAL times, with time re-based to the last dose and the linear-up /
+log-down trapezoidal rule.
+
+```{r pknca}
+conc_nca <- sim_typ |>
+  filter(round(tad, 2) %in% c(0, 0.5, 1, 1.5, 3)) |>
+  distinct(tad, .keep_all = TRUE) |>
+  select(tad, Plasma = Cc, ELF = Celf) |>
+  pivot_longer(-tad, names_to = "matrix", values_to = "conc") |>
+  mutate(id = 1L, conc = to_um(conc), time = tad) |>
+  filter(!is.na(conc)) |>
+  select(id, matrix, time, conc)
+
+dose_nca <- data.frame(id = 1L, matrix = c("Plasma", "ELF"), time = 0, amt = 250)
+
+intervals <- data.frame(
+  start = 0, end = c(3, Inf),
+  auclast = c(TRUE, FALSE), cmax = c(TRUE, FALSE), tmax = c(TRUE, FALSE),
+  aucinf.obs = c(FALSE, TRUE), half.life = c(FALSE, TRUE)
+)
+
+nca <- pk.nca(PKNCAdata(
+  PKNCAconc(conc_nca, conc ~ time | matrix + id),
+  PKNCAdose(dose_nca, amt ~ time | matrix + id),
+  intervals = intervals,
+  options = list(auc.method = "lin up/log down")
+))
+
+nca_res <- as.data.frame(nca$result)
+
+table2 <- data.frame(
+  matrix = c("Plasma", "ELF"),
+  aucinf.obs = c(81.2, 34.9),
+  auclast = c(64.7, 26.7),
+  cmax = c(47.9, 15.3),
+  tmax = c(0.5, 0.5),
+  half.life = c(1.24, 1.29)
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = table2,
+  by            = "matrix",
+  params        = c("aucinf.obs", "auclast", "cmax", "tmax", "half.life"),
+  units         = c(
+    aucinf.obs = "micromolar*h", auclast = "micromolar*h",
+    cmax = "micromolar", tmax = "h", half.life = "h"
+  ),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Typical-value NCA after the fifth dose against Rizk 2018 Table 2 (mean-profile NCA). * differs by >20%.")
+```
+
+```{r nca-check}
+auc_rows <- nca_res |>
+  filter(PPTESTCD %in% c("aucinf.obs", "auclast")) |>
+  select(matrix, PPTESTCD, PPORRES) |>
+  inner_join(
+    pivot_longer(table2, -matrix, names_to = "PPTESTCD", values_to = "pub"),
+    by = c("matrix", "PPTESTCD")
+  ) |>
+  mutate(pct_diff = 100 * (PPORRES / pub - 1))
+auc_rows
+stopifnot(
+  # Exposure is set by CL (plasma) and kELF * fu (ELF); a transcription or unit
+  # error in either shifts these AUCs by far more than 15%.
+  all(abs(auc_rows$pct_diff) < 15)
+)
+```
+
+The model reproduces the mean-profile AUCs in both matrices within 5%. The
+model's plasma Cmax is 13% below the observed mean at 0.5 h and its ELF Cmax is
+21% above it (the one starred row), which mirrors the population prediction
+against the observations in Figure 4: the model was not refitted, and these are
+the published estimates. The terminal half-lives are 5-9% shorter than the
+paper's NCA values from the observed means.
+
+# Assumptions and deviations
+
+* **Imipenem not included.** The paper reports NCA for imipenem but fits a
+  population model only for relebactam; imipenem lung penetration from this
+  study was modelled in a separate publication (reference 21 of the paper).
+* **Alveolar cells not modelled.** AC concentrations entered the NCA (Table 2)
+  but not the population model.
+* **Naive pooled fit.** The authors pooled the data without random effects, so
+  the model carries no IIV; between-subject variability is absorbed into the
+  residual error. Stochastic simulations therefore spread only by residual
+  error.
+* **Residual error scale.** Table 4 reports the proportional errors as percent
+  CV (28.0% plasma, 39.2% ELF); they are encoded as proportional standard
+  deviations 0.28 and 0.392. The additive plasma error of 0.01 mg/L was fixed
+  by the authors.
+* **Molecular weight.** Concentrations are compared in micromolar using
+  348.4 g/mol, which the paper does not print (see Figure 1 section for the
+  in-paper corroboration).
+* **Figure 4 values.** The population-prediction values in the Figure 4 check
+  were read from the figure by the maintainers and carry the precision of a
+  visual read.
+* **Unbound fraction.** The paper gives the relebactam unbound fraction in
+  plasma as approximately 80% in the Methods and as 80% in the Results; 0.8 is
+  used. The text after Eq. 3 labels it `fu,ELF` while the equation writes
+  `fu,REL`; the description ('free fraction of relebactam in plasma') matches
+  the equation.
+* **Literature check.** No erratum or correction for this article was found in
+  Europe PMC (checked 2026-11-25).
