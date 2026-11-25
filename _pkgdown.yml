@@ -5116,6 +5116,8 @@ navbar:
         href: articles/Chae_2012_metformin.html
       - text: "Metformin (Choi 2018)"
         href: articles/Choi_2018_metformin.html
+      - text: "Metformin (Dissanayake 2018)"
+        href: articles/Dissanayake_2018_metformin.html
       - text: "Metformin (Li 2020)"
         href: articles/Li_2020_metformin.html
       - text: "Metformin (Yoon 2013)"
@@ -5124,6 +5126,8 @@ navbar:
         href: articles/vanRongen_2018_metformin.html
       - text: "Metformin cimetidine ddi pbpk (Nishiyama 2019)"
         href: articles/Nishiyama_2019_metformin_cimetidine.html
+      - text: "Metformin crcl (Dissanayake 2018)"
+        href: articles/Dissanayake_2018_metformin.html
       - text: "Metformin ddi pbpk (Yang 2021)"
         href: articles/Yang_2021_metformin_ddi_pbpk.html
       - text: "Metformin pbpk (Nishiyama 2019)"
@@ -9970,6 +9974,7 @@ articles:
   - articles/Ding_2026_vancomycin
   - articles/Dings_2026_cafedrine_theodrenaline_ephedrine
   - articles/Dirks_2008_cetuximab
+  - articles/Dissanayake_2018_metformin
   - articles/Djebli_2017_FV60165_rabbit
   - articles/Djebli_2017_alirocumab
   - articles/Djerada_2014_nefopam
