@@ -1750,7 +1750,11 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # `cl_time_fday` is the fraction compounded once per dosing day in
 # `cl * (1 + cl_time_fday)^floor(t / 24)`; `cl_time_hyp` is the rate of the
 # hyperbolic decline `cl0 / (1 + cl_time_hyp * t)`.
-.timeVaryingClearanceAcceptPattern <- "cl_time_max|cl_t50|cl_time_hill|cl_time_slope|cl_time_fday|cl_time_hyp|cl_exp_|tclchange"
+.timeVaryingClearanceAcceptPattern <- paste(
+  "cl_time_max", "cl_t50", "cl_time_hill", "cl_time_slope", "cl_time_fday",
+  "cl_time_hyp", "cl_exp_", "tclchange",
+  sep = "|"
+)
 
 # The `ini({})` block declares parameters and their labels; only `model({})`
 # contains the equations. Scanning the whole function makes label prose such as
