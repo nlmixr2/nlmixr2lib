@@ -4798,6 +4798,10 @@ navbar:
         href: articles/Lignet_2023_m8891.html
       - text: "M8891 mouse (Lignet 2023)"
         href: articles/Lignet_2023_m8891.html
+      - text: "MAB04 mouse (Ahlberg 2019)"
+        href: articles/Ahlberg_2019_spesolimab.html
+      - text: "MAB04 mouse mm (Ahlberg 2019)"
+        href: articles/Ahlberg_2019_spesolimab.html
       - text: "MAb combined (Betts 2018)"
         href: articles/Betts_2018_mAb_linear_PK.html
       - text: "MAb cyno (Betts 2018)"
@@ -7726,6 +7730,10 @@ navbar:
         href: articles/Parmar_2023_spectinamides_pbpk.html
       - text: "Spectinamide 1810 rat pbpk (Parmar 2023)"
         href: articles/Parmar_2023_spectinamides_pbpk.html
+      - text: "Spesolimab (Ahlberg 2019)"
+        href: articles/Ahlberg_2019_spesolimab.html
+      - text: "Spesolimab dedrick (Ahlberg 2019)"
+        href: articles/Ahlberg_2019_spesolimab.html
       - text: "Spironolactone qsp (Meid 2024)"
         href: articles/Meid_2024_spironolactone_qsp.html
       - text: "Sucrose rat pbpk (Hirasawa 2022)"
@@ -9372,6 +9380,7 @@ articles:
   - articles/Aguiar_2021_ustekinumab
   - articles/Agyeman_2022_covid19_viral_dynamics
   - articles/Ahamadi_2017_pembrolizumab
+  - articles/Ahlberg_2019_spesolimab
   - articles/Ahlstrom_2010_nicotinicAcid_rat
   - articles/Ahmad_2021_oatBiomarkers
   - articles/Ahmed_2015_topiramate
