@@ -1,0 +1,642 @@
+---
+title: "PF-05231023 (FGF21 analogue) OGTT and body weight in obese mice (Weng 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PF-05231023 (FGF21 analogue) OGTT and body weight in obese mice (Weng 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Weng_2015_PF05231023_obob_mouse_qsp"))$reference`
+* Article: [PLoS One 2015;10(3):e0119104](https://doi.org/10.1371/journal.pone.0119104) (open access)
+
+PF-05231023 is a long-acting FGF21 analogue: two FGF21 molecules conjugated
+(at A129C) to the CovX-2000 antibody scaffold. Proteases clip the FGF21
+C-terminus quickly and the N-terminus slowly, so after dosing the circulating
+drug is a mixture of fully intact molecules (high potency) and "N-only"
+molecules (C-terminus clipped, still active at lower potency). Weng et al.
+built two mechanistic PK/PD models on that idea, each in its own mouse model
+and fitted separately, and both are packaged here:
+
+| Model file | Mouse | Endpoint |
+|---|---|---|
+| `Weng_2015_PF05231023_obob_mouse_qsp` | leptin-deficient ob/ob | glucose-AUC reduction in an oral glucose tolerance test (OGTT) |
+| `Weng_2015_PF05231023_dio_mouse_qsp` | diet-induced obese (DIO) | body weight during and after three weekly doses |
+
+```{r load-models}
+obob <- rxode2::rxode(readModelDb("Weng_2015_PF05231023_obob_mouse_qsp"))
+dio <- rxode2::rxode(readModelDb("Weng_2015_PF05231023_dio_mouse_qsp"))
+obob$description
+dio$description
+```
+
+Both models are deterministic: the paper fits mean responses by least
+squares and reports no between-animal or residual variability, so every
+simulation below is a single typical-animal solve.
+
+# Population
+
+All animals were male mice. PK was measured after single 3 or 10 mg/kg IV or
+SC doses in 9-10 week old ob/ob and DIO mice (n = 3-4 per group; Table 1 and
+Table 2). The OGTT model was fitted to the glucose-AUC reduction on days 3-6
+after single 3 or 10 mg/kg SC doses in ob/ob mice (Fig 3, Fig 6a; at least 8
+mice per group and day) and checked against the day-3 dose response to
+0.03-10 mg/kg IV or SC (Fig 2, Fig 6b). The body-weight model was fitted to
+DIO mice (about 14 weeks on a 60% high-fat diet, about 42-43 g) given 1, 3 or
+10 mg/kg IV, or 1 or 10 mg/kg SC, on days 1, 8 and 15 and weighed twice a week
+to day 57 (Fig 4, Fig 7; at least 9 mice per group).
+
+```{r population}
+str(obob$population)
+str(dio$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. They are
+collected here.
+
+## ob/ob OGTT model
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lvc` (systemic volume) | 40 mL/kg | Methods, "4% of the body weight" |
+| `lka` (SC absorption) | ln(2)/48 1/h | Methods, "absorption half-life of 48 hours" |
+| `thalf_ct`, `thalf_nt` (clipping) | 2.5 h, 13 h | Methods, "2.5 and 13 hours for the C and N termini" |
+| `thalf_bb` (CovX-2000 backbone) | 12 days | Methods, "~12 days"; Eq 1 |
+| `mw` | 192000 g/mol | Not printed; Fig 5a (see Assumptions) |
+| `ki` | 0.5 nM | Methods, "KI was set to 0.5 nM" (in vitro pERK EC50) |
+| `kn` | 22 nM | Results, "KN was optimized at 22 nM" |
+| `gamma` | 3 days | Results, "gamma was optimized at 3 days" |
+| `ogtt_a` | 812.74 | Not printed; set so the model equals the day-3 10 mg/kg SC value of Fig 6a |
+| 16 species x 2 compartments ODEs | -- | Eq 1 (species [1 1 0 1]) generalised as the text describes; S1 Fig a |
+| Intact and N-only pools | -- | Methods, definitions of "intact" and "N-only" |
+| `sig` = S(t) | -- | Eq 2 |
+| `ogtt_memory`, `ogtt` | -- | Eq 3, written as d/dt(memory) = S - memory/gamma |
+
+## DIO body-weight model
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lka` | ln(2)/48 1/h | Methods, "half-life of 48 hours" |
+| `thalf_ct`, `thalf_nt` | 1.7 h, 26.2 h | Methods, "DIO mouse-measured half-lives" |
+| `lvc` | 2.4 mL | Methods, "central compartment with volume 2.4 ml" |
+| `lvadipose` | 0.8 mL | Methods, "volume 0.8 ml (assuming 20 g of fat with 4% extracellular space)" |
+| `lq` | 0.0167 mL/h | Methods, "A first-order transport rate of 0.0167 ml/hr was symmetrically applied" |
+| `lkp_adipose` | log(1) | Not printed; implied by "symmetrically applied" (see Assumptions) |
+| `mw` | 192000 g/mol | Not printed; Fig 5a |
+| `rtot` | 4.15 nM | Methods, receptor complex concentration |
+| `kd_intact` | 0.5 nM | Methods, "set to 0.5 nM based on in vitro hASC measurements" |
+| `kd_nonly`, `beta`, `delta`, `rho`, `eps` | 94 nM, 1.3, 0.48, 3, 2.3 | Fig 7a table |
+| `rmr` | 0.86 kJ/(day g FFM) | Methods, reference 23 |
+| `tat_slope`, `tat_int` | 0.46, 9.9 g | Eq 6 |
+| `ed_fat`, `ed_lean` | 39.5, 7.6 kJ/g | Methods, reference 22; Eq 7 and Eq 13 |
+| `bwc_0`, `bwc_inf`, `kbwc` | 43.25 g, 56.83 g, 0.01226 1/day | Not printed; vehicle curve of Fig 7b, digitised |
+| Competitive binding | -- | Eq 4, solved in closed form (cubic in free receptor) |
+| `peff` = P(RO) | -- | Eq 5, A = 1 + delta^rho so that P(1) = 1 |
+| `fic`, `fi`, `de`, `d/dt(bw)` | -- | Eqs 6-13 (see Assumptions for Eq 8, Eq 11 and Eq 12) |
+
+# ob/ob OGTT model
+
+## PK: intact and N-only pools (Fig 5a) and signalling (Fig 5c)
+
+```{r obob-helpers}
+# Before NCA: the ODE solver undershoots zero by about its absolute tolerance
+# once a short-lived analyte has gone; assert that, floor it, and drop the
+# numerically-zero tail so half-lives are not fitted to integrator noise.
+nca_floor <- function(d) {
+  d |>
+    dplyr::group_by(group, id) |>
+    dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+    dplyr::mutate(Cc = pmax(Cc, 0)) |>
+    dplyr::ungroup()
+}
+solve_one <- function(mod, ev) {
+  out <- as.data.frame(rxode2::rxSolve(mod, ev))
+  if (is.null(out$id)) out$id <- 1L
+  out
+}
+obob_run <- function(dose, route, times = sort(unique(c(seq(0, 168, by = 0.5), 0.083)))) {
+  cmt <- if (route == "IV") "central_1111" else "depot_1111"
+  ev <- rxode2::et(amt = dose, cmt = cmt) |> rxode2::et(times)
+  solve_one(obob, ev) |> mutate(route = route, dose = dose)
+}
+obob_10 <- bind_rows(obob_run(10, "IV"), obob_run(10, "SC"))
+```
+
+```{r figure-5a, fig.cap = "Replicates Figure 5a (and 5c) of Weng 2015: intact (solid) and N-only (dashed) pools after 10 mg/kg IV or SC in ob/ob mice, with the intact (blue) and N-only (green) potencies."}
+obob_10 |>
+  select(time, route, Intact = Cintact, `N-only` = Cnonly) |>
+  pivot_longer(c(Intact, `N-only`), names_to = "pool", values_to = "conc") |>
+  filter(conc > 0.1) |>
+  ggplot(aes(time / 24, conc, colour = route, linetype = pool)) +
+  geom_line() +
+  geom_hline(yintercept = 0.5, colour = "blue") +
+  geom_hline(yintercept = 22, colour = "darkgreen") +
+  scale_y_log10(limits = c(0.1, 1e4)) +
+  scale_colour_manual(values = c(IV = "black", SC = "red")) +
+  labs(x = "Time after dosing (days)", y = "Calculated plasma concentration (nM)",
+       title = "Figure 5a: ob/ob 10 mg/kg")
+```
+
+```{r figure-5c, fig.cap = "Replicates Figure 5c of Weng 2015: instantaneous signal S(t) (shown in the paper as receptor occupancy in the central space)."}
+ggplot(obob_10, aes(time / 24, sig, colour = route)) +
+  geom_line() +
+  scale_colour_manual(values = c(IV = "black", SC = "red")) +
+  labs(x = "Time after dosing (days)", y = "S(t)", title = "Figure 5c: ob/ob 10 mg/kg")
+```
+
+Values read from Fig 5a and 5c, against the model:
+
+```{r fig5a-check}
+at <- function(d, route, t) d[d$route == route & abs(d$time - t) < 1e-6, ]
+fig5a <- tibble::tribble(
+  ~quantity, ~figure, ~model,
+  "IV intact at t = 0 (nM)", 1300, at(obob_10, "IV", 0)$Cintact,
+  "SC N-only peak (nM)", 180, max(obob_10$Cnonly[obob_10$route == "SC"]),
+  "IV and SC N-only at day 7 (nM)", 0.23, at(obob_10, "IV", 168)$Cnonly,
+  "IV S(t) at day 2", 0.88, at(obob_10, "IV", 48)$sig,
+  "IV S(t) at day 3", 0.70, at(obob_10, "IV", 72)$sig
+)
+knitr::kable(fig5a, digits = 2)
+stopifnot(abs(fig5a$model / fig5a$figure - 1) < 0.1)
+```
+
+The figure values are approximate readings of a log-scale plot; the model
+values agree within 10%. The 1300 nM starting value is what fixed the
+unprinted molecular weight (see Assumptions), so that row is not an
+independent check.
+
+## Mass balance of the clipping network
+
+Every clipping reaction turns one species into another, so the total amount
+of molecules in the depot and central compartments falls only through
+backbone clearance in the central compartment. The check uses the same
+solve (no closed form is involved beyond integration).
+
+```{r obob-mass-balance}
+states <- grep("^(depot|central)_[01]{4}$", names(obob_10), value = TRUE)
+mb <- obob_10 |>
+  filter(route == "IV") |>
+  mutate(total = rowSums(across(all_of(states))))
+# IV dose: only central species exist and all are lost at kbb = ln(2)/288 1/h
+mb_err <- max(abs(mb$total - 10 * exp(-log(2) / 288 * mb$time)))
+mb_err
+stopifnot(mb_err < 1e-4)
+```
+
+## PKNCA: the two ELISA analytes against Table 1 and Table 2
+
+The two assays detect every molecule with at least one intact C-terminus
+(CT assay, `Cct`) or one intact N-terminus (NT assay, `Cnt`). The model
+outputs are in nM; they are converted to ug/mL with the molecular weight.
+
+```{r obob-pknca}
+obob_nca_in <- obob_10 |>
+  select(id, time, route, CT = Cct, NT = Cnt) |>
+  pivot_longer(c(CT, NT), names_to = "analyte", values_to = "conc_nM") |>
+  mutate(Cc = conc_nM * 192000 / 1e6, group = paste("ob/ob", analyte, route)) |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, group)
+stopifnot(all(obob_nca_in$Cc >= -1e-6 * max(obob_nca_in$Cc)))
+obob_nca_in <- nca_floor(obob_nca_in)
+# dose in ug/kg with concentrations in ug/mL gives CL in mL/h/kg
+obob_dose <- obob_nca_in |> distinct(id, group) |> mutate(time = 0, dose = 10000)
+obob_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(obob_nca_in, Cc ~ time | group + id),
+  PKNCA::PKNCAdose(obob_dose, dose ~ time | group + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                         aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE)
+))
+obob_res <- as.data.frame(obob_nca)
+```
+
+## OGTT time course (Fig 6a) and dose response (Fig 6b)
+
+`ogtt_a` was set by the authors so that the model matches the observed
+day-3 response to 10 mg/kg SC. Fig 6b uses a second normalisation, matched to
+the 10 mg/kg IV point ("In this case the model output normalization was set
+to the 10 mg/kg IV dose"); it is applied here by overriding `ogtt_a`.
+
+```{r figure-6a}
+ogtt_days <- c(3, 4, 5, 6)
+fig6a <- bind_rows(lapply(c(3, 10), function(d) {
+  obob_run(d, "SC", times = ogtt_days * 24) |>
+    transmute(dose = d, day = time / 24, model = ogtt)
+})) |>
+  mutate(
+    # Fig 6a, digitised: model crosses and observed means ((mg/dL)*min)
+    figure_model = c(21900, 19100, 14800, 11200, 29800, 28850, 23850, 18000),
+    data = c(22200, 16800, 16700, 10300, 29900, 28850, 25200, 19800)
+  )
+knitr::kable(fig6a, digits = 0)
+stopifnot(abs(fig6a$model / fig6a$figure_model - 1) < 0.05)
+```
+
+```{r figure-6a-plot, fig.cap = "Replicates Figure 6a of Weng 2015: OGTT glucose-AUC reduction 3-6 days after a single SC dose. Circles: observed means read from the figure; crosses: model."}
+ggplot(fig6a, aes(day, colour = factor(dose))) +
+  geom_point(aes(y = data), shape = 1, size = 3) +
+  geom_point(aes(y = model), shape = 4, size = 3) +
+  scale_colour_manual(values = c("3" = "red", "10" = "blue"), name = "mg/kg SC") +
+  expand_limits(y = 0) +
+  labs(x = "Time after dosing (days)", y = "delta(AUC) (mg/dL)*min", title = "Figure 6a")
+```
+
+```{r figure-6b}
+iv10_memory <- obob_run(10, "IV", times = 72)$ogtt_memory
+obob_6b <- obob |> rxode2::ini(ogtt_a = 23500 / iv10_memory)
+fig6b <- expand.grid(dose = c(0.03, 0.3, 1, 3, 10), route = c("IV", "SC"), stringsAsFactors = FALSE)
+fig6b$model <- mapply(function(d, r) {
+  ev <- rxode2::et(amt = d, cmt = if (r == "IV") "central_1111" else "depot_1111") |> rxode2::et(72)
+  solve_one(obob_6b, ev)$ogtt
+}, fig6b$dose, fig6b$route)
+# Fig 6b, digitised: model crosses and observed means ((mg/dL)*min)
+fig6b$figure_model <- c(3000, 9000, 14300, 19000, 23500, 600, 4400, 9500, 15700, 21500)
+fig6b$data <- c(6000, 12900, 16300, 18700, 23500, 5900, 7900, 12700, 12700, 16300)
+knitr::kable(fig6b, digits = 0)
+# The 0.03 mg/kg crosses sit at the bottom of the axis, where one pixel is
+# ~80 units; compare the remaining doses on a relative scale.
+big <- fig6b$dose >= 0.3
+stopifnot(abs(fig6b$model[big] / fig6b$figure_model[big] - 1) < 0.07)
+```
+
+```{r figure-6b-plot, fig.cap = "Replicates Figure 6b of Weng 2015: day-3 OGTT dose response. Circles: observed means read from the figure; crosses: model."}
+ggplot(fig6b, aes(factor(dose), colour = route)) +
+  geom_point(aes(y = data), shape = 1, size = 3) +
+  geom_point(aes(y = model), shape = 4, size = 3) +
+  scale_colour_manual(values = c(IV = "red", SC = "blue")) +
+  labs(x = "Dose (mg/kg)", y = "delta(AUC) (mg/dL)*min", title = "Figure 6b")
+```
+
+The packaged ob/ob model reproduces both panels of Fig 6 to within a few
+percent of the plotted model crosses, and the pools and signal of Fig 5a/5c.
+
+# DIO body-weight model
+
+## Central-adipose exchange: printed value and the reading that matches the figures
+
+The Methods give the exchange between the central compartment (2.4 mL) and
+the adipose extracellular space (0.8 mL) as "a first-order transport rate of
+0.0167 ml/hr ... symmetrically applied", which "corresponds to the fat
+extracellular volume exchanging with the plasma over 48 hours" (0.8 mL / 48 h
+= 0.0167 mL/h). The packaged model uses exactly that: a flow `q` of
+0.0167 mL/h acting on the concentration difference, which makes the
+steady-state volume Vc + Vadipose = 3.2 mL, the "7% total Vss" of a 45 g mouse
+the paper quotes.
+
+Read that way, the model does not reproduce the authors' own simulated
+figures: adipose exposure (Fig 5b), adipose receptor occupancy (Fig 5d) and
+the body-weight loss of Fig 7b/7c are all well below what the paper shows.
+Fig 5b has the adipose N-only concentration (~850 nM after 10 mg/kg IV)
+*above* the highest central N-only concentration the same PK produces (about
+730 nM), which no flow-limited exchange with an equal concentration ratio can
+do. An exchange with the same first-order rate constant on the *amounts* in
+both directions can, and with a rate constant of about 0.05 1/h (read from
+the shape of Fig 5b, not fitted to body weight) it reproduces Fig 5b and 5d
+and comes close to Fig 7b and 7c. In this model's
+parameters that reading is `q = 0.05 * 2.4 = 0.12` mL/h with an
+adipose:central concentration ratio `kp_adipose = Vc / Vadipose = 3`. It is
+shown below as an `ini()` override, next to the packaged (printed) model.
+
+```{r dio-models}
+dio_alt <- dio |> rxode2::ini(lq = log(0.05 * 2.4), lkp_adipose = log(2.4 / 0.8))
+dio_models <- list(printed = dio, `figure-matching` = dio_alt)
+
+# Vehicle curves: IV study (Fig 7b; the model default) and SC study (Fig 7c),
+# both digitised and fitted to bwc_inf - (bwc_inf - bwc_0) * exp(-kbwc * day).
+sc_vehicle <- c(bwc_0 = 41.667, bwc_inf = 68.585, kbwc = 0.006027)
+
+# Doses are per 45 g mouse, the body weight the PK volumes are built for.
+dio_run <- function(mod, dose, route, wt_base, times = seq(0, 56 * 24, by = 2), n_doses = 3) {
+  if (route == "SC") mod <- mod |> rxode2::ini(bwc_0 = sc_vehicle[["bwc_0"]],
+                                             bwc_inf = sc_vehicle[["bwc_inf"]],
+                                             kbwc = sc_vehicle[["kbwc"]])
+  ev <- rxode2::et(amt = dose * 0.045, cmt = if (route == "IV") "central" else "depot",
+                   ii = 168, addl = n_doses - 1) |>
+    rxode2::et(times) |>
+    as.data.frame()
+  ev$WT_BASE <- wt_base
+  solve_one(mod, ev) |> mutate(dose = dose, route = route)
+}
+# Group starting weights read from Fig 7b/7c (kg)
+arms <- tibble::tribble(
+  ~dose, ~route, ~wt_base,
+  1, "IV", 0.04325, 3, "IV", 0.04325, 10, "IV", 0.04325,
+  1, "SC", 0.04236, 10, "SC", 0.04207
+)
+dio_sims <- bind_rows(lapply(names(dio_models), function(nm) {
+  bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+    dio_run(dio_models[[nm]], arms$dose[i], arms$route[i], arms$wt_base[i])
+  })) |> mutate(reading = nm)
+}))
+```
+
+## PK and receptor occupancy in adipose (Fig 5b, 5d)
+
+```{r figure-5b, fig.cap = "Replicates Figure 5b of Weng 2015: intact (solid) and N-only (dashed) concentrations in adipose after 10 mg/kg weekly x3, packaged (printed exchange) and figure-matching readings."}
+dio_sims |>
+  filter(dose == 10, time <= 35 * 24) |>
+  select(time, route, reading, Intact = Cadipose, `N-only` = Cadipose_nonly) |>
+  pivot_longer(c(Intact, `N-only`), names_to = "pool", values_to = "conc") |>
+  filter(conc > 0.1) |>
+  ggplot(aes(time / 24, conc, colour = route, linetype = pool)) +
+  geom_line() +
+  geom_hline(yintercept = 0.5, colour = "blue") +
+  geom_hline(yintercept = 94, colour = "darkgreen") +
+  facet_wrap(~reading) +
+  scale_y_log10(limits = c(0.1, 1000)) +
+  scale_colour_manual(values = c(IV = "black", SC = "red")) +
+  labs(x = "Time (days)", y = "Calculated concentration in adipose (nM)", title = "Figure 5b: DIO 10 mg/kg")
+```
+
+```{r figure-5d, fig.cap = "Replicates Figure 5d of Weng 2015: receptor occupancy in adipose after 10 mg/kg weekly x3."}
+dio_sims |>
+  filter(dose == 10, time <= 35 * 24) |>
+  ggplot(aes(time / 24, ro, colour = route)) +
+  geom_line() +
+  facet_wrap(~reading) +
+  scale_colour_manual(values = c(IV = "black", SC = "red")) +
+  labs(x = "Time (days)", y = "Receptor occupancy", title = "Figure 5d: DIO 10 mg/kg")
+```
+
+```{r fig5bd-check}
+first_week <- dio_sims |> filter(dose == 10, time < 168)
+fig5bd <- first_week |>
+  group_by(reading, route) |>
+  summarise(
+    `adipose N-only peak (nM)` = max(Cadipose_nonly),
+    `adipose intact peak (nM)` = max(Cadipose),
+    `RO at day 1` = ro[time == 24],
+    .groups = "drop"
+  )
+fig5bd_ref <- tibble::tibble(
+  reading = "Fig 5b/5d (read from figure)", route = c("IV", "SC"),
+  `adipose N-only peak (nM)` = c(850, 160), `adipose intact peak (nM)` = c(100, 2),
+  `RO at day 1` = c(0.95, 0.6)
+)
+knitr::kable(bind_rows(fig5bd, fig5bd_ref), digits = 2)
+```
+
+## Transfer function P(RO) (Fig 7d)
+
+```{r figure-7d, fig.cap = "Replicates Figure 7d of Weng 2015."}
+p_ro <- function(ro, delta = 0.48, rho = 3) (delta^rho + 1) * ro^rho / (delta^rho + ro^rho)
+ro_grid <- seq(0, 1, by = 0.01)
+ggplot(data.frame(ro = ro_grid, p = p_ro(ro_grid)), aes(ro, p)) +
+  geom_line(colour = "blue") +
+  labs(x = "Receptor occupancy", y = "Relative effect on BW", title = "Figure 7d")
+stopifnot(abs(p_ro(1) - 1) < 1e-12, abs(p_ro(0.48) - 0.5 * (0.48^3 + 1)) < 1e-12)
+```
+
+## Receptor binding: closed-form solution against the equations it solves
+
+The model solves Eq 4 in closed form. Plugging its free-receptor value back
+into the receptor mass balance checks the root (and its branch) at every
+output time of every arm.
+
+```{r binding-check}
+kdi <- 0.5; kdn <- 94; rt <- 4.15
+bind_chk <- dio_sims |>
+  mutate(
+    resid = rfree + Cadipose * rfree / (kdi + rfree) +
+      Cadipose_nonly * rfree / (kdn + rfree) - rt
+  )
+max(abs(bind_chk$resid))
+stopifnot(max(abs(bind_chk$resid)) < 1e-8, all(bind_chk$rfree > 0 & bind_chk$rfree <= rt + 1e-12))
+```
+
+## Body weight (Fig 7b, 7c)
+
+```{r figure-7bc, fig.height = 5, fig.cap = "Replicates Figure 7b (IV) and 7c (SC) of Weng 2015: body weight after three weekly doses, packaged (printed exchange) and figure-matching readings. The black curve is the vehicle-group input curve of each study."}
+vehicle <- bind_rows(
+  dio_sims |> filter(dose == 1, route == "IV") |> distinct(time, reading, route, bw = bwc),
+  dio_sims |> filter(dose == 1, route == "SC") |> distinct(time, reading, route, bw = bwc)
+) |> mutate(arm = "Vehicle")
+dio_sims |>
+  mutate(arm = paste(dose, "mg/kg")) |>
+  select(time, reading, route, arm, bw) |>
+  bind_rows(vehicle) |>
+  ggplot(aes(time / 24, bw, colour = arm)) +
+  geom_line() +
+  facet_grid(reading ~ route) +
+  scale_colour_manual(values = c(Vehicle = "black", `1 mg/kg` = "red", `3 mg/kg` = "green3", `10 mg/kg` = "blue")) +
+  labs(x = "Time (days)", y = "BW (g)", title = "Figures 7b and 7c")
+```
+
+Nadirs of the model curves, against the model curves of Fig 7b/7c:
+
+```{r fig7-check}
+fig7 <- dio_sims |>
+  group_by(reading, route, dose) |>
+  summarise(nadir_g = min(bw), nadir_day = time[which.min(bw)] / 24, day56_g = bw[time == 56 * 24], .groups = "drop") |>
+  left_join(
+    tibble::tribble(
+      ~route, ~dose, ~figure_nadir_g, ~figure_nadir_day,
+      "IV", 1, 41.9, 3, "IV", 3, 40.5, 17, "IV", 10, 37.5, 18,
+      "SC", 1, NA, NA, "SC", 10, 39.5, 18
+    ),
+    by = c("route", "dose")
+  ) |>
+  arrange(route, dose, reading)
+knitr::kable(fig7, digits = 2)
+# Deterministic solves, so these bounds only need to cover the reading error
+# of the figure (~0.1 g) and the reported misses.
+alt_fig7 <- fig7 |> filter(reading == "figure-matching", !is.na(figure_nadir_g), dose >= 3)
+printed_fig7 <- fig7 |> filter(reading == "printed", dose == 10)
+stopifnot(
+  abs(alt_fig7$nadir_g - alt_fig7$figure_nadir_g) < 1.2,
+  # the printed exchange loses at least 1.5 g less than Fig 7b/7c at 10 mg/kg
+  printed_fig7$nadir_g - printed_fig7$figure_nadir_g > 1.5
+)
+```
+
+With the printed exchange, the packaged model gives a 10 mg/kg IV nadir of
+about 40 g against 37.5 g in Fig 7b, and almost no loss after 10 mg/kg SC
+(Fig 7c: about 39.5 g). The figure-matching reading reproduces the 3 and
+10 mg/kg IV nadirs to within about 0.4 g and their timing, and puts the
+10 mg/kg SC nadir about 1 g below Fig 7c (38.5 against 39.5 g; the SC
+study's own vehicle curve and starting weight are used). Neither reading
+reproduces the early dip of the 1 mg/kg IV curve (about 41.9 g at day 3 in
+Fig 7b).
+
+## Vehicle self-consistency
+
+With no drug, P = 0 and a treated animal that starts on the vehicle curve
+must stay on it (Eq 8 defines vehicle food intake from that curve).
+
+```{r vehicle-check}
+veh_ev <- data.frame(id = 1L, time = seq(0, 56 * 24, by = 24), evid = 0, amt = 0,
+                     cmt = "central", WT_BASE = 0.04325)
+veh <- as.data.frame(rxode2::rxSolve(dio, veh_ev))
+max(abs(veh$bw - veh$bwc))
+stopifnot(max(abs(veh$bw - veh$bwc)) < 1e-3)
+```
+
+## PKNCA: DIO PK against Table 1 and Table 2
+
+In the DIO model the intact molecule is what the CT assay detects, and the
+intact plus N-only molecules are what the NT assay detects. Single 10 mg/kg
+doses (per 45 g) with the packaged model:
+
+```{r dio-pknca}
+pk_times <- c(seq(0, 24, by = 0.25), seq(25, 480, by = 1))
+dio_pk <- bind_rows(
+  dio_run(dio, 10, "IV", 0.04325, times = pk_times, n_doses = 1),
+  dio_run(dio, 10, "SC", 0.04325, times = pk_times, n_doses = 1)
+)
+dio_nca_in <- dio_pk |>
+  transmute(id, time, route, CT = Cc, NT = Cc + Cc_nonly) |>
+  pivot_longer(c(CT, NT), names_to = "analyte", values_to = "conc_nM") |>
+  mutate(Cc = conc_nM * 192000 / 1e6, group = paste("DIO", analyte, route)) |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, group)
+stopifnot(all(dio_nca_in$Cc >= -1e-6 * max(dio_nca_in$Cc)))
+dio_nca_in <- nca_floor(dio_nca_in)
+dio_dose <- dio_nca_in |> distinct(id, group) |> mutate(time = 0, dose = 10000)
+dio_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(dio_nca_in, Cc ~ time | group + id),
+  # dose in ug/kg with concentrations in ug/mL gives CL in mL/h/kg
+  PKNCA::PKNCAdose(dio_dose, dose ~ time | group + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                         aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE)
+))
+dio_res <- as.data.frame(dio_nca)
+```
+
+```{r nca-comparison}
+sim_long <- bind_rows(obob_res, dio_res) |>
+  filter(PPTESTCD %in% c("half.life", "cl.obs", "tmax")) |>
+  filter(!(grepl("SC", group) & PPTESTCD == "cl.obs")) |>
+  select(group, PPTESTCD, PPORRES)
+# Table 1 (IV) and Table 2 (SC), means. CL is not reported for SC; the NT
+# half-life of ob/ob SC and its Cmax are not used (NC / dose not stated).
+ref <- tibble::tribble(
+  ~group, ~half.life, ~cl.obs, ~tmax,
+  "ob/ob CT IV", 2.20, 20.2, NA,
+  "ob/ob NT IV", 13.0, 3.25, NA,
+  "ob/ob CT SC", 2.48, NA, 6.0,
+  "ob/ob NT SC", NA, NA, 21.0,
+  "DIO CT IV", 1.61, 18.8, NA,
+  "DIO NT IV", 22.7, 2.62, NA,
+  "DIO CT SC", 3.61, NA, 4.0,
+  "DIO NT SC", 55.1, NA, 19.0
+)
+sim_long <- sim_long |> semi_join(
+  ref |> pivot_longer(-group, names_to = "PPTESTCD") |> filter(!is.na(value)),
+  by = c("group", "PPTESTCD")
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  sim_long, ref, by = "group",
+  units = c(half.life = "h", cl.obs = "mL/h/kg", tmax = "h")
+)
+# Only IV clearances are compared, so the row is CL, not CL/F
+cmp[[1]] <- sub("CL/F", "CL", cmp[[1]], fixed = TRUE)
+knitr::kable(cmp)
+```
+
+`r attr(cmp, "footnote")`
+
+The models use the clipping half-lives the authors chose (ob/ob 2.5 and
+13 h; DIO 1.7 and 26.2 h), which are close to but not equal to the Table 1
+means, so the IV half-lives agree within about 15%. Clearances agree less
+well: the models were built to reproduce the clipping kinetics and the PD,
+not the volume terms of the NCA (ob/ob uses a volume of 40 mL/kg against a
+Table 1 Vc of 22.5-24.2 mL/kg; the ob/ob CT analyte also includes the
+long-lived molecules whose N-terminus was clipped first). After SC dosing the
+model's terminal half-lives equal its clipping half-lives, because loss from
+the depot (absorption plus clipping) is faster than clipping alone; the
+longer SC half-lives of Table 2 (3.6 h and 55 h in DIO) are not reproduced,
+and neither are the Tmax values of the DIO arm. These rows are shown as they
+are and were not tuned.
+
+The DIO Methods also state that this PK model "leads to calculated
+bioavailabilities of 2.6% and 38.5% for intact CT and NT respectively
+following subcutaneous dosing, a Tmax ~24 hours for the intact NT":
+
+```{r dio-f}
+auc <- dio_res |> filter(PPTESTCD == "aucinf.obs") |> select(group, PPORRES)
+f_ct <- auc$PPORRES[auc$group == "DIO CT SC"] / auc$PPORRES[auc$group == "DIO CT IV"]
+f_nt <- auc$PPORRES[auc$group == "DIO NT SC"] / auc$PPORRES[auc$group == "DIO NT IV"]
+# Closed form: fraction of the depot dose absorbed before clipping
+ka <- log(2) / 48; kct <- log(2) / 1.7; knt <- log(2) / 26.2
+c(F_CT = f_ct, F_CT_closed_form = ka / (ka + kct + knt),
+  F_NT = f_nt, F_NT_closed_form = ka / (ka + knt))
+stopifnot(abs(f_ct / (ka / (ka + kct + knt)) - 1) < 0.01, abs(f_nt / (ka / (ka + knt)) - 1) < 0.01)
+tmax_nt <- dio_res |> filter(group == "DIO NT SC", PPTESTCD == "tmax") |> pull(PPORRES)
+tmax_nt
+```
+
+The model gives 3.2% and 35.3%, against the 2.6% and 38.5% the paper quotes
+for the same model, and an NT Tmax of about `r round(tmax_nt)` hours (paper:
+~24 hours). The printed bioavailabilities cannot both come from one
+absorption half-life (2.6% implies 60 h, 38.5% implies 42 h), so they may
+have been computed over a finite window or with settings not given in the
+paper.
+
+# Assumptions and deviations
+
+* **Central-adipose exchange (DIO).** Packaged as printed: a flow of
+  0.0167 mL/h between equal concentrations (`kp_adipose = 1`). This
+  under-predicts the paper's own Fig 5b, 5d, 7b and 7c (see above). An
+  exchange with a rate constant of about 0.05 1/h on amounts in both
+  directions (`q = 0.12` mL/h, `kp_adipose = 3` in this parameterisation)
+  reproduces Fig 5b and 5d and comes within about 1 g of the Fig 7b/7c
+  nadirs. The 0.05 1/h was read from Fig 5b; the paper
+  prints neither it nor `kp_adipose`, which exists in the model only so the
+  alternative can be expressed as an `ini()` override.
+* **Molecular weight.** Not printed. 192 kDa makes a 10 mg/kg IV dose in
+  4% of body weight start at the ~1300 nM of Fig 5a; with it the ob/ob
+  model reproduces Fig 6a and 6b. It is consistent with an IgG scaffold
+  carrying two FGF21 molecules (roughly 150 + 2 x 19.5 kDa).
+* **OGTT normalisation A.** Not printed. Set so the model equals the
+  day-3 response to 10 mg/kg SC in Fig 6a (29900 (mg/dL)*min, read from the
+  figure) for Fig 6a, and to the 10 mg/kg IV point (23500) for Fig 6b, as
+  the Results describe.
+* **Vehicle body-weight curve (DIO).** The paper smooths the vehicle data to
+  estimate vehicle food intake but gives no smoothing function. The vehicle
+  model curves of Fig 7b (IV study, packaged default) and Fig 7c (SC study,
+  set by override above) were digitised and fitted with an exponential
+  approach (residual SD about 0.1 g). Group starting weights were read from
+  the same figures.
+* **Eq 8 energy densities.** Eq 8 writes the energy content of added tissue
+  as 0.46 x 7.6 + 0.54 x 39.5 kJ/g, transposing the fat and lean
+  coefficients of Eq 7 and Eq 13 (0.46 x 39.5 + 0.54 x 7.6, from 46% body
+  fat). The model uses the Eq 7/Eq 13 value throughout; with the printed
+  Eq 8 a vehicle animal would grow 11% faster than the vehicle curve it is
+  built from.
+* **Sign of the FGF21 energy term.** Eq 11 defines dE_FGF21 = -epsilon P TAT
+  and Eq 12 subtracts it, which as printed would add energy and increase
+  body weight. The text describes it as "an additional energy consumption
+  term" (browning, thermogenesis), so the model subtracts epsilon P TAT from
+  the energy balance.
+* **Units of epsilon.** Fig 7a gives epsilon in kJ/(day g FFM), but Eq 11 and
+  the text ("proportional to the amount of body fat") apply it to total
+  adipose tissue. The model follows Eq 11; applying it to fat-free mass
+  instead gives a 10 mg/kg IV nadir near 29 g with the packaged exchange,
+  far below Fig 7b (37.5 g).
+* **Baseline food intake.** FI(t = 0) in Eq 10 is taken as Eq 10 evaluated at
+  t = 0, where P = 0: vehicle intake at day 0 scaled by
+  (BWcontrol(0) / BW(0))^beta. For groups starting on the vehicle curve this
+  is the vehicle intake.
+* **RMR units.** The Methods give 0.86 kJ/(g fat free mass); per day is
+  implied by the food-intake units and the reference.
+* **Dose basis (DIO).** Doses are converted to mg for a 45 g mouse, the body
+  weight the PK volumes are built for. Body weight in the PD part does not
+  feed back into the PK.
+* **Receptor binding.** Eq 4 is solved exactly (the free receptor is the
+  root of a cubic), not by numerical iteration; the check above confirms the
+  root at every output time.
+* **No variability.** The paper estimates no between-animal or residual
+  variability; neither model has etas or residual error.
