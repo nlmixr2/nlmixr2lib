@@ -1,0 +1,501 @@
+---
+title: "Ticagrelor and platelet reactivity (Astrand 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ticagrelor and platelet reactivity (Astrand 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Astrand_2019_ticagrelor"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Astrand_2019_ticagrelor"))$description`
+* Article: <https://doi.org/10.1111/bcp.13812> (open access, PMC6339964)
+
+Astrand 2019 pooled two AstraZeneca studies, ONSET/OFFSET (stable coronary
+artery disease, CAD) and the PEGASUS-TIMI 54 platelet function substudy (prior
+myocardial infarction, MI), to relate ticagrelor exposure to platelet
+reactivity measured as VerifyNow P2Y12 reaction units (PRU). Ticagrelor and its
+active metabolite AR-C124910XX were modelled jointly; platelet inhibition is a
+direct sigmoid Emax function of the ticagrelor concentration alone. The
+authors tested the sum of parent and metabolite as the driver and kept
+ticagrelor alone (OFV difference 3.6).
+
+**Units.** Doses are in mg and concentrations in nmol/L, as in the paper. The
+model converts with the ticagrelor molecular weight, 522.57 g/mol. The
+metabolite states hold ticagrelor-equivalent mass, so the molar fraction
+`fm` carries straight through and the metabolite's own molecular weight is not
+needed.
+
+# Population
+
+ONSET/OFFSET randomised 123 mainly white (88%) patients with stable CAD to
+ticagrelor 180 mg then 90 mg twice daily (n = 57), clopidogrel 600 mg then 75
+mg once daily (n = 54, not modelled) or placebo (n = 12) for about six weeks.
+The PEGASUS-TIMI 54 platelet function substudy randomised 180 mainly white
+(93%) patients with an MI 1-3 years earlier to placebo (n = 64), ticagrelor 60
+mg (n = 58) or 90 mg (n = 58) twice daily, sampled before and 2 h after a dose
+after at least four months of treatment. All patients took aspirin. The
+analysis used 871 ticagrelor, 872 AR-C124910XX and 954 PRU measurements
+(Astrand 2019 Methods and Table 1). Age, weight and sex are not reported in the
+article, and no demographic covariate entered the model.
+
+The only covariate is the study indicator `STUDY_PEGASUS` (1 = PEGASUS-TIMI 54
+prior-MI patient). It switches on a 0.48 h absorption lag and lowers the PRU
+baseline from 311 to 261.
+
+The same information is available programmatically via
+`readModelDb("Astrand_2019_ticagrelor")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment in
+`inst/modeldb/specificDrugs/Astrand_2019_ticagrelor.R`; this table collects
+them. All values are from Astrand 2019 Table 2 unless stated.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (CL/F) | 16.6 L/h | Table 2 |
+| `lq` (Q/F) | 10.4 L/h | Table 2 |
+| `lvc` (Vc/F) | 156 L | Table 2 |
+| `lvp` (Vp/F) | 55.8 L | Table 2 |
+| `lktr` (KTR) | 10.1 1/h | Table 2 |
+| `ltlag` (lag, prior MI only) | 0.48 h | Table 2, 'Absorption lag time prior MI' |
+| `lfdepot` (Frel) | 1, fixed | Table 2, '1 FIX' |
+| `lcl_tam` (CLm/F) | 10.2 L/h | Table 2 |
+| `fm` (Fm) | 0.22, fixed | Table 2 '0.22 FIX'; Methods |
+| `lq_tam` (Qm/F) | 4.41 L/h | Table 2 |
+| `lvc_tam` (Vcm/F) | 7.04 L | Table 2 |
+| `lvp_tam` (Vpm/F) | 42.3 L | Table 2 |
+| `rbase` (PRU baseline, ONSET/OFFSET) | 311 | Table 2; Results |
+| `rbase_pegasus` (PRU baseline, PEGASUS) | 261 | Table 2; Results |
+| `lec50` (EC50) | 116 nmol/L | Table 2; Abstract |
+| `logitemax` (Emax) | logit(0.985) | Table 2, Emax 98.5% derived from the estimated logit |
+| `hill` (gamma) | 1.59 | Table 2 |
+| `etalcl`, `etalq`, `etalktr`, `etalfdepot` | 0.24^2, 0.95^2, 0.54^2, 0.32^2 | Table 2 BSV column (24, 95, 54, 32%) |
+| `etalcl_tam`, `etalvp_tam` | 0.28^2, 0.37^2 | Table 2 BSV column (28, 37%) |
+| `etarbase` + `etalec50` | 35^2, 0.33 * 35 * 0.66, 0.66^2 | Table 2: PRU baseline SD 35 (additive), EC50 66%, correlation 0.33 |
+| `etalogitemax` | 2.2^2 | Table 2: Emax BSV 2.2, SD on the logit scale (footnote) |
+| `propSd`, `propSd_tam` | 0.32, 0.26 | Table 2 proportional residual errors |
+| `propSd_PRU`, `powExp_PRU` | 47.6 / 300^0.48, 0.48 | Table 2 and footnote: SD = (PRU/300)^alpha * 47.6 |
+| Erlang absorption, 8 transits, one KTR | -- | Results, 'Ticagrelor population PK model' |
+| Two-compartment parent and metabolite, Fm of CL/F forms metabolite | -- | Methods, 'Population PK/PD model development' |
+| `PRU = PRU_baseline * (1 - Emax * C^gamma / (EC50^gamma + C^gamma))` | -- | Results equation |
+| Molecular weight 522.57 g/mol | -- | Not printed; reproduces the printed steady-state averages exactly (below) |
+
+```{r model}
+mod <- readModelDb("Astrand_2019_ticagrelor")
+ui <- rxode2::rxode2(mod)
+typ <- rxode2::zeroRe(ui)
+```
+
+# Event-table helpers
+
+The model has three endpoints (`Cc`, `Cc_tam`, `PRU`), so observation rows name
+the `central` ODE state together with `dvid = 1L`. Concentrations and the
+inhibition fraction `inhib` are returned on every row regardless.
+
+```{r helpers}
+make_events <- function(ids, dose_mg, n_doses, ii, obs_times, pegasus) {
+  doses <- tidyr::crossing(id = ids, time = ii * (seq_len(n_doses) - 1)) |>
+    dplyr::mutate(amt = dose_mg, evid = 1L, cmt = "depot", dvid = NA_integer_)
+  obs <- tidyr::crossing(id = ids, time = obs_times) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::mutate(STUDY_PEGASUS = pegasus)
+}
+
+solve_df <- function(model, events, keep = NULL) {
+  as.data.frame(rxode2::rxSolve(
+    model, events = events, keep = keep,
+    useLinCmt = FALSE, maxsteps = 5e5
+  ))
+}
+```
+
+# Typical-value checks against printed numbers
+
+The Results print three deterministic quantities that pin the structure: the
+average steady-state concentration for 60 and 90 mg twice daily (576 and 864
+nmol/L) and the terminal half-lives of ticagrelor and AR-C124910XX (10.2 and
+9.6 h, Discussion). Since `Css,av = F * Dose / (CL/F * tau)`, the first pair
+also fixes the molecular weight used for the nmol/L conversion.
+
+```{r typical-checks}
+css_typ <- lapply(c(60, 90), function(d) {
+  ev <- make_events(1L, d, 40, 12, seq(468, 480, by = 0.01), pegasus = 0)
+  s <- solve_df(typ, ev)
+  data.frame(dose = d, css_av = sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2) / 12)
+}) |> dplyr::bind_rows()
+css_typ$published <- c(576, 864)
+knitr::kable(
+  css_typ |> dplyr::rename("Dose (mg BID)" = dose, "Css,av simulated (nmol/L)" = css_av,
+                           "Css,av published (nmol/L)" = published),
+  digits = 1
+)
+
+# Terminal half-life of each two-compartment disposition from its eigenvalues.
+p <- rxode2::rxode2(mod)$theta
+half_life <- function(cl, q, vc, vp) {
+  k10 <- cl / vc; k12 <- q / vc; k21 <- q / vp
+  s <- k10 + k12 + k21
+  beta <- (s - sqrt(s^2 - 4 * k10 * k21)) / 2
+  log(2) / beta
+}
+t_half <- c(
+  ticagrelor = half_life(exp(p[["lcl"]]), exp(p[["lq"]]), exp(p[["lvc"]]), exp(p[["lvp"]])),
+  AR_C124910XX = half_life(exp(p[["lcl_tam"]]), exp(p[["lq_tam"]]), exp(p[["lvc_tam"]]), exp(p[["lvp_tam"]]))
+)
+round(t_half, 2)
+
+# Typical-value peak after the 180 mg loading dose (stable CAD, no lag).
+typ_ld <- solve_df(typ, make_events(1L, 180, 1, 24, seq(0, 24, by = 0.01), pegasus = 0))
+cmax_typ <- max(typ_ld$Cc)
+round(cmax_typ)
+
+stopifnot(
+  abs(css_typ$css_av / css_typ$published - 1) < 0.005,
+  abs(t_half[["ticagrelor"]] - 10.2) < 0.1,
+  abs(t_half[["AR_C124910XX"]] - 9.6) < 0.15,
+  # Printed median Cmax 2096 nmol/L; the deterministic peak is about 8% lower
+  # (see the PKNCA section).
+  abs(cmax_typ / 2096 - 1) < 0.10
+)
+```
+
+Both steady-state averages match to within rounding, and the half-lives
+(10.18 and 9.67 h) match the Discussion's 10.2 and 9.6 h.
+
+# Concentration-response (replicates Figure 3)
+
+The Results state that "80% median platelet inhibition (IQR: 66-86%) ... was
+on average reached at ticagrelor concentrations of 344 nmol/L". The spread
+comes only from the EC50 and Emax random effects, so it can be reproduced
+directly from the model's omega matrix. It also tests how the Table 2 'BSV'
+column was read: the logit-scale Emax entry of 2.2 is taken as an SD, as the
+table footnote states.
+
+```{r conc-response}
+om <- ui$omega
+set.seed(20190201)
+n_pd <- 20000
+eta_ec50 <- rnorm(n_pd, 0, sqrt(om["etalec50", "etalec50"]))
+eta_emax <- rnorm(n_pd, 0, sqrt(om["etalogitemax", "etalogitemax"]))
+ec50_i <- exp(p[["lec50"]] + eta_ec50)
+emax_i <- plogis(p[["logitemax"]] + eta_emax)
+inhib_at <- function(conc) emax_i * conc^p[["hill"]] / (ec50_i^p[["hill"]] + conc^p[["hill"]])
+
+q344 <- 100 * quantile(inhib_at(344), c(0.25, 0.5, 0.75))
+round(q344, 1)
+stopifnot(abs(q344[["50%"]] - 80) < 3, abs(q344[["25%"]] - 66) < 4)
+
+conc_grid <- c(0, exp(seq(log(1), log(6000), length.out = 120)))
+curve <- lapply(conc_grid, function(cc) {
+  x <- 100 * inhib_at(cc)
+  data.frame(conc = cc, median = median(x), lo = quantile(x, 0.025), hi = quantile(x, 0.975))
+}) |> dplyr::bind_rows()
+
+ggplot(curve, aes(conc + 1, median)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line() +
+  scale_x_log10() +
+  labs(x = "Ticagrelor plasma concentration + 1 (nmol/L)", y = "PRU inhibition (%)",
+       caption = "Replicates Figure 3 of Astrand 2019: median and 95% interval over EC50 and Emax variability.")
+```
+
+The simulated quartiles at 344 nmol/L are close to the published 66, 80 and 86%.
+Figure 3's shaded band is narrower at high concentrations than this one; the
+band in the paper is not defined beyond "95% prediction interval", and the
+model's logit-normal Emax (SD 2.2) gives about 5% of patients a maximal
+inhibition below 64%, which is what the steady-state quantiles below require.
+
+# Loading dose in stable CAD and prior MI patients (replicates Figures 1 and 2)
+
+```{r loading-dose}
+rxode2::rxSetSeed(2019)
+n_per_arm <- 200
+obs_ld <- c(0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.5, 4, 5, 6, 8, 10, 12, 16, 20, 24)
+ev_ld <- dplyr::bind_rows(
+  make_events(1:n_per_arm, 180, 1, 24, obs_ld, pegasus = 0) |> dplyr::mutate(population = "Stable CAD"),
+  make_events(n_per_arm + 1:n_per_arm, 180, 1, 24, obs_ld, pegasus = 1) |> dplyr::mutate(population = "Prior MI")
+)
+sim_ld <- solve_df(ui, ev_ld, keep = "population")
+
+sim_ld |>
+  dplyr::filter(population == "Stable CAD") |>
+  dplyr::select(time, Cc, PRU) |>
+  tidyr::pivot_longer(c(Cc, PRU)) |>
+  dplyr::group_by(name, time) |>
+  dplyr::summarise(p10 = quantile(value, 0.1), p50 = median(value), p90 = quantile(value, 0.9), .groups = "drop") |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), alpha = 0.3) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y",
+             labeller = labeller(name = c(Cc = "Ticagrelor (nmol/L)", PRU = "PRU (with residual error)"))) +
+  labs(x = "Time after the 180 mg loading dose (h)", y = NULL,
+       caption = "Replicates the upper-left panels of Figures 1 and 2 of Astrand 2019: median and 10th-90th percentiles.")
+```
+
+The Results report that the median maximal PRU inhibition after the 180 mg
+loading dose was 96% (IQR 91-98%), reached on average at 1.8 h in CAD and
+2.4 h in prior MI patients. The simulated values use the individual
+predictions (no residual error). The paper's "on average" times are compared
+with the simulated mean times (1.7 and 2.2 h here); the prior-MI delay comes
+from the 0.48 h lag.
+
+```{r ld-peak}
+peak <- sim_ld |>
+  dplyr::group_by(population, id) |>
+  dplyr::summarise(max_inhib = 100 * max(inhib), t_max_inhib = time[which.max(inhib)], .groups = "drop") |>
+  dplyr::group_by(population) |>
+  dplyr::summarise(
+    `Median max inhibition (%)` = median(max_inhib),
+    `Q1 (%)` = quantile(max_inhib, 0.25),
+    `Q3 (%)` = quantile(max_inhib, 0.75),
+    `Mean time of max inhibition (h)` = mean(t_max_inhib),
+    `Median time of max inhibition (h)` = median(t_max_inhib)
+  )
+knitr::kable(peak, digits = 1)
+
+stopifnot(
+  all(abs(peak$`Median max inhibition (%)` - 96) < 3),
+  peak$`Median time of max inhibition (h)`[peak$population == "Prior MI"] >
+    peak$`Median time of max inhibition (h)`[peak$population == "Stable CAD"]
+)
+```
+
+# Steady-state dose response (replicates Figure 4)
+
+The paper simulated 15-90 mg twice daily at steady state and summarised PRU
+inhibition 2 h after a dose and at the 12 h trough. Fourteen doses (7 days,
+about 16 terminal half-lives) reach steady state. The paper does not say which
+population was simulated; inhibition does not depend on the PRU baseline, and
+the lag time hardly moves steady-state concentrations, so the stable-CAD
+setting is used.
+
+```{r dose-response}
+rxode2::rxSetSeed(4)
+doses <- c(15, 30, 45, 60, 90)
+ev_dr <- lapply(seq_along(doses), function(i) {
+  make_events((i - 1) * n_per_arm + 1:n_per_arm, doses[i], 14, 12, c(158, 168), pegasus = 0) |>
+    dplyr::mutate(dose = doses[i])
+}) |> dplyr::bind_rows()
+sim_dr <- solve_df(ui, ev_dr, keep = "dose") |>
+  dplyr::mutate(when = ifelse(time == 158, "2 h post-dose", "Trough 12 h after dose"),
+                inhib_pct = 100 * inhib)
+
+ggplot(sim_dr, aes(factor(dose), inhib_pct)) +
+  geom_boxplot(outlier.shape = NA, coef = 0) +
+  stat_summary(fun.min = function(x) quantile(x, 0.05), fun.max = function(x) quantile(x, 0.95),
+               fun = median, geom = "linerange") +
+  facet_wrap(~when) +
+  labs(x = "Dose (mg twice daily)", y = "PRU inhibition (%)",
+       caption = "Replicates Figure 4 of Astrand 2019: box = IQR, whiskers = 5th-95th percentiles.")
+```
+
+The Results give medians and IQRs for 30-90 mg, and the proportion of patients
+below 70% inhibition at the trough.
+
+```{r dose-response-table}
+published_dr <- tibble::tribble(
+  ~dose, ~when, ~pub_median, ~pub_q1, ~pub_q3,
+  90, "2 h post-dose", 94, 87, 97,
+  90, "Trough 12 h after dose", 87, 73, 93,
+  60, "2 h post-dose", 92, 83, 96,
+  60, "Trough 12 h after dose", 80, 62, 90,
+  45, "2 h post-dose", 89, 78, 95,
+  45, "Trough 12 h after dose", 73, 53, 86,
+  30, "2 h post-dose", 83, 68, 91,
+  30, "Trough 12 h after dose", 60, 39, 77
+)
+published_below70 <- tibble::tibble(dose = c(90, 60, 45, 30), pub_below70 = c(22, 34, 46, 63))
+
+sim_dr_summary <- sim_dr |>
+  dplyr::group_by(dose, when) |>
+  dplyr::summarise(
+    sim_median = median(inhib_pct), sim_q1 = quantile(inhib_pct, 0.25),
+    sim_q3 = quantile(inhib_pct, 0.75), sim_below70 = 100 * mean(inhib_pct < 70),
+    .groups = "drop"
+  )
+dr_cmp <- published_dr |>
+  dplyr::left_join(sim_dr_summary, by = c("dose", "when")) |>
+  dplyr::left_join(published_below70, by = "dose") |>
+  dplyr::mutate(
+    pub_below70 = ifelse(when == "Trough 12 h after dose", pub_below70, NA),
+    sim_below70 = ifelse(when == "Trough 12 h after dose", sim_below70, NA)
+  )
+dr_cmp |>
+  dplyr::rename(
+    "Dose (mg)" = dose, "Time" = when,
+    "Published median" = pub_median, "Published Q1" = pub_q1, "Published Q3" = pub_q3,
+    "Simulated median" = sim_median, "Simulated Q1" = sim_q1, "Simulated Q3" = sim_q3,
+    "Simulated % < 70" = sim_below70, "Published % < 70" = pub_below70
+  ) |>
+  knitr::kable(digits = 0, caption = "PRU inhibition (%) at steady state: simulated versus Astrand 2019 Results.")
+
+# Centre and robust-quantile assertions only (200 subjects per arm).
+stopifnot(
+  max(abs(dr_cmp$sim_median - dr_cmp$pub_median)) < 5,
+  max(abs(dr_cmp$sim_q1 - dr_cmp$pub_q1)) < 8,
+  max(abs(dr_cmp$sim_q3 - dr_cmp$pub_q3)) < 5
+)
+```
+
+# PKNCA validation
+
+Non-compartmental analysis of the simulated ticagrelor profiles, compared with
+the two exposure numbers in the Results: median Cmax after the 180 mg loading
+dose (2096 nmol/L, CAD patients) and the steady-state average concentration
+for 60 and 90 mg twice daily (576 and 864 nmol/L).
+
+```{r pknca-single}
+conc_ld <- sim_ld |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = paste("180 mg loading dose,", population)) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_ld <- ev_ld |>
+  dplyr::filter(evid == 1) |>
+  dplyr::mutate(treatment = paste("180 mg loading dose,", population)) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_ld, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_ld, amt ~ time | treatment + id)
+intervals_ld <- data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_ld <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals_ld))
+summary(nca_ld)
+```
+
+```{r pknca-ss}
+rxode2::rxSetSeed(60)
+obs_ss <- 156 + c(0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 6, 8, 10, 12)
+ev_ss <- dplyr::bind_rows(
+  make_events(1:n_per_arm, 60, 14, 12, obs_ss, pegasus = 1) |> dplyr::mutate(treatment = "60 mg BID"),
+  make_events(n_per_arm + 1:n_per_arm, 90, 14, 12, obs_ss, pegasus = 1) |> dplyr::mutate(treatment = "90 mg BID")
+)
+sim_ss <- solve_df(ui, ev_ss, keep = "treatment")
+
+# Re-base the last dosing interval to start at time 0.
+conc_ss <- sim_ss |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(time = time - 156) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_ss <- ev_ss |>
+  dplyr::filter(evid == 1, time == 156) |>
+  dplyr::mutate(time = 0) |>
+  dplyr::select(id, time, amt, treatment)
+intervals_ss <- data.frame(start = 0, end = 12, cmax = TRUE, cav = TRUE, auclast = TRUE)
+nca_ss <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_ss, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_ss, amt ~ time | treatment + id),
+  intervals = intervals_ss
+))
+summary(nca_ss)
+```
+
+```{r nca-compare}
+simulated_nca <- dplyr::bind_rows(
+  as.data.frame(nca_ld) |> dplyr::filter(treatment == "180 mg loading dose, Stable CAD", PPTESTCD == "cmax"),
+  as.data.frame(nca_ss) |> dplyr::filter(PPTESTCD == "cav")
+) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES)
+published_nca <- tibble::tribble(
+  ~treatment, ~cmax, ~cav,
+  "180 mg loading dose, Stable CAD", 2096, NA,
+  "60 mg BID", NA, 576,
+  "90 mg BID", NA, 864
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulated_nca,
+  reference = published_nca,
+  by = "treatment",
+  units = c(cmax = "nmol/L", cav = "nmol/L"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Regimen" = treatment) |>
+  knitr::kable(caption = "Simulated median NCA versus the medians printed in the Astrand 2019 Results.")
+
+sim_med <- simulated_nca |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(med = median(PPORRES), .groups = "drop")
+stopifnot(
+  # The cohort median sits 10-13% below the printed value (explained below);
+  # the bound leaves room for cohort-to-cohort spread.
+  abs(sim_med$med[sim_med$PPTESTCD == "cmax"] / 2096 - 1) < 0.20,
+  all(abs(sim_med$med[sim_med$PPTESTCD == "cav"] / c(576, 864) - 1) < 0.15)
+)
+```
+
+The steady-state averages from NCA are cohort medians; the typical-value
+calculation above reproduces the printed 576 and 864 nmol/L exactly.
+
+The simulated median Cmax after the 180 mg loading dose is about 10% below the
+printed 2096 nmol/L. The typical-value Cmax is about 1920 nmol/L, and the
+between-subject variability lowers the median of the individual-prediction
+peaks slightly (to about 1870 nmol/L in a 3000-subject run) rather than raising
+it. Reading the log-normal BSV column as `omega^2 = log(1 + CV^2)` instead
+changes the median by less than 1%. Taking the largest of the residual-error
+observations at the ONSET/OFFSET sampling times (0.5, 1, 2, 4, 8 and 24 h)
+gives about 1970 nmol/L. The paper does not say how its median Cmax was
+derived, so the gap is reported rather than explained; the parameters are not
+adjusted to close it.
+
+# Metabolite exposure
+
+The Discussion states the AR-C124910XX exposure was "approximately one third of
+the ticagrelor exposure". In molar terms the steady-state AUC ratio is
+`Fm * (CL/F) / (CLm/F) = 0.22 * 16.6 / 10.2 = 0.36`.
+
+```{r metabolite}
+auc_ratio <- sim_ss |>
+  dplyr::group_by(treatment, id) |>
+  dplyr::summarise(ratio = sum(Cc_tam) / sum(Cc), .groups = "drop") |>
+  dplyr::summarise(median_ratio = median(ratio))
+auc_ratio
+stopifnot(abs(auc_ratio$median_ratio - 0.36) < 0.05)
+```
+
+# Assumptions and deviations
+
+* **BSV scale.** Table 2's 'BSV (%)' column for the log-normal etas (CL/F,
+  Q/F, KTR, Frel, CLm/F, Vpm/F, EC50) is read as `sqrt(omega^2) * 100`, so
+  `omega^2 = (BSV/100)^2`. The footnote states that the PRU-baseline entry (35)
+  and the Emax entry (2.2, logit scale) are standard deviations. The PD reading
+  is supported by the concentration-response and steady-state quantiles above,
+  which reproduce the published medians and IQRs to within a few percentage
+  points. The PK etas cannot be checked as directly; the alternative reading
+  `omega^2 = log(1 + CV^2)` would change only the spread, not the medians.
+* **Molecular weight.** The paper does not print it. The ticagrelor value
+  522.57 g/mol reproduces the printed `Css,av` of 576 and 864 nmol/L exactly.
+* **Molar metabolite formation.** `Fm` is applied as a molar fraction, and the
+  metabolite states hold ticagrelor-equivalent mass. The paper does not say
+  whether the NONMEM dataset used molar doses; the molar reading gives the
+  metabolite-to-parent exposure ratio of 0.36 ("approximately one third").
+* **Erlang chain.** "Eight transit compartments", with the same KTR used from
+  the dose compartment to the first transit compartment, between transits and
+  from the last transit to central, is encoded as `depot -> transit1 ... transit8
+  -> central`, with nine transfers at rate KTR.
+* **Lag time.** Applied to the dose compartment for prior-MI (PEGASUS)
+  patients only, as Table 2 reports it.
+* **Study and population.** The PEGASUS-TIMI 54 substudy is the only source of
+  prior-MI patients, so the study indicator `STUDY_PEGASUS` carries both the
+  lag time and the lower PRU baseline.
+* **Below-LOQ data.** The authors fitted below-LOQ PK samples with the M3
+  method; that is an estimation feature and does not affect simulation.
+* **Not modelled.** Clopidogrel PRU data (summarised descriptively by the
+  authors) and the VerifyNow BASE channel (used only for graphical display).
+* **Figure 4 boxes.** The boxes in the published Figure 4 look slightly wider
+  than the IQRs quoted in the Results text; the simulation is compared with the
+  text values.
