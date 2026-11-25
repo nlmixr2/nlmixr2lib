@@ -1638,6 +1638,10 @@ navbar:
         href: articles/Sime_2019b_ceftolozane_tazobactam.html
       - text: "Ceftolozane (Zhang 2021)"
         href: articles/Zhang_2021_ceftolozane_tazobactam.html
+      - text: "Ceftolozane healthy (Xiao 2016)"
+        href: articles/Xiao_2016_ceftolozane_tazobactam.html
+      - text: "Ceftolozane pneumonia (Xiao 2016)"
+        href: articles/Xiao_2016_ceftolozane_tazobactam.html
       - text: "Ceftolozane tazobactam (Pai 2025)"
         href: articles/Pai_2025_ceftolozane_tazobactam.html
       - text: "Ceftolozanetazobactam AmpC (Deroche 2023)"
@@ -8054,8 +8058,12 @@ navbar:
         href: articles/Williamson_2026_tazobactam.html
       - text: "Tazobactam (Zhang 2021)"
         href: articles/Zhang_2021_ceftolozane_tazobactam.html
+      - text: "Tazobactam healthy (Xiao 2016)"
+        href: articles/Xiao_2016_ceftolozane_tazobactam.html
       - text: "Tazobactam mbma (Selig 2022)"
         href: articles/Selig_2022_piperacillin_tazobactam.html
+      - text: "Tazobactam pneumonia (Xiao 2016)"
+        href: articles/Xiao_2016_ceftolozane_tazobactam.html
       - text: "Tazobactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Tbaj587 (Leding 2026)"
@@ -12235,6 +12243,7 @@ articles:
   - articles/Xiang_2020_bemarituzumab
   - articles/Xiang_2021_bemarituzumab
   - articles/Xiang_2025_tacrolimus
+  - articles/Xiao_2016_ceftolozane_tazobactam
   - articles/Xie_2000_m3g_rat
   - articles/Xie_2019_agomelatine
   - articles/Xie_2019_tofacitinib
