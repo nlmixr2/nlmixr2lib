@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Sheikh Ghadzi 2017 hypothetical antihyperglycemic drug on the integrated glucose-insulin OGTT model ([doi:10.1002/psp4.12214](https://doi.org/10.1002/psp4.12214)) -- virtual patients with type 2 diabetes (simulation model, seven switchable mechanisms of action).
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
