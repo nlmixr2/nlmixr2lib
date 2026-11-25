@@ -20,9 +20,8 @@ You_2026_moxifloxacin_ttp28d <- function() {
     concentration = "h (ttp, MGIT time to positivity); no drug concentration"
   )
 
-  # No d/dt() states: ttp is the algebraic prediction, declared
-  # paper-specific as in Gumbo_2026_ethambutol_hfs.
-  paper_specific_compartments <- c("ttp")
+  # No d/dt() states: ttp is the algebraic prediction (canonical output in
+  # inst/references/compartment-names.md).
 
   covariateData <- list(
     LUNG_CAVITY = list(

@@ -2501,6 +2501,13 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Khan_2015_ciprofloxacin.R`, `Mohamed_2016_colistin_meropenem.R`, `Sadouki_2025_meropenem_gentamicin_ciprofloxacin.R`, `Svensson_2016_rifampicin.R`, `Wicha_2018_rifampicin.R`.
 - **Notes:** Transform base (ln vs log10) is paper-dependent and documented in each source file.
 
+### ttp (**canonical mycobacterial time-to-positivity PD output**)
+- **Type:** compartment
+- **Role:** Linear-scale time to positivity of a sputum or culture sample in liquid culture (typically the BACTEC MGIT 960 system), the companion TB bacterial-burden endpoint to `log_cfu`: TTP rises as the viable bacterial load falls. The upper culture limit is typically 42 days.
+- **Source aliases:** none.
+- **Example models:** `You_2026_moxifloxacin_ttp14d.R`, `You_2026_moxifloxacin_ttp28d.R`.
+- **Notes:** Units are paper-dependent (hours or days) and stated in each model's `units` field; the You 2026 models use hours, `Gumbo_2026_ethambutol_hfs.R` uses days. A log-transformed TTP output is a different quantity and keeps its own name (`log_ttp`, paper-specific in the Koele models).
+
 ### MBL (**canonical mean bacterial load**)
 - **Type:** compartment
 - **Role:** Mean bacterial load PD output (Svensson 2017 bedaquiline). Capitalised form; lowercase `mbl` is a registered bare alias.

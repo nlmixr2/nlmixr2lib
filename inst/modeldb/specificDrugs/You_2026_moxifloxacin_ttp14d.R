@@ -20,9 +20,8 @@ You_2026_moxifloxacin_ttp14d <- function() {
     concentration = "h (ttp, MGIT time to positivity); no drug concentration"
   )
 
-  # No d/dt() states: ttp is the algebraic prediction, declared
-  # paper-specific as in Gumbo_2026_ethambutol_hfs.
-  paper_specific_compartments <- c("ttp")
+  # No d/dt() states: ttp is the algebraic prediction (canonical output in
+  # inst/references/compartment-names.md).
   # One eta shared by both slopes (alpha_bi and beta_bi); there is no single
   # lslope_bi typical value for it to pair with.
   paper_specific_etas <- c("etalslope_bi")
