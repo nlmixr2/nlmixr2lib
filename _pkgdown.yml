@@ -2168,6 +2168,8 @@ navbar:
         href: articles/Wang_2019_cyclosporin.html
       - text: "Cyclosporine (Back 2019)"
         href: articles/Back_2019_pediatric_size_maturation.html
+      - text: "Cyclosporine (Baek 2014)"
+        href: articles/Baek_2014_cyclosporine.html
       - text: "Cyclosporine (Feng 2023)"
         href: articles/Feng_2023_cyclosporine.html
       - text: "Cyclosporine (Gao 2022)"
@@ -10327,7 +10329,7 @@ articles:
   - articles/Back_2018_fenofibrate
   - articles/Back_2019_pediatric_size_maturation
   - articles/Bae_2026_MIT001
-  - articles/Bae_2026_busulfan
+  - articles/Baek_2014_cyclosporine
   - articles/Baheti_2011_tenofovir
   - articles/Bai_2021_mkAsodnLiposome_pbpk
   - articles/Bai_2024_imipenem

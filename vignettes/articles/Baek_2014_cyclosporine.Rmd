@@ -1,0 +1,478 @@
+---
+title: "Cyclosporine (Baek 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cyclosporine (Baek 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Baek_2014_cyclosporine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Baek_2014_cyclosporine"))$description`
+* Article (open access): <https://doi.org/10.2147/DDDT.S70595>
+
+Baek 2014 followed oral micro-emulsified cyclosporine (CsA) through the
+non-steady-state first week after living-donor renal transplantation. Full
+12-hour profiles on postoperative days (POD) 2, 3 and 7 were fitted with a
+two-compartment model with first-order absorption and a lag time. Disposition
+was held constant across the week. The absorption parameters (ka, lag time
+and relative bioavailability F1) were allowed to change between study days,
+and they did: ka rose 4.56-fold from POD 2 to POD 3, the lag time 1.15-fold,
+and F1 rose 1.09-fold and then fell again by POD 7.
+
+# Population
+
+Sixty-nine adult Korean recipients of a first living-donor kidney (Samsung
+Medical Center, Seoul) were enrolled: mean age 41.2 years (SD 10.6, range
+16-63), mean body weight 58.7 kg (SD 10.2, range 38.9-97.6), 31 women and 38
+men (Table 1). All received CsA, mycophenolate mofetil 1,500 mg/day and
+tapering methylprednisolone without induction therapy. CsA was given as 4
+mg/kg IV on POD 1 and then as 8 mg/kg/day oral micro-emulsion (Cipol-N soft
+capsule) in two divided doses from POD 2, titrated to a trough of 300-350
+ng/mL. Whole blood was sampled pre-dose and at 1, 2, 3, 4, 6, 8 and 12 h after
+the morning dose on POD 2, 3 and 7; two patients with acute rejection missed
+the POD 7 profile, leaving 1,640 concentrations. Genotype frequencies (ABCB1
+3435C>T, CYP3A4, CYP3A5) are in Table 2; none was retained as a covariate.
+
+The same information is available programmatically via
+`readModelDb("Baek_2014_cyclosporine")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The table
+below collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment model, first-order absorption, lag time; k estimated instead of CL | n/a | Results, Population PK modeling |
+| `P = theta * exp(eta)` | n/a | Methods, Equation 1 |
+| Proportional residual error only | n/a | Methods, Equation 2; Results |
+| `V2 = COV2 * (weight/60)^EWTV * (age/41.2)^EAGV` | n/a | Table 3 |
+| `ka = INKA` (POD 2), `INKA * D3KA` (POD 3), `INKA * D3KA * D7KA` (POD 7) | n/a | Table 3 |
+| `ALAG1 = INLA` (POD 2), `INLA * D3LA` (POD 3) | n/a | Table 3 |
+| `F1 = 1` (POD 2), `D3F1` (POD 3), `D3F1 * D7F1` (POD 7); `D7F1 = T7F1 * (age/41.2)^EAGF` | n/a | Table 3 |
+| `lkel` (k) | 0.254 1/h | Table 3 |
+| `lvc` (COV2) | 142 L | Table 3 |
+| `e_wt_vc` (EWTV) | 0.689 | Table 3 |
+| `e_age_vc` (EAGV) | -0.227 | Table 3 |
+| `lvp` (V3) | 236 L | Table 3 |
+| `lq` (Q) | 24.9 L/h | Table 3 |
+| `lka` (INKA) | 1.09 1/h | Table 3 |
+| `e_pod3_ka` (D3KA) | 4.56 | Table 3 |
+| `e_pod7_ka` (D7KA) | 1, fixed | Table 3 and footnote a |
+| `ltlag` (INLA) | 0.811 h | Table 3 |
+| `e_pod3_tlag` (D3LA) | 1.15 | Table 3 |
+| `lfdepot` (F1 on POD 2) | 1, fixed | Table 3 |
+| `e_pod3_fdepot` (D3F1) | 1.09 | Table 3 |
+| `e_pod7_fdepot` (T7F1) | 0.807 | Table 3 |
+| `e_age_pod7_fdepot` (EAGF) | -0.293 | Table 3 |
+| `etalvc`, `etalvp` | 13.4%, 67.1% CV; correlation 0.523 | Table 3 |
+| `etalq` | 35.4% CV | Table 3 |
+| `etalka`, `etae_pod3_ka` | 136%, 174% CV; correlation -0.571 | Table 3 |
+| `etae_pod7_ka` | 268% CV | Table 3 |
+| `etae_pod3_fdepot`, `etae_pod7_fdepot` | 12.8%, 21.2% CV | Table 3 |
+| `propSd` | 0.23 | Table 3 |
+
+# Virtual cohort
+
+Two hundred virtual recipients are drawn with weight and age from normal
+distributions matching the Table 1 mean and SD, truncated to the observed
+ranges.
+
+```{r cohort}
+set.seed(2014)
+n_sub <- 200
+rtnorm <- function(n, mean, sd, lo, hi) {
+  x <- rnorm(n, mean, sd)
+  while (any(out <- x < lo | x > hi)) x[out] <- rnorm(sum(out), mean, sd)
+  x
+}
+cohort <- tibble(
+  id = seq_len(n_sub),
+  WT = rtnorm(n_sub, 58.7, 10.2, 38.9, 97.6),
+  AGE = rtnorm(n_sub, 41.2, 10.6, 16, 63)
+)
+summary(cohort[, c("WT", "AGE")])
+```
+
+# Dosing and simulation
+
+Time zero is the first oral dose, the morning of POD 2. Each recipient takes
+4 mg/kg every 12 hours (the starting 8 mg/kg/day regimen) through the morning
+dose of POD 7, and is sampled at the study times after the morning dose of POD
+2, 3 and 7. `POD` is supplied on every row as `2 + floor(time / 24)`.
+
+```{r events}
+dose_times <- seq(0, 120, by = 12)
+pk_days <- c(2, 3, 7)
+nominal <- c(0, 1, 2, 3, 4, 6, 8, 12)
+obs_times <- sort(unique(unlist(lapply(pk_days, function(d) {
+  (d - 2) * 24 + c(seq(0, 12, by = 0.25), nominal)
+}))))
+
+doses <- tidyr::crossing(cohort, time = dose_times) |>
+  mutate(amt = 4 * WT, evid = 1, cmt = "depot")
+obs <- tidyr::crossing(cohort, time = obs_times) |>
+  mutate(amt = 0, evid = 0, cmt = "central")
+events <- bind_rows(doses, obs) |>
+  mutate(POD = 2 + floor(time / 24)) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+mod <- readModelDb("Baek_2014_cyclosporine")
+rxode2::rxSetSeed(2014)
+sim <- rxode2::rxSolve(mod, events = events, returnType = "data.frame") |>
+  mutate(
+    POD = 2 + floor(time / 24),
+    tad = time - (POD - 2) * 24
+  ) |>
+  filter(POD %in% pk_days, tad <= 12) |>
+  mutate(pod_label = factor(paste("POD", POD), levels = paste("POD", pk_days)))
+```
+
+# Replicate Figure 3 (VPC by study day)
+
+```{r fig3, fig.cap = "Replicates Figure 3 of Baek 2014: median (solid) and 90% prediction interval (dashed) of whole-blood cyclosporine after the morning dose on POD 2, 3 and 7."}
+vpc <- sim |>
+  filter(tad %in% nominal) |>
+  group_by(pod_label, tad) |>
+  summarise(
+    p05 = quantile(sim, 0.05),
+    p50 = quantile(sim, 0.50),
+    p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+# The POD 2 pre-dose sample is zero (no IV dose) and cannot go on a log axis.
+ggplot(filter(vpc, p50 > 0), aes(tad)) +
+  geom_line(aes(y = p50)) +
+  geom_line(aes(y = p05), linetype = "dashed") +
+  geom_line(aes(y = p95), linetype = "dashed") +
+  facet_wrap(~pod_label) +
+  scale_y_log10(limits = c(50, 3000)) +
+  scale_x_continuous(breaks = nominal) +
+  labs(x = "Time after dose (h)", y = "Cyclosporine (ng/mL)")
+```
+
+The published Figure 3 draws the same prediction lines in all three panels
+(median about 870 ng/mL at 2 h and about 200 ng/mL at 12 h) and overlays each
+day's observations, so the per-day comparison is against the observed points.
+The values below were read by eye from Figure 3 by the maintainers and are
+approximate.
+
+* **POD 3.** The observed points at 6, 8 and 12 h centre near 450, 300 and
+  200 ng/mL, matching the simulated medians (`r round(vpc$p50[vpc$pod_label == "POD 3" & vpc$tad == 6])`,
+  `r round(vpc$p50[vpc$pod_label == "POD 3" & vpc$tad == 8])` and
+  `r round(vpc$p50[vpc$pod_label == "POD 3" & vpc$tad == 12])` ng/mL). The
+  observed 2-h values centre near 1,000 ng/mL, below the simulated
+  `r round(vpc$p50[vpc$pod_label == "POD 3" & vpc$tad == 2])` ng/mL, so the
+  simulated POD 3 peak is somewhat sharper than the data.
+* **POD 7.** The observed points sit about 20-30% below the simulated medians
+  at every time, troughs included (observed about 160-170 ng/mL against a
+  simulated `r round(vpc$p50[vpc$pod_label == "POD 7" & vpc$tad == 12])`
+  ng/mL at 12 h). A uniform offset of this kind is what a lower average dose
+  gives, and the study doses were titrated to the trough rather than held at 4
+  mg/kg.
+* **POD 2.** The simulation starts at the first oral dose and leaves out the
+  POD 1 intravenous dose, so the simulated pre-dose concentration is zero
+  where the observed values centre near 170 ng/mL. The simulated late
+  concentrations are correspondingly lower than the observations, and the
+  slower POD 2 absorption shows as a lower 1-h median than on POD 3 or POD 7.
+
+The individual doses in the study are not reported, so absolute levels are
+not expected to match exactly.
+
+# Typical-value checks against the closed form
+
+A typical 60 kg, 41.2-year-old recipient is given a single 240 mg oral dose
+with `POD` held at 2, 3 or 7, with random effects removed. For a linear
+model, AUC0-inf is `F1 * Dose / (k * V2)`, so the ratios of AUC0-inf between
+days must equal the bioavailability ratios in Table 3: 1.09 from POD 2 to POD
+3, and 0.807 from POD 3 to POD 7 at the reference age.
+
+```{r typical}
+typ_grid <- c(seq(0, 24, by = 0.1), seq(24.5, 400, by = 0.5))
+typ_events <- bind_rows(lapply(c(2, 3, 7), function(p) {
+  bind_rows(
+    data.frame(id = p, time = 0, amt = 240, evid = 1, cmt = "depot"),
+    data.frame(id = p, time = typ_grid, amt = 0, evid = 0, cmt = "central")
+  ) |>
+    mutate(POD = p, WT = 60, AGE = 41.2)
+}))
+# Three typical subjects (one per POD) with omega removed: rxode2 warns that a
+# multi-subject solve has no omega, which is the intent here.
+typ <- withCallingHandlers(
+  rxode2::rxSolve(
+    rxode2::zeroRe(mod, "omega"),
+    events = typ_events, returnType = "data.frame",
+    rtol = 1e-10, atol = 1e-12
+  ),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+  }
+) |>
+  mutate(POD = id)
+
+typ_conc <- typ |> select(POD, time, Cc)
+typ_dose <- typ_events |> filter(evid == 1) |> select(POD, time, amt)
+typ_nca <- pk.nca(PKNCAdata(
+  PKNCAconc(typ_conc, Cc ~ time | POD),
+  PKNCAdose(typ_dose, amt ~ time | POD),
+  intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE, cmax = TRUE, tmax = TRUE)
+))
+typ_res <- as.data.frame(typ_nca$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs")) |>
+  select(POD, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  select(POD, cmax, tmax, aucinf.obs)
+
+# Closed form, ng*h/mL: F1 * Dose / (k * V2) * 1000
+f_rel <- c(`2` = 1, `3` = 1.09, `7` = 1.09 * 0.807)
+typ_res$auc_closed <- f_rel[as.character(typ_res$POD)] * 240 / (0.254 * 142) * 1000
+
+typ_res |>
+  mutate(pct_diff = 100 * (aucinf.obs / auc_closed - 1)) |>
+  dplyr::rename(
+    "POD" = POD,
+    "Cmax (ng/mL)" = cmax,
+    "Tmax (h)" = tmax,
+    "AUC0-inf, simulated (ng*h/mL)" = aucinf.obs,
+    "AUC0-inf, closed form (ng*h/mL)" = auc_closed,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2)
+
+auc <- setNames(typ_res$aucinf.obs, typ_res$POD)
+stopifnot(
+  # The solve and the closed form share every parameter, so the only
+  # difference is trapezoidal and extrapolation error (measured < 0.1%).
+  all(abs(typ_res$aucinf.obs / typ_res$auc_closed - 1) < 0.01),
+  abs(auc[["3"]] / auc[["2"]] / 1.09 - 1) < 0.005,
+  abs(auc[["7"]] / auc[["3"]] / 0.807 - 1) < 0.005
+)
+```
+
+The POD 3 increase in ka moves the typical Tmax earlier and raises Cmax
+beyond what the 9% gain in bioavailability alone would give.
+
+## Age dependence of the POD 7 bioavailability change (Figure 2C)
+
+```{r fig2c, fig.cap = "Typical D7F1 = 0.807 * (age / 41.2)^-0.293 over the observed age range; compare the individual estimates and smooth in Figure 2C of Baek 2014."}
+age_curve <- tibble(AGE = seq(16, 63, by = 1)) |>
+  mutate(d7f1 = 0.807 * (AGE / 41.2)^-0.293)
+ggplot(age_curve, aes(AGE, d7f1)) +
+  geom_line() +
+  labs(x = "Age (years)", y = "D7F1 (POD 7 vs POD 3 relative bioavailability)")
+```
+
+The typical value falls from 1.06 at 16 years to 0.71 at 63 years. The
+published smooth through the individual estimates runs from about 0.93 to
+about 0.69 over the same range. That smooth runs through individual
+(empirical Bayes) estimates, which shrink toward the population value, rather
+than tracing the typical-value curve.
+
+## Individual parameters in the stochastic cohort
+
+The medians of the individual absorption changes across the virtual cohort
+should sit at the Table 3 typical values, because each change is log-normal
+around its typical value.
+
+```{r indiv}
+ind <- sim |>
+  filter(tad == 0) |>
+  select(id, POD, ka, tlag, fdepot) |>
+  pivot_wider(names_from = POD, values_from = c(ka, tlag, fdepot))
+chk <- tibble(
+  quantity = c(
+    "ka POD 3 / POD 2", "ka POD 7 / POD 3", "lag POD 3 / POD 2",
+    "F1 POD 3 / POD 2"
+  ),
+  table3 = c(4.56, 1, 1.15, 1.09),
+  simulated_median = c(
+    median(ind$ka_3 / ind$ka_2), median(ind$ka_7 / ind$ka_3),
+    median(ind$tlag_3 / ind$tlag_2), median(ind$fdepot_3 / ind$fdepot_2)
+  )
+)
+chk |>
+  dplyr::rename(
+    "Quantity" = quantity,
+    "Table 3 typical value" = table3,
+    "Simulated median" = simulated_median
+  ) |>
+  knitr::kable(digits = 3)
+
+stopifnot(
+  # The lag-time change has no BSV, so it is exact.
+  abs(chk$simulated_median[3] / 1.15 - 1) < 1e-6,
+  # F1 ratio: log-SD 0.127, so the SE of the median of 200 is about 1.1%.
+  abs(log(chk$simulated_median[4] / 1.09)) < 0.05,
+  # ka ratio: log-SD 1.18 (174% CV), SE of the median of 200 about 0.10 on
+  # the log scale; 0.4 is roughly 4 SE and still fails on a misplaced eta.
+  abs(log(chk$simulated_median[1] / 4.56)) < 0.4
+)
+```
+
+# NCA of the simulated profiles
+
+PKNCA is run on each 12-hour profile after the morning dose, grouped by study
+day.
+
+```{r nca}
+conc_df <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, pod_label, tad, Cc)
+dose_df <- conc_df |>
+  distinct(id, pod_label) |>
+  left_join(cohort, by = "id") |>
+  mutate(tad = 0, amt = 4 * WT)
+
+nca <- pk.nca(PKNCAdata(
+  PKNCAconc(conc_df, Cc ~ tad | pod_label + id),
+  PKNCAdose(dose_df, amt ~ tad | pod_label + id),
+  intervals = data.frame(
+    start = 0, end = 12,
+    cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE
+  )
+))
+nca_sum <- as.data.frame(nca$result) |>
+  group_by(pod_label, PPTESTCD) |>
+  summarise(
+    median = median(PPORRES, na.rm = TRUE),
+    p05 = quantile(PPORRES, 0.05, na.rm = TRUE),
+    p95 = quantile(PPORRES, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(summary = sprintf("%.3g (%.3g-%.3g)", median, p05, p95)) |>
+  select(pod_label, PPTESTCD, summary) |>
+  pivot_wider(names_from = PPTESTCD, values_from = summary)
+nca_sum |>
+  dplyr::rename(
+    "Study day" = pod_label,
+    "Cmax (ng/mL)" = cmax,
+    "Tmax (h)" = tmax,
+    "Cmin (ng/mL)" = cmin,
+    "AUC0-12 (ng*h/mL)" = auclast
+  ) |>
+  knitr::kable(caption = "Median (5th-95th percentile) of simulated NCA parameters at 4 mg/kg every 12 h.")
+```
+
+Cmin on POD 2 is zero because the simulated pre-dose sample precedes the
+first oral dose. The paper reports no NCA summary, so there is no published
+table to compare against; the profiles above are checked against the Figure 3
+observations instead.
+
+# Single concentrations as predictors of AUC0-12 (Table 4)
+
+Table 4 of the paper correlates each sampled concentration with the
+linear-trapezoid AUC0-12 on each study day. The same calculation on the
+simulated nominal samples:
+
+```{r table4}
+nom <- sim |>
+  filter(tad %in% nominal) |>
+  select(id, pod_label, tad, sim) |>
+  group_by(id, pod_label) |>
+  arrange(tad, .by_group = TRUE) |>
+  mutate(auc012 = sum(diff(tad) * (head(sim, -1) + tail(sim, -1)) / 2)) |>
+  ungroup()
+r_sim <- nom |>
+  # The simulated POD 2 pre-dose sample is zero for everyone (no IV dose).
+  filter(!(pod_label == "POD 2" & tad == 0)) |>
+  group_by(pod_label, tad) |>
+  summarise(r = cor(sim, auc012), .groups = "drop") |>
+  mutate(source = "Simulated")
+r_pub <- tibble(
+  pod_label = factor(rep(paste("POD", pk_days), each = 8), levels = paste("POD", pk_days)),
+  tad = rep(nominal, 3),
+  r = c(
+    0.5215, 0.2418, 0.3323, 0.4346, 0.4925, 0.6868, 0.7013, 0.6834,
+    0.4849, 0.4397, 0.5886, 0.5908, 0.6712, 0.6568, 0.7199, 0.5457,
+    0.5291, 0.5710, 0.7536, 0.7544, 0.6841, 0.6082, 0.6489, 0.6823
+  ),
+  source = "Baek 2014 Table 4 (overall)"
+)
+bind_rows(r_sim, r_pub) |>
+  ggplot(aes(tad, r, colour = source)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~pod_label) +
+  scale_x_continuous(breaks = nominal) +
+  labs(x = "Sampling time after dose (h)", y = "Correlation with AUC0-12", colour = NULL)
+```
+
+```{r table4-best}
+best <- function(d) {
+  d |>
+    group_by(pod_label) |>
+    slice_max(r, n = 1) |>
+    ungroup() |>
+    transmute(pod_label, best = sprintf("C%g (r = %.2f)", tad, r))
+}
+best(r_sim) |>
+  rename(simulated = best) |>
+  left_join(best(r_pub) |> rename(published = best), by = "pod_label") |>
+  dplyr::rename(
+    "Study day" = pod_label,
+    "Best single time, simulated" = simulated,
+    "Best single time, Table 4" = published
+  ) |>
+  knitr::kable()
+```
+
+On POD 7 the simulation agrees with Table 4: the 2-3 h samples track AUC0-12
+best, which is the paper's case that early sampling only becomes informative
+once absorption has recovered. On POD 3 the simulated best time (6 h) is close
+to the published 8 h, with the 4-8 h samples nearly tied in both. POD 2 does
+not agree: in the simulation the 3-h sample correlates best and the late
+samples worst, whereas in the paper the 6-12 h samples correlate best. The
+simulation leaves out the POD 1 intravenous dose, whose carry-over makes up a
+large share of the late POD 2 concentrations, and it does not reproduce the
+individually titrated doses. The comparison is therefore qualitative, and it
+is not informative on POD 2.
+
+# Assumptions and deviations
+
+* **Between-subject variability scale.** Table 3 reports BSV as CV% without a
+  definition. The exact log-normal conversion `omega^2 = log(1 + CV^2)` is
+  used. If the authors meant `CV = 100 * sqrt(omega^2)`, the variances of the
+  three ka terms (136%, 174%, 268%) would be larger (1.85, 3.03 and 7.18
+  instead of 1.05, 1.39 and 2.10); the bootstrap percentile intervals in
+  Table 3 cannot discriminate between the two readings, and simulating
+  both shows that the median profiles barely differ (the POD 3 2-h median
+  moves by about 4%), so Figure 3 cannot settle it either.
+* **Lag time on POD 7.** Table 3 defines the lag time only on POD 2 (INLA)
+  and POD 3 (INLA * D3LA) and lists no POD 7 term. POD 7 is given the POD 3
+  value, following the cumulative pattern Table 3 uses for ka and F1, where
+  each later day multiplies the previous day's value.
+* **POD between and beyond the study days.** The model is defined for POD 2,
+  3 and 7. POD 4-6 take the POD 3 values and POD after 7 the POD 7 values;
+  neither was sampled.
+* **Relative bioavailability.** F1 is relative to POD 2, so V2, V3, Q and
+  CL = k * V2 are apparent values scaled by the unknown absolute oral
+  bioavailability on POD 2. The model is for oral dosing only; the POD 1
+  intravenous dose cannot be represented on the same scale and is omitted
+  from the simulations.
+* **BSV fixed to zero.** BSV on k, on the lag time and on D3LA was not
+  estimable (Table 3) and is omitted rather than encoded as a zero variance.
+  D7KA is fixed to 1 but kept to carry its BSV, as in the source.
+* **Covariates screened but not retained.** Sex, CYP3A5 genotype and ABCB1
+  (MDR1) 3435C>T genotype were tested and not retained. ABCB1 carriers had a
+  larger individual POD 7 change in ka (post hoc P = 0.002), but the genotype
+  was left out because it inflated the standard errors. These are documented
+  under `covariatesDataExcluded`.
+* **Dosing in the simulations.** The virtual recipients stay on 4 mg/kg every
+  12 h; the study titrated the dose to a 300-350 ng/mL trough, and the actual
+  doses are not reported.
+* **Erratum check.** No erratum or correction was found in Europe PMC (searched
+  2026-11-23).
