@@ -2086,6 +2086,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Carreno_2025_linerixibat.R` (founding example).
 - **Notes:** Follows the `e_<driver>_<param>` covariate-effect grammar, but the driver is a model parameter (the eta-bearing individual baseline), not a dataset covariate column, so it is registered here rather than in `covariate-columns.md`. Carreno 2025 does not print the equation; the maintainers ratified the centred additive form, which leaves the reported trough C4 and GSRS endpoints within 3% and 0.5 percentage points of the uncentred and proportional alternatives. A negative value means subjects with a higher baseline have a smaller rhythm.
 
+### rbase_circ_famp (**canonical fractional amplitude of a 24-hour cosine rhythm on a baseline level**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless fractional amplitude of a single-harmonic 24-hour cosinor rhythm that multiplies a baseline (mesor) level: `state = rbase * (1 + rbase_circ_famp * cos(2 * pi / 24 * (TCLOCK - tacro)))`. Pairs with the acrophase `ltacro` / `tacro` and the mesor `lrbase`.
+- **Source aliases:**
+  - `theta A,P` / 'amplitude' -- Bienert 2010 Eq. 7 and Table 4 (0.048 for heart rate, 0.00326 for body temperature), quoted in the Results as a percentage of the mesor.
+- **Example models:** `Bienert_2010_heartRate.R` (founding example; `rbase_circ_famp = 0.048`), `Bienert_2010_bodyTemperature.R` (`rbase_circ_famp = 0.00326`).
+- **Notes:** The single-harmonic member, on a baseline level, of the `<param>_circ_famp` family of [[cl_circ_famp_day]] and [[kin_circ_famp1, kin_circ_famp2]]; the `cl_circ_famp_day` entry names the biomarker-baseline generalisation. Linear because the amplitude is a signed fraction estimated on the natural scale. Distinct from `lamp`, which carries an ABSOLUTE amplitude in the state's own units.
+
 ### kd (**canonical mechanistic dissociation / dissociation-like rate**)
 - **Type:** paper-named-param
 - **Role:** Dissociation rate constant or paper-mechanistic "kd" parameter (paper-specific meaning). Also covers the **equilibrium** dissociation constant of a drug for its receptor, which has concentration units rather than 1/time; the log-transformed `lkd` form carries the `ini()` typical value where the source reports an exponential IIV. The two senses share the symbol in the literature, so the `label()` must state the units.

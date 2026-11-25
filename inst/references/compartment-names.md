@@ -2812,8 +2812,16 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Heart rate (beats/min) PD output. May be an indirect-response turnover state, or -- as in Dings 2026 -- an algebraic Emax output computed from an upstream effect-delay cascade and an at-diagnosis baseline anchor.
 - **Source aliases:**
   - `HR` -- the near-universal clinical abbreviation; used directly in Dings 2026 Eq. A12.
-- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (algebraic Emax output `hr = HR_BL + (rmax_hr - HR_BL) * conc/(conc + ec50_hr) + e_event_hr * iu`, fitted jointly with `map` and `sbp`), `Hallik_2020_dobutamine_hr.R` (neonatal sigmoidal Emax in the effect-compartment dobutamine concentration, fitted jointly with `Cc`), `GarrazaObaldia_2024_propofol_remifentanil.R` (indirect-response turnover state whose production is inhibited by remifentanil; feeds back on `map` production).
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (algebraic Emax output `hr = HR_BL + (rmax_hr - HR_BL) * conc/(conc + ec50_hr) + e_event_hr * iu`, fitted jointly with `map` and `sbp`), `Hallik_2020_dobutamine_hr.R` (neonatal sigmoidal Emax in the effect-compartment dobutamine concentration, fitted jointly with `Cc`), `GarrazaObaldia_2024_propofol_remifentanil.R` (indirect-response turnover state whose production is inhibited by remifentanil; feeds back on `map` production), `Bienert_2010_heartRate.R` (algebraic 24-hour cosinor about an individual mesor in propofol-sedated ICU patients; no drug term).
 - **Notes:** Holds a rate in beats/min, not a drug concentration. Distinct from the `HR` *covariate* (an observed heart-rate data value used as a covariate on clearance, e.g. `Ngamprasertwong_2016_propofol_sheep.R`) and from its anchor siblings `HR_PRESURG` / `HR_BL`: those are inputs, `hr` is the predicted output.
+
+### body_temperature (**canonical body-temperature PD output**)
+- **Type:** compartment
+- **Role:** Core body temperature (degC) PD output. In the founding example it is an algebraic 24-hour cosinor about an individual mesor, `body_temperature = rbase * (1 + rbase_circ_famp * cos(2 * pi / 24 * (TCLOCK - tacro)))`, with no drug term.
+- **Source aliases:**
+  - `TEMP` -- Bienert 2010 Table 4 and Eq. 7.
+- **Example models:** `Bienert_2010_bodyTemperature.R` (founding example; propofol-sedated adult ICU patients, mesor 37.0 degC, fractional amplitude 0.00326, acrophase 21.4 h, proportional residual error).
+- **Notes:** Holds a temperature, not a drug concentration. Spelled out per the maintainers' output-naming rule and kept lowercase so the predicted output stays distinct from the `BODYTEMP` *covariate* column in `covariate-columns.md` (an observed temperature used as an input) -- the same output/input split as `hr` / `HR`. Not for ambient, water or incubation temperatures (e.g. in fish or in-vitro models), which are environmental inputs rather than a physiological output. Residual error follows the standard per-output rule (`propSd` / `addSd` for a single-output model, `propSd_body_temperature` when multi-output).
 
 ### rvo (**canonical right ventricular cardiac output PD output**)
 - **Type:** compartment
