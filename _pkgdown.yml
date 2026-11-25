@@ -8186,14 +8186,24 @@ navbar:
         href: articles/Beliveau_2026_tenofovir_alafenamide_implant.html
       - text: "Tenofovir combined (Lu 2016)"
         href: articles/Lu_2016_tenofovir.html
+      - text: "Tenofovir cvl (Wahl 2017)"
+        href: articles/Wahl_2017_tenofovir_prep.html
+      - text: "Tenofovir dose (Wahl 2017)"
+        href: articles/Wahl_2017_tenofovir_prep.html
       - text: "Tenofovir emtricitabine (Chen 2016)"
         href: articles/Chen_2016_tenofovir_emtricitabine.html
+      - text: "Tenofovir frt (Wahl 2017)"
+        href: articles/Wahl_2017_tenofovir_prep.html
+      - text: "Tenofovir frt tfvdp (Wahl 2017)"
+        href: articles/Wahl_2017_tenofovir_prep.html
       - text: "Tenofovir full (Thoueille 2023)"
         href: articles/Thoueille_2023_tenofovir_ckd.html
       - text: "Tenofovir p24 (Jayachandran 2021)"
         href: articles/Jayachandran_2021_tenofovir.html
       - text: "Tenofovir pbpk (Granda 2024)"
         href: articles/Granda_2024_kidney_pbpk.html
+      - text: "Tenofovir plasma (Wahl 2017)"
+        href: articles/Wahl_2017_tenofovir_prep.html
       - text: "Tenofovir prdi (Lu 2016)"
         href: articles/Lu_2016_tenofovir.html
       - text: "Tenofovir pregnancy taf (Yu 2026)"
@@ -12051,6 +12061,7 @@ articles:
   - articles/Wade_2008_fluconazole
   - articles/Wade_2015_certolizumab
   - articles/Wagh_2021_spectinamide_1810_mouse
+  - articles/Wahl_2017_tenofovir_prep
   - articles/Wahlby_2004_time_varying_covariates
   - articles/Wahlquist_2024_propofol
   - articles/Wald_2022_brexanolone
