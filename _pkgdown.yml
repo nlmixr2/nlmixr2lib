@@ -8380,6 +8380,12 @@ navbar:
         href: articles/Kim_2022_SCR430_rat_pbpk.html
       - text: "SCR430 rat repeatedDosing pbpk (Kim 2022)"
         href: articles/Kim_2022_SCR430_rat_pbpk.html
+      - text: "SEN001 rat (Sou 2019)"
+        href: articles/Sou_2019_quorumSensingInhibitors.html
+      - text: "SEN019 rat (Sou 2019)"
+        href: articles/Sou_2019_quorumSensingInhibitors.html
+      - text: "SEN032 rat (Sou 2019)"
+        href: articles/Sou_2019_quorumSensingInhibitors.html
       - text: "SHetA2 dog (Sharma 2018)"
         href: articles/Sharma_2018_SHetA2.html
       - text: "SHetA2 human (Sharma 2018)"
@@ -13260,6 +13266,7 @@ articles:
   - articles/Soraluce_2020_linezolid
   - articles/SoriaChacartegui_2026_tramadol
   - articles/Soto_2014_ampicillin_sulbactam
+  - articles/Sou_2019_quorumSensingInhibitors
   - articles/Sou_2026_siremadlin
   - articles/Soy_2015_benznidazole
   - articles/Spinosa_2026_bispecific_mpbpk

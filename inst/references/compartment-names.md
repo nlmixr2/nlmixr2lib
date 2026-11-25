@@ -4493,7 +4493,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Bare lung organ compartment in full-body PBPK extractions. Also used for the *uninvolved* (non-lesion) lung tissue in site-of-action models that resolve a diseased `lesion` compartment separately -- see `lesion`.
 - **Source aliases:**
   - `CUlung` -- uninvolved-lung state in `Mehta_2023_bedaquiline_mpbpk.R` (Mehta 2023 ESM S2).
-- **Example models:** `Zhang_2011_nutlin3a.R`, `Mehta_2023_bedaquiline_mpbpk.R`, `Li_2025_polymyxinB.R` (the ELF peripheral compartment of a classical coupled plasma + ELF model, exchanging with `elf` through `q_elf_lung`), `Kreuer_2014_propofol_lungdelay.R` and `Kreuer_2014_propofol_lungcmt.R` (a plasma-driven lung CONCENTRATION in ug/mL that feeds an exhaled-breath output: a first-order delay `ke0 * (Cc - lung)` in the first, separate `kin_lung` / `kout_lung` legs in the second; neither depletes `central`).
+- **Example models:** `Zhang_2011_nutlin3a.R`, `Mehta_2023_bedaquiline_mpbpk.R`, `Li_2025_polymyxinB.R` (the ELF peripheral compartment of a classical coupled plasma + ELF model, exchanging with `elf` through `q_elf_lung`); `Sou_2019_SEN001_rat.R`, `Sou_2019_SEN019_rat.R`, `Sou_2019_SEN032_rat.R` (the intratracheal dosing compartment of a lung + plasma model, exchanging with `central` through `q_lung` and, for SEN001 and SEN032, with `lung_deep`).
 
 ### lesion (**canonical site-of-action disease-lesion compartment**)
 - **Type:** compartment
@@ -9381,7 +9381,7 @@ PBPK organ sub-compartment suffixes used by Ayyar 2024 givosiran whole-organ ext
 - **Type:** metabolite-suffix
 - **Role:** Deep-bound / sequestered pool inside the named organ.
 - **Source aliases:** `x_t` ('trap' compartment) -- Ynineb 2025 Eq. 7d, where it is attached to `peripheral2`.
-- **Example models:** `Ayyar_2024_givosiran.R`, `Pan_2019_fentanyl_pbpk.R` (`gut_deep`, `liver_deep`, `spleen_deep`), `Ynineb_2025_propofol_remifentanil.R` (`peripheral2_deep`).
+- **Example models:** `Ayyar_2024_givosiran.R`, `Pan_2019_fentanyl_pbpk.R` (`gut_deep`, `liver_deep`, `spleen_deep`), `Ynineb_2025_propofol_remifentanil.R` (`peripheral2_deep`), `Sou_2019_SEN001_rat.R` and `Sou_2019_SEN032_rat.R` (`lung_deep`, the deep lung compartment that exchanges only with the intratracheal dosing compartment `lung`).
 - **Notes:** Also attaches to a compartmental-model peripheral state when the source sub-divides that peripheral compartment into a catenary sequestered pool that exchanges ONLY with it, never with `central`: `Ynineb_2025_propofol_remifentanil.R` uses `peripheral2_deep` for the drug trapped inside the fat compartment (`peripheral2`) of a three-compartment model. A deep pool that exchanges with `central` is an ordinary extra peripheral compartment (`peripheral3`), not `_deep`.
 
 ### deep2 (**canonical second deep pool suffix**)

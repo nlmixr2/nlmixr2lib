@@ -3079,15 +3079,44 @@ One member was added alongside the Maggs 2026 rifampicin extraction: `fm_desacet
 - **Type:** log-transformed-pk
 - **Role:** Apparent volume of the canonical `lung` compartment (volume). Needed for the same reason as `lv_elf`: the bare volume canonicals `lvc` / `lvp` / `lvp2` / `lvp3` are reserved for the central and numbered peripheral compartments of a classical-PK model, and a lung distribution space is a named physiological compartment rather than a peripheral one. The bare form `v_lung` is used inside `model()` to convert the lung amount to a concentration, `Clung <- lung / v_lung`.
 - **Source aliases:** `VL2`, `V L2` -- Saporta 2026 Table 1 ("Apparent volume of distribution of second lung compartment").
-- **Example models:** `Saporta_2026_meropenem.R` (`VL2 = 9.27 L/kg`, RSE 26%; an apparent volume, because the lung limb is driven by plasma without mass transfer so the whole limb absorbs the unknown partitioning); `Li_2025_polymyxinB.R` (`V4 = 4.35 L`, the ELF peripheral compartment).
+- **Example models:** `Saporta_2026_meropenem.R` (`VL2 = 9.27 L/kg`, RSE 26%; an apparent volume, because the lung limb is driven by plasma without mass transfer so the whole limb absorbs the unknown partitioning); `Li_2025_polymyxinB.R` (`V4 = 4.35 L`, the ELF peripheral compartment); `Sou_2019_SEN001_rat.R`, `Sou_2019_SEN019_rat.R`, `Sou_2019_SEN032_rat.R` (`VL = 0.002 L`, fixed to the 2 g rat lung; the intratracheal dosing compartment).
 - **Notes:** Auto-approved 2026-09-01 as a well-formed member of the documented `lv_<compartment>` family founded by `lv_elf`, alongside the Saporta 2026 meropenem extraction (maintainers' ruling, PMC13041408, that compartment-derived names need no separate ruling). Pairs with `lq_elf_lung`. Distinct from the `kp_lung` / `lkp_lung` tissue-to-plasma partition coefficients, which are whole-body-PBPK partitioning constants rather than a fitted compartment volume.
 
 ### lq_lung (**canonical log-transformed central-to-lung inter-compartmental clearance**)
 - **Type:** log-transformed-pk
 - **Role:** Inter-compartmental clearance between `central` and a classical (non-PBPK) `lung` distribution compartment (volume / time), applied symmetrically: `q_lung / vc` out of central and `q_lung / v_lung` back. A member of the `lq_<destination>` family (`lq_milk`, `lq_elf`, `lq_kidney`), taken under the standing authorisation in the `lq_kidney` entry that perfused organs take the same `lq_<organ>` shape. The bare form `q_lung` is used inside `model()`. Pairs with `lv_lung`.
 - **Source aliases:** `Q2` -- Dias 2022 Table 1 and Equations 1 and 3 ("intercompartmental clearance between the central and the lung compartment").
-- **Example models:** `Dias_2022_tobramycin_rat.R` (`Q2 = 0.370 L/h` in rats; the lung compartment carries the unbound tobramycin sampled by lung microdialysis).
+- **Source aliases:** `CLLP` -- Sou 2019 Table 5 and Equations 1-2 ("clearance from lung to plasma"; despite the name, the same clearance returns drug from plasma to the lung, `CLLP / VC * AC`).
+- **Example models:** `Dias_2022_tobramycin_rat.R` (`Q2 = 0.370 L/h` in rats; the lung compartment carries the unbound tobramycin sampled by lung microdialysis); `Sou_2019_SEN001_rat.R`, `Sou_2019_SEN019_rat.R`, `Sou_2019_SEN032_rat.R` (`CLLP` = 0.0175, 0.0724 and 0.150 L/h; here `lung` is the intratracheal dosing compartment and `q_lung` is the absorption route into plasma).
 - **Notes:** Registered 2026-10-02 with the Dias 2022 tobramycin extraction (PMC9228144). The same bare token `q_lung` appears in the whole-body PBPK models (`Fu_2019_paclitaxel_human_pbpk.R` and others) as the physiological lung blood flow; the two readings are the same quantity -- flow between the systemic circulation and the lung -- and differ only in whether it is fitted or fixed to physiology. Distinct from `lq_elf_lung`, which exchanges the ELF and a deeper lung compartment and does not touch `central`.
+
+### lq_lung_lung_deep (**canonical log-transformed lung-to-deep-lung inter-compartmental clearance**)
+- **Type:** log-transformed-pk
+- **Role:** Bidirectional inter-compartmental clearance (volume / time) between the canonical `lung` compartment and a catenary `lung_deep` pool that exchanges ONLY with `lung`, never with `central`: `q_lung_lung_deep / v_lung` out of `lung` and `q_lung_lung_deep / v_lung_deep` back. Shaped like `lq_elf_lung` (two endpoint tokens, because neither end is `central`) and like the `lk_<organ>_<organ>_deep` rate-constant family; `lung_deep` is the registered `deep` compartment suffix on `lung`. The bare form `q_lung_lung_deep` is used inside `model()`. Pairs with `lv_lung_deep`.
+- **Source aliases:** `QL` -- Sou 2019 Table 5, Equations 1 and 4, Figure 2 ("intercompartmental clearance between VL and VLP").
+- **Example models:** `Sou_2019_SEN001_rat.R` (founding example; `QL = 0.00596 L/h`), `Sou_2019_SEN032_rat.R` (`QL = 0.0107 L/h`).
+- **Notes:** A well-formed compartment-derived name under the 2026-09-01 maintainers' ruling (PMC13041408) that names built from registered compartments need no separate ruling. Distinct from `lq_lung` (`central` <-> `lung`) and `lq_elf_lung` (`elf` <-> `lung`).
+
+### lv_lung_deep (**canonical log-transformed deep-lung volume**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent volume of the `lung_deep` compartment (volume), the catenary deep pool of `lung`. Member of the `lv_<compartment>` family founded by `lv_elf`. The bare form `v_lung_deep` is used inside `model()`.
+- **Source aliases:** `VLP` -- Sou 2019 Table 5 and Figure 2 ("volume of the deep lung compartment").
+- **Example models:** `Sou_2019_SEN001_rat.R` (founding example; `VLP = 0.0582 L`), `Sou_2019_SEN032_rat.R` (`VLP = 0.00360 L`).
+- **Notes:** A well-formed compartment-derived name under the 2026-09-01 maintainers' ruling (PMC13041408). Pairs with `lq_lung_lung_deep`.
+
+### logitfbal (**canonical logit-transformed fraction of the lung amount recovered in bronchoalveolar lavage**)
+- **Type:** log-transformed-pk
+- **Role:** Logit-scale fraction (unitless, bounded in (0, 1)) of the drug amount in the `lung` compartment that a bronchoalveolar lavage recovers at sampling. The bare form `fbal = expit(logitfbal)` is used inside `model()`: the BAL concentration is `fbal * lung / v_bal`, and when the lung homogenate is collected after the lavage, the homogenate holds the remaining `(1 - fbal) * lung`. An observation-side recovery fraction: it does not move drug between compartments.
+- **Source aliases:** `FBAL` -- Sou 2019 Table 5 and Equation 5 ("fraction of drug collected in BAL").
+- **Example models:** `Sou_2019_SEN001_rat.R` (founding example; `FBAL = 0.980`, encoded as `log(0.980 / (1 - 0.980))`).
+- **Notes:** Logit rather than log scale for the reason recorded under `logitfrel`: a log-scale bounded fraction can exceed 1 under IIV or a refit, which here would make the post-lavage lung concentration negative. Distinct from the ELF-to-lung ratio parameters (`r_elf_lung`), which scale a concentration rather than split an amount.
+
+### lv_bal (**canonical log-transformed volume of bronchoalveolar-lavage fluid**)
+- **Type:** log-transformed-pk
+- **Role:** Volume (volume) of the lavage fluid in which a bronchoalveolar lavage recovers drug, converting a recovered amount into the measured BAL concentration, `Cbal <- fbal * lung / v_bal`. A sampling-procedure volume rather than a physiological space, so it is normally wrapped in `fixed()`. The bare form `v_bal` is used inside `model()`.
+- **Source aliases:** `VBAL` -- Sou 2019 Equation 5 ("volume of fluid used to collect the BAL samples").
+- **Example models:** `Sou_2019_SEN001_rat.R` (founding example; the paper does not print the value, so it is fixed at 0.008 L back-solved from the BAL-to-lung concentration ratio in Figure 3).
+- **Notes:** Distinct from `lv_elf` / `v_elf`, the in-vivo epithelial-lining-fluid volume that a urea-dilution correction estimates; `v_bal` is the instilled-and-recovered lavage volume and is typically several hundred times larger.
 
 ### lv_rbc (**canonical log-transformed apparent red-cell compartment volume**)
 - **Type:** log-transformed-pk

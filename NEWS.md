@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Taubert 2018 iohexol ([doi:10.1038/s41598-018-35989-x](https://doi.org/10.1038/s41598-018-35989-x)) -- elderly adults (70 years or older) of the Berlin Initiative Study.
+- Add Sou 2019 quorum-sensing inhibitors SEN001, SEN019 and SEN032 ([doi:10.1016/j.xphs.2018.09.017](https://doi.org/10.1016/j.xphs.2018.09.017)) -- healthy male Sprague-Dawley rats given an intratracheal dose (plasma, lung and bronchoalveolar lavage).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
