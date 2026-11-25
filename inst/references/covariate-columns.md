@@ -4002,6 +4002,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Khera_2024_dyp688_mouse_tgi.R`.
 - **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_CARBOPLATIN_MGKG`). Carried in mg/kg because the model's `amt` is in nmol of antibody, so the categorical level cannot be recovered from the dose records. The 3 mg/kg Q2W and Q4W groups share one level; the categorical effect is a per-dose-level fit and is not an exposure-response, so the authors used the reference (smallest) kkill for every simulation outside the fitted groups.
 
+### DOSE_PP13_NGKG (**canonical for the placental protein 13 dose level of the treatment group, in ng/kg**)
+- **Description:** The recombinant placental protein 13 (PP13, galectin-13) dose level of the animal's treatment group, normalised to body weight and expressed in ng/kg. Per-subject (per-group) covariate.
+- **Units:** ng/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** none -- selects one of three dose-group parameter sets (1.3, 2.6 and 12.8 ng/kg), each the mean of individual two-compartment fits. Below 1.84 ng/kg takes the 1.3 ng/kg set, 1.84 to below 5.77 ng/kg the 2.6 ng/kg set, and 5.77 ng/kg or above the 12.8 ng/kg set (geometric midpoints between the studied levels).
+- **Source aliases:**
+  - `Group 1-4` -- Drobnjak 2018 dose groups (1.3, 2.6, 12.8 ng/kg IV; 12.8 ng/kg SC). Same units, no value transformation.
+- **Example models:** `Drobnjak_2018_pp13_rabbit.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_DYP688_MGKG`). Carried in ng/kg because the model's `amt` is the per-animal dose in pg, so the dose level cannot be recovered from the dose records without body weight. The paper gives no dose-exposure function, so this is a lookup of the nearest studied group, not an interpolation.
+
 ### CSF1 (**canonical for colony-stimulating factor 1 / macrophage-colony-stimulating factor concentration**)
 - **Description:** Plasma colony-stimulating factor 1 (CSF-1, also known as macrophage colony-stimulating factor, M-CSF) concentration (baseline or time-varying). The hematopoietic cytokine that signals through CSF-1R to drive monocyte / macrophage differentiation and survival; used as both a target-engagement biomarker (anti-CSF-1R mAbs increase circulating free CSF-1) and a baseline covariate on PK / PD parameters in CSF-1R-pathway PopPK/PD models.
 - **Units:** pg/mL (= ng/L; the two labels are numerically equivalent). Document per-model via `covariateData[[CSF1]]$units`.
