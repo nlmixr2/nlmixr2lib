@@ -1,0 +1,515 @@
+---
+title: "Copper kinetics in Wilson disease and VTX-801 gene therapy (Lindauer 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Copper kinetics in Wilson disease and VTX-801 gene therapy (Lindauer 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Lindauer_2026_copper"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Lindauer_2026_copper"))$description`
+* Article: <https://doi.org/10.1002/psp4.70153> (CPT Pharmacometrics Syst
+  Pharmacol 2026;15:e70153, PMC12823325, open access)
+* Supporting Information: Data S1 (literature overview, NONMEM control stream,
+  mouse dose-response, supplementary figures) and Data S2 (campsis simulation
+  model and script).
+
+This is a mechanistic model of whole-body copper handling, not a drug PK
+model. The drug, VTX-801, is an adeno-associated-virus vector that delivers a
+functional mini-ATP7B gene to the liver; it enters the model only as a
+restored ATP7B *activity factor* (AF) in Wilson disease (WD) patients. The
+model has 14 linear ODE states: a proximal-gut absorption pool, distal gut and
+faecal transit, three hepatic pools (extracellular, precursor, storage),
+plasma and tissue copper split into ceruloplasmin-bound (CP) and
+non-ceruloplasmin-bound copper (NCC), a deep tissue pool, and cumulative
+urine, faeces and sweat. ATP7B drives two processes: loading of copper onto
+ceruloplasmin (`k_livPre_plCP`) and biliary excretion (`k_livPre_out`); each
+is multiplied by its own activity factor.
+
+```{r model}
+mod <- readModelDb("Lindauer_2026_copper")
+mod_ui <- rxode2::rxode2(mod)
+```
+
+# Population
+
+The model was fitted to copper time-activity data digitised from 18
+published studies dating back to 1954, plus individual data from the COMET
+study (EudraCT 2019-001157-13). Data S1 Table S1 lists 215 digitised subjects:
+62 untreated WD patients, 7 WD patients on zinc, 16 WD patients on chelators,
+36 heterozygous ATP7B carriers and 94 healthy subjects; four further PET or
+scintillation liver-imaging sources are listed without subject counts. COMET
+gave 6 participants (3 healthy adults and 3 heterozygous carriers) a single
+intravenous dose of [64Cu]CuCl2 and sampled plasma (68 usable samples up to
+96 h) and faeces. Only intravenous data were used in the final fit; the oral
+absorption parameters were fixed from an earlier model version. Plasma
+radioactivity was standardised to percent of injected dose using a plasma
+volume of 2800 mL.
+
+```{r population}
+str(mod()$population)
+```
+
+# Source trace
+
+| Item | Value | Source |
+|------|-------|--------|
+| ODE system (14 copper states) | `$DES` block | Data S1 section 3 (NONMEM); Data S2 `model.campsis` `[ODE]` |
+| Gene-therapy state `trt_af` (constant, dosed with the AF) | `d/dt(trt_af) <- 0` | Data S2 `model.campsis` (`TRT` state, `A_TRT`) and script (`Bolus(..., compartment = "TRT")`) |
+| `k_abs_liv`, `k_abs_gutD` | exp(1.79), exp(2.64) /day, fixed | NONMEM THETA(1-2) FIX; Table 1 (6, 14.0) |
+| `k_livPre_out` | 1.13 /day | Table 1 |
+| `E_bill` (`f_bile_out`) | 0.75, fixed | Table 1 (Buckley); biliary split into `k_liv_gutD` / `k_liv_abs` in `$PK` |
+| `k_liv_livPre`, `k_livPre_liv` | 169, 4.9 /day (`k_livPre_liv` = 0 unless WD) | Table 1; `$PK` `IF(isWD.LT.1)` |
+| `k_livPre_plCP`, `k_livPre_livStore`, `k_livStore_livPre` | 0.516, 5.26, 0.711 /day | Table 1 |
+| `k_gutD_feces` | 1.00 /day | Table 1 |
+| `k_pl_liv` | exp(6.13) /day, fixed | NONMEM THETA(10) FIX; Table 1 (459) |
+| `k_liv_pl`, `k_pl_tis`, `k_tis_pl`, `k_pl_tis2`, `k_tis2_pl` | 1339, 91.8, 29.7, 42.9, 0.0863 /day | Table 1 |
+| `k_plCP_tisCP`, `k_tisCP_plCP`, `k_plCP_liv`, `k_tis_sweat` | exp(-0.968), exp(-0.223), exp(-2.07), exp(-5.42) /day, fixed | NONMEM THETA(20, 21, 16, 17) FIX; Table 1 (0.380, 0.800, 0.126, 0.00443) |
+| `k_pl_urine`, `k_tis_abs` | 0.411, 0.983 /day | Table 1 |
+| Plasma volume | 2.8 L, fixed | Methods (2800 mL); Data S2 `theta.csv` |
+| `AFcp`, `AFbil` (heterozygotes) | 0.369, 0.101 | Table 1 |
+| Gene-therapy biliary activity | `AF^2.28` | Data S2 `model.campsis` |
+| Chelator, WD and COMET effects | 15.8, -0.153, 1.43, 26.6, -0.607 | Table 1 |
+| Zinc effects on `k_abs_liv`, `k_pl_tis` | -0.8, 1, fixed | NONMEM THETA(26-27) FIX; Data S2 `theta.csv` (Table 1 prints -0.401, 1.2; see deviations) |
+| IIV | 15% CV, fixed (simulation assumption) | Methods, Simulations; eta set from Data S2 `omega.csv` |
+| Residual error (proportional) | 0.698, 0.176, 0.441, 0.711, 0.611, 0.203 | Table 1 |
+| Cold-copper outputs (molar mass 63.5, liver 1500 g at 75% water) | `[ERROR]` block | Data S2 `model.campsis` |
+
+# Helper functions
+
+Every simulation below builds a data frame with a dose record, observation
+records on the `plasma_ncc` state (with `dvid = 1`, because the model has six
+endpoints) and the five covariate columns. VTX-801 gene therapy is not a
+covariate: as in the authors' campsis script, the restored activity factor is
+given as a bolus into the constant state `trt_af`, which is 0 until that dose
+and holds the dosed value afterwards.
+
+```{r helpers}
+cov_cols <- function(df, wd = 0, het = 0, chel = 0, zinc = 0, comet = 0) {
+  df$DIS_WILSON <- wd
+  df$ATP7B_HET <- het
+  df$CONMED_COPPER_CHELATOR <- chel
+  df$CONMED_ZINC <- zinc
+  df$STUDY_COMET <- comet
+  df
+}
+
+# Intravenous tracer: 100 dose units into plasma NCC, so every amount reads as
+# percent of the injected dose (%ID).
+iv_tracer_events <- function(ids, obs_days) {
+  one <- bind_rows(
+    data.frame(time = 0, amt = 100, evid = 1L, cmt = "plasma_ncc", dvid = NA_integer_),
+    data.frame(time = obs_days, amt = 0, evid = 0L, cmt = "plasma_ncc", dvid = 1L)
+  )
+  bind_rows(lapply(ids, function(i) mutate(one, id = i)))
+}
+
+# VTX-801: a bolus of the activity factor `af` into `trt_af` at `time`. An
+# untreated patient (af = 0) gets no record, so trt_af stays at 0.
+af_dose <- function(ids, af, time = 0) {
+  if (af == 0) {
+    return(NULL)
+  }
+  data.frame(id = ids, time = time, amt = af, evid = 1L, cmt = "trt_af", dvid = NA_integer_)
+}
+
+# Order each subject's records by time; at a tied time the doses come first.
+sort_events <- function(df) {
+  arrange(df, id, time, desc(evid))
+}
+
+# Typical-value solve. With the etas zeroed, rxode2 notes that a multi-subject
+# solve has no omega; that is intended here, so only that warning is muffled.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+}
+solve_typical <- function(model, events) {
+  withCallingHandlers(
+    rxSolve(rxode2::zeroRe(model), events, returnType = "data.frame"),
+    warning = muffle_no_omega
+  )
+}
+```
+
+# Mass balance
+
+Every copper flux leaves one state and enters another, and urine, faeces and
+sweat are cumulative states, so after a single intravenous tracer dose the sum
+over the 14 copper states must stay at the dose. This checks the transcription of the
+ODE right-hand sides.
+
+```{r mass-balance}
+states <- c(
+  "gut_abs", "gut_distal", "liver", "liver_storage", "liver_precursor",
+  "plasma_ncc", "plasma_cp", "tissue_ncc", "tissue_deep", "tissue_cp",
+  "gut_transit", "feces", "urine", "sweat"
+)
+mb_ev <- bind_rows(
+  cov_cols(iv_tracer_events(1, c(0.1, 1, 3, 30, 300))),
+  cov_cols(iv_tracer_events(2, c(0.1, 1, 3, 30, 300)), wd = 1),
+  cov_cols(iv_tracer_events(3, c(0.1, 1, 3, 30, 300)), het = 1, chel = 1, zinc = 1)
+)
+mb <- solve_typical(mod_ui, mb_ev)
+mb$total <- rowSums(mb[, states])
+knitr::kable(mb[, c("id", "time", "total")], digits = 6)
+stopifnot(all(abs(mb$total - 100) < 1e-3))
+```
+
+# Radiocopper: 24/2-h and 48/2-h plasma ratios (Figure 4)
+
+Figure 4 compares simulated 24/2-h and 48/2-h total plasma radioactivity
+ratios with the external Czlonkowska data. The paper simulated 2000 virtual
+subjects per group with 15% CV IIV on the rate constants; 200 per group are
+simulated here. The ratio uses the total plasma copper output `Cc` (individual
+predictions, no residual error).
+
+```{r fig4}
+n_per_group <- 200
+grp <- data.frame(
+  group = c("Healthy controls", "Heterozygote", "WD"),
+  wd = c(0, 0, 1), het = c(0, 1, 0)
+)
+obs_days <- c(2, 24, 48) / 24
+ev4 <- bind_rows(lapply(seq_len(nrow(grp)), function(g) {
+  ids <- (g - 1) * n_per_group + seq_len(n_per_group)
+  cov_cols(iv_tracer_events(ids, obs_days), wd = grp$wd[g], het = grp$het[g])
+}))
+rxode2::rxSetSeed(20260101)
+sim4 <- rxSolve(mod_ui, ev4, returnType = "data.frame")
+ratios <- sim4 |>
+  mutate(group = grp$group[(id - 1) %/% n_per_group + 1], hour = round(time * 24)) |>
+  select(id, group, hour, Cc) |>
+  pivot_wider(names_from = hour, values_from = Cc, names_prefix = "h") |>
+  mutate(ratio_24_2 = h24 / h2, ratio_48_2 = h48 / h2)
+
+ratio_long <- ratios |>
+  select(group, ratio_24_2, ratio_48_2) |>
+  pivot_longer(-group, names_to = "ratio", values_to = "value")
+
+ggplot(ratio_long, aes(ratio, value, colour = ratio)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_hline(yintercept = 0.395, linetype = "dotted") +
+  facet_wrap(~group) +
+  labs(x = NULL, y = "24 or 48/2 hour ratio", colour = "Time point") +
+  theme_bw()
+```
+
+Replicates the "Simulated" boxes of Figure 4 of Lindauer 2026. The dotted
+line is the Czlonkowska diagnostic cut-off of 0.395 for the 48/2-h ratio.
+
+The medians of the paper's simulated boxes, read from Figure 4, are compared
+with the simulated medians below.
+
+```{r fig4-compare}
+fig4_ref <- data.frame(
+  group = rep(grp$group, each = 2),
+  ratio = rep(c("ratio_24_2", "ratio_48_2"), 3),
+  published = c(1.13, 1.30, 0.67, 0.85, 0.28, 0.22)
+)
+fig4_cmp <- ratio_long |>
+  group_by(group, ratio) |>
+  summarise(simulated = median(value), .groups = "drop") |>
+  left_join(fig4_ref, by = c("group", "ratio")) |>
+  mutate(pct_diff = 100 * (simulated - published) / published)
+fig4_cmp |>
+  rename(
+    "Group" = group, "Ratio" = ratio, "Simulated median" = simulated,
+    "Figure 4 median (digitised)" = published, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2)
+# Medians of 200 subjects with 15% CV on every rate constant; the digitised
+# reference is read to about +/-0.03 off the figure.
+stopifnot(abs(median(fig4_cmp$pct_diff)) < 10, max(abs(fig4_cmp$pct_diff)) < 20)
+```
+
+# Radiocopper response to ATP7B restoration (Figure 5A-B)
+
+For the responder simulations the paper did not apply the WD-specific
+distribution differences ("their behavior under treatment remains
+uncertain"), so all WD differences are switched off below with an `ini()`
+override: the three fractional shifts are set to 0 and the WD-only return
+flux from the precursor pool (`k_livPre_liv`) to effectively zero. Each WD
+patient then receives an activity factor AF (a bolus into `trt_af` before
+the tracer) on ceruloplasmin loading and
+`AF^2.28` on biliary excretion. Leaving `k_livPre_liv` on lowers the AF = 1
+plasma level at 72 h from 5.5 to 3.7 %ID, which does not match Figure 5A, so
+the figure was evidently simulated without it.
+
+```{r fig5a}
+mod_resp <- mod_ui |>
+  rxode2::ini(
+    e_wilson_k_liv_livpre = 0, e_wilson_k_tis_pl = 0, e_wilson_k_tis2_pl = 0,
+    lk_livpre_liv = log(1e-12)
+  )
+af_grid <- seq(0, 1, by = 0.1)
+fig5_days <- c(seq(0.25, 6, by = 0.25), seq(7, 72, by = 1)) / 24
+ev5a <- bind_rows(lapply(seq_along(af_grid), function(i) {
+  bind_rows(iv_tracer_events(i, fig5_days), af_dose(i, af_grid[i])) |>
+    sort_events() |>
+    cov_cols(wd = 1)
+}))
+sim5a <- solve_typical(mod_resp, ev5a) |>
+  mutate(AF = af_grid[id], pct_id = Cc * 2.8)
+ggplot(sim5a, aes(time * 24, pct_id, colour = factor(AF))) +
+  geom_line() +
+  scale_x_continuous(breaks = c(2, 6, 12, 24, 36, 48, 60, 72)) +
+  labs(x = "Time (h)", y = "%ID in plasma", colour = "AF") +
+  theme_bw()
+```
+
+Replicates Figure 5A of Lindauer 2026 (typical profiles). At AF = 1 the
+plasma level at 72 h is about 5.5 %ID in the figure; at AF = 0 it is close to
+zero.
+
+```{r fig5a-check}
+end72 <- sim5a |> filter(abs(time * 24 - 72) < 1e-6)
+knitr::kable(end72 |> select(AF, pct_id), digits = 2)
+stopifnot(
+  abs(end72$pct_id[abs(end72$AF - 1) < 1e-9] - 5.5) < 0.5,
+  end72$pct_id[abs(end72$AF) < 1e-9] < 0.5
+)
+```
+
+```{r fig5b}
+n_per_af <- 100
+ev5b <- bind_rows(lapply(seq_along(af_grid), function(i) {
+  ids <- (i - 1) * n_per_af + seq_len(n_per_af)
+  bind_rows(iv_tracer_events(ids, c(2, 48) / 24), af_dose(ids, af_grid[i])) |>
+    sort_events() |>
+    cov_cols(wd = 1)
+}))
+rxode2::rxSetSeed(20260102)
+sim5b <- rxSolve(mod_resp, ev5b, returnType = "data.frame") |>
+  mutate(AF = af_grid[(id - 1) %/% n_per_af + 1], hour = round(time * 24)) |>
+  select(id, AF, hour, Cc) |>
+  pivot_wider(names_from = hour, values_from = Cc, names_prefix = "h") |>
+  mutate(ratio = h48 / h2)
+sum5b <- sim5b |>
+  group_by(AF) |>
+  summarise(median = median(ratio), q05 = quantile(ratio, 0.05), q95 = quantile(ratio, 0.95))
+ggplot(sum5b, aes(AF, median)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), fill = "grey85") +
+  geom_line(linewidth = 1) +
+  labs(x = "Activity factor", y = "48/2-hour ratio") +
+  theme_bw()
+```
+
+Replicates Figure 5B of Lindauer 2026: the median 48/2-h ratio rises from
+about 0 at AF = 0 through about 1.0 at AF = 0.5 to about 1.3 at AF = 1. The paper's band is wider because
+it includes 15% residual error and 2000 subjects per AF.
+
+```{r fig5b-check}
+knitr::kable(sum5b, digits = 3)
+stopifnot(
+  sum5b$median[abs(sum5b$AF) < 1e-9] < 0.1,
+  abs(sum5b$median[abs(sum5b$AF - 0.5) < 1e-9] - 1.0) < 0.15,
+  abs(sum5b$median[abs(sum5b$AF - 1) < 1e-9] - 1.3) < 0.15
+)
+```
+
+# Cold copper: typical long-term profiles (Figure S8)
+
+Assuming that stable and radioactive copper behave identically, the model
+predicts endogenous ("cold") copper biomarkers. A daily oral intake of
+1.4 mg is given as a continuous input into the absorption compartment for
+1500 days (the paper's script gives 1.4 mg once daily; the steady state is
+the same). At day 1000 a WD patient starts gene therapy (AF = 0.4), a
+chelator or zinc. The outputs are total serum copper and exchangeable copper
+(NCC, the model's CuEXC) in umol/L, relative exchangeable copper (REC, %),
+liver copper (ug/g dry weight) and urinary copper excretion (ug/day).
+
+```{r figs8}
+s8_arms <- data.frame(
+  arm = c("Healthy", "WD - gene therapy (AF=0.4)", "WD - chelator", "WD - zinc"),
+  wd = c(0, 1, 1, 1), af = c(0, 0.4, 0, 0), chel = c(0, 0, 1, 0), zinc = c(0, 0, 0, 1)
+)
+s8_obs <- c(seq(0, 1000, by = 10), seq(1001, 1100, by = 1), seq(1110, 1500, by = 10))
+ev_s8 <- bind_rows(lapply(seq_len(nrow(s8_arms)), function(i) {
+  a <- s8_arms[i, ]
+  ev <- bind_rows(
+    data.frame(time = 0, amt = 1.4 * 1500, rate = 1.4, evid = 1L, cmt = "gut_abs", dvid = NA_integer_),
+    data.frame(time = s8_obs, amt = 0, rate = 0, evid = 0L, cmt = "plasma_ncc", dvid = 1L)
+  ) |>
+    mutate(id = i)
+  gt <- af_dose(i, a$af, time = 1000)
+  if (!is.null(gt)) gt$rate <- 0
+  ev <- bind_rows(ev, gt) |> sort_events()
+  on <- ev$time >= 1000
+  ev <- cov_cols(ev, wd = a$wd)
+  ev$CONMED_COPPER_CHELATOR <- ifelse(on, a$chel, 0)
+  ev$CONMED_ZINC <- ifelse(on, a$zinc, 0)
+  ev
+}))
+sim_s8 <- solve_typical(mod_ui, ev_s8) |>
+  mutate(arm = factor(s8_arms$arm[id], levels = s8_arms$arm), urine_ug_day = 1000 * urine_rate)
+
+s8_long <- sim_s8 |>
+  filter(time > 0) |>
+  select(arm, time,
+    "Total serum Cu (umol/L)" = cu_total_umol_l, "CuEXC (umol/L)" = ncc_umol_l,
+    "REC (%)" = rec, "Liver Cu (ug/g)" = liver_ug_g, "Urine excr. (ug/day)" = urine_ug_day
+  ) |>
+  pivot_longer(-c(arm, time), names_to = "biomarker")
+ggplot(s8_long, aes(time, value, colour = arm)) +
+  geom_line() +
+  facet_grid(biomarker ~ arm, scales = "free_y") +
+  labs(x = "Time (day)", y = NULL) +
+  theme_bw() +
+  theme(legend.position = "none", strip.text = element_text(size = 7))
+```
+
+Replicates Figure S8 of Lindauer 2026. The values below are read from the
+figure at day 990 (before treatment) and day 1500.
+
+```{r figs8-check}
+s8_ref <- tribble(
+  ~arm, ~time, ~biomarker, ~published,
+  "Healthy", 1500, "cu_total_umol_l", 8.7,
+  "Healthy", 1500, "liver_ug_g", 8.3,
+  "WD - gene therapy (AF=0.4)", 990, "cu_total_umol_l", 1.8,
+  "WD - gene therapy (AF=0.4)", 990, "ncc_umol_l", 1.82,
+  "WD - gene therapy (AF=0.4)", 990, "liver_ug_g", 74,
+  "WD - gene therapy (AF=0.4)", 990, "urine_ug_day", 135,
+  "WD - gene therapy (AF=0.4)", 1500, "cu_total_umol_l", 15.5,
+  "WD - gene therapy (AF=0.4)", 1500, "ncc_umol_l", 0.90,
+  "WD - gene therapy (AF=0.4)", 1500, "liver_ug_g", 35,
+  "WD - gene therapy (AF=0.4)", 1500, "urine_ug_day", 70,
+  "WD - chelator", 1500, "ncc_umol_l", 0.27,
+  "WD - chelator", 1500, "liver_ug_g", 12,
+  "WD - chelator", 1500, "urine_ug_day", 370,
+  "WD - zinc", 1500, "ncc_umol_l", 0.23,
+  "WD - zinc", 1500, "liver_ug_g", 9.5
+)
+s8_cmp <- sim_s8 |>
+  filter(time %in% c(990, 1500)) |>
+  mutate(arm = as.character(arm)) |>
+  select(arm, time, cu_total_umol_l, ncc_umol_l, liver_ug_g, urine_ug_day) |>
+  pivot_longer(-c(arm, time), names_to = "biomarker", values_to = "simulated") |>
+  inner_join(s8_ref, by = c("arm", "time", "biomarker")) |>
+  mutate(pct_diff = 100 * (simulated - published) / published)
+# Half a minor gridline of the corresponding Figure S8 panel: how precisely a
+# value can be read off the figure.
+read_precision <- c(cu_total_umol_l = 0.5, ncc_umol_l = 0.05, liver_ug_g = 2.5, urine_ug_day = 25)
+s8_cmp$tolerance <- pmax(0.1 * s8_cmp$published, read_precision[s8_cmp$biomarker])
+s8_cmp |>
+  rename(
+    "Arm" = arm, "Day" = time, "Biomarker" = biomarker, "Simulated" = simulated,
+    "Figure S8 (digitised)" = published, "Difference (%)" = pct_diff,
+    "Tolerance" = tolerance
+  ) |>
+  knitr::kable(digits = 2)
+# Typical-value solve against values read off a figure: the tolerance is the
+# reading precision (10% or half a minor gridline), not model noise.
+stopifnot(all(abs(s8_cmp$simulated - s8_cmp$published) < s8_cmp$tolerance))
+```
+
+The zinc arm is the decisive check on the zinc effect sizes. Table 1 prints
+`Zinc_eff_abs = -0.401` and `Zinc_eff_dist = 1.2`, while the NONMEM control
+stream and the simulation code both fix them at -0.8 and 1. With the code
+values, CuEXC under zinc settles at 0.23 umol/L as in Figure S8; with the
+Table 1 values it settles near 0.62 umol/L.
+
+```{r zinc-table1}
+zinc_ev <- ev_s8 |> filter(id == 4)
+zinc_t1 <- rxSolve(
+  rxode2::zeroRe(mod_ui) |> rxode2::ini(e_zinc_k_abs_liv = -0.401, e_zinc_k_pl_tis = 1.2),
+  zinc_ev,
+  returnType = "data.frame"
+)
+c(code_values = sim_s8$ncc_umol_l[sim_s8$id == 4 & sim_s8$time == 1500],
+  table1_values = zinc_t1$ncc_umol_l[zinc_t1$time == 1500])
+```
+
+# Mass balance at steady state
+
+At steady state the oral intake of 1.4 mg/day must leave through faeces,
+urine and sweat. The excretion rates are the day-over-day increments of the
+cumulative states over days 990-1000 in the healthy and untreated-WD
+arms (before day 1000 every WD arm is untreated).
+
+```{r ss-balance}
+ss <- sim_s8 |>
+  filter(id %in% c(1, 2), time %in% c(990, 1000)) |>
+  group_by(arm) |>
+  summarise(out_per_day = (diff(feces) + diff(urine) + diff(sweat)) / 10)
+knitr::kable(ss, digits = 4)
+stopifnot(all(abs(ss$out_per_day - 1.4) < 0.01))
+```
+
+# Assumptions and deviations
+
+* **Zinc effects.** Table 1 prints `Zinc_eff_abs = -0.401` and
+  `Zinc_eff_dist = 1.2`. Both are fixed parameters, and the NONMEM control
+  stream in Data S1 (which produced Table 1) fixes them at -0.8 and 1, as does
+  the campsis simulation model in Data S2. The model uses -0.8 and 1; Figure S8
+  is reproduced only with these values (see above). The value -0.401 matches
+  the `$THETA` initial value of `k_livStore_livPre`, which suggests a
+  transcription slip in the table.
+* **Fixed rate constants** use the exact log-scale values from the NONMEM
+  `$THETA` block (e.g. `k_abs_liv = exp(1.79) = 5.99/day`, printed as 6 in
+  Table 1). Estimated values are the Table 1 final estimates; the control
+  stream's `$THETA` block holds initial values only. The campsis `theta.csv`
+  carries a few estimates at different rounding (e.g. `k_pl_tis` 91.5 vs
+  91.8, `AF_HET_CP` 0.3687); Table 1 is used.
+* **IIV.** The fitted model has no IIV (`$OMEGA 0 FIX`). The paper's
+  simulations set 15% CV on the rate constants. The model carries these as
+  fixed etas of variance 0.0225 (0.15 squared, the SD scale of the Data S2
+  `omega.csv` file) on the parameters that `omega.csv` lists: every rate
+  constant except `k_plCP_liv`, plus the plasma volume. Use
+  `rxode2::zeroRe()` for typical-value predictions. The paper's high-variability
+  scenario (30% CV IIV, 20% residual error) can be set with `ini()`.
+* **Residual error.** The six proportional terms are the Table 1 estimates.
+  In the fit each SD was divided by the square root of the number of subjects
+  behind a mean observation; for individual data that number is 1. COMET
+  plasma data have their own term, selected by `STUDY_COMET`. The paper's simulations used 15% residual error instead.
+* **Zero-valued WD shifts dropped.** The control stream also carries WD
+  effects on `k_pl_urine`, `k_livPre_livStore`, `k_livStore_livPre`,
+  `k_pl_tis` and `k_pl_tis2` that are all fixed at 0; they are not in Table 1
+  or the campsis model and are omitted.
+* **Gene therapy.** VTX-801 is represented, as in the campsis script, by a
+  constant state `trt_af` (`d/dt(trt_af) <- 0`, the campsis `TRT` state) that
+  receives the activity factor as a bolus at the time of vector injection, so
+  a dose record carries a unitless activity factor rather than an amount of
+  copper. Its value is the restored ceruloplasmin-loading activity in a WD
+  patient; biliary activity follows as `trt_af^2.28`, the power function of
+  the campsis model (the exponent reproduces the heterozygote pair:
+  0.369^2.28 = 0.103 vs 0.101). Only WD patients use it; in healthy subjects
+  and carriers a `trt_af` dose has no effect. The model reads `trt_af`
+  through `max(trt_af, 0)`: the state is mathematically constant, but the
+  default stiff solver's trial values can dip to about -1e-21 in an untreated
+  patient, and a negative number raised to 2.28 is `NaN`.
+  The mouse dose-response model that links vector dose to AF (Table S2) is not
+  part of this model.
+* **Figure 6 changes from baseline are not reproduced.** The baselines of
+  Figure 6 agree with this model (healthy total serum copper about 9 umol/L;
+  untreated WD CuEXC about 1.8 umol/L, urinary copper about 130 ug/day, liver
+  copper about 75 ug/g; chelator urinary copper about 370 ug/day). The
+  week-36 decreases in CuEXC, urinary and liver copper at AF = 0.4 in
+  Figure 6 (about -23% to -26%) are about half of what this model gives
+  (about -48% to -52%). The model does reproduce the authors' own
+  typical-profile simulation in Figure S8, which uses the same AF = 0.4 and
+  ends at the same values as this model. Figure 6 is a 2000-subject
+  simulation whose exact settings are not given, so the difference is left
+  unresolved.
+* **Responder simulations (Figure 5).** The paper states that WD-specific
+  distribution differences were not applied. Figure 5A is reproduced only when
+  all four WD differences are removed, including the WD-only
+  `k_livPre_liv`, so the vignette removes all four with an `ini()` override.
+  The model itself keeps them, as fitted.
+* **Daily intake** of 1.4 mg is given as a continuous input rather than a
+  once-daily bolus; this does not change the steady state.
+* **No PKNCA analysis.** Copper is an endogenous element in a closed linear
+  system, so the validation uses mass balance, steady-state flux balance and
+  replication of the published simulation figures in place of NCA.

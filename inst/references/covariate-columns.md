@@ -10441,6 +10441,29 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative +24% effect on CL; no Vss effect).
 - **Notes:** Castleman's disease is a lymphoproliferative disorder strongly associated with elevated IL-6 levels; it is the only FDA-approved indication for siltuximab. Scope: specific because the disease-pooling reference category is paper-defined.
 
+### DIS_WILSON (**canonical for Wilson disease patient indicator**)
+- **Description:** 1 = Wilson disease patient (hepatolenticular degeneration; loss of function of both ATP7B alleles, homozygous or compound heterozygous), 0 = not a Wilson disease patient (healthy subject or heterozygous ATP7B carrier). Time-fixed per subject. Treatment status (chelators, zinc, gene therapy) is carried by separate covariates, not by this flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Wilson subject; the complement group is paper-defined -- in Lindauer 2026 it pools healthy subjects and heterozygous carriers, which are separated by `ATP7B_HET`).
+- **Source aliases:**
+  - `isWD` -- Lindauer 2026 NONMEM `$INPUT` column, coded 0 / 0.5 / 1 for healthy / heterozygote / WD; `DIS_WILSON = (isWD == 1)`. Used in `Lindauer_2026_copper.R`.
+- **Example models:** `Lindauer_2026_copper.R` (sets both ATP7B activity factors to the gene-therapy-restored value, 0 if untreated; switches on the WD-only precursor-to-extracellular-liver copper flux; fractional shifts on three hepatic / tissue copper distribution rates).
+- **Notes:** Auto-approved member of the `DIS_<disease>` family. Scope: specific because the complement group is paper-defined.
+
+### ATP7B_HET (**canonical for heterozygous ATP7B carrier indicator**)
+- **Description:** 1 = heterozygous ATP7B carrier (one functional and one loss-of-function ATP7B allele; typically a first-degree relative of a Wilson disease patient), 0 = not a heterozygous carrier (healthy non-carrier or Wilson disease patient). Time-fixed per subject (germline genotype). Carriers are clinically unaffected but have partially reduced ATP7B-dependent copper handling (biliary excretion, ceruloplasmin loading).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (healthy non-carrier when paired with `DIS_WILSON = 0`). Mutually exclusive with `DIS_WILSON`: a Wilson disease patient has `ATP7B_HET = 0`.
+- **Source aliases:**
+  - `isWD == 0.5` -- Lindauer 2026 NONMEM `$INPUT` column coded 0 / 0.5 / 1 for healthy / heterozygote / WD; `ATP7B_HET = (isWD == 0.5)`. Used in `Lindauer_2026_copper.R`.
+  - `isHet` -- Lindauer 2026 campsis simulation model (Data S2).
+- **Example models:** `Lindauer_2026_copper.R` (estimated ATP7B activity factors replace 1 in carriers: 0.369 on ceruloplasmin loading and 0.101 on biliary copper excretion; no Wilson disease distribution shifts).
+- **Notes:** Gene-level carrier flag following the `<GENE>_..._HET` pattern of `CYP2D6_STAR10_HET` and `CYP3A5_STAR1_HET`. It is gene-level rather than allele-level because Wilson disease is caused by hundreds of ATP7B variants and sources classify carriers by family genotyping, not by a specific allele. The homozygous / compound-heterozygous loss-of-function state is `DIS_WILSON`, not an `ATP7B_HOM` flag.
+
 ### DIS_HOFH (**canonical for homozygous familial hypercholesterolemia patient indicator**)
 - **Description:** 1 = patient with homozygous familial hypercholesterolemia (HoFH), 0 = non-HoFH subject (typically healthy volunteer or another reference cohort pooled in the source analysis). Time-fixed per subject.
 - **Units:** (binary)
@@ -14370,6 +14393,28 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `CFZ` -- the clofazimine indicator column name in `Salinger_2019_pretomanid.R` (control-stream column) and the abbreviation Kengo 2024 uses throughout.
 - **Example models:** `Kengo_2024_levofloxacin.R` (fractional effect `1 + e_conmed_clofazimine_cl * CONMED_CLOFAZIMINE` on levofloxacin clearance, `e_conmed_clofazimine_cl = -0.148`; time-varying within subject: 0 at the pre-clofazimine PK visit and 1 at the visit 21 days after clofazimine 100 mg daily was started). Screened and not retained, documented in `covariatesDataExcluded`: `Kengo_2024_isoniazid.R`, `Kengo_2024_linezolid.R`, `Salinger_2019_pretomanid.R`, `Nyangwa_2026_pretomanid.R` (the BPaLC arm).
 - **Notes:** Auto-approved member of the `CONMED_<INN>` family. Record per-model the clofazimine dose and how long it had been given before the victim-drug sampling, since clofazimine accumulates over weeks; a before/after design cannot separate a clofazimine effect from other changes between the two periods (e.g. clinical improvement), which the model's `notes` should say when it applies.
+
+### CONMED_ZINC (**canonical for concomitant zinc therapy indicator**)
+- **Description:** 1 = on oral zinc therapy (zinc acetate, sulfate or gluconate), 0 = no zinc therapy. Zinc induces enterocyte metallothionein, which binds dietary copper and blocks its absorption; it is a standard maintenance therapy in Wilson disease. Time-varying allowed.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no zinc therapy).
+- **Source aliases:**
+  - `onZinc` -- Lindauer 2026 NONMEM `$INPUT` column. Used in `Lindauer_2026_copper.R`.
+- **Example models:** `Lindauer_2026_copper.R` (fractional effects `1 + e_zinc_k_abs_liv * CONMED_ZINC` on gut-to-liver copper absorption, -0.8, and `1 + e_zinc_k_pl_tis * CONMED_ZINC` on plasma-to-tissue copper distribution, +1; both fixed from an earlier model version).
+- **Notes:** Auto-approved member of the `CONMED_<INN>` family; the salt is not distinguished because the effect is attributed to elemental zinc. Record the zinc salt and daily elemental dose per model when the source reports them.
+
+### CONMED_COPPER_CHELATOR (**canonical for concomitant copper-chelator therapy indicator**)
+- **Description:** 1 = on copper-chelator therapy (D-penicillamine, trientine, dimercaprol / BAL or another copper chelator), 0 = no copper chelator. Chelators bind non-ceruloplasmin-bound copper and increase its urinary excretion; they are standard first-line and maintenance therapy in Wilson disease. Time-varying allowed.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copper chelator).
+- **Source aliases:**
+  - `onChelator` -- Lindauer 2026 NONMEM `$INPUT` column. Used in `Lindauer_2026_copper.R`.
+- **Example models:** `Lindauer_2026_copper.R` (fractional effect `1 + e_chelator_k_pl_urine * CONMED_COPPER_CHELATOR` on plasma-to-urine copper excretion, 15.8, a 16.8-fold increase; one pooled effect for penicillamine, trientine and dimercaprol).
+- **Notes:** Class-level `CONMED_` indicator (precedents `CONMED_AZOLE`, `CONMED_DIURETIC`). The per-model `covariateData[[CONMED_COPPER_CHELATOR]]$notes` must list which chelators the source pools. Iron chelators (deferoxamine, deferasirox, deferiprone) are not covered by this indicator.
 
 ### CONMED_AZOLE (**canonical for concomitant azole antifungal therapy (CYP3A4/P-gp inhibitor)**)
 - **Description:** 1 = patient coadministered an azole antifungal (itraconazole, voriconazole, fluconazole, ketoconazole, posaconazole, isavuconazole, or another systemic azole) during the observation interval, 0 = no concomitant azole antifungal. Time-varying per subject because azole exposure starts and stops during the observation period.
@@ -25176,6 +25221,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `STUDY` -- Riggs 2013 Methods ("Separate residual variance terms were included during model development to account for the greater variability in the empagliflozin concentrations observed from Studies D and E compared with Studies A, B, and C") and the Table 2 residual-variance block, which is split into "Studies A, B, and C" and "Studies D and E" sub-rows. Used in `Riggs_2013_empagliflozin.R`.
 - **Example models:** `Riggs_2013_empagliflozin.R` (switches the combined residual error only: proportional 19.6% CV + additive 0.179 nmol/L for Studies A/B/C versus proportional 35.7% CV + additive 0.010 nmol/L for Studies D/E; no structural or disposition parameter depends on it).
 - **Notes:** Specific scope; tied to the five-trial Boehringer Ingelheim empagliflozin Phase I/II programme pooled by Riggs 2013. Supply per observation record rather than per subject in principle, though in this analysis every subject contributes to exactly one study so it is effectively subject-level. Unusually for the `STUDY_<id>` family this indicator carries **no** fixed-effect meaning -- it exists purely to stratify the residual error, which is why the model computes the proportional and additive SDs as `propSd_studyabc * (1 - STUDY_DE) + propSd_studyde * STUDY_DE` and passes those model-computed variables into `prop()` / `add()`. Directly analogous to `STUDY_DORZA_EARLY`, which likewise uses one binary indicator to name a *group* of studies rather than a single trial. Follows the auto-approved `STUDY_<id>` canonical family.
+
+### STUDY_COMET (**canonical for the COMET radiocopper study participant indicator**)
+- **Description:** 1 = participant of the COMET study (EudraCT 2019-001157-13; open-label single intravenous [64Cu]CuCl2 dose in 3 healthy adults and 3 heterozygous ATP7B carriers, Austria), 0 = subject from the pooled literature data. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (literature-data subject; set 0 to simulate new patients).
+- **Source aliases:**
+  - `isCOMET` -- Lindauer 2026 NONMEM `$INPUT` column. Used in `Lindauer_2026_copper.R`.
+- **Example models:** `Lindauer_2026_copper.R` (fractional effect `1 + e_comet_k_gutd_feces * STUDY_COMET` on the distal-gut-to-faeces rate, -0.607, i.e. 60.7% slower faecal transit in COMET; also selects the COMET plasma residual error, `propSd * (1 - STUDY_COMET) + propSd_comet * STUDY_COMET`).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family.
 
 ### TRT_T2DM_NAIVE, TRT_T2DM_NONNAIVE, TRT_T2DM_ADDON, TRT_T2DM_MIXED (**canonical for the four-level type-2-diabetes treatment-history stratum of a trial arm**)
 - **Description:** Four mutually exclusive binary indicators recording the antihyperglycemic treatment history of a type-2-diabetes study arm. Exactly one is 1 on any record. The levels are those defined in Yao 2023 Model development: `TRT_T2DM_NAIVE` = patients naive to oral hypoglycemic agents; `TRT_T2DM_NONNAIVE` = patients who had taken hypoglycemic agents but had undergone a washout period of more than 2 weeks; `TRT_T2DM_ADDON` = patients receiving the study drug on top of ongoing antihyperglycemic combination treatment; `TRT_T2DM_MIXED` = arms that pooled naive and non-naive patients or did not report treatment history. The stratum selects the magnitude of the placebo response on FPG and on HbA1c, which differ materially between them: FPG rises under placebo in every stratum except add-on, where concomitant agents pull it down.

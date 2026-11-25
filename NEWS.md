@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jung 2026 potassium-competitive acid blocker class PK/PD MBMA (tegoprazan, YH4808, fexuprazan, vonoprazan; [doi:10.1002/psp4.70181](https://doi.org/10.1002/psp4.70181)) -- digitised arm means from healthy-volunteer studies.
+- Add Lindauer 2026 copper kinetics and VTX-801 ATP7B gene therapy ([doi:10.1002/psp4.70153](https://doi.org/10.1002/psp4.70153)) -- healthy adults, heterozygous ATP7B carriers and patients with Wilson disease.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
