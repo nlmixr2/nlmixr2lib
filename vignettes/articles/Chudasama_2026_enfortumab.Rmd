@@ -1,0 +1,497 @@
+---
+title: "Enfortumab vedotin tumor growth inhibition in urothelial cancer (Chudasama 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Enfortumab vedotin tumor growth inhibition in urothelial cancer (Chudasama 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Chudasama et al. (2026) built a population pharmacokinetic / tumor growth
+inhibition (PK-TGI) model for enfortumab vedotin, an anti-Nectin-4
+antibody-drug conjugate (ADC) carrying monomethyl auristatin E, in patients
+with locally advanced or metastatic urothelial cancer. They used it to ask how
+dose reductions, dose eliminations, lower starting doses and early
+discontinuations change the simulated tumor response.
+
+The TGI part is a Claret-type model. The tumor sum of diameters (SOD) grows
+exponentially and shrinks at a rate driven by the conjugated-ADC plasma
+concentration through an Emax term. A resistance rate damps the shrinkage
+over time, and a residual FLOOR effect keeps it from reaching zero:
+
+d/dt(SOD) = KG * SOD - KS * (FLOOR + exp(-lambda * t)) * C_ADC / (IC50 + C_ADC) * SOD
+
+The ADC concentration comes from the enfortumab vedotin population PK model of
+Zuo et al. (2024), a linear three-compartment model. Chudasama 2026 drove the
+TGI with each patient's post hoc PK parameters from that model. A library
+model has to simulate new patients, so this file carries the Zuo 2024 final
+ADC model in full: typical values, all covariates, IIV and residual error, all
+held fixed.
+
+```{r model-info}
+mod <- readModelDb("Chudasama_2026_enfortumab")
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.1002/jcph.70241> (open access, PMC13377668)
+* PK layer: Zuo et al. 2024, <https://doi.org/10.1002/cpt.3383>
+
+# Population
+
+The TGI analysis set has 603 patients with urothelial cancer from four trials:
+EV-101 (phase 1, 0.5-1.25 mg/kg), EV-102 (phase 1, Japan, 1.0-1.25 mg/kg),
+EV-201 (phase 2, two cohorts, 1.25 mg/kg) and EV-301 (phase 3, 1.25 mg/kg). All
+patients received enfortumab vedotin on days 1, 8 and 15 of a 28-day cycle
+(3Q4W); 91.4% started at 1.25 mg/kg. Patients without a post-baseline tumor
+assessment were excluded, and so were seven patients whose post-baseline SOD
+was 0 mm. The analysis used 2167 SOD observations.
+
+Median (range) age was 68 (24-90) years, body weight 74.2 (36.9-158) kg and
+baseline SOD 64.1 (11-331) mm. 74.6% of patients were male and 70.0% were
+non-Asian. 15.4% had albumin below 35 g/L, 22.4% had hemoglobin below
+100 g/L, and 29.9% had received three or more prior lines of therapy
+(Chudasama 2026 Results and Table S10). The Zuo 2024 PK model was estimated
+on 748 patients from five studies with the same median age (68 years) and a
+median weight of 75 kg.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| TGI structure (exponential growth, Emax shrinkage, `FLOOR + exp(-lambda t)`) | -- | Chudasama 2026 Methods equation; Table S3 control stream `$DES`; Table S4 mrgsolve `$ODE` |
+| Initial tumor size | observed baseline SOD | Table S3 `A_0(4) = BASE = SODB` |
+| `lp` (KG) | 0.00137 1/day | Table S9, final model |
+| `lkkill` (KS) | 0.0327 1/day | Table S9, final model |
+| `lres` (lambda) | 0.0278 1/day | Table S9, final model |
+| `lic50` (IC50) | 3.40 ug/mL | Table S9, final model |
+| `lkill_floor` (FLOOR) | 0.149 | Table S9, final model |
+| `e_tumsz_p` (baseline SOD on KG, ref 64.1 mm) | 0.664 | Table S9; reference from Table S3/S4 `SODB2REF = 64.1` |
+| `e_alb_p` (albumin on KG, ref 39 g/L) | -0.593 | Table S9; Results equation; `ALBREF = 39` |
+| `e_hgb_p` (hemoglobin on KG, ref 112 g/L) | -0.421 | Table S9; Results equation; `HGBREF = 112` |
+| `e_line_4l_plus_p` (>= 3 prior lines on KG) | 0.354 | Table S9; Results equation `(1 + PTHRALL * 0.354)` |
+| `etalp` / `etalic50` (variances) | 1.01 / 3.51 | Table S9, final model |
+| `addSd_tumor_size` | 7.85 mm | Table S9; Table S3 `Y = IPRED + W * ERR(1)`, `$SIGMA 1 FIX` |
+| `lcl`, `lvc`, `lq`, `lvp`, `lq2`, `lvp2` | 0.110 L/h, 3.63 L, 0.00446 L/h, 5.79 L, 0.0397 L/h, 3.42 L | Zuo 2024 Table 1, final model |
+| `e_wt_cl` (CLA, Q2, Q3) / `e_wt_vc` (V1, V2, V3), ref 75 kg | 0.572 / 0.607 | Zuo 2024 Table 1; reference population in Figure 2 legend |
+| `e_age_cl` (ref 68 years), `e_alb_cl` (ref 39 g/L), `e_tumsz_cl` (ref 65 mm) | -0.325, -0.507, 0.0555 | Zuo 2024 Table 1; Figure 2 legend |
+| `e_hgb_vc` (ref 112 g/L) | -0.380 | Zuo 2024 Table 1; Figure 2 legend |
+| `e_sexf_cl`, `e_sexf_vc`, `e_sexf_vp2` | -0.138, -0.148, -0.139 | Zuo 2024 Table 1 |
+| `e_form_processa_cl` | -0.110 | Zuo 2024 Table 1 |
+| `e_assay_intertek_vp2` | -0.355 | Zuo 2024 Table 1 |
+| `etalcl`, `etalvc`, `etalvp2` | 20.3, 21.3, 37.4 %CV | Zuo 2024 Table 1, as log(1 + CV^2) |
+| `propSd`, `addSd` | 20.4%, 0.0459 ug/mL | Zuo 2024 Table 1 |
+| Infusion duration | 30 min | Table S4 `DURD = 0.0208` day |
+
+# Virtual cohort
+
+The same 200 virtual patients are used in every dosing scenario below, so the
+scenarios differ only in dosing. Covariates are drawn to match the medians,
+means, SDs and ranges of Chudasama 2026 Table S10. All patients get the
+reference manufacturing process and laboratory (`FORM_ENFORTUMAB_PROCESSA = 0`,
+`ASSAY_LAB_INTERTEK = 0`). Each patient's random effects are drawn once from
+the model's IIV variances and passed to every scenario as data columns.
+
+```{r cohort}
+set.seed(20261114)
+n_sub <- 200
+
+rtrunc_norm <- function(n, mean, sd, lo, hi) {
+  pmin(pmax(rnorm(n, mean, sd), lo), hi)
+}
+
+omega <- ui$omega
+cohort <- tibble(
+  id = seq_len(n_sub),
+  WT = rtrunc_norm(n_sub, 75.8, 17.4, 36.9, 158),
+  AGE = rtrunc_norm(n_sub, 67.1, 9.84, 24, 90),
+  ALB = rtrunc_norm(n_sub, 38.5, 4.16, 25, 51),
+  HGB = rtrunc_norm(n_sub, 113, 15.9, 79, 172),
+  # Table S10: median 64.1 mm, mean 76.6 mm -> lognormal sdlog = sqrt(2 * log(76.6 / 64.1))
+  TUMSZ = pmin(pmax(rlnorm(n_sub, log(64.1), sqrt(2 * log(76.6 / 64.1))), 11), 331),
+  SEXF = rbinom(n_sub, 1, 0.254),
+  LINE_4L_PLUS = rbinom(n_sub, 1, 0.299),
+  FORM_ENFORTUMAB_PROCESSA = 0L,
+  ASSAY_LAB_INTERTEK = 0L,
+  etalp = rnorm(n_sub, 0, sqrt(omega["etalp", "etalp"])),
+  etalic50 = rnorm(n_sub, 0, sqrt(omega["etalic50", "etalic50"])),
+  etalcl = rnorm(n_sub, 0, sqrt(omega["etalcl", "etalcl"])),
+  etalvc = rnorm(n_sub, 0, sqrt(omega["etalvc", "etalvc"])),
+  etalvp2 = rnorm(n_sub, 0, sqrt(omega["etalvp2", "etalvp2"]))
+)
+
+cohort |>
+  summarise(
+    `Weight median (kg)` = median(WT),
+    `Age median (y)` = median(AGE),
+    `Albumin median (g/L)` = median(ALB),
+    `Hemoglobin median (g/L)` = median(HGB),
+    `Baseline SOD median (mm)` = median(TUMSZ),
+    `Female (%)` = 100 * mean(SEXF),
+    `>= 3 prior lines (%)` = 100 * mean(LINE_4L_PLUS)
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+# Dosing scenarios
+
+Doses are 1.25 mg/kg (capped at 125 mg) as 30-minute infusions on days 1, 8
+and 15 of each 28-day cycle, for six cycles (24 weeks), matching the
+simulation horizon of Chudasama 2026 Figures 4-7. Tumor size is computed
+daily.
+
+```{r scenarios}
+cycle_days <- c(0, 7, 14)
+dose_rows <- function(mgkg_by_cycle, skip = character()) {
+  out <- expand.grid(cycle = seq_along(mgkg_by_cycle), day = cycle_days)
+  out$time <- (out$cycle - 1) * 28 + out$day
+  out$mgkg <- mgkg_by_cycle[out$cycle]
+  out$tag <- paste0("C", out$cycle, "D", out$day + 1)
+  out <- out[out$mgkg > 0 & !(out$tag %in% skip), ]
+  out[order(out$time), c("time", "mgkg")]
+}
+
+scenarios <- list(
+  "1.25 mg/kg 3Q4W" = dose_rows(rep(1.25, 6)),
+  "1.00 mg/kg 3Q4W" = dose_rows(rep(1.00, 6)),
+  "Reduced to 1.00 mg/kg at Cycle 3" = dose_rows(c(1.25, 1.25, rep(1.00, 4))),
+  "Eliminated C1D15 and C2D15" = dose_rows(rep(1.25, 6), skip = c("C1D15", "C2D15")),
+  "Discontinued at Cycle 3" = dose_rows(c(1.25, 1.25, 0, 0, 0, 0)),
+  "Discontinued at Cycle 5" = dose_rows(c(1.25, 1.25, 1.25, 1.25, 0, 0))
+)
+
+obs_times <- seq(0, 168, by = 1)
+build_events <- function(doses, label, scen_index) {
+  dose_df <- tidyr::crossing(cohort["id"], doses) |>
+    left_join(cohort[, c("id", "WT")], by = "id") |>
+    mutate(amt = pmin(mgkg * WT, 125), dur = 30 / 1440, evid = 1L, cmt = "central") |>
+    select(id, time, amt, dur, evid, cmt)
+  # Observation rows sit on the tumor_size state, one of the two declared
+  # endpoints; Cc is returned as a column at every row.
+  obs_df <- tidyr::crossing(cohort["id"], time = obs_times) |>
+    mutate(amt = 0, dur = 0, evid = 0L, cmt = "tumor_size")
+  bind_rows(dose_df, obs_df) |>
+    left_join(cohort, by = "id") |>
+    mutate(scenario = label, id = id + (scen_index - 1) * n_sub) |>
+    arrange(id, time, desc(evid))
+}
+events <- bind_rows(Map(build_events, scenarios, names(scenarios), seq_along(scenarios)))
+```
+
+# Simulation
+
+Random effects are supplied as data, so the solve uses the model with its IIV
+and residual error set to zero.
+
+```{r simulate}
+mod_typ <- rxode2::zeroRe(ui)
+sim <- suppressWarnings(
+  # rxode2 warns that a multi-subject solve has no omega; the per-subject
+  # random effects are the eta columns of the event data.
+  rxode2::rxSolve(mod_typ, events = events, keep = c("scenario", "TUMSZ"))
+) |>
+  as.data.frame() |>
+  mutate(
+    week = time / 7,
+    chg_mm = tumor_size - TUMSZ,
+    pchg = 100 * chg_mm / TUMSZ,
+    responder = pchg <= -30
+  )
+stopifnot(!anyNA(sim$tumor_size), nrow(sim) == length(scenarios) * n_sub * length(obs_times))
+```
+
+# ADC exposure: PKNCA check of cycle 1
+
+Chudasama 2026 quotes the population-PK estimated cycle 1 Cavg of enfortumab
+vedotin as 3.93 (printed as ng/mL; the ADC concentration and IC50 are in
+ug/mL throughout the paper, and 3.93 ug/mL is consistent with this model, so
+the unit is a typo). The PKNCA check below re-solves the base-case arm over
+the first 28 days on a dense grid (every 0.05 day plus the end of each
+infusion), because the daily grid used for the tumor curves misses the
+end-of-infusion peaks and would understate the AUC.
+
+```{r pknca}
+pk_dose <- events |>
+  filter(scenario == "1.25 mg/kg 3Q4W", evid == 1, time < 28) |>
+  select(id, time, amt, dur, evid, cmt, scenario)
+pk_obs <- tidyr::crossing(
+  cohort["id"],
+  time = sort(unique(c(seq(0, 28, by = 0.05), cycle_days + 30 / 1440)))
+) |>
+  mutate(amt = 0, dur = 0, evid = 0L, cmt = "tumor_size", scenario = "1.25 mg/kg 3Q4W")
+pk_events <- bind_rows(pk_dose, pk_obs) |>
+  left_join(cohort, by = "id") |>
+  arrange(id, time, desc(evid))
+pk_sim <- suppressWarnings(
+  rxode2::rxSolve(mod_typ, events = pk_events, keep = "scenario")
+) |>
+  as.data.frame()
+pk_conc <- pk_sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, scenario)
+conc_obj <- PKNCA::PKNCAconc(pk_conc, Cc ~ time | scenario + id)
+dose_obj <- PKNCA::PKNCAdose(pk_dose, amt ~ time | scenario + id)
+intervals <- data.frame(start = 0, end = 28, cav = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published <- tibble::tribble(
+  ~scenario, ~cav,
+  "1.25 mg/kg 3Q4W", 3.93
+)
+nca_cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "scenario",
+  units = c(cav = "ug/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(nca_cmp)
+
+cav_med <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "cav") |>
+  pull(PPORRES) |>
+  median()
+# Structural check on the ADC PK layer: a mis-transcribed clearance, volume
+# or dose unit moves the cohort median Cavg by far more than 20%.
+stopifnot(abs(cav_med / 3.93 - 1) < 0.2)
+```
+
+The simulated cycle 1 Cavg of `r signif(cav_med, 3)` ug/mL lies within
+`r round(100 * abs(cav_med / 3.93 - 1))`% of the published 3.93.
+
+```{r pk-plot, fig.width = 7, fig.height = 4, fig.cap = "Simulated enfortumab vedotin (ADC) concentrations, 1.25 mg/kg 3Q4W, median and 10th-90th percentiles (compare Chudasama 2026 Figure 4a)."}
+sim |>
+  filter(scenario %in% c("1.25 mg/kg 3Q4W", "Reduced to 1.00 mg/kg at Cycle 3")) |>
+  group_by(scenario, week) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.1), hi = quantile(Cc, 0.9), .groups = "drop") |>
+  ggplot(aes(week, med, colour = scenario, fill = scenario)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line() +
+  labs(x = "Time (weeks)", y = "ADC concentration (ug/mL)", colour = NULL, fill = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The concentrations are sampled once a day, so the end-of-infusion peaks
+(about 25 ug/mL for a typical patient) fall between grid points.
+
+# Tumor dynamics under the dosing scenarios
+
+Chudasama 2026 counts a simulated patient as a responder at a time point when
+the simulated SOD is at least 30% below baseline. The curves below summarise
+the same quantities as Figures 4-7: the median change in SOD from baseline in
+mm (the figures' 'Relative SOD (mm)' axis) and the percentage of responders,
+against the 1.25 mg/kg base case.
+
+The summaries follow the authors' simulation code (Table S5): a time point
+with a simulated SOD more than 20% above baseline after week 8 is dropped
+(the patient would have stopped treatment for progression), which shapes the
+SOD-change percentiles, while the percentage of responders keeps every patient
+in the denominator.
+
+```{r summaries}
+tgi_sum <- sim |>
+  group_by(scenario, week) |>
+  summarise(
+    resp = 100 * sum(responder) / n_sub,
+    .groups = "drop"
+  ) |>
+  left_join(
+    sim |>
+      filter(!(pchg > 20 & time > 56)) |>
+      group_by(scenario, week) |>
+      summarise(
+        med = median(chg_mm),
+        lo = quantile(chg_mm, 0.1),
+        hi = quantile(chg_mm, 0.9),
+        .groups = "drop"
+      ),
+    by = c("scenario", "week")
+  )
+
+plot_scen <- function(keep, title) {
+  d <- filter(tgi_sum, scenario %in% keep)
+  base <- filter(d, scenario == "1.25 mg/kg 3Q4W")
+  p1 <- ggplot(d, aes(week, med, colour = scenario, linetype = scenario)) +
+    geom_ribbon(data = base, aes(ymin = lo, ymax = hi), fill = "salmon", alpha = 0.2, colour = NA) +
+    geom_line() +
+    labs(x = "Time (weeks)", y = "Change in SOD from baseline (mm)", title = title, colour = NULL, linetype = NULL) +
+    theme_bw() +
+    theme(legend.position = "bottom", legend.direction = "vertical")
+  p2 <- ggplot(d, aes(week, resp, colour = scenario, linetype = scenario)) +
+    geom_line() +
+    labs(x = "Time (weeks)", y = "Patients with >= 30% SOD reduction (%)", colour = NULL, linetype = NULL) +
+    theme_bw() +
+    theme(legend.position = "bottom", legend.direction = "vertical")
+  list(p1, p2)
+}
+```
+
+## Lower starting dose (Figure 6)
+
+```{r fig6, fig.width = 7, fig.height = 4.5, fig.cap = "Replicates Figure 6 of Chudasama 2026: 1.00 mg/kg versus 1.25 mg/kg starting dose. Band: 10th-90th percentile of the base case."}
+p <- plot_scen(c("1.25 mg/kg 3Q4W", "1.00 mg/kg 3Q4W"), "Starting dose")
+p[[1]]
+p[[2]]
+```
+
+## Dose reduction at Cycle 3 (Figure 4)
+
+```{r fig4, fig.width = 7, fig.height = 4.5, fig.cap = "Replicates Figure 4 of Chudasama 2026: dose reduced to 1.00 mg/kg from Cycle 3 versus the 1.25 mg/kg base case."}
+p <- plot_scen(c("1.25 mg/kg 3Q4W", "Reduced to 1.00 mg/kg at Cycle 3"), "Dose reduction at Cycle 3")
+p[[1]]
+p[[2]]
+```
+
+## Early dose eliminations (Figure 5)
+
+```{r fig5, fig.width = 7, fig.height = 4.5, fig.cap = "Replicates Figure 5 of Chudasama 2026: Cycle 1 Day 15 and Cycle 2 Day 15 doses eliminated."}
+p <- plot_scen(c("1.25 mg/kg 3Q4W", "Eliminated C1D15 and C2D15"), "Dose eliminations")
+p[[1]]
+p[[2]]
+```
+
+## Treatment discontinuation (Figure 7)
+
+```{r fig7, fig.width = 7, fig.height = 4.5, fig.cap = "Replicates Figure 7 of Chudasama 2026: treatment discontinued at the start of Cycle 3 or Cycle 5."}
+p <- plot_scen(c("1.25 mg/kg 3Q4W", "Discontinued at Cycle 3", "Discontinued at Cycle 5"), "Discontinuation")
+p[[1]]
+p[[2]]
+```
+
+## Comparison with the published curves
+
+The published values below were read off Chudasama 2026 Figures 5-7 by the
+maintainers (percentage of responders and median change in SOD from baseline
+in mm, both at week 24).
+
+```{r compare}
+wk24 <- tgi_sum |>
+  filter(week == 24) |>
+  select(scenario, resp, med)
+published_wk24 <- tibble::tribble(
+  ~scenario, ~resp_pub, ~med_pub,
+  "1.25 mg/kg 3Q4W", 58, -23,
+  "1.00 mg/kg 3Q4W", 54, -21,
+  "Eliminated C1D15 and C2D15", 50, -19,
+  "Discontinued at Cycle 3", 37.5, -12,
+  "Discontinued at Cycle 5", 50.5, -20
+)
+wk24 |>
+  left_join(published_wk24, by = "scenario") |>
+  dplyr::rename(
+    Scenario = scenario,
+    `Responders, simulated (%)` = resp,
+    `Responders, Chudasama 2026 (%)` = resp_pub,
+    `Median change, simulated (mm)` = med,
+    `Median change, Chudasama 2026 (mm)` = med_pub
+  ) |>
+  knitr::kable(digits = 1)
+
+r24 <- setNames(wk24$resp, wk24$scenario)
+# Every scenario gives each virtual patient no more drug than the base case,
+# and the shrinkage term increases with concentration, so with the same
+# patients in every arm the base case has the most responders. The ordering
+# is deterministic, not a sampling result.
+stopifnot(
+  r24["1.25 mg/kg 3Q4W"] >= r24["1.00 mg/kg 3Q4W"],
+  r24["1.25 mg/kg 3Q4W"] >= r24["Eliminated C1D15 and C2D15"],
+  r24["Discontinued at Cycle 5"] >= r24["Discontinued at Cycle 3"],
+  # Envelope on the base-case response rate (published about 58%).
+  r24["1.25 mg/kg 3Q4W"] > 40, r24["1.25 mg/kg 3Q4W"] < 75
+)
+```
+
+The virtual cohort reproduces the direction and the relative size of every
+published scenario effect: a lower starting dose and early dose eliminations
+cost a few percentage points of responders, a reduction at Cycle 3 costs
+almost nothing, and stopping at Cycle 3 costs far more than stopping at
+Cycle 5. The absolute response rates and median shrinkage run a few points
+below the published curves, which were simulated from the post hoc estimates
+of the 603 trial patients rather than from the population distributions (see
+Assumptions and deviations).
+
+## Best overall change (Table S7)
+
+Table S7 compares the observed proportion of patients whose best change from
+baseline was a decrease of more than 30% with simulations of the analysis
+dataset. The simulations used each patient's actual dosing and sampling
+history; the closest analogue here is the base case over 24 weeks.
+
+```{r table-s7}
+best <- sim |>
+  filter(scenario == "1.25 mg/kg 3Q4W") |>
+  group_by(id) |>
+  summarise(best = min(pchg), .groups = "drop")
+tibble::tibble(
+  Source = c("This model, 1.25 mg/kg 3Q4W, 24 weeks", "Table S7, all studies, simulated", "Table S7, all studies, observed"),
+  `Best decrease > 30% (%)` = c(100 * mean(best$best < -30), 53.8, 57.0)
+) |>
+  knitr::kable(digits = 1)
+```
+
+# Assumptions and deviations
+
+* **PK layer from Zuo 2024.** Chudasama 2026 drove the TGI with individual
+  post hoc PK parameters (control-stream columns CLD, V1, Q2D, V2, Q3D, V3)
+  rather than with a population PK model. To simulate new patients, this file
+  carries the Zuo 2024 final ADC population PK model (Table 1) with all of its
+  covariates, IIV and residual error. All PK parameters are fixed. The paper
+  cites this model as reference 10.
+* **Zuo 2024 covariate forms.** Zuo 2024 states that continuous covariates
+  enter as power functions of the covariate over its median and categorical
+  covariates as proportional changes. The reference values (75 kg, 68 years,
+  albumin 39 g/L, hemoglobin 112 g/L, SOD 65 mm, male) are those of its
+  reference population (Figure 2 legend, where albumin is misprinted as
+  "39 g/mL"). The weight exponent printed for "CLA, Q2, Q3" is applied to all
+  three clearances, and the one for "V1, V2, V3" to all three volumes.
+* **Zuo 2024 IIV.** Reported as CV%; converted with omega^2 = log(1 + CV^2). No
+  correlations are reported, so the IIV is diagonal.
+* **Zuo 2024 residual error.** Proportional plus additive, combined in the
+  nlmixr2 default form; Zuo 2024 does not say how the two were combined.
+* **Manufacturing process and analytical laboratory.** Zuo 2024 estimated
+  effects of manufacturing process A on clearance and of the Intertek
+  laboratory on V3. Both indicators are 0 in all simulations here.
+* **TGI final estimates.** Values are from Table S9 (final model, 603
+  patients). The NONMEM control stream in Table S3 lists initial estimates,
+  and the mrgsolve code in Table S4 agrees with Table S9 except for the IC50
+  IIV variance (3.57 in the code, 3.51 in Table S9); Table S9 is used. Table S8
+  (610 patients including complete responders) and Table S12 (SAEM
+  re-estimation) are sensitivity analyses and are not packaged.
+* **Prior lines of therapy.** The Results text says ">3 prior lines", but the
+  Methods ("3+ lines vs all others"), Table S9 ("Prior therapies (3+)") and
+  the code define the category as three or more, which is what the
+  `LINE_4L_PLUS` indicator encodes. The reference level pools zero, one and
+  two prior lines.
+* **Cycle 1 Cavg unit.** The Results quote the cycle 1 Cavg as "3.93 ng/mL";
+  the ADC concentrations and IC50 are in ug/mL everywhere else in the paper,
+  and the model reproduces 3.93 ug/mL, so ng/mL is a typo.
+* **Time origin.** The resistance term uses time since the first dose
+  (NONMEM `T`, mrgsolve `SOLVERTIME`), not time since the last dose.
+* **Simulation design.** Chudasama 2026 simulated the 603 analysis patients
+  from their post hoc parameter estimates. This vignette uses a 200-patient
+  virtual cohort with random effects drawn from the IIV variances, so the
+  joint distribution of covariates, KG and IC50 differs from that of the
+  trial patients. The IC50 variance (3.51) is large, so a cohort drawn from
+  it spreads further than one built from shrunken post hoc estimates. The
+  week-8 progression filter and the responder denominator follow the authors'
+  Shiny code (Table S5).
+* **Figure values.** The week-24 response rates and median changes quoted
+  from Figures 5-7 were read off the published plots and are approximate.
+* **Covariate distributions.** Truncated normal draws for weight, age,
+  albumin and hemoglobin and a truncated lognormal for baseline SOD, matched
+  to the Table S10 summaries; the joint correlation of covariates is not
+  reported and is not reproduced.
