@@ -1,0 +1,562 @@
+---
+title: "Evacetrapib PK, HDL-C and LDL-C (Friedrich 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Evacetrapib PK, HDL-C and LDL-C (Friedrich 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Friedrich 2014 analysed a 12-week phase II study of evacetrapib, a
+cholesteryl ester transfer protein (CETP) inhibitor, with three sequentially
+fitted models: a population PK model, and two exposure-response models for the
+percent change from baseline in HDL-C and LDL-C that take each patient's
+steady-state evacetrapib AUC from the PK model as their exposure. The three are
+packaged as three model files:
+
+* `Friedrich_2014_evacetrapib` -- population PK.
+* `Friedrich_2014_evacetrapib_hdl` -- HDL-C percent change (Eq. 1).
+* `Friedrich_2014_evacetrapib_ldl` -- LDL-C percent change (Eqs. 2 and 3).
+
+* Citation: `r rxode2::rxode(readModelDb("Friedrich_2014_evacetrapib"))$reference`
+* Article: <https://doi.org/10.1038/psp.2013.70> (open access; the
+  supplementary data hold the authors' NONMEM code and final estimates for all
+  three models).
+
+```{r models}
+mod_pk <- readModelDb("Friedrich_2014_evacetrapib")
+mod_hdl <- readModelDb("Friedrich_2014_evacetrapib_hdl")
+mod_ldl <- readModelDb("Friedrich_2014_evacetrapib_ldl")
+```
+
+# Population
+
+The study randomised 398 adults with hypercholesterolemia or low HDL-C
+(triglycerides below 400 mg/dL after a lipid washout and dietary lead-in) to
+12 weeks of placebo; evacetrapib 30, 100 or 500 mg once daily; atorvastatin
+20 mg, simvastatin 40 mg or rosuvastatin 10 mg once daily; or each statin with
+evacetrapib 100 mg once daily (about 40 per arm). 56.0% were female and 92.9%
+white; age was 28-83 years (mean 58.3) and body weight 44-164 kg (mean 83.6).
+Mean baseline LDL-C, HDL-C and triglycerides were 144.3, 55.1 and 139.8 mg/dL
+(Results). The PK model used 1,629 concentrations from 226 patients, the HDL-C
+model 1,882 observations from 391 patients and the LDL-C model 1,469
+observations from 388 patients. The same information is available
+programmatically, e.g. `rxode2::rxode(readModelDb("Friedrich_2014_evacetrapib"))$population`.
+
+# Source trace
+
+Every value below is the final estimate printed in the authors' NONMEM output
+(Supplementary Data) and agrees with the corresponding row of Tables 1-3.
+
+| Model | Parameter / equation | Value | Source location |
+|-------|----------------------|-------|-----------------|
+| PK | `lka` | log(0.3) (held constant) | Table 1; NONMEM THETA(1) |
+| PK | `lcl` | log(15.3) L/h | Table 1; THETA(2) |
+| PK | `lvc` | log(228) L | Table 1; THETA(3) |
+| PK | `lq` | log(9.79) L/h | Table 1; THETA(4) |
+| PK | `lvp` | log(827) L | Table 1; THETA(5) |
+| PK | `e_dose_cl` | 0.00105 /mg | Table 1 and footnote c; THETA(6) |
+| PK | `e_crcl_cl` | 0.00198 /(mL/min), centred at 91.28 | Table 1 and footnote c; THETA(7) |
+| PK | `etalcl + etalvc` | 0.144, 0.225, 0.426 | NONMEM $OMEGA BLOCK(2); Table 1 (39.4%, 50.2%, 72.9%) |
+| PK | `etalq` | 1.04 | NONMEM OMEGA(4); Table 1 (135.2%) |
+| PK | `propSd` | 0.3302 = sqrt(0.109) | NONMEM SIGMA; Table 1 (33%) |
+| PK | CL/F equation | `15.3 * (1 + 0.00105 * DOSE) * (1 + 0.00198 * (CGCL - 91.28))` | Table 1 footnote c; NONMEM $PK |
+| PK | `Cc = 1000 * central / vc` (ng/mL) | n/a | NONMEM $PK `S2 = V2/1000` |
+| HDL | `emax` | 177 % | Table 2; THETA(1) |
+| HDL | `lauc50` | 8.59 (exp = 5,379 ng*h/mL) | NONMEM THETA(2); Table 2 (5,380) |
+| HDL | `e_hdlc_lauc50` | 0.00317 /(mg/dL), centred at 52.2 | Table 2; THETA(7); NONMEM $PRED |
+| HDL | `lhill` | log(1) (held constant) | NONMEM THETA(3); Results |
+| HDL | `plac` | 0 (held constant) | Table 2; THETA(4) |
+| HDL | `e_conmed_statin_hdl` | 0 (held constant) | NONMEM THETA(6); Results |
+| HDL | `lkhdl` | log(0.00684) /h | Table 2; THETA(5) |
+| HDL | `etaemax`, `etalkhdl`, `etaplac` | 3680, 0.281, 59.7 | NONMEM $OMEGA; Table 2 (34.3%, 57%, 7.7) |
+| HDL | `addSd` | 14.18 = sqrt(201) | NONMEM SIGMA; Table 2 (14.2) |
+| HDL | `hdlcfb = (PLAC + STAT * I + Emax * AUC / (EAUC50 + AUC)) * (1 - exp(-K * time))` | n/a | Eqs. 1 and 4; NONMEM $PRED |
+| LDL | `emax` | -44.1 % | Table 3; THETA(1) |
+| LDL | `lauc50` | 8.35 (exp = 4,230 ng*h/mL) | NONMEM THETA(2); Table 3 (4,230) |
+| LDL | `e_apoa1_emax` | -0.989, reference 153 mg/dL | Table 3 and footnote d; THETA(5) |
+| LDL | `plac` | 0 (held constant) | Table 3; NONMEM TVPLAC |
+| LDL | `e_ldlc_plac` | -0.119, centred at 146.56 mg/dL | Table 3 and footnote e; THETA(6); NONMEM $PRED |
+| LDL | `e_trig_plac` | 1.87, reference 120.01 mg/dL | Table 3 and footnote e; THETA(7); NONMEM $PRED |
+| LDL | `e_conmed_statin_ldl` | -38.7 % | Table 3; THETA(3) |
+| LDL | `e_inter` | -0.997 | Table 3; THETA(4) |
+| LDL | `etaplac` | 140 | NONMEM OMEGA(1); Table 3 (11.8) |
+| LDL | `addSd` | 11.31 = sqrt(128) | NONMEM SIGMA; Table 3 (11.3) |
+| LDL | `ldlcfb = PLAC + STAT * I_ST + LY * (1 - I_COMB) + INTER * I_COMB * 100 * (1 - (1 + STAT/100) * (1 + LY/100))` | n/a | Eqs. 2 and 3; NONMEM $PRED |
+
+# Checks against statements in the paper
+
+Several results in the paper are deterministic functions of the typical-value
+model and can be checked exactly.
+
+```{r deterministic-checks}
+# CL/F at the median CGCL for each dose level, and the CGCL effect.
+cl_typ <- function(dose, crcl) 15.3 * (1 + 0.00105 * dose) * (1 + 0.00198 * (crcl - 91.28))
+cl_by_dose <- tibble(
+  dose = c(30, 100, 500),
+  cl_model = cl_typ(dose, 91.28),
+  cl_text = c(13.1, 17.0, 25.4)
+)
+crcl_ratio <- cl_typ(100, 50) / cl_typ(100, 100)
+
+# HDL-C: fraction of Emax reached at the geometric-mean AUC of each dose group
+# (Discussion: "~30, 50, and 80% of the maximal effect").
+auc_gm <- c(2300, 5900, 19700)
+frac_emax <- auc_gm / (exp(8.59) + auc_gm)
+
+hdl_typ <- rxode2::zeroRe(mod_hdl)
+ldl_typ <- rxode2::zeroRe(mod_ldl)
+
+# Typical-value solves of several rows at once: rxode2 warns that a
+# multi-subject solve has no omega, which is the intent here.
+solve_typical <- function(mod, d) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod, d),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+hdl_at <- function(auc, hdlc, time = 12 * 7 * 24) {
+  d <- data.frame(
+    id = seq_along(auc), time = time, AUC_EVACETRAPIB = auc,
+    HDLC = hdlc, CONMED_STATIN = 0
+  )
+  solve_typical(hdl_typ, d)$hdlcfb
+}
+
+# Discussion: an AUC giving +110% at baseline HDL-C 55 mg/dL gives +127% at
+# 40 mg/dL (the DEFINE study's mean baseline).
+auc_110 <- uniroot(function(a) hdl_at(a, 55) - 110, c(1000, 50000))$root
+hdl_define <- hdl_at(auc_110, 40)
+
+checks <- tibble(
+  Claim = c(
+    "CL/F 10% lower at CGCL 50 than 100 mL/min (Results)",
+    "30 mg: fraction of HDL-C Emax ~30% (Discussion)",
+    "100 mg: fraction of HDL-C Emax ~50% (Discussion)",
+    "500 mg: fraction of HDL-C Emax ~80% (Discussion)",
+    "+110% at HDL-C 55 mg/dL becomes +127% at 40 mg/dL (Discussion)"
+  ),
+  Paper = c(10, 30, 50, 80, 127),
+  Model = c(100 * (1 - crcl_ratio), 100 * frac_emax, hdl_define)
+)
+knitr::kable(checks, digits = 1)
+stopifnot(
+  abs(checks$Model[1] - 10) < 1,
+  all(abs(checks$Model[2:4] - c(30, 50, 80)) < 3),
+  abs(hdl_define - 127) < 2
+)
+```
+
+The CL/F values that the Results text quotes for the three dose levels (13.1,
+17.0 and 25.4 L/h) are not what the Table 1 covariate equation gives at the
+median CGCL:
+
+```{r cl-by-dose}
+cl_by_dose |>
+  dplyr::rename(
+    "Dose (mg)" = dose,
+    "CL/F from Table 1 equation (L/h)" = cl_model,
+    "CL/F quoted in Results (L/h)" = cl_text
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+The quoted values match the spread of the individual post hoc clearances by
+dose group in Supplementary Figure S3 (medians read as about 12.4, 15.3 and
+24.8 L/h), and they reproduce the published geometric-mean AUCs exactly
+(1000 x 30 / 13.1 = 2,290; 1000 x 500 / 25.4 = 19,690 ng*h/mL), so they are
+summaries of the individual estimates rather than the typical-value curve. The
+linear dose term understates the curvature between 30 and 100 mg; the
+simulated AUC at 30 mg is therefore lower than published (see the NCA
+comparison below). The equation in Table 1 and the NONMEM code is used as
+published.
+
+# PK simulation
+
+## Virtual cohort
+
+Covariate distributions are assumptions (the paper gives the median CGCL but
+no spread): CGCL is drawn log-normally around the 91.28 mL/min median with a
+30% coefficient of variation and truncated to 30-200 mL/min. PK is not
+affected by statin coadministration, so one PK cohort per evacetrapib dose
+level is simulated (100 patients each), plus a separate 100 mg cohort that
+supplies AUCs for the evacetrapib + statin arm of the exposure-response
+simulations.
+
+```{r pk-cohort}
+rxode2::rxSetSeed(20140101)
+set.seed(20140101)
+
+n_per_arm <- 100
+pk_arms <- tibble(
+  treatment = c("30 mg", "100 mg", "500 mg", "100 mg + statin"),
+  dose = c(30, 100, 500, 100)
+)
+tau <- 24
+n_dose <- 84
+t_last_dose <- (n_dose - 1) * tau
+
+make_pk_cohort <- function(arm, dose, id_offset) {
+  crcl <- exp(rnorm(n_per_arm, log(91.28), 0.3))
+  crcl <- pmin(pmax(crcl, 30), 200)
+  subj <- tibble(
+    id = id_offset + seq_len(n_per_arm),
+    treatment = arm, DOSE = dose, CRCL = crcl
+  )
+  doses <- subj |>
+    mutate(time = 0, amt = dose, evid = 1L, cmt = "depot", ii = tau, addl = n_dose - 1)
+  obs_times <- c(seq(0, 7 * 24, by = 6), seq(t_last_dose, t_last_dose + tau, by = 0.25))
+  obs <- tidyr::crossing(subj, time = obs_times) |>
+    mutate(amt = 0, evid = 0L, cmt = "central", ii = 0, addl = 0)
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid)) |>
+    select(id, time, amt, evid, cmt, ii, addl, DOSE, CRCL, treatment)
+}
+
+pk_events <- bind_rows(lapply(seq_len(nrow(pk_arms)), function(i) {
+  make_pk_cohort(pk_arms$treatment[i], pk_arms$dose[i], (i - 1L) * n_per_arm)
+}))
+stopifnot(!anyDuplicated(pk_events[pk_events$evid == 1, "id"]))
+```
+
+```{r pk-simulate}
+pk_sim <- rxode2::rxSolve(mod_pk, events = pk_events, keep = c("treatment", "DOSE"))
+pk_sim <- as.data.frame(pk_sim)
+```
+
+## Concentration-time profiles
+
+```{r pk-profiles, fig.height = 4}
+pk_sim |>
+  filter(time >= t_last_dose, treatment != "100 mg + statin") |>
+  mutate(tad = time - t_last_dose) |>
+  group_by(treatment, tad) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(treatment = factor(treatment, levels = c("30 mg", "100 mg", "500 mg"))) |>
+  ggplot(aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~treatment, scales = "free_y") +
+  labs(
+    x = "Time after the week-12 dose (h)", y = "Evacetrapib (ng/mL)",
+    caption = "Median and 90% interval of simulated steady-state concentrations."
+  )
+```
+
+## Steady-state AUC (PKNCA)
+
+```{r pknca}
+nca_conc <- pk_sim |>
+  filter(time >= t_last_dose, !is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+
+nca_dose <- pk_events |>
+  filter(evid == 1) |>
+  select(id, time, amt, ii, addl, treatment) |>
+  mutate(n = addl + 1) |>
+  tidyr::uncount(n, .id = "k") |>
+  mutate(time = time + (k - 1) * ii) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = t_last_dose, end = t_last_dose + tau,
+  auclast = TRUE, cmax = TRUE, cmin = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+The paper reports the geometric-mean AUC over the dosing interval at steady
+state for each group (Results; Supplementary Figure S2).
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~treatment, ~auclast,
+  "30 mg", 2300,
+  "100 mg", 5900,
+  "500 mg", 19700,
+  "100 mg + statin", 5620
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated (median) vs published (geometric mean) steady-state AUC over 24 h. * differs by >20%.")
+```
+
+The 100 mg + statin reference is the middle of the three published
+combination-arm geometric means (5,500, 5,620 and 5,960 ng*h/mL for
+atorvastatin, simvastatin and rosuvastatin). The 30 mg arm runs below the
+published value because of the linear dose term discussed above.
+
+The AUC over one dosing interval at steady state equals `1000 * DOSE / cl` for
+the same simulated patient; this is the quantity the exposure-response models
+take as `AUC_EVACETRAPIB`. The two agree to within trapezoidal error:
+
+```{r auc-closed-form}
+auc_nca <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, treatment, auc_nca = PPORRES)
+subj_pk <- pk_sim |>
+  group_by(id, treatment) |>
+  summarise(DOSE = first(DOSE), cl = first(cl), .groups = "drop") |>
+  mutate(AUC_EVACETRAPIB = 1000 * DOSE / cl)
+auc_chk <- inner_join(auc_nca, subj_pk, by = c("id", "treatment")) |>
+  mutate(pct_diff = 100 * (auc_nca - AUC_EVACETRAPIB) / AUC_EVACETRAPIB)
+stopifnot(
+  nrow(auc_chk) == nrow(subj_pk),
+  abs(median(auc_chk$pct_diff)) < 1,
+  quantile(abs(auc_chk$pct_diff), 0.9) < 3
+)
+summary(auc_chk$pct_diff)
+```
+
+```{r auc-boxplot, fig.height = 4}
+# Replicates Supplementary Figure S2 of Friedrich 2014: AUCtau,ss by group.
+subj_pk |>
+  mutate(treatment = factor(treatment, levels = pk_arms$treatment)) |>
+  ggplot(aes(treatment, AUC_EVACETRAPIB)) +
+  geom_boxplot() +
+  labs(
+    x = NULL, y = "AUCtau,ss (ng*h/mL)",
+    caption = "Replicates Supplementary Figure S2 of Friedrich 2014."
+  )
+```
+
+# Exposure-response simulations
+
+## Virtual cohort
+
+Baseline lipids are drawn independently (an assumption; the paper does not
+publish their spread or correlations): HDL-C log-normal with the 52.2 mg/dL
+median and the 55.1 mg/dL mean implying a log-scale SD of 0.33; triglycerides
+log-normal with the 120.01 mg/dL median and 139.8 mg/dL mean (log-scale SD
+0.55), truncated below the 400 mg/dL entry limit; LDL-C normal around the
+146.56 mg/dL median with an SD of 35 mg/dL; ApoA1 log-normal around the
+153 mg/dL median with a log-scale SD of 0.18. Placebo and statin-only arms
+have an AUC of 0. HDL-C and LDL-C are evaluated at the week 2, 4, 8 and 12
+visits.
+
+```{r pd-cohort}
+pd_subj <- bind_rows(
+  subj_pk |> select(id, treatment, AUC_EVACETRAPIB),
+  tibble(id = 400L + seq_len(n_per_arm), treatment = "Placebo", AUC_EVACETRAPIB = 0),
+  tibble(id = 500L + seq_len(n_per_arm), treatment = "Statin", AUC_EVACETRAPIB = 0)
+)
+n_pd <- nrow(pd_subj)
+pd_subj <- pd_subj |>
+  mutate(
+    CONMED_STATIN = as.integer(treatment %in% c("Statin", "100 mg + statin")),
+    HDLC = exp(rnorm(n_pd, log(52.2), 0.33)),
+    TRIG = pmin(exp(rnorm(n_pd, log(120.01), 0.55)), 399),
+    LDLC = pmax(rnorm(n_pd, 146.56, 35), 60),
+    APOA1 = exp(rnorm(n_pd, log(153), 0.18))
+  )
+stopifnot(!anyDuplicated(pd_subj$id))
+visits <- c(2, 4, 8, 12) * 7 * 24
+pd_events <- tidyr::crossing(pd_subj, time = visits) |>
+  mutate(evid = 0L) |>
+  arrange(id, time)
+```
+
+```{r pd-simulate}
+hdl_sim <- as.data.frame(rxode2::rxSolve(mod_hdl, events = pd_events, keep = "treatment"))
+ldl_sim <- as.data.frame(rxode2::rxSolve(mod_ldl, events = pd_events, keep = "treatment"))
+```
+
+## Time course by arm
+
+```{r figure-1, fig.height = 6}
+# Compare with Figure 1 of Friedrich 2014 (observed mean percent change by
+# monotherapy arm).
+arm_levels <- c("Placebo", "30 mg", "100 mg", "500 mg", "Statin", "100 mg + statin")
+pd_means <- bind_rows(
+  hdl_sim |> group_by(treatment, time) |>
+    summarise(mean = mean(hdlcfb), .groups = "drop") |> mutate(endpoint = "HDL-C"),
+  ldl_sim |> group_by(treatment, time) |>
+    summarise(mean = mean(ldlcfb), .groups = "drop") |> mutate(endpoint = "LDL-C")
+) |>
+  mutate(treatment = factor(treatment, levels = arm_levels), week = time / (7 * 24))
+
+ggplot(pd_means, aes(week, mean, colour = treatment)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~endpoint, ncol = 1, scales = "free_y") +
+  labs(
+    x = "Week", y = "Mean % change from baseline", colour = NULL,
+    caption = "Simulated arm means; compare Figure 1 of Friedrich 2014."
+  )
+```
+
+Week-12 arm means against the observed means read from Figure 1 (monotherapy
+arms only; the paper does not plot the statin arms):
+
+```{r week12-table}
+fig1 <- tibble::tribble(
+  ~treatment, ~endpoint, ~observed,
+  "Placebo", "HDL-C", -2,
+  "30 mg", "HDL-C", 56,
+  "100 mg", "HDL-C", 94,
+  "500 mg", "HDL-C", 133,
+  "Placebo", "LDL-C", 3,
+  "30 mg", "LDL-C", -14,
+  "100 mg", "LDL-C", -22,
+  "500 mg", "LDL-C", -37
+)
+wk12 <- pd_means |>
+  filter(week == 12) |>
+  mutate(treatment = as.character(treatment)) |>
+  inner_join(fig1, by = c("treatment", "endpoint"))
+stopifnot(nrow(wk12) == nrow(fig1))
+wk12 |>
+  select(endpoint, treatment, mean, observed) |>
+  dplyr::rename(
+    "Endpoint" = endpoint, "Arm" = treatment,
+    "Simulated mean (%)" = mean, "Figure 1 observed mean (%)" = observed
+  ) |>
+  knitr::kable(digits = 1)
+# Robust envelope on arm means of 100 simulated patients: the largest gap is
+# about 9 points (the 30 mg HDL-C arm, which inherits the low 30 mg AUC) and
+# the 500 mg HDL-C arm mean has a Monte Carlo SE near 5 points. A
+# mis-transcribed Emax, EAUC50 or unit moves an arm mean by tens of points.
+stopifnot(all(abs(wk12$mean - wk12$observed) < 25))
+```
+
+## Figure 2: HDL-C response against baseline HDL-C
+
+```{r figure-2, fig.height = 4}
+# Replicates Figure 2 of Friedrich 2014: typical HDL-C % change at week 12 at
+# an AUC of 9,500 ng*h/mL.
+fig2 <- tibble(HDLC = seq(35, 65, by = 1)) |>
+  mutate(hdlcfb = hdl_at(rep(9500, n()), HDLC))
+fig2_digitised <- tibble(HDLC = c(35, 50, 65), paper = c(130, 114, 98))
+fig2_chk <- inner_join(fig2, fig2_digitised, by = "HDLC")
+stopifnot(nrow(fig2_chk) == 3, all(abs(fig2_chk$hdlcfb - fig2_chk$paper) < 3))
+ggplot(fig2, aes(HDLC, hdlcfb)) +
+  geom_line() +
+  geom_point(data = fig2_digitised, aes(y = paper), shape = 1, size = 2) +
+  labs(
+    x = "HDL-C at baseline (mg/dL)", y = "HDL-C % change from baseline at week 12",
+    caption = "Line: model. Circles: read from Figure 2 of Friedrich 2014."
+  )
+```
+
+## Figure 3: response against evacetrapib AUC
+
+```{r figure-3, fig.height = 6}
+# Replicates Figure 3 of Friedrich 2014 at median baseline covariates.
+auc_grid <- seq(0, 30000, by = 500)
+ldl_at <- function(auc) {
+  d <- data.frame(
+    id = seq_along(auc), time = 336, AUC_EVACETRAPIB = auc,
+    APOA1 = 153, LDLC = 146.56, TRIG = 120.01, CONMED_STATIN = 0
+  )
+  solve_typical(ldl_typ, d)$ldlcfb
+}
+fig3 <- bind_rows(
+  tibble(AUC = auc_grid, value = hdl_at(auc_grid, 52.2), endpoint = "HDL-C (week 12)"),
+  tibble(AUC = auc_grid, value = ldl_at(auc_grid), endpoint = "LDL-C (steady state)")
+)
+fig3_digitised <- tibble::tribble(
+  ~AUC, ~paper, ~endpoint,
+  5000, 81, "HDL-C (week 12)",
+  10000, 111, "HDL-C (week 12)",
+  20000, 137, "HDL-C (week 12)",
+  30000, 148, "HDL-C (week 12)",
+  5000, -24, "LDL-C (steady state)",
+  10000, -31, "LDL-C (steady state)",
+  20000, -36.5, "LDL-C (steady state)",
+  30000, -38.6, "LDL-C (steady state)"
+)
+fig3_chk <- inner_join(fig3, fig3_digitised, by = c("AUC", "endpoint"))
+stopifnot(nrow(fig3_chk) == 8, all(abs(fig3_chk$value - fig3_chk$paper) < 5))
+ggplot(fig3, aes(AUC, value)) +
+  geom_line() +
+  geom_point(data = fig3_digitised, aes(y = paper), shape = 1, size = 2) +
+  facet_wrap(~endpoint, ncol = 1, scales = "free_y") +
+  labs(
+    x = "Evacetrapib AUC (ng*h/mL)", y = "% change from baseline",
+    caption = "Line: model at median covariates. Circles: read from Figure 3 of Friedrich 2014."
+  )
+```
+
+## Statin interaction
+
+With the estimated interaction coefficient of -0.997 the LDL-C reduction in
+the combination arms is, to within 0.3%, the product of the two independent
+fractional reductions, which is the paper's conclusion of pharmacologic
+independence:
+
+```{r statin-interaction}
+d_int <- data.frame(
+  id = 1:3, time = 336, AUC_EVACETRAPIB = c(0, 5900, 5900),
+  APOA1 = 153, LDLC = 146.56, TRIG = 120.01, CONMED_STATIN = c(1, 0, 1)
+)
+ldl_int <- solve_typical(ldl_typ, d_int)$ldlcfb
+independent <- 100 * ((1 + ldl_int[1] / 100) * (1 + ldl_int[2] / 100) - 1)
+knitr::kable(tibble(
+  Arm = c("Statin alone", "Evacetrapib 100 mg alone (AUC 5,900)", "Combination", "Independent-action prediction"),
+  `LDL-C % change` = c(ldl_int, independent)
+), digits = 1)
+stopifnot(abs(ldl_int[1] - (-38.7)) < 1e-6, abs(ldl_int[3] - independent) < 0.5)
+```
+
+# Assumptions and deviations
+
+- **EAUC50 covariate form (HDL-C).** Table 2 footnote f writes
+  `EAUC50 = 5,380 * exp(0.00317 * (bHDL - 52.2))`. The authors' NONMEM code
+  estimates the logarithm of EAUC50 and applies the baseline-HDL-C factor to
+  that logarithm, `log(EAUC50) = 8.59 * exp(0.00317 * (bHDL - 52.2))`. The
+  code's form is used: it reproduces Figure 2 (130% and 98% at 35 and 65 mg/dL)
+  and the Discussion's 110% to 127% example, whereas the footnote's form
+  gives about 115% and 111% at 35 and 65 mg/dL and 112% for the example.
+- **Centring values.** Table 3 footnote e prints the LDL-C and triglyceride
+  centring values rounded to 147 and 120 mg/dL; the NONMEM code uses 146.56
+  and 120.01, which are used here.
+- **Missing-covariate guards.** The authors' LDL-C code skips a covariate term
+  when the baseline value is coded 0 (missing). The packaged model has no such
+  guard: supply every baseline covariate.
+- **Statin arm indicators.** The paper's indicators I_ST (statin alone) and
+  I_COMB (statin with evacetrapib) are derived from `CONMED_STATIN` and
+  `AUC_EVACETRAPIB > 0`. The HDL-C model's statin effect is held at 0 in the
+  final model; its `CONMED_STATIN` column is kept only so the model matches the
+  authors' code.
+- **CL/F by dose.** The CL/F values quoted for 30, 100 and 500 mg in the
+  Results are group summaries of individual estimates; the Table 1 equation
+  is used as published, and the simulated 30 mg AUC is about 15-20% below the
+  published geometric mean.
+- **Patient count.** The PK text reports 226 patients; the NONMEM output
+  reports 233 patients in the data file. The text value is recorded in the
+  model metadata.
+- **Virtual covariates.** CGCL, baseline HDL-C, LDL-C, triglycerides and ApoA1
+  distributions, and their independence, are assumptions; the paper gives
+  medians and means only.
+- **Time origin.** `time` in the HDL-C model is the time from the first dose of
+  study treatment in hours; the model describes the on-treatment period only
+  (the paper's Figure 1 washout visit is not modelled).
+- No erratum or correction notice was found for this article (EuropePMC
+  search, 2026-11-20).

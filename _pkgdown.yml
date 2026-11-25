@@ -3324,6 +3324,12 @@ navbar:
         href: articles/Moein_2025_etrolizumab.html
       - text: "Etrolizumab maintenance endorem (Moein 2025)"
         href: articles/Moein_2025_etrolizumab.html
+      - text: "Evacetrapib (Friedrich 2014)"
+        href: articles/Friedrich_2014_evacetrapib.html
+      - text: "Evacetrapib hdl (Friedrich 2014)"
+        href: articles/Friedrich_2014_evacetrapib.html
+      - text: "Evacetrapib ldl (Friedrich 2014)"
+        href: articles/Friedrich_2014_evacetrapib.html
       - text: "Everolimus (Itohara 2022)"
         href: articles/Itohara_2022_everolimus.html
       - text: "Everolimus (Mo 2025)"
@@ -10979,6 +10985,7 @@ articles:
   - articles/Freyer_2000_AVI_regimen
   - articles/Friberg_2002_paclitaxel
   - articles/Friberg_2012_voriconazole
+  - articles/Friedrich_2014_evacetrapib
   - articles/Frobel_2013_ciclosporin
   - articles/Frohlich_2018_mRNA_translation
   - articles/Fromage_2025_mycophenolic_acid
