@@ -2498,6 +2498,8 @@ navbar:
         href: articles/Li_2025_doxycycline_florfenicol_ducks.html
       - text: "Doxycycline duck lung (Li 2025)"
         href: articles/Li_2025_doxycycline_florfenicol_ducks.html
+      - text: "Doxycycline mouse (Sharma 2016)"
+        href: articles/Sharma_2016_tetracyclines_wolbachia.html
       - text: "Doxycycline pig (Toutain 2025)"
         href: articles/Toutain_2025_doxycycline_pig.html
       - text: "Doxycycline rabbit (Mileva 2021)"
@@ -5340,6 +5342,8 @@ navbar:
         href: articles/Verrest_2023_miltefosine_paromomycin.html
       - text: "Minocycline (Athanassa 2025)"
         href: articles/Athanassa_2025_minocycline.html
+      - text: "Minocycline mouse (Sharma 2016)"
+        href: articles/Sharma_2016_tetracyclines_wolbachia.html
       - text: "Miridesap (Sahota 2015)"
         href: articles/Sahota_2015_miridesap.html
       - text: "Mirikizumab (Chua 2025)"
@@ -11652,6 +11656,7 @@ articles:
   - articles/Shahraz_2024_falbikitug
   - articles/Shao_2023_bedaquiline
   - articles/Sharma_2016_hydroxyprogesteroneCaproate
+  - articles/Sharma_2016_tetracyclines_wolbachia
   - articles/Sharma_2018_SHetA2
   - articles/Sharma_2018_naltrexone_bupropion
   - articles/Sharma_2023_nitrofurantoin
