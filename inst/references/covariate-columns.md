@@ -6042,6 +6042,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Mi_2022_ceftiofur_pkpd_plasma.R`, `Mi_2022_ceftiofur_pkpd_balf.R` (Mi 2022 ex vivo sigmoid Imax PK/PD integration against *P. multocida* HB13 in plasma and BALF; `AUC_CEFTIOFUR / mic` drives the signed 24 h change in log10 CFU/mL).
 - **Notes:** Specific scope -- ceftiofur-specific. Member of the `AUC_<DRUG>` family; the full INN is spelled out (as in `AUC_FENEBRUTINIB`) because every short form (`CEF`, `CEFT`, `TIO`, `XNL`) collides with, or is not recognisable beside, the abbreviations of other cephalosporins. Follows the `AUCMIC_TYLO` entry's rule for choosing between the `AUC_<DRUG>` and ratio-carrying `AUCMIC_<DRUG>` families: Mi 2022 reports the challenge strain's MIC (0.06 ug/mL in vitro and ex vivo), and that MIC reconstructs the paper's ex vivo kill at the plasma sample concentrations it lists (Figure 2A), so the absolute-AUC form plus a model `mic` parameter is used. Unlike `AUC_CEFQ`, the index is **not** divided by 24 h.
 
+### AUC_NEMONOXACIN (**canonical for 0-24 h nemonoxacin AUC in the medium of an in vitro dynamic infection model**)
+- **Description:** Nemonoxacin area under the concentration-time curve over 0-24 h, measured in the medium of an in vitro dynamic (dilution) infection model rather than in plasma, used as the numerator of the AUC0-24/MIC PK/PD index. Qi 2026 sampled the central flask of a one-compartment urinary-tract-infection model by LC-MS/MS and derived the value non-compartmentally in Phoenix WinNonlin; because that source publishes no structural PK model of the apparatus, the PD models consume AUC_NEMONOXACIN directly as a covariate and divide it by the isolate MIC (`MIC` for the standard CAMHB MIC, `MIC_SYNTHETIC_URINE` for the MIC measured in synthetic human urine).
+- **Units:** `mg*h/L` (equivalently `h*ug/mL`). Document per-model via `covariateData[[AUC_NEMONOXACIN]]$units` if a different exposure unit is reported.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free growth controls so the sigmoid term `Emax * X^H / (X^H + EC50^H)` vanishes and the prediction reduces to `E0`.
+- **Source aliases:**
+  - `AUC0-24` / `AUC0-24h` -- printed names in Qi 2026 Methods (PK/PD index and targets) and Table 2 (indices `AUC0-24h/MIC` and `AUC0-24h/MICSHU`). The flask reproduced day-10 urine concentrations after oral 500 mg once daily (Table 1); interval-weighting the Table 1 minimum and median interval concentrations gives about 1482 and 3823 mg*h/L for the low- and high-exposure arms.
+- **Example models:** `Qi_2026_nemonoxacin_camhb_aucmic_dlogcfu.R`, `Qi_2026_nemonoxacin_camhb_aucmic_aubkc.R`, `Qi_2026_nemonoxacin_shu_aucmic_dlogcfu.R`, `Qi_2026_nemonoxacin_shu_aucmic_aubkc.R`, `Qi_2026_nemonoxacin_shu_aucmicshu_aubkc.R` (Qi 2026 sigmoid Emax PK/PD-index fits against *Escherichia coli* in CAMHB and synthetic human urine).
+- **Notes:** Specific scope -- nemonoxacin-specific and tied to the 0-24 h interval. Split (absolute AUC plus a separate MIC column) rather than the ratio form `AUCMIC_<DRUG>`, because Qi 2026 reports every isolate's MIC (Table S3) and those MICs do reconstruct the paper's index axes: the low-exposure AUC of about 1482 mg*h/L over the lowest CAMHB MIC in that arm (8 mg/L) gives 185, against a Figure 6(a) AUC/MIC maximum of about 200, and the high-exposure AUC of about 3823 mg*h/L over NTU-001's CAMHB MIC of 1 mg/L gives about 3800, against a Figure 6(b) maximum of about 4100. Name ratified by the maintainers alongside the Qi 2026 extraction. Closest analogues: `AUC_AMPH` and `AUC_CEFQ`.
+
 ### AUC_LEN (**canonical for lenvatinib steady-state daily AUC**)
 - **Description:** Lenvatinib area under the plasma concentration-time curve over the once-daily 24 h dosing interval at steady state, used as the drug-exposure driver of PK/PD models in which lenvatinib exposure acts on serum biomarker turnover or on tumor growth inhibition. Time-varying step-wise: held constant between assessments and updated when the dose level changes (or when treatment is interrupted or stopped). Majid 2024 derives it inside the upstream population PK run as `AUC = 1000 * F1 * DGRP / CL` -- 1000 x relative bioavailability x current daily dose (mg) divided by the individual apparent clearance (L/h) -- and carries it into the two downstream PK/PD runs as a data column. Two closely related conventions occur in that paper and are pooled onto this single canonical: the value at the time of the biomarker assessment (`LENAUC`, biomarker model) and the average over the interval between two tumor assessments computed from the average dose in that interval (`LEVAVAUC`, tumor model); record which one applies via `covariateData[[AUC_LEN]]$notes`.
 - **Units:** `ng*h/mL` (equivalently `ug*h/L`). Must be in the same units as the model's EC50 so the Emax term is dimensionless. Note that the Majid 2024 tumor control stream (Text S3) rescales the column to `ug*h/mL` with `AUC = LEVAVAUC/1000` and divides its carried EC50 values by 1000 to match; the register keeps the untransformed `ng*h/mL` scale so the column is interchangeable across the biomarker and tumor models. Document per-model via `covariateData[[AUC_LEN]]$units`.
@@ -6417,27 +6428,16 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Yang_2026_APTM_cmaxmic.R` (Yang 2026 inhibitory sigmoid Emax PK/PD integration against *Mycoplasma gallisepticum* strain S6 in an intratracheal chicken infection model; `CMAX_APTM / mic` drives the signed 72 h change in lung log10 CFU/mL).
 - **Notes:** Specific scope -- APTM-specific. This is the first drug-specific member of a `CMAX_<DRUG>` family and is the parallel canonical that the `AUC_AMPH` and `AUCMIC_TYLO` entries direct a future Cmax/MIC-indexed antibacterial model to register rather than overloading an `AUC_<DRUG>` name; it is the peak-concentration twin of `AUC_APTM`, and the two drive the sibling models `Yang_2026_APTM_cmaxmic.R` and `Yang_2026_APTM_aucmic.R` respectively. Distinct from `CMAX_M1` (an empirical-Bayes month-1 peak derived from an upstream population PK model, not tied to a named drug) and from `PRED_CMAX_FREE` (the peak of a *co-medication* rather than of the modelled drug). Distinct from the `CONC_<DRUG>_<UNITS>` family, which carries an instantaneous concentration driving a mechanism-based kill-rate model: a peak concentration is a summary exposure metric, not a time course. A future APTM model using a different exposure metric (Ctrough, T>MIC, or a per-interval steady-state AUC) should register a parallel canonical rather than overload this name.
 
-### CMAX_CEFEPIME_BRAIN_CORTEX (**canonical for peak cefepime cerebral-cortex tissue concentration over the first 24 h of treatment**)
-- **Description:** Per-subject (time-fixed) maximum cefepime concentration in cerebral-cortex tissue over the first 24 h from the first dose, used as the exposure regressor of an exposure-toxicity model that carries no PK compartments. In Pais 2026 it is read from each rat's empirical-Bayes cortex profile on a 6-min grid (total tissue concentration, ug/g treated as mg/L).
-- **Units:** `mg/L`.
+### CMAX_NEMONOXACIN (**canonical for peak nemonoxacin concentration in the medium of an in vitro dynamic infection model**)
+- **Description:** Nemonoxacin peak concentration in the medium of an in vitro dynamic (dilution) infection model, used as the numerator of the Cmax/MIC PK/PD index. Qi 2026 read it non-compartmentally (Phoenix WinNonlin) from LC-MS/MS concentrations in the central flask of a one-compartment urinary-tract-infection model; the PD models consume it directly as a covariate and divide it by the isolate MIC (`MIC` or `MIC_SYNTHETIC_URINE`).
+- **Units:** `mg/L` (equivalently `ug/mL`).
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a -- enters the logit linearly as `logit_slope * (CMAX_CEFEPIME_BRAIN_CORTEX - tc50)`. Pais 2026 cohort median (IQR) 36.0 (16.3-75.6) mg/L.
+- **Reference category:** n/a -- set to 0 for drug-free growth controls so the sigmoid term vanishes and the prediction reduces to `E0`.
 - **Source aliases:**
-  - `Cmax_cortex` -- Pais 2026 Figure 5d x-axis label.
-- **Example models:** `Pais_2026_cefepime_seizure_cmaxcortex_rat.R` (TC50 45.0 mg/L).
-- **Notes:** Member of the `CMAX_<DRUG>` family founded by `CMAX_APTM`, with the `_BRAIN_<region>` matrix suffix of `AUC_CEFEPIME_BRAIN_CORTEX` (see that entry). Because the cortex equilibrates slowly (peak about 6 h after an intravenous bolus), this peak is not the plasma Cmax and is not reached at the end of the infusion.
-
-### CMAX_CEFEPIME_BRAIN_HIPPOCAMPUS (**canonical for peak cefepime hippocampus tissue concentration over the first 24 h of treatment**)
-- **Description:** Per-subject (time-fixed) maximum cefepime concentration in hippocampus tissue over the first 24 h from the first dose, used as the exposure regressor of an exposure-toxicity model that carries no PK compartments. In Pais 2026 it is read from each rat's empirical-Bayes hippocampus profile on a 6-min grid (total tissue concentration, ug/g treated as mg/L).
-- **Units:** `mg/L`.
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- enters the logit linearly as `logit_slope * (CMAX_CEFEPIME_BRAIN_HIPPOCAMPUS - tc50)`. Pais 2026 cohort median 41.9 mg/L; the IQR is printed as 31.7-62.8 in Results and 13.7-62.8 in the Abstract.
-- **Source aliases:**
-  - `Cmax_hippocampus` -- Pais 2026 Figure 5f x-axis label.
-- **Example models:** `Pais_2026_cefepime_seizure_cmaxhippocampus_rat.R` (TC50 48.2 mg/L).
-- **Notes:** Hippocampus sibling of `CMAX_CEFEPIME_BRAIN_CORTEX`; see that entry.
+  - `Cmax` -- printed name in Qi 2026 Methods (PK/PD index and targets) and Table 2 (indices `Cmax/MIC` and `Cmax/MICSHU`). The simulated urine profile's 0-2 h interval concentration is 150.76 mg/L (Table 1 minimum, low exposure) and 535.34 mg/L (Table 1 median, high exposure).
+- **Example models:** `Qi_2026_nemonoxacin_camhb_cmaxmic_dlogcfu.R`, `Qi_2026_nemonoxacin_camhb_cmaxmic_aubkc.R`, `Qi_2026_nemonoxacin_shu_cmaxmic_dlogcfu.R`, `Qi_2026_nemonoxacin_shu_cmaxmic_aubkc.R`, `Qi_2026_nemonoxacin_shu_cmaxmicshu_dlogcfu.R`, `Qi_2026_nemonoxacin_shu_cmaxmicshu_aubkc.R`.
+- **Notes:** Specific scope -- nemonoxacin-specific. Peak-concentration twin of `AUC_NEMONOXACIN`; member of the `CMAX_<DRUG>` family founded by `CMAX_APTM`. Name ratified by the maintainers alongside the Qi 2026 extraction.
 
 ### CMIN_ARI (**canonical for model-predicted minimum aripiprazole plasma concentration proximate to a clinical event**)
 - **Description:** Individual model-predicted minimum (trough) aripiprazole plasma concentration at the time proximate to an impending-relapse event or to censoring, generated by applying a population PK model to the subject's recorded dosing history together with that subject's empirical-Bayes PK parameters. Continuous; time-invariant per subject (one value, read at the event / censoring time). Used as the exposure driver of a downstream time-to-event exposure-response model.
@@ -8082,6 +8082,28 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
   - `%T > MIC (combine)` -- printed name in Wei 2026 Table 5 (both the plasma and lung blocks), Table 6 and Materials and methods, 'Analysis of antibacterial effects and fitting of PK/PD', which defines it as "the proportion of time within 24 h that the drug concentration exceeded MIC (combine)", computed in WinNonlin. Wei 2026 reports plasma values of 20.13-63.89% and lung values of 29.00-99.55% across the six combination arms, with EC50 estimates of 35.748% (plasma) and 50.059% (lung).
 - **Example models:** `Wei_2026_cefquinome_enrofloxacin_plasma_tmic.R`, `Wei_2026_cefquinome_enrofloxacin_lung_tmic.R` (Wei 2026 inhibitory sigmoid Emax PK/PD integration for cefquinome plus a fixed 20 mg/kg enrofloxacin background against *Klebsiella pneumoniae* CLS2 in a chick pneumonia model).
 - **Notes:** Specific scope -- cefquinome-specific. The threshold is MIC(combine), not the cefquinome monotherapy MIC; Wei 2026 compared the two directly and found that the monotherapy-MIC version of %T > MIC placed the bactericidal ENR20 + CEQ10-split arm below the conventional 40% cephalosporin threshold, which is why all its fitting uses MIC(combine). See the `AUCMIC_CEFQ` Notes for the arm-by-arm MIC(combine) reconstruction. This is the index Wei 2026 selected as its primary result: the plasma fit has the highest R^2 (0.953) and lowest AIC (14.695) of the six in Table 6, and its 3 log10 CFU/mL target of 37.062% is the paper's headline PK/PD breakpoint.
+
+### FTMIC_NEMONOXACIN (**canonical for the nemonoxacin percentage-of-interval-above-MIC PK/PD index**)
+- **Description:** Percentage of the 24 h interval during which the nemonoxacin concentration exceeds the standard CAMHB broth-microdilution MIC of the challenge isolate (%T > MIC), supplied to a sigmoid Emax PK/PD-index model. Carried whole, as for every `FTMIC_<DRUG>` member: it is a duration statistic with no ratio to split.
+- **Units:** percent (0-100).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free growth controls.
+- **Source aliases:**
+  - `%T > MIC` -- printed name in Qi 2026 Methods (PK/PD index and targets) and Table 2. Qi 2026 fits it on the 0-1 FRACTION scale (Figure 6 x-axes run 0-1; Table 2 EC50 values 0.487, 4.79, 1.29 and 1.28); the packaged models multiply those EC50 values by 100 so this column stays on the family's percent scale. The rescaling is exact because the sigmoid term depends only on the index divided by EC50.
+- **Example models:** `Qi_2026_nemonoxacin_camhb_tmic_dlogcfu.R`, `Qi_2026_nemonoxacin_camhb_tmic_aubkc.R`, `Qi_2026_nemonoxacin_shu_tmic_dlogcfu.R`, `Qi_2026_nemonoxacin_shu_tmic_aubkc.R`.
+- **Notes:** Specific scope -- nemonoxacin-specific. The threshold is the standard CAMHB MIC even in the synthetic-human-urine arm; the index against the MIC measured in synthetic urine is the separate column `FTMIC_SYNTHETIC_URINE_NEMONOXACIN`. Name ratified by the maintainers alongside the Qi 2026 extraction.
+
+### FTMIC_SYNTHETIC_URINE_NEMONOXACIN (**canonical for the nemonoxacin percentage-of-interval above the MIC measured in synthetic human urine**)
+- **Description:** Percentage of the 24 h interval during which the nemonoxacin concentration exceeds the MIC of the challenge isolate measured in synthetic human urine (`MIC_SYNTHETIC_URINE`), supplied to a sigmoid Emax PK/PD-index model.
+- **Units:** percent (0-100).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free growth controls.
+- **Source aliases:**
+  - `%T > MICSHU` -- printed name in Qi 2026 Methods (PK/PD index and targets) and Table 2, fitted on the 0-1 fraction scale (Figure 6(b); Table 2 EC50 values 1.68 and 1.09); the packaged EC50 values are multiplied by 100 to the percent scale.
+- **Example models:** `Qi_2026_nemonoxacin_shu_tmicshu_dlogcfu.R`, `Qi_2026_nemonoxacin_shu_tmicshu_aubkc.R`.
+- **Notes:** Specific scope -- nemonoxacin-specific. Distinct from `FTMIC_NEMONOXACIN` only in the MIC that defines the threshold. The token `SYNTHETIC_URINE` follows the spelled-out new-canonical naming policy and matches `MIC_SYNTHETIC_URINE`. Name ratified by the maintainers alongside the Qi 2026 extraction.
 
 ### CP_MILTEFOSINE_UGML (**canonical for instantaneous miltefosine plasma concentration as a time-varying PD driver**)
 - **Description:** Instantaneous plasma concentration of miltefosine (hexadecylphosphocholine; oral alkylphosphocholine antileishmanial) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only antiparasitic kill-rate models that consume an upstream miltefosine population PK trajectory as input because the source analysis was a sequential PK-then-PD fit with the PK model fixed from a previously published popPK analysis.
@@ -12321,8 +12343,19 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Reference category:** n/a -- continuous. Founding model uses an UNCENTERED exponential effect, `exp(beta * MIC)`, so the typical value is the extrapolation to MIC = 0.
 - **Source aliases:**
   - `MIC` -- Troisi 2024 Results, Table 3 ('MIC on IC50') and ESM covariate equation `IC50 = IC50pop x e^(beta_MIC x MIC)`; meropenem MIC against the Gram-negative isolate from the bronchoalveolar lavage / blood culture.
-- **Example models:** `Tanigawara_2012_garenoxacin_cure.R` and `Tanigawara_2012_garenoxacin_cure_cart.R` (garenoxacin MIC, CLSI method, against the causative respiratory pathogen; the higher MIC is used for polymicrobial infections; the denominator of `fu * AUC_GARENOXACIN / MIC`, phase III range 0.05-32 mg/L), `Troisi_2024_meropenem.R` (exponential effect on the meropenem IC50 for inhibition of C-reactive protein production: `ic50 = 0.79 * exp(0.44 * MIC) * exp(2.46 * CONMED_ANTIMRSA)`; Table 2 cohort median MIC 0.25 mg/L, IQR 0.12-4, range 0.12-64 -- founding example).
+- **Example models:** `Troisi_2024_meropenem.R` (exponential effect on the meropenem IC50 for inhibition of C-reactive protein production: `ic50 = 0.79 * exp(0.44 * MIC) * exp(2.46 * CONMED_ANTIMRSA)`; Table 2 cohort median MIC 0.25 mg/L, IQR 0.12-4, range 0.12-64 -- founding example). The nemonoxacin Qi 2026 PK/PD-index models (for example `Qi_2026_nemonoxacin_camhb_aucmic_dlogcfu.R`) divide `AUC_NEMONOXACIN` or `CMAX_NEMONOXACIN` by it, CAMHB MIC from Table S3.
 - **Notes:** Distinct from the ratio PK/PD-index canonicals `AUCMIC_<DRUG>`, `CMAXMIC_<DRUG>` and `FTMIC_<DRUG>`, which carry an exposure already divided by an MIC; `MIC` is the bare susceptibility value, and the model computes any exposure ratio itself. MIC values are reported on the two-fold dilution scale and are often censored at the panel limits (Troisi 2024 reports 0.12 mg/L, the lowest dilution tested, for most Enterobacterales isolates); supply the reported value as-is. With an uncentered exponential effect the covariate dominates at high MIC (`exp(0.44 * 16)` is about 1100-fold in the founding model), so simulations should stay within the source cohort's MIC range.
+
+### MIC_SYNTHETIC_URINE (**canonical for the MIC of the modelled antibacterial measured in synthetic human urine**)
+- **Description:** Minimum inhibitory concentration of the modelled antibacterial against the challenge isolate, measured by broth microdilution with the standard medium (CAMHB) replaced by synthetic human urine. Carries the urine-matrix susceptibility, which can be several two-fold dilutions above the standard MIC, into a urinary PK/PD model as the denominator of an exposure index. The drug is implied by the model, as for `MIC`.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous; must be positive when it divides an exposure.
+- **Source aliases:**
+  - `MICSHU` -- Qi 2026 Methods (MIC determination in CAMHB and SHU) and Table 2 (indices `Cmax/MICSHU`, `AUC0-24h/MICSHU`, `%T > MICSHU`); the value used is the pH 6.5 column of Table S3 (0.5-512 mg/L for nemonoxacin), the pH of the PK/PD model medium.
+- **Example models:** `Qi_2026_nemonoxacin_shu_cmaxmicshu_dlogcfu.R`, `Qi_2026_nemonoxacin_shu_cmaxmicshu_aubkc.R`, `Qi_2026_nemonoxacin_shu_aucmicshu_aubkc.R`.
+- **Notes:** Distinct from `MIC`, which is the standardised broth-microdilution MIC; never overload `MIC` with a urine-matrix value. The urine MIC depends on pH (Qi 2026 reports nemonoxacin MICs 5 +/- 2, 4 +/- 2 and 2 +/- 1 log2 dilutions above CAMHB at pH 5.6, 6.0 and 6.5); record the pH in each model's `covariateData` notes. Name ratified by the maintainers alongside the Qi 2026 extraction.
 
 ## Vaccine immunogenicity (placebo-corrected `_RATIO` family)
 

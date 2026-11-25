@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sabo 2026 hydroxyurea ([doi:10.3390/pharmaceutics18060654](https://doi.org/10.3390/pharmaceutics18060654)) -- children and adults with sickle cell disease (OPTIMDREP trial), with the observed rapid/slow absorption phenotype as a covariate on ka.
+- Add Qi 2026 nemonoxacin PK/PD indices ([doi:10.1128/aac.01368-25](https://doi.org/10.1128/aac.01368-25)) -- in vitro dynamic urinary tract infection model, *Escherichia coli* in broth and synthetic human urine (17 sigmoid Emax fits).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
