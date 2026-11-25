@@ -1,0 +1,366 @@
+---
+title: "Tremelimumab (Baverel 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tremelimumab (Baverel 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Baverel P, Roskos L, Tatipalli M, Lee N, Stockman P, Taboada M,
+  Vicini P, Horgan K, Narwal R. Exposure-Response Analysis of Overall
+  Survival for Tremelimumab in Unresectable Malignant Mesothelioma: The
+  Confounding Effect of Disease Status. *Clin Transl Sci.*
+  2019;12(5):450-458.
+  doi:[10.1111/cts.12633](https://doi.org/10.1111/cts.12633)
+* Description: Two-compartment linear population PK model for
+  tremelimumab (anti-CTLA-4 IgG2) in the DETERMINE trial of second- and
+  third-line unresectable malignant mesothelioma.
+* Modality: Therapeutic monoclonal antibody, IV infusion, 10 mg/kg every
+  4 weeks for seven doses and every 12 weeks thereafter.
+
+Baverel 2019 fitted a population PK model to the tremelimumab arm of the
+phase IIb DETERMINE trial (NCT01843374) to derive each patient's
+steady-state exposure, `AUCss = Dose / CL`, and then examined overall
+survival (OS) by `AUCss` quartile. The apparent exposure-response trend
+(median OS 4.9 months in the lowest quartile vs 14.9 months in the
+highest) was attributed to confounding: sex, C-reactive protein (CRP) and
+baseline tumor size were each associated with both OS and tremelimumab
+clearance.
+
+The OS analysis is Kaplan-Meier only (no parametric survival or hazard
+model was fitted), so the packaged model is the PK model. The covariate
+screen of Table 2 found sex, CRP and tumor size statistically significant
+on clearance, but none changed `AUCss` by the pre-specified 30%, so the
+authors' final model carries no covariates (Supplementary Figure S1
+caption). The screened effects are recorded in the model's
+`covariatesDataExcluded` metadata and reproduced below as a check.
+
+```{r load-model}
+mod <- readModelDb("Baverel_2019_tremelimumab")
+mod_ui <- rxode2::rxode2(mod)
+```
+
+# Population
+
+The PK data set had 376 tremelimumab-treated patients with 1,328
+evaluable concentrations; six of the 382 randomized to tremelimumab had
+no evaluable PK. Patients had unresectable pleural or peritoneal
+malignant mesothelioma that had progressed after one or two prior
+systemic regimens including a platinum agent. Baverel 2019 does not
+tabulate age, weight, sex or race (those are in the primary trial report,
+Maio et al., Lancet Oncol 2017); the Table 2 footnote gives the medians
+used for covariate centring: serum albumin 31 g/L, CRP 33 mg/L and
+baseline tumor size 97 mm. Fifteen of 377 ADA-evaluable tremelimumab
+patients (4%) were ADA-positive after baseline, with no apparent effect
+on PK.
+
+```{r population}
+str(mod_ui$meta$population)
+```
+
+# Source trace
+
+| Element | Value | Source location |
+|---|---|---|
+| Structure: two-compartment linear, IV | -- | Results "PK modeling"; Supplementary Methods S1 Step 1 |
+| `lcl` (CL) | 0.310 L/day | Table 1 |
+| `lvc` (V1) | 3.85 L | Table 1 |
+| `lvp` (V2) | 1.72 L | Table 1 |
+| `lq` (Q) | 0.273 L/day | Table 1 |
+| `etalcl` | 0.380^2 | Table 1, BSV CL 38.0% |
+| `etalvc` | 0.325^2 | Table 1, BSV V1 32.5% |
+| `etalvp` | 0.252^2 | Table 1, BSV V2 25.2% |
+| `propSd` | 0.377 | Table 1, CV% (proportional epsilon) 37.7% |
+| Proportional residual error model | -- | Supplementary Methods S1 Step 1 |
+| No covariates in the final model | -- | Results, paragraph after Table 2; Supplementary Figure S1 caption |
+| Screened covariate effects (excluded) | Table 2 | Table 2 and footnote |
+| `AUCss = Dose / CL` | -- | Supplementary Figure S1 caption |
+| Dosing: 10 mg/kg q4w x 7, then q12w | -- | Introduction, DETERMINE design |
+
+# Typical-value profile under the DETERMINE regimen
+
+The trial regimen was 10 mg/kg every 4 weeks for seven doses, then every
+12 weeks. The infusion duration is not stated in Baverel 2019; a 1-hour
+infusion is assumed (it has no visible effect on a 28-day profile).
+
+```{r regimen}
+dose_days <- c(seq(0, 6 * 28, by = 28), 6 * 28 + c(12, 24) * 7)
+inf_dur <- 1 / 24
+
+make_events <- function(ids, wt, dose_times, obs_times) {
+  dose_rows <- expand.grid(id = ids, time = dose_times) |>
+    dplyr::mutate(
+      amt = 10 * wt[id],
+      rate = amt / inf_dur,
+      evid = 1L,
+      cmt = "central"
+    )
+  obs_rows <- expand.grid(id = ids, time = obs_times) |>
+    dplyr::mutate(amt = 0, rate = 0, evid = 0L, cmt = "central")
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+obs_profile <- sort(unique(c(seq(0, 364, by = 1), dose_days + inf_dur)))
+ev_typ <- make_events(1L, wt = c(70), dose_days, obs_profile)
+
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod_ui), events = ev_typ) |>
+  as.data.frame()
+```
+
+```{r typical-plot, fig.cap = "Typical-value tremelimumab concentration for a 70-kg patient under the DETERMINE regimen (10 mg/kg q4w x 7, then q12w)."}
+ggplot(sim_typ, aes(time, Cc)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "Tremelimumab concentration (ug/mL)") +
+  theme_bw()
+```
+
+# Virtual cohort
+
+Body weight drives the dose (10 mg/kg) but not the PK parameters. Baverel
+2019 does not report the weight distribution of the DETERMINE PK
+population, so a log-normal weight with median 70 kg and 20% CV,
+truncated to 40-130 kg, is assumed. One cohort of 200 patients is
+simulated.
+
+```{r cohort}
+set.seed(20190312)
+rxode2::rxSetSeed(20190312)
+n_sub <- 200L
+wt <- exp(rnorm(n_sub, log(70), 0.2))
+wt <- pmin(pmax(wt, 40), 130)
+summary(wt)
+```
+
+# Stochastic profile
+
+```{r vpc}
+obs_vpc <- seq(0, 364, by = 2)
+ev_vpc <- make_events(seq_len(n_sub), wt, dose_days, obs_vpc)
+sim_vpc <- rxode2::rxSolve(mod_ui, events = ev_vpc) |>
+  as.data.frame()
+
+vpc_sum <- sim_vpc |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    p05 = quantile(Cc, 0.05),
+    p50 = median(Cc),
+    p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+```
+
+```{r vpc-plot, fig.cap = "Simulated median and 90% prediction interval of tremelimumab concentration (individual predictions, without residual error) under the DETERMINE regimen; 200 virtual patients."}
+ggplot(vpc_sum, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line(aes(y = p50)) +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "Tremelimumab concentration (ug/mL)") +
+  theme_bw()
+```
+
+# Steady-state exposure (AUCss) and PKNCA
+
+Baverel 2019 derived each patient's steady-state exposure as
+`AUCss = Dose / CL` with the individual clearance (Supplementary Figure S1
+caption), i.e. the AUC over one dosing interval at steady state for a
+10 mg/kg dose. To check the packaged model against that metric with
+PKNCA, the cohort is dosed 10 mg/kg every 4 weeks to steady state (ten
+doses) and the AUC over the last 28-day interval (days 252-280) is
+computed per patient.
+
+```{r ss-sim}
+tau_start <- 9 * 28
+ss_doses <- seq(0, tau_start, by = 28)
+obs_ss <- sort(unique(c(
+  tau_start + c(0, inf_dur, 0.25, 0.5),
+  seq(tau_start + 1, tau_start + 28, by = 1)
+)))
+ev_ss <- make_events(seq_len(n_sub), wt, ss_doses, obs_ss)
+sim_ss <- rxode2::rxSolve(mod_ui, events = ev_ss) |>
+  as.data.frame() |>
+  dplyr::mutate(treatment = "10 mg/kg q4w")
+
+ss_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod_ui),
+  events = make_events(1L, wt = c(70), ss_doses, obs_ss)
+) |>
+  as.data.frame() |>
+  dplyr::mutate(treatment = "typical 70 kg")
+```
+
+```{r pknca}
+nca_input <- dplyr::bind_rows(sim_ss, ss_typ |> dplyr::mutate(id = 0L)) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, treatment, time, Cc)
+
+conc_obj <- PKNCA::PKNCAconc(nca_input, Cc ~ time | treatment + id)
+dose_df <- dplyr::bind_rows(
+  ev_ss |> dplyr::filter(evid == 1L) |> dplyr::mutate(treatment = "10 mg/kg q4w"),
+  data.frame(id = 0L, time = ss_doses, amt = 700, treatment = "typical 70 kg")
+) |>
+  dplyr::select(id, treatment, time, amt)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- data.frame(
+  start = tau_start,
+  end = tau_start + 28,
+  auclast = TRUE,
+  cmax = TRUE,
+  cmin = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(nca_res)
+```
+
+The typical 70-kg patient checks the PKNCA AUC over one steady-state
+interval against the closed form `Dose / CL` that Baverel 2019 used. Both
+sides use the same parameters, so the agreement is limited only by the
+trapezoidal integration and by any remaining accumulation.
+
+```{r typical-auc-check}
+auc_typ <- nca_tbl |>
+  dplyr::filter(treatment == "typical 70 kg", PPTESTCD == "auclast") |>
+  dplyr::pull(PPORRES)
+auc_closed <- 700 / 0.310
+c(pknca = auc_typ, closed_form = auc_closed, pct_diff = 100 * (auc_typ / auc_closed - 1))
+stopifnot(abs(auc_typ / auc_closed - 1) < 0.02)
+```
+
+# Comparison with Table 3 (AUCss by quartile)
+
+Table 3 of Baverel 2019 gives the median `AUCss` within each quartile of
+the 376 patients' model-predicted exposure. Q2 ends at 2,328 and Q3
+starts at 2,331 mg/L.day, so the overall median is about 2,330 mg/L.day.
+The simulated per-patient `AUCss` (PKNCA `auclast` over the steady-state
+interval) is split into quartiles the same way.
+
+```{r quartiles}
+auc_sim <- nca_tbl |>
+  dplyr::filter(treatment == "10 mg/kg q4w", PPTESTCD == "auclast") |>
+  dplyr::mutate(quartile = paste0("Q", dplyr::ntile(PPORRES, 4)))
+
+published <- tibble::tribble(
+  ~quartile, ~auclast,
+  "Q1", 1629,
+  "Q2", 2118,
+  "Q3", 2548,
+  "Q4", 3404
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = auc_sim |> dplyr::select(quartile, PPTESTCD, PPORRES),
+  reference = published,
+  by = "quartile",
+  units = c(auclast = "mg*day/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Median AUCss within each exposure quartile: Baverel 2019 Table 3 vs simulation. * differs from the reference by >20%."
+)
+
+overall_median <- median(auc_sim$PPORRES)
+c(simulated_median = overall_median, published_median = 2330)
+stopifnot(
+  # A mis-transcribed CL or a unit error moves the whole distribution by
+  # tens of percent. The assumed 70-kg median weight puts the expected
+  # median at 700 / 0.310 = 2258 (-3%), and the median of 200 draws with
+  # a log-scale SD near 0.43 has a sampling SE of about 4%, so 15% leaves
+  # roughly three SEs of headroom across rxode2 builds.
+  abs(overall_median / 2330 - 1) < 0.15
+)
+```
+
+The simulated overall median (`r round(overall_median)` mg/L.day) is
+`r round(100 * (overall_median / 2330 - 1))`% from the published value,
+which is within the combined effect of the assumed 70-kg median weight
+(-3%) and the sampling error of a 200-patient cohort. The simulated quartile
+medians spread wider than the published ones (lower Q1, higher Q4).
+That is expected: Table 3 summarises empirical Bayes estimates of
+clearance from 1,328 sparse samples, which shrink toward the population
+value, whereas the simulation draws clearance from the full 38% BSV.
+The published Q4 also includes a few outliers (maximum 19,751 mg/L.day,
+Supplementary Figure S2) that a log-normal draw of 200 patients does not
+reproduce.
+
+# Screened covariate effects (Supplementary Figure S1)
+
+Table 2 reports the covariate effects that were tested on clearance as
+proportional linear shifts from the cohort median
+(`CL * (1 + coef * (COV - median))`) and, for sex, a fractional reduction
+for women. Supplementary Figure S1 shows their effect on `AUCss` at the
+10th and 90th percentiles. Recomputing the figure from the Table 2
+coefficients confirms the reading of the coefficients recorded in
+`covariatesDataExcluded`; the effects are not in the packaged model.
+
+```{r figS1}
+figS1 <- tibble::tribble(
+  ~covariate, ~level, ~cl_ratio, ~published_pct,
+  "Female", "female vs male", 1 - 0.19, 24,
+  "CRP", "121 mg/L", 1 + 0.0034 * (121 - 33), -22,
+  "CRP", "4 mg/L", 1 + 0.0034 * (4 - 33), 10,
+  "Tumor size", "201 mm", 1 + 0.00058 * (201 - 95.6), -6,
+  "Tumor size", "36 mm", 1 + 0.00058 * (36 - 95.6), 4
+) |>
+  dplyr::mutate(recomputed_pct = round(100 * (1 / cl_ratio - 1), 1))
+
+figS1 |>
+  dplyr::select(covariate, level, recomputed_pct, published_pct) |>
+  dplyr::rename(
+    "Covariate" = covariate,
+    "Level" = level,
+    "AUCss change, recomputed (%)" = recomputed_pct,
+    "AUCss change, Figure S1 (%)" = published_pct
+  ) |>
+  knitr::kable(caption = "Replicates Supplementary Figure S1 of Baverel 2019 from the Table 2 coefficients.")
+
+stopifnot(all(abs(figS1$recomputed_pct - figS1$published_pct) < 1.5))
+```
+
+# Assumptions and deviations
+
+* **Final model is covariate-free.** Supplementary Figure S1 and the
+  Results state that no covariate was kept in the final PK model, and the
+  `AUCss` used for the exposure-response analysis came from that model.
+  The Table 2 row labelled "Final model" (tumor size added to sex and
+  CRP) is the last step of the covariate search, not the model used.
+  The maintainers extracted the model the authors used for exposure
+  derivation.
+* **Table 1 BSV on CL (38.0%) equals the post-covariate value.** The
+  Table 2 footnote says sex, CRP and tumor size reduced the CL
+  variability "from 42% to 38%", yet Table 1 (titled the final model, with
+  no covariate rows) prints 38.0%. Table 1 is extracted as printed; the
+  covariate-free variability may be nearer 42%. The structural
+  estimates of the covariate model are not reported separately.
+* **BSV scale.** Table 1's column header "BSV (Omega) (%)" with the
+  footnote "variance Omega^2" is read as `100 * Omega`, so each variance
+  is `(BSV / 100)^2`. The alternative reading `log(1 + CV^2)` gives
+  variances 6-7% smaller and does not change any conclusion here.
+* **Residual error.** Proportional only (Supplementary Methods S1); the
+  37.7% CV is the residual SD on the proportional scale.
+* **Infusion duration** is not stated; 1 hour is assumed.
+* **Body-weight distribution** of the DETERMINE PK population is not
+  reported in Baverel 2019; a log-normal distribution with median 70 kg
+  and 20% CV (40-130 kg) is assumed for the 10 mg/kg dosing.
+* **Overall survival.** The OS analysis is Kaplan-Meier by exposure
+  quartile and by baseline factor (Figures 1-3) with no fitted survival
+  model, so there is no OS sub-model to package.
+* **Screened covariates with no register column.** EORTC prognostic
+  status (effect 0.068 on CL, P = 0.16) and epithelioid histology (8.4%
+  higher CL, P = 0.19) are noted in the `population` metadata only.
+* No erratum to Baverel 2019 was found in Europe PMC (checked
+  2026-11-25).
