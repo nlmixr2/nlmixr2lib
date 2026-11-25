@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2016 endogenous citrate turnover with NaCT inhibition ([doi:10.1002/psp4.12062](https://doi.org/10.1002/psp4.12062)) -- healthy adults given intravenous or oral citrate.
+- Add Daryani 2016 5-fluorouracil ([doi:10.1002/psp4.12075](https://doi.org/10.1002/psp4.12075)) -- children and young adults with recurrent ependymoma, with the orthotopic ependymoma mouse PK-PD model and the scaled-adult dose-selection model.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
