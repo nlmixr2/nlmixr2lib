@@ -1,0 +1,533 @@
+---
+title: "Morphine EEG effect-compartment and target-binding models in rats (de Witte 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Morphine EEG effect-compartment and target-binding models in rats (de Witte 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+de Witte et al. (2018) refitted the rat morphine plasma, brain
+extracellular-fluid (ECF) microdialysis and EEG data of Groenendaal et al.
+(2007) to ask whether the delay between morphine concentrations and the
+increase in EEG delta-band amplitude is better described by an effect
+compartment (EC), by drug-target binding kinetics (TB), or by both (EC-TB).
+Seven pharmacodynamic models from the paper are packaged here, each as a
+self-contained model that carries the same plasma and brain-ECF layers:
+
+| Model file | Paper model | PD driver | Delay / link | GF120918 acts on |
+|---|---|---|---|---|
+| `deWitte_2018_morphine_rat_ecpl1` | ECPL1 (best overall, Table 4) | plasma | transit + effect compartment, sigmoidal Emax | k1e, keo |
+| `deWitte_2018_morphine_rat_tbpl4` | TBPL4 (Table 5) | plasma | target binding, linear in occupancy | KD |
+| `deWitte_2018_morphine_rat_ectbpl1` | EC-TBPL1 (Table 6) | plasma | effect compartment then target binding | KD |
+| `deWitte_2018_morphine_rat_tbecf1` | TBECF1 (Table 7) | brain ECF | target binding, linear in occupancy | KD |
+| `deWitte_2018_morphine_rat_deecf1` | DEECF1 (Table 7) | brain ECF | direct sigmoidal Emax | Emax |
+| `deWitte_2018_morphine_rat_ececf1` | ECECF1 (Table 7) | brain ECF | effect compartment, sigmoidal Emax | Emax |
+| `deWitte_2018_morphine_rat_ieecf1` | IEECF1 (best ECF model, Table 7) | brain ECF | indirect response (stimulated ksyn) | Emax |
+
+* Citation: `r rxode2::rxode(readModelDb("deWitte_2018_morphine_rat_ecpl1"))$reference`
+* Article: <https://doi.org/10.1007/s10928-018-9593-x> (open access,
+  PMC6061075), with Supplementary material 1 (equations, plasma and ECF
+  parameter tables, goodness-of-fit plots and VPCs).
+
+```{r models, message = FALSE}
+model_names <- paste0(
+  "deWitte_2018_morphine_rat_",
+  c("ecpl1", "tbpl4", "ectbpl1", "tbecf1", "deecf1", "ececf1", "ieecf1")
+)
+model_labels <- c("ECPL1", "TBPL4", "EC-TBPL1", "TBECF1", "DEECF1", "ECECF1", "IEECF1")
+names(model_labels) <- model_names
+uis <- lapply(setNames(model_names, model_names), function(nm) {
+  rxode2::rxode(readModelDb(nm))
+})
+```
+
+# Population
+
+```{r population}
+str(uis[[1]]$population)
+```
+
+Male Wistar rats received a 10-min intravenous infusion of 0 (vehicle), 4, 10
+or 40 mg/kg morphine (Table 1). Nine of the 29 rats in the 4 mg/kg group
+also received the P-glycoprotein (Pgp) inhibitor GF120918 (elacridar) as a
+continuous infusion. Plasma was sampled in 54 animals, brain ECF by
+microdialysis in 29 and EEG in 54. The EEG endpoint is the amplitude in the
+delta band (0.5-4.5 Hz), recorded every minute and averaged over 3-min
+intervals.
+
+The analysis was sequential. The plasma three-compartment model (Supplement
+S1, Table S1) was fitted first. Its individual estimates then drove the
+brain-ECF model (Table S2), and all individual PK estimates were held fixed
+while each EEG model was fitted. The plasma-driven models (ECPL, TBPL,
+EC-TBPL) used all EEG animals. The ECF-driven models (Table 7) used the
+reduced dataset of animals with ECF data.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The
+plasma and brain-ECF layers are identical in all seven files.
+
+```{r source-trace-pk, echo = FALSE}
+tibble::tribble(
+  ~Parameter, ~Value, ~Source,
+  "CL (L/min)", "0.028", "Table S1, '3-cmp model 4 IIV parameters'",
+  "Vc (L)", "0.17", "Table S1",
+  "Q1 (L/min)", "0.019", "Table S1",
+  "V2 (L)", "1.3", "Table S1",
+  "Q2 (L/min)", "0.031", "Table S1",
+  "V3 (L)", "0.36", "Table S1",
+  "omega^2 CL, Vc, Q1, V2", "0.33, 0.63, 0.62, 0.66", "Table S1",
+  "sigma^2 prop (plasma)", "0.079", "Table S1 prints '0.79 (14)'; see Errata",
+  "kdiff (1/min)", "0.0025", "Table S2, 'IIV on kdiff, Nmax'",
+  "keff (1/min)", "0.020", "Table S2",
+  "Nmax (nM/min)", "2.6", "Table S2",
+  "C50 (nM)", "34.8 (fixed)", "Not reported; Groenendaal 2007 Table 3, 9.92 ng/mL",
+  "omega^2 kdiff, Nmax (keff = 0 FIX)", "0.36, 0.42", "Table S2",
+  "sigma^2 prop (ECF)", "0.11", "Table S2",
+  "Plasma ODEs", "", "Supplement S1 eqs 1-8",
+  "Brain ECF ODE", "", "Supplement S1 eq 9"
+) |>
+  knitr::kable(caption = "Plasma and brain-ECF layer (all seven files).")
+```
+
+```{r source-trace-pd, echo = FALSE}
+tibble::tribble(
+  ~Model, ~Parameters, ~Equations,
+  "ECPL1", "Table 4: k1e 0.0393, keo 0.0382, k1e-Pgp 0.0565, keo-Pgp 0.016, E0 45.1, Emax 27.9, EC50 1270, NH 1.44, slope -0.024, omega^2 E0 0.111, sigma^2 0.0554", "S1 eqs 10-12; Figure 1",
+  "TBPL4", "Table 5: koff 0.009, KD 1570, KD-Pgp 381, Rtot 1 FIX, E0 45.4, Emax 32.9, slope -0.0299, omega^2 E0 0.113, sigma^2 0.0584", "S1 eqs 16-17; Figure 2",
+  "EC-TBPL1", "Table 6: koff 0.0275, keo 0.0327, KD 1520, KD-Pgp 296, Rtot 1 FIX, E0 45.0, Emax 31.8, slope -0.0276, omega^2 E0 0.111, sigma^2 0.057", "S1 eqs 13-15 (eq 13 sign corrected); Figure 3",
+  "TBECF1", "Table 7: koff 0.0932, KD 283, KD-Pgp 55.9, E0 48.9, Emax 32.7, slope -0.0400, omega^2 E0 0.0668, sigma^2 0.0598; Rtot 1 nM assumed", "Figure 4c with S1 eqs 16-17",
+  "DEECF1", "Table 7: E0 48.9, Emax 23.4, Emax-Pgp 41.6, EC50 173, NH 2.3, slope -0.0359, omega^2 E0 0.072, sigma^2 0.0598", "Figure 4a",
+  "ECECF1", "Table 7: keo 0.161, E0 49.1, Emax 24.9, Emax-Pgp 43.2, EC50 182, NH 2.02, slope -0.0373, omega^2 E0 0.0696, sigma^2 0.0593", "Figure 4b",
+  "IEECF1", "Table 7: kdeg 0.124, E0 49.1, Emax 25.4, Emax-Pgp 43.3, EC50 182, NH 2.07, slope -0.0377, omega^2 E0 0.0961, sigma^2 0.059", "Figure 4d; Table 7 footnote a"
+) |>
+  knitr::kable(caption = "EEG pharmacodynamic layer, one row per model (units: rate constants 1/min, concentrations nM, EEG uV).")
+```
+
+Inter-animal variability is log-normal on every parameter (paper eqs 1-2),
+and all residual errors are proportional (eq 3). The tables report omega^2
+and sigma^2, so `propSd` is `sqrt(sigma^2)`. A separately estimated
+"-Pgp" parameter is encoded as a log-ratio covariate effect,
+`exp(lP + e_conmed_elacridar_P * CONMED_ELACRIDAR)`, which reproduces both
+tabulated values exactly.
+
+# Virtual cohort and dosing
+
+The model time `t` is experiment time. The linear EEG drift `slope * t` is
+anchored at the start of EEG recording, and the morphine infusion starts at
+about t = 60 min (the first plasma samples and the rise of the EEG in
+Figures S2, S3 and S10 sit there). Doses in mg/kg are converted to nmol per
+animal with the free-base molar mass (285.34 g/mol). Body weight is not
+reported in de Witte 2018, so weights are drawn uniformly from the 250-350 g
+range of the source experiment.
+
+```{r cohort}
+mw_morphine <- 285.34 # g/mol, free base
+t_dose <- 60 # min, start of the 10-min infusion (read from Figures S2 / S10)
+obs_times <- seq(0, 430, by = 3)
+
+arms <- tibble::tribble(
+  ~arm, ~dose_mgkg, ~CONMED_ELACRIDAR,
+  "0 mg/kg", 0, 0L,
+  "4 mg/kg", 4, 0L,
+  "4 mg/kg + GF120918", 4, 1L,
+  "10 mg/kg", 10, 0L,
+  "40 mg/kg", 40, 0L
+) |>
+  mutate(arm = factor(arm, levels = arm))
+
+make_events <- function(n_per_arm, weights = NULL, times = obs_times) {
+  subj <- arms |>
+    slice(rep(seq_len(n()), each = n_per_arm)) |>
+    mutate(id = seq_len(n()))
+  subj$WT <- if (is.null(weights)) runif(nrow(subj), 0.25, 0.35) else weights
+  subj$amt_nmol <- subj$dose_mgkg * subj$WT * 1e6 / mw_morphine
+  doses <- subj |>
+    filter(dose_mgkg > 0) |>
+    transmute(id, arm, CONMED_ELACRIDAR,
+      time = t_dose, amt = amt_nmol, rate = amt_nmol / 10,
+      evid = 1L, cmt = "central", dvid = NA_integer_
+    )
+  obs <- subj |>
+    select(id, arm, CONMED_ELACRIDAR) |>
+    tidyr::crossing(time = times) |>
+    mutate(amt = NA_real_, rate = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
+  # Three error endpoints (Cc, Cbrain_ecf, eeg): every observation row must
+  # nominate one through dvid; all three observables are returned as columns
+  # on every row regardless.
+  bind_rows(doses, obs) |>
+    select(id, time, amt, rate, evid, cmt, dvid, everything()) |>
+    arrange(id, time, desc(evid)) |>
+    as.data.frame()
+}
+
+rxode2::rxSetSeed(20180518)
+set.seed(20180518)
+n_per_arm <- 100
+events <- make_events(n_per_arm)
+stopifnot(!anyDuplicated(events[events$evid == 0, c("id", "time")]))
+```
+
+# Simulation
+
+Each model is simulated twice: a stochastic cohort (100 animals per arm,
+inter-animal variability on, residual error off) and a typical-value solve
+(`zeroRe()`) at 0.3 kg.
+
+```{r simulate, message = FALSE}
+sim_all <- bind_rows(lapply(model_names, function(nm) {
+  rxode2::rxSolve(uis[[nm]], events, keep = "arm", returnType = "data.frame") |>
+    mutate(model = model_labels[[nm]])
+})) |>
+  mutate(model = factor(model, levels = model_labels))
+
+events_tv <- make_events(1, weights = 0.3, times = seq(0, 430, by = 1))
+# zeroRe() solves of several subjects warn that there is no omega; that is
+# the intent here, so only that warning is muffled.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+tv_solve <- function(ui, ev = events_tv) {
+  withCallingHandlers(
+    rxode2::rxSolve(rxode2::zeroRe(ui), ev, keep = "arm", returnType = "data.frame"),
+    warning = muffle_no_omega
+  )
+}
+tv_all <- bind_rows(lapply(model_names, function(nm) {
+  tv_solve(uis[[nm]]) |> mutate(model = model_labels[[nm]])
+})) |>
+  mutate(model = factor(model, levels = model_labels))
+```
+
+# Replicate published figures
+
+## Plasma and brain-ECF concentrations (Figures S2 and S5)
+
+```{r fig-plasma, fig.cap = "Simulated plasma morphine (median and 5th-95th percentile of individual predictions, ECPL1 cohort). Compare with the left panel of Figure S2 of de Witte 2018: about 10,000 nM at the end of a 4 mg/kg infusion and about 100 nM by 300 min."}
+pk_sum <- sim_all |>
+  filter(model == "ECPL1", arm != "0 mg/kg", time > t_dose) |>
+  group_by(arm, time) |>
+  summarise(
+    across(c(Cc, Cbrain_ecf), list(
+      lo = ~ quantile(.x, 0.05), med = median, hi = ~ quantile(.x, 0.95)
+    )),
+    .groups = "drop"
+  )
+
+ggplot(pk_sum, aes(time)) +
+  geom_ribbon(aes(ymin = Cc_lo, ymax = Cc_hi), alpha = 0.25) +
+  geom_line(aes(y = Cc_med)) +
+  facet_wrap(~arm) +
+  scale_y_log10() +
+  labs(x = "Time (min)", y = "Plasma morphine (nM)")
+```
+
+```{r fig-ecf, fig.cap = "Simulated brain-ECF morphine (median and 5th-95th percentile). Compare with Figure S5: individual fits peak at about 100-300 nM after 4 mg/kg and about 1,000-2,000 nM after 40 mg/kg."}
+ggplot(pk_sum, aes(time)) +
+  geom_ribbon(aes(ymin = Cbrain_ecf_lo, ymax = Cbrain_ecf_hi), alpha = 0.25) +
+  geom_line(aes(y = Cbrain_ecf_med)) +
+  facet_wrap(~arm) +
+  scale_y_log10() +
+  labs(x = "Time (min)", y = "Brain ECF morphine (nM)")
+```
+
+## EEG prediction interval for ECPL1 (Figure S10)
+
+```{r fig-vpc, fig.cap = "ECPL1: 5th, 50th and 95th percentiles of the simulated individual EEG amplitude (residual error not added). Replicates the simulated-quantile bands of Figure S10 of de Witte 2018 (baseline median about 45 uV, rising after the infusion starts at about 60 min)."}
+sim_all |>
+  filter(model == "ECPL1") |>
+  group_by(arm, time) |>
+  summarise(
+    lo = quantile(eeg, 0.05), med = median(eeg), hi = quantile(eeg, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line(aes(y = med)) +
+  facet_wrap(~arm) +
+  labs(x = "Time (min)", y = "EEG delta amplitude (uV)")
+```
+
+## All seven models side by side
+
+The paper's central finding is that the EC, TB and combined models give
+nearly the same EEG time courses over the studied doses (Figures S10-S12),
+so the delay alone cannot tell the mechanisms apart.
+
+```{r fig-compare, fig.cap = "Typical-value EEG amplitude (0.3 kg rat) for the seven packaged models."}
+ggplot(tv_all, aes(time, eeg, colour = model)) +
+  geom_line() +
+  facet_wrap(~arm) +
+  labs(x = "Time (min)", y = "EEG delta amplitude (uV)", colour = "Model")
+```
+
+```{r table-peaks}
+tv_all |>
+  group_by(model, arm) |>
+  summarise(
+    eeg_t0 = first(eeg),
+    eeg_peak = max(eeg),
+    t_peak = time[which.max(eeg)] - t_dose,
+    .groups = "drop"
+  ) |>
+  filter(arm != "0 mg/kg") |>
+  mutate(across(c(eeg_t0, eeg_peak), ~ round(.x, 1))) |>
+  dplyr::rename(
+    "Model" = model, "Arm" = arm, "EEG at t = 0 (uV)" = eeg_t0,
+    "Peak EEG (uV)" = eeg_peak, "Peak time after dose start (min)" = t_peak
+  ) |>
+  knitr::kable(caption = "Typical-value EEG peak by model and arm.")
+```
+
+# Model checks
+
+Every check below uses deterministic typical-value solves, with no
+random effects, so the tolerances can be tight.
+
+```{r checks, message = FALSE}
+# 1. Vehicle arm: no drug, so every model must return exactly E0 + slope * t.
+placebo <- tv_all |> filter(arm == "0 mg/kg")
+placebo_err <- sapply(model_names, function(nm) {
+  p <- placebo[placebo$model == model_labels[[nm]], ]
+  th <- uis[[nm]]$theta
+  max(abs(p$eeg - (exp(th[["le0"]]) + th[["drift"]] * p$time)))
+})
+placebo_err
+stopifnot(all(placebo_err < 1e-6))
+
+# 2. Plasma mass balance: AUC(0-inf) * CL equals the dose.
+ev_long <- make_events(1, weights = 0.3, times = seq(0, 6000, by = 1)) |>
+  filter(arm == "4 mg/kg")
+pk_long <- tv_solve(uis[[1]], ev_long)
+auc_inf <- sum(diff(pk_long$time) * (head(pk_long$Cc, -1) + tail(pk_long$Cc, -1)) / 2)
+dose_nmol <- ev_long$amt[ev_long$evid == 1]
+cl_typ <- exp(uis[[1]]$theta[["lcl"]])
+mass_ratio <- auc_inf * cl_typ / dose_nmol
+mass_ratio
+stopifnot(abs(mass_ratio - 1) < 0.01)
+
+# 3. GF120918 has no retained effect on plasma or brain-ECF disposition.
+#    The two solves differ only in adaptive step sizes (the EEG states
+#    differ), so the comparison is relative.
+gf_pair <- tv_all |>
+  filter(model == "ECPL1", arm %in% c("4 mg/kg", "4 mg/kg + GF120918")) |>
+  select(arm, time, Cc, Cbrain_ecf) |>
+  tidyr::pivot_wider(names_from = arm, values_from = c(Cc, Cbrain_ecf))
+rel_gap <- function(a, b) max(abs(a - b)) / max(abs(a))
+gf_gap <- c(
+  Cc = rel_gap(gf_pair[["Cc_4 mg/kg"]], gf_pair[["Cc_4 mg/kg + GF120918"]]),
+  Cbrain_ecf = rel_gap(gf_pair[["Cbrain_ecf_4 mg/kg"]], gf_pair[["Cbrain_ecf_4 mg/kg + GF120918"]])
+)
+gf_gap
+stopifnot(all(gf_gap < 1e-4))
+
+# 4. Target-binding models: with no drug depletion, the EEG depends on
+#    occupancy only, so the fixed Rtot value cannot change the prediction.
+ui_rtot <- uis[["deWitte_2018_morphine_rat_tbpl4"]] |> rxode2::ini(lrtot = log(0.01))
+rtot_diff <- max(abs(tv_solve(ui_rtot)$eeg - tv_solve(uis[["deWitte_2018_morphine_rat_tbpl4"]])$eeg))
+rtot_diff
+stopifnot(rtot_diff < 1e-3)
+
+# 5. Saturable influx: the dose-normalised brain-ECF AUC falls with dose.
+ecf_auc <- tv_all |>
+  filter(model == "ECPL1", arm %in% c("4 mg/kg", "40 mg/kg")) |>
+  group_by(arm) |>
+  summarise(
+    dose = first(as.numeric(sub(" mg/kg", "", arm))),
+    auc_dn = sum(diff(time) * (head(Cbrain_ecf, -1) + tail(Cbrain_ecf, -1)) / 2) / dose
+  )
+ecf_auc
+stopifnot(ecf_auc$auc_dn[ecf_auc$arm == "40 mg/kg"] < ecf_auc$auc_dn[ecf_auc$arm == "4 mg/kg"])
+```
+
+The next check compares the typical-value peaks with the ranges the
+individual fits span in the supplement figures, read by eye. Plasma peaks
+at 5,000-10,000 nM after 4 mg/kg (Figure S2). Brain ECF peaks at about
+100-300 nM after 4 mg/kg and 1,000-2,000 nM after 40 mg/kg (Figure S5). The
+brain-ECF check is the main test of the borrowed C50.
+
+```{r checks-figures, message = FALSE}
+tv_peaks <- tv_all |>
+  filter(model == "ECPL1") |>
+  group_by(arm) |>
+  summarise(Cc_max = max(Cc), Cbrain_ecf_max = max(Cbrain_ecf), .groups = "drop")
+tv_peaks |>
+  mutate(across(-arm, ~ signif(.x, 3))) |>
+  dplyr::rename(
+    "Arm" = arm, "Typical plasma Cmax (nM)" = Cc_max,
+    "Typical brain ECF Cmax (nM)" = Cbrain_ecf_max
+  ) |>
+  knitr::kable(caption = "Typical-value (0.3 kg) peak concentrations.")
+pk4 <- tv_peaks[tv_peaks$arm == "4 mg/kg", ]
+pk40 <- tv_peaks[tv_peaks$arm == "40 mg/kg", ]
+stopifnot(
+  pk4$Cc_max > 3000, pk4$Cc_max < 10000,
+  pk4$Cbrain_ecf_max > 100, pk4$Cbrain_ecf_max < 300,
+  pk40$Cbrain_ecf_max > 1000, pk40$Cbrain_ecf_max < 2000
+)
+```
+
+# PKNCA validation
+
+de Witte 2018 reports no NCA, so the plasma NCA below documents the
+simulated exposure by dose group. The plasma model is linear, so the
+dose-normalised AUC differs between arms only through the randomly drawn
+animals.
+
+```{r pknca}
+sim_nca <- sim_all |>
+  filter(model == "ECPL1", arm != "0 mg/kg", !is.na(Cc)) |>
+  mutate(arm = as.character(arm)) |>
+  select(id, time, Cc, arm)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id)
+dose_df <- events |>
+  filter(evid == 1) |>
+  mutate(arm = as.character(arm)) |>
+  select(id, time, amt, arm)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+
+intervals <- data.frame(
+  start = t_dose, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+PKNCA::PKNCA.options(progress = FALSE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_tab <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  group_by(arm, PPTESTCD) |>
+  summarise(median = signif(median(PPORRES, na.rm = TRUE), 3), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+nca_tab |>
+  dplyr::rename(
+    "Arm" = arm, "Cmax (nM)" = cmax, "Tmax (min)" = tmax,
+    "AUC0-inf (nM*min)" = aucinf.obs, "t1/2 (min)" = half.life
+  ) |>
+  knitr::kable(caption = "Median simulated plasma NCA (ECPL1 cohort; time measured from t = 0, the dose starts at 60 min).")
+
+auc_dn <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  left_join(arms |> mutate(arm = as.character(arm)) |> select(arm, dose_mgkg), by = "arm") |>
+  group_by(arm, dose_mgkg) |>
+  summarise(auc_dn = median(PPORRES / dose_mgkg, na.rm = TRUE), .groups = "drop")
+auc_dn
+```
+
+## Sensitivity to the unreported C50
+
+The brain-ECF C50 is not reported anywhere in de Witte 2018 and is fixed to
+the Groenendaal 2007 value for the same data (34.8 nM). Plasma
+concentrations are far above that value around the peak, so the saturable
+influx runs near its maximum there. In a typical-value solve, moving C50
+from 3.48 to 348 nM changes the brain-ECF peak by about 7% at 4 mg/kg and
+by less than 1% at 40 mg/kg. It does change the late tail after 4 mg/kg, where plasma falls to
+about 40 nM by 400 min: the ECF concentration at 400 min is about 116, 78
+and 24 nM for C50 = 3.48, 34.8 and 348 nM. C50 does not enter the EEG
+predictions of the three plasma-driven models (ECPL1, TBPL4, EC-TBPL1); it
+affects the four ECF-driven models through their driver.
+
+```{r fig-c50, message = FALSE, fig.cap = "Typical brain-ECF morphine for C50 = 3.48, 34.8 (packaged) and 348 nM."}
+c50_grid <- c(0.1, 1, 10) * 9.92 * 1000 / 285.34
+c50_sens <- bind_rows(lapply(c50_grid, function(c50) {
+  ui_c <- uis[[1]] |> rxode2::ini(lc50 = log(c50))
+  tv_solve(ui_c) |> mutate(C50 = sprintf("%.1f nM", c50))
+})) |>
+  filter(arm %in% c("4 mg/kg", "40 mg/kg"))
+
+ggplot(c50_sens, aes(time, Cbrain_ecf, colour = C50)) +
+  geom_line() +
+  facet_wrap(~arm, scales = "free_y") +
+  labs(x = "Time (min)", y = "Brain ECF morphine (nM)", colour = "C50")
+
+c50_table <- c50_sens |>
+  group_by(arm, C50) |>
+  summarise(peak = max(Cbrain_ecf), at_400 = Cbrain_ecf[time == 400], .groups = "drop")
+c50_table |>
+  mutate(across(c(peak, at_400), ~ round(.x))) |>
+  dplyr::rename(
+    "Arm" = arm, "C50" = C50, "Brain ECF peak (nM)" = peak,
+    "Brain ECF at 400 min (nM)" = at_400
+  ) |>
+  knitr::kable(caption = "Typical brain-ECF morphine across the C50 grid.")
+peak_spread <- c50_table |>
+  group_by(arm) |>
+  summarise(rel = (max(peak) - min(peak)) / max(peak))
+peak_spread
+stopifnot(all(peak_spread$rel < 0.08))
+```
+
+# Assumptions and deviations
+
+* **C50 of the saturable brain influx is not reported.** Supplement S1 eq 9
+  contains C50, but no table, text, figure or supplement gives its value.
+  The packaged value is `fixed()` at the Groenendaal 2007 estimate for the
+  same rats (Table 3, 9.92 ng/mL = 34.8 nM with the free-base molar mass);
+  S1 calls the ECF structure "the original one compartment ECF model", and
+  the de Witte estimates of kdiff, keff and Nmax (0.0025 /min, 0.020 /min,
+  2.6 nM/min = 0.74 ng/mL/min) are close to Groenendaal's (0.0014 /min,
+  0.0195 /min, 0.66 ng/mL/min). This is non-paper provenance; see the C50
+  sensitivity figure above. Whether de Witte et al. re-estimated or fixed
+  C50 is not stated.
+* **Plasma residual variance.** Table S1 prints sigma^2 prop for the
+  selected plasma model as "0.79 (14)". It is read as 0.079 (SD 28%): the
+  neighbouring columns print 0.0766 and 0.071, and the observed-versus-IPRED
+  plot in Figure S2 is far tighter than an 89% proportional SD would allow.
+* **EC-TBPL1 effect-compartment sign.** Supplement S1 eq 13 is printed as
+  keo * (C_EFF - C1), which diverges from zero initial conditions. It is
+  encoded as keo * (C1 - C_EFF), consistent with the Figure 3 caption
+  ("distribution rate constant into and out of the effect compartment").
+* **EC-TBPL1 koff.** The Discussion quotes koff as 0.275; Table 6 gives
+  0.0275 /min, which is used.
+* **ECPL1 transit chain as printed.** S1 eqs 10-11 feed the effect
+  compartment at k1e and drain it at keo (Figure 1), so the effect-site
+  concentration is not plasma-equivalent at steady state unless k1e = keo.
+  The equations are encoded as printed.
+* **TBECF1 Rtot.** Table 7 has no Rtot row. Rtot = 1 nM fixed is assumed,
+  as in all plasma binding models; check 4 above shows the prediction does
+  not depend on it.
+* **ECF-driven model structures.** The paper gives no equations for the
+  ECF-driven models. DEECF1, ECECF1 and IEECF1 are built from Figure 4 and
+  the Table 7 parameter list. ECECF1 uses keo for both inflow and outflow of
+  the effect compartment (Figure 4b). For IEECF1, Table 7 footnote a
+  defines Emax as (ksyn,max - ksyn,0) / kdeg with ksyn,0 = E0 * kdeg, so the
+  response pool starts at E0 and its steady state is E0 + Emax * S(C). The
+  paper does not say where the linear drift enters the indirect-response
+  model; it is added to the output, as in every other model.
+* **Time origin.** `slope * t` uses experiment time from the start of EEG
+  recording. The morphine infusion start at t = 60 min is read from
+  Figures S2, S3 and S10; the paper does not state it.
+* **Dose units.** Doses are given in mg/kg and concentrations in nM; the
+  salt form is not stated, so the free-base molar mass 285.34 g/mol is used
+  for the conversion. Body weight is not reported; 250-350 g (uniform) is
+  taken from the source experiment.
+* **Sequential estimation.** The PD parameters were estimated with each
+  animal's PK held at its individual estimate. The packaged models carry
+  the population PK variability of Tables S1 and S2 instead, and treat the
+  PK and PD random effects as independent.
+* **Plasma versus blood.** de Witte 2018 calls the concentrations plasma
+  concentrations; Groenendaal 2007 analysed the same samples as blood.
+* **Not packaged.** The non-selected variants in Tables 4-6 (ECPL2-4,
+  TBPL1-3 and 5, EC-TBPL2-5), the ECPL1 refit on the reduced dataset in
+  Table 7, the alternative plasma and ECF models of Tables S1 and S2, and
+  the one-compartment target-binding simulation study of Figures 5-7 and
+  Supplements S2-S3 (a theoretical grid over kon and koff with no fitted
+  parameters).
+* **Literature check (2026-11-25).** The only published correction (doi:
+  10.1007/s10928-018-9604-y) changes the copyright line and no model
+  content.

@@ -5416,12 +5416,26 @@ navbar:
         href: articles/Gulave_2025_morphine_pbpk.html
       - text: "Morphine pbpk (Verscheijden 2021)"
         href: articles/Verscheijden_2021_morphine.html
+      - text: "Morphine rat deecf1 (deWitte 2018)"
+        href: articles/deWitte_2018_morphine_rat_eeg.html
+      - text: "Morphine rat ececf1 (deWitte 2018)"
+        href: articles/deWitte_2018_morphine_rat_eeg.html
+      - text: "Morphine rat ecpl1 (deWitte 2018)"
+        href: articles/deWitte_2018_morphine_rat_eeg.html
+      - text: "Morphine rat ectbpl1 (deWitte 2018)"
+        href: articles/deWitte_2018_morphine_rat_eeg.html
       - text: "Morphine rat eeg (Groenendaal 2007)"
         href: articles/Groenendaal_2007_morphine_rat_eeg.html
+      - text: "Morphine rat ieecf1 (deWitte 2018)"
+        href: articles/deWitte_2018_morphine_rat_eeg.html
       - text: "Morphine rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Morphine rat pbpk (Yamamoto 2017)"
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
+      - text: "Morphine rat tbecf1 (deWitte 2018)"
+        href: articles/deWitte_2018_morphine_rat_eeg.html
+      - text: "Morphine rat tbpl4 (deWitte 2018)"
+        href: articles/deWitte_2018_morphine_rat_eeg.html
       - text: "Morphine6Glucuronide rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Mosunetuzumab (Bender 2024)"
@@ -12531,6 +12545,7 @@ articles:
   - articles/deVries_2025_durvalumab
   - articles/deWinter_2009_mycophenolic_acid
   - articles/deWit_2016_everolimus
+  - articles/deWitte_2018_morphine_rat_eeg
   - articles/elDesoky_1997_theophylline_pediatric_asthma
   - articles/leNoble_2024_lormetazepam
   - articles/vanEijk_2022_paclitaxel
