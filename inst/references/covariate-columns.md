@@ -6765,6 +6765,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the insulin-at-site-of-action delay), `NA_NA_paracetamol.R` (DDMODEL00000228 OGTT model: drives the insulin-on-glucose-elimination first-order effect compartment via `kie * (INS / 6.945 - effect_ins)`), `Denti_2010_glucoseMinimal.R` (Bergman minimal-model insulin forcing function entering the insulin-action ODE as `p2 * si * (INS - INS_BL)`; units pmol/L; supplied via `linear(INS)`).
 - **Notes:** Specific scope because `INS` is meaningful only for glucose-kinetics or insulin-PD models that take plasma insulin as an exogenous regressor. For drugs that *modify* circulating insulin as a downstream effect, use a different mechanism-specific name. The DDMORE bundle's hand-rolled piecewise-linear interpolation (`I = (t-T1)/(TOBS-T1)*(INS-INS1)+INS1` with bracketing columns `iins / insn / td / tn`) is replaced in nlmixr2 by `linear(INS)` declared in `model`; the bracketing columns are not required.
 
+### SUV_BLOOD (**canonical for whole-blood tracer-activity time-course regressor**)
+- **Description:** Whole-blood activity of an imaging tracer (e.g. a PET radiolabel) as a time-varying *regressor* input (standardized uptake value, SUV) that drives a mechanistic tissue-uptake model. Not a covariate that modifies a parameter; the model reads `SUV_BLOOD` directly as the blood input forcing function feeding tissue compartments and as the fixed blood-volume contribution to an observed tissue VOI signal.
+- **Units:** SUV (dimensionless standardized uptake value); document per-model via `covariateData[[SUV_BLOOD]]$units` if a model supplies the blood input in another activity unit.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used as a time-varying regressor. The model declares `linear(SUV_BLOOD)` so rxode2 linearly interpolates `SUV_BLOOD` between dataset rows.
+- **Source aliases:**
+  - `CB` (blood compartment) -- Alidori 2017 labels the heart-VOI whole-blood input function CB in Figs 3A/4A. Rename `CB` -> `SUV_BLOOD` before passing to `rxSolve`.
+- **Example models:** `Alidori_2017_fCNT_kidney_cyno.R` (heart-VOI whole-blood [86Y]fCNT input driving the serial renal two-compartment model and the fixed 15% blood-volume contribution to the renal VOI SUV), `Alidori_2017_fCNT_liver_cyno.R` (same blood input driving the parallel hepatic two-compartment model and the fixed 20% blood-volume contribution to the liver VOI SUV).
+- **Notes:** Specific scope because `SUV_BLOOD` is meaningful only for imaging tissue-kinetics models that take a measured whole-blood activity curve as an exogenous blood input function. The per-animal heart-VOI curve is not tabulated in Alidori 2017, so users supply the observed or an assumed blood SUV profile. Analogous to the `GLU` / `INS` plasma-regressor pattern for glucose-insulin models.
+
 ### INS_BL (**canonical for baseline (fasting) plasma insulin concentration**)
 - **Description:** Baseline (fasting) plasma insulin concentration, time-fixed per subject. Used as the per-subject anchor for steady-state insulin-driven processes (e.g., initial condition of an insulin-on-elimination effect compartment) and as the per-subject baseline-state insulin input to a baseline-glucose-production rate calculation.
 - **Units:** pmol/L (or uU/mL; document per-model via `covariateData[[INS_BL]]$units`). The example model rescales via `INS_BL / 6.945` to convert pmol/L to uU/mL.

@@ -2,6 +2,7 @@
 
 # development version
 
+- Add Alidori 2017 functionalized carbon nanotube (fCNT) ([doi:10.1371/journal.pone.0183902](https://doi.org/10.1371/journal.pone.0183902)) -- cynomolgus monkey PET tissue kinetics (serial kidney and parallel liver two-compartment models driven by a whole-blood input).
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
