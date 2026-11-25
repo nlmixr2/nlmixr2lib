@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhou 2017b tulathromycin ex vivo PK/PD ([doi:10.3389/fphar.2017.00684](https://doi.org/10.3389/fphar.2017.00684)) -- serum of healthy piglets against *Streptococcus suis*.
+- Add Kenmotsu 2017 docetaxel PK and neutropenia (percent ANC decrease at nadir versus unbound AUC) ([doi:10.1111/bcp.13354](https://doi.org/10.1111/bcp.13354)) -- Japanese adults with non-small cell lung cancer, including patients aged 75 years and over.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
