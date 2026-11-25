@@ -1,0 +1,525 @@
+---
+title: "Deuterium oxide dose-to-the-mother (Liu 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Deuterium oxide dose-to-the-mother (Liu 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Liu et al. (2019) model the deuterium oxide (D2O) dose-to-the-mother (DTM)
+technique, which is used to tell whether an infant is exclusively breastfed.
+The mother drinks about 30 g of D2O; it mixes into her body water, and some of
+it reaches her infant through breast milk. Saliva enrichment of both is then
+measured over 14 days. The model is two linked one-compartment models (paper
+Fig. 1): the mother loses D2O at a total rate constant `kmm`, part of which is
+the lactation clearance `CLmb` into the infant, and the infant loses it through
+its own water clearance `CLbo`. The infant's volume of distribution is not
+estimated; it is computed from infant weight and grows with the infant. The
+quantity the paper is after is `Rs`, the infant's water intake from sources
+other than breast milk, which follows from `CLmb` and `CLbo` by a water mass
+balance (paper Appendix 1, reproduced below).
+
+* Citation: `r rxode2::rxode(readModelDb("Liu_2019_deuterium"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Liu_2019_deuterium"))$description`
+* Article: <https://doi.org/10.1007/s10928-018-9613-x> (open access; the seven
+  Electronic Supplementary Materials include the Stan code (ESM 4), the
+  population parameters (ESM 6, Table S6.1) and the individual posterior means
+  (ESM 5)).
+
+# Population
+
+113 exclusively breastfeeding mother-infant pairs from Sumedang, West Java,
+Indonesia (121 recruited; 7 removed as non-exclusively breastfed on home
+observation and 1 as biologically implausible), giving 1500 paired saliva
+observations (paper Results, Data; Table 1). Mothers were 25 years old (range
+16-42) and weighed 53.1 kg (34.5-93.1). Infants were singleton, full-term and
+healthy, 3.3 months old (2.0-5.4), 54 male and 59 female, and weighed 5.9 kg
+(3.9-8.4) at the start and 6.2 kg (4.3-8.5) at the end of the 14-day protocol.
+Each mother received about 30 g of D2O orally (30.0-30.2 g); saliva was sampled
+from both before the dose and on days 1, 2, 5, 6, 13 and 14.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Structure: `d/dt(central) = -kmm * central`; `d/dt(infant_central) = kmb * central - kbo * infant_central` | -- | Eqs. 3-4; Fig. 1 |
+| `kmb = CLmb / Vm`, `kbo = CLbo / Vb` | -- | Eqs. 1-2 |
+| `Cc = 1000 * central / Vm`, `Cinfant = 1000 * infant_central / Vb` (g to mg/L) | -- | ESM 4 Stan code `amt*1000/Vm` |
+| `lvc` (Vm at maternal weight 70 kg) | 3.49 (32.8 L) | Eq. 16 |
+| `lkel` (kmm) | -2.2277 (0.108 1/day) | Table S6.1 mean 0.109 1/day with BSV 15.0%, `log(0.109) - 0.15^2/2` |
+| `lcl_milk` (CLmb) | -0.33 (0.719 L/day) | ESM 7, `log(CLmb) ~ N(-0.33, 0.20)` |
+| `lcl_infant` (CLbo at infant weight 5 kg) | -0.16 (0.852 L/day) | Eq. 17 |
+| `e_wt_vc` | 0.62 | Eq. 16; Stan `pow(MWT[i]/70, theta[1])` |
+| `e_wt_infant_cl_infant` | 0.17 | Eq. 17; Stan `pow(BWT[i]/5, theta[2])` |
+| `etalvc` variance | 0.070^2 | Table S6.1 BSV 7.0%; Eq. 16 SD 0.07 |
+| `etalkel` variance | 0.150^2 | Table S6.1 BSV 15.0% |
+| `etalcl_milk`, `etalcl_infant` variances | 0.201^2, 0.171^2 | Table S6.1 BSV 20.1%, 17.1%; ESM 7 SDs 0.20, 0.17 |
+| `etalcl_milk`-`etalcl_infant` correlation | 0.99 | ESM 7, note 2 |
+| Infant volume `Vb = 1.041 * exp(-0.427 + 0.963 * log(WT_INFANT))` | -- | Eqs. A1.9-A1.10; Stan `Vb_b` |
+| Residual error: combined, one sigma pair for mother and infant | not reported, held at 0 | Eq. 7; Stan `sigma` |
+| `Rs` mass balance (vignette only) | -- | Eqs. A1.3-A1.13; Stan `Rs` |
+
+# Typical values against the published population table
+
+Table S6.1 prints *arithmetic* population means. For a log-normal parameter
+that mean is `exp(mu + omega^2 / 2)`, so the packaged log-scale typical values
+and variances must reproduce it. Three of the four `mu` values are printed in
+the paper (Eqs. 16-17, ESM 7), which makes this a check of the reading of
+"BSV %" as the log-scale SD; `kmm` was back-solved from the same relationship,
+so for it the check is only arithmetic.
+
+```{r typical-values}
+mod <- rxode2::rxode2(readModelDb("Liu_2019_deuterium"))
+ini_df <- mod$iniDf
+th <- setNames(ini_df$est, ini_df$name)
+om <- function(eta) th[[eta]]
+
+tv_check <- data.frame(
+  parameter = c("Vm (L)", "kmm (1/day)", "CLmb (L/day)", "CLbo (L/day)"),
+  mu = c(th[["lvc"]], th[["lkel"]], th[["lcl_milk"]], th[["lcl_infant"]]),
+  omega2 = c(om("etalvc"), om("etalkel"), om("etalcl_milk"), om("etalcl_infant")),
+  published_mean = c(32.86, 0.109, 0.733, 0.864)
+) |>
+  mutate(
+    median = exp(mu),
+    model_mean = exp(mu + omega2 / 2),
+    pct_diff = 100 * (model_mean / published_mean - 1)
+  )
+knitr::kable(
+  tv_check |>
+    select(parameter, median, model_mean, published_mean, pct_diff) |>
+    rename(
+      "Parameter" = parameter,
+      "exp(mu)" = median,
+      "Model arithmetic mean" = model_mean,
+      "Table S6.1 mean" = published_mean,
+      "Difference (%)" = pct_diff
+    ),
+  digits = 3
+)
+# The printed mu values carry two decimals, i.e. +/- 0.005 on the log scale,
+# so agreement to within 0.6% is all the rounding allows.
+stopifnot(all(abs(tv_check$pct_diff) < 0.6))
+```
+
+ESM 5 lists each pair's posterior mean of these four parameters *before* the
+covariate effects are applied (`exp(phi)` in the Stan code; the maternal
+volumes centre on 32.8 L although the mothers weighed 53 kg). Their geometric
+means are therefore a second, independent estimate of `exp(mu)`. Computed from
+the 113 rows of ESM 5, they are 32.85 L, 0.1071 1/day, 0.7205 L/day and
+0.8494 L/day, and the correlation between the individual `log(CLmb)` and
+`log(CLbo)` is 0.997.
+
+```{r esm5-check}
+esm5_geomean <- c(32.85, 0.1071, 0.7205, 0.8494)
+stopifnot(all(abs(log(tv_check$median / esm5_geomean)) < 0.01))
+```
+
+# Structural check: ODE against the authors' closed form
+
+The Stan code does not integrate ODEs; it evaluates the analytic solution of
+Eqs. 3-4 (paper Eqs. 5-6) with the infant volume `Vb` taken at each
+observation time. That is exact while the infant's weight is constant, and a
+frozen-coefficient approximation while it grows. The packaged model integrates
+the mass-balanced ODEs with a time-varying `Vb`, so for a constant infant
+weight the two must agree to integrator precision and for a growing infant
+they should differ slightly.
+
+```{r closed-form}
+stan_closed_form <- function(time, dose, mwt, wt_infant, bwt, p) {
+  vm <- exp(p[["lvc"]]) * (mwt / 70)^p[["e_wt_vc"]]
+  kmm <- exp(p[["lkel"]])
+  clmb <- exp(p[["lcl_milk"]])
+  clbo <- exp(p[["lcl_infant"]]) * (bwt / 5)^p[["e_wt_infant_cl_infant"]]
+  vb <- 1.041 * exp(-0.427 + 0.963 * log(wt_infant))
+  data.frame(
+    time = time,
+    Cc = dose * 1000 / vm * exp(-kmm * time),
+    Cinfant = dose * 1000 / vm * clmb / (vb * (kmm - clbo / vb)) *
+      (exp(-clbo / vb * time) - exp(-kmm * time))
+  )
+}
+
+typical_events <- function(wt_start, wt_end, t_end = 14, dt = 0.125) {
+  obs_t <- seq(0, t_end, by = dt)
+  rbind(
+    data.frame(id = 1L, time = 0, amt = 30, evid = 1L, cmt = "central", dvid = NA_integer_),
+    data.frame(id = 1L, time = obs_t, amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  ) |>
+    mutate(WT = 53.1, WT_INFANT = wt_start + (wt_end - wt_start) * time / t_end)
+}
+
+mod_typ <- rxode2::zeroRe(mod)
+
+# Constant infant weight: the closed form is exact.
+ev_const <- typical_events(6.05, 6.05)
+sim_const <- rxode2::rxSolve(mod_typ, ev_const, rtol = 1e-10, atol = 1e-12,
+                             returnType = "data.frame")
+cf_const <- stan_closed_form(sim_const$time, 30, 53.1, 6.05, 6.05, th)
+late <- sim_const$time >= 0.5
+err_const <- max(abs(c(sim_const$Cc[late] / cf_const$Cc[late] - 1,
+                       sim_const$Cinfant[late] / cf_const$Cinfant[late] - 1)))
+err_const
+stopifnot(err_const < 1e-6)
+
+# Typical growth, 5.9 -> 6.2 kg over 14 days (Table 1 medians); the paper's
+# clearance covariate is the study-average weight, 6.05 kg.
+ev_grow <- typical_events(5.9, 6.2)
+sim_grow <- rxode2::rxSolve(mod_typ, ev_grow, covsInterpolation = "linear",
+                            returnType = "data.frame")
+cf_grow <- stan_closed_form(sim_grow$time, 30, 53.1,
+                            5.9 + 0.3 * sim_grow$time / 14, 6.05, th)
+dev_grow <- (sim_grow$Cinfant / cf_grow$Cinfant - 1)[sim_grow$time >= 1]
+range(100 * dev_grow)
+stopifnot(max(abs(dev_grow)) < 0.03)
+```
+
+For a typical infant growing 0.3 kg over the study the mass-balanced ODE
+gives infant enrichment up to about 1.7% below the authors' frozen-volume
+form at day 14; the maternal profile is identical.
+
+# Replicating Figure 2
+
+Figure 2 of the paper shows individual fits for four pairs. The maternal
+profile starts near 1000-1100 mg/L and falls monoexponentially, the infant's
+rises to a peak of about 350-550 mg/L around days 5-6, and the two curves
+cross between about day 8 and day 12, after which the infant is the more
+enriched. The figure below shows the same profiles for the typical pair and
+the 95% between-subject band of a 200-pair virtual cohort.
+
+```{r cohort}
+set.seed(20190101)
+rxode2::rxSetSeed(20190101)
+n_pairs <- 200
+
+# Reject-and-redraw inside the Table 1 ranges; a clamp would pile mass on
+# the boundaries.
+draw_lnorm <- function(n, median, sdlog, lo, hi) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- exp(rnorm(n, log(median), sdlog))
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
+pairs <- data.frame(
+  id = seq_len(n_pairs),
+  WT = draw_lnorm(n_pairs, 53.1, 0.20, 34.5, 93.1),
+  wt_start = draw_lnorm(n_pairs, 5.9, 0.15, 3.9, 8.4)
+) |>
+  mutate(wt_end = wt_start + 0.3)
+
+obs_t <- seq(0, 14, by = 0.25)
+ev_cohort <- bind_rows(
+  pairs |> mutate(time = 0, amt = 30, evid = 1L, cmt = "central", dvid = NA_integer_),
+  tidyr::crossing(pairs, time = obs_t) |>
+    mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+) |>
+  mutate(WT_INFANT = wt_start + (wt_end - wt_start) * time / 14) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, amt, evid, cmt, dvid, WT, WT_INFANT)
+
+sim <- rxode2::rxSolve(mod, ev_cohort, covsInterpolation = "linear",
+                       returnType = "data.frame")
+
+# The model has no residual error (not reported), so these are the
+# between-subject spreads of the true saliva enrichment.
+stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc)), all(sim$Cinfant >= -1e-6 * max(sim$Cinfant)))
+```
+
+```{r fig2, fig.cap = "Replicates the shape of Figure 2 of Liu 2019: maternal (upper at day 0) and infant (lower at day 0) saliva D2O enrichment after a 30 g oral dose to the mother. Lines: typical pair (maternal weight 53.1 kg, infant 5.9 to 6.2 kg); band: 2.5th-97.5th percentiles of 200 simulated pairs."}
+band <- sim |>
+  select(id, time, Cc, Cinfant) |>
+  pivot_longer(c(Cc, Cinfant), names_to = "member", values_to = "conc") |>
+  group_by(member, time) |>
+  summarise(lo = quantile(conc, 0.025), hi = quantile(conc, 0.975), .groups = "drop")
+typ <- sim_grow |>
+  select(time, Cc, Cinfant) |>
+  pivot_longer(c(Cc, Cinfant), names_to = "member", values_to = "conc")
+member_lab <- c(Cc = "Mother", Cinfant = "Infant")
+
+ggplot() +
+  geom_ribbon(data = band, aes(time, ymin = lo, ymax = hi, fill = member), alpha = 0.25) +
+  geom_line(data = typ, aes(time, conc, colour = member), linewidth = 0.9) +
+  scale_colour_discrete(labels = member_lab) +
+  scale_fill_discrete(labels = member_lab) +
+  labs(x = "Time (days)", y = "D2O concentration (mg/L)", colour = NULL, fill = NULL) +
+  theme_bw()
+```
+
+```{r fig2-checks}
+typ_w <- sim_grow
+c0 <- typ_w$Cc[typ_w$time == 0]
+t_peak_inf <- typ_w$time[which.max(typ_w$Cinfant)]
+c_peak_inf <- max(typ_w$Cinfant)
+t_cross <- typ_w$time[which(typ_w$time > 1 & typ_w$Cinfant >= typ_w$Cc)[1]]
+c(c0 = c0, t_peak_infant = t_peak_inf, c_peak_infant = c_peak_inf, t_cross = t_cross)
+stopifnot(
+  c0 > 1000, c0 < 1150,
+  t_peak_inf >= 5, t_peak_inf <= 7,
+  c_peak_inf > 350, c_peak_inf < 550,
+  t_cross >= 8, t_cross <= 12
+)
+```
+
+The typical pair starts at `r round(c0)` mg/L, the infant peaks at
+`r round(c_peak_inf)` mg/L on day `r t_peak_inf`, and the curves cross on
+day `r t_cross`, all inside the range of the four pairs in Figure 2.
+
+# Non-compartmental analysis
+
+The paper reports no NCA, so the PKNCA results are checked against the
+model's own closed forms for the typical pair: for the mother `t1/2 = log(2) /
+kmm` and `AUC0-inf = 1000 * Dose / (Vm * kmm)`; for an infant of constant
+weight every gram that leaves the mother through milk (`Dose * CLmb /
+(Vm * kmm)`) is eventually cleared by `CLbo`, so `AUC0-inf = 1000 * Dose *
+CLmb / (Vm * kmm * CLbo)`. The typical pair is followed for 120 days so that
+the infant's terminal phase, which runs at the slower maternal rate, is
+well established.
+
+```{r nca-typical}
+ev_long <- typical_events(6.05, 6.05, t_end = 120, dt = 0.25)
+sim_long <- rxode2::rxSolve(mod_typ, ev_long, rtol = 1e-10, atol = 1e-12,
+                            returnType = "data.frame")
+# A single-subject solve returns no id column.
+conc_long <- sim_long |>
+  mutate(id = 1L) |>
+  select(id, time, Cc, Cinfant) |>
+  pivot_longer(c(Cc, Cinfant), names_to = "member", values_to = "conc") |>
+  filter(!is.na(conc)) |>
+  mutate(conc = pmax(conc, 0))
+dose_long <- data.frame(id = 1L, time = 0, dose = 30,
+                        member = c("Cc", "Cinfant"))
+nca_long <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_long, conc ~ time | member + id),
+  PKNCA::PKNCAdose(dose_long, dose ~ time | member + id),
+  intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE, half.life = TRUE)
+))
+res_long <- as.data.frame(nca_long$result)
+
+vm_t <- exp(th[["lvc"]]) * (53.1 / 70)^th[["e_wt_vc"]]
+kmm_t <- exp(th[["lkel"]])
+clmb_t <- exp(th[["lcl_milk"]])
+clbo_t <- exp(th[["lcl_infant"]]) * (6.05 / 5)^th[["e_wt_infant_cl_infant"]]
+expected <- data.frame(
+  member = c("Cc", "Cc", "Cinfant", "Cinfant"),
+  PPTESTCD = c("aucinf.obs", "half.life", "aucinf.obs", "half.life"),
+  expected = c(30000 / (vm_t * kmm_t), log(2) / kmm_t,
+               30000 * clmb_t / (vm_t * kmm_t * clbo_t), log(2) / kmm_t)
+)
+nca_cmp <- res_long |>
+  inner_join(expected, by = c("member", "PPTESTCD")) |>
+  mutate(pct_diff = 100 * (PPORRES / expected - 1))
+knitr::kable(
+  nca_cmp |>
+    mutate(member = member_lab[member]) |>
+    select(member, PPTESTCD, PPORRES, expected, pct_diff) |>
+    rename("Dyad member" = member, "NCA parameter" = PPTESTCD,
+           "PKNCA" = PPORRES, "Closed form" = expected, "Difference (%)" = pct_diff),
+  digits = 3
+)
+# Deterministic typical-pair solve. Measured: AUCs within 0.02%; the infant
+# half-life 0.8% long because PKNCA's automatic point selection reaches back
+# to where the infant's faster disposition phase has not fully decayed.
+stopifnot(all(abs(nca_cmp$pct_diff) < 2))
+```
+
+For the virtual cohort over the 14-day protocol, the NCA by dyad member is:
+
+```{r nca-cohort}
+conc_cohort <- sim |>
+  select(id, time, Cc, Cinfant) |>
+  pivot_longer(c(Cc, Cinfant), names_to = "member", values_to = "conc") |>
+  filter(!is.na(conc)) |>
+  mutate(conc = pmax(conc, 0))
+dose_cohort <- tidyr::crossing(id = pairs$id, member = c("Cc", "Cinfant")) |>
+  mutate(time = 0, dose = 30)
+nca_cohort <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_cohort, conc ~ time | member + id),
+  PKNCA::PKNCAdose(dose_cohort, dose ~ time | member + id),
+  intervals = data.frame(start = 0, end = 14, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+))
+nca_sum <- as.data.frame(nca_cohort$result) |>
+  group_by(member, PPTESTCD) |>
+  summarise(median = median(PPORRES), p05 = quantile(PPORRES, 0.05),
+            p95 = quantile(PPORRES, 0.95), .groups = "drop") |>
+  mutate(member = member_lab[member])
+knitr::kable(
+  nca_sum |>
+    rename("Dyad member" = member, "NCA parameter" = PPTESTCD,
+           "Median" = median, "5th percentile" = p05, "95th percentile" = p95),
+  digits = 2
+)
+```
+
+# Water intake from non-milk sources (Rs)
+
+Appendix 1 of the paper turns the two clearances into the infant's intake of
+water from sources other than breast milk. With all quantities in L/day,
+
+* breast-milk intake `M = CLmb / 0.889` (free water 88.9% of milk, Eq. A1.4);
+* water from oxidising the milk's protein, fat and lactose `Rm = 0.07733 * M`
+  (Eq. A1.7);
+* infant water output corrected for isotope fractionation `Rcbo = CLbo /
+  0.9906` (Eq. A1.12);
+* water retained for growth `Rg = (TBW_end - TBW_start) / 14` (Eq. A1.8);
+* water absorbed from the atmosphere `Ra = 0.063 * (Rcbo + Rg)` (Eq. A1.13);
+
+and `Rs = Rcbo + Rg - CLmb - Rm - Ra` (Eq. A1.3), reported in g/day. In the
+Stan code `CLbo` here is evaluated at the infant's average study weight; with
+linear growth that is the weight at day 7, which is when `cl_infant` is read
+below. The paper samples the milk-composition, fractionation and atmospheric
+constants from priors; here they are held at their means.
+
+```{r rs}
+tbw <- function(wt) exp(-0.427 + 0.963 * log(wt))
+rs_calc <- function(cl_milk, cl_infant, wt_start, wt_end, days = 14) {
+  m_milk <- cl_milk / 0.889
+  rm <- 0.07733 * m_milk
+  rcbo <- cl_infant / 0.9906
+  rg <- (tbw(wt_end) - tbw(wt_start)) / days
+  ra <- 0.063 * (rcbo + rg)
+  1000 * (rcbo + rg - cl_milk - rm - ra)
+}
+
+rs_pairs <- sim |>
+  filter(abs(time - 7) < 1e-8) |>
+  select(id, cl_milk, cl_infant) |>
+  inner_join(pairs, by = "id") |>
+  mutate(Rs = rs_calc(cl_milk, cl_infant, wt_start, wt_end))
+rs_typ <- rs_calc(exp(th[["lcl_milk"]]), clbo_t, 5.9, 6.2)
+
+# Rs is linear in CLmb and CLbo, so its population mean is the mass balance
+# evaluated at the arithmetic-mean clearances exp(mu + omega^2 / 2) -- the
+# Table S6.1 quantities -- with no Monte Carlo involved.
+mean_clmb <- exp(th[["lcl_milk"]] + om("etalcl_milk") / 2)
+mean_clbo5 <- exp(th[["lcl_infant"]] + om("etalcl_infant") / 2)
+f_wt <- function(wt) (wt / 5)^th[["e_wt_infant_cl_infant"]]
+rs_expected <- rs_calc(mean_clmb, mean_clbo5 * f_wt(6.05), 5.9, 6.2)
+# The same mass balance at the arithmetic means of the ESM 5 individual
+# posterior means (CLmb 0.7347, CLbo 0.8604 L/day before the weight effect).
+rs_esm5 <- rs_calc(0.7347, 0.8604 * f_wt(6.05), 5.9, 6.2)
+# Sensitivity of Rs to 0.1 kg of average infant weight.
+rs_per_100g <- rs_expected - rs_calc(mean_clmb, mean_clbo5 * f_wt(5.95), 5.8, 6.1)
+
+rs_summary <- data.frame(
+  quantity = c(
+    "Typical pair (exp(mu) clearances)",
+    "Population mean, Table S6.1 clearance means",
+    "Population mean, ESM 5 posterior-mean clearances",
+    "Simulated cohort mean",
+    "Simulated cohort SD",
+    "Simulated cohort 90th percentile"
+  ),
+  value = c(rs_typ, rs_expected, rs_esm5, mean(rs_pairs$Rs), sd(rs_pairs$Rs),
+            quantile(rs_pairs$Rs, 0.9)),
+  published = c(NA, 50.7, 50.7, 50.7, 0.571 * 50.7, NA)
+)
+knitr::kable(
+  rs_summary |>
+    rename("Rs (g/day)" = quantity, "This model" = value,
+           "Table S6.1" = published),
+  digits = 1
+)
+```
+
+```{r rs-checks}
+# Deterministic centre. Rs is the small difference of two 0.99-correlated
+# clearances (~0.9 and ~0.8 L/day): 0.001 L/day in CLbo is ~1 g/day of Rs, and
+# the paper's own two summaries of CLbo (Table S6.1 0.864, ESM 5 0.8604)
+# already differ by 0.0036 L/day. Measured: 59.2 against 50.7.
+stopifnot(abs(rs_expected - 50.7) < 12)
+
+# The cohort must agree with the model's own expectation for the cohort's
+# weights; 4 Monte-Carlo standard errors.
+rs_cohort_expected <- mean(rs_calc(
+  mean_clmb, mean_clbo5 * f_wt((pairs$wt_start + pairs$wt_end) / 2),
+  pairs$wt_start, pairs$wt_end
+))
+stopifnot(abs(mean(rs_pairs$Rs) - rs_cohort_expected) <
+            4 * sd(rs_pairs$Rs) / sqrt(nrow(rs_pairs)))
+```
+
+Table S6.1 gives a population mean `Rs` of 50.7 g/day with 57.1% between-
+subject variability. The model's population mean, from the same table's
+clearance means, is `r round(rs_expected, 1)` g/day. The gap is a property of
+`Rs` rather than of the model: `Rs` is the small difference between the
+infant's water turnover and its milk-water intake, two clearances near 0.9 and
+0.8 L/day that are 0.99-correlated, so it amplifies their uncertainty roughly
+fifteen-fold. Evaluating the same mass balance at the arithmetic means of the
+ESM 5 individual posterior clearances instead of the Table S6.1 values already
+moves it to `r round(rs_esm5, 1)` g/day, and each 0.1 kg of average infant
+weight, which is not published per pair, moves it by about
+`r round(rs_per_100g, 1)` g/day. Treat `Rs` computed from this model as
+reproducing the paper to within about 10 g/day.
+
+The paper's exclusive-breastfeeding cut-off of 86.6 g/day is the 90th
+percentile of the *pooled individual posterior* distributions of the 113
+pairs. It mixes each pair's estimation uncertainty (individual 95% credible
+intervals with a median half-width of about 38 g/day, ESM 5) with the spread
+of their shrunken posterior means, so it is a property of the fitted data set
+rather than a quantile of the population model and is not compared here; the
+90th percentile of the simulated between-pair `Rs` is
+`r round(quantile(rs_pairs$Rs, 0.9), 1)` g/day.
+
+# Assumptions and deviations
+
+* **Residual error not reported.** The combined error model of the paper
+  shares one (proportional, additive) pair between mother and infant, but the
+  posterior values of `sigma` are not printed in the paper or in any
+  supplement. Both pairs are held at zero, so simulations are of the true
+  saliva enrichment; rxode2 needs a separate pair per endpoint, so the model
+  carries `propSd`/`addSd` and `propSd_Cinfant`/`addSd_Cinfant`.
+* **Unreported IIV correlations.** The paper fitted a full 4 x 4 LKJ
+  correlation matrix but prints only the `CLmb`-`CLbo` correlation (0.99,
+  ESM 7). The other five correlations are set to zero. In the ESM 5 individual
+  posterior means they are small (between -0.13 and 0.24).
+* **BSV reading.** Table S6.1's "BSV %" is taken as 100 x the log-scale SD,
+  as ESM 7 states explicitly for `CLmb` and `CLbo` ("SD as Between Subject
+  Variability", 0.20 and 0.17) and as the arithmetic-mean check above
+  confirms for all four parameters.
+* **kmm typical value back-solved.** No log-scale mean is printed for `kmm`;
+  `lkel = log(0.109) - 0.15^2 / 2` from Table S6.1. The ESM 5 geometric mean,
+  0.1071 1/day, agrees within 0.7%.
+* **ODE instead of the closed form.** The Stan code evaluates the analytic
+  solution with the infant volume frozen at each observation time; the
+  packaged model integrates the mass-balanced ODEs with a time-varying infant
+  volume. They are identical for constant infant weight and differ by up to
+  about 1.7% at day 14 for typical growth (shown above).
+* **Infant weight on CLbo.** The paper evaluates the infant-clearance
+  covariate at the infant's average weight over the study (Stan `BWT`); the
+  packaged model uses the current `WT_INFANT`. With 0.3 kg of growth on a 6 kg
+  infant and an exponent of 0.17 this changes `CLbo` by less than 0.5% at any
+  time; supply a constant `WT_INFANT` equal to the study average to remove
+  even that, at the cost of a constant infant volume.
+* **Rs reproduced only approximately.** See the `Rs` section: the model's
+  population-mean `Rs` is `r round(rs_expected, 1)` g/day against the
+  published 50.7 g/day, a gap of the size explained by the difference between
+  the paper's own two summaries of the clearances and the unpublished infant
+  weights.
+* **Constants held at their prior means.** The Stan model samples the TBW
+  coefficients `a` and `b`, the milk water fraction, the oxidation water
+  fraction and the atmospheric absorption fraction from informative priors.
+  The packaged model and the `Rs` calculation use the prior means.
+* **Reference weights.** Eqs. 16-17 centre on 70 kg (mother) and 5 kg
+  (infant), which the paper calls the median weights although Table 1 gives
+  53.1 kg and 5.9 kg; the model uses 70 kg and 5 kg, as the fitted code does.
+* **Virtual cohort.** Individual weights are not published. Maternal and
+  start-of-study infant weights are drawn log-normally around the Table 1
+  medians and redrawn when outside the Table 1 ranges; every infant gains the
+  median 0.3 kg over 14 days, linearly, as the Stan code assumes.
+* **Errata.** No erratum or correction was found for this article (Europe
+  PMC, checked 2026-11-25).
