@@ -1,0 +1,554 @@
+---
+title: "Placebo heart rate, QTcF and blood pressure circadian models (Minocha 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Placebo heart rate, QTcF and blood pressure circadian models (Minocha 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4, message = FALSE)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r meta}
+mod_hr <- readModelDb("Minocha_2019_placebo_hr")
+mod_qt <- readModelDb("Minocha_2019_placebo_QTcF")
+mod_sbp <- readModelDb("Minocha_2019_placebo_sbp")
+mod_dbp <- readModelDb("Minocha_2019_placebo_dbp")
+```
+
+* Citation: `r rxode2::rxode(mod_hr)$reference`
+* Article: <https://doi.org/10.1111/cts.12640> (open access)
+* Corrigendum: <https://doi.org/10.1111/cts.12773> (adds Table S1 with the
+  between-subject variability estimates that were missing from Table 2, and a
+  corrected Figure 2)
+
+Minocha et al. pooled the placebo arms of 65 AbbVie phase I trials and fitted
+four independent nonlinear mixed-effects models, one each for heart rate,
+Fridericia-corrected QT interval (QTcF), systolic blood pressure (SBP) and
+diastolic blood pressure (DBP). Every model has the same additive structure
+(Eq. 2):
+
+P_ij = BL_i + sum_k CIRC_k,ij +/- TE_ij + residual error
+
+* **Baseline** `BL_i` is the value at midnight. Continuous covariates (age
+  normalised to 30 years, weight to 70 kg) enter as a power function of the
+  typical value, and sex and race as additive shifts with males and White
+  subjects as the reference (Eq. 3). Between-subject variability on the
+  baseline is additive.
+* **Circadian rhythm** is a sum of cosines,
+  `CIRC_k = AMP_k * cos(2 * 3.14 * (t - PS_k) / k)` with periods k of 24, 12 and
+  6 h for heart rate and QTcF and a single 24-h cosine for SBP and DBP (Eq. 4).
+  `PS_k` is the clock time (hours after midnight) at which that cosine peaks.
+* **Time drift** `TE` is linear for heart rate (`0.15 * t / 24`, added) and an
+  exponential approach to a plateau for the other three
+  (`MAX * (1 - exp(-k * t / 24))`, subtracted).
+
+`t` is clock time in hours since the midnight before the subject's first
+recorded measurement, so `t = 35` is 11:00 am on the second study day. There is
+no drug input: these are placebo backbones intended to be combined with a drug
+effect.
+
+```{r descriptions, results = "asis"}
+for (m in list(mod_hr, mod_qt, mod_sbp, mod_dbp)) {
+  cat("* ", rxode2::rxode(m)$description, "\n", sep = "")
+}
+```
+
+# Population
+
+Healthy volunteers who received placebo in single- and multiple-dose phase I
+trials conducted by AbbVie between 2007 and 2014 (Minocha 2019 Table 1). Heart
+rate and QTcF: 996 subjects from 63 studies, 16,509 observations (each the mean
+of high-precision triplicate ECGs), from 3 days before the first placebo dose to
+about 21 days after it. SBP and DBP: 1,035 subjects from 65 studies, 18,807
+observations, from 3 days before to 12 weeks after the first placebo dose. The
+cohorts were 75-76% male, 57% White, 33% Black, 8% Asian and 2% other race, with
+mean (SD) age 34 (10) years and body weight 75 (12-13) kg.
+
+The same information is available programmatically via each model's
+`population` metadata:
+
+```{r population}
+str(rxode2::rxode(mod_qt)$population)
+```
+
+# Source trace
+
+Per-parameter origins are recorded as in-file comments next to every `ini()`
+entry in `inst/modeldb/therapeuticArea/Minocha_2019_placebo_*.R`. "S1" is
+Table S1 of the 2020 corrigendum.
+
+| Element | Heart rate | QTcF | SBP | DBP | Source |
+|---------|-----------|------|-----|-----|--------|
+| Model structure | Eq. 9 | Eq. 10 | Eq. 11 | Eq. 12 | Eqs. 2-8; heart-rate code in Data S1 |
+| `rbase` (male, White, 30 y, 70 kg) | 60.7 bpm | 400 ms | 123 mmHg | 78.3 mmHg | Table 2 |
+| `e_sexf_rbase` | 6.8 | 14.7 | -8.3 | -4.7 | Table 2 |
+| `e_race_black_rbase` | NS | -3.4 | 3.8 | 2.1 | Table 2 |
+| `e_race_asian_rbase` | NS | NS | NS | -1.5 | Table 2 |
+| `e_age_rbase` (power, /30 y) | NS | 0.031 | NS | 0.08 | Table 2 |
+| `e_wt_rbase` (power, /70 kg) | NS | NS | 0.09 | NS | Table 2 |
+| `amp_24h`, `acrophase_24h` | 2.2, 17.6 h | 2.6, 2.2 h | 1.0, 19.3 h | 1.6, 2.3 h | Table 2 |
+| `amp_12h`, `acrophase_12h` | 0.5, 0 (held) | 2.0, 3.6 h | -- | -- | Table 2; Data S1 `PHI12 0 FIX` |
+| `amp_6h`, `acrophase_6h` | 2.7, 2.8 h | 1.2, 1.7 h | -- | -- | Table 2 |
+| Drift | `slope_drift` 0.15 /day | `drift_max` 5.0, k 1.4 /day | 7.6, 1.2 /day | 4.8, 1.6 /day | Table 2; Eqs. 5-6 |
+| `etarbase` (variance) | 7.1^2 | 13.9^2 | 7.4^2 | 6.0^2 | Table 2 scaling factor, omega^2 = 1 |
+| `etaamp_24h` | 3.52 | -- | 3.44 | 0.93 | S1 |
+| `etaacrophase_24h` | 3.12 | 8.09 | -- | 6.12 | S1 |
+| `etaamp_12h` | 1.27 | -- | -- | -- | S1 |
+| `etaacrophase_12h` | -- | 2.24 | -- | -- | S1 |
+| `etaacrophase_6h` | 0.638 | 0.967 | -- | -- | S1 |
+| `etaslope_drift` | 0.204 | -- | -- | -- | S1 (Results: SD 0.45 bpm/day) |
+| Residual error | `propSd` sqrt(0.004) | `addSd` 5.7 ms | 7.5 mmHg | 5.2 mmHg | Table 2 (footnote c: proportional for heart rate) |
+
+NS: not significant, not in the final model; --: not part of that model.
+
+# Typical-value time course (Figures 1 and 2)
+
+Figures 1 and 2 show the typical prediction for a 30-year-old, 70-kg White male
+between 24 and 72 h after the first midnight. The models carry no random effects
+in this replication (`zeroRe(..., "omega")`); the plotted observation variables
+are the model predictions without residual error. Figure 2 is the corrected
+version printed in the 2020 corrigendum.
+
+```{r typical}
+typ_subject <- function(times, AGE = 30, WT = 70, SEXF = 0, RACE_BLACK = 0, RACE_ASIAN = 0) {
+  data.frame(
+    id = 1L, time = times, evid = 0L,
+    AGE = AGE, WT = WT, SEXF = SEXF, RACE_BLACK = RACE_BLACK, RACE_ASIAN = RACE_ASIAN
+  )
+}
+solve_typ <- function(mod, ev, dv) {
+  sim <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod, "omega"), ev))
+  data.frame(time = sim$time, value = sim[[dv]])
+}
+
+grid <- seq(24, 72, by = 0.1)
+ev_ref <- typ_subject(grid)
+typ <- bind_rows(
+  solve_typ(mod_hr, ev_ref, "hr") |> mutate(variable = "Heart rate (beats/min)"),
+  solve_typ(mod_qt, ev_ref, "QTcF") |> mutate(variable = "QTcF (ms)"),
+  solve_typ(mod_sbp, ev_ref, "sbp") |> mutate(variable = "Systolic BP (mmHg)"),
+  solve_typ(mod_dbp, ev_ref, "dbp") |> mutate(variable = "Diastolic BP (mmHg)")
+)
+```
+
+```{r figure-1-2, fig.height = 6}
+ggplot(typ, aes(time, value)) +
+  geom_line(colour = "red") +
+  geom_vline(xintercept = c(24, 48), linetype = "dashed") +
+  facet_wrap(~variable, scales = "free_y", ncol = 2) +
+  scale_x_continuous(breaks = seq(24, 72, by = 6)) +
+  labs(
+    x = "Time since midnight (h)", y = NULL,
+    title = "Typical 30-year-old, 70-kg White male",
+    caption = "Replicates the model lines of Figures 1a, 1b and corrected Figures 2a, 2b of Minocha 2019."
+  )
+```
+
+The table below compares the packaged model with turning points read off the
+published figure lines by the maintainers (reading precision about 0.3 units
+for heart rate and blood pressure and 0.5 ms for QTcF).
+
+```{r figure-1-2-check}
+fig_read <- tibble::tribble(
+  ~variable, ~dv, ~time, ~published,
+  "Heart rate", "hr", 24, 58.5,
+  "Heart rate", "hr", 30, 55.5,
+  "Heart rate", "hr", 39, 65.3,
+  "Heart rate", "hr", 54, 55.7,
+  "Heart rate", "hr", 63, 65.5,
+  "QTcF", "QTcF", 26, 400.3,
+  "QTcF", "QTcF", 35, 390.5,
+  "QTcF", "QTcF", 50, 399.5,
+  "QTcF", "QTcF", 59, 390.0,
+  "SBP", "sbp", 24, 118.0,
+  "SBP", "sbp", 43, 117.2,
+  "SBP", "sbp", 55, 114.9,
+  "DBP", "dbp", 24, 75.9,
+  "DBP", "dbp", 39, 72.3,
+  "DBP", "dbp", 50, 75.3,
+  "DBP", "dbp", 63, 72.0
+)
+mods <- list(hr = mod_hr, QTcF = mod_qt, sbp = mod_sbp, dbp = mod_dbp)
+fig_read$simulated <- vapply(seq_len(nrow(fig_read)), function(i) {
+  solve_typ(mods[[fig_read$dv[i]]], typ_subject(fig_read$time[i]), fig_read$dv[i])$value
+}, numeric(1))
+fig_read <- fig_read |> mutate(difference = simulated - published)
+
+fig_read |>
+  select(-dv) |>
+  dplyr::rename(
+    "Variable" = variable, "Time (h)" = time, "Figure" = published,
+    "Model" = simulated, "Model - figure" = difference
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical-value model vs. values read from Figures 1 and 2 (corrected).")
+
+# A transcription error in an amplitude, phase or drift parameter moves these
+# points by several units; the bounds sit outside the reading precision plus the
+# constant ~0.8 ms QTcF offset described under Assumptions and deviations.
+tol <- c(hr = 1, QTcF = 1.5, sbp = 0.75, dbp = 0.75)
+stopifnot(all(abs(fig_read$difference) < tol[fig_read$dv]))
+```
+
+## Peak and trough clock times
+
+The Results ('Effect of circadian rhythm') state the clock times of the peaks
+and troughs and the peak-to-trough differences of the typical profile. These are
+checked on the third study day (48-72 h), where the drift has almost reached its
+plateau.
+
+```{r peaks}
+day3 <- typ |> filter(time >= 48, time <= 72)
+peaks <- day3 |>
+  group_by(variable) |>
+  summarise(
+    peak_clock = time[which.max(value)] - 48,
+    trough_clock = time[which.min(value)] - 48,
+    peak_to_trough = max(value) - min(value),
+    .groups = "drop"
+  )
+published_peaks <- tibble::tribble(
+  ~variable, ~peak_pub, ~trough_pub, ~diff_pub,
+  "Heart rate (beats/min)", 15, 6, 10,
+  "QTcF (ms)", 2, 11, 10,
+  "Systolic BP (mmHg)", 19, 8, 2,
+  "Diastolic BP (mmHg)", 2, 14, 3.5
+)
+peak_cmp <- left_join(peaks, published_peaks, by = "variable")
+peak_cmp |>
+  dplyr::rename(
+    "Variable" = variable,
+    "Peak clock time, model (h)" = peak_clock, "Peak, paper (h)" = peak_pub,
+    "Trough clock time, model (h)" = trough_clock, "Trough, paper (h)" = trough_pub,
+    "Peak - trough, model" = peak_to_trough, "Peak - trough, paper (approx.)" = diff_pub
+  ) |>
+  knitr::kable(digits = 2, caption = "Circadian turning points of the typical profile on day 3.")
+
+# The paper rounds clock times to the hour and differences to 'approximately'.
+stopifnot(
+  all(abs(peak_cmp$peak_clock - peak_cmp$peak_pub) <= 1),
+  all(abs(peak_cmp$trough_clock - peak_cmp$trough_pub) <= 1),
+  all(abs(peak_cmp$peak_to_trough - peak_cmp$diff_pub) < 0.5)
+)
+```
+
+The Results also give the drift half-lives: about 12 h (QTcF), 14 h (SBP) and
+10 h (DBP).
+
+```{r drift-half-lives}
+half_life_h <- log(2) / exp(c(
+  QTcF = rxode2::rxode(mod_qt)$theta[["lkdrift"]],
+  SBP = rxode2::rxode(mod_sbp)$theta[["lkdrift"]],
+  DBP = rxode2::rxode(mod_dbp)$theta[["lkdrift"]]
+)) * 24
+round(half_life_h, 1)
+stopifnot(all(abs(half_life_h - c(12, 14, 10)) < 0.6))
+```
+
+# Effect of sex and race at 11:00 am (Figure 3)
+
+Figure 3 shows model-predicted values at 11:00 am for 1,000 subjects in each of
+four groups (White or Black, male or female; 30 years, 70 kg). Here 200 subjects
+per group are simulated with between-subject variability at `t = 35` h (11:00 am
+on study day 2). The observation columns returned by `rxSolve()` are individual
+predictions without residual error.
+
+```{r figure-3-sim}
+rxode2::rxSetSeed(2019)
+groups <- tibble::tribble(
+  ~group, ~SEXF, ~RACE_BLACK,
+  "White-Male", 0, 0,
+  "Black-Male", 0, 1,
+  "White-Female", 1, 0,
+  "Black-Female", 1, 1
+)
+n_per_group <- 200
+ev_fig3 <- groups |>
+  mutate(g = row_number()) |>
+  tidyr::uncount(n_per_group, .id = "k") |>
+  mutate(
+    id = (g - 1L) * n_per_group + k, time = 35, evid = 0L,
+    AGE = 30, WT = 70, RACE_ASIAN = 0
+  ) |>
+  select(id, time, evid, AGE, WT, SEXF, RACE_BLACK, RACE_ASIAN, group)
+stopifnot(!anyDuplicated(ev_fig3$id))
+
+sim_one <- function(mod, dv, label) {
+  as.data.frame(rxode2::rxSolve(mod, events = ev_fig3, keep = "group")) |>
+    transmute(group, variable = label, value = .data[[dv]])
+}
+fig3 <- bind_rows(
+  sim_one(mod_hr, "hr", "Heart rate (beats/min)"),
+  sim_one(mod_qt, "QTcF", "QTcF (ms)"),
+  sim_one(mod_sbp, "sbp", "Systolic BP (mmHg)"),
+  sim_one(mod_dbp, "dbp", "Diastolic BP (mmHg)")
+) |>
+  mutate(group = factor(group, levels = groups$group))
+```
+
+```{r figure-3, fig.height = 6}
+ggplot(fig3, aes(group, value, fill = group)) +
+  geom_boxplot(show.legend = FALSE) +
+  facet_wrap(~variable, scales = "free_y", ncol = 2) +
+  labs(
+    x = NULL, y = "Value at 11:00 am",
+    caption = "Replicates Figure 3 of Minocha 2019 (200 simulated subjects per group)."
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+The medians and interquartile ranges in Figure 3 were read by the maintainers
+(reading precision about 1 unit).
+
+```{r figure-3-check}
+fig3_pub <- tibble::tribble(
+  ~variable, ~group, ~median_pub, ~q25_pub, ~q75_pub,
+  "Heart rate (beats/min)", "White-Male", 59, 54.5, 64.5,
+  "Heart rate (beats/min)", "Black-Male", 59, 54, 64.5,
+  "Heart rate (beats/min)", "White-Female", 66.5, 61.5, 72,
+  "Heart rate (beats/min)", "Black-Female", 66.5, 61.5, 72,
+  "QTcF (ms)", "White-Male", 392, 383, 402,
+  "QTcF (ms)", "Black-Male", 388, 380, 398,
+  "QTcF (ms)", "White-Female", 407, 397, 418,
+  "QTcF (ms)", "Black-Female", 404, 394, 413,
+  "Systolic BP (mmHg)", "White-Male", 116, 110.5, 121,
+  "Systolic BP (mmHg)", "Black-Male", 119.5, 115, 124.5,
+  "Systolic BP (mmHg)", "White-Female", 108, 102.5, 113,
+  "Systolic BP (mmHg)", "Black-Female", 111, 106.5, 116.5,
+  "Diastolic BP (mmHg)", "White-Male", 73.5, 69, 77.5,
+  "Diastolic BP (mmHg)", "Black-Male", 75.5, 71, 79.5,
+  "Diastolic BP (mmHg)", "White-Female", 68, 64, 72.5,
+  "Diastolic BP (mmHg)", "Black-Female", 70.5, 66.5, 74.5
+)
+dv_of <- c(
+  "Heart rate (beats/min)" = "hr", "QTcF (ms)" = "QTcF",
+  "Systolic BP (mmHg)" = "sbp", "Diastolic BP (mmHg)" = "dbp"
+)
+fig3_pub$typical <- vapply(seq_len(nrow(fig3_pub)), function(i) {
+  g <- groups[groups$group == fig3_pub$group[i], ]
+  dv <- dv_of[[fig3_pub$variable[i]]]
+  solve_typ(mods[[dv]], typ_subject(35, SEXF = g$SEXF, RACE_BLACK = g$RACE_BLACK), dv)$value
+}, numeric(1))
+fig3_sim <- fig3 |>
+  group_by(variable, group) |>
+  summarise(
+    median_sim = median(value),
+    iqr_sim = IQR(value),
+    .groups = "drop"
+  ) |>
+  mutate(group = as.character(group))
+fig3_cmp <- left_join(fig3_pub, fig3_sim, by = c("variable", "group")) |>
+  mutate(iqr_pub = q75_pub - q25_pub)
+
+fig3_cmp |>
+  select(variable, group, median_pub, typical, median_sim, iqr_pub, iqr_sim) |>
+  dplyr::rename(
+    "Variable" = variable, "Group" = group,
+    "Median, Figure 3" = median_pub, "Typical value" = typical,
+    "Median, simulated" = median_sim,
+    "IQR, Figure 3" = iqr_pub, "IQR, simulated" = iqr_sim
+  ) |>
+  knitr::kable(digits = 1, caption = "Figure 3 medians and interquartile ranges vs. the model.")
+
+# 1. Deterministic: the typical value of each group against the figure median.
+#    The sex and race shifts separate the groups by 2-15 units; the bound is the
+#    reading precision plus the ~0.8 ms QTcF offset noted under Assumptions.
+stopifnot(all(abs(fig3_cmp$typical - fig3_cmp$median_pub) < 2))
+
+# 2. Stochastic: the 200-subject median sits on the typical value. The sampling
+#    SD of that median is about 1.25 x SD / sqrt(200) = 0.089 x the baseline SD
+#    (0.6 bpm, 1.2 ms, 0.7 and 0.5 mmHg), so 0.45 x the baseline SD is about
+#    5 sampling SDs: it fails only for a real error in the variability model.
+bl_sd <- c(
+  "Heart rate (beats/min)" = 7.1, "QTcF (ms)" = 13.9,
+  "Systolic BP (mmHg)" = 7.4, "Diastolic BP (mmHg)" = 6.0
+)
+stopifnot(all(
+  abs(fig3_cmp$median_sim - fig3_cmp$typical) < 0.45 * bl_sd[fig3_cmp$variable]
+))
+
+# 3. Spread: interquartile range pooled over the four groups (800 subjects,
+#    sampling SD about 4%) against the mean of the four published IQRs.
+#    Adding the residual error would widen the SBP IQR by about 40%.
+iqr_pooled <- fig3 |>
+  left_join(fig3_cmp |> select(variable, group, typical), by = c("variable", "group")) |>
+  group_by(variable) |>
+  summarise(iqr_sim = IQR(value - typical), .groups = "drop") |>
+  left_join(
+    fig3_cmp |> group_by(variable) |> summarise(iqr_pub = mean(iqr_pub), .groups = "drop"),
+    by = "variable"
+  )
+iqr_pooled
+stopifnot(all(abs(iqr_pooled$iqr_sim / iqr_pooled$iqr_pub - 1) < 0.2))
+```
+
+# Effect of age and body weight (Figure 4)
+
+Figure 4 shows the median and 90% prediction interval of QTcF and DBP for White
+males aged 18, 30 or 60 years (70 kg), and of SBP for White males weighing 40,
+70 or 120 kg (30 years). 200 subjects per stratum are simulated here.
+
+```{r figure-4-sim}
+rxode2::rxSetSeed(2020)
+grid4 <- seq(24, 72, by = 1)
+make_stratum <- function(n, stratum, AGE, WT, id_offset) {
+  tidyr::expand_grid(id = id_offset + seq_len(n), time = grid4) |>
+    mutate(
+      evid = 0L, AGE = AGE, WT = WT, SEXF = 0, RACE_BLACK = 0, RACE_ASIAN = 0,
+      stratum = stratum
+    )
+}
+ev_age <- bind_rows(
+  make_stratum(200, "18 years", 18, 70, 0L),
+  make_stratum(200, "30 years", 30, 70, 200L),
+  make_stratum(200, "60 years", 60, 70, 400L)
+)
+ev_wt <- bind_rows(
+  make_stratum(200, "40 kg", 30, 40, 0L),
+  make_stratum(200, "70 kg", 30, 70, 200L),
+  make_stratum(200, "120 kg", 30, 120, 400L)
+)
+stopifnot(
+  !anyDuplicated(ev_age[, c("id", "time")]),
+  !anyDuplicated(ev_wt[, c("id", "time")])
+)
+
+summ <- function(mod, ev, dv, label) {
+  as.data.frame(rxode2::rxSolve(mod, events = ev, keep = "stratum")) |>
+    group_by(stratum, time) |>
+    summarise(
+      Q05 = quantile(.data[[dv]], 0.05), Q50 = median(.data[[dv]]),
+      Q95 = quantile(.data[[dv]], 0.95), .groups = "drop"
+    ) |>
+    mutate(variable = label)
+}
+fig4 <- bind_rows(
+  summ(mod_qt, ev_age, "QTcF", "QTcF (ms)"),
+  summ(mod_dbp, ev_age, "dbp", "Diastolic BP (mmHg)"),
+  summ(mod_sbp, ev_wt, "sbp", "Systolic BP (mmHg)")
+) |>
+  mutate(stratum = factor(stratum, levels = c(
+    "18 years", "30 years", "60 years", "40 kg", "70 kg", "120 kg"
+  )))
+```
+
+```{r figure-4, fig.height = 7}
+ggplot(fig4, aes(time, Q50, colour = stratum, fill = stratum)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.15, colour = NA) +
+  geom_line() +
+  facet_grid(variable ~ stratum, scales = "free") +
+  scale_x_continuous(breaks = seq(24, 72, by = 12)) +
+  labs(
+    x = "Time since midnight (h)", y = NULL,
+    caption = "Replicates Figure 4 of Minocha 2019 (median and 90% prediction interval, 200 subjects per stratum)."
+  ) +
+  theme(legend.position = "none")
+```
+
+The typical profile at `t = 24` h (midnight starting day 2) read from Figure 4
+is compared with the typical-value model below.
+
+```{r figure-4-check}
+fig4_pub <- tibble::tribble(
+  ~variable, ~dv, ~stratum, ~AGE, ~WT, ~published,
+  "QTcF (ms)", "QTcF", "18 years", 18, 70, 391.5,
+  "QTcF (ms)", "QTcF", "30 years", 30, 70, 397.5,
+  "QTcF (ms)", "QTcF", "60 years", 60, 70, 406.5,
+  "Diastolic BP (mmHg)", "dbp", "18 years", 18, 70, 72.2,
+  "Diastolic BP (mmHg)", "dbp", "30 years", 30, 70, 75.5,
+  "Diastolic BP (mmHg)", "dbp", "60 years", 60, 70, 80.1,
+  "Systolic BP (mmHg)", "sbp", "40 kg", 30, 40, 111.5,
+  "Systolic BP (mmHg)", "sbp", "70 kg", 30, 70, 117.3,
+  "Systolic BP (mmHg)", "sbp", "120 kg", 30, 120, 123.2
+)
+fig4_pub$simulated <- vapply(seq_len(nrow(fig4_pub)), function(i) {
+  solve_typ(
+    mods[[fig4_pub$dv[i]]],
+    typ_subject(24, AGE = fig4_pub$AGE[i], WT = fig4_pub$WT[i]),
+    fig4_pub$dv[i]
+  )$value
+}, numeric(1))
+fig4_pub |>
+  select(variable, stratum, published, simulated) |>
+  dplyr::rename(
+    "Variable" = variable, "Stratum" = stratum,
+    "Figure 4 at 24 h" = published, "Typical-value model" = simulated
+  ) |>
+  knitr::kable(digits = 1, caption = "Figure 4 median at 24 h vs. typical-value model.")
+
+# The age and weight power exponents shift these values by 4-9 units between
+# strata; the bound is the reading precision of the small Figure 4 panels.
+stopifnot(all(abs(fig4_pub$simulated - fig4_pub$published) < 1.5))
+```
+
+# Why there is no NCA
+
+These are placebo models with no drug input, so there is no concentration
+profile to summarise with PKNCA. The checks above use the quantities the paper
+reports instead: typical-value profiles (Figures 1, 2 and 4), circadian peak and
+trough clock times, drift half-lives, and covariate-stratified distributions
+(Figure 3).
+
+# Assumptions and deviations
+
+* **Corrigendum.** Table 2 of the original article omitted the between-subject
+  variances of the amplitudes, phase shifts and the heart-rate drift slope. They
+  are taken from Table S1 of the 2020 corrigendum
+  (doi:10.1111/cts.12773). The heart-rate drift-slope variance there (0.204)
+  agrees with the SD of 0.45 bpm/day quoted in the original Results. The
+  corrigendum also replaced Figure 2 because the code that drew it shifted the
+  curves by a constant; the checks above use the corrected Figure 2.
+* **Baseline variability parameterisation.** The authors estimated each
+  baseline eta as `ETA * THETA` with the eta variance held at 1, so that THETA
+  is the between-subject SD. The packaged models use the equivalent single
+  eta with variance THETA^2 (for example 7.1^2 = 50.41 for heart rate).
+  Likewise, the additive residual SDs (`addSd`) are the published scaling
+  factors with sigma^2 = 1.
+* **Heart-rate residual error.** Table 2 lists 0.004 in the row labelled
+  'sigma^2 (additive residual error)' for heart rate, with footnote c stating
+  that heart rate uses a proportional error. The authors' control stream (Data
+  S1) confirms a purely proportional error, so `propSd = sqrt(0.004) = 0.0632`.
+* **Heart-rate 12-h phase shift.** Table 2 lists it as 'NS'; the Results explain
+  that it was not estimated because the estimate was close to 12 h, and Data S1
+  holds `PHI12` at 0. With a 12-h period a phase of 0 and of 12 h are the same,
+  so `acrophase_12h` is held at 0.
+* **The constant 3.14.** Eq. 4 and the authors' control stream both use
+  `2 * 3.14` rather than `2 * pi`; the packaged models keep 3.14 because that is
+  the form that was fitted. Over three weeks the difference shifts the cosines
+  by about 0.25 h.
+* **Time origin.** The authors' `TIME` is continuous clock time from the
+  midnight before each subject's first record, which includes screening (about
+  3 days before the first placebo dose); the drift terms are anchored there too.
+  Users simulating a trial should set `t = 0` at the midnight before the first
+  measurement, not at the first dose. For crossover studies the authors reset
+  each period with `EVID = 4`.
+* **Covariate reference groups.** Males and White subjects are the reference
+  categories (the most frequent ones). Race groups whose shift was not
+  significant (Asian for heart rate, QTcF and SBP; other race for all four)
+  share the White baseline. Screened but not retained covariates are listed in
+  each model's `covariatesDataExcluded`.
+* **DBP age-exponent interval.** Table 2 prints the bootstrap interval of the
+  DBP age exponent as (0.07, 1.0); the upper bound is presumably 0.10. The
+  point estimate 0.08 is used.
+* **QTcF offset in Figure 1b.** The typical QTcF from the published parameters
+  sits about 0.8 ms above the Figure 1b line at every turning point read, while
+  heart rate (Figure 1a) and the corrected blood-pressure lines (Figure 2) agree
+  within reading precision. A constant offset of this size (0.2%) is consistent
+  with rounding of the published estimates or with how the figure line was
+  drawn; the parameters are used as published.
+* **Figure 3 and 4 cohorts.** The simulations use 200 subjects per group rather
+  than the paper's 1,000, and Figure 3 is evaluated on study day 2 (`t = 35` h)
+  because the paper does not say which day was used. The simulated values are
+  individual predictions without residual error. Their interquartile ranges
+  are 4-7% narrower than those read from Figure 3; adding the residual error
+  would widen the SBP range by about 40%, far beyond the figure, so the figure
+  is taken to show predictions without residual error.
