@@ -1,0 +1,417 @@
+---
+title: "Amikacin exposure targets for tuberculosis in vitro (Srivastava 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Amikacin exposure targets for tuberculosis in vitro (Srivastava 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Srivastava 2016 asked which amikacin exposure best predicts the killing of
+*Mycobacterium tuberculosis*, and whether amikacin, like aminoglycosides in
+general, loses activity at acidic pH. Every fit in the paper is an inhibitory
+sigmoid Emax model of a bacterial burden in log10 CFU/mL,
+
+$$E = E_0 - \frac{E_{max} \, X^{H}}{X^{H} + EC_{50}^{H}},$$
+
+where `X` is an exposure. The paper contributes ten models in three groups.
+
+**Hollow fiber system model of tuberculosis (HFS-TB), day 14.** These are the
+paper's primary result. The same day-14 burdens were fitted against four PK/PD
+indices, and the paper printed each fitted equation on its figure:
+
+* `Srivastava_2016_amikacin_hfs_cmaxmic`: Cmax/MIC (Figure 4), the index the
+  paper selected (AIC -18.81, EC90 = Cmax/MIC 10.13).
+* `Srivastava_2016_amikacin_hfs_aucmic`: AUC0-24/MIC (Figure 5; AIC -9.448,
+  EC90 = 102.74).
+* `Srivastava_2016_amikacin_hfs_tmic`: %T>MIC (Figure 6A; AIC 8.55).
+* `Srivastava_2016_amikacin_hfs_cminmic`: Cmin/MIC (Figure 6B; AIC 28.34).
+
+**Static test tubes, *M. tuberculosis* H37Ra, day 7** (Figure 1):
+`Srivastava_2016_amikacin_mtb_ph68` (log-phase growth at pH 6.8) and
+`Srivastava_2016_amikacin_mtb_ph58` (semidormant bacilli at pH 5.8).
+
+**Static test tubes, MRSA ATCC 33591, 4 h** (Figure 2), used as a fast-growing
+surrogate for the pH question: `Srivastava_2016_amikacin_mrsa_ph73`,
+`Srivastava_2016_amikacin_mrsa_ph50`, `Srivastava_2016_streptomycin_mrsa_ph73`
+and `Srivastava_2016_streptomycin_mrsa_ph50`.
+
+All ten are algebraic. They have no ODE and no time dependence, and the exposure
+enters as a covariate. Where the paper's exposure is a ratio to the MIC, the
+model takes the absolute exposure and divides it by a fixed `mic` parameter, so
+the model can be re-targeted to a strain with a different MIC.
+
+* Citation: `r rxode2::rxode(readModelDb("Srivastava_2016_amikacin_hfs_cmaxmic"))$reference`
+* Article: <https://doi.org/10.1128/AAC.00961-16> (open access, PMC5038304)
+
+```{r load-models}
+stems <- c(
+  hfs_cmaxmic = "Srivastava_2016_amikacin_hfs_cmaxmic",
+  hfs_aucmic = "Srivastava_2016_amikacin_hfs_aucmic",
+  hfs_tmic = "Srivastava_2016_amikacin_hfs_tmic",
+  hfs_cminmic = "Srivastava_2016_amikacin_hfs_cminmic",
+  mtb_ph68 = "Srivastava_2016_amikacin_mtb_ph68",
+  mtb_ph58 = "Srivastava_2016_amikacin_mtb_ph58",
+  amk_mrsa_ph73 = "Srivastava_2016_amikacin_mrsa_ph73",
+  amk_mrsa_ph50 = "Srivastava_2016_amikacin_mrsa_ph50",
+  str_mrsa_ph73 = "Srivastava_2016_streptomycin_mrsa_ph73",
+  str_mrsa_ph50 = "Srivastava_2016_streptomycin_mrsa_ph50"
+)
+# Covariate carrying the exposure in each model.
+cov_of <- c(
+  hfs_cmaxmic = "CMAX_AMIKACIN", hfs_aucmic = "AUC_AMIKACIN",
+  hfs_tmic = "FTMIC_AMIKACIN", hfs_cminmic = "CMIN_AMIKACIN",
+  mtb_ph68 = "CONC_AMK_MGL", mtb_ph58 = "CONC_AMK_MGL",
+  amk_mrsa_ph73 = "CONC_AMK_MGL", amk_mrsa_ph50 = "CONC_AMK_MGL",
+  str_mrsa_ph73 = "CONC_STR_MGL", str_mrsa_ph50 = "CONC_STR_MGL"
+)
+mods <- lapply(stems, function(s) rxode2::rxode(readModelDb(s)))
+stopifnot(
+  identical(names(mods), names(cov_of)),
+  all(vapply(names(mods), function(k) identical(mods[[k]]$allCovs, cov_of[[k]]), logical(1)))
+)
+```
+
+# Population
+
+There are no patients. All data come from one laboratory strain of each organism.
+
+* ***M. tuberculosis* H37Ra (ATCC 25177).** The amikacin MIC was 0.5 mg/L by
+  broth and by Etest, each done twice, and the mutation frequency at 6x MIC was
+  2 x 10^-7. In the **test tubes**, day-4 log-phase bacilli in Middlebrook 7H9
+  broth (measured pH 6.8), or semidormant bacilli in broth acidified to pH 5.8
+  with citric acid, were incubated at 1.5 x 10^5 CFU/mL for 7 days. Amikacin
+  was tested at 0-8 mg/L in triplicate.
+* **HFS-TB.** 20 mL of log-phase bacilli at 10^6 CFU/mL were placed in the
+  peripheral compartment. Amikacin was infused over 30 min into the central
+  compartment so that the concentration-time profiles mimicked those in the
+  lungs of patients given 0 to 30 mg/kg/day. Six exposures were also given
+  every 48 h, and 30 mg/kg also twice daily, to break the collinearity between
+  the indices. Drug concentrations were measured on the first day and fitted
+  with a two-compartment model, from which Cmax, AUC0-24, %T>MIC and Cmin were
+  computed. The burden was cultured on days 3, 7, 14, 21 and 28, and the paper
+  modelled day 14, the day with the lowest AIC and the highest r^2 for every
+  index. Figures 4-6 plot 12 to 14 day-14 points. No amikacin-resistant
+  isolates arose.
+* **MRSA ATCC 33591.** The amikacin MIC was 0.25 mg/L and the streptomycin MIC
+  2 mg/L. Bacteria were incubated for 4 h with 0-2 mg/L of drug in
+  Mueller-Hinton broth at pH 7.3, or acidified to pH 5.0 with citric acid. The
+  experiment was run twice in triplicate.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Inhibitory sigmoid Emax model | n/a | Methods, 'Amikacin concentration effect studies' and 'PK and PD modeling'; equation printed on Figures 4-6 |
+| `mic`, *M. tuberculosis* H37Ra | 0.5 mg/L (FIXED) | Results, first sentence |
+| `mic`, MRSA amikacin / streptomycin | 0.25 / 2 mg/L (FIXED) | Results, MRSA paragraph |
+| HFS Cmax/MIC: `e0` / `emax` / `hill` / `ec50` | 6.88 / 6.85 / 1.19 / 1.60 | Figure 4 equation |
+| HFS AUC0-24/MIC: `e0` / `emax` / `hill` / `ec50` | 6.89 / 6.68 / 1.70 / 28.21 | Figure 5 equation |
+| HFS %T>MIC: `e0` / `emax` / `hill` / `ec50` | 5.31 / 5.15 / 3.23 / 22.36 | Figure 6A equation |
+| HFS Cmin/MIC: `e0` / `emax` / `hill` / `ec50` | 4.66 / 4.66 / 0.4 / 0.002 | Figure 6B equation |
+| Mtb pH 6.8: `emax` / `hill` / `ec50` | 5.39 / 2.96 / 0.99 | Results, Figure 1A paragraph |
+| Mtb pH 5.8: `emax` / `hill` / `ec50` | 4.87 / 5.88 / 0.58 | Results, Figure 1B paragraph |
+| MRSA amikacin pH 7.3: `emax` / `hill` / `ec50` | 2.34 / 0.94 / 0.12 | Results, Figure 2A |
+| MRSA amikacin pH 5.0: `emax` / `hill` / `ec50` | 2.92 / 2.70 / 1.68 | Results, Figure 2B |
+| MRSA streptomycin pH 7.3: `emax` / `hill` / `ec50` | 0.89 / 2.79 / 0.03 | Results, Figure 2C |
+| MRSA streptomycin pH 5.0: `emax` / `hill` / `ec50` | 0.32 / 1.89 / 0.03 | Results, Figure 2C |
+| `e0` of the six test-tube fits | 5.27, 4.85, 6.07, 6.87, 7.71, 6.99 | Not printed; digitised by the maintainers from the fitted curves of Figures 1A, 1B, 2A, 2B and 2C (see below) |
+| `addSd` (all ten) | 0 (FIXED) | Not reported; the paper gives r^2 and AIC only |
+| Published EC90, Cmax/MIC and AUC0-24/MIC | 10.13 and 102.74 | Results, Figure 4 and Figure 5 paragraphs |
+
+# Hollow fiber exposure-response (day 14)
+
+## The published EC90s follow from the packaged models
+
+The EC90 is the exposure at which the burden has fallen by 90% of `emax`. Each
+packaged model is inverted numerically at that level and compared with the
+EC90 printed in the Results. Both sides are deterministic, so the tolerance is
+just the rounding of the printed values.
+
+```{r solve-helper}
+# Solve one packaged model at a vector of absolute exposures.
+solve_at <- function(key, values) {
+  ev <- data.frame(id = seq_along(values), time = 0, evid = 0, amt = NA_real_)
+  ev[[cov_of[[key]]]] <- values
+  out <- suppressMessages(rxode2::rxSolve(mods[[key]], ev, returnType = "data.frame"))
+  stopifnot(nrow(out) == length(values), !anyNA(out$log_cfu))
+  out$log_cfu
+}
+mic_mtb <- 0.5
+ini_value <- function(key, nm) {
+  ini <- mods[[key]]$iniDf
+  v <- ini$est[ini$name == nm]
+  stopifnot(length(v) == 1)
+  v
+}
+```
+
+```{r ec90}
+ec90_of <- function(key, scale) {
+  e0 <- exp(ini_value(key, "le0"))
+  emax <- exp(ini_value(key, "lemax"))
+  target <- e0 - 0.9 * emax
+  uniroot(function(x) solve_at(key, x * scale) - target, c(1e-3, 1e4), tol = 1e-10)$root
+}
+ec90 <- tibble(
+  index = c("Cmax/MIC", "AUC0-24/MIC"),
+  model = c(ec90_of("hfs_cmaxmic", mic_mtb), ec90_of("hfs_aucmic", mic_mtb)),
+  published = c(10.13, 102.74)
+) |>
+  mutate(pct_diff = 100 * (model - published) / published)
+# Tight: a wrong digit in ec50 or hill moves the EC90 by several percent.
+stopifnot(all(abs(ec90$pct_diff) < 0.5))
+ec90 |>
+  mutate(across(c(model, published), ~ signif(.x, 5)), pct_diff = round(pct_diff, 2)) |>
+  rename("PK/PD index" = index, "EC90, packaged model" = model,
+         "EC90, Srivastava 2016" = published, "Difference (%)" = pct_diff) |>
+  knitr::kable()
+```
+
+## Replicating Figures 4, 5 and 6
+
+The points are the day-14 burdens digitised by the maintainers from each figure.
+The lines are the packaged models, solved at the absolute exposure (index x
+MIC). The dashed vertical lines mark the published EC90s.
+
+```{r hfs-data}
+obs <- bind_rows(
+  tibble(key = "hfs_cmaxmic",
+         x = c(0, 0.738, 1.292, 1.476, 2.695, 4.428, 9.502, 12.522, 25.461, 45.018, 52.871, 60.683),
+         y = c(6.836, 4.845, 3.938, 4.624, 2.059, 1.814, 0.708, 0.698, 0.708, 0, 0, 0)),
+  tibble(key = "hfs_aucmic",
+         x = c(0, 18.519, 25.780, 42.172, 47.054, 67.901, 126.657, 372.953, 587.037, 631.481, 744.444, 789.912),
+         y = c(6.844, 4.838, 3.942, 2.062, 4.625, 1.816, 0.708, 0.708, 0, 0, 0.710, 0)),
+  tibble(key = "hfs_tmic",
+         x = c(0, 0, 6.27, 14.41, 26.03, 31.13, 35.02, 66.6, 79.15, 99.97, 100),
+         y = c(6.82, 4.83, 3.928, 4.61, 1.806, 2.053, 0.692, 0, 0.692, 0.695, 0)),
+  tibble(key = "hfs_cminmic",
+         x = c(0, 0, 0, 0, 0, 0, 0.169, 0.303, 0.486, 0.530, 0.992, 1.328, 5.049, 7.700),
+         y = c(6.847, 4.843, 4.627, 3.939, 1.814, 0.697, 0, 0.697, 2.056, 0, 0.697, 0, 0, 0))
+)
+hfs <- tibble(
+  key = c("hfs_cmaxmic", "hfs_aucmic", "hfs_tmic", "hfs_cminmic"),
+  label = c("Figure 4: Cmax/MIC", "Figure 5: AUC0-24/MIC",
+            "Figure 6A: %T>MIC", "Figure 6B: Cmin/MIC"),
+  xmax = c(100, 1000, 100, 10),
+  scale = c(mic_mtb, mic_mtb, 1, mic_mtb)
+)
+curves <- lapply(seq_len(nrow(hfs)), function(i) {
+  h <- hfs[i, ]
+  x <- seq(0, h$xmax, length.out = 401)
+  tibble(key = h$key, x = x, log_cfu = solve_at(h$key, x * h$scale))
+}) |> bind_rows()
+lab <- setNames(hfs$label, hfs$key)
+curves$key <- factor(curves$key, levels = hfs$key)
+obs$key <- factor(obs$key, levels = hfs$key)
+```
+
+```{r fig-hfs, fig.height = 6.5, fig.cap = "Replicates Figures 4, 5, 6A and 6B of Srivastava 2016: day-14 M. tuberculosis burden in the HFS-TB against each PK/PD index."}
+ggplot(curves, aes(x, log_cfu)) +
+  geom_line() +
+  geom_point(data = obs, aes(x, y), shape = 1) +
+  geom_vline(data = tibble(key = factor(c("hfs_cmaxmic", "hfs_aucmic"), levels = hfs$key), x = c(10.13, 102.74)),
+             aes(xintercept = x), linetype = 2, colour = "grey40") +
+  facet_wrap(~key, scales = "free_x", labeller = as_labeller(lab)) +
+  coord_cartesian(ylim = c(0, 8)) +
+  labs(x = "PK/PD index", y = "M. tuberculosis burden (log10 CFU/mL)")
+```
+
+The digitised points are not an exact copy of the paper's data set: a point can
+hide under another one, and Figure 6B shows 14 points where Figure 4 shows 12.
+The r^2 values that the paper prints (above 0.99, 0.98, 0.89 and 0.53) are
+therefore not used as a check.
+
+## Each printed equation against its drawn curve
+
+A second, independent check compares the packaged parameters with samples that
+the maintainers read off each curve drawn in the paper's figures. Away from the
+markers, the drawn line can be read to about 0.03 log10 CFU/mL. For Figures 1
+and 2, `e0` was itself read off the same curves, so the check there confirms the
+printed `emax`, `hill` and `ec50` rather than `e0`.
+
+```{r curve-check}
+drawn <- bind_rows(
+  tibble(key = "hfs_cmaxmic", x = c(7, 15, 20, 35, 90), y = c(1.040, 0.487, 0.354, 0.199, 0.100)),
+  tibble(key = "hfs_aucmic", x = c(90, 200, 300, 500, 900), y = c(1.021, 0.444, 0.333, 0.266, 0.244)),
+  tibble(key = "hfs_tmic", x = c(2, 10, 20, 40, 50, 60, 90), y = c(5.848, 4.483, 2.846, 1.287, 0.945, 0.712, 0.380)),
+  tibble(key = "hfs_cminmic", x = c(0.7, 2, 3, 4, 6, 9), y = c(0.501, 0.354, 0.305, 0.275, 0.246, 0.206)),
+  tibble(key = "mtb_ph68", x = c(0.3, 0.4, 0.7, 1.2, 1.4, 1.6), y = c(5.111, 4.917, 3.861, 1.833, 1.319, 0.917)),
+  tibble(key = "mtb_ph58", x = c(0.3, 0.4, 0.45, 0.6, 0.7, 0.8), y = c(4.736, 4.347, 3.958, 2.222, 1.222, 0.611)),
+  tibble(key = "amk_mrsa_ph73", x = c(0.75, 1.5, 3, 5, 7), y = c(4.078, 3.923, 3.829, 3.798, 3.767)),
+  tibble(key = "amk_mrsa_ph50", x = c(0.6, 2.5, 3, 7.5), y = c(6.688, 4.688, 4.469, 4.000)),
+  tibble(key = "str_mrsa_ph73", x = 0.5, y = 6.82),
+  tibble(key = "str_mrsa_ph50", x = 0.5, y = 6.67)
+)
+# The x of every curve is the index (or concentration / MIC); convert to the
+# absolute exposure each model takes.
+scale_of <- c(
+  hfs_cmaxmic = mic_mtb, hfs_aucmic = mic_mtb, hfs_tmic = 1, hfs_cminmic = mic_mtb,
+  mtb_ph68 = mic_mtb, mtb_ph58 = mic_mtb, amk_mrsa_ph73 = 0.25, amk_mrsa_ph50 = 0.25,
+  str_mrsa_ph73 = 2, str_mrsa_ph50 = 2
+)
+stopifnot(all(vapply(names(scale_of)[scale_of != 1], function(k) ini_value(k, "mic") == scale_of[[k]], logical(1))))
+chk <- drawn |>
+  group_by(key) |>
+  mutate(model = solve_at(first(key), x * scale_of[[first(key)]])) |>
+  ungroup() |>
+  mutate(diff = model - y)
+dev <- chk |> group_by(key) |> summarise(n = n(), max_abs_diff = max(abs(diff)), .groups = "drop")
+dev_of <- setNames(dev$max_abs_diff, dev$key)
+stopifnot(
+  # Read to about 0.03 log10 from a raster figure; 0.06 allows for the steep
+  # part of the pH 5.8 curve, where one pixel spans more than 0.03.
+  all(dev_of[setdiff(names(dev_of), c("hfs_tmic", "hfs_cminmic"))] < 0.06),
+  # Figure 6B prints hill = 0.4 and ec50 = 0.002 to one significant figure.
+  dev_of[["hfs_cminmic"]] < 0.1,
+  # Figure 6A's drawn curve does not follow its printed equation (Errata).
+  dev_of[["hfs_tmic"]] > 0.3
+)
+dev |>
+  mutate(max_abs_diff = round(max_abs_diff, 3)) |>
+  rename("Model" = key, "Curve samples" = n, "Largest absolute difference from the drawn curve (log10 CFU/mL)" = max_abs_diff) |>
+  knitr::kable()
+```
+
+The Figure 6A curve is the one exception. The model, which follows the printed
+equation, lies up to about 0.5 log10 from the line drawn in the figure. Fitting
+the sigmoid separately to the drawn line and to the digitised data points shows
+which of the two the printed equation belongs to:
+
+```{r fig6a-refit}
+sig <- y ~ E0 - Em * x^h / (x^h + ec^h)
+fit_drawn <- nls(sig, data = filter(drawn, key == "hfs_tmic"),
+                 start = list(E0 = 6, Em = 6, h = 1.7, ec = 19))
+fit_points <- nls(sig, data = filter(obs, key == "hfs_tmic"),
+                  start = list(E0 = 5.3, Em = 5.1, h = 3.2, ec = 22))
+printed <- c(E0 = 5.31, Em = 5.15, h = 3.23, ec = 22.36)
+fits6a <- rbind(printed = printed, data_points = coef(fit_points), drawn_line = coef(fit_drawn))
+stopifnot(
+  # The digitised data points refit to the printed equation...
+  abs(coef(fit_points)[["E0"]] - 5.31) < 0.15,
+  abs(coef(fit_points)[["ec"]] - 22.36) < 1,
+  # ...while the drawn line has a clearly different E0 and Hill coefficient.
+  coef(fit_drawn)[["E0"]] > 5.8,
+  coef(fit_drawn)[["h"]] < 2.2
+)
+as.data.frame(round(fits6a, 2)) |>
+  tibble::rownames_to_column("source") |>
+  rename("Fitted to" = source, "E0" = E0, "Emax" = Em, "H" = h, "EC50 (%)" = ec) |>
+  knitr::kable()
+```
+
+The printed equation is the fit to the data, so the packaged model uses it.
+
+# Static test tubes (Figures 1 and 2)
+
+```{r fig-tubes, fig.height = 6, fig.cap = "Replicates Figures 1 and 2 of Srivastava 2016: test-tube concentration-effect curves for M. tuberculosis (7 days) and MRSA (4 h). Concentration is a multiple of each strain's MIC; the paper draws Figure 1 on a log2 axis."}
+tubes <- tibble(
+  key = c("mtb_ph68", "mtb_ph58", "amk_mrsa_ph73", "amk_mrsa_ph50", "str_mrsa_ph73", "str_mrsa_ph50"),
+  label = c("Fig 1A: M. tuberculosis, amikacin, pH 6.8", "Fig 1B: M. tuberculosis, amikacin, pH 5.8",
+            "Fig 2A: MRSA, amikacin, pH 7.3", "Fig 2B: MRSA, amikacin, pH 5.0",
+            "Fig 2C: MRSA, streptomycin, pH 7.3", "Fig 2C: MRSA, streptomycin, pH 5.0"),
+  xmin = c(0.25, 0.25, 0, 0, 0, 0),
+  xmax = c(4, 4, 8, 8, 1, 1)
+)
+tube_curves <- lapply(seq_len(nrow(tubes)), function(i) {
+  tb <- tubes[i, ]
+  x <- seq(tb$xmin, tb$xmax, length.out = 301)
+  tibble(label = tb$label, x = x, log_cfu = solve_at(tb$key, x * scale_of[[tb$key]]))
+}) |> bind_rows() |>
+  mutate(label = factor(label, levels = tubes$label))
+ggplot(tube_curves, aes(x, log_cfu)) +
+  geom_line() +
+  facet_wrap(~label, scales = "free_x", ncol = 2) +
+  coord_cartesian(ylim = c(0, 8)) +
+  labs(x = "Concentration (x MIC)", y = "Burden (log10 CFU/mL)")
+```
+
+For M. tuberculosis the EC50 is lower at pH 5.8 than at pH 6.8 (0.58 versus 0.99 x
+MIC) and the Emax is about the same. For MRSA, amikacin's EC50 rises 14-fold
+at pH 5.0, while streptomycin's Emax collapses from 0.89 to 0.32 log10 CFU/mL.
+These are the paper's conclusions about pH.
+
+# Why there is no NCA
+
+The packaged models contain no pharmacokinetics. The paper fitted a
+two-compartment model to the hollow-fiber drug concentrations only to compute
+each unit's exposure, and it reports none of that model's parameters. Every
+packaged model maps an exposure to a burden, so a PKNCA analysis would have
+nothing to act on. The checks above (EC90 inversion and the drawn-curve
+comparison) take its place. `PKNCA` is loaded only for consistency with the
+other articles.
+
+# Assumptions and deviations
+
+* **`e0` of the six test-tube fits was digitised.** The Results print Emax, the
+  Hill coefficient and EC50 for Figures 1 and 2, but not the drug-free burden.
+  The maintainers read it off the fitted curves:
+  * **Figures 1A and 1B:** a least-squares fit of `e0` to about 100 curve
+    samples, with the printed parameters fixed. Left free, the same fit returns
+    5.39 / 2.97 / 0.99 (1A) and 4.87 / 5.89 / 0.58 (1B), matching the printed
+    values.
+  * **Figures 2A and 2B:** the same approach.
+  * **Figure 2C:** the plateau of each line plus `emax` times the fractional
+    effect at 0.5 x MIC.
+
+  The figures are low-resolution raster images, so `e0` is uncertain by about
+  0.05 log10 CFU/mL.
+* **Fitted floor below zero for Mtb at pH 6.8.** With `e0` = 5.27 and `emax` =
+  5.39, the curve tends to -0.12 log10 CFU/mL at saturating concentration. The
+  paper's figure clips the curve at zero. The model keeps the fitted function.
+* **No residual error or variability.** The paper reports r^2 and AIC only.
+  `addSd` is fixed at 0 and there are no etas; the models are for typical-value
+  prediction.
+* **The HFS PK model is not packaged.** The paper reports only that a
+  two-compartment model described the central-compartment concentrations
+  (Figure 3, r^2 = 0.98), with no parameter values. To use the HFS models you
+  need an amikacin exposure from elsewhere. Note that the paper's EC90 is a
+  lung exposure target: its Discussion converts Cmax/MIC 10.13 to a serum
+  Cmax/MIC of about 70-90 by assuming a serum-to-bronchial-secretion ratio of
+  0.135.
+* **Absolute exposure plus `mic`.** The figures plot ratios to the MIC. The
+  models take absolute Cmax, AUC0-24, Cmin or concentration in mg/L (mg*h/L
+  for AUC) and divide by the MIC the paper reports for each strain. %T>MIC is
+  carried whole, in percent.
+* **Day 14 only.** The paper fitted every sampling day and published only the
+  day-14 fits. The kill slopes it quotes are linear regressions over 28 days,
+  not models: -0.11 log10 CFU/mL/day growth of the controls (printed with a
+  negative sign although the controls grew) and 0.23 log10 CFU/mL/day kill
+  across all regimens. They are not packaged.
+
+## Errata
+
+* **Figure 6A: the drawn curve does not follow the printed equation.** The
+  equation printed on the panel is E = 5.31 - 5.15 TMIC^3.23 / (TMIC^3.23 +
+  22.36^3.23). The line drawn beneath it starts at about 6.0 rather than 5.31,
+  and a fit to the drawn line gives E0 5.97, Emax 5.97, H 1.73, EC50 19.0.
+  An unweighted refit to the digitised data points returns 5.27 / 4.98 / 3.53 /
+  22.2. Those values are close to the printed equation, which suggests the
+  printed equation is the fit to the data and the drawn line is not. The
+  packaged model therefore uses the printed equation. Both refits are
+  asserted above.
+* **The Abstract and the Results differ slightly.** For Mtb at pH 5.8 the
+  Abstract gives Emax 4.88 (95% CI 4.46-5.22) and EC50 0.60 (0.50-0.66), while
+  the Results give 4.87 (4.39-5.35) and 0.58 (0.49-0.66). For pH 6.8 the
+  Abstract gives EC50 1.0 and the Results 0.99. The EC90 CI for Cmax/MIC is
+  7.73-12.48 in the Abstract and 7.76-12.48 in the Results. The models use the
+  Results values, which are given to more digits.
+* **The Sauton's-medium experiment does not match the Methods.** The Results
+  say that the lowest amikacin concentration, 0.03 mg/L, killed 5.70 log10
+  CFU/mL at pH 5.8. However, 0.03 mg/L is not among the Mtb concentrations
+  listed in the Methods (lowest 0.125 mg/L). That experiment was not fitted and
+  is not packaged.
+* **A typo in the streptomycin CI.** The confidence interval of the pH 5.0
+  streptomycin Hill coefficient is printed as a "5% CI".

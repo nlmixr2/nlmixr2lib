@@ -6052,6 +6052,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Gumbo_2026_ethambutol_hfs.R` (hollow-fiber M. kansasii day-by-day inhibitory sigmoid Emax on log10 CFU/mL and time-to-positivity, plus a quadratic resistant subpopulation).
 - **Notes:** Member of the `AUC_<DRUG>` family, which `AUC_EMPA`'s Notes declare extensible; INN spelled out, as for `AUC_FENEBRUTINIB` and `AUC_ACALABRUTINIB`. The absolute-AUC form (rather than an `AUCMIC_<DRUG>` ratio column) follows the `AUCMIC_TYLO` rule because the source reports the challenge-strain MIC (8 mg/L) and that MIC reproduces the paper's own index: the plotted HFS AUC0-24 values equal 8 x the printed AUC0-24/MIC values for all six regimens. Not a plasma AUC: a model that consumes a patient plasma ethambutol AUC (for example from `Gumbo_2026_ethambutol.R`) should say so in its covariate notes, because Gumbo 2026 compared the hollow-fiber exposures to cavity-centre rather than plasma AUCs.
 
+### AUC_AMIKACIN (**canonical for amikacin AUC over 0-24 h, as the numerator of the AUC0-24/MIC index**)
+- **Description:** Amikacin area under the concentration-time curve from 0 to 24 h (AUC0-24), supplied as a static exposure column to an exposure-response model that has no PK ODE of its own. In the founding model it is the AUC0-24 of the hollow-fiber central compartment, run to mimic amikacin concentration-time profiles in the lungs of tuberculosis patients; the model divides it by its own `mic` parameter to form the AUC0-24/MIC index.
+- **Units:** `mg*h/L`. Document per-model via `covariateData[[AUC_AMIKACIN]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for non-treated control records, where the sigmoid term vanishes and the burden equals the drug-free value. Founding-model exposures: AUC0-24/MIC 0 to about 800 against an MIC of 0.5 mg/L (about 0-400 mg*h/L).
+- **Source aliases:**
+  - `AUC0-24/MIC` (numerator) -- Srivastava 2016 Figure 5 x-axis and Results.
+- **Example models:** `Srivastava_2016_amikacin_hfs_aucmic.R` (Srivastava 2016 day-14 inhibitory sigmoid Emax exposure-response of amikacin against *M. tuberculosis* H37Ra in the hollow fiber system model of tuberculosis).
+- **Notes:** Member of the `AUC_<DRUG>` family; INN spelled out, as for `AUC_ETHAMBUTOL`. The absolute-AUC form rather than an `AUCMIC_<DRUG>` ratio follows the `AUCMIC_TYLO` rule because the source reports the challenge-strain MIC (0.5 mg/L). For an every-48-h schedule the founding paper still used the AUC over the first 24 h. Not a plasma AUC: a model that consumes a patient serum amikacin AUC should say in its notes how lung and serum exposure relate.
+
 ### AUC_RIF (**canonical for rifampicin plasma AUC over a 24 h dosing interval**)
 - **Description:** Per-subject (time-fixed) rifampicin plasma AUC over a 0-24 h once-daily dosing interval, used as an exposure covariate in exposure-response models. In Svensson 2020 it is the individual AUC0-24 on day 2 +/- 1 of treatment (before autoinduction is complete), predicted from the empirical Bayes estimates of the companion popPK model, and it reduces the hazard of death through an Emax function.
 - **Units:** `mg*h/L` (Svensson 2020). Kloprogge 2020 carries the column in `umol*h/L` because its PK data were molar; convert with the rifampicin molecular weight 822.94 g/mol (`AUC_umol = AUC_mg * 1000 / 822.94`). Each model's `covariateData[["AUC_RIF"]]$units` states which.
@@ -6154,6 +6165,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Yang_2026_APTM_cmaxmic.R` (Yang 2026 inhibitory sigmoid Emax PK/PD integration against *Mycoplasma gallisepticum* strain S6 in an intratracheal chicken infection model; `CMAX_APTM / mic` drives the signed 72 h change in lung log10 CFU/mL).
 - **Notes:** Specific scope -- APTM-specific. This is the first drug-specific member of a `CMAX_<DRUG>` family and is the parallel canonical that the `AUC_AMPH` and `AUCMIC_TYLO` entries direct a future Cmax/MIC-indexed antibacterial model to register rather than overloading an `AUC_<DRUG>` name; it is the peak-concentration twin of `AUC_APTM`, and the two drive the sibling models `Yang_2026_APTM_cmaxmic.R` and `Yang_2026_APTM_aucmic.R` respectively. Distinct from `CMAX_M1` (an empirical-Bayes month-1 peak derived from an upstream population PK model, not tied to a named drug) and from `PRED_CMAX_FREE` (the peak of a *co-medication* rather than of the modelled drug). Distinct from the `CONC_<DRUG>_<UNITS>` family, which carries an instantaneous concentration driving a mechanism-based kill-rate model: a peak concentration is a summary exposure metric, not a time course. A future APTM model using a different exposure metric (Ctrough, T>MIC, or a per-interval steady-state AUC) should register a parallel canonical rather than overload this name.
 
+### CMAX_AMIKACIN (**canonical for amikacin peak concentration, as the numerator of the Cmax/MIC index**)
+- **Description:** Amikacin peak concentration (Cmax) of one dosing interval, supplied as a static exposure column to an exposure-response model that has no PK ODE of its own. In the founding model it is the Cmax of the hollow-fiber central compartment, run to mimic amikacin concentration-time profiles in the lungs of tuberculosis patients; the model divides it by its own `mic` parameter to form the Cmax/MIC index.
+- **Units:** `mg/L`. Document per-model via `covariateData[[CMAX_AMIKACIN]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for non-treated control records, where the sigmoid term vanishes and the burden equals the drug-free value. Founding-model exposures: Cmax/MIC 0 to about 60 against an MIC of 0.5 mg/L (about 0-30 mg/L).
+- **Source aliases:**
+  - `Cmax/MIC`, `peak concentration (Cmax)-to-MIC ratio` (numerator) -- Srivastava 2016 Figure 4 x-axis, Abstract and Results.
+- **Example models:** `Srivastava_2016_amikacin_hfs_cmaxmic.R` (Srivastava 2016 day-14 inhibitory sigmoid Emax exposure-response of amikacin against *M. tuberculosis* H37Ra in the hollow fiber system model of tuberculosis).
+- **Notes:** Member of the `CMAX_<DRUG>` family (`CMAX_APTM`); INN spelled out. Absolute form plus a model `mic` parameter because the source reports the challenge-strain MIC (0.5 mg/L), per the `AUCMIC_TYLO` rule. The founding paper's EC90 (Cmax/MIC 10.13) is a lung-exposure target; its Discussion converts it to a serum Cmax/MIC of about 70-90 using a serum-to-bronchial-secretion ratio of 0.135, so do not feed a serum Cmax into the founding model without that conversion.
+
 ### CMIN_ARI (**canonical for model-predicted minimum aripiprazole plasma concentration proximate to a clinical event**)
 - **Description:** Individual model-predicted minimum (trough) aripiprazole plasma concentration at the time proximate to an impending-relapse event or to censoring, generated by applying a population PK model to the subject's recorded dosing history together with that subject's empirical-Bayes PK parameters. Continuous; time-invariant per subject (one value, read at the event / censoring time). Used as the exposure driver of a downstream time-to-event exposure-response model.
 - **Units:** ng/mL (document per-model via `covariateData[[CMIN_ARI]]$units` if a different concentration unit is reported).
@@ -6165,6 +6187,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
   - `Cmin` -- the printed symbol in Wang 2022 Figures 5 and 6.
 - **Example models:** `Wang_2022_aripiprazole_relapse.R` (exponential time-to-event model of impending relapse in schizophrenia; the dichotomy at 95 ng/mL multiplies the hazard by exp(-1.484) = 1/4.41, and the upstream population PK model that generates the column is `modellib('Wang_2022_aripiprazole')`).
 - **Notes:** Specific scope because the value is intrinsically tied to aripiprazole and to the upstream population PK model used to derive it; document that upstream model in each model's `covariateData[[CMIN_ARI]]$notes`, along with the window over which the trough is read (Wang 2022 uses 24 h after the preceding oral dose when the event falls in the first AOM dose period and 672 h after the preceding AOM dose thereafter). This is the first member of a `CMIN_<DRUG>` family, registered rather than overloading a neighbouring canonical exactly as the `AUC_HTBZ` Notes ("a future model that uses one of those metrics should register a `CMAX` / `CMIN`-family entry or an `AUC`-family sibling rather than overloading this canonical") and the `CMAX_APTM` Notes ("a future APTM model using a different exposure metric (Ctrough, T>MIC, or a per-interval steady-state AUC) should register a parallel canonical") direct. It is the trough twin of the registered `CMAX_<DRUG>` family and a sibling of `CAV` (dosing-interval average), `CMAX_M1` (empirical-Bayes month-1 peak) and the `CSS_<DRUG>` family (steady-state average from an upstream PK fit); the distinguishing feature is that a Cmin is the extreme of the interval rather than its average, which is what makes it the natural driver when efficacy is expected to fail at the end of a long dosing interval. Distinct from the `CONC_<DRUG>_<UNITS>` family, which carries an instantaneous concentration time course into a mechanism-based model rather than a summary exposure metric. A placebo record is NOT automatically 0: Wang 2022 predicted nonzero troughs for placebo subjects because washout of pre-randomisation aripiprazole was incomplete (minimum 0.000329 ng/mL), so a model reusing this canonical must state whether placebo records carry a predicted or a zeroed value.
+
+### CMIN_AMIKACIN (**canonical for amikacin trough concentration, as the numerator of the Cmin/MIC index**)
+- **Description:** Amikacin trough concentration (Cmin) at the end of a dosing interval, supplied as a static exposure column to an exposure-response model that has no PK ODE of its own. In the founding model it is the trough of the hollow-fiber central compartment; the model divides it by its own `mic` parameter to form the Cmin/MIC index.
+- **Units:** `mg/L`. Document per-model via `covariateData[[CMIN_AMIKACIN]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for non-treated control records. Founding-model exposures: Cmin/MIC 0 to about 8 against an MIC of 0.5 mg/L.
+- **Source aliases:**
+  - `Cmin/MIC`, `Trough/MIC` (numerator) -- Srivastava 2016 Results and Figure 6B x-axis.
+- **Example models:** `Srivastava_2016_amikacin_hfs_cminmic.R` (Srivastava 2016 day-14 inhibitory sigmoid Emax exposure-response of amikacin against *M. tuberculosis* H37Ra in the hollow fiber system model of tuberculosis).
+- **Notes:** Member of the `CMIN_<DRUG>` family (`CMIN_ARI`); INN spelled out. Absolute form plus a model `mic` parameter because the source reports the challenge-strain MIC (0.5 mg/L). The founding fit is the weakest of its paper's four PK/PD indices (r^2 = 0.53) and has EC50 = 0.002, so almost any non-zero trough predicts near-maximal kill; it is packaged for completeness, not as a dosing target.
 
 ### VC_INDIV (**canonical for per-subject empirical-Bayes central volume of distribution**)
 - **Description:** Individual point estimate of the modelled drug's central volume of distribution, supplied per-subject as a fixed data column. Companion to `CL_INDIV` in sequential PK->PD encodings.
@@ -7115,6 +7148,28 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Clewe_2018_TB_MTP_GPDI_invitro.R` (static ethambutol concentration driving the multistate-TB kill effects; tested concentrations 0.0078, 0.031, 0.125, 0.5, 2, 8, 32 mg/L per Figure 1).
 - **Notes:** Specific scope because the value is bound to ethambutol and the in-vitro experimental design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`).
 
+### CONC_AMK_MGL (**canonical for static in-vitro amikacin concentration driving an antibacterial PD model**)
+- **Description:** Static (time-invariant) amikacin concentration in the growth medium of an in-vitro concentration-effect experiment, supplied as an exogenous covariate. Applied experimental concentration in the in-vitro matrix; distinct from `Cc` and from the hollow-fiber exposure indices `CMAX_AMIKACIN` / `AUC_AMIKACIN`.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free controls.
+- **Source aliases:**
+  - `Amikacin (xMIC)`, `Amikacin concentration (xMIC)` -- Srivastava 2016 Figures 1 and 2 x-axes, which plot this concentration divided by the strain MIC.
+- **Example models:** `Srivastava_2016_amikacin_mtb_ph68.R`, `Srivastava_2016_amikacin_mtb_ph58.R` (day-7 *M. tuberculosis* H37Ra burden at pH 6.8 and 5.8, MIC 0.5 mg/L), `Srivastava_2016_amikacin_mrsa_ph73.R`, `Srivastava_2016_amikacin_mrsa_ph50.R` (4-h MRSA ATCC 33591 burden at pH 7.3 and 5.0, MIC 0.25 mg/L).
+- **Notes:** Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family; `AMK` is the standard amikacin abbreviation. Each founding model divides the column by its own strain `mic`, because the source fitted against concentration as a multiple of the MIC.
+
+### CONC_STR_MGL (**canonical for static in-vitro streptomycin concentration driving an antibacterial PD model**)
+- **Description:** Static (time-invariant) streptomycin concentration in the growth medium of an in-vitro concentration-effect experiment, supplied as an exogenous covariate. Applied experimental concentration in the in-vitro matrix; distinct from `Cc`.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for drug-free controls.
+- **Source aliases:**
+  - `Streptomycin concentration (xMIC)` -- Srivastava 2016 Figure 2C x-axis, which plots this concentration divided by the strain MIC.
+- **Example models:** `Srivastava_2016_streptomycin_mrsa_ph73.R`, `Srivastava_2016_streptomycin_mrsa_ph50.R` (4-h MRSA ATCC 33591 burden at pH 7.3 and 5.0, MIC 2 mg/L).
+- **Notes:** Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family; `STR` is the abbreviation used for streptomycin in susceptibility testing. Each founding model divides the column by its own strain `mic`.
+
 ### CONC_VAN_MGL (**canonical for unbound vancomycin concentration driving an antibacterial PD model**)
 - **Description:** Unbound vancomycin concentration driving a bacterial-kill PD effect and, where the model carries one, an adaptive-resistance transition. Supplied as an exogenous covariate rather than derived from a PK state. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied or externally-predicted concentration presented to an in-vitro-derived PD model.
 - **Units:** mg/L
@@ -7742,6 +7797,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
   - `%T > MIC (combine)` -- printed name in Wei 2026 Table 5 (both the plasma and lung blocks), Table 6 and Materials and methods, 'Analysis of antibacterial effects and fitting of PK/PD', which defines it as "the proportion of time within 24 h that the drug concentration exceeded MIC (combine)", computed in WinNonlin. Wei 2026 reports plasma values of 20.13-63.89% and lung values of 29.00-99.55% across the six combination arms, with EC50 estimates of 35.748% (plasma) and 50.059% (lung).
 - **Example models:** `Wei_2026_cefquinome_enrofloxacin_plasma_tmic.R`, `Wei_2026_cefquinome_enrofloxacin_lung_tmic.R` (Wei 2026 inhibitory sigmoid Emax PK/PD integration for cefquinome plus a fixed 20 mg/kg enrofloxacin background against *Klebsiella pneumoniae* CLS2 in a chick pneumonia model).
 - **Notes:** Specific scope -- cefquinome-specific. The threshold is MIC(combine), not the cefquinome monotherapy MIC; Wei 2026 compared the two directly and found that the monotherapy-MIC version of %T > MIC placed the bactericidal ENR20 + CEQ10-split arm below the conventional 40% cephalosporin threshold, which is why all its fitting uses MIC(combine). See the `AUCMIC_CEFQ` Notes for the arm-by-arm MIC(combine) reconstruction. This is the index Wei 2026 selected as its primary result: the plasma fit has the highest R^2 (0.953) and lowest AIC (14.695) of the six in Table 6, and its 3 log10 CFU/mL target of 37.062% is the paper's headline PK/PD breakpoint.
+
+### FTMIC_AMIKACIN (**canonical for the amikacin percentage-of-interval-above-MIC PK/PD index**)
+- **Description:** Percentage of the dosing interval during which the amikacin concentration exceeds the MIC of the challenge strain (%T>MIC), supplied to an inhibitory sigmoid Emax exposure-response model. A duration statistic already expressed relative to the MIC, so it is carried whole with no `mic` parameter.
+- **Units:** percent (0-100), the scale of the fitted EC50. Document per-model via `covariateData[[FTMIC_AMIKACIN]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for non-treated control records.
+- **Source aliases:**
+  - `%TMIC`, `% time amikacin concentration persisted above MIC` -- Srivastava 2016 Results and Figure 6A x-axis.
+- **Example models:** `Srivastava_2016_amikacin_hfs_tmic.R` (Srivastava 2016 day-14 inhibitory sigmoid Emax exposure-response of amikacin against *M. tuberculosis* H37Ra in the hollow fiber system model of tuberculosis).
+- **Notes:** Member of the `FTMIC_<DRUG>` family (`FTMIC_TZP`, `FTMIC_CEFQ`); INN spelled out. The founding threshold is the H37Ra MIC of 0.5 mg/L.
 
 ### CP_MILTEFOSINE_UGML (**canonical for instantaneous miltefosine plasma concentration as a time-varying PD driver**)
 - **Description:** Instantaneous plasma concentration of miltefosine (hexadecylphosphocholine; oral alkylphosphocholine antileishmanial) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only antiparasitic kill-rate models that consume an upstream miltefosine population PK trajectory as input because the source analysis was a sequential PK-then-PD fit with the PK model fixed from a previously published popPK analysis.

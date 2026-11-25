@@ -326,6 +326,22 @@ navbar:
         href: articles/Tod_1998_amikacin.html
       - text: "Amikacin (vanderVeer 2025)"
         href: articles/vanderVeer_2025_amikacin.html
+      - text: "Amikacin hfs aucmic (Srivastava 2016)"
+        href: articles/Srivastava_2016_amikacin.html
+      - text: "Amikacin hfs cmaxmic (Srivastava 2016)"
+        href: articles/Srivastava_2016_amikacin.html
+      - text: "Amikacin hfs cminmic (Srivastava 2016)"
+        href: articles/Srivastava_2016_amikacin.html
+      - text: "Amikacin hfs tmic (Srivastava 2016)"
+        href: articles/Srivastava_2016_amikacin.html
+      - text: "Amikacin mrsa ph50 (Srivastava 2016)"
+        href: articles/Srivastava_2016_amikacin.html
+      - text: "Amikacin mrsa ph73 (Srivastava 2016)"
+        href: articles/Srivastava_2016_amikacin.html
+      - text: "Amikacin mtb ph58 (Srivastava 2016)"
+        href: articles/Srivastava_2016_amikacin.html
+      - text: "Amikacin mtb ph68 (Srivastava 2016)"
+        href: articles/Srivastava_2016_amikacin.html
       - text: "Aminocaproic acid (Stricker 2015)"
         href: articles/Stricker_2015_aminocaproic_acid.html
       - text: "AminocaproicAcid (Stricker 2013)"
@@ -7728,6 +7744,10 @@ navbar:
         href: articles/Parmar_2023_spectinamides_pbpk.html
       - text: "Spironolactone qsp (Meid 2024)"
         href: articles/Meid_2024_spironolactone_qsp.html
+      - text: "Streptomycin mrsa ph50 (Srivastava 2016)"
+        href: articles/Srivastava_2016_amikacin.html
+      - text: "Streptomycin mrsa ph73 (Srivastava 2016)"
+        href: articles/Srivastava_2016_amikacin.html
       - text: "Sucrose rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Sudapyridine (Kong 2025)"
@@ -11757,6 +11777,7 @@ articles:
   - articles/Spinosa_2026_bispecific_mpbpk
   - articles/Sridharan_2019_primaquine
   - articles/Srimani_2022_ixazomib
+  - articles/Srivastava_2016_amikacin
   - articles/Staatz_2005_gentamicin_vancomycin
   - articles/Stachanow_2023_hydrocortisone
   - articles/Stader_2021_bictegravir_ddi_pbpk
