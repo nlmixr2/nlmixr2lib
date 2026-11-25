@@ -2640,8 +2640,12 @@ navbar:
         href: articles/Vucicevic_2025_efavirenz.html
       - text: "Efavirenz (Vujkovic 2018)"
         href: articles/Vujkovic_2018_efavirenz.html
+      - text: "Efavirenz human (Srinivas 2019)"
+        href: articles/Srinivas_2019_efavirenz.html
       - text: "Efavirenz invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
+      - text: "Efavirenz monkey (Srinivas 2019)"
+        href: articles/Srinivas_2019_efavirenz.html
       - text: "Efineptakin alfa (Jeon 2025)"
         href: articles/Jeon_2025_efineptakin_alfa.html
       - text: "Efineptakin alfa (Park 2025)"
@@ -11757,6 +11761,7 @@ articles:
   - articles/Spinosa_2026_bispecific_mpbpk
   - articles/Sridharan_2019_primaquine
   - articles/Srimani_2022_ixazomib
+  - articles/Srinivas_2019_efavirenz
   - articles/Staatz_2005_gentamicin_vancomycin
   - articles/Stachanow_2023_hydrocortisone
   - articles/Stader_2021_bictegravir_ddi_pbpk
