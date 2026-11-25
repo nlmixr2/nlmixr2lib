@@ -2210,6 +2210,8 @@ navbar:
         href: articles/Cosson_2025_crovalimab.html
       - text: "CyaaE7 (ParraGuillen 2013)"
         href: articles/ParraGuillen_2013_tumor_immunotherapy.html
+      - text: "Cyadox pkpd index (Yan 2017)"
+        href: articles/Yan_2017_cyadox.html
       - text: "Cyanide pbpk (Harada 2025)"
         href: articles/Harada_2025_cyanide_pbpk.html
       - text: "Cyclophosphamide (Ahmed 2020)"
@@ -13617,6 +13619,7 @@ articles:
   - articles/Yamamoto_2017b_cns_distribution
   - articles/Yamamoto_2023_tominersen
   - articles/Yamazaki_2008_crizotinib_mouse
+  - articles/Yan_2017_cyadox
   - articles/Yan_2019_benralizumab
   - articles/Yan_2022_inebilizumab
   - articles/Yan_2023_tafolecimab

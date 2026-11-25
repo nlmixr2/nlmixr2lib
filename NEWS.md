@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2017 danofloxacin PK/PD index ([doi:10.3389/fmicb.2017.00926](https://doi.org/10.3389/fmicb.2017.00926)) -- chickens infected with *Mycoplasma gallisepticum*, lung AUC24/MIC sigmoid Emax.
+- Add Yan 2017 cyadox ex vivo PK/PD ([doi:10.1038/s41598-017-03970-9](https://doi.org/10.1038/s41598-017-03970-9)) -- pig ileum fluid challenged with *Clostridium perfringens*.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
