@@ -3550,6 +3550,10 @@ navbar:
         href: articles/Goulooze_2022_finerenone_uacr_egfr.html
       - text: "Finerenone uacr (Snelder 2020)"
         href: articles/Snelder_2020_finerenone.html
+      - text: "Fingolimod arr (Lee 2013)"
+        href: articles/Lee_2013_fingolimod.html
+      - text: "Fingolimod lymphocytes (Lee 2013)"
+        href: articles/Lee_2013_fingolimod.html
       - text: "Fitusiran mpbpk human (Sten 2023)"
         href: articles/Sten_2023_galnacSirna.html
       - text: "Fitusiran mpbpk monkey (Sten 2023)"
@@ -11695,6 +11699,7 @@ articles:
   - articles/Leding_2026_tbaj587
   - articles/Lee_2011_parkinson_progression
   - articles/Lee_2013_colistin
+  - articles/Lee_2013_fingolimod
   - articles/Lee_2015_sumatriptan
   - articles/Lee_2016_raltegravir
   - articles/Lee_2017_doripenem

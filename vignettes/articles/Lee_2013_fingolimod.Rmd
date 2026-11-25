@@ -1,0 +1,353 @@
+---
+title: "Fingolimod lymphocyte count and relapse rate (Lee 2013)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fingolimod lymphocyte count and relapse rate (Lee 2013)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Lee and Wang (US FDA) asked whether a fingolimod dose below the approved
+0.5 mg once daily would still reduce relapses in relapsing-remitting multiple
+sclerosis (RRMS). The phase III data held too little information at low
+exposure to estimate the shape of the exposure-relapse relationship directly,
+so the authors used the peripheral lymphocyte count, the pharmacodynamic
+marker of fingolimod's mechanism, as a bridge. Two models were fitted
+separately in SAS PROC NLMIXED and then chained:
+
+* `Lee_2013_fingolimod_lymphocytes` -- Model 1: the steady-state lymphocyte
+  count as a sigmoid Imax function of the steady-state pre-dose
+  fingolimod-phosphate concentration (`CTROUGH`).
+* `Lee_2013_fingolimod_arr` -- Model 2: the number of confirmed relapses over
+  each patient's time on study, negative binomial, with the log annualized
+  relapse rate (ARR) a sigmoid function of the steady-state lymphocyte count
+  (`LYMPH_ABS`).
+
+Neither model has a time course or a between-subject random effect: each
+patient contributes one averaged lymphocyte count and one relapse count.
+
+* Citation: `r rxode2::rxode(readModelDb("Lee_2013_fingolimod_arr"))$reference`
+* Article: <https://doi.org/10.1038/psp.2013.44> (open access, PMC3828008)
+
+# Population
+
+Data came from two double-blind phase III studies in RRMS: study 1, 24 months
+of fingolimod 0.5 or 1.25 mg once daily against placebo; study 2, 12 months of
+fingolimod 0.5 or 1.25 mg against intramuscular interferon beta-1a once weekly.
+About 2,500 patients aged 18 to 55 years were included; those with evaluable
+pharmacokinetics were pooled. The paper does not report sex, weight or race
+distributions. Lymphocyte counts reached steady state by month 2, so each
+patient's 3 to 6 counts after month 2 were averaged (Methods "Data"; Results).
+
+```{r population}
+readModelDb("Lee_2013_fingolimod_lymphocytes")()$population[c("n_subjects", "n_studies", "age_range", "disease_state")]
+```
+
+# Source trace
+
+Table 2 and the Model 1 and Model 2 equations are printed as images in the
+article; the supplement is the authors' SAS code.
+
+| Parameter / equation | Value | Source location |
+|---|---|---|
+| Model 1: `Y ~ N(mu, sigma^2)`, `mu = beta0 * (1 - f(conc))` | -- | Methods, Model 1 equations |
+| Model 1: `f = 0` placebo; sigmoid Imax fingolimod; `beta1` interferon | -- | Methods, Model 1 equations |
+| `lrbase` (beta0, placebo mean) | log(1.76) 10^9/L | Table 2, Model 1 |
+| `e_trt_ifnb1a_rbase` (beta1) | 0.04 | Table 2, Model 1 |
+| `logitimax` (Emax, logit scale) | 1.38 -> Imax 0.799 | Table 2, Model 1; logit transform in Methods and supplement (`ltImax`) |
+| `lic50` (EC50) | log(0.28) ng/mL | Table 2, Model 1 |
+| `lhill` (h) | log(1.64) | Table 2, Model 1 |
+| `addSd` (sigma) | 0.35 10^9/L | Table 2, Model 1 (labelled sigma^2); SD per supplement code (0.348) |
+| Model 2: `Y ~ NB(mu, k)`, `log(mu) = beta0 * (1 - f(lymph)) + log(t)` | -- | Methods, Model 2 equations |
+| Model 2: `f = IEmax * L^h / (EL50^h + L^h)` | -- | Methods, Model 2 equations |
+| `larr0` (beta0) | log(0.20) relapses/year | Table 2, Model 2 'ARR at lymphocyte count = 0' |
+| `lic50` (EL50) | log(0.9) 10^9/L | Table 2, Model 2 |
+| `imax` (IEmax) | 0.5 | Table 2, Model 2 |
+| `lhill` (h) | log(16.6) | Table 2, Model 2 |
+| `lovdp` (k) | log(0.7) | Table 2, Model 2; NB2 form from the supplement log-likelihood |
+
+# Model 1: lymphocyte count against fingolimod-phosphate
+
+The typical steady-state lymphocyte count is solved over the concentration
+range of Figure 3. The points are the decile medians of the observed counts,
+digitised by the maintainers from Figure 3.
+
+```{r model1}
+mod_lym <- readModelDb("Lee_2013_fingolimod_lymphocytes")
+conc_grid <- c(0, seq(0.01, 10, length.out = 300))
+d_lym <- data.frame(id = seq_along(conc_grid), time = 0, evid = 0,
+                    CTROUGH = conc_grid, TRT_IFNB1A = 0)
+s_lym <- rxode2::rxSolve(mod_lym, d_lym, returnType = "data.frame")
+
+fig3_obs <- data.frame(
+  conc = c(0, 0.80, 1.07, 1.25, 1.45, 1.75, 2.22, 2.72, 3.15, 3.55, 4.90),
+  lymph = c(1.75, 0.55, 0.49, 0.49, 0.46, 0.44, 0.43, 0.44, 0.38, 0.34, 0.33)
+)
+
+ggplot(s_lym, aes(CTROUGH, steady_state_lymphocyte_count)) +
+  geom_line() +
+  geom_point(data = fig3_obs, aes(conc, lymph)) +
+  coord_cartesian(ylim = c(0, 2)) +
+  labs(x = "Fingolimod-phosphate steady-state trough (ng/mL)",
+       y = expression("Lymphocytes (" * 10^9 * "/L)"),
+       caption = "Replicates Figure 3 of Lee 2013 (typical value; points digitised from the figure).")
+```
+
+The two readings of the mixed-scale Table 2 settle here. The logit-scale Emax
+gives the high-concentration plateau `1.76 * (1 - 0.799) = 0.35`, and the
+natural-scale EC50 of 0.28 ng/mL gives the steep fall below 1 ng/mL. These are
+typical-value (deterministic) predictions, so the checks are tight.
+
+```{r model1-check}
+typ_lym <- function(conc, ifn = 0) {
+  d <- data.frame(id = seq_along(conc), time = 0, evid = 0,
+                  CTROUGH = conc, TRT_IFNB1A = ifn)
+  rxode2::rxSolve(mod_lym, d, returnType = "data.frame")$steady_state_lymphocyte_count
+}
+chk1 <- data.frame(
+  point = c("Placebo (conc 0)", "0.8 ng/mL", "10 ng/mL (plateau)", "Interferon beta-1a"),
+  model = c(typ_lym(0), typ_lym(0.8), typ_lym(10), typ_lym(0, ifn = 1)),
+  figure3 = c(1.75, 0.55, 0.36, NA)
+)
+knitr::kable(chk1, digits = 3)
+stopifnot(
+  abs(chk1$model[1] - 1.76) < 1e-6,
+  abs(chk1$model[2] - 0.55) < 0.05,
+  abs(chk1$model[3] - 0.36) < 0.03,
+  abs(chk1$model[4] - 1.76 * (1 - 0.04)) < 1e-6
+)
+```
+
+# Model 2: relapse rate against lymphocyte count
+
+The annualized relapse rate is read from `arr`; the observation
+`relapse_count` is `arr * t` with `t` in years on study, so a record at
+`time = 1` returns the ARR itself.
+
+```{r model2}
+mod_arr <- readModelDb("Lee_2013_fingolimod_arr")
+lym_grid <- seq(0, 5, length.out = 300)
+typ_arr <- function(lymph) {
+  d <- data.frame(id = seq_along(lymph), time = 1, evid = 0, LYMPH_ABS = lymph)
+  rxode2::rxSolve(mod_arr, d, returnType = "data.frame")$arr
+}
+s_arr <- data.frame(lymph = lym_grid, arr = typ_arr(lym_grid))
+
+fig4_obs <- data.frame(
+  lymph = c(0.20, 0.28, 0.33, 0.40, 0.47, 0.58, 0.90, 1.40, 1.75, 2.35),
+  arr = c(0.200, 0.210, 0.230, 0.180, 0.185, 0.203, 0.320, 0.447, 0.418, 0.437)
+)
+
+ggplot(s_arr, aes(lymph, arr)) +
+  geom_line() +
+  geom_point(data = fig4_obs) +
+  coord_cartesian(ylim = c(0, 0.5)) +
+  labs(x = expression("Steady-state lymphocytes (" * 10^9 * "/L)"),
+       y = "Annualized relapse rate",
+       caption = "Replicates Figure 4 of Lee 2013 (typical value; points digitised from the figure).")
+```
+
+The fitted curve of Figure 4 has plateaus of about 0.203 below 0.7 x 10^9/L
+and 0.441 above 1.2 x 10^9/L. The model reproduces both, which confirms that
+Table 2 prints `beta0` back-transformed (`exp(beta0)` = 0.20) and that the
+upper plateau is `0.20^(1 - IEmax)`.
+
+```{r model2-check}
+plateaus <- typ_arr(c(0.3, 2))
+plateaus
+stopifnot(
+  abs(plateaus[1] - 0.203) < 0.01,
+  abs(plateaus[2] - 0.441) < 0.01,
+  abs(plateaus[2] - 0.20^0.5) < 1e-4
+)
+```
+
+# Bridging exposure to relapse rate
+
+The paper's deliverable chains the two models: the lymphocyte count predicted
+from exposure by Model 1 is fed to Model 2. The exposure boxplots of Figure 5
+give the steady-state fingolimod-phosphate distribution at each dose; the
+maintainers digitised a median of about 1.25 ng/mL (interquartile range
+1.05-1.50) at 0.5 mg and 3.15 ng/mL (2.60-3.65) at 1.25 mg, and model them as
+log-normal. As in the paper, the 0.25 mg distribution is the 0.5 mg one halved
+(dose proportionality, same variability).
+
+```{r bridge-curve}
+s_bridge <- s_lym |>
+  dplyr::transmute(conc = CTROUGH, lymph = steady_state_lymphocyte_count) |>
+  dplyr::mutate(arr = typ_arr(lymph))
+
+ggplot(s_bridge, aes(conc, arr)) +
+  geom_line() +
+  coord_cartesian(ylim = c(0, 0.6)) +
+  labs(x = "Fingolimod-phosphate steady-state trough (ng/mL)",
+       y = "Annualized relapse rate",
+       caption = "Replicates the typical-value curve of Figure 5 of Lee 2013.")
+```
+
+The typical-value curve is flat at 0.20 across all three doses' exposure
+ranges, so the typical patient's relapse rate cannot tell 0.25 mg from 0.5 mg.
+The paper's Table 1 prediction of 0.26 at 0.25 mg instead comes from averaging
+over patients: the supplement code draws each patient's exposure, predicts the
+lymphocyte count, adds Model 1's residual variability
+(`rannor * 0.348`), truncates to 0.11-5.15 x 10^9/L, and averages Model 2's
+ARR. Patients whose count lands above about 0.9 x 10^9/L relapse at the
+higher rate, and at 0.25 mg more of them do.
+
+The same expectation is computed here by quadrature rather than by random
+draws, so it does not depend on a seed: 200 exposure quantiles per dose times
+50 quantiles of the residual distribution.
+
+```{r table1}
+addSd <- rxode2::rxode(mod_lym)$theta[["addSd"]]
+expo <- data.frame(
+  arm = c("0.25 mg", "0.5 mg", "1.25 mg"),
+  median = c(1.25 / 2, 1.25, 3.15),
+  q1 = c(1.05 / 2, 1.05, 2.60),
+  q3 = c(1.50 / 2, 1.50, 3.65)
+) |>
+  dplyr::mutate(sdlog = (log(q3) - log(q1)) / (2 * qnorm(0.75)))
+
+p_conc <- (seq_len(200) - 0.5) / 200
+p_eps <- (seq_len(50) - 0.5) / 50
+
+expected_arr <- function(lymph_pred) {
+  grid <- expand.grid(lymph = lymph_pred, eps = qnorm(p_eps) * addSd)
+  lymph <- pmin(pmax(grid$lymph + grid$eps, 0.11), 5.15)
+  mean(typ_arr(lymph))
+}
+
+arms <- lapply(seq_len(nrow(expo)), function(i) {
+  conc <- qlnorm(p_conc, log(expo$median[i]), expo$sdlog[i])
+  data.frame(arm = expo$arm[i], value = expected_arr(typ_lym(conc)))
+})
+arms <- c(arms, list(
+  data.frame(arm = "Placebo", value = expected_arr(typ_lym(0))),
+  data.frame(arm = "Interferon beta-1a", value = expected_arr(typ_lym(0, ifn = 1)))
+))
+
+table1 <- dplyr::bind_rows(arms) |>
+  dplyr::left_join(
+    data.frame(
+      arm = c("Placebo", "0.25 mg", "0.5 mg", "1.25 mg", "Interferon beta-1a"),
+      paper = c(0.48, 0.26, 0.21, 0.22, 0.43),
+      lo = c(0.42, 0.22, 0.19, 0.19, 0.36),
+      hi = c(0.55, 0.30, 0.24, 0.25, 0.51)
+    ),
+    by = "arm"
+  )
+
+table1 |>
+  dplyr::mutate(ci = sprintf("%.2f-%.2f", lo, hi)) |>
+  dplyr::select(arm, value, paper, ci) |>
+  dplyr::rename(
+    "Arm" = arm,
+    "Model mean ARR" = value,
+    "Lee 2013 Table 1 ARR" = paper,
+    "Table 1 95% CI" = ci
+  ) |>
+  knitr::kable(digits = 3)
+
+stopifnot(
+  nrow(table1) == 5,
+  abs(table1$value[table1$arm == "0.25 mg"] - 0.26) < 0.02,
+  all(table1$value >= table1$lo & table1$value <= table1$hi)
+)
+```
+
+All five arms fall inside the Table 1 confidence intervals, and the 0.25 mg
+prediction of 0.26 is reproduced. The Table 1 placebo (0.48) and interferon
+(0.43) values look like observed rates; the model gives about 0.44 for both,
+because both arms sit on the upper plateau of Model 2.
+
+# Simulated relapse counts
+
+rxode2 has no negative-binomial endpoint, so `relapse_count` is declared
+Poisson and the dispersion is exposed as `ovdp`. Negative-binomial counts are
+drawn in R with `rnbinom(mu = arr * t, size = 1 / ovdp)`, which has variance
+`mu * (1 + ovdp * mu)` as in the supplement log-likelihood. Below, 200
+patients per arm are followed for 2 years with exposure and residual
+lymphocyte variability drawn as above.
+
+```{r nb-sim}
+set.seed(20130801)
+n_per_arm <- 200
+ovdp <- exp(rxode2::rxode(mod_arr)$theta[["lovdp"]])
+cohort <- expo |>
+  dplyr::slice(rep(seq_len(dplyr::n()), each = n_per_arm)) |>
+  dplyr::mutate(conc = rlnorm(dplyr::n(), log(median), sdlog))
+cohort$lymph <- pmin(pmax(typ_lym(cohort$conc) + rnorm(nrow(cohort), 0, addSd), 0.11), 5.15)
+cohort$arr <- typ_arr(cohort$lymph)
+cohort$relapses <- rnbinom(nrow(cohort), mu = cohort$arr * 2, size = 1 / ovdp)
+
+cohort |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    n = dplyr::n(),
+    total_relapses = sum(relapses),
+    observed_arr = sum(relapses) / (2 * dplyr::n()),
+    .groups = "drop"
+  ) |>
+  dplyr::rename(
+    "Arm" = arm,
+    "Patients" = n,
+    "Relapses in 2 years" = total_relapses,
+    "Simulated ARR" = observed_arr
+  ) |>
+  knitr::kable(digits = 3)
+```
+
+# Validation approach
+
+PKNCA does not apply: neither model has a concentration-time course. The
+checks above are typical-value reproductions of Figures 3 and 4, which are
+deterministic, and the quadrature expectation of Table 1.
+
+# Assumptions and deviations
+
+* **Mixed scales in Table 2, Model 1.** The table prints Emax as the
+  logit-scale estimate (1.38; the supplement's `ltImax`) but EC50 on the
+  natural scale (0.28 ng/mL), although the Methods say both were transformed.
+  The reading is fixed by Figure 3: `expit(1.38) = 0.799` gives the
+  0.35 x 10^9/L plateau, and a natural-scale Emax of 1.38 would give negative
+  counts; EC50 = 0.28 ng/mL gives the observed 0.55 x 10^9/L at 0.8 ng/mL,
+  where `exp(0.28) = 1.32` ng/mL would give 1.33 x 10^9/L.
+* **sigma vs sigma^2.** Table 2 labels the Model 1 residual row `sigma^2`
+  (0.35), but the supplement code declares
+  `model DV ~ normal(mlym, sigma**2)` and simulates with SD 0.348, so 0.35 is
+  the residual SD (`addSd`).
+* **beta0 of Model 2.** Table 2 prints 'ARR at lymphocyte count = 0' = 0.20,
+  i.e. `exp(beta0)`; `larr0 = log(0.20)`. This reproduces both plateaus of
+  Figure 4.
+* **Dispersion constant in the supplement simulation.** The supplement's
+  simulation step draws counts with `RAND('NEGBINOMIAL', p, 0.7525)`, where
+  0.7525 acts as the size, not as the Table 2 dispersion `k` = 0.7 of the
+  fitted log-likelihood. The model uses `k` = 0.7 from Table 2 with the NB2
+  variance `mu + k * mu^2`; this does not affect any mean ARR.
+* **Exposure distributions** at 0.5 and 1.25 mg are log-normal fits to the
+  medians and quartiles digitised by the maintainers from the Figure 5
+  boxplots; the paper resampled the observed 0.5 mg concentrations instead.
+  The paper's bootstrap also re-fitted Model 2 in every replicate to carry
+  parameter uncertainty into the confidence interval; only the point estimate
+  is reproduced here.
+* **Offset.** The paper's `log(t_i)` offset (years on study) is model time:
+  place each patient's relapse-count record at the patient's time on study in
+  years.
+* **Interferon arm.** `CTROUGH` must be 0 for placebo and interferon beta-1a
+  patients; the interferon effect enters through `TRT_IFNB1A`.
+* **Negative binomial as Poisson.** rxode2 has no negative-binomial endpoint;
+  `relapse_count ~ pois(lambda)` is declared and the dispersion is exposed as
+  `ovdp`. Estimation with this file would fit a Poisson likelihood.
+* No errata or corrections for this article were found (Europe PMC
+  comment/correction links and Crossref update records checked 2026-11-20).

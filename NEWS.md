@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hao 2013 azithromycin ([doi:10.1371/journal.pone.0054981](https://doi.org/10.1371/journal.pone.0054981)) -- male CD1 mice with LPS-induced depressive-like behaviour.
+- Add Lee 2013 fingolimod lymphocyte count and relapse rate ([doi:10.1038/psp.2013.44](https://doi.org/10.1038/psp.2013.44)) -- adults with relapsing-remitting multiple sclerosis.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
