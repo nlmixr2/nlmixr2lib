@@ -1,0 +1,574 @@
+---
+title: "Linezolid for tuberculosis sterilizing effect (Srivastava 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Linezolid for tuberculosis sterilizing effect (Srivastava 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Srivastava 2017 ran linezolid dose-effect and dose-scheduling studies in the
+hollow fiber system model of tuberculosis (HFS-TB) for sterilizing effect, and
+then used Monte Carlo experiments to translate the hollow-fiber target into a
+clinical dose. The paper contributes three models to nlmixr2lib:
+
+* `Srivastava_2017_linezolid_hfs_aucmic`: the day-28 inhibitory sigmoid Emax
+  curve of total *M. tuberculosis* burden against the free AUC0-24/MIC ratio
+  (equation printed in the Results).
+* `Srivastava_2017_linezolid_hfs_adr`: the day-specific quadratic curves of
+  the linezolid-resistant subpopulation against %T>MIC (Figure 2C, digitized).
+* `Srivastava_2017_linezolid`: the one-compartment oral population PK model
+  of the Monte Carlo experiments (Table 2), with the paper's translation from
+  serum to free epithelial-lining-fluid (ELF) concentrations.
+
+* Citation: `r rxode2::rxode(readModelDb("Srivastava_2017_linezolid"))$reference`
+* Article: <https://doi.org/10.1128/AAC.00751-17> (open access, PMC5527615)
+
+```{r load-models}
+mod_emax <- readModelDb("Srivastava_2017_linezolid_hfs_aucmic")
+mod_adr <- readModelDb("Srivastava_2017_linezolid_hfs_adr")
+mod_pk <- readModelDb("Srivastava_2017_linezolid")
+
+# The two hollow-fiber models have no between-unit variability, so rxode2's
+# notice about a multi-subject solve without omega carries no information.
+solve_quiet <- function(mod, events) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod, events = events, returnType = "data.frame"),
+    warning = function(w) {
+      if (grepl("omega", conditionMessage(w))) invokeRestart("muffleWarning")
+    }
+  )
+}
+```
+
+# Population
+
+**Hollow fiber system.** Fifteen HFS-TB units were inoculated with
+semidormant *M. tuberculosis* H37Rv at pH 5.8 (5.41 log10 CFU/mL at the start
+of therapy; linezolid MIC 1 mg/L by three methods). Linezolid was dosed into
+the central compartment to mimic the 4 h human half-life and the 3.3-fold
+ELF:serum AUC0-24 penetration, at free AUC0-24/MIC values of 5 to 80 once or
+twice daily and 111, 157 and 326 twice daily, plus non-treated controls. The
+peripheral compartment was cultured weekly for 56 days, on plain agar (total
+burden) and on agar with 3x MIC linezolid (resistant subpopulation).
+
+**Human PK model.** This is not a cohort fitted by Srivastava 2017. The
+authors took the mean and IIV of CL, V and ka from the population PK analysis
+of Abe et al. 2009 in 435 patients (Table 2) and fed them to the ADAPT 5
+PRIOR subroutine to simulate 10,000 adult tuberculosis patients for each of
+150, 300, 600 and 1,200 mg once daily. Abe's covariate model is not reported
+in Srivastava 2017 and is not encoded.
+
+# Source trace
+
+| Item | Value | Source |
+|---|---|---|
+| Total-burden equation | log_cfu = E0 - Emax X^H / (X^H + EC50^H), X = AUC0-24/MIC | Results, day-28 equation; Methods, "Pharmacokinetic-pharmacodynamic modeling" |
+| `le0`, `lemax`, `lhill`, `lec50` | 6.52, 5.62, 3.41, 79.46 | Results, day-28 equation |
+| `mic` | 1 mg/L (fixed) | Results, first paragraph |
+| EC80 check | 119 | Results and Abstract |
+| Resistant-subpopulation equation | log_cfu_res = res0 + res1 X + res2 X^2, X = %T>MIC | Methods ("quadratic function of Gumbo et al."); Figure 2C |
+| `res0_d*`, `res1_d*`, `res2_d*` (days 14-49) | per day | digitized by the maintainers from Figure 2C |
+| PK structure | one compartment, first-order absorption | Table 2 (CL, V, ka) |
+| `lcl` | 6.0 L/h (IIV 46.6%) | Table 2 |
+| `lvc` | 54.53 L (IIV 25.9%) | Table 2 |
+| `lka` | 0.58 1/h (IIV 40%) | Table 2 |
+| `eta*` variances | log(1 + CV^2) | Table 2 footnote, "IIV ... as percent coefficient of variation" |
+| `lrelf` | log(3.29) (fixed) | Methods, "Dose selection for optimal effect and minimal toxicity" |
+| `fu` | 0.7 (fixed) | Methods, same paragraph ("30% protein binding") |
+| Toxicity threshold | free serum AUC0-24 96 mg*h/L | Methods, same section |
+| Residual SDs | 0 (fixed) | none reported |
+
+# Hollow fiber total burden (day 28)
+
+## Reading the printed equation
+
+The Results print the day-28 fit as "effect (log10 CFU/ml) = (6.52 - 5.62) x
+AUC/MIC^3.41/(AUC/MIC^3.41 + 79.46^3.41)". Taken literally, the bracket makes
+the curve rise from 0 to 0.9 log10 CFU/mL with exposure, which is not an
+inhibitory curve and cannot describe a burden that started at 5.41 log10
+CFU/mL. The bracket is a typesetting slip for the standard inhibitory form
+E = 6.52 - 5.62 x X^3.41 / (X^3.41 + 79.46^3.41), which this package uses.
+The printed EC80 of 119 depends only on EC50 and H, so it checks those two
+values but not the E0/Emax reading.
+
+```{r emax-ec80}
+emax_events <- data.frame(
+  id = 1:5, time = 28, evid = 0L,
+  AUC_LINEZOLID = c(0, 119, 1e6, 16.24, 73.60)
+)
+emax_sim <- solve_quiet(mod_emax, emax_events)
+ec80 <- emax_sim$ec50[1] * 4^(1 / emax_sim$hill[1])
+frac_at_119 <- (emax_sim$e0[2] - emax_sim$log_cfu[2]) / emax_sim$emax[2]
+c(ec80_from_ec50 = ec80, fraction_of_emax_at_119 = frac_at_119)
+stopifnot(
+  abs(ec80 - 119) < 1,
+  abs(frac_at_119 - 0.8) < 0.005
+)
+
+# The literal reading of the bracket tops out at 6.52 - 5.62 = 0.9 log10 CFU/mL.
+literal_max <- 6.52 - 5.62
+c(literal_reading_max = literal_max, inhibitory_reading_at_0 = emax_sim$log_cfu[1])
+stopifnot(literal_max < 1, emax_sim$log_cfu[1] > 6)
+```
+
+The Results also name AUC0-24/MIC 16.24 as the exposure for bacteriostasis
+and 73.60 for a 1.0 log10 kill. These are two of the hollow-fiber arms
+(Figure 2A legend), not values derived from the day-28 equation; the curve
+gives `r round(emax_sim$log_cfu[4], 2)` and `r round(emax_sim$log_cfu[5], 2)`
+log10 CFU/mL at those exposures.
+
+```{r emax-curve, fig.cap = "Day-28 inhibitory sigmoid Emax curve of Srivastava 2017 (Results). Dashed line: day-0 burden (5.41 log10 CFU/mL); dotted line: EC80 = 119."}
+curve_events <- data.frame(id = 1L, time = 28, evid = 0L, AUC_LINEZOLID = 0:350)
+curve_events$id <- seq_len(nrow(curve_events))
+emax_curve <- solve_quiet(mod_emax, curve_events)
+ggplot(emax_curve, aes(aucmic, log_cfu)) +
+  geom_line() +
+  geom_hline(yintercept = 5.41, linetype = "dashed") +
+  geom_vline(xintercept = 119, linetype = "dotted") +
+  labs(x = "Free AUC0-24/MIC", y = "M. tuberculosis burden (log10 CFU/mL)")
+```
+
+# Linezolid-resistant subpopulation (Figure 2C)
+
+## Digitization check
+
+Figure 2C draws one quadratic per sampling day without printing the
+coefficients. Each curve was digitized from its pixels (axes calibrated on the
+printed tick marks; data-point markers masked) and refitted with an
+unweighted quadratic; the refits follow the drawn curves with a root-mean-square
+error of 0.006-0.026 log10 CFU/mL. The table below holds a thinned sample of
+the digitized curve points (one per 10% of %T>MIC where the curve is visible).
+The packaged model must reproduce each of them closely.
+
+```{r adr-digitized}
+digitized <- data.frame(
+  day = c(rep(14, 9), rep(21, 8), rep(28, 7), rep(35, 9), rep(42, 5), rep(49, 3)),
+  ftmic = c(
+    4.93, 14.79, 25.06, 36.36, 44.99, 64.91, 74.98, 86.48, 94.91,
+    4.93, 25.06, 36.36, 44.99, 64.91, 74.98, 86.48, 94.91,
+    4.93, 15.00, 24.86, 36.36, 44.99, 86.48, 94.91,
+    4.93, 15.00, 25.06, 36.36, 44.99, 64.91, 74.98, 86.48, 94.91,
+    4.93, 15.00, 25.06, 36.36, 44.99,
+    4.93, 15.00, 24.86
+  ),
+  log_cfu_res_digitized = c(
+    6.071, 6.117, 6.071, 5.932, 5.763, 5.193, 4.777, 4.237, 3.790,
+    5.747, 6.225, 6.102, 5.855, 4.622, 3.713, 2.373, 1.248,
+    6.487, 6.641, 6.564, 6.271, 5.901, 2.465, 1.341,
+    5.840, 5.778, 5.609, 5.270, 4.915, 3.729, 2.943, 1.895, 1.032,
+    1.017, 0.740, 0.478, 0.262, 0.139,
+    1.695, 1.079, 0.586
+  )
+)
+adr_events <- data.frame(
+  id = seq_len(nrow(digitized)), time = digitized$day, evid = 0L,
+  FTMIC_LINEZOLID = digitized$ftmic
+)
+adr_chk <- digitized |>
+  mutate(
+    log_cfu_res_model = solve_quiet(mod_adr, adr_events)$log_cfu_res,
+    diff = log_cfu_res_model - log_cfu_res_digitized
+  )
+adr_chk |>
+  group_by(day) |>
+  summarise(n = n(), max_abs_diff = max(abs(diff)), .groups = "drop") |>
+  dplyr::rename("Day" = day, "Digitized points" = n, "Max |model - digitized|" = max_abs_diff) |>
+  knitr::kable(digits = 3)
+# Model and points come from the same digitization, so the residual is pure
+# digitization noise and a tight bound is appropriate.
+stopifnot(all(abs(adr_chk$diff) < 0.1))
+```
+
+## Replicating Figure 2C
+
+```{r fig2c, fig.cap = "Replicates Figure 2C of Srivastava 2017: linezolid-resistant subpopulation versus %T>MIC by sampling day (quadratics digitized from the published curves, floored at 0)."}
+grid <- expand.grid(day = c(14, 21, 28, 35, 42, 49), ftmic = 0:100)
+fig2c <- solve_quiet(mod_adr, data.frame(
+  id = seq_len(nrow(grid)), time = grid$day, evid = 0L,
+  FTMIC_LINEZOLID = grid$ftmic
+)) |>
+  mutate(FTMIC_LINEZOLID = grid$ftmic, day = factor(paste("Day", time), levels = paste("Day", c(14, 21, 28, 35, 42, 49))))
+ggplot(fig2c, aes(FTMIC_LINEZOLID, log_cfu_res, colour = day)) +
+  geom_line() +
+  coord_cartesian(ylim = c(0, 10)) +
+  labs(x = "%T>MIC", y = "Resistant M. tuberculosis (log10 CFU/mL)", colour = NULL)
+```
+
+On days 21 and 28 the curves rise to a maximum near 26% and 16% T>MIC before
+falling, the inverted "U" the paper describes; on days 42 and 49 the
+resistant subpopulation is small and falls to zero by about 60% and 40% T>MIC.
+From day 14 to day 35 a %T>MIC of 100 gives the lowest resistant burden,
+matching the caption's "A %TMIC of 100 suppressed the linezolid-resistant
+subpopulation". The day-42 and day-49 quadratics turn up again slightly beyond
+their visible range (about 0.1 log10 CFU/mL at 100%), an extrapolation of the
+fit rather than a feature of the figure.
+
+```{r adr-shape}
+peak <- fig2c |>
+  group_by(time) |>
+  summarise(
+    ftmic_at_max = FTMIC_LINEZOLID[which.max(log_cfu_res)],
+    at_100 = log_cfu_res[FTMIC_LINEZOLID == 100],
+    min_value = min(log_cfu_res),
+    .groups = "drop"
+  )
+peak
+stopifnot(
+  all(peak$ftmic_at_max[peak$time %in% c(21, 28)] > 10),
+  all(peak$at_100[peak$time <= 35] <= peak$min_value[peak$time <= 35] + 1e-8),
+  all(peak$at_100[peak$time >= 42] < 0.2)
+)
+```
+
+# Clinical Monte Carlo pharmacokinetics
+
+## Virtual cohort and simulation
+
+The four Monte Carlo doses each get 200 virtual patients, dosed once daily for
+seven days and sampled densely over the last dosing interval, when every
+subject is at steady state.
+
+```{r pk-sim}
+doses <- c(150, 300, 600, 1200)
+n_per_arm <- 200
+obs_times <- sort(unique(c(seq(0, 144, by = 12), seq(144, 168, by = 0.5))))
+
+pk_events <- bind_rows(lapply(seq_along(doses), function(i) {
+  ids <- (i - 1) * n_per_arm + seq_len(n_per_arm)
+  dose_rows <- expand.grid(id = ids, time = seq(0, 144, by = 24))
+  dose_rows$amt <- doses[i]
+  dose_rows$evid <- 1L
+  dose_rows$cmt <- "depot"
+  obs_rows <- expand.grid(id = ids, time = obs_times)
+  obs_rows$amt <- 0
+  obs_rows$evid <- 0L
+  obs_rows$cmt <- "central"
+  bind_rows(dose_rows, obs_rows) |> mutate(dose = doses[i])
+})) |>
+  arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(20170725)
+pk_sim <- rxode2::rxSolve(mod_pk, events = pk_events, keep = "dose", returnType = "data.frame")
+```
+
+```{r pk-vpc, fig.cap = "Simulated serum linezolid over the seventh once-daily dose (median and 90% prediction interval, 200 virtual patients per dose)."}
+pk_sim |>
+  dplyr::filter(time >= 144) |>
+  group_by(dose, time) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95), .groups = "drop") |>
+  mutate(dose = factor(paste(dose, "mg"), levels = paste(doses, "mg"))) |>
+  ggplot(aes(time - 144, med, colour = dose, fill = dose)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line() +
+  labs(x = "Time after the seventh dose (h)", y = "Serum linezolid (mg/L)", colour = NULL, fill = NULL)
+```
+
+## Closed-form check
+
+For a linear model the steady-state dosing-interval AUC equals dose / CL. A
+typical-value solve of 600 mg once daily must give 600 / 6.0 = 100 mg*h/L;
+the solve is checked against its own closed form, so the tolerance is tight.
+
+```{r pk-identity}
+ss_events <- rxode2::et(amt = 600, cmt = "depot", ii = 24, addl = 13) |>
+  rxode2::et(seq(312, 336, by = 0.05), cmt = "central")
+ss <- rxode2::rxSolve(rxode2::zeroRe(mod_pk), ss_events, returnType = "data.frame")
+auc_ss <- sum(diff(ss$time) * (head(ss$Cc, -1) + tail(ss$Cc, -1)) / 2)
+c(simulated = auc_ss, closed_form = 600 / 6.0)
+stopifnot(abs(auc_ss / 100 - 1) < 0.005)
+```
+
+## NCA with PKNCA
+
+```{r pk-nca}
+nca_conc <- pk_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  select(id, time, Cc, dose) |>
+  mutate(treatment = paste(dose, "mg"))
+nca_dose <- pk_events |>
+  dplyr::filter(evid == 1) |>
+  select(id, time, amt, dose) |>
+  mutate(treatment = paste(dose, "mg"))
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id)
+intervals <- data.frame(start = 144, end = 168, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_ind <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  select(id, treatment, auc = PPORRES) |>
+  left_join(pk_sim |> distinct(id, dose, cl), by = "id")
+
+nca_ind |>
+  group_by(treatment, dose) |>
+  summarise(median = median(auc), mean = mean(auc), sd = sd(auc), .groups = "drop") |>
+  arrange(dose) |>
+  select(-dose) |>
+  dplyr::rename(
+    "Dose (once daily)" = treatment, "Median AUC0-24,ss" = median,
+    "Mean AUC0-24,ss" = mean, "SD" = sd
+  ) |>
+  knitr::kable(digits = 1, caption = "Steady-state serum AUC0-24 (mg*h/L) by dose, 200 simulated patients per dose.")
+
+# Each subject's steady-state AUC must equal dose / individual CL (same draws,
+# so only trapezoid and residual-accumulation error remain).
+ratio <- nca_ind$auc * nca_ind$cl / nca_ind$dose
+stopifnot(
+  abs(median(ratio) - 1) < 0.005,
+  quantile(abs(ratio - 1), 0.9) < 0.02
+)
+```
+
+The paper reports a simulated AUC0-24 at 600 mg/day of 107.5 +/- 30.16
+mg*h/L, against 91.40 +/- 39.3 mg*h/L in the US product label. The packaged
+model gives the mean exactly from the log-normal CL distribution,
+100 x exp(omega^2 / 2):
+
+```{r pk-mean}
+omega2_cl <- mod_pk |>
+  rxode2::rxode2() |>
+  (\(ui) ui$iniDf)() |>
+  dplyr::filter(name == "etalcl") |>
+  dplyr::pull(est)
+auc600_mean <- 600 / 6.0 * exp(omega2_cl / 2)
+auc600_sd <- auc600_mean * sqrt(exp(omega2_cl) - 1)
+nca_600 <- nca_ind$auc[nca_ind$dose == 600]
+data.frame(
+  source = c("Srivastava 2017 Results", "Packaged model (closed form)", "Packaged model (200 simulated)"),
+  mean = c(107.5, auc600_mean, mean(nca_600)),
+  sd = c(30.16, auc600_sd, sd(nca_600))
+) |>
+  dplyr::rename("Source" = source, "Mean AUC0-24 (mg*h/L)" = mean, "SD" = sd) |>
+  knitr::kable(digits = 1)
+stopifnot(
+  abs(auc600_mean / 107.5 - 1) < 0.05,
+  abs(median(nca_600) / 100 - 1) < 0.1
+)
+```
+
+The mean agrees to within 3%, but the paper's SD of 30.16 (CV 28%) is much
+smaller than the 46.6% CV of clearance in Table 2 implies (about 51 mg*h/L).
+The next sections show that the paper's own target-attainment and toxicity
+results are consistent with the narrower spread; see Assumptions.
+
+# Target attainment and toxicity (Figures 5 and 6)
+
+The Monte Carlo endpoint is the free ELF AUC0-24/MIC at steady state,
+`dose / CL x 3.29 x 0.7 / MIC`, compared with the hollow-fiber EC80 of 119.
+Because CL is log-normal, the probability of target attainment has a closed
+form, which avoids Monte Carlo noise in the comparisons below.
+
+```{r ta-functions}
+ini_df <- rxode2::rxode2(mod_pk)$iniDf
+par <- setNames(ini_df$est, ini_df$name)
+cl_typ <- exp(par[["lcl"]])
+relf <- exp(par[["lrelf"]])
+fu <- par[["fu"]]
+sd_cl <- sqrt(par[["etalcl"]])
+
+# P(free ELF AUC0-24 / MIC >= target) = P(CL <= dose x relf x fu / (target x MIC)).
+pta <- function(dose, mic, sdlog, target = 119, relf_use = relf, fu_use = fu) {
+  pnorm((log(dose * relf_use * fu_use / (target * mic)) - log(cl_typ)) / sdlog)
+}
+# P(free serum AUC0-24 >= 96 mg*h/L).
+p_tox <- function(dose, sdlog) pnorm((log(dose * fu / 96) - log(cl_typ)) / sdlog)
+```
+
+## Figure 5: target attainment by MIC
+
+At the MIC where each dose crosses the target, Figure 5 shows a target
+attainment of about 0.47 (150 mg at 0.5 mg/L, 300 mg at 1 mg/L, 600 mg at
+2 mg/L), and about 0.99 one MIC dilution lower. The first value is close to
+0.5 for any spread, because these MICs sit where the typical patient's
+exposure is close to the target; the second depends on the spread.
+
+```{r fig5}
+fig5 <- data.frame(
+  dose = c(150, 300, 600, 150, 300, 600),
+  mic = c(0.5, 1, 2, 0.25, 0.5, 1),
+  point = rep(c("breakpoint MIC", "one dilution lower"), each = 3),
+  figure5 = c(0.47, 0.475, 0.475, 0.995, 0.995, 0.995)
+) |>
+  mutate(
+    packaged = pta(dose, mic, sd_cl),
+    cv28 = pta(dose, mic, sqrt(log(1 + 0.28^2)))
+  )
+fig5 |>
+  dplyr::rename(
+    "Dose (mg/day)" = dose, "MIC (mg/L)" = mic, "Point" = point,
+    "Figure 5 (digitized)" = figure5, "Packaged model (CL CV 46.6%)" = packaged,
+    "Diagnostic (CL CV 28%)" = cv28
+  ) |>
+  knitr::kable(digits = 3)
+stopifnot(all(abs(fig5$packaged[1:3] - fig5$figure5[1:3]) < 0.05))
+```
+
+```{r fig5-curves, fig.cap = "Replicates the target-attainment curves of Figure 5 of Srivastava 2017 (EC80 target 119, packaged model, closed form)."}
+expand.grid(dose = c(150, 300, 600, 1200), mic = c(0.125, 0.25, 0.5, 1, 2)) |>
+  mutate(pta = pta(dose, mic, sd_cl), dose = factor(paste(dose, "mg daily"), levels = paste(c(150, 300, 600, 1200), "mg daily"))) |>
+  ggplot(aes(mic, pta, colour = dose)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Linezolid MIC (mg/L)", y = "Probability of target attainment", colour = NULL)
+```
+
+## Figure 6: cumulative fraction of response and toxicity
+
+The cumulative fraction of response (CFR) weights the target attainment by an
+MIC distribution. The paper does not say which of its three distributions
+(Spain, China, Germany) Figure 6 uses. The Spain distribution, read from
+Figure 5 (243 isolates; proportions 0.025, 0.41, 0.515, 0.035 and 0.01 at
+0.125 to 2 mg/L), reproduces the published EC80 CFRs, and is used here. The
+toxicity endpoint is the proportion of patients whose free serum AUC0-24
+reaches 96 mg*h/L.
+
+```{r fig6}
+mics <- c(0.125, 0.25, 0.5, 1, 2)
+spain <- c(0.025, 0.41, 0.515, 0.035, 0.01)
+spain <- spain / sum(spain)
+cfr <- function(dose, sdlog) sum(pta(dose, mics, sdlog) * spain)
+
+fig6 <- data.frame(
+  dose = c(150, 300, 600, 1200),
+  cfr_figure6 = c(68, 96.5, 99.3, 100),
+  tox_figure6 = c(0, 0, 14, 93)
+) |>
+  rowwise() |>
+  mutate(
+    cfr_packaged = 100 * cfr(dose, sd_cl),
+    cfr_cv28 = 100 * cfr(dose, sqrt(log(1 + 0.28^2))),
+    tox_packaged = 100 * p_tox(dose, sd_cl),
+    tox_cv28 = 100 * p_tox(dose, sqrt(log(1 + 0.28^2)))
+  ) |>
+  ungroup()
+fig6 |>
+  dplyr::rename(
+    "Dose (mg/day)" = dose,
+    "EC80 CFR, Figure 6 (%)" = cfr_figure6, "EC80 CFR, packaged (%)" = cfr_packaged,
+    "EC80 CFR, CV 28% (%)" = cfr_cv28,
+    "Toxicity, Figure 6 (%)" = tox_figure6, "Toxicity, packaged (%)" = tox_packaged,
+    "Toxicity, CV 28% (%)" = tox_cv28
+  ) |>
+  knitr::kable(digits = 1)
+stopifnot(
+  # Efficacy: the packaged model reproduces the Figure 6 EC80 CFRs.
+  all(abs(fig6$cfr_packaged - fig6$cfr_figure6) < 5),
+  # Toxicity: the packaged (Table 2) spread overshoots at 600 mg and
+  # undershoots at 1,200 mg ...
+  fig6$tox_packaged[3] > 20, fig6$tox_packaged[4] < 85,
+  # ... while a CL CV of 28% reproduces Figure 6.
+  all(abs(fig6$tox_cv28 - fig6$tox_figure6) < 5)
+)
+```
+
+The EC80 CFRs match Figure 6 with the packaged model. For toxicity, the packaged model gives `r round(fig6$tox_packaged[3])`% at 600 mg
+and `r round(fig6$tox_packaged[4])`% at 1,200 mg, against 14% and 93% in
+Figure 6, while a CL CV of 28% (the CV of the paper's own simulated AUC0-24)
+reproduces both. The paper's conclusions are unchanged either way: 300 mg/day
+stays essentially free of the toxic exposure, and 1,200 mg/day reaches it in
+most patients.
+
+## Lower ELF penetration sensitivity analysis
+
+Figure 6 also shows the CFR when the ELF:serum ratio is 1.52 instead of 3.29
+(40.5%, 87.3% and 98.8% at 150, 300 and 600 mg). Replacing 3.29 by 1.52 while
+keeping the protein binding gives much lower CFRs; applying 1.52 without the
+protein binding comes closer.
+
+```{r low-elf}
+low_elf <- data.frame(dose = c(150, 300, 600), figure6 = c(40.5, 87.3, 98.8)) |>
+  rowwise() |>
+  mutate(
+    with_fu = 100 * sum(pta(dose, mics, sd_cl, relf_use = 1.52) * spain),
+    without_fu = 100 * sum(pta(dose, mics, sd_cl, relf_use = 1.52, fu_use = 1) * spain)
+  ) |>
+  ungroup()
+low_elf |>
+  dplyr::rename(
+    "Dose (mg/day)" = dose, "Figure 6 (%)" = figure6,
+    "ELF 1.52 x fu 0.7 (%)" = with_fu, "ELF 1.52, no fu (%)" = without_fu
+  ) |>
+  knitr::kable(digits = 1)
+stopifnot(
+  low_elf$with_fu[2] < 70,
+  abs(low_elf$without_fu[2] - low_elf$figure6[2]) < abs(low_elf$with_fu[2] - low_elf$figure6[2])
+)
+```
+
+# Assumptions and deviations
+
+* **Day-28 equation bracket.** The printed "(6.52 - 5.62) x ..." is read as
+  "6.52 - 5.62 x ..." (see "Reading the printed equation"). The literal form
+  is a rising curve with a 0.9 log10 maximum and contradicts the inhibitory
+  sigmoid Emax model named in the Methods.
+* **Only day 28 of the total-burden fits is encoded.** Table 1 ranks the PK/PD
+  indices by AIC on every sampling day, but the paper prints parameter values
+  only for the day-28 AUC0-24/MIC fit, the one it used to define the EC80.
+* **Resistant-subpopulation coefficients are digitized.** The paper does not
+  print the Figure 2C coefficients. They were obtained by a quadratic
+  least-squares fit to the pixels of each curve, with axes calibrated on the
+  printed tick marks. The day-42 and day-49 curves are visible only up to
+  about 46% and 25% T>MIC before they reach the axis, so those two fits rest
+  on the visible part. Figure 2C clips the curves at 0, and the model floors
+  its output at 0 log10 CFU/mL to match. The day-7 curve, and a second flat
+  curve in the same colour as day 14, both lie along the x-axis at about 0.1
+  log10 CFU/mL and cannot be told apart, so day 7 is not encoded. The Table 1
+  footnote says the resistant subpopulation was below the limit of detection
+  on day 42, although Figure 2C draws a day-42 curve; the curve is encoded as
+  drawn. The y-axis of Figure 2C is labelled "M. tuberculosis burden"; the
+  caption identifies it as the linezolid-resistant subpopulation.
+* **The resistant-subpopulation model is defined only at the sampling days.**
+  The model picks the day's curve from the simulation time (cut points at
+  17.5, 24.5, 31.5, 38.5 and 45.5 days), so values between sampling days are a
+  step function, not an interpolation.
+* **The resistant-subpopulation output name.** `log_cfu_res` is not in the
+  compartment register, so `checkModelConventions()` reports one warning for
+  `Srivastava_2017_linezolid_hfs_adr`. The same name is used for the same
+  quantity by `Gumbo_2026_ethambutol_hfs`.
+* **Transcriptome fits not encoded.** Figure 3 fits gene-expression levels
+  (reads per kilobase of transcript per million mapped reads) of
+  protein-synthesis and efflux-pump genes against exposure, with no printed
+  coefficients. They are descriptive bioinformatic fits and are not included.
+* **Hollow-fiber PK not encoded.** The one-compartment fit of the hollow-fiber
+  concentrations (elimination rate constant 0.17/h, half-life 4.09 h) is
+  reported without a volume; it describes the device, not a patient.
+* **PK model source.** Table 2 reprints the means and IIVs of Abe et al. 2009;
+  the paper does not report Abe's covariate effects (body weight, age) or a
+  bioavailability, so CL and V are apparent oral values and the dose enters
+  the depot unscaled.
+* **IIV as log-normal CV, and the narrower spread of the paper's
+  simulations.** The Table 2 IIVs (46.6%, 25.9%, 40%) are encoded as log-normal
+  CVs, omega^2 = log(1 + CV^2). The paper's own Monte Carlo output is
+  narrower than this: the simulated AUC0-24 at 600 mg has CV 28%, and the
+  simulated ranges in Table 2 (CL 2.03-18.2 L/h, V 42.1-69.9 L over 10,000
+  patients) also imply a smaller spread than 46.6% and 25.9% CVs would give.
+  The packaged model keeps the stated Table 2 values. As shown above, the
+  efficacy results are insensitive to this choice, but the toxicity
+  proportions of Figure 6 are reproduced only with the narrower spread.
+* **ELF translation.** Target attainment uses the free ELF exposure, Cc x
+  3.29 x 0.7 (`Celf`). The breakpoint-MIC target attainments of Figure 5 are
+  reproduced only when both the ELF ratio and the protein binding are
+  applied; with the ELF ratio alone the attainment at those MICs would be far
+  above 0.5. The paper's lower-penetration sensitivity analysis (ELF ratio
+  1.52, Figure 6 "EC80 with lower ELF-serum ratio") is not reproduced by
+  replacing 3.29 with 1.52 while keeping the protein binding; it is closer to
+  1.52 applied without the protein binding (see the section above), but the
+  paper does not say which was done.
+* **MIC distribution of Figure 6.** Not stated in the paper; the Spain
+  distribution read from Figure 5 reproduces the EC80 CFRs and is used here.
+* **No residual error.** None of the three models reports residual
+  variability, so all residual SDs are fixed at 0.

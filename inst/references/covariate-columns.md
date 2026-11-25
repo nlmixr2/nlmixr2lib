@@ -6845,16 +6845,16 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
 - **Example models:** `Gumbo_2026_ethambutol_hfs.R` (hollow-fiber M. kansasii day-by-day inhibitory sigmoid Emax on log10 CFU/mL and time-to-positivity, plus a quadratic resistant subpopulation).
 - **Notes:** Member of the `AUC_<DRUG>` family, which `AUC_EMPA`'s Notes declare extensible; INN spelled out, as for `AUC_FENEBRUTINIB` and `AUC_ACALABRUTINIB`. The absolute-AUC form (rather than an `AUCMIC_<DRUG>` ratio column) follows the `AUCMIC_TYLO` rule because the source reports the challenge-strain MIC (8 mg/L) and that MIC reproduces the paper's own index: the plotted HFS AUC0-24 values equal 8 x the printed AUC0-24/MIC values for all six regimens. Not a plasma AUC: a model that consumes a patient plasma ethambutol AUC (for example from `Gumbo_2026_ethambutol.R`) should say so in its covariate notes, because Gumbo 2026 compared the hollow-fiber exposures to cavity-centre rather than plasma AUCs.
 
-### AUC_AMIKACIN (**canonical for amikacin AUC over 0-24 h, as the numerator of the AUC0-24/MIC index**)
-- **Description:** Amikacin area under the concentration-time curve from 0 to 24 h (AUC0-24), supplied as a static exposure column to an exposure-response model that has no PK ODE of its own. In the founding model it is the AUC0-24 of the hollow-fiber central compartment, run to mimic amikacin concentration-time profiles in the lungs of tuberculosis patients; the model divides it by its own `mic` parameter to form the AUC0-24/MIC index.
-- **Units:** `mg*h/L`. Document per-model via `covariateData[[AUC_AMIKACIN]]$units`.
+### AUC_LINEZOLID (**canonical for free linezolid AUC over 0-24 h, as the numerator of the AUC0-24/MIC index**)
+- **Description:** Free (unbound) linezolid area under the concentration-time curve over 0-24 h (AUC0-24), supplied as a static exposure column to an exposure-response model that has no PK ODE of its own. In the founding model it is the AUC0-24 of the hollow-fiber central compartment, which contains no protein and was run to mimic the 4 h human half-life and the 3.3-fold epithelial-lining-fluid penetration of linezolid; the model divides it by its own `mic` parameter to form the AUC0-24/MIC index.
+- **Units:** `mg*h/L`. Document per-model via `covariateData[[AUC_LINEZOLID]]$units`.
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a -- set to 0 for non-treated control records, where the sigmoid term vanishes and the burden equals the drug-free value. Founding-model exposures: AUC0-24/MIC 0 to about 800 against an MIC of 0.5 mg/L (about 0-400 mg*h/L).
+- **Reference category:** n/a -- set to 0 for non-treated control records, where the sigmoid Emax term vanishes and the burden equals the drug-free value. Founding-model exposures: AUC0-24/MIC 5.08-326.13 against an MIC of 1 mg/L (so 5.08-326.13 mg*h/L).
 - **Source aliases:**
-  - `AUC0-24/MIC` (numerator) -- Srivastava 2016 Figure 5 x-axis and Results.
-- **Example models:** `Srivastava_2016_amikacin_hfs_aucmic.R` (Srivastava 2016 day-14 inhibitory sigmoid Emax exposure-response of amikacin against *M. tuberculosis* H37Ra in the hollow fiber system model of tuberculosis).
-- **Notes:** Member of the `AUC_<DRUG>` family; INN spelled out, as for `AUC_ETHAMBUTOL`. The absolute-AUC form rather than an `AUCMIC_<DRUG>` ratio follows the `AUCMIC_TYLO` rule because the source reports the challenge-strain MIC (0.5 mg/L). For an every-48-h schedule the founding paper still used the AUC over the first 24 h. Not a plasma AUC: a model that consumes a patient serum amikacin AUC should say in its notes how lung and serum exposure relate.
+  - `AUC0-24/MIC` (numerator) -- Srivastava 2017 Results and Figure 2 legends.
+- **Example models:** `Srivastava_2017_linezolid_hfs_aucmic.R` (Srivastava 2017 day-28 inhibitory sigmoid Emax of linezolid sterilizing effect against semidormant *M. tuberculosis* H37Rv in the hollow fiber system model of tuberculosis).
+- **Notes:** Member of the `AUC_<DRUG>` family; INN spelled out, as for `AUC_ETHAMBUTOL`. The absolute-AUC form rather than an `AUCMIC_<DRUG>` ratio follows the `AUCMIC_TYLO` rule because the source reports the challenge-strain MIC (1 mg/L). The founding exposure is a FREE epithelial-lining-fluid-equivalent AUC, not a total serum AUC: `Srivastava_2017_linezolid.R` converts a patient serum exposure with the paper's ELF:serum ratio 3.29 and fraction unbound 0.7 (its `Celf` output), and a model that supplies a total serum AUC here would overstate efficacy about 2.3-fold.
 
 ### AUC_RIF (**canonical for rifampicin plasma AUC over a 24 h dosing interval**)
 - **Description:** Per-subject (time-fixed) rifampicin plasma AUC over a 0-24 h once-daily dosing interval, used as an exposure covariate in exposure-response models. In Svensson 2020 it is the individual AUC0-24 on day 2 +/- 1 of treatment (before autoinduction is complete), predicted from the empirical Bayes estimates of the companion popPK model, and it reduces the hazard of death through an Emax function.
@@ -8766,16 +8766,16 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
 - **Example models:** `Wei_2026_cefquinome_enrofloxacin_plasma_tmic.R`, `Wei_2026_cefquinome_enrofloxacin_lung_tmic.R` (Wei 2026 inhibitory sigmoid Emax PK/PD integration for cefquinome plus a fixed 20 mg/kg enrofloxacin background against *Klebsiella pneumoniae* CLS2 in a chick pneumonia model).
 - **Notes:** Specific scope -- cefquinome-specific. The threshold is MIC(combine), not the cefquinome monotherapy MIC; Wei 2026 compared the two directly and found that the monotherapy-MIC version of %T > MIC placed the bactericidal ENR20 + CEQ10-split arm below the conventional 40% cephalosporin threshold, which is why all its fitting uses MIC(combine). See the `AUCMIC_CEFQ` Notes for the arm-by-arm MIC(combine) reconstruction. This is the index Wei 2026 selected as its primary result: the plasma fit has the highest R^2 (0.953) and lowest AIC (14.695) of the six in Table 6, and its 3 log10 CFU/mL target of 37.062% is the paper's headline PK/PD breakpoint.
 
-### FTMIC_AMIKACIN (**canonical for the amikacin percentage-of-interval-above-MIC PK/PD index**)
-- **Description:** Percentage of the dosing interval during which the amikacin concentration exceeds the MIC of the challenge strain (%T>MIC), supplied to an inhibitory sigmoid Emax exposure-response model. A duration statistic already expressed relative to the MIC, so it is carried whole with no `mic` parameter.
-- **Units:** percent (0-100), the scale of the fitted EC50. Document per-model via `covariateData[[FTMIC_AMIKACIN]]$units`.
+### FTMIC_LINEZOLID (**canonical for the linezolid percentage-of-interval-above-MIC PK/PD index**)
+- **Description:** Percentage of the 24 h dosing period during which the linezolid concentration exceeds the MIC of the challenge strain (%T>MIC), supplied to an exposure-response model with no PK ODE of its own. A duration statistic already expressed relative to the MIC, so it is carried whole with no `mic` parameter.
+- **Units:** percent (0-100), the scale of the fitted coefficients. Document per-model via `covariateData[[FTMIC_LINEZOLID]]$units`.
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a -- set to 0 for non-treated control records.
+- **Reference category:** n/a -- set to 0 for non-treated control records. Founding-model exposures: 0, about 29, 33, 54.5, 83 and 100% (hollow-fiber free concentrations against an MIC of 1 mg/L).
 - **Source aliases:**
-  - `%TMIC`, `% time amikacin concentration persisted above MIC` -- Srivastava 2016 Results and Figure 6A x-axis.
-- **Example models:** `Srivastava_2016_amikacin_hfs_tmic.R` (Srivastava 2016 day-14 inhibitory sigmoid Emax exposure-response of amikacin against *M. tuberculosis* H37Ra in the hollow fiber system model of tuberculosis).
-- **Notes:** Member of the `FTMIC_<DRUG>` family (`FTMIC_TZP`, `FTMIC_CEFQ`); INN spelled out. The founding threshold is the H37Ra MIC of 0.5 mg/L.
+  - `%TMIC` -- Srivastava 2017 Figure 2C x-axis and Table 1.
+- **Example models:** `Srivastava_2017_linezolid_hfs_adr.R` (Srivastava 2017 day-specific quadratic model of the linezolid-resistant *M. tuberculosis* H37Rv subpopulation in the hollow fiber system model of tuberculosis).
+- **Notes:** Member of the `FTMIC_<DRUG>` family (`FTMIC_TZP`, `FTMIC_CEFQ`) and on the same PERCENT scale; a fraction-scaled column would silently mis-scale the quadratic, whose squared term makes the error grow with exposure.
 
 ### CP_MILTEFOSINE_UGML (**canonical for instantaneous miltefosine plasma concentration as a time-varying PD driver**)
 - **Description:** Instantaneous plasma concentration of miltefosine (hexadecylphosphocholine; oral alkylphosphocholine antileishmanial) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only antiparasitic kill-rate models that consume an upstream miltefosine population PK trajectory as input because the source analysis was a sequential PK-then-PD fit with the PK model fixed from a previously published popPK analysis.

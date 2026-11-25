@@ -5186,6 +5186,8 @@ navbar:
         href: articles/Schmidt_2009_oxazolidinones.html
       - text: "Linezolid (Soraluce 2020)"
         href: articles/Soraluce_2020_linezolid.html
+      - text: "Linezolid (Srivastava 2017)"
+        href: articles/Srivastava_2017_linezolid.html
       - text: "Linezolid (Taubert 2016)"
         href: articles/Taubert_2016_linezolid.html
       - text: "Linezolid (Tian 2025)"
@@ -5216,6 +5218,10 @@ navbar:
         href: articles/Mao_2021_linezolid_fosfomycin.html
       - text: "Linezolid fosfomycin strain6 (Mao 2021)"
         href: articles/Mao_2021_linezolid_fosfomycin.html
+      - text: "Linezolid hfs adr (Srivastava 2017)"
+        href: articles/Srivastava_2017_linezolid.html
+      - text: "Linezolid hfs aucmic (Srivastava 2017)"
+        href: articles/Srivastava_2017_linezolid.html
       - text: "Linezolid intermittent (Hui 2024)"
         href: articles/Hui_2024_linezolid.html
       - text: "Linvencorvir (Cosson 2021)"
@@ -13089,7 +13095,7 @@ articles:
   - articles/Spinosa_2026_bispecific_mpbpk
   - articles/Sridharan_2019_primaquine
   - articles/Srimani_2022_ixazomib
-  - articles/Srivastava_2016_amikacin
+  - articles/Srivastava_2017_linezolid
   - articles/Staatz_2005_gentamicin_vancomycin
   - articles/Stach_2026_fentanyl_rat
   - articles/Stachanow_2023_hydrocortisone
