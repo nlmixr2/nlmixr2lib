@@ -1,0 +1,593 @@
+---
+title: "Exhaled propofol (Kreuer 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Exhaled propofol (Kreuer 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Kreuer et al. (2014) measured propofol in the exhaled breath of one patient
+every minute for 346 min with a multi-capillary-column ion mobility
+spectrometer, while the patient received propofol by target-controlled
+infusion (TCI) at a constant calculated plasma concentration of 3 ug/mL. The
+breath signal lags the plasma concentration, so plotting one against the other
+gives a hysteresis loop. The paper removes the loop in two ways, each driven by
+the Marsh three-compartment model that the TCI pump uses to calculate the
+plasma concentration `Cc`:
+
+* **Approach 1, lung compartment** (`Kreuer_2014_propofol_lungcmt`, Figure 2):
+  $\frac{d\,\mathrm{lung}}{dt} = k_{1L} \cdot C_c - k_{L1} \cdot \mathrm{lung}$
+* **Approach 2, time delay** (`Kreuer_2014_propofol_lungdelay`, Figure 3):
+  $\frac{d\,\mathrm{lung}}{dt} = k_{e0,lung} \cdot (C_c - \mathrm{lung})$
+
+In both, the measured breath value $x$ is related to the lung concentration
+$y$ (ug/mL) by a zero-intercept second-order polynomial
+$y = q x^2 + s x$, fitted separately to the breath concentration in ppb and to
+the raw spectrometer peak height in volt. The packaged models predict breath
+from the lung concentration by inverting that polynomial on its rising branch,
+$x = \left(\sqrt{s^2 + 4 q y} - s\right) / (2 q)$, and hold $x$ at the vertex
+$-s / (2q)$ when $y$ exceeds the polynomial's maximum $-s^2/(4q)$.
+
+```{r models}
+mod_cmt <- readModelDb("Kreuer_2014_propofol_lungcmt")
+mod_delay <- readModelDb("Kreuer_2014_propofol_lungdelay")
+ui_cmt <- rxode2::rxode(mod_cmt)
+ui_delay <- rxode2::rxode(mod_delay)
+```
+
+* Citation: `r ui_delay$reference`
+* Description (approach 1): `r ui_cmt$description`
+* Description (approach 2): `r ui_delay$description`
+* Article: <https://doi.org/10.1038/srep05423> (open access; no supplement)
+
+# Population
+
+One adult patient scheduled for an abdominal surgical procedure at Saarland
+University Medical Center (Homburg, Germany) received propofol and
+remifentanil by TCI (propofol: Marsh model, plasma target 3 ug/mL held constant;
+remifentanil: Minto model, plasma mode). Age, sex and weight were not reported.
+Exhaled propofol was sampled automatically every minute (10 mL of breath per
+sample) from induction to emergence, 346 min in all, and reported both as peak
+height (V) and as ppb through a calibration curve. All parameters were fitted
+in Excel 2010 by ordinary least squares, maximising R2 with the Solver tool.
+
+The same information is available programmatically via
+`readModelDb("Kreuer_2014_propofol_lungdelay")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Marsh `k10` (`lkel`) | 0.1190 /min, fixed | Table 1 |
+| Marsh `k12` (`lk12`) | 0.1140 /min, fixed | Table 1 |
+| Marsh `k21` (`lk21`) | 0.0550 /min, fixed | Table 1 |
+| Marsh `k13` (`lk13`) | 0.0419 /min, fixed | Table 1 |
+| Marsh `k31` (`lk31`) | 0.0033 /min, fixed | Table 1 |
+| Marsh `V1` (`lvc`) | 0.228 L/kg x WT, fixed | Table 1 ('0,228*m [kg]') |
+| Three-compartment ODEs | -- | Figure 1 and Methods |
+| Approach 1 lung ODE | `LCC = (k1L*PPCO-kL1*LCCO)+LCCO` | Figure 2 legend |
+| `k1L` (`lkin_lung`) | 0.209 /min | Results, 'Propofol lung compartment concentration' |
+| `kL1` (`lkout_lung`) | 0.138 /min | Results, 'Propofol lung compartment concentration' |
+| Approach 1 ppb polynomial (`cal_slope_breath_quad`, `cal_slope_breath`) | -5.9, 9.23 | Results, 'y = -5.9*x2 + 9.23*x + 0' (R2 0.99, Figure 6b) |
+| Approach 1 volt polynomial (`cal_slope_breathv_quad`, `cal_slope_breathv`) | -12.6, 15.57 | Results, 'y = -12.6*x2 + 15.57*x + 0' (R2 0.87, Figure 6a) |
+| Approach 2 lung ODE | first-order delay | Figure 3 legend and Methods |
+| `ke0lung` (`lke0`) | 0.27 /min | Results, 'Time delay of the propofol plasma concentration'; Abstract |
+| Approach 2 ppb polynomial (`cal_slope_breath_quad`, `cal_slope_breath`) | -4.2, 7.14 | Results, 'y = -4.2*x2 + 7.14*x + 0' (R2 0.96, Figure 7b) |
+| Approach 2 volt polynomial (`cal_slope_breathv_quad`, `cal_slope_breathv`) | -7.7, 9.64 | Results, 'y = -7.7*x2 + 9.64*x + 0' (R2 0.82, Figure 7a) |
+| Plasma target 3 ug/mL; TCI stopped at end of surgery | -- | Methods, Results and Figure 4 |
+
+The paper also gives the approach 1 lung compartment as a volume of 17 L and a
+clearance of 3.75 L/min. The models carry the rate constants, which are what
+the printed update equation uses; see Assumptions and deviations.
+
+# Observed breath data (digitised from Figure 4)
+
+The paper publishes no data table. The maintainers digitised the red (ppb) and
+green (volt) breath traces of Figure 4 at every whole minute from the pixel
+colours of the published image (axis ticks 0-350 min and 0-1.0; the minute
+hidden behind the dashed phase line at 333 min and the first minute, before
+the first sample, are missing). The blue calculated-plasma trace of the same
+figure is flat at 3.00 ug/mL from 5 min to 334 min and falls from 335 min.
+
+```{r fig4-data}
+ppb <- c(
+  NA, 0.033, 0.181, 0.273, 0.323, 0.404, 0.458, 0.487, 0.530, 0.576, 0.594,
+  0.611, 0.618, 0.622, 0.629, 0.642, 0.645, 0.645, 0.642, 0.649, 0.659, 0.678,
+  0.683, 0.684, 0.688, 0.699, 0.698, 0.686, 0.684, 0.685, 0.688, 0.690, 0.690,
+  0.689, 0.688, 0.685, 0.689, 0.688, 0.685, 0.692, 0.691, 0.690, 0.676, 0.679,
+  0.686, 0.688, 0.693, 0.700, 0.698, 0.700, 0.703, 0.700, 0.704, 0.698, 0.698,
+  0.705, 0.709, 0.716, 0.723, 0.710, 0.704, 0.703, 0.702, 0.709, 0.707, 0.700,
+  0.705, 0.707, 0.703, 0.700, 0.703, 0.704, 0.703, 0.711, 0.711, 0.709, 0.704,
+  0.705, 0.707, 0.707, 0.706, 0.711, 0.711, 0.704, 0.706, 0.703, 0.705, 0.713,
+  0.713, 0.709, 0.713, 0.716, 0.718, 0.718, 0.717, 0.714, 0.712, 0.712, 0.713,
+  0.711, 0.713, 0.716, 0.713, 0.716, 0.717, 0.712, 0.712, 0.707, 0.712, 0.714,
+  0.714, 0.716, 0.713, 0.717, 0.713, 0.702, 0.697, 0.703, 0.713, 0.714, 0.719,
+  0.724, 0.726, 0.731, 0.728, 0.725, 0.723, 0.730, 0.731, 0.725, 0.723, 0.725,
+  0.737, 0.740, 0.738, 0.738, 0.745, 0.746, 0.733, 0.734, 0.738, 0.744, 0.747,
+  0.746, 0.749, 0.748, 0.749, 0.749, 0.749, 0.755, 0.755, 0.753, 0.755, 0.756,
+  0.755, 0.759, 0.760, 0.760, 0.760, 0.762, 0.767, 0.761, 0.760, 0.765, 0.774,
+  0.776, 0.777, 0.765, 0.766, 0.766, 0.767, 0.768, 0.768, 0.763, 0.761, 0.765,
+  0.763, 0.759, 0.763, 0.769, 0.766, 0.763, 0.763, 0.767, 0.767, 0.769, 0.770,
+  0.769, 0.761, 0.758, 0.760, 0.766, 0.774, 0.770, 0.779, 0.769, 0.765, 0.768,
+  0.774, 0.775, 0.769, 0.765, 0.762, 0.766, 0.770, 0.769, 0.770, 0.773, 0.773,
+  0.783, 0.779, 0.779, 0.774, 0.772, 0.768, 0.767, 0.765, 0.769, 0.772, 0.769,
+  0.774, 0.777, 0.772, 0.775, 0.777, 0.776, 0.774, 0.781, 0.783, 0.782, 0.780,
+  0.776, 0.775, 0.777, 0.777, 0.779, 0.779, 0.782, 0.782, 0.780, 0.776, 0.769,
+  0.774, 0.774, 0.767, 0.769, 0.770, 0.767, 0.775, 0.782, 0.777, 0.769, 0.769,
+  0.774, 0.781, 0.775, 0.769, 0.767, 0.767, 0.765, 0.767, 0.767, 0.770, 0.775,
+  0.767, 0.768, 0.777, 0.775, 0.772, 0.773, 0.773, 0.770, 0.765, 0.768, 0.772,
+  0.779, 0.772, 0.763, 0.767, 0.754, 0.760, 0.766, 0.772, 0.766, 0.760, 0.768,
+  0.770, 0.769, 0.752, 0.752, 0.765, 0.760, 0.762, 0.763, 0.759, 0.762, 0.761,
+  0.762, 0.759, 0.756, 0.749, 0.749, 0.741, 0.740, 0.742, 0.744, 0.739, 0.738,
+  0.741, 0.744, 0.742, 0.739, 0.731, 0.732, 0.730, 0.734, 0.746, 0.748, 0.740,
+  0.730, 0.728, 0.728, 0.728, 0.730, 0.727, 0.734, 0.740, 0.745, 0.737, 0.731,
+  0.724, 0.724, NA, 0.712, 0.712, 0.710, 0.707, 0.576, 0.556, 0.512, 0.450,
+  0.407, 0.399, 0.355, 0.331
+)
+volt <- c(
+  NA, 0.005, 0.017, 0.059, 0.099, 0.182, 0.260, 0.279, 0.338, 0.401, 0.425,
+  0.451, 0.463, 0.469, 0.479, 0.499, 0.502, 0.499, 0.490, 0.502, 0.523, 0.555,
+  0.564, 0.565, 0.578, 0.590, 0.590, 0.570, 0.565, 0.568, 0.571, 0.576, 0.576,
+  0.575, 0.570, 0.568, 0.573, 0.570, 0.569, 0.577, 0.578, 0.576, 0.554, 0.559,
+  0.562, 0.573, 0.580, 0.592, 0.590, 0.592, 0.597, 0.592, 0.596, 0.587, 0.589,
+  0.601, 0.607, 0.617, 0.628, 0.611, 0.599, 0.597, 0.594, 0.603, 0.605, 0.593,
+  0.600, 0.605, 0.597, 0.594, 0.596, 0.598, 0.597, 0.608, 0.611, 0.606, 0.597,
+  0.600, 0.606, 0.605, 0.601, 0.608, 0.610, 0.599, 0.601, 0.597, 0.600, 0.612,
+  0.614, 0.607, 0.615, 0.620, 0.621, 0.622, 0.621, 0.618, 0.614, 0.614, 0.614,
+  0.612, 0.617, 0.620, 0.614, 0.619, 0.617, 0.613, 0.613, 0.604, 0.612, 0.617,
+  0.615, 0.620, 0.614, 0.621, 0.617, 0.596, 0.586, 0.593, 0.613, 0.618, 0.625,
+  0.633, 0.638, 0.645, 0.639, 0.633, 0.628, 0.643, 0.645, 0.635, 0.627, 0.633,
+  0.654, 0.660, 0.657, 0.655, 0.667, 0.671, 0.652, 0.652, 0.660, 0.670, 0.671,
+  0.670, 0.675, 0.677, 0.676, 0.677, 0.678, 0.686, 0.688, 0.683, 0.688, 0.689,
+  0.689, 0.695, 0.697, 0.697, 0.696, 0.699, 0.707, 0.702, 0.699, 0.706, 0.721,
+  0.730, 0.731, 0.706, 0.705, 0.706, 0.710, 0.709, 0.710, 0.703, 0.700, 0.707,
+  0.702, 0.693, 0.702, 0.711, 0.709, 0.705, 0.705, 0.707, 0.709, 0.712, 0.713,
+  0.710, 0.699, 0.692, 0.695, 0.704, 0.719, 0.714, 0.728, 0.713, 0.706, 0.711,
+  0.723, 0.724, 0.713, 0.702, 0.700, 0.705, 0.713, 0.712, 0.713, 0.718, 0.723,
+  0.734, 0.732, 0.728, 0.721, 0.714, 0.709, 0.707, 0.706, 0.711, 0.713, 0.714,
+  0.725, 0.727, 0.720, 0.721, 0.726, 0.727, 0.721, 0.730, 0.738, 0.737, 0.733,
+  0.726, 0.727, 0.731, 0.727, 0.728, 0.730, 0.735, 0.737, 0.733, 0.724, 0.713,
+  0.718, 0.721, 0.710, 0.714, 0.714, 0.710, 0.724, 0.735, 0.728, 0.712, 0.713,
+  0.720, 0.733, 0.725, 0.712, 0.710, 0.710, 0.709, 0.707, 0.707, 0.716, 0.724,
+  0.718, 0.709, 0.726, 0.725, 0.718, 0.718, 0.718, 0.712, 0.704, 0.713, 0.718,
+  0.728, 0.720, 0.706, 0.707, 0.688, 0.696, 0.709, 0.717, 0.707, 0.699, 0.711,
+  0.717, 0.702, 0.688, 0.682, 0.702, 0.702, 0.702, 0.703, 0.696, 0.698, 0.702,
+  0.702, 0.695, 0.688, 0.683, 0.677, 0.667, 0.662, 0.664, 0.668, 0.657, 0.656,
+  0.661, 0.666, 0.663, 0.659, 0.645, 0.646, 0.642, 0.653, 0.672, 0.672, 0.660,
+  0.645, 0.641, 0.639, 0.640, 0.641, 0.641, 0.649, 0.657, 0.666, 0.654, 0.647,
+  0.633, 0.642, 0.647, 0.643, 0.612, 0.608, 0.605, 0.528, 0.421, 0.314, 0.234,
+  0.182, 0.160, 0.142, 0.101
+)
+fig4 <- data.frame(time = 1:345, ppb = ppb, volt = volt)
+# Calculated (Marsh) plasma concentration read off the blue trace of Figure 4
+fig4_plasma <- data.frame(
+  time = c(1, 2, 3, 5, 100, 200, 334, 336, 338, 340, 342, 345),
+  Cc = c(1.07, 1.50, 2.55, 3.00, 3.00, 3.00, 3.00, 2.71, 2.20, 1.93, 1.67, 1.52)
+)
+```
+
+# Target-controlled infusion
+
+A TCI pump recalculates the infusion rate every few seconds so that the Marsh
+plasma concentration follows the target. The vignette does the same: every
+10 s it chooses the infusion rate that brings the Marsh plasma concentration
+to the target at the end of the interval, using the exact solution of the
+linear three-compartment system, with the rate capped at 1200 mL/h of 1%
+propofol (200 mg/min) and floored at zero. The targets are the plasma values
+read from Figure 4 during the first 5 min (the calculated concentration there
+rises over about 4 min), 3 ug/mL from 5 min, and zero from 335 min, when the
+plotted plasma concentration starts to fall. Under TCI the calculated plasma,
+lung and breath concentrations do not depend on body weight (only the infused
+amount does), so a 70 kg patient is used.
+
+```{r tci}
+marsh <- c(k10 = 0.1190, k12 = 0.1140, k21 = 0.0550, k13 = 0.0419, k31 = 0.0033)
+wt <- 70
+v1 <- 0.228 * wt
+amat <- with(as.list(marsh), matrix(c(
+  -(k10 + k12 + k13), k21, k31,
+  k12, -k21, 0,
+  k13, 0, -k31
+), 3, byrow = TRUE))
+dt <- 1 / 6
+eig <- eigen(amat)
+emat <- Re(eig$vectors %*% diag(exp(eig$values * dt)) %*% solve(eig$vectors))
+gvec <- solve(amat, (emat - diag(3)) %*% c(1, 0, 0))
+t_stop <- 335
+tci_target <- function(t) {
+  if (t >= t_stop) {
+    return(0)
+  }
+  approx(c(0, 1, 2, 3, 5), c(0, 1.07, 1.50, 2.55, 3.00), xout = min(t, 5))$y
+}
+rate_max <- 1200 / 60 * 10
+step_start <- seq(0, 346 - dt, by = dt)
+state <- c(0, 0, 0)
+tci <- data.frame(time = step_start, rate = NA_real_, Cc_ctrl = NA_real_)
+for (i in seq_along(step_start)) {
+  free <- (emat %*% state)[1]
+  rate <- (tci_target(step_start[i] + dt) * v1 - free) / gvec[1]
+  rate <- min(max(rate, 0), rate_max)
+  state <- emat %*% state + gvec * rate
+  tci$rate[i] <- rate
+  tci$Cc_ctrl[i] <- state[1] / v1
+}
+tci$time_end <- tci$time + dt
+total_dose <- sum(tci$rate * dt)
+total_dose
+```
+
+```{r events}
+dose_rows <- tci |>
+  filter(rate > 0) |>
+  transmute(id = 1L, time, amt = rate * dt, rate, evid = 1L, cmt = "central")
+obs_times <- sort(unique(c(seq(0, 346, by = 0.5), tci$time_end[tci$time_end <= 346])))
+obs_rows <- data.frame(id = 1L, time = obs_times, amt = 0, rate = 0, evid = 0L, cmt = "central")
+events <- bind_rows(dose_rows, obs_rows) |>
+  mutate(WT = wt) |>
+  arrange(time, desc(evid))
+
+sim_delay <- rxode2::rxSolve(mod_delay, events, rtol = 1e-10, atol = 1e-12, maxsteps = 1e6, returnType = "data.frame")
+sim_cmt <- rxode2::rxSolve(mod_cmt, events, rtol = 1e-10, atol = 1e-12, maxsteps = 1e6, returnType = "data.frame")
+sim <- bind_rows(
+  sim_delay |> mutate(approach = "Approach 2 (time delay)"),
+  sim_cmt |> mutate(approach = "Approach 1 (lung compartment)")
+)
+```
+
+# Check 1: the Marsh encoding against the TCI controller
+
+The controller and the packaged model solve the same linear system by two
+different routes (eigen-decomposition in R versus the rxode2 ODE solver), so
+their plasma concentrations at the end of every 10-s step must agree to solver
+precision. During maintenance the plasma concentration must sit on the
+3 ug/mL target.
+
+```{r check-marsh}
+chk <- tci |>
+  inner_join(sim_delay |> select(time, Cc), by = c("time_end" = "time"))
+max_rel <- max(abs(chk$Cc[chk$Cc_ctrl > 0.1] / chk$Cc_ctrl[chk$Cc_ctrl > 0.1] - 1))
+maint <- sim_delay |> filter(time >= 5, time < t_stop)
+c(max_rel_diff_vs_controller = max_rel, maint_min = min(maint$Cc), maint_max = max(maint$Cc))
+stopifnot(
+  max_rel < 1e-5,
+  abs(min(maint$Cc) - 3) < 0.01,
+  abs(max(maint$Cc) - 3) < 0.01,
+  # Packaged models share the plasma model exactly
+  isTRUE(all.equal(sim_delay$Cc, sim_cmt$Cc, tolerance = 1e-8))
+)
+```
+
+The fall after the infusion stops is set only by the Marsh micro-constants, so
+it is checked against the blue trace of Figure 4. Ten minutes after the stop the
+plasma concentration has halved.
+
+```{r check-emergence}
+emerg <- fig4_plasma |>
+  filter(time >= 336) |>
+  rename(Cc_fig4 = Cc) |>
+  inner_join(sim_delay |> select(time, Cc), by = "time") |>
+  mutate(pct_diff = 100 * (Cc - Cc_fig4) / Cc_fig4)
+knitr::kable(emerg, digits = 2)
+stopifnot(abs(emerg$pct_diff[emerg$time == 345]) < 10)
+```
+
+The simulated concentration falls 2-4% faster than the plotted one in the
+first five minutes after the stop (the figure's line is drawn through the
+pump's display values, and the exact stop time is read off the figure), and
+matches it by 345 min.
+
+# Replicates Figure 4: time course
+
+```{r fig4-plot, fig.height = 5}
+breath_long <- sim |>
+  filter(time >= 1) |>
+  select(time, approach, Cbreath, Cbreath_volt) |>
+  pivot_longer(c(Cbreath, Cbreath_volt), names_to = "output", values_to = "value") |>
+  mutate(output = recode(output, Cbreath = "Breath (ppb)", Cbreath_volt = "Peak height (V)"))
+obs_long <- fig4 |>
+  pivot_longer(c(ppb, volt), names_to = "output", values_to = "value") |>
+  mutate(output = recode(output, ppb = "Breath (ppb)", volt = "Peak height (V)"))
+ggplot() +
+  geom_point(data = obs_long, aes(time, value), colour = "grey55", size = 0.6, na.rm = TRUE) +
+  geom_line(data = breath_long, aes(time, value, colour = approach), linewidth = 0.8) +
+  facet_wrap(~output, ncol = 1) +
+  labs(
+    x = "Time (min)", y = "Exhaled propofol", colour = NULL,
+    title = "Replicates Figure 4 of Kreuer 2014",
+    caption = "Grey points: breath traces digitised from Figure 4. Lines: packaged models under the simulated TCI."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r fig4-plasma, fig.height = 3}
+ggplot(sim_delay |> filter(time <= 346), aes(time, Cc)) +
+  geom_line(colour = "steelblue", linewidth = 0.8) +
+  geom_point(data = fig4_plasma, colour = "black") +
+  labs(
+    x = "Time (min)", y = "Plasma propofol (ug/mL)",
+    title = "Calculated plasma concentration (blue trace of Figure 4)",
+    caption = "Points: read from Figure 4. Line: Marsh model under the simulated TCI."
+  ) +
+  theme_bw()
+```
+
+Approach 2 follows the ppb trace closely through induction, maintenance and
+emergence. Neither model can follow the slow rise of the breath signal during
+maintenance (0.68 to 0.78 ppb between 20 and 250 min), because the calculated
+plasma concentration is constant then and both lung states are at steady state.
+Approach 1 holds the ppb output at its 0.78 ppb cap through maintenance and
+under-predicts the volt signal (next sections).
+
+# Replicates Figure 5: the hysteresis loop
+
+```{r fig5}
+fig5 <- fig4 |>
+  inner_join(sim_delay |> select(time, Cc), by = "time") |>
+  filter(!is.na(ppb), !is.na(volt))
+ggplot(fig5, aes(Cc, ppb)) +
+  geom_path(colour = "grey60") +
+  geom_point(colour = "red", size = 0.8) +
+  labs(
+    x = "Calculated plasma propofol (ug/mL)", y = "Breath propofol (ppb)",
+    title = "Replicates Figure 5b of Kreuer 2014"
+  ) +
+  theme_bw()
+r2_direct <- c(
+  ppb = cor(fig5$Cc, fig5$ppb)^2,
+  volt = cor(fig5$Cc, fig5$volt)^2
+)
+round(r2_direct, 2)
+```
+
+The paper reports R2 = 0.41 (ppb) and 0.32 (volt) for this direct correlation;
+the digitised data give `r round(r2_direct[["ppb"]], 2)` and
+`r round(r2_direct[["volt"]], 2)`, the same poor correlation that motivates
+the two lung models.
+
+# Replicates Figures 6 and 7: lung concentration against measured breath
+
+Figures 6 and 7 plot the computed lung concentration of each approach against
+the measured breath value, with the fitted polynomial. The same plot is made
+here from the simulated lung concentration and the digitised breath values. The
+goodness of fit is computed as $R^2 = 1 - SS_{res}/SS_{tot}$ of the polynomial
+of the measured breath against the computed lung concentration, the statistic
+Kreuer et al. maximised in Excel.
+
+```{r fig67}
+poly_coef <- list(
+  "Approach 1 (lung compartment)" = c(ppb_q = -5.9, ppb_s = 9.23, volt_q = -12.6, volt_s = 15.57),
+  "Approach 2 (time delay)" = c(ppb_q = -4.2, ppb_s = 7.14, volt_q = -7.7, volt_s = 9.64)
+)
+r2_fun <- function(y, f) 1 - sum((y - f)^2) / sum((y - mean(y))^2)
+lung_vs_breath <- sim |>
+  select(time, approach, lung) |>
+  inner_join(fig4, by = "time") |>
+  filter(!is.na(ppb), !is.na(volt)) |>
+  group_by(approach) |>
+  mutate(
+    poly_ppb = poly_coef[[approach[1]]][["ppb_q"]] * ppb^2 + poly_coef[[approach[1]]][["ppb_s"]] * ppb,
+    poly_volt = poly_coef[[approach[1]]][["volt_q"]] * volt^2 + poly_coef[[approach[1]]][["volt_s"]] * volt
+  ) |>
+  ungroup()
+r2_tab <- lung_vs_breath |>
+  group_by(approach) |>
+  summarise(
+    r2_ppb = r2_fun(lung, poly_ppb),
+    r2_volt = r2_fun(lung, poly_volt),
+    lung_plateau = lung[time == 300]
+  ) |>
+  mutate(
+    r2_ppb_paper = c(0.99, 0.96),
+    r2_volt_paper = c(0.87, 0.82),
+    plateau_fig = c(3.6, 3.0)
+  )
+r2_tab |>
+  select(approach, r2_ppb, r2_ppb_paper, r2_volt, r2_volt_paper, lung_plateau, plateau_fig) |>
+  rename(
+    "Approach" = approach,
+    "R2 ppb (simulated)" = r2_ppb,
+    "R2 ppb (paper)" = r2_ppb_paper,
+    "R2 volt (simulated)" = r2_volt,
+    "R2 volt (paper)" = r2_volt_paper,
+    "Lung plateau, ug/mL (simulated)" = lung_plateau,
+    "Lung plateau, ug/mL (Fig 6b / 7b)" = plateau_fig
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+```{r fig67-plot, fig.height = 6}
+curve_df <- expand.grid(
+  x = seq(0, 0.8, by = 0.01), approach = names(poly_coef), unit = c("ppb", "volt"),
+  stringsAsFactors = FALSE
+) |>
+  rowwise() |>
+  mutate(y = poly_coef[[approach]][[paste0(unit, "_q")]] * x^2 + poly_coef[[approach]][[paste0(unit, "_s")]] * x) |>
+  ungroup()
+pts <- lung_vs_breath |>
+  select(approach, lung, ppb, volt) |>
+  pivot_longer(c(ppb, volt), names_to = "unit", values_to = "x")
+ggplot() +
+  geom_point(data = pts, aes(x, lung), colour = "grey40", size = 0.7) +
+  geom_line(data = curve_df, aes(x, y), colour = "blue") +
+  facet_grid(approach ~ unit) +
+  labs(
+    x = "Measured breath (digitised, ppb or V)", y = "Computed lung concentration (ug/mL)",
+    title = "Replicates Figures 6 (approach 1) and 7 (approach 2) of Kreuer 2014",
+    caption = "Points: simulated lung concentration against digitised breath. Lines: printed polynomials."
+  ) +
+  theme_bw()
+```
+
+```{r check-fig7}
+r2_delay <- r2_tab |> filter(approach == "Approach 2 (time delay)")
+stopifnot(
+  # Approach 2 reproduces the paper's own goodness of fit from the printed
+  # ke0lung and polynomials: a mis-transcribed ke0lung or coefficient moves
+  # these by far more than the digitisation error.
+  abs(r2_delay$r2_ppb - 0.96) < 0.05,
+  abs(r2_delay$r2_volt - 0.82) < 0.05,
+  abs(r2_delay$lung_plateau - 3) < 0.01
+)
+```
+
+**Approach 2** reproduces Figure 7: the computed lung concentration plateaus at
+the 3 ug/mL plasma target, where both printed polynomials reach their maxima
+(3.03 and 3.02 ug/mL), and the goodness of fit computed from the printed
+parameters matches the published R2 values to within 0.05 (asserted below).
+
+**Approach 1 does not reproduce Figure 6b from its printed constants.** At
+steady state the lung concentration is
+$k_{1L}/k_{L1} \cdot C_c = 0.209/0.138 \times 3 = 4.54$ ug/mL, but the ppb
+polynomial cannot exceed $9.23^2/(4 \times 5.9) = 3.61$ ug/mL and the lung
+concentration in Figure 6b plateaus at about 3.6 ug/mL (a ratio to plasma of
+about 1.2, not 1.51). The printed constants therefore cannot be the ones that
+produced Figure 6b and its R2 of 0.99; with them the packaged model holds
+`Cbreath` at the polynomial's vertex (0.78 ppb) for the whole maintenance
+phase. The ratio 1.51 is closer to the volt panel (Figure 6a plateaus at
+about 4.7-4.8 ug/mL, and the volt polynomial peaks at 4.81 ug/mL), but the text
+assigns the constants to the ppb fit and reports none for the volt fit. The
+model is packaged with the printed values, as published.
+
+```{r check-fig6}
+r2_lungcmt <- r2_tab |> filter(approach == "Approach 1 (lung compartment)")
+stopifnot(
+  # The approach 1 plateau is exactly k1L / kL1 times the 3 ug/mL target.
+  abs(r2_lungcmt$lung_plateau - 0.209 / 0.138 * 3) < 1e-3,
+  # Above the 3.61 ug/mL polynomial maximum the ppb output sits at the vertex.
+  abs(sim_cmt$Cbreath[sim_cmt$time == 300] - 9.23 / (2 * 5.9)) < 1e-6
+)
+```
+
+# Check 2: the polynomial inversion
+
+Below the polynomial maximum, the breath outputs are the exact inverse of the
+printed polynomials: feeding `Cbreath` back through the polynomial recovers the
+lung concentration.
+
+```{r check-inverse}
+inv <- sim_delay |>
+  mutate(
+    back_ppb = -4.2 * Cbreath^2 + 7.14 * Cbreath,
+    back_volt = -7.7 * Cbreath_volt^2 + 9.64 * Cbreath_volt,
+    below_ppb = lung < 7.14^2 / (4 * 4.2),
+    below_volt = lung < 9.64^2 / (4 * 7.7)
+  )
+stopifnot(
+  max(abs(inv$back_ppb - inv$lung)[inv$below_ppb]) < 1e-8,
+  max(abs(inv$back_volt - inv$lung)[inv$below_volt]) < 1e-8,
+  # Rising branch: breath stays below the vertex
+  all(inv$Cbreath <= 7.14 / (2 * 4.2) + 1e-12)
+)
+```
+
+# PKNCA: plasma exposure under TCI
+
+The paper reports no NCA. As a check on the plasma model, the total exposure is
+computed with PKNCA and compared with what the Marsh clearance implies. The
+area to the end of the infusion is close to 3 ug/mL times its duration (less
+the 4-min induction ramp), and the area to infinity equals the infused dose
+divided by the Marsh clearance $k_{10} \cdot V_1$. The terminal phase of the
+Marsh model is long, so a separate solve runs to 3000 min.
+
+```{r pknca}
+obs_long <- data.frame(
+  id = 1L, time = sort(unique(c(obs_times, seq(350, 3000, by = 10)))),
+  amt = 0, rate = 0, evid = 0L, cmt = "central"
+)
+events_long <- bind_rows(dose_rows, obs_long) |>
+  mutate(WT = wt) |>
+  arrange(time, desc(evid))
+sim_long <- rxode2::rxSolve(mod_delay, events_long, rtol = 1e-10, atol = 1e-12, maxsteps = 1e6, returnType = "data.frame")
+
+conc <- sim_long |>
+  filter(!is.na(Cc)) |>
+  mutate(Cc = pmax(Cc, 0), id = 1L, treatment = "TCI 3 ug/mL") |>
+  select(id, time, Cc, treatment)
+dose_df <- data.frame(id = 1L, time = 0, amt = total_dose, treatment = "TCI 3 ug/mL")
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = c(0, 0), end = c(t_stop, Inf),
+  auclast = c(TRUE, FALSE), aucinf.obs = c(FALSE, TRUE), half.life = c(FALSE, TRUE)
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_res <- as.data.frame(nca$result)
+auc_stop <- nca_res$PPORRES[nca_res$PPTESTCD == "auclast" & nca_res$end == t_stop]
+auc_inf <- nca_res$PPORRES[nca_res$PPTESTCD == "aucinf.obs"]
+expected_inf <- total_dose / (marsh[["k10"]] * v1)
+knitr::kable(data.frame(
+  "NCA parameter" = c("AUC0-335 (ug*min/mL)", "AUC0-inf (ug*min/mL)"),
+  "Simulated (PKNCA)" = c(auc_stop, auc_inf),
+  "Expected" = c(NA, expected_inf),
+  check.names = FALSE
+), digits = 1)
+stopifnot(
+  abs(auc_inf / expected_inf - 1) < 0.02,
+  auc_stop > 3 * (t_stop - 5), auc_stop < 3 * t_stop
+)
+```
+
+# Assumptions and deviations
+
+* **One patient, no variability.** The source fits one patient by ordinary
+  least squares in Excel and reports no inter-individual variability, no
+  residual-error model and no parameter uncertainty. Both models are
+  deterministic and carry no residual error; `Cbreath` and `Cbreath_volt` are
+  algebraic outputs.
+* **Approach 1 printed constants do not reproduce Figure 6b** (see above). The
+  model carries k1L = 0.209 and kL1 = 0.138 /min exactly as printed. The paper
+  also gives the lung compartment as VLung = 17 L and ClLung = 3.75 L/min, and
+  the Figure 2 legend defines `k1L = Cllung/V1` and `kL1 = Vlung/Cllung`. The
+  second cannot be right as printed (it would be 4.53 min, not a rate
+  constant), and ClLung/VLung = 0.221 /min is not 0.138 either. `k1L =
+  ClLung/V1` would put V1 at 17.9 L, a 78.7 kg patient under Marsh, but no
+  reading of the legend gives kL1 = 0.138. No supplement, model file or
+  erratum exists (checked 2026-11-25). The volt polynomial of approach 1 is
+  assumed to use the same rate constants, since none are reported for it.
+* **Approach 2 lung equation.** The Figure 3 legend prints
+  `LCC = (PPC+ (LCCO-PPC))*exp(-ke0lung)`, which reduces to
+  `LCCO*exp(-ke0lung)` and never rises from zero. The text describes a
+  first-order equilibration between plasma and lung, whose exact one-minute
+  step is `PPC + (LCCO-PPC)*exp(-ke0lung)`; the model uses that
+  equilibration, and it reproduces Figure 7 and the published R2. ke0lung is
+  printed once, after the ppb fit, and is used for the volt output as well.
+* **Continuous time.** The paper's spreadsheet advances both lung equations in
+  one-minute steps (an Euler step for approach 1, an exact step for approach
+  2). The models use the continuous ODEs, which differ from a one-minute Euler
+  step only during the fast induction and emergence transients.
+* **Inverting the polynomials.** The paper writes each polynomial as lung
+  concentration as a function of breath. The models predict breath from the
+  lung concentration on the rising branch of the polynomial and hold it at the
+  vertex above the polynomial's maximum, where the published curves are drawn
+  flat.
+* **Lung state does not deplete plasma.** The Discussion states that V1 is
+  used 'parallel for both models', and the TCI calculation of the plasma
+  concentration ignores the lung, so the lung state is driven by `Cc` and
+  removes nothing from `central`.
+* **Marsh constants.** The Marsh micro-constants are taken as printed in
+  Kreuer 2014 Table 1 (k12 = 0.1140 /min, the same value
+  `Kawata_2024_propofol_marsh` carries); the original Marsh 1991 paper was not
+  re-read for this extraction.
+* **TCI and weight.** The paper does not report the infusion record or the
+  patient's weight. The TCI is reconstructed as described above with a 70 kg
+  patient; plasma, lung and breath predictions do not depend on the weight
+  under TCI. The induction targets and the 335-min stop time are read from
+  Figure 4.
+* **Digitised data.** Breath values and the plasma points were digitised from
+  the published Figure 4 image; they carry the resolution of that image
+  (about 0.002 units per pixel) and are used only for the comparisons above.
