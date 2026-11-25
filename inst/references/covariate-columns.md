@@ -6853,8 +6853,8 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Reference category:** n/a -- enters as the Hill term of an Imax inhibition expression, e.g. `1 - imax * CP_BPN_NGML^hill / (ic50^hill + CP_BPN_NGML^hill)` (Walsh 2024). Reference values observed: the observed BPN plasma concentration range across the Walsh 2024 phase 2 study was 0.636-12.3 ng/mL, and the paper's own COWS application simulation swept 0-10 ng/mL. Set to 0 for the pre-treatment (unblocked) condition, which returns the model to its baseline.
 - **Source aliases:**
   - `Cp` (Walsh 2024 notation, "the time-matched BPN concentration"; values in ng/mL) -- used in `Walsh_2024_buprenorphine_drugLiking.R`, `Walsh_2024_buprenorphine_desireToUse.R` and `Walsh_2024_buprenorphine_cows.R`.
-- **Example models:** `Walsh_2024_buprenorphine_drugLiking.R` (Imax blockade of period-corrected drug liking Emax VAS after an intramuscular hydromorphone 18 mg challenge; IC50 0.075 ng/mL), `Walsh_2024_buprenorphine_desireToUse.R` (Imax suppression of desire to use VAS with an exponential onset delay; IC50 0.0129 ng/mL), `Walsh_2024_buprenorphine_cows.R` (bounded-integer Imax suppression of the COWS total score; IC90 0.109 ng/mL).
-- **Notes:** Specific scope; buprenorphine-specific. The drug-specific naming follows the established `CP_<drug>_<units>` precedent (`CP_OXY_NGML`, `CP_FBX_NGML`, `CP_LSN_NGML`, `CP_MORPH_NGML`, `CP_RIF_UM`, `CP_REM_NGML`, `CP_GLASDEGIB_NGML`). Walsh 2024 sampled one BPN plasma concentration per challenge day, approximately 60 min before each hydromorphone administration, and time-matched it to the PD score; the analysis is therefore driven by daily concentrations rather than a dense profile. The upstream CAM2038 (subcutaneous long-acting buprenorphine depot) popPK model is NOT reported in Walsh 2024 and no buprenorphine popPK model exists in the nlmixr2lib registry, so downstream users must supply the concentration trajectory externally -- either from their own popPK source or by digitising Supplementary Figure S2 of Walsh 2024.
+- **Example models:** `Walsh_2024_buprenorphine_drugLiking.R` (Imax blockade of period-corrected drug liking Emax VAS after an intramuscular hydromorphone 18 mg challenge; IC50 0.075 ng/mL), `Walsh_2024_buprenorphine_desireToUse.R` (Imax suppression of desire to use VAS with an exponential onset delay; IC50 0.0129 ng/mL), `Walsh_2024_buprenorphine_cows.R` (bounded-integer Imax suppression of the COWS total score; IC90 0.109 ng/mL), `Lohmer_2026_buprenorphine_opioidUse.R` (Emax on the logit of weekly opioid abstinence; EC50 0.999 ng/mL; Study 2 drives the Emax through an `effect` compartment), `Lohmer_2026_buprenorphine_craving.R` (Emax on the cumulative logits of the opioid-craving category; EC50 0.365 ng/mL). The Lohmer 2026 models were fitted to individual predictions of the Jones 2021 BUP-XR popPK model, which is packaged as `Jones_2021_buprenorphine.R`, so its `Cc` can be supplied as this column.
+- **Notes:** Specific scope; buprenorphine-specific. The drug-specific naming follows the established `CP_<drug>_<units>` precedent (`CP_OXY_NGML`, `CP_FBX_NGML`, `CP_LSN_NGML`, `CP_MORPH_NGML`, `CP_RIF_UM`, `CP_REM_NGML`, `CP_GLASDEGIB_NGML`). Walsh 2024 sampled one BPN plasma concentration per challenge day, approximately 60 min before each hydromorphone administration, and time-matched it to the PD score; the analysis is therefore driven by daily concentrations rather than a dense profile. The upstream CAM2038 (subcutaneous long-acting buprenorphine depot) popPK model is NOT reported in Walsh 2024 and no CAM2038 popPK model exists in the nlmixr2lib registry, so for the Walsh models downstream users must supply the concentration trajectory externally -- either from their own popPK source or by digitising Supplementary Figure S2 of Walsh 2024.
 
 ### CP_EIDD_NGML (**canonical for instantaneous EIDD-1931 plasma concentration as a time-varying antiviral PD driver**)
 - **Description:** Instantaneous plasma concentration of EIDD-1931, the pharmacologically active nucleoside-analogue metabolite of the antiviral prodrug molnupiravir, supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in within-host viral-dynamics / QSP models that consume an external molnupiravir exposure profile as the driver of an Imax inhibition of viable-virus production.
@@ -8987,6 +8987,17 @@ readable.
 - **Source aliases:** `OBSTYPE` -- used in the Valitalo 2017 IRT morphine PD model (DDMODEL00000247).
 - **Example models:** `Valitalo_2017_morphine.R` (DDMODEL00000247; selects between `diff_vas_video` vs `diff_vas_bedside`, `discr_vas_video` vs `discr_vas_bedside`, and `addSd_vas_video` vs `addSd_vas_bedside`).
 - **Notes:** Specific scope because the binary observer-coding is tied to the Valitalo 2017 NM-TRAN dataset. Future IRT models with a different observer split (e.g., parent / nurse / physician) should register their own canonical rather than overloading this 2-level coding.
+
+### OPIOID_CRAVING_CAT (**canonical for last-observed opioid-craving category (LOCF) as a time-varying covariate**)
+- **Description:** The participant's most recent observed current-opioid-craving category on the 0-100 mm Opioid Craving Visual Analog Scale (OC-VAS), carried forward until the next assessment: 1 = 0 mm, 2 = 1-5 mm, 3 = 6-20 mm, 4 = >20 mm (clinically significant craving). Time-varying.
+- **Units:** (category 1-4)
+- **Type:** categorical
+- **Scope:** specific
+- **Reference category:** 1 (0 mm, no craving).
+- **Source aliases:**
+  - `Craving LOCF` -- Lohmer 2026 Supplementary Material, Treatment Retention Model Equations (`beta1^(Craving LOCF)`); Table 4 rows 'beta1 craving = 1-5', '6-20', '>20'.
+- **Example models:** `Lohmer_2026_buprenorphine_dropout.R` (founding example; multiplies the Gompertz dropout hazard by 0.897, 1.04 and 2.28 for categories 2, 3 and 4).
+- **Notes:** Shares its 1-4 coding with the ordinal observation `opioid_craving_cat` of `Lohmer_2026_buprenorphine_craving.R`, so a craving category simulated by that model can be carried forward into the dropout model. The cut points (0, 1-5, 6-20, >20 mm) are data-driven in Lohmer 2026, so a model with other cut points must register its own column. Before the first post-baseline assessment, use the baseline craving category.
 
 ## Race / ethnicity
 
@@ -20300,6 +20311,61 @@ Per-model `covariateData[[CYP2C19]]$notes` must document which orientation is in
 - **Example models:** `Henthorn_2024_tetrahydrocannabinol.R` (exponential effect on the estimated inhaled-dose fraction Fi: `fdepot = exp(lfdepot + e_cannabis_daily_fdepot * CANNABIS_DAILY + etalfdepot)` with `e_cannabis_daily_fdepot = 1.79`; daily users inhale `exp(1.79) = 5.99`-fold more bioavailable THC than the occasional-user reference, i.e. 10.78 mg versus 1.80 mg of a nominal 15 mg fully bioavailable dose).
 - **Notes:** General scope because habitual cannabis use is a behavioural-history indicator applicable beyond a single drug: it plausibly modifies the disposition of co-administered drugs (CYP1A2 induction from combusted-material exposure, CYP2C9 / CYP3A interactions) and characterises co-use populations, matching how the sibling per-substance flags `SMOKE` (tobacco) and `ALCOHOL_ABUSE` (alcohol) are scoped. Distinct from `SMOKE`: a daily cannabis user may be a tobacco non-smoker and vice versa, and concentrate users (vape pens, dabs) do not combust plant material at all, so the two columns must be carried separately rather than collapsed. Distinct from the model-specific `OPIOID_PATIENT_TYPE` selector, which is scoped `specific` and names a parameter-set selector rather than a behavioural-history flag. Per-model `covariateData[[CANNABIS_DAILY]]$notes` must document the paper's exact frequency definitions, because "occasional" is not standardised across the literature; Henthorn 2024 Methods defines occasional use as "an average of at least 2 days per month and no more than 3 days per week in the 90 days before enrollment" and daily use as daily consumption of flower or concentrate over the same window. A future paper that resolves usage pattern more finely (e.g. occasional / daily-flower / daily-concentrate, which Henthorn 2024 tested and rejected as non-significant, or a graded days-per-month count) should register a separate ordinal or paired-indicator canonical rather than overload this binary.
 
+### EMPLOYED (**canonical for employed-at-baseline indicator**)
+- **Description:** 1 = the participant reported being employed at baseline, 0 = not employed. Subject-level, time-fixed socio-economic flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (not employed).
+- **Source aliases:**
+  - `Employment` -- Lohmer 2026 Table 1 ('Employment: Yes') and Table 2 row 'theta alpha, employment'.
+- **Example models:** `Lohmer_2026_buprenorphine_opioidUse.R` (founding example; multiplies the negative logit intercept of weekly opioid abstinence by 0.796, so employment raises the drug-free probability of abstinence; 33.7% and 39.4% employed in the two pooled studies).
+- **Notes:** General scope: employment status is a standard social-determinant covariate in substance-use-disorder and psychiatric exposure-response analyses. Record in each model whether part-time or student status counts as employed when the source defines it; Lohmer 2026 does not. Missing values (5.3% of Lohmer 2026 Study 1) are not imputed by the model.
+
+### OPIOID_ROUTE_INJECTION (**canonical for injection as the main route of illicit opioid use indicator**)
+- **Description:** 1 = injection (intravenous or other injection) was reported as the participant's main route of opioid use at baseline, 0 = another main route (smoking, snorting, oral or other). Subject-level, time-fixed substance-use-history flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-injection main route).
+- **Source aliases:**
+  - `Injection use` -- Lohmer 2026 Tables 2 and 3 footnote: "'Injection use' means that injection was reported as the main route of opioid use at baseline"; Table 1 'Main route of administration: Injection'.
+- **Example models:** `Lohmer_2026_buprenorphine_opioidUse.R` (founding example; multiplies the buprenorphine EC50 on the logit of abstinence by 1.74), `Lohmer_2026_buprenorphine_craving.R` (enters only in interaction with `FENTANYL_GE2_DAILY`: Emax x 0.736 for fentanyl >= 2 times/day without injection and x 0.198 with injection).
+- **Notes:** Describes how the participant used illicit opioids before treatment, not how a study drug is administered: do not confuse with the `ROUTE_*` family, which encodes the administration route of the modelled drug. General scope because the main route of use is a standard opioid-use-disorder severity descriptor. The main route is a single choice per participant, so it is a binary flag rather than one indicator per route; a source that models smoking or snorting separately should register `OPIOID_ROUTE_<ROUTE>` siblings with the same convention.
+
+### FENTANYL_DAILY (**canonical for daily illicit fentanyl use at baseline indicator**)
+- **Description:** 1 = the participant reported using fentanyl (illicitly manufactured fentanyl or analogues) every day at baseline, 0 = less than daily or no fentanyl use. Subject-level, time-fixed substance-use-history flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no daily fentanyl use).
+- **Source aliases:**
+  - `Daily fentanyl` -- Lohmer 2026 Table 1; the Table 2 effect 'theta EC50, fentanyl/amph' is the product `FENTANYL_DAILY * AMPHETAMINE_USE`.
+- **Example models:** `Lohmer_2026_buprenorphine_opioidUse.R` (founding example; enters only together with `AMPHETAMINE_USE`: the buprenorphine EC50 is multiplied by 8.25 when both are 1).
+- **Notes:** Decomposed from the paper's composite 'daily fentanyl and amphetamine/methamphetamine co-use' so the substance-use history stays reusable; form the composite in `model()`. Lohmer 2026 imputed the flag as 0 for the whole 2015-2016 study because fentanyl was not assessed then. Nested in `FENTANYL_GE2_DAILY` in the sense that fentanyl at least twice a day implies daily use; carry both columns when a model uses both, rather than deriving one from the other, since the source reports them as separate questionnaire items (49.4% daily vs 44.0% >= 2 times/day in Lohmer 2026 Study 2).
+
+### FENTANYL_GE2_DAILY (**canonical for illicit fentanyl use at least twice per day at baseline indicator**)
+- **Description:** 1 = the participant reported using fentanyl at least twice per day at baseline, 0 = less often or not at all. Subject-level, time-fixed substance-use-history flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (fentanyl less than twice daily or none).
+- **Source aliases:**
+  - `Fentanyl >= 2x/day` -- Lohmer 2026 Table 1; Table 3 rows 'theta Emax, fentanyl, no injection' and 'theta Emax, fentanyl+injection'.
+- **Example models:** `Lohmer_2026_buprenorphine_craving.R` (founding example; multiplies the buprenorphine Emax on the cumulative logits of opioid craving by 0.736 without, and by 0.198 with, `OPIOID_ROUTE_INJECTION`).
+- **Notes:** A frequency threshold within daily use; see `FENTANYL_DAILY`. Lohmer 2026 imputed it as 0 for the 2015-2016 study. A source that reports weekly frequency ('>= 14 times/week', also in Lohmer 2026 Table 1) describes a different item and should register its own sibling.
+
+### AMPHETAMINE_USE (**canonical for amphetamine / methamphetamine use at baseline indicator**)
+- **Description:** 1 = the participant reported (or screened positive for) amphetamine or methamphetamine use at baseline, 0 = no use. Subject-level, time-fixed substance-use-history flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no amphetamine / methamphetamine use).
+- **Source aliases:**
+  - `Amphetamines/Methamphetamines` -- Lohmer 2026 Table 1; part of the Table 2 composite 'daily fentanyl and amphetamine/methamphetamine co-use at baseline'.
+- **Example models:** `Lohmer_2026_buprenorphine_opioidUse.R` (founding example; enters only together with `FENTANYL_DAILY`: buprenorphine EC50 x 8.25 when both are 1).
+- **Notes:** Stimulant-use history flag, sibling of `CANNABIS_DAILY`, `SMOKE` and `ALCOHOL_USE`. Amphetamine and methamphetamine are pooled because urine drug screens do not separate them. Not a frequency flag: any use at baseline counts (60.0% of Lohmer 2026 Study 2). Cocaine use is a separate stimulant and needs its own column.
+
 ### ATHLETE (**canonical for athlete / endurance-trained-individual indicator**)
 - **Description:** 1 = competitive athlete or healthy endurance-trained individual, 0 = the study's non-athlete reference group. Subject-level baseline training-status flag describing habitual endurance training rather than a measured physiological quantity. Time-fixed per subject.
 - **Units:** (binary)
@@ -20460,6 +20526,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `CONTINUE` -- Ravix 2025 File S1 control-stream column, 1 = concentration drawn under continuous infusion, 0 = under intermittent infusion (median 1 h, range 1 min to 4 h). Same orientation, no value transformation.
 - **Example models:** `Yoo_2025_benzylpenicillin.R` (founding example; multiplicative ratio on the central volume, `vc * 1.96^REGIMEN_CONTINF`, per Yoo 2025 Table 4 'Ratio,Vc' with `Vc,Linf = Vc x Ratio,Vc`. `REGIMEN_CONTINF = 0` on the 600 mg IV bolus given over 3 min and 1 on the 46.9-1133.6 ug/h continuous infusions of the CHIPS trial, so the column varies within subject. The source attributes part of the larger central volume to the infusion fluid load, 20 mL/h versus a single 10 mL bolus.), `Ravix_2025_piperacillin.R` (selects the proportional residual-error magnitude only, 0.63 for samples under intermittent infusion and 0.44 under continuous infusion, per Ravix 2025 Table 3 and the File S1 `$ERROR` block; no structural parameter depends on it. Here the comparator mode is an intermittent infusion of 1 min to 4 h rather than a bolus, and the value is read on the observation rows.), `Liu_2024_ciprofol.R` (study-design flag applied to the complement on four parameters: CL `exp(0.229 * (1 - REGIMEN_CONTINF))`, V2 `exp(-2.08 * ...)`, Q3 `exp(0.802 * ...)`, V3 `exp(-1.62 * ...)`; Liu 2024 Equation 3 and Table 2. The paper's flag `FLG` is 1 for the seven bolus / short-infusion studies and 0 for the five long-term maintenance-infusion studies, so `FLG = 1 - REGIMEN_CONTINF`, assigned per study rather than from each dose's infusion duration -- a 1 min bolus plus 30 min infusion study is 0 -- as the Notes below require. Time-fixed per subject.)
 - **Notes:** Administration MODE within one route, which is why it is neither a `ROUTE_*` canonical (both modes are intravenous) nor a `FORM_*` canonical (the same solution is given both ways), nor `OCC` (a fixed-effect typical-value shift, not an inter-occasion random effect). It is settable for a simulated regimen that was never studied, which a study-membership indicator such as `STUDY_<id>` is not. The `REGIMEN_` prefix collects dosing-strategy indicators (how a dose is delivered over time); a short infusion of fixed duration given in place of a bolus is still `REGIMEN_CONTINF = 0` unless the source models it with the continuous-infusion effect. Do not derive the column from an inequality on infusion rate or duration: the source paper defines the two groups by the trial phase, and an intermediate regimen was never studied.
+
+### REGIMEN_MAINT_100MG (**canonical for 100-mg-maintenance arm indicator of a loading/maintenance depot regimen**)
+- **Description:** 1 = the subject was randomised to the 100-mg maintenance regimen of a monthly depot (for BUP-XR: 300-mg loading injections followed by 100-mg maintenance injections, the '300/100 mg' arm), 0 = the 300-mg maintenance regimen ('300/300 mg') or placebo. Subject-level, time-fixed from randomisation.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (300/300-mg regimen or placebo).
+- **Source aliases:**
+  - `100 mg` -- Lohmer 2026 Table 2 row 'theta alpha, 100 mg, Study 1' and Table 3 row 'theta alpha 100 mg, Study 1' ('100-mg arm effect', carried over from Laffont 2022).
+- **Example models:** `Lohmer_2026_buprenorphine_opioidUse.R` (founding example; multiplies the logit intercept of abstinence by 0.764 in Study 1 only, gated by `(1 - STUDY_NCT04995029)`), `Lohmer_2026_buprenorphine_craving.R` (multiplies the first cumulative-logit intercept of craving by 0.971, also Study 1 only).
+- **Notes:** An arm effect on the drug-free intercept, estimated alongside a concentration-driven Emax term, so it captures a between-arm difference the concentrations do not explain. It is set from randomisation, so in Lohmer 2026 it applies from day 1 even though the two arms receive identical 300-mg injections for the first two months. Joins the `REGIMEN_` prefix (how doses are scheduled) rather than the `DOSE_<drug>_<units>` family, which carries an administered amount. Specific scope: the 100-mg/300-mg pair is the BUP-XR label regimen; a depot with other maintenance strengths should register its own sibling.
 
 ### DEVICE_AI (**canonical for autoinjector-vs-prefilled-syringe SC device indicator**)
 - **Description:** 1 = subject's SC dose delivered via autoinjector (AI), 0 = prefilled syringe (PFS). Per-subject (study-fixed) covariate flagging the SC delivery device when a model carries device-specific PK effects.
@@ -29557,24 +29634,13 @@ is the experimental condition itself, held constant for the whole solve.
 - **Example models:** `Kong_2025b_piperacillin_tazobactam.R` (sets the piperacillin unbound fraction to 1, held constant, instead of 0.645, so measured unbound equals total concentration in that study).
 - **Notes:** Auto-approved member of the `STUDY_<id>` family. Kong 2025 treats the study as an outlier in protein binding (Discussion, limitations). Sibling of `STUDY_SIME2014` in the same model.
 
-### STUDY_TOUTAIN1984 (**canonical for the Toutain 1984 IV dexamethasone horse study indicator**)
-- **Description:** 1 = the horse belongs to the Toutain et al. 1984 crossover study of IV dexamethasone alcohol and IV dexamethasone isonicotinate (0.05 mg/kg) in Saddlebred horses (Am J Vet Res 1984;45:1750-1756; conducted 1981); 0 = any other study of the pooled analysis. Subject-level (time-fixed).
+### STUDY_NCT04995029 (**canonical for the BUP-XR high-risk fentanyl-era study NCT04995029 indicator**)
+- **Description:** 1 = the subject belongs to NCT04995029, the 2021-2024 randomised double-blind study of monthly extended-release buprenorphine (BUP-XR) 100 mg vs 300 mg maintenance in adults with opioid use disorder and high-risk opioid use (US and Canada); 0 = the 2015-2016 pivotal phase 3 study NCT02357901. Subject-level (time-fixed).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (all other pooled studies).
+- **Reference category:** 0 (NCT02357901, Lohmer 2026 'Study 1').
 - **Source aliases:**
-  - `STUDY_ID = 1` -- Yu 2026 (J Pharmacokinet Pharmacodyn) NONMEM PD control stream and Table 1 ('1-1981').
-- **Example models:** `Yu_2026_dexamethasone_horse_poppkpd.R` (switches on the stress-induced cortisol surge Rmax,stress / tau for 0.34 h after each dose; the PD control stream applies the surge only in this study).
-- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_EKSTRAND2015` in the same model. Simulations of a new population normally set it to 0; set it to 1 to reproduce a handling-stress surge at dosing.
-
-### STUDY_EKSTRAND2015 (**canonical for the Ekstrand 2015 IM dexamethasone isonicotinate horse study indicator**)
-- **Description:** 1 = the horse belongs to the Ekstrand et al. 2015 study of IM dexamethasone isonicotinate (0.0237 mg/kg DEX-equivalent) in Standardbred geldings (J Vet Pharmacol Ther 2015; conducted 2010); 0 = any other study of the pooled analysis. Subject-level (time-fixed).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (all other pooled studies).
-- **Source aliases:**
-  - `STUDY_ID = 2` -- Yu 2026 (J Pharmacokinet Pharmacodyn) NONMEM PD control stream and Table 1 ('2-2010').
-- **Example models:** `Yu_2026_dexamethasone_horse_poppkpd.R` (selects the study-specific cortisol mesor Rm1 = 93 ng/mL instead of Rm2 = 47 ng/mL).
-- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_TOUTAIN1984` in the same model.
+  - `Study 2` -- Lohmer 2026 notation (Tables 2 and 3 rows suffixed 'Study 2').
+- **Example models:** `Lohmer_2026_buprenorphine_opioidUse.R` (selects the study-specific intercept and Emax and routes the Emax drive through a Study-2-only effect compartment), `Lohmer_2026_buprenorphine_craving.R` (selects the study-specific intercept, threshold increments and Emax; Study-2-only effect compartment).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. The study term stands for a more severe, fentanyl-exposed population with slower response rather than a design difference alone, so setting it to 1 for a simulated population is a statement about that population.

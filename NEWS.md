@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Brooks 2026 thiotepa and TEPA ([doi:10.1002/jcph.70296](https://doi.org/10.1002/jcph.70296)) -- children and young adults undergoing allogeneic or autologous hematopoietic cell transplantation.
+- Add Lohmer 2026 buprenorphine exposure-response models of opioid use, opioid craving and treatment retention ([doi:10.3389/fphar.2026.1839067](https://doi.org/10.3389/fphar.2026.1839067)) -- adults with moderate-to-severe opioid use disorder on monthly extended-release buprenorphine, before and during the fentanyl era.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

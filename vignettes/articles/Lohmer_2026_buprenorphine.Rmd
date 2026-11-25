@@ -1,0 +1,720 @@
+---
+title: "Buprenorphine exposure-response in opioid use disorder (Lohmer 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Buprenorphine exposure-response in opioid use disorder (Lohmer 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Pin the thread count as well as the seed: rxode2 draws random effects in
+# parallel, so the simulated cohort otherwise depends on the core count.
+rxode2::setRxThreads(1L)
+rxode2::rxSetSeed(20261839)
+set.seed(20261839)
+```
+
+# Model and source
+
+* Citation: Lohmer LRL, Greenwald MK, Kakar R, Laffont CM. Optimal
+  buprenorphine exposure to treat patients with opioid use disorder in the era
+  of fentanyl and polysubstance use. Front Pharmacol. 2026;17:1839067.
+* Article: <https://doi.org/10.3389/fphar.2026.1839067>
+* Supplementary Material (model equations):
+  <https://www.frontiersin.org/articles/10.3389/fphar.2026.1839067/full#supplementary-material>
+
+Lohmer et al. (2026) pooled two randomised trials of monthly subcutaneous
+extended-release buprenorphine (BUP-XR, SUBLOCADE) in adults with moderate to
+severe opioid use disorder: the pivotal phase 3 study NCT02357901 ("Study 1",
+2015-2016, before fentanyl became prevalent) and NCT04995029 ("Study 2",
+2021-2024, a high-risk population in which half the participants used fentanyl
+daily). Three exposure-response models were fitted separately in Pumas, so the
+paper contributes three model files:
+
+| Model | Endpoint | Structure |
+|---|---|---|
+| `Lohmer_2026_buprenorphine_opioidUse` | Weekly opioid use (urine screen and self-report both negative = abstinent) | Mixed-effects logistic regression, Emax in buprenorphine concentration; effect compartment in Study 2 |
+| `Lohmer_2026_buprenorphine_craving` | Current craving on the 0-100 mm Opioid Craving VAS, categorised 0 / 1-5 / 6-20 / >20 mm | Proportional-odds model, Emax in buprenorphine concentration plus a placebo onset term; effect compartment in Study 2 |
+| `Lohmer_2026_buprenorphine_dropout` | Treatment discontinuation | Gompertz hazard with the last observed craving category as a time-varying covariate |
+
+None of the three re-estimates pharmacokinetics. The authors refitted the
+Jones 2021 BUP-XR population PK model to both studies and drove the
+exposure-response models with the individual predicted plasma
+concentrations. That PK model is packaged as `Jones_2021_buprenorphine`, so
+this article chains it into the two concentration-driven models, and then
+feeds simulated craving into the dropout model, as the authors did when they
+used the combined model for evaluation.
+
+```{r load-models}
+mod_pk <- rxode2::rxode(readModelDb("Jones_2021_buprenorphine"))
+mod_use <- rxode2::rxode(readModelDb("Lohmer_2026_buprenorphine_opioidUse"))
+mod_crav <- rxode2::rxode(readModelDb("Lohmer_2026_buprenorphine_craving"))
+mod_drop <- rxode2::rxode(readModelDb("Lohmer_2026_buprenorphine_dropout"))
+```
+
+# Population
+
+The efficacy analyses included 989 participants (Table 1): 489 from Study 1
+and 500 from Study 2. Study 1 participants were 66.3% male, mean age 39.7
+years (SD 11.1), 71.3% White and 26.6% Black/African American; 43.8% reported
+injection as their main route of opioid use and 19.8% used
+amphetamines/methamphetamines. Study 2 participants were 58.0% male, mean age
+41.2 years (SD 10.6), 73.4% White and 20.8% Black/African American; 49.4%
+reported daily fentanyl use, 44.0% fentanyl use at least twice a day, 60.0%
+amphetamine/methamphetamine use, 29.2% daily fentanyl together with
+amphetamines/methamphetamines and 29.2% injection as their main route.
+Fentanyl was not assessed in Study 1 and was imputed as absent.
+
+Study 1 randomised participants 2:2:1 to six monthly injections of 300 mg
+(300/300 mg), two of 300 mg followed by four of 100 mg (300/100 mg), or
+placebo. In Study 2 every participant received 300 mg in Weeks 1 and 2, and at
+Week 6 was randomised to eight further monthly injections of 100 mg or 300 mg.
+The dropout analysis used 1,071 participants (489 + 582), including Study 2
+participants who stopped before the Week 6 randomisation.
+
+The same information is available programmatically through each model's
+`population` metadata, e.g.
+`readModelDb("Lohmer_2026_buprenorphine_opioidUse")()$population`.
+
+# Source trace
+
+Model equations come from the Supplementary Material ("Opioid Use Model
+Equations", "Opioid Craving Model Equations", "Treatment Retention Model
+Equations"); parameter values from Tables 2-4. Every `ini()` value carries
+the same reference as an in-file comment.
+
+**Opioid use (`Lohmer_2026_buprenorphine_opioidUse`, Table 2)**
+
+| Parameter | Value | Source |
+|---|---|---|
+| `logite0_study1`, `logite0_study2` | -4.28, -6.83 | Table 2, alpha Study 1 / Study 2 |
+| `e_regimen_maint_100mg_logite0` | 0.764 | Table 2, theta alpha 100 mg Study 1 |
+| `e_employed_logite0` | 0.796 | Table 2, theta alpha employment |
+| `lemax_study1`, `lemax_study2` | log(6.68), log(10.0) | Table 2, Emax Study 1 / Study 2 |
+| `e_race_black_emax` | 0.843 | Table 2, theta Emax race |
+| `lec50` | log(0.999 ng/mL) | Table 2, EC50 |
+| `e_opioid_route_injection_ec50` | 1.74 | Table 2, theta EC50 injection |
+| `e_fentanyl_daily_amphetamine_use_ec50` | 8.25 | Table 2, theta EC50 fentanyl/amph |
+| `lke0` | log(0.000856 1/h) | Table 2, ke0 Study 2 |
+| `etalogite0` | 2.27^2 | Table 2, IIV alpha (SD) |
+| `etalec50`, `etalke0` | log(1 + 1.71^2), log(1 + 1.43^2) | Table 2, IIV EC50 171%, ke0 143% |
+| logit structure | `alpha + fC + eta` | Supplementary Material |
+| Study 2 effect compartment | `d/dt(effect) = ke0 (C - effect)` | Results, "Opioid use model" |
+
+**Opioid craving (`Lohmer_2026_buprenorphine_craving`, Table 3)**
+
+| Parameter | Value | Source |
+|---|---|---|
+| `logite0_study1`, `logite0_study2` | -5.39, -8.61 | Table 3, alpha1 Study 1 / Study 2 |
+| `e_regimen_maint_100mg_logite0` | 0.971 | Table 3, theta alpha 100 mg Study 1 |
+| `logitstep1_study1`, `logitstep1_study2` | 2.42, 3.30 | Table 3, delta1 |
+| `logitstep2_study1`, `logitstep2_study2` | 1.92, 1.87 | Table 3, delta2 |
+| `lemax_study1`, `lemax_study2` | log(2.65), log(3.55) | Table 3, Emax |
+| `lec50` | log(0.365 ng/mL) | Table 3, EC50 |
+| `e_race_black_emax` | 1.43 | Table 3, theta Emax race |
+| `e_fentanyl_ge2_daily_emax` | 0.736 | Table 3, theta Emax fentanyl, no injection |
+| `e_fentanyl_ge2_daily_injection_emax` | 0.198 | Table 3, theta Emax fentanyl + injection |
+| `emax_placebo` | 3.73 | Table 3, theta Placebo |
+| `lke0` | log(0.00217 1/h) | Table 3, ke0 |
+| `etalogite0` | 1.71^2 | Table 3, IIV alpha (SD) |
+| `etalemax`, `etalec50`, `etalke0` | log(1 + CV^2) for 53.0%, 127%, 190% | Table 3, IIV |
+| cumulative logits | `alpha_m + fC + f_placebo + eta` | Supplementary Material |
+| placebo term | `theta_placebo (1 - exp(-ke0 t))` | Supplementary Material |
+
+**Dropout (`Lohmer_2026_buprenorphine_dropout`, Table 4)**
+
+| Parameter | Value | Source |
+|---|---|---|
+| `lhaz0_drug`, `lhaz0_placebo` | log(0.00332), log(0.00860) 1/day | Table 4, beta0 BUP-XR / placebo |
+| `lkhaz_drug`, `lkhaz_placebo` | log(0.00271), log(0.00906) 1/day | Table 4, ke BUP-XR / placebo |
+| `e_opioid_craving_cat2_haz` ... `cat4` | 0.897, 1.04, 2.28 | Table 4, beta1 craving 1-5 / 6-20 / >20 |
+| `e_age_haz_drug`, `e_age_haz_placebo` | -0.581, -1.70 | Table 4, beta2 age |
+| `e_race_black_haz` | 0.663 | Table 4, beta3 race |
+| hazard | `beta0 beta1^craving (AGE/40)^beta2 beta3^RACE exp(-ke t)` | Supplementary Material |
+
+# Virtual cohort
+
+Each study arm gets 150 virtual participants. Baseline characteristics are
+drawn to match the per-study frequencies of Table 1. The joint frequencies
+that the models use are matched too: in Study 2, 44.0% used fentanyl at least
+twice a day (all of them daily users, 49.4%), and only 6.0% combined that with
+injection, so injection is drawn conditional on frequent fentanyl use.
+Amphetamine/methamphetamine use is drawn independently of daily fentanyl use,
+which reproduces the reported 29.2% co-use (0.494 x 0.60 = 0.296). Body weight
+and body mass index, which the PK model needs, are not reported by Lohmer
+2026 and are drawn around the Jones 2021 cohort (76.5 kg, BMI 24.8 kg/m^2).
+
+```{r cohort}
+n_per_arm <- 150
+
+draw_cohort <- function(arm, study2, n, id0) {
+  fent_daily <- if (study2 == 1) rbinom(n, 1, 0.494) else rep(0L, n)
+  fent_ge2 <- if (study2 == 1) fent_daily * rbinom(n, 1, 0.440 / 0.494) else rep(0L, n)
+  inj <- if (study2 == 1) {
+    rbinom(n, 1, ifelse(fent_ge2 == 1, 0.060 / 0.440, (0.292 - 0.060) / 0.560))
+  } else {
+    rbinom(n, 1, 0.438)
+  }
+  age_mean <- if (study2 == 1) 41.2 else 39.7
+  age_sd <- if (study2 == 1) 10.6 else 11.1
+  age_rng <- if (study2 == 1) c(18, 72) else c(19, 64)
+  data.frame(
+    id = id0 + seq_len(n),
+    arm = arm,
+    STUDY_NCT04995029 = study2,
+    REGIMEN_MAINT_100MG = as.integer(arm %in% c("Study 1 300/100 mg", "Study 2 300/100 mg")),
+    PLACEBO = as.integer(arm == "Study 1 placebo"),
+    EMPLOYED = rbinom(n, 1, if (study2 == 1) 0.394 else 0.337),
+    RACE_BLACK = rbinom(n, 1, if (study2 == 1) 0.208 else 0.266),
+    AGE = pmin(pmax(rnorm(n, age_mean, age_sd), age_rng[1]), age_rng[2]),
+    OPIOID_ROUTE_INJECTION = inj,
+    FENTANYL_DAILY = fent_daily,
+    FENTANYL_GE2_DAILY = fent_ge2,
+    AMPHETAMINE_USE = rbinom(n, 1, if (study2 == 1) 0.600 else 0.198),
+    WT = exp(rnorm(n, log(76.5), 0.2)),
+    BMI = pmin(pmax(rnorm(n, 24.8, 4), 18), 40)
+  )
+}
+
+arms <- data.frame(
+  arm = c(
+    "Study 1 300/300 mg", "Study 1 300/100 mg", "Study 1 placebo",
+    "Study 2 300/300 mg", "Study 2 300/100 mg"
+  ),
+  study2 = c(0, 0, 0, 1, 1)
+)
+cohort <- bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  draw_cohort(arms$arm[i], arms$study2[i], n_per_arm, (i - 1) * n_per_arm)
+}))
+cohort |>
+  group_by(arm) |>
+  summarise(
+    n = n(),
+    `Black/AA (%)` = round(100 * mean(RACE_BLACK)),
+    `Injection (%)` = round(100 * mean(OPIOID_ROUTE_INJECTION)),
+    `Daily fentanyl + amph (%)` = round(100 * mean(FENTANYL_DAILY * AMPHETAMINE_USE)),
+    `Fentanyl >= 2/day + injection (%)` = round(100 * mean(FENTANYL_GE2_DAILY * OPIOID_ROUTE_INJECTION)),
+    .groups = "drop"
+  ) |>
+  knitr::kable()
+```
+
+# Buprenorphine exposure (Jones 2021 PK model)
+
+Doses follow the protocols: Study 1 injections every 28 days from Day 1;
+Study 2 injections on Day 1 and Day 8, then from Week 6 (Day 36) every 28 days
+for eight injections. The transmucosal buprenorphine run-in before the first
+injection is not simulated (its concentrations have washed out within days),
+so placebo participants have a concentration of zero throughout. A BUP-XR dose
+goes into both `depot_fast1` and `depot_slow1`, which the Jones model splits
+between its fast and slow pathways.
+
+```{r pk}
+dose_times <- function(arm) {
+  if (grepl("^Study 1", arm)) {
+    (0:5) * 672
+  } else {
+    c(0, 168, 840 + (0:7) * 672)
+  }
+}
+dose_amts <- function(arm) {
+  switch(arm,
+    "Study 1 300/300 mg" = rep(300, 6),
+    "Study 1 300/100 mg" = c(300, 300, rep(100, 4)),
+    "Study 2 300/300 mg" = rep(300, 10),
+    "Study 2 300/100 mg" = c(300, 300, rep(100, 8))
+  )
+}
+end_h <- function(study2) ifelse(study2 == 1, 38 * 168, 25 * 168)
+
+active <- cohort |> filter(PLACEBO == 0)
+pk_events <- bind_rows(lapply(seq_len(nrow(active)), function(i) {
+  s <- active[i, ]
+  tt <- dose_times(s$arm)
+  aa <- dose_amts(s$arm)
+  doses <- data.frame(
+    id = s$id, time = rep(tt, each = 2), amt = rep(aa, each = 2),
+    evid = 1, cmt = rep(c("depot_fast1", "depot_slow1"), length(tt))
+  )
+  obs <- data.frame(
+    id = s$id, time = seq(0, end_h(s$STUDY_NCT04995029), by = 24),
+    amt = 0, evid = 0, cmt = "central"
+  )
+  bind_rows(doses, obs) |>
+    mutate(WT = s$WT, BMI = s$BMI, FORM_BPN_FILM = 1, DOSE_BPN_SL_MG = 0)
+})) |>
+  arrange(id, time, desc(evid))
+
+sim_pk <- rxode2::rxSolve(mod_pk, events = pk_events, returnType = "data.frame") |>
+  select(id, time, Cc)
+
+conc <- sim_pk |>
+  rename(CP_BPN_NGML = Cc) |>
+  left_join(cohort |> select(id, arm), by = "id")
+conc |>
+  filter(time >= 20 * 168) |>
+  group_by(arm) |>
+  summarise(`Median Cc weeks 20-25+ (ng/mL)` = signif(median(CP_BPN_NGML), 3), .groups = "drop") |>
+  knitr::kable()
+```
+
+The 100-mg and 300-mg maintenance doses settle around the 2-3 and 5-6 ng/mL
+the paper discusses.
+
+## NCA of the simulated exposure (PKNCA)
+
+The exposure-response models take the concentration as an input, so the
+paper reports no NCA. As a check on the exposure that drives them, this is
+the NCA of the last dosing interval of the Study 1 arms (Day 141-169).
+
+```{r pknca}
+last_int <- conc |>
+  filter(grepl("^Study 1", arm), time >= 3360, time <= 4032) |>
+  mutate(tad = time - 3360)
+dose_last <- last_int |>
+  distinct(id, arm) |>
+  mutate(tad = 0, dose = ifelse(arm == "Study 1 300/300 mg", 300, 100))
+pk_obj <- PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(last_int, CP_BPN_NGML ~ tad | arm + id),
+  PKNCA::PKNCAdose(dose_last, dose ~ tad | arm + id),
+  intervals = data.frame(start = 0, end = 672, cmax = TRUE, cav = TRUE, cmin = TRUE)
+)
+nca <- PKNCA::pk.nca(pk_obj)
+summary(nca)
+```
+
+# Opioid use
+
+`CP_BPN_NGML` is supplied on every daily record; `covsInterpolation =
+"linear"` lets the Study 2 effect compartment integrate a smooth input. The
+cohort mean of the individual probabilities of abstinence (with
+between-subject variability) is compared with the observed proportions of
+Figure 1.
+
+```{r pd-data}
+pd_grid <- bind_rows(lapply(seq_len(nrow(cohort)), function(i) {
+  s <- cohort[i, ]
+  data.frame(id = s$id, time = seq(0, end_h(s$STUDY_NCT04995029), by = 24))
+})) |>
+  left_join(conc |> select(id, time, CP_BPN_NGML), by = c("id", "time")) |>
+  mutate(CP_BPN_NGML = ifelse(is.na(CP_BPN_NGML), 0, CP_BPN_NGML), evid = 0) |>
+  left_join(cohort, by = "id")
+```
+
+```{r opioid-use}
+sim_use <- rxode2::rxSolve(
+  mod_use,
+  events = pd_grid,
+  keep = "arm",
+  covsInterpolation = "linear",
+  returnType = "data.frame"
+)
+use_week <- sim_use |>
+  filter(time %% 168 == 0, time > 0) |>
+  mutate(week = time / 168) |>
+  group_by(arm, week) |>
+  summarise(pct_abstinent = 100 * mean(prob_opioid_abstinence), .groups = "drop")
+```
+
+Observed percentages read from Figure 1 by the maintainers:
+
+```{r fig1-digitised}
+fig1 <- tribble(
+  ~arm, ~week, ~observed,
+  "Study 1 300/100 mg", 5, 57,
+  "Study 1 300/100 mg", 13, 56,
+  "Study 1 300/100 mg", 25, 63,
+  "Study 1 300/300 mg", 5, 48,
+  "Study 1 300/300 mg", 13, 55,
+  "Study 1 300/300 mg", 25, 66,
+  "Study 1 placebo", 5, 20,
+  "Study 1 placebo", 13, 11,
+  "Study 1 placebo", 25, 6,
+  "Study 2 300/300 mg", 2, 24,
+  "Study 2 300/300 mg", 6, 30,
+  "Study 2 300/300 mg", 10, 38,
+  "Study 2 300/300 mg", 22, 43,
+  "Study 2 300/300 mg", 38, 51,
+  "Study 2 300/100 mg", 2, 18,
+  "Study 2 300/100 mg", 6, 31,
+  "Study 2 300/100 mg", 10, 37,
+  "Study 2 300/100 mg", 22, 45,
+  "Study 2 300/100 mg", 38, 48
+)
+cmp_use <- fig1 |>
+  left_join(use_week, by = c("arm", "week")) |>
+  mutate(simulated = round(pct_abstinent, 1), diff = round(simulated - observed, 1))
+cmp_use |>
+  select(arm, week, observed, simulated, diff) |>
+  dplyr::rename(
+    Arm = arm, Week = week, `Observed (%)` = observed,
+    `Simulated (%)` = simulated, `Difference (points)` = diff
+  ) |>
+  knitr::kable()
+```
+
+```{r fig1, fig.cap = "Replicates Figure 1 of Lohmer 2026: percentage of participants abstinent by week and arm. Lines: cohort mean of the simulated individual probabilities; points: observed values read from Figure 1."}
+ggplot(use_week, aes(week, pct_abstinent, colour = arm)) +
+  geom_line() +
+  geom_point(data = fig1, aes(week, observed, colour = arm), size = 2) +
+  facet_wrap(~ ifelse(grepl("^Study 1", arm), "Study 1", "Study 2"), scales = "free_x") +
+  scale_y_continuous(limits = c(0, 100)) +
+  labs(x = "Study week", y = "Participants abstinent (%)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r check-use}
+stopifnot(
+  # A transcription error in an intercept or Emax moves a whole arm by tens
+  # of points; the median gap across all digitised points stays small.
+  abs(median(cmp_use$diff)) < 6,
+  quantile(abs(cmp_use$diff), 0.9) < 15
+)
+```
+
+## Effect of daily fentanyl plus amphetamine co-use (Figure 3)
+
+Figure 3 shows that in Study 2 the participants who used both daily fentanyl
+and amphetamines/methamphetamines were the least abstinent on the 100-mg
+maintenance dose, and caught up with the others on 300 mg. The model carries
+this through an 8.25-fold higher EC50.
+
+```{r fig3, fig.cap = "Replicates the pattern of Figure 3 of Lohmer 2026: simulated abstinence in Study 2 by maintenance dose and daily fentanyl plus amphetamine/methamphetamine co-use."}
+fig3 <- sim_use |>
+  filter(time %% 168 == 0, time > 0, grepl("^Study 2", arm)) |>
+  mutate(
+    week = time / 168,
+    group = ifelse(FENTANYL_DAILY * AMPHETAMINE_USE == 1,
+      "Daily fentanyl + amphetamine", "Other"
+    )
+  ) |>
+  group_by(arm, group, week) |>
+  summarise(pct = 100 * mean(prob_opioid_abstinence), .groups = "drop")
+ggplot(fig3, aes(week, pct, colour = group)) +
+  geom_line() +
+  facet_wrap(~arm) +
+  labs(x = "Study week", y = "Participants abstinent (%)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r fig3-gap}
+gap <- fig3 |>
+  filter(week >= 30) |>
+  group_by(arm, group) |>
+  summarise(pct = mean(pct), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = group, values_from = pct) |>
+  mutate(gap = Other - `Daily fentanyl + amphetamine`)
+knitr::kable(gap, digits = 1)
+```
+
+The subgroup has only a few dozen simulated participants per arm, so the
+check is made on the typical participant instead: Study 2 at Week 38 with a
+constant concentration equal to the simulated median of each maintenance
+dose. The comparison is on the logit scale, where the drug effect acts: the
+8.25-fold EC50 leaves the co-use participant on the rising part of the Emax
+curve at 100-mg concentrations, so 300 mg adds more to the logit. (On the
+probability scale the typical "other" participant, with a random effect of
+zero, sits on the steep middle of the logistic curve, which hides this.)
+
+```{r typical-helper}
+typical_grid <- function(cp, covs) {
+  bind_rows(lapply(seq_along(cp), function(i) {
+    data.frame(id = i, time = seq(0, 38 * 168, by = 24), CP_BPN_NGML = cp[i], evid = 0) |>
+      bind_cols(covs[i, , drop = FALSE])
+  }))
+}
+base_covs <- data.frame(
+  STUDY_NCT04995029 = 1, REGIMEN_MAINT_100MG = 0, EMPLOYED = 0, RACE_BLACK = 0,
+  OPIOID_ROUTE_INJECTION = 0, FENTANYL_DAILY = 0, FENTANYL_GE2_DAILY = 0,
+  AMPHETAMINE_USE = 0
+)
+```
+
+```{r check-fig3}
+cp_ss <- c(2.66, 6.88, 2.66, 6.88)
+covs3 <- base_covs[rep(1, 4), ]
+covs3$FENTANYL_DAILY <- c(0, 0, 1, 1)
+covs3$AMPHETAMINE_USE <- c(0, 0, 1, 1)
+typ3 <- rxode2::rxSolve(rxode2::zeroRe(mod_use, "omega"), events = typical_grid(cp_ss, covs3), returnType = "data.frame") |>
+  filter(time == 38 * 168) |>
+  mutate(
+    dose = rep(c("100 mg", "300 mg"), 2),
+    group = rep(c("Other", "Daily fentanyl + amphetamine"), each = 2)
+  ) |>
+  select(group, dose, logit_opioid_abstinence, prob_opioid_abstinence)
+knitr::kable(typ3, digits = 3)
+p3 <- function(g, d) typ3$logit_opioid_abstinence[typ3$group == g & typ3$dose == d]
+# The co-use subgroup gains more from 300 mg than the other participants do.
+stopifnot(
+  p3("Daily fentanyl + amphetamine", "300 mg") - p3("Daily fentanyl + amphetamine", "100 mg") >
+    p3("Other", "300 mg") - p3("Other", "100 mg")
+)
+```
+
+# Opioid craving
+
+```{r craving}
+sim_crav <- rxode2::rxSolve(
+  mod_crav,
+  events = pd_grid,
+  keep = "arm",
+  covsInterpolation = "linear",
+  returnType = "data.frame"
+)
+crav_gt20 <- sim_crav |>
+  filter(time %% 168 == 0, time > 0) |>
+  mutate(study = ifelse(grepl("^Study 1", arm), "Study 1", "Study 2")) |>
+  group_by(study) |>
+  summarise(pct_gt20 = 100 * mean(prob_opioid_craving_gt20), .groups = "drop")
+crav_gt20 |>
+  mutate(published = c(6, 20)) |>
+  dplyr::rename(
+    Study = study, `Simulated craving > 20 mm (%)` = pct_gt20,
+    `Published (%)` = published
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+The Discussion reports clinically significant craving (>20 mm) in 20% of
+Study 2 and 6% of Study 1 participants. The simulated weekly averages are in
+the same range and keep the order between studies. The Study 1 figure here
+includes the placebo arm, whose craving is higher.
+
+```{r check-craving}
+stopifnot(
+  crav_gt20$pct_gt20[crav_gt20$study == "Study 2"] >
+    crav_gt20$pct_gt20[crav_gt20$study == "Study 1"] - 5,
+  abs(crav_gt20$pct_gt20[crav_gt20$study == "Study 2"] - 20) < 12
+)
+```
+
+```{r fig4, fig.cap = "Pattern of Figure 4 of Lohmer 2026: simulated probability of craving > 20 mm in Study 2 by frequent fentanyl use (>= 2 times/day) and injection as the main route."}
+fig4 <- sim_crav |>
+  filter(time %% 168 == 0, time > 0, grepl("^Study 2", arm)) |>
+  mutate(
+    week = time / 168,
+    group = case_when(
+      FENTANYL_GE2_DAILY == 1 & OPIOID_ROUTE_INJECTION == 1 ~ "Fentanyl >= 2/day + injection",
+      FENTANYL_GE2_DAILY == 1 ~ "Fentanyl >= 2/day, no injection",
+      OPIOID_ROUTE_INJECTION == 1 ~ "Injection, no frequent fentanyl",
+      TRUE ~ "Neither"
+    )
+  ) |>
+  group_by(group, week) |>
+  summarise(pct_gt20 = 100 * mean(prob_opioid_craving_gt20), .groups = "drop")
+ggplot(fig4, aes(week, pct_gt20, colour = group)) +
+  geom_line() +
+  labs(x = "Study week", y = "Craving > 20 mm (%)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 2))
+```
+
+As in Figure 4, frequent fentanyl users who inject have the highest
+craving. Only about 6% of Study 2 participants are in that group, so the
+ordering is checked on the typical participant (Week 38, 300-mg median
+concentration).
+
+```{r check-fig4}
+covs4 <- base_covs[rep(1, 4), ]
+covs4$FENTANYL_DAILY <- c(0, 1, 0, 1)
+covs4$FENTANYL_GE2_DAILY <- c(0, 1, 0, 1)
+covs4$OPIOID_ROUTE_INJECTION <- c(0, 0, 1, 1)
+typ4 <- rxode2::rxSolve(rxode2::zeroRe(mod_crav, "omega"), events = typical_grid(rep(6.88, 4), covs4), returnType = "data.frame") |>
+  filter(time == 38 * 168) |>
+  mutate(group = c("Neither", "Fentanyl >= 2/day, no injection", "Injection, no frequent fentanyl", "Fentanyl >= 2/day + injection")) |>
+  select(group, prob_opioid_craving_gt20)
+knitr::kable(typ4, digits = 3)
+stopifnot(
+  typ4$prob_opioid_craving_gt20[4] == max(typ4$prob_opioid_craving_gt20),
+  # No main effect of injection on craving was retained.
+  abs(typ4$prob_opioid_craving_gt20[3] - typ4$prob_opioid_craving_gt20[1]) < 1e-8
+)
+```
+
+# Treatment retention
+
+To drive the dropout model, a craving category is drawn for every
+participant at each protocol visit from the simulated category probabilities
+(weekly in Study 1; weekly to Week 10 and then every 4 weeks to Week 38 in
+Study 2), and carried forward day by day. Time in the dropout model is in
+days.
+
+```{r dropout}
+visit_weeks <- function(study2) {
+  if (study2 == 1) c(0:10, seq(14, 38, by = 4)) else 0:25
+}
+visits <- sim_crav |>
+  select(id, time, starts_with("prob_opioid_craving_le")) |>
+  mutate(week = time / 168) |>
+  left_join(cohort |> select(id, STUDY_NCT04995029), by = "id") |>
+  group_by(id) |>
+  filter(week %in% visit_weeks(first(STUDY_NCT04995029))) |>
+  ungroup() |>
+  mutate(
+    u = runif(n()),
+    cat = 1 + (u > prob_opioid_craving_le0) + (u > prob_opioid_craving_le5) +
+      (u > prob_opioid_craving_le20),
+    day = week * 7
+  ) |>
+  select(id, day, cat)
+
+drop_events <- bind_rows(lapply(seq_len(nrow(cohort)), function(i) {
+  s <- cohort[i, ]
+  data.frame(id = s$id, time = seq(0, end_h(s$STUDY_NCT04995029) / 24, by = 1))
+})) |>
+  left_join(visits, by = c("id", "time" = "day")) |>
+  group_by(id) |>
+  tidyr::fill(cat, .direction = "down") |>
+  ungroup() |>
+  mutate(OPIOID_CRAVING_CAT = cat, evid = 0, cmt = "cumhaz") |>
+  select(-cat) |>
+  left_join(cohort |> select(id, arm, AGE, RACE_BLACK, PLACEBO), by = "id")
+
+sim_drop <- rxode2::rxSolve(mod_drop, events = drop_events, keep = "arm", returnType = "data.frame")
+surv <- sim_drop |>
+  group_by(arm, time) |>
+  summarise(survival = mean(sur), .groups = "drop") |>
+  mutate(panel = case_when(
+    arm == "Study 1 placebo" ~ "Study 1 placebo",
+    grepl("^Study 1", arm) ~ "Study 1 BUP-XR",
+    TRUE ~ "Study 2 BUP-XR"
+  )) |>
+  group_by(panel, time) |>
+  summarise(survival = mean(survival), .groups = "drop")
+```
+
+Survival read from the observed Kaplan-Meier lines of Figure 5 by the
+maintainers:
+
+```{r fig5-digitised}
+fig5 <- tribble(
+  ~panel, ~time, ~observed,
+  "Study 1 BUP-XR", 50, 0.87,
+  "Study 1 BUP-XR", 100, 0.76,
+  "Study 1 BUP-XR", 150, 0.69,
+  "Study 1 placebo", 50, 0.58,
+  "Study 1 placebo", 100, 0.45,
+  "Study 1 placebo", 150, 0.38,
+  "Study 2 BUP-XR", 50, 0.78,
+  "Study 2 BUP-XR", 100, 0.66,
+  "Study 2 BUP-XR", 200, 0.54,
+  "Study 2 BUP-XR", 250, 0.49
+)
+cmp_drop <- fig5 |>
+  left_join(surv, by = c("panel", "time")) |>
+  mutate(simulated = round(survival, 3), diff = round(simulated - observed, 3))
+cmp_drop |>
+  select(panel, time, observed, simulated, diff) |>
+  dplyr::rename(
+    Panel = panel, `Day` = time, `Observed survival` = observed,
+    `Simulated survival` = simulated, Difference = diff
+  ) |>
+  knitr::kable()
+```
+
+```{r fig5, fig.cap = "Replicates Figure 5 of Lohmer 2026: treatment retention. Lines: mean simulated survival; points: observed Kaplan-Meier values read from Figure 5."}
+ggplot(surv, aes(time, survival)) +
+  geom_line(colour = "steelblue") +
+  geom_point(data = fig5, aes(time, observed)) +
+  facet_wrap(~panel, scales = "free_x") +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x = "Time (days)", y = "Survival") +
+  theme_bw()
+```
+
+```{r check-dropout}
+stopifnot(
+  abs(median(cmp_drop$diff)) < 0.06,
+  quantile(abs(cmp_drop$diff), 0.9) < 0.12
+)
+```
+
+The typical-value hazards alone show the size of the craving effect: a
+participant with craving above 20 mm throughout has about twice the hazard.
+
+```{r dropout-typical}
+typ <- expand.grid(time = c(0, 50, 100, 150, 200), OPIOID_CRAVING_CAT = 1:4) |>
+  mutate(id = OPIOID_CRAVING_CAT, AGE = 40, RACE_BLACK = 0, PLACEBO = 0, evid = 0, cmt = "cumhaz") |>
+  arrange(id, time)
+sim_typ <- rxode2::rxSolve(mod_drop, events = typ, returnType = "data.frame")
+sim_typ |>
+  filter(time == 200) |>
+  transmute(`Craving category` = c("0 mm", "1-5 mm", "6-20 mm", "> 20 mm")[id], `Survival at Day 200` = round(sur, 3)) |>
+  knitr::kable()
+```
+
+# Assumptions and deviations
+
+* **Craving model, which study has the effect compartment.** Table 3 labels
+  ke0 "Equilibrium rate constant for response in study 1 and placebo effect",
+  but the Results ("the same equilibration rate ke0 ... described the time to
+  maximal placebo effect in Study 1 and the slower treatment response in
+  Study 2") and the Discussion ("the model for opioid craving incorporated an
+  effect compartment for Study 2") place the effect compartment in Study 2.
+  The maintainers follow the Results and Discussion and read "study 1" in the
+  Table 3 label as a slip.
+* **Craving model, placebo term in every participant.** The printed final
+  equation adds `f_placebo = theta_placebo (1 - exp(-ke0 t))` to every
+  cumulative logit with no study or arm restriction, and the model applies it
+  so. Restricting it to Study 1 would put about half of Study 2 above 20 mm
+  late in treatment, against the low mean craving of Figure 4; restricting it
+  to the placebo arm would make placebo participants crave less than treated
+  ones.
+* **Log-normal variability.** Tables 2 and 3 report CV%; the variances use
+  `omega^2 = log(1 + CV^2)`, the convention of the same group's Jones 2021
+  PK model, whose Table 3 prints true CVs (variance 0.704 = 101% CV). The
+  intercept variability is additive and reported as an SD, so its variance is
+  the square of the SD.
+* **Covariate effects as multiplicative factors.** The "coefficient on"
+  parameters of Tables 2-4 are applied as multipliers (`theta^X` for an
+  indicator `X`). The Results prose confirms the direction and size of each
+  (1.74x and 8.25x EC50, Emax 16% lower, 43% higher, 26% and 80% lower;
+  dropout 34% lower; craving > 20 mm doubles the hazard). The intercepts are
+  negative, so the employment factor 0.796 raises the drug-free probability
+  of abstinence, as the Results state.
+* **Composite covariates are formed in the model.** The paper's composites
+  ("daily fentanyl and amphetamine/methamphetamine co-use", "fentanyl >= 2
+  times/day and injection use") are products of separate indicators
+  (`FENTANYL_DAILY * AMPHETAMINE_USE`, `FENTANYL_GE2_DAILY *
+  OPIOID_ROUTE_INJECTION`). "Fentanyl >= 2 times/day with no injection" and
+  "with injection" are mutually exclusive factors (0.736 and 0.198), not
+  cumulative.
+* **The Study 1 100-mg arm effect** applies from randomisation (Day 1), in
+  Study 1 only, as "100-mg arm effect in Study 1" states; the models multiply
+  `REGIMEN_MAINT_100MG` by `1 - STUDY_NCT04995029`.
+* **Time origin.** Time zero is the first BUP-XR or placebo injection, both
+  for the effect compartments and for the placebo and Gompertz terms. The
+  opioid use and craving models run in hours (ke0 in 1/h, as printed); the
+  dropout model runs in days (beta0 and ke in 1/day).
+* **Effect compartment initial state.** The effect compartment starts at
+  zero at the first injection, ignoring any transmucosal buprenorphine given
+  before it; the paper does not state its initial condition.
+* **Exposure for this article.** The authors used individual predictions from
+  the Jones 2021 model refitted to both studies (empirical Bayes estimates
+  that are not published). Here the published Jones 2021 typical values and
+  variability drive the simulation, without the transmucosal run-in. Body
+  weight and BMI are not reported by Lohmer 2026 and were drawn around the
+  Jones 2021 cohort.
+* **Comparison targets.** Figures 1 and 5 are observed data. The observed
+  proportions in Figure 1 come from participants still in the study, while
+  the simulation averages over the full cohort and ignores dropout; under
+  the missing-at-random dropout the authors found, this mainly affects late
+  weeks. The craving percentages are the Discussion's study-level figures.
+* **Values read from figures.** The observed points of Figures 1 and 5 were
+  read from the published figures by the maintainers and carry reading error
+  of a few percentage points.
+```

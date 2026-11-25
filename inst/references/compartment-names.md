@@ -1242,6 +1242,20 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Walsh_2024_buprenorphine_cows.R` (bounded-integer Imax model of COWS suppression by subcutaneous depot buprenorphine CAM2038, encoded as `probitNorm(addSd, 0, 45)`).
 - **Notes:** The `0, 45` bounds on the probit transform are the 45 ordered categories, not the 0-44 score maximum.
 
+### opioid_use (**canonical binary weekly opioid-use observation**)
+- **Type:** compartment
+- **Role:** Binary observation of past-week illicit opioid use in opioid-use-disorder exposure-response models, used as the categorical observation variable of a logistic model, `opioid_use ~ c(prob_opioid_abstinence)`. In Lohmer 2026 a week counts as abstinent only when both the urine drug screen and the self-report (Timeline Followback) are negative for opioids.
+- **Source aliases:** `Y` -- Lohmer 2026 Supplementary Material ('opioid use status ... 0 (no opioid use) or one (opioid use)').
+- **Example models:** `Lohmer_2026_buprenorphine_opioidUse.R` (founding example; Emax in the BUP-XR plasma buprenorphine concentration on the logit of abstinence).
+- **Notes:** **rxode2 category 1 is abstinence (the paper's Y = 0) and category 2 is opioid use (Y = 1)**, so the listed probability is `prob_opioid_abstinence`; a dataset coding Y as 0/1 must add 1 before fitting. Spelled out rather than abbreviated, following the maintainers' new-canonical policy. The urine-plus-self-report definition is source-specific: record in each model whether a missing urine screen counts as use.
+
+### opioid_craving_cat (**canonical ordinal opioid-craving category observation**)
+- **Type:** compartment
+- **Role:** Ordinal category of current opioid craving on the 0-100 mm Opioid Craving Visual Analog Scale (OC-VAS; 0 = no craving at all, 100 = strongest craving ever), cut at 0, 1-5, 6-20 and >20 mm, used as the ordinal observation variable of a proportional-odds model, `opioid_craving_cat ~ c(prob_opioid_craving_0, prob_opioid_craving_1_5, prob_opioid_craving_6_20)`.
+- **Source aliases:** `Y` -- Lohmer 2026 Supplementary Material (categories m = 1-4).
+- **Example models:** `Lohmer_2026_buprenorphine_craving.R` (founding example; three cumulative logits shifted by a buprenorphine Emax term and a placebo onset term).
+- **Notes:** Category 1 = 0 mm, 2 = 1-5 mm, 3 = 6-20 mm and the unlisted category 4 = >20 mm, which Lohmer 2026 treats as clinically significant craving. The same 1-4 coding is used by the dropout covariate `OPIOID_CRAVING_CAT`, so a simulated category can be carried forward into `Lohmer_2026_buprenorphine_dropout.R`. Distinct from `desiretousevas` (a continuous 0-100 desire-to-use VAS reading) and from `cows` (observer-rated withdrawal). Cut points other than 0 / 5 / 20 mm need their own canonical.
+
 ---
 
 ## Tobacco craving and withdrawal clinical scores
@@ -5862,6 +5876,20 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Source aliases:** `P0` ... `P5` and `P0_1` -- the trace labels of Zhou 2018 Figure 5, where `P0_1` is `P0 + P1` and equals `prob_moaas_le1`.
 - **Example models:** `Zhou_2018_remimazolam_moaas.R` (founding example; five baseline cumulative logits B1-B5 from Zhou 2018 Table 2 plus a common sigmoid Emax increment in remimazolam effect-site concentration, with `prob_moaas_le1` as the observed endpoint), `Vellinga_2025_remimazolam_moaas.R` (five cumulative logits driven by arterial remimazolam, CNS 7054 and remifentanil concentrations; the ordinal observation `moaas` is fitted through `prob_moaas0` ... `prob_moaas4`).
 - **Notes:** Probability outputs in `[0, 1]`. Members of the `prob_<endpoint>` family and validated by `probOutputRegex` rather than by enumeration, but documented here because the two suffix conventions are load-bearing and cannot be read off the name alone. **`_le<k>` is cumulative and `<k>` bare is exact**; the bare form is obtained by differencing adjacent cumulative forms, and the two must never be mixed in one comparison. **The scale is inverted relative to intuition**: a HIGHER MOAA/S score means a MORE alert subject, so `prob_moaas_le1` -- the standard clinical definition of loss of consciousness, "MOAA/S < 2" -- INCREASES with drug exposure. A six-level scale has only five free cutpoints because the top cumulative probability `P(MOAA/S <= 5)` is identically 1 and is therefore not registered; a source reporting five baseline values is reporting cutpoints for scores 0 through 4, which their required monotone ordering confirms. Unlike most of the `prob_<endpoint>` family these are **time-varying**: the driver is an effect-site concentration evolving under an ODE, not a scalar landmark exposure metric, which puts them alongside `prob_scc` rather than alongside `prob_orr_central`. Distinct from the continuous processed-EEG sedation index `BIS`, which the same papers often model in parallel from the same effect compartment but with its own equilibration rate constant; MOAA/S is an observer-scored ordinal judgement and BIS is an instrument reading, and the two do not share cutpoints.
+
+### prob_opioid_abstinence (**canonical probability of a week without illicit opioid use**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a participant with opioid use disorder is abstinent from illicit opioids over the past week (negative urine drug screen and negative self-report), output of a mixed-effects logistic exposure-response model. Time-varying: the driver is the buprenorphine plasma concentration (or an effect-compartment concentration) over the treatment course.
+- **Source aliases:** `P(Y = 0)` -- Lohmer 2026 Supplementary Material.
+- **Example models:** `Lohmer_2026_buprenorphine_opioidUse.R` (founding example; `expit(alpha + Emax * C / (EC50 + C) + eta)`).
+- **Notes:** The observation `opioid_use` is fitted through this probability as rxode2 category 1. A probability of abstinence, not of use: one minus it is the probability of a positive week.
+
+### prob_opioid_craving_0, prob_opioid_craving_1_5, prob_opioid_craving_6_20, prob_opioid_craving_gt20, prob_opioid_craving_le0, prob_opioid_craving_le5, prob_opioid_craving_le20 (**canonical opioid-craving category and cumulative probability outputs**)
+- **Type:** compartment
+- **Role:** Probabilities (0..1) attached to the four-level opioid-craving category of `opioid_craving_cat` (OC-VAS 0, 1-5, 6-20, >20 mm). `prob_opioid_craving_<range>` is the probability of the category exactly; `prob_opioid_craving_le<mm>` is the cumulative probability of craving at or below that many millimetres. Output by a proportional-odds model in which buprenorphine and placebo terms raise every cumulative logit, so low craving becomes more likely with treatment.
+- **Source aliases:** `P(Y = m)` and `P(Y <= m)` -- Lohmer 2026 Supplementary Material, m = 1-4.
+- **Example models:** `Lohmer_2026_buprenorphine_craving.R` (founding example; the observation `opioid_craving_cat` is fitted through `prob_opioid_craving_0`, `prob_opioid_craving_1_5` and `prob_opioid_craving_6_20`).
+- **Notes:** **`_le<mm>` is cumulative and the range form is exact**, as for `prob_moaas_le<k>` / `prob_moaas<k>`; the exact forms are differences of adjacent cumulative forms. The suffix carries the OC-VAS range in millimetres, not the category index, so `prob_opioid_craving_gt20` (clinically significant craving) reads directly. Time-varying.
 
 ### prob_umss0, prob_umss1, prob_umss2, prob_umss3, prob_umss_ge1, prob_umss_ge2, prob_umss_ge3 (**canonical University of Michigan Sedation Scale category and cumulative probability outputs**)
 - **Type:** compartment
