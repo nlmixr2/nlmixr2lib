@@ -2383,6 +2383,15 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Crass_2024_pegcetacoplan_ldh.R` (founding example; direct sigmoidal Emax LDH suppression by pegcetacoplan in paroxysmal nocturnal hemoglobinuria, with baseline and maximal effect stratified by baseline eculizumab status; algebraic output `ldh <- rbase * (1 - edrug)` with log-scale (`lnorm`) residual error).
 - **Notes:** Counterpart to the existing `LDH` covariate canonical in `inst/references/covariate-columns.md`, following the same covariate-versus-output-state pairing convention already documented for `Hba1c` / `HBA1C`: the covariate entry represents the baseline or observed clinical measurement used as a predictor, and `ldh` is the modelled dynamic output state. Distinct from the `lactate` canonical, which is the plasma L-lactate *metabolite* concentration (mmol/L) in turnover models -- LDH is an enzyme activity (U/L) and a different quantity, the same distinction the covariate register draws between `LDH` and `LACT`.
 
+### alternative_pathway_activity (**canonical complement alternative pathway activity PD output**)
+- **Type:** compartment
+- **Role:** Serum complement alternative pathway (AP) activity, expressed as a percentage of a reference serum's activity, used as a direct-response PD output for complement-inhibitor models. Measured functionally, by a hemolysis assay (APH) or a Wieslab-type ELISA; record which assay in the model's description, because the two are not interchangeable on an absolute scale.
+- **Source aliases:**
+  - `AP`, `APH`, `APHCOR` -- Chen 2026 Table 4 and PK-PD control stream (`DV = APHCOR`, `IPRED = BASE - (BASE - IMAX) * DRUGE`).
+  - `AP activity`, `alternative pathway activity` -- figure-axis and prose names.
+- **Example models:** `Chen_2026_danicopan.R` (founding example; direct inhibitory Emax model of AP activity by hemolysis assay driven by plasma danicopan, falling from a 29.1% baseline towards a 3.05% floor with IC50 12 ng/mL, in patients with paroxysmal nocturnal hemoglobinuria on a C5 inhibitor).
+- **Notes:** Spelled out rather than the source's `AP` / `APH`, following the spelled-out naming of new PD outputs (cf. `serum_phosphorus`). Distinct from classical-pathway activity (CH50) and from the terminal-pathway readouts that a C5 inhibitor suppresses; a factor D or factor B inhibitor acts on the alternative pathway proximally, so this output falls while terminal-pathway inhibition is already maintained by the background C5 inhibitor. Pairs with `lrmax_alternative_pathway_activity` when the source estimates the floor level of activity under maximal inhibition.
+
 ### Hba1c (**canonical glycated hemoglobin (HbA1c) PD output**)
 - **Type:** compartment
 - **Role:** Glycated hemoglobin (HbA1c, %) PD output state computed as the glycated-fraction percent of the total RBC pool in IGRH-style integrated glucose-RBC-HbA1c models. Counterpart to the existing `HBA1C` covariate canonical in `inst/references/covariate-columns.md`; the covariate represents the baseline / observed clinical measurement, and `Hba1c` is the modelled dynamic output state.

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Du 2026 cendakimab dysphagia-days exposure-response ([doi:10.1002/psp4.70199](https://doi.org/10.1002/psp4.70199)) -- adults and adolescents with eosinophilic esophagitis.
+- Add Chen 2026 danicopan PK and complement alternative pathway activity PK-PD ([doi:10.1002/psp4.70209](https://doi.org/10.1002/psp4.70209)) -- healthy adults and adults with paroxysmal nocturnal hemoglobinuria on ravulizumab or eculizumab.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

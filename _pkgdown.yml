@@ -2186,6 +2186,8 @@ navbar:
         href: articles/Damle_2021_dalteparin.html
       - text: "Dalteparin (Schoemaker 1996)"
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
+      - text: "Danicopan (Chen 2026)"
+        href: articles/Chen_2026_danicopan.html
       - text: "Danofloxacin carp (Song 2022)"
         href: articles/Song_2022_danofloxacin_carp.html
       - text: "Danoprevir (Canini 2015)"
@@ -10458,6 +10460,7 @@ articles:
   - articles/Chen_2025_methotrexate_rheumatoid_arthritis
   - articles/Chen_2025_remimazolam
   - articles/Chen_2025_vancomycin
+  - articles/Chen_2026_danicopan
   - articles/Chen_2026_nsclc_os_mbma
   - articles/Chen_2026_vancomycin
   - articles/Cheng_2019_lobaplatin

@@ -1,0 +1,623 @@
+---
+title: "Danicopan (Chen 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Danicopan (Chen 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+mod <- rxode2::rxode(readModelDb("Chen_2026_danicopan"))
+```
+
+* Citation: `r mod$reference`
+* Description: `r mod$description`
+* Article: <https://doi.org/10.1002/psp4.70209>
+* Open-access full text: <https://pmc.ncbi.nlm.nih.gov/articles/PMC12947316/>
+
+Danicopan is an oral complement factor D inhibitor approved as add-on therapy
+to the C5 inhibitors ravulizumab or eculizumab for clinically significant
+extravascular hemolysis in paroxysmal nocturnal hemoglobinuria (PNH). Chen
+2026 pools 14 studies into a population PK model and links it to a direct
+inhibitory Emax model of serum complement alternative pathway (AP) activity,
+measured by hemolysis assay in the phase 3 ALPHA study. Both layers are in the
+one model file: the PK model predicts `Cc` (ng/mL) and the PK-PD model turns
+`Cc` into `alternative_pathway_activity` (% of reference serum activity).
+
+# Population
+
+The PK dataset holds 7491 post-dose plasma concentrations from 407
+participants: 316 healthy participants from 11 phase 1 studies and 91 adults
+with PNH from two phase 2 studies (NCT03181633, NCT03472885) and the phase 3
+ALPHA study (NCT04469465; 69 patients, 440 samples). Overall, 74.2% were
+female, the median age was 38.0 years (16.9-82.0) and the median body weight
+77.0 kg (43.4-143.0). By race, 68.3% were White, 17.0% Asian, 4.9% Black or
+African American and the remainder other or missing. Renal function by eGFR
+was normal in 58.7%, mildly impaired in 35.1%, moderately impaired in 4.4%,
+severely impaired in 1.0% and end-stage in 0.7%; 2.0% had moderate hepatic
+impairment. 18.4% of participants received the early liquid-filled capsule
+(LFC) and the rest the approved tablet; 26.3% were dosed fasted, 69.8% with a
+standard meal and 3.9% with a high-fat meal (Chen 2026 Table 1; study list in
+Table S1).
+
+The PK-PD (AP activity) dataset is the 69 ALPHA patients with PNH on
+ravulizumab or eculizumab, contributing 475 time-matched AP activity and
+danicopan concentration pairs. They were 59.4% female, median 57 years old,
+median 70.0 kg (44.6-143.0), 39.1% Asian, and all received tablets with a
+standard meal (Table 1, last column).
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure | 2-compartment, linear elimination, zero-order release (D1) into depot then first-order ka, lag time | Methods "Population PK Model Development"; Results; supplement control stream (`ADVAN4 TRANS4`) |
+| `lcl` | CL/F 79.5 L/h | Table 2; CL/F equation |
+| `lvc` | Vc/F 163 L | Table 2; Vc/F equation |
+| `lq` | Q/F 34.9 L/h | Table 2; Q/F equation |
+| `lvp` | Vp/F 232 L | Table 2; Vp/F equation |
+| `lka`, `lka_lfc` | 1.58 (tablet), 0.801 (LFC) 1/h | Table 2; Ka equation |
+| `ld1`, `ld1_lfc` | 3.2 (tablet), 1.7 (LFC) h | Table 2; D1 equation |
+| `ltlag`, `ltlag_highfat` | 0.278 h (tablet, standard meal), 0.293 h (tablet, high-fat meal), both held | Table 2; Tlag equation |
+| `lfdepot` | 1 (tablet, standard meal, 200 mg) | F equation; Table 2 abbreviations |
+| `e_form_danicopan_lfc_fdepot` | 1.29 | Table 2; F equation |
+| `e_dose_fdepot` | -0.232, on (DOSE/200) | Table 2; F equation |
+| `e_fasted_fdepot`, `e_fed_highfat_fdepot` | -0.143, 0.101 (exponential) | Table 2; F equation |
+| `e_fasted_d1`, `e_fed_highfat_d1` | 0.0787, -0.661 held (exponential) | Table 2; D1 equation |
+| `e_fasted_ka` | +30.9 1/h (additive) | Table 2; Ka equation |
+| `e_fed_highfat_ka` | 1.09 held (exponential) | Table 2; Ka equation |
+| `e_wt_cl_q`, `e_wt_vc_vp` | 0.645, 0.876 (reference 75 kg) | Table 2; PK equations |
+| `e_sexf_cl`, `e_renalimp_sev_cl` | -0.221, -0.433 | Table 2; CL/F equation |
+| `etalcl`, `etalvc` | 0.0634, 0.412; covariance 0.0774 | Table 2 |
+| `etalvp`, `etalka` | 0.141, 2.1 | Table 2 |
+| `propSd`, `addSd` | 0.435, 0.254 ng/mL | Table 2; control stream `$ERROR` |
+| `Cc` | `central / vc * 1000` (ng/mL) | control stream `S2 = V2/1000` |
+| PK-PD structure | AP = AP0 - (AP0 - Imax) * C / (IC50 + C) | AP equation; PK-PD control stream `$PRED` |
+| `e0` | AP0 29.1% | Table 4; AP0 equation |
+| `e_wt_e0`, `e_region_eastasia_e0` | 1.29 (reference 69 kg), -0.460 | Table 4; AP0 equation |
+| `lic50` | 12.0 ng/mL | Table 4 |
+| `lrmax_alternative_pathway_activity` | Imax 3.05% | Table 4 |
+| `etae0` | 91.1, additive | Table 4 footnote a |
+| `etalic50` | 5.26, exponential | Table 4 footnote b |
+| `propSd_alternative_pathway_activity` | 67.1% | Table 4 |
+
+# Food status and formulation coding
+
+The paper has three food states with the standard meal as reference. The model
+uses two register columns, `FED` and `FED_HIGHFAT`:
+
+| Food status | `FED` | `FED_HIGHFAT` | Paper indicators |
+|---|---|---|---|
+| Fasted | 0 | 0 | FAST = 1 |
+| Standard meal (reference) | 1 | 0 | none |
+| High-fat meal | 1 | 1 | HIFAT = 1 |
+
+`FORM_DANICOPAN_LFC` is 1 for the liquid-filled capsule and 0 for the tablet.
+`DOSE` is the dose of each administration in mg (150 or 200 for the approved
+regimens), not the daily total. Doses go into the `depot` with `rate = -2`, so
+that the zero-order release lasts the model's D1.
+
+```{r helpers}
+# One subject's tid dosing records plus a dense observation grid over the
+# final 8 h interval. DOSE comes after amt, as the DOSE register entry asks.
+make_events <- function(cov, dose_mg, n_doses = 15, tau = 8, dt = 0.25) {
+  t_last <- (n_doses - 1) * tau
+  dose_rows <- data.frame(
+    time = (seq_len(n_doses) - 1) * tau,
+    amt = dose_mg, rate = -2, evid = 1, cmt = "depot"
+  )
+  obs_rows <- data.frame(
+    time = t_last + seq(0, tau, by = dt),
+    amt = 0, rate = 0, evid = 0, cmt = "central"
+  )
+  # The model has two endpoints (Cc and alternative_pathway_activity), so
+  # observation rows on the central state also carry dvid = 1; every
+  # endpoint column is then returned on each observation row.
+  obs_rows$dvid <- 1L
+  ev <- dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::arrange(time, dplyr::desc(evid))
+  ev$DOSE <- dose_mg
+  dplyr::cross_join(cov, ev)
+}
+t_last <- 14 * 8
+```
+
+# Typical-value covariate effects (Figure 2)
+
+Figure 2 is a forest plot of steady-state exposure for the 150 mg tid tablet
+regimen, relative to a typical male of 75 kg with normal renal function taking
+the tablet with a standard meal. The Results text gives the ratios behind it,
+and they follow from the model's covariate equations. Here they are recomputed
+with the between-subject variability switched off.
+
+```{r forest-sim}
+ref_cov <- data.frame(
+  WT = 75, SEXF = 0, RENALIMP_SEV = 0, FED = 1, FED_HIGHFAT = 0,
+  FORM_DANICOPAN_LFC = 0, REGION_EASTASIA = 0
+)
+scen <- dplyr::bind_rows(
+  ref_cov |> dplyr::mutate(scenario = "Reference", dose = 150),
+  ref_cov |> dplyr::mutate(scenario = "Female", SEXF = 1, dose = 150),
+  ref_cov |> dplyr::mutate(scenario = "Severe RI", RENALIMP_SEV = 1, dose = 150),
+  ref_cov |> dplyr::mutate(scenario = "WT 60 kg", WT = 60, dose = 150),
+  ref_cov |> dplyr::mutate(scenario = "WT 100 kg", WT = 100, dose = 150),
+  ref_cov |> dplyr::mutate(scenario = "Fasted", FED = 0, dose = 150),
+  ref_cov |> dplyr::mutate(scenario = "High-fat meal", FED_HIGHFAT = 1, dose = 150),
+  ref_cov |> dplyr::mutate(scenario = "200 mg tid", dose = 200)
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+ev_tv <- dplyr::bind_rows(lapply(seq_len(nrow(scen)), function(i) {
+  make_events(scen[i, setdiff(names(scen), "dose")], scen$dose[i])
+}))
+
+# Typical-value solve. With the random effects zeroed, rxode2 warns that a
+# multi-subject simulation has no omega; that is the intent here, so only that
+# warning is muffled.
+tv <- rxode2::zeroRe(mod)
+sim_tv <- withCallingHandlers(
+  rxode2::rxSolve(tv, events = ev_tv, keep = "scenario"),
+  warning = function(w) {
+    if (grepl("multi-subject simulation without", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+) |>
+  as.data.frame()
+```
+
+```{r forest-nca}
+nca_input <- function(sim, group) {
+  sim |>
+    dplyr::filter(time >= t_last, !is.na(Cc)) |>
+    dplyr::mutate(tad = time - t_last) |>
+    dplyr::select(id, dplyr::all_of(group), tad, Cc)
+}
+tv_conc <- nca_input(sim_tv, "scenario")
+tv_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(tv_conc, Cc ~ tad | scenario + id),
+  intervals = data.frame(start = 0, end = 8, cmax = TRUE, ctrough = TRUE, auclast = TRUE)
+))
+tv_wide <- as.data.frame(tv_res$result) |>
+  dplyr::select(scenario, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+tv_ref <- tv_wide |> dplyr::filter(scenario == "Reference")
+tv_ratio <- tv_wide |>
+  dplyr::mutate(
+    cmax_ratio = cmax / tv_ref$cmax,
+    ctrough_ratio = ctrough / tv_ref$ctrough,
+    auc_ratio = auclast / tv_ref$auclast
+  )
+tv_ratio |>
+  dplyr::select(scenario, cmax, ctrough, auclast, cmax_ratio, ctrough_ratio, auc_ratio) |>
+  dplyr::mutate(dplyr::across(c(cmax, ctrough, auclast), ~ signif(.x, 4)),
+                dplyr::across(dplyr::ends_with("_ratio"), ~ round(.x, 3))) |>
+  dplyr::rename(
+    Scenario = scenario, "Cmax,ss (ng/mL)" = cmax, "Ctrough,ss (ng/mL)" = ctrough,
+    "AUC0-8,ss (ng*h/mL)" = auclast, "Cmax ratio" = cmax_ratio,
+    "Ctrough ratio" = ctrough_ratio, "AUC ratio" = auc_ratio
+  ) |>
+  knitr::kable(caption = "Typical-value steady-state exposure (150 mg tid tablet unless stated) and ratio to the reference participant.")
+```
+
+The paper's statements for the same contrasts (Results "Impact of Covariates on
+Danicopan Exposure" and Discussion):
+
+```{r forest-compare}
+published_ratio <- tibble::tribble(
+  ~scenario,        ~metric, ~published, ~source,
+  "Female",         "AUC",   1.29, "Results: AUC 29% higher",
+  "Severe RI",      "AUC",   1.76, "Results and Discussion: 1.76-fold AUC",
+  "Severe RI",      "Cmax",  1.54, "Discussion: 1.54-fold Cmax",
+  "WT 100 kg",      "AUC",   0.82, "Results: decreased by ~18%",
+  "WT 60 kg",       "AUC",   1.16, "Results: increased by up to 16%",
+  "Fasted",         "AUC",   0.87, "Results: AUC 0.87-fold",
+  "High-fat meal",  "AUC",   1.10, "Results: AUC 1.10-fold",
+  "Fasted",         "Cmax",  0.93, "Results: Cmax 0.93-fold",
+  "High-fat meal",  "Cmax",  1.55, "Results: Cmax 1.55-fold"
+)
+sim_ratio <- tv_ratio |>
+  dplyr::select(scenario, Cmax = cmax_ratio, AUC = auc_ratio) |>
+  tidyr::pivot_longer(-scenario, names_to = "metric", values_to = "simulated")
+forest_cmp <- published_ratio |>
+  dplyr::left_join(sim_ratio, by = c("scenario", "metric")) |>
+  dplyr::mutate(pct_diff = 100 * (simulated / published - 1))
+forest_cmp |>
+  dplyr::mutate(simulated = round(simulated, 3), pct_diff = round(pct_diff, 1)) |>
+  dplyr::rename(
+    Scenario = scenario, Metric = metric, Published = published,
+    Simulated = simulated, "% diff" = pct_diff, Source = source
+  ) |>
+  knitr::kable(caption = "Typical-value exposure ratios vs the ratios stated in Chen 2026.")
+
+# The AUC ratios depend only on F and CL/F, so they must reproduce the stated
+# ratios to rounding. The Cmax ratios also depend on absorption and on the
+# between-subject variability that Figure 2 includes, so they get a wider band.
+auc_rows <- forest_cmp$metric == "AUC"
+stopifnot(
+  all(abs(forest_cmp$pct_diff[auc_rows]) < 3),
+  abs(forest_cmp$pct_diff[forest_cmp$scenario == "Severe RI" & forest_cmp$metric == "Cmax"]) < 10
+)
+```
+
+The 200 mg vs 150 mg contrast: dose-normalised AUC at 200 mg is
+`r round(tv_ratio$auc_ratio[tv_ratio$scenario == "200 mg tid"] * 150 / 200, 3)`
+of the 150 mg value, matching the "7% decrease in bioavailability at a dose of
+200 mg tid compared with 150 mg tid" ((200/150)^-0.232 = 0.935).
+
+The high-fat Cmax ratio reproduces the paper (1.55-fold). The fasted Cmax
+ratio falls between the 0.93-fold quoted in the Results text and Table 3,
+whose fasted / standard-meal median Cmax,ss ratios are 487 / 576 = 0.85
+(150 mg) and 597 / 726 = 0.82 (200 mg). The model's fasted state combines a
+13% lower bioavailability with much faster absorption (ka 32.5 vs 1.58 1/h),
+no lag time and a slightly longer zero-order release, and the zero-order step
+then limits the peak.
+
+## Absolute exposure of the reference patient (Figure 2)
+
+Figure 2 also gives absolute values: its solid vertical line marks the median
+exposure of 1000 simulated reference patients (male, 75 kg, normal renal
+function, 150 mg tid tablet with a standard meal) with between-subject
+variability. Digitised by the maintainers from the gridlines of each panel,
+these are Cmax,ss 389 ng/mL, Ctrough,ss 125 ng/mL and AUC24h,ss 5950 ng*h/mL.
+The dashed 80% and 125% lines in each panel sit at 0.80 and 1.25 times those
+readings, which confirms the readings. The same scenario is simulated here
+with between-subject variability for 200 reference patients.
+
+```{r fig2-abs}
+rxode2::rxSetSeed(20260210)
+n_ref <- 200
+ref_cohort <- ref_cov[rep(1, n_ref), ] |>
+  dplyr::mutate(id = seq_len(n_ref), scenario = "Reference, 150 mg tid")
+sim_ref <- rxode2::rxSolve(
+  mod, events = make_events(ref_cohort, 150), keep = "scenario"
+) |>
+  as.data.frame()
+ref_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_input(sim_ref, "scenario"), Cc ~ tad | scenario + id),
+  intervals = data.frame(start = 0, end = 8, cmax = TRUE, ctrough = TRUE, auclast = TRUE)
+))
+# AUC24h,ss / 3 is compared with the 8 h interval AUC.
+published_fig2 <- tibble::tribble(
+  ~scenario,                ~cmax, ~ctrough, ~auclast,
+  "Reference, 150 mg tid",  389,   125,      5950 / 3
+)
+cmp_fig2 <- nlmixr2lib::ncaComparisonTable(
+  simulated = ref_res,
+  reference = published_fig2,
+  by = "scenario",
+  units = c(cmax = "ng/mL", ctrough = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp_fig2,
+  caption = "Reference patient, simulated (PKNCA median of 200) vs the Figure 2 median read from the plot. AUC0-8 reference = AUC24h,ss / 3."
+)
+pct_fig2 <- as.numeric(gsub("[*%+]", "", cmp_fig2$`% diff`))
+# The covariates match Figure 2 exactly here, so this is the like-for-like
+# check of the absolute exposure scale.
+stopifnot(!anyNA(pct_fig2), all(abs(pct_fig2) < 15))
+```
+
+# Virtual ALPHA cohort and steady-state simulation (Table 3, Figure 3)
+
+Table 3 and Figure 3 simulate 150 mg and 200 mg tid tablets under the three
+food states in patients with PNH, sampling covariates (body weight, sex, East
+Asian origin) from the ALPHA population and using the ALPHA patients' post-hoc
+parameters. The individual post-hoc estimates are not published, so here the
+covariates are drawn to match ALPHA's Table 1 summary and between-subject
+variability comes from the population variances (Tables 2 and 4). 200 virtual
+patients are simulated per regimen and food state, and the same 200 covariate
+sets are reused in every arm.
+
+```{r cohort}
+rxode2::rxSetSeed(20260209)
+n_sub <- 200
+cohort <- data.frame(
+  id = seq_len(n_sub),
+  # ALPHA median 70 kg, range 44.6-143 (Table 1).
+  WT = pmin(pmax(70 * exp(stats::rnorm(n_sub, 0, 0.2)), 44.6), 143),
+  SEXF = stats::rbinom(n_sub, 1, 0.594),
+  # 39.1% of ALPHA participants were Asian (Table 1), taken as East Asian.
+  REGION_EASTASIA = stats::rbinom(n_sub, 1, 0.391),
+  RENALIMP_SEV = 0,
+  FORM_DANICOPAN_LFC = 0
+)
+summary(cohort[, c("WT", "SEXF", "REGION_EASTASIA")])
+```
+
+```{r sim-arms}
+arms <- tidyr::expand_grid(
+  dose = c(150, 200),
+  food = c("Fasted", "Standard meal", "High-fat meal")
+) |>
+  dplyr::mutate(
+    FED = ifelse(food == "Fasted", 0, 1),
+    FED_HIGHFAT = ifelse(food == "High-fat meal", 1, 0),
+    regimen = paste0(dose, " mg tid"),
+    arm = paste(regimen, food, sep = ", ")
+  )
+
+ev_arms <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  cov_i <- cohort |>
+    dplyr::mutate(
+      FED = arms$FED[i], FED_HIGHFAT = arms$FED_HIGHFAT[i],
+      arm = arms$arm[i], regimen = arms$regimen[i], food = arms$food[i],
+      id = id + (i - 1) * n_sub
+    )
+  make_events(cov_i, arms$dose[i])
+}))
+
+sim <- rxode2::rxSolve(
+  mod, events = ev_arms, keep = c("arm", "regimen", "food")
+) |>
+  as.data.frame()
+```
+
+The Table 3 percentiles include between-subject variability but not residual
+error, so the comparison below uses the individual predictions `Cc` and
+`alternative_pathway_activity`, not the residual-perturbed `sim` column.
+
+## Steady-state exposure (PKNCA)
+
+The simulation runs 15 doses (5 days), well past the time needed to reach
+steady state, and analyses the final 8 h dosing interval. Time is shifted so
+that the interval opens at 0, Cmax,ss and Ctrough,ss (the concentration at the
+end of the interval) come from PKNCA, and AUC24h,ss is three times the
+interval AUC.
+
+```{r nca}
+conc <- nca_input(sim, c("arm", "regimen", "food"))
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc, Cc ~ tad | arm + id),
+  intervals = data.frame(start = 0, end = 8, cmax = TRUE, ctrough = TRUE, auclast = TRUE)
+))
+stopifnot(!anyNA(as.data.frame(nca_res$result)$PPORRES))
+```
+
+```{r nca-compare}
+# Chen 2026 Table 3, medians. AUC24h,ss is divided by 3 to compare with the
+# simulated 8 h interval AUC.
+published_nca <- tibble::tribble(
+  ~arm,                          ~cmax, ~ctrough, ~auc24,
+  "150 mg tid, Fasted",          487,   118,      6901,
+  "150 mg tid, Standard meal",   576,   147,      8190,
+  "150 mg tid, High-fat meal",   912,   143,      9123,
+  "200 mg tid, Fasted",          597,   159,      8824,
+  "200 mg tid, Standard meal",   726,   177,      10184,
+  "200 mg tid, High-fat meal",   1143,  178,      11300
+) |>
+  dplyr::mutate(auclast = auc24 / 3) |>
+  dplyr::select(-auc24)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published_nca,
+  by = "arm",
+  units = c(cmax = "ng/mL", ctrough = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Simulated (PKNCA, median of 200 virtual patients per arm) vs Chen 2026 Table 3 median steady-state exposure. AUC0-8 reference = Table 3 AUC24h,ss / 3. * differs from reference by >20%."
+)
+```
+
+The simulated troughs agree with Table 3, but AUC runs about 10-15% lower and
+Cmax about 10-25% lower in every arm. The same model reproduces the Figure 2 reference
+patient (above), so the gap comes from the cohort, not from the model. Table 3
+was simulated from the ALPHA patients' own post-hoc parameters, and the
+published cohort was more exposed than its covariates alone predict. The
+Results give a mean CL/F of 63 L/h for the ALPHA patients, while the
+covariate-predicted typical CL/F for a 70 kg patient is 76 L/h for a man and
+59 L/h for a woman. A shift that applies to every arm leaves the food and dose
+contrasts between arms intact, and those agree with the paper (see the ratios
+above).
+
+```{r nca-assert}
+pct <- as.numeric(gsub("[*%+]", "", cmp$`% diff`))
+# Structural check on the centre: a wrong clearance, dose or unit would move
+# every arm by tens of percent. The envelope allows for the virtual cohort
+# standing in for the ALPHA post-hoc parameters.
+stopifnot(
+  !anyNA(pct),
+  abs(stats::median(pct)) < 20,
+  stats::quantile(abs(pct), 0.9) < 35
+)
+```
+
+Table 3 also reports the share of patients whose Ctrough,ss reaches the IC90
+of 108 ng/mL:
+
+```{r ic90}
+ic90 <- 108
+trough <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "ctrough") |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(sim_pct_ge_ic90 = 100 * mean(PPORRES >= ic90), .groups = "drop")
+published_ic90 <- tibble::tribble(
+  ~arm,                         ~pub_pct_ge_ic90,
+  "150 mg tid, Fasted",         58.2,
+  "150 mg tid, Standard meal",  74.5,
+  "150 mg tid, High-fat meal",  73.6,
+  "200 mg tid, Fasted",         82.9,
+  "200 mg tid, Standard meal",  86.1,
+  "200 mg tid, High-fat meal",  86.5
+)
+ic90_cmp <- published_ic90 |>
+  dplyr::left_join(trough, by = "arm")
+ic90_cmp |>
+  dplyr::mutate(sim_pct_ge_ic90 = round(sim_pct_ge_ic90, 1)) |>
+  dplyr::rename(
+    Arm = arm, "Published % with Ctrough,ss >= IC90" = pub_pct_ge_ic90,
+    "Simulated %" = sim_pct_ge_ic90
+  ) |>
+  knitr::kable(caption = "Share of patients with steady-state trough at or above the IC90 (108 ng/mL), Chen 2026 Table 3.")
+stopifnot(abs(stats::median(ic90_cmp$sim_pct_ge_ic90 - ic90_cmp$pub_pct_ge_ic90)) < 15)
+```
+
+## AP activity at trough
+
+```{r ap-trough}
+ap_trough <- sim |>
+  dplyr::filter(time == t_last + 8) |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    sim_median = stats::median(alternative_pathway_activity),
+    sim_p025 = stats::quantile(alternative_pathway_activity, 0.025),
+    sim_p975 = stats::quantile(alternative_pathway_activity, 0.975),
+    .groups = "drop"
+  )
+published_ap <- tibble::tribble(
+  ~arm,                         ~pub_median, ~pub_range,
+  "150 mg tid, Fasted",         4.9,         "1.8-43.8",
+  "150 mg tid, Standard meal",  4.6,         "1.7-42.3",
+  "150 mg tid, High-fat meal",  4.5,         "1.8-42.1",
+  "200 mg tid, Fasted",         4.4,         "1.7-41.3",
+  "200 mg tid, Standard meal",  4.2,         "1.8-39.9",
+  "200 mg tid, High-fat meal",  4.2,         "1.7-39.7"
+)
+ap_cmp <- published_ap |>
+  dplyr::left_join(ap_trough, by = "arm")
+ap_cmp |>
+  dplyr::mutate(
+    sim = sprintf("%.1f (%.1f-%.1f)", sim_median, sim_p025, sim_p975)
+  ) |>
+  dplyr::select(arm, pub_median, pub_range, sim) |>
+  dplyr::rename(
+    Arm = arm, "Published median (%)" = pub_median,
+    "Published 2.5th-97.5th" = pub_range, "Simulated median (2.5th-97.5th)" = sim
+  ) |>
+  knitr::kable(caption = "AP activity at steady-state trough (%), Chen 2026 Table 3 vs simulation.")
+
+# Every arm should sit in near-complete inhibition (< 10% activity), as the
+# paper concludes, with a median close to the published 4-5%. The tails are
+# not compared: the published 97.5th percentiles (about 40%) come from the
+# ALPHA patients' post-hoc IC50 and baseline values, and the virtual cohort's
+# tails are narrower.
+stopifnot(
+  all(ap_cmp$sim_median < 10),
+  abs(stats::median(ap_cmp$sim_median - ap_cmp$pub_median)) < 1.5
+)
+```
+
+## Steady-state profiles (Figure 3)
+
+```{r fig3-pk, fig.width = 8, fig.height = 5}
+prof <- sim |>
+  dplyr::filter(time >= t_last) |>
+  dplyr::mutate(tad = time - t_last) |>
+  dplyr::group_by(regimen, food, tad) |>
+  dplyr::summarise(
+    cc_med = stats::median(Cc),
+    cc_lo = stats::quantile(Cc, 0.025),
+    cc_hi = stats::quantile(Cc, 0.975),
+    ap_med = stats::median(alternative_pathway_activity),
+    ap_lo = stats::quantile(alternative_pathway_activity, 0.025),
+    ap_hi = stats::quantile(alternative_pathway_activity, 0.975),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(food = factor(food, levels = c("Fasted", "Standard meal", "High-fat meal")))
+
+ggplot(prof, aes(tad, cc_med)) +
+  geom_ribbon(aes(ymin = cc_lo, ymax = cc_hi), fill = "grey80") +
+  geom_line() +
+  geom_hline(yintercept = 108, linetype = "dashed") +
+  facet_grid(regimen ~ food) +
+  labs(
+    x = "Time after dose (h)", y = "Danicopan (ng/mL)",
+    title = "Replicates Figure 3A of Chen 2026",
+    caption = "Median and 2.5th-97.5th percentiles of 200 virtual patients per arm; dashed line = IC90 (108 ng/mL)."
+  )
+```
+
+```{r fig3-ap, fig.width = 8, fig.height = 5}
+ggplot(prof, aes(tad, ap_med)) +
+  geom_ribbon(aes(ymin = ap_lo, ymax = ap_hi), fill = "grey80") +
+  geom_line() +
+  facet_grid(regimen ~ food) +
+  labs(
+    x = "Time after dose (h)", y = "AP activity (%)",
+    title = "Replicates Figure 3B of Chen 2026",
+    caption = "Median and 2.5th-97.5th percentiles of 200 virtual patients per arm."
+  )
+```
+
+## Concentration-AP relationship
+
+At the typical baseline (69 kg, not East Asian) the model gives the IC50 and
+the IC90 that the paper reports; IC90 = 9 x IC50 for a hyperbolic Emax model.
+
+```{r ec-curve, fig.width = 6, fig.height = 4}
+conc_grid <- c(0, 10^seq(-1, 3.5, length.out = 200))
+ap_typ <- 29.1 - (29.1 - 3.05) * conc_grid / (12 + conc_grid)
+stopifnot(abs(9 * 12 - 108) < 1e-9)
+ggplot(data.frame(conc = conc_grid, ap = ap_typ), aes(conc, ap)) +
+  geom_line() +
+  geom_vline(xintercept = c(12, 108), linetype = c("dotted", "dashed")) +
+  scale_x_continuous(trans = "log1p", breaks = c(0, 1, 10, 100, 1000)) +
+  labs(x = "Danicopan (ng/mL)", y = "AP activity (%)",
+       caption = "Typical patient; dotted = IC50 (12 ng/mL), dashed = IC90 (108 ng/mL).")
+```
+
+# Assumptions and deviations
+
+1. **The supplement control streams are earlier runs, not the final models.**
+   The PK stream carries initial estimates (for example CL 81.4 L/h, Vc 173
+   L), holds the high-fat-meal effects on D1 and ka at 0 and has no lag time.
+   The PK-PD stream carries a Japan effect on IC50 and factor D and sex effects
+   on the baseline that the final model does not retain. Every value in the
+   model therefore comes from Tables 2 and 4 and the printed equations. The
+   streams settle the structure: ADVAN4, the combined residual error, the
+   `S2 = V2/1000` units, the additive random effect on the AP baseline and the
+   proportional AP residual error.
+2. **High-fat meal on ka is exponential.** The printed Ka equation multiplies
+   by e^(1.09 if HIFAT), giving a 2.97-fold ka with a high-fat meal. The
+   earlier control stream uses `(1 + THETA(24))`, which would give 2.09-fold.
+   The equation is followed.
+3. **The fasted effect on ka is additive.** Following the Ka equation and the
+   control stream (`+ THETA(23) * FAST`), fasting adds 30.9 1/h to the tablet
+   ka (32.5 1/h in total). Once the zero-order release has finished, absorption
+   is then almost immediate.
+4. **Lag time.** The Tlag equation defines a lag only for tablets taken with a
+   standard meal (0.278 h) or a high-fat meal (0.293 h). Fasted tablet doses
+   and LFC doses get no lag time.
+5. **Residual-error units.** Table 2 labels the proportional PK error as "%"
+   with the value 0.435. The control stream's initial value for the same
+   theta is 0.445 on the fractional scale, so the estimate is read as 0.435
+   (43.5%). Table 4's 67.1% is read as 0.671.
+6. **IIV on IC50.** Table 4 reports omega^2 = 5.26 for IC50 with "229%". That
+   percentage is 100 x sqrt(omega^2) rather than the 100 x sqrt(exp(omega^2) - 1)
+   used in Table 2; the variance 5.26 is used as printed.
+7. **AP baseline random effect is additive** (SD 9.5 percentage points), so a
+   low-weight East Asian virtual patient can occasionally get a baseline near
+   or below 0. The observed baselines in ALPHA ranged from 0.56% to 109%.
+8. **PK-PD driver.** The source fitted AP against observed, time-matched
+   danicopan concentrations. The packaged model drives AP with the
+   model-predicted `Cc`, which is how the authors' own simulations use it.
+9. **Severe renal impairment indicator.** Table 1 lists 4 participants with
+   severe impairment and 3 with end-stage disease, while the Discussion refers
+   to eight participants with severe renal impairment. The paper does not say
+   how the end-stage participants were coded. Set `RENALIMP_SEV = 1` for eGFR
+   < 30 mL/min/1.73 m^2.
+10. **East Asian origin.** The paper's covariate is participation from East
+    Asia. Table 1 gives only the share of Asian participants (39.1% in
+    ALPHA), which the virtual cohort uses as the East Asian share.
+11. **Virtual cohort instead of post-hoc parameters.** Table 3 and Figure 3
+    use the ALPHA patients' post-hoc parameters, which are not published. The
+    simulation here draws covariates from the Table 1 summary and random
+    effects from the population variances. That explains the remaining gaps
+    against Table 3, and is why the comparison checks medians and robust
+    quantiles rather than individual extremes.
