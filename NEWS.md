@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nguyen 2017 model-evaluation tutorial simulation models ([doi:10.1002/psp4.12161](https://doi.org/10.1002/psp4.12161)) -- a hypothetical IV two-compartment drug (methodology reference) and warfarin PK with a prothrombin-complex-activity turnover model in the O'Reilly study design.
+- Add Doi 2017 NC-6004 (micellar cisplatin) PK/PD with eGFR ([doi:10.1007/s00280-017-3254-4](https://doi.org/10.1007/s00280-017-3254-4)) -- Japanese and UK adults with advanced solid tumours.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
