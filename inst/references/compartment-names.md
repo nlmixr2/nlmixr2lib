@@ -9170,6 +9170,28 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 
 ---
 
+## Therapeutic-antibody quality-attribute (post-translational variant) suffixes
+
+A post-translational modification of a therapeutic protein (deamidation, glycoform, oxidation, pyroglutamate formation, ...) splits the drug into an original and a modified form that may differ in clearance and that may interconvert in vivo. The modified form is tracked as a suffixed species alongside the parent (`central_<attr>`, `peripheral1_<attr>`, `Cc_<attr>`), and the percentage of the total that carries the modification, the quantity an LC-MS peptide map reports, as `pct_<attr>`. Each attribute takes its own token so that a model of one attribute is not read as a model of another; a new attribute adds its own entry here (for example `oxid` for methionine oxidation or `pyroglu` for N-terminal pyroglutamate).
+
+### deamid (**canonical Fc-site deamidated antibody variant suffix**)
+- **Type:** metabolite-suffix
+- **Role:** The form of a therapeutic IgG that is deamidated at an Fc-region asparagine. Deamidation proceeds non-enzymatically in vivo, so the original form converts first-order to the deamidated form in every compartment, and the administered drug product already carries a batch-specific deamidated fraction. Carries `central_deamid`, `peripheral1_deamid`, the conversion rate constant `kmet_deamid`, the elimination rate constant `kel_deamid`, the dose fraction `fdose_deamid`, `Cc_deamid` and the relative level `pct_deamid` (percent of total antibody).
+- **Source aliases:**
+  - `mod`, `ACmod`, `APmod`, `kclmod`, `ktr`, `f` -- Li 2016 Equations 1-4 and Table 1, where the modified form of either attribute carries a generic `mod` subscript.
+- **Example models:** `Li_2016_MAB2_deamidation.R` (doi:10.1080/19420862.2016.1186322; founding example -- MAB2, a non-disclosed humanized IgG1, ktr = 0.01 /day and clearance equal to the original form's).
+- **Notes:** The Fc-site attribute is meant here; a deamidation in a complementarity-determining region that changes binding is a different attribute and should take a site-qualified token. Distinct from [[man5]], which is a glycoform present only in the dosed material and not formed in vivo.
+
+### man5 (**canonical mannose-5 Fc glycoform variant suffix**)
+- **Type:** metabolite-suffix
+- **Role:** The high-mannose Man5 Fc N-glycoform of a therapeutic IgG, cleared faster than the complex-glycan forms through the mannose receptor. It is not formed in circulation, so its only source is the Man5 fraction of the administered drug product. Carries `central_man5`, `peripheral1_man5`, the elimination rate constant `kel_man5`, the dose fraction `fdose_man5`, `Cc_man5` and the relative level `pct_man5` (percent of total antibody).
+- **Source aliases:**
+  - `mod`, `ACmod`, `APmod`, `kclmod`, `f` -- Li 2016 Equations 1-4 and Table 1 (generic `mod` subscript).
+- **Example models:** `Li_2016_MAB2_man5.R` (doi:10.1080/19420862.2016.1186322; founding example -- MAB2, kclmod = 0.295 /day against kcl0 = 0.127 /day, ktr = 0).
+- **Notes:** The token is the glycan's conventional name (Man5, Man5GlcNAc2) lowercased. Other high-mannose glycoforms (Man6 to Man9), where a paper resolves them, take their own `man<n>` token rather than sharing this one. Distinct from [[deamid]], which is formed in vivo.
+
+---
+
 ## PBPK organ extracellular / cellular split (Parmar 2023 mPBPK family)
 
 Minimal-PBPK models that resolve each organ into a rapid-equilibrium pool (vascular + interstitial, taken to be in instantaneous equilibrium with blood) and a slow-equilibrium cellular pool use the `<organ>_extracellular` / `<organ>_cellular` suffix pair. The two suffixes are complements of each other and must be used together: an organ carrying one without the other is a naming error, because the pair's whole point is that the organ's total concentration is the amount-weighted sum of exactly these two pools divided by the organ volume.

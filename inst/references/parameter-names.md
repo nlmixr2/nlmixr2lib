@@ -2609,6 +2609,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** mixture-distribution popPK extractions.
 
+### fdose (**canonical fraction of the administered dose that is a named species**)
+- **Type:** paper-named-param
+- **Role:** Fraction (0 to 1) of each administered dose that enters as the species named by the suffix (`fdose_<suffix>`, where `<suffix>` is a registered metabolite-suffix), the remainder entering as the parent. It describes the dosed material, not a disposition process, so it is normally fixed at the level of the drug batch the source paper studied. The model applies it as a bioavailability split, `f(central) <- 1 - fdose_<suffix>` and `f(central_<suffix>) <- fdose_<suffix>`, and the full dose amount is given twice at the same time, once into each compartment; a user models another batch by overriding the fixed value.
+- **Source aliases:**
+  - `f` -- Li 2016 Methods ('AC0(t=0) = (1 - f) x Dose and ACmod(t=0) = f x Dose ... f is the initial fraction of the modified form included in the IV dose').
+- **Example models:** `Li_2016_MAB2_deamidation.R` (`fdose_deamid` = 0.056, founding example); `Li_2016_MAB2_man5.R` (`fdose_man5` = 0.030).
+- **Notes:** Distinct from `fdepot` and `frel`, which are bioavailabilities of one species through one route, and from `fm`, which is the fraction of the parent's elimination that forms a metabolite after dosing. `Pouzin_2022_tusamitamab.R` splits an ADC dose across its DAR isoforms with derived, unregistered `fdar<n>` fractions computed from estimated ratios; that per-isoform family predates this entry and is not retrofitted.
+
 ### alfm (**canonical mixing-mixture parameter**)
 - **Type:** paper-named-param
 - **Role:** Paper-mechanistic mixing parameter; paper-specific meaning.
@@ -2834,8 +2842,8 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Type:** paper-named-param
 - **Role:** First-order rate constant for in-vivo formation of an active metabolite from the parent central compartment, used when the source paper parameterises metabolite formation independently of the parent's total clearance.
 - **Source aliases:** none.
-- **Example models:** `Krause_2017_selexipag.R` (parent -> ACT-333679 active metabolite); `Bertin_2026_levosimendan.R` (`kmet_or1896`, the metabolite-suffixed form); `Burns_2015_tenofovir.R` (`kmet_tfvdp` = the paper's `K24`, tenofovir -> intracellular tenofovir diphosphate); `Ivaturi_2017_fludarabine.R` (`kmet_faraatp` = the paper's `Kin`, driven by the plasma f-ara-a CONCENTRATION rather than the central amount and declining as a power of time after the first dose, `e_time_kmet_faraatp`).
-- **Notes:** Fraction-metabolised is implicit (`kmet * Vc_parent / CL_parent`) rather than estimated as `fm`. Distinct from `k_presystemic_central_sa` and its siblings, which describe PRE-systemic (first-pass) metabolite formation out of the `presystemic` compartment rather than systemic conversion out of `central`. Also has a log-transformed primary form `lkmet` (`Krause_2017_selexipag.R`, `Koh_2025_aspirin.R`).
+- **Example models:** `Krause_2017_selexipag.R` (parent -> ACT-333679 active metabolite); `Bertin_2026_levosimendan.R` (`kmet_or1896`, the metabolite-suffixed form); `Burns_2015_tenofovir.R` (`kmet_tfvdp` = the paper's `K24`, tenofovir -> intracellular tenofovir diphosphate); `Ivaturi_2017_fludarabine.R` (`kmet_faraatp` = the paper's `Kin`, driven by the plasma f-ara-a CONCENTRATION rather than the central amount and declining as a power of time after the first dose, `e_time_kmet_faraatp`); `Li_2016_MAB2_deamidation.R` (`lkmet_deamid` = the paper's `ktr`, non-enzymatic in-vivo deamidation of a therapeutic IgG).
+- **Notes:** In `Li_2016_MAB2_deamidation.R` the conversion is chemical rather than metabolic and acts at the same rate in the peripheral compartment as in central (`peripheral1` to `peripheral1_deamid`), so there the constant drains both pools. Fraction-metabolised is implicit (`kmet * Vc_parent / CL_parent`) rather than estimated as `fm`. Distinct from `k_presystemic_central_sa` and its siblings, which describe PRE-systemic (first-pass) metabolite formation out of the `presystemic` compartment rather than systemic conversion out of `central`. Also has a log-transformed primary form `lkmet` (`Krause_2017_selexipag.R`, `Koh_2025_aspirin.R`).
 
 ### k_presystemic_central (**canonical pre-systemic-to-parent-central transfer rate constant**)
 - **Type:** paper-named-param
