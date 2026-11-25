@@ -2216,6 +2216,8 @@ navbar:
         href: articles/Liu_2024_deutenzalutamide.html
       - text: "Deuterium (Liu 2019)"
         href: articles/Liu_2019_deuterium.html
+      - text: "Deuterium (Liu 2019b)"
+        href: articles/Liu_2019b_deuterium.html
       - text: "Dexamethasone (Krzyzanski 2021)"
         href: articles/Krzyzanski_2021_corticosteroids.html
       - text: "Dexamethasone (Ozdin 2025)"
@@ -10946,6 +10948,7 @@ articles:
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2018_pneumocystis_qsp
   - articles/Liu_2019_deuterium
+  - articles/Liu_2019b_deuterium
   - articles/Liu_2020_cefepime
   - articles/Liu_2020_hydroxychloroquine_monkey
   - articles/Liu_2022_dabigatran

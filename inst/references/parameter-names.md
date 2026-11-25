@@ -2791,7 +2791,7 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Role:** One-way clearance (volume / time) carrying drug or tracer out of the mother's central compartment and into the breastfed infant through breast milk, in a dyad model that lumps milk with the maternal central compartment instead of carrying a separate `milk` state. It is the lactation arm of the mother's total clearance, on the same principle as the route-specific arms `lcl_renal` and `lcl_nonren`: the mother's total elimination contains it, and only this arm delivers to `infant_central`. Inside `model()` the bare `cl_milk` gives the transfer rate constant `kmilkinf <- cl_milk / vc`.
 - **Source aliases:**
   - `CLmb` -- Liu 2019 (J Pharmacokinet Pharmacodyn) Eq. 2, 'water clearance from mother to infant'.
-- **Example models:** `Liu_2019_deuterium.R` (deuterium oxide dose-to-the-mother model; `CLmb = 0.733 L/day` population mean, log-scale mean -0.33 with 20.1% between-subject variability, correlated 0.99 with the infant clearance `lcl_infant`; for a water tracer it equals the infant's breast-milk WATER intake, so milk intake is `cl_milk / 0.889` kg/day).
+- **Example models:** `Liu_2019_deuterium.R` (deuterium oxide dose-to-the-mother model; `CLmb = 0.733 L/day` population mean, log-scale mean -0.33 with 20.1% between-subject variability, correlated 0.99 with the infant clearance `lcl_infant`; for a water tracer it equals the infant's breast-milk WATER intake, so milk intake is `cl_milk / 0.889` kg/day), `Liu_2019b_deuterium.R` (the same structure refitted to 565 pairs from nine countries; log-scale mean -0.36 with between-subject SD 0.31, base-model posterior).
 - **Notes:** Not an alias of `lq_milk`, which is a two-way exchange with a separate `milk` compartment, nor of `kmilkinf`, which is a rate constant applied to a milk AMOUNT. Use `lcl_milk` when the source estimates the lactation transfer as a clearance from the maternal body pool.
 
 ### lq_elf (**canonical log-transformed central-to-lung-ELF inter-compartmental clearance**)
@@ -3160,7 +3160,7 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Role:** Clearance (volume / time) of drug or tracer out of the breastfed infant's `infant_central` compartment in a mother-to-infant dyad model, when the infant clearance is estimated rather than scaled from the mother's. The `_infant` member of the plain `lcl`; the bare `cl_infant` is used inside `model()`, with `kel_infant <- cl_infant / vc_infant`.
 - **Source aliases:**
   - `CLbo` -- Liu 2019 (J Pharmacokinet Pharmacodyn) Eq. 1, 'water clearance from infant to out'.
-- **Example models:** `Liu_2019_deuterium.R` (deuterium oxide; `CLbo = 0.864 L/day` population mean at 5 kg infant weight, log-scale mean -0.16, power exponent 0.17 on infant weight `WT_INFANT` via `e_wt_infant_cl_infant`).
+- **Example models:** `Liu_2019_deuterium.R` (deuterium oxide; `CLbo = 0.864 L/day` population mean at 5 kg infant weight, log-scale mean -0.16, power exponent 0.17 on infant weight `WT_INFANT` via `e_wt_infant_cl_infant`), `Liu_2019b_deuterium.R` (nine-country refit; log-scale mean -0.16 at 5 kg, exponent 0.55).
 - **Notes:** Follows the `_infant` suffix rule stated under `lmtt_infant`. Compare `lkel_infant` (`Dickinson_2021_dolutegravir_motherinfant.R`), the rate-constant form used when the source estimates the infant elimination rate constant instead of a clearance.
 
 ### lmtt_bile (**canonical log-transformed bile-duct sub-compartment residence time**)
