@@ -10158,8 +10158,8 @@ navbar:
         href: articles/Tseng_2026_vancomycin.html
       - text: "Vancomycin (Wei 2022)"
         href: articles/Wei_2022_vancomycin.html
-      - text: "Vancomycin (Xu 2026)"
-        href: articles/Xu_2026_vancomycin.html
+      - text: "Vancomycin (Westra 2019)"
+        href: articles/Westra_2019_vancomycin.html
       - text: "Vancomycin (Yoon 2023)"
         href: articles/Yoon_2023_vancomycin.html
       - text: "Vancomycin (Yu 2023)"
@@ -13793,6 +13793,7 @@ articles:
   - articles/WerumeusBuning_2021_ceftazidime
   - articles/Westerhout_2012_acetaminophen_rat_pbpk
   - articles/Westerhout_2013_quinidine
+  - articles/Westra_2019_vancomycin
   - articles/Westra_2025_osimertinib
   - articles/White_2022_alfaxalone_rat
   - articles/Wi_2017_teicoplanin

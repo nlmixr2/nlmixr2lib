@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Srinivas 2019 efavirenz plasma, CSF and brain tissue ([doi:10.1111/cts.12620](https://doi.org/10.1111/cts.12620)) -- adults living with HIV, and rhesus macaques.
+- Add Westra 2019 vancomycin ([doi:10.1371/journal.pone.0216801](https://doi.org/10.1371/journal.pone.0216801)) -- adults on intermittent online hemodiafiltration.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
