@@ -377,8 +377,23 @@ obs <-
                 OCC = ifelse(pm_mg > 0 & time >= T0 + 12, 1L, 2L)) |>
   dplyr::select(-pm_mg)
 
+# Records every 0.25 h through the run-in, dropped from the output after
+# solving. rxode2 builds since its PR 1637 lose the end of a lagged
+# zero-order dose that is still being delivered when the next dose record
+# arrives, unless another record falls inside the delivery; in the
+# twice-daily arm an evening dose's lag plus duration can pass 12 h. Each
+# record takes the occasion of the dose that opened its interval, as the
+# samples do, so the covariates every dose reads are unchanged.
+run_in <-
+  cohort |>
+  dplyr::select(id, dplyr::all_of(covs), pm_mg) |>
+  tidyr::crossing(time = seq(0, T0 - 0.25, by = 0.25)) |>
+  dplyr::mutate(amt = 0, evid = 0L, cmt = "central", rate = 0,
+                OCC = ifelse(pm_mg > 0 & time %% 24 >= 12, 1L, 2L)) |>
+  dplyr::select(-pm_mg)
+
 events <-
-  dplyr::bind_rows(doses, obs) |>
+  dplyr::bind_rows(doses, run_in, obs) |>
   dplyr::arrange(id, time, dplyr::desc(evid)) |>
   as.data.frame()
 
@@ -414,6 +429,7 @@ sim_solve <- solve_d1(mod, events, addDosing = FALSE,
 sim <-
   sim_solve |>
   as.data.frame() |>
+  dplyr::filter(time >= T0) |>
   dplyr::mutate(tnca = time - T0) |>
   dplyr::left_join(dplyr::select(cohort, id, arm, band, WT, daily_mg), by = "id")
 
@@ -433,10 +449,10 @@ longer than the 12 h dosing interval (the 3.61-fold evening lag times a 62%
 between-occasion variability reaches it in a few percent of children). The
 evening dose then arrives after the next morning dose. `rxode2` does not read
 the dose's zero-order duration from that morning dose record, but it does read
-it from samples inside the lag window: for the evening dose before the observed
-interval, those are the morning samples, so it is absorbed over the morning
-occasion's duration. Its bioavailability, and therefore the AUC, is still its
-own. Those children are counted and checked on the AUC only.
+it from records inside the lag window, and those include the morning
+occasion's records (samples, or the run-in records), so the dose is absorbed
+over the morning occasion's duration. Its bioavailability, and therefore the
+AUC, is still its own. Those children are counted and checked on the AUC only.
 
 ```{r superposition}
 # Trapezoidal AUC over the observed interval; also used for Figure 2 below.
@@ -454,7 +470,8 @@ solve_sup <- function(ev) {
   solve_d1(mod_typ_sup, dplyr::filter(ev, id %in% twice_daily),
                   params = sup_par, addDosing = FALSE,
                   addlKeepsCov = FALSE, covsInterpolation = "locf") |>
-    as.data.frame()
+    as.data.frame() |>
+    dplyr::filter(time >= T0)
 }
 sup_both <- solve_sup(events)
 # Morning doses alone on occasion 2, evening doses alone on occasion 1.
@@ -1198,7 +1215,7 @@ is deliberately not encoded.
   pins the pairing. It also counts the one case neither setting handles: when
   a child's evening lag is longer than the 12 h dosing interval, the evening
   dose arrives after the next morning dose, and takes its zero-order duration
-  from the morning samples inside its lag window. Its bioavailability, and so
+  from the morning records inside its lag window. Its bioavailability, and so
   the AUC, stays its own;
   only the shape of its input changes.
 * **Each dose keeps the zero-order duration read at the dose.** That is how
