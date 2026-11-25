@@ -3294,6 +3294,8 @@ navbar:
         href: articles/Wanika_2024_tki_nsclc_invitro.html
       - text: "Erlotinib (Yin 2024)"
         href: articles/Yin_2024_erlotinib.html
+      - text: "Erlotinib gefitinib mouse (Eigenmann 2017)"
+        href: articles/Eigenmann_2017_erlotinib_gefitinib_mouse.html
       - text: "Erlotinib mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Erlotinib qsp (Wan 2025)"
@@ -11258,6 +11260,7 @@ articles:
   - articles/Edstein_2001_tafenoquine
   - articles/Edwards_2016_obeticholicAcid
   - articles/Edwina_2023_fosfomycin
+  - articles/Eigenmann_2017_erlotinib_gefitinib_mouse
   - articles/Eissing_2024_finerenone
   - articles/Ekhart_2008_carboplatin
   - articles/Ekobena_2025_bictegravir

@@ -1,0 +1,577 @@
+---
+title: "Erlotinib and gefitinib acquired resistance in NSCLC xenograft mice (Eigenmann 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Erlotinib and gefitinib acquired resistance in NSCLC xenograft mice (Eigenmann 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+mod_name <- "Eigenmann_2017_erlotinib_gefitinib_mouse"
+ui <- rxode2::rxode(readModelDb(mod_name))
+# Typical-value model: between-animal variability and residual error removed.
+tv <- suppressWarnings(rxode2::zeroRe(ui))
+# kel and vc must not trigger rxode2's automatic linear-compartment solve.
+stopifnot(is.null(ui$linCmt))
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article (open access): <https://doi.org/10.1007/s10928-017-9553-x>
+* Supplement: Supplementary material 1 (DOCX), with the study design (Table
+  S1), the missing-data summary (Table S2), the Berkeley Madonna code of the
+  three simulation studies (S3, S4, S5) and the random-effect correlation
+  matrix (Table S7).
+
+Crossref lists no correction or erratum for this article (checked 2026-11-25).
+
+Eigenmann 2017 fitted two semi-mechanistic tumor growth inhibition (TGI)
+models jointly to erlotinib- and gefitinib-treated patient-derived NSCLC
+xenograft mice: a base TGI model (Equations 4-8) and an acquired resistance
+model (Equations 9-14), which had the lower AIC and residual error (Table 1).
+Only the acquired resistance model has published parameter estimates
+(Table 2), so it is the model distributed here.
+
+# Population
+
+Patient-derived NSCLC (LXFA677) xenograft mice were randomised into seven
+groups of 8 (56 animals): vehicle, and erlotinib or gefitinib at 6.25, 25 or
+100 mg/kg given orally once daily on days 3-16. The erlotinib 100 mg/kg group
+had a drug holiday for dose-limiting toxicity and was dosed on days 3-10 and
+14-16 (Supplementary Table S1). Tumor volume was measured by caliper every
+2-3 days over 30 days, and sparse PK samples were taken on days 10 and 16.
+Seven percent of the tumor observations were missing (Supplementary Table S2),
+and values below the limit of quantification were treated as missing. The
+PK model and its individual estimates come from the authors' earlier report
+on the same study (Eigenmann 2016, Mol Cancer Ther 15:3110) and were held
+fixed while the PD parameters were estimated in Monolix 4.2.2.
+
+The same information is available programmatically via
+`readModelDb(mod_name)()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source; the table
+collects them.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| PK: `d/dt(depot)`, `d/dt(central)`, `Cc = central / (V - D * I)` | - | Equations 1-3; supplement S3 code |
+| `lka` | log(55) 1/day, fixed | Table 2 (X) |
+| `lkel`, `lkel_gefitinib` | log(7.56), log(3.87) 1/day | Table 2 |
+| `lvc`, `lvc_gefitinib` | log(0.127), log(1.40) L | Table 2 |
+| `e_cohdose_vc` (I) | 0.00772 L per mg/kg (gefitinib; 0 for erlotinib) | Table 2, Equation 3, Methods 'Covariates' |
+| Sensitive cells `d/dt(cycling_cells)` | - | Equation 10 |
+| Damaged cells `d/dt(damaged_cells1..3)` | - | Equations 11-13 |
+| Resistant cells `d/dt(resistant_cells)` | - | Equations 14, 15, 17; supplement S5 code |
+| `tumor_vol = S + T1 + T2 + T3 + R` | - | Equation 9 |
+| `ltumorExpGrowth` (lambda0) | log(0.217) 1/day | Table 2 |
+| `ltumorLinGrowth` (lambda1) | log(42.8) mm^3/day | Table 2 |
+| `lgrowthRatio_resistant` (beta) | log(0.869) | Table 2 |
+| `ldamageTransit` (k1) | log(1.52) 1/day | Table 2; tau = 3 / k1 = 1.97 day (Equation 16) |
+| `lkmut`, `lkmut_highdose` (kSR) | log(7.4e-3), log(1.7e-3) 1/day | Table 2 |
+| `ldrugSlope`, `ldrugSlope_highdose` (k2 erlotinib) | log(9.21e-5), log(3.15e-4) L/ug/day | Table 2 |
+| `ldrugSlope_gefitinib` (k2 gefitinib) | log(6.19e-4) L/ug/day | Table 2 |
+| `drugSlope_resistant` (k2R) | 0, fixed | Fig. 1 legend; simulations use 9.21e-5 (S4, S5 code) |
+| `lcthres` (Cth) | log(7152) ug/L, fixed | Equation 18; S4, S5 code |
+| IIV variances | Table 2 'Random effect' squared | Table 2 |
+| `propSd_tumor_vol` | 0.136 | Table 1 |
+| `addSd_tumor_vol`, `propSd` | 0, fixed (not reported) | Methods 'Parameter estimation' |
+| `TUM_VOL` (initial sensitive-cell volume) | covariate; 107 mm^3 in the authors' code | Equation 10; S3-S5 code |
+
+## Units
+
+Time is in days. Doses are amounts in ug for a 25 g mouse: the authors' code
+converts mg/kg to ug with `C = 25`, so 100 mg/kg is 2500 ug. With V in L the
+plasma concentration `Cc` is in ug/L and k2 in L/ug/day, as in Table 2. The
+dose group itself, in mg/kg, is the `COHDOSE` covariate that enters the
+gefitinib volume.
+
+## Covariates
+
+```{r covariates}
+str(ui$allCovs)
+```
+
+* `TRT_GEFITINIB`: 1 for gefitinib, 0 for erlotinib.
+* `DOSE_HIGH`: 1 for the 100 mg/kg group.
+* `COHDOSE`: dose group in mg/kg.
+* `TUM_VOL`: tumor volume at the start of the study, in mm^3.
+
+```{r helpers}
+# Event table for one or more animals. `doses` has columns id, time, amt (ug);
+# covariates are given per id in `covs`.
+make_events <- function(doses, covs, obs_times) {
+  dose_rows <- doses |>
+    mutate(evid = 1L, cmt = "depot", dvid = NA_integer_)
+  obs_rows <- tidyr::expand_grid(id = covs$id, time = obs_times) |>
+    mutate(amt = 0, evid = 0L, cmt = NA_character_, dvid = 1L)
+  bind_rows(dose_rows, obs_rows) |>
+    arrange(id, time, desc(evid)) |>
+    left_join(covs, by = "id") |>
+    as.data.frame()
+}
+
+one_animal <- function(drug = c("erlotinib", "gefitinib"), mgkg, tum_vol = 107) {
+  drug <- match.arg(drug)
+  data.frame(
+    id = 1L,
+    TRT_GEFITINIB = as.integer(drug == "gefitinib"),
+    DOSE_HIGH = as.integer(mgkg >= 100),
+    COHDOSE = mgkg,
+    TUM_VOL = tum_vol
+  )
+}
+
+# Trapezoidal area under a tumor-volume curve (the paper's AUCE).
+auc_trap <- function(time, y) {
+  sum(diff(time) * (head(y, -1) + tail(y, -1)) / 2)
+}
+
+value_at <- function(sim, t, col) sim[[col]][which.min(abs(sim$time - t))]
+```
+
+# Typical-value PK and PKNCA check
+
+The paper reports no NCA, so PKNCA is checked against the closed form of the
+one-compartment oral model, `AUC(0-inf) = Dose / (ke * V)`, for one
+100 mg/kg dose of each drug.
+
+```{r pk-single}
+obs_pk <- sort(unique(c(0, seq(0.001, 0.05, by = 0.001), seq(0.05, 3, by = 0.01))))
+pk_sim <- bind_rows(lapply(c("erlotinib", "gefitinib"), function(drug) {
+  ev <- make_events(
+    data.frame(id = 1L, time = 0, amt = 100 * 25),
+    one_animal(drug, 100),
+    obs_pk
+  )
+  as.data.frame(rxode2::rxSolve(tv, ev)) |>
+    mutate(id = 1L, treatment = drug)
+}))
+
+conc <- pk_sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+dose_df <- data.frame(
+  id = 1L, time = 0, amt = 2500,
+  treatment = c("erlotinib", "gefitinib")
+)
+pk_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+pk_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+pk_data <- PKNCA::PKNCAdata(
+  pk_conc, pk_dose,
+  intervals = data.frame(
+    start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+    aucinf.obs = TRUE, half.life = TRUE
+  )
+)
+nca <- as.data.frame(PKNCA::pk.nca(pk_data)$result)
+
+expected <- data.frame(
+  treatment = c("erlotinib", "gefitinib"),
+  auc_expected = c(
+    2500 / (7.56 * 0.127),
+    2500 / (3.87 * (1.40 - 0.00772 * 100))
+  )
+)
+nca_wide <- nca |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(expected, by = "treatment")
+nca_wide |>
+  dplyr::rename(
+    "Drug" = treatment, "Cmax (ug/L)" = cmax, "Tmax (day)" = tmax,
+    "AUC0-inf (ug*day/L)" = aucinf.obs, "t1/2 (day)" = half.life,
+    "Dose / (ke * V)" = auc_expected
+  ) |>
+  knitr::kable(digits = 3)
+
+# Same drawn parameters on both sides, so a tight bound is correct here.
+stopifnot(
+  all(abs(nca_wide$aucinf.obs / nca_wide$auc_expected - 1) < 0.01),
+  abs(nca_wide$half.life[nca_wide$treatment == "erlotinib"] - log(2) / 7.56) < 0.005
+)
+```
+
+The erlotinib Cmax after 100 mg/kg, about 14,300 ug/L, matches the peaks of
+the PK trace in Figure 5. At 100 mg/kg the gefitinib volume falls from 1.40 L
+to 1.40 - 0.772 = 0.628 L (Equation 3).
+
+# Figure 5: two treatment cycles of erlotinib 100 mg/kg
+
+Figure 5 simulates 100 mg/kg erlotinib on days 3-8 and 14-16. The
+authors' code S3 uses the high-dose potency k2 but the low/mid-dose
+conversion rate kSR = 0.0074 1/day, and Figure 5 is reproduced only with that
+combination, so the simulation below sets `lkmut_highdose` to the low/mid-dose
+value.
+
+```{r fig5}
+fig5_doses <- data.frame(id = 1L, time = c(3:8, 14:16), amt = 2500)
+tv_fig5 <- rxode2::ini(tv, lkmut_highdose = log(7.4e-3))
+sim5 <- as.data.frame(rxode2::rxSolve(
+  tv_fig5,
+  make_events(fig5_doses, one_animal("erlotinib", 100), seq(0, 40, by = 0.02))
+))
+
+sim5 |>
+  select(time, tumor_vol, cycling_cells, resistant_cells) |>
+  pivot_longer(-time) |>
+  mutate(name = recode(name,
+    tumor_vol = "Tumor volume", cycling_cells = "Sensitive cells",
+    resistant_cells = "Resistant cells"
+  )) |>
+  ggplot(aes(time, value, colour = name)) +
+  geom_line() +
+  labs(
+    x = "Time (day)", y = "Tumor volume (mm^3)", colour = NULL,
+    caption = "Replicates Figure 5 of Eigenmann 2017."
+  )
+
+# Digitised from Figure 5 at day 40: total 1270, resistant 650, sensitive 620 mm^3.
+fig5_check <- data.frame(
+  quantity = c("tumor_vol", "resistant_cells", "cycling_cells"),
+  published = c(1270, 650, 620)
+) |>
+  mutate(simulated = sapply(quantity, function(q) value_at(sim5, 40, q)))
+knitr::kable(fig5_check, digits = 0)
+stopifnot(all(abs(fig5_check$simulated / fig5_check$published - 1) < 0.10))
+```
+
+# Figure 6: 20 daily doses of erlotinib 100 mg/kg
+
+Figure 6 simulates 20 daily doses of 100 mg/kg from day 3 followed by a
+27-day wash-out. Here the packaged high-dose parameters (k2 and kSR of the
+100 mg/kg group) reproduce the figure.
+
+```{r fig6}
+fig6_doses <- data.frame(id = 1L, time = 3:22, amt = 2500)
+sim6 <- as.data.frame(rxode2::rxSolve(
+  tv,
+  make_events(fig6_doses, one_animal("erlotinib", 100), seq(0, 50, by = 0.02))
+))
+
+sim6 |>
+  select(time, tumor_vol, cycling_cells, resistant_cells) |>
+  pivot_longer(-time) |>
+  mutate(name = recode(name,
+    tumor_vol = "Tumor volume", cycling_cells = "Sensitive cells",
+    resistant_cells = "Resistant cells"
+  )) |>
+  ggplot(aes(time, value, colour = name)) +
+  geom_line() +
+  geom_line(
+    data = sim6, aes(time, frac_resistant * 1500), inherit.aes = FALSE,
+    linetype = "dashed"
+  ) +
+  scale_y_continuous(sec.axis = sec_axis(~ . / 1500, name = "Fraction of resistant cells (dashed)")) +
+  labs(
+    x = "Time (day)", y = "Tumor volume (mm^3)", colour = NULL,
+    caption = "Replicates Figure 6 of Eigenmann 2017."
+  )
+
+# Digitised from Figure 6 at day 50: total 1120, resistant 850, sensitive 280 mm^3;
+# the resistant fraction is close to 1 from day 20 to day 35.
+fig6_check <- data.frame(
+  quantity = c("tumor_vol", "resistant_cells", "cycling_cells"),
+  published = c(1120, 850, 280)
+) |>
+  mutate(simulated = sapply(quantity, function(q) value_at(sim6, 50, q)))
+knitr::kable(fig6_check, digits = 0)
+stopifnot(
+  all(abs(fig6_check$simulated / fig6_check$published - 1) < 0.10),
+  value_at(sim6, 25, "frac_resistant") > 0.95
+)
+```
+
+During treatment the sensitive cells are killed and the tumor shrinks, then
+regrows from slowly growing resistant cells; once dosing stops, the surviving
+sensitive cells regrow at their faster rate and the resistant fraction falls.
+
+# Figures 3 and 4: visual predictive check of the study design
+
+The study design of Supplementary Table S1 is simulated with between-animal
+variability and residual error, 100 animals per arm, with the initial tumor
+volume set to 107 mm^3 for every animal (the per-animal baseline volumes are
+not published).
+
+```{r vpc}
+rxode2::rxSetSeed(20171031)
+n_per_arm <- 100L
+arms <- tidyr::expand_grid(
+  drug = c("erlotinib", "gefitinib"),
+  mgkg = c(6.25, 25, 100)
+) |>
+  mutate(arm = row_number())
+covs_vpc <- arms |>
+  slice(rep(seq_len(n()), each = n_per_arm)) |>
+  mutate(
+    id = row_number(),
+    TRT_GEFITINIB = as.integer(drug == "gefitinib"),
+    DOSE_HIGH = as.integer(mgkg >= 100),
+    COHDOSE = mgkg,
+    TUM_VOL = 107
+  )
+dose_days <- function(drug, mgkg) {
+  if (drug == "erlotinib" && mgkg >= 100) c(3:10, 14:16) else 3:16
+}
+doses_vpc <- covs_vpc |>
+  rowwise() |>
+  reframe(id = id, time = dose_days(drug, mgkg), amt = mgkg * 25)
+ev_vpc <- make_events(
+  doses_vpc,
+  covs_vpc |> select(id, TRT_GEFITINIB, DOSE_HIGH, COHDOSE, TUM_VOL),
+  seq(0, 30, by = 0.5)
+)
+sim_vpc <- as.data.frame(rxode2::rxSolve(ui, ev_vpc, returnType = "data.frame")) |>
+  left_join(covs_vpc |> select(id, drug, mgkg), by = "id")
+
+vpc_sum <- sim_vpc |>
+  group_by(drug, mgkg, time) |>
+  summarise(
+    lo = quantile(tumor_vol, 0.05), med = median(tumor_vol),
+    hi = quantile(tumor_vol, 0.95), .groups = "drop"
+  ) |>
+  mutate(dose = factor(paste(mgkg, "mg/kg"), levels = c("100 mg/kg", "25 mg/kg", "6.25 mg/kg")))
+
+ggplot(vpc_sum, aes(time)) +
+  geom_ribbon(aes(ymin = pmax(lo, 1), ymax = hi), fill = "grey80") +
+  geom_line(aes(y = med)) +
+  facet_grid(drug ~ dose) +
+  scale_y_log10(limits = c(1, 1e4)) +
+  labs(
+    x = "Time (day)", y = "Tumor volume (mm^3)",
+    caption = "Median and 90% prediction interval; compare the upper panels of Figures 3 and 4 of Eigenmann 2017."
+  )
+```
+
+```{r vpc-check}
+med_at <- function(drug_, mgkg_, t) {
+  vpc_sum$med[vpc_sum$drug == drug_ & vpc_sum$mgkg == mgkg_ & vpc_sum$time == t]
+}
+vpc_tab <- tidyr::expand_grid(drug = c("erlotinib", "gefitinib"), mgkg = c(6.25, 25, 100)) |>
+  mutate(
+    day10 = mapply(med_at, drug, mgkg, 10),
+    day30 = mapply(med_at, drug, mgkg, 30)
+  )
+vpc_tab |>
+  mutate(mgkg = format(mgkg)) |>
+  dplyr::rename("Drug" = drug, "Dose (mg/kg)" = mgkg, "Day 10" = day10, "Day 30" = day30) |>
+  knitr::kable(digits = 0, caption = "Median simulated tumor volume (mm^3)")
+# Figures 3 and 4: in the 100 mg/kg groups the median falls well below the
+# starting volume by day 10, while the 6.25 and 25 mg/kg groups keep growing.
+stopifnot(
+  med_at("erlotinib", 100, 10) < 0.75 * 107,
+  med_at("gefitinib", 100, 10) < 0.75 * 107,
+  med_at("erlotinib", 6.25, 10) > 107,
+  med_at("gefitinib", 6.25, 10) > 107
+)
+```
+
+# Figure 7: continuous versus pulsed erlotinib in mice
+
+Figure 7 compares 100 mg/kg daily with a pulsed schedule of 420 mg/kg every
+5 days and 20 mg/kg on the other days (code S4: a 400 mg/kg pulse added to a
+20 mg/kg daily dose), assuming resistant cells are killed while the plasma
+concentration exceeds Cth. Both arms use the high-dose k2 and kSR, as in S4.
+The packaged model switches the threshold kill off; here it is switched on
+with `drugSlope_resistant = 9.21e-5` L/ug/day, the value of the S4 and S5
+code. The paper's curves are means of 250 animals simulated with
+between-animal variability, so the typical-value curves below are compared
+with them qualitatively.
+
+```{r fig7}
+tv_kill <- rxode2::ini(tv, drugSlope_resistant = 9.21e-5)
+cont_doses <- data.frame(id = 1L, time = 3:102, amt = 100 * 25)
+pulse_doses <- bind_rows(
+  data.frame(id = 1L, time = 3:102, amt = 20 * 25),
+  data.frame(id = 1L, time = seq(3, 102, by = 5), amt = 400 * 25)
+)
+run_mouse <- function(model, doses, label) {
+  as.data.frame(rxode2::rxSolve(
+    model,
+    make_events(doses, one_animal("erlotinib", 100), seq(0, 100, by = 0.01))
+  )) |>
+    mutate(schedule = label)
+}
+sim7 <- bind_rows(
+  run_mouse(tv_kill, cont_doses, "Continuous, 100 mg/kg daily"),
+  run_mouse(tv_kill, pulse_doses, "Pulsed, 420 mg/kg + 4 x 20 mg/kg")
+)
+
+ggplot(sim7, aes(time, tumor_vol, colour = schedule)) +
+  geom_line() +
+  labs(
+    x = "Time (day)", y = "Tumor volume (mm^3)", colour = NULL,
+    caption = "Typical-value analogue of Figure 7b of Eigenmann 2017."
+  ) +
+  theme(legend.position = "bottom")
+
+auce7 <- sim7 |>
+  group_by(schedule) |>
+  summarise(
+    Cmax = max(Cc),
+    TVmin = min(tumor_vol),
+    AUCE30 = auc_trap(time[time <= 30], tumor_vol[time <= 30]),
+    AUCE100 = auc_trap(time, tumor_vol)
+  )
+knitr::kable(auce7, digits = 0)
+
+# The typical animal's minimum tumor volume is far below the means of
+# Table 3 (60.9 and 69.5 mm^3), which average 250 animals with
+# between-animal variability; only the ordering of the schedules is compared.
+# Without the threshold kill the two schedules give nearly the same tumor
+# burden (Results: 'Similar PD responses were obtained ... (data not shown)').
+sim7_nokill <- bind_rows(
+  run_mouse(tv, cont_doses, "continuous"),
+  run_mouse(tv, pulse_doses, "pulsed")
+) |>
+  group_by(schedule) |>
+  summarise(AUCE100 = auc_trap(time, tumor_vol))
+knitr::kable(sim7_nokill, digits = 0, caption = "AUCE to day 100 without the threshold kill")
+
+stopifnot(
+  # Figure 7a: continuous peaks are about twofold, pulsed peaks far above Cth.
+  auce7$Cmax[1] > 7152, auce7$Cmax[2] > 4 * 7152,
+  # Figure 7c and Table 3: lower tumor burden with the pulsed schedule.
+  auce7$AUCE100[2] < auce7$AUCE100[1],
+  abs(sim7_nokill$AUCE100[2] / sim7_nokill$AUCE100[1] - 1) < 0.05
+)
+```
+
+# Figure 8: hybrid model with human erlotinib PK
+
+For the clinical scenarios (code S5) the mouse PK is replaced by human
+erlotinib PK (Lu 2006: ka 22.8 1/day, V 233 L, ke 0.408 1/day; doses in ug)
+while the tumor parameters stay at the mouse estimates. S5 uses kSR of the
+high-dose group (0.00166 1/day) with the low/mid-dose erlotinib k2
+(9.21e-5 L/ug/day) and the threshold kill of resistant cells. Three
+schedules are compared from day 1: 150 mg daily for 28 days; 1050 mg on two
+consecutive days each week with 50 mg on days 10-14, 17-21 and 24-28; and
+1600 mg once a week with 50 mg on six days of weeks 2-4.
+
+```{r fig8}
+tv_human <- rxode2::ini(
+  tv,
+  lka = log(22.8), lkel = log(0.408), lvc = log(233),
+  ldrugSlope_highdose = log(9.21e-5),
+  drugSlope_resistant = 9.21e-5
+)
+human_animal <- one_animal("erlotinib", 100)
+human_animal$COHDOSE <- 0
+schedules8 <- list(
+  "Continuous 150 mg" = data.frame(id = 1L, time = 1:28, amt = 150000),
+  "Pulsed 2 x 1050 mg + 5 x 50 mg" = bind_rows(
+    data.frame(id = 1L, time = c(1, 2, 8, 9, 15, 16, 22, 23), amt = 1050000),
+    data.frame(id = 1L, time = c(10:14, 17:21, 24:28), amt = 50000)
+  ),
+  "Pulsed 1 x 1600 mg + 6 x 50 mg" = bind_rows(
+    data.frame(id = 1L, time = c(1, 8, 15, 22), amt = 1600000),
+    data.frame(id = 1L, time = c(10:15, 17:22, 24:29), amt = 50000)
+  )
+)
+sim8 <- bind_rows(lapply(names(schedules8), function(nm) {
+  as.data.frame(rxode2::rxSolve(
+    tv_human,
+    make_events(schedules8[[nm]], human_animal, seq(0, 35, by = 0.01))
+  )) |>
+    mutate(schedule = nm)
+}))
+
+sim8 |>
+  select(time, schedule, Cc, tumor_vol) |>
+  pivot_longer(c(Cc, tumor_vol)) |>
+  mutate(name = recode(name, Cc = "Concentration (ug/L)", tumor_vol = "Tumor volume (mm^3)")) |>
+  ggplot(aes(time, value, colour = schedule)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y") +
+  labs(x = "Time (day)", y = NULL, colour = NULL, caption = "Replicates Figure 8 of Eigenmann 2017.") +
+  theme(legend.position = "bottom")
+
+fig8_check <- data.frame(
+  schedule = names(schedules8),
+  # Digitised from Figure 8: peak concentration (ug/L) and tumor volume at day 35 (mm^3).
+  published_cmax = c(1800, 7700, 7300),
+  published_tv35 = c(650, 515, 610)
+) |>
+  mutate(
+    simulated_cmax = sapply(schedule, function(s) max(sim8$Cc[sim8$schedule == s])),
+    simulated_tv35 = sapply(schedule, function(s) value_at(sim8[sim8$schedule == s, ], 35, "tumor_vol"))
+  )
+knitr::kable(fig8_check, digits = 0)
+stopifnot(
+  all(abs(fig8_check$simulated_cmax / fig8_check$published_cmax - 1) < 0.10),
+  all(abs(fig8_check$simulated_tv35 / fig8_check$published_tv35 - 1) < 0.10)
+)
+```
+
+The simulated delay of regrowth under the pulsed schedules is small, as the
+paper concludes: concentrations exceed the threshold only briefly.
+
+# Assumptions and deviations
+
+* **Base TGI model not distributed.** Table 1 reports only the parameter
+  count, residual error and AIC of the base model (Equations 4-8); its
+  estimates are not published.
+* **Joint model in one file.** The authors fitted both drugs simultaneously
+  with shared tumor-growth, transit and conversion parameters, so the drug is
+  selected with the `TRT_GEFITINIB` indicator rather than split into two
+  files.
+* **Initial tumor volume as a covariate.** Table 1 counts seven estimated
+  parameters, all of which appear in Table 2, so TV0 was not estimated; it is
+  the `TUM_VOL` covariate (the authors' code uses 107 mm^3).
+* **Random effects are Monolix standard deviations.** Table 2 reports omega
+  as a standard deviation, the Monolix convention; the `ini()` variances are
+  their squares. The Results text quotes a range of 0.468-0.689, which does
+  not match Table 2 (0.487-0.742); Table 2 is used. The S4 simulation code
+  uses different values for lambda0 (0.543) and erlotinib k2 (0.437) and is
+  not used for the variances.
+* **High-dose random effects.** Table 2 gives no separate random effect for
+  the high-dose kSR and erlotinib k2, so each group shares the random effect
+  of its parameter. The S4 code uses equal variances for the two levels,
+  which makes the two encodings equivalent in simulation.
+* **Residual error.** Table 1 prints one residual error (0.136) for the
+  combined error model; it is taken as the proportional component, and the
+  unreported additive component is fixed to 0. The proportional PK residual
+  error belongs to the earlier PK analysis and is not reported; it is fixed
+  to 0.
+* **PK parameters.** Table 2 lists the typical PK parameters and their
+  random effects from the earlier report; in the PD fit the individual PK
+  estimates were held fixed. ka is shared by both drugs and fixed (Table 2).
+* **Threshold kill of resistant cells.** Equation 17 writes the kill term as
+  `DER = k2R * Cp` above Cth and Equation 14 subtracts `DER` without
+  multiplying by R; the S5 code uses `k2R * PK * R`, which is the form
+  packaged. The S4 code (Figure 7) uses `k2R * (PK - Cth) * R` instead,
+  so the Figure 7 analogue above differs slightly from the paper's
+  simulation. The kill was not identifiable in the fit, so
+  `drugSlope_resistant` is fixed to 0 in the packaged model.
+* **Threshold value.** The text gives Cth as 7150 "ug/mL"; the units are
+  ug/L (1 uM x 393.4 g/mol / 0.055 = 7153 ug/L), and the value 7152 of the
+  S4 and S5 code is used. Figure 8 labels the threshold 7500 ug/L.
+* **Parameter combinations of the simulation code.** Figure 5 (code S3)
+  uses the high-dose k2 with the low/mid-dose kSR, and Figure 8 (code S5)
+  the high-dose kSR with the low/mid-dose k2; the replications above set
+  these combinations explicitly. Table 2 gives k1 = 1.52 and kSR (high dose)
+  = 1.7e-3 1/day, while the code uses 1.51 and 0.00166; Table 2 is used.
+  The S4 code also subtracts an extra `S_pulse * kSR_hd` term from the
+  sensitive cells of the pulsed arm, and the S5 code feeds the third damaged
+  compartment of the 1600 mg arm from the second compartment of the
+  1050 mg arm; both look like typing errors and are not reproduced, which
+  explains the small difference for the 1600 mg schedule in Figure 8.
+* **Dose units.** Doses are in ug for a 25 g mouse (`C = 25` in the code),
+  matching the PK peak of about 14,000 ug/L in Figure 5.
+* **Units of the growth rates.** The code comments swap the units of
+  lambda0 and lambda1; the units of Table 2 (1/day and mm^3/day) are used.
