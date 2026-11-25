@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Quinney 2013 midazolam + ketoconazole CYP3A interaction semi-PBPK ([doi:10.1038/psp.2013.50](https://doi.org/10.1038/psp.2013.50)) -- healthy adults (typical-subject simulation).
+- Add Jullien 2014 mefloquine ([doi:10.1186/1475-2875-13-187](https://doi.org/10.1186/1475-2875-13-187)) -- Indian adults with uncomplicated Plasmodium falciparum malaria given the artesunate-mefloquine fixed-dose combination.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

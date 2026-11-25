@@ -5442,6 +5442,8 @@ navbar:
         href: articles/Guidi_2019_artesunate_mefloquine.html
       - text: "Mefloquine (Hoglund 2018)"
         href: articles/Hoglund_2018_mefloquine.html
+      - text: "Mefloquine (Jullien 2014)"
+        href: articles/Jullien_2014_mefloquine.html
       - text: "Mefloquine (Ramharter 2019)"
         href: articles/Ramharter_2019_mefloquine.html
       - text: "Mefloquine (Simpson 2013)"
@@ -11451,6 +11453,7 @@ articles:
   - articles/Jovanovic_2026_adalimumab
   - articles/Jullien_2005_abacavir
   - articles/Jullien_2006_lopinavir
+  - articles/Jullien_2014_mefloquine
   - articles/Juma_2026_lumefantrine
   - articles/Jung_2022_donepezil
   - articles/Jung_2023_fractal_kinetics
