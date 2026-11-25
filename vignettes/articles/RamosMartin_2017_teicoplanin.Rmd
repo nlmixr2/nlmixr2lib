@@ -1,0 +1,472 @@
+---
+title: "Teicoplanin (Ramos-Martin 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Teicoplanin (Ramos-Martin 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta}
+mod <- readModelDb("RamosMartin_2017_teicoplanin")
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.1128/AAC.00707-17> (open access in PubMed Central,
+  PMC5610524)
+
+Ramos-Martin and colleagues pooled the teicoplanin concentrations of two Liverpool
+studies -- one in neonates, one in children older than 1 month -- into a single
+population model that could serve as the Bayesian prior of a BestDose
+multiple-model dose controller. The model was fitted non-parametrically with the
+NPAG algorithm in Pmetrics. No supplementary material accompanies the article,
+and no erratum was found (Europe PMC search, 2026-11-25).
+
+# Population
+
+Fifty-seven patients contributed 394 concentrations (Table 1): 18 neonates
+(postmenstrual age 26-44 weeks, median weight 2.04 kg), 16 infants and toddlers
+aged 1-23 months, 20 children aged 2-11 years and 3 children aged 11-16 years.
+Overall median age was 0.88 years (0.01-15.82), median weight 7.5 kg
+(0.69-62.2), 24 of 57 were female, median Haycock-Schwartz eGFR was 62.06
+mL/min/1.73 m^2 (5.4-160.3) and median serum creatinine 41 umol/L (21-308).
+Patients were treated for proven or suspected methicillin-resistant
+staphylococcal sepsis or central-line infection; 40% were in intensive care,
+mostly after cardiac surgery, and 30% were oncology patients with febrile
+neutropenia. Neonates received a 16 mg/kg loading dose then 8 mg/kg daily as a
+30-min infusion; older children received 10 mg/kg every 12 h for three doses
+and then 10 mg/kg daily as a 2-5 min bolus.
+
+```{r population}
+str(ui$population[c("n_subjects", "n_observations", "age_range", "weight_range", "sex_female_pct")])
+```
+
+# Model structure
+
+Two-compartment model with zero-order intravenous input (Eqs. 2a and 2b):
+
+* `kel = Ke0 * (WT/70)^-0.25 * Renal`, `V = V0 * (WT/70)`;
+* `Renal = PNA (days) / SCr (umol/L)` when postnatal age is below 3 months
+  (age < 0.25 year), otherwise `Renal = eGFR^pw` (eGFR uncentred, in
+  mL/min/1.73 m^2);
+* `Ke0` and `V0` take one value for samples drawn < 96 h after the first dose
+  (the paper's occasion 1) and another from 96 h onward (occasion 2). The
+  packaged model switches them as a step at 96 h after the first dose
+  (`tafd()`), so the concentration is discontinuous there by the ratio of the
+  two volumes. `Kcp`, `Kpc` and `pw` are shared.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment ODEs with `kel` as above | -- | Methods, Eqs. 2a and 2b |
+| Output `Y = X(1)/V` | -- | Methods, text after Eq. 2b |
+| `Renal` switch at age 0.25 year | -- | Methods, text after Eq. 2b; Table 3 footnote |
+| Occasion split at 96 h | -- | Methods, 'There were two sampling periods'; Table 3 footnote |
+| `lkel_lt96h` (Ke01) | log(0.03) 1/h | Table 3, median |
+| `lkel_ge96h` (Ke02) | log(0.025) 1/h | Table 3, median |
+| `lvc_lt96h` (V01) | log(19.52) L | Table 3, median |
+| `lvc_ge96h` (V02) | log(22.7) L | Table 3, median |
+| `lk12` (Kcp) | log(0.23) 1/h | Table 3, median |
+| `lk21` (Kpc) | log(0.12) 1/h | Table 3, median |
+| `e_crcl_kel` (pw) | 0.07 | Table 3, median |
+| `e_wt_kel` | -0.25, fixed | Eq. 2a; Methods 'we chose to fix these values' |
+| `e_wt_vc` | 1, fixed | Table 3 footnote, 'Volume = V0 * (wt/70)' |
+| `etalkel_lt96h` | 0.745755 | Table 3, CV = 0.04/0.038 |
+| `etalkel_ge96h` | 0.527355 | Table 3, CV = 0.03/0.036 |
+| `etalvc_lt96h` | 0.333034 | Table 3, CV = 14.23/22.636 |
+| `etalvc_ge96h` | 0.117921 | Table 3, CV = 7.95/22.472 |
+| `etalk12` | 0.672740 | Table 3, CV = 0.48/0.490 |
+| `etalk21` | 0.952369 | Table 3, CV = 0.27/0.214 |
+| `etae_crcl_kel` | 0.891998 | Table 3, CV = 0.15/0.125 |
+| `addSd`, `propSd` | 0, fixed | not reported (assay-error polynomial unpublished) |
+
+Every omega is `log(CV^2 + 1)` with `CV = SD / mean` of the NPAG marginal.
+
+# Typical values against the Abstract
+
+The Abstract summarises the model as `Ke = 0.03 * (wt/70)^-0.25 * Renal` and
+`V = 19.5 * (wt/70)` with `Renal = eGFR^0.07` or `PNA/SCr`. The packaged model
+must return exactly these on its first occasion. The two reference patients of
+the dose-controller simulations (Methods) are used, plus a median neonate from
+Table 1.
+
+```{r typical-values}
+pts <- data.frame(
+  id = 1:3,
+  who = c("Infant (Fig. 5)", "Child (Fig. 6)", "Median neonate (Table 1)"),
+  WT = c(6.3, 16.3, 2.04),
+  PNA = c(0.46 * 12, 5.78 * 12, 17 / 30.4375),
+  CREAT = c(40, 40, 44.5),
+  CRCL = c(63.84, 108.41, 42.8)
+)
+ev_tv <- do.call(rbind, lapply(pts$id, function(i) {
+  data.frame(id = i, time = c(0, 1, 100), amt = c(10, NA, NA), evid = c(1, 0, 0), cmt = "central")
+})) |>
+  dplyr::left_join(pts[, c("id", "WT", "PNA", "CREAT", "CRCL")], by = "id")
+tv <- rxode2::rxSolve(rxode2::zeroRe(ui), ev_tv, returnType = "data.frame") |>
+  dplyr::filter(time == 1) |>
+  dplyr::left_join(pts[, c("id", "who")], by = "id")
+renal_expected <- ifelse(
+  pts$PNA < 3,
+  pts$PNA * 30.4375 / pts$CREAT,
+  pts$CRCL^0.07
+)
+kel_expected <- 0.03 * (pts$WT / 70)^-0.25 * renal_expected
+vc_expected <- 19.52 * pts$WT / 70
+tv_tab <- data.frame(
+  Patient = tv$who,
+  kel = signif(tv$kel, 4),
+  `kel (Abstract)` = signif(kel_expected, 4),
+  `vc (L)` = signif(tv$vc, 4),
+  `vc (Abstract)` = signif(vc_expected, 4),
+  check.names = FALSE
+)
+knitr::kable(tv_tab, caption = "Typical kel (1/h) and central volume on occasion 1.")
+stopifnot(
+  max(abs(tv$kel / kel_expected - 1)) < 1e-10,
+  max(abs(tv$vc / vc_expected - 1)) < 1e-10
+)
+```
+
+## Unit of postnatal age in the young-infant renal descriptor
+
+The Methods text defines the young-infant descriptor as "the PNA (in years)
+divided by the serum creatinine concentration (in micromoles per liter)", while
+Table 1 reports PNA in days and the Abstract does not say. The two readings
+differ 365.25-fold, and Table 3 decides between them. `Ke0` is one parameter
+estimated across all 57 patients, so if PNA were in years, the neonates'
+`Ke0` support points would have to sit about 365 times above those of the older
+children to give comparable elimination. The reported `Ke0` distribution (mean
+0.038, SD 0.04 1/h) leaves no room for that.
+
+```{r pna-units}
+med_neo <- c(WT = 2.04, PNA_d = 17, SCR = 44.5) # Table 1, neonates
+size <- (med_neo[["WT"]] / 70)^-0.25
+kel_days <- 0.03 * size * med_neo[["PNA_d"]] / med_neo[["SCR"]]
+kel_years <- 0.03 * size * (med_neo[["PNA_d"]] / 365.25) / med_neo[["SCR"]]
+# Ke0 a median neonate would need under the years reading to keep the same kel
+ke0_needed_years <- kel_days / (size * (med_neo[["PNA_d"]] / 365.25) / med_neo[["SCR"]])
+data.frame(
+  reading = c("PNA in days", "PNA in years"),
+  `kel at Ke0 = 0.03 (1/h)` = signif(c(kel_days, kel_years), 3),
+  `half-life of kel (h)` = signif(log(2) / c(kel_days, kel_years), 3),
+  check.names = FALSE
+) |>
+  knitr::kable(caption = "Median Table 1 neonate (2.04 kg, PNA 17 days, SCr 44.5 umol/L).")
+# Under the years reading, 18 of 57 patients would need Ke0 near ke0_needed_years.
+# Their contribution alone to the mean of the Ke0 marginal would exceed 3 1/h, far
+# above the reported mean of 0.038 1/h (about 90-fold).
+stopifnot(18 / 57 * ke0_needed_years > 50 * 0.038)
+```
+
+The days reading gives an elimination half-life (of `kel`, before
+distribution) of about a day; the years reading gives one of about a year. The packaged model therefore uses
+days, converting the canonical `PNA` column (months) with `PNA * 30.4375`.
+
+# Structural check: ODE against the closed-form two-compartment solution
+
+Within the first occasion all parameters are constant, so a bolus must follow
+the two-compartment biexponential exactly. This checks the micro-constant
+wiring of Eqs. 2a/2b.
+
+```{r closed-form}
+cf_pts <- pts[1:3, ]
+ev_cf <- do.call(rbind, lapply(cf_pts$id, function(i) {
+  rbind(
+    data.frame(id = i, time = 0, amt = 100, evid = 1, cmt = "central"),
+    data.frame(id = i, time = seq(0.25, 95, by = 0.25), amt = NA, evid = 0, cmt = "central")
+  )
+})) |>
+  dplyr::left_join(cf_pts[, c("id", "WT", "PNA", "CREAT", "CRCL")], by = "id")
+sim_cf <- rxode2::rxSolve(rxode2::zeroRe(ui), ev_cf,
+  returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12
+)
+cf <- sim_cf |>
+  dplyr::mutate(
+    a = kel + k12 + k21,
+    alpha = (a + sqrt(a^2 - 4 * kel * k21)) / 2,
+    beta = (a - sqrt(a^2 - 4 * kel * k21)) / 2,
+    closed = 100 / vc * ((alpha - k21) / (alpha - beta) * exp(-alpha * time) +
+      (k21 - beta) / (alpha - beta) * exp(-beta * time))
+  )
+max_rel_err <- max(abs(cf$Cc / cf$closed - 1))
+max_rel_err
+stopifnot(max_rel_err < 1e-6)
+```
+
+# Occasion 2: steady-state exposure via PKNCA
+
+From 96 h onward the second-occasion `Ke0` and `V0` apply, so at steady state the
+dosing-interval AUC must equal `dose / (kel * vc)` evaluated on occasion 2. The
+three reference patients receive the label regimen used in the study (neonate:
+16 mg/kg then 8 mg/kg daily as a 30-min infusion; infant and child: 10 mg/kg
+every 12 h for three doses then 10 mg/kg daily) for 40 days, and PKNCA computes
+the last interval.
+
+```{r ss-pknca}
+mk_regimen <- function(id, wt, neonate) {
+  if (neonate) {
+    times <- seq(0, 39 * 24, by = 24)
+    amts <- wt * c(16, rep(8, length(times) - 1))
+  } else {
+    times <- c(0, 12, seq(24, 39 * 24, by = 24))
+    amts <- rep(10 * wt, length(times))
+  }
+  data.frame(id = id, time = times, amt = amts, evid = 1, cmt = "central", rate = amts / 0.5)
+}
+ev_ss <- do.call(rbind, lapply(pts$id, function(i) {
+  rbind(
+    mk_regimen(i, pts$WT[i], pts$PNA[i] < 3),
+    data.frame(
+      id = i, time = c(seq(0, 48, by = 1), seq(39 * 24, 40 * 24, by = 0.25)),
+      amt = NA, evid = 0, cmt = "central", rate = NA
+    )
+  )
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::left_join(pts[, c("id", "WT", "PNA", "CREAT", "CRCL")], by = "id")
+sim_ss <- rxode2::rxSolve(rxode2::zeroRe(ui), ev_ss,
+  returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12, maxsteps = 1e6
+) |>
+  dplyr::left_join(pts[, c("id", "who")], by = "id")
+
+conc_ss <- sim_ss |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
+  dplyr::select(id, who, time, Cc)
+dose_ss <- ev_ss |>
+  dplyr::filter(evid == 1) |>
+  dplyr::left_join(pts[, c("id", "who")], by = "id") |>
+  dplyr::select(id, who, time, amt)
+nca_ss <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_ss, Cc ~ time | who + id),
+  PKNCA::PKNCAdose(dose_ss, amt ~ time | who + id),
+  intervals = data.frame(
+    start = 39 * 24, end = 40 * 24,
+    auclast = TRUE, cmax = TRUE, cmin = TRUE
+  )
+))
+nca_tab <- as.data.frame(nca_ss$result) |>
+  dplyr::select(who, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+last_dose <- dose_ss |>
+  dplyr::group_by(who) |>
+  dplyr::slice_max(time, n = 1) |>
+  dplyr::ungroup() |>
+  dplyr::select(who, last_amt = amt)
+expected_auc <- sim_ss |>
+  dplyr::filter(time == 40 * 24) |>
+  dplyr::select(who, kel, vc) |>
+  dplyr::left_join(last_dose, by = "who") |>
+  dplyr::transmute(who, auc_expected = last_amt / (kel * vc))
+nca_cmp <- dplyr::left_join(nca_tab, expected_auc, by = "who") |>
+  dplyr::mutate(rel_diff = auclast / auc_expected - 1)
+nca_cmp |>
+  dplyr::mutate(dplyr::across(c(auclast, cmax, cmin, auc_expected), ~ signif(.x, 4)),
+    rel_diff = signif(rel_diff, 3)
+  ) |>
+  dplyr::rename(
+    Patient = who,
+    "AUC0-24 day 40 (PKNCA, mg*h/L)" = auclast,
+    "Cmax (mg/L)" = cmax,
+    "Cmin (mg/L)" = cmin,
+    "Dose / CL, occasion 2 (mg*h/L)" = auc_expected,
+    "Relative difference" = rel_diff
+  ) |>
+  knitr::kable(caption = "Typical-value steady state on occasion 2.")
+# Linear trapezoid on a 0.25 h grid: measured error up to 6e-4 (the neonate), so the
+# bound has about 8-fold headroom.
+stopifnot(max(abs(nca_cmp$rel_diff)) < 0.005)
+```
+
+```{r ss-plot, fig.cap = "Typical-value profiles over the first 48 h under the study's label regimens."}
+sim_ss |>
+  dplyr::filter(time <= 48) |>
+  ggplot(aes(time, Cc, colour = who)) +
+  geom_line() +
+  geom_hline(yintercept = c(15, 60), linetype = "dashed", colour = "grey50") +
+  labs(x = "Time after first dose (h)", y = "Teicoplanin (mg/L)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# Monte Carlo regimen comparison (Results, last paragraph)
+
+The paper simulated 100 profiles per regimen for four loading/maintenance
+regimens and reported, for the best one -- three loading doses of 25 mg/kg every
+12 h then 10 mg/kg daily -- that 30% of patients reached a day-3 trough of 15-60
+mg/L and 13% exceeded 60 mg/L. The simulation used the Pmetrics non-parametric
+prior with covariates "in the same range as the original population"; neither
+the covariate sampler nor the support points are published.
+
+The cohort below is built to match Table 1: 18/57 neonates and 39/57 older
+children, with log-normal draws around the Table 1 medians and redrawn
+(not clipped) outside the Table 1 ranges. Children's weights follow a median
+weight-for-age curve with 15% scatter. Doses are given as 30-min infusions;
+maintenance starts 24 h after the last loading dose, and the day-3 Cmin is the
+minimum concentration between 48 and 72 h.
+
+```{r mc-cohort}
+rxode2::rxSetSeed(2017)
+draw_ln <- function(n, med, sdlog, lo, hi) {
+  x <- numeric(0)
+  while (length(x) < n) {
+    y <- exp(rnorm(n, log(med), sdlog))
+    x <- c(x, y[y >= lo & y <= hi])
+  }
+  x[seq_len(n)]
+}
+# Approximate median weight-for-age (kg), both sexes averaged.
+wt_for_age <- stats::approxfun(
+  c(0, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16),
+  c(3.3, 6, 7.8, 9.6, 12.2, 14.3, 16.3, 18.3, 20.5, 25.6, 31.9, 40.5, 50.8, 58.6)
+)
+n_per_arm <- 200
+n_neo <- round(n_per_arm * 18 / 57)
+n_child <- n_per_arm - n_neo
+age_child <- draw_ln(n_child, 3.3, 1.1, 0.12, 15.8)
+wt_child <- wt_for_age(age_child) * exp(rnorm(n_child, 0, 0.15))
+cohort <- rbind(
+  data.frame(
+    PNA = draw_ln(n_neo, 17, 0.8, 4, 69) / 30.4375,
+    WT = draw_ln(n_neo, 2.04, 0.45, 0.69, 5.08),
+    CREAT = draw_ln(n_neo, 44.5, 0.5, 21, 265),
+    CRCL = draw_ln(n_neo, 42.8, 0.5, 5.4, 95.2)
+  ),
+  data.frame(
+    PNA = age_child * 12,
+    WT = wt_child,
+    CREAT = draw_ln(n_child, 41, 0.4, 27, 308),
+    CRCL = draw_ln(n_child, 78.94, 0.45, 6.43, 160.3)
+  )
+)
+cohort$id <- seq_len(nrow(cohort))
+summary(cohort[, c("PNA", "WT", "CREAT", "CRCL")])
+```
+
+```{r mc-sim}
+regimens <- data.frame(
+  regimen = c("(i) 3 x 30 then 20", "(ii) 3 x 20 then 15", "(iii) 3 x 25 then 10", "(iv) 2 x 30 then 10"),
+  load = c(30, 20, 25, 30),
+  n_load = c(3, 3, 3, 2),
+  maint = c(20, 15, 10, 10)
+)
+mc_one <- function(r) {
+  ld_t <- (seq_len(regimens$n_load[r]) - 1) * 12
+  md_t <- max(ld_t) + 24 * (0:3)
+  doses <- data.frame(
+    time = c(ld_t, md_t),
+    mgkg = c(rep(regimens$load[r], length(ld_t)), rep(regimens$maint[r], length(md_t)))
+  )
+  ev <- do.call(rbind, lapply(cohort$id, function(i) {
+    rbind(
+      data.frame(
+        id = i, time = doses$time, amt = doses$mgkg * cohort$WT[i], evid = 1,
+        cmt = "central", rate = doses$mgkg * cohort$WT[i] / 0.5
+      ),
+      data.frame(id = i, time = seq(48, 72, by = 0.5), amt = NA, evid = 0, cmt = "central", rate = NA)
+    )
+  })) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::left_join(cohort, by = "id")
+  rxode2::rxSolve(ui, ev, returnType = "data.frame") |>
+    dplyr::group_by(id) |>
+    dplyr::summarise(cmin = min(Cc), .groups = "drop") |>
+    dplyr::mutate(regimen = regimens$regimen[r])
+}
+mc <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), mc_one))
+mc_tab <- mc |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(
+    in_window = mean(cmin >= 15 & cmin <= 60),
+    above_60 = mean(cmin > 60),
+    median_cmin = median(cmin),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    published_in_window = c(NA, NA, 0.30, NA),
+    published_above_60 = c(NA, NA, 0.13, NA)
+  )
+mc_tab |>
+  dplyr::mutate(dplyr::across(-regimen, ~ signif(.x, 3))) |>
+  dplyr::rename(
+    Regimen = regimen,
+    "Cmin 15-60 (simulated)" = in_window,
+    "Cmin > 60 (simulated)" = above_60,
+    "Median day-3 Cmin (mg/L)" = median_cmin,
+    "Cmin 15-60 (published)" = published_in_window,
+    "Cmin > 60 (published)" = published_above_60
+  ) |>
+  knitr::kable(caption = "Fraction of subjects by day-3 Cmin window (mg/kg doses).")
+```
+
+```{r mc-plot, fig.cap = "Day-3 Cmin by regimen; dashed lines mark the 15-60 mg/L window."}
+ggplot(mc, aes(regimen, cmin)) +
+  geom_boxplot(outlier.size = 0.6) +
+  geom_hline(yintercept = c(15, 60), linetype = "dashed", colour = "grey50") +
+  scale_y_log10() +
+  labs(x = NULL, y = "Day-3 Cmin (mg/L)") +
+  theme_bw()
+```
+
+The simulated fraction in the window for regimen (iii) is higher than the
+published 30%, and more subjects exceed 60 mg/L. The comparison is shown but
+not asserted. The window fractions depend on the covariate sampler, which the
+paper does not describe, and on the shape of the parameter distribution, which
+here is a log-normal approximation to an unpublished non-parametric prior. They
+also count threshold crossings, which are sensitive to both. What does carry
+over is the paper's qualitative conclusion: no fixed weight-based regimen
+places most of the cohort in the 15-60 mg/L window by day 3.
+
+```{r mc-assert}
+# Qualitative claim above. With 200 subjects the binomial SE of a fraction near
+# 0.45 is about 0.035, so the 0.75 bound sits about 8 SE above the rendered values.
+stopifnot(all(mc_tab$in_window < 0.75))
+```
+
+# Assumptions and deviations
+
+* **PNA unit.** The young-infant descriptor uses PNA in days, not the years
+  printed in the Methods; see "Unit of postnatal age" above.
+* **Age switch.** "Age < 0.25 year" is implemented as canonical `PNA < 3`
+  months (0.25 x 365.25 = 91.3 days = 3 months at 30.4375 days per month).
+* **Typical values are NPAG medians**, as quoted in the Abstract. Every
+  marginal has its mean above its median, so the right skew is at least
+  qualitatively consistent with a log-normal.
+* **Inter-individual variability** is a log-normal approximation with
+  `CV = SD / mean` from Table 3. The non-parametric joint distribution, and so
+  any correlation between parameters or between the two occasions, is not
+  published; all etas are independent. In particular, a simulated subject's
+  `Ke0` and `V0` are redrawn independently at 96 h.
+* **Occasions as a step at 96 h after the first dose.** The paper assigns
+  occasion 1 to samples drawn < 96 h and occasion 2 to samples drawn >= 96 h
+  after treatment initiation. The packaged model applies the second-occasion
+  values from `tafd() >= 96` without resetting the compartment amounts, so the
+  concentration jumps by `V0_lt96h / V0_ge96h` at that time.
+* **Residual error** is `fixed(0)`. Observations were weighted by the inverse of
+  the estimated assay variance, but the Pmetrics assay-error polynomial and any
+  gamma/lambda term are not reported. The assay's own precision (< 6%,
+  Methods) is not a model residual and is not used.
+* **eGFR** is used uncentred (`eGFR^pw`) exactly as printed. It is the
+  Haycock-Schwartz estimate with k = 0.33 / 0.45 / 0.41 for preterm neonates,
+  term neonates and older children; users should compute it the same way.
+* **Not reproduced:** the BestDose individual dose optimisation (Figs. 5-6,
+  Table 4) uses each patient's Bayesian posterior over the unpublished support
+  points, so it cannot be replicated from the population model.
