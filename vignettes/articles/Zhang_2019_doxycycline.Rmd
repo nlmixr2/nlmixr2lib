@@ -15,6 +15,12 @@ library(rxode2)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+
+# The models have no between-replicate variability, so rxode2's note that a
+# multi-subject solve has no omega is expected and is muffled.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+}
 ```
 
 # Model and source
@@ -161,8 +167,11 @@ static_events <- dplyr::bind_rows(lapply(seq_along(mic_mult), function(i) {
   dplyr::filter(!(evid == 1L & amt == 0)) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-sim_static <- rxode2::rxSolve(mod_kr, static_events, params = c(lkel = -60),
-                              keep = "mic_mult", returnType = "data.frame")
+sim_static <- withCallingHandlers(
+  rxode2::rxSolve(mod_kr, static_events, params = c(lkel = -60),
+                  keep = "mic_mult", returnType = "data.frame"),
+  warning = muffle_no_omega
+)
 
 static_tab <- sim_static |>
   dplyr::group_by(mic_mult) |>
@@ -267,8 +276,11 @@ dyn_all <- dplyr::bind_rows(lapply(seq_along(regimens), function(i) {
     dplyr::mutate(regimen = factor(paste(regimens[i], "mg/kg"),
                                    levels = paste(regimens, "mg/kg")))
 }))
-sim_dyn <- rxode2::rxSolve(mod_kr, dyn_all, params = c(log10_cfu0 = 7.8),
-                           keep = "regimen", returnType = "data.frame")
+sim_dyn <- withCallingHandlers(
+  rxode2::rxSolve(mod_kr, dyn_all, params = c(log10_cfu0 = 7.8),
+                  keep = "regimen", returnType = "data.frame"),
+  warning = muffle_no_omega
+)
 
 ggplot(sim_dyn, aes(time, Cc, colour = regimen)) +
   geom_line() +
