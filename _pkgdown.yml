@@ -3524,6 +3524,8 @@ navbar:
         href: articles/Sampson_2014_gentamicin.html
       - text: "Gentamicin (Singu 2024)"
         href: articles/Singu_2024_gentamicin.html
+      - text: "Gentamicin (Smit 2019)"
+        href: articles/Smit_2019_gentamicin.html
       - text: "Gentamicin (Staatz 2005)"
         href: articles/Staatz_2005_gentamicin_vancomycin.html
       - text: "Gentamicin (Thomson 2003)"
@@ -11720,6 +11722,7 @@ articles:
   - articles/Sinha_2026_oxcarbazepine
   - articles/Sjogren_2021_malnutrition_physiology
   - articles/Sloan_2017_rifampicin
+  - articles/Smit_2019_gentamicin
   - articles/Smit_2020_vancomycin
   - articles/Smit_2021_vancomycin
   - articles/Smit_2022_moxidectin

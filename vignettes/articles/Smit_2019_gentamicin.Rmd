@@ -1,0 +1,493 @@
+---
+title: "Gentamicin in morbid obesity (Smit 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Gentamicin in morbid obesity (Smit 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Smit_2019_gentamicin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Smit_2019_gentamicin"))$description`
+* Article: <https://doi.org/10.1007/s40262-019-00762-4> (open access, PMC6768900)
+
+Smit et al. gave a single intravenous gentamicin dose to 20 morbidly obese
+adults scheduled for bariatric surgery and 8 non-obese healthy volunteers,
+sampled each for 24 h, and fitted a two-compartment model in NONMEM 7.3. Total
+body weight (TBW) was the best size descriptor for both clearance (exponent
+0.729) and central volume (exponent 1.25). The authors then simulated
+alternative dosing regimens across 50-215 kg and proposed a nomogram based on
+a "dose weight" of 70 x (TBW/70)^0.73 (Table 3).
+
+# Population
+
+```{r population}
+mod <- readModelDb("Smit_2019_gentamicin")
+str(mod()$population)
+```
+
+Table 1 of the paper lists the baseline characteristics. The 20 morbidly
+obese participants (50% male) had a median TBW of 148.8 kg (range 109-221),
+lean body weight (LBW, Janmahasatian) 76.5 kg, BMI 44.4 kg/m^2 and age 40.5
+years; the 8 non-obese volunteers (50% male) had a median TBW of 72.9 kg
+(53-86), BMI 21.8 kg/m^2 and age 22.0 years. All had an eGFR above 60 mL/min;
+the measured 24-h urine GFR was 110-230 mL/min in the obese group. The obese
+participants received 5 mg/kg LBW and the non-obese 5 mg/kg TBW, each as a
+30-min infusion (median dose 380 and 360 mg).
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source in
+`inst/modeldb/specificDrugs/Smit_2019_gentamicin.R`. The table collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL at 70 kg) | log(0.0892 L/min) | Table 2, final model, CL70kg; Eq. 5 |
+| `lvc` (Vc at 70 kg) | log(11.9 L) | Table 2, final model, Vc70kg; Eq. 4 |
+| `lq` (Q) | log(0.0848 L/min) | Table 2, final model |
+| `lvp` (Vp) | log(7.29 L) | Table 2, final model |
+| `e_wt_cl` | 0.729 | Table 2, Z (exponent on TBW/70 for CL) |
+| `e_wt_vc` | 1.25 | Table 2, X (exponent on TBW/70 for Vc) |
+| `etalcl` | log(1 + 0.181^2) | Table 2, IIV CL 18.1% |
+| `etalvc` | log(1 + 0.192^2) | Table 2, IIV Vc 19.2% |
+| covariance `etalcl`-`etalvc` | 0.0316 | Table 2, covariance IIV Vc-CL |
+| `propSd` | 0.159 | Table 2, proportional error (footnote b: SD) |
+| `addSd` | 0.206 mg/L | Table 2, additive error (footnote b: SD) |
+| `cl = CL70kg * (WT/70)^Z`, `vc = Vc70kg * (WT/70)^X` | -- | Table 2 equations; Eqs. 4-5 |
+| Two-compartment, IV infusion into `central` | -- | Results ("A two-compartment model ... best described the data"); ESM (ADVAN3) |
+| Log-normal IIV, `theta_i = theta * exp(eta_i)` | -- | ESM Eq. 1 |
+| `Cc ~ add(addSd) + prop(propSd)` | -- | ESM Eq. 2, `Y = Cpred + Cpred * eps1 + eps2` |
+
+# Typical-value covariate relationships (Figure 2)
+
+```{r figure-2}
+# Replicates the covariate lines of Figure 2 of Smit 2019.
+wt_grid <- tibble(WT = seq(50, 225, by = 1)) |>
+  mutate(
+    `Vc (L)` = 11.9 * (WT / 70)^1.25,
+    `CL (L/min)` = 0.0892 * (WT / 70)^0.729
+  ) |>
+  pivot_longer(-WT, names_to = "parameter")
+ggplot(wt_grid, aes(WT, value)) +
+  geom_line() +
+  facet_wrap(~parameter, scales = "free_y") +
+  labs(
+    x = "Total body weight (kg)", y = NULL,
+    caption = "Replicates the covariate lines of Figure 2 of Smit 2019."
+  )
+```
+
+# Virtual cohort matching the study
+
+The two study groups are rebuilt with 200 virtual participants each. TBW is
+drawn to match the medians and ranges of Table 1; height (needed for LBW) is
+not reported in the paper and is drawn from Dutch adult norms by sex.
+
+```{r cohort}
+set.seed(2019)
+rxode2::rxSetSeed(2019)
+
+# Janmahasatian 2005 lean body weight (the formula the paper used for dosing)
+lbw_janma <- function(wt, ht_cm, male) {
+  bmi <- wt / (ht_cm / 100)^2
+  ifelse(
+    male == 1,
+    9270 * wt / (6680 + 216 * bmi),
+    9270 * wt / (8780 + 244 * bmi)
+  )
+}
+
+draw_trunc <- function(n, draw, lo, hi) {
+  out <- draw(n)
+  bad <- out < lo | out > hi
+  while (any(bad)) {
+    out[bad] <- draw(sum(bad))
+    bad <- out < lo | out > hi
+  }
+  out
+}
+
+n_per_group <- 200
+make_group <- function(grp, id_offset) {
+  male <- rep(c(1, 0), length.out = n_per_group)
+  wt <- if (grp == "Morbidly obese") {
+    draw_trunc(n_per_group, function(n) rlnorm(n, log(148.8), 0.17), 109, 221)
+  } else {
+    draw_trunc(n_per_group, function(n) rnorm(n, 72.9, 9), 53, 86)
+  }
+  ht <- ifelse(male == 1, rnorm(n_per_group, 181, 7), rnorm(n_per_group, 168, 7))
+  tibble(
+    id = id_offset + seq_len(n_per_group),
+    group = grp,
+    WT = wt,
+    LBW = lbw_janma(wt, ht, male)
+  ) |>
+    mutate(dose = if (grp == "Morbidly obese") 5 * LBW else 5 * WT)
+}
+subjects <- bind_rows(
+  make_group("Morbidly obese", 0L),
+  make_group("Non-obese", n_per_group)
+)
+
+subjects |>
+  group_by(group) |>
+  summarise(
+    `TBW median (kg)` = median(WT),
+    `LBW median (kg)` = median(LBW),
+    `Dose median (mg)` = median(dose),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 1, caption = "Virtual cohort vs. Table 1 (obese: TBW 148.8, LBW 76.5, dose 380; non-obese: TBW 72.9, dose 360).")
+
+# Paper sampling times: 5, 30, 60, 90, 120, 180, 240, 360, 720, 1440 min after
+# the end of the 30-min infusion, plus a finer grid for plotting.
+t_samp <- 0.5 + c(5, 30, 60, 90, 120, 180, 240, 360, 720, 1440) / 60
+t_obs <- sort(unique(c(0, seq(0.25, 24, by = 0.25), 1, t_samp)))
+t_obs <- t_obs[t_obs <= 24]
+
+dose_rows <- subjects |>
+  transmute(id, group, WT, time = 0, amt = dose, rate = dose / 0.5, evid = 1L, cmt = "central")
+obs_rows <- subjects |>
+  select(id, group, WT) |>
+  tidyr::crossing(time = t_obs) |>
+  mutate(amt = 0, rate = 0, evid = 0L, cmt = "central")
+events <- bind_rows(dose_rows, obs_rows) |>
+  arrange(id, time, desc(evid))
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation (Figure 1 and Figure 3)
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events, keep = c("group")) |>
+  as.data.frame()
+```
+
+```{r figure-1}
+# Replicates Figures 1 and 3 of Smit 2019: concentration-time profiles after a
+# single 30-min infusion, by group (median and 2.5-97.5th percentiles of the
+# individual predictions, without residual error).
+sim |>
+  filter(time > 0) |>
+  group_by(group, time) |>
+  summarise(
+    lo = quantile(Cc, 0.025), med = median(Cc), hi = quantile(Cc, 0.975),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = 0.4, linetype = "dotted") +
+  facet_wrap(~group) +
+  scale_y_log10() +
+  labs(
+    x = "Time after start of infusion (h)", y = "Gentamicin (mg/L)",
+    caption = "Replicates Figures 1 and 3 of Smit 2019 (dotted line: LLOQ 0.4 mg/L)."
+  )
+```
+
+# PKNCA validation
+
+The paper reports AUC24 by the trapezoidal rule, and defines Cmax as the
+concentration 1 h after the start of infusion (Methods, Non-Compartmental
+Statistical Analysis). The concentration declines monotonically after the
+infusion ends at 0.5 h, so PKNCA's `cmax` over the interval 1-24 h is the
+concentration at 1 h.
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, group)
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | group + id)
+dose_obj <- PKNCA::PKNCAdose(
+  events |> filter(evid == 1) |> select(id, time, amt, group),
+  amt ~ time | group + id
+)
+intervals <- data.frame(
+  start = c(0, 1), end = c(24, 24),
+  auclast = c(TRUE, FALSE), cmax = c(FALSE, TRUE)
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_df <- as.data.frame(nca_res$result) |>
+  filter(
+    (PPTESTCD == "auclast" & start == 0) | (PPTESTCD == "cmax" & start == 1)
+  )
+```
+
+```{r nca-compare}
+# Results text: AUC24 43.7 vs 68.7 mg*h/L and Cmax (1 h) 8.6 vs 17.8 mg/L.
+published <- tibble::tribble(
+  ~group,           ~auclast, ~cmax,
+  "Morbidly obese", 43.7,     8.6,
+  "Non-obese",      68.7,     17.8
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_df,
+  reference = published,
+  by = "group",
+  units = c(auclast = "mg*h/L", cmax = "mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Simulated (median) vs. published NCA. AUC0-last is AUC0-24; Cmax is the concentration 1 h after the start of infusion. * differs by > 20%."
+)
+
+med <- nca_df |>
+  group_by(group, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop") |>
+  left_join(
+    published |> pivot_longer(-group, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("group", "PPTESTCD")
+  ) |>
+  mutate(pct_diff = 100 * (sim - ref) / ref)
+# A mis-transcribed CL, Vc or exponent moves these medians by tens of percent.
+stopifnot(all(abs(med$pct_diff) < 20))
+```
+
+All four medians fall within 20% of the published values. The morbidly obese
+AUC24 runs about 10% low; most of that gap is dose, not clearance. The virtual
+obese cohort's median LBW-based dose is about 6% below the study's 380 mg
+(Table 1), because heights are not reported and are drawn from population
+norms. Per milligram of dose the gap is about 5%.
+
+# Dosing-regimen simulations (Figure 4 and Table 3)
+
+The authors simulated six regimens over 50-215 kg using NHANES body-size data.
+Here each regimen uses 200 virtual adults with TBW uniform over 50-215 kg,
+half male, and height drawn from US adult norms by sex. Ideal body weight
+uses the Devine formula and adjusted body weight is IBW + 0.4 x (TBW - IBW),
+with IBW used when TBW < IBW (Methods, Eq. 1).
+
+```{r regimens}
+nomogram <- function(wt) {
+  # Table 3: dose on TBW below 100 kg, then fixed doses per 20-kg band.
+  case_when(
+    wt < 100 ~ 5 * wt,
+    wt < 120 ~ 480,
+    wt < 140 ~ 560,
+    wt < 160 ~ 600,
+    wt < 180 ~ 680,
+    wt < 200 ~ 760,
+    TRUE ~ 800
+  )
+}
+regimens <- c(
+  "5 mg/kg TBW", "7 mg/kg TBW", "5 mg/kg LBW", "8 mg/kg LBW",
+  "5 mg/kg ABW", "Nomogram (dose weight)"
+)
+n_reg <- 200
+base <- tibble(
+  WT = runif(n_reg, 50, 215),
+  male = rep(c(1, 0), length.out = n_reg),
+  HT = ifelse(male == 1, rnorm(n_reg, 175.7, 7.5), rnorm(n_reg, 162, 7))
+) |>
+  mutate(
+    LBW = lbw_janma(WT, HT, male),
+    IBW = ifelse(male == 1, 50, 45.5) + 2.3 * (HT / 2.54 - 60),
+    ABW = ifelse(WT < IBW, IBW, IBW + 0.4 * (WT - IBW))
+  )
+reg_subjects <- bind_rows(lapply(seq_along(regimens), function(i) {
+  base |>
+    mutate(
+      id = (i - 1L) * n_reg + seq_len(n_reg),
+      regimen = regimens[i],
+      dose = switch(regimens[i],
+        "5 mg/kg TBW" = 5 * WT,
+        "7 mg/kg TBW" = 7 * WT,
+        "5 mg/kg LBW" = 5 * LBW,
+        "8 mg/kg LBW" = 8 * LBW,
+        "5 mg/kg ABW" = 5 * ABW,
+        "Nomogram (dose weight)" = nomogram(WT)
+      )
+    )
+}))
+t_reg <- c(0, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 20, 24)
+reg_events <- bind_rows(
+  reg_subjects |>
+    transmute(id, regimen, WT, time = 0, amt = dose, rate = dose / 0.5, evid = 1L, cmt = "central"),
+  reg_subjects |>
+    select(id, regimen, WT) |>
+    tidyr::crossing(time = t_reg) |>
+    mutate(amt = 0, rate = 0, evid = 0L, cmt = "central")
+) |>
+  arrange(id, time, desc(evid))
+stopifnot(!anyDuplicated(unique(reg_events[, c("id", "time", "evid")])))
+
+reg_sim <- rxode2::rxSolve(mod, events = reg_events, keep = c("regimen")) |>
+  as.data.frame()
+reg_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(
+    reg_sim |> filter(!is.na(Cc)) |> select(id, time, Cc, regimen),
+    Cc ~ time | regimen + id
+  ),
+  PKNCA::PKNCAdose(
+    reg_events |> filter(evid == 1) |> select(id, time, amt, regimen),
+    amt ~ time | regimen + id
+  ),
+  intervals = data.frame(start = 0, end = 24, auclast = TRUE)
+))
+reg_out <- as.data.frame(reg_nca$result) |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, regimen, AUC24 = PPORRES) |>
+  left_join(
+    reg_sim |> filter(time == 24) |> select(id, Cmin = Cc),
+    by = "id"
+  ) |>
+  left_join(reg_subjects |> select(id, WT), by = "id") |>
+  mutate(
+    band = cut(WT,
+      breaks = c(50, 100, 120, 140, 160, 180, 200, 215),
+      labels = c("50-100", "100-120", "120-140", "140-160", "160-180", "180-200", "200-215"),
+      include.lowest = TRUE, right = FALSE
+    ),
+    regimen = factor(regimen, levels = regimens)
+  )
+target <- median(reg_out$AUC24[reg_out$regimen == "5 mg/kg TBW" & reg_out$WT < 100])
+```
+
+```{r figure-4, fig.height = 7}
+# Replicates Figure 4 of Smit 2019: AUC24 (upper) and Cmin (lower) by weight band.
+reg_out |>
+  select(regimen, band, AUC24, Cmin) |>
+  pivot_longer(c(AUC24, Cmin), names_to = "metric") |>
+  ggplot(aes(band, value)) +
+  geom_boxplot(outlier.size = 0.5) +
+  geom_hline(
+    data = tibble(metric = c("AUC24", "Cmin"), ref = c(target, 1)),
+    aes(yintercept = ref), linetype = "dashed"
+  ) +
+  facet_grid(metric ~ regimen, scales = "free_y") +
+  labs(
+    x = "Total body weight (kg)", y = "AUC24 (mg*h/L) / Cmin (mg/L)",
+    caption = "Replicates Figure 4 of Smit 2019 (dashed: AUC24 target from 5 mg/kg TBW < 100 kg; Cmin 1 mg/L)."
+  ) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 6))
+```
+
+```{r regimen-checks}
+reg_out |>
+  group_by(regimen) |>
+  summarise(
+    `AUC24 median (mg*h/L)` = median(AUC24),
+    `AUC24 median, > 150 kg` = median(AUC24[WT > 150]),
+    `Cmin median (mg/L)` = median(Cmin),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2, caption = "Regimen summary from the stochastic simulation.")
+
+# The paper's conclusions, checked on the robust centre of each regimen:
+# (1) every regimen keeps the median Cmin below 1 mg/L;
+# (2) the dose-weight nomogram keeps AUC24 near the < 100 kg target above 150 kg.
+reg_med <- reg_out |>
+  group_by(regimen) |>
+  summarise(cmin = median(Cmin), auc_heavy = median(AUC24[WT > 150]), .groups = "drop")
+stopifnot(
+  all(reg_med$cmin < 1),
+  abs(reg_med$auc_heavy[reg_med$regimen == "Nomogram (dose weight)"] / target - 1) < 0.15
+)
+```
+
+The dose weight follows from the clearance equation: a dose of
+5 mg/kg x 70 x (TBW/70)^0.73 divided by CL70kg x (TBW/70)^0.729 is almost
+independent of TBW. The typical-value check below confirms this on the
+packaged model without random effects, and that LBW-based dosing loses
+exposure as weight rises while TBW-based dosing gains it (Figure 4, upper
+panel).
+
+```{r typical-check}
+mod_typ <- rxode2::zeroRe(mod)
+wts <- c(60, 100, 150, 215)
+typ_events <- bind_rows(lapply(seq_along(wts), function(i) {
+  wt <- wts[i]
+  dw <- 70 * (wt / 70)^0.73
+  lbw <- lbw_janma(wt, 175, 1)
+  bind_rows(
+    tibble(
+      id = (i - 1) * 3 + 1:3, WT = wt,
+      regimen = c("dose weight", "5 mg/kg TBW", "5 mg/kg LBW"),
+      amt = c(5 * dw, 5 * wt, 5 * lbw)
+    )
+  )
+})) |>
+  mutate(time = 0, rate = amt / 0.5, evid = 1L, cmt = "central")
+typ_obs <- typ_events |>
+  select(id, WT, regimen) |>
+  tidyr::crossing(time = seq(0, 72, by = 0.05)) |>
+  mutate(amt = 0, rate = 0, evid = 0L, cmt = "central")
+# zeroRe() leaves no omega, so rxode2 notes that a multi-subject solve has
+# none; that note is expected and muffled.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) invokeRestart("muffleWarning")
+}
+typ_sim <- withCallingHandlers(
+  rxode2::rxSolve(
+    mod_typ,
+    events = bind_rows(typ_events, typ_obs) |> arrange(id, time, desc(evid)),
+    keep = c("regimen")
+  ),
+  warning = muffle_no_omega
+) |>
+  as.data.frame()
+typ_auc <- typ_sim |>
+  group_by(id, regimen) |>
+  summarise(
+    WT = first(WT),
+    # cumulative AUC to 72 h, then extrapolated with the terminal slope
+    auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2) +
+      last(Cc) / -coef(lm(log(Cc) ~ time, data = tail(pick(time, Cc), 100)))[[2]],
+    cl = first(cl),
+    .groups = "drop"
+  ) |>
+  left_join(typ_events |> select(id, amt), by = "id") |>
+  mutate(auc_closed = amt / cl)
+knitr::kable(typ_auc |> select(regimen, WT, amt, auc, auc_closed), digits = 2)
+dw_auc <- typ_auc$auc_closed[typ_auc$regimen == "dose weight"]
+tbw_auc <- typ_auc$auc_closed[typ_auc$regimen == "5 mg/kg TBW"]
+lbw_auc <- typ_auc$auc_closed[typ_auc$regimen == "5 mg/kg LBW"]
+stopifnot(
+  # numerical integration of the solve agrees with dose / CL
+  all(abs(typ_auc$auc / typ_auc$auc_closed - 1) < 0.01),
+  # dose weight: exposure flat across 60-215 kg (exponent 0.73 vs 0.729)
+  diff(range(dw_auc)) / mean(dw_auc) < 0.01,
+  all(diff(tbw_auc) > 0),
+  all(diff(lbw_auc) < 0)
+)
+```
+
+# Assumptions and deviations
+
+- Table 2 prints IIV as a percentage. The supplementary methods define the
+  etas as log-normal (`theta_i = theta * exp(eta_i)`), so the variances are
+  `log(1 + CV^2)`. At 18-19% the alternative reading `CV^2` differs by under
+  2%. The covariance 0.0316 is used as printed on the omega scale (implied
+  correlation about 0.93).
+- The Results text quotes the final-model IIV as 18.5% (Vc) and 17.4% (CL),
+  slightly different from Table 2 (19.2% and 18.1%), probably from an
+  intermediate covariate step; the Table 2 final-model values are used.
+- The paper reports clearances in L/min. The model keeps the printed values in
+  `ini()` and multiplies them by 60 in `model()`, so time is in hours.
+- Below-LLOQ concentrations were fitted with the M3 method; this affects
+  estimation only, not simulation.
+- Heights are not reported. The study cohort uses Dutch adult heights
+  (181 cm male, 168 cm female, SD 7 cm) to compute LBW for the obese dose; the
+  regimen simulation uses US adult heights (175.7 and 162 cm) in place of the
+  NHANES resampling the authors used, and draws TBW uniformly over 50-215 kg.
+  The weight bands of Figure 4 are not stated in the text; the Table 3 bands
+  are used.
+- The 1-h and 24-h concentrations are compared as simulated without residual
+  error, so they are model predictions rather than replicate observations.
+- No correction notice for this article was found in the PMC record as of
+  2026-11-25.
