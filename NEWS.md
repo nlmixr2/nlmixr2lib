@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van Lieshout 2026 bedaquiline zebrafish-to-human EBA translation ([doi:10.1002/cpt.70430](https://doi.org/10.1002/cpt.70430)) -- adults with pulmonary tuberculosis in two phase 2a EBA trials.
+- Add Mag 2026 enrofloxacin and ciprofloxacin ([doi:10.3390/antibiotics15080716](https://doi.org/10.3390/antibiotics15080716)) -- healthy Beagle dogs (plasma and interstitial fluid) after oral enrofloxacin.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

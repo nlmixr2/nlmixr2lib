@@ -1,0 +1,485 @@
+---
+title: "Enrofloxacin and ciprofloxacin in dog plasma and interstitial fluid (Mag 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Enrofloxacin and ciprofloxacin in dog plasma and interstitial fluid (Mag 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Mag P, Somogyi Z, Kertenics A, Kovacs M, Szabo P, Jerzsele A.
+  Exploratory Pharmacokinetic Characterization of Enrofloxacin and
+  Ciprofloxacin in Plasma and Interstitial Fluid of Dogs: Nonlinear
+  Mixed-Effects Modeling and PK/PD Target Attainment Analysis. Antibiotics
+  (Basel) 2026;15(8):716.
+* Article: <https://doi.org/10.3390/antibiotics15080716> (open access)
+
+Mag 2026 gave nine healthy male Beagle dogs a single fixed oral dose of
+225 mg enrofloxacin (1.5 Baytril Flavour 150 mg tablets, target 20 mg/kg) and
+measured enrofloxacin and its active metabolite ciprofloxacin in plasma and in
+subcutaneous interstitial fluid (ISF) collected by in vivo ultrafiltration.
+Four separate exploratory population PK models were fitted in Phoenix NLME
+(FOCE-ELS), one per analyte-matrix pair. The authors state that the four were
+never linked: neither plasma-to-ISF distribution nor enrofloxacin-to-
+ciprofloxacin conversion is modelled. They are therefore packaged as four
+independent model files that share this vignette.
+
+All four share one structure: a one-compartment model with first-order
+absorption, an absorption lag time and first-order elimination, with the
+225 mg enrofloxacin dose as the input. For the ciprofloxacin models the
+enrofloxacin dose is still the input, so CL/F and V/F also absorb the unknown
+fraction of enrofloxacin converted to ciprofloxacin and are descriptive only
+(Section 3.3). For the ISF models the output is the ISF ultrafiltrate
+concentration.
+
+```{r models}
+stems <- c(
+  "Mag_2026_enrofloxacin_plasma_dog",
+  "Mag_2026_enrofloxacin_isf_dog",
+  "Mag_2026_ciprofloxacin_plasma_dog",
+  "Mag_2026_ciprofloxacin_isf_dog"
+)
+labels <- c(
+  Mag_2026_enrofloxacin_plasma_dog = "Enrofloxacin plasma",
+  Mag_2026_enrofloxacin_isf_dog = "Enrofloxacin ISF",
+  Mag_2026_ciprofloxacin_plasma_dog = "Ciprofloxacin plasma",
+  Mag_2026_ciprofloxacin_isf_dog = "Ciprofloxacin ISF"
+)
+mods <- lapply(stems, function(s) rxode2::rxode2(readModelDb(s)))
+names(mods) <- stems
+```
+
+# Population
+
+The models were fitted to eight dogs (plasma) and six dogs (ISF). Nine
+purpose-bred intact male Beagles weighing 9.3-14.7 kg (mean 11.7 kg) were
+enrolled (Section 4.1); one dog vomited 20 minutes after dosing and was
+excluded, and probe failure removed two more dogs from the ISF analysis
+(Section 2.1). Because the tablet dose was fixed, the analysed dogs received
+15.3-21.0 mg/kg (mean 19.0 mg/kg). Plasma was sampled at 0, 10, 20 and 40
+minutes and 1, 2, 4, 6, 8, 10 and 24 h. ISF was collected over intervals
+ending at 1, 2, 4, 6, 8, 10, 22.5 and 24 h. Each ISF concentration was assigned
+to the interval midpoint minus the probe dead-volume delay
+t_UF = 70 uL / 1.35 uL/min = 0.84 h (Section 4.8), and the ISF models were
+fitted on that corrected clock. Body weight was screened as a median-centred
+power covariate on CL/F and V/F and not retained, so the models have no
+covariates.
+
+# Source trace
+
+| Item | Source location | Value(s) |
+|---|---|---|
+| Structure: 1-cmt, first-order absorption, lag, first-order elimination | Section 4.9; Section 2.3 | all four models |
+| Ka, CL/F, V/F, Tlag (enrofloxacin plasma) | Table 3 | 0.78 1/h, 27.06 L/h, 131.35 L, 0.40 h |
+| Ka, CL/F, V/F, Tlag (enrofloxacin ISF) | Table 3 | 0.13 1/h, 12.10 L/h, 21.70 L, 1.47 h |
+| Ka, CL/F, V/F, Tlag (ciprofloxacin plasma) | Table 3 | 0.46 1/h, 88.62 L/h, 804.76 L, 0.40 h |
+| Ka, CL/F, V/F, Tlag (ciprofloxacin ISF) | Table 3 | 0.24 1/h, 34.41 L/h, 334.12 L, 1.60 h |
+| IIV, enrofloxacin plasma (V/F, CL/F, Tlag) | Table 4 | 38.8, 113.2, 111.2 %CV |
+| IIV, enrofloxacin ISF (V/F, CL/F) | Table 4 | 27.9, 119.2 %CV |
+| IIV, ciprofloxacin plasma (V/F, CL/F) | Table 4 | 67.1, 79.4 %CV |
+| IIV, ciprofloxacin ISF (CL/F, Ka) | Table 4 | 72.1, 103.9 %CV |
+| %CV to variance: omega^2 = log(1 + CV^2) | Section 4.9 (%CV = sqrt(exp(omega^2) - 1) x 100) | -- |
+| Residual error forms (combined; additive for ciprofloxacin plasma) | Section 4.9 | magnitudes not reported, fixed to 0 |
+| Dose for simulation: 225 mg single oral | Sections 4.2 and 4.11 | -- |
+| Observed NCA | Tables 1 and 2 | means +/- SD |
+| Published PTA | Tables 5 and 6 | 5000 simulated dogs per model |
+
+# Typical-value profiles
+
+The typical-value profiles follow from Table 3 alone. The closed-form time of
+the peak for a one-compartment model with a lag is
+`tlag + log(ka/k) / (ka - k)`, which can be compared directly with the
+observed mean Tmax of Tables 1 and 2.
+
+```{r typical}
+typ_par <- tibble::tribble(
+  ~model, ~ka, ~cl, ~v, ~tlag,
+  "Mag_2026_enrofloxacin_plasma_dog", 0.78, 27.06, 131.35, 0.40,
+  "Mag_2026_enrofloxacin_isf_dog", 0.13, 12.10, 21.70, 1.47,
+  "Mag_2026_ciprofloxacin_plasma_dog", 0.46, 88.62, 804.76, 0.40,
+  "Mag_2026_ciprofloxacin_isf_dog", 0.24, 34.41, 334.12, 1.60
+)
+observed <- tibble::tribble(
+  ~model, ~cmax, ~tmax, ~auclast, ~half.life,
+  "Mag_2026_enrofloxacin_plasma_dog", 2.94, 2.88, 21.64, 5.89,
+  "Mag_2026_enrofloxacin_isf_dog", 3.77, 4.49, 44.93, 4.72,
+  "Mag_2026_ciprofloxacin_plasma_dog", 0.37, 4.50, 4.35, 5.17,
+  "Mag_2026_ciprofloxacin_isf_dog", 0.77, 8.91, 10.68, 5.12
+)
+
+# Closed-form AUC from 0 to 24 h of a lagged 1-cmt oral model.
+auc0_24 <- function(dose, ka, cl, v, tlag) {
+  k <- cl / v
+  tp <- 24 - tlag
+  dose / cl * (1 - (ka * exp(-k * tp) - k * exp(-ka * tp)) / (ka - k))
+}
+typ_chk <- typ_par |>
+  mutate(
+    k = cl / v,
+    tmax_typ = tlag + log(ka / k) / (ka - k),
+    auc_typ = auc0_24(225, ka, cl, v, tlag)
+  ) |>
+  left_join(observed, by = "model") |>
+  mutate(
+    tmax_pct = 100 * (tmax_typ - tmax) / tmax,
+    auc_ratio = auclast / auc_typ
+  )
+typ_chk |>
+  transmute(
+    Model = labels[model],
+    `Typical Tmax (h)` = signif(tmax_typ, 3),
+    `Observed mean Tmax (h)` = tmax,
+    `Typical AUC0-24 (ug*h/mL)` = signif(auc_typ, 3),
+    `Observed mean AUC0-24 (ug*h/mL)` = auclast,
+    `Observed / typical AUC` = signif(auc_ratio, 3)
+  ) |>
+  knitr::kable(caption = "Typical-value Tmax and AUC0-24 from Table 3 at 225 mg versus the observed means of Tables 1 and 2.")
+
+stopifnot(
+  # Shape: the printed Ka, Tlag and k place the peak where the data put it.
+  all(abs(typ_chk$tmax_pct) < 20),
+  # Scale: the printed CL/F gives about half the observed exposure in every
+  # model (see Errata); a mis-keyed CL/F would leave this band.
+  all(typ_chk$auc_ratio > 1.5 & typ_chk$auc_ratio < 3)
+)
+```
+
+The printed parameters place the peak correctly in all four models (typical
+Tmax within 13 % of the observed mean), but the typical AUC0-24 is only about
+38-53 % of the observed mean exposure. This is a property of the printed
+Table 3 values and is discussed under Errata.
+
+# Stochastic simulation
+
+Each model is simulated for 200 virtual dogs given 225 mg orally, on the
+0.25 h grid the authors used for their Monte Carlo simulation (Section 4.11).
+The grid runs to 48 h so that every simulated dog, including those with a late
+peak, has a terminal phase for the half-life; Cmax and AUC are taken over
+0-24 h as in the paper.
+The residual error magnitudes are not reported, so the simulated
+concentrations carry interindividual variability only.
+
+```{r simulate}
+ev <- rxode2::et(amt = 225, cmt = "depot") |>
+  rxode2::et(seq(0, 48, by = 0.25))
+
+rxode2::rxSetSeed(20261122)
+sim <- bind_rows(lapply(stems, function(s) {
+  out <- rxode2::rxSolve(mods[[s]], ev, nSub = 200, returnType = "data.frame")
+  out |>
+    transmute(model = s, id = as.integer(sim.id), time, Cc)
+}))
+```
+
+```{r vpc-plot, fig.width = 7, fig.height = 5.5}
+sim |>
+  filter(time <= 24) |>
+  group_by(model, time) |>
+  summarise(
+    p05 = quantile(Cc, 0.05),
+    p50 = median(Cc),
+    p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(model = factor(labels[model], levels = labels)) |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25, fill = "steelblue") +
+  geom_line(colour = "steelblue4") +
+  geom_point(
+    data = observed |> mutate(model = factor(labels[model], levels = labels)),
+    aes(tmax, cmax),
+    shape = 4, size = 3, colour = "firebrick"
+  ) +
+  facet_wrap(~model, scales = "free_y") +
+  labs(
+    x = "Time after dose (h)",
+    y = "Concentration (ug/mL)",
+    caption = paste(
+      "Line and band: simulated median and 5th-95th percentiles (200 dogs).",
+      "Cross: observed mean Cmax at mean Tmax (Tables 1 and 2)."
+    )
+  )
+```
+
+Compare with Figures 1 and 2 (observed means) and the VPCs of Figure 4 of
+Mag 2026. The simulated medians peak at the right time but below the observed
+mean peak, consistent with the exposure gap above.
+
+# NCA (PKNCA)
+
+```{r pknca}
+conc <- sim |>
+  filter(!is.na(Cc)) |>
+  mutate(model = labels[model])
+dose <- conc |>
+  distinct(model, id) |>
+  mutate(time = 0, amt = 225)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | model + id)
+dose_obj <- PKNCA::PKNCAdose(dose, amt ~ time | model + id)
+intervals <- data.frame(
+  start = 0, end = c(24, 48),
+  cmax = c(TRUE, FALSE), tmax = c(TRUE, FALSE), auclast = c(TRUE, FALSE),
+  half.life = c(FALSE, TRUE)
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+reference <- observed |> mutate(model = labels[model])
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca,
+  reference = reference,
+  by = "model",
+  params = c("cmax", "tmax", "auclast", "half.life"),
+  units = c(cmax = "ug/mL", tmax = "h", auclast = "ug*h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Model" = model) |>
+  knitr::kable(caption = paste(
+    "Simulated NCA (median of 200 dogs; Cmax, Tmax and AUC over 0-24 h,",
+    "half-life over 0-48 h) versus the observed",
+    "means of Mag 2026 Tables 1 and 2. Starred rows differ by more than 20 %."
+  ))
+```
+
+Tmax agrees within the expected scatter. The simulated terminal half-life
+is compared only loosely: the paper's values come from at least three points
+within 24 h, while the simulated values use a 48 h window, and in the
+flip-flop ISF and ciprofloxacin models the terminal slope is set by the
+slower of Ka and CL/V. Cmax and AUC0-24 are flagged in every model: the simulated
+medians are 35-47 % of the observed means. Part of this is median-versus-mean (the observed exposures are skewed,
+with SDs of 35-70 % of the mean), but most of it is the scale of the printed
+CL/F and V/F, examined next against the authors' own simulations.
+
+# Probability of target attainment (Tables 5 and 6)
+
+The authors simulated 5000 dogs per model at 225 mg, ran NCA on each profile,
+and reported the percentage of dogs reaching Cmax/MIC >= 8 and
+AUC0-24/MIC >= 30, 40, 100 and 125 across MICs of 0.008-1 ug/mL. The same
+calculation on the packaged models is below.
+
+```{r pta-setup}
+mic <- c(0.008, 0.015, 0.03, 0.06, 0.125, 0.25, 0.5, 1)
+targets <- c("cmax8", "auc30", "auc40", "auc100", "auc125")
+pta_pub <- list(
+  Mag_2026_enrofloxacin_plasma_dog = cbind(
+    c(100, 99.9, 99.4, 95.6, 79.6, 47.2, 16.0, 2.8),
+    c(100, 100, 99.8, 98.7, 93.0, 76.3, 47.2, 18.4),
+    c(100, 100, 99.6, 97.3, 87.7, 65.3, 34.1, 10.2),
+    c(99.9, 99.2, 95.6, 83.2, 55.7, 25.0, 5.9, 0.8),
+    c(99.7, 98.6, 93.0, 76.3, 45.3, 17.0, 3.3, 0.3)
+  ),
+  Mag_2026_enrofloxacin_isf_dog = cbind(
+    c(100, 100, 100, 100, 99.1, 86.0, 19.5, 0),
+    c(100, 100, 100, 100, 100, 100, 99.5, 64.7),
+    c(100, 100, 100, 100, 100, 99.9, 95.9, 25.6),
+    c(100, 100, 100, 100, 99.8, 84.6, 7.4, 0),
+    c(100, 100, 100, 100, 99.4, 59.2, 1.3, 0)
+  ),
+  Mag_2026_ciprofloxacin_plasma_dog = cbind(
+    c(97.6, 89.1, 64.0, 29.5, 6.7, 0.7, 0, 0),
+    c(99.9, 99.1, 94.9, 80.1, 48.3, 17.4, 3.3, 0.3),
+    c(99.7, 98.1, 90.5, 69.1, 34.4, 9.3, 1.3, 0.1),
+    c(96.2, 78.7, 59.3, 26.1, 5.4, 0.6, 0, 0),
+    c(93.5, 78.7, 48.3, 17.4, 2.9, 0.2, 0, 0)
+  ),
+  Mag_2026_ciprofloxacin_isf_dog = cbind(
+    c(99.5, 98.2, 92.3, 73.4, 18.7, 0, 0, 0),
+    c(100, 99.9, 99.4, 96.6, 85.9, 62.0, 22.3, 0),
+    c(100, 99.8, 98.7, 93.8, 77.8, 47.3, 6.4, 0),
+    c(99.5, 97.8, 90.5, 71.3, 33.8, 0.5, 0, 0),
+    c(99.2, 96.2, 85.9, 62.0, 19.7, 0, 0, 0)
+  )
+)
+
+# Per-dog Cmax and AUC0-24 from the PKNCA results.
+exposure <- as.data.frame(nca$result) |>
+  filter(end == 24, PPTESTCD %in% c("cmax", "auclast")) |>
+  select(model, id, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+# PTA (%) grid for one model; f scales exposure, which is exact for these
+# linear models (equivalent to simulating a dose of f x 225 mg).
+pta_grid <- function(cmax, auc, f = 1) {
+  cbind(
+    sapply(mic, function(m) mean(f * cmax / m >= 8)),
+    sapply(mic, function(m) mean(f * auc / m >= 30)),
+    sapply(mic, function(m) mean(f * auc / m >= 40)),
+    sapply(mic, function(m) mean(f * auc / m >= 100)),
+    sapply(mic, function(m) mean(f * auc / m >= 125))
+  ) * 100
+}
+pta_rmse <- function(f, cmax, auc, pub) sqrt(mean((pta_grid(cmax, auc, f) - pub)^2))
+best_f <- function(cmax, auc, pub) {
+  stats::optimize(pta_rmse, c(0.5, 4), cmax = cmax, auc = auc, pub = pub)$minimum
+}
+```
+
+```{r pta-fit}
+pta_fit <- bind_rows(lapply(stems, function(s) {
+  e <- exposure |> filter(model == labels[[s]])
+  f <- best_f(e$cmax, e$auclast, pta_pub[[s]])
+  tibble::tibble(
+    model = s,
+    rmse_nominal = pta_rmse(1, e$cmax, e$auclast, pta_pub[[s]]),
+    f = f,
+    rmse_best = pta_rmse(f, e$cmax, e$auclast, pta_pub[[s]])
+  )
+}))
+pta_fit |>
+  transmute(
+    Model = labels[model],
+    `RMSE at 225 mg (PTA points)` = round(rmse_nominal, 1),
+    `Exposure factor reproducing Tables 5/6` = round(f, 2),
+    `RMSE at that factor` = round(rmse_best, 1)
+  ) |>
+  knitr::kable(caption = paste(
+    "Agreement of the packaged models' PTA with Mag 2026 Tables 5 and 6",
+    "(root-mean-square difference over the 40 MIC x target cells)."
+  ))
+
+stopifnot(
+  # The printed parameters under-predict the published PTA; the exposure
+  # factor that reproduces it is about 2 in every model.
+  all(pta_fit$f > 1.5 & pta_fit$f < 2.5),
+  all(pta_fit$rmse_best < pta_fit$rmse_nominal)
+)
+```
+
+At the stated 225 mg dose the packaged models under-predict the published PTA,
+by 15-22 percentage points root-mean-square. Scaling every dog's exposure by a
+single factor of about 1.8-2.2 (equivalently, simulating roughly 400-500 mg)
+brings them much closer to Tables 5 and 6; the remaining misfit of
+enrofloxacin ISF is the IIV question of the next section. The factor is close to the observed / typical
+AUC ratio above, so the paper's own Monte Carlo simulation, its observed NCA
+and its observed profiles all agree with each other and disagree with the
+printed CL/F and V/F by the same factor. The printed values are kept as
+published.
+
+```{r pta-table}
+pta_show <- function(s, f) {
+  e <- exposure |> filter(model == labels[[s]])
+  sim_grid <- pta_grid(e$cmax, e$auclast, f)
+  pub <- pta_pub[[s]]
+  out <- data.frame(MIC = mic)
+  for (j in seq_along(targets)) {
+    out[[targets[j]]] <- sprintf("%.0f (%.0f)", sim_grid[, j], pub[, j])
+  }
+  out |>
+    dplyr::rename(
+      "MIC (ug/mL)" = MIC,
+      "Cmax/MIC >= 8" = cmax8,
+      "AUC/MIC >= 30" = auc30,
+      "AUC/MIC >= 40" = auc40,
+      "AUC/MIC >= 100" = auc100,
+      "AUC/MIC >= 125" = auc125
+    )
+}
+pta_show("Mag_2026_enrofloxacin_plasma_dog", 1) |>
+  knitr::kable(caption = "Enrofloxacin plasma, 225 mg: simulated PTA % (published Table 5 in brackets).")
+pta_show("Mag_2026_ciprofloxacin_isf_dog", 1) |>
+  knitr::kable(caption = "Ciprofloxacin ISF, 225 mg: simulated PTA % (published Table 6 in brackets).")
+```
+
+## Table 4 random-effect labels
+
+The same PTA comparison also tests which parameter carries which IIV. For
+enrofloxacin in ISF, Table 4 assigns 27.9 %CV to V/F and 119.2 %CV to CL/F.
+A 119 %CV on CL/F spreads AUC0-24 over a log-SD of about 0.9, while the AUC
+columns of Table 5 for ISF fall from 100 % to 0 % within a factor of about 2
+in MIC, which implies a log-SD near 0.3. Reading the Table 4 values in the
+reverse order of their row labels (V/F 119.2 %CV, CL/F 27.9 %CV) reproduces
+Table 5 almost exactly. The packaged models keep the labels as printed; the
+check below shows how to apply the alternative with `ini()`.
+
+```{r iiv-swap}
+mod_isf <- mods[["Mag_2026_enrofloxacin_isf_dog"]]
+mod_isf_swap <- mod_isf |>
+  rxode2::ini(etalvc ~ log(1 + 1.192^2), etalcl ~ log(1 + 0.279^2))
+
+rxode2::rxSetSeed(20261123)
+swap_sim <- rxode2::rxSolve(mod_isf_swap, ev, nSub = 200, returnType = "data.frame")
+auc_trap <- function(t, c) sum(diff(t) * (head(c, -1) + tail(c, -1)) / 2)
+swap_exp <- swap_sim |>
+  filter(time <= 24) |>
+  group_by(sim.id) |>
+  summarise(cmax = max(Cc), auc = auc_trap(time, Cc), .groups = "drop")
+e_isf <- exposure |> filter(model == "Enrofloxacin ISF")
+
+swap_chk <- tibble::tibble(
+  IIV = c("Table 4 as printed (V/F 27.9 %, CL/F 119.2 %)", "Reversed (V/F 119.2 %, CL/F 27.9 %)"),
+  `SD of log AUC0-24` = c(sd(log(e_isf$auclast)), sd(log(swap_exp$auc))),
+  f = c(
+    best_f(e_isf$cmax, e_isf$auclast, pta_pub$Mag_2026_enrofloxacin_isf_dog),
+    best_f(swap_exp$cmax, swap_exp$auc, pta_pub$Mag_2026_enrofloxacin_isf_dog)
+  )
+)
+swap_chk$rmse <- c(
+  pta_rmse(swap_chk$f[1], e_isf$cmax, e_isf$auclast, pta_pub$Mag_2026_enrofloxacin_isf_dog),
+  pta_rmse(swap_chk$f[2], swap_exp$cmax, swap_exp$auc, pta_pub$Mag_2026_enrofloxacin_isf_dog)
+)
+swap_chk |>
+  mutate(across(where(is.numeric), \(x) round(x, 2))) |>
+  dplyr::rename("Exposure factor" = f, "PTA RMSE at that factor" = rmse) |>
+  knitr::kable(caption = "Enrofloxacin ISF: Table 5 agreement under the two IIV assignments.")
+
+stopifnot(swap_chk$rmse[2] < swap_chk$rmse[1])
+```
+
+The same reversal improves enrofloxacin plasma (V/F 111.2 %, CL/F 113.2 %,
+Tlag 38.8 %) and, modestly, ciprofloxacin ISF (CL/F 103.9 %, Ka 72.1 %);
+ciprofloxacin plasma, whose two values are similar, does not discriminate.
+Users who want the simulation-consistent assignment can apply it with the
+same `ini()` call shown above.
+
+# Assumptions and deviations
+
+* **Exposure scale (Errata).** Table 3 CL/F and V/F at the stated 225 mg dose
+  give about 2-2.6x lower exposure than the observed NCA (Tables 1 and 2) and
+  about 1.8-2.2x lower than the
+  authors' own 225 mg PTA simulations (Tables 5 and 6), and sit below the
+  observed mean profiles of Figures 1 and 2, in all four models. Tmax is reproduced, so the
+  disagreement is one of scale only. No unit reading of the paper produces a
+  factor of 2, and no erratum was found (EuropePMC search, 2026-11-16). The
+  packaged models carry the printed values unchanged; the factor that
+  reproduces the published PTA (about 1.8-2.2) is computed above. Treat
+  absolute exposures from these models with caution; the maintainers are
+  asking the authors about the dose scale used in fitting.
+* **Table 4 labels (Errata).** The PTA tables are reproduced much better if
+  the Table 4 %CV values are read in reverse order of their row labels
+  (shown above for enrofloxacin ISF). The packaged models keep the printed
+  labels; the `ini()` override is shown above.
+* **Residual error.** Section 4.9 names the residual error forms (combined
+  additive and proportional, or additive for ciprofloxacin plasma) but no
+  magnitudes are reported in the paper or its supplement (which holds only
+  the bioanalytical validation). They are fixed to 0, so simulations show
+  interindividual variability only. The 5th percentile bands of Figure 4 reach
+  near zero, which implies a sizeable additive error that cannot be
+  back-solved.
+* **ISF clock.** The ISF models were fitted on a clock shifted by the probe
+  delay of 0.84 h (Section 4.8), so their lag times include it. The models'
+  time axis is that corrected clock, which is the physiological time of the
+  ISF concentration.
+* **ISF and metabolite models as depot-central models.** The ISF models
+  absorb the oral dose straight into a compartment whose concentration is
+  the ISF concentration, and the ciprofloxacin models absorb the enrofloxacin
+  dose straight into a ciprofloxacin compartment, exactly as fitted. Their
+  CL/F and V/F are descriptive and are not plasma, tissue or metabolite
+  disposition parameters.
+* **Body weight.** Screened and not retained (Section 2.3); recorded in each
+  model's `covariatesDataExcluded`.
+* **NCA reference values.** Tables 1 and 2 report means; the comparison table
+  pools the simulated dogs by median, so skewed exposures make the simulated
+  values somewhat lower even without the scale issue.
