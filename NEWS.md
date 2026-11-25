@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kawata 2019 gefitinib ([doi:10.1007/s00280-019-03788-4](https://doi.org/10.1007/s00280-019-03788-4)) -- Japanese adults with advanced or recurrent non-small-cell lung cancer.
+- Add Zhu 2019 ipatasertib exposure-response ([doi:10.1002/psp4.12394](https://doi.org/10.1002/psp4.12394)) -- men with metastatic castration-resistant prostate cancer on abiraterone.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
