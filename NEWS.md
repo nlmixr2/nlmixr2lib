@@ -2,7 +2,7 @@
 
 # development version
 
-- Add McKenna 2017 doxorubicin in vitro PK and treatment-response models ([doi:10.1038/s41598-017-05902-z](https://doi.org/10.1038/s41598-017-05902-z)) -- four triple-negative breast cancer cell lines (SUM-149PT, MDA-MB-231, MDA-MB-453, MDA-MB-468).
+- Add McKenna 2017 doxorubicin in vitro PK and treatment-response models ([doi:10.1038/s41598-017-05902-z](https://doi.org/10.1038/s41598-017-05902-z)) -- four triple-negative breast cancer cell lines (SUM-149PT, MDA-MB-231, MDA-MB-453, MDA-MB-468). Registers the `CONC_DNA_BOUND_MAX_DOXORUBICIN_NM` covariate.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
