@@ -1,0 +1,465 @@
+---
+title: "Enrofloxacin PK/PD against Salmonella Typhimurium in chickens (Li 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Enrofloxacin PK/PD against Salmonella Typhimurium in chickens (Li 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Li J, Hao H, Cheng G, Wang X, Ahmed S, Shabbir MAB, Liu Z, Dai M,
+  Yuan Z. (2017). The effects of different enrofloxacin dosages on clinical
+  efficacy and resistance development in chickens experimentally infected with
+  *Salmonella* Typhimurium. Scientific Reports 7:11676.
+* Article: <https://doi.org/10.1038/s41598-017-12294-7>
+
+Li 2017 designed an oral enrofloxacin dose for *Salmonella* Typhimurium
+infection in broilers from an *ex vivo* PK/PD integration, then tested that
+dose (4 mg/kg) against a high (100 mg/kg) and a low (0.1 mg/kg) dose in a
+42-day clinical-efficacy and resistance-selection study. The pharmacometric
+model is the PK/PD integration: after a single 10 mg/kg oral dose, intestinal
+contents collected from healthy and from infected chickens were incubated with
+the challenge strain *S.* Typhimurium CVCC541, and the change in bacterial
+count over 24 h was related to the PK/PD index AUC24h/MIC by an inhibitory
+sigmoid Emax equation. Table 2 reports one complete parameter set per donor
+group, so the paper contributes **two models**:
+
+| Model | Intestinal contents from | Table 2 column |
+|---|---|---|
+| `Li_2017_enrofloxacin_chicken_healthy` | healthy chickens | Healthy |
+| `Li_2017_enrofloxacin_chicken_infected` | *S.* Typhimurium-infected chickens | Infected |
+
+Both files encode
+
+$$E = e_0 - (e_0 - e_{max}) \frac{I^N}{I^N + EC_{50}^N}, \qquad I = \frac{AUC_{24h}}{MIC}$$
+
+where `E` is the signed change in log10 CFU/mL over a 24 h incubation, `e0`
+is that change with no drug (net growth) and `emax` the change at saturating
+exposure (net kill). Three features of the source shape the packaged models.
+
+* **There is no PK model to package.** Li 2017 analysed serum and
+  intestinal-content concentrations non-compartmentally in WinNonlin 5.2.1
+  (Table 1). Exposure therefore enters as the covariate `AUC_ENRO`, the
+  intestinal-content AUC over 24 h, divided by a fixed `mic` of 0.12 ug/mL.
+  There is no simulated concentration-time profile, so there is no PKNCA
+  section; the checks below are the closed-form and ODE checks that suit a
+  PD-only model.
+* **Table 2 labels the two plateaus the other way round.** It prints
+  `Log E0` = -6.68 / -7.01 and `Log Emax` = 1.46 / 2.14, and its footnote calls
+  E0 the drug-free control change. The drug-free controls grew, however
+  (Supplementary Figure S2), and Supplementary Figure S3 places the positive
+  value at AUC24h/MIC = 0. The files use the canonical roles (`e0` = effect at
+  zero exposure, `emax` = maximal effect); no number changes. Validation 1
+  confirms the assignment to the printed precision.
+* **`E` is a change over a 24 h window.** The bacterial density is integrated
+  as `d/dt(bact) = ln(10) * (E / 24) * bact`, so `log10(bact)` changes by
+  exactly `E` over 24 h, which is the only interval the paper fitted.
+
+# Population
+
+One hundred and thirty healthy Cobb broilers, 30 days old and weighing
+1.0-1.5 kg, were allocated equally to an infected group A and a healthy group
+B. After 7 days of acclimatisation each group-A chicken was inoculated with
+10^8 CFU *S.* Typhimurium CVCC541 by gavage, and 24 h later every chicken
+received a single oral bolus of 10 mg/kg enrofloxacin (Baytril 10% oral
+solution). Five chickens per group were killed before dosing and at 0.25, 0.5,
+0.75, 1, 1.5, 2, 3, 4, 8, 12, 24 and 48 h to collect serum and intestinal
+contents (Methods, "Design of dosage by PK/PD modeling"). The intestinal
+contents from each time were then used as the growth medium of the *ex vivo*
+time-kill assay; each point of Supplementary Figures S2 and S3 is the mean of
+five chickens.
+
+The challenge strain's enrofloxacin MIC was 0.12 mg/L in intestinal contents
+(0.06 mg/L in Mueller-Hinton broth), its MBC 0.25 mg/L (0.12 mg/L), and its
+MPC in broth 0.8 mg/L. Across 135 field *Salmonella* isolates, MIC50 and MIC90
+were 0.12 and 16 mg/L. Enrofloxacin was 53% bound to intestinal contents
+(unbound fraction `fu` = 0.47).
+
+```{r population}
+mods <- c("Li_2017_enrofloxacin_chicken_healthy", "Li_2017_enrofloxacin_chicken_infected")
+pop <- readModelDb(mods[2])()$population
+shown <- c("species", "n_subjects", "n_studies", "age_range", "weight_range",
+           "disease_state", "dose_range", "organism")
+data.frame(
+  Field = shown,
+  Value = vapply(pop[shown], function(x) paste(as.character(x), collapse = "; "), character(1))
+) |>
+  knitr::kable(row.names = FALSE)
+```
+
+# Source trace
+
+| Quantity | Symbol in file | Source location |
+|---|---|---|
+| Sigmoid Emax equation | `eff_log10 <- e0 - (e0 - emax) * idx^hill / (idx^hill + ec50^hill)` | Methods ("AUC24h/MIC data ... were modeled to the sigmoidal Emax equation"); Supplementary Figure S3 |
+| PK/PD index | `idx <- AUC_ENRO / mic` | Methods equation 1; Supplementary Table S1 |
+| Zero-exposure 24 h change | `e0` = 1.46 / 2.14 | Table 2, row `Log Emax` (see the role note above) |
+| Maximal 24 h change | `emax` = -6.68 / -7.01 | Table 2, row `Log E0` |
+| Half-maximal index | `lec50` = log(465.15) / log(684.21) | Table 2, row `AUC24/MIC EC50` |
+| Hill coefficient | `lhill` = log(9.40) / log(4.96) | Table 2, row `Slope (N)` |
+| MIC of the challenge strain | `mic` = fixed(0.12) | Results, MIC in intestinal contents 0.12 mg/L |
+| Starting inoculum | `log10_cfu0` = fixed(6.67) / fixed(7.01) | Supplementary Figure S2a / S2b, t = 0 point, digitised by the maintainers |
+| Residual SD | `addSd` = fixed(0) | Not reported |
+| Exposure covariate | `AUC_ENRO` | Table 1 row `AUC0-24` (intestinal contents) |
+| Bacterial ODE | `d/dt(bact) <- log(10) * (eff_log10 / 24) * bact` | Encoding of the 24 h difference; see below |
+
+## Units
+
+| Symbol | Units | Note |
+|---|---|---|
+| `AUC_ENRO` | h*ug/mL | intestinal-content AUC over 24 h |
+| `mic` | ug/mL | intestinal-content MIC |
+| `idx`, `ec50` | h | (h*ug/mL) / (ug/mL) |
+| `hill` | unitless | exponent |
+| `e0`, `emax`, `eff_log10` | log10 CFU/mL | change over a 24 h window |
+| `bact` | CFU/mL | ODE state |
+| `log(10) * (eff_log10 / 24) * bact` | CFU/mL per h | matches `d/dt(bact)` |
+
+## Parameter table (paper versus file)
+
+```{r param-table}
+pars_of <- function(nm) {
+  th <- rxode2::rxode(readModelDb(nm))$theta
+  c(e0 = th[["e0"]], emax = th[["emax"]], ec50 = exp(th[["lec50"]]),
+    hill = exp(th[["lhill"]]), mic = th[["mic"]], log10_cfu0 = th[["log10_cfu0"]])
+}
+fits <- data.frame(model = mods, donor = c("Healthy", "Infected"))
+fits <- cbind(fits, do.call(rbind, lapply(mods, pars_of)))
+
+# Li 2017 Table 2, transcribed independently of the model files. The 'Log
+# Emax' row is the zero-exposure value and 'Log E0' the maximal effect.
+paper <- data.frame(
+  donor      = c("Healthy", "Infected"),
+  p_logEmax  = c(1.46, 2.14),
+  p_logE0    = c(-6.68, -7.01),
+  p_hill     = c(9.40, 4.96),
+  p_ec50     = c(465.15, 684.21),
+  p_static   = c(395.67, 538.64),   # E = 0
+  p_cidal    = c(474.76, 719.33),   # E = -3
+  p_erad     = c(501.73, 789.97),   # E = -4
+  p_d_static = c(2.22, 3.03),       # Table 2 'Dosage (mg/kg)' column
+  p_d_cidal  = c(2.67, 4.04),
+  p_d_erad   = c(2.82, 4.44)
+)
+chk <- dplyr::left_join(fits, paper, by = "donor")
+
+chk |>
+  transmute(
+    Donor = donor,
+    `Log Emax (paper)` = p_logEmax, `e0 (file)` = e0,
+    `Log E0 (paper)` = p_logE0, `emax (file)` = emax,
+    `EC50 (paper)` = p_ec50, `EC50 (file)` = round(ec50, 4),
+    `N (paper)` = p_hill, `N (file)` = round(hill, 4)
+  ) |>
+  knitr::kable()
+
+stopifnot(
+  isTRUE(all.equal(chk$e0, chk$p_logEmax, tolerance = 1e-10)),
+  isTRUE(all.equal(chk$emax, chk$p_logE0, tolerance = 1e-10)),
+  isTRUE(all.equal(chk$ec50, chk$p_ec50, tolerance = 1e-10)),
+  isTRUE(all.equal(chk$hill, chk$p_hill, tolerance = 1e-10)),
+  all(chk$mic == 0.12)
+)
+```
+
+# Validation 1: the three PK/PD targets of Table 2
+
+Table 2 also prints, separately from the four fitted parameters, the
+AUC24h/MIC needed for bacteriostatic (`E = 0`), bactericidal (`E = -3`) and
+eradication (`E = -4`) activity. Inverting the sigmoid gives
+
+$$I = EC_{50} \left( \frac{f}{1-f} \right)^{1/N}, \qquad f = \frac{e_0 - E}{e_0 - e_{max}}$$
+
+Six printed targets, predicted from four fitted numbers each, are a sharp
+check of both the transcription and the role assignment of the two plateaus.
+
+```{r targets}
+target_for <- function(E, e0, emax, ec50, hill) {
+  f <- (e0 - E) / (e0 - emax)
+  ec50 * (f / (1 - f))^(1 / hill)
+}
+chk <- chk |>
+  mutate(
+    calc_static = target_for(0, e0, emax, ec50, hill),
+    calc_cidal  = target_for(-3, e0, emax, ec50, hill),
+    calc_erad   = target_for(-4, e0, emax, ec50, hill)
+  )
+
+tgt <- data.frame(
+  Donor = rep(chk$donor, 3),
+  Target = rep(c("Bacteriostatic (E = 0)", "Bactericidal (E = -3)", "Eradication (E = -4)"), each = 2),
+  paper = c(chk$p_static, chk$p_cidal, chk$p_erad),
+  model = c(chk$calc_static, chk$calc_cidal, chk$calc_erad)
+)
+tgt |>
+  mutate(model = round(model, 3), `% diff` = round(100 * (model - paper) / paper, 3)) |>
+  rename(`AUC24h/MIC, paper (h)` = paper, `AUC24h/MIC, model (h)` = model) |>
+  knitr::kable()
+
+# Table 2 prints the targets to two decimals; all six agree to rounding.
+stopifnot(max(abs(tgt$model - tgt$paper)) < 0.01)
+```
+
+All six reproduce to the printed precision. With `e0` and `emax` swapped back
+to the Table 2 labels the curve would rise with exposure, from net kill with no
+drug to net growth at high exposure, which contradicts the drug-free growth in
+Supplementary Figure S2 and the falling curves of Supplementary Figure S3.
+
+# Validation 2: the designed dose (Table 2 dosage column, equation 1)
+
+Li 2017 converts each target into a daily dose with equation 1,
+
+$$\text{Dose} = \frac{(AUC_{24h}/MIC) \times MIC_{50} \times CL/F}{f_u}$$
+
+with `MIC50` = 0.12 mg/L (field isolates), `fu` = 0.47 and the
+intestinal-content `ClB/F` of Table 1. The infected column, the one the paper
+used to choose its 4 mg/kg PK/PD dose, reproduces exactly with the infected
+`ClB/F` of 0.022. The healthy column reproduces only with that same infected
+value; the healthy `ClB/F` of 0.046 would give doses about twice as large (see
+*Errata*).
+
+```{r dose-equation}
+dose_eq <- function(index, mic50 = 0.12, cl_f, fu = 0.47) index * mic50 * cl_f / fu
+dose_tab <- tgt |>
+  mutate(
+    paper_dose = c(chk$p_d_static, chk$p_d_cidal, chk$p_d_erad),
+    dose_cl_infected = dose_eq(paper, cl_f = 0.022),
+    dose_cl_own = dose_eq(paper, cl_f = ifelse(Donor == "Healthy", 0.046, 0.022))
+  )
+dose_tab |>
+  transmute(Donor, Target,
+            `Dose, paper (mg/kg)` = paper_dose,
+            `Eq. 1, ClB/F = 0.022` = round(dose_cl_infected, 3),
+            `Eq. 1, own group ClB/F` = round(dose_cl_own, 3)) |>
+  knitr::kable()
+
+stopifnot(max(abs(dose_tab$dose_cl_infected - dose_tab$paper_dose)) < 0.006)
+```
+
+The bactericidal dose for infected chickens, 4.04 mg/kg, is the 4 mg/kg
+"PK/PD designed dosage" of the clinical-efficacy study.
+
+# Validation 3: the index column of Supplementary Table S1
+
+The covariate is an absolute AUC and the index is formed inside the model, so
+the packaged `mic` must turn Table 1's AUC0-24 into the AUC24h/MIC that
+Supplementary Table S1 reports. The same MIC also reproduces the Cmax/MIC row.
+
+```{r index-reconstruction}
+s1 <- data.frame(
+  Donor = c("Healthy", "Infected"),
+  auc024 = c(188.6, 351.8),   # Table 1, intestinal contents, AUC0-24
+  cmax = c(28.17, 48.99),     # Table 1, intestinal contents, Cmax
+  p_aucmic = c(1572, 2932),   # Supplementary Table S1
+  p_cmaxmic = c(234.8, 408.3)
+) |>
+  mutate(aucmic = auc024 / 0.12, cmaxmic = cmax / 0.12)
+s1 |>
+  transmute(Donor,
+            `AUC24h/MIC, S1` = p_aucmic, `AUC0-24 / mic` = round(aucmic, 1),
+            `Cmax/MIC, S1` = p_cmaxmic, `Cmax / mic` = round(cmaxmic, 2)) |>
+  knitr::kable()
+
+stopifnot(
+  max(abs(s1$aucmic - s1$p_aucmic)) < 0.5,
+  max(abs(s1$cmaxmic - s1$p_cmaxmic)) < 0.06
+)
+```
+
+# Replicate Supplementary Figure S3: sigmoid curves
+
+```{r figure-s3, fig.height = 5}
+effect_of <- function(idx, e0, emax, ec50, hill) {
+  e0 - (e0 - emax) * idx^hill / (idx^hill + ec50^hill)
+}
+grid <- seq(0, 2500, by = 5)
+curves <- do.call(rbind, lapply(seq_len(nrow(chk)), function(i) {
+  r <- chk[i, ]
+  data.frame(donor = r$donor, idx = grid,
+             effect = effect_of(grid, r$e0, r$emax, r$ec50, r$hill))
+}))
+targets_long <- tgt |> mutate(donor = Donor)
+
+ggplot(curves, aes(idx, effect)) +
+  geom_hline(yintercept = c(0, -3, -4), linetype = "dotted", colour = "grey40") +
+  geom_line(linewidth = 0.8, colour = "steelblue") +
+  geom_point(data = targets_long, aes(paper, c(0, 0, -3, -3, -4, -4)),
+             colour = "firebrick", size = 2) +
+  facet_wrap(~donor, ncol = 1) +
+  labs(x = "AUC24h/MIC (h)", y = "Change in log10 CFU/mL over 24 h",
+       title = "Replicates Supplementary Figure S3 of Li 2017 (x-axis truncated at 2500 h)",
+       subtitle = "Red points: Table 2 targets for E = 0, -3 and -4") +
+  theme_bw()
+```
+
+The curves start at +1.46 and +2.14 log10 CFU/mL and fall to the -6.68 and
+-7.01 plateaus, as in the published panels; every observed sample above
+AUC24h/MIC of about 1700 h sits on the plateau.
+
+# Time-kill trajectories from the ODE (Supplementary Figure S2)
+
+Solving each model for 24 h at a fixed exposure gives the *ex vivo*
+incubation. The drug-free trajectories end at 6.67 + 1.46 = 8.13 and
+7.01 + 2.14 = 9.15 log10 CFU/mL, matching the red control curves of
+Supplementary Figure S2 (about 8.1 and 9.2 at 24 h). The paper's own
+within-window counts are not modelled (see *Assumptions*), so only the 0 and
+24 h ends are comparable.
+
+```{r timekill, fig.height = 5}
+solve_at <- function(nm, auc, t_end = 24, by_h = 0.25) {
+  mod <- rxode2::rxode(readModelDb(nm))
+  ev <- data.frame(id = 1L, time = seq(0, t_end, by = by_h), AUC_ENRO = auc,
+                   amt = 0, evid = 0)
+  out <- as.data.frame(rxode2::rxSolve(mod, events = ev, keep = "AUC_ENRO"))
+  out$model <- nm
+  out
+}
+scen <- do.call(rbind, lapply(seq_len(nrow(chk)), function(i) {
+  r <- chk[i, ]
+  lv <- c(`Control (0)` = 0,
+          `Bacteriostatic target` = r$p_static * 0.12,
+          `Bactericidal target` = r$p_cidal * 0.12,
+          `Eradication target` = r$p_erad * 0.12)
+  do.call(rbind, lapply(names(lv), function(lb) {
+    s <- solve_at(r$model, unname(lv[[lb]]))
+    s$donor <- r$donor
+    s$scenario <- factor(lb, levels = names(lv))
+    s
+  }))
+}))
+
+ggplot(scen, aes(time, log_cfu, colour = scenario)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~donor, ncol = 2) +
+  scale_x_continuous(breaks = seq(0, 24, 4)) +
+  labs(x = "Ex vivo incubation time (h)", y = "log10 CFU/mL",
+       colour = "AUC_ENRO set to",
+       title = "Ex vivo 24 h trajectories at the Table 2 targets") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# Validation 4: encoding checks
+
+These read the ODE state `bact` rather than `log_cfu`, because
+`log_cfu <- log10(bact + 1)` carries a 1-CFU/mL floor that is a numerical
+guard, not part of the paper's model.
+
+```{r encoding-checks}
+end_change <- function(nm, auc) {
+  s <- solve_at(nm, auc, t_end = 24, by_h = 24)
+  log10(s$bact[s$time == 24]) - log10(s$bact[s$time == 0])
+}
+probe_auc <- 75  # h*ug/mL, an index of 625 h, on the steep part of both curves
+c1 <- vapply(seq_len(nrow(chk)), function(i) {
+  r <- chk[i, ]
+  end_change(r$model, probe_auc) - effect_of(probe_auc / 0.12, r$e0, r$emax, r$ec50, r$hill)
+}, numeric(1))
+c2 <- vapply(seq_len(nrow(chk)), function(i) end_change(chk$model[i], 0) - chk$e0[i], numeric(1))
+c3 <- vapply(seq_len(nrow(chk)), function(i) {
+  end_change(chk$model[i], 351.8) - effect_of(351.8 / 0.12, chk$e0[i], chk$emax[i], chk$ec50[i], chk$hill[i])
+}, numeric(1))
+c4 <- vapply(seq_len(nrow(chk)), function(i) {
+  s <- solve_at(chk$model[i], 0, t_end = 0.25, by_h = 0.25)
+  log10(s$bact[1]) - chk$log10_cfu0[i]
+}, numeric(1))
+
+data.frame(
+  Check = c("24 h change equals algebraic E (AUC_ENRO = 75)",
+            "Drug-free 24 h change equals e0",
+            "24 h change at the infected AUC0-24 (351.8) equals algebraic E",
+            "Initial density equals 10^log10_cfu0"),
+  `Max absolute deviation (log10 CFU/mL)` =
+    signif(c(max(abs(c1)), max(abs(c2)), max(abs(c3)), max(abs(c4))), 3),
+  check.names = FALSE
+) |>
+  knitr::kable()
+
+stopifnot(max(abs(c(c1, c2, c3, c4))) < 1e-4)
+```
+
+At the 10 mg/kg label dose the intestinal AUC0-24 of both groups gives an
+index of 1572-2932 h, three to four times the eradication target, which is why
+the paper could lower the dose to 4 mg/kg.
+
+```{r label-dose-effect}
+data.frame(
+  Donor = chk$donor,
+  `AUC0-24 (h*ug/mL)` = s1$auc024,
+  `AUC24h/MIC (h)` = round(s1$aucmic, 0),
+  `Predicted 24 h change (log10 CFU/mL)` =
+    round(effect_of(s1$aucmic, chk$e0, chk$emax, chk$ec50, chk$hill), 3),
+  check.names = FALSE
+) |>
+  knitr::kable()
+```
+
+# Assumptions and deviations
+
+* **Roles of the two plateaus.** Table 2's `Log Emax` (1.46, 2.14) is encoded
+  as `e0`, the change at zero exposure, and its `Log E0` (-6.68, -7.01) as
+  `emax`, the maximal effect. Supplementary Figures S2 and S3 and the six
+  Table 2 targets (Validation 1) all fix this assignment.
+* **Absolute AUC plus `mic`, not a ratio covariate.** The challenge strain's
+  intestinal-content MIC (0.12 ug/mL) reconstructs the paper's own
+  AUC24h/MIC column (Validation 3), so the exposure is supplied as the
+  absolute AUC `AUC_ENRO` and divided by a fixed `mic` parameter; a user can
+  change `mic` to apply the model to another isolate. `AUC_ENRO` was added to
+  the covariate register for these models.
+* **Index scale.** The paper does not say how it computed the AUC24h/MIC of
+  each *ex vivo* sample on the x-axis of Supplementary Figure S3, and the
+  plotted values cannot be rebuilt from the Figure 1 concentrations with the
+  usual 24 h x C / MIC rule (the highest healthy sample would sit near
+  24 x 28.17 / 0.12 = 5634 h, against about 14900 h plotted). The packaged
+  models follow the way the paper itself applies the fit: equation 1 treats
+  the Table 2 targets as in vivo AUC0-24/MIC, the same scale as Supplementary
+  Table S1. Because every sample above about 1700 h is on the kill plateau,
+  the steep part of each curve (and so EC50, N and the three targets) is set
+  by the drug-free control and the 48 h sample only.
+* **Starting inoculum digitised.** The *ex vivo* inoculum is not given in the
+  text; `log10_cfu0` is the common t = 0 point of Supplementary Figure S2,
+  read by the maintainers from the embedded image as 6.67 (healthy) and 7.01
+  (infected) log10 CFU/mL. Both equal minus the maximal effect within the
+  reading precision, which indicates that the kill plateau was scored as a
+  fall to 1 CFU/mL.
+* **The 24 h difference is spread uniformly across the window.** The paper
+  fitted only the 0-to-24 h change. The ODE makes `log10(bact)` change
+  linearly at rate `E / 24`; it is exact at 24 h and a smooth interpolation in
+  between. The intermediate counts of Supplementary Figure S2 (for example the
+  initial dip of the controls) are not part of the fitted model.
+* **No variability.** The sigmoid was fitted to means of five chickens and no
+  between-animal or residual variance was reported. There are no etas, and
+  `addSd` is fixed at 0. The models are for typical-value simulation.
+* **Units of intestinal concentrations.** Table 1 gives ug/mL and the
+  Discussion ug/g for the same values; they are treated as equal.
+* **The Mlxplore exposure projection (Figure 5) is not packaged.** Figure 5
+  shows intestinal concentrations predicted with Mlxplore for 0.1, 4 and
+  100 mg/kg given for 7 days, but the structure and parameters of the PK
+  model behind it are not printed in the article or the supplement.
+
+# Errata and internal inconsistencies in the source
+
+None of these changes a packaged value.
+
+1. **Table 2 footnote swaps E0 and Emax.** It defines E0 as the drug-free
+   control change and Emax as the change at the detection limit, but the
+   printed values carry the opposite roles (see *Assumptions*).
+2. **The healthy dosage column uses the infected clearance.** Equation 1
+   reproduces the healthy doses (2.22, 2.67, 2.82 mg/kg) only with the
+   infected-chicken `ClB/F` of 0.022; the healthy chickens' own 0.046 gives
+   4.65, 5.58 and 5.89 mg/kg. The infected column, which set the 4 mg/kg
+   study dose, is unaffected.
+3. **`ClB/F` units.** Table 1 lists `ClB/F` in L/kg; as a clearance it is
+   L/h/kg, the unit with which equation 1 returns mg/kg from an index in h.
+4. **Supplementary Table S2 caption.** It says treatment started at 6 days of
+   age, while the Methods say 8 days. Neither affects the PK/PD model.

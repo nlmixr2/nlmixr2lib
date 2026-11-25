@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dolder 2017 lysergide (LSD) PK and effect-compartment PK-PD for three subjective-effect VAS and four vital signs ([doi:10.1007/s40262-017-0513-9](https://doi.org/10.1007/s40262-017-0513-9)) -- healthy adults given a single oral dose of 100 or 200 ug LSD.
+- Add Li 2017 enrofloxacin ex vivo PK/PD against *Salmonella* Typhimurium ([doi:10.1038/s41598-017-12294-7](https://doi.org/10.1038/s41598-017-12294-7)) -- healthy and *Salmonella*-infected broiler chickens (intestinal contents).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

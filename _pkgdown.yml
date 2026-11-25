@@ -3124,8 +3124,10 @@ navbar:
         href: articles/SanchezPena_2005_enoxaparin.html
       - text: "Enoxaparin (Schoemaker 1996)"
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
-      - text: "Enoxaparin (Shenkoya 2026)"
-        href: articles/Shenkoya_2026_enoxaparin.html
+      - text: "Enrofloxacin chicken healthy (Li 2017)"
+        href: articles/Li_2017_enrofloxacin_chicken.html
+      - text: "Enrofloxacin chicken infected (Li 2017)"
+        href: articles/Li_2017_enrofloxacin_chicken.html
       - text: "Enrofloxacin ciprofloxacin cat (Foster 2023)"
         href: articles/Foster_2023_enrofloxacin_cat.html
       - text: "Enrofloxacin isf dog (Mag 2026)"
@@ -12147,6 +12149,7 @@ articles:
   - articles/Li_2017_CC292
   - articles/Li_2017_brentuximab
   - articles/Li_2017_cediranib
+  - articles/Li_2017_enrofloxacin_chicken
   - articles/Li_2017_naproxen_rat
   - articles/Li_2017_nhl_pfs
   - articles/Li_2017_pomalidomide
