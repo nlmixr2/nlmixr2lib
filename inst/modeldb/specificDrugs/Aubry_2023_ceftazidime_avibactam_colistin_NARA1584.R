@@ -51,7 +51,7 @@ Aubry_2023_ceftazidime_avibactam_colistin_NARA1584 <- function() {
       notes = "Held constant for the 30-h experiment. The paper writes 'CZA' for the ceftazidime concentration and states that it always corresponds to ceftazidime with 4 mg/L avibactam (Discussion); avibactam is assumed to inhibit the beta-lactamases fully without a bactericidal effect of its own, so it carries no covariate. Adaptive resistance develops only while the concentration is above zero (Code S2, the NARA1295 control stream; the paper uses the same structure for all four isolates: IF(A(1).GT.0) ADAPT_CZA=KON_CZA).",
       source_name = "CAZ_CONC"
     ),
-    CONC_CST_MGL = list(
+    CONC_COLISTIN_MGL = list(
       description = "Static (time-invariant) colistin concentration in the time-kill tube. Drives the sigmoidal Emax kill by colistin, switches on adaptive resistance to it, and as the GPDI perpetrator lowers the ceftazidime EC50.",
       units = "mg/L",
       type = "continuous",
@@ -119,20 +119,20 @@ Aubry_2023_ceftazidime_avibactam_colistin_NARA1584 <- function() {
 
     # GPDI (Eq 6; Code S2): the victim parameter is the ceftazidime EC50,
     # theta_INT = theta_mono * (1 + INT * C_perp^gINT / (EC50_INT^gINT + C_perp^gINT)).
-    fint_col_caz <- int_col_caz * CONC_CST_MGL^hillint_col_caz /
-      (ec50int_col_caz^hillint_col_caz + CONC_CST_MGL^hillint_col_caz)
+    fint_col_caz <- int_col_caz * CONC_COLISTIN_MGL^hillint_col_caz /
+      (ec50int_col_caz^hillint_col_caz + CONC_COLISTIN_MGL^hillint_col_caz)
     ec50_caz_i <- ec50_caz * (1 + fint_col_caz)
 
     # Adaptation develops only while the drug is present (Code S2 $DES:
     # ADAPT_CZA = 0; IF(A(1).GT.0) ADAPT_CZA = KON_CZA, and likewise for colistin).
     kon_caz_i <- kon_caz * (CONC_CAZ_MGL > 0)
-    kon_col_i <- kon_col * (CONC_CST_MGL > 0)
+    kon_col_i <- kon_col * (CONC_COLISTIN_MGL > 0)
 
     # Sigmoidal Emax kill, Emax reduced in proportion to the adapted fraction (Eq 4).
     kill_caz <- emax_caz * (1 - armax_caz * aron_caz) * CONC_CAZ_MGL^hill_caz /
       (ec50_caz_i^hill_caz + CONC_CAZ_MGL^hill_caz)
-    kill_col <- emax_col * (1 - armax_col * aron_col) * CONC_CST_MGL^hill_col /
-      (ec50_col^hill_col + CONC_CST_MGL^hill_col)
+    kill_col <- emax_col * (1 - armax_col * aron_col) * CONC_COLISTIN_MGL^hill_col /
+      (ec50_col^hill_col + CONC_COLISTIN_MGL^hill_col)
 
     # Bliss independence (Code S2 $DES): each kill rate is normalised by the
     # larger of the two typical Emax values, combined as Ea + Eb - Ea * Eb, and

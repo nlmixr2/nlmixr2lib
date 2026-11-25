@@ -45,7 +45,7 @@ Static time-kill (TK) experiments were run in cation-adjusted Mueller-Hinton bro
 shaking, starting from roughly 1e6 CFU/mL and sampled at 0, 1, 3, 6, 10, 24 and
 30 h. The limit of quantification was 400 CFU/mL (2.6 log10 CFU/mL). PMB was
 assumed stable over the experiment, so the applied concentration is time-invariant
-and is carried in these models as the covariate `CONC_PMB_MGL` rather than as a PK
+and is carried in these models as the covariate `CONC_POLYMYXINB_MGL` rather than as a PK
 compartment. The second covariate, `MUCIN_PRESENT`, is the binary medium indicator.
 
 ```{r population}
@@ -110,7 +110,7 @@ simTk <- function(model, conc, mucin, tmax = 30, by = 0.25) {
   ev <- rxode2::et(seq(0, tmax, by = by))
   d <- as.data.frame(ev)
   d$id <- 1L
-  d$CONC_PMB_MGL <- conc
+  d$CONC_POLYMYXINB_MGL <- conc
   d$MUCIN_PRESENT <- mucin
   out <- rxode2::rxSolve(rxode2::zeroRe(model), d,
                          omega = NA, sigma = NA, returnType = "data.frame")
@@ -427,7 +427,7 @@ mucinConc <- c(0.5, 4, 8, 128)
 stochastic <- lapply(mucinConc, function(cc) {
   ev <- rxode2::et(seq(0, 30, by = 0.5)) |> rxode2::et(id = seq_len(nExp))
   d <- as.data.frame(ev)
-  d$CONC_PMB_MGL <- cc
+  d$CONC_POLYMYXINB_MGL <- cc
   d$MUCIN_PRESENT <- 1
   rxode2::rxSolve(mod121, d, sigma = NA, returnType = "data.frame") |>
     dplyr::mutate(conc = cc)

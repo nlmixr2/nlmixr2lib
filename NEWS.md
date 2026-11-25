@@ -2,6 +2,8 @@
 
 # development version
 
+- Rename the in-vitro concentration covariate columns `CONC_MEM_MGL`, `CONC_CST_MGL` and `CONC_PMB_MGL` to `CONC_MEROPENEM_MGL`, `CONC_COLISTIN_MGL` and `CONC_POLYMYXINB_MGL` (Aubry 2023, Aubry 2025, Lacroix 2025 and Lopez-Arguello 2023 models); the old names are kept as source aliases.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

@@ -17,7 +17,7 @@ Lacroix_2025_polymyxinB_AB122D12 <- function() {
   vignette <- "Lacroix_2025_polymyxinB_mucin"
   units <- list(
     time = "h",
-    dosing = "none (PMB is held at a static total concentration supplied by the CONC_PMB_MGL covariate; the TK tubes receive no dosing events)",
+    dosing = "none (PMB is held at a static total concentration supplied by the CONC_POLYMYXINB_MGL covariate; the TK tubes receive no dosing events)",
     concentration = "log10 CFU/mL (log_cfu, total viable count of bact_s + bact_r)"
   )
 
@@ -45,8 +45,8 @@ Lacroix_2025_polymyxinB_AB122D12 <- function() {
   )
 
   covariateData <- list(
-    CONC_PMB_MGL = list(
-      description = "Static TOTAL polymyxin B concentration applied to the time-kill tube. Drives the unbound-fraction model (Eq 1) and hence the unbound concentration Cu = CONC_PMB_MGL * fu that produces the killing effect.",
+    CONC_POLYMYXINB_MGL = list(
+      description = "Static TOTAL polymyxin B concentration applied to the time-kill tube. Drives the unbound-fraction model (Eq 1) and hence the unbound concentration Cu = CONC_POLYMYXINB_MGL * fu that produces the killing effect.",
       units = "mg/L",
       type = "continuous",
       reference_category = "n/a -- AB122-D12 was studied at total PMB concentrations of 8 to 512 mg/L (Materials and Methods, TK experiments); 0 mg/L is the drug-free growth control.",
@@ -150,7 +150,7 @@ Lacroix_2025_polymyxinB_AB122D12 <- function() {
     ic50i <- fu_ic50 + etafu_ic50
     epsi <- fu_hill + etafu_hill
 
-    ct <- CONC_PMB_MGL
+    ct <- CONC_POLYMYXINB_MGL
     ct_e <- ct^epsi
     ic50_e <- ic50i^epsi
     # Eq 2: fu_i = E0_i + Imax_i * C^eps_i / (IC50_i^eps_i + C^eps_i).
