@@ -1,0 +1,610 @@
+---
+title: "Efavirenz HIV prophylaxis (Duwal 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Efavirenz HIV prophylaxis (Duwal 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Duwal_2019_efavirenz"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Duwal_2019_efavirenz"))$description`
+* Article: <https://doi.org/10.3389/fphar.2019.00199> (open access, PMC6424904)
+* PK model source: Dickinson et al., Clin Pharmacol Ther 2015;98:406-416,
+  <https://doi.org/10.1002/cpt.156>
+
+Duwal et al. asked whether the cheap, patent-expired non-nucleoside reverse
+transcriptase inhibitor efavirenz (EFV) could serve as HIV-1 pre-exposure
+prophylaxis (PrEP). They combined three layers:
+
+1. the ENCORE1 population PK model of oral EFV (one compartment, CYP2B6 /
+   CYP2A6 genotype effects on clearance), extended with an explicit
+   metabolic-autoinduction time course;
+2. a sigmoid Emax inhibition of reverse transcription, parameterised from ex
+   vivo IC50 and Hill coefficients for wild-type HIV-1 and three EFV-resistant
+   mutants and corrected for plasma protein binding;
+3. a stochastic model of the first viral replication cycles after exposure,
+   from which the prophylactic efficacy (relative reduction of infection risk)
+   follows.
+
+The packaged model carries all three layers. For the third it carries the
+deterministic parts: the expected-value (mean-field) ODEs of the six viral
+reactions, and the closed-form efficacy against a single transmitted virion
+that the current EFV concentration would give if held constant -- the
+quantity of Figure 2A. The hybrid stochastic simulations behind Figures 3-4
+(random exposure times, random inocula, missed doses) are a simulation
+protocol on top of these equations and are not reproduced here.
+
+# Population
+
+The PK model was developed by Dickinson et al. on the ENCORE1 trial: 606
+treatment-naive adults with HIV-1 (32% female; median age 35 years, range
+18-69; median weight 65 kg, range 39-148) randomised to EFV 400 mg or 600 mg
+once daily with tenofovir disoproxil fumarate / emtricitabine, at sites in
+Africa, Asia, South America, Europe and Oceania. Most were of African (37%) or
+Asian (33%) ethnicity, the rest Hispanic (17%), Caucasian (13%) or Aboriginal
+and Torres Strait Islander (0.2%). The 1491 plasma samples were single random
+samples 8-16 h post-dose at weeks 4 and 12, plus a 0-24 h profile in a
+subgroup between weeks 4 and 8 (Duwal 2019 Section 2). The viral-dynamics and
+PD constants come from the literature (Tables 2-3), not from ENCORE1.
+
+The same information is available programmatically via
+`readModelDb("Duwal_2019_efavirenz")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `d/dt(depot)`, `d/dt(central)` | Eqs. (1)-(3) | Section 3.1.1 |
+| `lka` | log(0.6), fixed | Section 3.1.1 (Arab-Alameddine 2009) |
+| `lcl` (CLss/F) | log(11.9) L/h | Table 1 |
+| `lvc` (V/F) | log(282) L | Table 1 |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | Table 1 legend |
+| Autoinduction `cl(t)` | Eq. (4) | Section 3.1.2 (Zhu 2009) |
+| `cl_time_fdef` | 1 - 5.76/9.86 = 0.416 | Section 3.1.2 (alpha = 0.58, Table 1) |
+| `lcl_t50` | log(245) h | Section 3.1.2 |
+| `e_geno0100_cl` ... `e_geno2011_cl`, `e_genomiss_cl` | 0.18-0.96 | Supplementary Table 2 (from Dickinson 2015) |
+| `etalcl` | 0.1256 (36.6% CV) | Table 1 |
+| `etaiov_lcl_1..3` | 0.04315 (21.0% CV) | Table 1 |
+| `propSd` | 0.20 | Table 1 |
+| Direct effect `eta_d_*` | Eq. (5) | Section 3.2 |
+| `lic50`, `hill` | log(5.4) nM, 1.69 | Table 2 (Shen 2008) |
+| IC50 protein-binding correction | x 2 / (fu + 1) | Supplementary Text 1, Eq. (S1.10) |
+| `fu` | 0.002 | Figure 2 legend, Supplementary Text 1 |
+| Molar mass | 315.6 g/mol | Section 3.1 |
+| `ic50_fold_*`, `hill_fold_*`, `fitness_*` | Y181C 2.8 / 0.9 / 0.78; K103N 89.1 / 0.83 / 0.74; G190S 72.1 / 0.6 / 0.24 | Table 2 (Sampah 2011) |
+| `etalic50`, `etahill` | 0.0274, 0.0064 | Table 2 (sd 0.9 on 5.4; sd 0.08) |
+| Viral ODEs | reactions (6)-(11) | Section 3.3 |
+| `lambda_t`, `delta_t`, `delta_t1`, `delta_t2`, `delta_pic_t`, `k_t`, `beta_t`, `n_t`, `cl_virus_naive` | 2e9, 0.02, 0.02, 1, 0.35, 0.35, 8e-12, 670, 2.3 | Table 3 |
+| `rho_rev` | 0.5 | Section 3.3 |
+| `phi_*` | Eq. (13), single virion | Section 3.6, Figure 2A |
+
+The prophylactic efficacy `phi` is the one place where the model goes beyond
+what the paper prints: Duwal et al. cite their earlier analytical solution
+rather than reprinting it. The packaged form is derived directly from the
+paper's reactions (6)-(11): the extinction probability of the branching
+process they define, with the drug effect held constant. The check below that
+it reproduces the paper's four 90%-protective concentrations exactly is what
+validates it.
+
+# Virtual cohort
+
+The paper's 1000 virtual patients are listed in Supplementary Table 1
+(individual CLss/F and V/F). Their V/F carries no random effect, so their body
+weights follow from it (`WT = 70 * V / 282`): median 66 kg, 2.5th-97.5th
+percentile 42-94 kg. The cohort below draws weights from a log-normal with
+that median and spread, and draws the four genotype positions independently
+from the ENCORE1 allele frequencies (Dickinson 2015 Table 1), with 5.3%
+missing genotype (32 of 606).
+
+```{r cohort}
+set.seed(20190313)
+
+geno_cols <- c(
+  "SNP_CYP2B6_RS3745274_T_COUNT", "SNP_CYP2B6_RS28399499_C_COUNT",
+  "SNP_CYP2A6_RS8192726", "SNP_CYP2A6_RS28399454", "CYP2B6_MISSING"
+)
+
+draw_subjects <- function(n, id_offset = 0L) {
+  out <- tibble(
+    id = id_offset + seq_len(n),
+    WT = pmin(pmax(exp(rnorm(n, log(66), 0.20)), 39), 148),
+    SNP_CYP2B6_RS3745274_T_COUNT = sample(0:2, n, TRUE, prob = c(253, 262, 59)),
+    SNP_CYP2B6_RS28399499_C_COUNT = sample(0:2, n, TRUE, prob = c(535, 36, 3)),
+    SNP_CYP2A6_RS8192726 = rbinom(n, 1, 104 / 570),
+    SNP_CYP2A6_RS28399454 = rbinom(n, 1, 58 / 572),
+    CYP2B6_MISSING = rbinom(n, 1, 32 / 606),
+    OCC = 1L
+  )
+  # Supplementary Table 2 has no estimate for 516TT with a 983 C allele, nor
+  # for 516GT / 983 C carrier / both CYP2A6 variants; the model returns NA
+  # clearance there, so redraw those subjects as 516GG / 983TT (0.7% of draws).
+  unlisted <- with(out, CYP2B6_MISSING == 0 &
+    ((SNP_CYP2B6_RS3745274_T_COUNT == 2 & SNP_CYP2B6_RS28399499_C_COUNT >= 1) |
+      (SNP_CYP2B6_RS3745274_T_COUNT == 1 & SNP_CYP2B6_RS28399499_C_COUNT >= 1 &
+        SNP_CYP2A6_RS8192726 == 1 & SNP_CYP2A6_RS28399454 == 1)))
+  out$SNP_CYP2B6_RS3745274_T_COUNT[unlisted] <- 0L
+  out$SNP_CYP2B6_RS28399499_C_COUNT[unlisted] <- 0L
+  out
+}
+
+n_arm <- 200
+subjects <- bind_rows(
+  draw_subjects(n_arm, 0L) |> mutate(treatment = "400 mg"),
+  draw_subjects(n_arm, n_arm) |> mutate(treatment = "600 mg")
+) |>
+  mutate(dose = ifelse(treatment == "400 mg", 400, 600))
+
+# Daily dosing for 30 days; observations dense over the first 4 days and on
+# day 30, every 3 h in between, and just before each dose (troughs).
+obs_times <- sort(unique(c(
+  seq(0, 96, by = 0.25),
+  seq(96, 720, by = 3),
+  seq(696, 720, by = 0.25),
+  24 * (1:30) - 0.01
+)))
+
+make_events <- function(subj) {
+  doses <- subj |>
+    tidyr::crossing(time = 24 * (0:29)) |>
+    mutate(amt = dose, evid = 1L, cmt = "depot")
+  obs <- subj |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(amt = 0, evid = 0L, cmt = "central")
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid)) |>
+    select(id, time, amt, evid, cmt, treatment, WT, all_of(geno_cols), OCC)
+}
+events <- make_events(subjects)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+# rxode2 notes at parse time that the occasion-indexed IOV etas cannot be
+# mu-referenced (they are multiplied by OCC indicators); that only matters for
+# estimation, so this one message is muffled. The same helper muffles the
+# 'multi-subject simulation without omega' note for the typical-value solves
+# of zeroRe() models below, where zero variability is the point.
+muffle_known <- function(expr) {
+  withCallingHandlers(expr, warning = function(w) {
+    if (grepl("non-mu referenced|multi-subject simulation without", conditionMessage(w))) {
+      invokeRestart("muffleWarning")
+    }
+  })
+}
+mod <- muffle_known(rxode2::rxode(readModelDb("Duwal_2019_efavirenz")))
+mod_typ <- muffle_known(rxode2::zeroRe(mod))
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep = c("treatment"),
+  returnType = "data.frame"
+)
+stopifnot(!anyNA(sim$cl))
+```
+
+# Pharmacokinetics (Figure 1)
+
+```{r figure-1, fig.width = 7, fig.height = 6}
+fig1 <- sim |>
+  filter(time > 0) |>
+  group_by(treatment, time) |>
+  summarise(
+    q025 = quantile(Cc, 0.025), q25 = quantile(Cc, 0.25),
+    q50 = median(Cc), q75 = quantile(Cc, 0.75), q975 = quantile(Cc, 0.975),
+    .groups = "drop"
+  )
+plot_band <- function(d, xlab, tscale) {
+  ggplot(d, aes(time / tscale)) +
+    geom_ribbon(aes(ymin = q025, ymax = q975), fill = "grey85") +
+    geom_ribbon(aes(ymin = q25, ymax = q75), fill = "grey60") +
+    geom_line(aes(y = q50), colour = "red", linewidth = 1) +
+    facet_wrap(~treatment) +
+    labs(x = xlab, y = "EFV plasma concentration (mg/L)")
+}
+plot_band(filter(fig1, time <= 96), "Time after initial dose (days)", 24) +
+  labs(title = "First four days", caption = "Replicates Figure 1A-B of Duwal 2019.")
+plot_band(fig1, "Time after initial dose (days)", 24) +
+  labs(title = "Thirty days of daily dosing", caption = "Replicates Figure 1C-D of Duwal 2019.")
+```
+
+As in the paper, concentrations rise over the first 4-5 doses and then drift
+down as autoinduction raises clearance from 58% to 100% of its steady-state
+value with a 245 h half-time; the 95% band widens because slow-metaboliser
+genotypes accumulate.
+
+## Clearance and half-life against Supplementary Table 1 and the Results
+
+The paper reports half-lives computed from the individual parameters: median
+35.57 h (95% range 14.28-125.26) on day 1 and 20.77 h (8.34-73.15) after
+autoinduction. The steady-state clearance distribution can also be compared
+with the paper's own 1000 virtual patients (Supplementary Table 1: mean 9.86,
+median 8.96, quartiles 6.07-12.39 L/h).
+
+```{r half-life}
+indiv <- sim |>
+  group_by(id, treatment) |>
+  summarise(cl0 = first(cl), cl_ss = first(cl_ss), vc = first(vc), .groups = "drop") |>
+  mutate(thalf_day1 = log(2) * vc / cl0, thalf_ss = log(2) * vc / cl_ss)
+
+hl_tab <- tibble(
+  Quantity = c(
+    "t1/2 day 1 (h), median", "t1/2 after autoinduction (h), median",
+    "CLss/F (L/h), mean", "CLss/F (L/h), median",
+    "CLss/F (L/h), 25th percentile", "CLss/F (L/h), 75th percentile"
+  ),
+  Published = c(35.57, 20.77, 9.86, 8.96, 6.07, 12.39),
+  Simulated = c(
+    median(indiv$thalf_day1), median(indiv$thalf_ss),
+    mean(indiv$cl_ss), median(indiv$cl_ss),
+    quantile(indiv$cl_ss, 0.25), quantile(indiv$cl_ss, 0.75)
+  )
+) |>
+  mutate(`Difference (%)` = 100 * (Simulated / Published - 1))
+knitr::kable(hl_tab, digits = c(0, 2, 2, 1))
+
+# The day-1 / steady-state half-life ratio is fixed by the model
+# (1 / alpha), so it is checked tightly; the cohort medians are checked
+# loosely because 400 simulated subjects carry ~6% sampling error on a median.
+stopifnot(
+  abs(median(indiv$thalf_day1 / indiv$thalf_ss) - 9.86 / 5.76) < 1e-6,
+  abs(median(indiv$thalf_ss) / 20.77 - 1) < 0.15,
+  abs(mean(indiv$cl_ss) / 9.86 - 1) < 0.15
+)
+```
+
+## PKNCA: first-dose and day-30 exposure
+
+The paper reports a median tmax of 5.90 h (95% range 4.56-7.88) and median
+trough concentrations after autoinduction of 1.35 mg/L (0.30-6.55) for
+400 mg and 2.02 mg/L (0.45-9.83) for 600 mg.
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = c(0, 696),
+  end = c(24, 720),
+  cmax = TRUE,
+  tmax = c(TRUE, FALSE),
+  cmin = c(FALSE, TRUE),
+  auclast = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r nca-compare}
+# tmax is computed only on the first-dose interval and cmin only on the
+# day-30 interval, so grouping by treatment alone pairs each with its value.
+published <- tibble::tribble(
+  ~treatment, ~tmax, ~cmin,
+  "400 mg", 5.90, 1.35,
+  "600 mg", 5.90, 2.02
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  params = c("tmax", "cmin"),
+  units = c(tmax = "h", cmin = "mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = paste(
+  "Simulated (median) vs published: first-dose Tmax and day-30 trough",
+  "(published: after autoinduction). * differs by >20%."
+))
+```
+
+The first-dose tmax matches, and the day-30 median troughs are within 5% of
+the published values. The paper does not say at what time its "after
+autoinduction" troughs were taken. At day 30, clearance has reached about 87%
+of its steady-state value. With autoinduction complete, the paper's own
+Supplementary Table 1 patients give a median 400 mg trough of 1.27 mg/L
+(closed-form steady state, computed by the maintainers), 6% below the printed
+1.35 mg/L, so the printed value must come from a finite time after the start
+of therapy.
+
+```{r trough-check}
+troughs <- sim |>
+  filter(abs(time - 719.99) < 1e-6) |>
+  group_by(treatment) |>
+  summarise(
+    median = median(Cc), q025 = quantile(Cc, 0.025), q975 = quantile(Cc, 0.975),
+    pct_ever_gt10 = NA_real_, .groups = "drop"
+  )
+ever10 <- sim |>
+  group_by(treatment, id) |>
+  summarise(ever = any(Cc > 10), .groups = "drop") |>
+  group_by(treatment) |>
+  summarise(pct_ever_gt10 = 100 * mean(ever), .groups = "drop")
+troughs$pct_ever_gt10 <- ever10$pct_ever_gt10[match(troughs$treatment, ever10$treatment)]
+troughs <- troughs |>
+  mutate(
+    published_median = c(1.35, 2.02),
+    published_pct_gt10 = c(2.5, 11.3)
+  )
+knitr::kable(troughs, digits = 2, caption = "Day-30 trough (mg/L) and percentage of subjects ever above 10 mg/L.")
+
+stopifnot(
+  # Linear PK: the 600/400 trough ratio is 1.5 up to cohort noise.
+  abs(troughs$median[2] / troughs$median[1] / 1.5 - 1) < 0.2,
+  all(abs(troughs$median / troughs$published_median - 1) < 0.25)
+)
+```
+
+The percentage of subjects who ever exceed 10 mg/L is shown for comparison
+with the paper's 11.3% (600 mg) and 2.5% (400 mg) but is not used as a check,
+because it is a known deviation. It is a tail statistic (sampling error about
+2 percentage points with 200 subjects per arm), and the paper does not
+reproduce it from its own cohort either: running the 1000 patients of
+Supplementary Table 1 through this model gives 6.8% (600 mg) and 1.3%
+(400 mg) over 30 or 120 days. The paper's simulation protocol evidently
+differs in a way it does not describe, for example by adding residual error
+to the simulated concentrations.
+
+# Concentration-prophylaxis profile (Figure 2)
+
+Figure 2A shows the prophylactic efficacy against a single transmitted virion
+as a function of a constant EFV plasma concentration. The model's `phi_*`
+outputs are exactly this quantity. To evaluate them at fixed concentrations,
+each simulated subject receives an intravenous bolus into `central` equal to
+the target concentration times V/F with clearance set to (almost) zero, so
+`Cc` stays constant.
+
+```{r figure-2-setup}
+conc_grid <- 10^seq(-4, log10(25), length.out = 300)
+conc_events <- function(conc, n_rep = 1L) {
+  tibble(id = seq_along(rep(conc, each = n_rep)), conc = rep(conc, each = n_rep)) |>
+    tidyr::crossing(evid = c(1L, 0L)) |>
+    mutate(
+      time = ifelse(evid == 1L, 0, 1),
+      amt = ifelse(evid == 1L, conc * 282, 0),
+      cmt = "central",
+      WT = 70,
+      SNP_CYP2B6_RS3745274_T_COUNT = 0L, SNP_CYP2B6_RS28399499_C_COUNT = 0L,
+      SNP_CYP2A6_RS8192726 = 0L, SNP_CYP2A6_RS28399454 = 0L,
+      CYP2B6_MISSING = 0L, OCC = 1L
+    ) |>
+    arrange(id, time, desc(evid))
+}
+no_clearance <- c(lcl = log(1e-12))
+
+# Typical-value curve: all random effects zero.
+phi_typ <- muffle_known(rxode2::rxSolve(
+  mod_typ,
+  events = conc_events(conc_grid),
+  params = no_clearance,
+  keep = "conc",
+  returnType = "data.frame"
+)) |>
+  filter(time == 1)
+
+# 90%-protective concentrations (ng/mL) by log-linear interpolation of the
+# monotone curve, against the paper's Abstract and Results.
+# Only the rising part of the curve is used: phi is flat at 0 and at 1 at
+# the ends of the grid, and approx() needs distinct x values.
+ec_at <- function(conc, phi, level) {
+  rising <- phi > 0.01 & phi < 0.999
+  10^approx(phi[rising], log10(conc[rising]), xout = level)$y * 1000
+}
+ec90 <- tibble(
+  strain = c("wild type", "Y181C", "K103N", "G190S"),
+  column = c("phi_wt", "phi_y181c", "phi_k103n", "phi_g190s"),
+  published_ng_ml = c(11, 36, 1287, 1486)
+) |>
+  rowwise() |>
+  mutate(simulated_ng_ml = ec_at(phi_typ$conc, phi_typ[[column]], 0.9)) |>
+  ungroup() |>
+  mutate(`Difference (%)` = 100 * (simulated_ng_ml / published_ng_ml - 1))
+knitr::kable(select(ec90, -column), digits = 1,
+  caption = "Plasma concentration giving 90% protection against a single virion.")
+
+# Deterministic typical-value curve against values the paper prints as whole
+# ng/mL: allow half a unit of the printed rounding (11 covers 10.5-11.5) plus
+# 1% for the 300-point grid interpolation.
+stopifnot(all(abs(ec90$simulated_ng_ml - ec90$published_ng_ml) <=
+  0.5 + 0.01 * ec90$published_ng_ml))
+```
+
+```{r figure-2, fig.width = 7, fig.height = 4.5}
+# Ranges: IC50 and m sampled per draw (Table 2 legend), 200 draws per
+# concentration on a coarser grid.
+conc_coarse <- 10^seq(-4, log10(25), length.out = 40)
+phi_var <- rxode2::rxSolve(
+  mod,
+  events = conc_events(conc_coarse, n_rep = 200L),
+  params = no_clearance,
+  keep = "conc",
+  returnType = "data.frame"
+) |>
+  filter(time == 1) |>
+  select(conc, phi_wt, phi_y181c, phi_k103n, phi_g190s) |>
+  pivot_longer(-conc, names_to = "strain", values_to = "phi") |>
+  group_by(conc, strain) |>
+  summarise(lo = quantile(phi, 0.025), hi = quantile(phi, 0.975), mean = mean(phi), .groups = "drop")
+
+strain_labels <- c(phi_wt = "wild type", phi_y181c = "Y181C", phi_k103n = "K103N", phi_g190s = "G190S")
+ggplot(phi_var, aes(conc, colour = strain, fill = strain)) +
+  annotate("rect", xmin = 0.30, xmax = 6.55, ymin = -Inf, ymax = Inf, fill = "lightyellow") +
+  geom_vline(xintercept = 1.35, linetype = "dashed") +
+  geom_ribbon(aes(ymin = 100 * lo, ymax = 100 * hi), alpha = 0.25, colour = NA) +
+  geom_line(aes(y = 100 * mean)) +
+  scale_x_log10() +
+  scale_colour_discrete(labels = strain_labels) +
+  scale_fill_discrete(labels = strain_labels) +
+  labs(
+    x = "EFV plasma concentration (mg/L)", y = "Prophylactic efficacy (%)",
+    colour = NULL, fill = NULL,
+    caption = paste(
+      "Replicates Figure 2A of Duwal 2019. Yellow: published 95% range of",
+      "400 mg steady-state troughs; dashed: published median."
+    )
+  )
+```
+
+The typical-value curve gives 11.5 ng/mL for wild type, which the paper
+rounds to 11; the three mutants agree to within 1%. At the published median
+400 mg trough (1.35 mg/L) the model gives complete protection against
+wild-type and Y181C virus and about 91% (K103N) and 89% (G190S) against the
+two highly resistant mutants -- the paper's "about 90% protection".
+
+```{r figure-2b, fig.width = 7, fig.height = 4}
+phi_typ |>
+  transmute(
+    conc,
+    Y181C = phi_wt - phi_y181c,
+    K103N = phi_wt - phi_k103n,
+    G190S = phi_wt - phi_g190s
+  ) |>
+  pivot_longer(-conc, names_to = "strain", values_to = "rel") |>
+  ggplot(aes(conc, 100 * rel, colour = strain)) +
+  geom_line() +
+  geom_vline(xintercept = 1.35, linetype = "dashed") +
+  scale_x_log10() +
+  labs(
+    x = "EFV plasma concentration (mg/L)",
+    y = "Relative transmissibility, phi_wt - phi_mut (%)", colour = NULL,
+    caption = "Replicates the typical-value curves of Figure 2B of Duwal 2019."
+  )
+
+at_median <- phi_typ[which.min(abs(phi_typ$conc - 1.35)), ]
+stopifnot(
+  at_median$phi_wt > 0.99, at_median$phi_y181c > 0.99,
+  at_median$phi_wt - at_median$phi_k103n < 0.2,
+  at_median$phi_wt - at_median$phi_g190s < 0.2
+)
+```
+
+# Viral dynamics after exposure during PrEP
+
+The viral states hold the expected numbers of free virions and of early and
+productively infected T cells. Without drug, one virion's expected progeny
+grows (each virion infects with probability about 0.2, and an integrated cell
+releases 670 virions per day), so the mean-field trajectory expands; under
+EFV the infection propensity is suppressed and the expected inoculum decays.
+This mean trajectory is not the infection probability -- that is `phi`, or the
+stochastic simulation of the paper -- but it shows the drug acting where the
+model says it acts. Below, a typical subject starts 400 mg daily and is
+exposed to one virion of each strain on day 31; a second run has no drug.
+
+```{r viral-dynamics, fig.width = 7, fig.height = 4}
+expo <- 30 * 24
+vd_events <- function(with_drug) {
+  ev <- tibble(id = 1L, time = expo, amt = 1, evid = 1L,
+    cmt = c("virus", "virus_y181c", "virus_k103n", "virus_g190s"))
+  if (with_drug) {
+    ev <- bind_rows(ev, tibble(id = 1L, time = 24 * (0:44), amt = 400, evid = 1L, cmt = "depot"))
+  }
+  bind_rows(ev, tibble(id = 1L, time = seq(expo, expo + 14 * 24, by = 2), amt = 0, evid = 0L, cmt = "central")) |>
+    mutate(
+      WT = 70, SNP_CYP2B6_RS3745274_T_COUNT = 0L, SNP_CYP2B6_RS28399499_C_COUNT = 0L,
+      SNP_CYP2A6_RS8192726 = 0L, SNP_CYP2A6_RS28399454 = 0L, CYP2B6_MISSING = 0L, OCC = 1L
+    ) |>
+    arrange(time, desc(evid))
+}
+vd <- bind_rows(
+  muffle_known(rxode2::rxSolve(mod_typ, events = vd_events(TRUE), returnType = "data.frame")) |>
+    mutate(regimen = "EFV 400 mg daily"),
+  muffle_known(rxode2::rxSolve(mod_typ, events = vd_events(FALSE), returnType = "data.frame")) |>
+    mutate(regimen = "no drug")
+) |>
+  select(regimen, time, virus, virus_y181c, virus_k103n, virus_g190s) |>
+  pivot_longer(starts_with("virus"), names_to = "strain", values_to = "virions")
+
+ggplot(vd, aes((time - expo) / 24, pmax(virions, 1e-6), colour = strain)) +
+  geom_line() +
+  facet_wrap(~regimen) +
+  scale_y_log10() +
+  scale_colour_discrete(labels = c(virus = "wild type", virus_y181c = "Y181C",
+    virus_k103n = "K103N", virus_g190s = "G190S")) +
+  labs(x = "Days after exposure", y = "Expected free virions", colour = NULL)
+
+v_end <- vd |> filter(time == max(time))
+stopifnot(
+  all(v_end$virions[v_end$regimen == "no drug"] > 1),
+  v_end$virions[v_end$regimen == "EFV 400 mg daily" & v_end$strain == "virus"] < 1e-3
+)
+```
+
+# Assumptions and deviations
+
+- **Prophylactic efficacy formula.** The paper computes Figure 2A with the
+  analytical solution of an earlier publication (Duwal 2018, Eqs. 19-21) and
+  does not reprint it. The packaged `phi_*` outputs are the extinction
+  probability of the branching process defined by the paper's own reactions
+  (6)-(11) with the drug effect held constant. They reproduce the paper's four
+  90%-protective concentrations (11, 36, 1287, 1486 ng/mL) to the paper's
+  printed precision, so the maintainers take the form to be the one the paper
+  used.
+- **Not reproduced.** The hybrid stochastic EXTRANDE simulations behind
+  Figures 3-4 (exposure model of Eq. 12, adherence sampling, PrEP on demand,
+  PEP) are a simulation protocol, not model structure, and are not run here.
+- **Viral states as expected values.** Because uninfected T cells are held
+  constant, the reactions are linear in the viral states and the ODEs give the
+  exact expected numbers. They do not give infection probabilities.
+- **Autoinduction parameter.** `cl_time_fdef` is `1 - 5.76/9.86` (alpha =
+  0.5842), the paper's own definition of alpha, rather than the rounded 0.58
+  of Table 1; with it the simulated day-1 / steady-state half-life ratio
+  matches the paper's reported half-lives (35.57 h and 20.77 h) exactly.
+- **Autoinduction clock.** Eq. (4) runs from the first EFV dose; the model
+  uses `tafd(depot)`, so an event table must start EFV with a dose into
+  `depot`.
+- **Genotype combinations without an estimate.** Supplementary Table 2 lists
+  15 genotype combinations plus missing genotype. Subjects with 516TT and a
+  983 C allele, or 516GT with a 983 C allele and both CYP2A6 variants, have no
+  estimate; the model returns `NA` clearance for them rather than borrowing
+  another group's value. The virtual cohort redraws them (0.7% of draws).
+- **Genotype frequencies.** Dickinson 2015 reports only the marginal
+  frequency of each SNP, so the cohort draws the four positions independently.
+  The resulting clearance distribution matches the paper's Supplementary
+  Table 1 closely (table above).
+- **IOV in the virtual cohort.** The spread of CLss/F in Supplementary Table 1
+  matches the model with both IIV and one draw of IOV, so the cohort uses
+  `OCC = 1` throughout.
+- **PD variability.** IC50 (log-normal) and m (normal) are sampled per
+  simulated subject with the wild-type coefficient of variation, as the
+  Table 2 legend states. One eta of each scales all four strains, so within a
+  subject the strains' potencies are perfectly correlated; the paper sampled
+  each strain separately. Marginal distributions per strain are unaffected.
+- **Trial size.** Duwal 2019 Section 2 assigns 311 patients to 600 mg and 295
+  to 400 mg, whereas Dickinson 2015 Table 1 has the reverse; the PK model does
+  not depend on it.
+- **Fraction exceeding 10 mg/L (known deviation).** The paper does not say
+  over what time window "eventually exceed" is evaluated; the 30-day window
+  here is the span of Figure 1C-D. The paper's 11.3% / 2.5% are not
+  reproduced even from its own virtual patients (6.8% / 1.3%), so this
+  comparison is reported but not checked.
+- **Half-lives and clearance against Supplementary Table 1.** The comparison
+  table uses the simulated 400-subject cohort, so its medians carry a few
+  percent of sampling error. Run through the model, the paper's own
+  Supplementary Table 1 patients give median half-lives of 35.56 h and
+  20.77 h, against the published 35.57 h and 20.77 h.
+- No correction notice for the article was found in Europe PMC as of
+  2026-11-25.

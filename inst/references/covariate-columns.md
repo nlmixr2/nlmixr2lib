@@ -18465,6 +18465,17 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Lane_2011_warfarin_s.R` (multiplicative CL effect 0.782 for the missing-genotype subgroup vs the *1/*1 wild-type reference; Lane 2011 Table 3).
 - **Notes:** Follows the missing-data-indicator pattern established by `ADA_MISSING` (multiplicative CL effect for subjects with missing ADA results; Suri 2018 brentuximab) and `HEPIMP_MOD_OR_MISSING` (composite moderate-or-missing hepatic impairment indicator). Distinct from the strategy of imputing missing genotype as wild-type (which would set `CYP2C9_S1_COUNT = 2` and not use a separate indicator); use `CYP2C9_MISSING` only when the source paper explicitly fits a separate coefficient for the missing-genotype subgroup.
 
+### CYP2B6_MISSING (**canonical for CYP2B6 genotype-missing indicator**)
+- **Description:** Binary indicator for a subject whose CYP2B6 genotype (or a composite genotype led by CYP2B6) was not available. 1 = genotype missing; 0 = genotyped. When 1, the model ignores the subject's CYP2B6 (and companion) SNP columns and applies the source's missing-genotype coefficient instead.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (genotyped).
+- **Source aliases:**
+  - `Missing genotype` -- Duwal 2019 Supplementary Table 2 (reproduced from Dickinson 2015), the missing level of the composite CYP2B6 516G>T / 983T>C / CYP2A6 *9B / *17 genotype, with CL/F multiplier 0.73.
+- **Example models:** `Duwal_2019_efavirenz.R` (multiplier 0.73 on efavirenz CL/F relative to the CYP2B6 516GG / 983TT reference).
+- **Notes:** Follows the `<GENE>_MISSING` pattern of [[CYP2C9_MISSING]]. In the founding model the missing level belongs to a composite of two CYP2B6 and two CYP2A6 SNPs; ENCORE1 had 32 of 606 subjects with no genotyping sample, plus a few CYP2A6 amplification failures. Use it only when the source fits a separate coefficient for missing genotype rather than imputing the reference genotype.
+
 ### VKORC1_1639G_COUNT (**canonical for VKORC1 -1639G allele count**)
 - **Description:** Continuous individual-level count of VKORC1 -1639G alleles (rs9923231, also reported as VKORC1 -1639 G > A or 1173 C > T depending on numbering convention). 0 = AA homozygous (warfarin-sensitive), 1 = GA heterozygous, 2 = GG homozygous (warfarin-resistant). Time-invariant (germline genotype). The complementary -1639A count is `2 - VKORC1_1639G_COUNT`.
 - **Units:** (count, 0/1/2 alleles per subject)
@@ -18558,6 +18569,28 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
   - `CYP2B6 983T>C (rs28399499)` -- Olagunju 2018 (paper Methods 'Sample Collection ...' paragraph 1; combined with rs3745274 to define a composite metaboliser status).
 - **Example models:** `Schipani_2011_nevirapine.R` (additive linear shift on CL/F: `cl = exp(lcl) + e_983tc_cl * (SNP_CYP2B6_RS28399499_C_COUNT == 1) + ...`; 983TC heterozygotes have approximately 40% lower CL/F than the TT reference; Schipani 2011 Table 2), `Olagunju_2018_efavirenz.R` (composite-metaboliser-status encoding: variant alleles from rs3745274 and rs28399499 are summed to classify subjects as fast / intermediate / slow; Olagunju 2018 Table 2).
 - **Notes:** Distribution in the Schipani 2011 European HIV-positive cohort (Table 1, n = 275): 983TT 97%, 983TC 3%, 983CC 0%. Distribution in the Olagunju 2018 Nigerian HIV-positive pregnant-women cohort (Table 1, n = 77): 983TT 75%, 983TC 25%, 983CC 0% -- a much higher heterozygous-variant fraction than the Schipani 2011 cohort, consistent with the West-African ethnicity of the Olagunju 2018 study population. The 983T>C variant is also known as CYP2B6*18 and is found primarily in African and African-admixed populations (allele frequency ~6-8% in West Africans, ~0% in Europeans and East Asians); the Schipani 2011 cohort included 33% Black-ethnicity subjects, which explains the observed 3% heterozygote frequency, while the all-Nigerian Olagunju 2018 cohort shows the typical West-African 25% heterozygote frequency. No 983CC homozygotes have been described in the published literature as of the 2011 report (Schipani 2011 Results paragraph 4), so models that include the variant typically estimate only a heterozygous shift. Often co-tested with 516G>T (linkage-disequilibrium block: subjects homozygous for both 516TT and 983TC are CYP2B6 "slow metabolizers" of efavirenz / nevirapine). The count-form encoding follows the same rationale as `SNP_CYP2B6_RS3745274_T_COUNT`.
+
+### SNP_CYP2A6_RS8192726 (**canonical for CYP2A6*9B (rs8192726) variant-carrier indicator**)
+- **Description:** Binary genotype indicator for the *CYP2A6*\*9B variant (rs8192726). 1 = the subject carries at least one variant allele (reported as CA or AA by Dickinson 2015); 0 = CC homozygous reference. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (CC).
+- **Source aliases:**
+  - `CYP2A6*9B` -- Duwal 2019 Supplementary Table 2 (reproduced from Dickinson 2015), third position of the composite CYP2B6 516G>T / 983T>C / CYP2A6 *9B / *17 genotype, with CA and AA pooled.
+- **Example models:** `Duwal_2019_efavirenz.R` (one position of a 16-level composite genotype that sets a multiplier on efavirenz CL/F; no effect within the CYP2B6 516GG / 983TT reference group).
+- **Notes:** Member of the `SNP_<GENE>_RS<rsid>` family; dominant-model carrier indicator, like [[SNP_NFIB_RS28379954]]. The rs number is the one Dickinson 2015 (Clin Pharmacol Ther 98:406) gives for *9B; the allele letters follow that paper's notation, which may be on the opposite strand to other reports. `Dhoro_2015_efavirenz.R` documents this SNP under the same name in `covariatesDataExcluded` as a screened-but-not-retained genotype. ENCORE1 frequencies (Dickinson 2015 Table 1, n = 570): CC 82%, CA 16%, AA 3%.
+
+### SNP_CYP2A6_RS28399454 (**canonical for CYP2A6*17 (rs28399454) variant-carrier indicator**)
+- **Description:** Binary genotype indicator for the *CYP2A6*\*17 variant (rs28399454). 1 = the subject carries at least one variant allele (reported as CT or TT by Dickinson 2015); 0 = CC homozygous reference. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (CC).
+- **Source aliases:**
+  - `CYP2A6*17` -- Duwal 2019 Supplementary Table 2 (reproduced from Dickinson 2015), fourth position of the composite genotype, with CT and TT pooled.
+- **Example models:** `Duwal_2019_efavirenz.R` (as for [[SNP_CYP2A6_RS8192726]]).
+- **Notes:** Member of the `SNP_<GENE>_RS<rsid>` family; dominant-model carrier indicator. *CYP2A6*\*17 is a reduced-function allele found mainly in people of African ancestry; CYP2A6 is the accessory efavirenz 7-hydroxylation pathway, which matters most when CYP2B6 is impaired. `Dhoro_2015_efavirenz.R` documents it under the same name in `covariatesDataExcluded`. ENCORE1 frequencies (Dickinson 2015 Table 1, n = 572): CC 90%, CT 10%, TT 0.5%.
 
 ### SNP_CYP2B6_RS4803419_T_COUNT (**canonical for CYP2B6 c.485-18C>T (rs4803419) T-allele count**)
 - **Description:** Continuous individual-level CYP2B6 c.485-18C>T (rs4803419) T-allele count: 0 = CC homozygous wild-type, 1 = CT heterozygous, 2 = TT homozygous variant. Time-invariant (germline genotype). rs4803419 is an intron-3 splice-region variant (also reported as CYP2B6 15582C>T) that tags the CYP2B6*22-associated reduced-expression haplotype; it is in partial linkage disequilibrium with c.516G>T (rs3745274) but carries an independently detectable effect on efavirenz apparent oral clearance in some cohorts.
