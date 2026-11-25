@@ -11578,6 +11578,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `VasquezBahena_2009_lumiracoxib_rat.R` (switches the COX-2 synthesis-rate model: CARRAGEENAN = 0 selects the constant saline synthesis rate `ks_cox2_saline` and CARRAGEENAN = 1 selects the time-variant gamma function `ks_cox2(t) = A * t^alpha * exp(-beta * t)` driving the carrageenan-induced inflammation profile).
 - **Notes:** The carrageenan-induced peripheral inflammation / hyperalgesia model (Winter 1962; Hargreaves 1988 thermal-hyperalgesia variant) is one of the most widely used preclinical assays for screening anti-inflammatory and analgesic drugs in rodents, so the canonical name is reusable for future preclinical extractions. Scope: specific until a second model ratifies the binary-switch semantics on a different PD framework. The Hargreaves-test thermal-hyperalgesia readout (`LT` paw withdrawal latency, seconds) is the typical observable when this indicator is in use, but other readouts (paw oedema, mechanical-allodynia von Frey threshold) are equally valid. Distinct from disease-state indicators (`DIS_*`) because the inflammatory state is experimentally induced at a defined time, not a chronic patient condition.
 
+### LIPOPOLYSACCHARIDE_CHALLENGE (**canonical for systemic lipopolysaccharide (endotoxin) inflammatory-challenge indicator**)
+- **Description:** 1 = animal received an experimental lipopolysaccharide (LPS, endotoxin) challenge (typically intraperitoneal or intravenous); 0 = not challenged. Time-fixed per animal within an experiment.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (normal, unchallenged animal).
+- **Source aliases:**
+  - `LPS-Challenging Mice` -- group label in Hao 2013 Table 1 (azithromycin PK in LPS-challenged vs normal mice).
+- **Example models:** `Hao_2013_azithromycin_mouse.R` (selects the Table 1 'LPS-Challenging Mice' azithromycin PK set: ka 0.85 1/h, ke 0.042 1/h, V/F 28.5 L/kg, instead of the 'Normal Mice' set).
+- **Notes:** The indicator marks the condition, not the dose: the LPS amount itself is a dosing event into the model's LPS absorption compartment. LPS challenge is the standard preclinical systemic-inflammation / sickness-behaviour paradigm, and drug PK is routinely compared between naive and LPS-challenged animals, hence general scope. The spelled-out name follows the register's preference for spelled-out new covariate names over abbreviations. Distinct from `CARRAGEENAN` (local intraplantar challenge), `DIS_CIA` (collagen-induced arthritis disease state), the `STUDY_LPS*` cohort-timing indicators, and `MIX_ETX_CONTAM` (assay contamination class).
+
 ### MENT_DISABLED (**canonical for severe mental-disability indicator (paper-defined diagnosis)**)
 - **Description:** 1 = subject diagnosed with severe mental disability by the pediatrics department per the source-paper clinical criteria; 0 = mentally intact (ASA class 1, normal mental ability). Time-fixed per subject. Subject-level indicator; the underlying definition is broad (severe developmental / cognitive impairment with impairment of daily-living activities irrespective of primary neurologic cause, per Shin 2014 Results) rather than a single diagnostic category.
 - **Units:** (binary)
@@ -14968,7 +14979,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** 0 (no concomitant azithromycin).
 - **Source aliases:**
   - `AZIFL` -- used in `Dave_2019_venetoclax.R` (Dave 2019 PK control stream `IF(AZIFL.EQ.1) TVFA = THETA(11) ; Azithromycin`).
-- **Example models:** `Dave_2019_venetoclax.R` (multiplicative factor 0.65 on venetoclax relative bioavailability, i.e. 35% lower F, Dave 2019 Table 2 'Azithromycin on F1'; healthy-volunteer DDI study V, Agarwal 2018 Adv Ther 35:2015; indicator set on the venetoclax dose record).
+- **Example models:** `Dave_2019_venetoclax.R` (multiplicative factor 0.65 on venetoclax relative bioavailability, i.e. 35% lower F, Dave 2019 Table 2 'Azithromycin on F1'; healthy-volunteer DDI study V, Agarwal 2018 Adv Ther 35:2015; indicator set on the venetoclax dose record); `Hao_2013_azithromycin_mouse.R` (preclinical mouse; here azithromycin is the perpetrator of a PK shift in the co-administered LPS challenge: selects the Hao 2013 Table 2 'Azithromycin-Treating Mice' LPS PK set, ka_LPS 1.63 1/h, ke_LPS 0.088 1/h, V_LPS/F 15.5 L/kg; per-animal, time-fixed).
 - **Notes:** Auto-approved member of the `CONMED_<INN>` family. Record per-model whether the effect is placed on bioavailability or on clearance, and whether it is time-varying (on the dose record only) or per-subject.
 
 ### CONMED_CLARITHROMYCIN (**canonical for concomitant clarithromycin coadministration indicator**)

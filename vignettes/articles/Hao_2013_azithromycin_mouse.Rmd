@@ -1,0 +1,470 @@
+---
+title: "Azithromycin and LPS-induced depressive-like behaviour in mice (Hao 2013)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Azithromycin and LPS-induced depressive-like behaviour in mice (Hao 2013)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Hao_2013_azithromycin_mouse"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Hao_2013_azithromycin_mouse"))$description`
+* Article: <https://doi.org/10.1371/journal.pone.0054981> (open access, with
+  the ADAPT II model code as Appendix S1)
+
+Hao 2013 built a mechanism-based PK-PD model of the anti-inflammatory action of
+the macrolide azithromycin (AZI) in a mouse model of inflammation-induced
+depressive-like behaviour. An intraperitoneal lipopolysaccharide (LPS) challenge
+raises plasma proinflammatory cytokines (PCs: the sum of IL-1beta, IL-6,
+IFN-gamma and TNF-alpha), which activate indoleamine 2,3-dioxygenase and raise
+plasma kynurenine (KYN); KYN in turn lengthens the immobility time in the forced
+swimming test (FST) and the tail suspension test (TST). AZI given
+intragastrically 20 minutes before LPS inhibits PCs production.
+
+# Population
+
+Male CD1 mice, 10-14 weeks old and 35-40 g (Methods, Animals), received a single
+intragastric AZI dose of 100 mg/kg, a single intraperitoneal LPS dose of
+0.8 mg/kg 20 minutes later, both, or neither. Eight mice per time point were
+sacrificed for plasma AZI, LPS, PCs and KYN, and a separate set of eight per
+time point underwent the behavioural tests (Methods, Study Design). The model
+was fitted by naive pooling in ADAPT II, so it carries typical values only:
+there is no between-animal variability and no residual-error model (the paper
+reports only that every residual error was below 38%).
+
+```{r population}
+str(readModelDb("Hao_2013_azithromycin_mouse")()$population)
+```
+
+# Model structure
+
+The equations are Eqs 1-7 of the paper, which match the ADAPT II code in
+Appendix S1 term for term.
+
+* AZI (Eqs 1-2): one compartment with first-order absorption from `depot`;
+  `Cc = central / vc` in ug/mL with the dose in mg/kg and `V/F` in L/kg.
+* LPS (Eqs 3-4): one compartment with first-order absorption from the
+  peritoneal cavity (`depot_lps`); the concentration is expressed in endotoxin
+  units, `Cc_lps = central_lps * 1e6 * 3.4 / (vc_lps * 1000)` in EU/mL, using
+  the paper's conversion of 3.4 EU per ng of LPS.
+* PCs (Eq 5): an indirect-response turnover with production stimulated by LPS
+  and inhibited by AZI,
+  `d/dt(pcs) = kin_pcs * (1 + Smax*Cc_lps/(Cc_lps + SC50)) * (1 - Imax*Cc/(Cc + IC50)) - kout_pcs * pcs`,
+  with `kin_pcs = PCs0 * kout_pcs`.
+* KYN (Eq 6) and FST / TST (Eq 7): transduction turnovers driven by the pool
+  upstream of them, `d/dt(kyn) = kin_kyn * (1 + pcs/PCs0) - kout_kyn * kyn` and
+  `d/dt(fst) = kin_fst * (1 + kyn/KYN0) - kout_fst * fst` (TST alike), with
+  `kin = X0 * kout / 2`. This baseline-normalised form is the maintainers'
+  reconstruction; the next section explains why.
+* Condition-specific PK: the paper estimated separate AZI PK in normal and
+  LPS-challenged mice (Table 1) and separate LPS PK in normal and AZI-treated
+  mice (Table 2). The binary covariates `LIPOPOLYSACCHARIDE_CHALLENGE` and
+  `CONMED_AZITHROMYCIN` select the parameter set, and must be set to match the
+  doses in the event table.
+
+## Why Eqs 6-7 are rewritten
+
+As printed, and as coded in Appendix S1 (`XP(6)=P(13)*(1+X(5))-P(14)*X(6)`),
+the KYN and behaviour equations use `kin * (1 + PCs)` and `kin * (1 + KYN)` on
+the raw concentrations, with `KYN0 = kin_KYN / kout_KYN` as the initial
+condition and no slope parameter. With PCs at its reported baseline of
+49.8 pg/mL, that production rate is 50.8 times what holds KYN at 104.3 ng/mL,
+so KYN would climb towards about 50.8 x 104.3 = 5300 ng/mL even without LPS,
+and the behaviour states would follow. Simulated literally with the Table 3
+values the LPS arm reaches about 58,000 ng/mL of KYN and an FST immobility time
+of about 2.8 million seconds, whereas Figure 2D peaks near 600 ng/mL and the
+control arms of Figures 2D and 3 stay flat at baseline.
+
+The packaged model therefore drives each step with the upstream pool relative to
+its own baseline, `(1 + X / X0)`, and halves `kin` so that `X0` remains a true
+steady state. Of the readings tested this one comes closest to the paper's
+fitted curves: a pure ratio `X / X0` gives roughly twice the observed KYN and
+FST peaks, and reinterpreting the units (PCs in ng/mL, KYN in ug/mL) leaves
+almost no response. The baseline inconsistency of Eqs 6-7 appears to be an
+error in the published equations; no erratum was found (PLoS ONE article page
+and literature search, November 2026).
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| AZI absorption / disposition | 1-cmt, first-order absorption | Eqs 1-2; Appendix S1 `XP(1)`, `XP(2)` |
+| `lka` (normal / LPS-challenged `lka_chall`) | 0.78 / 0.85 1/h | Table 1, ka |
+| `lkel` (normal / `lkel_chall`) | 0.040 / 0.042 1/h | Table 1, ke |
+| `lvc` (normal / `lvc_chall`) | 42.1 / 28.5 L/kg | Table 1, V_AZI/F_AZI |
+| LPS absorption / disposition | 1-cmt, first-order absorption | Eqs 3-4; Appendix S1 `XP(3)`, `XP(4)` |
+| `lka_lps` (normal / AZI-treated `lka_lps_azi`) | 1.51 / 1.63 1/h | Table 2, ka_LPS |
+| `lkel_lps` (normal / `lkel_lps_azi`) | 0.082 / 0.088 1/h | Table 2, ke_LPS |
+| `lvc_lps` (normal / `lvc_lps_azi`) | 16.3 / 15.5 L/kg | Table 2, V_LPS/F_LPS |
+| `eu_per_ng_lps` | 3.4 EU/ng (fixed) | Methods, text after Eq 4 |
+| PCs turnover with LPS stimulation and AZI inhibition | Eq 5 | Eq 5; Appendix S1 `XP(5)` |
+| `lrbase_pcs` | 49.8 pg/mL | Table 3, PCs,0 |
+| `lkout_pcs` | 0.234 1/h | Table 3, kout_PCs |
+| `lsmax` | 27.5 | Table 3, Smax |
+| `lsc50` | 103.5 EU/mL | Table 3, SC50 |
+| `limax` | 0.83 | Table 3, Imax |
+| `lic50` | 6.3 ug/mL | Table 3, IC50 |
+| KYN turnover driven by PCs | Eq 6, baseline-normalised | Eq 6; Appendix S1 `XP(6)`; maintainers' reconstruction |
+| `lrbase_kyn` | 104.3 ng/mL | Table 3, KYN0 |
+| `lkout_kyn` | 0.167 1/h | Table 3, kout_KYN |
+| FST / TST turnover driven by KYN | Eq 7, baseline-normalised | Eq 7; Appendix S1 `XP(7)`; maintainers' reconstruction |
+| `lrbase_fst` / `lrbase_tst` | 51.3 / 108.2 s | Table 3, FST0 (TST0) |
+| `lkout_fst` / `lkout_tst` | 0.253 / 0.143 1/h | Table 3, kout_FST (TST) |
+
+# Simulation
+
+Four typical mice reproduce the study's groups. AZI is given at time 0 and LPS
+20 minutes later, as in the study design; the PD and LPS panels are plotted
+against time after LPS.
+
+```{r simulate}
+mod <- readModelDb("Hao_2013_azithromycin_mouse")
+t_lps <- 20 / 60
+
+arms <- tibble::tribble(
+  ~id, ~arm,           ~azi,  ~lps,
+  1L,  "Control",      FALSE, FALSE,
+  2L,  "LPS",          FALSE, TRUE,
+  3L,  "AZI + LPS",    TRUE,  TRUE,
+  4L,  "AZI alone",    TRUE,  FALSE
+)
+
+obs_times <- sort(unique(c(seq(0, 48, by = 0.1), seq(48, 240, by = 0.5))))
+
+make_events <- function(id, azi, lps) {
+  doses <- NULL
+  if (azi) {
+    doses <- rbind(doses, data.frame(id = id, time = 0, amt = 100,
+                                     cmt = "depot", evid = 1L))
+  }
+  if (lps) {
+    doses <- rbind(doses, data.frame(id = id, time = t_lps, amt = 0.8,
+                                     cmt = "depot_lps", evid = 1L))
+  }
+  obs <- data.frame(id = id, time = obs_times, amt = 0, cmt = "central",
+                    evid = 0L)
+  out <- rbind(doses, obs)
+  out$LIPOPOLYSACCHARIDE_CHALLENGE <- as.integer(lps)
+  out$CONMED_AZITHROMYCIN <- as.integer(azi)
+  out
+}
+
+events <- do.call(rbind, Map(make_events, arms$id, arms$azi, arms$lps))
+
+sim <- rxode2::rxSolve(mod, events, returnType = "data.frame") |>
+  dplyr::left_join(dplyr::select(arms, id, arm), by = "id") |>
+  dplyr::mutate(arm = factor(arm, levels = arms$arm),
+                time_lps = time - t_lps)
+```
+
+## Steady state without a challenge
+
+With no dose every turnover pool must stay at its Table 3 baseline. This is the
+property the printed Eqs 6-7 fail.
+
+```{r baseline_check}
+ctrl <- dplyr::filter(sim, arm == "Control")
+base <- c(pcs = 49.8, kyn = 104.3, fst = 51.3, tst = 108.2)
+rel_dev <- vapply(names(base), function(v) {
+  max(abs(ctrl[[v]] - base[[v]])) / base[[v]]
+}, numeric(1))
+rel_dev
+stopifnot(all(rel_dev < 1e-6))
+```
+
+## Figure 2A: azithromycin
+
+```{r fig2a, fig.cap = "Replicates Figure 2A of Hao 2013: plasma AZI after 100 mg/kg intragastric, normal (AZI alone) versus LPS-challenged (AZI + LPS) mice. Points are the peak concentrations stated in the Results text."}
+fig2a_pts <- data.frame(arm = factor(c("AZI alone", "AZI + LPS"), levels = arms$arm),
+                        time = 2, Cc = c(6.1, 8.9))
+sim |>
+  dplyr::filter(arm %in% c("AZI alone", "AZI + LPS"), time <= 50) |>
+  ggplot(aes(time, Cc, colour = arm)) +
+  geom_line() +
+  geom_point(data = fig2a_pts, size = 2) +
+  labs(x = "Time after AZI dose (h)", y = "Azithromycin (ug/mL)", colour = NULL)
+```
+
+## Figure 2B: LPS
+
+```{r fig2b, fig.cap = "Replicates Figure 2B of Hao 2013: plasma LPS after 0.8 mg/kg intraperitoneal, normal (LPS) versus AZI-treated (AZI + LPS) mice."}
+sim |>
+  dplyr::filter(arm %in% c("LPS", "AZI + LPS"), time_lps >= 0, time_lps <= 50) |>
+  ggplot(aes(time_lps, Cc_lps, colour = arm)) +
+  geom_line() +
+  labs(x = "Time after LPS dose (h)", y = "LPS (EU/mL)", colour = NULL)
+```
+
+## Figures 2C, 2D, 3A and 3B: cytokines, kynurenine and behaviour
+
+```{r fig2c_3, fig.height = 6, fig.cap = "Replicates Figures 2C (PCs), 2D (KYN), 3A (FST) and 3B (TST) of Hao 2013 for the control, LPS and AZI + LPS groups. Points are the peak values stated in the Results text (PCs at 3 h, KYN at 12 h)."}
+pd_long <- sim |>
+  dplyr::filter(arm != "AZI alone", time_lps >= 0, time_lps <= 50) |>
+  dplyr::select(arm, time_lps, pcs, kyn, fst, tst) |>
+  tidyr::pivot_longer(c(pcs, kyn, fst, tst), names_to = "output") |>
+  dplyr::mutate(output = factor(output, levels = c("pcs", "kyn", "fst", "tst"),
+                                labels = c("PCs (pg/mL)", "KYN (ng/mL)",
+                                           "FST immobility (s)",
+                                           "TST immobility (s)")))
+text_pts <- data.frame(
+  arm = factor(c("LPS", "AZI + LPS", "LPS"), levels = arms$arm),
+  time_lps = c(3, 3, 12),
+  value = c(1055, 762, 649),
+  output = factor(c("PCs (pg/mL)", "PCs (pg/mL)", "KYN (ng/mL)"),
+                  levels = levels(pd_long$output))
+)
+ggplot(pd_long, aes(time_lps, value, colour = arm)) +
+  geom_line() +
+  geom_point(data = text_pts, size = 2) +
+  facet_wrap(~output, scales = "free_y") +
+  labs(x = "Time after LPS dose (h)", y = NULL, colour = NULL)
+```
+
+## Peaks against the published fitted curves
+
+The paper gives the observed peaks for some outputs in the Results text and
+draws the fitted curves in Figures 2 and 3. The figure readings below are the
+maintainers' visual reads of the fitted-curve peaks (about +/- 5% of full
+scale), so they are context, not exact targets.
+
+```{r peaks}
+peak_of <- function(df, var, tcol) {
+  i <- which.max(df[[var]])
+  c(value = df[[var]][i], time = df[[tcol]][i])
+}
+sim_peaks <- dplyr::bind_rows(
+  lapply(c("AZI alone", "AZI + LPS"), function(a) {
+    p <- peak_of(dplyr::filter(sim, arm == a), "Cc", "time")
+    data.frame(output = "AZI (ug/mL)", arm = a, sim_peak = p[["value"]],
+               sim_time = p[["time"]])
+  }),
+  lapply(c("LPS", "AZI + LPS"), function(a) {
+    d <- dplyr::filter(sim, arm == a, time_lps >= 0)
+    dplyr::bind_rows(lapply(
+      list(c("Cc_lps", "LPS (EU/mL)"), c("pcs", "PCs (pg/mL)"),
+           c("kyn", "KYN (ng/mL)"), c("fst", "FST (s)"), c("tst", "TST (s)")),
+      function(v) {
+        p <- peak_of(d, v[1], "time_lps")
+        data.frame(output = v[2], arm = a, sim_peak = p[["value"]],
+                   sim_time = p[["time"]])
+      }
+    ))
+  })
+)
+
+fig_peaks <- tibble::tribble(
+  ~output,        ~arm,        ~fig_peak, ~fig_time, ~source,
+  "AZI (ug/mL)",  "AZI alone", 5.1,       3,         "Fig 2A fitted (text: 6.1 observed at 2 h)",
+  "AZI (ug/mL)",  "AZI + LPS", 8.4,       3,         "Fig 2A fitted (text: 8.9 observed at 2 h)",
+  "LPS (EU/mL)",  "LPS",       380,       0.5,       "Fig 2B fitted",
+  "LPS (EU/mL)",  "AZI + LPS", 380,       0.5,       "Fig 2B fitted",
+  "PCs (pg/mL)",  "LPS",       1030,      4,         "Fig 2C fitted (text: 1055 observed at 3 h)",
+  "PCs (pg/mL)",  "AZI + LPS", 700,       4.5,       "Fig 2C fitted (text: 762 observed at 3 h)",
+  "KYN (ng/mL)",  "LPS",       600,       15,        "Fig 2D fitted (text: 649 observed at 12 h)",
+  "KYN (ng/mL)",  "AZI + LPS", 425,       14,        "Fig 2D fitted",
+  "FST (s)",      "LPS",       155,       25,        "Fig 3A fitted",
+  "FST (s)",      "AZI + LPS", 116,       24,        "Fig 3A fitted",
+  "TST (s)",      "LPS",       217,       25,        "Fig 3B fitted",
+  "TST (s)",      "AZI + LPS", 173,       22,        "Fig 3B fitted"
+)
+
+peaks <- dplyr::left_join(fig_peaks, sim_peaks, by = c("output", "arm")) |>
+  dplyr::mutate(ratio = sim_peak / fig_peak)
+
+peaks |>
+  dplyr::select(output, arm, fig_peak, fig_time, sim_peak, sim_time, ratio, source) |>
+  dplyr::rename("Output" = output, "Group" = arm,
+                "Figure peak" = fig_peak, "Figure time (h)" = fig_time,
+                "Simulated peak" = sim_peak, "Simulated time (h)" = sim_time,
+                "Ratio sim/figure" = ratio, "Source" = source) |>
+  knitr::kable(digits = 2, caption = "Simulated peaks versus the published fitted curves.")
+```
+
+The KYN and FST peaks land within about 25% of the published curves, and every
+downstream output keeps the paper's ordering (AZI + LPS below LPS alone). The
+AZI and LPS peaks sit 2.5-3-fold below the figures, the PCs peaks about
+1.5-fold below and about 5 h late, and TST peaks about 1.6-fold above
+Figure 3B; see "Assumptions and deviations".
+
+```{r ordering_check}
+lps_only <- dplyr::filter(peaks, arm == "LPS", output != "LPS (EU/mL)")
+with_azi <- dplyr::filter(peaks, arm == "AZI + LPS", output %in% lps_only$output)
+stopifnot(
+  identical(lps_only$output, with_azi$output),
+  all(with_azi$sim_peak < lps_only$sim_peak)
+)
+```
+
+# PKNCA validation
+
+AZI is analysed from its own dose (time 0) and LPS from its dose (20 minutes
+later), each over a 240 h grid so that the extrapolated AUC is small.
+
+```{r pknca}
+conc_azi <- sim |>
+  dplyr::filter(arm %in% c("AZI alone", "AZI + LPS")) |>
+  dplyr::transmute(id, treatment = as.character(arm), time, conc = Cc) |>
+  dplyr::filter(!is.na(conc))
+dose_azi <- conc_azi |>
+  dplyr::distinct(id, treatment) |>
+  dplyr::mutate(time = 0, amt = 100)
+
+conc_lps <- sim |>
+  dplyr::filter(arm %in% c("LPS", "AZI + LPS"), time_lps >= 0) |>
+  dplyr::transmute(id, treatment = as.character(arm), time = time_lps,
+                   conc = Cc_lps) |>
+  dplyr::filter(!is.na(conc))
+# time_lps is offset from the observation grid, so add the exact dosing-time
+# zero record.
+conc_lps <- dplyr::bind_rows(
+  dplyr::distinct(conc_lps, id, treatment) |> dplyr::mutate(time = 0, conc = 0),
+  conc_lps
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+dose_lps <- conc_lps |>
+  dplyr::distinct(id, treatment) |>
+  dplyr::mutate(time = 0, amt = 0.8)
+
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+
+run_nca <- function(conc, dose) {
+  PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, conc ~ time | treatment + id),
+    PKNCA::PKNCAdose(dose, amt ~ time | treatment + id),
+    intervals = intervals
+  ))
+}
+nca_azi <- run_nca(conc_azi, dose_azi)
+nca_lps <- run_nca(conc_lps, dose_lps)
+summary(nca_azi)
+summary(nca_lps)
+```
+
+For a one-compartment model with first-order absorption the terminal half-life
+is `log(2) / ke` and `AUCinf = F * Dose / (V/F * ke)` exactly, so both are
+checked against the Table 1 and Table 2 values in closed form.
+
+```{r nca_closed_form}
+res <- dplyr::bind_rows(
+  as.data.frame(nca_azi$result) |> dplyr::mutate(analyte = "AZI"),
+  as.data.frame(nca_lps$result) |> dplyr::mutate(analyte = "LPS")
+)
+closed <- tibble::tribble(
+  ~analyte, ~treatment,  ~ke,   ~v_l_kg, ~dose_amount,
+  "AZI",    "AZI alone", 0.040, 42.1,    100,
+  "AZI",    "AZI + LPS", 0.042, 28.5,    100,
+  "LPS",    "LPS",       0.082, 16.3,    0.8e6 * 3.4,
+  "LPS",    "AZI + LPS", 0.088, 15.5,    0.8e6 * 3.4
+) |>
+  dplyr::mutate(
+    half.life = log(2) / ke,
+    # AZI: mg/kg / (L/kg) = ug*h/mL; LPS: EU/kg / (mL/kg)
+    aucinf.obs = ifelse(analyte == "AZI", dose_amount / (v_l_kg * ke),
+                        dose_amount / (v_l_kg * 1000 * ke))
+  ) |>
+  tidyr::pivot_longer(c(half.life, aucinf.obs), names_to = "PPTESTCD",
+                      values_to = "expected")
+chk <- dplyr::inner_join(closed, res, by = c("analyte", "treatment", "PPTESTCD")) |>
+  dplyr::mutate(rel_err = PPORRES / expected - 1)
+chk |>
+  dplyr::select(analyte, treatment, PPTESTCD, expected, PPORRES, rel_err) |>
+  knitr::kable(digits = 4)
+stopifnot(nrow(chk) == 8, all(abs(chk$rel_err) < 0.01))
+```
+
+## Comparison against published NCA
+
+The Results text reports the AZI terminal half-lives (17.3 h and 16.5 h), AUC
+(81.7 and 143.6 ug h/mL) and observed peaks (6.1 and 8.9 ug/mL at 2 h), and the
+LPS half-lives (8.4 and 7.8 h) and AUC (2315.2 and 2247.6 EU h/mL; the text
+labels the second group "LPS-challenge", but in context it is the AZI-treated
+group). These are presumably non-compartmental values from the observed data.
+
+```{r nca_compare}
+published <- tibble::tribble(
+  ~analyte, ~treatment,  ~cmax, ~tmax, ~aucinf.obs, ~half.life,
+  "AZI",    "AZI alone", 6.1,   2,     81.7,        17.3,
+  "AZI",    "AZI + LPS", 8.9,   2,     143.6,       16.5,
+  "LPS",    "LPS",       NA,    NA,    2315.2,      8.4,
+  "LPS",    "AZI + LPS", NA,    NA,    2247.6,      7.8
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  # The paper reports no LPS Cmax or Tmax, so only AUC and half-life are
+  # compared for LPS.
+  simulated = res |>
+    dplyr::filter(analyte == "AZI" | PPTESTCD %in% c("aucinf.obs", "half.life")) |>
+    dplyr::select(analyte, treatment, PPTESTCD, PPORRES),
+  reference = published,
+  by = c("analyte", "treatment"),
+  params = c("cmax", "tmax", "aucinf.obs", "half.life"),
+  units = c(cmax = "ug/mL", tmax = "h",
+            aucinf.obs = "AZI: ug h/mL; LPS: EU h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Analyte" = analyte, "Group" = treatment) |>
+  knitr::kable(
+    caption = paste(
+      "Simulated NCA versus the values in the Hao 2013 Results text.",
+      "* differs from the published value by more than 20%."
+    ),
+    digits = 2
+  )
+```
+
+The half-lives agree by construction (`log(2) / ke` from Tables 1-2). The AZI
+peaks fall about two-thirds short of the reported values and arrive later
+(about 4 h against 2 h), the AZI AUCs fall 27-42% short, and the LPS AUCs about
+12% short; see "Assumptions and deviations".
+
+# Assumptions and deviations
+
+* **Eqs 6-7 rewritten (baseline-normalised drive).** The printed and coded
+  `kin * (1 + PCs)` and `kin * (1 + KYN)` cannot hold the reported baselines
+  (see "Why Eqs 6-7 are rewritten"). The packaged model uses
+  `kin * (1 + X / X0)` with `kin = X0 * kout / 2`. This is a reconstruction by
+  the maintainers, not the published form, and the remaining mismatches below
+  should be read with it in mind.
+* **TST about 1.6-fold high.** With the reconstructed Eq 7 the LPS group's TST
+  immobility peaks near 346 s at about 24 h, against about 217 s for the
+  Figure 3B fitted curve (AZI + LPS: about 286 s against 173 s). FST, driven by
+  the same KYN with its own `kout`, lands within about 12-25% of Figure 3A.
+* **The Table 1-3 values do not reproduce the paper's own PK and PCs curves.**
+  Encoded exactly as printed and not tuned: the AZI peaks are about 2.0 and
+  3.0 ug/mL against about 5 and 8.4 ug/mL in Figure 2A (6.1 and 8.9 observed);
+  the LPS peak is about 141 EU/mL at about 2 h against about 380 EU/mL at about
+  0.5 h in Figure 2B, although the LPS AUC is within about 12% of the reported
+  value; and the PCs peak is about 650 pg/mL at about 9-10 h against about
+  1030 pg/mL at about 4 h in Figure 2C. The AZI dose (100 mg/kg) and V/F
+  (L/kg) give `Cc` in ug/mL without further conversion, so a unit slip in the
+  model file is not the cause; the paper's table values and fitted curves
+  disagree.
+* **LPS dose conversion.** The model takes the LPS dose in mg/kg and converts
+  it with the paper's 3.4 EU/ng, with `V_LPS/F` read as L/kg like `V_AZI/F`.
+* **Condition-specific PK as covariates.** The paper reports separate PK for
+  normal and LPS-challenged (AZI) and for normal and AZI-treated (LPS) mice.
+  The packaged model selects these with `LIPOPOLYSACCHARIDE_CHALLENGE` and
+  `CONMED_AZITHROMYCIN`; it is the user's job to set them consistently with the
+  doses in the event table.
+* **AZI alone lowers PCs.** Eq 5 multiplies the basal production by the AZI
+  inhibition term, so AZI alone transiently lowers PCs (to about 41 pg/mL) and
+  KYN, FST and TST slightly below baseline. The paper reports the AZI-alone
+  group as similar to control and does not show it.
+* **No variability.** The naive-pooled ADAPT II fit reports parameter CV% from
+  bootstrap (parameter precision), not between-animal variability, and gives
+  no residual-error estimates beyond "all less than 38%". The model is
+  typical-value only.

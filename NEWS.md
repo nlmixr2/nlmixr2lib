@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bienert 2010 propofol PK/BIS and the heart-rate and body-temperature circadian rhythm models ([doi:10.1007/s10928-010-9161-5](https://doi.org/10.1007/s10928-010-9161-5)) -- adult ICU patients on a prolonged propofol sedation infusion (ratifies the `body_temperature` PD output).
+- Add Hao 2013 azithromycin ([doi:10.1371/journal.pone.0054981](https://doi.org/10.1371/journal.pone.0054981)) -- male CD1 mice with LPS-induced depressive-like behaviour.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

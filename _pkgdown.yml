@@ -834,6 +834,8 @@ navbar:
         href: articles/Zheng_2014_azithromycin.html
       - text: "Azithromycin (Zheng 2018)"
         href: articles/Zheng_2018_azithromycin.html
+      - text: "Azithromycin mouse (Hao 2013)"
+        href: articles/Hao_2013_azithromycin_mouse.html
       - text: "Aztreonam (Zhang 2023)"
         href: articles/Zhang_2023_aztreonam_amoxicillin_clavulanate.html
       - text: "Aztreonam avibactam (Xie 2025)"
@@ -11161,6 +11163,7 @@ articles:
   - articles/Hansson_2013c_sunitinib
   - articles/Hanzel_2021_infliximab
   - articles/Hanzel_2022_vedolizumab
+  - articles/Hao_2013_azithromycin_mouse
   - articles/Hao_2018_tacrolimus
   - articles/Harada_2025_cyanide_pbpk
   - articles/Hard_2017_aripiprazole_lauroxil
