@@ -7297,6 +7297,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Seng_2015_isoniazid.R` (compartments `central_acinh` / `peripheral1_acinh`, observation `Cc_acinh`, residual `expSd_acinh`); `Chen_2022_isoniazid.R` and `Chen_2022_isoniazid_nat2class.R` (compartment `central_acinh` holding AcINH in umol, observation `Cc_acinh` in umol/L, parameters `lkel_acinh` / `lvc_acinh` / `etalkel_acinh` / `propSd_acinh`).
 - **Notes:** Distinct from the `inh` suffix, which names isoniazid itself as one drug of a multi-drug tuberculosis model; in a single-drug isoniazid model the parent keeps the bare canonical names (`central`, `Cc`).
 
+### ac5asa (**canonical N-acetyl-5-aminosalicylic acid suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-acetyl-5-aminosalicylic acid (Ac-5-ASA, N-acetylmesalamine), the NAT1-catalysed acetylation product of mesalamine (5-aminosalicylic acid, 5-ASA) formed in the intestinal epithelium and the liver. It is the predominant circulating and urinary species after oral mesalamine and is pharmacologically inactive. Joint 5-ASA + Ac-5-ASA popPK models carry it as a second plasma analyte, with its own renal clearance into `urine_ac5asa`. Gives `central_ac5asa` / `urine_ac5asa` compartments, `lvc_ac5asa` / `lcl_renal_ac5asa` / `lcl_nonren_ac5asa` parameters, the `Cc_ac5asa` observation and the `propSd_ac5asa` / `propSd_urine_ac5asa` residual SDs.
+- **Source aliases:** `Ac-5-ASA`, `N-Ac-5-ASA`, `acetyl-5-ASA`, `N-acetylmesalamine`.
+- **Example models:** `Cuffari_2016_mesalamine.R` (founding example; Ac-5-ASA held in mg of Ac-5-ASA, formed from 5-ASA with the 195.15 / 153.14 molecular-weight conversion).
+- **Notes:** The `ac` + parent-abbreviation construction follows `acinh` and `acdap`. Mesalamine itself keeps the bare canonical names (`central`, `Cc`) in a single-drug model.
+
 ### sa (**canonical salicylic-acid metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Salicylic acid (SA), the deacetylation (hydrolysis) metabolite of acetylsalicylic acid. Formed both pre-systemically in the gut wall and systemically from circulating aspirin, and it is the dominant circulating salicylate species after an oral aspirin dose. Gives `central_sa` / `peripheral1_sa` compartments, `lcl_sa` / `lvc_sa` / `lvp_sa` / `lq_sa` parameters, the `Cc_sa` observation and the `propSd_sa` residual SD.

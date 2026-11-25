@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Brill 2016 midazolam and 1-OH-midazolam semi-PBPK ([doi:10.1002/psp4.12048](https://doi.org/10.1002/psp4.12048)) -- morbidly obese adults before and one year after bariatric surgery.
+- Add Cuffari 2016 mesalamine and N-acetyl-5-ASA ([doi:10.2147/DDDT.S95316](https://doi.org/10.2147/DDDT.S95316)) -- children and adolescents (5-17 years) with ulcerative colitis.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

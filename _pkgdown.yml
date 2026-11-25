@@ -5628,6 +5628,8 @@ navbar:
         href: articles/Landersdorfer_2018_meropenem_tobramycin.html
       - text: "Meropenem vaborbactam (Reed 2025)"
         href: articles/Reed_2025_meropenem_vaborbactam.html
+      - text: "Mesalamine (Cuffari 2016)"
+        href: articles/Cuffari_2016_mesalamine.html
       - text: "Mescaline (Mueller 2025)"
         href: articles/Mueller_2025_mescaline.html
       - text: "Mescaline anydrugeffect (Mueller 2025)"
@@ -10839,6 +10841,7 @@ articles:
   - articles/Cruikshank_2026_estradiol_qsp
   - articles/Csajka_2004_indinavir
   - articles/Csajka_2005_ephedrine_caffeine
+  - articles/Cuffari_2016_mesalamine
   - articles/DAgate_2020_bph_ipss_mbma
   - articles/DAgate_2021_bph_aurs_mbma
   - articles/DAgate_2024_aciclovir
