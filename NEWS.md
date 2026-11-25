@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Song 2016 olmesartan concentration-QTc (QT, QTcF and QTcP) ([doi:10.1002/jcph.572](https://doi.org/10.1002/jcph.572)) -- healthy adults in a thorough QTc study.
+- Add Yang 2016 methylphenidate PBPK with physiological gut absorption ([doi:10.1371/journal.pone.0164641](https://doi.org/10.1371/journal.pone.0164641)) -- healthy adults given immediate-release or extended-release (MLR-MPH, Ritalin LA, Metadate CD, Medikinet Retard) methylphenidate.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

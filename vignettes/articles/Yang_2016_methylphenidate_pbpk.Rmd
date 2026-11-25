@@ -1,0 +1,554 @@
+---
+title: "Methylphenidate PBPK (Yang 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Methylphenidate PBPK (Yang 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Yang_2016_methylphenidate_pbpk"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Yang_2016_methylphenidate_pbpk"))$description`
+* Article: <https://doi.org/10.1371/journal.pone.0164641>
+* Supplement S1 File (acslX model code) and S1-S6 Tables: <https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0164641#sec020>
+
+Yang, Duan and Fisher (US FDA) extended their whole-body PBPK model for
+immediate-release (IR) methylphenidate (MPH) with an ACAT-style physiological
+absorption model of the gut, recalibrated the hepatic and gut-loss constants
+against three IR studies, and then described four multiparticulate
+extended-release (ER) products (MLR-MPH, Ritalin LA, Metadate CD and Medikinet
+Retard) by adding a lagged Weibull release of the ER beads. The packaged model
+is the as-run acslX program of the S1 File with the calibrated values of
+Table 2.
+
+# Population
+
+The model was not fitted to individual data. It was calibrated against
+digitized mean d- and l-MPH profiles from three single-dose IR studies in
+healthy adults (Patrick 2013, 12 men of 82.2 kg and 12 women of 59.6 kg, 0.3
+mg/kg; Patrick 2007, 10 men of 82.2 kg and 10 women of 65.2 kg, 0.3 mg/kg;
+Wong 1998, 21 men of 74.7 kg, 40 mg) and evaluated against mean total-MPH
+profiles from ten single-dose ER datasets in healthy adults: MLR-MPH 20 and 80
+mg, Ritalin LA 20 and 40 mg and Metadate CD 20 mg fasted, and Medikinet Retard
+20 and 40 mg fed (Methods, 'Key pharmacokinetic studies'). Study means were
+24-35 years and 59.6-82.2 kg.
+
+The same information is available programmatically via
+`readModelDb("Yang_2016_methylphenidate_pbpk")()$population`.
+
+# Model structure
+
+For each enantiomer the model carries:
+
+* a nine-segment gut lumen (stomach, duodenum, jejunum 1-2, ileum 1-3, cecum
+  and ascending colon), each segment holding ER beads (`<segment>_er_*`),
+  undissolved IR drug (`<segment>_ir_*`) and dissolved drug
+  (`<segment>_lumen_*`), moved down the tract by first-order transit with the
+  Table 1 transit times;
+* dissolution of the IR drug by the Noyes-Whitney diffusion-layer model of
+  Eq 1, against a solubility that depends on segment pH (Eq 4) and bile-salt
+  concentration (Eq 5);
+* release of the ER beads, starting 4 h after the dose, in every intestinal
+  segment (none in the stomach);
+* passive permeation of the unionized dissolved drug into an enterocyte state
+  per intestinal segment (Eq 6), where it is either lost by a first-order
+  non-specific process (`k5`) or carried to the liver in the portal blood;
+* a flow-limited whole-body model with plasma, liver, fat, brain, gonads, heart
+  and richly and slowly perfused tissues. The liver hydrolyses both
+  enantiomers by CES1A1 with competitive inhibition between d- and l-MPH, and
+  oxidizes them linearly;
+* ritalinic acid (RA) formed in the liver and from 80% of the gut loss, in a
+  one-compartment body-water volume with renal clearance.
+
+The plasma output is the mixed venous concentration `Cc_d`, `Cc_l` and
+`Cc_rac = Cc_d + Cc_l` (the S1 File's `ctotal`), in ug/L (= ng/mL). All
+amounts are ug and doses are given in ug, half of a racemic dose into each
+enantiomer. The IR part of a dose goes into `stomach_ir_d` / `stomach_ir_l`
+and the ER part into `stomach_er_d` / `stomach_er_l`.
+
+# Source trace
+
+Every `ini()` value carries its source in the model file. The table below is
+generated from those in-file comments, so it cannot drift from the model.
+'S1 File' is the acslX code of the supplement.
+
+```{r source-trace}
+model_file <- system.file(
+  "modeldb", "specificDrugs", "Yang_2016_methylphenidate_pbpk.R",
+  package = "nlmixr2lib"
+)
+src <- readLines(model_file)
+pat <- '^\\s*([A-Za-z0-9_]+) <- fixed\\(([^)]*)\\); label\\("([^"]*)"\\) # (.*)$'
+ini_lines <- grep(pat, src, value = TRUE)
+trace <- data.frame(
+  Parameter = sub(pat, "\\1", ini_lines),
+  Value = sub(pat, "\\2", ini_lines),
+  Description = sub(pat, "\\3", ini_lines),
+  Source = sub(pat, "\\4", ini_lines)
+)
+stopifnot(nrow(trace) == length(rxode2::rxode(readModelDb("Yang_2016_methylphenidate_pbpk"))$iniDf$name))
+knitr::kable(trace)
+```
+
+| Equation / structure | Source location |
+|----------------------|-----------------|
+| IR dissolution `kd_ir * X_ir * (Sol - Cdiss)` | Eq 1; S1 File `D_X_*_SOLID_DT_DMPHIR` |
+| ER release `X_er * f(t - Tlag)`, `f` the Weibull density | Eq 2 (Weibull); S1 File `Release_*` |
+| Solubility `Sol = Sol_int * HH * (1 + SR * Sc * MW * bile) * 0.5` | Eqs 3-5; S1 File `SOLIF_*` |
+| Permeation `NI * 3600 * Peff * ESA * (Cdiss - Cent / 1000)` | Eq 6; S1 File `D_ABS_*_DMPH` |
+| Enterocyte balance, portal outflow `Q_seg * A_ent / (V_ent * Kp)` | S1 File `D_MEM_*_DT_DMPH` |
+| Liver: arterial inflow `Q_liver - 8 Q_seg`, competitive Michaelis-Menten hydrolysis, linear oxidation | Methods 'The oral absorption PBPK model'; S1 File `RALIVERD`, `Rmet_liverd` |
+| Slowly / richly perfused flows `0.24 QC - ...`, `0.76 QC - ...` and volumes `0.60 BW - ...`, `0.33 BW - ...` | S1 File DERIVATIVE block |
+| Ritalinic acid `(R_hyd + 0.8 R_gut) * 220 / 233.3 - Ku * C_RA` | S1 File `Rplasmarad` |
+| Output: mixed venous concentration | S1 File `ctotal = cvd + cvl` |
+
+# Simulation helpers
+
+Every simulation in this article is the deterministic typical subject of a
+study: one male and one female subject at the study's mean body weight, with
+the concentration profiles averaged by the study's sex split.
+
+```{r helpers}
+mod <- readModelDb("Yang_2016_methylphenidate_pbpk")
+
+# One subject: racemic dose (mg) split into IR and ER parts, half of each
+# into each enantiomer. Observation rows carry dvid = 1; every output is
+# computed on every row.
+make_subject <- function(id, label, dose_mg, f_ir, wt, sexf, fed = 0, mlr = 0,
+                         times = c(seq(0, 4, by = 0.05), seq(4.1, 24, by = 0.1))) {
+  amt_ir <- 1000 * dose_mg * f_ir / 2
+  amt_er <- 1000 * dose_mg * (1 - f_ir) / 2
+  doses <- data.frame(
+    time = 0, evid = 1L,
+    amt = c(amt_ir, amt_ir, amt_er, amt_er),
+    cmt = c("stomach_ir_d", "stomach_ir_l", "stomach_er_d", "stomach_er_l"),
+    dvid = NA_integer_
+  )
+  doses <- doses[doses$amt > 0, ]
+  obs <- data.frame(time = times, evid = 0L, amt = NA_real_, cmt = NA_character_, dvid = 1L)
+  ev <- rbind(doses, obs)
+  ev$id <- id
+  ev$label <- label
+  ev$WT <- wt
+  ev$SEXF <- sexf
+  ev$FED <- fed
+  ev$FORM_METHYLPHENIDATE_MLR <- mlr
+  ev
+}
+```
+
+# Gut absorption and ER release: Table 3
+
+Table 3 of the paper lists, for each product, the fraction of the ER load
+released and the fraction of the total dose absorbed in each gut segment.
+These cumulative amounts are not states of the model, so the check appends
+one accumulator per segment to the packaged model and integrates the
+per-segment release and permeation fluxes over 24 h (the S1 File's
+`TSTOP = 24`).
+
+```{r table3}
+segs <- c("duodenum", "jejunum1", "jejunum2", "ileum1", "ileum2", "ileum3", "cecum", "colon")
+acc <- c(
+  sprintf("d/dt(cum_abs_%s) <- abs_%s_d + abs_%s_l", segs, segs, segs),
+  sprintf("d/dt(cum_rel_%s) <- rel_%s_d + rel_%s_l", segs, segs, segs)
+)
+mod_acc <- eval(parse(text = paste0(
+  "rxode2::model(rxode2::rxode(mod), {", paste(acc, collapse = "\n"), "}, append = TRUE)"
+)))
+
+products <- data.frame(
+  product = c("IR-MPH", "MLR-MPH", "Ritalin LA (SODAS)", "Metadate CD (Diffucaps)",
+              "Medikinet Retard (enteric coated)"),
+  f_ir = c(1, 0.37, 0.5, 0.3, 0.5),
+  fed = c(0, 0, 0, 0, 1),
+  mlr = c(0, 1, 0, 0, 0)
+)
+ev_t3 <- bind_rows(lapply(seq_len(nrow(products)), function(i) {
+  make_subject(i, products$product[i], 20, products$f_ir[i], wt = 80, sexf = 0,
+               fed = products$fed[i], mlr = products$mlr[i], times = c(0, 24))
+}))
+sim_t3 <- as.data.frame(rxode2::rxSolve(mod_acc, events = ev_t3, keep = "label")) |>
+  filter(time == 24)
+
+pct <- function(x, denom) 100 * x / denom
+absorbed <- sim_t3 |>
+  select(label, starts_with("cum_abs_")) |>
+  pivot_longer(-label, names_to = "segment", names_prefix = "cum_abs_", values_to = "amount") |>
+  mutate(simulated = pct(amount, 20000))
+released <- sim_t3 |>
+  select(label, starts_with("cum_rel_")) |>
+  pivot_longer(-label, names_to = "segment", names_prefix = "cum_rel_", values_to = "amount") |>
+  left_join(products, by = c("label" = "product")) |>
+  filter(f_ir < 1) |>
+  mutate(simulated = pct(amount, 20000 * (1 - f_ir)))
+
+# Table 3 of Yang 2016, segment order duodenum ... ascending colon.
+t3_abs <- data.frame(
+  label = rep(products$product, each = 8), segment = rep(segs, 5),
+  paper = c(6, 26.3, 23.9, 18.8, 13.9, 8.4, 0.5, 1.6,
+            2.2, 9.8, 9.2, 7.8, 6.5, 4.9, 4.6, 21.4,
+            3, 13.3, 12.5, 10.6, 8.9, 6.6, 3.8, 15.6,
+            1.8, 8.1, 8, 7.4, 6.9, 5.9, 5.2, 21.2,
+            0.79, 3, 9.2, 19.1, 15.6, 10.9, 3.5, 13.2)
+)
+t3_rel <- data.frame(
+  label = rep(products$product[-1], each = 8), segment = rep(segs, 4),
+  paper = c(0, 0.5, 1.3, 2, 2.2, 2, 35, 18.2,
+            0, 1, 2.6, 3.7, 3.7, 3.3, 34.7, 13.1,
+            0, 1, 2.6, 3.7, 3.7, 3.3, 34.7, 13,
+            0.3, 3.6, 5.3, 5.8, 5.1, 4, 28.8, 9)
+)
+cmp_abs <- left_join(t3_abs, absorbed, by = c("label", "segment"))
+cmp_rel <- left_join(t3_rel, released, by = c("label", "segment"))
+
+bind_rows(
+  cmp_rel |> mutate(quantity = "Released (% of ER component)"),
+  cmp_abs |> mutate(quantity = "Absorbed (% of total dose)")
+) |>
+  mutate(cell = sprintf("%.1f (%.1f)", simulated, paper)) |>
+  select(quantity, label, segment, cell) |>
+  pivot_wider(names_from = segment, values_from = cell) |>
+  rename(Quantity = quantity, Product = label, `Ascending colon` = colon) |>
+  knitr::kable(caption = paste(
+    "Replicates Table 3 of Yang 2016: simulated per-segment percentage",
+    "(Table 3 value in parentheses); 20 mg dose, 80 kg male, 24 h."
+  ))
+
+totals <- data.frame(
+  product = products$product,
+  absorbed_sim = tapply(absorbed$simulated, absorbed$label, sum)[products$product],
+  absorbed_paper = c(99, 66, 74, 65, 75),
+  released_sim = c(NA, tapply(released$simulated, released$label, sum)[products$product[-1]]),
+  released_paper = c(NA, 61, 62, 62, 62)
+)
+knitr::kable(
+  totals |>
+    rename(Product = product, `Absorbed, simulated (%)` = absorbed_sim,
+           `Absorbed, Table 3 (%)` = absorbed_paper,
+           `ER released, simulated (%)` = released_sim,
+           `ER released, Table 3 (%)` = released_paper),
+  digits = 1, row.names = FALSE
+)
+
+stopifnot(
+  # Both sides are deterministic solves of the same structure, so the only
+  # differences are the paper's one-decimal rounding and integrator error.
+  max(abs(cmp_rel$simulated - cmp_rel$paper)) < 0.6,
+  max(abs(cmp_abs$simulated - cmp_abs$paper)) < 1.2,
+  all(abs(totals$absorbed_sim - totals$absorbed_paper) < 1.5),
+  all(abs(totals$released_sim - totals$released_paper) < 1.5, na.rm = TRUE)
+)
+```
+
+The per-segment release and absorption fractions reproduce Table 3 to its
+printed precision. Two features of the as-run code are what make this
+possible, and both are confirmed by the table:
+
+* The ER release in the S1 File is the amount of beads in a segment times the
+  Weibull *density* `(b/A) (t - Tlag)^(b-1) exp(-(t - Tlag)^b / A)`, not the
+  Weibull cumulative fraction of Eq 2 applied to a fixed load. A bead
+  population whose release rate is the density integrates to at most
+  `1 - exp(-1) = 63%`; the 61-62% released in Table 3 is exactly that
+  ceiling less the beads voided from the ascending colon.
+* The MLR-MPH row of Table 3 corresponds to the 37:63 IR:ER split of the 80 mg
+  capsule (Adjei 2014), not the 40:60 split the table's IR:ER column prints:
+  the 40:60 split gives 68% absorbed against the printed 66%.
+
+# Plasma profiles: Figures 2-6
+
+```{r studies}
+studies <- tribble(
+  ~study, ~product, ~dose_mg, ~f_ir, ~wt_m, ~wt_f, ~pct_female, ~fed, ~mlr, ~analytes,
+  "Patrick 2013", "IR-MPH", NA, 1, 82.2, 59.6, 12 / 24, 0, 0, "d,l",
+  "Patrick 2007", "IR-MPH", NA, 1, 82.2, 65.2, 10 / 20, 0, 0, "d",
+  "Wong 1998", "IR-MPH", 40, 1, 74.7, NA, 0, 0, 0, "d,l",
+  "Reiz 2008", "MLR-MPH", 20, 0.40, 70, 70, 11 / 21, 0, 1, "rac",
+  "Adjei 2014", "MLR-MPH", 80, 0.37, 70.4, 70.4, 11 / 26, 0, 1, "rac",
+  "Lee 2003", "Ritalin LA", 40, 0.5, 74.3, 74.3, 6 / 20, 0, 0, "rac",
+  "Markowitz 2003", "Ritalin LA", 20, 0.5, 70, 70, 9 / 19, 0, 0, "rac",
+  "Haessler 2008 (Ritalin LA)", "Ritalin LA", 40, 0.5, 79.1, NA, 0, 0, 0, "rac",
+  "Pentikis 2002", "Metadate CD", 20, 0.3, 72.4, 72.4, 12 / 26, 0, 0, "rac",
+  "Gonzalez 2002", "Metadate CD", 20, 0.3, 71.1, 71.1, 14 / 35, 0, 0, "rac",
+  "Haessler 2008 (Medikinet)", "Medikinet Retard", 40, 0.5, 79.1, NA, 0, 1, 0, "rac",
+  "Schutz 2009", "Medikinet Retard", 20, 0.5, 66.1, 66.1, 7 / 14, 1, 0, "rac",
+  "Fischer 2006", "Medikinet Retard", 20, 0.5, 71, 71, 8 / 12, 1, 0, "rac"
+)
+
+ev_studies <- bind_rows(lapply(seq_len(nrow(studies)), function(i) {
+  s <- studies[i, ]
+  sexes <- if (s$pct_female > 0) c(0, 1) else 0
+  bind_rows(lapply(sexes, function(sx) {
+    wt <- if (sx == 1) s$wt_f else s$wt_m
+    dose <- if (is.na(s$dose_mg)) 0.3 * wt else s$dose_mg # 0.3 mg/kg for Patrick
+    make_subject(2 * i + sx, s$study, dose, s$f_ir, wt, sx, fed = s$fed, mlr = s$mlr) |>
+      mutate(sex = sx)
+  }))
+}))
+sim <- as.data.frame(rxode2::rxSolve(mod, events = ev_studies, keep = c("label", "sex")))
+
+# Sex-weighted typical profile per study.
+profiles <- sim |>
+  left_join(select(studies, study, pct_female), by = c("label" = "study")) |>
+  mutate(w = ifelse(sex == 1, pct_female, 1 - pct_female)) |>
+  group_by(label, time) |>
+  summarise(across(c(Cc_d, Cc_l, Cc_rac), ~ sum(.x * w)), .groups = "drop") |>
+  left_join(select(studies, study, product, analytes), by = c("label" = "study"))
+```
+
+```{r fig2, fig.height = 6}
+profiles |>
+  filter(product == "IR-MPH") |>
+  select(label, time, `d-MPH` = Cc_d, `l-MPH` = Cc_l) |>
+  pivot_longer(c(`d-MPH`, `l-MPH`), names_to = "analyte", values_to = "conc") |>
+  ggplot(aes(time, conc)) +
+  geom_line() +
+  facet_grid(analyte ~ label, scales = "free_y") +
+  labs(x = "Time after dose (h)", y = "Plasma concentration (ng/mL)",
+       caption = "Replicates the simulated mean lines of Figure 2 (typical subject, not the Monte Carlo mean).")
+```
+
+```{r fig3to6, fig.height = 7}
+profiles |>
+  filter(product != "IR-MPH") |>
+  ggplot(aes(time, Cc_rac)) +
+  geom_line() +
+  facet_wrap(~ product + label, scales = "free_y", ncol = 3) +
+  labs(x = "Time after dose (h)", y = "Total MPH plasma concentration (ng/mL)",
+       caption = "Replicates the simulated mean lines of Figures 3-6 (typical subject).")
+```
+
+# NCA against the paper's model predictions: S2-S6 Tables
+
+The S2-S6 Tables list, for every study, the observed NCA parameters next to
+the mean of the authors' 1000-subject Monte Carlo simulation. The comparison
+below runs PKNCA on the typical-subject profiles and uses the authors'
+simulated means as the reference, since both are predictions of the same
+model; the observed means are shown alongside. Partial AUCs are carried as
+separate windows of the same profile.
+
+```{r nca}
+# Windows: the full profile (Cmax, Tmax, AUClast over the study's sampling
+# span) and the partial-AUC windows of S2-S6 Tables.
+windows <- tribble(
+  ~study, ~analyte, ~start, ~end, ~full,
+  "Patrick 2013", "d", 0, 12, TRUE,
+  "Patrick 2013", "l", 0, 8, TRUE,
+  "Patrick 2007", "d", 0, 10, TRUE,
+  "Wong 1998", "d", 0, 18, TRUE,
+  "Wong 1998", "l", 0, 18, TRUE,
+  "Wong 1998", "l", 0, 2, FALSE,
+  "Reiz 2008", "rac", 0, 24, TRUE,
+  "Reiz 2008", "rac", 0, 4, FALSE,
+  "Reiz 2008", "rac", 4, 12, FALSE,
+  "Adjei 2014", "rac", 0, 24, TRUE,
+  "Adjei 2014", "rac", 0, 4, FALSE,
+  "Lee 2003", "rac", 0, 24, TRUE,
+  "Lee 2003", "rac", 0, 4, FALSE,
+  "Lee 2003", "rac", 4, 8, FALSE,
+  "Markowitz 2003", "rac", 0, 24, TRUE,
+  "Markowitz 2003", "rac", 0, 4, FALSE,
+  "Haessler 2008 (Ritalin LA)", "rac", 0, 24, TRUE,
+  "Haessler 2008 (Ritalin LA)", "rac", 0, 4, FALSE,
+  "Haessler 2008 (Ritalin LA)", "rac", 4, 10, FALSE,
+  "Pentikis 2002", "rac", 0, 24, TRUE,
+  "Gonzalez 2002", "rac", 0, 24, TRUE,
+  "Gonzalez 2002", "rac", 0, 4, FALSE,
+  "Gonzalez 2002", "rac", 0, 6, FALSE,
+  "Gonzalez 2002", "rac", 0, 8, FALSE,
+  "Haessler 2008 (Medikinet)", "rac", 0, 24, TRUE,
+  "Haessler 2008 (Medikinet)", "rac", 0, 4, FALSE,
+  "Haessler 2008 (Medikinet)", "rac", 4, 10, FALSE,
+  "Schutz 2009", "rac", 0, 24, TRUE,
+  "Schutz 2009", "rac", 0, 4, FALSE,
+  "Schutz 2009", "rac", 4, 24, FALSE,
+  "Fischer 2006", "rac", 0, 16, TRUE
+) |>
+  mutate(group = sprintf("%s, %s-MPH, %g-%g h", study,
+                         ifelse(analyte == "rac", "total", analyte), start, end))
+
+conc_long <- profiles |>
+  select(label, time, d = Cc_d, l = Cc_l, rac = Cc_rac) |>
+  pivot_longer(c(d, l, rac), names_to = "analyte", values_to = "Cc")
+conc_nca <- windows |>
+  inner_join(conc_long, by = c("study" = "label", "analyte"), relationship = "many-to-many") |>
+  filter(time >= start, time <= end) |>
+  mutate(id = 1L) |>
+  filter(!is.na(Cc))
+dose_nca <- windows |>
+  left_join(select(studies, study, dose_mg), by = "study") |>
+  mutate(time = 0, id = 1L, dose = ifelse(is.na(dose_mg), NA_real_, dose_mg))
+
+intervals <- windows |>
+  transmute(group, start, end, cmax = full, tmax = full, auclast = TRUE)
+
+o_conc <- PKNCA::PKNCAconc(conc_nca, Cc ~ time | group / id)
+o_dose <- PKNCA::PKNCAdose(dose_nca, dose ~ time | group + id)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+nca_sim <- as.data.frame(nca_res$result) |>
+  select(group, PPTESTCD, PPORRES)
+
+# S2-S6 Tables: the authors' simulated means ('pred') and the observed means.
+ref <- tribble(
+  ~group, ~cmax_pred, ~tmax_pred, ~auclast_pred, ~cmax_obs, ~tmax_obs, ~auclast_obs,
+  "Patrick 2013, d-MPH, 0-12 h", 9.2, 1.9, 53.2, 10.1, 2.4, 47.9,
+  "Patrick 2013, l-MPH, 0-8 h", 0.19, 1.76, 0.76, 0.18, 1.8, 0.45,
+  "Patrick 2007, d-MPH, 0-10 h", 9.0, 2.1, 48.7, 15.3, 2.3, 75.3,
+  "Wong 1998, d-MPH, 0-18 h", 15.9, 2.1, 101.9, 17.8, 1.5, 92.3,
+  "Wong 1998, l-MPH, 0-18 h", 0.31, 1.8, NA, 0.23, 0.5, NA,
+  "Wong 1998, l-MPH, 0-2 h", NA, NA, 0.45, NA, NA, 0.45,
+  "Reiz 2008, total-MPH, 0-24 h", 4.0, 2.9, 47.6, 5.07, 3.71, 52.32,
+  "Reiz 2008, total-MPH, 0-4 h", NA, NA, 11.8, NA, NA, 12.35,
+  "Reiz 2008, total-MPH, 4-12 h", NA, NA, 22, NA, NA, 28.57,
+  "Adjei 2014, total-MPH, 0-24 h", 13.9, 2.1, 174.1, 23.5, 2.0, 262.7,
+  "Adjei 2014, total-MPH, 0-4 h", NA, NA, 40.5, NA, NA, 60.1,
+  "Lee 2003, total-MPH, 0-24 h", 8.6, 2.6, 80.1, 15.23, 4.22, 103.32,
+  "Lee 2003, total-MPH, 0-4 h", NA, NA, 25.4, NA, NA, 31.16,
+  "Lee 2003, total-MPH, 4-8 h", NA, NA, 25.0, NA, NA, 40.11,
+  "Markowitz 2003, total-MPH, 0-24 h", 4.7, 2.6, 48.3, 9.9, 5.5, 75.0,
+  "Markowitz 2003, total-MPH, 0-4 h", NA, NA, 14.0, NA, NA, 18.5,
+  "Haessler 2008 (Ritalin LA), total-MPH, 0-24 h", 7.9, NA, 81, 14.5, NA, 111.7,
+  "Haessler 2008 (Ritalin LA), total-MPH, 0-4 h", NA, NA, 23.3, NA, NA, 27.6,
+  "Haessler 2008 (Ritalin LA), total-MPH, 4-10 h", NA, NA, 31.7, NA, NA, 57.1,
+  "Pentikis 2002, total-MPH, 0-24 h", 3.3, 5.0, 40.2, 4.58, 4.58, 41.71,
+  "Gonzalez 2002, total-MPH, 0-24 h", NA, NA, 43, NA, NA, 36.31,
+  "Gonzalez 2002, total-MPH, 0-4 h", NA, NA, 8.3, NA, NA, 10.01,
+  "Gonzalez 2002, total-MPH, 0-6 h", NA, NA, 14.4, NA, NA, 17.11,
+  "Gonzalez 2002, total-MPH, 0-8 h", NA, NA, 20.5, NA, NA, 22.78,
+  "Haessler 2008 (Medikinet), total-MPH, 0-24 h", 8.3, NA, 80.9, 19.6, NA, 138.7,
+  "Haessler 2008 (Medikinet), total-MPH, 0-4 h", NA, NA, 14.7, NA, NA, 42.4,
+  "Haessler 2008 (Medikinet), total-MPH, 4-10 h", NA, NA, 38.5, NA, NA, 68.0,
+  "Schutz 2009, total-MPH, 0-24 h", 5.0, 5.0, 49.1, 5.26, 4.06, 39.16,
+  "Schutz 2009, total-MPH, 0-4 h", NA, NA, 8.7, NA, NA, 11.72,
+  "Schutz 2009, total-MPH, 4-24 h", NA, NA, 40.2, NA, NA, 26.99,
+  "Fischer 2006, total-MPH, 0-16 h", 4.5, 5, 44.5, 4.52, 2.02, 35.05
+)
+stopifnot(setequal(ref$group, windows$group))
+
+ref_pred <- ref |> select(group, cmax = cmax_pred, tmax = tmax_pred, auclast = auclast_pred)
+ref_obs <- ref |> select(group, cmax = cmax_obs, tmax = tmax_obs, auclast = auclast_obs)
+
+nca_units <- c(cmax = "ng/mL", tmax = "h", auclast = "ng*h/mL")
+tbl_pred <- ncaComparisonTable(nca_sim, ref_pred, by = "group", units = nca_units,
+                               tolerance_pct = 20)
+tbl_obs <- ncaComparisonTable(nca_sim, ref_obs, by = "group", units = nca_units,
+                              tolerance_pct = Inf)
+tbl <- tbl_pred |>
+  left_join(select(tbl_obs, `NCA parameter`, group, Observed = Reference),
+            by = c("NCA parameter", "group")) |>
+  rename(`Study, analyte, window` = group, `Paper simulation` = Reference,
+         `% diff vs paper simulation` = `% diff`)
+knitr::kable(tbl, caption = "Simulated (typical subject) versus the S2-S6 Tables.")
+attr(tbl_pred, "footnote")
+```
+
+```{r nca-gate}
+gate <- nca_sim |>
+  filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  inner_join(
+    pivot_longer(select(ref_pred, -tmax), -group, names_to = "PPTESTCD", values_to = "paper"),
+    by = c("group", "PPTESTCD")
+  ) |>
+  filter(!is.na(paper)) |>
+  mutate(pct_diff = 100 * (PPORRES - paper) / paper)
+stopifnot(
+  # Both sides are predictions of this model; the typical subject sits
+  # 5-20% above the authors' Monte Carlo means, so a mis-transcribed
+  # clearance, permeability or release constant (tens of percent or more)
+  # trips these bounds while the typical-versus-mean offset does not.
+  abs(median(gate$pct_diff)) < 15,
+  max(abs(gate$pct_diff)) < 30
+)
+summary(gate$pct_diff)
+```
+
+Across `r nrow(gate)` Cmax and AUC values the typical-subject prediction is a
+median `r sprintf("%.0f", median(gate$pct_diff))`% from the authors' Monte
+Carlo means (range `r sprintf("%.0f", min(gate$pct_diff))` to
+`r sprintf("%.0f", max(gate$pct_diff))`%). A typical subject is not the
+mean of a Monte Carlo population, and the authors' simulation sampled body
+weight, sex-specific flows and partition coefficients from the S1 Table
+distributions, truncated them at 1.96 SD and rescaled flows and volumes to
+keep the balance, so a modest systematic offset is expected.
+
+Tmax is the only parameter flagged beyond 20% (Reiz 2008, with Lee 2003 and
+Markowitz 2003 just inside). For the fasted ER products the typical subject's
+highest concentration is its IR peak at about 2 h, whereas the paper's value
+is the mean of each simulated subject's Tmax over the whole profile, which
+includes subjects whose ER peak is the higher one. Tmax of a bimodal profile
+is not a stable comparison and is not gated.
+
+The observed column shows the misfits the paper itself reports: the second
+peak of Ritalin LA and the early Medikinet Retard profile are underpredicted
+by the model, as described in the paper's Results. The Wong 1998 l-MPH
+observed values are the paper's recalculation from the digitized profile
+(0.23 ng/mL and 0.45 `ng*h/mL`, S2 Table footnote d), not the 0.82 ng/mL and
+1.34 `ng*h/mL` printed in Wong 1998, which the paper found inconsistent with
+that study's own figure.
+
+# Assumptions and deviations
+
+* **Code over text.** The structure and every fixed constant follow the acslX
+  program of the S1 File. Where it differs from the printed equations, the
+  code is kept because it is what produced the paper's results:
+  * Eq 2 gives the cumulative Weibull fraction released; the code releases
+    the beads present in each segment at the rate of the Weibull density. The
+    Table 3 release fractions (61-62% of the ER load) are reproduced exactly by
+    the code form and not by Eq 2.
+  * The bile solubilization ratio is computed as `exp(0.606 logP + 2.234)`
+    where Mithani's relation (cited in the text) is `10^(...)`, and the summed
+    aqueous plus bile solubility is halved. With a highly soluble drug like
+    MPH the solubility never limits dissolution, so neither affects the
+    profiles.
+  * The code's `INITIAL` block holds placeholder values for quantities the
+    authors overwrote from separate 'm files' ("parameter values in the csl codes
+    may be replaced by m files"). The packaged model uses the Table 2 values
+    for these: K5dC = 0.79 and K5lC = 37.8 1/h/kg^0.75 (code 0.78 and 37),
+    the optimized effective permeability 0.963e-4 cm/s (the code's
+    MDCK-correlation default evaluates to 4.18e-4 cm/s), and the Weibull
+    constants of Table 2 (code placeholders A = 0.001, b = 10).
+* **Sex.** The code carries male values with the female values in comments
+  (also tabulated in Table 1 and the S1 Table). The `SEXF` covariate selects
+  between them. How the authors assigned sex in their mixed-sex simulations is
+  not stated; this article averages a male and a female typical subject by
+  each study's sex split.
+* **Fed state.** The code holds only the fasted gut physiology. `FED = 1`
+  applies the Table 1 fed values (gastric transit 1 h, pH of the stomach,
+  duodenum and both jejunum segments, bile-salt concentrations of the
+  duodenum to ileum 3). Only the Medikinet Retard studies are fed.
+* **Release clock.** The code starts the ER lag at simulation time zero. The
+  model starts it at the most recent ER dose (`tad(stomach_er_d)`), which is
+  identical for a single dose at time zero. A second ER dose restarts the
+  release clock for beads still in the gut from the first dose, so the model
+  is suited to single doses or doses far enough apart that the earlier beads
+  have left the gut.
+* **Reiz 2008 body weight.** Reiz 2008 does not report body weight. A 70 kg
+  typical subject reproduces all four of the paper's simulated metrics for
+  this study (Cmax, AUC0-24, AUC0-4 and AUC4-12, each within 3%), whereas the
+  S1 Table default population weight of 83.4 kg gives values about 24% lower.
+  70 kg is used for this study and is a cohort input, not a model parameter.
+* **Population variability.** The paper's population predictions are Monte
+  Carlo simulations with the distributions of the S1 Table (normal or
+  log-normal, CV 9-30%, truncated at 1.96 SD, flows and volumes rescaled to
+  preserve the balance). This structure cannot be expressed as random effects
+  on the packaged parameters, so the model is deterministic and has no
+  between-subject variability; residual errors are fixed to zero because the
+  paper reports none.
+* **Ritalinic acid.** The renal clearances of d- and l-RA (0.305 and 0.168
+  L/h/kg^0.75) come from the S1 File; the paper states they were carried
+  over from the authors' previous IR model and does not report them, and no
+  RA data were used here. `C_ra_d` / `C_ra_l` are outputs without residual
+  error and are not validated.
+* **Units.** Doses and amounts are ug and concentrations ug/L (= ng/mL), as
+  in the S1 File; a 20 mg racemic dose is 10000 ug into each enantiomer.

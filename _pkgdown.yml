@@ -5790,6 +5790,8 @@ navbar:
         href: articles/Lyauk_2016_methylphenidate.html
       - text: "Methylphenidate (Teuscher 2015)"
         href: articles/Teuscher_2015_methylphenidate.html
+      - text: "Methylphenidate pbpk (Yang 2016)"
+        href: articles/Yang_2016_methylphenidate_pbpk.html
       - text: "Methylprednisolone (Cleary 2026)"
         href: articles/Cleary_2026_methylprednisolone.html
       - text: "Methylprednisolone (Rantanen 2026)"
@@ -13496,6 +13498,7 @@ articles:
   - articles/Yang_2010_rosuvastatin_mbma
   - articles/Yang_2013_losmapimod
   - articles/Yang_2016_dilmapimod
+  - articles/Yang_2016_methylphenidate_pbpk
   - articles/Yang_2017_buagafuran
   - articles/Yang_2017_remifentanil
   - articles/Yang_2020_enrofloxacin_rainbowTrout_pbpk
