@@ -5262,6 +5262,8 @@ navbar:
         href: articles/Beredaki_2024_micafungin.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
+      - text: "Midazolam (Brill 2016)"
+        href: articles/Brill_2016_midazolam.html
       - text: "Midazolam (Collins 2025)"
         href: articles/Collins_2025_midazolam.html
       - text: "Midazolam (Franken 2017)"
@@ -9613,6 +9615,7 @@ articles:
   - articles/Brenner_2016_pamrevlumab_rat
   - articles/Briggs_2023_dupilumab
   - articles/Brill_2014_midazolam
+  - articles/Brill_2016_midazolam
   - articles/Brillac_2025_isatuximab
   - articles/Britz_2019_fluvoxamine
   - articles/Brochot_2015_darunavir

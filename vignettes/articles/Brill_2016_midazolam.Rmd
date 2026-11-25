@@ -1,0 +1,555 @@
+---
+title: "Midazolam and 1-OH-midazolam semi-PBPK before and after bariatric surgery (Brill 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Midazolam and 1-OH-midazolam semi-PBPK before and after bariatric surgery (Brill 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Brill_2016_midazolam"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Brill_2016_midazolam"))$description`
+* Article: <https://doi.org/10.1002/psp4.12048> (open access, PMC4728292)
+
+**The second midazolam inter-compartmental clearance is not a fitted value.**
+The authors' NONMEM code (Supplementary Information S3) estimates it
+(`Q12 = THETA(18)`), but its final estimate is printed nowhere in the article
+or its supplements. The model fixes it at 0.5 L/min, the initial estimate in
+that code. It governs the slow terminal phase of midazolam, so simulated
+midazolam concentrations late after a dose, and quantities that depend on
+them (terminal half-life, AUC extrapolation), are uncertain. See
+"Assumptions and deviations".
+
+This cohort has two other analyses in the literature: occasion 1 (the day of
+surgery) pooled with healthy volunteers in Brill 2014 (packaged as
+`Brill_2014_midazolam`), and both occasions, midazolam only, in Brill 2015
+(doi:10.1007/s11095-015-1752-9). The present model adds the CYP3A metabolite
+1-OH-midazolam and separates first-pass metabolism into a gut-wall and a
+hepatic part, so that the effect of surgery on hepatic and intestinal CYP3A
+activity can be estimated separately.
+
+# Population
+
+Twenty morbidly obese adults (12 F / 8 M; age 26-57 years; body weight
+112-186 kg, mean 144.4 kg; BMI 40-68 kg/m^2) undergoing laparoscopic
+Roux-en-Y gastric bypass or sleeve gastrectomy received 7.5 mg oral
+midazolam and, 160 +/- 48 min later, 5 mg IV midazolam on the day of
+surgery. Eighteen of them (11 F / 7 M; 62-138 kg, mean 98.3 kg; mean weight
+loss 44.5 kg) were studied again one year later with the same design. A mean
+of 22 blood samples per patient and occasion were assayed for midazolam and
+1-OH-midazolam (Brill 2016 Methods and Table 2). The same information is in
+the model's `population` metadata.
+
+# Model structure
+
+The gut wall, portal vein and liver are assumed to be at quasi-steady state
+(Supplementary Information S2), so they appear as algebraic concentrations
+rather than ODE states. With `fub`, `fu_gut` the unbound fractions, `qh` the
+hepatic blood flow and `qvi` the villous blood flow:
+
+* hepatic extraction (well-stirred, Eq. 1): `eh = cl_int_h * fub / (qh + cl_int_h * fub)`;
+* gut-wall extraction (Qgut model, Eqs. 3-4): `qgut = qvi * cl_per / (qvi + cl_per)`,
+  `egut = cl_int_g * fu_gut / (qgut + cl_int_g * fu_gut)`;
+* the same two relations for 1-OH-midazolam, with `qvi` in place of `qgut`
+  (Eq. 6);
+* oral midazolam leaves the fifth transit compartment into the gut wall;
+  the fraction `1 - egut` passes to the portal vein and the fraction
+  `egut` is converted to 1-OH-midazolam in the gut wall;
+* the liver receives portal-vein and hepatic-artery blood; the fraction
+  `eh` of midazolam entering the liver is converted to 1-OH-midazolam, which
+  is in turn subject to hepatic (and, for metabolite formed in the gut wall,
+  gut-wall) extraction before it reaches the systemic circulation.
+
+Hepatic blood flow is the allometric scenario 1 of Table 1,
+`qh = 3.75 * WT^0.75 / 60` L/min, with portal-vein, hepatic-artery,
+intestinal, mucosal and villous flows as fixed fractions of it. Both
+analytes are reported as blood concentrations in ng/mL; 1-OH-midazolam is
+expressed in midazolam-mass equivalents because the authors' code applies no
+molecular-weight conversion.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|------:|-----------------|
+| `lka_presurg` -- Ka = Ktr before surgery | log(0.126) 1/min | Table 3; S3 THETA(4) |
+| `lka_postsurg` -- Ka = Ktr after surgery | log(0.242) 1/min | Table 3; S3 THETA(22) |
+| `lcl_int_h_presurg` -- CLint,H before surgery | log(16.8) L/min | Table 3; S3 THETA(7) |
+| `lcl_int_h_postsurg` -- CLint,H after surgery | log(25.5) L/min | Table 3; S3 THETA(23) |
+| `lcl_int_g` -- CLint,G | log(0.0199) L/min | Table 3; S3 THETA(9) |
+| `lvc` -- Vc at 127 kg before surgery, Vc after surgery | log(66.9) L | Table 3; S3 THETA(1) |
+| `e_wt_vc` -- linear WT slope on Vc before surgery | 0.0435 1/kg, fixed | Table 3 X; S3 THETA(21), centred at 127 kg |
+| `lvp` -- Vp at 127 kg before surgery, Vp after surgery | log(31.0) L | Table 3; S3 THETA(3) |
+| `e_wt_vp` -- power WT exponent on Vp before surgery | 3.93, fixed | Table 3 Y; S3 THETA(20), centred at 127 kg |
+| `lvp2` -- Vp2 = Z * Vp | log(10.8 * 31.0) L | Table 3 Z; S3 `V12=THETA(17)*V6` |
+| `lq` -- Q before surgery | log(1.41) L/min | Table 3 Q1; S3 THETA(2) |
+| `e_prior_bariatric_q` -- factor on Q after surgery | 3.22, fixed | Table 3 A; S3 THETA(24) 'fQ BA' |
+| `lq2` -- second inter-compartmental clearance | log(0.5) L/min, fixed | **S3 initial estimate of THETA(18); final value unreported** |
+| `lvc_1ohm` | log(41.7) L | Table 3; S3 THETA(10) |
+| `lvp_1ohm` | log(16.4) L | Table 3; S3 THETA(15) |
+| `lq_1ohm` | log(0.652) L/min | Table 3; S3 THETA(16) |
+| `lcl_int_h_1ohm` | log(27.4) L/min | Table 3; S3 THETA(11) |
+| `lcl_int_g_1ohm` | log(11.9) L/min | Table 3; S3 THETA(13) |
+| IIV Ka, Vc, Vp, CLint,H, CLint,G | 44, 63, 113, 48, 493% CV | Table 3; S3 ETA(11), 1, 3, 6, 7 |
+| `propSd_presurg`, `propSd_postsurg` | 0.326, 0.237 | Table 3 residual variability; S3 `$ERROR` |
+| `fub` = 0.033, `fu_gut` = 1 | fixed | S3 THETA(8) and `FUG`; Table 1 |
+| `cl_per` = 0.1766 L/min | fixed | S3 THETA(19); Table 1 CLperm 0.177 |
+| `fub_1ohm` = 0.106, `fu_gut_1ohm` = 1 | fixed | S3 THETA(12), THETA(14); Table 1 |
+| `qh = 3.75 * WT^0.75 / 60`; `qpv`, `qha` = 0.75, 0.25 x `qh` | n/a | Table 1 scenario 1; S3 `$PK` |
+| `qin = 0.4 * qh`, `qmu = 0.8 * qin`, `qvi = 0.6 * qmu` | n/a | Table 1; S3 `$PK` |
+| Extraction ratios and Qgut | n/a | Eqs. 1-6; S3 `$PK` |
+| Quasi-steady-state gut wall, portal vein, liver | n/a | S2; S3 `$DES` |
+| Depot + five transit compartments, Ka = Ktr | n/a | Methods; S3 `$MODEL`, `$DES` |
+| Weight effects before surgery only; surgery effects on Ka, CLint,H, Q | n/a | Methods; Table 3; S3 `$PK` |
+| Proportional error shared by both analytes, one SD per surgery stratum | n/a | Eq. 9; S3 `$ERROR` |
+
+# Derived quantities
+
+## Published ratios and hepatic blood flows
+
+The paper reports a 1.52-fold higher CLint,H after surgery, and quotes the
+hepatic blood flow of each scenario for the median patient before (144 kg)
+and after surgery (98 kg). Scenarios 2 and 3 are not packaged (the paper
+reports only their CLint,H values), but their blood flows follow from
+Table 1.
+
+```{r derived}
+mod <- rxode2::rxode(readModelDb("Brill_2016_midazolam"))
+stopifnot(is.null(mod$linCmt))
+p <- mod$theta
+qh_scenario <- function(WT, scenario) {
+  co <- (9119 - exp(9.164 - 2.9e-2 * WT + 3.91e-4 * WT^2 - 1.91e-6 * WT^3)) / 1000
+  switch(scenario, 3.75 * WT^0.75 / 60, 0.25 * co, 0.25 * 7)
+}
+qh_tab <- tidyr::expand_grid(scenario = 1:3, WT = c(144, 98)) |>
+  dplyr::mutate(
+    qh_model = mapply(qh_scenario, WT, scenario),
+    # Fig. 4 and Supplementary Information S1 (L/min)
+    qh_published = c(2.6, 2.0, 1.9, 1.3, 1.75, 1.75)
+  )
+knitr::kable(qh_tab, digits = 3)
+clint_ratio <- exp(p[["lcl_int_h_postsurg"]] - p[["lcl_int_h_presurg"]])
+clint_ratio
+stopifnot(
+  abs(clint_ratio - 1.52) < 0.01,
+  all(abs(qh_tab$qh_model - qh_tab$qh_published) < 0.06)
+)
+```
+
+The model's scenario-1 flow at 98 kg is 1.95 L/min, which Supplementary
+Information S1 prints as 2.0 L/min.
+
+## Plasma clearance, FH and FG by scenario
+
+Figure 4 shows the individual midazolam plasma clearance (Eq. 7), FH and FG
+for each blood-flow scenario, and the Results give the median change after
+surgery: plasma clearance x 1.28, 1.34 and 1.33, and FH x 0.84, 0.83 and
+0.88, for scenarios 1-3. The table evaluates the same equations for a
+typical 144 kg patient before and 98 kg patient after surgery, with the
+CLint,H estimates the Results report for each scenario (16.9 / 25.6,
+17.1 / 25.7 and 12.6 / 18.9 L/min) and the other parameters of Table 3.
+
+```{r scenarios}
+fig4 <- function(WT, scenario, cl_int_h) {
+  qh <- qh_scenario(WT, scenario)
+  qvi <- 0.6 * 0.8 * 0.4 * qh
+  qgut <- qvi * 0.1766 / (qvi + 0.1766)
+  eh <- cl_int_h * 0.033 / (qh + cl_int_h * 0.033)
+  c(
+    clplasma = qh * 0.033 * cl_int_h / (qh + 0.033 * cl_int_h / 0.66), # Eq. 7
+    fh = 1 - eh,
+    fg = 1 - 0.0199 / (qgut + 0.0199)
+  )
+}
+clint_scen <- list(c(16.9, 25.6), c(17.1, 25.7), c(12.6, 18.9))
+scen <- dplyr::bind_rows(lapply(1:3, function(s) {
+  before <- fig4(144, s, clint_scen[[s]][1])
+  after <- fig4(98, s, clint_scen[[s]][2])
+  tibble::tibble(
+    scenario = s,
+    clplasma_before = before[["clplasma"]], clplasma_after = after[["clplasma"]],
+    clplasma_ratio = after[["clplasma"]] / before[["clplasma"]],
+    clplasma_ratio_published = c(1.28, 1.34, 1.33)[s],
+    fh_ratio = after[["fh"]] / before[["fh"]],
+    fh_ratio_published = c(0.84, 0.83, 0.88)[s],
+    fg_before = before[["fg"]], fg_after = after[["fg"]]
+  )
+}))
+knitr::kable(scen, digits = 3)
+blood_cl_ratio_s1 <- {
+  b <- fig4(144, 1, 16.9)
+  a <- fig4(98, 1, 25.6)
+  (1 - a[["fh"]]) * qh_scenario(98, 1) / ((1 - b[["fh"]]) * qh_scenario(144, 1))
+}
+blood_cl_ratio_s1
+stopifnot(
+  # Deterministic: same equations, same parameters as the paper.
+  abs(scen$fh_ratio[1] - 0.84) < 0.02,
+  abs(scen$clplasma_ratio[3] - 1.33) < 0.02,
+  abs(blood_cl_ratio_s1 - 1.28) < 0.02
+)
+```
+
+For scenario 3 (one blood flow for everyone) and for FH in scenario 1 the
+typical-patient ratios match the published medians. The Eq. 7 plasma
+clearance ratios of scenarios 1 and 2 (1.21 and 1.10) are lower than
+published (1.28 and 1.34). For scenario 1 the ratio of the *blood*
+clearances (`eh * qh`), printed below the table, is 1.28, the published
+value; for scenarios 2 and 3 it is 1.18 and 1.37, so no single formula
+reproduces all three published ratios. The published values are medians of
+individual post hoc estimates over patients whose weights spread around the
+medians, and in scenario 2 the blood flow changes steeply with weight, so a
+typical-patient calculation only approximates them. The cohort simulation
+below repeats the scenario-1 comparison with individual weights and random
+effects.
+
+# Mass balance and closed forms
+
+With the organs at quasi-steady state, the model has exact closed forms for
+the typical patient. After an IV dose all midazolam is eliminated by the
+liver, so `AUC = Dose / (eh * qh)` in blood; after an oral dose the systemic
+availability is `(1 - egut) * (1 - eh)`. All 1-OH-midazolam formed (from the
+whole dose) is cleared by the liver with blood clearance `eh_1ohm * qh` after
+passing the hepatic (and, for gut-formed metabolite, gut-wall) extraction
+on its way out. These identities check the ODE wiring of the gut wall,
+portal vein and liver against Eqs. 1-6.
+
+```{r closed-form}
+mod0 <- rxode2::zeroRe(mod)
+grid <- c(0, exp(seq(log(0.01), log(60000), length.out = 4000)))
+closed_form <- function(WT, post) {
+  qh <- 3.75 * WT^0.75 / 60
+  qvi <- 0.6 * 0.8 * 0.4 * qh
+  qgut <- qvi * 0.1766 / (qvi + 0.1766)
+  clh <- exp(if (post == 1) p[["lcl_int_h_postsurg"]] else p[["lcl_int_h_presurg"]])
+  eh <- clh * 0.033 / (qh + clh * 0.033)
+  eg <- exp(p[["lcl_int_g"]]) / (qgut + exp(p[["lcl_int_g"]]))
+  clm <- exp(p[["lcl_int_h_1ohm"]])
+  egm_cl <- exp(p[["lcl_int_g_1ohm"]])
+  ehm <- clm * 0.106 / (qh + clm * 0.106)
+  egm <- egm_cl / (qvi + egm_cl)
+  c(
+    auc_iv = 5000 / (eh * qh),
+    auc_po = 7500 * (1 - eg) * (1 - eh) / (eh * qh),
+    auc_1ohm_iv = 5000 * (1 - ehm) / (ehm * qh),
+    auc_1ohm_po = 7500 * (eg * (1 - egm) + (1 - eg)) * (1 - ehm) / (ehm * qh)
+  )
+}
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+one_dose <- function(amt, cmt, WT, post) {
+  ev <- dplyr::bind_rows(
+    data.frame(id = 1, time = 0, amt = amt, evid = 1, cmt = cmt, dvid = NA_integer_),
+    data.frame(id = 1, time = grid, amt = 0, evid = 0, cmt = NA_character_, dvid = 1L)
+  )
+  ev$WT <- WT
+  ev$PRIOR_BARIATRIC <- post
+  as.data.frame(rxode2::rxSolve(mod0, ev, maxsteps = 1e6))
+}
+cf_tab <- dplyr::bind_rows(lapply(list(c(144, 0), c(98, 1)), function(s) {
+  iv <- one_dose(5000, "central", s[1], s[2])
+  po <- one_dose(7500, "depot", s[1], s[2])
+  cf <- closed_form(s[1], s[2])
+  tibble::tibble(
+    patient = c("144 kg, before surgery", "98 kg, after surgery")[s[2] + 1],
+    quantity = names(cf),
+    ode = c(trap(iv$time, iv$Cc), trap(po$time, po$Cc),
+            trap(iv$time, iv$Cc_1ohm), trap(po$time, po$Cc_1ohm)),
+    closed_form = unname(cf)
+  )
+})) |>
+  dplyr::mutate(pct_diff = 100 * (ode / closed_form - 1))
+knitr::kable(cf_tab, digits = c(0, 0, 1, 1, 3))
+# Same parameters on both sides: the difference is numerical error only.
+stopifnot(all(abs(cf_tab$pct_diff) < 0.5))
+```
+
+# Virtual cohort
+
+Two hundred virtual patients are studied before and one year after surgery,
+as in the study. Pre-surgery weight is drawn from the Table 2 distribution
+(144.4 +/- 21.7 kg) and the weight loss from 44.5 +/- 10.2 kg; draws outside
+the observed ranges (112-186 kg before, 62-138 kg after, 21-58 kg loss) are
+redrawn rather than truncated. Each patient receives 7.5 mg oral midazolam
+and 5 mg IV midazolam 160 min later at each occasion. The two occasions sit
+in one subject record so that the random effects are shared, as in the
+model; the second occasion starts two weeks after the first, long enough
+for midazolam and 1-OH-midazolam to be eliminated.
+
+```{r cohort}
+set.seed(2016)
+rxode2::rxSetSeed(2016)
+n_pt <- 200
+draw_in <- function(n, mean, sd, lo, hi) {
+  x <- rnorm(n, mean, sd)
+  while (any(bad <- x < lo | x > hi)) x[bad] <- rnorm(sum(bad), mean, sd)
+  x
+}
+pre_wt <- draw_in(n_pt, 144.4, 21.7, 112, 186)
+loss <- draw_in(n_pt, 44.5, 10.2, 21, 58)
+post_wt <- pre_wt - loss
+while (any(bad <- post_wt < 62 | post_wt > 138)) {
+  pre_wt[bad] <- draw_in(sum(bad), 144.4, 21.7, 112, 186)
+  loss[bad] <- draw_in(sum(bad), 44.5, 10.2, 21, 58)
+  post_wt <- pre_wt - loss
+}
+pts <- tibble::tibble(id = seq_len(n_pt), WT_pre = pre_wt, WT_post = post_wt)
+
+occ2_start <- 20160 # two weeks, in min
+obs_times <- c(5, 10, 15, 20, 30, 45, 60, 75, 90, 105, 120, 140, 160,
+               160 + c(2, 5, 10, 15, 30, 45, 60, 90, 120, 180, 240, 300, 360,
+                       480, 600, 720, 1440))
+occasion_rows <- function(offset, post) {
+  pts |>
+    dplyr::mutate(WT = if (post == 1) WT_post else WT_pre, PRIOR_BARIATRIC = post) |>
+    tidyr::crossing(tibble::tibble(
+      time = offset + c(0, 160, obs_times),
+      amt = c(7500, 5000, rep(0, length(obs_times))),
+      evid = c(1L, 1L, rep(0L, length(obs_times))),
+      cmt = c("depot", "central", rep(NA_character_, length(obs_times))),
+      dvid = c(NA_integer_, NA_integer_, rep(1L, length(obs_times)))
+    ))
+}
+ev_cohort <- dplyr::bind_rows(occasion_rows(0, 0), occasion_rows(occ2_start, 1)) |>
+  dplyr::select(id, time, amt, evid, cmt, dvid, WT, PRIOR_BARIATRIC) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+sim <- rxode2::rxSolve(mod, ev_cohort, returnType = "data.frame",
+                       maxsteps = 1e6) |>
+  dplyr::mutate(
+    occasion = factor(ifelse(PRIOR_BARIATRIC == 1, "After surgery", "Before surgery"),
+                      levels = c("Before surgery", "After surgery")),
+    tad = ifelse(PRIOR_BARIATRIC == 1, time - occ2_start, time)
+  )
+```
+
+## Concentration-time profiles
+
+The paper shows goodness-of-fit plots rather than profiles (Figure 2b); the
+figure below shows the model's typical profile and 5th-95th percentile band
+for the study design, for both analytes.
+
+```{r profiles, fig.height = 6}
+sim |>
+  dplyr::select(id, occasion, tad, Midazolam = Cc, `1-OH-midazolam` = Cc_1ohm) |>
+  tidyr::pivot_longer(c(Midazolam, `1-OH-midazolam`), names_to = "analyte",
+                      values_to = "conc") |>
+  dplyr::group_by(analyte, occasion, tad) |>
+  dplyr::summarise(lo = quantile(conc, 0.05), mid = median(conc),
+                   hi = quantile(conc, 0.95), .groups = "drop") |>
+  ggplot(aes(tad, mid, colour = occasion, fill = occasion)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line() +
+  facet_wrap(~analyte, ncol = 1, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time after oral dose (min)", y = "Blood concentration (ng/mL)",
+       colour = NULL, fill = NULL,
+       caption = paste("7.5 mg oral at 0 min, 5 mg IV at 160 min.\nLines: median;",
+                       "bands: 5th-95th percentile of 200 virtual patients.")) +
+  theme_minimal(base_size = 11)
+```
+
+## Replicating Figures 3 and 4
+
+Figure 3 compares the individual CLint,H and CLint,G before and after
+surgery, and Figure 4 the derived plasma clearance, FH and FG. The panels
+below draw the same quantities for the virtual cohort (scenario 1).
+
+```{r fig3-4, fig.height = 6}
+indiv <- sim |>
+  dplyr::group_by(id, occasion) |>
+  dplyr::slice(1) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(clplasma = qh * 0.033 * cl_int_h / (qh + 0.033 * cl_int_h / 0.66)) # Eq. 7
+indiv |>
+  dplyr::select(occasion, `CLint,H (L/min)` = cl_int_h, `CLint,G (L/min)` = cl_int_g,
+                `Plasma CL (L/min)` = clplasma, FH = fhep, FG = fgut) |>
+  tidyr::pivot_longer(-occasion) |>
+  ggplot(aes(occasion, value, fill = occasion)) +
+  geom_boxplot(outlier.size = 0.6) +
+  facet_wrap(~name, scales = "free_y") +
+  scale_fill_manual(values = c("grey20", "grey70")) +
+  labs(x = NULL, y = NULL, fill = NULL,
+       caption = "Replicates Figures 3 and 4 (scenario 1) of Brill 2016 for 200 virtual patients.") +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "none")
+
+fig4_cohort <- indiv |>
+  dplyr::group_by(occasion) |>
+  dplyr::summarise(clplasma = median(clplasma), fh = median(fhep),
+                   fg = median(fgut), .groups = "drop")
+fig4_ratio <- c(
+  clplasma = fig4_cohort$clplasma[2] / fig4_cohort$clplasma[1],
+  fh = fig4_cohort$fh[2] / fig4_cohort$fh[1]
+)
+knitr::kable(fig4_cohort, digits = 3)
+fig4_ratio
+stopifnot(
+  # Results: scenario 1 median decrease of FH 0.84 after surgery.
+  abs(fig4_ratio[["fh"]] - 0.84) < 0.04,
+  # Plasma clearance rises after surgery; the Eq. 7 ratio sits near the
+  # typical-patient 1.21 (published 1.28, see the scenario table above).
+  fig4_ratio[["clplasma"]] > 1.05 && fig4_ratio[["clplasma"]] < 1.45,
+  # FG close to one in both groups (Figure 4, lower row).
+  all(fig4_cohort$fg > 0.7)
+)
+```
+
+The cohort reproduces the published decrease in FH and the high FG in both
+groups. Its plasma-clearance ratio follows the typical-patient value of
+about 1.21 rather than the published 1.28, as discussed above.
+
+## Residual error by surgery stratum
+
+The two strata have their own proportional residual SD, shared by both
+analytes. The ratio of the simulated relative residuals checks that the
+stratum switch reaches the error model.
+
+```{r residual}
+res_sd <- sim |>
+  dplyr::group_by(occasion) |>
+  dplyr::summarise(rel_sd = sd((sim / Cc - 1)[Cc > 0]), .groups = "drop")
+res_sd
+sd_ratio <- res_sd$rel_sd[2] / res_sd$rel_sd[1]
+stopifnot(abs(sd_ratio / (0.237 / 0.326) - 1) < 0.1)
+```
+
+# PKNCA validation
+
+Non-compartmental analysis of a separate 5 mg IV bolus simulation for the
+same cohort, by occasion, out to 7 days so that the slow second peripheral
+phase is captured. Concentrations below 0.01 ng/mL are set to missing: far
+in the tail the ODE solution is round-off noise around zero (values of
++/-1e-11 ng/mL), which PKNCA cannot fit, and the AUC beyond that level is
+negligible. Midazolam is cleared only by the liver, so each patient's
+AUC from zero to infinity should equal the dose divided by that patient's
+blood clearance `eh * qh`. The paper reports no NCA results, so the check is
+against the model's own individual clearances.
+
+```{r pknca}
+iv_grid <- c(0, exp(seq(log(1), log(10080), length.out = 120)))
+iv_rows <- function(post) {
+  pts |>
+    dplyr::mutate(WT = if (post == 1) WT_post else WT_pre, PRIOR_BARIATRIC = post,
+                  id = id + post * n_pt) |>
+    tidyr::crossing(tibble::tibble(
+      time = c(0, iv_grid),
+      amt = c(5000, rep(0, length(iv_grid))),
+      evid = c(1L, rep(0L, length(iv_grid))),
+      cmt = c("central", rep(NA_character_, length(iv_grid))),
+      dvid = c(NA_integer_, rep(1L, length(iv_grid)))
+    ))
+}
+ev_iv <- dplyr::bind_rows(iv_rows(0), iv_rows(1)) |>
+  dplyr::select(id, time, amt, evid, cmt, dvid, WT, PRIOR_BARIATRIC) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+sim_iv <- rxode2::rxSolve(mod, ev_iv, returnType = "data.frame", maxsteps = 1e6) |>
+  dplyr::mutate(occasion = ifelse(PRIOR_BARIATRIC == 1, "After surgery", "Before surgery"))
+
+conc_iv <- sim_iv |>
+  dplyr::mutate(Cc = ifelse(Cc < 0.01, NA_real_, Cc)) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, occasion)
+dose_iv <- sim_iv |>
+  dplyr::distinct(id, occasion) |>
+  dplyr::mutate(time = 0, amt = 5000)
+conc_obj <- PKNCA::PKNCAconc(conc_iv, Cc ~ time | occasion + id,
+                             concu = "ng/mL", timeu = "min")
+dose_obj <- PKNCA::PKNCAdose(dose_iv, amt ~ time | occasion + id,
+                             doseu = "ug", route = "intravascular")
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE,
+                        half.life = TRUE, cl.obs = TRUE)
+nca_iv <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_iv)
+
+cl_indiv <- sim_iv |>
+  dplyr::group_by(id) |>
+  dplyr::slice(1) |>
+  dplyr::ungroup() |>
+  dplyr::transmute(id, auc_expected = 5000 / (eh * qh))
+chk <- as.data.frame(nca_iv$result) |>
+  dplyr::filter(PPTESTCD == "aucinf.obs") |>
+  dplyr::inner_join(cl_indiv, by = "id") |>
+  dplyr::mutate(pct_diff = 100 * (PPORRES / auc_expected - 1))
+chk |>
+  dplyr::group_by(occasion) |>
+  dplyr::summarise(median_pct_diff = median(pct_diff),
+                   p90_abs_pct_diff = quantile(abs(pct_diff), 0.9), .groups = "drop") |>
+  knitr::kable(digits = 2)
+stopifnot(
+  # Structural: a mis-wired liver or a wrong dose moves every patient.
+  abs(median(chk$pct_diff)) < 2,
+  # Envelope: extrapolation over the slow peripheral phase varies by patient.
+  quantile(abs(chk$pct_diff), 0.9) < 10
+)
+```
+
+# Assumptions and deviations
+
+* **Second inter-compartmental clearance (Q2) not reported.** Table 3 has no
+  row for it, and the text and supplements give no value. The authors' code
+  estimates it (`Q12 = THETA(18)`, initial value 0.5 L/min); the model fixes
+  it at that initial value. Q2 sets the exchange with the large second
+  peripheral volume (Vp2 = 10.8 x Vp, about 335 L after surgery), so the late
+  terminal phase of midazolam depends on this assumption. The final value
+  has been requested from the authors.
+* **Table 3 row 'Q2 = Q1 * A, A = 3.22 FIX'.** The code applies A to the
+  first inter-compartmental clearance after surgery
+  (`IF(OBES.EQ.2) TVQ = THETA(2)*THETA(24) ; fQ BA`), the Methods say a
+  separate inter-compartmental clearance was used for the two groups, the
+  footnote defines A as the "factor difference with morbidly obese
+  patients", and 3.22 is the post-surgery factor on Q of Brill 2015. The
+  model follows the code: Q = 1.41 L/min before and 4.54 L/min after
+  surgery, and the row label is taken as a misprint.
+* **Reference weight 127 kg.** Table 3 centres the weight effects on Vc and
+  Vp at 144 kg; the code centres them at 127 kg, the median weight over both
+  occasions and the reference at which Brill 2015 estimated X = 0.0435 and
+  Y = 3.93. The model follows the code. Before surgery the linear Vc term
+  becomes negative below 104 kg, outside the observed range of 112-186 kg.
+* **Unbound fraction of midazolam in blood.** Table 1 prints fuB = 0.0303;
+  the code and Supplementary Information S2 use 0.033. The model follows the
+  code.
+* **Hepatic blood flow in the Discussion.** The Discussion gives
+  "QH = 3.7 L/min at 144 kg" for scenario 1, but the Table 1 equation gives
+  2.6 L/min, which is what Figure 4 and Supplementary Information S1 print.
+  The Discussion value is taken as a typo.
+* **Scenario 1 only.** The paper presents the final estimates of hepatic
+  blood flow scenario 1 (allometric flow); for scenarios 2 and 3 it reports
+  only CLint,H and states that the other parameters were very similar. Only
+  scenario 1 is packaged; the "Derived quantities" section shows the other
+  two by their equations.
+* **Blood concentrations.** The model was fitted to blood concentrations
+  (Figure 2b, Table 3 "Blood parameter estimates", code comments "blood
+  conc."). Midazolam plasma concentrations are the blood concentrations
+  divided by the blood-to-plasma ratio of 0.66; for 1-OH-midazolam the ratio
+  is 1.
+* **Metabolite mass.** The code applies no molecular-weight conversion, so
+  1-OH-midazolam concentrations are in midazolam-mass equivalents (the
+  molecular weights are about 326 and 342 g/mol).
+* **IIV scale.** The paper reports IIV as % CV without a formula; the
+  variances are `log(1 + CV^2)`, as in the other Leiden midazolam models in
+  this package. This matters most for CLint,G (493% CV, variance 3.23); if
+  the authors' % CV is `100 * sqrt(omega^2)`, the variance would be 24.3.
+  No IIV was estimated on Q, Q2 or any 1-OH-midazolam parameter.
+* **Random effects shared by both occasions.** The paper estimated no
+  inter-occasion variability.
+* **IV administration.** The paper does not give the duration of the IV
+  dose; simulations give it as a bolus into the central compartment.
+* **Poorly identified metabolite gut-wall clearance.** CLint,G,1-OH has an
+  RSE of 180% and a bootstrap mean of 4.7e22 L/min; the Results report that
+  excluding two patients changes it to 6.7 L/min. The model uses the Table 3
+  estimate of 11.9 L/min.
+* **CLint,H values.** Table 3 gives 16.8 and 25.5 L/min; the Results text
+  gives 16.9 and 25.6 L/min for the same scenario. The model uses Table 3.
