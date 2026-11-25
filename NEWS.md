@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhou 2026 rituximab ([doi:10.1111/cts.70683](https://doi.org/10.1111/cts.70683)) -- treatment-naive Chinese adults with diffuse large B-cell lymphoma on R-CHOP induction (ratifies the new `ALB_GLOB_RATIO` covariate canonical).
+- Add Goryanin 2026 semaglutide combination-therapy aging QSP ([doi:10.1002/psp4.70322](https://doi.org/10.1002/psp4.70322)) -- typical adult with obesity and/or type 2 diabetes; translated verbatim from the authors' SBML, which does not reproduce the paper's calibration figure (see the article).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

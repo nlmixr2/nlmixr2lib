@@ -802,6 +802,7 @@ Recommended patterns:
 - `kint`, `kcat`, `kpro`, `krmr` — fractional rate constants (1/time). When a rate is recomputed at steady state vs. dynamically, suffix the steady-state value with `_0` (e.g., `kcat_0`) and leave the dynamic one unsuffixed.
 - `bl_<species>` — baseline concentration of an endogenous species (e.g., `bl_phe`, `bl_gut`). Use this as the initial condition: `<species>(0) <- bl_<species>`.
 - `f_<fraction>` — unitless fractional-activity scalars (e.g., `f_pah` = fraction of healthy PAH activity).
+- Response-state and aging-layer rate constants: `k<state>` fills a named state (`kbwloss`, `khba1cred`, `knausea`), `emax_<state>` is its logistic plateau, `kdam` / `krep_clear` / `krep_deg` / `krapa` drive `damage` / `repair`, `kfra` / `kfra_rep` / `kbag` drive `frailty` / `bioagegap`, and `drug_d` / `drug_r` are `fixed()` time-averaged combination-therapy scalars. Founding example: `Goryanin_2026_semaglutide_aging_qsp.R`.
 - `vd` — body-weight-normalized volume of distribution (L/kg) when the paper uses it that way. Don't rename to `vc` if the paper's mechanism makes `vd` meaningful.
 
 Constants spelled out in the `model()` block (molecular weights, stoichiometric conversion factors, reference weights) should sit at the **top** of `model()` before any derived quantity, with a unit comment.
