@@ -1,0 +1,330 @@
+---
+title: "Gefitinib (Kawata 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Gefitinib (Kawata 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Kawata_2019_gefitinib"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Kawata_2019_gefitinib"))$description`
+* Article: <https://doi.org/10.1007/s00280-019-03788-4> (open access, PMC6458983)
+
+Kawata 2019 measured plasma gefitinib in a prospective Japanese cohort with a
+nested case-control study of interstitial lung disease (ILD; NCT00252759). The
+population PK model (Results, Table 2; Online Resource) is a one-compartment
+model with first-order absorption and a lag time (NONMEM ADVAN2 TRANS2), fitted
+with the FO method to log-transformed concentrations. Clearance CL/F depends on
+serum alpha1-acid glycoprotein (AGP), body weight, age >= 65 years, concomitant
+CYP3A4 inducers and whether the sample was drawn at the time of ILD diagnosis;
+volume V/F depends on AGP and body weight.
+
+The paper's second analysis, a multivariate logistic regression of ILD
+occurrence on exposure quartiles and clinical risk factors (Online Resource
+Supplementary Table 1, Figure 3), is not packaged: only odds ratios are
+printed (no intercept), and the quartile boundaries are given only for the
+third quartile, so the regression cannot be reconstructed as a predictive
+model.
+
+# Population
+
+336 Japanese patients with advanced or recurrent non-small-cell lung cancer
+who had received at least one prior chemotherapy regimen took gefitinib 250 mg
+once daily at 50 centres between November 2003 and February 2006 (Table 1).
+Mean age was 64.8 years (range 37-87; 180 aged >= 65), mean weight 55.5 kg
+(33-100), 152 were women, and mean serum AGP was 121.3 mg/dL (31-327). 23
+patients took a CYP3A4 inducer. 51 patients developed ILD. The model was fitted
+to 1891 concentrations: 943 after the first dose, 911 at steady state (days
+10-15) and 37 drawn at the time of ILD development in 27 of the ILD patients.
+
+```{r population}
+str(readModelDb("Kawata_2019_gefitinib")()$population)
+```
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure: 1-cmt, first-order absorption, lag time | ADVAN2 TRANS2 | Results; Online Resource |
+| CL/F equation | `theta1*(AGP/121)^theta2*theta3^AGE65*theta4^IND*(WGT/55.5)^theta5*theta6^PERI` | Table 2 |
+| V/F equation | `theta7*(AGP/121)^theta8*(WGT/55.5)^theta9` | Table 2 |
+| `lcl` | log(28.6 L/h) | Table 2, theta1 |
+| `e_aag_cl` | -0.502 | Table 2, theta2 |
+| `e_age_ge65_cl` | 0.759 | Table 2, theta3 |
+| `e_cyp3a4_ind_cl` | 1.82 | Table 2, theta4 |
+| `e_wt_cl` | 0.503 | Table 2, theta5 |
+| `e_dis_ild_acute_cl` | 0.743 | Table 2, theta6 |
+| `lvc` | log(1540 L) | Table 2, theta7 |
+| `e_aag_vc` | -0.447 | Table 2, theta8 |
+| `e_wt_vc` | 0.766 | Table 2, theta9 |
+| `lka` | log(0.819 1/h) | Table 2, theta10 |
+| `ltlag` | log(0.863 h) | Table 2, theta11 |
+| `etalcl`, `etalvc`, `etalka`, `etaltlag` | log(1 + CV^2) = 0.218, 0.138, 2.09, 0.0679 | Table 2 omega rows (49.3%, 38.5%, 266%, 26.5%) |
+| `expSd` | sqrt(log(1 + 0.327^2)) = 0.319 | Table 2 sigma (32.7%); additive error on log scale per Online Resource |
+| AGP reference 121 mg/dL = 1.21 g/L | `ref_aag` | Table 2 equations; unit conversion to the canonical `AAG` column |
+| Weight reference 55.5 kg | `ref_wt` | Table 2 equations (cohort mean, Table 1) |
+
+# Virtual cohort
+
+Covariates are drawn to match Table 1. Values outside the observed ranges are
+redrawn, not clamped, so the distributions are not piled up at the limits. AGP
+is drawn log-normally with the Table 1 mean and SD and converted to g/L.
+
+```{r cohort}
+set.seed(20190214)
+rxode2::rxSetSeed(20190214)
+n_sub <- 200
+
+draw_in_range <- function(n, draw, lo, hi) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- draw(n)
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
+
+agp_sdlog <- sqrt(log(1 + (52.4 / 121.3)^2))
+agp_meanlog <- log(121.3) - agp_sdlog^2 / 2
+
+cohort <- tibble(
+  id = seq_len(n_sub),
+  WT = draw_in_range(n_sub, function(n) rnorm(n, 55.5, 11.0), 33, 100),
+  AGE = draw_in_range(n_sub, function(n) rnorm(n, 64.8, 9.1), 37, 87),
+  AGP_mgdl = draw_in_range(n_sub, function(n) rlnorm(n, agp_meanlog, agp_sdlog), 31, 327),
+  CONMED_CYP3A4_IND = rbinom(n_sub, 1, 23 / 336),
+  DIS_ILD_ACUTE = 0
+) |>
+  mutate(
+    AAG = AGP_mgdl / 100,
+    AGE_GE65 = as.integer(AGE >= 65)
+  )
+
+summary(select(cohort, WT, AGE, AGP_mgdl, AGE_GE65, CONMED_CYP3A4_IND))
+```
+
+# Simulation
+
+Two dosing scenarios are simulated for every virtual patient: the first 250 mg
+dose (observed 0-24 h) and a 250 mg dose at true steady state (`ss = 1`,
+observed over one 24-h interval). This mirrors the paper's first-dose and
+steady-state exposures, which were model-predicted from the empirical Bayes
+estimates.
+
+```{r simulate}
+mod <- readModelDb("Kawata_2019_gefitinib")
+obs_times <- sort(unique(c(seq(0, 4, by = 0.1), seq(4.25, 24, by = 0.25))))
+
+make_events <- function(cov, ss_flag, label) {
+  dose <- cov |>
+    mutate(time = 0, amt = 250, evid = 1L, cmt = "depot", ii = 24, ss = ss_flag)
+  obs <- tidyr::crossing(cov, time = obs_times) |>
+    mutate(amt = 0, evid = 0L, cmt = "central", ii = 0, ss = 0L)
+  bind_rows(dose, obs) |>
+    arrange(id, time, desc(evid)) |>
+    mutate(treatment = label)
+}
+
+ev_sd <- make_events(cohort, 0L, "First dose")
+ev_ss <- make_events(cohort, 1L, "Steady state")
+
+keep_cols <- c("id", "treatment")
+sim <- bind_rows(
+  as.data.frame(rxode2::rxSolve(mod, ev_sd, keep = keep_cols, returnType = "data.frame")),
+  as.data.frame(rxode2::rxSolve(mod, ev_ss, keep = keep_cols, returnType = "data.frame"))
+)
+```
+
+```{r profiles, fig.cap = "Simulated gefitinib concentrations after the first 250 mg dose and over one dosing interval at steady state (median and 5th-95th percentiles of 200 virtual patients)."}
+sim |>
+  group_by(treatment, time) |>
+  summarise(
+    med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~treatment) +
+  labs(x = "Time after dose (h)", y = "Gefitinib (ng/mL)")
+```
+
+# PKNCA validation
+
+```{r nca}
+conc_df <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, treatment, time, Cc)
+dose_df <- bind_rows(ev_sd, ev_ss) |>
+  filter(evid == 1) |>
+  select(id, treatment, time, amt)
+
+conc_obj <- PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 24, cmax = TRUE, auclast = TRUE, ctrough = TRUE)
+nca_res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_df <- as.data.frame(nca_res)
+```
+
+## Comparison against the published exposures
+
+Figure 1 of Kawata 2019 prints the median model-predicted Cmax, AUC0-24 and
+Cmin for patients without ILD (n = 285 after the first dose, n = 277 at steady
+state). They are the reference here because the virtual cohort carries no
+ILD-related difference; the 51 ILD patients had higher exposure (medians 214
+ng/mL, 3974 ng.h/mL and 141 ng/mL after the first dose). Cmin is the
+concentration at the end of the 24-h interval (`ctrough`).
+
+The steady-state exposures do not depend on the absorption rate and should
+match closely. The first-dose Cmax and AUC0-24 are expected to come out
+somewhat lower than the published medians. The published values are empirical
+Bayes predictions, and the ka random effect has 57% shrinkage (Table 2), so the
+published ka values cluster near the typical 0.819 1/h. The simulation instead
+draws ka from the full population distribution (CV 266%), and the slow
+absorbers in that tail lower the first-dose Cmax and AUC0-24.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~auclast, ~ctrough,
+  "First dose", 157, 2992, 107,
+  "Steady state", 434, 8830, 292
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_df,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ng/mL", auclast = "ng*h/mL", ctrough = "ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Median simulated vs published (Figure 1, patients without ILD) gefitinib exposure after 250 mg once daily. * marks rows differing by more than 20%."
+)
+```
+
+```{r nca-gate}
+sim_med <- nca_df |>
+  filter(PPTESTCD %in% c("cmax", "auclast", "ctrough")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop")
+ref_long <- published |>
+  pivot_longer(-treatment, names_to = "PPTESTCD", values_to = "ref")
+gate <- inner_join(sim_med, ref_long, by = c("treatment", "PPTESTCD")) |>
+  mutate(pct_diff = 100 * (sim - ref) / ref)
+gate
+# A 200-subject cohort median moves by up to about 25% between covariate and
+# eta draws (steady-state Ctrough is the noisiest), so the gate is on the
+# centre of the six differences plus a loose envelope. A mis-transcribed
+# clearance, volume, dose or unit shifts all six by far more than either.
+stopifnot(
+  nrow(gate) == 6,
+  abs(median(gate$pct_diff)) < 12,
+  all(abs(gate$pct_diff) < 40)
+)
+```
+
+## Typical-value checks
+
+For the reference patient (AGP 121 mg/dL, 55.5 kg, < 65 years, no CYP3A4
+inducer, not at ILD development) the steady-state AUC over one interval must
+equal Dose / (CL/F) = 250 mg / 28.6 L/h = 8741 ng.h/mL. At the time of ILD
+development CL/F is multiplied by 0.743, so the steady-state AUC rises by
+1 / 0.743 = 1.346; Figure 2 of the paper reports median AUC0-24 of 10141 and
+13643 ng.h/mL in the same 19 patients outside and at ILD development, a ratio
+of 1.345.
+
+```{r typical}
+mod_typ <- rxode2::zeroRe(mod)
+ref_pat <- tibble(
+  id = 1:2, WT = 55.5, AAG = 1.21, AGE_GE65 = 0, CONMED_CYP3A4_IND = 0,
+  DIS_ILD_ACUTE = c(0, 1)
+)
+ev_typ <- make_events(ref_pat, 1L, "Steady state")
+sim_typ <- as.data.frame(rxode2::rxSolve(mod_typ, ev_typ, keep = "id", returnType = "data.frame"))
+
+nca_typ <- pk.nca(PKNCAdata(
+  PKNCAconc(filter(sim_typ, !is.na(Cc)), Cc ~ time | id),
+  PKNCAdose(filter(ev_typ, evid == 1), amt ~ time | id),
+  intervals = data.frame(start = 0, end = 24, auclast = TRUE)
+)) |>
+  as.data.frame() |>
+  filter(PPTESTCD == "auclast")
+
+auc_ref <- nca_typ$PPORRES[nca_typ$id == 1]
+auc_ild <- nca_typ$PPORRES[nca_typ$id == 2]
+c(auc_ref = auc_ref, expected = 250 / 28.6 * 1000, ild_ratio = auc_ild / auc_ref, fig2_ratio = 13643 / 10141)
+# Same drawn parameters on both sides; the difference is trapezoid error only.
+stopifnot(
+  abs(auc_ref / (250 / 28.6 * 1000) - 1) < 0.005,
+  abs((auc_ild / auc_ref) / (1 / 0.743) - 1) < 0.005,
+  abs((auc_ild / auc_ref) / (13643 / 10141) - 1) < 0.01
+)
+```
+
+# Covariate effects
+
+```{r covariates, fig.cap = "Typical CL/F and V/F across the observed AGP range for 40, 55.5 and 80 kg patients (age < 65 years, no CYP3A4 inducer)."}
+agp_grid <- tidyr::crossing(AGP_mgdl = seq(31, 327, length.out = 60), WT = c(40, 55.5, 80)) |>
+  mutate(
+    cl = 28.6 * (AGP_mgdl / 121)^-0.502 * (WT / 55.5)^0.503,
+    vc = 1540 * (AGP_mgdl / 121)^-0.447 * (WT / 55.5)^0.766
+  ) |>
+  pivot_longer(c(cl, vc), names_to = "param", values_to = "value") |>
+  mutate(param = recode(param, cl = "CL/F (L/h)", vc = "V/F (L)"))
+ggplot(agp_grid, aes(AGP_mgdl, value, colour = factor(WT))) +
+  geom_line() +
+  facet_wrap(~param, scales = "free_y") +
+  labs(x = "Serum AGP (mg/dL)", y = NULL, colour = "Weight (kg)")
+```
+
+# Assumptions and deviations
+
+* **IIV and residual scale.** Table 2 prints each random-effect row as
+  "omega (%)" and the residual row as "sigma (%)" without saying how the
+  percentage was computed. They are read as log-normal CVs, so each variance
+  is log(1 + CV^2) and the residual SD on the log scale is
+  sqrt(log(1 + 0.327^2)). The other common convention, 100 times the SD of eta,
+  would give variances about 10%, 7% and 3% larger for CL/F, V/F and tlag,
+  and a ka variance of 7.08 instead of 2.09. The difference matters only for
+  ka. Under that reading the simulated first-dose median Cmax and AUC0-24 fall
+  roughly 25% below the published Figure 1 medians, against roughly 13% below
+  under the CV reading (median over several cohort draws). The comparison
+  favours the CV reading, though shrinkage keeps it from being decisive. Steady-state exposure is unaffected by either reading.
+* **AGP units.** The paper reports AGP in mg/dL; the packaged model takes the
+  canonical `AAG` column in g/L (AGP mg/dL / 100) with the reference 1.21 g/L,
+  which is the paper's 121 mg/dL.
+* **ILD period covariate.** The paper's `PERI` flag is packaged as
+  `DIS_ILD_ACUTE`: 1 for records at the time of ILD development, 0 otherwise.
+  It is time-varying within a patient. The authors note that AGP was not
+  measured at ILD development and suggest the CL/F reduction may reflect an
+  ILD-induced AGP rise.
+* **CYP3A4 inducers.** The paper does not name the inducers pooled into
+  `IND = 1`.
+* **Steady state.** The paper predicted steady-state exposure "assuming steady
+  state at 144 h after the first dosing"; the vignette uses a true steady-state
+  dose (`ss = 1`). For a typical half-life of 37 h, 144 h is about 3.9
+  half-lives, so the paper's steady-state exposures could be a few percent
+  lower than true steady state.
+* **Virtual cohort.** Table 1 gives only means, SDs and ranges, so weight and
+  age are drawn as normal and AGP as log-normal within the observed ranges,
+  independently of one another. No patient is at ILD development in the
+  cohort.
+* **Comparison reference.** The published Figure 1 medians are empirical Bayes
+  predictions in the observed patients, while the simulation draws new
+  patients from the population distribution; agreement of the medians, not
+  of the spread, is the check.
+* **Logistic regression of ILD risk.** Not packaged (see Model and source).
