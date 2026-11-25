@@ -58,6 +58,12 @@ navbar:
         href: articles/Duong_2017_AT9283.html
       - text: "AZD6088 rat (Viberg 2012)"
         href: articles/Viberg_2012_AZD6088_rat.html
+      - text: "AZD7687 human (MorentinGutierrez 2019)"
+        href: articles/MorentinGutierrez_2019_AZD7687.html
+      - text: "AZD7687 mouse (MorentinGutierrez 2019)"
+        href: articles/MorentinGutierrez_2019_AZD7687.html
+      - text: "AZD7687 rat (MorentinGutierrez 2019)"
+        href: articles/MorentinGutierrez_2019_AZD7687.html
       - text: "Abacavir (Archary 2019)"
         href: articles/Archary_2019_abacavir.html
       - text: "Abacavir (Chandasana 2024b)"
@@ -11152,6 +11158,7 @@ articles:
   - articles/Morath_2025_apixaban
   - articles/Morcos_2023_copanlisib
   - articles/Morcos_2023b_copanlisib
+  - articles/MorentinGutierrez_2019_AZD7687
   - articles/Morganroth_2015_moxifloxacin
   - articles/Mori_2018_zoledronicAcid
   - articles/Morris_2011_artesunate
