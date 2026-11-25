@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Luo 2017 glycoengineered pertuzumab ([doi:10.1038/srep46347](https://doi.org/10.1038/srep46347)) -- preclinical (ICR mice), six two-compartment IV-bolus models for fucosylation / sialylation glycoforms and asialofetuin ASGPR blockade.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
