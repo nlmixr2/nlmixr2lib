@@ -4144,6 +4144,8 @@ navbar:
         href: articles/Chen_2024_guhongInjection.html
       - text: "Hydroxyurea (Dong 2016)"
         href: articles/Dong_2016_hydroxyurea.html
+      - text: "Hydroxyurea (Hosawi 2026)"
+        href: articles/Hosawi_2026_hydroxyurea.html
       - text: "Hydroxyurea (Pandey 2023)"
         href: articles/Pandey_2023_hydroxyurea.html
       - text: "Hydroxyurea (Paule 2011)"
@@ -11178,6 +11180,7 @@ articles:
   - articles/Horita_2018_rifampicin
   - articles/Hornik_2019_methylprednisolone
   - articles/Hornik_2025_furosemide
+  - articles/Hosawi_2026_hydroxyurea
   - articles/Hosey_2022_t2dm_growth
   - articles/Hosoi_2026_fluoroquinolones_elf_mouse
   - articles/Hosseini_2024_flt3lfc
