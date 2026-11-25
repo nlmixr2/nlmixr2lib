@@ -1772,6 +1772,16 @@ navbar:
         href: articles/Hajjar_2018_pompe_disease.html
       - text: "Cipargamin (Hien 2017)"
         href: articles/Hien_2017_cipargamin.html
+      - text: "Cipargamin auctre (Lakshminarayana 2015)"
+        href: articles/Lakshminarayana_2015_spiroindolones.html
+      - text: "Cipargamin cmaxtre (Lakshminarayana 2015)"
+        href: articles/Lakshminarayana_2015_spiroindolones.html
+      - text: "Cipargamin doseresponse (Lakshminarayana 2015)"
+        href: articles/Lakshminarayana_2015_spiroindolones.html
+      - text: "Cipargamin mouse (Lakshminarayana 2015)"
+        href: articles/Lakshminarayana_2015_spiroindolones.html
+      - text: "Cipargamin ttre (Lakshminarayana 2015)"
+        href: articles/Lakshminarayana_2015_spiroindolones.html
       - text: "Ciprofloxacin (Abdulla 2020)"
         href: articles/Abdulla_2020_ciprofloxacin.html
       - text: "Ciprofloxacin (Alihodzic 2022)"
@@ -7726,6 +7736,18 @@ navbar:
         href: articles/Parmar_2023_spectinamides_pbpk.html
       - text: "Spectinamide 1810 rat pbpk (Parmar 2023)"
         href: articles/Parmar_2023_spectinamides_pbpk.html
+      - text: "Spiroindolone1 doseresponse (Lakshminarayana 2015)"
+        href: articles/Lakshminarayana_2015_spiroindolones.html
+      - text: "Spiroindolone2 doseresponse (Lakshminarayana 2015)"
+        href: articles/Lakshminarayana_2015_spiroindolones.html
+      - text: "Spiroindolone3 doseresponse (Lakshminarayana 2015)"
+        href: articles/Lakshminarayana_2015_spiroindolones.html
+      - text: "Spiroindolone4 doseresponse (Lakshminarayana 2015)"
+        href: articles/Lakshminarayana_2015_spiroindolones.html
+      - text: "Spiroindolone5 doseresponse (Lakshminarayana 2015)"
+        href: articles/Lakshminarayana_2015_spiroindolones.html
+      - text: "Spiroindolone6 doseresponse (Lakshminarayana 2015)"
+        href: articles/Lakshminarayana_2015_spiroindolones.html
       - text: "Spironolactone qsp (Meid 2024)"
         href: articles/Meid_2024_spironolactone_qsp.html
       - text: "Sucrose rat pbpk (Hirasawa 2022)"
@@ -10775,6 +10797,7 @@ articles:
   - articles/Lahu_2010_roflumilast
   - articles/Lai_2026_rivaroxaban
   - articles/Lakota_2018_ertapenem
+  - articles/Lakshminarayana_2015_spiroindolones
   - articles/Lallemand_2023_benzylpenicillin_horse
   - articles/Lalovic_2020_lemborexant
   - articles/Lam_2025_ondansetron

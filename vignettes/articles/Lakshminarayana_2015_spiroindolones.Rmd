@@ -1,0 +1,474 @@
+---
+title: "Cipargamin and spiroindolone analogs in P. berghei-infected mice (Lakshminarayana 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cipargamin and spiroindolone analogs in P. berghei-infected mice (Lakshminarayana 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Models and source
+
+Lakshminarayana 2015 studies the spiroindolone class of PfATP4 inhibitors in the
+*Plasmodium berghei* 4-day suppressive mouse model. It reports three kinds of
+separately fitted model, packaged here as eleven model files that share this
+vignette:
+
+| Model file | What it is | Source |
+|---|---|---|
+| `Lakshminarayana_2015_cipargamin_mouse` | Naive-pooled two-compartment oral PK of cipargamin (KAE609) in NMRI mice, Michaelis-Menten elimination | Table 4, equation 2 |
+| `Lakshminarayana_2015_cipargamin_cmaxtre` | Sigmoid model of day-4 parasitemia on Cmax/TRE | Table 5, Cmax/TRE column |
+| `Lakshminarayana_2015_cipargamin_auctre` | Sigmoid model of day-4 parasitemia on AUC0-48/TRE | Table 5, AUC0-48/TRE column |
+| `Lakshminarayana_2015_cipargamin_ttre` | Sigmoid model of day-4 parasitemia on %T>TRE | Table 5, %T>TRE column |
+| `Lakshminarayana_2015_cipargamin_doseresponse` | Single-dose dose-response of cipargamin, compound (+)-7 | Table 3 |
+| `Lakshminarayana_2015_spiroindolone1_doseresponse` ... `spiroindolone6_doseresponse` | Single-dose dose-response of analogs (+)-1 to (+)-6 | Table 3 |
+
+* Citation: `r rxode2::rxode(readModelDb("Lakshminarayana_2015_cipargamin_mouse"))$reference`
+* Article: <https://doi.org/10.1128/AAC.03274-14> (PMCID: PMC4335872, open access)
+
+The threshold TRE is twice the ex vivo *P. berghei* IC99 of cipargamin:
+IC99 = 61.6 nM, so TRE = 123 nM = 48 ng/mL (Results, 'KAE609 exhibits
+time-dependent killing'). The Cmax and AUC models carry TRE as the fixed
+parameter `tre` and take the absolute exposure as a covariate; the %T>TRE model
+takes the already-formed percentage.
+
+```{r descriptions, results = "asis"}
+mods <- c(
+  "Lakshminarayana_2015_cipargamin_mouse",
+  "Lakshminarayana_2015_cipargamin_cmaxtre",
+  "Lakshminarayana_2015_cipargamin_auctre",
+  "Lakshminarayana_2015_cipargamin_ttre",
+  "Lakshminarayana_2015_cipargamin_doseresponse"
+)
+for (m in mods) {
+  cat("**`", m, "`** -- ", rxode2::rxode(readModelDb(m))$description, "\n\n", sep = "")
+}
+```
+
+# Population
+
+**PK.** Female specific-pathogen-free NMRI mice (Janvier, France), infected
+(24 h after intravenous inoculation with 2 x 10^7 *P. berghei* GFP ANKA
+parasitized erythrocytes) and uninfected, each given a single oral dose of
+5.3 mg/kg cipargamin in 10% ethanol / 30% PEG 400 / 60% (10% vitamin E TPGS).
+Plasma was sampled destructively at 0.25, 0.5, 1, 2, 4, 8, 24 and 48 h
+(Figure 2 shows about three mice per time per group). Table 4 shows no
+difference in PK between infected and uninfected animals, so the data were
+pooled and fitted without between-animal variability. NMRI exposure was about
+4-fold higher than in CD-1 mice at a comparable dose (Tables 2 and 4), which is
+why the efficacy strain was used for the PK model.
+
+**Efficacy.** Female NMRI mice (20-22 g), infected as above on day 0, treated
+orally from 24 h post-infection, with parasitemia (parasitized erythrocytes per
+100 erythrocytes) read by flow cytometry at 72 h post-infection. The
+dose-response studies used single doses of 2.5, 5, 10, 30 and 100 mg/kg in
+groups of five (plus 0.5-200 mg/kg for cipargamin, Figure 1). The cipargamin
+dose-fractionation study used total daily doses of 0.5, 1, 2, 4 and 8 mg/kg
+given once, as two doses 12 h apart or as three doses 8 h apart, four mice per
+regimen (Table 1); vehicle controls averaged 35.51% +/- 3.86% parasitemia.
+
+```{r population}
+str(readModelDb("Lakshminarayana_2015_cipargamin_auctre")()$population, max.level = 1, width = 78)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| PK: `d/dt(depot)`, `d/dt(central)`, `d/dt(peripheral1)` | n/a | Methods, 'Pharmacokinetic modeling and simulation for KAE609': two-compartment model, first-order absorption, nonlinear elimination |
+| PK: `cl = vmax / (km + Cp)` | n/a | Equation 2 |
+| `lka` | 1.78 1/h | Table 4 |
+| `lvc` | 4.4 L/kg | Table 4 |
+| `lvp` | 5.1 L/kg | Table 4 |
+| `lq` | 0.61 L/h/kg | Table 4 |
+| `lvmax` | 143 ug/h/kg | Table 4 |
+| `lkm` | 34.1 ug/L | Table 4 |
+| PK `propSd` | 0 (FIXED) | Not reported (naive-pooled fit) |
+| Index and dose models: `log10 P = log10 Pmin + (log10 Pmax - log10 Pmin) / (1 + 10^((log10 EZ50 - log10 x) * s))` | n/a | Equation 1; x untransformed for %T>TRE (Methods, 'PK-PD relationship analysis of KAE609') |
+| `tre` | 0.048 ug/mL (FIXED) | Results: IC99 61.6 nM; 2 x IC99 = 123 nM or 48 ng/mL |
+| Cmax/TRE: `lpmin`, `lpmax`, `lec50`, `hill` | 0.12, 34.51, 5.43, -1.87 | Table 5 |
+| AUC0-48/TRE: `lpmin`, `lpmax`, `lec50`, `hill` | 0.13, 32.66, 52.72, -1.63 | Table 5 |
+| %T>TRE: `lpmin`, `lpmax`, `lec50`, `hill` | 0.15, 53.09, 32.06, -0.031 | Table 5 |
+| Index-model `expSd` | 0.34, 0.22, 0.17 x ln(10) | Results: standard error of the estimate Sy.x (log10 units) |
+| Dose models: `lpmin`, `lpmax`, `led90`, `hill` | per compound | Table 3 |
+| Dose models: `ez50 = ed90 / 9^(1 / -hill)` | n/a | Derived; see 'ED90 and EZ50' below |
+| Dose-model `expSd` | 0 (FIXED) | Not reported |
+
+# Cipargamin PK model
+
+```{r pk-sim}
+pk <- readModelDb("Lakshminarayana_2015_cipargamin_mouse")
+pk_grid <- sort(unique(c(seq(0, 4, by = 0.01), seq(4, 96, by = 0.1))))
+pk_events <- rxode2::et(amt = 5.3, cmt = "depot") |>
+  rxode2::et(pk_grid, cmt = "central") |>
+  as.data.frame() |>
+  mutate(treatment = "5.3 mg/kg")
+pk_sim <- rxode2::rxSolve(pk, pk_events, keep = "treatment", returnType = "data.frame")
+stopifnot(!anyNA(pk_sim$Cc))
+```
+
+```{r figure-2a, fig.cap = "Replicates Figure 2A of Lakshminarayana 2015: typical cipargamin plasma concentration after a single 5.3 mg/kg oral dose in NMRI mice (linear scale)."}
+pk_plot <- pk_sim |>
+  filter(time <= 48) |>
+  mutate(conc_ngml = 1000 * Cc)
+ggplot(pk_plot, aes(time, conc_ngml)) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Cipargamin (ng/mL)",
+       caption = "Replicates Figure 2A of Lakshminarayana 2015.") +
+  theme_minimal()
+```
+
+```{r figure-2b, fig.cap = "Replicates Figure 2B of Lakshminarayana 2015 (semi-log scale); the dashed line is TRE = 48 ng/mL."}
+ggplot(pk_plot |> filter(conc_ngml > 1), aes(time, conc_ngml)) +
+  geom_line() +
+  geom_hline(yintercept = 48, linetype = "dashed", colour = "grey40") +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Cipargamin (ng/mL)",
+       caption = "Replicates Figure 2B of Lakshminarayana 2015.") +
+  theme_minimal()
+```
+
+The Figure 2 model line peaks at about 950 ng/mL near 1.5 h and falls to
+about 8 ng/mL at 48 h. The packaged model reproduces both:
+
+```{r pk-gates}
+pk_cmax <- max(pk_sim$Cc)
+pk_tmax <- pk_sim$time[which.max(pk_sim$Cc)]
+pk_c48 <- 1000 * pk_sim$Cc[pk_sim$time == 48]
+c(cmax_ngml = 1000 * pk_cmax, tmax_h = pk_tmax, c48_ngml = pk_c48)
+stopifnot(
+  pk_cmax > 0.90, pk_cmax < 1.00,
+  pk_tmax > 1, pk_tmax < 2,
+  pk_c48 > 4, pk_c48 < 16
+)
+```
+
+## PKNCA against Table 4
+
+Table 4 reports the noncompartmental Cmax and AUC0-inf of the observed mean
+profiles. The model is a fit to those same data, so it should land close to
+them but not on them.
+
+```{r pknca}
+sim_nca <- pk_sim |>
+  filter(!is.na(Cc)) |>
+  mutate(id = 1L) |>
+  select(id, time, Cc, treatment)
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(
+  data.frame(id = 1L, time = 0, amt = 5.3, treatment = "5.3 mg/kg"),
+  amt ~ time | treatment + id
+)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published <- tibble::tribble(
+  ~treatment,  ~cmax, ~aucinf.obs,
+  "5.3 mg/kg", 1.01,  13.21
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ug/mL", aucinf.obs = "ug*h/mL", tmax = "h", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Typical-value PKNCA vs. Table 4 (uninfected NMRI mice). * differs by >20%.")
+```
+
+The infected group's NCA values (Cmax 0.96 ug/mL, AUC0-inf 12.64 ug*h/mL) are
+within 5% of the uninfected ones. The simulated values are 5-10% below the
+uninfected NCA, the expected size of the gap between a naive-pooled model fit
+and the trapezoidal NCA of the noisy mean profile.
+
+## Table 1: PK-PD indices of the dose-fractionation regimens
+
+The authors used this model in Berkeley Madonna to simulate Cmax, AUC0-48 and
+%T>TRE for each of the 15 regimens of Table 1. Simulating the same regimens --
+all doses given on the first treatment day, then no further dosing until the
+48 h readout -- reproduces every tabulated index:
+
+```{r table-1}
+tre <- 0.048
+table1 <- tibble::tribble(
+  ~total, ~n_doses, ~cmax_tre, ~auc_tre, ~ttre, ~par_mean, ~par_sd,
+  8,   1, 29.95, 513.68, 99.9,  0.15, 0.03,
+  8,   2, 19.40, 414.93, 99.8,  0.18, 0.04,
+  8,   3, 16.44, 383.23, 99.8,  0.16, 0.02,
+  4,   1, 14.56, 148.45, 54.5,  0.63, 0.57,
+  4,   2,  7.92, 106.02, 56.1,  0.43, 0.38,
+  4,   3,  6.00,  92.12, 57.3,  0.55, 0.28,
+  2,   1,  6.93,  45.07, 23.0,  5.64, 1.69,
+  2,   2,  3.37,  30.66, 22.7,  6.48, 3.94,
+  2,   3,  2.24,  25.18, 22.3, 10.83, 4.67,
+  1,   1,  3.21,  14.57, 10.7, 17.82, 3.05,
+  1,   2,  1.49,  10.16,  8.8, 18.19, 6.81,
+  1,   3,  0.96,   8.55,  0.0, 20.31, 5.71,
+  0.5, 1,  1.45,   4.98,  4.3, 28.82, 4.49,
+  0.5, 2,  0.67,   3.75,  0.0, 38.28, 2.95,
+  0.5, 3,  0.43,   3.34,  0.0, 35.37, 5.32
+) |>
+  mutate(regimen = paste0(total, " mg/kg x", n_doses))
+
+idx_grid <- seq(0, 48, by = 0.005)
+sim_indices <- function(total, n_doses) {
+  ev <- rxode2::et(amt = total / n_doses, cmt = "depot",
+                   ii = if (n_doses > 1) 24 / n_doses else 0,
+                   addl = n_doses - 1) |>
+    rxode2::et(idx_grid, cmt = "central")
+  s <- rxode2::rxSolve(pk, ev, returnType = "data.frame")
+  stopifnot(nrow(s) == length(idx_grid))
+  auc <- sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)
+  tibble(CMAX = max(s$Cc), AUC_CIPARGAMIN = auc,
+         FTTRE_CIPARGAMIN = 100 * mean(s$Cc > tre))
+}
+table1 <- bind_cols(table1, bind_rows(Map(sim_indices, table1$total, table1$n_doses))) |>
+  mutate(
+    cmax_pct = 100 * (CMAX / tre / cmax_tre - 1),
+    auc_pct = 100 * (AUC_CIPARGAMIN / tre / auc_tre - 1),
+    ttre_diff = FTTRE_CIPARGAMIN - ttre
+  )
+
+table1 |>
+  transmute(regimen,
+            "Cmax/TRE (paper)" = cmax_tre, "Cmax/TRE (model)" = round(CMAX / tre, 2),
+            "AUC0-48/TRE (paper)" = auc_tre, "AUC0-48/TRE (model)" = round(AUC_CIPARGAMIN / tre, 2),
+            "%T>TRE (paper)" = ttre, "%T>TRE (model)" = round(FTTRE_CIPARGAMIN, 1)) |>
+  knitr::kable(caption = "Table 1 PK-PD indices: published vs. the packaged PK model.")
+
+# Same model, same regimens, no random effects: the only differences are the
+# rounding of the printed values (two decimals on indices as small as 0.43)
+# and the integration grid.
+stopifnot(
+  max(abs(table1$cmax_pct)) < 1,
+  max(abs(table1$auc_pct)) < 1,
+  max(abs(table1$ttre_diff)) < 0.5
+)
+```
+
+This also pins the dosing design: a two-day course (doses repeated on the
+second treatment day) would roughly double every AUC0-48/TRE value.
+
+# PK-PD index models
+
+Each index model takes one exposure column. The simulated indices from the
+previous section feed all three, alongside a vehicle record with every exposure
+set to 0.
+
+```{r index-solve}
+mod_cmax <- readModelDb("Lakshminarayana_2015_cipargamin_cmaxtre")
+mod_auc <- readModelDb("Lakshminarayana_2015_cipargamin_auctre")
+mod_ttre <- readModelDb("Lakshminarayana_2015_cipargamin_ttre")
+
+# The index models have no time dependence, so each exposure value is one
+# observation row of a single subject (a time-varying covariate); this avoids
+# rxode2's multi-subject-without-omega warning.
+solve_index <- function(mod, cov_name, values) {
+  ev <- data.frame(id = 1L, time = seq_along(values), evid = 0, amt = NA_real_)
+  ev[[cov_name]] <- values
+  out <- rxode2::rxSolve(mod, ev, returnType = "data.frame")
+  stopifnot(nrow(out) == length(values), !anyNA(out$parasites))
+  out$parasites
+}
+
+table1 <- table1 |>
+  mutate(
+    pred_cmax = solve_index(mod_cmax, "CMAX", CMAX),
+    pred_auc = solve_index(mod_auc, "AUC_CIPARGAMIN", AUC_CIPARGAMIN),
+    pred_ttre = solve_index(mod_ttre, "FTTRE_CIPARGAMIN", FTTRE_CIPARGAMIN)
+  )
+vehicle <- c(
+  cmax = solve_index(mod_cmax, "CMAX", 0),
+  auc = solve_index(mod_auc, "AUC_CIPARGAMIN", 0),
+  ttre = solve_index(mod_ttre, "FTTRE_CIPARGAMIN", 0)
+)
+vehicle
+```
+
+At zero exposure the Cmax and AUC models return their Pmax (34.51% and
+32.66%), close to the observed vehicle mean of 35.51%. The %T>TRE model enters
+its index untransformed, so at 0% it has not yet reached its fitted upper
+asymptote (53.09%): it predicts about 31%, which is what Figure 3C shows at the
+left edge (log10 parasitemia about 1.5).
+
+```{r figure-3, fig.cap = "Replicates Figure 3 of Lakshminarayana 2015: day-4 parasitemia against each PK-PD index. Points are the Table 1 regimen means (+/- SD); lines are the packaged models.", fig.height = 3.6}
+curve_df <- bind_rows(
+  tibble(panel = "A: Cmax/TRE", x = 10^seq(log10(0.3), log10(50), length.out = 200)) |>
+    mutate(y = solve_index(mod_cmax, "CMAX", x * tre)),
+  tibble(panel = "B: AUC0-48/TRE", x = 10^seq(log10(2), log10(700), length.out = 200)) |>
+    mutate(y = solve_index(mod_auc, "AUC_CIPARGAMIN", x * tre)),
+  tibble(panel = "C: %T>TRE", x = seq(0, 100, length.out = 200)) |>
+    mutate(y = solve_index(mod_ttre, "FTTRE_CIPARGAMIN", x))
+)
+point_df <- bind_rows(
+  table1 |> transmute(panel = "A: Cmax/TRE", x = cmax_tre, par_mean, par_sd),
+  table1 |> transmute(panel = "B: AUC0-48/TRE", x = auc_tre, par_mean, par_sd),
+  table1 |> transmute(panel = "C: %T>TRE", x = ttre, par_mean, par_sd)
+) |>
+  mutate(lo = log10(pmax(par_mean - par_sd, 0.05)), hi = log10(par_mean + par_sd))
+
+# As in the paper, panels A and B use a log10 index axis and panel C a linear
+# one. Regimens with %T>TRE = 0 have positive Cmax and AUC, so no point is lost.
+to_axis <- function(panel, x) ifelse(panel == "C: %T>TRE", x, log10(x))
+ggplot() +
+  geom_line(data = curve_df, aes(to_axis(panel, x), log10(y))) +
+  geom_pointrange(data = point_df,
+                  aes(to_axis(panel, x), log10(par_mean), ymin = lo, ymax = hi),
+                  shape = 21, size = 0.3) +
+  facet_wrap(~panel, scales = "free_x") +
+  labs(x = "log10 index (A, B); percent of 48 h (C)", y = "log10 [% parasitemia]",
+       caption = "Replicates Figure 3 of Lakshminarayana 2015.") +
+  theme_minimal()
+```
+
+```{r index-gates}
+fit_stats <- table1 |>
+  summarise(across(c(pred_cmax, pred_auc, pred_ttre),
+                   ~ sqrt(mean((log10(.x) - log10(par_mean))^2))))
+knitr::kable(fit_stats, digits = 3,
+             caption = "Root-mean-square log10 error of each model against the 15 Table 1 regimen means.")
+
+ec50_cmax <- exp(rxode2::rxode(mod_cmax)$iniDf |> filter(name == "lec50") |> pull(est))
+stopifnot(
+  # Discussion: the Cmax producing half the maximal effect in vivo is 260 ng/mL,
+  # i.e. EC50 (5.43) x TRE (48 ng/mL).
+  abs(1000 * ec50_cmax * tre - 260) < 3,
+  # The fits are ranked by the paper as %T>TRE best and Cmax/TRE worst (R^2
+  # 0.97, 0.95, 0.88). Deterministic predictions, so a structural error (a
+  # wrong scale on the index, a missing log10) shows up as an error of a
+  # log unit or more; the observed RMS errors are 0.1-0.3.
+  fit_stats$pred_cmax < 0.5,
+  fit_stats$pred_auc < 0.4,
+  fit_stats$pred_ttre < 0.4,
+  abs(vehicle[["cmax"]] - 34.51) < 0.1,
+  abs(vehicle[["auc"]] - 32.66) < 0.1
+)
+```
+
+# Dose-response models (Table 3)
+
+## ED90 and EZ50
+
+Table 3 reports ED90 rather than the EZ50 of equation 1. Two readings of ED90
+are possible: the dose giving 90% of the maximal reduction on the fitted
+(log10) scale, or the dose reducing parasitemia to 10% of Pmax. The packaged
+models use the first, `EZ50 = ED90 / 9^(1 / |s|)`. Two checks support it.
+First, the midpoints of the Figure 1 curves sit at the derived EZ50 (for
+cipargamin about 2.5 mg/kg, log10 dose 0.4; for (+)-5 about 18 mg/kg, log10
+dose 1.26), whereas the second reading would put the cipargamin midpoint near
+5.5 mg/kg. Second, the Results quote 50%, 90% and 99% reductions in
+parasitemia for cipargamin at 1.2, 2.7 and 5.3 mg/kg from an earlier study;
+the first reading gives about 43%, 93% and 98.5% (computed below), and the
+second only about 45% at 2.7 mg/kg.
+
+```{r dose-models}
+dose_models <- c(
+  "(+)-1" = "Lakshminarayana_2015_spiroindolone1_doseresponse",
+  "(+)-2" = "Lakshminarayana_2015_spiroindolone2_doseresponse",
+  "(+)-3" = "Lakshminarayana_2015_spiroindolone3_doseresponse",
+  "(+)-4" = "Lakshminarayana_2015_spiroindolone4_doseresponse",
+  "(+)-5" = "Lakshminarayana_2015_spiroindolone5_doseresponse",
+  "(+)-6" = "Lakshminarayana_2015_spiroindolone6_doseresponse",
+  "(+)-7 (KAE609)" = "Lakshminarayana_2015_cipargamin_doseresponse"
+)
+solve_dose <- function(model_name, doses) {
+  ev <- data.frame(id = 1L, time = seq_along(doses), evid = 0, amt = NA_real_, DOSE = doses)
+  out <- rxode2::rxSolve(readModelDb(model_name), ev, returnType = "data.frame")
+  stopifnot(nrow(out) == length(doses), !anyNA(out$parasites))
+  out
+}
+dose_summary <- bind_rows(lapply(names(dose_models), function(cmpd) {
+  ini <- rxode2::rxode(readModelDb(dose_models[[cmpd]]))$iniDf
+  p <- setNames(ini$est, ini$name)
+  ed90 <- exp(p[["led90"]])
+  out <- solve_dose(dose_models[[cmpd]], c(0, ed90, 1e4))
+  lo <- log10(exp(p[["lpmin"]])); hi <- log10(exp(p[["lpmax"]]))
+  tibble(
+    compound = cmpd, ED90 = ed90, hill = p[["hill"]],
+    EZ50 = ed90 / 9^(1 / -p[["hill"]]),
+    P_at_0 = out$parasites[1], P_at_ED90 = out$parasites[2],
+    frac_max_log_reduction = (hi - log10(out$parasites[2])) / (hi - lo)
+  )
+}))
+knitr::kable(dose_summary, digits = c(0, 1, 2, 2, 2, 3, 3),
+             caption = "Table 3 models: derived EZ50 and the predicted parasitemia at ED90.")
+
+kae <- solve_dose(dose_models[["(+)-7 (KAE609)"]], c(0, 1.2, 2.7, 5.3))
+kae_red <- 100 * (1 - kae$parasites[-1] / kae$parasites[1])
+names(kae_red) <- c("1.2 mg/kg", "2.7 mg/kg", "5.3 mg/kg")
+kae_red
+
+stopifnot(
+  all(abs(dose_summary$frac_max_log_reduction - 0.9) < 1e-6),
+  # The earlier study's ED90 of 2.7 mg/kg: about 93% under the log10-scale
+  # reading of ED90, about 45% under the 10%-of-Pmax reading.
+  kae_red[["2.7 mg/kg"]] > 85, kae_red[["2.7 mg/kg"]] < 97,
+  kae_red[["5.3 mg/kg"]] > 96
+)
+```
+
+```{r figure-1, fig.cap = "Replicates Figure 1 of Lakshminarayana 2015: log10 day-4 parasitemia against log10 single oral dose for each spiroindolone. Vehicle (dose 0) is drawn at log10 dose -1, as in the paper.", fig.height = 5}
+log_dose <- seq(-1, 2.4, by = 0.02)
+fig1 <- bind_rows(lapply(names(dose_models), function(cmpd) {
+  out <- solve_dose(dose_models[[cmpd]], 10^log_dose)
+  tibble(compound = cmpd, log_dose = log_dose, log_par = log10(out$parasites))
+}))
+ggplot(fig1, aes(log_dose, log_par)) +
+  geom_line() +
+  facet_wrap(~compound, ncol = 4) +
+  labs(x = "log10 dose (mg/kg)", y = "log10 [% parasitemia]",
+       caption = "Replicates Figure 1 of Lakshminarayana 2015 (model lines only; the individual animal data are not published).") +
+  theme_minimal()
+```
+
+# Assumptions and deviations
+
+- **Dose-fractionation design.** Table 1 describes the regimens as a total daily
+  dose given once, twice or three times "over 24 h". The packaged validation
+  gives all doses on the first treatment day only; this reproduces every Table 1
+  index, and repeating the doses on a second day does not.
+- **ED90 reading.** Table 3 prints ED90 but not EZ50. The models derive
+  `EZ50 = ED90 / 9^(1 / |s|)` (ED90 = 90% of the maximal reduction on the
+  log10 scale); see 'ED90 and EZ50' above for the two checks that settle it.
+- **Residual error.** The index models use the reported standard error of the
+  estimate Sy.x (0.34, 0.22 and 0.17 log10 units) as a log-normal SD, converted
+  to the natural-log scale by multiplying by ln(10). The PK model (naive pooled)
+  and the Table 3 NONMEM dose-response fits report no residual or between-animal
+  variability, so those are held at 0.
+- **Bioavailability.** The authors assumed 100% oral bioavailability in NMRI
+  mice because no intravenous NMRI data were collected (Discussion); Vc, Vp, Q
+  and Vmax are therefore apparent (divided by F) values.
+- **Michaelis-Menten units.** Table 4 gives Vmax in ug/h/kg and Km in ug/L.
+  The model compares Km against `1000 * Cc` (ug/L) so that equation 2 returns a
+  clearance in L/h/kg.
+- **%T>TRE at zero exposure.** The %T>TRE model enters the index
+  untransformed, as the Methods state, so it predicts about 31% rather than the
+  fitted Pmax (53.09%) for a vehicle-treated animal; Figure 3C shows the same.
+- **Total concentrations.** All indices use total plasma concentrations
+  (plasma protein binding about 99.8% in mice, supplementary Table S1).
+- **Models not packaged.** Table 2 (CD-1 mouse PK and in vitro potency of the
+  analogs) is noncompartmental analysis only and has no model to package.
+  (-)-6 and (-)-7 had no efficacy and no dose-response fit.
+- **Number of animals.** Neither the PK study nor the pooled dose-response
+  studies state the number of animals, so `n_subjects` is left `NA` for those
+  models.
+- **Errata.** No correction notice for this article was found in Europe PMC as
+  of 2026-11-25.
