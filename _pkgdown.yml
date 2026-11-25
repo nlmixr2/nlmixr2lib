@@ -444,6 +444,10 @@ navbar:
         href: articles/deVriesSchultink_2018_cardiotoxicity.html
       - text: "Anti tryptase (Rymut 2023)"
         href: articles/Rymut_2023_anti_tryptase.html
+      - text: "AntiCD33ADC cyno (Figueroa 2018)"
+        href: articles/Figueroa_2018_antiCD33ADC.html
+      - text: "AntiCD33ADC human (Figueroa 2018)"
+        href: articles/Figueroa_2018_antiCD33ADC.html
       - text: "AntiCD66 pbpk model1 (Kletting 2015)"
         href: articles/Kletting_2015_antiCD66_pbpk.html
       - text: "AntiCD66 pbpk model2 (Kletting 2015)"
@@ -10095,6 +10099,7 @@ articles:
   - articles/FiedlerKelly_2019_fremanezumab
   - articles/FiedlerKelly_2020_fremanezumab_cm
   - articles/FiedlerKelly_2020_fremanezumab_em
+  - articles/Figueroa_2018_antiCD33ADC
   - articles/Fimbo_2023_ivermectin
   - articles/Fisher_2008_fosamprenavir
   - articles/Flint_2017_s_ketamine
