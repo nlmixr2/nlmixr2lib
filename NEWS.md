@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lutz 2026 aficamten exposure-response for post-Valsalva LVOT gradient and LVEF ([doi:10.1002/psp4.70237](https://doi.org/10.1002/psp4.70237)) -- adults with obstructive hypertrophic cardiomyopathy.
+- Add van der Gaag 2026 [18F]F-piflufolastat whole-body PSMA PBPK ([doi:10.1111/cts.70583](https://doi.org/10.1111/cts.70583)) -- men with metastatic prostate cancer.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
