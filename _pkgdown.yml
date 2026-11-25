@@ -7562,6 +7562,18 @@ navbar:
         href: articles/CarlssonPetri_2018_semaglutide.html
       - text: "Semaglutide (Overgaard 2019)"
         href: articles/Overgaard_2019_semaglutide.html
+      - text: "Sembragiline frontalcortex ad (Sturm 2017)"
+        href: articles/Sturm_2017_sembragiline.html
+      - text: "Sembragiline frontalcortex ec (Sturm 2017)"
+        href: articles/Sturm_2017_sembragiline.html
+      - text: "Sembragiline hippocampus ad (Sturm 2017)"
+        href: articles/Sturm_2017_sembragiline.html
+      - text: "Sembragiline hippocampus ec (Sturm 2017)"
+        href: articles/Sturm_2017_sembragiline.html
+      - text: "Sembragiline striatum ad (Sturm 2017)"
+        href: articles/Sturm_2017_sembragiline.html
+      - text: "Sembragiline striatum ec (Sturm 2017)"
+        href: articles/Sturm_2017_sembragiline.html
       - text: "Semimechanistic antibiotic pd (Nielsen 2007)"
         href: articles/Nielsen_2007_semimechanistic_antibiotic_pd.html
       - text: "Sepantronium (Aoyama 2012)"
@@ -11799,6 +11811,7 @@ articles:
   - articles/Stroh_2019_probody_cd166_qsp
   - articles/Struemper_2017_belimumab
   - articles/Struemper_2025_tumorsize_OS_nsclc
+  - articles/Sturm_2017_sembragiline
   - articles/Su_2016_dexmedetomidine
   - articles/Su_2024_tigecycline
   - articles/Su_2025_dual_targeted_cart

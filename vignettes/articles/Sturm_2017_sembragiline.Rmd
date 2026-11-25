@@ -1,0 +1,318 @@
+---
+title: "Sembragiline brain MAO-B inhibition (Sturm 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sembragiline brain MAO-B inhibition (Sturm 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Sturm_2017_sembragiline_hippocampus_ec"))$reference`
+* Article: <https://doi.org/10.1007/s00259-016-3510-6>
+
+Sembragiline (RO4602522 / RG1577 / EVT 302) is a potent, selective and
+reversible inhibitor of monoamine oxidase type B (MAO-B) that was developed as a
+treatment for Alzheimer's disease (AD). Sturm 2017 is an open-label,
+parallel-group, multiple-dose PET study in which patients with AD and healthy
+elderly controls (EC) received oral sembragiline once daily for 6-15 days. Brain
+MAO-B activity was measured with [11C]-L-deprenyl-D2 PET before the first dose
+and again at steady state, just before the last dose. Regional inhibition was
+the percentage reduction of the specific-binding index lambda*k3 from the
+baseline scan, and it was paired with the sembragiline plasma concentration
+drawn just before the second scan.
+
+The authors described the concentration-inhibition relationship with a simple
+Emax model (Methods),
+
+  Inhibition (%) = Emax * Cp / (Cp + EC50),
+
+fitted separately for each population (EC, AD) and for three brain regions of
+interest (hippocampus, striatum, frontal cortex) with Phoenix WinNonlin 6.2.
+Table 2 of the paper reports the six fits, and the package carries one model
+file per fit:
+
+```{r model-list}
+models <- tibble::tribble(
+  ~model,                                       ~population, ~region,
+  "Sturm_2017_sembragiline_hippocampus_ec",     "EC",        "Hippocampus",
+  "Sturm_2017_sembragiline_striatum_ec",        "EC",        "Striatum",
+  "Sturm_2017_sembragiline_frontalcortex_ec",   "EC",        "Frontal cortex",
+  "Sturm_2017_sembragiline_hippocampus_ad",     "AD",        "Hippocampus",
+  "Sturm_2017_sembragiline_striatum_ad",        "AD",        "Striatum",
+  "Sturm_2017_sembragiline_frontalcortex_ad",   "AD",        "Frontal cortex"
+)
+uis <- lapply(models$model, function(nm) rxode2::rxode2(readModelDb(nm)))
+names(uis) <- models$model
+
+models$emax <- vapply(uis, function(u) exp(u$theta[["lemax"]]), numeric(1))
+models$ec50 <- vapply(uis, function(u) exp(u$theta[["lec50"]]), numeric(1))
+
+models |>
+  dplyr::rename(
+    "Model" = model, "Population" = population, "Region" = region,
+    "Emax (%)" = emax, "EC50 (ng/mL)" = ec50
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+The models are PD-only. The sembragiline plasma concentration is supplied as
+the covariate `CP_SEMBRAGILINE_NGML` (ng/mL); there is no PK component, because
+the paper does not publish one (the population PK model it mentions is Roche
+data on file).
+
+# Population
+
+Sixteen subjects received sembragiline (Supplementary Table 1): six healthy
+elderly controls (mean age 70.5 years, SD 10.2; 5 of 6 male; mean weight
+84.8 kg; MMSE 28.3) and ten patients with probable AD (NINCDS/ADRDA and DSM-IV,
+MMSE 17-26; mean age 65.0 years, SD 8.4; 8 of 10 female; mean weight 72.3 kg;
+MMSE 22.1) on stable background AD therapy. All subjects were non-smokers and
+followed a low-tyramine diet. The dose groups were:
+
+* 0.1 mg/day for 13-16 days after a 5 mg loading dose on day 1 (AD, n = 2);
+* 0.2 mg/day on days 2-7 after a 5 mg loading dose (AD n = 3, EC n = 3);
+* 1 mg/day for 14 days (AD n = 3, of whom 2 had a post-dose scan; EC n = 3);
+* 5 mg/day for 6-9 days (AD, n = 2).
+
+The EC fits therefore rest on 6 concentration-inhibition pairs and the AD fits
+on 9.
+
+# Source trace
+
+| Item | Value | Source |
+|---|---|---|
+| Model equation `Occ% = Emax * Cp / (Cp + EC50)` | Cp = 0 at baseline | Methods, "Sembragiline plasma concentration-MAO-B enzyme inhibition relationship" |
+| Inhibition definition, `100% * abs(lambda*k3(drug) - lambda*k3(baseline)) / lambda*k3(baseline)` | -- | Methods, "Quantitation of [11C]-L-deprenyl-D2 binding" |
+| EC hippocampus Emax, EC50 | 89.1%, 2.05 ng/mL | Table 2 |
+| EC striatum Emax, EC50 | 88.8%, 1.67 ng/mL | Table 2 |
+| EC frontal cortex Emax, EC50 | 80.1%, 1.57 ng/mL | Table 2 |
+| AD hippocampus Emax, EC50 | 85.9%, 1.29 ng/mL | Table 2 |
+| AD striatum Emax, EC50 | 87.8%, 1.11 ng/mL | Table 2 |
+| AD frontal cortex Emax, EC50 | 81.1%, 1.06 ng/mL | Table 2 |
+| Residual error, between-subject variability | not reported; `addSd` fixed to 0 | -- |
+| Pre-scan plasma concentrations by dose group | 2.55-96.7 ng/mL | Supplementary Table 2 |
+| Observed mean regional inhibition by dose group | 49.1-86.3% | Table 1 |
+| Demographics | -- | Supplementary Table 1 |
+
+The CV% printed next to each value in Table 2 is the precision of the estimate,
+not between-subject variability.
+
+# Simulation
+
+The model has no states, so a "simulation" is the Emax curve evaluated on a
+grid of plasma concentrations, one record per concentration.
+
+```{r simulate}
+conc_grid <- c(0, exp(seq(log(0.05), log(1000), length.out = 200)))
+events <- data.frame(
+  id = 1L,
+  time = seq_along(conc_grid) - 1,
+  evid = 0L,
+  amt = 0,
+  CP_SEMBRAGILINE_NGML = conc_grid
+)
+
+solve_one <- function(nm, ev) {
+  out <- as.data.frame(rxode2::rxSolve(uis[[nm]], events = ev, keep = "CP_SEMBRAGILINE_NGML"))
+  out$model <- nm
+  out
+}
+
+sim <- dplyr::bind_rows(lapply(models$model, solve_one, ev = events)) |>
+  dplyr::left_join(models, by = "model") |>
+  dplyr::mutate(region = factor(region, levels = c("Hippocampus", "Striatum", "Frontal cortex")))
+head(sim[, c("model", "CP_SEMBRAGILINE_NGML", "maob_inhibition")])
+```
+
+## Closed-form agreement
+
+Every quantity is deterministic, so the solver output must equal the closed
+form to numerical precision.
+
+```{r closed-form}
+closed <- sim$emax * sim$CP_SEMBRAGILINE_NGML / (sim$CP_SEMBRAGILINE_NGML + sim$ec50)
+max_abs_dev <- max(abs(sim$maob_inhibition - closed))
+max_abs_dev
+stopifnot(
+  max_abs_dev < 1e-8,
+  all(sim$maob_inhibition[sim$CP_SEMBRAGILINE_NGML == 0] == 0)
+)
+```
+
+# Replicate published figures
+
+## Figure 3 -- inhibition versus plasma concentration
+
+```{r figure-3-linear, fig.height = 7}
+# Replicates the left-hand (linear concentration axis) panels of Figure 3 of Sturm 2017.
+sim |>
+  dplyr::filter(CP_SEMBRAGILINE_NGML <= 150) |>
+  ggplot(aes(CP_SEMBRAGILINE_NGML, maob_inhibition, colour = population)) +
+  geom_line(linewidth = 1) +
+  facet_wrap(~region, ncol = 1) +
+  scale_colour_manual(values = c(AD = "#28418c", EC = "#c0392b")) +
+  coord_cartesian(xlim = c(0, 150), ylim = c(0, 100)) +
+  labs(
+    x = "Sembragiline plasma concentration (ng/mL)",
+    y = "MAO-B enzyme inhibition (%)",
+    colour = NULL,
+    title = "Figure 3 (linear axis) -- packaged Emax curves"
+  )
+```
+
+```{r figure-3-log, fig.height = 7}
+# Replicates the right-hand (log concentration axis) panels of Figure 3 of Sturm 2017.
+sim |>
+  dplyr::filter(CP_SEMBRAGILINE_NGML > 0) |>
+  ggplot(aes(CP_SEMBRAGILINE_NGML, maob_inhibition, colour = population)) +
+  geom_line(linewidth = 1) +
+  facet_wrap(~region, ncol = 1) +
+  scale_colour_manual(values = c(AD = "#28418c", EC = "#c0392b")) +
+  scale_x_log10(breaks = c(0.01, 0.1, 1, 10, 100, 1000)) +
+  coord_cartesian(xlim = c(0.01, 1000), ylim = c(0, 100)) +
+  labs(
+    x = "Sembragiline plasma concentration (ng/mL, log scale)",
+    y = "MAO-B enzyme inhibition (%)",
+    colour = NULL,
+    title = "Figure 3 (log axis) -- packaged Emax curves"
+  )
+```
+
+As in the published figure, the AD curve lies slightly to the left of the EC
+curve in every region (lower EC50), and the plateaus sit near 86-89% in the
+hippocampus and striatum and near 80-81% in the frontal cortex.
+
+# PD checks (no PKNCA)
+
+The packaged models are PD-only and take the plasma concentration as an input,
+so there is no model-predicted concentration-time profile to integrate and the
+PKNCA validation used elsewhere in the package does not apply. The checks below
+take its place.
+
+## Comparison with the observed inhibition in Table 1
+
+Table 1 reports the mean observed inhibition per dose group, population and
+region, and Supplementary Table 2 reports the mean pre-scan plasma
+concentration of the same groups. Evaluating each fit at its group's mean
+concentration should land close to the group's mean observed inhibition. It
+cannot match exactly: the mean of a saturating function is not the function of
+the mean, and the groups have only 2-3 subjects.
+
+```{r table-1}
+groups <- tibble::tribble(
+  ~population, ~dose,    ~cp,   ~Hippocampus, ~Striatum, ~`Frontal cortex`,
+  "AD",        "0.1 mg",  2.55, 53.8,         59.9,      56.9,
+  "EC",        "0.2 mg",  3.29, 51.6,         56.1,      51.7,
+  "AD",        "0.2 mg",  7.06, 76.1,         77.1,      70.2,
+  "EC",        "1 mg",   33.9,  83.9,         84.7,      76.2,
+  "AD",        "1 mg",   41.9,  79.2,         85.0,      79.7,
+  "AD",        "5 mg",   96.7,  83.3,         84.8,      77.8
+) |>
+  tidyr::pivot_longer(
+    c(Hippocampus, Striatum, `Frontal cortex`),
+    names_to = "region", values_to = "observed"
+  ) |>
+  dplyr::left_join(models, by = c("population", "region"))
+
+pred_events <- function(cp) {
+  data.frame(id = 1L, time = 0, evid = 0L, amt = 0, CP_SEMBRAGILINE_NGML = cp)
+}
+groups$predicted <- vapply(seq_len(nrow(groups)), function(i) {
+  out <- as.data.frame(rxode2::rxSolve(uis[[groups$model[i]]], events = pred_events(groups$cp[i])))
+  out$maob_inhibition[1]
+}, numeric(1))
+groups$difference <- groups$predicted - groups$observed
+
+groups |>
+  dplyr::select(population, dose, cp, region, observed, predicted, difference) |>
+  dplyr::rename(
+    "Population" = population, "Dose" = dose,
+    "Mean Cp (ng/mL)" = cp, "Region" = region,
+    "Observed inhibition (%)" = observed,
+    "Predicted at mean Cp (%)" = predicted,
+    "Predicted - observed (points)" = difference
+  ) |>
+  knitr::kable(digits = c(0, 0, 2, 0, 1, 1, 1))
+
+stopifnot(
+  # A mis-transcribed Emax or EC50 shifts every row of its fit by several
+  # points; across the 18 rows the agreement is within 4.1 points.
+  max(abs(groups$difference)) < 6,
+  abs(median(groups$difference)) < 3
+)
+```
+
+## Claims in the text
+
+The Results state that Emax was 80-89% and EC50 1-2 ng/mL across regions and
+populations, that AD patients had slightly lower EC50 than EC subjects, and the
+Discussion states that concentrations around 20 ng/mL are needed for
+near-complete inhibition. With a simple Emax model the concentration giving 90%
+of Emax is 9 x EC50.
+
+```{r claims}
+claims <- models |>
+  dplyr::mutate(
+    c90 = 9 * ec50,
+    pct_of_emax_at_20 = 100 * 20 / (20 + ec50)
+  )
+claims |>
+  dplyr::select(population, region, c90, pct_of_emax_at_20) |>
+  dplyr::rename(
+    "Population" = population, "Region" = region,
+    "Concentration for 90% of Emax (ng/mL)" = c90,
+    "Percent of Emax reached at 20 ng/mL" = pct_of_emax_at_20
+  ) |>
+  knitr::kable(digits = 1)
+
+ec50_wide <- tidyr::pivot_wider(models[, c("population", "region", "ec50")],
+  names_from = population, values_from = ec50
+)
+stopifnot(
+  all(models$emax >= 80 & models$emax <= 89.5),
+  all(claims$c90 < 20),
+  all(ec50_wide$AD < ec50_wide$EC)
+)
+```
+
+# Assumptions and deviations
+
+* **Six independent fits, six files.** The authors fitted the Emax model
+  separately for each population and region of interest, so each fit is its own
+  model file; there is no pooled model and no population covariate. Table 1
+  also reports inhibition in the whole brain, thalamus and parietal cortex, but
+  the paper gives Emax and EC50 only for the three regions packaged here.
+* **No variability terms.** The fits were naive-pooled nonlinear regressions in
+  Phoenix WinNonlin. The paper reports neither a residual error model nor
+  between-subject variability (the CV% in Table 2 is the precision of each
+  estimate), so the additive residual SD is fixed to 0 and the models give
+  typical values only.
+* **Steady state only.** Every data pair is a steady-state trough concentration
+  and the inhibition measured just after it, plus the drug-free baseline.
+  Driving the models with a time-varying concentration assumes that inhibition
+  follows the plasma concentration without delay, which the paper did not test.
+* **No PK model.** The sembragiline population PK model (and the population PD
+  model the paper mentions, built on healthy-volunteer and AD data) are Roche
+  data on file and are not published in this paper. Users must supply
+  `CP_SEMBRAGILINE_NGML` from observed data or their own PK model. The paper
+  notes capacity-limited binding of sembragiline, which is why a 5 mg loading
+  dose preceded the 0.1 and 0.2 mg regimens.
+* **Output name.** The observation `maob_inhibition` (brain MAO-B enzyme
+  inhibition, %) is not yet a registered output name, so
+  `checkModelConventions()` reports one warning for each file. It follows the
+  spelled-out form of `hydroxyapatite_inhibition`, and a second model of
+  MAO-B inhibition would be the trigger to register it.
+* **Table 1 comparison.** The predicted values use the group-mean concentration
+  from Supplementary Table 2. For the AD 1 mg group that mean covers 3 subjects
+  while the observed inhibition covers the 2 subjects with a post-dose scan.
