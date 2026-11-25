@@ -5202,6 +5202,10 @@ navbar:
         href: articles/Lyauk_2016_methylphenidate.html
       - text: "Methylphenidate (Teuscher 2015)"
         href: articles/Teuscher_2015_methylphenidate.html
+      - text: "Methylphenidate ir (Gomeni 2019)"
+        href: articles/Gomeni_2019_methylphenidate.html
+      - text: "Methylphenidate ivivc (Gomeni 2019)"
+        href: articles/Gomeni_2019_methylphenidate.html
       - text: "Methylprednisolone (Cleary 2026)"
         href: articles/Cleary_2026_methylprednisolone.html
       - text: "Methylprednisolone il10 (Hornik 2019)"
@@ -10219,6 +10223,7 @@ articles:
   - articles/Goggin_2004_emfilermin
   - articles/Golubovic_2019_sirolimus
   - articles/Golzaryan_2025_lu177psmaIT_pbpk
+  - articles/Gomeni_2019_methylphenidate
   - articles/Gong_2023_pemigatinib
   - articles/Gong_2025_talquetamab
   - articles/GonzalezSales_2015_testosterone

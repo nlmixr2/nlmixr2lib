@@ -20760,6 +20760,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Assmus_2022_emodepside.R` (tablet A: +243% mean transit time, -31.4% relative bioavailability; tablet B: +124% mean transit time, -20.0% relative bioavailability; fractional multipliers `(1 + e * FORM)` on each parameter).
 - **Notes:** Members of the `FORM_<drug>_<formulation>` family. Specific scope because the contrasts are particular to the emodepside formulations developed by Bayer / DNDi. ASD-tablet B is the formulation carried into phase II. Distinct from the generic `FORM_TABLET` / `FORM_SOLUTION`, which would not separate the two tablet variants.
 
+### FORM_METHYLPHENIDATE_MEDIUM, FORM_METHYLPHENIDATE_FAST (**canonical for the medium- and fast-release Ritalin LA methylphenidate formulation indicators**)
+- **Description:** `FORM_METHYLPHENIDATE_MEDIUM` = 1 when the dose is the medium-release Ritalin LA (bimodal extended-release capsule) formulation; `FORM_METHYLPHENIDATE_FAST` = 1 when it is the fast-release formulation. Both 0 = the slow-release formulation. The three formulations differ only in their in vitro dissolution rate (Wang 2004 Biopharm Drug Dispos 25:91).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 for both (slow-release formulation).
+- **Source aliases:**
+  - Subject `ID` in the Gomeni 2019 NONMEM control stream, which fitted mean profiles with one ID per formulation (`ID.EQ.1` slow, `ID.EQ.2` medium, `ID.EQ.3` fast); derive `FORM_METHYLPHENIDATE_MEDIUM = as.integer(ID == 2)`, `FORM_METHYLPHENIDATE_FAST = as.integer(ID == 3)`.
+- **Example models:** `Gomeni_2019_methylphenidate_ivivc.R` (each indicator switches the fixed in vitro double-Weibull set, `lra_<formulation>` / `lgam1_<formulation>` / `lra2_<formulation>` / `lgam2_<formulation>` / `logitfrel_<formulation>`, from the slow set to the medium or fast set; the IVIVC time scaling and relative bioavailability are common to all three).
+- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family, with the drug token spelled out (`METHYLPHENIDATE`, not `MPH`) per the maintainers' ruling of 2026-11-25. Setting both indicators to 1 is not a valid formulation. A new methylphenidate formulation is better modelled by overriding the slow set's values than by adding an indicator.
+
 ### FORM_UPA_ER (**canonical for the upadacitinib extended-release tablet indicator**)
 - **Description:** Upadacitinib (UPA) formulation indicator. 1 = the dose was given as the extended-release tablet; 0 = given as the immediate-release capsule (the reference formulation). Per-dose-occasion indicator. The contrast is between two dosage forms of the same drug with materially different absorption behaviour, so it belongs to the `FORM_<drug>_<formulation>` drug-specific branch of the `FORM_*` family rather than to the generic oral solid-dosage members.
 - **Units:** (binary)
