@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chen 2019 cinacalcet PK/PD ([doi:10.1111/bcp.13900](https://doi.org/10.1111/bcp.13900)) -- adults and children with secondary hyperparathyroidism on dialysis, and healthy adults.
+- Add Zhang 2019 cinobufotalin ([doi:10.3389/fphar.2019.00521](https://doi.org/10.3389/fphar.2019.00521)) -- male Sprague-Dawley rats, normal and diethylnitrosamine-induced hepatocellular carcinoma.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

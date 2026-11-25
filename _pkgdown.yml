@@ -2000,8 +2000,8 @@ navbar:
         href: articles/Hanke_2020_cimetidine.html
       - text: "Cimetidine pbpk (Nishiyama 2019)"
         href: articles/Nishiyama_2019_metformin_cimetidine.html
-      - text: "Cinacalcet (Chen 2019)"
-        href: articles/Chen_2019_cinacalcet.html
+      - text: "Cinobufotalin rat (Zhang 2019)"
+        href: articles/Zhang_2019_cinobufotalin.html
       - text: "Cipaglucosidase (Hajjar 2018)"
         href: articles/Hajjar_2018_pompe_disease.html
       - text: "Cipargamin (Hien 2017)"
@@ -14062,6 +14062,7 @@ articles:
   - articles/Zhang_2017_danofloxacin_chicken
   - articles/Zhang_2018_flurbiprofen
   - articles/Zhang_2018_sunitinib
+  - articles/Zhang_2019_cinobufotalin
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2019b_nivolumab
   - articles/Zhang_2020_teicoplanin
