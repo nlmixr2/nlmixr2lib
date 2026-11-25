@@ -8342,6 +8342,8 @@ navbar:
         href: articles/Jamois_2025_tocilizumab.html
       - text: "Tofacitinib (Chang 2024)"
         href: articles/Chang_2024_tofacitinib.html
+      - text: "Tofacitinib (Mukherjee 2018)"
+        href: articles/Mukherjee_2018_tofacitinib.html
       - text: "Tofacitinib (Tse 2020)"
         href: articles/Tse_2020_tofacitinib.html
       - text: "Tofacitinib (Tsuchiwata 2026)"
@@ -8352,6 +8354,24 @@ navbar:
         href: articles/Xie_2019_tofacitinib.html
       - text: "Tofacitinib acr (Menon 2025)"
         href: articles/Menon_2025_tofacitinib.html
+      - text: "Tofacitinib clinrem cav (Mukherjee 2018)"
+        href: articles/Mukherjee_2018_tofacitinib.html
+      - text: "Tofacitinib clinrem ctrough (Mukherjee 2018)"
+        href: articles/Mukherjee_2018_tofacitinib.html
+      - text: "Tofacitinib clinrem dose (Mukherjee 2018)"
+        href: articles/Mukherjee_2018_tofacitinib.html
+      - text: "Tofacitinib clinresp cav (Mukherjee 2018)"
+        href: articles/Mukherjee_2018_tofacitinib.html
+      - text: "Tofacitinib clinresp ctrough (Mukherjee 2018)"
+        href: articles/Mukherjee_2018_tofacitinib.html
+      - text: "Tofacitinib clinresp dose (Mukherjee 2018)"
+        href: articles/Mukherjee_2018_tofacitinib.html
+      - text: "Tofacitinib endoimp cav (Mukherjee 2018)"
+        href: articles/Mukherjee_2018_tofacitinib.html
+      - text: "Tofacitinib endoimp ctrough (Mukherjee 2018)"
+        href: articles/Mukherjee_2018_tofacitinib.html
+      - text: "Tofacitinib endoimp dose (Mukherjee 2018)"
+        href: articles/Mukherjee_2018_tofacitinib.html
       - text: "Tofacitinib hb (Menon 2025)"
         href: articles/Menon_2025_tofacitinib.html
       - text: "Tofacitinib hb decrease (Menon 2025)"
@@ -11169,6 +11189,7 @@ articles:
   - articles/Mukai_2019_mogamulizumab
   - articles/Mukap_2025_amoxicillin
   - articles/Mukherjee_2018_amlodipine
+  - articles/Mukherjee_2018_tofacitinib
   - articles/Mukker_2026_tuvusertib
   - articles/Mukker_2026_tuvusertib_QTc
   - articles/Mukonzo_2009_efavirenz

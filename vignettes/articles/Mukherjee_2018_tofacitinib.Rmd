@@ -1,0 +1,675 @@
+---
+title: "Tofacitinib in ulcerative colitis (Mukherjee 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tofacitinib in ulcerative colitis (Mukherjee 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Models and source
+
+Mukherjee 2018 analysed the 8-week phase 2 dose-ranging induction trial of
+tofacitinib in moderately to severely active ulcerative colitis (A3921063,
+NCT00787202). A one-compartment population PK model supplied each patient's
+steady-state average and trough concentrations (C~av,ss~, C~trough,ss~), and
+landmark logistic regressions related week-8 efficacy to three exposure
+metrics: dose, C~av,ss~ and C~trough,ss~. The paper reports all nine
+exposure-response fits (three endpoints by three metrics) in Table 2, so each
+is a separate model file; all ten files share this vignette.
+
+| Model | Output | Drug term | Covariates on the logit |
+|---|---|---|---|
+| `Mukherjee_2018_tofacitinib` | `Cc` (ng/mL) | 1-compartment, first-order absorption, lag | none |
+| `..._clinrem_dose` / `_cav` / `_ctrough` | `prob_clinrem` | Emax | baseline total Mayo score, baseline CRP |
+| `..._clinresp_dose` / `_cav` / `_ctrough` | `prob_clinresp` | linear | baseline total Mayo score, baseline CRP |
+| `..._endoimp_dose` / `_cav` | `prob_endoimp` | linear | baseline total Mayo score, prior TNFi failure |
+| `..._endoimp_ctrough` | `prob_endoimp` | Emax | baseline total Mayo score, prior TNFi failure |
+
+Endpoint definitions (Methods, "Efficacy assessments"):
+
+* **Clinical remission** (`prob_clinrem`): total Mayo score <= 2 with no
+  individual subscore > 1.
+* **Clinical response** (`prob_clinresp`, the trial's primary endpoint): a
+  decrease from baseline in total Mayo score of >= 3 points and >= 30%, with a
+  decrease in rectal-bleeding subscore of >= 1 point or an absolute
+  rectal-bleeding subscore of 0 or 1.
+* **Mucosal healing** (`prob_endoimp`): Mayo endoscopic subscore of 0 or 1,
+  derived post hoc. The library calls this absolute <= 1 endoscopic criterion
+  endoscopic improvement.
+
+* Citation: `r rxode2::rxode(readModelDb("Mukherjee_2018_tofacitinib"))$reference`
+* Article: <https://doi.org/10.1111/bcp.13523> (open access, PMC5980553). The
+  Supporting Information holds Figures S1-S5 only, with no parameter values.
+  No erratum was found (Europe PMC citation search, 2026-11-25).
+
+```{r load-models}
+# readModelDb() returns the model function; rxode2::rxode() parses it once.
+mod_pk <- rxode2::rxode(readModelDb("Mukherjee_2018_tofacitinib"))
+
+er_names <- c(
+  clinrem_dose = "Mukherjee_2018_tofacitinib_clinrem_dose",
+  clinrem_cav = "Mukherjee_2018_tofacitinib_clinrem_cav",
+  clinrem_ctrough = "Mukherjee_2018_tofacitinib_clinrem_ctrough",
+  clinresp_dose = "Mukherjee_2018_tofacitinib_clinresp_dose",
+  clinresp_cav = "Mukherjee_2018_tofacitinib_clinresp_cav",
+  clinresp_ctrough = "Mukherjee_2018_tofacitinib_clinresp_ctrough",
+  endoimp_dose = "Mukherjee_2018_tofacitinib_endoimp_dose",
+  endoimp_cav = "Mukherjee_2018_tofacitinib_endoimp_cav",
+  endoimp_ctrough = "Mukherjee_2018_tofacitinib_endoimp_ctrough"
+)
+mod_er <- lapply(er_names, function(nm) rxode2::rxode(readModelDb(nm)))
+```
+
+# Population
+
+Table 1 of Mukherjee 2018 summarises the 188 analysed patients: 47 on placebo
+and 31, 32, 30 and 48 on tofacitinib 0.5, 3, 10 and 15 mg twice daily. Of the
+194 treated patients, five had no plasma concentrations and one was never
+treated; those six were excluded. The patients had a mean age of 42.1 years
+(range 19-77), a mean weight of 74.8 kg (41.4-126), and 54.8% were male. Mean
+baseline total Mayo score was 8.2 (SD 1.6, range 3-12) and mean baseline CRP
+13.9 mg/L (SD 21, range 0.2-124). At baseline 43.1% were on corticosteroids,
+and 18.6% had failed a TNF inhibitor in the previous 12 months. The PK model
+was fitted to the 141 tofacitinib-treated patients, using samples taken before
+dosing and 0.25, 0.5, 1 and 2-3 h after it at the baseline and week-8 visits.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Structure: 1-compartment, first-order absorption, lag | -- | Results, "Pharmacokinetics" |
+| CL/F (`lcl`) | 22.4 L/h | Results, "Pharmacokinetics" |
+| V/F (`lvc`) | 94.2 L | Results, "Pharmacokinetics" |
+| Ka (`lka`) | 2.83 1/h | Results, "Pharmacokinetics" |
+| Lag time (`ltlag`) | 0.16 h, fixed | Results, "Pharmacokinetics" |
+| IIV CL/F (`etalcl`) | 31.4% CV | Results, "Pharmacokinetics" |
+| IIV Ka (`etalka`) | 87.5% CV | Results, "Pharmacokinetics" |
+| Residual (`propSd`) | 47.5% | Results, "Pharmacokinetics" |
+| C~av,ss~ = Dose / (12 CL/F) | -- | Equation 1 |
+| C~trough,ss~ closed form | -- | Equation 2 |
+| logit p = beta0 + betaD + sum(beta_m X_m) | -- | Methods, "Data analysis and modelling" |
+| betaD = Emax C / (E50 + C) or slope * C | -- | Methods, "Data analysis and modelling" |
+| Intercept `logite0`, `emax_*`, `led50_*` / `lec50_*`, `lslope_*` | per model | Table 2 |
+| `e_crp_*`, `e_score_mayo_*`, `e_biologic_ir_*` | per model | Table 2 |
+| Mayo score divisor 12, CRP divisor 7 mg/L | -- | identified by the maintainers (section "Covariate scaling") |
+
+Table 2 transcribed (point estimate and 95% CI as printed):
+
+| Endpoint | Metric | Intercept | Emax | E50 | Slope | CRP | Mayo | Prior TNFi |
+|---|---|---|---|---|---|---|---|---|
+| Remission | Dose | 1.81 (-0.35, 3.97) | 2.35 (1.25, 3.45) | 1.06 mg (0.17, 6.49) | | -0.104 | -5.97 | |
+| Remission | C~av,ss~ | 1.83 (-0.33, 3.99) | 2.35 (1.25, 3.45) | 3.86 ng/mL (0.63, 23.55) | | -0.105 | -6 | |
+| Remission | C~trough,ss~ | 1.91 (-0.23, 4.05) | 2.35 (1.26, 3.44) | 0.84 ng/mL (0.14, 4.86) | | -0.105 | -6.04 | |
+| Response | Dose | 0.951 (-0.84, 2.74) | | | 0.11 /mg (0.07, 0.18) | -0.103 | -1.85 | |
+| Response | C~av,ss~ | 0.93 (-0.87, 2.73) | | | 0.03 per ng/mL (0.02, 0.05) | -0.104 | -1.81 | |
+| Response | C~trough,ss~ | 1.08 (-0.69, 2.85) | | | 0.12 per ng/mL (0.07, 0.22) | -0.0981 | -1.84 | |
+| Mucosal healing | Dose | 3.21 (1.37, 5.05) | | | 0.08 /mg (0.04, 0.15) | | -5.18 | -0.798 |
+| Mucosal healing | C~av,ss~ | 3.25 (1.41, 5.09) | | | 0.02 per ng/mL (0.01, 0.04) | | -5.15 | -0.805 |
+| Mucosal healing | C~trough,ss~ | 3.12 (1.27, 4.97) | 1.41 (0.41, 2.41) | 1.71 ng/mL (0.13, 21.85) | | | -5.35 | -0.789 |
+
+The CIs of E50 and of the slopes are symmetric on the log scale, not the
+linear one: for example ln(1.06) - ln(0.17) = 1.83 = ln(6.49) - ln(1.06). Table
+2's footnote also flags E50 as "(log scale)". Both are therefore carried as log
+parameters (`led50_*`, `lec50_*`, `lslope_*`); the intercepts, Emax and the
+covariate coefficients have linearly symmetric CIs and are carried as printed.
+
+# Pharmacokinetics
+
+## Typical-value checks
+
+The paper states a half-life of 2.9 h "based on mean CL/F and V/F estimates".
+
+```{r pk-typical}
+th <- mod_pk$theta
+cl_typ <- exp(th[["lcl"]])
+v_typ <- exp(th[["lvc"]])
+ka_typ <- exp(th[["lka"]])
+thalf <- log(2) * v_typ / cl_typ
+round(thalf, 3)
+stopifnot(abs(thalf - 2.9) < 0.05)
+```
+
+## Simulated cohort at steady state
+
+Each arm is 200 virtual patients dosed twice daily for 7 days, observed
+densely over the last 12-h interval (156-168 h). The paper derives C~av,ss~
+from Equation 1 and C~trough,ss~ from Equation 2, using individual parameters.
+Both are computed here from each simulated patient's own `ka`, `cl` and `vc`.
+PKNCA is then run on the simulated profiles.
+
+```{r pk-cohort}
+rxode2::rxSetSeed(20180601)
+arms <- c(0.5, 3, 10, 15)
+n_per_arm <- 200
+dose_times <- seq(0, 156, by = 12)
+obs_times <- 156 + c(0, seq(0.05, 1, by = 0.05), seq(1.25, 12, by = 0.25))
+
+subjects <- tibble(id = seq_len(n_per_arm * length(arms)),
+                   dose_mg = rep(arms, each = n_per_arm))
+pk_events <- bind_rows(
+  tidyr::expand_grid(subjects, time = dose_times) |>
+    mutate(amt = dose_mg, evid = 1L, cmt = "depot"),
+  tidyr::expand_grid(subjects, time = obs_times) |>
+    mutate(amt = 0, evid = 0L, cmt = "central")
+) |>
+  arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::select(id, time, amt, evid, cmt, dose_mg)
+
+sim <- rxode2::rxSolve(mod_pk, pk_events, keep = "dose_mg",
+                       returnType = "data.frame")
+
+# Equation 2 of Mukherjee 2018 (absorption lag ignored, as in the paper).
+ctrough_eq2 <- function(dose_mg, ka, cl, v, tau = 12) {
+  k <- cl / v
+  1000 * dose_mg * ka / (v * (ka - k)) *
+    (exp(-k * tau) / (1 - exp(-k * tau)) - exp(-ka * tau) / (1 - exp(-ka * tau)))
+}
+
+indiv <- sim |>
+  group_by(id) |>
+  slice(1) |>
+  ungroup() |>
+  transmute(id, dose_mg, ka, cl, vc,
+            cav_eq1 = 1000 * dose_mg / (12 * cl),
+            ctrough_eq2 = ctrough_eq2(dose_mg, ka, cl, vc))
+```
+
+```{r pk-profile, fig.cap = "Simulated steady-state profiles over the last dosing interval (median and 5th-95th percentiles). Compare with the shape of Figure S1 of Mukherjee 2018, which plots the same quantities on a log scale."}
+sim |>
+  mutate(tad = time - 156, arm = factor(paste(dose_mg, "mg b.d."),
+                                        levels = paste(arms, "mg b.d."))) |>
+  group_by(arm, tad) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+            .groups = "drop") |>
+  ggplot(aes(tad, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~arm, nrow = 1) +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Tofacitinib (ng/mL)")
+```
+
+## PKNCA
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  mutate(arm = paste(dose_mg, "mg b.d.")) |>
+  dplyr::select(id, time, Cc, arm)
+dose_df <- pk_events |>
+  dplyr::filter(evid == 1) |>
+  mutate(arm = paste(dose_mg, "mg b.d.")) |>
+  dplyr::select(id, time, amt, arm)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+intervals <- data.frame(start = 156, end = 168, cmax = TRUE, tmax = TRUE,
+                        auclast = TRUE, cav = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+# The trough is read directly off the profile 12 h after the last dose; with a
+# 0.16 h lag the interval minimum (cmin) falls just after the dose instead.
+ctrough_df <- sim |>
+  dplyr::filter(time == max(obs_times)) |>
+  dplyr::transmute(arm = paste(dose_mg, "mg b.d."), id, PPTESTCD = "ctrough", PPORRES = Cc)
+nca_long <- dplyr::bind_rows(
+  as.data.frame(nca_res) |>
+    dplyr::select(arm, id, PPTESTCD, PPORRES) |>
+    mutate(id = as.integer(as.character(id))),
+  ctrough_df |> mutate(id = as.integer(as.character(id)))
+)
+stopifnot(!anyNA(nca_long$PPORRES), sum(nca_long$PPTESTCD == "ctrough") == nrow(indiv))
+```
+
+The numerical C~av,ss~ (PKNCA AUC~tau~ / 12) uses the same drawn parameters
+as Equation 1, so the two differ only by trapezoidal error. The numerical
+trough is taken at 12 h after the dose, which is 11.84 h after the end of the
+lag, while Equation 2 ignores the lag. So the simulated trough sits above
+Equation 2 by about exp(k * 0.16), roughly 4% for the typical patient.
+
+```{r pk-identity}
+chk <- nca_long |>
+  dplyr::filter(PPTESTCD %in% c("cav", "ctrough")) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  mutate(id = as.integer(as.character(id))) |>
+  dplyr::left_join(indiv, by = "id") |>
+  mutate(cav_err_pct = 100 * (cav / cav_eq1 - 1),
+         trough_ratio = ctrough / ctrough_eq2)
+summary(chk$cav_err_pct)
+summary(chk$trough_ratio)
+stopifnot(
+  max(abs(chk$cav_err_pct)) < 2,
+  median(chk$trough_ratio) > 1, median(chk$trough_ratio) < 1.10
+)
+```
+
+## Comparison with Figure 1
+
+Figure 1 of Mukherjee 2018 plots the individual C~av,ss~ and C~trough,ss~
+values with their medians by dose. The medians were digitised by the
+maintainers from the black median symbols after calibrating the axes on their
+tick marks.
+
+```{r fig1-compare}
+fig1 <- tibble::tribble(
+  ~arm,          ~cav,  ~ctrough,
+  "0.5 mg b.d.", 1.55,  0.21,
+  "3 mg b.d.",   10.6,  2.02,
+  "10 mg b.d.",  35.9,  7.08,
+  "15 mg b.d.",  51.3,  9.55
+)
+sim_metrics <- indiv |>
+  mutate(arm = paste(dose_mg, "mg b.d.")) |>
+  dplyr::select(arm, id, cav = cav_eq1, ctrough = ctrough_eq2) |>
+  tidyr::pivot_longer(c(cav, ctrough), names_to = "PPTESTCD", values_to = "PPORRES")
+
+nlmixr2lib::ncaComparisonTable(
+  simulated = sim_metrics,
+  reference = fig1,
+  by = "arm",
+  units = c(cav = "ng/mL", ctrough = "ng/mL"),
+  tolerance_pct = 20
+) |>
+  knitr::kable(caption = "Simulated (Equations 1 and 2) vs. digitised Figure 1 medians. * differs by >20%.")
+```
+
+At 3-15 mg the simulated C~av,ss~ medians sit 2-11% above Figure 1 and the
+troughs 4-24% above. The paper's medians come from post hoc estimates of
+30-48 patients per arm, which are shrunk towards the typical value. At
+0.5 mg both symbols sit within a few pixels of zero on the figure's axes: one
+pixel is 0.2 ng/mL for C~av,ss~ and 0.1 ng/mL for C~trough,ss~. Those two
+medians therefore cannot be read to better than tens of percent, and the
+starred rows there are a reading limit.
+
+```{r fig1-gate}
+pct_cav <- sim_metrics |>
+  dplyr::filter(PPTESTCD == "cav") |>
+  group_by(arm) |>
+  summarise(med = median(PPORRES), .groups = "drop") |>
+  dplyr::left_join(fig1, by = "arm") |>
+  mutate(pct = 100 * (med / cav - 1))
+# Structural check on the centre: a mistranscribed CL/F, dose or unit moves
+# every arm by tens of percent.
+stopifnot(abs(median(pct_cav$pct)) < 15)
+# The population median of Cav per mg is exactly 1000 / (12 * CL/F) because
+# the CL/F random effect is log-normal.
+cav_per_mg <- median(indiv$cav_eq1 / indiv$dose_mg)
+c(simulated = cav_per_mg, typical = 1000 / (12 * cl_typ))
+stopifnot(abs(cav_per_mg / (1000 / (12 * cl_typ)) - 1) < 0.05)
+```
+
+# Covariate scaling
+
+Table 2 prints the coefficients for baseline total Mayo score and baseline CRP
+but not the scale on which the covariates enter. Read per raw unit they cannot
+be right. A coefficient of -5.97 per Mayo point would lower the odds of
+remission 390-fold for one point of baseline severity, and the remission
+intercept of 1.81 then gives no plausible placebo rate. The maintainers
+identified the scaling from three independent pieces of evidence in the paper,
+all computed below on a deterministic virtual cohort:
+
+* Baseline Mayo score uses the Table 1 distribution (mean 8.2, SD 1.6,
+  integers 3-12).
+* CRP is log-normal with the Table 1 mean of 13.9 mg/L and SD of 21 mg/L.
+* Prior TNFi failure occurs in 18.6% of patients.
+* The arm sizes are those of the trial.
+
+```{r cohort}
+mayo_lv <- 3:12
+mayo_w <- diff(pnorm(c(-Inf, seq(3.5, 11.5, by = 1), Inf), 8.2, 1.6))
+crp_sdlog <- sqrt(log(1 + (21 / 13.9)^2))
+crp_meanlog <- log(13.9) - crp_sdlog^2 / 2
+crp_quant <- function(k) qlnorm((seq_len(k) - 0.5) / k, crp_meanlog, crp_sdlog)
+
+make_cohort <- function(k_crp) {
+  tidyr::expand_grid(SCORE_MAYO = mayo_lv, CRP = crp_quant(k_crp),
+                     BIOLOGIC_IR = 0:1) |>
+    mutate(w = mayo_w[match(SCORE_MAYO, mayo_lv)] / k_crp *
+             ifelse(BIOLOGIC_IR == 1, 0.186, 0.814))
+}
+arm_n <- c(`0` = 47, `0.5` = 31, `3` = 32, `10` = 30, `15` = 48)
+expit <- function(x) 1 / (1 + exp(-x))
+```
+
+**1. Placebo rates.** The intercept multiplies "zero covariate", so the
+placebo rate predicted for the trial population depends directly on the
+divisor. Dividing the Mayo score by 12 (the maximum of the scale) reproduces
+the observed placebo rates of all three endpoints: 0.11, 0.43 and 0.35, from
+the bar labels of Figure 2 and Figure S2 and the observed symbol of Figure S5B
+digitised by the maintainers. Leaving it unscaled, or dividing by the mean
+score, does not.
+
+```{r placebo-rates}
+coh <- make_cohort(200)
+placebo_rate <- function(endpoint, mayo_div, crp_div) {
+  th <- mod_er[[paste0(endpoint, "_dose")]]$theta
+  crp_term <- if (endpoint == "endoimp") 0 else th[[paste0("e_crp_", endpoint)]] * coh$CRP / crp_div
+  tnf_term <- if (endpoint == "endoimp") th[["e_biologic_ir_endoimp"]] * coh$BIOLOGIC_IR else 0
+  eta <- th[["logite0"]] + th[[paste0("e_score_mayo_", endpoint)]] * coh$SCORE_MAYO / mayo_div +
+    crp_term + tnf_term
+  sum(coh$w * expit(eta))
+}
+hyp <- tibble::tribble(
+  ~hypothesis,                         ~mayo_div, ~crp_div,
+  "raw units (as printed)",            1,         1,
+  "divided by the population mean",    8.2,       13.9,
+  "Mayo / 12, CRP raw (mg/L)",         12,        1,
+  "Mayo / 12, CRP in mg/dL (/10)",     12,        10,
+  "Mayo / 12, CRP / 7 mg/L (packaged)", 12,       7
+)
+placebo_tab <- hyp |>
+  rowwise() |>
+  mutate(remission = placebo_rate("clinrem", mayo_div, crp_div),
+         response = placebo_rate("clinresp", mayo_div, crp_div),
+         mucosal_healing = placebo_rate("endoimp", mayo_div, crp_div)) |>
+  ungroup()
+placebo_tab |>
+  dplyr::select(-mayo_div, -crp_div) |>
+  dplyr::rename(Hypothesis = hypothesis, Remission = remission,
+                Response = response, `Mucosal healing` = mucosal_healing) |>
+  knitr::kable(digits = 3, caption = "Predicted placebo rates; observed 0.11, 0.43 and 0.35.")
+pk_row <- placebo_tab[placebo_tab$mayo_div == 12 & placebo_tab$crp_div == 7, ]
+stopifnot(
+  abs(pk_row$remission - 0.11) < 0.04,
+  abs(pk_row$response - 0.43) < 0.08,
+  abs(pk_row$mucosal_healing - 0.35) < 0.08,
+  placebo_tab$remission[1] < 0.001,
+  placebo_tab$response[placebo_tab$mayo_div == 12 & placebo_tab$crp_div == 1] < 0.3
+)
+```
+
+**2. Confidence-interval widths.** The paper prints a 95% CI for every
+estimate. The width of a CI depends on the scale of its covariate through the
+Fisher information of the trial's 188 patients. Evaluated at the published
+point estimates, the information predicts each CI half-width. The predicted
+widths of the remission intercept, Emax and log E50 agree with the printed
+ones for a Mayo divisor of 12, and are 40-85% too wide when the score is
+divided by its mean. The CRP coefficient's width then places the CRP divisor
+near 6.6 mg/L. The response model, checked the same way by the maintainers,
+places it near 6 mg/L. Both are close to the population median CRP (7.7 mg/L
+for the log-normal matched to Table 1). Raw mg/L makes the CRP interval about
+half as wide as printed, and it also fails the placebo-response check
+above.
+
+```{r fisher}
+fisher_halfwidth <- function(mayo_div, crp_div) {
+  th <- mod_er$clinrem_dose$theta
+  e50 <- exp(th[["led50_clinrem"]])
+  emax <- th[["emax_clinrem"]]
+  info <- matrix(0, 5, 5)
+  for (d in as.numeric(names(arm_n))) {
+    f <- coh$SCORE_MAYO / mayo_div
+    g <- coh$CRP / crp_div
+    eta <- th[["logite0"]] + emax * d / (e50 + d) + th[["e_crp_clinrem"]] * g +
+      th[["e_score_mayo_clinrem"]] * f
+    p <- expit(eta)
+    # gradient of eta wrt (intercept, Emax, log E50, CRP coef, Mayo coef)
+    X <- cbind(1, d / (e50 + d), -emax * d * e50 / (e50 + d)^2, g, f)
+    info <- info + arm_n[[as.character(d)]] * crossprod(X, X * (coh$w * p * (1 - p)))
+  }
+  1.96 * sqrt(diag(solve(info)))
+}
+printed <- c(intercept = 2.16, emax = 1.10, log_e50 = 1.82, crp = 0.155, mayo = 3.23)
+ci_tab <- hyp[-1, ] |>
+  rowwise() |>
+  mutate(hw = list(setNames(fisher_halfwidth(mayo_div, crp_div), names(printed)))) |>
+  ungroup() |>
+  tidyr::unnest_wider(hw)
+ci_ratio <- ci_tab |>
+  mutate(across(all_of(names(printed)), ~ .x / printed[[cur_column()]]))
+ci_ratio |>
+  dplyr::select(-mayo_div, -crp_div) |>
+  dplyr::rename(Hypothesis = hypothesis, Intercept = intercept, Emax = emax,
+                `log E50` = log_e50, CRP = crp, Mayo = mayo) |>
+  knitr::kable(digits = 2, caption = "Predicted / printed 95% CI half-width, clinical-remission dose model (1 = exact agreement).")
+pk_ci <- unlist(ci_ratio[ci_ratio$mayo_div == 12 & ci_ratio$crp_div == 7, names(printed)])
+stopifnot(all(pk_ci > 0.75), all(pk_ci < 1.30))
+```
+
+**3. Subgroup predictions.** The paper reports placebo-adjusted remission at
+10 mg twice daily of 39% for patients with baseline Mayo score <= 8 and 21% for
+those > 8. The packaged clinical-remission dose model gives:
+
+```{r subgroup}
+# Weighted remission rate of a cohort at one dose, through the packaged model.
+remission_rate <- function(dat, dose) {
+  x <- dat |>
+    mutate(id = seq_len(n()), time = 0, evid = 0L, DOSE = dose) |>
+    dplyr::select(id, time, evid, DOSE, SCORE_MAYO, CRP)
+  out <- rxode2::rxSolve(rxode2::zeroRe(mod_er$clinrem_dose), x, returnType = "data.frame")
+  sum(dat$w * out$prob_clinrem) / sum(dat$w)
+}
+sub_pred <- function(lo) {
+  dat <- if (lo) coh[coh$SCORE_MAYO <= 8, ] else coh[coh$SCORE_MAYO > 8, ]
+  remission_rate(dat, 10) - remission_rate(dat, 0)
+}
+subgroup <- c(mayo_le_8 = sub_pred(TRUE), mayo_gt_8 = sub_pred(FALSE))
+round(100 * subgroup, 1)
+stopifnot(abs(subgroup[["mayo_le_8"]] - 0.39) < 0.05,
+          abs(subgroup[["mayo_gt_8"]] - 0.21) < 0.05)
+```
+
+The CRP effect is small. Using 10 instead of 7 as the CRP divisor (i.e.
+reading the coefficient per mg/dL, the unit of the sponsor's other tofacitinib
+datasets) moves every predicted rate in this vignette by less than 2
+percentage points.
+
+# Exposure-response predictions
+
+The virtual trial below reuses the deterministic cohort with 20 CRP
+quantiles, and gives each patient the exposure of each arm. For the C~av,ss~
+and C~trough,ss~ models, exposure is spread over the CL/F and Ka random
+effects with equal-probability quadrature nodes. Arms are weighted by their
+trial sizes. Each of the nine models is solved through `rxSolve()`.
+
+```{r er-trial}
+coh20 <- make_cohort(20)
+om <- mod_pk$omega
+nodes <- function(k, var) qnorm((seq_len(k) - 0.5) / k) * sqrt(var)
+eta_grid <- tidyr::expand_grid(eta_cl = nodes(9, om["etalcl", "etalcl"]),
+                               eta_ka = nodes(5, om["etalka", "etalka"])) |>
+  mutate(w_eta = 1 / n())
+
+trial <- tidyr::expand_grid(coh20, dose_mg = as.numeric(names(arm_n)), eta_grid) |>
+  mutate(
+    cl = cl_typ * exp(eta_cl),
+    ka = ka_typ * exp(eta_ka),
+    DOSE = dose_mg,
+    CAV = 1000 * dose_mg / (12 * cl),
+    CTROUGH = ifelse(dose_mg == 0, 0, ctrough_eq2(dose_mg, ka, cl, v_typ)),
+    wt = w * w_eta * arm_n[as.character(dose_mg)] / sum(arm_n)
+  )
+
+predict_model <- function(model, data) {
+  x <- data |>
+    mutate(id = seq_len(n()), time = 0, evid = 0L) |>
+    dplyr::select(id, time, evid, dplyr::any_of(c("DOSE", "CAV", "CTROUGH",
+                                                  "SCORE_MAYO", "CRP", "BIOLOGIC_IR")))
+  out <- rxode2::rxSolve(rxode2::zeroRe(model), x, returnType = "data.frame")
+  stopifnot(nrow(out) == nrow(data))
+  out[[grep("^prob_", names(out), value = TRUE)]]
+}
+trial_pred <- trial
+for (nm in names(mod_er)) trial_pred[[nm]] <- predict_model(mod_er[[nm]], trial)
+
+arm_rates <- trial_pred |>
+  tidyr::pivot_longer(all_of(names(mod_er)), names_to = "model", values_to = "p") |>
+  group_by(model, dose_mg) |>
+  summarise(rate = sum(wt * p) / sum(wt), .groups = "drop") |>
+  tidyr::separate(model, c("endpoint", "metric"), sep = "_")
+```
+
+## Dose, C~av,ss~ and C~trough,ss~ give the same arm-level predictions
+
+The paper's central finding is that the three exposure metrics are
+interchangeable predictors of efficacy. With every patient carrying the
+exposure their arm produces, the three fitted models for each endpoint should
+therefore give nearly the same arm-level rates.
+
+```{r metric-agreement}
+arm_rates |>
+  mutate(rate = round(100 * rate, 1)) |>
+  tidyr::pivot_wider(names_from = metric, values_from = rate) |>
+  dplyr::rename(Endpoint = endpoint, `Dose (mg b.d.)` = dose_mg,
+                `Dose model (%)` = dose, `Cav,ss model (%)` = cav,
+                `Ctrough,ss model (%)` = ctrough) |>
+  knitr::kable(caption = "Predicted response rate by arm for each of the nine models.")
+spread <- arm_rates |>
+  group_by(endpoint, dose_mg) |>
+  summarise(range_pp = 100 * diff(range(rate)), .groups = "drop")
+# Deterministic quadrature; observed when written: at most 6.8 percentage points.
+stopifnot(max(spread$range_pp) < 8, median(spread$range_pp) < 4)
+```
+
+```{r fig-er, fig.cap = "Predicted week-8 response rates by arm for the dose, Cav,ss and Ctrough,ss models of each endpoint, with the observed proportions of Figure 2, Figure S2 and Figure S5B (crosses)."}
+observed <- tibble::tribble(
+  ~endpoint,  ~dose_mg, ~obs,
+  "clinrem",  0, 0.11, "clinrem", 0.5, 0.13, "clinrem", 3, 0.34, "clinrem", 10, 0.50, "clinrem", 15, 0.42,
+  "clinresp", 0, 0.43, "clinresp", 0.5, 0.32, "clinresp", 3, 0.47, "clinresp", 10, 0.60, "clinresp", 15, 0.77,
+  "endoimp",  0, 0.35, "endoimp", 0.5, 0.39, "endoimp", 3, 0.47, "endoimp", 10, 0.60, "endoimp", 15, 0.65
+)
+ggplot(arm_rates, aes(dose_mg, rate, colour = metric)) +
+  geom_line() +
+  geom_point() +
+  geom_point(data = observed, aes(dose_mg, obs), inherit.aes = FALSE, shape = 4, size = 3) +
+  facet_wrap(~endpoint) +
+  labs(x = "Tofacitinib dose (mg b.d.)", y = "Predicted proportion", colour = "Model")
+```
+
+Observed remission and response proportions are the bar labels of Figure 2
+and Figure S2. Figure S3 (mucosal healing by dose) is not part of the
+Supporting Information file, so the observed mucosal-healing proportions were
+digitised from the observed symbols of Figure S5B. The figure shows the
+paper's point: response rises steeply between 0.5 and 10 mg and is near its
+plateau by 15 mg.
+
+## Comparison with Figure 5 (placebo-adjusted remission)
+
+Figure 5 plots the placebo-adjusted remission predicted by each final model,
+by dose and by quartile bin of C~av,ss~ and C~trough,ss~ among the treated
+patients. The maintainers digitised the predicted points. Here the quartile
+bins are formed from the weighted virtual trial in the same way.
+
+```{r fig5}
+fig5 <- tibble::tribble(
+  ~metric,   ~bin, ~fig,
+  "dose",    1, 0.054, "dose",    2, 0.204, "dose",    3, 0.314, "dose",    4, 0.333,
+  "cav",     1, 0.084, "cav",     2, 0.203, "cav",     3, 0.331, "cav",     4, 0.350,
+  "ctrough", 1, 0.076, "ctrough", 2, 0.182, "ctrough", 3, 0.363, "ctrough", 4, 0.320
+)
+wquantile <- function(x, w, probs) {
+  o <- order(x)
+  cw <- cumsum(w[o]) / sum(w)
+  vapply(probs, function(p) x[o][which(cw >= p)[1]], numeric(1))
+}
+active <- trial_pred |> dplyr::filter(dose_mg > 0)
+pbo_rem <- trial_pred |>
+  dplyr::filter(dose_mg == 0) |>
+  summarise(across(starts_with("clinrem"), ~ sum(wt * .x) / sum(wt)))
+bin_by <- function(x, w) {
+  cuts <- wquantile(x, w, c(0.25, 0.5, 0.75))
+  findInterval(x, cuts, left.open = TRUE) + 1
+}
+fig5_sim <- bind_rows(
+  active |> mutate(bin = match(dose_mg, c(0.5, 3, 10, 15))) |>
+    group_by(bin) |>
+    summarise(sim = sum(wt * clinrem_dose) / sum(wt) - pbo_rem$clinrem_dose) |>
+    mutate(metric = "dose"),
+  active |> mutate(bin = bin_by(CAV, wt)) |>
+    group_by(bin) |>
+    summarise(sim = sum(wt * clinrem_cav) / sum(wt) - pbo_rem$clinrem_cav) |>
+    mutate(metric = "cav"),
+  active |> mutate(bin = bin_by(CTROUGH, wt)) |>
+    group_by(bin) |>
+    summarise(sim = sum(wt * clinrem_ctrough) / sum(wt) - pbo_rem$clinrem_ctrough) |>
+    mutate(metric = "ctrough")
+) |>
+  dplyr::left_join(fig5, by = c("metric", "bin")) |>
+  mutate(diff_pp = 100 * (sim - fig))
+fig5_sim |>
+  mutate(sim = round(sim, 3), diff_pp = round(diff_pp, 1)) |>
+  dplyr::rename(Metric = metric, `Dose or quartile bin` = bin,
+                Simulated = sim, `Figure 5` = fig, `Difference (pp)` = diff_pp) |>
+  knitr::kable(caption = "Placebo-adjusted remission: deterministic virtual trial vs. digitised Figure 5.")
+stopifnot(abs(median(fig5_sim$diff_pp)) < 4, max(abs(fig5_sim$diff_pp)) < 10)
+```
+
+## Comparison with Figure S5 (response and mucosal healing)
+
+Figure S5 plots the predictions of the response and mucosal-healing models
+against dose for the index trial. The maintainers traced the dose-model
+prediction lines at 3, 10 and 15 mg. The paper's simulation used the actual
+patients' covariates arm by arm, while this vignette uses one shared cohort,
+so agreement is expected only within a few percentage points.
+
+```{r figS5}
+figS5 <- tibble::tribble(
+  ~endpoint,  ~dose_mg, ~fig,
+  "clinresp", 3, 0.44, "clinresp", 10, 0.65, "clinresp", 15, 0.73,
+  "endoimp",  3, 0.44, "endoimp",  10, 0.57, "endoimp",  15, 0.67
+)
+figS5_cmp <- arm_rates |>
+  dplyr::filter(metric == "dose") |>
+  dplyr::inner_join(figS5, by = c("endpoint", "dose_mg")) |>
+  mutate(diff_pp = 100 * (rate - fig))
+figS5_cmp |>
+  mutate(rate = round(rate, 3), diff_pp = round(diff_pp, 1)) |>
+  dplyr::select(Endpoint = endpoint, `Dose (mg b.d.)` = dose_mg,
+                Simulated = rate, `Figure S5` = fig, `Difference (pp)` = diff_pp) |>
+  knitr::kable()
+stopifnot(abs(median(figS5_cmp$diff_pp)) < 5, max(abs(figS5_cmp$diff_pp)) < 10)
+```
+
+# Assumptions and deviations
+
+* **Covariate scaling (not printed).** The paper prints the Mayo and CRP
+  coefficients without the scale on which the covariates enter. The packaged
+  models use `SCORE_MAYO / 12` and `CRP / 7` (mg/L), both uncentered, as
+  identified in the section "Covariate scaling".
+  * The Mayo divisor is well determined. The placebo rates of all three
+    endpoints, the remission CI widths and the paper's subgroup prediction all
+    point to 12, the maximum of the scale.
+  * The CRP divisor is determined only to a range of about 6-7.5 mg/L, from
+    the CRP CI widths in the remission and response models. 7 mg/L is the
+    maintainers' rounded value, close to the population median. Reading CRP per mg/dL (a divisor of 10)
+    changes the predictions here by less than 2 percentage points.
+* **IIV scale.** The PK random effects are printed as % CV (31.4% on CL/F,
+  87.5% on Ka). They were converted to log-normal variances with
+  omega^2 = log(1 + CV^2). If the authors instead reported 100 * sqrt(omega^2),
+  the Ka variance would be 0.766 rather than 0.569. Ka barely affects C~av,ss~
+  and C~trough,ss~.
+* **Residual error.** The paper reports "residual variability 47.5%", and
+  Figure S1 shows the concentrations on a natural-log scale. It is encoded as
+  a proportional error with SD 0.475.
+* **Absorption lag.** Fixed at 0.16 h, as the paper did for convergence.
+  Equation 2 of the paper ignores the lag when computing C~trough,ss~; the
+  `CTROUGH` covariate should be supplied the same way (see the
+  `ctrough_eq2()` helper above).
+* **Exposure inputs.** The exposure-response models take `DOSE` (mg per
+  twice-daily administration), `CAV` or `CTROUGH` (ng/mL) as data columns, set
+  to 0 for placebo. They do not call the PK model. When solving with a `DOSE`
+  column, include an `evid` column so that rxode2 does not read `DOSE` as the
+  dose amount.
+* **Prior TNFi failure.** Encoded with the library's `BIOLOGIC_IR` column; the
+  source restricts it to anti-TNF failure within the previous 12 months.
+* **Placeholder residual.** The exposure-response models carry a fixed
+  additive residual SD of 0.001 on the probability output, only so that
+  nlmixr2 accepts them for simulation; the source likelihood is Bernoulli.
+* **Virtual cohort.** CRP is log-normal (mean 13.9, SD 21 mg/L), the Mayo
+  score is a discretised normal (mean 8.2, SD 1.6, 3-12), and prior TNFi
+  failure is independent at 18.6%. These are reconstructions from Table 1
+  marginals, with covariate correlations ignored.
+* **Not packaged.** The base models without covariates shown in Figure 4 have
+  no printed estimates. Corticosteroid use, faecal calprotectin, albumin and
+  the demographics were screened but not retained in the final models.
