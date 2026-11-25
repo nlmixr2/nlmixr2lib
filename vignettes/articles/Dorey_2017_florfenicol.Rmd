@@ -1,0 +1,372 @@
+---
+title: "Florfenicol against pig pneumonia pathogens (Dorey 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Florfenicol against pig pneumonia pathogens (Dorey 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Models and source
+
+Dorey 2017 measured the in vitro killing of two pig pneumonia pathogens,
+*Pasteurella multocida* and *Actinobacillus pleuropneumoniae*, by florfenicol,
+in an artificial broth and in pig serum. For each organism and growth matrix it
+fitted a sigmoid Emax model of the 24 h change in bacterial count against the
+PK/PD index AUC24h/MIC, and it reports the four parameter sets side by side in
+Tables 4 and 5. All four are packaged, one file per fit, sharing this vignette.
+
+| Model file | Organism | Growth matrix | Source |
+|---|---|---|---|
+| `Dorey_2017_florfenicol_Pmultocida_broth` | *P. multocida* | CAMHB broth | Table 4, Broth |
+| `Dorey_2017_florfenicol_Pmultocida_serum` | *P. multocida* | pig serum | Table 4, Serum |
+| `Dorey_2017_florfenicol_Apleuropneumoniae_broth` | *A. pleuropneumoniae* | Columbia broth + NAD | Table 5, Broth |
+| `Dorey_2017_florfenicol_Apleuropneumoniae_serum` | *A. pleuropneumoniae* | pig serum | Table 5, Serum |
+
+* Citation: `r rxode2::rxode(readModelDb("Dorey_2017_florfenicol_Pmultocida_broth"))$reference`
+* Article: <https://doi.org/10.1371/journal.pone.0177568> (PMCID: PMC5446118, open access)
+
+```{r stems}
+fits <- tibble::tribble(
+  ~fit,                ~organism,              ~matrix,
+  "Pmultocida_broth",        "P. multocida",        "broth",
+  "Pmultocida_serum",        "P. multocida",        "serum",
+  "Apleuropneumoniae_broth", "A. pleuropneumoniae", "broth",
+  "Apleuropneumoniae_serum", "A. pleuropneumoniae", "serum"
+) |>
+  mutate(stem = paste0("Dorey_2017_florfenicol_", fit))
+```
+
+```{r descriptions, results = "asis"}
+cat("**`", fits$stem[1], "`** -- ",
+    rxode2::rxode(readModelDb(fits$stem[1]))$description, "\n\n", sep = "")
+```
+
+The paper has no structural PK model. Plasma florfenicol was analysed
+non-compartmentally, so the PK/PD index enters the models as the covariate
+`AUCMIC_FLOR` and there is no PKNCA section in this vignette: no drug
+concentration is simulated.
+
+# Population
+
+The pharmacodynamic "population" is a panel of six EU field isolates of each
+organism (UK, France and Germany), taken from cases of pig pneumonia. They were
+chosen because they grew logarithmically in both broth and pig serum, were
+florfenicol-susceptible by disk diffusion, and spanned the broth MIC range (the
+highest, the lowest and four intermediate). Geometric mean MICs (SD) were 0.42
+(0.13) ug/mL in broth and 0.30 (0.16) ug/mL in serum for *P. multocida*, and
+0.38 (0.11) and 0.39 (0.17) ug/mL for *A. pleuropneumoniae* (Results, "Minimum
+inhibitory and mutant prevention concentrations").
+
+Time-kill curves used eight static florfenicol concentrations, 0.25 to 8 times
+the isolate's MIC, over 24 h, each isolate in triplicate, with a maximum count
+of 1 x 10^10 CFU/mL and a quantification limit of 33 CFU/mL (Methods, "PK/PD
+modelling"). Because the concentration is constant, the index is AUC24h/MIC =
+24 h x (MIC multiple), from 6 to 192 h. The sigmoid Emax model was fitted per
+isolate in WinNonlin and the six estimates averaged; Tables 4 and 5 give the
+mean and the SD across isolates.
+
+The plasma PK used for PK/PD integration came from 34 healthy Landrace Cross
+male pigs, about 2 months old and 32.5-52.0 kg, given 15 mg/kg florfenicol
+intramuscularly as one of two bioequivalent products (17 pigs each). Table 1
+reports geometric mean Cmax 3.04 mg/L, AUC 53.7 h*mg/L and Cl/F 0.23 L/h/kg.
+
+# Source trace
+
+| Item | Value(s) | Source |
+|---|---|---|
+| Sigmoid Emax equation, E = E0 + Emax * Ce^N / (EC50^N + Ce^N) | -- | Figure 2 |
+| Ce = AUC24h/MIC (h) | covariate `AUCMIC_FLOR` | Figure 2; Tables 4-5 |
+| `e0` (row 'Log E0') | 2.50 / 2.43 / 2.80 / 2.46 | Table 4 Broth / Serum; Table 5 Broth / Serum |
+| `emax` (row 'Log Emax') | -7.02 / -6.39 / -5.30 / -5.29 | same |
+| Span `emax - e0` (row 'Log Emax - Log E0') | -9.52 / -8.83 / -8.10 / -7.75 | same |
+| `lec50` (row 'AUC24h/MIC50 (h)') | log(35.7) / log(32.3) / log(31.1) / log(42.1) | same |
+| `lhill` (row 'Gamma') | log(3.10) / log(3.63) / log(3.06) / log(3.62) | same; also Results text, "PK/PD breakpoints" |
+| `addSd` | fixed(0) | not reported |
+| Breakpoints at E = 0, -3, -4 (validation targets) | see below | Tables 4-5 |
+
+# The equation and its sign convention
+
+Figure 2 prints `E = E0 + Emax * Ce^N / (EC50^N + Ce^N) x 100`, and Tables 4
+and 5 print three effect rows: 'Log E0' (control growth, positive), 'Log Emax'
+(the 24 h change in the presence of florfenicol, negative) and 'Log Emax - Log
+E0' (the difference). Two readings of the coefficient multiplying the sigmoid
+are possible: the 'Log Emax' row itself, or the span 'Log Emax - Log E0'. They
+are separated by the breakpoints, which the paper reports in rows of their own:
+invert each reading of the curve at E = 0, -3 and -4 and compare.
+
+```{r published}
+pub <- tibble::tribble(
+  ~fit,                      ~e0,  ~emax_row, ~span_row, ~ec50, ~hill, ~bp_static, ~bp_cidal, ~bp_4log,
+  "Pmultocida_broth",        2.50, -7.02,     -9.52,     35.7,  3.10,  25.7,       40.2,      47.0,
+  "Pmultocida_serum",        2.43, -6.39,     -8.83,     32.3,  3.63,  24.2,       37.3,      43.9,
+  "Apleuropneumoniae_broth", 2.80, -5.30,     -8.10,     31.1,  3.06,  24.6,       43.8,      58.6,
+  "Apleuropneumoniae_serum", 2.46, -5.29,     -7.75,     42.1,  3.62,  30.1,       58.4,      79.6
+)
+
+# Index giving effect E on a sigmoid that starts at e0 and moves by `coef`.
+# NA when E lies outside the curve's range.
+invert_sigmoid <- function(E, e0, coef, ec50, hill) {
+  fr <- (E - e0) / coef
+  ifelse(fr > 0 & fr < 1, ec50 * (fr / (1 - fr))^(1 / hill), NA_real_)
+}
+
+readings <- pub |>
+  tidyr::crossing(target = c(0, -3, -4)) |>
+  mutate(
+    published = case_when(target == 0 ~ bp_static, target == -3 ~ bp_cidal, TRUE ~ bp_4log),
+    coef_span = invert_sigmoid(target, e0, span_row, ec50, hill),
+    coef_emax_row = invert_sigmoid(target, e0, emax_row, ec50, hill)
+  )
+
+readings |>
+  select(fit, target, published, coef_span, coef_emax_row) |>
+  mutate(across(c(coef_span, coef_emax_row), \(x) round(x, 1))) |>
+  rename(
+    "Model" = fit, "Effect E (log10)" = target, "Published AUC24h/MIC (h)" = published,
+    "Coefficient = span" = coef_span, "Coefficient = 'Log Emax' row" = coef_emax_row
+  ) |>
+  knitr::kable()
+```
+
+```{r sign-gate}
+# GATE 1: the span reading is closer to the published breakpoint for every one
+# of the twelve targets. Where the 'Log Emax' reading is NA, the curve never
+# reaches the target at all, which by itself rules that reading out.
+stopifnot(all(is.na(readings$coef_emax_row) |
+  abs(readings$coef_span - readings$published) <
+    abs(readings$coef_emax_row - readings$published)))
+stopifnot(sum(is.na(readings$coef_emax_row)) == 5)
+
+# The table rows are internally consistent: 'Log Emax - Log E0' equals the
+# difference of the two rows above it to the printed rounding.
+stopifnot(all(abs((pub$emax_row - pub$e0) - pub$span_row) <= 0.011))
+```
+
+The coefficient is the span, so the canonical `emax` is the 'Log Emax' row and
+each model computes `E = e0 + (emax - e0) * Ce^N / (Ce^N + EC50^N)`. The
+trailing "x 100" in Figure 2 is a typesetting error: it would stretch the curve
+across hundreds of log10 units, whereas Figure 3 runs from about +2 to -6.
+
+# Simulating the four models
+
+```{r solve-helper}
+# Solve one packaged model at a vector of AUC24h/MIC values. The models have no
+# ODE state; each observation row returns the sigmoid at that row's covariate.
+solve_index <- function(stem, values) {
+  ev <- data.frame(id = seq_along(values), time = 24, evid = 0, amt = NA_real_,
+                   AUCMIC_FLOR = values)
+  out <- rxode2::rxSolve(readModelDb(stem), ev, returnType = "data.frame")
+  stopifnot(nrow(out) == length(values), !anyNA(out$Cc))
+  out$Cc
+}
+
+grid <- c(0, seq(1, 200, by = 1))
+curves <- fits |>
+  rowwise() |>
+  reframe(fit = fit, organism = organism, matrix = matrix,
+          aucmic = grid, effect = solve_index(stem, grid)) |>
+  ungroup()
+stopifnot(nrow(curves) == 4 * length(grid))
+```
+
+## Replicating Figure 3
+
+Figure 3 is an example curve from one unidentified isolate and matrix, with
+observed points at 0, 6, 12, 24, 36, 48, 96, 144 and 192 h (0.25 to 8 x MIC).
+The figure below shows the four mean-parameter curves with the same three
+reference lines: bacteriostasis (E = 0), bactericidal action (E = -3) and a 4
+log10 reduction (E = -4).
+
+```{r figure-3, fig.cap = "Mean-parameter sigmoid Emax curves for the four Dorey 2017 fits, in the format of Figure 3 of Dorey 2017 (change in log10 CFU/mL over 24 h against AUC24h/MIC)."}
+ggplot(curves, aes(aucmic, effect, colour = organism, linetype = matrix)) +
+  geom_hline(yintercept = c(0, -3, -4), linetype = "dashed", colour = "grey50") +
+  geom_line(linewidth = 0.8) +
+  labs(x = "AUC24h/MIC (h)", y = "Change in log10 CFU/mL over 24 h",
+       colour = "Organism", linetype = "Growth matrix") +
+  coord_cartesian(ylim = c(-8, 4)) +
+  theme_bw()
+```
+
+## Validation gate: the published breakpoints
+
+The decisive check inverts the packaged models themselves, by root-finding on
+`rxSolve()` output rather than on a copy of the equation, at the three effect
+levels the paper reports.
+
+```{r breakpoint-gate}
+invert_model <- function(stem, target) {
+  uniroot(function(x) solve_index(stem, x) - target, c(1e-6, 1e4), tol = 1e-8)$root
+}
+
+bp <- readings |>
+  left_join(fits |> select(fit, stem), by = "fit") |>
+  rowwise() |>
+  mutate(simulated = invert_model(stem, target)) |>
+  ungroup() |>
+  mutate(pct_diff = 100 * (simulated - published) / published)
+
+bp |>
+  select(fit, target, published, simulated, pct_diff) |>
+  mutate(simulated = round(simulated, 1), pct_diff = round(pct_diff, 1)) |>
+  rename("Model" = fit, "Effect E (log10)" = target,
+         "Published AUC24h/MIC (h)" = published,
+         "Packaged model AUC24h/MIC (h)" = simulated, "% difference" = pct_diff) |>
+  knitr::kable()
+
+# GATE 2a: the packaged files reproduce the closed-form inversion of the
+# transcribed parameters (both sides use the same numbers, so this is tight).
+stopifnot(max(abs(bp$simulated - bp$coef_span)) < 0.06)
+
+# GATE 2b: P. multocida, whose inter-isolate SDs are small, reproduces all six
+# published breakpoints within 5%.
+stopifnot(all(abs(bp$pct_diff[grepl("^Pmultocida", bp$fit)]) < 5))
+
+# GATE 2c: every breakpoint of every fit is within 20%, and every packaged
+# bacteriostatic breakpoint is within 15%.
+stopifnot(all(abs(bp$pct_diff) < 20))
+stopifnot(all(abs(bp$pct_diff[bp$target == 0]) < 15))
+```
+
+The published breakpoints are means of six per-isolate breakpoints, while the
+packaged curve uses the means of the six per-isolate parameters. The two agree
+only when the isolates are alike, because the breakpoint is a nonlinear
+function of the parameters. *P. multocida* isolates were alike (EC50 SD 2.8-3.1
+h) and agree within 4%. Agreement is weakest for *A. pleuropneumoniae* in serum,
+the fit the paper itself flags for large inter-isolate variability (EC50 SD
+14.5 h, breakpoint SDs 13.7-23.6 h). There the packaged curve gives 34.1, 53.5
+and 65.7 h against published means of 30.1, 58.4 and 79.6 h.
+
+## Validation gate: structural behaviour
+
+```{r structure-gate}
+chk <- curves |>
+  group_by(fit) |>
+  summarise(at_zero = effect[aucmic == 0], lowest = min(effect),
+            monotone = all(diff(effect) <= 1e-12), .groups = "drop") |>
+  left_join(pub |> select(fit, e0, emax_row, ec50), by = "fit")
+
+# GATE 3: each curve starts exactly at e0, falls monotonically with exposure,
+# and never passes emax.
+stopifnot(all(abs(chk$at_zero - chk$e0) < 1e-9))
+stopifnot(all(chk$monotone), all(chk$lowest >= chk$emax_row - 1e-9))
+
+# GATE 4: at the index equal to EC50 the effect is exactly halfway between e0
+# and emax, which is what makes EC50 the AUC24h/MIC50 of Tables 4 and 5.
+half <- mapply(function(stem, ec50) solve_index(stem, ec50), fits$stem, pub$ec50)
+stopifnot(max(abs(half - (pub$e0 + pub$emax_row) / 2)) < 1e-9)
+```
+
+# Using the models with the plasma PK
+
+Table 2 of Dorey 2017 integrates the plasma PK with the mean MICs. Its
+Cav0-24/MIC column times 24 h is the AUC0-24/MIC of the first day after a 15
+mg/kg dose, and its Cav24-48/MIC column times 24 h is that of the second day.
+Feeding those mean ratios to the matching model predicts the 24 h change in
+count that a static exposure of the same size would produce. This is an
+illustration of the models, not a reproduction: Dorey 2017 did not publish
+these predictions, and plasma exposure falls over each day rather than being
+static.
+
+```{r integration}
+tab2 <- tibble::tribble(
+  ~fit,                      ~cav0_24_mic, ~cav24_48_mic,
+  "Pmultocida_broth",        3.78,         1.69,
+  "Pmultocida_serum",        5.29,         2.37,
+  "Apleuropneumoniae_broth", 4.18,         1.87,
+  "Apleuropneumoniae_serum", 4.07,         1.82
+) |>
+  left_join(fits |> select(fit, stem), by = "fit") |>
+  rowwise() |>
+  mutate(
+    day1_index = 24 * cav0_24_mic,
+    day2_index = 24 * cav24_48_mic,
+    day1_effect = solve_index(stem, day1_index),
+    day2_effect = solve_index(stem, day2_index)
+  ) |>
+  ungroup()
+
+tab2 |>
+  select(fit, day1_index, day1_effect, day2_index, day2_effect) |>
+  mutate(across(-fit, \(x) round(x, 1))) |>
+  rename("Model" = fit, "Day 1 AUC24h/MIC (h)" = day1_index,
+         "Day 1 change (log10)" = day1_effect,
+         "Day 2 AUC24h/MIC (h)" = day2_index,
+         "Day 2 change (log10)" = day2_effect) |>
+  knitr::kable()
+```
+
+```{r integration-gate}
+# GATE 5: on day 1 every fit is past its own 4 log10 breakpoint, and on day 2
+# every fit is still past bacteriostasis (net kill).
+stopifnot(all(tab2$day1_effect < -4), all(tab2$day2_effect < 0))
+```
+
+On day 1 the mean index (about 90-130 h) is past the 4 log10 breakpoint of
+every fit. On day 2 (about 40-57 h) every fit still predicts net kill, but the
+size of the kill varies between the fits, as the table shows.
+
+# Assumptions and deviations
+
+* **Population-mean parameters, not a population model.** Each parameter set is
+  the mean of six per-isolate fits. The SDs in Tables 4 and 5 describe spread
+  across isolates; they are not estimated variance components, so the models
+  have no `eta` terms. The paper also reports no residual error, so `addSd` is
+  fixed at 0 and the models are for typical-value simulation.
+* **Index carried as a ratio.** `AUCMIC_FLOR` carries AUC24h/MIC directly. Each
+  isolate was exposed to multiples of its own MIC, and only the geometric mean
+  MIC of the six is reported, so no single MIC can split the ratio into an
+  absolute exposure and a `mic` parameter. To use a model with a plasma
+  exposure, form the ratio with the MIC of the isolate of interest, measured in
+  the matching growth matrix.
+* **Algebraic output, no bacterial state.** The fitted quantity is the 24 h
+  change in log10 CFU/mL relative to the starting inoculum, so `Cc` is that
+  change. The time-kill inoculum is not stated in Dorey 2017 (the Methods refer
+  to an earlier paper), so no absolute bacterial count is modelled.
+* **No PK model.** Plasma florfenicol was analysed non-compartmentally (Table 1
+  gives Cmax, AUC, AUMC, Tmax, Cl/F and T1/2 only), so there is no PK model to
+  package and no PKNCA comparison.
+* **Dose predictions not reproduced.** The deterministic and Monte Carlo dose
+  predictions (Tables 6-8) combine the breakpoints with Cl/F, a literature MIC
+  distribution (Figure 4), a serum:broth MIC correction and the serum free
+  fraction. The free fraction is given only in the Discussion (35%), and the
+  corrected MIC inputs are not printed, so these tables are not recalculated
+  here. The Table 6 doses are proportional to the serum breakpoints (dose per
+  hour of breakpoint 0.208 mg/kg for *P. multocida* and 0.685 mg/kg for *A.
+  pleuropneumoniae*), so the serum fits were the ones used.
+
+```{r dose-proportionality}
+# Table 6 deterministic daily doses (mg/kg) divided by the serum breakpoints of
+# Tables 4 and 5: a constant ratio within each organism shows that the serum
+# breakpoints were the input.
+tab6 <- tibble::tribble(
+  ~organism,  ~dose_static, ~dose_cidal, ~dose_4log, ~bp_static, ~bp_cidal, ~bp_4log,
+  "P. multocida",        5.05,  7.77,  9.15,  24.2, 37.3, 43.9,
+  "A. pleuropneumoniae", 20.6,  40.0,  54.5,  30.1, 58.4, 79.6
+) |>
+  mutate(r_static = dose_static / bp_static, r_cidal = dose_cidal / bp_cidal,
+         r_4log = dose_4log / bp_4log)
+ratios <- as.matrix(tab6[, c("r_static", "r_cidal", "r_4log")])
+stopifnot(all(abs(ratios[1, ] - 0.208) < 0.001), all(abs(ratios[2, ] - 0.685) < 0.002))
+```
+
+## Errata
+
+* **Figure 2, "x 100".** The printed equation ends in "x 100"; this is a
+  typesetting error (see "The equation and its sign convention" above).
+* **Abstract breakpoint labels.** The Abstract calls 25.7, 40.2 and 47.0 h (*P.
+  multocida*) and 24.6, 43.8 and 58.6 h (*A. pleuropneumoniae*) "serum
+  breakpoint values". In Tables 4 and 5 these are the **broth** columns; the
+  serum values are 24.2, 37.3 and 43.9 h and 30.1, 58.4 and 79.6 h. The
+  Discussion quotes the serum *P. multocida* values (24, 37 and 43 h)
+  correctly. The packaged models follow the tables.
+* No published correction to Dorey 2017 was found (EuropePMC search,
+  2026-11-25).

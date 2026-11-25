@@ -3670,6 +3670,14 @@ navbar:
         href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Fleroxacin rat pbpk mdckmdr1 (SanchezDengra 2021)"
         href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Florfenicol Apleuropneumoniae broth (Dorey 2017)"
+        href: articles/Dorey_2017_florfenicol.html
+      - text: "Florfenicol Apleuropneumoniae serum (Dorey 2017)"
+        href: articles/Dorey_2017_florfenicol.html
+      - text: "Florfenicol Pmultocida broth (Dorey 2017)"
+        href: articles/Dorey_2017_florfenicol.html
+      - text: "Florfenicol Pmultocida serum (Dorey 2017)"
+        href: articles/Dorey_2017_florfenicol.html
       - text: "Florfenicol cattle pbpk (Chou 2022)"
         href: articles/Chou_2022_igpbpk.html
       - text: "Florfenicol swine pbpk (Chou 2022)"
@@ -11148,6 +11156,7 @@ articles:
   - articles/Dong_2026_piperacillin
   - articles/Doodnaught_2017_buprenorphine_cat
   - articles/Dorajoo_2019_vancomycin
+  - articles/Dorey_2017_florfenicol
   - articles/Dorlo_2008_miltefosine
   - articles/Dorlo_2017_miltefosine
   - articles/Dorofaeff_2026_piperacillin_tazobactam

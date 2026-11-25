@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kovanda 2017 isavuconazole ([doi:10.1128/AAC.00101-17](https://doi.org/10.1128/AAC.00101-17)) -- adults with invasive fungal disease in the SECURE and VITAL trials, with and without mucositis during oral therapy.
+- Add Dorey 2017 florfenicol time-kill PK/PD-index models ([doi:10.1371/journal.pone.0177568](https://doi.org/10.1371/journal.pone.0177568)) -- porcine Pasteurella multocida and Actinobacillus pleuropneumoniae field isolates in broth and pig serum.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
