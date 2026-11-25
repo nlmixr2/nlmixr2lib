@@ -1,0 +1,430 @@
+---
+title: "Hypothetical antihyperglycemic drug on the IGI-OGTT model (Sheikh Ghadzi 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Hypothetical antihyperglycemic drug on the IGI-OGTT model (Sheikh Ghadzi 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Sheikh Ghadzi 2017 is a simulation study of how much power is lost when an
+antihyperglycemic drug is characterised from oral glucose tolerance tests
+(OGTT) with glucose measurements only, instead of glucose and insulin. Data
+were simulated from the integrated glucose-insulin (IGI) OGTT model of
+Jauslin 2007 for type 2 diabetes, with a hypothetical study compound acting
+on one of seven mechanisms of action (MOA), or on two of them, and then
+re-estimated with and without the insulin data.
+
+The packaged model, `SheikhGhadzi_2017_T2DM_IGI_OGTT`, is that simulation
+(data-generating) model:
+
+* glucose: central and peripheral compartments, insulin-independent
+  clearance CLG and insulin-dependent clearance CLGI acting through a
+  delayed insulin effect compartment (KIE), endogenous glucose production
+  fixed by the fasting steady state, and oral glucose absorbed through a
+  depot and a transit compartment (KABS, bioavailability BIOG);
+* insulin: one compartment, secretion driven by a delayed glucose effect
+  compartment (KGE) raised to the power IPRG and by an Emax incretin effect
+  of the transit glucose amount (INCRmax, INCR50);
+* drug: one-compartment oral PK; an Emax function of the plasma
+  concentration (shared EC50D) stimulates the incretin effect (`moa_incr`),
+  basal insulin secretion (`moa_bins`), CLG (`moa_clg`), CLGI (`moa_clgi`)
+  or the glucose-sensitivity exponent (`moa_gsen`), or inhibits endogenous
+  glucose production (`moa_egp`) or glucose absorption (`moa_gabs`).
+
+The `moa_*` parameters are 0/1 switches. The authors' NONMEM code selects
+the mechanism by commenting out the Emax term of each drug-effect line; the
+default switch setting is their published example, the incretin effect
+alone. Placebo is the absence of a drug dose.
+
+* Citation: `r rxode2::rxode(readModelDb("SheikhGhadzi_2017_T2DM_IGI_OGTT"))$reference`
+* Article: <https://doi.org/10.1002/psp4.12214>
+
+```{r load}
+mod <- rxode2::rxode(readModelDb("SheikhGhadzi_2017_T2DM_IGI_OGTT"))
+mod_typ <- rxode2::zeroRe(mod)
+moas <- c("incr", "bins", "clg", "clgi", "egp", "gabs", "gsen")
+moa_label <- c(
+  incr = "INCR", bins = "BINS", clg = "CLG", clgi = "CLGI",
+  egp = "EGP", gabs = "GABS", gsen = "GSEN"
+)
+
+# Model with exactly one mechanism switched on (Part 1 and 2 scenarios).
+with_moa <- function(m, moa) {
+  sw <- stats::setNames(as.list(as.numeric(moas == moa)), paste0("moa_", moas))
+  do.call(rxode2::ini, c(list(m), sw))
+}
+```
+
+# Population
+
+No real patients were studied. The glucose and insulin parameters are the
+Jauslin 2007 IGI-OGTT estimates in patients with type 2 diabetes (Table 1).
+The design copies Jauslin 2007: a crossover of placebo and 50 mg of the
+study compound given at time 0, a 75 g oral glucose load at 30 min, and
+glucose and insulin sampled at 0, 30, 60, 90, 120, 150, 180, 210 and 240 min
+(Methods, 'Study design'). Relative power was assessed with 500 simulated
+subjects, and accuracy and precision with 500 simulated studies of 15
+subjects. The model carries no covariates.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| `lgss`, `etalgss` | 169 mg/dL, IIV 14 | Table 1 'Gss'; Supplement 3 '$OMEGA 0.0196 ;OM1 GSS' |
+| `lvg`, `lvpg`, `lqg` | 9.33 L, 8.56 L, 0.442 L/min | Table 1 'VG', 'Vp', 'Q' (footnote a) |
+| `lclg`, `lclgi` | 0.0287 L/min, 0.0059 L/min per mU/L | Table 1 'CLG', 'CLGI' |
+| `lkge`, `liprg` | 0.0289 1/min, 1.42 | Table 1 'KGE', 'IPRG' (footnote a) |
+| `lbiog`, `lkabs` | 0.811, 0.0364 1/min | Table 1 'BIOG', 'KABS' (footnote a) |
+| `lincrmax`, `lincr50` | 1.47, 14.8 | Table 1 'INCRmax', 'INCR50' (footnote a) |
+| `liss`, `lcli` | 8.71 mU/L, 1.22 L/min | Table 1 'Iss', 'CLI' (footnote c) |
+| `lvi`, `lkie` | 6.09 L, 0.0213 1/min | Table 1 'VI', 'KIE' (footnote a) |
+| `lka`, `lcl`, `lvc` | 0.0365 1/min, 0.682 L/min, 155 L | Table 1 'KaD', 'CLD', 'VD' (footnote a) |
+| `lec50` | 0.1 mg/L | Table 1 'EC50D'; Methods 'EC50 set to 0.1 mg/L' |
+| `emax_incr` ... `emax_gsen` | 1.0, 0.5, 2.0, 0.5, 0.7, 0.02, 1.5 | Table 1 'EmaxD(...)' rows |
+| `moa_*` switches | default `moa_incr = 1`, others 0 | Supplement 3 drug-effect lines and '$PROB ... EXAMPLE INCRETIN DRUG EFFECT' |
+| IIV variances | (IIV/100)^2 | Table 1 'Interindividual variability'; convention from Supplement 3 OM1 and OM16 |
+| VG / Q / VI and CLD / VD covariances | r x SD1 x SD2 | Table 1 'Parameter correlations' |
+| `expSd_Gc`, `expSd_Ic` | 0.0732, 0.252 | Table 1 'RESG', 'RESI'; Supplement 3 $ERROR (log-transformed data) |
+| Glucose and insulin ODEs, steady-state initial conditions | -- | Supplement 3 $PK and $DES |
+| `f(glucose_depot) = BIOG/10` | -- | Supplement 3 'F6 = BIOG/10 ;correction L -> dL' |
+| Drug-effect equations | -- | Supplement 3 $DES (glucose-absorption term: see Assumptions) |
+
+# Typical-value checks
+
+## Fasting steady state
+
+The initial conditions are the fasting steady state, so without a glucose
+load glucose and insulin stay at GSS and ISS.
+
+```{r steady-state}
+obs_grid <- function(times) {
+  d <- as.data.frame(rxode2::et(times))
+  d$dvid <- 1L
+  d
+}
+ss <- as.data.frame(rxode2::rxSolve(mod_typ, obs_grid(seq(0, 600, by = 60))))
+stopifnot(
+  max(abs(ss$Gc / 169 - 1)) < 1e-4,
+  max(abs(ss$Ic / 8.71 - 1)) < 1e-4
+)
+range(ss$Gc)
+range(ss$Ic)
+```
+
+## Drug pharmacokinetics (PKNCA)
+
+Methods: the PK parameters give 'Cmax around 0.243 mg/L at 65 minutes and a
+4-hour concentration of 0.127 mg/L after a dose of 50 mg'.
+
+```{r pk-typical}
+pk_ev <- rxode2::et(amt = 50, time = 0, cmt = "depot") |>
+  rxode2::et(seq(0, 240, by = 1)) |>
+  as.data.frame() |>
+  mutate(dvid = ifelse(evid == 0, 1L, NA_integer_))
+pk_sim <- as.data.frame(rxode2::rxSolve(mod_typ, pk_ev)) |>
+  mutate(id = 1L, treatment = "50 mg oral")
+
+conc_df <- pk_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_df <- data.frame(id = 1L, time = 0, amt = 50, treatment = "50 mg oral")
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = 240,
+  cmax = TRUE, tmax = TRUE, clast.obs = TRUE, auclast = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+reference <- data.frame(treatment = "50 mg oral", cmax = 0.243, tmax = 65, clast.obs = 0.127)
+nca_cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = reference,
+  by = "treatment",
+  units = c(cmax = "mg/L", tmax = "min", clast.obs = "mg/L"),
+  tolerance_pct = 5
+)
+knitr::kable(nca_cmp, caption = "Typical-subject drug NCA after 50 mg against the values stated in Methods.")
+```
+
+```{r pk-gate}
+nca_num <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "clast.obs"))
+cmax <- nca_num$PPORRES[nca_num$PPTESTCD == "cmax"]
+tmax <- nca_num$PPORRES[nca_num$PPTESTCD == "tmax"]
+c240 <- nca_num$PPORRES[nca_num$PPTESTCD == "clast.obs"]
+stopifnot(
+  abs(cmax / 0.243 - 1) < 0.02,
+  abs(tmax - 65) <= 2,
+  abs(c240 / 0.127 - 1) < 0.02
+)
+```
+
+The stated values are reproduced to within 1 percent (Cmax) and 1 minute
+(Tmax); the concentration exceeds the EC50 of 0.1 mg/L from about 10 min
+onward, as Methods states.
+
+# OGTT profiles by mechanism (Supplementary Figure S1)
+
+```{r ogtt-events}
+samp <- c(0, 30, 60, 90, 120, 150, 180, 210, 240)
+ogtt_events <- function(drug, times = seq(0, 240, by = 2)) {
+  e <- rxode2::et(amt = 75000, time = 30, cmt = "glucose_depot")
+  if (drug) e <- rxode2::et(e, amt = 50, time = 0, cmt = "depot")
+  as.data.frame(rxode2::et(e, times)) |>
+    mutate(dvid = ifelse(evid == 0, 1L, NA_integer_))
+}
+placebo <- as.data.frame(rxode2::rxSolve(mod_typ, ogtt_events(FALSE)))
+typ <- bind_rows(lapply(moas, function(mo) {
+  drug <- as.data.frame(rxode2::rxSolve(with_moa(mod_typ, mo), ogtt_events(TRUE)))
+  bind_rows(
+    mutate(placebo, arm = "Without drug"),
+    mutate(drug, arm = "With drug")
+  ) |>
+    mutate(moa = factor(moa_label[[mo]], levels = moa_label))
+}))
+```
+
+```{r fig-s1, fig.height = 5.5, fig.cap = "Replicates Supplementary Figure S1 of Sheikh Ghadzi 2017: typical glucose (top) and insulin (bottom) profiles without and with 50 mg of the study compound, one mechanism at a time."}
+typ |>
+  dplyr::select(time, arm, moa, Glucose = Gc, Insulin = Ic) |>
+  pivot_longer(c(Glucose, Insulin), names_to = "analyte", values_to = "value") |>
+  mutate(analyte = ifelse(analyte == "Glucose", "Glucose (mg/dL)", "Insulin (mU/L)")) |>
+  ggplot(aes(time, value, colour = arm)) +
+  geom_line() +
+  facet_grid(analyte ~ moa, scales = "free_y", switch = "y") +
+  scale_x_continuous(breaks = c(0, 120, 240)) +
+  labs(x = "Time (min)", y = NULL, colour = NULL) +
+  theme(legend.position = "bottom", strip.placement = "outside")
+```
+
+The placebo profile read from Supplementary Figure S1 (approximate values
+read from the plotted lines by the maintainers) peaks higher and falls
+lower than the packaged model, with less insulin:
+
+```{r fig-s1-placebo}
+fig_s1 <- data.frame(
+  time = samp,
+  glucose_fig = c(172, 172, 315, 388, 335, 245, 175, 132, 115),
+  insulin_fig = c(9, 9, 18, 28, 34, 32, 25, 18, 11)
+)
+placebo |>
+  dplyr::filter(time %in% samp) |>
+  dplyr::select(time, Gc, Ic) |>
+  left_join(fig_s1, by = "time") |>
+  mutate(Gc = round(Gc), Ic = round(Ic, 1)) |>
+  dplyr::rename(
+    "Time (min)" = time,
+    "Glucose, model (mg/dL)" = Gc,
+    "Insulin, model (mU/L)" = Ic,
+    "Glucose, Figure S1 (mg/dL)" = glucose_fig,
+    "Insulin, Figure S1 (mU/L)" = insulin_fig
+  ) |>
+  knitr::kable(caption = "Typical placebo OGTT: packaged model against the read-back of Supplementary Figure S1.")
+```
+
+The pattern of the drug effects matches the figure: incretin and basal
+insulin secretion raise insulin and lower glucose, CLG, CLGI, EGP and GABS
+lower both, and GSEN produces the largest insulin peak. The placebo
+difference is discussed under 'What is not reproduced'.
+
+# Glucose-AUC titration
+
+Methods: 'The maximum effect EmaxD was titrated for each MOA to produce the
+same effect: 10 percent reduction in glucose area under the curve', and the
+true drug/placebo AUCG ratios 'are expected to be around 0.9'.
+
+```{r aucg-typical}
+auc_trap <- function(time, y) sum(diff(time) * (head(y, -1) + tail(y, -1)) / 2)
+aucg_typ <- typ |>
+  group_by(moa, arm) |>
+  summarise(aucg = auc_trap(time, Gc), .groups = "drop") |>
+  pivot_wider(names_from = arm, values_from = aucg) |>
+  mutate(ratio = `With drug` / `Without drug`)
+
+# The glucose-absorption term as printed in Supplement 3, for comparison.
+mod_gabs_printed <- with_moa(mod_typ, "gabs") |>
+  rxode2::model(d/dt(glucose_transit) <- kabs * (glucose_depot - (1 + dgabs) * glucose_transit))
+gabs_printed <- as.data.frame(rxode2::rxSolve(mod_gabs_printed, ogtt_events(TRUE)))
+ratio_gabs_printed <- auc_trap(gabs_printed$time, gabs_printed$Gc) /
+  auc_trap(placebo$time, placebo$Gc)
+
+aucg_typ |>
+  dplyr::select(moa, ratio) |>
+  mutate(ratio = round(ratio, 3)) |>
+  dplyr::rename("Mechanism" = moa, "AUCG ratio, drug / placebo (0-240 min)" = ratio) |>
+  knitr::kable(caption = "Typical-subject glucose AUC ratio for each mechanism.")
+ratio_gabs_printed
+```
+
+```{r aucg-typical-gate}
+stopifnot(
+  nrow(aucg_typ) == 7,
+  all(aucg_typ$ratio > 0.83 & aucg_typ$ratio < 0.95),
+  ratio_gabs_printed > 0.99
+)
+```
+
+Every mechanism lowers the typical AUCG by 6 to 15 percent. With the
+glucose-absorption term as printed in Supplement 3 the reduction is
+`r round(100 * (1 - ratio_gabs_printed), 1)` percent, which is why the
+packaged model encodes that term as a first-order loss (see Assumptions).
+
+## Simulated crossover
+
+The paper's crossover is reproduced inside each virtual subject: a placebo
+OGTT at time 0 and a drug OGTT 3000 min later, after the drug has washed
+out (half-life about 158 min) and glucose and insulin have returned to the
+fasting steady state, so both periods share the subject's random effects.
+
+```{r crossover}
+n_sub <- 200
+period2 <- 3000
+one_subject <- function() {
+  e <- rxode2::et(amt = 75000, time = 30, cmt = "glucose_depot") |>
+    rxode2::et(amt = 50, time = period2, cmt = "depot") |>
+    rxode2::et(amt = 75000, time = period2 + 30, cmt = "glucose_depot") |>
+    rxode2::et(c(seq(0, 240, by = 5), period2 + seq(0, 240, by = 5)))
+  as.data.frame(e)
+}
+xo_events <- bind_rows(lapply(seq_len(n_sub), function(i) mutate(one_subject(), id = i))) |>
+  mutate(dvid = ifelse(evid == 0, 1L, NA_integer_))
+
+xo <- bind_rows(lapply(seq_along(moas), function(i) {
+  rxode2::rxSetSeed(20170 + i)
+  as.data.frame(rxode2::rxSolve(with_moa(mod, moas[i]), xo_events, nStud = 1)) |>
+    mutate(moa = factor(moa_label[[moas[i]]], levels = moa_label))
+}))
+
+xo_ratio <- xo |>
+  mutate(period = ifelse(time < period2, "placebo", "drug"), t = time %% period2) |>
+  group_by(moa, id, period) |>
+  summarise(aucg = auc_trap(t, Gc), .groups = "drop") |>
+  pivot_wider(names_from = period, values_from = aucg) |>
+  mutate(ratio = drug / placebo)
+
+xo_summary <- xo_ratio |>
+  group_by(moa) |>
+  summarise(
+    median = median(ratio),
+    p05 = quantile(ratio, 0.05),
+    p95 = quantile(ratio, 0.95),
+    .groups = "drop"
+  )
+xo_summary |>
+  mutate(across(c(median, p05, p95), ~ round(.x, 3))) |>
+  dplyr::rename(
+    "Mechanism" = moa, "Median ratio" = median,
+    "5th percentile" = p05, "95th percentile" = p95
+  ) |>
+  knitr::kable(caption = sprintf("Per-subject AUCG ratio (drug / placebo, IPRED), %d virtual subjects per mechanism.", n_sub))
+```
+
+```{r crossover-gate}
+stopifnot(
+  nrow(xo_summary) == 7,
+  all(xo_summary$median > 0.80 & xo_summary$median < 0.97)
+)
+```
+
+# Stochastic simulation
+
+A visual predictive check of the default model (incretin mechanism) for
+200 virtual subjects per arm, including residual error.
+
+```{r vpc, fig.cap = "Median and 90 percent prediction interval of simulated glucose and insulin without and with the study compound (incretin mechanism)."}
+vpc_events <- function(drug) {
+  bind_rows(lapply(seq_len(200), function(i) mutate(ogtt_events(drug, samp), id = i)))
+}
+rxode2::rxSetSeed(2017)
+vpc <- bind_rows(
+  as.data.frame(rxode2::rxSolve(mod, vpc_events(FALSE), nStud = 1)) |> mutate(arm = "Without drug"),
+  as.data.frame(rxode2::rxSolve(mod, vpc_events(TRUE), nStud = 1)) |> mutate(arm = "With drug")
+)
+# With dvid = 1 on every observation row, 'sim' carries the glucose
+# residual draw; insulin is shown as IPRED.
+vpc |>
+  transmute(arm, time, `Glucose (mg/dL)` = sim, `Insulin (mU/L)` = Ic) |>
+  pivot_longer(-c(arm, time), names_to = "analyte") |>
+  group_by(arm, time, analyte) |>
+  summarise(
+    p05 = quantile(value, 0.05), p50 = median(value), p95 = quantile(value, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, p50, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.15, colour = NA) +
+  geom_line() +
+  facet_wrap(~analyte, scales = "free_y") +
+  labs(x = "Time (min)", y = NULL, colour = NULL, fill = NULL) +
+  theme(legend.position = "bottom")
+```
+
+# What is not reproduced
+
+* **Placebo profile of Supplementary Figure S1.** The figure's typical
+  placebo glucose peaks at about 388 mg/dL and falls to about 115 mg/dL at
+  240 min with an insulin peak of about 34 mU/L; the packaged model, built
+  from Table 1 and the Supplement 3 equations, peaks at about 335 mg/dL,
+  ends at about 128 mg/dL and reaches about 48 mU/L. The population median
+  of a stochastic simulation is no closer, and changing the units of INCR50
+  moves insulin toward the figure but leaves glucose high late. The figure
+  may show one simulated individual rather than the typical one; its caption
+  says 'simulated data ... for a typical individual'. No parameter was
+  changed to match it.
+* **Power and REE results (Tables 2 to 4, Figure 2).** These come from
+  re-estimating hundreds of simulated datasets with reduced analysis models
+  (many parameters fixed, IIV removed); they are properties of the design
+  and estimation, not of the simulation model, and are not repeated here.
+
+# Assumptions and deviations
+
+* **Glucose-absorption effect.** Supplement 3 prints the transit equation
+  as `DADT(7) = KABS*(A(6) - (1+DGABS)*A(7))` with `AGLU = KABS*A(7)`. With
+  EmaxD(GABS) = 0.02 that removes at most 2 percent of the oral glucose and
+  lowers the glucose AUC by under 1 percent, against the 10 percent
+  titration stated in Methods and the visible GABS effect in Supplementary
+  Figure S1. The packaged model reads the drug term as a first-order loss
+  rate of transit glucose, `kabs * glucose_depot - (kabs + dgabs) *
+  glucose_transit`, with EmaxD(GABS) in 1/min; this gives a typical AUCG
+  ratio of about 0.92, in line with the other six mechanisms.
+* **Drug-effect equations.** Supplement 3 is an excerpt ('etc...') with
+  transcription slips: the PK uses `CLD1`/`VD1` in $DES for `CLD`/`VD` of
+  $PK, the GSEN line lacks a parenthesis
+  (`EMAXD7*CONC/EC50D+CONC)`), and the first $THETA is annotated 'GSS,
+  mg/dL' with the value 9.33 (VG). The packaged model uses `cl`/`vc`,
+  `emax_gsen * Cc / (ec50 + Cc)` like the other six mechanisms, and Table 1
+  for every value.
+* **Mechanism switches.** The `moa_*` 0/1 parameters stand for the
+  commented-out Emax terms of the published code. Part 3 combinations
+  (Supplementary Table S1) switch two mechanisms on with the same Table 1
+  Emax values; Methods says the two effects were simulated as independent.
+* **IIV scale.** Table 1 IIV is read as omega = (IIV/100)^2, the convention
+  shown by Supplement 3 (OM1 GSS 0.0196 for 14, OM16 KAD 0.462 for 68).
+* **Correlations.** Table 1 'Parameter correlations' are read as correlation
+  coefficients, as labelled: a covariance of 0.7225 between VG and VI would
+  exceed the product of their SDs. The EC50D IIV of 30 is taken from Table 1;
+  the Supplement 3 excerpt shows `$OMEGA 0 FIX ;OM19 EC50D`, which is the
+  analysis model, where Methods states EC50D carried IIV.
+* **Fixed status.** Table 1 footnote a ('Fixed for analysis') and b ('Fixed
+  to zero for analysis') are encoded as `fixed()`; parameters re-estimated
+  in the analysis (CLG, CLGI, GSS, ISS, CLI, EC50D, the Emax values, their
+  IIVs and the residual errors) are not.
+* **Units.** Glucose amounts are in the code's (mg/dL) x L units (10 mg);
+  the glucose dose is in mg and enters through `f(glucose_depot) = BIOG/10`,
+  the code's 'correction L -> dL'. INCR50 is in the same amount units.
+* **Residual error.** Glucose and insulin were modelled as log-transformed
+  data with additive error (Supplement 3 $ERROR), encoded as `lnorm()`
+  with the Table 1 RESG and RESI as log-scale SDs.
