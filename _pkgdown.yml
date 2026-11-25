@@ -448,6 +448,8 @@ navbar:
         href: articles/Kletting_2015_antiCD66_pbpk.html
       - text: "AntiCD66 pbpk model2 (Kletting 2015)"
         href: articles/Kletting_2015_antiCD66_pbpk.html
+      - text: "AntiIL17 mouse (Kratochwil 2018)"
+        href: articles/Kratochwil_2018_antiIL17_mouse.html
       - text: "AntiSarsCov2IgG (Huygens 2024)"
         href: articles/Huygens_2024_antiSarsCov2IgG.html
       - text: "Antipcsk9 qsp (Sokolov 2019)"
@@ -10733,6 +10735,7 @@ articles:
   - articles/Kovalenko_2021_dupilumab
   - articles/Kovalenko_2025_alirocumab
   - articles/Kovar_2020_buprenorphine
+  - articles/Kratochwil_2018_antiIL17_mouse
   - articles/Kratochwil_2021_petesicatib
   - articles/Krause_2017_selexipag
   - articles/Krause_2023_daridorexant
