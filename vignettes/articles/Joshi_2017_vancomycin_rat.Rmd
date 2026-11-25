@@ -1,0 +1,379 @@
+---
+title: "Vancomycin in rats (Joshi 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin in rats (Joshi 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Joshi_2017_vancomycin_rat"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Joshi_2017_vancomycin_rat"))$description`
+* Article: <https://doi.org/10.1111/cts.12484> (open access, PMC5698807)
+* Predecessor model from the same group, used to settle the units:
+  <https://doi.org/10.1128/AAC.00591-16> (Rhodes 2016, PMC5038238)
+
+The paper is primarily a bioanalytical method report (an HPLC-UV assay for
+vancomycin in rat plasma and kidney homogenate, plus a catheter-adsorption
+study). Its demonstration pharmacokinetic study fits a population model whose
+final estimates are printed in Table 3; that model is what is packaged here.
+
+# Population
+
+Ten male Sprague-Dawley rats weighing 250-350 g were selected from a larger
+nephrotoxicity study (Rhodes 2016) to illustrate the assay. Each received
+vancomycin 150 mg/kg/day as a single daily intraperitoneal injection, for one
+day (n = 5) or three days (n = 5). Plasma was sampled from a jugular-vein
+catheter at 0 (predose), 10, 30, 60, 120, 240 and 1,440 min after the final
+dose and assayed by HPLC-UV (lower limit of quantitation 3 mg/L, linear to
+75 mg/L). The model was fitted with the non-parametric adaptive grid (NPAG)
+algorithm in Pmetrics.
+
+The same information is available programmatically via
+`readModelDb("Joshi_2017_vancomycin_rat")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Structure: peritoneal depot, first-order absorption, fraction absorbed, two-compartment disposition with micro-constants | -- | Methods, 'Pharmacokinetic model'; Table 3 parameter list; Figure 4 title ('2 Compartment: Peritoneal, Rat, Vancomycin Model') |
+| `lkel` (Ke) | log(0.911843) 1/h | Table 3, Ke mean |
+| `lvc` (V) | log(0.185885) L | Table 3, V mean |
+| `lka` (Ka) | log(3.946906) 1/h | Table 3, Ka mean |
+| `lk12` (KCP) | log(45.33389) 1/h | Table 3, KCP mean |
+| `lk21` (KPC) | log(42.25276) 1/h | Table 3, KPC mean |
+| `logitfdepot` (FA1) | logit(0.459455) | Table 3, FA1 mean |
+| `etalkel` | 0.555096 | Table 3, Ke SD 0.785514: log((SD/mean)^2 + 1) |
+| `etalvc` | 0.501010 | Table 3, V SD 0.14991 |
+| `etalka` | 0.230578 | Table 3, Ka SD 2.009931 |
+| `etalk12` | 0.299421 | Table 3, KCP SD 26.78453 |
+| `etalk21` | 0.450851 | Table 3, KPC SD 31.89025 |
+| `etalogitfdepot` | 0.397883 | Table 3, FA1 SD 0.156658: (SD / (F (1 - F)))^2 (delta method) |
+| `propSd`, `addSd` | fixed(0) | not reported |
+| Units: time h, V in L for a 250-350 g rat, dose in mg | -- | not printed in Table 3; see 'Units' below |
+
+# Units
+
+Table 3 prints no units. Time is in hours: the Results report a median
+half-life of 1.7 h, and the terminal half-life implied by the tabulated rate
+constants is about 1.6 h (checked below). The volume could be either litres for
+the whole rat (dosed with the absolute amount, 150 mg/kg times body weight) or
+litres per kilogram (dosed in mg/kg). Two pieces of evidence select the first:
+
+1. The ten rats are a subset of the Rhodes 2016 study, whose model of the
+   same animals (Table 2) reports volume as 'liter/0.3 kg', i.e. litres for a
+   0.3 kg rat dosed in mg. Rhodes 2016 did not estimate bioavailability; its
+   median apparent values V/F = 0.3 L and CL/F = 0.3 x 0.9 = 0.27 L/h become
+   about 0.14 L and 0.12 L/h after scaling by Joshi's fraction absorbed (0.46).
+   Read as litres per rat, Joshi's Table 3 gives V = 0.19 L and
+   CL = Ke x V = 0.17 L/h, the same order. Read as L/kg, the per-rat values
+   would be 0.056 L and 0.051 L/h, 2.5-fold below the earlier fit.
+2. The Discussion gives the mean predicted 6-h concentration in the one-day
+   rats as 5.19 mg/L. The typical-value solve gives about 4.3 mg/L under the
+   litre reading and about 14 mg/L under the L/kg reading.
+
+The simulated cohort does not settle the question on its own: under the litre
+reading its median Cmax and AUC fall about 55% below the Results' medians, and
+under the L/kg reading they would sit about 45% above (see 'Comparison against
+published NCA').
+
+The model therefore takes the dose as an absolute amount in mg. The paper has
+no body-weight covariate, so weight enters only through the dose.
+
+# Typical-value checks
+
+```{r typical}
+mod <- readModelDb("Joshi_2017_vancomycin_rat")
+mod_typ <- rxode2::zeroRe(mod)
+
+wt_ref <- 0.3 # kg, the middle of the 250-350 g range
+dose_ref <- 150 * wt_ref # mg
+
+ev_typ <- rbind(
+  data.frame(id = 1L, time = 0, evid = 1L, amt = dose_ref, cmt = "depot"),
+  data.frame(
+    id = 1L, time = sort(unique(c(seq(0, 2, by = 0.01), seq(2, 48, by = 0.05)))),
+    evid = 0L, amt = 0, cmt = "central"
+  )
+)
+sim_typ <- as.data.frame(rxode2::rxSolve(mod_typ, ev_typ, returnType = "data.frame"))
+
+# An independent implementation of the same system, written directly from the
+# Table 3 parameterisation, to confirm the packaged model solves the
+# intended structure (rxode2 may solve it in closed form from cl/vc/q/vp/ka).
+indep <- rxode2::rxode2({
+  d / dt(depot) <- -ka * depot
+  d / dt(central) <- ka * depot - (ke + kcp) * central + kpc * peripheral1
+  d / dt(peripheral1) <- kcp * central - kpc * peripheral1
+  f(depot) <- fa
+  Cc <- central / v
+})
+p_tab <- c(
+  ke = 0.911843, v = 0.185885, ka = 3.946906,
+  kcp = 45.33389, kpc = 42.25276, fa = 0.459455
+)
+sim_ind <- as.data.frame(rxode2::rxSolve(
+  indep,
+  params = p_tab,
+  events = rxode2::et(amt = dose_ref, cmt = "depot") |>
+    rxode2::et(unique(ev_typ$time[ev_typ$evid == 0])),
+  returnType = "data.frame"
+))
+chk <- dplyr::inner_join(
+  sim_typ[, c("time", "Cc")],
+  sim_ind[, c("time", "Cc")],
+  by = "time", suffix = c("_pkg", "_ind")
+)
+rel_diff <- with(
+  dplyr::filter(chk, Cc_ind > 0.01),
+  max(abs(Cc_pkg - Cc_ind) / Cc_ind)
+)
+
+# Mass balance: cl * AUC(0-inf) must equal F * Dose (PKNCA AUC, not a
+# hand-written trapezoid). With a terminal half-life near 1.6 h the profile
+# has fallen by ~30 half-lives at 48 h, so AUC(0-48) is AUC(0-inf).
+auc_inf <- PKNCA::pk.calc.auc.last(conc = sim_typ$Cc, time = sim_typ$time)
+cl_typ <- 0.911843 * 0.185885
+f_typ <- 0.459455
+
+# Terminal half-life from the rate constants (beta phase of the disposition).
+k10 <- 0.911843
+k12 <- 45.33389
+k21 <- 42.25276
+beta <- ((k10 + k12 + k21) - sqrt((k10 + k12 + k21)^2 - 4 * k10 * k21)) / 2
+thalf_typ <- log(2) / beta
+
+data.frame(
+  check = c(
+    "max relative difference, packaged vs independent ODE",
+    "cl * AUC(0-inf) / (F * Dose)",
+    "terminal half-life from Table 3 rate constants (h)",
+    "typical Cmax (mg/L)",
+    "typical C at 6 h (mg/L)"
+  ),
+  value = signif(c(
+    rel_diff,
+    cl_typ * auc_inf / (f_typ * dose_ref),
+    thalf_typ,
+    max(sim_typ$Cc),
+    sim_typ$Cc[which.min(abs(sim_typ$time - 6))]
+  ), 4)
+) |>
+  knitr::kable()
+
+c6_typ <- sim_typ$Cc[which.min(abs(sim_typ$time - 6))]
+stopifnot(
+  # Same parameters on both sides: a pure numerical comparison.
+  rel_diff < 1e-3,
+  abs(cl_typ * auc_inf / (f_typ * dose_ref) - 1) < 0.01,
+  # The Results' median half-life is 1.7 h.
+  abs(thalf_typ / 1.7 - 1) < 0.15,
+  # Discussion: mean predicted 6-h concentration 5.19 mg/L in the one-day
+  # rats. The litre reading gives ~4.3 mg/L; the L/kg reading ~14 mg/L.
+  abs(log(c6_typ / 5.19)) < log(1.5)
+)
+```
+
+# Virtual cohort and simulation
+
+Two arms of 100 rats each mirror the study: one daily dose (sampled over the
+24 h after it) and three daily doses (sampled over the 24 h after the third).
+Body weights are drawn uniformly over 250-350 g and each rat receives
+150 mg/kg as an intraperitoneal injection into the depot.
+
+```{r cohort}
+rxode2::rxSetSeed(20171101)
+n_per_arm <- 100L
+
+cohort <- data.frame(
+  id = seq_len(2L * n_per_arm),
+  arm = rep(c("1 day", "3 days"), each = n_per_arm),
+  wt = stats::runif(2L * n_per_arm, 0.25, 0.35)
+) |>
+  dplyr::mutate(n_dose = ifelse(arm == "1 day", 1L, 3L))
+
+dose_rows <- cohort |>
+  tidyr::uncount(n_dose, .id = "dose_no") |>
+  dplyr::mutate(
+    time = (dose_no - 1) * 24, evid = 1L, amt = 150 * wt, cmt = "depot"
+  )
+
+obs_grid <- sort(unique(c(seq(0, 2, by = 0.02), seq(2, 24, by = 0.1))))
+obs_rows <- cohort |>
+  dplyr::mutate(last_dose = (n_dose - 1) * 24) |>
+  tidyr::crossing(tad = obs_grid) |>
+  dplyr::mutate(time = last_dose + tad, evid = 0L, amt = 0, cmt = "central")
+
+events <- dplyr::bind_rows(
+  dose_rows[, c("id", "time", "evid", "amt", "cmt")],
+  obs_rows[, c("id", "time", "evid", "amt", "cmt")]
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim <- as.data.frame(rxode2::rxSolve(mod, events, returnType = "data.frame")) |>
+  dplyr::left_join(cohort[, c("id", "arm", "n_dose", "wt")], by = "id") |>
+  dplyr::mutate(tad = time - (n_dose - 1) * 24)
+```
+
+# Replicate Figure 3
+
+Figure 3 of the paper shows the observed mean (SEM) plasma concentrations for
+all rats on a log axis: the one-day rats over 0-24 h and the three-day rats over
+48-72 h. The simulated median and 5th-95th percentiles are plotted on the same
+layout.
+
+```{r figure3, fig.width = 7, fig.height = 4}
+sim |>
+  dplyr::group_by(arm, time) |>
+  dplyr::summarise(
+    median = stats::median(Cc),
+    lo = stats::quantile(Cc, 0.05),
+    hi = stats::quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  # Floor at the bottom of the plotted axis so the log scale has no zeros.
+  dplyr::mutate(dplyr::across(c(median, lo, hi), ~ pmax(.x, 1))) |>
+  ggplot(aes(time, median, group = arm)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "steelblue", alpha = 0.25) +
+  geom_line(colour = "steelblue4") +
+  geom_hline(yintercept = 3, linetype = "dashed", colour = "grey40") +
+  scale_y_log10(limits = c(1, 300)) +
+  scale_x_continuous(breaks = seq(0, 72, by = 6)) +
+  labs(
+    x = "Time (hours)", y = "Vancomycin concentration (mg/L)",
+    caption = paste(
+      "Replicates Figure 3 of Joshi 2017. Median and 5th-95th percentiles of",
+      "100 simulated rats per arm; dashed line is the 3 mg/L LLOQ."
+    )
+  ) +
+  theme_bw()
+```
+
+The observed means in Figure 3 peak near 100 mg/L after the single dose and
+near 60 mg/L after the third dose, and fall to about 15 mg/L by 4 h. The
+simulation reaches lower peaks (see the next section); the reasons are listed
+under Assumptions and deviations.
+
+# PKNCA validation
+
+NCA is run on each rat's final dosing interval (0-24 h after the last dose),
+grouped by arm.
+
+```{r pknca}
+# The stiff fast-distribution system can return values a few ulp below zero
+# once the profile has decayed; those are set to zero rather than dropped.
+conc_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
+  dplyr::select(id, arm, tad, Cc)
+
+dose_nca <- cohort |>
+  dplyr::transmute(id, arm, tad = 0, dose = 150 * wt)
+
+o_conc <- PKNCA::PKNCAconc(conc_nca, Cc ~ tad | arm + id)
+o_dose <- PKNCA::PKNCAdose(dose_nca, dose ~ tad | arm + id)
+intervals <- data.frame(
+  start = 0, end = 24,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+```
+
+# Comparison against published NCA
+
+The Results report, from the Bayesian posterior predicted concentrations over
+24 h, a median Cmax of 69.9 mg/L (range 30.4-95.2), AUC of 254.6 mg*h/L
+(range 194.2-307.0) and half-life of 1.7 h (range 1.5-5.9), pooled over both
+arms. The Discussion separately gives a 24-h AUC of 264 mg*h/L for the one-day
+rats.
+
+```{r nca-compare}
+published <- data.frame(
+  arm = c("1 day", "3 days"),
+  cmax = c(69.9, 69.9),
+  auclast = c(254.6, 254.6),
+  half.life = c(1.7, 1.7)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "arm",
+  units = c(cmax = "mg/L", auclast = "mg*h/L", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated (median of 100 rats per arm) vs the paper's pooled median",
+    "Bayesian posterior NCA. * marks rows differing by >20%."
+  )
+)
+
+sim_auc <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::pull(PPORRES)
+ratio_auc <- stats::median(sim_auc) / 254.6
+ratio_auc
+
+stopifnot(
+  # Pins the documented shortfall rather than hiding it: the litre-per-rat
+  # reading lands near 0.45, the L/kg reading (a dose 3.3x larger relative
+  # to V) near 1.5, and a mis-transcribed V or Ke moves the whole
+  # distribution out of this window. The median of 200 rats is robust to
+  # RNG differences between rxode2 builds.
+  ratio_auc > 0.3,
+  ratio_auc < 0.8
+)
+```
+
+The simulated half-life is within 9-26% of the paper's 1.7 h. Simulated Cmax and AUC
+are roughly half of the paper's medians, and these rows are flagged. The
+parameters were not adjusted to close the gap. The paper's values summarise the
+individual Bayesian posterior profiles of ten rats, while the simulation draws
+from independent log-normal marginals centred on the Table 3 means; with
+coefficients of variation of 80-86% on Ke and V, the marginals are strongly
+skewed and the medians of the fitted distributions are likely well below the
+tabulated means. A Ke and a V each about 30% below their means would close the
+AUC gap. The typical 6-h concentration (4.3 mg/L) is close to the 5.19 mg/L
+the Discussion reports for the one-day rats.
+
+# Assumptions and deviations
+
+* **Units were not printed.** Table 3 gives no units. Time in hours, volume in
+  litres for a 250-350 g rat and the dose as an absolute amount in mg were
+  inferred as described under 'Units'.
+* **Non-parametric means carried as log-normal medians.** NPAG returns a
+  discrete joint distribution of support points; Table 3 reports only the mean
+  and SD of each marginal. Following the library's other Pmetrics models, each
+  mean is the median of a log-normal (logit-normal for FA1) marginal, with the
+  variance taken from SD/mean. The SDs are large (CV 51-86%), so the marginals
+  are strongly skewed and the tabulated means are not the parameters of a
+  typical rat. This is the most likely reason the simulated Cmax and AUC fall
+  about 55% below the posterior medians reported in the Results.
+* **Correlations are lost.** The joint NPAG distribution is not published, so
+  the six random effects are independent. Ke and V, and KCP and KPC, are
+  almost certainly correlated in the fitted support points.
+* **Fraction absorbed on the logit scale.** FA1 (mean 0.459, SD 0.157) is
+  carried as a logit-normal so that simulated fractions stay inside (0, 1); its
+  variance was obtained from the SD by the delta method.
+* **Residual error not reported.** The Pmetrics error model (gamma or lambda)
+  and assay-error polynomial are not given; `propSd` and `addSd` are fixed to 0.
+  The quoted fit statistics (R^2 0.98, bias -0.25 mg/L, imprecision
+  1.05 mg^2/L^2) describe the individual Bayesian predictions in Figure 4.
+* **Body weight.** The paper reports only the 250-350 g range; weights were
+  drawn uniformly over it. There is no weight covariate in the model.
+* **Figures 1, 2 and 4** (chromatograms, catheter-retention concentrations and
+  the observed-vs-individual-predicted plot) cannot be reproduced from the
+  model and are not replicated.
