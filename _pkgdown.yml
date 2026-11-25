@@ -8328,6 +8328,8 @@ navbar:
         href: articles/Marier_2002_tobramycin_rat_conventional.html
       - text: "Tobramycin rat liposomal (Marier 2002)"
         href: articles/Marier_2002_tobramycin_rat_liposomal.html
+      - text: "Tocilizumab (Abdallah 2017)"
+        href: articles/Abdallah_2017_tocilizumab.html
       - text: "Tocilizumab (Bastida 2018)"
         href: articles/Bastida_2018_tocilizumab.html
       - text: "Tocilizumab (Frey 2010)"
@@ -9336,6 +9338,7 @@ articles:
   - articles/Abbiati_2021_avadomide
   - articles/Abboud_2009_epinephrine
   - articles/AbdRahman_2020_chloroquine
+  - articles/Abdallah_2017_tocilizumab
   - articles/AbdelJalil_2013_tacrolimus
   - articles/Abdelgawad_2024_linezolid
   - articles/Abdelgawad_2025_rifampicin
