@@ -4788,6 +4788,22 @@ navbar:
         href: articles/Shimizu_2021_lusutrombopag.html
       - text: "Luvometinib (Tan 2023)"
         href: articles/Tan_2023_luvometinib.html
+      - text: "Lysergide (Dolder 2017)"
+        href: articles/Dolder_2017_lysergide.html
+      - text: "Lysergide anydrugeffect (Dolder 2017)"
+        href: articles/Dolder_2017_lysergide.html
+      - text: "Lysergide baddrugeffect (Dolder 2017)"
+        href: articles/Dolder_2017_lysergide.html
+      - text: "Lysergide bodytemp (Dolder 2017)"
+        href: articles/Dolder_2017_lysergide.html
+      - text: "Lysergide dbp (Dolder 2017)"
+        href: articles/Dolder_2017_lysergide.html
+      - text: "Lysergide gooddrugeffect (Dolder 2017)"
+        href: articles/Dolder_2017_lysergide.html
+      - text: "Lysergide hr (Dolder 2017)"
+        href: articles/Dolder_2017_lysergide.html
+      - text: "Lysergide sbp (Dolder 2017)"
+        href: articles/Dolder_2017_lysergide.html
       - text: "M3g rat (Xie 2000)"
         href: articles/Xie_2000_m3g_rat.html
       - text: "M6495 cyno (Pereira 2024)"
@@ -9981,6 +9997,7 @@ articles:
   - articles/Dogterom_2018_asenapine
   - articles/Dohmann_2025_piperacillin
   - articles/DoldanMartelli_2013_EGF_IFN_chimera
+  - articles/Dolder_2017_lysergide
   - articles/DominguezMore_2024_rutin_physalis
   - articles/Dong_2014_mycophenolic_acid
   - articles/Dong_2015_snx2112_nanocrystals

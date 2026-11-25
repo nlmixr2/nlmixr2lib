@@ -1243,14 +1243,14 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Type:** compartment
 - **Role:** Single-item 'any drug effect' visual analog scale (VAS) output: a 100-mm unipolar line from 'not at all' (0) to 'extremely' (100), read as percent, rated repeatedly after dosing. It measures the overall strength of a drug's subjective effect regardless of its quality, and is the standard primary subjective outcome of the Basel psychedelic and stimulant studies (LSD, psilocybin, MDMA, mescaline). ABSOLUTE reading bounded on 0-100.
 - **Source aliases:** `VAS 'any drug effect'`, `any drug effect` -- Mueller 2025 paper notation.
-- **Example models:** `Mueller_2025_mescaline_anydrugeffect.R` (effect-compartment sigmoid Emax driven by plasma mescaline, Emax fixed at 100 percent, zero baseline).
+- **Example models:** `Mueller_2025_mescaline_anydrugeffect.R` (effect-compartment sigmoid Emax driven by plasma mescaline, Emax fixed at 100 percent, zero baseline), `Dolder_2017_lysergide_anydrugeffect.R` (the same effect-compartment sigmoid Emax driven by plasma LSD, with Emax estimated within 0-100 percent and a separate parameter set for the 100 ug and 200 ug doses; the rating is the difference from placebo at the same time point).
 - **Notes:** Family-conforming member of the clinical-score PD output family (`desiretousevas`, `psychedelicintensity`), lowercase run-together with the `vas` suffix of `desiretousevas`. Distinct from `psychedelicintensity`, a 0-10 numeric rating of the psychedelic experience; the 'any drug effect' VAS is drug-class-agnostic. Its companions on the same VAS panel are `gooddrugeffectvas` and `egodissolutionvas`; a 'bad drug effect' VAS, if modelled, should register a sibling `baddrugeffectvas`.
 
 ### gooddrugeffectvas (**canonical 'good drug effect' VAS output compartment**)
 - **Type:** compartment
 - **Role:** Single-item 'good drug effect' visual analog scale (VAS) output: a 100-mm unipolar line from 'not at all' (0) to 'extremely' (100), read as percent. Rates the positive (liked) component of a drug's subjective effect. ABSOLUTE reading bounded on 0-100.
 - **Source aliases:** `VAS 'good drug effect'`, `good drug effect` -- Mueller 2025 paper notation.
-- **Example models:** `Mueller_2025_mescaline_gooddrugeffect.R` (same effect-compartment sigmoid-Emax structure as the 'any drug effect' model, refitted to this scale).
+- **Example models:** `Mueller_2025_mescaline_gooddrugeffect.R` (same effect-compartment sigmoid-Emax structure as the 'any drug effect' model, refitted to this scale), `Dolder_2017_lysergide_gooddrugeffect.R` (LSD; same structure as `Dolder_2017_lysergide_anydrugeffect.R`).
 - **Notes:** Companion of `anydrugeffectvas`. Not the same endpoint as the opioid abuse-liability 'drug liking' VAS (`druglikingvascfb`), which is a bipolar scale centred on a neutral 50 and is analysed as a change score.
 
 ### egodissolutionvas (**canonical ego-dissolution VAS output compartment**)
@@ -1259,6 +1259,13 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Source aliases:** `VAS 'ego dissolution'`, `the boundaries between me and my surroundings seem to blur` -- Mueller 2025 paper notation.
 - **Example models:** `Mueller_2025_mescaline_egodissolution.R` (same effect-compartment sigmoid-Emax structure as the 'any drug effect' model, refitted to this scale).
 - **Notes:** Companion of `anydrugeffectvas`. This is the single-item VAS, not a multi-item 5D-ASC dimension score (e.g. 'oceanic boundlessness'), which would need its own canonical.
+
+### baddrugeffectvas (**canonical 'bad drug effect' VAS output compartment**)
+- **Type:** compartment
+- **Role:** Single-item 'bad drug effect' visual analog scale (VAS) output: a 100-mm unipolar line from 'not at all' (0) to 'extremely' (100), read as percent. Rates the negative (disliked, unpleasant or anxious) component of a drug's subjective effect. ABSOLUTE reading bounded on 0-100.
+- **Source aliases:** `VAS 'bad drug effect'`, `bad drug effect` -- Dolder 2017 paper notation.
+- **Example models:** `Dolder_2017_lysergide_baddrugeffect.R` (effect-compartment sigmoid Emax driven by plasma LSD, Emax estimated within 0-100 percent; the rating is the difference from placebo at the same time point).
+- **Notes:** The sibling anticipated in the `anydrugeffectvas` notes; companion of `anydrugeffectvas` and `gooddrugeffectvas` on the same Basel VAS panel. Unlike those two, a bad drug effect is reported by only some participants and often transiently, so a typical-value fit to it describes responders: Dolder 2017 could not estimate it in about a third of subjects, who never rated it above 5 percent.
 
 ---
 
@@ -2686,12 +2693,33 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Hansson_2013_sunitinib_dbp.R`.
 - **Notes:** Holds a blood-pressure value (mmHg), not a drug concentration; the related drug-induced *relative* change covariate used downstream is `DBP_REL` in `covariate-columns.md`.
 
+### dbpcfb (**canonical change in diastolic blood pressure output**)
+- **Type:** compartment
+- **Role:** Change in diastolic blood pressure in mmHg, a signed quantity, used as the observation variable when the model's structural equation targets the drug-induced change rather than the absolute pressure. Change-score sibling of `dbp`, named by the library-wide `<state>cfb` convention.
+- **Source aliases:** `diastolic blood pressure increase` (Dolder 2017 Table 2), `deltaDBP` -- translate to `dbpcfb`.
+- **Example models:** `Dolder_2017_lysergide_dbp.R` (effect-compartment sigmoid Emax driven by plasma LSD, zero baseline).
+- **Notes:** The Dolder 2017 effect is PLACEBO-corrected rather than baseline-corrected: the value after the drug minus the value in the same subject at the same clock time in a placebo session of the crossover, which removes circadian and placebo effects. It is a change score all the same and takes the `<state>cfb` suffix, as `fvcppcfb` does for a placebo-corrected change; note the reference in each model's `units` entry. Distinct from the covariate `DBP_REL`, a relative change used as an input.
+
 ### sbp (**canonical systolic blood pressure PD state**)
 - **Type:** compartment
 - **Role:** Systolic blood pressure (mmHg) indirect-response turnover state and PD output; the systolic sibling of `dbp`. In Ibrahim 2023 ibrutinib, `sbp` turns over via a zero-order production `kin` and first-order loss `kout` fed by a single upstream `transit1` compartment, with the daily ibrutinib AUC(0-24) stimulating `kin` through an Emax function; the state both carries the ODE and is the single observation variable.
 - **Source aliases:** none.
 - **Example models:** `Ibrahim_2023_ibrutinib_sbp.R`.
 - **Notes:** Holds a blood-pressure value (mmHg), not a drug concentration. Systolic and diastolic pressure are fitted as separate models in both founding papers, so keep them as two states in two files rather than collapsing them into one multi-output model; the related drug-induced *relative* change covariate used downstream is `DBP_REL` in `covariate-columns.md`. A paper that fits systolic pressure *jointly* with mean arterial pressure and heart rate uses `sbp` alongside `map` / `hr` as parallel outputs of one multi-output model -- see `Dings_2026_cafedrine_theodrenaline_ephedrine.R`.
+
+### sbpcfb (**canonical change in systolic blood pressure output**)
+- **Type:** compartment
+- **Role:** Change in systolic blood pressure in mmHg, a signed quantity, used as the observation variable when the model's structural equation targets the drug-induced change rather than the absolute pressure. Change-score sibling of `sbp`, named by the library-wide `<state>cfb` convention.
+- **Source aliases:** `systolic blood pressure increase` (Dolder 2017 Table 2), `deltaSBP` -- translate to `sbpcfb`.
+- **Example models:** `Dolder_2017_lysergide_sbp.R` (effect-compartment sigmoid Emax driven by plasma LSD, zero baseline).
+- **Notes:** The Dolder 2017 effect is PLACEBO-corrected rather than baseline-corrected: the value after the drug minus the value in the same subject at the same clock time in a placebo session of the crossover, which removes circadian and placebo effects. It is a change score all the same and takes the `<state>cfb` suffix, as `fvcppcfb` does for a placebo-corrected change; note the reference in each model's `units` entry.
+
+### bodytempcfb (**canonical change in body temperature output**)
+- **Type:** compartment
+- **Role:** Change in core body temperature in degrees Celsius, a signed quantity, used as the observation variable of models of a drug's thermogenic (or hypothermic) effect. Named by the library-wide `<state>cfb` convention on the stem of the `BODYTEMP` covariate; no absolute body-temperature output is registered.
+- **Source aliases:** `body temperature increase` (Dolder 2017 Table 2; tympanic temperature) -- translate to `bodytempcfb`.
+- **Example models:** `Dolder_2017_lysergide_bodytemp.R` (effect-compartment sigmoid Emax driven by plasma LSD, zero baseline, Emax about 1 degree C; the slowest-equilibrating of the Dolder 2017 endpoints, ke0 about 1.5 1/h).
+- **Notes:** The Dolder 2017 effect is PLACEBO-corrected rather than baseline-corrected: the value after the drug minus the value in the same subject at the same clock time in a placebo session of the crossover, which removes circadian and placebo effects. It is a change score all the same and takes the `<state>cfb` suffix, as `fvcppcfb` does for a placebo-corrected change; note the reference in each model's `units` entry. Distinct from the covariate `BODYTEMP`, an observed absolute temperature used as an input, and from the fixed physiological constant `temp_body` (kelvin) of `Takita_2020_creatinine_bidirectionalOCT2.R`.
 
 ### map (**canonical mean arterial pressure PD state**)
 - **Type:** compartment
@@ -2708,6 +2736,13 @@ One family in this section is validated by shape rather than by enumeration -- s
   - `HR` -- the near-universal clinical abbreviation; used directly in Dings 2026 Eq. A12.
 - **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (algebraic Emax output `hr = HR_BL + (rmax_hr - HR_BL) * conc/(conc + ec50_hr) + e_event_hr * iu`, fitted jointly with `map` and `sbp`), `Hallik_2020_dobutamine_hr.R` (neonatal sigmoidal Emax in the effect-compartment dobutamine concentration, fitted jointly with `Cc`), `GarrazaObaldia_2024_propofol_remifentanil.R` (indirect-response turnover state whose production is inhibited by remifentanil; feeds back on `map` production).
 - **Notes:** Holds a rate in beats/min, not a drug concentration. Distinct from the `HR` *covariate* (an observed heart-rate data value used as a covariate on clearance, e.g. `Ngamprasertwong_2016_propofol_sheep.R`) and from its anchor siblings `HR_PRESURG` / `HR_BL`: those are inputs, `hr` is the predicted output.
+
+### hrcfb (**canonical change in heart rate output**)
+- **Type:** compartment
+- **Role:** Change in heart rate in beats/min, a signed quantity, used as the observation variable when the model's structural equation targets the drug-induced change rather than the absolute rate. Change-score sibling of `hr`, named by the library-wide `<state>cfb` convention.
+- **Source aliases:** `heart rate increase` (Dolder 2017 Table 2), `d_hr`, `DeltaHR` -- translate to `hrcfb`.
+- **Example models:** `Dolder_2017_lysergide_hr.R` (effect-compartment sigmoid Emax driven by plasma LSD, zero baseline, Emax 22 and 33 beats/min at the 100 and 200 ug doses).
+- **Notes:** The Dolder 2017 effect is PLACEBO-corrected rather than baseline-corrected: the value after the drug minus the value in the same subject at the same clock time in a placebo session of the crossover, which removes circadian and placebo effects. It is a change score all the same and takes the `<state>cfb` suffix, as `fvcppcfb` does for a placebo-corrected change; note the reference in each model's `units` entry. The older `d_hr` entry describes the same quantity under the retired `d_` prefix.
 
 ### rvo (**canonical right ventricular cardiac output PD output**)
 - **Type:** compartment
