@@ -666,8 +666,12 @@ navbar:
         href: articles/Anbari_2023_atezolizumab_cibisatamab_qsp.html
       - text: "Atezolizumab cibisatamab qsp (Ma 2020)"
         href: articles/Ma_2020_atezolizumab_cibisatamab_qsp.html
+      - text: "Atezolizumab il18 tgi (Netterberg 2019)"
+        href: articles/Netterberg_2019_atezolizumab.html
       - text: "Atezolizumab isr (Chan 2025)"
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
+      - text: "Atezolizumab itac (Netterberg 2019)"
+        href: articles/Netterberg_2019_atezolizumab.html
       - text: "Atezolizumab nabpaclitaxel qsp (Wang 2021)"
         href: articles/Wang_2021_atezolizumab_nabpaclitaxel_qsp.html
       - text: "Atezolizumab nsclc pbpk (Salgado 2022)"
@@ -11225,6 +11229,7 @@ articles:
   - articles/Nestorov_2014_factorviii
   - articles/Netterberg_2017_docetaxel
   - articles/Netterberg_2018_breast_cancer_FN
+  - articles/Netterberg_2019_atezolizumab
   - articles/Ng_2018_exendin939
   - articles/Ngamprasertwong_2016_propofol_sheep
   - articles/Ngara_2020_atazanavir_ritonavir_hair

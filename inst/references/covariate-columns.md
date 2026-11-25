@@ -4189,6 +4189,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Baaz_2023_panitumumab_folfox.R`.
 - **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. A dose-per-cycle exposure surrogate used in place of a PK model; it is not an `amt` and should not be used to dose a PK compartment.
 
+### DOSE_ATEZOLIZUMAB_MG (**canonical for the atezolizumab dose administered in the current treatment cycle, in mg**)
+- **Description:** The amount of the most recent atezolizumab dose in mg (the dose of the current 3-week cycle); 0 before the first dose. Time-varying: it changes at each dose whose amount differs from the previous one.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters linearly as the numerator of the cycle-specific exposure `AUCcycle,n = DOSE_ATEZOLIZUMAB_MG / cl` (Netterberg 2019 Eq. 2, mg*day/L), which drives an exponentially waning AUC-related tumor-shrinkage rate.
+- **Source aliases:**
+  - `Dose_n` -- Netterberg 2019 Eq. 2 notation ("the dose administered in cycle n").
+- **Example models:** `Netterberg_2019_atezolizumab_il18_tgi.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. Unlike `DOSE_PANITUMUMAB_MGKG` this model also carries a PK model dosed through `amt`; the column duplicates the dose amount because, inside an ODE right-hand side, rxode2's `podo()` / `dose()` return the infusion rate rather than the amount for an infused dose, so the cycle dose cannot be recovered from the dosing records there. The column must agree with the `amt` of the dosing records; for mg/kg dosing it is the mg/kg dose times body weight.
+
 ## Cardiometabolic / target biomarkers
 
 ### HDLC (**canonical for high-density lipoprotein cholesterol**)
@@ -12288,7 +12299,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Scope:** general
 - **Reference category:** 0 (no liver metastases at baseline).
 - **Source aliases:** none; `LMET` is the common NONMEM / clinical-PK abbreviation used directly by the source papers.
-- **Example models:** `Quartino_2019_trastuzumab.R` (exponential effect on linear CL; +16.4% typical CL when LMET = 1, per Quartino 2019 Table 1 theta12 = 0.152), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (paper `LIVMET`; additive on log TS0 in both models, and on logit RE and the log PFS hazard in the final model).
+- **Example models:** `Quartino_2019_trastuzumab.R` (exponential effect on linear CL; +16.4% typical CL when LMET = 1, per Quartino 2019 Table 1 theta12 = 0.152), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (paper `LIVMET`; additive on log TS0 in both models, and on logit RE and the log PFS hazard in the final model), `Netterberg_2019_atezolizumab_il18_tgi.R` (paper `BLMETS`; multiplies the zero-order tumor growth rate by `1 + 8.48`).
 - **Notes:** Liver metastases are associated with hepatic protein-synthesis impairment and altered IgG catabolism, making `LMET` a commonly tested covariate in oncology mAb population PK analyses. Scope: general so future oncology papers can reuse the canonical column. Time-fixed baseline indicator; if a source paper treats it as time-varying (progression during treatment), document in `covariateData[[LMET]]$notes`.
 
 ### BONE_MET (**canonical for baseline presence of bone metastases**)
@@ -12321,7 +12332,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** 0 (fewer than three metastatic sites at baseline).
 - **Source aliases:**
   - `NumMet` (raw integer count 0-12; used in `Terranova_2022_TGD_OS_gastric.R`). When a source paper supplies the raw integer count column, derive `MET_GE3 = as.integer(NumMet >= 3)`.
-- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (multiplicative-additive effect on Gompertzian baseline tumor size: `BASE = exp(ltvBase + etalBase) * exp(0.143 * MET_GE3)` -- single-step binarisation of the paper's continuous per-metastasis coefficient `exp(0.143 * (NumMet - 3))`; deviation from paper's continuous form documented in vignette Errata per the count-covariate policy), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (the paper's NMET < 3 indicator is `1 - MET_GE3` in the development model; see `MET_GE2` for the final model).
+- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (multiplicative-additive effect on Gompertzian baseline tumor size: `BASE = exp(ltvBase + etalBase) * exp(0.143 * MET_GE3)` -- single-step binarisation of the paper's continuous per-metastasis coefficient `exp(0.143 * (NumMet - 3))`; deviation from paper's continuous form documented in vignette Errata per the count-covariate policy), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (the paper's NMET < 3 indicator is `1 - MET_GE3` in the development model; see `MET_GE2` for the final model), `Netterberg_2019_atezolizumab_il18_tgi.R` (paper `BMETS > 2`, 'more than two metastases at baseline'; multiplies the typical baseline SLD by `1 + 0.927`).
 - **Notes:** Sibling of `MET_GE4` (Bruno 2005) and `NTARGET_GE3` (Struemper 2025). The >= 3 split matches Terranova 2022's centering value of 3 (avelumab-arm median NumMet). Auto-approved under the count-covariate-decomposed-to-binary policy on 2026-07-24. If a future paper uses a different split (e.g. >= 2 or >= 5), register a separate sibling (`MET_GE2`, `MET_GE5`) rather than overloading this entry. A `MET_GE3 = 1` patient may also have `LMET = 1` (liver metastasis) or `PERIT_CARC = 1` (peritoneal carcinomatosis); the three columns are not mutually exclusive.
 
 ### MET_GE1 (**canonical for presence of metastases at baseline (>= 1 metastatic site) indicator**)
@@ -19188,7 +19199,7 @@ Per-model `covariateData[[CYP2C19]]$notes` must document which orientation is in
 - **Reference category:** 0 (former smoker, when paired with `SMOKE_CURRENT` = 0). The pairing follows the `RACE_<GROUP>` convention for paired indicators.
 - **Source aliases:**
   - `Smoking status = Never` / `SMOK = 0` (case-insensitive) -- derived from a 3-level smoking-status column.
-- **Example models:** `Hwang_2023_monalizumab.R` (proportional-shift effect on V1: `(1 - 0.141)^SMOKE_NEVER`; reference category former smoker), `Claret_2014_motesanib_tumorsize_OS.R` (unpaired two-level use: the source dichotomises smoking history as "former and current smokers vs. those who had never smoked", so the paper's ever-smoker indicator is formed inside `model()` as `1 - SMOKE_NEVER` and the published coefficient `-0.264` is applied to it unchanged).
+- **Example models:** `Hwang_2023_monalizumab.R` (proportional-shift effect on V1: `(1 - 0.141)^SMOKE_NEVER`; reference category former smoker), `Claret_2014_motesanib_tumorsize_OS.R` (unpaired two-level use: the source dichotomises smoking history as "former and current smokers vs. those who had never smoked", so the paper's ever-smoker indicator is formed inside `model()` as `1 - SMOKE_NEVER` and the published coefficient `-0.264` is applied to it unchanged), `Netterberg_2019_atezolizumab_il18_tgi.R` (unpaired two-level use, never vs current/former; the AUC-related tumor-shrinkage rate constant applies to ever smokers and is fixed to 0 in never smokers).
 - **Notes:** Baseline-only indicator. See also `SMOKE_CURRENT` (paired indicator) and `SMOKE` (binary current-vs-non-smoker encoding when the source paper does not split former vs never). `SMOKE_NEVER` may also be used **unpaired**, without `SMOKE_CURRENT`, when the source paper collapses smoking history to the two-level contrast never vs. ever (former or current) -- the description above already covers that encoding exactly (1 = never, 0 = former or current), and the implicit reference category is then the pooled ever-smoker group rather than the former-smoker group. When the source's published coefficient is stated on the ever-smoker side of that contrast, form the ever-smoker indicator in `model()` as `1 - SMOKE_NEVER` and keep the published coefficient and intercept unchanged, rather than re-parameterising onto `SMOKE_NEVER` and shifting the intercept -- that preserves the correspondence with any published parameter covariance matrix.
 
 ### SMOKE_TTFC_SCORE (**canonical for the Fagerstrom time-to-first-cigarette nicotine-dependence score**)

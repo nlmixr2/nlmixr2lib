@@ -1,0 +1,597 @@
+---
+title: "Atezolizumab IL-18, ITAC and tumor size in NSCLC (Netterberg 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Atezolizumab IL-18, ITAC and tumor size in NSCLC (Netterberg 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Netterberg 2019 analysed serum atezolizumab PK, plasma biomarkers and tumor
+size in 88 patients with relapsed / refractory non-small cell lung cancer
+(NSCLC) from the phase I study PCD4989g. Two models are packaged from the
+paper:
+
+* `Netterberg_2019_atezolizumab_il18_tgi` -- the final framework of the
+  paper's Figure 3: two-compartment PK, an effect-compartment-driven pool
+  indirect-response model for interleukin-18 (IL-18), a tumor-size model
+  driven by the cycle-specific exposure and by the relative change from
+  baseline in IL-18 at day 21, and the dropout model.
+* `Netterberg_2019_atezolizumab_itac` -- the same PK model with the pool
+  indirect-response model for interferon-inducible T-cell alpha
+  chemoattractant (ITAC), the second biomarker the paper modelled.
+
+* Citation: `r rxode2::rxode(readModelDb("Netterberg_2019_atezolizumab_il18_tgi"))$reference`
+* Description (IL-18 / tumor model): `r rxode2::rxode(readModelDb("Netterberg_2019_atezolizumab_il18_tgi"))$description`
+* Description (ITAC model): `r rxode2::rxode(readModelDb("Netterberg_2019_atezolizumab_itac"))$description`
+* Article: <https://doi.org/10.1002/cpt.1198> (open access, PMC6704358)
+
+# Population
+
+The biomarker and tumor analyses used 88 patients with relapsed / refractory
+NSCLC who received atezolizumab as a 30-60 min IV infusion every 3 weeks at
+10, 15 or 20 mg/kg or 1,200 mg (one patient received 1 mg/kg). The PK model
+was developed on 167 PCD4989g patients dosed at 10, 15 or 20 mg/kg and its
+individual estimates were carried into the biomarker and tumor models. Baseline
+covariates (Supplementary Table S5): number of metastatic sites median 2 (range
+0-4), liver metastases 30%, never smokers 19% (current 11%, former 69%),
+ECOG 0 / 1 28% / 72%, non-squamous histology 76%. Median baseline tumor size
+(sum of the longest diameters, SLD) was 5 cm and the median tumor-assessment
+duration 18 weeks (range 0-153). The paper does not tabulate age, weight, sex
+or race.
+
+The same information is available programmatically via
+`readModelDb("Netterberg_2019_atezolizumab_il18_tgi")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. Collected:
+
+| Parameter / equation | Value | Source |
+|---|---|---|
+| `lcl`, `lvc`, `lq`, `lvp` | CL 0.233 L/day, Vc 3.35 L, Q 0.452 L/day, Vp 3.36 L | Supplementary Table S3 (also the Figure S2 legend) |
+| `etalcl`, `etalvc` | IIV 42%, 27% | Supplementary Table S3 |
+| `propSd` | 18.7% | Supplementary Table S3 |
+| `lkin_il18`, `lkout_il18` | Rin 23.0 pg/mL/day, kout 0.106 1/day | Table 1, IL-18 model |
+| `lbl_il18_pool`, `lslope_il18`, `lke0` | Pool0 499 pg/mL, Slope 0.168 mL/ug, ke0 4.36e-3 1/day | Table 1, IL-18 model |
+| `etalkout_il18`, `etalbl_il18_pool`, `etalslope_il18` | IIV 47%, 78%, 80% | Table 1, IL-18 model |
+| `propSd_il18` | 22.3% | Table 1, IL-18 model |
+| `lkin_itac`, `lkout_itac` | Rin 3.07 pg/mL/day, kout 7.91e-3 1/day | Table 1, ITAC model |
+| `lbl_itac_pool`, `lslope_itac` | Pool0 271 pg/mL, Slope 0.0599 mL/ug | Table 1, ITAC model |
+| `etalkin_itac`, `etalbl_itac_pool` | IIV 48%, 115% | Table 1, ITAC model |
+| `propSd_itac`, `addSd_itac` | 28.3%, 51.8 pg/mL | Table 1, ITAC model |
+| `lrbase_tumor_size`, `lrgrowth` | SLD0 4.75 cm, RGrowth 0.0169 cm/week | Table 1, TGI model |
+| `lkshr_drug`, `llambda_drug` | KShr,Drug 2.75e-6 L/mg/day/week, lambdaDrug 0.0609 1/week | Table 1, TGI model |
+| `lkshr_il18` | KShr,IL-18 0.00282 1/week | Table 1, TGI model |
+| `e_lmet_rgrowth`, `e_met_ge3_rbase_tumor_size` | 8.48, 0.927 (as 1 + theta) | Table 1; Results quote 0.16 vs 0.017 cm/week and 9.1 vs 4.8 cm |
+| `kshr_drug_smoke_never` | 0 fixed | Table 1; Results "set to 0 in the final model" |
+| `etalrbase_tumor_size`, `etalrgrowth`, `etalkshr_drug`, `etalkshr_il18` | IIV 62%, 93%, 124%, 181% | Table 1, TGI model |
+| `propSd_tumor_size` | 13.4% | Table 1, TGI model |
+| `lhaz_base`, `e_tumor_size_rcfb_hazard` | h0 0.0306 1/week, beta 1.56 | Table 1, dropout model |
+| Pool indirect-response ODEs, `krel = kout * BioM0 / Pool0` | -- | Eq. 3 |
+| Effect compartment, `ke1 = ke0`, CE(0) = 0 | -- | Eq. 4 and Methods |
+| Tumor-size ODE | -- | Eq. 1 |
+| `AUCcycle,n = Dose_n / CL_i` | -- | Eq. 2 |
+| RCFB of IL-18 at day 21, zero before day 21 | -- | Methods, Tumor growth inhibition model |
+| Dropout hazard `h0 * exp(beta * x)` | -- | Eq. 5 and Results |
+
+# Virtual cohort
+
+The individual data are not public. Four arms of 100 virtual patients receive
+10, 15 or 20 mg/kg or 1,200 mg every 3 weeks as 1-h infusions for 28 cycles.
+Body weight (needed only for the mg/kg arms) is not reported; it is drawn
+log-normally around 70 kg. Liver metastases and never-smoking status follow
+Supplementary Table S5 (30% and 19%). The share of patients with more than two
+metastatic sites is not reported (median 2, range 0-4); 30% is assumed.
+
+```{r cohort}
+set.seed(20190201)
+n_per_arm <- 100L
+arms <- tibble::tribble(
+  ~arm,         ~mgkg, ~flat,
+  "10 mg/kg",   10,    NA,
+  "15 mg/kg",   15,    NA,
+  "20 mg/kg",   20,    NA,
+  "1,200 mg",   NA,    1200
+)
+
+subjects <- arms |>
+  slice(rep(seq_len(n()), each = n_per_arm)) |>
+  mutate(
+    id = seq_len(n()),
+    WT = pmin(pmax(rlnorm(n(), log(70), 0.2), 40), 130),
+    dose_mg = ifelse(is.na(flat), mgkg * WT, flat),
+    MET_GE3 = rbinom(n(), 1, 0.30),
+    LMET = rbinom(n(), 1, 0.30),
+    SMOKE_NEVER = rbinom(n(), 1, 0.19),
+    DOSE_ATEZOLIZUMAB_MG = dose_mg
+  )
+
+n_cycles <- 28L
+tau <- 21
+obs_times <- sort(unique(c(
+  seq(0, 21, by = 0.5), 1 / 24,
+  seq(21, 585, by = 3.5),
+  seq(189, 210, by = 0.25)
+)))
+
+make_events <- function(subj, obs_cmt) {
+  doses <- subj |>
+    tidyr::crossing(time = tau * (seq_len(n_cycles) - 1)) |>
+    mutate(evid = 1L, cmt = "central", amt = dose_mg, rate = dose_mg * 24)
+  obs <- subj |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(evid = 0L, cmt = obs_cmt, amt = NA_real_, rate = NA_real_)
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid)) |>
+    select(id, time, evid, cmt, amt, rate, arm, WT, MET_GE3, LMET, SMOKE_NEVER, DOSE_ATEZOLIZUMAB_MG)
+}
+
+# Observation rows name an ODE state that is also a declared endpoint, so
+# rxode2 returns every endpoint (Cc, il18, tumor_size / itac) on each row.
+events_il18 <- make_events(subjects, "tumor_size")
+events_itac <- make_events(subjects, "itac") |> filter(time <= 210)
+stopifnot(!anyDuplicated(subjects$id))
+```
+
+# Simulation
+
+```{r simulate}
+mod_il18 <- readModelDb("Netterberg_2019_atezolizumab_il18_tgi")
+mod_itac <- readModelDb("Netterberg_2019_atezolizumab_itac")
+
+rxode2::rxSetSeed(20190202)
+sim_il18 <- rxode2::rxSolve(
+  mod_il18, events = events_il18, keep = c("arm", "DOSE_ATEZOLIZUMAB_MG"),
+  sigma = NA, useLinCmt = FALSE, returnType = "data.frame"
+)
+sim_itac <- rxode2::rxSolve(
+  mod_itac, events = events_itac, keep = "arm",
+  sigma = NA, useLinCmt = FALSE, returnType = "data.frame"
+)
+arm_levels <- arms$arm
+sim_il18$arm <- factor(sim_il18$arm, levels = arm_levels)
+sim_itac$arm <- factor(sim_itac$arm, levels = arm_levels)
+```
+
+Residual error is switched off (`sigma = NA`), so the profiles are
+individual predictions with between-subject variability only.
+
+## Atezolizumab PK
+
+```{r pk-profile}
+# Compare with Figure S2 of Netterberg 2019 (pcVPC of the PK model by dose).
+sim_il18 |>
+  filter(time >= 1 / 24, time <= 63, arm != "1,200 mg") |>
+  group_by(arm, time) |>
+  summarise(
+    Q025 = quantile(Cc, 0.025), Q50 = median(Cc), Q975 = quantile(Cc, 0.975),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q025, ymax = Q975), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~arm) +
+  scale_y_log10() +
+  labs(
+    x = "Time after first dose (days)", y = "Atezolizumab (ug/mL)",
+    caption = "Median and 2.5th-97.5th percentiles. Compare Figure S2 of Netterberg 2019."
+  )
+```
+
+## IL-18 and ITAC
+
+```{r biomarker-profile}
+# Compare with Figure 1b,c of Netterberg 2019 (pcVPCs to day 175).
+bind_rows(
+  sim_il18 |> transmute(id, arm, time, biomarker = "IL-18", conc = il18),
+  sim_itac |> transmute(id, arm, time, biomarker = "ITAC", conc = itac)
+) |>
+  filter(time <= 175) |>
+  group_by(biomarker, time) |>
+  summarise(
+    Q025 = quantile(conc, 0.025), Q50 = median(conc), Q975 = quantile(conc, 0.975),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q025, ymax = Q975), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~biomarker, scales = "free_y") +
+  labs(
+    x = "Time after first dose (days)", y = "Concentration (pg/mL)",
+    caption = "Median and 2.5th-97.5th percentiles, all arms. Compare Figure 1b,c of Netterberg 2019."
+  )
+```
+
+The paper describes IL-18 and the other biomarkers as peaking at around day 21
+and declining over later cycles, while ITAC stays elevated after six cycles;
+the pool depletion (IL-18) and the slow ITAC turnover (kout 7.91e-3 1/day)
+reproduce both patterns.
+
+```{r biomarker-rcfb-by-dose}
+# Compare with Figure 2 of Netterberg 2019 (relative change from baseline by
+# nominal dose, protocol sampling days).
+nominal_days <- c(1, 7, 21, 42, 63, 126)
+bind_rows(
+  sim_il18 |> transmute(id, arm, time, biomarker = "IL-18", conc = il18),
+  sim_itac |> transmute(id, arm, time, biomarker = "ITAC", conc = itac)
+) |>
+  filter(arm != "1,200 mg") |>
+  group_by(id, biomarker) |>
+  mutate(rcfb = 100 * (conc - conc[time == 0][1]) / conc[time == 0][1]) |>
+  ungroup() |>
+  filter(time %in% nominal_days) |>
+  ggplot(aes(factor(time), rcfb, fill = arm)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~biomarker, scales = "free_y") +
+  coord_cartesian(ylim = c(-50, 400)) +
+  scale_fill_grey(start = 0.9, end = 0.4) +
+  labs(
+    x = "Nominal time after first dose (days)", y = "Relative change from baseline (%)",
+    caption = "Compare Figure 2 of Netterberg 2019 (IL-18 and ITAC panels)."
+  )
+```
+
+## Exposure and IL-18 metrics that drive tumor shrinkage
+
+The tumor model uses two individual metrics: the cycle exposure
+`AUCcycle,n = Dose_n / CL_i` and the relative change from baseline in IL-18 at
+day 21, `RCFB_IL-18,d21`. Netterberg 2019 reports the 5th, 50th and 95th
+percentiles of both in the analysis dataset (Figure 4 legend; median AUC
+`5,600 mg/l*day` and median RCFB 0.43 in the Results).
+
+```{r driver-percentiles}
+drivers <- sim_il18 |>
+  filter(time == 42) |>
+  select(id, arm, auc_cycle, rcfb_il18_d21)
+
+all_drivers <- drivers
+driver_tab <- tibble::tibble(
+  metric = c("AUCcycle (mg*day/L)", "RCFB IL-18, day 21"),
+  sim_p05 = c(quantile(all_drivers$auc_cycle, 0.05), quantile(all_drivers$rcfb_il18_d21, 0.05)),
+  sim_p50 = c(median(all_drivers$auc_cycle), median(all_drivers$rcfb_il18_d21)),
+  sim_p95 = c(quantile(all_drivers$auc_cycle, 0.95), quantile(all_drivers$rcfb_il18_d21, 0.95)),
+  pub_p05 = c(2900, 0.21),
+  pub_p50 = c(5600, 0.43),
+  pub_p95 = c(9500, 1.34)
+)
+driver_tab |>
+  mutate(across(where(is.numeric), ~ signif(.x, 3))) |>
+  rename(
+    Metric = metric,
+    "Simulated 5th" = sim_p05, "Simulated median" = sim_p50, "Simulated 95th" = sim_p95,
+    "Published 5th" = pub_p05, "Published median" = pub_p50, "Published 95th" = pub_p95
+  ) |>
+  knitr::kable(caption = "Simulated (all four arms pooled) vs published percentiles of the tumor-model drivers.")
+
+drivers |>
+  group_by(arm) |>
+  summarise(
+    "Median AUCcycle (mg*day/L)" = signif(median(auc_cycle), 3),
+    "Median RCFB IL-18, day 21" = signif(median(rcfb_il18_d21), 3),
+    .groups = "drop"
+  ) |>
+  rename(Arm = arm) |>
+  knitr::kable(caption = "Simulated medians by arm.")
+
+auc_1200 <- median(drivers$auc_cycle[drivers$arm == "1,200 mg"])
+stopifnot(
+  # 1,200 mg flat dose: the median AUC is 1,200 / CL, independent of the
+  # assumed weights; a mis-transcribed CL or dose unit moves it far more
+  # than 20% from the published dataset median.
+  abs(auc_1200 / 5600 - 1) < 0.2,
+  # Median IL-18 day-21 response: the published value is a median of
+  # empirical Bayes estimates, which shrink towards the typical value.
+  median(all_drivers$rcfb_il18_d21) > 0.25,
+  median(all_drivers$rcfb_il18_d21) < 0.65
+)
+```
+
+The published median AUC lies between the simulated 15 and 20 mg/kg arm
+medians, and the published 5th percentile is close to the 10 mg/kg median; the
+analysis dataset's mix of dose levels is not reported, so the pooled
+simulated percentiles (equal arm sizes) are not expected to match exactly.
+The simulated
+`RCFB_IL-18,d21` distribution is centred slightly lower than the published
+one; the published percentiles summarise individual estimates from the
+observed patients, whereas the simulation draws new patients from the
+estimated distributions under an assumed weight distribution.
+
+## Replicating Figure 4: tumor-size simulations
+
+Figure 4 shows the typical SLD time course of a current / former smoker with
+two or fewer metastatic sites and no liver metastases after 1,200 mg every 3
+weeks, varying either `RCFB_IL-18,d21` (left; AUC 5,600 `mg*day/L`) or AUC
+(right; `RCFB_IL-18,d21` 0.43). In the packaged model AUC is set through the
+cycle-dose column (`DOSE_ATEZOLIZUMAB_MG = AUC * CL`, with the typical CL), and
+a given `RCFB_IL-18,d21` is obtained by choosing the individual whose IL-18
+pool and slope random effects (shifted together) produce it -- the tumor model
+sees only the resulting day-21 value.
+
+```{r figure-4-helpers}
+fig4_times <- seq(0, 90 * 7, by = 1)
+fig4_events <- function(auc) {
+  dose <- auc * 0.233
+  d <- rxode2::et(amt = dose, rate = dose * 24, cmt = "central", ii = tau, addl = 30) |>
+    rxode2::et(fig4_times, cmt = "tumor_size") |>
+    as.data.frame()
+  d$id <- 1L
+  d$MET_GE3 <- 0
+  d$LMET <- 0
+  d$SMOKE_NEVER <- 0
+  d$DOSE_ATEZOLIZUMAB_MG <- dose
+  d
+}
+solve_typical <- function(shift, auc) {
+  rxode2::rxSolve(
+    mod_il18, events = fig4_events(auc),
+    params = c(lbl_il18_pool = log(499) + shift, lslope_il18 = log(0.168) + shift),
+    omega = NA, sigma = NA, useLinCmt = FALSE, returnType = "data.frame"
+  )
+}
+rcfb_gap <- function(shift, target, auc) {
+  s <- solve_typical(shift, auc)
+  s$rcfb_il18_d21[s$time == 42] - target
+}
+shift_for_rcfb <- function(target, auc) {
+  uniroot(rcfb_gap, interval = c(-2, 2), target = target, auc = auc, tol = 1e-6)$root
+}
+```
+
+```{r figure-4}
+scenarios <- tibble::tribble(
+  ~panel,                 ~label,                    ~rcfb, ~auc,
+  "Impact of IL-18 on SLD", "RCFB = 0.21 (5th)",      0.21,  5600,
+  "Impact of IL-18 on SLD", "RCFB = 0.43 (50th)",     0.43,  5600,
+  "Impact of IL-18 on SLD", "RCFB = 1.34 (95th)",     1.34,  5600,
+  "Impact of AUC on SLD",   "AUC = 2,900 (5th)",      0.43,  2900,
+  "Impact of AUC on SLD",   "AUC = 5,600 (50th)",     0.43,  5600,
+  "Impact of AUC on SLD",   "AUC = 9,500 (95th)",     0.43,  9500
+)
+fig4 <- bind_rows(lapply(seq_len(nrow(scenarios)), function(i) {
+  sc <- scenarios[i, ]
+  s <- solve_typical(shift_for_rcfb(sc$rcfb, sc$auc), sc$auc)
+  tibble::tibble(
+    panel = sc$panel, label = sc$label, week = s$time / 7,
+    sld = s$tumor_size, rcfb = s$rcfb_il18_d21, auc = s$auc_cycle
+  )
+}))
+fig4$label <- factor(fig4$label, levels = unique(scenarios$label))
+fig4$panel <- factor(fig4$panel, levels = unique(scenarios$panel))
+
+ggplot(fig4, aes(week, sld, linetype = label, colour = label)) +
+  geom_line() +
+  facet_wrap(~panel) +
+  coord_cartesian(ylim = c(3, 5.5)) +
+  labs(
+    x = "Time (weeks)", y = "SLD (cm)", colour = NULL, linetype = NULL,
+    caption = "Replicates Figure 4 of Netterberg 2019."
+  )
+```
+
+The paper's text gives the median-scenario landmarks: a nadir at about 27
+weeks and a return to the baseline tumor size by 89 weeks. The other values
+below were read off Figure 4 by the maintainers.
+
+```{r figure-4-check}
+fig4_summary <- fig4 |>
+  group_by(label) |>
+  summarise(
+    rcfb_d21 = rcfb[which.min(abs(week - 6))],
+    auc = auc[1],
+    nadir_cm = min(sld),
+    nadir_week = week[which.min(sld)],
+    sld_week89 = sld[which.min(abs(week - 89))],
+    .groups = "drop"
+  )
+digitised <- tibble::tribble(
+  ~label,                  ~fig_nadir_cm, ~fig_nadir_week, ~fig_sld_week89,
+  "RCFB = 0.21 (5th)",     4.25,          25,              4.93,
+  "RCFB = 0.43 (50th)",    4.20,          27,              4.72,
+  "RCFB = 1.34 (95th)",    3.87,          50,              3.91,
+  "AUC = 2,900 (5th)",     4.57,          19,              5.16,
+  "AUC = 5,600 (50th)",    4.20,          27,              4.72,
+  "AUC = 9,500 (95th)",    3.67,          34,              4.15
+)
+fig4_cmp <- left_join(fig4_summary, digitised, by = "label")
+fig4_cmp |>
+  mutate(across(where(is.numeric), ~ signif(.x, 3))) |>
+  rename(
+    Scenario = label, "RCFB IL-18, day 21" = rcfb_d21, "AUC (mg*day/L)" = auc,
+    "Nadir (cm)" = nadir_cm, "Nadir week" = nadir_week, "SLD at week 89 (cm)" = sld_week89,
+    "Figure nadir (cm)" = fig_nadir_cm, "Figure nadir week" = fig_nadir_week,
+    "Figure SLD at week 89 (cm)" = fig_sld_week89
+  ) |>
+  knitr::kable(caption = "Typical-patient tumor-size landmarks vs Figure 4 of Netterberg 2019.")
+
+stopifnot(
+  # Deterministic typical-value solve against values read off the figure:
+  # the tolerance covers the digitisation, not model noise.
+  all(abs(fig4_cmp$nadir_cm - fig4_cmp$fig_nadir_cm) < 0.08),
+  all(abs(fig4_cmp$sld_week89 - fig4_cmp$fig_sld_week89) < 0.08),
+  # Paper text: nadir at ~27 weeks for the median scenario.
+  abs(fig4_cmp$nadir_week[fig4_cmp$label == "RCFB = 0.43 (50th)"] - 27) < 3
+)
+```
+
+## Tumor size with dropout
+
+The dropout model gives each virtual patient a dropout time; tumor sizes after
+it are discarded, as in the paper's pcVPC.
+
+```{r tumor-vpc}
+dropout_time <- sim_il18 |>
+  group_by(id) |>
+  summarise(
+    t_drop = {
+      u <- runif(1)
+      j <- which(surv_dropout < u)[1]
+      if (is.na(j)) Inf else time[j]
+    },
+    .groups = "drop"
+  )
+
+sld_obs <- sim_il18 |>
+  left_join(dropout_time, by = "id") |>
+  filter(time <= t_drop, time %in% c(0, seq(42, 585, by = 42)))
+
+sld_obs |>
+  group_by(time) |>
+  summarise(
+    n = n(),
+    Q10 = quantile(tumor_size, 0.10), Q50 = median(tumor_size), Q90 = quantile(tumor_size, 0.90),
+    .groups = "drop"
+  ) |>
+  filter(n >= 10) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q10, ymax = Q90), alpha = 0.25) +
+  geom_line() +
+  labs(
+    x = "Time after first dose (days)", y = "SLD (cm)",
+    caption = "Median and 10th-90th percentiles of patients still in the study. Compare Figure 1a of Netterberg 2019."
+  )
+
+median_drop_weeks <- median(dropout_time$t_drop) / 7
+median_drop_weeks
+```
+
+The simulated median dropout time, `r round(median_drop_weeks, 1)` weeks,
+compares with a median tumor-assessment duration of 18 weeks in the trial plus
+the 3 weeks the paper assumed between the last assessment and dropout.
+
+# PKNCA validation
+
+Netterberg 2019 reports no NCA table. The PK model is checked with PKNCA over
+cycle 1 (Cmax, AUC0-21) and over cycle 10 at steady state, where the dosing
+interval AUC must equal `Dose / CL` -- the identity the paper's Eq. 2 uses for
+`AUCcycle,n`.
+
+```{r pknca}
+sim_nca <- sim_il18 |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, arm) |>
+  mutate(arm = as.character(arm))
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, arm) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, arm, time, .keep_all = TRUE) |>
+  arrange(id, arm, time)
+
+dose_df <- events_il18 |>
+  filter(evid == 1) |>
+  select(id, time, amt, arm)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+intervals <- data.frame(
+  start = c(0, 189),
+  end = c(21, 210),
+  cmax = c(TRUE, TRUE),
+  tmax = c(TRUE, FALSE),
+  auclast = c(TRUE, TRUE)
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_df <- as.data.frame(nca_res)
+
+nca_df |>
+  filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  group_by(arm, start, PPTESTCD) |>
+  summarise(median = signif(median(PPORRES, na.rm = TRUE), 3), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  rename(
+    Arm = arm, "Interval start (day)" = start, "Cmax (ug/mL)" = cmax,
+    "AUC over the interval (ug*day/mL)" = auclast
+  ) |>
+  knitr::kable(caption = "Median simulated NCA parameters by arm (cycle 1 and cycle 10).")
+```
+
+```{r nca-closed-form}
+ss_check <- nca_df |>
+  filter(PPTESTCD == "auclast", start == 189) |>
+  left_join(drivers |> select(id, auc_cycle), by = "id") |>
+  mutate(ratio = PPORRES / auc_cycle)
+summary(ss_check$ratio)
+stopifnot(
+  # Same individual parameters on both sides; the gap is trapezoidal error
+  # plus the residual approach to steady state at cycle 10.
+  abs(median(ss_check$ratio) - 1) < 0.03,
+  quantile(abs(ss_check$ratio - 1), 0.9) < 0.06
+)
+```
+
+```{r nca-compare}
+published <- tibble::tibble(arm = "1,200 mg", auclast = 5600)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res |> as.data.frame() |> filter(start == 189, arm == "1,200 mg"),
+  reference = published,
+  by = "arm",
+  params = "auclast",
+  units = c(auclast = "ug*day/mL"),
+  tolerance_pct = 20,
+  label_first_column = "NCA parameter"
+)
+knitr::kable(cmp, caption = "Simulated steady-state AUC over the cycle-10 dosing interval, days 189-210 (1,200 mg arm), vs the median AUC of the analysis dataset (Netterberg 2019 Results). * differs by >20%.")
+```
+
+The published median AUC (5,600 `mg*day/L`) pools the 10-20 mg/kg and 1,200 mg
+patients, so the comparison with the 1,200 mg arm is approximate; the typical
+value is 1,200 / 0.233 = 5,150 `mg*day/L`.
+
+# Assumptions and deviations
+
+* **IIV scale.** Table 1 and Supplementary Table S3 report IIV as CV% of
+  log-normal random effects; the variances use `omega^2 = log(1 + CV^2)`. If
+  the percentages were instead `100 * omega`, the wide rows would change
+  materially (KShr,IL-18 181%: 1.45 vs 3.28; KShr,Drug 124%: 0.93 vs 1.54).
+  The paper does not say which convention its table uses.
+* **Residual error.** The data were log-transformed with additive error on the
+  log scale (proportional for PK, IL-18 and tumor size; additive plus
+  proportional for ITAC). These are encoded as proportional and combined
+  additive + proportional error on the linear scale.
+* **Cycle dose as a data column.** `AUCcycle,n = Dose_n / CL_i` reads the
+  cycle dose from the column `DOSE_ATEZOLIZUMAB_MG`, which must match the
+  `amt` of the dosing records. Inside the ODE right-hand side rxode2's
+  `podo()` / `dose()` return the infusion rate rather than the amount for an
+  infused dose, so the dose cannot be recovered from the dosing records there.
+* **IL-18 at day 21.** The paper fed the individual model-predicted
+  `RCFB_IL-18,d21` into the sequentially fitted tumor model. The packaged
+  model computes it in the same solve: the state `il18_d21` follows IL-18 up
+  to day 21 and then holds that value. Day 21 and the waning AUC effect both
+  count from the first dose, which must be at time 0.
+* **Dropout predictor.** The paper names the predictor only as "the
+  model-predicted change from tumor size at baseline". It is encoded as the
+  relative change, `(SLD - SLD0) / SLD0`, which keeps `beta` dimensionless.
+  The simulated median dropout time is similar under an absolute (cm)
+  reading, so the trial's median follow-up does not separate the two.
+* **Never smokers.** Table 1's `theta KShr,Drug-Non-Smoking = 0 fixed` is read
+  with the Results text as the AUC-related shrinkage rate constant itself
+  being 0 in never smokers, not as a fractional change of 0.
+* **Units of the tumor model.** RGrowth, KShr,Drug, KShr,IL-18, lambdaDrug and
+  h0 keep the paper's per-week units in `ini()` and are divided by 7 in
+  `model()`, whose time unit is days. `RCFB_IL-18,d21` is a fraction (median
+  0.43), not a percentage, despite the "1/(% week)" unit printed for
+  KShr,IL-18; only the fraction reproduces Figure 4.
+* **ke0.** The effect-compartment rate constant (4.36e-3 1/day, a half-life of
+  about 160 days) is used as printed; with the depleting precursor pool it
+  still produces the observed IL-18 peak near day 21.
+* **Virtual cohort.** Body weight and the share of patients with more than two
+  metastatic sites are not reported and are assumed (log-normal around 70 kg;
+  30%). The PK model has no covariates, so weight only sets the mg/kg doses.
+* **Not packaged.** The biomarker screen, the alternative tumor models of
+  Supplementary Table S4 and the ITAC-driven tumor variants were not final
+  models. The other six prioritised biomarkers (CRP, CD40, ICAM-1, IL-8,
+  VCAM-1, proliferating CD8+ T cells) were not modelled.
