@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wilkins 2019 avelumab ([doi:10.1002/psp4.12406](https://doi.org/10.1002/psp4.12406)) -- adults with advanced solid tumors (14 tumor types, including Merkel cell carcinoma and urothelial carcinoma).
+- Add Jiang 2019 iopamidol renal DCE-CT tracer-kinetic model ([doi:10.1371/journal.pone.0219605](https://doi.org/10.1371/journal.pone.0219605)) -- adults with essential hypertension or atherosclerotic renal artery stenosis.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

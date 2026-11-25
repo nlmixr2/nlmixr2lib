@@ -10535,6 +10535,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_mhhy * DIS_HYPERT`; +0.539 logit units in patients with prior hypertension). The 19 `Wan_2025_<tki>_qsp.R` models (selects the hypertension LVESV-feedback constant `FB_LVESV` = 0.0045 vs 0.0042 1/mL of the cardiovascular QSP; Wan 2025 defines the hypertensive virtual population by baseline MAP >= 106 mmHg).
 - **Notes:** Companion to `DIS_DIAB` (diabetes-mellitus comorbidity); both are baseline binary medical-history flags collected from clinical-history forms. Captures any prior or current hypertension diagnosis, regardless of treatment status; if a future model needs to separate treated vs untreated hypertension, register a refinement (`DIS_HYPERT_TREATED`).
 
+### DIS_RAS_STENOTIC (**canonical for kidney supplied by an atherosclerotic stenotic renal artery**)
+- **Description:** 1 = the modelled kidney is supplied by a renal artery with atherosclerotic stenosis; 0 = otherwise. A KIDNEY-level indicator, for models whose observational unit is a single kidney rather than a patient.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. With `DIS_RAS_CONTRALATERAL` also 0, the reference is a kidney of a patient with essential hypertension (no renal artery stenosis).
+- **Source aliases:**
+  - `Stenotic Kidney` -- Jiang 2019 Table 2 column heading (renal artery obstruction above 60% on CT or blood velocity above 30 cm/s on Doppler ultrasonography).
+- **Example models:** `Jiang_2019_iopamidol.R` (selects the stenotic-kidney DCE-CT tracer-kinetic parameters, e.g. kGFR 0.0035 vs 0.0048 1/s in essential-hypertension kidneys).
+- **Notes:** Member of the `DIS_` family. Both kidneys of a patient with bilateral stenosis take 1. Mutually exclusive with `DIS_RAS_CONTRALATERAL`. Distinct from `DIS_HYPERT` (a patient-level hypertension comorbidity flag): every kidney in the founding study belongs to a hypertensive patient.
+
+### DIS_RAS_CONTRALATERAL (**canonical for non-stenotic contralateral kidney of unilateral renal artery stenosis**)
+- **Description:** 1 = the modelled kidney is the non-stenotic contralateral kidney of a patient with unilateral atherosclerotic renal artery stenosis; 0 = otherwise. A KIDNEY-level indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. With `DIS_RAS_STENOTIC` also 0, the reference is a kidney of a patient with essential hypertension.
+- **Source aliases:**
+  - `Contralateral Kidney` -- Jiang 2019 Table 2 column heading.
+- **Example models:** `Jiang_2019_iopamidol.R` (selects the contralateral-kidney DCE-CT tracer-kinetic parameters).
+- **Notes:** Member of the `DIS_` family. Kept separate from the essential-hypertension reference because the contralateral kidney of a stenosis patient is exposed to the same renovascular hypertension and, in the founding study, has a lower vascular volume fraction and kGFR than an essential-hypertension kidney. Mutually exclusive with `DIS_RAS_STENOTIC`.
+
 ### DIS_DILATED_CARDIOMYOPATHY (**canonical for dilated cardiomyopathy indicator**)
 - **Description:** 1 = patient has dilated cardiomyopathy (enlarged left ventricle with systolic dysfunction); 0 = no dilated cardiomyopathy. Time-fixed per subject.
 - **Units:** (binary)
@@ -13629,7 +13651,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** n/a -- used directly as a physiologic input that sets a compartment's sub-volumes, its perfusion and its permeability-surface-area product; not a covariate-effect coefficient.
 - **Source aliases:**
   - `Kidneys (measured volume)` -- Kletting 2016 J Nucl Med Table 1 column header; reported in mL, no value transformation.
-- **Example models:** `Budiansah_2025_dotatate_pbpk.R`, `Golzaryan_2025_lu177psmaIT_pbpk.R`.
+- **Example models:** `Budiansah_2025_dotatate_pbpk.R`, `Golzaryan_2025_lu177psmaIT_pbpk.R`, `Jiang_2019_iopamidol.R` (SINGLE-kidney volume measured on helical CT; enters only the derived outputs single-kidney GFR = kGFR * V * 60 and renal blood flow = perfusion * V / 100).
 - **Notes:** Founding member of the `ORGVOL_<ORGAN>` family, whose members carry a per-patient measured organ volume that a physiologically-based model uses to build that organ's sub-volumes rather than scaling it allometrically from body size. In the founding model the measured volume is split into vascular (5.5 %), interstitial (15 %) and intracellular (two thirds of the remainder) sub-volumes and multiplies the fitted sst2 binding-site density. Cohort range 125-233 mL. Distinct from `KBF` (renal blood flow, mL/min) -- that is a flow, this is a volume.
 
 ### ORGVOL_LIVER (**canonical for measured total liver volume**)
@@ -29071,6 +29093,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `Cart` (Data S1 of the same paper, the arterial concentration symbol in the brain-blood differential equation).
 - **Example models:** `Wickramasinghe_2025_abemaciclib_cns_pbpk.R` (founding example; drives all nine states of the 9-CNS spatial brain / brain-tumour PBPK model).
 - **Notes:** Specific scope; abemaciclib-specific. Follows the established `CP_<drug>_<units>` precedent (`CP_RIF_UM`, `CP_GDC_UM`, `CP_GLASDEGIB_NGML`, `CP_RITUXIMAB_UGML`), using the full INN rather than an abbreviation. Distinct in role from the perpetrator-drug members of the family (`CP_RIF_UM`, `CP_GDC_UM`), which enter a competitive-inhibition denominator: this one is a physiological input function, so a downstream user who substitutes their own profile changes the model's driving exposure rather than the strength of an interaction. The 9-CNS ODE system is linear and homogeneous in concentration, so any self-consistent concentration unit may be used provided the supplied plasma profile and the interpreted compartment outputs share it; umol/L is the unit implied by the abemaciclib values in the Wickramasinghe 2025 template, whose own figure axes are labelled only "Concentrations".
+
+### CP_IOPAMIDOL_HU (**canonical for the aortic whole-blood CT enhancement after an iopamidol bolus, as the arterial input function of a renal DCE-CT tracer-kinetic model**)
+- **Description:** Increase in CT attenuation above the pre-contrast baseline in an abdominal-aorta region of interest during dynamic contrast-enhanced CT after an intravenous bolus of the iodinated contrast agent iopamidol, supplied directly as a time-varying covariate column (the measured arterial input function) rather than computed from a coupled PK model. CT enhancement is linear in iodine concentration, so the column is used as a concentration surrogate.
+- **Units:** HU (Hounsfield units above the pre-contrast baseline of the same region of interest).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used as a time-varying regressor declared `linear(CP_IOPAMIDOL_HU)`, so rxode2 interpolates linearly between scans; 0 before contrast arrival.
+- **Source aliases:**
+  - `Ca(t)` -- Jiang 2019 Methods (iodine concentration in inflow blood from the abdominal aorta).
+- **Example models:** `Jiang_2019_iopamidol.R` (founding example; converted to the plasma input `Cp(t) = Ca(t) / (1 - Hct)` with an assumed haematocrit of 0.45 and fed, after the aorta-to-kidney transit delay, into the renal vascular compartment).
+- **Notes:** Specific scope; iopamidol-specific. Follows the `CP_<DRUG>_<UNITS>` precedent, extended to a CT-number unit for an imaging contrast agent. **The matrix is arterial whole blood, not plasma**, as for `CP_ERLOTINIB_KBQML`: the `CP_` stem is kept for the input-function family, and the founding model performs the blood-to-plasma conversion itself, so supply the raw aortic enhancement, not a haematocrit-corrected value. Subtract the pre-contrast baseline of the same region of interest; raw CT numbers on scanners that store an offset (for example +1024) must not be supplied directly.
+
+### CPAPILLA_TUBULAR_IOPAMIDOL_HU (**canonical for the tubular-transit (filtration) component of the renal-papilla CT enhancement after an iopamidol bolus**)
+- **Description:** Tubular-transit component of the CT enhancement in a renal-papilla region of interest (the strip of parenchyma where filtrate outflow converges) during dynamic contrast-enhanced CT after an iopamidol bolus: the papilla enhancement above baseline minus its vascular (perfusion) component. Supplied as a time-varying covariate column; it is the measured contrast output function that drives tubular outflow in a renal tracer-kinetic model.
+- **Units:** HU (Hounsfield units above the pre-contrast baseline).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used as a time-varying regressor declared `linear(CPAPILLA_TUBULAR_IOPAMIDOL_HU)`; 0 until filtered contrast reaches the papilla.
+- **Source aliases:**
+  - `Cout''(t)` -- Jiang 2019 Eq. 2 and Fig 2c (the filtration component of the papilla curve `Cout(t)`, obtained by subtracting the perfusion component `Cout'(t)`).
+- **Example models:** `Jiang_2019_iopamidol.R` (founding example; the tubular state loses contrast at `kout * CPAPILLA_TUBULAR_IOPAMIDOL_HU`).
+- **Notes:** Specific scope. Named in the tissue-matrix pattern `C<TISSUE>_<DRUG>_<UNITS>` of `CHEART_TETRAHYDROCANNABINOL_UM`, with a `_TUBULAR` qualifier because only one component of the papilla signal is used. It is a derived quantity: the founding paper fits the perfusion component of the papilla curve with the vascular equation over the early phase and subtracts it, without tabulating the fitted perfusion parameters, so the decomposition must be repeated by the user (the founding model's vignette documents one reconstruction).
 
 ### CP_BMS911543_UM (**canonical for the BMS-911543 concentration in an in-vitro enzyme incubation, as the driver of a Michaelis-Menten velocity or of a mechanism-based inactivation rate**)
 - **Description:** Concentration of BMS-911543, a selective small-molecule JAK2 inhibitor developed as Bristol-Myers Squibb development code BMS-911543 and never assigned an INN, supplied directly as a covariate column rather than computed from a coupled PK model. Founding uses are all in-vitro: as the substrate concentration `S` driving the Michaelis-Menten velocity of metabolite-M1 formation in three recombinant CYP incubations, and as the initial inhibitor concentration `I` driving the hyperbolic inactivation-rate term of a CYP1A2 time-dependent-inhibition assay. The column is defined generally, so a plasma or unbound site-of-interaction concentration can use the same name; the per-model `covariateData` entry states which sense is required.

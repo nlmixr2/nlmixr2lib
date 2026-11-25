@@ -4764,6 +4764,8 @@ navbar:
         href: articles/Wang_2024_rnaLipidNanoparticle.html
       - text: "IonizableLipid rat pbpk (Wang 2024)"
         href: articles/Wang_2024_rnaLipidNanoparticle.html
+      - text: "Iopamidol (Jiang 2019)"
+        href: articles/Jiang_2019_iopamidol.html
       - text: "Ipatasertib (Yoshida 2021)"
         href: articles/Yoshida_2021_ipatasertib.html
       - text: "Ipatasertib diarrhea grade2 (Zhu 2019)"
@@ -12018,6 +12020,7 @@ articles:
   - articles/Jian_2026_peginterferon_alfa_2b_myelosuppression
   - articles/Jiang_2008_gemcitabine
   - articles/Jiang_2016_harmaline_meodmt_mouse
+  - articles/Jiang_2019_iopamidol
   - articles/Jiang_2021_ivosidenib
   - articles/Jiang_2022_voriconazole
   - articles/Jiang_2023_imatinib

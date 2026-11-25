@@ -210,7 +210,7 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Role:** Kidney organ state used by paper-specific extraction-ratio first-pass models and whole-organ PBPK extractions.
 - **Source aliases:**
   - `kid` -- deprecated.
-- **Example models:** `Ayyar_2024_givosiran.R`, `Gilkey_2015_DiRnanoparticle.R`.
+- **Example models:** `Ayyar_2024_givosiran.R`, `Gilkey_2015_DiRnanoparticle.R`, `Jiang_2019_iopamidol.R` (DCE-CT renal tracer kinetics: the tubular contrast content per unit kidney volume, Ct(t) of Jiang 2019 Eq. 2).
 
 ### vagina (**canonical vaginal mucosal-tissue compartment**)
 - **Type:** compartment
@@ -1964,7 +1964,7 @@ PBPK organ-vascular concentration compartments used by membrane-limited PBPK ext
 - **Role:** Vascular concentration in the kidney organ.
 - **Source aliases:**
   - `vp_ki` -- deprecated.
-- **Example models:** `Parhiz_2024_mRNALNP.R`, `Shah_2012_mAb_PBPK.R`.
+- **Example models:** `Parhiz_2024_mRNALNP.R`, `Shah_2012_mAb_PBPK.R`, `Jiang_2019_iopamidol.R` (renal vascular plasma enhancement of a DCE-CT tracer-kinetic model, held on the aortic clock; the model reads it through `delay(vp_kidney, tdelay_kidney)` to apply the aorta-to-kidney transit delay).
 
 ### vp_spleen (**canonical PBPK spleen vascular concentration**)
 - **Type:** compartment
