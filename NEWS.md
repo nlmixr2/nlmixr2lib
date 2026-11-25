@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chen 2016 lopinavir and ritonavir ([doi:10.1002/psp4.12065](https://doi.org/10.1002/psp4.12065)) -- HIV-infected women in the second and third trimesters of pregnancy and postpartum, with total and unbound plasma concentrations.
+- Add Tessier 2016 anonymised Servier 'drug S' ([doi:10.1002/psp4.12054](https://doi.org/10.1002/psp4.12054)) -- 78 phase I subjects given single oral doses of 5-800 units.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

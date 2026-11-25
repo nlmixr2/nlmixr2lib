@@ -1,0 +1,560 @@
+---
+title: "Drug S (Tessier 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Drug S (Tessier 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Tessier_2016_drugS"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Tessier_2016_drugS"))$description`
+* Article: <https://doi.org/10.1002/psp4.12054> (open access, PMC4807465)
+
+Tessier 2016 is a simulation study of the power of pharmacogenetic tests when
+phase I data are analysed together with sparse phase II data. Every result in
+the paper is simulated from one population PK model: the model estimated from
+the phase I data of an oral drug of the Institut de Recherches Servier,
+anonymised as "drug S". That model is what this package provides. The
+pharmacogenetic part of the paper (simulated SNP effects on clearance, Lasso
+and stepwise association tests) is a property of each simulated dataset, not
+of the drug, and is described at the end of this article rather than built
+into the model.
+
+The authors' simulation code (Supporting Information, Data S1, written in R)
+is published with the paper. It contains a closed-form solution of the model
+for a single dose and for steady state, which this article uses as an
+independent check of the packaged ODE model.
+
+# Population
+
+The model was estimated from drug S concentrations in 78 subjects from three
+phase I studies, each given one oral dose of 5, 10, 20, 50, 100, 200, 400 or
+800 units (6, 6, 24, 12, 12, 6, 6 and 6 subjects) and sampled 16 times between
+0.5 and 192 h. All subjects were genotyped at baseline for 176 SNPs on a DNA
+microarray of genes involved in drug PK. The paper reports no demographics,
+does not say whether the subjects were healthy volunteers, and does not name
+the drug or its dose and volume units (Tessier 2016 Methods, "Simulation
+study" and "Simulated designs and analysis scenarios"; the population PK
+analysis itself was presented as Tessier 2013, PAGE abstract 2836).
+
+The paper's phase II studies (306 subjects, 20, 50 or 100 units once daily,
+sampled at steady state) are simulated designs, not observed data.
+
+```{r population}
+str(rxode2::rxode(readModelDb("Tessier_2016_drugS"))$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL) | 94.9 | Table 1 |
+| `lvc` (V1) | 1520 | Table 1 |
+| `lq` (Q) | 147 | Table 1 |
+| `lvp` (V2) | 2130 | Table 1 |
+| `ld1` (Tk0) | 1.59 h | Table 1 |
+| `ltlag` (Tlag1, zero-order route) | 0.401 h | Table 1; Data S1 `LagTk0` |
+| `lka` (Ka) | 0.203 /h | Table 1 |
+| `ltlag2` (Tlag2, first-order route) | 22.7 h | Table 1; Data S1 `LagKa` |
+| `lemax_ffo` (EmaxFRAC) | 0.45 | Table 1 |
+| `ld50_ffo` (D50FRAC) | 18.6 units | Table 1 |
+| `lfdepot` (F at or below 20 units) | 1, fixed | Table 1 footnote |
+| `limax_fdepot` (ImaxF) | 0.8 | Table 1 |
+| `ld50_fdepot` (D50F) | 41.7 units | Table 1 |
+| `etalfdepot` | 0.329^2 | Table 1 'omega (%)' 32.9 on F; Data S1 `omF` |
+| `etald1` | 0.316^2 | Table 1 31.6; Data S1 `omTk0` |
+| `etaltlag` | 0.351^2 | Table 1 35.1; Data S1 `omLagTk0` |
+| `etalq` | 0.899^2 | Table 1 89.9; Data S1 `omQ` |
+| `etalvp` | 0.442^2 | Table 1 44.2; Data S1 `omV2` |
+| `etalcl` | 0.251^2 | Table 1 25.1; Methods 'omega2 CL = 0.06' |
+| `propSd` | 0.20 | Table 1 'sigma slope (%)' 20; Data S1 `SIG_slope` |
+| `ffo = emax_ffo * DOSE / (d50_ffo + DOSE)` | | Table 1 footnote equation for FRAC |
+| `F = 1 - imax_fdepot * (DOSE - 20) / (d50_fdepot + DOSE - 20)`, F = 1 at or below 20 units | | Table 1 footnote equation for F; Data S1 `Fpop` |
+| Two-compartment disposition, zero-order input of (1 - FRAC) F DOSE into V1 after Tlag1, first-order input of FRAC F DOSE after Tlag2 | | Supplementary Figure S4; Data S1 closed-form solution |
+| `Cc = 1000 * central / vc` | | Data S1 doses `1000 x DOSE` and divides by V1 |
+
+# Dose-dependent absorption
+
+The fraction absorbed by the slow first-order route rises with dose towards
+45%, and the bioavailability falls above 20 units towards 20% of its
+low-dose value. Both are evaluated from the dose of the administration, which
+the model takes as the covariate `DOSE_DRUGS_UNITS`.
+
+```{r dose-terms}
+doses <- c(5, 10, 20, 50, 100, 200, 400, 800)
+dose_terms <- tibble(
+  dose = doses,
+  ffo = 0.45 * dose / (18.6 + dose),
+  fdepot = ifelse(dose <= 20, 1, 1 - 0.8 * (dose - 20) / (41.7 + dose - 20))
+)
+dose_terms |>
+  mutate(across(c(ffo, fdepot), \(x) signif(x, 3))) |>
+  rename(
+    "Dose (units)" = dose,
+    "First-order fraction FRAC" = ffo,
+    "Bioavailability F" = fdepot
+  ) |>
+  knitr::kable(caption = "Typical dose-dependent absorption terms (Table 1 footnote equations).")
+```
+
+# Event tables
+
+Each administration is two dose records with the same amount: one into
+`depot` for the first-order route and one into `central` with `rate = -2`,
+which makes rxode2 use the modelled zero-order duration `dur(central)`. This is
+how the authors coded their Monolix dataset (Data S1: two dosing lines per
+subject, `RATE = -2` on the zero-order line). The dose covariate is carried on
+every row.
+
+```{r events-helpers}
+# One single-dose subject block: two dose records plus observations.
+single_dose_events <- function(id, dose, obs_times) {
+  bind_rows(
+    tibble(
+      id = id, time = 0, amt = dose, evid = 1L,
+      cmt = c("depot", "central"), rate = c(0, -2)
+    ),
+    tibble(id = id, time = obs_times, amt = 0, evid = 0L, cmt = "central", rate = 0)
+  ) |>
+    mutate(DOSE_DRUGS_UNITS = dose)
+}
+
+# Once-daily dosing: n_doses administrations, the last one at time
+# (n_doses - 1) * tau, observations at obs_after hours after the last dose.
+repeat_dose_events <- function(id, dose, n_doses, obs_after, tau = 24) {
+  dose_times <- (seq_len(n_doses) - 1) * tau
+  last_dose <- max(dose_times)
+  bind_rows(
+    tibble(
+      id = id, time = rep(dose_times, each = 2), amt = dose, evid = 1L,
+      cmt = rep(c("depot", "central"), times = n_doses),
+      rate = rep(c(0, -2), times = n_doses)
+    ),
+    tibble(id = id, time = last_dose + obs_after, amt = 0, evid = 0L, cmt = "central", rate = 0)
+  ) |>
+    mutate(DOSE_DRUGS_UNITS = dose, last_dose = last_dose)
+}
+```
+
+# Check against the authors' closed-form solution
+
+Data S1 computes every simulated concentration from a closed-form solution of
+the two-compartment model with a lagged zero-order input and a lagged
+first-order input, both for a single dose and at steady state under once-daily
+dosing. The functions below are those formulas, transcribed from Data S1 with
+the same variable names. Because both sides use the same parameters, the
+difference between them is pure numerical error, and the checks are tight.
+
+```{r closed-form}
+# Data S1 'PK profiles for subjects from phase I study': single dose at time 0.
+# DOSE is in the paper's units; Data S1 doses 1000 x DOSE.
+cf_single <- function(t, DOSE, F1, CL = 94.9, V1 = 1520, Q = 147, V2 = 2130,
+                      Ka = 0.203, Tk0 = 1.59, Lag.Tk0 = 0.401, Lag.Ka = 22.7) {
+  FRAC <- 0.45 * DOSE / (18.6 + DOSE)
+  D <- 1000 * DOSE
+  beta <- 0.5 * ((Q / V1) + (Q / V2) + (CL / V1) -
+    sqrt(((Q / V1) + (Q / V2) + (CL / V1))^2 - 4 * (Q / V2) * (CL / V1)))
+  alpha <- ((Q / V2) * (CL / V1)) / beta
+  A0 <- (1 / V1) * ((alpha - (Q / V2)) / (alpha - beta))
+  B0 <- (1 / V1) * ((beta - (Q / V2)) / (beta - alpha))
+  A1 <- (Ka / V1) * (((Q / V2) - alpha) / ((Ka - alpha) * (beta - alpha)))
+  B1 <- (Ka / V1) * (((Q / V2) - beta) / ((Ka - beta) * (alpha - beta)))
+  k0 <- F1 * (1 - FRAC) * D / Tk0
+  zero <- ifelse(
+    t <= Lag.Tk0, 0,
+    ifelse(
+      t <= Tk0 + Lag.Tk0,
+      k0 * ((A0 / alpha) * (1 - exp(-alpha * (t - Lag.Tk0))) +
+        (B0 / beta) * (1 - exp(-beta * (t - Lag.Tk0)))),
+      k0 * ((A0 / alpha) * (1 - exp(-alpha * Tk0)) * exp(-alpha * (t - Tk0 - Lag.Tk0)) +
+        (B0 / beta) * (1 - exp(-beta * Tk0)) * exp(-beta * (t - Tk0 - Lag.Tk0)))
+    )
+  )
+  first <- ifelse(
+    t <= Lag.Ka, 0,
+    F1 * FRAC * D * (A1 * exp(-alpha * (t - Lag.Ka)) + B1 * exp(-beta * (t - Lag.Ka)) -
+      (A1 + B1) * exp(-Ka * (t - Lag.Ka)))
+  )
+  zero + first
+}
+
+# Data S1 'PK profiles for subjects from phase II study': steady state of
+# once-daily dosing, t = time after the last dose (no further doses).
+cf_ss <- function(t, DOSE, F1, tau = 24, CL = 94.9, V1 = 1520, Q = 147, V2 = 2130,
+                  Ka = 0.203, Tk0 = 1.59, Lag.Tk0 = 0.401, Lag.Ka = 22.7) {
+  FRAC <- 0.45 * DOSE / (18.6 + DOSE)
+  D <- 1000 * DOSE
+  beta <- 0.5 * ((Q / V1) + (Q / V2) + (CL / V1) -
+    sqrt(((Q / V1) + (Q / V2) + (CL / V1))^2 - 4 * (Q / V2) * (CL / V1)))
+  alpha <- ((Q / V2) * (CL / V1)) / beta
+  A0 <- (1 / V1) * ((alpha - (Q / V2)) / (alpha - beta))
+  B0 <- (1 / V1) * ((beta - (Q / V2)) / (beta - alpha))
+  A1 <- (Ka / V1) * (((Q / V2) - alpha) / ((Ka - alpha) * (beta - alpha)))
+  B1 <- (Ka / V1) * (((Q / V2) - beta) / ((Ka - beta) * (alpha - beta)))
+  k0 <- F1 * (1 - FRAC) * D / Tk0
+  ea <- 1 - exp(-alpha * tau)
+  eb <- 1 - exp(-beta * tau)
+  zero <- ifelse(
+    t <= Lag.Tk0,
+    k0 * (A0 / alpha * (1 - exp(-alpha * Tk0)) * exp(-alpha * (t + tau - Lag.Tk0 - Tk0)) / ea +
+      B0 / beta * (1 - exp(-beta * Tk0)) * exp(-beta * (t + tau - Lag.Tk0 - Tk0)) / eb),
+    ifelse(
+      t <= Tk0 + Lag.Tk0,
+      k0 * (A0 / alpha * ((1 - exp(-alpha * (t - Lag.Tk0))) +
+        exp(-alpha * tau) * (1 - exp(-alpha * Tk0)) * exp(-alpha * (t - Lag.Tk0 - Tk0)) / ea) +
+        B0 / beta * ((1 - exp(-beta * (t - Lag.Tk0))) +
+          exp(-beta * tau) * (1 - exp(-beta * Tk0)) * exp(-beta * (t - Lag.Tk0 - Tk0)) / eb)),
+      k0 * (A0 / alpha * (1 - exp(-alpha * Tk0)) * exp(-alpha * (t - Tk0 - Lag.Tk0)) / ea +
+        B0 / beta * (1 - exp(-beta * Tk0)) * exp(-beta * (t - Tk0 - Lag.Tk0)) / eb)
+    )
+  )
+  ek <- 1 - exp(-Ka * tau)
+  first <- ifelse(
+    t < Lag.Ka,
+    F1 * FRAC * D * (A1 * exp(-alpha * (t + tau - Lag.Ka)) / ea +
+      B1 * exp(-beta * (t + tau - Lag.Ka)) / eb -
+      (A1 + B1) * exp(-Ka * (t + tau - Lag.Ka)) / ek),
+    F1 * FRAC * D * (A1 * exp(-alpha * (t - Lag.Ka)) / ea +
+      B1 * exp(-beta * (t - Lag.Ka)) / eb -
+      (A1 + B1) * exp(-Ka * (t - Lag.Ka)) / ek)
+  )
+  zero + first
+}
+
+f_typ <- function(dose) ifelse(dose <= 20, 1, 1 - 0.8 * (dose - 20) / (41.7 + dose - 20))
+```
+
+## Typical single-dose profiles
+
+```{r typical-single}
+mod <- readModelDb("Tessier_2016_drugS")
+mod_typ <- rxode2::zeroRe(mod)
+
+# zeroRe() removes the random effects on purpose; rxode2 warns on every
+# multi-subject solve without omega, so muffle that one warning only.
+solve_typical <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+t_dense <- sort(unique(c(seq(0, 4, by = 0.05), seq(4.25, 48, by = 0.25), seq(49, 240, by = 1))))
+ev_typ <- bind_rows(lapply(seq_along(doses), \(i) single_dose_events(i, doses[i], t_dense)))
+sim_typ <- solve_typical(
+  mod_typ,
+  events = ev_typ, keep = "DOSE_DRUGS_UNITS",
+  rtol = 1e-10, atol = 1e-12, returnType = "data.frame"
+)
+
+chk_typ <- sim_typ |>
+  mutate(cf = cf_single(time, DOSE_DRUGS_UNITS, f_typ(DOSE_DRUGS_UNITS))) |>
+  group_by(DOSE_DRUGS_UNITS) |>
+  summarise(max_abs_diff_rel = max(abs(Cc - cf)) / max(cf), .groups = "drop")
+knitr::kable(chk_typ, digits = 12, caption = "ODE vs Data S1 closed form, typical subject, single dose.")
+# Same parameters on both sides, so only integration error remains: measured
+# about 4e-11 of the peak at these tolerances, so the bound has wide headroom.
+stopifnot(all(chk_typ$max_abs_diff_rel < 1e-6))
+```
+
+```{r figure-typical, fig.width = 7, fig.height = 4.5}
+sim_typ |>
+  filter(Cc > 0) |>
+  ggplot(aes(time, Cc, colour = factor(DOSE_DRUGS_UNITS))) +
+  geom_line() +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (h)", y = "Cc (milliunits/L)", colour = "Dose (units)",
+    title = "Typical drug S profiles after one oral dose",
+    caption = "The second rise near 23 h is the lagged first-order route (Tlag2 = 22.7 h)."
+  ) +
+  theme_bw()
+```
+
+## Individual single-dose profiles
+
+The same comparison for a stochastic phase I cohort, feeding each subject's
+own parameters (as returned by `rxSolve()`) into the closed form.
+
+```{r phase1-cohort}
+t1 <- c(0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 48, 72, 96, 120, 192)
+dose_alloc <- rep(doses, times = c(6, 6, 24, 12, 12, 6, 6, 6))
+ev_p1 <- bind_rows(lapply(seq_along(dose_alloc), \(i) single_dose_events(i, dose_alloc[i], c(0, t1))))
+
+rxode2::rxSetSeed(20160304)
+sim_p1 <- rxode2::rxSolve(
+  mod,
+  events = ev_p1, keep = "DOSE_DRUGS_UNITS",
+  rtol = 1e-10, atol = 1e-12, returnType = "data.frame"
+)
+stopifnot(!anyNA(sim_p1$Cc), length(unique(sim_p1$id)) == 78L)
+
+chk_ind <- sim_p1 |>
+  mutate(cf = cf_single(
+    time, DOSE_DRUGS_UNITS, fdepot,
+    CL = cl, V1 = vc, Q = q, V2 = vp, Ka = ka, Tk0 = d1, Lag.Tk0 = tlag, Lag.Ka = tlag2
+  )) |>
+  group_by(id) |>
+  summarise(max_abs_diff_rel = max(abs(Cc - cf)) / max(cf), .groups = "drop")
+summary(chk_ind$max_abs_diff_rel)
+# Measured at most about 1e-10 of each subject's peak.
+stopifnot(all(chk_ind$max_abs_diff_rel < 1e-6))
+```
+
+## Steady state under once-daily dosing
+
+The phase II designs sample at steady state of once-daily dosing. The ODE model
+reaches it by a 30-day run-in (the typical terminal half-life is about 33 h,
+so the 696 h from the first to the last dose is about 21 half-lives). Do not use `ss = 1` / `ss = 2` with this
+model: each administration is a split pair of records with a modelled `f()`,
+and rxode2's steady-state solver does not support that combination.
+
+```{r typical-ss}
+t_after <- sort(unique(c(seq(0, 4, by = 0.05), seq(4.25, 24, by = 0.25), seq(25, 96, by = 1))))
+ev_ss <- bind_rows(lapply(1:3, \(i) repeat_dose_events(i, c(20, 50, 100)[i], 30, t_after)))
+sim_ss <- solve_typical(
+  mod_typ,
+  events = ev_ss, keep = c("DOSE_DRUGS_UNITS", "last_dose"),
+  rtol = 1e-10, atol = 1e-12, maxsteps = 1e6, returnType = "data.frame"
+)
+chk_ss <- sim_ss |>
+  mutate(
+    tad = time - last_dose,
+    cf = cf_ss(tad, DOSE_DRUGS_UNITS, f_typ(DOSE_DRUGS_UNITS))
+  ) |>
+  filter(tad >= 0) |>
+  group_by(DOSE_DRUGS_UNITS) |>
+  summarise(max_abs_diff_rel = max(abs(Cc - cf)) / max(cf), .groups = "drop")
+knitr::kable(chk_ss, digits = 10, caption = "30-day run-in vs Data S1 steady-state closed form, typical subject.")
+# The run-in leaves about exp(-696 / 47.6) = 4e-7 of the accumulation short of
+# steady state; measured about 2.5e-7 of the peak.
+stopifnot(all(chk_ss$max_abs_diff_rel < 1e-5))
+```
+
+# Replicate Supplementary Figure S5
+
+Supplementary Figure S5 shows one simulated dataset: the 78 phase I subjects
+(16 samples after one dose) and the 306 phase II subjects of design
+SPI/II3s.96h (steady state of 20, 50 or 100 units once daily, sampled 2, 22
+and 96 h after the last dose; Data S1 `t2`). The figure below is the same
+design simulated with residual error, without the SNP effects (they barely
+move the profiles at a 25% CL variability, Supplementary Material "Simulated
+genetic effects").
+
+```{r phase2-cohort}
+dose_p2 <- rep(c(20, 50, 100), each = 102)
+ev_p2 <- bind_rows(lapply(seq_along(dose_p2), \(i) {
+  repeat_dose_events(100L + i, dose_p2[i], 30, c(2, 22, 96))
+}))
+sim_p2 <- rxode2::rxSolve(
+  mod,
+  events = ev_p2, keep = c("DOSE_DRUGS_UNITS", "last_dose"),
+  maxsteps = 1e6, returnType = "data.frame"
+)
+stopifnot(!anyNA(sim_p2$Cc), length(unique(sim_p2$id)) == 306L)
+```
+
+```{r figure-s5, fig.width = 7, fig.height = 4.5}
+fig_s5 <- bind_rows(
+  sim_p1 |> filter(time > 0) |> transmute(study = "Phase I", time, sim),
+  sim_p2 |> transmute(study = "Phase II (3s.96h)", time = time - last_dose, sim)
+) |>
+  filter(sim > 0)
+ggplot(fig_s5, aes(time, sim, colour = study)) +
+  geom_point(alpha = 0.6) +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(0, 192, by = 24)) +
+  scale_colour_manual(values = c("Phase I" = "#d49a9a", "Phase II (3s.96h)" = "#4f7f72")) +
+  labs(
+    x = "Time (h)", y = "Simulated concentration (milliunits/L)", colour = NULL,
+    title = "Simulated phase I and phase II concentrations",
+    caption = "Replicates the SPI/II3s.96h panels of Supplementary Figure S5 of Tessier 2016."
+  ) +
+  theme_bw()
+```
+
+The simulated concentrations span the same range as Figure S5: about 1 to
+100 in the first day, falling to about 0.01 to 1 at 192 h.
+
+# PKNCA validation
+
+The paper reports no NCA results, so the NCA below checks the model against
+its own analytic exposure. For an oral dose, AUC from zero to infinity is
+`F * DOSE / CL` whatever the shape of the input, so the typical dense
+profiles must give `1000 * F(DOSE) * DOSE / 94.9`.
+
+```{r pknca-typical}
+nca_typ_conc <- sim_typ |>
+  filter(!is.na(Cc)) |>
+  mutate(id = DOSE_DRUGS_UNITS, treatment = paste(DOSE_DRUGS_UNITS, "units")) |>
+  select(id, treatment, time, Cc)
+nca_typ_dose <- ev_typ |>
+  filter(evid == 1, cmt == "depot") |>
+  mutate(id = DOSE_DRUGS_UNITS, treatment = paste(DOSE_DRUGS_UNITS, "units")) |>
+  select(id, treatment, time, amt)
+nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_typ_conc, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(nca_typ_dose, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+))
+auc_chk <- as.data.frame(nca_typ) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  mutate(analytic = 1000 * f_typ(id) * id / 94.9, ratio = PPORRES / analytic) |>
+  arrange(id) |>
+  select(treatment, PPORRES, analytic, ratio)
+auc_chk |>
+  mutate(ratio = sprintf("%.5f", ratio)) |>
+  rename("Dose" = treatment, "PKNCA AUC0-inf" = PPORRES, "1000 F D / CL" = analytic, "Ratio" = ratio) |>
+  knitr::kable(digits = 2, caption = "Typical-subject AUC0-inf: PKNCA vs analytic.")
+# Linear-up/log-down trapezoids on a 0.05-1 h grid plus a log-linear tail;
+# measured within 0.01% of the analytic value.
+stopifnot(all(abs(auc_chk$ratio - 1) < 0.01))
+```
+
+The dose-normalised exposure is constant up to 20 units and then falls, which is
+the less-than-proportional exposure the bioavailability term encodes.
+
+The stochastic phase I cohort, on the paper's 16-sample design, by dose group:
+
+```{r pknca-phase1}
+nca_p1_conc <- sim_p1 |>
+  filter(!is.na(Cc)) |>
+  mutate(treatment = paste(DOSE_DRUGS_UNITS, "units")) |>
+  select(id, treatment, time, Cc)
+nca_p1_dose <- ev_p1 |>
+  filter(evid == 1, cmt == "depot") |>
+  mutate(treatment = paste(DOSE_DRUGS_UNITS, "units")) |>
+  select(id, treatment, time, amt)
+nca_p1 <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_p1_conc, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(nca_p1_dose, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+))
+as.data.frame(nca_p1) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  mutate(dose = as.numeric(sub(" units", "", treatment))) |>
+  arrange(dose) |>
+  select(treatment, cmax, tmax, aucinf.obs, half.life) |>
+  rename(
+    "Dose" = treatment, "Cmax" = cmax, "Tmax (h)" = tmax,
+    "AUC0-inf" = aucinf.obs, "t1/2 (h)" = half.life
+  ) |>
+  knitr::kable(digits = 2, caption = "Median NCA by dose group, stochastic phase I cohort (78 subjects).")
+```
+
+# The pharmacogenetic layer
+
+Under the paper's alternative hypothesis six randomly chosen SNPs act on
+log(CL) (Eq. 1), together explaining 30% of the CL variability, with
+`RGC` = 1, 2, 3, 5, 7 and 12% for the six variants. Each effect size follows
+from its `RGC` and minor allele frequency `p` (Eq. 2):
+
+`beta_k = sqrt(RGC_k * omega2_CL / (2 p_k (1 - p_k) - RGC_k * 2 p_k (1 - p_k)))`
+
+where `omega2_CL` is the non-genetic variance, `0.7 * 0.251^2 = 0.044`, which
+the paper rounds to 0.04. Since the causal SNPs differ in every simulated
+dataset, the model carries no SNP covariate. To simulate the paper's H1
+scenario, lower `etalcl` to the non-genetic variance and add
+`sum(beta_k * SNP_k)` to `log(cl)`; for the "IIV CL = 60%" scenario set
+`etalcl` to `0.6^2`:
+
+```{r pg-scenarios}
+omega2_ng <- (1 - sum(c(0.01, 0.02, 0.03, 0.05, 0.07, 0.12))) * 0.251^2
+omega2_ng
+stopifnot(abs(omega2_ng - 0.04) < 0.005)
+mod_h1 <- mod |> rxode2::ini(etalcl ~ 0.044101)
+mod_cl60 <- mod |> rxode2::ini(etalcl ~ 0.36)
+```
+
+Supplementary Table S1 lists simulated effect sizes and the genotype-based
+typical CL, `94.9 * exp(beta * SNP)`. Recomputing that column from the printed
+(two-decimal) betas agrees within the rounding of beta:
+
+```{r table-s1}
+s1 <- tribble(
+  ~scenario, ~rgc, ~pct, ~beta, ~cl1, ~cl2,
+  "SPI", "1%", 0.1, 0.03, 97.8, 100.8,
+  "SPI", "1%", 0.5, 0.04, 98.4, 102.1,
+  "SPI", "1%", 0.9, 0.10, 104.8, 115.8,
+  "SPI", "12%", 0.1, 0.11, 106.0, 118.3,
+  "SPI", "12%", 0.5, 0.15, 109.9, 127.4,
+  "SPI", "12%", 0.9, 0.35, 135.3, 193.0,
+  "SPI/II3s.96h", "1%", 0.1, 0.03, 97.8, 100.8,
+  "SPI/II3s.96h", "1%", 0.5, 0.04, 98.6, 102.4,
+  "SPI/II3s.96h", "1%", 0.9, 0.11, 106.1, 118.6,
+  "SPI/II3s.96h", "12%", 0.1, 0.11, 106.0, 118.3,
+  "SPI/II3s.96h", "12%", 0.5, 0.14, 108.8, 124.7,
+  "SPI/II3s.96h", "12%", 0.9, 0.34, 133.1, 186.6
+) |>
+  mutate(
+    calc1 = 94.9 * exp(beta), calc2 = 94.9 * exp(2 * beta),
+    # beta printed to 2 decimals: +/- 0.005 moves CL by up to 0.5% (1 copy)
+    # and 1% (2 copies)
+    ok = abs(calc1 / cl1 - 1) < 0.0051 & abs(calc2 / cl2 - 1) < 0.0101
+  )
+s1 |>
+  select(scenario, rgc, pct, beta, cl1, calc1, cl2, calc2) |>
+  rename(
+    "Scenario" = scenario, "RGC" = rgc, "Percentile" = pct, "beta" = beta,
+    "CL, SNP = 1 (Table S1)" = cl1, "CL, SNP = 1 (recomputed)" = calc1,
+    "CL, SNP = 2 (Table S1)" = cl2, "CL, SNP = 2 (recomputed)" = calc2
+  ) |>
+  knitr::kable(digits = 1)
+stopifnot(all(s1$ok))
+```
+
+# Assumptions and deviations
+
+- **Anonymised drug and units.** The paper names neither the drug nor its
+  units. Doses are in "units"; the volumes and clearances are taken to share
+  one undisclosed volume unit, and time is in hours (the sampling times). The
+  model is registered under the paper's own label, `drugS`.
+- **Concentration scale.** The authors' code (Data S1) gives each dose record
+  an amount of `1000 x DOSE` and divides by V1, so its simulated
+  concentrations, and Supplementary Figure S5, are on a "1000 x units per
+  volume" scale (ng/mL if the units are mg and volumes L). The model keeps
+  `amt` in units and multiplies by 1000 in `Cc`, which reproduces that scale.
+- **IIV magnitudes.** Table 1 headers the IIV column "omega (%)". Data S1 uses
+  those numbers directly as the standard deviation of the normal random effect
+  (`rnorm(sd = OMEGA)`), and the Methods give `omega2 CL = 0.06` for the
+  tabulated 25.1%; so the variances are the squares (0.251^2 = 0.063), not
+  `log(CV^2 + 1)`.
+- **One random effect on F.** Table 1 prints 32.9% beside both ImaxF and D50F;
+  Data S1 has a single `omF` applied to F itself (`F1 = Fpop * exp(ETA_F)`),
+  which the model follows. An individual F can exceed 1, as in the source.
+- **The 20-unit threshold.** The Table 1 footnote sets F = 1 for doses below
+  20 units and uses the Imax form from 20 units; Data S1 uses `<= 20`. Both
+  give F = 1 at exactly 20 units.
+- **No IIV** on V1, Ka, Tlag2, EmaxFRAC or D50FRAC, as in Table 1 and Data S1.
+- **Residual error.** Proportional 20% (`SIG_slope = 0.2`) with no additive
+  part (`SIG_inter = 0`).
+- **Genetic effects** are not part of the model; see "The pharmacogenetic
+  layer" for how to reproduce the H1 and 60% scenarios. The SNP genotypes
+  were simulated from HapMap with Hapgen2 and are not reproducible here.
+- **Phase II steady state** is reached by a 30-day once-daily run-in, not by
+  `ss` flags (see the steady-state section). Only the SPI/II3s.96h design is
+  simulated: the sampling times of the two other phase II designs (optimised
+  with PFIM) are not printed.
+- **Citation.** The article's last page number is not in the source on disk;
+  the reference gives the first page only. No correction notice for the
+  article was found in Europe PMC as of 2026-11-24.
