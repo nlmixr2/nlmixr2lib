@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Morschhauser 2018 ibritumomab tiuxetan dosimetry PK, one model per radioimmunotherapy fraction ([doi:10.1038/s41598-018-33160-0](https://doi.org/10.1038/s41598-018-33160-0)) -- adults with previously untreated follicular lymphoma.
+- Add Kratochwil 2018 anti-IL17 IgG1 ([doi:10.1371/journal.pone.0205435](https://doi.org/10.1371/journal.pone.0205435)) -- male C57BL/6J mice given a single IV dose with a 14C nanotracer.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
