@@ -5650,6 +5650,8 @@ navbar:
         href: articles/Leber_2023_immunosuppressants_hemoperfusion.html
       - text: "Metoclopramide (Ge 2020)"
         href: articles/Ge_2020_metoclopramide.html
+      - text: "Metoprolol (Chai 2026)"
+        href: articles/Chai_2026_metoprolol.html
       - text: "Metoprolol (Eugene 2016a)"
         href: articles/Eugene_2016a_metoprolol.html
       - text: "Metoprolol (Eugene 2016b)"
@@ -10454,6 +10456,7 @@ articles:
   - articles/Chae_2012_metformin
   - articles/Chae_2025_beeVenomPLA2
   - articles/Chae_2026_teicoplanin
+  - articles/Chai_2026_metoprolol
   - articles/Chairat_2016_oseltamivir
   - articles/Chakraborty_2012_canakinumab
   - articles/Chakravartula_2024_fentanyl_pediatric_respiratory_depression
