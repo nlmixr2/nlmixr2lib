@@ -36,6 +36,8 @@ navbar:
         href: articles/Liu_2024_spatholobiCaulis.html
       - text: "ABT 102 (Othman 2013)"
         href: articles/Othman_2013_ABT_102.html
+      - text: "ACT451840 (Krause 2016)"
+        href: articles/Krause_2016_ACT451840.html
       - text: "ADC human qsp (Scheuher 2023)"
         href: articles/Scheuher_2023_ADC_platform_qsp.html
       - text: "ADC invitro qsp (Scheuher 2023)"
@@ -11764,6 +11766,7 @@ articles:
   - articles/Kovar_2020_buprenorphine
   - articles/Kozielska_2012_risperidone_rat
   - articles/Kratochwil_2021_petesicatib
+  - articles/Krause_2016_ACT451840
   - articles/Krause_2017_selexipag
   - articles/Krause_2023_daridorexant
   - articles/Krause_2026_warfarin

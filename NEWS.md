@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2016 MAB2 Fc deamidation and Man5 glycoform quality-attribute PK ([doi:10.1080/19420862.2016.1186322](https://doi.org/10.1080/19420862.2016.1186322)) -- patients given a single high IV dose of a humanized IgG1.
+- Add Krause 2016 ACT-451840 PK/PD ([doi:10.1111/bcp.12962](https://doi.org/10.1111/bcp.12962)) -- healthy male volunteers with induced blood-stage *P. falciparum* malaria.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
