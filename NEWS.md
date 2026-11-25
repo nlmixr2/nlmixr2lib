@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lakshminarayana 2015 cipargamin and spiroindolone analogs ([doi:10.1128/AAC.03274-14](https://doi.org/10.1128/AAC.03274-14)) -- Plasmodium berghei-infected NMRI mice.
+- Add Singh 2015 PHI-1 erythropoiesis QSP ([doi:10.1002/psp4.12](https://doi.org/10.1002/psp4.12)) -- male BALB/c mice given an oral prolyl-hydroxylase-2 inhibitor.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
