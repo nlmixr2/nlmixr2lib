@@ -3412,6 +3412,8 @@ navbar:
         href: articles/Siebinga_2023_hadotatate.html
       - text: "Gabapentin (AlZubaydi 2024)"
         href: articles/AlZubaydi_2024_gabapentin.html
+      - text: "Gabapentin (Glerum 2018)"
+        href: articles/Glerum_2018_gabapentin.html
       - text: "Gabapentin milkcmt (Silvola 2025)"
         href: articles/Silvola_2025_gabapentin.html
       - text: "Gabapentin mpr (Silvola 2025)"
@@ -10215,6 +10217,7 @@ articles:
   - articles/Gisleskog_1999_dutasteride
   - articles/Glatard_2025_octreotide
   - articles/Glazar_2025_glioma_tgi
+  - articles/Glerum_2018_gabapentin
   - articles/Goel_2016_Sonidegib
   - articles/Goggin_2004_emfilermin
   - articles/Golubovic_2019_sirolimus
