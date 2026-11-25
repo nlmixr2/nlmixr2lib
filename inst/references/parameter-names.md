@@ -4242,21 +4242,29 @@ One member was added alongside the Maggs 2026 rifampicin extraction: `fm_desacet
 - **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
 - **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_brain`); the spinal-cord counterpart of `lv_brain`. Wrap in `fixed()` when the source fixes it from anatomy.
 
-### lcurv_decline, lcurv_recovery (**canonical log-transformed curvatures of a piecewise-quadratic decline-and-recovery time course**)
+### lkon_signal, kon_signal (**canonical log-transformed rate constant transforming a secondary signal into response production**)
 - **Type:** paper-named-param
-- **Role:** Log-transformed curvatures (output units per time^2) of an empirical response that falls along one parabola from its baseline to a nadir at `tnadir_anc` and recovers along a second parabola sharing the same vertex: `y = curv_decline * (t - tnadir_anc)^2 + base - curv_decline * tnadir_anc^2` for `t < tnadir_anc`, and the same with `curv_recovery` afterwards. Inside `model()` the bare names are `curv_decline` and `curv_recovery`.
+- **Role:** First-order rate constant (1 / time) at which a latent secondary-signal pool (the `signal` state) is transformed into production of the response in a secondary-signal / indirect-response model: the response gains `kon_signal * signal` per unit time and the signal pool loses the same amount. Inside `model()` the bare name is `kon_signal`.
 - **Source aliases:**
-  - `A1`, `A2` -- Morita 2026 Equations 2-9 ("slopes" of neutrophil decline and recovery).
-- **Example models:** `Morita_2026_pemetrexed.R`.
-- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13516902). Distinct from a turnover `kout` or a linear slope: the parabola's depth at the nadir is `curv_decline * tnadir_anc^2`, so the two curvatures are not rates and their magnitudes are not comparable to first-order constants. Pairs with `ltnadir_anc`.
+  - `kon_s` -- Busso 2017 Equations 2-3 and Table 2.
+- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; `lkon_signal = log(0.00739)` 1/day, the median of the six individual estimates).
+- **Notes:** Ratified by the maintainers 2026-11-25. Named after the pool it drains rather than as a bare `kon`, which is deliberately not canonicalised (see "Why `kon` is NOT canonicalised"): an on-rate of a binding model has other units and another meaning. Pairs with `lkout_signal`, the loss of the same pool that does not produce response.
 
-### ltnadir_anc (**canonical log-transformed time of the absolute-neutrophil-count nadir**)
+### lkout_signal, kout_signal (**canonical log-transformed first-order dissipation rate of a secondary-signal pool**)
 - **Type:** paper-named-param
-- **Role:** Log-transformed time, since the start of the treatment cycle, at which the absolute neutrophil count of an empirical time-course model reaches its minimum. Inside `model()` the bare name is `tnadir_anc`; each model states the time unit in its `units` and labels.
+- **Role:** First-order rate constant (1 / time) at which a latent secondary-signal pool (the `signal` state) dissipates without producing response, so the pool's total loss rate is `kout_signal + kon_signal` (times any inhibition factor on the production leg). Inside `model()` the bare name is `kout_signal`.
 - **Source aliases:**
-  - `B` -- Morita 2026 Equations 2-3 and 9 (week after the pemetrexed dose at which neutrophil recovery starts).
-- **Example models:** `Morita_2026_pemetrexed.R` (weeks after the cycle-1 dose; vertex of the piecewise-quadratic neutrophil course).
-- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13516902). The `_anc` suffix is deliberate: the bare `ltnadir` is not canonical, because `GonzalezSales_2015_testosterone.R` uses it for a different quantity (the clock time of a circadian testosterone nadir), which gets its own disambiguated name when registered. A parameter of the response shape, not a covariate: compare the `t_nadir` covariate of `Srimani_2022_ixazomib_mprotein.R`, a per-patient nadir time derived before the PK/PD fit and supplied as data.
+  - `kout_s` -- Busso 2017 Equation 2 and Table 2.
+- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; `lkout_signal = log(0.2915)` 1/day).
+- **Notes:** Ratified by the maintainers 2026-11-25. Read as a member of the `kout_<compartment>` family ("rate of leaving the suffixed pool"; see the `kin` entry), here for a non-anatomical pool. Distinct from `kpout`, the loss rate of an `indirect_prec` precursor pool whose loss is the response's production; in a secondary-signal model the production leg is `kon_signal`, and `kout_signal` is the non-productive loss.
+
+### lkinhib, kinhib (**canonical log-transformed linear inhibition slope per unit of driver**)
+- **Type:** paper-named-param
+- **Role:** Slope of a linear inhibition (or arrest) term, `inhib = kinhib * driver`, in units of 1 / (driver units). The driver is whatever the model says it is -- a training dose, an unbound drug concentration, a drug-effect fraction -- and the product is the dimensionless fraction removed from the inhibited process (`(1 - inhib)`) or a rate added to an arrest flux. Inside `model()` the bare name is `kinhib`; the log-transformed `lkinhib` is used in `ini()` when the slope is strictly positive.
+- **Source aliases:**
+  - `kin_i` -- Busso 2017 Equations 5 and 12 and Table 2, inhibition of performance production per training unit of the same day (1/tu). Not carried as `kin_i`, because `kin` is the canonical indirect-response production rate.
+- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; `lkinhib = log(0.00206)` 1/tu). The bare form is also used by `Gall_2023_doxorubicin_mouse.R`, `Gall_2023_doxorubicin_human.R`, `Gall_2023_fluorouracil_mouse.R` and `Gall_2023_fluorouracil_human.R` (`arrest <- kinhib * <driver>`).
+- **Notes:** Ratified by the maintainers 2026-11-25. Distinct from `imax` / `ic50` (a saturable inhibition) and from a slope on a stimulation (`slope`-type effects): `kinhib` is linear and inhibitory. Read the model body to learn what the driver is and therefore what the units are.
 
 ## Nested (multi-level) random effects
 

@@ -1,0 +1,658 @@
+---
+title: "Exercise training and physical performance (Busso 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Exercise training and physical performance (Busso 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Busso_2017_exerciseTraining"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Busso_2017_exerciseTraining"))$description`
+* Article: [Sci Rep 2017;7:40422](https://doi.org/10.1038/srep40422) (open access, CC BY 4.0)
+* Supplementary Information (raw data, Supplementary Table S1) and Supplementary Spreadsheet (an implementation of Models T and TI): <https://www.nature.com/articles/srep40422#Sec14>
+
+Busso (2017) carries the indirect-response idea from pharmacodynamics over to
+exercise training. The "dose" is the daily amount of training `W` in
+arbitrary training units (tu), computed from the number of 5-min repetitions
+and their intensity (Methods, Equation 17), with 100 tu counted for each
+performance test. Each day's training adds to a **secondary signal**, which
+dissipates first-order (`kout_s`) and is transformed into **production of
+performance** (`kon_s`). Performance is lost first-order (`koff`) and returns
+to its baseline when training stops. In Model TI, the paper's preferred
+model, production is also **inhibited** in proportion to the same day's
+training (`Inhib = kin_i * W`), so a hard session lowers the benefit of the
+signal accumulated from earlier sessions.
+
+The paper compares four models: T (signal only), TI (signal plus inhibition),
+TF (signal plus a fatigue term) and TIF (both). It retains Model TI because
+the fatigue term came out with the wrong sign in five of the six subjects
+(Results). Only Model TI has published parameter estimates (Table 2), so
+only Model TI is packaged. Model T is Model TI with `kin_i = 0`, and the
+authors' spreadsheet gives its fit for subject 1, which is used as an
+extra check below.
+
+# Population
+
+Six healthy men trained on a cycle ergometer for 15 weeks: 8 weeks of three
+sessions per week, one week without training, 4 weeks of five sessions per
+week, and 2 weeks without training (Methods, "Experimental data"; the data
+come from Busso 2003). Performance was the mean power of a 5-min maximal
+test (Plim5', in W), measured 40 to 46 times per subject. Each subject was
+fitted separately by maximum likelihood, so the paper reports six individual
+parameter sets (Table 2) and no between-subject variance. The packaged
+typical values are the medians of those six estimates, the values the paper
+simulates with (Figures 5 and 6).
+
+```{r population}
+ui <- rxode2::rxode(readModelDb("Busso_2017_exerciseTraining"))
+str(ui$population)
+```
+
+# Source trace
+
+| Element | Value in the model | Source |
+|---|---|---|
+| `dPerf/dt = kon - koff * Perf` (no training) | `d/dt(perf)` with `kout = koff` | Equation 1 |
+| Signal production and dissipation | `signal` dosed with `W`; decay `kout_s + kon_s * (1 - Inhib)` | Equation 2 (printed with `Prec` for `Signal`), Equation 13 |
+| Production `Prod = kon0 + kon_s * (1 - Inhib) * Signal` | `fprod * signal` plus `kout * rbase` | Equations 4, 11 and 14 |
+| `Inhib = kin_i * W` (same-day training) | `inhib <- kinhib * w_today` | Equations 5 and 12 |
+| Daily recursion `Perf(i) = Perf(i-1) exp(-koff) + Prod(i-1)` | reproduced exactly at whole days (see below) | Equation 7 |
+| `kon0 = Perf0 (1 - exp(-koff))`, baseline stationary | zero-order term `kout * rbase` | Equations 8 and 9 |
+| `Perf0` | 250 W (fixed) | Figure 6 caption; per subject, the first measured performance |
+| `koff` | 0.03055 1/day | Table 2, median of six (Results text: 0.0305) |
+| `kon_s` | 0.00739 1/day | Table 2, median of six (Results text: 0.0074) |
+| `kout_s` | 0.2915 1/day | Table 2, median of six (Results text: 0.292) |
+| `kin_i` | 0.00206 1/tu | Table 2, median of six (Results text: 0.0021) |
+| Residual error | additive, 6.02 W | Equation 18 (Gaussian likelihood, variance profiled out); value derived below |
+| Order of the inhibition term in the signal decay | day `i - 1` inhibition on the decay from day `i - 1` to day `i` | Supplementary Spreadsheet, sheet `Model_TI`, column E |
+
+# From the paper's daily recursion to an ODE
+
+The paper writes the model as ODEs (Equations 1 to 6) but fits and simulates
+it as a once-daily recursion (Equations 7 to 14): the signal just after
+day `i`'s training is `Signal(i)`, the day's production is
+`Prod(i) = kon0 + kon_s (1 - Inhib(i)) Signal(i)`, and
+`Perf(i + 1) = Perf(i) exp(-koff) + Prod(i)`. A plain ODE implementation of
+Equations 1 to 4 does not give the same numbers, because the recursion adds
+the whole day's production at once while the signal is still at its
+post-training value. For the median parameters the difference is about
+16% in the gain from a session, enough to miss Figures 5 and 6.
+
+The packaged model reproduces the recursion exactly at whole days:
+
+* each day's training `W` is a bolus into `signal` at the start of the day
+  (time in days, day `i` at `time = i`);
+* the inhibition for the day is read back from that dose with
+  `podo(signal)` while `tad(signal) < 1`, and is zero on days without a
+  training record;
+* inside a day the signal decays as `exp(-kloss_signal t)`, so the production
+  coefficient `fprod = kon_s (1 - Inhib) (kloss_signal - koff) / (exp(-koff) - exp(-kloss_signal))`
+  makes the within-day integral deliver exactly `kon_s (1 - Inhib) Signal(i)`
+  to performance by the end of the day, and the zero-order term
+  `koff * Perf0` delivers exactly `kon0`.
+
+Performance between whole days is a smooth interpolation that the paper does
+not define. Give at most one training record per day, at the start of the
+day. Days without training need no record.
+
+## Data: Supplementary Table S1
+
+The daily training doses and measured performances of the six subjects
+(Supplementary Table S1, published under CC BY 4.0) are embedded below. The
+training doses are rounded to four decimals.
+
+```{r data, echo = FALSE}
+s1 <- read.csv(text = "
+day,W1,P1,W2,P2,W3,P3,W4,P4,W5,P5,W6,P6
+1,0,,0,,0,,0,,0,,0,
+2,100,253,100,240,0,,0,,0,,0,
+3,100,252,0,,100,296,100,300,100,332,100,218
+4,0,,100,236,100,293,100,291,100,324,100,231
+5,100,245,0,,0,,0,,0,,0,
+6,0,,100,250,100,284,100,288,100,332,100,233
+7,0,,0,,0,,0,,0,,0,
+8,427.5591,254,0,,0,,0,,0,,0,
+9,0,,427.8689,244,435.6643,286,441.8919,296,443.5583,326,412.069,232
+10,431.7829,258,0,,0,,438.4615,299,0,,0,
+11,0,,411.284,257,440.1361,294,0,,431.3609,338,437.2881,236
+12,422.3881,268,417.4603,252,0,,438.5621,306,0,,441.4226,239
+13,0,,0,,446.0208,289,0,,428.1159,345,0,
+14,0,,0,,0,,0,,0,,0,
+15,440.9091,264,0,,0,,0,,0,,0,
+16,0,,425.2033,246,445.3925,293,0,,432.1637,342,432.8,250
+17,329.6703,,0,,0,,433.3333,318,0,,0,
+18,0,,320,,0,,333.3333,,333.3333,,328,
+19,424.8227,282,0,,439.726,292,0,,0,,433.0677,251
+20,0,,416.2055,253,0,,440.4255,329,426.3456,353,0,
+21,0,,0,,435.5705,298,0,,0,,0,
+22,428.6713,286,0,,0,,0,,0,,0,
+23,0,,423.0769,260,437.3333,300,0,,439.0805,348,442.3868,243
+24,420.5387,297,0,,0,,0,,0,,0,
+25,0,,415.7895,266,433.3333,300,0,,429.2818,362,428.8538,253
+26,422.1477,298,421.8391,261,433.3333,294,0,,0,,0,
+27,0,,0,,0,,0,,433.1507,365,399.6416,279
+28,0,,0,,0,,0,,0,,0,
+29,426.1745,298,0,,0,,0,,0,,0,
+30,0,,421.1679,274,442.8571,301,438.9222,334,424.7956,367,399.6416,279
+31,435.5705,298,0,,0,,0,,0,,0,
+32,425.4019,311,410.4693,277,448.0519,308,437.2093,344,429.4118,374,410.9541,283
+33,0,,413.6691,278,0,,0,,0,,415.1943,283
+34,0,,0,,438.558,319,437.3913,345,439.4595,370,0,
+35,0,,0,,0,,0,,0,,0,
+36,429.1139,316,0,,0,,0,,0,,0,
+37,0,,409.2199,282,441.6149,322,0,,440.5405,370,398.6486,296
+38,427.044,318,0,,0,,447.5219,343,0,,0,
+39,0,,403.4483,290,452.795,322,0,,441.0188,373,416.9014,284
+40,429.6296,324,418.3391,289,0,,438.0282,355,439.5225,377,405.0847,295
+41,0,,0,,440.4255,329,444.9857,349,0,,0,
+42,0,,0,,0,,0,,0,,0,
+43,418.7879,330,0,,0,,0,,0,,0,
+44,0,,418.3391,289,0,,446.4387,351,0,,399.0033,301
+45,415.4079,331,0,,438.3686,331,0,,435.7513,386,0,
+46,0,,409.7643,297,0,,438.7187,359,437.6623,385,414.9826,287
+47,427.3846,325,421.6216,296,442.5076,327,0,,0,,0,
+48,0,,0,,452.5836,329,437.9501,361,436.7876,386,406.0403,298
+49,0,,0,,0,,0,,0,,0,
+50,0,,0,,0,,0,,0,,0,
+51,432.0988,324,419.4719,303,440.4255,329,421.0141,355,409.8734,395,406.9767,301
+52,427.0517,329,0,,0,,433.3333,366,0,,0,
+53,0,,414.8387,310,441.349,341,0,,434.0102,394,406.7093,313
+54,421.6617,337,0,,0,,0,,0,,0,
+55,0,,420.2614,306,438.0952,336,430.2949,373,431.6583,398,423.2877,292
+56,0,,0,,0,,0,,0,,0,
+57,0,,0,,0,,0,,0,,0,
+58,427.1642,335,0,,0,,430.6233,369,425.5102,392,410.231,303
+59,421.6374,342,422.0779,308,434.2939,347,0,,0,,0,
+60,0,,417.4194,310,0,,0,,429.703,404,405.8824,306
+61,423.0321,343,0,,439.3586,343,429.7297,370,0,,0,
+62,0,,414.9206,315,432.3615,343,0,,422.1945,401,406.4935,308
+63,0,,0,,0,,0,,0,,0,
+64,100,337,0,,0,,0,,0,,0,
+65,0,,100,293,100,331,0,,100,403,100,300
+66,100,347,0,,0,,100,366,0,,0,
+67,0,,100,305,100,348,100,371,100,410,100,305
+68,100,,0,,0,,0,,0,,0,
+69,0,,100,,100,,100,,100,,100,
+70,0,,0,,0,,0,,0,,0,
+71,420.9726,329,0,,0,,0,,0,,0,
+72,410.2564,,413.7255,306,441.8803,351,450.838,358,435.5164,397,412.1311,305
+73,429.3413,334,394.7368,,436.6812,,430.9166,,421.3836,,398.0263,
+74,417.1687,,407.2848,302,454.7619,336,437.8016,373,436.6834,398,412.8713,303
+75,427.2727,330,394.7368,,441.6544,,423.5925,,425.5051,,406.25,
+76,0,,408.4967,306,434.3109,341,437.8016,373,445.1777,394,412.1311,305
+77,0,,0,,0,,0,,0,,0,
+78,414.4578,332,0,,0,,0,,0,,0,
+79,411.0613,,416.4983,297,438.9049,347,441.1444,367,429.7561,410,423.5495,293
+80,429.9703,337,396.6942,,422.5146,,430.5177,,417.4877,,399.0066,
+81,415.6805,,415.5844,308,439.4659,337,444.4142,367,432.3383,402,407.3955,311
+82,433.9233,339,400.9901,,441.9643,,433.6043,,416.3522,,385.2327,
+83,0,,419.4631,298,458.209,335,442.8571,371,435.8779,393,407.6923,312
+84,0,,0,,0,,0,,0,,0,
+85,418.8571,350,0,,0,,0,,0,,0,
+86,393.5389,,416.8831,308,440.9091,352,438.6243,378,423.6715,414,408.6817,311
+87,417.8248,331,384.6154,,434.7826,,429.7297,,406.2878,,394.822,
+88,408.9552,,415.1899,316,450.2959,338,448.0663,362,430.2663,413,415.3094,307
+89,439.823,339,388.9789,,442.4779,,429.5486,,410.628,,390.3226,
+90,0,,412.2924,301,450.5882,340,441.4634,369,433.494,415,409.2652,313
+91,0,,0,,0,,0,,0,,0,
+92,407.3446,354,0,,0,,0,,0,,0,
+93,406.25,,398.0892,314,444.1341,358,439.3617,376,417.8744,414,416.5563,302
+94,431.4286,350,380.0322,,427.5568,,421.1921,,404.3321,,397.3727,
+95,415.4728,,419.2182,307,453.7572,346,436.6755,379,424.2206,417,414.0065,307
+96,416.092,348,400.3268,,436.5193,,425.5319,,418.1818,,385.2327,
+97,0,,409.5082,305,449.2958,355,448.5255,373,443.1373,408,403.7975,316
+98,0,,0,,0,,0,,0,,0,
+99,100,341,0,,0,,0,,0,,0,
+100,0,,100,304,100,353,100,384,100,414,100,315
+101,100,350,0,,0,,0,,0,,0,
+102,0,,100,303,100,354,100,377,100,416,100,320
+103,100,353,0,,0,,0,,0,,0,
+104,0,,100,314,100,361,100,380,100,415,100,316
+105,0,,0,,0,,0,,0,,0,
+106,100,351,0,,0,,0,,0,,0,
+107,0,,100,316,100,366,100,384,100,404,100,317
+108,100,338,0,,0,,0,,0,,0,
+109,0,,100,319,100,364,0,,100,409,100,316
+")
+```
+
+```{r data-long}
+dat <- s1 |>
+  tidyr::pivot_longer(-day, names_to = c(".value", "id"), names_pattern = "([WP])([1-6])") |>
+  dplyr::mutate(id = as.integer(id)) |>
+  dplyr::arrange(id, day)
+dat |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    days = dplyr::n(),
+    training_days = sum(W > 0),
+    total_tu = round(sum(W)),
+    n_perf = sum(!is.na(P)),
+    first_perf_W = P[!is.na(P)][1]
+  ) |>
+  knitr::kable(caption = "Supplementary Table S1 per subject (40 to 46 performance tests, Methods).")
+stopifnot(identical(
+  as.integer(table(dat$id[!is.na(dat$P)])),
+  c(45L, 45L, 46L, 40L, 45L, 45L)
+))
+```
+
+## Individual estimates (Table 2)
+
+```{r table2}
+tab2 <- data.frame(
+  id = 1:6,
+  koff = c(0.0328, 0.0285, 0.0267, 0.0326, 0.0194, 0.0341),
+  kon_s = c(0.00845, 0.00462, 0.00071, 0.00783, 0.00695, 0.03751),
+  kout_s = c(0.297, 0.189, 0.053, 0.286, 0.405, 1.066),
+  kin_i = c(0.00199, 0.00246, 0.00148, 0.00213, 0.00201, 0.00211)
+)
+# The packaged typical values are these medians.
+meds <- vapply(tab2[-1], median, numeric(1))
+meds
+th <- exp(ui$theta[c("lkout", "lkon_signal", "lkout_signal", "lkinhib")])
+stopifnot(max(abs(th / meds - 1)) < 1e-12)
+```
+
+## Simulation helpers
+
+```{r helpers}
+mod <- readModelDb("Busso_2017_exerciseTraining")
+
+# Event table for one subject: daily training as boluses into `signal`, and
+# an observation of `perf` at every whole day so the integrator restarts at
+# each day boundary.
+make_events <- function(day, W) {
+  dplyr::bind_rows(
+    data.frame(time = day[W > 0], amt = W[W > 0], evid = 1L, cmt = "signal"),
+    data.frame(time = c(0, day), amt = 0, evid = 0L, cmt = "perf")
+  ) |>
+    dplyr::mutate(id = 1L) |>
+    dplyr::arrange(time, dplyr::desc(evid))
+}
+
+# Solve with one subject's parameters; returns perf at the whole days `day`.
+solve_subject <- function(day, W, perf0, koff, kon_s, kout_s, kin_i) {
+  m <- suppressMessages(rxode2::ini(
+    mod,
+    lrbase = log(perf0), lkout = log(koff), lkon_signal = log(kon_s),
+    lkout_signal = log(kout_s), lkinhib = log(kin_i)
+  ))
+  out <- rxode2::rxSolve(m, make_events(day, W), returnType = "data.frame",
+                         rtol = 1e-10, atol = 1e-10)
+  out <- out[!duplicated(out$time), ]
+  out$perf[match(day, out$time)]
+}
+
+# The authors' spreadsheet recursion (Supplementary Spreadsheet, sheet
+# Model_TI), written out independently of the packaged model.
+recursion <- function(W, perf0, koff, kon_s, kout_s, kin_i) {
+  kon0 <- perf0 * (1 - exp(-koff))
+  perf <- numeric(length(W))
+  s_prev <- 0; inhib_prev <- 0; prod_prev <- kon0; perf_prev <- perf0
+  for (i in seq_along(W)) {
+    inhib <- kin_i * W[i]
+    s <- W[i] + s_prev * exp(-kon_s * (1 - inhib_prev) - kout_s)
+    prod <- kon0 + s * kon_s * (1 - inhib)
+    perf[i] <- prod_prev + perf_prev * exp(-koff)
+    s_prev <- s; inhib_prev <- inhib; prod_prev <- prod; perf_prev <- perf[i]
+  }
+  perf
+}
+```
+
+# Check 1: the ODE reproduces the authors' recursion
+
+Each subject is solved with their own Table 2 estimates and their own first
+measured performance as `Perf0`, then compared with the spreadsheet recursion
+written out in R.
+
+```{r check-recursion}
+fits <- lapply(1:6, function(j) {
+  d <- dat[dat$id == j, ]
+  p <- tab2[j, ]
+  perf0 <- d$P[!is.na(d$P)][1]
+  ode <- solve_subject(d$day, d$W, perf0, p$koff, p$kon_s, p$kout_s, p$kin_i)
+  rec <- recursion(d$W, perf0, p$koff, p$kon_s, p$kout_s, p$kin_i)
+  data.frame(id = j, day = d$day, W = d$W, P = d$P, ode = ode, rec = rec)
+})
+fits <- dplyr::bind_rows(fits)
+fits |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(max_abs_diff_W = signif(max(abs(ode - rec)), 2)) |>
+  knitr::kable(caption = "Largest difference between the packaged ODE and the daily recursion over 109 days.")
+# Both sides use the same parameters; the difference is integration error
+# only (measured ~4e-7 W at rtol = atol = 1e-10).
+stopifnot(max(abs(fits$ode - fits$rec)) < 1e-5)
+```
+
+# Check 2: goodness of fit of Model TI (Table 1)
+
+With the residual variance profiled out of the Gaussian likelihood
+(Equation 18), the negative log-likelihood is
+`n/2 (log(2 pi) + 1 - log(n) + log(RSS))`, and the paper's adjusted R2 and
+AICc (Equations 20 and 21, `p = 4` parameters for Model TI) follow from the
+residual sum of squares.
+
+```{r table1}
+gof <- function(y, yhat, p) {
+  ok <- !is.na(y)
+  rss <- sum((y[ok] - yhat[ok])^2)
+  tss <- sum((y[ok] - mean(y[ok]))^2)
+  n <- sum(ok)
+  nll <- 0.5 * n * (log(2 * pi) + 1 - log(n) + log(rss))
+  c(
+    n = n, rss = rss,
+    adjR2 = 1 - (n - 1) / (n - p) * (rss / tss),
+    AICc = 2 * p + 2 * nll + 2 * p * (p + 1) / (n - p - 1),
+    sigma = sqrt(rss / n)
+  )
+}
+tab1 <- data.frame(
+  id = 1:6,
+  adjR2_paper = c(0.967, 0.932, 0.920, 0.950, 0.965, 0.935),
+  AICc_paper = c(291.07, 299.27, 312.77, 265.16, 281.39, 312.56)
+)
+gof_ti <- fits |>
+  dplyr::group_by(id) |>
+  dplyr::reframe(as.data.frame(t(gof(P, ode, p = 4)))) |>
+  dplyr::left_join(tab1, by = "id")
+gof_ti |>
+  dplyr::transmute(
+    Subject = id, n, RSS = round(rss, 1),
+    "Adj. R2 (sim)" = round(adjR2, 3), "Adj. R2 (Table 1)" = adjR2_paper,
+    "AICc (sim)" = round(AICc, 2), "AICc (Table 1)" = AICc_paper,
+    "sigma = sqrt(RSS/n) (W)" = round(sigma, 2)
+  ) |>
+  knitr::kable(caption = "Model TI goodness of fit with the Table 2 estimates, against Table 1.")
+# Table 2 prints three significant figures; refitting is not needed to land
+# within the rounding of Table 1 (largest adj. R2 gap 0.002, subject 6).
+stopifnot(
+  max(abs(gof_ti$adjR2 - gof_ti$adjR2_paper)) < 0.005,
+  max(abs(gof_ti$AICc - gof_ti$AICc_paper)) < 2
+)
+```
+
+The residual error in the packaged model is the median of the six
+per-subject `sigma` values:
+
+```{r sigma}
+median(gof_ti$sigma)
+stopifnot(abs(median(gof_ti$sigma) - ui$theta[["addSd"]]) < 0.01)
+```
+
+## Model T for subject 1
+
+The Model T sheet of the Supplementary Spreadsheet carries subject 1's
+Model T estimates (`koff` 0.0844829, `kon_s` 0.00294108, `kout_s` 0.0815401).
+Model T is the packaged model with `kin_i` set to zero.
+
+```{r model-t}
+d1 <- dat[dat$id == 1, ]
+perf_t <- solve_subject(d1$day, d1$W, 253, 0.0844829085170162,
+                        0.00294108281488496, 0.0815400703894475, 1e-300)
+g_t <- gof(d1$P, perf_t, p = 3)
+round(g_t[c("adjR2", "AICc")], 3)
+# Table 1, subject 1, Model T: adj. R2 0.923, AICc 328.04
+stopifnot(abs(g_t[["adjR2"]] - 0.923) < 0.001, abs(g_t[["AICc"]] - 328.04) < 0.05)
+```
+
+# Replicate Figure 3: fits of Model TI in the six subjects
+
+```{r figure3, fig.height = 6}
+ggplot(fits, aes(day)) +
+  geom_line(aes(y = ode), colour = "steelblue") +
+  geom_point(aes(y = P), data = fits[!is.na(fits$P), ], size = 1.2) +
+  facet_wrap(~id, scales = "free_y", labeller = label_both) +
+  labs(x = "Day", y = "Performance (W)",
+       title = "Replicates Figure 3 of Busso 2017",
+       caption = "Points: Supplementary Table S1. Line: packaged model with each subject's Table 2 estimates.")
+```
+
+# Replicate Figure 4: subject 1
+
+Daily production and removal of performance are read back from the solved
+performance: removal over day `i` is `Perf(i) (1 - exp(-koff))` and
+production is `Perf(i + 1) - Perf(i) exp(-koff)`.
+
+```{r figure4, fig.height = 6}
+p1 <- tab2[1, ]
+f1 <- fits[fits$id == 1, ]
+grid <- sort(unique(c(seq(0, 109, by = 0.05), d1$day)))
+ev_fine <- dplyr::bind_rows(
+  data.frame(time = d1$day[d1$W > 0], amt = d1$W[d1$W > 0], evid = 1L, cmt = "signal"),
+  data.frame(time = grid, amt = 0, evid = 0L, cmt = "perf")
+) |>
+  dplyr::mutate(id = 1L) |>
+  dplyr::arrange(time, dplyr::desc(evid))
+m1 <- suppressMessages(rxode2::ini(
+  mod, lrbase = log(253), lkout = log(p1$koff), lkon_signal = log(p1$kon_s),
+  lkout_signal = log(p1$kout_s), lkinhib = log(p1$kin_i)
+))
+sim1 <- rxode2::rxSolve(m1, ev_fine, returnType = "data.frame")
+perf_next <- c(f1$ode[-1], NA)
+fig4 <- dplyr::bind_rows(
+  data.frame(panel = "A: performance (W)", day = f1$day, value = f1$ode, what = "model"),
+  data.frame(panel = "B: production / removal (W/day)", day = f1$day,
+             value = perf_next - f1$ode * exp(-p1$koff), what = "production"),
+  data.frame(panel = "B: production / removal (W/day)", day = f1$day,
+             value = f1$ode * (1 - exp(-p1$koff)), what = "removal"),
+  data.frame(panel = "C: signal (tu)", day = sim1$time, value = sim1$signal, what = "signal"),
+  data.frame(panel = "D: inhibition", day = d1$day, value = p1$kin_i * d1$W, what = "inhibition")
+)
+ggplot(fig4, aes(day, value, colour = what)) +
+  geom_line() +
+  geom_point(aes(day, P), data = data.frame(panel = "A: performance (W)", d1[!is.na(d1$P), ]),
+             inherit.aes = FALSE, size = 1) +
+  facet_wrap(~panel, ncol = 1, scales = "free_y") +
+  labs(x = "Day", y = NULL, colour = NULL, title = "Replicates Figure 4 of Busso 2017 (subject 1)")
+```
+
+Production dips below removal on each heavy training day, because that day's
+inhibition cuts the yield of the accumulated signal, and stays below it on
+most days of the five-sessions-per-week block (weeks 10 to 13). That is the
+interruption of the rise in performance the paper describes for subject 1.
+
+# Replicate Figure 5: effect of one session, and of repeating it
+
+Figure 5 shows the gain in performance owed to a first 200- or 300-tu
+session when nothing follows it, and when the same session is repeated on
+the next one or two days. The gain owed to the first session is performance
+with all sessions minus performance with the first one removed.
+
+```{r figure5}
+gain_first <- function(dose, n_sessions) {
+  days <- 0:20
+  run <- function(first) {
+    W <- c(if (first) dose else 0, rep(dose, n_sessions - 1))
+    ev <- dplyr::bind_rows(
+      data.frame(time = seq_along(W) - 1, amt = W, evid = 1L, cmt = "signal") |>
+        dplyr::filter(amt > 0),
+      data.frame(time = days, amt = 0, evid = 0L, cmt = "perf")
+    ) |>
+      dplyr::mutate(id = 1L) |>
+      dplyr::arrange(time, dplyr::desc(evid))
+    out <- rxode2::rxSolve(mod, ev, returnType = "data.frame")
+    out <- out[!duplicated(out$time), ]
+    out$perf[match(days, out$time)]
+  }
+  data.frame(day = days, gain = run(TRUE) - run(FALSE), dose = dose,
+             scenario = c("Single session", "Same session next day",
+                          "Same session 2 next days")[n_sessions])
+}
+fig5 <- dplyr::bind_rows(lapply(c(200, 300), function(d) {
+  dplyr::bind_rows(lapply(1:3, function(k) gain_first(d, k)))
+}))
+fig5$scenario <- factor(fig5$scenario, levels = c("Single session", "Same session next day", "Same session 2 next days"))
+ggplot(fig5[fig5$day <= 19, ], aes(day, gain, colour = scenario)) +
+  geom_line() +
+  facet_wrap(~ paste0("Effect of a ", dose, "-tu session")) +
+  labs(x = "Time after session (days)", y = "Gain in performance (W)", colour = NULL,
+       title = "Replicates Figure 5 of Busso 2017")
+```
+
+```{r figure5-table}
+fig5_peak <- fig5 |>
+  dplyr::group_by(dose, scenario) |>
+  dplyr::summarise(peak = max(gain), day_of_peak = day[which.max(gain)], day19 = gain[day == 19],
+                   .groups = "drop")
+# Figure 5 read by the maintainers (axis 0-7 W): peak gain and gain at day 19.
+fig5_paper <- data.frame(
+  dose = rep(c(200, 300), each = 3),
+  scenario = levels(fig5$scenario)[c(1:3, 1:3)],
+  peak_fig = c(4.07, 3.72, 3.42, 5.75, 4.93, 4.33),
+  day19_fig = c(3.33, 3.05, 2.85, 4.73, 4.12, 3.65)
+)
+fig5_cmp <- dplyr::left_join(fig5_peak, fig5_paper, by = c("dose", "scenario"))
+fig5_cmp |>
+  dplyr::transmute(Dose = dose, Scenario = scenario,
+                   "Peak (sim)" = round(peak, 2), "Peak (Figure 5)" = peak_fig,
+                   "Day of peak (sim)" = day_of_peak,
+                   "Day 19 (sim)" = round(day19, 2), "Day 19 (Figure 5)" = day19_fig) |>
+  knitr::kable(caption = "Figure 5 against the packaged model with the median estimates.")
+# Deterministic simulation against values read off the published figure; the
+# read-off is good to about 0.05-0.1 W.
+stopifnot(
+  max(abs(fig5_cmp$peak / fig5_cmp$peak_fig - 1)) < 0.05,
+  max(abs(fig5_cmp$day19 / fig5_cmp$day19_fig - 1)) < 0.05,
+  all(fig5_cmp$day_of_peak %in% 8:11)
+)
+```
+
+The simulated curves sit 1% to 3% under the values read off the figure,
+uniformly across the six curves. The one-day gain (0.87 W for 200 tu,
+0.85 W for 300 tu) and the ranking of the scenarios agree.
+
+# Replicate Figure 6: steady state and the optimal daily dose
+
+When the same dose is repeated every day the system reaches a steady state.
+Equating successive days of the recursion gives
+
+`Perf_ss = Perf0 + kon_s (1 - kin_i W) W / ((1 - exp(-koff)) (1 - exp(-(kout_s + kon_s (1 - kin_i W)))))`,
+
+an inverted U in the daily dose `W`. The packaged ODE is simulated for
+600 days of daily training (18 half-lives of `koff`) and compared with that
+closed form.
+
+```{r figure6}
+perf_ss <- function(W, perf0, koff, kon_s, kout_s, kin_i) {
+  inhib <- kin_i * W
+  perf0 + kon_s * (1 - inhib) * W /
+    ((1 - exp(-koff)) * (1 - exp(-(kout_s + kon_s * (1 - inhib)))))
+}
+doses <- seq(0, 490, by = 10)
+ev6 <- dplyr::bind_rows(lapply(seq_along(doses), function(k) {
+  dplyr::bind_rows(
+    if (doses[k] > 0) data.frame(time = 0:599, amt = doses[k], evid = 1L, cmt = "signal"),
+    data.frame(time = 600, amt = 0, evid = 0L, cmt = "perf")
+  ) |>
+    dplyr::mutate(id = k)
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+# Tight tolerances: at the default rtol = 1e-6 the integration error builds
+# up over 600 dosing intervals to a few hundredths of a W.
+sim6 <- rxode2::rxSolve(mod, ev6, returnType = "data.frame",
+                        rtol = 1e-10, atol = 1e-10, maxsteps = 1e6)
+fig6 <- data.frame(W = doses, perf = sim6$perf[match(seq_along(doses), sim6$id)])
+fig6$closed_form <- perf_ss(fig6$W, 250, meds[["koff"]], meds[["kon_s"]], meds[["kout_s"]], meds[["kin_i"]])
+max(abs(fig6$perf - fig6$closed_form))
+# Same parameters on both sides: after 600 days exp(-koff * 600) ~ 1e-8 of
+# the start-up transient is left, so the gap is integration error only.
+stopifnot(max(abs(fig6$perf - fig6$closed_form)) < 0.005)
+ggplot(fig6, aes(W, perf)) +
+  geom_line() +
+  coord_cartesian(ylim = c(200, 400)) +
+  labs(x = "Daily training dose (tu)", y = "Performance at steady state (W)",
+       title = "Replicates Figure 6 of Busso 2017")
+```
+
+```{r figure6-optimum}
+opt <- optimize(function(W) -perf_ss(W, 250, meds[["koff"]], meds[["kon_s"]], meds[["kout_s"]], meds[["kin_i"]]),
+                c(0, 490))
+c(optimal_dose_tu = opt$minimum, peak_W = -opt$objective,
+  perf_at_490_tu = fig6$perf[fig6$W == 490])
+# Figure 6 (read by the maintainers): peak about 366 W near 245 tu; about
+# 245 W at 490 tu.
+stopifnot(
+  abs(-opt$objective - 366) < 3,
+  abs(opt$minimum - 245) < 15,
+  abs(fig6$perf[fig6$W == 490] - 245) < 5
+)
+```
+
+The Discussion gives the optimal daily dose from Model TI as 253 +/- 45 tu
+(mean +/- SD over the six subjects). With each subject's Table 2 estimates:
+
+```{r optimum-by-subject}
+opt_subj <- vapply(1:6, function(j) {
+  p <- tab2[j, ]
+  optimize(function(W) -perf_ss(W, 250, p$koff, p$kon_s, p$kout_s, p$kin_i), c(0, 600))$minimum
+}, numeric(1))
+round(opt_subj, 1)
+c(mean = mean(opt_subj), sd = sd(opt_subj))
+stopifnot(abs(mean(opt_subj) - 253) < 2, abs(sd(opt_subj) - 45) < 2)
+```
+
+The optimum does not depend on `Perf0`, which only shifts the curve.
+
+# Assumptions and deviations
+
+* **Daily recursion, not the printed ODEs.** The paper's estimates belong to
+  the discrete recursion of Equations 7 to 14, which the authors fitted and
+  simulated with. The packaged ODE reproduces that recursion exactly at whole
+  days (Check 1) by adjusting the production coefficient within each day.
+  Solving Equations 1 to 4 literally would change the gain from a session by
+  about 16% for the median parameters. Between whole days performance is a
+  smooth interpolation the paper does not define.
+* **Order of the inhibition term in the signal decay.** Equation 13 prints
+  `Signal(i) = Signal(i-1) exp(-kout_s - kon_s (1 - Inhib(i))) + W(i)`, with
+  the same day's inhibition. The authors' spreadsheet (sheet `Model_TI`,
+  column E) uses `Inhib(i - 1)`, the previous day's, and reproduces the
+  published fit of subject 1 to the last digit (RSS 1393.03, adj. R2 0.96699).
+  The model follows the spreadsheet. The production term (Equation 14) uses
+  the same day's inhibition in both.
+* **Equation 2** prints `Prec` in place of `Signal`.
+* **Table 1, subject 1, Model TI AICc** is printed as 291.07. The authors'
+  spreadsheet computes 291.17 from the same fit, as does this vignette; the
+  spreadsheet's Model T value (328.04) matches Table 1 exactly.
+* **Typical values** are the medians of the six Table 2 estimates (0.03055,
+  0.00739, 0.2915, 0.00206). The Results text prints them rounded (0.0305,
+  0.0074, 0.292, 0.0021). Figure 6 is reproduced with the unrounded medians
+  (peak 366.6 W at 244 tu, 245.5 W at 490 tu) and not with the rounded ones
+  (364.6 W at 239 tu, 236.2 W at 490 tu), so the unrounded medians are what
+  the paper simulated with.
+* **Baseline.** `Perf0` is fixed at 250 W (Figure 6). In the fits each
+  subject's `Perf0` was their first measured performance, and it should be
+  set the same way when simulating an individual.
+* **No between-subject variability.** Each subject was fitted separately and
+  no population variance was estimated, so the model has no `eta` terms. The
+  spread of the individual estimates is in Table 2 (large for `kon_s` and
+  `kout_s` because of subject 6).
+* **Residual error** is not printed in the paper. The likelihood (Equation 18)
+  profiles the residual variance out, so each subject's maximum-likelihood
+  `sigma` is `sqrt(RSS / n)`. The packaged 6.02 W is the median over the six
+  subjects of that value, computed by the maintainers above.
+* **Figure 5** is reproduced 1% to 3% below the values read off the figure,
+  uniformly across scenarios; the read-off itself is uncertain by about
+  0.05 to 0.1 W.
+* **Event records.** Training is entered as one bolus into `signal` per day,
+  at the start of the day, with the day's training units as the amount. The
+  inhibition reads that dose for one day (`tad(signal) < 1`), so two
+  training records on one day, or a record that is not at the start of the
+  day, break the daily semantics of the model.
+* **No NCA.** The endpoint is a physiological performance measure, not a drug
+  concentration, so the PKNCA section of a popPK validation does not apply;
+  the recursion, goodness-of-fit and steady-state checks above take its
+  place.
