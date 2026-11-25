@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Saito 2019 ipragliflozin popPK and urinary glucose excretion Emax ([doi:10.1111/bcp.13972](https://doi.org/10.1111/bcp.13972)) -- Japanese adults with type 2 diabetes (PK) and healthy Japanese men plus adults with type 2 diabetes (urinary glucose excretion).
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

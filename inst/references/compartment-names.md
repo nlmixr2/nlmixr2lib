@@ -1294,6 +1294,14 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Wattanakul_2026_paracetamol_creatinine.R` (exponential approach to a plateau, `crcfb = Plateau * (1 - exp(-kappa * t))`, with the plateau scaled by the enrollment KDIGO stage and the rate constant by log10 paracetamol AUC0-72h; additive residual 7.94%).
 - **Notes:** The `cfb` suffix follows the `ppsvcfb` / `tmccfb` / `das28cfb` precedent. This is a PERCENT change; a model of the absolute creatinine concentration or of an absolute (umol/L) change should register a sibling rather than overload this name.
 
+### ugecfb (**canonical change from baseline in 24-hour urinary glucose excretion output**)
+- **Type:** compartment
+- **Role:** Drug-induced change from the pre-treatment value in the amount of glucose excreted in urine over 24 h, in g/24 h. The primary pharmacodynamic endpoint of SGLT2-inhibitor trials. **Sign convention: POSITIVE for drug effect**, because SGLT2 inhibition raises urinary glucose. Algebraic output in the founding model (no ODE state).
+- **Source aliases:**
+  - `delta UGE24h` / `change in UGE24h from baseline` -- Saito 2019 Equation 1, Table 2 and Tables 4-5 notation.
+- **Example models:** `Saito_2019_ipragliflozin_uge.R` (direct Emax of the ipragliflozin 24 h AUC, `ugecfb = Emax * AUC_IPRA / (EC50 + AUC_IPRA)`, with Emax a power function of fasting plasma glucose and absolute GFR up to a filtered-glucose threshold `FPG x GFR = 18000`; combined additive 0.352 g/24 h and proportional 19.8% residual).
+- **Notes:** The `cfb` suffix follows the `ppsvcfb` / `crcfb` / `das28cfb` precedent. A model of the ABSOLUTE 24 h urinary glucose excretion (baseline plus drug effect, as in `Riggs_2014_empagliflozin.R`, whose output is `uge`) should use a sibling `uge` rather than overload this name. Units are g/24 h; papers that report mg or mmol per 24 h must be converted (glucose 180.16 g/mol).
+
 ### lnalt (**canonical natural-logarithm serum alanine aminotransferase output**)
 - **Type:** compartment
 - **Role:** Natural logarithm of serum alanine aminotransferase activity (ALT in U/L), used as a continuous hepatic-safety PD endpoint fitted on the log scale with an additive residual. Algebraic output in the founding model (no ODE state).
