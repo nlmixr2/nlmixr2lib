@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Luo 2017 glycoengineered pertuzumab ([doi:10.1038/srep46347](https://doi.org/10.1038/srep46347)) -- preclinical (ICR mice), six two-compartment IV-bolus models for fucosylation / sialylation glycoforms and asialofetuin ASGPR blockade.
+- Add Goncalves 2017 primaquine ([doi:10.1128/AAC.02590-16](https://doi.org/10.1128/AAC.02590-16)) -- African children aged 2-14 years, with the carboxyprimaquine metabolite.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

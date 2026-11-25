@@ -1,0 +1,599 @@
+---
+title: "Primaquine in African children (Goncalves 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Primaquine in African children (Goncalves 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Goncalves_2017_primaquine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Goncalves_2017_primaquine"))$description`
+* Article: <https://doi.org/10.1128/AAC.02590-16>
+
+Goncalves 2017 is the first primaquine (PQ) pharmacokinetic study in African
+children. A semi-physiological population model describes PQ and its main
+plasma metabolite carboxyprimaquine (CPQ) jointly. The final model has three
+features beyond allometric weight scaling: relative bioavailability that
+matures with age, a CYP2D6 intrinsic clearance proportional to the
+genotype-derived CYP2D6 activity score (AS), and a well-stirred liver in which
+monoamine oxidase (MAO) forms CPQ. Only the final model has reported
+estimates (Table 2), so it is the one packaged here. The Lee 2021 primaquine
+model in this library (`Lee_2021_primaquine`) uses the same liver structure in
+Korean adults.
+
+# Population
+
+Forty afebrile, G6PD-normal children aged 2-14 years in Balonghin, Burkina
+Faso, 37 with asymptomatic *P. falciparum* parasitaemia, received a single
+primaquine dose of 0.25 mg/kg (n = 20) or 0.40 mg/kg (n = 20) with the fifth
+dose of a six-dose artemether-lumefantrine course (Methods; Table 1). The dose
+was given as a 1 mg/mL solution of a crushed 15 mg tablet. Median (IQR) age was
+8 (6-10) and 10 (6.5-12) years, weight 19.8 (16.2-26.3) and 24.9
+(15.9-31.6) kg and height 118 (104-133.5) and 129 (104-144.5) cm in the two
+arms; 55% and 60% were female. Of the 36 children genotyped, one was a CYP2D6
+poor metabolizer (AS 0), ten intermediate (AS 0.5 or 1.0), 22 extensive
+(AS 1.5 or 2.0) and three ultrarapid (AS 3.0); the four without a genotype
+were set to AS 1.5. Two children were excluded from the PK analysis for
+inadequate sample volume, leaving 38 children and seven samples each (one
+pre-dose, four in 0-12 h, two in 24-72 h). The LC-MS assay had an LLOQ of
+4 ng/mL; BLQ samples were handled with Beal's M6 method.
+
+The same information is available programmatically via
+`readModelDb("Goncalves_2017_primaquine")()$population`.
+
+# Model structure
+
+```{r structure, echo = FALSE}
+knitr::kable(
+  tibble::tribble(
+    ~`Figure 2 rate constant`, ~Definition, ~`Model code`,
+    "k12, k23, k34", "3 / MAT", "ktr * depot, ktr * transit1, ktr * transit2",
+    "k46", "QH (1 - EH) / VL", "qh * (1 - eh) * liver / vliver",
+    "k64", "QH / VPQ", "qh * central / vc",
+    "k40", "CLH,CYP2D6 / VL", "clh_cyp2d6 * liver / vliver (lost)",
+    "k45", "CLH,MAO / VL", "mw_ratio * clh_mao * liver / vliver (forms CPQ)",
+    "k50", "CLCPQ / VCPQ", "cl_cpq * central_cpq / vc_cpq"
+  ),
+  caption = "Figure 2 of Goncalves 2017 and its encoding."
+)
+```
+
+* **Absorption.** Depot and two transit compartments at `ktr = (n + 1) / MAT`
+  with `n = 2` (Methods; Figure 2 gives `k12 = k23 = k34 = 3/MAT`), feeding
+  the liver.
+* **Bioavailability.** `F = AGE / (AGE + F50)` (Results), applied to the dose.
+* **Well-stirred liver.** `EH = CLint / (QH + CLint)` with `CLint` the sum of
+  the MAO and CYP2D6 intrinsic clearances; each hepatic clearance is
+  `CLH = EH * QH` apportioned by the pathway's share of `CLint` (Methods).
+  Total outflow from the liver is therefore `QH`: `QH (1 - EH)` returns to
+  plasma, and `QH * EH` is metabolised.
+* **CYP2D6.** `CLint,CYP2D6,i = AS * CLint,CYP2D6,pop` (Methods).
+* **Scaling.** Every flow and clearance (QH, both intrinsic clearances,
+  CLCPQ) scales as `(WT/70)^0.75` and every volume (VPQ, VCPQ) as
+  `(WT/70)^1` (Methods; Table 2 footnote). QH is 49.5 L/h at 70 kg.
+* **Liver volume.** VL comes from weight and height through body surface area
+  (Methods, citing Johnson 2005): `VL (L) = 0.722 * BSA^1.176`.
+* **Units.** The authors fitted in molar units. The packaged model doses in mg
+  of PQ base and reports ng/mL, so the MAO flux is multiplied by the
+  CPQ:PQ molecular-weight ratio 274.32 / 259.35.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment in
+`inst/modeldb/specificDrugs/Goncalves_2017_primaquine.R`.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lmat` | log(0.706) h | Table 2, mean absorption time |
+| `lvc` | log(127) L at 70 kg | Table 2, VPQ |
+| `lvc_cpq` | log(21.7) L at 70 kg | Table 2, VCPQ |
+| `lclint_mao` | log(7.35) L/h at 70 kg | Table 2, CLint,MAO |
+| `lclint_cyp2d6` | log(6.70) L/h at 70 kg per unit AS | Table 2, CLint,CYP2D6,pop |
+| `lcl_cpq` | log(1.50) L/h at 70 kg | Table 2, CLCPQ |
+| `age50_fdepot` | 4.27 years | Table 2, F50; Results |
+| `lqh` | fixed log(49.5) L/h at 70 kg | Methods |
+| `e_wt_cl`, `e_wt_vc` | fixed 0.75, 1 | Methods; Table 2 footnote |
+| `etalvc` | log(1 + 0.829^2) | Table 2, VPQ IIV 82.9% |
+| `etalclint_mao` | log(1 + 0.653^2) | Table 2, CLint,MAO IIV 65.3% |
+| `propSd`, `addSd` | 0.327, fixed 2 ng/mL | Table 2, residual error PQ |
+| `propSd_cpq`, `addSd_cpq` | 0.452, fixed 2 ng/mL | Table 2, residual error CPQ |
+| Transit absorption | `ktr = 3 / MAT` | Methods; Figure 2 |
+| `F` maturation | `AGE / (AGE + F50)` | Results, Pharmacokinetics |
+| Well-stirred liver, `EH`, `CLH` | as above | Methods; Figure 2 |
+| CYP2D6 effect | `AS * CLint,CYP2D6,pop` | Methods |
+| Liver volume | `0.722 * BSA^1.176` | Methods, ref. 44 (Johnson 2005 abstract) |
+| BSA | DuBois (< 15 kg) / Haycock (>= 15 kg) | not printed; see Assumptions |
+| Molar PQ to CPQ conversion | 274.32 / 259.35 | Methods (molar fit); molecular formulas |
+
+# Deterministic checks
+
+```{r mod}
+mod <- rxode2::rxode(readModelDb("Goncalves_2017_primaquine"))
+# No cl/vc pair is defined, so rxode2 keeps the explicit ODEs.
+stopifnot(is.null(mod$linCmt))
+mod_typ <- rxode2::zeroRe(mod)
+
+# Two declared endpoints (Cc, Cc_cpq): observation rows nominate dvid = 1 on
+# the central state and both observables come back as columns.
+make_events <- function(cov, dose_mgkg, obs_times) {
+  dose_rows <- cov |>
+    mutate(time = 0, evid = 1L, amt = dose_mgkg * WT, cmt = "depot", dvid = NA_integer_)
+  obs_rows <- tidyr::expand_grid(cov, time = obs_times) |>
+    mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+  bind_rows(dose_rows, obs_rows) |>
+    arrange(id, time, desc(evid))
+}
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+```
+
+## Closed-form exposure
+
+Every absorbed molecule enters the well-stirred liver, so the PQ AUC after a
+single dose is `F * Dose / CLint` and the CPQ AUC is
+`F * Dose * (CLint,MAO / CLint) * (274.32 / 259.35) / CLCPQ`, whatever the
+volumes. Solving the typical-value model to 400 h checks the ODE encoding
+against both identities.
+
+```{r closed-form}
+cf_cov <- tibble::tibble(
+  id = 1:4,
+  AGE = c(2, 8, 14, 14),
+  WT = c(12, 20, 40, 40),
+  HT = c(85, 118, 151, 151),
+  CYP2D6 = c(1, 1.5, 0, 3)
+)
+ev_cf <- make_events(cf_cov, 0.25, sort(unique(c(seq(0, 12, by = 0.01), seq(12, 400, by = 0.1)))))
+sim_cf <- as.data.frame(rxode2::rxSolve(mod_typ, ev_cf,
+  returnType = "data.frame", rtol = 1e-10, atol = 1e-12, maxsteps = 1e6
+))
+closed <- sim_cf |>
+  group_by(id) |>
+  summarise(auc_pq = trap(time, Cc), auc_cpq = trap(time, Cc_cpq), .groups = "drop") |>
+  left_join(cf_cov, by = "id") |>
+  mutate(
+    f = AGE / (AGE + 4.27),
+    clint_mao = 7.35 * (WT / 70)^0.75,
+    clint = clint_mao + CYP2D6 * 6.70 * (WT / 70)^0.75,
+    cl_cpq = 1.50 * (WT / 70)^0.75,
+    auc_pq_exact = 1000 * f * 0.25 * WT / clint,
+    auc_cpq_exact = 1000 * f * 0.25 * WT * (clint_mao / clint) * (274.32 / 259.35) / cl_cpq
+  )
+knitr::kable(
+  closed |>
+    select(AGE, WT, CYP2D6, auc_pq, auc_pq_exact, auc_cpq, auc_cpq_exact) |>
+    dplyr::rename(
+      "Age (y)" = AGE, "WT (kg)" = WT, "AS" = CYP2D6,
+      "PQ AUC (ODE)" = auc_pq, "PQ closed form" = auc_pq_exact,
+      "CPQ AUC (ODE)" = auc_cpq, "CPQ closed form" = auc_cpq_exact
+    ),
+  digits = 1,
+  caption = "Typical-value AUC0-400 (ng*h/mL) after 0.25 mg/kg against the closed forms."
+)
+# Same parameters on both sides; the residual is trapezoid error plus the
+# fraction of CPQ AUC beyond 400 h (half-life at most ~10 h, so negligible).
+stopifnot(
+  all(abs(closed$auc_pq / closed$auc_pq_exact - 1) < 0.002),
+  all(abs(closed$auc_cpq / closed$auc_cpq_exact - 1) < 0.002)
+)
+```
+
+## Replication of Figure 5
+
+Figure 5 shows model-derived typical profiles after 0.25 mg/kg: a 2-year-old
+of 12 kg and a 14-year-old of 40 kg with AS 1.0 (panels A and B), and four
+14-year-olds with AS 0, 1, 2 and 3 (panels C and D). The maintainers digitised
+the curves from the published bitmap against the axis tick marks (to about
++/- 1 ng/mL for PQ and +/- 2 ng/mL for CPQ). Figure 5 gives no heights; 85 cm
+and 151 cm are used, and the liver-volume check below shows height does not
+matter.
+
+```{r fig5-digitised}
+fig5 <- tibble::tribble(
+  ~panel, ~child, ~AGE, ~WT, ~HT, ~CYP2D6, ~analyte, ~time, ~digitised,
+  "A", "2 y, AS 1", 2, 12, 85, 1, "PQ", NA, 28.6,
+  "A", "2 y, AS 1", 2, 12, 85, 1, "PQ", 4, 21.4,
+  "A", "2 y, AS 1", 2, 12, 85, 1, "PQ", 8, 12.4,
+  "B", "2 y, AS 1", 2, 12, 85, 1, "CPQ", NA, 59.4,
+  "B", "2 y, AS 1", 2, 12, 85, 1, "CPQ", 4, 54.6,
+  "B", "2 y, AS 1", 2, 12, 85, 1, "CPQ", 20, 32.7,
+  "A", "14 y, AS 1", 14, 40, 151, 1, "PQ", NA, 71.9,
+  "A", "14 y, AS 1", 14, 40, 151, 1, "PQ", 4, 57.8,
+  "A", "14 y, AS 1", 14, 40, 151, 1, "PQ", 8, 38.9,
+  "A", "14 y, AS 1", 14, 40, 151, 1, "PQ", 12, 25.9,
+  "A", "14 y, AS 1", 14, 40, 151, 1, "PQ", 20, 11.9,
+  "B", "14 y, AS 1", 14, 40, 151, 1, "CPQ", NA, 142.9,
+  "B", "14 y, AS 1", 14, 40, 151, 1, "CPQ", 4, 121.6,
+  "B", "14 y, AS 1", 14, 40, 151, 1, "CPQ", 12, 139.4,
+  "B", "14 y, AS 1", 14, 40, 151, 1, "CPQ", 20, 107.4,
+  "C", "14 y, AS 0", 14, 40, 151, 0, "PQ", NA, 83.8,
+  "C", "14 y, AS 0", 14, 40, 151, 0, "PQ", 8, 60.0,
+  "C", "14 y, AS 0", 14, 40, 151, 0, "PQ", 20, 30.2,
+  "D", "14 y, AS 0", 14, 40, 151, 0, "CPQ", NA, 204.5,
+  "D", "14 y, AS 0", 14, 40, 151, 0, "CPQ", 4, 148.9,
+  "D", "14 y, AS 0", 14, 40, 151, 0, "CPQ", 20, 187.3,
+  "C", "14 y, AS 2", 14, 40, 151, 2, "PQ", NA, 64.4,
+  "C", "14 y, AS 2", 14, 40, 151, 2, "PQ", 8, 30.2,
+  "C", "14 y, AS 2", 14, 40, 151, 2, "PQ", 12, 18.4,
+  "D", "14 y, AS 2", 14, 40, 151, 2, "CPQ", NA, 115.5,
+  "D", "14 y, AS 2", 14, 40, 151, 2, "CPQ", 20, 76.3,
+  "C", "14 y, AS 3", 14, 40, 151, 3, "PQ", NA, 59.7,
+  "C", "14 y, AS 3", 14, 40, 151, 3, "PQ", 8, 24.9,
+  "C", "14 y, AS 3", 14, 40, 151, 3, "PQ", 12, 13.8,
+  "D", "14 y, AS 3", 14, 40, 151, 3, "CPQ", NA, 100.8,
+  "D", "14 y, AS 3", 14, 40, 151, 3, "CPQ", 20, 60.9
+)
+
+fig5_cov <- fig5 |>
+  distinct(child, AGE, WT, HT, CYP2D6) |>
+  mutate(id = seq_len(n()))
+ev5 <- make_events(fig5_cov |> select(id, AGE, WT, HT, CYP2D6), 0.25, seq(0, 24, by = 0.05))
+sim5 <- as.data.frame(rxode2::rxSolve(mod_typ, ev5, returnType = "data.frame")) |>
+  left_join(fig5_cov |> select(id, child), by = "id")
+
+sim5_long <- sim5 |>
+  select(child, time, PQ = Cc, CPQ = Cc_cpq) |>
+  pivot_longer(c(PQ, CPQ), names_to = "analyte", values_to = "conc")
+model_at <- function(ch, an, tt) {
+  s <- sim5_long[sim5_long$child == ch & sim5_long$analyte == an, ]
+  if (is.na(tt)) max(s$conc) else s$conc[which.min(abs(s$time - tt))]
+}
+fig5_cmp <- fig5 |>
+  rowwise() |>
+  mutate(model = model_at(child, analyte, time)) |>
+  ungroup() |>
+  mutate(
+    feature = ifelse(is.na(time), "peak", paste0(time, " h")),
+    pct_diff = 100 * (model / digitised - 1)
+  )
+knitr::kable(
+  fig5_cmp |>
+    select(panel, child, analyte, feature, digitised, model, pct_diff) |>
+    dplyr::rename(
+      "Panel" = panel, "Child" = child, "Analyte" = analyte, "Feature" = feature,
+      "Figure 5 (ng/mL)" = digitised, "Model (ng/mL)" = model, "% diff" = pct_diff
+    ),
+  digits = 1,
+  caption = "Typical-value model against the digitised Figure 5 curves."
+)
+```
+
+```{r fig5-plot, fig.width = 8, fig.height = 6, fig.cap = "Replicates Figure 5 of Goncalves 2017: typical PQ and CPQ profiles after 0.25 mg/kg. Lines are the packaged model; points are digitised from the published figure."}
+ggplot(sim5_long, aes(time, conc, colour = child)) +
+  geom_line() +
+  geom_point(
+    data = fig5_cmp |> filter(!is.na(time)),
+    aes(time, digitised, colour = child), inherit.aes = FALSE
+  ) +
+  facet_wrap(~ factor(analyte, levels = c("PQ", "CPQ")), scales = "free_y") +
+  labs(x = "Time (h)", y = "Concentration (ng/mL)", colour = NULL) +
+  theme_bw()
+```
+
+The 2-year-old, the AS 0 and the AS 1 curves reproduce Figure 5 to within the
+digitising error, which exercises the age-maturation of F, the allometric
+scaling of QH and the clearances, the MAO-to-CPQ molar conversion and the
+well-stirred liver. The AS 2 and AS 3 curves of the model lie below the
+published ones, by up to 18% at the late PQ points, where the
+concentrations are small. Each published curve matches a single
+model curve at an *effective* activity score: about 1.82 for the curve
+labelled AS 2 and about 2.47 for AS 3, with PQ peak, CPQ peak, PQ at 12 h and
+CPQ at 20 h all agreeing on the same value. The figure therefore behaves as if
+the CYP2D6 clearance rose less than proportionally above AS 1. The Methods
+state the linear form `CLint,CYP2D6,i = AS * CLint,CYP2D6,pop` explicitly, and
+the packaged model follows the printed equation; see Assumptions.
+
+```{r fig5-gates}
+exact <- fig5_cmp |> filter(CYP2D6 <= 1)
+high_as <- fig5_cmp |> filter(CYP2D6 >= 2)
+stopifnot(
+  # Age, weight, AS 0 and AS 1: a mis-transcribed F50, clearance, volume,
+  # QH scaling or molar ratio moves these by tens of percent.
+  all(abs(exact$pct_diff[exact$digitised >= 10]) < 5),
+  all(abs(exact$pct_diff[exact$digitised < 10] / 100 * exact$digitised[exact$digitised < 10]) < 1),
+  # AS 2-3: the model is BELOW the figure (the documented linear-AS
+  # deviation), and not by more than the effective-AS offset explains.
+  all(high_as$pct_diff < 0),
+  all(high_as$pct_diff > -30)
+)
+```
+
+## Liver volume does not affect the plasma profiles
+
+The paper does not print the BSA formula behind its liver volume. The liver
+residence time `VL / QH` is about two minutes, so the volume cannot shape the
+plasma profiles. Scaling VL by 0.5 and 2 (through height, the only route by
+which it enters) confirms this.
+
+```{r vl-sensitivity}
+vl_cov <- tibble::tibble(id = 1:3, AGE = 14, WT = 40, HT = c(151, 151, 151), CYP2D6 = 1)
+# HT^(0.3964 * 1.176) is the height dependence of VL for WT >= 15 kg; solve for
+# the heights that halve and double VL.
+vl_cov$HT <- 151 * c(1, 0.5, 2)^(1 / (0.3964 * 1.176))
+ev_vl <- make_events(vl_cov, 0.25, seq(0, 48, by = 0.05))
+sim_vl <- as.data.frame(rxode2::rxSolve(mod_typ, ev_vl, returnType = "data.frame"))
+vl_sum <- sim_vl |>
+  group_by(id) |>
+  summarise(cmax_pq = max(Cc), cmax_cpq = max(Cc_cpq), .groups = "drop")
+vl_sum$vl_multiplier <- c(1, 0.5, 2)
+knitr::kable(vl_sum |>
+  select(vl_multiplier, cmax_pq, cmax_cpq) |>
+  dplyr::rename("VL multiplier" = vl_multiplier, "PQ Cmax" = cmax_pq, "CPQ Cmax" = cmax_cpq),
+digits = 2)
+stopifnot(
+  all(abs(vl_sum$cmax_pq / vl_sum$cmax_pq[1] - 1) < 0.02),
+  all(abs(vl_sum$cmax_cpq / vl_sum$cmax_cpq[1] - 1) < 0.02)
+)
+```
+
+# Virtual cohort
+
+The individual data are not public. Two arms of 200 virtual children reproduce
+Table 1:
+
+* Age is normal, redrawn until it falls in the studied 2-14 years. The mean
+  and SD (8.2 and 3 years in the 0.25 mg/kg arm, 10.5 and 3.5 years in the
+  0.40 mg/kg arm) are chosen to approximate the Table 1 medians (8 and 10
+  years) and IQRs; the realised medians and IQRs are tabulated below.
+* Weight follows the exponential age trend through the two Table 1 medians
+  (19.8 kg at 8 years and 24.9 kg at 10 years), with 15% log-normal scatter.
+* Height follows the linear trend through the Table 1 medians (118 cm at 8
+  years, 129 cm at 10 years), with 6 cm scatter.
+* The CYP2D6 activity score is drawn from the genotyped frequencies. The
+  paper splits the intermediate (AS 0.5 or 1.0) and extensive (AS 1.5 or 2.0)
+  groups no further, so each group is split evenly, and the four children
+  without a genotype are added at AS 1.5. This gives AS 0, 0.5, 1, 1.5, 2
+  and 3 in proportions 1:5:5:15:11:3 of 40.
+
+```{r cohort}
+set.seed(20170517)
+rxode2::rxSetSeed(20170517)
+n_arm <- 200
+draw_age <- function(n, mean, sd) {
+  age <- rnorm(n, mean, sd)
+  while (any(bad <- age < 2 | age > 14)) age[bad] <- rnorm(sum(bad), mean, sd)
+  age
+}
+make_arm <- function(n, arm, dose_mgkg, age_mean, age_sd, id_offset) {
+  age <- draw_age(n, age_mean, age_sd)
+  tibble::tibble(
+    id = id_offset + seq_len(n),
+    arm = arm,
+    dose_mgkg = dose_mgkg,
+    AGE = age,
+    WT = 19.8 * exp(log(24.9 / 19.8) / 2 * (age - 8)) * exp(rnorm(n, 0, 0.15)),
+    HT = 118 + 5.5 * (age - 8) + rnorm(n, 0, 6),
+    CYP2D6 = sample(c(0, 0.5, 1, 1.5, 2, 3), n, replace = TRUE, prob = c(1, 5, 5, 15, 11, 3))
+  )
+}
+cohort <- bind_rows(
+  make_arm(n_arm, "0.25 mg/kg", 0.25, 8.2, 3, 0L),
+  make_arm(n_arm, "0.40 mg/kg", 0.40, 10.5, 3.5, n_arm)
+)
+cohort |>
+  group_by(arm) |>
+  summarise(
+    n = n(),
+    age = sprintf("%.1f (%.1f-%.1f)", median(AGE), quantile(AGE, 0.25), quantile(AGE, 0.75)),
+    wt = sprintf("%.1f (%.1f-%.1f)", median(WT), quantile(WT, 0.25), quantile(WT, 0.75)),
+    ht = sprintf("%.0f (%.0f-%.0f)", median(HT), quantile(HT, 0.25), quantile(HT, 0.75)),
+    as_mean = mean(CYP2D6)
+  ) |>
+  dplyr::rename(
+    "Arm" = arm, "N" = n, "Age, y" = age, "Weight, kg" = wt,
+    "Height, cm" = ht, "Mean AS" = as_mean
+  ) |>
+  knitr::kable(digits = 2, caption = "Virtual cohort, median (IQR); compare Table 1.")
+```
+
+# Simulation
+
+```{r simulate}
+obs_times <- sort(unique(c(seq(0, 4, by = 0.1), seq(4, 24, by = 0.5), seq(24, 168, by = 2))))
+ev <- bind_rows(
+  make_events(cohort |> filter(arm == "0.25 mg/kg") |> select(id, AGE, WT, HT, CYP2D6), 0.25, obs_times),
+  make_events(cohort |> filter(arm == "0.40 mg/kg") |> select(id, AGE, WT, HT, CYP2D6), 0.40, obs_times)
+) |>
+  left_join(cohort |> select(id, arm), by = "id") |>
+  arrange(id, time, desc(evid))
+sim <- as.data.frame(rxode2::rxSolve(mod, ev, returnType = "data.frame", keep = "arm"))
+```
+
+```{r fig1, fig.width = 8, fig.height = 6, fig.cap = "Simulated PQ and CPQ profiles by dose arm (median and 5th-95th percentiles of the individual predictions, 200 virtual children per arm). Compare with the observed data of Figure 1 and the VPC of Figure 3."}
+vpc <- sim |>
+  filter(time <= 72) |>
+  select(id, arm, time, PQ = Cc, CPQ = Cc_cpq) |>
+  pivot_longer(c(PQ, CPQ), names_to = "analyte", values_to = "conc") |>
+  mutate(analyte = factor(analyte, levels = c("PQ", "CPQ"))) |>
+  group_by(arm, analyte, time) |>
+  summarise(
+    p05 = quantile(conc, 0.05), p50 = median(conc), p95 = quantile(conc, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2) +
+  geom_line() +
+  facet_grid(analyte ~ arm, scales = "free_y") +
+  labs(x = "Time after primaquine (h)", y = "Concentration (ng/mL)") +
+  theme_bw()
+```
+
+# PKNCA validation
+
+Table 3 reports Cmax, Tmax and AUC0-inf from the empirical Bayes estimates,
+i.e. from individual predictions without residual error. PKNCA is applied to
+the simulated individual predictions `Cc` and `Cc_cpq` in the same way.
+
+```{r pknca}
+nca_input <- sim |>
+  select(id, arm, time, PQ = Cc, CPQ = Cc_cpq) |>
+  pivot_longer(c(PQ, CPQ), names_to = "analyte", values_to = "conc") |>
+  filter(!is.na(conc))
+stopifnot(all(nca_input$conc >= -1e-6 * max(nca_input$conc)))
+# Floor the integrator undershoot and drop the numerically-zero post-peak
+# tail (PQ falls below 1e-6 of its peak within a week in fast metabolizers),
+# so the half-life fit does not follow integrator noise.
+nca_input <- nca_input |>
+  mutate(conc = pmax(conc, 0)) |>
+  group_by(id, analyte) |>
+  filter(time <= time[which.max(conc)] | conc >= 1e-4 * max(conc)) |>
+  ungroup()
+
+dose_df <- ev |>
+  filter(evid == 1) |>
+  select(id, arm, time, amt) |>
+  tidyr::crossing(analyte = c("PQ", "CPQ"))
+
+conc_obj <- PKNCA::PKNCAconc(nca_input, conc ~ time | arm + analyte + id,
+  concu = "ng/mL", timeu = "h"
+)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + analyte + id, doseu = "mg")
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs"))
+stopifnot(!anyNA(nca_tab$PPORRES))
+nca_tab |>
+  group_by(analyte, arm, PPTESTCD) |>
+  summarise(
+    median = median(PPORRES), p05 = quantile(PPORRES, 0.05), p95 = quantile(PPORRES, 0.95),
+    .groups = "drop"
+  ) |>
+  dplyr::rename(
+    "Analyte" = analyte, "Arm" = arm, "Parameter" = PPTESTCD,
+    "Median" = median, "5th pct" = p05, "95th pct" = p95
+  ) |>
+  knitr::kable(digits = 1, caption = "Simulated NCA, 200 virtual children per arm.")
+```
+
+# Comparison against Table 3
+
+Table 3 summarises by the median, which `ncaComparisonTable()` also uses for
+the simulated per-subject values.
+
+```{r table3}
+published <- tibble::tribble(
+  ~analyte, ~arm,         ~tmax, ~cmax, ~aucinf.obs,
+  "PQ",  "0.25 mg/kg", 1.6,  50.2,  450.4,
+  "CPQ", "0.25 mg/kg", 7.1, 108.3, 2912.3,
+  "PQ",  "0.40 mg/kg", 1.6,  88.9,  730.7,
+  "CPQ", "0.40 mg/kg", 6.6, 196.8, 5091.7
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_tab |> select(analyte, arm, PPTESTCD, PPORRES),
+  reference = published,
+  by = c("analyte", "arm"),
+  units = c(cmax = "ng/mL", tmax = "h", aucinf.obs = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated median vs Goncalves 2017 Table 3 median.")
+
+sim_med <- nca_tab |>
+  group_by(analyte, arm, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop")
+chk <- published |>
+  pivot_longer(c(tmax, cmax, aucinf.obs), names_to = "PPTESTCD", values_to = "pub") |>
+  left_join(sim_med, by = c("analyte", "arm", "PPTESTCD")) |>
+  mutate(pct_diff = 100 * (sim / pub - 1))
+stopifnot(
+  # Structural: a mis-transcribed clearance, F50, dose or the molar ratio
+  # shifts every exposure row by tens of percent.
+  abs(median(chk$pct_diff[chk$PPTESTCD != "tmax"])) < 15,
+  # Envelope over all exposure rows: Table 3 summarises 18 and 20 children,
+  # so its medians carry roughly +/- 15-20% sampling error of their own.
+  all(abs(chk$pct_diff[chk$PPTESTCD != "tmax"]) < 35)
+)
+```
+
+PQ Cmax, Tmax and AUC agree with Table 3 to within 6%. The CPQ
+AUC is lower than Table 3 by a similar fraction in both arms. CPQ exposure
+depends on the fraction of PQ cleared by MAO, and so on the distribution of
+activity scores, which the paper reports only in groups (see Virtual cohort).
+It would also be raised by the less-than-linear CYP2D6 effect that Figure 5
+suggests above AS 1 (see Assumptions). The Table 3 medians summarise only 18
+and 20 children, with a between-subject spread in CPQ AUC of about fivefold,
+so a median carries a sampling error of roughly 15%. The model parameters
+were not adjusted.
+
+## AUC against body weight (Figure 4)
+
+Figure 4 shows that, although the dose is scaled linearly with weight, AUC
+rises with weight. The model reproduces this through the 0.75 allometric
+exponent on clearance and the age-maturation of F.
+
+```{r fig4, fig.width = 8, fig.height = 4, fig.cap = "Simulated AUC0-inf against body weight by arm. Compare Figure 4 of Goncalves 2017."}
+auc_wt <- nca_tab |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  left_join(cohort |> select(id, WT), by = "id")
+ggplot(auc_wt, aes(WT, PPORRES, colour = arm)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "loess", formula = y ~ x, se = FALSE) +
+  facet_wrap(~ factor(analyte, levels = c("PQ", "CPQ")), scales = "free_y") +
+  labs(x = "Body weight (kg)", y = "AUC0-inf (ng*h/mL)", colour = NULL) +
+  theme_bw()
+slopes <- auc_wt |>
+  group_by(analyte, arm) |>
+  summarise(r = cor(log(WT), log(PPORRES), method = "spearman"), .groups = "drop")
+stopifnot(all(slopes$r > 0.2))
+```
+
+# Assumptions and deviations
+
+* **Liver volume.** The paper computes VL from weight and height with
+  Johnson 2005, which is not open access. Its abstract gives
+  `VL (L) = 0.722 * BSA^1.176`; the BSA formula is not stated in Goncalves
+  2017. The packaged model uses the DuBois (< 15 kg) / Haycock (>= 15 kg)
+  pair that `Brussee_2018b_midazolam_children_pbpk` uses with the same
+  liver-volume equation. Halving or doubling VL changes Cmax by less than 2%
+  (above), so the choice does not affect the plasma predictions.
+* **Hepatic extraction ratio.** The Methods define `EH = CLint/(QH + CLint)`
+  and `CLH = EH * QH` without stating whether `CLint` is the sum of the
+  pathways. The packaged model uses the summed `CLint` (the standard
+  well-stirred form, in which liver outflow totals QH). Computing a separate
+  extraction ratio per pathway lowers the AS 1 PQ concentration at 12 h by
+  12% relative to Figure 5 panel C, while the summed form reproduces it to
+  within 1%.
+* **CYP2D6 effect at AS 2 and 3.** The Methods specify a linear effect,
+  `CLint,CYP2D6,i = AS * CLint,CYP2D6,pop`, and the model uses it. The AS 2
+  and AS 3 curves of Figure 5 correspond to effective activity scores of
+  about 1.82 and 2.47 under that equation, while the AS 0 and AS 1 curves match
+  to within the digitising error. The figure appears to have been drawn with a less-than-linear CYP2D6
+  effect above AS 1. The printed equation was kept. Only three ultrarapid
+  metabolizers (AS 3) were in the study.
+* **Between-subject variability scale.** Table 2 prints the IIV as a
+  percentage under an exponential model. It is read as a log-normal CV and
+  converted with `omega^2 = log(1 + CV^2)` (0.523 for VPQ and 0.355 for
+  CLint,MAO). Reading it as `100 * omega` would give 0.687 and 0.426. Nothing
+  in the paper settles this. The typical-value checks above do not depend on
+  it.
+* **Residual error.** The additive component is fixed at 2 ng/mL (half the
+  LLOQ, M6 method), printed in ng/mL although the fit was molar. The packaged
+  model keeps it in ng/mL.
+* **Molar conversion.** The paper fitted molar concentrations and reported
+  ng/mL. Molecular weights are not printed. 259.35 g/mol (PQ base,
+  C15H21N3O) and 274.32 g/mol (CPQ, C15H18N2O3) are consistent with the
+  paper's monitored [M+H]+ ions of 260.30 and 275.25 m/z. The 2-year-old and
+  14-year-old CPQ curves of Figure 5 are reproduced to within 1%.
+* **QH scaling.** QH (49.5 L/h at 70 kg) is scaled with the 0.75 exponent, as
+  the Methods state for all flows. The Figure 5 PQ peaks are reproduced
+  to within 1%; leaving QH unscaled would raise the 14-year-old PQ peak by about
+  7%.
+* **Virtual cohort.** Age, weight and height distributions and the split of
+  the intermediate and extensive CYP2D6 groups into activity scores are
+  assumptions built from the Table 1 medians and IQRs (see Virtual cohort).
+  The Figure 5 children have no stated heights; 85 cm and 151 cm are used.
+* **Co-medication.** Primaquine was given with artemether-lumefantrine, and
+  lumefantrine inhibits CYP2D6 in vitro (Discussion). The estimated CYP2D6
+  clearance therefore applies to that co-administration.

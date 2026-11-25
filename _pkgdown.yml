@@ -7484,6 +7484,8 @@ navbar:
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Primaquine (Chotsiri 2024)"
         href: articles/Chotsiri_2024_primaquine_metabolites.html
+      - text: "Primaquine (Goncalves 2017)"
+        href: articles/Goncalves_2017_primaquine.html
       - text: "Primaquine (Lee 2021)"
         href: articles/Lee_2021_primaquine.html
       - text: "Primaquine (Sridharan 2019)"
@@ -11376,6 +11378,7 @@ articles:
   - articles/Goggin_2004_emfilermin
   - articles/Golubovic_2019_sirolimus
   - articles/Golzaryan_2025_lu177psmaIT_pbpk
+  - articles/Goncalves_2017_primaquine
   - articles/Gong_2023_pemigatinib
   - articles/Gong_2025_talquetamab
   - articles/GonzalezSales_2015_testosterone
