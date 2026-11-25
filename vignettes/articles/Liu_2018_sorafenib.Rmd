@@ -1,0 +1,511 @@
+---
+title: "Sorafenib (Liu 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sorafenib (Liu 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
+                      fig.width = 7, fig.height = 4.5)
+suppressPackageStartupMessages({
+  library(nlmixr2lib)
+  library(PKNCA)
+  library(rxode2)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+})
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Liu_2018_sorafenib"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Liu_2018_sorafenib"))$description`
+* Article: Clin Transl Sci 2018;11(4):435-443. <https://doi.org/10.1111/cts.12555>
+* Corrigendum: Clin Transl Sci 2018;11(6):624. <https://doi.org/10.1111/cts.12587>
+
+The corrigendum only swaps the in-text references to Figures 2 and 3 (the
+NPDE plots are Figure 2, the voriconazole AUC-ratio plot is Figure 3). It
+changes no parameter or equation. The figure numbers below follow the
+corrected text.
+
+# Population
+
+The model was fitted to 15 adults with relapsed or refractory acute myeloid
+leukemia (AML) from a phase I dose-escalation study at Johns Hopkins
+(NCT00131989). Patients received sorafenib 400 mg twice daily for 14 days
+(n = 3) or 21 days (n = 9), or 600 mg twice daily for 14 days (n = 3), in
+28-day cycles. Table 1 reports a median age of 58 years (range 37-74),
+median body weight 74.6 kg (52.2-97.7), median BSA 1.85 m^2, 8 men and
+7 women, 8 asymptomatic and 7 symptomatic patients, and 8 patients on
+voriconazole for fungal pneumonia. The data were 141 total and 136 unbound
+sorafenib concentrations and 100 N-oxide concentrations from all 15 patients,
+and 35 FLT3-ITD and 36 ERK activity measurements (ex vivo, in TF-1 cells
+expressing FLT3-ITD, as percent of each patient's baseline) from 11 patients.
+
+The same information is available programmatically via
+`readModelDb("Liu_2018_sorafenib")()$population`.
+
+# Source trace
+
+The parent structure was adopted from the solid-tumour model of Jain 2011
+(available in this package as `Jain_2011_sorafenib`); Liu 2018 re-estimated
+every parameter in AML patients, added allometric weight scaling, the unbound
+fraction, the N-oxide metabolite and the FLT3 / ERK exposure-response models.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (Ka, every transit step) | log(3.75) 1/h | Table 2 |
+| `lcl` (CL, total outflow from central) | log(14.1) L/h | Table 2 |
+| `lvc` (V) | log(171) L | Table 2 |
+| `fent` (fENT) | 0.502 | Table 2 (50.20%) |
+| `lkehc` (K64) | log(0.173) 1/h | Table 2 |
+| `ltprime` (TENT) | log(5.48) h | Table 2 |
+| `lfu` (fu) | log(0.0181) | Table 2 (1.81%) |
+| `lcl_noxsora` (CLm) | log(116) L/h | Table 2 |
+| `lvc_noxsora` (V7) | log(89.8) L | Table 2 |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | Methods, CL / CLm / V / V7 equations (reference 80 kg) |
+| `pot_noxsora` | 14.59 (fixed) | Methods, Cadjusted equation (in vitro FLT3-ITD potency) |
+| `lic50_flt3`, `imax_flt3` | log(69.3) ng/mL, 1 (fixed) | Table 2; Results ('Imax ... fixed to 100%') |
+| `lic50_erk`, `imax_erk` | log(85.7) ng/mL, 0.84 | Table 2 |
+| `etalka`, `etalvc`, `etalvc_noxsora`, `etalcl`, `etalfu`, `etalcl_noxsora` | log(1 + CV^2) of 63.4, 74.4, 122, 55.0, 1.26, 117% | Table 2 BSV column |
+| `propSd`, `propSd_Cu` | 0.476 | Table 2 (one proportional error for total and unbound sorafenib) |
+| `propSd_noxsora`, `addSd_noxsora` | 0.424, 1.06 ng/mL | Table 2 |
+| `propSd_flt3_activity`, `propSd_erk_activity` | 0.879, 0.394 | Table 2 |
+| Transit chain, gallbladder, metabolite ODEs | n/a | Figure 1 |
+| EHYN switch at TENT after dose | n/a | Methods, 'Population PK model' |
+| `Cu = Cc * fu` | n/a | Methods, Cu equation |
+| `cadjusted = Cc + 14.59 * Cc_noxsora * 464.825 / 480.825` | n/a | Methods, Cadjusted equation |
+| `flt3_activity`, `erk_activity` inhibitory Emax | n/a | Methods, FLT3 / ERK activity equations |
+| Mixed (additive + proportional) N-oxide error | n/a | Methods, N-oxide residual equation |
+
+# Typical-value profile
+
+The figure below shows the typical patient (80 kg) over the first three days
+of 400 mg twice daily. Gallbladder release is switched on `TENT` = 5.48 h
+after each dose and returns drug to the last transit compartment, which
+produces the secondary rise late in each dosing interval.
+
+```{r typical}
+mod <- readModelDb("Liu_2018_sorafenib")
+mod_typ <- rxode2::zeroRe(mod)
+
+# With five declared endpoints, each observation row names the ODE state and
+# carries dvid = 1; every endpoint still comes back as a column.
+ev_typ <- dplyr::bind_rows(
+  data.frame(id = 1L, time = 0, amt = 400, evid = 1L, cmt = "depot",
+             ii = 12, addl = 5L, dvid = NA_integer_),
+  data.frame(id = 1L, time = seq(0, 72, by = 0.1), amt = 0, evid = 0L,
+             cmt = "central", ii = 0, addl = 0L, dvid = 1L)
+)
+sim_typ <- as.data.frame(rxode2::rxSolve(mod_typ, ev_typ, params = c(WT = 80)))
+
+sim_typ |>
+  dplyr::select(time, `Sorafenib (total)` = Cc, `Sorafenib N-oxide` = Cc_noxsora) |>
+  tidyr::pivot_longer(-time, names_to = "analyte", values_to = "conc") |>
+  ggplot(aes(time, conc, colour = analyte)) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Concentration (ng/mL)", colour = NULL,
+       title = "Typical patient, 400 mg twice daily") +
+  theme_bw()
+```
+
+# Steady state: mass balance and PKNCA
+
+The paper reports no NCA table. The checks below use the structure of the
+model instead. Drug sent to the gallbladder returns to the gut and is
+reabsorbed, so the only irreversible loss of sorafenib is the fraction
+`1 - fENT` of the central outflow that forms the N-oxide. Over a dosing
+interval at steady state:
+
+* `AUCtau(sorafenib) = Dose / (CL * (1 - fENT))`, and
+* `AUCtau(N-oxide) / AUCtau(sorafenib) = CL * (1 - fENT) / CLm` (the paper's
+  own AUC-ratio equation in Methods).
+
+Both identities are checked per subject with PKNCA against each subject's
+own `cl` and `cl_noxsora`, using 60 days of 400 mg twice daily so that even
+subjects in the slow tail of the volume and clearance distributions reach
+steady state.
+
+```{r ss-cohort}
+n_ss <- 200
+rxode2::rxSetSeed(20180427)
+set.seed(20180427)
+wt_ss <- runif(n_ss, 50, 80)
+tau <- 12
+t_last <- 60 * 24 - tau
+ev_ss <- dplyr::bind_rows(
+  data.frame(id = seq_len(n_ss), time = 0, amt = 400, evid = 1L, cmt = "depot",
+             ii = tau, addl = as.integer(t_last / tau), dvid = NA_integer_,
+             WT = wt_ss),
+  tidyr::expand_grid(id = seq_len(n_ss), time = t_last + seq(0, tau, by = 0.25)) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central", ii = 0, addl = 0L,
+                  dvid = 1L, WT = wt_ss[id])
+) |>
+  dplyr::mutate(treatment = "400 mg BID") |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+stopifnot(!anyDuplicated(ev_ss[ev_ss$evid == 0, c("id", "time")]))
+
+sim_ss <- as.data.frame(rxode2::rxSolve(mod, ev_ss, keep = c("treatment", "WT"),
+                                        maxsteps = 1e6))
+stopifnot(!anyNA(sim_ss$Cc), !anyNA(sim_ss$Cc_noxsora))
+```
+
+```{r ss-pknca}
+dose_ss <- data.frame(id = seq_len(n_ss), time = t_last, amt = 400,
+                      treatment = "400 mg BID")
+int_ss <- data.frame(start = t_last, end = t_last + tau, auclast = TRUE,
+                     cmax = TRUE, cmin = TRUE, tmax = TRUE)
+
+nca_one <- function(conc_col) {
+  conc <- sim_ss |>
+    dplyr::filter(!is.na(.data[[conc_col]])) |>
+    dplyr::transmute(id, time, treatment, Cc = .data[[conc_col]])
+  PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id),
+    PKNCA::PKNCAdose(dose_ss, amt ~ time | treatment + id),
+    intervals = int_ss
+  ))
+}
+nca_parent <- nca_one("Cc")
+nca_metab <- nca_one("Cc_noxsora")
+
+indiv <- sim_ss |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cl = dplyr::first(cl), cl_noxsora = dplyr::first(cl_noxsora),
+                   .groups = "drop")
+fent <- rxode2::rxode2(mod)$theta[["fent"]]
+
+auc_wide <- dplyr::bind_rows(
+  as.data.frame(nca_parent) |> dplyr::mutate(analyte = "parent"),
+  as.data.frame(nca_metab) |> dplyr::mutate(analyte = "metab")
+) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(id, analyte, PPORRES) |>
+  tidyr::pivot_wider(names_from = analyte, values_from = PPORRES) |>
+  dplyr::left_join(indiv, by = "id") |>
+  dplyr::mutate(
+    # Dose in mg, AUC in ng*h/mL: Dose / CLnet [mg*h/L] * 1000 = ng*h/mL.
+    auc_expected = 400 / (cl * (1 - fent)) * 1000,
+    pct_parent = 100 * (parent / auc_expected - 1),
+    ratio = metab / parent,
+    ratio_expected = cl * (1 - fent) / cl_noxsora,
+    pct_ratio = 100 * (ratio / ratio_expected - 1)
+  )
+
+stopifnot(
+  # A mis-transcribed CL, fENT, CLm, dose unit or the 1000 scaling moves these
+  # by tens of percent or more. The residual comes from the trapezoid on a
+  # 0.25 h grid and from the slowest subjects still approaching steady state.
+  abs(median(auc_wide$pct_parent)) < 1,
+  quantile(abs(auc_wide$pct_parent), 0.9) < 3,
+  abs(median(auc_wide$pct_ratio)) < 1,
+  quantile(abs(auc_wide$pct_ratio), 0.9) < 3
+)
+
+auc_wide |>
+  dplyr::summarise(
+    `Median AUCtau sorafenib (ng*h/mL)` = signif(median(parent), 3),
+    `Median % diff vs Dose / (CL (1 - fENT))` = round(median(pct_parent), 2),
+    `Median AUCtau ratio N-oxide / sorafenib` = signif(median(ratio), 3),
+    `Median % diff vs CL (1 - fENT) / CLm` = round(median(pct_ratio), 2)
+  ) |>
+  knitr::kable(caption = "Steady-state mass-balance identities, 400 mg twice daily (n = 200).")
+```
+
+```{r ss-summary}
+dplyr::bind_rows(
+  as.data.frame(nca_parent) |> dplyr::mutate(analyte = "Sorafenib (total)"),
+  as.data.frame(nca_metab) |> dplyr::mutate(analyte = "Sorafenib N-oxide")
+) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "cmin", "auclast")) |>
+  dplyr::group_by(analyte, PPTESTCD) |>
+  dplyr::summarise(
+    median = signif(median(PPORRES), 3),
+    p05 = signif(quantile(PPORRES, 0.05), 3),
+    p95 = signif(quantile(PPORRES, 0.95), 3),
+    .groups = "drop"
+  ) |>
+  dplyr::rename(Analyte = analyte, `NCA parameter` = PPTESTCD, Median = median,
+                `5th percentile` = p05, `95th percentile` = p95) |>
+  knitr::kable(caption = "Simulated steady-state NCA (ng/mL, ng*h/mL), 400 mg twice daily.")
+```
+
+# Figure 3: N-oxide to sorafenib AUC ratio
+
+Figure 3 plots the individual steady-state `AUCm / AUC` of the 15 patients by
+voriconazole use. The values below were digitised by the maintainers from the
+figure (14 distinguishable markers; two pairs overlap). The model's typical
+ratio is `CL (1 - fENT) / CLm` = 14.1 x 0.498 / 116 = 0.061.
+
+```{r figure-3}
+fig3 <- data.frame(
+  voriconazole = rep(c("YES", "NO"), each = 7),
+  ratio = c(0.136, 0.112, 0.069, 0.069, 0.045, 0.037, 0.031,
+            0.502, 0.294, 0.258, 0.247, 0.216, 0.192, 0.054)
+)
+sim_ratio <- data.frame(voriconazole = "Simulated (model)", ratio = auc_wide$ratio)
+
+ggplot(dplyr::bind_rows(fig3, sim_ratio), aes(voriconazole, ratio)) +
+  geom_boxplot(data = sim_ratio, outlier.shape = NA, width = 0.4) +
+  geom_point(data = fig3, shape = 2, size = 2) +
+  scale_y_log10() +
+  labs(x = NULL, y = "AUCm / AUC at steady state",
+       caption = "Replicates Figure 3 of Liu 2018 (points digitised from the figure).") +
+  theme_bw()
+```
+
+The digitised values have a geometric mean of
+`r signif(exp(mean(log(fig3$ratio))), 2)`, about twice the model's typical
+ratio, and the simulated 5th-95th percentile range
+(`r signif(quantile(auc_wide$ratio, 0.05), 2)` to
+`r signif(quantile(auc_wide$ratio, 0.95), 2)`) covers all but the extreme
+points. The paper did not retain voriconazole as a covariate, so its effect
+(about 68% less N-oxide formed) is absorbed into the between-subject
+variability of CL and CLm.
+
+# Figure 4: exposure-response
+
+The FLT3 and ERK activities depend only on the adjusted concentration, so the
+curves are the model's Emax functions evaluated on a concentration grid. FLT3
+activity falls to 50% at 69.3 ng/mL and to 0 at high exposure; ERK activity
+levels off at 100 x (1 - 0.84) = 16%. The steady-state simulation above is
+used to confirm that the model wires these equations to `cadjusted` as
+printed.
+
+```{r figure-4}
+th <- rxode2::rxode2(mod)$theta
+stopifnot(
+  max(abs(sim_ss$flt3_activity -
+            100 * (1 - th[["imax_flt3"]] * sim_ss$cadjusted /
+                     (exp(th[["lic50_flt3"]]) + sim_ss$cadjusted)))) < 1e-8,
+  max(abs(sim_ss$erk_activity -
+            100 * (1 - th[["imax_erk"]] * sim_ss$cadjusted /
+                     (exp(th[["lic50_erk"]]) + sim_ss$cadjusted)))) < 1e-8,
+  max(abs(sim_ss$cadjusted -
+            (sim_ss$Cc + 14.59 * sim_ss$Cc_noxsora * 464.825 / 480.825))) <
+    1e-8 * max(sim_ss$cadjusted)
+)
+
+cgrid <- 10^seq(-1, 5, length.out = 200)
+data.frame(
+  cadjusted = rep(cgrid, 2),
+  endpoint = rep(c("FLT3", "ERK"), each = length(cgrid)),
+  activity = c(
+    100 * (1 - th[["imax_flt3"]] * cgrid / (exp(th[["lic50_flt3"]]) + cgrid)),
+    100 * (1 - th[["imax_erk"]] * cgrid / (exp(th[["lic50_erk"]]) + cgrid))
+  )
+) |>
+  ggplot(aes(cadjusted, activity)) +
+  geom_line() +
+  facet_wrap(~endpoint) +
+  scale_x_log10() +
+  labs(x = "Adjusted sorafenib total plasma concentration (ng/mL)",
+       y = "Activity (% of baseline)",
+       caption = "Replicates the model lines of Figure 4 of Liu 2018.") +
+  theme_bw()
+```
+
+# Figure 5: probability of target attainment
+
+The paper simulated 1,000 patients per regimen with body weight uniform on
+50-80 kg, hourly for 120 h, and reported the proportion whose FLT3 or ERK
+inhibition stayed at or above each target throughout the dosing interval at
+steady state. Here 200 patients per regimen are simulated with the same
+weight distribution, and inhibition is evaluated on the individual
+predictions (no residual error) over the last dosing interval that the 120 h
+grid contains: from the last dose given before 120 h to 120 h (108-120 h for
+twice-daily, 96-120 h for daily and every-other-day dosing; for the
+every-other-day arm this is the first 24 h of a 48 h interval).
+
+```{r figure-5-sim}
+regs <- data.frame(
+  regimen = c("200 mg QoD", "200 mg QD", "200 mg BID", "400 mg QD", "400 mg BID"),
+  amt = c(200, 200, 200, 400, 400),
+  ii = c(48, 24, 12, 24, 12)
+)
+n_arm <- 200
+# Doses given before 120 h: 10 (BID), 5 (QD) and 3 (QoD, at 0 / 48 / 96 h).
+# The evaluated interval runs from the last of them to 120 h, which is a full
+# interval for BID and QD and the first 24 h of the 48 h QoD interval.
+n_dose <- as.integer(ceiling(120 / regs$ii))
+stopifnot(identical(n_dose, c(3L, 5L, 10L, 5L, 10L)))
+rxode2::rxSetSeed(20180501)
+set.seed(20180501)
+ev_pta <- dplyr::bind_rows(lapply(seq_len(nrow(regs)), function(i) {
+  ids <- (i - 1L) * n_arm + seq_len(n_arm)
+  wt <- runif(n_arm, 50, 80)
+  dplyr::bind_rows(
+    data.frame(id = ids, time = 0, amt = regs$amt[i], evid = 1L, cmt = "depot",
+               ii = regs$ii[i], addl = n_dose[i] - 1L,
+               dvid = NA_integer_, WT = wt),
+    tidyr::expand_grid(id = ids, time = seq(0, 120, by = 1)) |>
+      dplyr::mutate(amt = 0, evid = 0L, cmt = "central", ii = 0, addl = 0L,
+                    dvid = 1L, WT = wt[id - (i - 1L) * n_arm])
+  ) |>
+    dplyr::mutate(regimen = regs$regimen[i],
+                  last_dose = regs$ii[i] * (n_dose[i] - 1L))
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+stopifnot(!anyDuplicated(ev_pta[ev_pta$evid == 0, c("id", "time")]))
+
+sim_pta <- as.data.frame(rxode2::rxSolve(mod, ev_pta,
+                                         keep = c("regimen", "last_dose")))
+
+pta_subj <- sim_pta |>
+  dplyr::filter(time >= last_dose, time <= 120) |>
+  dplyr::group_by(regimen, id) |>
+  dplyr::summarise(flt3_inh = 100 - max(flt3_activity),
+                   erk_inh = 100 - max(erk_activity), .groups = "drop")
+
+pta_sim <- dplyr::bind_rows(
+  tidyr::expand_grid(endpoint = "FLT3", target = c(50, 80, 90),
+                     regimen = regs$regimen),
+  tidyr::expand_grid(endpoint = "ERK", target = c(40, 60, 80),
+                     regimen = regs$regimen)
+) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(simulated = {
+    x <- pta_subj[pta_subj$regimen == regimen, ]
+    inh <- if (endpoint == "FLT3") x$flt3_inh else x$erk_inh
+    100 * mean(inh >= target)
+  }) |>
+  dplyr::ungroup()
+```
+
+The published proportions below were read from Figure 5 by the maintainers
+(approximate, to about 2 percentage points).
+
+```{r figure-5-compare}
+pta_pub <- tibble::tribble(
+  ~endpoint, ~target, ~regimen,     ~published,
+  "FLT3",    50,      "400 mg BID", 99,
+  "FLT3",    80,      "400 mg BID", 99,
+  "FLT3",    90,      "400 mg BID", 99,
+  "FLT3",    50,      "400 mg QD",  99,
+  "FLT3",    80,      "400 mg QD",  99,
+  "FLT3",    90,      "400 mg QD",  98,
+  "FLT3",    50,      "200 mg BID", 99,
+  "FLT3",    80,      "200 mg BID", 99,
+  "FLT3",    90,      "200 mg BID", 99,
+  "FLT3",    50,      "200 mg QD",  99,
+  "FLT3",    80,      "200 mg QD",  99,
+  "FLT3",    90,      "200 mg QD",  90,
+  "FLT3",    50,      "200 mg QoD", 98,
+  "FLT3",    80,      "200 mg QoD", 97,
+  "FLT3",    90,      "200 mg QoD", 55,
+  "ERK",     40,      "400 mg BID", 99,
+  "ERK",     60,      "400 mg BID", 99,
+  "ERK",     80,      "400 mg BID", 98,
+  "ERK",     40,      "400 mg QD",  99,
+  "ERK",     60,      "400 mg QD",  99,
+  "ERK",     80,      "400 mg QD",  88,
+  "ERK",     40,      "200 mg BID", 99,
+  "ERK",     60,      "200 mg BID", 99,
+  "ERK",     80,      "200 mg BID", 96,
+  "ERK",     40,      "200 mg QD",  99,
+  "ERK",     60,      "200 mg QD",  99,
+  "ERK",     80,      "200 mg QD",  61,
+  "ERK",     40,      "200 mg QoD", 97,
+  "ERK",     60,      "200 mg QoD", 89,
+  "ERK",     80,      "200 mg QoD", 16
+)
+pta_cmp <- dplyr::left_join(pta_pub, pta_sim,
+                            by = c("endpoint", "target", "regimen")) |>
+  dplyr::mutate(difference = simulated - published)
+stopifnot(nrow(pta_cmp) == 30, !anyNA(pta_cmp$simulated))
+
+# Gate on the four regimens other than every-other-day dosing (see below for
+# why that arm is excluded). The 200 mg QD ERK-80% point is the one that is
+# not saturated and so carries the information: a wrong dose, volume,
+# clearance or IC50 moves it by tens of points. Its model value, from a
+# 2,000-per-regimen run, is 53.5% against 61% published (a 7.5-point gap); a
+# 20-point bound leaves 12.5 points, over 3.5 binomial standard errors at
+# n = 200 (SE = 3.5 points). Every other gated row differs by under 6 points
+# in that run.
+gate <- pta_cmp |> dplyr::filter(regimen != "200 mg QoD")
+stopifnot(max(abs(gate$difference)) < 20)
+
+pta_cmp |>
+  dplyr::mutate(simulated = round(simulated, 1), difference = round(difference, 1)) |>
+  dplyr::rename(Endpoint = endpoint, `Inhibition target (%)` = target,
+                Regimen = regimen, `Published (%)` = published,
+                `Simulated (%)` = simulated, `Difference (points)` = difference) |>
+  knitr::kable(caption = "Proportion of patients keeping inhibition at or above the target over the steady-state dosing interval.")
+```
+
+```{r figure-5-plot}
+pta_cmp |>
+  tidyr::pivot_longer(c(published, simulated), names_to = "source",
+                      values_to = "pct") |>
+  ggplot(aes(target, pct, colour = regimen, linetype = source)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~endpoint, scales = "free_x") +
+  labs(x = "Inhibition target (%)", y = "Proportion of subjects (%)",
+       colour = "Regimen", linetype = NULL,
+       caption = "Replicates Figure 5 of Liu 2018.") +
+  theme_bw()
+```
+
+For the 400 mg twice-daily, 400 mg daily, 200 mg twice-daily and 200 mg
+daily regimens the simulation agrees with Figure 5. A 2,000-per-regimen run
+of the same protocol gives, at 80% ERK inhibition, about 100% for 400 mg
+twice daily, 97% for 200 mg twice daily, 89% for 400 mg daily and 54% for
+200 mg daily, against about 98%, 96%, 88% and 61% in the figure. This
+reproduces the ordering the dose recommendation rests on: 200 mg twice daily
+close to 400 mg twice daily and about 8-10 points ahead of 400 mg daily.
+
+The 200 mg every-other-day arm agrees less well. In the same large run the
+simulated proportions are 78% versus 97% published at 80% FLT3 inhibition,
+44% versus 55% at 90% FLT3, 84% versus 89% at 60% ERK and 6% versus 16% at
+80% ERK. This arm is excluded from the gate because Figure 5 is not
+internally consistent for it under the printed model. With the printed
+parameters, 80% FLT3 inhibition requires an adjusted concentration of at
+least 4 x 69.3 = 277 ng/mL, while 60% ERK inhibition requires only
+0.6 x 85.7 / (0.84 - 0.6) = 214 ng/mL. For any one simulated cohort, the
+proportion reaching 80% FLT3 inhibition therefore cannot exceed the
+proportion reaching 60% ERK inhibition, yet Figure 5 shows about 97% against
+about 89% for this arm. The paper does not describe the every-other-day
+simulation in enough detail to explain the difference (the 120 h horizon
+covers only two and a half 48 h intervals), and the model parameters were
+not adjusted.
+
+# Assumptions and deviations
+
+* **Between-subject variability.** Table 2 reports BSV as a percentage. It is
+  converted to log-scale variance with `omega^2 = log(1 + CV^2)`. The fu BSV
+  of 1.26% is taken at face value as a CV, which makes it negligible.
+* **Shared residual error.** The paper used one proportional error for total
+  and unbound sorafenib. nlmixr2 cannot share an error parameter between two
+  endpoints, so the unbound endpoint carries its own `propSd_Cu` at the same
+  value (0.476). Simulation is unaffected; a re-estimation would estimate the
+  two separately.
+* **EHYN switch.** The paper describes EHYN as a binary, time-dependent switch
+  that turns gallbladder release on at TENT after a dose. It is encoded as
+  `ehyn = 1` when the time after the most recent dose is at least TENT and 0
+  otherwise, so the gallbladder fills until TENT and empties for the rest of
+  each dosing interval. Jain 2011 used a steep Hill function of the time after
+  dose for the same purpose.
+* **Transit chain.** Figure 1 shows the dosing compartment Aa and transit
+  compartments A1-A3 feeding A4, the gut compartment that also receives the
+  gallbladder release, and every step at Ka. This is the same four-transit
+  chain as Jain 2011, so `transit4` is A4 and the dose goes to `depot` (Aa).
+* **Metabolite units.** N-oxide formation is carried in parent mass units, as
+  in the paper's equation `AUCm / AUC = CL (1 - fENT) / CLm`, so V7 and CLm
+  are apparent values. The molecular-weight conversion appears only in the
+  adjusted concentration, as printed.
+* **Unbound fraction.** The estimated fu (1.81%) is higher than the 0.3%
+  quoted from in vitro data in the paper's introduction; the estimate is used
+  as printed.
+* **Covariates not retained.** Voriconazole, age, sex and baseline
+  performance status were tested and not retained, and are listed in
+  `covariatesDataExcluded`. Voriconazole had a clear effect on N-oxide
+  formation (Figure 3) that the final model does not carry.
+* **Figure 5 protocol.** The paper does not say whether residual error was
+  included or which interval was taken as the steady-state interval. The
+  replication uses individual predictions from the last dose given before
+  120 h to 120 h. Cohorts are 200 per regimen rather than 1,000.

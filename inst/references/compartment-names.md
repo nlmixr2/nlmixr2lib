@@ -8250,6 +8250,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Li_2021_voriconazole.R` (founding example; doi:10.3389/fphar.2021.730826).
 - **Notes:** Parent-qualified on the `noxpeflox` precedent because the bare `noxide` is registered to roflumilast N-oxide. The parent stem `vori` is the shortest unambiguous voriconazole stem; a later hydroxy-voriconazole metabolite should follow the same shape (`ohvori`).
 
+### noxsora (**canonical sorafenib N-oxide metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sorafenib N-oxide (M2), the main circulating oxidative metabolite of sorafenib, formed by CYP3A4. It is pharmacologically active (about 14.6-fold more potent than sorafenib on FLT3-ITD in vitro), so exposure-response models can drive the effect from a potency-adjusted sum of parent and N-oxide. Drives `central_noxsora`, `Cc_noxsora`, `lcl_noxsora`, `lvc_noxsora`, `etalcl_noxsora`, `etalvc_noxsora`, `propSd_noxsora` and `addSd_noxsora`.
+- **Source aliases:**
+  - `A7` / `V7` / `CLm` / `Cm` -- Liu 2018 Figure 1 and Table 2 metabolite-compartment amount, volume, clearance and concentration symbols.
+- **Example models:** `Liu_2018_sorafenib.R` (founding example; doi:10.1111/cts.12555).
+- **Notes:** Parent-qualified on the `noxpeflox` / `noxvori` precedent because the bare `noxide` is registered to roflumilast N-oxide. Distinct from the drug-name suffix `sorafenib`, which names the parent when it is one drug of a combination model.
+
 ### crizotinib (**canonical crizotinib suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Crizotinib, the ALK/ROS1/MET kinase inhibitor, when it enters a model as the active metabolite of a prodrug rather than as the dosed drug. Founding case: unecritinib (TQ-B3101), the N-acetyl amide of crizotinib, is converted to crizotinib by amide hydrolysis. Used in parent + metabolite joint popPK extractions of unecritinib.
