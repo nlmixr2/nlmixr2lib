@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Juul 2019 somapacitan PK/IGF-I ([doi:10.1007/s40262-018-0662-5](https://doi.org/10.1007/s40262-018-0662-5)) -- healthy adults and adults and children with growth hormone deficiency.
+- Add Das 2019 ceftaroline ([doi:10.1093/jac/dky439](https://doi.org/10.1093/jac/dky439)) -- healthy volunteers, renal impairment and patients with complicated skin and soft tissue infection or community-acquired pneumonia.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

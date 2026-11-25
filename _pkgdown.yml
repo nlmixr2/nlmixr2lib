@@ -1756,6 +1756,8 @@ navbar:
         href: articles/Adamiszak_2025_ceftaroline.html
       - text: "Ceftaroline (Chauzy 2022)"
         href: articles/Chauzy_2022_ceftaroline.html
+      - text: "Ceftaroline (Das 2019)"
+        href: articles/Das_2019_ceftaroline.html
       - text: "Ceftaroline (Minichmayr 2024)"
         href: articles/Minichmayr_2024_ceftaroline.html
       - text: "Ceftaroline (Riccobene 2016)"
@@ -11255,7 +11257,7 @@ articles:
   - articles/Darwish_2025a_trofinetide
   - articles/Darwish_2025b_trofinetide
   - articles/Darwish_2026_remlifanserin
-  - articles/Daryani_2016_fluorouracil
+  - articles/Das_2019_ceftaroline
   - articles/Daskapan_2019_darunavir
   - articles/Dasti_2025_mrna_vaccines
   - articles/Daud_2011_peginterferon_alfa_2b
