@@ -2651,6 +2651,21 @@ These are internationally standardised clinical abbreviations registered as cano
 
 ---
 
+### auc_log_cfu (**canonical area under the log CFU curve output**)
+- **Type:** compartment
+- **Role:** Area under the log10 CFU/mL-versus-time curve over a stated window (the area under the bacterial kill curve, AUBKC), units log10 CFU/mL*h. Used as the observation of a PK/PD-index model whose endpoint is the AUBKC itself, a single value per experiment, so the output is algebraic rather than an ODE state.
+- **Source aliases:**
+  - `AUBKC` -- Qi 2026 Methods (PK/PD index and targets) and Table 2, over 0-24 h.
+- **Example models:** `Qi_2026_nemonoxacin_camhb_aucmic_aubkc.R` and the other eight Qi 2026 `_aubkc` files.
+- **Notes:** The area under the `log_cfu` curve, not under the linear CFU curve, and not baseline-subtracted: Qi 2026 drug-free controls sit near 200 log10 CFU/mL*h over 24 h, a mean of about 8.6 log10 CFU/mL. Document the integration window per model.
+
+### steady_state_lymphocyte_count (**canonical steady-state absolute lymphocyte count**)
+- **Type:** compartment
+- **Role:** Per-subject scalar endpoint: the patient's mean absolute peripheral-blood lymphocyte count once the count has reached steady state on treatment, in 10^9 cells/L. Used as the observation variable of exposure-response models that relate one steady-state exposure metric per subject to the lymphocyte sequestration produced by sphingosine-1-phosphate receptor modulators. One observation per subject and no ODE state.
+- **Source aliases:** `Y_i` / `lymphocyte counts at SS` (Lee 2013 Model 1); `DV` / `mlym` (Lee 2013 supplement SAS code).
+- **Example models:** `Lee_2013_fingolimod_lymphocytes.R` (founding example; `rbase * (1 - f)` with `f` a sigmoid Imax of the steady-state fingolimod-phosphate trough, a constant for interferon beta-1a, and 0 on placebo).
+- **Notes:** Sibling of `nadir_lymphocyte_count`: same analyte and the same spelled-out `lymphocyte_count` stem, but the steady-state MEAN rather than the post-dose minimum, so the two are not interchangeable (the nadir sits below the steady-state mean). A longitudinal circulating-lymphocyte time course still belongs in `circ` (or `circ_<celltype>`). As an observation it is the absolute count, not a percentage of white cells; the matching covariate column, when a later model consumes the count, is `LYMPH_ABS`. The maintainers ratified the name (2026-11-20) over `ss_lymphocyte_count` and the landmark-free `lymphocyte_count`, keeping the landmark in the name.
+
 ## Steady-state dose-prediction outputs
 
 Outputs of empirical steady-state dose-concentration models, in which the dependent variable is the dose rate rather than a concentration. These models have no compartments and no dose events: the measured steady-state concentration is supplied as a covariate column, and the model predicts the dose that sustains it.
@@ -4744,6 +4759,21 @@ One family in this section is validated by shape rather than by enumeration -- s
   - 'alpha-synuclein (pg/mL)' -- Jin 2024.
 - **Example models:** `Jin_2024_parkinson_progression.R`.
 - **Notes:** Ratified by the maintainers 2026-11-06. Algebraic; residual on `asyn_z`. Measured in CSF, so not a plasma `Cc`-type state.
+
+### prob_clinical_benefit_6mo (**canonical durable-clinical-benefit probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient achieves clinical benefit lasting at least 6 months -- complete response, partial response or stable disease maintained for >= 6 months by RECIST 1.1 (the source's CBR6) -- in a static landmark exposure-efficacy logistic model.
+- **Source aliases:** `CBR6` -- Biesdorf 2026.
+- **Example models:** `Biesdorf_2026_cofetuzumabPelidotin_clinical_benefit_6mo.R` (logistic regression linear in the cofetuzumab pelidotin conjugate Cavg up to best overall response; coefficients back-solved from the Table 3 predicted probabilities; observed 24/60).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Wider than `prob_orr` because stable disease counts, and narrower than a plain clinical-benefit or disease-control rate because of the 6-month duration requirement: in Biesdorf 2026 the plain clinical-benefit rate had no significant exposure relationship while CBR6 did, so the duration is part of the endpoint and a future plain-CBR or disease-control model takes a different name. Distinct from the multistate occupancy probability `prob_stable_disease`, which is a time-resolved state probability rather than a landmark endpoint.
+
+### body_temperature (**canonical body-temperature PD output**)
+- **Type:** compartment
+- **Role:** Core body temperature (degC) PD output. In the founding example it is an algebraic 24-hour cosinor about an individual mesor, `body_temperature = rbase * (1 + rbase_circ_famp * cos(2 * pi / 24 * (TCLOCK - tacro)))`, with no drug term.
+- **Source aliases:**
+  - `TEMP` -- Bienert 2010 Table 4 and Eq. 7.
+- **Example models:** `Bienert_2010_bodyTemperature.R` (founding example; propofol-sedated adult ICU patients, mesor 37.0 degC, fractional amplitude 0.00326, acrophase 21.4 h, proportional residual error).
+- **Notes:** Holds a temperature, not a drug concentration. Spelled out per the maintainers' output-naming rule and kept lowercase so the predicted output stays distinct from the `BODYTEMP` *covariate* column in `covariate-columns.md` (an observed temperature used as an input) -- the same output/input split as `hr` / `HR`. Not for ambient, water or incubation temperatures (e.g. in fish or in-vitro models), which are environmental inputs rather than a physiological output. Residual error follows the standard per-output rule (`propSd` / `addSd` for a single-output model, `propSd_body_temperature` when multi-output).
 
 ## Adaptive-resistance bacterial states
 
@@ -8958,6 +8988,31 @@ concentration output, and the `propSd_<drug>` / `addSd_<drug>` residuals.
 - **Example models:** `Bins_2019_pazopanib.R` (doi:10.1007/s40262-018-0719-5; the fixed Kerbusch 2000 one-compartment autoinduction model, `central_ifosfamide` with `enz_pool`, whose relative enzyme amount multiplies pazopanib clearance).
 - **Notes:** Spelled out per the new-canonical policy, following `ciclosporin` / `bosentan`. A standalone ifosfamide model (`Kerbusch_2000_ifosfamide.R`, `Brain_2008_ifosfamide.R`) keeps the bare canonical names; use the suffix only when ifosfamide is the perpetrator alongside another drug's states.
 
+### captopril (**canonical captopril perpetrator drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Captopril drug suffix for a model that carries captopril's own PK as coupled ODE states next to a co-administered drug whose rate constants it modifies (and which modifies captopril's in turn). It covers `depot_captopril` / `central_captopril` / `peripheral1_captopril`, the rate constants `lka_captopril` / `lk12_captopril` / `lk21_captopril` / `lkel_captopril`, the coupling slopes `ddi_<param>_captopril`, and the observation `Cc_captopril`.
+- **Source aliases:**
+  - `Cap`, `Y` -- Huang 2026 abbreviation and drug label (`y0`, `y1`, `y2`, `beta`).
+- **Example models:** `Huang_2026_metoprolol_captopril.R` (doi:10.1371/journal.pone.0339052; linearly coupled two-compartment PK, every metoprolol rate constant shifted by a slope times the captopril amount in the compartment the process leaves, and vice versa).
+- **Notes:** Ratified by the maintainers 2026-11-20 (oasweep_PMC12890151). Spelled out per the new-canonical policy and the `ciclosporin` / `pioglitazone` / `bosentan` precedent. Both drugs are victim and perpetrator in the founding model; the drug the paper labels X (metoprolol) keeps the bare canonical names and drug Y takes this suffix. Standalone captopril models use bare names and must not be retrofitted.
+
+### metformin (**canonical metformin perpetrator drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Metformin drug suffix for a model that carries metformin's own PK as coupled ODE states next to a co-administered drug whose rate constants it modifies (and which modifies metformin's in turn). It covers `depot_metformin` / `central_metformin` / `peripheral1_metformin`, the rate constants `lka_metformin` / `lk12_metformin` / `lk21_metformin` / `lkel_metformin`, the coupling slopes `ddi_<param>_metformin`, and the observation `Cc_metformin`.
+- **Source aliases:**
+  - `Met` (imeglimin/metformin pair), `Y` -- Huang 2026 Supplementary S1 File drug label.
+- **Example models:** `Huang_2026_imeglimin_metformin.R` (doi:10.1371/journal.pone.0339052, S7-S9 Tables; same linearly coupled structure as `Huang_2026_metoprolol_captopril.R`).
+- **Notes:** Ratified by the maintainers 2026-11-20 (oasweep_PMC12890151). Spelled out, as for `captopril`. Distinct from the covariate canonical `CONMED_METFORMIN` (co-administration indicator) and the cocktail indicator `CONMED_DIGOXIN_METFORMIN_PITAVASTATIN_SITAGLIPTIN`: use the suffix only when metformin's PK is carried as ODE states in the model file. Standalone metformin models (e.g. `Yoon_2013_metformin.R`) use bare names and must not be retrofitted.
+
+### ketoconazole (**canonical ketoconazole perpetrator drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Ketoconazole (strong CYP3A4 inhibitor) perpetrator drug suffix, used when a model carries ketoconazole's own PK as coupled ODE states so that its unbound concentration can drive a competitive CYP3A4 inhibition term on a co-modelled victim drug or endogenous biomarker. Listed here with the transporter perpetrators because the coupling pattern is the same; spelled out per the new-canonical policy.
+- **Source aliases:**
+  - `KET1` / `KET2` / `KET3` -- NONMEM `$MODEL` compartment names (absorption / central / peripheral) in Leil 2014 Supplementary Data.
+  - `Keto` -- Leil 2014 Figure 1 and `$DES` comments.
+- **Example models:** `Leil_2014_4betaHydroxycholesterol.R` (doi:10.1038/psp.2014.18; unmeasured two-compartment oral PK with saturable well-stirred hepatic clearance, `depot_ketoconazole` / `central_ketoconazole` / `peripheral1_ketoconazole`; `cu_ketoconazole` inhibits midazolam intrinsic clearance and 4beta-hydroxycholesterol formation).
+- **Notes:** Use the suffix only when the ketoconazole PK is carried as ODE states inside the model file; a paper that supplies ketoconazole exposure as data, or only its co-administration, uses a covariate column instead. Ketoconazole MW = 531.4 g/mol.
+
 ## TB-treatment drug suffixes (combination antibiotic)
 
 TB-treatment drug suffixes used in combination-antibiotic `central_<drug>` / `depot_<drug>` / `peripheral1_<drug>` PK subsystems. Each suffix is the canonical drug INN lowercase abbreviation.
@@ -9719,3 +9774,122 @@ Clinician-rated ordinal scores of eyebrow and eyelash hair loss used in alopecia
   - `itching score`, `CAC itching score` -- Fidler 2018 Methods and Figure 2.
 - **Example models:** `Fidler_2018_olopatadine.R` (founding example; a differential-odds K-PD model of olopatadine 0.1/0.2/0.7% and vehicle eye drops, with the expected score `itch_mean` as an algebraic output).
 - **Notes:** The 0-4 half-unit CAC scale (Ora/Abelson). A conjunctival-redness score from the same challenge is a different instrument and needs its own name; so does a skin pruritus scale (`SCORE_PPNRS` is a covariate, not this output). The eye's baseline score used as a covariate is `OCULAR_ITCH_BL` in `covariate-columns.md`. A threshold probability such as P(score < 1) is a derived quantity of the same model, not a separate output.
+
+## Semaglutide response and aging-layer QSP states (Goryanin 2026)
+
+### bwloss (**canonical percent body-weight loss PD state**)
+- **Type:** compartment
+- **Role:** Body-weight loss from baseline in percent of baseline weight, signed so that a positive value is a loss. Used when a model integrates the loss itself (for example a logistic approach to a maximal loss) rather than the body weight in kg.
+- **Source aliases:**
+  - `W` -- Goryanin 2026 SBML species 'Body weight change (%)' and Layer 1 equations.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; `d/dt(bwloss) = kbwloss * E * (1 - bwloss / emax_bwloss)`).
+- **Notes:** Distinct from `bw` and `weight`, which hold body weight itself (kg or g). The trial data the founding model was calibrated to report weight change as a negative number; compare against `-bwloss`.
+
+### hba1cred (**canonical absolute HbA1c reduction PD state**)
+- **Type:** compartment
+- **Role:** Absolute reduction of HbA1c from baseline in percentage points, signed so that a positive value is an improvement.
+- **Source aliases:**
+  - `A` -- Goryanin 2026 SBML species 'HbA1c change (%)' and Layer 1 equations.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; logistic approach to `emax_hba1cred`).
+- **Notes:** Distinct from `Hba1c` (the HbA1c level itself, %) and from the MBMA arm outputs `hba1c_placebo` / `hba1c_drug`. Compare against a reported HbA1c change with the sign reversed.
+
+### nausea (**canonical nausea-prevalence PD state**)
+- **Type:** compartment
+- **Role:** Percentage of a treated population reporting nausea at a given time, modelled as a continuous state (induction by drug exposure, first-order resolution, and gating by a tolerance state).
+- **Source aliases:**
+  - `N` -- Goryanin 2026 SBML species 'Nausea prevalence (%)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; tolerance carried by `moderator1`).
+- **Notes:** A population prevalence, not an individual's probability. Individual-level adverse-event probabilities use `prob_nausea` or `p_nausea`.
+
+### damage (**canonical accumulated-damage aging state**)
+- **Type:** compartment
+- **Role:** Dimensionless accumulated molecular and cellular damage in a damage-repair aging model; accrues at a constant rate reduced by treatment and is cleared in proportion to repair capacity.
+- **Source aliases:**
+  - `DAM` -- Goryanin 2026 SBML species 'Damage accumulation (a.u.)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example).
+- **Notes:** Arbitrary units. Not a tissue-injury biomarker such as a troponin or a liver enzyme; those have their own analyte names.
+
+### repair (**canonical repair-capacity aging state**)
+- **Type:** compartment
+- **Role:** Dimensionless repair (resilience) capacity in a damage-repair aging model; induced by treatment, decays first order, clears `damage` and suppresses `frailty`.
+- **Source aliases:**
+  - `REP` -- Goryanin 2026 SBML species 'Repair capacity (a.u.)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; starts at 0.1 a.u.).
+- **Notes:** Arbitrary units.
+
+### frailty (**canonical frailty-index aging state**)
+- **Type:** compartment
+- **Role:** Frailty index in the deficit-accumulation sense, driven up by `damage` and down by `repair`.
+- **Source aliases:**
+  - `FRA` -- Goryanin 2026 SBML species 'Frailty index (a.u.)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example).
+- **Notes:** Arbitrary units in the founding model, not the 0-1 Rockwood deficit fraction; a model on that scale should say so in its `units`.
+
+### bioagegap (**canonical biological-age-gap aging state**)
+- **Type:** compartment
+- **Role:** Biological age minus chronological age, as a net balance of `damage` over `repair`.
+- **Source aliases:**
+  - `BAG` -- Goryanin 2026 SBML species 'Biological age gap (a.u.)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; dimensionless, not calibrated to years or to an epigenetic clock).
+- **Notes:** A model expressing the gap in years should state that in its `units`.
+
+### cysc (**canonical cystatin C biomarker state**)
+- **Type:** compartment
+- **Role:** Serum cystatin C as a model state, either as a concentration or as a change from baseline; the model's `units` say which.
+- **Source aliases:**
+  - `CysC` -- Goryanin 2026 SBML species 'Cystatin C change (%)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; % change from baseline, production-degradation turnover).
+- **Notes:** Follows the bare lower-case analyte form of other biomarker states (`vegf`, `igf1`, `shbg`). Distinct from a cystatin-C-based eGFR covariate.
+
+### leptin (**canonical leptin biomarker state**)
+- **Type:** compartment
+- **Role:** Serum leptin as a model state, either as a concentration or as a change from baseline; the model's `units` say which.
+- **Source aliases:**
+  - `LEP` -- Goryanin 2026 SBML species 'Leptin change (%)'.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; % change from baseline, production-degradation turnover).
+- **Notes:** Follows the bare lower-case analyte form of other biomarker states (`vegf`, `igf1`, `shbg`).
+
+## Subcutaneous insulin product suffixes
+
+### glar (**canonical insulin glargine sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Insulin glargine (long-acting basal insulin analogue). Drives `depot_glar` / `central_glar`, `lka_glar` / `lcl_glar` / `lvc_glar`, `Cc_glar` and `propSd_glar`.
+- **Source aliases:** `Glar` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+
+### hum (**canonical human-insulin disposition suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Exogenous human insulin, the shared disposition system of regular human insulin (any strength) and human insulin isophane suspension (NPH). Names the central state and its parameters (`central_hum`, `lcl_hum`, `lvc_hum`, `Cc_hum`); the products' own depots carry the formulation suffixes `regu100`, `regu500` and `nph`.
+- **Source aliases:** `Reg/NPH` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+
+### regu100 (**canonical regular human insulin U-100 formulation suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Regular (soluble) human insulin at 100 U/mL (Humulin R U-100), as an absorption depot feeding `central_hum`: `depot_regu100`, `lka_regu100`.
+- **Source aliases:** `RegU100` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+- **Notes:** Kept separate from `regu500` because the concentrated product is absorbed more slowly.
+
+### regu500 (**canonical regular human insulin U-500 formulation suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Regular human insulin at 500 U/mL (Humulin R U-500), as an absorption depot feeding `central_hum`: `depot_regu500`, `lka_regu500`.
+- **Source aliases:** `RegU500` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+
+### nph (**canonical NPH (human insulin isophane suspension) formulation suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Neutral protamine Hagedorn human insulin isophane suspension (intermediate-acting), as an absorption depot feeding `central_hum`: `depot_nph`, `lka_nph`, `ltlag_nph`.
+- **Source aliases:** `NPH` -- Tham 2017.
+- **Example models:** `Tham_2017_insulin.R`.
+
+### lis (**canonical insulin lispro sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Insulin lispro (rapid-acting analogue). Names both the lispro depot and the shared lispro disposition system that insulin lispro protamine suspension also feeds: `depot_lis`, `central_lis`, `lka_lis`, `lcl_lis`, `lvc_lis`, `Cc_lis`.
+- **Source aliases:** `Lispro` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+
+### ilps (**canonical insulin lispro protamine suspension formulation suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Insulin lispro protamine suspension (the intermediate-acting component of the lispro premixes), as an absorption depot feeding `central_lis`: `depot_ilps`, `lka_ilps`.
+- **Source aliases:** `ILPS` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
