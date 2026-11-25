@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kato 2017 amikacin ([doi:10.1007/s40268-016-0165-5](https://doi.org/10.1007/s40268-016-0165-5)) -- hospitalized Japanese adults treated for infections.
+- Add Raigani 2017 mt-PA and Alteplase ([doi:10.1038/srep43028](https://doi.org/10.1038/srep43028)) -- preclinical i.v.-bolus two-compartment fibrinolytic-activity PK in female Wistar rats.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

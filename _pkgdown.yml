@@ -310,8 +310,8 @@ navbar:
         href: articles/Dudkowski_2017_alogliptin.html
       - text: "Alprazolam (Klein 2026)"
         href: articles/Klein_2026_alprazolam.html
-      - text: "Alverine mouse (Cho 2026)"
-        href: articles/Cho_2026_alverine_mouse.html
+      - text: "Alteplase rat (Raigani 2017)"
+        href: articles/Raigani_2017_mtpa.html
       - text: "Alvespimycin (Aregbe 2012)"
         href: articles/Aregbe_2012_alvespimycin.html
       - text: "Alvespimycin nep11 (Li 2026)"
@@ -6128,6 +6128,8 @@ navbar:
         href: articles/Taddio_2018_hepatobiliary_transport_pet_pbpk.html
       - text: "Mt107 mouse pbpk (Taddio 2018)"
         href: articles/Taddio_2018_hepatobiliary_transport_pet_pbpk.html
+      - text: "Mtpa rat (Raigani 2017)"
+        href: articles/Raigani_2017_mtpa.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Mxylene pbpk (McNally 2011)"
@@ -12668,7 +12670,7 @@ articles:
   - articles/Quartino_2019_trastuzumab
   - articles/Quinney_2013_midazolam_ketoconazole
   - articles/Quintairos_2021_tacrolimus_mycophenolic_acid
-  - articles/Rachedi_2025_avalglucosidaseAlfa
+  - articles/Raigani_2017_mtpa
   - articles/Ramachandran_2023_tuberculosis_eptb_pbpk
   - articles/Ramakrishnan_2023_amyloid_qsp
   - articles/Rambiritch_2016_glibenclamide

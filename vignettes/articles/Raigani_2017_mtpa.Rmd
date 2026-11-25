@@ -1,0 +1,256 @@
+---
+title: "mt-PA and Alteplase in rats (Raigani 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mt-PA and Alteplase in rats (Raigani 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Raigani et al. (2017) developed a mutated chimeric tissue plasminogen activator
+(mt-PA) by deleting the finger, EGF and kringle-1 domains of wild-type t-PA,
+inserting a GHRP fibrin-binding tetrapeptide, and substituting the KHRR 296-299
+residues with four alanines to confer resistance to plasminogen activator
+inhibitor-1. They characterised its plasma fibrinolytic-activity pharmacokinetics
+in female Wistar rats after single intravenous bolus doses, with wild-type
+Alteplase as the comparator. Plasma activity decayed biphasically and was fit to
+a two-compartment model. This paper contributes two model files, both built here:
+
+* **mt-PA** -- `r rxode2::rxode(readModelDb("Raigani_2017_mtpa_rat"))$description`
+* **Alteplase** -- `r rxode2::rxode(readModelDb("Raigani_2017_alteplase_rat"))$description`
+
+Citation: `r rxode2::rxode(readModelDb("Raigani_2017_mtpa_rat"))$reference`
+
+* Article: <https://doi.org/10.1038/srep43028>
+
+# Population
+
+The study used female Wistar rats (12-14 weeks, 230-250 g) from the Pasteur
+Institute of Iran. mt-PA was given as a single tail-vein i.v. bolus at 100 IU
+(3 rats), 200 IU (4 rats) or 400 IU (6 rats) in 0.5 mL; Alteplase was given at
+4000 IU (6 rats) as a positive control. Plasma fibrinolytic activity was measured
+by an amidolytic (Chromolize t-PA) assay before and at 2, 5, 10, 15, 20, 30, 45,
+60, 75, 90 and 120 min after mt-PA, and before and at 2, 5, 10, 15, 20, 30 and
+45 min after Alteplase (Methods, "Preparation and administration of dosing
+solution"; Table 1). Because the assay reports fibrinolytic activity, doses and
+concentrations are expressed in international units (IU) rather than mass, and no
+molar amount or body-weight normalisation is defined.
+
+The population metadata are available programmatically, e.g.
+`readModelDb("Raigani_2017_mtpa_rat")()$population`.
+
+# Source trace
+
+The authors fit plasma activity to the bi-exponential
+`Cp(t) = D * (A * exp(-alpha * t) + B * exp(-beta * t))` (Eq. 1), reporting the
+macro-constants A, B, alpha and beta per treatment/dose group in Table 3, with
+log-additive covariate effects for treatment and mt-PA dose (Eq. 7). mt-PA dose
+was not statistically significant across the three doses (Table 3), so the single
+mt-PA parameter set here is the pooled mt-PA estimate (Alteplase reference shifted
+by the mt-PA treatment coefficient). The macro-constants were converted to
+canonical CL/Vc/Q/Vp by the standard bi-exponential relationships
+(`Vc = 1/(A+B)`; `k21 = (A*beta + B*alpha)/(A+B)`; `k10 = alpha*beta/k21`;
+`k12 = alpha+beta-k21-k10`; `CL = k10*Vc`; `Q = k12*Vc`; `Vp = Q/k21`), which
+reproduce the micro-constants and volumes reported directly in Table 1.
+
+| Model | Parameter | Value | Source location |
+|-------|-----------|-------|-----------------|
+| mt-PA | macro-constants (pooled) | A=0.01249, B=0.005231 /mL; alpha=0.3694, beta=0.03041 /min | Table 3 (Alteplase reference + mt-PA coefficients), Eq. 7 |
+| mt-PA | `CL` | 4.86 mL/min | Derived; cf. Table 1 CLp 3.9-5.9 mL/min |
+| mt-PA | `Vc` | 56.4 mL | Derived; cf. Table 1 V1 48.3-58.7 mL |
+| mt-PA | `Q` | 10.34 mL/min | Derived from Table 3 |
+| mt-PA | `Vp` | 79.3 mL | Derived; cf. Table 1 V2 42.9-105.2 mL |
+| Alteplase | macro-constants | A=0.00176, B=0.000191 /mL; alpha=0.383, beta=0.0811 /min | Table 3 (Dose=4000, reference) |
+| Alteplase | `CL` | 143.88 mL/min | Derived; cf. Table 1 CLp 142.6 mL/min |
+| Alteplase | `Vc` | 512.6 mL | Derived; cf. Table 1 V1 509.3 mL |
+| Alteplase | `Q` | 37.28 mL/min | Derived from Table 3 |
+| Alteplase | `Vp` | 336.9 mL | Derived; cf. Table 1 V2 328.7 mL |
+| both | `d/dt(central)`, `d/dt(peripheral1)` | n/a | Standard 2-compartment i.v.-bolus disposition, Eq. 1 |
+| both | `propSd` | fixed 0 | No residual error model reported (least-squares fit) |
+
+# Simulation
+
+Both models are typical-value only (no inter-individual variance or residual
+error was reported), so the profiles below are deterministic. Each dose scenario
+is a single i.v. bolus into the central compartment, observed on the paper's
+sampling grid extended to a 1-minute resolution for clean NCA.
+
+```{r simulate}
+mod_mt <- readModelDb("Raigani_2017_mtpa_rat")
+mod_al <- readModelDb("Raigani_2017_alteplase_rat")
+
+obs_t <- sort(unique(c(
+  seq(0, 120, by = 1),
+  c(2, 5, 10, 15, 20, 30, 45, 60, 75, 90, 120)
+)))
+
+sim_one <- function(mod, dose, label, id) {
+  ev <- rxode2::et(amt = dose, cmt = "central") |>
+    rxode2::et(obs_t)
+  rxode2::rxSolve(mod, ev) |>
+    as.data.frame() |>
+    dplyr::mutate(id = id, treatment = label, dose = dose)
+}
+
+sim <- dplyr::bind_rows(
+  sim_one(mod_mt, 100, "mt-PA 100 IU", 1L),
+  sim_one(mod_mt, 200, "mt-PA 200 IU", 2L),
+  sim_one(mod_mt, 400, "mt-PA 400 IU", 3L),
+  sim_one(mod_al, 4000, "Alteplase 4000 IU", 4L)
+)
+```
+
+# Replicate published figures
+
+```{r figure-4, fig.width = 7, fig.height = 4.5}
+# Replicates Figure 4(a-d) of Raigani 2017: plasma activity vs time, semi-log,
+# for each mt-PA dose and Alteplase.
+sim |>
+  dplyr::filter(time > 0, Cc > 0) |>
+  ggplot(aes(time, Cc)) +
+  geom_line() +
+  facet_wrap(~treatment, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time (min)", y = "Plasma activity Cc (IU/mL)",
+    title = "Figure 4 - plasma activity-time profiles",
+    caption = "Replicates Figure 4(a-d) of Raigani 2017."
+  )
+```
+
+```{r figure-4e, fig.width = 6, fig.height = 4}
+# Replicates Figure 4e of Raigani 2017: 400 IU mt-PA vs 4000 IU Alteplase.
+sim |>
+  dplyr::filter(treatment %in% c("mt-PA 400 IU", "Alteplase 4000 IU"),
+                time > 0, Cc > 0) |>
+  ggplot(aes(time, Cc, colour = treatment)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(
+    x = "Time (min)", y = "Plasma activity Cc (IU/mL)",
+    colour = NULL,
+    title = "Figure 4e - mt-PA 400 IU vs Alteplase 4000 IU",
+    caption = "Replicates Figure 4e of Raigani 2017."
+  )
+```
+
+The longer terminal phase of mt-PA (elimination half-life ~23 min) relative to
+Alteplase (~8.5 min) reproduces the paper's central finding.
+
+# PKNCA validation
+
+NCA is run per treatment group and compared against the compartmental parameters
+tabulated in Table 1. For an i.v. bolus the time-zero record is the post-bolus
+concentration, so no defensive time-zero row is needed here.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+
+dose_df <- sim |>
+  dplyr::distinct(id, treatment, dose) |>
+  dplyr::mutate(time = 0) |>
+  dplyr::rename(amt = dose)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- data.frame(
+  start      = 0,
+  end        = Inf,
+  cmax       = TRUE,
+  aucinf.obs = TRUE,
+  half.life  = TRUE,
+  cl.obs     = TRUE,
+  mrt.obs    = TRUE,
+  vss.obs    = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published NCA
+
+Table 1 reports AUC0->inf, elimination half-life, plasma clearance (CLp), mean
+residence time (MRT) and steady-state volume (Vss) per dose group. These are the
+NCA/compartmental summaries the simulated profiles should reproduce.
+
+```{r nca_compare}
+# Transcribed from Table 1 (Mean values per group).
+published <- tibble::tribble(
+  ~treatment,          ~aucinf.obs, ~half.life, ~cl.obs, ~mrt.obs, ~vss.obs,
+  "mt-PA 100 IU",      17.0,        20.3,       5.9,     23.3,     137.6,
+  "mt-PA 200 IU",      59.2,        19.1,       3.9,     25.4,     91.2,
+  "mt-PA 400 IU",      83.3,        26.1,       5.4,     31.8,     163.9,
+  "Alteplase 4000 IU", 28.3,        8.3,        142.6,   6.0,      838.0
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by        = "treatment",
+  units     = c(aucinf.obs = "IU*min/mL", half.life = "min",
+                cl.obs = "mL/min", mrt.obs = "min", vss.obs = "mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated vs. published NCA (Table 1). * differs from reference by >20%.",
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+The dose-independent disposition parameters (half-life, CLp, MRT, Vss) match
+Table 1 closely for both drugs. The pooled mt-PA model enforces exact
+dose-proportionality of AUC, so AUC0->inf agrees for the 100 IU and 400 IU groups
+but under-predicts the 200 IU group, whose observed mean AUC (59.2 +/- 23.9) is
+higher than a proportional scaling of the 100 IU value (17.0 +/- 1.6) would give.
+This reflects the large between-animal scatter at small sample sizes rather than a
+true dose effect: Raigani 2017 tested dose as a covariate with a Wald test and
+found no significant difference among the three mt-PA doses (Table 3), which is
+why the three groups are pooled here. No parameters were tuned to the Table 1
+values.
+
+# Assumptions and deviations
+
+- **Pooled mt-PA dose groups.** mt-PA dose was not a significant covariate on the
+  disposition macro-constants (Table 3), so the three mt-PA dose groups are
+  represented by one parameter set (the Alteplase reference shifted by the mt-PA
+  treatment coefficient, Eq. 7). The consequence is exact dose-proportional AUC,
+  which under-predicts the (highly variable, n = 4) observed 200 IU AUC; this is
+  documented above and not corrected by tuning.
+- **Two separate model files.** mt-PA and Alteplase were fit jointly in one
+  regression with treatment as the reference-level covariate, but they are two
+  distinct molecules with independent disposition parameters, so the maintainers
+  packaged them as two model files (`Raigani_2017_mtpa_rat`,
+  `Raigani_2017_alteplase_rat`) sharing this one vignette.
+- **Canonical CL/Vc/Q/Vp from reported macro-constants.** The paper estimated the
+  bi-exponential macro-constants (A, B, alpha, beta; Table 3); the canonical
+  clearances and volumes were derived from them by the standard two-compartment
+  relationships and cross-checked against the micro-constants and volumes
+  reported directly in Table 1.
+- **No inter-individual or residual variability.** The fit was a nonlinear
+  least-squares regression; individual-animal spread appears only graphically
+  (Figure 5) and was not reported as variance components, and no residual error
+  model was reported. Both models are therefore typical-value only, with the
+  proportional residual error fixed at zero.
+- **Activity units.** All amounts and concentrations are in IU of fibrinolytic
+  activity, as measured by the amidolytic assay; the models carry no mass or
+  molar interpretation and no per-kilogram scaling.
+- No correction or erratum notice for this article was found as of 2026-11-25.
+```
