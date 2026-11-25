@@ -9430,6 +9430,8 @@ navbar:
         href: articles/Huang_2026_tiapride.html
       - text: "Ticagrelor (Almquist 2016)"
         href: articles/Almquist_2016_ticagrelor.html
+      - text: "Ticagrelor (Astrand 2019)"
+        href: articles/Astrand_2019_ticagrelor.html
       - text: "Ticagrelor (Kang 2026)"
         href: articles/Kang_2026_ticagrelor.html
       - text: "Ticarcillin qsp (LopezArguello 2023)"
@@ -10764,6 +10766,7 @@ articles:
   - articles/Assmus_2026_dndi6148
   - articles/Assmus_2026_oxfendazole
   - articles/Aston_2017_receptor_rebound
+  - articles/Astrand_2019_ticagrelor
   - articles/Athanassa_2025_minocycline
   - articles/Attarwala_2023_mRNA3927
   - articles/Aubry_2023_ceftazidime_avibactam_colistin
