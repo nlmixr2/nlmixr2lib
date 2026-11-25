@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Vu 2017 erenumab ([doi:10.1007/s11095-017-2183-6](https://doi.org/10.1007/s11095-017-2183-6)) -- healthy subjects and migraine patients (phase 1 SAD/MAD), with the capsaicin-induced dermal blood flow response.
+- Add Li 2017 voriconazole ([doi:10.1097/FTD.0000000000000425](https://doi.org/10.1097/FTD.0000000000000425)) -- Chinese adult renal transplant recipients (trough TDM; AST on CL, CYP2C19 phenotype on V).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
