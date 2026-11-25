@@ -1,0 +1,526 @@
+---
+title: "AZD7687 and postprandial triglyceride across species (Morentin Gutierrez 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{AZD7687 and postprandial triglyceride across species (Morentin Gutierrez 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("MorentinGutierrez_2019_AZD7687_human"))$reference`
+* Article: <https://doi.org/10.1002/prp2.465> (open access; PMC6408865)
+* Supplement: Supporting information S1-S2 of the same article (PK models in
+  all three species and the full PK/PD parameter tables).
+
+Morentin Gutierrez et al. built one mechanistic PK/PD model of the plasma
+triglyceride (TAG) excursion after an oral lipid tolerance test (OLTT) and
+fitted it separately to human, rat and mouse data with AZD7687, an inhibitor of
+diacylglycerol acyltransferase 1 (DGAT1). The three fits are independent, so
+the library carries three models that share one structure:
+
+| Model | Species | AZD7687 PK |
+|-------|---------|------------|
+| `MorentinGutierrez_2019_AZD7687_human` | human | 2-compartment, first-order absorption, body weight on CL / V1 / V2 |
+| `MorentinGutierrez_2019_AZD7687_rat`   | rat (Han-Wistar) | 1-compartment per kg, ka fixed at 3 1/h |
+| `MorentinGutierrez_2019_AZD7687_mouse` | mouse (ICR) | 1-compartment per kg, ka fixed at 3 1/h |
+
+The TAG part is, in every species (main-text equations 1-4):
+
+$$\mathrm{Inh}(C) = 1 - \frac{C}{C + IC_{50}}$$
+$$\frac{dA_{TAG}}{dt} = -k_{a,TAG}\,A_{TAG}\quad(\text{lag } T_{lag,TAG})$$
+$$\frac{dC_{TAG}}{dt} = R_0\,k_{out} + \frac{A_{TAG}}{V_{TAG}}\,k_{a,TAG}\,\mathrm{Inh}(C) - k_{out}\,C_{TAG}$$
+
+with $C_{TAG}(0) = R_0$. In the model files $A_{TAG}$ is `depot_tg` (mg),
+$C_{TAG}$ is `tg` (mg/dL) and $C$ is `Cc`, the **free** (unbound) plasma
+AZD7687 concentration in umol/L. All PK and IC50 values in the paper are on the
+free scale (free fractions 0.055 human, 0.03 rat, 0.1 mouse); divide `Cc` by the
+free fraction to obtain a total plasma concentration.
+
+# Population
+
+* **Human** (`population` of the human model): 142 men from two phase I OLTT
+  studies. In the single-ascending-dose study 80 healthy men received one oral
+  dose of 1-60 mg (6 active + 2 placebo per cohort) and a 1100-kcal
+  standardized mixed meal (45% or 60% of energy from fat) 4 h after dosing; in
+  the multiple-ascending-dose study 62 overweight or obese men received 1-20
+  mg/day (or placebo) for a week, with a 45%-fat meal 1 h after dosing. Mean
+  body weight 85.3 kg and mean BMI 27.5 kg/m^2 (the covariate centring values,
+  Supplementary sections S1 and S2); the paper prints no other demographics.
+* **Rat**: 53 male Han-Wistar rats (~230 g) fasted 14 h, dosed with vehicle or
+  0.1, 0.3 or 3 mg/kg AZD7687, then 5 mL/kg corn oil 2 h later; 6 naive rats
+  received no oil.
+* **Mouse**: 41 male ICR mice (~25 g) dosed with vehicle or 0.1, 1 or 3 mg/kg
+  AZD7687, then 10 mL/kg Intralipos 20% (soybean-oil emulsion) 0.5 h later.
+
+```{r population}
+str(readModelDb("MorentinGutierrez_2019_AZD7687_human")()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source; the table
+collects them. "S" tables are the supplementary tables; "T1" is main-text
+Table 1.
+
+| Parameter | Human | Rat | Mouse | Source |
+|-----------|-------|-----|-------|--------|
+| `lka` (1/h) | 5.19 | 3 (fixed) | 3 (fixed) | S1 / S2 / S3 |
+| `lcl` | 28.1 L/h | 0.73 L/h/kg | 2.17 L/h/kg | S1 / S2 / S3 |
+| `lvc` | 320.2 L | 8.66 L/kg | 13.14 L/kg | S1 / S2 / S3 |
+| `lq`, `lvp` | 50.8 L/h, 136.8 L | - | - | S1 |
+| `e_wt_cl`, `e_wt_vc`, `e_wt_vp` | 1.05, 1.18, 1.89 | - | - | S1, eqs 1-3 (WT / 85.3 kg) |
+| `ltlag_tg` (h) | 1.63 | 1.24 | 0.98 | S4 / S5 / S6 |
+| `lka_tg` (1/h) | 0.74 | 0.37 | 2.10 | S4 / S5 / S6 |
+| `lvc_tg` (dL) | 250.4 | 2.19 | 0.012 | S4 / S5 / S6 |
+| `lrbase_tg` (mg/dL) | 97.8 | 109.2 | 178.07 | S4 / T1 / S6 |
+| `lkout_tg` (1/h) | 0.70 | 0.28 | 4.41 | S4 / S5 / S6 |
+| `lic50_tg` (umol/L, free) | 0.0078 | 0.162 | 0.081 | S4 / S5 / T1 |
+| `e_bmi_rbase_tg` | 1.28 | - | - | S4, eq 4 (BMI / 27.5 kg/m^2) |
+| IIV CL, V1 (corr) | 21.8%, 19.4% (0.59) | 45.4%, 11.7% | 35.9%, 27.7% (0.419) | S1 / S2 / S3 |
+| IIV ka, V2 | 62.4%, 47.0% | - | - | S1 |
+| IIV TlagTAG | - | 4.53% | 0.19% | S5 / S6 |
+| IIV kaTAG | 20.3% | 99.2% | 35.3% | S4 / S5 / S6 |
+| IIV VTAG | 57.2% | 55.9% | - | S4 / S5 |
+| IIV R0 | 38.3% | 18.5% | 17.7% | S4 / S5 / S6 |
+| IIV kout | 65.0% | - | - | S4 |
+| IIV IC50 | 223.4% | - | 62.0% | S4 / S6 |
+| `addSd` (umol/L) | 0.0005 | 0.0023 | - | S1 / S2 |
+| `propSd` | 0.159 | 0.15 | 0.112 | S1 / S2 / S3 |
+| `propSd_tg` | 0.192 | 0.3 | 0.198 | S4 / S5 / S6 |
+| Equations 1-4 | | | | Main text, "The PK/PD model" |
+
+# Dose conversions
+
+The models take AZD7687 in umol (human) or umol/kg (rodents), because the
+paper's concentrations and IC50 are in umol/L; the meal or oil goes into
+`depot_tg` as mg of triglyceride per subject. The paper's own conversions
+(Methods, "The PK/PD model") are reproduced here.
+
+```{r conversions}
+mw_azd7687 <- 367.4 # g/mol, C21H25N3O3 (PubChem CID 42636350)
+mg_to_umol <- function(mg) mg / mw_azd7687 * 1000
+
+# Human: 1100 kcal meal, 9 kcal per g of fat
+meal_mg <- function(fat_frac) 1100 * fat_frac / 9 * 1000
+# Rat: corn oil 5 mL/kg, density 0.9 g/mL, ~230 g rat
+rat_oil_mg <- 5 * 0.9 * 0.230 * 1000
+# Mouse: Intralipos 20% at 10 mL/kg -> 2 mL/kg soybean oil, 0.917 g/mL, ~25 g mouse
+mouse_oil_mg <- 10 * 0.20 * 0.917 * 0.025 * 1000
+
+data.frame(
+  challenge = c("Human 60% fat meal", "Human 45% fat meal", "Rat corn oil", "Mouse soybean oil"),
+  TAG_mg = round(c(meal_mg(0.60), meal_mg(0.45), rat_oil_mg, mouse_oil_mg), 1)
+) |>
+  knitr::kable(caption = "Triglyceride amount entering depot_tg per subject.")
+```
+
+# Human: single-ascending-dose study with the 60% fat meal (Figure 2)
+
+The SAD design in Figure 2: a baseline meal at 0 h, AZD7687 (or placebo) at
+24 h, and the second meal at 28 h, all 60% fat. Body weight and BMI are drawn
+around the analysis means.
+
+```{r human-cohort}
+mod_h <- readModelDb("MorentinGutierrez_2019_AZD7687_human")
+
+set.seed(2019)
+n_per_arm <- 150
+doses_h <- c(0, 1, 2.5, 5, 10, 20)
+obs_tg <- seq(0, 36, by = 0.5)
+obs_pk <- 24 + c(0, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 36, 48, 72)
+
+make_human_arm <- function(dose_mg, n, id_offset) {
+  subj <- tibble(
+    id = id_offset + seq_len(n),
+    WT = 85.3 * exp(rnorm(n, 0, 0.14)),
+    BMI = 27.5 * exp(rnorm(n, 0, 0.12))
+  )
+  dosing <- bind_rows(
+    tibble(time = 0, amt = meal_mg(0.60), cmt = "depot_tg"),
+    tibble(time = 24, amt = mg_to_umol(dose_mg), cmt = "depot"),
+    tibble(time = 28, amt = meal_mg(0.60), cmt = "depot_tg")
+  ) |>
+    mutate(evid = 1)
+  if (dose_mg == 0) dosing <- dplyr::filter(dosing, cmt != "depot")
+  obs <- tibble(time = sort(unique(c(obs_tg, obs_pk))), amt = 0, cmt = "tg", evid = 0)
+  tidyr::crossing(subj, bind_rows(dosing, obs)) |>
+    mutate(dose_mg = dose_mg, arm = ifelse(dose_mg == 0, "Placebo", paste(dose_mg, "mg"))) |>
+    arrange(id, time, desc(evid))
+}
+
+events_h <- bind_rows(lapply(seq_along(doses_h), function(i) {
+  make_human_arm(doses_h[i], n_per_arm, id_offset = (i - 1L) * n_per_arm)
+}))
+stopifnot(!anyDuplicated(events_h[events_h$evid == 0, c("id", "time")]))
+
+rxode2::rxSetSeed(2019)
+sim_h <- rxode2::rxSolve(mod_h, events = events_h, keep = c("arm", "dose_mg")) |>
+  as.data.frame()
+arm_levels <- c("Placebo", paste(doses_h[-1], "mg"))
+sim_h$arm <- factor(sim_h$arm, levels = arm_levels)
+```
+
+```{r figure-2, fig.height = 6}
+sim_h |>
+  dplyr::filter(time <= 36) |>
+  group_by(arm, time) |>
+  summarise(
+    Q025 = quantile(tg, 0.025), Q50 = median(tg), Q975 = quantile(tg, 0.975),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q025, ymax = Q975), alpha = 0.2) +
+  geom_line(colour = "red") +
+  facet_wrap(~arm) +
+  labs(
+    x = "Time from first visit (h)", y = "Plasma TAG (mg/dL)",
+    title = "Human SAD, 60% fat meal at 0 h and 28 h; AZD7687 at 24 h",
+    caption = "Replicates Figure 2 of Morentin Gutierrez 2019 (median and 95% PI)."
+  )
+```
+
+In the paper's Figure 2 the median peaks near 200 mg/dL about 3 h after the
+baseline meal in every panel, and the second-meal peak falls from about 200
+mg/dL on placebo to about 155 (1 mg), 130 (5 mg) and 125 mg/dL (20 mg). The
+table compares the simulated medians and upper 97.5th percentiles with values
+read by the maintainers from Figure 2.
+
+```{r figure-2-compare}
+fig2 <- tibble::tribble(
+  ~arm,      ~time, ~fig_median, ~fig_q975,
+  "Placebo",     3,         205,       440,
+  "Placebo",    31,         200,       430,
+  "1 mg",       31,         155,       355,
+  "5 mg",       31,         130,       305,
+  "20 mg",      31,         125,       270
+)
+cmp_h <- sim_h |>
+  dplyr::filter(time %in% c(3, 31)) |>
+  mutate(arm = as.character(arm)) |>
+  group_by(arm, time) |>
+  summarise(sim_median = median(tg), sim_q975 = quantile(tg, 0.975), .groups = "drop") |>
+  inner_join(fig2, by = c("arm", "time"))
+stopifnot(nrow(cmp_h) == nrow(fig2))
+cmp_h |>
+  mutate(across(c(sim_median, sim_q975), \(x) round(x, 0))) |>
+  knitr::kable(caption = "Plasma TAG (mg/dL): simulation vs Figure 2 (read from the plot).")
+
+# Structural check: a mis-transcribed VTAG, kout or meal size moves these by
+# tens of percent; the bounds leave room for cohort-to-cohort spread.
+stopifnot(
+  all(abs(cmp_h$sim_median / cmp_h$fig_median - 1) < 0.25),
+  all(abs(cmp_h$sim_q975 / cmp_h$fig_q975 - 1) < 0.35)
+)
+```
+
+## Human AZD7687 PK (PKNCA)
+
+The paper reports no NCA, so the PKNCA results below are checked against the
+model's own identity `AUC0-inf = Dose / CL` per subject (free concentrations)
+rather than a published table.
+
+```{r human-pknca}
+pk_h <- sim_h |>
+  dplyr::filter(dose_mg > 0, time >= 24) |>
+  mutate(tad = time - 24) |>
+  dplyr::filter(!is.na(Cc)) |>
+  select(id, arm, tad, Cc, cl)
+
+conc_obj <- PKNCA::PKNCAconc(pk_h, Cc ~ tad | arm + id)
+dose_df <- events_h |>
+  dplyr::filter(evid == 1, cmt == "depot") |>
+  transmute(id, arm, tad = 0, amt)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ tad | arm + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_h <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_wide <- as.data.frame(nca_h$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  select(id, arm, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+nca_wide |>
+  group_by(arm) |>
+  summarise(
+    cmax = median(cmax), tmax = median(tmax),
+    aucinf.obs = median(aucinf.obs), half.life = median(half.life),
+    .groups = "drop"
+  ) |>
+  mutate(arm = factor(arm, levels = arm_levels)) |>
+  arrange(arm) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
+  dplyr::rename(
+    "Dose" = arm, "Cmax (umol/L)" = cmax, "Tmax (h)" = tmax,
+    "AUC0-inf (umol*h/L)" = aucinf.obs, "t1/2 (h)" = half.life
+  ) |>
+  knitr::kable(caption = "Median free AZD7687 NCA by dose (simulated SAD, 150 per arm).")
+
+ident <- nca_wide |>
+  left_join(distinct(pk_h, id, cl), by = "id") |>
+  left_join(dplyr::select(dose_df, id, amt), by = "id") |>
+  mutate(ratio = aucinf.obs * cl / amt)
+# Identity per subject: extrapolation error only.
+stopifnot(abs(median(ident$ratio) - 1) < 0.02, quantile(abs(ident$ratio - 1), 0.9) < 0.05)
+```
+
+The simulated free Cmax after 20 mg (median near 0.14 umol/L, under 1 h post
+dose) matches the observed data and the median curve in Supplementary Figure 2B,
+which peaks at about 0.14 umol/L (read from the plot by the maintainers).
+
+```{r human-cmax-check}
+cmax_20 <- median(nca_wide$cmax[nca_wide$arm == "20 mg"])
+# A dose entered in mg instead of umol would be ~370-fold off.
+stopifnot(abs(cmax_20 / 0.14 - 1) < 0.2)
+```
+
+# Rat (Figure 3)
+
+```{r rat}
+mod_r <- readModelDb("MorentinGutierrez_2019_AZD7687_rat")
+groups_r <- tibble::tribble(
+  ~arm,      ~dose_mgkg, ~oil,
+  "0.1",            0.1, TRUE,
+  "0.3",            0.3, TRUE,
+  "3",              3,   TRUE,
+  "Naive",          0,   FALSE,
+  "Vehicle",        0,   TRUE
+)
+n_r <- 150
+events_r <- bind_rows(lapply(seq_len(nrow(groups_r)), function(i) {
+  g <- groups_r[i, ]
+  ids <- (i - 1L) * n_r + seq_len(n_r)
+  dose <- if (g$dose_mgkg > 0) tibble(time = 0, amt = mg_to_umol(g$dose_mgkg), cmt = "depot", evid = 1) else NULL
+  oil <- if (g$oil) tibble(time = 2, amt = rat_oil_mg, cmt = "depot_tg", evid = 1) else NULL
+  obs <- tibble(time = sort(unique(c(seq(0, 11, by = 0.25)))), amt = 0, cmt = "tg", evid = 0)
+  tidyr::crossing(id = ids, bind_rows(dose, oil, obs)) |> mutate(arm = g$arm)
+})) |>
+  arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(2019)
+sim_r <- rxode2::rxSolve(mod_r, events = events_r, keep = "arm") |> as.data.frame()
+```
+
+```{r figure-3, fig.height = 6}
+sim_r |>
+  dplyr::filter(time >= 2) |>
+  group_by(arm, time) |>
+  summarise(Q025 = quantile(tg, 0.025), Q50 = median(tg), Q975 = quantile(tg, 0.975), .groups = "drop") |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q025, ymax = Q975), alpha = 0.2) +
+  geom_line(colour = "red") +
+  facet_wrap(~arm) +
+  labs(
+    x = "Time from compound dose (h)", y = "Plasma TAG (mg/dL)",
+    title = "Rat OLTT: corn oil 5 mL/kg at 2 h; AZD7687 (mg/kg) at 0 h",
+    caption = "Replicates Figure 3 of Morentin Gutierrez 2019 (median and 95% PI)."
+  )
+```
+
+```{r figure-3-compare}
+fig3 <- tibble::tribble(
+  ~arm,      ~time, ~fig_median,
+  "Vehicle",     5,         405,
+  "Vehicle",     8,         375,
+  "0.1",         5,         300,
+  "0.3",         8,         220,
+  "3",           8,         130,
+  "Naive",       8,         105
+)
+cmp_r <- sim_r |>
+  dplyr::filter(time %in% c(5, 8)) |>
+  group_by(arm, time) |>
+  summarise(sim_median = median(tg), .groups = "drop") |>
+  inner_join(fig3, by = c("arm", "time"))
+stopifnot(nrow(cmp_r) == nrow(fig3))
+cmp_r |>
+  mutate(sim_median = round(sim_median, 0)) |>
+  knitr::kable(caption = "Rat plasma TAG (mg/dL): simulated median vs Figure 3 (read from the plot).")
+# The vehicle and 0.1 mg/kg medians run 15-30% below Figure 3 (see
+# Assumptions and deviations); the bound still fails a per-kg oil dose
+# (+160%) or a mis-transcribed VTAG or kout.
+stopifnot(all(abs(cmp_r$sim_median / cmp_r$fig_median - 1) < 0.45))
+```
+
+# Mouse (Figure 4)
+
+```{r mouse}
+mod_m <- readModelDb("MorentinGutierrez_2019_AZD7687_mouse")
+groups_m <- tibble::tribble(
+  ~arm,      ~dose_mgkg,
+  "0.1",            0.1,
+  "1",              1,
+  "3",              3,
+  "Vehicle",        0
+)
+n_m <- 150
+events_m <- bind_rows(lapply(seq_len(nrow(groups_m)), function(i) {
+  g <- groups_m[i, ]
+  ids <- (i - 1L) * n_m + seq_len(n_m)
+  dose <- if (g$dose_mgkg > 0) tibble(time = 0, amt = mg_to_umol(g$dose_mgkg), cmt = "depot", evid = 1) else NULL
+  oil <- tibble(time = 0.5, amt = mouse_oil_mg, cmt = "depot_tg", evid = 1)
+  obs <- tibble(time = seq(0, 4.5, by = 0.1), amt = 0, cmt = "tg", evid = 0)
+  tidyr::crossing(id = ids, bind_rows(dose, oil, obs)) |> mutate(arm = g$arm)
+})) |>
+  arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(2019)
+sim_m <- rxode2::rxSolve(mod_m, events = events_m, keep = "arm") |> as.data.frame()
+```
+
+```{r figure-4, fig.height = 6}
+sim_m |>
+  dplyr::filter(time >= 0.5) |>
+  group_by(arm, time) |>
+  summarise(Q025 = quantile(tg, 0.025), Q50 = median(tg), Q975 = quantile(tg, 0.975), .groups = "drop") |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q025, ymax = Q975), alpha = 0.2) +
+  geom_line(colour = "red") +
+  facet_wrap(~arm) +
+  labs(
+    x = "Time from dose of compound (h)", y = "Plasma TAG (mg/dL)",
+    title = "Mouse OLTT: Intralipos 20% 10 mL/kg at 0.5 h; AZD7687 (mg/kg) at 0 h",
+    caption = "Replicates Figure 4 of Morentin Gutierrez 2019 (median and 95% PI)."
+  )
+```
+
+```{r figure-4-compare}
+fig4 <- tibble::tribble(
+  ~arm,      ~time, ~fig_median,
+  "Vehicle",   2.5,         610,
+  "0.1",       2.5,         530,
+  "1",         2.5,         325,
+  "3",         2.5,         240,
+  "Vehicle",   1.5,         375
+)
+cmp_m <- sim_m |>
+  dplyr::filter(abs(time - 1.5) < 1e-6 | abs(time - 2.5) < 1e-6) |>
+  mutate(time = round(time, 1)) |>
+  group_by(arm, time) |>
+  summarise(sim_median = median(tg), .groups = "drop") |>
+  inner_join(fig4, by = c("arm", "time"))
+stopifnot(nrow(cmp_m) == nrow(fig4))
+cmp_m |>
+  mutate(sim_median = round(sim_median, 0)) |>
+  knitr::kable(caption = "Mouse plasma TAG (mg/dL): simulated median vs Figure 4 (read from the plot).")
+stopifnot(all(abs(cmp_m$sim_median / cmp_m$fig_median - 1) < 0.30))
+```
+
+# Mass balance of the TAG excursion
+
+The TAG equation is linear in the meal input, so without drug the incremental
+area above baseline from one meal equals `Dose / (VTAG * kout)` exactly. Checked
+on the typical values of each species (one challenge, long window).
+
+```{r mass-balance}
+mb_check <- function(mod, tg_mg, horizon, extra = list()) {
+  ev <- bind_rows(
+    tibble(time = 0, amt = tg_mg, cmt = "depot_tg", evid = 1),
+    tibble(time = seq(0, horizon, by = 0.01), amt = 0, cmt = "tg", evid = 0)
+  )
+  for (nm in names(extra)) ev[[nm]] <- extra[[nm]]
+  s <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev, atol = 1e-10, rtol = 1e-10) |>
+    as.data.frame()
+  inc <- s$tg - s$rbase_tg[1]
+  iauc <- sum(diff(s$time) * (head(inc, -1) + tail(inc, -1)) / 2)
+  expected <- tg_mg / (s$vc_tg[1] * s$kout_tg[1])
+  c(iAUC = iauc, expected = expected, rel_err = iauc / expected - 1)
+}
+mb <- rbind(
+  human = mb_check(mod_h, meal_mg(0.60), 72, list(WT = 85.3, BMI = 27.5)),
+  rat = mb_check(mod_r, rat_oil_mg, 120),
+  mouse = mb_check(mod_m, mouse_oil_mg, 24)
+)
+knitr::kable(signif(mb, 4), caption = "Incremental TAG AUC (mg*h/dL): trapezoid vs Dose/(VTAG*kout).")
+stopifnot(all(abs(mb[, "rel_err"]) < 0.005))
+
+# A naive rat (no oil) stays at its baseline.
+naive <- sim_r |> dplyr::filter(arm == "Naive") |> group_by(id) |>
+  summarise(dev = max(abs(tg / rbase_tg - 1)), .groups = "drop")
+stopifnot(max(naive$dev) < 1e-6)
+```
+
+# Cross-species potency
+
+```{r potency}
+data.frame(
+  species = c("human", "rat", "mouse"),
+  IC50_free_umolL = c(0.0078, 0.162, 0.081),
+  IC50_free_ngmL = round(c(0.0078, 0.162, 0.081) * mw_azd7687, 2)
+) |>
+  knitr::kable(caption = "In vivo free IC50 of AZD7687 on meal TAG input (Table 1).")
+```
+
+# Assumptions and deviations
+
+- **Dose units.** The paper states concentrations and IC50 in umol/L but does
+  not state the dose unit used in the fit. The models take AZD7687 in umol
+  (human) or umol/kg (rodents), converting mg with the molecular weight 367.4
+  g/mol (C21H25N3O3, PubChem CID 42636350; not printed in the paper). With this
+  conversion the simulated free Cmax after 20 mg (~0.14 umol/L) matches
+  Supplementary Figure 2B, which a mg-based dose would miss by a factor of
+  ~370.
+- **Rodent PK per kg, rodent TAG per animal.** The rodent CL and V are per kg
+  (Supplementary Tables 2-3 give L/kg and L/(kg*hr); main-text Table 1 prints
+  "L"), so the AZD7687 dose is per kg. The fat challenge goes into `depot_tg`
+  as mg per animal, computed from the nominal ~230 g (rat) and ~25 g (mouse)
+  body weights in Methods; this is the reading under which VTAG (dL) reproduces
+  Figures 3 and 4 (a per-kg fat dose would put the mouse TAG peak above
+  100,000 mg/dL).
+- **Mouse fat amount.** "Intralipos 20%" was taken as 20% soybean oil by
+  volume, converted with the 0.917 g/mL density the paper quotes.
+- **IIV scale.** The paper reports IIV as a percentage; it was converted to a
+  log-normal variance with `omega^2 = log(CV^2 + 1)`. For the 223% IIV on the
+  human IC50, the readings `log(CV^2 + 1)` and `CV^2` give variances of 1.79 and
+  4.99. With the first, the simulated human 97.5th percentiles lie within about
+  20% of Figure 2's (table above).
+- **Correlations.** Phoenix correlations (CL-V1 0.59 human, CL-V 0.419 mouse)
+  were converted to covariances with the corresponding variances.
+- **Combined residual error.** Phoenix "additive + multiplicative" PK error
+  is encoded as nlmixr2's combined error (`add(addSd) + prop(propSd)`,
+  variances summed).
+- **Value discrepancies between the main text and the supplement.** Rat R0 is
+  109.2 mg/dL in Table 1 and 109.3 mg/dL in Supplementary Table 5; the main-text
+  value is used. Mouse R0 (178.07 vs 178.0) and mouse IC50 (0.081 vs 0.08) use
+  the more precise of the two printings.
+- **Rat TAG amplitude.** With the printed rat parameters the simulated
+  vehicle-group median at 5-8 h (about 280 mg/dL) is about 30% below the
+  Figure 3 median (about 375-405 mg/dL), and the simulated 97.5th percentile
+  is well below the published upper bound (about 1000 mg/dL). The gap is
+  in amplitude, not variability: the median is unchanged whether the reported
+  IIV percentages are read as CVs, as standard deviations or as variances. The
+  human and mouse fits, which share the structure and the unit conventions,
+  match their figures to within about 15%. The cause could not be identified
+  from the paper. Accounting for it through the oil amount would need rats of
+  about 400 g, against the ~230 g in Methods. The printed parameters are kept
+  unchanged.
+- **Prediction intervals.** The simulated intervals are for the model
+  prediction without residual error, so they are somewhat narrower than the
+  published ones if Phoenix included residual error in its 1000 simulated data
+  sets.
+- **Virtual human cohort.** The paper gives only the mean body weight (85.3 kg)
+  and mean BMI (27.5 kg/m^2); both were drawn log-normally around those means
+  (CV about 14% and 12%). The Figure 2 replication uses 150 subjects per arm
+  against the paper's 6-8 per cohort, so the simulated median and percentiles
+  describe the model rather than the small observed cohorts.
+- **Figure values.** The comparison values for Figures 2-4 were read from the
+  published plots by the maintainers (approximately +/-10 mg/dL for Figure 2,
+  +/-20 mg/dL for Figures 3-4).
+- **`tg` and `depot_tg`** are not yet canonical compartment names; they are
+  declared paper-specific, as in the other triglyceride models in the library.
+- No erratum or correction notice for this article was found in Europe PMC
+  (checked 2026-11-25).

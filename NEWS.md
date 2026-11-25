@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2019 deuterium oxide dose-to-the-mother ([doi:10.1007/s10928-018-9613-x](https://doi.org/10.1007/s10928-018-9613-x)) -- exclusively breastfeeding mother-infant pairs in West Java, Indonesia.
+- Add Morentin Gutierrez 2019 AZD7687 PK and plasma triglyceride during an oral lipid tolerance test ([doi:10.1002/prp2.465](https://doi.org/10.1002/prp2.465)) -- healthy and overweight men, Han-Wistar rats and ICR mice.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
