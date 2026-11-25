@@ -8478,6 +8478,8 @@ navbar:
         href: articles/Quintairos_2021_tacrolimus_mycophenolic_acid.html
       - text: "Tacrolimus (Rower 2017)"
         href: articles/Rower_2017_tacrolimus.html
+      - text: "Tacrolimus (Saqr 2024)"
+        href: articles/Saqr_2024_tacrolimus.html
       - text: "Tacrolimus (Storset 2014)"
         href: articles/Storset_2014_tacrolimus.html
       - text: "Tacrolimus (Sun 2024)"
@@ -12318,7 +12320,7 @@ articles:
   - articles/SanzCodina_2024_cefiderocol
   - articles/Saporta_2024_afabicin
   - articles/Saporta_2026_meropenem
-  - articles/Saqr_2025_mycophenolic_acid
+  - articles/Saqr_2024_tacrolimus
   - articles/Sarashina_2005_epinastine
   - articles/Saravanakumar_2026_tak_500
   - articles/Sasaki_2022_delamanid
