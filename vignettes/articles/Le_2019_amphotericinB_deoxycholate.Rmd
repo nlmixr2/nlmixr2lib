@@ -1,0 +1,539 @@
+---
+title: "Amphotericin B deoxycholate in talaromycosis (Le 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Amphotericin B deoxycholate in talaromycosis (Le 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-load}
+ui <- rxode2::rxode(readModelDb("Le_2019_amphotericinB_deoxycholate"))
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.1128/AAC.01739-18>
+
+Le 2019 is the pharmacokinetic-pharmacodynamic substudy of the IVAP trial of
+amphotericin B deoxycholate (0.7 mg/kg/day) versus itraconazole for induction
+therapy of HIV-associated talaromycosis. The analysis ran in two steps with the
+nonparametric adaptive grid (NPAG) algorithm of Pmetrics:
+
+1. **Pharmacokinetics** (78 patients): a two-compartment model with zero-order
+   infusion into the central compartment and first-order clearance. A base model
+   (Table 2) was extended so that clearance is an additive linear function of
+   body weight, `CL = int + slope * weight` (Table 3); the extended model fitted
+   better (P = 0.001) and is the final model packaged here.
+2. **Pharmacodynamics** (55 fungaemic patients): with each patient's Bayesian
+   posterior PK parameters fixed, the density of *Talaromyces marneffei* in
+   blood, `N`, was described by monophasic first-order killing driven by a
+   sigmoid Emax function of the plasma amphotericin B concentration, with no
+   growth term (Table 4).
+
+The two steps form one PK-PD model, packaged as one file whose outputs are the
+plasma concentration `Cc` (mg/L) and the fungal density `cfu` (CFU/mL). The
+base PK model of Table 2 is a development step and is not packaged. The
+Cox and linear regressions of Figure 4 and the logistic regressions of drug
+exposure against toxicity are statistical post-hoc analyses of posterior AUC
+values, not part of the PK-PD model, and are not packaged either.
+
+Because the model has two residual-error endpoints, every observation row in an
+event table must nominate one through `dvid` (1 = `Cc`, 2 = `cfu`); rxode2 then
+returns both outputs as columns on every row.
+
+# Population
+
+The 78 PK patients were adults with advanced HIV infection (median CD4 count 7
+cells/uL, IQR 4 to 14) and culture-confirmed disseminated talaromycosis,
+recruited at the Hospital for Tropical Diseases, Ho Chi Minh City, Vietnam,
+between October 2012 and December 2015 (Le 2019 Table 1). Their median age was
+32 years (IQR 27 to 37), median weight 45 kg (IQR 39 to 45), and 53 of 78
+(67.9%) were male. Median serum creatinine was 62 umol/L (IQR 52 to 80). Of
+these, 57 were blood-culture positive (median baseline fungal count 2.53 log10
+CFU/mL, IQR 1.40 to 3.40), and the 55 with serial quantitative blood cultures
+formed the PD population (median weight 44 kg, IQR 38 to 50). Amphotericin B
+MICs ranged from 0.25 to 1 mg/L (modal 0.5 mg/L).
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+Every `ini()` entry in
+`inst/modeldb/specificDrugs/Le_2019_amphotericinB_deoxycholate.R` carries an
+in-file comment pointing at its source location. They are collected here.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `d/dt(central)` | n/a | Materials and Methods, final model: `XP(1) = R(1) - [(int + slope*weight)/Vc] * X(1) + Kpc * X(2)`, with the missing `- Kcp * X(1)` restored (see Assumptions and deviations) |
+| `d/dt(peripheral1)` | n/a | Materials and Methods: `XP(2) = Kcp * X(1) - Kcp * X(2)`, read as `- Kpc * X(2)` (see Assumptions and deviations) |
+| `Cc` | n/a | Materials and Methods: `Y(1) = X(1)/Vc` |
+| `cl` | n/a | Materials and Methods and Table 3 footnote: `CL = intercept + slope * weight` |
+| `d/dt(cfu)` | n/a | Equation 1: `dN/dt = -Kkillmax * C^H / (C^H + C50k^H) * N`, with `C = X(1)/Vc` |
+| `cfu(0)` | n/a | Materials and Methods: initial condition is the fungal density just before amphotericin B; Table 4 `IC` |
+| `lcl` | `log(0.320)` | Table 3, `Intercept (liters/h)` mean |
+| `e_wt_cl` | `0.048` | Table 3, `Slope` mean (L/h/kg) |
+| `lvc` | `log(23.907)` | Table 3, `Vc (liters)` mean |
+| `lk12` | `log(8.996)` | Table 3, `Kcp (h-1)` mean |
+| `lk21` | `log(4.237)` | Table 3, `Kpc (h-1)` mean |
+| `lemax` | `log(0.133)` | Table 4, `Kkillmax` mean |
+| `lhill` | `log(13.815)` | Table 4, `H` mean |
+| `lec50` | `log(0.016)` | Table 4, `C50k (mg/liter)` mean |
+| `lrbase` | `log(4318.564)` | Table 4, `IC (no. of CFU/ml)` mean |
+| `etalcl` | `1.03164` | Table 3, intercept SD 0.430: `log(1 + (0.430/0.320)^2)` |
+| `etae_wt_cl` | `0.131576` | Table 3, slope SD 0.018: `log(1 + (0.018/0.048)^2)` |
+| `etalvc` | `0.288889` | Table 3, Vc SD 13.836: `log(1 + (13.836/23.907)^2)` |
+| `etalk12` | `1.10801` | Table 3, Kcp SD 12.812: `log(1 + (12.812/8.996)^2)` |
+| `etalk21` | `1.51901` | Table 3, Kpc SD 8.003: `log(1 + (8.003/4.237)^2)` |
+| `etalemax` | `0.419369` | Table 4, Kkillmax SD 0.096: `log(1 + (0.096/0.133)^2)` |
+| `etalhill` | `0.170897` | Table 4, H SD 5.964: `log(1 + (5.964/13.815)^2)` |
+| `etalec50` | `0.693147` | Table 4, C50k SD 0.016: `log(1 + (0.016/0.016)^2)` |
+| `etalrbase` | `1.40245` | Table 4, IC SD 7,560.737: `log(1 + (7560.737/4318.564)^2)` |
+| `propSd` | `0.093` (fixed) | Materials and Methods, "Bioanalytical methodology": assay CV below 9.3%. Not a fitted residual |
+| `addSd_cfu`, `propSd_cfu` | `0` (fixed) | Materials and Methods: PD variance `[intercept + slope * Y]^2`; values not published |
+| `WT` | covariate | Table 1, `Median (IQR) wt (kg)`: 45 (39 to 45) PK, 44 (38 to 50) PK-PD |
+
+The paper's printed constants are restated once here and used from this list
+throughout, so that the checks below are driven by numbers transcribed from the
+paper rather than by the model's own variables.
+
+```{r paper-constants}
+paper <- list(
+  # Table 3 (final PK model): mean and median of each NPAG marginal
+  cl_int = c(mean = 0.320, median = 0.069), # L/h
+  cl_slope = c(mean = 0.048, median = 0.049), # L/h/kg
+  vc = c(mean = 23.907, median = 22.650), # L
+  kcp = c(mean = 8.996, median = 1.001), # 1/h
+  kpc = c(mean = 4.237, median = 0.184), # 1/h
+  # Table 4 (final PD model)
+  kkillmax = c(mean = 0.133, median = 0.118), # 1/h
+  hill = c(mean = 13.815, median = 15.447),
+  c50k = c(mean = 0.016, median = 0.010), # mg/L
+  ic = c(mean = 4318.564, median = 733.770), # CFU/mL
+  # Results and Figure 2: average AUC0-24 at 0.7 mg/kg/day
+  auc_avg_mean = 11.84, # mg*h/L
+  auc_avg_sd = 3.54,
+  auc_avg_median = 11.16,
+  # Results: time to sterilisation of the bloodstream (n = 55)
+  tster_mean = 83.16, # h
+  n_sterilised = 48L,
+  n_pd = 55L,
+  wt_median = 45, # Table 1, PK patients (kg)
+  mgkg = 0.7,
+  ndays = 14L, # 14-day induction course
+  tinf = 5 # assumed; not reported (see Assumptions and deviations)
+)
+```
+
+# Deterministic structural checks
+
+These checks use the typical-value model (`zeroRe()`) and compare it against
+arithmetic carried out independently from the printed constants above. They are
+deterministic, so they are asserted tightly.
+
+```{r typical-model}
+ui_typ <- rxode2::zeroRe(ui)
+
+# One typical 45 kg patient on the 14-day course, observed every 0.05 h.
+make_events <- function(wt, n_id = 1L, tgrid = seq(0, 24 * paper$ndays, by = 0.05)) {
+  ids <- seq_len(n_id)
+  dose <- tidyr::crossing(id = ids, time = 24 * (seq_len(paper$ndays) - 1)) |>
+    mutate(evid = 1L, cmt = "central", amt = paper$mgkg * wt[id], rate = amt / paper$tinf, dvid = NA_integer_)
+  obs <- tidyr::crossing(id = ids, time = tgrid) |>
+    mutate(evid = 0L, cmt = NA_character_, amt = NA_real_, rate = NA_real_, dvid = 1L)
+  bind_rows(dose, obs) |>
+    mutate(WT = wt[id]) |>
+    arrange(id, time, desc(evid)) |>
+    as.data.frame()
+}
+
+ev_typ <- make_events(paper$wt_median)
+sim_typ <- rxode2::rxSolve(ui_typ, events = ev_typ, returnType = "data.frame")
+
+# The explicit two-compartment ODE must be kept, not converted to linCmt().
+stopifnot(is.null(ui$linCmt), all(c("central", "peripheral1", "cfu") %in% names(sim_typ)))
+```
+
+## Pharmacokinetics against an independent biexponential
+
+The two-compartment infusion system has a closed-form solution. The function
+below is written from scratch out of the paper's printed constants and is
+independent of the packaged model, so agreement exercises the ODE block, the
+weight relation on clearance, the dosing route and the observation equation at
+once.
+
+```{r closed-form-pk}
+biexp_conc <- function(times, wt, p) {
+  cl <- p$cl_int + p$cl_slope * wt
+  k10 <- cl / p$vc
+  b <- k10 + p$kcp + p$kpc
+  alpha <- (b + sqrt(b^2 - 4 * k10 * p$kpc)) / 2
+  beta <- (b - sqrt(b^2 - 4 * k10 * p$kpc)) / 2
+  rate <- paper$mgkg * wt / paper$tinf
+  ca <- (alpha - p$kpc) / ((alpha - beta) * alpha)
+  cb <- (p$kpc - beta) / ((alpha - beta) * beta)
+  # Central amount under a never-ending infusion started u hours ago; a finite
+  # infusion is that minus the same thing started tinf later.
+  step <- function(u) {
+    ifelse(u <= 0, 0, rate * (ca * (1 - exp(-alpha * pmax(u, 0))) + cb * (1 - exp(-beta * pmax(u, 0)))))
+  }
+  amt <- rep(0, length(times))
+  for (d in seq_len(paper$ndays)) {
+    t0 <- 24 * (d - 1)
+    amt <- amt + step(times - t0) - step(times - t0 - paper$tinf)
+  }
+  list(conc = amt / p$vc, cl = cl, beta = beta)
+}
+
+p_mean <- lapply(paper[c("cl_int", "cl_slope", "vc", "kcp", "kpc")], `[[`, "mean")
+ref <- biexp_conc(sim_typ$time, paper$wt_median, p_mean)
+keep <- sim_typ$time > 0
+rel_err <- max(abs(sim_typ$Cc[keep] - ref$conc[keep]) / ref$conc[keep])
+
+# Two solutions of the same linear ODE: the difference is solver error only.
+stopifnot(rel_err < 1e-4)
+rel_err
+```
+
+## Average AUC over the course
+
+Le 2019 defines the average AUC0-24 as the total AUC over the treatment course
+divided by the number of 24-h intervals, and reports a mean of 11.84 and a
+median of 11.16 mg\*h/L at 0.7 mg/kg/day (Results and Figure 2). For a typical
+45 kg patient on a 14-day course the packaged model gives:
+
+```{r avg-auc-typical}
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+auc_course <- trap(sim_typ$time, sim_typ$Cc)
+auc_avg_typ <- auc_course / paper$ndays
+
+# Mass balance: AUC over the course = (dose given - drug still in the body) / CL.
+amt_left <- tail(sim_typ$central, 1) + tail(sim_typ$peripheral1, 1)
+auc_massbal <- (paper$ndays * paper$mgkg * paper$wt_median - amt_left) / ref$cl
+stopifnot(abs(auc_course - auc_massbal) / auc_massbal < 1e-4)
+
+# Same calculation with the Table 3 MEDIANS in place of the means.
+p_median <- lapply(paper[c("cl_int", "cl_slope", "vc", "kcp", "kpc")], `[[`, "median")
+sim_med <- rxode2::rxSolve(
+  ui_typ,
+  events = ev_typ, returnType = "data.frame",
+  params = c(
+    lcl = log(p_median$cl_int), e_wt_cl = p_median$cl_slope, lvc = log(p_median$vc),
+    lk12 = log(p_median$kcp), lk21 = log(p_median$kpc)
+  )
+)
+auc_avg_med <- trap(sim_med$time, sim_med$Cc) / paper$ndays
+
+tibble(
+  "Typical-value vector" = c("Table 3 means (packaged)", "Table 3 medians"),
+  "Average AUC0-24 (mg*h/L)" = c(auc_avg_typ, auc_avg_med),
+  "Dose / CL at steady state (mg*h/L)" = paper$mgkg * paper$wt_median /
+    c(p_mean$cl_int + p_mean$cl_slope * paper$wt_median, p_median$cl_int + p_median$cl_slope * paper$wt_median)
+) |>
+  knitr::kable(digits = 2, caption = "Typical 45 kg patient, 0.7 mg/kg once daily for 14 days. Reported cohort values: mean 11.84, median 11.16 mg*h/L.")
+
+# Structural: a mis-transcribed intercept, slope or unit shifts this by tens of
+# percent.
+stopifnot(abs(auc_avg_typ - paper$auc_avg_mean) / paper$auc_avg_mean < 0.10)
+```
+
+Both typical-value vectors land close to the reported cohort values; the
+average falls below `Dose / CL` because the peripheral compartment is still
+filling over the 14 days and the drug left in the body at the end of the course
+is excluded.
+
+## Pharmacodynamics against the integrated kill equation
+
+Equation 1 is linear in `N`, so its solution is
+`N(t) = IC * exp(-Kkillmax * integral of C^H / (C^H + C50k^H))`. The integral
+is computed here from the closed-form concentrations above and the printed Table
+4 constants.
+
+```{r closed-form-pd}
+ckill_ref <- ref$conc^paper$hill[["mean"]] / (ref$conc^paper$hill[["mean"]] + paper$c50k[["mean"]]^paper$hill[["mean"]])
+cum_kill <- c(0, cumsum(diff(sim_typ$time) * (head(ckill_ref, -1) + tail(ckill_ref, -1)) / 2))
+n_ref <- paper$ic[["mean"]] * exp(-paper$kkillmax[["mean"]] * cum_kill)
+
+pd_cmp <- tibble(time = sim_typ$time, model = log10(sim_typ$cfu), closed = log10(n_ref)) |>
+  filter(time <= 96)
+# Trapezoid on a 0.05 h grid against the ODE; the difference is quadrature
+# error only.
+stopifnot(max(abs(pd_cmp$model - pd_cmp$closed)) < 1e-3)
+
+# With C50k = 0.016 mg/L, killing is near-maximal throughout the course.
+cmin_after_1h <- min(ref$conc[sim_typ$time >= 1])
+stopifnot(min(ckill_ref[sim_typ$time >= 1]) > 0.99)
+summary(ckill_ref[sim_typ$time >= 1])
+```
+
+The concentration at half-maximal killing (0.016 mg/L) is
+`r signif(paper$c50k[["mean"]] / cmin_after_1h, 2)` times the lowest typical
+plasma concentration after the first hour
+(`r signif(cmin_after_1h, 2)` mg/L), and with a Hill coefficient near 14 the
+effect is essentially on/off: killing proceeds at `Kkillmax` from shortly after
+the first infusion starts. This matches the paper's observation of a monophasic,
+monoexponential decline and its conclusion that a nearly maximal antifungal
+effect was reached in most patients.
+
+## Kill-rate units: natural-log, not log10
+
+Table 4 prints the unit of `Kkillmax` as "no. of log10 CFU/ml/h". Equation 1,
+however, is a first-order process in `N`, which makes `Kkillmax` a natural-log
+rate in 1/h, and Figure 3B settles it: the individual fitted lines fall
+roughly 3 log10 units in about 60 h, that is about 0.05 log10 units/h, which is
+`0.118 / ln(10)` for the median `Kkillmax` and not 0.118 itself. Read as log10
+units, a patient with the median `Kkillmax` and median initial density would
+fall below 10 CFU/mL in about 16 h, against a reported mean time to
+sterilisation of 83 h.
+
+```{r kill-units}
+tibble(
+  Reading = c("Natural-log rate (Equation 1, packaged)", "log10 rate (Table 4 unit label)"),
+  "log10 decline per hour at median Kkillmax" = c(paper$kkillmax[["median"]] / log(10), paper$kkillmax[["median"]]),
+  "Hours from median IC to 10 CFU/mL" = c(
+    log(paper$ic[["median"]] / 10) / paper$kkillmax[["median"]],
+    log10(paper$ic[["median"]] / 10) / paper$kkillmax[["median"]]
+  )
+) |>
+  knitr::kable(digits = 3)
+```
+
+# Virtual cohort
+
+Observed data are not public. The cohort below has 200 patients on 0.7 mg/kg
+once daily for 14 days. Weights are log-normal around the PK-cohort median of
+45 kg with a spread chosen to match the PK-PD cohort IQR (38 to 50 kg); Table 1
+gives no range, so draws outside 30 to 75 kg are redrawn (not clipped).
+
+```{r cohort}
+# set.seed() seeds R's RNG, which draws the weights. rxode2's eta sampler is
+# partitioned per solver thread, so the drawn cohort can differ across
+# machines; every assertion below is on a centre, not on an extreme.
+set.seed(20190125)
+rxode2::rxSetSeed(20190125)
+n_sub <- 200L
+
+draw_wt <- function(n) {
+  wt <- numeric(0)
+  while (length(wt) < n) {
+    x <- stats::rlnorm(n, log(paper$wt_median), log(50 / 38) / (2 * qnorm(0.75)))
+    wt <- c(wt, x[x >= 30 & x <= 75])
+  }
+  wt[seq_len(n)]
+}
+cohort_wt <- draw_wt(n_sub)
+
+ev_cohort <- make_events(cohort_wt, n_id = n_sub, tgrid = c(seq(0, 24, by = 0.5), seq(25, 24 * paper$ndays, by = 1)))
+ev_cohort$treatment <- "0.7 mg/kg q24h"
+
+sim <- rxode2::rxSolve(ui, events = ev_cohort, keep = c("WT", "treatment"), returnType = "data.frame")
+```
+
+## Average AUC0-24 (Figure 2) with PKNCA
+
+PKNCA computes each simulated patient's AUC over the 14-day course; dividing by
+14 gives the paper's average AUC0-24.
+
+```{r pknca}
+conc_df <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+dose_df <- ev_cohort |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+o_conc <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 24 * paper$ndays, auclast = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+
+auc_sub <- as.data.frame(nca$result) |>
+  filter(PPTESTCD == "auclast") |>
+  mutate(auc_avg = PPORRES / paper$ndays)
+stopifnot(nrow(auc_sub) == n_sub, !anyNA(auc_sub$auc_avg))
+
+reference <- data.frame(treatment = "0.7 mg/kg q24h", auclast = paper$auc_avg_median * paper$ndays)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca,
+  reference = reference,
+  by = "treatment",
+  units = c(auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Median AUC over the 14-day course (0-336 h). Reference: 14 x the reported median average AUC0-24 of 11.16 mg*h/L.")
+
+tibble(
+  Statistic = c("Mean", "SD", "Median"),
+  "Le 2019 (mg*h/L)" = c(paper$auc_avg_mean, paper$auc_avg_sd, paper$auc_avg_median),
+  "Simulated (mg*h/L)" = c(mean(auc_sub$auc_avg), sd(auc_sub$auc_avg), median(auc_sub$auc_avg))
+) |>
+  knitr::kable(digits = 2, caption = "Average AUC0-24 at 0.7 mg/kg/day.")
+
+# Centre of the distribution only (see the package's vignette-assertion notes).
+stopifnot(abs(median(auc_sub$auc_avg) - paper$auc_avg_median) / paper$auc_avg_median < 0.20)
+```
+
+```{r figure-2}
+ggplot(auc_sub, aes(auc_avg)) +
+  geom_histogram(binwidth = 1, fill = "grey70", colour = "grey30") +
+  geom_vline(xintercept = paper$auc_avg_median, linetype = 2) +
+  labs(
+    x = "Average AUC0-24 (mg*h/L)", y = "Number of simulated patients",
+    caption = "Replicates Figure 2 of Le 2019 (dashed line: reported median 11.16 mg*h/L)."
+  ) +
+  theme_bw()
+```
+
+The simulated cohort sits below the reported values (median
+`r round(median(auc_sub$auc_avg), 2)` against 11.16 mg\*h/L) and is more spread
+out (SD `r round(sd(auc_sub$auc_avg), 2)` against 3.54 mg\*h/L), although the
+typical patient above matches the reported mean. Both follow from approximating
+each NPAG marginal by an independent log-normal (see Assumptions and
+deviations): carrying the reported mean of the clearance intercept (0.320 L/h)
+as the log-normal median with a CV of 134% puts a long right tail on the
+intercept, which raises clearance across the cohort, and the correlation
+between intercept and slope in the support-point distribution is not
+published and so is ignored.
+
+## Fungal killing in blood (Figure 3B)
+
+```{r figure-3b}
+pd_typ <- sim_typ |> filter(time <= 300, cfu >= 1)
+sim |>
+  filter(id <= 55, time <= 300, cfu >= 1) |>
+  ggplot(aes(time, log10(cfu), group = id)) +
+  geom_line(alpha = 0.3) +
+  geom_line(data = pd_typ, aes(time, log10(cfu)), inherit.aes = FALSE, linewidth = 1, colour = "firebrick") +
+  coord_cartesian(xlim = c(0, 300), ylim = c(0, 6)) +
+  labs(
+    x = "Time (h)", y = "log10 CFU/mL blood",
+    caption = "Replicates Figure 3B of Le 2019: 55 simulated patients (grey) and the typical patient (red), drawn down to 1 CFU/mL."
+  ) +
+  theme_bw()
+```
+
+## Time to sterilisation of the bloodstream (Figure 3A)
+
+The paper does not state its definition of sterilisation in model terms. Blood
+cultures plated 100 uL of blood, so one colony corresponds to 10 CFU/mL; the
+simulated time to sterilisation below is the first time `cfu` falls below that.
+The trial cultured daily for 4 days and every other day after, which delays the
+observed event times relative to this continuous-time definition.
+
+```{r figure-3a}
+t_ster <- sim |>
+  group_by(id) |>
+  summarise(t = suppressWarnings(min(time[cfu < 10])), .groups = "drop") |>
+  mutate(event = is.finite(t), t = ifelse(event, t, 24 * paper$ndays))
+
+km <- t_ster |>
+  arrange(t) |>
+  mutate(frac = 1 - cumsum(event) / n())
+
+ggplot(km, aes(t, frac)) +
+  geom_step() +
+  coord_cartesian(xlim = c(0, 300), ylim = c(0, 1)) +
+  labs(
+    x = "Time (hours)", y = "Fraction of patients with fungaemia",
+    caption = "Replicates Figure 3A of Le 2019 (simulated, no censoring other than the end of the 14-day course)."
+  ) +
+  theme_bw()
+
+tibble(
+  Quantity = c("Mean time to sterilisation (h)", "Fraction sterilised within 14 days"),
+  "Le 2019" = c(paper$tster_mean, paper$n_sterilised / paper$n_pd),
+  Simulated = c(mean(t_ster$t[t_ster$event]), mean(t_ster$event))
+) |>
+  knitr::kable(digits = 2)
+
+# Loose centre check: a log10-vs-ln mix-up in Kkillmax would put the median
+# near one day, and a wrong IC scale would move it by days.
+stopifnot(median(t_ster$t) > 24, median(t_ster$t) < 150)
+```
+
+The simulated mean time to sterilisation
+(`r round(mean(t_ster$t[t_ster$event]))` h) is shorter than the reported 83 h,
+for two reasons that act in the same direction. The simulated event is
+continuous-time, whereas the trial could detect sterilisation only at the next
+scheduled culture (daily for 4 days, then every other day), which adds up to
+one or two days to each observed time. And the model has no growth or
+persister term, so `r round(100 * mean(t_ster$event))`% of simulated patients
+sterilise within the course, against 48 of 55 (87%) in the study; the 7
+patients with persistent fungaemia are represented only through the low tail
+of the log-normal `Kkillmax` distribution, and the paper attributes their
+persistence to neither drug exposure nor MIC.
+
+# Assumptions and deviations
+
+* **Printed PK equations corrected.** The base and final model equations print
+  `XP(1) = R(1) - (CL/Vc) X(1) + Kpc X(2)` and `XP(2) = Kcp X(1) - Kcp X(2)`.
+  As printed, drug enters the peripheral compartment without leaving the
+  central one, so mass is not conserved. The prose describes "a standard
+  2-compartment model" whose compartments "were connected by two first-order
+  intercompartmental rate constants that described the transfer of mass back
+  and forth", and the same paragraph also misprints "Kpc and Kpc". The packaged
+  model uses the standard mammillary form,
+  `d/dt(central) = R - (CL/Vc + Kcp) central + Kpc peripheral1`,
+  `d/dt(peripheral1) = Kcp central - Kpc peripheral1`, as written by the same
+  group in Stott 2018 (`Stott_2018_amphotericinB_deoxycholate`).
+* **Printed PD equation corrected.** Equation 1 prints the driver as
+  `X(1)^H / Vc` and the potency as `C50k_50^H`. Since `C50k` is in mg/L, the
+  driver is the concentration raised to the Hill power, `(X(1)/Vc)^H`, which is
+  what is packaged.
+* **Kill-rate unit.** Table 4's unit "no. of log10 CFU/ml/h" for `Kkillmax`
+  contradicts Equation 1; the natural-log reading is used, as shown above
+  against Figure 3B.
+* **Typical values are the NPAG means.** Pmetrics reports the mean, median and
+  SD of each parameter's nonparametric marginal; Le 2019 does not say which it
+  regards as typical. The means are used, following the same group's other
+  Pmetrics amphotericin B models (Stott 2018, Stott 2022). For the PK the
+  choice matters little to exposure (average AUC 11.9 versus 11.6 mg\*h/L above)
+  but much to distribution, because the Kcp and Kpc means are 9 and 23 times
+  their medians. For the PD it moves the typical initial fungal density from
+  734 (median) to 4,319 CFU/mL (mean), against an observed median baseline of
+  339 CFU/mL (2.53 log10) in culture-positive patients.
+* **Inter-individual variability.** Each NPAG marginal is approximated by an
+  independent log-normal with the reported coefficient of variation,
+  `omega^2 = log(1 + (SD/mean)^2)`, with the mean carried as the log-normal
+  median. The support-point distribution and its correlations are not
+  published, so this is a parametric approximation; it does not reproduce the
+  skew shown by the gap between means and medians.
+* **Residual error.** The PK assay-error polynomial and the per-patient PD
+  variance model `[intercept + slope * Y]^2` were estimated but not published.
+  The PK error is set to the HPLC assay CV of 9.3% (fixed), as in Stott 2018;
+  the PD error keeps the published form (additive plus proportional, SDs
+  summed, `combined1`) with both terms fixed at zero. Neither is a fitted value.
+* **Drug on board at enrolment not packaged.** 15 of 78 patients had started
+  amphotericin B before enrolment, and the PK model estimated the amounts in
+  the central and peripheral compartments at the first sample (Table 3: IC1
+  mean 2.665 mg, median 2.213, SD 2.044; IC2 mean 16.059 mg, median 8.061, SD
+  19.355), switched to zero for patients sampled before their first dose. These
+  are nuisance parameters for those patients' data; the packaged model starts
+  with empty compartments, as for a new patient. A user can supply nonzero
+  `central(0)` / `peripheral1(0)` through the event table if needed.
+* **Infusion duration.** Not reported in Le 2019; 5 h is assumed in the
+  simulations. It is an event-table choice, not a model parameter, and changing
+  it to 4 or 6 h moves the average AUC by less than 0.5%.
+* **Weight distribution.** Table 1 gives only the median and IQR; the
+  log-normal cohort with redraws outside 30 to 75 kg is an assumption.
+* **Statistical analyses not packaged.** The logistic regressions of average AUC
+  against toxicity, the Cox models of AUC/MIC against time to sterilisation and
+  death, and the linear model of AUC/MIC against early fungicidal activity
+  (Figure 4) are not part of the PK-PD model, and none was significant.
+* **Literature check.** No erratum or correction to Le 2019 was found in
+  Europe PMC (checked 2026-11-25), and the article has no supplementary
+  material.
