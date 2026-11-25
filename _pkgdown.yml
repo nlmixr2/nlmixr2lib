@@ -9716,6 +9716,8 @@ navbar:
         href: articles/Pressly_2023_trastuzumab_tmdd_tutorial.html
       - text: "Trastuzumab vc mmae mouse qsp (Chang 2023)"
         href: articles/Chang_2023_trastuzumab_vc_mmae.html
+      - text: "Trastuzumab vc mmae mouse qsp (Singh 2019)"
+        href: articles/Singh_2019_trastuzumab_vc_mmae.html
       - text: "TrastuzumabDeruxtecan (Yin 2021)"
         href: articles/Yin_2021_trastuzumabDeruxtecan.html
       - text: "TrastuzumabDeruxtecan invitro qsp (Vasalou 2024)"
@@ -13266,7 +13268,7 @@ articles:
   - articles/Simpson_2013_chloroquine
   - articles/Simpson_2013_lumefantrine
   - articles/Simpson_2013_mefloquine
-  - articles/Singh_2016_stamulumab
+  - articles/Singh_2019_trastuzumab_vc_mmae
   - articles/Singh_2021_idecabtageneVicleucel
   - articles/Singh_2025_donidalorsen
   - articles/Singkham_2022_rivaroxaban
