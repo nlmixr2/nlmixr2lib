@@ -38,7 +38,7 @@ independent model files:
 The key output of each model is `BTOT`, the total amount of biomarker
 released by the lesion (in concentration units, because the model has no
 volume). The authors propose it as a surrogate of infarct size. `BTOT` rises
-exponentially with the area at risk (`AAR_PCT`) and is lower in patients
+exponentially with the area at risk (`AREA_AT_RISK_PCT`) and is lower in patients
 randomized to a cardioprotective conditioning arm (`TRT_CONDITIONING`).
 
 ```{r load-models}
@@ -158,21 +158,21 @@ typical_check <- function(mod, out, aar, trt, tmax) {
   mz <- rxode2::zeroRe(rxode2::rxode(mod))
   ev <- data.frame(
     id = 1L, time = seq(0, tmax, by = 0.05), evid = 0L, cmt = "central",
-    AAR_PCT = aar, TRT_CONDITIONING = trt
+    AREA_AT_RISK_PCT = aar, TRT_CONDITIONING = trt
   )
   s <- as.data.frame(rxode2::rxSolve(mz, ev, atol = 1e-10, rtol = 1e-10))
   kin <- if ("kin" %in% names(s)) s$kin else 0
   excess <- s[[out]] - kin / s$kel * (1 - exp(-s$kel * s$time))
   auc <- sum(diff(s$time) * (head(excess, -1) + tail(excess, -1)) / 2)
   data.frame(
-    AAR_PCT = aar, TRT_CONDITIONING = trt,
+    AREA_AT_RISK_PCT = aar, TRT_CONDITIONING = trt,
     btot = s$btot[1], auc_excess = auc, expected = s$btot[1] / s$kel[1]
   )
 }
 idchk <- bind_rows(
-  CK = bind_rows(lapply(c(0, 1), \(a) typical_check(mod_ck, "ck", 35, a, 600))),
+  CK = bind_rows(lapply(c(0, 1), \(a) typical_check(mod_ck, "cpk", 35, a, 600))),
   cTnI = bind_rows(lapply(c(0, 1), \(a) typical_check(mod_ctni, "troponin_i", 35, a, 1500))),
-  `CK-MB` = bind_rows(lapply(c(0, 1), \(a) typical_check(mod_ckmb, "ck_mb", 35, a, 400))),
+  `CK-MB` = bind_rows(lapply(c(0, 1), \(a) typical_check(mod_ckmb, "cpk_mb", 35, a, 400))),
   .id = "biomarker"
 ) |>
   mutate(rel_err = (auc_excess - expected) / expected)
@@ -224,7 +224,7 @@ make_cohort <- function(n_ctl, n_trt, med, q1, q3) {
   subj <- data.frame(
     id = seq_len(n_ctl + n_trt),
     TRT_CONDITIONING = rep(c(0L, 1L), c(n_ctl, n_trt)),
-    AAR_PCT = draw_aar(n_ctl + n_trt, med, q1, q3)
+    AREA_AT_RISK_PCT = draw_aar(n_ctl + n_trt, med, q1, q3)
   )
   tidyr::crossing(subj, time = obs_times) |>
     mutate(evid = 0L, cmt = "central") |>
@@ -242,18 +242,18 @@ cohort_ripost <- make_cohort(97, 200, 37.4, 30.5, 45.7)
 sim_one <- function(mod, cohort, out, label) {
   s <- rxode2::rxSolve(
     mod, cohort,
-    keep = c("TRT_CONDITIONING", "AAR_PCT")
+    keep = c("TRT_CONDITIONING", "AREA_AT_RISK_PCT")
   )
   as.data.frame(s) |>
     transmute(
-      id, time, TRT_CONDITIONING, AAR_PCT, btot, brel,
+      id, time, TRT_CONDITIONING, AREA_AT_RISK_PCT, btot, brel,
       conc = .data[[out]], biomarker = label
     )
 }
 sim <- bind_rows(
-  sim_one(mod_ck, cohort_lyon, "ck", "CK"),
+  sim_one(mod_ck, cohort_lyon, "cpk", "CK"),
   sim_one(mod_ctni, cohort_lyon, "troponin_i", "cTnI"),
-  sim_one(mod_ckmb, cohort_ripost, "ck_mb", "CK-MB")
+  sim_one(mod_ckmb, cohort_ripost, "cpk_mb", "CK-MB")
 ) |>
   mutate(
     biomarker = factor(biomarker, levels = c("CK", "cTnI", "CK-MB")),
@@ -277,11 +277,11 @@ typ <- data.frame(
   om_b0 = c(1.1, 3.7, 1.1), om_btot = c(0.65, 0.80, 0.51)
 )
 neg_release <- sim |>
-  distinct(biomarker, id, brel, TRT_CONDITIONING, AAR_PCT) |>
+  distinct(biomarker, id, brel, TRT_CONDITIONING, AREA_AT_RISK_PCT) |>
   mutate(biomarker = as.character(biomarker)) |>
   left_join(typ, by = "biomarker") |>
   mutate(p_neg = pnorm(
-    (log(b0) - log(btot0) - e_trt * TRT_CONDITIONING - e_aar * AAR_PCT) /
+    (log(b0) - log(btot0) - e_trt * TRT_CONDITIONING - e_aar * AREA_AT_RISK_PCT) /
       sqrt(om_b0^2 + om_btot^2)
   )) |>
   group_by(biomarker) |>
@@ -339,13 +339,13 @@ the release peak time (see Assumptions and deviations).
 ## Total released amount by arm (Figure 3)
 
 ```{r btot, fig.width = 8, fig.height = 3.5}
-btot_subj <- sim |> distinct(biomarker, id, arm, AAR_PCT, btot)
+btot_subj <- sim |> distinct(biomarker, id, arm, AREA_AT_RISK_PCT, btot)
 btot_subj |>
   group_by(biomarker, arm) |>
   summarise(median_BTOT = median(btot), .groups = "drop") |>
   tidyr::pivot_wider(names_from = arm, values_from = median_BTOT) |>
   knitr::kable(digits = 0, caption = "Median simulated BTOT by arm (Figure 3, left).")
-ggplot(btot_subj, aes(AAR_PCT, btot, colour = arm)) +
+ggplot(btot_subj, aes(AREA_AT_RISK_PCT, btot, colour = arm)) +
   geom_point(alpha = 0.4, size = 0.8) +
   facet_wrap(~biomarker, scales = "free_y") +
   labs(
@@ -503,7 +503,7 @@ observed trapezoidal AUC.
 * **Time origin.** Time is measured from each patient's first blood sample
   (before PCI), not from symptom onset or reperfusion. The models have no
   dose records; supply observation rows on `central` from time zero.
-* **Covariates.** `AAR_PCT` (area at risk, % of abnormally contracting
+* **Covariates.** `AREA_AT_RISK_PCT` (area at risk, % of abnormally contracting
   segments on left ventriculography) and `TRT_CONDITIONING` (conditioning arm
   versus control) are new entries in the covariate register. Both act on
   `BTOT` without centring, so the tabulated `BTOT` is the value at AAR = 0 in

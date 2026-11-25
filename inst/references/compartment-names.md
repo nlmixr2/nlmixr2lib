@@ -4994,9 +4994,24 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 
 ### cpk (**canonical creatine phosphokinase PD output**)
 - **Type:** compartment
-- **Role:** Creatine phosphokinase muscle biomarker.
-- **Source aliases:** none.
-- **Example models:** `Yang_2024_axatilimab.R`.
+- **Role:** Creatine phosphokinase (creatine kinase) biomarker, released by injured skeletal or cardiac muscle.
+- **Source aliases:** `CK` -- Ternant 2017.
+- **Example models:** `Yang_2024_axatilimab.R`, `Ternant_2017_ck.R` (serum total CK in IU/L after ST-elevation myocardial infarction; the algebraic observation `cpk <- central` of an endogenous release model).
+- **Notes:** Total CK across isoenzymes. The myocardial MB isoenzyme is the separate output `cpk_mb`.
+
+### cpk_mb (**canonical creatine phosphokinase MB isoenzyme PD output**)
+- **Type:** compartment
+- **Role:** The MB isoenzyme of creatine phosphokinase, a myocardial necrosis biomarker.
+- **Source aliases:** `CK-MB` -- Ternant 2017.
+- **Example models:** `Ternant_2017_ckmb.R` (serum CK-MB in IU/L after ST-elevation myocardial infarction; the algebraic observation `cpk_mb <- central`).
+- **Notes:** Named in the `cpk` form, so the isoenzyme sits next to total `cpk`. The two are measured separately and are not interchangeable.
+
+### troponin_i (**canonical cardiac troponin I PD output**)
+- **Type:** compartment
+- **Role:** Cardiac troponin I, a myocardial necrosis biomarker.
+- **Source aliases:** `cTnI` -- Ternant 2017.
+- **Example models:** `Ternant_2017_ctni.R` (serum cTnI after ST-elevation myocardial infarction; the algebraic observation `troponin_i <- central`).
+- **Notes:** Kept distinct from cardiac troponin T (`troponin_t` in `deVriesSchultink_2018_anthracycline_troponinT.R`), a different protein measured by a different assay.
 
 ### csf1 (**canonical colony-stimulating factor 1 PD output**)
 - **Type:** compartment

@@ -31,7 +31,7 @@ Ternant_2017_ck <- function() {
   )
 
   covariateData <- list(
-    AAR_PCT = list(
+    AREA_AT_RISK_PCT = list(
       description = paste(
         "Myocardial area at risk, as the circumferential extent of",
         "abnormally contracting segments (ACS) on biplane left",
@@ -43,7 +43,7 @@ Ternant_2017_ck <- function() {
       reference_category = NULL,
       notes = paste(
         "Time-fixed, measured at the index PCI. Uncentred exponential",
-        "effect on BTOT: BTOT = BTOT0 * exp(e_aar_btot * AAR_PCT), so the",
+        "effect on BTOT: BTOT = BTOT0 * exp(e_aar_btot * AREA_AT_RISK_PCT), so the",
         "tabulated BTOT is the value at AAR = 0 (Methods, 'Covariates').",
         "Cohort median 34.8% [IQR 27.0-46.5] (Table 1)."
       ),
@@ -157,7 +157,7 @@ Ternant_2017_ck <- function() {
   model({
     # Total released amount and its pre-sampling part (Methods, 'Biomarker
     # release'; 'Covariates': ln(theta) shifted by beta_ARM, theta * exp(beta_AAR * AAR))
-    btot <- exp(lbtot + etalbtot + e_trt_btot * TRT_CONDITIONING + e_aar_btot * AAR_PCT)
+    btot <- exp(lbtot + etalbtot + e_trt_btot * TRT_CONDITIONING + e_aar_btot * AREA_AT_RISK_PCT)
     b0 <- exp(lb0 + etalb0)
     brel <- btot - b0
 
@@ -180,7 +180,7 @@ Ternant_2017_ck <- function() {
     d/dt(central) <- release + kin - kel * central
     central(0) <- b0
 
-    ck <- central
-    ck ~ add(addSd) + prop(propSd)
+    cpk <- central
+    cpk ~ add(addSd) + prop(propSd)
   })
 }

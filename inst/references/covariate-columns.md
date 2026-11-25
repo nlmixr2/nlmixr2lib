@@ -1309,6 +1309,17 @@ Do **not** collapse the two onto one column, and do not use a single `_PRE` suff
 - **Example models:** `Johnson_2024_osimertinib_lvef_osimertinib.R`, `Johnson_2024_osimertinib_lvef_az5104.R` (penalized logistic exposure-safety models for an LVEF decrease of at least 10 points to below 50%; a higher baseline lowers the event probability), `Merali_2024_mavacamten_lvef.R` (observed baseline LVEF as a power covariate, reference 74%, on the individual baseline LVEF0 (exponent 0.336) and on the mavacamten exposure-response slope kMAVA (exponent 1.73) of an `lvef` exposure-response model; patients rolling into an extension study had it reset to the extension baseline), `Wu_2025_mavacamten_lvef.R` (refit with Chinese patients added: power exponent 0.315 on LVEF0 only, reference 72.82%; no longer on kMAVA).
 - **Notes:** General scope. Member of the `_BL` cardiac anchor set with `LVEDV_BL` / `LVESV_BL`; when both volumes are available, `LVEF_BL = 100 * (LVEDV_BL - LVESV_BL) / LVEDV_BL`. Distinct from the `lvef` PD output, which carries the ejection fraction through time. In Merali 2024 the model's own baseline parameter LVEF0 is a separate, IIV-carrying quantity that the observed `LVEF_BL` only informs, so the two are not interchangeable.
 
+### AREA_AT_RISK_PCT (**canonical for myocardial area at risk**)
+- **Description:** Myocardial area at risk of an acute myocardial infarction: the circumferential extent of abnormally contracting segments (ACS) on biplane left ventriculography at the index angiography, in percent of the left-ventricular circumference. Time-fixed per subject.
+- **Units:** % (percent of the left-ventricular circumference with abnormally contracting segments, e.g. 35; not a 0-1 fraction)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters the founding models as an uncentred exponential term, `BTOT = BTOT0 * exp(e_aar_btot * AREA_AT_RISK_PCT)`, so the tabulated BTOT is the value at an area at risk of 0. Ternant 2017 cohort median 34.8% (IQR 27.0-46.5) for CK and cTnI and 37.4% (IQR 30.5-45.7) for CK-MB (Table 1).
+- **Source aliases:**
+  - `AAR` -- Ternant 2017 Methods 'Covariates' ('continuous covariate: AAR (% ACS)'); no value transformation.
+- **Example models:** `Ternant_2017_ck.R`, `Ternant_2017_ctni.R`, `Ternant_2017_ckmb.R` (exponential effect on the total released amount of the necrosis biomarker, 0.020, 0.019 and 0.037 per percentage point).
+- **Notes:** General scope. Spelled out rather than abbreviated, with `AAR` kept as the source alias. Other modalities (SPECT perfusion defect, CMR T2 oedema) report the area at risk as a percentage of left-ventricular mass rather than circumference; record the modality in the model's covariate notes, because the two scales are not interchangeable.
+
 ### LVOT_GRADIENT_VALSALVA_BL (**canonical for Valsalva left ventricular outflow tract peak gradient at treatment baseline**)
 - **Description:** Pre-dose peak left ventricular outflow tract (LVOT) pressure gradient measured by Doppler echocardiography during the Valsalva manoeuvre, in mmHg, treated as a per-subject time-fixed covariate. The provoked gradient is the standard measure of outflow obstruction in obstructive hypertrophic cardiomyopathy (a gradient of 30 mmHg or more indicates obstruction).
 - **Units:** mmHg
@@ -24408,6 +24419,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `RT1` -- Hodson 2023 NONMEM Code S1 flag, derived from the treatment-cohort code (`TRT > 1` -> 1; every fitted cohort other than the control received radiotherapy).
 - **Example models:** `Hodson_2023_radiotherapy_antipdl1_olaparib_azd0156_mouse.R` (gates the Heaviside radiotherapy input `rt_dose * (t < rt_end)`, 2 Gy per day, that recruits antigen-presenting cells in proportion to the proliferating tumour rim).
 - **Notes:** Specific scope. A non-drug member of the `TRT_` treatment-arm family, alongside `TRT_PBT` and `TRT_WATCHFUL_WAITING`: radiotherapy has no INN, so the modality is spelled out. Distinct from `PRIOR_RADIATION`, which flags radiotherapy received *before* the analysed treatment as a baseline characteristic; here radiotherapy is part of the modelled treatment.
+
+### TRT_CONDITIONING (**canonical for cardioprotective conditioning-arm indicator**)
+- **Description:** Binary treatment-arm indicator: 1 = randomized to a cardioprotective conditioning arm given around reperfusion of an acute myocardial infarction (ischemic postconditioning, pharmacological postconditioning with cyclosporine A, or remote ischemic perconditioning with or without local postconditioning); 0 = control arm (reperfusion alone). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (control arm).
+- **Source aliases:**
+  - `ARM` -- Ternant 2017 Methods 'Covariates' ('study arm was coded as 0 (reference, control arm) or 1 (conditioned arm)'); no value transformation. For RIPOST-MI the RIPer and RIPer + IPost arms were merged into 1.
+- **Example models:** `Ternant_2017_ck.R`, `Ternant_2017_ctni.R` (PC, PC-CsA and PCNR trials; additive on log BTOT, beta = -0.43 and -0.56), `Ternant_2017_ckmb.R` (RIPOST-MI trial; beta = -0.75). In all three it shifts the log of the total released amount of the necrosis biomarker.
+- **Notes:** General scope. A non-drug member of the `TRT_` treatment-arm family, like `TRT_RADIOTHERAPY`: the indicator pools several conditioning procedures under one class, so it is named for the class rather than one procedure or drug. A model that separates the procedures would need per-procedure indicators instead.
 
 ### TRT_OLAPARIB, TRT_AZD0156 (**canonical for DNA-damage-response-inhibitor treatment-arm indicators**)
 - **Description:** Binary treatment-arm indicators: `TRT_OLAPARIB` = 1 when the regimen includes the PARP inhibitor olaparib; `TRT_AZD0156` = 1 when it includes the ATM inhibitor AZD0156; 0 otherwise. Time-fixed per subject, at the dose and schedule of the source study.
