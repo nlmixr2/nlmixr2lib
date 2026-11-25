@@ -1,0 +1,712 @@
+---
+title: "Isoniazid and rifampicin in children with tuberculosis (Aruldhas 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Isoniazid and rifampicin in children with tuberculosis (Aruldhas 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Aruldhas 2019 fitted two separate population PK models -- one for isoniazid
+and one for rifampicin -- to steady-state profiles from the same children, and
+used them to evaluate Indian paediatric dosing regimens. The library carries
+them as two files that share this vignette.
+
+* Citation: `r rxode2::rxode(readModelDb("Aruldhas_2019_isoniazid"))$reference`
+* Isoniazid: `r rxode2::rxode(readModelDb("Aruldhas_2019_isoniazid"))$description`
+* Rifampicin: `r rxode2::rxode(readModelDb("Aruldhas_2019_rifampicin"))$description`
+* Article: [Br J Clin Pharmacol. 2019;85(3):644-654](https://doi.org/10.1111/bcp.13846)
+
+# Population
+
+The study enrolled 41 children and adolescents aged 2-16 years (median 7,
+IQR 3.5-13) at Christian Medical College, Vellore, India, newly diagnosed with
+pulmonary (n = 36) or lymph-node (n = 5) tuberculosis (Table 2). Median body
+weight was 19.5 kg (IQR 13.7-33.7); 12 of 41 were girls. Children with relapse,
+multidrug-resistant tuberculosis or HIV co-infection were excluded. Isoniazid,
+rifampicin, pyrazinamide and ethambutol were given either daily (WHO regimen,
+n = 14) or thrice weekly (national RNTCP directly observed regimen, n = 27) at
+the same per-occasion dose (Table 1, Regimen 2). Plasma was sampled during the
+last 2 weeks of the 8-week intensive phase, pre-dose and 0.5, 1, 1.5, 2, 2.5,
+4 and 6 h after an overnight-fasted dose. The isoniazid model used 290
+concentrations from 39 children and the rifampicin model 284 concentrations
+from 39 children.
+
+# Source trace
+
+| Element | Isoniazid | Rifampicin | Source |
+|---|---|---|---|
+| Disposition | one compartment | one compartment | Results, both 'Pharmacokinetic properties' sections |
+| Absorption | 5 transit compartments, ka = ktr | 9 transit compartments, ka = ktr | Results; Tables 3, 4 'No. of trans comp' |
+| ktr | 6 / MTT | 10 / MTT | Savic transit chain; checked against published Tmax below |
+| MTT | 0.547 h | 0.932 h | Table 3 / Table 4 |
+| CL/F | 2.59 L/h slow, 7.79 L/h fast (mixture) | 8.11 L/h | Table 3 / Table 4 |
+| V/F | 29.7 L | 44.7 L | Table 3 / Table 4 |
+| F | 1 (fixed) | 1 (fixed) | Methods; Tables 3, 4 |
+| Allometry | WT/19.4 kg, exponents 0.75 (CL) and 1 (V), fixed | same | Methods; Tables 3, 4 footnotes |
+| BSV (%CV) | V 23.4, MTT 68.2, F 41.8 | V 42, MTT 52.2, F 68.0 | Tables 3, 4 |
+| Residual error | additive on log scale, variance 0.0967 | additive on log scale, variance 0.271 | Methods; Tables 3, 4 'RUV' |
+| Fast-acetylator fraction | 31% (printed; see Errata) | -- | Results; Table 3 footnote; Discussion |
+| Regimens 1-4 | Table 1 | Table 1 | Table 1 |
+
+```{r models}
+mod_inh <- rxode2::rxode(readModelDb("Aruldhas_2019_isoniazid"))
+mod_rif <- rxode2::rxode(readModelDb("Aruldhas_2019_rifampicin"))
+```
+
+# Shared simulation helpers
+
+The paper simulated 1000 children at every integer body weight from 6 to
+30 kg (Methods, 'Dose optimization'). Rather than a large Monte Carlo cohort,
+the replications below integrate over the between-subject variability
+deterministically:
+
+* relative bioavailability F scales every concentration, so its log-normal
+  variability is integrated analytically (`pnorm()` over its omega);
+* the V/F and MTT etas are integrated with a 9 x 9 Gauss-Hermite grid, solved
+  at every weight from 6 to 30 kg;
+* CL/F carries no between-subject variability, so steady-state
+  `AUC0-24 = F * Dose / CL` is exact.
+
+This makes every number in the replication tables reproducible to the digit,
+independently of the random-number stream.
+
+```{r helpers}
+# Gauss-Hermite nodes and weights for a standard normal (Golub-Welsch).
+gauss_hermite <- function(k) {
+  b <- sqrt(seq_len(k - 1))
+  jac <- matrix(0, k, k)
+  jac[cbind(1:(k - 1), 2:k)] <- b
+  jac[cbind(2:k, 1:(k - 1))] <- b
+  e <- eigen(jac, symmetric = TRUE)
+  list(z = e$values, w = e$vectors[1, ]^2)
+}
+
+# Table 1 weight bands. `lower` holds the lower band edges in kg.
+band_dose <- function(wt, lower, dose) dose[findInterval(wt, lower)]
+dose_inh <- list(
+  "Regimen 1" = function(wt) band_dose(wt, c(6, 11, 18, 26), c(75, 150, 225, 300)),
+  "Regimen 2" = function(wt) band_dose(wt, c(6, 8, 12, 16, 18, 23), c(75, 112.5, 150, 187.5, 225, 300)),
+  "Regimen 3" = function(wt) band_dose(wt, c(4, 8, 12, 16, 25, 30), c(50, 100, 150, 200, 225, 250))
+)
+dose_rif <- list(
+  "Regimen 1" = dose_inh[["Regimen 1"]],
+  "Regimen 2" = dose_inh[["Regimen 2"]],
+  "Regimen 3" = function(wt) band_dose(wt, c(4, 8, 12, 16, 25, 30), c(75, 150, 225, 300, 375, 450)),
+  "Regimen 4" = function(wt) {
+    ifelse(wt <= 11, 35 * wt, band_dose(wt, c(12, 15, 20, 24, 28), c(450, 600, 750, 900, 1050)))
+  }
+)
+
+omega_sd <- function(mod, eta) sqrt(mod$omega[eta, eta])
+
+# Grid of (weight, V eta, MTT eta, mixture class) nodes with their
+# quadrature weights.
+make_grid <- function(mod, classes, k = 9) {
+  gh <- gauss_hermite(k)
+  g <- expand.grid(WT = 6:30, i = seq_len(k), j = seq_len(k), MIX_FAST_ELIM = classes)
+  g$etalvc <- omega_sd(mod, "etalvc") * gh$z[g$i]
+  g$etalmtt <- omega_sd(mod, "etalmtt") * gh$z[g$j]
+  g$etalfdepot <- 0
+  g$wq <- gh$w[g$i] * gh$w[g$j]
+  g$id <- seq_len(nrow(g))
+  g
+}
+
+# Steady-state concentrations after a 1-mg daily dose (15 daily doses, the
+# last interval observed every 0.05 h) at every grid node, with F = 1.
+# Etas are carried as event-table columns on a zeroRe() model, so each node
+# is solved at exactly its own eta values.
+solve_unit <- function(mod, grid) {
+  dose_times <- seq(0, 24 * 14, by = 24)
+  obs_times <- 24 * 14 + seq(0, 24, by = 0.05)
+  cols <- c("id", "WT", "MIX_FAST_ELIM", "etalvc", "etalmtt", "etalfdepot")
+  ev <- dplyr::bind_rows(
+    expand.grid(id = grid$id, time = dose_times) |>
+      dplyr::mutate(amt = 1, evid = 1L, cmt = "depot"),
+    expand.grid(id = grid$id, time = obs_times) |>
+      dplyr::mutate(amt = 0, evid = 0L, cmt = "central")
+  ) |>
+    dplyr::left_join(grid[, cols], by = "id") |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+  sim <- suppressWarnings(
+    rxode2::rxSolve(rxode2::zeroRe(mod), ev, returnType = "data.frame")
+  )
+  sim$tad <- sim$time - 24 * 14
+  sim
+}
+
+# Probability that F * dose * c1 exceeds (or falls below) a threshold,
+# integrated over the grid and the analytic F distribution.
+p_above <- function(conc1, dose, wq, omega_f, thr) {
+  sum(wq * stats::pnorm(log(dose * conc1 / thr) / omega_f)) / sum(wq)
+}
+
+# Quantile of the mixture distribution of F * dose * c1 over the grid.
+mix_quantile <- function(prob, conc1, dose, wq, omega_f, upper = Inf) {
+  cdf <- function(x) sum(wq * stats::pnorm(log(x / (dose * conc1)) / omega_f)) / sum(wq)
+  total <- if (is.finite(upper)) cdf(upper) else 1
+  stats::uniroot(function(x) cdf(x) - prob * total, c(1e-4, 1e4), tol = 1e-8)$root
+}
+```
+
+```{r grid-solve}
+grid_inh <- make_grid(mod_inh, classes = c(0, 1))
+grid_rif <- make_grid(mod_rif, classes = 0)
+sim_inh <- solve_unit(mod_inh, grid_inh)
+sim_rif <- solve_unit(mod_rif, grid_rif)
+
+# Each node's solve must carry its own eta: check V/F against the closed form.
+v_chk <- sim_inh |>
+  dplyr::filter(tad == 0) |>
+  dplyr::select(id, WT, vc) |>
+  dplyr::left_join(dplyr::transmute(grid_inh, id, eta_v = etalvc), by = "id") |>
+  dplyr::mutate(v_expected = 29.7 * exp(eta_v) * WT / 19.4)
+stopifnot(max(abs(v_chk$vc / v_chk$v_expected - 1)) < 1e-8)
+
+unit_cmax <- function(sim, grid) {
+  per_node <- sim |>
+    dplyr::group_by(id) |>
+    dplyr::summarise(cmax1 = max(Cc), tmax = tad[which.max(Cc)], .groups = "drop")
+  dplyr::left_join(grid, per_node, by = "id")
+}
+nodes_inh <- unit_cmax(sim_inh, grid_inh)
+nodes_rif <- unit_cmax(sim_rif, grid_rif)
+of_inh <- omega_sd(mod_inh, "etalfdepot")
+of_rif <- omega_sd(mod_rif, "etalfdepot")
+```
+
+# Transit-chain convention: typical-value Tmax
+
+Both models set the absorption rate equal to the transit rate, so the mean
+transit time spans every first-order transfer from the dosing compartment to
+the central compartment: `n + 1` of them for `n` transit compartments. The
+alternative reading, `ktr = n / MTT`, delays the peak. The published median
+Tmax (Tables 3 and 4, secondary parameters) separates the two.
+
+```{r tmax}
+typical <- function(nodes) nodes |> dplyr::filter(abs(etalvc) < 1e-12, abs(etalmtt) < 1e-12, WT == 19)
+tmax_tab <- dplyr::bind_rows(
+  typical(nodes_inh) |>
+    dplyr::transmute(Model = ifelse(MIX_FAST_ELIM == 1, "Isoniazid, fast", "Isoniazid, slow"), tmax, published = 1.10),
+  typical(nodes_rif) |> dplyr::transmute(Model = "Rifampicin", tmax, published = 1.59)
+)
+knitr::kable(
+  tmax_tab |> dplyr::rename("Typical Tmax at 19 kg (h)" = tmax, "Published median Tmax (h)" = published),
+  digits = 2
+)
+stopifnot(
+  all(abs(tmax_tab$tmax - tmax_tab$published) < 0.12)
+)
+```
+
+With `ktr = n / MTT` the same solve gives about 1.19-1.36 h for isoniazid and
+1.72 h for rifampicin, further from the published values in every case.
+
+# Residual error: variance, not SD
+
+Tables 3 and 4 print the residual error as a bare 'RUV' with an RSE and a
+bootstrap 95% CI. The between-subject variability rows of the same tables are
+on the %CV scale, and for those the CI width is consistent with the RSE
+(about `2 x 1.96 x RSE`). For the RUV rows the CI is twice as wide as the RSE
+implies, which is what a variance whose RSE is reported on the SD scale looks
+like (the relative uncertainty of a variance is twice that of its SD). The
+models therefore take `expSd = sqrt(RUV)`.
+
+```{r ruv-scale}
+ci_rows <- data.frame(
+  Row = c("INH RUV", "RIF RUV", "INH BSV V", "INH BSV MTT", "INH BSV F", "RIF BSV V", "RIF BSV MTT", "RIF BSV F"),
+  est = c(0.0967, 0.271, 23.4, 68.2, 41.8, 42, 52.2, 68.0),
+  rse = c(9.79, 8.96, 14.1, 13.9, 12.1, 12.6, 12.7, 16.6),
+  lo = c(0.0639, 0.191, 16.9, 49.3, 30.1, 31.1, 39.7, 40.0),
+  hi = c(0.141, 0.379, 30.2, 94.3, 51.9, 53.9, 68.0, 95.6)
+) |>
+  dplyr::mutate(ratio = ((hi - lo) / est) / (2 * 1.96 * rse / 100))
+knitr::kable(
+  ci_rows |> dplyr::rename("Table row" = Row, "Estimate" = est, "RSE (%)" = rse, "CI low" = lo, "CI high" = hi,
+                           "CI width / (3.92 x RSE)" = ratio),
+  digits = 3
+)
+stopifnot(
+  all(abs(ci_rows$ratio[1:2] - 2) < 0.25),
+  all(abs(ci_rows$ratio[3:8] - 1) < 0.35)
+)
+```
+
+# Replicating Table 5: target attainment by regimen
+
+Table 5 reports, per regimen, the percentage of simulated children reaching
+each exposure target, separately for fast and slow acetylators for isoniazid.
+These percentages are per class, so they do not depend on the mixture
+proportion. Cmax is the steady-state peak of daily dosing.
+
+```{r table5}
+attain <- function(nodes, doses, omega_f, cl_fun, classes, targets) {
+  out <- list()
+  for (reg in names(doses)) {
+    for (cls in classes) {
+      nd <- nodes[nodes$MIX_FAST_ELIM == cls, ]
+      d <- doses[[reg]](nd$WT)
+      for (tg in names(targets)) {
+        thr <- targets[[tg]]
+        p <- if (tg == "AUC0-24 > 10.5") {
+          p_above(1 / cl_fun(nd$WT, cls), d, nd$wq, omega_f, thr)
+        } else if (grepl("<", tg, fixed = TRUE)) {
+          1 - p_above(nd$cmax1, d, nd$wq, omega_f, thr)
+        } else {
+          p_above(nd$cmax1, d, nd$wq, omega_f, thr)
+        }
+        out[[length(out) + 1]] <- data.frame(regimen = reg, class = cls, target = tg, simulated = 100 * p)
+      }
+    }
+  }
+  dplyr::bind_rows(out)
+}
+cl_inh <- function(wt, cls) ifelse(cls == 1, 7.79, 2.59) * (wt / 19.4)^0.75
+cl_rif <- function(wt, cls) 8.11 * (wt / 19.4)^0.75
+
+t5_sim <- dplyr::bind_rows(
+  attain(nodes_inh, dose_inh, of_inh, cl_inh, c(1, 0),
+         list("Cmax > 6" = 6, "Cmax > 3" = 3, "AUC0-24 > 10.5" = 10.5)) |>
+    dplyr::mutate(drug = "Isoniazid", class = ifelse(class == 1, "fast", "slow")),
+  attain(nodes_rif, dose_rif, of_rif, cl_rif, 0, list("Cmax > 8" = 8, "Cmax < 4" = 4)) |>
+    dplyr::mutate(drug = "Rifampicin", class = "all")
+)
+
+# Table 5 of Aruldhas 2019 (blank cells were not simulated by the authors).
+t5_pub <- tibble::tribble(
+  ~drug, ~class, ~target, ~regimen, ~published,
+  "Isoniazid", "fast", "Cmax > 6", "Regimen 1", 41.6,
+  "Isoniazid", "fast", "Cmax > 6", "Regimen 2", 47.6,
+  "Isoniazid", "fast", "Cmax > 3", "Regimen 1", 88.6,
+  "Isoniazid", "fast", "Cmax > 3", "Regimen 2", 90.6,
+  "Isoniazid", "fast", "Cmax > 3", "Regimen 3", 84.9,
+  "Isoniazid", "fast", "AUC0-24 > 10.5", "Regimen 1", 95.9,
+  "Isoniazid", "fast", "AUC0-24 > 10.5", "Regimen 2", 97.1,
+  "Isoniazid", "fast", "AUC0-24 > 10.5", "Regimen 3", 94.1,
+  "Isoniazid", "slow", "Cmax > 6", "Regimen 1", 60.6,
+  "Isoniazid", "slow", "Cmax > 6", "Regimen 2", 73.1,
+  "Isoniazid", "slow", "Cmax > 3", "Regimen 1", 95.9,
+  "Isoniazid", "slow", "Cmax > 3", "Regimen 2", 98.6,
+  "Isoniazid", "slow", "Cmax > 3", "Regimen 3", 94.4,
+  "Isoniazid", "slow", "AUC0-24 > 10.5", "Regimen 1", 99.9,
+  "Isoniazid", "slow", "AUC0-24 > 10.5", "Regimen 2", 100,
+  "Isoniazid", "slow", "AUC0-24 > 10.5", "Regimen 3", 99.9,
+  "Rifampicin", "all", "Cmax > 8", "Regimen 1", 15.1,
+  "Rifampicin", "all", "Cmax > 8", "Regimen 2", 17.8,
+  "Rifampicin", "all", "Cmax > 8", "Regimen 3", 28.8,
+  "Rifampicin", "all", "Cmax > 8", "Regimen 4", 74.2,
+  "Rifampicin", "all", "Cmax < 4", "Regimen 1", 53.7,
+  "Rifampicin", "all", "Cmax < 4", "Regimen 2", 48.9,
+  "Rifampicin", "all", "Cmax < 4", "Regimen 3", 34.3,
+  "Rifampicin", "all", "Cmax < 4", "Regimen 4", 5.2
+)
+t5 <- dplyr::inner_join(t5_pub, t5_sim, by = c("drug", "class", "target", "regimen")) |>
+  dplyr::mutate(diff = simulated - published)
+
+knitr::kable(
+  t5 |> dplyr::rename("Drug" = drug, "Acetylator class" = class, "Target (mg/L, mg*h/L)" = target,
+                      "Regimen" = regimen, "Published (%)" = published, "Simulated (%)" = simulated,
+                      "Difference (points)" = diff),
+  digits = 1,
+  caption = "Replicates Table 5 of Aruldhas 2019."
+)
+stopifnot(
+  nrow(t5) == nrow(t5_pub),
+  abs(median(t5$diff)) < 3,
+  max(abs(t5$diff)) < 7
+)
+```
+
+All 24 published cells are reproduced, with a median difference of
+`r sprintf("%.1f", median(t5$diff))` percentage points and a largest absolute
+difference of `r sprintf("%.1f", max(abs(t5$diff)))` points. The isoniazid
+fast-acetylator cells run 2-5 points high. The paper says the simulated
+exposures 'were derived from the posthoc estimates from NONMEM', i.e. from
+re-estimated individual parameters of the simulated data. Shrinkage of those
+estimates narrows the distribution, which may account for a few points; the
+gap is not tuned away. Reading the %CV values as `omega = CV` instead of
+the exact `omega^2 = log(1 + CV^2)` moves the rifampicin cells 2-3 points
+further from the published values, which supports the exact conversion used
+in the models.
+
+# Replicating Figures 2-4: Cmax and AUC by body weight
+
+Figures 2-4 show box plots of simulated Cmax (and, for isoniazid, AUC0-24)
+at each integer weight. The maintainers digitised the medians from the
+published figures (precision about +/- 0.3 mg/L, +/- 1 mg h/L). The model
+medians below are exact quantiles of the integrated distribution.
+
+```{r fig-medians}
+digitised <- dplyr::bind_rows(
+  data.frame(
+    figure = "Figure 2A: isoniazid Cmax, Regimen 2",
+    WT = c(6, 7, 8, 11, 12, 15, 16, 17, 18, 22, 23, 30),
+    digitised = c(6.4, 5.6, 7.2, 5.6, 6.8, 5.6, 6.5, 6.2, 7.0, 5.8, 7.5, 5.7)
+  ),
+  data.frame(
+    figure = "Figure 3: rifampicin Cmax, Regimen 2",
+    WT = c(6, 7, 8, 11, 12, 15, 16, 17, 18, 22, 23, 30),
+    digitised = c(4.1, 3.7, 4.9, 3.6, 4.55, 3.55, 4.2, 4.0, 4.55, 3.65, 4.75, 3.6)
+  ),
+  data.frame(
+    figure = "Figure 4: rifampicin Cmax, Regimen 4",
+    WT = 6:30,
+    digitised = c(11.0, 11.9, 12.2, 12.4, 12.3, 12.7, 13.6, 12.2, 11.6, 14.2, 13.5, 13.0, 12.1,
+                  11.6, 13.6, 12.7, 12.3, 11.7, 13.4, 13.7, 12.5, 12.4, 13.9, 13.3, 12.8)
+  )
+)
+
+p_fast_printed <- 0.31
+
+# Median Cmax at one weight. For isoniazid the two acetylator classes are
+# mixed in the proportion p_fast through the quadrature weights.
+median_cmax <- function(nodes, dose_fun, omega_f, wt, p_fast = NULL) {
+  nd <- nodes[nodes$WT == wt, ]
+  wq <- nd$wq
+  if (!is.null(p_fast)) wq <- wq * ifelse(nd$MIX_FAST_ELIM == 1, p_fast, 1 - p_fast)
+  mix_quantile(0.5, nd$cmax1, dose_fun(wt), wq, omega_f)
+}
+fig_model_median <- function(figure, wt) {
+  if (grepl("isoniazid", figure, fixed = TRUE)) {
+    median_cmax(nodes_inh, dose_inh[["Regimen 2"]], of_inh, wt, p_fast_printed)
+  } else if (grepl("Regimen 2", figure, fixed = TRUE)) {
+    median_cmax(nodes_rif, dose_rif[["Regimen 2"]], of_rif, wt)
+  } else {
+    median_cmax(nodes_rif, dose_rif[["Regimen 4"]], of_rif, wt)
+  }
+}
+fig_cmp <- digitised |>
+  dplyr::mutate(model = mapply(fig_model_median, figure, WT)) |>
+  dplyr::mutate(pct_diff = 100 * (model / digitised - 1))
+
+ggplot(fig_cmp, aes(WT)) +
+  geom_point(aes(y = digitised, colour = "Digitised from paper")) +
+  geom_line(aes(y = model, colour = "Model median")) +
+  facet_wrap(~figure, ncol = 1, scales = "free_y") +
+  labs(x = "Body weight (kg)", y = "Median steady-state Cmax (mg/L)", colour = NULL,
+       caption = "Replicates the medians of Figures 2A, 3 and 4 of Aruldhas 2019.")
+
+fig_cmp |>
+  dplyr::group_by(figure) |>
+  dplyr::summarise(median_pct_diff = median(pct_diff), max_abs_pct_diff = max(abs(pct_diff))) |>
+  dplyr::rename("Figure" = figure, "Median % difference" = median_pct_diff,
+                "Largest absolute % difference" = max_abs_pct_diff) |>
+  knitr::kable(digits = 1)
+```
+
+```{r fig-medians-gate}
+rif_cmp <- fig_cmp |> dplyr::filter(grepl("rifampicin", figure))
+stopifnot(
+  abs(median(rif_cmp$pct_diff)) < 6,
+  quantile(abs(rif_cmp$pct_diff), 0.9) < 12
+)
+```
+
+The rifampicin medians at both regimens follow the published saw-tooth shape
+(each weight band's fixed dose spread over a growing body weight) and level.
+The isoniazid Cmax median depends on the acetylator mixture; see the next
+section.
+
+# Errata: the fast-acetylator fraction
+
+The paper states three times that the mixture model assigned 31% of children
+to the fast-acetylator class (Results; Table 3 footnote; Discussion: '30.8%
+were found to be fast acetylators and 69.2% to be slow acetylators'). Several
+of the paper's own outputs are reproduced only if the proportions are the
+other way round, i.e. about 69% of children have the 7.79 L/h clearance.
+
+**Figure 2B (isoniazid AUC0-24, Regimen 2).** CL/F has no between-subject
+variability, so `AUC0-24 = F * Dose / CL` is exact and the median at each
+weight follows from the mixture proportion alone. The figure's y-axis stops at
+80 mg h/L. When the axis limits drop points outside that range before the box
+statistics are computed, the boxes describe only the subjects below 80, so the
+comparison is shown both with and without that truncation.
+
+```{r mixture-auc}
+auc_dig <- data.frame(
+  WT = c(6, 7, 8, 11, 12, 15, 16, 17, 18, 22, 23, 30),
+  digitised = c(25.5, 23, 29.5, 25, 29.5, 27, 30, 29.5, 32, 29, 35.5, 30.5)
+)
+auc_median <- function(wt, p_fast, upper) {
+  d <- dose_inh[["Regimen 2"]](wt)
+  mix_quantile(0.5, 1 / c(cl_inh(wt, 1), cl_inh(wt, 0)), d, c(p_fast, 1 - p_fast), of_inh, upper)
+}
+auc_cmp <- tidyr::expand_grid(auc_dig, p_fast = c(0.31, 0.69), upper = c(Inf, 80)) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(model = auc_median(WT, p_fast, upper)) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(ratio = model / digitised)
+auc_summary <- auc_cmp |>
+  dplyr::group_by(p_fast, upper) |>
+  dplyr::summarise(median_ratio = median(ratio), min_ratio = min(ratio), max_ratio = max(ratio), .groups = "drop")
+knitr::kable(
+  auc_summary |>
+    dplyr::mutate(upper = ifelse(is.finite(upper), "points above 80 dropped", "all points"),
+                  p_fast = sprintf("%.0f%%", 100 * p_fast)) |>
+    dplyr::rename("Fast-acetylator fraction" = p_fast, "Box statistics over" = upper,
+                  "Median model/digitised" = median_ratio, "Min" = min_ratio, "Max" = max_ratio),
+  digits = 2
+)
+printed <- auc_summary |> dplyr::filter(p_fast == 0.31)
+swapped_trunc <- auc_summary |> dplyr::filter(p_fast == 0.69, upper == 80)
+stopifnot(
+  # The printed 31% overpredicts every digitised median, with or without
+  # the axis truncation.
+  all(printed$min_ratio > 1.2),
+  # 69% with the axis truncation reproduces them to within the digitising error.
+  abs(swapped_trunc$median_ratio - 1) < 0.08
+)
+
+# Median AUC0-24 over the whole 6-30 kg Regimen 2 population, all points.
+pop_auc_median <- function(p_fast) {
+  wt <- rep(6:30, each = 2)
+  cls <- rep(c(1, 0), times = 25)
+  mix_quantile(0.5, 1 / cl_inh(wt, cls), dose_inh[["Regimen 2"]](wt),
+               ifelse(cls == 1, p_fast, 1 - p_fast), of_inh)
+}
+pop_auc <- c(printed = pop_auc_median(0.31), swapped = pop_auc_median(0.69))
+pop_auc
+```
+
+Over the whole 6-30 kg population the median isoniazid AUC0-24 under Regimen 2
+is `r sprintf("%.1f", pop_auc[["printed"]])` mg h/L with the printed 31% and
+`r sprintf("%.1f", pop_auc[["swapped"]])` mg h/L with 69%.
+
+```{r mixture-auc-gate}
+stopifnot(pop_auc[["printed"]] > 1.5 * pop_auc[["swapped"]])
+```
+
+**Figure 2A (isoniazid Cmax, Regimen 2).** Cmax depends less on clearance
+than AUC does, but the same comparison holds: the printed 31% puts the model
+medians above the digitised ones, while 69% brings them close.
+
+```{r mixture-cmax}
+cmax_inh_cmp <- fig_cmp |>
+  dplyr::filter(grepl("isoniazid", figure)) |>
+  dplyr::select(WT, digitised, p31 = model) |>
+  dplyr::mutate(p69 = mapply(function(w) median_cmax(nodes_inh, dose_inh[["Regimen 2"]], of_inh, w, 0.69), WT))
+cmax_inh_summary <- data.frame(
+  p_fast = c("31%", "69%"),
+  median_pct_diff = c(median(100 * (cmax_inh_cmp$p31 / cmax_inh_cmp$digitised - 1)),
+                      median(100 * (cmax_inh_cmp$p69 / cmax_inh_cmp$digitised - 1)))
+)
+knitr::kable(
+  cmax_inh_summary |>
+    dplyr::rename("Fast-acetylator fraction" = p_fast, "Median % difference from digitised" = median_pct_diff),
+  digits = 1
+)
+stopifnot(
+  abs(cmax_inh_summary$median_pct_diff[2]) < abs(cmax_inh_summary$median_pct_diff[1])
+)
+```
+
+**Table 3 secondary parameters.** The posthoc median AUC0-24 of the studied
+children was 34.04 mg h/L (IQR 23.29-44.23). At a typical Regimen 2 dose for
+a 19.4-kg child (225 mg), a slow acetylator has `AUC0-24 = 225 / 2.59 =
+87` mg h/L and a fast acetylator `225 / 7.79 = 29` mg h/L; a median of 34
+is possible only if most children are in the fast class. The rifampicin value
+from the same children and the same mg dose, `225 / 8.11 = 28` against a
+published median of 25.19, shows the doses are not the explanation.
+
+**Table 5 pooled percentages.** For Regimen 3 the Results report that about
+88% of all children reach Cmax > 3 mg/L and 96% reach AUC0-24 > 10.5. Solving
+`p x fast + (1 - p) x slow` for the class-specific cells of Table 5 gives
+`p = (94.4 - 88) / (94.4 - 84.9) = 0.67` and `p = (99.9 - 96) / (99.9 - 94.1)
+= 0.67` for the fast fraction.
+
+**Figure 1A (isoniazid VPC).** The observed median falls from about 4.3 mg/L
+at 2.5 h to about 1.3 mg/L at 6 h, an apparent elimination rate near
+0.34 /h; the slow-acetylator rate is `2.59 / 29.7 = 0.087` /h and the fast
+one `7.79 / 29.7 = 0.26` /h. Most pre-dose concentrations sit near the
+0.01 mg/L LLOQ, whereas a slow acetylator on daily dosing would have a trough
+near 1 mg/L.
+
+The model file encodes the published clearances unchanged, and they are what
+Table 5 validates per class. The class probability is not a model parameter:
+it is used only when drawing `MIX_FAST_ELIM` for a virtual cohort. The
+`MIX_FAST_ELIM` notes in the model file carry the printed 31%. Users who want
+to reproduce the paper's own population-level outputs should note that those
+outputs correspond to about 69% of children in the fast (7.79 L/h) class.
+
+# Virtual cohort and PKNCA
+
+A stochastic cohort reproduces the steady-state profile under Regimen 2 daily
+dosing, the regimen given to the studied children. Weights cover the paper's
+simulated range of 6-30 kg (eight children per integer kg, 200 per drug).
+Isoniazid acetylator classes are assigned with the printed 31% fast fraction.
+
+```{r cohort}
+rxode2::rxSetSeed(20190301)
+n_per <- 200
+cohort <- data.frame(id = seq_len(n_per), WT = rep(6:30, length.out = n_per))
+set.seed(20190301)
+cohort$MIX_FAST_ELIM <- as.integer(seq_len(n_per) %in% sample.int(n_per, round(p_fast_printed * n_per)))
+
+make_events <- function(cohort, dose_fun) {
+  dose_times <- seq(0, 24 * 14, by = 24)
+  obs_times <- sort(unique(c(24 * 14 + seq(0, 24, by = 0.25), 24 * 14 + c(0.5, 1.5, 2.5))))
+  dplyr::bind_rows(
+    expand.grid(id = cohort$id, time = dose_times) |>
+      dplyr::mutate(evid = 1L, cmt = "depot"),
+    expand.grid(id = cohort$id, time = obs_times) |>
+      dplyr::mutate(evid = 0L, cmt = "central")
+  ) |>
+    dplyr::left_join(cohort, by = "id") |>
+    dplyr::mutate(amt = ifelse(evid == 1L, dose_fun(WT), 0)) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+ev_inh <- make_events(cohort, dose_inh[["Regimen 2"]])
+ev_rif <- make_events(cohort, dose_rif[["Regimen 2"]])
+
+sim_c_inh <- rxode2::rxSolve(mod_inh, ev_inh, returnType = "data.frame", keep = c("WT", "MIX_FAST_ELIM"))
+sim_c_rif <- rxode2::rxSolve(mod_rif, ev_rif, returnType = "data.frame", keep = "WT")
+sim_c <- dplyr::bind_rows(
+  sim_c_inh |> dplyr::mutate(treatment = "Isoniazid"),
+  sim_c_rif |> dplyr::mutate(treatment = "Rifampicin")
+) |>
+  dplyr::mutate(tad = time - 24 * 14)
+```
+
+```{r cohort-plot}
+sim_c |>
+  dplyr::filter(tad <= 6) |>
+  dplyr::group_by(treatment, tad) |>
+  dplyr::summarise(
+    p05 = quantile(Cc, 0.05), p50 = quantile(Cc, 0.5), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~treatment) +
+  scale_y_log10() +
+  labs(x = "Time after dose at steady state (h)", y = "Plasma concentration (mg/L)",
+       caption = "Median and 90% interval over 0-6 h, the sampling window of Figure 1.")
+```
+
+```{r pknca}
+conc_df <- sim_c |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_df <- dplyr::bind_rows(
+  ev_inh |> dplyr::filter(evid == 1L) |> dplyr::mutate(treatment = "Isoniazid"),
+  ev_rif |> dplyr::filter(evid == 1L) |> dplyr::mutate(treatment = "Rifampicin")
+) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(start = 24 * 14, end = 24 * 15, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- suppressMessages(PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)))
+
+nca_wide <- as.data.frame(nca_res$result) |>
+  dplyr::select(treatment, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+# Steady-state AUC over one dosing interval equals F * Dose / CL exactly;
+# the trapezoidal NCA on a 0.25-h grid must agree to within numerical error.
+auc_chk <- nca_wide |>
+  dplyr::left_join(
+    dplyr::bind_rows(
+      sim_c_inh |> dplyr::mutate(treatment = "Isoniazid"),
+      sim_c_rif |> dplyr::mutate(treatment = "Rifampicin")
+    ) |>
+      dplyr::filter(time == 24 * 14) |>
+      dplyr::select(treatment, id, WT, cl),
+    by = c("treatment", "id")
+  ) |>
+  dplyr::left_join(dose_df |> dplyr::distinct(treatment, id, amt), by = c("treatment", "id"))
+```
+
+The per-subject bioavailability is not an output column, so the closed form
+is checked on the subjects' ratio `AUC0-24 x CL / Dose`, which must equal
+their individual F: its spread must match the F omega.
+
+```{r pknca-check}
+auc_chk <- auc_chk |> dplyr::mutate(f_implied = auclast * cl / amt)
+f_sd <- auc_chk |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(sd_log_f = sd(log(f_implied)), median_f = median(f_implied), .groups = "drop")
+knitr::kable(
+  f_sd |> dplyr::rename("Drug" = treatment, "SD of log implied F" = sd_log_f, "Median implied F" = median_f),
+  digits = 3
+)
+stopifnot(
+  # Monte Carlo SE of an SD at n = 200 is about 5%; 15% is three SEs.
+  abs(f_sd$sd_log_f[f_sd$treatment == "Isoniazid"] / of_inh - 1) < 0.15,
+  abs(f_sd$sd_log_f[f_sd$treatment == "Rifampicin"] / of_rif - 1) < 0.15
+)
+```
+
+# Comparison against the published secondary parameters
+
+Tables 3 and 4 report the median of the posthoc Cmax, Tmax and AUC0-24 of the
+studied children. The simulated cohort is the paper's 6-30 kg simulation
+population rather than the 39 studied children, so close agreement is not
+expected; the comparison is a check of level.
+
+```{r nca-compare}
+reference <- data.frame(
+  treatment = c("Isoniazid", "Rifampicin"),
+  cmax = c(5.90, 4.73),
+  tmax = c(1.10, 1.59),
+  auclast = c(34.04, 25.19)
+)
+sim_long <- as.data.frame(nca_res$result) |>
+  dplyr::select(treatment, id, PPTESTCD, PPORRES)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  sim_long, reference,
+  by = "treatment",
+  params = c("cmax", "tmax", "auclast"),
+  units = c(cmax = "mg/L", tmax = "h", auclast = "mg*h/L")
+)
+knitr::kable(cmp, caption = "Steady-state AUC0-24 is reported as `auclast` over the 24-h interval.")
+```
+
+Rifampicin Cmax, Tmax and AUC0-24 agree with Table 4. Isoniazid Tmax agrees;
+the simulated isoniazid AUC0-24 is well above the published median, which is
+the acetylator-fraction inconsistency described in the Errata section above
+(the population medians under both readings are computed in that section).
+
+# Assumptions and deviations
+
+* **Transit convention.** `ktr = (n + 1) / MTT` with the absorption rate equal
+  to the transit rate; confirmed against the published Tmax.
+* **BSV conversion.** `omega^2 = log(1 + CV^2)`; the paper does not state the
+  formula. The Table 5 replication favours it over `omega = CV`.
+* **Residual error.** The 'RUV' rows are read as variances (CI-width argument
+  above). Residual error is `lnorm(expSd)`, the exact counterpart of an
+  additive error on log-transformed concentrations.
+* **Reference weight.** 19.4 kg, the typical child of the Tables 3 and 4
+  footnotes (Table 2 gives a median of 19.5 kg for all 41 enrolled children).
+* **Table 5 simulation design.** Daily dosing to steady state at every integer
+  weight from 6 to 30 kg, with the Table 1 weight-band doses. The paper used
+  Cmax > 6 mg/L as the target for thrice-weekly dosing but does not say
+  whether those cells were simulated with a thrice-weekly schedule; simulating
+  them thrice weekly lowers the slow-acetylator cells by about 11 points
+  (fast-acetylator cells are unchanged) and fits the published values less
+  well, so daily dosing is used throughout.
+* **Regimen 4, 6-11 kg.** 35 mg/kg as the commercially available suspension
+  (Table 1 footnote), simulated with the same bioavailability as the capsules.
+* **Fast-acetylator fraction.** The printed 31% is carried in the model
+  metadata; the paper's own exposure outputs instead correspond to about 69%
+  (Errata section above). No parameter was changed.
+* **Auto-induction.** Not modelled. Samples were taken after about 60 days of
+  rifampicin, so the rifampicin model describes the induced steady state only
+  and should not be used for the first weeks of therapy.
+* **Covariates screened but not retained.** Age, sex, body mass index,
+  height, albumin and fat-free mass (as an alternative size descriptor) are
+  listed in `covariatesDataExcluded`.

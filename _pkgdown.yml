@@ -4208,6 +4208,8 @@ navbar:
         href: articles/Kinsale_2024_islatravir_rat.html
       - text: "Isolariciresinol rat (Liu 2024)"
         href: articles/Liu_2024_spatholobiCaulis.html
+      - text: "Isoniazid (Aruldhas 2019)"
+        href: articles/Aruldhas_2019_tuberculosis.html
       - text: "Isoniazid (Calderin 2025)"
         href: articles/Calderin_2025_pyrazinamide_isoniazid_tbm.html
       - text: "Isoniazid (Chen 2022)"
@@ -7050,6 +7052,8 @@ navbar:
         href: articles/Chang_2023_rifapentine_rifabutin_mouse.html
       - text: "Rifampicin (Abdelgawad 2025)"
         href: articles/Abdelgawad_2025_rifampicin.html
+      - text: "Rifampicin (Aruldhas 2019)"
+        href: articles/Aruldhas_2019_tuberculosis.html
       - text: "Rifampicin (Barnett 2018)"
         href: articles/Barnett_2018_rifampicin.html
       - text: "Rifampicin (Chigutsa 2011)"
@@ -9446,6 +9450,7 @@ articles:
   - articles/Arrieta_2021_isavuconazole
   - articles/Arshad_2020_fluorouracil
   - articles/Arshad_2021_methotrexate
+  - articles/Aruldhas_2019_tuberculosis
   - articles/Aruldhas_2021_methadone
   - articles/Asaumi_2019_rifampicin_ddi_pbpk
   - articles/Asaumi_2022_rifampicin_pgp_ddi_pbpk
