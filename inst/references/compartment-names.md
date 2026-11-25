@@ -970,7 +970,7 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Type:** compartment
 - **Role:** Central enzyme pool that drives time-varying clearance via an indirect-response loop in Clewe 2015 / Svensson 2016 rifampicin autoinduction.
 - **Source aliases:** none.
-- **Example models:** `Clewe_2015_rifampicin.R`, `Svensson_2016_rifampicin.R`.
+- **Example models:** `Clewe_2015_rifampicin.R`, `Svensson_2016_rifampicin.R`, `Bins_2019_pazopanib.R` (ifosfamide-induced enzyme pool, `enz_pool(0) <- 1`, multiplying pazopanib and ifosfamide clearance).
 
 ### enzyme_2b6 (**canonical CYP2B6 enzyme pool**)
 - **Type:** compartment
@@ -8237,6 +8237,14 @@ concentration output, and the `propSd_<drug>` / `addSd_<drug>` residuals.
 - **Source aliases:** none.
 - **Example models:** `Melillo_2023_gadoxetate_rat_pbpk.R` (doi:10.3390/pharmaceutics15030896; a two-compartment model, `central_bosentan` / `peripheral1_bosentan`, drives `cu_bosentan` into the gadoxetate active-uptake inhibition term; bosentan does not inhibit rMrp2 and so has no biliary term).
 - **Notes:** Distinct from the covariate canonicals `CONMED_BOSENTAN` and `BOSENTAN` (treatment-arm indicator). The informal `_bos` fragment elsewhere (e.g. `Aoki_2024_bosentan_pbpk.R`) is a standalone-drug parameter name, not a coupled-perpetrator compartment suffix.
+
+### ifosfamide (**canonical ifosfamide perpetrator drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Ifosfamide perpetrator drug suffix, used when a model carries ifosfamide's own PK as coupled ODE states to drive the induction of a metabolic enzyme pool that also clears a co-modelled victim drug (`central_ifosfamide`, `Cc_ifosfamide`, `lcl_ifosfamide`, `lvc_ifosfamide`).
+- **Source aliases:**
+  - `IFO` / `ICLI` / `IVI` -- Bins 2019 control-stream compartment label and data items for the individual ifosfamide clearance and volume.
+- **Example models:** `Bins_2019_pazopanib.R` (doi:10.1007/s40262-018-0719-5; the fixed Kerbusch 2000 one-compartment autoinduction model, `central_ifosfamide` with `enz_pool`, whose relative enzyme amount multiplies pazopanib clearance).
+- **Notes:** Spelled out per the new-canonical policy, following `ciclosporin` / `bosentan`. A standalone ifosfamide model (`Kerbusch_2000_ifosfamide.R`, `Brain_2008_ifosfamide.R`) keeps the bare canonical names; use the suffix only when ifosfamide is the perpetrator alongside another drug's states.
 
 ## TB-treatment drug suffixes (combination antibiotic)
 

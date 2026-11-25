@@ -4661,6 +4661,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Mathis_2022_berotralstat.R` (single doses 10-900 mg and once-daily doses 110-450 mg pooled over 13 studies).
 - **Notes:** Member of the `DOSE_<drug>_<units>` family. In the source studies API-in-capsule doses are expressed as the HCl salt and blend-in-capsule (commercial) doses as the free base (Mathis 2022 Supporting Information Table S1 note); the two formulations were bioequivalent at those nominal doses.
 
+### DOSE_PAZOPANIB_MG (**canonical for the pazopanib amount per administration in milligrams**)
+- **Description:** Milligram pazopanib amount of the current oral administration, carried as a covariate because relative bioavailability falls with the administered dose. Set it to the dose record's `amt` (mg); per administration, so 400 mg twice daily is 400, not 800.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 200 mg, where the dose-dependent relative bioavailability is 1. Enters as `1 - Emax * (DOSE_PAZOPANIB_MG - 200) / (ED50 + DOSE_PAZOPANIB_MG - 200)` with `Emax` fixed to 1 and `ED50` = 466 mg (Bins 2019 Table 4), so the factor is 0.70 at 400 mg and 0.44 at 800 mg.
+- **Source aliases:**
+  - `DOSE` -- the NONMEM `$INPUT` column of the Bins 2019 final-model control stream (Electronic Supplementary Material), used in `$PK` as `TVB = (1-(DOSE-200)*VMAX/(KM+DOSE-200))`; the same structure as Yu 2017 Eq. 3.
+- **Example models:** `Bins_2019_pazopanib.R` (starting doses 200-1000 mg once daily pooled over three studies).
+- **Notes:** Member of the `DOSE_<drug>_<units>` family. Distinct from `Tan_2025_pazopanib.R`, whose power-form bioavailability `(200 / DOSE)^0.42` reads the dose from a model-local column rather than this register entry.
+
 ### DOSE_BEVUROGANT_MG (**canonical for the administered bevurogant (BI 730357) oral dose in milligrams**)
 - **Description:** Milligram bevurogant dose of the most recent oral administration, carried as a covariate because absolute bioavailability falls linearly with dose on the logit scale and the zero-order input duration of fed doses follows a power of dose. Set it to the dose record's `amt` (mg); per record in dose-escalation designs.
 - **Units:** mg
@@ -18646,7 +18657,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Reference category:** 0 (CYP3A4 `*1/*1` wild-type non-carrier).
 - **Source aliases:**
   - `CYP3A4 Genotype` / `CYP3A4*22` -- used in `MohammedAli_2023_tacrolimus.R` (Mohammed Ali 2023 Methods section 2.3 `CYP3A4*22 C > T (rs35599367)` TaqMan genotyping; Table 1 reports `*1/*1` 86 (86.7%) vs `*1/*22` 12 (13.3%), so heterozygotes and the (unobserved) homozygotes are pooled into the carrier group exactly as the paper's `CYP3A4*22 carriers vs non-carriers` contrast does).
-- **Example models:** `MohammedAli_2023_tacrolimus.R` (one of the two binary inputs from which the three-level CYP3A4/CYP3A5 cluster metabolizer phenotype is reconstructed inside `model()`: `is_hm <- (1 - SNP_CYP3A4_RS35599367) * CYP3A5_EXPR`, `is_pm <- SNP_CYP3A4_RS35599367 * (1 - CYP3A5_EXPR)`, `is_im <- 1 - is_hm - is_pm`; the three indicators then select one of three separately estimated typical CL/F values, 19.6 / 10.6 / 7.37 L/h).
+- **Example models:** `Bins_2019_pazopanib.R` (multiplicative effect on pazopanib clearance, `cl <- exp(lcl + etalcl) * e_snp_cyp3a4_rs35599367_cl^SNP_CYP3A4_RS35599367`, 0.18 vs 0.28 L/h; all carriers heterozygous), `MohammedAli_2023_tacrolimus.R` (one of the two binary inputs from which the three-level CYP3A4/CYP3A5 cluster metabolizer phenotype is reconstructed inside `model()`: `is_hm <- (1 - SNP_CYP3A4_RS35599367) * CYP3A5_EXPR`, `is_pm <- SNP_CYP3A4_RS35599367 * (1 - CYP3A5_EXPR)`, `is_im <- 1 - is_hm - is_pm`; the three indicators then select one of three separately estimated typical CL/F values, 19.6 / 10.6 / 7.37 L/h).
 - **Notes:** Distinct from the two already-registered CYP3A4 SNP canonicals: `SNP_CYP3A4_RS2246709` (active-allele count) and `SNP_CYP3A4_RS2242480_VAR_COUNT` (variant-allele count for the `*1G` / c.1026+12G>A intronic variant) are different loci, and the continuous `CYP3A4` canonical is a probe-substrate-derived activity score rather than a genotype. `*22` is the principal reduced-function *CYP3A4* allele in the tacrolimus / CYP3A pharmacogenetics literature and is nearly always analysed jointly with the *CYP3A5* `*3` expresser status (`CYP3A5_EXPR`), because the two genes together determine total CYP3A metabolic capacity. Follow the two-binary-input convention documented in the `CYP3A5_EXPR_DONOR` Notes: when a source paper fits a combined CYP3A4 + CYP3A5 "cluster" phenotype (high / intermediate / poor metabolizer), keep the underlying genotypes as separate canonical columns (`CYP3A5_EXPR` and `SNP_CYP3A4_RS35599367`) and reconstruct the cluster levels inside `model()`, rather than registering a single collapsed three-level cluster column -- this keeps the underlying biology explicit in the dataset and lets a downstream user re-derive any other clustering rule.
 
 ### SNP_NR1I2_RS2461817_HOM (**canonical for NR1I2 (PXR) rs2461817 homozygous-variant indicator**)
