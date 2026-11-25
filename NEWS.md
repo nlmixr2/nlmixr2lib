@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Friedrich 2014 evacetrapib popPK plus HDL-C and LDL-C exposure-response ([doi:10.1038/psp.2013.70](https://doi.org/10.1038/psp.2013.70)) -- adults with hypercholesterolemia or low HDL-C, as monotherapy or with atorvastatin, simvastatin or rosuvastatin.
+- Add Quinney 2013 midazolam + ketoconazole CYP3A interaction semi-PBPK ([doi:10.1038/psp.2013.50](https://doi.org/10.1038/psp.2013.50)) -- healthy adults (typical-subject simulation).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

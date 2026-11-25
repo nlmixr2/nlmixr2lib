@@ -5784,6 +5784,8 @@ navbar:
         href: articles/Hyland_2009_midazolam_glucuronidation.html
       - text: "Midazolam infants adults (Cella 2012)"
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
+      - text: "Midazolam ketoconazole ddi pbpk (Quinney 2013)"
+        href: articles/Quinney_2013_midazolam_ketoconazole.html
       - text: "Midazolam monkey pbpk (Yau 2023)"
         href: articles/Yau_2023_middle_out_pbpk_translation.html
       - text: "Midazolam pbpk (Brussee 2018)"
@@ -12386,6 +12388,7 @@ articles:
   - articles/Qin_2026_ropeginterferon
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
+  - articles/Quinney_2013_midazolam_ketoconazole
   - articles/Quintairos_2021_tacrolimus_mycophenolic_acid
   - articles/Rachedi_2025_avalglucosidaseAlfa
   - articles/Ramachandran_2023_tuberculosis_eptb_pbpk

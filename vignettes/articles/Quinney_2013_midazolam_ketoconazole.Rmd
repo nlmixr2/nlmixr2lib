@@ -1,0 +1,334 @@
+---
+title: "Midazolam + ketoconazole CYP3A interaction (Quinney 2013)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Midazolam + ketoconazole CYP3A interaction (Quinney 2013)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Quinney_2013_midazolam_ketoconazole_ddi_pbpk"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Quinney_2013_midazolam_ketoconazole_ddi_pbpk"))$description`
+* Article: <https://doi.org/10.1038/psp.2013.50> (open access, PMC4026634)
+* Structural model: Chien et al. 2006, <https://doi.org/10.1124/dmd.105.008730>
+
+Quinney 2013 has two parts. The first re-analyses six published human liver
+microsome studies of ketoconazole inhibiting midazolam 1'-hydroxylation,
+fitting competitive (C), noncompetitive (NC) and mixed (M) inhibition models
+combined with several microsomal-binding models (Table 3). Those fits are
+algebraic Michaelis-Menten regressions on in vitro rates, not a dosing
+model, so they are not packaged. Their output, the binding-corrected
+inhibition constants, feeds the second part: a semi-physiological
+midazolam / ketoconazole interaction model (Chien et al. 2006) that predicts
+how much 200 mg ketoconazole daily raises the AUC of intravenous midazolam
+under each inhibition mechanism (Figure 3, Table 4). That in vivo model is
+what is packaged here, transcribed from the authors' R code in the
+Supplementary Data.
+
+```{r load-model}
+mod <- readModelDb("Quinney_2013_midazolam_ketoconazole_ddi_pbpk")
+mod_rx <- rxode2::rxode2(mod)
+```
+
+# Population
+
+The paper simulates one typical subject with the mean parameters ("A single
+subject was simulated for each inhibition type using the mean parameters").
+The comparator data are from a healthy-volunteer study in which ketoconazole
+200 mg was given once daily before intravenous midazolam (Quinney 2013
+ref. 16, Lucksiri 2005, PhD thesis, Purdue University), with every
+midazolam concentration normalised to a 1 mg dose. The model has no
+covariates, no between-subject variability and no residual error.
+
+# Source trace
+
+Every value is transcribed from the parameter vector in
+`PSP-2013-0039-s07.txt` (the authors' simulation script); the ODEs are the
+three functions of `PSP-2013-0039-s06.txt`. The code labels the values it took
+from Chien et al. 2006 with "Chien, 2006".
+
+| Quantity | Value | Source |
+|---|---|---|
+| Midazolam ka, kpv | 1.17, 1400 1/h | s07 para[1], para[2] |
+| Midazolam V4 (central), V5 (peripheral), Q4 | 43 L, 88.4 L, 14.73 L/h | s07 para[3]-para[5] |
+| Midazolam Vmax gut wall, Vmax liver | 2549, 2549 + 206 mg/h | s07 para[6], para[7] |
+| Midazolam Km | 5.8 x 0.362 = 2.0996 mg/L | s07 para[8] |
+| fm (CYP3A fraction of hepatic metabolism) | 0.93 | s07 para[18] |
+| fu,MDZ, fu,KTZ | 0.04, 0.01 | s07 para[22], para[23]; Methods text below Eq. 9 |
+| Midazolam renal clearance | 0.06 L/h | s07 para[33] |
+| Ketoconazole ka, V51, V61, Q5 | 1.10 1/h, 32.1 L, 19.6 L, 2.39 L/h | s07 para[9]-para[11], para[14] |
+| Ketoconazole Vmax, Km (liver) | 41.1 mg/h, 0.810 mg/L | s07 para[15], para[16] |
+| Ketoconazole fukCL, fukEff | 1, 1 | s07 para[24], para[25] |
+| Ketoconazole liver-to-enzyme-site k2e, Tmax, keff | 1 1/h, 1 mg/h, 5 mg/L | s07 para[13], para[34], para[12] |
+| Vpv, Qpv, Qh | 0.07 L, 67.5 L/h, 90 L/h | s07 para[26]-para[28] |
+| Vh (midazolam liver), Vhk (ketoconazole liver), Ve, Vgw | 1.5, 0.825, 0.825, 1 L | s07 para[29], para[30], para[35], para[32] |
+| Kic, Kin (mixed, BIM) | 19.2, 39.8 nmol/L | Table 3 (BIM, M); s07 para[38], para[37] |
+| Kic (competitive, BIM) | 4.2 nmol/L | Table 3 (BIM, C); s07 para[17] |
+| Kin (noncompetitive, BIM) | 33.5 nmol/L | Table 3 (BIM, NC) |
+| Ketoconazole MW for nmol/L to mg/L | 531.4 g/mol | s07 para[37], para[38] |
+| Hepatic CLint, three inhibition forms | -- | Eqs. 9-11; s06 `competitive.model`, `noncompetitive.model`, `mixed.inhibition.model` |
+| Midazolam and ketoconazole mass balances | -- | s06 (all three functions share them) |
+
+The competitive and noncompetitive functions of s06 are the mixed function
+with, respectively, the noncompetitive term removed (`kin` infinite) and
+`kic = kin`. The packaged model is the mixed form; the other two are run below
+by overriding `kic` and `kin`.
+
+```{r inhibition-settings}
+inhibition <- tibble::tribble(
+  ~treatment,       ~kic,  ~kin,
+  "Competitive",     4.2,  1e12, # Table 3, BIM / C
+  "Noncompetitive", 33.5,  33.5, # Table 3, BIM / NC
+  "Mixed",          19.2,  39.8  # Table 3, BIM / M (the packaged values)
+)
+inhibition
+```
+
+# Simulation
+
+Following the authors' script (s07): ketoconazole 200 mg orally once daily
+at 0, 24, ..., 120 h (six doses), and midazolam 1 mg intravenously with the
+sixth ketoconazole dose at 120 h. The control arm is midazolam 1 mg alone.
+Observations are on the midazolam `central` state; `Cc` is returned in
+ug/L.
+
+```{r simulate}
+obs_grid <- seq(0, 24, by = 0.1)
+
+ev_alone <- rxode2::et(amt = 1, cmt = "central", time = 0) |>
+  rxode2::et(time = obs_grid, cmt = "central") |>
+  as.data.frame() |>
+  dplyr::mutate(id = 1L, treatment = "Midazolam alone")
+
+ev_ddi <- rxode2::et(amt = 200, cmt = "depot_ketoconazole", time = 0, ii = 24, addl = 5) |>
+  rxode2::et(amt = 1, cmt = "central", time = 120) |>
+  rxode2::et(time = 120 + obs_grid, cmt = "central") |>
+  as.data.frame()
+
+sim_one <- function(events, kic, kin) {
+  rxode2::rxSolve(
+    mod_rx, events,
+    params = c(kic = kic, kin = kin),
+    atol = 1e-10, rtol = 1e-8,
+    returnType = "data.frame"
+  )
+}
+
+sim_alone <- sim_one(ev_alone, kic = 19.2, kin = 39.8) |>
+  dplyr::mutate(treatment = "Midazolam alone", tad = time)
+
+sim_ddi <- dplyr::bind_rows(lapply(seq_len(nrow(inhibition)), function(i) {
+  sim_one(ev_ddi, kic = inhibition$kic[i], kin = inhibition$kin[i]) |>
+    dplyr::mutate(treatment = inhibition$treatment[i], tad = time - 120)
+}))
+
+sim <- dplyr::bind_rows(sim_alone, sim_ddi) |>
+  dplyr::filter(tad >= 0) |>
+  dplyr::mutate(
+    treatment = factor(
+      treatment,
+      levels = c("Midazolam alone", "Competitive", "Noncompetitive", "Mixed")
+    )
+  )
+```
+
+# Replicate published figures
+
+## Figure 3a: midazolam alone
+
+The authors' script simulates the control profile with a 3.5 mg intravenous
+dose (s07: `ystart[5]=ystart[5]+3.5`), which is why Figure 3a starts near
+80 ug/L (3.5 mg / 43 L) rather than near 23 ug/L.
+
+```{r fig3a, fig.cap = "Replicates Figure 3a of Quinney 2013: intravenous midazolam alone (3.5 mg, as in the authors' script)."}
+sim_3a <- rxode2::rxSolve(
+  mod_rx,
+  rxode2::et(amt = 3.5, cmt = "central", time = 0) |>
+    rxode2::et(time = obs_grid, cmt = "central"),
+  returnType = "data.frame"
+)
+ggplot(sim_3a, aes(time, Cc)) +
+  geom_line(colour = "blue") +
+  scale_y_log10(limits = c(0.1, 100)) +
+  scale_x_continuous(breaks = c(0, 8, 16, 24)) +
+  labs(x = "Time (h)", y = "Midazolam (ug/L)")
+```
+
+## Figure 3b: midazolam with ketoconazole, three inhibition models
+
+```{r fig3b, fig.cap = "Replicates Figure 3b of Quinney 2013: midazolam 1 mg IV with the sixth daily 200 mg ketoconazole dose. Blue competitive, red mixed, green noncompetitive, as in the paper."}
+sim |>
+  dplyr::filter(treatment != "Midazolam alone") |>
+  ggplot(aes(tad, Cc, colour = treatment)) +
+  geom_line() +
+  scale_colour_manual(values = c(Competitive = "blue", Mixed = "red", Noncompetitive = "darkgreen")) +
+  scale_y_log10(limits = c(0.1, 100)) +
+  scale_x_continuous(breaks = c(0, 8, 16, 24)) +
+  labs(x = "Time after midazolam dose (h)", y = "Midazolam (ug/L)", colour = NULL)
+```
+
+The ordering and spacing of the three curves match Figure 3b: the
+competitive model (Kic 4.2 nmol/L) gives the most inhibition, the
+noncompetitive model the least, and the mixed model lies between them, close
+to the observed profiles.
+
+# PKNCA validation
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::transmute(id = as.integer(treatment), time = tad, Cc, treatment)
+
+dose_df <- sim_nca |>
+  dplyr::distinct(id, treatment) |>
+  dplyr::mutate(time = 0, amt = 1)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, route = "intravascular")
+
+intervals <- data.frame(
+  start = 0,
+  end = Inf,
+  cmax = TRUE,
+  auclast = TRUE,
+  aucinf.obs = TRUE,
+  half.life = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_res)
+```
+
+## Comparison against published values
+
+Results reports the predicted midazolam AUC without inhibitor as 0.031
+against an observed 0.032, printed with units "ng/ml/h". A 1 mg intravenous
+dose cleared at about 30 L/h gives an AUC near 0.03 mg h/L, so the printed
+value is read as 0.031 mg h/L = 31 ug h/L. The paper does not say how its
+AUCs were computed; AUC0-inf is used here.
+
+```{r nca-compare}
+reference <- tibble::tibble(treatment = "Midazolam alone", aucinf.obs = 31)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = reference,
+  by = "treatment",
+  units = c(aucinf.obs = "ug*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs. the paper's predicted midazolam AUC without inhibitor.")
+```
+
+The AUC ratios (AUCR) of Table 4 are computed from the same PKNCA results.
+
+```{r aucr}
+auc_tbl <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "aucinf.obs")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+ctrl <- auc_tbl |> dplyr::filter(treatment == "Midazolam alone")
+
+aucr <- auc_tbl |>
+  dplyr::filter(treatment != "Midazolam alone") |>
+  dplyr::mutate(
+    aucr_0_24 = auclast / ctrl$auclast,
+    aucr_inf = aucinf.obs / ctrl$aucinf.obs,
+    treatment = as.character(treatment)
+  ) |>
+  dplyr::left_join(
+    tibble::tibble(
+      treatment = c("Competitive", "Noncompetitive", "Mixed"),
+      paper = c(4.5, 2.0, 2.5)
+    ),
+    by = "treatment"
+  ) |>
+  dplyr::mutate(pct_diff = 100 * (aucr_inf - paper) / paper)
+
+aucr |>
+  dplyr::select(treatment, aucr_0_24, aucr_inf, paper, pct_diff) |>
+  dplyr::mutate(dplyr::across(c(aucr_0_24, aucr_inf, pct_diff), \(x) signif(x, 3))) |>
+  dplyr::rename(
+    "Inhibition model" = treatment,
+    "Simulated AUCR (0-24 h)" = aucr_0_24,
+    "Simulated AUCR (0-inf)" = aucr_inf,
+    "Table 4 AUCR" = paper,
+    "Difference, 0-inf (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Midazolam AUC ratio with / without ketoconazole. Observed (Table 4): 3.1 (2.8-3.3).")
+```
+
+```{r gate}
+# Deterministic model: one typical subject per arm, no random effects, so
+# the differences below are transcription / method differences only.
+ctrl_auc <- ctrl$aucinf.obs
+stopifnot(
+  abs(ctrl_auc - 31) / 31 < 0.10,
+  all(abs(aucr$pct_diff) < 10),
+  aucr$aucr_inf[aucr$treatment == "Competitive"] >
+    aucr$aucr_inf[aucr$treatment == "Mixed"],
+  aucr$aucr_inf[aucr$treatment == "Mixed"] >
+    aucr$aucr_inf[aucr$treatment == "Noncompetitive"]
+)
+```
+
+All three predicted AUCRs are within 10% of Table 4 and the mixed model is
+the closest to the observed 3.1, as the paper concludes. AUC0-inf reproduces
+Table 4 better than AUC0-24 does, which suggests the paper's AUCs were
+extrapolated to infinity.
+
+# Assumptions and deviations
+
+- **Source of the equations and constants.** The text defers to Chien et al.
+  2006 for "all other equations and parameters". The authors' R code
+  (Supplementary Data s06 and s07) contains the complete ODE system and every
+  constant, so the model is transcribed from the code; Chien et al. 2006 was
+  not needed.
+- **Unbound fraction in the CLint equations.** Printed Eqs. 9-11 multiply Km
+  by fu,MDZ in the denominator, which makes fu,MDZ cancel. The code applies
+  fu,MDZ to the substrate term only (`km * Vh * (...) + fum * Ah * (...)`),
+  so Km acts on unbound midazolam. The code's form is used.
+- **Midazolam Km.** Methods says the simulation used the Km from the BIM
+  binding model (3.30-3.48 umol/L, Table 3). The code uses 5.8 umol/L x 0.362
+  = 2.10 mg/L, the value it labels "Chien, 2006". The code's value is used;
+  it reproduces the paper's predicted control AUC (0.031 mg h/L).
+- **Inhibition constants per model.** The example script (s07) runs the
+  noncompetitive model with Kin = 39.8 nmol/L, the mixed-model value. Methods
+  says each model used its own BIM constants, and with the noncompetitive
+  BIM value of Table 3 (Kin = 33.5 nmol/L) the AUCR is closer to Table 4
+  (2.0); 33.5 nmol/L is used for the noncompetitive arm here. The competitive
+  arm uses Kic = 4.2 nmol/L (Table 3, BIM / C, and s07 para[17]).
+- **Ketoconazole regimen.** Results states ketoconazole was given for 7 days
+  in one place and 6 days in another; the script gives six once-daily doses
+  with midazolam at the sixth, which is what is simulated.
+- **Figure 3a dose.** Figure 3a is simulated at 3.5 mg, the dose in the
+  authors' control script, although Results says concentrations were
+  normalised to 1 mg. The AUC and AUCR comparisons use 1 mg.
+- **Route flags and dummy state.** The code multiplies the oral-midazolam
+  equations by a flag `modose` (0 in the paper's simulation) and keeps a
+  ketoconazole portal-vein state whose derivative is identically zero. Here
+  the route is chosen by the compartment that is dosed (`depot` for oral,
+  `central` for intravenous midazolam) and the zero state is omitted. The
+  paper only simulated intravenous midazolam, so the oral path, including
+  gut-wall inhibition by ketoconazole still in the gut lumen, is shipped as
+  coded but was not evaluated by the authors.
+- **Zero-order infusion term.** The code carries an infusion rate `Dinf`
+  (0 in every run) in both central compartments. It is omitted; an infusion
+  into `central` is given with an rxode2 `rate` instead.
+- **No variability.** The paper reports no between-subject or residual
+  variability for the in vivo model, so none is included.
+- Europe PMC, which carries PubMed's comment and correction links, lists no
+  erratum or correction for this article as of 2026-11-23.
