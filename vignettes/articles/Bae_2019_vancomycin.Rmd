@@ -334,6 +334,9 @@ model is kept exactly as printed in Table 2.
 
 # Assumptions and deviations
 
+* **Errata and supplements.** No erratum or correction was found
+  (Europe PMC, 2026-11-25), and the article has no supplementary
+  material; Table 2 is the sole source of the parameter values.
 * **Residual error.** Methods Eq. 2 describes a combined additive plus
   proportional error model, but Table 2 reports only a proportional
   component (0.253). The model uses proportional error only. The value is
