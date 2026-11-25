@@ -4365,38 +4365,16 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
 - **Example models:** `Khera_2024_dyp688_mouse_tgi.R`.
 - **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_CARBOPLATIN_MGKG`). Carried in mg/kg because the model's `amt` is in nmol of antibody, so the categorical level cannot be recovered from the dose records. The 3 mg/kg Q2W and Q4W groups share one level; the categorical effect is a per-dose-level fit and is not an exposure-response, so the authors used the reference (smallest) kkill for every simulation outside the fitted groups.
 
-### DOSE_TAK648_MGKG (**canonical for the once-daily TAK-648 dose of the treatment group, in mg/kg/day**)
-- **Description:** The once-daily oral dose of the PDE4 inhibitor TAK-648 received by the animal's treatment group, normalised to body weight. Per-subject (per-group) covariate, constant over the treatment period. 0 for animals that did not receive TAK-648.
-- **Units:** mg/kg/day
+### DOSE_PP13_NGKG (**canonical for the placental protein 13 dose level of the treatment group, in ng/kg**)
+- **Description:** The recombinant placental protein 13 (PP13, galectin-13) dose level of the animal's treatment group, normalised to body weight and expressed in ng/kg. Per-subject (per-group) covariate.
+- **Units:** ng/kg
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** none (continuous; 0 = no TAK-648).
+- **Reference category:** none -- selects one of three dose-group parameter sets (1.3, 2.6 and 12.8 ng/kg), each the mean of individual two-compartment fits. Below 1.84 ng/kg takes the 1.3 ng/kg set, 1.84 to below 5.77 ng/kg the 2.6 ng/kg set, and 5.77 ng/kg or above the 12.8 ng/kg set (geometric midpoints between the studied levels).
 - **Source aliases:**
-  - dose group -- Plock 2017 Supplementary Table 1 (1, 3 or 10 mg/kg once daily). The published `$PRED` reads a precomputed exposure column (`TPDE`, total PDE4 inhibition) rather than the dose; the model rebuilds that exposure from this covariate.
-- **Example models:** `Plock_2017_TAK648_mouse.R`.
-- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. Converted inside the model to the steady-state AUC over one dosing interval as `1000 * DOSE / CL` (ug*h/L) with the apparent clearance in L/h/kg. Carried as a covariate because the model is algebraic in time and consumes no dose events.
-
-### DOSE_ROFLUMILAST_MGKG (**canonical for the once-daily roflumilast dose of the treatment group, in mg/kg/day**)
-- **Description:** The once-daily oral roflumilast dose received by the animal's treatment group, normalised to body weight. Per-subject (per-group) covariate. 0 for animals that did not receive roflumilast.
-- **Units:** mg/kg/day
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** none (continuous; 0 = no roflumilast).
-- **Source aliases:**
-  - dose group -- Plock 2017 Supplementary Table 1 (0.3, 1 or 3 mg/kg once daily).
-- **Example models:** `Plock_2017_TAK648_mouse.R`.
-- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. Roflumilast dosing produces exposure to both roflumilast and its active metabolite roflumilast N-oxide; in the founding model each analyte's AUC is the dose divided by that analyte's apparent clearance after roflumilast dosing. Distinct from `CONMED_ROFLUMILAST_DOSE`, the human ug/day total-daily-dose column of a COPD meta-analysis.
-
-### DOSE_ROFLUMILASTNOXIDE_MGKG (**canonical for the once-daily roflumilast N-oxide dose of the treatment group, in mg/kg/day**)
-- **Description:** The once-daily oral dose of roflumilast N-oxide (the active metabolite of roflumilast, given as the administered compound) received by the animal's treatment group, normalised to body weight. Per-subject (per-group) covariate. 0 for animals that did not receive roflumilast N-oxide.
-- **Units:** mg/kg/day
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** none (continuous; 0 = no roflumilast N-oxide).
-- **Source aliases:**
-  - dose group -- Plock 2017 Supplementary Table 1 (3 mg/kg once daily).
-- **Example models:** `Plock_2017_TAK648_mouse.R`.
-- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. N-oxide dosing yields mainly N-oxide exposure plus a small roflumilast exposure (2.6% of the N-oxide AUC in the founding source); the founding model uses the two apparent clearances estimated after N-oxide dosing.
+  - `Group 1-4` -- Drobnjak 2018 dose groups (1.3, 2.6, 12.8 ng/kg IV; 12.8 ng/kg SC). Same units, no value transformation.
+- **Example models:** `Drobnjak_2018_pp13_rabbit.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_DYP688_MGKG`). Carried in ng/kg because the model's `amt` is the per-animal dose in pg, so the dose level cannot be recovered from the dose records without body weight. The paper gives no dose-exposure function, so this is a lookup of the nearest studied group, not an interpolation.
 
 ### CSF1 (**canonical for colony-stimulating factor 1 / macrophage-colony-stimulating factor concentration**)
 - **Description:** Plasma colony-stimulating factor 1 (CSF-1, also known as macrophage colony-stimulating factor, M-CSF) concentration (baseline or time-varying). The hematopoietic cytokine that signals through CSF-1R to drive monocyte / macrophage differentiation and survival; used as both a target-engagement biomarker (anti-CSF-1R mAbs increase circulating free CSF-1) and a baseline covariate on PK / PD parameters in CSF-1R-pathway PopPK/PD models.

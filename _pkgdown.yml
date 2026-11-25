@@ -7526,10 +7526,8 @@ navbar:
         href: articles/May_2025_potravitug.html
       - text: "Pozelimab (Lin 2024)"
         href: articles/Lin_2024_pozelimab.html
-      - text: "Poziotinib human (Pin 2026)"
-        href: articles/Pin_2026_intestinal_organoid_gi_toxicity.html
-      - text: "Poziotinib organoid (Pin 2026)"
-        href: articles/Pin_2026_intestinal_organoid_gi_toxicity.html
+      - text: "Pp13 rabbit (Drobnjak 2018)"
+        href: articles/Drobnjak_2018_pp13_rabbit.html
       - text: "Pramlintide (Fang 2013)"
         href: articles/Fang_2013_pramlintide.html
       - text: "Pravastatin (Ide 2009)"
@@ -11288,6 +11286,7 @@ articles:
   - articles/Downes_2020_vancomycin
   - articles/Downes_2022_tobramycin
   - articles/Downes_2023_vancomycin
+  - articles/Drobnjak_2018_pp13_rabbit
   - articles/Drweesh_2026_adalimumab
   - articles/Du_2019_magnesiumSulfate
   - articles/Du_2019_magnesiumSulfate_eclampsia

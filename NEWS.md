@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mukherjee 2018 tofacitinib popPK and week-8 exposure-response for clinical remission, clinical response and mucosal healing ([doi:10.1111/bcp.13523](https://doi.org/10.1111/bcp.13523)) -- adults with moderately to severely active ulcerative colitis.
+- Add Drobnjak 2018 placental protein 13 (PP13) ([doi:10.2147/DDDT.S167926](https://doi.org/10.2147/DDDT.S167926)) -- nonpregnant female New Zealand White rabbits (IV and SC).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
