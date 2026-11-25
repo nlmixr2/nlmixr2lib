@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Al-Huniti 2016 naloxegol spontaneous-bowel-movement and diary-discontinuation exposure-response models ([doi:10.1002/psp4.12099](https://doi.org/10.1002/psp4.12099)) -- adults with noncancer pain and opioid-induced constipation.
+- Add Gatault 2015 eculizumab ([doi:10.1080/19420862.2015.1086049](https://doi.org/10.1080/19420862.2015.1086049)) -- adults on maintenance therapy for atypical hemolytic-uremic syndrome or paroxysmal nocturnal hemoglobinuria.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
