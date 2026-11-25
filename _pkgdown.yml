@@ -6932,6 +6932,8 @@ navbar:
         href: articles/Bhagunde_2019_imipenem_relebactam.html
       - text: "Relebactam (Patel 2022)"
         href: articles/Patel_2022_imipenem_relebactam.html
+      - text: "Relebactam (Rizk 2018)"
+        href: articles/Rizk_2018_relebactam.html
       - text: "Relebactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Remdesivir (Abouellil 2023)"
@@ -11499,6 +11501,7 @@ articles:
   - articles/Riggs_2014_empagliflozin
   - articles/Riglet_2020_mycophenolic_acid
   - articles/Rini_2013_axitinib
+  - articles/Rizk_2018_relebactam
   - articles/Robarge_2017_efavirenz
   - articles/Robbie_2012_palivizumab
   - articles/Roberts_2011_vancomycin
