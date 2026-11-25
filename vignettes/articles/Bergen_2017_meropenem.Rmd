@@ -123,10 +123,14 @@ The two-state life-cycle model is moderately stiff because `k21` (50 /h) is
 much faster than the subpopulation growth rate constants `k12` (~0.09-1.2 /h).
 Default lsoda tolerances accumulate enough error over ~24 h of growth to drive
 the trajectory to `NaN`. Tighten the absolute and relative tolerances when
-solving:
+solving, and use the Fortran LSODA (`method = "lsoda"`):
 
 ```{r solver-opts}
-solver_opts <- list(maxsteps = 1e6, atol = 1e-12, rtol = 1e-8)
+# The drug-free growth control is knife-edge on liblsoda, rxode2's default:
+# perturbing the parameters by 1e-12 makes about half of its solves fail with
+# "could not solve the system", depending on the machine. The Fortran LSODA
+# solves every case and agrees with dop853.
+solver_opts <- list(maxsteps = 1e6, atol = 1e-12, rtol = 1e-8, method = "lsoda")
 ```
 
 # Carrying-capacity (growth control) check
@@ -386,8 +390,9 @@ knitr::kable(cmp, digits = 2,
 * **Solver tolerances.** Default lsoda settings (atol=1e-8, rtol=1e-6) drive
   the trajectory to NaN within ~3 h because the population spans 10^6 ->
   10^10 CFU/mL and the relative-error budget is overwhelmed. The vignette
-  uses `atol = 1e-12, rtol = 1e-8, maxsteps = 1e6`; users should pass the
-  same tolerances to `rxSolve`.
+  uses `atol = 1e-12, rtol = 1e-8, maxsteps = 1e6` with the Fortran LSODA
+  (`method = "lsoda"`), because the default liblsoda fails on the drug-free
+  control on some machines; users should pass the same settings to `rxSolve`.
 * **Below limit of counting.** Displayed total counts are floored at the
   published limit of counting (1.0 log10 CFU/mL); the underlying states are
   not floored. The limit on antibiotic-containing agar is 0.7 log10 CFU/mL
