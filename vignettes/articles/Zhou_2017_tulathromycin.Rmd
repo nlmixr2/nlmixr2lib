@@ -1,0 +1,343 @@
+---
+title: "Tulathromycin PK/PD against Pasteurella multocida in a porcine tissue cage model (Zhou 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tulathromycin PK/PD against Pasteurella multocida in a porcine tissue cage model (Zhou 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Zhou 2017 (Front Pharmacol 8:392, doi:10.3389/fphar.2017.00392) studied
+**tulathromycin**, a long-acting veterinary macrolide, against
+*Pasteurella multocida* in piglets fitted with subcutaneous tissue cages. The
+pharmacokinetics in serum, in non-inflamed cage fluid (transudate) and in
+carrageenan-inflamed cage fluid (exudate) were analysed non-compartmentally
+only, so no PK model can be packaged. The quantitative model of the paper is
+the ex vivo PK/PD integration: samples of each fluid, taken after a single
+2.5 mg/kg intramuscular dose, were inoculated with *P. multocida* CVCC430 and
+the 24 h change in log10 CFU/mL was fitted against the AUC(0-24 h)/MIC of the
+sample with an inhibitory sigmoid Emax model. The three fluids were fitted
+separately (Table 6), so each fit is its own model file:
+
+| Model file | Fluid | Source |
+|---|---|---|
+| `Zhou_2017_tulathromycin_pkpd_serum` | Serum | Table 6, column 'Serum' |
+| `Zhou_2017_tulathromycin_pkpd_transudate` | Tissue-cage transudate | Table 6, column 'Transudate' |
+| `Zhou_2017_tulathromycin_pkpd_exudate` | Tissue-cage exudate | Table 6, column 'Exudate' |
+
+The paper prints the model as
+
+`E = Emax - (Emax - E0) * Ce^N / (EC50^N + Ce^N)`
+
+with its **Emax defined as the growth in drug-free control samples and its E0
+as the maximum growth inhibition**, the reverse of the usual names. The model
+files use the canonical roles, `e0` = effect at zero exposure (the paper's
+Emax) and `emax` = maximal effect (the paper's E0), and the same equation. No
+value changes.
+
+In the ex vivo design each sample holds one concentration C for the 24 h
+incubation, so the covariate `AUC_TULA` is `24 * C` (ug*h/mL) and the index is
+`AUC_TULA / mic`, with the CVCC430 MIC of 0.03 ug/mL in all three fluids.
+
+```{r models}
+m_serum <- rxode2::rxode2(readModelDb("Zhou_2017_tulathromycin_pkpd_serum"))
+m_trans <- rxode2::rxode2(readModelDb("Zhou_2017_tulathromycin_pkpd_transudate"))
+m_exu <- rxode2::rxode2(readModelDb("Zhou_2017_tulathromycin_pkpd_exudate"))
+```
+
+# Population
+
+Twelve healthy Duroc x Landrace x Yorkshire piglets (six male, six female,
+13-15 kg) each carried two silicone tissue cages under the neck skin; one cage
+was injected with 0.5 mL of 1% carrageenan, and after 4-5 weeks the plain cage
+held transudate and the injected cage exudate. Six piglets received
+tulathromycin 2.5 mg/kg intravenously and six intramuscularly. The ex vivo
+time-kill curves (Figure 5) used the intramuscular group's serum (0.083-360 h)
+and cage fluids (1-360 h). CVCC430 has an MIC of 0.25 ug/mL in Mueller-Hinton
+broth and 0.03 ug/mL in serum, transudate and exudate (Table 4 and Results).
+No animal covariate enters any of the three models, so no virtual cohort is
+needed; every simulation below is a deterministic typical-value solve.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Sigmoid Emax equation | `E = Emax - (Emax - E0)*Ce^N/(EC50^N + Ce^N)` | Methods, 'PK/PD Integration and Modeling' |
+| Index `Ce` | AUC(0-24 h)/MIC, AUC = sample concentration x 24 h | Methods, 'PK/PD Integration and Modeling' |
+| `e0` (paper Emax), serum / transudate / exudate | 1.60 / 1.08 / 1.85 log10 CFU/mL | Table 6 |
+| `emax` (paper E0), serum / transudate / exudate | -4.91 / -0.40 / -3.16 log10 CFU/mL | Table 6 |
+| EC50, serum / transudate / exudate | 58.80 / 13.70 / 33.55 h | Table 6 |
+| N, serum / transudate / exudate | 4.03 / 1.88 / 15.55 | Table 6 |
+| `mic` (CVCC430) | 0.03 ug/mL in serum, transudate and exudate | Table 4; Results, 'MIC and MBC Values' |
+| `log10_cfu0` | 7.2 log10 CFU/mL | Figure 5, time-zero counts (digitised) |
+| `addSd` | 0 (fixed) | not reported |
+
+# Ex vivo sigmoid Emax models
+
+## Table 6 target indices
+
+Table 6 prints the AUC(0-24 h)/MIC giving no net change (E = 0), a 3-log10
+kill (E = -3) and a 4-log10 kill (E = -4). These are computed by the paper
+from the same curve parameters, so solving the packaged models for those
+targets checks the transcription. The solve below runs each model over a fine
+grid of exposures and interpolates the simulated 24 h change.
+
+```{r targets}
+grid_aucmic <- exp(seq(log(1), log(1000), length.out = 2000))
+mic <- 0.03
+cfu0 <- 7.2
+ex_events <- function(aucmic) {
+  data.frame(
+    id = seq_along(aucmic), time = 24, evid = 0, amt = 0, cmt = "bact",
+    AUC_TULA = aucmic * mic
+  )
+}
+change_24h <- function(mod, aucmic = grid_aucmic) {
+  sim <- rxode2::rxSolve(mod, ex_events(aucmic), returnType = "data.frame")
+  sim$log_cfu - log10(10^cfu0 + 1)
+}
+dE <- list(
+  Serum = change_24h(m_serum),
+  Transudate = change_24h(m_trans),
+  Exudate = change_24h(m_exu)
+)
+
+solve_target <- function(d, target) {
+  if (min(d) > target) {
+    return(NA_real_)
+  }
+  approx(d, grid_aucmic, xout = target, ties = mean)$y
+}
+targets <- tibble::tribble(
+  ~fluid, ~E, ~published,
+  "Serum", 0, 44.55,
+  "Serum", -3, 73.19,
+  "Serum", -4, 92.44,
+  "Transudate", 0, 23.17,
+  "Transudate", -3, NA,
+  "Transudate", -4, NA,
+  "Exudate", 0, 32.42,
+  "Exudate", -3, 41.85,
+  "Exudate", -4, NA
+) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    model = solve_target(dE[[fluid]], E),
+    pct_diff = 100 * (model - published) / published
+  ) |>
+  dplyr::ungroup()
+
+targets |>
+  dplyr::mutate(model = round(model, 2), pct_diff = round(pct_diff, 2)) |>
+  dplyr::rename(
+    "Fluid" = fluid, "Target E (log10 CFU/mL)" = E,
+    "Published AUC(0-24 h)/MIC (h)" = published, "Model AUC(0-24 h)/MIC (h)" = model,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Table 6 target indices, published versus solved from the packaged models. Blank published cells are blank in Table 6.")
+```
+
+```{r targets-check}
+printed <- targets |> dplyr::filter(!is.na(published))
+blank <- targets |> dplyr::filter(is.na(published))
+stopifnot(
+  # All six printed targets reproduce to better than 0.5%.
+  all(abs(printed$pct_diff) < 0.5),
+  # Every blank cell is a kill the fitted maximal effect cannot reach
+  # (transudate emax = -0.40, exudate emax = -3.16), which is why Table 6
+  # leaves it blank.
+  all(is.na(blank$model))
+)
+```
+
+All six printed targets reproduce to within `r round(max(abs(printed$pct_diff)), 2)`%, and each blank cell of
+Table 6 is a kill that the fitted maximal effect cannot reach.
+
+## Effect curves (replicates Figure 4, top panel)
+
+```{r fig4, fig.cap = "Replicates the layout of Zhou 2017 Figure 4 (top panel, serum) and adds the transudate and exudate fits of Table 6: 24 h change in bacterial count versus AUC(0-24 h)/MIC. Dashed lines mark the bacteriostatic, bactericidal and eradication levels."}
+curves <- data.frame(
+  aucmic = rep(grid_aucmic, 3),
+  change = unlist(dE, use.names = FALSE),
+  fluid = rep(names(dE), each = length(grid_aucmic))
+) |>
+  dplyr::filter(aucmic <= 600)
+ggplot(curves, aes(aucmic, change, colour = fluid)) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = c(0, -3, -4), linetype = "dashed", colour = "grey50") +
+  coord_cartesian(xlim = c(0, 600), ylim = c(-6, 2)) +
+  labs(x = "AUC(0-24 h)/MIC (h)", y = "Change in log10 CFU/mL over 24 h", colour = NULL) +
+  theme_bw()
+```
+
+The serum curve matches Figure 4: about +1.6 log10 at low exposure, a fall
+between about 30 and 120 h, and a plateau near -4.9 log10 (the detection limit
+of 200 CFU/mL from a start of about 7.2 log10). The middle panel of Figure 4
+(Cmax/MIC) is the same fit on an axis divided by 24, since each ex vivo sample
+has a constant concentration; its EC50 would be 58.80 / 24 = 2.45. Figure 4's
+largest AUC(0-24 h)/MIC, about 595 h, is 24 x 0.74 / 0.03 = 592 h: the serum
+Cmax of Table 1 divided by the CVCC430 MIC.
+
+## Ex vivo kill at the serum sample concentrations (compare Figure 5A)
+
+Zhou 2017 reports that serum samples taken from 0.083 to 60 h after the dose
+gave a 3- to 4-log10 kill and that samples from 96 h onward did not inhibit
+growth (Figure 5A). The mean serum concentrations below were digitised by the
+maintainers from Figure 2 (axis-calibrated pixel positions of the serum
+markers; about 2% precision).
+
+```{r fig5a}
+serum_fig2 <- data.frame(
+  time_h = c(0.25, 12, 24, 48, 60, 96, 120, 144, 168),
+  conc = c(0.740, 0.137, 0.134, 0.122, 0.099, 0.045, 0.036, 0.031, 0.023),
+  reported = c(rep("3-4 log10 kill", 5), rep("no inhibition", 4))
+)
+change_at <- function(conc, mic_value) {
+  ev <- data.frame(
+    id = seq_along(conc), time = 24, evid = 0, amt = 0, cmt = "bact",
+    AUC_TULA = 24 * conc * 0.03 / mic_value
+  )
+  sim <- rxode2::rxSolve(m_serum, ev, returnType = "data.frame")
+  sim$log_cfu - log10(10^cfu0 + 1)
+}
+serum_fig2$model_mic003 <- change_at(serum_fig2$conc, 0.03)
+serum_fig2$model_mic004 <- change_at(serum_fig2$conc, 0.04)
+serum_fig2 |>
+  dplyr::mutate(
+    aucmic = round(24 * conc / 0.03, 1),
+    dplyr::across(c(model_mic003, model_mic004), \(x) round(x, 2))
+  ) |>
+  dplyr::select(time_h, conc, aucmic, reported, model_mic003, model_mic004) |>
+  dplyr::rename(
+    "Sample time (h)" = time_h, "Serum conc. (ug/mL, Figure 2)" = conc,
+    "AUC(0-24 h)/MIC at MIC 0.03 (h)" = aucmic, "Figure 5A (text)" = reported,
+    "Model change, MIC 0.03" = model_mic003, "Model change, MIC 0.04" = model_mic004
+  ) |>
+  knitr::kable(caption = "Predicted 24 h change (log10 CFU/mL) in each serum sample, with the CVCC430 MIC (0.03 ug/mL) and, for contrast, the 7-strain average serum MIC (0.04 ug/mL) that Table 5 uses.")
+```
+
+```{r fig5a-check}
+kill <- serum_fig2$reported == "3-4 log10 kill"
+stopifnot(
+  # With the CVCC430 MIC, every sample up to 60 h gives at least a 3-log10
+  # kill and every sample from 96 h grows, as Figure 5A reports.
+  all(serum_fig2$model_mic003[kill] <= -3),
+  all(serum_fig2$model_mic003[!kill] > 0),
+  # The 0.04 ug/mL average MIC would lose the 60 h kill.
+  serum_fig2$model_mic004[serum_fig2$time_h == 60] > -3
+)
+```
+
+The CVCC430 MIC of 0.03 ug/mL reproduces the reported pattern; the
+seven-strain average of 0.04 ug/mL would leave the 60 h sample at a
+`r round(-serum_fig2$model_mic004[serum_fig2$time_h == 60], 1)`-log10 kill. This, with the Figure 4 axis extent above, is why `mic` is
+0.03 ug/mL.
+
+The tissue-cage fluids are not compared sample by sample. Their concentrations
+in Figure 2 overlap and are hard to separate, and the reported ex vivo
+responses (slight inhibition in transudate at 36 h, a 3-log10 kill in exudate
+at 24 h and slight inhibition at most other exudate times) fall inside the
+narrow exposure band (about 20-50 h) where both fitted curves change.
+
+## Dosage table (Table 7)
+
+Table 7 converts each target index into a dose with
+`Dose = Cl x factor x MIC / (fu x F)`, using a serum MIC distribution scaled
+from broth. The clearance, bioavailability and unbound fraction are common to
+all cells, so each dose divided by (target index x MIC) should be the same
+constant. Using the model-solved targets checks the proportionality of all
+twelve printed doses at once.
+
+```{r table7}
+tab7 <- tibble::tribble(
+  ~fluid, ~E, ~dose_006, ~dose_012, ~dose_024,
+  "Serum", 0, 3.19, 6.39, 12.78,
+  "Serum", -3, 5.25, 10.49, 20.99,
+  "Serum", -4, 6.63, 13.25, 26.51,
+  "Transudate", 0, 1.66, 3.32, 6.64,
+  "Exudate", 0, 2.32, 4.65, 9.30,
+  "Exudate", -3, 3.00, 6.00, 12.00
+) |>
+  dplyr::left_join(dplyr::select(targets, fluid, E, model), by = c("fluid", "E")) |>
+  dplyr::mutate(
+    k_006 = dose_006 / (model * 0.06),
+    k_012 = dose_012 / (model * 0.12),
+    k_024 = dose_024 / (model * 0.24)
+  )
+tab7 |>
+  dplyr::mutate(dplyr::across(c(model, k_006, k_012, k_024), \(x) signif(x, 4))) |>
+  dplyr::rename(
+    "Fluid" = fluid, "Target E" = E, "Model index (h)" = model,
+    "Dose / (index x 0.06)" = k_006, "Dose / (index x 0.12)" = k_012,
+    "Dose / (index x 0.24)" = k_024
+  ) |>
+  dplyr::select(-dose_006, -dose_012, -dose_024) |>
+  knitr::kable(caption = "Table 7 doses (mg/kg) divided by the model-solved target index and the serum MIC column.")
+```
+
+```{r table7-check}
+k_all <- c(tab7$k_006, tab7$k_012, tab7$k_024)
+stopifnot(
+  # One constant explains all 18 printed doses to within 2% (Table 7 rounds
+  # to 0.01 mg/kg, which is up to 0.6% of the smallest dose).
+  (max(k_all) - min(k_all)) / median(k_all) < 0.02
+)
+```
+
+The constant is about `r round(median(k_all), 3)` L/kg/h, which is
+`5 x Cl / (fu x F)` for a dose covering 5 days. With the intravenous
+`Cl` of 0.16 L/kg/h and `F` = 1.0427 (Table 1) it implies `fu` of about
+`r round(5 * 0.16 / (1.0427 * median(k_all)), 2)`, inside the 0.53-0.68 range
+the paper quotes; with `Cl/F` = 0.15 it implies about
+`r round(5 * 0.15 / median(k_all), 2)`. The paper does not say which it used, so the doses are checked
+for proportionality only.
+
+# PKNCA
+
+No PKNCA check is run. None of the three model files has a PK component: the
+paper's PK analysis is non-compartmental (WinNonlin, Tables 1-3) and fits no
+compartmental model, so there is no packaged concentration-time profile to
+analyse. The models' input, `AUC_TULA`, is a static-sample exposure.
+
+# Assumptions and deviations
+
+* **Inverted Emax / E0 naming.** Zhou 2017 calls the drug-free growth "Emax"
+  and the maximal inhibition "E0". The files carry them as `e0` and `emax`
+  respectively, with the printed equation unchanged.
+* **MIC.** The ex vivo index uses the CVCC430 MIC of 0.03 ug/mL in every
+  fluid, as the Methods state ('MIC ... determined in biological fluid ... for
+  P. multocida CVCC430'). Table 5 and the Results quote an average serum MIC
+  of 0.04 ug/mL over the seven strains, but that average reproduces neither
+  the Figure 4 axis extent nor the Figure 5A kill at 60 h (see above). Table 5
+  itself, which divides in vivo AUCs by 0.04, is not part of the models.
+* **Starting inoculum.** The text gives no inoculum for the ex vivo curves.
+  Every curve in Figure 5 starts at about 7.2 log10 CFU/mL, read from the
+  figure by the maintainers; the serum fit's floor agrees (detection limit
+  log10(200) = 2.30, plus 4.91 = 7.21). The models predict a 24 h change,
+  which does not depend on the start.
+* **Within-window time course.** The paper fitted only the 24 h change; the
+  models spread it uniformly over the window (`d/dt(bact) = ln(10) * E/24 *
+  bact`). They do not reproduce the shape of the curves within the 24 h of
+  Figure 5 (for example the kill complete by 8 h in serum), only the 24 h
+  endpoint.
+* **No variability or residual error.** Table 6 gives point estimates only,
+  with no standard errors, between-animal variances or residual error. All
+  three models are typical-value only, with `addSd` fixed at 0.
+* **Other PK/PD indices.** Figure 4 also shows Cmax/MIC (the same fit on a
+  rescaled axis) and T>MIC (R2 = 0.82, parameters not printed) for serum. Only
+  the AUC(0-24 h)/MIC fits of Table 6 are packaged.
+* **The in vitro time-kill experiment** (Figure 3: 0.25-64 x MIC in serum) was
+  not modelled by the paper and is not packaged.
+* **Literature check.** No erratum or correction was found for Zhou 2017
+  (Europe PMC, searched 2026-11-25).
