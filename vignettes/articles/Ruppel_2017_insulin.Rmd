@@ -1,0 +1,552 @@
+---
+title: "Inhaled Technosphere insulin and s.c. regular human insulin (Ruppel 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Inhaled Technosphere insulin and s.c. regular human insulin (Ruppel 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Ruppel 2017 contributes four models, all linked to this article:
+
+* `Ruppel_2017_insulin` -- the population PK and PK-glucose infusion rate (PK-GIR)
+  model for inhaled Technosphere insulin (TI) and subcutaneous regular human
+  insulin (RHI).
+* `Ruppel_2017_insulin_doseGIRAUC_TI`, `Ruppel_2017_insulin_doseGIRAUC_RHI` and
+  `Ruppel_2017_insulin_doseGIRAUC_TIRHI` -- the three population dose-response
+  (dose-GIRAUC) fits of Table 2 (TI alone, RHI alone, and both together with a
+  common Hill coefficient). They are algebraic Emax models of the 0-20 h area
+  under the insulin-induced GIR, fitted by the authors to GIR profiles simulated
+  from the PK-GIR model.
+
+* Citation: `r rxode2::rxode(readModelDb("Ruppel_2017_insulin"))$reference`
+* Description (PK-GIR): `r rxode2::rxode(readModelDb("Ruppel_2017_insulin"))$description`
+* Article: <https://doi.org/10.1002/psp4.12189> (open access, with the NONMEM
+  control streams of all three modelling steps as supplementary files)
+
+# Population
+
+The models come from study NCT01490762, a hyperinsulinemic euglycemic glucose
+clamp crossover in 32 healthy volunteers at the Profil Institute (Chula Vista,
+CA). Each subject received single doses of 10, 30, 60 and 80 U inhaled TI and
+15 IU s.c. RHI on five occasions. One subject with occasionally very high
+exposure was excluded, leaving 31 subjects (18 male, 13 female), aged 18-53
+years and weighing 49-100 kg ('Study design and population' section). Insulin
+was corrected for endogenous secretion with C-peptide and sampled for 3 h after
+TI; GIR was recorded for 4 h after TI and 10 h after RHI.
+
+The same information is available programmatically via
+`readModelDb("Ruppel_2017_insulin")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry. "Stream" means the authors' NONMEM control stream in the supplement
+(PK model code, PK-GIR model code, dose-GIRAUC model code).
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lka_sc` (ka,sc1, depot to transit) | 0.34 1/h | Table S1 |
+| `lktr` (ka,sc2, transit to central) | 0.86 1/h | Table S1 |
+| `lka_lung` (ka,TI,0 at 70 kg) | 1.64 1/h | Table S1 |
+| `e_wt_ka_lung` (gamma_WT) | -1.7 | Table S1; footnote equation ka,TI = ka,TI,0 (WT/70)^gamma_WT |
+| `lfdepot_lung` (F_TI relative to RHI) | 0.25 | Table S1 |
+| `lvc` (V4) | 4.5 L | Table S1 |
+| `lvp` (V5) | 56.4486 L, fixed | Table S1 (56.4, no CI); PK stream `$THETA 56.448600 FIX` |
+| `lq` (Q) | 29.5602 L/h, fixed | Table S1 (29.6, no CI); PK stream `$THETA 29.560200 FIX` |
+| `lkel` (ke0, elimination) | 8.55 1/h, fixed | Table S1; PK stream `$THETA 8.55 FIX ; Potocka 43.7/5.11` |
+| `le0` (GIR0) | 2.7 mg/kg/min | Table 1 |
+| `lemax` (GIRmax) | 11.9059 mg/kg/min, fixed | Table 1 (11.9, no CI); PK-GIR stream bounds `(11.905900 11.905900 11.905900)`; profiled, Supplementary Figure S2 |
+| `lec50` (EC50) | 152 | Table 1 (labelled mU/L; see the effect-compartment note below) |
+| `lhill` (gamma) | 1.8 | Table 1 |
+| `lke0` (kin = kout) | 1.24 1/h | Table 1; one parameter `KEFF` in the PK-GIR stream |
+| IIV ka,sc1 / ka,TI / F_TI / V4 / V5 | 48 / 21 / 29 / 22 / 102 % | Table S1 |
+| IIV Emax / EC50 | 31 / 38 % | Table 1 |
+| IOV F_TI / GIR0 | 30 / 61 % | Table S1 / Table 1; `$OMEGA BLOCK(1) SAME` in both streams |
+| `propSd` (insulin) | 0.31 | Table S1 'p' |
+| `addSd_GIR` | 2.1 mg/kg/min | Table 1 'sigma A' |
+| Absorption and disposition ODEs | n/a | Figure 3; PK stream `$DES` |
+| Effect compartment `d/dt(effect) = ke0 (central - effect)` | n/a | PK-GIR stream `DADT(6) = KEFF*(A(4)-A(6))`, `S6 = 1` |
+| GIR = GIR0 + GIRmax Ce^gamma / (EC50^gamma + Ce^gamma) | n/a | Equation 2; PK-GIR stream `$ERROR` |
+| Dose-GIRAUC Emax model | n/a | Equation 3; dose-GIRAUC stream `$PRED` |
+| `lemax` (GIRAUC,max) | 14.287 g/kg, fixed | Equation 4 and Methods: 11.9 mg/kg/min x 1200 min = 14.3 g/kg |
+| `led50` / `lhill` / `propSd`, TI fit | 249 U / 1.07 / 0.22 | Table 2, TI column (Fit 626954) |
+| `led50` / `lhill` / `propSd`, RHI fit | 43 IU / 1.15 / 0.04 | Table 2, RHI column (Fit 629531) |
+| `led50_lung` / `led50_sc` / `lhill` / `propSd`, common fit | 245 U / 48 IU / 1.08 / 0.21 | Table 2, TI/RHI column (Fit 47694) |
+| IIV ED50 and gamma | 40 / 49 / 40, 45 % and 17 % | Table 2 |
+
+# Typical-value PK and GIR profiles at the study doses
+
+Doses are entered in mU (1 U = 1000 mU), the amount unit implied by the
+insulin concentrations in mU/L and volumes in L. TI doses go to `depot_lung`
+and RHI doses to `depot`. The model has two error endpoints (`Cc` and `GIR`),
+so observation rows nominate one with `dvid`; both come back as columns.
+
+```{r typical}
+mod <- readModelDb("Ruppel_2017_insulin")
+mod_typ <- rxode2::zeroRe(mod)
+
+grid <- seq(0, 20, by = 1 / 60)
+make_events <- function(arms, n_per_arm = 1L, wt = NULL) {
+  bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+    ids <- (i - 1L) * n_per_arm + seq_len(n_per_arm)
+    w <- if (is.null(wt)) rep(70, n_per_arm) else wt[ids]
+    dose <- data.frame(
+      id = ids, time = 0, amt = arms$amt_mU[i], evid = 1L,
+      cmt = arms$cmt[i], dvid = NA_integer_
+    )
+    obs <- expand.grid(time = grid, id = ids)
+    obs <- data.frame(
+      id = obs$id, time = obs$time, amt = 0, evid = 0L,
+      cmt = NA_character_, dvid = 1L
+    )
+    bind_rows(dose, obs) |>
+      left_join(data.frame(id = ids, WT = w), by = "id") |>
+      mutate(OCC = 1L, treatment = arms$treatment[i])
+  })) |>
+    arrange(id, time, desc(evid))
+}
+
+study_arms <- tibble::tribble(
+  ~treatment,    ~amt_mU, ~cmt,
+  "TI 10 U",     10000,   "depot_lung",
+  "RHI 15 IU",   15000,   "depot",
+  "TI 30 U",     30000,   "depot_lung",
+  "TI 60 U",     60000,   "depot_lung",
+  "TI 80 U",     80000,   "depot_lung"
+)
+ev_typ <- make_events(study_arms)
+sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, keep = "treatment", returnType = "data.frame")
+sim_typ$treatment <- factor(sim_typ$treatment, levels = study_arms$treatment)
+```
+
+```{r figure-s1-s3, fig.height = 6}
+sim_typ |>
+  filter(time <= 10) |>
+  select(treatment, time, Cc, GIR) |>
+  pivot_longer(c(Cc, GIR)) |>
+  mutate(name = ifelse(name == "Cc", "Insulin (mU/L)", "GIR (mg/kg/min)")) |>
+  ggplot(aes(time, value, colour = treatment)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Time after dose (h)", y = NULL, colour = NULL,
+    caption = "Typical-value profiles; compare Supplementary Figures S1 (PK VPC) and S3 (PK-GIR VPC) of Ruppel 2017."
+  )
+```
+
+The table compares the typical-value peaks with the observed-median peaks of the
+prediction-corrected VPCs in Supplementary Figures S1 and S3, read by the
+maintainers from the figures to the nearest grid fraction (approximate, so the
+check is a coarse one that a wrong dose unit, volume or effect-compartment
+scale would fail by a wide margin).
+
+```{r vpc-peaks}
+vpc_read <- tibble::tribble(
+  ~treatment,  ~cmax_vpc, ~girmax_vpc,
+  "TI 10 U",   42,        5.5,
+  "RHI 15 IU", 50,        12,
+  "TI 30 U",   125,       9.8,
+  "TI 60 U",   270,       12,
+  "TI 80 U",   400,       14
+)
+peaks <- sim_typ |>
+  group_by(treatment) |>
+  summarise(cmax = max(Cc), girmax = max(GIR), .groups = "drop") |>
+  mutate(treatment = as.character(treatment)) |>
+  left_join(vpc_read, by = "treatment")
+stopifnot(
+  all(abs(peaks$cmax / peaks$cmax_vpc - 1) < 0.35),
+  all(abs(peaks$girmax / peaks$girmax_vpc - 1) < 0.35)
+)
+peaks |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
+  rename(
+    "Treatment" = treatment,
+    "Typical Cmax (mU/L)" = cmax,
+    "VPC median peak, Fig. S1 (mU/L)" = cmax_vpc,
+    "Typical peak GIR (mg/kg/min)" = girmax,
+    "VPC median peak, Fig. S3 (mg/kg/min)" = girmax_vpc
+  ) |>
+  knitr::kable(caption = "Typical-value peaks versus the approximate observed-median VPC peaks.")
+```
+
+## The effect compartment tracks the central amount
+
+Table 1 labels EC50 in mU/L, but the authors' PK-GIR control stream integrates
+`DADT(6) = KEFF*(A(4) - A(6))` with `S6 = 1`: the effect compartment follows the
+central AMOUNT `A(4)` (mU) with a nominal 1-L scale, not the concentration
+`A(4)/V4`. The packaged model follows the control stream. Driving the Emax
+function with the concentration instead would give an RHI 15 IU peak GIR of
+about 4 mg/kg/min, a third of the observed median peak in Figure S3B:
+
+```{r effect-scale}
+rhi15 <- sim_typ |> filter(treatment == "RHI 15 IU")
+gir_amount <- max(rhi15$GIR)
+gir_conc <- with(rhi15, max(e0 + emax * (effect / vc)^hill / (ec50^hill + (effect / vc)^hill)))
+c(amount_driven = gir_amount, concentration_driven = gir_conc, vpc_observed_median = 12)
+stopifnot(abs(gir_amount / 12 - 1) < 0.25, gir_conc < 0.5 * 12)
+```
+
+# Onset and duration of action (Figure 5 and Supplementary Table S2)
+
+The authors compared 8 IU RHI with 40 U TI, a pair of doses with about the same
+GIRAUC, through the cumulative insulin-induced GIRAUC normalised to its 0-20 h
+total (Equation 6) and the times at which it reaches 10%, 50% and 90%. The
+cumulative AUC is taken over GIR above the individual baseline, the quantity the
+dose-GIRAUC stream fits (`AUCIPREDE0`); integrating total GIR instead pushes the
+90% time past 1000 min for both insulins.
+
+A virtual cohort of 200 subjects per arm is simulated with all random effects;
+body weight is drawn log-normally around 72 kg and restricted (by redrawing) to
+the study's 49-100 kg range, since the paper reports only the range.
+
+```{r cohort}
+set.seed(2017)
+rxode2::rxSetSeed(2017)
+draw_wt <- function(n) {
+  w <- numeric(0)
+  while (length(w) < n) {
+    x <- exp(rnorm(n, log(72), 0.18))
+    w <- c(w, x[x >= 49 & x <= 100])
+  }
+  w[seq_len(n)]
+}
+grid <- seq(0, 20, by = 5 / 60)
+onset_arms <- tibble::tribble(
+  ~treatment,  ~amt_mU, ~cmt,
+  "RHI 8 IU",  8000,    "depot",
+  "TI 40 U",   40000,   "depot_lung"
+)
+n_onset <- 200L
+ev_onset <- make_events(onset_arms, n_onset, wt = draw_wt(n_onset * nrow(onset_arms)))
+sim_onset <- rxode2::rxSolve(mod, ev_onset, keep = "treatment", returnType = "data.frame")
+
+cum_times <- function(time_h, x) {
+  cu <- cumsum(c(0, diff(time_h * 60) * (head(x, -1) + tail(x, -1)) / 2))
+  tm <- time_h * 60
+  c(t10 = tm[which(cu >= 0.1 * max(cu))[1]], t50 = tm[which(cu >= 0.5 * max(cu))[1]],
+    t90 = tm[which(cu >= 0.9 * max(cu))[1]])
+}
+onset <- sim_onset |>
+  group_by(id, treatment) |>
+  summarise(tt = list(cum_times(time, GIR - e0)), .groups = "drop") |>
+  unnest_wider(tt)
+```
+
+```{r figure-5}
+sim_onset |>
+  group_by(id, treatment) |>
+  mutate(x = GIR - e0, cu = cumsum(c(0, diff(time) * (head(x, -1) + tail(x, -1)) / 2)), cu = cu / max(cu)) |>
+  ungroup() |>
+  filter(id %in% c(1:31, n_onset + 1:31)) |>
+  ggplot(aes(time * 60, cu, group = id, colour = treatment)) +
+  geom_line(alpha = 0.6) +
+  scale_colour_manual(values = c("RHI 8 IU" = "magenta3", "TI 40 U" = "dodgerblue3")) +
+  labs(
+    x = "Time (min)", y = "Cumulative GIRAUC (fraction of 0-20 h)", colour = NULL,
+    caption = "Replicates Figure 5 of Ruppel 2017 (31 virtual subjects per arm)."
+  )
+```
+
+```{r table-s2}
+published_s2 <- tibble::tribble(
+  ~treatment,  ~metric, ~mean, ~sd,
+  "TI 40 U",   "t10",   35,    5,
+  "TI 40 U",   "t50",   124,   25,
+  "TI 40 U",   "t90",   386,   136,
+  "RHI 8 IU",  "t10",   122,   23,
+  "RHI 8 IU",  "t50",   296,   64,
+  "RHI 8 IU",  "t90",   621,   152
+)
+sim_s2 <- onset |>
+  pivot_longer(c(t10, t50, t90), names_to = "metric") |>
+  group_by(treatment, metric) |>
+  summarise(sim_mean = mean(value), sim_sd = sd(value), .groups = "drop")
+cmp_s2 <- left_join(published_s2, sim_s2, by = c("treatment", "metric")) |>
+  mutate(pct_diff = 100 * (sim_mean / mean - 1))
+stopifnot(
+  # T10 and T50 are set by absorption and the effect-compartment delay; a wrong
+  # rate constant, route or effect scale moves them by tens of percent.
+  all(abs(cmp_s2$pct_diff[cmp_s2$metric != "t90"]) < 15),
+  # T90 sits in the long, right-skewed tail of the response (SD up to 40% of
+  # the mean in the paper), so it gets a wider band.
+  all(abs(cmp_s2$pct_diff[cmp_s2$metric == "t90"]) < 30)
+)
+cmp_s2 |>
+  mutate(
+    published = sprintf("%.0f +/- %.0f", mean, sd),
+    simulated = sprintf("%.0f +/- %.0f", sim_mean, sim_sd),
+    pct_diff = sprintf("%+.0f%%", pct_diff)
+  ) |>
+  select(treatment, metric, published, simulated, pct_diff) |>
+  rename(
+    "Treatment" = treatment, "Time to % of 0-20 h GIRAUC" = metric,
+    "Published, min (mean +/- SD)" = published,
+    "Simulated, min (mean +/- SD)" = simulated, "Difference" = pct_diff
+  ) |>
+  knitr::kable(caption = "Supplementary Table S2 of Ruppel 2017 versus the simulated cohort.")
+```
+
+# Dose-response (Figure 4 and Table 2)
+
+The authors simulated GIR for 20 h with the PK-GIR model at doses up to 240 U TI
+and 80 IU RHI, integrated the insulin-induced GIR, and fitted Equation 3 to the
+resulting dose-GIRAUC pairs. Below, the same simulation is repeated with the
+packaged PK-GIR model (100 virtual subjects per dose), and the median simulated
+GIRAUC is set against the typical-value curves of the three packaged
+dose-GIRAUC fits.
+
+```{r dose-response-sim}
+dr_arms <- bind_rows(
+  tibble(dose = c(10, 30, 60, 80, 120, 180, 240), form = "TI", cmt = "depot_lung"),
+  tibble(dose = c(4, 8, 15, 30, 45, 60, 80), form = "RHI", cmt = "depot")
+) |>
+  mutate(treatment = paste(form, dose), amt_mU = 1000 * dose)
+n_dr <- 100L
+ev_dr <- make_events(dr_arms, n_dr, wt = draw_wt(n_dr * nrow(dr_arms)))
+sim_dr <- rxode2::rxSolve(mod, ev_dr, keep = "treatment", returnType = "data.frame")
+
+auc_window <- function(time_h, x, upto) {
+  keep <- time_h <= upto
+  t <- time_h[keep] * 60
+  y <- x[keep]
+  sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2) / 1000 # mg/kg -> g/kg
+}
+girauc_sim <- sim_dr |>
+  group_by(id, treatment) |>
+  summarise(
+    auc20 = auc_window(time, GIR - e0, 20),
+    auc4 = auc_window(time, GIR - e0, 4),
+    .groups = "drop"
+  ) |>
+  left_join(select(dr_arms, treatment, dose, form), by = "treatment") |>
+  group_by(form, dose) |>
+  summarise(med20 = median(auc20), mean20 = mean(auc20), med4 = median(auc4), .groups = "drop")
+```
+
+```{r dose-response-models}
+dr_eval <- function(name, dose, form_ti = NULL) {
+  m <- rxode2::zeroRe(readModelDb(name))
+  ev <- data.frame(id = 1L, time = seq_along(dose), evid = 0L, DOSE = dose)
+  if (!is.null(form_ti)) ev$FORM_INSULIN_TI <- form_ti
+  out <- rxode2::rxSolve(m, ev, returnType = "data.frame")
+  out$GIRAUC
+}
+dgrid <- seq(1, 240, by = 1)
+curves <- bind_rows(
+  tibble(form = "TI", fit = "TI fit", dose = dgrid,
+         GIRAUC = dr_eval("Ruppel_2017_insulin_doseGIRAUC_TI", dgrid)),
+  tibble(form = "RHI", fit = "RHI fit", dose = dgrid[dgrid <= 120],
+         GIRAUC = dr_eval("Ruppel_2017_insulin_doseGIRAUC_RHI", dgrid[dgrid <= 120])),
+  tibble(form = "TI", fit = "common fit", dose = dgrid,
+         GIRAUC = dr_eval("Ruppel_2017_insulin_doseGIRAUC_TIRHI", dgrid, rep(1, length(dgrid)))),
+  tibble(form = "RHI", fit = "common fit", dose = dgrid[dgrid <= 120],
+         GIRAUC = dr_eval("Ruppel_2017_insulin_doseGIRAUC_TIRHI", dgrid[dgrid <= 120], rep(0, sum(dgrid <= 120))))
+)
+```
+
+```{r figure-4a}
+ggplot() +
+  geom_line(data = curves, aes(dose, GIRAUC, colour = form, linetype = fit)) +
+  geom_point(data = girauc_sim, aes(dose, med20, colour = form), size = 2) +
+  scale_colour_manual(values = c(RHI = "magenta3", TI = "dodgerblue3")) +
+  scale_linetype_manual(values = c("TI fit" = "solid", "RHI fit" = "solid", "common fit" = "dashed")) +
+  labs(
+    x = "Dose (U TI or IU RHI)", y = "GIRAUC, 0-20 h (g/kg)", colour = NULL, linetype = NULL,
+    caption = paste(
+      "Replicates Figure 4a of Ruppel 2017. Lines: typical-value dose-GIRAUC fits (Table 2);",
+      "points: median 0-20 h GIRAUC simulated from the PK-GIR model."
+    )
+  )
+```
+
+```{r dose-response-check}
+dr_check <- girauc_sim |>
+  rowwise() |>
+  mutate(model = if (form == "TI") {
+    dr_eval("Ruppel_2017_insulin_doseGIRAUC_TI", dose)
+  } else {
+    dr_eval("Ruppel_2017_insulin_doseGIRAUC_RHI", dose)
+  }) |>
+  ungroup() |>
+  mutate(ratio = med20 / model)
+stopifnot(
+  # The two packaged layers must agree on the dose-response they share. A wrong
+  # ED50 (e.g. the TI and RHI values swapped) or a GIRAUC,max off by the
+  # minutes-to-hours factor moves this ratio far outside the band.
+  abs(median(dr_check$ratio) - 1) < 0.15,
+  # Envelope on a robust quantile: the per-dose medians of 100 subjects are
+  # noisy at the lowest doses, where GIRAUC is small and right-skewed.
+  quantile(abs(dr_check$ratio - 1), 0.75) < 0.3
+)
+dr_check |>
+  mutate(across(c(med20, mean20, model, ratio), \(x) signif(x, 3))) |>
+  select(form, dose, med20, mean20, model, ratio) |>
+  rename(
+    "Insulin" = form, "Dose (U / IU)" = dose,
+    "Simulated median GIRAUC (g/kg)" = med20, "Simulated mean GIRAUC (g/kg)" = mean20,
+    "Dose-GIRAUC fit, typical (g/kg)" = model, "Median / fit" = ratio
+  ) |>
+  knitr::kable(caption = "PK-GIR simulation versus the formulation-specific dose-GIRAUC fits.")
+```
+
+For RHI the two layers agree to within about 10% from 8 IU upward; at 4 IU the
+simulated GIRAUC is small and right-skewed, so its median falls below the
+typical-value curve. For TI the PK-GIR simulation rises more steeply than the
+fitted Emax curve at low doses and flattens faster above about 120 U, because the
+high, sharp TI peaks saturate the GIR Emax function; the TI dose-GIRAUC fit
+absorbs this shape misfit in its larger proportional error (22% against 4% for
+RHI, Table 2). The simulated 4-h half-maximal doses below (about 22 IU RHI and
+29 U TI) are close to the published 20 IU and 35 U.
+
+## Equivalent doses
+
+The common fit gives the paper's dose-conversion factor, the ED50 ratio
+(Equation 5):
+
+```{r conversion}
+common <- readModelDb("Ruppel_2017_insulin_doseGIRAUC_TIRHI")
+ini_common <- rxode2::rxode(common)$iniDf
+ed50_ratio <- exp(ini_common$est[ini_common$name == "led50_lung"]) /
+  exp(ini_common$est[ini_common$name == "led50_sc"])
+ed50_ratio
+stopifnot(abs(ed50_ratio - 5.1) < 0.05)
+```
+
+## A 4-h integration window
+
+Figure 4b shows that truncating the integral at 4 h produces an apparent
+saturation, with half-maximal doses of 20 IU RHI and 35 U TI. With the maximum
+4-h GIRAUC fixed at GIRmax x 240 min = 2.86 g/kg, the dose at which the median
+simulated 4-h GIRAUC reaches half of it is interpolated below:
+
+```{r figure-4b}
+half4 <- 11.9059 * 240 / 1000 / 2
+ed50_4h <- girauc_sim |>
+  group_by(form) |>
+  summarise(ed50_4h = approx(med4, dose, xout = half4)$y, .groups = "drop")
+ed50_4h
+stopifnot(
+  abs(ed50_4h$ed50_4h[ed50_4h$form == "RHI"] / 20 - 1) < 0.3,
+  abs(ed50_4h$ed50_4h[ed50_4h$form == "TI"] / 35 - 1) < 0.3
+)
+```
+
+# PKNCA
+
+The paper reports no NCA. Insulin exposure from the stochastic simulation at the
+five study doses is summarised with PKNCA for reference, and a typical-value
+identity checks the disposition: the 0-72 h AUC times the apparent clearance
+`kel * V4` must equal the bioavailable dose.
+
+```{r pknca}
+ev_nca <- make_events(study_arms, 100L, wt = draw_wt(100L * nrow(study_arms)))
+sim_nca <- rxode2::rxSolve(mod, ev_nca, keep = "treatment", returnType = "data.frame") |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(
+  ev_nca |> filter(evid == 1) |> select(id, time, amt, treatment),
+  amt ~ time | treatment + id
+)
+intervals <- data.frame(start = 0, end = 20, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_res)
+```
+
+```{r auc-identity}
+# Integrate to 72 h: the slow s.c. absorption (ka,sc1 = 0.34 1/h) leaves about
+# 1% of the RHI AUC beyond 20 h.
+grid <- seq(0, 72, by = 1 / 60)
+sim_long <- rxode2::rxSolve(mod_typ, make_events(study_arms), keep = "treatment", returnType = "data.frame")
+sim_long$treatment <- factor(sim_long$treatment, levels = study_arms$treatment)
+typ_auc <- sim_long |>
+  group_by(treatment) |>
+  summarise(
+    auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    cl = kel[1] * vc[1], f = fdepot_lung[1], .groups = "drop"
+  ) |>
+  left_join(study_arms |> mutate(treatment = factor(treatment, levels = treatment)), by = "treatment") |>
+  mutate(
+    f_eff = ifelse(cmt == "depot_lung", f, 1),
+    ratio = auc * cl / (f_eff * amt_mU)
+  )
+typ_auc |> select(treatment, auc, ratio)
+stopifnot(all(abs(typ_auc$ratio - 1) < 0.002))
+```
+
+# Assumptions and deviations
+
+- **Effect compartment scale.** Table 1 gives EC50 in mU/L, but the PK-GIR
+  control stream drives the effect compartment with the central amount (`A(4)`,
+  mU) and fixes its scale to 1 (`S6 = 1`). The packaged model follows the code;
+  the concentration-driven alternative under-predicts the observed GIR peaks by
+  about two thirds (see above). EC50 therefore has amount units (mU, nominally
+  per 1 L), and it interacts with the individual central volume.
+- **Dose units.** Doses are in mU of labelled units (1 U = 1000 mU): TI doses in
+  Technosphere units, RHI doses in international units. TI bioavailability is
+  relative to RHI, so the volumes and clearance are apparent values relative to
+  RHI bioavailability (Table S1 footnote). The authors estimate the absolute TI
+  bioavailability at 12-13% using an RHI bioavailability of 53% from Potocka
+  2010.
+- **Variance scale.** The tables print each random-effect magnitude as a
+  percentage. The packaged variances use omega^2 = (percent/100)^2 (log-scale
+  SD). The Table S1 V5 row, '102 (76-123)', decides it: the interval is
+  symmetric on the variance scale under that reading (midpoint 1.045 against
+  1.040), and not under omega^2 = log(1 + CV^2) (midpoint 0.689 against 0.713,
+  outside rounding). The same reading is applied to every table.
+- **Fixed values from the code.** V5, Q and GIRmax are printed without
+  confidence intervals; the control streams show them fixed (V5 and Q from
+  earlier fits, GIRmax by likelihood profiling, Supplementary Figure S2). The
+  code's unrounded values are used. The elimination rate constant (8.55 1/h) is
+  fixed from Potocka 2010 as 43.7/5.11.
+- **Occasions.** The PK stream indexes the TI bioavailability IOV by four TI
+  occasions (`OCC` 3-6) and the PK-GIR stream indexes the GIR-baseline IOV by
+  five visits (`VISIT` 3-7). The packaged model indexes both by one `OCC = 1-5`
+  column; the extra bioavailability slot is inert on the RHI occasion because
+  only TI carries a bioavailability. The GIR baseline has IOV but no IIV (its
+  IIV is fixed to 0 in the stream).
+- **Logit bioavailability.** The PK stream passes F_TI through
+  `PHI = LOG(FTI/(1-FTI))`, `F3 = EXP(PHI)/(1+EXP(PHI))`, which returns F_TI
+  unchanged; the packaged model applies F_TI directly. (In NONMEM an individual
+  F_TI above 1 would make `PHI` undefined; with the published variances this
+  happens for about 1 in 2000 occasions.)
+- **Dose-GIRAUC maximum.** In the dose-GIRAUC fits GIRAUC,max is not a
+  parameter but each subject's GIRmax times 1200 min, entered as a data column.
+  The packaged dose-GIRAUC models carry it as a fixed typical value,
+  11.9059 x 1.2 = 14.287 g/kg (the paper rounds to 14.3), with a fixed random
+  effect equal to the PK-GIR Emax variability (31%) so that simulations
+  reproduce the between-subject spread the fits conditioned on. The caption
+  of Figure 4 quotes a maximum of 13.8 g/kg, which the paper does not derive.
+- **Dose-GIRAUC output.** `GIRAUC` is the 0-20 h integral of GIR above the
+  individual baseline (the dose-GIRAUC stream's dependent variable is
+  `AUCIPREDE0`), in g/kg. It is a paper-specific output name, not a registered
+  canonical endpoint.
+- **Virtual cohort.** The paper reports only the weight range (49-100 kg), so
+  weights are drawn log-normally around 72 kg and redrawn outside the range.
+  Each simulated subject receives one treatment on occasion 1.
+- **VPC comparison.** The observed-median peaks of Supplementary Figures S1 and
+  S3 were read approximately from the figures by the maintainers; they support a
+  coarse check only.
+- **Errata.** No correction notice for this article was found in Europe PMC as
+  of 2026-11-25.

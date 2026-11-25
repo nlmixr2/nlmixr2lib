@@ -4098,6 +4098,14 @@ navbar:
         href: articles/Garrett_2019_inotuzumab.html
       - text: "Inotuzumab (Wu 2024)"
         href: articles/Wu_2024_inotuzumab.html
+      - text: "Insulin (Ruppel 2017)"
+        href: articles/Ruppel_2017_insulin.html
+      - text: "Insulin doseGIRAUC RHI (Ruppel 2017)"
+        href: articles/Ruppel_2017_insulin.html
+      - text: "Insulin doseGIRAUC TI (Ruppel 2017)"
+        href: articles/Ruppel_2017_insulin.html
+      - text: "Insulin doseGIRAUC TIRHI (Ruppel 2017)"
+        href: articles/Ruppel_2017_insulin.html
       - text: "Interferon alfa 2b (Chatelut 1999)"
         href: articles/Chatelut_1999_interferon_alfa_2b.html
       - text: "InterferonAlfa2a (Jeon 2013)"
@@ -11541,6 +11549,7 @@ articles:
   - articles/Ruhs_2012_methotrexate
   - articles/RuizMartinez_2022_nivolumab_qsp
   - articles/Ruiz_2025_thrombin_generation
+  - articles/Ruppel_2017_insulin
   - articles/Rymut_2023_anti_tryptase
   - articles/Ryu_2021_hyaluronicAcid_fillers_mouse
   - articles/Sadaf_2024_glutamine
