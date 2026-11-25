@@ -1,0 +1,351 @@
+---
+title: "Urinary 3-OHBaP toxicokinetics after occupational benzo(a)pyrene exposure (Heredia-Ortiz 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Urinary 3-OHBaP toxicokinetics after occupational benzo(a)pyrene exposure (Heredia-Ortiz 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-source, echo = FALSE, results = "asis"}
+ui <- rxode2::rxode(readModelDb("HerediaOrtiz_2014_benzopyrene"))
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Article: <https://doi.org/10.1371/journal.pone.0102570>\n")
+```
+
+Heredia-Ortiz and colleagues built two toxicokinetic models to interpret
+biomonitoring of workers exposed to polycyclic aromatic hydrocarbons (PAHs),
+using urinary 3-hydroxybenzo(a)pyrene (3-OHBaP) as the biomarker of
+benzo(a)pyrene (BaP) exposure. The headline model is a whole-body physiologically
+based pharmacokinetic (PBPK) model (Figure 1 of the paper). Alongside it the
+authors fit a deliberately simple **single-compartment toxicokinetic model**
+(Figure 2), which is the model packaged here.
+
+In the simple model, absorbed BaP enters a whole-body pool through
+route-specific first-order absorption. The pool is eliminated at a single rate
+`kb`, and a route-specific fraction `alpha` of that elimination appears in urine
+as 3-OHBaP (the rest leaves by other routes). The authors parameterised the
+inhalation and dermal routes for the occupational cohort; the published general
+equations (Appendix S1, Eqs. 27-32) also carry oral and intravenous routes,
+which were not fit (direct oral exposure was deemed insignificant for these
+workers and intravenous dosing is not an occupational route).
+
+The whole-body PBPK model is **not** packaged: its human organ volumes and blood
+flows are taken from Brown 1997 and Davies & Morris 1993, and its structure from
+the rat PBPK model of Heredia-Ortiz & Bouchard 2013 (doi:10.1007/s10928-013-9338-9),
+none of which report those values within this paper. Reconstructing it would
+require substituting physiological constants from outside the paper, which would
+make the model unauditable (see "Assumptions and deviations").
+
+# Occupational context
+
+```{r population, echo = FALSE}
+pop <- ui$population
+tibble::tibble(
+  Field = names(pop),
+  Value = vapply(pop, function(x) paste(as.character(x), collapse = "; "), character(1))
+) |>
+  knitr::kable(caption = "Study population, from the model's `population` metadata.")
+```
+
+The human absorption, metabolism and elimination constants were fit to the
+urinary 3-OHBaP elimination time course of a single worker (worker 4 of an
+artificial shooting-target factory, over the 35-45 h after onset of a weekly
+exposure) and then evaluated against three further industrial cohorts (an
+artificial shooting-target factory, a carbon disk-brake plant, and a silicon
+production plant repairing metallurgical furnaces). Urinary 3-OHBaP was measured
+in complete voids over a work week and the following days off, corrected for
+creatinine. The model carries no between-worker random effects and no residual
+error: the publication fits point values by a Monte-Carlo / chi-square
+procedure, so the packaged model is deterministic.
+
+# Source trace
+
+Every `ini()` entry carries an in-file comment naming its source location; the
+table below collects them for review.
+
+```{r source-trace, echo = FALSE}
+tibble::tribble(
+  ~Quantity,                               ~Value,            ~Source,
+  "d/dt(depot_inh), d/dt(depot_der)",      "n/a",             "Appendix S1 Eqs. 30, 28 (dA_route/dt = -ka_route*A_route + D_route)",
+  "d/dt(body_inh) + d/dt(body_der)",       "n/a",             "Appendix S1 Eq. 31 (dB/dt = -kb*B + sum ka_route*A_route)",
+  "d/dt(urine)",                           "n/a",             "Appendix S1 Eq. 32 (dU/dt = alpha*kb*B)",
+  "ka_inh (inhalation absorption rate)",   "48.35e-3 /h",     "Results, single-compartment model",
+  "ka_der (dermal absorption rate)",       "61.81e-3 /h",     "Results, single-compartment model",
+  "kb (whole-body elimination rate)",      "198.26e-3 /h",    "Results, single-compartment model",
+  "alpha_inh (urinary recovery, inhal.)",  "3.99e-2",         "Results, single-compartment model",
+  "alpha_der (urinary recovery, dermal)",  "1.64e-2",         "Results, single-compartment model"
+) |>
+  knitr::kable(caption = "Source trace for every equation and parameter in the model file.")
+```
+
+## Units and dimensional analysis
+
+Amounts are in nmol and time in hours; the model is linear, so the absolute dose
+scale is arbitrary and every output scales proportionally with the absorbed
+dose. Each ODE term must have units of nmol/h.
+
+```{r units-table, echo = FALSE}
+tibble::tribble(
+  ~Symbol,                      ~Units,  ~Note,
+  "depot_inh, depot_der",       "nmol",  "absorbed BaP awaiting first-order absorption",
+  "body_inh, body_der",         "nmol",  "route shares of the whole-body BaP pool (sum = Eq. 31 B)",
+  "urine",                      "nmol",  "cumulative urinary 3-OHBaP",
+  "ka_inh, ka_der, kb",         "1/h",   "first-order rate constants",
+  "falpha_inh, falpha_der",     "-",     "unitless urinary recovery fractions",
+  "ka_route * depot_route",     "nmol/h","absorption flux into the body pool",
+  "kb * body_route",            "nmol/h","elimination flux from the body pool",
+  "ohbap_urine_rate",           "nmol/h","urinary 3-OHBaP appearance rate (proportional to void concentration)"
+) |>
+  knitr::kable(caption = "Units of every symbol in the ODE system.")
+```
+
+Checking `d/dt(body_der) = ka_der * depot_der - kb * body_der`: both terms are
+(1/h)(nmol) = nmol/h, matching the state's nmol/h derivative. `d/dt(urine) =
+alpha * kb * body` is (unitless)(1/h)(nmol) = nmol/h.
+
+# Structural and mass-balance checks
+
+Three properties follow from the equations rather than from any fitted value, so
+they are exact (to solver tolerance) and catch a sign error, a dropped term or a
+mis-typed constant immediately. The model carries no random effects, so every
+check is deterministic.
+
+```{r helpers}
+mod <- readModelDb("HerediaOrtiz_2014_benzopyrene")
+
+# A single absorbed bolus of `D` nmol by one route, observed on a fine grid long
+# enough for the body pool to clear (body half-life ~ 3.5 h).
+single_route <- function(route = c("der", "inh"), D = 1000, tmax = 600) {
+  route <- match.arg(route)
+  cmt <- if (route == "der") "depot_der" else "depot_inh"
+  ev <- rxode2::et(amt = D, cmt = cmt, time = 0) |>
+    rxode2::et(seq(0, tmax, by = 0.25))
+  rxode2::rxSolve(mod, ev, returnType = "data.frame")
+}
+
+kb <- 0.19826
+alpha_inh <- 0.0399
+alpha_der <- 0.0164
+```
+
+```{r mass-balance}
+der <- single_route("der", D = 1000)
+inh <- single_route("inh", D = 1000)
+
+# 1. Mass balance (Eq. 32 integrated): the cumulative urinary 3-OHBaP from a
+#    single-route absorbed dose equals alpha_route * dose exactly, because all of
+#    the absorbed dose is eventually eliminated through the body pool at rate kb.
+U_der <- tail(der$urine, 1)
+U_inh <- tail(inh$urine, 1)
+stopifnot(
+  abs(U_der - alpha_der * 1000) / (alpha_der * 1000) < 1e-6,
+  abs(U_inh - alpha_inh * 1000) / (alpha_inh * 1000) < 1e-6
+)
+
+# 2. Elimination rate kb, isolated by dosing straight into the body pool so the
+#    (slower) absorption step is bypassed: the pool then decays at exactly kb.
+body_bolus <- rxode2::rxSolve(
+  mod,
+  rxode2::et(amt = 1000, cmt = "body_der", time = 0) |> rxode2::et(seq(0, 100, by = 0.25)),
+  returnType = "data.frame"
+)
+late <- body_bolus[body_bolus$time %in% c(20, 40), ]
+k_est <- -(log(late$body[2]) - log(late$body[1])) / (40 - 20)
+stopifnot(abs(k_est - kb) < 1e-4)
+
+# 3. The urinary-rate peak time matches the one-compartment closed form
+#    log(kb/ka)/(kb - ka).
+tpk_der <- der$time[which.max(der$ohbap_urine_rate)]
+tpk_cf <- log(kb / 0.06181) / (kb - 0.06181)
+stopifnot(abs(tpk_der - tpk_cf) < 0.5)
+
+# 4. Flip-flop: both absorption rates (ka_der = 0.0618, ka_inh = 0.0484 /h) are
+#    slower than kb (0.198 /h), so absorption is rate-limiting and the terminal
+#    decay of a depot-dosed profile is governed by the smaller rate ka, not kb.
+tail_der <- der[der$time %in% c(300, 350), ]
+k_tail <- -(log(tail_der$body[2]) - log(tail_der$body[1])) / (350 - 300)
+stopifnot(abs(k_tail - 0.06181) < 1e-4)
+
+tibble::tibble(
+  Check = c("Urinary 3-OHBaP per 1000 nmol dermal dose (nmol)",
+            "Urinary 3-OHBaP per 1000 nmol inhalation dose (nmol)",
+            "Elimination rate kb from a direct body dose (1/h)",
+            "Dermal urinary-rate peak time (h)",
+            "Terminal slope of a dermal depot dose = ka_der (1/h)"),
+  Model = signif(c(U_der, U_inh, k_est, tpk_der, k_tail), 5),
+  Expected = signif(c(alpha_der * 1000, alpha_inh * 1000, kb, tpk_cf, 0.06181), 5)
+) |>
+  knitr::kable(caption = "Exact structural checks against the equations and fitted constants.")
+```
+
+Per absorbed nmol, inhalation yields about `r round(alpha_inh / alpha_der, 2)`
+times more urinary 3-OHBaP than dermal exposure, the ratio of the two fitted
+recovery fractions (`alpha_inh` / `alpha_der` = 0.0399 / 0.0164).
+
+# Reproducing the workweek urinary biomarker profile
+
+Figures 3-5 of the paper show urinary 3-OHBaP rising across a work week and
+decaying over the following days off, with daily peaks and troughs driven by the
+shift pattern. The shape is reproduced here by driving the model with a
+realistic occupational exposure: a zero-order absorbed-dose input over each work
+shift (a continuous dermal/inhalation uptake during the shift), repeated across
+four workdays, followed by two days off.
+
+```{r workweek}
+# Four 8-h shifts (06:00-14:00) on days 0-3, then two days off. The absorbed
+# dose per shift is an arbitrary 100 nmol delivered zero-order over 8 h (the
+# model is linear, so the magnitude only scales the curve).
+shift_len <- 8
+dose_shift <- 100
+shift_starts <- c(0, 24, 48, 72)
+
+workweek <- function(cmt) {
+  # Zero-order absorbed-dose input over each shift (amt + rate => an infusion of
+  # duration amt/rate = shift_len h into the route depot), plus a fine
+  # observation grid. Built as a plain event data frame.
+  doses <- tibble::tibble(
+    id = 1L, time = shift_starts, amt = dose_shift,
+    rate = dose_shift / shift_len, evid = 1L, cmt = cmt
+  )
+  obs <- tibble::tibble(
+    id = 1L, time = seq(0, 168, by = 0.5), amt = NA_real_,
+    rate = NA_real_, evid = 0L, cmt = "urine"
+  )
+  ev <- dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+  rxode2::rxSolve(mod, ev, returnType = "data.frame")
+}
+
+ww_der <- workweek("depot_der")
+ww_inh <- workweek("depot_inh")
+
+ww <- dplyr::bind_rows(
+  tibble::tibble(time = ww_der$time, rate = ww_der$ohbap_urine_rate, Route = "Dermal"),
+  tibble::tibble(time = ww_inh$time, rate = ww_inh$ohbap_urine_rate, Route = "Inhalation")
+)
+
+ggplot(ww, aes(time, rate, colour = Route)) +
+  geom_line() +
+  geom_vline(xintercept = c(shift_starts, shift_starts + shift_len),
+             linetype = "dotted", colour = "grey70") +
+  labs(x = "Time (h from start of work week)",
+       y = "Urinary 3-OHBaP appearance rate (nmol/h)",
+       colour = NULL,
+       title = "Workweek urinary 3-OHBaP biomarker profile",
+       caption = "Qualitatively reproduces the workweek shape of Figures 3-5 (Heredia-Ortiz 2014).") +
+  theme(legend.position = "bottom")
+```
+
+```{r workweek-checks}
+# The biomarker accumulates across the week: each workday's peak is higher than
+# the previous day's, and after exposure ends it decays monotonically.
+daily_peak <- function(s, day) {
+  w <- s[s$time >= day * 24 & s$time < (day + 1) * 24, ]
+  max(w$ohbap_urine_rate)
+}
+peaks_der <- vapply(0:3, function(d) daily_peak(ww_der, d), numeric(1))
+
+# Post-exposure decay: after the last shift ends (t = 80 h) the rate falls.
+post <- ww_der[ww_der$time >= 96, ]
+stopifnot(
+  all(diff(peaks_der) > 0),           # biomarker builds up over the work week
+  all(diff(post$ohbap_urine_rate) < 1e-9)  # monotonic decline during days off
+)
+
+tibble::tibble(
+  Day = paste("Workday", 1:4),
+  `Peak urinary rate (dermal, nmol/h)` = signif(peaks_der, 3)
+) |>
+  knitr::kable(caption = "Daily peak urinary 3-OHBaP rate builds up across the work week (dermal scenario).")
+```
+
+The delayed, days-long washout after exposure ends is the model's central
+qualitative result. In this lumped model the persistence is absorption-rate
+limited: both fitted absorption rates are slower than the body elimination rate
+`kb`, so the slowly-emptying depots sustain urinary 3-OHBaP well into the days
+off work (the "flip-flop" terminal slope checked above). This is the simple
+model's counterpart to the PBPK model's explanation -- slow release of retained
+BaP from adipose tissue and lungs -- and it is the behaviour the authors use to
+argue that complete urine voids over a full week are needed to reconstruct
+exposure.
+
+# Route comparison
+
+Because the two routes differ both in absorption rate (`ka`) and in urinary
+recovery fraction (`alpha`), the same absorbed dose produces different urinary
+magnitudes and slightly different timing. This is the ambiguity the authors
+highlight: urinary 3-OHBaP alone does not cleanly identify the route of entry.
+
+```{r route-compare}
+rc <- dplyr::bind_rows(
+  tibble::tibble(time = der$time, rate = der$ohbap_urine_rate, Route = "Dermal (alpha = 0.0164)"),
+  tibble::tibble(time = inh$time, rate = inh$ohbap_urine_rate, Route = "Inhalation (alpha = 0.0399)")
+) |>
+  dplyr::filter(time <= 120)
+
+ggplot(rc, aes(time, rate, colour = Route)) +
+  geom_line() +
+  labs(x = "Time (h after a single absorbed dose)",
+       y = "Urinary 3-OHBaP appearance rate (nmol/h)",
+       colour = NULL,
+       title = "Route comparison for an identical absorbed dose",
+       caption = "Single 1000 nmol absorbed dose by each route.") +
+  theme(legend.position = "bottom")
+```
+
+# Assumptions and deviations
+
+- **Only the simple compartmental toxicokinetic model is packaged.** The paper's
+  companion whole-body PBPK model (Figure 1, Appendix S1 Eqs. 1-26) inherits its
+  human organ volumes and blood flows from Brown 1997 and Davies & Morris 1993
+  and its structure from the rat PBPK model of Heredia-Ortiz & Bouchard 2013;
+  none of those physiological values is reported in this paper. Reconstructing it
+  would mean substituting physiological constants from outside the sources, which
+  would make the model unauditable, so it is left for a follow-up once those
+  references are obtained.
+- **Inhalation and dermal routes only.** The general equations (Eqs. 27-31) also
+  carry oral and intravenous absorption compartments, but the authors fit rate
+  constants only for inhalation and dermal uptake (direct oral exposure was
+  deemed insignificant for the workers, and intravenous dosing is not an
+  occupational route). The two unfitted routes are therefore omitted rather than
+  carried with invented rate constants.
+- **The whole-body pool is split by route.** Eq. 31 is a single pool `B` fed by
+  all routes; the paper fits a separate urinary recovery fraction `alpha` for
+  each route and simulates one route at a time. To carry both fitted `alpha`
+  values in a single model, the pool is split into `body_inh` and `body_der`, so
+  each route's urinary contribution uses its own `alpha`. The system is linear,
+  so for any single-route exposure this is identical to Eq. 31, and the sum
+  `body_inh + body_der` is the paper's `B`.
+- **The observable is an excretion rate.** The measured biomarker is the urinary
+  3-OHBaP concentration in each void; the model exposes the urinary appearance
+  rate `ohbap_urine_rate`, which is proportional to that concentration (the
+  constant of proportionality is the urine production rate, which the paper does
+  not model). The cumulative `urine` state gives the total excreted.
+- **Dose scale is arbitrary.** The absorbed-dose inputs are in nmol but the model
+  is linear; the paper notes that changing the exposure concentration or exposed
+  surface only scales the simulated urinary profile without altering its shape,
+  so the absolute magnitude of the dose inputs in this vignette carries no
+  physiological claim.
+- **Deterministic, no residual error.** The publication fits point values by a
+  Monte-Carlo / chi-square procedure and reports no inter-individual or residual
+  variability, so the packaged model carries no `eta` terms and no residual
+  error.
+- **Rate constants are kept on the linear scale.** `ka_inh`, `ka_der` and `kb`
+  are fixed mechanistic rate constants reported as point values, not estimated
+  population-PK parameters, so they are written on the natural (linear) scale per
+  the mechanistic-parameter convention. `checkModelConventions()` emits an
+  advisory suggesting a log-transformed `lka_inh` / `lka_der`; that is the
+  expected false positive for a deterministic mechanistic model of this class.
+```

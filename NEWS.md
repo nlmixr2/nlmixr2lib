@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Leil 2014 4beta-hydroxycholesterol / midazolam CYP3A4 interaction model ([doi:10.1038/psp.2014.18](https://doi.org/10.1038/psp.2014.18)) -- healthy adults given ketoconazole or rifampin.
+- Add Heredia-Ortiz 2014 benzo(a)pyrene ([doi:10.1371/journal.pone.0102570](https://doi.org/10.1371/journal.pone.0102570)) -- simple compartmental toxicokinetic model of urinary 3-OHBaP biomarker in PAH-exposed workers.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

@@ -1008,6 +1008,8 @@ navbar:
         href: articles/Assmus_2025_benznidazole_mouse.html
       - text: "Benznidazole qpcr (Assmus 2025)"
         href: articles/Assmus_2025_benznidazole.html
+      - text: "Benzopyrene (HerediaOrtiz 2014)"
+        href: articles/HerediaOrtiz_2014_benzopyrene.html
       - text: "Benzylpenicillin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Benzylpenicillin (Obura 2025)"
@@ -11242,6 +11244,7 @@ articles:
   - articles/Henninger_2026_dndi6148
   - articles/Henthorn_2024_tetrahydrocannabinol
   - articles/Heo_2016_amlodipine_valsartan
+  - articles/HerediaOrtiz_2014_benzopyrene
   - articles/HernandezLozano_2025_apramycin
   - articles/Heuberger_2018_salbutamol
   - articles/Hibma_2023_DMD_NSAA
