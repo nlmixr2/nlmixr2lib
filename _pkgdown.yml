@@ -2620,6 +2620,8 @@ navbar:
         href: articles/Heathman_2024_efavirenz.html
       - text: "Efavirenz (Hirt 2009)"
         href: articles/Hirt_2009_efavirenz.html
+      - text: "Efavirenz (Kitabi 2018)"
+        href: articles/Kitabi_2018_efavirenz.html
       - text: "Efavirenz (Luo 2016)"
         href: articles/Luo_2016_efavirenz.html
       - text: "Efavirenz (Mukonzo 2009)"
@@ -10673,6 +10675,7 @@ articles:
   - articles/Kiriyama_2024_nifedipine_captopril_rat
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kirwan_2021_vancomycin
+  - articles/Kitabi_2018_efavirenz
   - articles/Kleiber_2017_clonidine
   - articles/Kleideiter_2017_cebranopadol
   - articles/Kleideiter_2018_cebranopadol
