@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kreuer 2014 exhaled propofol, lung-compartment and time-delay models ([doi:10.1038/srep05423](https://doi.org/10.1038/srep05423)) -- one adult surgical patient under Marsh target-controlled infusion.
+- Add Felton 2014 piperacillin ([doi:10.1128/AAC.02664-14](https://doi.org/10.1128/AAC.02664-14)) -- critically ill adults with nosocomial infection.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
