@@ -1,0 +1,725 @@
+---
+title: "Ceftriaxone and metronidazole in severe acute malnutrition (Standing 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ceftriaxone and metronidazole in severe acute malnutrition (Standing 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Standing et al. (2018) studied intravenous ceftriaxone and oral metronidazole
+in Kenyan infants and young children hospitalised with complicated severe acute
+malnutrition (SAM), as the pharmacokinetic stage of the FLACSAM trial. The two
+drugs were modelled separately, so the paper contributes two models:
+
+* `Standing_2018_ceftriaxone` -- three-compartment model for **unbound**
+  ceftriaxone, with total ceftriaxone in the central compartment and the
+  unbound concentration derived from instantaneous saturable binding whose
+  capacity depends on serum albumin.
+* `Standing_2018_metronidazole` -- one-compartment parent and metabolite
+  model in which hydroxymetronidazole is formed both on first pass and from
+  circulating metronidazole through a well-stirred liver model.
+
+* Citation: `r rxode2::rxode(readModelDb("Standing_2018_ceftriaxone"))$reference`
+* Ceftriaxone model: `r rxode2::rxode(readModelDb("Standing_2018_ceftriaxone"))$description`
+* Metronidazole model: `r rxode2::rxode(readModelDb("Standing_2018_metronidazole"))$description`
+* Article: <https://doi.org/10.1002/cpt.1078> (open access, PMC6282491)
+
+# Population
+
+Eighty-one children aged 2-45 months (median 14 months; weight 2.53-10.9 kg,
+median 5.88 kg; 46 girls) with complicated SAM were enrolled at three Kenyan
+centres (Standing 2018 Table 1). SAM was defined as kwashiorkor, a mid-upper-arm
+circumference below 11.5 cm (11 cm at 1-5 months) or a weight-for-height
+Z-score below -3. Children received ceftriaxone 50 mg/kg (100 mg/kg if
+meningitis was suspected) as a daily intravenous bolus and metronidazole
+7.5 mg/kg every 8 h as an oral suspension. Each child gave a pre-dose sample
+and three post-dose samples randomised to early (5 min, 30 min, 1 h), middle
+(2, 4, 8 h) and late (24, 48, 72 h) times. Eighty children contributed to the
+ceftriaxone analysis and 69 to the metronidazole analysis. Nutritional oedema
+was common (grades 0/1/2/3 = 45/12/14/9 in the ceftriaxone analysis) and
+oedematous children were heavier. Serum albumin had a median of 33.75 g/L
+(range 7-57) and serum creatinine a median of 21 umol/L (range 4-178).
+
+The same information is available programmatically:
+
+```{r population}
+str(rxode2::rxode(readModelDb("Standing_2018_ceftriaxone"))$population[c("n_subjects", "age_range", "weight_median")])
+str(rxode2::rxode(readModelDb("Standing_2018_metronidazole"))$population[c("n_subjects", "age_range", "weight_median")])
+```
+
+# Source trace
+
+All structure and final estimates come from the NONMEM control streams in the
+Supplementary Material (section 2.1 for ceftriaxone, section 2.2 for
+metronidazole). The metronidazole estimates are also printed as the "original"
+row of the initial-estimate perturbation table in section 3.2. Every `ini()`
+value carries an in-file comment to its source.
+
+## Ceftriaxone
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (unbound CL, 70 kg) | 4.61627 L/h | Stream THETA(1); Table 2 'CL' 4.62 |
+| `lvc` (total central volume V1) | 14.4644 L | Stream THETA(2); Table 2 'V1' 14.46 |
+| `lq` (Q2) | 0.933031 L/h | Stream THETA(3); Table 2 unlabelled row 0.93 |
+| `lvp` (V2) | 6.05411 L | Stream THETA(4); Table 2 value 6.05 |
+| `lq2` (Q3) | 29.9815 L/h | Stream THETA(5); Table 2 value 29.98 |
+| `lvp2` (V3) | 19.2606 L | Stream THETA(6); Table 2 value 19.26 |
+| `lbmax_pb` (Bmax) | 69.7743 mg/L | Stream THETA(7); Table 2 value 69.77 |
+| `lkd_pb` (Kd) | 22.8853 mg/L | Stream THETA(8); Table 2 value 22.89; Discussion 'Kd of 22.9 mg/L' |
+| `e_alb_bmax_pb` | 0.555443 | Stream THETA(9); Table 2 value 0.56 |
+| `e_creat_cl` | -0.261234 | Stream THETA(10); Table 2 -0.26 |
+| `e_dis_edema_wt` | -0.255959 | Stream THETA(11); Results '26%' |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | Methods 'allometric scaling'; stream `$PK` |
+| `pma50_cl`, `h_pma_cl` | 47.7 weeks, 3.4 (fixed) | Stream `$PK`; Rhodin 2009 (paper ref 10) |
+| `etalcl`, `etalvc` block | 0.174903, 0.0807096, 0.18196 | Stream `$OMEGA BLOCK(2)` |
+| `etalbmax_pb` | 0.172225 | Stream `$OMEGA` (ETA(3) on BM) |
+| `propSd`, `addSd` (total) | 0.1904, 0.2236 mg/L | Stream `$SIGMA` 0.0362471 and 0.05 (variances) |
+| `propSd_Cu` (unbound) | 0.2666 | Stream `$SIGMA` 0.0710923; unbound additive is `0 FIX` |
+| Age-expected creatinine | `-2.37330 - 12.91367 log(AGE) + 23.93581 AGE^0.5` | Stream `$PK` MSCR (Ceriotti) |
+| Unbound concentration | quadratic in `Cc`, `Bmax`, `Kd` | Methods equations; stream `$DES` CFREE |
+| `d/dt(central)` etc. | only unbound drug leaves central | Supplementary section 1.5 equations; stream `$DES` |
+
+## Metronidazole and hydroxymetronidazole
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lka` | 0.393084 1/h | Stream THETA(1); Table 2 'Ka' 0.39 |
+| `lclint` (CLI) | 0.743542 L/h | Stream THETA(2); Table 2 'CLIMET' 0.74 |
+| `lcl` (other routes) | 0.505611 L/h | Stream THETA(3); Table 2 'CLMET' 0.51 |
+| `lvc` | 56.3524 L | Stream THETA(4); Table 2 'VMET' 56.35 |
+| `lcl_2oh` | 1.45238 L/h | Stream THETA(5); Table 2 'CLOH' 1.45 |
+| `lvc_2oh` | 16.8914 L | Stream THETA(6); Table 2 'VOH' 16.89 |
+| `ltlag` | 0.171638 h | Stream THETA(7); Table 2 'Alag' 0.17 |
+| `e_dis_edema_ge2_wt` | -0.16871 | Stream THETA(8); Results '17%' |
+| `e_wt_cl`, `e_wt_vc`, `e_wt_ka` | 0.75, 1, -0.25 (fixed) | Methods; stream `$PK` |
+| CYP2A6 maturation on CLI | 1.1, 0.15, 0.04 y, 0.8 (fixed) | Stream `$PK`; Upreti (paper ref 11) |
+| `pma50_cl_2oh`, `h_pma_cl_2oh` | 47.7 weeks, 3.4 (fixed) | Stream `$PK`; Rhodin 2009 |
+| Hepatic flow | `76 (WT/70)^0.75 (1 - 0.91 HCT)` L/h | Methods equation; stream QH, QHP |
+| Extraction ratio, formation clearance | `eh = CLI/(QHP + CLI)`, `QHP eh` | Methods equation; stream ER, CLTM |
+| First-pass split | `1 - eh` to parent, `eh` to metabolite | Stream F1, F2 |
+| `etalka`, `etalclint`, `etalvc` | 0.626046, 0.376697, 0.141027 | Stream `$OMEGA` (CL, CLM, V2 are `0 FIX`) |
+| `propSd` (parent) | 0.3234 | Stream `$SIGMA` 0.104557; parent additive is `0 FIX` |
+| `propSd_2oh`, `addSd_2oh` | 0.2880, 0.1222 mg/L | Stream `$SIGMA` 0.0829706 and 0.0149359 |
+
+# Virtual cohort
+
+The individual data are not public. The virtual children below follow the
+Table 1 marginal distributions: age log-normal around 15 months within
+2-45 months, weight increasing with age around the 5.88 kg median within
+2.53-10.9 kg, oedema grade drawn with the Table 1 frequencies, albumin and
+creatinine drawn around their medians within the observed ranges, and
+haematocrit taken as three times a haemoglobin drawn around 9 g/dL. Every
+child is assumed born at term, so postmenstrual age is postnatal age plus 40
+weeks. Values outside a range are redrawn rather than clamped. The same 200
+children are reused in every dose arm, with disjoint `id` ranges.
+
+```{r cohort}
+set.seed(20180323)
+rxode2::rxSetSeed(20180323)
+
+redraw <- function(n, draw, lo, hi) {
+  x <- draw(n)
+  bad <- x < lo | x > hi
+  while (any(bad)) {
+    x[bad] <- draw(sum(bad))
+    bad <- x < lo | x > hi
+  }
+  x
+}
+
+n_sub <- 200
+age_mo <- redraw(n_sub, function(n) exp(rnorm(n, log(15), 0.7)), 2, 45)
+# Weight follows age; children outside the observed 2.53-10.9 kg are redrawn.
+wt <- 5.88 * (age_mo / 15)^0.35 * exp(rnorm(n_sub, 0, 0.15))
+bad <- wt < 2.53 | wt > 10.9
+while (any(bad)) {
+  wt[bad] <- 5.88 * (age_mo[bad] / 15)^0.35 * exp(rnorm(sum(bad), 0, 0.15))
+  bad <- wt < 2.53 | wt > 10.9
+}
+grade <- sample(0:3, n_sub, replace = TRUE, prob = c(45, 12, 14, 9))
+hgb <- redraw(n_sub, function(n) rnorm(n, 9, 1.6), 4.4, 12.8)
+
+cohort <- tibble(
+  sid = seq_len(n_sub),
+  WT = wt,
+  AGE = age_mo / 12,
+  PAGE = age_mo * 4.35 + 40,
+  ALB = redraw(n_sub, function(n) rnorm(n, 33.75, 8), 7, 57),
+  CREAT = redraw(n_sub, function(n) exp(rnorm(n, log(21), 0.6)), 4, 178),
+  HCT = 3 * hgb,
+  DIS_EDEMA = as.integer(grade > 0),
+  DIS_EDEMA_GE2 = as.integer(grade > 1)
+)
+stopifnot(all(cohort$DIS_EDEMA_GE2 <= cohort$DIS_EDEMA))
+summary(cohort[, c("WT", "AGE", "ALB", "CREAT", "HCT")])
+```
+
+```{r event-helpers}
+# Doses and observation rows for one arm. Observations sit on the central
+# state with dvid = 1; the algebraic outputs (Cc, Cu, Cc_2oh) come back as
+# columns on every observation row.
+make_arm <- function(cohort, regimen, dose_mgkg, cmt_dose, dose_times, obs_times, id_offset) {
+  doses <- tidyr::crossing(cohort, time = dose_times) |>
+    mutate(evid = 1L, cmt = cmt_dose, amt = dose_mgkg * WT, dvid = NA_integer_)
+  obs <- tidyr::crossing(cohort, time = obs_times) |>
+    mutate(evid = 0L, cmt = "central", amt = 0, dvid = 1L)
+  bind_rows(doses, obs) |>
+    mutate(id = sid + id_offset, regimen = regimen) |>
+    arrange(id, time, desc(evid)) |>
+    select(id, time, evid, cmt, amt, dvid, regimen, everything(), -sid)
+}
+```
+
+# Ceftriaxone
+
+## Unbound fraction versus total concentration and albumin
+
+The unbound concentration is the positive root of
+`Cc = Cu + Bmax Cu / (Kd + Cu)`. The plot reproduces the model curves of
+Supplementary Figure S10.
+
+```{r fu-curve}
+mod_cef <- readModelDb("Standing_2018_ceftriaxone")
+ui_cef <- rxode2::rxode(mod_cef)
+stopifnot(is.null(ui_cef$linCmt))
+th <- setNames(ui_cef$iniDf$est, ui_cef$iniDf$name)
+
+fu_grid <- tidyr::crossing(ALB = c(15, 25, 33.75, 45), Cc = exp(seq(log(1), log(500), length.out = 200))) |>
+  mutate(
+    bmax = exp(th[["lbmax_pb"]]) * (ALB / 33.75)^th[["e_alb_bmax_pb"]],
+    kd = exp(th[["lkd_pb"]]),
+    Cu = 0.5 * ((Cc - bmax - kd) + sqrt((Cc - bmax - kd)^2 + 4 * kd * Cc)),
+    fu = Cu / Cc
+  )
+# The root satisfies the binding equation it was derived from.
+stopifnot(max(abs(fu_grid$Cu + fu_grid$bmax * fu_grid$Cu / (fu_grid$kd + fu_grid$Cu) - fu_grid$Cc) / fu_grid$Cc) < 1e-8)
+
+ggplot(fu_grid, aes(Cc, fu, colour = factor(ALB))) +
+  geom_line() +
+  scale_x_log10() +
+  labs(
+    x = "Total ceftriaxone (mg/L)", y = "Fraction unbound", colour = "Albumin (g/L)",
+    caption = "Replicates the model curves of Supplementary Figure S10 of Standing 2018."
+  )
+```
+
+At low concentrations the unbound fraction tends to `Kd / (Kd + Bmax)`, about
+0.25 at the median albumin of 33.75 g/L, and rises towards 1 as binding
+saturates.
+
+## Concentration-time profiles under the study regimen
+
+```{r cef-study}
+obs_72 <- sort(unique(c(seq(0, 72, by = 0.5), 0.083)))
+ev_cef_study <- make_arm(cohort, "50 mg/kg q24h", 50, "central", c(0, 24, 48), obs_72, 0L)
+sim_cef_study <- rxode2::rxSolve(mod_cef, ev_cef_study, keep = "regimen", returnType = "data.frame")
+
+sim_cef_study |>
+  select(id, time, Total = Cc, Unbound = Cu) |>
+  pivot_longer(c(Total, Unbound), names_to = "analyte", values_to = "conc") |>
+  group_by(analyte, time) |>
+  summarise(
+    p05 = quantile(conc, 0.05), p50 = median(conc), p95 = quantile(conc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~analyte) +
+  scale_y_log10() +
+  labs(
+    x = "Time after first dose (h)", y = "Ceftriaxone (mg/L)",
+    caption = "Median and 90% interval; compare with Figure 1 (total and unbound VPC) of Standing 2018."
+  )
+```
+
+## Mass balance of unbound clearance
+
+Only unbound drug is cleared, so after a single bolus the unbound AUC to
+infinity times the individual unbound clearance must equal the dose. This holds
+whatever the binding parameters are, which makes it a check of the ODE wiring.
+
+```{r cef-mass-balance}
+typ_child <- tibble(
+  sid = 1L, WT = 5.88, AGE = 15 / 12, PAGE = 15 * 4.35 + 40, ALB = 33.75,
+  CREAT = 21, HCT = 27, DIS_EDEMA = 0L, DIS_EDEMA_GE2 = 0L
+)
+mod_cef_typ <- rxode2::zeroRe(mod_cef)
+obs_long <- sort(unique(c(0, exp(seq(log(0.01), log(480), length.out = 400)))))
+ev_mb <- make_arm(typ_child, "50 mg/kg single", 50, "central", 0, obs_long, 0L)
+sim_mb <- rxode2::rxSolve(mod_cef_typ, ev_mb, keep = "regimen", returnType = "data.frame",
+                          atol = 1e-10, rtol = 1e-10) |>
+  mutate(id = 1L) # a one-subject solve returns no id column
+nca_mb <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(bind_rows(sim_mb |> select(id, time, Cu), tibble(id = 1, time = 0, Cu = 0)) |>
+                     distinct(id, time, .keep_all = TRUE), Cu ~ time | id),
+  PKNCA::PKNCAdose(ev_mb |> filter(evid == 1) |> select(id, time, amt), amt ~ time | id),
+  intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE),
+  options = list(auc.method = "lin up/log down")
+))
+aucu_inf <- as.data.frame(nca_mb$result) |> filter(PPTESTCD == "aucinf.obs") |> pull(PPORRES)
+ratio_mb <- sim_mb$cl[1] * aucu_inf / (50 * 5.88)
+ratio_mb
+stopifnot(abs(ratio_mb - 1) < 0.02)
+```
+
+## Fraction of time above MIC (Figure 3)
+
+The paper simulated single doses of 50, 80 and 100 mg/kg and reported
+percentiles of the fraction of the first 24 h with unbound ceftriaxone above
+the MIC. The median curve was digitised by the maintainers from Figure 3 at
+MIC 4 and 8 mg/L (at MIC 2 mg/L and below it is flat at 1).
+
+```{r cef-ftmic}
+obs_24 <- seq(0, 24, by = 0.05)
+cef_doses <- c(50, 80, 100)
+ev_cef_ft <- bind_rows(lapply(seq_along(cef_doses), function(i) {
+  make_arm(cohort, paste0(cef_doses[i], " mg/kg"), cef_doses[i], "central", 0, obs_24, (i - 1L) * n_sub)
+}))
+stopifnot(!anyDuplicated(ev_cef_ft[, c("id", "time", "evid")]))
+sim_cef_ft <- rxode2::rxSolve(mod_cef, ev_cef_ft, keep = "regimen", returnType = "data.frame")
+
+mics <- c(0.25, 0.5, 1, 2, 4, 8)
+ft_cef <- sim_cef_ft |>
+  filter(time > 0) |>
+  tidyr::crossing(MIC = mics) |>
+  group_by(regimen, id, MIC) |>
+  summarise(ft = mean(Cu > MIC), .groups = "drop")
+
+ft_cef_pct <- ft_cef |>
+  group_by(regimen, MIC) |>
+  summarise(
+    p05 = quantile(ft, 0.05), p10 = quantile(ft, 0.10),
+    p20 = quantile(ft, 0.20), p50 = median(ft), .groups = "drop"
+  )
+
+ft_cef_pct |>
+  pivot_longer(p05:p50, names_to = "percentile", values_to = "ft") |>
+  mutate(regimen = factor(regimen, levels = paste(cef_doses, "mg/kg"))) |>
+  ggplot(aes(MIC, ft, linetype = percentile)) +
+  geom_line() +
+  geom_hline(yintercept = 0.5, colour = "grey60") +
+  geom_vline(xintercept = 2, colour = "grey60") +
+  scale_x_continuous(trans = "log2", breaks = mics) +
+  facet_wrap(~regimen) +
+  labs(
+    x = "MIC (mg/L)", y = "Fraction time > MIC", linetype = "Percentile",
+    caption = "Replicates Figure 3 of Standing 2018."
+  )
+```
+
+```{r cef-ftmic-compare}
+fig3 <- tribble(
+  ~regimen,    ~MIC, ~published,
+  "50 mg/kg",  4,    0.80,
+  "50 mg/kg",  8,    0.55,
+  "80 mg/kg",  4,    0.93,
+  "80 mg/kg",  8,    0.68,
+  "100 mg/kg", 4,    0.99,
+  "100 mg/kg", 8,    0.74
+)
+
+# Deterministic typical child (median covariates, no oedema) for the
+# structural gate; the cohort median is shown alongside.
+ev_cef_typ <- bind_rows(lapply(seq_along(cef_doses), function(i) {
+  make_arm(typ_child, paste0(cef_doses[i], " mg/kg"), cef_doses[i], "central", 0, obs_24, i - 1L)
+}))
+ft_cef_typ <- rxode2::rxSolve(mod_cef_typ, ev_cef_typ, keep = "regimen", returnType = "data.frame") |>
+  filter(time > 0) |>
+  tidyr::crossing(MIC = c(4, 8)) |>
+  group_by(regimen, MIC) |>
+  summarise(typical = mean(Cu > MIC), .groups = "drop")
+
+cmp_fig3 <- fig3 |>
+  left_join(ft_cef_typ, by = c("regimen", "MIC")) |>
+  left_join(ft_cef_pct |> select(regimen, MIC, cohort_median = p50), by = c("regimen", "MIC"))
+
+cmp_fig3 |>
+  rename(
+    "Dose" = regimen, "MIC (mg/L)" = MIC, "Figure 3 median" = published,
+    "Typical child" = typical, "Virtual-cohort median" = cohort_median
+  ) |>
+  knitr::kable(digits = 2, caption = "Unbound ceftriaxone fraction of 0-24 h above the MIC.")
+
+stopifnot(
+  # Typical-value solve: a mis-transcribed CL, V1, Bmax or Kd moves these by
+  # well over 0.1.
+  all(abs(cmp_fig3$typical - cmp_fig3$published) < 0.08),
+  # Cohort centre: depends on the virtual cohort, so a wider band.
+  all(abs(cmp_fig3$cohort_median - cmp_fig3$published) < 0.12)
+)
+```
+
+The Discussion states that at 50 mg/kg more than 95% of children have unbound
+concentrations above 2 mg/L for at least half the interval, and that 80 mg/kg
+raises the 5th percentile above 60% of the interval:
+
+```{r cef-claims}
+ft_cef_pct |>
+  filter(MIC == 2) |>
+  select(regimen, p05, p10, p20) |>
+  knitr::kable(digits = 2, caption = "Lower percentiles of fraction time above 2 mg/L.")
+```
+
+## Covariate effects (Figure 5a and 5c)
+
+Figure 5 reports the proportion of simulated children reaching 50% of the
+interval above 2 mg/L by oedema and by serum creatinine. The figure does not
+state the dose; the study dose of 50 mg/kg is used here. These proportions sit
+close to 1 and are shown for direction only.
+
+```{r cef-fig5}
+pta_cef <- ft_cef |>
+  filter(regimen == "50 mg/kg", MIC == 2) |>
+  mutate(sid = id) |>
+  left_join(cohort, by = "sid") |>
+  mutate(
+    Oedema = ifelse(DIS_EDEMA == 1, ">= 1", "0"),
+    Creatinine = cut(CREAT, c(0, 15, 30, 60, Inf), labels = c("<15", "15-30", "30-60", ">60"))
+  )
+bind_rows(
+  pta_cef |> group_by(group = paste("Oedema", Oedema)) |> summarise(PTA = mean(ft >= 0.5), n = n()),
+  pta_cef |> group_by(group = paste("Creatinine", Creatinine, "umol/L")) |> summarise(PTA = mean(ft >= 0.5), n = n())
+) |>
+  left_join(tribble(
+    ~group, ~published,
+    "Oedema 0", 0.99, "Oedema >= 1", 0.94,
+    "Creatinine <15 umol/L", 0.94, "Creatinine 15-30 umol/L", 0.97,
+    "Creatinine 30-60 umol/L", 1, "Creatinine >60 umol/L", 1
+  ), by = "group") |>
+  rename("Group" = group, "Simulated PTA" = PTA, "Figure 5 PTA" = published) |>
+  knitr::kable(digits = 2)
+```
+
+## PKNCA: total and unbound exposure after the first dose
+
+The paper reports no NCA table; the values below summarise the simulated first
+24 h at each dose.
+
+```{r cef-pknca}
+cef_nca_input <- sim_cef_ft |>
+  filter(!is.na(Cc)) |>
+  select(id, time, regimen, Cc, Cu)
+dose_cef <- ev_cef_ft |> filter(evid == 1) |> select(id, time, amt, regimen)
+nca_cef <- lapply(c("Cc", "Cu"), function(v) {
+  conc <- PKNCA::PKNCAconc(cef_nca_input, stats::as.formula(paste(v, "~ time | regimen + id")))
+  dose <- PKNCA::PKNCAdose(dose_cef, amt ~ time | regimen + id)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc, dose,
+    intervals = data.frame(start = 0, end = 24, cmax = TRUE, auclast = TRUE)))
+  as.data.frame(res$result) |> mutate(analyte = ifelse(v == "Cc", "Total", "Unbound"))
+})
+bind_rows(nca_cef) |>
+  group_by(analyte, regimen, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  rename("Analyte" = analyte, "Dose" = regimen, "Cmax (mg/L)" = cmax, "AUC0-24 (mg*h/L)" = auclast) |>
+  knitr::kable(digits = 1, caption = "Median simulated ceftriaxone exposure, first 24 h.")
+```
+
+# Metronidazole and hydroxymetronidazole
+
+## Mass balance of the parent-metabolite system
+
+With a single oral dose, `(1 - eh)` of the dose reaches the circulation as
+metronidazole and is removed by `cl + clf_2oh`; hydroxymetronidazole receives
+`eh` of the dose plus the systemic formation flux and is removed by `cl_2oh`.
+Both AUC identities follow from the ODEs alone.
+
+```{r met-mass-balance}
+mod_met <- readModelDb("Standing_2018_metronidazole")
+ui_met <- rxode2::rxode(mod_met)
+stopifnot(is.null(ui_met$linCmt))
+mod_met_typ <- rxode2::zeroRe(mod_met)
+typ_met <- typ_child |> mutate(AGE = 17 / 12, PAGE = 17 * 4.35 + 40)
+ev_mmb <- make_arm(typ_met, "10 mg/kg single", 10, "depot", 0, obs_long, 0L)
+sim_mmb <- rxode2::rxSolve(mod_met_typ, ev_mmb, keep = "regimen", returnType = "data.frame",
+                           atol = 1e-10, rtol = 1e-10) |>
+  mutate(id = 1L) # a one-subject solve returns no id column
+auc_inf <- function(df, v) {
+  conc <- bind_rows(df |> select(id, time, all_of(v)), tibble(id = 1, time = 0, !!v := 0)) |>
+    distinct(id, time, .keep_all = TRUE)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, stats::as.formula(paste(v, "~ time | id"))),
+    PKNCA::PKNCAdose(ev_mmb |> filter(evid == 1) |> select(id, time, amt), amt ~ time | id),
+    intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE),
+    options = list(auc.method = "lin up/log down")
+  ))
+  as.data.frame(res$result) |> filter(PPTESTCD == "aucinf.obs") |> pull(PPORRES)
+}
+p <- sim_mmb[1, ]
+dose_mmb <- 10 * 5.88
+ratio_parent <- (p$cl + p$clf_2oh) * auc_inf(sim_mmb, "Cc") / ((1 - p$eh) * dose_mmb)
+ratio_metab <- p$cl_2oh * auc_inf(sim_mmb, "Cc_2oh") /
+  (dose_mmb * (p$eh + (1 - p$eh) * p$clf_2oh / (p$cl + p$clf_2oh)))
+c(parent = ratio_parent, metabolite = ratio_metab, extraction_ratio = p$eh,
+  fraction_metabolised = p$clf_2oh / (p$clf_2oh + p$cl))
+stopifnot(abs(ratio_parent - 1) < 0.02, abs(ratio_metab - 1) < 0.02)
+```
+
+The typical child's extraction ratio of about 0.013 and fraction metabolised of
+about 0.6 sit close to the cohort medians the authors report (0.015 and 0.636,
+Supplementary Material section 3).
+
+## Concentration-time profiles under the study regimen
+
+```{r met-study}
+ev_met_study <- make_arm(cohort, "7.5 mg/kg q8h", 7.5, "depot", seq(0, 64, by = 8), obs_72, 0L)
+sim_met_study <- rxode2::rxSolve(mod_met, ev_met_study, keep = "regimen", returnType = "data.frame")
+
+sim_met_study |>
+  select(id, time, Metronidazole = Cc, Hydroxymetronidazole = Cc_2oh) |>
+  pivot_longer(-c(id, time), names_to = "analyte", values_to = "conc") |>
+  group_by(analyte, time) |>
+  summarise(
+    p05 = quantile(conc, 0.05), p50 = median(conc), p95 = quantile(conc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~analyte, scales = "free_y") +
+  labs(
+    x = "Time after first dose (h)", y = "Concentration (mg/L)",
+    caption = "Median and 90% interval; compare with Figure 2 (VPC) of Standing 2018."
+  )
+```
+
+Both analytes accumulate over the 72 h, as the paper notes for Figure 2.
+
+## Twice-daily regimens (Figure 4)
+
+The paper's target-attainment simulations assumed 10% protein binding for both
+analytes and weighted hydroxymetronidazole by 0.65 for its lower activity, so
+the active concentration is `0.9 Cc + 0.65 x 0.9 Cc_2oh`. Figure 4b plots
+AUC:MIC; at MIC 1 mg/L this is the active AUC itself. Its median line was
+digitised by the maintainers at MIC 1 mg/L for 0-24 h and 24-48 h.
+
+The Methods say both indices were calculated for 0-24 h and 24-48 h, but the
+"48 hrs" panels of Figure 4a can only have been computed over the whole
+0-48 h. Their median fraction of time above 1 mg/L is about 0.99 rather than 1,
+which requires the absorption lag of the first dose inside the window, and
+their medians at MIC 16 mg/L (0.72, 0.75 and 0.85) are what a 0-24 h value
+near 0.45 combined with near-complete coverage on the second day gives over
+48 h. A 24-48 h window would put every median at 1 up to MIC 8 mg/L. The AUC
+panels of Figure 4b, by contrast, match 24-48 h and not 0-48 h. The fraction of
+time above the MIC is therefore computed here over 0-24 h and 0-48 h, and the
+AUC over 0-24 h and 24-48 h.
+
+```{r met-fig4}
+obs_48 <- seq(0, 48, by = 0.05)
+met_doses <- c(10, 12.5, 15)
+ev_met_bd <- bind_rows(lapply(seq_along(met_doses), function(i) {
+  make_arm(cohort, paste0(met_doses[i], " mg/kg BD"), met_doses[i], "depot", c(0, 12, 24, 36), obs_48, (i - 1L) * n_sub)
+}))
+stopifnot(!anyDuplicated(ev_met_bd[, c("id", "time", "evid")]))
+sim_met_bd <- rxode2::rxSolve(mod_met, ev_met_bd, keep = "regimen", returnType = "data.frame") |>
+  mutate(Cactive = 0.9 * Cc + 0.65 * 0.9 * Cc_2oh)
+
+ft_met <- bind_rows(
+  sim_met_bd |> filter(time > 0, time <= 24) |> mutate(window = "0-24 h"),
+  sim_met_bd |> filter(time > 0) |> mutate(window = "0-48 h")
+) |>
+  tidyr::crossing(MIC = c(1, 2, 4, 8, 16, 32)) |>
+  group_by(regimen, window, id, MIC) |>
+  summarise(ft = mean(Cactive > MIC), .groups = "drop")
+
+ft_met |>
+  group_by(regimen, window, MIC) |>
+  summarise(
+    p05 = quantile(ft, 0.05), p10 = quantile(ft, 0.10),
+    p20 = quantile(ft, 0.20), p50 = median(ft), .groups = "drop"
+  ) |>
+  pivot_longer(p05:p50, names_to = "percentile", values_to = "ft") |>
+  mutate(regimen = factor(regimen, levels = paste(met_doses, "mg/kg BD"))) |>
+  ggplot(aes(MIC, ft, linetype = percentile)) +
+  geom_line() +
+  geom_hline(yintercept = 0.9, colour = "grey60") +
+  geom_vline(xintercept = 8, colour = "grey60") +
+  scale_x_continuous(trans = "log2", breaks = c(1, 2, 4, 8, 16, 32)) +
+  facet_grid(window ~ regimen) +
+  labs(
+    x = "MIC (mg/L)", y = "Fraction time > MIC", linetype = "Percentile",
+    caption = "Replicates Figure 4a of Standing 2018."
+  )
+```
+
+```{r met-fig4a-compare}
+# Median line of Figure 4a, digitised by the maintainers at MIC 8 and 16 mg/L.
+fig4a <- tribble(
+  ~regimen,        ~window,  ~MIC, ~published,
+  "10 mg/kg BD",   "0-24 h", 8,    0.91,
+  "10 mg/kg BD",   "0-24 h", 16,   0.44,
+  "12.5 mg/kg BD", "0-24 h", 8,    0.94,
+  "12.5 mg/kg BD", "0-24 h", 16,   0.49,
+  "15 mg/kg BD",   "0-24 h", 8,    0.96,
+  "15 mg/kg BD",   "0-24 h", 16,   0.70,
+  "10 mg/kg BD",   "0-48 h", 8,    0.96,
+  "10 mg/kg BD",   "0-48 h", 16,   0.72,
+  "12.5 mg/kg BD", "0-48 h", 8,    0.97,
+  "12.5 mg/kg BD", "0-48 h", 16,   0.75,
+  "15 mg/kg BD",   "0-48 h", 8,    0.98,
+  "15 mg/kg BD",   "0-48 h", 16,   0.85
+)
+cmp_fig4a <- fig4a |>
+  left_join(
+    ft_met |> group_by(regimen, window, MIC) |> summarise(cohort_median = median(ft), .groups = "drop"),
+    by = c("regimen", "window", "MIC")
+  )
+cmp_fig4a |>
+  rename("Dose" = regimen, "Window" = window, "MIC (mg/L)" = MIC,
+         "Figure 4a median" = published, "Virtual-cohort median" = cohort_median) |>
+  knitr::kable(digits = 2, caption = "Fraction of time with active metronidazole above the MIC.")
+# At MIC 16 mg/L the median sits on the steep part of the curve, where a few
+# hours' shift in the crossing time moves it by about 0.04 (0-24 h) or
+# 0.02 (0-48 h) per hour.
+stopifnot(all(abs(cmp_fig4a$cohort_median - cmp_fig4a$published) < 0.12))
+```
+
+```{r met-pknca}
+met_nca_input <- sim_met_bd |>
+  filter(!is.na(Cactive)) |>
+  select(id, time, regimen, Cactive)
+conc_met <- PKNCA::PKNCAconc(met_nca_input, Cactive ~ time | regimen + id)
+dose_met <- PKNCA::PKNCAdose(ev_met_bd |> filter(evid == 1) |> select(id, time, amt, regimen),
+                             amt ~ time | regimen + id)
+nca_met <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_met, dose_met,
+  intervals = data.frame(start = c(0, 24), end = c(24, 48), auclast = TRUE)))
+
+sim_auc <- as.data.frame(nca_met$result) |>
+  mutate(window = paste0(start, "-", end, " h")) |>
+  select(regimen, window, PPTESTCD, PPORRES)
+
+fig4b <- tribble(
+  ~regimen,         ~window,   ~auclast,
+  "10 mg/kg BD",    "0-24 h",  315,
+  "12.5 mg/kg BD",  "0-24 h",  395,
+  "15 mg/kg BD",    "0-24 h",  475,
+  "10 mg/kg BD",    "24-48 h", 555,
+  "12.5 mg/kg BD",  "24-48 h", 700,
+  "15 mg/kg BD",    "24-48 h", 840
+)
+
+cmp_met <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_auc,
+  reference = fig4b,
+  by = c("regimen", "window"),
+  units = c(auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_met, caption = "Median active AUC (0.9 metronidazole + 0.65 x 0.9 hydroxymetronidazole): virtual cohort vs Figure 4b at MIC 1 mg/L.")
+```
+
+```{r met-gate}
+# Deterministic typical child for the structural gate.
+ev_met_typ <- bind_rows(lapply(seq_along(met_doses), function(i) {
+  make_arm(typ_met, paste0(met_doses[i], " mg/kg BD"), met_doses[i], "depot", c(0, 12, 24, 36), obs_48, i - 1L)
+}))
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+auc_typ <- rxode2::rxSolve(mod_met_typ, ev_met_typ, keep = "regimen", returnType = "data.frame") |>
+  mutate(Cactive = 0.9 * Cc + 0.65 * 0.9 * Cc_2oh) |>
+  group_by(regimen) |>
+  summarise(
+    `0-24 h` = trap(time[time <= 24], Cactive[time <= 24]),
+    `24-48 h` = trap(time[time >= 24], Cactive[time >= 24]),
+    .groups = "drop"
+  ) |>
+  pivot_longer(-regimen, names_to = "window", values_to = "typical") |>
+  left_join(fig4b, by = c("regimen", "window")) |>
+  left_join(sim_auc |> group_by(regimen, window) |> summarise(cohort = median(PPORRES), .groups = "drop"),
+            by = c("regimen", "window")) |>
+  mutate(typical_pct = 100 * (typical / auclast - 1), cohort_pct = 100 * (cohort / auclast - 1))
+knitr::kable(auc_typ, digits = 1)
+stopifnot(
+  # Typical-value solve: a mis-transcribed clearance, volume or ka moves the
+  # first-day AUC by far more than 12%.
+  all(abs(auc_typ$typical_pct) < 12),
+  # Cohort centre against the digitised median.
+  all(abs(auc_typ$cohort_pct) < 20)
+)
+```
+
+## Covariate effect of oedema (Figure 5b)
+
+Figure 5b reports the proportion of children with at least 90% of the time
+above 8 mg/L (active concentration) at 48 h by oedema grade, taken here over
+0-48 h for the reason given under Figure 4. The dose is not
+stated; 12.5 mg/kg twice daily, the paper's recommendation, is used here.
+
+```{r met-fig5}
+ft_met |>
+  filter(regimen == "12.5 mg/kg BD", window == "0-48 h", MIC == 8) |>
+  mutate(sid = id - n_sub) |>
+  left_join(cohort, by = "sid") |>
+  group_by(Oedema = ifelse(DIS_EDEMA_GE2 == 1, "> 1", "<= 1")) |>
+  summarise(PTA = mean(ft >= 0.9), n = n(), .groups = "drop") |>
+  left_join(tibble(Oedema = c("<= 1", "> 1"), published = c(0.90, 0.93)), by = "Oedema") |>
+  rename("Oedema grade" = Oedema, "Simulated PTA" = PTA, "Figure 5 PTA" = published) |>
+  knitr::kable(digits = 2)
+```
+
+# Assumptions and deviations
+
+- **Table 2 of the article has misaligned rows.** From the unlabelled third
+  ceftriaxone row onward, every value sits one row below its label (0.93 is Q2,
+  6.05 is V2, 29.98 is Q3, 19.26 is V3, 69.77 is Bmax with its 42% IIV, 22.89
+  is Kd, 0.56 is the albumin exponent, and so on), and the last two residual
+  rows repeat the CL and V1 entries. The NONMEM control stream in the
+  Supplementary Material gives the same numbers in an unambiguous order, the
+  Discussion confirms Kd = 22.9 mg/L, and Table 2's own units for "BM" (mg/h)
+  are a typographical slip for mg/L. The stream is used throughout.
+- **Additive error on total ceftriaxone.** The stream estimates this variance
+  (no `FIX`) at exactly 0.05, which would also be a plausible initial value.
+  Table 2 does not print a usable value for this row. The stream value
+  (SD 0.224 mg/L) is used as an estimate.
+- **Hydroxymetronidazole additive error.** Table 2 labels its 0.01 as an SD in
+  mmol/L; the stream gives the variance 0.0149 on the mg/L scale. The SD
+  sqrt(0.0149) = 0.122 mg/L is used.
+- **First-pass metabolite formation.** The stream doses two depots (parent with
+  F = 1 - ER and metabolite with F = ER) with the same ka and lag time. The
+  packaged model uses a single depot whose absorbed flux is split in the same
+  proportions; the two forms are mathematically identical and need one dose
+  record instead of two.
+- **Metabolite mass.** Parent mass is moved to the metabolite compartment
+  without a molecular-weight ratio, exactly as in the stream; the difference
+  is absorbed into the apparent metabolite volume.
+- **Zero-variance random effects.** The metronidazole stream lists `$OMEGA 0 FIX`
+  for CL, CLM and V2 and both streams list a `$SIGMA 0 FIX` additive term for
+  one analyte; these are omitted, which gives the same model.
+- **Haematocrit.** The stream uses haematocrit as a fraction; the canonical
+  `HCT` column is a percentage, so the model divides by 100. Haematocrit is not
+  reported in the paper, so the virtual cohort uses three times a haemoglobin
+  drawn around the Table 1 median of 9 g/dL.
+- **Oedema.** The stream carries an ordinal grade (0-3). Ceftriaxone dichotomises
+  it at any oedema (`DIS_EDEMA`) and metronidazole at grade 2 or more
+  (`DIS_EDEMA_GE2`); a data set for both models carries both indicators from the
+  same grade.
+- **Virtual cohort.** The PTA simulations in the paper resampled the study
+  children, whose individual data are not public. The cohort here follows the
+  Table 1 marginals only; the correlation between oedema and weight (oedematous
+  children were heavier) and between age and weight are approximate. Postmenstrual
+  age assumes term birth.
+- **Window of the 48-h fraction of time above the MIC.** The Methods state
+  24-48 h for both indices; the Figure 4a values are only consistent with
+  0-48 h (see the Figure 4 section), so 0-48 h is used for that index and for
+  Figure 5b, and 24-48 h for the AUC.
+- **Digitised targets.** The Figure 3, Figure 4a and Figure 4b medians were digitised by
+  the maintainers from the published figure files at native resolution
+  (about +/-0.01 in fraction and +/-4% in AUC). The regimens behind Figure 5
+  are not stated; 50 mg/kg ceftriaxone and 12.5 mg/kg twice-daily metronidazole
+  are assumed and the comparison is not used as a gate.
+- The PubMed record of the article (PMID 29574688, via Europe PMC) lists no
+  linked erratum or correction as of 2026-11-25.

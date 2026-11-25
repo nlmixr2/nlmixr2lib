@@ -6756,8 +6756,8 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 ### 2oh (**canonical 2-hydroxy metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 2-hydroxy metabolite of the parent drug: 2-hydroxycarbamazepine (2OH-CBZ) for carbamazepine (Yip 2021). Member of the positional-hydroxy family (`2oh` / `3oh` / `5oh` / `7oh` / `8oh` / `9oh` / `11oh`); the parent drug of the model disambiguates.
-- **Source aliases:** `2OH-CBZ` (Yip 2021).
-- **Example models:** `Yip_2021_carbamazepine.R` (2OH-CBZ, formed via an arene-oxide intermediate; compartment `central_2oh`, observation `Cc_2oh`, apparent elimination clearance `lcl_2oh`, residual `expSd_2oh`, and the autoinduction covariate effect `e_autoind_cl_2oh` on its elimination clearance).
+- **Source aliases:** `2OH-CBZ` (Yip 2021); `METAB` / hydroxymetronidazole (Standing 2018 stream COMP(METAB); Table 2 `OH` subscripts).
+- **Example models:** `Yip_2021_carbamazepine.R` (2OH-CBZ, formed via an arene-oxide intermediate; compartment `central_2oh`, observation `Cc_2oh`, apparent elimination clearance `lcl_2oh`, residual `expSd_2oh`, and the autoinduction covariate effect `e_autoind_cl_2oh` on its elimination clearance), `Standing_2018_metronidazole.R` (hydroxymetronidazole, from CYP2A6 hydroxylation at the 2 position of metronidazole, formed on first pass and from circulating parent through a well-stirred liver model; compartment `central_2oh`, observation `Cc_2oh`, parameters `lcl_2oh` / `lvc_2oh`, residuals `propSd_2oh` / `addSd_2oh`).
 - **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier, following the `3oh` / `5oh` / `7oh` precedent.
 
 ### cbze (**canonical carbamazepine-10,11-epoxide metabolite suffix**)
