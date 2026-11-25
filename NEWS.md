@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhao 2018 tulathromycin ex vivo PK/PD ([doi:10.1371/journal.pone.0209177](https://doi.org/10.1371/journal.pone.0209177)) -- serum from Haemophilus parasuis-infected neutropenic guinea pigs.
+- Add Choi 2018 kaurenoic acid ([doi:10.3390/pharmaceutics10040253](https://doi.org/10.3390/pharmaceutics10040253)) -- healthy Korean men given Araliae continentalis Radix extract powder.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

@@ -1,0 +1,240 @@
+---
+title: "Kaurenoic acid (Choi 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Kaurenoic acid (Choi 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Choi_2018_kaurenoic_acid"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Choi_2018_kaurenoic_acid"))$description`
+* Article (open access): <https://doi.org/10.3390/pharmaceutics10040253>
+
+Kaurenoic acid (KAU) is a diterpene from the root of *Aralia continentalis*
+Kitagawa (Araliae continentalis Radix), an herbal extract powder approved in
+Korea for pain and convulsion. Choi et al. developed a UPLC-MS/MS assay with
+an LLOQ of 0.2 ng/mL and used it to describe the first human PK profile of
+KAU after the usual clinical dose of the extract. The concentration-time data
+were fitted with the naive-pooled engine of Phoenix NLME 8.0; a
+two-compartment model with first-order absorption and no lag time was
+selected over one-compartment and lag-time alternatives (Results 3.4).
+
+# Population
+
+Ten healthy Korean men aged 21-33 years (mean 25.8), weighing 60.4-86.7 kg
+(mean 73.3), with creatinine clearance 98.0-139.1 mL/min (mean 115.0) took a
+single oral dose of 1.0054 g extract powder, which contained 1.147 mg KAU
+(Results 3.1), with 240 mL water after a fast of at least 10 h. Plasma was
+sampled before the dose and at 0.25, 0.5, 0.75, 1, 2, 3, 4, 6, 8, 10 and
+12 h (Methods 2.5). Demographics are in Choi 2018 Table 3.
+
+The same information is available programmatically:
+
+```{r population}
+str(rxode2::rxode(readModelDb("Choi_2018_kaurenoic_acid"))$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (ka)    | 1.72 1/h  | Table 4, Ka (CV 28.79%) |
+| `lcl` (CL/F)  | 23.89 L/h | Table 4, CL/F (CV 9.30%) |
+| `lvc` (V/F)   | 24.44 L   | Table 4, V/F (CV 29.16%) |
+| `lq` (CLD/F)  | 15.55 L/h | Table 4, CLD/F (CV 13.77%) |
+| `lvp` (V2/F)  | 64.05 L   | Table 4, V2/F (CV 21.05%) |
+| `propSd`      | 0.48      | Table 4, proportional residual error epsilon; Methods eq. 3 |
+| ODEs for `depot`, `central`, `peripheral1` | n/a | Methods eq. 2 |
+| `Cc ~ prop(propSd)` | n/a | Methods eq. 3, `Cobs = Cpred * (1 + eps)` |
+| Dose 1147 ug KAU | n/a | Results 3.1 (1.0054 g extract x 1.1408 mg/g) |
+
+# Typical-value simulation
+
+The model has no between-subject variability, so the typical-value
+prediction is the model's prediction for every subject. Concentrations are
+simulated on a fine grid over the 12 h sampling window. rxode2 warns that
+the model has no omega parameters; that is expected for a naive-pooled fit.
+
+```{r typical}
+mod <- readModelDb("Choi_2018_kaurenoic_acid")
+dose_ug <- 1147 # 1.147 mg KAU in 1.0054 g extract (Results 3.1)
+trt <- "1.0054 g extract (1.147 mg KAU)"
+
+ev_typ <- rxode2::et(amt = dose_ug, cmt = "depot") |>
+  rxode2::et(seq(0, 12, by = 0.05), cmt = "central")
+
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ) |>
+  as.data.frame() |>
+  dplyr::mutate(id = 1L, treatment = trt)
+```
+
+# Replicate Figure 4
+
+Figure 4 of Choi 2018 shows the observed concentrations (n = 10) with the
+model-predicted curve on a log axis. Below, the typical-value curve is drawn
+together with a 90% prediction interval from 200 replicate profiles that
+carry only the proportional residual error, sampled at the study's nominal
+times.
+
+```{r vpc}
+rxode2::rxSetSeed(20181128)
+obs_times <- c(0.25, 0.5, 0.75, 1, 2, 3, 4, 6, 8, 10, 12)
+n_rep <- 200L
+ev_rep <- dplyr::bind_rows(
+  data.frame(id = seq_len(n_rep), time = 0, amt = dose_ug, evid = 1L, cmt = "depot"),
+  tidyr::crossing(id = seq_len(n_rep), time = obs_times) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim_rep <- rxode2::rxSolve(mod, events = ev_rep) |> as.data.frame()
+
+# The simulated observations scatter around the prediction with the
+# published proportional SD: the pooled median of sim/pred must be ~1.
+# 2200 draws give a standard error of about 1.3% on that median, so a
+# 10% window cannot flicker, yet any mismatch between the error model
+# and the observation variable moves it.
+ratio <- sim_rep$sim / sim_rep$Cc
+stopifnot(abs(median(ratio) - 1) < 0.10)
+
+pi_rep <- sim_rep |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q05 = quantile(sim, 0.05),
+    Q50 = quantile(sim, 0.50),
+    Q95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+
+ggplot() +
+  geom_ribbon(
+    data = pi_rep, aes(time, ymin = pmax(Q05, 0.1), ymax = Q95),
+    fill = "steelblue", alpha = 0.25
+  ) +
+  # Drop the pre-dose zero, which has no place on a log axis.
+  geom_line(data = dplyr::slice(sim_typ, -1), aes(time, Cc), colour = "blue") +
+  geom_point(data = pi_rep, aes(time, Q50), colour = "steelblue") +
+  scale_y_log10(limits = c(0.1, 100)) +
+  labs(
+    x = "Time (h)", y = "Plasma KAU (ug/L)",
+    title = "Typical prediction and 90% residual-error interval",
+    caption = "Replicates Figure 4 of Choi 2018 (predicted curve)."
+  )
+```
+
+The typical curve reproduces the published line: a peak of about 18 ug/L
+near 0.6 h, about 2.2 ug/L at 4 h and about 0.64 ug/L at 12 h. The lower
+residual-error bound is truncated at 0.1 ug/L for the log axis; proportional
+error with SD 0.48 puts the 5th percentile close to zero near the peak.
+
+# PKNCA validation
+
+Choi 2018 computed its secondary parameters by noncompartmental analysis of
+the **model-predicted** profile, with AUC0-inf from the linear trapezoidal
+rule up to the last time and extrapolated to infinity (Methods 2.6). The
+same analysis is run on the typical-value profile.
+
+```{r pknca}
+nca_conc <- sim_typ |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+dose_df <- data.frame(id = 1L, time = 0, amt = dose_ug, treatment = trt)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = intervals,
+  options = list(auc.method = "linear")
+))
+
+nca_wide <- as.data.frame(nca_res$result) |>
+  dplyr::select(PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+nca_wide
+```
+
+## Comparison against published NCA
+
+```{r nca_compare}
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax, ~aucinf.obs, ~half.life,
+  trt,        18.02, 0.6,   47.89,       4.97
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ug/L", tmax = "h", aucinf.obs = "ug*h/L", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Simulated vs. published (Choi 2018 Table 4, secondary parameters). * differs from reference by >20%."
+)
+
+# Deterministic comparison: the typical-value profile has no random
+# component, so these bounds are tight. A mis-transcribed CL, V or ka, or a
+# dose-unit slip, moves Cmax or AUC by far more than 3%.
+stopifnot(
+  abs(nca_wide$cmax / 18.02 - 1) < 0.03,
+  abs(nca_wide$tmax - 0.6) <= 0.1,
+  abs(nca_wide$aucinf.obs / 47.89 - 1) < 0.03,
+  abs(nca_wide$half.life / 4.97 - 1) < 0.05
+)
+
+# Closed-form identity: AUC0-inf of a linear model equals Dose / (CL/F).
+stopifnot(abs(nca_wide$aucinf.obs / (dose_ug / 23.89) - 1) < 0.01)
+```
+
+All four secondary parameters agree with Table 4. AUC0-inf also equals
+Dose / (CL/F) = 1147 / 23.89 = 48.0 ug*h/L; the printed 47.89 ug*h/L
+differs from it only by the trapezoid and extrapolation error of the
+paper's NCA.
+
+# Assumptions and deviations
+
+- **No between-subject variability.** The published parameters come from
+  the naive-pooled engine (Methods 2.6). The authors also ran an exploratory
+  mixed-effects analysis and say they present the basic-model estimates,
+  but they report no omega values, so the packaged model carries no etas.
+  Simulations with `rxSolve()` therefore vary only through the residual
+  error.
+- **Residual error as an SD.** Table 4 prints the proportional residual
+  error as 0.48 without saying whether it is a variance or a standard
+  deviation. Phoenix NLME estimates the residual-error parameter as a
+  standard deviation, so it is encoded as `propSd = 0.48`.
+- **Covariates.** Age, body weight, height, serum creatinine, creatinine
+  clearance, ALT, AST and GGTP were screened. Only creatinine clearance on
+  CL/F showed a relationship and it did not significantly improve the basic
+  model, so no covariate is in the model; the screened covariates are listed
+  in `covariatesDataExcluded`.
+- **Dose units.** The model is dosed in micrograms of KAU (1147 ug for the
+  1.0054 g extract dose), so `central / vc` is in ug/L (= ng/mL), the units
+  of the paper's figures and Table 4.
+- **Apparent parameters.** CL, CLD, V and V2 are apparent (/F) values
+  (Methods 2.6). Oral bioavailability is not identifiable and no `f(depot)`
+  term is included.
+- **Height range.** Methods 2.5 gives the height range as 167-183 cm and
+  Table 3 as 157.0-183.0 cm. Height is not in the model; the `population`
+  metadata records both.
+- No erratum or correction notice for this article was found on Europe PMC
+  (checked 2026-11-25).

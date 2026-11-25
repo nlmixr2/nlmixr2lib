@@ -4928,6 +4928,8 @@ navbar:
         href: articles/Chen_2024_guhongInjection.html
       - text: "Kanamycin (Humphries 2021)"
         href: articles/Humphries_2021_tb_lung_pbpk.html
+      - text: "Kaurenoic acid (Choi 2018)"
+        href: articles/Choi_2018_kaurenoic_acid.html
       - text: "Ketamine (Abuhelwa 2022)"
         href: articles/Abuhelwa_2022_ketamine.html
       - text: "Ketamine hr (Abuhelwa 2022)"
@@ -11139,6 +11141,7 @@ articles:
   - articles/Choe_2012_busulfan
   - articles/Choi_2011_remifentanil
   - articles/Choi_2016_gcc4401c_rivaroxaban
+  - articles/Choi_2018_kaurenoic_acid
   - articles/Choi_2018_metformin
   - articles/Choi_2021_doxorubicin_sorafenib_mouse
   - articles/Choi_2024_cd123nkce
