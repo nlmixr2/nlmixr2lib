@@ -2468,6 +2468,18 @@ navbar:
         href: articles/Gall_2023_intestinal_epithelium_toxicity.html
       - text: "Doxorubicin human qsp (Sang 2021)"
         href: articles/Sang_2021_doxorubicin_cardiotoxicity.html
+      - text: "Doxorubicin mdamb231 pd (McKenna 2017)"
+        href: articles/McKenna_2017_doxorubicin.html
+      - text: "Doxorubicin mdamb231 pk (McKenna 2017)"
+        href: articles/McKenna_2017_doxorubicin.html
+      - text: "Doxorubicin mdamb453 pd (McKenna 2017)"
+        href: articles/McKenna_2017_doxorubicin.html
+      - text: "Doxorubicin mdamb453 pk (McKenna 2017)"
+        href: articles/McKenna_2017_doxorubicin.html
+      - text: "Doxorubicin mdamb468 pd (McKenna 2017)"
+        href: articles/McKenna_2017_doxorubicin.html
+      - text: "Doxorubicin mdamb468 pk (McKenna 2017)"
+        href: articles/McKenna_2017_doxorubicin.html
       - text: "Doxorubicin mouse (Choi 2021)"
         href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
       - text: "Doxorubicin mouse (Gall 2023)"
@@ -2480,6 +2492,10 @@ navbar:
         href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
       - text: "Doxorubicin sorafenib mouse (Choi 2021)"
         href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
+      - text: "Doxorubicin sum149pt pd (McKenna 2017)"
+        href: articles/McKenna_2017_doxorubicin.html
+      - text: "Doxorubicin sum149pt pk (McKenna 2017)"
+        href: articles/McKenna_2017_doxorubicin.html
       - text: "Doxorubicin trastuzumab ac16 (Yu 2025)"
         href: articles/Yu_2025_trastuzumab_doxorubicin_cardiotoxicity.html
       - text: "Doxorubicin trastuzumab bnp ac16 (Yu 2025)"
@@ -11069,6 +11085,7 @@ articles:
   - articles/Mazzocco_2015_temozolomide
   - articles/McBride_2025_radamts13_qsp
   - articles/McCann_2025_midazolam
+  - articles/McKenna_2017_doxorubicin
   - articles/McKnite_2026_midazolam_crrt
   - articles/McLachlan_1996_fluconazole
   - articles/McLaughlin_2024_tld_1

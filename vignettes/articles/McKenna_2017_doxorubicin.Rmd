@@ -1,0 +1,627 @@
+---
+title: "Doxorubicin in triple-negative breast cancer cell lines (McKenna 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Doxorubicin in triple-negative breast cancer cell lines (McKenna 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 8, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+McKenna et al. built an in vitro pharmacokinetic / pharmacodynamic (PK/PD)
+model of doxorubicin in four triple-negative breast cancer (TNBC) cell lines.
+A three-compartment cellular PK model (Eqs 1-3) describes uptake of the drug
+from the well medium and its binding to DNA. Its output, the maximum bound
+intracellular concentration CB,max, summarises a timed exposure and drives a
+treatment-response model of cell number over the following ~30 days
+(Eqs 4, 5A, 5B and 10).
+
+The cell lines were fitted independently, so the library carries one PK
+model and one PD model per cell line (eight models):
+
+```{r models}
+lines_tbl <- tibble::tibble(
+  line = c("SUM-149PT", "MDA-MB-231", "MDA-MB-453", "MDA-MB-468"),
+  sfx = c("sum149pt", "mdamb231", "mdamb453", "mdamb468")
+) |>
+  mutate(
+    pk = paste0("McKenna_2017_doxorubicin_", sfx, "_pk"),
+    pd = paste0("McKenna_2017_doxorubicin_", sfx, "_pd")
+  )
+pk_ui <- lapply(setNames(lines_tbl$pk, lines_tbl$line), function(n) rxode2::rxode(readModelDb(n)))
+pd_ui <- lapply(setNames(lines_tbl$pd, lines_tbl$line), function(n) rxode2::rxode(readModelDb(n)))
+lines_tbl |>
+  select(line, pk, pd) |>
+  rename("Cell line" = line, "PK model" = pk, "PD model" = pd) |>
+  knitr::kable()
+```
+
+* Citation: `r pk_ui[[1]]$reference`
+* Article: <https://doi.org/10.1038/s41598-017-05902-z>
+  (open access; supplementary materials at the same address)
+
+## How the two models are used together
+
+1. Simulate the PK model with the treatment's medium concentration time course.
+   A treatment is a bolus of the applied concentration (nM) into `conc_dox`
+   at t = 0; media replacement at the end of exposure is an `evid = 5`
+   replacement of `conc_dox` by 0.
+2. Take CB,max, the maximum of `intracellular_bound`. Bound drug is never
+   released (Eq 3), so CB,max is the bound concentration once the free pool
+   has washed out. Simulate long enough for that (a day or two after removal;
+   the slowest line, MDA-MB-453, washes out with a half-life of about 4 h).
+3. Simulate the PD model with `CBMAX_DOX_NM` set to that value, dosing the
+   initial cell number into both `cells_a` and `cells_b` at t = 0. The output
+   `cells` is the cell number per well.
+
+```{r helpers}
+# CB,max for one treatment: medium concentration conc_nm (nM) for texp hours.
+cbmax_of <- function(ui, conc_nm, texp, horizon = 720) {
+  ev <- rbind(
+    data.frame(time = c(0, texp), evid = c(1, 5), amt = c(conc_nm, 0), cmt = "conc_dox"),
+    data.frame(time = c(texp, horizon), evid = 0, amt = 0, cmt = "intracellular_bound")
+  )
+  ev$id <- 1L
+  out <- rxode2::rxSolve(ui, ev, returnType = "data.frame")
+  max(out$intracellular_bound)
+}
+
+# Cell-number trajectory for one treatment. The paper initialised each fit at
+# the first post-treatment count, so the cells are dosed at t_start with n_start.
+cells_of <- function(ui, cbmax, times, n_start, t_start = 0) {
+  ev <- rbind(
+    data.frame(time = t_start, evid = 1, amt = n_start, cmt = c("cells_a", "cells_b")),
+    data.frame(time = times, evid = 0, amt = 0, cmt = "cells_a")
+  )
+  ev$id <- 1L
+  ev$CBMAX_DOX_NM <- cbmax
+  out <- rxode2::rxSolve(ui, ev, returnType = "data.frame")
+  out <- out[!duplicated(out$time), ]
+  out[match(times, out$time), c("time", "cells", "cells_a", "cells_b")]
+}
+```
+
+# Population
+
+The models describe cultured human TNBC cell lines, one from each of four
+Lehmann subtypes: MDA-MB-468 (basal-like 1), SUM-149PT (basal-like 2),
+MDA-MB-231 (mesenchymal) and MDA-MB-453 (luminal androgen receptor).
+
+* **Uptake (PK) experiment.** About 10,000 parental cells per well of a 96-well
+  plate, 250 uL of medium, imaged every ~15 min by brightfield and
+  fluorescence microscopy from 1 h before to ~24 h after drug application.
+  Doxorubicin's own fluorescence, converted to concentration with a linear
+  calibration (Fig 2d), gave intracellular and extracellular concentration
+  time courses. Doxorubicin was applied at 312-2500 nM (two-fold series) for 6
+  or 12 h, in duplicate.
+* **Treatment-response (PD) experiment.** About 2,500 H2B-mRFP-labelled cells
+  per well, grown for at least 3 days, then exposed to 9.77-2500 nM (nine
+  two-fold concentrations) for 6, 12 or 24 h and imaged daily for at least 30
+  days, six replicate wells per condition. Media were refreshed every 3 days.
+
+The same information is in each model's `population` metadata, for example
+`pd_ui[["SUM-149PT"]]$population`.
+
+# Source trace
+
+Every `ini()` value carries a comment naming its source. The tables below
+collect them. Figure values were digitised by the maintainers from the
+published figures (main-text figures from the 300 dpi images in the article
+PDF; supplementary figures from the supplement PDF).
+
+## Equations
+
+| Equation | Model | Source |
+|----------|-------|--------|
+| `d/dt(conc_dox) = kFE vI/vE CF - kEF CE` | PK | Eq 1 |
+| `d/dt(intracellular_free) = kEF vE/vI CE - (kFE + kFB) CF` | PK | Eq 2 |
+| `d/dt(intracellular_bound) = kFB CF` | PK | Eq 3 |
+| `d/dt(cells_x) = (kp - kd(t)) N (1 - N / theta)` | PD | Eq 4 |
+| `kd(t) = kd,A` for t >= 0 | PD (`cells_a`) | Eq 5A |
+| `kd(t) = kd,B r t exp(1 - r t)` for t >= 0 | PD (`cells_b`) | Eq 5B |
+| `cells = w_A cells_a + w_B cells_b` | PD | Eq 10 (weights from the AIC, Eqs 8-9) |
+| kd,A, kd,B, r, theta_A, theta_B, w_B as functions of CB,max | PD | Fig 5, Fig S7, Fig S8 (knots digitised, see below) |
+
+## PK parameters
+
+```{r pk-trace}
+pk_tab <- bind_rows(lapply(names(pk_ui), function(l) {
+  th <- pk_ui[[l]]$theta
+  tibble::tibble(
+    line = l,
+    kEF = exp(th[["lkef"]]),
+    kFE = exp(th[["lkfe"]]),
+    kFB = exp(th[["lkfb"]]),
+    vE = exp(th[["lvext"]]),
+    vI = exp(th[["lvint"]])
+  )
+}))
+pk_tab |>
+  mutate(vI = signif(vI, 4)) |>
+  rename(
+    "Cell line" = line,
+    "kEF (1/h)" = kEF,
+    "kFE (1/h)" = kFE,
+    "kFB (1/h)" = kFB,
+    "vE (uL)" = vE,
+    "vI (uL)" = vI
+  ) |>
+  knitr::kable(caption = "kEF, kFE, kFB: bar heights of Fig 2f-h. vE: Methods (250 uL per well). vI: back-solved, see below.")
+```
+
+## PD parameters
+
+The proliferation rate kp and the untreated carrying capacity theta are
+printed in the Results ("Doxorubicin treatment response"). The drug-effect
+parameters were fitted separately for every concentration x exposure
+condition. Plotted against CB,max, the fits from the three exposure series
+fall on one curve per cell line (Fig 5). The model encodes each curve as 11
+knots on the two-fold dilution lattice: knot 0 is the 9.77 nM x 6 h condition
+and knot n the condition with 2^n times its medium AUC, located at
+`cbmax_n00 * 2^n`. The knot value is the mean of the digitised points of the
+6, 12 and 24 h series at that knot (one or two series at the ends of the
+lattice).
+
+```{r pd-trace}
+pd_tab <- bind_rows(lapply(names(pd_ui), function(l) {
+  th <- pd_ui[[l]]$theta
+  tibble::tibble(
+    line = l,
+    kp = exp(th[["lkgrow"]]),
+    theta = exp(th[["lcellmax"]]),
+    cbmax_n00 = th[["cbmax_n00"]]
+  )
+}))
+pd_tab |>
+  rename(
+    "Cell line" = line,
+    "kp (1/h)" = kp,
+    "Control theta (cells)" = theta,
+    "CB,max at knot 0 (nM)" = cbmax_n00
+  ) |>
+  knitr::kable(caption = "kp and control theta: Results text. cbmax_n00: from the companion PK model.")
+
+knots <- bind_rows(lapply(names(pd_ui), function(l) {
+  th <- pd_ui[[l]]$theta
+  nm <- grep("_n[0-9]{2}$", names(th), value = TRUE)
+  nm <- setdiff(nm, "cbmax_n00")
+  tibble::tibble(line = l, name = nm, value = unname(th[nm])) |>
+    mutate(
+      par = sub("_n[0-9]{2}$", "", name),
+      knot = as.integer(sub("^.*_n", "", name)),
+      cbmax = th[["cbmax_n00"]] * 2^knot
+    )
+}))
+knots |>
+  filter(line == "SUM-149PT") |>
+  select(par, knot, value) |>
+  pivot_wider(names_from = par, values_from = value) |>
+  rename(
+    "Knot" = knot,
+    "kd,A (1/h)" = kda,
+    "kd,B (1/h)" = kdb,
+    "r (1/h)" = ron,
+    "theta_A (cells)" = thetaa,
+    "theta_B (cells)" = thetab,
+    "w_B" = wb
+  ) |>
+  knitr::kable(caption = "SUM-149PT knot values (Fig 5, Fig S7, Fig S8). The other cell lines are in their model files.")
+```
+
+## The intracellular volume vI
+
+The paper estimated vI as the 10,000 seeded cells times a cell volume from an
+ellipsoid fit to the segmentation, but does not print it. kEF (about 1e-5 1/h)
+only acts through the product kEF vE / vI, so vI is needed. For a single
+exposure pulse the PK model is linear and the free pool washes out completely,
+so
+
+CB,max = kFB / (kFE + kFB) x kEF x vE / vI x AUC,
+
+where AUC is the medium concentration times the exposure time. Figs 3 and 4
+print CB,max next to the AUC for 20 conditions. The maintainers set vI per
+cell line so that CB,max / AUC equals the geometric mean of those printed
+ratios. The implied cell volumes are 507, 2645, 187 and 479 um^3 (equivalent
+spheres 10, 17, 7 and 10 um across). The MDA-MB-453 value inherits the
+imprecision of its very short kEF bar, but CB depends only on the product
+kEF vE / vI, which the printed CB,max values fix.
+
+# Validation of the PK model
+
+## CB,max against the values printed in Figs 3 and 4
+
+PKNCA computes Cmax of the bound concentration (that is, CB,max) and the medium
+AUC for each printed condition. The reference values are the numbers printed
+in the panel legends of Figs 3 and 4.
+
+```{r pk-printed}
+printed <- tibble::tribble(
+  ~line, ~conc, ~texp, ~cbmax_pub, ~auc_pub, ~fig,
+  "SUM-149PT", 2500 / 128, 6, 3.2, 117, "3a",
+  "SUM-149PT", 156.25, 6, 25.5, 938, "3d, 4",
+  "SUM-149PT", 312.5, 6, 50.9, 1875, "4",
+  "SUM-149PT", 625, 6, 101.8, 3750, "4",
+  "SUM-149PT", 1250, 6, 203.6, 7500, "3g",
+  "SUM-149PT", 2500 / 128, 12, 6.0, 234, "3b",
+  "SUM-149PT", 156.25, 12, 47.8, 1875, "3e",
+  "SUM-149PT", 1250, 12, 382.1, 15000, "3h",
+  "SUM-149PT", 2500 / 128, 24, 11.9, 469, "3c",
+  "SUM-149PT", 156.25, 24, 95.4, 3750, "3f",
+  "SUM-149PT", 1250, 24, 763.2, 30000, "3i",
+  "MDA-MB-231", 156.25, 6, 17.2, 938, "4",
+  "MDA-MB-231", 312.5, 6, 34.4, 1875, "4",
+  "MDA-MB-231", 625, 6, 68.7, 3750, "4",
+  "MDA-MB-453", 156.25, 6, 18.1, 938, "4",
+  "MDA-MB-453", 312.5, 6, 36.3, 1875, "4",
+  "MDA-MB-453", 625, 6, 72.6, 3750, "4",
+  "MDA-MB-468", 156.25, 6, 12.8, 938, "4",
+  "MDA-MB-468", 312.5, 6, 25.7, 1875, "4",
+  "MDA-MB-468", 625, 6, 51.3, 3750, "4"
+) |>
+  mutate(
+    treatment = sprintf("%s %s nM x %g h", line, formatC(conc, format = "g", digits = 4), texp),
+    id = row_number()
+  )
+
+pk_sim <- bind_rows(lapply(seq_len(nrow(printed)), function(i) {
+  p <- printed[i, ]
+  tt <- sort(unique(c(seq(0, 72, by = 0.25), p$texp - 1e-4, p$texp + 1e-4, 168, 720)))
+  ev <- rbind(
+    data.frame(time = c(0, p$texp), evid = c(1, 5), amt = c(p$conc, 0), cmt = "conc_dox"),
+    data.frame(time = tt, evid = 0, amt = 0, cmt = "intracellular_bound")
+  )
+  ev$id <- 1L
+  out <- rxode2::rxSolve(pk_ui[[p$line]], ev, returnType = "data.frame")
+  out <- out[!duplicated(out$time), ]
+  tibble::tibble(
+    id = p$id, treatment = p$treatment, time = out$time,
+    conc_dox = out$conc_dox, intracellular_bound = out$intracellular_bound
+  )
+}))
+
+dose_df <- printed |> transmute(id, treatment, time = 0, amt = conc)
+iv <- data.frame(start = 0, end = 720, cmax = TRUE, auclast = TRUE)
+
+# CB,max = Cmax of the bound concentration
+nca_cb <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(pk_sim, intracellular_bound ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id),
+  intervals = transform(iv, auclast = FALSE)
+))
+# Medium AUC = AUClast of conc_dox
+nca_auc <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(pk_sim, conc_dox ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id),
+  intervals = transform(iv, cmax = FALSE)
+))
+
+sim_both <- bind_rows(
+  as.data.frame(nca_cb) |> filter(PPTESTCD == "cmax"),
+  as.data.frame(nca_auc) |> filter(PPTESTCD == "auclast")
+) |>
+  select(treatment, PPTESTCD, PPORRES)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_both,
+  reference = printed |> transmute(treatment, cmax = cbmax_pub, auclast = auc_pub),
+  by = "treatment",
+  units = c(cmax = "nM", auclast = "nM*h"),
+  tolerance_pct = 5
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Cmax is CB,max (bound concentration) and AUClast is the medium AUC.",
+    "Reference: Figs 3 and 4 panel legends. * differs from the reference by more than 5%."
+  )
+)
+```
+
+```{r pk-printed-check}
+chk_pk <- printed |>
+  left_join(
+    sim_both |> pivot_wider(names_from = PPTESTCD, values_from = PPORRES),
+    by = "treatment"
+  ) |>
+  mutate(cb_pct = 100 * (cmax / cbmax_pub - 1), auc_pct = 100 * (auclast / auc_pub - 1))
+stopifnot(
+  # The medium AUC labels are concentration x exposure time, rounded.
+  all(abs(chk_pk$auc_pct) < 1),
+  # One vI per cell line, set from the same printed values: MDA lines
+  # reproduce to rounding, SUM-149PT to its exposure split (next section).
+  all(abs(chk_pk$cb_pct[chk_pk$line != "SUM-149PT"]) < 1),
+  all(abs(chk_pk$cb_pct) < 5)
+)
+```
+
+The three MDA lines reproduce the printed CB,max values to within rounding.
+For SUM-149PT, the printed CB,max per unit AUC is 6.6% higher for the 6 h
+exposures (0.0271-0.0273 nM per nM*h) than for the 12 and 24 h exposures
+(0.0254-0.0256). No single set of linear PK parameters produces that
+difference: with the free pool washing out within hours (kFE + kFB =
+1.48 1/h), CB,max is proportional to AUC whatever the exposure time. The model
+uses one value between the two groups, so the 6 h conditions come out about
+3.5% low and the 12 and 24 h conditions about 3% high. The paper does not say
+how the input function was specified for each series. One possibility is that
+the 6 h input used the observed removal time; the media replacement in Fig 2e
+happens about 6.7 h after application, not at 6 h.
+
+## Uptake time course
+
+The uptake experiment (Fig 2e shows one well at 2500 nM for 6 h) can be
+simulated directly. The intracellular concentration `cint` is the sum of the
+free and bound pools, which share the intracellular space.
+
+```{r fig2e, fig.cap = "Simulated total intracellular doxorubicin after 2500 nM for 6 h, compare Fig 2e (cell line of Fig 2e not stated)."}
+up <- bind_rows(lapply(names(pk_ui), function(l) {
+  ev <- rbind(
+    data.frame(time = c(0, 6), evid = c(1, 5), amt = c(2500, 0), cmt = "conc_dox"),
+    data.frame(time = seq(0, 24, by = 0.25), evid = 0, amt = 0, cmt = "intracellular_bound")
+  )
+  ev$id <- 1L
+  out <- rxode2::rxSolve(pk_ui[[l]], ev, returnType = "data.frame")
+  out <- out[!duplicated(out$time), ]
+  tibble::tibble(line = l, time = out$time, cint = out$cint, bound = out$intracellular_bound)
+}))
+up |>
+  pivot_longer(c(cint, bound), names_to = "pool") |>
+  mutate(pool = recode(pool, cint = "total intracellular", bound = "bound")) |>
+  ggplot(aes(time, value, colour = line, linetype = pool)) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Doxorubicin (nM)", colour = NULL, linetype = NULL)
+```
+
+In Fig 2e the measured intracellular concentration rises to about 400 nM by
+the end of a 6 h exposure to 2500 nM and then declines slowly. The simulated
+values at 6 h are of the same order (about 490-770 nM). The slowly declining
+shape matches the slow-exchange lines MDA-MB-453 and MDA-MB-468.
+
+# Validation of the PD model
+
+## Drug-effect parameters against CB,max (Figs 5, S7 and S8)
+
+```{r fig5, fig.height = 9, fig.cap = "Model drug-effect functions (lines) through the digitised knots (points). Replicates Fig 5 (kd,A, kd,B, r), Fig S7 (theta_A, theta_B) and Fig S8 (w_B) of McKenna 2017, pooled over the 6, 12 and 24 h series."}
+grid <- bind_rows(lapply(names(pd_ui), function(l) {
+  cb0 <- pd_ui[[l]]$theta[["cbmax_n00"]]
+  cbs <- cb0 * 2^seq(0, 10, by = 0.05)
+  ev <- data.frame(id = seq_along(cbs), time = 0, evid = 0, amt = 0, cmt = "cells_a", CBMAX_DOX_NM = cbs)
+  out <- rxode2::rxSolve(pd_ui[[l]], ev, returnType = "data.frame")
+  tibble::tibble(
+    line = l, cbmax = cbs, kda = out$kd_a, kdb = out$kd_b, ron = out$ron,
+    thetaa = out$theta_a, thetab = out$theta_b, wb = out$w_b
+  )
+}))
+lab <- c(
+  kda = "kd,A (1/h)", kdb = "kd,B (1/h)", ron = "r (1/h)",
+  thetaa = "theta_A (cells)", thetab = "theta_B (cells)", wb = "w_B"
+)
+grid_long <- grid |> pivot_longer(-c(line, cbmax), names_to = "par")
+ggplot(grid_long, aes(cbmax, value)) +
+  geom_line() +
+  geom_point(data = knots, colour = "red", size = 1) +
+  scale_x_log10() +
+  facet_grid(par ~ line, scales = "free_y", labeller = labeller(par = lab)) +
+  labs(x = "CB,max (nM)", y = NULL)
+```
+
+The paper states two values that the interpolation must carry:
+
+* SUM-149PT: above an AUC of 25,000 nM*h the population declines rapidly with
+  kd,A >= 2.9e-2 1/h (Results, "Doxorubicin treatment response"). The only
+  such condition in the design is 1250 nM for 24 h (and 2500 nM for 12 h,
+  the same AUC of 30,000 nM*h).
+* SUM-149PT: w_B is about 1 at low CB,max and about 0 at high CB,max
+  (Fig S8 caption and Results).
+
+```{r printed-pd-check}
+cb_hi <- cbmax_of(pk_ui[["SUM-149PT"]], 1250, 24)
+kda_hi <- approx(grid$cbmax[grid$line == "SUM-149PT"], grid$kda[grid$line == "SUM-149PT"], cb_hi)$y
+wb_sum <- grid$wb[grid$line == "SUM-149PT"]
+c(cbmax_1250nM_24h = cb_hi, kd_a = kda_hi)
+stopifnot(
+  # 2.9e-2 printed to two figures; the digitised knot sits at 2.92e-2-3.00e-2
+  kda_hi >= 0.0285,
+  wb_sum[1] > 0.95,
+  tail(wb_sum, 1) < 0.05
+)
+```
+
+## Cell-number trajectories (Figs 3 and 4)
+
+The red bands in Figs 3 and 4 are the 95% confidence intervals of the
+paper's best fit to each condition. The maintainers digitised the centre of
+each band every 50 h, starting at the first post-treatment time point
+(25 h). Each simulation starts from the band centre at 25 h, as the paper
+initialised its fits at the first post-treatment count, and keeps t = 0 at
+drug application.
+
+The published bands come from fits to each individual condition. The library
+model instead takes all its drug-effect parameters from the pooled
+curves above, so it behaves like the paper's prediction scheme, not like
+its per-condition fits.
+
+```{r bands}
+band_txt <- tibble::tribble(
+  ~fig, ~line, ~conc, ~texp, ~mid,
+  "3", "SUM-149PT", 19.53125, 6, "4420 16700 29900 33800 34300 34400",
+  "3", "SUM-149PT", 19.53125, 12, "4300 15700 27200 31700 32800 33100",
+  "3", "SUM-149PT", 19.53125, 24, "4210 15300 25600 28500 28900 29000",
+  "3", "SUM-149PT", 156.25, 6, "2640 6240 11800 17700 21300 22900 23600 23700 23800",
+  "3", "SUM-149PT", 156.25, 12, "2600 4300 6240 9260 13600 18700 22100 24000 24700 24900",
+  "3", "SUM-149PT", 156.25, 24, "2480 3180 3260 3470 4340 6400 10200 15500 21300 25600 27900",
+  "3", "SUM-149PT", 1250, 6, "2650 3480 3060 2400 1980 1990 2400 3520 5800 9730 14400 18300 21400 23100",
+  "3", "SUM-149PT", 1250, 12, "1950 2440 2400 2150 1700 1450 1330 1240 1200 1200 1370 1780 2530 3440 4470",
+  "3", "SUM-149PT", 1250, 24, "1900 1660 1490 1330 1160 994 828 745 745 663 663 663 580 580 580",
+  "4", "MDA-MB-231", 156.25, 6, "2370 3300 3770 3960 4050 4090 4180 4570 5210 6140 7260 8060 8430 8640",
+  "4", "MDA-MB-231", 312.5, 6, "2600 3450 3460 3190 3000 3060 3480 4150 5140 6360 7760 9380 11300 12400",
+  "4", "MDA-MB-231", 625, 6, "2360 3210 3190 2720 2240 1910 1710 1710 1920 2420 3170 4460 6230 8610 11100 13300",
+  "4", "MDA-MB-453", 156.25, 6, "1320 1920 2280 2660 3110 3850 5070 6750 9090 11800 14700 17100 18700",
+  "4", "MDA-MB-453", 312.5, 6, "1140 1540 1770 1740 1680 1540 1410 1320 1320 1380 1500 1770 2080 2530",
+  "4", "MDA-MB-453", 625, 6, "1700 2260 2440 2370 2170 1920 1650 1440 1250 1140 1050 1030 1070 1180",
+  "4", "MDA-MB-468", 156.25, 6, "1080 1340 1400 1480 1420 1450 1530 1560 1690 1940 2180 2720 3680 4870 6610",
+  "4", "MDA-MB-468", 312.5, 6, "1100 1240 1320 1320 1290 1180 1080 914 833 699 726 672 618 591 565",
+  "4", "MDA-MB-468", 625, 6, "1370 1290 1240 1180 1160 1050 995 887 887 806 806 753 699 672 645",
+  "4", "SUM-149PT", 156.25, 6, "2530 6220 12000 17500 21300 23000 23500 23700 23800",
+  "4", "SUM-149PT", 312.5, 6, "3080 4450 5910 8630 13700 19900 24700 26700 27500",
+  "4", "SUM-149PT", 625, 6, "3170 3690 3410 3540 4630 7310 12500 19400 22900 29100 30400"
+)
+bands <- band_txt |>
+  mutate(mid = lapply(strsplit(mid, " "), as.numeric)) |>
+  unnest(mid) |>
+  group_by(fig, line, conc, texp) |>
+  mutate(time = 25 + 50 * (row_number() - 1)) |>
+  ungroup()
+
+traj <- bands |>
+  group_by(fig, line, conc, texp) |>
+  group_modify(function(z, key) {
+    cb <- cbmax_of(pk_ui[[key$line]], key$conc, key$texp)
+    tt <- seq(25, max(z$time), by = 5)
+    s <- cells_of(pd_ui[[key$line]], cb, tt, n_start = z$mid[z$time == 25], t_start = 25)
+    tibble::tibble(cbmax = cb, time = s$time, cells = s$cells)
+  }) |>
+  ungroup() |>
+  mutate(panel = sprintf("Fig %s: %s %g nM x %g h", fig, line, signif(conc, 3), texp))
+bands <- bands |> mutate(panel = sprintf("Fig %s: %s %g nM x %g h", fig, line, signif(conc, 3), texp))
+# Short facet labels: Fig 3 is all SUM-149PT, Fig 4 is all 6 h exposures
+short_lab <- function(fig, line, conc, texp) {
+  ifelse(fig == "3", sprintf("%g nM x %g h", signif(conc, 3), texp), sprintf("%s, %g nM", line, signif(conc, 3)))
+}
+traj <- traj |> mutate(facet = short_lab(fig, line, conc, texp))
+bands <- bands |> mutate(facet = short_lab(fig, line, conc, texp))
+```
+
+```{r fig3, fig.height = 7, fig.cap = "SUM-149PT after 20, 156 and 1250 nM for 6, 12 or 24 h. Lines: library model; points: centre of the published best-fit band. Replicates Fig 3 of McKenna 2017."}
+ggplot(filter(traj, fig == "3"), aes(time, cells)) +
+  geom_line() +
+  geom_point(data = filter(bands, fig == "3"), aes(y = mid), colour = "red") +
+  facet_wrap(~facet, scales = "free_y") +
+  labs(x = "Time after drug application (h)", y = "Cells per well")
+```
+
+```{r fig4, fig.height = 8, fig.cap = "Four cell lines after 156, 312 and 625 nM for 6 h. Lines: library model; points: centre of the published best-fit band. Replicates Fig 4 of McKenna 2017."}
+ggplot(filter(traj, fig == "4"), aes(time, cells)) +
+  geom_line() +
+  geom_point(data = filter(bands, fig == "4"), aes(y = mid), colour = "red") +
+  facet_wrap(~facet, scales = "free_y", ncol = 4) +
+  labs(x = "Time after drug application (h)", y = "Cells per well")
+```
+
+```{r traj-check}
+chk_pd <- bands |>
+  left_join(traj |> select(panel, time, cells), by = c("panel", "time"), relationship = "one-to-one") |>
+  mutate(pct = 100 * (cells - mid) / mid)
+per_panel <- chk_pd |>
+  group_by(panel) |>
+  summarise(
+    "median % difference" = round(median(pct), 1),
+    "median |% difference|" = round(median(abs(pct)), 1),
+    .groups = "drop"
+  )
+knitr::kable(per_panel, caption = "Library model against the centre of the published best-fit band, per panel.")
+stopifnot(
+  # A wrong knot table, CB,max scale or growth constant moves whole panels
+  # by tens of percent; the pooled interpolation itself is not exact.
+  median(abs(chk_pd$pct)) < 15,
+  quantile(per_panel[["median |% difference|"]], 0.9) < 40
+)
+```
+
+The model follows most panels closely. The largest differences are in
+panels where regrowth starts late. There the published per-condition fit
+and the pooled curves place the onset of regrowth at different times (for
+example SUM-149PT at 1250 nM for 12 h, whose published band is wide; see
+Fig 3h). This matches the paper's own finding that its predictions were less
+accurate at the highest concentrations (Table 1).
+
+## Untreated growth (Fig S3)
+
+With `CBMAX_DOX_NM = 0` the model is the control logistic growth with the
+printed kp and theta.
+
+```{r control, fig.cap = "Untreated growth from 2,500 cells per well. Compare Fig S3."}
+ctrl <- bind_rows(lapply(names(pd_ui), function(l) {
+  s <- cells_of(pd_ui[[l]], 0, seq(0, 720, by = 6), n_start = 2500)
+  tibble::tibble(line = l, time = s$time, cells = s$cells)
+}))
+ggplot(ctrl, aes(time, cells, colour = line)) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Cells per well", colour = NULL)
+end_ctrl <- ctrl |> filter(time == 720) |> left_join(pd_tab, by = "line")
+stopifnot(all(abs(end_ctrl$cells / end_ctrl$theta - 1) < 0.01))
+```
+
+## Example: a regimen outside the experimental design
+
+The framework was built to predict untested regimens. As an example, here
+are all four cell lines after 400 nM for 18 h (medium AUC 7200 nM*h):
+
+```{r example, fig.cap = "Predicted response to 400 nM for 18 h from 2,500 cells per well."}
+ex <- bind_rows(lapply(names(pd_ui), function(l) {
+  cb <- cbmax_of(pk_ui[[l]], 400, 18)
+  s <- cells_of(pd_ui[[l]], cb, seq(0, 720, by = 6), n_start = 2500)
+  tibble::tibble(line = sprintf("%s (CB,max %.0f nM)", l, cb), time = s$time, cells = s$cells)
+}))
+ggplot(ex, aes(time, cells, colour = line)) +
+  geom_line() +
+  labs(x = "Time after drug application (h)", y = "Cells per well", colour = NULL)
+```
+
+# Assumptions and deviations
+
+* **Figure-derived values.** The paper prints no table of model parameters
+  apart from kp and the control theta. The maintainers digitised kEF, kFE
+  and kFB from the bar charts of Fig 2f-h, and the per-condition drug-effect
+  parameters from Fig 5 (kd,A, kd,B, r), Fig S7 (theta_A, theta_B) and Fig S8
+  (w_B). Fig 5 and Fig S7 were read by locating each marker on the two-fold
+  dilution lattice. Fig S8, where most weights are exactly 0 or 1 and lines
+  jump between them, was read by eye to about +/-0.02. The MDA-MB-453 kEF
+  bar is only 4-5 pixels tall in the 300 dpi figure, so its value is
+  uncertain by about 15%. This affects only the derived vI, not CB.
+* **The drug-effect functions are the maintainers' construction.** The paper
+  maps a new treatment's (CB,max, AUC) to parameters by local linear
+  regression, and to model weights by a binomial logistic model trained on the
+  fitted weights. It prints neither the regression bandwidth nor the logistic
+  coefficients. The library replaces both with piecewise-linear interpolation
+  in log2(CB,max) through the knot means. For the pulsed exposures studied,
+  CB,max is proportional to AUC (to within the 6.6% SUM-149PT exposure split
+  discussed above), so CB,max alone indexes the treatment and AUC adds no
+  separate information. For other input shapes (for example in vivo
+  biexponential curves) the two would differ, and the paper's regression used
+  both.
+* **Averaging across exposure series.** Each knot is the mean of the 6, 12 and
+  24 h fits at that CB,max. Where the series disagree (for example the
+  SUM-149PT w_B at knot 5, where the 24 h fit selected Eq 5A and the 6 and
+  12 h fits selected Eq 5B), the mean is a weight between 0 and 1.
+* **Outside the lattice.** CB,max values below knot 0 or above knot 10 are
+  clamped to the end knots. `CBMAX_DOX_NM = 0` is the untreated control (no
+  drug effect, control carrying capacity), which is a discontinuity: the
+  lowest tested exposure has a small negative kd (growth slightly faster than
+  control) in SUM-149PT and MDA-MB-231.
+* **vI back-solved.** See "The intracellular volume vI" above. The CB,max
+  of the PD model's knot 0 (`cbmax_n00`) is the PK model's value for the
+  9.77 nM x 6 h condition, so the two models share one CB,max scale.
+* **Pre-treatment phase not modelled.** The paper fitted kp to at least 3
+  days of pre-treatment growth. The library models start at drug application
+  (t = 0), with the cell number at that time (or at the first post-treatment
+  count, as in the comparison above) supplied as a dose into both
+  `cells_a` and `cells_b`.
+* **No variability.** The paper fitted deterministic models by nonlinear least
+  squares and reports confidence intervals from bootstrapping, but no
+  between-well variance or residual-error model. None is encoded.
+* **Media replacement** at the end of exposure is an `evid = 5` replacement of
+  the medium concentration by zero, as in the experiment. The 3-day media
+  refreshes during the PD experiment contain no drug and do not change CB,max.
+* **Errata.** No correction notice for this article was found on the
+  publisher's article page or in Europe PMC as of 2026-11-25.
