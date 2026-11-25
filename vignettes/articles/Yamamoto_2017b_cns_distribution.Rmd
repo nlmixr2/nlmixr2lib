@@ -411,13 +411,22 @@ dose_df <- nca_in |> dplyr::distinct(id, treatment, amt) |> dplyr::mutate(time =
 intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
                         aucinf.obs = TRUE, half.life = TRUE)
 
+# Past the peak, values below 1e-6 * Cmax are solver noise around zero (some
+# negative, for quinidine's plasma tail) and would decide the terminal-slope fit.
+trim_tail <- function(d, conc) {
+  d |>
+    dplyr::filter(!is.na(.data[[conc]])) |>
+    dplyr::group_by(treatment, id) |>
+    dplyr::filter(time <= time[which.max(.data[[conc]])] | .data[[conc]] >= 1e-6 * max(.data[[conc]])) |>
+    dplyr::ungroup()
+}
 nca_plasma <- PKNCA::pk.nca(PKNCA::PKNCAdata(
-  PKNCA::PKNCAconc(nca_in |> dplyr::filter(!is.na(Cc)), Cc ~ time | treatment + id),
+  PKNCA::PKNCAconc(trim_tail(nca_in, "Cc"), Cc ~ time | treatment + id),
   PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id),
   intervals = intervals
 ))
 nca_ecf <- PKNCA::pk.nca(PKNCA::PKNCAdata(
-  PKNCA::PKNCAconc(nca_in |> dplyr::filter(!is.na(Cbrain_ecf)), Cbrain_ecf ~ time | treatment + id),
+  PKNCA::PKNCAconc(trim_tail(nca_in, "Cbrain_ecf"), Cbrain_ecf ~ time | treatment + id),
   PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id),
   intervals = intervals
 ))
