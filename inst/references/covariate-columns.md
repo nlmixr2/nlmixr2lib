@@ -1031,7 +1031,30 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Source aliases:**
   - `Prog` (progesterone at baseline) -- Rose 2016b Table 1 and Figure 2; no value transformation.
 - **Example models:** `Rose_2016b_follitropin_delta.R` (power exponent -0.246 on the endogenous FSH baseline; effect parameter `e_prog_base_rbase`).
-- **Notes:** Follows the `<X>_BASE` time-fixed-baseline pattern (`CRCL_BASE`, `TBILI_BASE`), as chosen by the maintainers. Distinct from `DOSE_PROGESTIN_UMOL`, which is an administered progestin dose. A time-varying progesterone column, if a future model needs one, would be the bare `PROG` with this entry as its paired baseline.
+- **Notes:** Follows the `<X>_BASE` time-fixed-baseline pattern (`CRCL_BASE`, `TBILI_BASE`), as chosen by the maintainers. Distinct from `DOSE_PROGESTIN_UMOL`, which is an administered progestin dose. The time-varying progesterone column is `PROGESTERONE`.
+
+### ESTRADIOL (**canonical for serum estradiol concentration (baseline or time-varying)**)
+- **Description:** Serum 17-beta-estradiol (E2) concentration, endogenous or from estradiol replacement therapy (baseline or time-varying). Used when the hormone concentration itself drives a rate law, e.g. estradiol stimulation of hepatic enzymes over the menstrual cycle.
+- **Units:** nmol/L (equivalently nM). Document per-model via `covariateData[[ESTRADIOL]]$units`; pg/mL is the other common clinical unit (1 nmol/L = 272.4 pg/mL, MW 272.38 g/mol).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- in the founding model it enters as the excess over a reference level, `1 + V_E2 * (ESTRADIOL - 0.09) / (K_E2 + ESTRADIOL - 0.09)`, so every activation term is 1 at 0.09 nmol/L (the male / postmenopausal level). Typical values: 0.09 nmol/L for men and postmenopausal women, 0.4368 nmol/L as the 28-day average in premenopausal women, peaking near 1.15 nmol/L before ovulation (Cruikshank 2026 Methods and Figure 5A).
+- **Source aliases:**
+  - `E2` -- Cruikshank 2026 text, Data S1 rate laws and Figure 5A; no value transformation.
+- **Example models:** `Cruikshank_2026_estradiol_qsp.R` (constant for the steady-state analyses, a spline-interpolated 28-day menstrual-cycle profile for the cycle simulations; activates CBS, GCL and GPX).
+- **Notes:** Spelled out rather than abbreviated, per the maintainers' policy for new canonicals; a plain analyte name like `SEX_HORMONE_BINDING_GLOBULIN`, used for both baseline and time-varying values, and each model's `covariateData` notes say which one it uses. `BL_E2` stays the canonical for a measured pre-treatment baseline carried as a time-fixed scaling covariate (pg/mL, Pohl 2022). Distinct from `DOSE_EE_UG`, an administered ethinyl estradiol dose.
+
+### PROGESTERONE (**canonical for serum progesterone concentration (baseline or time-varying)**)
+- **Description:** Serum progesterone (P4) concentration (baseline or time-varying). Endogenous measured hormone, not an administered progestin.
+- **Units:** nmol/L (equivalently nM) in the founding model. Document per-model via `covariateData[[PROGESTERONE]]$units`; ng/mL (= ug/L) is the other common clinical unit (1 ng/mL = 3.18 nmol/L, MW 314.46 g/mol).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- in the founding model it enters as the excess over a reference level, `1 - V_P4 * (PROGESTERONE - 0.318) / (K_P4 + PROGESTERONE - 0.318)`, so the inhibition is zero at 0.318 nmol/L (the male / postmenopausal level). Typical values: 0.318 nmol/L for men and postmenopausal women, 12.4859 nmol/L as the 28-day average in premenopausal women, rising to about 40 nmol/L in the luteal phase (Cruikshank 2026 Methods and Figure 5B).
+- **Source aliases:**
+  - `P4` -- Cruikshank 2026 text, Data S1 rate laws and Figure 5B; no value transformation.
+  - `PROGESTERONE` -- Sharma 2016 Table 1 (baseline plasma progesterone, ng/mL; screened on CL but not retained).
+- **Example models:** `Cruikshank_2026_estradiol_qsp.R` (constant or the menstrual-cycle profile; inhibits cytosolic and mitochondrial GPX). `Sharma_2016_hydroxyprogesteroneCaproate.R` (baseline, ng/mL, screened only).
+- **Notes:** Spelled out, per the maintainers' policy for new canonicals. Paired with the time-fixed `PROG_BASE` (ug/L) when a model needs a measured pre-dose value as a scaling covariate. Distinct from `DOSE_PROGESTIN_UMOL` and from 17-alpha-hydroxyprogesterone (`OHP17_DBS_BL`).
 
 ### INHIBINB (**canonical for serum inhibin B, time-varying**)
 - **Description:** Observed serum inhibin B concentration, a granulosa-cell glycoprotein hormone that feeds back negatively on pituitary FSH secretion. Used as a time-varying covariate.
