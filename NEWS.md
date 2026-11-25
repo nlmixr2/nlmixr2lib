@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mo 2014 lifespan-based tumor growth inhibition models of paclitaxel, AZ968 (with the reference Simeoni model) and AZD1208 ([doi:10.1371/journal.pone.0109747](https://doi.org/10.1371/journal.pone.0109747)) -- mice with HCT116 colon carcinoma and MOLM-16 acute myeloid leukemia xenografts.
+- Add Li 2014 oseltamivir + amantadine influenza immune-response QSP, with and without immune modules ([doi:10.1038/psp.2014.32](https://doi.org/10.1038/psp.2014.32)) -- typical adult with influenza A infection.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

@@ -1,0 +1,595 @@
+---
+title: "Oseltamivir + amantadine influenza immune-response QSP (Li 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Oseltamivir + amantadine influenza immune-response QSP (Li 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Li 2014 built a modular mechanistic model of influenza A virus (IAV) infection
+in humans and used it to ask whether oseltamivir and amantadine act
+synergistically. Two versions were fitted and compared throughout the paper,
+and both are packaged:
+
+* `Li_2014_oseltamivir_amantadine_qsp` -- the full model with innate (IFN-alpha)
+  and cell-mediated adaptive (CD8+ cytotoxic T lymphocyte) immune responses,
+  the paper's "+IM" model.
+* `Li_2014_oseltamivir_amantadine_noimmune_qsp` -- the target-cell-limited model
+  without immune responses, the paper's "-IM" model.
+
+* Citation: `r rxode2::rxode(readModelDb("Li_2014_oseltamivir_amantadine_qsp"))$reference`
+* Description (+IM): `r rxode2::rxode(readModelDb("Li_2014_oseltamivir_amantadine_qsp"))$description`
+* Description (-IM): `r rxode2::rxode(readModelDb("Li_2014_oseltamivir_amantadine_noimmune_qsp"))$description`
+* Article: <https://doi.org/10.1038/psp.2014.32> (open access, with the
+  supplementary equations, parameter tables and model code)
+
+```{r models}
+mod_im <- rxode2::rxode(readModelDb("Li_2014_oseltamivir_amantadine_qsp"))
+mod_noim <- rxode2::rxode(readModelDb("Li_2014_oseltamivir_amantadine_noimmune_qsp"))
+```
+
+# Population
+
+The model describes a single typical ("average") adult. Li 2014 did not fit
+individual data; each module was calibrated against published summary data:
+
+* PK modules (Figure 2): a 150 + 75 mg oseltamivir loading-dose multidose study
+  in Thai volunteers (Wattanagoon 2009), a 150 mg single dose in Japanese and
+  Caucasian volunteers (Jhee 2008), amantadine 100 mg once daily (Reuman 1989)
+  and a 200 mg amantadine single dose averaged over young and elderly adults
+  (Hayden 1985). Clearances and volumes are for a 70-kg adult.
+* Immune modules (Figure 3): nasal-lavage viral titre and IFN-alpha after
+  experimental human IAV infection (Hayden 1998).
+* Treatment (Figure 4): oseltamivir 75 and 150 mg twice daily versus placebo
+  (Treanor 2000) and amantadine versus placebo (Knight 1970).
+
+Parameters were estimated with a genetic algorithm (GAPSM) inside
+literature-based ranges (Supplementary Table S2). The model carries no
+between-subject variability and no residual error.
+
+```{r population}
+str(mod_im$population)
+```
+
+# Source trace
+
+Equations are from Supplementary Table S1, parameter values from Supplementary
+Table S2 (where a parameter differs between the models the table prints the
++IM value first and the -IM value second), and initial values from
+Supplementary Table S3. Paper parameter K numbers are kept in each `label()`.
+
+| Parameter (paper name) | +IM | -IM | Source |
+|---|---|---|---|
+| `lktr` (K1a, OP dissolution delay) | log(6.412) 1/h | same | Table S2 |
+| `lka` (K1b, OP absorption) | log(0.3652) 1/h | same | Table S2 |
+| `lkm` (K2, OP to OC conversion) | log(1.768) 1/h | same | Table S2 |
+| `lcl` / `lvc` (CLOP / VDOP) | log(78060) mL/h / log(212600) mL | same | Table S2 |
+| `lcl_oselcarb` / `lvc_oselcarb` (CLOC / VDOC) | log(26460) mL/h / log(115000) mL | same | Table S2 |
+| `lktr_amantadine` (K19, AMT dissolution delay) | log(62.69) 1/h | same | Table S2 |
+| `lka_amantadine` (K20, AMT absorption) | log(3.356) 1/h | same | Table S2 |
+| `lcl_amantadine` / `lvc_amantadine` (CLAMT / VDAMT) | log(12850) mL/h / log(325900) mL | same | Table S2 |
+| `lic50_oselcarb` (1/K17) | log(1/0.0445) ng/mL | log(1/0.0237) | Table S2; Table S1 footnote d |
+| `lic50_amantadine` (1/K22) | log(1/0.07987) ng/mL | log(1/0.25710) | Table S2; Table S1 footnote b |
+| `lbeta` (K11, epithelial infection) | log(1.04e-5) | log(4.74e-6) | Table S2 |
+| `lk_eclipse` (K13, eclipse transition) | log(0.06191) 1/h | log(0.11661) | Table S2 |
+| `ldelta` (K14, infected-cell death) | log(0.4196) 1/h | log(0.35438) | Table S2 |
+| `lp_virus` (K16, virus release) | log(0.00231) | log(0.000933) | Table S2 |
+| `lc_virus` (K18, virus elimination) | log(0.6007) 1/h | log(0.31658) | Table S2 |
+| `lk_ifn_ctl` (K24) | log(0.01439) | -- | Table S2 |
+| `lkdeg_ifn` (K25) | log(1.856) 1/h | -- | Table S2 |
+| `lk_protect` (K26) | log(0.0003995) | -- | Table S2 |
+| `lk_revert` (K27) | log(8.066e-5) 1/h | -- | Table S2 |
+| `lk_nk` (K28) | log(1.614e-7) | -- | Table S2 |
+| `lk_ctl_act` (K32) | log(0.1135) 1/h | -- | Table S2 |
+| `lk_ctl_kill` (K34) | log(5.002e-6) | -- | Table S2 |
+| `lk_apc_mig` (K37) | log(0.111) 1/h | -- | **not tabulated**; back-solved from Figure 3a (below) |
+| `lkdeg_apc_act` (K42) | log(0.07744) 1/h | -- | Table S2 |
+| `lkdeg_ctl` (K45) | log(0.04555) 1/h | -- | Table S2 |
+| `lk_ifn_inf` (K47) | log(5.45e-14) | -- | Table S2 |
+| `lk_apc_inf` (K48) | log(0.004715) | -- | Table S2 |
+| `lkdeg_apc_inf` (K53) | log(0.09598) 1/h | -- | Table S2 |
+| `lk_ifn_apc` (K57) | log(0.01177) | -- | Table S2 |
+| `lk_apc_turn` (K59) | log(6.459e-7) 1/h | -- | Table S2 |
+| `f_ctl_lung` | fixed(0.15) | -- | Methods; Table S1 footnote c |
+| `tau_ctl_mig` / `tau_apc_mig` | fixed(12) h / fixed(24) h | -- | Methods; Table S1 footnotes c, f |
+| `apc0` | fixed(1e5) cells | -- | Methods; Table S1; Table S3 |
+| `target0` | fixed(4e8) cells | same | Table S3 |
+| `virus0` | fixed(10) TCID50/mL | same | Methods 'Calculation of synergy'; per-figure values in Table S3 |
+| PK ODEs | -- | -- | Table S1 'PK Modules' |
+| Virus life-cycle and immune ODEs | -- | -- | Table S1 (with / without immune systems) |
+| Delayed terms `delay(ctl, 12)`, `delay(apc_infected, 24)` | -- | -- | Table S1 footnotes c, f; authors' `delaymodelfun.R` |
+| `log10_viral_load = log10(virus + 1)` | -- | -- | Table S3 note (pseudo count of 1) |
+
+# Helpers
+
+All solves below are typical-value solves of a single subject. The +IM model
+contains delay differential equations, so it is solved with `dop853` and a large
+step budget.
+
+```{r helpers}
+solve_im <- function(events, params = NULL) {
+  out <- rxode2::rxSolve(mod_im, events = events, params = params,
+                         method = "dop853", maxsteps = 1e7,
+                         returnType = "data.frame")
+  if (is.null(out$id)) out$id <- 1L
+  out
+}
+solve_noim <- function(events, params = NULL) {
+  out <- rxode2::rxSolve(mod_noim, events = events, params = params,
+                         returnType = "data.frame")
+  if (is.null(out$id)) out$id <- 1L
+  out
+}
+# Twice-daily oral dosing of OP and/or AMT starting at `t_first` h, with
+# observations on a fixed grid.
+bid_events <- function(op_mg, amt_mg, t_first, n_doses, obs_times) {
+  ev <- rxode2::et(obs_times)
+  if (op_mg > 0) {
+    ev <- ev |> rxode2::et(amt = op_mg, cmt = "depot", time = t_first,
+                           ii = 12, addl = n_doses - 1)
+  }
+  if (amt_mg > 0) {
+    ev <- ev |> rxode2::et(amt = amt_mg, cmt = "depot_amantadine",
+                           time = t_first, ii = 12, addl = n_doses - 1)
+  }
+  ev
+}
+value_at <- function(sim, var, t) {
+  v <- sim[[var]][match(t, sim$time)]
+  stopifnot(!anyNA(v))
+  v
+}
+```
+
+# PK modules (Figure 2)
+
+The PK modules are shared by both models; the +IM model is used here. Panel a
+gives the oseltamivir loading-dose regimen (150 mg then 75 mg twice daily) and
+a 150 mg single dose; panel b gives amantadine 100 mg once daily and a 200 mg
+single dose.
+
+```{r figure-2}
+pk_scen <- list(
+  "a-left: OP 150 + 75 mg q12h" = rxode2::et(c(seq(0, 24, 0.25), seq(25, 48, 1))) |>
+    rxode2::et(amt = 150, cmt = "depot", time = 0) |>
+    rxode2::et(amt = 75, cmt = "depot", time = 12, ii = 12, addl = 2),
+  # Sampled to 72 h (Figure 2 shows 24 h) so that the PKNCA terminal phase
+  # below is clear of the absorption phase (OP ka 0.37/h vs OC kel 0.23/h).
+  "a-right: OP 150 mg single" = rxode2::et(seq(0, 72, 0.25)) |>
+    rxode2::et(amt = 150, cmt = "depot", time = 0),
+  "b-left: AMT 100 mg q24h" = rxode2::et(seq(0, 168, 0.5)) |>
+    rxode2::et(amt = 100, cmt = "depot_amantadine", time = 0, ii = 24, addl = 6),
+  "b-right: AMT 200 mg single" = rxode2::et(seq(0, 72, 0.25)) |>
+    rxode2::et(amt = 200, cmt = "depot_amantadine", time = 0)
+)
+pk_sim <- bind_rows(lapply(names(pk_scen), function(nm) {
+  solve_im(pk_scen[[nm]], params = c(virus0 = 0)) |>
+    mutate(panel = nm)
+}))
+pk_long <- pk_sim |>
+  select(panel, time, OP = Cc, OC = Cc_oselcarb, AMT = Cc_amantadine) |>
+  pivot_longer(c(OP, OC, AMT), names_to = "analyte", values_to = "conc") |>
+  filter((grepl("^a", panel) & analyte != "AMT") | (grepl("^b", panel) & analyte == "AMT"))
+ggplot(pk_long, aes(time, conc, linetype = analyte)) +
+  geom_line() +
+  facet_wrap(~panel, scales = "free_x") +
+  labs(x = "Time after first dose (h)", y = "Plasma concentration (ng/mL)",
+       linetype = NULL, caption = "Replicates Figure 2 of Li 2014.")
+```
+
+The simulated curves match the drawn model lines of Figure 2: an OC peak of
+about 480 ng/mL near 4 h and an OP peak near 80 ng/mL after 150 mg, a first
+amantadine peak near 290 ng/mL after 100 mg, and an amantadine peak near
+580 ng/mL with about 35 ng/mL remaining at 72 h after 200 mg.
+
+```{r figure-2-check}
+s150 <- pk_sim |> filter(panel == "a-right: OP 150 mg single")
+s200 <- pk_sim |> filter(panel == "b-right: AMT 200 mg single")
+s100 <- pk_sim |> filter(panel == "b-left: AMT 100 mg q24h")
+fig2 <- tibble(
+  quantity = c("OC Cmax, OP 150 mg (ng/mL)", "OC Tmax, OP 150 mg (h)",
+               "OP Cmax, OP 150 mg (ng/mL)", "AMT Cmax, 200 mg (ng/mL)",
+               "AMT C72, 200 mg (ng/mL)", "AMT first-dose Cmax, 100 mg (ng/mL)"),
+  figure = c(480, 4, 80, 580, 35, 290),
+  simulated = c(max(s150$Cc_oselcarb), s150$time[which.max(s150$Cc_oselcarb)],
+                max(s150$Cc), max(s200$Cc_amantadine), value_at(s200, "Cc_amantadine", 72),
+                max(s100$Cc_amantadine[s100$time < 24]))
+)
+knitr::kable(fig2, digits = 1)
+# Deterministic solve against values read off the drawn model line; the
+# tolerance covers reading precision on the printed figure.
+stopifnot(all(abs(fig2$simulated / fig2$figure - 1) < 0.15))
+```
+
+## PKNCA
+
+Li 2014 reports no NCA table; the single-dose NCA below documents the exposure
+the PK modules imply.
+
+```{r pknca}
+nca_conc <- bind_rows(
+  s150 |> transmute(id = 1L, time, conc = Cc_oselcarb, treatment = "OC after OP 150 mg"),
+  s150 |> transmute(id = 1L, time, conc = Cc, treatment = "OP after OP 150 mg"),
+  s200 |> transmute(id = 1L, time, conc = Cc_amantadine, treatment = "AMT 200 mg")
+) |>
+  filter(!is.na(conc))
+nca_dose <- tibble(
+  id = 1L, time = 0,
+  dose = c(150, 150, 200),
+  treatment = c("OC after OP 150 mg", "OP after OP 150 mg", "AMT 200 mg")
+)
+conc_obj <- PKNCA::PKNCAconc(nca_conc, conc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, dose ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+nca_tab |>
+  dplyr::rename("Analyte / regimen" = treatment, "Cmax (ng/mL)" = cmax,
+                "Tmax (h)" = tmax, "AUC0-inf (h*ng/mL)" = aucinf.obs,
+                "t1/2 (h)" = half.life) |>
+  knitr::kable(digits = 1)
+```
+
+The amantadine half-life equals `log(2) * VDAMT / CLAMT` =
+`r round(log(2) * 325900 / 12850, 1)` h, and the OC terminal half-life equals
+`log(2) * VDOC / CLOC` = `r round(log(2) * 115000 / 26460, 1)` h, as a
+one-compartment module requires.
+
+```{r pknca-check}
+hl <- setNames(nca_tab$half.life, nca_tab$treatment)
+stopifnot(
+  abs(hl[["AMT 200 mg"]] / (log(2) * 325900 / 12850) - 1) < 0.02,
+  abs(hl[["OC after OP 150 mg"]] / (log(2) * 115000 / 26460) - 1) < 0.02
+)
+```
+
+# Immune response after infection (Figure 3)
+
+Figure 3 simulates an untreated experimental infection with the +IM model,
+starting from the Table S3 initial titre of 1.474e-5 TCID50/mL. The circles
+are the nasal-lavage titres and IFN-alpha levels of Hayden 1998 as given in
+the authors' supplementary data file (titres shown, as in the paper, as
+log10(titre + 1)).
+
+```{r figure-3-data}
+fig3_obs <- tibble(
+  time = c(0, 24, 48, 72, 96, 120, 144, 168, 192),
+  log10_titre = c(NA, 1.865, 3.752, 3.329, 2.613, 2.484, 1.305, 0.857, 0.364),
+  ifna = c(0, 6.03, 157.4, 20.3, 47.8, 57.9, 19.3, 2.8, 0)
+)
+# Model line of Figure 3a read at the 24-h grid on which it is drawn.
+fig3_line <- tibble(
+  time = c(0, 24, 48, 72, 96, 120, 144, 168, 192),
+  log10_titre = c(0, 0.25, 3.75, 4.0, 3.15, 2.05, 1.35, 0.68, 0.35),
+  ifna = c(0, 5, 157, 20, 80, 57, 20, 5, 1)
+)
+```
+
+## Back-solving K37
+
+The Table S1 equation for activated lymph-node APC,
+`d(ActivatedAPCLymphnode)/dt = K37*InfectedAPC(t-24) - K42*ActivatedAPCLymphnode`,
+uses a rate constant K37 that has no row in Table S2 (the authors' example
+code carries a placeholder value, and none of that code's values are the final
+estimates). Activated APC feed only CTL production, so every model output
+depends on K37 only through the product K32 * K37; with K32 fixed at its
+printed value the remaining factor is identified by the paper's own simulated
+curves. The maintainers fitted K37 by least squares to the drawn model line of
+Figure 3a (titre on the log10 scale; IFN-alpha scaled by 40 pg/mL):
+
+```{r k37-backsolve}
+fig3_events <- rxode2::et(sort(unique(c(seq(0, 192, 0.5)))))
+k37_loss <- function(k37) {
+  s <- solve_im(fig3_events, params = c(virus0 = 1.474e-5, lk_apc_mig = log(k37)))
+  sum((value_at(s, "log10_viral_load", fig3_line$time) - fig3_line$log10_titre)^2) +
+    sum(((value_at(s, "ifna", fig3_line$time) - fig3_line$ifna) / 40)^2)
+}
+k37_fit <- optimize(k37_loss, c(0.03, 0.3), tol = 1e-3)
+k37_fit$minimum
+stopifnot(abs(k37_fit$minimum - 0.111) < 0.005)
+```
+
+The fitted value, 0.111 1/h, is the packaged `lk_apc_mig`. Two features of the
+paper that did not enter the fit confirm it: the ratio of the second to the
+first IFN-alpha peak in Figure 3b (about 0.19 by eye) and the +IM curves of
+Figure 4 below.
+
+```{r figure-3}
+fig3_sim <- solve_im(fig3_events, params = c(virus0 = 1.474e-5))
+bind_rows(
+  fig3_sim |> transmute(time, value = log10_viral_load, panel = "Viral titre, log10(TCID50/mL + 1)"),
+  fig3_sim |> transmute(time, value = ifna, panel = "Nasal IFN-alpha (pg/mL)")
+) |>
+  ggplot(aes(time, value)) +
+  geom_line() +
+  geom_point(data = bind_rows(
+    fig3_obs |> transmute(time, value = log10_titre, panel = "Viral titre, log10(TCID50/mL + 1)"),
+    fig3_obs |> transmute(time, value = ifna, panel = "Nasal IFN-alpha (pg/mL)")
+  ), shape = 1, na.rm = TRUE) +
+  facet_wrap(~panel, ncol = 1, scales = "free_y") +
+  labs(x = "Time post infection (h)", y = NULL,
+       caption = "Replicates Figure 3a of Li 2014.")
+```
+
+```{r figure-3b}
+fig3_sim |>
+  mutate(ctl_lung = 0.15 * lag(ctl, 24)) |>
+  transmute(time, `Infected APC` = apc_infected / max(apc_infected),
+            `IFN-alpha` = ifna / max(ifna),
+            `Cytotoxic T cells (lung)` = ctl_lung / max(ctl_lung, na.rm = TRUE)) |>
+  pivot_longer(-time) |>
+  ggplot(aes(time, value, linetype = name)) +
+  geom_line(na.rm = TRUE) +
+  labs(x = "Time post infection (h)", y = "Fraction of maximum amount", linetype = NULL,
+       caption = "Replicates Figure 3b of Li 2014. Lung CTL: 0.15 x lymph-node CTL 12 h earlier.")
+```
+
+```{r figure-3-check}
+early <- fig3_sim$time < 60
+fig3_check <- tibble(
+  quantity = c("infected-APC peak time (h)", "first IFN-alpha peak time (h)",
+               "second IFN-alpha peak time (h)", "IFN-alpha second / first peak",
+               "lung CTL peak time (h)"),
+  figure = c(37, 37, 97, 0.19, 97),
+  simulated = c(fig3_sim$time[which.max(fig3_sim$apc_infected)],
+                fig3_sim$time[early][which.max(fig3_sim$ifna[early])],
+                fig3_sim$time[!early][which.max(fig3_sim$ifna[!early])],
+                max(fig3_sim$ifna[!early]) / max(fig3_sim$ifna[early]),
+                fig3_sim$time[which.max(fig3_sim$ctl)] + 12)
+)
+knitr::kable(fig3_check, digits = 2)
+stopifnot(
+  all(abs(value_at(fig3_sim, "log10_viral_load", fig3_line$time) - fig3_line$log10_titre) < 0.3),
+  abs(value_at(fig3_sim, "ifna", 48) / 157 - 1) < 0.05,
+  abs(fig3_check$simulated[4] - 0.19) < 0.03,
+  all(abs(fig3_check$simulated[-4] - fig3_check$figure[-4]) <= 3)
+)
+```
+
+# Monotherapy with and without immune responses (Figure 4)
+
+Li 2014 draws its model lines in Figures 3 and 4 by joining the simulated
+values at the data times only (a straight line from infection to 96 h, for
+example), so the continuous curves below agree with the published lines at the
+data times but not necessarily in between. The Figure 4a points are digitised
+from the figure; the Figure 4b points are from the authors' supplementary data
+file.
+
+Treatment starts 96 h after infection (Methods). The initial titre of each
+group was fitted separately by Li 2014 and is taken from Table S3. Figure 4a is
+oseltamivir 75 or 150 mg twice daily (Treanor 2000); Figure 4b is amantadine
+100 mg twice daily (Knight 1970).
+
+```{r figure-4-scenarios}
+fig4_scen <- tribble(
+  ~panel, ~arm, ~op, ~amt, ~v0_im, ~v0_noim,
+  "a", "Placebo", 0, 0, 4.136e-7, 0.03996,
+  "a", "OP 75 mg", 75, 0, 1.849e-7, 0.02006,
+  "a", "OP 150 mg", 150, 0, 2.486e-6, 0.1098,
+  "b", "Placebo", 0, 0, 5.541e-9, 5.686e-4,
+  "b", "AMT 100 mg", 0, 100, 1.005e-10, 0.001157
+)
+fig4_sim <- bind_rows(lapply(seq_len(nrow(fig4_scen)), function(i) {
+  sc <- fig4_scen[i, ]
+  t_end <- if (sc$panel == "a") 168 else 178
+  ev <- bid_events(sc$op, sc$amt, t_first = 96, n_doses = 10, obs_times = seq(0, t_end, 1))
+  bind_rows(
+    solve_im(ev, params = c(virus0 = sc$v0_im)) |> mutate(model = "+IM"),
+    solve_noim(ev, params = c(virus0 = sc$v0_noim)) |> mutate(model = "-IM")
+  ) |>
+    mutate(panel = sc$panel, arm = sc$arm)
+}))
+fig4_obs <- tribble(
+  ~panel, ~arm, ~time, ~log10_titre,
+  "a", "Placebo", 96, 3.50, "a", "Placebo", 120, 2.30, "a", "Placebo", 168, 0.30,
+  "a", "OP 75 mg", 96, 3.50, "a", "OP 75 mg", 120, 1.80, "a", "OP 75 mg", 168, 0.30,
+  "a", "OP 150 mg", 96, 3.35, "a", "OP 150 mg", 120, 1.30, "a", "OP 150 mg", 168, 0.30,
+  "b", "Placebo", 96, 3.97, "b", "Placebo", 106, 3.28, "b", "Placebo", 130, 1.95,
+  "b", "Placebo", 154, 1.54, "b", "Placebo", 178, 1.16,
+  "b", "AMT 100 mg", 96, 4.46, "b", "AMT 100 mg", 106, 2.50, "b", "AMT 100 mg", 130, 1.78,
+  "b", "AMT 100 mg", 154, 1.41, "b", "AMT 100 mg", 178, 1.11
+)
+```
+
+```{r figure-4ab, fig.height = 6}
+ggplot(fig4_sim, aes(time, log10_viral_load, linetype = arm)) +
+  geom_line() +
+  geom_point(data = fig4_obs, aes(time, log10_titre, shape = arm)) +
+  facet_grid(panel ~ model) +
+  labs(x = "Time post infection (h)", y = "Viral titre, log10(TCID50/mL + 1)",
+       linetype = NULL, shape = NULL,
+       caption = "Replicates Figure 4a (top) and 4b (bottom) of Li 2014.")
+```
+
+```{r figure-4c}
+fig4_sim |>
+  filter(panel == "b", arm == "Placebo") |>
+  select(model, time, `Viral titre (log10)` = log10_viral_load,
+         `Fraction uninfected` = frac_uninfected) |>
+  pivot_longer(-c(model, time)) |>
+  ggplot(aes(time, value)) +
+  geom_line() +
+  facet_grid(name ~ model, scales = "free_y") +
+  labs(x = "Time post infection (h)", y = NULL,
+       caption = "Replicates Figure 4c of Li 2014 (placebo course of Figure 4b).")
+```
+
+The -IM model depletes essentially every target cell by the time of peak
+titre, while the +IM model leaves about 87% of the epithelium uninfected (or
+IFN-protected) throughout -- the contrast Li 2014 draws in Figure 4c.
+
+```{r figure-4-check}
+# Drawn model lines of Figure 4 read at the plotted data times.
+fig4_line <- tribble(
+  ~model, ~panel, ~arm, ~time, ~line,
+  "-IM", "a", "Placebo", 120, 2.3, "-IM", "a", "Placebo", 168, 0.2,
+  "-IM", "a", "OP 75 mg", 120, 1.7, "-IM", "a", "OP 150 mg", 120, 1.3,
+  "+IM", "a", "Placebo", 120, 2.35, "+IM", "a", "Placebo", 168, 0.8,
+  "+IM", "a", "OP 75 mg", 120, 1.7, "+IM", "a", "OP 150 mg", 120, 1.2,
+  "-IM", "b", "Placebo", 96, 4.05, "-IM", "b", "Placebo", 178, 0.3,
+  "-IM", "b", "AMT 100 mg", 178, 1.35,
+  "+IM", "b", "Placebo", 96, 3.8, "+IM", "b", "Placebo", 178, 0.8,
+  "+IM", "b", "AMT 100 mg", 178, 1.1
+)
+fig4_cmp <- fig4_line |>
+  left_join(fig4_sim |> select(model, panel, arm, time, simulated = log10_viral_load),
+            by = c("model", "panel", "arm", "time"))
+knitr::kable(fig4_cmp, digits = 2)
+fu <- fig4_sim |> filter(panel == "b", arm == "Placebo")
+stopifnot(
+  nrow(fig4_cmp) == nrow(fig4_line), !anyNA(fig4_cmp$simulated),
+  all(abs(fig4_cmp$simulated - fig4_cmp$line) < 0.3),
+  value_at(fu |> filter(model == "-IM"), "frac_uninfected", 96) < 0.01,
+  abs(value_at(fu |> filter(model == "+IM"), "frac_uninfected", 178) - 0.87) < 0.05
+)
+```
+
+# Drug-combination synergy (Figure 5)
+
+Li 2014 scored synergy with the Prichard and Shipman method: with X, Y and E
+the fractional inhibitions of viral titre by OP alone, AMT alone and the
+combination, the additive expectation is `Z = X + Y(1 - X)` and synergy is
+`S = E - Z` (in percent). Per the Methods, the initial titre was fixed at 10,
+the first dose was given 96 h after infection, doses were twice daily, and
+inhibition was read 24 h after the first dose relative to placebo. Resistant
+strains multiply the corresponding in vivo IC50 by 10.
+
+Two details are not stated: the titre scale on which inhibition was computed
+and the exact dose grid. On the linear titre scale S stays close to zero
+everywhere (column `max |S| linear` below), which cannot produce the surfaces of
+Figure 5, so inhibition is computed on the log10(titre + 1) scale that every
+other figure of the paper uses. A coarse 5 x 5 dose grid keeps the render
+short.
+
+```{r synergy, fig.height = 8}
+synergy_grid <- function(model, doses_op, doses_amt, fold_op, fold_amt) {
+  grid <- expand.grid(op = doses_op, amt = doses_amt)
+  base_p <- c(virus0 = 10)
+  if (model == "+IM") {
+    base_p <- c(base_p, lic50_oselcarb = log(fold_op / 0.0445),
+                lic50_amantadine = log(fold_amt / 0.07987))
+  } else {
+    base_p <- c(base_p, lic50_oselcarb = log(fold_op / 0.0237),
+                lic50_amantadine = log(fold_amt / 0.25710))
+  }
+  grid$virus <- vapply(seq_len(nrow(grid)), function(i) {
+    ev <- bid_events(grid$op[i], grid$amt[i], t_first = 96, n_doses = 2, obs_times = c(0, 120))
+    s <- if (model == "+IM") solve_im(ev, params = base_p) else solve_noim(ev, params = base_p)
+    value_at(s, "virus", 120)
+  }, numeric(1))
+  grid$S <- prichard_shipman(grid, log10(grid$virus + 1))
+  grid$S_linear <- prichard_shipman(grid, grid$virus)
+  grid
+}
+# S = E - (X + Y(1 - X)), in percent, from the titre on a given scale; the
+# single-drug rows (amt == 0, op == 0) supply X and Y.
+prichard_shipman <- function(grid, titre) {
+  key <- paste(grid$op, grid$amt)
+  inhib <- 1 - titre / titre[key == "0 0"]
+  x <- inhib[match(paste(grid$op, 0), key)]
+  y <- inhib[match(paste(0, grid$amt), key)]
+  stopifnot(!anyNA(x), !anyNA(y))
+  100 * (inhib - (x + y * (1 - x)))
+}
+strains <- tribble(
+  ~strain, ~fold_op, ~fold_amt, ~dmax,
+  "a: wild type", 1, 1, 100,
+  "b: AMT resistant", 1, 10, 400,
+  "c: OP resistant", 10, 1, 400,
+  "d: double resistant", 10, 10, 400
+)
+syn <- bind_rows(lapply(seq_len(nrow(strains)), function(i) {
+  st <- strains[i, ]
+  doses <- seq(0, st$dmax, length.out = 5)
+  bind_rows(lapply(c("-IM", "+IM"), function(m) {
+    synergy_grid(m, doses, doses, st$fold_op, st$fold_amt) |>
+      mutate(model = m, strain = st$strain)
+  }))
+}))
+ggplot(syn, aes(op, amt, fill = S)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "steelblue", mid = "white", high = "orchid4", midpoint = 0) +
+  facet_wrap(~ strain + model, ncol = 2, scales = "free") +
+  labs(x = "OP dose (mg, twice daily)", y = "AMT dose (mg, twice daily)", fill = "S (%)",
+       caption = "Compare Figure 5 of Li 2014 (coarse grid; see text).")
+```
+
+```{r synergy-summary}
+syn_summary <- syn |>
+  filter(op > 0, amt > 0) |>
+  group_by(strain, model) |>
+  summarise(`mean S` = mean(S), `max S` = max(S),
+            `max |S| linear` = max(abs(S_linear)), .groups = "drop")
+knitr::kable(syn_summary, digits = 1)
+# Deterministic solves: pin the wild-type summary so a change to either model
+# shows up here.
+wt <- syn_summary |> filter(strain == "a: wild type")
+stopifnot(
+  nrow(wt) == 2, nrow(syn) == 8 * 25,
+  abs(wt$`mean S`[wt$model == "+IM"] - 5.9) < 0.3,
+  abs(wt$`mean S`[wt$model == "-IM"] - 5.3) < 0.3,
+  all(syn_summary$`max |S| linear` < 2.5)
+)
+```
+
+Under this reading of the protocol synergy is positive over most of the grid
+for both models, and the +IM model predicts somewhat more synergy than the -IM
+model for the wild-type, OP-resistant and double-resistant strains. The gap is
+much smaller than in Figure 5, however, and it reverses for the AMT-resistant
+strain, so **the packaged models do not reproduce Figure 5**. The synergy
+protocol is not specified completely (the dose grid, the time origin of the
+synergy runs and the inhibition scale), and the authors' synergy script is not
+among the supplementary files. Figures 2 to 4, which fix every model parameter,
+are reproduced closely, so the difference most likely lies in the synergy
+protocol rather than in the models; it has not been resolved.
+
+# Assumptions and deviations
+
+* **K37 back-solved.** The APC migration/activation rate constant K37 appears in
+  the Table S1 equations but not in Table S2 or anywhere else in the paper or
+  supplements. It was back-solved by the maintainers from the drawn model curve
+  of Figure 3a (0.111 1/h) and is consistent with Figures 3b and 4. Only the
+  product K32 * K37 is identifiable, so splitting it differently would give
+  identical predictions.
+* **Drug-to-parameter mapping.** The Methods say resistance multiplies "the in
+  vivo IC50 (inverse of K17 for AMT and K22 for OC respectively)". Table S1
+  (footnotes b and d), Table S2 and the authors' code all pair K17 with OC and
+  K22 with AMT; the packaged model follows the tables and code.
+* **Figure 4b dose.** The Figure 4 caption says amantadine 150 mg twice daily,
+  but the authors' data file doses 100 mg every 12 h from 96 h, and 100 mg
+  reproduces the drawn Figure 4b curves while 150 mg does not; 100 mg is used.
+  Table S3 labels the third Figure 4a initial titre "100 mg group"; Figure 4a
+  has a 150 mg group, which is the group it is used for here.
+* **Units.** Table S2 lists the infection-rate units of K11 and K48 per log10
+  TCID50/mL, but the equations and the authors' code use the linear titre;
+  the linear titre is used. Drug concentrations are amounts in mg over volumes
+  in mL, converted to ng/mL to match K17 and K22. The OP-to-OC conversion
+  carries no molecular-weight correction, as printed.
+* **IL-6.** The authors' example code carries an IL-6 state that feeds back on
+  nothing and is absent from the Table S1 equations; it is omitted.
+* **Initial titre.** `virus0` defaults to the value 10 that the paper used for
+  its drug-combination simulations; the per-figure titres of Table S3 are
+  passed as parameter overrides above.
+* **Figure 5 not reproduced.** The synergy surfaces computed above under the
+  stated protocol (initial titre 10, first dose at 96 h, inhibition 24 h later
+  on the log10 titre scale) are positive but flatter than Figure 5, and the
+  +IM model's advantage is small; see the Figure 5 section.
+* **No variability.** Li 2014 adopts typical values only, so neither model has
+  between-subject variability or residual error.
