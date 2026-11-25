@@ -1,0 +1,688 @@
+---
+title: "Meropenem (Lei 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meropenem (Lei 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+ui <- rxode2::rxode(readModelDb("Lei_2026_meropenem"))
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Description: ", ui$description, "\n", sep = "")
+```
+
+* Article: <https://doi.org/10.3390/pharmaceutics18091113>
+
+Lei and colleagues developed a two-compartment population PK model for
+meropenem in septic adults and asked whether plasma 4-pyridoxic acid (PDA), an
+endogenous substrate of the renal organic anion transporters OAT1 and OAT3,
+explains clearance variability beyond Cockcroft-Gault creatinine clearance
+(CLcr). In the final model PDA enters clearance as a piecewise-linear ("hockey
+stick") term: no effect up to an estimated knot of 26.5 ng/mL, and a linear
+decrease above it. The authors then used Monte Carlo simulation to map the
+probability of target attainment (PTA) for six regimens across CLcr and PDA
+strata (Figures 5 and 6). This vignette checks the packaged covariate
+equations exactly, simulates the study regimens, and reproduces the PTA heat
+map of Figure 5.
+
+# Population
+
+The PopPK model was fitted to 138 meropenem concentrations from the 28
+patients who had intensive sampling, a subset of a 49-patient single-centre
+ICU cohort (Peking University Third Hospital, January 2022 to December 2024)
+used for the exposure-response analysis. Demographics are tabulated only for
+the full cohort (Lei 2026 Table 1): median age 74 years (IQR 64-85), 63.3%
+female, all Han Chinese, median BMI 21.5 kg/m^2, median APACHE II 17 and SOFA
+7, and 83.7% pulmonary infection. Baseline renal status (KDIGO) was normal in
+21 patients, acute kidney injury (AKI) without renal replacement in 21, and
+continuous renal replacement therapy (CRRT) in 7. Median Cockcroft-Gault CLcr
+was 47.1 mL/min (IQR 32.8-80.8), serum albumin 31.0 g/L (IQR 29.1-34.8) and
+baseline PDA 6.8 ng/mL (IQR 4.3-17.3). Patients received 0.5 g q12h (3),
+1.0 g q8h (19) or 1.0 g q12h (27), all as 1-h infusions (Section 3.1).
+
+The same information is available programmatically via
+`readModelDb("Lei_2026_meropenem")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source; this table
+collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` | 7.21 L/h | Table 2, final model, CL; Eq. 3 leading coefficient |
+| `lvc` | 7.41 L | Table 2, final model, Vc; Eq. 4 |
+| `lq` | 6.45 L/h | Table 2, final model, Q |
+| `lvp` | 9.33 L | Table 2, final model, Vp |
+| `e_crcl_cl` | 0.29 | Table 2, CL-CLcr; Eq. 3 exponent |
+| `crcl_ref_cl` | 2.62 L/h (fixed) | Eq. 3 denominator; Section 3.2.3 (PopPK-cohort median CLcr) |
+| `e_pyridoxic_acid_bl_cl` | -0.042 L/h per ng/mL | Table 2, CL-PDA; Eq. 3 |
+| `lpyridoxic_acid_bl_hinge` | 26.5 ng/mL | Section 3.2.3 (PDA cutoff estimated as a structural parameter); Eq. 3 |
+| `e_alb_vc` | -3.67 | Table 2, Vc-ALB; Eq. 4 exponent |
+| `alb_ref_vc` | 31.4 g/L (fixed) | Eq. 4 denominator; Section 3.2.3 (PopPK-cohort median ALB) |
+| `e_dis_arf_vc` | 2.02 | Table 2, Vc-GROUP; Eq. 4 (x2.02 AKI, x4.08 = 2.02^2 CRRT) |
+| `etalcl` variance | 0.264^2 = 0.0697 | Table 2, IIV on CL 26.4% (see Assumptions) |
+| `etalvc` variance | 0.227^2 = 0.0515 | Table 2, IIV on Vc 22.7% |
+| `etalq` variance | 1.086^2 = 1.179 | Table 2, IIV on Q 108.6% |
+| `propSd` | sqrt(0.0578) = 0.240 | Table 2, residual error, proportional (variance; see Assumptions) |
+| `addSd` | sqrt(0.105) = 0.324 mg/L | Table 2, residual error, additive (variance) |
+| Two-compartment ODEs | n/a | Eqs. 1-2 |
+| CL hinge in PDA | n/a | Eq. 3 |
+| Vc power in ALB, renal-status factor | n/a | Eq. 4 |
+
+# Structural verification
+
+## Covariate equations
+
+The individual clearance and central volume returned by the solver must equal
+Eqs. 3 and 4 exactly. CLcr is supplied in mL/min (the canonical `CRCL` column)
+and converted to the paper's L/h inside the model.
+
+```{r check-covariates}
+mod <- readModelDb("Lei_2026_meropenem")
+
+grid <- expand.grid(
+  CRCL = c(20, 2.62 * 1000 / 60, 100),
+  PYRIDOXIC_ACID_BL = c(5, 26.5, 50, 100),
+  ALB = c(25, 31.4, 40),
+  grp = c("normal", "AKI", "CRRT"),
+  stringsAsFactors = FALSE
+)
+grid$id <- seq_len(nrow(grid))
+grid$DIS_ARF <- as.numeric(grid$grp != "normal")
+grid$RRT_CRRT_STATUS <- as.numeric(grid$grp == "CRRT")
+
+ev_cov <- grid |>
+  dplyr::mutate(time = 0, amt = 0, evid = 0, cmt = "central") |>
+  dplyr::select(id, time, amt, evid, cmt, CRCL, PYRIDOXIC_ACID_BL, ALB,
+                DIS_ARF, RRT_CRRT_STATUS)
+
+# zeroRe() removes every eta, so each id is a typical subject; rxode2 warns
+# that a multi-subject solve has no omega, which is the intent here.
+cov_chk <- suppressWarnings(
+  rxode2::rxSolve(rxode2::zeroRe(mod), ev_cov, returnType = "data.frame")
+) |>
+  dplyr::select(id, cl, vc) |>
+  dplyr::inner_join(grid, by = "id") |>
+  dplyr::mutate(
+    clcr_lh = CRCL * 60 / 1000,
+    cl_eq3 = ifelse(PYRIDOXIC_ACID_BL <= 26.5,
+                    7.21 * (clcr_lh / 2.62)^0.29 - 0.042 * 26.5,
+                    7.21 * (clcr_lh / 2.62)^0.29 - 0.042 * PYRIDOXIC_ACID_BL),
+    vc_eq4 = 7.41 * (ALB / 31.4)^-3.67 *
+      c(normal = 1, AKI = 2.02, CRRT = 4.08)[grp],
+    cl_err = abs(cl / cl_eq3 - 1),
+    vc_err = abs(vc / vc_eq4 - 1)
+  )
+stopifnot(nrow(cov_chk) == nrow(grid))
+
+knitr::kable(
+  cov_chk |>
+    dplyr::filter(ALB == 31.4, grp == "normal") |>
+    dplyr::select(CRCL, PYRIDOXIC_ACID_BL, cl, cl_eq3) |>
+    dplyr::rename("CLcr (mL/min)" = CRCL, "PDA (ng/mL)" = PYRIDOXIC_ACID_BL,
+                  "CL solved (L/h)" = cl, "CL from Eq. 3 (L/h)" = cl_eq3),
+  digits = c(1, 1, 4, 4),
+  caption = "Typical clearance from the solver against Eq. 3 (ALB 31.4 g/L, normal renal function)."
+)
+
+knitr::kable(
+  cov_chk |>
+    dplyr::filter(CRCL == 20, PYRIDOXIC_ACID_BL == 5) |>
+    dplyr::select(ALB, grp, vc, vc_eq4) |>
+    dplyr::rename("ALB (g/L)" = ALB, "Renal status" = grp,
+                  "Vc solved (L)" = vc, "Vc from Eq. 4 (L)" = vc_eq4),
+  digits = c(1, 0, 3, 3),
+  caption = "Typical central volume from the solver against Eq. 4."
+)
+
+# Eq. 4 prints the CRRT factor rounded to 4.08; the model carries 2.02^2 =
+# 4.0804, a 1e-4 relative difference. Everything else is exact.
+stopifnot(
+  max(cov_chk$cl_err) < 1e-10,
+  max(cov_chk$vc_err) < 2e-4
+)
+```
+
+At the reference subject (CLcr 2.62 L/h = 43.7 mL/min, PDA at or below the
+knot) clearance is 7.21 - 0.042 x 26.5 = 6.10 L/h: the leading coefficient of
+Eq. 3 is not itself the typical clearance, because the flat arm of the hinge
+still subtracts the slope times the knot. Up to the knot PDA has no effect
+(the 5 and 26.5 ng/mL rows are identical); above it each 10 ng/mL lowers
+clearance by 0.42 L/h.
+
+## Clearance across the covariate space
+
+```{r fig-cl-surface}
+cl_surface <- expand.grid(CRCL = c(15, 30, 60, 100, 150),
+                          PYRIDOXIC_ACID_BL = seq(0, 125, by = 2.5)) |>
+  dplyr::mutate(cl = 7.21 * (CRCL * 60 / 1000 / 2.62)^0.29 -
+                  0.042 * pmax(PYRIDOXIC_ACID_BL, 26.5))
+
+ggplot(cl_surface, aes(PYRIDOXIC_ACID_BL, cl, colour = factor(CRCL))) +
+  geom_line(linewidth = 0.9) +
+  geom_vline(xintercept = 26.5, linetype = "dashed") +
+  geom_hline(yintercept = 0, colour = "grey50") +
+  labs(x = "Baseline PDA (ng/mL)", y = "Typical clearance (L/h)",
+       colour = "CLcr (mL/min)",
+       title = "Eq. 3: meropenem clearance against PDA and CLcr",
+       caption = "Dashed line: the estimated knot, 26.5 ng/mL.")
+```
+
+The PDA term is subtracted, not multiplied, so at very low CLcr and very high
+PDA Eq. 3 approaches zero clearance (at CLcr 15 mL/min and the cohort's
+maximum PDA of 121.3 ng/mL it is 0.19 L/h). Simulations below stay inside the
+covariate range where clearance is positive.
+
+# Virtual cohort
+
+The observed data are not public. The cohort approximates Table 1: CLcr and
+PDA are drawn log-normally from their reported medians and interquartile
+ranges, albumin normally, and renal status in the 21:21:7 proportions of the
+full cohort. CLcr is truncated to 15-150 mL/min and PDA to the observed
+maximum of 121.3 ng/mL, which keeps every typical clearance positive.
+
+```{r cohort}
+# set.seed() draws the covariates. It does not fix rxode2's eta draws across
+# machines with different thread counts, so every assertion below is written
+# on medians and robust quantiles.
+set.seed(20261123)
+
+n_arm <- 150
+draw_cohort <- function(n) {
+  grp <- sample(c("normal", "AKI", "CRRT"), n, replace = TRUE, prob = c(21, 21, 7))
+  data.frame(
+    CRCL = pmin(pmax(rlnorm(n, log(47.1), log(80.8 / 32.8) / 1.349), 15), 150),
+    PYRIDOXIC_ACID_BL = pmin(rlnorm(n, log(6.8), log(17.3 / 4.3) / 1.349), 121.3),
+    ALB = pmin(pmax(rnorm(n, 31.0, (34.8 - 29.1) / 1.349), 20), 45),
+    DIS_ARF = as.numeric(grp != "normal"),
+    RRT_CRRT_STATUS = as.numeric(grp == "CRRT")
+  )
+}
+cov_df <- dplyr::bind_rows(
+  draw_cohort(n_arm) |> dplyr::mutate(treatment = "1 g q8h", ii = 8),
+  draw_cohort(n_arm) |> dplyr::mutate(treatment = "1 g q12h", ii = 12)
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+typical_cl <- 7.21 * (cov_df$CRCL * 60 / 1000 / 2.62)^0.29 -
+  0.042 * pmax(cov_df$PYRIDOXIC_ACID_BL, 26.5)
+stopifnot(all(typical_cl > 0))
+
+knitr::kable(
+  tibble::tibble(
+    Covariate = c("CLcr (mL/min)", "PDA (ng/mL)", "ALB (g/L)"),
+    `Simulated median (IQR)` = sprintf(
+      "%.1f (%.1f-%.1f)",
+      c(median(cov_df$CRCL), median(cov_df$PYRIDOXIC_ACID_BL), median(cov_df$ALB)),
+      c(quantile(cov_df$CRCL, 0.25), quantile(cov_df$PYRIDOXIC_ACID_BL, 0.25),
+        quantile(cov_df$ALB, 0.25)),
+      c(quantile(cov_df$CRCL, 0.75), quantile(cov_df$PYRIDOXIC_ACID_BL, 0.75),
+        quantile(cov_df$ALB, 0.75))),
+    `Table 1 median (IQR)` = c("47.1 (32.8-80.8)", "6.8 (4.3-17.3)", "31.0 (29.1-34.8)")
+  ),
+  caption = "Virtual-cohort covariates against Lei 2026 Table 1."
+)
+
+t_end <- 72
+make_events <- function(row) {
+  ev <- rxode2::et(amt = 1000, ii = row$ii, until = t_end - row$ii, dur = 1,
+                   cmt = "central") |>
+    rxode2::et(seq(0, t_end, by = 0.25), cmt = "central") |>
+    as.data.frame()
+  ev$id <- NULL
+  ev$id <- row$id
+  cbind(ev, row[rep(1, nrow(ev)), c("CRCL", "PYRIDOXIC_ACID_BL", "ALB", "DIS_ARF",
+                                     "RRT_CRRT_STATUS", "treatment")],
+        row.names = NULL)
+}
+events <- do.call(rbind, lapply(split(cov_df, cov_df$id), make_events))
+```
+
+# Simulation
+
+```{r simulate}
+rxode2::rxSetSeed(20261123)
+sim <- rxode2::rxSolve(mod, events = events, keep = "treatment",
+                       returnType = "data.frame")
+stopifnot(nrow(sim) > 0, all(sim$cl > 0))
+```
+
+## Concentrations against time since the last dose (Figure 2)
+
+Figure 2 plots the 138 observed concentrations against time since the last
+dose. The panel below shows the simulated steady-state (day 3) envelope for
+the two main study regimens, with the observed concentration range
+(0.28-223.12 mg/L, Section 3.1) dashed.
+
+```{r fig-tad}
+ss <- sim |>
+  dplyr::mutate(ii = ifelse(treatment == "1 g q8h", 8, 12)) |>
+  dplyr::filter(time >= t_end - ii) |>
+  dplyr::mutate(tad = time - (t_end - ii))
+
+env <- ss |>
+  dplyr::group_by(treatment, tad) |>
+  dplyr::summarise(Q05 = quantile(Cc, 0.05), Q50 = median(Cc),
+                   Q95 = quantile(Cc, 0.95), .groups = "drop")
+
+ggplot(env, aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "steelblue", alpha = 0.25) +
+  geom_line(linewidth = 0.9) +
+  geom_hline(yintercept = c(0.28, 223.12), linetype = "dashed", colour = "grey40") +
+  facet_wrap(~treatment) +
+  scale_y_log10() +
+  labs(x = "Time since last dose (h)", y = "Meropenem concentration (mg/L)",
+       title = "Simulated steady-state 5th-50th-95th percentiles, 1-h infusions",
+       caption = "Compare with Lei 2026 Figure 2. Dashed: observed range.")
+```
+
+```{r check-range}
+# The 90% envelope must sit inside the observed range: a dose-unit or volume
+# error would move it by an order of magnitude.
+stopifnot(
+  min(env$Q05) > 0.28 / 5,
+  max(env$Q95) < 223.12,
+  median(ss$Cc) > 1,
+  median(ss$Cc) < 50
+)
+```
+
+# PKNCA validation
+
+Steady-state NCA over the final dosing interval of each arm. The paper
+reports no NCA table, so the reference is the identity that holds for linear
+PK at steady state, AUC(0-tau) = Dose / CL, using each subject's own drawn
+clearance.
+
+```{r pknca}
+sim_nca <- ss |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::group_by(id) |>
+  dplyr::filter(time == max(time)) |>
+  dplyr::ungroup() |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "mg")
+
+intervals <- data.frame(
+  treatment = c("1 g q8h", "1 g q12h"),
+  start = c(t_end - 8, t_end - 12),
+  end = t_end,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(id, treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+stopifnot(nrow(nca_wide) == 2 * n_arm)
+
+chk <- nca_wide |>
+  dplyr::inner_join(sim |> dplyr::distinct(id, cl), by = "id") |>
+  dplyr::mutate(auc_expected = 1000 / cl,
+                pct_diff = 100 * (auclast / auc_expected - 1))
+
+chk |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    cmax = median(cmax), cmin = median(cmin), auclast = median(auclast),
+    auc_expected = median(auc_expected),
+    med_pct = median(pct_diff), q90_abs_pct = quantile(abs(pct_diff), 0.9),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Regimen" = treatment, "Median Cmax,ss (mg/L)" = cmax,
+                "Median Cmin,ss (mg/L)" = cmin,
+                "Median AUC0-tau (mg*h/L)" = auclast,
+                "Median Dose/CL (mg*h/L)" = auc_expected,
+                "Median % difference" = med_pct,
+                "90th pct |% difference|" = q90_abs_pct) |>
+  knitr::kable(digits = 2, caption = "PKNCA steady-state exposure against AUC(0-tau) = Dose/CL.")
+
+# Both sides use the same drawn CL; the residual is trapezoid error on the
+# post-infusion decay plus the approach to steady state of slow eliminators
+# (CRRT subjects carry a fourfold Vc). Assert on the centre and a robust
+# quantile, not on the extremes.
+stopifnot(
+  abs(median(chk$pct_diff)) < 3,
+  quantile(abs(chk$pct_diff), 0.9) < 10
+)
+```
+
+# Reproducing the PTA heat map (Figure 5)
+
+Figure 5 prints, for six regimens and seven (CLcr, PDA) strata, the PTA for
+100% fT > MIC at nine MICs; Figure 6 (100% fT > 4xMIC) is the same grid
+shifted by two MIC doublings. Since 100% fT > MIC means the steady-state
+trough exceeds the MIC, one steady-state solve per stratum and regimen gives
+every MIC. The paper does not discuss protein binding; meropenem is about 2%
+bound, so the targets are applied to the total concentration `Cc` here.
+
+Section 2.6 says the simulations incorporated "the parameter variability and
+covariate distributions from the final PopPK model" but does not say how
+albumin and renal status were set. Three readings are simulated: the
+reference subject (ALB 31.4 g/L, normal renal function); albumin drawn from
+Table 1 with normal renal function (the primary comparison); and both albumin
+and renal status drawn from Table 1.
+
+```{r pta-sim}
+fig5 <- read.csv(text = "reg,crcl,pda,m0.125,m0.25,m0.5,m1,m2,m4,m8,m16,m32
+1g q12h 1h,150,25,89,77,53,25,8,1,0,0,0
+1g q12h 1h,100,25,ok,87,69,41,15,3,0,0,0
+1g q12h 1h,60,25,ok,ok,85,62,32,10,1,0,0
+1g q12h 1h,30,25,ok,ok,ok,84,60,29,8,1,0
+1g q12h 1h,60,50,ok,ok,ok,77,51,24,8,2,0
+1g q12h 1h,30,50,ok,ok,ok,ok,76,51,24,7,1
+1g q12h 1h,30,100,ok,ok,ok,ok,ok,85,68,47,27
+1g q12h 3h,150,25,ok,86,68,38,14,2,0,0,0
+1g q12h 3h,100,25,ok,ok,81,55,26,6,1,0,0
+1g q12h 3h,60,25,ok,ok,ok,75,45,16,3,0,0
+1g q12h 3h,30,25,ok,ok,ok,ok,72,39,12,1,0
+1g q12h 3h,60,50,ok,ok,ok,84,61,32,11,2,0
+1g q12h 3h,30,50,ok,ok,ok,ok,84,61,32,10,1
+1g q12h 3h,30,100,ok,ok,ok,ok,ok,89,74,52,31
+1g q12h 6h,150,25,ok,ok,89,66,33,8,1,0,0
+1g q12h 6h,100,25,ok,ok,ok,80,48,16,2,0,0
+1g q12h 6h,60,25,ok,ok,ok,ok,69,33,7,0,0
+1g q12h 6h,30,25,ok,ok,ok,ok,88,62,23,4,0
+1g q12h 6h,60,50,ok,ok,ok,ok,80,52,21,4,0
+1g q12h 6h,30,50,ok,ok,ok,ok,ok,78,46,15,3
+1g q12h 6h,30,100,ok,ok,ok,ok,ok,ok,83,60,35
+1g q8h 1h,150,25,ok,ok,ok,75,43,14,2,0,0
+1g q8h 1h,100,25,ok,ok,ok,85,59,26,6,0,0
+1g q8h 1h,60,25,ok,ok,ok,ok,78,44,15,2,0
+1g q8h 1h,30,25,ok,ok,ok,ok,ok,72,37,9,1
+1g q8h 1h,60,50,ok,ok,ok,ok,87,63,31,8,1
+1g q8h 1h,30,50,ok,ok,ok,ok,ok,86,60,26,5
+1g q8h 1h,30,100,ok,ok,ok,ok,ok,ok,88,70,43
+1g q8h 3h,150,25,ok,ok,ok,88,62,27,5,0,0
+1g q8h 3h,100,25,ok,ok,ok,ok,77,43,12,1,0
+1g q8h 3h,60,25,ok,ok,ok,ok,89,64,25,4,0
+1g q8h 3h,30,25,ok,ok,ok,ok,ok,85,53,15,1
+1g q8h 3h,60,50,ok,ok,ok,ok,ok,76,43,14,2
+1g q8h 3h,30,50,ok,ok,ok,ok,ok,ok,70,34,8
+1g q8h 3h,30,100,ok,ok,ok,ok,ok,ok,ok,76,49
+2g q8h 3h,150,25,ok,ok,ok,ok,88,63,28,5,0
+2g q8h 3h,100,25,ok,ok,ok,ok,ok,77,43,11,1
+2g q8h 3h,60,25,ok,ok,ok,ok,ok,90,64,27,4
+2g q8h 3h,30,25,ok,ok,ok,ok,ok,ok,85,53,15
+2g q8h 3h,60,50,ok,ok,ok,ok,ok,ok,75,43,14
+2g q8h 3h,30,50,ok,ok,ok,ok,ok,ok,ok,71,36
+2g q8h 3h,30,100,ok,ok,ok,ok,ok,ok,ok,ok,77",
+  colClasses = c("character", "numeric", "numeric", rep("character", 9)))
+stopifnot(nrow(fig5) == 42)
+
+fig5_long <- fig5 |>
+  tidyr::pivot_longer(dplyr::starts_with("m"), names_to = "mic", values_to = "paper") |>
+  dplyr::mutate(mic = as.numeric(sub("^m", "", mic)))
+
+regs <- data.frame(reg = c("1g q12h 1h", "1g q12h 3h", "1g q12h 6h",
+                           "1g q8h 1h", "1g q8h 3h", "2g q8h 3h"),
+                   dose = c(1000, 1000, 1000, 1000, 1000, 2000),
+                   ii = c(12, 12, 12, 8, 8, 8),
+                   tinf = c(1, 3, 6, 1, 3, 3))
+strata <- unique(fig5[, c("crcl", "pda")])
+mics <- sort(unique(fig5_long$mic))
+n_pta <- 200
+t_ss <- 168  # a multiple of 8 and 12; > 10 half-lives for every stratum
+
+pta_variant <- function(variant) {
+  set.seed(20261123)
+  alb <- if (variant == "reference") rep(31.4, n_pta) else
+    pmin(pmax(rnorm(n_pta, 31.0, (34.8 - 29.1) / 1.349), 20), 45)
+  grp <- if (variant == "ALB and renal status drawn")
+    sample(0:2, n_pta, replace = TRUE, prob = c(21, 21, 7)) else rep(0, n_pta)
+  subj <- merge(strata, data.frame(i = seq_len(n_pta), ALB = alb, grp = grp)) |>
+    dplyr::mutate(id = dplyr::row_number(),
+                  DIS_ARF = as.numeric(grp >= 1),
+                  RRT_CRRT_STATUS = as.numeric(grp == 2))
+  res <- lapply(seq_len(nrow(regs)), function(r) {
+    ev <- rxode2::et(amt = regs$dose[r], ii = regs$ii[r], until = t_ss - regs$ii[r],
+                     dur = regs$tinf[r], cmt = "central") |>
+      rxode2::et(t_ss, cmt = "central") |>
+      as.data.frame()
+    ev$id <- NULL
+    full <- merge(ev, subj[, c("id", "crcl", "pda", "ALB", "DIS_ARF", "RRT_CRRT_STATUS")]) |>
+      dplyr::mutate(CRCL = crcl, PYRIDOXIC_ACID_BL = pda) |>
+      dplyr::arrange(id, time, dplyr::desc(evid))
+    rxode2::rxSetSeed(4242)  # common random numbers across regimens
+    tr <- rxode2::rxSolve(mod, full, returnType = "data.frame")
+    tr <- tr[tr$time == t_ss, c("id", "Cc")]
+    tr <- merge(tr, subj[, c("id", "crcl", "pda")], by = "id")
+    stopifnot(nrow(tr) == nrow(subj))
+    expand.grid(mic = mics, k = seq_len(nrow(strata))) |>
+      dplyr::mutate(
+        reg = regs$reg[r], crcl = strata$crcl[k], pda = strata$pda[k],
+        model = mapply(function(m, cc, pp) 100 * mean(tr$Cc[tr$crcl == cc & tr$pda == pp] > m),
+                       mic, crcl, pda)
+      ) |>
+      dplyr::select(-k)
+  })
+  dplyr::bind_rows(res) |> dplyr::mutate(variant = variant)
+}
+
+variants <- c("reference", "ALB drawn", "ALB and renal status drawn")
+pta <- dplyr::bind_rows(lapply(variants, pta_variant)) |>
+  dplyr::inner_join(fig5_long, by = c("reg", "crcl", "pda", "mic"))
+stopifnot(nrow(pta) == 3 * 42 * 9)
+```
+
+```{r pta-compare}
+pta <- pta |>
+  dplyr::mutate(paper_num = suppressWarnings(as.numeric(paper)))
+cmp <- pta |>
+  dplyr::group_by(variant) |>
+  dplyr::summarise(
+    checked_cells = sum(paper == "ok"),
+    checked_reproduced = mean(model[paper == "ok"] >= 90),
+    numeric_cells = sum(paper_num >= 5 & paper_num <= 95, na.rm = TRUE),
+    median_diff = median((model - paper_num)[which(paper_num >= 5 & paper_num <= 95)]),
+    median_abs_diff = median(abs(model - paper_num)[which(paper_num >= 5 & paper_num <= 95)]),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(variant = factor(variant, levels = variants)) |>
+  dplyr::arrange(variant)
+
+knitr::kable(
+  cmp |>
+    dplyr::rename("Simulation covariates" = variant,
+                  "Cells marked >= 90%" = checked_cells,
+                  "Fraction the model puts >= 90%" = checked_reproduced,
+                  "Cells printed 5-95%" = numeric_cells,
+                  "Median model - paper (points)" = median_diff,
+                  "Median abs difference (points)" = median_abs_diff),
+  digits = 3,
+  caption = "Packaged model against the 378 cells of Lei 2026 Figure 5."
+)
+
+primary <- cmp[cmp$variant == "ALB drawn", ]
+# Realised: 98% of the checked cells reproduced; median gap about -3 points,
+# median absolute gap about 4.5. The reference subject and the fully drawn
+# cohort bracket the printed grid (about -7 and +9.5). A clearance or unit error
+# (for example CLcr not converted from mL/min) shifts every cell by tens of
+# points and fails these bounds.
+stopifnot(
+  primary$checked_reproduced > 0.9,
+  abs(primary$median_diff) < 10,
+  primary$median_abs_diff < 12,
+  cmp$median_diff[cmp$variant == "reference"] <
+    cmp$median_diff[cmp$variant == "ALB and renal status drawn"]
+)
+```
+
+```{r fig-pta, fig.height = 7.5, fig.width = 9}
+pta |>
+  dplyr::filter(variant == "ALB drawn") |>
+  dplyr::mutate(
+    stratum = factor(sprintf("CLcr %g / PDA %g", crcl, pda),
+                     levels = rev(sprintf("CLcr %g / PDA %g", strata$crcl, strata$pda))),
+    reg = factor(reg, levels = regs$reg),
+    label = ifelse(model >= 90, "+", sprintf("%.0f", model))
+  ) |>
+  ggplot(aes(factor(mic), stratum, fill = model)) +
+  geom_tile(colour = "white") +
+  geom_text(aes(label = label), size = 2.6) +
+  facet_wrap(~reg, nrow = 2) +
+  scale_fill_gradientn(colours = c("#d73027", "#fdae61", "#fee08b", "#1a9850"),
+                       values = c(0, 0.5, 0.9, 1), limits = c(0, 100)) +
+  labs(x = "MIC (mg/L)", y = NULL, fill = "PTA (%)",
+       title = "Simulated PTA for 100% fT > MIC (ALB drawn, normal renal function)",
+       caption = "Replicates Lei 2026 Figure 5. '+' marks PTA >= 90%.") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r fig-pta-scatter}
+pta |>
+  dplyr::filter(!is.na(paper_num)) |>
+  dplyr::mutate(variant = factor(variant, levels = variants)) |>
+  ggplot(aes(paper_num, model, colour = factor(pda))) +
+  geom_abline(linetype = "dashed") +
+  geom_point(alpha = 0.7) +
+  facet_wrap(~variant) +
+  coord_equal() +
+  labs(x = "PTA printed in Figure 5 (%)", y = "PTA from the packaged model (%)",
+       colour = "PDA (ng/mL)",
+       title = "Cell-by-cell comparison with Figure 5")
+```
+
+```{r pta-by-pda}
+pta |>
+  dplyr::filter(variant == "ALB drawn", paper_num >= 5, paper_num <= 95) |>
+  dplyr::group_by(pda) |>
+  dplyr::summarise(cells = dplyr::n(), median_diff = median(model - paper_num),
+                   max_diff = max(model - paper_num), .groups = "drop") |>
+  dplyr::rename("PDA (ng/mL)" = pda, "Cells printed 5-95%" = cells,
+                "Median model - paper (points)" = median_diff,
+                "Largest model - paper (points)" = max_diff) |>
+  knitr::kable(digits = 1, caption = "Agreement with Figure 5 by PDA stratum (primary reading).")
+```
+
+The primary reading reproduces the printed grid to a median of a few points,
+and the two alternative readings bracket it. The PDA 100 ng/mL row is the
+exception: there the model's PTA sits above the printed values in every
+regimen, so the paper's own simulation evidently gave that stratum a higher
+or more variable clearance than Eq. 3 implies. The PDA 25 and 50 ng/mL rows,
+which carry most of the dosing recommendations, are reproduced closely.
+
+## Values quoted in the Results
+
+Section 3.5 quotes several PTAs to two decimals; the model's values under the
+primary reading are listed beside them.
+
+```{r pta-text}
+quoted <- read.csv(text = "reg,crcl,pda,mic,paper
+1g q12h 1h,30,100,2,94.48
+1g q12h 1h,30,25,2,59.92
+1g q12h 3h,30,50,2,84.28
+1g q12h 3h,60,50,2,60.64
+1g q12h 1h,60,25,1,61.92
+1g q8h 1h,60,25,1,94.50
+1g q8h 1h,60,25,2,77.92
+1g q8h 3h,60,25,2,89.08
+2g q8h 3h,30,25,8,84.58
+1g q8h 3h,30,25,8,53.18")
+
+quoted_cmp <- quoted |>
+  dplyr::inner_join(
+    pta |> dplyr::filter(variant == "ALB drawn") |>
+      dplyr::select(reg, crcl, pda, mic, model),
+    by = c("reg", "crcl", "pda", "mic"))
+stopifnot(nrow(quoted_cmp) == nrow(quoted))
+
+knitr::kable(
+  quoted_cmp |>
+    dplyr::rename("Regimen" = reg, "CLcr (mL/min)" = crcl, "PDA (ng/mL)" = pda,
+                  "MIC (mg/L)" = mic, "Paper PTA (%)" = paper, "Model PTA (%)" = model),
+  digits = 1,
+  caption = "PTAs quoted in Lei 2026 Section 3.5 against the packaged model."
+)
+
+stopifnot(median(abs(quoted_cmp$model - quoted_cmp$paper)) < 12)
+```
+
+The ordering claims of Section 3.5 all hold in the model: at CLcr 30 mL/min
+the high-PDA stratum reaches a higher PTA than the low-PDA stratum, PTA falls
+as CLcr rises, q8h beats q12h at the same daily dose, and extended infusion
+helps at the higher MICs.
+
+# Assumptions and deviations
+
+- **IIV is the SD of eta, not a CV.** Table 2 prints IIV as percentages
+  (26.4% CL, 22.7% Vc, 108.6% Q). Section 3.2.3 quotes the CL and Vc
+  variances as 0.052 and 0.069, which are 0.227^2 and 0.264^2 -- the squares
+  of the two percentages, attached in the prose to the opposite parameters
+  (Table 2 and the Abstract both give 26.4% for CL). The percentages are
+  therefore read as sqrt(omega^2) and the variances as their squares; the
+  alternative log(1 + CV^2) reading would give 0.0675 for CL, which matches
+  neither quoted variance.
+- **Residual error is printed as variances.** Table 2 lists the proportional
+  and additive residual errors as 0.0578 and 0.105, the raw NONMEM SIGMA
+  variances. The model uses their square roots, a 24.0% proportional SD and a
+  0.324 mg/L additive SD. Read as SDs instead, the proportional error would be
+  5.8%, which the observed-versus-IPRED panel of Supplementary Figure S1A
+  rules out: several points between 30 and 80 mg/L lie 20-50% from the line
+  of identity. Residual error does not affect any PTA above, which uses
+  individual predictions as the paper does.
+- **The renal-status covariate is split into two indicators.** The paper's
+  GROUP covariate has three levels. It is encoded as `DIS_ARF` (1 for any
+  acute kidney injury, including CRRT patients) and `RRT_CRRT_STATUS` (1 on
+  CRRT), with the Vc factor `2.02^(DIS_ARF + RRT_CRRT_STATUS)`. Table 2
+  reports a single estimated GROUP parameter of 2.02, and Eq. 4's CRRT
+  factor of 4.08 is its square (2.02^2 = 4.0804), so one parameter carries
+  both levels. The combination `DIS_ARF = 0`, `RRT_CRRT_STATUS = 1` is not a
+  level of the source covariate.
+- **CLcr units.** Eq. 3 uses CLcr in L/h centred at 2.62 L/h; the model takes
+  the canonical Cockcroft-Gault column in mL/min (not BSA-normalised) and
+  converts with `CRCL * 60 / 1000`. The 2.62 L/h centring value is the median
+  of the 28-patient PopPK subset, which is not otherwise tabulated.
+- **Clearance can reach zero.** Eq. 3 subtracts the PDA term, so typical
+  clearance becomes non-positive when CLcr is very low and PDA very high
+  (below about 13 mL/min at the cohort's maximum PDA). The model is encoded
+  as published; the virtual cohort is truncated at CLcr 15 mL/min.
+- **IIV multiplies the whole clearance.** Section 2.3 states exponential IIV;
+  Eq. 3 gives only the typical value, so `exp(etalcl)` is applied to the full
+  hinge expression, the usual NONMEM form `CL = TVCL * EXP(ETA(1))`.
+- **Simulation covariates.** The paper does not state how albumin and renal
+  status were set in its Monte Carlo simulations. Three readings are shown;
+  the primary one (albumin drawn from Table 1, normal renal function) is the
+  closest to Figure 5. Covariate distributions in the virtual cohorts are
+  log-normal (CLcr, PDA) or normal (albumin) fitted to the Table 1 medians and
+  IQRs, which come from the full 49-patient cohort rather than the 28-patient
+  PopPK subset.
+- **Figure 5 transcription.** The PTA grid was transcribed from the printed
+  heat map; cells marked with a tick (PTA >= 90%) are recorded as such.
+  Figure 6 was checked to be Figure 5 shifted by two MIC doublings, so it is
+  not reproduced separately. The Section 3.5 statement that 1 g q8h over 3 h
+  at CLcr 60 mL/min, MIC 0.5 mg/L "dropped below target in the low PDA group"
+  matches Figure 6 (4xMIC, 89%), not Figure 5.
+- **Not reproduced.** Figure 3 (individual fits for patient 1021) and Figure 4
+  (pcVPC) need the observed data, which are not public. The exposure-response
+  analysis (Section 3.4, Supplementary Table S3) is a set of univariable
+  regressions on simulated exposure metrics, not a model, and is not part of
+  this extraction.
+- **Covariates screened but not retained.** Platelet count on Vc and 24-hour
+  urine output on CL entered in forward selection and were removed in
+  backward elimination (Supplementary Table S2); they are recorded in the
+  model's `covariatesDataExcluded`.
+- **Literature check.** No erratum or correction notice was found for the
+  article as of November 2026.
