@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yang 2016 methylphenidate PBPK with physiological gut absorption ([doi:10.1371/journal.pone.0164641](https://doi.org/10.1371/journal.pone.0164641)) -- healthy adults given immediate-release or extended-release (MLR-MPH, Ritalin LA, Metadate CD, Medikinet Retard) methylphenidate.
+- Add van Erp 2016 everolimus semi-physiological PK with hematocrit and S6K1 inhibition ([doi:10.1007/s40262-016-0414-3](https://doi.org/10.1007/s40262-016-0414-3)) -- adults with advanced thyroid or breast cancer.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
