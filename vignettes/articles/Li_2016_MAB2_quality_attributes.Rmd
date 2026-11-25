@@ -309,9 +309,22 @@ knitr::kable(
   caption = "AUC(0-42 day): Table 2 of Li 2016 vs. simulated. * differs by >20%.",
   digits = 1
 )
+
+# Typical-value solve against the published typical-value simulation, so a
+# tight bound on every row is appropriate.
+auc_chk <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(treatment, auc_sim = PPORRES) |>
+  dplyr::inner_join(published, by = "treatment") |>
+  dplyr::mutate(pct_diff = 100 * (auc_sim / auclast - 1))
+stopifnot(
+  nrow(auc_chk) == nrow(published),
+  all(abs(auc_chk$pct_diff) < 3)
+)
+max(abs(auc_chk$pct_diff))
 ```
 
-Every row agrees within a few percent. The deamidation total-AUC rows are not
+Every row agrees within 3% (the largest difference is printed above). The deamidation total-AUC rows are not
 an independent check (the deamidation 0% total sets the dose, and the total
 does not depend on the initial level when both forms clear at the same rate),
 but the Man5 totals, including the Man5 0% row, and every attribute AUC are.
