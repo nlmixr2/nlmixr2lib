@@ -4796,6 +4796,10 @@ navbar:
         href: articles/Hu_2024_nivolumab_ipilimumab_pediatric.html
       - text: "Ipilimumab (Sanghavi 2020)"
         href: articles/Sanghavi_2020_ipilimumab.html
+      - text: "Ipragliflozin (Saito 2019)"
+        href: articles/Saito_2019_ipragliflozin.html
+      - text: "Ipragliflozin uge (Saito 2019)"
+        href: articles/Saito_2019_ipragliflozin.html
       - text: "Iptacopan healthy (BurmeisterGetz 2025)"
         href: articles/BurmeisterGetz_2025_iptacopan.html
       - text: "Iptacopan mild hepatic (BurmeisterGetz 2025)"
@@ -13149,6 +13153,7 @@ articles:
   - articles/Sahasrabudhe_2026_ceftibuten_avibactam
   - articles/Sahota_2015_miridesap
   - articles/Said_2025_imatinib
+  - articles/Saito_2019_ipragliflozin
   - articles/Sakamoto_2021_fluconazole
   - articles/Sakares_2025_deferasirox
   - articles/Sakurai_2007_lansoprazole

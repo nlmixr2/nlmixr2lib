@@ -1,0 +1,595 @@
+---
+title: "Ipragliflozin PK and urinary glucose excretion (Saito 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ipragliflozin PK and urinary glucose excretion (Saito 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Saito M, Kaibara A, Kadokura T, Toyoshima J, Yoshida S, Kazuta K,
+  Ueyama E. Pharmacokinetic and pharmacodynamic modelling for renal function
+  dependent urinary glucose excretion effect of ipragliflozin, a selective
+  sodium-glucose cotransporter 2 inhibitor, both in healthy subjects and
+  patients with type 2 diabetes mellitus. *Br J Clin Pharmacol*.
+  2019;85(8):1808-1819.
+  doi:[10.1111/bcp.13972](https://doi.org/10.1111/bcp.13972)
+* Article: <https://pmc.ncbi.nlm.nih.gov/articles/PMC6624389/>
+
+The paper reports two models that were fitted separately and chained only for
+simulation. Both are packaged:
+
+* `Saito_2019_ipragliflozin` -- two-compartment population PK model with
+  first-order absorption, fitted to rich data from two clinical pharmacology
+  studies and trough concentrations from four phase II/III studies in
+  Japanese adults with type 2 diabetes (T2DM). CL/F depends on absolute GFR,
+  total serum protein, total bilirubin and body surface area (Equation 4).
+* `Saito_2019_ipragliflozin_uge` -- direct Emax model for the change from
+  baseline in 24 h urinary glucose excretion (`ugecfb`, g/24 h) as a function
+  of the ipragliflozin AUC over the same 24 h (`AUC_IPRA`). Emax is a power
+  function of fasting plasma glucose (FPG) and GFR while the filtered-glucose
+  proxy FAC = FPG x GFR is at most 18000, and a constant 107 g/24 h above it
+  (Equations 1-3). Fitted to healthy Japanese men and patients with T2DM.
+
+The paper links the two at steady state with
+`AUC24h = dose / individual CL/F`, which in the packaged units is
+`AUC_IPRA = 1000 * dose (mg) / cl (L/h)`; this vignette does the same.
+
+```{r load-models}
+mod_pk <- rxode2::rxode2(readModelDb("Saito_2019_ipragliflozin"))
+mod_pd <- rxode2::rxode2(readModelDb("Saito_2019_ipragliflozin_uge"))
+```
+
+# Population
+
+The popPK model was built from 673 Japanese adults with T2DM who contributed
+PK data: 534 rich-sampling concentrations from 43 patients in studies B
+(CL-0070) and C (CL-0073), then 3714 trough concentrations from 630 patients in
+studies D-G (CL-0103, CL-0105, CL-0121, CL-0072) fitted with NONMEM `$PRIOR`
+on the rich-data base model. Over the 887 T2DM patients of studies B-G
+(Table 1, including 192 on placebo) the mean age was 58.7 years (range 26-86),
+weight 68.2 kg (41.5-128.0), 31.7% female, GFR 84.5 mL/min (24.1-181.5), and
+35.9% / 52.5% / 11.6% had normal renal function, mild and moderate renal
+impairment by eGFR class. No patient had severe impairment.
+
+The PK/PD model used 155 delta UGE24h records from 111 subjects: 65 healthy
+Japanese men from the phase I study A (CL-0101; single doses 10-300 mg and
+multiple doses 20-100 mg once daily) and 46 patients with T2DM from studies B
+and C. Doses of 1 and 3 mg were excluded because they had no detectable effect.
+Healthy subjects had FPG 83-110 mg/dL and GFR 72.2-153.0 mL/min; patients had
+FPG 84-255 mg/dL and GFR 29.8-169.8 mL/min (Table 1).
+
+The same information is available programmatically:
+
+```{r population}
+str(mod_pk$population, give.attr = FALSE)
+str(mod_pd$population, give.attr = FALSE)
+```
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Structure: 2-cmt, first-order absorption, ADVAN4/TRANS4 | -- | Methods, 'Population PK model' |
+| `lka` (Ka) | 6.38 1/h | Table 3 |
+| `lcl` (CL/F) | 9.47 L/h | Table 3; Equation 4 |
+| `lvc` (Vc/F) | 39.4 L | Table 3 |
+| `lq` (Q/F) | 6.63 L/h | Table 3 |
+| `lvp` (Vp/F) | 68.1 L | Table 3 |
+| `e_crcl_cl` | 0.233 (ref 90 mL/min) | Table 3; Equation 4 |
+| `e_tpro_cl` | -0.417 (ref 7.0 g/dL) | Table 3; Equation 4 |
+| `e_tbili_cl` | -0.0681 (ref 0.8 mg/dL) | Table 3; Equation 4 |
+| `e_bsa_cl` | 0.610 (ref 1.73 m^2) | Table 3; Equation 4 |
+| `etalcl` | omega^2 = 0.0533 | Table 3 |
+| `propSd` (PK) | sqrt(0.0596) = 0.2441 | Table 3 (sigma^2) |
+| GFR in mL/min de-normalised by Du Bois BSA | -- | Results, 'Demographics and laboratory variables' |
+| Emax model on AUC24h | -- | Equation 1 |
+| `lec50` | 1590 ng*h/mL | Table 2 |
+| `lemax` (FAC <= 18000) | 72.3 g/24 h (FPG 100 mg/dL, GFR 90 mL/min) | Table 2; Equation 2 |
+| `lemax_hifac` (FAC > 18000) | 107 g/24 h | Table 2; Equation 3 |
+| `e_fpg_emax` | 1.37 | Table 2; Equation 2 |
+| `e_crcl_emax` | 0.623 | Table 2; Equation 2 |
+| FAC threshold | 18000 mg/dL x mL/min (preset, not estimated) | Results, 'Exploratory assessment of PD' |
+| `addSd` (PD) | 352 mg = 0.352 g/24 h | Table 2; Results text |
+| `propSd` (PD) | 0.198 | Table 2 |
+
+# Virtual cohort
+
+Table 1 gives the mean, SD and range of each covariate for the 887 T2DM
+patients, but not their joint distribution. The cohort below draws each
+covariate independently: normal distributions truncated at the Table 1 range
+for FPG, GFR, total protein and BSA, and a log-normal distribution for total
+bilirubin, which is right-skewed (mean 0.81, SD 0.31, range 0.2-3.6 mg/dL).
+Out-of-range draws are redrawn rather than clipped. The canonical covariate
+columns are in SI units, so total protein (g/dL) is multiplied by 10 and
+total bilirubin (mg/dL) by 17.1.
+
+```{r cohort-helpers}
+draw_trunc_norm <- function(n, mean, sd, lo, hi) {
+  out <- rnorm(n, mean, sd)
+  bad <- out < lo | out > hi
+  while (any(bad)) {
+    out[bad] <- rnorm(sum(bad), mean, sd)
+    bad <- out < lo | out > hi
+  }
+  out
+}
+
+draw_cohort <- function(n) {
+  sdlog_tbil <- sqrt(log(1 + (0.31 / 0.81)^2))
+  tbil_mgdl <- exp(rnorm(n, log(0.81) - sdlog_tbil^2 / 2, sdlog_tbil))
+  tbil_mgdl <- pmin(pmax(tbil_mgdl, 0.2), 3.6)
+  data.frame(
+    FPG = draw_trunc_norm(n, 168.3, 37.9, 73, 342),
+    CRCL = draw_trunc_norm(n, 84.46, 23.91, 24.1, 181.5),
+    TPRO = 10 * draw_trunc_norm(n, 7.27, 0.40, 5.8, 9.1),
+    TBILI = 17.1 * tbil_mgdl,
+    BSA = draw_trunc_norm(n, 1.732, 0.178, 1.28, 2.47)
+  )
+}
+```
+
+The log-normal bilirubin tail is bounded to the Table 1 range by clipping
+because fewer than 0.1% of draws fall outside it.
+
+```{r cohort}
+set.seed(2019)
+rxode2::rxSetSeed(2019)
+n_per_arm <- 200
+cohort <- draw_cohort(n_per_arm) |>
+  mutate(cohort_id = row_number())
+
+cohort |>
+  summarise(across(
+    c(FPG, CRCL, TPRO, TBILI, BSA),
+    list(mean = mean, sd = sd)
+  )) |>
+  pivot_longer(everything()) |>
+  knitr::kable(digits = 2, caption = "Virtual cohort covariate summary (SI units for TPRO, g/L, and TBILI, umol/L).")
+```
+
+# Typical-value check of the PK model
+
+At the reference covariates (GFR 90 mL/min, total protein 7.0 g/dL, total
+bilirubin 0.8 mg/dL, BSA 1.73 m^2) every covariate factor is 1, so CL/F is the
+Table 3 value 9.47 L/h and the steady-state AUC over a 24 h interval is
+`1000 * dose / 9.47`. This is a solve against its own closed form, so the
+bound is tight.
+
+```{r typical-check}
+ref_cov <- data.frame(CRCL = 90, TPRO = 70, TBILI = 0.8 * 17.1, BSA = 1.73)
+ev_ref <- rxode2::et(amt = 50, cmt = "depot", ss = 1, ii = 24) |>
+  rxode2::et(seq(0, 24, by = 0.01), cmt = "central")
+sim_ref <- rxode2::rxSolve(
+  rxode2::zeroRe(mod_pk),
+  events = ev_ref,
+  params = ref_cov,
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
+  maxsteps = 1e6
+)
+sim_ref <- as.data.frame(sim_ref)
+auc_trap <- sum(diff(sim_ref$time) *
+  (head(sim_ref$Cc, -1) + tail(sim_ref$Cc, -1)) / 2)
+auc_closed <- 1000 * 50 / 9.47
+c(trapezoid = auc_trap, closed_form = auc_closed, cl = unique(sim_ref$cl))
+stopifnot(
+  abs(unique(sim_ref$cl) / 9.47 - 1) < 1e-8,
+  # 0.01 h linear trapezoid over the 0.5 h absorption peak; measured ~0.01%
+  abs(auc_trap / auc_closed - 1) < 0.002
+)
+```
+
+# Steady-state PK by dose (replicates Figure 4)
+
+Each of the four once-daily doses is given to the same 200-patient virtual
+cohort at steady state, with concentrations from 0 to 36 h after a dose and no
+further dose, as in Figure 4.
+
+```{r sim-pk}
+doses <- c(12.5, 25, 50, 100)
+obs_times <- sort(unique(c(
+  seq(0, 1, by = 0.05), seq(1.25, 4, by = 0.25), 5:36
+)))
+
+make_events <- function(dose, cov) {
+  ids <- seq_len(nrow(cov))
+  dose_rows <- data.frame(
+    id = ids, time = 0, amt = dose, evid = 1L, ss = 1L, ii = 24,
+    cmt = "depot"
+  )
+  obs_rows <- expand.grid(id = ids, time = obs_times) |>
+    mutate(amt = 0, evid = 0L, ss = 0L, ii = 0, cmt = "central")
+  bind_rows(dose_rows, obs_rows) |>
+    left_join(mutate(cov, id = ids), by = "id") |>
+    arrange(id, time, desc(evid))
+}
+
+sim_pk <- lapply(doses, function(d) {
+  ev <- make_events(d, cohort)
+  s <- rxode2::rxSolve(mod_pk, events = ev, maxsteps = 1e6, returnType = "data.frame")
+  s$dose <- d
+  s
+}) |>
+  bind_rows() |>
+  mutate(treatment = factor(paste(dose, "mg"), levels = paste(doses, "mg")))
+
+stopifnot(!anyNA(sim_pk$Cc))
+```
+
+```{r fig4, fig.cap = "Replicates Figure 4 of Saito 2019: steady-state plasma ipragliflozin by dose. Red line: median of the simulated observations; blue band: 2.5th-97.5th percentile (with residual error)."}
+sim_pk |>
+  group_by(treatment, time) |>
+  summarise(
+    med = median(sim),
+    lo = quantile(sim, 0.025),
+    hi = quantile(sim, 0.975),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "lightblue") +
+  geom_line(colour = "red", linewidth = 1) +
+  scale_y_log10(limits = c(1, 1e4)) +
+  scale_x_continuous(breaks = seq(0, 36, 6)) +
+  facet_wrap(~treatment) +
+  labs(x = "Time (h)", y = "Plasma ipragliflozin (ng/mL)")
+```
+
+# PKNCA: steady-state AUC over 24 h (Table 4)
+
+```{r pknca}
+conc <- sim_pk |>
+  filter(!is.na(Cc), time <= 24) |>
+  select(id, time, Cc, treatment, dose)
+stopifnot(all(conc$Cc >= -1e-6 * max(conc$Cc)))
+conc <- mutate(conc, Cc = pmax(Cc, 0))
+
+dose_df <- conc |>
+  distinct(id, treatment, dose) |>
+  mutate(time = 0)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, dose ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = 24,
+  auclast = TRUE, cmax = TRUE, tmax = TRUE, cmin = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_df <- as.data.frame(nca_res)
+```
+
+Table 4 of the paper gives the median AUC24h over the 887 patients' post-hoc
+CL/F. The virtual cohort reproduces it from the ODE solution:
+
+```{r nca-compare}
+published <- data.frame(
+  treatment = paste(doses, "mg"),
+  auclast = c(1354, 2709, 5417, 10834)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_df |> filter(PPTESTCD == "auclast"),
+  reference = published,
+  by = "treatment",
+  units = c(auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Median steady-state AUC0-24 (ng*h/mL): Saito 2019 Table 4 vs the virtual cohort.")
+
+auc_med <- nca_df |>
+  filter(PPTESTCD == "auclast") |>
+  group_by(treatment) |>
+  summarise(sim = median(PPORRES), .groups = "drop") |>
+  left_join(published, by = "treatment") |>
+  mutate(pct_diff = 100 * (sim / auclast - 1))
+stopifnot(
+  nrow(auc_med) == 4,
+  # A mis-transcribed CL/F, dose or unit moves every median by tens of
+  # percent; cohort-to-cohort spread of a 200-subject median is a few percent.
+  all(abs(auc_med$pct_diff) < 10)
+)
+```
+
+The simulated steady-state peak and trough concentrations at 50 mg are close
+to the medians drawn in Figure 4 (roughly 1000 ng/mL at the peak and
+50-60 ng/mL at 24 h):
+
+```{r nca-50}
+nca_df |>
+  filter(treatment == "50 mg", PPTESTCD %in% c("cmax", "tmax", "cmin")) |>
+  group_by(PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  knitr::kable(digits = 2, caption = "Simulated median steady-state Cmax (ng/mL), Tmax (h) and Cmin (ng/mL) at 50 mg once daily.")
+```
+
+# Urinary glucose excretion (Table 4 and Figure 5)
+
+Following the paper, the steady-state `AUC_IPRA` of each virtual patient is
+`1000 * dose / cl` with the patient's own CL/F, and the PK/PD model then gives
+delta UGE24h from that AUC, the patient's FPG and GFR. The PD model has no
+random effects; the medians below are the model prediction `ugecfb`, and the
+residual error is added only for the prediction interval of Figure 5.
+
+```{r sim-pd}
+indiv_cl <- sim_pk |>
+  distinct(id, dose, treatment, cl)
+
+pd_input <- indiv_cl |>
+  left_join(mutate(cohort, id = cohort_id), by = "id") |>
+  mutate(AUC_IPRA = 1000 * dose / cl)
+
+# Cross-check: Dose/CL against the PKNCA AUC from the ODE solution
+chk_auc <- nca_df |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, treatment, auc_nca = PPORRES) |>
+  left_join(pd_input, by = c("id", "treatment")) |>
+  mutate(rel = auc_nca / AUC_IPRA - 1)
+stopifnot(max(abs(chk_auc$rel)) < 0.01)
+
+solve_pd <- function(df) {
+  ev <- df |>
+    mutate(id = row_number(), time = 0, evid = 0L, amt = 0)
+  rxode2::rxSolve(mod_pd, events = ev, returnType = "data.frame") |>
+    select(ugecfb, sim) |>
+    bind_cols(select(df, -any_of("id")))
+}
+sim_pd <- solve_pd(pd_input)
+stopifnot(nrow(sim_pd) == 4 * n_per_arm, !anyNA(sim_pd$ugecfb))
+```
+
+```{r table4}
+pd_pub <- data.frame(
+  treatment = paste(doses, "mg"),
+  auc_pub = c(1354, 2709, 5417, 10834),
+  uge_pub = c(51, 70, 85, 95)
+)
+tab4 <- sim_pd |>
+  group_by(treatment) |>
+  summarise(
+    auc_sim = median(AUC_IPRA),
+    uge_sim = median(ugecfb),
+    pred_lo = quantile(ugecfb, 0.025),
+    pred_hi = quantile(ugecfb, 0.975),
+    uge_lo = quantile(sim, 0.025),
+    uge_hi = quantile(sim, 0.975),
+    .groups = "drop"
+  ) |>
+  left_join(pd_pub, by = "treatment") |>
+  mutate(uge_pct_diff = 100 * (uge_sim / uge_pub - 1))
+
+tab4 |>
+  transmute(
+    Treatment = treatment,
+    `AUC24h published` = auc_pub,
+    `AUC24h simulated` = round(auc_sim),
+    `delta UGE24h published (g)` = uge_pub,
+    `delta UGE24h simulated (g)` = round(uge_sim, 1),
+    `Published 95% PI (g)` = c("30-91", "42-120", "51-145", "57-162"),
+    `Simulated 95% PI, prediction (g)` = sprintf("%.0f-%.0f", pred_lo, pred_hi),
+    `Simulated 95% PI, with residual (g)` = sprintf("%.0f-%.0f", uge_lo, uge_hi),
+    `% diff` = round(uge_pct_diff, 1)
+  ) |>
+  knitr::kable(caption = "Steady-state medians and 2.5th-97.5th percentiles: Saito 2019 Table 4 vs the virtual cohort.")
+
+stopifnot(
+  nrow(tab4) == 4,
+  # The medians depend on the joint FPG-GFR distribution, which Table 1 does
+  # not give; independence is assumed. A mis-transcribed Emax, EC50 or
+  # exponent moves them by 20% or more.
+  all(abs(tab4$uge_pct_diff) < 15),
+  # The dose-response flattens: Table 4 rises 51 -> 95 g over an 8-fold dose
+  # range, i.e. less than 2-fold.
+  tab4$uge_sim[4] / tab4$uge_sim[1] < 2.2,
+  tab4$uge_sim[4] / tab4$uge_sim[1] > 1.4
+)
+```
+
+The published 95% intervals sit close to the simulated intervals of the
+model prediction and are narrower than those with residual error added, so
+Table 4 appears to summarise the predicted delta UGE24h without residual
+error.
+
+```{r fig5, fig.cap = "Replicates Figure 5 of Saito 2019: (A) steady-state AUC24h vs dose; (B) delta UGE24h vs AUC24h. Line: median; band: 2.5th-97.5th percentile (PD band includes residual error)."}
+fig5 <- bind_rows(
+  sim_pd |>
+    group_by(dose) |>
+    summarise(
+      x = dose[1], med = median(AUC_IPRA),
+      lo = quantile(AUC_IPRA, 0.025), hi = quantile(AUC_IPRA, 0.975),
+      .groups = "drop"
+    ) |>
+    mutate(panel = "(A) AUC24h (ng*h/mL) vs dose (mg)"),
+  sim_pd |>
+    group_by(dose) |>
+    summarise(
+      x = median(AUC_IPRA), med = median(ugecfb),
+      lo = quantile(sim, 0.025), hi = quantile(sim, 0.975),
+      .groups = "drop"
+    ) |>
+    mutate(panel = "(B) delta UGE24h (g) vs AUC24h (ng*h/mL)")
+)
+fig5 <- bind_rows(
+  fig5,
+  data.frame(x = 0, med = 0, lo = 0, hi = 0, panel = unique(fig5$panel))
+)
+ggplot(fig5, aes(x, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "pink") +
+  geom_line(colour = "red") +
+  geom_point(colour = "red", shape = 1, size = 2) +
+  facet_wrap(~panel, scales = "free") +
+  labs(x = NULL, y = NULL)
+```
+
+# Renal function (Table 5)
+
+Table 5 splits the 50 mg simulation by eGFR class. The packaged models take
+the absolute GFR in mL/min; the class is defined on the BSA-normalised eGFR,
+recovered here as `CRCL * 1.73 / BSA`. Each class is filled with 200 patients
+drawn from the Table 1 distribution and kept only if their eGFR falls in the
+class (draws outside are discarded and redrawn), so the within-class
+distribution is the Table 1 marginal restricted to the class.
+
+```{r renal}
+draw_class <- function(n, lo, hi) {
+  out <- NULL
+  while (is.null(out) || nrow(out) < n) {
+    cand <- draw_cohort(4 * n) |>
+      mutate(egfr = CRCL * 1.73 / BSA) |>
+      filter(egfr >= lo, egfr < hi)
+    out <- bind_rows(out, cand)
+  }
+  out[seq_len(n), ]
+}
+renal_classes <- data.frame(
+  renal = c("Normal (eGFR >= 90)", "Mild (eGFR 60 to <90)", "Moderate (eGFR 30 to <60)"),
+  lo = c(90, 60, 30),
+  hi = c(Inf, 90, 60)
+)
+renal_cohort <- bind_rows(lapply(seq_len(nrow(renal_classes)), function(i) {
+  draw_class(n_per_arm, renal_classes$lo[i], renal_classes$hi[i]) |>
+    mutate(renal = renal_classes$renal[i])
+})) |>
+  mutate(renal = factor(renal, levels = renal_classes$renal))
+
+ev_renal <- make_events(50, select(renal_cohort, FPG, CRCL, TPRO, TBILI, BSA)) |>
+  filter(evid == 1 | time == 0)
+cl_renal <- rxode2::rxSolve(mod_pk, events = ev_renal, maxsteps = 1e6, returnType = "data.frame") |>
+  distinct(id, cl)
+renal_pd <- renal_cohort |>
+  mutate(id = row_number()) |>
+  left_join(cl_renal, by = "id") |>
+  mutate(AUC_IPRA = 1000 * 50 / cl, dose = 50) |>
+  select(-id)
+renal_sim <- solve_pd(renal_pd)
+
+tab5_pub <- data.frame(
+  renal = renal_classes$renal,
+  auc_pub = c(5083, 5474, 5969),
+  uge_pub = c(86, 89, 65)
+)
+tab5 <- renal_sim |>
+  group_by(renal) |>
+  summarise(
+    auc_sim = median(AUC_IPRA),
+    uge_sim = median(ugecfb),
+    .groups = "drop"
+  ) |>
+  left_join(tab5_pub, by = "renal") |>
+  mutate(
+    auc_pct_diff = 100 * (auc_sim / auc_pub - 1),
+    uge_pct_diff = 100 * (uge_sim / uge_pub - 1),
+    # Reproducibly outside tolerance; see the text below the table.
+    uge_deviation = renal == "Moderate (eGFR 30 to <60)"
+  )
+
+tab5 |>
+  transmute(
+    `Renal function` = renal,
+    `AUC24h published` = auc_pub,
+    `AUC24h simulated` = round(auc_sim),
+    `delta UGE24h published (g)` = uge_pub,
+    `delta UGE24h simulated (g)` = round(uge_sim, 1),
+    `delta UGE24h % diff` = round(uge_pct_diff, 1),
+    `Known deviation` = ifelse(uge_deviation, "yes", "")
+  ) |>
+  knitr::kable(caption = "Steady-state medians at 50 mg once daily by renal function: Saito 2019 Table 5 vs the virtual cohort.")
+
+ratio_auc <- tab5$auc_sim[3] / tab5$auc_sim[1]
+ratio_uge <- tab5$uge_sim[3] / tab5$uge_sim[1]
+c(auc_moderate_vs_normal = ratio_auc, uge_moderate_vs_normal = ratio_uge)
+stopifnot(
+  nrow(tab5) == 3,
+  sum(tab5$uge_deviation) == 1,
+  # Realised 0.4-6.4% over five cohorts; a CL/F covariate exponent
+  # mis-transcription shifts one class by more.
+  all(abs(tab5$auc_pct_diff) < 12),
+  # Paper: 1.17-fold, moderate vs normal. Realised 1.10-1.15 over five
+  # cohorts, about 0.03 SE each.
+  ratio_auc > 1.0, ratio_auc < 1.35,
+  # Realised -2% to +13.5% (mild) over five cohorts.
+  all(abs(tab5$uge_pct_diff[!tab5$uge_deviation]) < 20)
+)
+```
+
+**Not reproduced: delta UGE24h in moderate renal impairment.** The
+simulated median for the moderate class is about 81-86 g across cohorts,
+against 65 g in Table 5, while the normal and mild classes and every AUC
+median match. All moderate-class patients have FAC below 18000, so their
+Emax is the power function of FPG and GFR. At the class median AUC (about
+5950 ng*h/mL) the drug term is 0.79 of Emax, so the published 65 g needs a
+median Emax near 82 g/24 h, for example FPG near 150 mg/dL with GFR near
+45 mL/min. The virtual cohort, drawn from the pooled Table 1 marginals with
+no correlation, gives the moderate class a median FPG of about 177 mg/dL and
+GFR of about 52 mL/min. The paper simulated its 103 actual moderate-impairment
+patients, mostly from the renal-impairment study G, whose FPG and GFR are not
+reported separately. The difference is therefore attributed to the cohort,
+not the model, which reproduces the Discussion's stated Emax of about
+140 g/24 h at FPG 160 mg/dL and GFR 90 mL/min:
+
+```{r emax-check}
+emax_160_90 <- 72.3 * (160 / 100)^1.37 * (90 / 90)^0.623
+emax_160_90
+pd_ref <- solve_pd(data.frame(FPG = 160, CRCL = 90, AUC_IPRA = 1e12))
+stopifnot(
+  abs(emax_160_90 - 140) < 3,
+  abs(pd_ref$ugecfb / emax_160_90 - 1) < 1e-6
+)
+```
+
+# Assumptions and deviations
+
+* **Two models, chained only for simulation.** The paper fitted the PK/PD
+  model to noncompartmental AUC0-24h (studies A-C) and the popPK model to
+  concentrations (studies B-G) separately, so they are packaged as two models.
+  The PK/PD model takes the AUC as the `AUC_IPRA` covariate; at steady state it
+  is `1000 * dose / cl` from the popPK model, as in the paper's simulation.
+  After a single dose, or for a healthy subject, `AUC_IPRA` should be the
+  AUC0-24h over the urine-collection interval, which is what the PK/PD model
+  was fitted to.
+* **GFR is in mL/min, not mL/min/1.73 m^2.** The paper estimated GFR with the
+  Japanese-modified MDRD equation and then de-normalised it by the individual
+  Du Bois BSA before modelling; both models' `CRCL` column must be supplied
+  that way (`eGFR * BSA / 1.73`).
+* **Covariate units.** Total protein and total bilirubin are carried in the
+  library's SI units (g/L and umol/L) and converted inside `model()` to the
+  paper's g/dL and mg/dL (factors 10 and 17.1). FPG stays in mg/dL, the
+  unit of the paper's reference value and FAC threshold.
+* **PK residual error.** Table 3 gives sigma^2 = 0.0596 for a proportional
+  error and quotes 24.8% as `sqrt(exp(sigma^2) - 1)`. The packaged
+  proportional SD is `sqrt(0.0596) = 0.2441`.
+* **PK/PD residual error.** Table 2 reports the additive error as 352 with the
+  text '+/-352 mg'; the packaged output is in g/24 h (matching the Emax
+  units), so `addSd = 0.352`. Additive and proportional errors are combined.
+* **Emax discontinuity.** As printed, Emax jumps from the power function to
+  107 g/24 h at FAC = 18000 (for FPG 200 mg/dL and GFR 90 mL/min the power
+  function gives about 187 g/24 h). The model reproduces Equations 2-3
+  exactly; the paper explains the constant branch as patients with
+  substantial baseline glucosuria, whose delta UGE24h did not follow the FAC
+  trend.
+* **Virtual cohort.** Covariates were drawn independently from the Table 1
+  means, SDs and ranges of the T2DM patients; the paper used the 887 actual
+  patients. Correlations between FPG, GFR, BSA and the laboratory values are
+  therefore absent, which mostly affects the delta UGE24h medians through the
+  FAC threshold. The pooled Table 4 medians are reproduced within a few
+  percent, but the moderate-renal-impairment delta UGE24h of Table 5 is not
+  (about 81-86 g simulated against 65 g published); see the Renal function
+  section.
+* **IIV.** The popPK base (prior) model had IIV on CL, Vp and F, but the
+  final model estimated IIV on CL/F only (Table 3), which is what is packaged.
+  The PK/PD model has no IIV (only one or two delta UGE24h values per
+  subject).
