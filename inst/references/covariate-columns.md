@@ -20460,6 +20460,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Zhou_2022_alisertib.R` (relative bioavailability of the tablet 0.671, applied as `f(transit1) <- e_form_ect_fdepot^FORM_ALISERTIB_ECT` -- founding example), `Zhou_2018_alisertib.R` (screened on KTR and F and not retained; documented in `covariatesDataExcluded`).
 - **Notes:** Member of the `FORM_<drug>_<formulation>` family. In the paediatric analysis each formulation was used in only one study (capsule in ADVL0812, tablet in ADVL0921), so the effect is confounded with study and sampling design; the adult analysis found no formulation difference.
 
+### FORM_METHYLPHENIDATE_MLR (**canonical for multilayer-release methylphenidate extended-release formulation indicator**)
+- **Description:** 1 = multilayer-release methylphenidate (MLR-MPH) extended-release capsule, 0 = another multiparticulate methylphenidate extended-release product (Ritalin LA, Metadate CD or Medikinet Retard). Dose-record level, time-fixed per product.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Ritalin LA / Metadate CD / Medikinet Retard ER beads, which share one set of release constants).
+- **Source aliases:**
+  - `MLR-MPH` -- Yang 2016 Table 2 column heading (the formulation is a model input, not a data column).
+- **Example models:** `Yang_2016_methylphenidate_pbpk.R` (founding example; selects the MLR-MPH Weibull release constants A = 6 h^b and b = 4 instead of A = 0.5 h^b and b = 2 for the other three products, Table 2).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family. It acts only on the release of the ER beads; the immediate-release fraction of each product (MLR-MPH 40:60 or 37:63, Ritalin LA 50:50, Metadate CD 30:70, Medikinet Retard 50:50) is set by splitting the dose between the IR and ER dosing compartments, not by this indicator. An IR-only product needs no formulation indicator. A future model that gives Ritalin LA, Metadate CD or Medikinet Retard their own release constants should register per-product siblings (`FORM_METHYLPHENIDATE_SODAS`, ...) rather than overload the reference level.
+
 ### FORM_RTV_TABLET (**canonical for ritonavir tablet vs soft-gel capsule formulation indicator**)
 - **Description:** 1 = ritonavir (Norvir) film-coated tablet, 0 = ritonavir (Norvir) soft-gel capsule. A per-dose-record property of the ritonavir booster dose, for models that embed ritonavir PK to drive a CYP3A4-inhibition term on a victim drug.
 - **Units:** (binary)
