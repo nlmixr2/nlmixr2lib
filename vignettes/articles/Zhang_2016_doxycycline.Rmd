@@ -1,0 +1,509 @@
+---
+title: "Doxycycline PK/PD against Mycoplasma gallisepticum (Zhang 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Doxycycline PK/PD against Mycoplasma gallisepticum (Zhang 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Zhang 2016 studied doxycycline against *Mycoplasma gallisepticum* strain S6, the
+main cause of chronic respiratory disease in chickens, in two in-vitro systems: a
+static time-kill assay at constant concentrations and a dynamic model in which the
+concentration declines monoexponentially, mimicking either the 6.51 h
+intravenous half-life the authors measured in broiler chickens or a 12 h
+long-acting formulation. The paper fits two pharmacodynamic models, and this
+package carries one file for each:
+
+| Model file | Paper component | Source |
+|---|---|---|
+| `Zhang_2016_doxycycline_killrate` | Sigmoid Emax of the kill rate on concentration (equation 1), driven by the dynamic-model PK | Table 1 row 0-48 h; Results 'Pharmacokinetics in In Vitro Dynamic Model' |
+| `Zhang_2016_doxycycline_pkpd_index` | Inhibitory sigmoid Imax of the 48 h change in count on %T>MIC (equation 2), with the dynamic-model PK | Table 3 row 'T > MIC (%)'; same PK |
+
+* Article: <https://doi.org/10.3389/fmicb.2016.00653>
+
+```{r models}
+mods <- c("Zhang_2016_doxycycline_killrate", "Zhang_2016_doxycycline_pkpd_index")
+for (m in mods) {
+  cat("##", m, "\n")
+  cat(rxode2::rxode2(readModelDb(m))$description, "\n\n")
+}
+cat(rxode2::rxode2(readModelDb(mods[1]))$reference)
+```
+
+# Population
+
+There are no subjects in the usual sense. Both models describe cultures of
+*M. gallisepticum* standard strain S6 (China Institute of Veterinary Drugs
+Control) started at about 10^7 CFU/mL. The doxycycline MIC was 0.125 mg/L at
+inocula of 10^5, 10^6 and 10^7 CFU/mL. The static assay exposed the culture to 0,
+0.5, 1, 2, 4, 8, 16, 32 and 64 x MIC for 48 h. The dynamic model (a 320 mL
+external compartment around a 10 mL dialysis-tube internal compartment,
+continuously diluted with drug-free medium) started at 1 to 64 x MIC in each of
+the two half-life arms. Every experiment was run in triplicate.
+
+The paper also measured doxycycline PK in 12 Sanhuang broiler chickens after a
+single 10 mg/kg intravenous dose (Table 2). Those values were analysed
+non-compartmentally and are not packaged; see Assumptions and deviations. The same
+information is available from each model's `population` metadata.
+
+```{r constants}
+MIC <- 0.125 # ug/mL, Results 'Minimum Inhibitory Concentration'
+arms <- tibble::tribble(
+  ~arm,                 ~cl,  ~vc,  ~thalf_pub, ~mrt_pub,
+  "6.51 h design",      0.10, 0.90, 6.19,       8.29,
+  "12 h design",        0.06, 0.99, 11.93,      17.03
+)
+mic_mult <- c(1, 2, 4, 8, 16, 32, 64)
+```
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Kill-rate equation | E = Emax * Ce^N / (EC50^N + Ce^N) | Methods, equation (1) |
+| `lemax` | log(0.11) 1/h | Table 1, row 0-48 h |
+| `lec50` | log(0.32) ug/mL | Table 1, row 0-48 h |
+| `lhill` (kill rate) | log(2.11) | Table 1, row 0-48 h |
+| Dynamic-model PK | C = C0 * exp(-k * t), one-compartment IV bolus | Methods 'Exposure to Changing Antibiotic Concentrations' and 'Pharmacokinetic Analysis' |
+| `lcl` | log(0.10) L/h (12 h arm 0.06) | Results 'Pharmacokinetics in In Vitro Dynamic Model' |
+| `lvc` | log(0.90) L (12 h arm 0.99) | Results 'Pharmacokinetics in In Vitro Dynamic Model' |
+| `mic` | 0.125 ug/mL (fixed) | Results 'Minimum Inhibitory Concentration' |
+| Index equation | E = E0 - Imax * Ce^N / (IC50^N + Ce^N) | Methods, equation (2) |
+| `e0` | 2.25 log10 CFU/mL | Table 3, row 'T > MIC (%)' |
+| `limax` | log(5.93) log10 CFU/mL | Table 3, row 'T > MIC (%)' |
+| `lic50` | log(44.39) % | Table 3, row 'T > MIC (%)' |
+| `lhill` (index) | log(1.12) | Table 3, row 'T > MIC (%)' |
+| `log10_cfu0` | 7 (fixed) | Methods, inoculum approximately 10^7 CFU/mL |
+| %T>MIC definition | 100 * (time above MIC) / 48 h, not capped at 48 h | Inferred from Figure 6C (see Assumptions and deviations) |
+| Residual SDs | 0 (fixed) | Not reported |
+
+# Helpers
+
+```{r helpers}
+# One record per initial concentration: an IV bolus giving C0 = n x MIC in the
+# arm's volume, followed by observations on the central compartment. The
+# kill-rate model has two endpoints (Cc and log_cfu), so observation rows also
+# carry dvid = 1; every endpoint column is still returned on every row.
+make_events <- function(arm_row, mult, times) {
+  dplyr::bind_rows(lapply(seq_along(mult), function(i) {
+    obs <- if (length(times) > 0) {
+      data.frame(id = i, time = times, evid = 0, cmt = "central", amt = 0,
+                 dvid = 1L)
+    }
+    dplyr::bind_rows(
+      data.frame(id = i, time = 0, evid = 1, cmt = "central",
+                 amt = mult[i] * MIC * arm_row$vc, dvid = NA_integer_),
+      obs
+    )
+  })) |>
+    dplyr::mutate(mult = mult[id], arm = arm_row$arm)
+}
+
+arm_model <- function(mod, arm_row) {
+  suppressMessages(mod |> rxode2::ini(lcl = log(arm_row$cl), lvc = log(arm_row$vc)))
+}
+
+# The models carry no between-experiment variability, so each id is one
+# deterministic regimen; rxode2's warning about a multi-subject solve without
+# omega is expected and muffled.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+}
+
+solve_arm <- function(mod, arm_row, mult, times) {
+  ev <- make_events(arm_row, mult, times)
+  withCallingHandlers(
+    rxode2::rxSolve(arm_model(mod, arm_row), ev, returnType = "data.frame",
+                    keep = c("mult", "arm")),
+    warning = muffle_no_omega
+  )
+}
+```
+
+# Part 1 - Dynamic-model pharmacokinetics
+
+Both model files share the one-compartment PK of the dynamic model. The 6.51 h
+design arm is the default; the 12 h design arm is obtained by overriding `lcl` and
+`lvc`. Figure 4 of the paper shows the measured concentrations; the simulation
+below uses the nominal initial concentrations.
+
+```{r pk-sim}
+mod_kr <- rxode2::rxode2(readModelDb("Zhang_2016_doxycycline_killrate"))
+times_pk <- seq(0, 48, by = 0.25)
+sim_pk <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(j) {
+  solve_arm(mod_kr, arms[j, ], mic_mult, times_pk)
+}))
+```
+
+```{r fig4, fig.cap = "Replicates Figure 4 of Zhang 2016: concentration-time curves of the dynamic model for the 6.51 h (left) and 12 h (right) design arms."}
+ggplot(sim_pk, aes(time, Cc, colour = factor(paste0(mult, " x MIC"),
+                                             levels = paste0(mic_mult, " x MIC")))) +
+  geom_line() +
+  facet_wrap(~arm) +
+  labs(x = "Time (h)", y = "Doxycycline (ug/mL)", colour = NULL)
+```
+
+## PKNCA
+
+```{r pknca}
+sim_nca <- sim_pk |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::rename(treatment = arm) |>
+  dplyr::select(id, time, Cc, treatment)
+stopifnot(any(sim_nca$time == 0))
+
+dose_df <- make_events(arms[1, ], mic_mult, numeric(0)) |>
+  dplyr::bind_rows(make_events(arms[2, ], mic_mult, numeric(0))) |>
+  dplyr::filter(evid == 1) |>
+  dplyr::rename(treatment = arm) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                             concu = "ug/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             doseu = "mg", route = "intravascular", duration = 0)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = data.frame(start = 0, end = Inf, half.life = TRUE,
+                         aucinf.obs = TRUE, cl.obs = TRUE, mrt.obs = TRUE)
+))
+```
+
+```{r nca-compare}
+published <- arms |>
+  dplyr::transmute(treatment = arm, half.life = thalf_pub, cl.obs = cl,
+                   mrt.obs = mrt_pub)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca,
+  reference = published,
+  by = "treatment",
+  units = c(half.life = "h", cl.obs = "L/h", mrt.obs = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs. published dynamic-model PK (Zhang 2016 Results). * differs from reference by >20%.")
+```
+
+Clearance is recovered exactly because it is a model parameter. The half-life of
+the 6.51 h arm agrees to 1%; that of the 12 h arm is 4% short, because the
+printed clearance (0.06 L/h, one significant figure) and volume give
+`log(2) * 0.99 / 0.06 = 11.4` h against the separately averaged 11.93 h. The
+reported mean residence times (8.29 and 17.03 h) differ from the one-compartment
+`1/k` (9.0 and 16.5 h) by 8% and 3%; the paper reports each statistic as a mean
+over triplicate fits, which need not be mutually consistent. `ncaComparisonTable()`
+labels the clearance row "CL/F"; for these intravenous-bolus doses F is 1, so it
+is CL.
+
+```{r pk-check}
+nca_res <- as.data.frame(nca)
+hl <- nca_res |> dplyr::filter(PPTESTCD == "half.life") |>
+  dplyr::group_by(treatment) |> dplyr::summarise(hl = median(PPORRES))
+hl <- dplyr::left_join(hl, published, by = "treatment")
+stopifnot(all(abs(hl$hl / hl$half.life - 1) < 0.06))
+```
+
+# Part 2 - The kill-rate model
+
+## Table 1 and Figure 2
+
+Zhang 2016 Table 1 reports the sigmoid Emax kill-rate fit over seven time
+windows. The packaged model carries the 0-48 h row, which has the highest R^2
+(0.986) and is the one plotted in Figure 2.
+
+```{r table1}
+table1 <- tibble::tribble(
+  ~window, ~Emax, ~EC50, ~N,   ~R2,
+  "0-24",  0.12,  0.02,  1.45, 0.958,
+  "0-36",  0.11,  0.38,  2.21, 0.971,
+  "0-48",  0.11,  0.32,  2.11, 0.986,
+  "2-24",  0.10,  0.33,  2.21, 0.955,
+  "2-36",  0.10,  0.32,  2.47, 0.970,
+  "2-48",  0.11,  0.31,  2.83, 0.907,
+  "12-48", 0.12,  0.28,  2.20, 0.977
+)
+kill_rate <- function(conc, emax, ec50, n) emax * conc^n / (ec50^n + conc^n)
+conc_grid <- seq(0, 8, by = 0.02)
+curves <- table1 |>
+  dplyr::rowwise() |>
+  dplyr::reframe(window = window, conc = conc_grid,
+                 kr = kill_rate(conc_grid, Emax, EC50, N))
+```
+
+```{r fig2, fig.cap = "Replicates Figure 2 of Zhang 2016 (0-48 h window, thick line) together with the other six Table 1 windows."}
+ggplot(curves, aes(conc, kr, group = window, colour = window)) +
+  geom_line(aes(linewidth = window == "0-48")) +
+  scale_linewidth_manual(values = c(0.4, 1.2), guide = "none") +
+  labs(x = "Doxycycline (ug/mL)", y = "Kill rate (1/h)", colour = "Window (h)")
+```
+
+All windows except 0-24 h share an EC50 of 0.28-0.38 ug/mL (2.2 to 3 x MIC) and a
+plateau of 0.10-0.12 1/h. The 0-24 h EC50 of 0.02 ug/mL is an order of magnitude
+lower; see Errata.
+
+## Static experiment recovered from the packaged model
+
+With a negligible clearance the dynamic model becomes the static assay, and the
+packaged ODE must then reproduce the closed-form kill rate exactly: log10 of the
+density state `bact` falls by `48 * E` over 48 h. (The observation `log_cfu`
+adds a 1 CFU/mL floor, which matters only below about 2 log10 CFU/mL.)
+
+```{r static}
+static_arm <- tibble::tibble(arm = "static", cl = 1e-12, vc = 0.90)
+static_mult <- c(0, 0.5, 1, 2, 4, 8, 16, 32, 64)
+sim_static <- solve_arm(mod_kr, static_arm, static_mult, c(0, 48))
+chk_static <- sim_static |>
+  dplyr::filter(time == 48) |>
+  dplyr::mutate(conc = mult * MIC,
+                ode = log10(bact),
+                closed = 7 - 48 * kill_rate(conc, 0.11, 0.32, 2.11),
+                diff = ode - closed)
+knitr::kable(chk_static |> dplyr::select(mult, conc, ode, closed) |>
+               dplyr::rename("x MIC" = mult, "Concentration (ug/mL)" = conc,
+                             "ODE log10 CFU/mL at 48 h" = ode,
+                             "Closed form" = closed),
+             digits = 3)
+# Same parameters on both sides: pure numerical error, so a tight bound.
+stopifnot(max(abs(chk_static$diff[chk_static$mult > 0])) < 1e-3)
+```
+
+The largest reduction the model predicts, at 64 x MIC, is
+`r round(48 * kill_rate(8, 0.11, 0.32, 2.11), 2)` log10 CFU/mL over 48 h,
+against the 5.62 log10 CFU/mL maximum reduction the paper reports for the static
+assay (Figure 1); the kill rate is a regression slope over the whole window, not
+the end-point difference, so close but not exact agreement is expected.
+
+```{r static-check}
+stopifnot(abs(48 * kill_rate(8, 0.11, 0.32, 2.11) / 5.62 - 1) < 0.10)
+```
+
+## Composed kill-rate prediction for the dynamic model
+
+Running the kill-rate model through the dynamic-model PK gives the prediction
+below. Figure 5 of the paper shows the measured counts: regrowth once the
+concentration falls below the MIC, and a growing drug-free control. Neither can be
+produced by equation (1), which has no growth term, so this composition describes
+the killing phase only.
+
+```{r fig5, fig.cap = "Kill-rate model driven by the dynamic-model PK (compare Figure 5 of Zhang 2016)."}
+ggplot(sim_pk, aes(time, log_cfu, colour = factor(paste0(mult, " x MIC"),
+                                                  levels = paste0(mic_mult, " x MIC")))) +
+  geom_line() +
+  facet_wrap(~arm) +
+  labs(x = "Time (h)", y = "log10 CFU/mL", colour = NULL)
+```
+
+The composition over-predicts the killing that was measured. At 64 x MIC the
+counts read by the maintainers from Figure 5 end near 5.2 (6.51 h arm) and 4.7
+(12 h arm) log10 CFU/mL at 48 h, against the model values below; the 1 x MIC arms
+also regrew in the experiment but stay flat here.
+
+```{r fig5-compare}
+fig5_48h <- tibble::tribble(
+  ~arm,            ~mult, ~observed_fig5,
+  "6.51 h design", 64,    5.2,
+  "12 h design",   64,    4.7
+)
+cmp5 <- sim_pk |>
+  dplyr::filter(time == 48, mult == 64) |>
+  dplyr::select(arm, mult, log_cfu) |>
+  dplyr::left_join(fig5_48h, by = c("arm", "mult"))
+knitr::kable(cmp5 |> dplyr::rename("Arm" = arm, "x MIC" = mult,
+                                   "Model log10 CFU/mL at 48 h" = log_cfu,
+                                   "Figure 5 (read off)" = observed_fig5),
+             digits = 2)
+```
+
+The static kill rate is therefore not a good predictor of killing under a
+declining concentration, which is consistent with the paper's own conclusion that
+the anti-mycoplasmal effect is time-dependent. For fluctuating exposure use the
+%T>MIC model of Part 3, which was fitted to the dynamic experiments.
+
+# Part 3 - The %T>MIC index model
+
+## Computing the index
+
+The packaged model accumulates the time above the MIC in the state `t_gt_mic`
+and forms `pct_tmic = 100 * t_gt_mic / 48`. The simulation runs to 400 h so that
+the concentration has fallen below the MIC in every regimen, which gives the
+uncapped index the authors used (see Assumptions and deviations).
+
+```{r index-sim}
+mod_ix <- rxode2::rxode2(readModelDb("Zhang_2016_doxycycline_pkpd_index"))
+times_ix <- c(seq(0, 48, by = 0.25), seq(48.5, 400, by = 0.5))
+sim_ix <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(j) {
+  solve_arm(mod_ix, arms[j, ], mic_mult, times_ix)
+}))
+idx <- sim_ix |>
+  dplyr::group_by(arm, mult) |>
+  dplyr::summarise(pct_tmic = dplyr::last(pct_tmic),
+                   dlog10cfu = dplyr::last(dlog10cfu),
+                   cmax_mic = max(Cc) / MIC,
+                   auc_mic = sum(diff(time[time <= 48]) *
+                                   (head(Cc[time <= 48], -1) + tail(Cc[time <= 48], -1)) / 2) / MIC,
+                   .groups = "drop")
+# The closed form of the uncapped index for a monoexponential decline.
+idx <- idx |>
+  dplyr::left_join(arms, by = "arm") |>
+  dplyr::mutate(pct_closed = 100 * log(mult) / (cl / vc) / 48)
+stopifnot(max(abs(idx$pct_tmic - idx$pct_closed)) < 0.6)
+knitr::kable(idx |> dplyr::select(arm, mult, pct_tmic, dlog10cfu) |>
+               dplyr::rename("Arm" = arm, "x MIC" = mult, "%T>MIC" = pct_tmic,
+                             "Predicted 48 h change (log10 CFU/mL)" = dlog10cfu),
+             digits = 2)
+```
+
+(The `pct_tmic` accumulator is resolved on the output grid's step size, so it
+agrees with the closed form `100 * ln(C0 / MIC) / k / 48` to within the 0.5 h
+spacing.)
+
+## Figure 6C
+
+```{r fig6c, fig.cap = "Replicates Figure 6C of Zhang 2016: Table 3 %T>MIC curve (line) with the model's predictions for the 14 design regimens (points)."}
+x <- seq(0, 200, by = 1)
+curve6c <- data.frame(x = x, E = 2.25 - 5.93 * x^1.12 / (44.39^1.12 + x^1.12))
+ggplot() +
+  geom_line(data = curve6c, aes(x, E)) +
+  geom_point(data = idx, aes(pct_tmic, dlog10cfu, colour = arm)) +
+  labs(x = "T>MIC (%)", y = "E (log10 CFU/mL)", colour = NULL) +
+  coord_cartesian(ylim = c(-4, 4))
+```
+
+The fitted curve of Figure 6C passes through about -0.9 log10 CFU/mL at 50% and
+ends near -2.75 at 200%, which Table 3 reproduces:
+
+```{r fig6c-check}
+E_tmic <- function(x) 2.25 - 5.93 * x^1.12 / (44.39^1.12 + x^1.12)
+c(E_50 = E_tmic(50), E_200 = E_tmic(200))
+stopifnot(abs(E_tmic(50) - (-0.9)) < 0.15, abs(E_tmic(200) - (-2.75)) < 0.15)
+```
+
+The 12 h design arm reaches %T>MIC values above 100% at 32 and 64 x MIC
+(`r round(idx$pct_tmic[idx$arm == "12 h design" & idx$mult == 32])`% and
+`r round(idx$pct_tmic[idx$arm == "12 h design" & idx$mult == 64])`%), matching
+the two right-most observed points of Figure 6C (about 120% and 158%). A capped
+index cannot exceed 100%.
+
+## The rejected AUC/MIC and Cmax/MIC fits
+
+Table 3 also fits equation (2) to AUC0-48h/MIC and Cmax/MIC. They are not
+packaged; their predictions for the same 14 regimens are shown for comparison.
+
+```{r table3}
+table3 <- tibble::tribble(
+  ~index,         ~Imax, ~IC50,  ~E0,  ~N,   ~R2,
+  "AUC0-48h/MIC", 5.82,  79.12,  2.30, 0.55, 0.953,
+  "Cmax/MIC",     6.49,  10.90,  2.28, 0.44, 0.897,
+  "T>MIC (%)",    5.93,  44.39,  2.25, 1.12, 0.989
+)
+imax_fn <- function(x, row) row$E0 - row$Imax * x^row$N / (row$IC50^row$N + x^row$N)
+cmp_idx <- idx |>
+  dplyr::transmute(arm, mult,
+                   E_auc = imax_fn(auc_mic, table3[1, ]),
+                   E_cmax = imax_fn(cmax_mic, table3[2, ]),
+                   E_tmic = dlog10cfu)
+knitr::kable(cmp_idx |> dplyr::rename("Arm" = arm, "x MIC" = mult,
+                                      "AUC/MIC fit" = E_auc,
+                                      "Cmax/MIC fit" = E_cmax,
+                                      "%T>MIC fit (packaged)" = E_tmic),
+             digits = 2)
+stopifnot(abs(median(cmp_idx$E_auc - cmp_idx$E_tmic)) < 1)
+```
+
+The three fits agree on the overall pattern, a net growth at 1-2 x MIC turning
+into a reduction of about 1.5-2.5 log10 CFU/mL at the highest exposures.
+
+## Published %T>MIC targets
+
+Zhang 2016 states that %T>MIC values of 32.48, 45.68 and 54.36% give 0, 2 and 3
+log10 CFU/mL reductions. Inverting equation (2) with the Table 3 parameters gives
+different values:
+
+```{r targets}
+inv_tmic <- function(E) {
+  f <- (2.25 - E) / 5.93
+  44.39 * (f / (1 - f))^(1 / 1.12)
+}
+targets <- tibble::tibble(
+  reduction = c(0, 2, 3),
+  published = c(32.48, 45.68, 54.36),
+  table3_inverse = sapply(-c(0, 2, 3), inv_tmic),
+  E_at_published = E_tmic(c(32.48, 45.68, 54.36))
+)
+knitr::kable(targets |> dplyr::rename(
+  "Reduction (log10 CFU/mL)" = reduction,
+  "Published %T>MIC" = published,
+  "%T>MIC from Table 3" = table3_inverse,
+  "Table 3 E at the published %T>MIC" = E_at_published
+), digits = 2)
+```
+
+The 0-log target is close (`r round(inv_tmic(0), 1)`% against 32.48%), but the
+2-log and 3-log targets cannot come from Table 3: at 45.68% and 54.36% Table 3
+predicts only `r round(E_tmic(45.68), 2)` and `r round(E_tmic(54.36), 2)` log10
+CFU/mL, and a 3-log reduction needs about `r round(inv_tmic(-3))`%. The packaged
+model follows Table 3, which also reproduces the fitted curve of Figure 6C; the
+published targets are not used.
+
+# Assumptions and deviations
+
+* **Two models, one per fitted analysis.** The kill-rate model (static data) and
+  the %T>MIC model (dynamic data) were fitted separately and are packaged
+  separately. Each carries the dynamic-model PK so that it can be simulated
+  directly. In the kill-rate file this composition is not a joint fit: the
+  kill-rate parameters come from constant concentrations, and the dynamic data
+  were not used to estimate them.
+* **Default PK arm.** Both files default to the 6.51 h design arm (CL 0.10 L/h,
+  V 0.90 L). The 12 h design arm uses CL 0.06 L/h and V 0.99 L through
+  `rxode2::ini()`. The PK volumes are apparent values from the authors'
+  one-compartment fits; they exceed the 320 mL external compartment, so a dose
+  should be read as `C0 * V`, the amount that gives the intended initial
+  concentration, not as a physical amount added to the flask.
+* **%T>MIC is not capped at 48 h.** The paper defines the index as the
+  "cumulative percentage of time over a 48-h period that the drug concentration
+  exceeds the MIC". Figure 6C nevertheless plots observed indices of about 120%
+  and 158%, which only the uncapped 12 h arm can reach (124% and 149% at 32 and
+  64 x MIC with the measured 11.93 h half-life). The packaged accumulator is
+  therefore uncapped, and `dlog10cfu` should be read once the concentration has
+  fallen below the MIC; before that it reflects only the time accumulated so far.
+* **No growth term in the kill-rate model.** Equation (1) has no baseline, so the
+  drug-free control does not grow and regrowth below the MIC is not described.
+  The paper's estimate of the drug-free growth rate (0.02 1/h) is not part of the
+  fitted model and is not added.
+* **Starting density.** Both files use 10^7 CFU/mL, the nominal inoculum; the
+  measured starting counts were about 10^7.0-10^7.6 CFU/mL (Figures 1 and 5).
+* **No variability.** No between-experiment variability or residual error was
+  reported; the residual SDs are fixed at zero.
+* **Chicken PK not packaged.** The broiler PK of Table 2 (10 mg/kg IV) was
+  analysed in WinNonlin without a stated model, and its values identify a
+  non-compartmental analysis: the volume 0.54 L/kg equals CL / lambda_z
+  (`0.06 * 6.51 / log(2) = 0.56`), while the mean residence time of 6.21 h is
+  shorter than `1 / lambda_z = 9.4` h, which a one-compartment model cannot
+  produce. A non-compartmental summary is not a structural model, so no chicken
+  file is provided; the 6.51 h half-life enters the package only as the design of
+  the dynamic model.
+
+# Errata
+
+* Table 1, row 0-24 h: EC50 = 0.02 ug/mL is about 15-fold lower than every other
+  window (0.28-0.38 ug/mL) with a similar Emax, and is probably a misprint. The
+  packaged 0-48 h row is unaffected.
+* Table 3: the IC50 column is headed "ug/mL", but each IC50 is in the unit of its
+  index (h for AUC0-48h/MIC, unitless for Cmax/MIC, % for T>MIC).
+* The %T>MIC targets for 2 and 3 log10 CFU/mL reduction (45.68% and 54.36%) are
+  not reproduced by Table 3 (see Part 3). The 0-log target (32.48%) is within 4
+  percentage points.
+* The Abstract and the closing Discussion paragraph give R^2 = 0.986 for the
+  %T>MIC fit; Results and Table 3 give 0.989. The 0.986 figure is the R^2 of the
+  0-48 h kill-rate fit.
