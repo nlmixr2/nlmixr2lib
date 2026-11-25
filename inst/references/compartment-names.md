@@ -8342,6 +8342,13 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Example models:** `CherkaouiRbati_2017_midazolam_qsp.R` (founding example; midazolam is the victim probe and takes the bare names `a_venous` / `a_gut` / `sinusoid_slab<n>`, while `a_venous_perpetrator` / `a_gut_perpetrator` / `sinusoid_perpetrator_slab<n>` carry whichever of the paper's ten CYP3A4 perpetrators is parameterised).
 - **Notes:** Use only when the second analyte is genuinely a parameterised slot. A DDI model that studies one named perpetrator and only that perpetrator should register and use that drug's own suffix instead, so the state names say what they hold. Because the `<tissue>_slab<n>` family requires the suffix to sit **inside** the stem, the spatially discretised form is `sinusoid_perpetrator_slab<n>`, not `sinusoid_slab<n>_perpetrator`.
 
+### drugb (**canonical hypothetical second-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** The **second hypothetical drug** of a methodology model that carries two author-defined, unnamed drugs side by side (the source's "drug A" and "drug B"). Drug A keeps the bare canonical names; drug B's states, parameters, observation and residual error carry `_drugb`. Like `perpetrator`, it names an analyte role rather than a molecule, because the drugs have no INN and the model is parameterised to represent any pair.
+- **Source aliases:** `drug B`, `B` (as a subscript, e.g. `VB`, `CLint,u,WL_B`, `K0B`).
+- **Example models:** `Calvier_2018_iv1cmt_dispersion.R` (founding example; two hypothetical substrates of one isoenzyme sharing hepatic blood flow and intrinsic clearance, with `central_drugb`, `lvc_drugb`, `fu_drugb`, `bp_drugb`, `Cc_drugb`, `propSd_drugb`).
+- **Notes:** Use only when the second drug is genuinely hypothetical. A model of two named drugs uses each drug's own suffix, and a drug-drug-interaction model whose second drug is a parameterised precipitant uses `perpetrator`. There is no `druga` token: the first drug takes the bare names.
+
 ### cot (**canonical cotinine suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Cotinine, the major proximate metabolite of nicotine (about 80 percent of hepatic nicotine metabolism) and the standard long-half-life biomarker of nicotine exposure. Used by nicotine PBPK / popPK extractions that carry a cotinine sub-model alongside the parent.
