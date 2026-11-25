@@ -1,0 +1,390 @@
+---
+title: "Brown snake venom and fibrinogen (Gulati 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Brown snake venom and fibrinogen (Gulati 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Gulati A, Isbister GK, Duffull SB. Scale reduction of a systems
+  coagulation model with an application to modeling
+  pharmacokinetic-pharmacodynamic data. *CPT Pharmacometrics Syst Pharmacol*.
+  2014;3(1):e90.
+* Article: <https://doi.org/10.1038/psp.2013.67> (open access,
+  [PMC3910010](https://pmc.ncbi.nlm.nih.gov/articles/PMC3910010/))
+* Description: `r rxode2::rxode(readModelDb("Gulati_2014_brownSnakeVenom"))$description`
+
+Gulati 2014 reduced the 62-state, 178-parameter humoral coagulation network of
+Wajima 2009 (as extended for Australian elapid venoms) to five states by proper
+lumping, keeping only what the brown snake venom to fibrinogen input-output
+relationship needs. The ODEs of the lumped system were then written out by
+hand (the "extracted model", Eq 1-5), two unidentifiable parameters were held
+at their original-model values, and the remaining nine were estimated as a
+population PK-PD model on fibrinogen concentrations from the Australian
+Snakebite Project. This file packages that fitted extracted model.
+
+# Population
+
+The data came from the Australian Snakebite Project, which recruited 138
+snakebite cases from over 100 Australian hospitals between January 2004 and
+May 2008 (Methods, "The data"). Of 73 patients bitten by brown snakes, the 61
+with complete venom-induced consumption coagulopathy (VICC) contributed timed
+fibrinogen concentrations (Table 3). Patients were 74% male with a mean age of
+41 years (SD 18). Every complete-VICC patient received antivenom. Fibrinogen
+was measured in g/L with a limit of quantification of 0.2 g/L, and data below
+it were handled with Beal's M3 method in NONMEM 7.2 (FOCE with interaction).
+Because the venom dose is unknown, every patient was given the same nominal
+venom dose and the between-subject variability on its bioavailable fraction
+absorbs the bite-to-bite differences.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Venom absorption state `depot`, `d/dt(depot) = -ka * depot` | dose 0.0075 (nmol/L) | Eq 1; Table 1 state 1L |
+| Venom plasma state `central`, elimination times antivenom factor | factor 1 or 100 | Eq 2 |
+| Fibrinogen `fibrinogen`, production, loss, thrombin-driven conversion | `fibrinogen(0)` 8945.5 nmol/L | Eq 3 |
+| Thrombin `thrombin`, venom-driven formation, first-order loss | `thrombin(0)` 0 | Eq 4 |
+| Lumped pool `lumped`, production, loss, venom-driven activation | `lumped(0)` 1394.4 nmol/L | Eq 5; Table 1 state 5L |
+| `ka` (k_a^Brown) | 0.854 1/h | Table 2 |
+| `kel` (d^Brown) | 0.744 1/h | Table 2 |
+| `kdeg_thrombin` (d^IIa) | 58.3 1/h | Table 2 |
+| `vmax_lumped` (vmax, lumped state to IIa by venom) | 1940 | Table 2 |
+| `km_lumped` (Km, lumped state to IIa by venom) | 1.38 nmol/L | Table 2 |
+| `kdeg_fibrinogen` (d^Fg) | 0.0174 1/h | Table 2 |
+| `kin_fibrinogen` (p^Fg) | 216 nmol/L/h | Table 2 |
+| `vmax_fibrinogen` (vmax, Fg to F by IIa) | 8.88 | Table 2 |
+| `km_fibrinogen` (Km, Fg to F by IIa) | 22.9 nmol/L | Table 2 |
+| `kin_lumped` (p^Lumped_state), held constant | 147 nmol/L/h | Results, "Identifiability of the simplified model" |
+| `kdeg_lumped` (d^Lumped_state), held constant | 0.01 1/h | Results, "Identifiability of the simplified model" |
+| `fdepot` typical value, held constant | 1 | Methods, "Data analysis using a population approach" |
+| IIV variances on d^IIa, vmax, Km, d^Fg, F_venom | 0.005, 2.10, 0.990, 0.530, 1.40 | Table 2 |
+| Proportional residual error | 0.390 | Table 2 (see Assumptions) |
+| Additive residual error (variance) | 0.00100 | Table 2 |
+| Fibrinogen molecular weight for nmol/L to g/L | 340 kDa | not in the source; see Assumptions |
+| Antivenom switch `CONMED_ANTIVENOM` | 0 before, 1 after antivenom | Eq 2; Supplementary original_model.m |
+
+# Typical-value time course
+
+The lumping simulations in the paper used one nominal brown snake bite
+(0.0075 nmol/L) with antivenom 4 h after the bite, the average time in the
+brown snake data. The chunk below solves the typical patient under that
+scenario and, for contrast, without antivenom.
+
+```{r events}
+mod <- readModelDb("Gulati_2014_brownSnakeVenom")
+VENOM_DOSE <- 0.0075 # Eq 1, C1L(0)
+LOQ <- 0.2 # g/L, Methods "The data"
+
+# One bite at time 0; CONMED_ANTIVENOM switches to 1 at the antivenom time
+# (Inf = never given). Observations are on the fibrinogen state; rxode2
+# returns Cfibrinogen and every other state at those rows.
+make_events <- function(id, t_av, obs_times) {
+  obs_times <- sort(unique(c(obs_times, if (is.finite(t_av)) t_av)))
+  dplyr::bind_rows(
+    data.frame(id = id, time = 0, amt = VENOM_DOSE, evid = 1L, cmt = "depot"),
+    data.frame(id = id, time = obs_times, amt = 0, evid = 0L, cmt = "fibrinogen")
+  ) |>
+    dplyr::mutate(CONMED_ANTIVENOM = as.integer(time >= t_av)) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+obs_fine <- sort(unique(c(seq(0, 2, by = 0.05), seq(2, 72, by = 0.5))))
+ev_typ <- dplyr::bind_rows(
+  make_events(1, 4, obs_fine) |> dplyr::mutate(arm = "Antivenom at 4 h"),
+  make_events(2, Inf, obs_fine) |> dplyr::mutate(arm = "No antivenom")
+)
+
+mod_typ <- rxode2::zeroRe(mod)
+# Two typical-value arms are two ids with no omega; rxode2 warns about that
+# deliberately chosen design, so only that message is muffled.
+sim_typ <- withCallingHandlers(
+  rxode2::rxSolve(mod_typ, ev_typ, keep = "arm", returnType = "data.frame"),
+  warning = function(w) {
+    if (grepl("multi-subject simulation without", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+)
+```
+
+```{r typical-plot, fig.height = 6}
+sim_typ |>
+  dplyr::select(time, arm, `Venom plasma (nmol/L)` = central,
+                `Thrombin (nmol/L)` = thrombin, `Lumped pool (nmol/L)` = lumped,
+                `Fibrinogen (g/L)` = Cfibrinogen) |>
+  tidyr::pivot_longer(-c(time, arm)) |>
+  ggplot(aes(time, value, colour = arm)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y") +
+  labs(x = "Time post-bite (h)", y = NULL, colour = NULL,
+       title = "Typical brown snake envenoming, with and without antivenom") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+Fibrinogen falls from 3.0 g/L to below the 0.2 g/L limit of quantification
+within an hour of the bite, as the venom converts the lumped prothrombin-like
+pool to thrombin, and recovers at close to the zero-order production rate once
+the venom has gone. Compare the shape with Figure 2c (lumped 5-state model with
+the original-model parameters), which reaches about 2.2 g/L at 40 h; the fitted
+model below reaches about 2 g/L.
+
+```{r typical-table}
+sim_typ |>
+  dplyr::filter(time %in% c(0, 1, 4, 10, 20, 30, 40)) |>
+  dplyr::select(arm, time, Cfibrinogen) |>
+  tidyr::pivot_wider(names_from = arm, values_from = Cfibrinogen) |>
+  dplyr::rename(`Time (h)` = time) |>
+  knitr::kable(digits = 2, caption = "Typical fibrinogen (g/L).")
+```
+
+# Closed-form checks
+
+Three quantities follow from Table 2 alone. The paper reports a brown snake
+venom half-life of 55 min and a fibrinogen half-life of 1.5 days.
+
+```{r closed-form}
+p <- rxode2::rxode(mod)$theta
+kel <- exp(p[["lkel"]])
+kdeg_fg <- exp(p[["lkdeg_fibrinogen"]])
+kin_fg <- exp(p[["lkin_fibrinogen"]])
+mw <- p[["mw_fibrinogen"]]
+
+closed <- tibble::tibble(
+  Quantity = c("Venom half-life without antivenom (min)",
+               "Fibrinogen half-life (days)",
+               "Fibrinogen steady state kin/kdeg (g/L)",
+               "Fibrinogen initial condition (g/L)"),
+  Model = c(60 * log(2) / kel, log(2) / kdeg_fg / 24,
+            kin_fg / kdeg_fg * mw / 1e6, p[["bl_fibrinogen"]] * mw / 1e6),
+  Paper = c(55, 1.5, NA, NA)
+)
+knitr::kable(closed, digits = 2)
+
+stopifnot(abs(closed$Model[1] - 55) < 2)
+```
+
+The venom half-life reproduces the reported 55 min. The fibrinogen half-life
+from Table 2 is 1.66 days, which the Discussion rounds to "1.5 days".
+
+The fibrinogen initial condition (8945.5 nmol/L, Eq 3) is not the steady state
+of Eq 3 (kin / kdeg = 12414 nmol/L, 4.2 g/L), so an unbitten typical patient
+drifts upward with the fibrinogen half-life. The solve below checks the
+packaged ODE against the closed-form solution of that drift; both sides use the
+same parameters, so the bound is tight.
+
+```{r no-venom-drift}
+ev_none <- make_events(1, Inf, c(0, 24, 48, 96, 200)) |>
+  dplyr::mutate(amt = ifelse(evid == 1L, 0, amt))
+drift <- rxode2::rxSolve(mod_typ, ev_none, returnType = "data.frame") |>
+  dplyr::mutate(
+    closed = (kin_fg / kdeg_fg + (p[["bl_fibrinogen"]] - kin_fg / kdeg_fg) *
+      exp(-kdeg_fg * time)) * mw / 1e6,
+    pct_diff = 100 * (Cfibrinogen - closed) / closed
+  )
+knitr::kable(dplyr::select(drift, `Time (h)` = time, `ODE (g/L)` = Cfibrinogen,
+                           `Closed form (g/L)` = closed),
+             digits = 3, caption = "Fibrinogen without a bite.")
+stopifnot(max(abs(drift$pct_diff)) < 0.1)
+```
+
+# Visual predictive check (Figure 3)
+
+Figure 3 of Gulati 2014 is a percentile VPC of the final model over the
+observed design (1,000 replicates, below-limit values censored as in the
+data). The individual antivenom times of the observed design are not
+published, so the replicate below gives every simulated patient antivenom at
+4 h, the average reported for the brown snake data, and adds a sensitivity
+scenario at 8 h. Values below the 0.2 g/L limit are displayed at 0.1 g/L, so
+percentiles in the censored region read 0.1. The reference points are the
+model-prediction percentiles read off Figure 3 by the maintainers at 20, 30 and
+40 h.
+
+```{r vpc-sim}
+N_PER_ARM <- 200
+obs_vpc <- c(0, 0.5, 1, 2, 3, 5, 6, 8, 10, 12, 15, 20, 25, 30, 35, 40)
+ev_vpc <- dplyr::bind_rows(
+  lapply(seq_len(N_PER_ARM), function(i) make_events(i, 4, obs_vpc)) |>
+    dplyr::bind_rows() |> dplyr::mutate(arm = "Antivenom at 4 h"),
+  lapply(seq_len(N_PER_ARM), function(i) make_events(N_PER_ARM + i, 8, obs_vpc)) |>
+    dplyr::bind_rows() |> dplyr::mutate(arm = "Antivenom at 8 h")
+)
+
+rxode2::rxSetSeed(20140101)
+sim_vpc <- rxode2::rxSolve(mod, ev_vpc, keep = "arm", returnType = "data.frame") |>
+  dplyr::filter(time %in% obs_vpc) |>
+  dplyr::mutate(dv = ifelse(sim < LOQ, LOQ / 2, sim))
+
+vpc <- sim_vpc |>
+  dplyr::group_by(arm, time) |>
+  dplyr::summarise(
+    p10 = quantile(dv, 0.1), p50 = quantile(dv, 0.5), p90 = quantile(dv, 0.9),
+    .groups = "drop"
+  )
+
+fig3 <- tibble::tibble(
+  time = c(20, 30, 40),
+  p10 = c(0.45, 0.65, 0.95),
+  p50 = c(0.75, 1.25, 1.75),
+  p90 = c(1.30, 2.20, 3.15)
+)
+```
+
+```{r vpc-plot}
+vpc |>
+  tidyr::pivot_longer(c(p10, p50, p90), names_to = "pct") |>
+  ggplot(aes(time, value, colour = arm, linetype = pct == "p50", group = interaction(arm, pct))) +
+  geom_line() +
+  geom_point(
+    data = tidyr::pivot_longer(fig3, c(p10, p50, p90), names_to = "pct"),
+    aes(time, value), inherit.aes = FALSE, shape = 4, size = 3
+  ) +
+  scale_linetype_manual(values = c(`TRUE` = "solid", `FALSE` = "dashed"), guide = "none") +
+  coord_cartesian(ylim = c(0, 6)) +
+  labs(x = "Time post-bite (h)", y = "Fibrinogen (g/L)", colour = NULL,
+       title = "10th, 50th and 90th percentiles of simulated fibrinogen",
+       caption = "Replicates Figure 3 of Gulati 2014; crosses are the Figure 3 model-prediction percentiles.") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+```{r vpc-table}
+vpc_cmp <- vpc |>
+  dplyr::filter(time %in% fig3$time) |>
+  dplyr::left_join(fig3, by = "time", suffix = c("", "_fig3"))
+knitr::kable(
+  dplyr::select(vpc_cmp, Scenario = arm, `Time (h)` = time,
+                `P10 sim` = p10, `P10 Fig 3` = p10_fig3,
+                `P50 sim` = p50, `P50 Fig 3` = p50_fig3,
+                `P90 sim` = p90, `P90 Fig 3` = p90_fig3),
+  digits = 2, caption = "Simulated versus Figure 3 percentiles (g/L)."
+)
+
+at40 <- dplyr::filter(vpc_cmp, time == 40, arm == "Antivenom at 4 h")
+stopifnot(
+  # Centre: a wrong production rate, loss rate or unit conversion moves the
+  # recovery by tens of percent.
+  abs(at40$p50 / at40$p50_fig3 - 1) < 0.25,
+  # Spread: the 10th percentile at 40 h separates the two readings of the
+  # residual-error row (about 0.9 g/L with a 39% proportional SD, about 0.4
+  # g/L with a 62% SD).
+  at40$p10 > 0.6
+)
+```
+
+At 40 h the simulated percentiles match Figure 3. At 20 and 30 h the simulated
+median with antivenom at 4 h is 0.3 to 0.4 g/L above Figure 3, i.e. recovery
+starts a few hours earlier; the 8 h scenario sits closer, consistent with the
+observed design containing patients treated later than the 4 h average.
+
+# PKNCA: venom disposition
+
+The venom states carry the model's PK. A PKNCA pass on the typical patient's
+plasma venom state recovers the venom half-life without antivenom. With
+antivenom at 4 h, plasma venom is cleared 100 times faster from then on, so
+its terminal phase becomes absorption-limited: the half-life PKNCA reports for
+that scenario is ln(2) / ka = 0.81 h, set by the venom still leaving the bite
+site, and the venom AUC is smaller.
+
+```{r pknca}
+conc_venom <- sim_typ |>
+  dplyr::filter(!is.na(central)) |>
+  dplyr::select(id, time, arm, central)
+dose_venom <- ev_typ |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::select(id, time, amt, arm)
+
+conc_obj <- PKNCA::PKNCAconc(conc_venom, central ~ time | arm + id)
+dose_obj <- PKNCA::PKNCAdose(dose_venom, amt ~ time | arm + id)
+intervals <- data.frame(start = 0, end = 72, cmax = TRUE, tmax = TRUE,
+                        auclast = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+knitr::kable(
+  as.data.frame(nca_res) |>
+    dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life")) |>
+    dplyr::select(arm, PPTESTCD, PPORRES) |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+    dplyr::rename(Scenario = arm, `Cmax (nmol/L)` = cmax, `Tmax (h)` = tmax,
+                  `AUC0-72 (nmol*h/L)` = auclast, `t1/2 (h)` = half.life),
+  digits = 4, caption = "NCA of plasma venom, typical patient."
+)
+```
+
+## Comparison against published values
+
+The paper reports only the venom half-life (Discussion, 55 min without
+antivenom).
+
+```{r nca-compare}
+published <- tibble::tibble(arm = "No antivenom", half.life = 55 / 60)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "arm",
+  params = "half.life",
+  units = c(half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated versus published venom half-life. * differs by >20%.")
+```
+
+# Assumptions and deviations
+
+* **Residual-error row read as an SD.** Table 2 labels the proportional
+  residual-error row `sigma^2_prop = 0.390`. Read as a variance (SD 0.624), the
+  simulated 10th percentile at 40 h is about 0.4 g/L, against about 0.95 g/L in
+  the paper's own VPC (Figure 3), and the 90th percentile at time 0 is about
+  5.6 g/L against about 4.8 g/L. Read as an SD (39% CV), both match. The
+  packaged model therefore uses `propSd = 0.390`. The additive row
+  (`sigma^2_add = 0.00100`) is used as a variance (SD 0.032 g/L); either
+  reading is negligible next to the 0.2 g/L limit of quantification.
+* **BSV rows are variances.** The Table 2 BSV rows are headed "(%)" but carry
+  values (0.005 to 2.10) that cannot be percentages of CV given the reported
+  shrinkage; they are used as NONMEM OMEGA variances of exponential random
+  effects, as the Methods describe. The VPC above is insensitive to this
+  choice because the residual error dominates the prediction interval.
+* **Fibrinogen units.** The model states are in nmol/L but fibrinogen was
+  measured in g/L, and the source does not print the conversion. The packaged
+  observation uses a fibrinogen molecular weight of 340 kDa, which puts the
+  Eq 3 initial condition at 3.04 g/L, matching the start of the curves in
+  Figures 2 and 3. `mw_fibrinogen` can be changed in `ini()`.
+* **Extracted versus lumped initial conditions.** Table 1 lists lumped-model
+  initial conditions of 8,900 nmol/L for fibrinogen and 7,900 nmol/L for the
+  lumped state (the sum of the 58 pooled original states), which the
+  lumping simulations used. The fitted extracted model writes its own initial
+  conditions in Eq 3 and Eq 5 (8945.5 and 1394.4 nmol/L, the latter being the
+  original model's prothrombin, which the lumped state is assumed to be
+  dominated by). The packaged model uses the Eq 3 and Eq 5 values.
+* **Not at steady state.** With the Table 2 and held-constant values, neither
+  fibrinogen (kin / kdeg = 12414 nmol/L) nor the lumped pool (147 / 0.01 =
+  14700 nmol/L) starts at the steady state of its own equation. This is a
+  property of the published model and is reproduced as is.
+* **Antivenom timing.** Eq 2 switches venom elimination 100-fold when
+  antivenom is present. The model takes this from the time-varying covariate
+  `CONMED_ANTIVENOM`. The paper does not say whether the NONMEM fit used each
+  patient's antivenom time or the 4 h average; supply each patient's own time
+  when it is known.
+* **Venom dose.** Eq 1 sets the venom absorption state to 0.0075 (nmol/L) at
+  the bite; the Methods also call the same nominal dose "0.0075 mg". The model
+  takes it as a dose of 0.0075 into `depot`, scaled by the bioavailable
+  fraction (typical value 1, between-subject variance 1.40).
+* **Vmax units.** Table 2 prints both Vmax values in nmol/L/h, but in Eq 3-5
+  each multiplies a concentration, so they act as first-order rate constants
+  (1/h). The paper notes that these Vmax and Km values do not carry their
+  usual enzyme-kinetic meaning.
+* **Below-limit data.** The M3 likelihood for data below 0.2 g/L is part of
+  the estimation, not the model; simulated values below the limit are only
+  censored for display here.

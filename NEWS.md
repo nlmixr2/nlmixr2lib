@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lee 2013 fingolimod lymphocyte count and relapse rate ([doi:10.1038/psp.2013.44](https://doi.org/10.1038/psp.2013.44)) -- adults with relapsing-remitting multiple sclerosis.
+- Add Gulati 2014 brown snake venom and fibrinogen (reduced coagulation QSP) ([doi:10.1038/psp.2013.67](https://doi.org/10.1038/psp.2013.67)) -- Australian patients with brown snake envenoming and venom-induced consumption coagulopathy.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

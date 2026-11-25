@@ -964,6 +964,18 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Example models:** `Hughes_2025_clesacostat.R` (clesacostat CL/F 27.4% higher with ervogastat, Table S4; an Emax form collapsed to an EC50 of about 0.001, hence the on/off indicator).
 - **Notes:** Member of the auto-approved `CONMED_<INN>` family.
 
+### CONMED_ANTIVENOM (**canonical for antivenom-administered indicator (time-varying)**)
+- **Description:** Time-varying indicator that snake antivenom has been administered: `0` at records before the antivenom dose, `1` at and after it. Marks when antivenom starts neutralising circulating venom, not the antivenom dose or concentration.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (antivenom not yet given). Effect form in Gulati 2014 Eq 2 is a multiplier on the first-order elimination of plasma venom: `kel * (1 + 99 * CONMED_ANTIVENOM)`, i.e. venom elimination 100-fold faster once antivenom is given.
+- **Source aliases:**
+  - `antivenom` -- Gulati 2014 Eq 2 (1 if absent, 100 if present).
+  - `time_of_antivenom` -- the per-subject switch time in the authors' original_model.m (`if t>time_of_antivenom`); derive the column as `as.integer(time > time_of_antivenom)` per record.
+- **Example models:** `Gulati_2014_brownSnakeVenom.R` (founding example; brown snake envenoming, venom-induced consumption coagulopathy).
+- **Notes:** Member of the auto-approved `CONMED_<INN>` family, with the product class in place of an INN as in `CONMED_ABX` (antivenoms are animal-derived immunoglobulin products with no INN). General scope because any venom-kinetics or envenoming model with antivenom treatment needs the same switch. Distinct from a model of the antivenom's own pharmacokinetics (`Isbister_2015_snake_antivenom.R`), where antivenom is the dosed drug in the event table rather than a covariate, and from `SNAKEFAMILY_ELAPID`, which classifies the venom source. A model that resolves antivenom concentration (binding of venom by circulating antivenom) should carry the antivenom as a dosed state instead of this indicator.
+
 ### DIS_EOPE (**canonical for early-onset pre-eclampsia indicator**)
 - **Description:** Binary indicator of early-onset pre-eclampsia (eoPE); `1` = eoPE diagnosed before 34 weeks gestation, `0` = not eoPE. Time-fixed per subject within the gestational PK study window. Used by population PK models that compare drug disposition in pregnant women with vs without early-onset pre-eclampsia.
 - **Units:** (binary)
