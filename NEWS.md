@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tham 2017 subcutaneous insulins (glargine, regular U-100/U-500, NPH, lispro, lispro protamine suspension and their premixes) ([doi:10.1002/jcph.899](https://doi.org/10.1002/jcph.899)) -- healthy adults without diabetes.
+- Add Ternant 2017 myocardial necrosis biomarkers CK, cTnI and CK-MB ([doi:10.1038/s41598-017-11352-4](https://doi.org/10.1038/s41598-017-11352-4)) -- adults with STEMI treated by primary PCI in cardioprotective conditioning trials.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

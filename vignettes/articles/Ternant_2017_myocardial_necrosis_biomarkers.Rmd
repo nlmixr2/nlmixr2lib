@@ -1,0 +1,512 @@
+---
+title: "Myocardial necrosis biomarkers CK, cTnI and CK-MB after STEMI (Ternant 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Myocardial necrosis biomarkers CK, cTnI and CK-MB after STEMI (Ternant 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Ternant_2017_ck"))$reference`
+* Article: <https://doi.org/10.1038/s41598-017-11352-4> (open access)
+
+Ternant et al. described the serum kinetics of three myocardial necrosis
+biomarkers -- creatine kinase (CK), cardiac troponin I (cTnI) and the
+CK-MB isoenzyme -- after ST-segment elevation myocardial infarction (STEMI)
+treated by primary percutaneous coronary intervention (PCI). Each biomarker
+was modelled separately (Monolix 4.3.2, SAEM), so the paper contributes three
+independent model files:
+
+| Model | Biomarker | Release | Disposition | Baseline production |
+|-------|-----------|---------|-------------|---------------------|
+| `Ternant_2017_ck` | CK (IU/L) | two transit chains | one compartment | yes (`kin`) |
+| `Ternant_2017_ctni` | cTnI (mg/L as printed) | two transit chains | two compartments | no |
+| `Ternant_2017_ckmb` | CK-MB (IU/L) | one transit chain | one compartment | yes (`kin`) |
+
+The key output of each model is `BTOT`, the total amount of biomarker
+released by the lesion (in concentration units, because the model has no
+volume). The authors propose it as a surrogate of infarct size. `BTOT` rises
+exponentially with the area at risk (`AREA_AT_RISK_PCT`) and is lower in patients
+randomized to a cardioprotective conditioning arm (`TRT_CONDITIONING`).
+
+```{r load-models}
+mod_ck <- readModelDb("Ternant_2017_ck")
+mod_ctni <- readModelDb("Ternant_2017_ctni")
+mod_ckmb <- readModelDb("Ternant_2017_ckmb")
+```
+
+# Population
+
+`r rxode2::rxode(mod_ck)$population$n_subjects` STEMI patients from three
+Lyon conditioning trials (two ischemic postconditioning trials, a cyclosporine
+A postconditioning trial and the PCNR postconditioning trial) contributed CK
+and cTnI profiles (1965 measurements each; 61 control, 71 conditioned).
+`r rxode2::rxode(mod_ckmb)$population$n_subjects` patients from the RIPOST-MI
+trial (Angers) contributed CK-MB profiles (735 measurements; 16 control, 17
+remote ischemic perconditioning, 16 perconditioning plus local
+postconditioning). Median age was 58-59 years and median weight 75-76 kg
+(Table 1). Blood was sampled before PCI, every 4 h over the first 24 h and every
+6 h over the next 48 h. Each data set was split at random into a learning
+subset (2/3) used for estimation and a validation subset (1/3).
+
+Table 1 prints sex as "female/male 101/31" and "40/19"; a STEMI cohort is
+predominantly male, so the labels are almost certainly transposed, and the
+CK-MB pair sums to 59 rather than 49. The models do not use sex.
+
+The same information is available programmatically via
+`rxode2::rxode(readModelDb("Ternant_2017_ck"))$population`.
+
+# Model structure
+
+For each patient time zero is the first blood sample (before PCI), and the
+biomarker level at that sample, `B0`, is an estimated initial condition. The
+rest of the total released amount, `B = BTOT - B0`, enters the central
+compartment through a transit release function. With two chains,
+
+    R(t) = B * [Fr * f1(t) + (1 - Fr) * f2(t)]
+    f(t) = ktr * (ktr * t)^n * exp(-ktr * t) / Gamma(n + 1)
+
+which is the transit-compartment input of Savic et al. 2007 (paper reference
+43) with a non-integer number of transit compartments `n`. The central
+compartment follows `dB/dt = R(t) + kprod - ke * B` (Eq. 3) for CK and CK-MB,
+and Eqs. 4-5 with peripheral exchange `k12`, `k21` for cTnI. Covariates act on
+`BTOT` only: `BTOT = BTOT0 * exp(beta_ARM * ARM + beta_AAR * AAR)`.
+
+# Source trace
+
+All values are from Table 2 of Ternant 2017; IIV is reported as standard
+deviations (omega) and encoded as variances (omega squared).
+
+| Parameter | CK | cTnI | CK-MB | Source |
+|-----------|----|------|-------|--------|
+| `lbtot` (BTOT at AAR = 0, control) | 2120 | 196 | 167 | Table 2 'B TOT' |
+| `e_trt_btot` (conditioning arm on log BTOT) | -0.43 | -0.56 | -0.75 | Table 2 'Arm on BTOT' |
+| `e_aar_btot` (AAR on BTOT, per % ACS) | 0.020 | 0.019 | 0.037 | Table 2 'AAR on BTOT' |
+| `lb0` (level at first sample) | 173 | 0.11 | 43.1 | Table 2 'B1' |
+| `logitfslow` (Fr) | 0.15 | 0.53 | -- | Table 2 'Fr' |
+| `lntr1` (n1) | 2.5 | 2.0 | 1.0 | Table 2 'n1' |
+| `lktr1` (ktr1, 1/h) | 0.68 | 0.29 | 0.34 | Table 2 'ktr1' |
+| `lntr2` (n2) | 50.7 | 4.2 | -- | Table 2 'n2' |
+| `lktr2` (ktr2, 1/h) | 14.4 | 0.88 | -- | Table 2 'ktr2' |
+| `lkin` (kprod, units/h) | 6.9 | -- | 0.32 | Table 2 'kprod' |
+| `lkel` (ke, 1/h) | 0.062 | 0.097 | 0.096 | Table 2 'ke' |
+| `lk12`, `lk21` (1/h) | -- | 0.11, 0.044 | -- | Table 2 'k12', 'k21' |
+| omega BTOT, B0 | 0.65, 1.1 | 0.80, 3.7 | 0.51, 1.1 | Table 2 |
+| omega Fr, n1, ktr1 | 0.79, 0.49, 0.78 | 0.59, 0.46, 0.43 | --, 0.64, 0.18 | Table 2 |
+| omega n2, ktr2 | 0 (fixed), 0 (fixed) | 0.25, -- | -- | Table 2 |
+| omega kprod, ke | 0.83, 0.23 | --, 0.23 | 0.37, 0.10 | Table 2 |
+| omega k12, k21 | -- | 0.16, 0.79 | -- | Table 2 |
+| `addSd` | 9.3 IU/L | 0.82 mg/L | 0.19 IU/L | Table 2 'sigma add' |
+| `propSd` | 0.099 | 0.15 | 0.12 | Table 2 'sigma prop' |
+| Release function | | | | Eq. 1-2 with Savic 2007 normalisation (see below) |
+| Disposition ODEs | Eq. 3 | Eqs. 4-5 | Eq. 3 | Methods, 'Biomarker distribution and elimination' |
+| Covariate model | | | | Methods, 'Covariates' |
+| Residual error `Y = F (1 + e_prop) + e_add` | | | | Methods, 'Error model' |
+
+# Exact checks
+
+## Elimination half-lives
+
+The Results give elimination half-lives of 11.2 h (CK), 37.8 h (cTnI) and
+7.2 h (CK-MB), computed from the kinetic estimates. For CK and CK-MB this is
+`log(2) / ke`; for the two-compartment cTnI model it is the terminal
+(beta-phase) half-life, which reproduces only with the standard
+`dB2/dt = k12 * B1 - k21 * B2` (Eq. 5 prints `+ k21 * B2`).
+
+```{r half-lives}
+beta_phase <- function(kel, k12, k21) {
+  s <- kel + k12 + k21
+  (s - sqrt(s^2 - 4 * kel * k21)) / 2
+}
+hl <- data.frame(
+  biomarker = c("CK", "cTnI", "CK-MB"),
+  reported_h = c(11.2, 37.8, 7.2),
+  model_h = c(
+    log(2) / 0.062,
+    log(2) / beta_phase(0.097, 0.11, 0.044),
+    log(2) / 0.096
+  )
+)
+hl$pct_diff <- 100 * (hl$model_h - hl$reported_h) / hl$reported_h
+knitr::kable(hl, digits = 2)
+stopifnot(all(abs(hl$pct_diff) < 1))
+```
+
+## Total released amount
+
+The release functions integrate to one, so the area under the
+baseline-corrected curve from time zero to infinity is `BTOT / ke` (B0 is
+eliminated from the central compartment and B is released into it; for cTnI
+all central elimination is through `ke` and the peripheral compartment
+returns everything it takes up). This checks the release normalisation, the
+`B = BTOT - B0` split and the covariate model in one identity.
+
+```{r auc-identity}
+typical_check <- function(mod, out, aar, trt, tmax) {
+  mz <- rxode2::zeroRe(rxode2::rxode(mod))
+  ev <- data.frame(
+    id = 1L, time = seq(0, tmax, by = 0.05), evid = 0L, cmt = "central",
+    AREA_AT_RISK_PCT = aar, TRT_CONDITIONING = trt
+  )
+  s <- as.data.frame(rxode2::rxSolve(mz, ev, atol = 1e-10, rtol = 1e-10))
+  kin <- if ("kin" %in% names(s)) s$kin else 0
+  excess <- s[[out]] - kin / s$kel * (1 - exp(-s$kel * s$time))
+  auc <- sum(diff(s$time) * (head(excess, -1) + tail(excess, -1)) / 2)
+  data.frame(
+    AREA_AT_RISK_PCT = aar, TRT_CONDITIONING = trt,
+    btot = s$btot[1], auc_excess = auc, expected = s$btot[1] / s$kel[1]
+  )
+}
+idchk <- bind_rows(
+  CK = bind_rows(lapply(c(0, 1), \(a) typical_check(mod_ck, "cpk", 35, a, 600))),
+  cTnI = bind_rows(lapply(c(0, 1), \(a) typical_check(mod_ctni, "troponin_i", 35, a, 1500))),
+  `CK-MB` = bind_rows(lapply(c(0, 1), \(a) typical_check(mod_ckmb, "cpk_mb", 35, a, 400))),
+  .id = "biomarker"
+) |>
+  mutate(rel_err = (auc_excess - expected) / expected)
+knitr::kable(idchk, digits = c(0, 0, 0, 1, 0, 0, 5))
+stopifnot(all(abs(idchk$rel_err) < 0.005))
+```
+
+The covariate model is exact by construction: the conditioned-to-control
+`BTOT` ratio is `exp(beta_ARM)`, i.e. reductions of
+`r round(100 * (1 - exp(-0.43)))`% (CK), `r round(100 * (1 - exp(-0.56)))`%
+(cTnI) and `r round(100 * (1 - exp(-0.75)))`% (CK-MB).
+
+```{r arm-ratio}
+arm_ratio <- idchk |>
+  group_by(biomarker) |>
+  summarise(ratio = btot[TRT_CONDITIONING == 1] / btot[TRT_CONDITIONING == 0])
+stopifnot(isTRUE(all.equal(
+  arm_ratio$ratio[match(c("CK", "cTnI", "CK-MB"), arm_ratio$biomarker)],
+  exp(c(-0.43, -0.56, -0.75)),
+  tolerance = 1e-8
+)))
+```
+
+# Virtual cohort
+
+Observed data are not public. The virtual cohort draws the area at risk from
+a log-normal distribution matched to the Table 1 median and interquartile
+range (redrawing values outside 10-70% ACS, the range seen in Figure 3), and
+assigns arms in the trial proportions with at most 200 subjects per arm.
+Sampling follows the protocol: before PCI, every 4 h to 24 h, then every 6 h
+to 72 h.
+
+```{r cohort}
+set.seed(20170906)
+rxode2::rxSetSeed(20170906)
+
+draw_aar <- function(n, med, q1, q3) {
+  sdlog <- (log(q3) - log(q1)) / (2 * qnorm(0.75))
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- rlnorm(2 * n, log(med), sdlog)
+    out <- c(out, x[x >= 10 & x <= 70])
+  }
+  out[seq_len(n)]
+}
+obs_times <- c(0, 4, 8, 12, 16, 20, 24, 30, 36, 42, 48, 54, 60, 66, 72)
+
+make_cohort <- function(n_ctl, n_trt, med, q1, q3) {
+  subj <- data.frame(
+    id = seq_len(n_ctl + n_trt),
+    TRT_CONDITIONING = rep(c(0L, 1L), c(n_ctl, n_trt)),
+    AREA_AT_RISK_PCT = draw_aar(n_ctl + n_trt, med, q1, q3)
+  )
+  tidyr::crossing(subj, time = obs_times) |>
+    mutate(evid = 0L, cmt = "central") |>
+    arrange(id, time) |>
+    as.data.frame()
+}
+# CK / cTnI: 61 control vs 71 conditioned; CK-MB: 16 control vs 33 conditioned
+cohort_lyon <- make_cohort(172, 200, 34.8, 27.0, 46.5)
+cohort_ripost <- make_cohort(97, 200, 37.4, 30.5, 45.7)
+```
+
+# Simulation
+
+```{r simulate}
+sim_one <- function(mod, cohort, out, label) {
+  s <- rxode2::rxSolve(
+    mod, cohort,
+    keep = c("TRT_CONDITIONING", "AREA_AT_RISK_PCT")
+  )
+  as.data.frame(s) |>
+    transmute(
+      id, time, TRT_CONDITIONING, AREA_AT_RISK_PCT, btot, brel,
+      conc = .data[[out]], biomarker = label
+    )
+}
+sim <- bind_rows(
+  sim_one(mod_ck, cohort_lyon, "cpk", "CK"),
+  sim_one(mod_ctni, cohort_lyon, "troponin_i", "cTnI"),
+  sim_one(mod_ckmb, cohort_ripost, "cpk_mb", "CK-MB")
+) |>
+  mutate(
+    biomarker = factor(biomarker, levels = c("CK", "cTnI", "CK-MB")),
+    arm = ifelse(TRT_CONDITIONING == 1, "Conditioned", "Control")
+  )
+```
+
+Because `BTOT` and `B0` have independent random effects, a few simulated
+subjects draw `B0 > BTOT` and therefore a negative post-sampling release
+`B = BTOT - B0` (see Assumptions and deviations). The simulated fraction
+matches its analytic expectation. These subjects are excluded from the NCA
+below, which needs non-negative levels.
+
+```{r negative-release}
+# Analytic expectation: log(B0) - log(BTOT) is normal with mean from the
+# typical values and covariates and variance omega_B0^2 + omega_BTOT^2.
+typ <- data.frame(
+  biomarker = c("CK", "cTnI", "CK-MB"),
+  b0 = c(173, 0.11, 43.1), btot0 = c(2120, 196, 167),
+  e_trt = c(-0.43, -0.56, -0.75), e_aar = c(0.020, 0.019, 0.037),
+  om_b0 = c(1.1, 3.7, 1.1), om_btot = c(0.65, 0.80, 0.51)
+)
+neg_release <- sim |>
+  distinct(biomarker, id, brel, TRT_CONDITIONING, AREA_AT_RISK_PCT) |>
+  mutate(biomarker = as.character(biomarker)) |>
+  left_join(typ, by = "biomarker") |>
+  mutate(p_neg = pnorm(
+    (log(b0) - log(btot0) - e_trt * TRT_CONDITIONING - e_aar * AREA_AT_RISK_PCT) /
+      sqrt(om_b0^2 + om_btot^2)
+  )) |>
+  group_by(biomarker) |>
+  summarise(
+    n_subjects = dplyr::n(),
+    pct_negative_B = 100 * mean(brel < 0),
+    pct_expected = 100 * mean(p_neg),
+    .groups = "drop"
+  )
+knitr::kable(neg_release, digits = 1)
+# A binomial count over about 300 subjects: allow 4 percentage points.
+stopifnot(all(abs(neg_release$pct_negative_B - neg_release$pct_expected) < 4))
+```
+
+## Prediction intervals (Figure 2)
+
+```{r vpc, fig.width = 8, fig.height = 4}
+vpc <- sim |>
+  group_by(biomarker, time) |>
+  summarise(
+    q05 = quantile(conc, 0.05), q50 = median(conc), q95 = quantile(conc, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(time)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), fill = "grey75") +
+  geom_line(aes(y = q50)) +
+  facet_wrap(~biomarker, scales = "free_y") +
+  labs(
+    x = "Time from first blood sample (h)", y = "Biomarker level",
+    caption = "Replicates Figure 2 of Ternant 2017 (90% prediction interval and median, both arms pooled)."
+  ) +
+  theme_bw()
+```
+
+```{r vpc-peaks}
+vpc |>
+  group_by(biomarker) |>
+  summarise(
+    `Peak of 95th percentile` = max(q95),
+    `Time of peak (h)` = time[which.max(q95)],
+    `95th percentile at 72 h` = q95[time == 72],
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 0)
+```
+
+Read from Figure 2, the upper edge of the published band peaks at about
+7500-8000 IU/L (CK), 350 (cTnI) and 700 IU/L (CK-MB), and all three bands
+return close to baseline by 72 h. The simulated bands above are on the
+protocol sampling grid and exclude residual error, so they are
+comparable in order of magnitude only. The CK-MB band in Figure 2 reaches
+its maximum within the first 4 h sampling bin, so the figure cannot resolve
+the release peak time (see Assumptions and deviations).
+
+## Total released amount by arm (Figure 3)
+
+```{r btot, fig.width = 8, fig.height = 3.5}
+btot_subj <- sim |> distinct(biomarker, id, arm, AREA_AT_RISK_PCT, btot)
+btot_subj |>
+  group_by(biomarker, arm) |>
+  summarise(median_BTOT = median(btot), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = arm, values_from = median_BTOT) |>
+  knitr::kable(digits = 0, caption = "Median simulated BTOT by arm (Figure 3, left).")
+ggplot(btot_subj, aes(AREA_AT_RISK_PCT, btot, colour = arm)) +
+  geom_point(alpha = 0.4, size = 0.8) +
+  facet_wrap(~biomarker, scales = "free_y") +
+  labs(
+    x = "Area at risk (% ACS)", y = "BTOT",
+    caption = "Compare Figure 3 of Ternant 2017 (right): individual BTOT versus AAR."
+  ) +
+  theme_bw()
+```
+
+```{r btot-fig3}
+fig3_ctl <- data.frame(biomarker = c("CK", "cTnI", "CK-MB"), fig3_control = c(5000, 230, 620))
+btot_cmp <- btot_subj |>
+  dplyr::filter(arm == "Control") |>
+  group_by(biomarker) |>
+  summarise(simulated_control = median(btot), .groups = "drop") |>
+  mutate(biomarker = as.character(biomarker)) |>
+  left_join(fig3_ctl, by = "biomarker") |>
+  mutate(ratio = simulated_control / fig3_control)
+knitr::kable(btot_cmp, digits = 2)
+```
+
+The Figure 3 values are approximate control-arm medians of the individual
+(empirical-Bayes) BTOT estimates in the learning subsets, read from the box
+plots. The simulated control-arm medians are within
+`r round(min(btot_cmp$ratio), 1)`- to `r round(max(btot_cmp$ratio), 1)`-fold
+of them. cTnI shows the largest gap, in line with the population-prediction
+bias the authors report for cTnI.
+
+# NCA against Table 1
+
+Table 1 reports the median trapezoidal AUC and peak level of each biomarker
+over all patients (both arms pooled). PKNCA is run per biomarker and arm over
+the 0-72 h sampling window, and the pooled medians are compared with
+Table 1.
+
+```{r pknca}
+conc_obj <- PKNCA::PKNCAconc(
+  sim |> dplyr::filter(brel >= 0) |> dplyr::filter(!is.na(conc)),
+  conc ~ time | biomarker + arm + id
+)
+intervals <- data.frame(start = 0, end = 72, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, intervals = intervals))
+nca_long <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast"))
+
+nca_long |>
+  group_by(biomarker, arm, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename("Cmax" = cmax, "Tmax (h)" = tmax, "AUC0-72" = auclast) |>
+  knitr::kable(digits = 1, caption = "Median simulated NCA by arm.")
+```
+
+```{r nca-compare}
+reference <- data.frame(
+  biomarker = c("CK", "cTnI", "CK-MB"),
+  cmax = c(2745, 97, 306),
+  auclast = c(74213, 2607, 5403)
+)
+simulated <- nca_long |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  select(biomarker, PPTESTCD, PPORRES) |>
+  mutate(biomarker = as.character(biomarker))
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated, reference,
+  by = "biomarker",
+  units = c(cmax = "biomarker units", auclast = "biomarker units*h")
+)
+knitr::kable(cmp, caption = "Pooled-arm medians: Table 1 (reference) versus simulation.")
+```
+
+```{r nca-assert}
+pooled <- simulated |>
+  group_by(biomarker, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop") |>
+  left_join(
+    tidyr::pivot_longer(reference, -biomarker, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("biomarker", "PPTESTCD")
+  ) |>
+  mutate(ratio = sim / ref)
+# Centre-of-distribution check: a mis-transcribed BTOT, ke or release
+# normalisation (for example the unnormalised Eq. 1 as printed, which scales
+# the CK release by n / ktr, about 4-fold) moves these medians by
+# several-fold.
+stopifnot(all(pooled$ratio > 0.5 & pooled$ratio < 2))
+```
+
+CK agrees with Table 1 within about 10%, and cTnI within about 20%. The
+CK-MB peak is about 30% below Table 1 (flagged), and the CK-MB AUC is about
+15% below.
+Three things contribute. Table 1 summarises observed levels, which include
+residual error, and the maximum of noisy samples is biased upwards. The
+virtual cohort is an approximation of the trial. The authors also note a
+bias of the population (typical-value) predictions for CK and cTnI that
+disappears for individual predictions (Figure 1). For CK-MB, the
+conditioned-arm medians of the individual BTOT estimates in Figure 3 (about
+400-450 IU/L) lie above the simulated conditioned-arm median. That is, the
+population estimate of the arm effect (-0.75 on log BTOT, a 53% reduction)
+is larger than the gap between the empirical-Bayes estimates in the figure.
+The model AUC (from the population parameters) is compared here with an
+observed trapezoidal AUC.
+
+# Assumptions and deviations
+
+* **Release function normalisation.** Eq. 1 prints
+  `f(t) = (ktr t)^n exp(-ktr t) / Gamma(n)`, which is dimensionless and does
+  not integrate to one, so `R(t) = B f(t)` cannot be added to `dB/dt` as
+  written. The models use the transit input of the cited reference (Savic
+  2007), `ktr (ktr t)^n exp(-ktr t) / Gamma(n + 1)`. With this form, the
+  model reproduces the Table 1 AUC medians and the Figure 3 BTOT medians.
+  The unnormalised form as printed would multiply the released amount by
+  `n / ktr` (for example 3.7 and 3.5 for the two CK chains), several times the
+  Table 1 AUC. A shape-`n` gamma density (`ktr (ktr t)^(n - 1) exp(-ktr t) /
+  Gamma(n)`) would also integrate to one and give the same AUC, but release
+  would peak earlier (by about 2-4 h for cTnI and CK-MB). The maintainers
+  compared both forms with Figure 2. For CK-MB, the Savic form matches the
+  height of the band peak (about 700 IU/L), where the shape-`n` form
+  overshoots it by about 40%. The shape-`n` form declines slightly more like
+  the figure between 12 and 30 h. Neither comparison is decisive, so the form
+  of the cited reference is used.
+* **Eq. 2** prints `R(t) = [F f1(t) + (1 - F) F2(t)]` without the amount `B`;
+  the prose ("R(t) = B f(t)" for a single chain) and the definition of `B`
+  restore it.
+* **Eq. 5 sign.** `dB2/dt = k12 B1 + k21 B2` is printed; the models use
+  `- k21 B2`, which is what reproduces the 37.8 h cTnI half-life.
+* **B = BTOT - B0.** The Methods define `BTOT = B0 + B`, with `B0` the level
+  at the first sample (Table 2 'B1') and `B` the amount released afterwards.
+  The models follow this literally. Because `BTOT` and `B0` carry
+  independent random effects, a small fraction of simulated subjects (about
+  1% for CK, 2% for cTnI and 4% for CK-MB in a cohort like the trials') have
+  `B0 > BTOT`.
+  These subjects get a negative release term and a profile below their
+  starting level. The paper does not say how the authors handled this.
+* **B2(0).** Table 2 reports no value for 'B2' (the initial peripheral cTnI
+  level), so the peripheral compartment starts empty.
+* **Fr random effect.** The Methods state an exponential (log-normal) model
+  for every parameter. A log-normal `Fr` exceeds 1 for about 14% of cTnI
+  subjects (typical 0.53, omega 0.59), which would make the second release
+  chain negative. `Fr` is therefore encoded logit-normal (`logitfslow`), the
+  usual Monolix choice for a fraction, with omega on the logit scale. Chain 1
+  is the slower chain for both CK and cTnI, which is why the parameter is
+  named `fslow`.
+* **Fixed-to-zero random effects.** omega n2 and omega ktr2 of the CK model
+  were fixed to 0 and are omitted rather than carried as zero-variance etas.
+* **Conditioning-arm covariate for CK-MB.** The Results say the reference
+  category was "control and RIPer arms" and the other "RIPer/RIPer + IPOST".
+  Because the RIPer and RIPer + IPOST arms were merged after they did not
+  differ (p = 0.89), the reference is the control arm and
+  `TRT_CONDITIONING = 1` covers both conditioned arms. This matches Figure 3,
+  where both conditioned arms lie below control.
+* **cTnI units.** Table 2 and Figure 3 label cTnI in mg/L, and Figure 2 in
+  IU/L. The magnitudes (median peak 97) correspond to ug/L (ng/mL) on the
+  contemporary cTnI assays. The model is linear in the biomarker level, so
+  only `addSd` depends on the unit; the printed mg/L is kept.
+* **Time origin.** Time is measured from each patient's first blood sample
+  (before PCI), not from symptom onset or reperfusion. The models have no
+  dose records; supply observation rows on `central` from time zero.
+* **Covariates.** `AREA_AT_RISK_PCT` (area at risk, % of abnormally contracting
+  segments on left ventriculography) and `TRT_CONDITIONING` (conditioning arm
+  versus control) are new entries in the covariate register. Both act on
+  `BTOT` without centring, so the tabulated `BTOT` is the value at AAR = 0 in
+  the control arm.
+* **Virtual cohort.** AAR is log-normal from the Table 1 median and IQR, and
+  arm sizes keep the trial ratios at no more than 200 subjects per arm.
