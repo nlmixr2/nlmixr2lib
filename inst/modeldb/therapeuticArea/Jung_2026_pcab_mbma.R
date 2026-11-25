@@ -33,6 +33,7 @@ Jung_2026_pcab_mbma <- function() {
     concentration = "ng/mL (Cc); gastric_ph is in pH units"
   )
 
+  dosing <- c("depot", "food")
   paper_specific_compartments <- "food"
 
   compartmentData <- list(
