@@ -8949,3 +8949,15 @@ Clinician-rated ordinal scores of eyebrow and eyelash hair loss used in alopecia
 - **Notes:** One item of the 15-item GSRS. The other items, and the GSRS diarrhea syndrome sub-score (the mean of Questions 11, 12 and 14), are different scales and should get their own `gsrs_<item>` names rather than reuse this one. Some GSRS versions score 0-6 instead of 1-7; say which range a model uses in its `units`, and do not mix ranges under one name. A threshold probability such as P(score >= 4) is a derived quantity of the same model, not a separate output.
 
 ---
+
+---
+
+## Ocular allergy scores (conjunctival allergen challenge)
+
+### ocular_itch (**canonical CAC ocular itching score ordinal output**)
+- **Type:** compartment
+- **Role:** Ocular itching score of one eye after a conjunctival allergen challenge (CAC), rated by the patient 0-4 in 0.5-unit steps (nine categories, 0 = none, 4 = incapacitating itch), usually at 3, 5 and 7 min after the allergen instillation. Ordinal PD output: a cumulative-logit model (`logite0` plus `logitstep1` to `logitstep7`, with grade `k = 2 x score`) whose observation is the rxode2 ordinal endpoint `ocular_itch ~ c(p0, ..., p7)`, so simulated category `k` is itching score `(k - 1) / 2` and the per-grade probabilities are the outputs to summarise.
+- **Source aliases:**
+  - `itching score`, `CAC itching score` -- Fidler 2018 Methods and Figure 2.
+- **Example models:** `Fidler_2018_olopatadine.R` (founding example; a differential-odds K-PD model of olopatadine 0.1/0.2/0.7% and vehicle eye drops, with the expected score `itch_mean` as an algebraic output).
+- **Notes:** The 0-4 half-unit CAC scale (Ora/Abelson). A conjunctival-redness score from the same challenge is a different instrument and needs its own name; so does a skin pruritus scale (`SCORE_PPNRS` is a covariate, not this output). The eye's baseline score used as a covariate is `OCULAR_ITCH_BL` in `covariate-columns.md`. A threshold probability such as P(score < 1) is a derived quantity of the same model, not a separate output.

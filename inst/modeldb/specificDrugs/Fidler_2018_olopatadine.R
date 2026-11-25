@@ -105,11 +105,11 @@ Fidler_2018_olopatadine <- function() {
 
     # Vehicle effect Ve = Vi * (Vb + Vm * t) on logit P(Y >= s) (Methods
     # equation for Ve(S); Table 5 'Vehicle parameters').
-    shift_placebo <- -4.98
+    logit_placebo <- -4.98
     label("Vehicle shift Vb of logit P(itching score >= s) at the instillation time, typical eye (unitless)") # Table 5: Vehicle linear shift (Vb) = -4.98 (RSE 5.65%)
     slope_placebo <- 0.06
     label("Vehicle time slope Vm of logit P(itching score >= s) (1/h)") # Table 5: Vehicle time shift (Vm) = 0.06 (RSE 14.07%)
-    e_ocular_itch_bl_shift_placebo <- 2.16
+    e_ocular_itch_bl_logit_placebo <- 2.16
     label("Power exponent of the baseline itching score (OCULAR_ITCH_BL / 2.8) on Vb (unitless)") # Table 5: psi baseline on Vb = 2.16 (RSE 5.04%)
 
     # Vehicle differential-odds parameters v_s (Table 5 column 'vs'),
@@ -195,7 +195,7 @@ Fidler_2018_olopatadine <- function() {
     # into depot_kpd so that tad() is defined.
     tveh <- 0
     if (TRT_PHASE == 1) tveh <- tad(depot_kpd)
-    shift_veh <- shift_placebo * (OCULAR_ITCH_BL / 2.8)^e_ocular_itch_bl_shift_placebo
+    shift_veh <- logit_placebo * (OCULAR_ITCH_BL / 2.8)^e_ocular_itch_bl_logit_placebo
     eff_veh <- TRT_PHASE * (shift_veh + slope_placebo * tveh)
 
     # Linear shift of the whole distribution by the eye's baseline itching,

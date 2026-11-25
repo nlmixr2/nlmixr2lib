@@ -1,0 +1,422 @@
+---
+title: "Olopatadine ocular itching (Fidler 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Olopatadine ocular itching (Fidler 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Fidler_2018_olopatadine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Fidler_2018_olopatadine"))$description`
+* Article: <https://doi.org/10.1007/s10928-018-9588-7> (open access, PMC6061088)
+
+Olopatadine is an antihistamine and mast-cell stabiliser given as eye drops for
+allergic conjunctivitis. Fidler et al. pooled two conjunctival allergen
+challenge (CAC) trials and modelled the patient-rated ocular itching score
+(0-4 in 0.5-unit steps, nine categories) as an ordinal outcome. No ocular
+concentrations were measured, so the dose strength (%) enters a virtual
+kinetic-pharmacodynamic (K-PD) compartment whose first-order washout drives an
+Emax drug effect. The paper's purpose was to show which patients obtain better
+24-h itching relief from olopatadine 0.7% than from 0.2%.
+
+# Population
+
+The model was fitted to 10,759 itching observations from 547 adults in trials
+C-10-126 (NCT01479374) and C-12-053 (NCT01743027). The data were 3269 baseline
+(screening) observations and post-treatment observations on vehicle (117
+patients), olopatadine 0.1% (99), 0.2% (167) and 0.7% (164). Table 3 of the
+paper (545 patients in the intention-to-treat analysis set) reports a mean age
+of 40.9 years (range 18-77) and 60.2% women. The eye's baseline itching score
+had a mean of 2.8 (SD 0.5), median 2.8 and range 1.5-4.0. Grass (42%), dust
+mites (17%) and ragweed (17%) were the most common challenge allergens.
+Patients had to show itching of at least 2 and redness of at least 2 in two of
+three vessel beds at both screening challenges.
+
+The same information is available programmatically via
+`readModelDb("Fidler_2018_olopatadine")()$population`.
+
+# Model structure
+
+For itching score `s = 0.5, 1, ..., 4` the paper models
+
+`logit P(Y >= s) = alpha_0.5 + ... + alpha_s + Ve(s) - De(s) + psi_BL (BL - 2.8) + eta`
+
+with
+
+* `Ve(s) = Vi * (Vb * (BL / 2.8)^psi_Vb + Vm * t) * prod_{m <= s} expit(v_m)`: the vehicle
+  effect, on every record after a drop of vehicle or olopatadine (`Vi = 1`),
+  with `t` the time since the drop;
+* `De(s) = Emax * A / (EC50 + A) * prod_{m <= s} expit(delta_m)`: the drug
+  effect, with `A` the K-PD amount (dose strength, %) washing out with a
+  half-life of 18.46 h;
+* an extra `psi_0.7 (BL - 2.8)` in the 0.7% arm after treatment.
+
+The library stores the model in the `logit P(grade <= k)` frame of its other
+proportional-odds models, with grade `k = 2 x score`. Every sign is therefore
+flipped: `logite0 = -alpha_0.5` and `logitstep<k> = -alpha_s` with
+`k = 2 s - 1`. The rxode2 ordinal endpoint `ocular_itch ~ c(p0, ..., p7)`
+returns category `k` for itching score `(k - 1) / 2` in the `sim` column. The
+model also outputs `itch_mean`, the expected score
+`0.5 * sum_s P(Y >= s)`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Cumulative-logit model `logit P(Y >= s) = f_s + eta` | -- | Methods, 'Model development' equations |
+| `f_s = De(s) + Ve(s) + sum alpha` | -- | Methods equation for `f_s` |
+| `De(s)`, `Ve(s)` with differential-odds products | -- | Methods equations for `De(S)` and `Ve(S)` |
+| Linear covariate shift `psi (cov - median)` | -- | Methods, 'Covariate analysis' equation |
+| `logite0` | -8.79 | Table 5, alpha 0.5 = 8.79 (sign-flipped) |
+| `logitstep1` .. `logitstep7` | 1.47, 1.03, 0.85, 1.88, 2.88, 3.02, 2.14 | Table 5, alpha 1 .. alpha 4 (sign-flipped) |
+| `logit_placebo` | -4.98 | Table 5, 'Vehicle linear shift (Vb)' |
+| `slope_placebo` | 0.06 1/h | Table 5, 'Vehicle time shift (Vm)' |
+| `e_ocular_itch_bl_logit_placebo` | 2.16 | Table 5, 'psi baseline on Vb'; Table 4 'Baseline on vehicle (Vb)' |
+| `logitfdiff_placebo1` .. `7` | 10 (fixed), 10 (fixed), 10 (fixed), 2.38, 1.07, 10 (fixed), 10 (fixed) | Table 5, column 'v s' |
+| `lkel` | log(log(2) / 18.46) | Table 5, 'KPD drug half-life' 18.46 h |
+| `lec50` | log(0.03) | Table 5, 'EC50 (%)' |
+| `lemax` | log(3.40) | Table 5, 'Maximum effect, Emax' |
+| `logitfdiff_drug1` .. `7` | 10 (fixed), 10 (fixed), 3.64, 1.56, 10 (fixed), -10 (fixed), 10 (fixed) | Table 5, column 'delta s' |
+| `e_ocular_itch_bl_ocular_itch` | 5.37 | Table 5, 'psi baseline, distribution' |
+| `e_dose_high_ocular_itch_bl_ocular_itch` | -0.64 | Table 5, 'psi Olopatadine 0.7 % shift on baseline, distribution'; Table 4 |
+| `etalogite0` | 1.9044 (SD 1.38) | Table 5, 'Log odds SD (w)' |
+| Centring value 2.8 | 2.8 | Table 3, overall median baseline itching |
+
+# Typical-value check against the printed equations
+
+A typical eye (`eta = 0`) is solved with the packaged model and compared with a
+direct implementation of the paper's equations in its own `P(Y >= s)` frame,
+using the Table 5 values. Both sides use the same parameters, so the difference
+is pure numerical error and a tight bound is the right check.
+
+```{r typical-check}
+mod <- rxode2::rxode2(readModelDb("Fidler_2018_olopatadine"))
+mod_typ <- rxode2::zeroRe(mod)
+
+# Paper-frame implementation (Methods equations, Table 5 values)
+alpha <- c(8.79, -1.47, -1.03, -0.85, -1.88, -2.88, -3.02, -2.14)
+v_s <- c(NA, 10, 10, 10, 2.38, 1.07, 10, 10)
+delta_s <- c(NA, 10, 10, 3.64, 1.56, 10, -10, 10)
+fac_v <- c(1, cumprod(plogis(v_s[-1])))
+fac_d <- c(1, cumprod(plogis(delta_s[-1])))
+paper_mean <- function(bl, trt, tad, amt, high) {
+  ve <- trt * (-4.98 * (bl / 2.8)^2.16 + 0.06 * tad)
+  de <- 3.40 * amt / (0.03 + amt)
+  shift <- (5.37 - 0.64 * high * trt) * (bl - 2.8)
+  f <- cumsum(alpha) + ve * fac_v - de * fac_d + shift
+  0.5 * sum(plogis(f))
+}
+
+kel <- log(2) / 18.46
+grid <- expand.grid(
+  bl = c(2, 2.8, 3.5), dose = c(0, 0.2, 0.7), tchal = c(0.5, 16, 24),
+  KEEP.OUT.ATTRS = FALSE
+)
+grid$id <- seq_len(nrow(grid))
+ev_typ <- bind_rows(
+  grid |> mutate(time = 0, evid = 1, amt = dose),
+  grid |> mutate(time = tchal + 5 / 60, evid = 0, amt = 0)
+) |>
+  mutate(
+    cmt = "depot_kpd", TRT_PHASE = 1, OCULAR_ITCH_BL = bl,
+    DOSE_HIGH = as.integer(dose == 0.7)
+  ) |>
+  arrange(id, time, desc(evid))
+s_typ <- rxode2::rxSolve(mod_typ, ev_typ, returnType = "data.frame")
+s_typ <- s_typ |>
+  left_join(grid, by = "id") |>
+  rowwise() |>
+  mutate(paper = paper_mean(bl, 1, time, dose * exp(-kel * time), dose == 0.7)) |>
+  ungroup()
+max_abs_diff <- max(abs(s_typ$itch_mean - s_typ$paper))
+max_abs_diff
+stopifnot(max_abs_diff < 1e-6)
+
+# K-PD washout: the amount at 24 h is the dose times exp(-kel * 24)
+kpd24 <- s_typ |> filter(dose == 0.7, abs(time - (24 + 5 / 60)) < 1e-9)
+stopifnot(all(abs(kpd24$depot_kpd / (0.7 * exp(-kel * kpd24$time)) - 1) < 1e-4))
+```
+
+The typical expected score at the 24-h challenge for an eye with the median
+baseline (2.8):
+
+```{r typical-table}
+s_typ |>
+  filter(bl == 2.8) |>
+  mutate(arm = ifelse(dose == 0, "Vehicle", paste0(dose, "%"))) |>
+  select(arm, tchal, itch_mean) |>
+  pivot_wider(names_from = tchal, values_from = itch_mean) |>
+  rename(
+    "Arm" = arm, "Onset (0.5 h)" = `0.5`, "16 h" = `16`, "24 h" = `24`
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+# Virtual CAC cohort
+
+Each simulated subject is one eye. The eye's baseline itching score is drawn
+from a normal distribution with the Table 3 mean and SD (2.8, 0.5), redrawn
+until it lies in the analysis-set range 1.5-4.0. The schedule follows the
+C-10-126 design described in the Methods: a screening challenge (baseline
+records), then a drop of study medication followed by a challenge 24 h later,
+a drop with a challenge 16 h later two weeks on, and a drop with a challenge
+27 min later (onset of action) one week after that. Itching is scored at 3, 5
+and 7 min after each challenge. All four arms are solved with the same seed
+and the same baseline draws, so they differ only in treatment.
+
+```{r cohort}
+n_per_arm <- 200
+set.seed(20180421)
+draw_bl <- function(n) {
+  out <- rnorm(n, 2.8, 0.5)
+  bad <- out < 1.5 | out > 4
+  while (any(bad)) {
+    out[bad] <- rnorm(sum(bad), 2.8, 0.5)
+    bad <- out < 1.5 | out > 4
+  }
+  out
+}
+bl_draw <- draw_bl(n_per_arm)
+
+h <- 24
+visits <- tibble::tibble(
+  visit = c("24 h", "16 h", "Onset"),
+  dose_time = c(7 * h, 21 * h, 28 * h),
+  chal_time = c(7 * h + 24, 21 * h + 16, 28 * h + 27 / 60)
+)
+make_events <- function(dose) {
+  obs_min <- c(3, 5, 7) / 60
+  ids <- seq_len(n_per_arm)
+  base <- expand.grid(id = ids, time = obs_min) |>
+    mutate(evid = 0, amt = 0, TRT_PHASE = 0, visit = "Baseline")
+  doses <- expand.grid(id = ids, v = seq_len(nrow(visits))) |>
+    mutate(
+      time = visits$dose_time[v], evid = 1, amt = dose, TRT_PHASE = 1,
+      visit = visits$visit[v]
+    ) |>
+    select(-v)
+  obs <- expand.grid(id = ids, v = seq_len(nrow(visits)), m = obs_min) |>
+    mutate(
+      time = visits$chal_time[v] + m, evid = 0, amt = 0, TRT_PHASE = 1,
+      visit = visits$visit[v]
+    ) |>
+    select(-v, -m)
+  bind_rows(base, doses, obs) |>
+    mutate(
+      cmt = "depot_kpd",
+      OCULAR_ITCH_BL = bl_draw[id],
+      DOSE_HIGH = as.integer(dose == 0.7)
+    ) |>
+    arrange(id, time, desc(evid))
+}
+
+arms <- c("Vehicle" = 0, "0.1%" = 0.1, "0.2%" = 0.2, "0.7%" = 0.7)
+sim <- bind_rows(lapply(names(arms), function(a) {
+  ev <- make_events(arms[[a]])
+  stopifnot(!anyDuplicated(ev[, c("id", "time", "evid")]))
+  rxode2::rxSetSeed(20180421)
+  rxode2::rxSolve(mod, ev, keep = "visit", returnType = "data.frame") |>
+    mutate(arm = a, score = (sim - 1) / 2)
+}))
+```
+
+# Replicate published figures
+
+## Figure 2: mean itching score by arm and challenge time
+
+Figure 2 of the paper annotates each panel with the mean (SD) itching score of
+its population-predicted simulation (100,000 subjects with between-subject
+variability). The simulated mean below is the cohort average of the expected
+score `itch_mean` over eyes and the three post-challenge times. The baseline
+column pools the screening records of every arm. Olopatadine 0.1% was not
+studied at the 16-h challenge.
+
+```{r fig2-means}
+fig2_pub <- tibble::tribble(
+  ~arm, ~visit, ~published,
+  "Baseline", "Baseline", 2.86,
+  "Vehicle", "Onset", 1.72, "Vehicle", "16 h", 2.11, "Vehicle", "24 h", 2.21,
+  "0.1%", "Onset", 1.80, "0.1%", "24 h", 1.64,
+  "0.2%", "Onset", 0.64, "0.2%", "16 h", 1.05, "0.2%", "24 h", 1.36,
+  "0.7%", "Onset", 0.53, "0.7%", "16 h", 0.92, "0.7%", "24 h", 1.14
+)
+sim_means <- sim |>
+  mutate(arm = ifelse(visit == "Baseline", "Baseline", arm)) |>
+  group_by(arm, visit) |>
+  summarise(simulated = mean(itch_mean), .groups = "drop")
+fig2_cmp <- fig2_pub |>
+  left_join(sim_means, by = c("arm", "visit")) |>
+  mutate(difference = simulated - published)
+fig2_cmp |>
+  rename(
+    "Arm" = arm, "Challenge" = visit, "Figure 2 population mean" = published,
+    "Simulated mean" = simulated, "Difference" = difference
+  ) |>
+  knitr::kable(digits = 2)
+
+# The 0.1% onset annotation (1.80) disagrees with its own panel: the observed
+# and individual-predicted means are 0.77 and 0.80, and the population bars
+# put most of their mass at scores 0-1. It is checked against the observed
+# mean instead and left out of the population-mean envelope.
+typo_row <- fig2_cmp$arm == "0.1%" & fig2_cmp$visit == "Onset"
+stopifnot(
+  # Structural: a sign or scale error in any effect moves every arm's mean by
+  # much more than this.
+  median(abs(fig2_cmp$difference[!typo_row])) < 0.12,
+  # Envelope on each arm-by-time mean of 200 eyes (not on a per-eye extreme).
+  all(abs(fig2_cmp$difference[!typo_row]) < 0.3),
+  abs(fig2_cmp$simulated[typo_row] - 0.77) < 0.3
+)
+```
+
+The 0.1% onset panel of Figure 2 prints a population-predicted mean of 1.80,
+but the same panel's observed and individual-predicted means are 0.77 and
+0.80, and its population-predicted bars sit mostly at scores 0-1, which cannot
+average 1.80. The annotation is read as a typesetting error for 0.80; the
+simulated mean matches the observed 0.77.
+
+```{r fig2-hist, fig.width = 8, fig.height = 6}
+sim |>
+  mutate(arm = ifelse(visit == "Baseline", "Baseline", arm)) |>
+  count(arm, visit, score) |>
+  group_by(arm, visit) |>
+  mutate(pct = 100 * n / sum(n)) |>
+  ungroup() |>
+  mutate(
+    arm = factor(arm, levels = c("Baseline", names(arms))),
+    visit = factor(visit, levels = c("Baseline", "Onset", "16 h", "24 h"))
+  ) |>
+  ggplot(aes(score, pct)) +
+  geom_col(fill = "steelblue") +
+  facet_grid(visit ~ arm) +
+  labs(
+    x = "Itching score", y = "Percent of observations",
+    caption = "Replicates the population-predicted bars of Figure 2 of Fidler 2018."
+  ) +
+  theme_bw()
+```
+
+## Figures 3 and 4: 24-h relief with olopatadine 0.7% versus 0.2%
+
+The paper defines 24-h relief as an average itching score below 1 (or below
+1.5) over the three post-challenge times. Figure 4 shows that olopatadine 0.7%
+relieves itching in roughly 10-25 percentage points more patients than 0.2%,
+with a difference that grows with the required screening severity. The paper's
+own simulation selected patients by their screening scores; here the cohort is
+stratified by the eye's baseline score instead, and the two arms share every
+baseline draw and random effect.
+
+```{r fig34}
+relief <- sim |>
+  filter(visit == "24 h", arm %in% c("0.2%", "0.7%")) |>
+  group_by(arm, id, OCULAR_ITCH_BL) |>
+  summarise(avg = mean(score), .groups = "drop") |>
+  mutate(
+    severity = cut(OCULAR_ITCH_BL, c(1.5, 2.5, 3, 4),
+      include.lowest = TRUE,
+      labels = c("baseline < 2.5", "2.5 to 3", "baseline > 3")
+    )
+  )
+relief_tab <- bind_rows(
+  relief |> mutate(severity = "All eyes"),
+  relief |> mutate(severity = as.character(severity))
+) |>
+  group_by(severity, arm) |>
+  summarise(
+    n = n(),
+    below_1 = 100 * mean(avg < 1),
+    below_1.5 = 100 * mean(avg < 1.5),
+    .groups = "drop"
+  )
+relief_tab |>
+  rename(
+    "Baseline stratum" = severity, "Arm" = arm, "Eyes" = n,
+    "% relieved (mean < 1)" = below_1, "% relieved (mean < 1.5)" = below_1.5
+  ) |>
+  knitr::kable(digits = 1)
+
+relief_diff <- relief_tab |>
+  select(severity, arm, below_1, below_1.5) |>
+  pivot_wider(names_from = arm, values_from = c(below_1, below_1.5)) |>
+  transmute(
+    severity,
+    diff_below_1 = `below_1_0.7%` - `below_1_0.2%`,
+    diff_below_1.5 = `below_1.5_0.7%` - `below_1.5_0.2%`
+  )
+relief_diff |>
+  rename(
+    "Baseline stratum" = severity,
+    "0.7% minus 0.2%, mean < 1 (points)" = diff_below_1,
+    "0.7% minus 0.2%, mean < 1.5 (points)" = diff_below_1.5
+  ) |>
+  knitr::kable(digits = 1)
+
+all_eyes <- relief_diff[relief_diff$severity == "All eyes", ]
+# Direction of the paper's conclusion: 0.7% relieves more eyes than 0.2%.
+stopifnot(all_eyes$diff_below_1 > 0, all_eyes$diff_below_1.5 > 0)
+```
+
+As in Figures 3 and 4, olopatadine 0.7% relieves itching at 24 h in more eyes
+than 0.2%, by about 10-20 percentage points overall (the paper's simulated
+differences are 13-22 points). The gain is largest in the eyes with the most
+severe baseline itching, where the paper reports about 25 points. Because
+each stratum holds only 50-90 eyes, the per-stratum differences are
+illustrative.
+
+# Assumptions and deviations
+
+* **Sign of the drug effect.** The printed equation adds the drug effect
+  `De(S)` to `logit P(Y >= s)` with a positive Emax of 3.40, which would make
+  olopatadine raise itching. The model subtracts it, so olopatadine lowers the
+  cumulative probability of every score. That is what Figure 2 and the trial
+  results show.
+* **Differential-odds factors.** The paper writes the factors as a product of
+  `delta_m` (or `v_m`) but calls the parameters 'logit-transformed differential
+  odds adjustment parameters', where 10 'implied no additional change to the
+  odds' and -10 'implied the odds for this and larger scores approach zero'.
+  The model uses the cumulative product of their inverse logits, which is the
+  only reading consistent with that description (a literal product of the
+  printed values would multiply the effect by up to 10^7).
+* **Covariate centring.** The covariate equation subtracts the 'Median
+  Covariate' without printing it. The model centres the baseline score at 2.8,
+  the overall median in Table 3; the vehicle power term uses the same value.
+* **Baseline score per eye.** The covariate is 'the average of all of the
+  baseline measurements for the eye'. Each simulated subject here is one eye;
+  the paper's random effect is per patient and is shared by both eyes, which
+  this single-eye cohort does not represent.
+* **Vehicle time.** `t` in the vehicle term is taken as the time since the last
+  drop (`tad()` of the K-PD compartment). Vehicle-arm drops are `amt = 0`
+  doses so that this time is defined.
+* **0.7% shift.** The extra baseline-score shift of the 0.7% arm is applied
+  only to post-treatment records (`TRT_PHASE = 1`), because baseline records
+  precede randomisation.
+* **EC50 units.** The paper states that the EC50 units 'are unknown, though
+  could match the dose (which was measured in %)'. The model doses the strength
+  in % into the K-PD compartment, so the EC50 of 0.03 is in %.
+* **Figure 2 annotation.** The 0.1% onset population-predicted mean printed
+  in Figure 2 (1.80) is read as a typesetting error for 0.80 (see the Figure 2
+  section); that row is compared with the observed mean.
+* **Population count.** The Methods text gives 547 patients; Table 3 lists
+  545 in the intention-to-treat analysis set. The `population` metadata uses
+  the 547 of the text.
+* **Figure 4 replication.** The paper's 24-h relief simulation enrolled
+  patients by screening criteria (2/6 to 5/6 baseline observations at or
+  above a threshold) and sampled parameter uncertainty over 100 simulated
+  studies. The table above uses fixed Table 5 values and stratifies by the
+  baseline score instead, so it checks the direction and size of the 0.7%
+  versus 0.2% benefit rather than reproducing each point.
+* Age and sex were tested on Emax, the vehicle shift and the score
+  distribution and were not retained (Table 4); they are documented in
+  `covariatesDataExcluded`.

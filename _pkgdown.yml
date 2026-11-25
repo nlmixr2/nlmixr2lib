@@ -5836,6 +5836,8 @@ navbar:
         href: articles/Borghardt_2016_olodaterol.html
       - text: "Olokizumab (Kretsos 2014)"
         href: articles/Kretsos_2014_olokizumab.html
+      - text: "Olopatadine (Fidler 2018)"
+        href: articles/Fidler_2018_olopatadine.html
       - text: "Olpasiran 1cmt (Sten 2023)"
         href: articles/Sten_2023_galnacSirna.html
       - text: "Olpasiran 3cmt (Sten 2023)"
@@ -10091,6 +10093,7 @@ articles:
   - articles/FernandezTeruel_2025_capivasertib
   - articles/Ferron_2013_cabazitaxel
   - articles/Fiandaca_2025_mRNABiTE
+  - articles/Fidler_2018_olopatadine
   - articles/Fidler_2020_ranibizumab
   - articles/FiedlerKelly_2019_fremanezumab
   - articles/FiedlerKelly_2020_fremanezumab_cm
