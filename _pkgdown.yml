@@ -6712,8 +6712,8 @@ navbar:
         href: articles/Nagy_2017_obiltoxaximab.html
       - text: "Obinutuzumab (Gibiansky 2014)"
         href: articles/Gibiansky_2014_obinutuzumab.html
-      - text: "Ocrelizumab (Serkland 2026)"
-        href: articles/Serkland_2026_ocrelizumab.html
+      - text: "Obinutuzumab (Jamois 2019)"
+        href: articles/Jamois_2019_obinutuzumab.html
       - text: "Octreotide (Glatard 2025)"
         href: articles/Glatard_2025_octreotide.html
       - text: "Octreotide (Kapralos 2021)"
@@ -11967,6 +11967,7 @@ articles:
   - articles/Jaiswal_2025_dordaviprone
   - articles/Jakobsson_2026_velsecorat
   - articles/James_2025_fepixnebart
+  - articles/Jamois_2019_obinutuzumab
   - articles/Jamois_2025_tocilizumab
   - articles/Jamsen_2011_dihydroartemisinin
   - articles/Jang_2019_cefprozil

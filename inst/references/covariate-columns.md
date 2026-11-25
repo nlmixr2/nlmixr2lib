@@ -14594,9 +14594,8 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** 0 = all other tumor types (in Gibiansky 2014 the implicit reference is CLL when paired with `TUMTP_BCL` and `TUMTP_DLBCL` all = 0).
 - **Source aliases:**
   - `DIS` (Gibiansky 2014; integer code with `DIS == 4` flagging MCL) -- decompose into `TUMTP_MCL = as.integer(DIS == 4)`.
-  - `Brexu-cel product type/MCL disease type` (Mc Laughlin 2026 Table 2) -- the composite indicator of brexucabtagene autoleucel in MCL; maps directly to `TUMTP_MCL` (see Notes).
-- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; separate effect on CL_T and CL_inf via the standalone MCL indicator (ratio 1.75, i.e., 75% higher CL than CLL)); `McLaughlin_2026_axicabtagene_brexucabtagene.R` (fractional change -0.617 on the CAR-T-cell tumour-killing rate constant kkill, i.e. 62% lower kkill and about 2.6-fold higher Cmax and AUC0-28d for brexu-cel in MCL than axi-cel in other lymphomas; 67 of 473 patients).
-- **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (broader lymphoma pool). The Gibiansky 2014 cohort had only 20 MCL patients (2.9%); the paper reports the highest obinutuzumab CL among the four B-cell-malignancy histologies for MCL, consistent with the highest CD20 expression density on MCL B-cells relative to the other histologies. In Mc Laughlin 2026 every brexucabtagene autoleucel patient had MCL and no axicabtagene ciloleucel patient did, so the effect is an inseparable product-type / disease-type composite: `TUMTP_MCL = 1` simulates brexu-cel in MCL, and the model cannot predict either product in the other disease.
+- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; separate effect on CL_T and CL_inf via the standalone MCL indicator (ratio 1.75, i.e., 75% higher CL than CLL)), `Jamois_2019_obinutuzumab.R` (multiplicative `exp(theta)` effects 2.98 on CL_T and 2.04 on CL_inf, reference follicular lymphoma).
+- **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (broader lymphoma pool). The Gibiansky 2014 cohort had only 20 MCL patients (2.9%); the paper reports the highest obinutuzumab CL among the four B-cell-malignancy histologies for MCL, consistent with the highest CD20 expression density on MCL B-cells relative to the other histologies.
 
 ### TUMTP_FL (**canonical for follicular lymphoma indicator**)
 - **Description:** 1 = follicular lymphoma (FL), 0 = other tumor types. Time-fixed per subject. FL is the most common indolent non-Hodgkin lymphoma (NHL) subtype, derived from germinal-center B cells and characterized by the t(14;18) BCL2-IGH translocation in most cases.
@@ -14608,6 +14607,39 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - Categorical "tumor histology" column with level `FL` (Lu 2017) -- decompose into `TUMTP_FL = as.integer(tumor_histology == "FL")`.
 - **Example models:** `Lu_2017_polatuzumab_neuropathy.R` (FL is the implicit reference category; the model file declares `TUMTP_FL` in `covariatesDataExcluded` to record FL as the reference without referencing it in `model()`)., `BravoPadros_2026_odronextamab.R` (fractional changes on the baseline Michaelis-Menten Vmax, -0.252, on its decline rate constant Kv, -0.891, and on the asymptote-to-baseline ratio Rv, -0.133; reference histology DLBCL).
 - **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_BCL` (a broader pooled-residual indolent-B-cell-lymphoma indicator in Gibiansky 2014 that lumps FL with other indolent histologies); use `TUMTP_FL` when the source paper names follicular lymphoma in isolation.
+
+### TUMTP_CLL (**canonical for chronic lymphocytic leukemia indicator**)
+- **Description:** 1 = chronic lymphocytic leukemia (CLL), 0 = other histology. Time-fixed per subject. For pooled B-cell-malignancy analyses that code CLL as its own level of a histology categorical.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other histologies (paper-defined; in Jamois 2019 the reference is follicular lymphoma, pooled with DLBCL).
+- **Source aliases:**
+  - Disease-type level `CLL` (Jamois 2019 Tables S1/S2 rows `CL_T,CLL` and `CL_CLL`) -- decompose into `TUMTP_CLL = as.integer(disease == "CLL")`.
+- **Example models:** `Jamois_2019_obinutuzumab.R` (multiplicative `exp(theta)` effects: 2.28 on the time-dependent clearance CL_T and 1.45 on the time-independent clearance CL_inf, reference FL), `Bell_2026_pirtobrutinib.R` (in `covariatesDataExcluded`; there the level pools CLL with SLL).
+- **Notes:** Follows the `TUMTP_<type>` decomposition pattern. Kept separate from `TUMTP_SLL` because Jamois 2019 estimates distinct CLL and SLL effects; when a paper pools CLL/SLL into one level, use `TUMTP_CLL` and say so in the per-model notes. Distinct from `TUMTP_LEUK` (any leukemia pooled, for heterogeneous-cancer cohorts) and from `DIS_BCELLNHL` (B-cell NHL vs a CLL/SLL complement). Gibiansky 2014 used CLL as its implicit reference level, so that model carries no `TUMTP_CLL` column.
+
+### TUMTP_SLL (**canonical for small lymphocytic lymphoma indicator**)
+- **Description:** 1 = small lymphocytic lymphoma (SLL), the nodal presentation of the CLL disease entity, 0 = other histology. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other histologies (paper-defined; in Jamois 2019 the CL_inf reference is follicular lymphoma, pooled with MZL and DLBCL).
+- **Source aliases:**
+  - Disease-type level `SLL` (Jamois 2019 Table S1 row `CL_SLL`) -- decompose into `TUMTP_SLL = as.integer(disease == "SLL")`.
+- **Example models:** `Jamois_2019_obinutuzumab.R` (multiplicative `exp(theta)` effect 1.38 on the time-independent clearance CL_inf; no SLL effect on CL_T).
+- **Notes:** Follows the `TUMTP_<type>` decomposition pattern. Mutually exclusive with `TUMTP_CLL` when a paper keeps the two as separate levels; see the `TUMTP_CLL` notes for the pooled case.
+
+### TUMTP_MZL (**canonical for marginal zone lymphoma indicator**)
+- **Description:** 1 = marginal zone lymphoma (MZL; nodal, splenic or extranodal MALT), 0 = other histology. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other histologies (paper-defined; in Jamois 2019 the CL_T reference is follicular lymphoma, pooled with DLBCL).
+- **Source aliases:**
+  - Disease-type level `MZL` (Jamois 2019 Table S1 row `CL_T,MZL`) -- decompose into `TUMTP_MZL = as.integer(disease == "MZL")`.
+- **Example models:** `Jamois_2019_obinutuzumab.R` (multiplicative `exp(theta)` effect 1.40 on the time-dependent clearance CL_T; MZL shares the CL_inf reference with FL and DLBCL).
+- **Notes:** Follows the `TUMTP_<type>` decomposition pattern. Distinct from `TUMTP_OTHER_NHL`, which pools MZL with other non-FL non-DLBCL histologies; use `TUMTP_MZL` when the source estimates an MZL-specific effect.
 
 ### TUMTP_OTHER_NHL (**canonical for 'other non-FL non-DLBCL NHL' tumor-histology indicator**)
 - **Description:** 1 = a non-follicular-lymphoma (non-FL) non-diffuse-large-B-cell-lymphoma (non-DLBCL) NHL histology (e.g., mantle cell lymphoma, marginal-zone lymphoma, small-lymphocytic lymphoma, transformed FL, chronic lymphocytic leukemia, T-cell NHL, etc., pooled together in the paper's residual histology category), 0 = FL or DLBCL or any non-NHL tumor. Time-fixed per subject.
@@ -17118,7 +17150,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** 0 (no CHOP or CHOP-like backbone).
 - **Source aliases:**
   - `CHOP/CHOP-like` -- Li 2017 Table 1 `Type of treatment` block and Table S1 coefficient row.
-- **Example models:** `Li_2017_nhl_pfs_mbma.R` (study-arm-level; log-linear coefficient +0.819 on the Weibull scale `lambda` of progression-free survival, i.e. `exp(0.819) = 2.27`-fold longer median PFS time).
+- **Example models:** `Jamois_2019_obinutuzumab.R` (one shared indicator for CHOP or CVP -- CVP shares three of the four CHOP drugs; multiplicative `exp(theta)` effect 0.285 on k_des, the decay rate of the time-dependent clearance), `Li_2017_nhl_pfs_mbma.R` (study-arm-level; log-linear coefficient +0.819 on the Weibull scale `lambda` of progression-free survival, i.e. `exp(0.819) = 2.27`-fold longer median PFS time).
 - **Notes:** A regimen-composite indicator in the `CONMED_<regimen>` sub-family alongside `CONMED_AVD` and `CONMED_EOX`, not a single-INN column. **`CHOP-like` is deliberately pooled with CHOP** because that is how the founding source modelled it: Li 2017 Methods defines CHOP-like as a regimen sharing 3 of the 4 CHOP drugs, and no finer decomposition is recoverable from the paper. A model needing a strict-CHOP-only column must register a separate canonical rather than narrowing this one. Not mutually exclusive with `CONMED_RITUX`: an R-CHOP arm carries both at 1 and receives both coefficients additively. Distinct from `CONMED_DOXORUBICIN` and `CONMED_EPIRUBICIN`, which record a single anthracycline rather than the four-drug regimen.
 
 ### CONMED_BENDAMUSTINE (**canonical for concomitant bendamustine coadministration indicator**)
@@ -17129,8 +17161,19 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** 0 (no bendamustine).
 - **Source aliases:**
   - `Bendamustine` -- Li 2017 Table 1 `Type of treatment` block and Table S1 coefficient row.
-- **Example models:** `Li_2017_nhl_pfs_mbma.R` (study-arm-level; log-linear coefficient +1.39 on the Weibull scale `lambda` of progression-free survival, i.e. `exp(1.39) = 4.01`-fold longer median PFS time -- the largest treatment effect in that model).
+- **Example models:** `Jamois_2019_obinutuzumab.R` (multiplicative `exp(theta)` effect 0.466 on k_des, the decay rate of the time-dependent clearance), `Li_2017_nhl_pfs_mbma.R` (study-arm-level; log-linear coefficient +1.39 on the Weibull scale `lambda` of progression-free survival, i.e. `exp(1.39) = 4.01`-fold longer median PFS time -- the largest treatment effect in that model).
 - **Notes:** Standard `CONMED_<INN>` member. In the founding model this is the **smallest** treatment stratum (11 of 155 cohorts, 7%), which is why its coefficient is also the least stable: it moves from 1.39 in the final model to 0.526 (RSE 54%) in that paper's complete-covariate sensitivity analysis. Treat the point estimate accordingly.
+
+### CONMED_FC (**canonical for concomitant fludarabine + cyclophosphamide (FC) chemotherapy backbone indicator**)
+- **Description:** 1 = the regimen includes the FC backbone (fludarabine plus cyclophosphamide), 0 = otherwise.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no FC backbone; in Jamois 2019 the reference is obinutuzumab without chemotherapy).
+- **Source aliases:**
+  - `FC` (Jamois 2019 Table S1 row `k_des,FC`, Table S2 row 'FC Administered').
+- **Example models:** `Jamois_2019_obinutuzumab.R` (multiplicative `exp(theta)` effect 2.88 on k_des, the decay rate of the time-dependent clearance).
+- **Notes:** A regimen-composite indicator in the `CONMED_<regimen>` sub-family alongside `CONMED_CHOP`, `CONMED_AVD` and `CONMED_EOX`, not a single-INN column. Distinct from single-drug `CONMED_<INN>` columns; a paper that codes fludarabine or cyclophosphamide alone should register those single-INN canonicals instead.
 
 ### CONMED_NONCHEMO_OTHER (**canonical for residual 'other non-chemotherapy anticancer drug' coadministration indicator**)
 - **Description:** 1 = the regimen includes at least one non-chemotherapy anticancer agent that the source did not model as its own level, 0 = otherwise. A residual-bucket indicator whose membership is defined by the source's own enumeration.
