@@ -1768,6 +1768,8 @@ navbar:
         href: articles/Hanke_2020_cimetidine.html
       - text: "Cimetidine pbpk (Nishiyama 2019)"
         href: articles/Nishiyama_2019_metformin_cimetidine.html
+      - text: "Cinacalcet (Chen 2019)"
+        href: articles/Chen_2019_cinacalcet.html
       - text: "Cipaglucosidase (Hajjar 2018)"
         href: articles/Hajjar_2018_pompe_disease.html
       - text: "Cipargamin (Hien 2017)"

@@ -5035,7 +5035,7 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Type:** compartment
 - **Role:** Parathyroid hormone biomarker PD output.
 - **Source aliases:** none.
-- **Example models:** `Ahn_2014_parathyroidHormone.R`.
+- **Example models:** `Ahn_2014_parathyroidHormone.R`, `Chen_2019_cinacalcet.R` (algebraic pseudo-steady-state intact PTH in pmol/L, driven by calcium-sensing-receptor occupancy).
 
 ### t4_thyroid (**canonical thyroxine pool in thyroid tissue**)
 - **Type:** compartment
@@ -5078,7 +5078,7 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Type:** compartment
 - **Role:** Serum calcium biomarker PD output.
 - **Source aliases:** none.
-- **Example models:** `Ahn_2014_parathyroidHormone.R`.
+- **Example models:** `Ahn_2014_parathyroidHormone.R`, `Chen_2019_cinacalcet.R` (corrected serum calcium in mmol/L as a turnover ODE state whose production is driven by the change in PTH).
 
 ### serum_phosphorus (**canonical serum phosphorus PD output**)
 - **Type:** compartment
