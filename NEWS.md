@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kletting 2016 [177Lu]Lu-PSMA I&T whole-body PBPK ([doi:10.1371/journal.pone.0162303](https://doi.org/10.1371/journal.pone.0162303)) -- men with metastasizing prostate cancer.
+- Add Peters 2016 ilofotase alfa (human recombinant alkaline phosphatase) ([doi:10.1007/s40262-016-0399-y](https://doi.org/10.1007/s40262-016-0399-y)) -- healthy adult volunteers.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

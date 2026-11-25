@@ -4338,6 +4338,8 @@ navbar:
         href: articles/DeBonis_2025_il12_qsp.html
       - text: "Ilaprazole (Yu 2024)"
         href: articles/Yu_2024_ilaprazole.html
+      - text: "IlofotaseAlfa (Peters 2016)"
+        href: articles/Peters_2016_ilofotaseAlfa.html
       - text: "Iloperidone (Pei 2016)"
         href: articles/Pei_2016_iloperidone.html
       - text: "Im depot (Jung 2023)"
@@ -12512,7 +12514,7 @@ articles:
   - articles/Perlstein_2025_risperidone_tv46000
   - articles/Perlstein_2026_olanzapine
   - articles/Perrottet_2009_ganciclovir
-  - articles/Petermann_2026_encorafenib_binimetinib
+  - articles/Peters_2016_ilofotaseAlfa
   - articles/Petkova_2022_doxycycline_chicken
   - articles/Petric_2023_vinpocetine
   - articles/Petrov_2024_romiplostim
