@@ -4353,6 +4353,213 @@ One member was added alongside the Maggs 2026 rifampicin extraction: `fm_desacet
 - **Example models:** `Gomeni_2019_methylphenidate_ivivc.R` (founding example; all three `fixed()` at the identity, as in Table S3).
 - **Notes:** Ratified by the maintainers 2026-11-25 with `livivc_tscale` / `livivc_tshape`. Where a control stream applies the linear factors to the UNRELEASED fraction rather than to the released fraction of the printed equation (Gomeni 2019: `FA = A1 + A2*VV` with `VV` the unreleased fraction), follow the code and say so in the model: the two forms agree only at the identity.
 
+### ddi_ka, ddi_k12, ddi_k21, ddi_kel (**canonical linear drug-drug coupling slopes of one drug's rate constants on another drug's amount**)
+- **Type:** paper-named-param
+- **Role:** Signed slopes (1 / (amount * time)) that make a drug's micro rate constant a linear function of a co-administered drug's AMOUNT in the compartment the process leaves: `ka_X = ka + ddi_ka * depot_Y`, `k12_X = k12 + ddi_k12 * central_Y`, `k21_X = k21 + ddi_k21 * peripheral1_Y`, `kel_X = kel + ddi_kel * central_Y`. Negative values inhibit the process and positive values promote it; with either drug absent the slope multiplies zero and the single-drug model is recovered. The bare name modifies the unsuffixed drug's parameter; `ddi_<param>_<drug>` (e.g. `ddi_kel_captopril`) modifies the parameter of the drug carrying that registered suffix, driven by the unsuffixed drug's amount. Untransformed, because the sign carries the direction of the interaction.
+- **Source aliases:**
+  - `alpha00'`, `alpha12'`, `alpha21'`, `alpha10'` (effect of Y on X) and `beta00'`, `beta12'`, `beta21'`, `beta10'` (effect of X on Y) -- Huang 2026 equation 1, Table 8 and Supplementary S9 Table.
+- **Example models:** `Huang_2026_metoprolol_captopril.R`, `Huang_2026_imeglimin_metformin.R` (founding examples; slopes in 1/(g*h) applied to amounts in g).
+- **Notes:** Ratified by the maintainers 2026-11-20 (oasweep_PMC12890151). Distinct from `slope_drug` / `slope_placebo` (PD effect slopes on a concentration), `ka_slope` (time ramp of ka) and concentration-driven inhibition terms such as Hadigol 2026's `theta_slope`. A coupling on another drug's CONCENTRATION, or on a parameter outside the micro-rate set, should extend this family with the matching `<param>` token and state the driving quantity in its label.
+
+### lpef_high, pef_high (**canonical log-transformed high-state mean peak expiratory flow of a two-state hidden Markov model**)
+- **Type:** paper-named-param
+- **Role:** Mean PEF (L/min) of the high-PEF ("normal health") latent state of a two-state hidden Markov model of home-measured peak expiratory flow; `pef_high = exp(lpef_high + etalpef_high)` is the individual value used in `model()`.
+- **Source aliases:**
+  - `m0`, `m_i,0`, `mu1` (transformed `log m0`) -- Jakobsson 2026 Section 2.3 and supplement Table S4.
+- **Example models:** `Jakobsson_2026_velsecorat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). The `_high` suffix names the latent state, so a future model with more states can add `pef_<state>`. Distinct from a PEF baseline of a continuous-time model, which is the value before treatment rather than the mean of one latent state.
+
+### logitd_low, d_low (**canonical logit-transformed low-to-high state ratio of a two-state hidden Markov model**)
+- **Type:** paper-named-param
+- **Role:** Ratio d in (0, 1) of the low-state mean to the high-state mean of a two-state hidden Markov model, `pef_low = d_low * pef_high`; `d_low = expit(logitd_low + ... + etalogitd_low)`. A larger value is a milder worsened state.
+- **Source aliases:**
+  - `d`, `d_i`, `mu2` (transformed `logit d`; "drop parameter") -- Jakobsson 2026 Section 2.3 and supplement Table S4.
+- **Example models:** `Jakobsson_2026_velsecorat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). Parameterising the low state as a fraction of the high state, rather than as a second free mean, keeps the states ordered.
+
+### lvar_pef, var_pef (**canonical log-transformed within-state PEF variance of a hidden Markov model**)
+- **Type:** paper-named-param
+- **Role:** Subject-specific within-state variance sigma^2 ((L/min)^2) of PEF measurements around the current latent state's mean; `sd_pef = sqrt(var_pef)` is passed to `PEF ~ add(sd_pef)`. It is a model parameter with IIV and a dose effect, which is why it is not encoded as the residual-error canonical `addSd`.
+- **Source aliases:**
+  - `sigma^2`, `sigma_i^2`, `mu3` (transformed `log sigma^2`; "inter-state variability" in Jakobsson 2026 Table 1 and Table S4).
+- **Example models:** `Jakobsson_2026_velsecorat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). Kept on the variance scale because the source estimates and reports the log variance.
+
+### logit2p_hl, logit2p_lh, p_hl, p_lh (**canonical half-capped transition probabilities of a two-state discrete-time hidden Markov model**)
+- **Type:** paper-named-param
+- **Role:** Per-step probabilities of leaving the high state for the low state (`p_hl`) and of leaving the low state for the high state (`p_lh`) in a two-state discrete-time hidden Markov chain. The `logit2p` transform is `logit(2 p)`, so `p = expit(logit2p + eta) / 2` is capped at 0.5.
+- **Source aliases:**
+  - `p0,1`, `p_i,0,1`, `mu4` (transformed `logit(2 p01)`) -> `logit2p_hl`; `p1,0`, `p_i,1,0`, `mu5` (transformed `logit(2 p10)`) -> `logit2p_lh` -- Jakobsson 2026 Section 2.3 and supplement Table S4.
+- **Example models:** `Jakobsson_2026_velsecorat.R` (one step = one twice-daily PEF measurement).
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). The probability is per record of the chain, not per unit time, so the step must be stated in the model's `description`. The `2` in the name records the 0.5 cap.
+
+### emax_lvar, led50_lvar, emax_logit2p_lh, led50_logit2p_lh (**canonical dose Emax and log ED50 acting on a transformed hidden-Markov parameter**)
+- **Type:** paper-named-param
+- **Role:** Additive dose Emax term on a transformed parameter, `phi = mu + emax_<param> * DOSE / (exp(led50_<param>) + DOSE) + eta`. `emax_<param>` is the maximal shift on the transformed scale (unitless, signed); `led50_<param>` is the log of the dose giving half of it (log of the dose units).
+- **Source aliases:**
+  - `Emax,3`, `log(ED50,3)` -> `emax_lvar`, `led50_lvar`; `Emax,5`, `log(ED50,5)` -> `emax_logit2p_lh`, `led50_logit2p_lh` -- Jakobsson 2026 supplement Table S4.
+- **Example models:** `Jakobsson_2026_velsecorat.R` (dose in ug).
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). The suffix names the transformed parameter the term is added to. `led50_<param>` reuses the dose-axis meaning of `led50`; `emax_<param>` is signed because the shift may lower the parameter (`emax_lvar` < 0 narrows the within-state spread).
+
+### e_active_logitd (**canonical constant shift on logit(d) for any active dose**)
+- **Type:** paper-named-param
+- **Role:** Additive shift on `logitd_low` applied when the subject receives any active dose (`DOSE > 0`), with no further dependence on dose level.
+- **Source aliases:**
+  - `beta2` (Jakobsson 2026 'Constant' dose-response, `beta(x) = beta 1(x > 0)`, supplement Table S4).
+- **Example models:** `Jakobsson_2026_velsecorat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13245144). `active` is the indicator derived in `model()` from the dose covariate, not an input column.
+
+### ratio_cord_central (**canonical bare umbilical-cord : central (maternal plasma) concentration ratio**)
+- **Type:** paper-named-param
+- **Role:** Unitless fetal-to-maternal concentration ratio that derives the umbilical-cord venous concentration algebraically from the maternal central compartment when the fetus has no ODE state of its own: `Ccord <- ratio_cord_central * Cc`.
+- **Source aliases:**
+  - `FMR` -- Krzyzanski 2026 Eq 25 and Table 3 ('fetal-to-maternal DEX concentration ratio').
+- **Example models:** `Krzyzanski_2026_dexamethasone_1cohort.R` and `Krzyzanski_2026_dexamethasone_3cohort.R` (founding examples; 0.329, RSE 7%, in both fits, estimated from one paired maternal and cord sample per woman at birth, no IIV).
+- **Notes:** A bare member of the `lratio_<numerator>_<denominator>` family founded by `lratio_pbmc_central`, written bare like `ratio_isf_peripheral1` because the source estimates it on the natural scale with no random effect; a paper reporting an exponential typical value or IIV uses `lratio_cord_central`. Pair with the `Ccord` observable and its residual (`expSd_Ccord` / `propSd_Ccord`). Distinct from a cord compartment with its own transfer rate constants (`Muller_2009_amoxicillin.R`, `cord_venous` state), which models placental transfer kinetics rather than assuming instantaneous proportionality.
+
+### p_cohort1, p_cohort2 (**canonical fixed mixing probabilities of a discrete cohort (mixture) population**)
+- **Type:** paper-named-param
+- **Role:** Probability (fraction) that a subject belongs to cohort 1, 2, ... of a finite mixture population, passed to rxode2's `mix()` as `cl <- mix(cl_cohort1, p_cohort1, cl_cohort2, p_cohort2, cl_cohort3)`; the last cohort takes the remainder, so an N-cohort model declares N - 1 of them. Cohorts are numbered in the order the source numbers its subpopulations (NONMEM `MIXNUM`).
+- **Source aliases:**
+  - `P(1)`, `P(2)`, `W1`, `W2` -- Krzyzanski 2026 Appendix 1 `$MIX` block (Gauss-Hermite weights `w_i / sqrt(pi)`).
+- **Example models:** `Krzyzanski_2026_dexamethasone_3cohort.R` (founding example; fixed at the N = 3 Gauss-Hermite weights 0.2954089751509 / sqrt(pi) = 1/6 and 1.181635900604 / sqrt(pi) = 2/3, the third cohort 1/6).
+- **Notes:** Ratified by the maintainers 2026-11-20 with the Krzyzanski 2026 extraction, the first library model to use native `mix()`. Wrap in `fixed()` when the source fixes the weights (Gauss-Hermite cohort populations always do); an estimated mixing fraction uses the same names unfixed. A `mixest` data column (1, 2, ...) pins a subject to a cohort at simulation time. Distinct from the latent-class covariate idiom (`MIX_FAST_ABS`, `lka_fastabs`), where the user supplies the class in the data, and from the generic `frac`.
+
+### omega_cohort_lcl (**canonical between-cohort SD of log clearance in a Gauss-Hermite cohort population**)
+- **Type:** paper-named-param
+- **Role:** Standard deviation of log clearance across the cohorts of a Gauss-Hermite cohort population, estimated as a fixed effect: the cohort clearances are `exp(lcl + sqrt(2) * xi_i * omega_cohort_lcl)` at the quadrature nodes `xi_i`, and the cohort distribution has the mean and variance of a log-normal with variance `omega_cohort_lcl^2`. It stands in for between-subject variability, which the source fixes at zero.
+- **Source aliases:**
+  - `omega`, `OM1`, `THETA(5)` -- Krzyzanski 2026 Eq 26, Table 3 and Appendix 1.
+- **Example models:** `Krzyzanski_2026_dexamethasone_3cohort.R` (founding example; 0.30, RSE 11%, giving cohort CL/F of 23.1 / 38.8 / 65.2 L/h).
+- **Notes:** Ratified by the maintainers 2026-11-20 with the Krzyzanski 2026 extraction. Shape `omega_cohort_<param>`: a cohort SD on another log-scale parameter takes that parameter's name (`omega_cohort_lvc`). Distinct from an OMEGA variance (`etalcl ~ var`), which is a random-effect variance, not an `ini()` fixed effect.
+
+### kbwloss, khba1cred, knausea (**canonical exposure-driven rate constants of semaglutide response states**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constants (1 / time per unit exposure) with which a drug exposure term drives the `bwloss`, `hba1cred` and `nausea` states: `d/dt(bwloss) = kbwloss * E * (1 - bwloss / emax_bwloss)`, `d/dt(hba1cred) = khba1cred * E * (1 - hba1cred / emax_hba1cred)`, `d/dt(nausea) = knausea * E * (1 - moderator1) - kout_nausea * nausea`. Pattern `k<state>`: the rate constant that fills the named state.
+- **Source aliases:**
+  - `k_W` / `k_weight`, `k_A` / `k_HbA1c`, `k_N` / `k_nausea` -- Goryanin 2026 Table 2 / SBML.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; 0.20, 0.15 and 0.35 /week).
+- **Notes:** The first-order loss of `nausea` is `kout_nausea`, a member of the `kin_<compartment>` / `kout_<compartment>` family.
+
+### emax_bwloss, emax_hba1cred (**canonical plateau of a logistic approach-to-maximum response state**)
+- **Type:** paper-named-param
+- **Role:** Maximum attainable value of `bwloss` (% of baseline weight) and `hba1cred` (% points) in a logistic approach-to-maximum ODE `d/dt(x) = k * E * (1 - x / emax_x)`. The states start at zero, so the plateau level and the increment from baseline coincide, as for `lemax_elf`; that is why these are `emax_<output>` and not `lrmax_<output>`.
+- **Source aliases:**
+  - `Emax_W` / `Emax_weight`, `Emax_A` / `Emax_HbA1c` -- Goryanin 2026 Table 2 / SBML.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; 15% and 1.80% points).
+- **Notes:** Positive by construction. The plateau does not depend on dose; only the approach rate does.
+
+### ktol (**canonical tolerance-development rate constant**)
+- **Type:** paper-named-param
+- **Role:** Rate constant of a tolerance (`moderator<n>`) pool. Two uses are recorded: the single symmetric turnover rate shared by every stage of a moderator chain (`Rognas_2025_bitopertin.R`, `Ahlstrom_2010_nicotinicAcid_rat.R`), and the build-up rate of a bounded tolerance state driven by the response it attenuates, `d/dt(moderator1) = ktol * nausea * (1 - moderator1)` (`Goryanin_2026_semaglutide_aging_qsp.R`).
+- **Source aliases:**
+  - `k_T` / `k_tolerance` -- Goryanin 2026 Table 2 / SBML.
+- **Example models:** `Rognas_2025_bitopertin.R`, `Ahlstrom_2010_nicotinicAcid_rat.R`, `Goryanin_2026_semaglutide_aging_qsp.R`.
+- **Notes:** Units follow the driver: 1/time for a chain, 1/(time x driver units) when the driver multiplies the rate. Read the model body.
+
+### kdam, krep_clear, krep_deg, krapa (**canonical damage-repair aging-layer rate constants**)
+- **Type:** paper-named-param
+- **Role:** Rate constants of the `damage` / `repair` pair of a damage-repair aging model: `d/dt(damage) = kdam * (1 - drug_d) - krep_clear * repair * damage` and `d/dt(repair) = krapa * drug_r - krep_deg * repair`. `kdam` is the zero-order damage accrual rate, `krep_clear` the second-order clearance of damage by repair capacity, `krep_deg` the first-order decay of repair capacity, and `krapa` the induction of repair capacity per unit of the repair-induction scalar `drug_r` (rapamycin / mTOR-inhibition in the founding model).
+- **Source aliases:**
+  - `k_dam` / `k_damage`, `k_rep` / `k_repair_clear`, `k_Rdeg` / `k_repair_decay`, `k_Rap` / `k_rapamycin` -- Goryanin 2026 Table 2 / SBML.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; 0.10, 0.80, 0.25 and 0.45).
+- **Notes:** Arbitrary-unit states, so only the ratios carry meaning.
+
+### kfra, kfra_rep, kbag (**canonical frailty and biological-age-gap rate constants**)
+- **Type:** paper-named-param
+- **Role:** Rate constants of the downstream aging states: `d/dt(frailty) = kfra * damage - kfra_rep * repair` and `d/dt(bioagegap) = kbag * (damage - 0.5 * repair)`. `kfra` is frailty induction by damage, `kfra_rep` frailty suppression by repair capacity, `kbag` the scale of the net damage-repair balance that drives the biological age gap.
+- **Source aliases:**
+  - `k_F` / `k_frailty`, `k_Frep` / `k_frailty_rep`, `k_B` / `k_BioAgeGap` -- Goryanin 2026 identifiability report S6 and SBML.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; 0.30, 0.50 and 0.40 /week).
+
+### drug_d, drug_r (**canonical time-averaged combination-therapy scenario scalars**)
+- **Type:** paper-named-param
+- **Role:** Constant, time-averaged effects of a drug combination on a damage-repair aging model: `drug_d` is the fractional suppression of damage accrual (enters as `1 - drug_d`), `drug_r` the repair-induction input (enters as `krapa * drug_r`). They stand in for PK and are set per scenario rather than estimated.
+- **Source aliases:**
+  - `drug_D`, `drug_R` -- Goryanin 2026 Methods; `drug_D_ageing` / `drug_D_baseline`, `drug_R_ageing` / `drug_R_baseline` -- SBML.
+- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; 0.40 / 0.10 for GLP-1 RA + SGLT2 inhibitor + metformin, 0.50 / 0.60 for GLP-1 RA + SGLT2 inhibitor + rapamycin).
+- **Notes:** Wrap in `fixed()`: they are scenario inputs, not estimates. Override per scenario through `ini()`.
+
+### lcurv_decline, lcurv_recovery (**canonical log-transformed curvatures of a piecewise-quadratic decline-and-recovery time course**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed curvatures (output units per time^2) of an empirical response that falls along one parabola from its baseline to a nadir at `tnadir_anc` and recovers along a second parabola sharing the same vertex: `y = curv_decline * (t - tnadir_anc)^2 + base - curv_decline * tnadir_anc^2` for `t < tnadir_anc`, and the same with `curv_recovery` afterwards. Inside `model()` the bare names are `curv_decline` and `curv_recovery`.
+- **Source aliases:**
+  - `A1`, `A2` -- Morita 2026 Equations 2-9 ("slopes" of neutrophil decline and recovery).
+- **Example models:** `Morita_2026_pemetrexed.R`.
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13516902). Distinct from a turnover `kout` or a linear slope: the parabola's depth at the nadir is `curv_decline * tnadir_anc^2`, so the two curvatures are not rates and their magnitudes are not comparable to first-order constants. Pairs with `ltnadir_anc`.
+
+### ltnadir_anc (**canonical log-transformed time of the absolute-neutrophil-count nadir**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed time, since the start of the treatment cycle, at which the absolute neutrophil count of an empirical time-course model reaches its minimum. Inside `model()` the bare name is `tnadir_anc`; each model states the time unit in its `units` and labels.
+- **Source aliases:**
+  - `B` -- Morita 2026 Equations 2-3 and 9 (week after the pemetrexed dose at which neutrophil recovery starts).
+- **Example models:** `Morita_2026_pemetrexed.R` (weeks after the cycle-1 dose; vertex of the piecewise-quadratic neutrophil course).
+- **Notes:** Ratified by the maintainers 2026-11-20 (PMC13516902). The `_anc` suffix is deliberate: the bare `ltnadir` is not canonical, because `GonzalezSales_2015_testosterone.R` uses it for a different quantity (the clock time of a circadian testosterone nadir), which gets its own disambiguated name when registered. A parameter of the response shape, not a covariate: compare the `t_nadir` covariate of `Srimani_2022_ixazomib_mprotein.R`, a per-patient nadir time derived before the PK/PD fit and supplied as data.
+
+### tkchange (**canonical estimated switch time of the assimilation and elimination rate constants**)
+- **Type:** paper-named-param
+- **Role:** Time from the start of exposure (time) at which the assimilation and elimination rate constants step together from their first-stage arms (`kassim`, `kel`) to their `_late` arms while exposure continues. Carried on the linear scale.
+- **Source aliases:**
+  - `ts` -- Skip 2014 Table 1 ('switch time', estimated from the model) and Table 3.
+- **Example models:** `Skip_2014_nickel.R` (founding example; ts = 1.978 day, estimated).
+- **Notes:** Ratified by the maintainers 2026-11-25 with the Skip 2014 extraction. The rate-constant analogue of `tclchange` (a clearance-only step from treatment initiation) and of `tkacut` (an absorption-only switch measured from each dose). Use `ltkchange` if a future paper estimates the switch time on the log scale.
+
+### cfood_uptake, cfood_depur (**canonical external (food / medium) exposure concentrations of an uptake-depuration experiment**)
+- **Type:** paper-named-param
+- **Role:** Measured concentration of the xenobiotic in the external medium (food, water or soil) during the uptake phase (`cfood_uptake`) and after transfer to uncontaminated medium (`cfood_depur`), in the model's concentration units. They are the exposure inputs of a `kassim * cfood - kel * central` model, not estimates, and are carried as `fixed()` scenario parameters so a user can override them to simulate another exposure.
+- **Source aliases:**
+  - `CEu`, `CEd` -- Skip 2014 Table 1 ('external metal concentration in the uptake / decontamination phase').
+- **Example models:** `Skip_2014_cadmium.R` (founding example; 154.6 and 0.92 mg/kg), `Skip_2014_nickel.R` (2525 and 5.95 mg/kg).
+- **Notes:** Ratified 2026-11-25 with `lkassim`. The `food` token is kept even when the medium is water or soil, so that every exposure-concentration input of this model family shares one stem. A non-zero `cfood_depur` is what lets the body concentration settle at `cfood_depur * kassim_depur / kel_depur` instead of decaying to zero.
+
+### tdepur (**canonical time of transfer to uncontaminated medium**)
+- **Type:** paper-named-param
+- **Role:** Experimenter-defined time from the start of exposure (time) at which the organism is moved to uncontaminated food or medium, ending the uptake phase and starting depuration. Carried on the linear scale as a `fixed()` scenario input.
+- **Source aliases:**
+  - `tc` -- Skip 2014 Table 1 ('time of changing the food from contaminated to uncontaminated').
+- **Example models:** `Skip_2014_cadmium.R` (founding example; 90 day), `Skip_2014_nickel.R` (64 day).
+- **Notes:** Ratified 2026-11-25 with `lkassim`. A design value, not an estimate; contrast with the estimated `tkchange`.
+
+### lkon_signal, kon_signal (**canonical log-transformed rate constant transforming a secondary signal into response production**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) at which a latent secondary-signal pool (the `signal` state) is transformed into production of the response in a secondary-signal / indirect-response model: the response gains `kon_signal * signal` per unit time and the signal pool loses the same amount. Inside `model()` the bare name is `kon_signal`.
+- **Source aliases:**
+  - `kon_s` -- Busso 2017 Equations 2-3 and Table 2.
+- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; `lkon_signal = log(0.00739)` 1/day, the median of the six individual estimates).
+- **Notes:** Ratified by the maintainers 2026-11-25. Named after the pool it drains rather than as a bare `kon`, which is deliberately not canonicalised (see "Why `kon` is NOT canonicalised"): an on-rate of a binding model has other units and another meaning. Pairs with `lkout_signal`, the loss of the same pool that does not produce response.
+
+### lkout_signal, kout_signal (**canonical log-transformed first-order dissipation rate of a secondary-signal pool**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) at which a latent secondary-signal pool (the `signal` state) dissipates without producing response, so the pool's total loss rate is `kout_signal + kon_signal` (times any inhibition factor on the production leg). Inside `model()` the bare name is `kout_signal`.
+- **Source aliases:**
+  - `kout_s` -- Busso 2017 Equation 2 and Table 2.
+- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; `lkout_signal = log(0.2915)` 1/day).
+- **Notes:** Ratified by the maintainers 2026-11-25. Read as a member of the `kout_<compartment>` family ("rate of leaving the suffixed pool"; see the `kin` entry), here for a non-anatomical pool. Distinct from `kpout`, the loss rate of an `indirect_prec` precursor pool whose loss is the response's production; in a secondary-signal model the production leg is `kon_signal`, and `kout_signal` is the non-productive loss.
+
+### lkinhib, kinhib (**canonical log-transformed linear inhibition slope per unit of driver**)
+- **Type:** paper-named-param
+- **Role:** Slope of a linear inhibition (or arrest) term, `inhib = kinhib * driver`, in units of 1 / (driver units). The driver is whatever the model says it is -- a training dose, an unbound drug concentration, a drug-effect fraction -- and the product is the dimensionless fraction removed from the inhibited process (`(1 - inhib)`) or a rate added to an arrest flux. Inside `model()` the bare name is `kinhib`; the log-transformed `lkinhib` is used in `ini()` when the slope is strictly positive.
+- **Source aliases:**
+  - `kin_i` -- Busso 2017 Equations 5 and 12 and Table 2, inhibition of performance production per training unit of the same day (1/tu). Not carried as `kin_i`, because `kin` is the canonical indirect-response production rate.
+- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; `lkinhib = log(0.00206)` 1/tu). The bare form is also used by `Gall_2023_doxorubicin_mouse.R`, `Gall_2023_doxorubicin_human.R`, `Gall_2023_fluorouracil_mouse.R` and `Gall_2023_fluorouracil_human.R` (`arrest <- kinhib * <driver>`).
+- **Notes:** Ratified by the maintainers 2026-11-25. Distinct from `imax` / `ic50` (a saturable inhibition) and from a slope on a stimulation (`slope`-type effects): `kinhib` is linear and inhibitory. Read the model body to learn what the driver is and therefore what the units are.
+
+### slope_shrink, slope_regrow (**canonical linear shrinkage and regrowth slopes of a piecewise-linear tumour-size model**)
+- **Type:** paper-named-param
+- **Role:** The two arms of a piecewise-linear tumour-size time course in which a lesion diameter falls at a constant rate under treatment and, after a switch time `tregrow`, rises at a constant rate as resistance emerges (tumour-size units / time, e.g. mm/day). Kept on the bare, untransformed scale: the source fits them with additive (normal) random effects and places no sign restriction on them, so an individual lesion may shrink with a positive `slope_shrink` or keep shrinking with a negative `slope_regrow`. Inside `model()` the individual values are `slope_shrink_i` / `slope_regrow_i`.
+- **Source aliases:**
+  - `d` ("decay rate"), `g` ("re-growth rate") -- Mistry 2018 notation.
+- **Example models:** `Mistry_2018_vemurafenib_tumor.R`, `Mistry_2018_dabrafenib_tumor.R`, `Mistry_2018_trametinib_tumor.R`.
+- **Notes:** Zero-order (linear-in-time) slopes, distinct from the first-order Stein rate constants `kse` / `kge` (1/time), which act on an exponential. The linear form follows from Mayneord's argument that a tumour grows from a thin proliferating rim, so its radius, not its volume, changes linearly in time.
+
+### tregrow (**canonical switch time from tumour shrinkage to regrowth**)
+- **Type:** paper-named-param
+- **Role:** Time from treatment start at which a piecewise-linear tumour-size model switches from its shrinkage arm (`slope_shrink`) to its regrowth arm (`slope_regrow`) (time). Bare scale.
+- **Source aliases:**
+  - `sp` ("switching time-point") -- Mistry 2018 notation.
+- **Example models:** `Mistry_2018_vemurafenib_tumor.R`, `Mistry_2018_dabrafenib_tumor.R`, `Mistry_2018_trametinib_tumor.R` (`tregrow = fixed(63)` day for all three drugs, chosen by log-likelihood from the grid 63 / 116 / 179 days rather than estimated).
+- **Notes:** A population-level switch time, not an individual time to progression. Compare `ltclchange`, the breakpoint of a piecewise-constant clearance.
+
 ## Nested (multi-level) random effects
 
 model in this library to carry a second hierarchical level of random effects.
