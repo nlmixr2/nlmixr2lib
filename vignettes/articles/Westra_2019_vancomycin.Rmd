@@ -1,0 +1,454 @@
+---
+title: "Vancomycin in hemodiafiltration (Westra 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin in hemodiafiltration (Westra 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+```{r load-model}
+ui <- rxode2::rxode(readModelDb("Westra_2019_vancomycin"))
+typ <- rxode2::zeroRe(ui)
+```
+
+# Model and source
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article (open access): <https://doi.org/10.1371/journal.pone.0216801>
+* Full text: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6516654/>
+
+Westra and colleagues fitted a two-compartment model to routine vancomycin
+levels from 17 patients on intermittent online hemodiafiltration (HDF), with
+the iterative two-stage Bayesian (ITSB) `KinPop` module of MW\\Pharm 3.83,
+and then showed that the same model predicts levels in 21 low-flux
+hemodialysis (LF-HD) patients. Total clearance has three additive arms
+(Methods, Eq 2):
+
+$$CL = CL_m + f_r \cdot CL_{cr} + Q_{ec} \cdot E_{ec}$$
+
+where $Q_{ec}$, the extracorporeal blood flow, is zero outside a dialysis
+session. Both volumes are per kg of fat-corrected lean body mass
+$LBM_c = LBM + 0.4 (BW - LBM)$ (Eq 3). The paper then uses the model to build
+a priori loading- and maintenance-dose tables for infusion during the last
+30 or 60 minutes of a 4-hour session (Tables 3 and 4).
+
+The individual dosing records behind the goodness-of-fit plots (Figures 2
+and 3) are not published, so those figures cannot be reproduced. The dosing
+tables can: they are deterministic typical-value simulations whose only
+unreported input is the height of the simulated "standard patients", and
+they are the main validation below.
+
+# Population
+
+```{r population}
+str(ui$population)
+```
+
+The development cohort (Table 1) is 17 adults (9 men, 8 women), median age
+63 years (46-85), median weight 72.9 kg (53-95.7), median height 165 cm
+(145-189), with residual renal function (mean of 24-h urinary creatinine and
+urea clearance) of median 2.9 mL/min (0.4-16.5). All were dialysed with FX80
+high-flux filters at HagaZiekenhuis, The Hague, between 2002 and 2007, and
+contributed 159 vancomycin levels. The per-patient demographics are published
+as supplement S1 and are used for the virtual cohort below.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Two-compartment structure, CL from central | -- | Methods, Model development; Abstract |
+| `CL = CLm + fr * CLcr + Qec * Eec`, Qec = 0 off dialysis | Eq 2 | Methods, Eq 2 and following sentence |
+| `LBMc = LBM + ffat * (BW - LBM)` | Eq 3 | Methods, Eq 3 |
+| `LBM = 50.0 + 0.9 * (HT - 152)` (men), `45.5 + 0.9 * (HT - 152)` (women) | -- | Methods, text below Eq 3 |
+| `ffat_v` | 0.4 (fixed) | Methods, text below Eq 3 |
+| `lcl_nonren` (CLm) | 0.473 L/h | Table 2 |
+| `e_crcl_cl_renal` (fr) | 0.100 (fixed) | Table 2 |
+| `lvc` (V1) | 0.278 L/kg LBMc | Table 2 |
+| `lq` (CL12) | 9.96 L/h (fixed) | Table 2 |
+| `lvp` (V2) | 0.686 L/kg LBMc | Table 2 |
+| `ledia` (Eec) | 0.212 | Table 2 |
+| `etalcl_nonren` | SD 0.271 L/h, omega^2 = log(1 + (0.271/0.473)^2) = 0.2839 | Table 2 |
+| `etalvc` | SD 0.092, omega^2 = 0.1039 | Table 2 |
+| `etalvp` | SD 0.335, omega^2 = 0.2139 | Table 2 |
+| `etaledia` | SD 0.069, omega^2 = 0.1007 | Table 2 |
+| `addSd`, `propSd`, `quadSd` | 1.3842, 0.0626, 0.0018 (fixed) | Methods, Vancomycin assay: `SD = 1.3842 + 0.0626 C + 0.0018 C^2` |
+| CLcr and Qec units mL/min, converted to L/h by 0.06 | -- | Table 1 (CLcr in mL/min); Tables 3-4 (Qec in mL/min) |
+
+# Virtual cohort
+
+The 17 development-cohort records from supplement S1 (sex, height, weight and
+residual renal function in mL/min; the supplement's BSA-normalised column is
+not the one the model uses) are resampled with replacement.
+
+```{r cohort}
+s1 <- data.frame(
+  SEXF = c(0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0),
+  HT = c(165, 169, 160, 176, 156, 165, 145, 151, 159, 171, 167, 189, 170, 170, 160, 160, 175),
+  WT = c(92, 69, 63.8, 95.5, 80, 95.7, 62, 59, 72.9, 62, 82.1, 87.5, 85, 53, 57.2, 65, 91),
+  CRCL = c(7.110, 3.203, 4.616, 0.396, 0.450, 1.456, 2.797, 1.085, 1.184,
+           2.916, 12.404, 3.274, 8.967, 6.352, 0.943, 0.867, 16.484)
+)
+stopifnot(nrow(s1) == 17, sum(s1$SEXF) == 8, median(s1$WT) == 72.9, median(s1$HT) == 165)
+```
+
+# Event-table helper
+
+Sessions last 4 h (Discussion) and start every `tau` hours; vancomycin is
+infused during the last `dur` hours of a session. The dialysis gate
+`RRT_HEMODIAL_ACTIVE` is a time-varying covariate, so every session start and
+end is written as a record; rxode2 carries covariates forward between records.
+
+```{r helpers}
+session_events <- function(id, cov, tau, dur, n_sess, dose_amts, obs_times) {
+  sess <- (seq_len(n_sess) - 1) * tau
+  dose_t <- sess[seq_along(dose_amts)] + 4 - dur
+  tt <- sort(unique(c(obs_times, sess, sess + 4)))
+  d <- bind_rows(
+    data.frame(time = dose_t, evid = 1, amt = dose_amts, rate = dose_amts / dur),
+    data.frame(time = tt, evid = 0, amt = 0, rate = 0)
+  ) |>
+    filter(evid == 0 | amt > 0) |>
+    arrange(time, desc(evid))
+  d$id <- id
+  d$cmt <- "central"
+  d$RRT_HEMODIAL_ACTIVE <- vapply(d$time, function(t) as.integer(any(t >= sess & t < sess + 4)), 1L)
+  cbind(d, cov[rep(1, nrow(d)), , drop = FALSE])
+}
+```
+
+# Replicating the dosing tables (Tables 3 and 4)
+
+Methods, Dosing regimen: for standard patients of 50-120 kg with a residual
+CLcr of 4.4 mL/min, the dose is the smallest multiple of 100 mg that keeps the
+**worst-case AUC24h** -- the area over the 24 h immediately before the next
+infusion starts, which includes the steep fall during the first part of the
+next session (Figure 1) -- at or above 400 mg h/L. Loading doses are scored
+over the window before the second dose; maintenance doses are scored here at
+steady state.
+
+The model is linear, so each scenario is solved once at 1000 mg and the dose
+is read off the AUC per mg. The worst-case AUCs are computed with PKNCA
+(`aucint.last` over each window). The standard patients' height is not
+reported; a man of 165 cm (the development-cohort median height) is used for
+every weight class.
+
+```{r table-sim}
+pub <- bind_rows(
+  expand.grid(WT = seq(50, 120, 10), BFR = c(200, 250, 300)) |>
+    mutate(table = "Table 3 (q48h, last 60 min)", tau = 48, dur = 1,
+           LD_pub = c(1300, 1500, 1600, 1700, 1800, 1800, 1900, 2000,
+                      1300, 1500, 1700, 1700, 1800, 1900, 1900, 2000,
+                      1400, 1500, 1700, 1700, 1800, 1900, 1900, 2000),
+           MD_pub = c(rep(700, 8), 800, rep(700, 7), rep(800, 8))),
+  expand.grid(WT = seq(50, 120, 10), BFR = c(200, 250, 300)) |>
+    mutate(table = "Table 3 (q48h, last 30 min)", tau = 48, dur = 0.5,
+           LD_pub = NA_real_, MD_pub = 700),
+  expand.grid(WT = seq(50, 120, 10), BFR = c(200, 250, 300)) |>
+    mutate(table = "Table 4 (q72h, last 60 min)", tau = 72, dur = 1,
+           LD_pub = c(1700, 1800, 1900, 2000, 2100, 2100, 2200, 2200,
+                      1700, 1800, 2000, 2000, 2100, 2100, 2200, 2300,
+                      1700, 1800, 2000, 2000, 2100, 2200, 2200, 2300),
+           MD_pub = c(rep(1000, 16), 1100, rep(1000, 7)))
+) |>
+  mutate(scenario = seq_len(n()))
+
+n_md <- 20 # maintenance doses before the scored window: about 15 half-lives
+ev_list <- list()
+win_list <- list()
+for (i in seq_len(nrow(pub))) {
+  p <- pub[i, ]
+  cov <- data.frame(WT = p$WT, HT = 165, SEXF = 0, CRCL = 4.4, BFR = p$BFR)
+  ds <- 4 - p$dur
+  # Loading dose alone; window ends when the second infusion would start.
+  ld_end <- p$tau + ds
+  ev_list[[length(ev_list) + 1]] <- session_events(
+    2 * i - 1, cov, p$tau, p$dur, n_sess = 2, dose_amts = 1000,
+    obs_times = seq(ld_end - 24, ld_end, by = 0.05)
+  )
+  # Maintenance dose every session to steady state; window before dose n_md + 1.
+  md_end <- n_md * p$tau + ds
+  ev_list[[length(ev_list) + 1]] <- session_events(
+    2 * i, cov, p$tau, p$dur, n_sess = n_md + 1, dose_amts = rep(1000, n_md),
+    obs_times = seq(md_end - 24, md_end, by = 0.05)
+  )
+  win_list[[length(win_list) + 1]] <- data.frame(
+    id = c(2 * i - 1, 2 * i), scenario = p$scenario, regimen = c("LD", "MD"),
+    start = c(ld_end - 24, md_end - 24), end = c(ld_end, md_end)
+  )
+}
+ev_tab <- bind_rows(ev_list)
+windows <- bind_rows(win_list)
+
+sim_tab <- as.data.frame(rxSolve(typ, ev_tab, returnType = "data.frame",
+                                 addCov = FALSE))
+if (is.null(sim_tab$id)) sim_tab$id <- 1L
+
+conc_tab <- sim_tab |>
+  select(id, time, Cc) |>
+  filter(!is.na(Cc)) |>
+  inner_join(windows |> select(id, scenario, regimen), by = "id")
+stopifnot(all(conc_tab$Cc >= 0))
+
+intervals_tab <- windows |> mutate(aucint.last = TRUE)
+nca_tab <- pk.nca(PKNCAdata(
+  PKNCAconc(conc_tab, Cc ~ time | scenario + regimen + id),
+  intervals = intervals_tab,
+  options = list(auc.method = "linear")
+))
+auc_tab <- as.data.frame(nca_tab$result) |>
+  filter(PPTESTCD == "aucint.last") |>
+  select(scenario, regimen, auc_per_g = PPORRES)
+stopifnot(nrow(auc_tab) == 2 * nrow(pub), !anyNA(auc_tab$auc_per_g))
+
+dose_for_target <- function(auc_per_g) {
+  # mg needed for AUC = 400 mg h/L, rounded UP to a multiple of 100 mg.
+  ceiling(round(400 / (auc_per_g / 1000), 6) / 100) * 100
+}
+cmp <- auc_tab |>
+  mutate(dose_sim = dose_for_target(auc_per_g)) |>
+  select(-auc_per_g) |>
+  pivot_wider(names_from = regimen, values_from = dose_sim, names_prefix = "sim_") |>
+  inner_join(pub, by = "scenario") |>
+  mutate(dLD = sim_LD - LD_pub, dMD = sim_MD - MD_pub)
+```
+
+```{r table-show}
+cmp |>
+  mutate(LD = ifelse(is.na(LD_pub), "--", paste0(sim_LD, " / ", LD_pub)),
+         MD = paste0(sim_MD, " / ", MD_pub)) |>
+  select(table, WT, BFR, LD, MD) |>
+  pivot_wider(names_from = BFR, values_from = c(LD, MD), names_sep = " @ Qec ") |>
+  dplyr::rename("Weight (kg)" = WT, "Table" = table) |>
+  knitr::kable(caption = paste(
+    "Simulated / published dose (mg) for each cell of Tables 3 and 4.",
+    "Qec in mL/min. The 30-min table prints maintenance doses only."
+  ))
+```
+
+```{r table-gate}
+ld <- cmp |> filter(!is.na(LD_pub))
+agree <- data.frame(
+  quantity = c("Loading dose", "Maintenance dose"),
+  cells = c(nrow(ld), nrow(cmp)),
+  exact = c(mean(ld$dLD == 0), mean(cmp$dMD == 0)),
+  within_100mg = c(mean(abs(ld$dLD) <= 100), mean(abs(cmp$dMD) <= 100)),
+  median_diff_mg = c(median(ld$dLD), median(cmp$dMD))
+)
+agree |>
+  dplyr::rename("Dose" = quantity, "Cells" = cells, "Fraction exact" = exact,
+                "Fraction within 100 mg" = within_100mg,
+                "Median sim - published (mg)" = median_diff_mg) |>
+  knitr::kable(digits = 2)
+
+headline <- cmp |> filter(WT == 70, BFR == 250, table == "Table 3 (q48h, last 60 min)")
+stopifnot(
+  nrow(ld) == 48, nrow(cmp) == 72, nrow(headline) == 1,
+  # Abstract / Results headline: 70 kg, last 60 min: LD 1700 mg, MD 700 mg q48h.
+  abs(headline$sim_LD - 1700) <= 100, headline$sim_MD == 700,
+  # Whole tables. Deterministic typical-value solves; the only unreported
+  # input is the standard patients' height, which shifts the light-weight
+  # loading doses (see Assumptions).
+  median(ld$dLD) == 0, mean(abs(ld$dLD) <= 100) >= 0.85,
+  median(cmp$dMD) == 0, mean(cmp$dMD == 0) >= 0.7, all(abs(cmp$dMD) <= 100)
+)
+```
+
+Two thirds of the loading-dose cells and five sixths of the maintenance-dose
+cells are reproduced exactly, and every maintenance-dose cell within 100 mg;
+the paper's observation that the maintenance dose is almost independent of
+body weight is reproduced. For the headline 70 kg patient (last 60 min,
+q48h) the maintenance dose is 700 mg at every blood flow, as published; the
+loading dose is 1600-1700 mg against the published 1600-1700 mg, 100 mg
+lower at Qec 250 mL/min. The loading-dose misses concentrate in the lightest
+weight classes: at 50 kg a 165 cm man has LBM = 61.7 kg, above his total
+weight, so the printed (uncapped) LBM formula gives LBMc > BW and a larger
+loading dose than the table. The standard patients' heights are not reported,
+which is the limit of this comparison.
+
+# Typical profile (Figure 1)
+
+A 70 kg, 165 cm man, Qec 250 mL/min, residual CLcr 4.4 mL/min, given the
+Table 3 regimen. The shaded band marks the worst-case AUC24h window before
+the second dose, as in Figure 1.
+
+```{r fig1}
+cov70 <- data.frame(WT = 70, HT = 165, SEXF = 0, CRCL = 4.4, BFR = 250)
+ev70 <- bind_rows(
+  session_events(1, cov70, tau = 48, dur = 1, n_sess = 4,
+                 dose_amts = c(1700, 700, 700, 700), obs_times = seq(0, 196, by = 0.05)),
+  # Same subject with the dialysis gate forced off, to show the arm is live.
+  session_events(2, cov70, tau = 48, dur = 1, n_sess = 4,
+                 dose_amts = c(1700, 700, 700, 700), obs_times = seq(0, 196, by = 0.05)) |>
+    mutate(RRT_HEMODIAL_ACTIVE = 0L)
+)
+sim70 <- as.data.frame(rxSolve(typ, ev70, returnType = "data.frame"))
+if (is.null(sim70$id)) sim70$id <- 1L
+
+ggplot(sim70 |> filter(id == 1), aes(time, Cc)) +
+  annotate("rect", xmin = 27, xmax = 51, ymin = -Inf, ymax = Inf, alpha = 0.15, fill = "red") +
+  annotate("rect", xmin = (0:3) * 48, xmax = (0:3) * 48 + 4, ymin = -Inf, ymax = 0,
+           fill = "black") +
+  geom_line() +
+  labs(x = "Time from start of first session (h)", y = "Vancomycin (mg/L)",
+       caption = "Replicates the design of Figure 1 of Westra 2019; black bars are 4-h sessions.")
+
+# Concentration at the end of the second session, with and without the gate.
+end2 <- sim70 |> filter(abs(time - 52) < 1e-6) |> arrange(id)
+stopifnot(nrow(end2) == 2)
+# Without the dialysis arm the level after a session would be higher; the
+# dialyser removes roughly a fifth of the circulating drug during a session.
+stopifnot(end2$Cc[1] < 0.9 * end2$Cc[2])
+```
+
+The Discussion quotes, for a typical patient, V1 = 19.5 L, V2 = 48.0 L
+(that is, LBMc = 70 kg) and a dialysis clearance of 74 L/day. The model
+gives:
+
+```{r discussion-check}
+# A 70 kg man whose LBM is 70 kg (height 152 + 20 / 0.9 cm) has LBMc = 70 kg.
+# Solve on and off dialysis and read the model's own vc, vp and cl.
+cov_lbmc70 <- data.frame(WT = 70, HT = 152 + 20 / 0.9, SEXF = 0, CRCL = 4.4, BFR = 250)
+ev_disc <- bind_rows(
+  session_events(1, cov_lbmc70, tau = 48, dur = 1, n_sess = 1, dose_amts = 1000,
+                 obs_times = c(1, 10)),
+  session_events(2, cov_lbmc70, tau = 48, dur = 1, n_sess = 1, dose_amts = 1000,
+                 obs_times = c(1, 10))
+)
+sim_disc <- as.data.frame(rxSolve(typ, ev_disc, returnType = "data.frame"))
+on <- sim_disc |> filter(id == 1, time == 1)
+off <- sim_disc |> filter(id == 1, time == 10)
+stopifnot(nrow(on) == 1, nrow(off) == 1)
+disc <- data.frame(
+  quantity = c("V1 (L)", "V2 (L)", "Dialysis clearance at Qec 250 mL/min (L/day)"),
+  model = c(on$vc, on$vp, (on$cl - off$cl) * 24),
+  paper = c(19.5, 48.0, 74)
+)
+disc |>
+  dplyr::rename("Quantity" = quantity, "Model" = model, "Paper (Discussion)" = paper) |>
+  knitr::kable(digits = 1)
+stopifnot(abs(disc$model[1:2] / disc$paper[1:2] - 1) < 0.01)
+```
+
+The 74 L/day corresponds to Qec = 74 / 24 / 0.06 / 0.212 = 242 mL/min, a
+typical blood flow, so the per-patient blood flows (not published) averaged
+close to the Table 3 middle column.
+
+# Stochastic simulation
+
+200 subjects resampled from the development-cohort records, Qec 250 mL/min,
+1700 mg loading then 700 mg every 48 h, each infused in the last 60 min of a
+4-h session.
+
+```{r vpc}
+set.seed(2019)
+rxode2::rxSetSeed(2019)
+n_sub <- 200
+pick <- sample(seq_len(nrow(s1)), n_sub, replace = TRUE)
+ev_vpc <- bind_rows(lapply(seq_len(n_sub), function(i) {
+  session_events(i, cbind(s1[pick[i], ], BFR = 250), tau = 48, dur = 1, n_sess = 4,
+                 dose_amts = c(1700, 700, 700, 700), obs_times = seq(0, 196, by = 0.5))
+}))
+sim_vpc <- as.data.frame(rxSolve(ui, ev_vpc, returnType = "data.frame"))
+if (is.null(sim_vpc$id)) sim_vpc$id <- 1L
+
+vpc <- sim_vpc |>
+  group_by(time) |>
+  summarise(p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95), .groups = "drop")
+ggplot(vpc, aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  labs(x = "Time from start of first session (h)", y = "Vancomycin (mg/L)",
+       caption = "Median and 90% prediction interval of the individual (no residual error) profile.")
+
+# Pre-session levels (the routine sampling time) before sessions 2-4.
+pre <- sim_vpc |>
+  filter(time %in% c(48, 96, 144)) |>
+  group_by(time) |>
+  summarise(median = median(Cc), p05 = quantile(Cc, 0.05), p95 = quantile(Cc, 0.95), .groups = "drop")
+knitr::kable(pre, digits = 1,
+             caption = "Simulated pre-session concentrations (mg/L).")
+```
+
+# NCA of the typical profile
+
+PKNCA on the typical 70 kg profile above: the worst-case AUC24h of the loading
+dose (27-51 h) and of the third maintenance dose (123-147 h), each computed as
+AUClast over its 24-h window (the simulation has samples at both window
+edges), against the 400 mg h/L target the regimen was designed for. Because doses were rounded
+up to 100 mg, both should land at or a little above 400.
+
+```{r nca-typical}
+conc70 <- sim70 |> filter(id == 1, !is.na(Cc)) |> select(id, time, Cc) |>
+  mutate(treatment = "LD 1700 mg + MD 700 mg q48h")
+dose70 <- ev70 |> filter(id == 1, evid == 1) |> select(id, time, amt) |>
+  mutate(treatment = "LD 1700 mg + MD 700 mg q48h")
+iv70 <- data.frame(start = c(27, 123), end = c(51, 147), auclast = TRUE)
+nca70 <- pk.nca(PKNCAdata(
+  PKNCAconc(conc70, Cc ~ time | treatment + id),
+  PKNCAdose(dose70, amt ~ time | treatment + id),
+  intervals = iv70,
+  options = list(auc.method = "linear")
+))
+res70 <- as.data.frame(nca70$result) |>
+  filter(PPTESTCD == "auclast") |>
+  mutate(window = ifelse(start == 27, "Loading dose (27-51 h)", "Third maintenance dose (123-147 h)"))
+
+nca_sim <- res70 |> select(window, PPTESTCD, PPORRES)
+nca_ref <- data.frame(window = res70$window, auclast = 400)
+ncaComparisonTable(nca_sim, nca_ref, by = "window", params = "auclast",
+                   units = c(auclast = "mg*h/L")) |>
+  knitr::kable(caption = "Worst-case AUC24h versus the 400 mg h/L design target.")
+stopifnot(nrow(res70) == 2, all(res70$PPORRES >= 400), all(res70$PPORRES < 400 * 1.2))
+```
+
+# Assumptions and deviations
+
+* **Inter-individual variability.** MW\\Pharm reports each parameter as a
+  natural-scale mean and SD, and the paper states the distributions are
+  log-normal. The mean is used as the typical value and the SD converted to a
+  log-scale variance with omega^2 = log(1 + (SD/mean)^2). If MW\\Pharm's mean
+  is instead the arithmetic mean of the log-normal, the typical (median)
+  values would be lower by a factor exp(-omega^2/2), i.e. 3-13%.
+* **Residual error.** The fit was weighted by the assay-error polynomial
+  `SD = 1.3842 + 0.0626 C + 0.0018 C^2`, the three terms added linearly.
+  Supplement S2 evaluates it at the measured concentration; here it is
+  evaluated at the prediction, as nlmixr2 requires. No further residual
+  component is reported, so none is added.
+* **Lean body mass.** The printed formula
+  `LBM = 50.0 (45.5 for women) + 0.9 (HT - 152)` is encoded as printed, with
+  no cap at total body weight. MW\\Pharm is known to cap LBM at total body
+  weight in other analyses; with the cap the light-weight loading doses in
+  Table 3 move closer to the published values, but the improvement is small
+  and the standard patients' heights are unknown, so the printed form is kept.
+  Users simulating very lean or very short-and-heavy patients should be aware
+  that LBMc can exceed body weight.
+* **Renal function.** CLcr is the measured residual renal function in
+  absolute mL/min (Table 1 matches the un-normalised column of supplement S1),
+  stored in the `CRCL` column although that column is usually BSA-normalised.
+  It enters as `0.1 * CRCL * 0.06` L/h, a minor contribution at the cohort's
+  4.4 mL/min mean.
+* **Dialysis.** The extracorporeal arm is `BFR * 0.06 * Eec` while
+  `RRT_HEMODIAL_ACTIVE = 1`. Per-patient blood flows are not reported; the
+  Discussion's 74 L/day implies about 242 mL/min. The model was developed in
+  online HDF on FX80 filters; the paper reports that it also predicts LF-HD
+  levels (MDPE -0.7%, MDAPE 7.9% for individual predictions), which cannot be
+  re-computed here because the dosing records are not published.
+* **Dosing-table replication.** The standard patients' height (a man of
+  165 cm here, the cohort median) and the session timing within the
+  48/72-h interval (sessions starting exactly every `tau` hours) are not
+  reported. Maintenance doses are scored at steady state.
+* **Fixed parameters.** fr = 0.1 and CL12 = 9.96 L/h were fixed by the
+  authors at literature values (Results), and ffat = 0.4 was set (Methods);
+  all three are `fixed()` in the model.
