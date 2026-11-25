@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Baek 2014 cyclosporine ([doi:10.2147/DDDT.S70595](https://doi.org/10.2147/DDDT.S70595)) -- adult Korean living-donor renal transplant recipients in the first postoperative week.
+- Add Hoch 2014 etirinotecan pegol tumor PK/PD ([doi:10.1007/s00280-014-2577-7](https://doi.org/10.1007/s00280-014-2577-7)) -- nude mice with HT29 colon and NCI-H460 lung xenografts.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
