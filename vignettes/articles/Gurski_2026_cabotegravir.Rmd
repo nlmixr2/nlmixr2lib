@@ -1,0 +1,805 @@
+---
+title: "Cabotegravir long-acting PrEP and HIV-1 resistance evolution (Gurski 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cabotegravir long-acting PrEP and HIV-1 resistance evolution (Gurski 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Gurski_2026_cabotegravir"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Gurski_2026_cabotegravir"))$description`
+* Article: <https://doi.org/10.1371/journal.pone.0355833> (open access,
+  PMC13492818)
+
+Gurski, Kang and Ma couple a within-host model of acute HIV-1 infection to a
+pharmacokinetic/pharmacodynamic (PK/PD) description of long-acting
+cabotegravir (CAB-LA) pre-exposure prophylaxis (PrEP). Healthy CD4+ T cells
+(`tcell_uninfected`, H) are infected either by free virions (`virus`, V) or
+by cell-to-cell transfer through virological synapses. The two routes give
+two classes of early infected cells (`tcell_early_free`, E_f, and
+`tcell_early_c2c`, E_c) that still have to integrate the viral DNA before
+they become productively infected (`tcell_infected`, I). Cabotegravir is an
+integrase inhibitor, so it acts on that E -> I step.
+
+Resistance is modelled with evolutionary game theory: two mean phenotypic
+traits, `trait_free` (u_k) and `trait_c2c` (u_w), lower the infectivity of
+their route as `exp(-u^2/2)` and let the virus escape the drug as
+`exp(-u^2/(2 sigma^2))`. They evolve along the gradient of the Malthusian
+fitness r, the dominant eigenvalue of the Jacobian at the disease-free state
+(Lande's equation, Eq 19). The packaged model computes r and its gradient
+inside `model()`, so a single `rxSolve()` gives the T-cell, viral, trait and
+fitness trajectories together.
+
+This is a deterministic theoretical model: there is no between-subject
+variability and no residual error.
+
+# Population
+
+No patient cohort was fitted. The T-cell and viral parameters are literature
+values (Table 2), apart from the maximum cell-to-cell infection rate omega_m,
+which the authors fitted by nudging the model toward the smoothed mean viral
+load of 46 acute HIV-1 infections from the RV217 cohort (Fig 6). The CAB-LA
+PK/PD curve (Eq 3) was fitted in the authors' earlier work to human plasma
+concentrations after a single injection. The resistance-breadth parameters
+sigma_k and sigma_w are scenario values (0.5, 1 and 2 in the paper), since
+they have not been measured. The simulated subject is an HIV-negative adult
+on CAB-LA injections at day 0 and day 14 and then every 56 days, exposed to
+HIV-1 at the third injection.
+
+The same information is available programmatically via
+`readModelDb("Gurski_2026_cabotegravir")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `d/dt(central)`, `Cc` | C(t) = 5.04 exp(-0.0363 t) per injection | Eq 3; superposition across injections from Fig 3 |
+| `feff` | 1 - IC50 / (IC50 + C), n = 1 | Eq 1, Eq 3 |
+| `kinf`, `winf`, `d_free`, `d_c2c` | trait-dependent rates | Table 4 |
+| ODEs for H, E_f, E_c, I, V | | Eq 31 (Eq 5 when u_k = u_w = 0) |
+| `d/dt(trait_free)`, `d/dt(trait_c2c)` | du/dt = s dr/du | Eq 19, Eq 31 |
+| `fitness` (r) | dominant eigenvalue at H0 = beta/mu | Section 8.3, Eq 32 |
+| `drdu_free`, `drdu_c2c` | implicit differentiation of P(r) = 0 | Eq 33-34 (checked numerically below) |
+| `lcinj`, `lkel`, `lic50` | log(5.04), log(0.0363), log(0.018) | Eq 3 |
+| `lambda_t` (beta) | 60 cells/uL/day | Table 2 |
+| `delta_t` (mu) | 0.05 1/day | Table 2 |
+| `delta_c2c` (mu_c) | 0.25 1/day | Table 2 |
+| `delta_burst` (delta) | 1 1/day | Table 2 |
+| `n_burst` (N) | 100 virions/cell | Table 2 |
+| `cl_virus` (c) | 25 1/day | Table 2 |
+| `k_t` (phi) | 24/15 = 1.6 1/day | Table 2, Section 7 |
+| `beta_t` (k_m) | 2.5e-4 uL/virion/day | Table 2 |
+| `omega_c2c` (omega_m) | 2.93e-3 uL/cell/day | Table 2 (fitted) |
+| `sigma_free`, `sigma_c2c` | 2 (default; paper uses 0.5, 1, 2) | Section 8, Figs 10-18 |
+| `s_free`, `s_c2c` | 0.018, 0.024 | not reported; back-solved by the maintainers from Fig 16 |
+| `trait_free0`, `trait_c2c0` | 0.1 (default) | Figs 15-16 |
+| `tcell0`, `tcell_infected0`, `virus0` | 1000, 1e-3, 100 per uL | Table 1 |
+
+## Units, and how to dose the model
+
+Time is in days. One dose record with `amt = 1` into `central` is one CAB-LA
+injection: `central` holds the remaining injection-equivalents and `Cc` is
+the plasma cabotegravir concentration in ug/mL, 5.04 ug/mL immediately after
+an injection. The paper gives the concentration-time curve per injection but
+not the dose in mg, so the model doses in injections rather than in mg.
+
+Model time 0 is the moment of HIV exposure: the cell, virus and trait states
+start at their Table 1 values and the scenario values `trait_free0` and
+`trait_c2c0`. Drug already on board from earlier injections is given as an
+extra amount at time 0. For exposure `texp` days after the third injection,
+with injections at days -70, -56 and 0 relative to the third injection, that
+amount is the sum of `exp(-kel (texp - t_inj))` over the earlier injections.
+
+The viral-load output `vl` is in copies/mL (1000 x V; the paper's figures
+draw the exposure inoculum of 100 virions/uL at 1e5 vRNA/mL). The
+seroconversion threshold used throughout the paper is 20 copies/mL.
+
+```{r helpers}
+mod <- readModelDb("Gurski_2026_cabotegravir")
+ui <- rxode2::rxode(mod)
+th <- ui$theta
+kel <- exp(th[["lkel"]])
+
+# Event table for an exposure texp days after the third injection; doses
+# on central (one injection = amt 1), observations on central.
+exposure_events <- function(texp = 0, tend = 210, dt = 0.25, id = 1L) {
+  past <- c(-70, -56, 0) - texp
+  on_board <- sum(exp(kel * past))
+  next_inj <- seq(56 - texp, tend, by = 56)
+  dplyr::bind_rows(
+    data.frame(time = 0, amt = on_board, evid = 1L),
+    data.frame(time = next_inj, amt = 1, evid = 1L),
+    data.frame(time = seq(0, tend, by = dt), amt = 0, evid = 0L)
+  ) |>
+    dplyr::mutate(id = id, cmt = "central") |>
+    dplyr::arrange(time, dplyr::desc(evid))
+}
+
+solve_one <- function(params = c(), texp = 0, tend = 210) {
+  rxode2::rxSolve(
+    mod,
+    events = exposure_events(texp, tend),
+    params = params,
+    returnType = "data.frame",
+    atol = 1e-10,
+    rtol = 1e-8
+  )
+}
+
+seroconversion_line <- geom_hline(yintercept = 20, linetype = "dashed", colour = "green4")
+```
+
+# Virtual cohort
+
+The model has no random effects, so every simulation is a single typical
+trajectory for a scenario: the resistance breadths sigma_k and sigma_w, the
+traits at exposure and the timing of exposure within the injection cycle are
+the scenario inputs, exactly as in the paper's figures.
+
+# PK/PD: drug effectiveness (Figure 3)
+
+```{r fig3}
+inj_times <- c(0, 14, seq(70, 350, by = 56))
+obs3 <- sort(unique(c(seq(0, 350, by = 0.25), inj_times[-1] - 0.01)))
+fig3_ev <- data.frame(time = inj_times, amt = 1, evid = 1L) |>
+  dplyr::bind_rows(data.frame(time = obs3, amt = 0, evid = 0L)) |>
+  dplyr::mutate(id = 1L, cmt = "central") |>
+  dplyr::arrange(time, dplyr::desc(evid))
+fig3 <- rxode2::rxSolve(
+  mod,
+  events = fig3_ev,
+  params = c(trait_free0 = 0, trait_c2c0 = 0),
+  returnType = "data.frame"
+)
+ggplot(fig3, aes(time / 7, feff)) +
+  geom_line(linewidth = 1) +
+  coord_cartesian(ylim = c(0.975, 1)) +
+  labs(x = "Weeks", y = "Feff", caption = "Replicates Figure 3 of Gurski 2026.")
+
+# Closed form: Eq 3 superposed over the injections given so far.
+feff_closed <- function(t) {
+  conc <- sum(exp(th[["lcinj"]]) * exp(-kel * (t - inj_times[inj_times <= t])))
+  conc / (exp(th[["lic50"]]) + conc)
+}
+fig3_chk <- data.frame(
+  point = c(
+    "1st injection", "just before 2nd (day 14)", "after 2nd",
+    "just before 3rd (day 70)", "after 3rd", "just before 4th (day 126)"
+  ),
+  time = c(0, 13.99, 14, 69.99, 70, 125.99),
+  figure_3 = c(0.9965, 0.9948, 0.9977, 0.983, 0.997, 0.977)
+) |>
+  dplyr::mutate(
+    model = vapply(time, function(t) fig3$feff[fig3$time == t][1], numeric(1)),
+    closed_form = vapply(time, feff_closed, numeric(1))
+  )
+knitr::kable(fig3_chk, digits = 4, caption = "Feff at the Figure 3 peaks and troughs (figure values read from the plot).")
+```
+
+Figure 3 shows Feff starting at about 0.9965, peaking at about 0.9977 after
+the second injection, falling to about 0.983 before the third and then
+cycling between about 0.997 and 0.976. Those values need the concentrations
+of successive injections to add (superposition): with a single injection's
+curve restarted at every injection the trough before the third injection
+would be 0.973 instead. The section 7 text quotes the cycle as 97.5% to
+99.5%. The minimum before the second injection is drawn slightly higher in
+the figure (about 0.9948 against 0.9941), within the line width of the plot.
+
+```{r fig3-check}
+stopifnot(
+  # model against its own closed form: numerical error only
+  max(abs(fig3_chk$model - fig3_chk$closed_form)) < 1e-6,
+  # against the plotted values
+  max(abs(fig3_chk$model - fig3_chk$figure_3)) < 0.001
+)
+```
+
+# Threshold drug effectiveness (Theorem 1)
+
+With constant drug effectiveness the reproduction number is below 1 exactly
+when Feff exceeds the Theorem 1 threshold (Eq 9). The paper gives 95.5% for
+the Table 2 values.
+
+```{r theorem1}
+feff0 <- with(as.list(th), {
+  num <- lambda_t * k_t * (delta_burst * n_burst * beta_t + cl_virus * omega_c2c) -
+    cl_virus * delta_t * (delta_burst + delta_t) * (delta_c2c + k_t)
+  den <- k_t * (lambda_t * (delta_burst * n_burst * beta_t + cl_virus * omega_c2c) -
+    cl_virus * delta_t * (delta_burst + delta_t))
+  num / den
+})
+feff0
+stopifnot(abs(feff0 - 0.955) < 0.0005)
+# Fig 8 text: W(0) is roughly eleven times K(0).
+th[["omega_c2c"]] / th[["beta_t"]]
+```
+
+The CAB-LA trough (0.978) stays above the threshold, so with fully
+drug-sensitive virus (u_k = u_w = 0) the model fitness stays negative over the
+whole injection cycle:
+
+```{r theorem1-cycle}
+sens <- solve_one(c(trait_free0 = 0, trait_c2c0 = 0))
+range(sens$fitness)
+stopifnot(max(sens$fitness) < 0)
+```
+
+# Fitness and its gradient: model against eigen() and Eq 33-34
+
+The model finds r by Newton's method on the characteristic polynomial and
+the gradient by implicit differentiation. Both are checked here against an
+independent calculation: `eigen()` of the 4 x 4 Jacobian of (E_f, E_c, I, V)
+at the disease-free state, and the paper's own gradient formula (Eq 33-34),
+at 200 random trait / breadth / drug-effectiveness combinations. The two
+sides use the same parameters, so the difference is pure numerical error and
+a tight bound is the right check.
+
+```{r eigen-check}
+set.seed(20261122)
+n_chk <- 200
+chk_par <- data.frame(
+  id = seq_len(n_chk),
+  trait_free0 = runif(n_chk, 0, 4),
+  trait_c2c0 = runif(n_chk, 0, 4),
+  sigma_free = exp(runif(n_chk, log(0.25), log(4))),
+  sigma_c2c = exp(runif(n_chk, log(0.25), log(4))),
+  s_free = 0,
+  s_c2c = 0
+)
+# Observation times spread across a cycle sample a range of Feff values.
+chk_ev <- dplyr::bind_rows(lapply(seq_len(n_chk), function(i) {
+  data.frame(
+    id = i,
+    time = c(0, (i %% 50) + 0.5),
+    amt = c(1.2, 0),
+    evid = c(1L, 0L),
+    cmt = "central"
+  )
+}))
+chk <- rxode2::rxSolve(mod, events = chk_ev, params = chk_par, returnType = "data.frame")
+# Drop the dose-time row of each subject; the comparison uses the later one.
+chk <- chk[chk$time != 0, ]
+
+jac_r <- function(uk, uw, feff, sk, sw, p) {
+  with(as.list(p), {
+    kinf <- beta_t * exp(-uk^2 / 2)
+    winf <- omega_c2c * exp(-uw^2 / 2)
+    df <- k_t * (1 - feff * exp(-uk^2 / (2 * sk^2)))
+    dc <- k_t * (1 - feff * exp(-uw^2 / (2 * sw^2)))
+    h0 <- lambda_t / delta_t
+    J <- matrix(
+      c(
+        -(df + delta_t), 0, 0, kinf * h0,
+        0, -(dc + delta_c2c), winf * h0, 0,
+        df, dc, -(delta_burst + delta_t), 0,
+        0, 0, n_burst * delta_burst, -cl_virus
+      ),
+      4,
+      byrow = TRUE
+    )
+    max(Re(eigen(J)$values))
+  })
+}
+
+# Paper Eq 33-34, evaluated at the eigen() value of r.
+eq33 <- function(uk, uw, feff, sk, sw, r, p) {
+  with(as.list(p), {
+    K <- beta_t * exp(-uk^2 / 2)
+    W <- omega_c2c * exp(-uw^2 / 2)
+    Df <- k_t * (1 - feff * exp(-uk^2 / (2 * sk^2)))
+    Dc <- k_t * (1 - feff * exp(-uw^2 / (2 * sw^2)))
+    H0 <- lambda_t / delta_t
+    d <- delta_burst
+    N <- n_burst
+    ct <- cl_virus + r
+    mt <- delta_t + r
+    mct <- delta_c2c + r
+    Cf <- H0 * (d * N * K * (mct + Dc) + ct * Dc * W) - ct * (d + mt) * (mct + Dc)
+    Cc <- H0 * (d * N * K * Df + ct * (Df + mt) * W) - ct * (d + mt) * (mt + Df)
+    CK <- H0 * d * N * Df * (mct + Dc)
+    CW <- H0 * ct * Dc * (mt + Df)
+    E1 <- (ct + d + mt) - W * H0
+    Ef <- (d + mt) * (ct + mct) + ct * mct - d * N * K * H0
+    Ec <- (d + mt) * (ct + mt) + ct * mt - (ct + mt) * H0 * W
+    E0 <- mt * (d + mt) * (ct + mct) + ct * (d + 2 * mt) * mct
+    den <- E1 * Df * Dc + Ef * Df + Ec * Dc + E0
+    c(
+      free = (Cf * k_t * feff * exp(-uk^2 / (2 * sk^2)) * uk / sk^2 - CK * uk * K) / den,
+      c2c = (Cc * k_t * feff * exp(-uw^2 / (2 * sw^2)) * uw / sw^2 - CW * uw * W) / den
+    )
+  })
+}
+
+chk <- chk |>
+  dplyr::select(id, time, feff, trait_free, trait_c2c, fitness, drdu_free, drdu_c2c) |>
+  dplyr::left_join(dplyr::select(chk_par, id, sk = sigma_free, sw = sigma_c2c), by = "id")
+chk$r_eigen <- mapply(
+  jac_r, chk$trait_free, chk$trait_c2c, chk$feff, chk$sk, chk$sw,
+  MoreArgs = list(p = th)
+)
+g33 <- t(mapply(
+  eq33, chk$trait_free, chk$trait_c2c, chk$feff, chk$sk, chk$sw, chk$r_eigen,
+  MoreArgs = list(p = th)
+))
+summary(chk$feff)
+c(
+  max_abs_r = max(abs(chk$fitness - chk$r_eigen)),
+  max_abs_grad_free = max(abs(chk$drdu_free - g33[, "free"])),
+  max_abs_grad_c2c = max(abs(chk$drdu_c2c - g33[, "c2c"]))
+)
+stopifnot(
+  max(abs(chk$fitness - chk$r_eigen)) < 1e-8,
+  max(abs(chk$drdu_free - g33[, "free"])) < 1e-6,
+  max(abs(chk$drdu_c2c - g33[, "c2c"])) < 1e-6
+)
+```
+
+# Drug-sensitive virus: exposure timing (Figure 7)
+
+With u_k = u_w = 0 the model reduces to the paper's Eq 5. Exposure on day 0,
+28 or 55 after the third injection:
+
+```{r fig7}
+fig7 <- dplyr::bind_rows(lapply(c(0, 28, 55), function(te) {
+  solve_one(c(trait_free0 = 0, trait_c2c0 = 0), texp = te, tend = 210 - te) |>
+    dplyr::mutate(exposure = paste("Exposure day", te), week = (time + te) / 7)
+}))
+ggplot(dplyr::filter(fig7, vl > 0), aes(week, vl, colour = exposure)) +
+  geom_line(linewidth = 0.8) +
+  seroconversion_line +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(1, 1e6)) +
+  labs(
+    x = "Weeks after the third injection", y = "Viral load (copies/mL)", colour = NULL,
+    caption = "Replicates Figure 7 of Gurski 2026."
+  )
+fig7_end <- fig7 |>
+  dplyr::group_by(exposure) |>
+  dplyr::summarise(
+    plateau_before_next_injection = vl[which.min(abs(time - 20))],
+    vl_week_28 = vl[which.min(abs(week - 28))]
+  )
+knitr::kable(fig7_end, digits = 3)
+stopifnot(all(fig7_end$vl_week_28 < 1))
+```
+
+As in Figure 7, the inoculum is cleared within days to a low plateau (about
+15 copies/mL for exposure on day 0 or 55 and about 50 copies/mL for exposure
+on day 28, against roughly 15 and 40-60 in the figure), each new injection
+produces a sharp further drop, and the infection is not established for any
+exposure day.
+
+# Fitness as a function of the cell-to-cell trait (Figure 11a)
+
+Fitness at u_k = 0 against u_w, 0, 28 and 55 days after an injection, for
+sigma_w = 2, 1 and 0.5 (traits held fixed with s = 0):
+
+```{r fig11}
+fig11_par <- tidyr::expand_grid(trait_c2c0 = seq(0, 3, by = 0.05), sigma_c2c = c(2, 1, 0.5)) |>
+  dplyr::mutate(id = dplyr::row_number(), trait_free0 = 0, s_free = 0, s_c2c = 0)
+fig11_ev <- dplyr::bind_rows(lapply(fig11_par$id, function(i) {
+  data.frame(
+    id = i,
+    time = c(0, 0, 28, 55),
+    amt = c(1 + exp(-kel * 56) + exp(-kel * 70), 0, 0, 0),
+    evid = c(1L, 0L, 0L, 0L),
+    cmt = "central"
+  )
+}))
+fig11 <- rxode2::rxSolve(mod, events = fig11_ev, params = fig11_par, returnType = "data.frame") |>
+  dplyr::select(id, time, trait_c2c, fitness) |>
+  dplyr::left_join(dplyr::select(fig11_par, id, sw = sigma_c2c), by = "id") |>
+  dplyr::mutate(day = factor(time), sigma_w = factor(sw))
+ggplot(fig11, aes(trait_c2c, fitness, colour = sigma_w, linetype = day)) +
+  geom_line() +
+  geom_hline(yintercept = 0, colour = "green4") +
+  labs(
+    x = "u_w", y = "Fitness r (1/day)", colour = "sigma_w", linetype = "Day after injection",
+    caption = "Replicates Figure 11a of Gurski 2026."
+  )
+```
+
+```{r fig11-table}
+fig11_peaks <- fig11 |>
+  dplyr::group_by(sigma_w = sw, day = time) |>
+  dplyr::summarise(
+    r_at_uw_0 = fitness[trait_c2c == 0],
+    peak_r = max(fitness),
+    uw_at_peak = trait_c2c[which.max(fitness)],
+    r_at_uw_3 = fitness[abs(trait_c2c - 3) < 1e-9],
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(figure_11a_peak = c(0.15, 0.17, 0.21, 0.46, 0.47, 0.49, 0.80, 0.80, 0.815)[
+    match(paste(sigma_w, day), paste(rep(c(2, 1, 0.5), each = 3), rep(c(0, 28, 55), 3)))
+  ])
+knitr::kable(fig11_peaks, digits = 3, caption = paste(
+  "Fitness along u_w at u_k = 0. figure_11a_peak is read from Figure 11a,",
+  "taking the legend's marker shapes as sigma and colours as day (see text)."
+))
+```
+
+Figure 11a agrees with the model at both ends of the u_w axis: about
+-0.05, -0.04 and slightly below zero at u_w = 0 on days 0, 28 and 55, and
+about -0.045 at u_w = 3, where cell-to-cell infectivity is lost and the free
+route alone (fully drug-sensitive at u_k = 0) cannot sustain the infection.
+The ordering is also the same: narrower drug coverage (smaller sigma_w)
+gives much higher fitness, and fitness rises through the injection cycle.
+Two things do not match:
+
+* The printed legend assigns the marker shapes to the day and the colours to
+  sigma_w. At u_w = 0 neither sigma matters, so curves of the same day must
+  meet there; in the figure the curves of one colour meet, so the colours
+  are the days and the shapes are sigma_w, as used for the table above.
+* The peaks of the published curves are higher than the model's by about
+  0.25-0.3 per day (about 0.8 against 0.55 for sigma_w = 0.5). The same
+  model reproduces the fitness plateaus of Figure 16 (0.8, 0.53 and 0.27 per
+  day for three different scenarios, next section), so the difference is
+  specific to Figure 11, whose free-virion settings beyond u_k = 0 are not
+  stated; it was not resolved.
+
+The section 8.1 text says fitness at day 55 exceeds zero "including the
+drug-sensitive case u_w = 0". With u_k = u_w = 0 this contradicts Theorem 1:
+the day-55 effectiveness (0.979) is above the 95.5% threshold, so r stays
+negative, as it does in the model and as Figure 7 shows.
+
+```{r fig11-check}
+f11 <- function(d, s, u) fig11$fitness[fig11$time == d & fig11$sw == s & abs(fig11$trait_c2c - u) < 1e-9]
+stopifnot(
+  # u_w = 0: independent of sigma_w, negative over the cycle, rising with time
+  abs(f11(55, 2, 0) - f11(55, 0.5, 0)) < 1e-10,
+  f11(0, 2, 0) < f11(28, 2, 0), f11(28, 2, 0) < f11(55, 2, 0), f11(55, 2, 0) < 0,
+  # u_w = 3: about -0.045 as in the figure
+  all(abs(fig11$fitness[abs(fig11$trait_c2c - 3) < 1e-9] + 0.045) < 0.01),
+  # narrower coverage gives higher peak fitness
+  all(diff(fig11_peaks$peak_r[fig11_peaks$day == 55][order(-fig11_peaks$sigma_w[fig11_peaks$day == 55])]) > 0)
+)
+```
+
+# Trait evolution (Figure 16)
+
+Figure 16 is the paper's central result: four (sigma_k, sigma_w) scenarios,
+traits starting at 0.1, exposure at the third injection. The evolutionary
+speeds s_k and s_w are not reported (the Conclusion calls them free scaling
+parameters), so the model defaults were back-solved by the maintainers: the
+u_k and u_w curves of Figure 16 were digitised by colour from the published
+image, and one pooled pair (s_k, s_w) was fitted by least squares to all
+eight curves at once (437 points). The table below gives the digitised curves
+every two weeks.
+
+```{r fig16-digitised}
+fig16_dig <- dplyr::bind_rows(
+  data.frame(trait = "u_k", scenario = "sigma_k 0.5, sigma_w 0.5", week = c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29), u = c(0.150, 0.340, 0.538, 0.640, 0.683, 0.704, 0.711, 0.713, 0.713, 0.715, 0.715, 0.715, 0.715, 0.717, 0.715)),
+  data.frame(trait = "u_k", scenario = "sigma_k 0.5, sigma_w 2", week = c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29), u = c(0.124, 0.152, 0.227, 0.325, 0.394, 0.432, 0.470, 0.514, 0.552, 0.568, 0.591, 0.600, 0.602, 0.604, 0.606)),
+  data.frame(trait = "u_k", scenario = "sigma_k 2, sigma_w 0.5", week = c(1, 5, 9, 11, 13, 15, 19, 23, 27), u = c(0.104, 0.122, 0.139, 0.146, 0.156, 0.169, 0.199, 0.240, 0.304)),
+  data.frame(trait = "u_k", scenario = "sigma_k 2, sigma_w 2", week = c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29), u = c(0.101, 0.103, 0.102, 0.104, 0.111, 0.114, 0.116, 0.122, 0.126, 0.129, 0.133, 0.139, 0.144, 0.148, 0.154)),
+  data.frame(trait = "u_w", scenario = "sigma_k 0.5, sigma_w 0.5", week = c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29), u = c(0.199, 0.636, 0.724, 0.735, 0.737, 0.737, 0.737, 0.735, 0.739, 0.737, 0.739, 0.735, 0.739, 0.737, 0.739)),
+  data.frame(trait = "u_w", scenario = "sigma_k 0.5, sigma_w 2", week = c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29), u = c(0.095, 0.110, 0.122, 0.136, 0.170, 0.238, 0.341, 0.514, 0.681, 0.886, 1.008, 1.047, 1.073, 1.092, 1.095)),
+  data.frame(trait = "u_w", scenario = "sigma_k 2, sigma_w 0.5", week = c(1, 3, 5, 7, 9, 13, 17, 21, 25, 29), u = c(0.129, 0.548, 0.698, 0.704, 0.707, 0.707, 0.709, 0.707, 0.707, 0.707)),
+  data.frame(trait = "u_w", scenario = "sigma_k 2, sigma_w 2", week = c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29), u = c(0.099, 0.101, 0.102, 0.104, 0.111, 0.113, 0.116, 0.114, 0.126, 0.128, 0.131, 0.137, 0.144, 0.146, 0.152))
+)
+
+scen16 <- data.frame(
+  scenario = c("sigma_k 0.5, sigma_w 0.5", "sigma_k 0.5, sigma_w 2", "sigma_k 2, sigma_w 0.5", "sigma_k 2, sigma_w 2"),
+  sigma_free = c(0.5, 0.5, 2, 2),
+  sigma_c2c = c(0.5, 2, 0.5, 2)
+)
+fig16 <- dplyr::bind_rows(lapply(seq_len(nrow(scen16)), function(i) {
+  solve_one(c(sigma_free = scen16$sigma_free[i], sigma_c2c = scen16$sigma_c2c[i])) |>
+    dplyr::mutate(scenario = scen16$scenario[i], week = time / 7)
+}))
+fig16_long <- fig16 |>
+  dplyr::select(scenario, week, u_k = trait_free, u_w = trait_c2c) |>
+  tidyr::pivot_longer(c(u_k, u_w), names_to = "trait", values_to = "u")
+ggplot(fig16_long, aes(week, u, colour = scenario)) +
+  geom_line() +
+  geom_point(data = fig16_dig, shape = 1) +
+  facet_wrap(~trait, ncol = 1) +
+  labs(
+    x = "Weeks after exposure", y = "Mean trait", colour = NULL,
+    caption = "Replicates Figure 16 (left column) of Gurski 2026; points digitised from the figure."
+  ) +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 2))
+```
+
+```{r fig16-right}
+fig16_right <- fig16 |>
+  dplyr::select(scenario, week, `Fitness r (1/day)` = fitness, `Viral load (copies/mL)` = vl) |>
+  tidyr::pivot_longer(-c(scenario, week)) |>
+  dplyr::mutate(value = ifelse(name == "Viral load (copies/mL)", log10(pmax(value, 1)), value))
+ggplot(fig16_right, aes(week, value, colour = scenario)) +
+  geom_line() +
+  facet_wrap(~name, ncol = 1, scales = "free_y", labeller = labeller(name = c(
+    "Fitness r (1/day)" = "Fitness r (1/day)",
+    "Viral load (copies/mL)" = "log10 viral load (copies/mL, floored at 1)"
+  ))) +
+  labs(
+    x = "Weeks after exposure", y = NULL, colour = NULL,
+    caption = "Replicates Figure 16 (right column) of Gurski 2026."
+  ) +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 2))
+```
+
+```{r fig16-check}
+fig16_cmp <- fig16_dig |>
+  dplyr::left_join(
+    fig16_long |> dplyr::mutate(week = round(week, 4)),
+    by = c("trait", "scenario", "week"),
+    suffix = c("_digitised", "_model")
+  ) |>
+  dplyr::mutate(diff = u_model - u_digitised)
+fig16_rms <- fig16_cmp |>
+  dplyr::group_by(scenario) |>
+  dplyr::summarise(rms_trait_error = sqrt(mean(diff^2)), max_abs_error = max(abs(diff)))
+fig16_wk28 <- fig16 |>
+  dplyr::filter(abs(week - 28) < 1e-9) |>
+  dplyr::select(scenario, u_k = trait_free, u_w = trait_c2c, fitness, vl)
+knitr::kable(fig16_rms, digits = 3, caption = "Model against the digitised Figure 16 traits.")
+knitr::kable(fig16_wk28, digits = 3, caption = "State at week 28.")
+
+wk28 <- function(s) fig16_wk28[fig16_wk28$scenario == s, ]
+stopifnot(
+  # Plateaus of the narrow-coverage scenario (Fig 16: about 0.71, 0.73, 0.8)
+  abs(wk28("sigma_k 0.5, sigma_w 0.5")$u_k - 0.71) < 0.03,
+  abs(wk28("sigma_k 0.5, sigma_w 0.5")$u_w - 0.74) < 0.03,
+  abs(wk28("sigma_k 0.5, sigma_w 0.5")$fitness - 0.8) < 0.03,
+  # Outcomes: broad coverage on both routes clears; the other three escape.
+  wk28("sigma_k 2, sigma_w 2")$vl < 1,
+  wk28("sigma_k 0.5, sigma_w 0.5")$vl > 1e4,
+  wk28("sigma_k 0.5, sigma_w 2")$vl > 1e4,
+  wk28("sigma_k 2, sigma_w 0.5")$vl > 1e4,
+  max(fig16_rms$rms_trait_error) < 0.1
+)
+```
+
+The pooled speeds reproduce the plateaus, the escape-versus-clearance
+outcome of every scenario, the sigmoidal rise of u_w for
+(sigma_k, sigma_w) = (0.5, 2) and the slow drift of u_k when sigma_k = 2. No
+single pair matches all four scenarios closely, though: fitted one scenario
+at a time, the speeds that best match each one differ by up to 2.5-fold
+(table below). The defaults are a compromise across them, not a fit to any
+one.
+
+| Scenario (sigma_k, sigma_w) | best s_k | best s_w | trait error with the pooled speeds (sum of squares, n) |
+|---|---|---|---|
+| 0.5, 0.5 | 0.027 | 0.024 | 0.29 (120) |
+| 0.5, 2 | 0.017 | 0.026 | 0.98 (119) |
+| 2, 0.5 | 0.015 | 0.019 | 0.16 (78) |
+| 2, 2 | 0.011 | 0.011 | 0.26 (120) |
+| Pooled (model default) | 0.018 | 0.024 | 1.68 (437) |
+
+# Exposure timing with evolving traits (Figure 15)
+
+```{r fig15}
+fig15 <- dplyr::bind_rows(lapply(c(1, 2), function(s) {
+  dplyr::bind_rows(lapply(c(0, 28, 55), function(te) {
+    solve_one(c(sigma_free = s, sigma_c2c = s), texp = te, tend = 210 - te) |>
+      dplyr::mutate(sigma = paste("sigma_k = sigma_w =", s), exposure = paste("day", te), week = (time + te) / 7)
+  }))
+}))
+ggplot(dplyr::filter(fig15, vl > 0), aes(week, vl, colour = exposure)) +
+  geom_line() +
+  seroconversion_line +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(1e-2, 1e6)) +
+  facet_wrap(~sigma) +
+  labs(
+    x = "Weeks after the third injection", y = "Viral load (copies/mL)", colour = "Exposure",
+    caption = "Replicates Figure 15 of Gurski 2026."
+  )
+fig15_end <- fig15 |>
+  dplyr::group_by(sigma, exposure) |>
+  dplyr::summarise(vl_end = vl[which.max(time)], .groups = "drop")
+knitr::kable(fig15_end, digits = 3)
+stopifnot(
+  all(fig15_end$vl_end[grepl("= 1$", fig15_end$sigma)] > 1e4),
+  all(fig15_end$vl_end[grepl("= 2$", fig15_end$sigma)] < 1)
+)
+```
+
+As in Figure 15, with sigma = 1 the infection escapes for every exposure day
+and with sigma = 2 it is controlled for every exposure day.
+
+# Other starting traits (Figures 17 and 18)
+
+Figure 17 starts the traits at 0.5 or 3 with sigma_k = sigma_w = 2. With the
+Figure 16 speeds the model gets the outcome of the (0.5, 0.5) and (0.5, 3)
+starts right (escape and control), but traits that start at 3 move far more
+slowly than in the figure, where u_k falls from 3 to about 1 within 28 weeks.
+Fitting the Figure 17 trait curves the same way as Figure 16 gives pooled
+speeds of about 0.23 per day for both traits, roughly ten times the Figure 16
+values, so the two figures cannot have been drawn with the same speeds. The
+plot shows both.
+
+```{r fig17}
+starts17 <- data.frame(
+  start = c("u_k 0.5, u_w 0.5", "u_k 0.5, u_w 3", "u_k 3, u_w 0.5", "u_k 3, u_w 3"),
+  uk = c(0.5, 0.5, 3, 3),
+  uw = c(0.5, 3, 0.5, 3)
+)
+speeds <- list(
+  "Figure 16 speeds (model default)" = c(),
+  "Speeds back-solved from Figure 17 (0.23)" = c(s_free = 0.23, s_c2c = 0.23)
+)
+fig17 <- dplyr::bind_rows(lapply(names(speeds), function(sp) {
+  dplyr::bind_rows(lapply(seq_len(nrow(starts17)), function(i) {
+    solve_one(c(trait_free0 = starts17$uk[i], trait_c2c0 = starts17$uw[i], speeds[[sp]])) |>
+      dplyr::mutate(start = starts17$start[i], speeds = sp, week = time / 7)
+  }))
+}))
+fig17 |>
+  dplyr::select(start, speeds, week, u_k = trait_free, u_w = trait_c2c) |>
+  tidyr::pivot_longer(c(u_k, u_w), names_to = "trait", values_to = "u") |>
+  ggplot(aes(week, u, colour = start)) +
+  geom_line() +
+  facet_grid(trait ~ speeds) +
+  labs(
+    x = "Weeks after exposure", y = "Mean trait", colour = NULL,
+    caption = "Compare with Figure 17 (left column) of Gurski 2026."
+  ) +
+  theme(legend.position = "bottom")
+fig17 |>
+  dplyr::filter(abs(week - 28) < 1e-9) |>
+  dplyr::select(speeds, start, u_k = trait_free, u_w = trait_c2c, vl) |>
+  knitr::kable(digits = 3, caption = "Week 28.")
+```
+
+Figure 18 shows delayed seroconversion (between days 62 and 98) for
+starting traits (2, 0.2) and (0, 0.12). In the figure, the (2, 0.2) start
+escapes at once with sigma = 0.5, crosses 20 copies/mL at about day 63 with
+sigma = 1 and is controlled with sigma = 2; the (0, 0.12) start escapes at
+once with sigma = 0.5 and 1 and crosses at about day 62 with sigma = 2. With
+the Figure 16 speeds the model escapes at once for (2, 0.2) with sigma = 0.5
+and 1, and is still controlled at week 28 with sigma = 2; for (0, 0.12) it
+escapes at once with sigma = 0.5, at about day 24 with sigma = 1, and is
+controlled with sigma = 2 (table below). So the model produces a delayed
+escape, but not with the same sigma or timing as the figure; as for Figure
+17, the published trajectories move faster than the Figure 16 speeds allow.
+
+```{r fig18}
+starts18 <- data.frame(start = c("(a) u_k 2, u_w 0.2", "(b) u_k 0, u_w 0.12"), uk = c(2, 0), uw = c(0.2, 0.12))
+fig18 <- dplyr::bind_rows(lapply(seq_len(nrow(starts18)), function(i) {
+  dplyr::bind_rows(lapply(c(0.5, 1, 2), function(s) {
+    solve_one(c(trait_free0 = starts18$uk[i], trait_c2c0 = starts18$uw[i], sigma_free = s, sigma_c2c = s)) |>
+      dplyr::mutate(start = starts18$start[i], sigma = factor(s), week = time / 7)
+  }))
+}))
+ggplot(dplyr::filter(fig18, vl > 0), aes(week, vl, colour = sigma)) +
+  geom_line() +
+  seroconversion_line +
+  geom_vline(xintercept = c(62, 98) / 7, colour = "grey30", linetype = "dashed") +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(1e-1, 1e6)) +
+  facet_wrap(~start) +
+  labs(
+    x = "Weeks after exposure", y = "Viral load (copies/mL)", colour = "sigma_k = sigma_w",
+    caption = "Compare with Figure 18 of Gurski 2026 (dashed lines: days 62 and 98)."
+  )
+```
+
+```{r fig18-table}
+# Day from which the viral load stays above 20 copies/mL to the end of the
+# 30-week run (NA: below 20 copies/mL at the end).
+sustained_from <- function(time, vl) {
+  above <- vl > 20
+  if (!above[length(above)]) {
+    return(NA_real_)
+  }
+  time[max(c(0, which(!above))) + 1]
+}
+fig18 |>
+  dplyr::group_by(start, sigma) |>
+  dplyr::summarise(
+    above_20_from_day = sustained_from(time, vl),
+    vl_week_28 = vl[abs(week - 28) < 1e-9],
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2, caption = "Seroconversion in the Figure 18 scenarios with the model's default speeds.")
+```
+
+# PKNCA: single injection
+
+The PK part of the model is the mono-exponential curve of Eq 3. A PKNCA run
+on a single injection recovers its peak and half-life
+(log(2)/0.0363 = 19.1 days).
+
+```{r pknca}
+nca_ev <- data.frame(id = 1L, time = c(0, seq(0, 196, by = 1)), amt = c(1, rep(0, 197)), evid = c(1L, rep(0L, 197)), cmt = "central")
+nca_sim <- rxode2::rxSolve(mod, events = nca_ev, returnType = "data.frame") |>
+  dplyr::mutate(id = 1L, treatment = "single injection") |>
+  dplyr::select(id, time, Cc, treatment) |>
+  dplyr::filter(!is.na(Cc))
+conc_obj <- PKNCA::PKNCAconc(nca_sim, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(
+  data.frame(id = 1L, time = 0, amt = 1, treatment = "single injection"),
+  amt ~ time | treatment + id
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE, half.life = TRUE)
+))
+ref_nca <- data.frame(treatment = "single injection", cmax = 5.04, tmax = 0, half.life = log(2) / 0.0363)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = ref_nca,
+  by = "treatment",
+  params = c("cmax", "half.life"),
+  units = c(cmax = "ug/mL", half.life = "day")
+)
+knitr::kable(cmp, caption = "PKNCA on one injection against Eq 3 (Cmax 5.04 ug/mL, half-life log(2)/0.0363).")
+nca_tbl <- as.data.frame(nca_res)
+stopifnot(
+  abs(nca_tbl$PPORRES[nca_tbl$PPTESTCD == "cmax"] - 5.04) < 1e-6,
+  abs(nca_tbl$PPORRES[nca_tbl$PPTESTCD == "half.life"] - log(2) / 0.0363) < 0.01
+)
+```
+
+# Assumptions and deviations
+
+* **Evolutionary speeds (not reported).** s_k and s_w appear only as
+  symbols; the paper treats them as free scaling parameters and gives no
+  values. The defaults `s_free = 0.018` and `s_c2c = 0.024` per day were
+  back-solved by the maintainers by least squares on the colour-digitised u_k
+  and u_w curves of Figure 16, pooled over the four scenarios. Fitted one
+  scenario at a time, the best speeds range from 0.011 to 0.027 (s_k) and
+  0.011 to 0.026 (s_w), so the pooled pair is a compromise and the
+  (0.5, 2) scenario's u_k is the least well matched. The Figure 17 trait
+  curves need speeds about ten times larger (about 0.23 for both traits;
+  0.04 to 0.26 per curve), and the Figure 18 trajectories also evolve faster
+  than the Figure 16 speeds allow, so the published figures were evidently
+  not drawn with one pair of speeds. Set `s_free` and `s_c2c` for the
+  question at hand; with `s_free = s_c2c = 0` the traits are frozen.
+* **Superposition of injections.** Eq 3 gives the curve after a single
+  injection. The Figure 3 peaks and troughs need the concentrations of
+  successive injections to add, so the model is a one-compartment bolus
+  per injection (one `amt = 1` record each), not a curve restarted at every
+  injection.
+* **Dosing schedule.** Injections at day 0 and day 14, then every 56 days, as
+  the paper states (Figure 3 caption) and as Figure 3 shows; HIV exposure is
+  at the third injection (day 70) unless stated. The earlier injections are
+  given as drug on board at time 0.
+* **Dose units.** The paper gives the concentration curve per injection but
+  not the dose in mg, so doses are in injections (`amt = 1` per injection)
+  and `lcinj` converts to ug/mL.
+* **Fitness.** r is the dominant eigenvalue of the Jacobian of
+  (E_f, E_c, I, V) at the disease-free T-cell level H0 = beta/mu (Eq 32 uses
+  H0), evaluated at the current traits and the current Feff. It is computed
+  in the model by 20 Newton steps on the characteristic polynomial from an
+  upper bound; the gradient by implicit differentiation equals the paper's
+  Eq 33-34 (checked above to 1e-6).
+* **Paper-specific names.** The T-cell states follow the islatravir HIV
+  model in this package (`tcell_uninfected`, `tcell_infected`) with two new
+  early-infected states for the two routes, and the two traits are model
+  states. Parameter names follow the same model where the concept matches
+  (`lambda_t`, `delta_t`, `beta_t`, `k_t`, `cl_virus`).
+* **Figure-text inconsistencies in the source.** The Figure 17 text names a
+  (u_k, u_w) = (3, 0.3) start while the figure legend shows (3, 3). The
+  Figure 18 text gives delayed seroconversion for sigma = 2 in panel (a) and
+  for sigma = 1 in panel (b), while the figure shows it for sigma = 1 in (a)
+  and sigma = 2 in (b). The Figure 11 legend swaps marker shapes and colours
+  (see that section), and the section 8.1 claim of positive day-55 fitness
+  at u_w = 0 contradicts Theorem 1. The plots above follow the figures.
+* **Figure 11 peak heights.** The published fitness curves of Figure 11
+  peak about 0.25-0.3 per day higher than the model's at u_k = 0, while
+  their end points and the Figure 16 fitness plateaus agree with the model.
+  This was not resolved; the paper does not state the free-virion settings
+  of Figure 11 beyond u_k.
+* **Viral load units.** `vl` = 1000 x V copies/mL, matching the figures,
+  which draw 100 virions/uL at 1e5 vRNA/mL (one RNA copy per virion).
+* **Out of scope.** The nudging fit of omega_m (Eq 6-7, Fig 6) and the
+  constant-Feff equilibrium analysis of Eq 24-26 (Fig 9) are not reproduced;
+  omega_m is used at its published value.

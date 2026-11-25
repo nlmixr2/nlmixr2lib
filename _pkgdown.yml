@@ -1324,6 +1324,8 @@ navbar:
         href: articles/Ferron_2013_cabazitaxel.html
       - text: "Cabazitaxel (Janssen 2017)"
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
+      - text: "Cabotegravir (Gurski 2026)"
+        href: articles/Gurski_2026_cabotegravir.html
       - text: "Cabotegravir (Han 2022)"
         href: articles/Han_2022_cabotegravir.html
       - text: "Cabotegravir (Han 2024)"
@@ -11070,6 +11072,7 @@ articles:
   - articles/Gupta_2022_mobocertinib
   - articles/Gupta_2025_erenumab_rat
   - articles/Gurjar_2023_raltegravir
+  - articles/Gurski_2026_cabotegravir
   - articles/Gwee_2020_ivermectin
   - articles/Hadigol_2026_talazoparib_enzalutamide
   - articles/Hahn_2019_sufentanil
