@@ -419,7 +419,7 @@ nca_tab |>
     "Arm" = arm, "Cmax (nM)" = cmax, "Tmax (min)" = tmax,
     "AUC0-inf (nM*min)" = aucinf.obs, "t1/2 (min)" = half.life
   ) |>
-  knitr::kable(caption = "Median simulated plasma NCA (ECPL1 cohort; time measured from t = 0, the dose starts at 60 min).")
+  knitr::kable(caption = "Median simulated plasma NCA (ECPL1 cohort; Tmax is measured from the start of the 10-min infusion at t = 60 min, on the 3-min observation grid).")
 
 auc_dn <- as.data.frame(nca_res) |>
   filter(PPTESTCD == "aucinf.obs") |>
