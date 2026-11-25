@@ -7728,6 +7728,8 @@ navbar:
         href: articles/Parmar_2023_spectinamides_pbpk.html
       - text: "Spironolactone qsp (Meid 2024)"
         href: articles/Meid_2024_spironolactone_qsp.html
+      - text: "Stavudine (Innes 2018)"
+        href: articles/Innes_2018_stavudine.html
       - text: "Sucrose rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Sudapyridine (Kong 2025)"
@@ -10459,6 +10461,7 @@ articles:
   - articles/Ide_2022_elotuzumab
   - articles/Idkaidek_2011_ibuprofen
   - articles/Iida_2008_nicorandil
+  - articles/Innes_2018_stavudine
   - articles/Inoue_2025_valemetostat_ptcl
   - articles/Ippolito_2024_pacmilimab_qsp
   - articles/Ippolito_2024b_pacmilimab_qsp
