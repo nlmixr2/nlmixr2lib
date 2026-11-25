@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Biesdorf 2026 cofetuzumab pelidotin conjugate, Aur0101 payload and exposure-response models ([doi:10.1002/cpt.70432](https://doi.org/10.1002/cpt.70432)) -- adults with advanced solid tumours, exposure-efficacy in PTK7-expressing NSCLC; ratifies the new `PTK7_HIGH_NONSQUAMOUS_EGFR_WT` covariate canonical.
+- Add Rantanen 2026 methylprednisolone ([doi:10.1007/s00228-026-04168-7](https://doi.org/10.1007/s00228-026-04168-7)) -- neonates and infants undergoing cardiac surgery with cardiopulmonary bypass.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

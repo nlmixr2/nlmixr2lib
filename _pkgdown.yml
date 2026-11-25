@@ -5656,6 +5656,8 @@ navbar:
         href: articles/Teuscher_2015_methylphenidate.html
       - text: "Methylprednisolone (Cleary 2026)"
         href: articles/Cleary_2026_methylprednisolone.html
+      - text: "Methylprednisolone (Rantanen 2026)"
+        href: articles/Rantanen_2026_methylprednisolone.html
       - text: "Methylprednisolone il10 (Hornik 2019)"
         href: articles/Hornik_2019_methylprednisolone.html
       - text: "Methylprednisolone il6 (Hornik 2019)"
@@ -12319,6 +12321,7 @@ articles:
   - articles/Ramharter_2019_mefloquine
   - articles/Rancic_2024_meropenem
   - articles/Randell_2024_metronidazole
+  - articles/Rantanen_2026_methylprednisolone
   - articles/Rao_2021_antituberculosis_critical_illness
   - articles/Rao_2023_covid19_qsp
   - articles/Rascher_2025_empagliflozin

@@ -21206,60 +21206,38 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Wu_2022_fentanyl.R` (selects the residual-error magnitudes only: additive 0.0297 ug/L and proportional 0.361 for DINO against 0.246 ug/L and 0.23 for the Helsinki dataset), `Wu_2023_paracetamol.R` (selects the plasma residual-error magnitudes only, against the reference Flint et al. single-dose dataset: log-scale SDs for paracetamol and its three metabolites, plus the additive SD2 terms on sulfate and the oxidative metabolites that apply to the Flint dataset alone; source column `ASY`, same orientation).
 - **Notes:** The indicator identifies the study, not the assay: in `Wu_2022_fentanyl.R` the two datasets also differ in bioanalysis (DINO LC-MS/MS vs Helsinki radioimmunoassay), sampling route and BLOQ handling, and the paper attributes the residual split to the dataset. Use `RIA_ASSAY` / `IMMUNOASSAY` instead when a paper attributes a residual split specifically to the analytical method. The DINO cohort also underlies `Voller_2019_midazolam.R`, which retains no study term.
 
-### STUDY_SWEDEN_IV (**canonical for the Swedish intravenous benzylpenicillin horse cohort indicator**)
-- **Description:** 1 = record from one of the 4 Swedish horses given a single intravenous dose of sodium benzylpenicillin (Olsen 2018 dataset), with no intramuscular administration; 0 = any other cohort pooled in the same meta-analysis. Subject-level (time-fixed).
+### STUDY_2008_007413_76_TOF (**canonical for the tetralogy of Fallot cohort of the Helsinki paediatric cardiac-surgery methylprednisolone trials (EudraCT 2008-007413-76) indicator**)
+- **Description:** 1 = record from the randomized 5 vs 30 mg/kg methylprednisolone trial in infants undergoing total correction of tetralogy of Fallot (Keski-Nisula 2016, Ann Thorac Surg 102:870); 0 = record from another cohort of the pooled analysis. Subject-level (study-fixed) binary indicator.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (the other cohorts; in the founding model the French cohort, `Nationcode = 0`, is the reference when all `STUDY_*` indicators are 0).
+- **Reference category:** 0 (the other cohorts of the pooled analysis; in `Rantanen_2026_methylprednisolone.R`, all three `STUDY_2008_007413_76_*` at 0 is the neonatal cardiac-surgery cohort of Keski-Nisula 2013, operation group `OPER = 0`).
 - **Source aliases:**
-  - `Nationcode` ('source of dataset', level 1) -- Lallemand 2023 Supplementary Data 2 Phoenix model; `STUDY_SWEDEN_IV = as.integer(Nationcode == 1)`.
-- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-linear effect -0.683 on plasma clearance, frozen from the IV-only analysis, Table 4; CL 243 vs 481 mL/kg/h in French horses).
-- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family; the id is the national cohort because the source codes its datasets by country and route. A separate level from `STUDY_SWEDEN_IM`: Lallemand 2023 Section 2.2 gives no reason to assume the two Swedish cohorts share a clearance. Mutually exclusive with `STUDY_SWEDEN_IM`, `STUDY_USA1`, `STUDY_USA2` and `STUDY_JAPAN`.
+  - `OPER = 1` -- Rantanen 2026 four-level operation-group covariate (Table 2 footnote); `STUDY_2008_007413_76_TOF = as.integer(OPER == 1)`.
+- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.404 * STUDY_2008_007413_76_TOF)`, and the cohort's proportional residual error 0.423).)
+- **Notes:** Member of the auto-approved `STUDY_<id>` family. All four Helsinki trials pooled by Rantanen 2026 were registered under the single EudraCT number 2008-007413-76 (sponsor protocol code 'steroiditutkimus'), so the id is that number with the cohort label as the suffix; the three `STUDY_2008_007413_76_*` indicators are mutually exclusive. Each cohort is defined by its operation, but because each is also one trial, the fitted effects are cohort descriptors rather than procedure effects (Rantanen 2026 Discussion); do not reuse these indicators as procedure-type covariates.
 
-### STUDY_SWEDEN_IM (**canonical for the Swedish intramuscular benzylpenicillin horse cohort indicator**)
-- **Description:** 1 = record from one of the 8 Swedish horses in the 2x2 crossover of intramuscular procaine benzylpenicillin against intramuscular sodium benzylpenicillin (Olsen 2013 dataset), with no intravenous dose; 0 = any other cohort pooled in the same meta-analysis. Subject-level (time-fixed).
+### STUDY_2008_007413_76_VSD_AVSD (**canonical for the ventricular / atrioventricular septal defect cohort of the Helsinki paediatric cardiac-surgery methylprednisolone trials (EudraCT 2008-007413-76) indicator**)
+- **Description:** 1 = record from the randomized intravenous vs CPB-prime methylprednisolone trial in infants undergoing VSD or AVSD repair (Keski-Nisula 2015, Ann Thorac Surg 99:180); 0 = record from another cohort of the pooled analysis. Subject-level (study-fixed) binary indicator.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (the other cohorts; in the founding model the French cohort, `Nationcode = 0`).
+- **Reference category:** 0 (the other cohorts of the pooled analysis; in `Rantanen_2026_methylprednisolone.R`, all three `STUDY_2008_007413_76_*` at 0 is the neonatal cardiac-surgery cohort of Keski-Nisula 2013, operation group `OPER = 0`).
 - **Source aliases:**
-  - `Nationcode` ('source of dataset', level 11) -- Lallemand 2023 Supplementary Data 2 Phoenix model; `STUDY_SWEDEN_IM = as.integer(Nationcode == 11)`.
-- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-linear effect -0.315 on plasma clearance, estimated in the full model, CL 351 mL/kg/h; +0.039 on the log procaine absorption rate constant; a multiplicative factor exp(-0.0018) on the logit procaine bioavailability).
-- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. See `STUDY_SWEDEN_IV` for why the Swedish IV and IM cohorts are separate levels. Mutually exclusive with the other four Lallemand 2023 `STUDY_*` indicators.
+  - `OPER = 2` -- Rantanen 2026 four-level operation-group covariate (Table 2 footnote); `STUDY_2008_007413_76_VSD_AVSD = as.integer(OPER == 2)`.
+- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.475 * STUDY_2008_007413_76_VSD_AVSD)`, and the cohort's proportional residual error 0.207).)
+- **Notes:** Member of the auto-approved `STUDY_<id>` family. All four Helsinki trials pooled by Rantanen 2026 were registered under the single EudraCT number 2008-007413-76 (sponsor protocol code 'steroiditutkimus'), so the id is that number with the cohort label as the suffix; the three `STUDY_2008_007413_76_*` indicators are mutually exclusive. Each cohort is defined by its operation, but because each is also one trial, the fitted effects are cohort descriptors rather than procedure effects (Rantanen 2026 Discussion); do not reuse these indicators as procedure-type covariates. The route contrast within the cohort (intravenous vs CPB prime) was screened and not retained.
 
-### STUDY_USA1 (**canonical for the USA1 benzylpenicillin horse cohort indicator**)
-- **Description:** 1 = record from one of the 7 USA1 horses (Younkin 2019 dataset) given two intravenous doses of potassium benzylpenicillin 6 h apart followed by one intramuscular dose of procaine benzylpenicillin (Norocillin); 0 = any other cohort pooled in the same meta-analysis. Subject-level (time-fixed).
+### STUDY_2008_007413_76_GLENN (**canonical for the bidirectional Glenn cohort of the Helsinki paediatric cardiac-surgery methylprednisolone trials (EudraCT 2008-007413-76) indicator**)
+- **Description:** 1 = record from the 30 mg/kg methylprednisolone trial in children with tricuspid atresia undergoing the bidirectional Glenn procedure (Keski-Nisula 2020, J Cardiothorac Vasc Anesth 34:1542); 0 = record from another cohort of the pooled analysis. Subject-level (study-fixed) binary indicator.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (the other cohorts; in the founding model the French cohort, `Nationcode = 0`).
+- **Reference category:** 0 (the other cohorts of the pooled analysis; in `Rantanen_2026_methylprednisolone.R`, all three `STUDY_2008_007413_76_*` at 0 is the neonatal cardiac-surgery cohort of Keski-Nisula 2013, operation group `OPER = 0`).
 - **Source aliases:**
-  - `Nationcode` ('source of dataset', level 2) -- Lallemand 2023 Supplementary Data 2 Phoenix model; `STUDY_USA1 = as.integer(Nationcode == 2)`.
-- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-linear effect -0.126 on plasma clearance, frozen from the IV-only analysis, CL 424 mL/kg/h; -2.37 on the log procaine absorption rate constant, MAT 230 h; a multiplicative factor exp(0.052) on the logit procaine bioavailability).
-- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Only three samples were taken after the intramuscular dose, ending 12 h after it, so Lallemand 2023 Discussion advises caution with the very slow absorption estimate. Mutually exclusive with the other four Lallemand 2023 `STUDY_*` indicators.
-
-### STUDY_USA2 (**canonical for the USA2 benzylpenicillin horse cohort indicator**)
-- **Description:** 1 = record from one of the 6 USA2 horses (Wilson 2022 dataset) given a single intravenous dose of potassium benzylpenicillin together with gentamicin 6.6 mg/kg; 0 = any other cohort pooled in the same meta-analysis. Subject-level (time-fixed).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (the other cohorts; in the founding model the French cohort, `Nationcode = 0`).
-- **Source aliases:**
-  - `Nationcode` ('source of dataset', level 4) -- Lallemand 2023 Supplementary Data 2 Phoenix model; `STUDY_USA2 = as.integer(Nationcode == 4)`.
-- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-linear effect -0.136 on plasma clearance, frozen from the IV-only analysis; CL 420 mL/kg/h).
-- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Intravenous data only. Mutually exclusive with the other four Lallemand 2023 `STUDY_*` indicators.
-
-### STUDY_JAPAN (**canonical for the Japanese benzylpenicillin horse cohort indicator**)
-- **Description:** 1 = record from one of the 6 Japanese horses given a single intramuscular dose of procaine benzylpenicillin, with no intravenous dose; 0 = any other cohort pooled in the same meta-analysis. Subject-level (time-fixed).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (the other cohorts; in the founding model the French cohort, `Nationcode = 0`).
-- **Source aliases:**
-  - `Nationcode` ('source of dataset', level 3) -- Lallemand 2023 Supplementary Data 2 Phoenix model; `STUDY_JAPAN = as.integer(Nationcode == 3)`.
-- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-linear effect -0.157 on plasma clearance, estimated in the full model, CL 411 mL/kg/h; -0.0043 on the log procaine absorption rate constant; a multiplicative factor exp(0.423) on the logit procaine bioavailability).
-- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. A single-cohort study label, not a geographic covariate: use a `REGION_*` canonical when a paper's covariate is the country contrast itself. Mutually exclusive with the other four Lallemand 2023 `STUDY_*` indicators.
+  - `OPER = 3` -- Rantanen 2026 four-level operation-group covariate (Table 2 footnote); `STUDY_2008_007413_76_GLENN = as.integer(OPER == 3)`.
+- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.884 * STUDY_2008_007413_76_GLENN)`, and the cohort's proportional residual error 0.140).)
+- **Notes:** Member of the auto-approved `STUDY_<id>` family. All four Helsinki trials pooled by Rantanen 2026 were registered under the single EudraCT number 2008-007413-76 (sponsor protocol code 'steroiditutkimus'), so the id is that number with the cohort label as the suffix; the three `STUDY_2008_007413_76_*` indicators are mutually exclusive. Each cohort is defined by its operation, but because each is also one trial, the fitted effects are cohort descriptors rather than procedure effects (Rantanen 2026 Discussion); do not reuse these indicators as procedure-type covariates.
 
 ### REGI_BID (**canonical for twice-daily dosing-regimen indicator**)
 - **Description:** 1 = subject's dosing regimen is BID (twice daily), 0 = QD (once daily) or other non-BID regimen. Per-subject (regimen-fixed) categorical indicator for population analyses that pool QD and BID arms and test regimen as a covariate.
