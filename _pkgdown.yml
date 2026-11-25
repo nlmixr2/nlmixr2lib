@@ -5258,6 +5258,8 @@ navbar:
         href: articles/Siebinga_2024_lu177psmaIT.html
       - text: "Lu177psmaIT pbpk (Golzaryan 2025)"
         href: articles/Golzaryan_2025_lu177psmaIT_pbpk.html
+      - text: "Lu177psmaIT pbpk (Kletting 2016)"
+        href: articles/Kletting_2016_lu177psmaIT_pbpk.html
       - text: "Lucitanib (Liao 2022)"
         href: articles/Liao_2022_lucitanib.html
       - text: "Lumasiran healthy (Sten 2023)"
@@ -11737,6 +11739,7 @@ articles:
   - articles/Kleijn_2011_sugammadex_rocuronium
   - articles/Klein_2026_alprazolam
   - articles/Kletting_2015_antiCD66_pbpk
+  - articles/Kletting_2016_lu177psmaIT_pbpk
   - articles/Kloft_2004_sibrotuzumab
   - articles/Kloos_2021_pegasparaginase
   - articles/Kloosterboer_2020_pipamperone
