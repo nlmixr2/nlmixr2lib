@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cuffari 2016 mesalamine and N-acetyl-5-ASA ([doi:10.2147/DDDT.S95316](https://doi.org/10.2147/DDDT.S95316)) -- children and adolescents (5-17 years) with ulcerative colitis.
+- Add Pan 2015 Hu714MuXHu anti-IL-15 PK/PD ([doi:10.1002/prp2.199](https://doi.org/10.1002/prp2.199)) -- healthy cynomolgus monkeys, serum antibody and NK cell counts.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

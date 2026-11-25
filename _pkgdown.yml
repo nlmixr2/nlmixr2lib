@@ -4186,6 +4186,8 @@ navbar:
         href: articles/Na_2025_hosu53.html
       - text: "Hrze bacterialload (Kloprogge 2020)"
         href: articles/Kloprogge_2020_tuberculosis.html
+      - text: "Hu714MuXHu cyno (Pan 2015)"
+        href: articles/Pan_2015_Hu714MuXHu_cyno.html
       - text: "HuHMFG1 (Royer 2010)"
         href: articles/Royer_2010_HuHMFG1.html
       - text: "HyaluronicAcid 99fill mouse (Ryu 2021)"
@@ -12370,6 +12372,7 @@ articles:
   - articles/Paioni_2021_gentamicin
   - articles/Pais_2026_cefepime_rat
   - articles/Palmer_2025_moxifloxacin
+  - articles/Pan_2015_Hu714MuXHu_cyno
   - articles/Pan_2019_fentanyl_lumping
   - articles/Pan_2026_adalimumab
   - articles/Panday_2025_sert_tremor_mbma

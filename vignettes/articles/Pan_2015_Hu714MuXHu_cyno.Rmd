@@ -1,0 +1,512 @@
+---
+title: "Hu714MuXHu anti-IL-15 antibody and NK cells in cynomolgus monkeys (Pan 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Hu714MuXHu anti-IL-15 antibody and NK cells in cynomolgus monkeys (Pan 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Hu714MuXHu is a chimeric murine-human IgG1 antibody against interleukin-15
+(IL-15). It is the cynomolgus surrogate of AMG 714, which does not neutralise
+macaque IL-15 efficiently. IL-15 signalling is needed for natural killer (NK)
+cell development and survival, so blocking it lowers the circulating NK cell
+count. Pan et al. (2015) fitted one PK/PD model to the serum concentrations
+and NK cell counts of three monkey studies at once.
+
+* Citation: `r rxode2::rxode(readModelDb("Pan_2015_Hu714MuXHu_cyno"))$reference`
+* Article: <https://doi.org/10.1002/prp2.199> (open access, PMC4777250)
+
+The PK part is a two-compartment model with linear elimination from the
+central compartment. SC doses are absorbed first order with bioavailability
+`F1`; IV doses enter the central compartment (Figure 1). The PD part is an
+indirect-response model in which the serum concentration `C` inhibits NK cell
+production (Methods):
+
+$$\frac{dR}{dt} = K_{in}\left(1 - \frac{E_{max}\, C}{EC_{50} + C}\right) - K_{out}\, R, \qquad R(0) = R_0, \quad K_{in} = R_0 K_{out}.$$
+
+`R` is the NK cell count in 10^3 cells/uL of blood. Parameters are per kg of
+body weight and doses are in mg/kg, so `Cc` is in ug/mL.
+
+# Population
+
+104 healthy, treatment-naive cynomolgus monkeys of Chinese origin (55 male,
+49 female), aged 3-6 years and weighing 2.0-4.6 kg, from three studies
+(Table 1):
+
+* a single-dose PK/PD study: 0.1 or 1 mg/kg IV, 3 males per group, sampled to
+  Day 42;
+* a 1-month GLP toxicology study: vehicle, 30, 60 or 150 mg/kg IV or 150 mg/kg
+  SC once weekly for 5 doses, 5 per sex per group, of which 2 per sex were
+  followed to Day 337;
+* a 3-month GLP toxicology study: vehicle, 5, 30 or 150 mg/kg SC once weekly
+  for 14 doses, 6 per sex per group, of which 2 per sex were followed to
+  Day 205.
+
+1408 concentrations and 982 NK cell counts entered the fit. No anti-drug
+antibodies were detected.
+
+```{r population}
+str(rxode2::rxode(readModelDb("Pan_2015_Hu714MuXHu_cyno"))$population)
+```
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Structure, PK | two compartments, first-order SC absorption, linear CL | Methods; Figure 1 |
+| Structure, PD | indirect response, Emax inhibition of `Kin` | Methods equation; Figure 1 |
+| `Ka` | 0.522 1/day | Table 3 |
+| `CL` | 3.66 mL/day/kg | Table 3 |
+| `Vc` | 44.8 mL/kg | Table 3 |
+| `Q` | 5.07 mL/day/kg | Table 3 |
+| `Vp` | 24.3 mL/kg | Table 3 |
+| `F1` (SC) | 0.824, no BSV | Table 3 |
+| `R0` | 0.584 x 10^3 cells/uL | Table 3 |
+| `Kout` | 0.305 1/day | Table 3 |
+| `Emax` | 0.941 | Table 3 |
+| `EC50` | 0.0978 ug/mL | Table 3 |
+| BSV `Ka`, `CL`, `Vc`, `Q`, `Vp` | 23.7, 17.1, 15.2, 72.1, 12.6% | Table 3 |
+| BSV `R0`, `Kout`, `Emax`, `EC50` | 40.4, 63.2, 2.45, 90.7% | Table 3 |
+| Proportional error, PK and NK | variance 0.0349 and 0.217 | Table 3 |
+| Additive error, PK and NK | fixed to 0 | Table 3; Methods |
+
+# Regimens and event tables
+
+The regimens follow Table 1 and the figure legends. Day 1 of each study is
+time 0. The 1-month study gave 5 weekly doses and the 3-month study 14
+(Figure 2 legend; the last 3-month dose was on Day 92). The observation grid
+contains the PK sampling times of Table 1 inside the two NCA intervals of
+each study, a point just after each of those doses so that the IV peak is
+captured, the end of each NCA interval, and a 3-day grid to the end of
+follow-up.
+
+```{r regimens}
+regimens <- tribble(
+  ~regimen, ~study, ~amt, ~cmt, ~n_dose, ~end_day,
+  "0.1 mg/kg IV", "Single dose", 0.1, "central", 1, 42,
+  "1 mg/kg IV", "Single dose", 1, "central", 1, 42,
+  "Vehicle IV", "1-month", 0, "central", 5, 336,
+  "30 mg/kg IV QW x 5", "1-month", 30, "central", 5, 336,
+  "60 mg/kg IV QW x 5", "1-month", 60, "central", 5, 336,
+  "150 mg/kg IV QW x 5", "1-month", 150, "central", 5, 336,
+  "150 mg/kg SC QW x 5", "1-month", 150, "depot", 5, 336,
+  "Vehicle SC", "3-month", 0, "depot", 14, 205,
+  "5 mg/kg SC QW x 14", "3-month", 5, "depot", 14, 205,
+  "30 mg/kg SC QW x 14", "3-month", 30, "depot", 14, 205,
+  "150 mg/kg SC QW x 14", "3-month", 150, "depot", 14, 205
+) |>
+  mutate(
+    study = factor(study, levels = c("Single dose", "1-month", "3-month")),
+    # Second NCA interval: Day 22 (1-month) and Day 85 (3-month), Table 2.
+    nca2_start = case_when(study == "1-month" ~ 21, study == "3-month" ~ 84, TRUE ~ NA_real_)
+  )
+
+# Samples of an NCA interval: the dose time, just after the dose, the
+# intensive PK samples of Table 1 (0.5, 2, 8, 24, 48 and 96 h), and the end of
+# the interval. rxode2 applies a dose before an observation at the same time,
+# so a sample at a dose time is post-dose (for an IV bolus, C0), and the
+# end-of-interval trough is taken 1e-4 day before the next dose.
+pk_offsets <- c(0, 1e-4, c(0.5, 2, 8, 24, 48, 96) / 24, 7 - 1e-4)
+
+make_regimen <- function(i, n, regs, step) {
+  r <- regs[i, ]
+  ids <- (i - 1L) * n + seq_len(n)
+  dose_times <- 7 * (seq_len(r$n_dose) - 1)
+  times <- if (r$study == "Single dose") {
+    # Single-dose study: Day 1 dose, sampled on Days 3, 5, 8, 14, ..., 42.
+    c(0, 1e-4, 1, 2, 4, 7, 13, 20, 27, 34, 41, seq(0, 42, by = step))
+  } else {
+    c(pk_offsets, r$nca2_start + pk_offsets, seq(0, r$end_day, by = step))
+  }
+  times <- sort(unique(round(times, 6)))
+  dose <- tidyr::expand_grid(id = ids, time = dose_times) |>
+    mutate(evid = 1L, amt = r$amt, cmt = r$cmt, dvid = NA_integer_)
+  obs <- tidyr::expand_grid(id = ids, time = times) |>
+    mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+  bind_rows(dose, obs) |>
+    mutate(regimen = r$regimen, study = as.character(r$study)) |>
+    arrange(id, time, desc(evid))
+}
+make_events <- function(n, regs, step = 3) {
+  bind_rows(lapply(seq_len(nrow(regs)), make_regimen, n = n, regs = regs, step = step))
+}
+```
+
+# Replicate Figures 2 and 3: population predictions
+
+Figures 2 and 3 of the paper overlay the population-predicted (typical-value)
+profiles on the observed means. The same typical-value profiles are
+simulated here with the random effects set to zero.
+
+```{r typical}
+mod <- readModelDb("Pan_2015_Hu714MuXHu_cyno")
+ev_typ <- make_events(1, regimens, step = 0.25)
+# One typical subject per regimen; rxode2 warns that a multi-subject solve
+# has no omega, which is the intent here.
+typ <- withCallingHandlers(
+  rxode2::rxSolve(
+    rxode2::zeroRe(mod, "omega"),
+    events = ev_typ, keep = c("regimen", "study"),
+    rtol = 1e-10, atol = 1e-12
+  ),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+  }
+) |>
+  as.data.frame() |>
+  mutate(
+    regimen = factor(regimen, levels = regimens$regimen),
+    study = factor(study, levels = levels(regimens$study))
+  )
+```
+
+```{r fig2, fig.height = 8}
+typ |>
+  filter(!grepl("Vehicle", regimen), Cc > 0.1) |>
+  ggplot(aes(time, Cc, colour = regimen)) +
+  geom_line() +
+  facet_wrap(~study, ncol = 1, scales = "free_x") +
+  scale_y_log10() +
+  labs(
+    x = "Time after first dose (day)", y = "Serum Hu714MuXHu (ug/mL)", colour = NULL,
+    caption = "Replicates Figure 2 of Pan 2015 (population-predicted lines; observed means not shown)."
+  )
+```
+
+```{r fig3, fig.height = 8}
+typ |>
+  ggplot(aes(time, nkcell, colour = regimen)) +
+  geom_line() +
+  facet_wrap(~study, ncol = 1, scales = "free_x") +
+  coord_cartesian(ylim = c(0, 2)) +
+  labs(
+    x = "Time after first dose (day)", y = "NK cell count (10^3 cells/uL)", colour = NULL,
+    caption = "Replicates Figure 3 of Pan 2015 (population-predicted lines; observed means not shown)."
+  )
+```
+
+## Closed-form checks on the typical profiles
+
+Four quantities have a closed form in the Table 3 parameters:
+
+* the single-dose IV `AUCinf` is `Dose / CL`, which Table 2 reports from NCA;
+* the terminal half-life is `ln 2 / beta`, the slower eigenvalue of the
+  two-compartment model, and `Vss = Vc + Vp`;
+* the NK nadir during saturating exposure is `R0 (1 - Emax)`;
+* the paper quotes `Kin = R0 Kout` as 0.17 x 10^3 cells/uL/day.
+
+```{r closed-form}
+cl <- 3.66 / 1000; vc <- 44.8 / 1000; q <- 5.07 / 1000; vp <- 24.3 / 1000
+k10 <- cl / vc; k12 <- q / vc; k21 <- q / vp
+beta <- ((k10 + k12 + k21) - sqrt((k10 + k12 + k21)^2 - 4 * k10 * k21)) / 2
+cf <- tibble(
+  quantity = c(
+    "AUCinf 0.1 mg/kg IV (ug*day/mL)", "AUCinf 1 mg/kg IV (ug*day/mL)",
+    "Terminal t1/2 (day)", "Vss (mL/kg)", "NK nadir (10^3 cells/uL)", "Kin (10^3 cells/uL/day)"
+  ),
+  model = c(0.1 / cl, 1 / cl, log(2) / beta, 1000 * (vc + vp), 0.584 * (1 - 0.941), 0.584 * 0.305),
+  paper = c(27.2, 293, NA, NA, NA, 0.17),
+  paper_source = c(
+    "Table 2 NCA mean", "Table 2 NCA mean", "Table 2: 12.7-18 day across groups",
+    "Table 2: 67.9 and 77.2 mL/kg", "Figure 3 nadir about 0.03", "Discussion"
+  )
+)
+knitr::kable(cf, digits = 3, caption = "Closed-form quantities of the typical model against the paper.")
+
+auc_typ <- function(d, a, b) {
+  d <- d[d$time >= a & d$time <= b, ]
+  sum(diff(d$time) * (head(d$Cc, -1) + tail(d$Cc, -1)) / 2)
+}
+sd1 <- typ |> filter(regimen == "1 mg/kg IV")
+nadir_150 <- typ |> filter(regimen == "150 mg/kg IV QW x 5") |> pull(nkcell) |> min()
+
+stopifnot(
+  # Dose / CL: a mis-transcribed CL or unit conversion moves this by
+  # the same factor.
+  abs(0.1 / cl / 27.2 - 1) < 0.05,
+  abs(1 / cl / 293 - 1) < 0.10,
+  # Terminal half-life inside the NCA range of every group in Table 2.
+  log(2) / beta > 12.7, log(2) / beta < 18,
+  # The NK nadir at saturating exposure is R0 * (1 - Emax).
+  abs(nadir_150 / (0.584 * (1 - 0.941)) - 1) < 0.01,
+  # Kin quoted in the Discussion; 0.584 * 0.305 = 0.178 truncated to 0.17.
+  abs(0.584 * 0.305 - 0.17) < 0.01
+)
+```
+
+The typical NK count falls to `R0 (1 - Emax)` = 0.034 x 10^3 cells/uL within
+about two weeks of the first dose at every dose level, as in Figure 3. After
+0.1 mg/kg IV the typical count is back to about 0.22 at Day 41, the level of
+the predicted line in the single-dose panel of Figure 3. In the 1-month study
+it recovers to near baseline by Day 336, later for the higher doses; in the
+3-month study it stays suppressed to Day 205 at 30 and 150 mg/kg.
+
+```{r nk-recovery}
+nk_at <- typ |>
+  filter(time %in% c(41, 150, 204, 249, 336)) |>
+  select(regimen, time, nkcell) |>
+  pivot_wider(names_from = time, values_from = nkcell, names_prefix = "Day ") |>
+  mutate(across(-regimen, ~ ifelse(is.na(.x), "", formatC(.x, digits = 3, format = "f"))))
+knitr::kable(nk_at, caption = "Typical NK cell count (10^3 cells/uL) at selected times after the first dose (blank: after the end of that study).")
+
+rec <- function(reg, t) typ$nkcell[typ$regimen == reg & typ$time == t]
+stopifnot(
+  # Single 0.1 mg/kg IV: partial recovery at Day 41 (Figure 3, about 0.2).
+  rec("0.1 mg/kg IV", 41) > 0.15, rec("0.1 mg/kg IV", 41) < 0.30,
+  # 1-month study: more than 80% of baseline by Day 336 for every active dose.
+  all(sapply(c("30 mg/kg IV QW x 5", "60 mg/kg IV QW x 5", "150 mg/kg IV QW x 5", "150 mg/kg SC QW x 5"),
+             rec, t = 336) > 0.8 * 0.584),
+  # 3-month study at 150 mg/kg: still below 20% of baseline at Day 204.
+  rec("150 mg/kg SC QW x 14", 204) < 0.2 * 0.584,
+  # Vehicle groups stay at baseline.
+  abs(rec("Vehicle SC", 204) / 0.584 - 1) < 1e-6
+)
+```
+
+# Simulated cohort: Figures 6 and 7 and NCA
+
+A cohort of 50 virtual monkeys per regimen is simulated with between-subject
+variability and residual error. Figures 6 and 7 of the paper are visual
+predictive checks of this kind (median and 90% prediction interval).
+
+```{r cohort}
+n_per <- 50
+ev <- make_events(n_per, regimens)
+stopifnot(!anyDuplicated(ev[, c("id", "time", "evid")]))
+rxode2::rxSetSeed(2015199)
+sim <- rxode2::rxSolve(mod, events = ev, keep = c("regimen", "study"), maxsteps = 1e6) |>
+  as.data.frame() |>
+  mutate(
+    regimen = factor(regimen, levels = regimens$regimen),
+    study = factor(study, levels = levels(regimens$study))
+  )
+stopifnot(!anyNA(sim$Cc), !anyNA(sim$nkcell))
+```
+
+```{r fig6-7, fig.height = 8}
+vpc <- sim |>
+  group_by(study, regimen, time) |>
+  summarise(
+    across(c(Cc, nkcell), list(
+      lo = ~ quantile(.x, 0.05), med = ~ median(.x), hi = ~ quantile(.x, 0.95)
+    )),
+    .groups = "drop"
+  )
+
+vpc |>
+  filter(!grepl("Vehicle", regimen), Cc_med > 0.1) |>
+  ggplot(aes(time, Cc_med, colour = regimen, fill = regimen)) +
+  geom_ribbon(aes(ymin = pmax(Cc_lo, 0.01), ymax = Cc_hi), alpha = 0.15, colour = NA) +
+  geom_line() +
+  facet_wrap(~study, ncol = 1, scales = "free_x") +
+  scale_y_log10() +
+  labs(
+    x = "Time after first dose (day)", y = "Serum Hu714MuXHu (ug/mL)", colour = NULL, fill = NULL,
+    caption = "Replicates Figure 6 of Pan 2015: simulated median and 90% prediction interval."
+  )
+
+vpc |>
+  ggplot(aes(time, nkcell_med, colour = regimen, fill = regimen)) +
+  geom_ribbon(aes(ymin = nkcell_lo, ymax = nkcell_hi), alpha = 0.15, colour = NA) +
+  geom_line() +
+  facet_wrap(~study, ncol = 1, scales = "free_x") +
+  coord_cartesian(ylim = c(0, 2)) +
+  labs(
+    x = "Time after first dose (day)", y = "NK cell count (10^3 cells/uL)", colour = NULL, fill = NULL,
+    caption = "Replicates Figure 7 of Pan 2015: simulated median and 90% prediction interval."
+  )
+```
+
+## PKNCA against Table 2
+
+Table 2 reports NCA on the observed data: `AUCinf` and half-life after a
+single IV dose, and `Cmax` (`C0` for IV) and `AUCtau` over the first dosing
+interval and over the interval starting on Day 22 (1-month) or Day 85
+(3-month). The same NCA is computed below on the simulated concentrations
+(`Cc` with residual error removed is the individual prediction; the NCA uses
+it so that the comparison concerns the structural model). For IV doses the
+sample at the dose time is the concentration just after the bolus, so `Cmax`
+stands for `C0`.
+
+```{r nca}
+stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc)))
+conc <- sim |>
+  filter(!is.na(Cc), !grepl("Vehicle", regimen)) |>
+  mutate(Cc = pmax(Cc, 0), regimen = as.character(regimen)) |>
+  select(id, time, Cc, regimen)
+doses <- ev |>
+  filter(evid == 1L, !grepl("Vehicle", regimen)) |>
+  select(id, time, amt, regimen)
+
+intervals <- bind_rows(
+  tibble(regimen = c("0.1 mg/kg IV", "1 mg/kg IV"), start = 0, end = Inf,
+         cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE),
+  regimens |>
+    filter(study != "Single dose", amt > 0) |>
+    select(regimen, nca2_start) |>
+    tidyr::crossing(which = c("first", "second")) |>
+    mutate(start = ifelse(which == "first", 0, nca2_start), end = start + 7 - 1e-4,
+           cmax = TRUE, auclast = TRUE) |>
+    select(regimen, start, end, cmax, auclast)
+) |>
+  mutate(across(c(cmax, aucinf.obs, half.life, auclast), ~ coalesce(.x, FALSE))) |>
+  as.data.frame()
+
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc, Cc ~ time | regimen + id),
+  PKNCA::PKNCAdose(doses, amt ~ time | regimen + id),
+  intervals = intervals
+))
+nca_res <- as.data.frame(nca$result) |>
+  mutate(day = paste("Day", start + 1)) |>
+  filter(PPTESTCD %in% c("cmax", "auclast", "aucinf.obs", "half.life"))
+```
+
+```{r nca-compare}
+# Table 2, mean values. `auclast` over a 7-day interval is the AUCtau of
+# Table 2; `cmax` of an IV group is the C0 of Table 2.
+published <- tribble(
+  ~regimen, ~day, ~cmax, ~auclast, ~aucinf.obs, ~half.life,
+  "0.1 mg/kg IV", "Day 1", 1.65, NA, 27.2, 12.7,
+  "1 mg/kg IV", "Day 1", 17.9, NA, 293, 15.3,
+  "30 mg/kg IV QW x 5", "Day 1", 878, 3130, NA, NA,
+  "60 mg/kg IV QW x 5", "Day 1", 1700, 5850, NA, NA,
+  "150 mg/kg IV QW x 5", "Day 1", 3350, 12200, NA, NA,
+  "150 mg/kg SC QW x 5", "Day 1", 1560, 9100, NA, NA,
+  "30 mg/kg IV QW x 5", "Day 22", 1490, 7210, NA, NA,
+  "60 mg/kg IV QW x 5", "Day 22", 2760, 12900, NA, NA,
+  "150 mg/kg IV QW x 5", "Day 22", 5740, 25300, NA, NA,
+  "150 mg/kg SC QW x 5", "Day 22", 3640, 23900, NA, NA,
+  "5 mg/kg SC QW x 14", "Day 1", 53.5, 310, NA, NA,
+  "30 mg/kg SC QW x 14", "Day 1", 355, 2050, NA, NA,
+  "150 mg/kg SC QW x 14", "Day 1", 1400, 8450, NA, NA,
+  "5 mg/kg SC QW x 14", "Day 85", 176, 1180, NA, NA,
+  "30 mg/kg SC QW x 14", "Day 85", 1090, 7130, NA, NA,
+  "150 mg/kg SC QW x 14", "Day 85", 4370, 28500, NA, NA
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res |> select(regimen, day, PPTESTCD, PPORRES),
+  reference = published,
+  by = c("regimen", "day"),
+  units = c(cmax = "ug/mL", auclast = "ug*day/mL", aucinf.obs = "ug*day/mL", half.life = "day"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Regimen" = regimen, "Interval" = day) |>
+  knitr::kable(caption = "Simulated median NCA (50 per regimen) against the Table 2 means of Pan 2015.")
+```
+
+```{r nca-gate}
+pct <- cmp[["% diff"]]
+pct <- as.numeric(gsub("[+%*]", "", pct))
+stopifnot(
+  length(pct) == 34L,
+  # Structural: a mis-transcribed CL, volume, F1 or unit conversion moves the
+  # whole distribution of differences by tens of percent.
+  abs(median(pct)) < 10,
+  # Envelope: the differences that remain come from the observed C0 and
+  # dose-normalised AUC drifting across the IV doses, which a linear model
+  # cannot follow (see below).
+  quantile(abs(pct), 0.9) < 30
+)
+```
+
+Most simulated values are within 20% of Table 2. The differences that are
+flagged have identifiable causes:
+
+* **`C0` after a single IV dose.** The single-dose study sampled first on
+  Day 3, so the WinNonlin `C0` is a back-extrapolation over the distribution
+  phase (alpha half-life about 2 days) and lies below `Dose / Vc`. The
+  simulated value is the concentration just after the bolus. Their
+  `AUCinf` and half-life agree.
+* **IV dose proportionality in the 1-month study.** Dose-normalised `C0`
+  and `AUCtau` fall with dose in the observed data (`C0` per mg/kg on Day 1:
+  29.3, 28.3 and 22.3 for 30, 60 and 150 mg/kg; `AUCtau` per mg/kg: 104, 98
+  and 81). The model is linear and has one `Vc` and one `CL`, so it
+  under-predicts `C0` at 30 and 60 mg/kg and over-predicts `AUCtau` at
+  150 mg/kg. The authors describe the PK as approximately dose proportional
+  and estimated a single linear model for all doses.
+
+## Accumulation and relative bioavailability
+
+The paper derives two further quantities from the NCA: the accumulation
+ratio (Day 22 or Day 85 `AUCtau` over Day 1 `AUCtau`) and the Day 1 SC/IV
+`AUCtau` ratio at 150 mg/kg.
+
+```{r accumulation}
+med_auc <- nca_res |>
+  filter(PPTESTCD == "auclast") |>
+  group_by(regimen, day) |>
+  summarise(auc = median(PPORRES), .groups = "drop") |>
+  pivot_wider(names_from = day, values_from = auc) |>
+  mutate(ratio = coalesce(`Day 22`, `Day 85`) / `Day 1`)
+knitr::kable(med_auc, digits = 2, caption = "Simulated median AUCtau and accumulation ratio.")
+
+acc <- setNames(med_auc$ratio, med_auc$regimen)
+f_rel <- med_auc$`Day 1`[med_auc$regimen == "150 mg/kg SC QW x 5"] /
+  med_auc$`Day 1`[med_auc$regimen == "150 mg/kg IV QW x 5"]
+f_rel
+stopifnot(
+  # Results: accumulation 3.4-3.8 after 13 weekly doses (3-month study) and
+  # 2.1-2.6 after 5 (1-month study); the model is linear, so the ratio is
+  # dose independent and set by the half-life.
+  all(acc[grepl("x 14", names(acc))] > 3.1 & acc[grepl("x 14", names(acc))] < 4.1),
+  all(acc[grepl("IV QW x 5", names(acc))] > 1.9 & acc[grepl("IV QW x 5", names(acc))] < 2.9),
+  # Results: relative bioavailability 75% at 150 mg/kg from Day 1 AUCtau.
+  # Over 7 days only part of the SC dose has been absorbed, so this ratio is
+  # below the estimated F1 of 0.824.
+  f_rel > 0.55, f_rel < 0.80
+)
+```
+
+The simulated accumulation ratios fall in the ranges reported in the Results
+(3.4-3.8 for the 3-month study, 2.1-2.6 for the 1-month IV groups; the
+1-month SC group accumulates slightly more, about 2.8, because absorption
+also builds up). The simulated Day 1 SC/IV `AUCtau` ratio at 150 mg/kg is
+about 0.64 against 0.75 from the observed means. It is below the
+bioavailability `F1` of 0.824 because absorption is not complete within the
+first week (`Ka` 0.522 1/day), and the observed ratio is raised by the
+low observed AUC of the 150 mg/kg IV group discussed above.
+
+# Assumptions and deviations
+
+- **BSV scale.** Table 3 gives BSV as a percentage without saying how it was
+  computed. The model uses the log-normal relation `omega^2 = log(1 + CV^2)`.
+  If the percentages are `100 * omega` instead, the variances of `Q` and
+  `EC50` (72.1% and 90.7%) would be 0.52 and 0.82 rather than 0.42 and 0.60;
+  the other variances differ by less than 3%.
+- **No CL-Vc correlation.** The Methods say a correlation between the BSV of
+  CL and V "was also considered", but Table 3 reports no covariance, so the
+  random effects are independent.
+- **Additive residual errors omitted.** Both additive error variances were
+  fixed to 0 in the final model (Table 3), so only the proportional errors
+  are included.
+- **Unit of Emax.** Table 3 prints the unit of `Emax` as 10^3 cells/uL. In the
+  model equation `Emax` multiplies a dimensionless fraction inside
+  `1 - Emax C / (EC50 + C)`, so it is a fraction (0.941), which is how it is
+  coded.
+- **Emax above 1.** `Emax` has log-normal BSV (2.45%) around 0.941. About
+  `r round(100 * (1 - pnorm(-log(0.941) / sqrt(log(1 + 0.0245^2)))), 1)`% of
+  simulated animals draw `Emax > 1`; at high concentration their production
+  term becomes negative and the simulated NK count can fall below zero. This
+  follows from the published parameterisation and is left as is.
+- **Number of doses.** Table 1 says weekly for 4 weeks and for 13 weeks;
+  the Figure 2 legend gives 5 and 14 doses, consistent with the 3-month
+  sampling "1 day after Day 92 dose". The simulations use 5 and 14 doses.
+- **Group sizes.** Table 1 lists 3 monkeys per single-dose group and Table 2
+  says N = 4 per group. Neither number enters the model.
+- No erratum to the article was found (Europe PMC, checked 2026-11-24).
