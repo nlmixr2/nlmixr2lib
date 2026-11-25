@@ -5,7 +5,7 @@ Hao_2013_azithromycin_mouse <- function() {
     "depressive-like behaviour (Hao 2013). AZI (intragastric) and LPS",
     "(intraperitoneal) each follow one-compartment disposition with",
     "first-order absorption, with condition-specific PK: AZI PK differs in",
-    "LPS-challenged mice (LPS_CHALLENGE) and LPS PK differs in AZI-treated",
+    "LPS-challenged mice (LIPOPOLYSACCHARIDE_CHALLENGE) and LPS PK differs in AZI-treated",
     "mice (CONMED_AZITHROMYCIN). Circulating LPS stimulates (Smax / SC50)",
     "and AZI inhibits (Imax / IC50) production of total proinflammatory",
     "cytokines (PCs), which drive plasma kynurenine (KYN), which in turn",
@@ -53,7 +53,7 @@ Hao_2013_azithromycin_mouse <- function() {
   )
 
   covariateData <- list(
-    LPS_CHALLENGE = list(
+    LIPOPOLYSACCHARIDE_CHALLENGE = list(
       description = paste(
         "1 = mouse challenged with intraperitoneal lipopolysaccharide",
         "(LPS); 0 = not challenged."
@@ -222,9 +222,9 @@ Hao_2013_azithromycin_mouse <- function() {
 
   model({
     # Condition-specific PK parameter sets (Tables 1 and 2).
-    ka <- exp(lka * (1 - LPS_CHALLENGE) + lka_chall * LPS_CHALLENGE)
-    kel <- exp(lkel * (1 - LPS_CHALLENGE) + lkel_chall * LPS_CHALLENGE)
-    vc <- exp(lvc * (1 - LPS_CHALLENGE) + lvc_chall * LPS_CHALLENGE)
+    ka <- exp(lka * (1 - LIPOPOLYSACCHARIDE_CHALLENGE) + lka_chall * LIPOPOLYSACCHARIDE_CHALLENGE)
+    kel <- exp(lkel * (1 - LIPOPOLYSACCHARIDE_CHALLENGE) + lkel_chall * LIPOPOLYSACCHARIDE_CHALLENGE)
+    vc <- exp(lvc * (1 - LIPOPOLYSACCHARIDE_CHALLENGE) + lvc_chall * LIPOPOLYSACCHARIDE_CHALLENGE)
     ka_lps <- exp(
       lka_lps * (1 - CONMED_AZITHROMYCIN) + lka_lps_azi * CONMED_AZITHROMYCIN
     )

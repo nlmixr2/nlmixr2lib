@@ -70,7 +70,7 @@ Appendix S1 term for term.
   reconstruction; the next section explains why.
 * Condition-specific PK: the paper estimated separate AZI PK in normal and
   LPS-challenged mice (Table 1) and separate LPS PK in normal and AZI-treated
-  mice (Table 2). The binary covariates `LPS_CHALLENGE` and
+  mice (Table 2). The binary covariates `LIPOPOLYSACCHARIDE_CHALLENGE` and
   `CONMED_AZITHROMYCIN` select the parameter set, and must be set to match the
   doses in the event table.
 
@@ -156,7 +156,7 @@ make_events <- function(id, azi, lps) {
   obs <- data.frame(id = id, time = obs_times, amt = 0, cmt = "central",
                     evid = 0L)
   out <- rbind(doses, obs)
-  out$LPS_CHALLENGE <- as.integer(lps)
+  out$LIPOPOLYSACCHARIDE_CHALLENGE <- as.integer(lps)
   out$CONMED_AZITHROMYCIN <- as.integer(azi)
   out
 }
@@ -457,7 +457,7 @@ peaks fall about two-thirds short of the reported values and arrive later
   it with the paper's 3.4 EU/ng, with `V_LPS/F` read as L/kg like `V_AZI/F`.
 * **Condition-specific PK as covariates.** The paper reports separate PK for
   normal and LPS-challenged (AZI) and for normal and AZI-treated (LPS) mice.
-  The packaged model selects these with `LPS_CHALLENGE` and
+  The packaged model selects these with `LIPOPOLYSACCHARIDE_CHALLENGE` and
   `CONMED_AZITHROMYCIN`; it is the user's job to set them consistently with the
   doses in the event table.
 * **AZI alone lowers PCs.** Eq 5 multiplies the basal production by the AZI
