@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dissanayake 2018 metformin, with and without a creatinine-clearance effect ([doi:10.1002/prp2.424](https://doi.org/10.1002/prp2.424)) -- metformin-naive adults with type 2 diabetes and chronic kidney disease stage 4.
+- Add Figueroa 2018 anti-CD33 antibody-drug conjugate ([doi:10.1080/19420862.2018.1465160](https://doi.org/10.1080/19420862.2018.1465160)) -- cynomolgus monkeys, with the projection to patients with acute myeloid leukemia.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
