@@ -67,7 +67,7 @@ Doi_2017_nc6004 <- function() {
       ),
       source_name = "WT"
     ),
-    ASSAY_AAS = list(
+    ASSAY_ATOMIC_ABSORPTION = list(
       description = paste(
         "Total-platinum assay indicator: 1 = atomic absorption spectrometry",
         "(AAS), 0 = inductively coupled plasma (ICP) method"
@@ -81,7 +81,7 @@ Doi_2017_nc6004 <- function() {
         "(144 points) and by ICP in 5 (42 points); the Japanese study used ICP",
         "throughout. AAS rows read 1.69 x exp(eta) times the ICP prediction",
         "with a 31.6% instead of 17.0% proportional residual error (Table 3",
-        "'Difference by method [folds] (AA to ICP)'). Set ASSAY_AAS = 0 to",
+        "'Difference by method [folds] (AA to ICP)'). Set ASSAY_ATOMIC_ABSORPTION = 0 to",
         "simulate the ICP readout."
       ),
       source_name = "method (AA / ICP)"
@@ -199,9 +199,9 @@ Doi_2017_nc6004 <- function() {
     label("Intercompartmental clearance of free platinum, Qm (L/h)") # Table 3, Qm = 9.30 L/h
 
     # Total-platinum assay conversion -- Table 3
-    e_assay_aas_cc <- 1.69
+    e_assay_atomic_absorption_cc <- 1.69
     label("Multiplicative factor on predicted total Pt for AAS- vs ICP-assayed samples (unitless)") # Table 3, 'Difference by method [folds] (AA to ICP)' = 1.69
-    e_assay_aas_propsd <- 1.858824
+    e_assay_atomic_absorption_propsd <- 1.858824
     label("Multiplicative factor on the total-Pt proportional residual SD for AAS- vs ICP-assayed samples (unitless)") # Table 3, residual CV Total Pt (AA) 31.6% / Total Pt (ICP) 17.0% = 0.316 / 0.170
 
     # eGFR indirect-response model -- Table 4 (rates printed per day,
@@ -224,7 +224,7 @@ Doi_2017_nc6004 <- function() {
     etalvp ~ 0.179776 # Table 3, Vm2 IIV 42.4 CV% (24.2-54.9); 0.424^2
     etalcl ~ 0.208849 # Table 3, CLm IIV 45.7 CV% (21.8-60.9); 0.457^2
     etalq ~ 0.295936 # Table 3, Qm IIV 54.4 CV% (22.2-73.7); 0.544^2
-    etae_assay_aas_cc ~ 0.044944 # Table 3, AA-to-ICP fold IIV 21.2 CV% (4.8-29.6); 0.212^2
+    etae_assay_atomic_absorption_cc ~ 0.044944 # Table 3, AA-to-ICP fold IIV 21.2 CV% (4.8-29.6); 0.212^2
     etalrbase ~ 0.070225 # Table 4, GFR0 IIV 26.5 CV%; 0.265^2
     etalkout ~ 0.237169 # Table 4, Kout IIV 48.7 CV%; 0.487^2
     etalic50 ~ 4.481689 # Table 4, IC50 IIV 211.7 CV%; 2.117^2
@@ -284,11 +284,11 @@ Doi_2017_nc6004 <- function() {
     egfr(0) <- rbase
     d/dt(egfr) <- kin * (1 - inh) - kout * egfr
 
-    # Total plasma Pt on the ICP scale; AAS rows read e_assay_aas_cc x exp(eta)
+    # Total plasma Pt on the ICP scale; AAS rows read e_assay_atomic_absorption_cc x exp(eta)
     # times the ICP value with a larger proportional residual error
-    cf_aas <- e_assay_aas_cc * exp(etae_assay_aas_cc)
-    Cc_np <- central_np / vc_np * cf_aas^ASSAY_AAS
-    propSd_np_eff <- propSd_np * e_assay_aas_propsd^ASSAY_AAS
+    cf_atomic_absorption <- e_assay_atomic_absorption_cc * exp(etae_assay_atomic_absorption_cc)
+    Cc_np <- central_np / vc_np * cf_atomic_absorption^ASSAY_ATOMIC_ABSORPTION
+    propSd_np_eff <- propSd_np * e_assay_atomic_absorption_propsd^ASSAY_ATOMIC_ABSORPTION
 
     # Observed eGFR is the turnover state itself
     egfrObs <- egfr

@@ -37,7 +37,7 @@ glomerular filtration rate (eGFR) through an indirect-response model:
   eliminated by CLm. The micellar clearance is the only input to free Pt.
 * Total Pt (`Cc_np`) is reported on the ICP scale; samples assayed by atomic
   absorption spectrometry (AAS, most of the UK study) read 1.69-fold higher
-  (`ASSAY_AAS = 1`).
+  (`ASSAY_ATOMIC_ABSORPTION = 1`).
 * eGFR (Methods Eq. 1): `d eGFR/dt = kin (1 - Imax Cf / (IC50 + Cf)) - kout
   eGFR`, with `kin = eGFR0 kout` and Cf the free Pt concentration in ng/mL.
 * Methods Eq. 2: `Imax = Imax0 exp(-trend t) exp(eta_IOV)`, where t is the
@@ -70,8 +70,8 @@ distributions are not reported.
 | `lq_np` (Q) | 0.0117 L/h | Table 3 |
 | `lvc`, `lvp` (Vm1, Vm2) | 81.6, 665 L | Table 3 |
 | `lcl`, `lq` (CLm, Qm) | 6.54, 9.30 L/h | Table 3 |
-| `e_assay_aas_cc` | 1.69 | Table 3, 'Difference by method [folds] (AA to ICP)' |
-| `e_assay_aas_propsd` | 0.316 / 0.170 | Table 3, residual CV of total Pt by AA and ICP |
+| `e_assay_atomic_absorption_cc` | 1.69 | Table 3, 'Difference by method [folds] (AA to ICP)' |
+| `e_assay_atomic_absorption_propsd` | 0.316 / 0.170 | Table 3, residual CV of total Pt by AA and ICP |
 | IIV V1, CL, Q, Vm1, Vm2, CLm, Qm, fold | 13.9, 17.2, 20.1, 24.4, 42.4, 45.7, 54.4, 21.2 CV% | Table 3; omega = CV / 100 |
 | `propSd_np`, `propSd` | 0.170, 0.316 | Table 3, total Pt (ICP), free Pt (ICP) |
 | `lrbase` (GFR0) | 83.4 mL/min/1.73 m^2 | Table 4 |
@@ -113,7 +113,7 @@ make_cohort <- function(n, seed) {
 # with each dose; a trailing evid = 2 row on a further occasion gives every
 # subject at least two occasions, which rxode2 needs to draw the IOV per
 # subject and occasion.
-make_events <- function(cohort, dose_mgm2, n_dose, obs_h, assay_aas = 0) {
+make_events <- function(cohort, dose_mgm2, n_dose, obs_h, assay_atomic_absorption = 0) {
   tau <- 21 * 24
   bind_rows(lapply(seq_len(nrow(cohort)), function(i) {
     amt <- dose_mgm2 * cohort$BSA[i] * pt_per_cis
@@ -130,7 +130,7 @@ make_events <- function(cohort, dose_mgm2, n_dose, obs_h, assay_aas = 0) {
       dvid = NA_integer_, OCC = n_dose + 1L
     )
     bind_rows(dose, obs, end) |>
-      mutate(id = cohort$id[i], WT = cohort$WT[i], ASSAY_AAS = assay_aas)
+      mutate(id = cohort$id[i], WT = cohort$WT[i], ASSAY_ATOMIC_ABSORPTION = assay_atomic_absorption)
   })) |>
     arrange(id, time, desc(evid))
 }
@@ -194,7 +194,7 @@ plummer <- tribble(
 # on the AAS scale as in Plummer 2011.
 typ_auc <- function(dose_mgm2, mass_factor) {
   ev <- make_events(data.frame(id = 1, WT = 67.8, BSA = 1.8), dose_mgm2, 1,
-    obs_h = sort(unique(c(seq(0, 48, 0.1), seq(48, 20000, 2)))), assay_aas = 1
+    obs_h = sort(unique(c(seq(0, 48, 0.1), seq(48, 20000, 2)))), assay_atomic_absorption = 1
   )
   ev$amt[ev$evid == 1] <- ev$amt[ev$evid == 1] / pt_per_cis * mass_factor
   s <- as.data.frame(rxode2::rxSolve(mod_typ, ev, returnType = "data.frame"))
@@ -227,7 +227,7 @@ stopifnot(
 nca_obs <- c(0, 0.5, 1, 2, 3, 4, 6, 8, 12, 24, 36, 48, 72, 96, 168, 240, 336, 504)
 cohort_uk <- make_cohort(60, seed = 2011)
 sim_nca <- bind_rows(lapply(plummer$dose, function(d) {
-  ev <- make_events(cohort_uk, d, 1, obs_h = nca_obs, assay_aas = 1)
+  ev <- make_events(cohort_uk, d, 1, obs_h = nca_obs, assay_atomic_absorption = 1)
   rxode2::rxSetSeed(100 + d)
   as.data.frame(rxode2::rxSolve(mod, ev, returnType = "data.frame")) |>
     mutate(treatment = paste(d, "mg/m^2"), dose = d)
