@@ -5982,6 +5982,17 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
 - **Example models:** `Assmus_2022_emodepside.R` (+105% in the mean transit time per mg/kg/day; observed range 0.012-0.667 mg/kg/day across 1-40 mg single doses and 5-20 mg/day multiple doses in healthy men).
 - **Notes:** Member of the `DOSE_<DRUG>_MGKGD` family (siblings `DOSE_PHT_MGKGD`, `DOSE_VPA_MGKGD`). Specific scope because the coefficient is intrinsic to emodepside absorption. Twice-daily 10 mg in a 75 kg adult is 20/75 = 0.267 mg/kg/day. The effect is linear and unbounded, so values far above the observed 0.667 mg/kg/day extrapolate the mean transit time linearly.
 
+### DOSE_ZORIFERTINIB_MGKGD (**canonical for the daily zorifertinib (AZD3759) dose of a treatment group, in mg/kg/day**)
+- **Description:** The once-daily zorifertinib (AZD3759) dose of the animal's treatment group, normalised to body weight, in mg/kg/day; 0 for vehicle controls. Per-subject (per-group) covariate, constant over the study.
+- **Units:** mg/kg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- the dose itself is the exposure metric of a model with no PK layer. It enters the subcutaneous xenograft model through a sigmoid Emax cell-kill rate `Emax * D^gamma / (ED50^gamma + D^gamma)` and the brain metastasis models through a linear cell-kill rate `kD * D` on the treatment-sensitive cells (Martin 2018 Equations 1 and 2).
+- **Source aliases:**
+  - `D` -- Martin 2018 symbol for the dose in Equations 1-2. Same orientation and units, no value transformation.
+- **Example models:** `Martin_2018_zorifertinib_sc_mouse.R` (3.75, 7.5, 15 and 30 mg/kg), `Martin_2018_zorifertinib_brainmet_mouse.R`, `Martin_2018_zorifertinib_brainmet_h12_mouse.R` (7.5 and 15 mg/kg).
+- **Notes:** Member of the `DOSE_<DRUG>_MGKGD` family (siblings `DOSE_EMODEPSIDE_MGKGD`, `DOSE_PHT_MGKGD`). Carried as a covariate because the models have no drug concentration: the drug effect is a function of the daily dose and is assumed constant under daily dosing, so no dosing records are needed.
+
 ### DOSE_VPA_MGD (**canonical for total daily valproic acid dose**)
 - **Description:** Patient's own total daily dose of valproic acid (mg), summed across the 1-3 daily administrations and NOT normalised by body weight. Per-dose-record covariate; constant within an inter-dose interval and updated when the prescriber alters the daily dose.
 - **Units:** mg/d
