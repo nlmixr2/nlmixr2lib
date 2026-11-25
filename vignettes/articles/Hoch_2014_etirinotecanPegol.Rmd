@@ -1,0 +1,553 @@
+---
+title: "Etirinotecan pegol tumor PK/PD in mouse xenografts (Hoch 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Etirinotecan pegol tumor PK/PD in mouse xenografts (Hoch 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Hoch_2014_etirinotecanPegol_ht29_mouse"))$reference`
+* Article: <https://doi.org/10.1007/s00280-014-2577-7> (open access, PMC4236622)
+* Supplement: Online Resource 1 (PK/PD schematic) and Online Resource 2 (NCI-H460 PK figure), available from the article page.
+
+Hoch 2014 compared etirinotecan pegol (NKTR-102, a PEG conjugate of irinotecan)
+with conventional irinotecan in mouse xenografts. Female nude mice bearing HT29
+colon or NCI-H460 lung tumors received 40 mg/kg irinotecan-equivalent IV bolus
+doses of either drug on days 0, 4 and 8. Mean plasma and tumor concentrations of
+etirinotecan pegol, irinotecan and SN-38 were fitted with one- to
+three-compartment models in Berkeley Madonna, and a tumor PK/PD model related
+the tumor SN-38 time course to tumor growth: an inhibitory Emax effect (Emax
+fixed at 1) acting on Gompertz growth (Online Resource 1).
+
+The paper contributes three models to nlmixr2lib:
+
+| Model | Content |
+|---|---|
+| `Hoch_2014_etirinotecanPegol_ht29_mouse` | Tumor SN-38 PK/PD, HT29 colon xenograft |
+| `Hoch_2014_etirinotecanPegol_h460_mouse` | Tumor SN-38 PK/PD, NCI-H460 lung xenograft |
+| `Hoch_2014_etirinotecanPegol_tumorpk_mouse` | Descriptive two-compartment model of tumor etirinotecan pegol, HT29 (Figure 2d) |
+
+**Read this first.** The paper prints only the PD parameters (`kgr`, `Limit`,
+`EC50` per tumor line, and `Emax` = 1). It prints no PK parameter at all,
+including the tumor SN-38 model that drives the PD. Every PK value in these
+three models was back-solved by the maintainers from the model-predicted
+curves in Figures 2 and 3. The back-solved values reproduce the paper's printed
+tumor AUCs to within 4% (see [Published exposure](#published-exposure)), but
+they are maintainer estimates, not the authors' estimates.
+
+# Population
+
+Female athymic nude mice (Ncr:Nu and Nu:Nu; 6-10 weeks, 14-28 g in the
+xenograft studies) with subcutaneous HT29 or NCI-H460 tumor fragments,
+randomized at a median tumor volume of 100-172 mm^3 (HT29, 13 days after
+implant) or 100-245 mm^3 (NCI-H460, 9 days after implant). Each sampling time
+used a group of 4 mice; blood and tumor were taken up to 60 days (HT29) or 30
+days (NCI-H460) after the first dose. The models were fitted to group-mean data,
+so they carry no between-animal variability and no residual-error estimate. The
+total number of animals is not reported. Doses and concentrations of
+etirinotecan pegol are expressed as irinotecan equivalents throughout the paper
+and in these models.
+
+```{r population}
+str(readModelDb("Hoch_2014_etirinotecanPegol_ht29_mouse")()$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Effect `1 - Emax * C / (EC50 + C)` | n/a | Online Resource 1 schematic |
+| Gompertz growth `d/dt(RTW) = kgr * RTW * log(Limit / RTW) * Effect`, `RTW(0) = 1` | n/a | Methods 'Tumor PK/PD analysis' ('based on the Gompertz equation'); equation not printed, form confirmed by reproducing the Figure 3a irinotecan-arm prediction (below) |
+| `emax` (both lines) | 1 (fixed) | Methods: 'Emax was fixed at a value of 1' |
+| `lkgrow` HT29 / H460 | log(0.033) / log(0.033) | Results: 'kgr ... 0.033 (day-1) ... for HT29; and 0.033 (day-1) ... for NCI-H460' |
+| `ltsmax` HT29 / H460 | log(52) / log(150) | Results: 'Limit ... 52 ... for HT29; ... 150 ... for NCI-H460' |
+| `lec50` HT29 / H460 | log(0.20) / log(1.2) ug/g | Results: 'EC50 ... 0.20 ug/g for HT29; ... 1.2 ug/g for NCI-H460' |
+| HT29 `lka`, `lkel_sn38`, `lv_tumor_sn38` | log(0.0457), log(0.235), log(15.3) | Back-solved from Figure 3c dashed curve (maintainers) |
+| HT29 `lv_tumor_sn38_irinotecan` | log(286) | 40 mg/kg / 0.140 ug/g spike height digitised from Figure 3a (maintainers) |
+| HT29 `lkel_sn38_irinotecan` | log(4.2) | 3 x 0.140 ug/g / 0.100 ug day/g (Results text AUC of the irinotecan arm) |
+| H460 `lka_fast`, `lka_slow`, `logitfrel`, `lkel_sn38`, `lv_tumor_sn38` | log(4.60), log(0.120), logit(0.0893), log(0.120), log(32.5) | Back-solved from Figure 3d dashed curve (maintainers) |
+| H460 `lkel_sn38_irinotecan`, `lv_tumor_sn38_irinotecan` | log(0.377), log(566) | Back-solved from Figure 3b dashed curve (maintainers) |
+| Tumor EP `lkel`, `lk12`, `lk21`, `lv_tumor_ep` | log(0.105), log(0.899), log(0.758), log(1.19) | Back-solved from Figure 2d solid curve (maintainers) |
+| Residual errors | fixed(0) | Not reported (fits to group means) |
+
+# Digitised reference curves
+
+The maintainers digitised the model-predicted curves from the article's
+600-dpi figure images by pixel analysis (axis ticks located to sub-pixel
+precision; one pixel is about 12 ng/g on the Figure 3c/3d SN-38 axis, 2 ng/g on
+Figure 3a/3b and 0.5 ug/g on Figure 2d). Stretches hidden under data symbols
+were skipped.
+
+```{r digitised}
+fig3c_ep_ht29 <- tibble(
+  time = c(0.26, 2.16, 2.54, 2.84, 3.15, 5.20, 5.58, 6.19, 6.50, 6.80, 7.10, 7.41, 7.71, 8.02, 8.32, 8.63,
+           9.23, 9.84, 10.45, 10.76, 11.06, 11.37, 11.67, 11.97, 12.28, 13.19, 13.50, 13.80, 14.10, 14.41,
+           16.84, 17.15, 17.45, 17.76, 18.06, 18.67, 19.28, 20.50, 21.11, 21.71, 22.32, 22.93, 23.54, 24.15,
+           25.37, 25.98, 27.19, 27.80, 29.02, 29.63, 32.67, 33.28, 34.50, 35.11, 36.32, 36.93, 38.15, 38.76,
+           39.98, 40.59, 41.80, 42.41, 43.02, 44.24, 44.85, 46.06, 47.28, 48.50, 55.20, 57.02, 58.24, 58.85,
+           59.46, 60.07),
+  conc = c(31, 164, 200, 218, 241, 416, 454, 531, 555, 590, 602, 620, 626, 661, 661, 685, 756, 838, 909,
+           921, 927, 968, 974, 986, 980, 1004, 1004, 1004, 1004, 1010, 957, 945, 939, 933, 927, 903, 886,
+           844, 827, 797, 785, 767, 744, 732, 691, 673, 643, 626, 590, 566, 507, 496, 466, 460, 430, 425,
+           401, 389, 365, 354, 336, 330, 318, 306, 295, 265, 259, 247, 188, 194, 164, 153, 153, 147) / 1000
+)
+fig3d_ep_h460 <- tibble(
+  time = c(1.30, 1.91, 2.21, 2.52, 3.13, 3.43, 3.73, 4.04, 4.65, 4.95, 5.26, 5.56, 5.87, 6.17, 6.48, 6.78,
+           7.09, 7.39, 7.69, 8.00, 8.61, 8.91, 9.22, 9.52, 10.74, 11.05, 11.65, 11.96, 12.26, 12.57, 12.87,
+           13.18, 13.79, 14.09, 14.40, 15.61, 15.92, 16.22, 16.53, 16.83, 17.14, 17.44, 17.75, 18.05, 18.36,
+           18.66, 18.97, 19.27, 19.58, 20.49, 21.10, 21.40, 22.01, 22.32, 22.62, 22.93, 23.23, 23.54, 23.84,
+           24.14, 24.45, 24.75, 25.36, 25.67, 25.97, 26.28, 26.58, 26.89, 27.19, 27.50, 27.80, 28.10, 28.41,
+           28.71, 29.02, 29.32, 29.63, 29.93),
+  conc = c(249, 285, 302, 332, 362, 362, 385, 397, 650, 680, 694, 700, 735, 759, 789, 800, 812, 836, 848,
+           854, 1055, 1085, 1126, 1156, 1239, 1251, 1263, 1275, 1275, 1281, 1275, 1275, 1263, 1263, 1257,
+           1215, 1204, 1192, 1174, 1168, 1156, 1132, 1121, 1109, 1085, 1073, 1061, 1038, 1020, 972, 937,
+           919, 883, 872, 842, 836, 818, 794, 783, 765, 753, 735, 700, 688, 676, 658, 640, 628, 611, 599,
+           593, 569, 557, 545, 528, 516, 510, 492) / 1000
+)
+fig3b_irn_h460 <- tibble(
+  time = c(0.85, 1.00, 1.16, 1.46, 1.62, 1.77, 2.08, 2.23, 2.39, 2.54, 4.23, 4.39, 4.54, 4.70, 4.85, 5.16,
+           5.31, 5.46, 5.62, 5.77, 5.93, 6.08, 6.39, 6.54, 8.24, 8.39, 8.54, 8.70, 8.85, 9.31, 9.77, 11.16,
+           11.62, 12.08, 12.54, 13.01, 13.47, 13.93, 16.24, 16.70, 17.16),
+  conc = c(53, 52, 49, 41, 39, 38, 32, 30, 28, 27, 81, 77, 75, 67, 65, 55, 53, 52, 45, 44, 40, 40, 34, 32,
+           84, 79, 76, 68, 66, 54, 45, 25, 23, 18, 15, 12, 10, 8, 5, 4, 3) / 1000
+)
+fig2d_ep_tumor <- tibble(
+  time = c(2.50, 2.96, 3.41, 3.64, 4.02, 4.55, 4.78, 5.23, 5.46, 5.91, 6.14, 6.37, 6.60, 6.82, 7.05, 7.28,
+           7.51, 7.73, 8.02, 8.42, 8.64, 8.87, 9.10, 9.32, 9.55, 9.78, 10.01, 10.23, 10.46, 10.69, 10.92,
+           11.14, 13.19, 13.42, 13.65, 13.87, 14.10, 14.33, 16.15, 16.83, 17.51, 18.20, 18.88, 20.24, 20.92,
+           21.61, 22.29, 22.97, 23.65, 24.34, 25.02, 25.70, 26.38, 27.07, 27.75, 28.43, 29.11, 31.16, 31.84,
+           32.52, 33.21, 33.89, 34.57, 35.25, 35.94, 36.62, 37.30, 37.98, 38.66, 39.35, 40.03, 40.71, 41.39,
+           42.08, 43.44, 44.81, 45.49, 46.85, 48.22, 48.90, 50.95, 52.99, 53.68, 55.72, 57.77, 59.13),
+  conc = c(13, 13, 13, 12, 44.5, 33, 30, 28.5, 27, 24, 24, 24, 23, 23, 23, 23, 23, 22, 54.5, 47, 42, 38,
+           36, 35, 34, 34, 33, 33, 32, 32, 32, 31, 29, 28, 28, 28, 27, 27, 25, 24, 23, 23, 22, 20, 20, 19,
+           19, 18, 17, 17, 16, 16, 15, 15, 14, 14, 14, 12, 12, 12, 11, 11, 10, 10, 10, 9, 9, 9, 9, 8, 8, 8,
+           8, 7, 7, 7, 6, 6, 6, 5, 5, 5, 4, 4, 4, 3)
+)
+# Predicted relative tumor weight (solid lines) read at selected days.
+fig3_rtw <- tribble(
+  ~line,      ~arm,          ~time, ~rtw_fig,
+  "HT29",     "Irinotecan",  14,    4.27,
+  "HT29",     "Irinotecan",  21,    7.17,
+  "HT29",     "Irinotecan",  28,    11.04,
+  "HT29",     "Irinotecan",  35,    14.80,
+  "HT29",     "Irinotecan",  42,    19.15,
+  "NCI-H460", "Irinotecan",  12,    4.73,
+  "NCI-H460", "Irinotecan",  16,    7.16,
+  "NCI-H460", "Irinotecan",  20,    10.07,
+  "NCI-H460", "Irinotecan",  24,    13.95,
+  "NCI-H460", "Irinotecan",  28,    18.44,
+  "HT29",     "Etirinotecan pegol", 14, 1.30,
+  "HT29",     "Etirinotecan pegol", 28, 1.78,
+  "HT29",     "Etirinotecan pegol", 42, 2.50,
+  "HT29",     "Etirinotecan pegol", 56, 5.03,
+  "HT29",     "Etirinotecan pegol", 60, 5.99,
+  "NCI-H460", "Etirinotecan pegol", 8,  1.93,
+  "NCI-H460", "Etirinotecan pegol", 16, 3.37,
+  "NCI-H460", "Etirinotecan pegol", 24, 5.54,
+  "NCI-H460", "Etirinotecan pegol", 28, 7.11,
+  "HT29",     "Vehicle",     14,    4.31,
+  "HT29",     "Vehicle",     28,    9.8,
+  "HT29",     "Vehicle",     42,    15.60,
+  "HT29",     "Vehicle",     56,    19.57,
+  "NCI-H460", "Vehicle",     8,     5.54,
+  "NCI-H460", "Vehicle",     16,    14.46,
+  "NCI-H460", "Vehicle",     24,    23.37,
+  "NCI-H460", "Vehicle",     28,    27.5
+)
+```
+
+# Simulation
+
+All three models are deterministic (no random effects), so a single
+typical-value solve per treatment arm reproduces the paper's mean-data fits.
+An etirinotecan pegol dose goes into `depot`; in the NCI-H460 model it is given
+as two records of the same amount, one into `depot` and one into `depot2`,
+which `f()` splits between the fast and the slow release route. Irinotecan is
+dosed straight into `tumor_sn38_irinotecan`.
+
+```{r simulate}
+mod_ht29 <- readModelDb("Hoch_2014_etirinotecanPegol_ht29_mouse")
+mod_h460 <- readModelDb("Hoch_2014_etirinotecanPegol_h460_mouse")
+mod_tumorpk <- readModelDb("Hoch_2014_etirinotecanPegol_tumorpk_mouse")
+
+dose_times <- c(0, 4, 8)
+# Fine grid through the dosing period resolves the irinotecan SN-38 spikes
+# (HT29 half-life about 4 h).
+obs_grid <- function(end) sort(unique(c(seq(0, min(end, 12), by = 0.01), seq(12, end, by = 0.1))))
+
+arm_events <- function(line, arm, end) {
+  ev <- rxode2::et(obs_grid(end), cmt = "tumor_vol")
+  if (arm == "Etirinotecan pegol") {
+    ev <- rxode2::et(ev, amt = 40, time = dose_times, cmt = "depot")
+    if (line == "NCI-H460") ev <- rxode2::et(ev, amt = 40, time = dose_times, cmt = "depot2")
+  }
+  if (arm == "Irinotecan") ev <- rxode2::et(ev, amt = 40, time = dose_times, cmt = "tumor_sn38_irinotecan")
+  as.data.frame(ev)
+}
+
+arms <- tidyr::expand_grid(
+  line = c("HT29", "NCI-H460"),
+  arm = c("Vehicle", "Irinotecan", "Etirinotecan pegol")
+) |>
+  # One day past the last study day, so the digitised points at day 60.07
+  # (HT29) and 29.93 (NCI-H460) lie inside the simulated range.
+  mutate(id = row_number(), end = ifelse(line == "HT29", 61, 31))
+
+sim_pkpd <- bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  a <- arms[i, ]
+  mod <- if (a$line == "HT29") mod_ht29 else mod_h460
+  s <- rxode2::rxSolve(mod, events = arm_events(a$line, a$arm, a$end), returnType = "data.frame")
+  s |>
+    distinct(time, .keep_all = TRUE) |>
+    transmute(id = a$id, line = a$line, arm = a$arm, time, Ctumor_sn38, tumor_vol)
+}))
+
+ev_tep <- rxode2::et(obs_grid(60), cmt = "tumor_ep") |>
+  rxode2::et(amt = 40, time = dose_times, cmt = "tumor_ep")
+sim_tep <- rxode2::rxSolve(mod_tumorpk, events = ev_tep, returnType = "data.frame") |>
+  distinct(time, .keep_all = TRUE)
+
+stopifnot(
+  !anyNA(sim_pkpd$Ctumor_sn38), !anyNA(sim_pkpd$tumor_vol), !anyNA(sim_tep$Ctumor),
+  all(sim_pkpd$tumor_vol > 0)
+)
+```
+
+# Replicate published figures
+
+## Figure 2d: tumor etirinotecan pegol (HT29)
+
+```{r figure-2d}
+ggplot(sim_tep, aes(time, Ctumor)) +
+  geom_line() +
+  geom_point(data = fig2d_ep_tumor, aes(time, conc), shape = 1, colour = "firebrick") +
+  labs(
+    x = "Time (day)", y = "Etirinotecan pegol in tumor (ug/g, irinotecan eq.)",
+    title = "Tumor etirinotecan pegol after 40 mg/kg on days 0, 4, 8 (HT29)",
+    caption = "Replicates Figure 2d of Hoch 2014. Line: packaged model; circles: digitised published prediction."
+  )
+```
+
+## Figure 3: tumor SN-38 and relative tumor weight
+
+```{r figure-3, fig.height = 6.5}
+digitised_sn38 <- bind_rows(
+  fig3c_ep_ht29 |> mutate(line = "HT29", arm = "Etirinotecan pegol"),
+  fig3d_ep_h460 |> mutate(line = "NCI-H460", arm = "Etirinotecan pegol"),
+  fig3b_irn_h460 |> mutate(line = "NCI-H460", arm = "Irinotecan")
+)
+sim_pkpd |>
+  filter(arm != "Vehicle") |>
+  ggplot(aes(time, Ctumor_sn38 * 1000)) +
+  geom_line() +
+  geom_point(data = digitised_sn38, aes(time, conc * 1000), shape = 1, colour = "firebrick") +
+  facet_wrap(arm ~ line, scales = "free") +
+  labs(
+    x = "Time (day)", y = "SN-38 in tumor (ng/g)",
+    title = "Tumor SN-38 after 40 mg/kg on days 0, 4, 8",
+    caption = "Replicates the dashed curves of Figure 3a-d of Hoch 2014. Circles: digitised published prediction."
+  )
+```
+
+```{r figure-3-rtw, fig.height = 4}
+sim_pkpd |>
+  ggplot(aes(time, tumor_vol, colour = arm)) +
+  geom_line() +
+  geom_point(data = fig3_rtw, aes(time, rtw_fig, colour = arm), shape = 1, size = 2) +
+  facet_wrap(~line, scales = "free_x") +
+  labs(
+    x = "Time (day)", y = "Relative tumor weight", colour = NULL,
+    title = "Relative tumor weight",
+    caption = paste0(
+      "Replicates the solid curves of Figure 3 of Hoch 2014.\n",
+      "Lines: packaged model; circles: published predicted lines read off the figure."
+    )
+  ) +
+  theme(legend.position = "bottom")
+```
+
+## How closely the back-solved drivers follow the published curves
+
+```{r driver-fit}
+driver_fit <- function(sim, dig, value) {
+  pred <- approx(sim$time, sim[[value]], xout = dig$time)$y
+  abs(log(pred / dig$conc))
+}
+fits <- list(
+  "Figure 3c, HT29, etirinotecan pegol" = driver_fit(
+    filter(sim_pkpd, line == "HT29", arm == "Etirinotecan pegol"), fig3c_ep_ht29, "Ctumor_sn38"
+  ),
+  "Figure 3d, NCI-H460, etirinotecan pegol" = driver_fit(
+    filter(sim_pkpd, line == "NCI-H460", arm == "Etirinotecan pegol"), fig3d_ep_h460, "Ctumor_sn38"
+  ),
+  "Figure 3b, NCI-H460, irinotecan" = driver_fit(
+    filter(sim_pkpd, line == "NCI-H460", arm == "Irinotecan"), fig3b_irn_h460, "Ctumor_sn38"
+  ),
+  "Figure 2d, HT29, tumor etirinotecan pegol" = driver_fit(sim_tep, fig2d_ep_tumor, "Ctumor")
+)
+fit_tab <- tibble(
+  curve = names(fits),
+  points = vapply(fits, length, integer(1)),
+  median_abs_pct = vapply(fits, function(x) 100 * median(exp(x) - 1), numeric(1)),
+  max_abs_pct = vapply(fits, function(x) 100 * max(exp(x) - 1), numeric(1))
+)
+fit_tab |>
+  dplyr::rename(
+    "Digitised curve" = curve, "Points" = points,
+    "Median |difference| (%)" = median_abs_pct, "Max |difference| (%)" = max_abs_pct
+  ) |>
+  knitr::kable(digits = 1)
+
+# Deterministic solves against digitised curves: the residual is digitisation
+# (a pixel is 2-12 ng/g) plus the back-solve's own misfit. Medians are 0.4-3.3%;
+# the largest single misses (8-24%) sit on the lowest-concentration
+# points, where one pixel is a large fraction of the value. A wrong rate
+# constant or volume moves the whole curve and breaks the median bound.
+stopifnot(
+  all(fit_tab$points > 40),
+  all(fit_tab$median_abs_pct < 5),
+  all(fit_tab$max_abs_pct < 30)
+)
+```
+
+The Figure 3a irinotecan SN-38 spike (HT29) is narrower than one pixel and is
+not digitised; it is set from its height and the paper's printed AUC (see
+[Assumptions and deviations](#assumptions-and-deviations)).
+
+# Published exposure
+
+The Results text gives the tumor AUCs that the authors computed by
+noncompartmental analysis of their predicted profiles. PKNCA on the packaged
+models' profiles:
+
+```{r pknca}
+nca_conc <- bind_rows(
+  sim_pkpd |>
+    filter(arm != "Vehicle") |>
+    transmute(treatment = paste(line, arm, "SN-38"), id, time, conc = Ctumor_sn38),
+  sim_tep |> transmute(treatment = "HT29 Etirinotecan pegol tumor EP", id = 99L, time, conc = Ctumor)
+)
+nca_dose <- nca_conc |>
+  distinct(treatment, id) |>
+  tidyr::crossing(time = dose_times) |>
+  mutate(amt = 40)
+conc_obj <- PKNCA::PKNCAconc(nca_conc, conc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id)
+# AUC over each study's sampling period (60 days HT29, 30 days NCI-H460), as in
+# the Results text; tumor etirinotecan pegol half-life over days 20-60.
+intervals <- data.frame(
+  treatment = c(
+    "HT29 Etirinotecan pegol SN-38", "HT29 Irinotecan SN-38", "HT29 Etirinotecan pegol tumor EP",
+    "NCI-H460 Etirinotecan pegol SN-38", "NCI-H460 Irinotecan SN-38", "HT29 Etirinotecan pegol tumor EP"
+  ),
+  start = c(0, 0, 0, 0, 0, 20),
+  end = c(60, 60, 60, 30, 30, 60),
+  auclast = c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE),
+  half.life = c(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE)
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published <- tibble::tribble(
+  ~treatment,                          ~auclast, ~half.life,
+  "HT29 Etirinotecan pegol SN-38",     31,       NA,
+  "NCI-H460 Etirinotecan pegol SN-38", 26,       NA,
+  "HT29 Irinotecan SN-38",             0.100,    NA,
+  "NCI-H460 Irinotecan SN-38",         0.110,    NA,
+  "HT29 Etirinotecan pegol tumor EP",  860,      17
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(auclast = "ug*day/g", half.life = "day"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Packaged model vs. Hoch 2014 Results text. * differs from the published value by >20%.")
+```
+
+```{r pknca-gate}
+res <- as.data.frame(nca_res)
+auc <- function(trt) {
+  v <- res$PPORRES[res$treatment == trt & res$PPTESTCD == "auclast"]
+  if (length(v) != 1L) stop("no unique AUC for ", trt)
+  v
+}
+# The three independent checks: none of these AUCs was used to back-solve.
+# Measured 30.1 / 25.3 / 891 against 31 / 26 / 860. A misplaced volume, dose
+# or unit moves an AUC by far more than 10%.
+stopifnot(
+  abs(auc("HT29 Etirinotecan pegol SN-38") / 31 - 1) < 0.10,
+  abs(auc("NCI-H460 Etirinotecan pegol SN-38") / 26 - 1) < 0.10,
+  abs(auc("HT29 Etirinotecan pegol tumor EP") / 860 - 1) < 0.10,
+  # Not independent: the HT29 irinotecan elimination rate was set from this AUC.
+  abs(auc("HT29 Irinotecan SN-38") / 0.100 - 1) < 0.02
+)
+```
+
+The NCI-H460 irinotecan row is starred: the AUC implied by the paper's own
+Figure 3b curve is about five times the 0.110 ug day/g printed in the text (see
+[Assumptions and deviations](#assumptions-and-deviations)). The tumor
+etirinotecan pegol half-life over days 20-60 is about 15 days, against the 17
+days quoted in the abstract; the abstract does not say over which window its
+value was estimated.
+
+# Relative tumor weight
+
+```{r rtw-table}
+rtw_cmp <- fig3_rtw |>
+  left_join(
+    sim_pkpd |> mutate(time = round(time, 2)) |> select(line, arm, time, tumor_vol),
+    by = c("line", "arm", "time")
+  ) |>
+  mutate(pct_diff = 100 * (tumor_vol / rtw_fig - 1))
+stopifnot(!anyNA(rtw_cmp$tumor_vol))
+rtw_cmp |>
+  dplyr::rename(
+    "Tumor" = line, "Arm" = arm, "Day" = time, "Figure 3 line" = rtw_fig,
+    "Packaged model" = tumor_vol, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2)
+
+irn <- filter(rtw_cmp, arm == "Irinotecan")
+# Irinotecan arms: the drug effect is small, so these rows test the Gompertz
+# form and the printed kgr / Limit. HT29 agrees within 4%; NCI-H460 runs 4-8%
+# high.
+stopifnot(max(abs(irn$pct_diff[irn$line == "HT29"])) < 6, max(abs(irn$pct_diff)) < 12)
+```
+
+The irinotecan arms confirm the growth equation: with the printed `kgr` and
+`Limit`, the Gompertz form reproduces the Figure 3a prediction to within 4% at
+every day read. The etirinotecan pegol arms do not match as closely. With the
+printed `EC50` and the SN-38 curve the figure itself draws, the model predicts
+less early growth suppression than the figure's solid line (HT29: 2.35 against
+1.78 at day 28), and no single `EC50` reproduces both the flat early course and
+the late regrowth of the published line. The vehicle lines are discussed under
+[Assumptions and deviations](#assumptions-and-deviations).
+
+The Results text quotes the tumor-volume increases. The packaged model:
+
+```{r text-claims}
+at_day <- function(ln, ar, d) {
+  s <- filter(sim_pkpd, line == ln, arm == ar)
+  approx(s$time, s$tumor_vol, xout = d)$y
+}
+claims <- tibble::tribble(
+  ~claim,                                                     ~published, ~model,
+  "HT29, etirinotecan pegol, day 60: 'only sixfold'",          6,          at_day("HT29", "Etirinotecan pegol", 60),
+  "HT29, irinotecan, day 60: 'a 30-fold increase'",            30,         at_day("HT29", "Irinotecan", 60),
+  "NCI-H460, etirinotecan pegol, day 30: 'only eightfold'",    8,          at_day("NCI-H460", "Etirinotecan pegol", 30),
+  "NCI-H460, irinotecan, day 30: 'a >= 21-fold increase'",     21,         at_day("NCI-H460", "Irinotecan", 30)
+)
+claims |>
+  dplyr::rename("Results text" = claim, "Published fold" = published, "Packaged model" = model) |>
+  knitr::kable(digits = 1)
+# Deterministic. Model 6.8 / 29.9 / 9.5 / 22.7 against 6 / 30 / 8 / >= 21;
+# the text rounds to whole folds, and the etirinotecan pegol arms carry the
+# early-suppression gap described above.
+stopifnot(
+  abs(claims$model[1] / 6 - 1) < 0.25,
+  abs(claims$model[2] / 30 - 1) < 0.10,
+  abs(claims$model[3] / 8 - 1) < 0.25,
+  claims$model[4] >= 21
+)
+```
+
+# Assumptions and deviations
+
+**No PK parameter is printed.** Every PK value in the three models was
+back-solved by the maintainers from the article's figures. The values are
+maintainer estimates, made by least squares on the log scale against the
+digitised model-predicted curves:
+
+- *Tumor SN-38 after etirinotecan pegol, HT29 (Figure 3c).* The paper calls this
+  a two-compartment model without stating the input. A dose depot releasing
+  first-order into a tumor SN-38 compartment reproduces the curve (median 1.9%
+  difference). The slower rate constant, 0.0457/day, is assigned to the
+  release, so the 15-day terminal decline reflects the slow loss of
+  etirinotecan pegol from tumor that the paper reports (17-day half-life).
+- *Tumor SN-38 after etirinotecan pegol, NCI-H460 (Figure 3d).* The curve jumps
+  within hours of each dose and then keeps rising for days, which one
+  first-order release cannot follow (log-scale RMSE 3.7%, with the post-dose
+  jumps missed, against 1.7% for the packaged form). Two parallel release
+  routes do: 8.9% of the dose at 4.6/day and the
+  rest at 0.12/day. The slow release rate and the SN-38 elimination rate cannot
+  be told apart from the curve (the least-squares fit runs to equality), so both
+  are set to 0.120/day. The H460 and HT29 drivers therefore have different
+  structures; each was chosen as the simplest form that follows its own curve.
+- *Tumor SN-38 after irinotecan.* One compartment with bolus-type input, as the
+  paper states. For NCI-H460 the Figure 3b curve gives 70.7 ng/g per dose and an
+  elimination rate of 0.377/day. For HT29 the Figure 3a spike reaches 140 ng/g
+  but falls to baseline within one pixel (about 0.3 day), so its decay cannot be
+  read from the figure. The elimination rate, 4.2/day, is instead set from the
+  printed AUC of that arm: 3 doses x 0.140 ug/g / 0.100 ug day/g. It is
+  consistent with the text ('undetectable within 12 h'; the tumor lower limit
+  of quantitation is 0.030 ug/g).
+- *Tumor etirinotecan pegol, HT29 (Figure 2d).* The paper's two-compartment fit
+  to tumor concentrations has a fast spike at each dose and a slow phase. The
+  biexponential 19.3 exp(-1.716 t) + 14.34 exp(-0.0465 t) ug/g per 40 mg/kg
+  reproduces it (median 1.7% difference). It is written as an IV bolus into the
+  sampled tumor pool `tumor_ep`, which exchanges with `peripheral1`. Neither
+  compartment is plasma: the authors fitted tumor data directly. The
+  observation is `Ctumor`, not `Cc`, because it is a tumor concentration.
+- *Apparent volumes.* `v_tumor_sn38`, `v_tumor_sn38_irinotecan` and
+  `v_tumor_ep` are dose-to-concentration ratios ((mg/kg) per (ug/g)). They
+  absorb the unknown fraction of each dose that reaches the tumor as the
+  analyte, and are not physical volumes.
+- *Not packaged.* The plasma fits (three-compartment etirinotecan pegol,
+  one-compartment irinotecan; Figure 2a-c and Online Resource 2) and the tumor
+  irinotecan fit (Figure 2b) are not packaged. Their terminal phases sit on
+  linear axes at the floor of the plot (0-800 ug/mL for plasma etirinotecan
+  pegol) and the irinotecan curves are spikes narrower than a pixel, so they
+  cannot be back-solved. They are not linked to the PD model.
+- *Rat and dog.* The rat and dog PK in Figure 5 was analysed only by NCA, so no
+  model exists to package.
+
+**Inconsistencies in the paper.**
+
+- *NCI-H460 irinotecan SN-38 AUC.* The Results text gives 0.110 ug day/g, but
+  the Figure 3b predicted curve (and the observed means plotted with it)
+  decline with a half-life of about 1.8 days, which gives about 0.56 ug day/g
+  over three doses. The packaged model follows the figure. The effect on tumor
+  growth is negligible either way: SN-38 never exceeds 0.085 ug/g against an
+  `EC50` of 1.2 ug/g.
+- *Vehicle predictions in Figure 3.* With an inhibitory effect and one shared
+  parameter set, the vehicle (no drug) prediction is the upper bound for every
+  treated arm. The grey vehicle lines in Figure 3 do not follow the printed
+  `kgr` and `Limit`. At HT29 day 56 the line reads about 19.6, against 27.9 from
+  the printed values. At NCI-H460 day 28 it reads about 27.5, against 20.5. In
+  Figure 3a the irinotecan prediction lies above the vehicle prediction, which no
+  shared parameter set with an inhibitory effect can produce. The black
+  irinotecan lines, by contrast, match the printed parameters (table above). So
+  either the vehicle lines were drawn from a separate fit, or the legend swaps
+  the line styles. The packaged models use the printed values; their vehicle
+  prediction is the irinotecan curve without drug effect.
+- *Etirinotecan pegol tumor-weight predictions.* See
+  [Relative tumor weight](#relative-tumor-weight). The packaged models reproduce
+  the text's fold increases (6.8 and 9.5 against 'sixfold' and 'eightfold') but
+  run up to about 40% above the Figure 3c/3d solid lines in mid-course.
+
+**Other assumptions.**
+
+- The Gompertz equation is not printed (the citation given, Simeoni 2004, is not
+  a Gompertz model). The form `kgr * RTW * log(Limit / RTW)` with the effect as
+  a multiplier is the one that reproduces the Figure 3a irinotecan prediction
+  with the printed `kgr` and `Limit` to within 4%.
+- `RTW(0) = 1`: the paper fitted relative tumor volume, normalised to the volume
+  at the first dose.
+- No residual error or between-animal variability is reported (fits to group
+  means); residual-error SDs are `fixed(0)`.
+- No erratum or correction notice was found for this article (checked
+  2026-11-25).
