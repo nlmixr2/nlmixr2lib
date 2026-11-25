@@ -24722,6 +24722,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Bindellini_2025_cefazolin.R` (two catheters in the subcutaneous adipose tissue of both upper arms; intercatheter variability 58.6% CV on the relative recovery `rr_md`, on top of 43.3% CV inter-individual variability).
 - **Notes:** Distinct from `OCC`: the catheters are simultaneous, not successive occasions, so the column cannot double as a dosing-occasion index in a model that also carries inter-occasion variability. Intracatheter variability (a within-catheter random effect on recovery) needs no column of its own.
 
+### LESION (**canonical for the tumour target-lesion identifier within a subject**)
+- **Description:** Integer identifier (`1`, `2`, ...) of the RECIST target lesion a tumour-size record belongs to, when a model describes each lesion of a patient separately rather than the patient's sum of longest diameters. Constant within a lesion; records of different lesions interleave in time because all target lesions are measured at the same imaging visit.
+- **Units:** (count)
+- **Type:** categorical
+- **Scope:** general
+- **Reference category:** n/a -- used as a random-effect nesting level in `ini()` (`etalrbase_lesion ~ var | LESION`), which gives each lesion of a patient its own within-patient deviation on top of the between-patient eta that the patient's lesions share. Not referenced in `model()`. rxode2 requires the event table to contain at least two distinct values, also when the random effects are zeroed.
+- **Source aliases:**
+  - `j` -- the lesion subscript of Mistry 2018 (`L_ijk`, patient i, lesion j, time k).
+- **Example models:** `Mistry_2018_vemurafenib_tumor.R`, `Mistry_2018_dabrafenib_tumor.R`, `Mistry_2018_trametinib_tumor.R` (piecewise-linear longest diameter of each target lesion in BRAF-mutant metastatic melanoma; between-patient (BP) and within-patient (WP) random effects on the log baseline diameter and on the shrinkage and regrowth slopes).
+- **Notes:** Same nesting role as `MD_CATHETER` (simultaneous within-subject units), and distinct from `OCC`, whose levels are successive occasions. Distinct from `NTARGET`, the count of target lesions a patient has. The lesion numbering is positional; it does not identify an anatomical site.
+
 ### MONTH1 (**canonical for first-month-of-treatment landmark indicator**)
 - **Description:** Binary within-subject landmark indicator: 1 = the observation falls within the first 30 days after treatment initiation, 0 = subsequent months. Time-varying within subject -- gates a transient step change in typical-value CL that the source paper attributes to higher Erwinia asparaginase clearance in the first month of pediatric ALL therapy.
 - **Units:** (binary)
