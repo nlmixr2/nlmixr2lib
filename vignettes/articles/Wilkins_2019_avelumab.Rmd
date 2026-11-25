@@ -1,0 +1,513 @@
+---
+title: "Avelumab (Wilkins 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Avelumab (Wilkins 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Wilkins_2019_avelumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Wilkins_2019_avelumab"))$description`
+* Article: <https://doi.org/10.1002/psp4.12406> (open access, PMC6617853)
+
+Avelumab is a human anti-PD-L1 IgG1 monoclonal antibody. Wilkins 2019
+describes its serum pharmacokinetics in 1,827 patients with 14 types of
+advanced solid tumors, given 1 to 20 mg/kg IV every 2 weeks. The model is
+linear two-compartment with a sigmoid time-varying clearance taken from
+the nivolumab model of Liu et al. (Eq. 1):
+
+\[ \mathrm{CL}_{i}(t) = \mathrm{TVCL}_i \cdot
+   \exp\!\left(\frac{I_{\max,i}\, t^{\gamma}}{T_{50}^{\gamma} + t^{\gamma}}\right)
+   \cdot \exp(\eta_{\mathrm{CL},i}), \qquad
+   I_{\max,i} = I_{\max} + \eta_{I_{\max},i} \]
+
+where \(t\) is the time after the first dose in days. The typical
+\(I_{\max}\) is zero for 12 of the 14 tumor types and negative (a decrease
+in clearance) for metastatic Merkel cell carcinoma (mMCC) and squamous cell
+carcinoma of the head and neck (SCCHN). Its additive random effect lets an
+individual's clearance rise or fall over time in every tumor type. Thirteen
+covariate effects act on CL and four on the central volume V1, all
+normalised to the population medians.
+
+The authors' NONMEM control stream is published as Data S1 of the article.
+The packaged model follows its structure (covariate normalisation,
+imputation and caps, and the tumor-type switches), with the final
+estimates from Table 2.
+
+# Population
+
+Data come from three trials: JAVELIN Solid Tumor (phase I, n = 1,688),
+JAVELIN Solid Tumor JPN (phase I in Japan, n = 51) and JAVELIN Merkel 200
+(phase II, mMCC, n = 88). Together they give 10,637 serum concentrations
+(Table 1). Median baseline age was 63 years (19-91) and median weight
+71 kg (30.4-204); 47.8% of patients were female, 76.2% White, 11.3% Asian
+and 4.8% Black or African American. Most patients (97.3%) received
+10 mg/kg every 2 weeks. The largest tumor groups were NSCLC (18.6%),
+gastric / GEJ cancer (15.7%), urothelial carcinoma (13.6%) and ovarian
+cancer (12.5%); SCCHN was 8.4% and mMCC 4.8%.
+
+The same information is available programmatically from
+`readModelDb("Wilkins_2019_avelumab")()$population`.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| `lcl` | log(0.0308 L/h) | Table 2, CL |
+| `lvc` | log(3.42 L) | Table 2, central volume |
+| `lvp` | log(0.918 L) | Table 2, peripheral volume |
+| `lq` | log(0.0313 L/h) | Table 2, intercompartmental CL |
+| `cl_time_max` | 0, fixed | Table 2, Imax for all other tumor types |
+| `cl_time_max_scchn` | -0.284 | Table 2, Imax SCCHN |
+| `cl_time_max_mcc` | -0.387 | Table 2, Imax mMCC |
+| `lcl_t50` | log(68.4 day) | Table 2, T50 for all other tumor types (also used for SCCHN in Data S1) |
+| `lcl_t50_mcc` | log(131 day) | Table 2, T50 mMCC |
+| `lcl_time_hill` | log(2.91) | Table 2, gamma for all other tumor types |
+| `lcl_time_hill_scchn` | log(0.73) | Table 2, gamma for SCCHN |
+| `lcl_time_hill_mcc` | log(1.68) | Table 2, gamma for mMCC |
+| `e_wt_cl`, `e_wt_vc` | 0.324, 0.362 | Table 2, body weight on CL and V1 |
+| `e_sexf_cl`, `e_sexf_vc` | -0.15, -0.160 | Table 2, female sex on CL and V1 |
+| `e_age_cl` | -0.12 | Table 2, age on CL |
+| `e_race_black_cl` | -0.12 | Table 2, Black race on CL |
+| `e_alb_cl`, `e_alb_vc` | -0.438, -0.278 | Table 2, albumin on CL and V1 |
+| `e_crcl_cl` | 0.0579 | Table 2, eGFR on CL |
+| `e_tumsz_cl` | 0.0592 | Table 2, tumor burden on CL |
+| `e_ada_pos_cl` | 0.123 | Table 2, ever positive for ADA on CL |
+| `e_crp_cl` | 0.0677 | Table 2, CRP on CL |
+| `e_plt_cl` | 0.0603 | Table 2, platelets on CL |
+| `e_ast_cl` | -0.0514 | Table 2, AST on CL |
+| `e_no_opioid_cl` | -0.0445 | Table 2, not taking concomitant opioids on CL |
+| `e_prior_bio_cl`, `e_prior_bio_vc` | -0.0508, -0.0526 | Table 2, previous use of biologics on CL and V1 |
+| `etalcl + etalvc + etalvp` | 0.0535; 0.0171, 0.0332; 0.0633, -0.014, 0.858 | Table 2 IIV rows, placed by the Data S1 `$OMEGA BLOCK(3)` (see Assumptions) |
+| `etacl_time_max` | 0.0596 (additive) | Table 2, IIV on Imax |
+| `propSd`, `addSd` | 0.162, 2.43 ug/mL | Table 2, residual variability |
+| Covariate medians (71 kg, 63 y, 39 g/L, 85.9, 60 mm, 10.7 mg/L, 247, 22 U/L) | -- | Data S1 `$PK`; Table 1 medians |
+| Covariate caps and imputation of missing values | -- | Data S1 `$PK` |
+| Eq. 1 time-varying CL, Eqs. 2-3 covariate forms | -- | Methods, Data S1 |
+| Two-compartment structure, combined residual error | -- | Results, Data S1 (`ADVAN3 TRANS4`, `$ERROR`) |
+
+# Virtual cohort
+
+The individual data are not public. The cohort below has three arms of
+150 patients each: urothelial carcinoma (one of the 12 tumor types with no
+typical time effect), SCCHN and mMCC. Continuous covariates are drawn from
+log-normal or normal distributions centred on the Table 1 medians and kept
+inside the Table 1 ranges by redrawing out-of-range values. Binary
+covariates use the Table 1 frequencies, with the mMCC female fraction
+(26.1%) from the JAVELIN Merkel 200 column.
+
+```{r cohort}
+set.seed(2019)
+n_arm <- 150
+
+draw_in_range <- function(n, draw, lo, hi) {
+  x <- draw(n)
+  bad <- x < lo | x > hi
+  while (any(bad)) {
+    x[bad] <- draw(sum(bad))
+    bad <- x < lo | x > hi
+  }
+  x
+}
+
+make_arm <- function(arm, id0, scchn, mcc, p_female) {
+  n <- n_arm
+  data.frame(
+    id = id0 + seq_len(n),
+    arm = arm,
+    WT = draw_in_range(n, function(k) rlnorm(k, log(71), 0.22), 30.4, 204),
+    AGE = draw_in_range(n, function(k) rnorm(k, 63, 11), 19, 91),
+    ALB = draw_in_range(n, function(k) rnorm(k, 39, 5), 10, 52),
+    CRCL = draw_in_range(n, function(k) rlnorm(k, log(85.9), 0.3), 21.8, 398),
+    TUMSZ = draw_in_range(n, function(k) rlnorm(k, log(60), 0.7), 10, 750),
+    CRP = draw_in_range(n, function(k) rlnorm(k, log(10.7), 1.4), 0.2, 1770),
+    PLT = draw_in_range(n, function(k) rlnorm(k, log(247), 0.35), 71, 1130),
+    AST = draw_in_range(n, function(k) rlnorm(k, log(22), 0.45), 2, 210),
+    SEXF = rbinom(n, 1, p_female),
+    RACE_BLACK = rbinom(n, 1, 0.0476),
+    ADA_POS = rbinom(n, 1, 0.0416),
+    CONMED_OPIOID = rbinom(n, 1, 0.669),
+    PRIOR_BIO = rbinom(n, 1, 0.262),
+    TUMTP_SCCHN = scchn,
+    TUMTP_MCC = mcc
+  )
+}
+
+cohort <- dplyr::bind_rows(
+  make_arm("Urothelial carcinoma", 0, 0, 0, 0.478),
+  make_arm("SCCHN", n_arm, 1, 0, 0.478),
+  make_arm("mMCC", 2 * n_arm, 0, 1, 0.261)
+)
+cohort$arm <- factor(cohort$arm, levels = c("Urothelial carcinoma", "SCCHN", "mMCC"))
+```
+
+Every patient receives 10 mg/kg as a 1-hour IV infusion every 2 weeks for
+26 weeks (13 doses). Observations are dense over the first and the last
+dosing interval and daily in between.
+
+```{r events}
+tau <- 336
+dose_times <- seq(0, by = tau, length.out = 13)
+last_start <- max(dose_times)
+obs_times <- sort(unique(c(
+  0, 0.5, 1, 1.5, 2, 4, 8, 12, seq(24, tau, by = 12),
+  seq(tau, last_start, by = 24),
+  last_start + c(0.5, 1, 1.5, 2, 4, 8, 12), seq(last_start + 24, last_start + tau, by = 12)
+)))
+
+doses <- cohort |>
+  tidyr::crossing(time = dose_times) |>
+  dplyr::mutate(amt = 10 * WT, dur = 1, evid = 1L, cmt = "central")
+obs <- cohort |>
+  tidyr::crossing(time = obs_times) |>
+  dplyr::mutate(amt = NA_real_, dur = NA_real_, evid = 0L, cmt = "central")
+events <- dplyr::bind_rows(doses, obs) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Wilkins_2019_avelumab")
+rxode2::rxSetSeed(2019)
+sim <- rxode2::rxSolve(
+  mod, events = events, keep = "arm",
+  returnType = "data.frame"
+)
+```
+
+# Replicate Figure 2a: first dosing cycle at 10 mg/kg
+
+Figure 2a of the paper is a visual predictive check of the first cycle.
+There, the observed median is about 230 ug/mL at the end of the infusion
+and falls to roughly 25-30 ug/mL by the end of the 2-week interval.
+
+```{r fig2a, fig.width = 7, fig.height = 4.5}
+first_cycle <- sim |>
+  dplyr::filter(time <= tau) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    median = stats::median(Cc),
+    lo = stats::quantile(Cc, 0.05),
+    hi = stats::quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(first_cycle, aes(time, median)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "orange", alpha = 0.4) +
+  geom_line(colour = "navy", linewidth = 1) +
+  labs(
+    x = "Time after first dose (h)", y = "Avelumab concentration (ug/mL)",
+    title = "Simulated first cycle, 10 mg/kg (median and 90% interval)",
+    caption = "Replicates Figure 2a of Wilkins 2019 (all tumor types pooled)."
+  ) +
+  theme_bw()
+```
+
+# Replicate Figure 3: change in clearance over time
+
+```{r fig3, fig.width = 8, fig.height = 4}
+cl_rel <- sim |>
+  dplyr::group_by(id) |>
+  dplyr::mutate(cl_rel = cl / cl_base) |>
+  dplyr::ungroup()
+
+ggplot(dplyr::filter(cl_rel, id %% 3 == 0), aes(time / 24, cl_rel, group = id)) +
+  geom_line(alpha = 0.3) +
+  geom_hline(yintercept = 1, linetype = "dashed", colour = "red") +
+  facet_wrap(~arm) +
+  labs(
+    x = "Time after first dose (day)", y = "CL(t) / CL at time zero",
+    title = "Individual time course of clearance by tumor type",
+    caption = "Replicates the corresponding panels of Figure 3 of Wilkins 2019 (one in three patients drawn)."
+  ) +
+  theme_bw()
+```
+
+# Replicate Figure 5: clearance at baseline and after 26 weeks
+
+Figure 5 shows a marked fall in clearance by steady state in mMCC
+(medians about 0.034 to 0.025 L/h in non-responders and 0.027 to
+0.018 L/h in responders). In urothelial carcinoma the medians barely
+change (about 0.031 and 0.026 L/h). The simulated cohort is not split by
+response.
+
+```{r fig5, fig.width = 7, fig.height = 4}
+cl_compare <- sim |>
+  dplyr::filter(time %in% c(0, last_start + tau)) |>
+  dplyr::mutate(when = ifelse(time == 0, "CL at baseline", "CL after 26 weeks"))
+cl_compare$when <- factor(cl_compare$when, levels = c("CL at baseline", "CL after 26 weeks"))
+
+ggplot(cl_compare, aes(arm, cl, fill = when)) +
+  geom_boxplot(outlier.size = 0.5) +
+  scale_fill_manual(values = c("grey60", "white")) +
+  labs(
+    x = NULL, y = "CL (L/h)", fill = NULL,
+    caption = "Replicates Figure 5 of Wilkins 2019 (responders and non-responders pooled)."
+  ) +
+  theme_bw()
+
+cl_compare |>
+  dplyr::group_by(arm, when) |>
+  dplyr::summarise(median_cl = stats::median(cl), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = when, values_from = median_cl) |>
+  dplyr::rename("Tumor type" = arm) |>
+  knitr::kable(digits = 4, caption = "Simulated median clearance (L/h).")
+```
+
+# Typical-value checks
+
+The paper states the typical numbers for the time effect: CL falls by at
+most 32.1% in mMCC (0.0308 to 0.0209 L/h) and by at most 24.7% in SCCHN
+(0.0308 to 0.0232 L/h). The packaged model must give these. Below, a
+typical patient at the covariate medians is solved without random
+effects, and the solved CL is checked against Eq. 1.
+
+```{r typical}
+typ_cov <- data.frame(
+  WT = 71, AGE = 63, ALB = 39, CRCL = 85.9, TUMSZ = 60, CRP = 10.7,
+  PLT = 247, AST = 22, SEXF = 0, RACE_BLACK = 0, ADA_POS = 0,
+  CONMED_OPIOID = 1, PRIOR_BIO = 0
+)
+typ_arms <- data.frame(
+  id = 1:3, arm = c("Urothelial carcinoma", "SCCHN", "mMCC"),
+  TUMTP_SCCHN = c(0, 1, 0), TUMTP_MCC = c(0, 0, 1)
+)
+t_typ <- c(0, 24 * c(1, 28, 68.4, 131, 182, 365, 3650))
+ev_typ <- merge(typ_arms, typ_cov) |>
+  tidyr::crossing(time = t_typ) |>
+  dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central")
+ev_typ <- dplyr::bind_rows(
+  dplyr::mutate(merge(typ_arms, typ_cov), time = 0, amt = 710, dur = 1, evid = 1L, cmt = "central"),
+  ev_typ
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_typ, keep = "arm", returnType = "data.frame")
+
+# Eq. 1 written out independently from Table 2
+eq1 <- function(t_day, imax, t50, g) 0.0308 * exp(imax * t_day^g / (t50^g + t_day^g))
+typ$cl_eq1 <- with(typ, ifelse(
+  arm == "mMCC", eq1(time / 24, -0.387, 131, 1.68),
+  ifelse(arm == "SCCHN", eq1(time / 24, -0.284, 68.4, 0.73), eq1(time / 24, 0, 68.4, 2.91))
+))
+stopifnot(all(abs(typ$cl / typ$cl_eq1 - 1) < 1e-6))
+
+# Maximal decreases printed in the Results (32.1% and 24.7%)
+ini_df <- rxode2::rxode2(mod)$iniDf
+imax_mcc <- ini_df$est[ini_df$name == "cl_time_max_mcc"]
+imax_scchn <- ini_df$est[ini_df$name == "cl_time_max_scchn"]
+max_drop <- c(mMCC = 1 - exp(imax_mcc), SCCHN = 1 - exp(imax_scchn))
+stopifnot(
+  abs(max_drop[["mMCC"]] - 0.321) < 0.0005,
+  abs(max_drop[["SCCHN"]] - 0.247) < 0.0005,
+  abs(0.0308 * exp(imax_mcc) - 0.0209) < 0.00005,
+  abs(0.0308 * exp(imax_scchn) - 0.0232) < 0.00005
+)
+
+# The 10-year typical mMCC CL is at its asymptote (0.0209 L/h)
+cl_mcc_10y <- typ$cl[typ$arm == "mMCC" & typ$time == max(t_typ)]
+stopifnot(abs(cl_mcc_10y - 0.0209) < 0.0001)
+
+typ |>
+  dplyr::filter(time > 0) |>
+  dplyr::mutate(day = time / 24, cl_rel = cl / 0.0308) |>
+  dplyr::select(arm, day, cl, cl_rel) |>
+  tidyr::pivot_wider(id_cols = day, names_from = arm, values_from = cl_rel) |>
+  dplyr::rename("Day" = day) |>
+  knitr::kable(digits = 3, caption = "Typical CL(t) / CL(0) by tumor type.")
+```
+
+The typical terminal half-life at baseline follows from the
+two-compartment micro-constants. The paper reports a geometric mean of the
+individual (empirical Bayes) half-lives of 4.5 days at baseline. After
+26 weeks of dosing it reports 6.8 days in mMCC and 5.7 days in SCCHN,
+with no change in the other tumor types.
+
+```{r typical-thalf}
+terminal_thalf_day <- function(cl, vc, q, vp) {
+  k10 <- cl / vc
+  k12 <- q / vc
+  k21 <- q / vp
+  a <- k10 + k12 + k21
+  lz <- (a - sqrt(a^2 - 4 * k10 * k21)) / 2
+  log(2) / lz / 24
+}
+thalf_typ <- typ |>
+  dplyr::filter(time %in% c(24, 182 * 24)) |>
+  dplyr::mutate(thalf = terminal_thalf_day(cl, vc, q, vp))
+thalf_base <- thalf_typ$thalf[thalf_typ$arm == "Urothelial carcinoma" & thalf_typ$time == 24]
+stopifnot(abs(thalf_base / 4.5 - 1) < 0.1)
+
+thalf_typ |>
+  dplyr::mutate(day = time / 24) |>
+  dplyr::select(arm, day, cl, thalf) |>
+  dplyr::rename("Tumor type" = arm, "Day" = day, "CL (L/h)" = cl, "Terminal t1/2 (day)" = thalf) |>
+  knitr::kable(digits = 4, caption = "Typical terminal half-life at day 1 and after 26 weeks.")
+```
+
+The typical baseline half-life (`r round(thalf_base, 2)` days) is 5% below
+the published geometric mean of the individual estimates. The 26-week
+typical values are lower than the published geometric means (6.8 and
+5.7 days). Those are averages of empirical Bayes estimates in the treated
+patients, which include the random effect on Imax and selective follow-up
+of patients who stayed on treatment. They are not the typical-value
+quantity computed here.
+
+# PKNCA validation
+
+NCA over the first dosing interval and over the last one, weeks 24-26.
+
+```{r pknca}
+nca_window <- function(d, start, label) {
+  d |>
+    dplyr::filter(!is.na(Cc), time >= start, time <= start + tau) |>
+    dplyr::mutate(time = time - start, treatment = paste(arm, label, sep = ", "))
+}
+conc <- dplyr::bind_rows(
+  nca_window(sim, 0, "first dose"),
+  nca_window(sim, last_start, "weeks 24-26")
+) |>
+  dplyr::select(id, treatment, time, Cc)
+
+dose_nca <- cohort |>
+  dplyr::select(id, arm, WT) |>
+  tidyr::crossing(label = c("first dose", "weeks 24-26")) |>
+  dplyr::mutate(treatment = paste(arm, label, sep = ", "), time = 0, amt = 10 * WT) |>
+  dplyr::select(id, treatment, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = tau,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, cmin = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_df <- as.data.frame(nca_res$result)
+
+summary(nca_res) |>
+  knitr::kable(caption = "Simulated NCA by tumor type and dosing interval (10 mg/kg every 2 weeks).")
+```
+
+The paper's half-life values are geometric means of individual estimates
+(Results). Below they are set against the median simulated NCA half-life
+for the same tumor type and interval.
+
+```{r nca-compare}
+simulated_hl <- nca_df |>
+  dplyr::filter(PPTESTCD == "half.life") |>
+  dplyr::mutate(PPORRES = PPORRES / 24) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES)
+
+published <- data.frame(
+  treatment = c(
+    "Urothelial carcinoma, first dose", "SCCHN, first dose", "mMCC, first dose",
+    "Urothelial carcinoma, weeks 24-26", "SCCHN, weeks 24-26", "mMCC, weeks 24-26"
+  ),
+  half.life = c(4.5, 4.5, 4.5, 4.5, 5.7, 6.8)
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulated_hl,
+  reference = published,
+  by = "treatment",
+  units = c(half.life = "day"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Tumor type and interval" = treatment) |>
+  knitr::kable(caption = paste(
+    "Terminal half-life: simulated median versus published geometric mean.",
+    "* differs by more than 20%."
+  ))
+
+hl_med <- simulated_hl |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(hl = stats::median(PPORRES, na.rm = TRUE), .groups = "drop")
+hl_first <- hl_med$hl[grepl("first dose", hl_med$treatment)]
+stopifnot(all(abs(hl_first / 4.5 - 1) < 0.25))
+
+# The time effect lengthens the half-life in mMCC and SCCHN but not in UC.
+# Typical-value ratios are 1.26 (mMCC) and 1.18 (SCCHN); the thresholds leave
+# room for cohort-to-cohort noise in the medians.
+hl_ratio <- function(arm) {
+  hl_med$hl[hl_med$treatment == paste(arm, "weeks 24-26", sep = ", ")] /
+    hl_med$hl[hl_med$treatment == paste(arm, "first dose", sep = ", ")]
+}
+stopifnot(
+  hl_ratio("mMCC") > 1.1,
+  hl_ratio("SCCHN") > 1.03,
+  abs(hl_ratio("Urothelial carcinoma") - 1) < 0.1
+)
+```
+
+The simulated median half-lives are within about 10% of the published
+geometric means at baseline and in SCCHN after 26 weeks. In mMCC after
+26 weeks the simulated median is about 12% below the published 6.8 days,
+consistent with the typical-value comparison above.
+
+# Assumptions and deviations
+
+- **Placement of the V2 covariances.** Table 2 lists the IIV terms in
+  NONMEM output order: omega2 CL, cov(CL,V1), omega2 V1, 0.0633, -0.014,
+  omega2 V2. It labels the fourth row "cov(V1,V2)" and the fifth
+  "cov(CL,V2)". The published control stream (Data S1) has
+  `$OMEGA BLOCK(3)` with row 3 = `0.0625345 -0.0140066 0.853445`, so its
+  initial values put about 0.063 at cov(ETA1, ETA3), which is cov(CL,V2),
+  and -0.014 at cov(ETA2, ETA3), which is cov(V1,V2). The Table 2 labels
+  are also visibly garbled: all three covariance rows carry the subscript
+  "CL,V1". The packaged model follows the control stream, so
+  cov(CL,V2) = 0.0633 and cov(V1,V2) = -0.014. The Discussion's remark
+  that the CL-V2 covariance was imprecise follows the Table 2 labels.
+  Both placements give a positive-definite matrix.
+- **Final estimates.** Data S1 carries the initial estimates of the final
+  run (for example, gamma for SCCHN 0.96 and Imax SCCHN -0.266). The
+  model uses the final estimates of Table 2 (0.73 and -0.284), which
+  match the Results text.
+- **T50 for SCCHN.** Table 2 has no SCCHN-specific T50. In Data S1 the
+  SCCHN branch overrides only Imax and gamma, so SCCHN uses the shared
+  T50 of 68.4 days, as the Results text says.
+- **Covariate handling.** Data S1 imputes missing covariates (coded
+  <= 0) to the population median and caps albumin (61 g/L), eGFR (226),
+  tumor size (388 mm), CRP (250 mg/L), platelets (600) and AST
+  (105 U/L). The model does the same, so a CRP of exactly 0 is also
+  treated as 10.7 mg/L. Age is neither capped nor imputed.
+- **Opioid effect orientation.** The published effect applies to
+  patients *not* taking opioids (-0.0445). The model therefore uses
+  `1 - CONMED_OPIOID`, with patients taking opioids as the reference.
+- **ADA.** `ADA_POS` is the time-fixed "ever positive" flag the paper
+  used (HAHAEVER). Missing ADA status counts as negative.
+- **Race coding.** `RACE_BLACK = 1` corresponds to `RACE = 2` in Data S1.
+  All other races and missing race form the reference.
+- **Tumor-type indicators.** `TUMTP_SCCHN` and `TUMTP_MCC` correspond to
+  `TTYPE = 6` and `TTYPE = 14` in Data S1, matching the code comments
+  "head and neck" and "MCC". All other tumor types (both zero) share
+  typical Imax = 0, T50 = 68.4 days and gamma = 2.91.
+- **Parameter scale for Imax.** Imax is kept on its natural scale
+  (`cl_time_max`, not log-transformed) because it is zero or negative and
+  carries an additive random effect. The convention checker's "should be
+  log-transformed" warning for this parameter is expected.
+- **Time.** The model time unit is hours (CL and Q in L/h), and the time
+  effect uses days after the first dose (`t / 24`). The first dose must
+  be at time 0.
+- **Infusion duration.** The paper does not state it; the simulations
+  use the labelled 1-hour infusion.
+- **Virtual cohort.** Covariate distributions are approximations built
+  from the Table 1 medians and ranges, drawn independently. Responder
+  status (Figures 4 and 5) is not modelled.
+- **Errata.** No erratum or correction for this article was found in
+  Europe PMC (checked 2026-11-25).
