@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Shortal 2018 propofol brain target-controlled infusion ([doi:10.1371/journal.pone.0194949](https://doi.org/10.1371/journal.pone.0194949)) -- adult male C57BL/6 mice (blood and serial brain biopsies).
+- Add Xiao 2018 danofloxacin PK/PD index ([doi:10.3389/fphar.2018.00391](https://doi.org/10.3389/fphar.2018.00391)) -- rabbits with systemic *Salmonella* Typhimurium infection (blood, liver, spleen and lung).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
