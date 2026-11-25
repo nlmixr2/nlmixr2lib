@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Busso 2017 exercise training and physical performance ([doi:10.1038/srep40422](https://doi.org/10.1038/srep40422)) -- healthy men on a 15-week cycle-ergometer training programme.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
