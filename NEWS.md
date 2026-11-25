@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chu 2016 VEGF165b QSP ([doi:10.1038/srep37030](https://doi.org/10.1038/srep37030)) -- endogenous VEGF isoform distribution in human peripheral arterial disease.
+- Add Tomizawa 2017 cefmetazole ([doi:10.1186/s40780-016-0071-6](https://doi.org/10.1186/s40780-016-0071-6)) -- Japanese adults receiving intraoperative prophylaxis during colorectal-cancer surgery.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

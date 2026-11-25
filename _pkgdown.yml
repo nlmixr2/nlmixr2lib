@@ -1680,6 +1680,8 @@ navbar:
         href: articles/Fratoni_2025_humanized_exposures_mouse.html
       - text: "Cefiderocol plasma mouse (Fratoni 2025)"
         href: articles/Fratoni_2025_humanized_exposures_mouse.html
+      - text: "Cefmetazole (Tomizawa 2017)"
+        href: articles/Tomizawa_2017_cefmetazole.html
       - text: "Cefodizime rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Cefotaxime (Ahsman 2010)"
@@ -13146,7 +13148,7 @@ articles:
   - articles/Togawa_2016_bilastine
   - articles/Tohi_2023_nivolumab
   - articles/Tomita_2022_imeglimin
-  - articles/Tompkins_2026_romidepsin
+  - articles/Tomizawa_2017_cefmetazole
   - articles/Tong_2026_vancomycin
   - articles/Tornoe_2006_HPG_axis
   - articles/Tortorici_2017_a1pi
