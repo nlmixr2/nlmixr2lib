@@ -6334,6 +6334,8 @@ navbar:
         href: articles/Nagy_2017_obiltoxaximab.html
       - text: "Obinutuzumab (Gibiansky 2014)"
         href: articles/Gibiansky_2014_obinutuzumab.html
+      - text: "Ocrelizumab (Serkland 2026)"
+        href: articles/Serkland_2026_ocrelizumab.html
       - text: "Octreotide (Glatard 2025)"
         href: articles/Glatard_2025_octreotide.html
       - text: "Octreotide (Kapralos 2021)"
@@ -12554,6 +12556,7 @@ articles:
   - articles/Senek_2020_levodopa
   - articles/Seng_2015_isoniazid
   - articles/Seo_2023_cefepime
+  - articles/Serkland_2026_ocrelizumab
   - articles/Serrano_2026_atopicDermatitis_placebo_mbma
   - articles/Sethi_2024_acetaminophen_diclofenac_mbma
   - articles/Setiawan_2022_levofloxacin

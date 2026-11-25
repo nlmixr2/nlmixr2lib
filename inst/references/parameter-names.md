@@ -2116,6 +2116,15 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (sugammadex-rocuronium dynamic interaction: `lk2 = -3.38`, giving `k2 = 0.034 1/min`, RSE 16.5%; paired with the fixed `kd` and the derived `k1`).
 - **Notes:** Pairs with `k1` (association). The paper-numerical convention `k_d = k_2 / k_1` should be encoded explicitly in `model` so the dimensionally-correct relationship is visible at the call site.
 
+### kirrev (**canonical second-order irreversible drug-dependent loss rate constant**)
+- **Type:** paper-named-param
+- **Role:** Second-order rate constant of an irreversible, drug-driven loss of a target pool or cell population, entering as `kirrev * Cc * <state>`, with units of 1 / (concentration * time) so that `kirrev * Cc` is a first-order rate. The log-transformed `lkirrev` form carries the `ini()` typical value. Covers irreversible covalent target binding and drug-mediated cell depletion; the `label()` must state the units, which follow the concentration units of the model.
+- **Source aliases:**
+  - `kirrev` -- Papasouliotis 2022 Table 3, irreversible BTK binding (mL/ng/h).
+  - `kdeg` -- Serkland 2026 Eq. 12 and Table 2, ocrelizumab-dependent CD19+ B-lymphocyte elimination (L/(day*mg)); the paper's symbol is not the first-order `kdeg`.
+- **Example models:** `Papasouliotis_2022_evobrutinib.R` (`d/dt(target) <- kin - kout * target - kirrev * Cc * target`, kirrev 0.0135 mL/ng/h with IIV); `Serkland_2026_ocrelizumab.R` (`d/dt(bcell) <- kin - kirrev * Cc * bcell - kout * bcell`, kirrev 1.70 L/(day*mg)).
+- **Notes:** Distinct from `kdeg` (a first-order degradation rate, 1/time), from `k1` (the association rate of a *reversible* binding paired with `k2`), and from `kint` (internalisation of a drug-target complex). Use `kirrev` when the paper writes the drug-dependent loss as a mass-action product with the concentration and no saturation; a saturable drug effect is an Emax term instead.
+
 ### ks (**canonical drug-mediated effect-compartment elimination rate**)
 - **Type:** paper-named-param
 - **Role:** Second-order rate constant for one drug's modulation of another drug's elimination from an effect compartment, with units of (1 / (concentration * time)). Used in two-drug PK-PD interaction models where the modulating drug's plasma concentration multiplies a target drug's effect-compartment amount to drive an additional elimination route (mechanistic abstraction for site-of-action drug-drug interaction such as the sugammadex-mediated rocuronium reversal). Inside `model` the bare name is `ks`; the log-transformed `lks` form is used in `ini` when the source paper reports `log_e(ks)`.
