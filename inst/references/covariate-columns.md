@@ -10287,6 +10287,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Yamada_2025_zolbetuximab.R` (fractional effects on CLss, CLT, V1).
 - **Notes:** Applicable to any PK model where gastrointestinal anatomy affects absorption, first-pass, or protein turnover; not inherently oncology-specific. No distinction between partial vs total gastrectomy unless the source paper separates them.
 
+### PRIOR_BARIATRIC (**canonical for bariatric (weight-loss) surgery performed before the record**)
+- **Description:** 1 = the record falls after bariatric surgery (Roux-en-Y gastric bypass, sleeve gastrectomy, or another weight-loss operation), 0 = before bariatric surgery. Time-varying within subject when the same patient is studied before and after the operation; time-fixed in cross-sectional cohorts.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (before bariatric surgery, typically a morbidly obese patient).
+- **Source aliases:**
+  - `bariatric surgery` -- Brill 2015 midazolam covariate (Methods Eq. 3, Table II 'Bariatric patients' rows); 0 = occasion 1 (day of surgery), 1 = occasion 2 (one year after).
+- **Example models:** `Brill_2015_midazolam.R` (factors 1.68 on CL and 3.22 on Q, a separately estimated transit rate constant, and body-weight effects on the volumes applied only before surgery; 20 morbidly obese patients studied before and 18 of them one year after Roux-en-Y gastric bypass or sleeve gastrectomy).
+- **Notes:** Follows the `PRIOR_GAST` / `PRIOR_SPLEN` pattern for prior surgical history. Distinct from `PRIOR_GAST`: a Roux-en-Y gastric bypass partitions the stomach without resecting it, and the effects a bariatric-surgery covariate carries are usually systemic (weight loss, recovery of hepatic CYP3A activity) as well as gastrointestinal. Distinct from `DIS_OBESE` / `DIS_OBESE_MORBID` (cohort obesity status) and from `INTRAOP` (active-surgery period). Record body weight at each occasion in `WT` alongside it. The procedure type (bypass vs sleeve) is not separated unless the source paper does so.
+
 ### PRIOR_SPLEN (**canonical for prior splenectomy**)
 - **Description:** Prior splenectomy indicator, 1 = prior splenectomy (spleen surgically removed before or concurrent with the modelled treatment period), 0 = spleen intact. Time-fixed per subject.
 - **Units:** (binary)

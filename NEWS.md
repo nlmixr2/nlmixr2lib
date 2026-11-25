@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Taubel 2015 E-52862 concentration-QTc ([doi:10.1371/journal.pone.0136369](https://doi.org/10.1371/journal.pone.0136369)) -- healthy adults given single oral doses of 500-800 mg.
+- Add Brill 2015 midazolam ([doi:10.1007/s11095-015-1752-9](https://doi.org/10.1007/s11095-015-1752-9)) -- morbidly obese adults before and one year after bariatric surgery.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

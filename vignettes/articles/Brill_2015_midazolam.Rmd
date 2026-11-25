@@ -1,0 +1,389 @@
+---
+title: "Midazolam before and after bariatric surgery (Brill 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Midazolam before and after bariatric surgery (Brill 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Brill_2015_midazolam"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Brill_2015_midazolam"))$description`
+* Article: <https://doi.org/10.1007/s11095-015-1752-9> (open access, PMC4628089)
+
+The first study occasion of this cohort (the day of surgery) was published
+separately as Brill 2014 and is packaged as `Brill_2014_midazolam`, where it
+was pooled with healthy volunteers. The present model is a different fit: it
+analyses both occasions of the 20 morbidly obese patients jointly, with
+"bariatric surgery" as the covariate, and its structure (five transit
+compartments, a second peripheral volume estimated as a fraction of the
+first) and parameter values differ from the 2014 model.
+
+# Population
+
+Twenty morbidly obese adults (12 F / 8 M; age 26-57 years; body weight
+112-186 kg, mean 144.4 kg; BMI 40-68 kg/m^2) undergoing laparoscopic
+Roux-en-Y gastric bypass or sleeve gastrectomy at St. Antonius Hospital,
+Nieuwegein, the Netherlands, received 7.5 mg oral midazolam followed by 5 mg
+IV 160 +/- 48 min later on the day of surgery (occasion 1; the IV dose
+coincided with induction of anaesthesia). Eighteen of them (16 gastric
+bypass, 2 sleeve gastrectomy) returned 51.8 +/- 2.5 weeks later (occasion 2;
+body weight 62-138 kg, mean 98.3 kg; mean weight loss 44.5 kg) and received
+the same doses with the IV dose at 150 min. About 22 samples were taken per
+patient per occasion (Brill 2015 Table I). The same information is available
+from the model's `population` metadata.
+
+# Source trace
+
+All values are from the "Final model of simultaneous analysis" column of
+Brill 2015 Table II.
+
+| Equation / parameter | Value | Source location |
+|----------------------|------:|-----------------|
+| `lka_presurg` -- Ka = Ktr before surgery | log(0.117) 1/min | Table II, Ka = Ktr morbidly obese |
+| `lka_postsurg` -- Ka = Ktr after surgery | log(0.267) 1/min | Table II, Ka = Ktr bariatric patients |
+| `lfdepot` -- oral bioavailability | log(0.537) | Table II, F |
+| `lcl` -- CL before surgery | log(0.385) L/min | Table II, CL morbidly obese |
+| `e_prior_bariatric_cl` -- factor on CL after surgery | 1.68 | Table II, fCL bariatric patients (CL = 0.647 L/min) |
+| `lq` -- Q before surgery | log(0.669) L/min | Table II, Q morbidly obese |
+| `e_prior_bariatric_q` -- factor on Q after surgery | 3.22 | Table II, fQ bariatric patients (Q = 2.15 L/min) |
+| `lq2` -- Q2 | log(0.551) L/min | Table II, Q2 |
+| `lvc` -- Vc at 127 kg (before) / Vc (after) | log(37.3) L | Table II, Vmedian BW and Vcentral bariatric patients |
+| `e_wt_vc` -- linear WT slope on Vc, before surgery | 0.0435 1/kg | Table II, X; Vc = Vmedian * (1 + X * (BW - 127)) |
+| `lvp` -- Vp at 127 kg (before) / Vp (after) | log(106) L | Table II, Vmedian BW and V1st peripheral bariatric patients |
+| `e_wt_vp` -- power WT exponent on Vp, before surgery | 3.93 | Table II, Y; Vp = Vmedian * (BW / 127)^Y |
+| `lvp2` -- second peripheral volume | log(0.359 * 106) L | Table II, fV2nd peripheral = 0.359 of V1st peripheral |
+| IIV Ka = Ktr | 42.4% CV | Table II |
+| IIV CL | 19.7% CV | Table II |
+| IIV F | 33.4% CV | Table II |
+| IIV Vc | 53.7% CV | Table II |
+| IIV V1st peripheral | 0 FIX | Table II |
+| `propSd` -- proportional residual error | 0.421 | Table II, 42.1% |
+| Five transit compartments, Ktr = Ka, MTT = (N + 1) / Ktr | n/a | Methods (absorption models); Results, Pharmacokinetic Analysis |
+| Three-compartment disposition, Vp2 = fV * Vp | n/a | Results, Pharmacokinetic Analysis; Table II footnote |
+| Binary covariate as P = Pp * Z^COV | n/a | Methods Eq. 3 |
+| Weight effect only before surgery (Eqs. 6-8 with occasions switched) | n/a | Methods Eqs. 6-8; Results, Table II |
+| Exponential IIV, proportional residual error | n/a | Methods Eqs. 1-2 |
+
+# Derived quantities
+
+The paper quotes the mean oral transit time MTT = (N + 1) / Ktr with N = 5 as
+51.3 min before and 22.6 min after surgery, and the post-surgery CL and Q as
+0.647 and 2.15 L/min. These follow from the packaged parameters exactly.
+
+```{r derived}
+mod <- rxode2::rxode(readModelDb("Brill_2015_midazolam"))
+p <- mod$theta
+derived <- tibble::tibble(
+  quantity = c("MTT before surgery (min)", "MTT after surgery (min)",
+               "CL after surgery (L/min)", "Q after surgery (L/min)",
+               "Vp2 (L)"),
+  packaged = c(6 / exp(p[["lka_presurg"]]), 6 / exp(p[["lka_postsurg"]]),
+               exp(p[["lcl"]]) * p[["e_prior_bariatric_cl"]],
+               exp(p[["lq"]]) * p[["e_prior_bariatric_q"]],
+               exp(p[["lvp2"]])),
+  published = c(51.3, 22.6, 0.647, 2.15, 38)
+)
+knitr::kable(derived, digits = 3)
+stopifnot(all(abs(derived$packaged / derived$published - 1) < 0.01))
+```
+
+# Replicating Figure 3
+
+Brill 2015 Figure 3 shows the population mean and 90% interval of 1000
+simulated patients given a 5 mg IV bolus, a 2.5 mg/h continuous infusion and
+a 7.5 mg oral dose, for a morbidly obese patient (145 kg) before surgery and
+for a patient after bariatric surgery. The paper simulated body weight from
+the study distribution (144 +/- 26 kg); here weights are drawn from that
+distribution and truncated to the observed pre-surgery range of 112-186 kg,
+because the linear weight term on Vc becomes negative below 104 kg. After
+surgery the volumes do not depend on weight, so the post-surgery arm uses the
+typical post-surgery weight. Each arm has 200 virtual patients.
+
+```{r cohort}
+set.seed(2015)
+rxode2::rxSetSeed(2015)
+n_arm <- 200
+cohort <- dplyr::bind_rows(
+  tibble::tibble(
+    id = seq_len(n_arm),
+    WT = pmin(pmax(rnorm(n_arm, 144, 26), 112), 186),
+    PRIOR_BARIATRIC = 0,
+    arm = "Before surgery"
+  ),
+  tibble::tibble(
+    id = n_arm + seq_len(n_arm),
+    WT = 98,
+    PRIOR_BARIATRIC = 1,
+    arm = "After surgery"
+  )
+)
+typical <- tibble::tibble(
+  id = 1:2, WT = c(145, 98), PRIOR_BARIATRIC = c(0, 1),
+  arm = c("Before surgery", "After surgery")
+)
+
+make_events <- function(subjects, amt, cmt, obs_times, rate = 0) {
+  dose <- subjects |>
+    dplyr::mutate(time = 0, amt = amt, rate = rate, evid = 1, cmt = cmt)
+  obs <- subjects |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(amt = 0, rate = 0, evid = 0, cmt = "central")
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    as.data.frame()
+}
+
+simulate_panel <- function(amt, cmt, obs_times, rate = 0) {
+  vpc <- rxode2::rxSolve(
+    mod, make_events(cohort, amt, cmt, obs_times, rate),
+    keep = "arm", returnType = "data.frame"
+  ) |>
+    dplyr::group_by(arm, time) |>
+    dplyr::summarise(
+      lo = quantile(Cc, 0.05), mid = median(Cc), hi = quantile(Cc, 0.95),
+      .groups = "drop"
+    )
+  typ <- rxode2::rxSolve(
+    rxode2::zeroRe(mod), make_events(typical, amt, cmt, obs_times, rate),
+    keep = "arm", returnType = "data.frame"
+  )
+  list(vpc = vpc, typical = typ)
+}
+
+plot_panel <- function(sim, title, caption) {
+  ggplot(sim$vpc, aes(time, mid, colour = arm, fill = arm)) +
+    geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+    geom_line(data = sim$typical, aes(time, Cc, colour = arm),
+              inherit.aes = FALSE, linewidth = 0.9) +
+    labs(x = "Time (min)", y = "Midazolam (ng/mL)", colour = NULL, fill = NULL,
+         title = title, caption = caption) +
+    theme_minimal(base_size = 11)
+}
+```
+
+## Figure 3a -- 5 mg IV bolus
+
+```{r fig3a}
+sim_iv <- simulate_panel(5000, "central", c(0, 1, 2, 5, seq(10, 800, by = 10)))
+plot_panel(sim_iv, "5 mg IV bolus",
+           "Replicates Figure 3a of Brill 2015. Lines: typical patient; band: 5th-95th percentile.") +
+  scale_y_log10(limits = c(1, 1000))
+```
+
+## Figure 3b -- 2.5 mg/h continuous infusion
+
+```{r fig3b}
+rate_ug_min <- 2500 / 60
+sim_inf <- simulate_panel(rate_ug_min * 15000, "central",
+                          seq(0, 15000, by = 100), rate = rate_ug_min)
+plot_panel(sim_inf, "2.5 mg/h continuous IV infusion",
+           "Replicates Figure 3b of Brill 2015.")
+```
+
+## Figure 3c -- 7.5 mg oral dose
+
+```{r fig3c}
+sim_po <- simulate_panel(7500, "depot", c(0, seq(1, 800, by = 1)))
+plot_panel(sim_po, "7.5 mg oral dose",
+           "Replicates Figure 3c of Brill 2015.")
+```
+
+## Steady state under the infusion
+
+The infusion steady state is the dose rate divided by clearance, about 108 and
+64 ng/mL before and after surgery, which are the plateaus of Figure 3b. The
+paper states that steady state is reached in about 37 h before and about 14 h
+after surgery; it does not say which fraction of steady state it used, so the
+table gives the typical patient's time to 90% and 95% of steady state.
+
+```{r steady-state}
+css <- sim_inf$typical |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    css_closed_form = rate_ug_min / ifelse(dplyr::first(arm) == "After surgery",
+                                           0.385 * 1.68, 0.385),
+    conc_at_250h = dplyr::last(Cc),
+    t90_h = time[which(Cc >= 0.90 * css_closed_form)[1]] / 60,
+    t95_h = time[which(Cc >= 0.95 * css_closed_form)[1]] / 60,
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(published_h = ifelse(arm == "Before surgery", 37, 14))
+knitr::kable(css, digits = 2)
+stopifnot(
+  all(abs(css$conc_at_250h / css$css_closed_form - 1) < 0.01),
+  all(css$published_h >= css$t90_h * 0.9 & css$published_h <= css$t95_h * 1.1)
+)
+```
+
+# Both occasions in one patient
+
+In the study each patient was observed before and again one year after
+surgery, and the model shares one set of random effects across the two
+occasions. A simulation of that design puts both occasions in one subject
+record, with `PRIOR_BARIATRIC` and `WT` changing between them. The IV dose
+follows the oral dose by 150 min, as on occasion 2. The study's occasions
+were a year apart; here the second occasion starts two weeks (20,160 min)
+after the first. Midazolam is eliminated completely within days, so the
+shorter gap gives the same profiles, while integrating across a full year of
+near-zero concentrations exceeds the ODE solver's default step limit and
+returns missing values.
+
+```{r both-occasions}
+occ2_start <- 20160 # two weeks, in min
+occ_times <- c(5, 15, 30, 45, 60, 75, 90, 120, 150,
+               150 + c(5, 15, 30, 60, 90, 120, 150, 180, 240, 300))
+n_pt <- 100
+pts <- tibble::tibble(
+  id = seq_len(n_pt),
+  WT_pre = pmin(pmax(rnorm(n_pt, 144.4, 21.7), 112), 186),
+  WT_post = pmin(pmax(rnorm(n_pt, 98.3, 18.0), 62), 138)
+)
+occasion_rows <- function(offset, post) {
+  pts |>
+    dplyr::mutate(WT = if (post == 1) WT_post else WT_pre,
+                  PRIOR_BARIATRIC = post) |>
+    tidyr::crossing(tibble::tibble(
+      time = offset + c(0, 150, occ_times),
+      amt = c(7500, 5000, rep(0, length(occ_times))),
+      evid = c(1, 1, rep(0, length(occ_times))),
+      cmt = c("depot", "central", rep("central", length(occ_times)))
+    ))
+}
+ev_occ <- dplyr::bind_rows(occasion_rows(0, 0), occasion_rows(occ2_start, 1)) |>
+  dplyr::select(id, time, amt, evid, cmt, WT, PRIOR_BARIATRIC) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+sim_occ <- rxode2::rxSolve(mod, ev_occ,
+                           returnType = "data.frame") |>
+  dplyr::mutate(
+    occasion = ifelse(PRIOR_BARIATRIC == 1, "After surgery", "Before surgery"),
+    tad = ifelse(PRIOR_BARIATRIC == 1, time - occ2_start, time)
+  )
+
+sim_occ |>
+  dplyr::group_by(occasion, tad) |>
+  dplyr::summarise(lo = quantile(sim, 0.05), mid = median(sim),
+                   hi = quantile(sim, 0.95), .groups = "drop") |>
+  ggplot(aes(tad, mid, colour = occasion, fill = occasion)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time after oral dose (min)", y = "Midazolam (ng/mL)",
+       colour = NULL, fill = NULL,
+       caption = paste("Study design of occasion 2 (7.5 mg oral, 5 mg IV at 150 min),",
+                       "with residual error; compare with Figure 1 of Brill 2015.")) +
+  theme_minimal(base_size = 11)
+```
+
+# PKNCA validation
+
+Non-compartmental analysis of the stochastic 7.5 mg oral simulation, grouped
+by arm. Brill 2015 reports the oral Tmax of the Figure 3c population mean
+curves (65 min before and 32 min after surgery) and a 1.5-fold higher Cmax
+after surgery; the Cmax values in the reference column (30 and 43 ng/mL) were
+read by the maintainers from the peaks of Figure 3c.
+
+```{r pknca}
+po_ind <- rxode2::rxSolve(
+  mod, make_events(cohort, 7500, "depot", c(0, seq(1, 800, by = 1))),
+  keep = "arm", returnType = "data.frame"
+)
+conc_po <- po_ind |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, arm)
+dose_po <- cohort |>
+  dplyr::mutate(time = 0, amt = 7500) |>
+  dplyr::select(id, time, amt, arm)
+
+conc_obj <- PKNCA::PKNCAconc(conc_po, Cc ~ time | arm + id,
+                             concu = "ng/mL", timeu = "min")
+dose_obj <- PKNCA::PKNCAdose(dose_po, amt ~ time | arm + id, doseu = "ug")
+intervals <- data.frame(start = 0, end = 800, cmax = TRUE, tmax = TRUE,
+                        auclast = TRUE)
+nca_po <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                         intervals = intervals))
+
+reference <- data.frame(
+  arm = c("Before surgery", "After surgery"),
+  cmax = c(30, 43),
+  tmax = c(65, 32)
+)
+nlmixr2lib::ncaComparisonTable(
+  nca_po, reference, by = "arm", params = c("cmax", "tmax"),
+  units = c(cmax = "ng/mL", tmax = "min"),
+  label_first_column = "NCA parameter"
+)
+```
+
+```{r pknca-check}
+med <- as.data.frame(nca_po$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax")) |>
+  dplyr::group_by(arm, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+med
+cmax_ratio <- med$cmax[med$arm == "After surgery"] / med$cmax[med$arm == "Before surgery"]
+cmax_ratio
+stopifnot(
+  # Faster absorption after surgery: the median Tmax roughly halves.
+  med$tmax[med$arm == "After surgery"] < 0.7 * med$tmax[med$arm == "Before surgery"],
+  # The paper's 1.5-fold increase in Cmax, within the precision of a median.
+  cmax_ratio > 1.2 && cmax_ratio < 1.8
+)
+```
+
+The median simulated Tmax and Cmax track the published Figure 3c values. The
+paper's Tmax and Cmax refer to the population mean of its own 1000-patient
+simulation, so a difference of several minutes in Tmax is expected.
+
+# Assumptions and deviations
+
+* **Covariate column.** The paper's binary covariate "bariatric surgery"
+  (0 = occasion 1 before surgery, 1 = occasion 2 one year after) is carried
+  as `PRIOR_BARIATRIC`. It changes within a subject between occasions, and
+  `WT` should be the weight measured at each occasion.
+* **Weight effects before surgery only.** Table II gives the weight
+  equations for the morbidly obese occasion and the same Vmedian value,
+  without weight terms, for the bariatric occasion; the Results state that
+  the volumes after surgery showed no significant weight dependence. The
+  model applies the weight terms only when `PRIOR_BARIATRIC = 0`. The linear
+  term on Vc gives a negative volume for weights below 104 kg, outside the
+  observed pre-surgery range (112-186 kg).
+* **Second peripheral volume.** Table II estimates Vp2 as a fraction
+  fV = 0.359 of Vp. Because Vp has no random effect, this is packaged
+  exactly as `lvp2 = log(0.359 * 106)` with the same weight scaling as Vp.
+  The table's annotation "*V 1st peripheral = 38 L" in this row is the
+  resulting second peripheral volume (0.359 x 106 L = 38 L).
+* **Table II annotation for fQ.** The row "fQ Bariatric patients 3.22
+  (* Q Morbidly obese = 2.15)" is read as the post-surgery Q
+  (0.669 x 3.22 = 2.15 L/min), consistent with the Results text "0.669 to
+  2.15 L/min".
+* **IIV scale.** The paper reports IIV as % CV without giving the formula;
+  variances are `log(1 + CV^2)`, as in the other Leiden midazolam models in
+  this package (`Brill_2014_midazolam`, `vanRongen_2015_midazolam`). The
+  random effects are shared by both occasions because the paper reports no
+  inter-occasion variability.
+* **Bioavailability above 1.** Exponential IIV of 33.4% on F = 0.537 lets a
+  few simulated patients (about 3%) have F > 1. The paper's Eq. 1 applies
+  the exponential model to every parameter and gives no bound, so none is
+  imposed.
+* **Figure 3 cohort.** The paper's Monte Carlo simulation drew weight from
+  144 +/- 26 kg; here the draw is truncated to 112-186 kg to keep Vc
+  positive. Figure 3 cannot show whether the paper truncated.
+* **Occasion 1 surgery.** On occasion 1 the IV dose coincided with induction
+  of anaesthesia; the model has no term for anaesthesia or surgery, and the
+  paper discusses this as a limitation.
