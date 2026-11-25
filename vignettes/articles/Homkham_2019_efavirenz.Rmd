@@ -1,0 +1,412 @@
+---
+title: "Efavirenz HIV viral dynamics in children (Homkham 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Efavirenz HIV viral dynamics in children (Homkham 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Homkham_2019_efavirenz"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Homkham_2019_efavirenz"))$description`
+* Article: <https://doi.org/10.1371/journal.pone.0216868> (PLoS One, open access)
+
+Homkham 2019 links the individual average efavirenz concentration of HIV-infected
+Thai children to the time course of their HIV-1 RNA load and CD4 cell count with
+a three-state target-cell viral-dynamics model. Efavirenz inhibits the infection
+rate `beta` through an Imax function of the individual average concentration
+`Cav`, and the inhibition at a child's own `Cav` and `IC50` is the paper's
+inhibitory score ISEFV (Eq 5). The paper then shows that an ISEFV below 85%
+predicts virological failure while the mid-dose concentration C12 does not.
+
+There is no efavirenz concentration state in the model. `Cav` was computed from
+each child's individual clearance in the previously published population PK
+model of the same cohort (Homkham 2015, Pediatr Infect Dis J 34:1214) and enters
+here as the covariate `CAV` (mg/L), constant from the start of treatment and 0
+before it.
+
+# Population
+
+87 HIV-1-infected, antiretroviral-naive children (51% boys) from the Program for
+HIV Prevention and Treatment (PHPT) Observational Cohort in Thailand (NCT00433030)
+who started first-line efavirenz with zidovudine (57) or stavudine (30) plus
+lamivudine (84) or didanosine (3) between May 2002 and March 2010 (Homkham 2019
+Table 1 and Results). At treatment start the median age was 8 years (IQR 5 to
+10), body weight 17 kg (14 to 23), HIV-1 RNA load 5.1 log10 copies/mL (4.6 to
+5.4) and CD4 count 71 cells/mm3 (23 to 262). Efavirenz was dosed once daily by
+the US FDA weight bands, median 13.9 mg/kg. Median follow-up was 24 months; 443
+HIV-1 RNA loads and 447 CD4 counts were analysed.
+
+The same information is available programmatically via
+`readModelDb("Homkham_2019_efavirenz")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source; the table
+collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `d/dt(target)` | `lambda - d*T - I(t)*beta*T*V` | Eq 1 |
+| `d/dt(infected)` | `I(t)*beta*T*V - delta*T*` | Eq 2 |
+| `d/dt(virus)` | `p*T* - c*V` | Eq 3 |
+| `inh` | `1 - Imax*Cav/(IC50 + Cav)` | Eq 4 |
+| `target(0)`, `infected(0)`, `virus(0)` | `c*delta/(beta*p)`, `c*VL0/p`, `lambda*p/(c*delta) - d/beta` | Methods, paragraph after Fig 1 |
+| `isefv` | `100*Imax*Cav/(IC50 + Cav)` | Eq 5 |
+| `lkin` (lambda) | 89.2 cells/mm3/month | Table 2 |
+| `lkout` (d) | 0.1 /month | Table 2 |
+| `lbeta` (beta) | 6.7e-6 mL/copy/month | Table 2 |
+| `ldelta` (delta) | 15.2 /month, fixed | Table 2; Results (Perelson 1996) |
+| `lp` (p) | 6.5e4 (copies/mL)/(cells/mm3)/month | Table 2 |
+| `lc` (c) | 3.3 /month | Table 2 |
+| `imax` | 1, fixed | Table 2; Results |
+| `lic50` | 0.1 mg/L | Table 2 |
+| `etalkin`, `etalkout` | SD 0.6, 0.6; correlation 0.6 | Table 2 |
+| `etalbeta`, `etalp`, `etalc`, `etalic50` | SD 1.0, 0.4, 0.5, 2.1 | Table 2 |
+| `addSd_log10_viral_load` | 0.7 log10 copies/mL | Table 2 |
+| `addSd_target` | 176 cells/mm3 | Table 2 |
+
+Dimensional check of each ODE term (time in months, T and T* in cells/mm3, V in
+copies/mL):
+
+| Term | Units |
+|------|-------|
+| `lambda` | cells/mm3/month |
+| `d*T` | (1/month)(cells/mm3) |
+| `beta*T*V` | (mL/copy/month)(cells/mm3)(copies/mL) = cells/mm3/month |
+| `delta*T*` | (1/month)(cells/mm3) |
+| `p*T*` | ((copies/mL)/(cells/mm3)/month)(cells/mm3) = copies/mL/month |
+| `c*V` | (1/month)(copies/mL) |
+
+# Untreated steady state
+
+Before treatment (`CAV = 0`) the system starts at the chronic-infection steady
+state written in the Methods and must stay there.
+
+```{r steady-state}
+mod <- readModelDb("Homkham_2019_efavirenz")
+mod_typ <- rxode2::zeroRe(mod)
+
+ev_hold <- data.frame(
+  id = 1L, time = seq(0, 36, by = 1), evid = 0L, cmt = "target", CAV = 0
+)
+hold <- rxode2::rxSolve(mod_typ, ev_hold, returnType = "data.frame")
+
+# Closed-form steady state from the typical Table 2 values
+lambda <- 89.2; d <- 0.1; beta <- 6.7e-6; delta <- 15.2; p <- 6.5e4; c_v <- 3.3
+t0 <- c_v * delta / (beta * p)
+vl0 <- lambda * p / (c_v * delta) - d / beta
+ti0 <- c_v * vl0 / p
+r0 <- lambda * beta * p / (d * c_v * delta)
+
+ss_tab <- data.frame(
+  Quantity = c("T0 (cells/mm3)", "T*0 (cells/mm3)", "VL0 (log10 copies/mL)", "R0"),
+  `Closed form` = signif(c(t0, ti0, log10(vl0), r0), 4),
+  `Solved, 36 months` = signif(c(
+    hold$target[nrow(hold)], hold$infected[nrow(hold)],
+    hold$log10_viral_load[nrow(hold)], NA
+  ), 4),
+  check.names = FALSE
+)
+knitr::kable(ss_tab)
+
+# Production and loss balance in each equation at T0, T*0, VL0
+flux <- c(
+  target = lambda - d * t0 - beta * t0 * vl0,
+  infected = beta * t0 * vl0 - delta * ti0,
+  virus = p * ti0 - c_v * vl0
+)
+stopifnot(
+  max(abs(flux / c(lambda, delta * ti0, c_v * vl0))) < 1e-12,
+  # The ODE solve holds the closed-form state (numeric path, rtol 1e-6)
+  max(abs(hold$target / t0 - 1)) < 1e-4,
+  max(abs(hold$virus / vl0 - 1)) < 1e-4,
+  # Table 2 values reproduce the cohort's median baseline viral load
+  # (Table 1: 5.1 log10 copies/mL); a transcription slip in lambda, p, c or
+  # beta by a factor of 2 moves this by 0.3 log10 or more
+  abs(log10(vl0) - 5.1) < 0.2
+)
+```
+
+The typical child starts at 5.00 log10 copies/mL against the cohort median of
+5.1. The typical baseline CD4 count, 115 cells/mm3, is above the cohort median of
+71 cells/mm3 (IQR 23 to 262); with an additive residual error of 176 cells/mm3
+that gap is well inside the model's stated precision.
+
+# The ISEFV threshold follows from the viral dynamics
+
+On treatment the effective reproductive ratio is `R0 * (1 - ISEFV/100)`. Virus
+replication is suppressed when that is below 1, that is when
+`ISEFV > 100 * (1 - 1/R0)`. For the typical child that threshold is
+`r round(100 * (1 - 1 / r0), 1)`%, next to the 85% cut-off the paper found from
+the observed failures with Youden's index (Results). The typical child at the
+cohort median Cav of 1.7 mg/L has ISEFV = `r round(100 * 1.7 / (0.1 + 1.7), 1)`%,
+against the published cohort median of 95%.
+
+```{r isefv-typical}
+isefv_targets <- c(70, 80, 85, 90, 95)
+cav_for <- 0.1 * isefv_targets / (100 - isefv_targets) # inverts Eq 5 at IC50 = 0.1
+ev_typ <- tidyr::crossing(
+  id = seq_along(cav_for),
+  time = c(seq(0, 2, by = 0.05), seq(2.25, 36, by = 0.25))
+) |>
+  mutate(evid = 0L, cmt = "target", CAV = cav_for[id], ISEFV = isefv_targets[id])
+typ <- rxode2::rxSolve(mod_typ, ev_typ, keep = "ISEFV", returnType = "data.frame")
+
+end36 <- typ |> filter(time == 36)
+knitr::kable(
+  end36 |>
+    transmute(ISEFV, CAV = signif(CAV, 3), log10_viral_load = round(log10_viral_load, 2),
+              target = round(target)) |>
+    dplyr::rename(
+      "ISEFV (%)" = ISEFV, "Cav (mg/L)" = CAV,
+      "log10 HIV-1 RNA at 36 months" = log10_viral_load,
+      "CD4 at 36 months (cells/mm3)" = target
+    )
+)
+
+stopifnot(
+  abs(100 * (1 - 1 / r0) - 85) < 3,
+  abs(100 * 1.7 / (0.1 + 1.7) - 95) < 1,
+  # Below the threshold the virus rebounds above 200 copies/mL by 36 months;
+  # above it the load stays far below the 50 copies/mL quantification limit
+  end36$log10_viral_load[end36$ISEFV == 80] > log10(200),
+  end36$log10_viral_load[end36$ISEFV == 95] < log10(50)
+)
+```
+
+```{r fig-typical, fig.cap = "Typical-child HIV-1 RNA (left) and CD4 (right) over 36 months at five ISEFV values. The dashed line marks 200 copies/mL, the paper's failure threshold."}
+typ |>
+  select(time, ISEFV, `log10 HIV-1 RNA (copies/mL)` = log10_viral_load,
+         `CD4 (cells/mm3)` = target) |>
+  pivot_longer(-c(time, ISEFV)) |>
+  ggplot(aes(time, value, colour = factor(ISEFV))) +
+  geom_line() +
+  geom_hline(
+    data = data.frame(name = "log10 HIV-1 RNA (copies/mL)", y = log10(200)),
+    aes(yintercept = y), linetype = 2
+  ) +
+  facet_wrap(~name, scales = "free_y") +
+  labs(x = "Treatment duration (months)", y = NULL, colour = "ISEFV (%)") +
+  theme_bw()
+```
+
+# Virtual cohort
+
+The observed data are not public. Each virtual child gets a `Cav` drawn from a
+log-normal distribution with the published median of 1.7 mg/L and an IQR of 1.3
+to 2.2 mg/L (Results), which gives a log-scale SD of
+`(log(2.2) - log(1.3)) / 1.349 = 0.39`. HIV-1 RNA and CD4 are observed at the
+cohort's six-monthly schedule plus months 1 and 3.
+
+With the Table 2 variances about 6% of random-effect draws have a basic
+reproductive ratio below 1, for which no chronic infection exists and the
+baseline viral load from the steady-state formula is negative. Every child in
+the cohort was viraemic at baseline, so these draws are outside the population
+the model describes and are dropped.
+
+```{r cohort}
+set.seed(2019)
+rxode2::rxSetSeed(2019)
+n_sub <- 200
+cav <- exp(rnorm(n_sub, log(1.7), (log(2.2) - log(1.3)) / (2 * qnorm(0.75))))
+obs_times <- c(0, 1, 3, seq(6, 36, by = 6))
+events <- tidyr::crossing(id = seq_len(n_sub), time = obs_times) |>
+  mutate(evid = 0L, cmt = "target", CAV = cav[id])
+
+sim <- rxode2::rxSolve(mod, events, returnType = "data.frame")
+viraemic <- sim |> filter(time == 0, virus > 0) |> pull(id)
+sim <- sim |> filter(id %in% viraemic)
+
+# Residual error from the model's own ini() values
+ui <- rxode2::rxode(mod)
+sigma <- setNames(ui$iniDf$est, ui$iniDf$name)
+sim <- sim |>
+  mutate(
+    vl_obs = log10_viral_load + rnorm(n(), 0, sigma[["addSd_log10_viral_load"]]),
+    cd4_obs = target + rnorm(n(), 0, sigma[["addSd_target"]])
+  )
+length(viraemic)
+```
+
+# Replicates S1 Fig (visual predictive check)
+
+```{r fig-vpc, fig.cap = "Replicates S1 Fig of Homkham 2019: 25th, 50th and 75th percentiles of simulated HIV-1 RNA (left) and CD4 count (right) with residual error. Simulated HIV-1 RNA below the 50 copies/mL limit (dotted line) corresponds to the censored values of the published figure."}
+vpc <- sim |>
+  select(id, time, `log10 HIV-1 RNA (copies/mL)` = vl_obs, `CD4 (cells/mm3)` = cd4_obs) |>
+  pivot_longer(-c(id, time)) |>
+  group_by(name, time) |>
+  summarise(
+    p25 = quantile(value, 0.25), p50 = median(value), p75 = quantile(value, 0.75),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(time)) +
+  geom_ribbon(aes(ymin = p25, ymax = p75), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = p50), colour = "steelblue4") +
+  geom_hline(
+    data = data.frame(name = "log10 HIV-1 RNA (copies/mL)", y = log10(50)),
+    aes(yintercept = y), linetype = 3
+  ) +
+  facet_wrap(~name, scales = "free_y") +
+  labs(x = "Treatment duration (months)", y = NULL) +
+  theme_bw()
+```
+
+The published VPC shows the observed median HIV-1 RNA falling from about 5 to
+below the quantification limit by month 6, and the observed median CD4 rising from
+under 200 to roughly 750 cells/mm3 by month 36; the simulated percentiles follow
+the same course.
+
+```{r vpc-check}
+cd4_36 <- vpc |> filter(name == "CD4 (cells/mm3)", time == 36) |> pull(p50)
+vl_0 <- vpc |> filter(name == "log10 HIV-1 RNA (copies/mL)", time == 0) |> pull(p50)
+vl_12 <- vpc |> filter(name == "log10 HIV-1 RNA (copies/mL)", time == 12) |> pull(p50)
+c(cd4_36 = cd4_36, vl_0 = vl_0, vl_12 = vl_12)
+stopifnot(
+  # Baseline median HIV-1 RNA vs Table 1 (5.1 log10 copies/mL)
+  abs(vl_0 - 5.1) < 0.4,
+  # Median HIV-1 RNA below the quantification limit by month 12
+  vl_12 < log10(50),
+  # Median CD4 at month 36 vs the S1 Fig observed median (about 750 cells/mm3);
+  # the typical-child asymptote lambda/d is 892 cells/mm3
+  cd4_36 > 400, cd4_36 < 1100
+)
+```
+
+# ISEFV and virological failure (replicates Fig 2B)
+
+ISEFV is computed from each virtual child's own `Cav` and `IC50` (Eq 5). Failure
+follows the paper's definition: HIV-1 RNA above 200 copies/mL from month 6,
+confirmed at the next six-monthly visit, within the first 3 years.
+
+```{r failure}
+visits <- sim |>
+  filter(time >= 6) |>
+  arrange(id, time) |>
+  group_by(id) |>
+  mutate(
+    above = vl_obs > log10(200),
+    confirmed = above & lead(above, default = FALSE)
+  ) |>
+  summarise(
+    isefv = first(isefv),
+    # Each child's own suppression threshold, 100 * (1 - 1/R0_i)
+    threshold = first(100 * (1 - kout * cvir * delta / (kin * beta * p))),
+    failed = any(confirmed),
+    t_fail = if (any(confirmed)) min(time[confirmed]) else NA_real_,
+    .groups = "drop"
+  ) |>
+  mutate(group = ifelse(isefv < 85, "ISEFV < 85%", "ISEFV >= 85%"))
+
+isefv_summary <- c(
+  median = median(visits$isefv),
+  quantile(visits$isefv, c(0.25, 0.75)),
+  pct_below_85 = 100 * mean(visits$isefv < 85)
+)
+round(isefv_summary, 1)
+
+fail_tab <- visits |>
+  group_by(group) |>
+  summarise(n = n(), n_failed = sum(failed), pct = round(100 * mean(failed), 1)) |>
+  mutate(published = ifelse(group == "ISEFV < 85%", "15/23 (65%)", "1/64 (2%)"))
+knitr::kable(
+  fail_tab |>
+    dplyr::rename(
+      "ISEFV group" = group, "Virtual children" = n, "Failures" = n_failed,
+      "Simulated (%)" = pct, "Homkham 2019 (Results)" = published
+    )
+)
+
+pct_low <- fail_tab$pct[fail_tab$group == "ISEFV < 85%"]
+pct_high <- fail_tab$pct[fail_tab$group == "ISEFV >= 85%"]
+stopifnot(
+  # Cohort median ISEFV vs the published 95%
+  abs(isefv_summary[["median"]] - 95) < 3,
+  # A low score separates the children who fail: published 65% vs 2%
+  pct_low <= 100, pct_high >= 0,
+  pct_low - pct_high > 30,
+  # Failure is decided by each child's own threshold, not by the 85% cut-off:
+  # almost every failing child sits below its threshold and almost every
+  # suppressed child above it
+  mean(visits$isefv[visits$failed] < visits$threshold[visits$failed]) > 0.8,
+  mean(visits$isefv[!visits$failed] > visits$threshold[!visits$failed]) > 0.8
+)
+
+# Failing children in the high-score group and their own thresholds
+visits |>
+  filter(group == "ISEFV >= 85%", failed) |>
+  summarise(n = n(), below_own_threshold = sum(isefv < threshold),
+            median_threshold = round(median(threshold), 1))
+```
+
+```{r fig-km, fig.cap = "Replicates Fig 2B of Homkham 2019: cumulative proportion of virtual children with confirmed HIV-1 RNA above 200 copies/mL by ISEFV group."}
+km <- tidyr::crossing(group = unique(visits$group), time = seq(0, 36, by = 6)) |>
+  rowwise() |>
+  mutate(cum = mean(!is.na(visits$t_fail[visits$group == group]) &
+                      visits$t_fail[visits$group == group] <= time)) |>
+  ungroup()
+ggplot(km, aes(time, cum, colour = group)) +
+  geom_step() +
+  labs(x = "Treatment duration (months)", y = "Cumulative probability of viral replication",
+       colour = NULL) +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+* **Cav is an input, not a simulated concentration.** The model carries no
+  efavirenz PK; `CAV` must be supplied per child. The vignette draws it from a
+  log-normal distribution matching the published median and IQR rather than
+  from the upstream Homkham 2015 PK model.
+* **Random effects.** Table 2 reports Monolix omegas, read as the standard
+  deviations of the log-normal random effects (variance = omega^2). The
+  'omega lambda,d' entry of 0.6 is read as the correlation between the lambda
+  and d random effects; read as a covariance it would imply a correlation of
+  1.67, which is impossible.
+* **Parameterisation.** The Methods say the initial conditions were
+  reformulated to estimate the baseline HIV-1 RNA and CD4 count, with lambda, d,
+  beta, delta, p and c derived from them, but no baseline estimates are printed;
+  Table 2 reports lambda, d, beta, p and c with their own between-subject
+  variability. The model uses Table 2 as printed. With these variances about 6%
+  of random-effect draws have no chronic-infection steady state (negative
+  baseline viral load); such draws are outside the modelled population and are
+  dropped in this vignette.
+* **CD4 output.** The paper does not say whether the observed CD4 count is the
+  uninfected state T or T + T*. The model observes T. The alternative differs
+  by T*, about 5
+  cells/mm3 at baseline and near zero on suppressive treatment, which is under
+  3% of the 176 cells/mm3 residual SD.
+* **Viral-load floor.** `log10_viral_load` floors the virus state at 1e-4
+  copies/mL before the log transform so the output stays finite when the virus
+  is driven toward zero. The floor is 5.7 log10 below the 50 copies/mL
+  quantification limit, so it changes no prediction above that limit and no
+  censored-data likelihood.
+* **Typographical issues in the source.** Table 2 gives the unit of d as
+  cells/mm3/month; Fig 1 and Eq 1 make it a first-order rate constant (1/month).
+  Table 1 prints the age IQR as 5 to 6 years and the triglyceride IQR as 85 to
+  108 mg/dL around a median of 135; the age IQR of 5 to 10 years from the
+  abstract is used.
+* **Comparison with the published ISEFV distribution and failure split.** In
+  this virtual cohort `r round(isefv_summary[["pct_below_85"]])`% of children have
+  an ISEFV below 85% (published 23 of 87, 26%) and the ISEFV IQR is
+  `r round(isefv_summary[["25%"]])` to `r round(isefv_summary[["75%"]])`% (published
+  86 to 96%). Confirmed failure occurs in `r round(pct_low)`% of the low-score
+  group (published 65%) and `r round(pct_high)`% of the high-score group
+  (published 2%). The published ISEFV values are empirical Bayes estimates,
+  which shrink the very wide IC50 distribution (log-scale SD 2.1) toward its
+  median, whereas the virtual children carry the full population distribution;
+  children whose own reproductive ratio is high need an ISEFV above 85% to
+  suppress the virus (threshold `100 * (1 - 1/R0)`), which is where the excess
+  failures in the high-score group come from.
+* No PKNCA analysis: the model has no drug-concentration output.
