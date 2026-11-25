@@ -30702,6 +30702,39 @@ is the experimental condition itself, held constant for the whole solve.
 - **Example models:** `Wojciechowski_2023_ritlecitinib_updated.R` (linear fractional effect on the rate of loss from the depot compartment: `d/dt(depot) = -ka_eff * depot * (1 - 0.134 * FORM_RIT_OVERENCAP)`, per Wojciechowski 2023 Table 2 "Effect of over-encapsulated capsules on loss from depot"). The effect deliberately scales the depot LOSS RATE and not the amount reaching the systemic circulation: Table S3 of the Electronic Supplementary Material evaluated both parameterisations (run 17 "loss from depot", dOFV -40.3; run 16 "amount reaching systemic circulation", dOFV -39.4) and carried the loss-from-depot form forward.
 - **Notes:** Member of the `FORM_<drug>_<formulation>` family of drug-product-version indicators, alongside `FORM_RAL_600`, `FORM_NMV_TAB150`, `FORM_ITR_SUBA`, `FORM_TAC_IR`, `FORM_SAR_DP2`, `FORM_ISA_P2F2`, `FORM_LINAG_TAB1` and `FORM_VISMO_PHASEI`. Distinct from the general `FORM_CAPSULE` canonical, which the same model uses in parallel for the broader "any capsule" effect on ka: an over-encapsulated record has both `FORM_CAPSULE = 1` and `FORM_RIT_OVERENCAP = 1`, and the two indicators act on different parameters (ka and the depot loss rate respectively). Over-encapsulation is a blinding technique rather than a distinct drug product, so the effect is expected to be on absorption kinetics rather than on intrinsic disposition. Scope: specific because the comparator set is paper-defined. Ratified canonically on 2026-08-05 alongside the Wojciechowski 2023 ritlecitinib extraction.
 
+### FORM_SILDENAFIL_SRFAST (**canonical for the sildenafil 'SRfast' sustained-release tablet indicator**)
+- **Description:** 1 = the sildenafil dose was the SRfast sustained-release matrix tablet of Kim 2019 (60 mg sildenafil, 10% w/w HPMC 2208-100 cps, wet-granulated); 0 = any other sildenafil tablet. Per-dose-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. `FORM_SILDENAFIL_SRFAST = FORM_SILDENAFIL_SRMEDIUM = FORM_SILDENAFIL_SRSLOW = 0` selects the immediate-release (IR, 20 mg) tablet, the model reference.
+- **Source aliases:**
+  - `SRfast` -- Kim 2019 formulation label (Tables 1-5).
+- **Example models:** `Kim_2019_sildenafil_dog.R` (selects the fitted in vivo maximum dissolution rate Vmax,in vivo/dose = 1.71 1/h; founding example), `Kim_2019_sildenafil_dog_ivivc.R` (selects the in vitro Vmax/dose 1.40 1/h that the IVIVC correlation converts to the in vivo rate), `Kim_2019_sildenafil_invitro.R` (selects the in vitro Vmax/dose).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family, with siblings `FORM_SILDENAFIL_SRMEDIUM` and `FORM_SILDENAFIL_SRSLOW`; the three are mutually exclusive. The tablets are laboratory formulations made for the founding study, not marketed products, and differ only in the HPMC release-modifier fraction (lactose balancing). The indicator switches a dissolution rate, not a bioavailability: the relative bioavailability differences between the tablets (Kim 2019 Table 2) emerge from how much drug dissolves before the gastric-emptying and colon windows of the time-varying dissolved fraction close.
+
+### FORM_SILDENAFIL_SRMEDIUM (**canonical for the sildenafil 'SRmedium' sustained-release tablet indicator**)
+- **Description:** 1 = the sildenafil dose was the SRmedium sustained-release matrix tablet of Kim 2019 (60 mg sildenafil, 30% w/w HPMC 2208-100 cps); 0 = any other sildenafil tablet. Per-dose-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (immediate-release tablet when all three `FORM_SILDENAFIL_SR*` indicators are 0).
+- **Source aliases:**
+  - `SRmedium` -- Kim 2019 formulation label (Tables 1-5).
+- **Example models:** `Kim_2019_sildenafil_dog.R` (in vivo Vmax/dose 0.781 1/h), `Kim_2019_sildenafil_dog_ivivc.R`, `Kim_2019_sildenafil_invitro.R` (in vitro Vmax/dose 0.358 1/h).
+- **Notes:** Sibling of `FORM_SILDENAFIL_SRFAST`, whose Notes apply here.
+
+### FORM_SILDENAFIL_SRSLOW (**canonical for the sildenafil 'SRslow' sustained-release tablet indicator**)
+- **Description:** 1 = the sildenafil dose was the SRslow sustained-release matrix tablet of Kim 2019 (60 mg sildenafil, 60% w/w HPMC 2208-100 cps); 0 = any other sildenafil tablet. Per-dose-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (immediate-release tablet when all three `FORM_SILDENAFIL_SR*` indicators are 0).
+- **Source aliases:**
+  - `SRslow` -- Kim 2019 formulation label (Tables 1-5).
+- **Example models:** `Kim_2019_sildenafil_dog.R` (in vivo Vmax/dose 0.219 1/h), `Kim_2019_sildenafil_dog_ivivc.R`, `Kim_2019_sildenafil_invitro.R` (in vitro Vmax/dose 0.124 1/h).
+- **Notes:** Sibling of `FORM_SILDENAFIL_SRFAST`, whose Notes apply here.
+
 ### STUDY_FIH_MAD (**canonical for the GLPG1690 first-in-human multiple-ascending-dose study-part indicator**)
 - **Description:** 1 = record from the multiple-ascending-dose (MAD) part of the GLPG1690 first-in-human study NCT02179502 (healthy male volunteers; 150 mg twice daily, 600 mg or 1000 mg once daily for 14 days), 0 = any other study or study part. Subject-level (time-fixed).
 - **Units:** (binary)

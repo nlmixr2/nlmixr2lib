@@ -1,0 +1,451 @@
+---
+title: "Sildenafil IR and SR tablets in beagle dogs: site-dependent dissolution and IVIVC (Kim 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sildenafil IR and SR tablets in beagle dogs: site-dependent dissolution and IVIVC (Kim 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+ui_pk <- rxode2::rxode(readModelDb("Kim_2019_sildenafil_dog"))
+ui_ivivc <- rxode2::rxode(readModelDb("Kim_2019_sildenafil_dog_ivivc"))
+ui_vitro <- rxode2::rxode(readModelDb("Kim_2019_sildenafil_invitro"))
+cat("* Citation: ", ui_pk$reference, "\n", sep = "")
+cat("* Article: <https://doi.org/10.3390/pharmaceutics11060251>\n")
+```
+
+Kim et al. made one immediate-release (IR, 20 mg) and three sustained-release
+(SR, 60 mg) sildenafil tablets whose release is slowed by increasing amounts of
+HPMC (SRfast, SRmedium, SRslow). Sildenafil dissolves well at gastric pH and
+poorly above pH 6, so in dogs the SR tablets showed reduced bioavailability and
+secondary plasma peaks. The authors modelled this in S-ADAPT by separating
+dissolution from absorption: drug leaves the tablet by dose-normalised
+Michaelis-Menten kinetics multiplied by a time-varying dissolved fraction,
+FDiss,total, that is near 1 in the stomach, near 0 in the small intestine,
+about 0.12 in the colon, and 0 again at the end of the gut. They then
+correlated the fitted in vivo maximum dissolution rates with the in vitro ones
+(pH 1.2) to obtain a level-A in vitro-in vivo correlation (IVIVC).
+
+The paper contributes three models, all of which are packaged:
+
+| Model | What it is | Source |
+|---|---|---|
+| `Kim_2019_sildenafil_invitro` | In vitro Michaelis-Menten dissolution at pH 1.2 | Eq 1, Table 3 |
+| `Kim_2019_sildenafil_dog` | Population PK model with fitted per-formulation in vivo Vmax | Eqs 2-11, Table 4 |
+| `Kim_2019_sildenafil_dog_ivivc` | The same model with in vivo Vmax computed from the in vitro Vmax | Eq 13, Tables 3-4 |
+
+# Population
+
+Twelve male beagle dogs aged 14-18 months (Orient Bio, Korea) were fasted
+overnight and given a single tablet with 30 mL water: IR 20 mg or one of the
+three SR tablets at 60 mg, three dogs per formulation (Methods 2.4). Plasma was
+sampled to 48 h and assayed by LC-MS/MS (LLOQ 5 ng/mL). Body weight is not
+reported and is not used by the model.
+
+```{r population, echo = FALSE}
+str(ui_pk$population)
+```
+
+# Source trace
+
+| Element | Value used | Source |
+|---|---|---|
+| In vitro dissolution ODE | `dX/dt = -Vmax * X / (AM50 + X)` (dose-normalised) | Eq 1; Methods 2.6.2 |
+| In vitro AM50/dose | 0.395 (BSV 0.0316) | Table 3 |
+| In vitro Vmax/dose IR, SRfast, SRmedium, SRslow | 6.58, 1.40, 0.358, 0.124 1/h | Table 3 |
+| In vivo dissolution ODE | `dX/dt = -Vmax,in vivo * X / (AM50,in vivo + X) * FDiss,total` | Eq 2 (see Errata) |
+| FDiss,total | FDiss,stomach + FDiss,intestine | Eq 3 |
+| FDiss,stomach | `1 - Imax * t^H_s / (TGET^H_s + t^H_s)` | Eq 4 |
+| FDiss,intestine | `Dissmax * t^H_i/(Ttrans1^H_i + t^H_i) * (1 - t^H_i/(Ttrans2^H_i + t^H_i))` | Eq 5 |
+| Ttrans1, Ttrans2 | TGET + TITT; TGET + TITT + TCTT | Eqs 6-7 |
+| Lumen, gut | `dXLumen/dt = diss - klag*XLumen`; `dXGut/dt = klag*XLumen - ka*XGut` | Eqs 8-9 |
+| Disposition | two-compartment, CL and CLD | Eqs 10-11 |
+| V1, V2 | 22 L (BSV 0.157), 31 L (BSV 0.751) | Table 4 |
+| CL | 9.97 L/h (BSV 0.2) | Table 4, row printed as CLD (see Errata) |
+| CLD | 49.2 L/h (BSV 0.379) | Table 4, row printed as CL (see Errata) |
+| klag, ka | 3.13 1/h (0.497), 4.37 1/h (0.952) | Table 4 |
+| TGET, Imax, Hillstomach | 0.73 h (0.385), 0.992 (0.0027), 16.7 (0.0316) | Table 4 |
+| TITT, TCTT | 2.18 h (0.434), 4.1 h (0.11) | Table 4 |
+| Dissmax, Hillintestine | 0.115 (0.359), 13.1 (0.0316) | Table 4 |
+| In vivo AM50/dose | 0.315 (0.105) | Table 4 |
+| In vivo Vmax/dose IR, SRfast, SRmedium, SRslow | 4.42 (0.416), 1.71 (0.145), 0.781 (0.295), 0.219 (0.255) 1/h | Table 4 |
+| IVIVC correlation | `Vmax,in vivo/Dose = 2.1411 * (Vmax,in vitro/Dose)^0.4388 - 0.6346` | Eq 13 |
+| BSV scale | omega^2 = BSV^2 (S-ADAPT exponential model, BSV = log-scale SD) | Methods 2.6.3 |
+| Residual error | not reported; zero placeholder | -- |
+
+# Shared simulation helpers
+
+```{r helpers}
+formulations <- tibble::tibble(
+  treatment = factor(c("IR", "SRfast", "SRmedium", "SRslow"),
+                     levels = c("IR", "SRfast", "SRmedium", "SRslow")),
+  dose = c(20, 60, 60, 60),
+  FORM_SILDENAFIL_SRFAST = c(0, 1, 0, 0),
+  FORM_SILDENAFIL_SRMEDIUM = c(0, 0, 1, 0),
+  FORM_SILDENAFIL_SRSLOW = c(0, 0, 0, 1)
+)
+
+# One subject per formulation (n_per_arm = 1) or n_per_arm subjects per
+# formulation; dose into the tablet (depot), observe on a named ODE state.
+make_events <- function(times, n_per_arm = 1, obs_cmt = "central") {
+  subj <- formulations |>
+    tidyr::uncount(n_per_arm) |>
+    dplyr::mutate(id = dplyr::row_number())
+  dose_rows <- subj |> dplyr::mutate(time = 0, evid = 1L, amt = dose, cmt = "depot")
+  obs_rows <- subj |>
+    tidyr::crossing(time = times) |>
+    dplyr::mutate(evid = 0L, amt = 0, cmt = obs_cmt)
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    as.data.frame()
+}
+
+times_fine <- sort(unique(c(seq(0, 24, by = 0.05), 36, 48)))
+ev_typ <- make_events(times_fine)
+
+# Typical-value solve. The two muffled warnings are the expected notices for a
+# zeroRe() model solved for several subjects (no omega, no sigma); any other
+# warning still surfaces.
+expected_typ_warning <- "multi-subject simulation without|No sigma parameters"
+muffle_expected <- function(w) {
+  if (grepl(expected_typ_warning, conditionMessage(w))) invokeRestart("muffleWarning")
+}
+solve_typ <- function(ui, ev) {
+  withCallingHandlers(
+    rxode2::rxSolve(rxode2::zeroRe(ui), events = ev,
+                    keep = c("treatment", "dose"),
+                    returnType = "data.frame"),
+    warning = muffle_expected
+  )
+}
+```
+
+# In vitro dissolution (Equation 1, Table 3)
+
+```{r invitro}
+ev_vitro <- make_events(seq(0, 24, by = 0.01), obs_cmt = "released")
+sim_vitro <- solve_typ(ui_vitro, ev_vitro) |>
+  dplyr::mutate(pct_released = 100 * released / dose)
+
+ggplot(sim_vitro |> dplyr::filter(time <= 12),
+       aes(time, pct_released, colour = treatment)) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Released (%)", colour = NULL,
+       title = "Typical in vitro dissolution at pH 1.2",
+       caption = "Replicates the pH 1.2 curves of Figure 2 and Figure S1 of Kim 2019.")
+
+# Results 3.1: IR release 'completed within 0.4 h' at pH 1.2.
+ir_04 <- sim_vitro$pct_released[sim_vitro$treatment == "IR" & abs(sim_vitro$time - 0.4) < 1e-9]
+ir_04
+stopifnot(ir_04 > 95)
+# Release order IR > SRfast > SRmedium > SRslow at every time (Results 3.1).
+ord <- sim_vitro |>
+  dplyr::filter(time %in% c(0.5, 1, 2, 4, 8)) |>
+  dplyr::select(time, treatment, pct_released) |>
+  tidyr::pivot_wider(names_from = treatment, values_from = pct_released)
+stopifnot(all(ord$IR > ord$SRfast), all(ord$SRfast > ord$SRmedium),
+          all(ord$SRmedium > ord$SRslow))
+```
+
+# Time-varying dissolved fraction (Figure 4A)
+
+FDiss,total is a deterministic function of time after dose and the typical
+parameters, so the Results 3.3.2 statements can be checked exactly.
+
+```{r fdiss}
+sim_pk <- solve_typ(ui_pk, ev_typ)
+
+fd <- sim_pk |>
+  dplyr::filter(treatment == "IR", time <= 12) |>
+  dplyr::select(time, fdiss_stomach, fdiss_intestine, fdiss_total) |>
+  tidyr::pivot_longer(-time)
+
+ggplot(fd, aes(time, value, linetype = name)) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Dissolved fraction", linetype = NULL,
+       caption = "Replicates Figure 4A of Kim 2019.")
+
+fd_at <- function(t) sim_pk$fdiss_total[sim_pk$treatment == "IR" & abs(sim_pk$time - t) < 1e-9]
+fd_min <- min(sim_pk$fdiss_total[sim_pk$treatment == "IR" & sim_pk$time >= 1 & sim_pk$time <= 2])
+c(t0.25 = fd_at(0.25), t1 = fd_at(1), min_1_to_2h = fd_min, t3.2 = fd_at(3.2),
+  t5 = fd_at(5), t6.3 = fd_at(6.3), t10 = fd_at(10))
+stopifnot(
+  fd_at(0.25) > 0.99,                    # 'estimated to be 100% until approximately 30 min'
+  # 'decreased to the minimum fraction of 0.8% at 1 h': the floor is
+  # 1 - Imax = 0.008, reached between 1 and 2 h (0.013 at exactly 1 h).
+  fd_at(1) < 0.02, abs(fd_min - 0.008) < 0.001,
+  fd_at(5) > 0.10,                       # 'remained above 10% within 3.2-6.3 h'
+  abs(fd_at(3.2) - 0.10) < 0.02,         # window edges sit at about 10%
+  abs(fd_at(6.3) - 0.10) < 0.02,
+  fd_at(10) < 0.02                       # 'reached the minimum again at around 10 h'
+)
+```
+
+# In vivo dissolution (Figure 4B)
+
+```{r invivo-diss}
+sim_ivivc <- solve_typ(ui_ivivc, ev_typ)
+diss <- dplyr::bind_rows(
+  sim_pk |> dplyr::mutate(model = "Population PK (Table 4 Vmax)"),
+  sim_ivivc |> dplyr::mutate(model = "IVIVC (Eq 13 Vmax)")
+) |>
+  dplyr::mutate(pct_dissolved = 100 * (1 - depot / dose))
+
+ggplot(diss |> dplyr::filter(time <= 12),
+       aes(time, pct_dissolved, colour = treatment)) +
+  geom_line() +
+  facet_wrap(~model) +
+  labs(x = "Time (h)", y = "In vivo dissolution (%)", colour = NULL,
+       caption = "Replicates Figure 4B of Kim 2019.")
+
+diss_tab <- diss |>
+  dplyr::filter(time %in% c(1, 12)) |>
+  dplyr::select(model, treatment, time, pct_dissolved) |>
+  tidyr::pivot_wider(names_from = time, values_from = pct_dissolved,
+                     names_prefix = "t")
+diss_tab |>
+  dplyr::rename("Model" = model, "Tablet" = treatment,
+                "Dissolved at 1 h (%)" = t1, "Dissolved at 12 h (%)" = t12) |>
+  knitr::kable(digits = 1)
+
+# Results 3.3.2: at 12 h SRmedium 63% and SRslow 21% dissolved; IR and SRfast
+# almost complete.
+d12 <- function(m, f) diss_tab$t12[diss_tab$model == m & diss_tab$treatment == f]
+for (m in unique(diss_tab$model)) {
+  stopifnot(
+    abs(d12(m, "SRmedium") - 63) < 6,
+    abs(d12(m, "SRslow") - 21) < 2,
+    d12(m, "IR") > 99, d12(m, "SRfast") > 95
+  )
+}
+```
+
+# Systemic clearance: the printed Table 4 rows are transposed
+
+The IR tablet dissolves completely (Figure 4B and above), so its
+AUC(0-inf) equals Dose / CL regardless of the dissolution and absorption
+details. The observed IR AUCinf is 2007 ng*h/mL (Table 2) and the paper's own
+IVIVC prediction of AUCall is 1942 ng*h/mL (Table 5).
+
+```{r cl-swap}
+auc_from_cl <- function(cl) 20 * 1000 / cl   # ng*h/mL for 20 mg
+c(printed_CL_49.2 = auc_from_cl(49.2), swapped_CL_9.97 = auc_from_cl(9.97),
+  observed_Table2 = 2007.1)
+stopifnot(abs(auc_from_cl(9.97) / 2007.1 - 1) < 0.02,
+          auc_from_cl(49.2) / 2007.1 < 0.25)
+
+# The packaged model gives the same AUC numerically (IR dissolves fully).
+ir <- sim_pk |> dplyr::filter(treatment == "IR")
+# AUC(0-48 h); the typical concentration at 48 h is below 0.1 ng/mL, so the
+# remaining tail is negligible against the 2% bound.
+auc_ir <- sum(diff(ir$time) * (head(ir$Cc, -1) + tail(ir$Cc, -1)) / 2)
+c(model_AUC_0_48 = auc_ir, C48 = tail(ir$Cc, 1))
+stopifnot(tail(ir$Cc, 1) < 0.1)
+stopifnot(abs(auc_ir / auc_from_cl(9.97) - 1) < 0.02)
+
+# The distribution clearance is then pinned by Cmax: with CLD = 49.2 L/h the
+# typical IR Cmax is close to the Table 5 prediction (338.7 ng/mL); with
+# CLD = 9.97 L/h as well it would be about 500 ng/mL.
+alt <- solve_typ(ui_pk |> rxode2::ini(lq = log(9.97)), ev_typ)
+c(model_Cmax = max(ir$Cc),
+  CLD_9.97_Cmax = max(alt$Cc[alt$treatment == "IR"]))
+stopifnot(abs(max(ir$Cc) / 338.7 - 1) < 0.1,
+          max(alt$Cc[alt$treatment == "IR"]) / 338.7 > 1.3)
+```
+
+# Typical profiles and PKNCA against Tables 2 and 5
+
+Table 5 compares the IVIVC-predicted mean Cmax and AUCall with the observed
+values. The observed AUCall runs to the last quantifiable sample, which the
+Table 2 AUCinf - AUCall difference and the reported half-lives place at 24 h
+for IR, SRfast and SRmedium and at 12 h for SRslow (Figure 3), so the
+simulated AUC uses those end times.
+
+```{r pknca}
+conc_typ <- sim_ivivc |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(id = as.integer(treatment)) |>
+  dplyr::select(id, time, Cc, treatment)
+conc_typ <- dplyr::bind_rows(
+  conc_typ,
+  conc_typ |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(treatment, id, time)
+
+dose_typ <- formulations |>
+  dplyr::mutate(id = as.integer(treatment), time = 0, amt = dose) |>
+  dplyr::select(id, time, amt, treatment)
+
+intervals <- data.frame(
+  treatment = formulations$treatment,
+  start = 0,
+  end = c(24, 24, 24, 12),
+  cmax = TRUE, tmax = TRUE, auclast = TRUE
+)
+
+nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_typ, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_typ, amt ~ time | treatment + id),
+  intervals = intervals
+))
+
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~auclast,
+  "IR",        338.7, 1942.2,
+  "SRfast",    797.4, 5609.2,
+  "SRmedium",  439.9, 3896.7,
+  "SRslow",    137.2, 1010.0
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_typ,
+  reference = published,
+  by = "treatment",
+  params = c("cmax", "auclast"),
+  units = c(cmax = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = paste(
+  "Typical-value IVIVC simulation vs the Kim 2019 Table 5 IVIVC predictions",
+  "(Monte Carlo means). AUC is AUC(0-24 h), or AUC(0-12 h) for SRslow.",
+  "* marks a difference greater than 20%."
+))
+
+sim_res <- as.data.frame(nca_typ) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::mutate(treatment = as.character(treatment)) |>
+  dplyr::inner_join(published, by = "treatment", suffix = c("_sim", "_pub"))
+pct <- with(sim_res, c(100 * (cmax_sim / cmax_pub - 1), 100 * (auclast_sim / auclast_pub - 1)))
+round(pct, 1)
+# Deterministic typical-value solve against the paper's Monte Carlo means:
+# both sides are fixed numbers, so a fixed bound is reproducible.
+stopifnot(all(abs(pct) < 15), abs(median(pct)) < 8)
+```
+
+The fitted population PK model (Table 4 in vivo Vmax) and the IVIVC model
+give typical profiles that differ only through the four in vivo Vmax values:
+
+```{r typical-profiles}
+prof <- dplyr::bind_rows(
+  sim_pk |> dplyr::mutate(model = "Population PK"),
+  sim_ivivc |> dplyr::mutate(model = "IVIVC")
+)
+ggplot(prof |> dplyr::filter(time <= 24),
+       aes(time, Cc, colour = treatment, linetype = model)) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Sildenafil (ng/mL)", colour = NULL, linetype = NULL,
+       caption = "Typical-value profiles; compare with Figure 3 of Kim 2019.")
+```
+
+# Stochastic prediction (Figure 6)
+
+```{r vpc}
+set.seed(2019)
+rxode2::rxSetSeed(2019)
+ev_vpc <- make_events(c(0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8,
+                        10, 12, 16, 20, 24), n_per_arm = 200)
+sim_vpc <- rxode2::rxSolve(ui_ivivc, events = ev_vpc, keep = "treatment",
+                           returnType = "data.frame")
+stopifnot(!anyNA(sim_vpc$Cc))
+
+vpc <- sim_vpc |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(
+    p10 = quantile(Cc, 0.10), p25 = quantile(Cc, 0.25), p50 = median(Cc),
+    p75 = quantile(Cc, 0.75), p90 = quantile(Cc, 0.90), .groups = "drop"
+  )
+
+ggplot(vpc, aes(time)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), alpha = 0.2) +
+  geom_ribbon(aes(ymin = p25, ymax = p75), alpha = 0.3) +
+  geom_line(aes(y = p50)) +
+  scale_y_log10() +
+  facet_wrap(~treatment, scales = "free_y") +
+  labs(x = "Time (h)", y = "Sildenafil (ng/mL)",
+       caption = paste("200 virtual dogs per tablet; median, 25-75th and",
+                       "10-90th percentiles. Replicates Figure 6 of Kim 2019."))
+
+# Medians of the plateau / peak region read from Figure 6 are of the order of
+# 300 (IR, 1 h), 700 (SRfast, 1.5 h), 300 (SRmedium, 3 h) and 100 (SRslow, 4 h)
+# ng/mL. Gate the median (centre of the cohort), not the tails.
+med_at <- function(f, t) vpc$p50[vpc$treatment == f & vpc$time == t]
+stopifnot(
+  med_at("IR", 1) > 150, med_at("IR", 1) < 500,
+  med_at("SRfast", 1.5) > 400, med_at("SRfast", 1.5) < 1100,
+  med_at("SRmedium", 3) > 150, med_at("SRmedium", 3) < 500,
+  med_at("SRslow", 4) > 50, med_at("SRslow", 4) < 160
+)
+```
+
+# Assumptions and deviations
+
+* **Table 4 CL and CLD rows are transposed.** The table prints systemic
+  clearance CL = 49.2 L/h (BSV 0.379) and distribution clearance CLD =
+  9.97 L/h (BSV 0.2). The IR tablet dissolves completely, so its AUC equals
+  Dose / CL exactly; CL = 49.2 L/h gives 406 ng*h/mL, a fifth of the observed
+  2007 ng*h/mL and of the paper's own IVIVC prediction (Table 5), while
+  CL = 9.97 L/h gives 2006 ng*h/mL and matches the NCA CL/F of the IR and
+  SRfast tablets (Table 2: 12.1 and 10.4 L/h). With CL = 9.97 L/h, only
+  CLD = 49.2 L/h reproduces the Table 5 Cmax values. The packaged models
+  swap the two rows, value and BSV together; which BSV belongs to which
+  clearance cannot be checked independently.
+* **Equation subscripts.** Equations (2) and (8) print the in vitro symbols
+  Vmax,in vitro and AM50,in vitro in the rate term and FDiss,in vivo in
+  Equation (8); the surrounding text defines Vmax,in vivo and AM50,in vivo as
+  the parameters of the in vivo dissolution and FDiss,total as the
+  multiplier, and Table 4 reports them. The models use the in vivo
+  parameters and FDiss,total in both equations, so the amount leaving the
+  tablet enters the lumen (mass balance).
+* **Dose normalisation.** Methods 2.6.3 states that the tablet amount was
+  normalised by the dose and that Vmax/dose and AM50/dose were estimated.
+  The models write Equation (2) in amounts as
+  `Vmax * X / (AM50 + X / Dose)` with `Dose = podo(depot)`. This reading
+  reproduces the 63% (SRmedium) and 21% (SRslow) dissolved at 12 h stated in
+  Results 3.3.2. The models are single-dose models: FDiss,total is a function
+  of the time since the latest tablet, so overlapping tablets (repeated
+  dosing before the previous tablet has left the colon) are not described.
+* **Between-subject variability scale.** Table 4 does not state the scale of
+  its BSV column. S-ADAPT reports BSV as the standard deviation of the
+  log-scale random effect ('apparent CV'), so omega^2 = BSV^2. The 0.0316
+  entries (Hill coefficients, in vitro AM50) equal sqrt(0.001), the usual
+  small-variance floor of S-ADAPT fits, which supports this reading. They
+  are not marked as fixed in the paper and are not fixed here.
+* **Imax variability.** Imax (0.992) carries an exponential random effect
+  (BSV 0.0027), as stated for all parameters, so an individual Imax can
+  slightly exceed 1 (by at most about 0.01 at 3 SD), giving a marginally
+  negative FDiss,stomach after gastric emptying. The effect on dissolution is
+  negligible and the model is kept as published.
+* **Residual error.** No residual-error model or estimate is reported. The
+  models carry a proportional residual SD fixed to zero as a placeholder;
+  the in vitro model has no observation error at all.
+* **IVIVC variability.** The paper does not say which between-subject
+  variability its IVIVC Monte Carlo simulations (Section 2.7) applied to the
+  correlated in vivo Vmax. `Kim_2019_sildenafil_dog_ivivc` applies the
+  Table 4 per-formulation BSV of the fitted in vivo Vmax to the correlated
+  value. The in vitro Vmax inputs and the Equation (13) coefficients are
+  fixed: they come from separate fits (Table 3 and the SigmaPlot
+  regression). Equation (13) returns a non-positive in vivo rate for in vitro
+  Vmax/dose below about 0.062 1/h, outside the 0.124-6.58 1/h range on which it
+  was built.
+* **Figure 4B.** The Figure 4B curves match the IVIVC-derived in vivo Vmax
+  (SRmedium 63% at 12 h, 38% at 1 h) slightly better than the Table 4 fitted
+  values (67% and 41%); both are within the tolerance used above.
+* **In vitro dissolution at pH 4.5 and 6.8** (Figure 2) was not modelled by the
+  authors and is not represented.
+* **Body weight** is not reported; doses are flat tablet amounts.

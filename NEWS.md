@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2019 intranasal dexmedetomidine ([doi:10.3389/fphar.2019.00756](https://doi.org/10.3389/fphar.2019.00756)) -- Chinese children aged 4-10 years undergoing surgery.
+- Add Kim 2019 sildenafil site-dependent dissolution and IVIVC ([doi:10.3390/pharmaceutics11060251](https://doi.org/10.3390/pharmaceutics11060251)) -- beagle dogs given IR and sustained-release tablets, with the in vitro dissolution model.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
