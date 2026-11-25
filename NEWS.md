@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2026 microdose cocktail midazolam, dabigatran, pitavastatin, rosuvastatin and atorvastatin ([doi:10.3389/fphar.2026.1924307](https://doi.org/10.3389/fphar.2026.1924307)) -- Chinese healthy volunteers and type 2 diabetes patients.
+- Add Hong 2026 datopotamab deruxtecan exposure-response ([doi:10.1002/cpt.70477](https://doi.org/10.1002/cpt.70477)) -- adults with previously treated advanced non-small cell lung cancer (efficacy) and NSCLC or breast cancer (safety).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

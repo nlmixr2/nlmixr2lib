@@ -2314,34 +2314,18 @@ navbar:
         href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Datopotamab (Hong 2025)"
         href: articles/Hong_2025_datopotamab.html
-      - text: "Datopotamab dose interruption (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab dose reduction (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab os (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab ose (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab ose grade2 (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab pfs (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab sae (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab stomatitis (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab stomatitis grade2 (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab teae grade3 (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "DatopotamabDeruxtecan tg32mouse adc (Nakagawa 2026)"
-        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
-      - text: "DatopotamabDeruxtecan tg32mouse tab (Nakagawa 2026)"
-        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
-      - text: "DatopotamabDeruxtecan wtmouse adc (Nakagawa 2026)"
-        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
-      - text: "DatopotamabDeruxtecan wtmouse tab (Nakagawa 2026)"
-        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "Datopotamab dose reduction (Hong 2026)"
+        href: articles/Hong_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab orr (Hong 2026)"
+        href: articles/Hong_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab os (Hong 2026)"
+        href: articles/Hong_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab pfs (Hong 2026)"
+        href: articles/Hong_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab sae (Hong 2026)"
+        href: articles/Hong_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab teae grade3 (Hong 2026)"
+        href: articles/Hong_2026_datopotamab_exposure_response.html
       - text: "Daunorubicin (Bogason 2011)"
         href: articles/Bogason_2011_daunorubicin.html
       - text: "Daunorubicin (Varatharajan 2016)"
@@ -11236,6 +11220,7 @@ articles:
   - articles/Hong_2016_pregabalin
   - articles/Hong_2019_evofosfamide
   - articles/Hong_2025_datopotamab
+  - articles/Hong_2026_datopotamab_exposure_response
   - articles/Hood_2021_medi7836
   - articles/Hopkins_2015_leflunomide
   - articles/Hopkins_2017_doxycycline
