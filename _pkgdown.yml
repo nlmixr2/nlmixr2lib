@@ -2180,10 +2180,16 @@ navbar:
         href: articles/Choi_2025_denosumab.html
       - text: "Denosumab (SanchezVidaurre 2025)"
         href: articles/SanchezVidaurre_2025_denosumab.html
+      - text: "Denosumab bmd direct (Hasegawa 2018)"
+        href: articles/Hasegawa_2018_denosumab_bone_scale_reduction.html
+      - text: "Denosumab bmd turnover (Hasegawa 2018)"
+        href: articles/Hasegawa_2018_denosumab_bone_scale_reduction.html
       - text: "Denosumab kn012 (Zhu 2026)"
         href: articles/Zhu_2026_denosumab.html
       - text: "Denosumab phase1 (SanchezVidaurre 2025)"
         href: articles/SanchezVidaurre_2025_denosumab.html
+      - text: "Denosumab qsp (Hasegawa 2018)"
+        href: articles/Hasegawa_2018_denosumab_bone_scale_reduction.html
       - text: "Denosumab reference (Zhu 2026)"
         href: articles/Zhu_2026_denosumab.html
       - text: "Deoxypodophyllotoxin dog pbpk (Chen 2016)"
@@ -10324,6 +10330,7 @@ articles:
   - articles/Hartmann_2026_nintedanib
   - articles/Harun_2019_cysticFibrosis
   - articles/Harwood_2025_tobramycin
+  - articles/Hasegawa_2018_denosumab_bone_scale_reduction
   - articles/Hashimoto_1994_zonisamide
   - articles/Hassouneh_2024_dasatinib
   - articles/Hawwa_2008_mercaptopurine
