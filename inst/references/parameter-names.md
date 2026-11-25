@@ -4296,9 +4296,16 @@ Prescription, geometry and transport parameters of an extracorporeal blood circu
 ### qpfr (**canonical patient fluid removal rate**)
 - **Type:** paper-named-param
 - **Role:** Net ultrafiltration rate removed from the patient (fluid removal prescription). Contributes to `qfil` and is subtracted from the return-line flow. Zero in a bench circuit that is not net-removing fluid.
-- **Source aliases:** `Q_PFR`, `UFR`, `patient fluid removal`
-- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
-- **Notes:** Papers sometimes tabulate the same quantity as `UFR` (ultrafiltration rate); check whether the tabulated number is the *net* patient removal or the *gross* filtrate flow before mapping it here, because the gross flow is `qfil`, not `qpfr`.
+- **Source aliases:** `Q_PFR`, `UFR`, `QUF`, `patient fluid removal`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example); `Eloot_2016_urea.R` and its five protein-bound-solute siblings (net patient ultrafiltration during intermittent hemodialysis, `QUF` = 0.41 L/h held at the cohort mean and gated by `RRT_HEMODIAL_ACTIVE`; it drains the `fluid_balance` state, which shrinks the plasmatic and extraplasmatic volumes in proportion).
+- **Notes:** Papers sometimes tabulate the same quantity as `UFR` (ultrafiltration rate); check whether the tabulated number is the *net* patient removal or the *gross* filtrate flow before mapping it here, because the gross flow is `qfil`, not `qpfr`. In a patient-side kinetic model with no circuit (Eloot 2016) `qpfr` is the rate at which the patient's body-fluid volume falls while a session runs; pair it with `qgain` for the interdialytic refill.
+
+### qgain (**canonical interdialytic fluid regain rate**)
+- **Type:** paper-named-param
+- **Role:** Rate at which a dialysis patient's body-fluid volume is restored between sessions (volume / time), the counterpart of the intradialytic net ultrafiltration `qpfr`. Drives the `fluid_balance` state up while `RRT_HEMODIAL_ACTIVE = 0`.
+- **Source aliases:** interdialytic weight gain expressed as a rate.
+- **Example models:** `Eloot_2016_urea.R` and its five protein-bound-solute siblings (founding examples; not printed in the paper, set to the weekly ultrafiltrate of the 3 x 4 h schedule spread over the 156 interdialytic hours, 0.41 L/h x 12 h / 156 h, so the weekly fluid balance is zero).
+- **Notes:** Schedule-dependent: when a simulation changes the session length or frequency, set `qgain` so that `qgain x interdialytic time = qpfr x dialysis time` per week, otherwise the volumes drift across weeks. Distinct from a fluid-intake covariate such as `FLUID_IN_24H`, which is a daily volume supplied as data rather than a structural rate. Ratified by the maintainers 2026-11-25 with the Eloot 2016 extraction.
 
 ### vreservoir (**canonical ex vivo blood reservoir volume**)
 - **Type:** paper-named-param

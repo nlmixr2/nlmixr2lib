@@ -515,6 +515,14 @@ The corresponding derived observation variables are `Cmilk` / `Cmilk_<metab>` an
 - **Example models:** `Patel_2015_oseltamivir.R` (per-metabolite form `dialysate_oselcarb`; oseltamivir carboxylate removed from `central_oselcarb` by the two alternating peritoneal-dialysis arms `cl_ccpd_oselcarb` / `cl_capd_oselcarb` accumulates here and was fitted against dialysate amounts in micrograms, with the collection compartment "emptied and reset" at each interval boundary in the source NONMEM dataset).
 - **Notes:** Per-metabolite `dialysate_<metab>` is accepted via the registered metabolite suffixes, exactly as for `urine_<metab>`. Distinct from a dialysis *clearance* parameter (`lcl_hemodialysis`, `lcl_ccpd_oselcarb`) and from the dialysis *session gate* covariates (`RRT_HEMODIAL_ACTIVE`, `RRT_CCPD_ACTIVE`, `RRT_CAPD_ACTIVE`) -- this entry is only the collected-amount state. Because the state is cumulative, a model reproducing per-interval collected amounts must reset it at each interval boundary; see the `URINE_VOL_INTERVAL` register entry and `ButraguenoLaiseca_2024_meropenem.R` for the `evid = 5` reset idiom and the rxode2 ordering hazard it documents. Ratified by the maintainers 2026-09-02 (PMC4386947).
 
+### fluid_balance (**canonical net body-fluid balance state**)
+- **Type:** compartment
+- **Role:** Net change in the patient's total body-fluid volume (L) relative to the volume at the time origin of the model, carried as an ODE state so that distribution volumes can change over time. It is a bookkeeping state, not a drug amount: net ultrafiltration during a dialysis session drives it down and interdialytic fluid intake drives it back up, and the model scales its distribution volumes by `(vtot0 + fluid_balance) / vtot0`.
+- **Source aliases:**
+  - `dV/dt`, `dV1/dt + dV2/dt` -- Eloot 2016 Eq. 1-2 (the volume-change terms of the mass balances).
+- **Example models:** `Eloot_2016_urea.R` and its five protein-bound-solute siblings (`Eloot_2016_pCresylGlucuronide.R`, `Eloot_2016_hippuricAcid.R`, `Eloot_2016_indoleAceticAcid.R`, `Eloot_2016_indoxylSulfate.R`, `Eloot_2016_pCresylSulfate.R`; founding examples). `d/dt(fluid_balance) <- (1 - RRT_HEMODIAL_ACTIVE) * qgain - RRT_HEMODIAL_ACTIVE * qpfr`, with the ultrafiltrate distributed over the plasmatic and extraplasmatic volumes in proportion to their size.
+- **Notes:** Units are a volume (L), so its `compartmentData` entry uses `units = "L"` and `specimen = "not applicable"`. Pair with `qpfr` (net ultrafiltration rate) and `qgain` (interdialytic fluid regain rate) in `parameter-names.md`. Distinct from the circuit-side flow parameters of a CRRT circuit model (`qfil`, `qret`), which move blood through the device and do not change the patient's volume, and from a body-weight covariate (`WT`), which is supplied as data rather than integrated. Ratified by the maintainers 2026-11-25 with the Eloot 2016 extraction.
+
 ---
 
 ## mPBPK exception (Cao 2013 family)
