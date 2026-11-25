@@ -9188,6 +9188,12 @@ navbar:
         href: articles/Izat_2025_aldehyde_oxidase_substrates.html
       - text: "Zonisamide (Hashimoto 1994)"
         href: articles/Hashimoto_1994_zonisamide.html
+      - text: "Zorifertinib brainmet h12 mouse (Martin 2018)"
+        href: articles/Martin_2018_zorifertinib.html
+      - text: "Zorifertinib brainmet mouse (Martin 2018)"
+        href: articles/Martin_2018_zorifertinib.html
+      - text: "Zorifertinib sc mouse (Martin 2018)"
+        href: articles/Martin_2018_zorifertinib.html
       # AUTOGEN:specific_drugs:END
     ddmore:
       text: DDMoRe models
@@ -11053,6 +11059,7 @@ articles:
   - articles/Martial_2017_micafungin
   - articles/Martial_2021_tacrolimus
   - articles/MartinCerezuela_2024_isavuconazole
+  - articles/Martin_2018_zorifertinib
   - articles/MartinezCasanova_2023_piperacillin
   - articles/Martinez_2019_alirocumab
   - articles/Martson_2020_caspofungin

@@ -1,0 +1,354 @@
+---
+title: "Zorifertinib (AZD3759) tumour growth and resistance in mouse xenografts (Martin 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Zorifertinib (AZD3759) tumour growth and resistance in mouse xenografts (Martin 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Martin_2018_zorifertinib_brainmet_mouse"))$reference`
+* Article: <https://doi.org/10.1007/s00280-018-3630-8> (open access, PMC6132866)
+
+Martin 2018 modelled the tumour response of human non-small cell lung cancer
+(NSCLC) xenografts in mice to zorifertinib (AZD3759), a brain-penetrant EGFR
+tyrosine kinase inhibitor. The paper contributes three models, all driven by
+the daily dose in mg/kg rather than by a drug concentration (there is no PK
+layer):
+
+| Model | Data | Structure |
+|-------|------|-----------|
+| `Martin_2018_zorifertinib_sc_mouse` | Subcutaneous xenografts, calliper tumour volume, 15 days | Exponential growth, sigmoid-Emax cell kill (Eq. 1, Table 1) |
+| `Martin_2018_zorifertinib_brainmet_mouse` | PC9_Luc brain metastasis model, bioluminescence, 70 days | Sensitive + resistant cell populations, a fraction resistant at baseline (Hypothesis 1, final model; Eqs. 2-4, Table 2) |
+| `Martin_2018_zorifertinib_brainmet_h12_mouse` | Same data | Hypothesis 1 plus conversion of sensitive to resistant cells (Hypothesis 1 + 2, reported alternative; Table 2) |
+
+```{r models}
+mod_sc <- readModelDb("Martin_2018_zorifertinib_sc_mouse")
+mod_h1 <- readModelDb("Martin_2018_zorifertinib_brainmet_mouse")
+mod_h12 <- readModelDb("Martin_2018_zorifertinib_brainmet_h12_mouse")
+```
+
+# Population
+
+**Subcutaneous study.** 38 mice bearing subcutaneous NSCLC xenografts
+(about 15 mm^3 of cells implanted, about 180 mm^3 at the start of dosing):
+7 vehicle controls and 7 or 8 animals at each of 3.75, 7.5, 15 and 30 mg/kg
+zorifertinib once daily. Tumour volume was measured by calliper roughly every
+4 days for 15 days, as V = length x width^2 / 2. The cell line and mouse
+strain are not stated.
+
+**Brain metastasis study.** 51 immunodeficient nude mice implanted with PC9
+cells (EGFR exon 19 deletion) carrying a luciferase reporter (PC9_Luc):
+25 controls and 13 animals at each of 7.5 and 15 mg/kg once daily, followed
+for up to 70 days. Tumour burden was measured as total bioluminescence flux;
+it varied over several orders of magnitude between animals at baseline.
+
+The same information is available programmatically, for example
+`readModelDb("Martin_2018_zorifertinib_brainmet_mouse")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. In summary:
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| SC: `d/dt(tumor_size) = kg*V - Emax*D^hill/(ED50^hill + D^hill)*V` | n/a | Equation 1 |
+| SC: `lkg` (lambda) | 0.0855 1/day, IIV 34.9% | Table 1 |
+| SC: `lemax` (Emax) | 0.519 1/day | Table 1 (unit printed as mm3/day; see Errata) |
+| SC: `led50` (ED50) | 21.5 mg/kg | Table 1 |
+| SC: `lhill` (Gamma) | 0.617 | Table 1 |
+| SC: `lrbase` (Baseline) | 175 mm^3, IIV 30.5% | Table 1 |
+| SC: `expSd` | 0.127 | Table 1, residual error 12.7% |
+| Brain: `d/dt(tumor_sensitive)`, `d/dt(tumor_resistant)`, `tumor_size` | n/a | Equations 2-4 |
+| Brain: initial conditions `p*Total(0)`, `(1-p)*Total(0)`, `p = exp(S)/(1+exp(S))` | n/a | Methods, 'Brain metastasis mouse models' |
+| H1: `lkg_sens` (lambda_S) | 0.108 1/day, IIV 48.2% | Table 2, Hypothesis 1 |
+| H1: `lkg_res` (lambda_R) | 0.0556 1/day | Table 2, Hypothesis 1 |
+| H1: `lkkill` (kD) | 0.0139 1/day per mg/kg, IIV 11.0% | Table 2, Hypothesis 1 |
+| H1: `lrbase` (Baseline) | 137 x 10^6 p/s, IIV 245% | Table 2, Hypothesis 1 |
+| H1: `logitfsens` (S) | logit(0.987), IIV 48.4% | Table 2, Hypothesis 1 |
+| H1: `expSd` | 0.190 | Table 2, Hypothesis 1 |
+| H1+2: `lkg_sens`, `lkg_res`, `lkr`, `lkkill`, `lrbase`, `logitfsens`, `expSd` | 0.0992, 0.0708, 1.54e-6, 0.0132, 177, logit(0.996), 0.165 | Table 2, Hypothesis 1 + 2 |
+| H1+2 IIV on lambda_S, kD, Baseline, S | 48.9%, 9.08%, 248%, 135% | Table 2, Hypothesis 1 + 2 |
+
+# Typical-value checks against closed forms
+
+Each model is linear in its states with constant rates, so the typical-value
+solution has a closed form. Both sides use the same parameter values, so the
+difference is pure ODE-solver error and a tight bound is appropriate.
+
+```{r closed-form}
+grid_sc <- tidyr::expand_grid(
+  dose = c(0, 3.75, 7.5, 15, 30),
+  time = seq(0, 15, by = 0.5)
+) |>
+  mutate(
+    id = match(dose, c(0, 3.75, 7.5, 15, 30)),
+    evid = 0, amt = 0, cmt = "tumor_size",
+    DOSE_ZORIFERTINIB_MGKGD = dose
+  )
+typ_sc <- rxode2::rxSolve(rxode2::zeroRe(mod_sc), grid_sc,
+  keep = "dose", returnType = "data.frame"
+)
+kill_sc <- function(d) 0.519 * d^0.617 / (21.5^0.617 + d^0.617)
+typ_sc$closed <- 175 * exp((0.0855 - kill_sc(typ_sc$dose)) * typ_sc$time)
+
+grid_bm <- tidyr::expand_grid(
+  dose = c(0, 7.5, 15),
+  time = seq(0, 70, by = 1)
+) |>
+  mutate(
+    id = match(dose, c(0, 7.5, 15)),
+    evid = 0, amt = 0, cmt = "tumor_sensitive",
+    DOSE_ZORIFERTINIB_MGKGD = dose
+  )
+typ_h1 <- rxode2::rxSolve(rxode2::zeroRe(mod_h1), grid_bm,
+  keep = "dose", returnType = "data.frame"
+)
+typ_h1$closed <- 137 * (0.987 * exp((0.108 - 0.0139 * typ_h1$dose) * typ_h1$time) +
+  0.013 * exp(0.0556 * typ_h1$time))
+
+stopifnot(
+  max(abs(typ_sc$tumor_size / typ_sc$closed - 1)) < 1e-4,
+  max(abs(typ_h1$tumor_size / typ_h1$closed - 1)) < 1e-4
+)
+```
+
+# Figure 5: dose-response of the growth-rate reduction
+
+Figure 5 plots the reduction in growth rate against dose for the two mouse
+models: the subcutaneous Emax term and the brain-metastasis linear term
+`kD * D`. The figure reads about 0.29 1/day at 30 mg/kg (subcutaneous) and
+0.21 1/day at 15 mg/kg (brain metastasis). These readings confirm that
+`Emax` is in 1/day and that `kD` is per mg/kg (see Errata).
+
+```{r figure-5}
+dr <- bind_rows(
+  tibble(dose = seq(0, 30, by = 0.25), model = "Subcutaneous") |>
+    mutate(reduction = kill_sc(dose)),
+  tibble(dose = seq(0, 15, by = 0.25), model = "Brain metastasis") |>
+    mutate(reduction = 0.0139 * dose)
+)
+stopifnot(
+  abs(kill_sc(30) / 0.29 - 1) < 0.05,
+  abs(0.0139 * 15 / 0.21 - 1) < 0.05
+)
+ggplot(dr, aes(dose, reduction, linetype = model)) +
+  geom_line() +
+  coord_cartesian(ylim = c(0, 0.4)) +
+  labs(
+    x = "Dose (mg/kg)", y = "Reduction in growth rate (1/day)", linetype = NULL,
+    caption = "Replicates Figure 5 of Martin 2018."
+  )
+```
+
+# Figure 3: visual predictive checks
+
+A virtual cohort of 100 animals per dose group is simulated from each model
+with the published between-animal variability and residual error. The solid
+line is the typical-value prediction and the band the 2.5th-97.5th
+percentiles of simulated observations, as in Figure 3.
+
+```{r vpc-sim}
+rxode2::rxSetSeed(2018)
+n_per_arm <- 100
+
+make_cohort <- function(doses, times, cmt, n) {
+  tidyr::expand_grid(arm = seq_along(doses), rep = seq_len(n), time = times) |>
+    mutate(
+      id = (arm - 1) * n + rep,
+      dose = doses[arm],
+      DOSE_ZORIFERTINIB_MGKGD = dose,
+      evid = 0, amt = 0, cmt = cmt
+    ) |>
+    select(id, time, evid, amt, cmt, dose, DOSE_ZORIFERTINIB_MGKGD)
+}
+
+ev_sc <- make_cohort(c(0, 3.75, 7.5, 15, 30), seq(0, 15, by = 1), "tumor_size", n_per_arm)
+ev_bm <- make_cohort(c(0, 7.5, 15), seq(0, 70, by = 2), "tumor_sensitive", n_per_arm)
+
+sim_sc <- rxode2::rxSolve(mod_sc, ev_sc, keep = "dose", returnType = "data.frame")
+sim_h1 <- rxode2::rxSolve(mod_h1, ev_bm, keep = "dose", returnType = "data.frame")
+
+vpc_summary <- function(d) {
+  d |>
+    group_by(dose, time) |>
+    summarise(
+      lo = quantile(sim, 0.025), hi = quantile(sim, 0.975),
+      med = median(sim), .groups = "drop"
+    )
+}
+dose_lab <- function(d) factor(ifelse(d == 0, "Control", paste(d, "mg/kg")),
+  levels = c("Control", paste(c(3.75, 7.5, 15, 30), "mg/kg"))
+)
+```
+
+```{r figure-3a, fig.height = 3}
+vpc_sc <- vpc_summary(sim_sc)
+ggplot(vpc_sc, aes(time)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey85") +
+  geom_line(aes(y = tumor_size), data = typ_sc, linewidth = 1) +
+  facet_wrap(~ dose_lab(dose), nrow = 1) +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(1, 1500)) +
+  labs(
+    x = "Time from randomisation (days)", y = "Tumour volume (mm^3)",
+    caption = "Replicates Figure 3a of Martin 2018."
+  )
+```
+
+```{r figure-3b, fig.height = 3}
+vpc_bm <- vpc_summary(sim_h1)
+ggplot(vpc_bm, aes(time)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey85") +
+  geom_line(aes(y = tumor_size), data = typ_h1, linewidth = 1) +
+  facet_wrap(~ dose_lab(dose), nrow = 1) +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(1e-2, 1e6)) +
+  labs(
+    x = "Time from randomisation (days)",
+    y = "Bioluminescence (1e6 photons/s)",
+    caption = "Replicates Figure 3b of Martin 2018 (Hypothesis 1 model)."
+  )
+```
+
+The typical curves agree with the solid lines of Figure 3. Subcutaneous model
+at day 15: about 630 mm^3 in controls and 87, 44, 20 and 9 mm^3 at 3.75 to
+30 mg/kg. Brain metastasis model: about 2.6 x 10^5 at day 70 in controls; at
+15 mg/kg, a fall to a minimum near day 35 followed by regrowth to about 90 at
+day 70. The 7.5 mg/kg line of Figure 3b ends somewhat higher (about 6 x 10^2)
+than the typical value here (about 3 x 10^2). At that dose the net growth rate
+of the sensitive cells, 0.108 - 0.0139 x 7.5 = 0.004 1/day, is close to zero,
+so the curve is very sensitive to rounding of the printed estimates.
+
+```{r figure-3-checks}
+typ_at <- function(d, t) typ_h1$tumor_size[typ_h1$dose == d & typ_h1$time == t]
+stopifnot(
+  # Controls grow; 15 mg/kg shrinks and then regrows from resistant cells
+  typ_at(0, 70) > 1e5,
+  typ_at(15, 35) < typ_at(15, 0),
+  typ_at(15, 70) > typ_at(15, 35)
+)
+```
+
+# Figure 4: proportion of resistant cells over time
+
+Figure 4 shows the proportion of sensitive and resistant cells by dose group.
+Below are the typical-value proportion (line) and the mean over the
+simulated cohort (points), which includes the between-animal variability of
+the sensitive fraction.
+
+```{r figure-4, fig.height = 3}
+mean_res <- sim_h1 |>
+  group_by(dose, time) |>
+  summarise(frac_resistant = mean(frac_resistant), .groups = "drop")
+ggplot(typ_h1, aes(time, frac_resistant)) +
+  geom_line() +
+  geom_point(data = mean_res, size = 0.8) +
+  facet_wrap(~ dose_lab(dose), nrow = 1) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Time from randomisation (days)", y = "Proportion resistant",
+    caption = "Compare with Figure 4 of Martin 2018 (dark area = resistant)."
+  )
+
+stopifnot(
+  # Typical proportion resistant: 1.3% at baseline, falling in controls,
+  # rising in the treated groups, nearly all resistant at 70 days on 15 mg/kg
+  abs(typ_h1$frac_resistant[typ_h1$time == 0][1] - 0.013) < 1e-6,
+  typ_h1$frac_resistant[typ_h1$dose == 0 & typ_h1$time == 70] < 0.013,
+  typ_h1$frac_resistant[typ_h1$dose == 7.5 & typ_h1$time == 56] > 0.1,
+  typ_h1$frac_resistant[typ_h1$dose == 15 & typ_h1$time == 70] > 0.95
+)
+```
+
+Figure 4 starts at about 3.5% resistant in every group, more than the typical
+1.3%. The figure's starting value is close to the cohort mean (about 3%) when
+the between-animal variability is log-normal on the logit `S`. It is lower
+(about 1.5%) when that variability is additive on the logit scale. That is
+why the model applies the 48.4% variability log-normally (see Assumptions).
+Later time points of Figure 4 appear to be averaged over the study animals'
+individual estimates, which a simulation cannot reproduce exactly.
+
+# Hypothesis 1 versus Hypothesis 1 + 2
+
+The authors preferred Hypothesis 1: the AIC difference was small (4029.19
+versus 4028.59) and the estimated conversion rate `kR` was negligible
+(1.54 x 10^-6 1/day). The two typical-value predictions are close:
+
+```{r h1-vs-h12, fig.height = 3}
+typ_h12 <- rxode2::rxSolve(rxode2::zeroRe(mod_h12), grid_bm,
+  keep = "dose", returnType = "data.frame"
+)
+both <- bind_rows(
+  typ_h1 |> mutate(model = "Hypothesis 1"),
+  typ_h12 |> mutate(model = "Hypothesis 1 + 2")
+)
+ggplot(both, aes(time, tumor_size, linetype = model)) +
+  geom_line() +
+  facet_wrap(~ dose_lab(dose), nrow = 1) +
+  scale_y_log10() +
+  labs(
+    x = "Time from randomisation (days)", y = "Bioluminescence (1e6 photons/s)",
+    linetype = NULL
+  )
+
+# Number of resistant cells generated by conversion over 70 days at 15 mg/kg,
+# relative to the resistant cells present at baseline (Results: negligible)
+conv_share <- with(
+  typ_h12[typ_h12$dose == 15, ],
+  sum(diff(time) * 1.54e-6 * head(tumor_sensitive, -1)) / tumor_resistant[1]
+)
+stopifnot(conv_share < 0.01)
+```
+
+# PKNCA
+
+Not applicable: these models have no drug concentration. Zorifertinib enters
+only through the daily dose, so the checks above (closed-form solutions,
+Figure 5 dose-response, Figures 3 and 4) are the validation.
+
+# Assumptions and deviations
+
+* **Emax units.** Table 1 prints the Emax unit as mm^3/day. In Equation 1
+  Emax multiplies the tumour volume, so it must be a rate constant in 1/day.
+  Figure 5 plots the subcutaneous reduction in growth rate in 1/day,
+  reaching 0.29 1/day at 30 mg/kg, which is what 0.519 1/day gives.
+* **lambda_S / lambda_R units.** Table 2 prints them as
+  "x 10^6 (p/s)/day", which is the baseline's unit carried over in error.
+  The Results compare lambda_S (0.11) directly with the subcutaneous lambda
+  (0.0855 1/day), so both are taken as 1/day.
+* **kD units.** Table 2 gives kD in 1/day, but it multiplies the dose D in
+  mg/kg (Equation 2). The model treats it as 1/day per mg/kg, which
+  reproduces Figure 5 (0.21 1/day at 15 mg/kg).
+* **Bioluminescence units.** The output is in units of 10^6 photons/s,
+  matching the Table 2 baseline (137 x 10^6 p/s). Figure 3b labels its axis
+  "total flux [p/s]", but its typical curves start near 10^2, so the plotted
+  values are on the same 10^6 scale.
+* **Random effects.** The Methods state that IIV is log-normal and define
+  CV% as the square root of the variance, so each variance is (CV/100)^2.
+  For the sensitive fraction, the IIV is applied log-normally to the logit
+  parameter S (`S_i = S * exp(eta)`), which matches the starting proportion
+  of Figure 4 better than an additive logit-scale random effect. The paper
+  does not print its NONMEM code, so this is an interpretation.
+* **Residual error.** The Methods give log-normal residual error. The
+  percentage in Tables 1 and 2 is used as the log-scale SD (`lnorm(expSd)`).
+* **Dose as a covariate.** The models use the daily dose of the animal's
+  group (`DOSE_ZORIFERTINIB_MGKGD`, mg/kg/day; 0 for controls) and assume a
+  constant effect from time 0 (randomisation and start of dosing), as the
+  paper does. Dosing records are not needed.
+* **Dropout.** About 10% of brain-metastasis animals dropped out with large
+  tumour burdens. The authors found that a joint dropout model did not change
+  the estimates, and the packaged model has no dropout component.
+* No erratum or supplementary material was found for this article (checked
+  2026-11-25).
