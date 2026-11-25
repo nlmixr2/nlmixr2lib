@@ -2786,6 +2786,14 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (`Q/F = 0.400 L/h`, shared between primaquine and carboxyprimaquine per Wattanakul 2024 Table 2 footnote c; the source paper assumed and encoded `Q/F_CPQ = Q/F_PQ`).
 - **Notes:** Metabolite forms take the standard suffix (`lq_milk_<metab>`) when a paper estimates the parent and metabolite transfer clearances separately.
 
+### lcl_milk (**canonical log-transformed lactation-route clearance from mother to breastfed infant**)
+- **Type:** log-transformed-pk
+- **Role:** One-way clearance (volume / time) carrying drug or tracer out of the mother's central compartment and into the breastfed infant through breast milk, in a dyad model that lumps milk with the maternal central compartment instead of carrying a separate `milk` state. It is the lactation arm of the mother's total clearance, on the same principle as the route-specific arms `lcl_renal` and `lcl_nonren`: the mother's total elimination contains it, and only this arm delivers to `infant_central`. Inside `model()` the bare `cl_milk` gives the transfer rate constant `kmilkinf <- cl_milk / vc`.
+- **Source aliases:**
+  - `CLmb` -- Liu 2019 (J Pharmacokinet Pharmacodyn) Eq. 2, 'water clearance from mother to infant'.
+- **Example models:** `Liu_2019_deuterium.R` (deuterium oxide dose-to-the-mother model; `CLmb = 0.733 L/day` population mean, log-scale mean -0.33 with 20.1% between-subject variability, correlated 0.99 with the infant clearance `lcl_infant`; for a water tracer it equals the infant's breast-milk WATER intake, so milk intake is `cl_milk / 0.889` kg/day).
+- **Notes:** Not an alias of `lq_milk`, which is a two-way exchange with a separate `milk` compartment, nor of `kmilkinf`, which is a rate constant applied to a milk AMOUNT. Use `lcl_milk` when the source estimates the lactation transfer as a clearance from the maternal body pool.
+
 ### lq_elf (**canonical log-transformed central-to-lung-ELF inter-compartmental clearance**)
 - **Type:** log-transformed-pk
 - **Role:** Inter-compartmental clearance between a central compartment and the lung epithelial-lining-fluid space (volume / time). Second member of the `lq_<destination>` family founded by `lq_milk`, for the same reason: the bare `lq` / `lq2` mean exchange with `peripheral1` / `peripheral2` specifically, so a lung-ELF exchange needs its own destination token. The bare form `q_elf` is used inside `model`. Note that the exchange is generally NOT symmetric in rate -- `q_elf` is a clearance applied to whichever compartment the drug is leaving, so the ELF-to-central micro-constant is `q_elf / v_elf` while the central-to-ELF one is `q_elf / vc`.
@@ -3131,7 +3139,7 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Role:** First-order rate constant (1/time) transferring drug from a mother's `milk` compartment into the breastfed infant's `infant_depot` compartment during a feeding window in a mother-to-infant dyad model. Normally fixed to a large value so that essentially all of the milk-compartment amount transfers within the window rather than estimated, because the feed is fast relative to every other process in the model.
 - **Source aliases:** none.
 - **Example models:** `Wattanakul_2024_primaquine_motherinfant.R` (`MTINF_PQ = MTINF_CPQ = 100 /h`, fixed high so that more than 95% of the amount in the breast-milk compartment is transferred during the 24-minute feeding window per Wattanakul 2024 Results, 'Predicting infant concentrations'); `Dickinson_2021_dolutegravir_motherinfant.R` (`kBM-INF = 3.22 /h`, ESTIMATED, a continuous first-order input `kmilkinf * milk` straight into `infant_central` with no feeding gate and no infant absorption compartment, and not draining `milk` -- see Notes).
-- **Notes:** Two structural forms share this name, and a model must say which it uses. In the gated form (Wattanakul 2024) the transfer drains `milk` into `infant_depot` during each feed, so the constant is a fast mass transfer and is fixed. In the continuous form (Dickinson 2021) the constant is an empirical input rate estimated from infant plasma, applied to the milk AMOUNT of a maternal model whose milk compartment was fixed when the infant model was fitted; there it does not remove drug from `milk` (a literal drain at 3.22 /h from a 0.125 L compartment would imply about 9.7 L of milk a day) and it absorbs the infant's oral bioavailability, which is also why the infant volume is apparent (`VINF/F`).
+- **Notes:** Two structural forms share this name, and a model must say which it uses. In the gated form (Wattanakul 2024) the transfer drains `milk` into `infant_depot` during each feed, so the constant is a fast mass transfer and is fixed. In the continuous form (Dickinson 2021) the constant is an empirical input rate estimated from infant plasma, applied to the milk AMOUNT of a maternal model whose milk compartment was fixed when the infant model was fitted; there it does not remove drug from `milk` (a literal drain at 3.22 /h from a 0.125 L compartment would imply about 9.7 L of milk a day) and it absorbs the infant's oral bioavailability, which is also why the infant volume is apparent (`VINF/F`). A third, lumped form (Liu 2019) has no `milk` state at all: milk is pooled with the mother's body water, `kmilkinf <- cl_milk / vc` is derived from the lactation clearance `lcl_milk`, and it moves tracer from `central` to `infant_central` as part of, not in addition to, the mother's total elimination (`Liu_2019_deuterium.R`).
 
 ### feed_n, feed_window, feed_first, milk_intake (**canonical breastfeeding-pattern constants**)
 - **Type:** paper-named-param
@@ -3146,6 +3154,14 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Source aliases:** none.
 - **Example models:** `Wattanakul_2024_primaquine_motherinfant.R` (`MTT_infant = 0.706 h`, fixed from a paediatric literature model to account for more rapid absorption in infants, with 2 transit compartments so `ktr_infant = 3 / MTT_infant`; Wattanakul 2024 Methods, 'Predicting infant concentrations').
 - **Notes:** Any other canonical parameter that a dyad model must carry separately for the infant partner takes the same `_infant` suffix; parameters that are merely SCALED from the mother's (allometric clearances and volumes) do not get their own `ini()` name at all, because they are derived inside `model()`.
+
+### lcl_infant (**canonical log-transformed breastfed-infant clearance**)
+- **Type:** log-transformed-pk
+- **Role:** Clearance (volume / time) of drug or tracer out of the breastfed infant's `infant_central` compartment in a mother-to-infant dyad model, when the infant clearance is estimated rather than scaled from the mother's. The `_infant` member of the plain `lcl`; the bare `cl_infant` is used inside `model()`, with `kel_infant <- cl_infant / vc_infant`.
+- **Source aliases:**
+  - `CLbo` -- Liu 2019 (J Pharmacokinet Pharmacodyn) Eq. 1, 'water clearance from infant to out'.
+- **Example models:** `Liu_2019_deuterium.R` (deuterium oxide; `CLbo = 0.864 L/day` population mean at 5 kg infant weight, log-scale mean -0.16, power exponent 0.17 on infant weight `WT_INFANT` via `e_wt_infant_cl_infant`).
+- **Notes:** Follows the `_infant` suffix rule stated under `lmtt_infant`. Compare `lkel_infant` (`Dickinson_2021_dolutegravir_motherinfant.R`), the rate-constant form used when the source estimates the infant elimination rate constant instead of a clearance.
 
 ### lmtt_bile (**canonical log-transformed bile-duct sub-compartment residence time**)
 - **Type:** log-transformed-pk
