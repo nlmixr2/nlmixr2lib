@@ -5282,6 +5282,38 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
 - **Example models:** `Stodtmann_2021_elagolix.R` (drives average estradiol, which in turn drives the estrogen fraction of the Riggs 2012 bone QSP model and thereby lumbar spine BMD, CTX and P1NP).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings: [[DOSE_TPM_MGD]], [[DOSE_LOR_MGD]], [[DOSE_EMPA_MGD]]). The model has no elagolix PK: estradiol is a direct steady-state function of the daily dose, so the column is the only drug input and no dose event rows are needed. Distinct from the rxode2 / nlmixr2 event column `amt`.
 
+### DOSE_GLARGINE_U (**canonical for the insulin glargine units of the current injection**)
+- **Description:** Units of insulin glargine in the current subcutaneous injection. Time-varying in a repeated regimen: carries the units of the most recent glargine injection; 0 before the first one.
+- **Units:** U (international units)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as `F = (DOSE_GLARGINE_U / 35)^theta1` (theta1 = -0.300) on glargine relative bioavailability in `Tham_2017_insulin.R`; reference 35 U. A value of 0 (no glargine given) falls back to the 35 U reference.
+- **Source aliases:**
+  - `Dose_Glar` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. A covariate rather than `podo()` because a premix or a multi-product regimen doses several compartments at once and the effect must read the glargine units only.
+
+### DOSE_REGULARU100_U (**canonical for the regular human insulin U-100 units of the current injection**)
+- **Description:** Units of regular human insulin U-100 in the current subcutaneous injection, counting only the regular component of a premix (30% of a Mix 70/30 dose). Time-varying in a repeated regimen: carries the units of the most recent injection containing regular U-100; 0 before the first one.
+- **Units:** U (international units)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as `ka = TVka (DOSE_REGULARU100_U / 10)^theta2` (theta2 = -0.275) on the regular U-100 absorption rate constant in `Tham_2017_insulin.R`; reference 10 U. A value of 0 falls back to the 10 U reference.
+- **Source aliases:**
+  - `Dose_RegU100` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Distinct from [[DOSE_HUMANINSULIN_U]], which sums every human-insulin product given at that time.
+
+### DOSE_HUMANINSULIN_U (**canonical for the total human-insulin units of the current injection(s)**)
+- **Description:** Total units of human insulin (regular U-100, regular U-500 and NPH, including both components of a Mix 70/30 premix) given at the current dosing time. Time-varying in a repeated regimen: carries the total of the most recent dosing time that included human insulin; 0 before the first one.
+- **Units:** U (international units)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as `CL/F = TVCL (DOSE_HUMANINSULIN_U / 10)^theta6` (theta6 = -0.282) on the shared regular/NPH apparent clearance in `Tham_2017_insulin.R`; reference 10 U. A value of 0 falls back to the 10 U reference.
+- **Source aliases:**
+  - `Dose_Reg/NPH` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. The source fitted single doses of one product, so its dose term was unambiguous; the total is used because regular and NPH insulin share one central compartment and one CL/F, which can carry only one dose value at a time. Distinct from [[DOSE_REGULARU100_U]].
 ### DOSE_GLPG1690_MGD (**canonical for total daily GLPG1690 dose**)
 - **Description:** Total daily GLPG1690 (ziritaxestat) dose, in mg/day, summed across the day's administrations (600 mg once daily -> 600; 150 mg twice daily -> 300). For a single-dose record it is the administered dose. Time-fixed per subject within a regimen.
 - **Units:** mg/day

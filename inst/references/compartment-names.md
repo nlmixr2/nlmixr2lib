@@ -9606,76 +9606,49 @@ Clinician-rated ordinal scores of eyebrow and eyelash hair loss used in alopecia
 
 ---
 
-## Semaglutide response and aging-layer QSP states (Goryanin 2026)
+## Subcutaneous insulin product suffixes
 
-### bwloss (**canonical percent body-weight loss PD state**)
-- **Type:** compartment
-- **Role:** Body-weight loss from baseline in percent of baseline weight, signed so that a positive value is a loss. Used when a model integrates the loss itself (for example a logistic approach to a maximal loss) rather than the body weight in kg.
-- **Source aliases:**
-  - `W` -- Goryanin 2026 SBML species 'Body weight change (%)' and Layer 1 equations.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; `d/dt(bwloss) = kbwloss * E * (1 - bwloss / emax_bwloss)`).
-- **Notes:** Distinct from `bw` and `weight`, which hold body weight itself (kg or g). The trial data the founding model was calibrated to report weight change as a negative number; compare against `-bwloss`.
+Suffixes for models that carry several insulin products at once, each with its own absorption depot and, where the products differ in disposition, its own central compartment. A disposition suffix names an insulin molecule (`glar`, `hum`, `lis`); a formulation suffix names one product of that molecule whose absorption differs (`regu100`, `regu500`, `nph`, `ilps`). Founded by `Tham_2017_insulin.R`.
 
-### hba1cred (**canonical absolute HbA1c reduction PD state**)
-- **Type:** compartment
-- **Role:** Absolute reduction of HbA1c from baseline in percentage points, signed so that a positive value is an improvement.
-- **Source aliases:**
-  - `A` -- Goryanin 2026 SBML species 'HbA1c change (%)' and Layer 1 equations.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; logistic approach to `emax_hba1cred`).
-- **Notes:** Distinct from `Hba1c` (the HbA1c level itself, %) and from the MBMA arm outputs `hba1c_placebo` / `hba1c_drug`. Compare against a reported HbA1c change with the sign reversed.
+### glar (**canonical insulin glargine sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Insulin glargine (long-acting basal insulin analogue). Drives `depot_glar` / `central_glar`, `lka_glar` / `lcl_glar` / `lvc_glar`, `Cc_glar` and `propSd_glar`.
+- **Source aliases:** `Glar` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
 
-### nausea (**canonical nausea-prevalence PD state**)
-- **Type:** compartment
-- **Role:** Percentage of a treated population reporting nausea at a given time, modelled as a continuous state (induction by drug exposure, first-order resolution, and gating by a tolerance state).
-- **Source aliases:**
-  - `N` -- Goryanin 2026 SBML species 'Nausea prevalence (%)'.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; tolerance carried by `moderator1`).
-- **Notes:** A population prevalence, not an individual's probability. Individual-level adverse-event probabilities use `prob_nausea` or `p_nausea`.
+### hum (**canonical human-insulin disposition suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Exogenous human insulin, the shared disposition system of regular human insulin (any strength) and human insulin isophane suspension (NPH). Names the central state and its parameters (`central_hum`, `lcl_hum`, `lvc_hum`, `Cc_hum`); the products' own depots carry the formulation suffixes `regu100`, `regu500` and `nph`.
+- **Source aliases:** `Reg/NPH` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
 
-### damage (**canonical accumulated-damage aging state**)
-- **Type:** compartment
-- **Role:** Dimensionless accumulated molecular and cellular damage in a damage-repair aging model; accrues at a constant rate reduced by treatment and is cleared in proportion to repair capacity.
-- **Source aliases:**
-  - `DAM` -- Goryanin 2026 SBML species 'Damage accumulation (a.u.)'.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example).
-- **Notes:** Arbitrary units. Not a tissue-injury biomarker such as a troponin or a liver enzyme; those have their own analyte names.
+### regu100 (**canonical regular human insulin U-100 formulation suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Regular (soluble) human insulin at 100 U/mL (Humulin R U-100), as an absorption depot feeding `central_hum`: `depot_regu100`, `lka_regu100`.
+- **Source aliases:** `RegU100` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
+- **Notes:** Kept separate from `regu500` because the concentrated product is absorbed more slowly.
 
-### repair (**canonical repair-capacity aging state**)
-- **Type:** compartment
-- **Role:** Dimensionless repair (resilience) capacity in a damage-repair aging model; induced by treatment, decays first order, clears `damage` and suppresses `frailty`.
-- **Source aliases:**
-  - `REP` -- Goryanin 2026 SBML species 'Repair capacity (a.u.)'.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; starts at 0.1 a.u.).
-- **Notes:** Arbitrary units.
+### regu500 (**canonical regular human insulin U-500 formulation suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Regular human insulin at 500 U/mL (Humulin R U-500), as an absorption depot feeding `central_hum`: `depot_regu500`, `lka_regu500`.
+- **Source aliases:** `RegU500` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
 
-### frailty (**canonical frailty-index aging state**)
-- **Type:** compartment
-- **Role:** Frailty index in the deficit-accumulation sense, driven up by `damage` and down by `repair`.
-- **Source aliases:**
-  - `FRA` -- Goryanin 2026 SBML species 'Frailty index (a.u.)'.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example).
-- **Notes:** Arbitrary units in the founding model, not the 0-1 Rockwood deficit fraction; a model on that scale should say so in its `units`.
+### nph (**canonical NPH (human insulin isophane suspension) formulation suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Neutral protamine Hagedorn human insulin isophane suspension (intermediate-acting), as an absorption depot feeding `central_hum`: `depot_nph`, `lka_nph`, `ltlag_nph`.
+- **Source aliases:** `NPH` -- Tham 2017.
+- **Example models:** `Tham_2017_insulin.R`.
 
-### bioagegap (**canonical biological-age-gap aging state**)
-- **Type:** compartment
-- **Role:** Biological age minus chronological age, as a net balance of `damage` over `repair`.
-- **Source aliases:**
-  - `BAG` -- Goryanin 2026 SBML species 'Biological age gap (a.u.)'.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; dimensionless, not calibrated to years or to an epigenetic clock).
-- **Notes:** A model expressing the gap in years should state that in its `units`.
+### lis (**canonical insulin lispro sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Insulin lispro (rapid-acting analogue). Names both the lispro depot and the shared lispro disposition system that insulin lispro protamine suspension also feeds: `depot_lis`, `central_lis`, `lka_lis`, `lcl_lis`, `lvc_lis`, `Cc_lis`.
+- **Source aliases:** `Lispro` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
 
-### cysc (**canonical cystatin C biomarker state**)
-- **Type:** compartment
-- **Role:** Serum cystatin C as a model state, either as a concentration or as a change from baseline; the model's `units` say which.
-- **Source aliases:**
-  - `CysC` -- Goryanin 2026 SBML species 'Cystatin C change (%)'.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; % change from baseline, production-degradation turnover).
-- **Notes:** Follows the bare lower-case analyte form of other biomarker states (`vegf`, `igf1`, `shbg`). Distinct from a cystatin-C-based eGFR covariate.
-
-### leptin (**canonical leptin biomarker state**)
-- **Type:** compartment
-- **Role:** Serum leptin as a model state, either as a concentration or as a change from baseline; the model's `units` say which.
-- **Source aliases:**
-  - `LEP` -- Goryanin 2026 SBML species 'Leptin change (%)'.
-- **Example models:** `Goryanin_2026_semaglutide_aging_qsp.R` (founding example; % change from baseline, production-degradation turnover).
-- **Notes:** Follows the bare lower-case analyte form of other biomarker states (`vegf`, `igf1`, `shbg`).
+### ilps (**canonical insulin lispro protamine suspension formulation suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Insulin lispro protamine suspension (the intermediate-acting component of the lispro premixes), as an absorption depot feeding `central_lis`: `depot_ilps`, `lka_ilps`.
+- **Source aliases:** `ILPS` -- Tham 2017 Supplement Methods.
+- **Example models:** `Tham_2017_insulin.R`.
