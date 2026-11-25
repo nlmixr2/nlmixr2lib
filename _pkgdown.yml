@@ -8184,6 +8184,8 @@ navbar:
         href: articles/Wang_2026_serplulimab.html
       - text: "Sertraline (Cooper 2015)"
         href: articles/Cooper_2015_sertraline.html
+      - text: "Sertraline (GandaraMireles 2026)"
+        href: articles/GandaraMireles_2026_sertraline.html
       - text: "Sertraline (Xia 2025)"
         href: articles/Xia_2025_sertraline.html
       - text: "Sertraline (Zhang 2024)"
@@ -10914,6 +10916,7 @@ articles:
   - articles/Gallo_2021_remdesivir_pbpk
   - articles/Galluppi_2016_BIIB023
   - articles/Galluppi_2021_ulotaront
+  - articles/GandaraMireles_2026_sertraline
   - articles/Gandhi_2021_abatacept
   - articles/Ganesan_2022_epetraborole
   - articles/Ganesan_2023_tebipenem

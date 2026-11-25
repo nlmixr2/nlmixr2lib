@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Krzyzanski 2026 dexamethasone, 1-cohort and Gauss-Hermite 3-cohort ([doi:10.1007/s10928-026-10048-5](https://doi.org/10.1007/s10928-026-10048-5)) -- parturient women and their fetuses (umbilical cord) after antenatal IM dexamethasone phosphate.
+- Add Gandara Mireles 2026 sertraline ([doi:10.3389/fphar.2026.1862275](https://doi.org/10.3389/fphar.2026.1862275)) -- Mexican pediatric patients with anxiety disorders.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
