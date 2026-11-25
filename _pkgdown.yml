@@ -9046,6 +9046,8 @@ navbar:
         href: articles/Kim_2019_voriconazole.html
       - text: "Voriconazole (Kim 2020)"
         href: articles/Kim_2020_voriconazole.html
+      - text: "Voriconazole (Li 2017)"
+        href: articles/Li_2017_voriconazole.html
       - text: "Voriconazole (Li 2021)"
         href: articles/Li_2021_voriconazole.html
       - text: "Voriconazole (Lin 2018)"
@@ -10863,6 +10865,7 @@ articles:
   - articles/Li_2017_naproxen_rat
   - articles/Li_2017_nhl_pfs
   - articles/Li_2017_pomalidomide
+  - articles/Li_2017_voriconazole
   - articles/Li_2018_PF04236921
   - articles/Li_2018_guanfacine
   - articles/Li_2018_olanzapine

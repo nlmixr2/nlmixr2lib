@@ -1,0 +1,423 @@
+---
+title: "Voriconazole (Li 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Voriconazole (Li 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+suppressPackageStartupMessages({
+  library(nlmixr2lib)
+  library(PKNCA)
+  library(rxode2)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+})
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Li_2017_voriconazole"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Li_2017_voriconazole"))$description`
+* Article: <https://doi.org/10.1097/FTD.0000000000000425> (open access, PMC5538305)
+
+# Population
+
+Li 2017 is a retrospective therapeutic-drug-monitoring study of adult renal
+transplant recipients who received voriconazole for prevention or treatment of
+invasive fungal infection at the Department of Urological Organ
+Transplantation, Second Xiangya Hospital, Central South University (Changsha,
+China), between September 2015 and June 2016 (Methods, "Patients and Data
+Collection"). Patients aged 15 years or younger, patients on a strong CYP2C19
+inducer (e.g. rifampin), and patients with substantial missing data were
+excluded.
+
+The analysis used 125 trough concentrations (Cmin, drawn 30 minutes before the
+next dose; median 2.18, range 0.16-9.59 ug/mL) from 56 patients (Results,
+"Patient Demographics and Dose Characteristics"). Table 1 reports 39 men and 17
+women (30.4% female), age 40 +/- 8 years (18-60), weight 55 +/- 10 kg (33-78),
+AST 33.0 +/- 48.1 U/L (7.9-311.5) and creatinine clearance 51.8 +/- 24.7 mL/min.
+CYP2C19 phenotypes were 2 rapid metabolizers (RM, `*1/*17`), 24 extensive
+metabolizers (EM, `*1/*1`), 25 intermediate metabolizers (IM, `*1/*2`, `*1/*3`,
+`*2/*17`) and 5 poor metabolizers (PM, `*2/*2`) (Tables 1 and 3). 78.6% of
+patients were within the first year after transplantation; 46.4% received a
+proton pump inhibitor and 69.6% a glucocorticoid. The usual starting regimen was
+200 mg twice daily, adjusted after the first trough; intravenous and oral forms
+were both used.
+
+The same information is available programmatically via
+`readModelDb("Li_2017_voriconazole")$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| One-compartment model, first-order absorption and elimination | n/a | Methods, "Structural Model"; Results, "Population Pharmacokinetic Analysis" |
+| `lka` (ka, fixed) | 1.1 1/h | Methods, "Structural Model" ("fixed to a value of 1.1 h", refs 18-20) |
+| `lcl` (theta_CL, CL at AST = 33 U/L) | 4.76 L/h | Table 5 (final model); Table 4; Abstract |
+| `lvc` (theta_V, V for the RM reference) | 22.47 L | Table 5 (final model); Table 4; Abstract |
+| `e_cyp2c19_em_vc` (theta_1) | 2.21 | Table 5 |
+| `e_cyp2c19_im_vc` (theta_2) | 4.67 | Table 5 |
+| `e_cyp2c19_pm_vc` (theta_3) | 3.30 | Table 5 |
+| `e_ast_cl` (theta_4) | -0.23 | Table 5; Abstract equation `(AST/33)^(-0.23)` |
+| V = theta_V x [1 + theta_1 (EM=1)] x [1 + theta_2 (IM=1)] x [1 + theta_3 (PM=1)] x exp(eta_V) | n/a | Table 5 footnote; Results and Abstract |
+| CL = theta_CL x (AST/33)^theta_4 x exp(eta_CL) | n/a | Table 5 footnote; Results and Abstract |
+| `etalvc` | 0.9604 (omega_V = 0.98 SD) | Table 5; Abstract prints the variance exp(0.96) |
+| `etalcl` | 0.1369 (omega_CL = 0.37 SD) | Table 5; Abstract prints the variance exp(0.14) |
+| `propSd` | 0.39 | Table 5 sigma; Results prints the variance as `Cobs = Cpred x (1 + 0.15)` |
+| Exponential IIV, proportional residual error | n/a | Methods, "Statistical Model" (equations 2 and 4); Results |
+
+```{r typical-volumes}
+mod <- rxode2::rxode2(readModelDb("Li_2017_voriconazole"))
+p <- mod$theta
+phenotype_levels <- c("RM", "EM", "IM", "PM")
+
+phenotypes <- tibble::tibble(
+  phenotype = c("RM", "EM", "IM", "PM"),
+  CYP2C19_RM = c(1L, 0L, 0L, 0L),
+  CYP2C19_IM = c(0L, 0L, 1L, 0L),
+  CYP2C19_PM = c(0L, 0L, 0L, 1L),
+  CYP2C19_UM = 0L
+)
+
+typical <- phenotypes |>
+  mutate(
+    V = exp(p[["lvc"]]) *
+      (1 + p[["e_cyp2c19_em_vc"]] * (1 - CYP2C19_RM - CYP2C19_IM - CYP2C19_PM - CYP2C19_UM)) *
+      (1 + p[["e_cyp2c19_im_vc"]] * CYP2C19_IM) *
+      (1 + p[["e_cyp2c19_pm_vc"]] * CYP2C19_PM),
+    CL = exp(p[["lcl"]]),
+    `t1/2 (h)` = log(2) * V / CL
+  )
+
+# The phenotype volumes the Table 5 equation gives, written out by hand.
+stopifnot(isTRUE(all.equal(
+  typical$V,
+  22.47 * c(1, 1 + 2.21, 1 + 4.67, 1 + 3.30)
+)))
+
+typical |>
+  select(phenotype, V, CL, `t1/2 (h)`) |>
+  dplyr::rename("CYP2C19 phenotype" = phenotype, "V (L)" = V, "CL (L/h)" = CL) |>
+  knitr::kable(digits = 2, caption = "Typical-value volume, clearance and half-life by CYP2C19 phenotype at AST = 33 U/L.")
+```
+
+# Virtual cohort
+
+The original data are not public. The cohort below has 50 subjects in each of
+the four phenotype strata the model resolves (RM, EM, IM, PM). AST is drawn from
+a log-normal distribution with the Table 1 mean and SD (33.0 and 48.1 U/L),
+keeping only draws inside the observed 7.9-311.5 U/L range (draws outside are
+redrawn rather than clipped, so the range does not pile subjects at its
+limits).
+
+```{r cohort}
+set.seed(20170422)
+rxode2::rxSetSeed(20170422)
+
+n_per_arm <- 50L
+
+draw_ast <- function(n, mean = 33.0, sd = 48.1, lo = 7.9, hi = 311.5) {
+  sdlog <- sqrt(log(1 + (sd / mean)^2))
+  meanlog <- log(mean) - sdlog^2 / 2
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- rlnorm(n, meanlog, sdlog)
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
+
+cohort <- phenotypes |>
+  slice(rep(seq_len(n()), each = n_per_arm)) |>
+  mutate(id = seq_len(n()), AST = draw_ast(n()))
+```
+
+# Simulation
+
+Every subject receives oral 200 mg twice daily, the usual regimen of the study,
+simulated directly at steady state (`ss = 1`) because the slow-eliminating
+subjects (large `eta_V`) would otherwise need several weeks of run-in. The
+observation grid covers one 12-hour dosing interval, so the value at time 0 is
+the steady-state trough.
+
+```{r simulate}
+tau <- 12
+dose <- 200
+obs_times <- c(0, 0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10, 12)
+
+covs <- cohort |> select(id, phenotype, AST, CYP2C19_RM, CYP2C19_IM, CYP2C19_PM, CYP2C19_UM)
+
+ev_ss <- bind_rows(
+  covs |> mutate(time = 0, amt = dose, evid = 1L, cmt = "depot", ii = tau, ss = 1L),
+  covs |> tidyr::crossing(time = obs_times) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", ii = NA_real_, ss = NA_integer_)
+) |>
+  arrange(id, time, desc(evid))
+
+sim_ss <- rxode2::rxSolve(mod, events = ev_ss, keep = "phenotype", maxsteps = 1e6) |>
+  as.data.frame()
+stopifnot(!anyNA(sim_ss$Cc))
+```
+
+## Steady-state profiles by phenotype
+
+```{r fig-profiles}
+sim_ss |>
+  mutate(phenotype = factor(phenotype, levels = phenotype_levels)) |>
+  group_by(phenotype, time) |>
+  summarise(
+    q05 = quantile(Cc, 0.05), q50 = median(Cc), q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.2) +
+  geom_line() +
+  geom_hline(yintercept = c(1, 5.5), linetype = "dashed", colour = "grey40") +
+  facet_wrap(~phenotype, nrow = 1) +
+  labs(
+    x = "Time after dose at steady state (h)", y = "Voriconazole (ug/mL)",
+    caption = "Median and 5th-95th percentiles, 200 mg every 12 h orally. Dashed lines: the 1.0-5.5 ug/mL window the paper used."
+  )
+```
+
+## Troughs against the observed Table 3 means
+
+Li 2017 does not publish a simulation or NCA table. Its Table 3 reports the
+observed mean (SD) trough by phenotype, which reflects doses that were adjusted
+after the first trough, so the comparison below is descriptive, not a fit
+criterion. The paper itself reports that the final model's population
+prediction deviates at high concentrations (Discussion).
+
+```{r troughs}
+observed_t3 <- tibble::tibble(
+  phenotype = c("RM", "EM", "IM", "PM"),
+  obs_mean = c(0.40, 1.76, 3.02, 4.43),
+  obs_sd = c(0.14, 1.24, 2.07, 2.46)
+)
+
+troughs <- sim_ss |>
+  filter(time == 0) |>
+  group_by(phenotype) |>
+  summarise(sim_median = median(Cc), sim_mean = mean(Cc), .groups = "drop") |>
+  left_join(observed_t3, by = "phenotype") |>
+  arrange(factor(phenotype, levels = phenotype_levels))
+
+troughs |>
+  dplyr::rename(
+    "CYP2C19 phenotype" = phenotype,
+    "Simulated median Cmin" = sim_median,
+    "Simulated mean Cmin" = sim_mean,
+    "Observed mean Cmin (Table 3)" = obs_mean,
+    "Observed SD (Table 3)" = obs_sd
+  ) |>
+  knitr::kable(digits = 2, caption = "Steady-state trough (ug/mL) at 200 mg every 12 h versus the observed Table 3 means.")
+```
+
+The typical-value troughs (below) order the phenotypes RM < EM < PM < IM. The
+observed means order RM < EM < IM < PM, with the PM mean resting on 5 patients.
+Because CYP2C19 enters the model only through V and clearance does not depend on
+phenotype, every phenotype has the same exposure (AUC = Dose/CL) at a given
+dose; the trough differences come entirely from the slower elimination that a
+larger V gives.
+
+## Deterministic checks
+
+The typical-value steady-state trough of a one-compartment model with
+first-order absorption has a closed form; the rxode2 solve must match it, and
+the phenotype ordering it implies is checked here rather than on the random
+cohort.
+
+```{r typical-checks}
+ev_typ <- bind_rows(
+  phenotypes |> mutate(id = seq_len(n()), AST = 33, time = 0, amt = dose, evid = 1L,
+                       cmt = "depot", ii = tau, ss = 1L),
+  phenotypes |> mutate(id = seq_len(n()), AST = 33) |> tidyr::crossing(time = c(0, 6, 12)) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", ii = NA_real_, ss = NA_integer_)
+) |>
+  arrange(id, time, desc(evid))
+
+sim_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = ev_typ, keep = "phenotype",
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12, maxsteps = 1e6
+) |>
+  as.data.frame()
+
+ka <- exp(p[["lka"]])
+closed_form <- function(t, V, CL) {
+  k <- CL / V
+  dose * ka / (V * (ka - k)) *
+    (exp(-k * t) / (1 - exp(-k * tau)) - exp(-ka * t) / (1 - exp(-ka * tau)))
+}
+
+chk <- sim_typ |>
+  left_join(typical |> select(phenotype, V, CL), by = "phenotype") |>
+  mutate(cf = closed_form(time, V, CL))
+# Same parameters on both sides: the difference is integrator error only.
+stopifnot(max(abs(chk$Cc / chk$cf - 1)) < 1e-6)
+
+typ_trough <- chk |> filter(time == 0) |> arrange(factor(phenotype, levels = phenotype_levels))
+stopifnot(
+  typ_trough$Cc[typ_trough$phenotype == "RM"] < typ_trough$Cc[typ_trough$phenotype == "EM"],
+  typ_trough$Cc[typ_trough$phenotype == "EM"] < typ_trough$Cc[typ_trough$phenotype == "PM"],
+  typ_trough$Cc[typ_trough$phenotype == "PM"] < typ_trough$Cc[typ_trough$phenotype == "IM"]
+)
+typ_trough |>
+  select(phenotype, Cc) |>
+  dplyr::rename("CYP2C19 phenotype" = phenotype, "Typical Cmin,ss (ug/mL)" = Cc) |>
+  knitr::kable(digits = 2)
+```
+
+# PKNCA validation
+
+## Single-dose typical values
+
+For a single 200 mg oral dose the typical AUC0-inf is Dose / CL = 200 / 4.76 =
+42.0 mg h/L in every phenotype, and the terminal half-life is log(2) V / CL. The
+observation grid runs to 400 h so the IM half-life (18.6 h) is well resolved.
+
+```{r nca-single}
+sd_times <- sort(unique(c(0, 0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, seq(36, 400, by = 12))))
+ev_sd <- bind_rows(
+  phenotypes |> mutate(id = seq_len(n()), AST = 33, time = 0, amt = dose, evid = 1L, cmt = "depot"),
+  phenotypes |> mutate(id = seq_len(n()), AST = 33) |> tidyr::crossing(time = sd_times) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central")
+) |>
+  arrange(id, time, desc(evid))
+
+sim_sd <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = ev_sd, keep = "phenotype",
+  rtol = 1e-10, atol = 1e-12, maxsteps = 1e6
+) |>
+  as.data.frame() |>
+  mutate(treatment = as.character(phenotype))
+
+# The RM profile (t1/2 3.3 h) reaches integrator noise long before 400 h;
+# drop the numerically-zero tail after the peak so lambda-z is not fitted to
+# it.
+stopifnot(all(sim_sd$Cc >= -1e-6 * max(sim_sd$Cc, na.rm = TRUE), na.rm = TRUE))
+conc_sd <- sim_sd |>
+  filter(!is.na(Cc)) |>
+  mutate(Cc = pmax(Cc, 0)) |>
+  group_by(id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
+  select(id, time, Cc, treatment)
+dose_sd <- ev_sd |> filter(evid == 1) |> mutate(treatment = as.character(phenotype)) |>
+  select(id, time, amt, treatment)
+
+nca_sd <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_sd, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_sd, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                         aucinf.obs = TRUE, half.life = TRUE)
+))
+
+sd_res <- as.data.frame(nca_sd$result) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(typical |> mutate(treatment = as.character(phenotype)) |>
+              select(treatment, V, CL), by = "treatment")
+
+# AUC0-inf * CL == Dose and half-life == log(2) V / CL (one subject per
+# phenotype, deterministic): the bounds sit well above trapezoid and
+# lambda-z fitting error on this grid.
+stopifnot(
+  max(abs(sd_res$aucinf.obs * sd_res$CL / dose - 1)) < 0.02,
+  max(abs(sd_res$half.life / (log(2) * sd_res$V / sd_res$CL) - 1)) < 0.02
+)
+
+sd_res |>
+  arrange(factor(treatment, levels = phenotype_levels)) |>
+  select(treatment, cmax, tmax, aucinf.obs, half.life) |>
+  dplyr::rename(
+    "CYP2C19 phenotype" = treatment, "Cmax (ug/mL)" = cmax, "Tmax (h)" = tmax,
+    "AUC0-inf (mg h/L)" = aucinf.obs, "t1/2 (h)" = half.life
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical-value NCA after a single 200 mg oral dose (AST = 33 U/L).")
+```
+
+## Steady-state cohort
+
+```{r nca-ss}
+conc_ss <- sim_ss |>
+  filter(!is.na(Cc)) |>
+  mutate(treatment = as.character(phenotype), Cc = pmax(Cc, 0)) |>
+  select(id, time, Cc, treatment)
+dose_ss <- ev_ss |> filter(evid == 1) |> mutate(treatment = as.character(phenotype)) |>
+  select(id, time, amt, treatment)
+
+nca_ss <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_ss, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_ss, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = tau, cmax = TRUE, cmin = TRUE, auclast = TRUE)
+))
+
+ss_res <- as.data.frame(nca_ss$result) |>
+  select(id, treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(sim_ss |> filter(time == 0) |> select(id, cl), by = "id")
+
+# At steady state AUCtau * CL == Dose per subject. Large eta_V subjects have a
+# flat profile and fast-absorbing small-V subjects a narrow peak, so the
+# trapezoid error is checked on the centre and a robust quantile.
+pct_err <- 100 * (ss_res$auclast * ss_res$cl / dose - 1)
+stopifnot(
+  abs(median(pct_err)) < 2,
+  quantile(abs(pct_err), 0.9) < 5
+)
+
+ss_res |>
+  group_by(treatment) |>
+  summarise(
+    across(c(cmax, cmin, auclast), median),
+    .groups = "drop"
+  ) |>
+  arrange(factor(treatment, levels = phenotype_levels)) |>
+  dplyr::rename(
+    "CYP2C19 phenotype" = treatment, "Median Cmax,ss (ug/mL)" = cmax,
+    "Median Cmin,ss (ug/mL)" = cmin, "Median AUCtau,ss (mg h/L)" = auclast
+  ) |>
+  knitr::kable(digits = 2, caption = "Steady-state NCA (200 mg every 12 h orally), stochastic cohort, 50 subjects per phenotype.")
+```
+
+Li 2017 reports no NCA parameters, so there is no published NCA table to
+compare against.
+
+# Assumptions and deviations
+
+* **Reference category for V.** Li 2017's equation multiplies `theta_V` by a
+  factor for each of EM, IM and PM, so its reference phenotype is the rapid
+  metabolizer (`*1/*17`, 2 patients). The model keeps that parameterization and
+  the paper's estimates. It takes the register indicators `CYP2C19_RM`,
+  `CYP2C19_IM`, `CYP2C19_PM` and `CYP2C19_UM` and derives the extensive
+  metabolizer as the subject flagged by none of them, so every subject needs
+  exactly one phenotype coded (all four 0 means EM).
+* **Ultrarapid metabolizers.** The paper defines a UM (`*17/*17`) category but
+  enrolled no UM patients. The model gives UM the rapid-metabolizer V (the
+  other `*17` gain-of-function group) instead of the EM V; this is an
+  extrapolation outside the fitted cohort.
+* **Absorption and route.** ka was fixed at 1.1 (the text prints the unit as
+  "h"; the rate constant is per hour) and no bioavailability was estimated.
+  Both intravenous and oral forms were given in the study, but the paper does
+  not say how intravenous doses were entered in the first-order-absorption
+  model. CL and V are therefore apparent values for oral dosing (F taken as 1);
+  an intravenous dose can be given into `central`, which treats F as 1 as
+  well.
+* **IIV and residual scale.** Tables 4 and 5 print omega and sigma in a column
+  pair whose second column is labelled "SD" (the uncertainty of the estimate).
+  The omega and sigma estimates are themselves SDs: the Abstract's final
+  equation prints `exp(0.96)` and `exp(0.14)`, and the Results print the
+  residual model as `Cpred x (1 + 0.15)`, which are 0.98^2, 0.37^2 and 0.39^2.
+  The model uses variances 0.9604 and 0.1369 and a proportional SD of 0.39. No
+  covariance between eta_V and eta_CL was reported, so the omega matrix is
+  diagonal.
+* **AST.** The reference value 33 U/L is the Table 1 cohort mean. The paper
+  does not say whether AST was entered per sample or per patient.
+* **Errata and supplements.** A search of Europe PMC and PubMed on 2026-11-25
+  found no erratum or correction, and the article has no supplementary
+  material.
