@@ -816,6 +816,8 @@ navbar:
         href: articles/Liu_2025_avatrombopag.html
       - text: "Avelumab (Masters 2022)"
         href: articles/Masters_2022_avelumab.html
+      - text: "Avelumab (Wilkins 2019)"
+        href: articles/Wilkins_2019_avelumab.html
       - text: "Avelumab (vanderWalt 2025)"
         href: articles/vanderWalt_2025_avelumab.html
       - text: "Avibactam (Chen 2025)"
@@ -13823,6 +13825,7 @@ articles:
   - articles/Wilhelm_2012_ciclosporin
   - articles/Wilkins_2008_rifampicin
   - articles/Wilkins_2011_isoniazid
+  - articles/Wilkins_2019_avelumab
   - articles/Willemin_2024_interleukin6_cyp_pbpk
   - articles/Willemin_2024_interleukin6_cyp_talquetamab
   - articles/Willemze_2008_ciclosporin
