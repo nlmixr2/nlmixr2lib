@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gurski 2026 long-acting cabotegravir PrEP with HIV-1 viral dynamics and Darwinian resistance-trait evolution ([doi:10.1371/journal.pone.0355833](https://doi.org/10.1371/journal.pone.0355833)) -- QSP, theoretical HIV-negative adult exposed to HIV-1 on bimonthly CAB-LA.
+- Add van Lieshout 2026 bedaquiline zebrafish-to-human EBA translation ([doi:10.1002/cpt.70430](https://doi.org/10.1002/cpt.70430)) -- adults with pulmonary tuberculosis in two phase 2a EBA trials.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
