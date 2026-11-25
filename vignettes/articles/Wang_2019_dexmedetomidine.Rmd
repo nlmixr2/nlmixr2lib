@@ -1,0 +1,291 @@
+---
+title: "Intranasal dexmedetomidine in children (Wang 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Intranasal dexmedetomidine in children (Wang 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Wang_2019_dexmedetomidine"))$reference`
+* Article (open access): <https://doi.org/10.3389/fphar.2019.00756>
+* Trial registration: NCT03337581
+
+Dexmedetomidine is a selective alpha-2 adrenoceptor agonist used for
+perioperative and procedural sedation. Wang 2019 gave a single 1 ug/kg
+intranasal dose (undiluted 100 ug/mL solution, applied as drops from a 1-mL
+syringe) to 13 Chinese children under general anaesthesia, 30 min before the
+end of surgery, and sampled arterial plasma for 180 min. A two-compartment
+model with first-order absorption and fixed allometric weight scaling
+standardised to 70 kg described the data. The article has no supplementary
+material, and no erratum was found (EuropePMC title search, 2026-11-25).
+
+# Population
+
+Wang 2019 Table 1 (n = 13; 145 arterial samples):
+
+| Characteristic | Value |
+|---|---|
+| Sex (female / male) | 8 / 5 |
+| Age (years) | 6.5 +/- 1.7 (4-10) |
+| Weight (kg) | 24.8 +/- 5.8 (14-36) |
+| Height (cm) | 110 +/- 12 (83-130) |
+| Serum creatinine (umol/L) | 37.3 +/- 7.3 (23.8-47.0) |
+| Creatinine clearance (mL/min) | 99.2 +/- 19.0 (78.2-150) |
+
+Children were scheduled for orthopaedic, lower abdominal, urologic or plastic
+surgery (expected duration at least 2 h), with propofol/fentanyl induction and
+sevoflurane maintenance. All samples were above the 0.01 ng/mL limit of
+quantitation. The same information is available programmatically via
+`readModelDb("Wang_2019_dexmedetomidine")()$population`.
+
+# Source trace
+
+| Element | Value in the model | Source |
+|---|---|---|
+| Structure | 2-compartment, first-order absorption, no lag | Results: 2-cmt OFV 1331.0 vs 1-cmt 1344.6; lag time did not improve the fit (OFV 1330.5) |
+| `lka` | log(0.0378) 1/min | Table 2 'Ka (1/min)' |
+| `lcl` | log(0.319) L/min per 70 kg | Table 2 'CL/F (L/min/70 kg)' |
+| `lvc` | log(34.2) L per 70 kg | Table 2 'V1/F (L/70 kg)' |
+| `lq` | log(10.0) L/min per 70 kg | Table 2 'Q2/F (L/min/70 kg)' |
+| `lvp` | log(34.9) L per 70 kg | Table 2 'V2/F (L/70 kg)' |
+| `e_wt_cl_q`, `e_wt_vc_vp` | fixed 0.75, fixed 1 | Methods 'Pharmacokinetic Modeling' power model `(BW/70)^PBW`; Results: 'exponent of 1 for all volumes and of 0.75 for all clearances' |
+| `etalka`, `etalcl`, `etalvc`, `etalq` | 0.0112, 0.0207, 0.00569, 1.29 | Table 2 'Interindividual variability omega2' (variances of exponential etas, Methods `Pi = PTV * exp(eta_i)`) |
+| IIV on V2/F | none | Table 2 '0 (fixed)'; Results: variance < 0.0001, fixed to zero |
+| `addSd` | sqrt(1752) = 41.857 pg/mL | Table 2 'sigma2 add' = 1752; proportional term removed (Results: sigma2 prop < 0.0001) |
+| `Cc` | `central / vc * 1000` | dose in ug, volume in L, concentrations reported in pg/mL |
+
+# Typical-value replication of Table 3
+
+Table 3 of the paper lists the typical-value pharmacokinetics for children of
+10, 20, 30 and 40 kg after 1 ug/kg intranasally. These are deterministic model
+outputs, so the packaged model must reproduce them to the printed precision.
+The half-lives are the eigenvalues of the two-compartment system and Tpeak /
+Cpeak come from a dense typical-value solve.
+
+```{r table3}
+mod <- readModelDb("Wang_2019_dexmedetomidine")
+mod_typ <- rxode2::zeroRe(mod)
+
+wts <- c(10, 20, 30, 40)
+ev_typ <- do.call(rbind, lapply(seq_along(wts), function(i) {
+  data.frame(
+    id = i, WT = wts[i],
+    time = c(0, seq(0, 300, by = 0.01)),
+    amt = c(wts[i], rep(0, 30001)),
+    evid = c(1, rep(0, 30001)),
+    cmt = c("depot", rep("central", 30001))
+  )
+}))
+sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, rtol = 1e-10, atol = 1e-12,
+                           returnType = "data.frame", keep = "WT")
+
+eig <- function(w) {
+  cl <- 0.319 * (w / 70)^0.75; q <- 10.0 * (w / 70)^0.75
+  v1 <- 34.2 * w / 70; v2 <- 34.9 * w / 70
+  k10 <- cl / v1; k12 <- q / v1; k21 <- q / v2
+  a <- k10 + k12 + k21; b <- sqrt(a^2 - 4 * k10 * k21)
+  c(CL = cl, V1 = v1, Vss = v1 + v2,
+    thalf_a = log(2) / ((a + b) / 2), thalf_b = log(2) / ((a - b) / 2))
+}
+
+ours <- sim_typ |>
+  dplyr::group_by(WT) |>
+  dplyr::summarise(Tpeak = time[which.max(Cc)], Cpeak = max(Cc), .groups = "drop") |>
+  dplyr::bind_cols(as.data.frame(do.call(rbind, lapply(wts, eig))))
+
+published_t3 <- data.frame(
+  WT = wts,
+  CL = c(0.0740, 0.124, 0.169, 0.209),
+  V1 = c(4.88, 9.76, 14.6, 19.5),
+  Vss = c(9.87, 19.7, 29.6, 39.5),
+  thalf_a = c(0.73, 0.87, 0.96, 1.03),
+  thalf_b = c(93.1, 111, 123, 132),
+  Tpeak = c(52.4, 55.6, 57.5, 58.9),
+  Cpeak = c(675, 704, 720, 731)
+)
+
+cmp_t3 <- tidyr::pivot_longer(published_t3, -WT, names_to = "quantity", values_to = "published") |>
+  dplyr::left_join(
+    tidyr::pivot_longer(ours, -WT, names_to = "quantity", values_to = "packaged"),
+    by = c("WT", "quantity")
+  ) |>
+  dplyr::mutate(pct_diff = 100 * (packaged / published - 1))
+
+cmp_t3 |>
+  dplyr::mutate(packaged = signif(packaged, 4), pct_diff = round(pct_diff, 2)) |>
+  dplyr::rename(
+    "Weight (kg)" = WT, "Quantity" = quantity, "Wang 2019 Table 3" = published,
+    "Packaged model" = packaged, "% diff" = pct_diff
+  ) |>
+  knitr::kable(caption = "Replicates Table 3 of Wang 2019 (typical child, 1 ug/kg intranasal).")
+
+# Every Table 3 entry is printed to 3 significant figures (2 for the
+# shortest half-lives), so the packaged model must agree within rounding.
+# A mis-transcribed parameter, exponent, reference weight or unit factor
+# moves at least one row by several percent.
+stopifnot(max(abs(cmp_t3$pct_diff)) < 0.8)
+```
+
+All 32 entries agree within the rounding of the printed table, which
+confirms the parameter values, the 70 kg standardisation, the allometric
+exponents, the absence of a weight effect on Ka and the pg/mL unit factor at
+once.
+
+# Virtual cohort
+
+Body weights are drawn from a normal distribution with the Table 1 mean and SD
+(24.8 +/- 5.8 kg), restricted to the observed 14-36 kg range by rejection and
+redraw, so the cohort keeps the published spread instead of piling up at the
+bounds. The dose is 1 ug/kg and the observation grid is the paper's arterial
+sampling schedule, extended to 12 h so that a terminal half-life can be
+estimated.
+
+```{r cohort}
+set.seed(20190705)
+n_sub <- 200
+draw_wt <- function(n) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- stats::rnorm(2 * n, 24.8, 5.8)
+    out <- c(out, x[x >= 14 & x <= 36])
+  }
+  out[seq_len(n)]
+}
+wt <- draw_wt(n_sub)
+
+obs_times <- c(0, 3, 5, 10, 15, 20, 30, 45, 60, 90, 120, 150, 180,
+               240, 300, 360, 480, 600, 720)
+ev <- do.call(rbind, lapply(seq_len(n_sub), function(i) {
+  data.frame(
+    id = i, WT = wt[i],
+    time = c(0, obs_times),
+    amt = c(wt[i], rep(0, length(obs_times))),
+    evid = c(1, rep(0, length(obs_times))),
+    cmt = c("depot", rep("central", length(obs_times)))
+  )
+}))
+
+rxode2::rxSetSeed(20190705)
+sim <- rxode2::rxSolve(mod, ev, returnType = "data.frame", keep = "WT")
+```
+
+# Concentration-time profiles
+
+```{r fig1, fig.cap = "Simulated individual profiles over the 180-min sampling window (compare Figure 1 of Wang 2019, which shows the 13 measured profiles)."}
+sim |>
+  dplyr::filter(time <= 180, id <= 30) |>
+  ggplot(aes(time, sim, group = id)) +
+  geom_line(alpha = 0.4) +
+  labs(x = "Time after intranasal dose (min)", y = "Dexmedetomidine (pg/mL)",
+       title = "30 simulated children, 1 ug/kg intranasal (with residual error)")
+```
+
+```{r fig3, fig.cap = "Simulated 5th, 50th and 95th percentiles (compare the prediction-corrected VPC in Figure 3 of Wang 2019; observed Cmax 713-795 pg/mL)."}
+sim |>
+  dplyr::filter(time <= 180) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05), p50 = quantile(sim, 0.50), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.25) +
+  geom_line(aes(y = p50), colour = "steelblue4") +
+  geom_hline(yintercept = c(713, 795), linetype = "dashed", colour = "grey40") +
+  labs(x = "Time after intranasal dose (min)", y = "Dexmedetomidine (pg/mL)")
+```
+
+# NCA with PKNCA
+
+Peak metrics are taken over the paper's 0-180 min sampling schedule; the
+terminal half-life is estimated over the extended grid. NCA uses the
+individual predictions `Cc` (no residual error).
+
+```{r pknca}
+conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = "1 ug/kg IN") |>
+  dplyr::select(id, time, Cc, treatment)
+dose <- ev |>
+  dplyr::filter(evid == 1) |>
+  dplyr::mutate(treatment = "1 ug/kg IN") |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = c(0, 0), end = c(180, Inf),
+  cmax = c(TRUE, FALSE), tmax = c(TRUE, FALSE), auclast = c(TRUE, FALSE),
+  half.life = c(FALSE, TRUE)
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_res <- as.data.frame(nca$result)
+```
+
+Wang 2019 reports arithmetic means (observed Cmax and Tmax from Results; the
+terminal half-life from the individual Bayesian estimates), so the simulated
+values are aggregated as means before comparison.
+
+```{r nca_compare}
+sim_mean <- nca_res |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "half.life")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(PPORRES = mean(PPORRES, na.rm = TRUE), .groups = "drop")
+
+published_nca <- data.frame(
+  treatment = "1 ug/kg IN",
+  cmax = 748,      # Results: maximum measured concentration 748 +/- 29.6 pg/mL
+  tmax = 49.6,     # Results: observed time to maximum 49.6 +/- 7.21 min
+  half.life = 117  # Results: terminal elimination half-life 117 +/- 16.1 min
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_mean,
+  reference = published_nca,
+  by = "treatment",
+  units = c(cmax = "pg/mL", tmax = "min", half.life = "min"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs. published mean NCA (1 ug/kg intranasal). * differs from reference by >20%.")
+
+cmax_ratio <- sim_mean$PPORRES[sim_mean$PPTESTCD == "cmax"] / 748
+thalf_ratio <- sim_mean$PPORRES[sim_mean$PPTESTCD == "half.life"] / 117
+# Centre-of-distribution checks only; a dose, unit or clearance error moves
+# these by tens of percent.
+stopifnot(abs(cmax_ratio - 1) < 0.15, abs(thalf_ratio - 1) < 0.20)
+```
+
+Observed Tmax is read on the 45/60 min sampling points, so it is coarser than
+the model's continuous Tpeak (the paper's own simulated Tpeak was 55.2 +/- 5.96
+min). The observed Cmax spread (SD 29.6 pg/mL, range 713-795) is much
+narrower than the cohort above, because the model also carries the
+between-subject variability of Ka, CL/F and V1/F and residual error.
+
+# Assumptions and deviations
+
+* **No bioavailability.** No intravenous arm was studied; all disposition
+  parameters are apparent (divided by F) and the model applies no `f(depot)`.
+  Doses enter `depot` at the nominal amount.
+* **IIV on V2/F omitted.** Table 2 reports the V2/F variance as 0 (fixed); the
+  model carries no eta on `lvp`, which is equivalent.
+* **Large IIV on Q2/F.** The Q2/F variance of 1.29 (about 113% CV on the
+  log scale) is reproduced as published. The authors note it is the least
+  well-estimated parameter (highest shrinkage and RSE).
+* **Residual error.** Additive only, SD = sqrt(1752) = 41.9 pg/mL, as printed.
+* **Haemodynamics not modelled.** Figure 4 (MAP and heart rate) is
+  descriptive; the paper fits no PD model, so none is packaged.
+* **Virtual cohort.** Weights are drawn from a normal distribution with the
+  Table 1 mean and SD restricted to the observed range; age, sex and renal
+  function were screened and not retained, so they are not simulated.

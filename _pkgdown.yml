@@ -2580,8 +2580,8 @@ navbar:
         href: articles/Su_2016_dexmedetomidine.html
       - text: "Dexmedetomidine (Talke 2018)"
         href: articles/Talke_2018_dexmedetomidine.html
-      - text: "Dexmedetomidine (Wiczling 2016)"
-        href: articles/Wiczling_2016_dexmedetomidine.html
+      - text: "Dexmedetomidine (Wang 2019)"
+        href: articles/Wang_2019_dexmedetomidine.html
       - text: "Dexmedetomidine piglet (Ezzati 2014)"
         href: articles/Ezzati_2014_dexmedetomidine_piglet.html
       - text: "Dextroamphetamine (Castelli 2022)"
@@ -13732,6 +13732,7 @@ articles:
   - articles/Wang_2019_ceftiofur_dog
   - articles/Wang_2019_cpx351
   - articles/Wang_2019_cyclosporin
+  - articles/Wang_2019_dexmedetomidine
   - articles/Wang_2019_lamotrigine
   - articles/Wang_2019_linezolid
   - articles/Wang_2019_methotrexate
