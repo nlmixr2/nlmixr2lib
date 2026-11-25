@@ -1362,6 +1362,8 @@ navbar:
         href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Cabozantinib tumor (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
+      - text: "Cadmium (Skip 2014)"
+        href: articles/Skip_2014_metal_toxicokinetics.html
       - text: "Cafedrine theodrenaline ephedrine (Dings 2026)"
         href: articles/Dings_2026_cafedrine_theodrenaline_ephedrine.html
       - text: "Caffeine 32c6h (Szederkenyi 2024)"
@@ -6216,6 +6218,8 @@ navbar:
         href: articles/Cortez_2015_nevirapine.html
       - text: "Nevirapine rat la2 (Cortez 2015)"
         href: articles/Cortez_2015_nevirapine.html
+      - text: "Nickel (Skip 2014)"
+        href: articles/Skip_2014_metal_toxicokinetics.html
       - text: "Niclosamide hamster (Kim 2024)"
         href: articles/Kim_2024_niclosamide_hamster.html
       - text: "Niclosamide hamster linear (Kim 2024)"
@@ -12695,6 +12699,7 @@ articles:
   - articles/Sinha_2026_oxcarbazepine
   - articles/Sinnollareddy_2026_epcoritamab
   - articles/Sjogren_2021_malnutrition_physiology
+  - articles/Skip_2014_metal_toxicokinetics
   - articles/Sloan_2017_rifampicin
   - articles/Smit_2020_vancomycin
   - articles/Smit_2021_vancomycin

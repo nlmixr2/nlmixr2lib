@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tarning 2014 piperaquine PK and P. vivax relapse time-to-event ([doi:10.1038/psp.2014.29](https://doi.org/10.1038/psp.2014.29)) -- patients aged 3-57 years with Plasmodium vivax malaria in Thailand.
+- Add Skip 2014 cadmium and nickel toxicokinetics ([doi:10.1371/journal.pone.0108740](https://doi.org/10.1371/journal.pone.0108740)) -- ground beetles (*Poecilus cupreus*, *Pterostichus oblongopunctatus*) fed metal-contaminated food, then clean food.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
