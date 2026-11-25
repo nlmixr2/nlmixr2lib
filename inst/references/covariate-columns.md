@@ -4338,16 +4338,16 @@ Centred-log-ratio (CLR) transformed relative abundance of one bacterial species 
 - **Example models:** `Khera_2024_dyp688_mouse_tgi.R`.
 - **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_CARBOPLATIN_MGKG`). Carried in mg/kg because the model's `amt` is in nmol of antibody, so the categorical level cannot be recovered from the dose records. The 3 mg/kg Q2W and Q4W groups share one level; the categorical effect is a per-dose-level fit and is not an exposure-response, so the authors used the reference (smallest) kkill for every simulation outside the fitted groups.
 
-### DOSE_IRONOXIDENANOPARTICLE_MGKG (**canonical for the superparamagnetic iron oxide nanoparticle dose level of the treatment group, in mg Fe/kg**)
-- **Description:** The IV bolus dose of superparamagnetic iron oxide (SPIO) nanoparticle given to the animal's group, expressed as iron per kilogram of body weight (mg Fe/kg). Per-subject (per-group) covariate.
+### DOSE_AZ968_MGKG (**canonical for the AZ968 dose per administration of the treatment group, in mg/kg**)
+- **Description:** The dose per administration of the casein kinase 2 inhibitor AZ968 in the animal's treatment group, normalised to body weight and expressed in mg/kg. Per-subject (per-group) covariate.
 - **Units:** mg/kg
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** 10 mg Fe/kg -- enters as categorical dose-level log-ratio effects on the blood-to-liver, liver-to-blood and elimination rate constants (`e_dose05_*` and `e_dose3_*` for 0.5 and 3 mg Fe/kg). Any other value takes the 10 mg Fe/kg rate constants.
+- **Reference category:** 10 mg/kg -- selects dose-specific PK parameters fitted to single 10, 20 and 30 mg/kg intraperitoneal doses (Mo 2014 Table 3: kel = 33.9 / 26.0 / 24.7 1/day and V = 2.70 / 2.07 / 1.97 L/kg). 20 and 30 mg/kg take their own values; any other value, including untreated controls, takes the 10 mg/kg values.
 - **Source aliases:**
-  - `0.5 / 3 / 10 mg Fe/kg` -- Liu 2014 Table 3 column headers. Same units, no value transformation.
-- **Example models:** `Liu_2014_ironOxideNanoparticle_mouse.R`.
-- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_DYP688_MGKG`). Carried as a covariate because the source reports one rate-constant set per dose group rather than a dose-exposure function, so the group cannot be recovered from the dose records by the model.
+  - dose group -- Mo 2014 labels the groups "10 mg/kg", "20 mg/kg", "30 mg/kg". Same orientation and units, no value transformation.
+- **Example models:** `Mo_2014_az968_mouse.R`, `Mo_2014_az968_simeoni_mouse.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_DYP688_MGKG`). Needed because the per-dose-level PK is a categorical fit (the authors' handling of non-linear PK), not a function of the event-table amount, and must not be interpolated to other doses.
 
 ### CSF1 (**canonical for colony-stimulating factor 1 / macrophage-colony-stimulating factor concentration**)
 - **Description:** Plasma colony-stimulating factor 1 (CSF-1, also known as macrophage colony-stimulating factor, M-CSF) concentration (baseline or time-varying). The hematopoietic cytokine that signals through CSF-1R to drive monocyte / macrophage differentiation and survival; used as both a target-engagement biomarker (anti-CSF-1R mAbs increase circulating free CSF-1) and a baseline covariate on PK / PD parameters in CSF-1R-pathway PopPK/PD models.

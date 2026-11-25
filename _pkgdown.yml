@@ -822,6 +822,12 @@ navbar:
         href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Axomadol (MangasSanjuan 2016)"
         href: articles/MangasSanjuan_2016_axomadol.html
+      - text: "Az968 mouse (Mo 2014)"
+        href: articles/Mo_2014_lifespan_tgi.html
+      - text: "Az968 simeoni mouse (Mo 2014)"
+        href: articles/Mo_2014_lifespan_tgi.html
+      - text: "Azd1208 mouse (Mo 2014)"
+        href: articles/Mo_2014_lifespan_tgi.html
       - text: "Azd7648 mouse (DeJongh 2025)"
         href: articles/DeJongh_2025_azd7648_olaparib_xenograft.html
       - text: "Azd7648 olaparib xenograft mouse (DeJongh 2025)"
@@ -6622,6 +6628,8 @@ navbar:
         href: articles/Zhou_2020_paclitaxel_liposomal.html
       - text: "Paclitaxel liposomal neutropenia (Zhou 2020)"
         href: articles/Zhou_2020_paclitaxel_liposomal.html
+      - text: "Paclitaxel mouse (Mo 2014)"
+        href: articles/Mo_2014_lifespan_tgi.html
       - text: "Paclitaxel mouse pbpk (Fu 2019)"
         href: articles/Fu_2019_paclitaxel_pbpk.html
       - text: "Paclitaxel myelosuppression (Wahlby 2004)"
@@ -12061,6 +12069,7 @@ articles:
   - articles/Miyagi_2011_ugt1a1_ugt1a6_hepatic_ontogeny
   - articles/Miyano_2022_atopicDermatitis_qsp
   - articles/Mizaki_2023_mycophenolic_acid
+  - articles/Mo_2014_lifespan_tgi
   - articles/Mo_2018_olaratumab
   - articles/Mo_2024_shikimicAcid
   - articles/Mo_2025_everolimus
