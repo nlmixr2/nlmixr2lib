@@ -5700,6 +5700,10 @@ navbar:
         href: articles/Porchet_1987_nicotine_pbpk.html
       - text: "Nicotine transdermal (OlssonGisleskog 2021)"
         href: articles/OlssonGisleskog_2021_nicotine.html
+      - text: "NicotinicAcid lean rat (Andersson 2017)"
+        href: articles/Andersson_2017_nicotinicAcid_rat.html
+      - text: "NicotinicAcid obese rat (Andersson 2017)"
+        href: articles/Andersson_2017_nicotinicAcid_rat.html
       - text: "NicotinicAcid rat (Ahlstrom 2010)"
         href: articles/Ahlstrom_2010_nicotinicAcid_rat.html
       - text: "Nifedipine (Fu 2022)"
@@ -9425,6 +9429,7 @@ articles:
   - articles/Anbari_2023_atezolizumab_cibisatamab_qsp
   - articles/Ande_2018_paclitaxel_everolimus_dasatinib
   - articles/Anderson_1998_paracetamol
+  - articles/Andersson_2017_nicotinicAcid_rat
   - articles/Andrews_2017_tacrolimus
   - articles/Andrews_2019_tacrolimus
   - articles/Andrews_2020_tacrolimus
