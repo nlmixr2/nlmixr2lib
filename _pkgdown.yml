@@ -5826,6 +5826,14 @@ navbar:
         href: articles/DeJongh_2025_azd7648_olaparib_xenograft.html
       - text: "Olaratumab (Mo 2018)"
         href: articles/Mo_2018_olaratumab.html
+      - text: "Olaratumab os cavg (Jones 2019)"
+        href: articles/Jones_2019_olaratumab_exposure_response.html
+      - text: "Olaratumab os cmin1 (Jones 2019)"
+        href: articles/Jones_2019_olaratumab_exposure_response.html
+      - text: "Olaratumab pfs cavg (Jones 2019)"
+        href: articles/Jones_2019_olaratumab_exposure_response.html
+      - text: "Olaratumab pfs cmin1 (Jones 2019)"
+        href: articles/Jones_2019_olaratumab_exposure_response.html
       - text: "Olmesartan (Song 2013)"
         href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
       - text: "Olmesartan amlodipine hydrochlorothiazide dbp (Song 2013)"
@@ -10554,6 +10562,7 @@ articles:
   - articles/Jones_2011_PF04878691_HCV
   - articles/Jones_2013_perfusionLimited_pbpk
   - articles/Jones_2019_mab_pbpk
+  - articles/Jones_2019_olaratumab_exposure_response
   - articles/Jones_2021_buprenorphine
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
