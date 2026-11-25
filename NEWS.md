@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cruikshank 2026 estradiol and hepatic oxidative stress QSP ([doi:10.1002/psp4.70243](https://doi.org/10.1002/psp4.70243)) -- men, pre- and postmenopausal women, and cystathionine beta-synthase deficiency (virtual population).
+- Add Lutz 2026 aficamten exposure-response for post-Valsalva LVOT gradient and LVEF ([doi:10.1002/psp4.70237](https://doi.org/10.1002/psp4.70237)) -- adults with obstructive hypertrophic cardiomyopathy.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
