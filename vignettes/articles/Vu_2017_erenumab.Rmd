@@ -1,0 +1,557 @@
+---
+title: "Erenumab (Vu 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Erenumab (Vu 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+PKNCA::PKNCA.options(progress = FALSE)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Vu_2017_erenumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Vu_2017_erenumab"))$description`
+* Article: <https://doi.org/10.1007/s11095-017-2183-6> (open access, PMC5533838)
+
+Erenumab (AMG 334) is a fully human IgG2 monoclonal antibody against the
+calcitonin gene-related peptide (CGRP) receptor. Binding to the receptor is
+also a route of elimination, so its pharmacokinetics are nonlinear at low
+concentrations. Vu 2017 pooled the phase 1 single- and multiple-ascending-dose
+studies and fitted:
+
+1. a **two-compartment quasi-steady-state (QSS) TMDD model** with first-order
+   SC absorption, linear clearance, internalization of the drug-receptor
+   complex, and a time-varying total receptor pool (Eqs. 1-4); and
+2. a **direct sigmoid inhibitory model** of the capsaicin-induced increase in
+   dermal blood flow (CIDBF), driven by the serum erenumab concentration
+   (Eq. 7).
+
+The CIDBF response is the difference between laser-Doppler dermal blood flow
+30 min after and immediately before topical capsaicin, in perfusion units (PU).
+Erenumab does not change blood flow before the capsaicin challenge.
+
+# Population
+
+108 subjects (60 SAD, 48 MAD; Tables I-II) at a single centre in Leuven,
+Belgium: 80 healthy subjects and 28 migraine patients, 78% male, mean (SD) age
+29.5 (9.7) years and weight 74.9 (11.9) kg (range 49-104 kg). The SAD study
+gave SC 1, 7, 21, 70, 140 or 210 mg or IV 140 mg to healthy subjects and SC
+140 mg to migraine patients; the MAD study gave SC 21, 70 or 140 mg Q4W x 3 or
+280 mg then 210 mg x 2 Q4W to healthy subjects and SC 21 or 140 mg Q4W x 3 to
+migraine patients. 1297 concentrations from 78 subjects and 676 dermal blood
+flow measurements from 100 subjects (30 on placebo) were analysed.
+
+The same information is available programmatically via
+`readModelDb("Vu_2017_erenumab")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL at 70 kg) | 0.214 L/day | Table III |
+| `lvc` (Vc at 70 kg) | 4.27 L | Table III |
+| `lq` (Q) | 3.34 L/day | Table III |
+| `lvp` (Vp) | 2.73 L | Table III |
+| `lka` (ka) | 0.432 1/day | Table III |
+| `logitfdepot` (F) | logit(0.74) | Table III (F = 74%); Eq. 1 logit parameterization |
+| `lksyn` (ksyn) | 51.9 ng/mL/day | Table III |
+| `lkdeg` (kdeg) | 0.22 1/day | Table III |
+| `lkss` (Kss) | 18.8 ng/mL | Table III |
+| `lkint` (kint) | 0.0345 1/day | Table III |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | Table III footnote a; Results |
+| `etalcl`, `etalka`, `etalkint` block | CV 25.1, 59.5, 42.3%; cov -0.0731, 0.0682 | Table III |
+| `etalvc` | CV 43.8% | Table III |
+| `expSd` | 0.179 | Table III; Supplementary Methods (ln-transformed fit) |
+| `lrbase_cidbf` (dDBF0) | 398 PU | Table IV |
+| `lic50` (IC50) | 255 ng/mL | Table IV |
+| `limax` (Imax) | 0.893 | Table IV |
+| `lhill` (Hill) | 3.08 | Table IV |
+| `etalrbase_cidbf`, `etalic50` | CV 28.3%, 94.1% | Table IV |
+| `addSd_cidbf`, `propSd_cidbf` | 23.8 PU, 21.9% | Table IV; Supplementary Methods |
+| `etaRUV_cidbf` | CV 38.7% | Table IV ('Residual error' row with eta shrinkage) |
+| `d/dt(depot)`, `f(depot)` | -- | Eq. 1 |
+| Unbound concentration (QSS root) | -- | Eq. 2 |
+| `d/dt(total_target)`, `total_target(0) = ksyn/kdeg` | -- | text under Eq. 2 |
+| `d/dt(central)` (total drug) | -- | Eq. 3 |
+| `d/dt(peripheral1)` (unbound drug) | -- | Eq. 4 |
+| `cidbf` | -- | Eq. 7 |
+
+BSV is printed as %CV, which the table footnote calls an approximation of the
+coefficient of variation; the variances are `CV^2`. That reading is confirmed by
+the printed covariances, which reproduce the correlations quoted in the Results
+only under it (checked below).
+
+# Parameter identities
+
+The paper prints several quantities derived from the estimates. They are
+deterministic functions of `ini()`, so they are checked exactly (to the
+precision printed).
+
+```{r identities}
+mod <- readModelDb("Vu_2017_erenumab")
+ui <- rxode2::rxode2(mod)
+th <- ui$theta
+p <- exp(th[c("lcl", "lvc", "lka", "lksyn", "lkdeg", "lkss", "lkint", "lic50", "lhill")])
+names(p) <- sub("^l", "", names(p))
+om <- ui$omega
+
+ident <- tibble::tribble(
+  ~quantity, ~model, ~paper,
+  "Absorption half-life (day)", log(2) / p[["ka"]], 1.6,
+  "CL/Vc (1/day)", p[["cl"]] / p[["vc"]], 0.0501,
+  "Rtot,ss = ksyn/kdeg (ng/mL)", p[["ksyn"]] / p[["kdeg"]], NA,
+  "Max. nonlinear CL = kint*Vc*Rtot,ss/Kss (L/day)",
+  p[["kint"]] * p[["vc"]] * (p[["ksyn"]] / p[["kdeg"]]) / p[["kss"]], 1.84,
+  "IC99 = 99^(1/hill) * IC50 (ng/mL)", 99^(1 / p[["hill"]]) * p[["ic50"]], 1134,
+  "corr(eta CL, eta ka)", om["etalcl", "etalka"] / sqrt(om["etalcl", "etalcl"] * om["etalka", "etalka"]), -0.49,
+  "corr(eta CL, eta kint)", om["etalcl", "etalkint"] / sqrt(om["etalcl", "etalcl"] * om["etalkint", "etalkint"]), 0.642
+)
+knitr::kable(ident, digits = 4)
+
+chk <- ident |> filter(!is.na(paper))
+stopifnot(all(abs(chk$model / chk$paper - 1) < 0.02))
+```
+
+The Results quote maximal nonlinear clearance as "approximately 1.84 L/day"
+(1.85 here) and about 8 times the linear clearance (1.85 / 0.214 = 8.6).
+
+# Drug-free baseline
+
+The receptor pool starts at `ksyn/kdeg` and the CIDBF response at its baseline,
+so an undosed (placebo) solve must stay flat. Both sides share the same
+parameters, so a tight bound is correct.
+
+```{r baseline}
+mod_typ <- rxode2::zeroRe(mod)
+
+# Two endpoints (Cc and cidbf): every observation row carries dvid = 1 so it
+# maps to an endpoint; both observables are returned as columns regardless.
+obs_rows <- function(times, id = 1L) {
+  data.frame(id = id, time = times, amt = NA_real_, evid = 0L,
+             cmt = NA_character_, dvid = 1L)
+}
+dose_rows <- function(times, amt, cmt, id = 1L) {
+  data.frame(id = id, time = times, amt = amt, evid = 1L,
+             cmt = cmt, dvid = NA_integer_)
+}
+build <- function(dose, obs, wt = 70) {
+  ev <- dplyr::bind_rows(dose, obs)
+  ev$WT <- wt
+  ev[order(ev$id, ev$time, -ev$evid), ]
+}
+
+pl <- rxode2::rxSolve(mod_typ, build(NULL, obs_rows(seq(0, 200, by = 5))),
+                      returnType = "data.frame")
+c(max_rtot_drift = max(abs(pl$total_target - p[["ksyn"]] / p[["kdeg"]])),
+  max_cidbf_drift = max(abs(pl$cidbf - 398)))
+stopifnot(max(abs(pl$total_target - p[["ksyn"]] / p[["kdeg"]])) < 1e-6,
+          max(abs(pl$cidbf - 398)) < 1e-6)
+```
+
+# Typical-value profiles against Figure 2
+
+```{r typical}
+grid <- sort(unique(c(0, 0.02, 0.1, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 10,
+                      seq(12, 56, by = 2), seq(63, 224, by = 7))))
+regimens <- tibble::tribble(
+  ~regimen, ~amt, ~cmt, ~times,
+  "1 mg SC", 1, "depot", list(0),
+  "7 mg SC", 7, "depot", list(0),
+  "21 mg SC", 21, "depot", list(0),
+  "70 mg SC", 70, "depot", list(0),
+  "140 mg SC", 140, "depot", list(0),
+  "140 mg IV", 140, "central", list(0),
+  "210 mg SC", 210, "depot", list(0),
+  "21 mg SC Q4W", 21, "depot", list(c(0, 28, 56)),
+  "70 mg SC Q4W", 70, "depot", list(c(0, 28, 56)),
+  "140 mg SC Q4W", 140, "depot", list(c(0, 28, 56))
+)
+typ <- lapply(seq_len(nrow(regimens)), function(i) {
+  r <- regimens[i, ]
+  s <- rxode2::rxSolve(
+    mod_typ,
+    build(dose_rows(unlist(r$times), r$amt, r$cmt), obs_rows(grid)),
+    returnType = "data.frame"
+  )
+  s$regimen <- r$regimen
+  s
+}) |> dplyr::bind_rows()
+typ$regimen <- factor(typ$regimen, levels = regimens$regimen)
+
+typ_peak <- typ |>
+  filter(time <= 28) |>
+  group_by(regimen) |>
+  summarise(Cmax_first = max(Cc), tmax_first = time[which.max(Cc)],
+            Cc_day28 = Cc[time == 28], .groups = "drop")
+knitr::kable(typ_peak, digits = c(0, 0, 1, 0),
+             caption = "Typical-value (70 kg) unbound erenumab, first dosing interval.")
+```
+
+The Figure 2 VPC medians peak at roughly 300 ng/mL for 7 mg SC, roughly
+5000 ng/mL for 70 mg SC and start near 30000 ng/mL after 140 mg IV (read off
+the log-scale panels by the maintainers). The typical-value solve reproduces
+these within the reading precision of the figure.
+
+```{r fig2-gate}
+fig2 <- c("7 mg SC" = 300, "70 mg SC" = 5000)
+got <- setNames(typ_peak$Cmax_first, typ_peak$regimen)[names(fig2)]
+iv0 <- typ$Cc[typ$regimen == "140 mg IV" & typ$time == 0.02]
+rbind(model = c(got, "140 mg IV (t = 0+)" = iv0),
+      figure2 = c(fig2, 30000))
+stopifnot(all(abs(got / fig2 - 1) < 0.35), abs(iv0 / 30000 - 1) < 0.35)
+```
+
+Target-mediated elimination makes exposure more than dose proportional at low
+doses; at high doses the receptor sink is saturated and the dose-normalized
+exposure approaches the linear limit `F / CL`.
+
+```{r nonlinearity}
+dn <- typ |>
+  filter(regimen %in% c("1 mg SC", "7 mg SC", "21 mg SC", "70 mg SC",
+                        "140 mg SC", "210 mg SC")) |>
+  group_by(regimen) |>
+  summarise(auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+            .groups = "drop") |>
+  mutate(dose = as.numeric(sub(" mg SC", "", regimen)),
+         # AUC in ng*day/mL; F*Dose/CL in mg*day/L = ug*day/mL, x 1000
+         auc_over_linear_limit = auc / (1000 * 0.74 * dose / p[["cl"]]))
+knitr::kable(dn, digits = 3)
+stopifnot(all(diff(dn$auc_over_linear_limit) > 0),
+          dn$auc_over_linear_limit[dn$dose == 210] > 0.8,
+          dn$auc_over_linear_limit[dn$dose == 1] < 0.3)
+```
+
+# Virtual cohort
+
+Observed data are not public. Each arm below is a virtual cohort of 100
+subjects with body weight drawn from a normal distribution matching Table II
+(mean 74.9 kg, SD 11.9 kg), rejected and redrawn outside the observed
+49-104 kg range.
+
+```{r cohort}
+set.seed(20170917)
+rxode2::rxSetSeed(20170917)
+n_per_arm <- 100
+
+draw_wt <- function(n) {
+  wt <- rnorm(n, 74.9, 11.9)
+  bad <- wt < 49 | wt > 104
+  while (any(bad)) {
+    wt[bad] <- rnorm(sum(bad), 74.9, 11.9)
+    bad <- wt < 49 | wt > 104
+  }
+  wt
+}
+
+make_cohort <- function(n, regimen, dose_times, amt, cmt, obs, id_offset) {
+  ids <- id_offset + seq_len(n)
+  wt <- draw_wt(n)
+  ev <- lapply(seq_len(n), function(j) {
+    d <- if (amt > 0) {
+      data.frame(id = ids[j], time = dose_times,
+                 amt = amt,
+                 evid = 1L, cmt = cmt, dvid = NA_integer_)
+    } else {
+      NULL
+    }
+    e <- dplyr::bind_rows(d, data.frame(id = ids[j], time = obs, amt = NA_real_,
+                                        evid = 0L, cmt = NA_character_, dvid = 1L))
+    e$WT <- wt[j]
+    e
+  }) |> dplyr::bind_rows()
+  ev$regimen <- regimen
+  ev
+}
+
+arms <- tibble::tribble(
+  ~regimen, ~amt, ~cmt, ~times,
+  "Placebo", 0, "depot", list(0),
+  "1 mg SC", 1, "depot", list(0),
+  "7 mg SC", 7, "depot", list(0),
+  "21 mg SC", 21, "depot", list(0),
+  "70 mg SC", 70, "depot", list(0),
+  "140 mg SC", 140, "depot", list(0),
+  "140 mg IV", 140, "central", list(0),
+  "210 mg SC", 210, "depot", list(0),
+  "21 mg SC Q4W", 21, "depot", list(c(0, 28, 56)),
+  "70 mg SC Q4W", 70, "depot", list(c(0, 28, 56)),
+  "140 mg SC Q4W", 140, "depot", list(c(0, 28, 56))
+)
+events <- lapply(seq_len(nrow(arms)), function(i) {
+  make_cohort(n_per_arm, arms$regimen[i], unlist(arms$times[[i]]), arms$amt[i],
+              arms$cmt[i], grid, id_offset = (i - 1L) * n_per_arm)
+}) |> dplyr::bind_rows()
+events <- events[order(events$id, events$time, -events$evid), ]
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+
+# 280 mg then 210 mg x 2 Q4W
+extra <- make_cohort(n_per_arm, "280/210 mg SC Q4W", c(0, 28, 56), 210, "depot",
+                     grid, id_offset = nrow(arms) * n_per_arm)
+extra$amt[extra$evid == 1L & extra$time == 0] <- 280
+events <- dplyr::bind_rows(events, extra)
+events <- events[order(events$id, events$time, -events$evid), ]
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "WT"),
+                       returnType = "data.frame")
+sim$regimen <- factor(sim$regimen, levels = c(arms$regimen, "280/210 mg SC Q4W"))
+```
+
+# Replicate published figures
+
+## Figure 2 -- PK VPC
+
+```{r figure-2, fig.height = 6}
+# Replicates Figure 2 of Vu 2017: model-predicted median and 90% interval of
+# serum (unbound) erenumab concentration by cohort.
+sim |>
+  filter(regimen != "Placebo", time >= 0.1) |>
+  group_by(regimen, time) |>
+  summarise(Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+            .groups = "drop") |>
+  ggplot(aes(time / 7, Q50)) +
+  geom_ribbon(aes(ymin = pmax(Q05, 1), ymax = Q95), fill = "orange", alpha = 0.2) +
+  geom_line() +
+  facet_wrap(~regimen, scales = "free") +
+  scale_y_log10() +
+  labs(x = "Time after dose (weeks)", y = "Serum erenumab (ng/mL)",
+       caption = "Replicates Figure 2 of Vu 2017 (simulated, no observed data).")
+```
+
+## Figure 3 -- CIDBF VPC
+
+```{r figure-3, fig.height = 6}
+# Replicates Figure 3 of Vu 2017: capsaicin-induced dermal blood flow response.
+sim |>
+  group_by(regimen, time) |>
+  summarise(Q05 = quantile(cidbf, 0.05), Q50 = median(cidbf),
+            Q95 = quantile(cidbf, 0.95), .groups = "drop") |>
+  ggplot(aes(time / 7, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "orange", alpha = 0.2) +
+  geom_line() +
+  facet_wrap(~regimen) +
+  coord_cartesian(xlim = c(0, 32)) +
+  labs(x = "Time after first dose (weeks)", y = "Dermal blood flow response (PU)",
+       caption = "Replicates Figure 3 of Vu 2017 (individual predictions, no residual error).")
+```
+
+The Figure 3 medians sit at about 400 PU on placebo and fall to about 40 PU
+(`398 * (1 - 0.893) = 42.6`) while concentrations stay above IC99. The
+placebo median is a centre statistic of the baseline distribution, so it is
+checked against 398 PU with a tolerance; the typical-value nadir is exact.
+
+```{r figure-3-gate}
+plc_med <- median(sim$cidbf[sim$regimen == "Placebo"])
+nadir_typ <- min(typ$cidbf[typ$regimen == "140 mg SC"])
+c(placebo_median = plc_med, typical_nadir_140mg = nadir_typ)
+stopifnot(abs(plc_med / 398 - 1) < 0.1,
+          abs(nadir_typ - 398 * (1 - 0.893)) < 1)
+```
+
+## Figure 4 -- concentration-inhibition relationship
+
+```{r figure-4}
+# Replicates the typical profile of Figure 4 of Vu 2017.
+conc <- 10^seq(-1, 5, length.out = 300)
+inh_curve <- data.frame(
+  conc = conc,
+  inh = 100 * 0.893 * conc^3.08 / (255^3.08 + conc^3.08)
+)
+ggplot(inh_curve, aes(conc, inh)) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = 0.99 * 89.3, linetype = 2, colour = "red") +
+  geom_vline(xintercept = 1134, linetype = 2, colour = "red") +
+  scale_x_log10() +
+  labs(x = "Erenumab concentration (ng/mL)", y = "DBF inhibition (%)",
+       caption = "Replicates Figure 4 of Vu 2017 (typical profile).")
+
+# The model's own inhibition at IC99 is 99% of Imax by construction.
+s99 <- rxode2::rxSolve(
+  mod_typ,
+  build(dose_rows(0, 1000, "central"), obs_rows(c(0.001, 1, 5, 10, 20, 40, 60))),
+  returnType = "data.frame"
+)
+k <- which.min(abs(s99$Cc - 1134))
+stopifnot(abs(s99$inh[k] / 0.893 -
+                s99$Cc[k]^3.08 / (255^3.08 + s99$Cc[k]^3.08)) < 1e-8)
+```
+
+## Figure 5 -- phase 2 dose-selection simulation
+
+Figure 5 simulated 7, 21 and 70 mg SC monthly for 12 weeks followed by
+open-label 70 mg monthly to week 48 (100 subjects per cohort, Supplementary
+Methods), and showed the median and 90% interval of concentration and of DBF
+inhibition as a percentage of Imax.
+
+```{r figure-5}
+p2_obs <- sort(unique(c(seq(0, 448, by = 2), seq(450, 448 + 140, by = 7))))
+p2 <- lapply(seq_along(c(7, 21, 70)), function(i) {
+  d <- c(7, 21, 70)[i]
+  ev <- make_cohort(n_per_arm, paste(d, "mg"), seq(0, 336, by = 28), d,
+                    "depot", p2_obs, id_offset = 10000L + (i - 1L) * n_per_arm)
+  ev$amt[ev$evid == 1L & ev$time >= 84] <- 70
+  ev
+}) |> dplyr::bind_rows()
+p2 <- p2[order(p2$id, p2$time, -p2$evid), ]
+sim5 <- rxode2::rxSolve(mod, events = p2, keep = "regimen", returnType = "data.frame") |>
+  mutate(pct_imax = 100 * inh / 0.893)
+
+sum5 <- sim5 |>
+  group_by(regimen, time) |>
+  summarise(across(c(Cc, pct_imax),
+                   list(q05 = ~ quantile(.x, 0.05), q50 = median, q95 = ~ quantile(.x, 0.95))),
+            .groups = "drop")
+
+ggplot(filter(sum5, time > 0), aes(time / 7, Cc_q50, colour = regimen)) +
+  geom_line() +
+  geom_line(aes(y = pmax(Cc_q05, 1)), linetype = 2) +
+  geom_line(aes(y = Cc_q95), linetype = 2) +
+  geom_hline(yintercept = c(255, 1134)) +
+  scale_y_log10() +
+  labs(x = "Weeks", y = "Erenumab (ng/mL)",
+       caption = "Replicates Figure 5 (left) of Vu 2017.")
+
+ggplot(sum5, aes(time / 7, pct_imax_q50, colour = regimen)) +
+  geom_line() +
+  geom_line(aes(y = pct_imax_q05), linetype = 2) +
+  geom_line(aes(y = pct_imax_q95), linetype = 2) +
+  labs(x = "Weeks", y = "DBF inhibition (% of Imax)",
+       caption = "Replicates Figure 5 (right) of Vu 2017 (no residual error).")
+```
+
+The Results state that 21 mg Q4W places more than half of the subjects above
+IC99 after the second dose, and that 70 mg Q4W holds full inhibition through
+the dosing interval.
+
+```{r figure-5-gate}
+dose2_peak <- sim5 |>
+  filter(regimen == "21 mg", time > 28, time <= 56) |>
+  group_by(id) |>
+  summarise(cmax = max(Cc), .groups = "drop")
+trough70 <- sim5 |>
+  filter(regimen == "70 mg", time == 84) |>
+  pull(pct_imax)
+c(frac_21mg_above_ic99_dose2 = mean(dose2_peak$cmax > 1134),
+  median_pct_imax_70mg_trough3 = median(trough70))
+stopifnot(median(dose2_peak$cmax) > 1134, median(trough70) > 95)
+```
+
+# PKNCA validation
+
+The paper reports no NCA, so PKNCA is used to summarize the simulated
+single-dose cohorts (unbound erenumab) without a published comparator.
+
+```{r pknca}
+sad <- c("1 mg SC", "7 mg SC", "21 mg SC", "70 mg SC", "140 mg SC",
+         "140 mg IV", "210 mg SC")
+sim_nca <- sim |>
+  filter(regimen %in% sad, !is.na(Cc)) |>
+  mutate(treatment = as.character(regimen)) |>
+  select(id, time, Cc, treatment)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+# IV bolus: the time-zero value is the first post-dose concentration, not 0.
+iv_first <- sim_nca |> filter(treatment == "140 mg IV", time > 0) |>
+  group_by(id) |> slice(1) |> ungroup()
+sim_nca <- sim_nca |>
+  left_join(iv_first |> select(id, c0 = Cc), by = "id") |>
+  mutate(Cc = ifelse(treatment == "140 mg IV" & time == 0, c0, Cc)) |>
+  select(-c0)
+
+dose_df <- events |>
+  filter(evid == 1, regimen %in% sad) |>
+  mutate(treatment = regimen) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_sum <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  mutate(treatment = factor(treatment, levels = sad)) |>
+  arrange(treatment)
+nca_sum |>
+  rename("Cohort" = treatment, "Cmax (ng/mL)" = cmax, "Tmax (day)" = tmax,
+         "AUCinf (ng*day/mL)" = aucinf.obs, "t1/2 (day)" = half.life) |>
+  knitr::kable(digits = 1, caption = "Median simulated NCA of unbound erenumab.")
+```
+
+The median Tmax of the SC cohorts (about 4-6 days) is consistent with the
+paper's absorption half-life of 1.6 days and its statement that SC absorption
+is essentially complete within about 8 days.
+
+```{r pknca-gate}
+sc_tmax <- nca_sum$tmax[nca_sum$treatment %in% c("70 mg SC", "140 mg SC", "210 mg SC")]
+stopifnot(all(sc_tmax > 2 & sc_tmax < 10))
+```
+
+# Assumptions and deviations
+
+- **Observed concentration.** The paper estimated Kss "directly from the
+  available unbound serum erenumab concentration data", so `Cc` is the unbound
+  concentration of Eq. 2, and the PD model (Eq. 7, "[AMG334]") is driven by the
+  same quantity.
+- **Amount and concentration units.** Doses are in mg and volumes in L, while
+  Rtot, Kss, ksyn and IC50 are in ng/mL; the model converts the central amount
+  to ng/mL with a factor of 1000. The receptor pool is carried in
+  erenumab-mass-equivalent concentration, as the paper does.
+- **Bioavailability parameterization.** Eq. 1 estimates F on a logit scale
+  (`1/(1 + exp(F))`); only the back-transformed 74% is printed, so the model
+  carries `logit(0.74)` with no between-subject variability.
+- **BSV scale.** BSV is printed as %CV, and variances are taken as `CV^2`; this
+  reproduces both correlations quoted in the Results (-0.49 and 0.642), which
+  the log-normal `log(1 + CV^2)` form does not (-0.54).
+- **ka-kint covariance.** Only the CL-ka and CL-kint covariances are printed,
+  so the ka-kint covariance is 0.
+- **IIV on the DBF residual error.** Table IV lists a second "Residual error"
+  row (38.7% CV, 33.3% shrinkage) beside the BSV rows; it is read as
+  between-subject variability on the residual-error magnitude (NONMEM
+  `W * EXP(ETA)`), applied to both the additive and proportional components.
+  It is named `etaRUV_cidbf` after the existing `etaRUV` / `etaRUV_<output>`
+  models; because it scales two residual parameters at once there is no single
+  fixed effect for it to pair with, which `checkModelConventions()` reports as
+  a naming warning.
+- **Combined residual error form.** The Supplementary Methods describe the DBF
+  error as `Y = Ypred + W * eps` with W additive, proportional "or a
+  combination" without giving the combination formula; nlmixr2's default
+  `add() + prop()` (variances summed) is used.
+- **IV administration.** The 140 mg IV dose is entered as a bolus into
+  `central` (Eq. 3 initial condition `Atot(0) = DoseIV`); the infusion
+  duration is not reported.
+- **Figure 5 low-dose cohorts.** The typical-value peaks agree with the
+  Figure 2 VPC medians for the 7 mg SC, 70 mg SC and 140 mg IV panels (gated
+  above), and the 70 mg simulation agrees with the Figure 5 projection. For
+  7 and 21 mg, the Figure 5 medians peak lower than simulated here (about 150
+  versus 300 ng/mL for 7 mg and 1000 versus 1360 ng/mL for 21 mg after the
+  first dose, read off the figure by the maintainers). The covariate set sampled for Figure 5 is not printed, and
+  Figure 2 is the fitted-model VPC, so the packaged parameters are used as
+  printed and the low-dose difference is not gated.
+- **Covariates screened but not retained.** Sex, age and population type
+  (healthy versus migraine) were tested and not retained; they are recorded in
+  `covariatesDataExcluded`.
+- **Errata.** No correction notice for this article was found on PubMed or
+  Europe PMC (checked 2026-11-25).

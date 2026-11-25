@@ -3268,6 +3268,8 @@ navbar:
         href: articles/Baker_2020_eptinezumab.html
       - text: "Eravacycline (Ji 2025)"
         href: articles/Ji_2025_eravacycline.html
+      - text: "Erenumab (Vu 2017)"
+        href: articles/Vu_2017_erenumab.html
       - text: "Erenumab rat (Gupta 2025)"
         href: articles/Gupta_2025_erenumab_rat.html
       - text: "Ergothioneine pbpk (Okumura 2025)"
@@ -13407,6 +13409,7 @@ articles:
   - articles/Vorontsova_2022_misoprostol
   - articles/Vos_2025_iminobiotin
   - articles/Vos_2025_nortriptyline
+  - articles/Vu_2017_erenumab
   - articles/Vucicevic_2025_efavirenz
   - articles/Vujkovic_2018_efavirenz
   - articles/Vuu_2016_topiramate_dog
