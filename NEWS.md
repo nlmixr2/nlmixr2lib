@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Busso 2017 exercise training and physical performance ([doi:10.1038/srep40422](https://doi.org/10.1038/srep40422)) -- healthy men on a 15-week cycle-ergometer training programme.
+- Add Yamamoto 2017b multi-compartmental CNS distribution models for acetaminophen, atenolol, methotrexate, morphine, paliperidone, phenytoin, quinidine, remoxipride and risperidone ([doi:10.1007/s11095-016-2065-3](https://doi.org/10.1007/s11095-016-2065-3)) -- male Wistar rats, with the allometric translation of acetaminophen and morphine to neurointensive-care patients.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
