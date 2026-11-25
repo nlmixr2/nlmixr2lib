@@ -11803,19 +11803,19 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Troisi_2024_meropenem.R` (exponential effect on the meropenem IC50 for inhibition of C-reactive protein production: `ic50 = 0.79 * exp(0.44 * MIC) * exp(2.46 * CONMED_ANTIMRSA)`; Table 2 cohort median MIC 0.25 mg/L, IQR 0.12-4, range 0.12-64 -- founding example).
 - **Notes:** Distinct from the ratio PK/PD-index canonicals `AUCMIC_<DRUG>`, `CMAXMIC_<DRUG>` and `FTMIC_<DRUG>`, which carry an exposure already divided by an MIC; `MIC` is the bare susceptibility value, and the model computes any exposure ratio itself. MIC values are reported on the two-fold dilution scale and are often censored at the panel limits (Troisi 2024 reports 0.12 mg/L, the lowest dilution tested, for most Enterobacterales isolates); supply the reported value as-is. With an uncentered exponential effect the covariate dominates at high MIC (`exp(0.44 * 16)` is about 1100-fold in the founding model), so simulations should stay within the source cohort's MIC range.
 
-### MIC_MEM (**canonical for the meropenem MIC of the isolate in a multi-drug antibacterial PK/PD model**)
-- **Description:** Minimum inhibitory concentration (MIC) of meropenem against the bacterial isolate, supplied as a per-isolate (time-fixed) covariate. Member of the drug-qualified `MIC_<DRUG>` family, which carries each drug's MIC when a model needs the MICs of more than one antibacterial; the drug token follows the American Society for Microbiology antibiotic abbreviations used by the `CONC_<DRUG>_MGL` family (`MEM` = meropenem, `CST` = colistin, `PMB` = polymyxin B).
+### MIC_MEROPENEM (**canonical for the meropenem MIC of the isolate in a multi-drug antibacterial PK/PD model**)
+- **Description:** Minimum inhibitory concentration (MIC) of meropenem against the bacterial isolate, supplied as a per-isolate (time-fixed) covariate. Member of the drug-qualified `MIC_<DRUG>` family, which carries each drug's MIC when a model needs the MICs of more than one antibacterial; the drug token is the drug name spelled out in capitals, as in `CONC_MEROPENEM_MGL`, `CONC_COLISTIN_MGL`, `CONC_POLYMYXINB_MGL`, `AUC_POLYMYXINB` and `CONMED_MEROPENEM`.
 - **Units:** mg/L
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- continuous. In the founding model the meropenem EC50 is EC50_MERO x MIC_MEM, with EC50_MERO fixed to 1.
+- **Reference category:** n/a -- continuous. In the founding model the meropenem EC50 is EC50_MERO x MIC_MEROPENEM, with EC50_MERO fixed to 1.
 - **Source aliases:**
   - `MIC_MERO` -- Soeorg 2026 Eq 9 subscript (`EC50_MERO MIC_MERO`).
 - **Example models:** `Soeorg_2026_meropenem_colistin_polymyxinB.R` (founding example; MIC-scaled meropenem EC50 for 60 pooled A. baumannii isolates, 57 of them meropenem-resistant).
 - **Notes:** Use the bare `MIC` when a model has a single antibacterial (the drug is implied by the model); use `MIC_<DRUG>` when a model needs the MICs of two or more drugs, as combination time-kill models do. Supply the reported two-fold-dilution value as-is.
 
-### MIC_CST (**canonical for the colistin MIC of the isolate in a multi-drug antibacterial PK/PD model**)
-- **Description:** Colistin MIC of the bacterial isolate, as a per-isolate (time-fixed) covariate. Member of the `MIC_<DRUG>` family (see `MIC_MEM`).
+### MIC_COLISTIN (**canonical for the colistin MIC of the isolate in a multi-drug antibacterial PK/PD model**)
+- **Description:** Colistin MIC of the bacterial isolate, as a per-isolate (time-fixed) covariate. Member of the `MIC_<DRUG>` family (see `MIC_MEROPENEM`).
 - **Units:** mg/L
 - **Type:** continuous
 - **Scope:** general
@@ -11825,12 +11825,12 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Soeorg_2026_meropenem_colistin_polymyxinB.R` (founding example).
 - **Notes:** Colistin activity as colistin base from colistin sulfate, matching `CONC_COLISTIN_MGL`.
 
-### MIC_PMB (**canonical for the polymyxin B MIC of the isolate in a multi-drug antibacterial PK/PD model**)
-- **Description:** Polymyxin B MIC of the bacterial isolate, as a per-isolate (time-fixed) covariate. Member of the `MIC_<DRUG>` family (see `MIC_MEM`).
+### MIC_POLYMYXINB (**canonical for the polymyxin B MIC of the isolate in a multi-drug antibacterial PK/PD model**)
+- **Description:** Polymyxin B MIC of the bacterial isolate, as a per-isolate (time-fixed) covariate. Member of the `MIC_<DRUG>` family (see `MIC_MEROPENEM`).
 - **Units:** mg/L
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- continuous. In the founding model it replaces `MIC_CST` whenever the polymyxin in use is polymyxin B (`CONC_POLYMYXINB_MGL` above 0).
+- **Reference category:** n/a -- continuous. In the founding model it replaces `MIC_COLISTIN` whenever the polymyxin in use is polymyxin B (`CONC_POLYMYXINB_MGL` above 0).
 - **Source aliases:**
   - `MIC_COLPMB` -- Soeorg 2026 Eq 10-11 subscript (colistin and polymyxin B pooled).
 - **Example models:** `Soeorg_2026_meropenem_colistin_polymyxinB.R` (founding example).

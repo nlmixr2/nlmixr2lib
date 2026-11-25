@@ -45,10 +45,10 @@ vary over time when the model is driven from a PK profile:
 
 | Covariate | Meaning |
 |---|---|
-| `CONC_MEM_MGL` | meropenem concentration (mg/L) |
-| `CONC_CST_MGL`, `CONC_PMB_MGL` | colistin and polymyxin B concentrations (mg/L); summed into one polymyxin concentration, so set the unused one to 0 |
-| `MIC_MEM` | meropenem MIC of the isolate (mg/L) |
-| `MIC_CST`, `MIC_PMB` | colistin and polymyxin B MICs (mg/L); `MIC_PMB` is used when `CONC_PMB_MGL > 0`, otherwise `MIC_CST` |
+| `CONC_MEROPENEM_MGL` | meropenem concentration (mg/L) |
+| `CONC_COLISTIN_MGL`, `CONC_POLYMYXINB_MGL` | colistin and polymyxin B concentrations (mg/L); summed into one polymyxin concentration, so set the unused one to 0 |
+| `MIC_MEROPENEM` | meropenem MIC of the isolate (mg/L) |
+| `MIC_COLISTIN`, `MIC_POLYMYXINB` | colistin and polymyxin B MICs (mg/L); `MIC_POLYMYXINB` is used when `CONC_POLYMYXINB_MGL > 0`, otherwise `MIC_COLISTIN` |
 | `CARBAPENEMASE_POS` | 1 = acquired carbapenemase (OXA-23, OXA-24/40, OXA-58, OXA-72, VIM-1, NDM-1) |
 | `INOC_LOG10CFU` | starting inoculum (log10 CFU/mL) |
 
@@ -151,8 +151,8 @@ solve_typ <- function(events, ...) {
 kill_events <- function(times, ...) {
   grid <- tidyr::expand_grid(...)
   grid$id <- seq_len(nrow(grid))
-  defaults <- list(CONC_MEM_MGL = 0, CONC_CST_MGL = 0, CONC_PMB_MGL = 0,
-                   MIC_MEM = 16, MIC_CST = 1, MIC_PMB = 1,
+  defaults <- list(CONC_MEROPENEM_MGL = 0, CONC_COLISTIN_MGL = 0, CONC_POLYMYXINB_MGL = 0,
+                   MIC_MEROPENEM = 16, MIC_COLISTIN = 1, MIC_POLYMYXINB = 1,
                    CARBAPENEMASE_POS = 0, INOC_LOG10CFU = 6)
   for (nm in setdiff(names(defaults), names(grid))) grid[[nm]] <- defaults[[nm]]
   tidyr::expand_grid(grid, time = times) |>
@@ -160,8 +160,8 @@ kill_events <- function(times, ...) {
     arrange(id, time) |>
     as.data.frame()
 }
-covs <- c("CONC_MEM_MGL", "CONC_CST_MGL", "CONC_PMB_MGL", "MIC_MEM", "MIC_CST",
-          "MIC_PMB", "CARBAPENEMASE_POS", "INOC_LOG10CFU")
+covs <- c("CONC_MEROPENEM_MGL", "CONC_COLISTIN_MGL", "CONC_POLYMYXINB_MGL", "MIC_MEROPENEM", "MIC_COLISTIN",
+          "MIC_POLYMYXINB", "CARBAPENEMASE_POS", "INOC_LOG10CFU")
 ```
 
 # Structural checks
@@ -192,7 +192,7 @@ ggplot(sim_g, aes(time, log_cfu, colour = factor(INOC_LOG10CFU))) +
 With the drug present from time zero, `R_on(t) = 1 - exp(-katten t)` for each drug.
 
 ```{r attenuation}
-ev_a <- kill_events(c(0, 6, 12, 24), CONC_MEM_MGL = 16, CONC_CST_MGL = 1)
+ev_a <- kill_events(c(0, 6, 12, 24), CONC_MEROPENEM_MGL = 16, CONC_COLISTIN_MGL = 1)
 sim_a <- as.data.frame(solve_typ(ev_a))
 stopifnot(
   max(abs(sim_a$aron_mero - (1 - exp(-th[["kon_mero"]] * sim_a$time)))) < 1e-6,
@@ -209,16 +209,16 @@ inoculum, carbapenemase and interaction terms together.
 
 ```{r kill-hand}
 ev_k <- kill_events(0,
-  CONC_MEM_MGL = c(0, 4, 16, 64), CONC_CST_MGL = c(0, 0.25, 1),
+  CONC_MEROPENEM_MGL = c(0, 4, 16, 64), CONC_COLISTIN_MGL = c(0, 0.25, 1),
   CARBAPENEMASE_POS = c(0, 1), INOC_LOG10CFU = c(5, 6, 8))
 sim_k <- as.data.frame(solve_typ(ev_k, keep = covs))
 hand <- with(sim_k, {
   emax_m <- 3.47 * (INOC_LOG10CFU / 6)^-0.63
   emax_c <- 3.62 * 0.005^(INOC_LOG10CFU >= 7.5)
-  fint <- CONC_CST_MGL / (1 * MIC_CST + CONC_CST_MGL)
-  k_m <- emax_m * 0.83^CARBAPENEMASE_POS * (1 + 0.29 * fint) * CONC_MEM_MGL /
-    (1 * MIC_MEM * (1 - 1 * fint) + CONC_MEM_MGL)
-  k_c <- emax_c * CONC_CST_MGL / (0.33 * MIC_CST + CONC_CST_MGL)
+  fint <- CONC_COLISTIN_MGL / (1 * MIC_COLISTIN + CONC_COLISTIN_MGL)
+  k_m <- emax_m * 0.83^CARBAPENEMASE_POS * (1 + 0.29 * fint) * CONC_MEROPENEM_MGL /
+    (1 * MIC_MEROPENEM * (1 - 1 * fint) + CONC_MEROPENEM_MGL)
+  k_c <- emax_c * CONC_COLISTIN_MGL / (0.33 * MIC_COLISTIN + CONC_COLISTIN_MGL)
   k_m + k_c - (k_m / emax_m) * (k_c / emax_c) * pmax(emax_m, emax_c)
 })
 stopifnot(max(abs(sim_k$kkill - hand)) < 1e-8)
@@ -226,10 +226,10 @@ stopifnot(max(abs(sim_k$kkill - hand)) < 1e-8)
 # Two readings of Table 1 the model must honour: meropenem alone at C = MIC gives
 # half its Emax, and colistin alone at C = 0.33 x MIC gives half its Emax.
 half <- as.data.frame(solve_typ(kill_events(0,
-  CONC_MEM_MGL = c(0, 16), CONC_CST_MGL = c(0, 0.33)), keep = covs))
+  CONC_MEROPENEM_MGL = c(0, 16), CONC_COLISTIN_MGL = c(0, 0.33)), keep = covs))
 stopifnot(
-  abs(half$kkill[half$CONC_MEM_MGL == 16 & half$CONC_CST_MGL == 0] - 3.47 / 2) < 1e-8,
-  abs(half$kkill[half$CONC_MEM_MGL == 0 & half$CONC_CST_MGL == 0.33] - 3.62 / 2) < 1e-8
+  abs(half$kkill[half$CONC_MEROPENEM_MGL == 16 & half$CONC_COLISTIN_MGL == 0] - 3.47 / 2) < 1e-8,
+  abs(half$kkill[half$CONC_MEROPENEM_MGL == 0 & half$CONC_COLISTIN_MGL == 0.33] - 3.62 / 2) < 1e-8
 )
 ```
 
@@ -241,7 +241,7 @@ simulations.
 
 ```{r static-curves, fig.height = 6}
 regimens <- tribble(
-  ~regimen,                         ~CONC_MEM_MGL, ~CONC_CST_MGL,
+  ~regimen,                         ~CONC_MEROPENEM_MGL, ~CONC_COLISTIN_MGL,
   "Control",                         0,             0,
   "Colistin 0.5 x MIC",              0,             0.5,
   "Meropenem 1 x MIC",              16,             0,
@@ -251,8 +251,8 @@ regimens <- tribble(
 ev_s <- tidyr::expand_grid(regimens, CARBAPENEMASE_POS = c(0, 1)) |>
   mutate(id = row_number()) |>
   tidyr::expand_grid(time = seq(0, 24, by = 0.25)) |>
-  mutate(evid = 0, cmt = "cfu", CONC_PMB_MGL = 0, MIC_MEM = 16, MIC_CST = 1,
-         MIC_PMB = 1, INOC_LOG10CFU = 6) |>
+  mutate(evid = 0, cmt = "cfu", CONC_POLYMYXINB_MGL = 0, MIC_MEROPENEM = 16, MIC_COLISTIN = 1,
+         MIC_POLYMYXINB = 1, INOC_LOG10CFU = 6) |>
   as.data.frame()
 sim_s <- as.data.frame(solve_typ(ev_s, keep = c("regimen", "CARBAPENEMASE_POS")))
 ggplot(sim_s, aes(time, log_cfu, colour = regimen)) +
@@ -343,9 +343,9 @@ arms <- tidyr::expand_grid(regimen = c("Colistin", "Combination"),
 iso <- arms[rep(seq_len(nrow(arms)), each = n_iso), ] |>
   mutate(id = row_number(), INOC_LOG10CFU = rnorm(n(), 6, 0.25))
 ev_c <- tidyr::expand_grid(iso, lung) |>
-  mutate(CONC_MEM_MGL = ifelse(regimen == "Combination", meropenem, 0),
-         CONC_CST_MGL = colistin, CONC_PMB_MGL = 0,
-         MIC_MEM = 16, MIC_CST = 1, MIC_PMB = 1,
+  mutate(CONC_MEROPENEM_MGL = ifelse(regimen == "Combination", meropenem, 0),
+         CONC_COLISTIN_MGL = colistin, CONC_POLYMYXINB_MGL = 0,
+         MIC_MEROPENEM = 16, MIC_COLISTIN = 1, MIC_POLYMYXINB = 1,
          evid = 0, cmt = "cfu") |>
   arrange(id, time) |>
   as.data.frame()

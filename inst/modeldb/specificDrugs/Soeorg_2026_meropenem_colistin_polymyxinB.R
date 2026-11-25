@@ -38,7 +38,7 @@ Soeorg_2026_meropenem_colistin_polymyxinB <- function() {
   )
 
   covariateData <- list(
-    CONC_MEM_MGL = list(
+    CONC_MEROPENEM_MGL = list(
       description = "Meropenem concentration in the time-kill medium. Drives the meropenem Emax kill and switches on its attenuation while above zero.",
       units = "mg/L",
       type = "continuous",
@@ -46,44 +46,44 @@ Soeorg_2026_meropenem_colistin_polymyxinB <- function() {
       notes = "Static in the static time-kill experiments (0 to 125 x MIC across the pooled studies, Table S1) and time-varying in the hollow-fibre experiments. In the paper's clinical simulations it is the predicted unbound epithelial-lining-fluid meropenem concentration (plasma x 0.625 unbound x 0.25 lung penetration).",
       source_name = "C_MERO"
     ),
-    CONC_CST_MGL = list(
-      description = "Colistin concentration in the time-kill medium. Colistin and polymyxin B share one set of parameters; the model uses CONC_CST_MGL + CONC_PMB_MGL as the polymyxin concentration (C_COLPMB), so supply 0 for whichever drug was not used.",
+    CONC_COLISTIN_MGL = list(
+      description = "Colistin concentration in the time-kill medium. Colistin and polymyxin B share one set of parameters; the model uses CONC_COLISTIN_MGL + CONC_POLYMYXINB_MGL as the polymyxin concentration (C_COLPMB), so supply 0 for whichever drug was not used.",
       units = "mg/L",
       type = "continuous",
       reference_category = "n/a -- 0 mg/L when colistin was not used",
       notes = "The fit found no difference between colistin and polymyxin B potency (Table S2, model P7 vs P6), so the paper pools them as C_COLPMB. Switches on the colistin/polymyxin B attenuation while the pooled concentration is above zero.",
       source_name = "C_COLPMB"
     ),
-    CONC_PMB_MGL = list(
-      description = "Polymyxin B concentration in the time-kill medium. Summed with CONC_CST_MGL into the pooled colistin/polymyxin B concentration (C_COLPMB); supply 0 when polymyxin B was not used.",
+    CONC_POLYMYXINB_MGL = list(
+      description = "Polymyxin B concentration in the time-kill medium. Summed with CONC_COLISTIN_MGL into the pooled colistin/polymyxin B concentration (C_COLPMB); supply 0 when polymyxin B was not used.",
       units = "mg/L",
       type = "continuous",
       reference_category = "n/a -- 0 mg/L when polymyxin B was not used",
-      notes = "Total concentration as reported by the source time-kill studies; see CONC_CST_MGL.",
+      notes = "Total concentration as reported by the source time-kill studies; see CONC_COLISTIN_MGL.",
       source_name = "C_COLPMB"
     ),
-    MIC_MEM = list(
-      description = "Meropenem MIC of the isolate. The meropenem EC50 is EC50_MERO x MIC_MEM (EC50_MERO fixed to 1).",
+    MIC_MEROPENEM = list(
+      description = "Meropenem MIC of the isolate. The meropenem EC50 is EC50_MERO x MIC_MEROPENEM (EC50_MERO fixed to 1).",
       units = "mg/L",
       type = "continuous",
       reference_category = "n/a -- continuous; EC50 scales linearly with the MIC",
       notes = "Reported by each source study (broth microdilution in 15 of 21 studies). 57 of the 60 isolates were meropenem-resistant (EUCAST MIC > 8 mg/L; Fig 1A).",
       source_name = "MIC_MERO"
     ),
-    MIC_CST = list(
-      description = "Colistin MIC of the isolate. Used as MIC_COLPMB (scaling the colistin/polymyxin B EC50 and the interaction potency) when the polymyxin in use is colistin, i.e. when CONC_PMB_MGL is 0.",
+    MIC_COLISTIN = list(
+      description = "Colistin MIC of the isolate. Used as MIC_COLPMB (scaling the colistin/polymyxin B EC50 and the interaction potency) when the polymyxin in use is colistin, i.e. when CONC_POLYMYXINB_MGL is 0.",
       units = "mg/L",
       type = "continuous",
       reference_category = "n/a -- continuous; EC50 scales linearly with the MIC",
       notes = "14 of the 60 isolates were colistin/polymyxin B-resistant (EUCAST MIC > 2 mg/L; Fig 1A). The paper does not distinguish colistin and polymyxin B MICs.",
       source_name = "MIC_COLPMB"
     ),
-    MIC_PMB = list(
-      description = "Polymyxin B MIC of the isolate. Used as MIC_COLPMB when the polymyxin in use is polymyxin B, i.e. when CONC_PMB_MGL is above 0.",
+    MIC_POLYMYXINB = list(
+      description = "Polymyxin B MIC of the isolate. Used as MIC_COLPMB when the polymyxin in use is polymyxin B, i.e. when CONC_POLYMYXINB_MGL is above 0.",
       units = "mg/L",
       type = "continuous",
       reference_category = "n/a -- continuous; EC50 scales linearly with the MIC",
-      notes = "See MIC_CST.",
+      notes = "See MIC_COLISTIN.",
       source_name = "MIC_COLPMB"
     ),
     CARBAPENEMASE_POS = list(
@@ -169,12 +169,12 @@ Soeorg_2026_meropenem_colistin_polymyxinB <- function() {
 
     # Drug concentrations. Colistin and polymyxin B share one parameter set;
     # only one of the two is present in an experiment.
-    c_mero <- CONC_MEM_MGL
-    c_col <- CONC_CST_MGL + CONC_PMB_MGL
-    if (CONC_PMB_MGL > 0) {
-      mic_col <- MIC_PMB
+    c_mero <- CONC_MEROPENEM_MGL
+    c_col <- CONC_COLISTIN_MGL + CONC_POLYMYXINB_MGL
+    if (CONC_POLYMYXINB_MGL > 0) {
+      mic_col <- MIC_POLYMYXINB
     } else {
-      mic_col <- MIC_CST
+      mic_col <- MIC_COLISTIN
     }
 
     # Inoculum effects (Eq 7-8).
@@ -186,7 +186,7 @@ Soeorg_2026_meropenem_colistin_polymyxinB <- function() {
     emax_col_inoc <- emax_col * e_inoc8_emax_col^inoc8
 
     # EC50 as a multiple of the MIC with interisolate variability.
-    ec50_mero_i <- exp(lec50_mero + etalec50_mero) * MIC_MEM
+    ec50_mero_i <- exp(lec50_mero + etalec50_mero) * MIC_MEROPENEM
     ec50_col_i <- exp(lec50_col + etalec50_col) * mic_col
 
     # GPDI: saturable functions of the colistin/polymyxin B concentration (Eq 11).
