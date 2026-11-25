@@ -8432,6 +8432,8 @@ navbar:
         href: articles/Ohk_2022_sumatriptan.html
       - text: "Sunitinib (AitOudhia 2016)"
         href: articles/AitOudhia_2016_sunitinib.html
+      - text: "Sunitinib (Liu 2026)"
+        href: articles/Liu_2026_sunitinib.html
       - text: "Sunitinib (Wang 2020)"
         href: articles/Wang_2020_sunitinib.html
       - text: "Sunitinib (Wang 2021)"
@@ -8444,6 +8446,8 @@ navbar:
         href: articles/vanErp_2010_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
+      - text: "Sunitinib multistate (Liu 2026)"
+        href: articles/Liu_2026_sunitinib.html
       - text: "Sunitinib qsp (Wan 2025)"
         href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Sunitinib su12662 (Wang 2020)"
@@ -11780,10 +11784,7 @@ articles:
   - articles/Liu_2025_selpercatinib
   - articles/Liu_2025_tranexamicAcid
   - articles/Liu_2025_voriconazole
-  - articles/Liu_2026_meropenem
-  - articles/Liu_2026_riluzole
-  - articles/Liu_2026_tislelizumab
-  - articles/Liu_2026_venetoclax
+  - articles/Liu_2026_sunitinib
   - articles/Liva_2021_rec2282
   - articles/Livio_2014_tobramycin
   - articles/LlanosPaez_2017_gentamicin

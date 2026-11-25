@@ -1748,8 +1748,9 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # switch and the breakpoint is what identifies the structure. `cl_time_slope`
 # is the fractional slope of the linear-in-time form `cl * (1 + slope * t)`;
 # `cl_time_fday` is the fraction compounded once per dosing day in
-# `cl * (1 + cl_time_fday)^floor(t / 24)`.
-.timeVaryingClearanceAcceptPattern <- "cl_time_max|cl_t50|cl_time_hill|cl_time_slope|cl_time_fday|cl_exp_|tclchange"
+# `cl * (1 + cl_time_fday)^floor(t / 24)`; `cl_time_hyp` is the rate of the
+# hyperbolic decline `cl0 / (1 + cl_time_hyp * t)`.
+.timeVaryingClearanceAcceptPattern <- "cl_time_max|cl_t50|cl_time_hill|cl_time_slope|cl_time_fday|cl_time_hyp|cl_exp_|tclchange"
 
 # The `ini({})` block declares parameters and their labels; only `model({})`
 # contains the equations. Scanning the whole function makes label prose such as
@@ -1799,6 +1800,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
           "Use cl_time_max / cl_t50 / cl_time_hill for a sigmoidal-in-time",
           "clearance, cl_time_slope for a linear-in-time clearance,",
           "cl_time_fday for a clearance compounded once per dosing day,",
+          "cl_time_hyp for a hyperbolic decline cl0 / (1 + rate * t),",
           "cl_exp_inf / cl_exp_component / cl_exp_kdes for an exponential",
           "decay, or tclchange / cl_late for a piecewise-constant step, so",
           "the structure can be found by name (issue #481)."

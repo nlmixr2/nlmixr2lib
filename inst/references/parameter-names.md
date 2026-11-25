@@ -1393,6 +1393,30 @@ number of elapsed dosing days only when dosing is daily from `t = 0`; a schedule
 dosing-free days needs the index rebuilt. Like `cl_time_slope` the form is unbounded, so
 it is valid only over the time span the source studied.
 
+### cl_time_hyp, v_time_hyp (**canonical rate of a hyperbolic decline in clearance or volume with time**)
+- **Type:** paper-named-param
+- **Role:** Rate constant of the hyperbolic time course `cl <- cl0 / (1 + cl_time_hyp * t)` (and
+`vc <- vc0 / (1 + v_time_hyp * t)`, `vp <- vp0 / (1 + v_time_hyp * t)` for the volumes), in
+1/time. `1 / cl` rises linearly in time, so the parameter falls by half at `t = 1 / cl_time_hyp`.
+Carried on the linear scale in `ini()`, with no `l` form, because the source places an
+additive random effect on it so that individual rates may take either sign. `v_time_hyp`
+names one rate shared by the central and peripheral volumes when the source applies the
+same rate to both. Metabolite forms take the registered suffix (`cl_time_hyp_su12662`).
+- **Source aliases:**
+  - `beta_CL`, `beta_TIME,CL` / `beta_V`, `beta_TIME,Vc` -- Liu 2026 Supplementary S2
+    equations and Table S2.
+- **Example models:** `Liu_2026_sunitinib.R` (sunitinib CL/F 0.00365 and SU12662 CL/F
+  0.00801 per week; V/F 0.00168 and 0.0125 per week; time in weeks since the first dose; one
+  additive random effect per parameter class shared by parent and metabolite, the metabolite
+  receiving it divided by an estimated scale).
+- **Notes:** A further shape of the time-varying clearance family, beside the sigmoidal
+`cl_time_max` / `cl_t50` / `cl_time_hill`, the exponential `cl_exp_*`, the linear
+`cl_time_slope`, the compounded `cl_time_fday` and the step `ltclchange`. Do not use
+`cl_time_slope` for it: for small `cl_time_hyp * t` the two forms agree to first order, and
+papers sometimes describe the hyperbolic form as a "linear decrease" (Liu 2026 does), but
+they separate as `t` grows and the hyperbolic form never crosses zero for a positive rate.
+The form is valid only over the time span the source studied.
+
 ### cl_pna0 (**canonical value of a maturing parameter at postnatal age zero**)
 - **Type:** bare-pk
 - **Role:** Intercept of an Anderson-Holford postnatal-age maturation curve: the value the maturing parameter takes at PNA 0, in that parameter's own units. Log form `lcl_pna0`. Used in the additive maturation form `cl <- cl_pna0 + cl_matspan * PNA^hill / (pna50^hill + PNA^hill)`. It is the INTERCEPT, not the plateau; the plateau is `cl_pna0 + cl_matspan`.
@@ -2755,7 +2779,7 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Notes:** Distinct from `kmet` (formation rate constant): `fm` is unitless and bounded; `kmet` has rate units. **In a parent-plus-metabolite model fit to plasma observations of both species, `fm` and the metabolite's central volume are not simultaneously identifiable** -- an increase in the volume can be compensated by a decrease in `fm` at unchanged total parent clearance, so only one of the pair may be estimated. A source paper resolves this in one of two ways, and which way it chose determines whether the metabolite's compartment holds a true or an `fm`-scaled amount: either it FIXES `fm` from external information and estimates the volume freely (Hadigol 2026 fixes `fm` to 0.634 from a published enzalutamide PBPK model, having found this fit better than the alternative of assuming equal central volumes for parent and metabolite, so `central_ndmenz` holds a true amount), or it estimates apparent metabolite parameters `CLm/fm` and `Vm/fm` and never names `fm` at all (`Petain_2008_imatinib.R`, `MenonAndersen_2009_imatinib.R`, `Tuo_2025_clobazam.R`, whose metabolite compartments hold `fm`-scaled amounts but still predict the true concentration, because the same `fm` divides clearance and volume). Record which resolution the source used, because the two are not interchangeable when a downstream user changes `fm`.
 
 
-### fm_125d3, fm_1ohm, fm_25d3, fm_9oh, fm_aca, fm_acmpag, fm_afhpa, fm_ap32914, fm_ap32960, fm_az5104, fm_cervix, fm_cyp1a2, fm_cyp2b6, fm_cyp2c8, fm_cyp2c9, fm_cyp3a4, fm_cyp3a5, fm_cysmer, fm_fenbendazole, fm_gluc, fm_gx, fm_h4, fm_ko516_frac, fm_m1, fm_m2, fm_m27, fm_m3, fm_m3034, fm_m3g, fm_m5, fm_m6, fm_m6g, fm_megx, fm_mmae, fm_morphine, fm_morphine_raw, fm_mpag, fm_norbup, fm_norflox, fm_noxpeflox, fm_odv, fm_other, fm_oxfsfn, fm_rectum, fm_shnk, fm_sn38, fm_snk, fm_sulf, fm_tfv, fm_ugt, fm_ugt1a1, fm_vagina (**canonical fraction metabolised by a named pathway**)
+### fm_125d3, fm_1ohm, fm_25d3, fm_9oh, fm_aca, fm_afhpa, fm_ap32914, fm_ap32960, fm_az5104, fm_cervix, fm_cyp1a2, fm_cyp2b6, fm_cyp2c8, fm_cyp2c9, fm_cyp3a4, fm_cyp3a5, fm_cysmer, fm_fenbendazole, fm_gluc, fm_gx, fm_h4, fm_ko516_frac, fm_m1, fm_m2, fm_m27, fm_m3, fm_m3034, fm_m3g, fm_m5, fm_m6, fm_m6g, fm_megx, fm_mmae, fm_morphine, fm_morphine_raw, fm_norbup, fm_norflox, fm_noxpeflox, fm_odv, fm_other, fm_oxfsfn, fm_rectum, fm_shnk, fm_sn38, fm_snk, fm_su12662, fm_sulf, fm_tfv, fm_ugt, fm_ugt1a1, fm_vagina (**canonical fraction metabolised by a named pathway**)
 - **Type:** paper-named-param
 - **Role:** Fraction of a parent drug's clearance routed to one named elimination pathway, used when a paper splits the metabolic flux across two or more identified routes instead of estimating the single `fm` above. Unitless, bounded in (0, 1]; the members of one model's split are expected to sum to 1, either explicitly or with the residual route written inline as `1 - fm_a - fm_b`. The family shape is `fm_<pathway>`, where `<pathway>` is a lowercase token naming the route -- an enzyme (`fm_cyp3a4`, `fm_cyp3a5`) or the metabolite that route forms, reusing the metabolite suffix registered in `compartment-names.md` (`fm_h4`, `fm_m3g`, `fm_m6g`).
 - **Source aliases:**
@@ -2805,6 +2829,8 @@ Two members were added alongside the Saqr 2025 mycophenolate extraction: `fm_mpa
 `fm_norbup` (`Gu_2023_buprenorphine.R`) is the fraction of the whole buprenorphine clearance forming norbuprenorphine. It is a derived value in `model`: the bare `fm` is the estimated-scale `ini` parameter, fixed to 1 because without intravenous data only apparent metabolite parameters are identifiable, and `fm_norbup = fm * e_dose16_fm^(DOSE_BPN_SL_MG == 16)` carries the 1.98-fold increase in the 16 mg group, so `fm_norbup` exceeds 1 there and is an apparent ratio rather than a probability.
 
 One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, the fraction of the absorbed venlafaxine dose converted to O-desmethylvenlafaxine pre-systemically (the paper's `FP`), estimated directly on the linear scale. It follows the `fm_m2` precedent of Keunecke 2020 for a first-pass formation fraction of the dose; the systemic VEN-to-ODV conversion carries no `fm_` because all apparent VEN clearance forms ODV in that model (`Wang_2022_venlafaxine.R`).
+
+`fm_su12662` (`Liu_2026_sunitinib.R`) is the fraction of the sunitinib dose that reaches the circulation as SU12662, fixed to 0.21 (carried on the log scale as `lfm_su12662` with IIV `etalfm_su12662` and a sex effect). The pathway token is the registered `su12662` metabolite suffix. Its denominator is the dose, like `fm_9oh` and `fm_odv`: the paper gives SU12662 its own first-order input depot dosed with `F * fm_su12662` of the sunitinib dose, rather than a formation clearance from the parent's central compartment.
 
 ### logitfm (**canonical logit-transformed fraction metabolised**)
 - **Type:** paper-named-param

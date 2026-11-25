@@ -1,0 +1,747 @@
+---
+title: "Sunitinib PK and multistate outcomes in metastatic renal cell carcinoma (Liu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sunitinib PK and multistate outcomes in metastatic renal cell carcinoma (Liu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Liu et al. (2026) re-analysed individual patient data from four Pfizer trials of
+sunitinib 50 mg once daily on the 4-weeks-on / 2-weeks-off (4/2) schedule in
+metastatic renal cell carcinoma (mRCC), to ask whether the positive
+exposure-efficacy relationship reported earlier survives time-dependent bias and
+baseline confounding. Two models from the paper are shipped:
+
+* `Liu_2026_sunitinib` -- the joint population PK model of sunitinib and its
+  active metabolite SU12662 (294 patients, four trials; Supplementary Material S2,
+  Table S2).
+* `Liu_2026_sunitinib_multistate` -- the six-state multistate model of response,
+  progression, discontinuation and death in the 165 cytokine-refractory patients of
+  studies 1006 and 014 (Supplementary Material S3, Table S4).
+
+The PK model supplies the exposure metric the paper tested in the multistate model,
+AUCss,DOSE50,CLcycle1 (equation 1). Exposure was not retained in the final
+multistate model: after adjustment for albumin and age it had no independent
+effect on progression or survival (Table 2), so the two shipped models are not
+linked.
+
+* Citation: `r rxode2::rxode(readModelDb("Liu_2026_sunitinib"))$reference`
+* Article: <https://doi.org/10.1002/cpt.70447>
+* PMC record with Supplementary Materials S1-S3:
+  <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC13468949/>
+
+# Population
+
+The PK analysis pooled 294 patients with sunitinib and SU12662 concentrations under
+the 50 mg 4/2 regimen: 105 from study 1006 and 60 from study 014 (both
+cytokine-refractory, phase II) and 42 from study 1034 and 88 from study 1065
+(treatment-naive). The data held 1688 sunitinib and 1715 SU12662 total plasma
+concentrations, mostly troughs in the on-treatment weeks and at the end of the
+2-week break, for up to 5 cycles (Table 1; Supplementary S2).
+
+The exposure-response set is the 165 cytokine-refractory patients of studies 1006
+and 014 (Supplementary Table S1): mean age 57.1 years (SD 10.3, range 24-87), mean
+weight 85.0 kg (SD 18.6), 35% women, 92% White, albumin 40.4 g/L (SD 4.8),
+haemoglobin 124.3 g/L (SD 18.8), ECOG 0 in 55% and 1 in 44%, and a mean 38.0
+months since diagnosis (SD 53.6). Dose reductions to 37.5 or 25 mg occurred in 38.2%.
+The PK-model covariates are centred on the medians of the 294-patient PK dataset
+(age 60 years, albumin 41 g/L, weight 82.4 kg), which the paper does not tabulate
+further.
+
+The same information is available programmatically through each model's
+`population` metadata, e.g. `readModelDb("Liu_2026_sunitinib")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The table
+collects them.
+
+| Model / parameter | Value | Source |
+|---|---|---|
+| PK structure: two 2-cmt models, separate first-order input depots | -- | Methods 'Model for pharmacokinetic data'; Supplementary S2 |
+| `lka`, `lka_su12662` (fixed) | 0.224, 0.132 1/h | Table S2 'Ka' |
+| `lcl`, `lvc`, `lq`, `lvp` | 35.3 L/h, 2250 L, 1.72 L/h, 272 L | Table S2 parent column |
+| `lcl_su12662`, `lvc_su12662`, `lq_su12662`, `lvp_su12662` | 18.1 L/h, 2210 L, 1.02 L/h, 384 L | Table S2 metabolite column |
+| `lfdepot` (fixed), `lfm_su12662` (fixed) | 1, 0.21 | Methods; Table S2 and footnote 1 |
+| `e_sexf_fdepot`, `e_sexf_fm_su12662` | 0.148, 0.243 | Table S2 'SEX on F', 'SEX on fm'; footnote 2 |
+| `e_sexf_cl`, `e_sexf_cl_su12662` | -0.0985, -0.0864 | Table S2 'SEX on CL/F'; footnote 2 |
+| `e_age_cl`, `e_age_cl_su12662` | -0.00590, -0.00793 | Table S2 'AGE on CL/F'; footnote 3 (centred 60 y) |
+| `e_alb_cl`, `e_alb_vc` (shared) | -0.507, -0.741 | Table S2 'ALB on CL/F', 'ALB on Vc/F'; footnote 4 (41 g/L) |
+| `e_wt_cl_su12662`, `e_wt_vc`, `e_wt_vc_su12662` | 0.217, 0.220, 0.447 | Table S2 'WT on'; footnote 5 (82.4 kg) |
+| Time course `param0 / (1 + beta * week)` on CL/F, Vc/F and Vp/F | -- | Supplementary S2 equations; Table S2 footnote 6 |
+| `cl_time_hyp`, `cl_time_hyp_su12662` | 0.00365, 0.00801 1/week | Table S2 'beta TIME, CL' |
+| `v_time_hyp`, `v_time_hyp_su12662` | 0.00168, 0.0125 1/week | Table S2 'beta TIME, Vc' |
+| `scale_etacl_time_hyp_su12662`, `scale_etav_time_hyp_su12662` | 0.90, 1.38 | Table S2 'IIV beta scale'; footnote 8 |
+| `etalfdepot`, `etalfm_su12662` | 26.5%, 22.6% | Table S2 'Exponential IIV'; footnote 7 (SD x 100) |
+| CL/F, Vc/F, Vp/F IIV and correlations | 9.91/15.1, 8.30/11.7, 26.1/59.4; r = 0.70, 0.68 | Table S2 'Exponential IIV', 'Correlation of IIV' |
+| `etacl_time_hyp`, `etav_time_hyp` (additive) | 0.8, 0.9 (SD x 100, 1/week) | Table S2 'Additive IIV and scales' |
+| `propSd`, `propSd_su12662` | 0.217, 0.219 | Table S2 'RUV' |
+| Multistate ODEs | -- | Supplementary S3 'Multistate Model Structure' |
+| Weibull hazard `scale*shape*(scale*t)^(shape-1)` | -- | Supplementary S3 'Weibull function' |
+| `lscale12`, `lshape12` | 0.0471 1/week, 0.844 | Table S4 |
+| `lk13`, `lk23`, `lk14`, `lk24` | 0.00725, 0.0171, 0.00758, 0.000758 1/week | Table S4 |
+| `lk15` (= lambda25, merged) | 0.00131 1/week | Table S4 and footnote c |
+| `lscale36`, `lshape36` (log-logistic in time to progression) | 0.0340 1/week, 0.930 | Table S4; Supplementary S3 |
+| `lk46` (= lambda56, merged) | 0.0267 1/week | Table S4 and footnote e |
+| `e_alb_k13`, `e_hgb_k13`, `e_age_k13` | -0.165, -0.0255, -0.0892 | Table S4 'Covariate effects'; footnote 2 centring |
+| `e_ecog_ge1_k13`, `e_tdiag_gt1y_k13` | log(1.48), log(0.950) | Table S4 HRs |
+| `e_alb_k36`, `e_tdiag_gt1y_k36` | -0.0731, log(0.678) | Table S4 |
+| `gm_c`, `gm_alpha`, `gm_beta` (fixed) | 0.0007, 0.00018645, 0.11425 per year | Table S4 footnote d (Missov and Lenart 2013) |
+
+# Population PK model
+
+## Virtual cohort and simulation
+
+Two hundred virtual patients are drawn from the exposure-response set demographics
+of Supplementary Table S1 (normal distributions truncated at the observed ranges;
+35% women). Each receives the first two 4/2 cycles of 50 mg once daily. The
+sunitinib dose is entered in both `depot` (sunitinib) and `depot_su12662` (the
+SU12662 input); the model's `f()` applies F and F * fm. Observations are made on
+the ODE states with `dvid` set, because the model declares two endpoints.
+
+```{r pk-cohort}
+# Typical-value solves (omega zeroed) and the multistate model (no IIV in the
+# source) solve several subjects without random effects, which rxode2 notes
+# with a warning; that one message is expected here and is muffled.
+solve_typical <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) invokeRestart("muffleWarning")
+    }
+  )
+}
+mod_pk <- readModelDb("Liu_2026_sunitinib")
+n_pk <- 200
+rtn <- function(n, m, s, lo, hi) {
+  x <- rnorm(n, m, s)
+  while (any(out <- x < lo | x > hi)) x[out] <- rnorm(sum(out), m, s)
+  x
+}
+set.seed(2026)
+cohort_pk <- data.frame(
+  id = seq_len(n_pk),
+  AGE = rtn(n_pk, 57.1, 10.3, 24, 87),
+  WT = rtn(n_pk, 85.0, 18.6, 45, 150),
+  ALB = rtn(n_pk, 40.4, 4.8, 20, 49),
+  SEXF = rbinom(n_pk, 1, 0.35)
+)
+
+dose_days <- c(0:27, 42:69)
+dosing_pk <- expand.grid(id = cohort_pk$id, day = dose_days, cmt = c("depot", "depot_su12662"),
+  stringsAsFactors = FALSE) |>
+  mutate(time = 24 * day, evid = 1L, amt = 50, dvid = NA_integer_) |>
+  select(-day)
+# Daily troughs for both cycles plus a rich profile over day 27 (the last
+# on-treatment dosing interval of cycle 1).
+obs_times <- sort(unique(c(24 * (0:84), 648 + c(0.5, 1, 2, 4, 6, 8, 10, 12, 16, 20, 23.99))))
+obs_pk <- expand.grid(id = cohort_pk$id, time = obs_times) |>
+  mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+events_pk <- bind_rows(dosing_pk, obs_pk) |>
+  left_join(cohort_pk, by = "id") |>
+  mutate(treatment = "50 mg QD 4/2") |>
+  arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(20261)
+sim_pk <- rxode2::rxSolve(mod_pk, events = events_pk, keep = "treatment",
+  returnType = "data.frame") |>
+  mutate(Ctot = Cc + Cc_su12662)
+```
+
+```{r pk-figure, fig.cap = "Simulated trough concentrations of sunitinib, SU12662 and their sum over the first two 4/2 cycles (median and 10th-90th percentiles, 200 virtual patients). Compare with the observed data in Supplementary Figure S2 and the VPC in Supplementary Figure S4 of Liu 2026."}
+sim_pk |>
+  filter(time %% 24 == 0, time >= 24) |>
+  select(id, time, Sunitinib = Cc, SU12662 = Cc_su12662, Total = Ctot) |>
+  pivot_longer(c(Sunitinib, SU12662, Total), names_to = "analyte", values_to = "conc") |>
+  group_by(analyte, time) |>
+  summarise(Q10 = quantile(conc, 0.1), Q50 = median(conc), Q90 = quantile(conc, 0.9),
+    .groups = "drop") |>
+  ggplot(aes(time / 168, Q50, colour = analyte, fill = analyte)) +
+  geom_ribbon(aes(ymin = Q10, ymax = Q90), alpha = 0.2, colour = NA) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time after first dose (weeks)", y = "Trough concentration (ng/mL)",
+    colour = NULL, fill = NULL)
+```
+
+## Exposure metric (equation 1) and PKNCA
+
+The paper's primary exposure metric is the steady-state AUC of sunitinib plus
+SU12662 for the initial 50 mg dose with cycle 1 apparent clearance,
+AUCss = Dose / (CL / F) + Dose / (CL_SU12662 / F_SU12662) (equation 1). The model
+reports the individual baseline clearances (`cl0`, `cl0_su12662`), `fdepot` and
+`fm_su12662`, so the metric follows directly. PKNCA over the day-27 dosing
+interval gives the corresponding simulated AUC0-24 and trough.
+
+```{r pknca}
+nca_conc <- sim_pk |>
+  filter(!is.na(Cc)) |>
+  select(id, time, treatment, Sunitinib = Cc, SU12662 = Cc_su12662, Total = Ctot) |>
+  pivot_longer(c(Sunitinib, SU12662, Total), names_to = "analyte", values_to = "conc")
+nca_dose <- events_pk |>
+  filter(evid == 1, cmt == "depot") |>
+  select(id, time, amt, treatment) |>
+  tidyr::crossing(analyte = c("Sunitinib", "SU12662", "Total"))
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_conc, conc ~ time | treatment + analyte + id),
+  PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + analyte + id),
+  intervals = data.frame(start = 648, end = 672, auclast = TRUE, cmin = TRUE, cmax = TRUE)
+))
+nca_df <- as.data.frame(nca_res)
+
+# Equation 1 from each virtual patient's baseline parameters (mg*h/L = ug*h/mL).
+eq1 <- sim_pk |>
+  filter(time == 0) |>
+  distinct(id, .keep_all = TRUE) |>
+  transmute(
+    id,
+    Sunitinib = 50 * fdepot / cl0,
+    SU12662 = 50 * fdepot * fm_su12662 / cl0_su12662,
+    Total = Sunitinib + SU12662
+  )
+```
+
+Supplementary Table S3 gives the medians of AUCss,DOSE50,CLcycle1 across the 165
+patients of the exposure-response set (1.54, 0.67 and 2.19 ug*h/mL); Results give
+the median combined steady-state trough, 81.8 ng/mL. The simulated AUC0-24 over
+day 27 is in ng*h/mL, so the published values are multiplied by 1000.
+
+```{r nca-compare}
+reference_nca <- data.frame(
+  analyte = c("Sunitinib", "SU12662", "Total"),
+  auclast = 1000 * c(1.54, 0.67, 2.19),
+  cmin = c(NA, NA, 81.8)
+)
+sim_nca <- nca_df |>
+  filter(PPTESTCD %in% c("auclast", "cmin")) |>
+  select(analyte, PPTESTCD, PPORRES)
+cmp <- ncaComparisonTable(
+  simulated = sim_nca,
+  reference = reference_nca,
+  by = "analyte",
+  units = c(auclast = "ng*h/mL", cmin = "ng/mL")
+)
+knitr::kable(cmp, caption = "Median simulated day-27 AUC0-24 and trough versus the published medians of AUCss,DOSE50,CLcycle1 (Table S3) and Ctrough,ss (Results).")
+```
+
+```{r nca-check}
+eq1_med <- eq1 |>
+  summarise(across(c(Sunitinib, SU12662, Total), median))
+knitr::kable(
+  data.frame(
+    Analyte = c("Sunitinib", "SU12662", "Total"),
+    "Equation 1, median (ug*h/mL)" = unlist(eq1_med),
+    "Table S3 median (ug*h/mL)" = c(1.54, 0.67, 2.19),
+    check.names = FALSE
+  ),
+  digits = 2, caption = "Equation 1 exposure from the virtual patients' baseline parameters."
+)
+
+# Equation 1 is a true steady state, which the day-27 interval is not: the
+# SU12662 peripheral volume fills slowly (Vp/Q is about 380 h in a typical
+# patient and far longer in some). The structural check therefore switches the
+# time course off and doses daily for 200 days, after which the dosing-interval
+# AUC must equal Dose * F / CL exactly. Two typical patients: the reference man
+# and a 70-year-old, 60-kg woman with albumin 35 g/L, so the sex effects on F
+# and fm and every covariate term are exercised.
+typ_flat <- rxode2::zeroRe(mod_pk) |>
+  rxode2::ini(cl_time_hyp = 0, cl_time_hyp_su12662 = 0, v_time_hyp = 0, v_time_hyp_su12662 = 0)
+ss_pat <- data.frame(id = 1:2, SEXF = c(0, 1), AGE = c(60, 70), WT = c(82.4, 60), ALB = c(41, 35))
+ss_events <- bind_rows(
+  expand.grid(id = 1:2, day = 0:199, cmt = c("depot", "depot_su12662"), stringsAsFactors = FALSE) |>
+    mutate(time = 24 * day, evid = 1L, amt = 50, dvid = NA_integer_) |>
+    select(-day),
+  expand.grid(id = 1:2, time = c(0, 199 * 24 + c(0, 0.5, 1, 2, 3, 4, 6, 8, 10, 12, 16, 20, 23.99))) |>
+    mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+) |>
+  left_join(ss_pat, by = "id") |>
+  arrange(id, time, desc(evid))
+ss_sim <- solve_typical(typ_flat, events = ss_events, returnType = "data.frame")
+ss_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(ss_sim |>
+    filter(!is.na(Cc)) |>
+    select(id, time, Sunitinib = Cc, SU12662 = Cc_su12662) |>
+    pivot_longer(c(Sunitinib, SU12662), names_to = "analyte", values_to = "conc"),
+  conc ~ time | analyte + id),
+  PKNCA::PKNCAdose(ss_events |> filter(evid == 1, cmt == "depot") |> select(id, time, amt) |>
+    tidyr::crossing(analyte = c("Sunitinib", "SU12662")), amt ~ time | analyte + id),
+  intervals = data.frame(start = 199 * 24, end = 200 * 24, auclast = TRUE)
+))
+ss_check <- as.data.frame(ss_nca) |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, analyte, auc = PPORRES) |>
+  left_join(
+    ss_sim |>
+      filter(time == 0) |>
+      transmute(id, Sunitinib = 1000 * 50 * fdepot / cl,
+        SU12662 = 1000 * 50 * fdepot * fm_su12662 / cl_su12662) |>
+      pivot_longer(c(Sunitinib, SU12662), names_to = "analyte", values_to = "expected"),
+    by = c("id", "analyte")
+  ) |>
+  mutate(pct_diff = 100 * (auc / expected - 1))
+knitr::kable(ss_check, digits = 2,
+  caption = "Steady-state dosing-interval AUC (ng*h/mL) with the time course switched off, against Dose * F / CL.")
+# Same parameters on both sides: only trapezoidal error over a 13-point grid.
+stopifnot(all(abs(ss_check$pct_diff) < 1))
+
+# Against the published medians: a mis-transcribed clearance or a unit slip
+# moves the whole distribution by tens of percent.
+pub <- c(Sunitinib = 1.54, SU12662 = 0.67, Total = 2.19)
+stopifnot(all(abs(100 * (unlist(eq1_med)[names(pub)] / pub - 1)) < 20))
+```
+
+The simulated medians sit close to the published ones. The virtual cohort draws its
+covariates from the exposure-response set summary statistics, not from the
+individual data, so an exact match is not expected.
+
+## Time-varying clearance (Figure 2a)
+
+```{r tv-cl, fig.cap = "Typical apparent clearance relative to its baseline value. Solid: the model, CL0 / (1 + beta * week) as printed in Supplementary S2. Dashed: the straight line 1 - beta * week. Replicates Figure 2a of Liu 2026."}
+typ_pk <- rxode2::zeroRe(mod_pk)
+tgrid <- data.frame(id = 1L, time = seq(0, 24 * 7 * 24, by = 24), evid = 0L, amt = 0,
+  cmt = "central", dvid = 1L, AGE = 60, WT = 82.4, ALB = 41, SEXF = 0)
+typ_tv <- solve_typical(typ_pk, events = tgrid, returnType = "data.frame") |>
+  mutate(week = time / 168, Sunitinib = cl / cl0, SU12662 = cl_su12662 / cl0_su12662)
+typ_tv |>
+  select(week, Sunitinib, SU12662) |>
+  pivot_longer(-week, names_to = "analyte", values_to = "ratio") |>
+  mutate(linear = 1 - ifelse(analyte == "Sunitinib", 0.00365, 0.00801) * week) |>
+  ggplot(aes(week / (30.4375 / 7), ratio, colour = analyte)) +
+  geom_line() +
+  geom_line(aes(y = linear), linetype = "dashed") +
+  coord_cartesian(ylim = c(0.7, 1)) +
+  labs(x = "Time after first dose (months)", y = "Fraction of initial CL/F", colour = NULL)
+
+end_c4 <- typ_tv |> filter(week == 24)
+decline <- data.frame(
+  Quantity = c("Sunitinib CL/F", "SU12662 CL/F", "Sunitinib V/F", "SU12662 V/F"),
+  Model = 100 * (1 - c(end_c4$cl / end_c4$cl0, end_c4$cl_su12662 / end_c4$cl0_su12662,
+    end_c4$vc / end_c4$vc0, end_c4$vc_su12662 / end_c4$vc0_su12662)),
+  "beta x 24 weeks" = 100 * 24 * c(0.00365, 0.00801, 0.00168, 0.0125),
+  "Published decrease" = c(8.8, 19.2, 4.0, 30.0),
+  check.names = FALSE
+)
+knitr::kable(decline, digits = 1,
+  caption = "Percent decrease by the end of cycle 4 (24 weeks) in a typical patient.")
+stopifnot(
+  # The model equation, exactly.
+  abs(end_c4$cl / end_c4$cl0 - 1 / (1 + 0.00365 * 24)) < 1e-6,
+  abs(end_c4$cl_su12662 / end_c4$cl0_su12662 - 1 / (1 + 0.00801 * 24)) < 1e-6,
+  # The published percentages are beta x 24 weeks.
+  all(abs(decline[["beta x 24 weeks"]] - decline[["Published decrease"]]) < 0.1)
+)
+```
+
+The published decreases (8.8%, 19.2%, 4.0%, 30.0%) equal beta x 24 weeks, the
+first-order approximation of the printed hyperbolic form. The model follows the
+printed equation, which gives 8.1%, 16.1%, 3.9% and 23.1%. See the assumptions
+section.
+
+## Covariate effects on exposure (Figure 3b)
+
+```{r cov-exposure}
+cov_grid <- data.frame(
+  label = c("Reference", "Age 47 y", "Age 74 y", "Albumin 33 g/L", "Albumin 46 g/L",
+    "Age +10 y", "Albumin +10%"),
+  AGE = c(60, 47, 74, 60, 60, 70, 60),
+  ALB = c(41, 41, 41, 33, 46, 41, 45.1),
+  WT = 82.4, SEXF = 0
+) |>
+  mutate(id = row_number(), time = 0, evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+cov_typ <- solve_typical(typ_pk, events = cov_grid, returnType = "data.frame") |>
+  mutate(label = cov_grid$label,
+    auc_sun = 50 * fdepot / cl0, auc_su = 50 * fdepot * fm_su12662 / cl0_su12662)
+ref <- cov_typ[1, ]
+cov_tab <- cov_typ |>
+  transmute(label, "Sunitinib CL/F ratio" = cl0 / ref$cl0,
+    "SU12662 CL/F ratio" = cl0_su12662 / ref$cl0_su12662,
+    "Sunitinib AUCss ratio" = auc_sun / ref$auc_sun,
+    "SU12662 AUCss ratio" = auc_su / ref$auc_su)
+knitr::kable(cov_tab, digits = 3, caption = "Typical-patient clearance and exposure relative to the model reference (age 60 years, albumin 41 g/L, 82.4 kg, man).")
+# Results: a 10-year increase in age lowers CL/F by 5.7% (sunitinib) and 7.6%
+# (SU12662); exactly exp(10 * theta_AGE).
+stopifnot(
+  abs(100 * (1 - cov_tab[["Sunitinib CL/F ratio"]][6]) - 5.7) < 0.05,
+  abs(100 * (1 - cov_tab[["SU12662 CL/F ratio"]][6]) - 7.6) < 0.05
+)
+```
+
+A 10% higher albumin lowers both clearances by 4.7%, the figure the Results quote
+for the AUC increase (the AUC ratio itself is 1/0.953 = 1.049). For albumin the
+Figure 3b point estimates (about 0.89 at 33 g/L and 1.03 at 46 g/L) agree with the
+table above. The Figure 3b age panels show a wider spread (about 0.85 and 1.17 for
+sunitinib at 47 and 74 years) than the Table S2 age coefficients imply (0.93 and
+1.09); the model uses Table S2, which also reproduces the 5.7% and 7.6% per
+decade that the Results state.
+
+# Multistate model
+
+The multistate model propagates the probabilities of the six states on a week
+axis. All transitions except two have constant hazards. Stable disease -> response
+is a decreasing Weibull hazard in time since the first dose. Progression -> death
+is a log-logistic function of the subject's time to progression, supplied as the
+covariate `T_PROGRESSION`: once a subject has progressed, that hazard is constant
+and lower the later the progression happened. This is the form in which the
+source fitted the model, with each subject's observed transition times in the
+data. From baseline, though, the time to progression is not yet known. The
+marginal probabilities of stable disease, response and the two discontinuation
+states do not depend on it and come straight from the ODEs. Overall survival
+integrates over the time-to-progression distribution, and below it is obtained by
+simulating individual patient histories from the model's hazards.
+
+```{r ms-setup}
+mod_ms <- readModelDb("Liu_2026_sunitinib_multistate")
+ref_cov <- data.frame(ALB = 41, HGB = 130, AGE = 57, ECOG_GE1 = 0, T_DIAG_CANCER = 200)
+week_grid <- c(0, 0.25, 0.5, 1, 2, 4, seq(6, 156, by = 2))
+# T_PROGRESSION = time: the k36 column then reads lambda36 for a progression at
+# that time. It does not affect the stable, response or discontinuation states.
+typ_ms <- solve_typical(mod_ms,
+  events = data.frame(id = 1L, time = week_grid, evid = 0L, cmt = "s_stable") |>
+    bind_cols(ref_cov) |>
+    mutate(T_PROGRESSION = time),
+  returnType = "data.frame")
+```
+
+## Closed-form and mass-balance checks
+
+From stable disease the competing hazards are the Weibull stable -> response hazard
+and four constants, so the probability of remaining in stable disease has the closed
+form `exp(-(scale12 * t)^shape12 - (k13 + k14 + k15 + k16) * t)`. The ODE solution
+must match it, and the six probabilities must sum to one.
+
+```{r ms-closed-form}
+c1 <- with(typ_ms[2, ], k13 + k14 + k15 + k16)
+cf_stable <- exp(-(0.0471 * typ_ms$time)^0.844 - c1 * typ_ms$time)
+stopifnot(
+  max(abs(typ_ms$prob_stable_disease / cf_stable - 1)) < 1e-4,
+  max(abs(typ_ms$prob_state_sum - 1)) < 1e-8
+)
+```
+
+## Individual patient histories
+
+Each history starts in stable disease. The time of leaving stable disease solves
+`(scale12 * t)^shape12 + c1 * t = E` for a unit-exponential draw `E`; the
+destination is drawn in proportion to the hazards at that time. Every later
+sojourn is exponential, with the progression -> death hazard read from the model
+at the drawn time to progression. All hazards come from the model's own output,
+so the simulation exercises the shipped equations rather than a re-implementation
+of them.
+
+```{r ms-des-functions}
+lookup_k36 <- function(k36_table, ids, ttp) {
+  out <- rep(NA_real_, length(ids))
+  for (i in which(!is.na(ttp))) {
+    tab <- k36_table[k36_table$id == ids[i], ]
+    out[i] <- approx(tab$time, tab$k36, xout = min(ttp[i], max(tab$time)))$y
+  }
+  out
+}
+
+draw_dest <- function(h, states) {
+  u <- runif(nrow(h)) * rowSums(h)
+  states[1 + rowSums(u > t(apply(h, 1, cumsum)))]
+}
+
+simulate_histories <- function(hz, k36_table, nrep, fu = 156) {
+  tr <- hz[rep(seq_len(nrow(hz)), each = nrep), ]
+  c1 <- tr$k13 + tr$k14 + tr$k15 + tr$k16
+  e1 <- rexp(nrow(tr))
+  t1 <- vapply(seq_along(e1), function(i) {
+    uniroot(function(t) (0.0471 * t)^0.844 + c1[i] * t - e1[i], c(0, 1e5), tol = 1e-10)$root
+  }, numeric(1))
+  h12 <- 0.0471 * 0.844 * (0.0471 * t1)^(0.844 - 1)
+  dest1 <- draw_dest(cbind(h12, tr$k13, tr$k14, tr$k15, tr$k16), 2:6)
+  t2 <- t1 + rexp(nrow(tr), tr$k23 + tr$k24 + tr$k25 + tr$k26)
+  dest2 <- draw_dest(cbind(tr$k23, tr$k24, tr$k25, tr$k26), 3:6)
+  ttp <- ifelse(dest1 == 3, t1, ifelse(dest1 == 2 & dest2 == 3, t2, NA))
+  t_disc <- ifelse(dest1 %in% 4:5, t1, ifelse(dest1 == 2 & dest2 %in% 4:5, t2, NA))
+  disc <- ifelse(dest1 %in% 4:5, dest1, ifelse(dest1 == 2 & dest2 %in% 4:5, dest2, NA))
+  k36 <- lookup_k36(k36_table, tr$id, ttp)
+  t_death <- ifelse(!is.na(ttp), ttp + rexp(nrow(tr), ifelse(is.na(k36), 1, k36)),
+    ifelse(!is.na(t_disc), t_disc + rexp(nrow(tr), tr$k46),
+      ifelse(dest1 == 6, t1, t2)))
+  # Endpoint derivation as in Supplementary S3: TTP censored at death without
+  # progression or at discontinuation; time to discontinuation due to AEs
+  # censored at progression, discontinuation for other reasons or death.
+  ttp_time <- pmin(ifelse(is.na(ttp), pmin(t_death, t_disc, na.rm = TRUE), ttp), fu)
+  ae_time <- pmin(t_death, ttp, t_disc, na.rm = TRUE)
+  data.frame(
+    id = tr$id, dest1 = dest1, dest2 = ifelse(dest1 == 2, dest2, NA),
+    t1 = t1, t2 = ifelse(dest1 == 2, t2, NA), t_disc = t_disc, disc = disc, t_death = t_death,
+    ttp_time = ttp_time, ttp_event = !is.na(ttp) & ttp <= fu,
+    os_time = pmin(t_death, fu), os_event = t_death <= fu,
+    ae_time = pmin(ae_time, fu), ae_event = disc %in% 4 & t_disc <= fu
+  )
+}
+
+hazards_for <- function(cohort, grid = 0:160) {
+  dd <- merge(cohort, data.frame(time = grid)) |>
+    arrange(id, time) |>
+    mutate(evid = 0L, cmt = "s_stable", T_PROGRESSION = time)
+  out <- solve_typical(mod_ms, events = dd, returnType = "data.frame")
+  # rxSolve omits the id column when only one subject is solved.
+  if (!"id" %in% names(out)) out$id <- cohort$id[1]
+  list(
+    hz = out |> filter(time == 1) |> select(id, k13, k14, k15, k16, k23, k24, k25, k26, k46),
+    k36 = out |> select(id, time, k36)
+  )
+}
+```
+
+First, a check of the simulator against the ODEs for the reference patient: the
+fractions of 4000 simulated histories in stable disease, response and the two
+discontinuation states must match the ODE probabilities within Monte Carlo error.
+Those four states do not depend on the time to progression, so the ODEs give them
+exactly.
+
+```{r ms-des-check}
+set.seed(20262)
+ref_hz <- hazards_for(ref_cov |> mutate(id = 1L))
+hist_ref <- simulate_histories(ref_hz$hz, ref_hz$k36, nrep = 4000, fu = 1e6)
+check_weeks <- c(12, 26, 52)
+# State occupancy at week w rebuilt from each history's transition times
+# (fu = 1e6, so nothing is censored).
+occ <- do.call(rbind, lapply(check_weeks, function(w) {
+  h <- hist_ref
+  in_disc <- !is.na(h$disc) & h$t_disc <= w & h$t_death > w
+  data.frame(
+    week = w,
+    stable = mean(h$t1 > w),
+    response = mean(h$dest1 == 2 & h$t1 <= w & h$t2 > w),
+    disc_ae = mean(in_disc & h$disc == 4),
+    disc_other = mean(in_disc & h$disc == 5)
+  )
+}))
+ode <- typ_ms[match(check_weeks, typ_ms$time), ]
+occ_cmp <- data.frame(
+  week = rep(check_weeks, 4),
+  state = rep(c("stable", "response", "disc_ae", "disc_other"), each = length(check_weeks)),
+  simulated = c(occ$stable, occ$response, occ$disc_ae, occ$disc_other),
+  ode = c(ode$prob_stable_disease, ode$prob_tumor_response, ode$prob_discontinuation_ae,
+    ode$prob_discontinuation_other)
+)
+knitr::kable(occ_cmp, digits = 3,
+  caption = "Reference patient: state occupancy in 4000 simulated histories versus the ODE probabilities.")
+# Monte Carlo SE of a fraction from 4000 histories is at most 0.008.
+stopifnot(all(abs(occ_cmp$simulated - occ_cmp$ode) < 0.03))
+```
+
+## Virtual cohort, transitions and survival (Figures 1, 2 and 4)
+
+Two hundred virtual patients are drawn from the Supplementary Table S1 summary
+statistics (truncated normal albumin, haemoglobin and age; 45% ECOG >= 1;
+log-normal time since diagnosis with mean 38 and SD 53.6 months), each with 25
+simulated histories over 36 months of follow-up.
+
+```{r ms-cohort}
+set.seed(20264)
+n_ms <- 200
+cohort_ms <- data.frame(
+  id = seq_len(n_ms),
+  ALB = rtn(n_ms, 40.4, 4.8, 20, 49),
+  HGB = rtn(n_ms, 124.3, 18.8, 86, 169),
+  AGE = rtn(n_ms, 57.1, 10.3, 24, 87),
+  ECOG_GE1 = rbinom(n_ms, 1, 0.45)
+)
+sdlog <- sqrt(log(1 + (53.6 / 38)^2))
+cohort_ms$T_DIAG_CANCER <- 30.4375 *
+  pmin(pmax(rlnorm(n_ms, log(38) - sdlog^2 / 2, sdlog), 2.2), 339)
+
+cohort_hz <- hazards_for(cohort_ms)
+hist_cohort <- simulate_histories(cohort_hz$hz, cohort_hz$k36, nrep = 25)
+```
+
+```{r ms-transitions}
+obs_counts <- c(Response = 85, Progression = 56, "Disc. AEs" = 15, "Disc. other" = 6, Death = 2)
+sim_frac <- table(factor(hist_cohort$dest1, levels = 2:6)) / nrow(hist_cohort)
+trans_tab <- data.frame(
+  "From stable disease to" = names(obs_counts),
+  "Observed (Figure 1)" = sprintf("%d (%.0f%%)", obs_counts, 100 * obs_counts / sum(obs_counts)),
+  "Simulated" = sprintf("%.0f%%", 100 * as.numeric(sim_frac)),
+  check.names = FALSE
+)
+knitr::kable(trans_tab, caption = "First transition out of stable disease: Figure 1 counts (164 patients who left stable disease) versus the simulated cohort.")
+resp_to_prog <- mean(hist_cohort$dest2[hist_cohort$dest1 == 2] == 3)
+```
+
+Of the simulated responders, `r sprintf("%.0f%%", 100 * resp_to_prog)` later
+progressed, against 62 of the 71 observed responders with a further transition
+(87%, Figure 1). The model sends more patients from stable disease to response
+than were observed (see the assumptions section).
+
+```{r ms-km, fig.cap = "Kaplan-Meier curves of simulated time to progression, overall survival and time to discontinuation due to adverse events (200 virtual patients x 25 histories). Compare with Figure 4 (VPC by study) and Figure 2d of Liu 2026."}
+wk_per_month <- 30.4375 / 7
+km_df <- function(time, event, endpoint) {
+  fit <- survival::survfit(survival::Surv(time, event) ~ 1)
+  data.frame(endpoint = endpoint, months = fit$time / wk_per_month, surv = fit$surv)
+}
+km_all <- bind_rows(
+  km_df(hist_cohort$ttp_time, hist_cohort$ttp_event, "Time to progression"),
+  km_df(hist_cohort$os_time, hist_cohort$os_event, "Overall survival"),
+  km_df(hist_cohort$ae_time, hist_cohort$ae_event, "Time to disc. due to AEs")
+)
+ggplot(km_all, aes(months, surv)) +
+  geom_step() +
+  facet_wrap(~endpoint) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(x = "Time after first dose (months)", y = "Proportion without event")
+
+km_median <- function(time, event) {
+  unname(summary(survival::survfit(survival::Surv(time, event) ~ 1))$table["median"]) /
+    wk_per_month
+}
+km_at <- function(time, event, months) {
+  summary(survival::survfit(survival::Surv(time, event) ~ 1),
+    times = months * wk_per_month, extend = TRUE)$surv
+}
+med_ttp <- km_median(hist_cohort$ttp_time, hist_cohort$ttp_event)
+med_os <- km_median(hist_cohort$os_time, hist_cohort$os_event)
+ae_36 <- km_at(hist_cohort$ae_time, hist_cohort$ae_event, 35.5)
+knitr::kable(data.frame(
+  Endpoint = c("Median TTP (months)", "Median OS (months)", "Free of disc. due to AEs at 36 months"),
+  Simulated = c(med_ttp, med_os, ae_36),
+  "Published (read from Figures 2d and 4)" = c("about 9-10", "about 20", "about 0.80-0.88"),
+  check.names = FALSE
+), digits = 2)
+# Centre checks against values read from the published Kaplan-Meier curves:
+# a wrong hazard unit (per day vs per week) or a sign error on a covariate
+# effect moves these medians several-fold.
+stopifnot(
+  abs(med_ttp / 9.5 - 1) < 0.25,
+  abs(med_os / 20 - 1) < 0.25,
+  ae_36 > 0.7, ae_36 < 0.95
+)
+```
+
+## Confounder-fixed simulation (Figure 5)
+
+Figure 5 of the paper sets every patient's albumin and age to the cohort medians
+(41 g/L and 57 years) and keeps the other covariates. Because exposure is not in
+the final model, low- and high-exposure groups have the same expected curves, which
+is what the figure shows.
+
+```{r ms-fig5, fig.cap = "Simulated time to progression and overall survival with albumin and age fixed at the cohort medians. Compare with Figure 5 of Liu 2026."}
+set.seed(20265)
+cohort_fix <- cohort_ms |> mutate(ALB = 41, AGE = 57)
+fix_hz <- hazards_for(cohort_fix)
+hist_fix <- simulate_histories(fix_hz$hz, fix_hz$k36, nrep = 25)
+bind_rows(
+  km_df(hist_fix$ttp_time, hist_fix$ttp_event, "Time to progression"),
+  km_df(hist_fix$os_time, hist_fix$os_event, "Overall survival")
+) |>
+  ggplot(aes(months, surv)) +
+  geom_step() +
+  facet_wrap(~endpoint) +
+  coord_cartesian(xlim = c(0, 31), ylim = c(0, 1)) +
+  labs(x = "Time after first dose (months)", y = "Proportion without event")
+knitr::kable(data.frame(
+  Endpoint = c("Median TTP (months)", "Median OS (months)"),
+  Simulated = c(km_median(hist_fix$ttp_time, hist_fix$ttp_event),
+    km_median(hist_fix$os_time, hist_fix$os_event)),
+  "Figure 5 (read from the curves)" = c("about 11", "about 18"),
+  check.names = FALSE
+), digits = 1)
+```
+
+Time to progression matches Figure 5. The simulated median overall survival is
+longer than the roughly 18 months read from the figure; with albumin and age drawn
+rather than fixed (previous section) it is about 19 months, close to the observed
+curves of Figures 2d and 4.
+The published simulation used the observed multistate dataset as its template,
+with each patient's own haemoglobin, ECOG, time since diagnosis and follow-up,
+whereas this cohort draws them independently from summary statistics.
+
+## Exposure effects that were tested (Table 2)
+
+For reference, the Table 2 hazard ratios per inter-quartile-range increase in
+AUCss,DOSE50,CLcycle1 (1.37 ug*h/mL) convert to log-hazard slopes
+`beta = log(HR) / 1.37` per ug*h/mL on `exp(beta * (AUC - 2.19))`. None is part of
+the final model, and the baseline hazards of the models they were estimated in are
+not published, so they are not shipped as model parameters.
+
+```{r table2}
+tab2 <- data.frame(
+  Hazard = c("Stable -> progression", "Stable -> disc. AEs", "Progression -> death",
+    "Stable -> progression (adj. age, albumin)", "Progression -> death (adj. albumin)",
+    "Time to first dose reduction"),
+  HR_IQR = c(0.71, 1.48, 0.78, 1.13, 0.94, 2.10)
+) |>
+  mutate(beta = log(HR_IQR) / 1.37)
+knitr::kable(tab2 |> rename("HR per IQR" = HR_IQR, "beta (per ug*h/mL)" = beta), digits = 3)
+```
+
+# Assumptions and deviations
+
+* **Hyperbolic versus linear time course.** Supplementary S2 prints the time course
+  twice as `CL/F = CL0/F / (1 + beta * T)` (and the same for Vc/F and Vp/F), and
+  Table S2 footnote 6 repeats it. The main text calls the change a "linear decrease"
+  and quotes decreases (8.8%, 19.2%, 4.0%, 30.0% by the end of cycle 4) that equal
+  beta x 24 weeks, and Figure 2a draws straight lines ending near 0.91 and 0.81. The
+  model follows the printed equation; the two readings differ by under 1 percentage
+  point for sunitinib and 3 points for SU12662 CL/F over the 5-cycle span the data
+  cover. Neither form is meant for extrapolation beyond about 30 weeks; with a
+  negative individual beta the hyperbolic form grows without bound as `1 + beta * T`
+  approaches zero.
+* **Volume correlations.** Supplementary S2 says correlations were incorporated
+  "between their respective Vc/F and Vp/F estimates", and Table S2 reports one
+  "Correlation V/F (Parent-Met)" of 0.68. The maintainers apply 0.68 to both the
+  parent-metabolite Vc/F pair and the Vp/F pair.
+* **Two input depots.** The paper fixes separate absorption rate constants for the
+  two compounds (Table S2) and states F_SU12662 = F_sunitinib x fm, i.e. SU12662
+  appears through its own first-order input of a fraction of the sunitinib dose
+  rather than through a formation clearance. Users dose the full sunitinib amount
+  into both `depot` and `depot_su12662`. Amounts are on a mass basis; no
+  molecular-weight conversion between sunitinib and SU12662 is applied, as in the
+  paper's equation 1.
+* **Time origin.** The time-varying terms use time since the first dose, in weeks;
+  the first dose must be at `t = 0`.
+* **Progression -> death hazard.** Table S4 names the time scale of this hazard
+  "Time to Prog." and the text says it "decreased with longer time to progression".
+  The log-logistic function itself is not printed. The maintainers use the same
+  rate parameterisation the paper prints for its Weibull hazards,
+  `scale * shape * (scale * TTP)^(shape - 1) / (1 + (scale * TTP)^shape)`, evaluated
+  at the time to progression and held constant after progression.
+* **Weibull stable -> response hazard.** With the printed parameterisation the
+  virtual cohort leaves stable disease for response more often (about two thirds)
+  than the 52% observed in Figure 1, and for progression less often (about 22% versus
+  34%); median TTP and OS nonetheless match the published curves. The alternative
+  `scale * t^shape` cumulative hazard brings the response share to about 54% but
+  raises discontinuation due to AEs to about 15% (9% observed). The printed form is
+  kept. The virtual cohort is built from summary statistics, which also contributes:
+  the stable -> progression covariate effects are large (one SD of age alone changes
+  the hazard 2.5-fold).
+* **Background mortality.** Table S4 footnote d gives the Gompertz-Makeham natural
+  death rate `0.0007 + 0.00018645 * exp(0.11425 * (age - 30))` per year. It is
+  evaluated at baseline age and converted with 52.1429 weeks per year, as in the
+  same group's Liu 2023 control stream. At age 57 it is about 9e-5 per week.
+* **Time since diagnosis.** The paper's covariate is the dichotomy > 1 year versus
+  <= 1 year. The model takes the canonical continuous `T_DIAG_CANCER` in days and
+  applies the cut at 365.25 days.
+* **Placeholder residual.** The source fits the multistate model with the exact
+  likelihood of the observed transitions and has no residual error. A tiny additive
+  error (`addSd = 0.001`) on `prob_death` lets nlmixr2 accept the model; it is not
+  from the paper.
+* **Time to first dose reduction.** The parametric time-to-event model for the first
+  dose reduction (50 to 37.5 mg/day) is described only through its exposure hazard
+  ratio (Table 2, 2.10 per IQR); its baseline hazard and distribution are not
+  published, so it is not shipped.
+* **Figure 3b age effect.** The Figure 3b age panels imply a larger age effect on
+  exposure than the Table S2 coefficients; the model uses Table S2, which reproduces
+  the per-decade clearance changes stated in the Results.
+* **Virtual cohorts.** Covariates are drawn from the Supplementary Table S1 means,
+  SDs and ranges, independently of each other; the paper's individual data and
+  correlation structure (Supplementary Figure S1) are not available.
