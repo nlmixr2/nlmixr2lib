@@ -1,0 +1,427 @@
+---
+title: "REMoxTB time-to-positivity EBA models, moxifloxacin regimens (You 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{REMoxTB time-to-positivity EBA models, moxifloxacin regimens (You 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+You and Simonsson (2026) predicted 2-month sputum culture conversion in the
+REMoxTB tuberculosis trial with machine-learning classifiers. The features
+for those classifiers came from two nonlinear mixed-effects early
+bactericidal activity (EBA) models of the MGIT liquid-culture time to
+positivity (TTP), fitted in NONMEM to the first 14 and the first 28 days of
+treatment. The classifiers themselves are not models nlmixr2lib can carry;
+the two TTP models are:
+
+* `You_2026_moxifloxacin_ttp14d` -- biexponential model for days 0-14
+  (Methods Equation 2, Supplementary Table S2).
+* `You_2026_moxifloxacin_ttp28d` -- exponential approach to an asymptote
+  for days 0-28 (Methods Equation 3, Supplementary Table S3).
+
+Neither model has a drug-exposure term. TTP is a function of time on
+treatment, the treatment arm and baseline covariates only, so the models
+have no dosing events and no differential equations. Time is in days and
+TTP in hours.
+
+* Citation: `r rxode2::rxode(readModelDb("You_2026_moxifloxacin_ttp14d"))$reference`
+* Article: <https://doi.org/10.1111/cts.70694>
+
+REMoxTB (NCT00864383) randomised adults with drug-sensitive pulmonary
+tuberculosis to a control regimen of isoniazid, rifampicin, pyrazinamide
+and ethambutol (HRZE) or to one of two 4-month regimens in which
+moxifloxacin replaced ethambutol (the "isoniazid group", HRZM) or
+isoniazid (the "ethambutol group", MRZE). The covariate columns
+`TRT_MOXIFLOXACIN_FOR_ETHAMBUTOL` and `TRT_MOXIFLOXACIN_FOR_ISONIAZID`
+name the arms after the drug moxifloxacin replaced; the paper's tables
+name them after the companion drug that was kept.
+
+# Population
+
+You 2026 prints no demographics table. The analysis dataset held 1821
+patients (Results, "Clinical Data"). The baseline characteristics below
+are from Table 1 of the primary REMoxTB report (Gillespie 2014, N Engl J
+Med 371:1577-1587, per-protocol population, N = 1548): 70% male; 44%
+Black, 31% Asian, 25% mixed race, <1% other; 31% current smokers; 71% with
+lung cavitation; 7% HIV-positive; age 30% < 25 y, 31% 25-35 y, 39% > 35 y;
+weight 10% < 40 kg, 16% 40-45 kg, 40% > 45-55 kg, 32% > 55-75 kg, 2% >
+75 kg; baseline MGIT TTP >= 5 days in 51%. Patients were randomised in
+South Africa, India, Tanzania, Kenya, Thailand, Malaysia, Zambia, China
+and Mexico.
+
+# Source trace
+
+| Item | Source location | Value |
+|---|---|---|
+| 14-day structure: TTP = exp(A_bi) exp(alpha_bi t) + exp(B_bi) exp(beta_bi t) | Methods Equation 2 (exponent signs corrected, see below) | -- |
+| A_bi | Table S2 | 3.43 |
+| alpha_bi control / moxifloxacin arms | Table S2 | 0.0419 / 0.0477 per day |
+| B_bi control / moxifloxacin arms | Table S2 | 4.54 / 4.56 |
+| beta_bi control / moxifloxacin arms | Table S2 | 0.0645 / 0.0737 per day |
+| Absence of cavity, female sex, smoking on A_bi | Table S2 | 0.124, -0.00554, 0.061 |
+| Asian race, unknown race, female sex on B_bi | Table S2 | -0.0251, -0.0144, 0.0223 |
+| Unknown race, age, smoking on beta_bi | Table S2 | 0.963, -0.00489, -0.0867 |
+| omega2 baseline, omega2 slope, sigma2 (proportional) | Table S2 | 0.0427, 0.785, 0.0981 |
+| 28-day structure: TTP = A_exp + B_exp (1 - exp(-alpha_exp t)) | Methods Equation 3 (exponent sign corrected) | -- |
+| A_exp | Table S3 | 117 h |
+| alpha_exp control / isoniazid / ethambutol group | Table S3 | 0.0472 / 0.0441 / 0.0599 per day |
+| B_exp control / isoniazid / ethambutol group | Table S3 | 341 / 425 / 341 h |
+| Absence of cavities, smoking on A_exp | Table S3 | 0.154, 0.0559 |
+| Age, absence of cavity, Asian, female, weight, Black on B_exp | Table S3 | -0.00662, 0.129, -0.121, 0.401, 0.00793, 0.1 |
+| Baseline TTP, Black race, female sex on alpha_exp | Table S3 | 0.00388, -0.184, -0.336 |
+| omega2 intercept, slope, asymptote; sigma2 (proportional) | Table S3 | 0.0788, 0.34, 0.227; 0.104 |
+| Covariate functional form (PsN stepwise covariate model, linear) | Methods "Pharmacometric EBA Analysis"; form assumed, see below | -- |
+| Age centre 31.3 y, weight centre 51.0 kg | Gillespie 2014 Table 1 grouped distribution (interpolated median) | -- |
+| Baseline TTP centre 126.8 h | Results: median predicted baseline TTP | -- |
+| Validation targets: median baseline 126.8 h, median dTTP0-14 182 h, median dTTP0-28 240.3 h | Results, "Pharmacometric EBA Analysis" | -- |
+
+# The printed equations have sign errors
+
+As printed, Equation 2 is `TTP = e^Abi * e^(-alpha t) + e^Bbi * e^(-beta t)`
+and Equation 3 is `TTP = Aexp + Bexp * (1 - e^(alpha t))`. With the
+positive slopes of Tables S2 and S3 both would make TTP fall with time on
+treatment, and Equation 3 would go negative within days. Figure 3 and the
+reported medians (TTP rising by 182 h over 14 days and by 240 h over 28
+days) show TTP rising, which is what effective treatment does: fewer viable
+bacteria take longer to turn a culture positive. The models therefore use
+`exp(+alpha t)`, `exp(+beta t)` and `1 - exp(-alpha t)`. The check below
+shows that the corrected typical curves start at the reported median
+baseline and rise by about the reported amounts; the printed signs fail it.
+
+```{r typical}
+mod14 <- readModelDb("You_2026_moxifloxacin_ttp14d")
+mod28 <- readModelDb("You_2026_moxifloxacin_ttp28d")
+
+# Reference covariates: cavitation present, male, non-smoker, Black or mixed
+# race, at the age, weight and baseline-TTP centres.
+ref_cov <- data.frame(
+  LUNG_CAVITY = 1, SEXF = 0, SMOKE = 0, RACE_ASIAN = 0, RACE_BLACK = 0,
+  RACE_MISSING = 0, AGE = 31.3, WT = 51.0, TTP_MGIT_BASE = 126.8 / 24
+)
+arms <- data.frame(
+  arm = c("Control (HRZE)", "Isoniazid group (HRZM)", "Ethambutol group (MRZE)"),
+  TRT_MOXIFLOXACIN_FOR_ETHAMBUTOL = c(0, 1, 0),
+  TRT_MOXIFLOXACIN_FOR_ISONIAZID = c(0, 0, 1)
+)
+typ_events <- function(days) {
+  merge(arms, ref_cov) |>
+    dplyr::mutate(id = seq_len(dplyr::n())) |>
+    merge(data.frame(time = days)) |>
+    dplyr::mutate(evid = 0L, amt = 0) |>
+    dplyr::arrange(id, time)
+}
+typ14 <- rxode2::rxSolve(rxode2::zeroRe(mod14), typ_events(c(0, 14)),
+  keep = "arm", returnType = "data.frame"
+)
+typ28 <- rxode2::rxSolve(rxode2::zeroRe(mod28), typ_events(c(0, 28)),
+  keep = "arm", returnType = "data.frame"
+)
+
+closed14 <- function(t, alpha, b, beta) exp(3.43) * exp(alpha * t) + exp(b) * exp(beta * t)
+closed28 <- function(t, alpha, b) 117 + b * (1 - exp(-alpha * t))
+closed <- data.frame(
+  arm = arms$arm,
+  alpha14 = c(0.0419, 0.0477, 0.0477), b14 = c(4.54, 4.56, 4.56), beta14 = c(0.0645, 0.0737, 0.0737),
+  alpha28 = c(0.0472, 0.0441, 0.0599), b28 = c(341, 425, 341)
+)
+chk_typ <- closed |>
+  dplyr::mutate(
+    base14_closed = closed14(0, alpha14, b14, beta14),
+    day14_closed = closed14(14, alpha14, b14, beta14),
+    base28_closed = closed28(0, alpha28, b28),
+    day28_closed = closed28(28, alpha28, b28),
+    day14_printed_signs = exp(3.43) * exp(-alpha14 * 14) + exp(b14) * exp(-beta14 * 14),
+    day28_printed_signs = 117 + b28 * (1 - exp(alpha28 * 28))
+  )
+model_typ <- data.frame(
+  arm = arms$arm,
+  base14_model = typ14$ttp[typ14$time == 0],
+  day14_model = typ14$ttp[typ14$time == 14],
+  base28_model = typ28$ttp[typ28$time == 0],
+  day28_model = typ28$ttp[typ28$time == 28]
+)
+chk_typ <- dplyr::left_join(chk_typ, model_typ, by = "arm")
+
+chk_typ |>
+  dplyr::select(arm, base14_model, day14_model, day14_printed_signs, base28_model, day28_model, day28_printed_signs) |>
+  dplyr::rename(
+    "Arm" = arm, "Day 0, 14-d model" = base14_model, "Day 14, 14-d model" = day14_model,
+    "Day 14, printed signs" = day14_printed_signs, "Day 0, 28-d model" = base28_model,
+    "Day 28, 28-d model" = day28_model, "Day 28, printed signs" = day28_printed_signs
+  ) |>
+  knitr::kable(digits = 1, caption = "Typical TTP (h) for the reference subject, corrected vs printed exponent signs.")
+
+stopifnot(
+  # The solved model is the closed form (same parameters, no randomness).
+  max(abs(chk_typ$base14_model - chk_typ$base14_closed)) < 1e-6,
+  max(abs(chk_typ$day14_model - chk_typ$day14_closed)) < 1e-6,
+  max(abs(chk_typ$base28_model - chk_typ$base28_closed)) < 1e-6,
+  max(abs(chk_typ$day28_model - chk_typ$day28_closed)) < 1e-6,
+  # Corrected signs: TTP rises; printed signs: it falls (or turns negative).
+  all(chk_typ$day14_model > chk_typ$base14_model),
+  all(chk_typ$day14_printed_signs < chk_typ$base14_closed),
+  all(chk_typ$day28_printed_signs < 0)
+)
+```
+
+The reference subject's 14-day baseline, `exp(3.43) + exp(4.54)` = 124.6 h
+(control) or 126.5 h (moxifloxacin arms), is within 2% of the reported
+median predicted baseline of 126.8 h.
+
+# Virtual cohort
+
+200 subjects per arm, with covariates drawn independently from the
+REMoxTB per-protocol baseline table. Within each age and weight band the
+value is drawn uniformly; the open-ended bands are closed at 18-60 years
+and 35-90 kg. Baseline MGIT TTP is drawn log-normally with a median of
+5 days (51% of patients had a baseline TTP of at least 5 days) and a
+log-scale SD of 0.45; the paper gives no distribution for it.
+
+```{r cohort}
+set.seed(2026)
+rxode2::rxSetSeed(2026)
+n_arm <- 200L
+draw_band <- function(n, breaks, probs) {
+  band <- sample(seq_along(probs), n, replace = TRUE, prob = probs)
+  stats::runif(n, breaks[band], breaks[band + 1])
+}
+race <- sample(c("Black", "Asian", "Mixed", "Missing"), 3 * n_arm,
+  replace = TRUE, prob = c(0.44, 0.31, 0.24, 0.01)
+)
+cohort <- data.frame(
+  id = seq_len(3 * n_arm),
+  arm = rep(arms$arm, each = n_arm),
+  TRT_MOXIFLOXACIN_FOR_ETHAMBUTOL = rep(arms$TRT_MOXIFLOXACIN_FOR_ETHAMBUTOL, each = n_arm),
+  TRT_MOXIFLOXACIN_FOR_ISONIAZID = rep(arms$TRT_MOXIFLOXACIN_FOR_ISONIAZID, each = n_arm),
+  SEXF = stats::rbinom(3 * n_arm, 1, 0.30),
+  SMOKE = stats::rbinom(3 * n_arm, 1, 0.31),
+  LUNG_CAVITY = stats::rbinom(3 * n_arm, 1, 0.71),
+  RACE_BLACK = as.integer(race == "Black"),
+  RACE_ASIAN = as.integer(race == "Asian"),
+  RACE_MISSING = as.integer(race == "Missing"),
+  AGE = draw_band(3 * n_arm, c(18, 25, 35, 60), c(0.30, 0.31, 0.39)),
+  WT = draw_band(3 * n_arm, c(35, 40, 45, 55, 75, 90), c(0.10, 0.16, 0.40, 0.32, 0.02)),
+  TTP_MGIT_BASE = stats::rlnorm(3 * n_arm, log(5), 0.45)
+)
+cohort |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    n = dplyr::n(), female = mean(SEXF), smoker = mean(SMOKE), cavity = mean(LUNG_CAVITY),
+    median_age = median(AGE), median_wt = median(WT), median_ttp_base_d = median(TTP_MGIT_BASE)
+  ) |>
+  knitr::kable(digits = 2, caption = "Virtual cohort summary by arm.")
+```
+
+# Simulation
+
+```{r simulate}
+obs_events <- function(days) {
+  merge(cohort, data.frame(time = days)) |>
+    dplyr::mutate(evid = 0L, amt = 0) |>
+    dplyr::arrange(id, time)
+}
+sim14 <- rxode2::rxSolve(mod14, obs_events(0:14), keep = "arm", returnType = "data.frame")
+sim28 <- rxode2::rxSolve(mod28, obs_events(0:28), keep = "arm", returnType = "data.frame")
+```
+
+## Visual predictive check (Figure 3)
+
+Figure 3 shows prediction-corrected VPCs per arm on a log TTP axis. The
+simulated median and 2.5th/97.5th percentiles of TTP with residual error
+(`sim`) are plotted on the same axes. MGIT cultures are read for at most
+42 days (1008 h), so values above that are capped for display.
+
+```{r vpc, fig.height = 6}
+vpc <- dplyr::bind_rows(
+  sim14 |> dplyr::mutate(model = "(a) 14-day biexponential"),
+  sim28 |> dplyr::mutate(model = "(b) 28-day exponential")
+) |>
+  dplyr::mutate(sim_cap = pmin(sim, 1008)) |>
+  dplyr::group_by(model, arm, time) |>
+  dplyr::summarise(
+    p025 = quantile(sim_cap, 0.025), p50 = median(sim_cap), p975 = quantile(sim_cap, 0.975),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(time, p50)) +
+  geom_ribbon(aes(ymin = p025, ymax = p975), fill = "grey85") +
+  geom_line(linewidth = 0.9) +
+  geom_line(aes(y = p025), linetype = 2) +
+  geom_line(aes(y = p975), linetype = 2) +
+  scale_y_log10(limits = c(40, 1100)) +
+  facet_grid(model ~ arm, scales = "free_x") +
+  labs(
+    x = "Time since start of treatment (days)", y = "TTP (h)",
+    caption = "Replicates the layout of Figure 3 of You 2026 (median, 2.5th and 97.5th percentiles)."
+  )
+```
+
+Figure 3 (a low-resolution image, read by eye) shows the median rising
+from about 130 h at day 0 to about 250-300 h at day 14 and to about
+350-400 h at day 28, with the 97.5th percentile near the 1000 h culture
+limit after the first week. The simulation follows the same course; its
+day-14 median runs somewhat higher, because the simulated individuals
+carry the full between-subject variability of the right-skewed first term
+(see 'Reported medians'), whereas Figure 3 is prediction-corrected. At
+day 0 the simulated 2.5th-97.5th percentile interval of the 14-day model,
+`r v0 <- vpc[vpc$time == 0 & grepl("14-day", vpc$model), ]; round(median(v0$p025))`-`r round(median(v0$p975))` h
+(median over arms), is close to the roughly 60-400 h of Figure 3a. That spread comes mostly from
+the eta on `A_bi`: with the eta read as additive on `A_bi` instead (a 21%
+CV on the first-term amplitude) the upper limit would fall to about 220 h.
+
+## Reported medians
+
+Results reports the median predicted baseline TTP (126.8 h in both models),
+the median predicted rise from day 0 to day 14 (182 h, 14-day model) and
+from day 0 to day 28 (240.3 h, 28-day model). These are medians of the
+individual predictions, so the comparison uses `ttp` (no residual error).
+
+The paper's individual predictions come from empirical Bayes estimates,
+which are shrunk towards the typical value (Results: 27% on the baseline
+and 47% on the slope of the 14-day model; 18%, 44% and 31% on the
+intercept, slope and asymptote of the 28-day model). A simulation from the
+full omegas spreads the individuals more widely. In the 14-day model this
+matters: `A_bi` is a log amplitude with an exponential eta, so the first
+term `exp(A_bi)` is strongly right-skewed and its spread lifts the median
+rise. The cohort is therefore also simulated with each omega scaled by
+`(1 - shrinkage)^2`, which approximates the spread of the empirical Bayes
+estimates.
+
+```{r medians}
+diag_omega <- function(v) {
+  m <- diag(v, length(v))
+  dimnames(m) <- list(names(v), names(v))
+  m
+}
+omega14_ebe <- diag_omega(c(etaa_bi = 0.0427 * (1 - 0.27)^2, etalslope_bi = 0.785 * (1 - 0.47)^2))
+omega28_ebe <- diag_omega(c(
+  etala_exp = 0.0788 * (1 - 0.18)^2, etalalpha_exp = 0.34 * (1 - 0.44)^2,
+  etalb_exp = 0.227 * (1 - 0.31)^2
+))
+sim14_ebe <- rxode2::rxSolve(mod14, obs_events(c(0, 14)), omega = omega14_ebe, returnType = "data.frame")
+sim28_ebe <- rxode2::rxSolve(mod28, obs_events(c(0, 28)), omega = omega28_ebe, returnType = "data.frame")
+
+median_rise <- function(sim, day_end) {
+  d0 <- sim |> dplyr::filter(time == 0) |> dplyr::arrange(id)
+  d1 <- sim |> dplyr::filter(time == day_end) |> dplyr::arrange(id)
+  c(base = median(d0$ttp), rise = median(d1$ttp - d0$ttp))
+}
+m14 <- median_rise(sim14, 14)
+m14_ebe <- median_rise(sim14_ebe, 14)
+m28 <- median_rise(sim28, 28)
+m28_ebe <- median_rise(sim28_ebe, 28)
+chk_med <- data.frame(
+  quantity = c(
+    "Median baseline TTP, 14-day model (h)", "Median baseline TTP, 28-day model (h)",
+    "Median dTTP 0-14 days (h)", "Median dTTP 0-28 days (h)"
+  ),
+  reported = c(126.8, 126.8, 182, 240.3),
+  full = c(m14[["base"]], m28[["base"]], m14[["rise"]], m28[["rise"]]),
+  ebe = c(m14_ebe[["base"]], m28_ebe[["base"]], m14_ebe[["rise"]], m28_ebe[["rise"]])
+) |>
+  dplyr::mutate(
+    pct_full = 100 * (full - reported) / reported,
+    pct_ebe = 100 * (ebe - reported) / reported
+  )
+chk_med |>
+  dplyr::select(quantity, reported, full, pct_full, ebe, pct_ebe) |>
+  dplyr::rename(
+    "Quantity" = quantity, "You 2026 Results" = reported,
+    "Simulated, full omega" = full, "Difference (%)" = pct_full,
+    "Simulated, shrunk omega" = ebe, "Difference, shrunk (%)" = pct_ebe
+  ) |>
+  knitr::kable(digits = 1, caption = "Reported vs simulated medians of the individual predictions (600 subjects).")
+```
+
+The baselines and, with the shrunk omegas, the 14-day rise agree with the
+paper within a few percent. The 28-day rise is above the reported 240.3 h
+whichever omegas are used (by `r round(chk_med$pct_full[4])`% and
+`r round(chk_med$pct_ebe[4])`% here). Even with no between-subject variability
+the reference subject rises by 250 h (control), 301 h (isoniazid group) and
+277 h (ethambutol group), so the median over a cohort balanced across the
+arms sits near 275 h unless the covariates pull it down; with the
+covariate distribution assumed here they do not. The analysis-dataset
+covariate distribution and the covariate centres are not reported (see
+'Assumptions and deviations'), and the parameters were not adjusted to
+close the gap.
+
+```{r medians-assert, include = FALSE}
+# A mis-transcribed intercept, slope or exponent sign moves these medians
+# by tens of percent. The 28-day rise carries the unexplained ~15% offset
+# discussed above, so its bound is wider.
+stopifnot(
+  abs(chk_med$pct_ebe[1]) < 10,
+  abs(chk_med$pct_ebe[2]) < 10,
+  abs(chk_med$pct_ebe[3]) < 10,
+  abs(chk_med$pct_ebe[4]) < 30
+)
+```
+
+## NCA
+
+There is no drug concentration in either model (the outcome is a
+bacterial-load biomarker driven by time on treatment), so a PKNCA
+non-compartmental analysis does not apply; the closed-form and reported-
+median checks above take its place.
+
+# Assumptions and deviations
+
+* **Exponent signs.** Equations 2 and 3 are implemented with the signs
+  that make TTP rise, as shown above; the printed signs contradict
+  Figure 3 and the reported medians.
+* **Shared slope variability (14-day model).** Table S2 reports a single
+  `omega2 slope` (0.785) with a single shrinkage value (47%) for a model
+  with two slopes. It is encoded as one eta shared by `alpha_bi` and
+  `beta_bi`; `B_bi` has no IIV, and the `omega2 baseline` eta acts
+  exponentially on `A_bi` itself (which is a log amplitude).
+* **Covariate functional form.** No covariate equation is printed. The
+  stepwise covariate model was run in PsN, whose default linear form is
+  `P * (1 + theta)` for a binary covariate and `P * (1 + theta * (x -
+  median))` for a continuous one; that form is used, applied to `A_bi` and
+  `B_bi` on their log scale. It is supported by the agreement between the
+  two models: the absence of cavitation raises the typical baseline by 13%
+  in the 14-day model (via `A_bi`) and by 15% in the 28-day model (via
+  `A_exp`), and smoking by 5.7% and 5.6%. Reading the 14-day effects as
+  additive on `A_bi` (a factor `exp(theta)` on its term) would give 3.2%
+  and 1.5% and break that agreement.
+* **Covariate coding.** From the supplementary analysis code: smoking is
+  the TB-PACTS substance-use occurrence flag (Y/N), read here as current
+  smoking (`SMOKE`); "unknown race" pools the TB-PACTS values "NOT
+  REPORTED" and "OTHER" (`RACE_MISSING`); each race effect is a separate
+  indicator, so all race indicators 0 means Black or mixed race in the
+  14-day model and mixed or unreported race in the 28-day model. The
+  reported "absence of cavity" effects enter as `(1 - LUNG_CAVITY)`.
+* **Centring values.** PsN centres continuous covariates on the
+  analysis-dataset median, which You 2026 does not report. Age (31.3 y)
+  and weight (51.0 kg) are the medians interpolated from the grouped age
+  and weight distribution of the REMoxTB per-protocol population
+  (Gillespie 2014 Table 1, which prints no medians); the You 2026 analysis
+  dataset is larger (1821 patients). Baseline TTP is centred at 126.8 h,
+  the median predicted baseline TTP, and is assumed to enter in hours. A
+  different centre changes only subjects away from it, not the typical
+  curves.
+* **Arm effects.** The text says no statistically significant difference
+  between the three treatments was found, yet Tables S2 and S3 list
+  arm-specific slopes, intercepts and asymptotes as final estimates. The
+  tables are encoded as printed. In the 14-day model the two moxifloxacin
+  arms share one set of values ("isoniazid or ethambutol").
+* **Virtual cohort.** Covariates are drawn independently; their
+  correlations in REMoxTB are not reported. The baseline-TTP covariate is
+  drawn independently of each subject's model-predicted baseline.
+* **Reported 28-day rise.** The simulated median rise over 28 days is
+  about 10-15% above the reported 240.3 h (see 'Reported medians'); no
+  reading of the printed model closes the gap, and it is left as found.
+* **Culture limits.** Neither model includes the 42-day (1008 h) upper
+  limit of MGIT culture or culture-negative samples; the paper does not
+  describe how they were handled in the EBA models.
