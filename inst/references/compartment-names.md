@@ -2595,6 +2595,13 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Vellinga_2025_remimazolam_moaas.R` (founding example; five cumulative logits with a remimazolam sigmoid Emax term, CNS 7054 competitive antagonism and a multiplicative remifentanil term, driven by arterial plasma concentrations).
 - **Notes:** Lower-case to match the `prob_moaas<k>` / `prob_moaas_le<k>` probability outputs it is observed through. **The rxode2 ordinal category index is the score plus one**: the `k`-th listed probability is category `k`, so category 1 is MOAA/S 0 (`prob_moaas0`) and the unlisted sixth category, MOAA/S 5, carries one minus the sum of the five listed probabilities. A dataset that codes the score itself (0-5) must add 1 before fitting. Holds an ordinal category, not a concentration; the per-category probabilities live in `prob_moaas<k>` (see the `prob_moaas0 ... prob_moaas5` entry), not here. Distinct from the continuous processed-EEG index `BIS`.
 
+### sbm (**canonical daily spontaneous-bowel-movement count ordinal observation**)
+- **Type:** compartment
+- **Role:** The number of spontaneous bowel movements (SBMs; bowel movements without rescue laxative use in the previous 24 h) recorded in a patient's daily diary, truncated at a paper-specific maximum and modelled as an ordered-categorical endpoint `sbm ~ c(p0, ..., p<K-1>)`. rxode2 numbers the categories from 1, so simulated category k is an SBM count of k - 1 and the unlisted last category is the truncation level ("K or more").
+- **Source aliases:** `DVORD`, `SBM` -- Al-Huniti 2016 control stream.
+- **Example models:** `AlHuniti_2016_naloxegol_sbm.R` (counts 0 to >= 6, cumulative-logit first-order Markov model of opioid-induced constipation on naloxegol; companion expected-count output `sbm_mean`).
+- **Notes:** Holds an ordinal category, not a concentration. The weekly SBM frequency used in responder definitions is a sum of daily counts and is not a model output. Distinct from stool-consistency or straining scores, which are separate patient-reported scales.
+
 ### log_car (**canonical log CAR-T cell-count PD output**)
 - **Type:** compartment
 - **Role:** Log-transformed CAR-T cell count per microlitre of blood, the observed output of a CAR-T cellular-kinetics model. The linear state is the total CAR-T cell pool; this is the log of its per-uL concentration, with an epsilon floor so the transform stays finite before expansion and after contraction.

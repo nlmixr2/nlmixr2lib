@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wyska 2016 lisofylline PBPK ([doi:10.1007/s13318-015-0260-y](https://doi.org/10.1007/s13318-015-0260-y)) -- male CD-1 mice given an intravenous bolus, with the projection to a 70 kg adult.
+- Add Al-Huniti 2016 naloxegol spontaneous-bowel-movement and diary-discontinuation exposure-response models ([doi:10.1002/psp4.12099](https://doi.org/10.1002/psp4.12099)) -- adults with noncancer pain and opioid-induced constipation.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
