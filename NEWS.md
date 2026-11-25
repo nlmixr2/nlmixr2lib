@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Xiao 2018 danofloxacin PK/PD index ([doi:10.3389/fphar.2018.00391](https://doi.org/10.3389/fphar.2018.00391)) -- rabbits with systemic *Salmonella* Typhimurium infection (blood, liver, spleen and lung).
+- Add Mao 2018 pravastatin in vitro OATP hepatic uptake kinetics ([doi:10.1002/psp4.12283](https://doi.org/10.1002/psp4.12283)) -- plated human hepatocytes (single donor) in human plasma and in induction medium.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
