@@ -4675,25 +4675,33 @@ Indirect-response state variables of the Xiang 2018 baicalein anti-inflammatory 
 
 ## Radiation tumor-growth-inhibition states
 
-State variables specific to the Cardilin 2018 combination radiation + radiosensitizer tumor-growth-inhibition model (`Cardilin_2018_radiation_radiosensitizer_mouse.R`), where linear-quadratic radiation kill routes proliferating cells into an irradiated-cell chain that divides at most once more before dying.
+State variables specific to the Cardilin combination radiation + radiosensitizer tumor-growth-inhibition models (`Cardilin_2018_radiation_radiosensitizer_mouse.R`, short-term; `Cardilin_2019_radiation_radiosensitizer_mouse.R`, long-term), where linear-quadratic radiation kill routes proliferating cells into an irradiated-cell chain that divides at most once more before dying.
 
 ### irrad1 (**canonical first irradiated-cell pool**)
 - **Type:** compartment
 - **Role:** First irradiated-cell pool; receives proliferating cells killed by the linear-quadratic radiation hazard at each fraction and either dies or progresses to a final division.
 - **Source aliases:** none.
-- **Example models:** `Cardilin_2018_radiation_radiosensitizer_mouse.R`.
+- **Example models:** `Cardilin_2018_radiation_radiosensitizer_mouse.R`, `Cardilin_2019_radiation_radiosensitizer_mouse.R`.
 
 ### irrad2 (**canonical second irradiated-cell pool**)
 - **Type:** compartment
 - **Role:** Second irradiated-cell pool fed by the post-division progression from `irrad1` (factor-2 source for the one final division before death); first-order natural death thereafter.
 - **Source aliases:** none.
-- **Example models:** `Cardilin_2018_radiation_radiosensitizer_mouse.R`.
+- **Example models:** `Cardilin_2018_radiation_radiosensitizer_mouse.R`, `Cardilin_2019_radiation_radiosensitizer_mouse.R`.
 
 ### rad_depot (**canonical radiation-timing trigger compartment**)
 - **Type:** compartment
 - **Role:** Radiation-timing trigger compartment; a unit bolus is dosed in at each irradiation time and decays fast so that the kill hazard integrates to the linear-quadratic lethal-lesion number per fraction (a Dirac-delta numerical device, not a fitted state).
 - **Source aliases:** none.
-- **Example models:** `Cardilin_2018_radiation_radiosensitizer_mouse.R`.
+- **Example models:** `Cardilin_2018_radiation_radiosensitizer_mouse.R`, `Cardilin_2019_radiation_radiosensitizer_mouse.R`.
+
+### rad_dose_cum (**canonical accumulated effective radiation dose**)
+- **Type:** compartment
+- **Role:** Accumulated effective radiation dose (Gy). Starts at 0 and, at each fraction, jumps by the fraction dose scaled by any radiosensitizer enhancement (Cardilin 2019 Eq. 7: `IR_Tot(t+) = IR_Tot(t-) + (1 + b C) D`), driven through the same `rad_depot` trigger so that `d/dt(rad_dose_cum) <- (1 + b * Cc) * radDose * krad * rad_depot`. It never decays and feeds a permanent growth inhibition such as `exp(-gamma * rad_dose_cum)`.
+- **Source aliases:**
+  - `IR_Tot` -- Cardilin 2019 notation (Eqs. 4, 7, 8).
+- **Example models:** `Cardilin_2019_radiation_radiosensitizer_mouse.R` (founding example; the permanent growth inhibition of Eq. 4, `kg * exp(-gamma * IR_Tot)`).
+- **Notes:** Ratified by the maintainers 2026-11-25 (PMC6499765) over the paper-mirroring alternative `irtot`. The snake_case `rad_dose_cum` keeps the `rad_` stem of `rad_depot` and spells out what the state holds. It is a dose-accumulator, not a cell pool, so it is kept apart from `irrad1` / `irrad2`. It also differs from drug-exposure integrators such as `auc_central`: it accumulates a delivered external dose, sensitizer-weighted, not a concentration-time integral.
 
 ---
 

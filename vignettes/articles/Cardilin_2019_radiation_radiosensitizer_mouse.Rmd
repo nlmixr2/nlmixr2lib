@@ -40,7 +40,7 @@ and eradication.
   is lethally irradiated and moved to `U1` (`irrad1`), which may divide once
   more into `U2` (`irrad2`, factor 2) before both die through the transit
   chain.
-* The **accumulated effective radiation dose** `IR_Tot` (`irtot`) increases by
+* The **accumulated effective radiation dose** `IR_Tot` (`rad_dose_cum`) increases by
   `(1 + b C) D` at each fraction and permanently inhibits growth,
   `kg * exp(-gamma IR_Tot)`.
 * `C` is the radiosensitizer plasma concentration at the time of irradiation,
@@ -551,7 +551,7 @@ half to two-thirds are eradicated at 25 mg/kg, and nearly all at 100 mg/kg.
 - **Instantaneous radiation effects.** The jumps of Eqs. 2, 6 and 7 at each
   fraction are implemented with a fast-decaying trigger compartment
   (`rad_depot`, rate `krad = 5000` per day). Its integral is 1 per fraction,
-  so the kill hazard integrates to the LQ lethal-lesion number and `irtot`
+  so the kill hazard integrates to the LQ lethal-lesion number and `rad_dose_cum`
   rises by `(1 + b C) D`. The radiosensitizer concentration changes by about
   0.1% during the spike. The closed-form checks above show the remaining
   error.

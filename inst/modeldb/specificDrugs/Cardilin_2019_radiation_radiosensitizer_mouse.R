@@ -50,7 +50,7 @@ Cardilin_2019_radiation_radiosensitizer_mouse <- function() {
     damaged_cells1 = list(analyte = "dying tumor cells", units = "mm^3", specimen = "tumor", verified = TRUE),
     damaged_cells2 = list(analyte = "dying tumor cells", units = "mm^3", specimen = "tumor", verified = TRUE),
     damaged_cells3 = list(analyte = "dying tumor cells", units = "mm^3", specimen = "tumor", verified = TRUE),
-    irtot = list(
+    rad_dose_cum = list(
       analyte = "accumulated effective radiation dose",
       units = "Gy",
       specimen = "not applicable",
@@ -159,7 +159,7 @@ Cardilin_2019_radiation_radiosensitizer_mouse <- function() {
     killHaz <- lethal * krad * rad_depot
 
     # 4. Long-term growth inhibition by the accumulated dose (Eq. 4)
-    inhib <- exp(-gammaRad * irtot)
+    inhib <- exp(-gammaRad * rad_dose_cum)
 
     d/dt(central) <- -ke * central
     d/dt(rad_depot) <- -krad * rad_depot
@@ -171,7 +171,7 @@ Cardilin_2019_radiation_radiosensitizer_mouse <- function() {
     d/dt(damaged_cells1) <- kk * cycling_cells + kk * irrad1 + kk * irrad2 - kk * damaged_cells1
     d/dt(damaged_cells2) <- kk * damaged_cells1 - kk * damaged_cells2
     d/dt(damaged_cells3) <- kk * damaged_cells2 - kk * damaged_cells3
-    d/dt(irtot) <- (1 + bRadTot * Cc) * radDose * krad * rad_depot
+    d/dt(rad_dose_cum) <- (1 + bRadTot * Cc) * radDose * krad * rad_depot
 
     # 5. Initial conditions (Eq. 8): V_i(0) = V0 (kk/kg)^(i-1), U_j(0) = 0,
     # IR_Tot(0) = 0 -- the pseudo-steady split that makes untreated growth
