@@ -6940,6 +6940,30 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
   - `endx` -- prior canonical name (pre-2026-06-19 readability standardization).
 - **Example models:** `TerHeine_2014_tamoxifen.R`.
 
+### ndmtam (**canonical N-desmethyltamoxifen suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-desmethyltamoxifen (NDMT), the quantitatively dominant primary tamoxifen metabolite (CYP3A-mediated N-demethylation) and the immediate precursor of endoxifen (CYP2D6-mediated 4-hydroxylation). Carries a full set of whole-body PBPK states in a coupled tamoxifen metabolite model (`central_ndmtam`, `liver1_ndmtam`, ..., `intestine_ent_ndmtam`), with the observed blood concentration output `Cc_ndmtam`.
+- **Source aliases:**
+  - `NDMT` / `NDM` -- Nakamura 2018 main text, Figure 2B, Supplementary Methods and Supplementary Tables S1-S2.
+- **Example models:** `Nakamura_2018_tamoxifen_pbpk.R`.
+- **Notes:** The `tam` metabolite-suffix is already taken by the ticagrelor active metabolite (see the `tam` entry's acronym-collision note), so the tamoxifen N-desmethyl species is spelled `ndmtam` to make the tamoxifen parentage explicit and unmistakably distinct from the five drug-specific `ndm*` suffixes of other drugs (`ndmsel`, `ndmima`, `ndmclb`, `ndmenz`, `ndmsil`). Tamoxifen itself is the model's parent analyte and so takes the bare canonical names (`central`, `liver1`, ...) with no suffix. Ratified by the maintainers 2026-11-25 (PMC6063740, sidecar q1 option B).
+
+### ohtam (**canonical 4-hydroxytamoxifen suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 4-hydroxytamoxifen (4-OHT), the minor but high-affinity primary tamoxifen metabolite (formed from tamoxifen by CYP2D6, CYP2C9 and other enzymes) and the second precursor of endoxifen (CYP3A-mediated N-demethylation of 4-OHT). Carries a full whole-body PBPK state set (`central_ohtam`, `liver1_ohtam`, ...) with output `Cc_ohtam`.
+- **Source aliases:**
+  - `4-OHT` / `4OHT` -- Nakamura 2018 main text, Figure 2B, Supplementary Methods and Supplementary Tables S1-S2.
+- **Example models:** `Nakamura_2018_tamoxifen_pbpk.R`.
+- **Notes:** Spelled with an `oh` prefix rather than the bare `4oht` because rxode2 state names cannot begin with a digit. Paired with its glucuronide `ohtamg`. Ratified by the maintainers 2026-11-25 (PMC6063740, sidecar q1 option B).
+
+### ohtamg (**canonical 4-hydroxytamoxifen-glucuronide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 4-hydroxytamoxifen glucuronide (4-OHT-G), the UGT-formed glucuronide conjugate of 4-OHT, included because it recirculates enterohepatically and is deconjugated back to 4-OHT in the gut lumen (a source term feeding the active-metabolite pools). Carries a full whole-body PBPK state set (`central_ohtamg`, `liver1_ohtamg`, ...) with output `Cc_ohtamg`.
+- **Source aliases:**
+  - `4-OHT-G` / `4-OHT Glu` / `4OHTG` -- Nakamura 2018 main text, Figure 2B, Supplementary Methods and Supplementary Tables S1-S2.
+- **Example models:** `Nakamura_2018_tamoxifen_pbpk.R`.
+- **Notes:** A single composite token for the glucuronide conjugate of a named metabolite, following the `sn38g` / `m3g` / `m6g` / `acmpag` convention for conjugates. Ratified by the maintainers 2026-11-25 (PMC6063740, sidecar q1 option B).
+
 ### canrenone (**canonical canrenone suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Canrenone, the principal active metabolite of spironolactone and the species that actually occupies the mineralocorticoid receptor. Spironolactone is extensively metabolised; the canrenone concentration -- not the parent -- drives the Emax receptor-inhibition term in mineralocorticoid-receptor-antagonist PK/PD and QSP models, so canrenone carries its own central and peripheral disposition compartments alongside the parent.

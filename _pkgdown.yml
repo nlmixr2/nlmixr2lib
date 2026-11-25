@@ -8006,6 +8006,8 @@ navbar:
         href: articles/Gong_2025_talquetamab.html
       - text: "Tamibarotene pediatric (Azechi 2024)"
         href: articles/Azechi_2024_tamibarotene_pediatric.html
+      - text: "Tamoxifen pbpk (Nakamura 2018)"
+        href: articles/Nakamura_2018_tamoxifen_pbpk.html
       - text: "Tamsulosin (Tsuda 2010)"
         href: articles/Tsuda_2010_tamsulosin.html
       - text: "Tanezumab (Jonsson 2016)"
@@ -11203,6 +11205,7 @@ articles:
   - articles/Naik_2013_peginesatide
   - articles/Naik_2016_vortioxetine
   - articles/Nakai_2025_tranexamicAcid
+  - articles/Nakamura_2018_tamoxifen_pbpk
   - articles/Nakamura_2024_linagliptin_pbpk
   - articles/Nakao_2019_afatinib
   - articles/Nakashima_2015_valproic_acid_seizure_control
