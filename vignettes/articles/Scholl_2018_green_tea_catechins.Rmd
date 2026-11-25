@@ -1,0 +1,567 @@
+---
+title: "Green tea catechins EGCG, EGC and ECG (Scholl 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Green tea catechins EGCG, EGC and ECG (Scholl 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Scholl et al. (2018) gave 84 healthy volunteers capsules of a green tea
+extract standardised to 150 mg epigallocatechin gallate (EGCG) twice daily
+for four days and one capsule on the morning of day 5, then sampled plasma
+for 9 h. They fitted three **independently developed** two-compartment
+population PK models, one per catechin measured in plasma. The library
+therefore ships three model files that share this vignette:
+
+| Model | Catechin | Dose per capsule | Absorption |
+|---|---|---|---|
+| `Scholl_2018_egcg` | epigallocatechin gallate (EGCG) | 150 mg | zero-order dissolution (D1) into depot, lagged first-order ka |
+| `Scholl_2018_egc` | epigallocatechin (EGC) | 18 mg | lagged first-order ka |
+| `Scholl_2018_ecg` | epicatechin gallate (ECG) | 35 mg | zero-order dissolution (D1) into depot, lagged first-order ka |
+
+* Citation: `r rxode2::rxode(readModelDb("Scholl_2018_egcg"))$reference`
+* Article: <https://doi.org/10.1371/journal.pone.0193074> (open access)
+* Modeling Supplement (S6 File, the three NONMEM control streams):
+  <https://doi.org/10.1371/journal.pone.0193074.s006>
+* Concentration data (S1 File): <https://doi.org/10.1371/journal.pone.0193074.s001>
+
+```{r models}
+mod_egcg <- readModelDb("Scholl_2018_egcg")
+mod_egc <- readModelDb("Scholl_2018_egc")
+mod_ecg <- readModelDb("Scholl_2018_ecg")
+```
+
+# Population
+
+`r rxode2::rxode(mod_egcg)$population$notes` Participants were 19-49 years old
+(mean 24.5), weighed 68.0 kg on average (SD 11.7) and had a BMI of 18-30
+kg/m^2 (Table 1). All were of Western European ancestry and free of acute or
+chronic disease; 54 were women, of whom 37 used oral contraceptives. The
+capsules were taken with a meal on days 1-4 and after an overnight fast on day
+5. Sampling on day 5 was pre-dose and at 0.5, 1, 2, 3, 4, 5, 7 and 9 h.
+
+Gender, age, weight, height, BMI, smoking, alcohol, habitual tea drinking and
+blood counts were screened and not retained. The retained covariates are
+genotypes of drug transporters and phase II enzymes (accepted at the
+exploratory threshold p <= 0.025) and, for EGC, oral-contraceptive use.
+
+# Source trace
+
+All structural values are the final estimates in Scholl 2018 Table 3; the
+model structure and the covariate parameterisations are those of the S6 File
+control streams (`$PK`, `$DES`, `$ERROR`).
+
+| Element | EGCG | EGC | ECG | Source |
+|---|---|---|---|---|
+| ka (1/h) | 1.86 | 0.830 | 1.78 | Table 3; S6 `K12 = THETA(1)` |
+| CL/F (L/h) | 148 | 560 | 196 | Table 3 |
+| Vcentral/F (L) | 334 | 1180 | 395 | Table 3 |
+| Q/F (L/h) | 59.7 | 324 | 56.2 | Table 3 |
+| Vperipheral/F (L) | 1260 | 10100 | 1300 | Table 3 |
+| D1 (h) | 0.301 | -- | 0.422 | Table 3; S6 `D1`, `RATE` in `$INPUT` |
+| Lag time (h) | 0.327 | 0.413 | 0.319 | Table 3; S6 `ALAG` |
+| F | 1 (fixed) | 1 (fixed) | 1 (fixed) | Table 3; S6 `$THETA (1 FIX)` |
+| IIV ka / CL / D1 / F / lag (%CV) | 79 / 25 / 103 / 46 / 32 | -- / 38 / -- / 37 / 11 | 78 / 39 / 70 / 57 / 43 | Table 3 |
+| IIV Vcentral/F / Q/F (%CV) | -- | 80 / 92 | -- | Table 3 |
+| Proportional / additive residual | 17 % / 5 ug/L | 28 % / -- | 18 % / 1 ug/L | Table 3; S6 `Y = IPRED*(1+EPS(1))+EPS(2)` |
+| SLCO1B1 rs4149056 on CL/F | `*(1 - 0.152 x C-allele count)` | -- | -- | Table 3; S6 `CL = THETA(2)*(1+OATP41EFF*OATP41T)`; Table 5 |
+| ABCC2 rs717620 on F | `* 0.740` if C/C | -- | -- | Table 3; S6 `IF (MRP71T.EQ.0)`; Table 5 |
+| Contraceptives on Vcentral/F | -- | `* 0.450` | -- | Table 3 `CONCEP`; S6; Table 5 |
+| ABCC2 rs717620 on Vcentral/F | -- | `*(1 - 0.370 x T-allele count)` | -- | Table 3; S6 `(1+MRP71EFF*MRP71T)`; Table 5 |
+| ABCC2 rs3740066 on Q/F | -- | `* 2.33` if C/C | -- | Table 3; S6 `IF (MRP37T.EQ.0)`; Table 5 |
+| SLCO1B1 rs2306283 on CL/F | -- | `* 0.653` if A/A | -- | Table 3; S6 `IF (OATP23T.EQ.0)`; Table 5 |
+| UGT1A1*28 on CL/F | -- | `* 0.744` if (TA)6/(TA)6 | -- | Table 3; S6 `IF (UGT.EQ.0)`; Table 5 |
+| COMT rs4680 on F | -- | `* 0.760` if A/A | -- | Table 3; S6 `IF (COMT.EQ.2)`; Table 5 |
+| ODEs (depot -> central <-> peripheral, CL from central) | all | all | all | S6 `$DES` |
+| Concentration = amount / Vcentral x 1000 (mg, L -> ug/L) | all | all | all | S6 `S2 = V2/1000` |
+
+## Scale of the IIV column
+
+Table 3 prints IIV as %CV without a conversion formula, and the Methods state
+that omega "expresses approximately the coefficient of variation". The ECG
+control stream in the S6 File carries an `$OMEGA BLOCK(5)` whose initial
+estimates were evidently seeded from a near-final run. Pushing each initial
+variance through both candidate readings shows which one the table uses:
+
+```{r omega-scale}
+omega_init <- c(ka = 0.571, CL = 0.137, D1 = 0.619, F = 0.32, lag = 0.186) # S6 File ECG $OMEGA BLOCK(5) diagonal
+cv_table <- c(ka = 78, CL = 39, D1 = 70, F = 57, lag = 43) # Table 3 ECG IIV %CV
+omega_chk <- data.frame(
+  parameter = names(omega_init),
+  table_cv = cv_table,
+  sqrt_omega = round(100 * sqrt(omega_init), 1),
+  lognormal_cv = round(100 * sqrt(exp(omega_init) - 1), 1)
+)
+knitr::kable(
+  omega_chk |>
+    dplyr::rename(
+      "Parameter" = parameter,
+      "Table 3 %CV" = table_cv,
+      "100 x omega" = sqrt_omega,
+      "Log-normal CV%" = lognormal_cv
+    ),
+  row.names = FALSE
+)
+err_sqrt <- abs(omega_chk$sqrt_omega - omega_chk$table_cv)
+err_logn <- abs(omega_chk$lognormal_cv - omega_chk$table_cv)
+stopifnot(
+  # F and lag time sit exactly on 100 x omega and 2-5 points off the
+  # log-normal reading; the largest variances (ka, D1) discriminate hardest.
+  sum(err_sqrt < err_logn) >= 4,
+  all(err_sqrt[omega_chk$parameter %in% c("F", "lag")] < 0.5)
+)
+```
+
+The `100 x omega` reading tracks the table for four of the five entries and
+reproduces F and lag time exactly, so all three models encode
+`omega^2 = (CV/100)^2`.
+
+# Virtual cohort
+
+Genotypes are drawn independently from the observed genotype counts (Table 4)
+and contraceptive use from the observed 37 of 84 participants. Each catechin
+model uses only the covariates it needs. 200 subjects are simulated per
+catechin.
+
+```{r cohort}
+set.seed(2018)
+rxode2::rxSetSeed(2018)
+n_sub <- 200
+draw_geno <- function(n, counts) sample(0:2, n, replace = TRUE, prob = counts)
+cohort <- data.frame(
+  id = seq_len(n_sub),
+  mrp71t = draw_geno(n_sub, c(58, 22, 3)), # ABCC2 rs717620 CC/CT/TT
+  oatp41t = draw_geno(n_sub, c(54, 27, 3)), # SLCO1B1 rs4149056 TT/CT/CC
+  oatp23t = draw_geno(n_sub, c(29, 40, 15)), # SLCO1B1 rs2306283 AA/GA/GG
+  mrp37t = draw_geno(n_sub, c(40, 32, 12)), # ABCC2 rs3740066 CC/CT/TT
+  ugt = draw_geno(n_sub, c(37, 37, 10)), # UGT1A1*28 (-)/(-/TA)/TA
+  comt = draw_geno(n_sub, c(14, 47, 23)), # COMT rs4680 GG/GA/AA
+  CONMED_BIRTHCONTROL = rbinom(n_sub, 1, 37 / 84)
+) |>
+  mutate(
+    SNP_ABCC2_RS717620_HET = as.integer(mrp71t == 1),
+    SNP_ABCC2_RS717620_HOM = as.integer(mrp71t == 2),
+    SNP_SLCO1B1_RS4149056_HET = as.integer(oatp41t == 1),
+    SNP_SLCO1B1_RS4149056_HOM = as.integer(oatp41t == 2),
+    SNP_SLCO1B1_RS2306283_HET = as.integer(oatp23t == 1),
+    SNP_SLCO1B1_RS2306283_HOM = as.integer(oatp23t == 2),
+    SNP_ABCC2_RS3740066_HET = as.integer(mrp37t == 1),
+    SNP_ABCC2_RS3740066_HOM = as.integer(mrp37t == 2),
+    SNP_UGT1A1_RS8175347_HET = as.integer(ugt == 1),
+    SNP_UGT1A1_RS8175347_HOM = as.integer(ugt == 2),
+    SNP_COMT_RS4680_HOM = as.integer(comt == 2)
+  )
+```
+
+# Simulation of the study
+
+Doses are given at 0, 12, ..., 96 h (eight doses on days 1-4 and the day-5
+morning dose). EGCG and ECG doses carry `rate = -2` so that the modelled
+dissolution duration D1 applies; EGC doses are boluses into the depot.
+
+```{r events}
+catechins <- data.frame(
+  analyte = c("EGCG", "EGC", "ECG"),
+  dose = c(150, 18, 35),
+  rate = c(-2, 0, -2)
+)
+model_of <- list(EGCG = mod_egcg, EGC = mod_egc, ECG = mod_ecg)
+
+make_events <- function(dose, rate, dose_times, obs_times, cov_df) {
+  doses <- expand.grid(id = seq_len(n_sub), time = dose_times)
+  doses$amt <- dose
+  doses$evid <- 1L
+  doses$rate <- rate
+  obs <- expand.grid(id = seq_len(n_sub), time = obs_times)
+  obs$amt <- 0
+  obs$evid <- 0L
+  obs$rate <- 0
+  bind_rows(doses, obs) |>
+    mutate(cmt = "depot") |>
+    mutate(cmt = ifelse(evid == 0L, "central", cmt)) |>
+    arrange(id, time, desc(evid)) |>
+    left_join(cov_df, by = "id")
+}
+
+# cov_df is one covariate frame for all catechins, or a list of frames
+# named by catechin.
+simulate_catechin <- function(i, dose_times, obs_times, cov_df) {
+  if (!is.data.frame(cov_df)) cov_df <- cov_df[[catechins$analyte[i]]]
+  ev <- make_events(catechins$dose[i], catechins$rate[i], dose_times, obs_times, cov_df)
+  sim <- rxode2::rxSolve(model_of[[catechins$analyte[i]]], ev, returnType = "data.frame")
+  sim$analyte <- catechins$analyte[i]
+  sim
+}
+
+study_times <- c(0, 0.5, 1, 2, 3, 4, 5, 7, 9)
+day5 <- bind_rows(lapply(seq_len(nrow(catechins)), simulate_catechin,
+  dose_times = 12 * (0:8), obs_times = 96 + seq(0, 12, by = 0.25),
+  cov_df = cohort
+)) |>
+  mutate(tad = time - 96)
+```
+
+## Visual predictive check (Figure 6)
+
+The S1 File publishes every measured concentration. The observed 5th, 50th
+and 95th percentiles per sampling time below were computed by the maintainers
+from that file (values below the limit of detection are missing there; the
+`n` column shows how many were quantified, which falls to 27 of 84 for EGC
+before the dose and 34 of 84 at 9 h).
+
+```{r observed}
+observed <- data.frame(
+  analyte = rep(c("EGCG", "EGC", "ECG"), each = 9),
+  tad = rep(study_times, 3),
+  n = c(
+    82, 80, 82, 81, 80, 81, 80, 80, 77,
+    27, 71, 81, 81, 77, 76, 71, 62, 34,
+    69, 79, 82, 81, 80, 81, 79, 77, 67
+  ),
+  p05 = c(
+    5.55, 16.2, 57.1, 92.5, 58, 37.6, 24.3, 13, 8.29,
+    0.794, 1.09, 2.46, 2.21, 1.78, 1.34, 1.02, 0.411, 0.658,
+    -0.501, 0.774, 9.29, 17.1, 10.1, 6.84, 3.76, 0.0764, -0.704
+  ),
+  p50 = c(
+    23.5, 50.6, 159, 179, 138, 96.3, 64.5, 33.4, 23.6,
+    2.57, 3.09, 6.78, 6.43, 4.99, 3.59, 2.69, 2.05, 1.47,
+    3.27, 8.51, 34.5, 40, 28.5, 21, 13, 5.44, 3.53
+  ),
+  p95 = c(
+    58.6, 238, 573, 408, 283, 188, 136, 70.6, 47.6,
+    10.6, 14.7, 22.5, 16.5, 10.7, 7.87, 6.84, 7.55, 8.27,
+    13.3, 44.6, 111, 97.2, 63.4, 44.2, 30.3, 15.5, 10.2
+  )
+)
+
+vpc <- day5 |>
+  filter(tad <= 9) |>
+  group_by(analyte, tad) |>
+  summarise(
+    lo = quantile(sim, 0.05), med = median(sim), hi = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+vpc$analyte <- factor(vpc$analyte, levels = catechins$analyte)
+observed$analyte <- factor(observed$analyte, levels = catechins$analyte)
+
+ggplot(vpc, aes(tad)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line(aes(y = med)) +
+  geom_point(data = observed, aes(y = p50), colour = "firebrick") +
+  geom_point(data = observed, aes(y = p95), colour = "firebrick", shape = 2) +
+  geom_point(data = observed, aes(y = p05), colour = "firebrick", shape = 6) +
+  facet_wrap(~analyte, scales = "free_y") +
+  labs(
+    x = "Time after the day-5 dose (h)", y = "Plasma concentration (ug/L)",
+    caption = paste(
+      "Line and band: simulated median and 90% prediction interval.",
+      "Points: observed median and 5th/95th percentiles (S1 File)."
+    )
+  )
+```
+
+Replicates Figure 6 of Scholl 2018 (linear panels). The simulated median is
+compared with the observed median at every sampling time after the dose:
+
+```{r vpc-check}
+vpc_chk <- observed |>
+  filter(tad > 0) |>
+  inner_join(vpc, by = c("analyte", "tad")) |>
+  mutate(pct_diff = 100 * (med - p50) / p50)
+knitr::kable(
+  vpc_chk |>
+    select(analyte, tad, p50, med, pct_diff) |>
+    mutate(med = signif(med, 3), pct_diff = round(pct_diff, 1)) |>
+    dplyr::rename(
+      "Catechin" = analyte,
+      "Time after dose (h)" = tad,
+      "Observed median (ug/L)" = p50,
+      "Simulated median (ug/L)" = med,
+      "% difference" = pct_diff
+    ),
+  row.names = FALSE
+)
+vpc_summary <- vpc_chk |>
+  group_by(analyte) |>
+  summarise(median_abs_pct = median(abs(pct_diff)), .groups = "drop")
+vpc_summary
+stopifnot(
+  # A dose, unit (mg -> ug/L) or clearance error moves every time point by a
+  # factor of two or more; residual differences of up to about 20 % come from the
+  # 200-subject draw and from below-LoD values missing from the observed side.
+  all(vpc_summary$median_abs_pct < 30)
+)
+```
+
+## Steady-state identity (deterministic)
+
+At steady state the AUC over one dosing interval must equal `F x Dose / CL`
+for every individual. The typical ECG subject (no covariates) is dosed for 20
+days and integrated over the last interval on a fine grid:
+
+```{r ss-identity}
+ss_ev <- data.frame(
+  id = 1L, time = 12 * (0:39), amt = 35, evid = 1L, rate = -2, cmt = "depot"
+) |>
+  bind_rows(data.frame(
+    id = 1L, time = 468 + seq(0, 12, by = 0.01), amt = 0, evid = 0L, rate = 0,
+    cmt = "central"
+  )) |>
+  arrange(time, desc(evid))
+ss_sim <- rxode2::rxSolve(rxode2::zeroRe(mod_ecg), ss_ev, returnType = "data.frame")
+auc_tau <- with(ss_sim, sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2))
+auc_expected <- 35 / 196 * 1000
+c(auc_tau = auc_tau, expected = auc_expected)
+stopifnot(abs(auc_tau / auc_expected - 1) < 0.01)
+```
+
+# Single-dose and steady-state exposure (Figure 8)
+
+Scholl 2018 simulated 1000 subjects per catechin after a single dose and at
+steady state (12-hourly dosing) and reported median AUC0-12 values in the
+Results text, without saying which covariate values the simulation used.
+The same is done here for the virtual cohort above (study covariate mix) and,
+separately, with every covariate effect switched off: each subject is given
+the genotype for which all covariate multipliers equal 1, so only the Table 3
+typical values and IIV remain. Because the reference stratum of ABCC2
+rs717620 differs between the EGCG model (T carriers) and the EGC model (C/C),
+this second cohort is built per catechin.
+
+```{r fig8}
+no_cov <- cohort |>
+  mutate(across(starts_with("SNP_"), ~0L), CONMED_BIRTHCONTROL = 0L)
+cohort_off <- list(
+  # F multiplier 1 for ABCC2 rs717620 T carriers; CL multiplier 1 for rs4149056 T/T.
+  EGCG = no_cov |> mutate(SNP_ABCC2_RS717620_HET = 1L),
+  # Multipliers 1 for rs717620 C/C, rs3740066 and rs2306283 variant carriers,
+  # UGT1A1*28 carriers, COMT G carriers and no contraceptive use.
+  EGC = no_cov |> mutate(
+    SNP_ABCC2_RS3740066_HET = 1L, SNP_SLCO1B1_RS2306283_HET = 1L,
+    SNP_UGT1A1_RS8175347_HET = 1L
+  ),
+  ECG = no_cov
+)
+
+auc012 <- function(sim, start) {
+  sim |>
+    filter(time >= start, time <= start + 12) |>
+    group_by(analyte, id) |>
+    summarise(
+      auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+      .groups = "drop"
+    )
+}
+
+run_fig8 <- function(cov_df, label) {
+  sd_sim <- bind_rows(lapply(seq_len(nrow(catechins)), simulate_catechin,
+    dose_times = 0, obs_times = seq(0, 12, by = 0.05), cov_df = cov_df
+  ))
+  ss_sim <- bind_rows(lapply(seq_len(nrow(catechins)), simulate_catechin,
+    dose_times = 12 * (0:19), obs_times = 228 + seq(0, 12, by = 0.05), cov_df = cov_df
+  ))
+  bind_rows(
+    auc012(sd_sim, 0) |> mutate(regimen = "Single dose"),
+    auc012(ss_sim, 228) |> mutate(regimen = "Steady state")
+  ) |>
+    group_by(analyte, regimen) |>
+    summarise(median_auc = median(auc), .groups = "drop") |>
+    mutate(cohort = label)
+}
+```
+
+```{r fig8-run}
+fig8 <- bind_rows(
+  run_fig8(cohort, "Study genotype mix"),
+  run_fig8(cohort_off, "Covariate effects off")
+)
+published_fig8 <- data.frame(
+  analyte = rep(c("EGCG", "EGC", "ECG"), each = 2),
+  regimen = rep(c("Single dose", "Steady state"), 3),
+  published = c(657.0, 902.0, 15.8, 30.4, 144.2, 176.7)
+)
+fig8_tbl <- fig8 |>
+  pivot_wider(names_from = cohort, values_from = median_auc) |>
+  left_join(published_fig8, by = c("analyte", "regimen")) |>
+  mutate(
+    pct_mix = round(100 * (`Study genotype mix` - published) / published, 1),
+    pct_off = round(100 * (`Covariate effects off` - published) / published, 1),
+    `Study genotype mix` = round(`Study genotype mix`, 1),
+    `Covariate effects off` = round(`Covariate effects off`, 1)
+  )
+fig8_tbl$analyte <- factor(fig8_tbl$analyte, levels = catechins$analyte)
+fig8_tbl <- arrange(fig8_tbl, analyte, regimen)
+knitr::kable(
+  fig8_tbl |>
+    select(analyte, regimen, published, `Study genotype mix`, pct_mix, `Covariate effects off`, pct_off) |>
+    dplyr::rename(
+      "Catechin" = analyte,
+      "Regimen" = regimen,
+      "Published median AUC0-12 (h*ug/L)" = published,
+      "Simulated, study mix" = `Study genotype mix`,
+      "% diff (study mix)" = pct_mix,
+      "Simulated, covariate effects off" = `Covariate effects off`,
+      "% diff (effects off)" = pct_off
+    ),
+  row.names = FALSE
+)
+accumulation <- fig8 |>
+  pivot_wider(names_from = regimen, values_from = median_auc) |>
+  mutate(ratio = round(`Steady state` / `Single dose`, 2)) |>
+  select(analyte, cohort, ratio) |>
+  pivot_wider(names_from = cohort, values_from = ratio) |>
+  left_join(
+    published_fig8 |>
+      pivot_wider(names_from = regimen, values_from = published) |>
+      mutate(Published = round(`Steady state` / `Single dose`, 2)) |>
+      select(analyte, Published),
+    by = "analyte"
+  )
+accumulation
+gallates <- filter(fig8_tbl, analyte %in% c("EGCG", "ECG"))
+stopifnot(
+  # EGCG and ECG: the study genotype mix reproduces all four published medians.
+  all(abs(gallates$pct_mix) < 15)
+)
+```
+
+EGCG and ECG reproduce the published single-dose and steady-state medians
+with the study covariate mix. For EGC the study mix reproduces the published
+accumulation ratio (steady state over single dose, about 1.9), but both
+medians sit about a quarter above the published 15.8 and 30.4 h*ug/L, a level
+shift in `F / CL`. Switching the covariate effects off brings the EGC
+steady-state median close to the published value but not the single-dose one,
+and lowers the accumulation ratio, because the ABCC2 rs3740066 effect on Q/F
+then disappears. The covariate set-up of the published simulation is not
+reported, so this gap cannot be attributed further. The day-5 VPC above and
+the NCA comparison below show that the EGC model with the study genotype mix
+reproduces the **observed** concentrations and the observed AUC0-9.
+
+# Non-compartmental analysis on day 5 (Table 2)
+
+PKNCA is run on the simulated day-5 profiles at the study sampling times
+(0-9 h after the dose), as Scholl 2018 did with Phoenix WinNonlin (linear
+trapezoidal rule, AUC to the last sample). Two choices make the simulated
+values comparable with Table 2:
+
+* The concentrations include residual error (`sim`), because the observed NCA
+  was run on measured data and the maximum of noisy samples is biased upward
+  relative to the noise-free prediction. Negative simulated values (additive
+  error near zero) are set to 0.
+* The Table 2 central values are **means**: the mean tmax of 1.6 h for EGCG
+  and 1.7 h for ECG cannot be a median of the sampling times 1 and 2 h. The
+  simulated individual NCA values are therefore averaged with the mean as
+  well.
+
+```{r nca}
+nca_conc <- day5 |>
+  filter(tad %in% study_times, !is.na(sim)) |>
+  mutate(treatment = analyte, conc = pmax(sim, 0)) |>
+  select(id, tad, conc, treatment)
+nca_dose <- catechins |>
+  rename(treatment = analyte) |>
+  tidyr::crossing(id = seq_len(n_sub)) |>
+  mutate(tad = 0) |>
+  select(id, tad, dose, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, conc ~ tad | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, dose ~ tad | treatment + id)
+intervals <- data.frame(
+  start = 0, end = 9,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+reference_nca <- data.frame(
+  treatment = c("EGCG", "EGC", "ECG"),
+  cmax = c(275.4, 10.7, 60.1),
+  tmax = c(1.6, 1.5, 1.7),
+  auclast = c(877.9, 35.1, 183.6),
+  half.life = c(2.6, 3.9, 1.8)
+)
+nca_mean <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(PPORRES = mean(PPORRES, na.rm = TRUE), .groups = "drop")
+nca_tbl <- ncaComparisonTable(
+  nca_mean, reference_nca,
+  by = "treatment",
+  units = c(cmax = "ug/L", tmax = "h", auclast = "h*ug/L", half.life = "h")
+)
+knitr::kable(nca_tbl, row.names = FALSE)
+```
+
+`r attr(nca_tbl, "footnote")`
+
+```{r nca-check}
+nca_wide <- nca_mean |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  inner_join(reference_nca, by = "treatment", suffix = c("_sim", "_ref"))
+stopifnot(
+  # AUC0-9 integrates F x Dose / CL over the interval; a dose, unit or
+  # clearance error shows up here first.
+  all(abs(nca_wide$auclast_sim / nca_wide$auclast_ref - 1) < 0.15),
+  all(abs(nca_wide$cmax_sim / nca_wide$cmax_ref - 1) < 0.25)
+)
+```
+
+The reference values are the means of Scholl 2018 Table 2 (observed NCA on
+day 5, 84 subjects). AUC0-9, Cmax and tmax agree with the observed values for
+all three catechins. The terminal half-life is overestimated by the simulated
+NCA, most for EGC: over a 9 h window the log-linear fit mixes the
+distribution and the slow terminal phase of a two-compartment profile (EGC
+peripheral volume 10,100 L), a mean of individual half-lives is pulled up by
+a few flat noisy tails, and the observed EGC half-life rests on few
+quantifiable late samples (34 of 84 at 9 h).
+
+# Assumptions and deviations
+
+* **Three independent models.** Scholl 2018 fitted EGCG, EGC and ECG as three
+  separate NONMEM problems on the same subjects (`IGNORE(ANALYTE.NE.n)` in each
+  S6 File stream); they are packaged as three model files. No between-catechin
+  correlation is modelled, although the paper reports strongly correlated AUCs
+  (Figure 4).
+* **IIV scale.** Table 3 %CV values are encoded as `omega^2 = (CV/100)^2`; the
+  evidence is the ECG `$OMEGA` initial-estimate check above and the paper's
+  own statement that omega approximates the CV.
+* **ECG IIV correlations.** The S6 File ECG stream estimates a full
+  `$OMEGA BLOCK(5)`, but Table 3 reports only the variances. The unreported
+  covariances are set to zero; the block's initial estimates are not final
+  values and are not used. Individual-level ECG simulations therefore lose
+  the correlation between, for example, ka and D1.
+* **Residual error.** The Table 3 proportional (%) and additive (ug/L) values
+  are read as standard deviations; the S6 File `$ERROR` blocks are
+  `Y = IPRED*(1+EPS(1)) + EPS(2)` (EGCG, ECG) and `Y = IPRED*(1+EPS(1))` (EGC),
+  encoded as `prop() + add()` and `prop()`.
+* **Dose per catechin.** Each model is dosed with the mg of its own catechin
+  per capsule (150 mg EGCG, 18 mg EGC, 35 mg ECG; Study drug section). The
+  S6 File scales concentration by `S2 = V2/1000` (mg and L to ug/L), and
+  dose / AUC reproduces the Table 2 CL/F of each catechin, which confirms the
+  per-catechin dose. The capsule content is stated as approximate.
+* **Food.** Doses on days 1-4 were taken with a meal and the day-5 dose after
+  an overnight fast; the models have no food effect, as in the source.
+* **Lag times.** The text quotes 19 min (EGCG, ECG) and 25 min (EGC), which
+  match the Table 3 values of 0.32-0.33 h and 0.413 h.
+* **Central volume in the Discussion.** The Discussion quotes a central volume
+  of 425 L for EGCG; Table 3 and the fitted model give 334 L, which is used.
+* **Missing genotype.** One participant had no ABCC2 rs717620 genotype
+  (Table 4 footnote); how this subject was coded is not stated.
+* **Figure 8 cohort.** The covariate values used for the published single-dose
+  and steady-state simulations are not reported (see the Figure 8 section).
+* **Observed percentiles.** The VPC points are summaries of the S1 File
+  computed by the maintainers, not values printed in the article. Values below
+  the limit of detection are missing in that file and were excluded, which
+  biases the observed EGC percentiles upward before the dose and at 9 h.

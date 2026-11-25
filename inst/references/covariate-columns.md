@@ -928,7 +928,8 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Source aliases:**
   - `BC` (Allegaert 2015 NONMEM column; same orientation, no transformation) -- used in `Allegaert_2015_paracetamol.R`.
   - `OC` (Csajka 2005 NONMEM column; same orientation, no transformation) -- used in `Csajka_2005_ephedrine_caffeine.R`.
-- **Example models:** `Allegaert_2015_paracetamol.R`, `Csajka_2005_ephedrine_caffeine.R`, `Angeli_2016_iron_hepcidin.R` (multiplicative effect on iron elimination `kout_iron`; women on oral contraception have ~18% lower iron elimination, consistent with the paper's narrative that contraception limits menstrual blood loss; `e_conmed_birthcontrol_kout_iron = -0.20`).
+  - `CONTRACEPTIVES` (Scholl 2018 NONMEM column, `No = 0, Yes = 1`; the stream comment says 'hormonal contraceptives', the article 'oral contraceptives'; same orientation, no transformation) -- used in `Scholl_2018_egc.R`.
+- **Example models:** `Allegaert_2015_paracetamol.R`, `Csajka_2005_ephedrine_caffeine.R`, `Angeli_2016_iron_hepcidin.R` (multiplicative effect on iron elimination `kout_iron`; women on oral contraception have ~18% lower iron elimination, consistent with the paper's narrative that contraception limits menstrual blood loss; `e_conmed_birthcontrol_kout_iron = -0.20`), `Scholl_2018_egc.R` (multiplies the apparent central volume of epigallocatechin by 0.450, i.e. -55 percent; Scholl 2018 Table 3 `CONCEP` and Table 5).
 - **Notes:** Specific scope because the canonical encoding pools all oral contraceptive types (combined / progestin-only) into a single binary; future models that need to distinguish formulations should register a finer-grained canonical (e.g., `CONMED_BIRTHCONTROL_COMBINED`, `CONMED_BIRTHCONTROL_PROGESTIN`). The full-word canonical name was chosen over a shorter `BC_USE` form for clarity in source traces.
 
 ### CONMED_TICLOPIDINE (**canonical for ticlopidine co-medication / study-phase indicator**)
@@ -18317,6 +18318,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 0.15 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
 - **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
 
+### SNP_COMT_RS4680_HOM (**canonical for COMT rs4680 (Val158Met) homozygous A/A (Met/Met) indicator**)
+- **Description:** Binary genotype indicator for the *COMT* (catechol-O-methyltransferase) rs4680 G>A polymorphism (p.Val158Met; written c.1947G>A in Scholl 2018). 1 = subject carries two A alleles (A/A, Met/Met, the low-activity, thermolabile enzyme); 0 = otherwise (G/G and G/A pooled). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (G/G Val/Val and G/A Val/Met pooled).
+- **Source aliases:**
+  - `COMT` (Scholl 2018 NONMEM column, G/G = 0, G/A = 1, A/A = 2; derive HOM = (COMT == 2)) -- S6 File EGC stream; Table 3 row `COMT_rs4680`.
+- **Example models:** `Scholl_2018_egc.R` (EGC relative bioavailability F1 multiplied by 0.760 when 1, i.e. -24 percent; Scholl 2018 Table 3 and Table 5).
+- **Notes:** The reference category pools G/G with G/A because the founding model contrasted A/A against the rest; a future extraction that separates the heterozygote should register a paired `SNP_COMT_RS4680_HET` on the usual `_HET` / `_HOM` pattern rather than redefining this column's reference. In Europeans the A (Met) allele is close to half of alleles (A frequency 0.55 in the founding cohort: G/G 14, G/A 47, A/A 23; Scholl 2018 Table 4), so "variant = 1" does not mean "minority = 1". Not to be confused with `CONMED_COMTI`, the concomitant COMT-inhibitor drug indicator. The founding authors themselves call the effect statistically weak and counterintuitive (retained at the relaxed p <= 0.025 exploratory threshold).
+
 ### SNP_NFIB_RS28379954 (**canonical for NFIB rs28379954 (T>C) variant-carrier indicator**)
 - **Description:** Binary genotype indicator for the nuclear factor I B (*NFIB*) rs28379954 T>C variant, a transcriptional regulator of *CYP2D6* expression. 1 = the subject carries at least one C allele (CT or CC); 0 = TT. Time-fixed per subject (germline genotype).
 - **Units:** (binary)
@@ -19702,6 +19714,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
   - `UGT1A1 *28`, heterozygote column -- Toshimoto 2017 Supplementary Table 2A.
   - `*1/*28` -- Toshimoto 2017 Methods, where the dominant and recessive genetic models are defined over the same three strata.
 - **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the UGT1A1-mediated SN-38 glucuronidation clearance in both liver and enterocyte by 0.602, i.e. heterozygotes retain 60.2 percent of wild-type glucuronidation capacity; Supplementary Table 2A).
+  - `Scholl_2018_egc.R` (EGC CL/F multiplied by 0.744 in the (TA)6/(TA)6 wild-type stratum, i.e. HET = 0 and HOM = 0; Scholl 2018 Table 3 and S6 File, source column `UGT` coded (-) = 0, (-/TA) = 1, TA = 2).
 - **Notes:** Paired with `SNP_UGT1A1_RS8175347_HOM`; see that entry's Notes for the activity-ratio provenance caveat, which is load-bearing. \*28 is the best-established pharmacogenetic determinant of irinotecan toxicity and is the variant behind Gilbert's syndrome. Genotype frequencies in the Teft 2015 cohort that Toshimoto 2017 used to build its virtual population: \*1/\*1 44.66 percent, \*1/\*28 47.57 percent, \*28/\*28 7.77 percent. Distinct from the East Asian \*6 allele (rs4148323, G71R), which is a coding rather than a promoter variant; if a future source models both, register \*6 separately rather than reusing this column.
 
 ### SNP_UGT1A1_RS8175347_HOM (**canonical for UGT1A1 *28 homozygous-variant indicator**)
@@ -19713,6 +19726,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Source aliases:**
   - `UGT1A1 *28`, homozygote column -- Toshimoto 2017 Supplementary Table 2A.
 - **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the UGT1A1-mediated SN-38 glucuronidation clearance in both liver and enterocyte by 0.322; Supplementary Table 2A).
+  - `Scholl_2018_egc.R` -- see `SNP_UGT1A1_RS8175347_HET`.
 - **Notes:** Companion to `SNP_UGT1A1_RS8175347_HET`. **Activity-ratio provenance caveat:** Toshimoto 2017 Supplementary Table 2A footnote a states that the 60.2 / 32.2 percent activity ratios assigned to \*28 were in fact measured for the *UGT1A1 \*6* polymorphism (Yamamoto 1998) and borrowed. A future extraction that needs a \*28-specific in vitro activity ratio must not take these numbers as \*28 measurements. The column itself is unaffected -- it encodes genotype, not activity -- but any model reusing it should carry its own sourced ratio.
 
 ### SNP_SLCO1B1_RS4149056_HET (**canonical for SLCO1B1 c.521T>C heterozygous (521T/C) indicator**)
@@ -19724,6 +19738,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Source aliases:**
   - `SLCO1B1 c.521T>C` -- Toshimoto 2017 Supplementary Table 2A.
 - **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 0.634; Supplementary Table 2A), `Stillemans_2022_atorvastatin.R` (atorvastatin CL/F = theta_CL * (1 + theta), theta = -0.402 for 521T/C; Table 3).
+  - `Scholl_2018_egcg.R` (EGCG CL/F `* (1 - 0.152 * (HET + 2 * HOM))`, i.e. -15 percent T/C, -30 percent C/C; Scholl 2018 Table 3 and S6 File, source column `OATP41T` = C-allele count).
   - `Beck_2022_elagolix.R` (OATP1B1 'intermediate transporter' = heterozygous 521T>C; raises elagolix relative bioavailability F1 by the fraction 0.421, i.e. F1 = 1.42 vs the extensive-transporter reference; Beck 2022 Table 3 footnote d). Paired there with `SNP_SLCO1B1_RS4149056_MISSING` for the non-genotyped stratum.
 - **Notes:** Paired with `SNP_SLCO1B1_RS4149056_HOM`. c.521T>C is the classical **reduced-function** OATP1B1 variant (the defining SNP of the \*5 allele and, in cis with c.388A>G, of the \*15 / \*17 haplotypes). **Relationship to `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM`:** those canonicals encode the phased \*15 HAPLOTYPE (388G and 521C together); this column encodes the single c.521T>C SNP on its own. Use the haplotype canonicals when the source phases the two loci into \*15, and this pair plus `SNP_SLCO1B1_RS2306283_*` when the source models the two SNPs as separate covariates -- as Toshimoto 2017 does, combining their activities multiplicatively on the same transporter. The two encodings must not be mixed in one model. Toshimoto 2017 draws the joint genotype from the linkage-disequilibrium frequency table of its Supplementary Table 2B (Pasanen 2008) rather than treating the two loci as independent. Activity ratio 63.4 percent, from the authors' unpublished in-house data (Supplementary Table 2A footnote b) -- not from a citable source, so a future extraction should prefer its own published ratio.
 
@@ -19737,6 +19752,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
   - `SLCO1B1 c.521T>C` -- Toshimoto 2017 Supplementary Table 2A.
   - `SLCO1B1 c.521 CC` (`MT_GZR_*` states, `RA_mt`) -- Yoshikado 2025 Methods and deposited code.
 - **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 0.268; Supplementary Table 2A), `Stillemans_2022_atorvastatin.R` (atorvastatin CL/F = theta_CL * (1 + theta), theta = -0.041 for 521C/C; Table 3).
+  - `Scholl_2018_egcg.R` -- see `SNP_SLCO1B1_RS4149056_HET`.
   - `Beck_2022_elagolix.R` (OATP1B1 'poor transporter' = homozygous-variant 521T>C; raises elagolix relative bioavailability F1 by the fraction 0.963, i.e. F1 = 1.96; Beck 2022 Table 3 footnote d).
   - `Yoshikado_2025_grazoprevir_pbpk.R` (multiplies the OATP1B1 Michaelis-Menten hepatic uptake term of grazoprevir by RA_mt = 0.344, from Tomita 2013; Table S1A; heterozygotes not modelled).
 - **Notes:** Companion to `SNP_SLCO1B1_RS4149056_HET`; see that entry's Notes for the \*15-haplotype relationship, the linkage-disequilibrium sampling and the unpublished-ratio caveat. Activity ratio 26.8 percent of wild type.
@@ -19828,6 +19844,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
   - `SLCO1B1 c.388A>G` -- Toshimoto 2017 Supplementary Table 2A.
   - `RS2306283` / `RS230` (1 = G/G, 2 = A/G, 3 = A/A; derive HET = (RS2306283 == 2), HOM = (RS2306283 == 1)) -- Wang 2019 Abstract and Section 3.3.
 - **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 1.61; Supplementary Table 2A), `Wang_2019_methotrexate.R` (multiplies methotrexate clearance by 0.647; Table 3 theta6 -- a REDUCTION, the opposite direction to Toshimoto 2017).
+  - `Scholl_2018_egc.R` (EGC CL/F multiplied by 0.653 in the A/A wild-type stratum, i.e. HET = 0 and HOM = 0 -- wild type clears 35 percent more SLOWLY, consistent with 388G increasing function; Scholl 2018 Table 3 and S6 File, source column `OATP23T` = G-allele count).
 - **Notes:** Paired with `SNP_SLCO1B1_RS2306283_HOM`. **Direction of effect is opposite to most transporter variants:** c.388A>G INCREASES OATP1B1 uptake activity (161 percent of wild type in heterozygotes, 221 percent in homozygotes per Toshimoto 2017 Supplementary Table 2A), so a carrier clears the substrate from blood into the liver FASTER. A model that assumes every variant reduces function will get the sign wrong. See `SNP_SLCO1B1_RS4149056_HET` Notes for the relationship to the `SLCO1B1_HAP15_*` haplotype canonicals, for the linkage-disequilibrium joint sampling with c.521T>C, and for the unpublished-ratio caveat (Supplementary Table 2A footnote b).
 
 ### SNP_SLCO1B1_RS2306283_HOM (**canonical for SLCO1B1 c.388A>G homozygous-variant (388G/G) indicator**)
@@ -19840,6 +19857,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
   - `SLCO1B1 c.388A>G` -- Toshimoto 2017 Supplementary Table 2A.
   - `RS2306283` / `RS230` (1 = G/G, 2 = A/G, 3 = A/A; derive HET = (RS2306283 == 2), HOM = (RS2306283 == 1)) -- Wang 2019 Abstract and Section 3.3.
 - **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 2.21; Supplementary Table 2A), `Wang_2019_methotrexate.R` (multiplies methotrexate clearance by 0.805; Table 3 theta5 -- a REDUCTION, the opposite direction to Toshimoto 2017).
+  - `Scholl_2018_egc.R` -- see `SNP_SLCO1B1_RS2306283_HET`.
 - **Notes:** Companion to `SNP_SLCO1B1_RS2306283_HET`; see that entry's Notes, in particular that this variant INCREASES rather than decreases OATP1B1 activity (221 percent of wild type).
 
 ### SNP_AADAC_RS1803155_HOM (**canonical for AADAC rs1803155 homozygous-variant (AA) indicator**)
@@ -19873,6 +19891,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Source aliases:**
   - `ABCC2 -24C>T` -- Toshimoto 2017 Supplementary Table 2A.
 - **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (scales MRP2-mediated biliary excretion and enterocyte-to-lumen efflux to 66.6 percent of wild type, weighted by the MRP2 contribution to each compound: 50 percent for irinotecan, 33 percent for SN-38 and 100 percent for SN-38G).
+  - `Scholl_2018_egcg.R` (the EGCG relative bioavailability F1 is multiplied by 0.740 in the C/C wild-type stratum, i.e. HET = 0 and HOM = 0; source column `MRP71T` = T-allele count). `Scholl_2018_egc.R` (EGC apparent central volume `* (1 - 0.370 * (HET + 2 * HOM))`, i.e. -37 percent C/T, -74 percent T/T; Scholl 2018 Table 3 and S6 File).
 - **Notes:** Paired with `SNP_ABCC2_RS717620_HOM`. The 66.6 / 33.3 percent activity ratios are recorded in Toshimoto 2017 Supplementary Table 2A as `Assumption` -- the authors assumed a one-third loss of function per variant allele rather than measuring or citing one, so the ratios carry no experimental support and a future extraction should supply its own. Genotype frequencies in the Teft 2015 cohort: C/C 58.25 percent, C/T 32.04 percent, T/T 9.71 percent. Distinct from the `SNP_ABCC4_*` columns (a different ABC-C-subfamily transporter gene).
 
 ### SNP_ABCC2_RS717620_HOM (**canonical for ABCC2 c.-24C>T homozygous-variant indicator**)
@@ -19884,7 +19903,30 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Source aliases:**
   - `ABCC2 -24C>T` -- Toshimoto 2017 Supplementary Table 2A.
 - **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (scales MRP2-mediated biliary excretion and enterocyte-to-lumen efflux to 33.3 percent of wild type, weighted by the per-compound MRP2 contribution).
+  - `Scholl_2018_egcg.R`, `Scholl_2018_egc.R` -- see `SNP_ABCC2_RS717620_HET`.
 - **Notes:** Companion to `SNP_ABCC2_RS717620_HET`; see that entry's Notes for the `Assumption` provenance of the activity ratios and the cohort genotype frequencies.
+
+### SNP_ABCC2_RS3740066_HET (**canonical for ABCC2 c.3972C>T heterozygote indicator**)
+- **Description:** Binary genotype indicator for the *ABCC2* (MRP2 canalicular and apical efflux transporter) c.3972C>T synonymous polymorphism (rs3740066, I1324I, exon 28). 1 = subject carries exactly one variant allele (C/T); 0 = otherwise (the paired `SNP_ABCC2_RS3740066_HOM` flags the T/T stratum). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (C/C wild-type homozygote, when paired with `SNP_ABCC2_RS3740066_HOM` = 0).
+- **Source aliases:**
+  - `MRP37T` (Scholl 2018 NONMEM column, T-allele count C/C = 0, C/T = 1, T/T = 2; derive HET = (MRP37T == 1), HOM = (MRP37T == 2)) -- S6 File EGC stream; Table 3 row `MRP2_rs3740066`.
+- **Example models:** `Scholl_2018_egc.R` (EGC apparent intercompartmental clearance Q/F multiplied by 2.33 in the C/C wild-type stratum, i.e. HET = 0 and HOM = 0, +133 percent; Scholl 2018 Table 3 and Table 5).
+- **Notes:** Paired with `SNP_ABCC2_RS3740066_HOM`. Silent coding variant, often in linkage disequilibrium with the c.-24C>T promoter variant (`SNP_ABCC2_RS717620_*`) on the ABCC2 haplotype; the founding model carries both as separate covariates. Genotype frequencies in the founding cohort (84 Western European healthy volunteers): C/C 40, C/T 32, T/T 12 (Scholl 2018 Table 4). The founding effect was retained at the relaxed p <= 0.025 exploratory threshold.
+
+### SNP_ABCC2_RS3740066_HOM (**canonical for ABCC2 c.3972C>T homozygous-variant indicator**)
+- **Description:** Binary genotype indicator for the *ABCC2* (MRP2) c.3972C>T polymorphism (rs3740066). 1 = subject carries two variant alleles (T/T); 0 = otherwise (the paired `SNP_ABCC2_RS3740066_HET` flags the C/T stratum). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (C/C wild-type homozygote, when paired with `SNP_ABCC2_RS3740066_HET` = 0).
+- **Source aliases:**
+  - `MRP37T` (Scholl 2018; derive HOM = (MRP37T == 2)) -- S6 File EGC stream.
+- **Example models:** `Scholl_2018_egc.R` -- see `SNP_ABCC2_RS3740066_HET`.
+- **Notes:** Companion to `SNP_ABCC2_RS3740066_HET`; see that entry's Notes.
 
 ### SNP_MTHFR_RS1801131 (**canonical for MTHFR rs1801131 (A1298C) variant-carrier indicator**)
 - **Description:** Binary genotype indicator for the *MTHFR* (methylenetetrahydrofolate reductase) A1298C polymorphism (rs1801131). 1 = the subject carries at least one variant allele (heterozygous or homozygous mutant, a dominant inheritance model); 0 = wild-type. Time-fixed per subject (germline genotype).
