@@ -1,0 +1,527 @@
+---
+title: "Metformin (Dissanayake 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Metformin (Dissanayake 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Dissanayake 2018 fitted two one-compartment oral population PK models to the
+first-dose metformin profiles of 18 metformin-naive patients with type 2
+diabetes and chronic kidney disease stage 4. The library carries both:
+
+* `Dissanayake_2018_metformin`: Equation (1), parameterised by K, ka and
+  CL/F, with no covariates (Table 2). AIC and BIC preferred this model.
+* `Dissanayake_2018_metformin_crcl`: Equation (2), in which CL/F is baseline
+  creatinine clearance (in L/h) times an estimated ratio (Table A3). The
+  authors used this model for the CrCl-specific dose recommendations of
+  Table A4.
+
+* Citation: `r rxode2::rxode(readModelDb("Dissanayake_2018_metformin"))$reference`
+* Description (no CrCl): `r rxode2::rxode(readModelDb("Dissanayake_2018_metformin"))$description`
+* Description (CrCl): `r rxode2::rxode(readModelDb("Dissanayake_2018_metformin_crcl"))$description`
+* Article: <https://doi.org/10.1002/prp2.424>
+
+# Population
+
+Eighteen metformin-naive adults with type 2 diabetes (diagnosed at least two
+years earlier, HbA1c 6-11%) and CKD stage 4 (eGFR 15-29 mL/min/1.73 m^2, not
+on dialysis) took part in a New Zealand Phase I open-label consecutive-cohort
+dose-escalation study. Six patients each received immediate-release metformin
+hydrochloride 250, 500 or 1000 mg once daily for about four weeks. Median age
+was 66.0 years and median BMI 38.0 kg/m^2 (every patient had BMI >= 23);
+4 of 18 were female. Cockcroft-Gault creatinine clearance on adjusted body
+weight ranged 18-49 mL/min (median 30.2). Serum metformin was sampled at 0, 2,
+4, 6, 8 and 24 h after the first dose (102 concentrations), and fasting
+troughs at later visits. Both PK models were fitted to the first-dose profiles
+only, with R `nlme` (Results text; Table A1).
+
+The same information is available programmatically through the `population`
+element of each model, e.g.
+`readModelDb("Dissanayake_2018_metformin")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Structure: first-order absorption into one compartment, `c(t) = D K ka / (CL/F (ka - K)) (exp(-K t) - exp(-ka t))` | n/a | Equation (1), Methods 'Pharmacokinetics: single-dose hourly concentrations' |
+| `lka_int` (no CrCl) | log(0.65) 1/h | Table 2, ka |
+| `lcl_int` (no CrCl) | log(29.6) L/h | Table 2, Cl/F |
+| `lkel` (no CrCl) | log(0.119) 1/h | Table 2, K |
+| `vc = cl / kel` | 248.7 L typical | Table 2 derives V/F = 249.7 L from the same estimates |
+| `etacl`, `etaka` (no CrCl) | var 133.6336, 0.156025; cov 3.584467 | Table 2, sd(Cl/F) 11.56 L/h, sd(ka) 0.395 1/h, cor 0.785 |
+| `addSd` (no CrCl) | 0.095 mg/L | Table 2, Resid. SE |
+| Structure: CL/F = CrCl (L/h) x (Cl/F)' | n/a | Equation (2) |
+| `lka_int` (CrCl) | log(0.564) 1/h | Table A3, ka |
+| `lkel` (CrCl) | log(0.128) 1/h | Table A3, K |
+| `e_crcl_cl` (CrCl) | 17.4 | Table A3, Cl/F'; Results 'Pharmacokinetics and kidney function' |
+| `etae_crcl_cl`, `etaka` (CrCl) | var 60.9961, 0.0961; cov 1.912669 | Table A3, sd(Cl/F') 7.81, sd(ka) 0.31 1/h, cor 0.79 |
+| `addSd` (CrCl) | 0.099 mg/L | Table A3, Resid. SE printed 0.99 with 95% CI (0.08, 0.12) |
+| `CRCL` | mL/min, converted to L/h in `model()` | Methods 'Other measures'; Table A1 adjusted-body-weight column |
+
+# Typical-value replication of the published tables
+
+Every number in Tables 2, 3, A3 and A4 is a typical-value quantity: it is
+derived from the fixed effects alone (Table 2 footnote a). The chunks below
+solve each model with its random effects removed and compare against the
+printed values. These are deterministic solves, so the bounds only need to
+admit the rounding of the printed estimates.
+
+```{r typical-helpers}
+mod1 <- readModelDb("Dissanayake_2018_metformin")
+mod2 <- readModelDb("Dissanayake_2018_metformin_crcl")
+mod1_typ <- rxode2::zeroRe(mod1)
+mod2_typ <- rxode2::zeroRe(mod2)
+
+single_dose_typical <- function(mod, dose, crcl = NULL) {
+  ev <- rxode2::et(amt = dose, cmt = "depot") |>
+    rxode2::et(seq(0, 24, by = 0.01), cmt = "central") |>
+    as.data.frame()
+  if (!is.null(crcl)) ev$CRCL <- crcl
+  s <- rxode2::rxSolve(mod, ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
+    maxsteps = 1e6
+  )
+  data.frame(dose = dose, cmax = max(s$Cc), tmax = s$time[which.max(s$Cc)])
+}
+
+# Once-daily dosing for 30 days; the last interval is at steady state (t1/2
+# about 6 h). maxsteps is raised because liblsoda charges its step budget
+# across the whole 30-day run at these tolerances.
+steady_state_typical <- function(mod, dose, crcl = NULL) {
+  ev <- rxode2::et(amt = dose, cmt = "depot", ii = 24, addl = 29) |>
+    rxode2::et(seq(696, 720, by = 0.01), cmt = "central") |>
+    as.data.frame()
+  if (!is.null(crcl)) ev$CRCL <- crcl
+  s <- rxode2::rxSolve(mod, ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
+    maxsteps = 1e6
+  )
+  s <- s[s$time >= 696, ]
+  data.frame(
+    dose = dose,
+    cmin_ss = s$Cc[nrow(s)],
+    cavg_ss = mean(s$Cc),
+    cmax_ss = max(s$Cc)
+  )
+}
+```
+
+## Table 2: single-dose Cmax, tmax and AUC (model without CrCl)
+
+```{r table2}
+tab2 <- bind_rows(lapply(c(250, 500, 1000), single_dose_typical, mod = mod1_typ)) |>
+  mutate(aucinf = dose / 29.6) |>
+  left_join(
+    tibble::tribble(
+      ~dose, ~cmax_pub, ~tmax_pub, ~aucinf_pub,
+      250,   0.69,      3.19,      8.43,
+      500,   1.37,      3.19,      16.87,
+      1000,  2.74,      3.19,      33.74
+    ),
+    by = "dose"
+  )
+tab2 |>
+  dplyr::rename(
+    "Dose (mg)" = dose,
+    "Cmax model (mg/L)" = cmax, "Cmax Table 2" = cmax_pub,
+    "tmax model (h)" = tmax, "tmax Table 2" = tmax_pub,
+    "AUC0-inf = D/(CL/F) (mg*h/L)" = aucinf, "AUC0-inf Table 2" = aucinf_pub
+  ) |>
+  knitr::kable(digits = 3, caption = "Typical-value single-dose exposure versus Table 2.")
+
+stopifnot(
+  nrow(tab2) == 3,
+  all(abs(tab2$cmax / tab2$cmax_pub - 1) < 0.01),
+  all(abs(tab2$tmax - tab2$tmax_pub) < 0.02),
+  # Table 2's AUC carries the unrounded CL/F; 29.6 L/h reproduces it to 0.2%.
+  all(abs(tab2$aucinf / tab2$aucinf_pub - 1) < 0.005)
+)
+```
+
+## Table 3: steady-state concentrations (model without CrCl)
+
+```{r table3}
+tab3 <- bind_rows(lapply(c(250, 500, 1000), steady_state_typical, mod = mod1_typ)) |>
+  left_join(
+    tibble::tribble(
+      ~dose, ~cmin_pub, ~cavg_pub, ~cmax_pub,
+      250,   0.08,      0.35,      0.74,
+      500,   0.15,      0.70,      1.47,
+      1000,  0.30,      1.41,      2.95
+    ),
+    by = "dose"
+  )
+tab3 |>
+  dplyr::rename(
+    "Dose (mg/day)" = dose,
+    "Cmin,ss model" = cmin_ss, "Cmin,ss Table 3" = cmin_pub,
+    "Cavg,ss model" = cavg_ss, "Cavg,ss Table 3" = cavg_pub,
+    "Cmax,ss model" = cmax_ss, "Cmax,ss Table 3" = cmax_pub
+  ) |>
+  knitr::kable(digits = 3, caption = "Typical-value steady state (mg/L) versus Table 3.")
+
+# Table 3 prints two decimals; the bound admits half a unit in the last place
+# plus the rounding of the three printed estimates.
+stopifnot(
+  nrow(tab3) == 3,
+  all(abs(tab3$cmin_ss - tab3$cmin_pub) <= 0.006),
+  all(abs(tab3$cavg_ss - tab3$cavg_pub) <= 0.006),
+  all(abs(tab3$cmax_ss - tab3$cmax_pub) <= 0.011)
+)
+```
+
+## Tables A3 and A4: the CrCl model
+
+Table A3 gives tmax = 3.40 h for this model. Table A4 gives steady-state
+concentrations at baseline creatinine clearances of 30-50 mL/min, which fixes
+both the L/h unit of CrCl in Equation (2) and the reading of the 17.4 ratio:
+at 30 mL/min (1.8 L/h), CL/F = 31.3 L/h and Cavg,ss for 1000 mg is
+1000 / (31.3 x 24) = 1.33 mg/L, as printed.
+
+```{r tableA4}
+tA3 <- single_dose_typical(mod2_typ, 1000, crcl = 30)
+stopifnot(abs(tA3$tmax - 3.40) < 0.02)
+
+grid <- expand.grid(crcl = c(30, 35, 40, 45, 50), dose = c(250, 500, 1000))
+tabA4 <- bind_rows(lapply(seq_len(nrow(grid)), function(i) {
+  steady_state_typical(mod2_typ, grid$dose[i], crcl = grid$crcl[i]) |>
+    mutate(crcl = grid$crcl[i])
+})) |>
+  left_join(
+    tibble::tribble(
+      ~crcl, ~dose, ~cmin_pub, ~cavg_pub, ~cmax_pub,
+      30, 250, 0.06, 0.33, 0.70,
+      35, 250, 0.06, 0.28, 0.60,
+      40, 250, 0.05, 0.25, 0.53,
+      45, 250, 0.04, 0.22, 0.47,
+      50, 250, 0.04, 0.20, 0.42,
+      30, 500, 0.13, 0.66, 1.40,
+      35, 500, 0.11, 0.57, 1.20,
+      40, 500, 0.10, 0.50, 1.05,
+      45, 500, 0.09, 0.44, 0.94,
+      50, 500, 0.08, 0.40, 0.84,
+      30, 1000, 0.26, 1.33, 2.81,
+      35, 1000, 0.22, 1.14, 2.40,
+      40, 1000, 0.19, 1.00, 2.10,
+      45, 1000, 0.17, 0.89, 1.87,
+      50, 1000, 0.15, 0.80, 1.68
+    ),
+    by = c("crcl", "dose")
+  )
+stopifnot(nrow(tabA4) == 15, !anyNA(tabA4$cmax_pub))
+
+tabA4 |>
+  select(crcl, dose, cmin_ss, cmin_pub, cavg_ss, cavg_pub, cmax_ss, cmax_pub) |>
+  dplyr::rename(
+    "CrCl (mL/min)" = crcl, "Dose (mg)" = dose,
+    "Cmin,ss model" = cmin_ss, "Cmin,ss Table A4" = cmin_pub,
+    "Cavg,ss model" = cavg_ss, "Cavg,ss Table A4" = cavg_pub,
+    "Cmax,ss model" = cmax_ss, "Cmax,ss Table A4" = cmax_pub
+  ) |>
+  knitr::kable(digits = 3, caption = "Typical-value steady state (mg/L) for the CrCl model versus Table A4.")
+
+stopifnot(
+  all(abs(tabA4$cmin_ss - tabA4$cmin_pub) <= 0.006),
+  all(abs(tabA4$cavg_ss - tabA4$cavg_pub) <= 0.006),
+  all(abs(tabA4$cmax_ss - tabA4$cmax_pub) <= 0.011)
+)
+```
+
+All 45 Table A4 cells and all of Tables 2 and 3 are reproduced to within the
+printed rounding.
+
+# Virtual cohort
+
+The random effects in both models are additive and normal on the natural
+parameter scale (the paper reports sd(Cl/F) in L/h and sd(ka) in 1/h). Taken
+literally, that distribution gives about 5% of subjects a negative ka in the
+model without CrCl (0.65 / 0.395 = 1.65 SD). The cohort below therefore draws
+the random effects in R from the published covariance matrix and redraws any
+subject with a non-positive ka or CL/F before passing them to `rxSolve()`.
+
+```{r cohort}
+set.seed(6138239)
+
+draw_positive_etas <- function(n, omega, typical) {
+  out <- matrix(numeric(0), ncol = ncol(omega), dimnames = list(NULL, colnames(omega)))
+  while (nrow(out) < n) {
+    z <- matrix(stats::rnorm(n * ncol(omega)), ncol = ncol(omega)) %*% chol(omega)
+    colnames(z) <- colnames(omega)
+    keep <- apply(sweep(z, 2, typical, "+") > 0, 1, all)
+    out <- rbind(out, z[keep, , drop = FALSE])
+  }
+  out[seq_len(n), , drop = FALSE]
+}
+
+n_per_arm <- 200L
+doses <- c(250, 500, 1000)
+omega1 <- rxode2::rxode2(mod1)$omega
+etas1 <- draw_positive_etas(
+  n_per_arm * length(doses), omega1,
+  typical = c(etacl = 29.6, etaka = 0.65)[colnames(omega1)]
+)
+subjects <- tibble(
+  id = seq_len(n_per_arm * length(doses)),
+  dose = rep(doses, each = n_per_arm)
+) |>
+  mutate(treatment = paste(dose, "mg"))
+params1 <- bind_cols(subjects |> select(id), as.data.frame(etas1))
+
+# First-dose profile (dense, 0-72 h) for NCA, then once-daily dosing to day 28
+# with a trough 24 h after every dose.
+obs_sd <- sort(unique(c(seq(0, 12, by = 0.25), seq(13, 72, by = 1))))
+events1 <- bind_rows(lapply(seq_len(nrow(subjects)), function(i) {
+  s <- subjects[i, ]
+  bind_rows(
+    tibble(id = s$id, time = 0, amt = s$dose, evid = 1L, cmt = "depot", ii = 0, addl = 0),
+    tibble(id = s$id, time = obs_sd, amt = 0, evid = 0L, cmt = "central", ii = 0, addl = 0)
+  ) |>
+    mutate(treatment = s$treatment, phase = "single")
+}))
+events_md <- bind_rows(lapply(seq_len(nrow(subjects)), function(i) {
+  s <- subjects[i, ]
+  bind_rows(
+    tibble(id = s$id, time = 0, amt = s$dose, evid = 1L, cmt = "depot", ii = 24, addl = 27),
+    tibble(id = s$id, time = 24 * (1:28), amt = 0, evid = 0L, cmt = "central", ii = 0, addl = 0)
+  ) |>
+    mutate(treatment = s$treatment, phase = "repeat")
+}))
+stopifnot(!anyDuplicated(unique(events1[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+`rxSolve()` warns that a multi-subject simulation has no `omega` when every
+subject's random effects are supplied through `params`; that is the intent
+here, so only that warning is muffled.
+
+```{r simulate}
+muffle_no_omega <- function(expr) {
+  withCallingHandlers(expr, warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  })
+}
+sim_sd <- muffle_no_omega(rxode2::rxSolve(
+  mod1, events = events1, params = params1, keep = "treatment",
+  returnType = "data.frame", maxsteps = 1e6
+))
+sim_md <- muffle_no_omega(rxode2::rxSolve(
+  mod1, events = events_md, params = params1, keep = "treatment",
+  returnType = "data.frame", maxsteps = 1e6
+))
+# The supplied random effects reach the solve: the individual CL/F match the draws.
+chk <- sim_sd |> distinct(id, cl) |> left_join(params1, by = "id")
+stopifnot(max(abs(chk$cl - (29.6 + chk$etacl))) < 1e-6)
+```
+
+## Single-dose profiles
+
+```{r single-dose-vpc, fig.width = 8, fig.height = 4}
+sim_sd |>
+  filter(time <= 24) |>
+  group_by(treatment, time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(treatment = factor(treatment, levels = paste(doses, "mg"))) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~treatment, scales = "free_y") +
+  labs(
+    x = "Time after first dose (h)", y = "Serum metformin (mg/L)",
+    caption = "Median and 5th-95th percentiles, 200 virtual patients per dose (model without CrCl)."
+  )
+```
+
+## Repeat-dose troughs (Figure 1)
+
+Figure 1 overlays observed troughs on the steady-state minimum, average and
+maximum concentrations implied by the model. The dashed lines below are those
+typical values (Table 3); the ribbon is the 5th-95th percentile of the
+simulated troughs, i.e. the between-patient spread the model itself predicts.
+
+```{r figure-1, fig.width = 8, fig.height = 4}
+ss_lines <- tab3 |>
+  transmute(treatment = paste(dose, "mg"), Cmin = cmin_ss, Cavg = cavg_ss, Cmax = cmax_ss) |>
+  pivot_longer(-treatment, names_to = "quantity", values_to = "conc") |>
+  mutate(treatment = factor(treatment, levels = paste(doses, "mg")))
+sim_md |>
+  group_by(treatment, time) |>
+  summarise(Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95), .groups = "drop") |>
+  mutate(treatment = factor(treatment, levels = paste(doses, "mg"))) |>
+  ggplot(aes(time / 24, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  geom_hline(data = ss_lines, aes(yintercept = conc, linetype = quantity)) +
+  facet_wrap(~treatment, scales = "free_y") +
+  labs(
+    x = "Days after first dose", y = "Serum metformin (mg/L)", linetype = "Typical steady state",
+    caption = "Replicates the model bands of Figure 1 of Dissanayake 2018 (observed troughs not reproduced)."
+  )
+```
+
+The paper's observed troughs were consistently above the modelled minimum in
+the 11 patients whose creatinine clearance was below about 32 mL/min
+(Figure 2), and within it in the 7 patients with higher clearance
+(Figure 3). The authors conclude that this single-dose model under-predicts
+accumulation in the lower half of the CKD-4 range; the model reproduces what
+was fitted (24-h first-dose profiles) and should not be extrapolated to
+long-term troughs below that clearance.
+
+# PKNCA validation
+
+```{r pknca}
+sim_nca <- sim_sd |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_df <- events1 |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published values
+
+Table 2 reports model-based (typical-value) Cmax, tmax, AUC0-inf and
+elimination half-life; the simulated column is the median over each virtual
+dose arm.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax, ~aucinf.obs, ~half.life,
+  "250 mg",   0.69,  3.19,  8.43,        5.84,
+  "500 mg",   1.37,  3.19,  16.87,       5.84,
+  "1000 mg",  2.74,  3.19,  33.74,       5.84
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "mg/L", tmax = "h", aucinf.obs = "mg*h/L", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated (median of 200 per arm) versus Table 2. * differs by >20%.")
+
+nca_med <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "aucinf.obs")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(med = median(PPORRES), .groups = "drop") |>
+  dplyr::left_join(
+    published |> tidyr::pivot_longer(-treatment, names_to = "PPTESTCD", values_to = "pub"),
+    by = c("treatment", "PPTESTCD")
+  )
+stopifnot(nrow(nca_med) == 6, !anyNA(nca_med$pub))
+# Cohort medians, not extremes: a mis-transcribed CL/F, ka or dose moves these
+# by tens of percent, while redrawing the non-positive tail moves them by a
+# few percent.
+stopifnot(all(abs(nca_med$med / nca_med$pub - 1) < 0.10))
+```
+
+The medians sit close to the typical values because the random effects are
+symmetric on the natural scale; the small upward shift in the median CL/F (and
+so the slightly lower median AUC) comes from discarding the non-positive tail.
+
+# The CrCl model in the study cohort
+
+Table A1 lists each patient's baseline creatinine clearance. Solving the CrCl
+model at its typical values for those 18 patients shows how strongly the
+predicted steady-state trough depends on renal function within CKD stage 4.
+
+```{r tableA1-cohort, fig.width = 6, fig.height = 4}
+tabA1 <- tibble::tribble(
+  ~patient, ~dose, ~CRCL,
+  1, 250, 17.96, 2, 250, 23.43, 3, 250, 36.70, 4, 250, 31.24, 5, 250, 42.91, 6, 250, 26.18,
+  7, 500, 24.46, 8, 500, 41.96, 9, 500, 23.96, 10, 500, 22.50, 11, 500, 48.55, 12, 500, 40.54,
+  13, 1000, 31.05, 14, 1000, 27.84, 16, 1000, 31.73, 17, 1000, 27.08, 18, 1000, 21.87, 19, 1000, 23.15
+)
+stopifnot(nrow(tabA1) == 18, abs(median(tabA1$CRCL) - 27.46) < 0.01)
+
+a1 <- bind_rows(lapply(seq_len(nrow(tabA1)), function(i) {
+  steady_state_typical(mod2_typ, tabA1$dose[i], crcl = tabA1$CRCL[i]) |>
+    mutate(patient = tabA1$patient[i], CRCL = tabA1$CRCL[i])
+}))
+ggplot(a1, aes(CRCL, cmin_ss, colour = factor(dose))) +
+  geom_point() +
+  geom_vline(xintercept = 32, linetype = "dashed") +
+  labs(
+    x = "Baseline CrCl, adjusted body weight (mL/min)", y = "Typical Cmin,ss (mg/L)",
+    colour = "Dose (mg/day)",
+    caption = "Dashed line: the 32 mL/min boundary below which observed troughs exceeded the model (Results)."
+  )
+```
+
+At the cohort median CrCl the CrCl model's typical CL/F is close to the
+model without CrCl, as expected from two fits to the same data:
+
+```{r crcl-consistency}
+cl_at_median <- 30.2 * 60 / 1000 * 17.4
+cl_at_median
+stopifnot(abs(cl_at_median / 29.6 - 1) < 0.1)
+```
+
+# Assumptions and deviations
+
+- **Sign of Equation (1).** Equations (1) and (2) print the denominator as
+  `(K - ka)`; with the positive difference `exp(-K t) - exp(-ka t)` that
+  gives negative concentrations whenever ka > K. The model uses the standard
+  `(ka - K)`, which reproduces every Cmax, tmax and steady-state value the
+  paper derives from these equations (Tables 2, 3, A3 and A4).
+- **Residual error of the CrCl model.** Table A3 prints 'Resid. SE' = 0.99
+  mg/L with a 95% CI of (0.08, 0.12). The point estimate lies outside its own
+  interval and is ten times the 0.095 mg/L of the companion model fitted to
+  the same data, so the maintainers read it as 0.099 mg/L.
+- **Units of the CrCl coefficient.** Equation (2) takes CrCl in L/h
+  (Methods). The model's `CRCL` column is in mL/min, the register's unit, and
+  `model()` converts it; Table A4 is reproduced only with that conversion.
+- **Random effects on the natural scale.** Both models were fitted with R
+  `nlme`, and Tables 2 and A3 report the random-effect SDs in the units of the
+  parameters, so the etas are additive (`cl = exp(lcl_int) + etacl`). K has no
+  random effect, so V/F = (CL/F)/K varies with CL/F. A literal draw from that
+  distribution includes non-positive ka (about 5%) and CL/F (about 0.5%); the
+  virtual cohort above redraws those subjects. Simulations that sample etas
+  through `rxSolve()` directly do not apply that restriction.
+- **V/F.** Table 2 prints V/F = 249.7 L; 29.6 / 0.119 = 248.7 L. The model
+  derives V/F from the two printed estimates; the 0.4% difference reflects
+  the paper's unrounded estimates.
+- **Dose units.** Doses are milligrams of metformin hydrochloride, as
+  prescribed and as used in the paper's AUC and clearance calculations.
+- **CrCl definition.** Modified Cockcroft-Gault with a BMI-selected weight;
+  every study patient had BMI >= 23 kg/m^2, so the adjusted body weight
+  IBW + 0.4 x (TBW - IBW) applied throughout (Table A1).
+- **Observed data.** Individual concentrations are not published, so the
+  observed troughs of Figures 1-3 are not overlaid.
+- **Cohort median CrCl.** The Results text gives a median CrCl of 30.2 mL/min
+  (IQR 8.6); the 18 adjusted-body-weight values of Table A1 have a median of
+  27.46 mL/min. The model metadata quotes the text; the cohort section above
+  uses the Table A1 values.
+- **Errata.** Europe PMC lists no correction or erratum for this article,
+  and none among the records citing it, as of 2026-11-25.
