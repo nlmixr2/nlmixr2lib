@@ -7137,7 +7137,7 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Type:** metabolite-suffix
 - **Role:** 25-O-desacetyl rifapentine (25-DRFP), primary active metabolite of rifapentine, formed by enzymatic deacetylation; microbiologically active against Mycobacterium tuberculosis. Parallel naming to the registered `desrbn` (25-O-desacetyl rifabutin) suffix.
 - **Source aliases:** `25-DRFP` / `25DRFP` / `metabolite_M` (paper narrative in Zvada 2010 Methods and Figure 1 caption).
-- **Example models:** `Zvada_2010_rifapentine.R` (doi:10.1128/AAC.00345-10).
+- **Example models:** `Zvada_2010_rifapentine.R` (doi:10.1128/AAC.00345-10), `Savic_2017_rifapentine.R` (one-compartment `central_desrpt` formed from all parent elimination).
 
 ### desethylenecip (**canonical desethylene ciprofloxacin metabolite suffix**)
 - **Type:** metabolite-suffix

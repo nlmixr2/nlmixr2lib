@@ -1,0 +1,446 @@
+---
+title: "Rifapentine (Savic 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rifapentine (Savic 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r meta}
+mod <- rxode2::rxode2(readModelDb("Savic_2017_rifapentine"))
+```
+
+* Citation: `r mod$reference`
+* Description: `r mod$description`
+* Article: [doi:10.1002/cpt.634](https://doi.org/10.1002/cpt.634)
+
+Savic 2017 pooled the rifapentine arms of two phase II tuberculosis treatment
+trials (TB Trials Consortium Studies 29 and 29X) to find the rifapentine dose
+with the greatest treatment-shortening potential. The analysis had two layers:
+
+1. a joint population PK model for rifapentine and its active metabolite
+   25-O-desacetyl rifapentine (Table 2), packaged here; and
+2. Weibull time-to-event models for stable sputum culture conversion driven by
+   the individual rifapentine AUC0-24, which are **not** packaged (see
+   Assumptions and deviations).
+
+The PK model is a one-compartment model with first-order absorption for the
+parent. All parent elimination forms the metabolite, which has its own
+one-compartment disposition (Supplementary Figure S1). Because the fraction
+metabolised cannot be identified from plasma data, the metabolite clearance and
+volume are apparent values (CLm/Fm, Vm/Fm). The paper's reference condition is a
+450 mg dose taken with a high-fat meal by a 31-year-old Black man without HIV
+infection.
+
+# Population
+
+`r mod$population$n_subjects` adults with smear-positive pulmonary tuberculosis
+received rifapentine during the 8-week intensive phase (Savic 2017 Table 1):
+median age 31 years, median weight 55 kg, 71% men, 60% Black, 19% White, 16%
+Asian, and 9% HIV-infected. Study 29 gave 10 mg/kg rifapentine 5 days a week
+fasting; Study 29X gave 10, 15 or 20 mg/kg 7 days a week with food. Doses were
+given as 150 mg tablets, so the absolute doses were 450 to 1500 mg. 2203
+rifapentine and metabolite concentrations were collected between weeks 2 and 8,
+by sparse (1-3 samples) or intensive (7 samples) sampling.
+
+```{r population}
+str(mod$population)
+```
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Structure: 1-cmt parent, first-order absorption; all elimination forms metabolite; 1-cmt metabolite | -- | Supplementary Figure S1; Supplementary Results |
+| CL/F | 1.86 L/h | Table 2 |
+| V/F | 12.77 L | Table 2 |
+| ka | 0.07 1/h | Table 2 |
+| CLm/Fm | 1.91 L/h | Table 2 |
+| Vm/Fm | 8.83 L | Table 2 |
+| F (450 mg, high-fat meal) | 1 (reference) | Table 2 |
+| F, 600 / 900 / 1200-1500 mg vs 450 mg | 0.91 / 0.83 / 0.74 | Table 2; Results ('combined 1,200 and 1,500 mg') |
+| F, fasting / low-fat meal vs high-fat meal | 0.72 / 0.83 | Table 2 |
+| F, White / Asian vs Black | 1.19 / 1.51 | Table 2 |
+| F, HIV-infected vs uninfected | 0.85 | Table 2 |
+| Age on CL/F, `CL * (1 + theta * (AGE - 31))` | -0.00379 per year | Table 2 and footnote a |
+| Sex on CL/F (female vs male) | 0.81 | Table 2 |
+| Fm above 600 mg vs 600 mg or less | 1.34 | Table 2 |
+| IIV CL/F, CLm/Fm, F | 40%, 44%, 36% CV | Table 2 |
+| Correlations CL-F, CLm-F, CL-CLm | 0.55, 0.45, 0.69 | Table 2 |
+| Residual error, rifapentine | 19% proportional, 1.61 ug/mL additive | Table 2 |
+| Residual error, metabolite | 14% proportional, 1.33 ug/mL additive | Table 2 |
+| Meal categories (high fat > 27 g, lower fat 1-27 g, fasting) | -- | Supplementary Methods |
+
+# Typical-value steady state
+
+Each typical subject is a 31-year-old Black man without HIV infection; the
+rows vary dose and meal. Fourteen once-daily doses are given and the
+14th dosing interval (312-336 h) is analysed, which is at steady state (the
+slowest rate constant, `ka = 0.07 1/h`, has a 9.9 h half-life).
+
+The model has two error endpoints, so every observation row names one with
+`dvid`; both concentrations come back as columns.
+
+```{r typical-events}
+tau <- 24
+n_dose <- 14L
+t_last <- (n_dose - 1L) * tau
+obs_times <- seq(t_last, t_last + tau, by = 0.25)
+
+ref_cov <- list(
+  AGE = 31, SEXF = 0, RACE_WHITE = 0, RACE_ASIAN = 0, HIV_POS = 0
+)
+
+typ_subj <- tibble::tribble(
+  ~treatment,              ~dose, ~FED_HIGHFAT, ~FED_LOWFAT,
+  "450 mg, high-fat",        450,            1,           0,
+  "600 mg, high-fat",        600,            1,           0,
+  "900 mg, high-fat",        900,            1,           0,
+  "1200 mg, high-fat",      1200,            1,           0,
+  "1200 mg, low-fat",       1200,            0,           1,
+  "1200 mg, fasting",       1200,            0,           0
+) |>
+  dplyr::mutate(id = dplyr::row_number(), !!!ref_cov)
+
+make_events <- function(subj) {
+  doses <- subj |>
+    dplyr::transmute(
+      id, time = 0, amt = dose, evid = 1L, cmt = "depot", dvid = NA_integer_,
+      ii = tau, addl = n_dose - 1L
+    )
+  obs <- subj |>
+    dplyr::select(id) |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(
+      amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L,
+      ii = NA_real_, addl = NA_integer_
+    )
+  covs <- subj |>
+    dplyr::select(
+      id, AGE, SEXF, RACE_WHITE, RACE_ASIAN, HIV_POS, FED_HIGHFAT, FED_LOWFAT,
+      DOSE_RIFAPENTINE_MG = dose
+    )
+  # Event columns first, covariates after them.
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::left_join(covs, by = "id")
+}
+
+typ_events <- make_events(typ_subj)
+```
+
+```{r typical-solve}
+sim_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  events = typ_events,
+  omega = NA,
+  returnType = "data.frame"
+) |>
+  dplyr::left_join(dplyr::select(typ_subj, id, treatment), by = "id")
+
+stopifnot(
+  nrow(sim_typ) > 0,
+  !anyNA(sim_typ$Cc), !anyNA(sim_typ$Cc_desrpt),
+  # random effects are off: one clearance value per typical subject
+  all(tapply(sim_typ$cl, sim_typ$id, function(x) length(unique(round(x, 10)))) == 1L)
+)
+```
+
+```{r typical-profiles, fig.cap = "Typical steady-state profiles over one dosing interval for rifapentine and 25-O-desacetyl rifapentine (31-year-old Black man without HIV infection)."}
+sim_typ |>
+  dplyr::select(treatment, time, Rifapentine = Cc, `Desacetyl rifapentine` = Cc_desrpt) |>
+  tidyr::pivot_longer(-c(treatment, time), names_to = "analyte", values_to = "conc") |>
+  dplyr::mutate(
+    tad = time - t_last,
+    treatment = factor(treatment, levels = typ_subj$treatment)
+  ) |>
+  ggplot(aes(tad, conc, colour = treatment)) +
+  geom_line() +
+  facet_wrap(~analyte) +
+  labs(x = "Time after dose (h)", y = "Concentration (ug/mL)", colour = NULL)
+```
+
+## PKNCA against the closed-form steady-state exposure
+
+At steady state the parent AUC over one dosing interval is `F * Dose / CL`.
+Every eliminated parent molecule becomes metabolite, so the metabolite
+AUC over the interval is `Fm * F * Dose / CLm` on the apparent scale. Both
+sides use the same parameter values, so this checks the encoding (dose-level
+and meal factors, the Fm switch, units) rather than the paper.
+
+```{r typical-pknca}
+run_nca <- function(sim, conc_col, events, subj) {
+  conc <- sim |>
+    dplyr::filter(!is.na(.data[[conc_col]])) |>
+    dplyr::transmute(id, time, conc = .data[[conc_col]], treatment)
+  dose <- subj |>
+    dplyr::transmute(id, time = t_last, amt = dose, treatment)
+  stopifnot(all(c(t_last, t_last + tau) %in% conc$time))
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, conc ~ time | treatment + id, concu = "ug/mL", timeu = "h"),
+    PKNCA::PKNCAdose(dose, amt ~ time | treatment + id, doseu = "mg"),
+    intervals = data.frame(
+      start = t_last, end = t_last + tau,
+      cmax = TRUE, tmax = TRUE, auclast = TRUE
+    )
+  ))
+  as.data.frame(res$result)
+}
+
+nca_parent <- run_nca(sim_typ, "Cc", typ_events, typ_subj)
+nca_metab <- run_nca(sim_typ, "Cc_desrpt", typ_events, typ_subj)
+
+f_dose <- function(dose) {
+  dplyr::case_when(dose <= 450 ~ 1, dose <= 600 ~ 0.91, dose <= 900 ~ 0.83, TRUE ~ 0.74)
+}
+closed <- typ_subj |>
+  dplyr::mutate(
+    f = f_dose(dose) * ifelse(FED_LOWFAT == 1, 0.83, 1) *
+      ifelse(FED_HIGHFAT == 0 & FED_LOWFAT == 0, 0.72, 1),
+    fm = ifelse(dose > 600, 1.34, 1),
+    auc_parent = f * dose / 1.86,
+    auc_metab = fm * f * dose / 1.91
+  )
+
+cmp_parent <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_parent,
+  reference = closed |> dplyr::select(treatment, auclast = auc_parent),
+  by = "treatment",
+  params = "auclast",
+  units = c(auclast = "ug*h/mL"),
+  tolerance_pct = 1
+)
+knitr::kable(cmp_parent, caption = "Rifapentine AUC0-24 at steady state: PKNCA on the packaged model (Simulated) against F * Dose / CL from Savic 2017 Table 2 (Reference).")
+
+cmp_metab <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_metab,
+  reference = closed |> dplyr::select(treatment, auclast = auc_metab),
+  by = "treatment",
+  params = "auclast",
+  units = c(auclast = "ug*h/mL"),
+  tolerance_pct = 1
+)
+knitr::kable(cmp_metab, caption = "Desacetyl rifapentine AUC0-24 at steady state: PKNCA (Simulated) against Fm * F * Dose / CLm (Reference).")
+```
+
+```{r typical-gate}
+gate_typ <- dplyr::bind_rows(
+  nca_parent |>
+    dplyr::filter(PPTESTCD == "auclast") |>
+    dplyr::left_join(closed, by = "treatment") |>
+    dplyr::transmute(pct = 100 * (PPORRES / auc_parent - 1)),
+  nca_metab |>
+    dplyr::filter(PPTESTCD == "auclast") |>
+    dplyr::left_join(closed, by = "treatment") |>
+    dplyr::transmute(pct = 100 * (PPORRES / auc_metab - 1))
+)
+# The two sides share every parameter, so only trapezoid error separates them.
+stopifnot(nrow(gate_typ) == 12L, all(abs(gate_typ$pct) < 1))
+```
+
+The typical 600 mg steady-state Cmax is
+`r round(nca_parent$PPORRES[nca_parent$PPTESTCD == "cmax" & nca_parent$treatment == "600 mg, high-fat"], 1)`
+ug/mL, close to the 15.7 ug/mL median of the 211 participants who received
+600 mg (Table 3); the typical AUC0-24 of 293 ug h/mL is likewise close to the
+Table 3 median of 295 ug h/mL. Table 3 pools both studies, all meal conditions
+and the full covariate mix, so this is a plausibility check, not a gate.
+
+# Replicating Figure 3: AUC0-24 by dose and meal
+
+Figure 3 shows the distribution of rifapentine AUC0-24 at 900 and 1200 mg
+daily by meal (high fat, lower fat, fasting). Its six medians were read off the
+published figure by the maintainers, calibrated against the 300 and
+350 ug h/mL reference lines. The virtual cohort draws race, sex, HIV status and
+age from the rifapentine column of Table 1, 200 participants per dose and meal
+arm.
+
+```{r cohort}
+rxode2::rxSetSeed(2017)
+n_per_arm <- 200L
+
+draw_age <- function(n) {
+  # log-normal around the median age of 31 years, redrawn into 18-70 years
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- round(31 * exp(rnorm(n, 0, 0.3)))
+    out <- c(out, x[x >= 18 & x <= 70])
+  }
+  out[seq_len(n)]
+}
+
+arms <- tidyr::expand_grid(
+  dose = c(900, 1200),
+  meal = c("high fat", "lower fat", "fasting")
+) |>
+  dplyr::mutate(treatment = paste0(dose, " mg, ", meal))
+
+cohort <- arms |>
+  dplyr::slice(rep(seq_len(dplyr::n()), each = n_per_arm)) |>
+  dplyr::mutate(
+    id = dplyr::row_number(),
+    race = sample(c("Black", "White", "Asian", "Other"), dplyr::n(), TRUE,
+      prob = c(0.60, 0.19, 0.16, 0.05)
+    ),
+    RACE_WHITE = as.integer(race == "White"),
+    RACE_ASIAN = as.integer(race == "Asian"),
+    SEXF = rbinom(dplyr::n(), 1, 0.294),
+    HIV_POS = rbinom(dplyr::n(), 1, 0.09),
+    AGE = draw_age(dplyr::n()),
+    FED_HIGHFAT = as.integer(meal == "high fat"),
+    FED_LOWFAT = as.integer(meal == "lower fat")
+  )
+
+coh_events <- make_events(cohort)
+sim_coh <- rxode2::rxSolve(mod, events = coh_events, returnType = "data.frame") |>
+  dplyr::left_join(dplyr::select(cohort, id, treatment), by = "id")
+nca_coh <- run_nca(sim_coh, "Cc", coh_events, cohort)
+```
+
+```{r figure3, fig.cap = "Replicates Figure 3 of Savic 2017: simulated steady-state rifapentine AUC0-24 by dose and meal (boxes), with the published medians (red diamonds), the 350 ug h/mL target (green) and the 300 ug h/mL low-exposure line (red)."}
+fig3 <- tibble::tribble(
+  ~treatment,              ~auclast,
+  "900 mg, high fat",       475,
+  "900 mg, lower fat",      418,
+  "900 mg, fasting",        334,
+  "1200 mg, high fat",      570,
+  "1200 mg, lower fat",     503,
+  "1200 mg, fasting",       398
+)
+
+auc_coh <- nca_coh |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::mutate(treatment = factor(treatment, levels = fig3$treatment))
+
+ggplot(auc_coh, aes(treatment, PPORRES)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_point(
+    data = dplyr::mutate(fig3, treatment = factor(treatment, levels = fig3$treatment)),
+    aes(y = auclast), colour = "red", shape = 18, size = 4
+  ) +
+  geom_hline(yintercept = 350, colour = "green3") +
+  geom_hline(yintercept = 300, colour = "red") +
+  coord_cartesian(ylim = c(0, 1100)) +
+  labs(x = NULL, y = "AUC0-24 (ug*h/mL)") +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+```{r figure3-table}
+cmp_fig3 <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_coh,
+  reference = fig3,
+  by = "treatment",
+  params = "auclast",
+  units = c(auclast = "ug*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_fig3, caption = "Median steady-state AUC0-24 by dose and meal: virtual cohort (Simulated) against the medians read from Savic 2017 Figure 3 (Reference).")
+```
+
+```{r figure3-gate}
+gate_fig3 <- auc_coh |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(sim = median(PPORRES), .groups = "drop") |>
+  dplyr::left_join(dplyr::mutate(fig3, treatment = factor(treatment, levels = fig3$treatment)), by = "treatment") |>
+  dplyr::mutate(pct = 100 * (sim / auclast - 1))
+stopifnot(
+  nrow(gate_fig3) == 6L,
+  # Centre: a mis-transcribed CL/F, dose-level factor or meal factor moves
+  # the medians by tens of percent.
+  abs(median(gate_fig3$pct)) < 10,
+  # Envelope over six cohort medians whose covariate mix is assumed, not known.
+  max(abs(gate_fig3$pct)) < 25
+)
+```
+
+The ratios between the published medians test the dose-level and meal
+factors without any cohort: the 1200/900 mg ratio is 1.20 in Figure 3 against
+`0.74 * 1200 / (0.83 * 900) =` `r round(0.74 * 1200 / (0.83 * 900), 3)` in the
+model, and the fasting/high-fat ratio is 0.70 against 0.72. The lower-fat
+medians in the figure (0.88 of high fat) sit a little above the model's 0.83;
+Figure 3 summarises individual estimates of participants who chose each meal,
+whose covariate mix differs between groups.
+
+# Between-subject spread of AUC0-24
+
+Supplementary Figure S3 gives the median AUC0-24 with its 5th-95th percentile
+range for the narrowest subgroup, Black men under 30 years without HIV:
+322 [169, 568] ug h/mL. With race, sex and HIV fixed, the spread of log AUC is
+set by the random effects on F and CL/F alone,
+`var(log AUC) = omega_F^2 + omega_CL^2 - 2 cov(CL, F)`.
+
+```{r iiv-spread}
+om <- mod$omega
+sd_log_auc <- sqrt(om["etalfdepot", "etalfdepot"] + om["etalcl", "etalcl"] -
+  2 * om["etalcl", "etalfdepot"])
+sd_fig_s3 <- log(568 / 169) / (2 * qnorm(0.95))
+knitr::kable(
+  data.frame(
+    Source = c("Packaged model (Table 2 IIV)", "Supplementary Figure S3, bottom row"),
+    `SD of log AUC0-24` = signif(c(sd_log_auc, sd_fig_s3), 3),
+    `95th / 5th percentile ratio` = signif(exp(2 * qnorm(0.95) * c(sd_log_auc, sd_fig_s3)), 3),
+    check.names = FALSE
+  )
+)
+# The figure's subgroup still mixes ages and meals, so it is slightly wider.
+stopifnot(abs(sd_log_auc / sd_fig_s3 - 1) < 0.15)
+```
+
+The positive CL-F correlation (0.55) cancels much of the two variances: AUC
+varies with a log-SD of about 0.35, smaller than either random effect would
+suggest on its own.
+
+# Assumptions and deviations
+
+* **Culture-conversion models not packaged.** The paper's exposure-response
+  layer is a Weibull time-to-event model for stable culture conversion. The
+  supplement prints the base parameters (rifapentine scale 0.0137 1/day,
+  shape 2.04, AUC50 313 ug h/mL, Emax -0.346; rifampin scale 0.01472 1/day,
+  shape 2.115), but not how the Emax term enters the hazard, and not the
+  coefficients of the retained covariates (cavity size, African study site,
+  Karnofsky score, smear grade, food; Supplementary Table S5 gives P values
+  only). Table 4 shows group-specific shapes, so the final model is not the
+  printed base model. Without the drug-effect form and the covariate
+  coefficients the model cannot be written down, so it is left out. The
+  rifampin base parameters do reproduce the 114-day time for 95% of control
+  participants quoted in Figure 1 (`(log 20)^(1/2.115) / 0.01472` =
+  `r round(log(20)^(1 / 2.115) / 0.01472)` days).
+* **IIV scale.** Table 2 gives IIV as CV%; the variances use
+  `omega^2 = log(1 + CV^2)` and each covariance is the Table 2 correlation times the two SDs.
+* **Dose bands.** The paper estimated one relative bioavailability per dose
+  given (450, 600, 900, and 1200 pooled with 1500 mg). The model reads the dose
+  from `DOSE_RIFAPENTINE_MG` and places other doses in the next-higher band
+  (for example 750 mg uses the 900 mg factor). Doses below 450 mg use the
+  reference. The 1.34-fold Fm effect applies to doses above 600 mg as printed.
+* **Meal coding.** The paper's reference meal is high fat (> 27 g fat).
+  Fasting is coded as `FED_HIGHFAT = FED_LOWFAT = 0`; the two indicators must
+  not both be 1.
+* **Race.** Table 2 gives effects for White and Asian race relative to Black.
+  The 4% of participants of other or unreported race get no effect, which
+  treats them as the reference.
+* **Fraction metabolised.** With all parent elimination forming metabolite
+  and Fm unidentified, the metabolite clearance and volume are apparent
+  values; the dose-dependent Fm factor scales metabolite formation, so above
+  600 mg the metabolite amount is not mass-balanced against the parent. No
+  molecular-weight correction is applied, as in the paper.
+* **AUC variability statement.** The Results describe a 21% CV for AUC0-24,
+  which the Table 2 random effects do not reproduce (they imply about 36%);
+  Supplementary Figure S3, used above, agrees with Table 2.
+* **Virtual cohort.** The age distribution (log-normal around the median of
+  31 years, 18-70 years) is assumed; Table 1 gives only the median. Sex, race
+  and HIV proportions are those of the rifapentine column of Table 1.
+* **Study 29 dosing frequency.** Study 29 gave rifapentine 5 days a week, and
+  the paper scaled those participants' AUC by 5/7 for the exposure-response
+  analysis only. The PK model itself does not depend on it.
