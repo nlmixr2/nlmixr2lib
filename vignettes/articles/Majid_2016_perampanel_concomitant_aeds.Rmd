@@ -1,0 +1,534 @@
+---
+title: "Perampanel effect on concomitant antiepileptic drugs (Majid 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Perampanel effect on concomitant antiepileptic drugs (Majid 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Majid O, Laurenza A, Ferry J, Hussein Z. Impact of perampanel on
+  pharmacokinetics of concomitant antiepileptics in patients with
+  partial-onset seizures: pooled analysis of clinical trials. Br J Clin
+  Pharmacol. 2016;82(2):422-430.
+* Article: <https://doi.org/10.1111/bcp.12951> (open access,
+  [PMC4972158](https://pmc.ncbi.nlm.nih.gov/articles/PMC4972158/))
+* Supplement: Supporting Information file 1 of the article (Supplemental
+  Tables S1-S11, one final model per antiepileptic drug).
+
+Majid 2016 pooled the three Phase III trials of adjunctive perampanel in
+refractory partial-onset seizures and fitted one population model per
+concomitant antiepileptic drug (AED) to ask whether perampanel changes that
+AED's apparent clearance. Eleven AEDs taken by at least 30 patients were
+analysed. Ten of the eleven final models are packaged here, one file per
+drug, as the authors fitted them independently:
+
+```{r models}
+models <- c(
+  carbamazepine = "Majid_2016_carbamazepine",
+  clobazam      = "Majid_2016_clobazam",
+  clonazepam    = "Majid_2016_clonazepam",
+  lamotrigine   = "Majid_2016_lamotrigine",
+  levetiracetam = "Majid_2016_levetiracetam",
+  oxcarbazepine = "Majid_2016_oxcarbazepine",
+  phenobarbital = "Majid_2016_phenobarbital",
+  topiramate    = "Majid_2016_topiramate",
+  valproic_acid = "Majid_2016_valproic_acid",
+  zonisamide    = "Majid_2016_zonisamide"
+)
+uis <- lapply(models, function(nm) rxode2::rxode(readModelDb(nm)))
+```
+
+The phenytoin model (Supplemental Table S8) is not packaged; see
+[Assumptions and deviations](#assumptions-and-deviations).
+
+# Model structure
+
+The data were sparse (two samples 1-2 h apart at each maintenance visit, one
+sample at each baseline visit) and the time of the concomitant AED dose was
+not recorded, so no compartmental model could be fitted. Each observed
+concentration was instead treated as an average steady-state concentration
+(Majid 2016 Methods, PK model and parameters):
+
+$$C_{av,ss} = \frac{R_0}{CL/F}, \qquad R_0 = \frac{\text{total daily dose}}{24\ \text{h}}$$
+
+The packaged models are therefore algebraic: there is no volume, no
+absorption and no dosing record. The AED's own daily dose is supplied as a
+covariate column (`DOSE_<AED>_MGD`), and `Cc` is the predicted steady-state
+concentration. Between-subject variability on CL/F is exponential, and
+inter-occasion variability (IOV) is defined on five identical occasions:
+visits 1 and 2 (before perampanel) and visits 6, 7 and 8 (maintenance weeks
+10, 14 and 19), encoded as `OCC` = 1-5.
+
+The paper does not print the covariate equations. The form used for every
+model is
+
+$$CL/F = \theta_{basal} \cdot \left(1 + \sum_k \theta_k X_k\right) \cdot e^{\eta_{CL} + \kappa_{CL,occ}}$$
+
+with binary indicators entering as $X_k \in \{0, 1\}$ and body weight as the
+uncentred ratio `WT / 70`. Carbamazepine adds an absolute dose term to the
+basal clearance. The [form-deduction section](#deducing-the-covariate-form-from-table-2)
+shows how Table 2 and Figure 1 select this form over the alternatives.
+
+# Population
+
+```{r population}
+pop <- dplyr::bind_rows(lapply(names(uis), function(d) {
+  p <- uis[[d]]$population
+  data.frame(
+    AED = d,
+    n = p$n_subjects,
+    `Mean age (SD), y` = sub("SD ", "", sub("^mean ", "", sub(" years$", "", p$age_median))),
+    `Mean weight (SD), kg` = sub("SD ", "", sub("^mean ", "", sub(" kg$", "", p$weight_median))),
+    `Female, %` = p$sex_female_pct,
+    `White, %` = unname(p$race_ethnicity["White"]),
+    `Asian incl. Chinese, %` = unname(p$race_ethnicity["Asian"] + p$race_ethnicity["Chinese"]),
+    check.names = FALSE
+  )
+}))
+knitr::kable(pop, caption = "Demographics by concomitant AED (Majid 2016 Table 1). Patients could take up to three AEDs, so the groups overlap.")
+```
+
+Patients were aged 12 years or older with partial-onset seizures
+uncontrolled despite at least two AEDs in the previous two years, and could
+take up to three stable concomitant AEDs (at most one enzyme inducer) plus
+perampanel 2-12 mg or placebo once daily at bedtime. The AED doses were not
+reported. The same information is available programmatically through each
+model's `population` element, e.g.
+`rxode2::rxode(readModelDb("Majid_2016_valproic_acid"))$population`.
+
+# Source trace
+
+Every value comes from the final-model table of the Supplement for that
+drug, column "Final estimate". The in-file comment on each `ini()` line
+quotes the table row.
+
+```{r source-trace}
+# Values transcribed from the Supplement, in the order the tables print
+# them. The basal clearance is stored as lcl = log(value); IIV and IOV are
+# variances; the residual 'proportional' row is a variance (see
+# Assumptions), so propSd = sqrt(value).
+published <- list(
+  carbamazepine = list(table = "S1", basal = 0.375, effects = c(e_dose_cbz_cl = 0.00347, e_conmed_vpa_cl = 0.125, e_dose_perampanel_cl = 0.00357), iiv = 0.0512, iov = 0.0246, prop = 0.0167),
+  clobazam      = list(table = "S2", basal = 4.76,  effects = c(e_sexf_cl = -0.387, e_wt_cl = -0.312, e_conmed_pht_cl = 0.545, e_cp_perampanel_cl = 0.0000678), iiv = 0.497, iov = 0.0258, prop = 0.059),
+  clonazepam    = list(table = "S3", basal = 2.53,  effects = c(e_conmed_pht_cl = 1.89, e_conmed_vpa_cl = 0.785, e_conmed_clb_cl = 1.01), iiv = 0.388, iov = 0.0513, prop = 0.0171),
+  lamotrigine   = list(table = "S4", basal = 1.18,  effects = c(e_conmed_cbz_cl = 0.584, e_conmed_pb_cl = 0.742, e_conmed_vpa_cl = -0.51, e_dose_perampanel_cl = 0.037), iiv = 0.249, iov = 0.0296, prop = 0.0193),
+  levetiracetam = list(table = "S5", basal = 2.28,  effects = c(e_sexf_cl = -0.244, e_wt_cl = 0.389, e_conmed_pht_cl = -0.252, e_conmed_vpa_cl = -0.154), iiv = 0.23, iov = 0.034, prop = 0.0717),
+  oxcarbazepine = list(table = "S6", basal = 63.4,  effects = c(e_sexf_cl = -0.263, e_conmed_pht_cl = 0.823, e_conmed_perampanel_cl = -0.261), iiv = 0.305, iov = 0.195, prop = 0.407),
+  phenobarbital = list(table = "S7", basal = 0.243, effects = c(e_transaminase_gt2uln_cl = 0.24, e_conmed_lamotrigine_cl = -0.24, e_conmed_oxc_cl = -0.325), iiv = 0.281, iov = 0.0189, prop = 0.0112),
+  topiramate    = list(table = "S9", basal = 0.953, effects = c(e_wt_cl = 0.878, e_conmed_pht_cl = 0.714, e_conmed_zns_cl = 1.12), iiv = 0.212, iov = 0.0292, prop = 0.0278),
+  valproic_acid = list(table = "S10", basal = 0.401, effects = c(e_wt_cl = 0.490, e_dose_perampanel_cl = 0.00761), iiv = 0.316, iov = 0.0308, prop = 0.0259),
+  zonisamide    = list(table = "S11", basal = 0.558, effects = c(e_conmed_pht_cl = 0.581, e_conmed_pb_cl = 0.491, e_conmed_clb_cl = -0.334), iiv = 0.235, iov = 0.0216, prop = 0.0141)
+)
+
+trace <- dplyr::bind_rows(lapply(names(published), function(d) {
+  p <- published[[d]]
+  ui <- uis[[d]]
+  th <- ui$theta
+  om <- diag(ui$omega)
+  # Every theta in the model must be one the table prints, and vice versa.
+  stopifnot(setequal(names(th), c("lcl", names(p$effects), "propSd")))
+  stopifnot(
+    abs(exp(th[["lcl"]]) - p$basal) < 1e-9,
+    all(abs(th[names(p$effects)] - p$effects) < 1e-12),
+    abs(om[["etalcl"]] - p$iiv) < 1e-12,
+    all(abs(om[paste0("etaiov_cl_", 1:5)] - p$iov) < 1e-12),
+    abs(th[["propSd"]] - sqrt(p$prop)) < 5e-4
+  )
+  data.frame(
+    AED = d,
+    Table = p$table,
+    `Basal CL/F (L/h)` = p$basal,
+    `Covariate effects` = paste(sprintf("%s = %s", names(p$effects), signif(p$effects, 3)), collapse = "; "),
+    `IIV / IOV variance` = sprintf("%s / %s", p$iiv, p$iov),
+    `Residual variance -> propSd` = sprintf("%s -> %.4f", p$prop, sqrt(p$prop)),
+    check.names = FALSE
+  )
+}))
+knitr::kable(trace, caption = "Final estimates transcribed from Majid 2016 Supplemental Tables S1-S11 (phenytoin, Table S8, excluded). Each row is asserted against the packaged model.")
+```
+
+| Equation | Source location |
+|----------|-----------------|
+| `Cc = (DOSE / 24) / cl` | Majid 2016 Methods, PK model and parameters (C_av,ss = R0 / CL) |
+| Exponential IIV on CL/F | Methods ("estimated using an exponential model") |
+| IOV on five identical occasions (visits 1, 2, 6, 7, 8) | Methods |
+| Proportional residual error | Supplemental Tables S1-S11 (only a proportional row is printed) |
+| Relative-additive covariate bracket, uncentred `WT / 70` | Not printed; deduced from Table 2 (next section) |
+| Carbamazepine absolute dose term | Not printed; deduced from Table 2 and Figure 1A (next section) |
+| Lamotrigine `ln(perampanel dose)` term | Table S4 row label and Results ("proportionally to the loge of perampanel daily dose") |
+
+# Deducing the covariate form from Table 2
+
+Table 2 of the paper prints the model-predicted typical CL/F of each AED
+without perampanel and with 8 and 12 mg perampanel, for the subgroups each
+final model distinguishes. Those numbers are produced by the unprinted
+covariate equations, so they test candidate forms. The helper below returns
+the typical-value clearance of a packaged model for given covariates.
+
+```{r typical-helper}
+# Typical-value solve: one row per covariate combination, all random
+# effects zeroed. The models are algebraic, so a single observation row per
+# subject is enough.
+typical <- function(ui, covs) {
+  ev <- covs
+  ev$id <- seq_len(nrow(ev))
+  ev$time <- 0
+  ev$evid <- 0
+  if (is.null(ev$OCC)) ev$OCC <- 1
+  out <- rxode2::rxSolve(rxode2::zeroRe(ui), ev, returnType = "data.frame")
+  if (is.null(out$id)) out$id <- 1L
+  stopifnot(nrow(out) == nrow(covs))
+  out
+}
+
+# A printed value p with `dp` decimals is reproduced when the model value
+# lies within half a unit of the last printed digit, widened by 0.15% for
+# the rounding of the three-significant-figure parameter estimates.
+reproduces <- function(model, printed, dp) {
+  abs(model - printed) <= 0.5 * 10^(-dp) + 0.0015 * printed
+}
+```
+
+```{r table2}
+dose_rows <- data.frame(per_mg = c(0, 8, 12))
+per3 <- c("without", "8 mg", "12 mg")
+
+t2_cbz <- typical(uis$carbamazepine, data.frame(
+  DOSE_CBZ_MGD = 900, CONMED_VPA = 0, DOSE_PERAMPANEL_MGD = dose_rows$per_mg
+)) |> mutate(AED = "CBZ", group = "all", perampanel = per3, printed = c(3.50, 3.60, 3.65), dp = 2)
+
+t2_ltg <- typical(uis$lamotrigine, data.frame(
+  DOSE_LTG_MGD = 200, CONMED_CBZ = 0, CONMED_PB = 0, CONMED_VPA = 0,
+  DOSE_PERAMPANEL_MGD = dose_rows$per_mg
+)) |> mutate(AED = "LTG", group = "all", perampanel = per3, printed = c(1.18, 1.27, 1.29), dp = 2)
+
+t2_vpa <- typical(uis$valproic_acid, data.frame(
+  DOSE_VPA_MGD = 1000, WT = 70, DOSE_PERAMPANEL_MGD = dose_rows$per_mg
+)) |> mutate(AED = "VPA", group = "all", perampanel = per3, printed = c(0.60, 0.62, 0.63), dp = 2)
+
+# Clobazam's perampanel term is per ng/mL of perampanel. The perampanel
+# concentrations behind Table 2 are not printed; 0 / 270 / 330 ng/mL lie in
+# the windows that reproduce BOTH sexes (derived below).
+t2_clb <- typical(uis$clobazam, data.frame(
+  DOSE_CLB_MGD = 20, WT = 70, CONMED_PHT = 0,
+  SEXF = rep(c(0, 1), each = 3),
+  CP_PERAMPANEL_NGML = rep(c(0, 270, 330), 2)
+)) |> mutate(AED = "CLB", group = rep(c("males", "females"), each = 3),
+             perampanel = rep(c("without", "8 mg (270 ng/mL)", "12 mg (330 ng/mL)"), 2),
+             printed = c(3.27, 3.36, 3.38, 1.43, 1.52, 1.54), dp = 2)
+
+t2_oxc <- typical(uis$oxcarbazepine, data.frame(
+  DOSE_OXC_MGD = 1200,
+  SEXF = c(0, 0, 1, 1, 0, 0, 1, 1),
+  CONMED_PHT = c(0, 0, 0, 0, 1, 1, 1, 1),
+  CONMED_PERAMPANEL = c(0, 1, 0, 1, 0, 1, 0, 1)
+)) |> mutate(AED = "OXC", perampanel = rep(c("without", "with"), 4),
+             group = rep(c("males, no PHT", "females, no PHT", "males, PHT", "females, PHT"), each = 2),
+             printed = c(63.4, 46.9, 46.7, 30.2, 115.6, 98.9, 99.0, 82.4), dp = 1)
+
+t2 <- dplyr::bind_rows(t2_cbz, t2_ltg, t2_vpa, t2_clb, t2_oxc) |>
+  mutate(ok = reproduces(tvcl, printed, dp))
+
+t2 |>
+  select(AED, group, perampanel, printed, tvcl, ok) |>
+  rename(`Table 2 CL/F (L/h)` = printed, `Model CL/F (L/h)` = tvcl,
+         Reproduced = ok) |>
+  knitr::kable(digits = 3, caption = "Typical CL/F from the packaged models against Majid 2016 Table 2.")
+
+stopifnot(nrow(t2) == 23, all(t2$ok))
+```
+
+All 23 printed cells are reproduced. What each block establishes:
+
+* **Oxcarbazepine** (8 cells, all covariates binary): every effect is
+  additive inside one relative bracket. Females without phenytoin lose
+  0.263 x 63.4 = 16.7 L/h and perampanel subtracts the same 16.5 L/h in
+  every subgroup. This is why Table 3 reports different relative
+  reductions (26%, 35.3%, 14.4%, 16.8%) for one perampanel coefficient.
+  A multiplicative form (`exp(theta)` or `(1 + theta)` per covariate) gives
+  63.4 x 0.769 = 48.7 L/h for females and cannot reproduce the table.
+* **Clobazam**: going from 4.76 L/h (basal) to 3.27 L/h for males requires
+  the weight term to contribute -0.312 x 1.003, which is the uncentred
+  `WT / WTref` at the reference weight. A power `(WT / 70)^-0.312` or a
+  centred linear term gives 4.76 L/h there. Females then follow with no
+  further freedom: 4.76 x (1 - 0.387 - 0.312) = 1.433 L/h, printed 1.43.
+  The perampanel increment is the same in both sexes (+0.09 / +0.11 L/h),
+  so it too sits inside the bracket, as the paper says ("proportional to
+  perampanel concentrations and to clobazam clearance").
+* **Valproic acid**: the same uncentred weight term,
+  0.401 x (1 + 0.490) = 0.597 L/h, printed 0.60. With perampanel inside the
+  same bracket the cells are 0.622 and 0.634 (printed 0.62, 0.63). If
+  perampanel multiplied separately the 8 mg cell would be 0.634, printed
+  0.62. The paper's "5.0% at 12 mg" is 0.63 / 0.60 of the rounded cells.
+* **Lamotrigine**: 1.18 x (1 + 0.037 ln 8) = 1.271 and
+  1.18 x (1 + 0.037 ln 12) = 1.289 L/h.
+* **Carbamazepine**: the cells need a carbamazepine dose. 3.50 L/h
+  back-solves to 900 mg/day under the absolute dose term used here, a
+  typical maintenance dose. The perampanel cells then follow at
+  +2.9% / +4.3%.
+
+```{r clobazam-window}
+# The perampanel concentration that reproduces a printed clobazam cell is a
+# window; the additive form must find ONE concentration per dose level that
+# satisfies males and females at once.
+k <- exp(uis$clobazam$theta[["lcl"]]) * uis$clobazam$theta[["e_cp_perampanel_cl"]]
+base <- t2_clb$tvcl[c(1, 4)] # males, females without perampanel
+window <- function(printed, base) (printed + c(-0.005, 0.005) - base) / k
+w8 <- rbind(window(3.36, base[1]), window(1.52, base[2]))
+w12 <- rbind(window(3.38, base[1]), window(1.54, base[2]))
+cp8 <- c(max(w8[, 1]), min(w8[, 2]))
+cp12 <- c(max(w12[, 1]), min(w12[, 2]))
+cp8
+cp12
+stopifnot(cp8[1] < cp8[2], cp12[1] < cp12[2])
+
+# A perampanel factor multiplying the whole clearance would need ONE ratio
+# for both sexes; the windows do not overlap.
+ratio <- function(printed, base) (printed + c(-0.005, 0.005)) / base
+r12 <- rbind(ratio(3.38, base[1]), ratio(1.54, base[2]))
+r12
+stopifnot(max(r12[, 1]) > min(r12[, 2]))
+```
+
+The implied perampanel concentrations, about 255-279 ng/mL at 8 mg and
+317-341 ng/mL at 12 mg, are plausible for a cohort in which many patients
+took enzyme-inducing AEDs that lower perampanel exposure.
+
+## Carbamazepine dose term: Figure 1A
+
+Three forms of the carbamazepine dose effect are compatible with the
+printed coefficient: an absolute term
+`CL = 0.375 + 0.00347 * DOSE` (used here), a relative term
+`CL = 0.375 * (1 + 0.00347 * DOSE)`, and an exponential
+`CL = 0.375 * exp(0.00347 * DOSE)`. Table 2's 3.50 L/h requires 900,
+2400 and 643 mg/day respectively. Figure 1A shows a carbamazepine median
+of about 10 ug/mL, flat across visits, with the interquartile range
+roughly 8-12 ug/mL.
+
+```{r cbz-forms}
+cbz_dose <- c(400, 600, 800, 1000, 1200, 1600)
+cbz_forms <- data.frame(dose = cbz_dose) |>
+  mutate(
+    absolute = (dose / 24) / (0.375 + 0.00347 * dose),
+    relative = (dose / 24) / (0.375 * (1 + 0.00347 * dose)),
+    exponential = (dose / 24) / (0.375 * exp(0.00347 * dose))
+  )
+# The packaged model must equal the absolute form.
+pkg <- typical(uis$carbamazepine, data.frame(
+  DOSE_CBZ_MGD = cbz_dose, CONMED_VPA = 0, DOSE_PERAMPANEL_MGD = 0
+))
+stopifnot(all(abs(pkg$Cc - cbz_forms$absolute) < 1e-9))
+
+cbz_forms |>
+  rename(`CBZ dose (mg/day)` = dose,
+         `Absolute (packaged)` = absolute,
+         `Relative` = relative,
+         `Exponential` = exponential) |>
+  knitr::kable(digits = 1, caption = "Typical carbamazepine Css (ug/mL), no valproic acid, no perampanel, under the three candidate dose forms.")
+
+# Over the usual 600-1200 mg/day maintenance range the packaged form stays
+# inside Figure 1A's interquartile range; the relative form sits above the
+# upper whisker (about 18 ug/mL) and the exponential form collapses with dose.
+mid <- cbz_forms$dose >= 600 & cbz_forms$dose <= 1200
+stopifnot(
+  all(cbz_forms$absolute[mid] > 8 & cbz_forms$absolute[mid] < 12),
+  all(cbz_forms$relative[mid] > 18),
+  cbz_forms$exponential[cbz_forms$dose == 1200] < 3
+)
+```
+
+The absolute form also behaves like carbamazepine autoinduction:
+concentration approaches the ceiling 1 / (24 x 0.00347) = 12.0 ug/mL as the
+dose rises.
+
+# Typical concentrations against Figure 1
+
+The paper reports no AED doses, so its box plots (Figure 1) cannot be
+re-simulated. What can be checked is that each model, at an ordinary
+adult maintenance dose and with no interacting co-medication, predicts a
+concentration of the same order as Figure 1's median. This catches unit
+errors (ng/mL against ug/mL) and gross structural errors. The doses below
+are assumptions, not values from the paper; the medians were read from
+Figure 1 by the maintainers.
+
+```{r figure1-typical}
+fig1 <- tibble::tribble(
+  ~AED,            ~dose, ~fig1_median, ~unit,
+  "carbamazepine",   800,     10,       "ug/mL",
+  "clobazam",         20,    250,       "ng/mL",
+  "clonazepam",        2,     20,       "ng/mL",
+  "lamotrigine",     300,      7.5,     "ug/mL",
+  "levetiracetam",  2000,     28,       "ug/mL",
+  "oxcarbazepine",  1200,      0.7,     "ug/mL",
+  "phenobarbital",   150,     25,       "ug/mL",
+  "topiramate",      300,      7.5,     "ug/mL",
+  "valproic_acid",  1250,     80,       "ug/mL",
+  "zonisamide",      300,     17,       "ug/mL"
+)
+
+# Reference covariates: 70 kg male, no interacting co-medication, no
+# perampanel, normal transaminases.
+ref_covs <- function(aed, dose) {
+  base <- data.frame(WT = 70, SEXF = 0, CONMED_PHT = 0, CONMED_VPA = 0,
+                     CONMED_CLB = 0, CONMED_CBZ = 0, CONMED_PB = 0,
+                     CONMED_LAMOTRIGINE = 0, CONMED_OXC = 0, CONMED_ZNS = 0,
+                     CONMED_PERAMPANEL = 0, DOSE_PERAMPANEL_MGD = 0,
+                     CP_PERAMPANEL_NGML = 0, TRANSAMINASE_GT2ULN = 0)
+  dose_col <- c(carbamazepine = "DOSE_CBZ_MGD", clobazam = "DOSE_CLB_MGD",
+                clonazepam = "DOSE_CZP_MGD", lamotrigine = "DOSE_LTG_MGD",
+                levetiracetam = "DOSE_LEV_MGD", oxcarbazepine = "DOSE_OXC_MGD",
+                phenobarbital = "DOSE_PB_MGD", topiramate = "DOSE_TPM_MGD",
+                valproic_acid = "DOSE_VPA_MGD", zonisamide = "DOSE_ZNS_MGD")[[aed]]
+  base[[dose_col]] <- dose
+  base
+}
+
+fig1$model <- vapply(seq_len(nrow(fig1)), function(i) {
+  typical(uis[[fig1$AED[i]]], ref_covs(fig1$AED[i], fig1$dose[i]))$Cc
+}, numeric(1))
+fig1$ratio <- fig1$model / fig1$fig1_median
+
+fig1 |>
+  rename(`Assumed dose (mg/day)` = dose, `Figure 1 median` = fig1_median,
+         Unit = unit, `Model typical Css` = model, `Model / Figure 1` = ratio) |>
+  knitr::kable(digits = 2, caption = "Typical steady-state concentration at an assumed maintenance dose against the Figure 1 median.")
+
+stopifnot(all(fig1$ratio > 0.5 & fig1$ratio < 2))
+```
+
+# Simulation: oxcarbazepine by visit
+
+The oxcarbazepine model carries the only perampanel effect the paper
+considered potentially relevant. The simulation below mirrors the study
+design: visits 1 and 2 before perampanel, visits 6-8 on maintenance, half
+the cohort on perampanel and half on placebo, with between-subject and
+inter-occasion variability. Doses (600-2400 mg/day) and covariates are
+assumptions; 49% male and 6.5% on phenytoin follow Tables 1 and 2.
+
+```{r oxc-sim}
+rxode2::rxSetSeed(2016)
+set.seed(2016)
+n_arm <- 200
+subj <- data.frame(
+  id = seq_len(2 * n_arm),
+  arm = rep(c("perampanel", "placebo"), each = n_arm),
+  SEXF = rbinom(2 * n_arm, 1, 0.51),
+  CONMED_PHT = rbinom(2 * n_arm, 1, 0.065),
+  DOSE_OXC_MGD = sample(c(600, 900, 1200, 1500, 1800, 2400), 2 * n_arm, replace = TRUE)
+)
+visits <- data.frame(OCC = 1:5, visit = factor(c("Baseline 1", "Baseline 2", "6", "7", "8"),
+                                               levels = c("Baseline 1", "Baseline 2", "6", "7", "8")))
+ev <- merge(subj, visits) |>
+  arrange(id, OCC) |>
+  mutate(
+    time = (OCC - 1) * 24 * 7,
+    evid = 0,
+    CONMED_PERAMPANEL = as.integer(arm == "perampanel" & OCC >= 3)
+  )
+sim <- rxode2::rxSolve(uis$oxcarbazepine, ev, returnType = "data.frame",
+                       keep = c("arm", "visit", "CONMED_PERAMPANEL"))
+
+ggplot(sim, aes(visit, sim, fill = arm)) +
+  geom_boxplot(outlier.shape = NA) +
+  coord_cartesian(ylim = c(0, 4)) +
+  labs(x = "Visit", y = "Oxcarbazepine (ug/mL)", fill = NULL,
+       title = "Simulated oxcarbazepine concentration by visit",
+       caption = "Compare Majid 2016 Figure 1F (perampanel-treated patients only).") +
+  theme_minimal()
+```
+
+```{r oxc-check}
+pre_post <- sim |>
+  filter(arm == "perampanel") |>
+  mutate(phase = ifelse(CONMED_PERAMPANEL == 1, "on", "pre")) |>
+  group_by(phase) |>
+  summarise(median = median(sim), .groups = "drop")
+pre_post
+ratio_on_pre <- pre_post$median[pre_post$phase == "on"] / pre_post$median[pre_post$phase == "pre"]
+ratio_on_pre
+# Typical-value ratio is 1 / (1 - 0.261 / bracket), 1.35 (males) to 1.55
+# (females) without phenytoin. The pooled-observation median carries the
+# large IOV and residual variance of this model, so the bound is wide
+# (about 4 standard errors either side of the expected ~1.4); a perampanel
+# effect of the wrong sign or of 0 fails it.
+stopifnot(ratio_on_pre > 1.1, ratio_on_pre < 1.9)
+```
+
+The observed medians in Figure 1F rise only slightly once perampanel
+starts (from roughly 0.6 ug/mL at the baseline visits to 0.6-0.7 ug/mL at
+visits 6-8), less than the 35-55% rise the 26% clearance reduction implies
+at the typical value.
+The final oxcarbazepine model also over-predicted low concentrations in
+its goodness-of-fit plots (Supplement), and the parent drug, with a short
+half-life, is a poor fit to a steady-state assumption when sampling time is
+unknown. The model is reproduced as published.
+
+# Assumptions and deviations
+
+* **Covariate equations are not printed.** The relative-additive bracket,
+  the uncentred `WT / 70` weight term and the absolute carbamazepine dose
+  term were deduced from Table 2 and Figure 1 as shown above. Oxcarbazepine,
+  clobazam, valproic acid and lamotrigine reproduce Table 2 exactly; the
+  levetiracetam and topiramate weight terms and the clonazepam,
+  phenobarbital and zonisamide indicators have no Table 2 cell and use the
+  same form by analogy, since one analyst fitted all models. For the three
+  indicator-only models the Results text fixes the sign of every effect,
+  which excludes reading the coefficients as multiplicative factors (the
+  clonazepam valproic-acid coefficient 0.785 is an increase).
+* **Reference weight.** The weight term needs `WT / WTref = 1` at the
+  Table 2 typical value; the reference itself is not printed and 70 kg is
+  used.
+* **Carbamazepine valproic-acid term.** Its placement (in the relative
+  bracket that multiplies the dose-dependent clearance) is not
+  identifiable from the published numbers; Table 2 has no valproic-acid
+  cell.
+* **Perampanel concentration unit (clobazam).** Not printed; ng/mL is
+  assumed. The implied concentrations behind Table 2 (about 270 and
+  330 ng/mL) are plausible.
+* **Lamotrigine at 0 mg perampanel.** The `ln(dose)` term is undefined at
+  0 mg; the model uses `ln(max(dose, 1))`, which is 0 for placebo and the
+  exact logarithm for every studied dose (2-12 mg).
+* **Residual error is read as a variance.** Each supplemental table
+  prints the residual "proportional" row in the same "Final estimate"
+  column as the IIV and IOV variances, whose %CV is the square root in every
+  table. For carbamazepine (0.0167, 12.9%) and zonisamide (0.0141, 11.9%) the
+  printed %CV is also the square root; for the other drugs it is 100 times
+  the estimate (for example lamotrigine 0.0193, "1.9%"), which would make
+  the residual error of a sparse clinical assay 1-3%. `propSd` is
+  therefore `sqrt(estimate)` for every model.
+* **Additive residual components.** The Supplement says a combined
+  proportional and additive error was used for most drugs, but only the
+  proportional row is printed. Only proportional error is packaged.
+* **Clonazepam Table S3 copy errors.** The SEE, 95% CI and %CV columns of
+  Table S3 repeat Table S2 (clobazam) verbatim, including a 95% CI of
+  3.041-6.479 around an estimate of 2.53, and Table 2 repeats the clobazam
+  IIV/IOV %CV (70.5 / 16.1). The estimates themselves differ from Table S2
+  and are used; the implied %CVs are 62.3 (IIV) and 22.6 (IOV).
+* **Oxcarbazepine IOV.** The Results give 41% where Table S6 and Table 2
+  give 44.2%; the variance 0.195 (sqrt = 44.2%) is used.
+* **Phenytoin not packaged.** The Methods state that phenytoin was fitted
+  with a Michaelis-Menten model (Vmax, Km) and the Results that its
+  clearance rose with its own daily dose, but Table S8 prints only a
+  "Phenytoin clearance" of 0.129 L/h with oxcarbazepine and zonisamide
+  effects: no Vmax, no Km and no dose term. Read as `Css = R0 / CL`, 0.129
+  L/h gives about 97 ug/mL at 300 mg/day against Figure 1H's median of
+  about 15 ug/mL. The published parameters do not define a usable model.
+* **Bioavailability.** All clearances are apparent (CL/F); F is not
+  separable from CL in these data.
+* **Bracket positivity.** The clobazam bracket
+  `1 - 0.387 SEXF - 0.312 WT/70 + ...` reaches zero for a female heavier
+  than about 137 kg, outside the cohort (mean 67.9, SD 17.3 kg).
+* **Errata.** A EuropePMC search (2026-11-24) found no erratum or
+  correction for this article.
