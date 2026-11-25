@@ -5794,6 +5794,8 @@ navbar:
         href: articles/Nagy_2017_obiltoxaximab.html
       - text: "Obinutuzumab (Gibiansky 2014)"
         href: articles/Gibiansky_2014_obinutuzumab.html
+      - text: "Obinutuzumab (Gibiansky 2019)"
+        href: articles/Gibiansky_2019_obinutuzumab.html
       - text: "Octreotide (Glatard 2025)"
         href: articles/Glatard_2025_octreotide.html
       - text: "Octreotide (Kapralos 2021)"
@@ -10206,6 +10208,7 @@ articles:
   - articles/Gibiansky_2005_fospropofol
   - articles/Gibiansky_2010_mab_two_target_tmdd
   - articles/Gibiansky_2014_obinutuzumab
+  - articles/Gibiansky_2019_obinutuzumab
   - articles/Gibiansky_2021_rituximab
   - articles/Gibiansky_2022_tisotumab
   - articles/Gidal_2018_eslicarbazepine_exposure_response

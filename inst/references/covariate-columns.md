@@ -12985,8 +12985,41 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** 0 = all other tumor types (in Gibiansky 2014 the implicit reference is CLL when paired with `TUMTP_BCL` and `TUMTP_DLBCL` all = 0).
 - **Source aliases:**
   - `DIS` (Gibiansky 2014; integer code with `DIS == 4` flagging MCL) -- decompose into `TUMTP_MCL = as.integer(DIS == 4)`.
-- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; separate effect on CL_T and CL_inf via the standalone MCL indicator (ratio 1.75, i.e., 75% higher CL than CLL)).
+- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; separate effect on CL_T and CL_inf via the standalone MCL indicator (ratio 1.75, i.e., 75% higher CL than CLL)); `Gibiansky_2019_obinutuzumab.R` (reference FL or DLBCL; factors 2.80 on CL_T and 2.07 on CL_inf).
 - **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (broader lymphoma pool). The Gibiansky 2014 cohort had only 20 MCL patients (2.9%); the paper reports the highest obinutuzumab CL among the four B-cell-malignancy histologies for MCL, consistent with the highest CD20 expression density on MCL B-cells relative to the other histologies.
+
+### TUMTP_CLL (**canonical for chronic lymphocytic leukaemia tumor-type indicator**)
+- **Description:** 1 = chronic lymphocytic leukaemia (CLL), 0 = other tumor types. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (in Gibiansky 2019 the reference is FL or DLBCL).
+- **Source aliases:**
+  - Disease type `CLL` (Gibiansky 2019 Table S2 and Table S5 rows `CL T,CLL`, `CL CLL`) -- decompose a disease-type column into `TUMTP_CLL = as.integer(disease == "CLL")`.
+- **Example models:** `Gibiansky_2019_obinutuzumab.R` (factors 2.25 on CL_T and 1.47 on CL_inf).
+- **Notes:** Follows the `TUMTP_<type>` decomposition. Small lymphocytic lymphoma (SLL), the nodal form of the same disease, has its own indicator `TUMTP_SLL` because Gibiansky 2019 classed it as an indolent NHL subtype with a separate effect. Distinct from `TUMTP_LEUK` (all leukaemias pooled).
+
+### TUMTP_SLL (**canonical for small lymphocytic lymphoma tumor-type indicator**)
+- **Description:** 1 = small lymphocytic lymphoma (SLL), 0 = other tumor types. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (in Gibiansky 2019 the reference iNHL subtype is FL).
+- **Source aliases:**
+  - iNHL subtype `SLL` (Gibiansky 2019 Table S2 and Table S5 row `CL SLL`).
+- **Example models:** `Gibiansky_2019_obinutuzumab.R` (factor 1.38 on CL_inf).
+- **Notes:** A subtype of indolent non-Hodgkin lymphoma in the source; kept separate from `TUMTP_CLL` (see there). Use a pooled CLL/SLL indicator only when a source pools them.
+
+### TUMTP_MZL (**canonical for marginal zone lymphoma tumor-type indicator**)
+- **Description:** 1 = marginal zone lymphoma (MZL), 0 = other tumor types. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (in Gibiansky 2019 the reference iNHL subtype is FL).
+- **Source aliases:**
+  - iNHL subtype `MZL` (Gibiansky 2019 Table S2, Table 1 and Table S5 row `K des,MZL`).
+- **Example models:** `Gibiansky_2019_obinutuzumab.R` (factor 0.299 on the decay rate k_des of the time-dependent clearance; CL_T half-life 21.1 days).
+- **Notes:** Follows the `TUMTP_<type>` decomposition. `DIS_OTHER_HEME` may pool MZL with other histologies; use `TUMTP_MZL` when the source names MZL on its own.
 
 ### TUMTP_FL (**canonical for follicular lymphoma indicator**)
 - **Description:** 1 = follicular lymphoma (FL), 0 = other tumor types. Time-fixed per subject. FL is the most common indolent non-Hodgkin lymphoma (NHL) subtype, derived from germinal-center B cells and characterized by the t(14;18) BCL2-IGH translocation in most cases.
@@ -15282,7 +15315,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** 0 (no CHOP or CHOP-like backbone).
 - **Source aliases:**
   - `CHOP/CHOP-like` -- Li 2017 Table 1 `Type of treatment` block and Table S1 coefficient row.
-- **Example models:** `Li_2017_nhl_pfs_mbma.R` (study-arm-level; log-linear coefficient +0.819 on the Weibull scale `lambda` of progression-free survival, i.e. `exp(0.819) = 2.27`-fold longer median PFS time).
+- **Example models:** `Li_2017_nhl_pfs_mbma.R` (study-arm-level; log-linear coefficient +0.819 on the Weibull scale `lambda` of progression-free survival, i.e. `exp(0.819) = 2.27`-fold longer median PFS time); `Gibiansky_2019_obinutuzumab.R` (patient-level; factor 0.309 on the obinutuzumab time-dependent-clearance decay rate k_des).
 - **Notes:** A regimen-composite indicator in the `CONMED_<regimen>` sub-family alongside `CONMED_AVD` and `CONMED_EOX`, not a single-INN column. **`CHOP-like` is deliberately pooled with CHOP** because that is how the founding source modelled it: Li 2017 Methods defines CHOP-like as a regimen sharing 3 of the 4 CHOP drugs, and no finer decomposition is recoverable from the paper. A model needing a strict-CHOP-only column must register a separate canonical rather than narrowing this one. Not mutually exclusive with `CONMED_RITUX`: an R-CHOP arm carries both at 1 and receives both coefficients additively. Distinct from `CONMED_DOXORUBICIN` and `CONMED_EPIRUBICIN`, which record a single anthracycline rather than the four-drug regimen.
 
 ### CONMED_BENDAMUSTINE (**canonical for concomitant bendamustine coadministration indicator**)
@@ -15293,8 +15326,19 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** 0 (no bendamustine).
 - **Source aliases:**
   - `Bendamustine` -- Li 2017 Table 1 `Type of treatment` block and Table S1 coefficient row.
-- **Example models:** `Li_2017_nhl_pfs_mbma.R` (study-arm-level; log-linear coefficient +1.39 on the Weibull scale `lambda` of progression-free survival, i.e. `exp(1.39) = 4.01`-fold longer median PFS time -- the largest treatment effect in that model).
+- **Example models:** `Li_2017_nhl_pfs_mbma.R` (study-arm-level; log-linear coefficient +1.39 on the Weibull scale `lambda` of progression-free survival, i.e. `exp(1.39) = 4.01`-fold longer median PFS time -- the largest treatment effect in that model); `Gibiansky_2019_obinutuzumab.R` (patient-level; factor 0.591 on the obinutuzumab time-dependent-clearance decay rate k_des).
 - **Notes:** Standard `CONMED_<INN>` member. In the founding model this is the **smallest** treatment stratum (11 of 155 cohorts, 7%), which is why its coefficient is also the least stable: it moves from 1.39 in the final model to 0.526 (RSE 54%) in that paper's complete-covariate sensitivity analysis. Treat the point estimate accordingly.
+
+### CONMED_FC (**canonical for concomitant fludarabine + cyclophosphamide (FC) chemotherapy indicator**)
+- **Description:** 1 = the regimen includes the fludarabine + cyclophosphamide (FC) combination, 0 = otherwise. A regimen-composite indicator in the `CONMED_<regimen>` sub-family alongside `CONMED_CHOP`, `CONMED_AVD` and `CONMED_EOX`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no FC).
+- **Source aliases:**
+  - `Received fludarabine + cyclophosphamide`, `K des,fludarabine/cyclophosphamide` -- Gibiansky 2019 Table 1 and Table S5.
+- **Example models:** `Gibiansky_2019_obinutuzumab.R` (factor 2.64 on the decay rate k_des of the obinutuzumab time-dependent clearance; CL_T half-life 2.4 days with FC versus 6.3 days without partner chemotherapy).
+- **Notes:** Use for the two-drug FC backbone given as one regimen. A model with separate fludarabine and cyclophosphamide effects uses `CONMED_<INN>` columns instead. Rituximab added to FC (FCR) is carried by a separate rituximab indicator, not folded into this one.
 
 ### CONMED_NONCHEMO_OTHER (**canonical for residual 'other non-chemotherapy anticancer drug' coadministration indicator**)
 - **Description:** 1 = the regimen includes at least one non-chemotherapy anticancer agent that the source did not model as its own level, 0 = otherwise. A residual-bucket indicator whose membership is defined by the source's own enumeration.

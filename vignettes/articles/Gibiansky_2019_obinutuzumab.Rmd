@@ -1,0 +1,590 @@
+---
+title: "Obinutuzumab in B-cell malignancies, GADOLIN update (Gibiansky 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Obinutuzumab in B-cell malignancies, GADOLIN update (Gibiansky 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Gibiansky_2019_obinutuzumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Gibiansky_2019_obinutuzumab"))$description`
+* Article: <https://doi.org/10.1111/bcp.13974> (open access; the parameter
+  estimates of the final model are in Supplementary Table S5)
+
+Obinutuzumab is a glycoengineered type II anti-CD20 IgG1 antibody. Gibiansky
+2019 updated the population PK model of Gibiansky 2014 (packaged as
+`Gibiansky_2014_obinutuzumab`) with the phase III GADOLIN study
+(obinutuzumab plus bendamustine in rituximab-refractory indolent non-Hodgkin
+lymphoma) and the phase II GATHER study (obinutuzumab plus CHOP in diffuse
+large B-cell lymphoma), and used it to derive exposure for GADOLIN
+exposure-response analyses. The structure is unchanged from 2014: two
+compartments, and a total clearance made of a time-independent component
+`CL_inf` and a time-dependent component `CL_T` that decays exponentially with
+time since the first dose as CD20+ target cells are depleted:
+
+`CL(t) = CL_T * exp(-k_des * t) + CL_inf`
+
+The covariate model is new. Body weight, albumin, age, sex, disease type and
+indolent lymphoma subtype, and baseline tumour size act on the clearances;
+the partner chemotherapy (CHOP, bendamustine, or fludarabine +
+cyclophosphamide) and marginal zone lymphoma act on the decay rate `k_des`.
+
+# Population
+
+The analysis pooled 16,301 serum concentrations from 961 patients in six
+studies (Table S1): GAUSS (105), GAUGUIN (131), GAUDI (134), CLL11 (308),
+GADOLIN (183) and GATHER (100). Disease types were CLL (342), indolent NHL
+(469: follicular lymphoma 406, marginal zone lymphoma 35, small lymphocytic
+lymphoma 22, Waldenstrom macroglobulinaemia 5), DLBCL (130) and mantle cell
+lymphoma (20). Mean (SD) age was 64.1 (12.2) years, weight 77.4 (16.3) kg,
+albumin 40.3 (5.18) g/L and baseline tumour size 4900 (5760) mm^2 (Table
+S4). Intravenous doses ranged from 50 to 2000 mg. The sex distribution is not
+reported.
+
+The same information is available programmatically via
+`readModelDb("Gibiansky_2019_obinutuzumab")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. The
+table below collects them. The paper prints the parameter values (Table S5)
+and the effect sizes at reference and illustrative covariate values (Table 1)
+but no model code; the functional forms below are the ones that reproduce
+every row of Table 1 (checked in the next section).
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl_exp_kdes` (k_des) | log(0.11 1/day) | Table S5; half-life 6.3 days (Results) |
+| `lcl_exp_component` (CL_T) | log(0.154 L/day) | Table S5 |
+| `lcl_exp_inf` (CL_inf) | log(0.0742 L/day) | Table S5; "74 mL/day" (Results) |
+| `lvc` (V1) | log(2.72 L) | Table S5 |
+| `lvp` (V2) | log(1.23 L) | Table S5 |
+| `lq` (Q) | log(1.32 L/day) | Table S5 |
+| `e_wt_cl_exp_inf`, `e_wt_vc`, `e_wt_vp` | 0.639, 0.378, 1.08 | Table S5; `(WT/75)^theta` (Table 1) |
+| `e_alb_cl_exp_inf` | -0.682 | Table S5; `(ALB/40)^theta` (Table 1) |
+| `e_age_cl_exp_inf` | -0.241 | Table S5; `(AGE/65)^theta` (Table 1) |
+| `e_tumsz_cl_exp_inf`, `e_tumsz_cl_exp_component` | 0.09, 0.351 | Table S5; `(BSIZ/3000)^theta` (Table 1) |
+| `e_sex_cl_exp_inf`, `e_sex_cl_exp_component`, `e_sex_vc` | 1.18, 1.45, 1.19 | Table S5; male vs female reference (Table 1) |
+| `e_tumtp_cll_cl_exp_inf`, `e_tumtp_sll_cl_exp_inf`, `e_tumtp_mcl_cl_exp_inf` | 1.47, 1.38, 2.07 | Table S5; vs FL or DLBCL (Table 1) |
+| `e_tumtp_cll_cl_exp_component`, `e_tumtp_mcl_cl_exp_component` | 2.25, 2.80 | Table S5; vs FL or DLBCL (Table 1) |
+| `e_conmed_chop_cl_exp_kdes`, `e_conmed_bendamustine_cl_exp_kdes`, `e_conmed_fc_cl_exp_kdes` | 0.309, 0.591, 2.64 | Table S5; Table 1 |
+| `e_tumtp_mzl_cl_exp_kdes` | 0.299 | Table S5; Table 1 |
+| `sdL`, `sdH`, `sd50` | 1.77, 0.111, 8.26 ug/mL | Table S5 and its footnote |
+| `etalcl_exp_kdes` ... `etalq` | 0.82, 1.21, 0.199, 0.0341, 0.23, 0.956 | Table S5 omega^2 |
+| `etaRUV` | 0.224 | Table S5 omega^2 EPS, IIV on the residual SD |
+| `cl <- cl_exp_component * exp(-cl_exp_kdes * time) + cl_exp_inf` | n/a | Methods, "Population PK analysis" |
+| `d/dt(central)`, `d/dt(peripheral1)` | n/a | Methods ("2-compartment model") |
+| `w <- (sdL - (sdL - sdH) * Cc / (sd50 + Cc)) * exp(etaRUV)`; `Cc ~ lnorm(w)` | n/a | Table S5 footnote (exponential residual error; SD = (sdH + sdL)/2 at sd50) |
+
+# Deterministic checks of the model file
+
+## Covariate effects (Table 1)
+
+Table 1 lists the percentage change of each parameter at the 2.5th and 97.5th
+percentiles of the continuous covariates, and for each category, relative to
+the reference subject (65-year-old woman with FL or DLBCL, 75 kg, albumin
+40 g/L, tumour size 3000 mm^2, no partner chemotherapy). These follow from the
+typical values alone.
+
+```{r table1}
+mod <- readModelDb("Gibiansky_2019_obinutuzumab")
+
+ref <- data.frame(
+  WT = 75, ALB = 40, AGE = 65, SEXF = 1, TUMSZ = 3000,
+  TUMTP_CLL = 0, TUMTP_MCL = 0, TUMTP_SLL = 0, TUMTP_MZL = 0,
+  CONMED_CHOP = 0, CONMED_BENDAMUSTINE = 0, CONMED_FC = 0
+)
+scen <- tibble::tribble(
+  ~parameter, ~covariate, ~value, ~published,
+  "cl_exp_inf", "WT", 52, -20.9,
+  "cl_exp_inf", "WT", 115, 31.4,
+  "cl_exp_inf", "ALB", 28.7, 25.4,
+  "cl_exp_inf", "ALB", 48.7, -12.6,
+  "cl_exp_inf", "SEXF", 0, 17.6,
+  "cl_exp_inf", "TUMTP_CLL", 1, 46.9,
+  "cl_exp_inf", "TUMTP_SLL", 1, 38,
+  "cl_exp_inf", "TUMTP_MCL", 1, 106.9,
+  "cl_exp_inf", "AGE", 38, 13.8,
+  "cl_exp_inf", "AGE", 83, -5.7,
+  "cl_exp_inf", "TUMSZ", 304, -18.6,
+  "cl_exp_inf", "TUMSZ", 22400, 19.8,
+  "cl_exp_component", "SEXF", 0, 45.1,
+  "cl_exp_component", "TUMTP_CLL", 1, 125.1,
+  "cl_exp_component", "TUMTP_MCL", 1, 180.3,
+  "cl_exp_component", "TUMSZ", 304, -55.2,
+  "cl_exp_component", "TUMSZ", 22400, 102.3,
+  "vc", "WT", 52, -12.9,
+  "vc", "WT", 115, 17.5,
+  "vc", "SEXF", 0, 19.4,
+  "vp", "WT", 52, -32.6,
+  "vp", "WT", 115, 58.4,
+  "cl_exp_kdes", "CONMED_CHOP", 1, -69.1,
+  "cl_exp_kdes", "CONMED_FC", 1, 164.4,
+  "cl_exp_kdes", "CONMED_BENDAMUSTINE", 1, -40.9,
+  "cl_exp_kdes", "TUMTP_MZL", 1, -70.1
+)
+
+# One subject per scenario (id 1 is the reference subject); a single
+# observation at time 0 returns the individual parameters.
+cov_rows <- ref[rep(1, nrow(scen) + 1), ]
+for (i in seq_len(nrow(scen))) {
+  cov_rows[i + 1, scen$covariate[i]] <- scen$value[i]
+}
+ev_par <- cbind(id = seq_len(nrow(cov_rows)), time = 0, evid = 0, cmt = "central", cov_rows)
+par <- rxode2::rxSolve(mod, ev_par, omega = NA, returnType = "data.frame")
+stopifnot(nrow(par) == nrow(scen) + 1)
+
+scen$model <- vapply(seq_len(nrow(scen)), function(i) {
+  100 * (par[[scen$parameter[i]]][i + 1] / par[[scen$parameter[i]]][1] - 1)
+}, numeric(1))
+
+scen |>
+  dplyr::mutate(model = round(model, 1)) |>
+  dplyr::rename(
+    "Parameter" = parameter, "Covariate" = covariate, "Covariate value" = value,
+    "Published change (%)" = published, "Model change (%)" = model
+  ) |>
+  knitr::kable(caption = "Covariate effects: model versus Table 1 of Gibiansky 2019.")
+
+# Table 1 is computed from unrounded estimates and printed to one decimal;
+# Table S5 rounds the factors to 3 significant digits. The largest
+# difference is 0.4 points (for example V1 in men: factor 1.19 printed,
+# +19.4% in Table 1).
+stopifnot(max(abs(scen$model - scen$published)) < 0.75)
+```
+
+## Half-life of the time-dependent clearance
+
+The Results give the half-life of the `CL_T` decay, `log(2) / k_des`, for the
+reference subject (6.3 days) and for several disease and treatment groups.
+
+```{r kdes-half-lives}
+ref_par <- par[1, ]
+kdes_ref <- ref_par$cl_exp_kdes
+theta <- rxode2::rxode(mod)$theta
+half_lives <- tibble::tribble(
+  ~group, ~factor, ~published,
+  "Reference (FL or DLBCL, no partner chemotherapy)", 1, 6.3,
+  "Marginal zone lymphoma", theta[["e_tumtp_mzl_cl_exp_kdes"]], 21.1,
+  "CLL treated with chlorambucil (Results) = CHOP factor (Table S5)", theta[["e_conmed_chop_cl_exp_kdes"]], 20.4,
+  "iNHL treated with bendamustine", theta[["e_conmed_bendamustine_cl_exp_kdes"]], 10.7,
+  "FL treated with fludarabine + cyclophosphamide", theta[["e_conmed_fc_cl_exp_kdes"]], 2.4
+) |>
+  dplyr::mutate(model = log(2) / (kdes_ref * factor))
+
+half_lives |>
+  dplyr::transmute(group, published, model = round(model, 2)) |>
+  dplyr::rename("Group" = group, "Published half-life (day)" = published, "Model half-life (day)" = model) |>
+  knitr::kable(caption = "Half-life of the time-dependent clearance, model versus Results.")
+
+stopifnot(max(abs(half_lives$model - half_lives$published)) < 0.1)
+```
+
+All five values agree. The fourth row needs a comment. The Results attribute
+the 20.4-day half-life to "CLL treated with chlorambucil", but Tables 1 and
+S5 list no chlorambucil or CLL effect on `k_des`. The 20.4 days is exactly
+the CHOP factor (0.309) applied to the reference `k_des`. The library model
+follows the tables: `CONMED_CHOP` carries the 0.309 factor, and a CLL patient
+on chlorambucil gets the reference `k_des` (half-life 6.3 days). See
+Assumptions and deviations.
+
+## Residual error
+
+The Table S5 footnote defines `sigma_50` as the concentration at which the SD
+of the exponential residual error is `(sigma_H + sigma_L) / 2`. The hyperbolic
+form in the model meets that definition:
+
+```{r residual-check}
+w_at <- function(conc) {
+  theta[["sdL"]] - (theta[["sdL"]] - theta[["sdH"]]) * conc / (theta[["sd50"]] + conc)
+}
+stopifnot(abs(w_at(theta[["sd50"]]) - (theta[["sdL"]] + theta[["sdH"]]) / 2) < 1e-12)
+knitr::kable(data.frame(
+  `Concentration (ug/mL)` = c(1, 8.26, 100, 400),
+  `Log-scale residual SD` = round(w_at(c(1, 8.26, 100, 400)), 3),
+  check.names = FALSE
+), caption = "Typical residual SD (before the etaRUV random effect) at selected concentrations.")
+```
+
+# Replicate Figure S3: typical-value predictions in FL
+
+Supplementary Figure S3 shows "predictive simulations" of the iNHL regimen
+in follicular lymphoma: 1000 mg on days 0, 7, 14, 28, 56, 84, 112 and 140,
+then on days 200, 260, 320 and 380 (Supplementary Methods). Panel A compares
+women and men, panel B disease types under obinutuzumab monotherapy, and
+panel C the partner chemotherapies. The curves turn out to be typical-value
+profiles at the Table 1 reference covariates: the female monotherapy curve
+of panel A passes within a few percent of the reference subject at every
+trough. The maintainers digitised the curves from the supplement images by
+pixel colour, at 0.5-1 day before each dose and at day 300.
+
+```{r figure-s3-sim}
+dose_times <- c(0, 7, 14, 28, 56, 84, 112, 140, 200, 260, 320, 380)
+# Infusion duration is not reported; 4 h is used for every infusion.
+inf_dur <- 4 / 24
+
+s3_scen <- list(
+  "Women (reference)" = list(),
+  "Men" = list(SEXF = 0),
+  "MCL" = list(TUMTP_MCL = 1),
+  "SLL" = list(TUMTP_SLL = 1),
+  "MZL" = list(TUMTP_MZL = 1),
+  "CLL" = list(TUMTP_CLL = 1),
+  "With CHOP" = list(CONMED_CHOP = 1),
+  "With FC" = list(CONMED_FC = 1),
+  "With bendamustine" = list(CONMED_BENDAMUSTINE = 1)
+)
+obs_s3 <- sort(unique(c(seq(0, 301, by = 0.25), 6.5, 27.5, 55.5, 83.5, 111.5, 139.5, 199, 259)))
+ev_s3 <- dplyr::bind_rows(lapply(seq_along(s3_scen), function(i) {
+  cv <- ref
+  for (k in names(s3_scen[[i]])) cv[[k]] <- s3_scen[[i]][[k]]
+  doses <- data.frame(time = dose_times[dose_times <= 300], evid = 1L, amt = 1000, cmt = "central")
+  doses$rate <- doses$amt / inf_dur
+  obs <- data.frame(time = obs_s3, evid = 0L, amt = 0, cmt = "central", rate = 0)
+  ev <- rbind(doses, obs)
+  cbind(id = i, scenario = names(s3_scen)[i], ev, cv[rep(1, nrow(ev)), ])
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_s3, keep = "scenario", returnType = "data.frame")
+stopifnot(all(typ$Cc >= 0))
+
+panel <- c(
+  "Women (reference)" = "A: sex", "Men" = "A: sex",
+  "MCL" = "B: disease type", "SLL" = "B: disease type", "MZL" = "B: disease type", "CLL" = "B: disease type",
+  "With CHOP" = "C: partner chemotherapy", "With FC" = "C: partner chemotherapy",
+  "With bendamustine" = "C: partner chemotherapy"
+)
+typ |>
+  dplyr::mutate(panel = panel[scenario]) |>
+  dplyr::bind_rows(
+    typ |>
+      dplyr::filter(scenario == "Women (reference)") |>
+      dplyr::mutate(scenario = "FL monotherapy (reference)", panel = "B: disease type"),
+    typ |>
+      dplyr::filter(scenario == "Women (reference)") |>
+      dplyr::mutate(scenario = "Monotherapy (reference)", panel = "C: partner chemotherapy")
+  ) |>
+  ggplot(aes(time / 7, Cc, colour = scenario)) +
+  geom_line() +
+  facet_wrap(~panel, ncol = 1) +
+  labs(
+    x = "Time (weeks)", y = "Concentration (ug/mL)", colour = NULL,
+    caption = "Replicates Figure S3 A-C of Gibiansky 2019 (typical-value profiles)."
+  )
+```
+
+```{r figure-s3-compare}
+digitised <- tibble::tribble(
+  ~scenario, ~time, ~published,
+  "Women (reference)", 6.5, 196, "Women (reference)", 27.5, 445,
+  "Women (reference)", 55.5, 401, "Women (reference)", 83.5, 393,
+  "Women (reference)", 111.5, 385, "Women (reference)", 139.5, 379,
+  "Women (reference)", 199, 211, "Women (reference)", 300, 194,
+  "Men", 6.5, 161, "Men", 27.5, 371, "Men", 55.5, 340, "Men", 83.5, 331,
+  "Men", 111.5, 325, "Men", 139.5, 316, "Men", 199, 174, "Men", 300, 161,
+  "MCL", 27.5, 247, "MCL", 55.5, 165, "MCL", 83.5, 149, "MCL", 111.5, 141,
+  "MCL", 139.5, 128, "MCL", 300, 63,
+  "SLL", 27.5, 385, "SLL", 55.5, 298, "SLL", 83.5, 273, "SLL", 111.5, 256,
+  "SLL", 139.5, 244, "SLL", 199, 104, "SLL", 300, 116,
+  "MZL", 27.5, 336, "MZL", 55.5, 257, "MZL", 111.5, 298, "MZL", 139.5, 321,
+  "MZL", 199, 182,
+  "With CHOP", 27.5, 339, "With CHOP", 55.5, 266, "With CHOP", 83.5, 283,
+  "With CHOP", 111.5, 305, "With CHOP", 139.5, 326,
+  "With FC", 27.5, 495, "With FC", 55.5, 443, "With FC", 83.5, 412,
+  "With FC", 111.5, 392, "With FC", 139.5, 379,
+  "With bendamustine", 27.5, 400, "With bendamustine", 55.5, 352,
+  "With bendamustine", 83.5, 356, "With bendamustine", 111.5, 368,
+  "With bendamustine", 139.5, 363
+)
+s3_cmp <- digitised |>
+  dplyr::inner_join(typ[, c("scenario", "time", "Cc")], by = c("scenario", "time")) |>
+  dplyr::mutate(pct_diff = 100 * (Cc / published - 1))
+stopifnot(nrow(s3_cmp) == nrow(digitised))
+
+s3_cmp |>
+  dplyr::mutate(Cc = round(Cc), pct_diff = round(pct_diff, 1)) |>
+  dplyr::rename(
+    "Scenario" = scenario, "Day" = time, "Figure S3 (ug/mL)" = published,
+    "Model (ug/mL)" = Cc, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Typical-value troughs: model versus digitised Figure S3.")
+
+# The comparison is deterministic (typical values, no random effects); the
+# residual differences are digitisation error, largest at the steep day-6.5
+# points. A wrong factor, exponent or reference value moves a whole scenario
+# by tens of percent.
+stopifnot(
+  abs(median(s3_cmp$pct_diff)) < 3,
+  quantile(abs(s3_cmp$pct_diff), 0.9) < 6
+)
+```
+
+Every scenario, including the slower decay of `CL_T` with CHOP and MZL
+(troughs rising over cycles 2-6) and the faster decay with FC, reproduces the
+supplement figure. The digitised CLL curve is dashed and overlaps the others,
+so it is plotted but not tabulated.
+
+# Virtual GADOLIN cohort
+
+The exposure-response analyses used follicular lymphoma patients treated
+with obinutuzumab plus bendamustine in GADOLIN. The cohort below has 200
+virtual FL patients on bendamustine with covariates drawn to match the
+GADOLIN column of Table S4: age 61.7 (SD 11.2) years, weight 80.8 (17.2) kg,
+albumin 39.9 (4.8) g/L and tumour size 4500 (4460) mm^2 (log-normal). The
+paper does not report sex; half the cohort is female. The random effects
+come from R's random number generator (a Latin hypercube over the
+standard-normal marginals, scaled by the Table S5 variances) and the solve
+uses `omega = NA`, so the cohort is identical on any machine or solver
+thread count.
+
+```{r cohort}
+set.seed(20190501)
+n <- 200
+lognormal <- function(n, m, s, lo, hi) {
+  sdlog <- sqrt(log(1 + (s / m)^2))
+  pmin(pmax(exp(rnorm(n, log(m) - sdlog^2 / 2, sdlog)), lo), hi)
+}
+subjects <- data.frame(
+  sid = seq_len(n),
+  SEXF = sample(rep(0:1, length.out = n)),
+  WT = pmin(pmax(rnorm(n, 80.8, 17.2), 45), 150),
+  ALB = pmin(pmax(rnorm(n, 39.9, 4.8), 25), 52),
+  AGE = pmin(pmax(rnorm(n, 61.7, 11.2), 25), 90),
+  TUMSZ = lognormal(n, 4500, 4460, 100, 40000),
+  TUMTP_CLL = 0, TUMTP_MCL = 0, TUMTP_SLL = 0, TUMTP_MZL = 0,
+  CONMED_CHOP = 0, CONMED_BENDAMUSTINE = 1, CONMED_FC = 0
+)
+
+omega <- rxode2::rxode(mod)$omega
+z <- vapply(seq_len(ncol(omega)), function(j) qnorm((sample.int(n) - 0.5) / n), numeric(n))
+etas <- z %*% chol(omega)
+colnames(etas) <- colnames(omega)
+subjects <- cbind(subjects, etas)
+
+subjects |>
+  dplyr::summarise(dplyr::across(c(AGE, WT, ALB, TUMSZ), ~ sprintf("%.3g (%.3g)", mean(.x), sd(.x)))) |>
+  dplyr::mutate(`Female (%)` = 100 * mean(subjects$SEXF)) |>
+  knitr::kable(caption = "Virtual cohort, mean (SD). Table S4 GADOLIN: age 61.7 (11.2) years, weight 80.8 (17.2) kg, albumin 39.9 (4.8) g/L, tumour size 4500 (4460) mm^2.")
+```
+
+```{r events}
+# Dense sampling through induction (for the induction-period Cmean) and a
+# 180-day washout after the last maintenance dose (for the terminal
+# half-life).
+obs_times <- sort(unique(c(
+  seq(0, 168, by = 0.5), seq(170, 380, by = 2), seq(382, 560, by = 2),
+  dose_times + inf_dur
+)))
+events <- dplyr::bind_rows(lapply(seq_len(n), function(i) {
+  s <- subjects[i, ]
+  doses <- data.frame(time = dose_times, evid = 1L, amt = 1000, cmt = "central", rate = 1000 / inf_dur)
+  obs <- data.frame(time = obs_times, evid = 0L, amt = 0, cmt = "central", rate = 0)
+  ev <- rbind(doses, obs)
+  cbind(id = i, treatment = "G-Benda", ev, s[rep(1, nrow(ev)), names(s) != "sid"])
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events, omega = NA, keep = "treatment", returnType = "data.frame")
+stopifnot(all(sim$Cc >= 0))
+
+# The supplied random effects are applied: the realised between-subject SD
+# of log(CL_T), after removing the covariate effects, equals sqrt(omega^2).
+first_row <- sim[!duplicated(sim$id), ]
+stopifnot(abs(sd(first_row$etalcl_exp_component) - sqrt(1.21)) < 0.05)
+
+pct <- sim |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95), .groups = "drop")
+ggplot(pct, aes(time / 7)) +
+  geom_line(aes(y = Q50), colour = "red") +
+  geom_line(aes(y = Q05), colour = "navy") +
+  geom_line(aes(y = Q95), colour = "navy") +
+  labs(
+    x = "Time (weeks)", y = "Concentration (ug/mL)",
+    caption = "Virtual GADOLIN FL cohort on bendamustine: median (red), 5th and 95th percentiles (blue); compare Figure S2."
+  )
+```
+
+Figure S2 of the paper is a conditional simulation with the individual
+parameters of the analysis patients, so only its general shape (steady
+state reached by the end of cycle 1, medians of roughly 300-600 ug/mL
+through induction) is comparable with a population simulation.
+
+# Exposure over the induction period (PKNCA)
+
+The exposure-response analyses use `Cmean`, the cumulative AUC from the first
+dose to 28 days after the last induction dose divided by that duration
+(Supplementary Methods); with the nominal regimen this is `AUC(0-168 d) / 168`,
+which PKNCA computes as `cav`. Table 2 gives the `Cmean` tertile boundaries
+in the 128 G-Benda patients of the PFS analysis (141, 313, 400 and
+794 ug/mL), and the Results give its 5th and 95th percentiles (195 and
+604 ug/mL).
+
+```{r pknca-induction}
+conc_ind <- sim |>
+  dplyr::filter(!is.na(Cc), time <= 168) |>
+  dplyr::select(id, treatment, time, Cc)
+dose_all <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, treatment, time, amt)
+stopifnot(all(tapply(conc_ind$time, conc_ind$id, min) == 0))
+
+nca_ind <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_ind, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_all, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = 168, cav = TRUE, cmax = TRUE)
+))
+cmean <- as.data.frame(nca_ind$result) |>
+  dplyr::filter(PPTESTCD == "cav")
+stopifnot(nrow(cmean) == n, !anyNA(cmean$PPORRES))
+
+q_cmp <- data.frame(
+  quantile = c("5th", "33.3rd (lower tertile boundary)", "66.7th (upper tertile boundary)", "95th"),
+  published = c(195, 313, 400, 604),
+  simulated = unname(quantile(cmean$PPORRES, c(0.05, 1 / 3, 2 / 3, 0.95)))
+) |>
+  dplyr::mutate(pct_diff = 100 * (simulated / published - 1))
+q_cmp |>
+  dplyr::mutate(simulated = round(simulated), pct_diff = round(pct_diff, 1)) |>
+  dplyr::rename(
+    "Percentile" = quantile, "Published Cmean (ug/mL)" = published,
+    "Simulated Cmean (ug/mL)" = simulated, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Induction-period Cmean distribution: virtual cohort versus Table 2 and Results.")
+
+# Tertile boundaries are robust quantiles of the cohort; the patients' own
+# dosing delays and reductions are not simulated, so a modest excess is
+# expected. A clearance or dose error moves both boundaries by tens of percent.
+stopifnot(
+  abs(median(q_cmp$pct_diff[2:3])) < 15,
+  max(abs(q_cmp$pct_diff[2:3])) < 20
+)
+```
+
+The tertile boundaries agree within 7%. The simulated tails are wider than
+the published 5th and 95th percentiles (the 5th percentile most of all). The
+published `Cmean` values come from post hoc individual parameters, which are
+shrunk towards the typical values (Table S5 shrinkage 27% for `CL_T` and 26%
+for `k_des`), while the virtual cohort draws the full between-subject
+variability; patients who stopped before five doses were also excluded from
+the published set. The tails are therefore shown but not gated.
+
+# Individual PK parameters and terminal half-life (Table S6)
+
+Table S6 summarises the individual (post hoc) PK parameters of the 406 FL
+patients: median `CL_inf` 0.0821 L/day, `V1` 2.96 L, `Vss` 4.32 L and
+terminal half-life 37.5 days, the last computed after `CL_T` has decayed to
+zero. The virtual cohort gives the same quantities from its individual
+parameters, and PKNCA gives the terminal half-life from the 180-day washout
+after the last maintenance dose, by which time `CL_T` has vanished.
+
+```{r table-s6}
+ind <- first_row |>
+  dplyr::mutate(
+    k10 = cl_exp_inf / vc, k12 = q / vc, k21 = q / vp,
+    a = k10 + k12 + k21,
+    beta = 0.5 * (a - sqrt(a^2 - 4 * k10 * k21)),
+    thalf = log(2) / beta,
+    vss = vc + vp
+  )
+s6 <- data.frame(
+  parameter = c("CL_inf (L/day)", "V1 (L)", "Vss (L)", "Terminal half-life (day)"),
+  published = c(0.0821, 2.96, 4.32, 37.5),
+  simulated = c(median(ind$cl_exp_inf), median(ind$vc), median(ind$vss), median(ind$thalf))
+) |>
+  dplyr::mutate(pct_diff = 100 * (simulated / published - 1))
+s6 |>
+  dplyr::mutate(simulated = signif(simulated, 3), pct_diff = round(pct_diff, 1)) |>
+  dplyr::rename(
+    "Parameter" = parameter, "Table S6 FL median" = published,
+    "Virtual cohort median" = simulated, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Median individual PK parameters: virtual FL cohort versus Table S6.")
+stopifnot(max(abs(s6$pct_diff)) < 15)
+```
+
+```{r pknca-terminal}
+conc_term <- sim |>
+  dplyr::filter(!is.na(Cc), time >= 380) |>
+  dplyr::mutate(time = time - 380) |>
+  dplyr::select(id, treatment, time, Cc)
+dose_term <- dose_all |>
+  dplyr::filter(time == 380) |>
+  dplyr::mutate(time = 0)
+stopifnot(all(tapply(conc_term$time, conc_term$id, min) == 0))
+nca_term <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_term, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_term, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, half.life = TRUE)
+))
+
+reference_s6 <- data.frame(treatment = "G-Benda", PPTESTCD = "half.life", PPORRES = 37.5)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_term,
+  reference = reference_s6,
+  by = "treatment",
+  params = "half.life",
+  units = c(half.life = "day"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Terminal half-life after the last maintenance dose (PKNCA, cohort median) versus the Table S6 FL median. * differs by more than 20%.")
+```
+
+# Assumptions and deviations
+
+* **Covariate functional forms.** The paper prints the estimates (Table S5)
+  and the effect sizes (Table 1) but not the model code. Continuous
+  covariates enter as power functions of the covariate over the Table 1
+  reference (median) value and categorical covariates as multiplicative
+  factors; this reproduces all 26 rows of Table 1 to within 0.4 percentage
+  points (the rounding of Table S5).
+* **Chlorambucil and `k_des`.** The Results quote a 20.4-day `CL_T` half-life
+  for "CLL treated with chlorambucil", which equals the CHOP factor of Table
+  S5 (0.309) on the reference `k_des`. Neither table lists a chlorambucil or
+  CLL effect on `k_des`. The library model follows the tables (the CHOP
+  factor applies to CHOP only), so a CLL patient on chlorambucil gets the
+  reference half-life of 6.3 days. If the analysis pooled chlorambucil with
+  CHOP into one indicator, setting `CONMED_CHOP = 1` for CLL11-type
+  chlorambucil patients would reproduce the 20.4 days quoted in the Results.
+* **Reference sex.** The reference subject is female (Results; Table 1), so
+  the male factors are applied as `theta^(1 - SEXF)`.
+* **Missing covariates.** The paper does not state how missing albumin or
+  tumour size were handled; supply a value for every subject (for example the
+  reference value).
+* **Time origin.** `CL_T` decays with time since the first obinutuzumab dose;
+  simulations must start at the first dose.
+* **Residual error.** The exponential residual error is encoded as a
+  log-scale SD falling from `sdL` to `sdH` with concentration, times
+  `exp(etaRUV)`, the form defined by the Table S5 footnote and used in the
+  authors' later rituximab model (Gibiansky 2021). The paper does not print
+  the equation itself.
+* **IIV.** Table S5 reports variances only; the random effects are
+  independent.
+* **Infusion duration.** Not reported; 4 hours for every infusion.
+* **Virtual cohort.** Covariates were drawn independently from the GADOLIN
+  column of Table S4, with half the cohort female (sex is not reported). The
+  nominal regimen of the Supplementary Methods simulations is used, without
+  the dosing delays and modifications that entered the patients' `Cmean`.
+* **Figure S3 digitisation.** Values were read from the supplement images by
+  pixel colour at 0.5-1 day before each dose and at day 300, calibrated on
+  the axis ticks.
+* **Errata.** No correction notice was found for this article as of
+  2026-11-25 (Crossref).
