@@ -1,0 +1,510 @@
+---
+title: "Gentamicin in infective endocarditis (Gomes 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Gentamicin in infective endocarditis (Gomes 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+```{r load-models}
+models <- c(
+  Endocarditis = "Gomes_2017_gentamicin_endocarditis",
+  ICU = "Gomes_2017_gentamicin_icu",
+  Standard = "Gomes_2017_gentamicin_standard"
+)
+uis <- lapply(models, function(m) rxode2::rxode(readModelDb(m)))
+```
+
+# Model and source
+
+* Citation: `r uis$Endocarditis$reference`
+* Article: <https://doi.org/10.1371/journal.pone.0177324>
+* Open-access full text: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5419648/>
+
+Gomes and colleagues asked which population model should drive Bayesian
+therapeutic drug monitoring (TDM) of gentamicin in adults with infective
+endocarditis. Two MWPharm gentamicin models were in Dutch clinical use -- an
+"ICU model" and a "standard" (non-ICU) model, both from Evers and Vinks -- and
+neither had been built on endocarditis patients. The authors therefore fitted
+a third, the "endocarditis model", to 65 patients from The Hague Hospitals with
+the iterative two-stage Bayesian (ITSB) procedure of MWPharm 3.82, and then
+compared all three on 14 patients from the University Medical Center Groningen.
+
+All three share one structure (Methods, Phase 1):
+
+* one compartment, first-order elimination, intravenous dosing;
+* `CL = CLm * (BW / 70) + fr * CLcr`, a metabolic arm per 70 kg of total body
+  weight plus a renal arm proportional to Cockcroft-Gault creatinine clearance;
+* `V = Vd * LBMc`, a per-kg coefficient on the MWPharm fat-corrected lean body
+  mass.
+
+They differ only in their parameter values (Table 3), so the paper is packaged
+as three model files:
+
+| Model file | Role in the paper |
+|---|---|
+| `Gomes_2017_gentamicin_endocarditis` | The paper's own fit (Table 2, selected row; Table 3). |
+| `Gomes_2017_gentamicin_icu` | Comparator; the model the paper recommends for clinical use and the one simulated in Figures 1 and 2. |
+| `Gomes_2017_gentamicin_standard` | Comparator. |
+
+# Population
+
+The endocarditis model was fitted to 65 adults (21 women, 44 men) with
+infective endocarditis treated at The Hague Hospitals between 2011 and 2013,
+contributing 221 serum gentamicin concentrations (Results, Patient data;
+Table 1). Mean age was 69.3 years (range 32-92), weight 76.2 kg (46-121),
+height 173.9 cm (149-193), and Cockcroft-Gault creatinine clearance
+64.3 mL/min (8.7-157.5), or 58.4 mL/min/1.73 m^2 (7.8-153.2). Patients on
+dialysis were excluded. The validation cohort was 14 patients (3 women) from
+Groningen with 30 samples. Race was not reported. The ICU and standard models
+come from earlier Dutch ICU and ward populations that the paper does not
+describe.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure | one compartment, IV, first-order elimination | Methods, Phase 1 |
+| Clearance | `CL = CLm * (BW / 70) + fr * CLcr` | Methods, Phase 1 |
+| Volume | `V = Vd * LBMc` (L/kg LBMc) | Methods, Phase 1; Table 3 units |
+| LBM | `min(WT, 50 [men] or 45.5 [women] + 2.3 * (HT / 2.54 - 60))` | Back-solved from S1 Data LBM column (formula cited as reference 27, not printed) |
+| LBMc | `LBM + 0.4 * (WT - LBM)` | Back-solved from S1 Data LBMc column (fat correction cited as reference 28, not printed) |
+| CLcr scale | absolute mL/min, times 0.06 to L/h | Table 1 units; Figure 1 (checked below) |
+| Endocarditis CLm | 0.2765 L/h/70 kg, fixed, no IIV | Table 3 (0.277, SD 0); S2 Data |
+| Endocarditis fr | 0.6977, SD 0.3578 | Table 3 (0.698, 0.358); S2 Data |
+| Endocarditis Vd | 0.3115 L/kg LBMc, SD 0.0764 | Table 3 (0.312, 0.076); S2 Data |
+| Endocarditis fr-Vd correlation | 0.310 | S2 Data bootstrap sheet, mean of 1000 resamples |
+| ICU CLm / fr / Vd | 0.2765 (0.1382) / 0.8993 (0.4167) / 0.3347 (0.1043) | Table 3; S2 Data |
+| Standard CLm / fr / Vd | 0.2254 (0.1127) / 0.7272 (0.4709) / 0.2729 (0.0822) | Table 3; S2 Data |
+| IIV | log-normal, `omega^2 = log(1 + (SD / mean)^2)` | Methods, Phase 1 ('distributed log-normally') |
+| Residual error | `SD = 0.0766 + 0.0006 C + 0.0064 C^2` mg/L, fixed | Methods, Gentamicin assay |
+
+```{r param-table}
+param_tbl <- bind_rows(lapply(names(uis), function(nm) {
+  th <- uis[[nm]]$theta
+  data.frame(
+    Model = nm,
+    `CLm (L/h/70 kg)` = exp(th[["lcl_nonren"]]),
+    fr = exp(th[["le_crcl_cl_renal"]]),
+    `Vd (L/kg LBMc)` = exp(th[["lvd"]]),
+    check.names = FALSE
+  )
+}))
+knitr::kable(param_tbl, digits = 4, caption = "Typical values as packaged (Table 3).")
+```
+
+# Lean body mass: a known-answer check against the deposited data
+
+The paper cites the lean-body-mass equation of Chennavasin and Brater and the
+fat correction of Schwartz et al. but prints neither. The S1 Data workbook
+lists, for every modeling-cohort patient, weight, height, sex, `LBM` and
+`LBMc`. The formulas in the model files were back-solved from those columns;
+the chunk below feeds the 65 patients' covariates through the packaged model
+and checks that the volume divided by the volume coefficient reproduces each
+tabulated `LBMc`, including the patients whose lean body mass is capped at
+total body weight.
+
+```{r cohort-data}
+# S1 Data, sheet 'The Hague': the 65 modeling-cohort patients in file order.
+hague <- data.frame(
+  id = 1:65,
+  AGE = c(
+    78, 69, 32, 74, 78, 84, 88, 84, 75, 86, 78, 57, 74, 46, 55, 77, 73, 75, 82,
+    74, 59, 66, 85, 69, 56, 42, 79, 70, 79, 66, 66, 71, 69, 74, 64, 60, 67, 55,
+    77, 70, 88, 63, 71, 65, 67, 66, 92, 69, 69, 54, 76, 65, 76, 86, 66, 86, 69,
+    74, 63, 74, 61, 33, 69, 44, 74
+  ),
+  WT = c(
+    59, 85, 66, 69, 61, 56.9, 60, 56.9, 88, 60, 59, 89, 84, 70, 85, 60, 90,
+    74.4, 55, 100, 95, 90, 70, 106, 121, 65, 88, 70, 90, 78, 67, 73.6, 70, 85,
+    80, 52, 66.3, 76, 84.7, 108, 60, 80, 87, 75, 65, 73.3, 85, 88, 88, 82, 77,
+    115, 77, 70, 105, 70, 79, 60, 60, 70, 46, 74, 79, 52, 70
+  ),
+  HT = c(
+    175, 185, 175, 168, 158, 163, 170, 163, 193, 165, 158, 172, 153, 190, 180,
+    166, 180, 160, 160, 190, 176, 182, 178, 170, 192, 170, 180, 166, 180, 180,
+    168, 172, 175, 189, 175, 165, 149, 179, 185, 175, 168, 170, 170, 176, 151,
+    176, 174, 183, 183, 185, 175, 181, 175, 175, 181, 175, 186, 175, 175, 175,
+    159, 170, 188, 175, 175
+  ),
+  SEXF = c(
+    1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0
+  ),
+  CRCL = c(
+    52.9, 72, 121.4, 58.5, 46.6, 39.7, 46.5, 26.4, 56.4, 146.9, 11.3, 62, 19.4,
+    127.8, 90, 47.2, 40.5, 42.6, 51, 24.4, 68.8, 70.1, 21, 16.6, 140.1, 87.3,
+    80.3, 9.7, 72.1, 108.3, 10.3, 78.2, 61.2, 38.7, 157.5, 83.9, 49.2, 59.7,
+    73.1, 86.2, 60.5, 33.5, 29.1, 94.6, 22.7, 89.4, 58, 86.6, 93.9, 133.9, 59,
+    103.7, 8.7, 66.1, 13.1, 37.9, 46, 54.4, 86.7, 65, 58.3, 119.8, 67.2, 31.9,
+    102.8
+  ),
+  LBMC_S1 = c(
+    59, 81.7, 66, 63.4, 54.7, 55.8, 60, 55.8, 87.3, 58.1, 53.9, 76.2, 61.2, 70,
+    79, 58.7, 81, 61.2, 53.4, 90.4, 80.8, 82.1, 70, 79.3, 99.9, 65, 80.2, 65.4,
+    81, 76.2, 65.3, 70.1, 70, 83.9, 74.3, 52, 52, 74.9, 81.6, 85.5, 60, 68.9,
+    74.4, 72.8, 55.2, 72.1, 75.7, 81.8, 81.8, 80.5, 73.1, 91.5, 73.1, 70, 87.5,
+    70, 77.2, 60, 60, 67.6, 46, 69.2, 79, 52, 70
+  )
+)
+stopifnot(
+  nrow(hague) == 65,
+  sum(hague$SEXF) == 21,
+  abs(mean(hague$WT) - 76.2) < 0.05,
+  abs(mean(hague$CRCL) - 64.3) < 0.05
+)
+```
+
+```{r lbmc-check}
+mod_endo_typ <- rxode2::zeroRe(uis$Endocarditis)
+lbm_ev <- hague |>
+  mutate(time = 0, amt = 0, evid = 0, cmt = "central") |>
+  select(id, time, amt, evid, cmt, WT, HT, SEXF, CRCL)
+lbm_out <- rxode2::rxSolve(mod_endo_typ, lbm_ev, returnType = "data.frame") |>
+  select(id, lbmc, vc, vd) |>
+  left_join(hague, by = "id")
+# Known answer: every patient's model LBMc equals the deposited value to
+# its 0.1 kg rounding, and the volume is exactly Vd * LBMc.
+stopifnot(
+  max(abs(lbm_out$lbmc - lbm_out$LBMC_S1)) < 0.051,
+  max(abs(lbm_out$vc / lbm_out$vd - lbm_out$lbmc)) < 1e-8
+)
+summary(lbm_out$lbmc - lbm_out$LBMC_S1)
+```
+
+# Replicating Figure 1: the ICU-model standard patient
+
+Figure 1 simulates the ICU model for the paper's "standard patient" (male,
+70 years, 76.2 kg, 174 cm, serum creatinine 86 umol/L, creatinine clearance
+58 mL/min/1.73 m^2) given 3 mg/kg gentamicin once daily as a 30-minute
+infusion. The figure is the only place in the paper that fixes two details the
+text leaves open, so it is checked against a deterministic typical-value
+solve rather than a simulated cohort.
+
+* Whether `CLcr` in `fr * CLcr` is BSA-normalized. The caption quotes the
+  normalized 58 mL/min/1.73 m^2. The packaged models instead take absolute
+  mL/min, which for this patient is 58 x BSA / 1.73 with the Du Bois BSA of
+  1.91 m^2.
+* The fat-corrected lean body mass. With `fd = 0.4` the volume is
+  0.3347 x 72.2 = 24.2 L, which sets the peak.
+
+The typical curve was digitized by the maintainers from Figure 1. Over each of
+the eight dosing intervals, a log-linear fit to the 3-21 h segment gave an
+elimination rate constant of 0.1543-0.1571 1/h (mean 0.1557). Extrapolated to
+the end of the first infusion the peak is 9.07 mg/L, and the trough before the
+second dose is 0.235 mg/L.
+
+```{r fig1-typical}
+bsa_std <- 0.007184 * 76.2^0.425 * 174^0.725
+std_pt <- function(crcl) {
+  data.frame(WT = 76.2, HT = 174, SEXF = 0, CRCL = crcl)
+}
+dose_std <- 3 * 76.2
+ev_std <- rxode2::et(
+  amt = dose_std, rate = dose_std / 0.5, cmt = "central",
+  ii = 24, addl = 7
+) |>
+  rxode2::et(sort(unique(c(seq(0, 192, by = 0.25), 0.5 + 24 * (0:7)))), cmt = "central")
+
+mod_icu_typ <- rxode2::zeroRe(uis$ICU)
+sim_abs <- rxode2::rxSolve(mod_icu_typ, ev_std,
+  params = std_pt(58 * bsa_std / 1.73), returnType = "data.frame"
+)
+sim_norm <- rxode2::rxSolve(mod_icu_typ, ev_std,
+  params = std_pt(58), returnType = "data.frame"
+)
+
+fig1_digitized <- c(cmax = 9.07, ctrough = 0.235, kel = 0.1557)
+fig1_sim <- function(s) {
+  c(
+    cmax = s$Cc[s$time == 0.5],
+    ctrough = s$Cc[s$time == 24],
+    kel = s$kel[1]
+  )
+}
+fig1_tbl <- rbind(
+  `Digitized Figure 1` = fig1_digitized,
+  `Absolute CLcr (packaged)` = fig1_sim(sim_abs),
+  `BSA-normalized CLcr (rejected)` = fig1_sim(sim_norm)
+)
+knitr::kable(fig1_tbl,
+  digits = 4,
+  caption = "ICU-model typical standard patient: end-of-first-infusion peak (mg/L), trough at 24 h (mg/L) and elimination rate constant (1/h)."
+)
+
+# The absolute reading reproduces all three digitized values; the normalized
+# reading misses the rate constant by about 9 percent and the trough by
+# about 40 percent, far outside digitization error.
+abs_err <- abs(fig1_sim(sim_abs) / fig1_digitized - 1)
+norm_err <- abs(fig1_sim(sim_norm) / fig1_digitized - 1)
+stopifnot(
+  abs_err[["cmax"]] < 0.02,
+  abs_err[["kel"]] < 0.02,
+  abs_err[["ctrough"]] < 0.05,
+  norm_err[["kel"]] > 0.06,
+  norm_err[["ctrough"]] > 0.2
+)
+```
+
+```{r fig1-vpc, fig.cap = "Replicates Figure 1 of Gomes 2017: ICU-model typical curve for the standard patient (line) with a 95% prediction interval from 200 simulated patients (band). The figure's band is drawn for the same patient's covariates."}
+rxode2::rxSetSeed(20170505)
+ev_vpc <- ev_std |>
+  as.data.frame() |>
+  select(-any_of("id")) |>
+  tidyr::crossing(id = 1:200) |>
+  mutate(WT = 76.2, HT = 174, SEXF = 0, CRCL = 58 * bsa_std / 1.73) |>
+  arrange(id, time, desc(evid))
+sim_vpc <- rxode2::rxSolve(uis$ICU, ev_vpc, returnType = "data.frame")
+vpc_sum <- sim_vpc |>
+  group_by(time) |>
+  summarise(
+    lo = quantile(Cc, 0.025),
+    hi = quantile(Cc, 0.975),
+    .groups = "drop"
+  )
+ggplot() +
+  geom_ribbon(data = vpc_sum, aes(time, ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line(data = sim_abs, aes(time, Cc), colour = "steelblue", linewidth = 0.7) +
+  scale_x_continuous(breaks = seq(0, 192, 24)) +
+  labs(x = "Time (hours)", y = "Serum concentration (mg/L)") +
+  theme_bw()
+```
+
+The packaged band, like the published one, reaches roughly 15-16 mg/L at the
+peaks and holds an upper trough near 8 mg/L. The paper does not say whether
+its band includes assay error; the band above is of the individual
+predictions without it.
+
+# The three models on the modeling cohort
+
+The paper's main clinical conclusion is about the volume: the endocarditis
+fit's `Vd` (0.312 L/kg LBMc) lies between the standard model's (0.273) and the
+ICU model's (0.335), so dosing endocarditis patients with the standard model
+under-predicts the volume and therefore over-predicts the peak. The chunk
+below gives each of the 65 modeling-cohort patients the standard 3 mg/kg as a
+single 30-minute infusion under each model, first with typical values and then
+with between-subject variability. With typical values the median peak is
+about 9.7 mg/L under the endocarditis model, against 11.0 mg/L under the
+standard model and 8.9 mg/L under the ICU model, the direction the paper
+describes.
+
+```{r cohort-sim}
+obs_times <- sort(unique(c(seq(0, 2, by = 0.1), seq(2, 24, by = 0.5), seq(24, 240, by = 2))))
+make_cohort_ev <- function(cov) {
+  doses <- cov |>
+    mutate(time = 0, amt = 3 * WT, rate = amt / 0.5, evid = 1, cmt = "central")
+  obs <- cov |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(amt = 0, rate = 0, evid = 0, cmt = "central")
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid))
+}
+ev_cohort <- make_cohort_ev(select(hague, id, WT, HT, SEXF, CRCL))
+
+sim_typ <- bind_rows(lapply(names(uis), function(nm) {
+  rxode2::rxSolve(rxode2::zeroRe(uis[[nm]]), ev_cohort, returnType = "data.frame") |>
+    mutate(model = nm)
+}))
+# Three replicates of the 65 patients (195 per model) steady the
+# between-subject-variability summaries without exceeding 200 per arm.
+ev_cohort_rep <- make_cohort_ev(
+  hague |>
+    select(id, WT, HT, SEXF, CRCL) |>
+    tidyr::crossing(replicate = 1:3) |>
+    mutate(id = (replicate - 1L) * 65L + id) |>
+    select(-replicate)
+)
+rxode2::rxSetSeed(20170506)
+sim_iiv <- bind_rows(lapply(names(uis), function(nm) {
+  rxode2::rxSolve(uis[[nm]], ev_cohort_rep, returnType = "data.frame") |>
+    mutate(model = nm)
+}))
+
+# Deterministic: with a shared LBMc, the per-patient typical volume is
+# ordered exactly as the per-kg coefficients are.
+vc_wide <- sim_typ |>
+  distinct(model, id, vc) |>
+  tidyr::pivot_wider(names_from = model, values_from = vc)
+typ_peak <- sim_typ |>
+  filter(time == 0.5) |>
+  group_by(model) |>
+  summarise(peak = median(Cc), .groups = "drop")
+typ_peak <- setNames(typ_peak$peak, typ_peak$model)
+stopifnot(
+  all(vc_wide$Standard < vc_wide$Endocarditis),
+  all(vc_wide$Endocarditis < vc_wide$ICU),
+  abs(typ_peak[["Endocarditis"]] - 9.7) < 0.05,
+  abs(typ_peak[["Standard"]] - 11.0) < 0.05,
+  abs(typ_peak[["ICU"]] - 8.9) < 0.05
+)
+
+sim_iiv |>
+  filter(time == 0.5) |>
+  group_by(model) |>
+  summarise(
+    `Median peak (mg/L)` = median(Cc),
+    `P5 peak` = quantile(Cc, 0.05),
+    `P95 peak` = quantile(Cc, 0.95),
+    `Median V (L)` = median(vc),
+    `Median CL (L/h)` = median(cl),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Model" = model) |>
+  knitr::kable(digits = 2, caption = "End-of-infusion peak after 3 mg/kg and individual V and CL with between-subject variability: the 65 modeling-cohort patients, three replicates each.")
+```
+
+```{r cohort-plot, fig.cap = "Median and 90% interval of the simulated concentration after a single 3 mg/kg 30-minute infusion in the 65 modeling-cohort patients (three replicates each), by model."}
+sim_iiv |>
+  filter(time <= 24) |>
+  group_by(model, time) |>
+  summarise(
+    med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, med, colour = model, fill = model)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Gentamicin (mg/L)", colour = "Model", fill = "Model") +
+  theme_bw()
+```
+
+# PKNCA validation
+
+PKNCA is run on the typical-value cohort for each model. For a one-compartment
+intravenous model `AUC0-inf * CL` must equal the dose; this is a solve against
+its own closed form, so a tight bound is appropriate.
+
+```{r pknca}
+conc_df <- sim_typ |>
+  filter(!is.na(Cc)) |>
+  select(model, id, time, Cc)
+dose_df <- hague |>
+  transmute(id, time = 0, dose = 3 * WT) |>
+  tidyr::crossing(model = names(uis))
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | model + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, dose ~ time | model + id, route = "intravascular", duration = 0.5)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_wide <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs", "half.life")) |>
+  select(model, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+closed_form <- sim_typ |>
+  distinct(model, id, cl) |>
+  left_join(dose_df, by = c("model", "id")) |>
+  left_join(nca_wide, by = c("model", "id")) |>
+  mutate(ratio = aucinf.obs * cl / dose)
+stopifnot(max(abs(closed_form$ratio - 1)) < 0.01)
+
+nca_wide |>
+  group_by(model) |>
+  summarise(
+    `Cmax (mg/L)` = median(cmax),
+    `AUC0-inf (mg*h/L)` = median(aucinf.obs),
+    `t1/2 (h)` = median(half.life),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Model" = model) |>
+  knitr::kable(digits = 2, caption = "Median typical-value NCA after a single 3 mg/kg 30-minute infusion, 65 modeling-cohort patients.")
+```
+
+The only NCA-like quantities the paper publishes are those of the Figure 1
+standard patient, compared below with the packaged ICU model over the first
+dosing interval.
+
+```{r nca-compare}
+fig1_conc <- sim_abs |>
+  filter(time <= 24) |>
+  transmute(model = "ICU", id = 1, time, Cc)
+fig1_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(fig1_conc, Cc ~ time | model + id),
+  PKNCA::PKNCAdose(
+    data.frame(model = "ICU", id = 1, time = 0, dose = dose_std),
+    dose ~ time | model + id,
+    route = "intravascular", duration = 0.5
+  ),
+  intervals = data.frame(start = 0, end = 24, cmax = TRUE, ctrough = TRUE, half.life = TRUE)
+))
+fig1_ref <- data.frame(
+  model = "ICU", cmax = 9.07, ctrough = 0.235, half.life = log(2) / 0.1557
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = as.data.frame(fig1_nca) |> select(model, PPTESTCD, PPORRES),
+  reference = fig1_ref,
+  by = "model",
+  units = c(cmax = "mg/L", ctrough = "mg/L", half.life = "h")
+)
+cmp |>
+  dplyr::rename("Model" = model) |>
+  knitr::kable(caption = "ICU-model standard patient, first dosing interval: packaged model versus values digitized from Gomes 2017 Figure 1.")
+```
+
+No row differs from the digitized figure by more than a few percent.
+
+# Assumptions and deviations
+
+* **Formulas taken from the deposited data, not the text.** The paper names
+  the references for lean body mass (Chennavasin and Brater) and its fat
+  correction (Schwartz et al.) but prints neither formula. The packaged
+  `LBM = min(WT, Devine IBW)` and `LBMc = LBM + 0.4 * (WT - LBM)` were
+  back-solved from the per-patient S1 Data columns and reproduce all 65
+  tabulated `LBMc` values to their 0.1 kg rounding (checked above). The ICU
+  and standard models are assumed to use the same MWPharm formulas, since the
+  paper states all three volumes in the same L/kg LBMc unit; the Figure 1 peak
+  confirms this for the ICU model.
+* **Creatinine clearance is absolute mL/min.** Table 1 reports both absolute
+  and BSA-normalized Cockcroft-Gault clearance, and the Figure 1 caption
+  quotes the normalized value. Only the absolute value reproduces Figure 1
+  (checked above). The model takes `CRCL` as supplied and does not
+  compute Cockcroft-Gault: the paper does not give its serum-creatinine
+  units or body-weight convention, and the standard patient's quoted serum
+  creatinine (86 umol/L) gives about 76 mL/min by the textbook total-weight
+  formula, not the 64 mL/min the figure implies. Users should therefore
+  supply creatinine clearance directly.
+* **Mean and SD scale.** MWPharm reports each parameter as a population
+  mean and interindividual SD on the natural scale, with log-normal
+  variability. The printed mean is used as the typical value and the SD is
+  converted by `omega^2 = log(1 + (SD / mean)^2)`. If the printed mean is the
+  arithmetic mean of a log-normal, the median would be lower by
+  `sqrt(1 + CV^2)`, about 11% for the endocarditis `fr` and 3% for its `Vd`.
+* **Unrounded values.** Table 3 rounds to three decimals; the packaged values
+  are the unrounded ones in the S2 Data workbook that Table 3 cites.
+* **Endocarditis fr-Vd correlation.** Table 3 gives no correlation. The S2
+  Data bootstrap sheet reports a fr-Vd correlation `r` for each of 1000
+  resamples (mean 0.310, 95% interval 0.072-0.511); its mean is carried as
+  the correlation of the two log-scale random effects. The ICU and standard
+  models have no reported correlations and are diagonal.
+* **Fixed metabolic clearance.** In the endocarditis model `CLm` is fixed at
+  the ICU-model value with no variability (Table 3 SD 0). For the ICU and
+  standard models the tabulated `CLm` SDs are carried as variability, as
+  published; the "Fixed" `CLm` setting the paper used in its validation runs
+  is an MWPharm fitting option and is not part of those models.
+* **Residual error.** The assay-error polynomial is evaluated on the model
+  prediction; whether MWPharm evaluates it on the observed or predicted
+  concentration is not stated. The same polynomial is attached to all three
+  models because it is the error model Gomes 2017 used when comparing them.
+* **Not reproduced.** Figures 3-5 and the Table 4 prediction errors depend on
+  per-patient dosing records, which were not published (the S2 and S3 Data
+  workbooks list concentrations and sampling times only). Figure 2 is a
+  Bayesian individual fit, not a population simulation.
+* **ICU and standard model provenance.** Both come from Evers and Vinks 1995,
+  a conference abstract, and are transcribed from Gomes 2017 Table 3. Their
+  source populations are not described in Gomes 2017.
