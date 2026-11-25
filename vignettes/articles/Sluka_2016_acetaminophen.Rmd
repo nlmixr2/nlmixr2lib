@@ -1,0 +1,380 @@
+---
+title: "Acetaminophen liver-centric multiscale framework (Sluka 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Acetaminophen liver-centric multiscale framework (Sluka 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Sluka_2016_acetaminophen_pbpk"))$reference`
+* Article: [PLoS One 2016;11(9):e0162428](https://doi.org/10.1371/journal.pone.0162428)
+  (open access, with the SBML and CompuCell3D model code as S2 File)
+
+Sluka et al. built a three-scale model of acetaminophen (APAP) disposition:
+
+1. a whole-body PBPK model (SBML, BioModels MODEL1509230010),
+2. a two-dimensional agent-based model of blood flow and APAP exchange in a
+   single hepatic sinusoid lined with 20 hepatocytes (Cellular Potts model in
+   CompuCell3D), and
+3. a subcellular reaction network for phase I and phase II metabolism run in
+   each hepatocyte (SBML, BioModels MODEL1509230011).
+
+The authors designed all three as standalone models that can be run on their
+own (Results, "Standalone simulations") and showed standalone runs of each.
+The two ODE modules are packaged here as separate models:
+
+* `Sluka_2016_acetaminophen_pbpk`: `r rxode2::rxode(readModelDb("Sluka_2016_acetaminophen_pbpk"))$description`
+* `Sluka_2016_acetaminophen_hepatocyte_qsp`: `r rxode2::rxode(readModelDb("Sluka_2016_acetaminophen_hepatocyte_qsp"))$description`
+
+The coupled multiscale model, which produces the paper's plasma APAP-glucuronide
+and APAP-sulfate curves (Figs 7 to 12), the sensitivity analyses (Figs 13 to
+16) and the population simulation (Fig 17), is not included: its liver is the
+stochastic lattice model of point 2, which moves individual red blood cells and
+serum portions along the sinusoid and exchanges drug between neighbouring
+cells. That is not a system of ODEs and has no equivalent in rxode2.
+
+# Population
+
+No population model was fitted. The authors hand-tuned a parameter set named
+REFSIM (Tables 2, 4 and 6; S1 File Table 10) so that the complete multiscale
+model reproduced mean plasma concentrations of APAP and its glucuronide and
+sulfate conjugates after a 20 mg/kg (1.4 g) oral dose of APAP syrup in nine
+Caucasian volunteers (Critchley et al. 2005, paper reference 58): ages 23 to
+44 years, body weight 55 to 97 kg, six men and three women (Results,
+"Population Variability"). The digitised mean data are S1 File Table 15. Both
+packaged models simulate one reference 70 kg man and carry no between-subject
+variability and no residual error.
+
+```{r population}
+str(readModelDb("Sluka_2016_acetaminophen_pbpk")()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The tables
+below collect them.
+
+## Whole-body PBPK module
+
+| Parameter / equation | Value | Source location |
+|---|---|---|
+| `bw` | 70 kg | Table 2 `pbpk_bw`; SBML `BW` |
+| `qcc` | 15 L/h/kg^0.75 | S1 File Table 2 `QArt`; SBML `Cardiac_flow_ref` (363 L/h at 70 kg, Table 2 `pbpk_QCardiac` 363.01) |
+| `fq_gut` | 0.205 | S1 File Table 2 `QGut` (74.4 L/h at 70 kg; Table 2 74.42) |
+| `fq_liver` | 0.0535 | S1 File Table 2 `QLiver`, hepatic artery only (19.4 L/h; Table 2 19.42) |
+| `fq_kidney` | 0.2214 | S1 File Table 2 `QKidney` (80.4 L/h; Table 2 80.37) |
+| `q_other` | cardiac output minus gut, liver and kidney flows | S1 File Table 2 `QRest`; SBML assignment rule (188.8 L/h; Table 2 188.80) |
+| `fvol_total` | 0.6 L/kg | SBML `VTotal_ref`; 42.0 L at 70 kg = S1 File Table 2 `VTotal` |
+| `fvol_arterial`, `fvol_gut`, `fvol_kidney`, `fvol_liver`, `fvol_lung`, `fvol_venous` | 0.0357, 0.0263, 0.0070, 0.0408, 0.0121, 0.0812 | S1 File Table 2; volumes 1.50, 1.10, 0.294, 1.71, 0.508, 3.41 L match Table 2 |
+| `v_other` | total minus the six named volumes | SBML initial assignment `VRest` (33.47 L; Table 2 33.47) |
+| `lka` | log(1.5) | Table 2 `pbpk_kGutabs` 1.5 1/h |
+| `fup` | 0.8 | Table 2 `pbpk_Fup` |
+| `bp` | 1.09 | Table 2 `pbpk_Rb2p` |
+| `lkp_liver`, `lkp_kidney`, `lkp_other` | log(1), log(1), log(1.6) | Table 2 `pbpk_Kl2p`, `pbpk_Kk2p`, `pbpk_Kr2p` |
+| `qgfr` | 0.714 L/h | Table 2 `pbpk_Qgfr`; S1 File Table 10 REFSIM |
+| `kmet` | 9.5 1/h | deposited SBML `CLmetabolism` (not printed in the paper tables) |
+| ODEs | n/a | Table 1 rate equations; SBML reactions J1 to J13 |
+| `Cvenous` | venous / v_venous | Fig 4 y-axis "Venous APAP" |
+| `Cc` | Cvenous / bp | multiscale driver script `PBPK_SBML_MULTISteppables.py`: plasma = CVen / VVen / Rb2p |
+
+## Hepatocyte subcellular module
+
+| Parameter / equation | Value | Source location |
+|---|---|---|
+| `v_hep` | 1 L | SBML compartment `Hepatocyte` size |
+| `lvmax_gluc`, `lkm_gluc` | log(0.001 mmol/L/s), log(1 mmol/L) | Table 6 `sc_Vmax_GLUC`, `sc_Km_GLUC` |
+| `lvmax_sulf`, `lkm_sulf` | log(0.000175 mmol/L/s), log(0.2 mmol/L) | Table 6 `sc_Vmax_SULF`, `sc_Km_SULF` |
+| `lvmax_cyp2e1`, `lkm_cyp2e1` | log(0.00002 mmol/L/s), log(1.29 mmol/L) | Table 6 `sc_Vmax_2E1_APAP`, `sc_Km_2E1_APAP` |
+| `k_napqi_gsh` | 0.1 L/mmol/s | Table 6 `sc_kNAPQIGSH`; unit from the SBML |
+| `ksyn_gsh` | 0.0001 1/s | Table 6 `sc_kGsh`; unit from the SBML |
+| `gsh0`, `gshmax` | 9.9, 10 mmol/L | Table 6 `GSH0`, `GSHmax` |
+| ODEs | n/a | Table 5 rate equations; SBML reactions J0 to J4 |
+
+# Whole-body PBPK module
+
+## Simulation
+
+The standalone run of Fig 4 is a single 1.4 g oral dose to a 70 kg man,
+followed for 24 hours. Observation rows are placed on the venous-blood state,
+so rxode2 returns both the blood (`Cvenous`) and plasma (`Cc`) concentrations.
+
+```{r pbpk-sim}
+mod_pbpk <- readModelDb("Sluka_2016_acetaminophen_pbpk")
+dose_mg <- 1400
+
+ev_pbpk <- rxode2::et(amt = dose_mg, cmt = "depot") |>
+  rxode2::et(seq(0, 24, by = 0.05), cmt = "venous")
+
+sim_pbpk <- rxode2::rxSolve(mod_pbpk, ev_pbpk, returnType = "data.frame")
+```
+
+## Replicates Figure 4
+
+Fig 4 plots the venous whole-blood APAP concentration from the standalone
+PBPK module against the plasma data of Critchley et al. The open symbols below
+are those data as digitised by the authors (S1 File Table 15).
+
+```{r pbpk-fig4}
+critchley <- data.frame(
+  time = c(0, 0.3, 0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 12, 24),
+  APAP = c(0, 8.94, 14.67, 16.77, 16.63, 14.89, 13.98, 10.85, 8.14, 6.12, 4.45, 3.13, 2.72, 1.20, 0.38),
+  APAPS = c(0, 0.76, 1.97, 2.96, 3.41, 4.06, 4.24, 4.24, 3.71, 3.20, 2.68, 2.15, 1.66, 0.72, 0.12),
+  APAPG = c(0, 0.33, 1.75, 3.65, 4.71, 7.74, 9.32, 10.78, 10.75, 9.48, 8.13, 6.78, 5.18, 2.05, 0.27)
+)
+
+sim_pbpk_long <- sim_pbpk |>
+  dplyr::select(time, `Venous blood (Fig 4)` = Cvenous, `Venous plasma` = Cc) |>
+  tidyr::pivot_longer(-time, names_to = "matrix", values_to = "conc")
+
+ggplot(sim_pbpk_long, aes(time, conc)) +
+  geom_line(aes(linetype = matrix)) +
+  geom_point(data = critchley, aes(time, APAP), shape = 0, size = 2) +
+  labs(
+    x = "Time (h)", y = "APAP (ug/mL)", linetype = NULL,
+    caption = "Replicates Figure 4 of Sluka 2016 (solid line). Squares: Critchley et al. plasma data (S1 File Table 15)."
+  ) +
+  theme_bw() +
+  theme(legend.position = "inside", legend.position.inside = c(0.75, 0.8))
+```
+
+Fig 4 peaks at about 17 ug/mL a little after 1 hour (read from the figure by
+the maintainers). The packaged model gives:
+
+```{r pbpk-fig4-check}
+fig4 <- sim_pbpk |>
+  dplyr::summarise(
+    cmax_blood = max(Cvenous),
+    tmax_blood = time[which.max(Cvenous)],
+    cmax_plasma = max(Cc)
+  )
+knitr::kable(fig4, digits = 2)
+
+stopifnot(
+  # Deterministic typical-value solve: no cohort, so a direct bound is safe.
+  abs(fig4$cmax_blood - 17) / 17 < 0.05,
+  fig4$tmax_blood > 0.9, fig4$tmax_blood < 1.5
+)
+```
+
+## Mass balance and urinary recovery
+
+The model is closed: drug leaves only into the kidney tubules (`a_urine`) or
+by hepatic metabolism (`a_metabolized`), so the sum over all states equals the
+dose at every time.
+
+```{r pbpk-mass}
+state_cols <- c("depot", "gut", "liver", "kidney", "other", "venous", "lung", "arterial", "a_urine", "a_metabolized")
+mass <- sim_pbpk |>
+  dplyr::mutate(total = rowSums(dplyr::across(dplyr::all_of(state_cols))))
+stopifnot(max(abs(mass$total - dose_mg)) / dose_mg < 1e-6)
+
+recovery <- tail(sim_pbpk, 1) |>
+  dplyr::transmute(
+    `Unchanged in urine (% of dose)` = 100 * a_urine / dose_mg,
+    `Metabolized (% of dose)` = 100 * a_metabolized / dose_mg
+  )
+knitr::kable(recovery, digits = 1, row.names = FALSE)
+# Fig 17B (multiscale model): less than 10% of the dose is excreted as APAP.
+stopifnot(recovery[[1]] < 10)
+```
+
+## PKNCA validation
+
+The paper reports no NCA for the standalone PBPK module; S1 File Table 11
+gives Cmax, Tmax and AUC for the complete multiscale model only. The
+comparison below therefore uses the observed mean plasma profile of Critchley
+et al. (S1 File Table 15) as the reference, analysed with the same PKNCA set
+up as the simulated plasma profile.
+
+```{r pbpk-nca}
+intervals <- data.frame(
+  start = 0, end = 24, cmax = TRUE, tmax = TRUE, auclast = TRUE
+)
+
+conc_sim <- sim_pbpk |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::transmute(id = 1L, treatment = "1.4 g oral", time, Cc)
+dose_sim <- data.frame(id = 1L, treatment = "1.4 g oral", time = 0, amt = dose_mg)
+
+nca_sim <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_sim, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_sim, amt ~ time | treatment + id),
+  intervals = intervals
+))
+
+conc_obs <- critchley |>
+  dplyr::transmute(id = 1L, treatment = "1.4 g oral", time, Cc = APAP)
+nca_obs <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_obs, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_sim, amt ~ time | treatment + id),
+  intervals = intervals
+))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_sim,
+  reference = nca_obs,
+  by = "treatment"
+)
+knitr::kable(cmp, caption = "Standalone PBPK plasma APAP (Simulated) against the Critchley et al. mean plasma data (Reference), both by PKNCA.")
+```
+
+Simulated plasma Cmax and AUC are within about 10% of the observed means. The
+Tmax row is starred (more than 20% off): the simulated Tmax (about 1.2 h) is
+later than the observed 0.75 h, as Fig 4 also shows. The authors later
+re-examined absorption and concluded that APAP uptake from the gut lumen
+behaves as a lag of about 9 minutes followed by zero-order (saturated
+transporter) uptake, which fits early data better than the first-order
+`pbpk_kGutabs` used in REFSIM (Results, "Advantages of Separate Models for the
+Biological Scales"); they report no values for that variant, so it is not
+packaged.
+For context, the complete multiscale model with REFSIM gives a plasma APAP
+Cmax of 16.01 ug/mL at 1.083 h and an AUC of 66.76 ug*h/mL over its 8 h run
+(S1 File Table 11); those numbers come from a different liver model and are
+not a target for the standalone module.
+
+```{r pbpk-nca-check}
+sim_res <- as.data.frame(nca_sim)
+obs_res <- as.data.frame(nca_obs)
+pct <- function(code) {
+  s <- sim_res$PPORRES[sim_res$PPTESTCD == code]
+  o <- obs_res$PPORRES[obs_res$PPTESTCD == code]
+  100 * (s - o) / o
+}
+stopifnot(abs(pct("cmax")) < 15, abs(pct("auclast")) < 15)
+```
+
+# Hepatocyte subcellular module
+
+## Replicates Figure 6
+
+Fig 6 is the standalone run of the subcellular network from an initial
+intracellular APAP concentration of 0.1 mmol/L (15 ug/mL), over 40 minutes.
+Time in this model is in seconds.
+
+```{r hep-sim}
+mod_hep <- readModelDb("Sluka_2016_acetaminophen_hepatocyte_qsp")
+
+ev_hep <- rxode2::et(amt = 0.1, cmt = "hep_apap") |>
+  rxode2::et(seq(0, 2400, by = 10), cmt = "hep_apap")
+sim_hep <- rxode2::rxSolve(mod_hep, ev_hep, returnType = "data.frame")
+
+sim_hep |>
+  dplyr::transmute(
+    minutes = time / 60, APAP = Cc, APAPG = Cc_apapg, APAPS = Cc_apaps
+  ) |>
+  tidyr::pivot_longer(-minutes, names_to = "species", values_to = "conc") |>
+  ggplot(aes(minutes, conc, linetype = species)) +
+  geom_line() +
+  labs(
+    x = "Time (minute)", y = "Concentration (mmol/L)", linetype = NULL,
+    caption = "Replicates Figure 6 of Sluka 2016."
+  ) +
+  theme_bw()
+```
+
+Values read from Fig 6 by the maintainers: at 40 minutes APAP is nearly
+exhausted, APAP-glucuronide has reached about 0.056 mmol/L and APAP-sulfate
+about 0.042 mmol/L, and the falling APAP curve crosses the glucuronide curve
+at about 10.5 minutes.
+
+```{r hep-check}
+end <- tail(sim_hep, 1)
+cross_min <- with(sim_hep, time[which(Cc <= Cc_apapg)[1]] / 60)
+knitr::kable(data.frame(
+  quantity = c("APAP at 40 min", "APAPG at 40 min", "APAPS at 40 min", "APAP = APAPG crossing (min)"),
+  `Fig 6 (read)` = c("< 0.005", "0.056", "0.042", "10.5"),
+  model = signif(c(end$Cc, end$Cc_apapg, end$Cc_apaps, cross_min), 3),
+  check.names = FALSE
+))
+
+stopifnot(
+  end$Cc < 0.005,
+  abs(end$Cc_apapg - 0.056) / 0.056 < 0.05,
+  abs(end$Cc_apaps - 0.042) / 0.042 < 0.05,
+  abs(cross_min - 10.5) < 1.5
+)
+```
+
+## Mass and glutathione balance
+
+APAP is conserved across its four products, and glutathione is either free or
+bound in the NAPQI conjugate, with resynthesis as the only source.
+
+```{r hep-mass}
+apap_total <- with(sim_hep, Cc + Cc_apapg + Cc_apaps + Cc_napqi + Cc_napqigsh)
+stopifnot(max(abs(apap_total - 0.1)) < 1e-8)
+
+knitr::kable(
+  tail(sim_hep, 1) |>
+    dplyr::select(NAPQI = Cc_napqi, GSH = Cc_gsh, `NAPQI-GSH` = Cc_napqigsh) |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), \(x) format(x, digits = 3))),
+  row.names = FALSE,
+  caption = "Phase I products at 40 minutes (mmol/L). At this therapeutic-range concentration under 1% of APAP goes through CYP2E1."
+)
+```
+
+# Assumptions and deviations
+
+* **Scope.** Only the two ODE modules are packaged. The tissue module and the
+  coupled multiscale model are an agent-based Cellular Potts simulation and
+  cannot be expressed in rxode2; the paper's multiscale results (Figs 7 to
+  17, S1 File Tables 11 to 14) are therefore not reproduced. The APAP-glucuronide
+  and APAP-sulfate copies of the PBPK model are also left out: in the paper
+  their only input is the conjugate leaving the simulated sinusoid, so they
+  have no standalone use. Their parameter values are in Table 2 (`_G` and
+  `_S` rows) and S1 File Table 10, and the same structure with those values
+  and `kmet = 0` would reproduce them given a liver input.
+* **Hepatic metabolism constant.** The standalone PBPK module removes liver
+  APAP at `kmet * liver / (kp_liver * fup)` (Table 1, `CLiver -> CMetabolized`).
+  The paper prints the rate law but no value for `CLmetab`; the value 9.5 per
+  hour is the one in the deposited SBML file. In the multiscale model the
+  authors set it to zero and replace the liver with the sinusoid model.
+* **Glomerular filtration rate.** Table 2 and S1 File Table 10 give REFSIM
+  `pbpk_Qgfr` = 0.714 L/h (the 11.9 mL/min APAP renal clearance of Prescott,
+  per a comment in the driver script), and the multiscale driver applies that
+  value. The deposited SBML instead computes `Qgfr` from body weight as
+  0.039 * BW^0.75 = 0.944 L/h (S1 File Table 2). The packaged model uses the
+  REFSIM value as a fixed flow. The choice moves the simulated plasma Cmax by
+  under 0.5% and urinary recovery from 3.3% to 4.4% of the dose.
+* **Total perfusable volume.** The deposited SBML scales it linearly
+  (0.6 L/kg times body weight); S1 File Table 2 and the multiscale driver use
+  1.7355 * BW^0.75. Both give 42.0 L at 70 kg, so the reference simulation is
+  unaffected; they differ only if `bw` is changed. The packaged model follows
+  the SBML.
+* **Observed quantity.** Fig 4 plots venous whole-blood concentration against
+  plasma data; the multiscale driver converts venous blood to plasma by
+  dividing by the blood-to-plasma ratio. The model returns both: `Cvenous`
+  (Fig 4) and `Cc` (plasma). With `bp = 1.09` the plasma value is about 8%
+  lower.
+* **Units.** The SBML PBPK model works in moles; the packaged model works in
+  mg so that `Cc` is in mg/L (ug/mL), the unit of Fig 4. The PBPK model is
+  linear, so the change of unit does not alter any profile. Table 6 prints
+  `sc_kNAPQIGSH` and `sc_kGsh` in mmol/L/s; their rate laws (Table 5) make
+  them a second-order constant (L/mmol/s) and a first-order constant (1/s),
+  which is how the SBML declares them.
+* **Initial glutathione.** Table 6 gives `GSH0` = 9.9 mmol/L, used here; the
+  SBML file initialises GSH at 10 mmol/L and the multiscale driver at
+  9.9999 mmol/L. GSH barely moves at the Fig 6 APAP concentration, so the
+  choice does not affect the figure.
+* **CYP2E1 zonation.** In the multiscale model each hepatocyte's
+  `sc_Vmax_2E1_APAP` is scaled from 80% (periportal) to 100% (pericentral) of
+  the Table 6 value. The standalone module uses the full value.
+* **Variability.** The paper's population simulation draws each of 38
+  parameters from a normal distribution with 25% CV truncated to 0.75 to 1.25
+  times its REFSIM value, inside the multiscale model. No between-subject
+  variability is encoded here.
+* **Errata.** No erratum or correction was found for this article
+  (EuropePMC search, 2026-11-24).
