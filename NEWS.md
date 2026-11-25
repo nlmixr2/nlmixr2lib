@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jones 2019 olaratumab exposure-survival (OS and PFS, Cmin1 and Cavg) ([doi:10.1007/s00280-018-3723-4](https://doi.org/10.1007/s00280-018-3723-4)) -- adults with advanced soft tissue sarcoma on doxorubicin with or without olaratumab.
+- Add Aruldhas 2019 isoniazid and rifampicin ([doi:10.1111/bcp.13846](https://doi.org/10.1111/bcp.13846)) -- Indian children aged 2-16 years with tuberculosis.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
