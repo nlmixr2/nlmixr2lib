@@ -1,0 +1,527 @@
+---
+title: "Meloxicam (Aoyama 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meloxicam (Aoyama 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+# Escape the asterisks of star-allele names so markdown tables do not
+# render them as emphasis.
+md_star <- function(x) gsub("*", "\\*", x, fixed = TRUE)
+```
+
+# Model and source
+
+Aoyama 2017 reports two fitted models, packaged as two files that share this
+article:
+
+* `Aoyama_2017_meloxicam` -- the final population PK model (Table 2) fitted
+  to 119 healthy Japanese, Chinese, Korean and white men, coupled to the
+  TXB2 indirect-response PD layer exactly as the paper combines them for its
+  steady-state covariate simulations (Methods "Simulation", Figure 4).
+* `Aoyama_2017_meloxicam_pkpd` -- the sequential PK/PD fit (Table 3) to
+  digitised mean meloxicam and TXB2 profiles of CYP2C9\*1/\*1 and \*1/\*13
+  Korean men (Bae et al. 2007), with genotype-group-specific PK parameters
+  and shared PD parameters.
+
+* Citation: `r rxode2::rxode(readModelDb("Aoyama_2017_meloxicam"))$reference`
+* Description (population PK + PD): `r rxode2::rxode(readModelDb("Aoyama_2017_meloxicam"))$description`
+* Description (Table 3 PK/PD fit): `r rxode2::rxode(readModelDb("Aoyama_2017_meloxicam_pkpd"))$description`
+* Article: <https://doi.org/10.1002/psp4.12259> (open access, PMC5744175)
+
+# Population
+
+The population PK model was fitted to 119 healthy male volunteers from the
+Hasunuma et al. bridging trial (UMIN000004173): 30 Japanese, 30 Chinese, 29
+Korean and 30 white subjects, each given a single oral 7.5 mg meloxicam dose
+from one drug lot with matched meals and drinking water, and sampled
+pre-dose and 1-72 h post-dose (Methods; Table 1). Group-median ages were
+24-31 years (range 21-35), weights 63.5-74.5 kg (range 51.0-100), and lean
+body mass (LBM, James formula) 52.5-59.8 kg (overall median 55.0, range
+43.6-75.2 kg). CYP2C9 genotypes were 97 \*1/\*1, 6 \*1/\*2, 1 \*2/\*2 and 15
+\*1/\*3 (Methods).
+
+The PD parameters come from a separate fit to the published mean profiles of
+Bae et al. 2007: 12 CYP2C9\*1/\*1 (age 23.2 +/- 2.6 years, weight 71.8 +/-
+8.1 kg) and 9 \*1/\*13 (24.4 +/- 2.5 years, 70.7 +/- 7.3 kg) healthy Korean
+men given a single 15 mg dose.
+
+The same information is available programmatically via
+`readModelDb("Aoyama_2017_meloxicam")()$population` and
+`readModelDb("Aoyama_2017_meloxicam_pkpd")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. Summary:
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL/F, \*1/\*1) | 0.391 L/h | Table 2 |
+| `e_cyp2c9s2_cl`, `e_cyp2c9s3_cl` | -0.147, -0.400 per allele | Table 2; Eq. 5; Table 2 footnote equation |
+| `lvc` (Vc/F at LBM 55.0 kg) | 7.79 L | Table 2 |
+| `e_lbm_vc` | 1.05 | Table 2; footnote `Vcpop = 7.79 * (LBM/55.0)^1.05`; control stream `COV1 = LBM/55` |
+| `lq`, `lvp` | 1.24 L/h, 2.73 L | Table 2 |
+| `lka` | 2.00 1/h | Table 2 |
+| `ld1` (DT, = tlag) | 1.91 h | Table 2; footnote "DT and tlag were set to the same value" |
+| `logitffo` | logit(1 - 0.425) | Table 2 'F' (zero-order fraction); Eqs. 1-2 |
+| `etalcl`, `etalvc` | log(1 + 0.213^2), log(1 + 0.172^2) | Table 2 omega CL, omega Vd (CV%) |
+| `etalka + etalogitffo` | 0.999203, -0.346081, 2.03 | Table 2 omega Ka 131%, omega^2 F 2.03, correlation 0.243 |
+| `propSd` | 0.123 | Table 2 sigma 12.3%; control stream `Y = IPRED*(1+EPS(1))` |
+| `lkout`, `lic50`, `lhill` | 0.912 1/h, 1390 ng/mL, 0.739 | Table 3 (shared by both genotype groups) |
+| `kin = 100 * kout`, `txb2(0) = 100` | -- | Methods, Eq. 7 text; Table 3 footnote |
+| Table 3 PK, `*_s1s1` / `*_s1s13` | CL 0.320 / 0.147, Vc 5.24 / 3.38, Q 3.41 / 3.38, Vp 5.18 / 4.55, ka 5.01 / 5.27, DT 2.99 / 2.96, F 0.653 / 0.713 | Table 3 |
+| ODEs, parallel absorption | -- | Figure 2; control stream (Supplementary Files) `$DES`, `F1 = 1 - F2`, `ALAG1 = D2` |
+| `d/dt(txb2)` | -- | Eq. 7 |
+
+# Typical-value checks against the paper's stated numbers
+
+## CYP2C9 effect on CL/F
+
+The paper states that the model-predicted CL/F is 15%, 29%, 40%, 55% and 80%
+lower in \*1/\*2, \*2/\*2, \*1/\*3, \*2/\*3 and \*3/\*3 subjects than in
+\*1/\*1 subjects, and that CL/F for \*3/\*3 is 0.0782 L/h (Results; Discussion).
+
+```{r cl-genotype}
+mod <- readModelDb("Aoyama_2017_meloxicam")
+ini_pk <- rxode2::rxode2(mod)$theta
+geno <- tibble::tribble(
+  ~genotype, ~CYP2C9_S2_COUNT, ~CYP2C9_S3_COUNT, ~paper_pct_reduction,
+  "*1/*1", 0, 0, 0,
+  "*1/*2", 1, 0, 15,
+  "*2/*2", 2, 0, 29,
+  "*1/*3", 0, 1, 40,
+  "*2/*3", 1, 1, 55,
+  "*3/*3", 0, 2, 80
+)
+cl_tab <- geno |>
+  mutate(
+    cl = exp(ini_pk[["lcl"]]) *
+      (1 + ini_pk[["e_cyp2c9s2_cl"]] * CYP2C9_S2_COUNT + ini_pk[["e_cyp2c9s3_cl"]] * CYP2C9_S3_COUNT),
+    model_pct_reduction = 100 * (1 - cl / exp(ini_pk[["lcl"]]))
+  )
+stopifnot(
+  all(round(cl_tab$model_pct_reduction) == cl_tab$paper_pct_reduction),
+  abs(cl_tab$cl[cl_tab$genotype == "*3/*3"] - 0.0782) < 5e-4
+)
+cl_tab |>
+  mutate(genotype = md_star(genotype)) |>
+  dplyr::rename(
+    "Genotype" = genotype,
+    "CL/F (L/h)" = cl,
+    "Reduction, model (%)" = model_pct_reduction,
+    "Reduction, paper (%)" = paper_pct_reduction
+  ) |>
+  dplyr::select(-starts_with("CYP2C9")) |>
+  knitr::kable(digits = c(0, 0, 4, 1))
+```
+
+## Steady-state TXB2 by CYP2C9 genotype and LBM (Figure 4)
+
+The paper simulates typical subjects on 7.5 mg once daily at steady state
+and reports the 24-h time-weighted average percent serum TXB2 generation:
+60.5, 57.6, 51.0, 54.0, 45.7 and 31.8% for \*1/\*1, \*1/\*2, \*1/\*3, \*2/\*2,
+\*2/\*3 and \*3/\*3 (LBM 55.0 kg), and 60.3, 60.5 and 60.7% at LBM 75.2, 55.0
+and 43.6 kg (\*1/\*1). Each daily dose is two dose records with the same
+amount: a first-order record on `depot` and a zero-order record on `central`
+with `rate = -2`, so the model's own duration `d1` is used.
+
+```{r ss-events}
+make_ss <- function(id, s2, s3, lbm, n_days = 40, obs_step = 0.05) {
+  dose_times <- (seq_len(n_days) - 1) * 24
+  doses <- data.frame(
+    id = id, time = rep(dose_times, 2), amt = 7.5, evid = 1L,
+    cmt = rep(c("depot", "central"), each = n_days),
+    rate = rep(c(0, -2), each = n_days)
+  )
+  obs <- data.frame(
+    id = id, time = seq((n_days - 1) * 24, n_days * 24, by = obs_step),
+    amt = 0, evid = 0L, cmt = "central", rate = 0
+  )
+  bind_rows(doses, obs) |>
+    arrange(time, desc(evid)) |>
+    mutate(CYP2C9_S2_COUNT = s2, CYP2C9_S3_COUNT = s3, LBM = lbm)
+}
+
+scen <- tibble::tribble(
+  ~scenario, ~s2, ~s3, ~lbm, ~paper_twa,
+  "*1/*1", 0, 0, 55.0, 60.5,
+  "*1/*2", 1, 0, 55.0, 57.6,
+  "*1/*3", 0, 1, 55.0, 51.0,
+  "*2/*2", 2, 0, 55.0, 54.0,
+  "*2/*3", 1, 1, 55.0, 45.7,
+  "*3/*3", 0, 2, 55.0, 31.8,
+  "LBM 75.2 kg", 0, 0, 75.2, 60.3,
+  "LBM 55.0 kg", 0, 0, 55.0, 60.5,
+  "LBM 43.6 kg", 0, 0, 43.6, 60.7
+) |>
+  mutate(id = seq_len(n()))
+
+ss_events <- bind_rows(lapply(seq_len(nrow(scen)), function(i) {
+  make_ss(scen$id[i], scen$s2[i], scen$s3[i], scen$lbm[i])
+}))
+stopifnot(!anyDuplicated(unique(ss_events[, c("id", "time", "evid", "cmt")])))
+
+mod_typ <- rxode2::zeroRe(rxode2::rxode2(mod))
+ss_sim <- rxode2::rxSolve(mod_typ, events = ss_events, returnType = "data.frame") |>
+  mutate(time_ss = time - min(time)) |>
+  left_join(scen |> select(id, scenario), by = "id")
+```
+
+```{r ss-twa}
+trap_mean <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2) / (max(t) - min(t))
+twa <- ss_sim |>
+  group_by(scenario) |>
+  summarise(
+    sim_twa = trap_mean(time, TXB2),
+    txb2_6h = TXB2[which.min(abs(time_ss - 6))],
+    cmax = max(Cc), cmin = min(Cc),
+    .groups = "drop"
+  ) |>
+  left_join(scen |> select(scenario, paper_twa, id), by = "scenario") |>
+  arrange(id) |>
+  mutate(diff = sim_twa - paper_twa)
+
+# Deterministic solves of the published typical values: no cohort noise.
+# Observed differences are <= 0.04 percentage points except *3/*3 (see
+# below), so 0.15 still fails on any transcription error in CL, Vc, the
+# LBM exponent, F, DT, ka or the PD parameters.
+stopifnot(all(abs(twa$diff[twa$scenario != "*3/*3"]) < 0.15))
+# *3/*3: CL/F is 0.0782 L/h, so steady state takes about four weeks. The
+# simulation here runs 40 days (true steady state, 31.45%); the paper's
+# 31.8% lies between a 20-day (31.9%) and a 25-day (31.6%) simulation, i.e.
+# the paper's simulation had not fully reached steady state for this
+# genotype.
+stopifnot(abs(twa$diff[twa$scenario == "*3/*3"]) < 0.6)
+
+twa |>
+  select(scenario, paper_twa, sim_twa, diff, txb2_6h, cmax, cmin) |>
+  mutate(scenario = md_star(scenario)) |>
+  dplyr::rename(
+    "Scenario" = scenario,
+    "TWA TXB2, paper (%)" = paper_twa,
+    "TWA TXB2, model (%)" = sim_twa,
+    "Difference (points)" = diff,
+    "TXB2 at 6 h (%)" = txb2_6h,
+    "Cmax,ss (ng/mL)" = cmax,
+    "Cmin,ss (ng/mL)" = cmin
+  ) |>
+  knitr::kable(digits = c(0, 1, 2, 2, 1, 0, 0))
+```
+
+The Discussion also states that, at LBM 55 kg, TXB2 generation 6 h after a
+steady-state dose is decreased by 45% (\*1/\*1) and 47% (\*1/\*2), i.e. 55%
+and 53% of basal:
+
+```{r ss-6h}
+stopifnot(
+  abs(twa$txb2_6h[twa$scenario == "*1/*1"] - 55) < 1,
+  abs(twa$txb2_6h[twa$scenario == "*1/*2"] - 53) < 1
+)
+```
+
+```{r figure-4, fig.height = 6}
+# Replicates Figure 4 of Aoyama 2017 (panels a-d).
+fig4 <- ss_sim |>
+  filter(scenario != "LBM 55.0 kg") |>
+  mutate(
+    panel = ifelse(grepl("^LBM", scenario), "LBM (CYP2C9*1/*1)", "CYP2C9 genotype (LBM 55.0 kg)")
+  ) |>
+  bind_rows(
+    ss_sim |> filter(scenario == "*1/*1") |>
+      mutate(scenario = "LBM 55.0 kg", panel = "LBM (CYP2C9*1/*1)")
+  ) |>
+  select(panel, scenario, time_ss, Cc, TXB2) |>
+  pivot_longer(c(Cc, TXB2), names_to = "output", values_to = "value") |>
+  mutate(output = recode(output, Cc = "Meloxicam (ng/mL)", TXB2 = "Percent serum TXB2 generation (%)"))
+
+ggplot(fig4, aes(time_ss, value, colour = scenario)) +
+  geom_line() +
+  facet_grid(output ~ panel, scales = "free_y") +
+  labs(
+    x = "Time after steady-state dose (h)", y = NULL, colour = NULL,
+    caption = "Replicates Figure 4 of Aoyama 2017: typical subjects, 7.5 mg once daily at steady state."
+  ) +
+  theme_bw()
+```
+
+# Table 3 PK/PD fit (Figure 3b)
+
+The second model reproduces the fitted curves of Figure 3b: a single 15 mg
+dose in the CYP2C9\*1/\*1 and \*1/\*13 groups. Both endpoints are declared,
+so observation rows carry `dvid = 1` (one solve returns both `Cc` and `TXB2`
+as columns). The prediction lines of Figure 3b were digitised by the
+maintainers at 18, 36 and 60 h -- times with no observed point, so the
+markers do not obscure the line. One pixel of the published raster is about
+25 ng/mL on the concentration panel and about 0.9 points on the TXB2 panel.
+
+```{r figure-3b}
+mod_pkpd <- readModelDb("Aoyama_2017_meloxicam_pkpd")
+pkpd_events <- bind_rows(lapply(c(0, 1), function(s13) {
+  bind_rows(
+    data.frame(time = 0, amt = 15, evid = 1L, cmt = c("depot", "central"), rate = c(0, -2), dvid = NA_integer_),
+    data.frame(time = sort(unique(c(seq(0, 72, by = 0.25), 18, 36, 60))), amt = 0, evid = 0L, cmt = NA_character_, rate = 0, dvid = 1L)
+  ) |>
+    mutate(id = s13 + 1L, CYP2C9_S13_COUNT = s13)
+})) |>
+  arrange(id, time, desc(evid))
+
+pkpd_sim <- rxode2::rxSolve(mod_pkpd, events = pkpd_events, returnType = "data.frame") |>
+  mutate(group = ifelse(id == 1, "*1/*1", "*1/*13"))
+
+digitised <- tibble::tribble(
+  ~group, ~time, ~fig_Cc, ~fig_TXB2,
+  "*1/*1", 18, 841, 58.0,
+  "*1/*1", 36, 486, 67.2,
+  "*1/*1", 60, 232, 77.4,
+  "*1/*13", 18, 1364, 49.2,
+  "*1/*13", 36, 973, 55.5,
+  "*1/*13", 60, 622, 63.2
+)
+cmp3b <- digitised |>
+  left_join(pkpd_sim |> select(group, time, Cc, TXB2), by = c("group", "time"))
+# Two raster pixels on each panel; observed differences are at most 14 ng/mL
+# and 0.6 points. A wrong CL, volume or IC50 moves these by far more.
+stopifnot(
+  nrow(cmp3b) == 6,
+  all(abs(cmp3b$Cc - cmp3b$fig_Cc) < 50),
+  all(abs(cmp3b$TXB2 - cmp3b$fig_TXB2) < 2)
+)
+cmp3b |>
+  select(group, time, fig_Cc, Cc, fig_TXB2, TXB2) |>
+  mutate(group = md_star(group)) |>
+  dplyr::rename(
+    "Group" = group, "Time (h)" = time,
+    "Cc, Figure 3b (ng/mL)" = fig_Cc, "Cc, model (ng/mL)" = Cc,
+    "TXB2, Figure 3b (%)" = fig_TXB2, "TXB2, model (%)" = TXB2
+  ) |>
+  knitr::kable(digits = 1)
+
+pkpd_sim |>
+  select(group, time, Cc, TXB2) |>
+  pivot_longer(c(Cc, TXB2), names_to = "output", values_to = "value") |>
+  mutate(output = recode(output, Cc = "Meloxicam (ng/mL)", TXB2 = "Percent serum TXB2 generation (%)")) |>
+  ggplot(aes(time, value, colour = group)) +
+  geom_line() +
+  geom_point(
+    data = digitised |>
+      pivot_longer(c(fig_Cc, fig_TXB2), names_to = "output", values_to = "value") |>
+      mutate(output = recode(output, fig_Cc = "Meloxicam (ng/mL)", fig_TXB2 = "Percent serum TXB2 generation (%)")),
+    shape = 4, size = 3
+  ) +
+  facet_wrap(~output, scales = "free_y") +
+  labs(
+    x = "Time (h)", y = NULL, colour = "CYP2C9",
+    caption = "Replicates the fitted lines of Figure 3b (upper panels). Crosses: line values digitised from the figure."
+  ) +
+  theme_bw()
+```
+
+# Virtual cohort (population PK model)
+
+Observed data are not public. The cohort below approximates the 119-subject
+trial: genotype frequencies as observed (97 \*1/\*1, 6 \*1/\*2, 1 \*2/\*2, 15
+\*1/\*3 of 119), and LBM drawn from a normal distribution centred on the
+cohort median of 55.0 kg (SD 6.5 kg), redrawn when outside the observed
+range 43.6-75.2 kg. One cohort of 200 subjects receives a single 7.5 mg dose.
+
+```{r cohort}
+set.seed(2017)
+rxode2::rxSetSeed(2017)
+n_sub <- 200
+draw_lbm <- function(n) {
+  x <- rnorm(n, 55.0, 6.5)
+  bad <- x < 43.6 | x > 75.2
+  while (any(bad)) {
+    x[bad] <- rnorm(sum(bad), 55.0, 6.5)
+    bad <- x < 43.6 | x > 75.2
+  }
+  x
+}
+subj <- tibble(
+  id = seq_len(n_sub),
+  genotype = sample(c("*1/*1", "*1/*2", "*2/*2", "*1/*3"), n_sub, replace = TRUE, prob = c(97, 6, 1, 15)),
+  LBM = draw_lbm(n_sub)
+) |>
+  mutate(
+    CYP2C9_S2_COUNT = case_when(genotype == "*1/*2" ~ 1, genotype == "*2/*2" ~ 2, TRUE ~ 0),
+    CYP2C9_S3_COUNT = ifelse(genotype == "*1/*3", 1, 0),
+    lbm_group = cut(LBM, c(-Inf, 51.3, 55.0, 59.5, Inf),
+      labels = c("LBM < 51.3", "51.3 < LBM < 55.0", "55.0 < LBM < 59.5", "LBM > 59.5")
+    )
+  )
+obs_times <- sort(unique(c(seq(0, 12, by = 0.25), seq(13, 168, by = 1))))
+events <- bind_rows(
+  subj |> tidyr::crossing(tibble(cmt = c("depot", "central"), rate = c(0, -2))) |>
+    mutate(time = 0, amt = 7.5, evid = 1L),
+  subj |> tidyr::crossing(time = obs_times) |>
+    mutate(cmt = "central", rate = 0, amt = 0, evid = 0L)
+) |>
+  arrange(id, time, desc(evid))
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
+```
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events, keep = c("genotype", "lbm_group"), returnType = "data.frame")
+```
+
+```{r figure-3a}
+# Replicates the layout of Figure 3a of Aoyama 2017: concentration-time by
+# LBM band, coloured by CYP2C9 genotype; ribbons are the simulated 5th-95th
+# percentiles of this virtual cohort and lines the medians.
+sim |>
+  filter(time <= 72) |>
+  group_by(lbm_group, genotype, time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    n = n(), .groups = "drop"
+  ) |>
+  filter(n >= 3) |>
+  ggplot(aes(time, Q50, colour = genotype, fill = genotype)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.15, colour = NA) +
+  geom_line() +
+  facet_wrap(~lbm_group) +
+  labs(
+    x = "Time (h)", y = "Meloxicam (ng/mL)", colour = "CYP2C9", fill = "CYP2C9",
+    caption = "Virtual cohort, single 7.5 mg dose. Compare Figure 3a of Aoyama 2017."
+  ) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+The paper reports no NCA table of its own. With linear elimination and an
+apparent (F = 1) parameterisation, each subject's AUC0-inf must equal
+dose / CL/F; PKNCA on the dense 0-168 h profile is checked against that
+identity per subject, by genotype.
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, genotype)
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, genotype) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, genotype, time, .keep_all = TRUE) |>
+  arrange(id, genotype, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | genotype + id)
+dose_df <- subj |> transmute(id, genotype, time = 0, amt = 7.5)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | genotype + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+ind_cl <- sim |> distinct(id, cl)
+auc_chk <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  left_join(ind_cl, by = "id") |>
+  mutate(
+    auc_expected = 7.5 / cl * 1000,
+    pct_diff = 100 * (PPORRES - auc_expected) / auc_expected
+  )
+# Physical identity on each subject's own parameters; the residual is
+# trapezoid and terminal-extrapolation error, largest for the few subjects
+# drawn with very slow absorption (Ka CV 131%).
+stopifnot(
+  abs(median(auc_chk$pct_diff)) < 2,
+  quantile(abs(auc_chk$pct_diff), 0.9) < 5
+)
+
+summary(nca_res)
+```
+
+## Comparison against published NCA
+
+The paper's only NCA value is the 20 h terminal elimination half-life it
+quotes for healthy subjects (Introduction, ref. 10), which corresponds to
+the CYP2C9\*1/\*1 majority. The simulated \*1/\*1 median is compared with it
+below.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~genotype, ~half.life,
+  "*1/*1", 20
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = as.data.frame(nca_res) |> filter(genotype == "*1/*1"),
+  reference = published,
+  by = "genotype",
+  params = "half.life",
+  units = c(half.life = "h"),
+  tolerance_pct = 20
+)
+cmp |>
+  mutate(genotype = md_star(genotype)) |>
+  knitr::kable(caption = "Simulated vs. published half-life. * differs from reference by >20%.")
+```
+
+# Assumptions and deviations
+
+- **Concentration scaling.** The published control stream defines
+  `SC = V/1000` but never assigns it to `S2`, so as printed `IPRED` would be
+  the central amount in mg. Every reported concentration, the 7.79 L volume
+  and the 1390 ng/mL IC50 are only consistent with concentration =
+  1000 x amount (mg) / V (L) in ng/mL, which is what the packaged model uses
+  (`S2 = V/1000`). The steady-state TXB2 values above reproduce to within
+  0.04 points under this reading.
+- **Variability scale.** Table 2 prints omega CL, omega Vd and omega Ka as CV%.
+  They are converted with `omega^2 = log(1 + CV^2)`: the printed +/-1.96 SE
+  interval of omega Ka (68.1-201%) is symmetric about the estimate on the
+  variance scale only under that conversion (interval 0.383-1.621, midpoint
+  1.002 vs 0.999); the `CV = sqrt(omega^2)` reading gives an asymmetric one
+  (midpoint 2.25 vs 1.72). For CL and Vc the two readings differ by under 3%.
+  omega^2 of logit(F) is printed directly (2.03).
+- **Ka-F correlation.** The 0.243 entry is labelled a correlation coefficient
+  (Table 2 footnote) and is used as such. The packaged model carries the
+  first-order fraction `ffo = 1 - F` on the logit scale (the library's
+  canonical name), whose eta is the negated eta on logit(F), so the
+  covariance enters with a negative sign: -0.243 x sqrt(0.999203 x 2.03) =
+  -0.346081.
+- **Parallel absorption.** The control stream doses two compartments: a
+  zero-order input of fraction F into the central compartment over D2 = DT
+  (`RATE = -2`) and a first-order input of 1 - F from the depot with
+  `ALAG1 = DT`. Users must likewise supply two dose records per
+  administration (`cmt = "central"` with `rate = -2`, and `cmt = "depot"`),
+  as in the event tables above.
+- **CYP2C9 genotypes not in the data.** No \*2/\*3 or \*3/\*3 subject was
+  enrolled, and the control stream's allele coding (`CYPL` in {1, 2}) cannot
+  express \*3/\*3; the paper nevertheless simulates both with the per-allele
+  form of Eq. 5, which the packaged allele-count covariates reproduce. The
+  paper notes that its \*3/\*3 CL/F (0.0782 L/h) exceeds an observed NCA
+  estimate (0.043 L/h, n = 3), so the model likely under-predicts \*3/\*3
+  exposure.
+- **PD layer in the population model.** The PD parameters were estimated on a
+  different cohort (Bae et al. 2007) and dose (15 mg) from the population PK
+  model; coupling them is the paper's own simulation design (Methods,
+  "Simulation"). No PD residual error or between-subject variability was
+  reported, so `TXB2` is an unobserved output of `Aoyama_2017_meloxicam`.
+- **Table 3 residual error.** The PK/PD fit used weighted residuals but
+  reports neither the error model nor its magnitude; `propSd` (meloxicam)
+  and `addSd_TXB2` are `fixed(0)` placeholders, so simulations from
+  `Aoyama_2017_meloxicam_pkpd` are typical-value predictions. The error
+  forms (proportional for concentration, additive for TXB2) are the
+  maintainers' choice.
+- **CYP2C9\*13 covariate.** In `Aoyama_2017_meloxicam_pkpd`,
+  `CYP2C9_S13_COUNT` selects between the two fitted parameter sets (0 =
+  \*1/\*1, 1 = \*1/\*13); it is not a per-allele effect and is not defined for
+  other genotypes.
+- **Virtual-cohort LBM.** The SD of 6.5 kg is the maintainers' choice
+  (the paper reports only medians and ranges, Table 1).
+- **Excluded covariates.** Serum albumin on Vc/F entered the forward step
+  but was removed in backward elimination, and no ethnic difference (Eq. 6)
+  was significant; both are documented in `covariatesDataExcluded`.
+- **Errata.** No correction notice was found for this article (Europe PMC,
+  checked 2026-11-25).
