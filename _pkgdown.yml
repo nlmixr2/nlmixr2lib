@@ -7606,8 +7606,14 @@ navbar:
         href: articles/Zheng_2016_sifalimumab.html
       - text: "Sildenafil (Rhee 2022)"
         href: articles/Rhee_2022_sildenafil.html
+      - text: "Sildenafil dog (Kim 2019)"
+        href: articles/Kim_2019_sildenafil.html
       - text: "Sildenafil dog (Yata 2026)"
         href: articles/Yata_2026_sildenafil_dog.html
+      - text: "Sildenafil dog ivivc (Kim 2019)"
+        href: articles/Kim_2019_sildenafil.html
+      - text: "Sildenafil invitro (Kim 2019)"
+        href: articles/Kim_2019_sildenafil.html
       - text: "Siltuximab (Cao 2013)"
         href: articles/Cao_2013_siltuximab.html
       - text: "Siltuximab (Nikanjam 2019)"
@@ -10645,6 +10651,7 @@ articles:
   - articles/Kim_2017_fimasartan
   - articles/Kim_2017_tegafur_rat
   - articles/Kim_2018_tacrolimus
+  - articles/Kim_2019_sildenafil
   - articles/Kim_2019_voriconazole
   - articles/Kim_2020_CKD_519
   - articles/Kim_2020_voriconazole
