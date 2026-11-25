@@ -682,6 +682,13 @@ Do **not** use `iiv_`, `IIV_`, or `bsv_` prefixes for new models. The two most r
 
 Document `omega²` = `log(CV² + 1)` in a comment when translating CV% to the internal variance scale.
 
+Non-normal eta distributions are written out in `model()` with structural shape THETAs named after the transformed parameter (spelled as in `ini()`):
+
+- `boxcox_<param>` -- Box-Cox lambda on `exp(eta<param>)` (Siebinga 2024).
+- `logitskew_<param>` / `logitwidth_<param>` -- logit-transformed eta, `<param>_i = <param> + (expit(logitskew_<param> + eta<param>) - expit(logitskew_<param>)) * logitwidth_<param>` (paper `LGT1` / `LGT2`; founding example `Du_2026_cendakimab.R`).
+
+A combined uniform-binomial (CUB) count likelihood's mixture weight is `logitpinform` (bare `pinform`, the probability a record is informative/binomial rather than uniform; founding example `Du_2026_cendakimab.R`). It mixes likelihoods per record, unlike the subject-level mixing weights `frac` / `alfm`.
+
 ## Covariate-effect parameters
 
 Canonical form: `e_<cov>_<param>` (`<cov>` first, `<param>` second). Examples:

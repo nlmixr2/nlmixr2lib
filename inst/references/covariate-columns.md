@@ -6321,7 +6321,7 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model` as `CL_INDIV` in place of an estimated `cl <- exp(lcl + etalcl)`.
 - **Source aliases:** `CLI` -- used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel CL).
-- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel CL EBE supplied as a covariate column following the Friberg 2002 convention; the Wahlby 2004 PD model layers BIL and DBIL covariate effects on top of the Friberg-Karlsson chain), `Yarur_2025_ustekinumab_clinbiorem_cl.R` and `Yarur_2025_ustekinumab_ehi50_cl.R` (L/day; per-dose-cycle empirical-Bayes ustekinumab clearance from `modellib('Yarur_2025_ustekinumab')` with every parameter fixed as the Bayesian prior; enters mixed-effects logistic regressions for clinical-and-biochemical remission and for an endoscopic healing index above 50 points LINEARLY and UNCENTRED, slopes `-13.5` and `+18.0` per L/day; Yarur 2025 Table S1), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (L/day; per-subject apparent amcenestrant CL/F from the authors' unpublished population PK model, fed in as a Monolix regressor driving a joint tumor-size and PFS model).
+- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel CL EBE supplied as a covariate column following the Friberg 2002 convention; the Wahlby 2004 PD model layers BIL and DBIL covariate effects on top of the Friberg-Karlsson chain), `Yarur_2025_ustekinumab_clinbiorem_cl.R` and `Yarur_2025_ustekinumab_ehi50_cl.R` (L/day; per-dose-cycle empirical-Bayes ustekinumab clearance from `modellib('Yarur_2025_ustekinumab')` with every parameter fixed as the Bayesian prior; enters mixed-effects logistic regressions for clinical-and-biochemical remission and for an endoscopic healing index above 50 points LINEARLY and UNCENTRED, slopes `-13.5` and `+18.0` per L/day; Yarur 2025 Table S1), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (L/day; per-subject apparent amcenestrant CL/F from the authors' unpublished population PK model, fed in as a Monolix regressor driving a joint tumor-size and PFS model), `Du_2026_cendakimab.R` (L/h; per-subject cendakimab clearance from the authors' unpublished population PK model drives an exposure-response model of dysphagia days).
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug -- there is no shared meaning across drugs. Each model's `covariateData[[CL_INDIV]]$notes` should state which upstream popPK source the EBE values come from (e.g., Henningsson 2001 paclitaxel popPK, fixed in the DDMORE encoding) and whether placebo periods are present. Companion volumes are registered as `VC_INDIV` and `VP_INDIV`.
 
 ### CMAX_M1 (**canonical for maximum drug plasma concentration during month 1**)
@@ -6365,7 +6365,7 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model` as `VC_INDIV` in place of an estimated `vc <- exp(lvc + etalvc)`.
 - **Source aliases:** `V1I` -- used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V1).
-- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V1 EBE following the Friberg 2002 convention), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (per-subject apparent amcenestrant V1/F; see `CL_INDIV`).
+- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V1 EBE following the Friberg 2002 convention), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (per-subject apparent amcenestrant V1/F; see `CL_INDIV`), `Du_2026_cendakimab.R` (cendakimab; the authors' population PK model is unpublished).
 - **Notes:** See `CL_INDIV` notes for the broader convention.
 
 ### VP_INDIV (**canonical for per-subject empirical-Bayes peripheral volume of distribution**)
@@ -6375,7 +6375,7 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model` as `VP_INDIV` in place of an estimated `vp <- exp(lvp + etalvp)`.
 - **Source aliases:** `V2I` -- used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V2).
-- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V2 EBE following the Friberg 2002 convention), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (per-subject apparent amcenestrant V2/F; see `CL_INDIV`).
+- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V2 EBE following the Friberg 2002 convention), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (per-subject apparent amcenestrant V2/F; see `CL_INDIV`), `Du_2026_cendakimab.R` (cendakimab; the authors' population PK model is unpublished).
 - **Notes:** See `CL_INDIV` notes for the broader convention. For models requiring a second peripheral compartment, register `VP2_INDIV` (and add a follow-on entry to this register) when a second model legitimately needs it.
 
 ### KTR_INDIV (**canonical for per-subject empirical-Bayes transit / absorption rate constant**)
@@ -6390,13 +6390,44 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 
 ### Q_INDIV (**canonical for per-subject empirical-Bayes intercompartmental clearance**)
 - **Description:** Individual point estimate of the modelled drug's (apparent) intercompartmental clearance between the central and first peripheral compartments, supplied per-subject as a fixed data column. Companion to `CL_INDIV`, `VC_INDIV` and `VP_INDIV` in sequential PK->PD encodings.
-- **Units:** L/day in the founding models (document per-model via `covariateData[[Q_INDIV]]$units`).
+- **Units:** L/day in the Cerou 2024 models, L/h in `Du_2026_cendakimab.R` (document per-model via `covariateData[[Q_INDIV]]$units`).
 - **Type:** continuous
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model` as `Q_INDIV` in place of an estimated `q <- exp(lq + etalq)`.
-- **Source aliases:** `Q` -- Monolix regressor in Cerou 2024 Data S1 (`Q={use=regressor}`).
-- **Example models:** `Cerou_2024_amcenestrant.R`, `Cerou_2024_amcenestrant_ameera12.R` (apparent amcenestrant Q/F; see `KTR_INDIV`).
+- **Source aliases:** `Q` -- Monolix regressor in Cerou 2024 Data S1 (`Q={use=regressor}`); `Qi` -- NONMEM data column in Du 2026 Data S1.
+- **Example models:** `Cerou_2024_amcenestrant.R`, `Cerou_2024_amcenestrant_ameera12.R` (apparent amcenestrant Q/F; see `KTR_INDIV`), `Du_2026_cendakimab.R` (cendakimab Q in L/h; the authors' population PK model is unpublished).
 - **Notes:** See `CL_INDIV` notes for the broader convention.
+
+### KA_INDIV (**canonical for per-subject empirical-Bayes first-order absorption rate constant**)
+- **Description:** Individual point estimate of the modelled drug's first-order absorption rate constant from the depot, supplied per-subject as a fixed data column. Companion to `CL_INDIV`, `VC_INDIV`, `Q_INDIV` and `VP_INDIV` in sequential PK->PD encodings with first-order extravascular absorption.
+- **Units:** 1/h in the founding model (document per-model via `covariateData[[KA_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used directly inside `model` as `ka <- KA_INDIV` in place of an estimated `ka <- exp(lka + etalka)`.
+- **Source aliases:** `KAi` -- NONMEM data column in Du 2026 Data S1.
+- **Example models:** `Du_2026_cendakimab.R` (SC cendakimab; the authors' population PK model is unpublished).
+- **Notes:** See `CL_INDIV` notes for the broader convention. Distinct from `KTR_INDIV`, the rate of a transit-compartment absorption chain.
+
+### TLAG_INDIV (**canonical for per-subject empirical-Bayes absorption lag time**)
+- **Description:** Individual point estimate of the modelled drug's absorption lag time on the depot, supplied per-subject as a fixed data column and applied as `alag(depot) <- TLAG_INDIV`. Companion to `KA_INDIV` in sequential PK->PD encodings.
+- **Units:** h in the founding model (document per-model via `covariateData[[TLAG_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used directly inside `model` in place of an estimated `tlag <- exp(ltlag + etaltlag)`.
+- **Source aliases:** `ALAG1i` -- NONMEM data column in Du 2026 Data S1 (applied as `ALAG1`).
+- **Example models:** `Du_2026_cendakimab.R`.
+- **Notes:** See `CL_INDIV` notes for the broader convention. The root follows the canonical lag-time parameter `tlag`.
+
+### FDEPOT_INDIV (**canonical for per-subject empirical-Bayes bioavailability of the depot dose**)
+- **Description:** Individual point estimate of the modelled drug's bioavailable fraction of a depot dose, supplied per-subject as a fixed data column and applied as `f(depot) <- FDEPOT_INDIV`. Companion to `KA_INDIV` in sequential PK->PD encodings.
+- **Units:** (fraction)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used directly inside `model` in place of an estimated `fdepot <- exp(lfdepot + etalfdepot)`.
+- **Source aliases:** `F1i` -- NONMEM data column in Du 2026 Data S1 (applied as `F1`).
+- **Example models:** `Du_2026_cendakimab.R`.
+- **Notes:** See `CL_INDIV` notes for the broader convention. The root follows the canonical bioavailability parameter `fdepot`. When `CL_INDIV` and the volumes are already apparent (divided by F), supply 1.
+
 
 ### BAS_SVEGFR3 (**canonical for individual posthoc baseline soluble VEGFR-3 concentration from an upstream PD fit**)
 - **Description:** Subject-specific empirical-Bayes (posthoc) baseline plasma sVEGFR-3 (soluble vascular endothelial growth factor receptor 3) concentration from a separately published indirect-response biomarker model that the current downstream PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in fatigue / adverse-event PD models that consume the upstream biomarker dynamics as data covariates without instantiating the biomarker ODE.
@@ -8707,8 +8738,8 @@ readable.
 - **Type:** count
 - **Scope:** general
 - **Reference category:** n/a -- appears as a multiplier on a per-day rate.
-- **Source aliases:** `NDAYS` -- used in the Schoemaker 2018 LEV/BRV pediatric extrapolation (DDMODEL00000239).
-- **Example models:** `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239).
+- **Source aliases:** `NDAYS` -- used in the Schoemaker 2018 LEV/BRV pediatric extrapolation (DDMODEL00000239) and in the Du 2026 cendakimab NONMEM code ('Period which Dysphagia Days was evaluated').
+- **Example models:** `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239), `Du_2026_cendakimab.R` (the binomial size of the combined uniform-binomial likelihood of the dysphagia-day count; nominally 14, smaller when diary days are missing).
 - **Notes:** General scope because the count-interval-length concept is shared across any count or rate-based PD model that mixes record granularity (e.g., daily and monthly counts in the same dataset). For pure-daily or pure-monthly cohorts the column is constant; including it as a covariate keeps the model usable in mixed-granularity simulations.
 
 ### MOMENT (**canonical for endotracheal suctioning procedural state**)
@@ -16363,16 +16394,16 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `PonceBobadilla_2023_upadacitinib_induction_clinrem.R`, `PonceBobadilla_2023_upadacitinib_induction_clinresp.R`, `PonceBobadilla_2023_upadacitinib_induction_endoimp.R`, `PonceBobadilla_2023_upadacitinib_induction_endorem.R` (log-odds shifts of -0.776 to -1.07 at induction Week 8; the endoscopic-improvement coefficient is printed +0.922 with a negative CI and is encoded -0.922), `PonceBobadilla_2023_upadacitinib_maintenance_clinrem.R`, `PonceBobadilla_2023_upadacitinib_maintenance_endoimp.R`, `PonceBobadilla_2023_upadacitinib_maintenance_endorem.R`, `PonceBobadilla_2023_upadacitinib_maintenance_hemi.R`, `PonceBobadilla_2023_upadacitinib_maintenance_sfclinrem.R` (maintenance Week 52, -0.0667 to -0.41, none significant).
 - **Notes:** A treatment-FAILURE stratum, not an exposure stratum: distinct from `PRIOR_BIO` (1 = any prior biologic exposure) and `PRIOR_TNF` (1 = any prior anti-TNF exposure). A patient who stopped a biologic for cost or convenience is `PRIOR_BIO = 1` but `BIOLOGIC_IR = 0`. When a paper restricts the failure to anti-TNF agents (`TNF-IR`), record that in the per-model notes rather than reusing this column silently.
 
-### MIGRAINE_ORAL_PREVENTIVE_IR (**canonical for failed conventional oral migraine-preventive treatment indicator**)
-- **Description:** 1 = the patient has failed two to four classes of conventional oral migraine preventive treatments; 0 = not. The source does not list the classes or say whether failure means inadequate efficacy, intolerability or both; record the trial's definition in the per-model notes. Time-fixed per subject; usually an enrolment criterion of a dedicated difficult-to-treat migraine study rather than a randomisation stratum.
+### STEROID_IR (**canonical for corticosteroid inadequate responder or intolerant indicator**)
+- **Description:** 1 = the patient has had an inadequate response to, or intolerance of, prior corticosteroid therapy for the indication ("Steroid IR/I"); 0 = steroid responder or steroid-naive ("Steroid R/N"). Time-fixed per subject; usually a randomization stratification factor (e.g. topical swallowed corticosteroids in eosinophilic esophagitis).
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (no prior failure of two to four oral preventive classes).
+- **Scope:** general
+- **Reference category:** 0 (steroid responder or steroid-naive).
 - **Source aliases:**
-  - `TRTF` (`TRTF == 2` = yes) -- Schlachter 2026 (CPT Pharmacometrics Syst Pharmacol) Data S1 control stream; Table 1 / Table 4 row 'Previously failed treatments' ('patients for whom two to four classes of conventional oral preventive treatments failed').
-- **Example models:** `Schlachter_2026b_atogepant.R` (founding example; additive shift -0.410 on the shifted-logit combined placebo + atogepant effect on monthly migraine days, and a 0.628-fold multiplier on the time to half of that effect).
-- **Notes:** The migraine member of the `<therapy>_IR` treatment-FAILURE family started by `BIOLOGIC_IR`: it marks failure of a therapy class, not exposure to it. Distinct from an exposure indicator of the "prior preventive migraine medication (yes/no)" kind -- Schlachter 2026 screened such a column (`PRIMED`) separately and did not retain it, and in that cohort every failed-treatment patient was also exposed (Table 1) but most exposed patients had not failed. In Schlachter 2026 the indicator coincides exactly with one study (ELEVATE), so its effect cannot be separated from a study effect; record any such confounding in the per-model notes.
+  - `SIRIN` -- Du 2026 Data S1 NONMEM data column ('IF (SIRIN.EQ.1) COVSIRINEMAX = SIRINEMAX1'); 'Steroid IR/I' in the paper.
+- **Example models:** `Du_2026_cendakimab.R` (multiplies the drug Emax on the logit of the dysphagia-day probability by `exp(0.2377)`).
+- **Notes:** A treatment-FAILURE stratum, parallel to `BIOLOGIC_IR`; distinct from `PRICORT` (any prior corticosteroid use, regardless of response) and from `OCS_NONRESPONDER` (a study-level indicator). A steroid-naive patient is `STEROID_IR = 0`.
 
 ### PRIOR_IMMUNOMODULATORY_DRUG (**canonical for prior immunomodulatory-drug (IMiD) therapy indicator**)
 - **Description:** 1 = subject previously treated with an immunomodulatory imide drug (IMiD: thalidomide, lenalidomide or pomalidomide) before the current regimen, 0 = IMiD-naive. A baseline treatment-history indicator in multiple-myeloma cohorts, where prior IMiD exposure marks a more heavily pretreated and less IMiD-responsive disease.

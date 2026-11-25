@@ -1123,6 +1123,13 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Iwaki_2021_guselkumab.R`.
 - **Notes:** Member of a `latent_<endpoint>` pattern: the suffix names the endpoint the latent variable drives, so latent-variable models of other scores (the PASI models of Hu et al. that Iwaki 2021 follows) take `latent_pasi` and so on, and several can coexist in one model. `Wilbaux_2015_prostate.R`'s `latent_tumor` / `latent_tumor_d` follow the same pattern but are still listed in that model's `paper_specific_compartments`. Distinct from `effect` (a ke0 effect compartment holding a concentration) and from `lat<n>` (a latency / delay chain).
 
+### latent_dysphagia_days (**canonical latent drug-effect variable driving the dysphagia-day count**)
+- **Type:** compartment
+- **Role:** Dimensionless turnover variable `DE(t)` whose loss drives the drug effect on the daily dysphagia probability: `d/dt(latent_dysphagia_days) <- kout * (1 - Cc / (ec50 + Cc)) - kout * latent_dysphagia_days` with `latent_dysphagia_days(0) <- 1`, and the drug effect enters as `emax * (1 - latent_dysphagia_days)` on the logit of the probability. It has no physical units or matrix (`specimen = "not applicable"`).
+- **Source aliases:** `DE` -- Du 2026 Equations 5-6; `A(5)` / `COMP = (DE)` in its Supporting Information NONMEM code.
+- **Example models:** `Du_2026_cendakimab.R`.
+- **Notes:** Member of the `latent_<endpoint>` family (see `latent_pppasi`); the endpoint it drives is `dysphagia_days`.
+
 ---
 
 ## Atopic dermatitis scores (EASI, IGA)
@@ -2953,6 +2960,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Monthly migraine-day count PD output.
 - **Source aliases:** none.
 - **Example models:** `FiedlerKelly_2020_fremanezumab_cm.R` (and its sibling `FiedlerKelly_2020_fremanezumab_em.R`), `Schlachter_2026b_atogepant.R` (episodic and chronic migraine in one model; additive normal residual error, simulated values compressed into 0-28 days/month).
+
+### dysphagia_days (**canonical dysphagia-day count in a diary window**)
+- **Type:** compartment
+- **Role:** Number of days with dysphagia symptoms out of the `NDAYS` evaluable days of a patient diary window (nominally 14 days) in eosinophilic esophagitis. In the founding model it is not an ODE state but the name of a custom-likelihood endpoint, `ll(dysphagia_days) ~ ...`: the count follows a combined uniform-binomial (CUB) distribution, `pi * Binomial(k | NDAYS, xi) + (1 - pi) / (NDAYS + 1)`, with the daily dysphagia probability `xi` driven by a latent disease variable on the logit scale, and the observed count is read from `DV`.
+- **Source aliases:** `DD`, `dysphagia days` -- Du 2026 paper notation.
+- **Example models:** `Du_2026_cendakimab.R` (CUB likelihood with an exponential placebo onset, a drug effect driven by `latent_dysphagia_days`, and baseline records conditioned on the enrolment criterion DD >= 4).
+- **Notes:** Member of the `<symptom>_days` count family with `migraine_days` and `ms_headache_days`. Unlike those monthly counts, the window length varies by record with diary completion, so the binomial size is the `NDAYS` covariate rather than a constant.
 
 ### hae_attacks (**canonical per-4-week hereditary-angioedema attack-count PD output**)
 - **Type:** compartment
