@@ -1,0 +1,366 @@
+---
+title: "Vancomycin (Bae 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin (Bae 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Bae_2019_vancomycin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Bae_2019_vancomycin"))$description`
+* Article: [Pharmaceutics 2019;11(5):224](https://doi.org/10.3390/pharmaceutics11050224)
+  (open access, PMC6572512)
+
+Bae et al. built this model as the population prior of an open-source
+R Shiny Bayesian therapeutic-drug-monitoring tool for Korean patients,
+arguing that the Western-population priors in commercial TDM software
+over-predict vancomycin concentrations in Korean patients and cannot
+represent hemodialysis or continuous renal replacement therapy (CRRT).
+
+# Population
+
+Routine TDM data from 220 adult inpatients (1020 vancomycin
+concentrations) treated at Seoul St. Mary's Hospital, Republic of Korea,
+between June 2015 and August 2017 (Bae 2019 Methods 2.2, Table 1). Mean
+age was 63 years (range 21-98) and mean body weight 61.6 kg (range
+30.0-126.7); 139 patients were male and 81 female. Mean serum creatinine
+was 1.7 mg/dL (range 0.20-13.3) and mean Cockcroft-Gault creatinine
+clearance 77.0 mL/min (range 4.57-279; median 72.4 mL/min per the
+Discussion). Twenty patients received hemodialysis and nine received
+CRRT during vancomycin therapy. The same information is available
+programmatically via `readModelDb("Bae_2019_vancomycin")$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Two-compartment, first-order elimination, IV infusion | n/a | Results 3.1; Methods 2.3 |
+| `CL = theta1 * (CLCR/72)^theta2` (no HD, no CRRT) | n/a | Table 2, row 'CL' |
+| `lcl` (theta1) | 2.82 L/h | Table 2 |
+| `e_crcl_cl` (theta2) | 0.836 | Table 2 |
+| `lcl_crrt` (CL in CRRT patients) | 0.716 L/h | Table 2; Results 3.1 |
+| `lcl_dial` (CL in HD patients) | 0.334 L/h | Table 2; Results 3.1 |
+| `lvc` (V1) | 31.8 L | Table 2 |
+| `lq` (Q) | 11.7 L/h | Table 2 |
+| `V2 = theta3 * (WT/60)` | n/a | Table 2, row 'V2' |
+| `lvp` (theta3) | 75.4 L | Table 2 |
+| `etalcl` (99.2% CV) | 0.685147 | Table 2; CV-to-variance via Methods Eq. 3 |
+| `etalvp` (49.2% CV) | 0.216775 | Table 2; CV-to-variance via Methods Eq. 3 |
+| `propSd` | 0.253 | Table 2, row 'sigma prop' |
+| Log-normal IIV `P = theta * exp(eta)` | n/a | Methods Eq. 1 |
+
+Methods Eq. 3 defines `CV(%) = sqrt(exp(omega^2) - 1) x 100`, so each
+variance is `log(1 + CV^2)`.
+
+# Virtual cohort and simulation
+
+This reproduces the simulation design of Bae 2019 Section 3.2 and
+Figure 3: 1 g vancomycin every 24 h as a 1-h infusion to 60-kg patients
+in four groups. Group 1 has CLCR 100 mL/min, group 2 CLCR 40 mL/min,
+group 3 is on CRRT and group 4 on hemodialysis (CLCR is not read in
+groups 3 and 4). The paper simulated 1000 subjects per group; 200 are
+used here. Figure 3 shows eight doses (0 to 168 h) and a 192-h horizon,
+so the same schedule is used.
+
+```{r cohort}
+n_sub <- 200L
+groups <- tibble(
+  group = factor(1:4),
+  label = c("1: CLCR 100 mL/min", "2: CLCR 40 mL/min", "3: CRRT", "4: Hemodialysis"),
+  CRCL = c(100, 40, 72, 72),
+  RRT_CRRT_STATUS = c(0L, 0L, 1L, 0L),
+  RRT_HEMODIAL_STATUS = c(0L, 0L, 0L, 1L),
+  WT = 60
+)
+
+dose_mg <- 1000
+dose_times <- seq(0, 168, by = 24)
+obs_times <- sort(unique(c(seq(0, 192, by = 0.5), dose_times + 1)))
+
+build_group <- function(g) {
+  ids <- (as.integer(g$group) - 1L) * n_sub + seq_len(n_sub)
+  dose_rows <- tidyr::expand_grid(id = ids, time = dose_times) |>
+    mutate(evid = 1L, amt = dose_mg, rate = dose_mg / 1)
+  obs_rows <- tidyr::expand_grid(id = ids, time = obs_times) |>
+    mutate(evid = 0L, amt = 0, rate = 0)
+  bind_rows(dose_rows, obs_rows) |>
+    mutate(
+      cmt = "central",
+      group = g$group,
+      CRCL = g$CRCL,
+      RRT_CRRT_STATUS = g$RRT_CRRT_STATUS,
+      RRT_HEMODIAL_STATUS = g$RRT_HEMODIAL_STATUS,
+      WT = g$WT
+    )
+}
+
+events <- lapply(seq_len(nrow(groups)), function(i) build_group(groups[i, ])) |>
+  bind_rows() |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+```
+
+```{r simulate}
+mod <- readModelDb("Bae_2019_vancomycin")
+rxode2::rxSetSeed(20190509)
+sim <- rxode2::rxSolve(mod, events = events, keep = "group") |>
+  as.data.frame() |>
+  left_join(groups |> select(group, label), by = "group")
+
+mod_typical <- rxode2::zeroRe(mod)
+typ_events <- events |> filter(id %in% ((0:3) * n_sub + 1L))
+sim_typical <- rxode2::rxSolve(mod_typical, events = typ_events, keep = "group") |>
+  as.data.frame() |>
+  left_join(groups |> select(group, label), by = "group")
+```
+
+# Replicate Figure 3
+
+```{r figure3, fig.width = 7, fig.height = 8, fig.cap = "Replicates Figure 3 of Bae 2019: median (black) and 90% prediction interval (blue dashed) of vancomycin concentration after 1 g every 24 h as a 1-h infusion. Red lines mark the representative Ctrough (10 mg/L) and Cpeak (50 mg/L) targets."}
+fig3 <- sim |>
+  group_by(label, time) |>
+  summarise(
+    med = median(Cc),
+    lo = quantile(Cc, 0.05),
+    hi = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(fig3, aes(time)) +
+  geom_line(aes(y = med)) +
+  geom_line(aes(y = lo), colour = "blue", linetype = "dashed") +
+  geom_line(aes(y = hi), colour = "blue", linetype = "dashed") +
+  geom_hline(yintercept = c(10, 50), colour = "red") +
+  facet_wrap(~label, ncol = 1) +
+  labs(x = "Time (h)", y = "Vancomycin concentration (mg/L)") +
+  theme_bw()
+```
+
+The four panels reproduce the ordering and shape of Figure 3: exposure
+rises from group 1 to group 4, and the hemodialysis group is still
+accumulating at 192 h because its clearance (0.334 L/h) gives a terminal
+half-life of several days. The medians match the published panels
+closely in groups 3 and 4. The published 90% intervals are wider in
+those two groups (at 192 h roughly 10-100 mg/L for hemodialysis, against
+about 25-80 mg/L here); the paper does not state whether its intervals
+include residual error, and the intervals here show between-subject
+variability only.
+
+# Typical-value checks
+
+The clearance that each group's typical patient receives follows
+directly from Table 2. Both sides use the same parameters, so the bound
+is tight.
+
+```{r cl_check}
+cl_typ <- sim_typical |>
+  group_by(group) |>
+  summarise(cl = first(cl), .groups = "drop") |>
+  mutate(cl_table2 = c(2.82 * (100 / 72)^0.836, 2.82 * (40 / 72)^0.836, 0.716, 0.334))
+knitr::kable(cl_typ, digits = 3, caption = "Typical clearance (L/h) by simulation group.")
+stopifnot(max(abs(cl_typ$cl / cl_typ$cl_table2 - 1)) < 1e-8)
+```
+
+# Noncompartmental analysis
+
+## Single-dose identity check
+
+A single 1 g dose to each group's typical patient, followed for long
+enough to capture the hemodialysis terminal phase, must give
+`AUC(0-inf) = Dose / CL`.
+
+```{r sd_identity}
+# Follow each group for roughly 13-15 terminal half-lives: long enough to
+# make the AUC extrapolation negligible, short enough that the fast groups
+# do not decay into solver round-off.
+sd_end <- c(600, 900, 1800, 3000)
+sd_events <- lapply(seq_len(nrow(groups)), function(i) {
+  g <- groups[i, ]
+  sd_times <- sort(unique(c(0, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12,
+                            exp(seq(log(16), log(sd_end[i]), length.out = 120)))))
+  bind_rows(
+    tibble(time = 0, evid = 1L, amt = dose_mg, rate = dose_mg),
+    tibble(time = sd_times, evid = 0L, amt = 0, rate = 0)
+  ) |>
+    mutate(
+      id = i, cmt = "central", group = g$group, CRCL = g$CRCL,
+      RRT_CRRT_STATUS = g$RRT_CRRT_STATUS,
+      RRT_HEMODIAL_STATUS = g$RRT_HEMODIAL_STATUS, WT = g$WT
+    )
+}) |>
+  bind_rows() |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+sd_sim <- rxode2::rxSolve(mod_typical, events = sd_events, keep = "group") |>
+  as.data.frame()
+
+sd_conc <- sd_sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, group, cl)
+sd_dose <- sd_events |>
+  filter(evid == 1) |>
+  select(id, time, amt, group)
+
+sd_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(sd_conc, Cc ~ time | group + id),
+  PKNCA::PKNCAdose(sd_dose, amt ~ time | group + id),
+  intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE, half.life = TRUE)
+))
+
+sd_check <- as.data.frame(sd_nca$result) |>
+  filter(PPTESTCD %in% c("aucinf.obs", "half.life")) |>
+  select(group, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(sd_conc |> distinct(group, cl), by = "group") |>
+  mutate(dose_over_cl = dose_mg / cl, pct_diff = 100 * (aucinf.obs / dose_over_cl - 1))
+
+sd_check |>
+  dplyr::rename(
+    "Group" = group,
+    "AUC0-inf (mg*h/L)" = aucinf.obs,
+    "Terminal t1/2 (h)" = half.life,
+    "CL (L/h)" = cl,
+    "Dose/CL (mg*h/L)" = dose_over_cl,
+    "% diff" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, caption = "Single-dose AUC(0-inf) of the typical patient against Dose/CL.")
+
+# Deterministic solve against its own closed form: residual is trapezoid and
+# extrapolation error only.
+stopifnot(max(abs(sd_check$pct_diff)) < 1)
+```
+
+## Day-8 dosing interval against the published simulation
+
+Bae 2019 Results 3.2 reports the simulated median `Cpeak,ss` and
+`Ctrough,ss` for groups 1 and 2. The last dosing interval (168-192 h)
+is re-based to start at time 0 for PKNCA.
+
+```{r nca_ss}
+ss_conc <- sim |>
+  filter(!is.na(Cc), time >= 168, time <= 192) |>
+  mutate(time = time - 168) |>
+  select(id, time, Cc, group)
+
+ss_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(ss_conc, Cc ~ time | group + id),
+  intervals = data.frame(start = 0, end = 24, cmax = TRUE, ctrough = TRUE, auclast = TRUE)
+))
+ss_res <- as.data.frame(ss_nca$result)
+
+simulated <- ss_res |>
+  filter(group %in% c("1", "2"), PPTESTCD %in% c("cmax", "ctrough")) |>
+  select(group, PPTESTCD, PPORRES)
+
+# Results 3.2 prints group 2 as 'Cpeak,ss and Ctrough,ss were ... 14 mg/L and
+# 40 mg/L, respectively', which is the reverse order of group 1's pair; a peak
+# below the trough is impossible and Figure 3 panel 2 shows a peak near 40 and
+# a trough near 14, so the pair is read as Cpeak 40, Ctrough 14.
+reference <- data.frame(group = c("1", "2"), cmax = c(34, 40), ctrough = c(8, 14))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulated,
+  reference = reference,
+  by = "group",
+  units = c(cmax = "mg/L", ctrough = "mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Median simulated Cpeak and Ctrough over 168-192 h vs Bae 2019 Results 3.2 (groups 1 and 2).",
+  align = c("l", "l", "r", "r", "r")
+)
+attr(cmp, "footnote")
+
+ss_summary <- ss_res |>
+  filter(PPTESTCD %in% c("cmax", "ctrough", "auclast")) |>
+  group_by(group, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median)
+ss_summary |>
+  dplyr::rename(
+    "Group" = group,
+    "AUC168-192 (mg*h/L)" = auclast,
+    "Cmax (mg/L)" = cmax,
+    "Ctrough (mg/L)" = ctrough
+  ) |>
+  knitr::kable(digits = 1, caption = "Median day-8 exposure by group (all four groups).")
+
+gate <- simulated |>
+  group_by(group, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop") |>
+  left_join(
+    reference |> pivot_longer(-group, names_to = "PPTESTCD", values_to = "pub"),
+    by = c("group", "PPTESTCD")
+  ) |>
+  mutate(pct = 100 * (sim / pub - 1))
+stopifnot(
+  nrow(gate) == 4,
+  # Peaks: the 1-h infusion into V1 = 31.8 L sets the peak; a wrong V1, dose
+  # or infusion duration moves it by far more than this.
+  all(abs(gate$pct[gate$PPTESTCD == "cmax"]) < 15),
+  # Troughs: the published values are rounded to whole mg/L and miss in
+  # opposite directions in the two groups (see below), so only the order of
+  # magnitude is gated here.
+  all(abs(gate$pct[gate$PPTESTCD == "ctrough"]) < 30),
+  # Group ordering of Figure 3: exposure rises from group 1 to group 4.
+  all(diff(ss_summary$auclast) > 0)
+)
+```
+
+The simulated peaks agree with the published values to within about
+10%. The troughs miss in opposite directions, by roughly 10-20%: low in
+group 1 (CLCR 100 mL/min) and high in group 2 (CLCR 40 mL/min); the
+typical patient's troughs (6.6 and 17.3 mg/L) show the same pattern. The
+published pair implies a clearance ratio between the two groups of about
+1.65, whereas Table 2 gives `(100/40)^0.836 = 2.15`; no reading of the
+printed covariate model reproduces both troughs, and the CRRT and
+hemodialysis panels (which do not read CLCR) match Figure 3 closely. The
+model is kept exactly as printed in Table 2.
+
+# Assumptions and deviations
+
+* **Errata and supplements.** No erratum or correction was found
+  (Europe PMC, 2026-11-25), and the article has no supplementary
+  material; Table 2 is the sole source of the parameter values.
+* **Residual error.** Methods Eq. 2 describes a combined additive plus
+  proportional error model, but Table 2 reports only a proportional
+  component (0.253). The model uses proportional error only. The value is
+  read as a standard deviation (25.3%); a later vancomycin MIPD
+  comparison (Oda 2023, Clin Transl Sci) transcribes the same model with
+  a 25.3% proportional residual error.
+* **IIV.** Table 2 reports IIV on CL and V2 only. The Discussion states
+  that the Shiny tool optimizes the post hoc etas 'of CL and V1'; Table 2,
+  the estimation table, is followed.
+* **CRRT and hemodialysis clearances.** Table 2 and Results 3.1 assign
+  0.716 L/h to CRRT and 0.334 L/h to hemodialysis; the Discussion states
+  the reverse. Table 2 is followed, and Figure 3 (group 4, hemodialysis,
+  has the highest exposure) agrees with it. The CL eta is applied to the
+  CRRT and hemodialysis clearances as well as to the CLCR-driven
+  clearance, since the paper reports a single IIV on CL.
+* **Mutually exclusive RRT indicators.** The paper does not describe a
+  patient on both therapies; at most one of `RRT_HEMODIAL_STATUS` and
+  `RRT_CRRT_STATUS` should be 1. CLCR is not read when either is 1.
+* **Typical CL.** Results 3.1 quotes a typical CL of 2.80 L/h at CLCR
+  72 mL/min, while Table 2 gives theta1 = 2.82 L/h; the Table 2 final
+  estimate is used (2.80 is the bootstrap median).
+* **Simulation design.** Section 3.2 says 'daily 1 g for 7 days' but
+  Figure 3 shows eight doses (0 to 168 h); the figure's schedule is used.
+  Cohort size is 200 per group rather than 1000.
+* **Units.** The Methods outlier cut-off and the Figure 3 y-axis are
+  printed in ng/mL, but every value (target trough 10-20, peak target
+  50, Cpeak,ss 34) is in mg/L, the unit used here.

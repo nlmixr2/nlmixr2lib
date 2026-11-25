@@ -10066,6 +10066,8 @@ navbar:
         href: articles/Avachat_2025_vancomycin.html
       - text: "Vancomycin (Back 2019)"
         href: articles/Back_2019_pediatric_size_maturation.html
+      - text: "Vancomycin (Bae 2019)"
+        href: articles/Bae_2019_vancomycin.html
       - text: "Vancomycin (Buelga 2005)"
         href: articles/Buelga_2005_vancomycin.html
       - text: "Vancomycin (Chen 2023)"
@@ -10857,7 +10859,7 @@ articles:
   - articles/Babel_2026_telisotuzumab
   - articles/Back_2018_fenofibrate
   - articles/Back_2019_pediatric_size_maturation
-  - articles/Badhan_2017_liposomal_vaccine
+  - articles/Bae_2019_vancomycin
   - articles/Bae_2026_MIT001
   - articles/Baek_2014_cyclosporine
   - articles/Baheti_2011_tenofovir

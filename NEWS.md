@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Smit 2019 tobramycin ([doi:10.1007/s11095-019-2651-2](https://doi.org/10.1007/s11095-019-2651-2)) -- morbidly obese adults undergoing bariatric surgery and non-obese healthy volunteers.
+- Add Bae 2019 vancomycin ([doi:10.3390/pharmaceutics11050224](https://doi.org/10.3390/pharmaceutics11050224)) -- Korean adult inpatients receiving vancomycin TDM, including patients on hemodialysis or CRRT.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
