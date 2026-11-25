@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tessier 2016 anonymised Servier 'drug S' ([doi:10.1002/psp4.12054](https://doi.org/10.1002/psp4.12054)) -- 78 phase I subjects given single oral doses of 5-800 units.
+- Add Li 2016 endogenous citrate turnover with NaCT inhibition ([doi:10.1002/psp4.12062](https://doi.org/10.1002/psp4.12062)) -- healthy adults given intravenous or oral citrate.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
