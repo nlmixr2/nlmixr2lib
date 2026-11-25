@@ -9828,6 +9828,8 @@ navbar:
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Zidovudine (Fauchet 2013)"
         href: articles/Fauchet_2013_zidovudine.html
+      - text: "Zidovudine (Tang 2026)"
+        href: articles/Tang_2026_zidovudine.html
       - text: "Ziftomenib (Mitra 2026)"
         href: articles/Mitra_2026_ziftomenib.html
       - text: "Zika FAV HFIM (PiresdeMello 2018)"
@@ -12672,7 +12674,7 @@ articles:
   - articles/Tang_2026_datopotamab_exposure_response
   - articles/Tang_2026_tacrolimus
   - articles/Tang_2026_vixarelimab
-  - articles/Tanigawara_2012_garenoxacin
+  - articles/Tang_2026_zidovudine
   - articles/Tanzawa_2022_fluconazole
   - articles/Tao_2025_meropenem
   - articles/Tao_2026_levofloxacin
