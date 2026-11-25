@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Srivastava 2016 amikacin and streptomycin exposure-response ([doi:10.1128/AAC.00961-16](https://doi.org/10.1128/AAC.00961-16)) -- in vitro: Mycobacterium tuberculosis H37Ra in the hollow fiber system model of tuberculosis and in test tubes, and MRSA in test tubes.
+- Add Xiao 2016 ceftolozane/tazobactam plasma and lung ELF ([doi:10.1002/jcph.566](https://doi.org/10.1002/jcph.566)) -- healthy adults, with the simulation model for nosocomial pneumonia patients.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
