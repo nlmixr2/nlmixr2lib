@@ -1,0 +1,463 @@
+---
+title: "Total bile acids enterohepatic circulation (Guiastrennec 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Total bile acids enterohepatic circulation (Guiastrennec 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+suppressPackageStartupMessages({
+  library(nlmixr2lib)
+  library(rxode2)
+  library(PKNCA)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+})
+```
+
+# Model and source
+
+* Citation: Guiastrennec B, Sonne DP, Bergstrand M, Vilsboll T, Knop FK,
+  Karlsson MO (2018). Model-Based Prediction of Plasma Concentration and
+  Enterohepatic Circulation of Total Bile Acids in Humans. CPT
+  Pharmacometrics Syst Pharmacol 7(9):603-612.
+* Article: <https://doi.org/10.1002/psp4.12325>
+* PubMed Central: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6157686/>
+* Upstream gastric-emptying model: Guiastrennec B et al. (2016) CPT
+  Pharmacometrics Syst Pharmacol 5(12):692-700,
+  <https://doi.org/10.1002/psp4.12152>.
+
+The model describes what happens to the body's pool of total bile acids
+(TBA) after a test drink. The drink is dosed in kcal into the stomach.
+Gastric emptying is inhibited by the calories already in the upper small
+intestine and switches on with a logistic onset after the drink. The
+calories that reach the duodenum, converted into a fat-equivalent amount
+(Eq. 1), increase the rate at which the gallbladder empties (Eq. 3). That
+emptying is interrupted by a postprandial refilling window (Eq. 2), which
+is what produces the second TBA peak. Bile from the gallbladder carries
+113 mM TBA into the upper small intestine. There a fraction FAU is
+absorbed and the rest transits a three-compartment lower small
+intestine, from which it is absorbed. Both routes lead to the liver,
+which returns a constant fraction EH to the gallbladder. The rest spills
+over into a two-compartment plasma distribution taken from radiolabelled
+cholic-acid data. The TBA pool is closed: the model has no faecal loss
+and no hepatic synthesis, because the authors assumed the two cancel.
+
+The model was built from the authors' NONMEM code (Supplementary
+Figure S2), with final estimates from Table 2 and Supplementary Table S3.
+
+```{r load-model}
+mod <- readModelDb("Guiastrennec_2018_bile_acids")
+ui <- rxode2::rxode2(mod)
+```
+
+# Population
+
+Thirty adults (15 with type 2 diabetes and 15 healthy controls matched on
+sex, age and body-mass index) each drank four test drinks in a crossover
+after a 10-hour fast (Supplementary Table S1): 18 men and 12 women, mean
+age 60 years (42-71), mean weight 86.2 kg (63.6-122), mean height 1.76 m.
+The study gave 920 gallbladder volumes (ultrasound, -10 to 60 min) and
+1,236 plasma TBA concentrations (molar sum of 12 bile acids, -20 to
+240 min).
+
+```{r population}
+str(ui$population)
+```
+
+The four test drinks (Table 1) are the dosing inputs of the model:
+
+```{r drinks}
+drinks <- tibble::tibble(
+  drink = factor(
+    c("OGTT 75 g", "Low fat", "Medium fat", "High fat"),
+    levels = c("OGTT 75 g", "Low fat", "Medium fat", "High fat")
+  ),
+  DOSE_FAT_G = c(0, 2.5, 10, 40),
+  DOSE_CARB_G = c(75, 107, 93, 32),
+  DOSE_PROT_G = c(0, 13, 11, 3),
+  DRINK_OGTT = c(1, 0, 0, 0),
+  FED_HIGHFAT = c(0, 0, 0, 1)
+) |>
+  mutate(kcal = 4 * DOSE_CARB_G + 4 * DOSE_PROT_G + 9 * DOSE_FAT_G)
+knitr::kable(drinks)
+# Table 1 prints the energy as 300 / 503 / 506 / 500 kcal.
+stopifnot(all(abs(drinks$kcal - c(300, 503, 506, 500)) <= 0.5))
+```
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Fat-equivalent amount in duodenum | `efat = x3 / kcal * (fat + Pprot*prot + Pcarb*carb)` | Eq. 1; Figure S2 code `X3S` |
+| Gallbladder refilling window | logistic onset at `Trefill_onset`, offset at `Trefill_onset + Trefill_duration` | Eq. 2; Figure S2 code `RELAX` |
+| Gallbladder emptying rate | `GBvol * KRB * (1 + Slopeefat * efat) * GBrefill` | Eq. 3; Figure S2 code `DADT(4)` |
+| HLRB, T2D effect | `1250 * (1 - 0.481 * DIS_DIAB)` min | Eq. 4; Table 2 |
+| Slopeefat, age and T2D effects | `101 * (1 - 0.025 * (AGE - 64)) * (1 - 0.329 * DIS_DIAB)` | Eq. 5; Table 2 |
+| MTTA,L, sex and carbohydrate effects | `109 * (1 - 0.279 * SEXF) * (1 + 0.00614 * (DOSE_CARB_G - 93))` min | Eq. 6; Table 2 |
+| `lbase_gb` | log(29.4) mL for 70 kg | Table 2 |
+| `lhldj` | log(2.52) min | Table 2 |
+| `pcarb`, `pprot`, `pfat` | 0.0574, 0.823, 1 (fixed) | Table 2 |
+| `slope_refill`, `ltrefill_onset`, `ltrefill_dur` | 0.155, log(25.6), log(156) | Table 2 |
+| `lhltul` | log(59.7) min | Table 2 |
+| `logitfau`, `e_drink_ogtt_fau` | logit(0.216), +1.25 on the logit | Table 2; Figure S2 code `THETA(16)` |
+| `logiteh`, `e_fed_highfat_eh` | logit(0.638), -0.294 on the logit | Table 2; Figure S2 code `THETA(18)` |
+| `gb_cc` | 113 mM, fixed | Table 2 |
+| `lqh`, `e_fed_qh` | log(1.5) L/min, +30% after the drink, fixed | Table 2; Figure S2 code `TVQH` |
+| `lvc`, `lvp`, `lq` | log(2.839) L, log(4.072) L, log(0.1732) L/min, fixed | Table 2; Figure S3; Figure S2 code |
+| Liver volume | `0.822 * BSA^(1.108 * AGE^-0.022)`, DuBois BSA | Methods (Small et al.); Figure S2 code `VH` |
+| Allometric scaling | volumes `(WT/70)^1`, flows `(WT/70)^0.75` | Methods; Table 2 footnote b |
+| Initial conditions | fasting steady state | Figure S2 code `A_0` block |
+| `ramax`, `km` | 2.292 kcal/min, 25.12 kcal, fixed | Table 2; Figure S2 code |
+| `lkg0`, `lkul`, `lslpcal`, `e_sexf_slpcal` | log(1.06), log(0.0266), log(0.0173), 0.407, fixed | Guiastrennec 2016 Table 3 |
+| `steep`, `lt50ogtt`, `lt50fat` | 0.285, log(15.7), log(23.1), fixed | Guiastrennec 2016 Table 3 and Eq. 3 |
+| Eta block (8 x 8) | variances and covariances | Supplementary Table S3 |
+| `etalkg0`, `etalkul`, `etalslpcal` | 1.55^2, 0.56^2, 0.19^2, fixed | Guiastrennec 2016 Table 3 |
+| `propSd` | 0.318 | Table 2 (TBA) |
+| `propSd_GVol`, `addSd_GVol` | 0.102, sqrt(4.27) = 2.066 mL | Table 2 (gallbladder); Figure S2 `$SIGMA` |
+
+# Simulation helpers
+
+The drink is dosed into `stomach` at time 0. The model declares two
+endpoints, plasma TBA (`Cc`) and gallbladder volume (`GVol`). Each
+observation row therefore names an endpoint with `dvid`. Both outputs
+come back as columns on every row whichever endpoint is named.
+
+```{r helpers}
+obs_times <- c(0, 5, 10, 15, 20, 30, 40, 45, 60, 75, 90, 105, 120, 150, 180, 210, 240)
+
+make_events <- function(n_per_drink, subject = list(WT = 70, HT = 170, AGE = 64, SEXF = 0, DIS_DIAB = 0)) {
+  bind_rows(lapply(seq_len(nrow(drinks)), function(i) {
+    ids <- (i - 1L) * n_per_drink + seq_len(n_per_drink)
+    dose <- tibble::tibble(id = ids, time = 0, amt = drinks$kcal[i], evid = 1L, cmt = "stomach", dvid = NA_integer_)
+    obs <- tidyr::expand_grid(id = ids, time = obs_times) |>
+      mutate(amt = 0, evid = 0L, cmt = NA_character_, dvid = 1L)
+    bind_rows(dose, obs) |>
+      arrange(id, time, desc(evid)) |>
+      mutate(drink = drinks$drink[i]) |>
+      bind_cols(drinks[i, c("DOSE_FAT_G", "DOSE_CARB_G", "DOSE_PROT_G", "DRINK_OGTT", "FED_HIGHFAT")]) |>
+      bind_cols(tibble::as_tibble(subject))
+  }))
+}
+```
+
+# Typical-value checks
+
+## Fasting steady state and closed-form baseline
+
+Before the drink, the initial conditions are the fasting steady state
+written in the authors' code. A fasted subject must therefore stay flat.
+The baseline plasma TBA concentration then has a closed form,
+`base_gb * krb * gb_cc * (1 - EH) / (QH * EH)`.
+
+```{r steady-state}
+mod_typ <- rxode2::zeroRe(ui)
+fasted <- tidyr::expand_grid(id = 1:2, time = seq(0, 600, by = 60)) |>
+  mutate(evid = 0L, amt = 0, dvid = 1L, WT = 70, HT = 170, AGE = 64, SEXF = 0, DIS_DIAB = 0,
+         DOSE_FAT_G = 10, DOSE_CARB_G = 93, DOSE_PROT_G = 11, DRINK_OGTT = 0,
+         FED_HIGHFAT = c(0, 1)[id])
+ss <- as.data.frame(rxode2::rxSolve(mod_typ, fasted, returnType = "data.frame"))
+
+eh_closed <- function(shift) 1 / (1 + exp(-(log(0.638 / 0.362) + shift)))
+krb_typ <- log(2) / 1250
+cc_closed <- 29.4 * krb_typ * 113 * (1 - eh_closed(c(0, -0.294))) / (1.5 * eh_closed(c(0, -0.294)))
+
+ss_summary <- ss |>
+  group_by(id) |>
+  summarise(Cc_start = first(Cc), Cc_end = last(Cc), GVol_start = first(GVol), GVol_end = last(GVol)) |>
+  mutate(Cc_closed_form = cc_closed[id])
+knitr::kable(ss_summary, digits = 4)
+
+stopifnot(
+  all(abs(ss_summary$Cc_end / ss_summary$Cc_start - 1) < 1e-6),
+  all(abs(ss_summary$GVol_end / ss_summary$GVol_start - 1) < 1e-6),
+  all(abs(ss_summary$Cc_start / ss_summary$Cc_closed_form - 1) < 1e-6)
+)
+```
+
+The typical fasting TBA concentration is 0.70 umol/L for the reference
+drinks and 0.93 umol/L on the high-fat occasion. On that occasion the
+lower hepatic extraction lets more TBA escape the liver, as Figure 5 of
+the paper shows.
+
+## Mass balance of the bile-acid pool
+
+The TBA pool has no source and no sink, so the amount summed over the
+gallbladder (volume times 113 mM), the intestine, the liver and the
+plasma compartments is constant after a drink.
+
+```{r mass-balance}
+ev_typ <- make_events(1)
+sim_typ <- as.data.frame(rxode2::rxSolve(mod_typ, ev_typ, keep = "drink", returnType = "data.frame",
+                                         atol = 1e-10, rtol = 1e-10))
+pool <- sim_typ |>
+  mutate(pool = gallbladder * 113 + bile_upper_si + lower_si1 + lower_si2 + lower_si3 +
+           liver + central + peripheral1) |>
+  group_by(drink) |>
+  summarise(pool_min = min(pool), pool_max = max(pool), rel_range = (max(pool) - min(pool)) / mean(pool))
+knitr::kable(pool, digits = 6)
+stopifnot(nrow(pool) == 4, all(pool$rel_range < 1e-6))
+```
+
+## Typical profiles
+
+```{r typical-profiles, fig.height = 5}
+sim_typ |>
+  select(drink, time, `Gallbladder volume (mL)` = GVol, `Plasma TBA (umol/L)` = Cc) |>
+  pivot_longer(-c(drink, time)) |>
+  ggplot(aes(time, value, colour = drink)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y", ncol = 1) +
+  labs(x = "Time after test drink (min)", y = NULL, colour = NULL,
+       title = "Typical individual: male, 64 y, 70 kg, 1.70 m, no diabetes") +
+  theme_bw()
+```
+
+# Replication of Figure 5
+
+Figure 5 of the paper shows the median and prediction intervals of
+1,000 simulations for a typical individual (no diabetes, male, 70 kg,
+1.7 m, 64 years) after each drink. The simulations below use 200 subjects
+per drink, with the total (between-subject plus between-occasion)
+variability of Table S3. The gastric-emptying variability comes from the
+2016 model.
+
+```{r fig5-sim}
+rxode2::rxSetSeed(20180925)
+ev_sto <- make_events(200)
+sim_sto <- as.data.frame(rxode2::rxSolve(ui, ev_sto, keep = "drink", returnType = "data.frame"))
+
+pi_sto <- sim_sto |>
+  select(drink, time, GVol, Cc) |>
+  pivot_longer(c(GVol, Cc)) |>
+  group_by(drink, time, name) |>
+  summarise(
+    lo95 = quantile(value, 0.025), hi95 = quantile(value, 0.975),
+    lo80 = quantile(value, 0.10), hi80 = quantile(value, 0.90),
+    median = median(value), .groups = "drop"
+  ) |>
+  mutate(name = factor(name, c("GVol", "Cc"), c("Gallbladder volume (mL)", "TBA plasma conc. (umol/L)")))
+```
+
+```{r fig5-plot, fig.height = 5.5, fig.cap = "Replicates Figure 5 of Guiastrennec 2018: 95% and 80% prediction intervals and median of the simulated gallbladder volume (top) and plasma total bile acids (bottom) after each test drink."}
+ggplot(pi_sto, aes(time)) +
+  geom_ribbon(aes(ymin = lo95, ymax = hi95), fill = "#9ecae1") +
+  geom_ribbon(aes(ymin = lo80, ymax = hi80), fill = "#4292c6") +
+  geom_line(aes(y = median)) +
+  geom_vline(xintercept = 0) +
+  facet_grid(name ~ drink, scales = "free_y") +
+  labs(x = "Time (min)", y = NULL) +
+  theme_bw()
+```
+
+The medians at landmark times are compared below with values read by the
+maintainers from Figure 5 of the paper (about +/- 0.3 mL and +/- 0.1
+umol/L reading precision). Nadir and peak are taken over the simulated
+time grid.
+
+```{r fig5-compare}
+fig5 <- tibble::tribble(
+  ~drink, ~metric, ~published,
+  "OGTT 75 g", "GB nadir (mL)", 24.5,
+  "Low fat", "GB nadir (mL)", 18.3,
+  "Medium fat", "GB nadir (mL)", 16.5,
+  "High fat", "GB nadir (mL)", 10.5,
+  "OGTT 75 g", "GB at 240 min (mL)", 29.8,
+  "Low fat", "GB at 240 min (mL)", 24.6,
+  "Medium fat", "GB at 240 min (mL)", 24.4,
+  "High fat", "GB at 240 min (mL)", 24.7,
+  "OGTT 75 g", "TBA peak (umol/L)", 1.8,
+  "Low fat", "TBA peak (umol/L)", 2.1,
+  "Medium fat", "TBA peak (umol/L)", 2.45,
+  "High fat", "TBA peak (umol/L)", 5.4,
+  "OGTT 75 g", "TBA at 240 min (umol/L)", 0.5,
+  "Low fat", "TBA at 240 min (umol/L)", 1.6,
+  "Medium fat", "TBA at 240 min (umol/L)", 1.8,
+  "High fat", "TBA at 240 min (umol/L)", 2.5,
+  "OGTT 75 g", "TBA baseline (umol/L)", 0.7,
+  "High fat", "TBA baseline (umol/L)", 0.9
+)
+
+med <- sim_sto |>
+  group_by(drink, time) |>
+  summarise(GVol = median(GVol), Cc = median(Cc), .groups = "drop") |>
+  group_by(drink) |>
+  summarise(
+    `GB nadir (mL)` = min(GVol),
+    `GB at 240 min (mL)` = GVol[time == 240],
+    `TBA peak (umol/L)` = max(Cc),
+    `TBA at 240 min (umol/L)` = Cc[time == 240],
+    `TBA baseline (umol/L)` = Cc[time == 0]
+  ) |>
+  pivot_longer(-drink, names_to = "metric", values_to = "simulated") |>
+  mutate(drink = as.character(drink))
+
+cmp <- fig5 |>
+  left_join(med, by = c("drink", "metric")) |>
+  mutate(pct_diff = 100 * (simulated - published) / published)
+stopifnot(nrow(cmp) == 18, !anyNA(cmp$simulated))
+knitr::kable(cmp, digits = c(0, 0, 2, 2, 1))
+
+# Over 15 cohort draws (seeds 1-14 and the one above, 1 to 16 threads) the
+# median difference ranged 0.8 to 7.4% and the 90th percentile of the
+# absolute difference 6 to 17%. A mis-transcribed potency, extraction or
+# transit time moves these landmarks by tens of percent; reading EH as the
+# text's 45.0% raises the high-fat baseline TBA by 60%.
+stopifnot(
+  abs(median(cmp$pct_diff)) < 12,
+  quantile(abs(cmp$pct_diff), 0.9) < 25
+)
+```
+
+The differences in the table combine the sampling noise of a
+200-subject cohort with the reading precision of the figure; none of the
+landmarks is systematically off.
+
+The high-fat baseline is the clearest check on how the high-fat effect on
+hepatic extraction enters the model. In the authors' code it is added on
+the logit scale (EH falls from 63.8% to 56.8%), and this gives a fasting
+TBA of 0.93 umol/L, as the figure shows. The text instead describes the
+effect as a relative change to 45.0%, which would give
+`r signif(29.4 * krb_typ * 113 * 0.55 / (1.5 * 0.45), 3)` umol/L.
+
+# Covariate effects
+
+Type 2 diabetes shortens the basal gallbladder-emptying half-life by
+48% and lowers the fat-equivalent sensitivity of gallbladder emptying by
+33%. The faster basal emptying raises the fasting TBA concentration, as
+the observed means in Figure 1 of the paper show (about 1.8 umol/L in
+patients against 1.2 umol/L in controls).
+
+```{r t2d, fig.height = 5}
+ev_t2d <- bind_rows(
+  make_events(1) |> mutate(group = "Healthy"),
+  make_events(1) |> mutate(id = id + 100L, DIS_DIAB = 1, group = "Type 2 diabetes")
+)
+sim_t2d <- as.data.frame(rxode2::rxSolve(mod_typ, ev_t2d, keep = c("drink", "group"), returnType = "data.frame"))
+sim_t2d |>
+  select(drink, group, time, `Gallbladder volume (mL)` = GVol, `Plasma TBA (umol/L)` = Cc) |>
+  pivot_longer(-c(drink, group, time)) |>
+  ggplot(aes(time, value, colour = drink, linetype = group)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y", ncol = 1) +
+  labs(x = "Time after test drink (min)", y = NULL, colour = NULL, linetype = NULL) +
+  theme_bw()
+
+base_t2d <- sim_t2d |> filter(time == 0, drink == "Low fat") |> arrange(group)
+# Closed form: the fasting concentration scales with krb = log(2) / HLRB.
+stopifnot(abs(base_t2d$Cc[2] / base_t2d$Cc[1] - 1 / (1 - 0.481)) < 1e-6)
+```
+
+# NCA of the postprandial TBA response
+
+TBA is endogenous, so the NCA below uses the typical postprandial profile
+over the 240-minute sampling window. It summarises the size and timing of
+the spillover peak for each drink.
+
+```{r nca}
+conc <- sim_typ |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, drink)
+dose_df <- ev_typ |>
+  filter(evid == 1) |>
+  select(id, time, amt, drink)
+o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | drink + id)
+o_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | drink + id)
+o_data <- PKNCA::PKNCAdata(o_conc, o_dose,
+  intervals = data.frame(start = 0, end = 240, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+)
+nca <- PKNCA::pk.nca(o_data)
+nca_tab <- as.data.frame(nca$result) |>
+  select(drink, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  rename("Cmax (umol/L)" = cmax, "Tmax (min)" = tmax, "AUC0-240 (umol*min/L)" = auclast)
+knitr::kable(nca_tab, digits = 1)
+
+cm <- setNames(nca_tab[["Cmax (umol/L)"]], as.character(nca_tab$drink))
+au <- setNames(nca_tab[["AUC0-240 (umol*min/L)"]], as.character(nca_tab$drink))
+tm <- setNames(nca_tab[["Tmax (min)"]], as.character(nca_tab$drink))
+stopifnot(
+  length(cm) == 4,
+  cm[["High fat"]] > cm[["Medium fat"]], cm[["Medium fat"]] > cm[["Low fat"]],
+  au[["High fat"]] > au[["Medium fat"]], au[["Medium fat"]] > au[["Low fat"]],
+  tm[["OGTT 75 g"]] < min(tm[c("Low fat", "Medium fat", "High fat")])
+)
+```
+
+The paper does not report NCA values for TBA. The ordering (high fat >
+medium fat > low fat for both Cmax and AUC, with the OGTT peaking earliest)
+matches the observed means in Figure 1.
+
+# Assumptions and deviations
+
+* **Gastric-emptying parameters.** In the original fit each subject's
+  gastric-emptying parameters (KG0, SLPCAL, KUL, T50, SIG) were that
+  subject's empirical Bayes estimates from the 2016 model, entered as
+  data together with their standard errors. A library model has to
+  simulate new subjects, so it uses the 2016 typical values, the 2016
+  between-subject variability (CV% = sqrt(omega), the convention of that
+  paper's supplementary code) and the 2016 female effect on SLPCAL, all
+  fixed. The onset is the logistic function of the 2016 paper's Eq. 3.
+  T50 is 15.7 min for the OGTT drink and 23.1 min for any drink with
+  `DRINK_OGTT = 0`. All such drinks in this study contain fat. Water was
+  not studied.
+* **Typographical errors in the published code.** Supplementary Figure S2
+  computes `MTCOV = WOM*(1+THETA(17))*...` and then uses an undefined
+  `MTTALCOV`. As printed, this would give a zero mean transit time in
+  men. It also defines `TVTDUR = TON + THETA(14)` but then uses an
+  undefined `TVOFF`. The model follows Eq. 6,
+  `(1 - 0.279 * FEM) * (1 + 0.00614 * (CARB - 93))`, and takes the
+  refilling offset as `TON + Trefill_duration`, as in Eq. 2.
+* **Variability on the refilling offset.** The code puts the eta on the
+  offset time `TOFF` (the omega block is labelled `TOFF`), whereas Table 2
+  lists that variability under `Trefill_duration`. The model follows the
+  code: `trefill_off = (trefill_onset + 156) * exp(eta)`.
+* **Logit-scale drink effects.** The code adds the OGTT effect on FAU and
+  the high-fat effect on EH on the logit scale. The text reads them as
+  relative changes (FAU 48.6% for the OGTT, EH 45.0% for the high-fat
+  drink); on the logit scale they give 49.1% and 56.8%. The model follows
+  the code. The high-fat fasting baseline in Figure 5 (about 0.9 umol/L)
+  agrees with the logit form, and the confidence interval of the high-fat
+  effect (-109 to +50%) is only meaningful on that scale.
+* **Hepatic blood flow after the drink.** The code multiplies the fasting
+  1.5 L/min by 1.3 from the drink onward. The Methods text says 35%,
+  while Table 2 prints 2.0 L/min fed, which is consistent with either.
+  The model follows the code.
+* **Gallbladder additive error.** Table 2 prints 4.27 mL. That is the
+  NONMEM `$SIGMA` variance: its confidence interval (1.85 to 6.7) is
+  symmetric about 4.27, while the proportional errors are tabulated as
+  square roots with asymmetric intervals. The model uses
+  SD = sqrt(4.27) = 2.07 mL.
+* **Final versus initial estimates.** The `$THETA` and `$OMEGA` values in
+  the published code differ from Table 2 and Table S3 in the third
+  significant figure (for example HLDJ 2.533 vs 2.52 min). The model uses
+  Table 2 for fixed effects and Table S3 for the variance-covariance
+  matrix. Fixed physiological constants (VC 2.839 L, VP 4.072 L,
+  QD 0.1732 L/min, RAMAX 0.573 x 4 kcal/min, KM 6.28 x 4 kcal) carry the
+  code's precision.
+* **Total variability.** The paper estimates one eta per parameter for
+  between-subject and between-occasion variability together, and gives
+  their split only for reference (Table S2). The simulations here draw the
+  total variability independently for each subject-occasion; a user who
+  needs within-subject correlation across occasions can split each
+  variance with Table S2.
+* **Energy of the drink.** The NONMEM data carried the energy as a column
+  (`KCAL`). Here it is derived from the composition covariates as
+  `4 * carbohydrate + 4 * protein + 9 * fat` (Table 1 footnote). The
+  `amt` of the stomach dose must equal that value.
+* **Before the drink.** The code computes the onset and refilling
+  functions on pre-drink records from study time. The model holds the
+  fasting steady state until the first dose (no gastric emptying, no
+  refilling window, fasting hepatic blood flow), which is the steady
+  state its initial conditions assume.
+* **Several drinks in one subject.** Each drink above is simulated as a
+  separate subject. The authors' data reset the system at each drink
+  (NONMEM `EVID = 4`); to simulate a crossover within one subject, dose
+  each drink with `evid = 4` so that every occasion starts from the
+  fasting steady state.
+* **Height units.** The code reads height in metres and multiplies it by
+  100 in the DuBois formula. The `HT` covariate here is in centimetres.
