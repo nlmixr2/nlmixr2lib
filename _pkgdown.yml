@@ -7332,6 +7332,10 @@ navbar:
         href: articles/BlussevanOudAlblas_2019_propofol.html
       - text: "Propofol human (Knibbe 2005)"
         href: articles/Knibbe_2005_propofol.html
+      - text: "Propofol lungcmt (Kreuer 2014)"
+        href: articles/Kreuer_2014_propofol.html
+      - text: "Propofol lungdelay (Kreuer 2014)"
+        href: articles/Kreuer_2014_propofol.html
       - text: "Propofol marsh (Kawata 2024)"
         href: articles/Kawata_2024_propofol.html
       - text: "Propofol pbpk (Levitt 2005)"
@@ -11638,7 +11642,7 @@ articles:
   - articles/KreeftmeijerVegter_2015_levamisole
   - articles/Krekels_2015_paracetamol
   - articles/Kretsos_2014_olokizumab
-  - articles/Krippendorff_2012_zalutumumab_cyno
+  - articles/Kreuer_2014_propofol
   - articles/Krishna_2011_anacetrapib
   - articles/Krishnatry_2021_molibresib
   - articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin

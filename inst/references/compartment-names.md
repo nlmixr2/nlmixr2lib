@@ -2634,12 +2634,19 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 
 One family in this section is validated by shape rather than by enumeration -- see `prob_<endpoint>` immediately below. Its per-endpoint entries are retained as documentation of what each endpoint means, but `checkModelConventions()` no longer requires an entry to exist before accepting the name.
 
-### gametocyte_density (**canonical circulating Plasmodium gametocyte density output**)
+### Cbreath (**canonical exhaled-breath drug concentration output**)
 - **Type:** compartment
-- **Role:** Density of circulating mature Plasmodium falciparum gametocytes in peripheral blood (gametocytes/uL), the observed output of a gametocyte-dynamics model; fitted on the log scale (`gametocyte_density ~ lnorm(expSd)`).
-- **Source aliases:** `G` / `G(t)` -- Bousema 2010 density-model equations ('expected gametocyte density in circulation'); Pfs25 QT-NASBA gametocyte density.
-- **Example models:** `Bousema_2010_malaria_gametocyte_density_kenya.R`, `Bousema_2010_malaria_gametocyte_density_tanzania.R` (equal to the circulating-gametocyte state, released from a sequestered pool and decaying at 1 / mean circulation time).
-- **Notes:** Linear scale; the log transform lives in the residual model. Distinct from asexual parasitaemia (the `PARA` covariate and models such as `Hietala_2010_artemether_parasitemia.R`) and from the binary carriage output `gametocyte_status`.
+- **Role:** Drug concentration measured in exhaled breath, as an algebraic output of a model that links plasma to breath through a lung (or other delay) state. Units are those of the breath assay, typically ppb (by volume) for a calibrated gas-phase reading. Not an ODE state: it is computed from the model's lung concentration through the paper's breath-to-lung relationship.
+- **Source aliases:** `P-IMS ppb`, 'propofol breath concentration' -- Kreuer 2014 (Fig 4-7).
+- **Example models:** `Kreuer_2014_propofol_lungdelay.R` (founding example; lung = -4.2 x^2 + 7.14 x with x = breath ppb, inverted on the rising branch), `Kreuer_2014_propofol_lungcmt.R` (lung = -5.9 x^2 + 9.23 x).
+- **Notes:** The breath-to-lung coefficients take the `cal_slope_breath` / `cal_slope_breath_quad` names of the `cal_slope_<assay>` family (`parameter-names.md`), because they map the breath reading onto the model's lung-concentration scale. Distinct from `a_exhaled`, the cumulative exhaled AMOUNT integrator of volatile-chemical PBPK models (alveolar ventilation times alveolar concentration), and from end-tidal anaesthetic-gas concentrations, which models in this library carry as the central concentration `Cc`. A model reporting the same breath signal in raw instrument units as well uses `Cbreath_<unit>` for that output (`Cbreath_volt`).
+
+### Cbreath_volt (**canonical raw ion-mobility-spectrometer breath signal output**)
+- **Type:** compartment
+- **Role:** Uncalibrated breath reading -- the ion-mobility-spectrometer peak height in volt -- for the same exhaled drug that `Cbreath` reports in calibrated ppb. Algebraic output, not an ODE state.
+- **Source aliases:** `P-IMS Volt`, 'peak height [volt]', 'peak intensity' -- Kreuer 2014 (Fig 4-7).
+- **Example models:** `Kreuer_2014_propofol_lungdelay.R` (founding example; lung = -7.7 x^2 + 9.64 x with x = peak height in V), `Kreuer_2014_propofol_lungcmt.R` (lung = -12.6 x^2 + 15.57 x).
+- **Notes:** The ppb and volt readings differ by the spectrometer's non-linear calibration curve, which is why the source fits a separate polynomial to each; the volt coefficients are `cal_slope_breathv` / `cal_slope_breathv_quad`. The `_volt` suffix names the instrument unit; another instrument's raw signal would take its own unit suffix.
 
 ### tol (**canonical tolerance-to-laryngoscopy binary observation**)
 - **Type:** compartment
@@ -4403,7 +4410,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Bare lung organ compartment in full-body PBPK extractions. Also used for the *uninvolved* (non-lesion) lung tissue in site-of-action models that resolve a diseased `lesion` compartment separately -- see `lesion`.
 - **Source aliases:**
   - `CUlung` -- uninvolved-lung state in `Mehta_2023_bedaquiline_mpbpk.R` (Mehta 2023 ESM S2).
-- **Example models:** `Zhang_2011_nutlin3a.R`, `Mehta_2023_bedaquiline_mpbpk.R`, `Li_2025_polymyxinB.R` (the ELF peripheral compartment of a classical coupled plasma + ELF model, exchanging with `elf` through `q_elf_lung`).
+- **Example models:** `Zhang_2011_nutlin3a.R`, `Mehta_2023_bedaquiline_mpbpk.R`, `Li_2025_polymyxinB.R` (the ELF peripheral compartment of a classical coupled plasma + ELF model, exchanging with `elf` through `q_elf_lung`), `Kreuer_2014_propofol_lungdelay.R` and `Kreuer_2014_propofol_lungcmt.R` (a plasma-driven lung CONCENTRATION in ug/mL that feeds an exhaled-breath output: a first-order delay `ke0 * (Cc - lung)` in the first, separate `kin_lung` / `kout_lung` legs in the second; neither depletes `central`).
 
 ### lesion (**canonical site-of-action disease-lesion compartment**)
 - **Type:** compartment
