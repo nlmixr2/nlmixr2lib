@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van den Brink 2019 quinpirole cluster-based metabolomic PK/PD, plasma and brain ECF ([doi:10.1002/psp4.12370](https://doi.org/10.1002/psp4.12370)) -- healthy male Wistar rats with striatal microdialysis.
+- Add Gomeni 2019 methylphenidate Ritalin LA convolution IVIVC and Ritalin IR PK ([doi:10.1002/psp4.12378](https://doi.org/10.1002/psp4.12378)) -- healthy adults.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

@@ -649,6 +649,30 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Perlstein_2026_olanzapine_lai.R` (founding example; `SS1 = 3.25`, a markedly more sigmoidal second phase than the first process's `SS = 1.4`).
 - **Notes:** Note the deliberate asymmetry in the numbering: the FIRST process keeps the unsuffixed-except-for-`1` NONMEM name `gam1` (which predates this entry) while its rate partner is the unnumbered `ra`, so a two-process release model reads `ra` / `gam1` then `ra2` / `gam2`. This is inherited from the Desai 2016 registration and is not worth churning existing files over.
 
+### lra_<formulation>, lgam1_<formulation>, lra2_<formulation>, lgam2_<formulation>, logitfrel_<formulation> (**canonical formulation-suffixed fixed in vitro Weibull dissolution sets**)
+- **Type:** log-transformed-pk
+- **Role:** One fixed double-Weibull dissolution set per formulation, in a model that carries several formulations' in vitro release functions at once and picks one with `FORM_<drug>_<formulation>` indicators. Each member is the registered `lra` / `lgam1` / `lra2` / `lgam2` / `logitfrel` parameter with a lowercase formulation token appended; inside `model()` the selected set is assembled into the bare `ra` / `gam1` / `ra2` / `gam2` / `frel` (e.g. `ra <- exp(lra_slow) * form_slow + exp(lra_medium) * FORM_METHYLPHENIDATE_MEDIUM + ...`). Founding members: `lra_slow`, `lgam1_slow`, `lra2_slow`, `lgam2_slow`, `logitfrel_slow` and the `_medium` / `_fast` counterparts.
+- **Source aliases:**
+  - `TD`, `SS`, `TD1`, `SS1`, `FF` assigned per subject ID -- Gomeni 2019 NONMEM control stream (`IF(ID.EQ.1) THEN TD=0.186 ...`) and Table S2; `ra = 1 / TD`, `ra2 = 1 / TD1`.
+- **Example models:** `Gomeni_2019_methylphenidate_ivivc.R` (founding example; Ritalin LA slow / medium / fast formulations, all fifteen values `fixed()` from the separate dissolution fit). Prior art: `Hopkins_2024_amisulpride.R` uses the same suffix pattern for a single Weibull per formulation (`lra_cr10`, `lra_ir`, ...).
+- **Notes:** Ratified by the maintainers 2026-11-25 with the Gomeni 2019 extraction, together with the `FORM_<drug>_<formulation>` switches that select among the sets. Use this form when the formulations' sets are part of one fitted model (here, an IVIVC fitted jointly to all three formulations). A model of a single formulation, or one whose other formulations are hypothetical test products, keeps the unsuffixed names and documents the alternatives as `ini()` overrides (`Han_2023_budesonide_dissolution.R`). The formulation token is lowercase and names the product variant as the paper does (`slow`, `cr10`, `mups30`).
+
+### livivc_tscale (**canonical log-transformed IVIVC time-scaling factor**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the time-scaling factor `b2` of a Levy-type IVIVC time-scaling function, in which the in vivo release equals the in vitro release evaluated on a rescaled clock, `rvivo(t) = a1 + a2 * rvitro(tt)`, `tt = b1 + b2 * t^b3`. `b2` converts in vivo time into in vitro time: `b2 < 1` (with `b3 = 1`) means the in vivo release is slower than the dissolution test. Units are in vitro time per (in vivo time)^b3; dimensionless only when `b3 = 1`. The bare counterpart inside `model` is `ivivc_tscale`.
+- **Source aliases:**
+  - `b2`, `B2` -- Gomeni 2019 Eq. 3 / Eq. 10, Table S3 and NONMEM control stream ('time-scaling').
+- **Example models:** `Gomeni_2019_methylphenidate_ivivc.R` (founding example; `B2 = 0.19` with `B3 = 2.24`).
+- **Notes:** Ratified by the maintainers 2026-11-25 as part of the `ivivc_` family (`ivivc_int`, `ivivc_slope`, `ivivc_tshift`, `livivc_tscale`, `livivc_tshape`). The family keeps the general five-factor structure so a user can re-fit or override any factor; at `a1 = 0`, `a2 = 1`, `b1 = 0`, `b2 = 1`, `b3 = 1` the in vivo release equals the in vitro release. Distinct from `ra` / `ra2`, which scale time inside one Weibull process of the dissolution function itself; the IVIVC factor rescales the clock of the whole dissolution function.
+
+### livivc_tshape (**canonical log-transformed IVIVC time-shaping exponent**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the time-shaping exponent `b3` of the Levy-type IVIVC time-scaling function `tt = b1 + b2 * t^b3` (see `livivc_tscale`). `b3 > 1` makes the in vivo clock run slowly early and fast late relative to the dissolution test. Unitless. The bare counterpart inside `model` is `ivivc_tshape`.
+- **Source aliases:**
+  - `b3`, `B3` -- Gomeni 2019 Eq. 3 / Eq. 10, Table S3 and NONMEM control stream ('time-shaping factor').
+- **Example models:** `Gomeni_2019_methylphenidate_ivivc.R` (founding example; `B3 = 2.24`).
+- **Notes:** Member of the `ivivc_` family ratified 2026-11-25; see `livivc_tscale`. Log-transformed because the exponent is strictly positive in any physical time scaling.
+
 ### ltpeak_invgauss1 (**canonical log-transformed peak time of the first inverse-Gaussian input density**)
 - **Type:** log-transformed-pk
 - **Role:** Log of the time (after the dose) at which the first inverse-Gaussian absorption input density reaches its maximum, in an input model written as a weighted sum of inverse-Gaussian densities, `IR(t) = Dose * (frel * IG1(t) + (1 - frel) * IG2(t))` with `IG(t) = sqrt(MAT / (2 * pi * CV^2 * t^3)) * exp(-(t - MAT)^2 / (2 * CV^2 * MAT * t))`. The density's mean absorption time follows from its peak time and dispersion, `MAT = tpeak / (sqrt(1 + 9/4 * CV^4) - 3/2 * CV^2)`. Bare counterpart inside `model` is `tpeak_invgauss1` (time).
@@ -1714,6 +1738,13 @@ The form is valid only over the time span the source studied.
 - **Source aliases:**
   - `SS1` -- release-function "sigmoidicity factor for the second process"; `GAM2` / `GAMMA2` -- NONMEM convention.
 - **Example models:** `Perlstein_2026_olanzapine_lai.R` (founding example).
+
+### ivivc_tscale, ivivc_tshape (**canonical bare IVIVC time-scaling factor and time-shaping exponent**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `livivc_tscale` (`b2`) and `livivc_tshape` (`b3`) in the IVIVC time scaling `tt = ivivc_tshift + ivivc_tscale * t^ivivc_tshape`. Used inside `model` after exponentiation.
+- **Source aliases:**
+  - `B2`, `B3` -- Gomeni 2019 NONMEM control stream.
+- **Example models:** `Gomeni_2019_methylphenidate_ivivc.R` (founding example).
 
 ### tpeak_invgauss1, dtpeak_invgauss2, cv_invgauss1, cv_invgauss2 (**canonical bare inverse-Gaussian input-density parameters**)
 - **Type:** bare-pk
@@ -4265,29 +4296,13 @@ One member was added alongside the Maggs 2026 rifampicin extraction: `fm_desacet
 - **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
 - **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_brain`); the spinal-cord counterpart of `lv_brain`. Wrap in `fixed()` when the source fixes it from anatomy.
 
-### lkon_signal, kon_signal (**canonical log-transformed rate constant transforming a secondary signal into response production**)
+### ivivc_int, ivivc_slope, ivivc_tshift (**canonical IVIVC linear intercept, linear slope and time shift**)
 - **Type:** paper-named-param
-- **Role:** First-order rate constant (1 / time) at which a latent secondary-signal pool (the `signal` state) is transformed into production of the response in a secondary-signal / indirect-response model: the response gains `kon_signal * signal` per unit time and the signal pool loses the same amount. Inside `model()` the bare name is `kon_signal`.
+- **Role:** The three signed or identity-anchored factors of a Levy-type IVIVC time-scaling function, `rvivo(t) = ivivc_int + ivivc_slope * rvitro(tt)`, `tt = ivivc_tshift + ivivc_tscale * t^ivivc_tshape`: `ivivc_int` (`a1`, intercept, fraction released), `ivivc_slope` (`a2`, slope, unitless) and `ivivc_tshift` (`b1`, time shift, in vitro time). Identity values are 0, 1 and 0. Carried untransformed because `a1` and `b1` can be negative (the Gomeni 2019 control stream bounds `B1` in (-5, 5)).
 - **Source aliases:**
-  - `kon_s` -- Busso 2017 Equations 2-3 and Table 2.
-- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; `lkon_signal = log(0.00739)` 1/day, the median of the six individual estimates).
-- **Notes:** Ratified by the maintainers 2026-11-25. Named after the pool it drains rather than as a bare `kon`, which is deliberately not canonicalised (see "Why `kon` is NOT canonicalised"): an on-rate of a binding model has other units and another meaning. Pairs with `lkout_signal`, the loss of the same pool that does not produce response.
-
-### lkout_signal, kout_signal (**canonical log-transformed first-order dissipation rate of a secondary-signal pool**)
-- **Type:** paper-named-param
-- **Role:** First-order rate constant (1 / time) at which a latent secondary-signal pool (the `signal` state) dissipates without producing response, so the pool's total loss rate is `kout_signal + kon_signal` (times any inhibition factor on the production leg). Inside `model()` the bare name is `kout_signal`.
-- **Source aliases:**
-  - `kout_s` -- Busso 2017 Equation 2 and Table 2.
-- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; `lkout_signal = log(0.2915)` 1/day).
-- **Notes:** Ratified by the maintainers 2026-11-25. Read as a member of the `kout_<compartment>` family ("rate of leaving the suffixed pool"; see the `kin` entry), here for a non-anatomical pool. Distinct from `kpout`, the loss rate of an `indirect_prec` precursor pool whose loss is the response's production; in a secondary-signal model the production leg is `kon_signal`, and `kout_signal` is the non-productive loss.
-
-### lkinhib, kinhib (**canonical log-transformed linear inhibition slope per unit of driver**)
-- **Type:** paper-named-param
-- **Role:** Slope of a linear inhibition (or arrest) term, `inhib = kinhib * driver`, in units of 1 / (driver units). The driver is whatever the model says it is -- a training dose, an unbound drug concentration, a drug-effect fraction -- and the product is the dimensionless fraction removed from the inhibited process (`(1 - inhib)`) or a rate added to an arrest flux. Inside `model()` the bare name is `kinhib`; the log-transformed `lkinhib` is used in `ini()` when the slope is strictly positive.
-- **Source aliases:**
-  - `kin_i` -- Busso 2017 Equations 5 and 12 and Table 2, inhibition of performance production per training unit of the same day (1/tu). Not carried as `kin_i`, because `kin` is the canonical indirect-response production rate.
-- **Example models:** `Busso_2017_exerciseTraining.R` (founding example; `lkinhib = log(0.00206)` 1/tu). The bare form is also used by `Gall_2023_doxorubicin_mouse.R`, `Gall_2023_doxorubicin_human.R`, `Gall_2023_fluorouracil_mouse.R` and `Gall_2023_fluorouracil_human.R` (`arrest <- kinhib * <driver>`).
-- **Notes:** Ratified by the maintainers 2026-11-25. Distinct from `imax` / `ic50` (a saturable inhibition) and from a slope on a stimulation (`slope`-type effects): `kinhib` is linear and inhibitory. Read the model body to learn what the driver is and therefore what the units are.
+  - `a1` / `A1`, `a2` / `A2`, `b1` / `B1` -- Gomeni 2019 Eq. 3 / Eq. 10, Table S3 and NONMEM control stream ('intercept', 'slope', 'time-shifting').
+- **Example models:** `Gomeni_2019_methylphenidate_ivivc.R` (founding example; all three `fixed()` at the identity, as in Table S3).
+- **Notes:** Ratified by the maintainers 2026-11-25 with `livivc_tscale` / `livivc_tshape`. Where a control stream applies the linear factors to the UNRELEASED fraction rather than to the released fraction of the printed equation (Gomeni 2019: `FA = A1 + A2*VV` with `VV` the unreleased fraction), follow the code and say so in the model: the two forms agree only at the identity.
 
 ## Nested (multi-level) random effects
 
