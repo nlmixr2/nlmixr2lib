@@ -1,0 +1,361 @@
+---
+title: "Tulathromycin PK/PD against Haemophilus parasuis in neutropenic guinea pigs (Zhao 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tulathromycin PK/PD against Haemophilus parasuis in neutropenic guinea pigs (Zhao 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Zhao 2018 studies **tulathromycin**, a veterinary macrolide, against
+*Haemophilus parasuis*, the cause of Glasser's disease in pigs, using
+neutropenic guinea pigs as the infection model. Serum drawn after a single
+intramuscular dose of 1 or 10 mg/kg was used for ex vivo time-kill curves
+against the serotype 13 reference strain 13R, and the 24 h change in bacterial
+count was related to the PK/PD index AUC0-24h/MIC with an inhibitory sigmoid
+Emax model fitted in WinNonlin. The two dose levels were fitted separately, so
+they ship as two files:
+
+| Model file | What it is | Source |
+|---|---|---|
+| `Zhao_2018_tulathromycin_pkpd_1mgkg` | Ex vivo sigmoid Emax, E vs AUC0-24h/MIC, serum after 1 mg/kg | Methods equation, Table 6 |
+| `Zhao_2018_tulathromycin_pkpd_10mgkg` | Same model fitted to serum after 10 mg/kg | Methods equation, Table 6 |
+
+The pharmacokinetics were analysed only non-compartmentally (WinNonlin model
+200; Table 2), and no volume or absorption rate is reported, so there is no
+PK model to package. Exposure enters each model as the covariate
+`AUC_TULATHROMYCIN`.
+
+* Article: <https://doi.org/10.1371/journal.pone.0209177>
+
+```{r models}
+m1 <- rxode2::rxode2(readModelDb("Zhao_2018_tulathromycin_pkpd_1mgkg"))
+m10 <- rxode2::rxode2(readModelDb("Zhao_2018_tulathromycin_pkpd_10mgkg"))
+```
+
+# Population
+
+FMMU albino guinea pigs (three weeks old, 240-250 g) were made neutropenic
+with cyclophosphamide (100 mg/kg/day intraperitoneally for three days;
+leukocytes below 1000/mm^3, Table 1) and infected intraperitoneally with about
+10^9 CFU of *H. parasuis* 13R. Each dose group had 128 animals: eight were
+sacrificed at each of 16 sampling times from 0.083 to 168 h. Tulathromycin
+(Draxxin) was given as a single intramuscular dose of 1 or 10 mg/kg. The
+tulathromycin MIC against 13R is 0.03 ug/mL in guinea pig serum and
+0.5 ug/mL in cation-adjusted Mueller-Hinton broth (CAMHB). The ex vivo curves
+(Figures 5 and 6) incubated 13R in the mean of the eight sera per time point
+for 24 h, starting at about 10^5.7 CFU/mL.
+
+No animal covariates enter either model, so no virtual cohort is needed.
+Every simulation below is a deterministic typical-value solve.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Sigmoid Emax equation | `E = Emax - (Emax - E0)*Ce^N/(EC50^N + Ce^N)` | Methods, PK/PD modeling and data analysis |
+| e0 (paper's "Emax"), both doses | 2.65 log10 CFU/mL | Table 6 |
+| emax (paper's "E0"), both doses | -4.01 log10 CFU/mL | Table 6 |
+| EC50, 1 / 10 mg/kg | 24.66 / 26.0 h | Table 6 |
+| N, 1 / 10 mg/kg | 5.11 / 10.0 | Table 6 |
+| Targets E = 0 / -3 / -4, 1 mg/kg | 22.73 / 34.52 / 88.03 h | Table 6 |
+| Targets E = 0 / -3 / -4, 10 mg/kg | 24.94 / 30.94 / 49.92 h | Table 6 |
+| MIC of 13R in serum | 0.03 ug/mL | Results, MICs, MBCs, MPC and PAE |
+| MIC90 in serum (94 isolates) | 0.06 ug/mL | Results, MICs, MBCs, MPC and PAE |
+| Ce = AUC0-24h/MIC, AUC0-24h = 24 x sample concentration | -- | Methods; Figure 7 axes |
+| Starting inoculum | about 10^5.7 CFU/mL | Figures 5 and 6 (read by eye) |
+| Serum AUC0-168h, 1 / 10 mg/kg | 11019.6 / 57182.5 ng*h/mL | Table 2 |
+| Serum CL/F, 1 / 10 mg/kg | 88.1 / 172.0 mL/kg/h | Table 2 |
+| Free fraction in serum | 0.56-0.74 | Results, Pharmacokinetics |
+| Dose equation | `Dose = CL x factor x MIC90 / (fu x F)` | Methods, Dose regimen prediction |
+
+# Checks on the source
+
+## The index denominator is the serum MIC
+
+Table 5 prints the PK/PD ratios at each dose. Dividing the Table 2 serum
+exposures by the 13R serum MIC (0.03 ug/mL) and MBC (0.06 ug/mL) reproduces
+them, which confirms that the model's `mic` is the serum MIC and that the
+exposures are in ug/mL once converted from ng/mL.
+
+```{r table5}
+table5 <- tibble::tribble(
+  ~dose, ~cmax, ~auc168, ~pub_cmax_mic, ~pub_auc_mic, ~pub_cmax_mbc, ~pub_auc_mbc,
+  "1 mg/kg", 1.0795, 11.0196, 36.0, 367.3, 18.0, 183.7,
+  "10 mg/kg", 3.48625, 57.1825, 116.3, 1906.0, 58.2, 953.0
+) |>
+  dplyr::mutate(
+    cmax_mic = cmax / 0.03, auc_mic = auc168 / 0.03,
+    cmax_mbc = cmax / 0.06, auc_mbc = auc168 / 0.06
+  )
+table5 |>
+  dplyr::transmute(
+    dose,
+    cmax_mic = sprintf("%.1f (%.1f)", cmax_mic, pub_cmax_mic),
+    auc_mic = sprintf("%.1f (%.1f)", auc_mic, pub_auc_mic),
+    cmax_mbc = sprintf("%.1f (%.1f)", cmax_mbc, pub_cmax_mbc),
+    auc_mbc = sprintf("%.1f (%.1f)", auc_mbc, pub_auc_mbc)
+  ) |>
+  dplyr::rename(
+    "Dose" = dose, "Cmax/MIC" = cmax_mic, "AUC0-168h/MIC (h)" = auc_mic,
+    "Cmax/MBC" = cmax_mbc, "AUC0-168h/MBC (h)" = auc_mbc
+  ) |>
+  knitr::kable(caption = "Table 2 exposures divided by the serum MIC and MBC; Table 5 values in parentheses.")
+stopifnot(
+  all(abs(table5$cmax_mic / table5$pub_cmax_mic - 1) < 0.005),
+  all(abs(table5$auc_mic / table5$pub_auc_mic - 1) < 0.005),
+  all(abs(table5$cmax_mbc / table5$pub_cmax_mbc - 1) < 0.005),
+  all(abs(table5$auc_mbc / table5$pub_auc_mbc - 1) < 0.005)
+)
+```
+
+# Ex vivo sigmoid Emax models
+
+The models take the 24 h AUC as the covariate `AUC_TULATHROMYCIN`. Each ex
+vivo serum sample holds one fixed concentration for the 24 h incubation, so
+the AUC is 24 h times that concentration, and the index is
+`AUC_TULATHROMYCIN / mic`. The 24 h change is read from the bacterial state
+`bact`, observed at 0 and 24 h.
+
+## Table 6 target indices
+
+Table 6 prints the AUC0-24h/MIC that gives no net change (E = 0, bacteriostatic),
+a 3-log10 kill (E = -3, bactericidal) and a 4-log10 kill (E = -4, virtual
+eradication). Solving the packaged models for those targets checks both the
+transcription and the reading of the paper's inverted Emax/E0 labels: the
+targets reproduce only if the drug-free change (+2.65) is the value at zero
+exposure and the maximal kill (-4.01) is the asymptote.
+
+```{r targets}
+grid_aucmic <- exp(seq(log(1), log(1000), length.out = 2000))
+ex_events <- function(aucmic) {
+  dplyr::bind_rows(
+    data.frame(id = seq_along(aucmic), time = 0, evid = 0, amt = 0, cmt = "bact", AUC_TULATHROMYCIN = aucmic * 0.03),
+    data.frame(id = seq_along(aucmic), time = 24, evid = 0, amt = 0, cmt = "bact", AUC_TULATHROMYCIN = aucmic * 0.03)
+  ) |>
+    dplyr::arrange(id, time)
+}
+change_24h <- function(mod) {
+  sim <- rxode2::rxSolve(mod, ex_events(grid_aucmic), returnType = "data.frame")
+  sim |>
+    dplyr::group_by(id) |>
+    dplyr::summarise(change = log10(bact[time == 24]) - log10(bact[time == 0])) |>
+    dplyr::pull(change)
+}
+dE1 <- change_24h(m1)
+dE10 <- change_24h(m10)
+
+solve_target <- function(dE, target) {
+  approx(dE, grid_aucmic, xout = target, ties = mean)$y
+}
+targets <- tibble::tribble(
+  ~dose, ~E, ~published,
+  "1 mg/kg", 0, 22.73,
+  "1 mg/kg", -3, 34.52,
+  "1 mg/kg", -4, 88.03,
+  "10 mg/kg", 0, 24.94,
+  "10 mg/kg", -3, 30.94,
+  "10 mg/kg", -4, 49.92
+) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    model = solve_target(if (dose == "1 mg/kg") dE1 else dE10, E),
+    pct_diff = 100 * (model - published) / published
+  ) |>
+  dplyr::ungroup()
+
+targets |>
+  dplyr::mutate(model = round(model, 2), pct_diff = round(pct_diff, 2)) |>
+  dplyr::rename(
+    "Dose" = dose, "Target E (log10 CFU/mL)" = E,
+    "Published AUC0-24h/MIC (h)" = published, "Model AUC0-24h/MIC (h)" = model,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Table 6 target indices, published versus solved from the packaged models.")
+```
+
+```{r targets-check}
+# Deterministic solves of the published curves: every target reproduces to
+# rounding of the printed EC50 and N.
+stopifnot(all(abs(targets$pct_diff) < 0.5))
+```
+
+All six targets reproduce to within 0.25%. The largest gaps are on the
+E = -4 targets, where the curve is within 0.01 log10 of its -4.01 asymptote
+and the solved index is most sensitive to the rounding of the printed N.
+
+## Control growth and maximal kill (compare Figures 5 and 6)
+
+In Figures 5 and 6 the drug-free control rises from about 5.7 to about
+8.35 log10 CFU/mL over 24 h (a change of about +2.65), and every fully
+effective serum sample ends at the 1.7 log10 CFU/mL floor (a change of about
+-4.0). The packaged models give the same two limits.
+
+```{r limits}
+lim_events <- dplyr::bind_rows(
+  data.frame(id = 1, time = c(0, 2, 5, 8, 24), evid = 0, amt = 0, cmt = "bact", AUC_TULATHROMYCIN = 0),
+  data.frame(id = 2, time = c(0, 2, 5, 8, 24), evid = 0, amt = 0, cmt = "bact", AUC_TULATHROMYCIN = 24 * 3)
+)
+lim <- dplyr::bind_rows(
+  rxode2::rxSolve(m1, lim_events, returnType = "data.frame") |> dplyr::mutate(model = "1 mg/kg fit"),
+  rxode2::rxSolve(m10, lim_events, returnType = "data.frame") |> dplyr::mutate(model = "10 mg/kg fit")
+) |>
+  dplyr::mutate(serum = ifelse(id == 1, "Drug-free control", "3 ug/mL (saturating)"))
+lim |>
+  dplyr::filter(time == 24) |>
+  dplyr::transmute(model, serum, log_cfu_24 = round(log_cfu, 2), change = round(log_cfu - 5.7, 2)) |>
+  dplyr::rename(
+    "Model" = model, "Serum" = serum, "log10 CFU/mL at 24 h" = log_cfu_24,
+    "Change from 5.7 (log10 CFU/mL)" = change
+  ) |>
+  knitr::kable()
+lim24 <- lim |> dplyr::filter(time == 24)
+stopifnot(
+  all(abs(lim24$log_cfu[lim24$id == 1] - (5.7 + 2.65)) < 0.01),
+  all(abs(lim24$log_cfu[lim24$id == 2] - (5.7 - 4.01)) < 0.01)
+)
+```
+
+## Effect curves (replicate Figures 7 and 8)
+
+```{r effect-curves, fig.cap = "Replicates the top panels of Zhao 2018 Figures 7 (1 mg/kg) and 8 (10 mg/kg): 24 h change in H. parasuis count versus ex vivo AUC0-24h/MIC. Dashed lines mark the bacteriostatic, bactericidal and eradication levels."}
+data.frame(
+  aucmic = rep(grid_aucmic, 2),
+  change = c(dE1, dE10),
+  fit = rep(c("1 mg/kg (Figure 7)", "10 mg/kg (Figure 8)"), each = length(grid_aucmic))
+) |>
+  ggplot(aes(aucmic, change, colour = fit)) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = c(0, -3, -4), linetype = "dashed", colour = "grey50") +
+  scale_x_log10() +
+  labs(x = "AUC0-24h/MIC (h)", y = "E (change in log10 CFU/mL over 24 h)", colour = NULL) +
+  theme_bw()
+```
+
+## Time course at a few serum concentrations
+
+The models spread each 24 h change evenly over the incubation, so the
+log10 count is linear in time between the paper's 0 h and 24 h counts. The
+paper fitted only the 24 h change; intermediate times are not a prediction of
+the measured kinetics in Figures 5 and 6, which kill faster early.
+
+```{r timecourse, fig.cap = "Typical-value log10 count over a 24 h ex vivo incubation at serum concentrations spanning the effect range (1 mg/kg fit)."}
+concs <- c(0, 0.025, 0.03, 0.035, 0.05, 0.1)
+tc_events <- dplyr::bind_rows(lapply(seq_along(concs), function(i) {
+  data.frame(id = i, time = seq(0, 24, by = 1), evid = 0, amt = 0, cmt = "bact", AUC_TULATHROMYCIN = 24 * concs[i])
+}))
+tc <- rxode2::rxSolve(m1, tc_events, returnType = "data.frame") |>
+  dplyr::mutate(serum = factor(paste(concs[id], "ug/mL"), levels = paste(concs, "ug/mL")))
+ggplot(tc, aes(time, log_cfu, colour = serum)) +
+  geom_line(linewidth = 1) +
+  labs(x = "Incubation time (h)", y = "log10 CFU/mL", colour = "Serum tulathromycin") +
+  theme_bw()
+```
+
+# Dose prediction (Methods, Dose regimen prediction)
+
+Zhao 2018 converts the virtual-eradication target to a dose with
+`Dose = CL x factor x MIC90 / (fu x F)` for a 10-day period, using the serum
+CL of Table 2, the E = -4 target of Table 6 as `factor`, and MIC90 = 0.06 ug/mL.
+The paper does not print the fu or F it used. With F = 1 and fu = 0.65, the
+midpoint of the reported 0.56-0.74 range, the equation returns the published
+7.2-8.0 mg/kg, and the 0.296 guinea-pig-to-pig conversion factor gives the
+published 2.1-2.4 mg/kg for pigs. The dose uses the paper's printed targets;
+the packaged models reproduce those targets (above).
+
+```{r dose}
+dose_tab <- tibble::tibble(
+  fit = c("1 mg/kg", "10 mg/kg"),
+  cl_l_kg_h = c(0.0881, 0.1720),
+  factor = c(88.03, 49.92),
+  published = c(7.2, 8.0)
+) |>
+  dplyr::mutate(
+    dose_10d = cl_l_kg_h * factor * 0.06 / (0.65 * 1) * 10,
+    pig = dose_10d * 0.296
+  )
+dose_tab |>
+  dplyr::mutate(dose_10d = round(dose_10d, 2), pig = round(pig, 2)) |>
+  dplyr::rename(
+    "Fit" = fit, "CL (L/kg/h)" = cl_l_kg_h, "AUC0-24h/MIC for E = -4 (h)" = factor,
+    "Dose over 10 days (mg/kg)" = dose_10d, "Published (mg/kg)" = published,
+    "Pig dose (mg/kg)" = pig
+  ) |>
+  knitr::kable()
+stopifnot(all(abs(dose_tab$dose_10d / dose_tab$published - 1) < 0.02))
+```
+
+# PKNCA
+
+No PKNCA section is included. Neither packaged model has a pharmacokinetic
+component: the paper reports only non-compartmental serum parameters (Table 2),
+with no volume, absorption rate or concentration-time data from which a PK
+model could be built, and Table 2's NCA values are inputs to these models
+rather than outputs of them. Table 2 is internally consistent: dose divided by
+AUC0-168h gives 90.7 and 174.9 mL/kg/h against the printed CL of 88.1 and
+172.0 mL/kg/h, the small excess being the AUC beyond 168 h.
+
+```{r nca-consistency}
+stopifnot(
+  abs(1 / 11.0196 * 1000 / 88.1 - 1) < 0.05,
+  abs(10 / 57.1825 * 1000 / 172.0 - 1) < 0.05
+)
+```
+
+# Assumptions and deviations
+
+* **Inverted Emax/E0 labels.** The Methods equation is written with "Emax" as
+  the value at zero exposure and "E0" as the asymptote, and Table 6 gives
+  Emax = 2.65 and E0 = -4.01. The Table 6 footnote describes them the other
+  way round (E0 as the change in the control sample). The signs settle it:
+  a positive change can only be control growth, the Figures 5 and 6 controls
+  grow by about 2.65 log10 and the killed samples fall by about 4.0, and only
+  this reading reproduces the six Table 6 targets. The packaged files use the
+  canonical names `e0` = 2.65 (zero exposure) and `emax` = -4.01 (maximal
+  effect); no value is changed.
+* **Identical e0 and emax at both doses.** Table 6 prints the same 2.65 and
+  -4.01 for both fits, which suggests they were shared or fixed between the
+  two fits; only EC50 and N differ. The values are used as printed.
+* **Meaning of E.** The Methods text calls E the reduction relative to the
+  untreated control, but the efficacy levels define E = 0 as no change from
+  the initial inoculum after 24 h, and the zero-exposure value of +2.65 is
+  the control's own growth. E is therefore the change from the starting
+  inoculum, and the models integrate it from a starting density.
+* **Starting inoculum.** The paper gives 10^6 CFU/mL for the in vitro
+  time-kill curves and says the ex vivo curves were run the same way; the
+  ex vivo Figures 5 and 6 start at about 5.7 log10 CFU/mL, read by eye by the
+  maintainers, and that value is used. The predicted 24 h change does not
+  depend on it.
+* **Figure 8 axis.** In Figure 8 the Cmax/MIC panel has the same 0-3000 axis
+  and point positions as the AUC0-24h/MIC panel, whereas Cmax/MIC cannot
+  exceed the Table 5 value of about 116; the panel appears to repeat the AUC
+  axis. Only the AUC0-24h/MIC fit is packaged, so this does not affect the
+  models.
+* **Other PK/PD indices.** Figures 7 and 8 also fit Cmax/MIC and %T>MIC, and
+  the text names Cmax/MIC as a good predictor, but only the AUC0-24h/MIC
+  parameters are printed (Table 6). The other fits cannot be packaged.
+* **Free fraction in the dose equation.** The paper reports fu as 0.56-0.74
+  but not which value entered the dose equation; fu = 0.65 and F = 1
+  reproduce the published doses and are used only in the dose check above.
+* **Intramuscular "CL".** Table 2's CL is the apparent clearance CL/F after
+  intramuscular dosing. The text describing the dose prediction says the doses
+  were tested "by a single intravenous administration", which conflicts with
+  the intramuscular design throughout the Methods; the intramuscular reading
+  is used.
+* **No variability or residual error.** Neither fit reports between-animal
+  variability or a residual error (only R^2). Both models are typical-value
+  only, with `addSd` fixed at 0.
+* **Figure readings.** Every "about" value read from a figure in this
+  article is approximate and is used for comparison or as the non-influential
+  starting inoculum, never to set an effect parameter.
