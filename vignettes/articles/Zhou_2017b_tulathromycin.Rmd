@@ -1,0 +1,312 @@
+---
+title: "Tulathromycin PK/PD against Streptococcus suis in piglet serum (Zhou 2017b)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tulathromycin PK/PD against Streptococcus suis in piglet serum (Zhou 2017b)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Zhou 2017b (Zhou YF et al., Front Pharmacol 8:684,
+doi:10.3389/fphar.2017.00684) studied **tulathromycin**, a long-acting
+veterinary macrolide, as a candidate treatment for *Streptococcus suis*
+infection in pigs. Piglets received 2.5 mg/kg intravenously and
+intramuscularly; the serum pharmacokinetics were analysed non-compartmentally
+only (WinNonlin, Table 1), so no PK model can be packaged. The quantitative
+model of the paper is the ex vivo PK/PD integration: serum taken after the
+intramuscular dose was inoculated with *S. suis* ATCC 43765, and the 12 h
+change in log10 CFU/mL was fitted against the AUC(0-12 h)/MIC of the sample
+with a sigmoid Emax model (Table 4):
+
+`E = E0 + (Emax - E0) * Ce^N / (EC50^N + Ce^N)`
+
+E0 is the change in drug-free control serum and Emax the maximal effect, the
+canonical roles, so the file uses them directly as `e0` and `emax`.
+
+In the ex vivo design each sample holds one concentration C for the 12 h
+incubation, so the covariate `AUC_TULA` is `12 * C` (ug*h/mL) and the index is
+`AUC_TULA / mic`, with the ex vivo serum MIC of 0.031 ug/mL (Figure 2 caption).
+
+A different Zhou 2017 paper (Zhou Q et al., Front Pharmacol 8:392) studied
+tulathromycin against *Pasteurella multocida* in a tissue-cage model with a
+24 h incubation; the `b` suffix keeps the two apart.
+
+```{r model}
+mod <- rxode2::rxode2(readModelDb("Zhou_2017b_tulathromycin_pkpd_serum"))
+```
+
+# Population
+
+Eight healthy castrated crossbred piglets (Duroc x Landrace x Yorkshire; four
+male, four female; 20.5-23.6 kg) received tulathromycin 2.5 mg/kg
+intravenously and intramuscularly in a two-period crossover. The ex vivo
+killing curves (Figure 2B) used serum collected from 0 to 360 h after the
+intramuscular dose, inoculated with about 10^6 CFU/mL of *S. suis* ATCC 43765
+and counted over 12 h. That strain has an MIC of 1 ug/mL in Mueller-Hinton
+broth and 0.031 ug/mL in porcine serum. No animal covariate enters the model,
+so no virtual cohort is needed; every simulation below is a deterministic
+typical-value solve.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Sigmoid Emax equation | `E = E0 + (Emax - E0)*Ce^N/(EC50^N + Ce^N)` | Methods, 'PK/PD Modeling and Data Analysis' |
+| Index `Ce` | AUC12h/MIC; AUC = sample concentration x 12 h | Methods, 'PK/PD Modeling and Data Analysis' |
+| `e0` | 1.76 log10 CFU/mL | Table 4, 'E0' |
+| `emax` | -3.87 log10 CFU/mL | Table 4, 'Emax' |
+| `lec50` | log(17.9 h) | Table 4, 'EC50' |
+| `lhill` | log(1.18) | Table 4, 'Slope (N)' |
+| `mic` | 0.031 ug/mL (fixed) | Figure 2 caption, 'MICserum'; Table 3 serum 0.03 |
+| `log10_cfu0` | 6 log10 CFU/mL (fixed) | Methods, ex vivo inoculum 10^6 CFU/mL |
+| `addSd` | 0 (fixed) | not reported |
+
+# Ex vivo sigmoid Emax model
+
+## Table 4 parameters and target indices
+
+Table 4 prints `Emax - E0 = -5.63` next to the two parameters, and the
+AUC12h/MIC giving no net change (E = 0), a 1-log10 kill (E = -1) and a 2-log10
+kill (E = -2). The solve below runs the packaged model over a fine grid of
+exposures and interpolates the simulated 12 h change at each target.
+
+```{r targets}
+grid_aucmic <- exp(seq(log(0.1), log(1000), length.out = 2000))
+mic <- 0.031
+cfu0 <- 6
+change_12h <- function(aucmic) {
+  ev <- data.frame(
+    id = seq_along(aucmic), time = 12, evid = 0, amt = 0, cmt = "bact",
+    AUC_TULA = aucmic * mic
+  )
+  sim <- rxode2::rxSolve(mod, ev, returnType = "data.frame")
+  # Use the state itself: log_cfu carries a 1-CFU/mL floor that would bias
+  # the change by up to 0.003 log10 at the deepest kill.
+  log10(sim$bact) - cfu0
+}
+dE <- change_12h(grid_aucmic)
+
+targets <- tibble::tribble(
+  ~effect, ~E, ~published,
+  "Static", 0, 9.62,
+  "1-log10 kill", -1, 18.9,
+  "2-log10 kill", -2, 32.7
+) |>
+  dplyr::mutate(
+    model = approx(dE, grid_aucmic, xout = E, ties = mean)$y,
+    pct_diff = 100 * (model - published) / published
+  )
+
+targets |>
+  dplyr::mutate(model = round(model, 2), pct_diff = round(pct_diff, 1)) |>
+  dplyr::rename(
+    "Effect" = effect, "Target E (log10 CFU/mL)" = E,
+    "Published AUC12h/MIC (h)" = published, "Model AUC12h/MIC (h)" = model,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Table 4 target indices, published versus solved from the packaged model.")
+```
+
+```{r targets-check}
+ini_vals <- mod$theta
+stopifnot(
+  # Table 4 prints Emax - E0 = -5.63; the two transcribed values give it
+  # exactly.
+  abs((ini_vals[["emax"]] - ini_vals[["e0"]]) - (-5.63)) < 1e-9,
+  # The 12 h change at zero exposure is e0 and the simulation agrees with the
+  # closed-form sigmoid at every grid point (same parameters on both sides,
+  # so the bound is numerical).
+  max(abs(dE - (1.76 - 5.63 * grid_aucmic^1.18 / (17.9^1.18 + grid_aucmic^1.18)))) < 1e-4,
+  # The Table 4 parameters reproduce the static and 2-log10 targets within
+  # 5% and the 1-log10 target within 10% (see the next section for why they
+  # do not match exactly).
+  abs(targets$pct_diff[targets$E == 0]) < 5,
+  abs(targets$pct_diff[targets$E == -2]) < 5,
+  abs(targets$pct_diff[targets$E == -1]) < 10
+)
+```
+
+The Table 4 parameters give the static and 2-log10 targets to within
+`r round(max(abs(targets$pct_diff[targets$E != -1])), 1)`%, but the 1-log10
+target is `r round(abs(targets$pct_diff[targets$E == -1]), 1)`% low.
+
+## The drawn curve of Figure 4 and Table 4
+
+The solid line of Figure 4, digitised by the maintainers (axis-calibrated
+pixel positions; about 0.02 log10 and 1% in AUC/MIC precision), is not the
+curve of the Table 4 parameters. It starts at +1.54 log10 rather than +1.73,
+and it levels off at about -3.35 log10 rather than approaching -3.87. It
+crosses 0, -1 and -2 log10 at 9.67, 18.7 and 32.6 h, within about 1% of the three
+Table 4 targets. So the printed targets were read from the drawn line, and
+the drawn line and the printed parameters come from two different fits. The
+packaged model uses the printed parameters, since no parameter set for the
+drawn line is given.
+
+```{r fig4-drawn}
+fig4_drawn <- data.frame(
+  aucmic = c(0.2, 1, 3, 10, 30, 100, 300),
+  drawn = c(1.54, 1.38, 1.02, -0.03, -1.86, -3.26, -3.35)
+)
+fig4_drawn$table4 <- change_12h(fig4_drawn$aucmic)
+fig4_drawn |>
+  dplyr::mutate(table4 = round(table4, 2), diff = round(table4 - drawn, 2)) |>
+  dplyr::rename(
+    "AUC12h/MIC (h)" = aucmic, "Figure 4 drawn line" = drawn,
+    "Model (Table 4)" = table4, "Model - drawn" = diff
+  ) |>
+  knitr::kable(caption = "12 h change in log10 CFU/mL: Figure 4's drawn line (digitised) versus the packaged Table 4 model.")
+```
+
+```{r fig4-drawn-check}
+mid <- fig4_drawn$aucmic >= 3 & fig4_drawn$aucmic <= 100
+stopifnot(
+  # The two curves agree within 0.15 log10 from 3 to 100 h, where the data
+  # are dense; they separate only at the plateaus.
+  all(abs(fig4_drawn$table4[mid] - fig4_drawn$drawn[mid]) < 0.15),
+  # At the upper plateau the model is about 0.3 log10 below the drawn line.
+  fig4_drawn$table4[fig4_drawn$aucmic == 300] - fig4_drawn$drawn[fig4_drawn$aucmic == 300] < -0.25
+)
+```
+
+```{r fig4, fig.cap = "Replicates Figure 4 of Zhou 2017b: 12 h change in S. suis count in ex vivo serum versus AUC12h/MIC. Solid line: the packaged model (Table 4 parameters). Points: Figure 4's drawn line, digitised. Dotted lines mark the static, 1-log10 and 2-log10 kill levels."}
+curve <- data.frame(aucmic = grid_aucmic, change = dE) |>
+  dplyr::filter(aucmic >= 0.1, aucmic <= 1000)
+ggplot(curve, aes(aucmic, change)) +
+  geom_line(linewidth = 1, colour = "steelblue") +
+  geom_point(data = fig4_drawn, aes(aucmic, drawn), shape = 1, size = 2.5, colour = "firebrick") +
+  geom_hline(yintercept = c(0, -1, -2), linetype = "dotted", colour = "grey50") +
+  scale_x_log10() +
+  coord_cartesian(ylim = c(-5, 3)) +
+  labs(x = "AUC12h/MIC (h)", y = "Change in log10 CFU/mL over 12 h") +
+  theme_bw()
+```
+
+## Ex vivo kill at the serum sample concentrations (compare Figure 2B)
+
+Figure 2B labels each ex vivo serum curve with its sampling time and its
+mean tulathromycin concentration. The 12 h counts were read from the figure
+by the maintainers (about 0.15 log10 precision), against a start of about
+6.5 log10 CFU/mL.
+
+```{r fig2b}
+fig2b <- data.frame(
+  sample_h = c(0.5, 2, 12, 96, 192, 264, 360),
+  conc = c(0.493, 0.264, 0.131, 0.069, 0.032, 0.015, 0.010),
+  observed = c(2.87, 4.3, 4.9, 5.7, 6.0, 7.7, 7.85) - 6.5
+)
+fig2b$aucmic <- 12 * fig2b$conc / mic
+fig2b$model <- change_12h(fig2b$aucmic)
+fig2b |>
+  dplyr::mutate(
+    aucmic = round(aucmic, 1), observed = round(observed, 2), model = round(model, 2)
+  ) |>
+  dplyr::rename(
+    "Sample time (h)" = sample_h, "Serum conc. (ug/mL)" = conc,
+    "AUC12h/MIC (h)" = aucmic, "Figure 2B change (digitised)" = observed,
+    "Model change" = model
+  ) |>
+  knitr::kable(caption = "12 h change in log10 CFU/mL for each mean serum sample of Figure 2B: digitised versus predicted from the packaged model.")
+```
+
+```{r fig2b-check}
+stopifnot(
+  # Every mean sample is on the same side of zero in the model as in Figure
+  # 2B: growth at 264 and 360 h, net kill up to 192 h.
+  all(sign(fig2b$model) == sign(fig2b$observed)),
+  # The earliest sample (16x MIC) matches the observed kill closely.
+  abs(fig2b$model[1] - fig2b$observed[1]) < 0.3
+)
+```
+
+The model matches the direction of every sample and the 0.5 h sample closely.
+Between 2 and 96 h it predicts about one log10 more kill than the mean curves
+show. Figure 4 plots the individual samples, and those spread by about one
+log10 around the curve at the same AUC/MIC. So the mean curves of Figure 2B
+are not a sharper test than the fit itself.
+
+## Dose equation
+
+The paper converts the static target into a 5-day dose with
+`Dose = Cl x SF x MIC / (fu x F)`, where `SF` is the target AUC12h/MIC divided
+by 12 h. Its own inputs can be checked by arithmetic:
+
+```{r dose}
+cl_f_5d <- 0.126 * 120 # Table 1 IM Cl/F (126 mL/kg/h) over 5 days, L/kg
+sf <- 9.62 / 12
+fu <- 0.637
+fauc12_free <- 5.86 # Discussion, free AUC12h at 2.5 mg/kg (ug*h/mL)
+mic_limit <- fauc12_free / 9.62
+dose_checks <- data.frame(
+  quantity = c(
+    "Cl/F over 5 days (L/kg)", "Scaling factor SF",
+    "Highest serum MIC covered at 2.5 mg/kg (ug/mL)", "Same, as a broth MIC (ug/mL)"
+  ),
+  computed = c(cl_f_5d, sf, mic_limit, mic_limit * 40.3),
+  published = c(15.1, 0.8, 0.6, 24)
+)
+knitr::kable(
+  dose_checks |>
+    dplyr::mutate(computed = signif(computed, 3)) |>
+    dplyr::rename("Quantity" = quantity, "Computed" = computed, "Published" = published),
+  caption = "Arithmetic behind the dose prediction, recomputed from the paper's inputs."
+)
+# The published MIC limits are rounded (0.609 printed as 0.6, and the broth
+# value is 0.6 x 40.3 = 24.2 printed as 24), so allow 3%.
+stopifnot(all(abs(dose_checks$computed / dose_checks$published - 1) < 0.03))
+```
+
+With `Cl/F`, `Dose = 15.1 x 0.8 x MIC / 0.637 = 19.0 x MIC` mg/kg, so the two
+most common MIC classes of Figure 5 (0.050 and 0.099 ug/mL) give about 0.95 and
+1.9 mg/kg. Those match the two main peaks of the dose distribution in Figure
+6. The 90% target-attainment dose of 3.56 mg/kg is **not** reproduced from
+Figure 5. Read as plotted, Figure 5 puts about 76% of isolates at or below
+0.099 ug/mL and about 15% in the top class (1.588 ug/mL, about 30 mg/kg), so
+90% attainment would fall in that top class. Figure 6 shows only 423 of
+10,000 trials above 12 mg/kg. The Monte Carlo therefore used an MIC input
+that the paper does not print, and the dose prediction is not packaged.
+
+# PKNCA
+
+No PKNCA check is run. The model file has no PK component: the paper's PK
+analysis is non-compartmental (WinNonlin, Table 1) and fits no compartmental
+model, so there is no packaged concentration-time profile to analyse. The
+model's input, `AUC_TULA`, is a static-sample exposure.
+
+# Assumptions and deviations
+
+* **Drawn curve versus Table 4.** Figure 4's drawn line and Table 4's target
+  rows (9.62, 18.9, 32.7 h) agree with each other but not with Table 4's Hill
+  parameters. These give 9.18, 17.3 and 32.4 h and plateaus of +1.76 and
+  -3.87 log10, against about +1.54 and -3.35 for the drawn line. The model
+  uses the printed parameters unchanged. Users who need the paper's target
+  values should take them from Table 4 rather than from the model.
+* **MIC.** The ex vivo index uses the serum MIC of 0.031 ug/mL from the
+  Figure 2 caption (Table 3 gives 0.03 ug/mL for the same strain). The Table
+  2 mean of 0.05 ug/mL is for 16 field isolates, not the challenge strain.
+* **Starting inoculum.** The Methods give 10^6 CFU/mL; the Figure 2B curves
+  start nearer 6.5 log10. The model predicts a 12 h change, which does not
+  depend on the start.
+* **Within-window time course.** The paper fitted only the 12 h change. The
+  model spreads it uniformly over the window
+  (`d/dt(bact) = ln(10) * E/12 * bact`), so it gives only the 12 h endpoint,
+  not the shape of the curves in Figure 2B.
+* **No variability or residual error.** Table 4 gives point estimates only,
+  with no standard errors, between-animal variances or residual error. The
+  model is typical-value only, with `addSd` fixed at 0.
+* **Not packaged.** The in vitro broth time-kill curves (Figure 2A), the
+  post-antibiotic effects (Figure 3) and the Monte Carlo dose distribution
+  (Figures 5-6) were not modelled as equations with parameters by the paper,
+  or, for the Monte Carlo, cannot be reproduced from what is printed.
+* **Literature check.** No erratum or correction was found for Zhou 2017b
+  (Europe PMC, searched 2026-11-25).
