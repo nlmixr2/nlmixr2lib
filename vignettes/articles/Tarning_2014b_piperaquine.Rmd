@@ -1,0 +1,541 @@
+---
+title: "Piperaquine in Plasmodium vivax malaria (Tarning 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Piperaquine in Plasmodium vivax malaria (Tarning 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Tarning J, Thana P, Phyo AP, Lwin KM, Hanpithakpong W, Ashley EA,
+  Day NPJ, Nosten F, White NJ. Population Pharmacokinetics and Antimalarial
+  Pharmacodynamics of Piperaquine in Patients With *Plasmodium vivax* Malaria
+  in Thailand. *CPT Pharmacometrics Syst Pharmacol*. 2014;3(8):e132.
+  doi:10.1038/psp.2014.29.
+* Article: <https://doi.org/10.1038/psp.2014.29>
+* Supplementary material: Supplementary Methods (s01), and the NONMEM control
+  streams of the final pharmacokinetic (s03) and pharmacokinetic-pharmacodynamic
+  (s04) models.
+
+This is a different paper from `Tarning_2014_piperaquine` (Tarning 2014,
+*Antimicrob Agents Chemother* 58(4):2052-2058, doi:10.1128/AAC.02318-13), which
+models the effect of food on piperaquine in *P. falciparum* malaria.
+
+```{r load-model}
+mod_fn <- readModelDb("Tarning_2014b_piperaquine")
+mod <- rxode2::rxode2(mod_fn())
+```
+
+The model has three outputs:
+
+* `Cc` -- **venous** plasma piperaquine (ng/mL). The relapse hazard is driven
+  by this matrix.
+* `Ccap` -- **capillary** plasma piperaquine (ng/mL), `Cc` times the
+  transformation factor 1.41.
+* `sur` -- the probability of remaining free of recurrent *P. vivax* malaria,
+  `exp(-cumhaz)`.
+
+The relapse surges are timed from `time = 0`, so an event table must place the
+first dose of dihydroartemisinin-piperaquine at `time = 0`.
+
+# Population
+
+Tarning 2014 nested a pharmacokinetic study in the dihydroartemisinin-piperaquine
+(DHA-PQ) arm of an efficacy trial of DHA-PQ against chloroquine in Karen and
+Burmese patients with *P. vivax* mono-infection, at Shoklo Malaria Research Unit
+clinics on the Thailand-Myanmar border (Table 1). 241 patients were analysed for
+efficacy. 116 contributed 791 piperaquine plasma concentrations (435 venous, 356
+capillary): 62 were sampled randomly over 69 days and 54 gave a single sample at
+recurrent malaria. The PK cohort had a median (range) age of 23.5 (3-57) years,
+weight 50 (9-67) kg and was 22% female (26/116). The time-to-event model was
+fitted to the 62 patients with both pharmacokinetic and pharmacodynamic data.
+
+Every patient received DHA-PQ tablets (40 mg dihydroartemisinin + 320 mg
+piperaquine phosphate) at 17.8 mg/kg/day piperaquine phosphate once daily for 3
+days, with milk. Table 1 reports the total dose as 30.1 (27.2-36.1) mg/kg of
+piperaquine **base** in the PK cohort; doses in this model are mg of base.
+
+```{r population}
+str(mod_fn()$population[c("n_subjects", "age_range", "weight_range", "sex_female_pct")])
+```
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Three transit compartments, `ktr = ka = 4 / MTT` | n = 3 | Results; Figure 1 caption `KTR = (n+1)/MTT`; control stream s03 `KTR = 4/MTT` |
+| `lmtt` | 1.93 h | Table 2 |
+| `lcl` | 54.1 L/h | Table 2 |
+| `lvc` | 2,770 L | Table 2 |
+| `lq` | 663 L/h | Table 2 |
+| `lvp` | 10,600 L | Table 2 |
+| `lq2` | 72.7 L/h | Table 2 |
+| `lvp2` | 25,900 L | Table 2 |
+| `lfdepot` | 1 fixed | Table 2 |
+| `e_wt_cl`, `e_wt_vc`, reference 50 kg | 0.75, 1 fixed | Supplementary Methods; control stream s03 `(WT/50.0)**0.75`, `(WT/50.0)` |
+| `cfcap` | 1.41 | Table 2 (TF); control stream s03 `CPC = CPV*CV` |
+| `etalq`, `etalvp`, `etalvp2`, `etalmtt`, `etalfdepot` | 1.07, 0.125, 0.186, 0.26, 0.196 | Table 2 %CV (138, 36.5, 45.2, 54.5, 46.5); control stream s03 `$OMEGA` |
+| `expSd_Ccap`, `expSd` | 0.270, 0.321 | Table 2 sigma_1 (capillary), sigma_2 (venous); control stream s03 `Y = IPRED + W*EPS(1)` |
+| `lhaz_base` | 8.94 /year | Table 2 theta_BHZ |
+| `lsurge_amp` | 123% | Table 2 theta_SA |
+| `lsurge_sw` | 49.5 h | Table 2 theta_SW |
+| `surge_shp` | 4 fixed | Table 2 theta_SHP |
+| `surge_period` | 504 h fixed | Supplementary Methods (PT, 3-week intervals); control stream s04 peaks at 504, 1008, 1512 h |
+| Surge function | product of 3 surges | Supplementary Methods Eqs. 4-5; control stream s04 `SU` |
+| `lic50` | 6.92 ng/mL (venous) | Table 2 PC50 |
+| `lhill` | 9.28 | Table 2 Gamma |
+| Inhibitory Emax on the hazard | `1 - C^g / (C^g + PC50^g)` | Supplementary Methods Eq. 6; control stream s04 `DADT(8)` |
+| Survival `sur = exp(-cumhaz)` | -- | Supplementary Methods Eqs. 1-3 |
+
+The variances in the control streams are the final estimates, not initial
+values: each reproduces the Table 2 %CV through
+`100 * sqrt(exp(omega^2) - 1)`.
+
+```{r iiv-check}
+omega <- c(q = 1.07, vp = 0.125, vp2 = 0.186, mtt = 0.26, f = 0.196)
+cv_tab2 <- c(q = 138, vp = 36.5, vp2 = 45.2, mtt = 54.5, f = 46.5)
+cv_model <- 100 * sqrt(exp(omega) - 1)
+knitr::kable(
+  data.frame(Parameter = names(omega), `Table 2 %CV` = cv_tab2,
+             `From variance` = round(cv_model, 1), check.names = FALSE),
+  row.names = FALSE
+)
+# Deterministic identity; a transcription error moves the %CV by far more.
+stopifnot(all(abs(cv_model - cv_tab2) / cv_tab2 < 0.01))
+```
+
+# Event tables
+
+```{r helpers}
+dose_per_kg_day <- 30.1 / 3 # Table 1 median total base dose, PK cohort, over 3 days
+
+obs_grid <- sort(unique(c(
+  seq(0, 72, by = 0.25), seq(73, 168, by = 1), seq(172, 2880, by = 4)
+)))
+
+build_events <- function(subjects, obs_times) {
+  n <- nrow(subjects)
+  doses <- data.frame(
+    id = rep(subjects$id, each = 3), time = rep(c(0, 24, 48), n),
+    evid = 1L, amt = rep(subjects$DOSE, each = 3), cmt = "depot",
+    dvid = NA_integer_
+  )
+  obs <- data.frame(
+    id = rep(subjects$id, each = length(obs_times)),
+    time = rep(obs_times, n), evid = 0L, amt = NA_real_, cmt = "central",
+    dvid = 1L
+  )
+  ev <- rbind(doses, obs)
+  ev <- dplyr::left_join(ev, subjects[, c("id", "WT")], by = "id")
+  ev[order(ev$id, ev$time, -ev$evid), ]
+}
+```
+
+# Typical-value profile and Table 3
+
+Table 3 reports secondary parameters from the empirical Bayes estimates as
+medians over the PK cohort. A typical 50-kg patient receiving the median
+30.1 mg/kg total base dose gives:
+
+```{r typical}
+typ_subj <- data.frame(id = 1L, WT = 50, DOSE = dose_per_kg_day * 50)
+typ_events <- build_events(typ_subj, obs_grid)
+sim_typ <- as.data.frame(rxode2::rxSolve(mod, typ_events, omega = NA, sigma = NA))
+
+p <- c(cl = 54.1, vc = 2770, q = 663, vp = 10600, q2 = 72.7, vp2 = 25900)
+kmat <- matrix(c(
+  -(p[["cl"]] + p[["q"]] + p[["q2"]]) / p[["vc"]], p[["q"]] / p[["vp"]], p[["q2"]] / p[["vp2"]],
+  p[["q"]] / p[["vc"]], -p[["q"]] / p[["vp"]], 0,
+  p[["q2"]] / p[["vc"]], 0, -p[["q2"]] / p[["vp2"]]
+), 3, byrow = TRUE)
+t_half_days <- log(2) / min(-eigen(kmat)$values) / 24
+
+typ_tab <- data.frame(
+  Quantity = c("CL/F (L/h/kg)", "VD/F (L/kg)", "t1/2 (days)",
+               "Day-7 venous (ng/mL)", "Day-7 capillary (ng/mL)",
+               "Venous Cmax (ng/mL)", "Tmax after last dose (h)"),
+  `Table 3 median` = c(1.08, 802, 28.8, 33.0, 46.5, 162, 3.0),
+  Model = c(
+    p[["cl"]] / 50, sum(p[c("vc", "vp", "vp2")]) / 50, t_half_days,
+    sim_typ$Cc[sim_typ$time == 168], sim_typ$Ccap[sim_typ$time == 168],
+    max(sim_typ$Cc), sim_typ$time[which.max(sim_typ$Cc)] - 48
+  ),
+  check.names = FALSE
+)
+typ_tab$`Difference (%)` <- 100 * (typ_tab$Model / typ_tab$`Table 3 median` - 1)
+knitr::kable(typ_tab, digits = 2)
+
+# Deterministic typical-value quantities against cohort medians of post-hoc
+# estimates: they differ by the typical-vs-median offset only. A
+# mis-transcribed volume, clearance or dose unit moves them by tens of percent.
+stopifnot(all(abs(typ_tab$`Difference (%)`) < 10))
+```
+
+```{r typical-plot}
+sim_typ |>
+  dplyr::filter(time > 0) |>
+  dplyr::select(time, Venous = Cc, Capillary = Ccap) |>
+  tidyr::pivot_longer(-time, names_to = "Matrix", values_to = "conc") |>
+  ggplot(aes(time / 24, conc, colour = Matrix)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time after first dose (days)", y = "Piperaquine (ng/mL)",
+       title = "Typical 50-kg patient, 30.1 mg/kg total base dose")
+```
+
+# Virtual cohort and visual predictive check
+
+A cohort of 200 patients with body weights drawn to match the PK cohort
+(median 50 kg, range 9-67 kg) receives the median weight-based dose.
+
+```{r cohort}
+set.seed(20140801)
+rxode2::rxSetSeed(20140801)
+n_sub <- 200
+draw_wt <- function(n) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- rnorm(n, 50, 9)
+    out <- c(out, x[x >= 9 & x <= 67])
+  }
+  out[seq_len(n)]
+}
+cohort <- data.frame(id = seq_len(n_sub), WT = draw_wt(n_sub))
+cohort$DOSE <- dose_per_kg_day * cohort$WT
+cohort_events <- build_events(cohort, obs_grid)
+
+sim <- as.data.frame(rxode2::rxSolve(mod, cohort_events, keep = "WT"))
+summary(cohort$WT)
+```
+
+```{r vpc, fig.cap = "Venous piperaquine over the first 69 days; median and 5th-95th percentiles of the simulated cohort (compare Figure 2 of Tarning 2014)."}
+sim |>
+  dplyr::filter(time > 0, time <= 69 * 24) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time / 24)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.3) +
+  geom_line(aes(y = p50)) +
+  scale_y_log10() +
+  labs(x = "Time after first dose (days)", y = "Venous piperaquine (ng/mL)")
+```
+
+# PKNCA validation against Table 3
+
+Concentrations are individual predictions without residual error, which is
+what the Table 3 post-hoc secondary parameters are. PKNCA runs from 0 to
+infinity on a grid thinned to every 30 minutes over the dosing days and daily
+afterwards, which keeps the half-life fits fast without changing the results.
+Table 3 reports Tmax for the dose that gives the overall peak, the third, so
+Tmax is read directly off the 48-72 h interval, as is the day-7 concentration.
+
+```{r pknca}
+nca_grid <- c(seq(0, 72, by = 0.5), seq(96, 2880, by = 24))
+nca_conc <- sim |>
+  dplyr::filter(!is.na(Cc), time %in% nca_grid) |>
+  dplyr::select(id, time, Venous = Cc, Capillary = Ccap) |>
+  tidyr::pivot_longer(c(Venous, Capillary), names_to = "matrix",
+                      values_to = "conc")
+
+nca_dose <- cohort_events |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::select(id, time, amt) |>
+  tidyr::crossing(matrix = c("Venous", "Capillary"))
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, conc ~ time | matrix + id,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | matrix + id, doseu = "mg")
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE,
+                        half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_df <- as.data.frame(nca_res$result)
+
+direct <- sim |>
+  dplyr::select(id, time, Venous = Cc, Capillary = Ccap) |>
+  tidyr::pivot_longer(c(Venous, Capillary), names_to = "matrix", values_to = "conc") |>
+  dplyr::group_by(matrix, id) |>
+  dplyr::summarise(
+    tmax = time[time >= 48 & time <= 72][which.max(conc[time >= 48 & time <= 72])] - 48,
+    cday7 = conc[time == 168],
+    .groups = "drop"
+  ) |>
+  tidyr::pivot_longer(c(tmax, cday7), names_to = "PPTESTCD", values_to = "PPORRES")
+
+sim_nca <- nca_df |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "aucinf.obs", "half.life")) |>
+  dplyr::mutate(PPORRES = dplyr::if_else(PPTESTCD == "half.life", PPORRES / 24, PPORRES)) |>
+  dplyr::select(matrix, id, PPTESTCD, PPORRES) |>
+  dplyr::bind_rows(direct)
+
+ref_nca <- data.frame(
+  matrix = c("Venous", "Capillary"),
+  cmax = c(162, 228),
+  tmax = c(3.0, 3.0),
+  aucinf.obs = c(27160, 38250),
+  half.life = c(28.8, 28.9),
+  cday7 = c(33.0, 46.5)
+)
+
+# `cday7` (day-7 concentration) is not a PKNCA code; it is relabelled below,
+# so the unknown-code warning for it alone is muffled.
+nca_tbl <- withCallingHandlers(
+  nlmixr2lib::ncaComparisonTable(
+    sim_nca, ref_nca, by = "matrix",
+    units = c(cmax = "ng/mL", tmax = "h", aucinf.obs = "h*ng/mL",
+              half.life = "days", cday7 = "ng/mL")
+  ),
+  warning = function(w) {
+    if (grepl("unknown PKNCA code(s) returned as-is: 'cday7'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+)
+nca_tbl[[1]] <- sub("^cday7 ", "Day-7 conc ", nca_tbl[[1]])
+knitr::kable(nca_tbl, digits = 2, caption = paste(
+  "Simulated cohort medians vs Tarning 2014 Table 3 medians.",
+  "Tmax is measured from the third dose."
+))
+attr(nca_tbl, "footnote")
+```
+
+```{r nca-assert}
+nca_chk <- sim_nca |>
+  dplyr::group_by(matrix, PPTESTCD) |>
+  dplyr::summarise(sim = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  dplyr::inner_join(
+    tidyr::pivot_longer(ref_nca, -matrix, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("matrix", "PPTESTCD")
+  ) |>
+  dplyr::mutate(pct = 100 * (sim / ref - 1))
+# Cohort medians: robust to which subjects land in the tails, and a
+# mis-transcribed clearance, volume or dose unit moves them by far more.
+stopifnot(all(abs(nca_chk$pct) < 20))
+```
+
+# Relapse hazard: Figure 4a
+
+Figure 4a plots the hazard of recurrent *P. vivax* malaria with and without
+piperaquine. Without drug the hazard is the baseline 8.94 relapses/year,
+rising to 8.94 x 2.23 = 19.9/year at each 3-week relapse surge.
+
+```{r fig4a, fig.cap = "Replicates Figure 4a of Tarning 2014: hazard without drug, and after the standard regimen for the typical 50-kg patient and as the mean over the simulated cohort."}
+nodrug_events <- build_events(data.frame(id = 1L, WT = 50, DOSE = 0), obs_grid)
+sim_nodrug <- as.data.frame(rxode2::rxSolve(mod, nodrug_events, omega = NA, sigma = NA))
+
+haz <- dplyr::bind_rows(
+  sim_nodrug |> dplyr::transmute(time, hazard, Scenario = "No piperaquine"),
+  sim_typ |> dplyr::transmute(time, hazard, Scenario = "After DHA-PQ, typical patient"),
+  sim |>
+    dplyr::group_by(time) |>
+    dplyr::summarise(hazard = mean(hazard), .groups = "drop") |>
+    dplyr::mutate(Scenario = "After DHA-PQ, cohort mean")
+) |>
+  dplyr::filter(time <= 70 * 24) |>
+  dplyr::mutate(per_year = hazard * 24 * 365.25)
+
+ggplot(haz, aes(time / 24, per_year, linetype = Scenario)) +
+  geom_line() +
+  labs(x = "Time (days)", y = "Hazard rate (relapses/year)")
+
+surge_peak <- function(scenario, from_day, to_day) {
+  x <- haz[haz$Scenario == scenario & haz$time >= from_day * 24 & haz$time <= to_day * 24, ]
+  max(x$per_year)
+}
+haz_summary <- c(
+  base = sim_nodrug$hazard[1] * 24 * 365.25,
+  peak_no_drug = surge_peak("No piperaquine", 15, 25),
+  typical_week3 = surge_peak("After DHA-PQ, typical patient", 15, 25),
+  typical_week6 = surge_peak("After DHA-PQ, typical patient", 38, 46),
+  typical_week9 = surge_peak("After DHA-PQ, typical patient", 59, 67),
+  cohort_mean_week3 = surge_peak("After DHA-PQ, cohort mean", 15, 25),
+  cohort_mean_week6 = surge_peak("After DHA-PQ, cohort mean", 38, 46),
+  cohort_mean_week9 = surge_peak("After DHA-PQ, cohort mean", 59, 67)
+)
+round(haz_summary, 2)
+
+# Deterministic: the baseline and surge peak are the Table 2 values composed
+# exactly, and the typical-patient surge peaks carry no random effects. The
+# bands reflect values read off Figure 4a (about 0, 6.3 and 19.5/year).
+stopifnot(
+  abs(haz_summary[["base"]] - 8.94) < 0.01,
+  abs(haz_summary[["peak_no_drug"]] - 8.94 * 2.23) < 0.05,
+  haz_summary[["typical_week3"]] < 0.5,
+  haz_summary[["typical_week6"]] > 4, haz_summary[["typical_week6"]] < 12,
+  haz_summary[["typical_week9"]] > 18
+)
+```
+
+The typical patient reproduces the three findings of Figure 4a: the 3-week
+relapse surge is wiped out, the 6-week surge is partly suppressed and the
+9-week surge emerges almost in full, as piperaquine falls below the 6.92 ng/mL
+PC50. Read off the figure, the published curve peaks at about 6.3/year at
+6 weeks against `r round(haz_summary[["typical_week6"]], 1)`/year here.
+Figure 4a calls its curve the 'mean hazard rate' without saying over what.
+The mean over this cohort keeps a residual 3-week surge of about
+`r round(haz_summary[["cohort_mean_week3"]], 1)`/year. It comes from the few
+simulated patients whose concentrations at 3 weeks are already near the PC50,
+a tail that the steep shape factor (9.28) amplifies.
+
+# Protective day-7 concentration: Figure 4b
+
+Figure 4b plots the chance of remaining free of recurrence for 30 days against
+the day-7 venous concentration, and marks 27 ng/mL as the concentration giving
+a 99% chance for a typical patient. A typical 50-kg patient is simulated here
+across scaled doses.
+
+```{r fig4b}
+scales <- seq(0.05, 1.6, by = 0.05)
+scan <- lapply(seq_along(scales), function(i) {
+  ev <- build_events(data.frame(id = i, WT = 50, DOSE = scales[i] * dose_per_kg_day * 50),
+                     c(168, 720))
+  ev
+}) |> dplyr::bind_rows()
+sim_scan <- as.data.frame(rxode2::rxSolve(mod, scan, omega = NA, sigma = NA))
+scan_res <- sim_scan |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(c7 = Cc[time == 168], s30 = sur[time == 720], .groups = "drop")
+
+c7_99 <- approx(scan_res$s30, scan_res$c7, xout = 0.99)$y
+s30_floor <- min(scan_res$s30)
+c(day7_conc_for_99pct = c7_99, s30_without_drug_effect = s30_floor)
+
+cohort_pd <- sim |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(c7 = Cc[time == 168], s30 = sur[time == 720], .groups = "drop")
+
+ggplot() +
+  geom_point(data = cohort_pd, aes(c7, 100 * s30), colour = "grey60") +
+  geom_line(data = scan_res, aes(c7, 100 * s30)) +
+  geom_vline(xintercept = 27, linetype = "dashed") +
+  scale_x_log10(limits = c(1, 100)) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = "Day-7 venous concentration (ng/mL)", y = "% recurrence free at day 30",
+       caption = "Line: typical patient over scaled doses; points: simulated cohort at the standard dose; dashed: 27 ng/mL.")
+
+# Deterministic typical-value quantities. The 0.42 floor is the drug-free
+# survival to day 30 read from Figure 4b; the 99% threshold is discussed below.
+stopifnot(abs(s30_floor - 0.42) < 0.03, abs(c7_99 / 27 - 1) < 0.2)
+```
+
+The drug-free floor of the curve, about 42% recurrence-free at day 30, matches
+Figure 4b. The day-7 concentration giving a 99% chance of remaining free of
+recurrence for a typical patient is `r round(c7_99, 1)` ng/mL here, against
+27 ng/mL published, `r round(100 * (c7_99 / 27 - 1))`% higher. The paper defines its threshold two
+ways: for 'a typical patient' in the Figure 4b legend, and as what is 'needed to
+suppress the risk of relapse for 30 days (i.e., for 99% of simulated patients)'
+in the Discussion. These are not the same calculation, and the exact simulation
+design (dose scaling, sampling of the individual concentration profiles) is not
+reported. The model's capillary-to-venous ratio does reproduce the published
+pair, 38 / 27 = 1.41.
+
+# Timing of recurrences
+
+Only 14% (15/109) of recurrent *P. vivax* infections in the efficacy study were
+detected before day 39 and 64% (70/109) between days 42 and 56 (Results). In
+total 45% (109/241) of patients had a recurrence during a follow-up of up to 65
+days (Table 1). Patients were screened weekly, so the share of recurrences
+detected by each weekly visit follows from the cohort's expected survival.
+
+```{r recurrence}
+s_at <- function(day) mean(sim$sur[sim$time == day * 24])
+p_recur <- 1 - s_at(63)
+share_early <- (1 - s_at(35)) / p_recur
+share_mid <- (s_at(35) - s_at(56)) / p_recur
+rec_tab <- data.frame(
+  Quantity = c("Recurrent by day 63", "Share of recurrences by day 35 (before day 39)",
+               "Share of recurrences at days 42-56"),
+  Published = c(109 / 241, 15 / 109, 70 / 109),
+  Model = c(p_recur, share_early, share_mid)
+)
+knitr::kable(rec_tab, digits = 3)
+
+# Expected values over a 200-subject cohort (no event sampling), compared
+# against observed proportions that also lump reinfection and censoring at
+# P. falciparum recurrence, so the bands are wide; each still goes red if
+# the surge timing, the PC50 or the baseline hazard is mis-transcribed.
+stopifnot(
+  p_recur > 0.30, p_recur < 0.60,
+  share_early < 0.25,
+  share_mid > 0.40
+)
+```
+
+The cohort predicts `r round(100 * p_recur)`% recurrent by day 63 against
+45% observed. It places `r round(100 * share_early)`% of the recurrences by the
+day-35 visit (14% observed) and `r round(100 * share_mid)`% at days 42-56 (64%
+observed), so the delayed second relapse dominates, as the paper concludes. The
+excess of early recurrences comes from the same low-exposure tail as the residual
+3-week hazard above.
+
+```{r survival-plot, fig.cap = "Expected relapse-free survival of the simulated cohort (compare the Kaplan-Meier visual predictive check of Figure 3)."}
+sim |>
+  dplyr::filter(time <= 65 * 24) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(sur = mean(sur), .groups = "drop") |>
+  ggplot(aes(time / 24, sur)) +
+  geom_line() +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(x = "Time after first dose (days)", y = "Probability free of recurrent P. vivax")
+```
+
+# Assumptions and deviations
+
+* **Time origin of the relapse surges.** The control stream evaluates the
+  surges at `TIME - 504`, `TIME - 1008` and `TIME - 1512` hours. The model
+  takes `time = 0` as the first dose, which the Figure 4a peaks at days 21, 42
+  and 63 confirm. Datasets with records before the first dose must shift time.
+* **Baseline hazard units.** Table 2 reports 8.94 relapses/year; the model runs
+  in hours and converts with 365.25 days/year (1.02e-3 /h, matching the control
+  stream's initial estimate of 0.001 /h).
+* **Control-stream comment labels.** In control streams s03 and s04 the comments
+  on the `FLAG` branches call `FLAG = 1` venous, but the code assigns
+  `IPRED = LOG(CPC)` (capillary) and the capillary residual `THETA(10)` to
+  `FLAG = 1`. The code and Table 2 (sigma_1 = capillary = 0.270, sigma_2 =
+  venous = 0.321) agree, and the model follows them.
+* **Residual error.** Concentrations were log-transformed and fitted with an
+  additive error on the log scale, with `W` the standard deviation
+  (`$SIGMA 1 FIX`). This is `lnorm()` in nlmixr2.
+* **Numerical guard.** The control stream adds 1e-6 ng/mL to the concentration
+  inside the Emax term; the model keeps it.
+* **No maximal-effect parameter.** The Emax function has no estimated maximum;
+  the hazard is fully suppressed at saturating concentrations, as coded.
+* **Interval censoring.** Events were interval-censored between the last
+  negative and first positive weekly screen (Supplementary Methods Eqs. 2-3).
+  That shapes the estimation likelihood only; the model exposes the survivor
+  function `sur` with a placeholder additive residual so it can be simulated.
+* **Recurrence types.** The hazard covers all recurrent *P. vivax* malaria
+  (relapse, recrudescence and reinfection are not distinguished).
+* **Random effects removed from the final model.** IIV on CL/F, Vc/F, Q2/F and
+  the transformation factor was removed (Results; fixed to 0 in the control
+  streams), so those etas are omitted.
+* **Virtual cohort.** Body weights are drawn from a normal distribution (mean
+  50 kg, SD 9 kg) truncated to the Table 1 range; the paper does not report
+  the weight distribution beyond its median and range. Every patient receives
+  the median 30.1 mg/kg total base dose without tablet rounding.
+* **Day-7 protective concentration.** The model gives about 31 ng/mL for a 99%
+  chance of 30 days free of recurrence in a typical patient, against 27 ng/mL
+  published (see Figure 4b above).
+* **Figure 4a summary statistic.** The figure's 'mean hazard rate' is not
+  defined further. The typical patient matches its 3- and 9-week values; at
+  6 weeks the typical peak is about 2/year above the value read off the
+  figure, and the cohort mean shows a small residual 3-week surge that the
+  figure does not.
+* **Covariates screened but not retained** are documented in the model's
+  `covariatesDataExcluded`: age, sex, height, body temperature, hematocrit and
+  initial parasitaemia, plus days of fever and gametocytaemia (in
+  `population$notes`).

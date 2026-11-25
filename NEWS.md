@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2014 superparamagnetic iron oxide nanoparticle ([doi:10.1371/journal.pone.0103576](https://doi.org/10.1371/journal.pone.0103576)) -- athymic nude mice, with macrophage-depleted and RES-blocked groups; a record of the publication only, since its printed rate constants do not reproduce its own fitted curve.
+- Add Tarning 2014 piperaquine PK and P. vivax relapse time-to-event ([doi:10.1038/psp.2014.29](https://doi.org/10.1038/psp.2014.29)) -- patients aged 3-57 years with Plasmodium vivax malaria in Thailand.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
