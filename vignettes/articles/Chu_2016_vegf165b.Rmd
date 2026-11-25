@@ -1,0 +1,415 @@
+---
+title: "VEGF165b in peripheral arterial disease, QSP (Chu 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{VEGF165b in peripheral arterial disease, QSP (Chu 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7)
+```
+
+```{r libs, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(ggplot2)
+```
+
+This vignette validates the `Chu_2016_vegf165b_human_qsp` model against its
+source.
+
+* Reference: `r rxode2::rxode2(readModelDb("Chu_2016_vegf165b_human_qsp"))$reference`
+
+The paper extends the Popel-lab three-compartment model of vascular
+endothelial growth factor (VEGF) to peripheral arterial disease (PAD). The
+three compartments are normal tissue (all tissues and organs except blood and
+the diseased calf), blood, and the ischemic calf muscle. For the first time in
+this model family, the anti-angiogenic splice variant VEGF165b is tracked next
+to the pro-angiogenic VEGF165a and VEGF121. VEGF165b binds VEGFR1, VEGFR2,
+soluble VEGFR1 (sVEGFR1), alpha-2-macroglobulin and the heparan-sulfate (GAG)
+sites of the extracellular matrix. It does not bind neuropilin-1 (NRP1).
+
+The paper prints the parameter tables (Tables 2-5) and gives the equations as
+images in Supplementary File 1. It also ships the authors' **SimBiology model
+as an SBML export (Supplementary File 2)**. That export is the model the authors
+ran, so the packaged model is a mechanical translation of it:
+
+* 152 ODE states, one per SBML species that takes part in a reaction;
+* 410 reactions, each kept as one named flux `J_<SBML reaction name>` with the
+  rate law exactly as exported;
+* 249 derived constants (SBML initial assignments and assignment rules) and 153
+  base parameters, all `fixed()` in `ini()`.
+
+The SBML rate constants are per second. The packaged model runs in **hours**:
+every mass balance is multiplied by `sec_per_hr = 3600`, and the rate constants
+keep the per-second values printed in the paper. Species amounts are in mol per
+cm3 of compartment. The `*_pM` outputs are the authors' own SBML rules for free
+concentrations in interstitial fluid (tissues) or plasma (blood).
+
+This is an **endogenous steady-state model**: there is no dosing, and no
+between-subject or residual variability. Receptors and GAG sites start at their
+SBML initial amounts and the VEGF species start at zero. Validation therefore
+uses steady-state checks, not NCA. PKNCA is loaded only to follow the package's vignette template.
+
+```{r model}
+mod <- rxode2::rxode2(readModelDb("Chu_2016_vegf165b_human_qsp"))
+length(mod$state)
+stopifnot(length(mod$state) == 152)
+# An explicit-ODE model must not be auto-converted to a linear compartment solve.
+stopifnot(is.null(mod$linCmt))
+```
+
+## Population
+
+```{r population, echo = FALSE}
+p <- mod$population
+data.frame(
+  Field = c("Species", "Disease state", "Notes"),
+  Value = c(p$species, p$disease_state, p$notes)
+) |>
+  knitr::kable(caption = "Population metadata (Chu 2016 Methods and Table 2).")
+```
+
+The model is not fitted to individual patients. Geometry for the normal-tissue
+and blood compartments comes from the authors' earlier human model (Finley and
+Popel 2012). The diseased compartment is the combined lateral and medial
+gastrocnemius and soleus muscles of a PAD patient: 738 cm3, with the fluid
+fractions and muscle-fibre surface area of Table 2. The authors chose the
+fractions of VEGF165 secreted as VEGF165b (0.1 in normal tissue, 0.1 for
+endothelial cells, 1.0 in PAD calf). With these values VEGF stays inside the
+0-10 pM interstitial range measured in PAD muscle (Hoier 2013), and VEGF165b
+dominates in PAD calf as it does in patient biopsies.
+
+## Source trace
+
+Every base parameter in `ini()` carries a trailing comment naming its source.
+"Suppl. 2 SBML" means the value is taken from the SimBiology export. Where the
+paper also prints the value, the table or text location is given as well. The
+table below is built from those comments.
+
+```{r source-trace}
+src <- readLines(system.file(
+  "modeldb", "endogenous", "Chu_2016_vegf165b_human_qsp.R",
+  package = "nlmixr2lib"
+))
+ini_lines <- grep("<- fixed\\(", src, value = TRUE)
+trace <- data.frame(
+  Parameter = trimws(sub("<-.*", "", ini_lines)),
+  Value = sub(".*fixed\\(([^)]*)\\).*", "\\1", ini_lines),
+  Source = trimws(sub(".*\\) # ", "", ini_lines))
+)
+stopifnot(nrow(trace) == 153, all(nzchar(trace$Source)))
+knitr::kable(trace, caption = "Base parameters and their sources.")
+```
+
+| Model element | Source |
+|---|---|
+| Compartment layout (normal, blood, PAD calf), transport by permeability, lymph and clearance | Methods 'Three-compartment models'; Figure 7; Suppl. 2 SBML |
+| VEGF isoform / receptor binding network (VEGF165b binds R1, R2, sR1, GAG; not NRP1) | Methods 'Binding of VEGF165a, VEGF165b and VEGF121'; Figure 8; Suppl. 2 SBML |
+| All 410 rate laws, 249 derived constants and initial amounts | Suppl. 2 SBML (reactions, initial assignments, assignment rules) |
+| Free-concentration outputs (`*_pM`) and receptors per cell (`*_num`) | Suppl. 2 SBML assignment rules |
+| Secretion ratios VEGF165b / total VEGF165 = 0.1, 0.1, 1.0 | Conclusions; Suppl. 2 SBML |
+
+## Steady state
+
+```{r steady-state}
+ev <- rxode2::et(c(0, 10, 24, 48, 100, 500, 1000, 10000, 20000))
+sim <- as.data.frame(rxode2::rxSolve(mod, ev, atol = 1e-30, rtol = 1e-10, maxsteps = 1e6))
+
+out_cols <- c(
+  "dis_V165_pM", "dis_V165b_pM", "dis_V121_pM",
+  "bld_V165_pM", "bld_V165b_pM", "bld_V121_pM",
+  "nrm_V165_pM", "nrm_V165b_pM", "nrm_V121_pM"
+)
+ss <- sim[sim$time == 20000, ]
+ss_10k <- sim[sim$time == 10000, ]
+rel_change <- abs(unlist(ss[out_cols]) / unlist(ss_10k[out_cols]) - 1)
+max(rel_change)
+# Steady-state hold: the outputs no longer move between 10,000 and 20,000 h.
+stopifnot(max(rel_change) < 1e-6)
+```
+
+```{r approach-to-ss, fig.height = 4}
+sim[sim$time > 0, ] |>
+  dplyr::select(time, dplyr::all_of(out_cols)) |>
+  tidyr::pivot_longer(-time, names_to = "output", values_to = "pM") |>
+  dplyr::mutate(
+    compartment = factor(substr(output, 1, 3), c("nrm", "bld", "dis"), c("Normal", "Blood", "PAD calf")),
+    isoform = sub("^[a-z]+_(V[0-9b]+)_pM$", "\\1", output)
+  ) |>
+  ggplot(aes(time, pM, colour = isoform)) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10() +
+  facet_wrap(~compartment, scales = "free_y") +
+  labs(x = "Time (h)", y = "Free VEGF (pM)", colour = "Isoform",
+       title = "Approach to the endogenous steady state from zero VEGF")
+```
+
+## Table 1: steady-state VEGF concentrations
+
+Table 1 of the paper gives steady-state free concentrations for the final
+secretion ratios. Every simulated value is inside the 0-10 pM constraint the
+authors imposed.
+
+```{r table1}
+tab1 <- data.frame(
+  Compartment = rep(c("PAD calf", "Blood", "Normal"), each = 3),
+  Species = rep(c("VEGF165a", "VEGF165b", "VEGF121"), 3),
+  column = out_cols,
+  Published = c(1.276, 2.163, 0.701, 0.886, 1.863, 0.653, 4.591, 6.486, 2.416)
+)
+tab1$Simulated <- signif(unlist(ss[tab1$column]), 4)
+tab1$pct_diff <- round(100 * (tab1$Simulated / tab1$Published - 1), 1)
+tab1 |>
+  dplyr::select(-column) |>
+  dplyr::rename(
+    "Published (pM)" = Published,
+    "Simulated (pM)" = Simulated,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Replicates Table 1 of Chu 2016 (steady-state free VEGF).")
+
+stopifnot(
+  all(tab1$Simulated > 0 & tab1$Simulated < 10),
+  # Normal tissue and PAD-calf VEGF165a reproduce Table 1.
+  all(abs(tab1$pct_diff[tab1$Compartment == "Normal"]) < 3),
+  abs(tab1$pct_diff[tab1$column == "dis_V165_pM"]) < 3
+)
+```
+
+The deterministic solve matches the normal-tissue row to within 1.5%, and PAD
+calf VEGF165a to within 0.5%. The blood row and the PAD-calf VEGF165b and
+VEGF121 values come out **lower** than printed: blood VEGF165b by 26%, blood
+VEGF121 by 22%, PAD-calf VEGF165b by 9%. The maintainers checked the obvious
+explanations:
+
+* switching each of the 410 reactions off in turn does not close the gap: the
+  knockouts that agree best with Table 1 all leave blood VEGF165b at about
+  1.37 pM;
+* using the Table 3 receptor densities, or the Results-text endothelial
+  secretion split (0.0279 / 0.0031), makes the fit worse;
+* removing the redundant `*_Abluminal_*` reactions (see Assumptions) makes the
+  fit worse;
+* evaluating the nine initial assignments that read rule-set parameters
+  (`S_NB_dis`, `VesselSA_Vol_blood_tis_dis`) with those parameters' stored
+  placeholder value of 1 also makes the fit worse (blood VEGF165b 1.32 pM).
+
+Figure 3 (below) shows the same gap: its blood VEGF165b curve sits above the
+one simulated from the export. The export therefore seems to differ slightly
+from the version used for Table 1 and Figure 3 in some blood-side setting.
+The export's VEGF165b / VEGF165a ratios are 1.54 (PAD calf), 1.63 (blood) and
+1.40 (normal). The Discussion prints 1.70, 2.10 and 1.41. The model is shipped
+as exported; no parameter was tuned.
+
+## Figure 3: secretion-ratio scans
+
+Each row of Figure 3 varies the VEGF165b / total VEGF165 secretion ratio in one
+compartment from 0 to 1, with the ratio held at 0.1 in the other two
+compartments. Total VEGF165 secretion stays fixed.
+
+```{r fig3-sim}
+grid <- seq(0, 1, by = 0.1)
+scan <- dplyr::bind_rows(
+  data.frame(varied = "normal", V165bSecretionRatio_Normal = grid,
+             V165bSecretionRatio_Blood = 0.1, V165bSecretionRatio_Disease = 0.1),
+  data.frame(varied = "blood", V165bSecretionRatio_Normal = 0.1,
+             V165bSecretionRatio_Blood = grid, V165bSecretionRatio_Disease = 0.1),
+  data.frame(varied = "disease", V165bSecretionRatio_Normal = 0.1,
+             V165bSecretionRatio_Blood = 0.1, V165bSecretionRatio_Disease = grid)
+)
+scan$id <- seq_len(nrow(scan))
+ratio <- scan$V165bSecretionRatio_Normal
+ratio[scan$varied == "blood"] <- scan$V165bSecretionRatio_Blood[scan$varied == "blood"]
+ratio[scan$varied == "disease"] <- scan$V165bSecretionRatio_Disease[scan$varied == "disease"]
+scan$ratio <- ratio
+
+scan_sim <- as.data.frame(rxode2::rxSolve(
+  mod, rxode2::et(20000),
+  params = scan[, c("id", "V165bSecretionRatio_Normal", "V165bSecretionRatio_Blood",
+                    "V165bSecretionRatio_Disease")],
+  atol = 1e-30, rtol = 1e-10, maxsteps = 1e6
+))
+# One parameter set per row with a shared event table: rxode2 labels the rows sim.id.
+if (!"id" %in% names(scan_sim)) scan_sim$id <- scan_sim$sim.id
+fig3 <- scan_sim |>
+  dplyr::select(id, dplyr::all_of(out_cols)) |>
+  dplyr::left_join(scan[, c("id", "varied", "ratio")], by = "id") |>
+  tidyr::pivot_longer(dplyr::all_of(out_cols), names_to = "output", values_to = "pM") |>
+  dplyr::mutate(
+    compartment = factor(substr(output, 1, 3), c("nrm", "bld", "dis"), c("Normal", "Blood", "Disease")),
+    isoform = sub("^[a-z]+_(V[0-9b]+)_pM$", "\\1", output),
+    varied = factor(varied, c("normal", "blood", "disease"),
+                    c("A: vary normal", "B: vary blood", "C: vary disease"))
+  ) |>
+  dplyr::filter(isoform != "V121")
+```
+
+```{r fig3-plot, fig.height = 7}
+ggplot(fig3, aes(ratio, pM, colour = isoform)) +
+  geom_line() +
+  geom_point() +
+  facet_grid(varied ~ compartment, scales = "free_y") +
+  labs(x = "Secretion ratio of VEGF165b to total VEGF165",
+       y = "Free concentration (pM)", colour = NULL,
+       title = "Replicates Figure 3 of Chu 2016")
+```
+
+```{r fig3-check}
+pick <- function(v, comp, iso, r) {
+  fig3$pM[fig3$varied == v & fig3$compartment == comp & fig3$isoform == iso &
+            abs(fig3$ratio - r) < 1e-9]
+}
+# Row C, left column: normal-tissue VEGF is insensitive to the PAD-calf ratio
+# (Figure 3C reads about 4.6 pM VEGF165a and 6.4 pM VEGF165b over the whole range).
+nrm_c_a <- fig3$pM[fig3$varied == "C: vary disease" & fig3$compartment == "Normal" & fig3$isoform == "V165"]
+nrm_c_b <- fig3$pM[fig3$varied == "C: vary disease" & fig3$compartment == "Normal" & fig3$isoform == "V165b"]
+range(nrm_c_a)
+range(nrm_c_b)
+stopifnot(
+  diff(range(nrm_c_a)) / mean(nrm_c_a) < 0.01,
+  diff(range(nrm_c_b)) / mean(nrm_c_b) < 0.02,
+  # Row C, right column: PAD-calf VEGF165b overtakes VEGF165a near a ratio of
+  # 0.3 and rises monotonically with the disease secretion ratio.
+  all(diff(fig3$pM[fig3$varied == "C: vary disease" & fig3$compartment == "Disease" & fig3$isoform == "V165b"]) > 0),
+  pick("C: vary disease", "Disease", "V165b", 0.2) < pick("C: vary disease", "Disease", "V165", 0.2),
+  pick("C: vary disease", "Disease", "V165b", 0.4) > pick("C: vary disease", "Disease", "V165", 0.4),
+  # Row A, left column: normal VEGF165b reaches about 41 pM at a normal ratio of 1.
+  abs(pick("A: vary normal", "Normal", "V165b", 1) / 41 - 1) < 0.1,
+  # Row B, left column: about 26 pM at a blood ratio of 1.
+  abs(pick("B: vary blood", "Normal", "V165b", 1) / 26 - 1) < 0.1,
+  # Row C, middle column: simulated blood VEGF165b stays near 1.37 pM (the
+  # published curve rises from about 1.6 to 1.85 pM; see the Table 1 section).
+  all(abs(fig3$pM[fig3$varied == "C: vary disease" & fig3$compartment == "Blood" & fig3$isoform == "V165b"] / 1.37 - 1) < 0.03)
+)
+```
+
+The normal-tissue column reproduces Figure 3 in all three rows: about 41 pM
+VEGF165b at a normal ratio of 1 (row A), about 26 pM at a blood ratio of 1
+(row B), and no response to the PAD-calf ratio (row C). The PAD-calf column
+reproduces the shapes, including the crossing of VEGF165a and VEGF165b at a
+ratio of about 0.3 (row C), but its VEGF165b curves end 10-20% lower than
+printed. The blood column also runs lower. In row C the published blood
+VEGF165b rises from about 1.6 to 1.85 pM with the PAD-calf ratio, while the
+simulated curve stays near 1.37 pM. This is the same difference as in Table 1.
+
+## Figure 5: tissue VEGF distribution and receptor occupancy
+
+The Results give the main percentages behind Figure 5 in the text. Percentages
+of a ligand are over its free and bound forms in that compartment. For VEGFR1,
+the receptor-coupled `R1:N1` complex is counted under NRP1, as in the Figure 5B
+axis.
+
+```{r fig5}
+frac <- function(pre, target, pool) {
+  v <- unlist(ss[paste0(pre, "_", pool)])
+  100 * ss[[paste0(pre, "_", target)]] / sum(v)
+}
+v165 <- c("V165", "V165_MECM", "V165_MEBM", "V165_MPBM", "V165_R1", "V165_R2",
+          "V165_N1", "V165_R2_N1", "V165_sR1")
+v165b <- c("V165b", "V165b_MECM", "V165b_MEBM", "V165b_MPBM", "V165b_R1",
+           "V165b_R2", "V165b_sR1")
+v121_n <- c("V121", "V121_R1", "V121_R2", "V121_R1_N1", "V121_sR1", "V121_sR1_N1")
+v121_d <- c(v121_n, "R2_V121")
+r1 <- c("R1", "V165_R1", "V165b_R1", "V121_R1", "V121_R1_N1")
+r2_n <- c("R2", "V165_R2", "V165b_R2", "V121_R2", "V165_R2_N1")
+r2_d <- c(r2_n, "R2_V121")
+n1 <- c("N1", "V165_N1", "V121_R1_N1", "R1_N1", "sR1_N1", "V121_sR1_N1", "V165_R2_N1")
+sr1 <- c("sR1", "sR1_MECM", "sR1_MEBM", "sR1_MPBM", "V165_sR1", "V165b_sR1",
+         "V121_sR1", "sR1_N1", "V121_sR1_N1")
+
+fig5 <- data.frame(
+  Quantity = c(
+    "PAD calf VEGF165a bound to ECM", "PAD calf VEGF165a bound to PBM",
+    "PAD calf VEGF165b bound to ECM", "PAD calf VEGF165b bound to PBM",
+    "PAD calf VEGF121 as VEGF121:R1:N1", "Normal VEGF121 as VEGF121:R1:N1",
+    "Normal VEGFR1 as VEGF121:R1:N1", "Normal VEGFR2 as VEGF165a:R2:N1",
+    "PAD calf VEGFR2 as VEGF165a:R2:N1", "PAD calf NRP1 as R1:N1",
+    "PAD calf sVEGFR1 bound to ECM", "PAD calf sVEGFR1 bound to EBM",
+    "PAD calf sVEGFR1 bound to PBM"
+  ),
+  Published = c(55, 17, 62, 20, 48, 51, 33, 49, 20, 18, 62, 15, 19),
+  Simulated = c(
+    frac("dis", "V165_MECM", v165), frac("dis", "V165_MPBM", v165),
+    frac("dis", "V165b_MECM", v165b), frac("dis", "V165b_MPBM", v165b),
+    frac("dis", "V121_R1_N1", v121_d), frac("nrm", "V121_R1_N1", v121_n),
+    frac("nrm", "V121_R1_N1", r1), frac("nrm", "V165_R2_N1", r2_n),
+    frac("dis", "V165_R2_N1", r2_d), frac("dis", "R1_N1", n1),
+    frac("dis", "sR1_MECM", sr1), frac("dis", "sR1_MEBM", sr1),
+    frac("dis", "sR1_MPBM", sr1)
+  )
+)
+fig5$Simulated <- round(fig5$Simulated, 1)
+fig5 |>
+  dplyr::rename("Published (%)" = Published, "Simulated (%)" = Simulated) |>
+  knitr::kable(caption = "Replicates the Figure 5 percentages quoted in the Chu 2016 Results.")
+# Deterministic: no random draws, so the comparison is tight.
+stopifnot(all(abs(fig5$Simulated - fig5$Published) < 2))
+```
+
+All 13 percentages quoted in the text are reproduced to within 2 percentage
+points. These are steady-state ratios within each tissue compartment, so they
+do not depend on the blood-side difference seen in Table 1.
+
+## Assumptions and deviations
+
+* **The SBML export is the model.** Where the export and the printed tables
+  differ, the export is used, because it is what the authors simulated. The
+  differences are:
+  - Table 3 receptor densities (normal EC: 3,750 VEGFR1, 300 VEGFR2, 20,000
+    NRP1; disease: 0, 0 and 34,500) are not the export's values. The export
+    uses 550 / 350 / 17,500 per normal-tissue endothelial cell and 3,750 / 300 /
+    20,000 in PAD calf, on both the abluminal and luminal sides. The Table 3
+    values reproduce Table 1 much worse (normal VEGF121 0.46 instead of
+    2.4 pM).
+  - VEGF-GAG binding uses `koff = 6.9e-4 1/s` with `Kd = 23.8 nM`
+    (`kon = 2.9e4 1/M/s`). Table 4 prints `kon = 4e5`, `koff = 1e-2` and a Kd of
+    "23.8 pM". With `kon = 4e5` and `koff = 1e-2` the Kd is 25 nM, so the printed
+    pM is a unit slip for nM.
+  - The PAD-calf sVEGFR1 permeability is `1.5e-7 cm/s` (Table 5 prints
+    `3.0e-7`). VEGF:sVEGFR1 complexes clear from plasma at the sVEGFR1 rate
+    `5e-6 1/s` (Table 5 prints `3.0e-4`). VEGF165b:alpha-2-macroglobulin-fast
+    complexes clear at the slow `c_a2M` rate.
+  - Endothelial cells secrete 0.031 molecules/cell/s of VEGF165 plus
+    0.00344 of VEGF121. The Results text describes 0.031 as the endothelial
+    total including 10% VEGF121, which would give 0.0279 + 0.0031; that split
+    matches Table 1 worse.
+  - alpha-2-macroglobulin synthesis is `6.2776e-14 mol/cm3/s`
+    (3.78e10 molecules/cm3/s). Table 5 prints 3.5e10.
+  - Receptor internalization and insertion rates (`k_int`, `k_int_L`, `sR`,
+    `sR_L` = 2.8e-4 1/s), lymph flow and the normal-tissue and blood geometry
+    are not printed in the paper. They are taken from the export.
+* **Redundant receptor reactions are kept.** Besides the mass-action binding,
+  coupling and internalization reactions, the export has a set of
+  `Normal_Abluminal_*` and `Diseased_Abluminal_*` reactions. These repeat some
+  of the same rate terms (for example a second internalization of VEGF165:R1)
+  and also carry the abluminal receptor insertion. Removing the duplicates moves
+  normal-tissue VEGF165a from 4.59 to 3.16 pM, away from Table 1 (4.591 pM).
+  This shows the authors' simulation included them, so they are kept.
+* **Quirks of the export are kept as they are.** VEGF121:VEGFR2 in PAD calf is
+  formed as `dis_V121_R2` but internalized from a separate, never-formed
+  species `dis_R2_V121`. An orphan `dis_R1_N2` (always zero) feeds
+  `dis_V121_R1_N2`. Both are inert or near-inert, and both are translated
+  faithfully.
+* **Excluded parts of the export.** The export also contains an unpublished
+  anti-VEGF165b antibody arm: 34 reactions, its drug and complex species, and
+  bevacizumab-derived parameters that the paper neither prints nor uses. With no
+  dosing those species stay at zero. The arm is left out of the packaged model.
+  Also left out are the output rule `hVEGF_free_dis_ug_per_ml`, whose fixed
+  scale factor is not a valid conversion to ug/mL, and the 22 export species
+  that no reaction touches.
+* **Time unit.** The export works in seconds. The packaged model works in hours:
+  every mass balance is multiplied by 3600, and rate constants keep their
+  per-second values.
+* **Blood-compartment and PAD-calf VEGF165b / VEGF121 levels** sit 9-26% below
+  Table 1 and Figure 3 (see the Table 1 section). They were not tuned.
+* **Mouse model not included.** The paper also simulates a mouse hindlimb
+  ischemia version (Figure 6). It is built by swapping in mouse geometric
+  parameters for all three compartments. Table 2 prints only the mouse calf
+  geometry; the normal-tissue and blood geometry come from Finley 2013 (Front
+  Oncol 3:196) and Yen 2011 (PLoS One 6:e27514), and no mouse model export is
+  supplied. Only the human model is packaged here.
