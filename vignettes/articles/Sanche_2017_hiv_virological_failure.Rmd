@@ -1,0 +1,1078 @@
+---
+title: "HIV virological failure with efavirenz, tenofovir/emtricitabine and darunavir/ritonavir (Sanche 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{HIV virological failure with efavirenz, tenofovir/emtricitabine and darunavir/ritonavir (Sanche 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Sanche et al. (2017) predict virological failure, with and without resistance
+mutations, for patients who take their antiretrovirals irregularly. Their
+quantitative systems pharmacology (QSP) model chains four parts:
+
+1. **Adherence.** A two-state Markov chain decides whether each once-daily dose
+   is taken. It has two parameters: the overall adherence level and the
+   probability of taking a dose after a missed one (PIM), which sets how long
+   the drug holidays are.
+2. **Pharmacokinetics.** Published population PK models for efavirenz,
+   tenofovir, emtricitabine and darunavir (boosted with ritonavir).
+3. **Drug effect in lymph-node CD4+ T cells.** For strain *i* and drug *j*,
+   the fraction of single-cycle infections the drug does not block is
+   $U_{ij} = 1 / (1 + (C_j / (\rho_{ij} IC^0_{50,j} k_{p,j} k_{l,j}))^{m_j (1 + \sigma_{ij})})$.
+   The factor $k_p$ corrects the protein-free $IC_{50}$ for plasma protein
+   binding. The factor $k_l$ is the ratio of PBMC to lymph-node-cell drug
+   concentrations, so it carries the paper's central hypothesis: drug
+   penetrates poorly into lymph nodes. For the three-drug regimen the
+   single-drug effects are combined between Bliss independence and Loewe
+   additivity, using the Jilek 2012 degree of independence (DI).
+4. **Viral dynamics.** Productively infected cells of each strain, with a
+   1-day eclipse period between infection and virus production, latent-reservoir
+   activation and de novo mutation.
+
+The authors ran part 4 as a **stochastic tau-leap** in MATLAB: every 0.1 h
+they drew Poisson counts of reservoir activations, infected-cell deaths, new
+infections and new mutations. Resistance emerges only when a rare mutant
+(present at a frequency of 1e-6 to 1e-5) survives chance extinction, and a
+deterministic model cannot represent that. The supplement prints the
+expected-value (mean-field) form of the scheme as a delay differential
+equation (DDE). This package ships both forms:
+
+| File | Form | Regimen |
+|---|---|---|
+| `Sanche_2017_efavirenz_tenofovir_emtricitabine_qsp` | DDE (mean-field) | efavirenz monotherapy, or efavirenz + tenofovir DF + emtricitabine |
+| `Sanche_2017_efavirenz_tenofovir_emtricitabine_qsp_tauleap` | stochastic tau-leap | same |
+| `Sanche_2017_darunavir_qsp` | DDE (mean-field) | darunavir/ritonavir monotherapy |
+| `Sanche_2017_darunavir_qsp_tauleap` | stochastic tau-leap | same |
+
+The efavirenz-family files carry 16 viral strains: wild type, the five
+mutations the paper names (K103N, Y181C, G190S, M184V, K65R) and their ten
+pairwise double mutants. A regimen is chosen by dosing: efavirenz alone into
+`depot` gives efavirenz monotherapy. Adding tenofovir into `depot_tfv` and
+emtricitabine into `depot_ftc` gives the triple combination. The combination
+rule reduces exactly to the single-drug Hill curve when only one drug is
+present. The darunavir files carry the wild type only, because the paper
+modelled no darunavir resistance.
+
+The tau-leap files draw their random numbers from an MRG32k3a generator that
+the model carries in six states (`mrg1`..`mrg6`). The generator is seeded per
+subject through `mrg_seed1`..`mrg_seed6`. rxode2's own random-number functions
+cannot drive these dynamics, because they return zero while the system is
+being solved. The model schedules its own leaps, so each solve adds one output
+row per leap. Solve with `maxExtra = 0L` and `method = "lsoda"`. With the
+default `liblsoda`, the step count accumulates across the model-scheduled
+intervals, and `maxsteps` eventually stops the solve.
+
+```{r models}
+mod_names <- c(
+  efv_dde = "Sanche_2017_efavirenz_tenofovir_emtricitabine_qsp",
+  efv_tau = "Sanche_2017_efavirenz_tenofovir_emtricitabine_qsp_tauleap",
+  drv_dde = "Sanche_2017_darunavir_qsp",
+  drv_tau = "Sanche_2017_darunavir_qsp_tauleap"
+)
+ui <- lapply(mod_names, function(n) suppressWarnings(rxode2::rxode(readModelDb(n))))
+# compartment numbers used by the in-model delayed-arrival events
+stopifnot(
+  identical(
+    rxode2::rxModelVars(ui$efv_tau$simulationModel)$state[9:24],
+    paste0("inf_", c(
+      "wt", "k103n", "y181c", "g190s", "m184v", "k65r", "k103n_y181c", "k103n_g190s",
+      "k103n_m184v", "k103n_k65r", "y181c_g190s", "y181c_m184v", "y181c_k65r",
+      "g190s_m184v", "g190s_k65r", "m184v_k65r"
+    ))
+  ),
+  identical(rxode2::rxModelVars(ui$drv_tau$simulationModel)$state[4], "inf_wt")
+)
+```
+
+# Population
+
+No patient data were fitted. Every parameter comes from an independent source.
+The virtual patients are built as follows:
+
+- **Setpoint viral load** follows the Rosenbloom 2012 setpoint distribution
+  (Suppl. Fig. 2a; log10 bins of width 0.5 between 1.5 and 6.5, bin
+  midpoints).
+- **Infection phase** decides the basic reproduction number. The log viral
+  expansion rate is $\ln r \sim N(-0.07, 0.44^2)$ in the acute phase and
+  $N(-0.78, 0.52^2)$ in the chronic phase, and
+  $R_0 = (1 + r/d_y) e^{r\tau}$. The clinical comparison assumes 90% of
+  patients are in the chronic phase.
+- **Drug susceptibility.** $IC^0_{50}$ is log-normal per patient
+  (Table S2).
+- **Pharmacokinetic variability** comes from the population PK models.
+- **Adherence.** Patients are grouped by adherence level (10-100%), with
+  the PIM drawn within each level from the weights in Table S1.
+
+The modelled outcome is the number of productively infected cells per strain.
+The viral load is this number divided by 1,500, the factor the authors'
+MATLAB code uses (3 L of plasma, 2 RNA copies per virion).
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Efavirenz PK: ka, CL/F, V/F; IIV | 0.3 1/h, 9.61 L/h, 291 L; 0.437, 1.01 | Supplement 'Summary of parameter values' (Sanchez 2011 base model) |
+| Tenofovir PK: ka, CL/F, V1, V2, Q; IIV CL, V1, V2 | 0.822 1/h, 42.1 L/h, 224 L, 512 L, 175 L/h; 0.359, 0.794, 0.417 | Supplement (Baheti 2011) |
+| Emtricitabine PK: ka, CL/F, V1, V2, Q; IIV CL; CrCL exponent | 0.53 1/h, 15.1 L/h, 42.3 L, 55.4 L, 5.75 L/h; 0.174; 0.278 | Supplement (Blum 2007 as cited) |
+| Darunavir PK: ka, CL/F, V1, V2, Q; IIV CL, V1, V2 | 0.3 1/h, 10.7 L/h, 36.9 L, 1130 L, 21.3 L/h; 0.318, 0.589, 0.821 | Supplement (Molto 2013) |
+| kp (EFV, TFV, FTC, DRV) | 27, 1, 1, 14 | Table S2 |
+| kl (EFV, TFV, FTC, DRV) | 16.7, 5.0, 2.9, 100 | Table S2 |
+| log IC50 mean, SD (EFV, TFV, FTC, DRV) | -7.49/0.41, -1.79/0.82, -4.98/0.96, -6.28/0.3 | Table S2 |
+| Hill slope m (EFV, TDF, FTC, DRV/r) | 1.69, 0.97, 1.20, 3.55 | Rosenbloom 2012 Suppl. Table 1 (Supplement: 'most parameter values were taken from Rosenbloom') |
+| DI (EFV+TDF, EFV+FTC, TDF+FTC) | 0.46, 0.71, 0.33 | Supplement (Jilek 2012) |
+| Fitness cost s, mutation probability u | K103N 0.3/1.5e-6; Y181C 0.26/1.1e-5; G190S 0.79/2.2e-5; M184V 0.46/1.1e-5; K65R 0.41/1.1e-5 | Rosenbloom 2012 Suppl. Table 3 |
+| IC50 fold-change rho / slope change sigma | K103N-EFV 85/-0.17; Y181C-EFV 2.6/-0.11; G190S-EFV 70/-0.40; M184V-FTC 1186/-0.49, -TDF 3.0/-0.27; K65R-FTC 29/-0.04, -TDF 43/0.00 | Rosenbloom 2012 Suppl. Table 3 |
+| Double mutants: rho, sigma, fitness | product of rho; mean of sigma; midpoint of min and product of (1 - s) | Supplement 'Adapting the model for cross-resistance' |
+| Eclipse period tau; dy | 1 day; 1 per day | Supplement 'Eclipse Period'; main text Methods |
+| Reservoir activation | 3,000 cells/day, split by the expected strain fractions | Main text Eq. (4); Supplement 'Simulating viral kinetics' |
+| Expected strain fractions | weight 1 (wild type), u/s (single), u_a u_b / s_ab (double), normalised | Authors' deposited MATLAB input file (reproduces its `Ax` exactly) |
+| lambda | setpoint x dy x R0 / (R0 - 1) | Rosenbloom 2012 Suppl. section 1.2; reproduced on the deposited input file |
+| R0 from ln r | acute N(-0.07, 0.44^2), chronic N(-0.78, 0.52^2) | Supplement Eq. for R0 and 'Inter-individual variability' |
+| Delay ODE | dy_i/dt = A_i - d_y y_i + d_y lambda R_i(t - tau) y_i(t - tau) / (lambda + d_y sum_j R_j(t - tau) y_j(t - tau)) | Supplement boxed equation |
+| Tau-leap expectations | E[deaths] = y(1 - exp(-dy dt)); E[infections] = dt x (rightmost term of the DDE); E[mutations] = u x infections; E[activations] = A_i dt | Main text Eqs. (1)-(4); MATLAB code |
+| Tau-leap step | 0.1 h | Supplement 'Algorithm for the final model' |
+
+# Helper code: an independent drug-effect implementation and an R tau-leap
+
+The code below reimplements, in plain R, the parts the validation checks
+against:
+
+- **Drug effect.** The Bliss/Loewe/DI combination.
+- **Adherence.** The two-state Markov chain.
+- **Tau-leap.** The full scheme, with two draw modes. In `mrg` mode it consumes
+  each subject's MRG32k3a stream in exactly the model's order, so its
+  trajectories must equal the packaged file's cell for cell. In `rpois` mode
+  it draws with R's own generator. That mode is fast enough for the
+  population-scale reproductions of the paper's figures, which would take tens
+  of minutes with the rxode2 file at the authors' step.
+
+```{r helpers}
+# ---- Strain and mutation tables (Rosenbloom 2012 Suppl. Table 3) ----
+mut_tab <- data.frame(
+  mut = c("k103n", "y181c", "g190s", "m184v", "k65r"),
+  s = c(0.3, 0.26, 0.79, 0.46, 0.41),
+  u = c(1.5e-6, 1.1e-5, 2.2e-5, 1.1e-5, 1.1e-5),
+  rho_efv = c(85, 2.6, 70, 1, 1), sigma_efv = c(-0.17, -0.11, -0.40, 0, 0),
+  rho_tfv = c(1, 1, 1, 3.0, 43), sigma_tfv = c(0, 0, 0, -0.27, 0.00),
+  rho_ftc = c(1, 1, 1, 1186, 29), sigma_ftc = c(0, 0, 0, -0.49, -0.04)
+)
+strain_muts <- c(list(character()), as.list(mut_tab$mut), utils::combn(mut_tab$mut, 2, simplify = FALSE))
+strain_names <- vapply(strain_muts, function(m) if (length(m)) paste(m, collapse = "_") else "wt", "")
+strain_row <- function(m) {
+  mt <- mut_tab[match(m, mut_tab$mut), ]
+  fit <- if (!length(m)) 1 else if (length(m) == 1) 1 - mt$s else (min(1 - mt$s) + prod(1 - mt$s)) / 2
+  w <- if (!length(m)) 1 else if (length(m) == 1) mt$u / mt$s else prod(mt$u) / (1 - fit)
+  q <- max(length(m), 1)
+  data.frame(
+    fit = fit, w = w,
+    rho_efv = prod(mt$rho_efv), sigma_efv = sum(mt$sigma_efv) / q,
+    rho_tfv = prod(mt$rho_tfv), sigma_tfv = sum(mt$sigma_tfv) / q,
+    rho_ftc = prod(mt$rho_ftc), sigma_ftc = sum(mt$sigma_ftc) / q
+  )
+}
+strain_tab <- do.call(rbind, lapply(strain_muts, strain_row))
+strain_tab$strain <- strain_names
+strain_tab$f <- strain_tab$w / sum(strain_tab$w)
+# transitions in the model's draw order: wild type -> single, then single -> double
+trans_from_single <- function(a) {
+  x <- setdiff(mut_tab$mut, a)
+  to <- vapply(x, function(b) paste(mut_tab$mut[sort(match(c(a, b), mut_tab$mut))], collapse = "_"), "")
+  data.frame(from = a, to = to, mut = x)
+}
+trans_tab <- rbind(
+  data.frame(from = "wt", to = mut_tab$mut, mut = mut_tab$mut),
+  do.call(rbind, lapply(mut_tab$mut, trans_from_single))
+)
+trans_tab$u <- mut_tab$u[match(trans_tab$mut, mut_tab$mut)]
+trans_tab$i_from <- match(trans_tab$from, strain_names)
+trans_tab$i_to <- match(trans_tab$to, strain_names)
+
+drug_tab <- data.frame(
+  drug = c("efv", "tfv", "ftc"), kp = c(27, 1, 1), hill = c(1.69, 0.97, 1.20)
+)
+di_pair <- c(efv_tfv = 0.46, efv_ftc = 0.71, tfv_ftc = 0.33)
+
+# ---- Independent drug-effect implementation ----
+softplus <- function(v) ifelse(v > 30, v, log1p(exp(v)))
+# Fraction of infections unaffected for strain i. logc: list of log concentrations
+# (mg/L; -Inf when a drug is absent); lic50: list of individual log IC50s; kl: named.
+effect_strain <- function(i, logc, lic50, kl = c(efv = 16.7, tfv = 5.0, ftc = 2.9)) {
+  z <- list()
+  nn <- numeric(3)
+  for (j in 1:3) {
+    d <- drug_tab$drug[j]
+    nn[j] <- drug_tab$hill[j] * (1 + strain_tab[[paste0("sigma_", d)]][i])
+    z[[j]] <- nn[j] * (logc[[d]] - log(strain_tab[[paste0("rho_", d)]][i]) - lic50[[d]] -
+      log(drug_tab$kp[j]) - log(kl[[d]]))
+  }
+  # Bliss independence on the log-odds scale
+  sb <- softplus(z[[1]]) + softplus(z[[2]]) + softplus(z[[3]])
+  ub <- ifelse(sb > 30, sb, log(expm1(sb)))
+  # Loewe additivity: Newton iteration from the largest single-drug root
+  xl <- pmax(z[[1]], z[[2]], z[[3]])
+  none <- !is.finite(xl)
+  xl[none] <- 0
+  for (it in 1:100) {
+    e1 <- exp((z[[1]] - xl) / nn[1])
+    e2 <- exp((z[[2]] - xl) / nn[2])
+    e3 <- exp((z[[3]] - xl) / nn[3])
+    dx <- (e1 + e2 + e3 - 1) / (e1 / nn[1] + e2 / nn[2] + e3 / nn[3])
+    dx[none] <- 0
+    xl <- xl + dx
+    if (max(abs(dx) / (1 + abs(xl))) < 1e-10) break
+  }
+  # degree of independence weighted by the single-drug affected fractions (Jilek 2012)
+  f1 <- plogis(z[[1]])
+  f2 <- plogis(z[[2]])
+  f3 <- plogis(z[[3]])
+  wsum <- f1 * f2 + f1 * f3 + f2 * f3
+  dic <- ifelse(wsum > 0, (f1 * f2 * di_pair[["efv_tfv"]] + f1 * f3 * di_pair[["efv_ftc"]] +
+    f2 * f3 * di_pair[["tfv_ftc"]]) / pmax(wsum, 1e-300), 0)
+  ifelse(none, 1, plogis(-(xl + dic * (ub - xl))))
+}
+
+# ---- Adherence: two-state Markov chain of dose intake ----
+adherence_pattern <- function(n_dose, p, q, first_taken = FALSE) {
+  if (p >= 1) {
+    return(rep(1L, n_dose))
+  }
+  stay <- 1 - q * (1 - p) / p
+  x <- integer(n_dose)
+  x[1] <- if (first_taken) 1L else as.integer(stats::runif(1) < p)
+  for (j in seq_len(n_dose)[-1]) {
+    x[j] <- as.integer(stats::runif(1) < if (x[j - 1] == 1L) stay else q)
+  }
+  x
+}
+
+# ---- MRG32k3a, vectorised over subjects; same recurrence as the model file ----
+mrg_next <- function(g) {
+  r <- g$r
+  p1 <- 1403580 * r[, 2] - 810728 * r[, 1]
+  p1 <- p1 - 4294967087 * floor(p1 / 4294967087)
+  p2 <- 527612 * r[, 6] - 1370589 * r[, 4]
+  p2 <- p2 - 4294944443 * floor(p2 / 4294944443)
+  g$r <- cbind(r[, 2], r[, 3], p1, r[, 5], r[, 6], p2)
+  ifelse(p1 > p2, p1 - p2, p1 - p2 + 4294967087) * 2.328306549295727688e-10
+}
+# Poisson count by inversion of one uniform, normal approximation above a mean of 100
+pois_inv <- function(u, mu) {
+  out <- numeric(length(mu))
+  small <- mu > 0 & mu <= 100
+  big <- mu > 100
+  out[small] <- stats::qpois(u[small], mu[small])
+  out[big] <- pmax(0, floor(mu[big] + sqrt(mu[big]) * stats::qnorm(u[big]) + 0.5))
+  out
+}
+# One Poisson draw per element of the N x S mean matrix, column by column
+draw_counts <- function(mu, g) {
+  out <- matrix(0, nrow(mu), ncol(mu))
+  if (is.null(g)) {
+    big <- mu > 100
+    if (any(!big)) out[!big] <- stats::rpois(sum(!big), mu[!big])
+    if (any(big)) out[big] <- pmax(0, floor(mu[big] + sqrt(mu[big]) * stats::rnorm(sum(big)) + 0.5))
+  } else {
+    for (j in seq_len(ncol(mu))) out[, j] <- pois_inv(mrg_next(g), mu[, j])
+  }
+  out
+}
+
+# ---- Tau-leap reimplementation: same scheme and draw order as the model file ----
+# rx_get(src, k) returns the N x S matrix of R_i at leap k. g = NULL draws with
+# rpois()/rnorm(); otherwise g is an environment holding per-subject MRG32k3a states.
+tauleap_r <- function(rx_get, src, par, K, g = NULL, record = integer()) {
+  N <- length(par$y0tot)
+  S <- length(par$f)
+  dt <- 1 / par$nld
+  ntr <- if (S > 1) nrow(trans_tab) else 0
+  fmat <- matrix(par$f, N, S, byrow = TRUE)
+  buf <- array(0, c(N, S, par$ntau + 1))
+  rec <- list()
+  y <- matrix(par$y0tot, N, S) * fmat
+  for (k in 0:(K - 1)) {
+    if (k %in% record) rec[[as.character(k)]] <- y
+    rk <- rx_get(src, k)
+    npre <- 0
+    if (k == 0) {
+      y <- draw_counts(matrix(par$y0tot, N, S) * fmat, g)
+      npre <- par$ntau
+    }
+    nres <- draw_counts(par$atot * fmat * dt, g)
+    ndth <- pmin(draw_counts(y * (1 - exp(-par$dy * dt)), g), y)
+    for (ip in 0:npre) {
+      rs <- if (ip < npre) {
+        (1 - par$start_suppressed) * outer(par$r0, par$fit) + par$start_suppressed * rk
+      } else {
+        rk
+      }
+      sden <- par$lambda + par$dy * rowSums(rs * y)
+      ninf <- draw_counts(dt * par$dy * par$lambda * rs * y / sden, g)
+      narr <- ninf
+      if (ntr > 0) {
+        nm <- draw_counts(ninf[, trans_tab$i_from, drop = FALSE] * matrix(trans_tab$u, N, ntr, byrow = TRUE), g)
+        from <- matrix(0, N, S)
+        to <- matrix(0, N, S)
+        for (j in seq_len(ntr)) {
+          from[, trans_tab$i_from[j]] <- from[, trans_tab$i_from[j]] + nm[, j]
+          to[, trans_tab$i_to[j]] <- to[, trans_tab$i_to[j]] + nm[, j]
+        }
+        narr <- ninf - pmin(from, ninf) + to
+      }
+      # first state index that includes these newly producing cells
+      m <- if (ip < npre) ip + 1 else k + par$ntau + 1
+      if (m <= K) {
+        slot <- (m %% (par$ntau + 1)) + 1
+        buf[, , slot] <- buf[, , slot] + narr
+      }
+    }
+    slot <- ((k + 1) %% (par$ntau + 1)) + 1
+    y <- y + nres - ndth + buf[, , slot]
+    buf[, , slot] <- 0
+  }
+  if (K %in% record) rec[[as.character(K)]] <- y
+  list(y = y, rec = rec)
+}
+rx_from_list <- function(src, k) src[[k + 1]]
+
+# ---- Virtual cohorts ----
+# PK helper: the PK blocks of the packaged models without the viral part
+pk_helper <- rxode2::rxode2({
+  d / dt(depot) <- -ka * depot
+  d / dt(central) <- ka * depot - cl / vc * central
+  d / dt(depot_tfv) <- -ka_tfv * depot_tfv
+  d / dt(central_tfv) <- ka_tfv * depot_tfv - (cl_tfv + q_tfv) / vc_tfv * central_tfv + q_tfv / vp_tfv * peripheral1_tfv
+  d / dt(peripheral1_tfv) <- q_tfv / vc_tfv * central_tfv - q_tfv / vp_tfv * peripheral1_tfv
+  d / dt(depot_ftc) <- -ka_ftc * depot_ftc
+  d / dt(central_ftc) <- ka_ftc * depot_ftc - (cl_ftc + q_ftc) / vc_ftc * central_ftc + q_ftc / vp_ftc * peripheral1_ftc
+  d / dt(peripheral1_ftc) <- q_ftc / vc_ftc * central_ftc - q_ftc / vp_ftc * peripheral1_ftc
+  d / dt(depot_drv) <- -ka_drv * depot_drv
+  d / dt(central_drv) <- ka_drv * depot_drv - (cl_drv + q_drv) / vc_drv * central_drv + q_drv / vp_drv * peripheral1_drv
+  d / dt(peripheral1_drv) <- q_drv / vc_drv * central_drv - q_drv / vp_drv * peripheral1_drv
+  c_efv <- central / vc
+  c_tfv <- central_tfv / vc_tfv
+  c_ftc <- central_ftc / vc_ftc
+  c_drv <- central_drv / vc_drv
+})
+pk_params <- function(coh) {
+  data.frame(
+    id = coh$id,
+    ka = 0.3 * 24, cl = 9.61 * exp(0.437 * coh$zcl) * 24, vc = 291 * exp(1.01 * coh$zvc),
+    ka_tfv = 0.822 * 24, cl_tfv = 42.1 * exp(coh$etalcl_tfv) * 24, vc_tfv = 224 * exp(coh$etalvc_tfv),
+    vp_tfv = 512 * exp(coh$etalvp_tfv), q_tfv = 175 * 24,
+    ka_ftc = 0.53 * 24, cl_ftc = 15.1 * exp(coh$etalcl_ftc) * (coh$crcl / 104.5)^0.278 * 24,
+    vc_ftc = 42.3, vp_ftc = 55.4, q_ftc = 5.75 * 24,
+    ka_drv = 0.3 * 24, cl_drv = 10.7 * exp(0.318 * coh$zcl) * 24, vc_drv = 36.9 * exp(0.589 * coh$zvc),
+    vp_drv = 1130 * exp(coh$etalvp), q_drv = 21.3 * 24
+  )
+}
+# Table S1: PIM weights per adherence level (10-90 %)
+pim_weights <- matrix(c(
+  0.800, 0.267, 0.160, 0.114, 0.089, 0.050, 0.042, 0.024, 0.021,
+  0.200, 0.267, 0.160, 0.114, 0.089, 0.050, 0.042, 0.024, 0.021,
+  0, 0.267, 0.160, 0.114, 0.089, 0.050, 0.042, 0.024, 0.021,
+  0, 0.150, 0.160, 0.114, 0.089, 0.050, 0.042, 0.024, 0.021,
+  0, 0.050, 0.160, 0.114, 0.089, 0.050, 0.042, 0.024, 0.021,
+  0, 0, 0.150, 0.114, 0.089, 0.050, 0.042, 0.024, 0.021,
+  0, 0, 0.025, 0.114, 0.089, 0.050, 0.042, 0.024, 0.021,
+  0, 0, 0.025, 0.150, 0.089, 0.050, 0.042, 0.024, 0.021,
+  0, 0, 0, 0.010, 0.089, 0.050, 0.042, 0.024, 0.021,
+  0, 0, 0, 0.010, 0.150, 0.050, 0.042, 0.024, 0.021,
+  0, 0, 0, 0.010, 0.005, 0.050, 0.042, 0.024, 0.021,
+  0, 0, 0, 0.010, 0.005, 0.140, 0.042, 0.024, 0.021,
+  0, 0, 0, 0.010, 0.005, 0.039, 0.042, 0.024, 0.021,
+  0, 0, 0, 0, 0.005, 0.039, 0.140, 0.024, 0.021,
+  0, 0, 0, 0, 0.005, 0.039, 0.052, 0.024, 0.021,
+  0, 0, 0, 0, 0.005, 0.039, 0.052, 0.490, 0.021,
+  0, 0, 0, 0, 0.005, 0.039, 0.052, 0.038, 0.021,
+  0, 0, 0, 0, 0.005, 0.039, 0.052, 0.038, 0.490,
+  0, 0, 0, 0, 0.005, 0.039, 0.052, 0.038, 0.075,
+  0, 0, 0, 0, 0.005, 0.039, 0.052, 0.038, 0.075
+), ncol = 9, byrow = TRUE, dimnames = list(seq(5, 100, by = 5), seq(10, 90, by = 10)))
+# Setpoint viral load: Rosenbloom 2012 Suppl. Fig. 2a, digitised (log10 bins of width 0.5)
+setpoint_bins <- data.frame(
+  log10_mid = seq(1.75, 6.25, by = 0.5),
+  freq = c(0.0051, 0.0081, 0.0797, 0.0916, 0.1348, 0.1679, 0.2172, 0.1946, 0.1051, 0.0041)
+)
+draw_pim <- function(p) {
+  if (p >= 1) {
+    return(NA_real_)
+  }
+  w <- pim_weights[, as.character(round(100 * p))]
+  as.numeric(sample(names(w), 1, prob = w)) / 100
+}
+make_cohort <- function(levels, n_per_level, start_suppressed, n_days, acute_frac = 0.1) {
+  n <- length(levels) * n_per_level
+  coh <- data.frame(id = seq_len(n), adherence = rep(levels, each = n_per_level))
+  coh$pim <- vapply(coh$adherence, draw_pim, 0)
+  coh$acute <- stats::runif(n) < acute_frac
+  coh$hiv_vload <- 10^sample(setpoint_bins$log10_mid, n, replace = TRUE, prob = setpoint_bins$freq)
+  coh$crcl <- 104.5 * exp(stats::rnorm(n, 0, 0.34))
+  sds <- c(
+    zcl = 1, zvc = 1, etalvp = 0.821, etalcl_tfv = 0.359, etalvc_tfv = 0.794, etalvp_tfv = 0.417,
+    etalcl_ftc = 0.174, etalic50_efv = 0.41, etalic50_tfv = 0.82, etalic50_ftc = 0.96, etalic50_drv = 0.3, etalr = 1
+  )
+  for (nm in names(sds)) coh[[nm]] <- stats::rnorm(n, 0, sds[[nm]])
+  coh$doses <- lapply(seq_len(n), function(i) adherence_pattern(n_days, coh$adherence[i], coh$pim[i], start_suppressed == 1))
+  coh
+}
+# PK on the leap grid; doses on taken days, a steady-state first dose for a suppressed start
+cohort_pk <- function(coh, regimen, start_suppressed, n_days, nld) {
+  cmts <- switch(regimen, efv = "depot", triple = c("depot", "depot_tfv", "depot_ftc"), drv = "depot_drv")
+  amts <- switch(regimen, efv = 600, triple = c(600, 135.6, 200), drv = 800)
+  dd <- do.call(rbind, lapply(seq_len(nrow(coh)), function(i) {
+    d <- which(coh$doses[[i]] == 1) - 1
+    if (length(d)) data.frame(id = coh$id[i], time = d) else NULL
+  }))
+  ev <- do.call(rbind, lapply(seq_along(cmts), function(j) {
+    data.frame(dd, amt = amts[j], cmt = cmts[j], evid = 1L,
+      ss = as.integer(start_suppressed == 1 & dd$time == 0), ii = ifelse(start_suppressed == 1 & dd$time == 0, 1, 0))
+  }))
+  K <- n_days * nld
+  obs <- data.frame(id = rep(coh$id, each = K), time = rep((0:(K - 1)) / nld, nrow(coh)),
+    amt = 0, cmt = NA_character_, evid = 0L, ss = 0L, ii = 0)
+  ev <- rbind(ev, obs)
+  ev <- ev[order(ev$id, ev$time, -ev$evid), ]
+  # lsoda with hmax = 1 day: liblsoda returns NaN late in a long drug holiday once the
+  # concentration has decayed by hundreds of orders of magnitude
+  s <- rxode2::rxSolve(pk_helper, ev, params = pk_params(coh), returnType = "data.frame",
+    method = "lsoda", hmax = 1)
+  lapply(c(efv = "c_efv", tfv = "c_tfv", ftc = "c_ftc", drv = "c_drv"), function(v) {
+    pmax(matrix(s[[v]], nrow(coh), K, byrow = TRUE), 0)
+  })
+}
+rx_from_cohort <- function(src, k) {
+  b0 <- (k %/% src$block) * src$block
+  if (src$start != b0) {
+    cols <- (b0 + 1):min(b0 + src$block, src$K)
+    if (src$regimen == "drv") {
+      cc <- src$pk$drv[, cols, drop = FALSE]
+      u <- 1 / (1 + (cc / (exp(-6.28 + src$coh$etalic50_drv) * 14 * src$kl[["drv"]]))^3.55)
+      src$r <- array(u * src$r0, c(nrow(cc), length(cols), 1))
+    } else {
+      logc <- lapply(src$pk[c("efv", "tfv", "ftc")], function(m) log(as.vector(m[, cols])))
+      lic <- list(
+        efv = rep(-7.49 + src$coh$etalic50_efv, length(cols)),
+        tfv = rep(-1.79 + src$coh$etalic50_tfv, length(cols)),
+        ftc = rep(-4.98 + src$coh$etalic50_ftc, length(cols))
+      )
+      arr <- array(0, c(nrow(src$coh), length(cols), nrow(strain_tab)))
+      for (i in seq_len(nrow(strain_tab))) {
+        arr[, , i] <- effect_strain(i, logc, lic, src$kl) * src$r0 * strain_tab$fit[i]
+      }
+      src$r <- arr
+    }
+    src$start <- b0
+  }
+  matrix(src$r[, k - b0 + 1, ], nrow(src$coh))
+}
+# Run one cohort; returns viral load and mutant fraction at the evaluation days
+run_cohort <- function(coh, regimen, start_suppressed, n_days, nld, eval_days, kl) {
+  N <- nrow(coh)
+  S <- if (regimen == "drv") 1 else nrow(strain_tab)
+  rg <- exp(ifelse(coh$acute, -0.07 + 0.44 * coh$etalr, -0.78 + 0.52 * coh$etalr))
+  r0 <- (1 + rg) * exp(rg)
+  setpoint <- coh$hiv_vload * 1500
+  src <- new.env(parent = emptyenv())
+  src$pk <- cohort_pk(coh, regimen, start_suppressed, n_days, nld)
+  src$coh <- coh
+  src$regimen <- regimen
+  src$kl <- kl
+  src$r0 <- r0
+  src$K <- n_days * nld
+  src$block <- 7 * nld
+  src$start <- -1
+  par <- list(
+    y0tot = if (start_suppressed == 1) rep(3000, N) else setpoint,
+    lambda = setpoint * r0 / (r0 - 1),
+    f = if (S == 1) 1 else strain_tab$f, fit = if (S == 1) 1 else strain_tab$fit,
+    atot = 3000, dy = 1, nld = nld, ntau = nld, start_suppressed = start_suppressed, r0 = r0
+  )
+  res <- tauleap_r(rx_from_cohort, src, par, src$K, record = eval_days * nld)
+  data.frame(
+    id = rep(coh$id, length(eval_days)), adherence = rep(coh$adherence, length(eval_days)),
+    day = rep(eval_days, each = N),
+    vl = unlist(lapply(res$rec, function(y) rowSums(y) / 1500)),
+    fmut = unlist(lapply(res$rec, function(y) if (S == 1) rep(0, N) else 1 - y[, 1] / rowSums(y)))
+  )
+}
+
+# Independent L'Ecuyer-CMRG streams, one per subject, as model seeds
+mrg_seeds <- function(n, seed) {
+  old <- RNGkind()[1]
+  RNGkind("L'Ecuyer-CMRG")
+  set.seed(seed)
+  s <- .Random.seed
+  out <- matrix(NA_real_, n, 6)
+  for (i in seq_len(n)) {
+    s <- parallel::nextRNGStream(s)
+    v <- as.numeric(s[2:7])
+    v[v < 0] <- v[v < 0] + 2^32
+    out[i, ] <- v
+  }
+  RNGkind(old)
+  colnames(out) <- paste0("mrg_seed", 1:6)
+  out
+}
+eta_names <- c(
+  "etalcl", "etalvc", "etalcl_tfv", "etalvc_tfv", "etalvp_tfv", "etalcl_ftc",
+  "etalic50_efv", "etalic50_tfv", "etalic50_ftc", "etalr"
+)
+```
+
+# Validation of the stochastic files against the R reimplementation
+
+## Efavirenz + tenofovir + emtricitabine, untreated start
+
+Three patients start at their setpoint and take all doses for 14 days. Their
+between-subject effects are drawn here and passed to the model, so the R code
+can use the same values. The leap step is 1 h.
+
+```{r tau-exact-efv}
+nld_val <- 24
+n_val <- 3
+days_val <- 14
+set.seed(20170601)
+eta_val <- data.frame(
+  id = seq_len(n_val), etalcl = rnorm(n_val, 0, 0.437), etalvc = rnorm(n_val, 0, 1.01),
+  etalcl_tfv = rnorm(n_val, 0, 0.359), etalvc_tfv = rnorm(n_val, 0, 0.794), etalvp_tfv = rnorm(n_val, 0, 0.417),
+  etalcl_ftc = rnorm(n_val, 0, 0.174), etalic50_efv = rnorm(n_val, 0, 0.41),
+  etalic50_tfv = rnorm(n_val, 0, 0.82), etalic50_ftc = rnorm(n_val, 0, 0.96), etalr = rnorm(n_val)
+)
+seeds_val <- mrg_seeds(n_val, 11)
+dose_days <- 0:(days_val - 1)
+ev_val <- rbind(
+  data.frame(id = rep(seq_len(n_val), each = days_val), time = dose_days, amt = 600, cmt = "depot", evid = 1L),
+  data.frame(id = rep(seq_len(n_val), each = days_val), time = dose_days, amt = 135.6, cmt = "depot_tfv", evid = 1L),
+  data.frame(id = rep(seq_len(n_val), each = days_val), time = dose_days, amt = 200, cmt = "depot_ftc", evid = 1L),
+  data.frame(id = rep(seq_len(n_val), 2), time = rep(c(0, days_val), each = n_val), amt = 0, cmt = "central", evid = 0L)
+)
+ev_val <- ev_val[order(ev_val$id, ev_val$time, -ev_val$evid), ]
+ev_val$HIV_VLOAD <- 56234
+ev_val$CRCL <- 104.5
+p_val <- data.frame(eta_val, seeds_val, dt_leap = 1 / nld_val, tend = days_val)
+sim_val <- rxSolve(ui$efv_tau, ev_val, params = p_val, maxExtra = 0L, method = "lsoda", returnType = "data.frame")
+
+S <- strain_names
+sim_val$k <- round(sim_val$time * nld_val)
+leap <- sim_val[abs(sim_val$time * nld_val - sim_val$k) < 1e-6 & !duplicated(paste(sim_val$id, sim_val$k)), ]
+leap <- leap[order(leap$k, leap$id), ]
+K_val <- days_val * nld_val
+
+# (1) The in-model Bliss / Loewe / DI solver against the independent R implementation
+lic_val <- list(
+  efv = -7.49 + eta_val$etalic50_efv[leap$id], tfv = -1.79 + eta_val$etalic50_tfv[leap$id],
+  ftc = -4.98 + eta_val$etalic50_ftc[leap$id]
+)
+logc_val <- list(efv = log(pmax(leap$Cc, 0)), tfv = log(pmax(leap$Cc_tfv, 0)), ftc = log(pmax(leap$Cc_ftc, 0)))
+rx_model <- as.matrix(leap[, paste0("rx_", S)])
+rx_r <- sapply(seq_along(S), function(i) effect_strain(i, logc_val, lic_val) * leap$r0 * strain_tab$fit[i])
+effect_err <- max(abs(rx_r - rx_model) / pmax(abs(rx_model), 1e-12))
+effect_err
+stopifnot(effect_err < 1e-9)
+
+# (2) The packaged tau-leap against the lockstep R reimplementation
+rx_list <- lapply(0:(K_val - 1), function(k) rx_model[leap$k == k, , drop = FALSE])
+first <- leap[leap$k == 0, ]
+par_val <- list(
+  y0tot = first$y0tot, lambda = first$lambda, f = strain_tab$f, fit = strain_tab$fit, atot = 3000, dy = 1,
+  nld = nld_val, ntau = nld_val, start_suppressed = 0, r0 = first$r0
+)
+g <- new.env(parent = emptyenv())
+g$r <- seeds_val
+checkpoints <- c(1, 25, 49, 169, K_val)
+res_val <- tauleap_r(rx_from_list, rx_list, par_val, K_val, g = g, record = checkpoints)
+cmp <- do.call(rbind, lapply(checkpoints, function(kk) {
+  ym <- if (kk < K_val) {
+    as.matrix(leap[leap$k == kk, paste0("inf_", S)])
+  } else {
+    as.matrix(sim_val[sim_val$time == days_val & !duplicated(paste(sim_val$id, sim_val$time)), paste0("inf_", S)])
+  }
+  yr <- res_val$rec[[as.character(kk)]]
+  data.frame(
+    day = kk / nld_val, cells_compared = length(ym), identical = sum(ym == yr),
+    wild_type_model = paste(format(ym[, 1], big.mark = ","), collapse = " / "),
+    mutant_cells_model = paste(format(rowSums(ym[, -1]), big.mark = ","), collapse = " / ")
+  )
+}))
+knitr::kable(cmp, caption = "Infected cells per strain: rxode2 tau-leap file vs R reimplementation (3 patients x 16 strains).")
+stopifnot(all(cmp$identical == cmp$cells_compared))
+```
+
+Every count matches at every checkpoint, for every strain, in every patient.
+The file draws the same random numbers as the R reimplementation and applies
+them through the same expected values, delays and mutation transfers. It is
+therefore the scheme described in the supplement, and its correctness reduces
+to that of the readable R loop above.
+
+## Darunavir/ritonavir, suppressed start
+
+```{r tau-exact-drv}
+days_drv <- 28
+seeds_drv <- mrg_seeds(n_val, 12)
+set.seed(20170602)
+eta_drv <- data.frame(
+  id = seq_len(n_val), etalcl = rnorm(n_val, 0, 0.318), etalvc = rnorm(n_val, 0, 0.589),
+  etalvp = rnorm(n_val, 0, 0.821), etalic50_drv = rnorm(n_val, 0, 0.3), etalr = rnorm(n_val)
+)
+ev_drv <- rbind(
+  data.frame(id = seq_len(n_val), time = 0, amt = 800, cmt = "depot", evid = 1L, ss = 1L, ii = 1),
+  data.frame(id = rep(seq_len(n_val), each = days_drv - 1), time = seq_len(days_drv - 1), amt = 800, cmt = "depot", evid = 1L, ss = 0L, ii = 0),
+  data.frame(id = rep(seq_len(n_val), 2), time = rep(c(0, days_drv), each = n_val), amt = 0, cmt = "central", evid = 0L, ss = 0L, ii = 0)
+)
+ev_drv <- ev_drv[order(ev_drv$id, ev_drv$time, -ev_drv$evid), ]
+ev_drv$HIV_VLOAD <- 56234
+p_drv <- data.frame(eta_drv, seeds_drv, dt_leap = 1 / nld_val, tend = days_drv, start_suppressed = 1)
+sim_drv <- rxSolve(ui$drv_tau, ev_drv, params = p_drv, maxExtra = 0L, method = "lsoda", returnType = "data.frame")
+sim_drv$k <- round(sim_drv$time * nld_val)
+leap_drv <- sim_drv[abs(sim_drv$time * nld_val - sim_drv$k) < 1e-6 & !duplicated(paste(sim_drv$id, sim_drv$k)), ]
+leap_drv <- leap_drv[order(leap_drv$k, leap_drv$id), ]
+K_drv <- days_drv * nld_val
+first_drv <- leap_drv[leap_drv$k == 0, ]
+par_drv <- list(
+  y0tot = first_drv$y0tot, lambda = first_drv$lambda, f = 1, fit = 1, atot = 3000, dy = 1,
+  nld = nld_val, ntau = nld_val, start_suppressed = 1, r0 = first_drv$r0
+)
+rx_drv <- lapply(0:(K_drv - 1), function(k) matrix(leap_drv$rx_wt[leap_drv$k == k], ncol = 1))
+g <- new.env(parent = emptyenv())
+g$r <- seeds_drv
+res_drv <- tauleap_r(rx_from_list, rx_drv, par_drv, K_drv, g = g, record = c(1, 49, 337, K_drv))
+y_model_drv <- c(
+  leap_drv$inf_wt[leap_drv$k == 1], leap_drv$inf_wt[leap_drv$k == 49], leap_drv$inf_wt[leap_drv$k == 337],
+  sim_drv$inf_wt[sim_drv$time == days_drv & !duplicated(paste(sim_drv$id, sim_drv$time))]
+)
+y_r_drv <- unname(unlist(lapply(res_drv$rec, as.vector)))
+stopifnot(identical(y_model_drv, y_r_drv))
+range(y_model_drv)
+```
+
+## Pharmacokinetics: PKNCA at steady state
+
+The darunavir patients above start at steady state, so the AUC over any
+dosing interval must equal Dose / CL for each patient. PKNCA is run on the
+hourly concentrations the packaged file reports at its leap rows.
+
+```{r pknca}
+conc_ss <- leap_drv |>
+  filter(time <= 1 + 1e-9, !is.na(Cc)) |>
+  transmute(id, time, Cc, treatment = "DRV/r 800/100 mg QD")
+dose_ss <- data.frame(id = seq_len(n_val), time = 0, dose = 800, treatment = "DRV/r 800/100 mg QD")
+nca <- pk.nca(PKNCAdata(
+  PKNCAconc(conc_ss, Cc ~ time | treatment + id),
+  PKNCAdose(dose_ss, dose ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = 1, auclast = TRUE, cmax = TRUE)
+))
+auc <- as.data.frame(nca) |>
+  filter(PPTESTCD == "auclast") |>
+  mutate(id = as.integer(id))
+auc$cl <- 10.7 * 24 * exp(eta_drv$etalcl[auc$id])
+auc$ratio <- auc$PPORRES * auc$cl / 800
+auc |>
+  select(id, PPORRES, ratio) |>
+  rename("Patient" = id, "AUC0-24 (mg*day/L)" = PPORRES, "AUC x CL / Dose" = ratio) |>
+  knitr::kable(digits = 4)
+# Linear-up / log-down trapezoids on an hourly grid against the exact Dose / CL
+stopifnot(all(abs(auc$ratio - 1) < 0.02))
+```
+
+# Deterministic (mean-field) behaviour
+
+The DDE files are solved for a typical patient (all random effects at zero,
+setpoint 10^4.75 copies/mL, chronic phase).
+
+```{r dde-setup}
+typ <- lapply(ui[c("efv_dde", "drv_dde")], rxode2::zeroRe)
+obs_grid <- seq(0, 56, by = 0.25)
+qd <- function(amt, cmt, n_days, ss_first = FALSE) {
+  data.frame(time = 0:(n_days - 1), amt = amt, cmt = cmt, evid = 1L,
+    ss = c(as.integer(ss_first), rep(0L, n_days - 1)), ii = c(ifelse(ss_first, 1, 0), rep(0, n_days - 1)))
+}
+with_obs <- function(doses, hiv_vload = 10^4.75, grid = obs_grid) {
+  ev <- rbind(doses, data.frame(time = grid, amt = 0, cmt = "central", evid = 0L, ss = 0L, ii = 0))
+  ev <- ev[order(ev$time, -ev$evid), ]
+  ev$id <- 1L
+  ev$HIV_VLOAD <- hiv_vload
+  ev$CRCL <- 104.5
+  ev
+}
+no_drug <- rxSolve(typ$efv_dde, with_obs(qd(0, "depot", 1)), returnType = "data.frame")
+drift <- abs(no_drug$VL[no_drug$time == 56] / no_drug$VL[no_drug$time == 0] - 1)
+drift
+# untreated, the setpoint is an equilibrium: lambda = setpoint * dy * R0 / (R0 - 1)
+stopifnot(drift < 0.01)
+```
+
+Without drug the viral load stays at the setpoint. This confirms the relation
+between the CD4+ T-cell supply rate and the setpoint.
+
+```{r dde-efv}
+efv_mono <- with_obs(qd(600, "depot", 56))
+dde_efv <- bind_rows(
+  rxSolve(typ$efv_dde, efv_mono, returnType = "data.frame") |> mutate(scenario = "kl as reported (16.7)"),
+  rxSolve(rxode2::ini(typ$efv_dde, kl_efv = 1), efv_mono, returnType = "data.frame") |>
+    mutate(scenario = "complete lymph-node penetration (kl = 1)")
+)
+dde_efv |>
+  select(time, scenario, VL, fmut) |>
+  pivot_longer(c(VL, fmut)) |>
+  mutate(name = ifelse(name == "VL", "Viral load (copies/mL)", "Mutant fraction")) |>
+  ggplot(aes(time, value, colour = scenario)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y") +
+  scale_y_continuous(trans = "log10") +
+  labs(x = "Day", y = NULL, colour = NULL,
+    title = "Efavirenz monotherapy, full adherence, typical patient (mean-field model)") +
+  theme(legend.position = "bottom")
+end_efv <- dde_efv |> filter(time == 56)
+end_efv |> select(scenario, VL, fmut) |> knitr::kable(digits = 3)
+stopifnot(
+  # with the reported 6% lymph-node penetration, K103N escapes and takes over
+  end_efv$fmut[1] > 0.9, end_efv$VL[1] > 1000,
+  # with complete penetration the same patient stays suppressed
+  end_efv$VL[2] < 50
+)
+```
+
+With the reported penetration, K103N escapes: the lymph-node efavirenz
+concentration is far below its 85-fold-shifted IC50. The mean-field model
+carries mutant cells as fractional expected counts, so it shows this escape
+for every patient in whom some resistant strain can grow. Whether an
+individual patient actually acquires the mutant before the wild type is
+suppressed is decided by chance, and only the tau-leap files model it.
+
+```{r dde-triple-drv}
+triple <- with_obs(rbind(qd(600, "depot", 56), qd(135.6, "depot_tfv", 56), qd(200, "depot_ftc", 56)))
+dde_triple <- rxSolve(typ$efv_dde, triple, returnType = "data.frame")
+# the darunavir delay model is stiff for the explicit dense solver, so 28 days
+drv_ev <- with_obs(qd(800, "depot", 28), grid = seq(0, 28, by = 0.25))
+dde_drv <- bind_rows(lapply(c(200, 50, 1), function(klv) {
+  rxSolve(rxode2::ini(typ$drv_dde, kl_drv = klv), drv_ev, returnType = "data.frame") |>
+    mutate(scenario = paste0("darunavir, kl = ", klv))
+}))
+bind_rows(dde_triple |> mutate(scenario = "EFV + TDF + FTC"), dde_drv) |>
+  ggplot(aes(time, VL, colour = scenario)) +
+  geom_line() +
+  scale_y_log10() +
+  geom_hline(yintercept = 50, linetype = 2) +
+  labs(x = "Day", y = "Viral load (copies/mL)", colour = NULL,
+    title = "Untreated start, full adherence, typical patient (mean-field models)")
+end_drv <- dde_drv |> filter(time == 28)
+end_drv |> select(scenario, VL) |> knitr::kable(digits = 1)
+stopifnot(
+  # the triple combination suppresses the wild type within four weeks
+  max(dde_triple$inf_wt[dde_triple$time >= 28]) / 1500 < 50,
+  # darunavir: escape grows with poorer lymph-node penetration; none with complete penetration
+  end_drv$VL[1] > end_drv$VL[2],
+  end_drv$VL[3] < 50
+)
+```
+
+These solves start untreated at the setpoint. Do not start the delay-equation
+files with a steady-state dose (`ss = 1`): rxode2 then also drives the
+infected-cell states to its steady-state solution, which is not a valid
+starting point for a delay equation. The tau-leap files are unaffected,
+because their cell states have zero derivatives between leaps.
+
+## Mean-field file against the stochastic file
+
+During the first days of efavirenz monotherapy the wild type dominates. Its
+counts are in the millions, so the mean of the tau-leap should follow the
+delay equation. Eight typical patients are run at the authors' 0.1 h step.
+
+```{r dde-vs-tau}
+n_mf <- 8
+days_mf <- 5
+ev_mf <- rbind(
+  data.frame(id = rep(seq_len(n_mf), each = days_mf), time = 0:(days_mf - 1), amt = 600, cmt = "depot", evid = 1L),
+  data.frame(id = rep(seq_len(n_mf), each = days_mf + 1), time = 0:days_mf + 0.001, amt = 0, cmt = "central", evid = 0L)
+)
+ev_mf <- ev_mf[order(ev_mf$id, ev_mf$time, -ev_mf$evid), ]
+ev_mf$HIV_VLOAD <- 10^4.75
+ev_mf$CRCL <- 104.5
+p_mf <- data.frame(id = seq_len(n_mf), mrg_seeds(n_mf, 13), dt_leap = 1 / 240, tend = days_mf + 0.5)
+tau_mf <- rxSolve(rxode2::zeroRe(ui$efv_tau), ev_mf, params = p_mf, maxExtra = 0L, method = "lsoda", returnType = "data.frame")
+mf <- tau_mf |>
+  filter(abs(time - round(time) - 0.001) < 1e-9) |>
+  group_by(day = round(time)) |>
+  summarise(tau_leap_mean_VL = mean(VL), .groups = "drop") |>
+  left_join(dde_efv |> filter(scenario == "kl as reported (16.7)") |> transmute(day = time, dde_VL = VL), by = "day") |>
+  mutate(ratio = tau_leap_mean_VL / dde_VL)
+knitr::kable(mf, digits = 3)
+stopifnot(all(abs(mf$ratio - 1) < 0.05))
+```
+
+# Reproducing the published outcomes
+
+The population results are reproduced with the `rpois` mode of the R
+reimplementation. That code was shown above to be the packaged tau-leap file,
+draw for draw. The step is 1 h instead of the authors' 0.1 h, to fit the
+article's run time. The scheme's discretisation bias in the net growth rate
+is about dt/2 per day: 0.02/day at 1 h against 0.002/day at 0.1 h. Growth
+rates are 0.46/day (chronic) and 0.93/day (acute), so the coarser step
+slightly favours rebound. Each adherence level has 20 patients for efavirenz
+monotherapy and 15 for the combination, against the paper's 1,200-12,000, so
+single bars carry sampling noise of about 10 percentage points.
+
+```{r paper-values}
+# Digitised from Sanche 2017 Figures 2-5 (bar heights, %); maintainers' digitisation
+paper_efv <- data.frame(
+  adherence = seq(0.1, 1, by = 0.1),
+  success_kl = c(1.5, 6.9, 7.7, 9.2, 10.0, 10.0, 11.3, 12.1, 12.8, 12.2),
+  vf_res_kl = c(39.0, 74.8, 86.9, 89.3, 90.0, 90.0, 88.7, 87.9, 87.2, 87.8),
+  vf_wt_kl = c(59.5, 18.3, 5.4, 1.5, 0, 0, 0, 0, 0, 0),
+  success_kl1 = c(11.4, 23.6, 38.4, 50.8, 59.5, 66.4, 73.8, 79.4, 82.5, 85.0),
+  vf_res_kl1 = c(54.2, 64.2, 54.1, 44.7, 37.4, 33.6, 26.2, 20.6, 17.5, 15.0),
+  vf_wt_kl1 = c(34.3, 12.2, 7.5, 4.6, 3.1, 0, 0, 0, 0, 0)
+)
+paper_triple <- data.frame(
+  adherence = seq(0.1, 1, by = 0.1),
+  success_kl = c(6.8, 26.3, 48.9, 65.4, 77.4, 88.7, 94.0, 97.0, 98.5, 99.2),
+  success_kl1 = c(15.8, 54.9, 73.7, 85.0, 91.7, 97.0, 99.2, 100, 98.5, 100)
+)
+```
+
+## Efavirenz monotherapy (Figures 2 and 4)
+
+The trial starts untreated at the setpoint and lasts 48 weeks. Virological
+failure is a viral load of 50 copies/mL or more at week 48. It counts as
+failure with resistance when at least 20% of the virus is mutant.
+
+```{r fig2-fig4}
+set.seed(2)
+levels_adh <- seq(0.1, 1, by = 0.1)
+coh_efv <- make_cohort(levels_adh, 20, start_suppressed = 0, n_days = 336)
+outcome_efv <- function(out) {
+  out |>
+    mutate(vf = vl >= 50, res = vf & fmut >= 0.2) |>
+    group_by(adherence) |>
+    summarise(success = 100 * mean(!vf), vf_res = 100 * mean(res), vf_wt = 100 * mean(vf & !res), .groups = "drop")
+}
+sim_fig2 <- outcome_efv(run_cohort(coh_efv, "efv", 0, 336, 24, 336, kl = c(efv = 16.7, tfv = 5.0, ftc = 2.9)))
+sim_fig4 <- outcome_efv(run_cohort(coh_efv, "efv", 0, 336, 24, 336, kl = c(efv = 1, tfv = 1, ftc = 1)))
+tab_efv <- data.frame(
+  adherence = 100 * levels_adh,
+  sim_success = sim_fig2$success, paper_success = paper_efv$success_kl,
+  sim_vf_res = sim_fig2$vf_res, paper_vf_res = paper_efv$vf_res_kl,
+  sim_success_kl1 = sim_fig4$success, paper_success_kl1 = paper_efv$success_kl1,
+  sim_vf_res_kl1 = sim_fig4$vf_res, paper_vf_res_kl1 = paper_efv$vf_res_kl1
+)
+tab_efv |>
+  rename(
+    "Adherence (%)" = adherence,
+    "Success, sim" = sim_success, "Success, paper" = paper_success,
+    "VF + resistance, sim" = sim_vf_res, "VF + resistance, paper" = paper_vf_res,
+    "Success kl=1, sim" = sim_success_kl1, "Success kl=1, paper" = paper_success_kl1,
+    "VF + resistance kl=1, sim" = sim_vf_res_kl1, "VF + resistance kl=1, paper" = paper_vf_res_kl1
+  ) |>
+  knitr::kable(digits = 0, caption = "Efavirenz monotherapy outcomes (%) at week 48: simulated vs Sanche 2017 Figures 2 (kl as reported) and 4 (kl = 1).")
+bind_rows(
+  sim_fig2 |> mutate(source = "simulated", model = "kl as reported (Figure 2)"),
+  paper_efv |> transmute(adherence, success = success_kl, vf_res = vf_res_kl, vf_wt = vf_wt_kl) |>
+    mutate(source = "Sanche 2017", model = "kl as reported (Figure 2)"),
+  sim_fig4 |> mutate(source = "simulated", model = "kl = 1 (Figure 4)"),
+  paper_efv |> transmute(adherence, success = success_kl1, vf_res = vf_res_kl1, vf_wt = vf_wt_kl1) |>
+    mutate(source = "Sanche 2017", model = "kl = 1 (Figure 4)")
+) |>
+  pivot_longer(c(success, vf_res, vf_wt), names_to = "outcome") |>
+  mutate(outcome = factor(outcome, c("vf_wt", "vf_res", "success"),
+    c("VF, no resistance", "VF with resistance", "No VF"))) |>
+  ggplot(aes(factor(100 * adherence), value, fill = outcome)) +
+  geom_col() +
+  facet_grid(source ~ model) +
+  scale_fill_manual(values = c("steelblue", "firebrick", "forestgreen")) +
+  labs(x = "Adherence (%)", y = "Patients (%)", fill = NULL) +
+  theme(legend.position = "bottom")
+hi <- levels_adh >= 0.3
+stopifnot(
+  # Figure 2: from 30% adherence up, most patients fail with resistance
+  mean(sim_fig2$vf_res[hi]) > 60,
+  # Figure 4: complete lymph-node penetration turns most adherent patients into successes
+  mean(sim_fig4$success[levels_adh >= 0.7]) - mean(sim_fig2$success[levels_adh >= 0.7]) > 40,
+  # the wild-type failures are confined to low adherence in both models
+  mean(sim_fig2$vf_wt[levels_adh >= 0.5]) < 10
+)
+```
+
+## Efavirenz + tenofovir DF + emtricitabine (Figures 3 and 5)
+
+Patients start suppressed on established therapy (a steady-state first dose)
+and are followed for 12 months. The viral load is measured every 3 months, and
+virological failure is two consecutive values of 200 copies/mL or more, as in
+the comparator cohort.
+
+```{r fig3-fig5}
+set.seed(3)
+coh_tri <- make_cohort(levels_adh, 15, start_suppressed = 1, n_days = 364)
+outcome_tri <- function(out) {
+  w <- out |>
+    select(id, adherence, day, vl) |>
+    pivot_wider(names_from = day, values_from = vl)
+  v <- as.matrix(w[, -(1:2)]) >= 200
+  w$fail <- apply(v, 1, function(x) any(x[-1] & x[-length(x)]))
+  w |>
+    group_by(adherence) |>
+    summarise(success = 100 * mean(!fail), .groups = "drop")
+}
+eval_tri <- c(91, 182, 273, 364)
+sim_fig3 <- outcome_tri(run_cohort(coh_tri, "triple", 1, 364, 24, eval_tri, kl = c(efv = 16.7, tfv = 5.0, ftc = 2.9)))
+sim_fig5 <- outcome_tri(run_cohort(coh_tri, "triple", 1, 364, 24, eval_tri, kl = c(efv = 1, tfv = 1, ftc = 1)))
+tab_tri <- data.frame(
+  adherence = 100 * levels_adh,
+  sim = sim_fig3$success, paper = paper_triple$success_kl,
+  sim_kl1 = sim_fig5$success, paper_kl1 = paper_triple$success_kl1
+)
+tab_tri |>
+  rename(
+    "Adherence (%)" = adherence, "Success, sim" = sim, "Success, paper (Figure 3)" = paper,
+    "Success kl=1, sim" = sim_kl1, "Success kl=1, paper (Figure 5)" = paper_kl1
+  ) |>
+  knitr::kable(digits = 0, caption = "Combination therapy: probability of virological success (%) by adherence.")
+bind_rows(
+  tab_tri |> transmute(adherence, value = sim, source = "simulated", model = "kl as reported (Figure 3)"),
+  tab_tri |> transmute(adherence, value = paper, source = "Sanche 2017", model = "kl as reported (Figure 3)"),
+  tab_tri |> transmute(adherence, value = sim_kl1, source = "simulated", model = "kl = 1 (Figure 5)"),
+  tab_tri |> transmute(adherence, value = paper_kl1, source = "Sanche 2017", model = "kl = 1 (Figure 5)")
+) |>
+  ggplot(aes(factor(adherence), value, fill = source)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~model) +
+  labs(x = "Adherence (%)", y = "Virological success (%)", fill = NULL) +
+  theme(legend.position = "bottom")
+stopifnot(
+  # near-complete success at high adherence in both models
+  mean(sim_fig3$success[levels_adh >= 0.8]) > 85,
+  # failure concentrates at low adherence
+  mean(sim_fig3$success[levels_adh >= 0.8]) - mean(sim_fig3$success[levels_adh <= 0.2]) > 40
+)
+```
+
+## Darunavir/ritonavir monotherapy
+
+The paper reports virological failure in 13-48% of fully adherent patients
+over 48 weeks as kl ranges from 50 (2% penetration) to 200 (0.5%), with 14%
+observed clinically. The model matches that figure at 1.9% penetration
+(kl = 52.6). With complete penetration (kl = 1) no failure occurs. The paper
+does not state its failure criterion for this arm. Here the Rosenbloom 2012
+maintenance criterion is used: two consecutive weekly viral loads of
+200 copies/mL or more from week 5.
+
+```{r drv}
+set.seed(4)
+coh_drv <- make_cohort(1, 100, start_suppressed = 1, n_days = 336)
+eval_drv <- 7 * (5:48)
+vf_drv <- function(klv) {
+  out <- run_cohort(coh_drv, "drv", 1, 336, 24, eval_drv, kl = c(drv = klv))
+  v <- matrix(out$vl >= 200, nrow(coh_drv))
+  100 * mean(apply(v, 1, function(x) any(x[-1] & x[-length(x)])))
+}
+drv_tab <- data.frame(kl = c(200, 52.6, 50, 1))
+drv_tab$penetration <- paste0(signif(100 / drv_tab$kl, 2), "%")
+drv_tab$vf_sim <- vapply(drv_tab$kl, vf_drv, 0)
+drv_tab$vf_paper <- c("48 (upper end of 13-48)", "14 (matches clinical 14%)", "13 (lower end of 13-48)", "0 (no failure)")
+drv_tab |>
+  rename("kl" = kl, "Lymph-node penetration" = penetration, "VF, sim (%)" = vf_sim, "VF, Sanche 2017 (%)" = vf_paper) |>
+  knitr::kable(digits = 0)
+stopifnot(
+  drv_tab$vf_sim[1] > drv_tab$vf_sim[3],
+  drv_tab$vf_sim[4] <= 2
+)
+```
+
+# Agreement with the paper
+
+- **Efavirenz monotherapy (Figures 2 and 4)** is reproduced within sampling
+  noise. With the reported lymph-node penetration, almost every patient with
+  20% or more adherence fails with resistance, whatever the adherence.
+  Wild-type failure is confined to the lowest adherence levels. With complete
+  penetration, success climbs steadily with adherence.
+- **Combination therapy (Figures 3 and 5).** High-adherence success matches.
+  At low adherence the simulated patients succeed more often than the
+  paper's: by roughly 15-30 percentage points at 10-40% adherence for
+  Figure 3, and less for Figure 5. The parameters were not adjusted. The
+  paper leaves several design choices unstated, and each would move these
+  bars: suppressed vs untreated start, follow-up of 12 vs 18 months, the
+  tenofovir dose basis, and the PIM distribution at low adherence (the
+  Discussion itself names the PIM as uncertain there).
+- **Darunavir/ritonavir.** Failure at 2% and 1.9% penetration (kl = 50 and
+  52.6) lands close to the paper's 13% and 14% (100 patients each, so about
+  +/- 4 percentage points of sampling noise), and complete penetration gives
+  no failure. At 0.5% penetration (kl = 200) far more patients fail here than
+  the paper's 48%. The paper gives the 13-48% range without saying which
+  failure criterion it applied, so the gap at the low-penetration end may
+  come from the criterion.
+
+# Assumptions and deviations
+
+- **Tau-leap step in the population reproductions.** The packaged tau-leap
+  files default to the authors' 0.1 h step. The population runs above use
+  1 h (see 'Reproducing the published outcomes'). The 0.1 h step is exercised
+  in the mean-field comparison.
+- **Strain set.** The paper names five mutations (K103N, Y181C, G190S, M184V,
+  K65R) but not which combinations were tracked. The authors' deposited
+  example input tracks three mutations plus all their pairwise double mutants
+  and no triples. The files apply the same rule to the five named mutations:
+  16 strains, with doubles reached from either single mutant.
+- **Per-mutation values.** The paper takes fitness costs, mutation
+  probabilities, IC50 fold-changes and slope changes from its framework paper
+  (Rosenbloom 2012, Suppl. Table 3). A mutation without an entry for a drug
+  is taken to leave that drug's effect unchanged (rho = 1, sigma = 0). The
+  Hill slopes come from Rosenbloom 2012 Suppl. Table 1.
+- **Expected strain fractions.** The supplement assigns initial mutant cells
+  with probability P/s. The deposited input file instead carries normalised
+  weights (1, u/s, u_a u_b / s_ab); these reproduce its reservoir rates
+  exactly and are used for both the reservoir and the initial composition.
+- **Between-subject variability.** The supplement prints IIV for the PK
+  parameters as bare numbers (for efavirenz 0.437 and 1.01). These are the
+  coefficients of variation of the Sanchez 2011 base model (43.7% and 101%),
+  and the files use them as the SD of the log-normal effect.
+- **Emtricitabine creatinine clearance.** The supplement says creatinine
+  clearance 'in liters per hour followed a log-N(mu, sigma^2) distribution
+  with mu = 104.5 and sigma = 0.34'. A value of 104.5 L/h is not
+  physiological. The files read it as a median of 104.5 mL/min with a
+  log-scale SD of 0.34, and apply the exponent 0.278 as a power model centred
+  on that median. The functional form is not printed.
+- **Tenofovir dose.** The cited tenofovir PK model (Baheti 2011) is
+  parameterised on tenofovir-equivalent doses, so 300 mg of tenofovir
+  disoproxil fumarate enters as 135.6 mg of tenofovir.
+- **Trial designs.** Efavirenz monotherapy starts untreated at the setpoint
+  (the paper's naive-patient comparison). The combination and darunavir arms
+  start suppressed on established therapy, following the Rosenbloom 2012
+  maintenance design. The paper does not state these choices. The
+  combination arm is followed for 12 months; the comparator cohort covered
+  12-18 months. The darunavir failure criterion is the Rosenbloom 2012
+  maintenance criterion. Each population uses 90% chronic-phase patients
+  (the assumption the paper states for its clinical comparison) and draws
+  the PIM from Table S1.
+- **Start on established therapy.** The delay terms need concentrations from
+  one day before the start. For a suppressed start (`start_suppressed = 1`)
+  the files take them equal to the current concentrations, which holds for
+  once-daily dosing at steady state. The tau-leap file uses the
+  concentration at t = 0 for its pre-trial history. Reach steady state with a
+  steady-state first dose only in the tau-leap files: in the delay-equation
+  files such a dose also moves the infected-cell states (see 'Deterministic
+  (mean-field) behaviour').
+- **Mean-field mutation transfer.** The supplement's boxed delay equation
+  omits de novo mutation. The DDE file adds the expected mutation transfer
+  of main-text Eq. (3), so it is the expected-value form of the as-run
+  scheme.
+- **Solver settings.** Use `method = "lsoda"` for the tau-leap files. With
+  `liblsoda`, solver steps accumulate across the model-scheduled intervals
+  until `maxsteps` stops the solve (rxode2 5.1.8.9000). Plain ODE solves
+  across drug holidays of several months, in patients who eliminate the drug
+  quickly, can return NaN under liblsoda, so the population PK above uses
+  `lsoda` with `hmax = 1`.
+- **Figures 6 and 7** (minimum and maximum outcome per adherence level
+  across PIM and infection phase) are not reproduced: they need the paper's
+  full 300-patient strata.

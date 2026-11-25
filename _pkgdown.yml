@@ -2138,6 +2138,10 @@ navbar:
         href: articles/Cojutti_2020_darunavir.html
       - text: "Darunavir hiv (Cojutti 2020)"
         href: articles/Cojutti_2020_darunavir.html
+      - text: "Darunavir qsp (Sanche 2017)"
+        href: articles/Sanche_2017_hiv_virological_failure.html
+      - text: "Darunavir qsp tauleap (Sanche 2017)"
+        href: articles/Sanche_2017_hiv_virological_failure.html
       - text: "Dasabuvir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Dasatinib (Hassouneh 2024)"
@@ -2642,6 +2646,10 @@ navbar:
         href: articles/Vujkovic_2018_efavirenz.html
       - text: "Efavirenz invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
+      - text: "Efavirenz tenofovir emtricitabine qsp (Sanche 2017)"
+        href: articles/Sanche_2017_hiv_virological_failure.html
+      - text: "Efavirenz tenofovir emtricitabine qsp tauleap (Sanche 2017)"
+        href: articles/Sanche_2017_hiv_virological_failure.html
       - text: "Efineptakin alfa (Jeon 2025)"
         href: articles/Jeon_2025_efineptakin_alfa.html
       - text: "Efineptakin alfa (Park 2025)"
@@ -11570,6 +11578,7 @@ articles:
   - articles/Sampson_2014_azithromycin
   - articles/Sampson_2014_gentamicin
   - articles/Samuels_2025_infliximab
+  - articles/Sanche_2017_hiv_virological_failure
   - articles/Sanches_2022_piperacillin
   - articles/SanchezDengra_2021_neuro_pbpk_rat
   - articles/SanchezPena_2005_enoxaparin
