@@ -1,0 +1,566 @@
+---
+title: "PF-06648671 (Ahn 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PF-06648671 (Ahn 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Ahn_2020_PF06648671"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Ahn_2020_PF06648671"))$description`
+* Article: <https://doi.org/10.1002/cpt.1570> (open access, PMC6977340)
+
+PF-06648671 is an oral, brain-penetrant gamma-secretase modulator (GSM). It
+shifts gamma-secretase processing of the amyloid precursor protein away from
+the longer, more aggregation-prone amyloid-beta (Abeta) peptides Abeta42 and
+Abeta40 toward the shorter Abeta38 and Abeta37, leaving total Abeta unchanged.
+Ahn 2020 fit one PK/PD model to plasma PF-06648671 and the four CSF Abeta
+species from three phase I studies in healthy volunteers.
+
+# Population
+
+The analysis pooled 120 healthy volunteers from three Pfizer phase I studies
+(Ahn 2020 Table 1 and Results, "Study populations"):
+
+* **B7991001** (single ascending dose, Belgium): 18 white men, 22-55 years,
+  52.8-104.0 kg; single oral doses of 2, 4, 12, 40, 120 (fasted and fed), 240
+  and 360 mg, or placebo, in a crossover design. PK only.
+* **B7991003** (single dose, United States): 22 subjects (21 men; 11 white,
+  8 black, 1 Asian, 2 other), 21-55 years, 56.0-99.6 kg; 150 mg (n = 3),
+  300 mg (n = 11) or placebo (n = 8), with serial CSF sampling through an
+  indwelling lumbar catheter 2 h before and 0-36 h after the dose.
+* **B7991002** (14-day multiple ascending dose, Belgium): part 1, 70 men aged
+  18-55 years (52.4-107.2 kg) on 4, 12, 40, 100, 200 or 360 mg once daily or
+  placebo; part 2, 10 elderly subjects aged 65-75 years (4 women) on 200 mg
+  once daily or placebo. A single lumbar puncture was performed 72 h before
+  the first dose and 24 h after the day-14 dose (day-14 pre-dose for the
+  40 mg cohort).
+
+The PD model was fitted to the CSF Abeta data of B7991003 and B7991002 (Figure
+S2). The same information is available programmatically via
+`readModelDb("Ahn_2020_PF06648671")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. The
+table collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment PK, first-order absorption, linear elimination | n/a | Methods, "PK/PD modeling"; Table S4 |
+| `lka` | log(1.49 1/h) | Table S4 |
+| `lcl` | log(3.56 L/h) | Table S4 (CL/F) |
+| `lvc` | log(46.3 L) | Table S4 (Vc/F) |
+| `lq` | log(9.17 L/h) | Table S4 (Q/F) |
+| `lvp` | log(32.8 L) | Table S4 (Vp/F) |
+| `etalka` | 0.189 | Table S4, IIV (variance) on ka |
+| `etalcl`, `etalvc` block | 0.180, 0.0679, 0.0671 | Table S4, IIV on CL/F, covariance CL-Vc, IIV on Vc/F |
+| `etalvp` | 0.0867 | Table S4, IIV on Vp/F |
+| `propSd`, `addSd` | 0.164, 0.462 ng/mL | Table S4, proportional CV 16.4%, additive SD |
+| Inhibitory IDR, `d/dt(abeta42_csf)`, `d/dt(abeta40_csf)` | n/a | Eq. (2); Figure 3 |
+| Stimulatory sigmoid IDR, `d/dt(abeta38_csf)`, `d/dt(abeta37_csf)` | n/a | Eq. (3); Figure 3 |
+| `kin = kout * baseline` | n/a | Methods, text below Eq. (3) |
+| `lrbase_abeta42/40/38/37` | log(1001, 7584, 2404, 702 pg/mL) | Table 2, Baseline |
+| `lkout_abeta42/40/38/37` | log(0.121, 0.0835, 0.144, 0.0964 1/h) | Table 2, kout |
+| `limax_abeta42/40` | log(0.744, 0.725) | Table 2, Imax |
+| `lic50_abeta42/40` | log(421, 1228 ng/mL) | Table 2, IC50 |
+| `lemax_abeta38/37` | log(0.869, 5.63) | Table 2, Emax |
+| `lec50_abeta38/37` | log(1765, 1285 ng/mL) | Table 2, EC50 |
+| `lhill_abeta38/37` | log(1.4, 1.42) | Table 2, Gamma |
+| Placebo drift `(Pmax + eta) * time^Kp`, added to the observed species | n/a | Eq. (1); Methods, "Overall PD response was the sum of baseline, placebo (single-dose PD data), and treatment effects" |
+| `pmax_abeta42/40/38/37` | 87.4, 176, 70.7, 35.0 (fixed) | Table S3, Pmax |
+| `pow_abeta42/40/38/37` | 0.517, 0.799, 0.707, 0.598 (fixed) | Table S3, Kp |
+| `etapmax_*` | 0 (fixed) | Eq. (1) carries the eta; variance not reported |
+| `propSd_abeta*` | 0 (fixed) | PD residual error not reported |
+
+# Placebo drift in the serial-sampling study (Figure 1)
+
+In B7991003 all four Abeta species rose steadily in the placebo arm over the
+36 h of catheter sampling. The model adds the drift `(Pmax + eta) * time^Kp`
+to each observed species only when `STUDY_B7991003 = 1`. The typical-value
+profiles below reproduce the layout of Figure 1 b-e for placebo, 150 mg and
+300 mg. The drug arms dip below baseline and then drift back upward with the
+placebo trend, as the paper's mean profiles do.
+
+```{r fig1-sim}
+mod <- readModelDb("Ahn_2020_PF06648671")
+# The four PD residual SDs are thetas (fixed at zero), not sigmas, so remove
+# only the between-subject random effects for typical-value runs.
+mod_tv <- rxode2::zeroRe(mod, "omega")
+
+# rxode2 warns that a multi-subject solve has no omega; for these
+# typical-value runs that is intended, so only that warning is muffled.
+solve_tv <- function(events) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod_tv, events = events, keep = "dose"),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+grid_sd <- c(0, 0.5, 1, 2, 4, 8, 12, 16, 20, 24, 28, 32, 36)
+make_typical <- function(id, dose, study_b7991003, times, ii = 0, addl = 0) {
+  dose_row <- data.frame(
+    id = id, time = 0, amt = dose, evid = 1L, cmt = "depot",
+    ii = ii, addl = addl, dvid = NA_integer_
+  )
+  obs_rows <- data.frame(
+    id = id, time = times, amt = 0, evid = 0L, cmt = "central",
+    ii = 0, addl = 0L, dvid = 1L
+  )
+  out <- dplyr::bind_rows(dose_row, obs_rows)
+  out$STUDY_B7991003 <- study_b7991003
+  out$dose <- dose
+  out
+}
+
+ev_fig1 <- dplyr::bind_rows(
+  make_typical(1L, 0, 1, grid_sd),
+  make_typical(2L, 150, 1, grid_sd),
+  make_typical(3L, 300, 1, grid_sd)
+)
+sim_fig1 <- solve_tv(ev_fig1) |>
+  as.data.frame() |>
+  mutate(arm = factor(ifelse(dose == 0, "Placebo", paste(dose, "mg")),
+    levels = c("Placebo", "150 mg", "300 mg")
+  ))
+```
+
+```{r fig1-plot, fig.width = 7, fig.height = 5}
+sim_fig1 |>
+  select(time, arm, abeta42, abeta40, abeta38, abeta37) |>
+  pivot_longer(starts_with("abeta"), names_to = "species", values_to = "conc") |>
+  mutate(species = factor(species,
+    levels = c("abeta42", "abeta40", "abeta38", "abeta37"),
+    labels = c("Abeta42", "Abeta40", "Abeta38", "Abeta37")
+  )) |>
+  ggplot(aes(time, conc, linetype = arm)) +
+  geom_line() +
+  facet_wrap(~species, scales = "free_y") +
+  scale_x_continuous(breaks = seq(0, 36, 12)) +
+  labs(
+    x = "Time after dose (h)", y = "CSF concentration (pg/mL)", linetype = NULL,
+    title = "Typical CSF Abeta profiles in the serial-sampling study",
+    caption = "Replicates the layout of Figure 1 b-e of Ahn 2020 (typical value, placebo drift on)."
+  )
+```
+
+Over 36 h the paper's placebo-arm means (Figure 1) rise by roughly 600-700,
+3,000, 1,000 and 300 pg/mL for Abeta42, Abeta40, Abeta38 and Abeta37. The
+fixed Table S3 drift gives the increments below. They agree with the figure
+on the paper's pg/mL scale, which confirms that Pmax is additive in pg/mL
+with time in hours.
+
+```{r fig1-placebo}
+plac_36 <- sim_fig1 |>
+  filter(arm == "Placebo", time %in% c(0, 36)) |>
+  arrange(time) |>
+  summarise(across(c(abeta42, abeta40, abeta38, abeta37), ~ diff(.x)))
+knitr::kable(round(plac_36), caption = "Typical placebo drift between 0 and 36 h (pg/mL).")
+
+# The drift is a closed form of the fixed Table S3 values; the solve must
+# reproduce it exactly (same parameters on both sides).
+stopifnot(
+  abs(plac_36$abeta42 - 87.4 * 36^0.517) < 1e-6 * 1000,
+  abs(plac_36$abeta40 - 176 * 36^0.799) < 1e-6 * 1000,
+  abs(plac_36$abeta38 - 70.7 * 36^0.707) < 1e-6 * 1000,
+  abs(plac_36$abeta37 - 35.0 * 36^0.598) < 1e-6 * 1000
+)
+```
+
+The placebo-adjusted change at the PD Tmax is the drug effect on the
+turnover states. The paper's Bayesian analysis of the observed data gives
+-33%/-39% (Abeta42), -16%/-22% (Abeta40), +30%/+46% (Abeta38) and
++139%/+294% (Abeta37) at 150/300 mg (Table S2). The typical model
+predictions are below. They are larger than the observed single-dose
+changes for Abeta42 and Abeta40 (about -47%/-56% and -27%/-37%), close for
+Abeta38, and in the right range for Abeta37. The paper notes that the
+B7991003 data were highly variable and gave no clear exposure-response. The
+drug-effect parameters were determined mainly by the steady-state data of
+B7991002 (next sections), which the model follows closely.
+
+```{r fig1-tmax}
+sim_fig1 |>
+  filter(arm != "Placebo") |>
+  group_by(arm) |>
+  summarise(
+    `Abeta42 (%)` = 100 * (min(abeta42_csf) / 1001 - 1),
+    `Abeta40 (%)` = 100 * (min(abeta40_csf) / 7584 - 1),
+    `Abeta38 (%)` = 100 * (max(abeta38_csf) / 2404 - 1),
+    `Abeta37 (%)` = 100 * (max(abeta37_csf) / 702 - 1),
+    .groups = "drop"
+  ) |>
+  rename(Dose = arm) |>
+  knitr::kable(digits = 1, caption = "Typical maximum change from baseline within 36 h of a single dose (drug effect only).")
+```
+
+# Virtual cohorts for PK
+
+Original observed data are not available. The PK cohorts below use the PK
+between-subject variability of Table S4, with 100 subjects per arm. The model
+has no covariates on PK, so no demographic sampling is needed.
+
+```{r cohorts}
+rxode2::rxSetSeed(20200101)
+
+sd_doses <- c(40, 120, 240, 150, 300)
+sd_study <- c("B7991001", "B7991001", "B7991001", "B7991003", "B7991003")
+grid_pk_sd <- c(0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 36, 48, 72)
+
+make_cohort_sd <- function(n, dose, study, id_offset) {
+  ids <- id_offset + seq_len(n)
+  dose_rows <- data.frame(id = ids, time = 0, amt = dose, evid = 1L, cmt = "depot", dvid = NA_integer_)
+  obs_rows <- expand.grid(id = ids, time = grid_pk_sd)
+  obs_rows$amt <- 0
+  obs_rows$evid <- 0L
+  obs_rows$cmt <- "central"
+  obs_rows$dvid <- 1L
+  out <- dplyr::bind_rows(dose_rows, obs_rows)
+  out$STUDY_B7991003 <- as.integer(study == "B7991003")
+  out$treatment <- paste0(study, " ", dose, " mg SD")
+  dplyr::arrange(out, id, time, dplyr::desc(evid))
+}
+
+ev_sd <- dplyr::bind_rows(lapply(seq_along(sd_doses), function(i) {
+  make_cohort_sd(100L, sd_doses[i], sd_study[i], id_offset = (i - 1L) * 100L)
+}))
+
+md_doses <- c(40, 100, 200, 360)
+grid_pk_md <- 312 + c(0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24)
+make_cohort_md <- function(n, dose, id_offset) {
+  ids <- id_offset + seq_len(n)
+  dose_rows <- data.frame(
+    id = ids, time = 0, amt = dose, evid = 1L, cmt = "depot",
+    ii = 24, addl = 13L, dvid = NA_integer_
+  )
+  obs_rows <- expand.grid(id = ids, time = grid_pk_md)
+  obs_rows$amt <- 0
+  obs_rows$evid <- 0L
+  obs_rows$cmt <- "central"
+  obs_rows$ii <- 0
+  obs_rows$addl <- 0L
+  obs_rows$dvid <- 1L
+  out <- dplyr::bind_rows(dose_rows, obs_rows)
+  out$STUDY_B7991003 <- 0L
+  out$treatment <- paste0("B7991002 ", dose, " mg QD day 14")
+  dplyr::arrange(out, id, time, dplyr::desc(evid))
+}
+ev_md <- dplyr::bind_rows(lapply(seq_along(md_doses), function(i) {
+  make_cohort_md(100L, md_doses[i], id_offset = 1000L + (i - 1L) * 100L)
+}))
+```
+
+```{r simulate}
+sim_sd <- rxode2::rxSolve(mod, events = ev_sd, keep = "treatment") |> as.data.frame()
+sim_md <- rxode2::rxSolve(mod, events = ev_md, keep = "treatment") |> as.data.frame()
+```
+
+# PKNCA validation
+
+```{r pknca}
+nca_one <- function(sim, events, start, end, params) {
+  conc <- sim |>
+    filter(!is.na(Cc)) |>
+    select(id, time, Cc, treatment)
+  dose <- events |>
+    filter(evid == 1) |>
+    select(id, time, amt, treatment)
+  if (start == 0) {
+    # Pre-dose plasma concentration of an oral single dose is zero.
+    conc <- bind_rows(conc, conc |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)) |>
+      distinct(id, treatment, time, .keep_all = TRUE) |>
+      arrange(id, treatment, time)
+  }
+  intervals <- data.frame(start = start, end = end)
+  for (p in params) intervals[[p]] <- TRUE
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id),
+    PKNCA::PKNCAdose(dose, amt ~ time | treatment + id),
+    intervals = intervals
+  ))
+  as.data.frame(res)
+}
+
+nca_sd <- nca_one(sim_sd, ev_sd, 0, Inf, c("cmax", "tmax", "aucinf.obs", "half.life"))
+nca_md <- nca_one(sim_md, ev_md, 312, 336, c("cmax", "tmax", "auclast", "cmin"))
+nca_all <- bind_rows(nca_sd, nca_md) |>
+  select(treatment, PPTESTCD, PPORRES)
+```
+
+## Comparison against published NCA
+
+Table S2 reports geometric means (Tmax: median; t1/2: arithmetic mean). For
+the day-14 rows `auclast` over 312-336 h is AUCtau and `cmin` is Ctrough.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax, ~aucinf.obs, ~half.life, ~auclast, ~cmin,
+  "B7991001 40 mg SD", 814.4, 1.00, 9657, 13.94, NA, NA,
+  "B7991001 120 mg SD", 2429, 1.00, 41470, 19.05, NA, NA,
+  "B7991001 240 mg SD", 3752, 1.00, 79200, 22.43, NA, NA,
+  "B7991003 150 mg SD", 2482, 1.02, 36570, 12.83, NA, NA,
+  "B7991003 300 mg SD", 3578, 1.03, 57390, 13.34, NA, NA,
+  "B7991002 40 mg QD day 14", 991.0, 1.50, NA, NA, 11530, 234.3,
+  "B7991002 100 mg QD day 14", 2168, 1.50, NA, NA, 25050, 595.6,
+  "B7991002 200 mg QD day 14", 4595, 1.50, NA, NA, 64940, 1945,
+  "B7991002 360 mg QD day 14", 5143, 1.50, NA, NA, 71530, 2072
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_all,
+  reference = published,
+  by = "treatment",
+  units = c(
+    cmax = "ng/mL", tmax = "h", aucinf.obs = "ng*h/mL", half.life = "h",
+    auclast = "ng*h/mL", cmin = "ng/mL"
+  ),
+  tolerance_pct = 20
+)
+knitr::kable(cmp,
+  caption = "Simulated (median of 100 virtual subjects per arm) vs. Table S2. * differs from the reference by >20%."
+)
+```
+
+```{r nca-check}
+auc_sim <- nca_all |>
+  filter(PPTESTCD %in% c("aucinf.obs", "auclast")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(sim = median(PPORRES, na.rm = TRUE), .groups = "drop")
+auc_ref <- published |>
+  select(treatment, aucinf.obs, auclast) |>
+  pivot_longer(-treatment, names_to = "PPTESTCD", values_to = "ref") |>
+  filter(!is.na(ref))
+auc_cmp <- inner_join(auc_sim, auc_ref, by = c("treatment", "PPTESTCD")) |>
+  mutate(pct = 100 * (sim / ref - 1))
+# A mis-transcribed CL/F, dose or the mg -> ng/mL factor moves every AUC by
+# tens of percent; the centre of the per-arm differences stays well inside
+# 20% (the B7991003 and the 360 mg arms sit at the two ends, see below).
+stopifnot(abs(median(auc_cmp$pct)) < 20)
+```
+
+Most AUC and Cmax values agree within 20%. The exceptions are spread across
+studies rather than following a model trend. The population model has one
+apparent clearance (3.56 L/h) for all three studies. The NCA CL/F in Table S2
+runs from 2.3-4.1 L/h in B7991001, 2.3-5.0 L/h in day-14 B7991002 and
+4.1-5.2 L/h in B7991003. B7991003 subjects therefore had lower exposure than
+the pooled model predicts. In the day-14 360 mg arm (CL/F 5.0 L/h), exposure
+was barely higher than in the 200 mg arm; a linear model cannot reproduce
+that. The simulated Tmax of 1.5 h is a sampling-grid value: the typical peak
+falls between the 1 and 1.5 h samples. NCA half-lives (12.8-23 h) come from
+72-96 h sampling windows and bracket the model's terminal half-life of about
+16.5 h.
+
+# Day-14 CSF Abeta changes (B7991002, Figure 4)
+
+CSF was sampled once, 24 h after the day-14 dose (day-14 pre-dose for 40 mg),
+when the drug is near steady-state trough. The paper's Figure 4 VPC cannot be
+reproduced in full, because the PD between-subject variances are not
+published. The spread below comes from PK variability only. The table compares the
+median simulated change from baseline with the placebo-adjusted changes in
+Table S2.
+
+```{r fig4}
+pd_md <- sim_md |>
+  mutate(dose = as.numeric(sub("B7991002 ([0-9]+) mg.*", "\\1", treatment))) |>
+  filter((dose == 40 & time == 312) | (dose != 40 & time == 336)) |>
+  transmute(
+    dose,
+    Abeta42 = 100 * (abeta42 / 1001 - 1),
+    Abeta40 = 100 * (abeta40 / 7584 - 1),
+    Abeta38 = 100 * (abeta38 / 2404 - 1),
+    Abeta37 = 100 * (abeta37 / 702 - 1)
+  ) |>
+  pivot_longer(-dose, names_to = "species", values_to = "pct")
+
+pd_obs <- tibble::tribble(
+  ~dose, ~Abeta42, ~Abeta40, ~Abeta38, ~Abeta37,
+  40, -15.84, -5.89, 11.15, 88.08,
+  100, -43.67, -26.83, 8.55, 150.28,
+  200, -58.82, -42.35, 46.48, 331.09,
+  360, -64.77, -49.86, 44.65, 371.95
+) |>
+  pivot_longer(-dose, names_to = "species", values_to = "observed")
+
+pd_tab <- pd_md |>
+  group_by(dose, species) |>
+  summarise(simulated = median(pct), .groups = "drop") |>
+  left_join(pd_obs, by = c("dose", "species")) |>
+  mutate(species = factor(species, levels = c("Abeta42", "Abeta40", "Abeta38", "Abeta37"))) |>
+  arrange(species, dose)
+
+pd_tab |>
+  rename(
+    `Dose (mg QD)` = dose, Species = species,
+    `Simulated median (%)` = simulated, `Table S2 placebo-adjusted (%)` = observed
+  ) |>
+  knitr::kable(digits = 1, caption = "Change from baseline in CSF Abeta on day 14 of B7991002.")
+```
+
+```{r fig4-plot, fig.width = 7, fig.height = 5}
+pd_md |>
+  mutate(species = factor(species, levels = c("Abeta42", "Abeta40", "Abeta38", "Abeta37"))) |>
+  ggplot(aes(factor(dose), pct)) +
+  geom_boxplot(outlier.size = 0.5) +
+  geom_point(
+    data = pd_obs |> mutate(species = factor(species, levels = c("Abeta42", "Abeta40", "Abeta38", "Abeta37"))),
+    aes(factor(dose), observed), colour = "red", shape = 4, size = 3
+  ) +
+  facet_wrap(~species, scales = "free_y") +
+  labs(
+    x = "PF-06648671 dose (mg QD)", y = "Change from baseline (%)",
+    title = "Day-14 CSF Abeta change by dose",
+    caption = "Boxes: simulation with PK variability only. Crosses: Table S2 placebo-adjusted means. Compare Figure 4 of Ahn 2020."
+  )
+```
+
+```{r fig4-check}
+# Abeta42 and Abeta40 at 100-360 mg carry the dose-response the model was
+# built on; the simulated medians track the reported placebo-adjusted
+# changes there (realised gap <= 6 points; the median of 100 subjects moves
+# about 1 point between cohorts). The 40 mg arm is discussed below.
+dev <- pd_tab |>
+  filter(species %in% c("Abeta42", "Abeta40"), dose >= 100) |>
+  mutate(d = simulated - observed)
+stopifnot(max(abs(dev$d)) < 10)
+```
+
+At 100-360 mg, the simulated Abeta42 and Abeta40 medians fall within 6
+percentage points of the reported changes. At 40 mg the model predicts
+roughly twice the reported reductions (-33% vs -16% for Abeta42). Abeta37
+follows the reported dose-response: the model is 11 points below it at
+40 mg and 40-75 points above it at 100-360 mg. Abeta38 does not follow it: the observed change is step-like (+9% at 100 mg, then +46% at 200 mg and
+360 mg). The paper notes that the Abeta38 parameters are poorly determined
+(EC50 RSE 142%, gamma RSE 97%) and leaves Abeta38 out of its steady-state
+predictions for that reason.
+
+# Steady-state dose-response (Figure 5)
+
+Figure 5 shows the predicted average steady-state effect against the
+once-daily dose. Below, each species is averaged over the dosing interval of
+day 30 for a typical subject.
+
+```{r fig5}
+doses_f5 <- seq(0, 500, by = 25)
+ev_f5 <- dplyr::bind_rows(lapply(seq_along(doses_f5), function(i) {
+  make_typical(i, doses_f5[i], 0, seq(696, 720, by = 0.25), ii = 24, addl = 29L)
+}))
+ss <- solve_tv(ev_f5) |>
+  as.data.frame() |>
+  filter(time >= 696) |>
+  group_by(dose) |>
+  summarise(across(c(abeta42, abeta40, abeta38, abeta37), mean), .groups = "drop") |>
+  mutate(
+    pct42 = 100 * (abeta42 / 1001 - 1),
+    pct40 = 100 * (abeta40 / 7584 - 1),
+    pct37 = 100 * (abeta37 / 702 - 1),
+    r4240 = abeta42 / abeta40,
+    r4238 = abeta42 / abeta38,
+    r4237 = abeta42 / abeta37
+  )
+```
+
+```{r fig5-plot, fig.width = 7, fig.height = 5}
+ss |>
+  select(dose,
+    `(a) Abeta42 % change` = pct42, `(b) Abeta40 % change` = pct40,
+    `(c) Abeta37 % change` = pct37, `(d) Abeta42:Abeta40` = r4240,
+    `(e) Abeta42:Abeta38` = r4238, `(f) Abeta42:Abeta37` = r4237
+  ) |>
+  pivot_longer(-dose) |>
+  ggplot(aes(dose, value)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y") +
+  labs(
+    x = "PF-06648671 dose (mg QD)", y = NULL,
+    title = "Typical average steady-state effects",
+    caption = "Replicates the median lines of Figure 5 of Ahn 2020."
+  )
+```
+
+The paper gives several numbers from this analysis in the Results text, and
+the maintainers read the 500 mg end of the median lines in Figure 5 by eye.
+The typical model reproduces each of them:
+
+```{r fig5-check}
+at <- function(d) ss[ss$dose == d, ]
+f5 <- tibble::tribble(
+  ~Quantity, ~Paper, ~Model,
+  "Abeta42 % change at 75 mg", -50, at(75)$pct42,
+  "Abeta40 % change at 250 mg", -50, at(250)$pct40,
+  "Abeta42 % change at 500 mg (Figure 5a, read by eye)", -68, at(500)$pct42,
+  "Abeta40 % change at 500 mg (Figure 5b, read by eye)", -57, at(500)$pct40,
+  "Abeta37 % change at 500 mg (Figure 5c, read by eye)", 480, at(500)$pct37,
+  "Abeta42:Abeta40 at 0 mg", 0.13, at(0)$r4240,
+  "Abeta42:Abeta38 at 0 mg", 0.42, at(0)$r4238,
+  "Abeta42:Abeta37 at 0 mg", 1.42, at(0)$r4237,
+  "Abeta42:Abeta40 at 200 mg", 0.09, at(200)$r4240,
+  "Abeta42:Abeta38 at 200 mg", 0.10, at(200)$r4238,
+  "Abeta42:Abeta37 at 200 mg", 0.11, at(200)$r4237,
+  "Abeta42:Abeta40 % change at 200 mg", -30, 100 * (at(200)$r4240 / at(0)$r4240 - 1)
+)
+knitr::kable(f5, digits = 3, caption = "Results-text values (Ahn 2020) vs. typical model.")
+
+# Deterministic typical-value solves of the published parameters; the
+# tolerances are the rounding of the printed values.
+stopifnot(
+  abs(at(75)$pct42 - (-50)) < 3,
+  abs(at(250)$pct40 - (-50)) < 3,
+  abs(at(500)$pct42 - (-68)) < 5,
+  abs(at(500)$pct40 - (-57)) < 5,
+  abs(at(500)$pct37 - 480) < 40,
+  abs(at(0)$r4240 - 0.13) < 0.005,
+  abs(at(0)$r4238 - 0.42) < 0.005,
+  abs(at(0)$r4237 - 1.42) < 0.01,
+  abs(at(200)$r4240 - 0.09) < 0.01,
+  abs(at(200)$r4238 - 0.10) < 0.01,
+  abs(at(200)$r4237 - 0.11) < 0.01,
+  abs(100 * (at(200)$r4240 / at(0)$r4240 - 1) - (-30)) < 3
+)
+```
+
+# Assumptions and deviations
+
+- **PD between-subject variability is not published.** Eq. (1) has an
+  additive eta on the placebo magnitude Pmax, and the Discussion says the
+  joint model accounts for correlated baselines and responses between
+  species, but no PD variance or covariance appears in the paper or its
+  supplement. The four `etapmax_*` etas are included at a fixed variance of
+  zero; no other PD etas are encoded. CSF Abeta simulations therefore vary
+  only through PK variability.
+- **PD residual error is not published.** Each CSF endpoint carries a
+  proportional residual SD fixed at zero, so simulated CSF values are model
+  predictions without measurement noise.
+- **Placebo drift units and time origin.** Table S3 gives no units for Pmax.
+  Pmax is taken as pg/mL per h^Kp, added to the predicted concentration, with
+  time in hours after the dose. This follows the Methods ("the sum of
+  baseline, placebo ... and treatment effects") and matches the placebo
+  increments in Figure 1. Negative times (the 2-h pre-dose sample) are given
+  zero drift.
+- **Placebo study indicator.** The drift applies only to the serial-CSF data
+  of B7991003. It is switched on by the study indicator `STUDY_B7991003`.
+  Set it to 0 for single-lumbar-puncture designs such as B7991002.
+- **Food effect and elderly subjects.** Table S4 has no covariates. The food
+  effect in B7991001 (Tmax delayed by 3 h, Cmax -24%, AUC +23%) and the
+  roughly 20% lower day-14 exposure in elderly subjects are not part of the
+  model.
+- **CSF drug concentration** was not used in the model. Tubing adsorption in
+  B7991003 lowered the measured CSF concentrations. Plasma concentration
+  drives all four species directly.
+- No erratum or correction notice for the article was found (checked
+  2026-11-26).

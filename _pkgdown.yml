@@ -6020,6 +6020,8 @@ navbar:
         href: articles/Lin_2022_PF05251749.html
       - text: "PF05251749 750mg (Lin 2022)"
         href: articles/Lin_2022_PF05251749.html
+      - text: "PF06648671 (Ahn 2020)"
+        href: articles/Ahn_2020_PF06648671.html
       - text: "PRO95780 (Cao 2013)"
         href: articles/Cao_2013_PRO95780.html
       - text: "Paclitaxel (He 2022)"
@@ -9379,6 +9381,7 @@ articles:
   - articles/Ahmed_2020_cyclophosphamide
   - articles/Ahmed_2024_vancomycin
   - articles/Ahn_2014_parathyroidHormone
+  - articles/Ahn_2020_PF06648671
   - articles/Ahn_2023_vupanorsen
   - articles/Ahsman_2010_cefotaxime
   - articles/Ai_2024_ractopamine_goat_pbpk

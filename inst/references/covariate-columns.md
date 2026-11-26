@@ -27893,3 +27893,14 @@ is the experimental condition itself, held constant for the whole solve.
   - `Sukarnjanaset et al. [11]` -- Kong 2025 Table 1 and Eq. 23.
 - **Example models:** `Kong_2025b_piperacillin_tazobactam.R` (sets the piperacillin unbound fraction to 1, held constant, instead of 0.645, so measured unbound equals total concentration in that study).
 - **Notes:** Auto-approved member of the `STUDY_<id>` family. Kong 2025 treats the study as an outlier in protein binding (Discussion, limitations). Sibling of `STUDY_SIME2014` in the same model.
+
+### STUDY_B7991003 (**canonical for the PF-06648671 serial-CSF-sampling single-dose study B7991003 indicator**)
+- **Description:** 1 = the subject belongs to Pfizer study B7991003 (NCT02407353; single oral dose of the gamma-secretase modulator PF-06648671 or placebo in healthy adults, with serial CSF sampling over 36 h through an indwelling lumbar catheter); 0 = any other study of the pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (other studies, in particular the single-lumbar-puncture multiple-dose study B7991002).
+- **Source aliases:**
+  - `B7991003` -- Ahn 2020 Table 1 and Methods 'PK/PD modeling' ('In B7991003, an empirical placebo model was developed for each Abeta species').
+- **Example models:** `Ahn_2020_PF06648671.R` (switches on the additive power-of-time placebo drift `(Pmax + eta) * time^Kp` on each of the four observed CSF amyloid-beta species).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. The paper attributes the drift to frequent CSF sampling through the catheter rather than to the study as such, and reports a negligible placebo effect with the single lumbar puncture of B7991002; a user simulating another serial-catheter design would set it to 1.
