@@ -8580,6 +8580,8 @@ navbar:
         href: articles/Klunder_2017_upadacitinib.html
       - text: "Upadacitinib (Klunder 2019)"
         href: articles/Klunder_2019_upadacitinib.html
+      - text: "Upadacitinib (Mohamed 2020)"
+        href: articles/Mohamed_2020_upadacitinib.html
       - text: "Upadacitinib (PonceBobadilla 2023)"
         href: articles/PonceBobadilla_2023_upadacitinib.html
       - text: "Upadacitinib asas20 as (Bhatnagar 2024)"
@@ -8590,6 +8592,20 @@ navbar:
         href: articles/Bhatnagar_2024_upadacitinib.html
       - text: "Upadacitinib asas40 nraxspa (Bhatnagar 2024)"
         href: articles/Bhatnagar_2024_upadacitinib.html
+      - text: "Upadacitinib cdai150 (Mohamed 2020)"
+        href: articles/Mohamed_2020_upadacitinib.html
+      - text: "Upadacitinib clinrem (Mohamed 2020)"
+        href: articles/Mohamed_2020_upadacitinib.html
+      - text: "Upadacitinib clinresp (Mohamed 2020)"
+        href: articles/Mohamed_2020_upadacitinib.html
+      - text: "Upadacitinib endoimp (Mohamed 2020)"
+        href: articles/Mohamed_2020_upadacitinib.html
+      - text: "Upadacitinib endoimp25 (Mohamed 2020)"
+        href: articles/Mohamed_2020_upadacitinib.html
+      - text: "Upadacitinib endorem (Mohamed 2020)"
+        href: articles/Mohamed_2020_upadacitinib.html
+      - text: "Upadacitinib hv er (Mohamed 2020)"
+        href: articles/Mohamed_2020_upadacitinib.html
       - text: "Upadacitinib induction clinrem (PonceBobadilla 2023)"
         href: articles/PonceBobadilla_2023_upadacitinib.html
       - text: "Upadacitinib induction clinresp (PonceBobadilla 2023)"
@@ -11137,6 +11153,7 @@ articles:
   - articles/Mohamed_2013_procainamide
   - articles/Mohamed_2016_colistin_meropenem
   - articles/Mohamed_2019_upadacitinib
+  - articles/Mohamed_2020_upadacitinib
   - articles/MohammedAli_2023_tacrolimus
   - articles/MohammedAli_2025_tacrolimus
   - articles/Mohanan_2017_fludarabine

@@ -1,0 +1,771 @@
+---
+title: "Upadacitinib in Crohn's disease: population PK and exposure-response (Mohamed 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Upadacitinib in Crohn's disease: population PK and exposure-response (Mohamed 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Mohamed M-EF, Klunder B, Lacerda AP, Othman AA. Exposure-Response
+  Analyses for Upadacitinib Efficacy and Safety in the Crohn's Disease CELEST
+  Study and Bridging to the Extended-Release Formulation. *Clin Pharmacol
+  Ther*. 2020;107(3):639-649.
+* Article: <https://doi.org/10.1002/cpt.1668> (open access, PMC7027977).
+  Parameter estimates are in the Supporting Information: Tables S3 and S4
+  (population PK), S5 (Markov models), S6 (endoscopic regressions) and S7
+  (NONMEM control streams).
+
+The paper extends the upadacitinib population PK model to patients with
+Crohn's disease (CD), characterises the absorption of the extended-release (ER)
+tablet from a phase 1 study, and links exposure to six efficacy end points of
+the 16-week CELEST induction period. All eight models are packaged:
+
+| Model | What it is | Source |
+|-------|------------|--------|
+| `Mohamed_2020_upadacitinib` | Two-compartment PK in healthy, RA and CD subjects (IR), with the ER absorption branch | Tables S3, S4 |
+| `Mohamed_2020_upadacitinib_hv_er` | The ER formulation study fit in healthy subjects (IR and ER) | Table S4 |
+| `Mohamed_2020_upadacitinib_clinresp` | Markov model, clinical response, driven by time-varying concentration | Table S5 |
+| `Mohamed_2020_upadacitinib_clinrem` | Markov model, clinical remission 2.8/1.0, driven by steady-state Cmin | Tables S5, S7 |
+| `Mohamed_2020_upadacitinib_cdai150` | Markov model, CDAI < 150, driven by steady-state Cmin | Table S5 |
+| `Mohamed_2020_upadacitinib_endoimp25` | Emax regression, endoscopic response 25%, driven by Cave | Table S6 |
+| `Mohamed_2020_upadacitinib_endoimp` | Emax regression, endoscopic response 50%, driven by Cave | Table S6 |
+| `Mohamed_2020_upadacitinib_endorem` | Emax regression, endoscopic remission, driven by Cave | Table S6 |
+
+```{r load}
+mod_pk <- readModelDb("Mohamed_2020_upadacitinib")
+mod_hv <- readModelDb("Mohamed_2020_upadacitinib_hv_er")
+mod_resp <- readModelDb("Mohamed_2020_upadacitinib_clinresp")
+mod_rem <- readModelDb("Mohamed_2020_upadacitinib_clinrem")
+mod_cdai <- readModelDb("Mohamed_2020_upadacitinib_cdai150")
+mod_er25 <- readModelDb("Mohamed_2020_upadacitinib_endoimp25")
+mod_er50 <- readModelDb("Mohamed_2020_upadacitinib_endoimp")
+mod_erem <- readModelDb("Mohamed_2020_upadacitinib_endorem")
+
+# Two rxode2 warnings are expected here and carry no information: the
+# disease- and phase-gated random effects of the PK model (an eta multiplied by
+# a 0/1 indicator) cannot be mu-referenced, and the Markov and regression
+# models have no random effects, so a multi-subject solve has no 'omega'.
+# Only those two messages are muffled; any other warning still shows.
+quiet_known <- function(expr) {
+  withCallingHandlers(expr, warning = function(w) {
+    if (grepl("non-mu referenced|without 'omega'", conditionMessage(w))) {
+      invokeRestart("muffleWarning")
+    }
+  })
+}
+solve_quiet <- function(...) quiet_known(rxode2::rxSolve(...))
+```
+
+## Structure
+
+**PK.** Two compartments with first-order absorption after a lag time.
+Women have 15% lower CL/F and 25% lower Vc/F than men; CL/F scales with
+creatinine clearance (exponent 0.313) and Vc/F with body weight (exponent
+0.490). RA patients have 22% lower CL/F than healthy subjects and CD patients;
+both patient groups absorb 1.63 times faster than healthy subjects. Between-subject
+variability on CL/F is 16% in healthy subjects, 27% in RA and 41% in CD.
+The ER tablet splits the absorbed dose between a slow first-order route
+(44.6%, Ka 0.100 1/h) and a 6.11 h zero-order input into the central
+compartment, both after a 0.225 h lag, with 74.2% bioavailability relative to
+the IR capsule. In `Mohamed_2020_upadacitinib` that ER branch is attached to
+the final IR model, which is how the paper simulated ER regimens in CD
+(Table 2); `Mohamed_2020_upadacitinib_hv_er` is the study fit itself, in which
+the IR absorption was re-estimated in healthy subjects. An ER dose is two
+dose records: one into `depot` and one into `central` with `rate = -2`.
+
+**Clinical end points.** Each is a three-state continuous-time Markov model
+(no response, response, dropout; Figure S3). Upadacitinib multiplies the
+no-response to response rate K01 by `1 + Emax * C / (EC50 + C)` (Supplement
+Methods Equation 1). A factor fitted to the placebo arm multiplies both K01 and
+K10, and K01 is raised early in treatment: by a factor of 4.60 in the first
+two weeks for clinical response (Table S5 footnote c); by adding 1.57 (two
+weeks, clinical remission) or 3.60 (four weeks, CDAI < 150) to the drug-effect
+factor (footnotes d and e). The concentration `C` is the time-varying plasma
+concentration for clinical response, and the individual steady-state minimum
+concentration for the other two. The state probabilities are ODE states
+(`s_noresp`, `s_resp`, `s_dropout`), and the outputs (`prob_clinresp`,
+`prob_clinrem`, `prob_cdai150`) count responders who have not dropped out,
+the nonresponder-imputation (NRI) proportion of Figure 4.
+
+**Endoscopic end points.** `P = Placebo + (Max - Placebo) * Cave / (EC50 + Cave)`
+(Supplement Methods Equation 2), one assessment per patient at week 12 or 16.
+
+# Population
+
+CELEST (NCT02365649) randomised 220 adults with moderately-to-severely active
+Crohn's disease (CDAI 220-450, SES-CD >= 6, or >= 4 for ileal-only disease)
+and an inadequate response or intolerance to an immunomodulator or anti-TNF
+therapy to placebo or immediate-release upadacitinib 3, 6, 12 or 24 mg twice
+daily or 24 mg once daily for 16 weeks. The exposure-response analyses used
+216 of them: 57% women, 86% White, mean age 40.8 years, mean weight 75.7 kg,
+mean baseline CDAI 300 and SES-CD 14.9; 96% had failed at least one TNF
+antagonist (Table 1). The population PK analysis pooled 753 subjects from
+six studies: healthy volunteers, RA patients from one phase 1 substudy and two
+phase 2 studies, and 180 CELEST patients with PK samples (Table S2; the ER
+study, a further 71 healthy subjects, was fitted separately).
+
+```{r population}
+str(quiet_known(mod_pk())$population)
+str(mod_rem()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The table
+collects them.
+
+| Parameter | Value | Model(s) | Source |
+|-----------|-------|----------|--------|
+| `lcl`, `lvc`, `lvp`, `lq` | log(39.6) L/h, log(141) L, log(66.3) L, log(3.39) L/h | PK (fixed in `_hv_er`, `_clinresp`) | Table S3; Table S4 'fix' |
+| `lka` | log(3.60) 1/h; log(9.68) in `_hv_er`; log(3.60 x 1.63) in `_clinresp` | PK | Table S3 'KA'; Table S4 'KA IR' |
+| `ltlag` | log(0.469) h; log(0.247) in `_hv_er` | PK | Table S3 'ALAG1'; Table S4 'ALAG1 IR' |
+| `e_dis_ra_cl`, `e_sexf_cl`, `e_crcl_cl` | log(0.779), log(0.850), 0.313 | PK | Table S3 footnote b ratios and exponent |
+| `e_sexf_vc`, `e_wt_vc` | log(0.748), 0.490 | PK | Table S3 footnote c |
+| `e_pat_ka` | log(1.63) | `Mohamed_2020_upadacitinib` | Table S3 footnote d |
+| `bc_tlag` | fixed(8) | `Mohamed_2020_upadacitinib` | Table S3 'Box-cox Skewness Parameter' |
+| `lka_er`, `ltlag_er`, `logitffo`, `ld2`, `lfrel_er` | log(0.100), log(0.225), logit(0.446), log(6.11), log(0.742) | PK, `_clinresp` | Table S4; control stream F1/F2/D2/ALAG2 lines (Table S7) |
+| `etalcl_hv` / `_ra` / `_cd` | 0.162^2, 0.272^2, 0.412^2 | `Mohamed_2020_upadacitinib` | Table S3 %ISV |
+| `etalvc_hv` / `_pat` | 0.134^2, 0.286^2 | `Mohamed_2020_upadacitinib` | Table S3 %ISV |
+| `etalka`, `etaltlag`, `etaiov_ltlag` | 1.13^2, 0.366^2, 0.0936 | `Mohamed_2020_upadacitinib` | Table S3 |
+| ER etas | 1.11^2, 0.467^2, 1.49, 1.21^2, 0.170^2 | PK, `_clinresp` | Table S4 %ISV |
+| `propSd`, `addSd` | 0.305, 0.152 ng/mL; 0.288, 0.122 in `_hv_er` | PK | Tables S3, S4 |
+| `llambda01`, `llambda10` | fixed: 0.000123 / 0.000158; 0.0000603 / 0.000324; 0.0000813 / 0.000309 1/h | clinresp; clinrem; cdai150 | Table S5 |
+| `llambda0d`, `llambda1d` | 0.0000912 / 0.0000380; 0.0000813 / 0.0000158; 0.0000708 / 0.0000427 1/h | clinresp; clinrem; cdai150 | Table S5 |
+| `lemax`, `lec50` | 2.92, 15.6; 4.57, 6.11; 4.31, 10.2 ng/mL | clinresp; clinrem; cdai150 | Table S5 |
+| `e_early_lambda01` | 3.60 (x, 2 wk); 1.57 (+, 2 wk); 3.60 (+, 4 wk) | clinresp; clinrem; cdai150 | Table S5 footnotes c, d, e |
+| `lscale_lambda` | log(1.98); log(1.80); log(1.25) | clinresp; clinrem; cdai150 | Table S5 footnote f |
+| `lhill`, `minc` | fixed(log(1)); 0.001 ng/mL | Markov models | Table S7 control stream |
+| `le0` / `e0`, `lemax`, `lec50` | 0.153, 0.873, 40.6; 0.0288, 0.519, 26.2; fixed(0), 0.295, 26.9 | endoimp25; endoimp; endorem | Table S6 |
+| Markov ODEs | `d/dt(s_*)` | Markov models | Figure S3; Table S7 `$DES` |
+
+# Virtual cohort
+
+Covariates for a CD cohort are drawn from the CELEST summaries: 57% women
+(Table 1), body weight log-normal with mean 75.7 kg and SD 20.1 kg truncated
+to the observed 39-152 kg, and creatinine clearance log-normal with mean
+111 mL/min and SD 35 mL/min truncated to the observed 43-253 mL/min (Table S2,
+CELEST column). One set of 200 virtual patients is given every regimen.
+
+```{r cohort}
+# rxode2 draws the random effects from its own per-thread stream, so the cohort
+# differs between machines. Every assertion below is a centre or quantile check
+# that holds for any cohort the model can produce.
+set.seed(20200301)
+rxode2::rxSetSeed(20200301)
+n_per_arm <- 200L
+
+rlnorm_ms <- function(n, m, s, lo, hi) {
+  sdlog <- sqrt(log(1 + (s / m)^2))
+  pmin(pmax(rlnorm(n, log(m) - sdlog^2 / 2, sdlog), lo), hi)
+}
+cohort <- tibble(
+  pid = seq_len(n_per_arm),
+  SEXF = rbinom(n_per_arm, 1, 0.57),
+  WT = rlnorm_ms(n_per_arm, 75.7, 20.1, 39, 152),
+  CRCL = rlnorm_ms(n_per_arm, 111.3, 35.1, 43.3, 253.1)
+)
+
+regimens <- tribble(
+  ~regimen, ~form, ~dose, ~tau,
+  "Placebo", "IR", 0, 12,
+  "3 mg BID", "IR", 3, 12,
+  "6 mg BID", "IR", 6, 12,
+  "12 mg BID", "IR", 12, 12,
+  "18 mg BID", "IR", 18, 12,
+  "24 mg BID", "IR", 24, 12,
+  "24 mg QD", "IR", 24, 24,
+  "7.5 mg QD ER", "ER", 7.5, 24,
+  "15 mg QD ER", "ER", 15, 24,
+  "30 mg QD ER", "ER", 30, 24,
+  "45 mg QD ER", "ER", 45, 24,
+  "60 mg QD ER", "ER", 60, 24
+) |>
+  mutate(rid = row_number(), FORM_UPA_ER = as.integer(form == "ER"))
+summary(cohort[, c("SEXF", "WT", "CRCL")])
+```
+
+# Steady-state exposures (Table 2)
+
+## The occasion effect on the lag time
+
+At phase 2 visits the lag time is `0.469 * exp((exp(eta)^8 - 1) / 8)` with
+`eta ~ N(0, 0.0936)` (Table S3). The Box-Cox shape of 8 bounds the lag below at
+0.469 x exp(-1/8) = 0.41 h but gives it a very long right tail:
+
+```{r lag-tail}
+lag_q <- tibble(
+  quantile = c(0.05, 0.25, 0.5, 0.75, 0.9, 0.95),
+  eta = qnorm(quantile, 0, sqrt(0.0936))
+) |>
+  mutate(lag_h = 0.469 * exp((exp(eta)^8 - 1) / 8))
+knitr::kable(lag_q, digits = 3, caption = "Quantiles of the phase 2 occasion lag time (h).")
+p_over_12h <- 1 - pnorm(log(8 * log(12 / 0.469) + 1) / 8, 0, sqrt(0.0936))
+p_over_12h
+stopifnot(abs(p_over_12h - 0.09) < 0.005)
+```
+
+About 9% of occasions draw a lag longer than a twice-daily dosing interval,
+which in simulation behaves like a delayed or missed dose; in a few percent of
+patients the draw is so large (10^4 h and more) that rxode2 cannot solve the
+profile and returns `NA`. The model carries the occasion effect as published.
+Table 2, however, summarises the empirical-Bayes profiles of the CELEST
+patients, whose occasion effects are shrunk towards zero, so the exposure
+summaries below hold the occasion effect at its median (`eta = 0`, a lag of
+0.469 h) by replacing one line of the model. Every other random effect is
+simulated.
+
+```{r pk-model-sim}
+mod_pk_sim <- quiet_known(
+  rxode2::rxode2(mod_pk) |>
+    rxode2::model(tlag_ir <- exp(ltlag + etaltlag * STUDY_UPA_PHASE1))
+)
+```
+
+Each virtual patient is dosed for 13 days and observed over the next dosing
+interval. The event table still carries the occasion index `OCC` (occasion 1
+for the run-in, 2 for the observed interval), which the model requires.
+
+```{r pk-events}
+t_ss <- 312 # h, start of the observed dosing interval
+make_pk_events <- function(reg) {
+  tidyr::crossing(cohort, reg) |>
+    mutate(id = (rid - 1L) * n_per_arm + pid) |>
+    group_by(id) |>
+    group_modify(function(d, key) {
+      n_runin <- t_ss / d$tau
+      dose <- tibble(
+        time = c(0, t_ss), amt = d$dose, evid = 1L, cmt = "depot",
+        ii = c(d$tau, 0), addl = c(n_runin - 1L, 0L), rate = 0, OCC = c(1L, 2L)
+      )
+      if (d$FORM_UPA_ER == 1L) dose <- bind_rows(dose, mutate(dose, cmt = "central", rate = -2))
+      obs <- tibble(
+        time = t_ss + seq(0, d$tau, by = 0.25), amt = 0, evid = 0L,
+        cmt = "central", ii = 0, addl = 0L, rate = 0, OCC = 2L
+      )
+      bind_rows(dose, obs) |>
+        mutate(
+          regimen = d$regimen, dose_mg = d$dose, tau = d$tau, SEXF = d$SEXF,
+          WT = d$WT, CRCL = d$CRCL, FORM_UPA_ER = d$FORM_UPA_ER, DIS_RA = 0L,
+          DIS_CD = 1L, STUDY_UPA_PHASE1 = 0L
+        )
+    }) |>
+    ungroup() |>
+    arrange(id, time, desc(evid))
+}
+ev_pk <- make_pk_events(filter(regimens, dose > 0))
+stopifnot(!anyDuplicated(ev_pk[ev_pk$evid == 0, c("id", "time")]))
+sim_pk <- solve_quiet(mod_pk_sim, ev_pk,
+  keep = c("regimen", "dose_mg", "tau", "FORM_UPA_ER"),
+  returnType = "data.frame"
+)
+stopifnot(!anyNA(sim_pk$Cc))
+```
+
+```{r figure-ss, fig.height = 5}
+sim_pk |>
+  mutate(tad = time - t_ss) |>
+  group_by(regimen, tad) |>
+  summarise(q05 = quantile(Cc, 0.05), q50 = median(Cc), q95 = quantile(Cc, 0.95), .groups = "drop") |>
+  mutate(regimen = factor(regimen, levels = regimens$regimen)) |>
+  ggplot(aes(tad, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.2) +
+  geom_line() +
+  facet_wrap(~regimen, scales = "free_y") +
+  labs(
+    x = "Time after dose (h)", y = "Upadacitinib (ng/mL)",
+    caption = "Median and 5th-95th percentiles over one steady-state dosing interval, virtual CD cohort."
+  )
+```
+
+## PKNCA
+
+Cmax, Cmin and Cave over the observed interval, per patient and regimen.
+
+```{r pknca}
+conc_df <- sim_pk |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, regimen)
+dose_df <- ev_pk |>
+  dplyr::filter(evid == 1, cmt == "depot", time == t_ss) |>
+  dplyr::select(id, time, amt, regimen)
+intervals <- bind_rows(
+  data.frame(start = t_ss, end = t_ss + 12, regimen = regimens$regimen[regimens$tau == 12 & regimens$dose > 0]),
+  data.frame(start = t_ss, end = t_ss + 24, regimen = regimens$regimen[regimens$tau == 24])
+) |>
+  mutate(cmax = TRUE, cmin = TRUE, cav = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_df, Cc ~ time | regimen + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id),
+  intervals = intervals
+))
+nca_df <- as.data.frame(nca)
+stopifnot(!anyNA(nca_df$PPORRES))
+```
+
+Table 2 gives the median (5th-95th percentile) exposures. For the IR regimens
+they come from the empirical-Bayes estimates of the CELEST patients, for the
+ER regimens from simulation.
+
+```{r nca-compare}
+table2 <- tribble(
+  ~regimen, ~cav, ~cmax, ~cmin,
+  "3 mg BID", 6.9, 21.8, 1.2,
+  "6 mg BID", 14.9, 40.2, 2.6,
+  "12 mg BID", 26.7, 80.7, 4.9,
+  "24 mg BID", 55.1, 176, 7.8,
+  "24 mg QD", 25.1, 161, 1.7,
+  "7.5 mg QD ER", 6.4, 17.3, 1.4,
+  "15 mg QD ER", 12.9, 34.7, 2.9,
+  "30 mg QD ER", 25.8, 69.3, 5.7,
+  "45 mg QD ER", 38.7, 104.0, 8.6,
+  "60 mg QD ER", 51.6, 138.6, 11.4
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = filter(nca_df, regimen %in% table2$regimen),
+  reference = table2,
+  by = "regimen",
+  units = c(cav = "ng/mL", cmax = "ng/mL", cmin = "ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated median vs Mohamed 2020 Table 2. * differs by more than 20%.")
+```
+
+```{r nca-gate}
+med <- nca_df |>
+  group_by(regimen, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop") |>
+  inner_join(pivot_longer(table2, -regimen, names_to = "PPTESTCD", values_to = "pub"),
+    by = c("regimen", "PPTESTCD")
+  ) |>
+  mutate(pct = 100 * (sim / pub - 1))
+knitr::kable(
+  med |> group_by(PPTESTCD) |>
+    summarise(median_pct = median(pct), max_abs_pct = max(abs(pct))),
+  digits = 1, caption = "Percent difference from Table 2 by metric, across regimens."
+)
+# Cave depends only on CL/F and the relative bioavailability; a wrong
+# clearance, sex or creatinine-clearance effect, bioavailability or unit moves
+# every regimen together by tens of percent.
+stopifnot(
+  abs(median(med$pct[med$PPTESTCD == "cav"])) < 10,
+  abs(median(med$pct[med$PPTESTCD == "cmax"])) < 15,
+  abs(median(med$pct[med$PPTESTCD == "cmin"])) < 25
+)
+```
+
+Cave, which depends only on CL/F and the relative bioavailability, lands within
+about 10% of Table 2 for every regimen, IR and ER. Cmax and Cmin of the IR
+regimens agree to a similar degree, although Table 2 summarises the 180 CELEST
+patients' own empirical-Bayes profiles rather than a simulated cohort.
+
+The ER rows agree less well in this population simulation: Cmax medians run
+roughly 10-17% low and Cmin medians scatter widely between regimens. The ER
+absorption parameters carry very large variability (Ka 111%, zero-order
+duration 121%, logit first-order fraction variance 1.49; Table S4), so the
+median Cmin of 200 patients is unstable, and with that variability the
+population profiles are flatter than the typical one. Table S4 also reports
+only the variances of a 5 x 5 block of ER random effects, so the packaged
+models simulate them as independent, which the paper's simulations did not.
+The typical patient, which carries none of that variability, reproduces the
+ER rows closely. The check below uses a typical woman (the majority sex in
+CELEST) with the CELEST mean creatinine clearance and body weight:
+
+```{r er-typical}
+ev_typ_er <- filter(regimens, form == "ER") |>
+  mutate(id = row_number()) |>
+  group_by(id) |>
+  group_modify(function(d, key) {
+    dose <- tibble(
+      time = 0, amt = d$dose, evid = 1L, cmt = c("depot", "central"),
+      ii = 24, addl = 13L, rate = c(0, -2), OCC = 1L
+    )
+    obs <- tibble(time = t_ss + seq(0, 24, by = 0.05), amt = 0, evid = 0L, cmt = "central", ii = 0, addl = 0L, rate = 0, OCC = 2L)
+    bind_rows(dose, obs) |> mutate(regimen = d$regimen)
+  }) |>
+  ungroup() |>
+  mutate(SEXF = 1, WT = 75.7, CRCL = 111.3, FORM_UPA_ER = 1L, DIS_RA = 0L, DIS_CD = 1L, STUDY_UPA_PHASE1 = 0L) |>
+  arrange(id, time, desc(evid))
+typ_er <- solve_quiet(rxode2::zeroRe(mod_pk), ev_typ_er, keep = "regimen", returnType = "data.frame") |>
+  group_by(regimen) |>
+  summarise(cmax = max(Cc), cmin = min(Cc), cav = mean(Cc), .groups = "drop") |>
+  inner_join(table2, by = "regimen", suffix = c("_typ", "_pub")) |>
+  mutate(
+    pct_cmax = 100 * (cmax_typ / cmax_pub - 1),
+    pct_cmin = 100 * (cmin_typ / cmin_pub - 1),
+    pct_cav = 100 * (cav_typ / cav_pub - 1)
+  )
+knitr::kable(
+  select(typ_er, regimen, cmax_typ, cmax_pub, cmin_typ, cmin_pub, cav_typ, cav_pub),
+  digits = 2, caption = "Typical CD woman vs Table 2 ER medians (ng/mL)."
+)
+# Typical-value solve, no random draws: the remaining difference is between a
+# typical patient and the median of the paper's simulated cohort.
+stopifnot(
+  all(abs(typ_er$pct_cmax) < 10),
+  all(abs(typ_er$pct_cmin) < 15),
+  all(abs(typ_er$pct_cav) < 10)
+)
+```
+
+## Relative bioavailability of the ER tablet
+
+In the healthy-volunteer formulation fit, the dose-normalised AUC of the ER
+tablet relative to the IR capsule must equal the 74.2% relative bioavailability,
+because clearance is common to both. Typical values, single doses of 30 mg ER
+and 24 mg IR, observed for 10 days.
+
+```{r rel-ba}
+hv_typ <- tibble(id = 1:2, FORM_UPA_ER = c(0L, 1L), dose = c(24, 30), SEXF = 0, WT = 74, CRCL = 106.9)
+ev_hv <- hv_typ |>
+  group_by(id) |>
+  group_modify(function(d, key) {
+    dose <- tibble(time = 0, amt = d$dose, evid = 1L, cmt = "depot", rate = 0)
+    if (d$FORM_UPA_ER == 1L) dose <- bind_rows(dose, mutate(dose, cmt = "central", rate = -2))
+    obs <- tibble(time = c(seq(0, 24, by = 0.1), seq(25, 240, by = 1)), amt = 0, evid = 0L, cmt = "central", rate = 0)
+    bind_rows(dose, obs) |> mutate(FORM_UPA_ER = d$FORM_UPA_ER, SEXF = d$SEXF, WT = d$WT, CRCL = d$CRCL, dose_mg = d$dose)
+  }) |>
+  ungroup()
+sim_hv <- solve_quiet(rxode2::zeroRe(mod_hv), ev_hv, keep = "dose_mg", returnType = "data.frame")
+nca_hv <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(dplyr::filter(sim_hv, !is.na(Cc)), Cc ~ time | id),
+  PKNCA::PKNCAdose(dplyr::filter(ev_hv, evid == 1, cmt == "depot"), amt ~ time | id),
+  intervals = data.frame(start = 0, end = 240, auclast = TRUE, cmax = TRUE, tmax = TRUE)
+)) |>
+  as.data.frame() |>
+  select(id, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(hv_typ, by = "id") |>
+  mutate(auc_per_mg = auclast / dose)
+knitr::kable(nca_hv, digits = 3, caption = "Typical healthy male, single dose.")
+frel_obs <- nca_hv$auc_per_mg[2] / nca_hv$auc_per_mg[1]
+frel_obs
+# Same parameters on both sides: the only error is the 240 h truncation and
+# the trapezoid.
+stopifnot(abs(frel_obs / 0.742 - 1) < 0.02)
+```
+
+The ER profile peaks around the end of the 6.1 h zero-order input, and the
+slow first-order route keeps its terminal phase flat; this matches the
+qualitative shape of Figure S1.
+
+# Markov models: checks that need no cohort
+
+## Probability is conserved
+
+```{r mass-balance}
+obs_h <- c(0, 2, 4, 8, 12, 16) * 168
+typ <- tibble(id = 1L, SEXF = 1, WT = 75, CRCL = 111, FORM_UPA_ER = 0L)
+ev_typ <- bind_rows(
+  tibble(id = 1L, time = 0, amt = 12, evid = 1L, cmt = "depot", ii = 12, addl = 16 * 14 - 1L),
+  tibble(id = 1L, time = obs_h, amt = 0, evid = 0L, cmt = "s_resp", ii = 0, addl = 0L)
+) |>
+  left_join(typ, by = "id") |>
+  arrange(time, desc(evid))
+mb <- solve_quiet(rxode2::zeroRe(mod_resp), ev_typ, returnType = "data.frame") |>
+  mutate(total = s_noresp + s_resp + s_dropout)
+stopifnot(max(abs(mb$total - 1)) < 1e-6)
+range(mb$total)
+```
+
+## Closed form for the steady-state-Cmin models
+
+With a constant `CTROUGH`, the remission and CDAI < 150 chains are
+time-homogeneous within the early window and after it, so the state
+probabilities are a product of two matrix exponentials. Both sides use the
+same rates, so the bound is tight.
+
+```{r closed-form}
+markov_q <- function(k01, k10, k0d, k1d) {
+  q <- matrix(0, 3, 3)
+  q[1, 2] <- k01
+  q[1, 3] <- k0d
+  q[2, 1] <- k10
+  q[2, 3] <- k1d
+  diag(q) <- -rowSums(q)
+  q
+}
+expm_eigen <- function(a) {
+  e <- eigen(a)
+  Re(e$vectors %*% diag(exp(e$values)) %*% solve(e$vectors))
+}
+closed_form <- function(p, cmin, t) {
+  eff <- 1 + p$emax * (cmin + 0.001) / (p$ec50 + 0.001 + cmin + 0.001)
+  early_q <- markov_q(p$k01 * (eff + p$early) * p$s, p$k10 * p$s, p$k0d, p$k1d)
+  late_q <- markov_q(p$k01 * eff * p$s, p$k10 * p$s, p$k0d, p$k1d)
+  sapply(t, function(tt) {
+    pr <- c(1, 0, 0) %*% expm_eigen(early_q * min(tt, p$t_early))
+    if (tt > p$t_early) pr <- pr %*% expm_eigen(late_q * (tt - p$t_early))
+    pr[2]
+  })
+}
+par_rem <- list(k01 = 0.0000603, k10 = 0.000324, k0d = 0.0000813, k1d = 0.0000158,
+  emax = 4.57, ec50 = 6.11, early = 1.57, s = 1.80, t_early = 336)
+par_cdai <- list(k01 = 0.0000813, k10 = 0.000309, k0d = 0.0000708, k1d = 0.0000427,
+  emax = 4.31, ec50 = 10.2, early = 3.60, s = 1.25, t_early = 672)
+grid_h <- sort(c(seq(0, 16 * 168, by = 84), 336, 672))
+ev_cf <- tidyr::crossing(id = 1:3, time = grid_h) |>
+  mutate(CTROUGH = c(0, 2, 8)[id], amt = 0, evid = 0L, cmt = "s_resp")
+cf <- bind_rows(
+  solve_quiet(mod_rem, ev_cf, returnType = "data.frame") |>
+    mutate(model = "clinrem", prob = prob_clinrem),
+  solve_quiet(mod_cdai, ev_cf, returnType = "data.frame") |>
+    mutate(model = "cdai150", prob = prob_cdai150)
+) |>
+  select(model, id, time, prob) |>
+  left_join(distinct(ev_cf, id, CTROUGH), by = "id") |>
+  group_by(model, CTROUGH) |>
+  mutate(closed = closed_form(if (model[1] == "clinrem") par_rem else par_cdai, CTROUGH[1], time)) |>
+  ungroup()
+max(abs(cf$prob - cf$closed))
+stopifnot(max(abs(cf$prob - cf$closed)) < 1e-5)
+```
+
+# Efficacy by regimen (Figure 4)
+
+The paper simulated 100 trials of 220 patients per regimen and printed the
+median percentage of responders (NRI) at week 12 for the clinical end points
+and at week 12/16 for the endoscopic ones (Figure 4). Here each virtual patient
+receives every regimen. The two steady-state exposure metrics come from the PK
+solve above, with Cave computed by the paper's formula (Table 2 footnote a:
+dose x relative bioavailability / (CL/F x tau)) and Cmin the minimum over the
+observed interval. The clinical response model carries its own PK and is solved
+with 12 weeks of dosing.
+
+```{r er-exposures}
+indiv <- sim_pk |>
+  group_by(id, regimen) |>
+  summarise(cl = first(cl), frel = first(frel), dose_mg = first(dose_mg), tau = first(tau), .groups = "drop") |>
+  mutate(CAV = 1000 * dose_mg * frel / (cl * tau)) |>
+  left_join(
+    nca_df |> filter(PPTESTCD == "cmin") |> select(id, regimen, CTROUGH = PPORRES),
+    by = c("id", "regimen")
+  )
+pbo <- tibble(id = 0L - seq_len(n_per_arm), regimen = "Placebo", CAV = 0, CTROUGH = 0)
+indiv <- bind_rows(select(indiv, id, regimen, CAV, CTROUGH), pbo) |>
+  mutate(id = row_number())
+stopifnot(!anyNA(indiv$CAV), !anyNA(indiv$CTROUGH))
+```
+
+```{r er-static}
+wk12 <- 12 * 168
+ev_static <- indiv |> mutate(time = wk12, amt = 0, evid = 0L, cmt = "s_resp")
+solve_prob <- function(mod, col, ev) {
+  solve_quiet(mod, ev, keep = "regimen", returnType = "data.frame") |>
+    group_by(regimen) |>
+    summarise(pct = 100 * mean(.data[[col]]), .groups = "drop")
+}
+ev_endo <- select(ev_static, id, regimen, CAV) |> mutate(time = 0, amt = 0, evid = 0L)
+res_static <- bind_rows(
+  solve_prob(mod_rem, "prob_clinrem", ev_static) |> mutate(endpoint = "Clinical remission 2.8/1.0"),
+  solve_prob(mod_cdai, "prob_cdai150", ev_static) |> mutate(endpoint = "CDAI < 150"),
+  solve_prob(mod_er25, "prob_endoimp25", ev_endo) |> mutate(endpoint = "Endoscopic response 25%"),
+  solve_prob(mod_er50, "prob_endoimp", ev_endo) |> mutate(endpoint = "Endoscopic response 50%"),
+  solve_prob(mod_erem, "prob_endorem", ev_endo) |> mutate(endpoint = "Endoscopic remission")
+)
+```
+
+```{r er-clinresp}
+ev_resp <- tidyr::crossing(cohort, regimens) |>
+  mutate(id = (rid - 1L) * n_per_arm + pid) |>
+  group_by(id) |>
+  group_modify(function(d, key) {
+    dose <- tibble(
+      time = 0, amt = d$dose, evid = 1L, cmt = "depot", ii = d$tau,
+      addl = as.integer(16 * 168 / d$tau) - 1L, rate = 0
+    )
+    if (d$FORM_UPA_ER == 1L) dose <- bind_rows(dose, mutate(dose, cmt = "central", rate = -2))
+    obs <- tibble(time = obs_h, amt = 0, evid = 0L, cmt = "s_resp", ii = 0, addl = 0L, rate = 0)
+    bind_rows(dose, obs) |>
+      mutate(regimen = d$regimen, SEXF = d$SEXF, WT = d$WT, CRCL = d$CRCL, FORM_UPA_ER = d$FORM_UPA_ER)
+  }) |>
+  ungroup() |>
+  arrange(id, time, desc(evid))
+sim_resp <- solve_quiet(mod_resp, ev_resp, keep = "regimen", returnType = "data.frame")
+stopifnot(!anyNA(sim_resp$prob_clinresp))
+res_resp <- sim_resp |>
+  filter(time == wk12) |>
+  group_by(regimen) |>
+  summarise(pct = 100 * mean(prob_clinresp), .groups = "drop") |>
+  mutate(endpoint = "Clinical response")
+```
+
+```{r figure-4}
+fig4 <- tribble(
+  ~regimen, ~`Clinical response`, ~`Clinical remission 2.8/1.0`, ~`CDAI < 150`,
+  ~`Endoscopic response 25%`, ~`Endoscopic response 50%`, ~`Endoscopic remission`,
+  "Placebo", 35, 12, 21, 15, 3, 0,
+  "3 mg BID", 49, 19, 25, 26, 14, 6,
+  "6 mg BID", 54, 23, 27, 34, 20, 10,
+  "12 mg BID", 57, 28, 32, 45, 28, 15,
+  "18 mg BID", 60, 31, 34, 52, 33, 18,
+  "24 mg BID", 61, 33, 36, 57, 36, 20,
+  "24 mg QD", 55, 22, 26, 45, 28, 15,
+  "7.5 mg QD ER", 49, 21, 26, 26, 13, 6,
+  "15 mg QD ER", 52, 25, 29, 33, 20, 10,
+  "30 mg QD ER", 56, 29, 33, 44, 27, 15,
+  "45 mg QD ER", 58, 32, 35, 51, 32, 17,
+  "60 mg QD ER", 60, 33, 37, 56, 35, 19
+) |>
+  pivot_longer(-regimen, names_to = "endpoint", values_to = "published")
+er_cmp <- bind_rows(res_resp, res_static) |>
+  inner_join(fig4, by = c("regimen", "endpoint")) |>
+  mutate(diff = pct - published, regimen = factor(regimen, levels = regimens$regimen))
+
+er_cmp |>
+  ggplot(aes(regimen, pct)) +
+  geom_col(fill = "grey70") +
+  geom_point(aes(y = published), colour = "firebrick", size = 2) +
+  facet_wrap(~endpoint, ncol = 3) +
+  labs(
+    x = NULL, y = "Responders at week 12 (%, NRI)",
+    caption = "Bars: packaged models, virtual CD cohort. Red points: Figure 4 of Mohamed 2020."
+  ) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 7))
+```
+
+Replicates Figure 4 of Mohamed 2020.
+
+```{r figure-4-table}
+er_cmp |>
+  arrange(endpoint, regimen) |>
+  select(endpoint, regimen, published, pct, diff) |>
+  dplyr::rename(
+    "End point" = endpoint, "Regimen" = regimen, "Figure 4 (%)" = published,
+    "Model (%)" = pct, "Difference (points)" = diff
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+```{r figure-4-gate}
+er_gate <- er_cmp |>
+  group_by(endpoint) |>
+  summarise(median_diff = median(diff), q90_abs = quantile(abs(diff), 0.9))
+knitr::kable(er_gate, digits = 1)
+# A mis-transcribed rate, Emax, EC50 or early-window term shifts a whole panel
+# by several points; the published bars are medians of 100 simulated trials
+# read to the nearest percentage point.
+stopifnot(
+  all(abs(er_gate$median_diff) < 3),
+  all(er_gate$q90_abs < 5)
+)
+```
+
+All six end points reproduce the printed bars of Figure 4 to within about
+3 percentage points for every IR and ER regimen, including the placebo arms,
+which depend only on the transition rates and the early-window terms. The
+clinical-response bars of the ER regimens run 2-3 points above Figure 4, the
+largest differences in the figure.
+
+## Clinical response over time (Figure 3)
+
+```{r figure-3}
+fig3_regs <- c("Placebo", "3 mg BID", "6 mg BID", "12 mg BID", "24 mg BID", "24 mg QD")
+sim_resp |>
+  filter(regimen %in% fig3_regs) |>
+  group_by(regimen, time) |>
+  summarise(
+    nri = 100 * mean(prob_clinresp),
+    on_study = 100 * mean(prob_clinresp / (1 - s_dropout)), .groups = "drop"
+  ) |>
+  pivot_longer(c(nri, on_study), names_to = "denominator", values_to = "pct") |>
+  mutate(regimen = factor(regimen, levels = fig3_regs), week = time / 168) |>
+  ggplot(aes(week, pct, linetype = denominator)) +
+  geom_line() +
+  facet_wrap(~regimen) +
+  scale_x_continuous(breaks = c(0, 2, 4, 8, 12, 16)) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(
+    x = "Time (weeks)", y = "Clinical response (%)",
+    caption = paste(
+      "Expected percentage of responders, all randomised (NRI) and among those on study.",
+      "Compare with the model lines of Figure 3 of Mohamed 2020."
+    )
+  )
+```
+
+The steep rise over the first two weeks is the early K01 boost; drug arms rise
+faster than placebo already in that window, which is why the boost is read as
+multiplying the whole drug-modified K01 (Table S5 footnote c) rather than the
+placebo rate alone. Figure 3 plots responders among patients still on study,
+which sits a few points above the NRI curve that Figure 4 uses.
+
+# Assumptions and deviations
+
+* **ER branch attached to the CD model.** The ER absorption parameters were
+  estimated in healthy subjects with all disposition parameters fixed
+  (Table S4). The paper's ER simulations in CD combined them with the final IR
+  model (Methods; Table 2), and `Mohamed_2020_upadacitinib` and
+  `_clinresp` do the same. The control stream's ER branch replaces Ka
+  outright, so the patient Ka ratio of 1.63 does not apply to the ER tablet.
+  The re-estimated IR absorption of the formulation study (Ka 9.68 1/h,
+  lag 0.247 h) and its residual error are kept only in `_hv_er`.
+* **ER random effects are diagonal.** The formulation study estimated the five
+  ER random effects as a 5 x 5 block (`$OMEGA BLOCK(5)`, Table S7), but only
+  the variances are reported (Table S4), so the packaged models omit the
+  covariances. Population medians of ER Cmax and Cmin therefore differ from
+  the paper's simulated Table 2 rows by more than those of a typical patient
+  do (see "Steady-state exposures").
+* **Lag-time inter-occasion variability.** Table S3 reports a Box-Cox shape of
+  8 for the inter-occasion variability on the lag time at phase 2 visits. With
+  that shape the occasion lag time is bounded below (0.41 h) but has a very
+  long right tail: roughly 9% of occasions draw a lag above 12 h, which in
+  simulation acts like a delayed or missed dose, and the most extreme draws
+  make rxode2 return `NA` for that patient. This is encoded as published; the
+  population exposure summaries in this vignette hold the occasion effect at
+  its median instead (see "The occasion effect on the lag time"). Event tables for
+  `Mohamed_2020_upadacitinib` need an `OCC` column, and rxode2 draws a separate
+  occasion effect per patient only when patients have at least two `OCC`
+  levels. Phase 1 subjects carry the interindividual lag eta instead
+  (`STUDY_UPA_PHASE1 = 1`). The checker reports `OCC` as a covariate not used in
+  `model()`, because it is consumed by the `| OCC` nesting in `ini()`.
+* **Clinical response PK.** `_clinresp` carries the CD arm of the PK model at
+  the typical lag time, without the occasion effect, and with the PK parameters
+  fixed: the Markov fit took each patient's empirical-Bayes PK as given.
+* **Creatinine-clearance reference.** The control streams divide by
+  106.9 mL/min; Tables S3 and S4 print 107. The packaged models use 106.9.
+* **Early-window boundary and the minc guard.** Table S7 prints the control
+  stream of the clinical remission model only. Its form (K01 raised while
+  `T <= 336` h, Hill coefficient fixed to 1, and 0.001 ng/mL added to the
+  concentration and the EC50) is assumed for the other two Markov models, with
+  the four-week window of CDAI < 150 taken as `t <= 672` h. Time 0 is the
+  first dose.
+* **Markov K01 and K10 values.** The control stream fixes the remission K01 and
+  K10 at 10^-4.2216 and 10^-3.4855 per hour (6.00e-5 and 3.27e-4), whereas
+  Table S5 prints 0.0000603 and 0.000324. The differences are below 1%; the
+  packaged models use Table S5.
+* **State occupancy instead of transition probabilities.** The control stream
+  integrates transition probabilities from each patient's previous observed
+  state, which is what the likelihood needs. For simulation the packaged
+  models integrate the population state probabilities from everyone starting
+  in the no-response state, which is true at baseline for all three end points
+  in CELEST (CDAI >= 220 at entry; remission assessed among patients with
+  stool frequency >= 4.0 or abdominal pain >= 2.0; response is relative to
+  baseline).
+* **Exposure covariates.** `CTROUGH` (Cmin) and `CAV` (Cave) are constant per
+  patient from the first dose, as in the source data set, and are 0 for
+  placebo. Here they are computed from simulated steady-state profiles of the
+  PK model; the paper used each CELEST patient's empirical-Bayes PK.
+* **Placeholder residual errors.** The Markov and regression likelihoods are
+  categorical (Bernoulli), so the source has no residual error. Each model
+  carries a fixed additive SD of 0.001 on its probability output so that
+  nlmixr2 accepts it; it is not from the source.
+* **Virtual cohort.** Creatinine clearance and body weight are drawn
+  independently from log-normal distributions matching the CELEST means and
+  SDs; sex is drawn at the Table 1 proportion. The covariates of the real
+  cohort are correlated, which the virtual cohort does not reproduce.
+* **Safety.** The paper found no exposure-response trend for haemoglobin
+  decrease, lymphopenia, herpes zoster, pneumonia or serious infections and
+  fitted no model to them (Figure 5), so there is nothing to package.
