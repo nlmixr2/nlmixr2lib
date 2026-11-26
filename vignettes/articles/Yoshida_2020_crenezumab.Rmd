@@ -1,0 +1,617 @@
+---
+title: "Crenezumab (Yoshida 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Crenezumab (Yoshida 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Yoshida_2020_crenezumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Yoshida_2020_crenezumab"))$description`
+* Article: <https://doi.org/10.1186/s13195-020-0580-2> (open access)
+
+Crenezumab is a humanized IgG4 monoclonal antibody that binds monomeric and
+aggregated amyloid-beta (Abeta). Yoshida et al. pooled serum crenezumab and
+plasma total (free + bound) monomeric Abeta(1-40) and Abeta(1-42) from three
+trials and fitted a target-mediated drug disposition (TMDD) model with the
+Michaelis-Menten approximation (their Figure 1). Crenezumab follows
+two-compartment kinetics with first-order SC absorption. Each Abeta species is
+a turnover pool with zero-order synthesis and its own peripheral distribution
+compartment. The Abeta pool is split algebraically into a free fraction
+`Kd / (Kd + Ccren)`, degraded at `Kdeg`, and a crenezumab-bound fraction
+`Ccren / (Kd + Ccren)`, eliminated at `kint = CLint / Vcent`. Because the
+complex is cleared about 300-800 times more slowly than free Abeta, total
+plasma Abeta rises after dosing until it reaches a plateau.
+
+The paper also reports CSF crenezumab and CSF Abeta(1-42) descriptively. Those
+data were not modelled and have no counterpart here.
+
+# Population
+
+The analysis included 131 crenezumab-treated patients with mild-to-moderate
+Alzheimer's disease from the phase II ABBY (NCT01343966; Abeta data from the
+safety run-in cohort only) and BLAZE (NCT01397578) studies and the phase Ib
+GN29632 study (NCT02353598). Together they contributed 1332 serum PK and 2203
+plasma PD samples (Methods; Table 1). The regimens were 300 mg SC every 2 weeks
+and 15, 30, 45, 60 or 120 mg/kg IV every 4 weeks. The studies enrolled patients
+aged 50-80 (phase II) or 50-90 (phase Ib) years. The paper prints no
+demographics table. The covariate analysis gives the 90% observed ranges as
+52.4-95.9 kg for body weight, 54-82 years for age and 46.5-94.0
+mL/min/1.73 m^2 for GFR. Its typical patient (Figure 7) is a 72-year-old male
+weighing 72.3 kg with a GFR of 72.5 mL/min/1.73 m^2.
+
+The same information is available programmatically via
+`readModelDb("Yoshida_2020_crenezumab")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. They are
+collected here.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (CLel) | 0.159 L/day | Table 2 |
+| `lclint` (CLint) | 1.01 L/day | Table 2 |
+| `lvc` (Vcent) | 2.89 L | Table 2 |
+| `lvp` (crenezumab Vperiph) | 1.84 L | Table 2 |
+| `lq` (crenezumab Q) | 0.142 L/day | Table 2 |
+| `lfdepot` (Fsc) | 66.2% | Table 2 |
+| `lka` (Ka) | 0.161 1/day | Table 2 |
+| `lkd_ab40`, `lkd_ab42` | 12.0, 9.37 nM | Table 2 |
+| `lrbase_ab40`, `lrbase_ab42` | 142, 5.98 pM | Table 2; Results text |
+| `lkdeg_ab40`, `lkdeg_ab42` | 114, 287 1/day | Table 2 |
+| `lq_ab40`, `lvp_ab40` | 8.72 L/day, 3.77 L | Table 2 |
+| `lq_ab42`, `lvp_ab42` | 229 L/day, 8.19 L | Table 2 |
+| `e_wt_cl`, `e_wt_clint`, `e_wt_vc` | 0.835, 0.474, 0.725 | Table 2 (power form, footnote) |
+| `e_age_rbase_ab40` | 0.0037 1/year | Table 2 (linear form) |
+| `e_crcl_rbase_ab40`, `e_crcl_rbase_ab42` | -0.0035, -0.0048 | Table 2 (linear form) |
+| `e_sex_kdeg` | -0.16 (male), shared | Table 2, footnote b |
+| Covariate reference values 72.3 kg, 72 years, 72.5 mL/min/1.73 m^2 | -- | Figure 7 legend (typical patient) |
+| IIV (`etalcl`, `etalclint`, `etalvc`, `etalvp`) | 19.1, 15.3, 18.3, 75.2 CV% | Table 2 |
+| IIV `etalkd`, `etalkdeg` (one eta each, shared by both species) | 13.6, 17.9 CV% | Table 2, footnote a |
+| IIV `etalrbase_ab40`, `etalrbase_ab42` | 8.3, 13.8 CV% | Table 2 |
+| `mw` | 150000 g/mol | not in paper (nominal IgG) |
+| Residual error | fixed to 0 | not reported |
+| Michaelis-Menten target-mediated elimination `kint * A * C / (Kd + C)` | -- | Figure 1 |
+| Free-Abeta degradation `kdeg * A * Kd / (Kd + C)` | -- | Figure 1 |
+| Depot, central, peripheral crenezumab; Abeta synthesis and peripheral distribution | -- | Figure 1 |
+
+# Model
+
+```{r model}
+mod <- readModelDb("Yoshida_2020_crenezumab")
+mod_typical <- rxode2::zeroRe(mod)
+
+# Typical patient of Figure 7
+typical_cov <- data.frame(WT = 72.3, AGE = 72, CRCL = 72.5, SEXF = 0)
+```
+
+The model has three outputs: `Cc`, serum crenezumab in ug/mL, and `Ctotal_ab40`
+and `Ctotal_ab42`, total plasma Abeta in pM. It also returns the model-inferred
+free Abeta (`Cfree_ab40`, `Cfree_ab42`) and crenezumab in nM (`Cc_nM`).
+Observation rows name the ODE state `central` and carry `dvid = 1`; rxode2
+returns every output column on each observation row.
+
+```{r helpers}
+# One subject per row of `cov`, IV doses (mg/kg, 60-min infusion) or SC doses
+# (mg) at `dose_times`, observations at `obs_times`.
+make_events <- function(cov, dose_mgkg = NA, dose_sc_mg = NA, dose_times,
+                        obs_times, id_offset = 0L) {
+  cov$id <- seq_len(nrow(cov)) + id_offset
+  doses <- tidyr::expand_grid(id = cov$id, time = dose_times) |>
+    dplyr::left_join(cov, by = "id") |>
+    dplyr::mutate(
+      evid = 1L,
+      cmt = if (is.na(dose_sc_mg)) "central" else "depot",
+      amt = if (is.na(dose_sc_mg)) dose_mgkg * WT else dose_sc_mg,
+      dur = if (is.na(dose_sc_mg)) 1 / 24 else 0,
+      dvid = NA_integer_
+    )
+  obs <- tidyr::expand_grid(id = cov$id, time = obs_times) |>
+    dplyr::left_join(cov, by = "id") |>
+    dplyr::mutate(evid = 0L, cmt = "central", amt = 0, dur = 0, dvid = 1L)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+```
+
+# Baseline Abeta and covariate effects (Figure 7, right column)
+
+The steady-state baseline is the Table 2 value scaled by the linear age and GFR
+terms. This check confirms the centering: at 72 years and GFR 72.5 the
+baselines are exactly 142 and 5.98 pM. The Figure 7 bars were digitised by the
+maintainers.
+
+```{r baseline}
+fig7_cov <- tibble::tribble(
+  ~scenario,    ~AGE, ~CRCL, ~ab40_fig7, ~ab42_fig7,
+  "Typical",      72,  72.5,      142,      5.98,
+  "Age 54",       54,  72.5,      133,      5.98,
+  "Age 82",       82,  72.5,      147,      5.98,
+  "GFR 94.0",     72,  94.0,      131,      5.40,
+  "GFR 46.5",     72,  46.5,      155,      6.75
+)
+ev_base <- fig7_cov |>
+  dplyr::mutate(WT = 72.3, SEXF = 0, id = dplyr::row_number(), time = 0,
+                evid = 0L, cmt = "central", amt = 0, dvid = 1L)
+base <- rxode2::rxSolve(mod_typical, ev_base, keep = "scenario") |>
+  as.data.frame() |>
+  dplyr::select(scenario, Ctotal_ab40, Ctotal_ab42) |>
+  dplyr::left_join(fig7_cov, by = "scenario")
+
+base |>
+  dplyr::transmute(
+    "Scenario" = scenario,
+    "Abeta(1-40) model (pM)" = round(Ctotal_ab40, 1),
+    "Abeta(1-40) Figure 7 (pM)" = ab40_fig7,
+    "Abeta(1-42) model (pM)" = round(Ctotal_ab42, 2),
+    "Abeta(1-42) Figure 7 (pM)" = ab42_fig7
+  ) |>
+  knitr::kable()
+
+# Deterministic (no IIV): the only differences are digitisation error.
+stopifnot(
+  abs(base$Ctotal_ab40[1] - 142) < 1e-6,
+  abs(base$Ctotal_ab42[1] - 5.98) < 1e-6,
+  all(abs(base$Ctotal_ab40 / base$ab40_fig7 - 1) < 0.02),
+  all(abs(base$Ctotal_ab42 / base$ab42_fig7 - 1) < 0.03)
+)
+```
+
+The paper reports that over 90% of the observed GFR range, baselines differ
+1.2-fold (Abeta(1-40)) and 1.25-fold (Abeta(1-42)), and that over the age range
+Abeta(1-40) differs 1.1-fold. The model gives
+`r round(base$Ctotal_ab40[5] / base$Ctotal_ab40[4], 2)`,
+`r round(base$Ctotal_ab42[5] / base$Ctotal_ab42[4], 2)` and
+`r round(base$Ctotal_ab40[3] / base$Ctotal_ab40[2], 2)`.
+
+# Crenezumab PK after the first IV dose (Figure 2)
+
+Figure 2 shows mean serum crenezumab over the first 28 days. Its y-axis is
+labelled ng/mL, but the values (about 3000 at 120 mg/kg, which is 8.7 g in
+2.89 L) are in ug/mL. The means below were digitised by the maintainers. The
+15 mg/kg arm came from ABBY/BLAZE and the other arms from GN29632.
+
+```{r fig2, fig.cap = "Replicates Figure 2 of Yoshida 2020: typical-patient serum crenezumab after a single IV dose (lines) with the published means (points)."}
+fig2 <- tibble::tribble(
+  ~dose, ~time, ~conc,
+  15, 0, 285, 15, 1, 265, 15, 7, 150, 15, 14, 100, 15, 28, 60,
+  30, 0, 760, 30, 1, 650, 30, 7, 350, 30, 14, 270, 30, 28, 120,
+  45, 0, 1230, 45, 1, 1040, 45, 7, 550, 45, 14, 400, 45, 28, 180,
+  60, 0, 1570, 60, 1, 1300, 60, 7, 700, 60, 14, 520, 60, 28, 350,
+  120, 0, 3150, 120, 1, 2760, 120, 7, 1600, 120, 14, 940, 120, 28, 650
+)
+doses_iv <- c(15, 30, 45, 60, 120)
+# Published "day 0" samples were drawn ~60 min after the end of the infusion.
+obs_sd <- sort(unique(c(seq(0, 28, by = 0.25), 2 / 24, 1, 7, 14, 28)))
+ev_sd <- dplyr::bind_rows(lapply(seq_along(doses_iv), function(i) {
+  make_events(typical_cov, dose_mgkg = doses_iv[i], dose_times = 0,
+              obs_times = obs_sd, id_offset = i - 1L) |>
+    dplyr::mutate(dose = doses_iv[i])
+}))
+sim_sd <- rxode2::rxSolve(mod_typical, ev_sd, keep = "dose") |> as.data.frame()
+
+ggplot(sim_sd, aes(time, Cc, colour = factor(dose))) +
+  geom_line() +
+  geom_point(data = fig2, aes(time, conc)) +
+  labs(x = "Time (day)", y = "Serum crenezumab (ug/mL)", colour = "mg/kg") +
+  theme_bw()
+
+cmp_fig2 <- sim_sd |>
+  dplyr::mutate(time = ifelse(abs(time - 2 / 24) < 1e-9, 0, time)) |>
+  dplyr::filter(time %in% c(0, 1, 7, 14, 28), !(time == 0 & Cc == 0)) |>
+  dplyr::select(dose, time, Cc) |>
+  dplyr::inner_join(fig2, by = c("dose", "time")) |>
+  dplyr::mutate(pct_diff = 100 * (Cc / conc - 1))
+cmp_fig2 |>
+  dplyr::transmute("Dose (mg/kg)" = dose, "Day" = time,
+                   "Model (ug/mL)" = signif(Cc, 3), "Figure 2 mean (ug/mL)" = conc,
+                   "Difference (%)" = round(pct_diff)) |>
+  knitr::kable()
+```
+
+The GN29632 arms (30-120 mg/kg) agree with the published means. The median
+difference is `r round(median(cmp_fig2$pct_diff[cmp_fig2$dose > 15]))`%. The
+15 mg/kg means sit below dose-proportionality in the data themselves: the day-0
+mean is 19 ug/mL per mg/kg, against 25-27 for the other arms. The model, which
+is dose-proportional, therefore runs above that arm.
+
+```{r fig2-check}
+# Typical patient vs digitised means of 9-21 patients: assert on the centre.
+stopifnot(abs(median(cmp_fig2$pct_diff[cmp_fig2$dose > 15])) < 15)
+```
+
+The paper quotes a half-life of about 20 days for CLel and Vcent. That equals
+`log(2) * (Vcent + Vperiph) / CLel` =
+`r round(log(2) * (2.89 + 1.84) / 0.159, 1)` days. The terminal disposition
+half-life of the two-compartment model is longer:
+`r {k10 <- 0.159/2.89; k12 <- 0.142/2.89; k21 <- 0.142/1.84; a <- k10 + k12 + k21; round(log(2) / ((a - sqrt(a^2 - 4 * k10 * k21)) / 2), 1)}` days.
+The paper's Discussion gives the complex elimination rate as 0.36 /day. The
+model's `kint = CLint / Vcent` is `r round(1.01 / 2.89, 3)` /day.
+
+# Total plasma Abeta after the first IV dose (Figure 3)
+
+Figure 3 shows mean total Abeta in the first 28 days. Its printed y-axis is
+ng/mL. It is internally inconsistent with Figure 4, which plots the same
+GN29632 week-5 trough samples in nM. For example, 120 mg/kg on day 28 is about
+56 ng/mL (13 nM for Abeta(1-40), MW about 4330 g/mol) in Figure 3, but about
+20-25 nM in Figure 4. The Table 2 baselines and the Figure 4 plateaus agree
+with the model, so Figure 3 is compared on **shape** only. Each profile is
+normalised to its own day-7 value, which cancels the absolute scale.
+
+```{r fig3, fig.cap = "Replicates the shape of Figure 3 of Yoshida 2020: total plasma Abeta normalised to the day-7 value, typical patient (lines) vs published means (points)."}
+fig3 <- tibble::tribble(
+  ~species, ~dose, ~d1, ~d7, ~d14, ~d28,
+  "Abeta(1-40)", 15, 14.5, 28, 22, 11,
+  "Abeta(1-40)", 30, 16, 43, 37.5, 19.5,
+  "Abeta(1-40)", 45, 15, 47.5, 43, 26,
+  "Abeta(1-40)", 60, 15.5, 50, 54, 37,
+  "Abeta(1-40)", 120, 15, 57, 64.5, 56,
+  "Abeta(1-42)", 15, 0.95, 1.75, 1.37, 0.73,
+  "Abeta(1-42)", 30, 1.0, 2.5, 2.1, 1.18,
+  "Abeta(1-42)", 45, 1.0, 2.55, 2.27, 1.45,
+  "Abeta(1-42)", 60, 1.0, 3.0, 3.02, 2.12,
+  "Abeta(1-42)", 120, 0.95, 3.35, 3.7, 3.07
+) |>
+  tidyr::pivot_longer(d1:d28, names_to = "day", values_to = "obs") |>
+  dplyr::mutate(time = as.numeric(sub("d", "", day))) |>
+  dplyr::group_by(species, dose) |>
+  dplyr::mutate(obs_rel = obs / obs[time == 7]) |>
+  dplyr::ungroup()
+
+sim_ab <- sim_sd |>
+  dplyr::select(dose, time, Ctotal_ab40, Ctotal_ab42) |>
+  tidyr::pivot_longer(c(Ctotal_ab40, Ctotal_ab42), names_to = "species", values_to = "conc") |>
+  dplyr::mutate(species = ifelse(species == "Ctotal_ab40", "Abeta(1-40)", "Abeta(1-42)")) |>
+  dplyr::distinct(species, dose, time, .keep_all = TRUE) |>
+  dplyr::group_by(species, dose) |>
+  dplyr::mutate(rel = conc / conc[time == 7]) |>
+  dplyr::ungroup()
+
+ggplot(sim_ab, aes(time, rel, colour = factor(dose))) +
+  geom_line() +
+  geom_point(data = fig3, aes(time, obs_rel)) +
+  facet_wrap(~species) +
+  labs(x = "Time (day)", y = "Total Abeta / day-7 value", colour = "mg/kg") +
+  theme_bw()
+
+cmp_fig3 <- sim_ab |>
+  dplyr::filter(time %in% c(1, 14, 28)) |>
+  dplyr::inner_join(fig3, by = c("species", "dose", "time")) |>
+  dplyr::mutate(pct_diff = 100 * (rel / obs_rel - 1))
+cmp_fig3 |>
+  dplyr::transmute("Species" = species, "Dose (mg/kg)" = dose, "Day" = time,
+                   "Model (rel. day 7)" = round(rel, 2),
+                   "Figure 3 (rel. day 7)" = round(obs_rel, 2),
+                   "Difference (%)" = round(pct_diff)) |>
+  knitr::kable()
+
+stopifnot(
+  abs(median(cmp_fig3$pct_diff)) < 15,
+  quantile(abs(cmp_fig3$pct_diff), 0.75) < 40
+)
+```
+
+The model reproduces the dose-dependent shape. At 15 mg/kg total Abeta peaks
+near day 7 and falls by day 14. At 120 mg/kg it is still rising at day 14 and
+stays high at day 28. Day 1 for Abeta(1-42) is the least well matched point.
+Relative to day 7, the model's day-1 value is 20-33% below the published
+mean; for Abeta(1-40) day 1 matches to within 10%.
+
+# Trough total Abeta vs trough crenezumab (Figure 4)
+
+Figure 4 plots trough total plasma Abeta against trough serum crenezumab (both
+in nM) at weeks 5, 9 and 13, with the model median and 5-95% prediction
+interval. The virtual cohort below approximates the trial population: body
+weight log-normal with median 72.3 kg and 90% range 52.4-95.9 kg; age normal
+with mean 72 years and 90% range 54-82; GFR normal with mean 72.5 and 90% range
+46.5-94.0 mL/min/1.73 m^2; 50% female (not reported). Each arm has 100
+patients.
+
+```{r cohort}
+set.seed(20200121)
+rxode2::rxSetSeed(20200121)
+make_cov <- function(n) {
+  data.frame(
+    WT = exp(rnorm(n, log(72.3), (log(95.9) - log(52.4)) / (2 * 1.645))),
+    AGE = pmin(pmax(rnorm(n, 72, (82 - 54) / (2 * 1.645)), 50), 90),
+    CRCL = pmin(pmax(rnorm(n, 72.5, (94 - 46.5) / (2 * 1.645)), 20), 130),
+    SEXF = rbinom(n, 1, 0.5)
+  )
+}
+n_arm <- 100
+arms <- list(
+  list(label = "300 mg SC q2w", mgkg = NA, sc = 300, ii = 14),
+  list(label = "15 mg/kg q4w", mgkg = 15, sc = NA, ii = 28),
+  list(label = "30 mg/kg q4w", mgkg = 30, sc = NA, ii = 28),
+  list(label = "45 mg/kg q4w", mgkg = 45, sc = NA, ii = 28),
+  list(label = "60 mg/kg q4w", mgkg = 60, sc = NA, ii = 28),
+  list(label = "120 mg/kg q4w", mgkg = 120, sc = NA, ii = 28)
+)
+ev_trough <- dplyr::bind_rows(lapply(seq_along(arms), function(i) {
+  a <- arms[[i]]
+  make_events(make_cov(n_arm), dose_mgkg = a$mgkg, dose_sc_mg = a$sc,
+              dose_times = seq(0, 83, by = a$ii),
+              obs_times = c(28, 56, 84) - 1e-3,
+              id_offset = (i - 1L) * n_arm) |>
+    dplyr::mutate(treatment = a$label)
+}))
+stopifnot(!anyDuplicated(unique(ev_trough[ev_trough$evid == 0, c("id", "time")])))
+sim_trough <- rxode2::rxSolve(mod, ev_trough, keep = "treatment") |>
+  as.data.frame() |>
+  dplyr::mutate(treatment = factor(treatment, levels = sapply(arms, `[[`, "label")))
+```
+
+```{r fig4, fig.cap = "Replicates Figure 4 of Yoshida 2020: trough total Abeta vs trough crenezumab at weeks 5, 9 and 13 (points: simulated patients); line and band: binned median and 5-95% interval of the simulation; crosses: model median line digitised from Figure 4."}
+fig4_line <- tibble::tribble(
+  ~species, ~cren_nM, ~ab_nM,
+  "Abeta(1-40)", 1000, 8, "Abeta(1-40)", 2500, 17, "Abeta(1-40)", 5000, 25,
+  "Abeta(1-40)", 7500, 28.5, "Abeta(1-40)", 10000, 29,
+  "Abeta(1-42)", 1000, 0.6, "Abeta(1-42)", 2500, 1.35, "Abeta(1-42)", 5000, 2.0,
+  "Abeta(1-42)", 7500, 2.4, "Abeta(1-42)", 10000, 2.55
+)
+trough_long <- sim_trough |>
+  dplyr::transmute(treatment, cren_nM = Cc_nM,
+                   `Abeta(1-40)` = Ctotal_ab40 / 1000,
+                   `Abeta(1-42)` = Ctotal_ab42 / 1000) |>
+  tidyr::pivot_longer(c(`Abeta(1-40)`, `Abeta(1-42)`), names_to = "species", values_to = "ab_nM")
+breaks <- c(0, 500, 1500, 2500, 3500, 5000, 6500, 8500, Inf)
+binned <- trough_long |>
+  dplyr::mutate(bin = cut(cren_nM, breaks)) |>
+  dplyr::group_by(species, bin) |>
+  dplyr::summarise(cren_nM = median(cren_nM), med = median(ab_nM),
+                   lo = quantile(ab_nM, 0.05), hi = quantile(ab_nM, 0.95),
+                   n = dplyr::n(), .groups = "drop")
+
+ggplot(trough_long, aes(cren_nM, ab_nM)) +
+  geom_point(aes(colour = treatment), alpha = 0.3, size = 0.8) +
+  geom_ribbon(data = binned, aes(x = cren_nM, ymin = lo, ymax = hi), inherit.aes = FALSE,
+              fill = "purple", alpha = 0.15) +
+  geom_line(data = binned, aes(cren_nM, med)) +
+  geom_point(data = fig4_line, shape = 4, size = 3) +
+  facet_wrap(~species, scales = "free_y") +
+  coord_cartesian(xlim = c(0, 10500)) +
+  labs(x = "Crenezumab trough (nM)", y = "Total Abeta trough (nM)", colour = NULL) +
+  theme_bw()
+```
+
+The paper notes that, at steady-state trough for 60 mg/kg, crenezumab exceeds
+plasma Abeta about 150-fold. For the typical patient at steady state:
+
+```{r ratio}
+ev_ss60 <- make_events(typical_cov, dose_mgkg = 60, dose_times = seq(0, 532, by = 28),
+                       obs_times = 560 - 1e-3)
+ss60 <- rxode2::rxSolve(mod_typical, ev_ss60) |> as.data.frame()
+ratio_60 <- ss60$Cc_nM / (ss60$Ctotal_ab40 / 1000)
+ratio_60
+stopifnot(ratio_60 > 120, ratio_60 < 190)
+```
+
+The plateau is a closed-form property of the Michaelis-Menten approximation.
+As crenezumab rises, total Abeta approaches `baseline * Kdeg / kint`:
+`r round(142 * 114 / (1.01/2.89) / 1000, 1)` nM for Abeta(1-40) and
+`r round(5.98 * 287 / (1.01/2.89) / 1000, 2)` nM for Abeta(1-42). At the
+highest Figure 4 troughs (7500-10000 nM) the free fraction is still about
+0.1-0.2%, so the curves level off near 29 and 2.5 nM, below these limits.
+
+```{r fig4-check}
+# Binned simulated medians against the digitised published median line,
+# interpolated at each bin's median crenezumab trough.
+fig4_cmp <- binned |>
+  dplyr::filter(n >= 20, cren_nM >= 1000, cren_nM <= 10000) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(fig4 = approx(fig4_line$cren_nM[fig4_line$species == species],
+                              fig4_line$ab_nM[fig4_line$species == species],
+                              xout = cren_nM)$y) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(pct_diff = 100 * (med / fig4 - 1))
+fig4_cmp |>
+  dplyr::transmute("Species" = species, "Crenezumab trough (nM)" = round(cren_nM),
+                   "Simulated median (nM)" = signif(med, 3),
+                   "Figure 4 line (nM)" = signif(fig4, 3),
+                   "Difference (%)" = round(pct_diff), "N" = n) |>
+  knitr::kable()
+stopifnot(
+  abs(median(fig4_cmp$pct_diff[fig4_cmp$species == "Abeta(1-40)"])) < 20,
+  abs(median(fig4_cmp$pct_diff[fig4_cmp$species == "Abeta(1-42)"])) < 20
+)
+```
+
+# Free vs bound Abeta across doses (Figure 8)
+
+Figure 8 simulates 6-480 mg/kg q4w for 140 days. Crenezumab is almost
+entirely free. Plasma Abeta is almost entirely bound, so its total levels off
+with dose while free Abeta keeps falling.
+
+```{r fig8, fig.cap = "Replicates Figure 8 of Yoshida 2020 (lower panels): typical-patient total (solid) and free (dashed) plasma Abeta for 6-480 mg/kg IV q4w."}
+doses8 <- c(6, 15, 30, 45, 60, 120, 240, 480)
+ev8 <- dplyr::bind_rows(lapply(seq_along(doses8), function(i) {
+  make_events(typical_cov, dose_mgkg = doses8[i], dose_times = c(0, 28, 56, 84),
+              obs_times = seq(0, 140, by = 0.5), id_offset = i - 1L) |>
+    dplyr::mutate(dose = doses8[i])
+}))
+sim8 <- rxode2::rxSolve(mod_typical, ev8, keep = "dose") |> as.data.frame()
+sim8_long <- sim8 |>
+  dplyr::transmute(dose, time,
+                   `Abeta(1-40) total` = Ctotal_ab40 / 1000, `Abeta(1-40) free` = Cfree_ab40 / 1000,
+                   `Abeta(1-42) total` = Ctotal_ab42 / 1000, `Abeta(1-42) free` = Cfree_ab42 / 1000) |>
+  tidyr::pivot_longer(-c(dose, time), names_to = c("species", "measure"),
+                      names_sep = " (?=[a-z]+$)", values_to = "nM")
+ggplot(sim8_long, aes(time, nM, colour = factor(dose), linetype = measure)) +
+  geom_line() +
+  scale_y_log10() +
+  facet_wrap(~species) +
+  labs(x = "Time (day)", y = "Plasma concentration (nM)", colour = "mg/kg", linetype = NULL) +
+  theme_bw()
+
+trough140 <- sim8 |> dplyr::filter(time == 140)
+trough140 |>
+  dplyr::transmute("Dose (mg/kg)" = dose,
+                   "Total Abeta(1-40) (nM)" = signif(Ctotal_ab40 / 1000, 3),
+                   "Free Abeta(1-40) (pM)" = signif(Cfree_ab40, 3),
+                   "Free / baseline (%)" = signif(100 * Cfree_ab40 / 142, 2)) |>
+  knitr::kable()
+
+# Fold change in day-140 trough per doubling of dose, 60 -> 120 -> 240 -> 480.
+dbl <- trough140 |>
+  dplyr::filter(dose %in% c(60, 120, 240, 480)) |>
+  dplyr::arrange(dose) |>
+  dplyr::mutate(total_fold = Ctotal_ab40 / dplyr::lag(Ctotal_ab40),
+                free_fold = Cfree_ab40 / dplyr::lag(Cfree_ab40)) |>
+  dplyr::filter(!is.na(total_fold))
+dbl |>
+  dplyr::transmute("Dose doubled to (mg/kg)" = dose,
+                   "Total Abeta(1-40) fold change" = round(total_fold, 2),
+                   "Free Abeta(1-40) fold change" = round(free_fold, 2)) |>
+  knitr::kable()
+# Deterministic typical-value solve: each doubling adds less total Abeta than
+# the one before, and at the top doubling the fall in free Abeta is larger
+# than the rise in total.
+stopifnot(
+  all(diff(dbl$total_fold) < 0),
+  all(dbl$free_fold < 1),
+  (1 - dbl$free_fold[3]) > (dbl$total_fold[3] - 1)
+)
+```
+
+Each doubling of the dose adds less total Abeta than the previous one, while
+free Abeta keeps falling by a similar or larger fraction. This is the
+divergence between total and free Abeta that the paper's Discussion describes.
+
+# PKNCA: steady-state crenezumab exposure at 60 mg/kg q4w (Figure 7, left column)
+
+Figure 7 gives the typical patient's crenezumab AUC (about 183 uM*day) and Cmax
+(about 13.0 uM) at 60 mg/kg. The 5th-95th percentile ranges across the
+population are 139-238 uM*day and 9.6-16.8 uM. The Cmax matches steady state
+(single-dose Cmax is 10 uM), so the comparison uses the 20th dosing interval of
+a 200-patient cohort. The values were digitised from Figure 7 by the
+maintainers.
+
+```{r pknca}
+rxode2::rxSetSeed(20200122)
+ss_times <- c(532 + c(0, 1 / 24, 2 / 24, 0.25, 0.5, 1, 2, 3, 5, 7, 10, 14, 21, 28))
+ev_nca <- make_events(make_cov(200), dose_mgkg = 60, dose_times = seq(0, 532, by = 28),
+                      obs_times = ss_times, id_offset = 1000L) |>
+  dplyr::mutate(treatment = "60 mg/kg q4w")
+sim_nca <- rxode2::rxSolve(mod, ev_nca, keep = "treatment") |> as.data.frame()
+
+conc_nca <- sim_nca |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::transmute(id, treatment, time, Cc = Cc_nM / 1000)  # uM
+dose_nca <- ev_nca |>
+  dplyr::filter(evid == 1, time == 532) |>
+  dplyr::select(id, treatment, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(conc_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id)
+intervals <- data.frame(start = 532, end = 560, cmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_sim <- as.data.frame(nca_res$result) |>
+  dplyr::select(id, treatment, PPTESTCD, PPORRES)
+
+published <- tibble::tribble(
+  ~treatment,     ~cmax, ~auclast,
+  "60 mg/kg q4w",  13.0,    183
+)
+nlmixr2lib::ncaComparisonTable(
+  simulated = nca_sim,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "uM", auclast = "uM*day"),
+  tolerance_pct = 20
+) |>
+  dplyr::rename("Regimen" = treatment) |>
+  knitr::kable()
+
+pct <- nca_sim |>
+  dplyr::group_by(PPTESTCD) |>
+  dplyr::summarise(p05 = quantile(PPORRES, 0.05), median = median(PPORRES),
+                   p95 = quantile(PPORRES, 0.95), .groups = "drop")
+knitr::kable(pct, digits = 1)
+
+med_auc <- pct$median[pct$PPTESTCD == "auclast"]
+med_cmax <- pct$median[pct$PPTESTCD == "cmax"]
+stopifnot(abs(med_auc / 183 - 1) < 0.1, abs(med_cmax / 13.0 - 1) < 0.1)
+```
+
+The simulated medians are within a few percent of the Figure 7 typical values,
+and the simulated 5-95% ranges are close to the published ranges. The steady
+state AUCtau is slightly below `Dose / CLel` because target-mediated
+elimination of the bound complex removes about 2-3% of each dose at 60 mg/kg.
+
+On the weight effect in Figure 7: with mg/kg dosing and the Table 2 exponents,
+exposure scales as `WT^(1 - 0.835)` for AUC and `WT^(1 - 0.725)` for Cmax. That
+predicts the 1.1-fold AUC and Cmax spread over 52.4-95.9 kg that the paper
+reports. The paper's figure and text place the higher exposure at the lower
+body weight, the opposite of what these exponents give for weight-based dosing.
+The magnitude matches exactly, so the direction labels in Figure 7 appear to be
+reversed.
+
+# Assumptions and deviations
+
+* **Abeta central volume.** The paper gives Abeta peripheral volumes and
+  intercompartmental clearances but no Abeta central volume. The model uses the
+  crenezumab central volume Vcent, following the single-central-volume
+  Michaelis-Menten TMDD form of the tutorial the paper cites (Dua 2015). This
+  reading reproduces the Discussion's complex elimination rate
+  (`CLint / Vcent` = 0.35 vs 0.36 /day) and the Figure 4 plateaus.
+* **What distributes to the Abeta peripheral compartment.** The paper's Figure 1
+  shows an Abeta peripheral compartment without saying whether free or total
+  Abeta exchanges with it. The model distributes the total pool, with no drug
+  binding or elimination in the periphery. The maintainers simulated both
+  readings and compared them with Figure 3. For Abeta(1-40), distributing total
+  Abeta gives day-7/day-1 ratios of 1.9 and 3.4 at 15 and 120 mg/kg, against
+  1.9 and 3.8 published. Distributing free Abeta gives a much faster first-day
+  rise, with ratios of 1.2 and 2.5. For Abeta(1-42) the total-distribution
+  reading rises somewhat too slowly on day 1 (see the Figure 3 table), and the
+  free-distribution reading rises far too fast. Both readings give the same
+  steady state.
+* **Crenezumab molecular weight.** Not printed. The binding terms need
+  crenezumab in nM (Kd is in nM), and the drug-side target-mediated loss needs
+  mass per pmol, so a nominal IgG MW of 150000 g/mol is used (`mw`). A
+  different MW within 145-150 kDa shifts the PK exposures above by up to about
+  3%.
+* **Covariate reference values.** The paper does not state its centering
+  values. The model uses the typical patient of Figure 7 (72.3 kg, 72 years,
+  GFR 72.5 mL/min/1.73 m^2). At those values Figure 7 reproduces the Table 2
+  baselines of 142 and 5.98 pM exactly. The body-weight effect is a power
+  function `(WT / 72.3)^e`. The age, GFR and sex effects are linear,
+  `(1 + e * (x - ref))`, and are multiplied together (Table 2 footnote).
+* **Sex effect.** Table 2 reports a male effect of -0.16 on Kdeg, shared by
+  both species. It is applied as `1 + e_sex_kdeg * (1 - SEXF)`, with female as
+  the reference.
+* **GFR.** Encoded as the `CRCL` column (BSA-normalized, mL/min/1.73 m^2). The
+  paper does not state which estimating equation was used.
+* **Shared random effects.** Table 2 footnote a states that the same BSV was
+  used for Kd of both species and for Kdeg of both species. The model reads
+  this as one eta per parameter pair (`etalkd`, `etalkdeg`), by analogy with
+  footnote b, where one coefficient is shared.
+* **IIV scale.** Table 2 reports BSV as CV%. The variances use
+  `omega^2 = log(1 + CV^2)`. The paper does not say whether its percentages
+  are true CVs or `100 * omega`. The two readings differ materially only for
+  crenezumab Vperiph (75.2%: 0.448 vs 0.566).
+* **Residual error.** Not reported in the paper. All three outputs carry a
+  proportional error fixed to 0, so stochastic simulations show between-subject
+  variability only.
+* **Figure axis units.** Figure 2 is labelled ng/mL but plots ug/mL. Figure
+  3's absolute values (labelled ng/mL) disagree about two-fold with Figure 4
+  and Table 2, so only its shape was used.
+* **Virtual cohort.** The paper reports no demographics table. Covariate
+  distributions were built from the 90% ranges in the Results and Figure 7.
+  The sex split (50%) is assumed.
+* **CSF.** CSF crenezumab (about 0.3% of serum) and CSF Abeta(1-42) were
+  analysed descriptively in the paper and are not part of the model.

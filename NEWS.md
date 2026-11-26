@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Yoshida 2020 crenezumab PK/PD (TMDD on plasma amyloid-beta 1-40 and 1-42) ([doi:10.1186/s13195-020-0580-2](https://doi.org/10.1186/s13195-020-0580-2)) -- adults with mild-to-moderate Alzheimer's disease.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
