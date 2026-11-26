@@ -1,0 +1,413 @@
+---
+title: "Glucagon challenge test and glucagon-receptor antisense ISIS 325568 (Masroor 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Glucagon challenge test and glucagon-receptor antisense ISIS 325568 (Masroor 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 6)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, include = FALSE}
+mod_pre <- readModelDb("Masroor_2019_ISIS325568_pretreatment")
+mod_post <- readModelDb("Masroor_2019_ISIS325568_posttreatment")
+ui_pre <- rxode2::rxode(mod_pre)
+ui_post <- rxode2::rxode(mod_post)
+```
+
+* Citation: `r ui_pre$reference`
+* Article: <https://doi.org/10.1007/s10928-019-09655-2> (open access, PMC6868112)
+* Supplement: Electronic Supplementary Material 1 (PDF), published with the
+  article. It holds the smooth-profiling estimation details, the
+  identifiability analysis and Table 7, the per-subject parameter estimates.
+* Clinical study: van Dongen MG et al. (2015) First proof of pharmacology in
+  humans of a novel glucagon receptor antisense drug. J Clin Pharmacol
+  55(3):298-306, <https://doi.org/10.1002/jcph.396>.
+
+Masroor 2019 builds a small mechanistic model of the glucagon challenge test:
+three plasma compartments (glucose `G`, insulin `I`, glucagon `E`) coupled to a
+hepatic glucagon-receptor sub-model in which the receptor binds glucagon,
+internalizes, and recycles. Hepatic glucose production (HGP) is a Hill function
+of the glucagon-bound receptor fraction. The model is used to interpret
+challenge tests performed in eight healthy volunteers before and after six
+weeks of ISIS 325568 400 mg/week, a 2'-O-methoxyethyl antisense oligonucleotide
+that lowers hepatic glucagon-receptor (GCGR) expression.
+
+The authors fitted each subject's pre- and post-treatment challenge
+**separately** with the smooth profiling method of Ramsay et al. (no
+mixed-effects model), and report the mean and SD of the individual estimates
+for each condition (Table 4). The library therefore carries two models with
+the same structure:
+
+| Model | Parameter set |
+|---|---|
+| `Masroor_2019_ISIS325568_pretreatment` | Table 4 "Before" averages |
+| `Masroor_2019_ISIS325568_posttreatment` | Table 4 "After" averages |
+
+Both are deterministic typical-value models: the reported SDs are the spread
+of individual fits, not population variances, and the fitting method has no
+residual-error model.
+
+# Population
+
+Eight healthy volunteers (subjects 30, 31, 32, 33, 35, 36, 38 and 40) of the
+400 mg/week multiple-dose cohort of van Dongen 2015, each studied with a 6-h
+glucagon challenge before treatment and after six weeks (eight doses) of ISIS
+325568. Masroor 2019 does not report demographics. Glucose, insulin and
+glucagon were measured every 15 min during the challenge (135 to 360 min).
+
+```{r population}
+str(mod_pre()$population)
+```
+
+# The glucagon challenge test and the model time axis
+
+The test lasts 6 h. During hours 0-3 the subject is at steady state. At hour 3
+somatostatin stops endogenous insulin and glucagon secretion and three
+constant infusions start (Table 3): glucose 0.24 g/h, insulin 480 mU/h and
+glucagon 4134.7 pmol/h, which raises plasma glucagon 2-3-fold.
+
+The packaged models describe the challenge period, Eq 8a-8e of the paper.
+**Model time 0 is test hour 3**; every state starts at the pre-challenge steady
+state (Eq 7 and Eq 9), and endogenous secretion is zero throughout. Supply the
+three infusions as dosing events starting at time 0 into the `glucose`,
+`insulin` and `glucagon` states (amounts in g, mU and pmol). The plasma states
+are carried as amounts (concentration times distribution volume) so that an
+infusion of `Q` per hour contributes `Q / V` to the concentration, exactly the
+paper's `QG/VG`, `QI/VI` and `QE/VE` terms.
+
+The pre-challenge steady state is computed inside the model from the
+parameters. The baseline glucagon and insulin concentrations are model
+parameters (`bl_glucagon`, `bl_insulin`); the receptor fractions follow from
+Eq 6, and baseline glucose is the positive root of Eq 9 (HGP equals total
+glucose consumption). The source does not tabulate the average baselines, so
+`bl_glucagon` and `bl_insulin` were digitised by the maintainers from the 0-3 h
+segment of the average-parameter curves in Figure 5.
+
+# Source trace
+
+Per-parameter provenance is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Masroor_2019_ISIS325568_*.R`.
+
+| Parameter (file) | Paper symbol | Before | After | Source |
+|---|---|---|---|---|
+| `lhgp_base` | bG (g/L/h) | 0.0804 | 0.18 | Table 4 |
+| `lvmax_hgp` | V1 | 5.63 | 6.81 | Table 4 |
+| `lre50_hgp` | K1' = K1/Rtot | 0.00501 | 0.0109 | Table 4 |
+| `hill` | n | 2 (fixed) | 2 (fixed) | Methods, "The hepatic glucose production rate" |
+| `lvmax_ii` | Vii | 0.896 | 0.936 | Table 4 |
+| `km_ii` | Kii (g/L) | 0 (fixed) | 0 (fixed) | Table 2; Methods (collapsed to zero) |
+| `lvmax_id` | Vid | 1.52 | 1.66 | Table 4 |
+| `lkm_id` | Kid (g/L) | 11 | 10.3 | Table 4 |
+| `lkdeg_insulin` | kdegI (1/h) | 30.5 | 30.9 | Table 4 |
+| `lkdeg_glucagon` | kdegE (1/h) | 5.73 | 5.76 | Table 4 |
+| `lkint` | kin (1/h) | 21.5 | 12.1 | Table 4 |
+| `lvh` | Vh (L) | 4.65 | 4.96 | Table 4 |
+| `lkon` | kon (1/pmol/h) | 0.0036 (fixed) | 0.0036 (fixed) | Table 2; Methods; supplement Table 7 footnote |
+| `lkoff` | koff (1/h) | 14.4 (fixed) | 14.4 (fixed) | Table 2; Methods (0.24 1/min) |
+| `lkrec` | krec (1/h) | 0.18 (fixed) | 0.18 (fixed) | Table 2; Methods (0.003 1/min) |
+| `kint_free` | kin' (1/h) | 0 (fixed) | 0 (fixed) | Table 2; Methods (collapsed to zero) |
+| `lv_glucose` | VG (L) | 4.44 (fixed) | 4.44 (fixed) | Table 3 |
+| `lv_insulin` | VI (L) | 1.52 (fixed) | 1.52 (fixed) | Table 3 |
+| `lv_glucagon` | VE (L) | 19.6 (fixed) | 19.6 (fixed) | Table 3 (Table 2 prints 9.6; see below) |
+| `bl_glucagon` | E-bar (pmol/L) | 17.4 | 24.0 | digitised, Figure 5 E panels, 0-3 h |
+| `bl_insulin` | I-bar (mU/L) | 10.5 | 9.7 | digitised, Figure 5 I panels, 0-3 h |
+
+| Equation | Source |
+|---|---|
+| `d/dt(glucose)`: infusion + HGP - Vii G/(Kii+G) - Vid I G/(Kid+G) | Eq 3 / Eq 8a |
+| `d/dt(insulin)`: infusion - kdegI I (secretion off) | Eq 1 / Eq 8b |
+| `d/dt(glucagon)`: infusion - kdegE E (secretion off) | Eq 2 / Eq 8c |
+| `d/dt(target_gcgr_liver)` (free receptor fraction r) | Eq 5 / Eq 8d |
+| `d/dt(complex_gcgr_liver)` (bound receptor fraction re) | Eq 5 / Eq 8e |
+| `fhgp = bG + V1 re^2 / (K1'^2 + re^2)` | Methods, "The hepatic glucose production rate" |
+| Initial receptor fractions r-bar, re-bar | Eq 6 / Eq 7d-7e |
+| Initial glucose G-bar | Eq 9 (HGP = consumption at steady state) |
+
+## Units
+
+| Term | Units |
+|---|---|
+| `Gc`, `Ic`, `GNc` | g/L, mU/L, pmol/L |
+| `fhgp`, `hgp_base`, `vmax_hgp`, `vmax_ii` | g/L/h |
+| `vmax_id * Ic * Gc / (km_id + Gc)` | g/L/h, so `vmax_id` is 1/h per mU/L |
+| `kon * vh * GNc` | (1/pmol/h) x L x pmol/L = 1/h |
+| `koff`, `kint`, `krec`, `kint_free`, `kdeg_*` | 1/h |
+| `d/dt(glucose)` = `v_glucose` x (g/L/h) | g/h |
+| `d/dt(target_gcgr_liver)`, `d/dt(complex_gcgr_liver)` | fraction/h |
+
+Tables 1 and 4 print the units of V1 and Vii as 1/h. With the receptor
+fraction dimensionless and the glucose equation in g/L/h, both must be g/L/h
+(Vii is the whole insulin-independent rate once Kii = 0); the values are
+unaffected.
+
+# Simulating the challenge
+
+```{r simulate}
+challenge_events <- function() {
+  rxode2::et(amt = 0.24 * 3, rate = 0.24, cmt = "glucose") |>
+    rxode2::et(amt = 480 * 3, rate = 480, cmt = "insulin") |>
+    rxode2::et(amt = 4134.7 * 3, rate = 4134.7, cmt = "glucagon") |>
+    rxode2::et(seq(0, 3, by = 0.05), cmt = "glucose")
+}
+
+out_cols <- c("time", "Gc", "Ic", "GNc", "r_free", "r_bound", "r_internal", "fhgp")
+sim_pre <- rxode2::rxSolve(mod_pre, challenge_events())
+sim_post <- rxode2::rxSolve(mod_post, challenge_events())
+
+sim <- bind_rows(
+  as.data.frame(sim_pre)[, out_cols] |> mutate(treatment = "Before treatment"),
+  as.data.frame(sim_post)[, out_cols] |> mutate(treatment = "After treatment (400 mg)")
+) |>
+  mutate(test_time = time + 3)
+
+# The 0-3 h baseline period is the steady state the models start from.
+baseline <- sim |>
+  filter(time == 0) |>
+  select(-time, -test_time) |>
+  tidyr::crossing(test_time = seq(0, 3, by = 0.25))
+sim_6h <- bind_rows(baseline, sim |> select(-time)) |>
+  mutate(treatment = factor(treatment, c("Before treatment", "After treatment (400 mg)")))
+```
+
+## Figure 5
+
+```{r figure-5, fig.cap = "Replicates Figure 5 of Masroor 2019: model solution with the average before- and after-treatment parameters (Table 4). The dashed line marks the start of the challenge."}
+sim_6h |>
+  mutate(re_x10 = 10 * r_bound) |>
+  select(treatment, test_time, Gc, Ic, GNc, r_free, re_x10, r_internal, fhgp) |>
+  pivot_longer(-c(treatment, test_time)) |>
+  mutate(
+    panel = case_when(
+      name == "Gc" ~ "G (g/L)",
+      name == "Ic" ~ "I (mU/L)",
+      name == "GNc" ~ "E (pmol/L)",
+      name %in% c("r_free", "re_x10", "r_internal") ~ "R / Rtot",
+      name == "fhgp" ~ "Fhgp (g/L/h)"
+    ),
+    panel = factor(panel, c("G (g/L)", "I (mU/L)", "E (pmol/L)", "R / Rtot", "Fhgp (g/L/h)")),
+    series = recode(name, r_free = "r", re_x10 = "10 re", r_internal = "ri", .default = "model")
+  ) |>
+  ggplot(aes(test_time, value, colour = series)) +
+  geom_line() +
+  geom_vline(xintercept = 3, linetype = "dashed", colour = "grey50") +
+  facet_grid(panel ~ treatment, scales = "free_y") +
+  scale_x_continuous(breaks = 0:6) +
+  labs(x = "Time in the challenge test (h)", y = NULL, colour = NULL) +
+  theme_bw()
+```
+
+The model curves are compared below with values digitised by the maintainers
+from the average-parameter curves of Figure 5 (green lines; the receptor panel
+gives the free fraction `r`). Model and figure come from the same equations
+and the same parameters, so the remaining differences are digitisation error
+(one pixel is about 0.04 g/L, 1 pmol/L, 0.01 receptor fraction and 0.06 g/L/h).
+
+```{r figure-5-digitised}
+fig5 <- tribble(
+  ~treatment, ~test_time, ~Gc, ~GNc, ~r_free, ~fhgp,
+  "Before treatment", 3.5, 1.660, 35.8, 0.479, 4.15,
+  "Before treatment", 4.0, 2.128, 36.8, 0.447, 4.02,
+  "Before treatment", 4.5, 2.340, 37.4, 0.415, 3.86,
+  "Before treatment", 5.0, 2.426, 36.8, 0.394, 3.73,
+  "Before treatment", 5.5, 2.426, 37.4, 0.378, 3.61,
+  "After treatment (400 mg)", 3.5, 1.362, 36.3, 0.457, 3.64,
+  "After treatment (400 mg)", 4.0, 1.617, 36.8, 0.436, 3.61,
+  "After treatment (400 mg)", 4.5, 1.745, 36.8, 0.426, 3.48,
+  "After treatment (400 mg)", 5.0, 1.766, 36.8, 0.415, 3.39,
+  "After treatment (400 mg)", 5.5, 1.766, 36.8, 0.404, 3.29
+) |>
+  pivot_longer(c(Gc, GNc, r_free, fhgp), names_to = "output", values_to = "figure_5")
+
+cmp_fig5 <- sim_6h |>
+  mutate(test_time = round(test_time, 2), treatment = as.character(treatment)) |>
+  select(treatment, test_time, Gc, GNc, r_free, fhgp) |>
+  pivot_longer(c(Gc, GNc, r_free, fhgp), names_to = "output", values_to = "model") |>
+  inner_join(fig5, by = c("treatment", "test_time", "output")) |>
+  mutate(pct_diff = 100 * (model - figure_5) / figure_5)
+
+cmp_fig5 |>
+  mutate(across(c(model, figure_5), \(x) signif(x, 3)), pct_diff = round(pct_diff, 1)) |>
+  rename(
+    Treatment = treatment, "Test time (h)" = test_time, Output = output,
+    Model = model, "Figure 5" = figure_5, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable()
+
+stopifnot(
+  abs(median(cmp_fig5$pct_diff)) < 3,
+  max(abs(cmp_fig5$pct_diff)) < 6
+)
+```
+
+# Steady-state and mass-balance checks
+
+At model time 0 both models must sit at the steady state of Eq 7: HGP equals
+total glucose consumption (Eq 9), and the receptor equations balance at the
+baseline glucagon concentration.
+
+```{r steady-state}
+ss_check <- function(sim, ui) {
+  p <- ui$theta
+  s0 <- as.data.frame(sim)[1, ]
+  e0 <- s0$GNc
+  kon <- exp(p[["lkon"]])
+  koff <- exp(p[["lkoff"]])
+  krec <- exp(p[["lkrec"]])
+  kint <- exp(p[["lkint"]])
+  vh <- exp(p[["lvh"]])
+  consumption <- exp(p[["lvmax_ii"]]) * s0$Gc / (p[["km_ii"]] + s0$Gc) +
+    exp(p[["lvmax_id"]]) * s0$Ic * s0$Gc / (exp(p[["lkm_id"]]) + s0$Gc)
+  dr <- -kon * vh * e0 * s0$r_free + koff * s0$r_bound - p[["kint_free"]] * s0$r_free +
+    krec * (1 - s0$r_free - s0$r_bound)
+  dre <- kon * vh * e0 * s0$r_free - (koff + kint) * s0$r_bound
+  data.frame(
+    G0 = s0$Gc, HGP = s0$fhgp, consumption = consumption,
+    dr_dt = dr, dre_dt = dre
+  )
+}
+ss <- bind_rows(
+  "Before treatment" = ss_check(sim_pre, ui_pre),
+  "After treatment (400 mg)" = ss_check(sim_post, ui_post),
+  .id = "treatment"
+)
+knitr::kable(ss, digits = 6)
+stopifnot(
+  all(abs(ss$HGP - ss$consumption) < 1e-8),
+  all(abs(ss$dr_dt) < 1e-10),
+  all(abs(ss$dre_dt) < 1e-10)
+)
+```
+
+The baseline glucose that Eq 9 implies (`G0`) is not an input. It agrees
+with the 0-3 h level of Figure 5 (about 1.06 g/L before and 1.00 g/L after
+treatment, digitised) to within a few percent, which confirms the
+steady-state relations and the digitised baselines together. The check allows
+8%: `G0` moves about 1.1% for every 1% change in the digitised insulin
+baseline, and one pixel of the Figure 5 insulin axis is about 3% of
+`bl_insulin`, so two pixels of reading error in insulin alone account for the
+6% gap after treatment.
+
+```{r baseline-glucose}
+g0_cmp <- data.frame(
+  treatment = ss$treatment,
+  model_G0 = ss$G0,
+  figure_5 = c(1.06, 1.00)
+) |>
+  mutate(pct_diff = 100 * (model_G0 - figure_5) / figure_5)
+knitr::kable(g0_cmp, digits = 3)
+stopifnot(all(abs(g0_cmp$pct_diff) < 8))
+```
+
+During the challenge, insulin settles at `QI / (VI kdegI)` and glucagon at
+`QE / (VE kdegE)`; with VE = 19.6 L the glucagon plateau is about 37 pmol/L,
+the level Figure 5 shows.
+
+```{r plateaus}
+plateau <- sim |>
+  group_by(treatment) |>
+  filter(time == max(time)) |>
+  select(treatment, Ic, GNc)
+knitr::kable(plateau, digits = 2)
+stopifnot(
+  abs(plateau$GNc[plateau$treatment == "Before treatment"] - 4134.7 / (19.6 * 5.73)) < 0.05,
+  abs(plateau$Ic[plateau$treatment == "Before treatment"] - 480 / (1.52 * 30.5)) < 0.01
+)
+```
+
+# Reproducing the paper's analysis
+
+**Loss of glucagon receptors.** Since K1' = K1/Rtot, an unchanged K1 gives a
+relative change in total receptor of (1/K1'after - 1/K1'before) / (1/K1'before).
+From the Table 4 averages the paper reports -0.55 (computed with K1' rounded to
+0.011 and 0.005); the unrounded averages carried by the models give -0.54.
+
+```{r receptor-loss}
+k1p_pre <- exp(ui_pre$theta[["lre50_hgp"]])
+k1p_post <- exp(ui_post$theta[["lre50_hgp"]])
+delta <- (1 / k1p_post - 1 / k1p_pre) / (1 / k1p_pre)
+round(delta, 3)
+stopifnot(abs(delta - (-0.55)) < 0.02)
+```
+
+**Free receptor during the challenge.** The Discussion reports that the free
+receptor fraction falls during the challenge by about 15% before treatment and
+8% after treatment; in Figure 5 these are drops in `r` of about 0.15 and 0.08
+(fractions of the total receptor pool).
+
+```{r free-receptor-drop}
+drop_r <- sim |>
+  group_by(treatment) |>
+  summarise(r_start = first(r_free), r_end = last(r_free), drop = r_start - r_end)
+knitr::kable(drop_r, digits = 3)
+stopifnot(
+  abs(drop_r$drop[drop_r$treatment == "Before treatment"] - 0.15) < 0.02,
+  abs(drop_r$drop[drop_r$treatment == "After treatment (400 mg)"] - 0.08) < 0.02
+)
+```
+
+**Peak glucose.** Table 4 reports the observed peak glucose `Gmax` (mean of
+the individual data maxima: 2.71 g/L before, 2.00 g/L after). The
+average-parameter model peaks lower (about 2.4 and 1.8 g/L), as it does in
+Figure 5: the curve of averaged parameters is not the average of the
+individual curves, and the observed maxima include measurement noise. The
+relative reduction with treatment is similar.
+
+```{r gmax}
+gmax <- sim |>
+  group_by(treatment) |>
+  summarise(model_peak = max(Gc)) |>
+  mutate(observed_gmax = ifelse(treatment == "Before treatment", 2.71, 2.00))
+knitr::kable(gmax, digits = 2)
+```
+
+# Assumptions and deviations
+
+* **Two models for one structure.** The source fitted every subject twice and
+  compared the two sets of individual estimates; it did not fit a treatment
+  effect. The two files carry the Table 4 averages for each condition. No
+  between-subject or residual variability is encoded: the Table 4 SDs describe
+  the spread of individual smooth-profiling fits, and the method has no error
+  model.
+* **Glucagon distribution volume.** Table 2 prints VE = 9.6 L; Table 3, which
+  the Methods cite as the source of the volumes, prints 19.6 L. The models use
+  19.6 L: it gives the glucagon plateau of about 37 pmol/L shown in Figure 5 and
+  the stated 2-3-fold rise over baseline, whereas 9.6 L would give about
+  75 pmol/L.
+* **Baseline insulin and glucagon digitised.** The average pre-challenge
+  concentrations are not tabulated. `bl_glucagon` and `bl_insulin` were read
+  from the 0-3 h segment of the Figure 5 curves (17.4 pmol/L and 10.5 mU/L
+  before treatment; 24.0 pmol/L and 9.7 mU/L after). Override them in `ini()`
+  to simulate an individual.
+* **Baseline glucose derived.** Baseline glucose is computed from Eq 9 rather
+  than supplied, so the model starts at its own steady state; it matches the
+  Figure 5 baseline within digitisation error.
+* **Challenge period only.** The model starts at the challenge (test hour 3)
+  with endogenous insulin and glucagon secretion switched off. The pre-challenge
+  steady state needs no simulation, and the paper's basal secretion rates
+  (F-bar I, F-bar E) are neither fitted nor reported. Infusions must start at
+  model time 0; dosing later lets insulin and glucagon decay from baseline
+  first, which the source does not describe.
+* **Units printed in Tables 1 and 4.** V1 and Vii are printed with units 1/h;
+  dimensional analysis of Eq 8a requires g/L/h (see Units). Vid is printed as
+  1/h and multiplies insulin in mU/L, so it is 1/h per mU/L. The values are
+  used as printed.
+* **Internalization rate in the Discussion.** The Discussion quotes kin
+  averages of 21.022 and 12.05 1/h; Table 4 and supplementary Table 7 give
+  21.5 and 12.1. The models use the tables.
+* **kon unit.** Table 2 and the Methods give kon = 0.0036 1/pmol/h (written
+  "(pM h)^-1" in the Methods); the identifiability code in the supplement uses
+  6e-5 per minute, the same value.
+* **Placebo comparison.** Supplementary Figure 6 overlays the before-treatment
+  model on eight placebo subjects not used in fitting; those data are not
+  available, so that figure is not reproduced.

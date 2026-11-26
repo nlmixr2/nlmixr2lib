@@ -3786,6 +3786,10 @@ navbar:
         href: articles/Paule_2011_hydroxyurea.html
       - text: "Hyperoside rat (Chen 2024)"
         href: articles/Chen_2024_guhongInjection.html
+      - text: "ISIS325568 posttreatment (Masroor 2019)"
+        href: articles/Masroor_2019_glucagon_challenge.html
+      - text: "ISIS325568 pretreatment (Masroor 2019)"
+        href: articles/Masroor_2019_glucagon_challenge.html
       - text: "Iadademstat invitro (Bouhaddou 2020)"
         href: articles/Bouhaddou_2020_iadademstat.html
       - text: "Iadademstat mouse (Bouhaddou 2020)"
@@ -11059,6 +11063,7 @@ articles:
   - articles/Mascarenhas_2015_pentadecanoic_triheptadecanoic
   - articles/Maseda_2018_micafungin
   - articles/Maskawa_2025_vancomycin_mouse
+  - articles/Masroor_2019_glucagon_challenge
   - articles/Masters_2022_avelumab
   - articles/Matcha_2025_amikacin
   - articles/Mathis_2022_berotralstat
