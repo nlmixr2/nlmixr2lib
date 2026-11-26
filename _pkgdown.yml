@@ -5236,6 +5236,8 @@ navbar:
         href: articles/Kwak_2025_mg1113.html
       - text: "Mg1113 rabbit (Kwak 2025)"
         href: articles/Kwak_2025_mg1113.html
+      - text: "Micafungin (Gastine 2019)"
+        href: articles/Gastine_2019_micafungin.html
       - text: "Micafungin (Leroux 2018)"
         href: articles/Leroux_2018_fluconazole_micafungin.html
       - text: "Micafungin (Martial 2017)"
@@ -10186,6 +10188,7 @@ articles:
   - articles/Gaspar_2025_fexofenadine
   - articles/Gasthuys_2018_desmopressin_piglet
   - articles/Gasthuys_2023_paracetamol
+  - articles/Gastine_2019_micafungin
   - articles/Gastonguay_2005_efaproxiral
   - articles/Gatti_1996_dapsone
   - articles/Ge_2020_metoclopramide

@@ -1,0 +1,351 @@
+---
+title: "Micafungin (Gastine 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Micafungin (Gastine 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Gastine_2019_micafungin"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Gastine_2019_micafungin"))$description`
+* Article (open access): <https://doi.org/10.1038/s41598-019-53093-6>
+
+# Population
+
+Gastine 2019 studied 36 critically ill adults (24 male, 12 female; median age
+65 years, range 22-84; median weight 94.5 kg, range 49.9-162) in the intensive
+care units of the University Hospital Muenster, Germany. All received
+micafungin 100 mg intravenously once daily as empirical (25 patients) or
+targeted (11 patients) therapy of suspected or proven Candida infection. The
+cohort was severely ill: APACHE II median 35, SOFA median 12 (range 2-22),
+SAPS II median 55; 78% met sepsis criteria, 75% received vasopressors, 86% were
+mechanically ventilated, 16% were on ECMO and 64% (23/36) received renal
+replacement therapy (CVVHDF, SLEDD or intermittent haemodialysis) on at least
+one study day (Table 1). On day 1 plasma was sampled at 1, 4, 8, 12, 16 and
+20 h and before the next dose; from day 2 a peak and a trough were taken daily.
+
+The same information is available programmatically via
+`readModelDb("Gastine_2019_micafungin")$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The table
+collects them with the model equations.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Structure: 2 compartments, linear elimination, IV input | -- | Results 'Population pharmacokinetic modelling'; Methods (ADVAN6, FOCE-I) |
+| `lcl` (CL at SOFA 12, bilirubin <= 4 mg/dL) | log(1.56) L/h | Table 2, Clearance 1.56 (RSE 4.8%) |
+| `lvc` (Vc at SOFA <= 10) | log(16.2) L | Table 2, Central volume 16.2 (RSE 12.7%) |
+| `lq` (Q) | log(14.4) L/h | Table 2, Inter-compartmental clearance 14.4 (RSE 7.7%) |
+| `lvp` (Vp) | log(13.8) L | Table 2, Peripheral volume 13.8 (RSE 15.7%) |
+| `e_sofa_cl`: `CL x (1 + e_sofa_cl x (SOFA - 12))` | -0.024 per point | Results: 'linear decrease in clearance with a factor of 0.024 per score point'; centring on the Table 1 median 12 (see Assumptions) |
+| `e_sofa_vc`: `Vc x (1 + e_sofa_vc)` if SOFA > 10 | -0.308 | Results and Abstract: 30.8% lower Vc with SOFA > 10 |
+| `e_tbili_cl`: `CL x (1 + e_tbili_cl)` if bilirubin > 4 mg/dL | -0.211 | Results and Abstract: 21.1% lower CL with bilirubin > 4 mg/dL |
+| `etalcl` | log(1 + 0.259^2) | Table 2, IIV clearance 25.9% |
+| `etalvc` | log(1 + 0.489^2) | Table 2, IIV central volume 48.9% |
+| `etalvp` | log(1 + 0.70^2) | Table 2, IIV peripheral volume 70% |
+| `propSd` | 0.257 | Table 2, Proportional residual error 0.257 |
+| Dose | 100 mg once daily IV | Methods 'Study protocol' |
+
+# Virtual cohort
+
+Table 1 gives the SOFA distribution only as a median and range (12; 2-22), and
+the paper does not report the bilirubin distribution. The cohort below draws a
+per-subject SOFA score from a normal distribution with mean 12 and SD 4,
+rounded and truncated to 2-22, and holds bilirubin at 1 mg/dL (17.1 umol/L,
+below the 4 mg/dL threshold) for everyone. The covariates are held constant
+over the simulated week, whereas the study re-scored SOFA daily.
+
+```{r cohort}
+set.seed(20191128)
+rxode2::rxSetSeed(20191128)
+n_sub <- 200
+
+cohort <- tibble(
+  id = seq_len(n_sub),
+  SOFA = pmin(pmax(round(rnorm(n_sub, mean = 12, sd = 4)), 2), 22),
+  TBILI = 17.1
+)
+summary(cohort$SOFA)
+```
+
+# Simulation
+
+Micafungin 100 mg once daily for 7 days, each dose infused over 1 h (the
+labelled infusion time; the paper does not state it). Observations every
+0.25 h on the `central` compartment.
+
+```{r simulate}
+mod <- readModelDb("Gastine_2019_micafungin")
+
+dose_rows <- tidyr::expand_grid(id = cohort$id, time = seq(0, 144, by = 24)) |>
+  mutate(evid = 1L, amt = 100, dur = 1, cmt = "central")
+obs_rows <- tidyr::expand_grid(id = cohort$id, time = seq(0, 168, by = 0.25)) |>
+  mutate(evid = 0L, amt = 0, dur = 0, cmt = "central")
+
+events <- bind_rows(dose_rows, obs_rows) |>
+  left_join(cohort, by = "id") |>
+  arrange(id, time, desc(evid))
+
+sim <- rxode2::rxSolve(mod, events = events, returnType = "data.frame")
+sim <- sim |>
+  mutate(
+    day = pmin(floor(time / 24) + 1, 7),
+    tad = time - 24 * (day - 1)
+  )
+```
+
+# Typical-value covariate effects
+
+The three covariate effects act on the typical clearance and central volume as
+below. The linear SOFA effect keeps clearance positive across the observed
+range (at SOFA 22 it is 0.76 times the SOFA-12 value).
+
+```{r typical-values}
+th <- rxode2::rxode2(mod)$theta
+cov_grid <- tidyr::expand_grid(SOFA = c(2, 6, 10, 11, 12, 16, 22), bili_mgdl = c(1, 5)) |>
+  mutate(
+    CL = exp(th[["lcl"]]) * (1 + th[["e_sofa_cl"]] * (SOFA - 12)) *
+      (1 + th[["e_tbili_cl"]] * (bili_mgdl > 4)),
+    Vc = exp(th[["lvc"]]) * (1 + th[["e_sofa_vc"]] * (SOFA > 10))
+  )
+stopifnot(
+  abs(cov_grid$CL[cov_grid$SOFA == 12 & cov_grid$bili_mgdl == 1] - 1.56) < 1e-12,
+  abs(cov_grid$Vc[cov_grid$SOFA == 11][1] / cov_grid$Vc[cov_grid$SOFA == 10][1] - 0.692) < 1e-12
+)
+cov_grid |>
+  mutate(CL = signif(CL, 3), Vc = signif(Vc, 3)) |>
+  dplyr::rename(
+    "SOFA score" = SOFA,
+    "Bilirubin (mg/dL)" = bili_mgdl,
+    "Typical CL (L/h)" = CL,
+    "Typical Vc (L)" = Vc
+  ) |>
+  knitr::kable(caption = "Typical clearance and central volume across the covariate range.")
+```
+
+# Replicate published figures
+
+## Concentration versus time after dose (Figures 2 and 5)
+
+Figure 2 plots the observed concentrations against time after the last dose
+and Figure 5 the prediction-corrected VPC: the observed median falls from about
+4.3 mg/L at 1 h after the dose to about 1.2 mg/L at 24 h, with the 95th
+percentile near 7.5 mg/L at the peak. The simulated percentiles over days 2-7
+are shown below; Figure 5 is prediction-corrected and pools all days, so the
+comparison is visual.
+
+```{r fig-vpc}
+vpc <- sim |>
+  filter(day >= 2, tad > 0) |>
+  group_by(tad) |>
+  summarise(
+    p05 = quantile(sim, 0.05),
+    p50 = median(sim),
+    p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(tad)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line(aes(y = p50)) +
+  labs(
+    x = "Time after dose (h)",
+    y = "Micafungin (mg/L)",
+    title = "Replicates Figure 5 of Gastine 2019",
+    caption = "Simulated median and 5th-95th percentiles, days 2-7, 100 mg once daily."
+  )
+```
+
+## Concentration versus SOFA score (Figure 6)
+
+Figure 6 shows concentrations rising with the SOFA score (the observed median
+goes from about 1.6 mg/L at SOFA 5 to about 2.7 mg/L at SOFA 19), the
+consequence of the lower clearance and lower central volume in the sicker
+patients.
+
+```{r fig-sofa}
+sim |>
+  filter(day >= 2, tad > 0) |>
+  group_by(SOFA) |>
+  summarise(
+    p05 = quantile(sim, 0.05),
+    p50 = median(sim),
+    p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(SOFA)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line(aes(y = p50)) +
+  labs(
+    x = "SOFA score",
+    y = "Micafungin (mg/L)",
+    title = "Replicates Figure 6 of Gastine 2019",
+    caption = "Simulated median and 5th-95th percentiles, days 2-7."
+  )
+```
+
+# PKNCA validation
+
+Daily AUC0-24 for each simulated subject on days 1-7.
+
+```{r pknca}
+conc_df <- sim |>
+  filter(!is.na(Cc)) |>
+  transmute(id, time, Cc, treatment = "100 mg once daily")
+dose_df <- dose_rows |>
+  transmute(id, time, amt, treatment = "100 mg once daily")
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = seq(0, 144, by = 24),
+  end = seq(24, 168, by = 24),
+  auclast = TRUE,
+  cmax = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_day <- as.data.frame(nca_res$result) |>
+  mutate(day = end / 24)
+```
+
+## Comparison against published values
+
+The paper reports no NCA table. Figure 7 gives the post-hoc daily AUC0-24
+divided by the C. albicans MIC of 0.016 mg/L as boxplots per study day. The
+medians, digitised from the figure and multiplied by 0.016, are the reference
+below. Figure 9 (C. parapsilosis, MIC 2 mg/L) gives the same AUCs to within
+digitisation error (day 3-5 medians of about 33, i.e. 66 mg*h/L). The study
+population shrank from 36 patients on day 1 to 7 on day 7, so days 6-7 rest on
+few patients and are shown for completeness only.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~day, ~auclast,
+  1, 3200 * 0.016,
+  2, 4000 * 0.016,
+  3, 4150 * 0.016,
+  4, 4250 * 0.016,
+  5, 4250 * 0.016,
+  6, 4050 * 0.016,
+  7, 3400 * 0.016
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_day |> select(day, PPTESTCD, PPORRES),
+  reference = published,
+  by = "day",
+  params = "auclast",
+  units = c(auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Median daily AUC0-24: simulated vs digitised from Gastine 2019 Figure 7 (AUC/MIC x 0.016 mg/L). * marks rows differing by >20%."
+)
+```
+
+Two checks pin the model against Figure 7. The steady-state AUC (days 3-5)
+depends on the typical clearance at the cohort's SOFA scores, so it tests the
+centring of the linear SOFA effect: with the effect centred on the median of
+12 the simulated median lies close to the digitised 66-68 mg*h/L, whereas an
+uncentred effect (`1 - 0.024 x SOFA`) would give a SOFA-12 clearance of
+1.11 L/h and a steady-state AUC near 90 mg*h/L (+33%). The ratio of the day-1
+to the day-4 AUC depends mainly on the distribution kinetics and the
+accumulation rather than on the covariates, so it tests the structural
+parameters.
+
+The simulated medians sit 5-8% below the digitised steady-state values and the
+day-1 AUC 14% below. Three things separate the two sides and set the 15%
+tolerance used below: the figure medians are digitised (about +/-3%); the
+virtual cohort holds bilirubin below the 4 mg/dL threshold, whereas any study
+patient above it had a 21% lower clearance and a higher AUC; and Figure 7
+summarises post-hoc AUCs of a shrinking set of patients (36 on day 1, 24 on
+day 4, 7 on day 7), so the day-to-day ratio also reflects who remained on
+therapy. The day-7 box (7 patients) is not used in the checks. The uncentred
+SOFA reading stays well outside the tolerance.
+
+```{r nca-check}
+auc_med <- nca_day |>
+  filter(PPTESTCD == "auclast") |>
+  group_by(day) |>
+  summarise(auc = median(PPORRES), .groups = "drop")
+
+ss_sim <- mean(auc_med$auc[auc_med$day %in% 3:5])
+ss_pub <- mean(published$auclast[published$day %in% 3:5])
+ratio_sim <- auc_med$auc[auc_med$day == 1] / auc_med$auc[auc_med$day == 4]
+ratio_pub <- published$auclast[published$day == 1] / published$auclast[published$day == 4]
+
+data.frame(
+  check = c("Median AUC0-24, days 3-5 (mg*h/L)", "Day-1 / day-4 median AUC0-24"),
+  published = signif(c(ss_pub, ratio_pub), 3),
+  simulated = signif(c(ss_sim, ratio_sim), 3)
+) |>
+  knitr::kable()
+
+stopifnot(
+  # Centring of the SOFA effect: centred lands within a few percent, the
+  # uncentred reading would be about +33%.
+  abs(ss_sim / ss_pub - 1) < 0.15,
+  # Accumulation from day 1 to steady state (structural parameters).
+  abs(ratio_sim / ratio_pub - 1) < 0.15
+)
+```
+
+# Assumptions and deviations
+
+* **Centring of the linear SOFA effect on clearance.** The paper prints only
+  'a linear decrease in clearance with a factor of 0.024 per score point' from
+  the PsN stepwise covariate modelling. The PsN linear form
+  `CL = TVCL x (1 + theta x (SOFA - median))` is used, centred on the Table 1
+  median of 12. The steady-state AUCs of Figure 7 support the centred reading
+  and exclude the uncentred one (see the check above).
+* **Reference groups of the categorical effects.** The Results describe the
+  SOFA > 10 group as having a 30.8% lower central volume and the bilirubin
+  > 4 mg/dL group a 21.1% lower clearance; the Table 2 typical values are
+  therefore taken to apply to SOFA <= 10 (Vc) and bilirubin <= 4 mg/dL (CL).
+* **Bilirubin units.** The paper's threshold is 4 mg/dL; the model's `TBILI`
+  column is in umol/L and is divided by 17.1 inside the model.
+* **IIV scale.** Table 2 reports the IIVs as percentages without a definition;
+  they are converted with the exact log-normal relation
+  `omega^2 = log(1 + CV^2)`.
+* **IIV correlations.** The Results state that a full covariance matrix was
+  estimated for the three random effects, but the covariances are not reported,
+  so the etas are independent here. Simulated variability of parameter
+  combinations (for example AUC with correlated CL and Vc) may therefore
+  differ from the original fit.
+* **Residual error.** Table 2 reports 'Proportional residual Error (%)' as
+  0.257, while the IIV rows of the same column are printed as percentages
+  (25.9, 70, 48.9). It is read as a proportional SD of 25.7%; the spread of the
+  observations around the individual predictions in Figure 4A agrees with this
+  reading rather than with a variance of 0.257 (an SD of 51%).
+* **Infusion duration.** Not stated in the paper; the 1 h labelled infusion
+  time is used. The day-1 samples are timed 'post application' and the later
+  peaks 'one hour after infusion'.
+* **Time-varying covariates.** SOFA and bilirubin were time-varying in the
+  study (SOFA re-scored daily). The model accepts time-varying values, but the
+  virtual cohort above holds them constant, and the cohort's SOFA distribution
+  is assumed (normal, mean 12, SD 4, truncated to 2-22) because only the median
+  and range are reported.
+* **Bilirubin distribution.** Not reported; the cohort holds bilirubin at
+  1 mg/dL. Patients above 4 mg/dL in the study would have raised the observed
+  AUCs of Figure 7 somewhat relative to this cohort.
+* **Published weight range.** Table 1 gives 49.9-162 kg and the Results text
+  49.4-162 kg; the table value is recorded in the model metadata.
+* No erratum was found for the article (search of the publisher page and
+  PubMed, 2026-11-26).
