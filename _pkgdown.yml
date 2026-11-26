@@ -782,6 +782,8 @@ navbar:
         href: articles/Zheng_2018_azithromycin.html
       - text: "Aztreonam (Zhang 2023)"
         href: articles/Zhang_2023_aztreonam_amoxicillin_clavulanate.html
+      - text: "Aztreonam avibactam (Chauzy 2019)"
+        href: articles/Chauzy_2019_aztreonam_avibactam.html
       - text: "Aztreonam avibactam (Xie 2025)"
         href: articles/Xie_2025_aztreonam_avibactam.html
       - text: "Aztreonam qsp (LopezArguello 2023)"
@@ -9738,6 +9740,7 @@ articles:
   - articles/Chatelut_1999_interferon_alfa_2b
   - articles/Chatterjee_2016_pembrolizumab
   - articles/Chatterjee_2017_pembrolizumab_melanoma
+  - articles/Chauzy_2019_aztreonam_avibactam
   - articles/Chauzy_2022_ceftaroline
   - articles/Chauzy_2022_metronidazole_pbpk
   - articles/Chawla_2023_gefapixant

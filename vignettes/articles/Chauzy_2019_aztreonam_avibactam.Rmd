@@ -1,0 +1,536 @@
+---
+title: "Aztreonam + avibactam against MDR Enterobacteriaceae (Chauzy 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Aztreonam + avibactam against MDR Enterobacteriaceae (Chauzy 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Article: <https://doi.org/10.1002/psp4.12452> (open access)
+* Supplementary Material S1: drug stability analysis, the full description of
+  the pharmacodynamic model, the procedure used to reduce the model for the
+  simulations, and the NONMEM 7.4 model code. Figures S1-S7: observed and
+  predicted time-kill curves for every strain, and the simulations of the
+  individual avibactam effects.
+
+```{r citation}
+mod_fn <- readModelDb("Chauzy_2019_aztreonam_avibactam")
+mod <- rxode2::rxode2(mod_fn)
+cat(mod$reference, "\n")
+```
+
+Avibactam (AVI) has three effects when combined with aztreonam (ATM): it
+inhibits the beta-lactamases that degrade aztreonam, it kills bacteria itself
+(through PBP2), and it enhances aztreonam's own killing. Chauzy 2019 fitted one
+semi-mechanistic model, jointly, to static time-kill experiments with four
+multidrug-resistant, metallo-beta-lactamase-producing Enterobacteriaceae. The
+model was fitted to the bacterial counts and to the aztreonam concentrations
+measured in the flasks, and the authors then switched the three avibactam
+effects on one at a time to measure how much each one contributes.
+
+The packaged model has:
+
+* two bacterial subpopulations with the same logistic growth rate: a
+  susceptible `bact_susceptible_susceptible` (P1) and a less-susceptible
+  `bact_intermediate_resistant` (P2, a fixed fraction of the inoculum);
+* sigmoidal Emax kill by aztreonam on both subpopulations, with the P2 EC50
+  multiplied by a resistance factor;
+* sigmoidal Emax kill by avibactam on P1 only;
+* avibactam enhancement of aztreonam, modelled as a bi-exponential fall in
+  the aztreonam EC50, `EC50 = A exp(-alpha AVI) + B exp(-beta AVI)`, which
+  applies to both subpopulations;
+* aztreonam (`central`, mg/L) degraded first-order at the rate
+  `Degmin exp(psi log10(P1 + P2))`, inhibited by avibactam through a
+  fractional inhibitory Emax term. There is no degradation sub-model for
+  *E. coli* 1266865, because no degradation was observed for it;
+* two observations: `log_cfu` (log10 CFU/mL, additive error) and `Cc`
+  (aztreonam, mg/L, proportional error), with strain-specific residual SDs.
+
+Aztreonam is added at time 0 as a dose into `central`, with `amt` in mg/L.
+Avibactam is the static covariate `CONC_AVI_MGL`. The strain is selected by
+`BACT`, which takes the authors' STRAIN codes (1, 12, 15 or 16).
+
+# Population (biological context)
+
+```{r population}
+str(mod$population[c("species", "n_subjects", "initial_inoculum", "dose_range")])
+```
+
+```{r strains}
+strains <- tibble::tribble(
+  ~BACT, ~strain, ~beta_lactamases, ~mic_atm, ~mic_atm_avi, ~mic_avi,
+  1, "E. coli 1266865", "NDM-5, TEM-OSBL(b), CMY-42", 32, 4, 16,
+  12, "C. freundii 974673", "NDM-1, SHV-12(2be), TEM-OSBL(2b), CTX-M-3, CMY-34", 512, 0.125, 16,
+  15, "E. cloacae 1285905", "NDM-1, CTX-M-15", 64, 0.25, 32,
+  16, "E. cloacae 1318536", "NDM-1, CTX-M-15", 512, 0.125, 16
+)
+strains |>
+  dplyr::rename(
+    "Strain" = strain,
+    "Beta-lactamases" = beta_lactamases,
+    "MIC ATM (mg/L)" = mic_atm,
+    "MIC ATM + 4 mg/L AVI (mg/L)" = mic_atm_avi,
+    "MIC AVI (mg/L)" = mic_avi
+  ) |>
+  knitr::kable(caption = "The four strains (Chauzy 2019 Table 1).")
+```
+
+The isolates came from International Health Management Associates. All four
+were resistant to aztreonam alone and made susceptible by 4 mg/L avibactam.
+Static time-kill experiments ran for 27 h at 37 degrees C in 20 mL
+cation-adjusted Mueller-Hinton broth from an inoculum of about 1.5 x 10^6
+CFU/mL. Each strain had 32 conditions: a growth control, 6 avibactam-alone
+levels, 5 aztreonam-alone levels and 20 combinations, each at least in
+duplicate. Counts were plated at 0, 2, 4, 6, 8, 10, 15, 21, 24 and 27 h, with
+a lower limit of quantification of 200 CFU/mL. Aztreonam was measured by
+LC-MS/MS.
+
+# Source trace
+
+| Element | Source location | In the model file |
+|---|---|---|
+| Logistic growth of P1 + P2, same rate constant | S1 Pharmacodynamic model; code `PLAT`, `DADT(1)`, `DADT(2)` | `kg_s*`, `log10bmax` |
+| Inoculum split into P1 and P2 | Table 2 'P2 fraction'; code `A_0(1)`, `A_0(2)`, `MUT` | `log10inoc`, `fmut_s*` |
+| Aztreonam sigmoidal Emax on P1 and P2 (P2 EC50 x resistance factor) | code `ATMS`, `ATMR` | `emax_atm_s*`, `hill_atm_s*`, `resfac_s*` |
+| Avibactam sigmoidal Emax on P1 only | code `AVIS`, `DADT(1)` | `emax_avi_s*`, `ec50_avi_s*`, `hill_avi_s*` |
+| Bi-exponential aztreonam EC50 (enhancement) | S1 Eq 3; code `EC501` | `ec50a_atm_s*`, `ec50b_atm_s*`, `alpha_s*`, `beta_s*` |
+| Aztreonam degradation and its inhibition by avibactam | S1 Eq 4; code `NB`, `DEG`, `INH`, `DADT(3)` | `degmin_s*`, `psi_s*`, `ic50_avi_s*`, `hill_inh_s*` |
+| No degradation for *E. coli* 1266865 | Table 2 '-'; code `IF(STRAIN.EQ.1) TVDEGMIN = 0` | `degmin_s1 = fixed(0)` |
+| Observations and residual error | code `$ERROR` (`IPRD1 = LOG10(ATOT+0.000001)`, `SIG`, `W`) | `log_cfu ~ add()`, `Cc ~ prop()` |
+| All parameter values | Table 2; identical to code `$THETA` 1-66 | `ini()` |
+
+The model code in Supplementary Material S1 is the authors' final control
+stream: its `$THETA` initial values equal the Table 2 estimates to the printed
+digits.
+
+# Parameter table (paper vs. file)
+
+Table 2 is transcribed below and compared with the values read from the
+packaged model's `ini()`. This checks the transcription of every parameter.
+
+```{r table2}
+table2 <- read.csv(text = "
+parameter,s1,s12,s15,s16
+kg,0.907,1.1,1.15,1.24
+emax_atm,2.62,1.76,1.6,1.86
+ec50a_atm,31.8,99.1,2.94,67.9
+ec50b_atm,0,0.494,0.241,0.402
+alpha,0.42,37.2,25.9,42.3
+beta,0,0.548,0.602,0.412
+hill_atm,1.48,1.42,2.65,1.52
+resfac,8.09,9.39,18,29.1
+emax_avi,2.28,1.29,1.69,2.14
+ec50_avi,14.5,17.3,14.8,12
+hill_avi,12.9,4.63,2.1,8.91
+degmin,0,0.00462,0.000129,0.000166
+psi,1,0.563,1,1
+ic50_avi,1,0.0000213,0.000185,0.0128
+hill_inh,1,0.207,0.522,1.48
+fmut,0.00001,0.00001,0.00002,0.0000001
+addSd_log_cfu,0.97,0.708,0.845,0.782
+propSd,0.101,0.494,0.244,0.333
+")
+theta <- mod$theta
+file_vals <- table2 |>
+  tidyr::pivot_longer(-parameter, names_to = "strain", values_to = "paper") |>
+  dplyr::mutate(file = unname(theta[paste0(parameter, "_", strain)]))
+stopifnot(
+  !anyNA(file_vals$file),
+  isTRUE(all.equal(file_vals$file, file_vals$paper, tolerance = 1e-12))
+)
+stopifnot(
+  isTRUE(all.equal(unname(theta["log10bmax"]), 8.44)),
+  isTRUE(all.equal(unname(theta["log10inoc"]), 6.01))
+)
+file_vals |>
+  tidyr::pivot_wider(names_from = strain, values_from = c(paper, file)) |>
+  knitr::kable(caption = "Table 2 (paper) vs. ini() (file), per strain code. Shared: Nmax 8.44 and INOC 6.01 log10 CFU/mL.")
+```
+
+For *E. coli* 1266865, Table 2 prints '-' for the four degradation parameters.
+The values 0 / 1 / 1 / 1 in the table above are the constants the authors'
+code assigns to STRAIN 1. With `Degmin = 0` the other three have no effect.
+
+# Simulation helper
+
+A time-kill experiment is one flask: aztreonam dosed at time 0 and avibactam
+held constant. The model declares two endpoints, so the observation rows set
+`dvid = 1`. This returns every model variable, including `log_cfu` and `Cc`.
+
+```{r helper}
+sim_flask <- function(bact, atm, avi, times, params = NULL) {
+  obs <- data.frame(id = 1L, time = times, evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+  ev <- if (atm > 0) {
+    rbind(data.frame(id = 1L, time = 0, evid = 1L, amt = atm, cmt = "central", dvid = NA_integer_), obs)
+  } else {
+    obs
+  }
+  ev$BACT <- bact
+  ev$CONC_AVI_MGL <- avi
+  out <- rxode2::rxSolve(mod, events = ev, params = params, returnType = "data.frame")
+  out <- out[out$time %in% times & !duplicated(out$time), c("time", "log_cfu", "Cc")]
+  out$BACT <- bact
+  out$atm <- atm
+  out$avi <- avi
+  out
+}
+
+fine_times <- seq(0, 27, by = 0.25)
+```
+
+# Replicate Figure 2: E. cloacae 1285905 time-kill curves and aztreonam degradation
+
+Figure 2 shows the model fit to *E. cloacae* 1285905 (MIC of aztreonam alone
+64 mg/L): (a) aztreonam alone at 16-256 mg/L (0.25-4 x MIC), (b) avibactam
+alone, and (c) combinations. The lower panels show the percentage of the
+initial aztreonam concentration that remains.
+
+```{r figure-2}
+fig2_conds <- dplyr::bind_rows(
+  tibble::tibble(panel = "a: ATM alone", atm = c(16, 32, 64, 128, 256), avi = 0),
+  tibble::tibble(panel = "b: AVI alone", atm = 0, avi = c(0.004, 0.0625, 0.5, 4, 32, 64)),
+  tibble::tibble(panel = "c: ATM 1 mg/L + AVI", atm = 1, avi = c(0.004, 0.0625, 0.5, 4)),
+  tibble::tibble(panel = "c: ATM 8 mg/L + AVI", atm = 8, avi = c(0.004, 0.0625)),
+  tibble::tibble(panel = "c: ATM 32 mg/L + AVI", atm = 32, avi = 0.004)
+)
+fig2 <- dplyr::bind_rows(lapply(seq_len(nrow(fig2_conds)), function(i) {
+  out <- sim_flask(15, fig2_conds$atm[i], fig2_conds$avi[i], fine_times)
+  out$panel <- fig2_conds$panel[i]
+  out
+})) |>
+  dplyr::mutate(
+    condition = ifelse(panel == "b: AVI alone", paste("AVI", avi, "mg/L"),
+      ifelse(avi > 0, paste("AVI", avi, "mg/L"), paste("ATM", atm, "mg/L"))
+    ),
+    atm_remaining_pct = ifelse(atm > 0, 100 * Cc / atm, NA_real_)
+  )
+
+ggplot(fig2, aes(time, log_cfu, colour = condition)) +
+  geom_line() +
+  geom_hline(yintercept = log10(200), linetype = "dashed", colour = "grey50") +
+  facet_wrap(~panel, nrow = 2) +
+  coord_cartesian(ylim = c(0, 10)) +
+  labs(
+    x = "Time (h)", y = "E. cloacae 1285905 (log10 CFU/mL)", colour = NULL,
+    caption = "Replicates the model-predicted lines of Figure 2 (top panels) of Chauzy 2019."
+  )
+
+fig2 |>
+  dplyr::filter(atm > 0) |>
+  ggplot(aes(time, atm_remaining_pct, colour = condition)) +
+  geom_line() +
+  facet_wrap(~panel, nrow = 2) +
+  coord_cartesian(ylim = c(0, 120)) +
+  labs(
+    x = "Time (h)", y = "ATM remaining (%)", colour = NULL,
+    caption = "Replicates the model-predicted lines of Figure 2 (bottom panels) of Chauzy 2019."
+  )
+```
+
+The behaviour in Figure 2 is reproduced. With aztreonam alone, the two lowest
+concentrations let the culture regrow, and aztreonam is then degraded within
+about a day. At 128-256 mg/L the culture is killed and about three quarters of
+the aztreonam remains at 24 h. Avibactam alone kills only at 32-64 mg/L. When
+the counts stay low the degradation stops, which is why aztreonam degradation
+depends on the bacterial density.
+
+```{r figure-2-checks}
+at <- function(d, panel_, cond_, t_) d$log_cfu[d$panel == panel_ & d$condition == cond_ & d$time == t_]
+rem <- function(d, panel_, cond_, t_) d$atm_remaining_pct[d$panel == panel_ & d$condition == cond_ & d$time == t_]
+fig2_checks <- c(
+  atm16_regrows_by_15h = at(fig2, "a: ATM alone", "ATM 16 mg/L", 15) > 7.5,
+  atm16_degraded_by_24h = rem(fig2, "a: ATM alone", "ATM 16 mg/L", 24) < 10,
+  atm256_kills_by_15h = at(fig2, "a: ATM alone", "ATM 256 mg/L", 15) < 4,
+  atm256_mostly_intact_24h = rem(fig2, "a: ATM alone", "ATM 256 mg/L", 24) > 50,
+  avi64_below_inoculum_at_8h = at(fig2, "b: AVI alone", "AVI 64 mg/L", 8) < 5.8,
+  avi4_no_kill_at_8h = at(fig2, "b: AVI alone", "AVI 4 mg/L", 8) > 7.5,
+  atm32_avi0004_half_left_24h = abs(rem(fig2, "c: ATM 32 mg/L + AVI", "AVI 0.004 mg/L", 24) - 55) < 15,
+  atm8_avi00625_protected_24h = rem(fig2, "c: ATM 8 mg/L + AVI", "AVI 0.0625 mg/L", 24) > 70
+)
+fig2_checks
+stopifnot(all(fig2_checks))
+```
+
+These checks are figure-level statements read from the model-predicted lines
+of Figure 2, with wide margins. The model is deterministic, so they do not
+depend on a random seed. Avibactam at 64 mg/L brings the count down only to
+about 5 log10 CFU/mL by 8 h, as the fitted line does in Figure 2b. The observed
+counts went lower (about 3.7). The model's floor is the less-susceptible P2
+subpopulation, which avibactam does not kill and which regrows from about
+20 CFU/mL.
+
+# Replicate Figures 4, 5 and S5-S7: contribution of each avibactam effect
+
+The authors simulated constant concentrations at three levels: average
+(25 mg/L aztreonam + 4.5 mg/L avibactam), low (5 + 0.9) and high
+(125 + 22.5). They used the full model and four reduced models (Supplementary
+Material S1, Simulations):
+
+| Scenario | Aztreonam EC50 | Avibactam kill | Degradation inhibited |
+|---|---|---|---|
+| Full model | `A exp(-alpha AVI) + B exp(-beta AVI)` | yes | yes |
+| ATM effect | `A + B` | no | no |
+| ATM + AVI inhibitory effect | `A + B` | no | yes |
+| ATM + AVI bactericidal effect | `A + B` | yes | no |
+| ATM + AVI enhancing effect | `A exp(-alpha AVI) + B exp(-beta AVI)` | no | no |
+
+Each reduced model is the packaged model with parameter overrides: the
+enhancement is removed with `alpha = beta = 0`, the avibactam kill with
+`Emax,AVI = 0`, and the inhibition of degradation with an IC50 of 1e30 mg/L.
+
+```{r reduced-models}
+scenario_params <- function(bact, scenario) {
+  s <- paste0("_s", bact)
+  no_enh <- setNames(c(0, 0), paste0(c("alpha", "beta"), s))
+  no_kill <- setNames(0, paste0("emax_avi", s))
+  no_inh <- setNames(1e30, paste0("ic50_avi", s))
+  switch(scenario,
+    "Full model" = NULL,
+    "ATM effect" = c(no_enh, no_kill, no_inh),
+    "ATM + AVI inhibitory" = c(no_enh, no_kill),
+    "ATM + AVI bactericidal" = c(no_enh, no_inh),
+    "ATM + AVI enhancing" = c(no_kill, no_inh)
+  )
+}
+scenarios <- c("Full model", "ATM effect", "ATM + AVI inhibitory", "ATM + AVI bactericidal", "ATM + AVI enhancing")
+levels_conc <- tibble::tibble(
+  level = c("average", "low", "high"),
+  atm = c(25, 5, 125),
+  avi = c(4.5, 0.9, 22.5)
+)
+sim_grid <- tidyr::expand_grid(BACT = strains$BACT, level = levels_conc$level, scenario = c("Control", scenarios)) |>
+  dplyr::left_join(levels_conc, by = "level")
+effects <- dplyr::bind_rows(lapply(seq_len(nrow(sim_grid)), function(i) {
+  g <- sim_grid[i, ]
+  if (g$scenario == "Control") {
+    out <- sim_flask(g$BACT, 0, 0, fine_times)
+  } else {
+    out <- sim_flask(g$BACT, g$atm, g$avi, fine_times, params = scenario_params(g$BACT, g$scenario))
+  }
+  out$level <- g$level
+  out$scenario <- g$scenario
+  out
+})) |>
+  dplyr::left_join(strains |> dplyr::select(BACT, strain), by = "BACT")
+```
+
+```{r figure-s5, fig.height = 8}
+effects |>
+  dplyr::filter(level == "average", time <= 24) |>
+  dplyr::mutate(scenario = factor(scenario, levels = c("Control", scenarios))) |>
+  ggplot(aes(time, log_cfu, colour = scenario)) +
+  geom_line() +
+  geom_hline(yintercept = log10(200), linetype = "dashed", colour = "grey50") +
+  facet_grid(strain ~ scenario) +
+  coord_cartesian(ylim = c(0, 9)) +
+  scale_x_continuous(breaks = c(0, 12, 24)) +
+  theme(legend.position = "none", strip.text = element_text(size = 7)) +
+  labs(
+    x = "Time (h)", y = "Bacterial count (log10 CFU/mL)",
+    caption = "Replicates Figure S5 (and Figures 4 and 5, top panels) of Chauzy 2019: 25 mg/L ATM + 4.5 mg/L AVI.\nThe Control column is the drug-free growth curve (0% effect)."
+  )
+```
+
+```{r figure-5-atm}
+effects |>
+  dplyr::filter(level == "average", BACT == 15, scenario %in% scenarios, time <= 24) |>
+  dplyr::mutate(scenario = factor(scenario, levels = scenarios)) |>
+  ggplot(aes(time, Cc)) +
+  geom_line() +
+  facet_wrap(~scenario, nrow = 1) +
+  coord_cartesian(ylim = c(0, 26)) +
+  labs(
+    x = "Time (h)", y = "ATM concentration (mg/L)",
+    caption = "Replicates Figure 5 (bottom panels) of Chauzy 2019: E. cloacae 1285905, 25 mg/L ATM + 4.5 mg/L AVI."
+  )
+```
+
+As in Figure 5, aztreonam stays at 25 mg/L under the full model. It falls to
+about 0 by 21 h when neither the avibactam inhibition nor its enhancement is
+present, because the culture regrows and degrades the drug. With the
+enhancement alone it levels off near 19 mg/L. Kill is slower, so some
+degradation happens before the culture is controlled.
+
+## Percentage of the maximum effect
+
+The paper defines the effect of each scenario from the area under the log10
+CFU-time curve, `AUC_CFU`:
+
+`% maximum effect = 100 (AUC_CFU,control - AUC_CFU,i) / (AUC_CFU,control - AUC_CFU,full)`
+
+The paper does not say how `AUC_CFU` was computed. The published curves are
+piecewise linear between the experiment's sampling times (0, 2, 4, 6, 8, 10,
+15, 21 and 24 h), so the AUC is taken here with the linear trapezoidal rule on
+those times, from 0 to 24 h. The paper's figures also plot the log10 count
+only down to 0 (1 CFU/mL). Reading the AUC on that floor reproduces every
+published percentage. Without the floor, the high-concentration values fall
+well below the published ones, because the full model then goes as low as
+-6 log10 CFU/mL and the denominator grows. Both readings are shown below. The
+floored one is the one checked.
+
+```{r pct-max-effect}
+sampling_times <- c(0, 2, 4, 6, 8, 10, 15, 21, 24)
+auc_trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+auc_tab <- effects |>
+  dplyr::filter(time %in% sampling_times) |>
+  dplyr::group_by(BACT, strain, level, scenario) |>
+  dplyr::arrange(time, .by_group = TRUE) |>
+  dplyr::summarise(
+    auc_floor0 = auc_trap(time, pmax(log_cfu, 0)),
+    auc_nofloor = auc_trap(time, log_cfu),
+    .groups = "drop"
+  )
+pct_tab <- auc_tab |>
+  dplyr::filter(!scenario %in% c("Control", "Full model")) |>
+  dplyr::left_join(
+    auc_tab |> dplyr::filter(scenario == "Control") |> dplyr::select(BACT, level, ctrl0 = auc_floor0, ctrln = auc_nofloor),
+    by = c("BACT", "level")
+  ) |>
+  dplyr::left_join(
+    auc_tab |> dplyr::filter(scenario == "Full model") |> dplyr::select(BACT, level, full0 = auc_floor0, fulln = auc_nofloor),
+    by = c("BACT", "level")
+  ) |>
+  dplyr::mutate(
+    pct_floor0 = 100 * (ctrl0 - auc_floor0) / (ctrl0 - full0),
+    pct_nofloor = 100 * (ctrln - auc_nofloor) / (ctrln - fulln)
+  )
+
+# Figures S5 (average), S6 (low) and S7 (high); the E. coli 1266865 values for
+# "ATM + AVI inhibitory" carry the footnote that this strain has no degradation
+# sub-model. Figures 4 and 5 repeat the average-level values for strains 1 and 15.
+published <- tibble::tribble(
+  ~BACT, ~level, ~scenario, ~published,
+  1, "average", "ATM effect", 26.9, 1, "average", "ATM + AVI inhibitory", 26.9,
+  1, "average", "ATM + AVI bactericidal", 26.9, 1, "average", "ATM + AVI enhancing", 100,
+  12, "average", "ATM effect", 0.8, 12, "average", "ATM + AVI inhibitory", 1.9,
+  12, "average", "ATM + AVI bactericidal", 0.8, 12, "average", "ATM + AVI enhancing", 99.7,
+  15, "average", "ATM effect", 26.2, 15, "average", "ATM + AVI inhibitory", 28.7,
+  15, "average", "ATM + AVI bactericidal", 27.5, 15, "average", "ATM + AVI enhancing", 87.1,
+  16, "average", "ATM effect", 1.2, 16, "average", "ATM + AVI inhibitory", 3.6,
+  16, "average", "ATM + AVI bactericidal", 1.2, 16, "average", "ATM + AVI enhancing", 100,
+  1, "low", "ATM effect", 54.5, 1, "low", "ATM + AVI inhibitory", 54.5,
+  1, "low", "ATM + AVI bactericidal", 54.5, 1, "low", "ATM + AVI enhancing", 100,
+  12, "low", "ATM effect", 0.08, 12, "low", "ATM + AVI inhibitory", 0.2,
+  12, "low", "ATM + AVI bactericidal", 0.08, 12, "low", "ATM + AVI enhancing", 82.5,
+  15, "low", "ATM effect", 18.3, 15, "low", "ATM + AVI inhibitory", 22,
+  15, "low", "ATM + AVI bactericidal", 18.5, 15, "low", "ATM + AVI enhancing", 99.4,
+  16, "low", "ATM effect", 0.1, 16, "low", "ATM + AVI inhibitory", 0.4,
+  16, "low", "ATM + AVI bactericidal", 0.1, 16, "low", "ATM + AVI enhancing", 87.7,
+  1, "high", "ATM effect", 64.9, 1, "high", "ATM + AVI inhibitory", 64.9,
+  1, "high", "ATM + AVI bactericidal", 70.4, 1, "high", "ATM + AVI enhancing", 90.1,
+  12, "high", "ATM effect", 5.9, 12, "high", "ATM + AVI inhibitory", 14.7,
+  12, "high", "ATM + AVI bactericidal", 22.5, 12, "high", "ATM + AVI enhancing", 77.8,
+  15, "high", "ATM effect", 63.3, 15, "high", "ATM + AVI inhibitory", 63.4,
+  15, "high", "ATM + AVI bactericidal", 99.3, 15, "high", "ATM + AVI enhancing", 63.4,
+  16, "high", "ATM effect", 13.4, 16, "high", "ATM + AVI inhibitory", 19.4,
+  16, "high", "ATM + AVI bactericidal", 34.1, 16, "high", "ATM + AVI enhancing", 71.3
+)
+
+cmp <- published |>
+  dplyr::left_join(pct_tab |> dplyr::select(BACT, strain, level, scenario, pct_floor0, pct_nofloor),
+    by = c("BACT", "level", "scenario")
+  ) |>
+  dplyr::mutate(
+    diff_pp = pct_floor0 - published,
+    level = factor(level, levels = c("low", "average", "high"))
+  ) |>
+  dplyr::arrange(level, BACT)
+stopifnot(nrow(cmp) == 48, !anyNA(cmp$pct_floor0))
+
+cmp |>
+  dplyr::select(level, strain, scenario, published, pct_floor0, pct_nofloor, diff_pp) |>
+  dplyr::rename(
+    "Concentration level" = level,
+    "Strain" = strain,
+    "Scenario" = scenario,
+    "Published (%)" = published,
+    "Simulated, AUC floored at 0 (%)" = pct_floor0,
+    "Simulated, no floor (%)" = pct_nofloor,
+    "Difference, floored - published (percentage points)" = diff_pp
+  ) |>
+  knitr::kable(digits = 1, caption = "Percentage of the maximum effect: Figures S5 (average), S6 (low) and S7 (high) of Chauzy 2019 vs. the packaged model.")
+```
+
+```{r pct-max-effect-checks}
+summary(abs(cmp$diff_pp))
+# Deterministic comparison against the printed figure labels. The largest
+# difference observed is about 2.7 percentage points (E. coli 1266865 at the
+# high level); a mis-transcribed parameter moves these by tens of points.
+stopifnot(max(abs(cmp$diff_pp)) < 5)
+
+# The paper's main conclusion: at clinical average and low concentrations the
+# enhancing effect alone gives most of the full effect (82.5-100%), while the
+# inhibition of degradation adds little to aztreonam alone.
+enh <- cmp |> dplyr::filter(level != "high", scenario == "ATM + AVI enhancing")
+stopifnot(all(enh$pct_floor0 > 80))
+inh_gain <- cmp |>
+  dplyr::filter(scenario %in% c("ATM effect", "ATM + AVI inhibitory")) |>
+  dplyr::select(BACT, level, scenario, pct_floor0) |>
+  tidyr::pivot_wider(names_from = scenario, values_from = pct_floor0) |>
+  dplyr::mutate(gain = `ATM + AVI inhibitory` - `ATM effect`)
+stopifnot(all(inh_gain$gain < 10))
+```
+
+The model reproduces all 48 published percentages within a few percentage
+points, and it reproduces the paper's conclusion. Within the clinical
+concentration range, the enhancement of aztreonam explains nearly all of the
+combined activity. Inhibiting aztreonam degradation adds at most a few
+percentage points over aztreonam alone.
+
+# Why there is no PKNCA section
+
+This is a pharmacodynamic model of a closed in vitro flask. Aztreonam enters as
+one addition at time 0 and is lost only by enzymatic degradation, which depends
+on the bacteria. Avibactam is held constant. There is no dosing regimen or
+systemic exposure for NCA to summarise, so the validation above compares the
+model with the paper's own model predictions: the time-kill and degradation
+profiles of Figure 2, and the percentages of the maximum effect in Figures 4,
+5 and S5-S7.
+
+# Assumptions and deviations
+
+* **One joint model, strain selected by `BACT`.** The authors fitted all four
+  strains in one NONMEM run, sharing Nmax and the inoculum. The file therefore
+  holds the full set of strain-specific parameters and switches on the
+  dataset's STRAIN codes (1, 12, 15, 16), which are kept as the `BACT` levels.
+  Any other `BACT` value returns NA.
+* **No random effects.** `$OMEGA` on the growth rate is fixed to 0 in the
+  published code, so no between-flask variability is included. The residual SDs
+  are THETAs with `$SIGMA 1 FIX`, so the strain-specific Table 2 values are
+  SDs. They are selected per strain in `model()`.
+* **Units of `Degmin` and `psi`.** Table 2 gives Degmin in 1/h, and Supplementary
+  Material S1 gives it in mg/L/h. The code multiplies Degmin by the aztreonam
+  amount (`DADT(3) = -(DEG*INH)*A(3)`), so it is a first-order rate constant in
+  1/h. Table 2 gives psi in mL/CFU, but the code multiplies it by
+  `NB = LOG10(A(1)+A(2))`, the log10 of the count. The file follows the code and
+  labels psi per log10 CFU/mL.
+* **Degradation parameters for *E. coli* 1266865.** Table 2 prints '-'. The code
+  sets Degmin = 0 and psi, IC50 and the inhibition Hill coefficient to 1 for
+  this strain. The same constants are used here, fixed. They have no effect.
+* **Numerical guards.** At high concentrations a fully killed culture can reach a
+  tiny negative count through solver error. The count is floored at a small
+  positive value inside the `log10()` of the degradation term, and at 0 before
+  the code's 1e-6 CFU/mL offset in `log_cfu`. Neither guard changes any
+  positive-count value.
+* **Censoring.** Counts below 200 CFU/mL were handled with the M3 method in the
+  fit. This is a data-handling choice, not part of the structural model, and it
+  is not in the file.
+* **How `AUC_CFU` was computed.** This was not stated in the paper. The
+  maintainers used the linear trapezoidal rule from 0 to 24 h on the sampling
+  times, with the log10 count floored at 0. With that reading all 48 published
+  percentages are reproduced. The floor matters only when the full model kills
+  far below 1 CFU/mL, which happens at the high concentrations.
+* **Errata.** The PubMed record (PMID 31420947) links no correction, and the
+  PMC full text carries no correction notice (checked 2026-11-26).
