@@ -4454,6 +4454,18 @@ navbar:
         href: articles/Lim_2026_leuprolide.html
       - text: "Leuprolide iv rat (Lee 2018)"
         href: articles/Lee_2018_leuprolide.html
+      - text: "Leuprolide lucrin rat (Lee 2020)"
+        href: articles/Lee_2020_leuprolide.html
+      - text: "Leuprolide ol1 rat (Lee 2020)"
+        href: articles/Lee_2020_leuprolide.html
+      - text: "Leuprolide ol2 rat (Lee 2020)"
+        href: articles/Lee_2020_leuprolide.html
+      - text: "Leuprolide ol3 rat (Lee 2020)"
+        href: articles/Lee_2020_leuprolide.html
+      - text: "Leuprolide ol4 rat (Lee 2020)"
+        href: articles/Lee_2020_leuprolide.html
+      - text: "Leuprolide ol5 rat (Lee 2020)"
+        href: articles/Lee_2020_leuprolide.html
       - text: "Leuprolide sc rat (Lee 2018)"
         href: articles/Lee_2018_leuprolide.html
       - text: "Leuprolide sr cancer rat (Lee 2018)"
@@ -10819,6 +10831,7 @@ articles:
   - articles/Lee_2017_doripenem
   - articles/Lee_2018_leuprolide
   - articles/Lee_2019_tramadol
+  - articles/Lee_2020_leuprolide
   - articles/Lee_2021_meropenem
   - articles/Lee_2021_primaquine
   - articles/Lee_2021_vancomycin

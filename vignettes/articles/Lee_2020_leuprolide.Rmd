@@ -1,0 +1,432 @@
+---
+title: "Leuprolide electrosprayed microspheres IVIVC in rats (Lee 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Leuprolide electrosprayed microspheres IVIVC in rats (Lee 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Lee 2020 builds a Level A in vitro-in vivo correlation (IVIVC) for
+subcutaneous leuprolide acetate PLGA microspheres in rats. One structural
+model -- a release compartment fed by a non-capsuled burst fraction and by a
+diffusive and an erosive transit chain, absorbed into a one-compartment
+disposition model -- is fitted separately to six formulations:
+
+* the marketed Lucrin depot microspheres, fitted to the observed plasma
+  leuprolide profile of five rats, and
+* five electrosprayed microsphere formulations (OL1-OL5, differing in the
+  RG502:RG502H PLGA ratio), fitted to the in vivo release profile the IVIVC
+  predicts from each formulation's in vitro release test.
+
+The disposition parameters (ka, CL/F, Vd/F) are the same in all six and are
+carried from the authors' earlier solution study (Lee 2018, also in this
+package as `Lee_2018_leuprolide_sc_rat`). The six independent fits give six
+model files.
+
+```{r models}
+forms <- c("lucrin", "ol1", "ol2", "ol3", "ol4", "ol5")
+form_labels <- c(
+  lucrin = "Lucrin depot",
+  ol1 = "OL1", ol2 = "OL2", ol3 = "OL3", ol4 = "OL4", ol5 = "OL5"
+)
+model_names <- sprintf("Lee_2020_leuprolide_%s_rat", forms)
+names(model_names) <- forms
+uis <- lapply(model_names, function(n) rxode2::rxode(readModelDb(n)))
+
+tibble::tibble(
+  Model = unname(model_names),
+  Formulation = c(
+    "Lucrin depot (reference product; fitted to plasma PK)",
+    "OL1, RG502:RG502H 50:50 (fitted to IVIVC-predicted release)",
+    "OL2, RG502:RG502H 75:25 (fitted to IVIVC-predicted release)",
+    "OL3, RG502:RG502H 100:0 (fitted to IVIVC-predicted release)",
+    "OL4, RG502:RG502H 25:75 (fitted to IVIVC-predicted release)",
+    "OL5, RG502:RG502H 0:100 (fitted to IVIVC-predicted release; validated in vivo)"
+  )
+) |>
+  knitr::kable(caption = "The six models this paper contributes.")
+```
+
+* Citation: `r uis[[1]]$reference`
+* Article: <https://doi.org/10.3390/pharmaceutics12010036>
+* PubMed Central: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7022573/>
+
+The paper also reports plasma testosterone after Lucrin depot and OL5
+(Figure 7) but fits no PD model to it; the testosterone feedback model for the
+same rats and products is the one in Lee 2018.
+
+# Population
+
+Fifteen male Wistar rats were used (Methods 2.3); ten of them formed the PK/PD
+study, five receiving Lucrin depot and five OL5, each as a single
+subcutaneous dose equivalent to 0.1 mg/kg leuprolide acetate (Methods
+2.10.1). Body weight is not reported. Every row of Table 3 gives
+CL/F x AUCinf = 25,000 ng (for example 475.97 mL/h x 52.52 h*ng/mL for OL5),
+so the dose used throughout this vignette is 25,000 ng per rat. OL1-OL4 were
+never given to animals: their release parameters come from the in vitro
+release test (Figure 4, n = 3) time-scaled to in vivo.
+
+# Source trace
+
+| Quantity | Value(s) | Source |
+|---|---|---|
+| Structure: NS, DS1..DSn, ES1..ESn, central | -- | Methods 2.9.1, Equation 1, Figure 2 |
+| Initial NS, DS1, ES1 = dose x E1, E2, E3 | -- | Methods 2.9.1 (text below Equation 1) |
+| ka | 16.67 1/h | Methods 2.9.1 (from Lee 2018 solution group) |
+| CL/F | 514.46 mL/h | Methods 2.9.1 |
+| Vd/F | 487.40 mL | Methods 2.9.1 |
+| E1, E2, E3 | per formulation | Table 2; Results 3.5.1 (Lucrin), 3.5.2 (OL1-OL5) |
+| Number of transit (DS), (ES) | per formulation | Table 2 |
+| ktr-d, ktr-e | per formulation | Table 2 |
+| Levy-plot Hill correlation a, b, c | 696.87, 1.75, 25.91 | Equation 3, Results 3.5.1 |
+| Cumulative-release times | 20-70 % | Table 1 |
+| Predicted Cmax / AUCinf | per formulation | Table 3 |
+| Residual error, between-animal variability | not reported | -- |
+
+```{r params}
+param_tab <- lapply(forms, function(f) {
+  ini <- uis[[f]]$theta
+  e1 <- plogis(ini[["logitfrel"]])
+  e2 <- (1 - e1) * plogis(ini[["logitfrel2"]])
+  states <- uis[[f]]$state
+  tibble::tibble(
+    Formulation = form_labels[[f]],
+    E1 = round(e1, 3),
+    E2 = round(e2, 3),
+    E3 = round(1 - e1 - e2, 3),
+    `DS stages` = sum(grepl("^transit_fast", states)),
+    `ES stages` = sum(grepl("^transit_slow", states)),
+    `ktr-d (1/h)` = signif(exp(ini[["lktr_fast"]]), 3),
+    `ktr-e (1/h)` = signif(exp(ini[["lktr_slow"]]), 3)
+  )
+}) |>
+  dplyr::bind_rows()
+knitr::kable(param_tab, caption = "Release parameters as packaged (compare Table 2).")
+```
+
+# Assumptions and deviations
+
+* **Transit-stage counts.** Table 2 prints non-integer numbers of transit
+  compartments for OL1-OL5 (for example 2.759 for the OL3 diffusive chain),
+  while Equation 1 writes each chain as discrete compartments. The packaged
+  models round each count to the nearest integer (DS: 2 stages, 3 for OL3;
+  ES: 2 stages). The check below shows that this reading reproduces the
+  curves of Figure 6A and that the continuous (gamma-distributed) reading does
+  not. Lucrin depot's counts (1 and 2) are printed as integers.
+* **Erosive chain rate constant.** Equation 1 as printed writes `ktr-d` for the
+  transfers inside the ES chain and `ktr-e` for its outflow into NS, which
+  would not conserve mass. The text (Methods 2.9.1: "ktr-e is the erosive
+  release constant from ES to NS") and Figure 2 both assign ktr-e to the ES
+  section, so the packaged models run the whole ES chain at ktr-e.
+* **Dose.** 25,000 ng per rat, back-calculated from Table 3 as described
+  under Population.
+* **Disposition parameters held at the Lee 2018 values.** They are encoded as
+  `fixed()` because this paper does not estimate them.
+* **No variability.** The fits are to mean profiles in Berkeley Madonna; no
+  residual error or between-animal variability is reported, so the
+  proportional residual SD is `fixed(0)` and there are no random effects.
+* **Levy-plot correlation.** Equation 3 maps in vivo to in vitro release time.
+  It is how the OL1-OL5 release parameters were obtained, not part of the
+  ODE model, so it is reproduced below as a check rather than packaged.
+* **Single dose.** The release sections are loaded by three simultaneous dose
+  records (amounts split by `f()`), so repeated doses superpose correctly, but
+  the paper studied single doses only.
+
+# Simulation
+
+All six models are deterministic. Each formulation receives 25,000 ng split
+by `f()` across the release compartment and the first compartment of each
+transit chain.
+
+```{r simulate}
+dose <- 25000
+grid <- sort(unique(c(seq(0, 2, by = 0.02), seq(2, 24, by = 0.1), seq(24, 336, by = 0.5))))
+
+make_events <- function(cmts, amt, times) {
+  ev <- rxode2::et(amt = amt, cmt = cmts[1])
+  for (cc in cmts[-1]) ev <- rxode2::et(ev, amt = amt, cmt = cc)
+  rxode2::et(ev, times, cmt = "central")
+}
+ev <- make_events(c("depot", "transit_fast1", "transit_slow1"), dose, grid)
+
+sim <- lapply(forms, function(f) {
+  as.data.frame(rxode2::rxSolve(uis[[f]], ev, atol = 1e-12, rtol = 1e-10)) |>
+    dplyr::select(time, Cc, dplyr::starts_with("transit")) |>
+    dplyr::mutate(formulation = form_labels[[f]], .before = 1)
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::mutate(formulation = factor(formulation, levels = form_labels))
+```
+
+```{r fig6a, fig.cap = "Replicates Figure 6A of Lee 2020: Lucrin depot (packaged fit) and the IVIVC-predicted profiles of OL1-OL5."}
+ggplot(dplyr::filter(sim, Cc > 1e-5), aes(time, Cc, colour = formulation)) +
+  geom_line() +
+  scale_y_log10(limits = c(1e-5, 100)) +
+  scale_x_continuous(breaks = seq(0, 336, by = 56)) +
+  labs(x = "Time (h)", y = "Plasma leuprolide (ng/mL)", colour = NULL) +
+  theme_bw()
+```
+
+## Check 1 - Figure 6A and the transit-stage counts
+
+The maintainers digitised the OL1-OL5 curves of Figure 6A (published
+722 x 379 px raster; log axis 1e-5 to 1e2) at the times below. The packaged
+(rounded) models are compared against those values. The continuous reading
+is computed alongside it with the same parameters, replacing each chain by its
+gamma-distributed outflow `A0 * ktr * (ktr t)^(n-1) * exp(-ktr t) / Gamma(n)`.
+
+```{r fig6a-digitised}
+digitised <- tibble::tribble(
+  ~formulation, ~time, ~fig6a,
+  "OL1", 8, 0.30, "OL1", 12, 0.39, "OL1", 20, 0.48, "OL1", 112, 0.031,
+  "OL1", 280, 0.0031, "OL1", 322, 0.0034,
+  "OL2", 8, 0.12, "OL2", 10, 0.14, "OL2", 20, 0.22, "OL2", 56, 0.25,
+  "OL2", 112, 0.12, "OL2", 280, 0.0042,
+  "OL3", 8, 0.029, "OL3", 10, 0.024, "OL3", 12, 0.028, "OL3", 16, 0.039,
+  "OL3", 20, 0.054, "OL3", 28, 0.074, "OL3", 40, 0.091, "OL3", 56, 0.098,
+  "OL3", 112, 0.074, "OL3", 280, 0.026, "OL3", 322, 0.020,
+  "OL4", 4, 0.46, "OL4", 6, 0.37, "OL4", 12, 0.56, "OL4", 16, 0.63,
+  "OL4", 20, 0.68, "OL4", 28, 0.66, "OL4", 40, 0.55, "OL4", 56, 0.36,
+  "OL4", 70, 0.24, "OL4", 168, 0.0061, "OL4", 224, 0.00057, "OL4", 280, 5.3e-5,
+  "OL5", 4, 0.84, "OL5", 8, 1.2, "OL5", 16, 1.3, "OL5", 20, 1.1, "OL5", 56, 0.14
+)
+
+# Continuous-count reading: the same release parameters, each chain replaced by
+# its closed-form gamma outflow with the printed non-integer stage count.
+gamma_mod <- rxode2::rxode2({
+  rin_d <- E2 * dose * exp(log(kd) + (nd - 1) * log(kd * t + 1e-300) - kd * t - lgamma(nd))
+  rin_e <- E3 * dose * exp(log(ke) + (ne - 1) * log(ke * t + 1e-300) - ke * t - lgamma(ne))
+  d/dt(depot) <- rin_d + rin_e - ka * depot
+  d/dt(central) <- ka * depot - cl / vc * central
+  depot(0) <- E1 * dose
+  Cc <- central / vc
+})
+table2_counts <- tibble::tibble(
+  formulation = c("OL1", "OL2", "OL3", "OL4", "OL5"),
+  nd = c(2.478, 2.364, 2.759, 2.020, 2.002),
+  ne = c(2.210, 2.000, 2.195, 2.068, 2)
+)
+gamma_pred <- lapply(seq_len(nrow(table2_counts)), function(i) {
+  f <- tolower(table2_counts$formulation[i])
+  th <- uis[[f]]$theta
+  e1 <- plogis(th[["logitfrel"]])
+  e2 <- (1 - e1) * plogis(th[["logitfrel2"]])
+  p <- c(
+    E2 = e2, E3 = 1 - e1 - e2, E1 = e1, dose = dose,
+    kd = exp(th[["lktr_fast"]]), ke = exp(th[["lktr_slow"]]),
+    nd = table2_counts$nd[i], ne = table2_counts$ne[i],
+    ka = exp(th[["lka"]]), cl = exp(th[["lcl"]]), vc = exp(th[["lvc"]])
+  )
+  times <- digitised$time[digitised$formulation == table2_counts$formulation[i]]
+  s <- as.data.frame(rxode2::rxSolve(gamma_mod, p, rxode2::et(times), atol = 1e-14, rtol = 1e-10))
+  tibble::tibble(formulation = table2_counts$formulation[i], time = s$time, gamma = s$Cc)
+}) |>
+  dplyr::bind_rows()
+
+fig6a_cmp <- digitised |>
+  dplyr::left_join(
+    sim |>
+      dplyr::mutate(formulation = as.character(formulation)) |>
+      dplyr::select(formulation, time, packaged = Cc),
+    by = c("formulation", "time")
+  ) |>
+  dplyr::left_join(gamma_pred, by = c("formulation", "time")) |>
+  dplyr::mutate(
+    pct_packaged = 100 * (packaged - fig6a) / fig6a,
+    pct_gamma = 100 * (gamma - fig6a) / fig6a
+  )
+
+fig6a_cmp |>
+  dplyr::mutate(dplyr::across(c(fig6a, packaged, gamma), \(x) signif(x, 2))) |>
+  dplyr::mutate(dplyr::across(c(pct_packaged, pct_gamma), \(x) round(x))) |>
+  dplyr::rename(
+    Formulation = formulation, `Time (h)` = time, `Figure 6A (ng/mL)` = fig6a,
+    `Packaged, rounded counts (ng/mL)` = packaged,
+    `Continuous counts (ng/mL)` = gamma,
+    `Rounded vs figure (%)` = pct_packaged, `Continuous vs figure (%)` = pct_gamma
+  ) |>
+  knitr::kable(caption = "Concentrations against the digitised Figure 6A.")
+
+fig6a_summary <- fig6a_cmp |>
+  dplyr::group_by(formulation) |>
+  dplyr::summarise(
+    median_abs_pct_rounded = median(abs(pct_packaged)),
+    median_abs_pct_continuous = median(abs(pct_gamma))
+  )
+knitr::kable(fig6a_summary, digits = 1, caption = "Median absolute deviation from Figure 6A by reading.")
+```
+
+The rounded counts follow the figure to within the reading precision of a
+small raster (median deviation 2-5 % per formulation). The continuous reading
+misses OL1 and OL2 by a median of 35-45 %, putting the diffusive peak too late
+and too low, and underpredicts the OL3 plateau at 56-112 h by 12-14 %; these
+are the three formulations whose printed counts are furthest from an integer.
+OL4 and OL5 have counts within 0.07 of 2, so the two readings coincide there.
+
+```{r fig6a-assert}
+stopifnot(
+  # Every formulation tracks the digitised figure; digitising a 379-px log axis
+  # carries roughly +/-10 % per point, so the bound sits on the median.
+  all(fig6a_summary$median_abs_pct_rounded < 10),
+  # The continuous reading is clearly worse for the three non-integer cases.
+  all(
+    fig6a_summary$median_abs_pct_continuous[fig6a_summary$formulation %in% c("OL1", "OL2", "OL3")] >
+      2 * fig6a_summary$median_abs_pct_rounded[fig6a_summary$formulation %in% c("OL1", "OL2", "OL3")]
+  )
+)
+```
+
+## Check 2 - Table 1 in vivo release times (Lucrin depot)
+
+The predicted in vivo release is the fraction of the dose that has left the
+microsphere sections and reached the release compartment: E1 at time zero
+plus the cumulative outflow of both transit chains, i.e.
+`1 - (amount still in the transit chains) / dose`. Table 1 lists the in vivo
+times at which the Lucrin depot fit reaches 20-70 % release.
+
+```{r table1}
+lucrin <- sim |>
+  dplyr::filter(formulation == "Lucrin depot") |>
+  dplyr::mutate(
+    released = 1 - (rowSums(dplyr::across(dplyr::starts_with("transit")), na.rm = TRUE)) / dose
+  )
+
+table1 <- tibble::tibble(
+  pct = c(20, 30, 40, 50, 60, 70),
+  in_vivo_paper = c(0.7, 4.4, 9.6, 18.6, 46.2, 128.5),
+  in_vitro_paper = c(3.4, 20.4, 88.2, 270.9, 497.3, 663.0)
+)
+table1$in_vivo_model <- approx(lucrin$released, lucrin$time, table1$pct / 100, ties = "ordered")$y
+
+# Equation 3: in vitro time = a * t^b / (c^b + t^b)
+levy <- function(t, a = 696.87, b = 1.75, c = 25.91) a * t^b / (c^b + t^b)
+table1$in_vitro_eq3 <- levy(table1$in_vivo_paper)
+
+table1 |>
+  dplyr::mutate(dplyr::across(c(in_vivo_model, in_vitro_eq3), \(x) round(x, 1))) |>
+  dplyr::rename(
+    `Cumulative release (%)` = pct,
+    `In vivo time, Table 1 (h)` = in_vivo_paper,
+    `In vivo time, packaged model (h)` = in_vivo_model,
+    `In vitro time, Table 1 (h)` = in_vitro_paper,
+    `In vitro time, Equation 3 (h)` = in_vitro_eq3
+  ) |>
+  knitr::kable(caption = "Table 1 against the packaged Lucrin depot model and Equation 3.")
+```
+
+```{r fig5a, fig.cap = "Predicted in vivo cumulative release of Lucrin depot (cf. the solid line of Figure 5A), with the Table 1 in vivo times as points."}
+ggplot(dplyr::filter(lucrin, time <= 336), aes(time, 100 * released)) +
+  geom_line() +
+  geom_point(data = table1, aes(in_vivo_paper, pct), colour = "red") +
+  scale_x_continuous(breaks = seq(0, 336, by = 56)) +
+  labs(x = "Time (h)", y = "Cumulative in vivo release (%)") +
+  theme_bw()
+```
+
+From 30 % upwards the packaged model reaches each release level within 10 %
+of the Table 1 time, consistently a little early (for example 18.1 h against
+18.6 h for 50 % and 126 h against 128.5 h for 70 %). The 20 % row is the
+exception: the model releases E1 = 19 % at time zero and reaches 20 % at
+0.3 h, against 0.7 h in Table 1, a difference of a fraction of an hour that
+the printed E1 and ktr-d (rounded to two significant figures) cannot resolve.
+Equation 3 reproduces the Table 1 in vitro times to within 8 % at 50 % release
+and above; at 20-40 % it is off by 18-63 %, which an R-square of 0.997 on an
+untransformed time scale dominated by the late points still allows.
+
+```{r table1-assert}
+stopifnot(
+  all(abs(table1$in_vivo_model[-1] - table1$in_vivo_paper[-1]) / table1$in_vivo_paper[-1] < 0.1)
+)
+```
+
+## Check 3 - PKNCA against Table 3
+
+```{r pknca}
+nca_in <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(id = as.integer(formulation)) |>
+  dplyr::select(id, formulation, time, Cc)
+
+# The solve grid starts at time 0, so every profile already has its time-zero
+# row; the defensive row is discarded by distinct().
+nca_in <- dplyr::bind_rows(
+  nca_in,
+  nca_in |> dplyr::distinct(id, formulation) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, formulation, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+
+conc_obj <- PKNCA::PKNCAconc(nca_in, Cc ~ time | formulation + id)
+dose_df <- nca_in |>
+  dplyr::distinct(id, formulation) |>
+  dplyr::mutate(time = 0, amt = dose)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | formulation + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, auclast = TRUE, aucinf.obs = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published <- tibble::tibble(
+  formulation = unname(form_labels),
+  cmax = c(8.53, 7.46, 12.93, 26.29, 9.05, 4.01),
+  aucinf.obs = c(52.51, 36.82, 46.10, 54.21, 51.20, 52.52)
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "formulation",
+  params = c("cmax", "aucinf.obs"),
+  units = c(cmax = "ng/mL", aucinf.obs = "h*ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs Table 3 NCA (Lucrin depot: observed; OL1-OL5: IVIVC-predicted). * differs from reference by >20%.")
+```
+
+Cmax agrees with Table 3 for every formulation; it is set by the burst
+fraction E1, ka and the disposition parameters, and the simulated OL1-OL5
+values run consistently 1.2-1.3 % below the table. The Lucrin depot entries
+of Table 3 are observed NCA values, not model predictions, so its row (3 %
+below) compares the fit against the data.
+
+AUCinf from the simulation is 5-10 % below Table 3 for Lucrin depot and
+OL2-OL5. Four Table 3 AUCinf values (Lucrin depot, OL3, OL4, OL5) exceed
+dose / CL = 25,000 / 514.46 = 48.6 h*ng/mL, the total exposure of the whole
+dose in this model, so they include area extrapolated beyond 14 days from a
+slowly declining (or still-rising) tail; the extrapolation method and window
+are not stated, and the simulated AUCinf depends on the same choice (the
+Lucrin depot value here, 49.6 h*ng/mL, also exceeds 48.6 for that reason).
+For OL1 the erosive chain is still raising the concentration at 336 h
+(Figure 6A), so PKNCA finds no terminal phase and reports no AUCinf; its
+AUC0-336 is 34.9 h*ng/mL against the Table 3 AUCinf of 36.82.
+
+The observed OL5 values of the validation study (Cmax 4.14 ng/mL, AUCinf
+56.95 h*ng/mL; Results 3.5.3) are 4 % and 14 % above the simulation.
+
+```{r pknca-assert}
+sim_vals <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast", "aucinf.obs")) |>
+  dplyr::select(formulation, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::mutate(formulation = as.character(formulation)) |>
+  dplyr::inner_join(published, by = "formulation", suffix = c("_sim", "_paper"))
+stopifnot(
+  # The two sides use the same deterministic parameters, so Cmax is tight.
+  all(abs(sim_vals$cmax_sim / sim_vals$cmax_paper - 1) < 0.05),
+  # The observed part of every profile carries no more than the whole dose.
+  all(sim_vals$auclast <= dose / exp(uis[[1]]$theta[["lcl"]])),
+  # OL1 has no terminal phase by 336 h; the others extrapolate.
+  is.na(sim_vals$aucinf.obs_sim[sim_vals$formulation == "OL1"]),
+  all(abs(sim_vals$aucinf.obs_sim / sim_vals$aucinf.obs_paper - 1) < 0.15, na.rm = TRUE)
+)
+```
