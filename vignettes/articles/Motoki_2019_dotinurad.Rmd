@@ -1,0 +1,482 @@
+---
+title: "Dotinurad (Motoki 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dotinurad (Motoki 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Motoki_2019_dotinurad"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Motoki_2019_dotinurad"))$description`
+* Article: <https://doi.org/10.1002/prp2.533> (open access)
+
+Dotinurad is a selective URAT1 inhibitor that lowers serum urate (SUA) by
+blocking renal tubular reabsorption of urate. Motoki 2019 fitted a
+one-compartment oral PK model to fasted single-dose data and coupled it to a
+physiological urate mass balance (Figure 1 of the paper): urate is produced at
+a constant rate, leaves by a constant non-renal (gut) route and by the kidney,
+and dotinurad raises renal urate clearance by inhibiting reabsorption of the
+filtered load with a simple Emax function of plasma concentration (Eq. 8):
+
+$$CL_{R,UA} = GFR - f_{reabs} \cdot GFR \cdot \left(1 - \frac{E_{max} C_p}{EC_{50} + C_p}\right)$$
+
+The model was built on the single ascending dose (SAD) study and validated by
+predicting SUA in the multiple ascending dose (MAD) study.
+
+# Population
+
+Both studies enrolled healthy Japanese men aged 20-35 years with a body mass
+index of 18.5 to < 25.0 kg/m^2. The SAD study (NCT02348307) randomised 54
+subjects to single fasted oral doses of 0.5, 1, 2, 5, 10 or 20 mg (6 per dose)
+or placebo (3 per dose level), with a fed 5 mg period in the same subjects. The
+MAD study (NCT02348333) gave 2 or 5 mg (6 per dose) or placebo (3 per dose)
+once daily for 7 days under fed conditions. Mean (SD) pre-dose values across
+the SAD study were SUA 5.71 (0.75) mg/dL, 24-h urinary urate excretion (XuUA)
+575 (100) mg/day and renal urate clearance (CLRUA) 7.10 (1.51) mL/min
+(Motoki 2019 Results). Mean body weight in the SAD study was about 60 kg
+(Discussion). The paper prints no table of baseline demographics.
+
+The same information is available programmatically via
+`readModelDb("Motoki_2019_dotinurad")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Motoki_2019_dotinurad.R`.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` | log(0.770) 1/h | Table 3, Ka |
+| `lvc` | log(10.585) L | Table 3, V/F = 10 585 mL |
+| `lkel` | log(0.0795) 1/h | Table 3, Ke |
+| `lvd_urate` | log(16.0) L | Table 3, VdUA (Eq. 4) |
+| `f_reab_urate` | 0.943 | Table 3, freabs (Eq. 9) |
+| `lemax` | log(0.51) | Table 3, Emax |
+| `lec50` | log(196) ng/mL | Table 3, EC50 |
+| `lksyn` | log(35.9375) mg/h, fixed | Eq. 7: Synthesis = 3/2 x XuUA, with XuUA = 575 mg/day (Results) |
+| `lcl_nonren_urate` | log(0.213) L/h, fixed | Eq. 6: CLGutUA = 1/2 x CLRUA, with CLRUA = 7.10 mL/min (Results) |
+| `lrbase` | log(5.71) mg/dL, fixed | Results, mean baseline SUA; initial value of the urate pool (Model simulation section) |
+| `CRCL` (covariate) | GFR | Methods: Ccr adjusted to 1.73 m^2 used as GFR |
+| `d/dt(depot)`, `d/dt(central)` | n/a | Methods: one-compartment model with first-order absorption |
+| `cl_renal_urate` | n/a | Eq. 8 |
+| `d/dt(urate)` | n/a | Eq. 1-3 (Figure 1), in differential form |
+| `urate(0)` | n/a | Model simulation: observed mean baseline SUA as initial value; initial UApool from Eq. 1 |
+
+# Typical subject
+
+The paper does not print the cohort's creatinine clearance. Equation 9 gives
+the pre-dose renal urate clearance as `GFR * (1 - freabs)`, so the printed mean
+baseline CLRUA of 7.10 mL/min and freabs of 0.943 imply the GFR used below.
+
+```{r typical}
+mod <- readModelDb("Motoki_2019_dotinurad")
+crcl_typ <- 7.10 / (1 - 0.943)
+crcl_typ
+
+# Deterministic identity: the model's pre-dose renal clearance reproduces
+# the printed 7.10 mL/min exactly.
+stopifnot(abs(crcl_typ * (1 - 0.943) - 7.10) < 1e-10)
+```
+
+The model is a typical-value model (no random effects and no residual error), so
+every simulation below is deterministic.
+
+# Single ascending dose study
+
+```{r sad-sim}
+sad_doses <- c(0.5, 1, 2, 5, 10, 20)
+obs_times <- sort(unique(c(seq(0, 12, by = 0.05), seq(12, 96, by = 0.5))))
+
+make_sad <- function(dose, id) {
+  dplyr::bind_rows(
+    data.frame(id = id, time = 0, evid = 1, amt = dose, cmt = "depot"),
+    data.frame(id = id, time = obs_times, evid = 0, amt = 0, cmt = "central")
+  ) |>
+    dplyr::mutate(
+      CRCL = crcl_typ,
+      treatment = paste(dose, "mg")
+    )
+}
+sad_events <- dplyr::bind_rows(
+  lapply(seq_along(sad_doses), function(i) make_sad(sad_doses[i], i)),
+  # placebo: zero dose, so the urate pool is left to its own dynamics
+  make_sad(0, length(sad_doses) + 1L) |> dplyr::mutate(treatment = "Placebo")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+sad_levels <- c("Placebo", paste(sad_doses, "mg"))
+
+sad <- rxode2::rxSolve(mod, events = sad_events, keep = "treatment") |>
+  as.data.frame() |>
+  dplyr::mutate(treatment = factor(treatment, levels = sad_levels))
+```
+
+## Figure 2: dotinurad plasma concentrations
+
+```{r figure-2}
+sad |>
+  dplyr::filter(treatment != "Placebo", time <= 48, time >= 0.05) |>
+  ggplot(aes(time, Cc, colour = treatment)) +
+  geom_line() +
+  scale_y_log10(limits = c(0.1, 1e4)) +
+  scale_x_continuous(breaks = seq(0, 48, 12)) +
+  labs(
+    x = "Time (h)", y = "Dotinurad plasma concentration (ng/mL)",
+    colour = "Dose",
+    caption = "Replicates the model-predicted lines of Figure 2 of Motoki 2019."
+  )
+```
+
+## NCA against Table 1
+
+```{r sad-nca}
+sad_nca <- sad |>
+  dplyr::filter(treatment != "Placebo", !is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment) |>
+  dplyr::mutate(treatment = as.character(treatment))
+sad_dose <- sad_events |>
+  dplyr::filter(evid == 1, treatment != "Placebo") |>
+  dplyr::select(id, time, amt, treatment)
+
+sad_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(sad_nca, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(sad_dose, amt ~ time | treatment + id),
+  intervals = data.frame(
+    start = 0, end = Inf,
+    cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+  )
+))
+
+table1 <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax, ~half.life, ~aucinf.obs,
+  "0.5 mg", 41.5, 2.67, 9.67, 613,
+  "1 mg", 89.2, 3.33, 9.60, 1276,
+  "2 mg", 175.2, 3.10, 9.53, 2599,
+  "5 mg", 447.8, 2.00, 9.27, 5526,
+  "10 mg", 858.2, 3.25, 9.87, 12126,
+  "20 mg", 1783.6, 2.25, 10.65, 23398
+)
+
+sad_cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sad_res,
+  reference = table1,
+  by = "treatment",
+  units = c(cmax = "ng/mL", tmax = "h", half.life = "h", aucinf.obs = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  sad_cmp,
+  caption = paste(
+    "Typical-value simulation vs. Motoki 2019 Table 1 (observed mean, fasted).",
+    "* differs from reference by > 20%."
+  )
+)
+```
+
+AUC0-inf is reproduced within about 10% at every dose, which is what the
+printed V/F and Ke jointly determine (CL/F = Ke x V/F = 0.842 L/h against a
+mean observed CL/F of 0.850 L/h). Cmax runs 12-19% below the observed means at
+every dose and t1/2 (8.7 h, i.e. ln 2 / Ke) runs below the observed 9.3-10.7 h;
+both are properties of the one-compartment fit, and the paper's own predicted
+lines in Figure 2 show the same shortfall at the peak. Tmax is a sampled value
+in the observed data and is not compared closely.
+
+```{r sad-nca-check}
+auc_cmp <- sad_res$result |>
+  dplyr::filter(PPTESTCD == "aucinf.obs") |>
+  dplyr::inner_join(table1, by = "treatment") |>
+  dplyr::mutate(pct = 100 * (PPORRES / aucinf.obs - 1))
+stopifnot(nrow(auc_cmp) == 6L)
+# Deterministic: measured -9% to +8%. A mis-transcribed V/F or Ke moves
+# every dose by the same tens of percent.
+stopifnot(all(abs(auc_cmp$pct) < 15))
+```
+
+## Figure 3 and the uricosuric response
+
+```{r figure-3}
+sad |>
+  dplyr::filter(time <= 48) |>
+  ggplot(aes(time, sUA, colour = treatment)) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(0, 48, 12)) +
+  coord_cartesian(ylim = c(0, 7)) +
+  labs(
+    x = "Time (h)", y = "SUA (mg/dL)", colour = "Dose",
+    caption = paste(
+      "Model counterpart of Figure 3 of Motoki 2019 (the figure shows observed",
+      "means only), typical subject starting from the SAD mean baseline 5.71 mg/dL."
+    )
+  )
+```
+
+The paper reports the following ranges across the six dose groups (Results):
+the maximal decrease in SUA within 48 h was 1.6-4.2 mg/dL, XuUA over 0-24 h
+was 869-1458 mg, and CLRUA over 0-24 h was 12.1-47.9 mL/min, with all three
+effects close to maximal at 5 mg. CLRUA over an interval is computed as in the
+paper's PD analysis, XuUA / AUEC.
+
+```{r sad-pd}
+auc_trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+sad_pd <- sad |>
+  dplyr::filter(treatment != "Placebo") |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    max_decrease = 5.71 - min(sUA[time <= 48]),
+    xu_0_24 = urate_urine[time == 24] - urate_urine[time == 0],
+    # mg / (mg/dL * h) = dL/h; x 100 / 60 gives mL/min
+    clr_0_24 = xu_0_24 / auc_trap(time[time <= 24], sUA[time <= 24]) * 100 / 60,
+    .groups = "drop"
+  )
+knitr::kable(
+  sad_pd |>
+    dplyr::rename(
+      "Dose" = treatment,
+      "Maximal SUA decrease, 0-48 h (mg/dL)" = max_decrease,
+      "XuUA 0-24 h (mg)" = xu_0_24,
+      "CLRUA 0-24 h (mL/min)" = clr_0_24
+    ),
+  digits = 2,
+  caption = "Typical-value SAD urate response by dose."
+)
+
+# Deterministic. The paper's reported ranges run from the lowest to the
+# highest dose group; the model's 0.5 mg and 20 mg values sit at
+# -9%/+9% (SUA decrease), -2%/+2% (XuUA) and +6%/+14% (CLRUA) of them.
+lo <- sad_pd[sad_pd$treatment == "0.5 mg", ]
+hi <- sad_pd[sad_pd$treatment == "20 mg", ]
+stopifnot(
+  nrow(lo) == 1L, nrow(hi) == 1L,
+  abs(lo$xu_0_24 / 869 - 1) < 0.10, abs(hi$xu_0_24 / 1458 - 1) < 0.10,
+  abs(lo$max_decrease / 1.6 - 1) < 0.20, abs(hi$max_decrease / 4.2 - 1) < 0.20,
+  abs(lo$clr_0_24 / 12.1 - 1) < 0.25, abs(hi$clr_0_24 / 47.9 - 1) < 0.25
+)
+```
+
+The placebo arm shows the consequence of treating urate production and
+non-renal clearance as constants derived from cohort means: the typical
+subject's urate steady state is `ksyn / (CLRUA + CLGutUA)` = 5.62 mg/dL, not
+exactly the mean baseline of 5.71 mg/dL, because a ratio of means (575 mg/day
+over 7.10 mL/min) is not the mean of the ratios.
+
+```{r placebo}
+pbo <- sad |> dplyr::filter(treatment == "Placebo")
+ss_typ <- 35.9375 / (crcl_typ * 0.06 * (1 - 0.943) + 0.213) / 10
+ss_typ
+stopifnot(abs(pbo$sUA[pbo$time == 96] / 5.71 - 1) < 0.02)
+```
+
+# Multiple ascending dose study
+
+## PK against Table 2
+
+```{r mad-sim}
+mad_times <- sort(unique(c(seq(0, 168, by = 0.1), seq(168, 216, by = 1))))
+make_mad <- function(dose, id, sua0) {
+  dplyr::bind_rows(
+    data.frame(id = id, time = 24 * (0:6), evid = 1, amt = dose, cmt = "depot"),
+    data.frame(id = id, time = mad_times, evid = 0, amt = 0, cmt = "central")
+  ) |>
+    dplyr::mutate(
+      CRCL = crcl_typ,
+      treatment = paste(dose, "mg")
+    )
+}
+# Each arm starts from its own observed baseline SUA (read off Figure 4:
+# 6.45 mg/dL at 2 mg, 6.85 mg/dL at 5 mg), as the paper's simulation did.
+mad_2 <- rxode2::rxSolve(mod, events = make_mad(2, 1L), keep = "treatment",
+                         params = c(lrbase = log(6.45)))
+mad_5 <- rxode2::rxSolve(mod, events = make_mad(5, 2L), keep = "treatment",
+                         params = c(lrbase = log(6.85)))
+# A single-subject solve returns no id column, so add it back
+mad <- dplyr::bind_rows(
+  as.data.frame(mad_2) |> dplyr::mutate(id = 1L),
+  as.data.frame(mad_5) |> dplyr::mutate(id = 2L)
+)
+mad_dose <- dplyr::bind_rows(make_mad(2, 1L), make_mad(5, 2L)) |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+mad_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(
+    mad |> dplyr::filter(!is.na(Cc)) |> dplyr::select(id, time, Cc, treatment),
+    Cc ~ time | treatment + id
+  ),
+  PKNCA::PKNCAdose(mad_dose, amt ~ time | treatment + id),
+  intervals = data.frame(
+    start = c(0, 72, 144), end = c(24, 96, 168),
+    cmax = TRUE, tmax = TRUE, auclast = TRUE
+  )
+))
+
+mad_sim <- mad_res$result |>
+  dplyr::mutate(day = paste("Day", c(`0` = 1, `72` = 4, `144` = 7)[as.character(start)])) |>
+  dplyr::select(treatment, day, PPTESTCD, PPORRES)
+table2 <- tibble::tribble(
+  ~treatment, ~day, ~cmax, ~tmax, ~auclast,
+  "2 mg", "Day 1", 188, 3.50, 2195,
+  "2 mg", "Day 4", 224, 3.67, 2649,
+  "2 mg", "Day 7", 228, 3.67, 2680,
+  "5 mg", "Day 1", 438, 4.17, 5211,
+  "5 mg", "Day 4", 493, 4.00, 6164,
+  "5 mg", "Day 7", 514, 3.83, 6321
+)
+mad_cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = mad_sim,
+  reference = table2,
+  by = c("treatment", "day"),
+  units = c(cmax = "ng/mL", tmax = "h", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  mad_cmp,
+  caption = paste(
+    "Typical-value simulation vs. Motoki 2019 Table 2 (observed mean, fed;",
+    "AUClast over each 24-h dosing interval is the paper's AUC0-24).",
+    "* differs from reference by > 20%."
+  )
+)
+```
+
+The fasted single-dose PK model reproduces the fed multiple-dose AUC0-24 within
+12% on every day, consistent with the paper's statements that fed exposure
+was predictable from the fasted parameters and that the MAD concentrations were
+close to the predictions (supplementary Figure S1). Cmax runs 12-24% below the
+observed means, the same one-compartment shortfall at the peak seen after single
+doses; at 2 mg it crosses the 20% flag on every day. The observed accumulation
+ratio of 1.18-1.22 compares with 1/(1 - exp(-24 Ke)) = 1.17 for the model.
+
+```{r mad-nca-check}
+mad_auc <- mad_sim |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::inner_join(table2, by = c("treatment", "day")) |>
+  dplyr::mutate(pct = 100 * (PPORRES / auclast - 1))
+stopifnot(nrow(mad_auc) == 6L, all(abs(mad_auc$pct) < 15))
+```
+
+## Figure 4: SUA after multiple doses
+
+The paper's predicted SUA lines in Figure 4 were digitised by the maintainers
+at time points away from the observed markers.
+
+```{r figure-4}
+fig4 <- tibble::tribble(
+  ~time, ~`2 mg`, ~`5 mg`,
+  18, 2.89, 1.81,
+  21, 2.89, 1.77,
+  30, 2.35, 1.40,
+  42, 2.19, 1.33,
+  54, 2.09, 1.27,
+  66, 2.12, 1.31,
+  90, 2.10, 1.31,
+  102, 2.05, 1.25,
+  126, 2.06, 1.25,
+  138, 2.12, 1.32,
+  160, 2.03, 1.27,
+  174, 2.72, 1.77,
+  186, 3.51, 2.45,
+  200, 4.35, 3.33,
+  210, 4.87, 3.96
+) |>
+  tidyr::pivot_longer(-time, names_to = "treatment", values_to = "paper")
+
+ggplot() +
+  geom_line(data = mad, aes(time, sUA)) +
+  geom_point(data = fig4, aes(time, paper), shape = 1, colour = "firebrick") +
+  facet_wrap(~treatment, ncol = 1) +
+  scale_x_continuous(breaks = seq(0, 240, 24)) +
+  coord_cartesian(ylim = c(0, 8)) +
+  labs(
+    x = "Time (h)", y = "SUA (mg/dL)",
+    caption = paste(
+      "Replicates Figure 4 of Motoki 2019. Line: packaged model.",
+      "Open circles: the paper's predicted line, digitised."
+    )
+  )
+
+fig4_cmp <- fig4 |>
+  dplyr::inner_join(
+    mad |> dplyr::select(treatment, time, sUA),
+    by = c("treatment", "time")
+  ) |>
+  dplyr::mutate(pct = 100 * (sUA / paper - 1))
+fig4_cmp |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    `Median % diff` = median(pct),
+    `Max abs % diff` = max(abs(pct)),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Dose" = treatment) |>
+  knitr::kable(digits = 1, caption = "Packaged model vs. the digitised Figure 4 prediction.")
+
+# Deterministic. Measured median -5.8% (2 mg) and +7.2% (5 mg), max 9.6%.
+# The alternative reading in which production is re-derived from each arm's
+# own baseline gives +8% and +30%, so this gate separates the two readings.
+stopifnot(
+  nrow(fig4_cmp) == 30L,
+  all(abs(tapply(fig4_cmp$pct, fig4_cmp$treatment, median)) < 10),
+  max(abs(fig4_cmp$pct)) < 15
+)
+```
+
+The packaged model follows the paper's prediction through the dosing week and
+the 72-h washout, sitting about 6% below it at 2 mg and 7% above it at 5 mg.
+The paper's simulation used each MAD arm's own mean baseline CLRUA, which is
+not printed; the typical-subject GFR used here comes from the SAD study, and a
+different arm-specific GFR shifts the two arms in the way seen.
+
+# Assumptions and deviations
+
+- **Urate production and non-renal clearance are constants.** Equations 5-7
+  derive Synthesis (3/2 x XuUA) and CLGutUA (1/2 x CLRUA) from pre-dose
+  values, and the Model simulation section says SUA was predicted "using
+  'Synthesis' in the scheme and VdUA as the constant value". The model uses
+  the SAD study's printed mean pre-dose values (XuUA 575 mg/day, CLRUA
+  7.10 mL/min), giving 862.5 mg/day (35.9375 mg/h) and 3.55 mL/min
+  (0.213 L/h). The maintainers chose this over re-deriving production from each
+  subject's own baseline for two reasons: it reproduces the paper's Figure 4
+  prediction (median -6%/+7% against +8%/+30%), and only with constant
+  production does a change in GFR change the urate steady state, which is the
+  application to renal impairment that the paper's Discussion proposes. A
+  user simulating a population whose pre-dose urate turnover differs from
+  healthy Japanese men should override `lksyn` and `lcl_nonren_urate` with
+  values derived by Eq. 6-7 from that population's baseline XuUA and CLRUA.
+- **GFR.** CRCL is not printed. The typical value 124.6 mL/min/1.73 m^2 is
+  back-calculated from Eq. 9 with the printed mean baseline CLRUA and freabs.
+- **Initial urate pool.** The pool starts at the observed baseline SUA
+  (`lrbase`, default 5.71 mg/dL), as in the paper. The MAD baselines (6.45 and
+  6.85 mg/dL) were read off the first observed point in Figure 4.
+- **Continuous-time mass balance.** The paper updated CLRUA every hour and
+  stepped the cumulative urate amounts of Eq. 1 forward in discrete intervals;
+  the packaged model integrates the same balance as an ODE driven by the
+  instantaneous plasma concentration. The paper's Emax fit used the mean
+  concentration over each urine collection interval.
+- **Units.** Plasma dotinurad is returned in ng/mL (`Cc = 1000 * central /
+  vc`, with V/F converted from 10 585 mL to 10.585 L) to match EC50. SUA is
+  returned as `sUA` in mg/dL; `urate_urine` is the cumulative renal urate
+  excretion in mg.
+- **Food.** The PK parameters come from fasted data. The paper found fed
+  exposure (5 mg; Cmax ratio 0.84, AUC ratio 0.95) well predicted by them and
+  applied them unchanged to the fed MAD study; no food effect is encoded.
+- **Variability.** The paper reports no between-subject or residual
+  variability for the model; the %CV values in Table 3 are estimation
+  uncertainty for the PK, Emax and EC50 parameters, and for VdUA (36.6%) and
+  freabs (0.6%) the spread of the individual calculations from Eq. 4 and 9.
+  None is encoded as a random effect.
+- **Parameter naming.** `f_reab_urate` and `lvd_urate` follow the
+  fraction-reabsorbed (`f_reab_water`) and analyte-volume (`vd_creatinine`)
+  spellings of the Takita 2020 creatinine models.
+- No erratum or correction notice for Motoki 2019 was found as of 2026-11-26.

@@ -2444,6 +2444,8 @@ navbar:
         href: articles/Melhem_2022_dostarlimab.html
       - text: "Dotatate pbpk (Budiansah 2025)"
         href: articles/Budiansah_2025_dotatate_pbpk.html
+      - text: "Dotinurad (Motoki 2019)"
+        href: articles/Motoki_2019_dotinurad.html
       - text: "Doxorubicin (Freyer 2000)"
         href: articles/Freyer_2000_AVI_regimen.html
       - text: "Doxorubicin (Janssen 2023)"
@@ -11159,6 +11161,7 @@ articles:
   - articles/Morse_2012_ghb_rbc_invitro
   - articles/Morse_2022_acetaminophen_ibuprofen
   - articles/Mosha_2014_artemether_lumefantrine
+  - articles/Motoki_2019_dotinurad
   - articles/Mouksassi_2015_thrombomodulinAlfa
   - articles/Mould_2007_alemtuzumab
   - articles/Mouton_2025_cefuroxime
