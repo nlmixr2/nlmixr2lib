@@ -686,6 +686,8 @@ navbar:
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
       - text: "Atogepant (Schlachter 2026)"
         href: articles/Schlachter_2026_atogepant.html
+      - text: "Atomoxetine (Oggianu 2020)"
+        href: articles/Oggianu_2020_atomoxetine.html
       - text: "Atomoxetine (Tobin 2026)"
         href: articles/Tobin_2026_atomoxetine.html
       - text: "Atorvastatin (Kakara 2014)"
@@ -11270,6 +11272,7 @@ articles:
   - articles/Offman_2023_XTMAB16
   - articles/Ogasawara_2019_fedratinib
   - articles/Ogasawara_2020_durvalumab
+  - articles/Oggianu_2020_atomoxetine
   - articles/Oggianu_2023_trazodone_gabapentin
   - articles/Ogungbenro_2009_penciclovir
   - articles/Ogungbenro_2019_simvastatin

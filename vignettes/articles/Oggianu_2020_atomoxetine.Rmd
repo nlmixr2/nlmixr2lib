@@ -1,0 +1,406 @@
+---
+title: "Atomoxetine (Oggianu 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Atomoxetine (Oggianu 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Oggianu_2020_atomoxetine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Oggianu_2020_atomoxetine"))$description`
+* Article: <https://doi.org/10.1002/psp4.12480>
+  (open access, PMC7020267)
+
+# What this model is, and what it is not
+
+Oggianu 2020 used the Simcyp simulator (version 14) to predict paediatric doses
+of trazodone for insomnia and to ask whether atomoxetine, often co-prescribed
+in attention deficit hyperactivity disorder, would raise trazodone exposure by
+inhibiting CYP3A4. The paper contains two compound models:
+
+* **Trazodone** -- a Simcyp *full-PBPK* model (Table 1). Its distribution is
+  carried by Simcyp's organ volumes, blood flows and predicted tissue
+  partition coefficients, none of which are printed; the only distribution
+  number the paper gives is the predicted steady-state volume of 1.0 L/kg.
+  Supplementary Information S4 states that the model code "cannot be
+  published". A compartmental reduction of this model fails against the
+  paper's own predictions (see [below](#trazodone)), so it is not packaged.
+* **Atomoxetine** -- a Simcyp *minimal-PBPK* model (Table 2) built as the
+  interaction perpetrator. Its compound layer is complete: apparent oral
+  clearance by CYP2D6 phenotype with a between-subject CV, absorption rate,
+  fraction absorbed, blood-to-plasma ratio and a steady-state volume, with no
+  single adjusting compartment. A minimal PBPK model without that compartment
+  is a systemic compartment plus the liver, which gives mono-exponential
+  disposition, so it reduces to a one-compartment oral model with no fitted
+  parameter. That reduction is the model packaged here.
+
+The reduction is built from the paper's inputs and checked against the
+**paper's own predicted** steady-state Cmax and AUC (Supplementary Tables
+S3.1, S3.2 and S3.4), not against the clinical observations.
+
+# Population
+
+The atomoxetine simulations used the Simcyp Caucasian healthy-volunteer
+population, split into CYP2D6 extensive (EM) and poor (PM) metabolizers
+(Supplementary Information S3):
+
+* 20 mg twice daily for 7 days: 10 trials of 7 subjects, age 20-50 years, all
+  male, EM and PM (observed data: Sauer 2003).
+* 40 mg twice daily for 7 days: 10 trials of 8 subjects, age 20-50 years, 50%
+  female, EM and PM (observed data: FDA Strattera clinical pharmacology
+  review, study HFBJ).
+* 60 mg twice daily for 12 days, PM only: 10 trials of 8 subjects, age 20-35
+  years, 50% female (the midazolam interaction verification).
+* Trazodone interaction: 10 trials of 10 subjects, age 20-50 years, 50% female,
+  60 mg atomoxetine twice daily for 12 days with 150 mg trazodone on day 10.
+
+The paper does not print the body-weight distribution of these trials; the
+median adult body weight of its healthy-volunteer virtual population is 73 kg
+(Table 4), which is used below.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| ka | 0.926 1/h | Table 2 (from the population-PK analysis of the FDA Strattera review) |
+| Fraction absorbed | 1 | Table 2 |
+| CL/F, CYP2D6 EM | 26.4 L/h, CV 55.7% | Table 2 |
+| CL/F, CYP2D6 PM | 2.55 L/h, CV 18% | Table 2 |
+| Vss | 0.71 L/kg (optimized; observed 0.85) | Table 2; Methods 'Atomoxetine model development' |
+| Distribution model | Minimal PBPK, no single adjusting compartment | Table 2 'Model' |
+| B:P | 0.605 | Table 2 |
+| fu (plasma) | 0.02 | Table 2 (cancels in the reduction, see below) |
+| CYP3A4 Ki | 34 uM, fu,mic 0.23 | Table 2; Supplementary S3.2.1 (documented, not encoded) |
+| Hepatic blood flow QH | 90 L/h | Methods, text below Equation 2 |
+| Liver weight | 1,648 g | Methods 'Estimation of CYP3A4-mediated metabolism for trazodone' |
+| Reference body weight | 73 kg | Table 4, adult row |
+| Well-stirred liver | Equations 1-2 | Methods |
+| Predicted Cmax / AUC, 20 and 40 mg BID | Means | Table 3; Supplementary Tables S3.1, S3.2 |
+| Predicted Cmax / AUC, 60 mg BID PM | Means | Supplementary Table S3.4 |
+
+## The reduction
+
+With fraction absorbed and gut availability both 1 and no renal clearance, the
+well-stirred liver gives, in blood, `CL/F = fu,B x CLint`. Dividing the plasma
+CL/F by B:P therefore gives `fu,B x CLint` directly, and the plasma fraction
+unbound cancels:
+
+```{r reduction}
+bp <- 0.605
+qh <- 90
+reduce <- function(clpo) {
+  clint_b <- clpo / bp
+  fh <- qh / (qh + clint_b)
+  c(CLpo = clpo, fH = fh, CL = fh * clpo)
+}
+knitr::kable(
+  rbind(EM = reduce(26.4), PM = reduce(2.55)),
+  digits = 3,
+  caption = "Systemic plasma clearance (L/h) and hepatic availability implied by the Table 2 CL/F."
+)
+vc_ref <- 0.71 * 73 - 1.648
+vc_ref
+```
+
+The systemic volume is `Vss x body weight` less the liver, which the minimal
+PBPK model holds as a separate compartment: `r round(vc_ref, 2)` L at 73 kg.
+
+Simcyp treats a clearance entered with a CV as the arithmetic mean of a
+log-normal distribution. The model therefore centres the individual CL/F on
+`mean x exp(-sd^2 / 2)`, with `sd = sqrt(log(1 + CV^2))`, and a standard-normal
+`etalcl` scaled by the phenotype-specific `sd`. With a CV of 55.7% in
+extensive metabolizers this matters: the mean AUC of the population is about
+31% above `dose / mean CL/F`, and the paper's predicted mean AUCs carry that
+inflation.
+
+# Virtual cohort
+
+```{r cohort}
+arms <- tibble::tribble(
+  ~arm,              ~dose, ~CYP2D6_PM, ~ndays,
+  "20 mg BID EM",       20,          0,      7,
+  "20 mg BID PM",       20,          1,      7,
+  "40 mg BID EM",       40,          0,      7,
+  "40 mg BID PM",       40,          1,      7,
+  "60 mg BID PM",       60,          1,     12
+)
+n_per_arm <- 200
+
+make_arm <- function(i) {
+  a <- arms[i, ]
+  ids <- (i - 1) * n_per_arm + seq_len(n_per_arm)
+  dose_times <- seq(0, by = 12, length.out = 2 * a$ndays)
+  last <- max(dose_times)
+  obs_times <- sort(unique(c(0, seq(0, last - 12, by = 12),
+                             last + seq(0, 12, by = 0.25))))
+  doses <- expand.grid(id = ids, time = dose_times)
+  doses$amt <- a$dose
+  doses$evid <- 1L
+  obs <- expand.grid(id = ids, time = obs_times)
+  obs$amt <- 0
+  obs$evid <- 0L
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(
+      cmt = ifelse(evid == 1L, "depot", "central"),
+      arm = a$arm,
+      CYP2D6_PM = a$CYP2D6_PM,
+      WT = 73,
+      tlast = last
+    )
+}
+events <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), make_arm)) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+```
+
+Body weight is held at the 73 kg median because the paper does not print the
+weight distribution of the atomoxetine trials; between-subject variability is
+the Table 2 CV on CL/F only, as in the paper's inputs.
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Oggianu_2020_atomoxetine")
+rxode2::rxSetSeed(20200212)
+sim <- rxode2::rxSolve(mod, events = events,
+                       keep = c("arm", "tlast")) |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+Supplementary Figures S3A and S3B show the predicted mean atomoxetine profile
+after 20 mg twice daily in EM and PM subjects. The plot below shows the
+simulated mean over the last dosing interval for every arm.
+
+```{r profiles, fig.width = 7, fig.height = 4.5}
+sim |>
+  dplyr::filter(time >= tlast) |>
+  dplyr::mutate(tad = time - tlast) |>
+  dplyr::group_by(arm, tad) |>
+  dplyr::summarise(Cc = mean(Cc), .groups = "drop") |>
+  ggplot(aes(tad, Cc, colour = arm)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time after the last morning dose (h)",
+       y = "Mean atomoxetine (ng/mL)", colour = NULL,
+       caption = "Mean steady-state profiles (cf. Oggianu 2020 Figures S3A and S3B).")
+```
+
+# PKNCA validation
+
+```{r pknca}
+conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, arm, tlast)
+conc <- dplyr::bind_rows(
+  conc,
+  conc |> dplyr::distinct(id, arm, tlast) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+
+dose <- events |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::select(id, time, amt, arm)
+
+intervals <- conc |>
+  dplyr::distinct(arm, tlast) |>
+  dplyr::transmute(arm, start = tlast, end = tlast + 12,
+                   cmax = TRUE, tmax = TRUE, auclast = TRUE)
+
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc, Cc ~ time | arm + id, concu = "ng/mL", timeu = "h"),
+  PKNCA::PKNCAdose(dose, amt ~ time | arm + id, doseu = "mg"),
+  intervals = as.data.frame(intervals)
+))
+nca_df <- as.data.frame(nca)
+```
+
+## Comparison against the published predictions
+
+The paper reports arithmetic means of its virtual trials, so the simulated
+individual NCA values are averaged the same way before comparison.
+
+```{r nca-compare}
+sim_means <- nca_df |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  dplyr::group_by(arm, PPTESTCD) |>
+  dplyr::summarise(PPORRES = mean(PPORRES), .groups = "drop")
+
+published <- tibble::tribble(
+  ~arm,             ~cmax, ~auclast,
+  "20 mg BID EM",   171.2,   1179.6,
+  "20 mg BID PM",   776.2,   8210.0,
+  "40 mg BID EM",   355.1,   2025.1,
+  "40 mg BID PM",  1607.7,  16601.8,
+  "60 mg BID PM",  2325.5,  24196.6
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_means,
+  reference = published,
+  by = "arm",
+  units = c(cmax = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste("Simulated means vs. Oggianu 2020 predicted means",
+                  "(Table 3; Supplementary Tables S3.1, S3.2, S3.4).",
+                  "AUC is over the steady-state dosing interval.")
+)
+```
+
+```{r nca-gate}
+pct <- suppressWarnings(
+  as.numeric(gsub("[^0-9.eE+-]", "", as.character(cmp[["% diff"]])))
+)
+stopifnot(
+  sum(is.finite(pct)) == 10,
+  # A mis-transcribed clearance, volume or B:P moves every arm by tens of
+  # percent; the centre of the ten comparisons catches that.
+  median(abs(pct), na.rm = TRUE) < 6,
+  # The 20 mg EM AUC is the loosest row (see text); 25% bounds it.
+  max(abs(pct), na.rm = TRUE) < 25
+)
+```
+
+Cmax agrees within about 6% in every arm, and AUC within about 8% except in
+the 20 mg EM arm. The extensive-metabolizer rows also carry the most
+sampling noise: with a 55.7% CV on clearance, the mean of 200 simulated
+subjects moves by several percent between seeds. A seed-free check removes
+that noise. At steady state the dosing-interval AUC is `dose / (CL/F)`, so
+for a log-normal CL/F whose arithmetic mean is the Table 2 value, the
+population mean AUC is `dose / mean(CL/F) x (1 + CV^2)`:
+
+```{r analytic-auc}
+analytic <- published |>
+  dplyr::mutate(
+    clpo = ifelse(grepl("EM", arm), 26.4, 2.55),
+    cv = ifelse(grepl("EM", arm), 0.557, 0.18),
+    dose = as.numeric(sub(" mg.*", "", arm)),
+    expected_auc = dose * 1000 / clpo * (1 + cv^2),
+    pct_diff = 100 * (expected_auc / auclast - 1)
+  ) |>
+  dplyr::select(arm, published_auc = auclast, expected_auc, pct_diff)
+knitr::kable(
+  analytic |>
+    dplyr::rename("Arm" = arm, "Published mean AUC" = published_auc,
+                  "Expected mean AUC" = expected_auc, "% diff" = pct_diff),
+  digits = 1,
+  caption = "Expected population-mean steady-state AUC (ng.h/mL) from the Table 2 CL/F and CV."
+)
+stopifnot(sum(abs(analytic$pct_diff) < 3) == 4)
+```
+
+Four arms agree within 3%. In the 20 mg EM arm the expected mean is 993
+ng.h/mL against a published 1,180. The paper's trial-by-trial values for that
+arm (Supplementary Table S3.1) explain the gap: nine trials range from 755 to
+1,398 ng.h/mL and one (trial 7) reached 1,930 ng.h/mL, so the published mean
+of 70 subjects is pulled up by the long right tail of the clearance
+distribution. No parameter was tuned.
+
+# Trazodone: why the victim model is not packaged {#trazodone}
+
+The trazodone clearance layer *is* reproducible. Equations 1-2 back-calculate
+the intrinsic clearance from the observed intravenous clearance of 10 L/h, and
+the printed inputs return it:
+
+```{r trazodone-clearance}
+fup <- 0.0354
+bp_t <- 0.68
+clint_3a4 <- 0.438 * 137 * 39.8 * 1648 * 60 / 1e6 # uL/min/pmol -> L/h
+clint_hlm <- 25.7 * 39.8 * 1648 * 60 / 1e6        # uL/min/mg   -> L/h
+clint <- clint_3a4 + clint_hlm
+fub <- fup / bp_t
+cl_h_plasma <- bp_t * qh * fub * clint / (qh + fub * clint)
+c(CLint_L_h = clint, fm_CYP3A4 = clint_3a4 / clint,
+  CL_plasma_L_h = cl_h_plasma, fH = qh / (qh + fub * clint))
+```
+
+The 70% CYP3A4 share and the 10 L/h clearance both come back. The
+distribution does not. Trazodone was modelled as full PBPK, so the only
+distribution value in the paper is Vss = 1.0 L/kg. A one-compartment
+reduction with that volume, the Table 1 ka of 1.60 1/h, and even the most
+favourable availability (`F = fa x fH`, with gut availability 1) cannot
+reach the paper's predicted peak:
+
+```{r trazodone-falsifier}
+ka_t <- 1.60
+v_t <- 1.0 * 73
+f_t <- 0.98 * qh / (qh + fub * clint)
+k_t <- cl_h_plasma / v_t
+tmax_t <- log(ka_t / k_t) / (ka_t - k_t)
+cmax_t <- f_t * 30 / v_t * ka_t / (ka_t - k_t) *
+  (exp(-k_t * tmax_t) - exp(-ka_t * tmax_t)) * 1000
+c(Cmax_ng_mL = cmax_t, predicted_Cmax = 387.9,
+  ratio = cmax_t / 387.9, Tmax_h = tmax_t)
+```
+
+The reduction gives about 69% of the paper's predicted 30 mg oral-solution
+Cmax (387.9 ng/mL, Table 3) and a Tmax near 1.7 h, against the ~0.5 h the
+paper reports for its simulations. The early peak comes from Simcyp's
+multi-organ distribution, which the paper does not print, so the trazodone
+model and the paediatric dose predictions built on it (Table 4) are not
+reproduced here. For the same reason the atomoxetine CYP3A4 inhibition
+constant (Ki = 34 uM, fu,mic = 0.23) has no victim to act on and is not
+encoded.
+
+As a rough check on the size of the effect, a basic static calculation with
+the 60 mg twice-daily PM peak (unbound fraction 0.02, molecular weight 291.82)
+and a 70% CYP3A4 fraction for trazodone gives a hepatic AUC ratio near 1.01:
+
+```{r static-ddi}
+i_u <- 2325.5 / 291.82 * 0.02          # unbound peak, uM
+ki_u <- 34 * 0.23                      # unbound Ki, uM
+1 / (0.7 / (1 + i_u / ki_u) + 0.3)
+```
+
+This ignores gut-wall inhibition, which the Simcyp prediction includes, so it
+sits below the paper's predicted ratio of 1.06; both agree that no clinically
+relevant interaction is expected.
+
+# Assumptions and deviations
+
+* **Model class.** The packaged model is a compartmental reduction of a Simcyp
+  minimal-PBPK model, not the platform model. Because the paper reports no
+  single adjusting compartment for atomoxetine, the reduction is
+  mono-exponential like the source.
+* **Hepatic blood flow and liver volume.** The paper prints QH = 90 L/h and a
+  liver weight of 1,648 g in the trazodone Methods; both are applied to
+  atomoxetine because both compounds were simulated in the same Simcyp
+  healthy-volunteer population. The liver weight is taken as 1.648 L. The
+  portal-vein volume is not printed and is not subtracted.
+* **Gut availability.** Table 2 gives fraction absorbed 1 and fu,gut 1 and
+  enters atomoxetine clearance as an in vivo CL/F rather than as
+  enzyme-specific intrinsic clearances, so gut-wall metabolism is taken as
+  absent (fG = 1).
+* **Renal clearance.** Not in Table 2; taken as zero, so CL/F is entirely
+  hepatic.
+* **Body weight.** Held at the 73 kg adult median (Table 4) in the
+  validation. Simcyp samples body weight across its population; that
+  distribution is not printed. Clearance is not scaled by weight, since the
+  paper enters CL/F in L/h.
+* **Between-subject variability.** Only the Table 2 CV on CL/F is carried,
+  as a log-normal distribution whose arithmetic mean is the tabulated CL/F.
+  The other sources of variability in a Simcyp population (organ sizes,
+  blood flows, protein binding) are not printed and are not carried.
+* **Residual error.** None (the source is a simulation model); `propSd` is
+  fixed at zero.
+* **CYP2D6 phenotypes.** Only extensive and poor metabolizers are
+  represented, matching the paper.
+* **Trazodone.** The full-PBPK trazodone model, the paediatric dose
+  predictions and the trazodone interaction ratios are not reproduced (see
+  above).
