@@ -1,0 +1,509 @@
+---
+title: "Carboplatin haematopoiesis QSP, rat and human (Fornari 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Carboplatin haematopoiesis QSP, rat and human (Fornari 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Fornari_2019_carboplatin_rat"))$reference`
+* Article: <https://doi.org/10.1002/psp4.12459> (open access, PMC6875710)
+* Packaged models:
+  * `Fornari_2019_carboplatin_rat` -- the model fitted to rat bone marrow
+    and blood data.
+  * `Fornari_2019_carboplatin_human` -- the authors' translation of the same
+    structure to patients (a prediction, not a fit to human data).
+
+Fornari et al. built a quantitative systems pharmacology (QSP) model of
+haematopoiesis that links free-platinum pharmacokinetics after carboplatin to
+DNA damage in proliferating bone marrow progenitors and, through lineage-
+specific maturation chains and cross-lineage feedback, to circulating
+neutrophils, monocytes, reticulocytes, platelets and red blood cells. The
+model was fitted to six rat studies and then translated to humans by swapping
+physiology-dependent parameters and scaling the drug-sensitivity slopes by
+in vitro IC50 ratios.
+
+# Population
+
+The rat model was fitted to 178 male RccHan:WIST rats (about 12 weeks old,
+at least 320 g) from six AstraZeneca studies (Table S1): single IV doses of
+3, 10, 30 or 40 mg/kg carboplatin, or 40 mg/kg every 14 days for up to eight
+cycles, with vehicle controls. Haematology was measured on a Siemens Advia
+2120i; femur bone marrow multipotent progenitors (MPP, CD90+/Lin-), common
+myeloid progenitors (CMP, CD45+) and megakaryocyte-erythrocyte progenitors
+(MEP, CD71+) by flow cytometry; free platinum in plasma ultrafiltrate by
+UPLC-MS/MS (Supplementary Text S1-S4). PK and PD were fitted sequentially
+with naive pooling, so the model has no between-animal variability.
+
+The human model was not fitted to data. Its predictions (Figure 4) were for
+patients dosed by the Calvert formula to an AUC of 5 mg*min/mL with a GFR of
+125 mL/min, over two 21-day cycles.
+
+```{r population}
+str(rxode2::rxode(readModelDb("Fornari_2019_carboplatin_rat"))$population)
+str(rxode2::rxode(readModelDb("Fornari_2019_carboplatin_human"))$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The table
+collects them.
+
+| Equation / parameter | Rat | Human | Source location |
+|---|---|---|---|
+| Free-platinum PK `cl`, `vc`, `vp`, `q` | 0.42 L/h, 0.26 L, 0.30 L, 0.06 L/h | 7.2 L/h, 15.5 L, 9.86 L, 3.46 L/h | Rat: Table S3, Equation S1. Human: Zandvliet 2008 Table 2 (Supplementary Text S11), CL at CLcr 125 mL/min |
+| DNA damage `kdam`, `krep` | 0.017, 0.017 1/h | as rat | Table 1; Equation 3 |
+| `kcirc_anc`, `kcirc_mono`, `kcirc_plt`, `kcirc_rbc` | 0.17, 0.06, 0.01, 0.0007 1/h | 0.1, 0.04, 0.0052, 0.00037 1/h | Table 1 |
+| Baselines Neut0, Mono0, Plt0, Ret0, RBC0 | 1.32, 0.16, 967, 235, 8161 | 4.5, 0.6, 345, 77.5, 5000 | Table 1 (human: midpoints of printed ranges for Neut0, Mono0, Ret0, RBC0) |
+| Baselines MPP0, CMP0, MEP0 | 69, 214, 156 | 1.3, 20.9, 15 | Table 1; Equations S8-S9 |
+| MTT Neut, Mono, Plt, Ret | 61.5, 62.2, 74, 75 h | 210, 121.5, 168, 66 h | Table 1 |
+| lambda1-lambda5 | 2, 2, 1.8, 1.8, 1.8 | as rat | Table 1; Equation S7 |
+| gamma stem, MatCMP, MatMEP, prolTrans | 0.07, 0.6, 0.3, 0.7 | as rat | Table 1; Equations 11-13 |
+| SlopeMPP, SlopeCMP, SlopeMEP | 2.05, 1.47, 2.19 1/uM | 0.79, 0.57, 0.66 1/uM | Table 2 |
+| deltaRet, deltaPlt | 2.8, 0.54 | as rat | Table 2 |
+| Log-additive residual SDs | 0.33, 0.19, 0.33, 0.17, 0.17, 0.17, 0.36, 0.06 | carried from rat | Table S4 (MPP, CMP, MEP, Neut, Mono, Plt, Ret, RBC) |
+| `d/dt(central)`, `d/dt(peripheral1)` | | | Equation S1 |
+| `d/dt(damage)` | | | Equation 3 |
+| `d/dt(mpp)`, `d/dt(cmp)`, `d/dt(mep)` | | | Equations 1, 2, 4 |
+| Neutrophil and monocyte transit chains | | | Equations 5-6 |
+| Reticulocyte and platelet transit chains | | | Equations 7-8 |
+| Circulating neutrophils, monocytes, reticulocytes, platelets | | | Equation 9 |
+| `d/dt(circ_rbc)` and `kcirc_ret` | | | Equation S4 (`kcircRet = kcircRBC * RBC0 / Ret0`) |
+| Feedback functions | | | Equations 11-13 (weights 1/2 = `alphaWBC` in the model code) |
+| Steady-state rates `ktr_*`, `kprol_*`, `kstem` and initial conditions | | | Equations S2-S4, S7 |
+
+# Homeostasis
+
+All differentiation and proliferation rates are derived from the untreated
+steady state (Equations S3-S4), so without drug every state must stay at its
+baseline. This checks the transcription of the steady-state algebra, which
+any error in one of the eighteen rate expressions would break.
+
+```{r homeostasis}
+mod_rat <- readModelDb("Fornari_2019_carboplatin_rat")
+mod_hum <- readModelDb("Fornari_2019_carboplatin_human")
+outputs <- c("MPP", "CMP", "MEP", "ANC", "MONO", "PLT", "RET", "RBC")
+
+# Observation rows of a model with several error-model endpoints carry the
+# ODE state in `cmt` and `dvid = 1`; rxSolve then returns every output column.
+obs_rows <- function(times) {
+  data.frame(id = 1L, time = times, amt = 0, rate = 0, evid = 0L, cmt = "central", dvid = 1L)
+}
+dose_rows <- function(times, amt, rate = 0) {
+  data.frame(id = 1L, time = times, amt = amt, rate = rate, evid = 1L, cmt = "central", dvid = NA_integer_)
+}
+
+drift <- function(mod) {
+  s <- as.data.frame(rxSolve(mod, obs_rows(seq(0, 2000, by = 100)), rtol = 1e-10, atol = 1e-12))
+  vapply(outputs, function(v) max(abs(s[[v]] / s[[v]][1] - 1)), numeric(1))
+}
+hold <- rbind(rat = drift(mod_rat), human = drift(mod_hum))
+knitr::kable(signif(hold, 2), caption = "Largest relative drift from baseline over 2000 h without drug.")
+stopifnot(all(hold < 1e-6))
+```
+
+# Rat free-platinum PK and DNA damage (Figure S3)
+
+Figure S3 shows the PK fit to 20 mg/kg (Siddik 1987) and 30 mg/kg (in-house)
+free-platinum data and the DNA damage it drives. The maintainers digitised
+the plotted PK and damage curves; the plot's dosing time is 24 h, shifted to
+0 here.
+
+```{r figS3}
+pk_ev <- function(dose, subject) {
+  rbind(dose_rows(0, dose), obs_rows(c(seq(0, 2, by = 0.05), seq(2.25, 24, by = 0.25)))) |>
+    mutate(id = subject, treatment = paste(dose, "mg/kg"))
+}
+# One solve per dose level: the model has no IIV, so a multi-subject solve
+# only adds an rxode2 warning.
+sim_pk <- bind_rows(lapply(1:2, function(i) {
+  ev <- pk_ev(c(20, 30)[i], i)
+  as.data.frame(rxSolve(mod_rat, ev)) |> mutate(id = i, treatment = ev$treatment[1])
+}))
+# One subject per dose level: the solve must return both, and the 30 mg/kg
+# peak is dose / Vc converted to uM (30 / 0.26 * 1000 / 371.25 = 311 uM).
+stopifnot(
+  setequal(unique(sim_pk$id), 1:2),
+  abs(max(sim_pk$Cc[sim_pk$treatment == "30 mg/kg"]) / (30 / 0.26 * 1000 / 371.25) - 1) < 1e-3
+)
+
+# Digitised from Figure S3 (blue PK line and orange damage line).
+figS3_pk <- data.frame(
+  time = c(1.32, 1.86, 2.39, 3.45, 8.77, 16.76, 23.68),
+  Cc = c(49.0, 21.1, 10.6, 4.87, 1.63, 0.402, 0.119)
+)
+figS3_damage <- data.frame(time = c(3.5, 20.77), damage = c(4.77, 3.73))
+
+ggplot(sim_pk, aes(time, Cc, colour = treatment)) +
+  geom_line() +
+  geom_point(data = figS3_pk, aes(time, Cc), inherit.aes = FALSE, shape = 1) +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Free platinum (uM)", colour = NULL,
+       caption = "Open circles: plotted model line of Figure S3 (digitised). Replicates Figure S3 of Fornari 2019.")
+
+ggplot(sim_pk, aes(time, damage, colour = treatment)) +
+  geom_line() +
+  geom_point(data = figS3_damage, aes(time, damage), inherit.aes = FALSE, shape = 1) +
+  labs(x = "Time after dose (h)", y = "Damage (uM-equivalent)", colour = NULL,
+       caption = "Open circles: plotted damage line of Figure S3 (digitised).")
+
+sim30 <- filter(sim_pk, treatment == "30 mg/kg")
+ratio <- figS3_pk |>
+  mutate(
+    Cc_sim = approx(sim30$time, sim30$Cc, xout = time)$y,
+    fig_over_sim = Cc / Cc_sim
+  ) |>
+  rename(Cc_fig = Cc)
+knitr::kable(select(ratio, time, Cc_sim, Cc_fig, fig_over_sim), digits = 3,
+             caption = "30 mg/kg: packaged model vs the plotted Figure S3 line.")
+```
+
+The packaged model reproduces the shape of the Figure S3 line exactly, but
+the plotted line sits about 1.5-fold above the 30 mg/kg simulation at every
+time (see Assumptions and deviations). The simulation at 30 mg/kg agrees with
+the plotted 30 mg/kg observations (about 120-250 uM at 15 min, about 50 uM at
+1 h, 4-6 uM at 3 h, 0.07-0.09 uM at 24 h).
+
+```{r figS3-check}
+# A dose-unit or molar-mass error would scale every row by the same factor;
+# the shape is fixed by Table S3, so the factor is constant across time.
+stopifnot(
+  abs(median(ratio$fig_over_sim) - 1.5) < 0.2,
+  diff(range(ratio$fig_over_sim)) < 0.35
+)
+```
+
+# Rat myelosuppression over eight cycles (Figure 3)
+
+Figure 3 shows 40 mg/kg every 14 days. Its model lines show eight nadirs
+(day 1 to day 99), matching the text's "eight cycles", so eight doses are
+simulated here; Table S1 lists seven dosing days for study E. The bands are
+the 5th-95th percentiles from the Table S4 log-additive residual error around
+the typical prediction, which is how the paper's visual predictive check was
+built.
+
+```{r fig3}
+dose_times <- seq(0, by = 336, length.out = 8)
+ev_rat <- rbind(dose_rows(dose_times, 40), obs_rows(seq(0, 120 * 24, by = 4)))
+sim_rat <- as.data.frame(rxSolve(mod_rat, ev_rat))
+
+sig <- rxode2::rxode(mod_rat)$iniDf |>
+  filter(grepl("^expSd_", name)) |>
+  transmute(output = sub("^expSd_", "", name), sigma = est)
+
+long_rat <- sim_rat |>
+  select(time, all_of(outputs)) |>
+  pivot_longer(-time, names_to = "output", values_to = "value") |>
+  left_join(sig, by = "output") |>
+  mutate(
+    day = time / 24,
+    lo = value * exp(qnorm(0.05) * sigma),
+    hi = value * exp(qnorm(0.95) * sigma),
+    output = factor(output, levels = outputs)
+  )
+
+ggplot(long_rat, aes(day, value)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "steelblue", alpha = 0.3) +
+  geom_line(colour = "firebrick") +
+  facet_wrap(~output, scales = "free_y", ncol = 4) +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "10^9 cells/L",
+       caption = "Replicates Figure 3 of Fornari 2019 (40 mg/kg every 14 days).")
+```
+
+The maintainers read the model lines of Figure 3 (log axes, so the readings
+are approximate) and compare them with the packaged model below.
+
+```{r fig3-table}
+cycle_stats <- lapply(seq_along(dose_times), function(k) {
+  w <- sim_rat$time >= dose_times[k] & sim_rat$time < dose_times[k] + 336
+  data.frame(
+    cycle = k,
+    MPP_min = min(sim_rat$MPP[w]), MPP_max = max(sim_rat$MPP[w]),
+    MEP_min = min(sim_rat$MEP[w]),
+    RET_min = min(sim_rat$RET[w]), RET_max = max(sim_rat$RET[w]),
+    PLT_min = min(sim_rat$PLT[w]), PLT_max = max(sim_rat$PLT[w])
+  )
+}) |> bind_rows()
+knitr::kable(cycle_stats, digits = 1, caption = "Per-cycle extremes of the packaged rat model.")
+
+fig3 <- tibble::tribble(
+  ~quantity, ~figure_3, ~model,
+  "MPP nadir (each cycle)", "about 8-9", sprintf("%.1f-%.1f", min(cycle_stats$MPP_min), max(cycle_stats$MPP_min)),
+  "MPP peak, cycle 2 to cycle 8", "about 55 falling to about 43", sprintf("%.0f falling to %.0f", cycle_stats$MPP_max[2], cycle_stats$MPP_max[8]),
+  "MEP nadir", "about 5", sprintf("%.1f", min(cycle_stats$MEP_min)),
+  "Reticulocyte nadir", "about 13-15", sprintf("%.1f", min(cycle_stats$RET_min)),
+  "Reticulocyte peak, cycles 2-8", "about 180-200", sprintf("%.0f-%.0f", min(cycle_stats$RET_max[-1]), max(cycle_stats$RET_max[-1])),
+  "Platelet nadir", "about 230-250", sprintf("%.0f", min(cycle_stats$PLT_min)),
+  "Platelet peak", "about 1000-1100", sprintf("%.0f", max(cycle_stats$PLT_max)),
+  "Reticulocyte nadir, % below baseline (text)", "more than 95%", sprintf("%.1f%%", 100 * (1 - min(sim_rat$RET) / sim_rat$RET[1])),
+  "Peak rise of the stem-cell inflow (text)", "27%", sprintf("%.1f%%", 100 * (max(sim_rat$fdbk_stem) - 1))
+)
+knitr::kable(fig3, caption = "Figure 3 and Results text vs the packaged rat model.")
+
+stopifnot(
+  # Progenitor depletion is set by SlopeMPP/SlopeMEP times the damage AUC;
+  # a dose-unit error moves these by tens of percent.
+  min(cycle_stats$MPP_min) > 7, max(cycle_stats$MPP_min) < 12,
+  min(cycle_stats$MEP_min) > 3, min(cycle_stats$MEP_min) < 7,
+  1 - min(sim_rat$RET) / sim_rat$RET[1] > 0.93,
+  min(cycle_stats$PLT_min) > 180, min(cycle_stats$PLT_min) < 300,
+  # The declining MPP peaks are the paper's evidence for the maturation feedback.
+  cycle_stats$MPP_max[8] < cycle_stats$MPP_max[2]
+)
+```
+
+Recovery after the last cycle, from the Results text: MEP needed 12 days,
+MPP 30 days and CMP about 50 days to reinstate at least 80% of their original
+population. The text does not say which reference time or level these were
+measured from.
+
+```{r recovery}
+ev_rec <- rbind(dose_rows(dose_times, 40), obs_rows(seq(0, dose_times[8] + 150 * 24, by = 4)))
+sim_rec <- as.data.frame(rxSolve(mod_rat, ev_rec))
+last <- dose_times[8]
+recovery <- lapply(c("MEP", "MPP", "CMP"), function(v) {
+  b <- sim_rec[[v]][1]
+  after <- sim_rec[sim_rec$time > last, ]
+  t_nadir <- after$time[which.min(after[[v]])]
+  t80 <- after$time[after$time > t_nadir & after[[v]] >= 0.8 * b][1]
+  data.frame(output = v, days_from_last_dose_to_80pct = (t80 - last) / 24)
+}) |> bind_rows()
+recovery$paper_days <- c(12, 30, 50)
+knitr::kable(recovery, digits = 1, caption = "Recovery to 80% of baseline after the eighth dose.")
+```
+
+The packaged model recovers in the same order as the paper (MEP, then MPP,
+then CMP) but more slowly; with the reference level unstated, the numbers are
+not directly comparable.
+
+# Rat single cycle (Figure S1)
+
+Figure S1 shows one cycle at 30 mg/kg; all populations but neutrophils and
+monocytes return to baseline.
+
+```{r figS1}
+ev_s1 <- rbind(dose_rows(0, 30), obs_rows(seq(0, 40 * 24, by = 4)))
+sim_s1 <- as.data.frame(rxSolve(mod_rat, ev_s1))
+sim_s1 |>
+  select(time, all_of(outputs)) |>
+  pivot_longer(-time, names_to = "output", values_to = "value") |>
+  group_by(output) |>
+  mutate(rel = value / first(value), output = factor(output, levels = outputs)) |>
+  ggplot(aes(time / 24, rel)) +
+  geom_hline(yintercept = 1, linetype = 2) +
+  geom_line() +
+  facet_wrap(~output, ncol = 4) +
+  labs(x = "Time (day)", y = "Relative to baseline",
+       caption = "Replicates Figure S1 of Fornari 2019 (30 mg/kg single dose).")
+```
+
+# Human translation (Figure 4)
+
+Figure 4 simulates two 21-day cycles with the Calvert dose for an AUC of
+5 mg*min/mL and a GFR of 125 mL/min: 5 x (125 + 25) = 750 mg. The infusion
+length is not stated; a 30-minute infusion (as in Zandvliet 2008) is used.
+Panel (b) uses the IC50-scaled slopes packaged in
+`Fornari_2019_carboplatin_human`; panel (a) uses the rat slopes, applied here
+by overriding the three slope parameters.
+
+```{r fig4}
+ev_hum <- rbind(dose_rows(c(0, 504), 750, rate = 1500), obs_rows(seq(0, 42 * 24, by = 6)))
+sim_b <- as.data.frame(rxSolve(mod_hum, ev_hum)) |> mutate(slopes = "(b) IC50-scaled slopes")
+sim_a <- as.data.frame(rxSolve(mod_hum, ev_hum,
+  params = c(slope_mpp = 2.05, slope_cmp = 1.47, slope_mep = 2.19)
+)) |> mutate(slopes = "(a) rat slopes")
+
+# Median lines of Figure 4b, digitised by the maintainers.
+fig4b <- bind_rows(
+  data.frame(output = "ANC",
+             day = c(2.7, 5.1, 7.1, 9.0, 11.2, 14.9, 17.1, 19.8, 21.2, 23.2, 25.2, 27.1, 29.3, 34.9, 37.4, 39.6, 41.0),
+             value = c(4.22, 3.86, 3.38, 2.89, 2.65, 2.59, 2.71, 3.09, 3.16, 3.46, 3.46, 3.16, 2.71, 2.37, 2.59, 2.83, 2.96)),
+  data.frame(output = "PLT",
+             day = c(9.0, 11.2, 13.4, 15.1, 17.1, 19.0, 23.2, 33.9, 37.1),
+             value = c(212, 177, 173, 177, 181, 212, 277, 148, 162))
+)
+
+bind_rows(sim_a, sim_b) |>
+  select(time, slopes, ANC, PLT) |>
+  pivot_longer(c(ANC, PLT), names_to = "output", values_to = "value") |>
+  ggplot(aes(time / 24, value)) +
+  geom_line(aes(colour = slopes)) +
+  geom_point(data = fig4b, aes(day, value), shape = 1) +
+  geom_hline(data = data.frame(output = c("ANC", "ANC", "PLT", "PLT"), y = c(1, 0.5, 50, 25)),
+             aes(yintercept = y), linetype = 3) +
+  facet_wrap(~output, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "10^9 cells/L", colour = NULL,
+       caption = "Open circles: Figure 4b median (digitised). Dotted: grade 3/4 thresholds. Replicates Figure 4 of Fornari 2019.") +
+  theme(legend.position = "bottom")
+
+cmp4 <- fig4b |>
+  mutate(time = round(day * 4) * 6) |>
+  inner_join(
+    sim_b |> select(time, ANC, PLT) |> pivot_longer(c(ANC, PLT), names_to = "output", values_to = "model"),
+    by = c("output", "time")
+  ) |>
+  mutate(pct_diff = 100 * (model / value - 1))
+cmp4 |>
+  group_by(output) |>
+  summarise(median_pct_diff = median(pct_diff), max_abs_pct_diff = max(abs(pct_diff)), .groups = "drop") |>
+  knitr::kable(digits = 1, caption = "Typical-value model vs the Figure 4b median line.")
+
+stopifnot(
+  # The neutrophil course is driven by the human MTT, kcirc and IC50-scaled
+  # slopes; a wrong slope or baseline moves the whole curve.
+  abs(median(cmp4$pct_diff[cmp4$output == "ANC"])) < 10,
+  quantile(abs(cmp4$pct_diff[cmp4$output == "ANC"]), 0.9) < 20,
+  # First-cycle platelet nadir (days 9-19): typical value vs a population median.
+  abs(median(cmp4$pct_diff[cmp4$output == "PLT" & cmp4$day < 20])) < 30
+)
+```
+
+The neutrophil course matches Figure 4b closely. Platelets match in timing
+and in the first-cycle nadir to within about 20%; the Figure 4b median falls
+further in the second cycle than the typical-value model does. The paper's
+bands come from 1,000 simulated patients whose source of variability is not
+described, and a median over such a population need not equal the
+typical-value trajectory.
+
+# PKNCA: free carboplatin exposure
+
+The paper reports no NCA. The human simulation is checked against the
+Calvert target that set the dose: an AUC of 5 mg*min/mL of free carboplatin,
+which is 5 x 1000 / 60 / 371.25 x 1000 = 224.5 uM*h. The rat 20 and 30 mg/kg
+single doses of Figure S3 are summarised alongside.
+
+```{r pknca}
+# Single 30-minute infusion, sampled densely over 72 h (more than 15
+# half-lives), solved with tight tolerances so the far tail is not integrator
+# noise.
+ev_h1 <- rbind(dose_rows(0, 750, rate = 1500), obs_rows(seq(0, 72, by = 0.25)))
+sim_h1 <- as.data.frame(rxSolve(mod_hum, ev_h1, rtol = 1e-10, atol = 1e-12))
+stopifnot(all(sim_h1$Cc >= -1e-6 * max(sim_h1$Cc)))
+conc_h <- sim_h1 |>
+  filter(!is.na(Cc)) |>
+  transmute(id = 1L, time, Cc = pmax(Cc, 0), treatment = "human 750 mg")
+conc_r <- sim_pk |>
+  filter(!is.na(Cc)) |>
+  transmute(id = as.integer(id) + 1L, time, Cc, treatment)
+conc_all <- bind_rows(conc_h, conc_r)
+dose_all <- data.frame(
+  id = c(1L, 2L, 3L), time = 0, amt = c(750, 20, 30),
+  treatment = c("human 750 mg", "20 mg/kg", "30 mg/kg")
+)
+nca <- pk.nca(PKNCAdata(
+  PKNCAconc(conc_all, Cc ~ time | treatment + id),
+  PKNCAdose(dose_all, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+))
+nca_tab <- as.data.frame(nca) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs", "half.life")) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+nca_tab |>
+  rename("Cmax (uM)" = cmax, "AUC0-inf (uM*h)" = aucinf.obs, "t1/2 (h)" = half.life) |>
+  knitr::kable(digits = 2, caption = "PKNCA summary of simulated free carboplatin / platinum.")
+
+cmp_nca <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca,
+  reference = data.frame(treatment = "human 750 mg", aucinf.obs = 224.5),
+  by = "treatment",
+  units = c(aucinf.obs = "uM*h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_nca, caption = "Human AUC vs the Calvert target. * differs by >20%.")
+```
+
+The human AUC is about 25% above the Calvert target because the Zandvliet
+2008 clearance at a creatinine clearance of 125 mL/min (7.2 L/h) is lower
+than the 150 mL/min (9 L/h) the Calvert formula assumes. Fornari et al. do
+not say which creatinine clearance they used for the Zandvliet clearance; see
+Assumptions and deviations.
+
+# Assumptions and deviations
+
+- **Rat dose units and the dose-to-concentration conversion.** Table S3 gives
+  the PK volumes in L and clearances in L/h (labelled `1/h` in the table and
+  `liter/hour` in the model code); the published model code ends before the
+  dosing and unit-conversion lines. The packaged model takes the dose in
+  mg/kg, treats the volumes and clearances as per kg (0.26 L/kg and
+  0.42 L/h/kg are typical of an extracellular volume and a rat glomerular
+  filtration rate), and converts mg/L to uM with the carboplatin molar mass,
+  371.25 g/mol. This reproduces the plotted 30 mg/kg free-platinum
+  observations of Figure S3, every model line of Figure 3, and the >95%
+  reticulocyte nadir. The plotted PK and damage lines of Figure S3 are about
+  1.5-fold higher than this at every time; using the platinum atomic mass
+  (195.08 g/mol, a 1.9-fold increase) instead would deepen the MPP and MEP
+  nadirs below those of Figure 3, so the carboplatin molar mass is kept.
+- **Red blood cell equation.** Equation 9 lists only neutrophils, monocytes,
+  reticulocytes and platelets, although red blood cells are a model output
+  with their own circulating rate and residual error. The packaged model uses
+  `d/dt(RBC) = kcircRet * Ret - kcircRBC * RBC`, the balance implied by the
+  steady-state relation `kcircRet = kcircRBC * RBC0 / Ret0` of Equation S4.
+- **Typographical errors in Equations 4 and 7.** The second line of
+  Equation 4 is printed as `dCMP/dt` but is the MEP equation. Equation 7
+  prints the outflow of the first platelet transit compartment as
+  `aRet * T1Plt`; the packaged model uses `aPlt * T1Plt`, which is what the
+  steady-state derivation of `kprolPlt` and `ktrPlt` (Equation S4) requires.
+  With `aRet` the system would not be at steady state without drug.
+- **Feedback weights.** Equations 11-13 use weights of 1/2; the published
+  model code sets `alphaWBC = 0.5`. The model code defines one damage rate,
+  `kdamage = 0.017`; Table 1 lists `kdam` and `krep` as 0.017 1/h each, and
+  both are used.
+- **Number of rat cycles.** Table S1 lists seven 40 mg/kg doses for study E,
+  but Figure 3 shows eight cycles and the text refers to eight; eight are
+  simulated.
+- **Free-platinum observations.** The PK was fitted separately (Phoenix NLME,
+  naive pooled, multiplicative error whose magnitude is not reported), so the
+  packaged models expose `Cc` but carry no residual error for it.
+- **Human baselines given as ranges.** Table 1 prints normal ranges for human
+  Neut0 (2-7), Mono0 (0.2-10), Ret0 (40-115) and RBC0 (4,100-5,900) x 10^9/L.
+  The maintainers used the midpoints. The Figure 4 neutrophil median starts at
+  about 4.5, the Neut0 midpoint. The Mono0 range is read as 0.2-1.0 (normal
+  adult monocyte counts; an upper limit of 10 x 10^9/L would be a marked
+  monocytosis), giving 0.6.
+- **Human slopes.** Equation 10 scales each rat slope by the ratio of rat to
+  human IC50s (Table S2: CMP 2.83 vs 4.04 uM, MEP 0.86 vs 1.56 uM), which would
+  give SlopeCMP = 1.03 and SlopeMEP = 1.21 1/uM. Table 2 prints 0.57 and
+  0.66, and 0.79 for MPP (no MPP IC50 is reported). The printed values equal
+  the rat slope times the product of the CMP and MEP ratios for MPP and CMP,
+  and times the square of the MEP ratio for MEP. The printed Table 2 values
+  are used; they reproduce the Figure 4b neutrophil course.
+- **Figure 4a.** With the rat slopes the packaged human model predicts more
+  neutropenia than with the IC50-scaled slopes, as larger slopes must. The
+  published Figure 4a and 4c show less neutropenia with the rat slopes; the
+  paper does not explain this, and it is not reproduced.
+- **Human PK.** Supplementary Text S11 uses the Zandvliet 2008 free-carboplatin
+  model (packaged as `Zandvliet_2008_carboplatin`) without stating the
+  covariates. The packaged human model uses its typical values with
+  CL = 0.76 x CLcr + 1.5 L/h at CLcr = 125 mL/min (7.5 L/h), the GFR that
+  Supplementary Text S11 assumes for the Calvert dose, giving 7.2 L/h; this
+  gives an AUC of 6.25 rather than 5 mg*min/mL. The PK IIV of Zandvliet 2008 is
+  not carried. Concentrations are converted to uM with the carboplatin molar
+  mass so that the damage drive is on the scale of the uM-based slopes.
+- **Human residual error.** No human residual error is reported. The rat
+  Table S4 values are carried into the human model, as the paper does for
+  every human parameter it did not rescale; they describe rat assay and
+  between-animal scatter, not human variability.
+- **Human population variability.** Figure 4 shows bands from 1,000 simulated
+  patients, but the paper does not say which parameters varied. The packaged
+  human model has no IIV, so only typical-value trajectories are compared.
+- **Recovery times.** The Results text gives recovery times to 80% of the
+  original population after the last cycle without stating the reference time
+  or level; the packaged model's times are reported without a gate.
+- Europe PMC lists no erratum, correction or retraction for this article as
+  of 2026-11-26.

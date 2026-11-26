@@ -1352,6 +1352,10 @@ navbar:
         href: articles/Zandvliet_2008_carboplatin.html
       - text: "Carboplatin dog (Beguin 2024)"
         href: articles/Beguin_2024_carboplatin_dog.html
+      - text: "Carboplatin human (Fornari 2019)"
+        href: articles/Fornari_2019_carboplatin_myelosuppression.html
+      - text: "Carboplatin rat (Fornari 2019)"
+        href: articles/Fornari_2019_carboplatin_myelosuppression.html
       - text: "Carboplatin thrombocytopenia dog (Beguin 2024)"
         href: articles/Beguin_2024_carboplatin_dog.html
       - text: "Carboxyprimaquine (Chotsiri 2024)"
@@ -10103,6 +10107,7 @@ articles:
   - articles/Fontova_2023_tacrolimus
   - articles/Foo_2016_droperidol
   - articles/Forder_2019_calcitriolQuantumDots
+  - articles/Fornari_2019_carboplatin_myelosuppression
   - articles/Foster_2023_enrofloxacin_cat
   - articles/Fostvedt_2021_glasdegib
   - articles/Fouad_2021_diacerein
