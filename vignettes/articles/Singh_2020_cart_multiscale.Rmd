@@ -1,0 +1,295 @@
+---
+title: "Multiscale CAR-T PBPK-PD: anti-BCMA bb2121 (Singh 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Multiscale CAR-T PBPK-PD: anti-BCMA bb2121 (Singh 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Singh et al. (2020, *MAbs* **12**:1688616) built a three-stage multiscale systems
+PK-PD model for chimeric antigen receptor (CAR) T cells: a cell-level *in vitro*
+model, a whole-body physiologically based PK (PBPK) model for CAR T-cell
+biodistribution, and an integrated PBPK-PD model that couples CAR T-cell
+expansion to tumor growth inhibition (TGI). The authors fitted the integrated
+model to four CAR constructs (anti-BCMA, anti-CD19, anti-HER2, anti-EGFR) in
+xenograft mice.
+
+This article packages the **anti-BCMA (bb2121, idecabtagene vicleucel)**
+instance of the integrated PBPK-PD model (paper Figure 1C, fitted in Figure 5A),
+which is the construct the authors carried forward into every downstream
+simulation (Figures 8 and 9). The structure, physiology and binding constants
+are transcribed from the authors' deposited Mlxtran model code in the
+Supplementary Material; the anti-BCMA PD parameters are from Table 2 (PBPK-PD
+block, BCMA column), which equals the code's `<PARAMETER>` block.
+
+```{r model}
+mod <- readModelDb("Singh_2020_idecabtageneVicleucel_mouse_pbpk")
+mod_meta <- readModelDb("Singh_2020_idecabtageneVicleucel_mouse_pbpk")()
+ui <- rxode2::rxode2(mod)
+```
+
+The model carries 23 ODE states in a 25 g mouse: blood, the vascular and
+extravascular spaces of lung, spleen, kidney, brain, GI tract, liver and
+"other", a lymph-node pool, the tumor vascular space, the total intratumoral
+CAR T-cell amount (`is_tumor`), CAR-BCMA complexes (`complex`), the total tumor
+volume (`tumor`) and a four-compartment killing-signal transit chain
+(`effect1`-`effect4`). An intravenous dose (number of CAR+ T cells) enters the
+blood through `f(blood) = 1/v_blood`, reproducing the code's dose of
+`Dose / V_Blood` cells/mL.
+
+# Source trace
+
+Every value is traced to the paper or the deposited code in the model file's
+`ini()` comments. The load-bearing values:
+
+| Quantity | Value | Source |
+|---|---|---|
+| Lung/spleen/kidney/liver/brain/GI/tumor/other flows and volumes | Supp. Table 1 | 25 g mouse physiology |
+| Transmigration rates `J_organ` | Table 2, PBPK block | lung 4705, spleen 1800, liver 716, kidney 297, tumor 10.35, others 86.8/1.4/9.05 (1/h) |
+| Liver elimination `Kel_Liver` | code `Kdep_Liver` = 0.0288/h (Table 2: 0.029) | first-order loss from liver EV |
+| CAR-BCMA `kon` / `koff` | code = 1.08e-12 / 6.48 | gives Kd = 10 nM (Table 1) |
+| BCMA density | 12,590/cell | Table 1 (RPMI-8226) |
+| CAR density | 5000/cell | code `Density_CAR` |
+| Tumor packing density | 1e8 cells/mL | Methods (after Eq. 20) |
+| `KgExp`, `Kkillmax`, `KC50`, `tau`, `TMaxAct`, `EC50Act` | 0.00305, 0.0486, 9.94, 21.6, 0.0906, 5.18 | Table 2 BCMA column |
+
+The anti-BCMA fit fixed `gamma_kill = gamma_exp = 1` (Table 2; code), so both
+Hill functions are hyperbolic.
+
+# Population
+
+The anti-BCMA model was fitted to female NSG mice bearing subcutaneous
+BCMA-expressing RPMI-8226 multiple-myeloma tumors (12,590 BCMA copies/cell),
+given a single intravenous dose of 5 million anti-BCMA (bb2121) CAR+ T cells
+(data from Friedman et al. 2018). The PBPK transmigration and elimination rates
+were estimated beforehand from untransduced-T-cell, anti-EGFR and anti-CD19
+biodistribution and held fixed. The model is deterministic (all between-animal
+variances were 0 in the deposited project).
+
+```{r population}
+mod_meta$population
+```
+
+# Figure 5A - anti-BCMA TGI and blood CAR-T expansion
+
+Figure 5A shows the hallmark CAR-T profile: after a single 5-million-cell IV
+dose into a ~150 mm^3 tumor, the tumor is eradicated by ~day 14, and blood
+CAR-T cells, undetectable early, expand to a sharp peak around day 13 before
+contracting. We reproduce the typical-value solve.
+
+```{r fig5a}
+dose_5a <- 5e6
+tv0_5a <- 0.15 # 150 mm^3 = 0.15 mL
+ev <- rxode2::et(amt = dose_5a, cmt = "blood", time = 0) |>
+  rxode2::et(seq(0, 35 * 24, by = 2), cmt = "blood")
+sol <- as.data.frame(rxode2::rxSolve(ui, ev %>% as.data.frame() %>% dplyr::mutate(tumor0 = tv0_5a)))
+sol$day <- sol$time / 24
+
+ggplot(sol, aes(day)) +
+  geom_line(aes(y = tumor_vol, colour = "Tumor volume (mm3)")) +
+  geom_line(aes(y = pmax(Cblood, 1e-3), colour = "Blood CAR-T (#/uL)")) +
+  scale_y_log10("Tumor volume (mm3) / Blood CAR-T (#/uL)") +
+  labs(x = "Time (day)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "top")
+```
+
+The blood CAR-T curve starts high at the IV dose, falls through the rapid
+distribution/margination phase to an undetectable trough, then expands to a
+sharp peak in the second week as intratumoral CAR-target complexes accumulate;
+the tumor collapses over the same window (eradicated by ~day 14), matching the
+published Figure 5A profile.
+
+```{r fig5a-check}
+# The expansion peak is the second-week maximum, not the t=0 IV distribution
+# spike, so look only after the rapid distribution phase (day > 2).
+expand <- sol[sol$day > 2, ]
+peak_day <- expand$day[which.max(expand$Cblood)]
+stopifnot(
+  # Tumor is eradicated (well under the ~150 mm3 starting burden) by day 20.
+  sol$tumor_vol[which.min(abs(sol$day - 20))] < 5,
+  # Blood CAR-T expansion peaks in the second week.
+  peak_day > 10, peak_day < 16,
+  # The expansion peak is a genuine re-growth from the post-distribution trough.
+  max(expand$Cblood) / min(expand$Cblood[expand$day < peak_day]) > 100
+)
+```
+
+# Figure 8 - effect of dose and of initial tumor burden
+
+The authors' key simulations (Figure 8) sweep the IV CAR-T dose (0.1-50 million
+cells, fixed 150 mm^3 burden) and the initial tumor burden (50-1000 mm^3, fixed
+5-million-cell dose), reading out TGI, complexes per tumor cell and blood CAR-T
+expansion over 28 days.
+
+```{r fig8-sim}
+grid_t <- seq(0, 28 * 24, by = 3)
+
+sim_one <- function(dose, tv0) {
+  ev <- rxode2::et(amt = dose, cmt = "blood", time = 0) |>
+    rxode2::et(grid_t, cmt = "blood")
+  s <- as.data.frame(rxode2::rxSolve(ui, ev %>% as.data.frame() %>% dplyr::mutate(tumor0 = tv0)))
+  s$day <- s$time / 24
+  s
+}
+
+doses <- c(0.1, 1, 5, 10, 50) * 1e6
+dose_runs <- dplyr::bind_rows(lapply(doses, function(d) {
+  s <- sim_one(d, 0.15)
+  s$scenario <- sprintf("%g M", d / 1e6)
+  s
+}))
+
+burdens <- c(50, 100, 150, 250, 500, 1000) / 1000 # mL
+burden_runs <- dplyr::bind_rows(lapply(burdens, function(v) {
+  s <- sim_one(5e6, v)
+  s$scenario <- sprintf("%g mm3", v * 1000)
+  s
+}))
+```
+
+## Dose sweep (Figure 8A-C)
+
+```{r fig8-dose, fig.height = 3.5}
+ggplot(dose_runs, aes(day, tumor_vol, colour = scenario)) +
+  geom_line() +
+  labs(x = "Time (day)", y = "Tumor volume (mm3)", colour = "CAR-T dose",
+       title = "Figure 8A: tumor growth inhibition by dose") +
+  theme_bw()
+
+ggplot(dose_runs, aes(day, pmax(Cblood, 1e-3), colour = scenario)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "Blood CAR-T (#/uL)", colour = "CAR-T dose",
+       title = "Figure 8C: blood CAR-T expansion by dose") +
+  theme_bw()
+```
+
+Figure 8 of the paper shows the steep dose-exposure relationship: below a
+critical dose (~1 million) there is no expansion and no TGI; above it, the blood
+peak saturates while the *time* to peak shortens as dose rises.
+
+```{r fig8-dose-check}
+# Peak = post-distribution expansion peak (day > 2), excluding the t=0 IV spike.
+peak_by_dose <- dose_runs %>%
+  filter(day > 2) %>%
+  group_by(scenario) %>%
+  summarise(peak = max(Cblood), tpeak = day[which.max(Cblood)], .groups = "drop")
+# Sub-threshold doses (0.1, 1 M) never expand; supra-threshold doses all do.
+low <- peak_by_dose$peak[peak_by_dose$scenario %in% c("0.1 M", "1 M")]
+high <- peak_by_dose$peak[peak_by_dose$scenario %in% c("5 M", "10 M", "50 M")]
+stopifnot(all(low < 1), all(high > 50))
+# Time-to-peak shortens as dose increases across the expanding doses.
+tp <- peak_by_dose %>%
+  filter(scenario %in% c("5 M", "10 M", "50 M")) %>%
+  mutate(d = c("5 M" = 5, "10 M" = 10, "50 M" = 50)[scenario]) %>%
+  arrange(d)
+stopifnot(tp$tpeak[1] >= tp$tpeak[3])
+```
+
+## Tumor-burden sweep (Figure 8D-F)
+
+```{r fig8-burden, fig.height = 3.5}
+ggplot(burden_runs, aes(day, pmax(Cblood, 1e-3), colour = scenario)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "Blood CAR-T (#/uL)", colour = "Initial burden",
+       title = "Figure 8F: blood CAR-T expansion by initial tumor burden") +
+  theme_bw()
+```
+
+The paper's central claim (Figures 8-9) is that the apparent blood Cmax of
+CAR-T expansion is more sensitive to tumor burden than to dose: higher burden
+drives faster, larger expansion.
+
+```{r fig8-burden-check}
+peak_by_burden <- burden_runs %>%
+  filter(day > 2) %>%
+  group_by(scenario) %>%
+  summarise(peak = max(Cblood), .groups = "drop") %>%
+  mutate(mm3 = as.numeric(sub(" mm3", "", scenario))) %>%
+  arrange(mm3)
+# Peak blood CAR-T rises monotonically with initial tumor burden.
+stopifnot(all(diff(peak_by_burden$peak) > 0))
+# And the burden sweep spans a far wider Cmax range than the dose sweep,
+# the paper's headline finding.
+burden_fold <- max(peak_by_burden$peak) / min(peak_by_burden$peak[peak_by_burden$peak > 1])
+dose_fold <- max(high) / min(high)
+stopifnot(burden_fold > dose_fold)
+```
+
+# Biodistribution sanity check (Figure 4)
+
+With binding and tumor growth switched off, the PBPK layer alone gives the
+%injected-dose/g biodistribution of Figure 4 (untransduced / anti-EGFR / anti-CD19
+all overlap because expansion is off). The authors found spleen, liver and lung
+carry the most CAR-T cells. We confirm the ordering at 24 h.
+
+```{r fig4}
+mod_pk <- mod |> rxode2::ini(kon = 0, lkg = log(1e-12))
+ui_pk <- rxode2::rxode2(mod_pk)
+D <- 2e7
+ev4 <- rxode2::et(amt = D, cmt = "blood", time = 0) |>
+  rxode2::et(c(1, 6, 24, 48, 168), cmt = "blood")
+s4 <- as.data.frame(rxode2::rxSolve(ui_pk, ev4 %>% as.data.frame() %>% dplyr::mutate(tumor0 = 0.1172)))
+# %ID/g (= %ID/mL at unit density) in each organ's whole tissue at 24 h.
+row24 <- s4[s4$time == 24, ]
+idg <- c(
+  spleen = (row24$vp_spleen * 0.0154 + row24$is_spleen * 0.0254) / 0.127 / D * 100,
+  liver = (row24$vp_liver * 0.164 + row24$is_liver * 0.385) / 1.93 / D * 100,
+  lung = (row24$vp_lung * 0.0295 + row24$is_lung * 0.0384) / 0.204 / D * 100,
+  kidney = (row24$vp_kidney * 0.0289 + row24$is_kidney * 0.0788) / 0.525 / D * 100
+)
+print(round(sort(idg, decreasing = TRUE), 2))
+stopifnot(idg["spleen"] > idg["kidney"], idg["liver"] > idg["kidney"])
+```
+
+# Assumptions and deviations
+
+* **Only the anti-BCMA (bb2121) integrated PBPK-PD instance is packaged.** The
+  paper's *in vitro* cell-level model (Figure 1A, Eqs. 1-12) and the anti-CD19 /
+  anti-HER2 / anti-EGFR PBPK-PD instances use the same structure with different
+  system parameters; bb2121 is the construct the authors carried into every
+  downstream simulation (Figures 8-9) and the one with simultaneously fitted
+  blood-expansion and TGI data (Figure 5A). The other constructs' Table 2
+  columns are tabulated in the paper for anyone wishing to re-instantiate them.
+* **Structure follows the deposited Mlxtran code, not the printed equations,
+  where they differ.** The code is the as-run anti-BCMA model. In particular the
+  tumor growth law is the code's `ddt_V_Tumor = Kg_Exp_Tumor * V_Tumor - K4 *
+  V_Tumor` (exponential growth minus the transit-delayed kill), rather than the
+  main-text Eq. 24 generalized growth law with a linear-growth switch and
+  `TVmax` ceiling: those `KgLin`, `TVmax` and `Psi` parameters are blank for
+  BCMA in Table 2, so the BCMA tumor grows purely exponentially and the code
+  omits that machinery.
+* **The expansion term acts on the total intratumoral CAR-T pool.** The code's
+  `ddt_A_E_Tumor` adds `Kact_CART * A_E_Tumor`; this matches the main text
+  (expansion of total, unbound + bound, CAR-T in the tumor extravascular space).
+* **Doses are cell numbers.** The deposited project carries blood CAR-T as a
+  concentration and doses `Dose / V_Blood`; here the state is still a
+  concentration but the dose amount is the cell number, applied through
+  `f(blood) = 1/v_blood` so the two are identical.
+* **Initial tumor burden is a scenario input** (`tumor0`, mL). Figure 5A used
+  ~150 mm^3; Figure 8 sweeps 50-1000 mm^3. Override `tumor0` per study.
+* **No residual-error or IIV model.** The deposited project fixed all omegas to
+  0 and did not report residual-error estimates, so the packaged model is
+  deterministic (typical-value). This is an expansion/TGI simulation model, not
+  an individual-level estimation model.
+* **No PKNCA comparison.** The outputs are tumor volume, intratumoral complexes
+  per cell and a blood cell count that is dominated by on-target expansion and
+  contraction rather than distribution/elimination PK; the authors reported no
+  NCA metrics, so a trapezoidal-AUC comparison would not correspond to anything
+  in the paper. Validation is against the published simulated figures (5A, 8)
+  and the biodistribution ordering (4) instead.
+```

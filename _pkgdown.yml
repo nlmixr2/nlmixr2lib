@@ -3846,6 +3846,8 @@ navbar:
         href: articles/Wu_2025_idecabtageneVicleucel.html
       - text: "IdecabtageneVicleucel human (Singh 2021)"
         href: articles/Singh_2021_idecabtageneVicleucel.html
+      - text: "IdecabtageneVicleucel mouse pbpk (Singh 2020)"
+        href: articles/Singh_2020_cart_multiscale.html
       - text: "IdecabtageneVicleucel orr (Connarn 2023)"
         href: articles/Connarn_2023_idecabtageneVicleucel.html
       - text: "IdecabtageneVicleucel orr (Wu 2025)"
@@ -11712,6 +11714,7 @@ articles:
   - articles/Simpson_2013_chloroquine
   - articles/Simpson_2013_lumefantrine
   - articles/Simpson_2013_mefloquine
+  - articles/Singh_2020_cart_multiscale
   - articles/Singh_2021_idecabtageneVicleucel
   - articles/Singh_2025_donidalorsen
   - articles/Singkham_2022_rivaroxaban
