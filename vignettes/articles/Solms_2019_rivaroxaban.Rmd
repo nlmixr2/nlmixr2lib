@@ -1,0 +1,630 @@
+---
+title: "Rivaroxaban PK and prothrombin time (Solms 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rivaroxaban PK and prothrombin time (Solms 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+```{r load-model}
+ui <- rxode2::rxode(readModelDb("Solms_2019_rivaroxaban"))
+```
+
+# Model and source
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.1002/psp4.12444> (PMC6875705, open access)
+
+Solms 2019 links rivaroxaban plasma concentration to prothrombin time (PT)
+so that the PT measured in large phase III trials, where few or no PK samples
+were taken, could sharpen the individual exposure estimates used in the
+exposure-response analyses the EMA requested. The packaged model is the
+**population PK/PT model** of the paper:
+
+* the PK layer is the integrated popPK model of Willmann 2018a (packaged
+  separately as `Willmann_2018a_rivaroxaban`), with every PK parameter fixed
+  to its final estimate, and
+* PT rises linearly with the individual predicted concentration,
+  `PT = BASE + SLOPE * Cc`, with exponential interindividual variability on
+  BASE and SLOPE and a proportional residual error.
+
+Three source documents were used:
+
+* the main article (Tables 1-3, Results);
+* Supplementary Figure S2, whose legend writes out the PK/PT model and gives
+  the final estimates with their RSEs, **including the PT residual error
+  (CV 11.4%)** that the main text does not print; and
+* the Supplementary Model Code, which holds the NONMEM control streams of the
+  integrated popPK model, the popPK/PT model, the "eta approach" and the R code
+  of the "PT covariate approach". The popPK/PT control stream fixes the PK
+  parameters to the Willmann 2018a final estimates at more digits than that
+  paper prints, and those values are used here. Its `$THETA` values for BASE
+  and SLOPE (12 and 0.04) and `$OMEGA` values for their IIV (0.3) are initial
+  estimates; the final estimates come from the Results and Figure S2.
+
+The PT-adjustment *regression functions* of Table 2 are not a simulation
+model -- they map a per-patient summary of observed PT onto a correction
+factor for an already-computed exposure. They are reproduced below as a
+post-processing step on the simulated output rather than packaged in
+`model()`.
+
+No erratum or corrigendum was found for this article (Crossref `relation` /
+`update-to` metadata and the JATS record were checked on 2026-11-26).
+
+# Population
+
+```{r population}
+str(ui$population)
+```
+
+The PK/PT model was fitted to 1,779 patients with time-matched PK and PT
+samples (Table 1): 508 from ODIXa-HIP2 and 322 from ODIXa-KNEE (VTE prevention
+after hip or knee replacement), 437 from ODIXa-DVT and 351 from the
+EINSTEIN-DVT dose-ranging study (VTE treatment), and 161 from the ROCKET AF PK
+substudy (atrial fibrillation). PT was measured centrally with a
+rivaroxaban-sensitive thromboplastin (STA Neoplastine / Neoplastine CI Plus).
+The paper does not tabulate the demographics of this PK-PT data set.
+
+# Source trace
+
+```{r source-trace, echo = FALSE}
+trace <- tibble::tribble(
+  ~Item, ~Value, ~Source,
+  "Structure: 1-cmt oral, first-order absorption and elimination", "ADVAN2 TRANS2", "Supplementary Model Code, popPK/PT control stream",
+  "PT = BASE + SLOPE * Cc, PT * (1 + eps)", "-", "Results; Figure S2 legend; control stream $ERROR 'IPRED = BASE+SLOPE*F'",
+  "ka", "0.820743 1/h", "popPK/PT $THETA 1 (FIX)",
+  "CL/F", "6.58214 L/h", "popPK/PT $THETA 2 (FIX)",
+  "V/F", "62.5172 L", "popPK/PT $THETA 3 (FIX)",
+  "CRCL exponent on CL/F (ref 93 mL/min, Tietz cap 140*BSA/1.73)", "0.405575", "popPK/PT $THETA 4 (FIX); $PK CRCL_MAX",
+  "WT exponent on V/F (ref 81 kg)", "0.21584", "popPK/PT $THETA 5 (FIX)",
+  "AGE exponent on V/F (ref 61 y)", "-0.189009", "popPK/PT $THETA 6 (FIX)",
+  "Female factor on V/F", "0.889284", "popPK/PT $THETA 7 (FIX)",
+  "P-gp inhibitor factor on CL/F", "0.965478", "popPK/PT $THETA 8 (FIX)",
+  "Strong CYP3A4 inhibitor factor on CL/F", "0.977924", "popPK/PT $THETA 9 (FIX)",
+  "Moderate CYP3A4 inhibitor factor on CL/F", "0.863422", "popPK/PT $THETA 10 (FIX)",
+  "Weak CYP3A4 inhibitor factor on CL/F", "0.939123", "popPK/PT $THETA 11 (FIX)",
+  "CYP3A4 inducer factor on CL/F", "1.30299", "popPK/PT $THETA 12 (FIX)",
+  "WT exponent on CL/F (ref 81 kg)", "-0.277974", "popPK/PT $THETA 13 (FIX)",
+  "AF factor on CL/F", "0.84858", "popPK/PT $THETA 14 (FIX)",
+  "ACS factor on CL/F", "1.13897", "popPK/PT $THETA 15 (FIX)",
+  "VTE prevention <= 72 h factor on CL/F", "1.03711", "popPK/PT $THETA 16 (FIX)",
+  "VTE prevention > 72 h factor on CL/F", "1.2848", "popPK/PT $THETA 17 (FIX)",
+  "F1MAX", "1.25", "popPK/PT $THETA 18 (FIX)",
+  "F1MIN", "0.58955", "popPK/PT $THETA 19 (FIX)",
+  "D50", "14.3671 mg", "popPK/PT $THETA 20 (FIX)",
+  "IIV ka (variance)", "0.628188", "popPK/PT $OMEGA 1 (FIX)",
+  "IIV CL/F, cov, V/F (variances)", "0.166888, 0.067385, 0.039115", "popPK/PT $OMEGA BLOCK(2) (FIX)",
+  "PK proportional residual (SD)", "0.450555 = sqrt(0.203389)", "popPK/PT $SIGMA 1 (final not reported; see deviations)",
+  "BASE", "13.1 s", "Results; Figure S2 (RSE 0.27%)",
+  "SLOPE", "0.031 s per ug/L", "Results; Figure S2 (RSE 1.11%)",
+  "IIV BASE (variance)", "0.006 (CV 7.76%)", "Results; Figure S2 (RSE 13%)",
+  "IIV SLOPE (variance)", "0.136 (CV 38.2%)", "Results; Figure S2 (RSE 9.5%)",
+  "PT proportional residual (SD)", "0.114 (CV 11.4%)", "Figure S2 (RSE 12.8%)",
+  "PT-adjustment functions (not in model())", "see Table 2", "Table 2"
+)
+knitr::kable(trace)
+```
+
+# Deterministic gates
+
+## The PK layer is the Willmann 2018a model
+
+The popPK/PT control stream fixes the PK parameters to the Willmann 2018a
+final estimates. Solving both packaged models for the same typical patient
+must give the same concentrations up to the rounding of the three-significant-
+figure values printed in Willmann 2018a Table 3.
+
+```{r pk-layer-gate}
+ref_cov <- data.frame(
+  CRCL = 93, BSA = 1.92, WT = 81, AGE = 61, SEXF = 0,
+  CONMED_PGP_INH = 0, CONMED_CYP3A4_INH_STRONG = 0,
+  CONMED_CYP3A4_INH_MOD = 0, CONMED_CYP3A4_INH_WEAK = 0,
+  CONMED_CYP3A4_IND = 0, DIS_AF = 0, DIS_ACS = 0, DIS_VTE_P = 0
+)
+
+# Event table for one subject: `dose_mg` every `tau` h for `n_dose` doses,
+# observed on `obs_times` on the central compartment. dvid = 1 on observation
+# rows is needed because the model declares two endpoints (Cc and PT); every
+# endpoint column is still returned.
+make_events <- function(id, dose_mg, tau, n_dose, obs_times, cov) {
+  doses <- data.frame(
+    id = id, time = (seq_len(n_dose) - 1) * tau, evid = 1L,
+    amt = dose_mg, cmt = "depot", dvid = NA_integer_
+  )
+  obs <- data.frame(
+    id = id, time = obs_times, evid = 0L, amt = NA_real_,
+    cmt = "central", dvid = 1L
+  )
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(DOSE_RIVAROXABAN_MG = dose_mg) |>
+    dplyr::cross_join(cov) |>
+    dplyr::arrange(time, dplyr::desc(evid))
+}
+
+ev_ref <- make_events(1L, 20, 24, 10, seq(216, 240, by = 0.5), ref_cov)
+
+sim_solms <- rxode2::rxSolve(
+  ui, ev_ref,
+  omega = NA, sigma = NA, useLinCmt = FALSE, returnType = "data.frame"
+)
+sim_willmann <- rxode2::rxSolve(
+  rxode2::rxode(readModelDb("Willmann_2018a_rivaroxaban")),
+  dplyr::select(ev_ref, -dvid),
+  omega = NA, sigma = NA, returnType = "data.frame"
+)
+rel_diff <- abs(sim_solms$Cc - sim_willmann$Cc) / sim_willmann$Cc
+max(rel_diff)
+stopifnot(nrow(sim_solms) == nrow(sim_willmann), max(rel_diff) < 0.01)
+```
+
+## The PT equation
+
+```{r pt-equation-gate}
+# PT is the error-free linear transform of the error-free concentration; with
+# no random effects BASE = 13.1 s and SLOPE = 0.031 s per ug/L exactly.
+stopifnot(
+  max(abs(sim_solms$PT - (13.1 + 0.031 * sim_solms$Cc))) < 1e-8
+)
+range(sim_solms$PT)
+```
+
+At the typical reference patient on 20 mg once daily the steady-state PT
+swings between about `r round(min(sim_solms$PT), 1)` s at trough and
+`r round(max(sim_solms$PT), 1)` s at peak, inside the 10-40 s range the paper
+quotes for patients on rivaroxaban measured with this reagent.
+
+## Regimen ratios of the covariate-only exposures (Table S3)
+
+Table S3 lists the median covariate-only exposures in the EINSTEIN-DVT/PE
+phase III population for 15 mg twice daily and 20 mg once daily. Both regimens
+are evaluated over the *same* patients, so their AUC0-24 ratio depends almost
+only on the dose-dependent bioavailability and the daily dose -- not on the
+undisclosed covariate distribution -- and is a sharp check on the F1 function
+of the fixed PK layer.
+
+```{r regimen-ratio}
+ev_bid <- make_events(1L, 15, 12, 20, seq(216, 240, by = 0.25), ref_cov)
+ev_od <- make_events(1L, 20, 24, 10, seq(216, 240, by = 0.25), ref_cov)
+
+auc_cmax_ctrough <- function(ev) {
+  s <- rxode2::rxSolve(
+    ui, ev,
+    omega = NA, sigma = NA, useLinCmt = FALSE, returnType = "data.frame"
+  )
+  data.frame(
+    auc = sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2),
+    cmax = max(s$Cc),
+    ctrough = s$Cc[s$time == 240]
+  )
+}
+ratio <- auc_cmax_ctrough(ev_bid) / auc_cmax_ctrough(ev_od)
+
+regimen_tbl <- data.frame(
+  metric = c("AUC0-24", "Cmax", "Ctrough"),
+  table_s3 = c(4082.78 / 2508.44, 235.66 / 221.00, 94.96 / 25.07),
+  model = unname(unlist(ratio))
+)
+regimen_tbl |>
+  dplyr::mutate(dplyr::across(c(table_s3, model), \(x) round(x, 3))) |>
+  dplyr::rename(
+    "Ratio 15 mg b.d. / 20 mg o.d." = metric,
+    "Table S3 medians" = table_s3,
+    "Model, typical patient" = model
+  ) |>
+  knitr::kable()
+
+# AUC0-24 ratio: 1.5 * F(15 mg) / F(20 mg); within 2% of the published ratio.
+stopifnot(abs(ratio$auc / (4082.78 / 2508.44) - 1) < 0.02)
+```
+
+The Cmax and Ctrough ratios also depend on the elimination rate, so they are
+reported for comparison only; the typical-patient values are within a few
+percent of the population medians.
+
+## The PT-adjustment functions reproduce Table 3
+
+Table 2 gives the linear PT-adjustment functions,
+`adjustment factor = intercept + slope * PT covariate`. Applying them to the
+PT-covariate percentiles of Table 3 must return the adjustment-factor
+percentiles printed in the same table (a monotone function maps percentiles
+onto percentiles). This checks the transcription of Table 2 used in the
+sections below.
+
+```{r table2-table3}
+adj_fun <- tibble::tribble(
+  ~metric, ~intercept, ~slope,
+  "AUC0-24", -0.0147, 1.02,
+  "Cmax", 0.34, 0.659,
+  "Ctrough", -1.14, 2.27
+)
+
+table3 <- tibble::tribble(
+  ~indication, ~row, ~p_min, ~p05, ~p50, ~p95, ~p_max,
+  "AF", "PT covariate", 0.55, 0.77, 1.02, 1.56, 3.19,
+  "AF", "AUC0-24", 0.55, 0.77, 1.03, 1.58, 3.24,
+  "AF", "Cmax", 0.70, 0.85, 1.01, 1.37, 2.44,
+  "AF", "Ctrough", 0.10, 0.60, 1.18, 2.41, 6.10,
+  "VTE treatment", "PT covariate", 0.58, 0.83, 1.06, 1.39, 2.95,
+  "VTE treatment", "AUC0-24", 0.58, 0.84, 1.07, 1.41, 3.00,
+  "VTE treatment", "Cmax", 0.72, 0.89, 1.04, 1.26, 2.28,
+  "VTE treatment", "Ctrough", 0.18, 0.75, 1.27, 2.02, 5.55,
+  "VTE prevention", "PT covariate", 0.71, 0.88, 1.05, 1.41, 2.81,
+  "VTE prevention", "AUC0-24", 0.71, 0.89, 1.06, 1.42, 2.86,
+  "VTE prevention", "Cmax", 0.81, 0.92, 1.03, 1.27, 2.19,
+  "VTE prevention", "Ctrough", 0.47, 0.86, 1.25, 2.05, 5.25
+) |>
+  tidyr::pivot_longer(p_min:p_max, names_to = "percentile")
+
+pt_cov <- table3 |>
+  dplyr::filter(row == "PT covariate") |>
+  dplyr::select(indication, percentile, pt = value)
+
+recon <- table3 |>
+  dplyr::filter(row != "PT covariate") |>
+  dplyr::rename(metric = row, printed = value) |>
+  dplyr::left_join(pt_cov, by = c("indication", "percentile")) |>
+  dplyr::left_join(adj_fun, by = "metric") |>
+  dplyr::mutate(
+    computed = intercept + slope * pt,
+    diff = computed - printed
+  )
+
+recon |>
+  dplyr::filter(percentile %in% c("p05", "p50", "p95")) |>
+  dplyr::select(indication, metric, percentile, printed, computed) |>
+  dplyr::mutate(computed = round(computed, 3)) |>
+  dplyr::rename(
+    "Indication" = indication, "Factor" = metric, "Percentile" = percentile,
+    "Table 3" = printed, "Table 2 function" = computed
+  ) |>
+  knitr::kable()
+
+# Deterministic: the PT covariate is printed to 0.005, which the Ctrough slope
+# of 2.27 amplifies to 0.011, plus 0.005 for rounding of the printed factor.
+# All 45 cells must agree within that.
+max_dev <- max(abs(recon$diff))
+max_dev
+stopifnot(nrow(recon) == 45, max_dev < 0.017)
+```
+
+All 45 cells agree within `r round(max_dev, 3)`, so Table 3 was generated with
+exactly the Table 2 functions and no floor or cap on the adjustment factor.
+
+# Virtual cohort
+
+The exposure comparisons below use the atrial fibrillation indication, the
+largest phase III population in the paper (Table S1). Solms 2019 does not
+tabulate demographics, so the cohort reproduces the ROCKET AF PK-substudy row
+of Willmann 2018a Table 1 -- the same 161 patients who contributed the AF data
+to the PK/PT fit: age 65.46 (SD 9.51) years, weight 85.40 (SD 18.60) kg, serum
+creatinine 1.09 (SD 0.29) mg/dL, BSA 1.96 (SD 0.22) m^2, 37.9% female.
+Creatinine clearance is derived with Cockcroft-Gault rather than drawn, and the
+ROCKET AF dose rule is applied (15 mg once daily at CrCL below 50 mL/min,
+otherwise 20 mg; Table 1).
+
+Random effects are drawn in base R from the model's own `$omega` and passed as
+data columns, so the cohort is identical on every machine; the PT residual
+error is likewise drawn in base R.
+
+```{r cohort}
+set.seed(20190704)
+n_sub <- 200 # one arm; validation cohorts are capped at 200 per arm
+
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  AGE = pmax(18, rnorm(n_sub, 65.46, 9.51)),
+  WT = pmax(40, rnorm(n_sub, 85.40, 18.60)),
+  SEXF = rbinom(n_sub, 1, 0.379),
+  SCR = pmax(0.4, rnorm(n_sub, 1.09, 0.29)),
+  BSA = pmax(1.3, rnorm(n_sub, 1.96, 0.22))
+) |>
+  dplyr::mutate(
+    CRCL = (140 - AGE) * WT / (72 * SCR) * ifelse(SEXF == 1, 0.85, 1),
+    dose = ifelse(CRCL < 50, 15, 20),
+    CONMED_PGP_INH = 0, CONMED_CYP3A4_INH_STRONG = 0,
+    CONMED_CYP3A4_INH_MOD = 0, CONMED_CYP3A4_INH_WEAK = 0,
+    CONMED_CYP3A4_IND = 0, DIS_AF = 1, DIS_ACS = 0, DIS_VTE_P = 0
+  )
+
+omega <- ui$omega
+eta <- matrix(rnorm(n_sub * nrow(omega)), n_sub) %*% chol(omega)
+colnames(eta) <- rownames(omega)
+eta <- tibble::as_tibble(eta) |> dplyr::mutate(id = cohort$id)
+
+stopifnot(
+  identical(colnames(omega), c("etalka", "etalcl", "etalvc", "etalrbase", "etalslope")),
+  abs(mean(cohort$CRCL) - 81.76) < 25
+)
+table(cohort$dose)
+```
+
+# Simulation
+
+Ten days of once-daily dosing reach steady state (the typical half-life is
+`r round(log(2) * 62.5172 / (6.58214 * 0.84858), 1)` h in AF). The final
+dosing interval is observed every 0.25 h.
+
+```{r simulate}
+tau <- 24
+n_dose <- 10
+t_last <- (n_dose - 1) * tau
+obs_times <- seq(t_last, t_last + tau, by = 0.25)
+
+events <- cohort |>
+  dplyr::group_by(id) |>
+  dplyr::group_modify(\(d, k) {
+    make_events(k$id, d$dose, tau, n_dose, obs_times, dplyr::select(d, -dose)) |>
+      dplyr::select(-id)
+  }) |>
+  dplyr::ungroup() |>
+  dplyr::relocate(id, time, evid, amt, cmt, dvid) |>
+  as.data.frame()
+
+# Covariate-only solve (all etas zero) and individual solve (etas as data
+# columns override the zero etas under omega = NA).
+sim_cov <- rxode2::rxSolve(
+  ui, events,
+  omega = NA, sigma = NA, useLinCmt = FALSE, returnType = "data.frame"
+)
+sim_ind <- rxode2::rxSolve(
+  ui, dplyr::left_join(events, eta, by = "id"),
+  omega = NA, sigma = NA, useLinCmt = FALSE, returnType = "data.frame"
+)
+
+stopifnot(
+  nrow(sim_cov) == n_sub * length(obs_times),
+  nrow(sim_ind) == nrow(sim_cov),
+  !anyNA(sim_ind$Cc), !anyNA(sim_ind$PT), all(sim_ind$Cc >= 0),
+  # the eta columns really were applied: individual CL/F differs from the
+  # covariate-only CL/F for (essentially) every subject
+  mean(abs(sim_ind$cl / sim_cov$cl - 1) > 1e-6) > 0.99
+)
+
+# Observed PT = individual prediction with proportional residual error.
+sim_ind$PT_obs <- sim_ind$PT * (1 + rnorm(nrow(sim_ind), 0, 0.114))
+```
+
+# Replicate published figures
+
+```{r fig-profiles, fig.width = 7, fig.height = 4, fig.cap = "Simulated steady-state rivaroxaban concentration and prothrombin time over one dosing interval in the atrial fibrillation cohort (median and 5th-95th percentiles, individual predictions). The PT panel corresponds to the steady-state PT profiles that Figure S5a of Solms 2019 shows for the phase III VTE-treatment population."}
+sim_ind |>
+  dplyr::mutate(tad = time - t_last) |>
+  tidyr::pivot_longer(c(Cc, PT), names_to = "endpoint") |>
+  dplyr::mutate(endpoint = dplyr::recode(
+    endpoint,
+    Cc = "Rivaroxaban (ug/L)", PT = "Prothrombin time (s)"
+  )) |>
+  dplyr::group_by(endpoint, tad) |>
+  dplyr::summarise(
+    lo = quantile(value, 0.05), med = median(value),
+    hi = quantile(value, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(tad, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~endpoint, scales = "free_y") +
+  labs(x = "Time after dose (h)", y = NULL) +
+  theme_bw()
+```
+
+```{r fig-pkpt, fig.width = 5.5, fig.height = 4, fig.cap = "Replicates the layout of Figure S2 of Solms 2019: time-matched simulated concentrations and observed PT (with residual error), with the typical linear relationship PT = 13.1 + 0.031 Cc in red."}
+set.seed(2)
+pkpt <- sim_ind |>
+  dplyr::group_by(id) |>
+  dplyr::slice_sample(n = 4) |>
+  dplyr::ungroup()
+
+ggplot(pkpt, aes(Cc, PT_obs)) +
+  geom_point(alpha = 0.3, size = 1) +
+  geom_abline(intercept = 13.1, slope = 0.031, colour = "red", linewidth = 0.9) +
+  labs(x = "Rivaroxaban concentration (ug/L)", y = "Prothrombin time (s)") +
+  theme_bw()
+
+# Least-squares refit of the simulated PK-PT pairs recovers the typical line
+# within the spread the IIV allows (SLOPE CV 38%): a mis-scaled Cc (ng/L vs
+# ug/L) or a transposed BASE/SLOPE moves these by orders of magnitude.
+fit <- stats::lm(PT_obs ~ Cc, data = pkpt)
+coef(fit)
+stopifnot(
+  abs(coef(fit)[[1]] / 13.1 - 1) < 0.1,
+  abs(coef(fit)[[2]] / 0.031 - 1) < 0.3
+)
+```
+
+# PKNCA validation
+
+The covariate-only steady-state exposures (all random effects zero) are the
+quantity Table S1 summarises as "Exposure based on covariates" for the AF
+population.
+
+```{r pknca}
+nca_conc <- sim_cov |>
+  dplyr::mutate(nca_time = time - t_last, treatment = "AF, 20 mg o.d. (15 mg at CrCL < 50)") |>
+  dplyr::select(id, treatment, nca_time, Cc) |>
+  dplyr::filter(!is.na(Cc))
+
+nca_dose <- cohort |>
+  dplyr::transmute(
+    id, treatment = "AF, 20 mg o.d. (15 mg at CrCL < 50)",
+    nca_time = 0, dose
+  )
+
+conc_obj <- PKNCA::PKNCAconc(
+  as.data.frame(nca_conc), Cc ~ nca_time | treatment + id,
+  concu = "ug/L", timeu = "h"
+)
+dose_obj <- PKNCA::PKNCAdose(
+  as.data.frame(nca_dose), dose ~ nca_time | treatment + id,
+  doseu = "mg"
+)
+intervals <- data.frame(
+  start = 0, end = tau, cmax = TRUE, tmax = TRUE, auclast = TRUE,
+  ctrough = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(nca_res$result)
+stopifnot(
+  all(c("cmax", "auclast", "ctrough") %in% nca_tbl$PPTESTCD),
+  !anyNA(nca_tbl$PPORRES[nca_tbl$PPTESTCD %in% c("cmax", "auclast", "ctrough")])
+)
+```
+
+```{r nca-comparison}
+reference <- data.frame(
+  treatment = "AF, 20 mg o.d. (15 mg at CrCL < 50)",
+  auclast = 3312.89, cmax = 252.38, ctrough = 47.23
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  nca_tbl |> dplyr::filter(PPTESTCD %in% c("auclast", "cmax", "ctrough")),
+  reference,
+  by = "treatment",
+  units = c(auclast = "ug*h/L", cmax = "ug/L", ctrough = "ug/L")
+)
+knitr::kable(cmp, caption = "Median covariate-only steady-state exposure in atrial fibrillation: simulated vs Table S1 'Exposure based on covariates' (N = 7,111). AUC0-24 is PKNCA auclast over the 0-24 h dosing interval.")
+attr(cmp, "footnote")
+
+sim_med <- nca_tbl |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax", "ctrough")) |>
+  dplyr::summarise(med = median(PPORRES), .by = PPTESTCD)
+pct <- with(sim_med, med[match(c("auclast", "cmax", "ctrough"), PPTESTCD)]) /
+  c(3312.89, 252.38, 47.23) - 1
+round(100 * pct, 1)
+# Centre of the distribution only (assertion style for cohorts): a wrong CL/F,
+# F1 or unit factor moves these by tens of percent.
+stopifnot(all(abs(pct) < 0.2))
+```
+
+# The PT covariate approach on simulated phase III data
+
+The paper's preferred approach (Methods; Supplementary Model Code, "R Script
+of PT-covariate approach") computes, for each patient, the geometric mean of
+observed PT divided by the PT expected from the covariate-only concentration
+and the typical PK/PT line. That **PT covariate** is turned into an exposure
+adjustment factor with the Table 2 functions. Phase III patients had a median
+of two PT samples each (Table 1); here two samples per patient are taken at
+random times in the steady-state dosing interval.
+
+```{r pt-covariate}
+set.seed(3)
+samp <- sim_ind |>
+  dplyr::select(id, time, PT_obs) |>
+  dplyr::left_join(
+    dplyr::select(sim_cov, id, time, Cc_cov = Cc),
+    by = c("id", "time")
+  ) |>
+  dplyr::group_by(id) |>
+  dplyr::slice_sample(n = 2) |>
+  dplyr::summarise(
+    pt_cov = exp(mean(log(PT_obs / (13.1 + 0.031 * Cc_cov)))),
+    .groups = "drop"
+  )
+
+auc_ratio <- nca_tbl |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(id, auc_cov = PPORRES)
+# Individual AUC0-24 by the trapezoidal rule on the same 0.25 h grid.
+auc_ind <- sim_ind |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    auc_ind = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    .groups = "drop"
+  )
+
+ptc <- samp |>
+  dplyr::left_join(auc_ratio, by = "id") |>
+  dplyr::left_join(auc_ind, by = "id") |>
+  dplyr::mutate(
+    true_ratio = auc_ind / auc_cov,
+    adj_auc = -0.0147 + 1.02 * pt_cov
+  )
+
+pt_q <- quantile(ptc$pt_cov, c(0.05, 0.5, 0.95))
+data.frame(
+  percentile = c("5th", "Median", "95th"),
+  table3 = c(0.77, 1.02, 1.56),
+  simulated = round(unname(pt_q), 2)
+) |>
+  dplyr::rename(
+    "Percentile" = percentile, "Table 3, AF" = table3,
+    "Simulated" = simulated
+  ) |>
+  knitr::kable(caption = "PT covariate in atrial fibrillation: simulated vs Table 3.")
+
+r2 <- stats::cor(ptc$adj_auc, ptc$true_ratio)^2
+r2
+# Centre of the PT covariate sits near 1 (the expected PT matches the observed
+# PT for a typical patient), and the PT covariate carries real information on
+# the unexplained AUC variability (positive correlation, as in Figure 3).
+stopifnot(
+  abs(median(ptc$pt_cov) - 1.02) < 0.1,
+  stats::cor(ptc$adj_auc, ptc$true_ratio) > 0.2
+)
+```
+
+```{r fig-ptcov, fig.width = 5.5, fig.height = 4, fig.cap = "Analogue of Figure 3 of Solms 2019 (PT covariate approach): PT-adjusted (predicted) vs true prediction-corrected AUC0-24 in the simulated AF cohort; the dashed line is identity."}
+ggplot(ptc, aes(true_ratio, adj_auc)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(linetype = 2) +
+  geom_smooth(method = "loess", formula = y ~ x, se = TRUE) +
+  labs(
+    x = "True prediction-corrected AUC0-24",
+    y = "PT-adjusted prediction-corrected AUC0-24"
+  ) +
+  theme_bw()
+```
+
+As in the paper, the PT-adjusted predictions are correlated with the true
+individual exposures but compressed towards 1: PT cannot replace a PK sample,
+and the adjusted distribution is narrower than the true one.
+
+The simulated PT covariate is centred where Table 3 puts it, and its lower
+tail matches, but its upper tail is shorter (95th percentile
+`r round(pt_q[[3]], 2)` vs 1.56). The simulation contains only the variability
+the PK/PT model describes -- PK IIV, BASE and SLOPE IIV, and an 11.4%
+residual error -- at exactly steady state. The phase III PT data also carry
+departures the model does not describe: non-adherence, varying time on
+treatment, imputed covariates and unrecorded comedication. These widen the
+observed ratio distribution, mostly upwards (the maximum PT covariate in
+Table 3 is 3.19). Only the centre is asserted.
+
+# Assumptions and deviations
+
+* **PK residual error.** The PK `$SIGMA` of the popPK/PT control stream has no
+  FIX flag, so it was re-estimated together with the PT data, but its final
+  value is not reported. The control-stream value 0.203389 (the Willmann 2018a
+  final variance; SD 0.450555) is used.
+* **IIV on BASE.** The Results print a variance of 0.006 with
+  "SD = 0.0757, CV = 7.76%". The CV is consistent with the variance
+  (log(1 + 0.0776^2) = 0.0060); the SD is not (0.0757^2 = 0.0057). The printed
+  variance 0.006 is used.
+* **Integer subject counts.** Table 1 sums to 1,779 patients with valid PK and
+  PT samples; the Results text gives 831 + 788 + 161 = 1,780.
+* **Comedication and indication.** The PK/PT data contain no ACS patients; the
+  ACS factor is carried from the fixed PK layer for completeness.
+* **Cohort.** Solms 2019 does not tabulate the demographics of the PK-PT data
+  set or of the phase III populations, so the AF cohort follows the ROCKET AF
+  row of Willmann 2018a Table 1 with no comedication. Table S1 summarises
+  7,111 ROCKET AF patients, of whom only the 161 PK-substudy patients share
+  these demographics, so the comparison against Table S1 is of the centre of
+  the distribution only.
+* **PT sampling times.** The timing of phase III PT samples relative to dose is
+  not reported; two random times within the steady-state dosing interval are
+  assumed (the paper excludes PT measured more than 30 h after a dose).
+* **PT-adjustment functions.** Table 2 is a post-hoc regression, not part of
+  the simulation model, and is applied outside `model()`. The paper's
+  alternative "eta approach" (post hoc PK estimates from PT alone, using the
+  same PK/PT model with the PT IIV set to zero and an assumed 45% PT residual
+  error) is not packaged; it is an estimation recipe rather than a different
+  model.
+

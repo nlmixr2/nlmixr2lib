@@ -7230,6 +7230,8 @@ navbar:
         href: articles/Ren_2026_rivaroxaban.html
       - text: "Rivaroxaban (Singkham 2022)"
         href: articles/Singkham_2022_rivaroxaban.html
+      - text: "Rivaroxaban (Solms 2019)"
+        href: articles/Solms_2019_rivaroxaban.html
       - text: "Rivaroxaban (Wang 2025)"
         href: articles/Wang_2025_rivaroxaban.html
       - text: "Rivaroxaban (Willmann 2018a)"
@@ -11739,6 +11741,7 @@ articles:
   - articles/Sokolov_2023_dapagliflozin
   - articles/Solana_2014_omeprazole
   - articles/Soliman_2025_omeprazole
+  - articles/Solms_2019_rivaroxaban
   - articles/Solms_2020_BAY94_9027
   - articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide
   - articles/Song_2017_vancomycin
