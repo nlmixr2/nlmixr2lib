@@ -5282,6 +5282,8 @@ navbar:
         href: articles/Wiebe_2020_midazolam.html
       - text: "Midazolam (Xie 2025)"
         href: articles/Xie_2025_midazolam.html
+      - text: "Midazolam (vanGroen 2019)"
+        href: articles/vanGroen_2019_midazolam.html
       - text: "Midazolam (vanRongen 2015)"
         href: articles/vanRongen_2015_midazolam.html
       - text: "Midazolam (vanRongen 2017)"
@@ -12536,6 +12538,7 @@ articles:
   - articles/vanEijk_2022_paclitaxel
   - articles/vanErp_2010_sunitinib
   - articles/vanEsdonk_2018_pregabalin_pain_models
+  - articles/vanGroen_2019_midazolam
   - articles/vanHasselt_2013_eribulin
   - articles/vanHasselt_2014_cefazolin
   - articles/vanHasselt_2015_eribulin

@@ -1,0 +1,328 @@
+---
+title: "Midazolam microdose in infants (van Groen 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Midazolam microdose in infants (van Groen 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: van Groen BD, Vaes WH, Park BK, Krekels EHJ, van Duijn E,
+  Korgvee LT, Maruszak W, Grynkiewicz G, Garner RC, Knibbe CAJ, Tibboel D,
+  de Wildt SN, Turner MA. Dose-linearity of the pharmacokinetics of an
+  intravenous [14C]midazolam microdose in children. Br J Clin Pharmacol.
+  2019;85(10):2332-2340. doi:10.1111/bcp.14047.
+* Article: <https://doi.org/10.1111/bcp.14047> (open access,
+  PMC6783587).
+* No erratum or correction notice was found (checked 2026-11-26).
+
+The paper gave a [14C]midazolam microdose (111 Bq/kg, 37.6 ng/kg, infused
+over 30 min) to 15 infants on intensive care, either on its own (microdose)
+or mixed into a therapeutic midazolam loading dose (microtracer). Plasma
+[14C]midazolam was measured by accelerator mass spectrometry and fitted with
+a two-compartment model in NONMEM 7.4. Treatment arm had no significant
+effect on any parameter, which is the paper's evidence for dose linearity, so
+one model describes both arms.
+
+```{r load-model}
+mod <- readModelDb("vanGroen_2019_midazolam")
+mod_ui <- rxode2::rxode2(mod)
+```
+
+The model is on the radioactivity scale the authors fitted: doses in Bq,
+[14C]midazolam concentrations in Bq/L (Figures 2-4 axes). The specific
+activity of 2.95 MBq/mg (Methods, Radiopharmaceutical preparation) converts
+to mass: 1 ng = 2.95 Bq, so 111 Bq/kg = 37.6 ng/kg.
+
+```{r constants}
+bq_per_ng <- 2.95 # Methods: specific activity 2.95 MBq/mg = 2.95 Bq/ng
+dose_bq_per_kg <- 111 # Methods, Study procedures
+dose_bq_per_kg / bq_per_ng # 37.6 ng/kg, as printed
+```
+
+# Population
+
+Fifteen infants (Table 1): 9 microdose, 6 microtracer. Gestational age at
+birth 39.4 (23.9-41.4) weeks, postnatal age 11.4 (0.6-49.1) weeks, body
+weight 3.6 (2.6-8.9) kg, plasma creatinine 35 (20-51) umol/L, total
+bilirubin 9 (2-274) umol/L, ASAT 42 (12-93) U/L, ALAT 17 (7-68) U/L (median
+(range)). Up to 5 samples per infant between 0.17 and 36 h; 59 of 67 samples
+were above the detection limit and modelled. Sex and race were not reported.
+Infants with serious hepatic or renal impairment, haemofiltration, dialysis
+or ECMO were excluded.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure | 2-compartment, IV input | Results, Nonlinear mixed effects modelling; Table 3 |
+| `lcl` | log(2.06 L/h) | Table 3, CL |
+| `lq` | log(0.79 L/h) | Table 3, Q |
+| `lvc` | log(3.81 L) at 4 kg | Table 3, V1_4kg |
+| `e_wt_vc` | 1.36 | Table 3, k1 in V1i = V1_4kg x (WT/4)^k1 |
+| `lvp` | log(3.19 L) | Table 3, V2 |
+| `etalcl` | 0.73 (variance) | Table 3, omega2 CL |
+| `propSd` | sqrt(0.09) = 0.30 | Table 3, Proportional error (variance; see below) |
+| `addSd` | sqrt(0.08) = 0.283 Bq/L | Table 3, Additional error (variance; see below) |
+| Dose | 111 Bq/kg over 30 min | Methods, Study procedures |
+| Units | Bq, Bq/L, h | Figures 2-4 axes; Table 3 |
+
+## Residual error: variances, not SDs
+
+Table 3 labels the IIV row `omega2` but gives the residual rows no symbol.
+Three pieces of evidence put them on the NONMEM `$SIGMA` (variance) scale:
+
+1. **Bootstrap interval width.** For `N` observations the relative width of
+   a 95% interval is about `3.92 * sqrt(2/N)` for a variance and half that
+   for an SD. With 59 modelled observations the proportional row's
+   bootstrap interval is wider than both predictions and nearer the variance
+   one (computed below).
+2. **Figure 4B scatter.** Observed versus individual predictions in the
+   10-100 Bq/L range deviate by 30-50% for several samples. An SD of 0.09
+   (9%) would make those 4-5 SD residuals; an SD of 0.30 makes them ordinary.
+3. **Low concentrations.** At individual predictions near 0.1-0.3 Bq/L
+   Figure 4B shows observations of 0.45 and 0.09 Bq/L. An additive SD of
+   0.08 Bq/L would make these 3-4 SD residuals; sqrt(0.08) = 0.28 Bq/L
+   covers them, and is about the 0.31 Bq/L quantification limit.
+
+```{r sigma-scale}
+n_obs <- 67 - 8
+prop_boot <- c(median = 0.08, lo = 0.05, hi = 0.14) # Table 3 bootstrap
+data.frame(
+  observed = unname((prop_boot["hi"] - prop_boot["lo"]) / prop_boot["median"]),
+  if_variance = 3.92 * sqrt(2 / n_obs),
+  if_sd = 3.92 * sqrt(1 / (2 * n_obs))
+) |>
+  dplyr::rename(
+    "Observed relative width" = observed,
+    "Predicted if variance" = if_variance,
+    "Predicted if SD" = if_sd
+  ) |>
+  knitr::kable(digits = 2, caption = "Relative width of the proportional-error bootstrap interval.")
+```
+
+## Closed-form check against the Discussion
+
+The Discussion restates the clearance for a 4 kg infant as 8.6 mL/kg/min.
+
+```{r cl-check}
+cl_typ <- exp(mod_ui$theta[["lcl"]])
+cl_ml_kg_min <- cl_typ / 4 * 1000 / 60
+cl_ml_kg_min
+stopifnot(abs(cl_ml_kg_min - 8.6) < 0.05)
+```
+
+# Virtual cohort
+
+Body weight is the only covariate. Weights are drawn from a log-normal
+distribution with the Table 1 median (3.6 kg), truncated to the observed
+2.6-8.9 kg range. Each infant gets 111 Bq/kg over 30 min.
+
+```{r cohort}
+set.seed(2019)
+rxode2::rxSetSeed(2019)
+n_sub <- 200
+wt <- numeric(0)
+while (length(wt) < n_sub) {
+  draw <- exp(rnorm(n_sub, log(3.6), 0.35))
+  wt <- c(wt, draw[draw >= 2.6 & draw <= 8.9])
+}
+cohort <- data.frame(id = seq_len(n_sub), WT = wt[seq_len(n_sub)])
+summary(cohort$WT)
+
+obs_times <- sort(unique(c(seq(0, 1, by = 0.05), seq(1.25, 36, by = 0.25))))
+
+dose_rows <- cohort |>
+  mutate(
+    time = 0, amt = dose_bq_per_kg * WT, dur = 0.5,
+    evid = 1L, cmt = "central"
+  )
+obs_rows <- cohort |>
+  tidyr::crossing(time = obs_times) |>
+  mutate(amt = 0, dur = 0, evid = 0L, cmt = "central")
+events <- bind_rows(dose_rows, obs_rows) |>
+  arrange(id, time, desc(evid)) |>
+  mutate(treatment = "microdose or microtracer")
+```
+
+# Simulation
+
+```{r simulate, warning = FALSE}
+sim <- rxode2::rxSolve(mod, events, keep = c("WT", "treatment")) |>
+  as.data.frame()
+sim_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  bind_rows(
+    lapply(c(2.6, 3.6, 8.9), function(w) {
+      data.frame(
+        id = w, WT = w,
+        time = c(0, obs_times), amt = c(dose_bq_per_kg * w, rep(0, length(obs_times))),
+        dur = c(0.5, rep(0, length(obs_times))), evid = c(1L, rep(0L, length(obs_times))),
+        cmt = "central"
+      )
+    })
+  ),
+  keep = "WT"
+) |>
+  as.data.frame()
+```
+
+## Concentration-time profiles
+
+Replicates the scale and shape of Figures 2 and 3 of van Groen 2019
+(individual semilog [14C]midazolam profiles, about 100-150 Bq/L shortly after
+the infusion and 0.1-10 Bq/L by 12-36 h).
+
+```{r fig-vpc}
+vpc <- sim |>
+  filter(time > 0) |>
+  group_by(time) |>
+  summarise(
+    p05 = quantile(sim, 0.05), p50 = quantile(sim, 0.5), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  # The additive error makes the lower percentile negative late in the
+  # profile; floor it for the log axis, well below the 0.31 Bq/L LLOQ.
+  mutate(p05 = pmax(p05, 0.05))
+ggplot(vpc, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line(aes(y = p50)) +
+  geom_line(
+    data = filter(sim_typ, time > 0),
+    aes(y = Cc, colour = factor(WT)), linetype = 2
+  ) +
+  scale_y_log10() +
+  labs(
+    x = "Time after start of infusion (h)", y = "[14C]midazolam (Bq/L)",
+    colour = "Typical infant WT (kg)",
+    caption = "Ribbon: 5th-95th percentile of 200 simulated infants with residual error\n(floored at 0.05 Bq/L); solid line: median."
+  ) +
+  theme_bw()
+```
+
+## Typical-value profiles by weight
+
+Weight changes only the central volume. With a per-kg dose the amount rises
+in proportion to weight and the central volume as WT^1.36, so heavier infants
+have a slightly lower peak; clearance does not scale with weight, so AUC
+rises in proportion to weight.
+
+```{r fig-typ}
+ggplot(filter(sim_typ, time > 0), aes(time, Cc, colour = factor(WT))) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "[14C]midazolam (Bq/L)", colour = "WT (kg)") +
+  theme_bw()
+```
+
+# PKNCA validation
+
+NCA on the simulated profiles, converted to mass units (ng/L) for
+comparison with Table 2.
+
+```{r pknca}
+conc_df <- sim |>
+  filter(!is.na(Cc)) |>
+  transmute(id, treatment, time, conc = Cc / bq_per_ng)
+dose_df <- dose_rows |>
+  transmute(id, treatment = "microdose or microtracer", time, dose = amt / bq_per_ng)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, conc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, dose ~ time | treatment + id, duration = 0.5, route = "intravascular")
+intervals <- data.frame(
+  start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_long <- as.data.frame(nca_res)
+```
+
+## Comparison against the published NCA
+
+Table 2 reports median AUC0-inf of 48.90 ng.h/L (range 34.15-218.80; total
+cohort, n = 14) from a log-linear NCA of the 2-5 observed samples per
+infant.
+
+```{r nca-compare}
+published <- data.frame(treatment = "microdose or microtracer", aucinf.obs = 48.90)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_long,
+  reference = published,
+  by = "treatment",
+  params = "aucinf.obs",
+  units = c(aucinf.obs = "ng*h/L"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Group" = treatment) |>
+  knitr::kable(
+    digits = 1,
+    caption = "Simulated (median of 200 infants, dense sampling) vs van Groen 2019 Table 2 median AUC0-inf."
+  )
+
+auc_sim <- nca_long |> filter(PPTESTCD == "aucinf.obs") |> pull(PPORRES)
+quantile(auc_sim, c(0.05, 0.5, 0.95))
+```
+
+The simulated median AUC0-inf is about 45% above the published NCA median,
+and the gap comes from the paper's own estimates, not from the simulation. A
+typical 3.6 kg infant receives 37.6 x 3.6 = 135 ng and the model's typical
+clearance is 2.06 L/h, so its AUC is about 66 ng.h/L (the simulated median is
+a little higher because the weight distribution is right-skewed).
+Reproducing a median of 48.9 ng.h/L would need a clearance near 2.8 L/h,
+which is inside the bootstrap interval for CL (1.57-3.23 L/h). Two features
+of the study make a gap of this size unremarkable:
+
+* the published median is over only 14 infants, and with a clearance
+  variance of 0.73 the standard error of that median is roughly
+  1.25 x sqrt(0.73) / sqrt(14), about 0.29 on the log scale (+/- 33%);
+* the NCA used 2-5 samples per infant, several last sampled at 2-4 h
+  (Figure 2), so the log-linear extrapolation often used the steeper
+  distribution phase and underestimated AUC0-inf.
+
+The simulated 5th-95th percentile range overlaps the published range
+(34-219 ng.h/L). No parameter was adjusted to close the gap.
+
+```{r nca-gate}
+auc_typ <- 37.6 * 3.6 / 2.06
+stopifnot(
+  # The simulated median is dose / CL for a typical infant; a dose-unit or
+  # clearance transcription error would move it by far more than the weight
+  # skew and the sampling error of a 200-infant median.
+  abs(median(auc_sim) / auc_typ - 1) < 0.3,
+  # The simulated central 90% overlaps the published individual range.
+  quantile(auc_sim, 0.05) < 218.8,
+  quantile(auc_sim, 0.95) > 34.15
+)
+```
+
+# Assumptions and deviations
+
+* **Residual-error scale.** Table 3 gives the residual rows without a
+  symbol. They are read as NONMEM `$SIGMA` variances (proportional SD 0.30,
+  additive SD 0.283 Bq/L); the evidence is set out above.
+* **Units.** The model was fitted on the radioactivity scale (Figures 2-4 in
+  Bq/L) and is packaged on that scale; doses are in Bq. Multiply by
+  1/2.95 to convert Bq to ng of midazolam. The additive error is in Bq/L and
+  would need the same conversion if concentrations were modelled in ng/L.
+* **Microdose and microtracer.** The paper found no effect of treatment arm
+  on any parameter, and the model has no arm covariate. Only the labelled
+  [14C]midazolam is modelled; the unlabelled therapeutic midazolam given with
+  the microtracer is not part of the model.
+* **1-hydroxy-midazolam.** The metabolite was analysed only by NCA (Table 2);
+  there is no metabolite model to extract.
+* **Virtual cohort.** Weight is log-normal around the Table 1 median and
+  truncated to the observed range; the paper reports only median and range.
+* **Covariates screened but not retained** (postnatal and postmenstrual age,
+  creatinine, ALAT, ASAT, total bilirubin, treatment arm) are listed in the
+  model's `covariatesDataExcluded`; the paper gives no estimates for them.
