@@ -2386,8 +2386,16 @@ navbar:
         href: articles/Freriksen_2020_dolutegravir_pregnancy_pbpk.html
       - text: "Domagrozumab (Wojciechowski 2022)"
         href: articles/Wojciechowski_2022_domagrozumab.html
+      - text: "Domagrozumab mmbk (Tiwari 2020)"
+        href: articles/Tiwari_2020_domagrozumab.html
+      - text: "Domagrozumab mmidr2 (Tiwari 2020)"
+        href: articles/Tiwari_2020_domagrozumab.html
+      - text: "Domagrozumab mmidr3 (Tiwari 2020)"
+        href: articles/Tiwari_2020_domagrozumab.html
       - text: "Domagrozumab qsp (Nguyen 2020)"
         href: articles/Nguyen_2020_myostatin_activin_dmd_qsp.html
+      - text: "Domagrozumab qss (Tiwari 2020)"
+        href: articles/Tiwari_2020_domagrozumab.html
       - text: "Donepezil (Jung 2022)"
         href: articles/Jung_2022_donepezil.html
       - text: "Donepezil combined mouse (Kaikousidis 2023)"
@@ -11930,6 +11938,7 @@ articles:
   - articles/Ting_2014_tobramycin_inhaled
   - articles/Tiraboschi_2023_avalglucosidaseAlfa
   - articles/Tiraboschi_2025_amlitelimab
+  - articles/Tiwari_2020_domagrozumab
   - articles/Tobin_2026_atomoxetine
   - articles/Tod_1998_amikacin
   - articles/Toffoletto_2023_dexamethasone_rabbit

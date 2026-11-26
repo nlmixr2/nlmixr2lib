@@ -1,0 +1,610 @@
+---
+title: "Domagrozumab TMDD model comparison (Tiwari 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Domagrozumab TMDD model comparison (Tiwari 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Tiwari_2020_domagrozumab_mmbk"))$meta$reference`
+* Article: <https://doi.org/10.1111/cts.12693>
+
+Domagrozumab (PF-06252616) is a humanized IgG1 monoclonal antibody that binds
+and neutralizes myostatin (growth differentiation factor 8, GDF8), a soluble
+negative regulator of skeletal muscle growth. Tiwari 2020 fitted four
+alternative population PK/PD models simultaneously to free domagrozumab and
+total myostatin serum concentrations from the first-in-human study in healthy
+adults, and compared them by fit and by the target coverage each predicts:
+
+| Model | File | Drug elimination | Total myostatin |
+|---|---|---|---|
+| QSS | `Tiwari_2020_domagrozumab_qss` | linear + complex internalization (QSS binding, `Kss`) | synthesis, degradation, drug-bound fraction cleared at `kint` |
+| MM-BK (selected) | `Tiwari_2020_domagrozumab_mmbk` | linear + Michaelis-Menten (`Vmax`, `Km`) | as QSS, but binding does not feed back on the PK |
+| MM-IDR2 | `Tiwari_2020_domagrozumab_mmidr2` | as MM-BK | indirect response, drug inhibits degradation (`Imax`, `IC50`, Hill) |
+| MM-IDR3 | `Tiwari_2020_domagrozumab_mmidr3` | as MM-BK | indirect response, drug stimulates synthesis (`Smax`, `SC50`, Hill) |
+
+The four models are independent fits with their own parameter estimates
+(Table 1), so each is a separate model file. The authors carried the MM-BK
+model forward because it balanced fit, mechanism and the precision of its
+target-coverage predictions, even though MM-IDR2 had the lowest objective
+function value.
+
+```{r models}
+mod_names <- c(
+  QSS = "Tiwari_2020_domagrozumab_qss",
+  `MM-BK` = "Tiwari_2020_domagrozumab_mmbk",
+  `MM-IDR2` = "Tiwari_2020_domagrozumab_mmidr2",
+  `MM-IDR3` = "Tiwari_2020_domagrozumab_mmidr3"
+)
+mods <- lapply(mod_names, function(nm) rxode2::rxode2(readModelDb(nm)))
+mods_typ <- lapply(mods, rxode2::zeroRe)
+# Every model has the same four ODE states in the same order, so the
+# event tables below address them consistently.
+stopifnot(all(vapply(
+  mods,
+  function(m) identical(m$state, c("depot", "central", "peripheral1", "total_target")),
+  logical(1)
+)))
+```
+
+# Population
+
+The data come from a Phase 1, double-blind, randomized, placebo-controlled
+dose-escalation study in healthy adults (Tiwari 2020 Methods, "Clinical study,
+PK, and myostatin data"): single IV doses of 1, 3, 10, 20 and 40 mg/kg infused
+over 2 hours, a single SC dose of 3 mg/kg, and a repeat-dose cohort of 10
+mg/kg IV every 2 weeks for 3 doses. Tiwari 2020 defers subject numbers and
+demographics to the study report (Bhattacharya 2017, Clin Pharmacol Drug Dev
+7:484-497), so the number of subjects is not given in the model metadata.
+The lower limits of quantification were 0.2 nM for free domagrozumab and 0.04
+nM for total myostatin; 21 domagrozumab and 1 myostatin observation were
+dropped from the analysis (Supplement, Figure S3).
+
+# Source trace
+
+All parameter values are from Tiwari 2020 Table 1 (one column per model). The
+in-file comments in each model give the column, value and RSE.
+
+| Element | Source location | Notes |
+|---|---|---|
+| QSS drug equation | Eq. 1, Eq. 5 | central holds total drug; free drug from the QSS root |
+| Depot and peripheral equations | Eqs. 2-3 | shared by all four models |
+| QSS / MM-BK total myostatin | Eqs. 4 and 7 | identical in both models |
+| MM-BK, MM-IDR drug equation | Eq. 6 | linear + Michaelis-Menten elimination |
+| MM-IDR2 total myostatin | Eq. 8 | `ksyn - kdeg (1 - Imax DC^g / (IC50^g + DC^g)) Mtot` |
+| MM-IDR3 total myostatin | Eq. 9 | `ksyn (1 + Smax DC^g / (SC50^g + DC^g)) - kdeg Mtot` |
+| `ksyn = kdeg M0` | Methods, QSS model paragraph | baseline homeostasis |
+| `k12 = Q/VC`, `k21 = Q/VP`, `kel = CL/VC` | Methods, QSS model paragraph | |
+| Target coverage, MM-BK | Eq. 10 | also applied to the QSS model (same myostatin equation) |
+| Target coverage, MM-IDR2 | Eq. 11 | not defined for MM-IDR3 |
+| CL, VC, Q, VP, ka, Fbio | Table 1, PK parameters | per kg (mL/h/kg, mL/kg) |
+| Kss, kint, kdeg, M0 | Table 1, PD parameters | |
+| Vmax, Km | Table 1, PD parameters | Vmax in nmol/h/kg |
+| IC50/SC50, Imax/Smax, gamma | Table 1, PD parameters | IDR models only |
+| IIV (CL, VC, M0, kint, vmax, IC50/SC50, Imax/Smax) | Table 1, random variability; Supplement "Population Model" | log-normal, CV% converted as `log(1 + CV^2)` |
+| Residual error | Table 1 RUV; Supplement "Population Model" | exponential (log-additive) for drug, proportional for myostatin |
+| Molecular weight of domagrozumab, 150,000 g/mol | not in Tiwari 2020; Nguyen 2020 Table 2 | needed for mg to nmol |
+
+# Virtual cohort
+
+Doses in the study were given per kilogram and every structural PK parameter
+is reported per kilogram, so with a dose of (mg/kg x body weight) all
+concentrations are independent of body weight. The cohorts below therefore
+use a fixed 70 kg body weight for the healthy-adult cohorts and 30 kg for the
+pediatric regimen of Figure 5; the weight only sets the mg amount.
+
+```{r cohort-helpers}
+# Phase 1 cohorts of Tiwari 2020: dose (mg/kg), route, number of doses and
+# dosing interval (h). The infusion lasts 2 hours.
+cohorts <- tibble::tribble(
+  ~treatment,              ~dose_mgkg, ~route, ~n_dose, ~ii,
+  "1 mg/kg IV",                     1, "IV",         1,   0,
+  "3 mg/kg IV",                     3, "IV",         1,   0,
+  "10 mg/kg IV",                   10, "IV",         1,   0,
+  "20 mg/kg IV",                   20, "IV",         1,   0,
+  "40 mg/kg IV",                   40, "IV",         1,   0,
+  "3 mg/kg SC",                     3, "SC",         1,   0,
+  "10 mg/kg repeat IV",            10, "IV",         3, 336
+)
+cohort_levels <- cohorts$treatment
+
+obs_times <- sort(unique(c(
+  0, 1, 2, 3, 4, 6, 8, 12, 24, 48, 72, 96, 120,
+  seq(168, 60 * 168, by = 84)
+)))
+
+# One subject's records for a regimen given as a data frame of dose times,
+# per-kg amounts and routes. Observation rows name the central state and
+# carry dvid = 1 so that rxode2 returns every endpoint of these
+# two-endpoint models.
+make_subject <- function(id, wt, dose_df, obs) {
+  doses <- data.frame(
+    id = id,
+    time = dose_df$time,
+    amt = dose_df$dose_mgkg * wt,
+    dur = ifelse(dose_df$route == "IV", 2, NA_real_),
+    cmt = ifelse(dose_df$route == "IV", "central", "depot"),
+    evid = 1L,
+    dvid = NA_integer_
+  )
+  observations <- data.frame(
+    id = id, time = obs, amt = NA_real_, dur = NA_real_,
+    cmt = "central", evid = 0L, dvid = 1L
+  )
+  out <- rbind(doses, observations)
+  out$WT <- wt
+  out[order(out$time, -out$evid), ]
+}
+
+cohort_doses <- function(row) {
+  data.frame(
+    time = (seq_len(row$n_dose) - 1) * row$ii,
+    dose_mgkg = row$dose_mgkg,
+    route = row$route
+  )
+}
+
+make_cohort_events <- function(n_per_cohort, wt = 70) {
+  out <- list()
+  next_id <- 0L
+  for (i in seq_len(nrow(cohorts))) {
+    ids <- next_id + seq_len(n_per_cohort)
+    next_id <- max(ids)
+    ev_i <- do.call(rbind, lapply(ids, make_subject,
+      wt = wt, dose_df = cohort_doses(cohorts[i, ]), obs = obs_times
+    ))
+    ev_i$treatment <- cohorts$treatment[i]
+    out[[i]] <- ev_i
+  }
+  do.call(rbind, out)
+}
+
+# Typical-value solves (zeroRe() models) run one subject per cohort; rxode2
+# warns that a multi-subject solve has no omega, which is intended here.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+
+solve_cohorts <- function(model, events, label) {
+  sim <- withCallingHandlers(
+    rxode2::rxSolve(model, events, keep = "treatment", returnType = "data.frame"),
+    warning = muffle_no_omega
+  )
+  sim$model <- label
+  sim
+}
+```
+
+# Typical-value predictions by cohort
+
+## Free domagrozumab (Figure 2 and Figure S2)
+
+```{r typical-solve}
+ev_typ <- make_cohort_events(n_per_cohort = 1)
+typ <- bind_rows(lapply(names(mods_typ), function(nm) {
+  solve_cohorts(mods_typ[[nm]], ev_typ, nm)
+})) |>
+  mutate(
+    treatment = factor(treatment, levels = cohort_levels),
+    model = factor(model, levels = names(mod_names)),
+    week = time / 168
+  )
+```
+
+```{r fig2, fig.height = 7}
+typ |>
+  filter(Cc > 0.05) |>
+  ggplot(aes(week, Cc, colour = model, linetype = model)) +
+  geom_line() +
+  geom_hline(yintercept = 0.2, linetype = "dashed", colour = "grey50") +
+  scale_y_log10() +
+  facet_wrap(~treatment, ncol = 2) +
+  labs(
+    x = "Time after first dose (weeks)",
+    y = "Free domagrozumab (nM)",
+    colour = NULL, linetype = NULL,
+    title = "Population predictions of free domagrozumab",
+    caption = "Replicates the PRED curves of Figures 2 and S2 of Tiwari 2020; dashed line = LLOQ 0.2 nM."
+  )
+```
+
+The QSS model clears domagrozumab almost linearly: its only nonlinear route is
+the internalization of the drug-myostatin complex, which is limited by the
+small myostatin pool (about 0.15-0.7 nM). The three models with a
+Michaelis-Menten term bend down once free drug falls below `Km` (about 10 nM),
+which is the late nonlinear decline the paper credits to the MM-BK model. The
+three MM models share almost identical PK estimates, so their curves overlap,
+as in Figure S2.
+
+```{r fig2-check}
+# Time at which the typical free-drug profile falls below the LLOQ, per
+# model and single-dose cohort (weeks).
+t_lloq <- typ |>
+  filter(treatment != "10 mg/kg repeat IV", time > 24) |>
+  group_by(model, treatment) |>
+  summarise(week_below_lloq = min(week[Cc < 0.2]), .groups = "drop") |>
+  pivot_wider(names_from = model, values_from = week_below_lloq)
+knitr::kable(t_lloq, digits = 1, caption = "Weeks until the typical free domagrozumab concentration falls below 0.2 nM.")
+
+# The Michaelis-Menten models reach the LLOQ sooner than the QSS model at the
+# lowest dose: the nonlinear decline the paper describes for Figure 2b.
+low <- t_lloq[t_lloq$treatment == "1 mg/kg IV", ]
+stopifnot(low[["MM-BK"]] < low[["QSS"]])
+```
+
+The MM-BK curves reach the LLOQ about 1.5-2.5 weeks earlier than the PRED
+curves of Figure 2b. The late decline below `Km` is governed by
+`CL + Vmax/Km`, and Table 1 prints Vmax to one significant figure (0.002
+nmol/h/kg, so anything from 0.0015 to 0.0025). The table below brackets that
+rounding: the crossing times digitized from Figure 2b by the maintainers sit
+at the 0.0015 end of the bracket. The packaged model keeps the printed 0.002.
+
+```{r fig2-vmax-rounding}
+sd_rows <- cohorts[cohorts$n_dose == 1, ]
+fine_obs <- seq(24, 60 * 168, by = 12)
+ev_fine <- do.call(rbind, lapply(seq_len(nrow(sd_rows)), function(i) {
+  ev_i <- make_subject(i, wt = 70, dose_df = cohort_doses(sd_rows[i, ]), obs = fine_obs)
+  ev_i$treatment <- sd_rows$treatment[i]
+  ev_i
+}))
+
+crossing_weeks <- function(vmax) {
+  m <- rxode2::ini(mods_typ[["MM-BK"]], lvmax = log(vmax))
+  solve_cohorts(m, ev_fine, "MM-BK") |>
+    group_by(treatment) |>
+    summarise(week = min(time[Cc < 0.2]) / 168, .groups = "drop")
+}
+
+vmax_bracket <- crossing_weeks(0.0025) |>
+  dplyr::rename(vmax_0.0025 = week) |>
+  left_join(crossing_weeks(0.002) |> dplyr::rename(vmax_0.002 = week), by = "treatment") |>
+  left_join(crossing_weeks(0.0015) |> dplyr::rename(vmax_0.0015 = week), by = "treatment") |>
+  left_join(
+    # Weeks at which the MM-BK PRED curve crosses the 0.2 nM LLOQ line,
+    # digitized from Figure 2b (reading error about 0.5 week).
+    tibble::tibble(
+      treatment = c("1 mg/kg IV", "3 mg/kg IV", "10 mg/kg IV", "20 mg/kg IV", "40 mg/kg IV", "3 mg/kg SC"),
+      figure_2b = c(16.8, 22.2, 27.1, 30.1, 34.3, 20.0)
+    ),
+    by = "treatment"
+  ) |>
+  mutate(treatment = factor(treatment, levels = cohort_levels)) |>
+  arrange(treatment)
+
+vmax_bracket |>
+  dplyr::rename(
+    Cohort = treatment,
+    `Vmax 0.0025` = vmax_0.0025,
+    `Vmax 0.002 (packaged)` = vmax_0.002,
+    `Vmax 0.0015` = vmax_0.0015,
+    `Figure 2b` = figure_2b
+  ) |>
+  knitr::kable(digits = 1, caption = "Weeks until the typical MM-BK free domagrozumab concentration falls below 0.2 nM, for Vmax across its rounding interval, against Figure 2b.")
+
+# Every digitized crossing lies inside the rounding bracket, widened by the
+# 1-week digitizing and grid allowance.
+stopifnot(
+  all(vmax_bracket$figure_2b > vmax_bracket$vmax_0.0025 - 1),
+  all(vmax_bracket$figure_2b < vmax_bracket$vmax_0.0015 + 1)
+)
+```
+
+## Total myostatin (Figure 3 and Figure S1)
+
+```{r fig3, fig.height = 7}
+ggplot(typ, aes(week, Myo, colour = model, linetype = model)) +
+  geom_line() +
+  facet_wrap(~treatment, ncol = 2) +
+  labs(
+    x = "Time after first dose (weeks)",
+    y = "Total myostatin (nM)",
+    colour = NULL, linetype = NULL,
+    title = "Population predictions of total myostatin",
+    caption = "Replicates the PRED curves of Figures 3 and S1 of Tiwari 2020."
+  )
+```
+
+```{r fig3-check}
+myo_peak <- typ |>
+  group_by(model, treatment) |>
+  summarise(peak_nM = max(Myo), .groups = "drop") |>
+  pivot_wider(names_from = model, values_from = peak_nM)
+knitr::kable(myo_peak, digits = 2, caption = "Peak typical total myostatin (nM).")
+
+# MM-BK plateaus (Figure 3a: about 0.7-0.8 nM at 10-40 mg/kg), while
+# MM-IDR2 keeps rising with dose (Figure 3b: about 0.9 nM at 40 mg/kg);
+# the paper attributes this to the sublinear Hill coefficient.
+bk <- setNames(myo_peak[["MM-BK"]], myo_peak$treatment)
+idr2 <- setNames(myo_peak[["MM-IDR2"]], myo_peak$treatment)
+stopifnot(
+  abs(bk[["40 mg/kg IV"]] - bk[["10 mg/kg IV"]]) / bk[["10 mg/kg IV"]] < 0.10,
+  idr2[["40 mg/kg IV"]] > 1.1 * idr2[["10 mg/kg IV"]],
+  # Baseline total myostatin equals M0 for every model.
+  all(abs(typ$Myo[typ$time == 0] - c(0.141, 0.149, 0.144, 0.145)[as.integer(typ$model[typ$time == 0])]) < 1e-6)
+)
+```
+
+# Stochastic predictions of total myostatin (Figure 4)
+
+```{r fig4-solve}
+rxode2::rxSetSeed(20200101)
+ev_vpc <- make_cohort_events(n_per_cohort = 100)
+vpc <- bind_rows(
+  solve_cohorts(mods[["MM-BK"]], ev_vpc, "MM-BK"),
+  solve_cohorts(mods[["MM-IDR2"]], ev_vpc, "MM-IDR2")
+) |>
+  mutate(treatment = factor(treatment, levels = cohort_levels), week = time / 168)
+
+vpc_sum <- vpc |>
+  group_by(model, treatment, week) |>
+  summarise(
+    p025 = quantile(Myo, 0.025),
+    p50 = median(Myo),
+    p975 = quantile(Myo, 0.975),
+    .groups = "drop"
+  )
+```
+
+```{r fig4, fig.height = 7}
+ggplot(vpc_sum, aes(week)) +
+  geom_ribbon(aes(ymin = p025, ymax = p975, fill = model), alpha = 0.25) +
+  geom_line(aes(y = p50, colour = model)) +
+  facet_wrap(~treatment, ncol = 2) +
+  labs(
+    x = "Time after first dose (weeks)",
+    y = "Total myostatin (nM)",
+    colour = NULL, fill = NULL,
+    title = "Simulated total myostatin: median and 95% interval",
+    caption = paste(
+      "Compare with Figure 4 of Tiwari 2020 (100 simulated subjects per cohort,",
+      "individual predictions without residual error)."
+    )
+  )
+```
+
+# Target coverage in the pediatric DMD regimen (Figure 5)
+
+Figure 5 simulates the regimen tested in boys with Duchenne muscular
+dystrophy with the healthy-adult MM-BK and MM-IDR2 models: 5 mg/kg every 4
+weeks for 16 weeks, then 20 mg/kg every 4 weeks for 16 weeks, then 40 mg/kg
+every 4 weeks for 16 weeks, all as 2-hour IV infusions.
+
+```{r fig5-solve}
+dmd_doses <- data.frame(
+  time = (0:11) * 672,
+  dose_mgkg = rep(c(5, 20, 40), each = 4),
+  route = "IV"
+)
+dmd_obs <- sort(unique(c(seq(0, 48 * 168, by = 12), (1:12) * 672 - 0.01)))
+
+rxode2::rxSetSeed(20200102)
+ev_dmd <- do.call(rbind, lapply(1:200, make_subject,
+  wt = 30, dose_df = dmd_doses, obs = dmd_obs
+))
+ev_dmd$treatment <- "DMD regimen"
+ev_dmd_typ <- make_subject(1, wt = 30, dose_df = dmd_doses, obs = dmd_obs)
+ev_dmd_typ$treatment <- "DMD regimen"
+
+mw_drug <- 150000 # g/mol, domagrozumab (Nguyen 2020 Table 2)
+mw_myo <- 25000 # g/mol, mature myostatin (Nguyen 2020 Table 1)
+
+dmd <- bind_rows(
+  solve_cohorts(mods[["MM-BK"]], ev_dmd, "MM-BK"),
+  solve_cohorts(mods[["MM-IDR2"]], ev_dmd, "MM-IDR2")
+) |>
+  mutate(
+    week = time / 168,
+    conc_ugmL = Cc * mw_drug / 1e6,
+    myo_ngmL = Myo * mw_myo / 1000
+  )
+dmd_typ <- bind_rows(
+  solve_cohorts(mods_typ[["MM-BK"]], ev_dmd_typ, "MM-BK"),
+  solve_cohorts(mods_typ[["MM-IDR2"]], ev_dmd_typ, "MM-IDR2")
+) |>
+  mutate(week = time / 168)
+
+dmd_sum <- dmd |>
+  select(model, week, conc_ugmL, coverage, myo_ngmL) |>
+  pivot_longer(c(conc_ugmL, coverage, myo_ngmL), names_to = "output") |>
+  group_by(model, output, week) |>
+  summarise(
+    p05 = quantile(value, 0.05),
+    p50 = median(value),
+    p95 = quantile(value, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(output = factor(output,
+    levels = c("conc_ugmL", "coverage", "myo_ngmL"),
+    labels = c("Domagrozumab (ug/mL)", "GDF8 coverage (%)", "Total GDF8 (ng/mL)")
+  ))
+```
+
+```{r fig5, fig.height = 8}
+ggplot(dmd_sum, aes(week)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = p50), colour = "darkred", linetype = "dashed") +
+  facet_grid(output ~ model, scales = "free_y") +
+  labs(
+    x = "Time (weeks)", y = NULL,
+    title = "Simulated PK, target coverage and total myostatin",
+    caption = paste(
+      "Replicates Figure 5 of Tiwari 2020: median (dashed) and 5th-95th",
+      "percentiles of 200 simulated subjects per model."
+    )
+  )
+```
+
+The Results state that the MM-BK model predicts serum target coverage from
+90% after 4 weeks to nearly 100% after 48 weeks, and the MM-IDR2 model only
+from 40% after 4 weeks to about 80% after 48 weeks.
+
+```{r fig5-check}
+cov_at <- function(df, mdl, t) df$coverage[df$model == mdl & abs(df$time - t) < 1e-6]
+coverage_tab <- tibble::tibble(
+  Model = c("MM-BK", "MM-BK", "MM-IDR2", "MM-IDR2"),
+  Time = c("Week 4 (trough)", "Week 48", "Week 4 (trough)", "Week 48"),
+  `Tiwari 2020 (%)` = c(90, 100, 40, 80),
+  `Typical value (%)` = c(
+    cov_at(dmd_typ, "MM-BK", 672 - 0.01), cov_at(dmd_typ, "MM-BK", 48 * 168),
+    cov_at(dmd_typ, "MM-IDR2", 672 - 0.01), cov_at(dmd_typ, "MM-IDR2", 48 * 168)
+  )
+)
+knitr::kable(coverage_tab, digits = 1, caption = "Target coverage: paper text against the typical-value simulation.")
+stopifnot(abs(coverage_tab$`Typical value (%)` - coverage_tab$`Tiwari 2020 (%)`) < 5)
+
+# First 5 mg/kg infusion: end-of-infusion concentration close to dose / VC
+# (5 mg/kg / 46 mL/kg = 108.7 ug/mL), as in Figure 5a,b.
+peak_typ <- dmd_typ |>
+  filter(time == 2) |>
+  mutate(conc_ugmL = Cc * mw_drug / 1e6)
+stopifnot(all(abs(peak_typ$conc_ugmL / (5 / 46 * 1000) - 1) < 0.05))
+```
+
+# Mathematical equivalence of MM-BK and MM-IDR2 (Discussion)
+
+The Discussion notes that, with Hill coefficient 1, the myostatin equation of
+the QSS / MM-BK models equals the MM-IDR2 equation with `Imax = 1 - kint/kdeg`
+and `IC50 = Kss`, which gives `Imax = 0.8` and `IC50 = 4.39 nM` from the
+MM-BK estimates.
+
+```{r equivalence}
+bk_ini <- setNames(mods[["MM-BK"]]$iniDf$est, mods[["MM-BK"]]$iniDf$name)
+imax_equiv <- 1 - exp(bk_ini[["lkint"]]) / exp(bk_ini[["lkdeg"]])
+stopifnot(abs(imax_equiv - 0.80) < 0.01, abs(exp(bk_ini[["lkss"]]) - 4.39) < 1e-8)
+
+# Numerically: an MM-IDR2 solve with those values and Hill = 1 reproduces the
+# MM-BK total myostatin for the same drug profile.
+idr2_equiv <- mods_typ[["MM-IDR2"]] |>
+  rxode2::ini(
+    lcl = log(0.102), lvc = log(46), lq = log(0.326), lvp = log(33),
+    lka = log(0.009), lfdepot = log(0.73), lvmax = log(0.002), lkm = log(10.1),
+    lkdeg = log(0.046), lrbase = log(0.149),
+    limax = log(imax_equiv), lic50 = log(4.39), lhill = log(1)
+  )
+eq_bk <- solve_cohorts(mods_typ[["MM-BK"]], ev_typ, "MM-BK")
+eq_idr <- solve_cohorts(idr2_equiv, ev_typ, "MM-IDR2 (equivalent)")
+stopifnot(max(abs(eq_idr$Myo - eq_bk$Myo)) < 1e-4)
+```
+
+# PKNCA of the single-dose cohorts
+
+Tiwari 2020 does not report NCA results (they are in the study report,
+Bhattacharya 2017), so the table below characterizes the simulated cohorts
+without a published comparator. The dose-normalized exposure rising with dose
+is the nonlinear PK the Michaelis-Menten models were built to capture.
+
+```{r pknca}
+sd_cohorts <- c("1 mg/kg IV", "3 mg/kg IV", "10 mg/kg IV", "20 mg/kg IV", "40 mg/kg IV", "3 mg/kg SC")
+nca_conc <- vpc |>
+  filter(model == "MM-BK", treatment %in% sd_cohorts, !is.na(Cc)) |>
+  mutate(treatment = as.character(treatment)) |>
+  select(id, time, Cc, treatment)
+
+nca_dose <- ev_vpc |>
+  filter(evid == 1, treatment %in% sd_cohorts) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_tab <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  left_join(cohorts |> select(treatment, dose_mgkg), by = "treatment") |>
+  mutate(
+    auc_per_dose = aucinf.obs / (dose_mgkg * 70),
+    treatment = factor(treatment, levels = sd_cohorts)
+  ) |>
+  arrange(treatment) |>
+  select(treatment, cmax, tmax, aucinf.obs, auc_per_dose, half.life) |>
+  dplyr::rename(
+    Cohort = treatment,
+    `Cmax (nM)` = cmax,
+    `Tmax (h)` = tmax,
+    `AUC0-inf (nM*h)` = aucinf.obs,
+    `AUC0-inf / dose (nM*h/mg)` = auc_per_dose,
+    `t1/2 (h)` = half.life
+  )
+knitr::kable(nca_tab, digits = 2, caption = "Median NCA parameters of the simulated MM-BK cohorts (100 subjects per cohort).")
+
+iv <- nca_tab[grepl("IV", nca_tab$Cohort), ]
+stopifnot(
+  # Dose-normalized AUC rises with dose (nonlinear elimination saturates).
+  iv$`AUC0-inf / dose (nM*h/mg)`[iv$Cohort == "40 mg/kg IV"] >
+    1.2 * iv$`AUC0-inf / dose (nM*h/mg)`[iv$Cohort == "1 mg/kg IV"]
+)
+```
+
+# Assumptions and deviations
+
+* **Molecular weight.** Tiwari 2020 reports doses in mg/kg and concentrations
+  in nM but does not print the molecular weight used for the conversion. The
+  models use 150,000 g/mol, the domagrozumab value in Nguyen 2020 (Table 2).
+  The figures support it: the 5 mg/kg end-of-infusion concentration in
+  Figure 5a (about 110 ug/mL) matches dose / VC.
+* **Units of Vmax.** Table 1 gives Vmax in nmol/hour/kg, an amount rate per
+  kilogram, although Eq. 6 is written in concentration form. The models apply
+  Vmax as an amount rate (Vmax x WT x C / (Km + C)). Read as a concentration
+  rate, the Michaelis-Menten clearance would be about 20-fold smaller than
+  the linear clearance and could not produce the nonlinear decline of
+  Figure 2b; the amount reading reproduces it and the Figure 5 coverage.
+* **Rounding of Vmax.** Table 1 prints Vmax as 0.002 nmol/h/kg in all three
+  Michaelis-Menten models. The packaged models use that value; the late PK
+  decline then runs 1.5-2.5 weeks ahead of the Figure 2b population
+  predictions, which a Vmax near 0.0015 (still printed as 0.002) reproduces.
+  The value was not adjusted.
+* **Body weight.** WT is not a covariate in the paper. It converts the
+  per-kilogram parameters to per-subject values so that doses are supplied in
+  mg; concentrations do not depend on it.
+* **IIV on VC, not VP.** Table 1 and the Results list IIV on CL, VC, M0
+  (and kint, vmax, IC50/SC50, Imax/Smax). The Supplement "Population Model"
+  paragraph names VP instead of VC; the models follow Table 1.
+* **CV% conversion.** The paper does not define its IIV CV%; the variances
+  are `log(1 + CV^2)`. No IIV correlations are reported, so the etas are
+  independent.
+* **Residual error.** Free domagrozumab was modelled on the log scale with
+  additive error (exponential error), encoded as `lnorm(expSd)` with the
+  reported 18-26% as the log-scale SD. Total myostatin uses a proportional
+  error.
+* **Target coverage.** Coverage (Eq. 10) and free myostatin are computed as
+  model outputs for QSS and MM-BK, and with Eq. 11 for MM-IDR2. The paper
+  defines no coverage for MM-IDR3.
+* **Figure 5 population.** The paper simulated the pediatric DMD regimen with
+  the healthy-adult models and their variability (500 subjects). This
+  vignette uses 200 subjects per model and plots individual predictions
+  without residual error, so the 5th-95th percentile bands are comparable to
+  the paper's only approximately. The figures of total myostatin in ng/mL use
+  25,000 g/mol for mature myostatin (Nguyen 2020 Table 1).
+* **Numerical guard.** In the IDR models the free-drug concentration in the
+  Hill term is floored at 0, because a fractional power of a tiny negative
+  solver value is not a number. This does not change any solution.
