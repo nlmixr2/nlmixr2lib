@@ -5244,6 +5244,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; clearance scales as `(F * DOSE_ABROCITINIB_MGD / 200)^-0.169`, with `F` the individual absolute bioavailability, so the dose term acts on the effective amount reaching the circulation), `Wojciechowski_2022_abrocitinib_platelets.R` (the same abrocitinib PK, carried unchanged as the PK layer of the platelet PK-PD model).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (sibling of `DOSE_LOR_MGD`). Distinct from [[DOSE_ABROCITINIB_MG]], the per-administration amount.
 
+### DOSE_TOFACITINIB_MG (**canonical for the randomized tofacitinib dose per administration**)
+- **Description:** Tofacitinib dose given at each administration of the patient's randomized regimen, in mg (for example 5 for 5 mg twice daily); 0 for placebo. Constant within a regimen.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- continuous; 0 = placebo. Studied levels 1, 3, 5, 10 and 15 mg twice daily.
+- **Source aliases:**
+  - `Di` -- Suzuki 2020 Methods 'Base Model Description' (the randomized dose in milligrams for each administration given twice daily).
+- **Example models:** `Suzuki_2020_tofacitinib_acr20.R`, `Suzuki_2020_tofacitinib_acr50.R`, `Suzuki_2020_tofacitinib_acr70.R` (drives a logit-domain Emax dose-response, `Emax * D / (D + ED50)`, for ACR20, ACR50 and ACR70 at Week 12; no PK layer).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. The per-administration amount of a twice-daily regimen, not the daily total; a daily-total sibling would be `DOSE_TOFACITINIB_MGD`.
+
 ### DOSE_MANNAC_MG (**canonical for administered N-acetylmannosamine (ManNAc) dose level**)
 - **Description:** Administered oral dose of N-acetylmannosamine (ManNAc, an orphan-drug substrate-replacement therapy for GNE myopathy) carried on each dose record, in milligrams of a single administration (not the daily total: a 4 g TID subject carries 4000, a 6 g BID subject 6000). Time-varying within subject in the Van Wart 2021 analysis, where the same participants received 3 g or 6 g BID, then 6 g BID, then 4 g TID.
 - **Units:** mg
@@ -23329,6 +23340,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `ST221` -- used in `Nielsen_2015_vigabatrin.R` (Nielsen 2015 Equation 10c).
 - **Example models:** `Nielsen_2015_vigabatrin.R` (shifts log overdispersion by -1.420 and the asymptotic time effect by -0.374, and raises the log SD of the baseline-rate random effect by +0.358).
 - **Notes:** Member of the `STUDY_<id>` auto-approve family; sibling of `STUDY_118` and `STUDY_192`. Studies 192 and 221 are the two pediatric cohorts with a *larger* maximum time (placebo) effect than adults, which the paper reconciles with the Rheims meta-analysis finding that placebo responder rates are about 1.9-fold greater in children than adults.
+
+### STUDY_NCT00687193 (**canonical for the Japanese phase 2 tofacitinib dose-ranging study (NCT00687193) indicator**)
+- **Description:** 1 = patient from the 12-week phase 2 tofacitinib monotherapy dose-ranging study in Japanese patients with rheumatoid arthritis (ClinicalTrials.gov NCT00687193); 0 = patient from the mostly Western phase 2B study NCT00550446. Time-fixed per patient.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the Western study NCT00550446).
+- **Source aliases:**
+  - `study` -- Suzuki 2020 Methods 'Inclusion of Covariates' (x = 1 for the effect of the Japanese study compared with the Western study).
+- **Example models:** `Suzuki_2020_tofacitinib_acr20.R`, `Suzuki_2020_tofacitinib_acr50.R`, `Suzuki_2020_tofacitinib_acr70.R` (multiplies the logit-domain dose-response Emax by 1.4, 1.3 and 1.5 for ACR20, ACR50 and ACR70 at Week 12).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family, named by the ClinicalTrials.gov identifier because the paper refers to the studies only by NCT number. Every patient in NCT00687193 was Japanese and none in NCT00550446 was, so the indicator doubles as the paper's Japanese/Western designation; Suzuki 2020 notes that study and population differences are confounded. Keep it distinct from `RACE_JAPANESE`, which is a per-patient race attribute that can vary within a study.
 
 ### STUDY_NCT00936403 (**canonical for the Papathanasiou 2021 somatropin pooled analysis Trial 2 (NCT00936403) cohort indicator**)
 - **Description:** 1 = subject from Trial 2 (ClinicalTrials.gov NCT00936403; single-dose NNC126-0083 dose-escalation trial in prepubertal children with GHD, whose Norditropin comparator arm received 0.035 mg/kg/day for 7 days) of the Papathanasiou 2021 pooled Norditropin PK/PD analysis; 0 = otherwise. Time-fixed per subject.

@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Suzuki 2020 tofacitinib dose-response: ACR20/50/70 at Week 12 ([doi:10.1002/jcph.1514](https://doi.org/10.1002/jcph.1514)) -- Japanese and Western adults with rheumatoid arthritis.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

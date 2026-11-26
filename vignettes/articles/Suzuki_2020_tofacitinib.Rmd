@@ -1,0 +1,376 @@
+---
+title: "Tofacitinib dose-response in Japanese and Western rheumatoid arthritis (Suzuki 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tofacitinib dose-response in Japanese and Western rheumatoid arthritis (Suzuki 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Suzuki M, Shoji S, Miyoshi S, Krishnaswami S. Model-Based
+  Comparison of Dose-Response Profiles of Tofacitinib in Japanese Versus Western
+  Rheumatoid Arthritis Patients. *J Clin Pharmacol.* 2020;60(2):198-208.
+* Article (open access): <https://doi.org/10.1002/jcph.1514>
+* Supporting information (Supplementary Tables S1-S4, covariate screening) is
+  distributed with the article.
+
+Suzuki 2020 pools the Week 12 American College of Rheumatology (ACR) responses
+of two phase 2 dose-ranging studies of tofacitinib monotherapy (placebo or 1, 3,
+5, 10 or 15 mg twice daily) in rheumatoid arthritis: a mostly Western study
+(NCT00550446) and a Japanese study (NCT00687193). The ACR20, ACR50 and ACR70
+responder flags are each fitted with their own Emax model on the logit domain,
+
+$$\mathrm{logit}\,P(\mathrm{ACR}_i = 1) = E_0 + E_{max} \frac{D_i}{D_i + ED_{50}},$$
+
+where $D_i$ is the randomized dose per twice-daily administration (mg). The
+final model of each endpoint (Table 4) adds a multiplicative study effect on
+$E_{max}$, $E_{max} = E_{max,0}\,\theta_{study}^{x}$ with $x = 1$ for the
+Japanese study. The three fits share no parameters, so each is packaged as its
+own model file:
+
+| Model file | Endpoint | Output |
+|---|---|---|
+| `Suzuki_2020_tofacitinib_acr20` | ACR20 at Week 12 | `prob_acr20` |
+| `Suzuki_2020_tofacitinib_acr50` | ACR50 at Week 12 | `prob_acr50` |
+| `Suzuki_2020_tofacitinib_acr70` | ACR70 at Week 12 | `prob_acr70` |
+
+The dose enters through the covariate column `DOSE_TOFACITINIB_MG` (0 for
+placebo) and the study through `STUDY_NCT00687193` (1 = Japanese study,
+0 = Western study). There is no PK layer.
+
+```{r load-models}
+mods <- list(
+  ACR20 = readModelDb("Suzuki_2020_tofacitinib_acr20"),
+  ACR50 = readModelDb("Suzuki_2020_tofacitinib_acr50"),
+  ACR70 = readModelDb("Suzuki_2020_tofacitinib_acr70")
+)
+ini_est <- function(fn) {
+  d <- rxode2::rxode(fn)$iniDf
+  stats::setNames(d$est, d$name)
+}
+pars <- lapply(mods, ini_est)
+
+# The models have no random effects, so rxode2 warns that a multi-subject
+# solve has no omega; only that message is muffled.
+solve_typical <- function(m, ev) {
+  withCallingHandlers(
+    rxode2::rxSolve(m, ev, returnType = "data.frame"),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+```
+
+# Population
+
+The analysis set is 648 patients with active rheumatoid arthritis and an
+inadequate response to at least one DMARD: 317 from the Japanese study (all
+Japanese) and 331 from the Western study after excluding its adalimumab arm
+(Table 1). Overall 85.2% were female, mean age 53.4 years (18-83) and mean
+weight 62.5 kg (31.4-125; 54.4 kg in the Japanese study and 70.3 kg in the
+Western study). Race: 38.7% White, 1.2% Black, 53.7% Asian (all Japanese-study
+patients and 31 of the 331 Western-study patients) and 6.3% other. Mean
+baseline DAS28-4(ESR) was 6.1 and 6.5 and mean baseline HAQ-DI 1.3 and 1.5 in
+the Japanese and Western studies. The same information is stored in the
+`population` metadata of each model file.
+
+# Source trace
+
+| Item | Value (ACR20 / ACR50 / ACR70) | Source |
+|---|---|---|
+| Logit Emax model | `logit P = E0 + Emax D / (D + ED50)` | Methods, Base Model Description |
+| `D` = dose per administration (mg) | covariate `DOSE_TOFACITINIB_MG` | Methods, Base Model Description |
+| Study effect on Emax | `Emax0 * theta^x`, x = 1 Japanese study | Methods, Inclusion of Covariates; Table 2 run 2 |
+| ED50 estimated on the log scale | `led50` | Methods, Base Model Description |
+| `e0` | -1.3 / -2.3 / -3.2 | Table 4 |
+| `emax` (Western study) | 3.2 / 3.7 / 3.2 | Table 4 |
+| `led50` | log(4.2) / log(6.1) / log(5.6) mg | Table 4 |
+| `e_study_nct00687193_emax` | 1.4 / 1.3 / 1.5 | Table 4 |
+| Fraction of maximum placebo-adjusted response | `(p(D) - p(0)) / (p(max) - p(0))` | Methods, Comparison of Dose-Response Profiles |
+| Per-study base fits (used for Figure 3 and Table 5 below) | see the next section | Table 3 |
+| Placeholder residual `addSd_prob_acr*` | 0.001, fixed | not from source (Bernoulli likelihood) |
+
+# Typical dose-response curves
+
+Replicates the fitted curves of Figure 2 (Japanese only and Western only
+panels) of Suzuki 2020.
+
+```{r typical}
+dose_grid <- seq(0, 15, by = 0.25)
+grid <- tidyr::expand_grid(STUDY_NCT00687193 = c(1, 0), DOSE_TOFACITINIB_MG = dose_grid) |>
+  mutate(id = dplyr::row_number(), time = 0, evid = 0L, amt = NA_real_, dv = NA_real_)
+
+solve_ep <- function(ep) {
+  out <- solve_typical(mods[[ep]], grid)
+  tibble::tibble(
+    endpoint = ep,
+    study = ifelse(grid$STUDY_NCT00687193 == 1, "Japanese study", "Western study"),
+    dose = grid$DOSE_TOFACITINIB_MG,
+    p = out[[paste0("prob_", tolower(ep))]]
+  )
+}
+typ <- dplyr::bind_rows(lapply(names(mods), solve_ep))
+
+# Closed form of the same parameters: a solve against its own equation, so the
+# difference is numerical only.
+closed <- typ |>
+  mutate(
+    e0 = vapply(endpoint, function(e) pars[[e]][["e0"]], numeric(1)),
+    emax = vapply(endpoint, function(e) pars[[e]][["emax"]], numeric(1)),
+    ed50 = vapply(endpoint, function(e) exp(pars[[e]][["led50"]]), numeric(1)),
+    ratio = vapply(endpoint, function(e) pars[[e]][["e_study_nct00687193_emax"]], numeric(1)),
+    p_closed = stats::plogis(e0 + emax * ratio^(study == "Japanese study") * dose / (dose + ed50))
+  )
+stopifnot(max(abs(closed$p - closed$p_closed)) < 1e-8)
+
+ggplot(typ, aes(dose, p, linetype = study)) +
+  geom_line() +
+  facet_wrap(~endpoint) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x = "Tofacitinib dose (mg twice daily)", y = "Probability of response at Week 12",
+       linetype = NULL,
+       caption = "Replicates the fitted curves of Figure 2 of Suzuki 2020 (final model).")
+```
+
+At the studied doses the typical probabilities are:
+
+```{r typical-table}
+typ |>
+  filter(dose %in% c(0, 1, 3, 5, 10, 15)) |>
+  mutate(p = 100 * p) |>
+  tidyr::pivot_wider(names_from = study, values_from = p) |>
+  dplyr::rename("Endpoint" = endpoint, "Dose (mg BID)" = dose) |>
+  knitr::kable(digits = 1, caption = "Typical responder rates (%) at Week 12, final model.")
+```
+
+The curves agree with the fitted lines of Figure 2 read by eye: about 0.21 at
+placebo for ACR20 in both studies, rising to about 0.90 (Japanese) and 0.78
+(Western) at 15 mg; ACR50 about 0.73 and 0.58 at 15 mg; ACR70 about 0.55 and
+0.28 at 15 mg.
+
+```{r typical-fig2}
+at15 <- typ |> filter(dose == 15)
+at15
+fig2_15 <- c(0.90, 0.73, 0.55, 0.78, 0.58, 0.28)
+stopifnot(all(abs(at15$p[order(at15$study, at15$endpoint)] - fig2_15) < 0.04))
+```
+
+# Simulated trials (Figure 2 prediction intervals)
+
+Suzuki 2020 builds its 90% prediction intervals by simulating the number of
+responders per arm from a binomial distribution for 1000 trials. The arm sizes
+are not printed; equal allocation of the 317 Japanese and 331 Western patients
+over six arms gives 53 and 55 patients per arm.
+
+```{r sim-trials}
+set.seed(20200101)
+n_arm <- c("Japanese study" = 53L, "Western study" = 55L)
+arms <- typ |> filter(dose %in% c(0, 1, 3, 5, 10, 15))
+n_trial <- 1000L
+sim <- arms |>
+  mutate(n = n_arm[study]) |>
+  tidyr::uncount(n_trial, .id = "trial") |>
+  mutate(rate = stats::rbinom(dplyr::n(), n, p) / n)
+
+pint <- sim |>
+  group_by(endpoint, study, dose) |>
+  summarise(lo = quantile(rate, 0.05), med = median(rate), hi = quantile(rate, 0.95),
+            .groups = "drop")
+
+ggplot(pint, aes(dose, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.3) +
+  geom_line() +
+  facet_grid(endpoint ~ study) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x = "Tofacitinib dose (mg twice daily)", y = "Responder rate at Week 12",
+       caption = "Median and 90% prediction interval of 1000 simulated trials; compare the Japanese-only and Western-only panels of Figure 2.")
+```
+
+# Fraction of the maximum placebo-adjusted response (Figure 3, Table 5)
+
+Figure 3 and Table 5 compare where the 5 and 10 mg doses sit on each study's
+dose-response curve after removing the difference in Emax,
+
+$$Fr = \frac{p(D) - p(\mathrm{placebo})}{p(\max) - p(\mathrm{placebo})}.$$
+
+Table 5 matches the base model fitted to **each study separately** (Table 3,
+"The Japanese Study" and "The Western Study" columns), not the pooled final
+model: the final model shares E0 and ED50 across studies and gives different
+fractions (shown below for contrast). The per-study fits are not packaged as
+model files; they are reproduced here by overriding the `ini()` values of the
+packaged models with `STUDY_NCT00687193 = 0`.
+
+```{r fr}
+t3 <- tibble::tribble(
+  ~endpoint, ~study,           ~e0,  ~emax, ~ed50,
+  "ACR20",   "Japanese study", -1.7, 4.5,   2.8,
+  "ACR20",   "Western study",  -1.0, 3.2,   6.2,
+  "ACR50",   "Japanese study", -2.6, 5.2,   5.9,
+  "ACR50",   "Western study",  -2.1, 3.1,   5.0,
+  "ACR70",   "Japanese study", -3.8, 5.0,   4.2,
+  "ACR70",   "Western study",  -2.9, 3.0,   7.2
+)
+fr_ev <- data.frame(
+  id = 1:3, time = 0, evid = 0L, amt = NA_real_, dv = NA_real_,
+  STUDY_NCT00687193 = 0, DOSE_TOFACITINIB_MG = c(0, 5, 10)
+)
+# Emax at an infinite dose: the drug term tends to Emax.
+p_of <- function(ep, e0, emax, ed50) {
+  m <- mods[[ep]] |>
+    rxode2::ini(e0 = e0, emax = emax, led50 = log(ed50))
+  out <- solve_typical(m, fr_ev)
+  p <- out[[paste0("prob_", tolower(ep))]]
+  pmax <- stats::plogis(e0 + emax)
+  (p[2:3] - p[1]) / (pmax - p[1])
+}
+fr_tab <- t3 |>
+  rowwise() |>
+  mutate(fr = list(p_of(endpoint, e0, emax, ed50))) |>
+  ungroup() |>
+  mutate(fr5 = vapply(fr, `[`, numeric(1), 1), fr10 = vapply(fr, `[`, numeric(1), 2)) |>
+  select(endpoint, study, fr5, fr10) |>
+  tidyr::pivot_longer(c(fr5, fr10), names_to = "dose", values_to = "model") |>
+  mutate(dose = ifelse(dose == "fr5", "5 mg", "10 mg"))
+
+table5 <- tibble::tribble(
+  ~endpoint, ~dose,   ~study,           ~paper, ~lo,  ~hi,
+  "ACR20",   "5 mg",  "Japanese study", 0.78,   0.63, 0.91,
+  "ACR20",   "10 mg", "Japanese study", 0.90,   0.78, 1.02,
+  "ACR50",   "5 mg",  "Japanese study", 0.43,   0.29, 0.57,
+  "ACR50",   "10 mg", "Japanese study", 0.69,   0.55, 0.83,
+  "ACR70",   "5 mg",  "Japanese study", 0.32,   0.18, 0.47,
+  "ACR70",   "10 mg", "Japanese study", 0.56,   0.40, 0.73,
+  "ACR20",   "5 mg",  "Western study",  0.54,   0.31, 0.75,
+  "ACR20",   "10 mg", "Western study",  0.73,   0.56, 0.91,
+  "ACR50",   "5 mg",  "Western study",  0.41,   0.21, 0.63,
+  "ACR50",   "10 mg", "Western study",  0.61,   0.42, 0.82,
+  "ACR70",   "5 mg",  "Western study",  0.22,   0.01, 0.46,
+  "ACR70",   "10 mg", "Western study",  0.40,   0.17, 0.65
+)
+```
+
+Table 5 reports the mean and 90% interval of the fraction over 1000 simulated
+trials, with the responders at dose D, at placebo and at the maximum effect each
+drawn from a binomial distribution. The same simulation with 53 or 55 patients
+per arm:
+
+```{r fr-sim}
+set.seed(20200102)
+fr_sim <- t3 |>
+  mutate(n = n_arm[study]) |>
+  rowwise() |>
+  mutate(sims = list({
+    p0 <- stats::plogis(e0)
+    pm <- stats::plogis(e0 + emax)
+    pd <- stats::plogis(e0 + emax * c(5, 10) / (c(5, 10) + ed50))
+    r0 <- stats::rbinom(n_trial, n, p0) / n
+    rm <- stats::rbinom(n_trial, n, pm) / n
+    f5 <- (stats::rbinom(n_trial, n, pd[1]) / n - r0) / (rm - r0)
+    f10 <- (stats::rbinom(n_trial, n, pd[2]) / n - r0) / (rm - r0)
+    tibble::tibble(dose = c("5 mg", "10 mg"),
+                   sim_mean = c(mean(f5), mean(f10)),
+                   sim_lo = c(quantile(f5, 0.05), quantile(f10, 0.05)),
+                   sim_hi = c(quantile(f5, 0.95), quantile(f10, 0.95)))
+  })) |>
+  ungroup() |>
+  select(endpoint, study, sims) |>
+  tidyr::unnest(sims)
+
+fr_cmp <- table5 |>
+  left_join(fr_tab, by = c("endpoint", "study", "dose")) |>
+  left_join(fr_sim, by = c("endpoint", "study", "dose"))
+
+fr_cmp |>
+  transmute(endpoint, study, dose,
+            paper = sprintf("%.2f (%.2f-%.2f)", paper, lo, hi),
+            typical = model,
+            simulated = sprintf("%.2f (%.2f-%.2f)", sim_mean, sim_lo, sim_hi)) |>
+  dplyr::rename("Endpoint" = endpoint, "Study" = study, "Dose (BID)" = dose,
+                "Suzuki 2020 Table 5, mean (90% CI)" = paper,
+                "Model, typical value" = typical,
+                "Model, 1000 simulated trials, mean (90% interval)" = simulated) |>
+  knitr::kable(digits = 2, caption = "Fraction of the maximum placebo-adjusted responder proportion at Week 12, per-study base fits.")
+
+# The typical-value fraction uses the two-significant-figure Table 3 estimates,
+# so it rounds to within 0.015 of the printed mean; the simulated mean carries
+# Monte Carlo error of about 0.005 on top.
+stopifnot(
+  max(abs(fr_cmp$model - fr_cmp$paper)) < 0.015,
+  max(abs(fr_cmp$sim_mean - fr_cmp$paper)) < 0.04
+)
+```
+
+The intervals of the simulation are close to the printed 90% CIs (for example
+ACR20 Japanese study, 5 mg, printed 0.63-0.91), which supports the assumed arm
+sizes.
+
+For contrast, the final (pooled) model gives these typical fractions:
+
+```{r fr-final}
+fr_final <- tidyr::expand_grid(endpoint = names(mods), study = c("Japanese study", "Western study")) |>
+  rowwise() |>
+  mutate(
+    ratio = pars[[endpoint]][["e_study_nct00687193_emax"]]^(study == "Japanese study"),
+    e0 = pars[[endpoint]][["e0"]],
+    emax = pars[[endpoint]][["emax"]] * ratio,
+    ed50 = exp(pars[[endpoint]][["led50"]]),
+    `5 mg` = (stats::plogis(e0 + emax * 5 / (5 + ed50)) - stats::plogis(e0)) /
+      (stats::plogis(e0 + emax) - stats::plogis(e0)),
+    `10 mg` = (stats::plogis(e0 + emax * 10 / (10 + ed50)) - stats::plogis(e0)) /
+      (stats::plogis(e0 + emax) - stats::plogis(e0))
+  ) |>
+  ungroup() |>
+  select(endpoint, study, `5 mg`, `10 mg`)
+fr_final |>
+  dplyr::rename("Endpoint" = endpoint, "Study" = study) |>
+  knitr::kable(digits = 2, caption = "Fraction of the maximum placebo-adjusted responder proportion, final model (shared E0 and ED50).")
+```
+
+# Non-compartmental analysis
+
+Not applicable. The models are landmark dose-response models for a binary
+response at Week 12; they carry no drug concentration, so there is no profile
+for PKNCA to analyse and the paper reports no NCA.
+
+# Assumptions and deviations
+
+* **Two-significant-figure estimates.** Table 4 prints E0, Emax, ED50 and the
+  study effect to two significant figures; the models use the printed values.
+  ED50 is printed on the natural scale and the model stores its logarithm, as
+  the paper estimated log ED50.
+* **Final model only.** The base models (pooled and per study, Table 3) are not
+  packaged. The per-study base fits are used above, through `ini()` overrides,
+  to reproduce Table 5 and Figure 3, which the paper derives from them.
+* **Three independent fits.** ACR20, ACR50 and ACR70 were fitted separately, so
+  the three models do not guarantee `prob_acr20 >= prob_acr50 >= prob_acr70`
+  for every covariate value (they do at every studied dose), and a joint
+  simulation of the nested responder flags is not defined by the paper.
+* **Placeholder residuals.** The source likelihood is Bernoulli with no residual
+  error; the fixed additive SD of 0.001 on each probability exists only so the
+  model has an observation model.
+* **Study, not race.** The retained covariate is the study. All Japanese-study
+  patients were Japanese and none of the Western-study patients were, so the
+  study effect is also the paper's Japanese/Western contrast; the paper notes
+  that the two are confounded. An Asian-race effect (Supplementary Table S1),
+  body weight (S2), baseline DAS28-4(ESR) (S3) and baseline HAQ-DI (S4) were
+  tested and not retained; no estimates are printed. They are listed under
+  `covariatesDataExcluded`.
+* **Arm sizes.** The per-arm sample sizes of the 1000-trial simulations are not
+  printed; equal allocation (53 Japanese and 55 Western patients per arm) is
+  assumed.
+* **No erratum** was found for the article (Europe PMC search, 2026-11-26).

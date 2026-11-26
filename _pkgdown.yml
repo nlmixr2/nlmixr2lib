@@ -8352,6 +8352,12 @@ navbar:
         href: articles/Xie_2019_tofacitinib.html
       - text: "Tofacitinib acr (Menon 2025)"
         href: articles/Menon_2025_tofacitinib.html
+      - text: "Tofacitinib acr20 (Suzuki 2020)"
+        href: articles/Suzuki_2020_tofacitinib.html
+      - text: "Tofacitinib acr50 (Suzuki 2020)"
+        href: articles/Suzuki_2020_tofacitinib.html
+      - text: "Tofacitinib acr70 (Suzuki 2020)"
+        href: articles/Suzuki_2020_tofacitinib.html
       - text: "Tofacitinib hb (Menon 2025)"
         href: articles/Menon_2025_tofacitinib.html
       - text: "Tofacitinib hb decrease (Menon 2025)"
@@ -11826,6 +11832,7 @@ articles:
   - articles/Suri_2019_brentuximab
   - articles/Suyagh_2011_metronidazole
   - articles/Suyagh_2012_canrenone
+  - articles/Suzuki_2020_tofacitinib
   - articles/Suzuki_2024_mycophenolic_acid
   - articles/Svensson_2012_nevirapine
   - articles/Svensson_2013_bedaquiline
