@@ -1,0 +1,530 @@
+---
+title: "COPD exacerbations, two-state semi-Markov model (Largajolli 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{COPD exacerbations, two-state semi-Markov model (Largajolli 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Largajolli 2019 describes chronic obstructive pulmonary disease (COPD)
+exacerbations as a two-state process. A patient is either asymptomatic
+(state 1) or in an exacerbation (state 2), and moves back and forth between
+the two. The time spent in a state (the sojourn) follows a log-logistic
+distribution whose clock restarts at every transition, a semi-Markov renewal
+process. Of the exponential, Weibull, Gompertz and log-logistic sojourn
+distributions the authors compared, the log-logistic fitted best (Table 2).
+Disease stage was retained as a covariate, a log-logistic time-to-dropout model
+was added, and drug effects were then estimated in three clinical data sets.
+The model was fitted by Bayesian MCMC in OpenBUGS.
+
+* Model: `modellib("Largajolli_2019_copd_exacerbation")`
+* Citation: `r readModelDb("Largajolli_2019_copd_exacerbation")()$reference`
+* Article: <https://doi.org/10.1007/s10928-019-09643-6>
+
+For state $k$ the hazard of leaving and the probability of still being in the
+state, $\tau$ days after entering it, are (Equation 5)
+
+$$h_k(\tau) = \frac{\alpha_k}{\theta_k} \frac{(\tau/\theta_k)^{\alpha_k - 1}}{1 + (\tau/\theta_k)^{\alpha_k}}, \qquad S_k(\tau) = \frac{1}{1 + (\tau/\theta_k)^{\alpha_k}},$$
+
+so the scale $\theta_k$ is the median sojourn. Covariates act on the log scale
+(Equation 6), $\theta_k = \theta_{0k} \exp(\beta_k X)$. A positive coefficient
+lengthens the sojourn, a negative one shortens it. Dropout follows the same
+log-logistic form, in time since randomisation.
+
+The packaged model is closed-form and has no differential equations. It
+returns `haz12` and `sur1` (exacerbation onset, as functions of time since
+entering state 1), `haz21` and `sur2` (exacerbation resolution), and
+`haz_drop` and `sur_drop`. The sojourn clock is `time - T_STATE_ENTRY`; with
+the default `T_STATE_ENTRY = 0`, the time axis is itself time since entry into
+the state, which is how this article uses it.
+
+```{r load-model}
+mod <- readModelDb("Largajolli_2019_copd_exacerbation")
+ui <- rxode2::rxode2(mod)
+```
+
+# Population
+
+The model-building data (Data 1) are the salmeterol 50 ug twice daily and
+placebo arms of the 52-week phase III trial SFCB3024: 619 subjects (315
+salmeterol, 304 placebo) with COPD, at least 10 pack-years of smoking and at
+least one exacerbation per year over the previous 3 years. By the ATS 1995
+staging used in Data 1, 283 were mild (FEV1 at least 50% of predicted), 224
+moderate (35-50%) and 112 severe (below 35%) (Largajolli 2019 Table 1). Age
+and sex were not reported. Drug effects were also estimated in Data 2 (3238
+subjects, two replicate 52-week fluticasone furoate / vilanterol trials) and
+Data 3 (602 subjects, a 24-week phase 2b trial of losmapimod).
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Sojourn distribution, hazard and survival | log-logistic | Equation 5; Table 2 (lowest DIC, 7026) |
+| Covariate model on the scale | $\theta_{0} \exp(\beta X)$ | Equation 6 |
+| `lshape12` (state 1 to 2 shape) | log(1.34) | Table 2, Alpha1 |
+| `lshape21` (state 2 to 1 shape) | log(2.97) | Table 2, Alpha2 |
+| `lscale12` (state 1 to 2 scale) | log(222) day | Digitised from Supplementary Figure S4, left panel |
+| `lscale21` (state 2 to 1 scale) | log(11.6) day | Digitised from Supplementary Figure S4, right panel |
+| `e_copdnonmild_scale12` | -0.40 | Table 3, disease stage (ATS), Beta11 |
+| `e_copdnonmild_scale21` | -0.11 | Table 3, disease stage (ATS), Beta12 |
+| `lscale_drop` (dropout scale, mild) | 7.02 | Digitised from Supplementary Figure S3, logtheta0[3] |
+| `lshape_drop` (dropout shape) | log(0.81) | Digitised from Supplementary Figure S3, alpha[3] |
+| `e_copdnonmild_scale_drop` | -0.68 | Results, Drop out model |
+| `e_trt_scale12` | 0.310 | Table 4, Data 1, Beta11 |
+| `e_trt_scale21` | -0.031 | Table 4, Data 1, Beta12 |
+| `etalscale12`, `etalscale21` | 0 (not reported) | Results, Model selection (random effects retained on both scales) |
+| Disease-stage threshold | FEV1 below 50% of predicted | Table 1 footnote (ATS 1995) |
+| Centring of the covariates | 0.5428 non-mild, 0.5089 salmeterol | Table 1 counts, see below |
+
+# Recovering the unprinted parameters
+
+The paper prints the shapes, the covariate coefficients and the drug effects
+but not the scales of the two transitions or any parameter of the dropout
+model. The maintainers took them from the supplementary figures.
+
+**Transition scales.** Supplementary Figure S4 plots the typical transition
+rate of the base log-logistic model against time since entry into the state,
+as boxplots over the posterior. The box medians were digitised. A least-squares
+fit of the log-logistic hazard to them, with the shape held at its Table 2
+value, gives the two scales. Fitting the shape as well returns the Table 2
+shapes to within 1%, which shows that the digitised points and the printed
+shapes describe the same curve.
+
+```{r digitised-s4}
+# Box medians of Supplementary Figure S4 (rate per day)
+s4_12 <- data.frame(
+  tsoj = c(1, 5, 30, 100, 200, 360),
+  rate = c(0.000951, 0.001633, 0.002868, 0.003456, 0.003141, 0.002459)
+)
+s4_21 <- data.frame(
+  tsoj = c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19),
+  rate = c(0.00182, 0.01782, 0.04509, 0.07745, 0.10618, 0.12400, 0.13345,
+           0.13491, 0.13236, 0.12655)
+)
+hll <- function(t, scale, shape) {
+  (shape / scale) * (t / scale)^(shape - 1) / (1 + (t / scale)^shape)
+}
+sse <- function(p, d) sum((log(hll(d$tsoj, exp(p[1]), exp(p[2]))) - log(d$rate))^2)
+# The day-1 box of state 2 sits on the axis and is not read precisely enough
+# to use in a log-scale fit.
+free12 <- exp(optim(c(5, 0.3), sse, d = s4_12)$par)
+free21 <- exp(optim(c(2.5, 1), sse, d = s4_21[-1, ])$par)
+fit12 <- exp(optimize(function(l) sse(c(l, log(1.34)), s4_12), c(3, 8))$minimum)
+fit21 <- exp(optimize(function(l) sse(c(l, log(2.97)), s4_21[-1, ]), c(1, 4))$minimum)
+knitr::kable(
+  data.frame(
+    transition = c("state 1 to 2", "state 2 to 1"),
+    scale_shape_fixed = signif(c(fit12, fit21), 4),
+    scale_free = signif(c(free12[1], free21[1]), 4),
+    shape_free = signif(c(free12[2], free21[2]), 4),
+    shape_table2 = c(1.34, 2.97)
+  ) |>
+    dplyr::rename(
+      "Transition" = transition,
+      "Scale, shape at Table 2 (day)" = scale_shape_fixed,
+      "Scale, shape free (day)" = scale_free,
+      "Shape, free fit" = shape_free,
+      "Shape, Table 2" = shape_table2
+    ),
+  caption = "Log-logistic fits to the digitised Supplementary Figure S4."
+)
+stopifnot(
+  abs(free12[2] / 1.34 - 1) < 0.02,
+  abs(free21[2] / 2.97 - 1) < 0.02,
+  abs(fit12 / exp(ui$theta[["lscale12"]]) - 1) < 0.01,
+  abs(fit21 / exp(ui$theta[["lscale21"]]) - 1) < 0.01
+)
+```
+
+**Dropout.** The dropout shape and scale appear only as MCMC trace plots in
+Supplementary Figure S3 (final model, `alpha[3]` and `logtheta0[3]`). The
+median of each plotted chain was read off against its axis ticks. The same
+reading recovers the printed values of every chain that has one: alpha1 1.345
+(Table 2: 1.34), log alpha2 1.084, which is alpha2 = 2.96 (2.97), the state 2
+disease-stage coefficient -0.110 (Table 3: -0.11) and the dropout
+disease-stage coefficient -0.682 (text: -0.68). The unprinted values read the
+same way are a dropout shape of 0.81 and a log scale of 7.02, a median time to
+dropout of 1118 days for a mild-stage subject.
+
+**Centring.** The scales come from the base model, which had no covariates,
+so they represent the Data 1 cohort as a whole. The model therefore centres
+the disease-stage and treatment indicators at their Data 1 means, 336 / 619 =
+0.5428 non-mild and 315 / 619 = 0.5089 on salmeterol. The cohort-weighted mean
+of the log scales then equals the digitised base scale:
+
+```{r centring}
+cells <- data.frame(
+  id = 1:2,
+  FEV1_PCTPRED = c(60, 40), # mild, non-mild (ATS 1995)
+  ON_TREATMENT = 315 / 619,
+  T_STATE_ENTRY = 0,
+  time = 0
+)
+cell_par <- as.data.frame(rxode2::rxSolve(ui, cells))
+w <- c(283, 336) / 619
+stopifnot(
+  abs(sum(w * log(cell_par$scale12)) - ui$theta[["lscale12"]]) < 1e-3,
+  abs(sum(w * log(cell_par$scale21)) - ui$theta[["lscale21"]]) < 1e-3
+)
+```
+
+# Sojourn hazards (Supplementary Figure S4)
+
+The four Data 1 covariate cells, against the digitised base-model medians:
+
+```{r fig-s4, fig.width = 8, fig.height = 4}
+grid <- tidyr::expand_grid(
+  cell = 1:4,
+  time = c(seq(0.5, 30, by = 0.5), seq(31, 360, by = 1))
+)
+cell_cov <- data.frame(
+  cell = 1:4,
+  FEV1_PCTPRED = c(60, 60, 40, 40),
+  ON_TREATMENT = c(0, 1, 0, 1),
+  label = c("mild, placebo", "mild, salmeterol", "non-mild, placebo",
+            "non-mild, salmeterol")
+)
+ev_cells <- grid |>
+  dplyr::left_join(cell_cov, by = "cell") |>
+  dplyr::mutate(id = cell, T_STATE_ENTRY = 0)
+sim_cells <- as.data.frame(rxode2::rxSolve(ui, ev_cells)) |>
+  dplyr::left_join(cell_cov[, c("cell", "label")], by = c("id" = "cell"))
+
+haz_long <- dplyr::bind_rows(
+  sim_cells |> dplyr::transmute(label, time, rate = haz12, transition = "state 1 to 2"),
+  sim_cells |> dplyr::filter(time <= 25) |>
+    dplyr::transmute(label, time, rate = haz21, transition = "state 2 to 1")
+)
+pts <- dplyr::bind_rows(
+  s4_12 |> dplyr::mutate(transition = "state 1 to 2"),
+  s4_21 |> dplyr::mutate(transition = "state 2 to 1")
+)
+ggplot(haz_long, aes(time, rate)) +
+  geom_line(aes(colour = label)) +
+  geom_point(data = pts, aes(tsoj, rate), shape = 21, fill = "white") +
+  facet_wrap(~transition, scales = "free") +
+  labs(x = "Time since entry into the state (day)", y = "Transition rate (1/day)",
+       colour = NULL,
+       caption = "Replicates Supplementary Figure S4 of Largajolli 2019 (points: digitised box medians).") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+With the covariate terms at their centring values the model's scales are the
+`ini()` scales, and the resulting hazard reproduces the digitised base-model
+curve (a check of the transcription, since the scales were fitted to these
+points):
+
+```{r fig-s4-check}
+centred <- tidyr::expand_grid(time = c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 30, 100, 200, 360)) |>
+  dplyr::mutate(
+    rate12 = hll(time, exp(ui$theta[["lscale12"]]), exp(ui$theta[["lshape12"]])),
+    rate21 = hll(time, exp(ui$theta[["lscale21"]]), exp(ui$theta[["lshape21"]]))
+  )
+chk_s4 <- dplyr::bind_rows(
+  s4_12 |> dplyr::inner_join(centred, by = c("tsoj" = "time")) |>
+    dplyr::transmute(transition = "state 1 to 2", tsoj, digitised = rate, model = rate12),
+  s4_21[-1, ] |> dplyr::inner_join(centred, by = c("tsoj" = "time")) |>
+    dplyr::transmute(transition = "state 2 to 1", tsoj, digitised = rate, model = rate21)
+) |>
+  dplyr::mutate(pct_diff = 100 * (model - digitised) / digitised)
+knitr::kable(
+  chk_s4 |>
+    dplyr::mutate(dplyr::across(c(digitised, model), ~ signif(.x, 3)), pct_diff = round(pct_diff, 1)) |>
+    dplyr::rename(
+      "Transition" = transition, "Time since entry (day)" = tsoj,
+      "Figure S4 (1/day)" = digitised, "Model (1/day)" = model, "Difference (%)" = pct_diff
+    )
+)
+stopifnot(max(abs(chk_s4$pct_diff)) < 5)
+```
+
+# Drug effect in Data 1 (Figure 3)
+
+Figure 3 (top row) plots the ratio of the placebo to the salmeterol transition
+rate against time since entry into the state. At short times the ratio tends
+to $\exp(\alpha_k \beta_k)$, and it decays towards 1 at a speed set by the
+scale. The model's ratio for each disease stage is compared with the box
+medians digitised from the top-left panel (state 1 to 2):
+
+```{r fig3}
+fig3 <- data.frame(
+  time = c(1, 51, 101, 151, 201, 251, 301, 351),
+  digitised = c(1.577, 1.451, 1.328, 1.242, 1.184, 1.147, 1.123, 1.101)
+)
+ratio_ev <- tidyr::expand_grid(
+  stage = c("mild", "non-mild"), arm = c("placebo", "salmeterol"), time = fig3$time
+) |>
+  dplyr::mutate(
+    id = as.integer(factor(paste(stage, arm))),
+    FEV1_PCTPRED = ifelse(stage == "mild", 60, 40),
+    ON_TREATMENT = as.integer(arm == "salmeterol"),
+    T_STATE_ENTRY = 0
+  )
+ratio_sim <- as.data.frame(rxode2::rxSolve(ui, ratio_ev)) |>
+  dplyr::left_join(dplyr::distinct(ratio_ev, id, stage, arm), by = "id") |>
+  dplyr::select(stage, arm, time, haz12, haz21) |>
+  tidyr::pivot_wider(names_from = arm, values_from = c(haz12, haz21)) |>
+  dplyr::mutate(
+    ratio12 = haz12_placebo / haz12_salmeterol,
+    ratio21 = haz21_placebo / haz21_salmeterol
+  )
+chk_fig3 <- ratio_sim |>
+  dplyr::select(stage, time, ratio12) |>
+  tidyr::pivot_wider(names_from = stage, values_from = ratio12) |>
+  dplyr::left_join(fig3, by = "time")
+knitr::kable(
+  chk_fig3 |>
+    dplyr::mutate(dplyr::across(-time, ~ round(.x, 3))) |>
+    dplyr::rename(
+      "Time since entry (day)" = time, "Model, mild" = mild,
+      "Model, non-mild" = `non-mild`, "Figure 3 median" = digitised
+    ),
+  caption = "Placebo / salmeterol transition-rate ratio, state 1 to 2."
+)
+ratio21_day1 <- ratio_sim$ratio21[ratio_sim$time == 1][1]
+stopifnot(
+  # The short-time limit exp(alpha1 * beta11) checks the drug coefficient
+  # against the figure independently of the digitised scale.
+  abs(chk_fig3$mild[1] / fig3$digitised[1] - 1) < 0.10,
+  # The decay: the figure's medians follow the non-mild curve.
+  max(abs(chk_fig3[["non-mild"]] / chk_fig3$digitised - 1)) < 0.05,
+  abs(ratio21_day1 - exp(2.97 * -0.031)) < 1e-3
+)
+```
+
+The day-1 ratio, 1.52 against 1.58, agrees within the spread of the boxes.
+After that the ratio depends on the scale, and the figure's medians lie close
+to the non-mild curve, within 4% throughout. The mild curve decays more slowly
+(1.19 against 1.10 at day 351). The figure does not say which covariate values
+it was drawn at, and it comes from the drug-effect fit to Data 1, whose scales
+were not reported and include the study-length term of Equation 6 (see
+Assumptions and deviations). The state 2 to 1 ratio at day 1 is
+`r round(ratio21_day1, 3)`, matching the 0.92 median of the top-right panel.
+
+# Dropout (Supplementary Figure S9)
+
+A subject counted as a dropout when its last visit fell more than a month
+before the end of the 52-week study (Methods, Dropout). The model's
+probability of dropping out by day 334, averaged over the Data 1 stage mix,
+is compared with the observed dropout fraction (the red line of Supplementary
+Figure S9, measured at 0.342 against the axis ticks):
+
+```{r dropout}
+drop_ev <- data.frame(
+  id = 1:2, time = 334, FEV1_PCTPRED = c(60, 40), ON_TREATMENT = 0, T_STATE_ENTRY = 0
+)
+drop_sim <- as.data.frame(rxode2::rxSolve(ui, drop_ev))
+p_drop <- sum(w * (1 - drop_sim$sur_drop))
+knitr::kable(
+  data.frame(
+    quantity = c("mild", "non-mild", "Data 1 cohort", "observed (Figure S9)"),
+    value = round(c(1 - drop_sim$sur_drop, p_drop, 0.342), 3)
+  ) |>
+    dplyr::rename("Probability of dropout by day 334" = quantity, "Value" = value)
+)
+stopifnot(abs(p_drop - 0.342) < 0.03)
+```
+
+# Simulated trial (Supplementary Figure S7)
+
+Individual histories of a Data 1-like trial are simulated from the model's own
+outputs. Each subject's scales and shapes come from `rxSolve()`. Each sojourn
+and the dropout time are then drawn by inverting the log-logistic survival,
+$\tau = \theta \, (U / (1 - U))^{1/\alpha}$, with the clock restarting at every
+transition. Every subject starts asymptomatic and is followed to day 364 or
+dropout. There are 200 subjects per arm, with the disease stage drawn at the
+Data 1 frequency, and 20 replicate trials.
+
+```{r trial}
+set.seed(20190613)
+n_arm <- 200
+trial_cov <- data.frame(
+  id = seq_len(2 * n_arm),
+  ON_TREATMENT = rep(0:1, each = n_arm),
+  FEV1_PCTPRED = ifelse(runif(2 * n_arm) < 336 / 619, 40, 60),
+  T_STATE_ENTRY = 0,
+  time = 0
+)
+trial_par <- as.data.frame(rxode2::rxSolve(ui, trial_cov, keep = c("ON_TREATMENT", "FEV1_PCTPRED")))
+
+rloglogis <- function(scale, shape) {
+  u <- runif(1)
+  scale * (u / (1 - u))^(1 / shape)
+}
+simulate_subject <- function(p, end = 364) {
+  t_drop <- rloglogis(p$scale_drop, p$shape_drop)
+  t_stop <- min(end, t_drop)
+  t_now <- 0
+  n_exac <- 0
+  repeat {
+    t_now <- t_now + rloglogis(p$scale12, p$shape12)
+    if (t_now >= t_stop) break
+    n_exac <- n_exac + 1
+    t_now <- t_now + rloglogis(p$scale21, p$shape21)
+    if (t_now >= t_stop) break
+  }
+  data.frame(n_exac = n_exac, dropout = t_drop < end - 30)
+}
+simulate_trial <- function(rep) {
+  out <- lapply(seq_len(nrow(trial_par)), function(i) simulate_subject(trial_par[i, ]))
+  cbind(rep = rep, ON_TREATMENT = trial_par$ON_TREATMENT, do.call(rbind, out))
+}
+histories <- do.call(rbind, lapply(1:20, simulate_trial))
+```
+
+The observed distribution in Supplementary Figure S7 is 317 subjects with no
+exacerbation and 119, 85, 45, 32, 14, 6 and 1 with one to seven (bar heights
+read off the figure; the 0 group is the remainder of the 619).
+
+```{r trial-counts, fig.width = 7, fig.height = 4}
+obs_counts <- data.frame(
+  n_exac = 0:7,
+  observed = c(317, 119, 85, 45, 32, 14, 6, 1) / 619
+)
+sim_counts <- histories |>
+  dplyr::mutate(n_exac = pmin(n_exac, 7)) |>
+  dplyr::count(rep, n_exac) |>
+  tidyr::complete(rep, n_exac = 0:7, fill = list(n = 0)) |>
+  dplyr::group_by(rep) |>
+  dplyr::mutate(frac = n / sum(n)) |>
+  dplyr::group_by(n_exac) |>
+  dplyr::summarise(
+    simulated = median(frac), lo = quantile(frac, 0.05), hi = quantile(frac, 0.95),
+    .groups = "drop"
+  )
+ggplot(dplyr::left_join(sim_counts, obs_counts, by = "n_exac"), aes(factor(n_exac))) +
+  geom_col(aes(y = observed), fill = "grey40") +
+  geom_pointrange(aes(y = simulated, ymin = lo, ymax = hi), colour = "steelblue") +
+  labs(x = "Number of exacerbations in 52 weeks", y = "Fraction of subjects",
+       caption = "Compare with Supplementary Figure S7 of Largajolli 2019 (bars: observed; points: model, 90% range over 20 trials).") +
+  theme_bw()
+
+per_trial <- histories |>
+  dplyr::group_by(rep) |>
+  dplyr::summarise(mean_exac = mean(n_exac), p_drop = mean(dropout), .groups = "drop")
+obs_mean <- sum(obs_counts$n_exac * obs_counts$observed)
+knitr::kable(
+  data.frame(
+    quantity = c("Mean exacerbations per subject", "Fraction with no exacerbation",
+                 "Dropout fraction"),
+    model = round(c(median(per_trial$mean_exac),
+                    sim_counts$simulated[sim_counts$n_exac == 0],
+                    median(per_trial$p_drop)), 3),
+    observed = round(c(obs_mean, obs_counts$observed[1], 0.342), 3)
+  ) |>
+    dplyr::rename("Quantity" = quantity, "Model (median of 20 trials)" = model, "Observed" = observed)
+)
+stopifnot(
+  # Monte Carlo against the closed form of the same model: 20 x 400 subjects
+  # put the standard error of the dropout fraction near 0.005.
+  abs(mean(histories$dropout) - p_drop) < 0.02,
+  # Structural: a scale in the wrong time unit (weeks or months for days)
+  # moves the mean count by a factor of several.
+  median(per_trial$mean_exac) > 0.5 * obs_mean,
+  median(per_trial$mean_exac) < 1.5 * obs_mean
+)
+```
+
+The model gives fewer exacerbations per subject than observed (about 0.8
+against 1.07), and too few subjects at both extremes: more with one or two
+exacerbations, fewer with none or with four or more. This is what leaving out
+the between-subject variability does. The paper kept random effects on both
+scales, which spread the subjects into frequent and infrequent exacerbators,
+but it did not report their variances, so the model carries them at zero.
+The model's predictions are therefore typical-subject predictions, and a
+simulation of between-subject spread needs a variance supplied by the user.
+
+# Drug effects in the other data sets
+
+Table 4 also reports the drug coefficients estimated in Data 2 and Data 3,
+each with the final model re-fitted to that data set. Those fits' scales were
+not reported, so only the Data 1 contrast is the model's default. The others
+can be substituted into `e_trt_scale12` and `e_trt_scale21` to apply the
+relative effect to the Data 1 baseline. The scale ratio $\exp(\beta)$ is the
+factor by which the active arm lengthens the median sojourn.
+
+```{r table4}
+table4 <- data.frame(
+  dataset = c("Data 1: salmeterol vs placebo",
+              "Data 2: FF/VI (all doses) vs VI",
+              "Data 3: losmapimod 15 mg vs placebo and lower doses",
+              "Data 3, low eosinophils"),
+  beta12 = c(0.310, 0.224, 0.211, 0.818),
+  beta21 = c(-0.031, 0.025, -0.196, -0.110)
+) |>
+  dplyr::mutate(ratio12 = round(exp(beta12), 3), ratio21 = round(exp(beta21), 3))
+knitr::kable(
+  table4 |>
+    dplyr::rename(
+      "Data set and contrast" = dataset, "Beta, state 1 to 2" = beta12,
+      "Beta, state 2 to 1" = beta21, "Scale ratio, state 1 to 2" = ratio12,
+      "Scale ratio, state 2 to 1" = ratio21
+    ),
+  caption = "Largajolli 2019 Table 4 (posterior medians)."
+)
+mod_fev <- ui |> rxode2::ini(e_trt_scale12 = 0.224, e_trt_scale21 = 0.025)
+stopifnot(abs(mod_fev$theta[["e_trt_scale12"]] - 0.224) < 1e-12)
+```
+
+# NCA
+
+Not applicable: the model has no drug concentration. The checks above replace
+it.
+
+# Assumptions and deviations
+
+* **Scales digitised.** The state 1 to 2 and state 2 to 1 scales are not
+  printed. They come from a fit to the box medians of Supplementary Figure S4
+  (the base model), with the shapes at Table 2. The dropout shape and log scale
+  were read off the Supplementary Figure S3 trace plots as chain medians. The
+  same readings recover every printed value they overlap with to within 1%.
+* **Study-length term absorbed.** Equation 6 includes
+  $\beta_{k0} \log(T_j)$, with $T_j$ the subject's study length, to allow for
+  different follow-up. Its coefficients were not reported. They are absorbed
+  into the digitised scales, which describe Data 1, a 52-week trial, so
+  the model has no study-length covariate. Whether the trace-plot
+  `logtheta0[1]` (about 0.2 on the log scale) and `logtheta0[2]` (about 3.2)
+  are the scales before this term cannot be checked, and they were not used.
+  The dropout scale is used as read, on the assumption that the dropout model
+  has no study-length term, since study length is its outcome. The dropout
+  fraction it predicts, 0.34, matches the observed 0.342.
+* **Base-model scales with final-model covariates.** Figure S4 belongs to the
+  base model and the coefficients to the covariate and drug-effect models, so
+  the indicators are centred at their Data 1 means (0.5428 non-mild, 0.5089
+  salmeterol) to keep the cohort-average scale equal to the base model's. The
+  disease-stage coefficients are those of the covariate model of Table 3; the
+  final-model traces give the same values (-0.43 and -0.11).
+* **Random effects at zero.** Random effects on both scales were retained but
+  their variances were not reported. They are carried as `fixed(0)`, on the
+  log scale. The paper writes them as $\theta_0 \eta$ with normal $\eta$
+  (Equation 6), which a zero variance makes moot. The Data 3 fit dropped the
+  state 2 random effect.
+* **Disease stage.** Data 1 staged patients by ATS 1995, and the covariate was
+  tested as mild against the rest. The model rebuilds it from `FEV1_PCTPRED`
+  with the ATS cut-off of 50% of predicted. Data 2 and Data 3 used GOLD
+  staging, which the model does not reproduce.
+* **Figure 4 not reproduced.** The transition probabilities of Figure 4 are
+  stratified by three or four disease stages and show drug effects that differ
+  by stage (in Data 1 severe patients, the drug arm is above placebo). That
+  cannot come from the final model's single binary stage covariate and
+  common drug coefficient, so they were not used as a check.
+* **Erratum.** The 2019 correction (doi:10.1007/s10928-019-09664-1) changes
+  the licence to open access and no values.
