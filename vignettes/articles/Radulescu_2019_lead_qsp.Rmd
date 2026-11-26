@@ -1,0 +1,405 @@
+---
+title: "Lead-calcium competitive toxicokinetics (Radulescu 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lead-calcium competitive toxicokinetics (Radulescu 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+ui <- rxode2::rxode(readModelDb("Radulescu_2019_lead_qsp"))
+ui$state
+```
+
+* Citation: `r ui$reference`
+* Article (open access): <https://doi.org/10.1038/s41598-019-50654-7>
+* PMCID: PMC6775169. The supplement (Appendix A) is a sigmoidal-parameter
+  sensitivity analysis and contributes no additional estimated values; every
+  value below is from the main text.
+
+Radulescu and Lundgren build a deliberately low-dimensional, *phenomenological*
+compartmental model of how lead (Pb) and calcium (Ca) move through the body
+together, competing for shared membrane transporters. The goal is not a fitted
+population-PK model but a proof of principle: that a nonlinear competitive model
+can explain counter-intuitive, developmentally dependent effects of low-level
+lead exposure on the brain that linear models cannot.
+
+Five compartments -- blood (S), bone (O), brain (B), kidney (K) and other soft
+tissue (T) -- each carry a lead and a calcium content, giving ten ODE states.
+Every inter-compartmental flux is competitive and saturable: a shared maximum
+rate `A` (normalised to 1 for every pair), split between Pb and Ca by their
+fractional abundance, times a sigmoidal "crowdedness" nonlinearity
+`N(x) = 1 / (1 + exp(-b (x - theta)))` on the joint Pb + Ca pool.
+
+Three feedbacks make the dynamics nonlinear:
+
+* **Absorption** of both elements from the gut is gated *down* by blood calcium,
+  `1 - N_{a,tau}(S_Ca)` -- a protective brake against excess systemic calcium.
+* **Bone resorption** is scaled by `z`, an age / physiological-state marker.
+* **Renal excretion** of both elements is blocked by accumulated kidney lead,
+  `exp(-k K_Pb)` -- lead nephrotoxicity throttling its own elimination.
+* **The blood-brain barrier** gates the blood-to-brain flux through
+  `xi = 1 - B exp(-s B_Pb)`, where `B` is the barrier's intrinsic filtering
+  efficiency and `s` its sensitivity to lead neurotoxicity. Rising brain lead
+  pushes `xi` toward 1, which *increases* the share of lead admitted -- a
+  self-reinforcing loop.
+
+Age enters entirely through `z`, `B` and `s`: an immature (child) barrier is low
+`B` / high `s`, a mature (adult) barrier is high `B` / low `s`.
+
+## What this file reproduces, and what it cannot
+
+The model is encoded exactly as published -- every equation and every constant.
+In **time-domain** simulation (the only mode `rxode2` offers) it reproduces the
+paper's quantitative blood-lead anchor, the monotone compartmental dose-response,
+and the sharp nonlinear threshold in brain lead, all checked below.
+
+The paper's headline qualitative finding -- a **bistability window** in lead
+intake `p` (two coexisting stable brain steady states, mapped by numerical
+continuation in Figs 3-20) -- is **not** reproduced as hysteresis at the exact
+published sigmoidal parameters. The authors traced the saddle-node curves by
+continuation, which follows the *unstable* equilibrium branch that time-domain
+integration cannot reach; at the published values this implementation sits just
+outside the cusp, so the two folds have effectively merged into one steep but
+single-valued transition. See "Assumptions and deviations" for the detail. What
+*can* be checked numerically is checked; the bistability is discussed, not
+asserted.
+
+# Population
+
+```{r population}
+pop <- ui$population
+knitr::kable(
+  data.frame(Field = names(pop), Value = unlist(lapply(pop, as.character))),
+  row.names = FALSE
+)
+```
+
+There is no individual-level cohort and no random effects: this is a
+deterministic typical-value systems model. Parameters were loosely tuned so the
+state variables sit within empirically observed human ranges, and the authors
+compare the output qualitatively and quantitatively against published
+single-subject and group lead-exposure datasets (Moore, Sherlock, Williams,
+Cools, O'Flaherty).
+
+# Source trace
+
+## Equations
+
+| Model code | Source | Published form |
+|---|---|---|
+| `N(x) = 1/(1+exp(-b(x-theta)))` | Inter-Compartmental Dynamics | `N_{b,theta}(x) = 1 / (exp(-b(x-theta)) + 1)` |
+| `fES_p`, `fES_c` | Absorption into blood | `A_ES * p/(p+c) * N(p+c) * [1 - N_{a,tau}(S_Ca)]` (and Ca form) |
+| `fST_*`, `fTS_*` | Transport in and out of soft tissue | `A * X_Pb/(X_Pb+X_Ca) * N(X_Pb+X_Ca)` |
+| `fSO_*`, `fOS_*` | Lead-calcium dynamics and bone structure | deposit `A*S_*/(..)*N(..)`; resorption carries `z` |
+| `fSK_*`, `fKS_*`, `fKE_*` | Effects on renal function and excretion | reabsorption plain; excretion carries `phi = exp(-k K_Pb)` |
+| `fSB_*` | Effects on brain function and the BBB | `A * xi*S_Pb/(xi*S_Pb+(1-xi)*S_Ca) * N(S_Pb+S_Ca)` (and Ca form) |
+| `xiBBB` | Effects on brain function and the BBB | `xi = 1 - B exp(-s B_Pb)` |
+| `fBS_*` | Effects on brain function and the BBB | plain `A * B_*/(B_Pb+B_Ca) * N(B_Pb+B_Ca)` |
+| `d/dt(blood_*)` | Lead-Calcium model | `sum_{X=E,T,K,O,B} f_XS - sum_{Y=T,K,O,B} f_SY` |
+| `d/dt(soft_*)`, `d/dt(brain_*)`, `d/dt(bone_*)` | Lead-Calcium model | `f_S. - f_.S` |
+| `d/dt(kidney_*)` | Lead-Calcium model | `f_SK - f_KS - f_KE` |
+
+## Parameters
+
+```{r params}
+knitr::kable(
+  ui$iniDf |>
+    dplyr::select(name, est, fix, label) |>
+    dplyr::rename(
+      "Parameter" = name, "Value" = est, "Fixed" = fix, "Description" = label
+    ),
+  row.names = FALSE, digits = 6
+)
+```
+
+Every parameter is `fixed()`: the paper estimates nothing. The baseline scenario
+is a healthy adult at medium exposure -- `p = 0.5`, `c = 10`, `z = 1`,
+`k = 0.05`, `B = 0.8`, `s = 1`, sigmoidals `a = b = 0.6`, `theta = 6`,
+`tau = 4` -- the parameter set fixed in the Fig. 3-5 captions.
+
+## Units
+
+| Symbol | Units | Note |
+|---|---|---|
+| time | week | Methods, "unit convention" |
+| `blood_*`, `bone_*`, `brain_*`, `kidney_*`, `soft_*` | mg/kg | compartment Pb/Ca content; in blood 1 mg/kg approx 1 mg/L, and mg/L x 100 = ug/dl |
+| `pbIntake` (`p`), `caIntake` (`c`) | mg/kg/week | environmental intake rates |
+| `aMaxRate` (`A`) | mg/kg/week | maximum transport rate, normalised to 1 |
+| `bSens`, `thetaSig`, `aGate`, `tauGate` | dimensionless (on the mg/kg pools) | sigmoidal shape |
+| `zResorp`, `bbbEff`, `sBbbSens`, `kRenalSens` | dimensionless (`k` as 1/(mg/kg)) | feedback modulators |
+
+Blood lead at the baseline steady state is about 0.3 mg/L, i.e. about 30 ug/dl --
+the "low-level" exposure range the paper studies.
+
+# Setting up solves
+
+The model has no dosing events: it is driven by the constant intake rates and by
+the initial compartment contents, both of which are `ini()` parameters. Scenarios
+are built by overriding parameters (`params=`) and, for the bistability probe,
+initial conditions (`inits=`).
+
+```{r helper}
+# Solve to steady state on a weekly grid and return the full trajectory.
+solve_scn <- function(params = NULL, inits = NULL, tmax = 400) {
+  ev <- rxode2::et(seq(0, tmax, by = 1))
+  args <- list(object = ui, events = ev, returnType = "data.frame")
+  if (!is.null(params)) args$params <- params
+  if (!is.null(inits)) args$inits <- inits
+  do.call(rxode2::rxSolve, args)
+}
+# Steady-state (final-row) summary for a scenario.
+ss_scn <- function(params = NULL, inits = NULL, tmax = 400) {
+  d <- solve_scn(params, inits, tmax)
+  d[nrow(d), ]
+}
+```
+
+# Validation
+
+The model is deterministic (no random effects), so these are exact-value and
+direction checks, not tolerance bands on a cohort.
+
+## 1. Blood-lead magnitude and time to steady state (Figure 5)
+
+Starting every compartment at the low value 0.1 mg/kg, the paper reports that
+blood lead "is settled towards a steady state of around 0.3 mg/l = 30 ug/dl
+within the first two to three weeks".
+
+```{r fig5-timecourse}
+tc <- solve_scn(tmax = 60)
+cc_states <- c("blood_Pb", "blood_Ca", "brain_Pb", "brain_Ca",
+               "bone_Pb", "bone_Ca", "kidney_Pb", "kidney_Ca",
+               "soft_Pb", "soft_Ca")
+long <- tc |>
+  dplyr::select(time, dplyr::all_of(cc_states)) |>
+  tidyr::pivot_longer(-time, names_to = "state", values_to = "content") |>
+  dplyr::mutate(
+    compartment = sub("_(Pb|Ca)$", "", state),
+    element = sub("^.*_", "", state)
+  )
+ggplot(long, aes(time, content, colour = compartment)) +
+  geom_line() +
+  facet_wrap(~element, scales = "free_y",
+             labeller = as_labeller(c(Pb = "Lead", Ca = "Calcium"))) +
+  labs(x = "Time (weeks)", y = "Content (mg/kg)",
+       title = "Approach to steady state (replicates Figure 5, low-start arm)") +
+  theme_bw()
+
+blood_pb_ss <- ss_scn()$blood_Pb
+blood_pb_3wk <- solve_scn(tmax = 3)$blood_Pb[4]  # t = 3 weeks (index 0,1,2,3)
+knitr::kable(
+  data.frame(
+    Quantity = c("Blood lead at steady state (mg/L)",
+                 "Blood lead at steady state (ug/dl)",
+                 "Blood lead at 3 weeks (mg/L)"),
+    Model = c(round(blood_pb_ss, 3), round(blood_pb_ss * 100, 1),
+              round(blood_pb_3wk, 3)),
+    Paper = c("~0.3", "~30", "already near plateau")
+  ),
+  row.names = FALSE
+)
+
+stopifnot(
+  # Blood lead settles to the paper's ~0.3 mg/L (30 ug/dl) anchor.
+  blood_pb_ss > 0.25, blood_pb_ss < 0.35,
+  # It is already most of the way there within three weeks (fast blood kinetics).
+  blood_pb_3wk > 0.20
+)
+```
+
+## 2. Monotone dose-response to lead intake (Figure 3)
+
+"The lead content X_Pb generally increases, and the calcium X_Ca content
+generally decreases, with increasing lead intake p" in every compartment. Brain
+lead stays low across the low-exposure range and then rises steeply -- the
+nonlinear threshold the paper builds the model to explain.
+
+```{r fig3-dose-response}
+pgrid <- seq(0.1, 1.6, by = 0.05)
+dr <- do.call(rbind, lapply(pgrid, function(p) {
+  f <- ss_scn(params = c(pbIntake = p))
+  data.frame(p = p, blood_Pb = f$blood_Pb, blood_Ca = f$blood_Ca,
+             brain_Pb = f$brain_Pb, brain_Ca = f$brain_Ca)
+}))
+dr_long <- dr |>
+  tidyr::pivot_longer(-p, names_to = "state", values_to = "content") |>
+  dplyr::mutate(compartment = sub("_(Pb|Ca)$", "", state),
+                element = sub("^.*_", "", state))
+ggplot(dr_long, aes(p, content, colour = compartment)) +
+  geom_line() +
+  facet_wrap(~element, scales = "free_y",
+             labeller = as_labeller(c(Pb = "Lead", Ca = "Calcium"))) +
+  labs(x = "Lead intake p (mg/kg/week)", y = "Steady-state content (mg/kg)",
+       title = "Equilibrium vs lead intake (replicates Figure 3)") +
+  theme_bw()
+
+lo <- ss_scn(params = c(pbIntake = 0.1))
+hi <- ss_scn(params = c(pbIntake = 1.5))
+stopifnot(
+  # Lead content rises with intake in every compartment.
+  hi$blood_Pb  > lo$blood_Pb,
+  hi$bone_Pb   > lo$bone_Pb,
+  hi$kidney_Pb > lo$kidney_Pb,
+  hi$soft_Pb   > lo$soft_Pb,
+  hi$brain_Pb  > lo$brain_Pb,
+  # Calcium content falls with lead intake in blood, bone, kidney, soft tissue.
+  hi$blood_Ca  < lo$blood_Ca,
+  hi$bone_Ca   < lo$bone_Ca,
+  hi$kidney_Ca < lo$kidney_Ca,
+  hi$soft_Ca   < lo$soft_Ca,
+  # Brain lead is low across the low-exposure range, then jumps: the value at
+  # p = 1.5 is many-fold the value at p = 0.5 (the steep threshold).
+  ss_scn(params = c(pbIntake = 1.5))$brain_Pb >
+    10 * ss_scn(params = c(pbIntake = 0.5))$brain_Pb
+)
+```
+
+## 3. Calcium intake lowers blood lead (Figure 6)
+
+"The equilibrium content of blood calcium increases with calcium consumption c,
+and the equilibrium content of blood lead decreases with calcium consumption."
+
+```{r fig6-calcium}
+cgrid <- seq(2, 18, by = 1)
+cc <- do.call(rbind, lapply(cgrid, function(cval) {
+  f <- ss_scn(params = c(caIntake = cval))
+  data.frame(c = cval, blood_Pb = f$blood_Pb, blood_Ca = f$blood_Ca)
+}))
+ggplot(cc, aes(c)) +
+  geom_line(aes(y = blood_Pb, colour = "Blood lead")) +
+  geom_line(aes(y = blood_Ca, colour = "Blood calcium")) +
+  labs(x = "Calcium intake c (mg/kg/week)", y = "Steady-state content (mg/kg)",
+       colour = NULL,
+       title = "Blood Pb and Ca vs calcium intake (replicates Figure 6)") +
+  theme_bw()
+
+lowc <- ss_scn(params = c(caIntake = 5))
+highc <- ss_scn(params = c(caIntake = 15))
+stopifnot(
+  highc$blood_Pb < lowc$blood_Pb,  # more dietary calcium -> less blood lead
+  highc$blood_Ca > lowc$blood_Ca   # more dietary calcium -> more blood calcium
+)
+```
+
+## 4. Blood-brain-barrier efficiency protects the brain (Figure 14)
+
+"Decreasing the efficiency B leads to increasing the brain lead steady state ...
+and lower brain calcium steady states."
+
+```{r fig14-bbb}
+bgrid <- seq(0.6, 0.95, by = 0.025)
+bb <- do.call(rbind, lapply(bgrid, function(bval) {
+  f <- ss_scn(params = c(bbbEff = bval))
+  data.frame(B = bval, brain_Pb = f$brain_Pb, brain_Ca = f$brain_Ca)
+}))
+ggplot(bb, aes(B)) +
+  geom_line(aes(y = brain_Pb, colour = "Brain lead")) +
+  geom_line(aes(y = brain_Ca, colour = "Brain calcium")) +
+  labs(x = "BBB filtering efficiency B", y = "Steady-state brain content (mg/kg)",
+       colour = NULL,
+       title = "Brain Pb and Ca vs BBB efficiency (replicates Figure 14)") +
+  theme_bw()
+
+loB <- ss_scn(params = c(bbbEff = 0.7))
+hiB <- ss_scn(params = c(bbbEff = 0.9))
+stopifnot(
+  loB$brain_Pb > hiB$brain_Pb,  # weaker barrier -> more brain lead
+  loB$brain_Ca < hiB$brain_Ca   # weaker barrier -> less brain calcium
+)
+```
+
+## 5. Kidney lead sensitivity drives renal storage (Figures 8-9)
+
+Raising the kidney sensitivity `k` "leads to a large renal storage of calcium,
+as well as lead" -- most visibly at high lead intake and low calcium, where the
+renal feedback `exp(-k K_Pb)` shuts excretion down.
+
+```{r fig8-kidney}
+loK <- ss_scn(params = c(kRenalSens = 0.05, pbIntake = 1.5, caIntake = 5))
+hiK <- ss_scn(params = c(kRenalSens = 0.5, pbIntake = 1.5, caIntake = 5))
+knitr::kable(
+  data.frame(
+    `Kidney sensitivity k` = c(0.05, 0.5),
+    `Kidney lead (mg/kg)` = round(c(loK$kidney_Pb, hiK$kidney_Pb), 3),
+    `Kidney calcium (mg/kg)` = round(c(loK$kidney_Ca, hiK$kidney_Ca), 3),
+    check.names = FALSE
+  ),
+  row.names = FALSE
+)
+stopifnot(
+  hiK$kidney_Pb > loK$kidney_Pb,  # higher sensitivity -> more renal lead storage
+  hiK$kidney_Ca > loK$kidney_Ca   # and more renal calcium storage
+)
+```
+
+## 6. Steady state is a genuine equilibrium
+
+A final hold check: once the system settles, the states stop moving. Blood lead
+reaches its plateau within a few weeks, but a *slow* mode (brain / bone calcium)
+relaxes over hundreds of weeks -- the signature of a system near a saddle-node,
+discussed below -- so the equilibrium is confirmed on a long horizon.
+
+```{r ss-hold}
+s1000 <- ss_scn(tmax = 1000)
+s1200 <- ss_scn(tmax = 1200)
+drift <- max(abs(unlist(s1000[cc_states]) - unlist(s1200[cc_states])))
+stopifnot(drift < 1e-3)  # states are stationary between t = 1000 and t = 1200 wk
+```
+
+# Assumptions and deviations
+
+* **Phenomenological model, loosely tuned parameters.** The authors state the
+  parameters were "loosely tuned to lie within intervals that lead to levels of
+  the system variables within the observed, empirical range" and that "the
+  precise values are not significant" (Appendix A). The values encoded are the
+  baseline set fixed in the Fig. 3-5 captions.
+
+* **Bistability not reproduced as hysteresis.** The paper's central qualitative
+  result is a saddle-node bistability window in lead intake `p` (roughly
+  `0.28 < p < 0.85` at baseline), within which the brain has two coexisting
+  stable steady states -- a "good" low-lead/high-calcium state and a "bad"
+  high-lead/low-calcium state -- and the one reached depends on the history
+  (initial conditions). The authors mapped these windows by **numerical
+  continuation**, which tracks the unstable middle branch that joins the two
+  folds. `rxode2` integrates the ODEs forward in time and can only reach *stable*
+  equilibria, so it cannot render an unstable branch. At the exact published
+  sigmoidal parameters this implementation is single-valued: brain lead stays low
+  until `p` is near the paper's upper fold (~0.85-0.9) and then rises steeply to
+  the high branch, with every initial condition -- including a large initial
+  blood-lead spike or a directly seeded high brain lead -- converging to the same
+  steady state. The very slow brain-calcium relaxation (hundreds of weeks)
+  confirms the system sits near the saddle-node "ghost", i.e. just outside the
+  cusp where the two folds have merged. The steep single-valued transition is the
+  degenerate limit of the paper's window. No parameters were adjusted to force a
+  window open; doing so would be tuning the model to a target. All *monotone* and
+  *directional* predictions (Sections 1-5) reproduce faithfully.
+
+* **Specimen mapping.** `compartmentData` maps the four solid compartments
+  (bone, brain, kidney, other soft tissue) to the controlled-vocabulary specimen
+  `tissue`, and blood to `whole blood` (blood lead is the clinically measured
+  quantity). The paper names each compartment's lead and calcium content
+  explicitly.
+
+* **Division-by-zero.** Each competitive flux divides by a compartment's joint
+  Pb + Ca pool, and the BBB flux by `xi*S_Pb + (1-xi)*S_Ca`. These are positive
+  for any positive state; the model's default initial content of 0.1 mg/kg in
+  every compartment keeps them well away from zero. Initialising a compartment at
+  exactly zero Pb *and* zero Ca would produce `0/0` -- keep initial contents
+  positive (as the paper does).
+
+* **Units.** Time is in weeks and all contents in mg/kg. In the blood compartment
+  the paper equates 1 mg/kg with 1 mg/L (approximating blood density with water),
+  so blood lead in mg/L times 100 gives the clinical ug/dl.
+```

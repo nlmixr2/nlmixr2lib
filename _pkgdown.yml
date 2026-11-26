@@ -4378,6 +4378,8 @@ navbar:
         href: articles/Wang_2022_latamoxef.html
       - text: "Latamoxef s (Wang 2022)"
         href: articles/Wang_2022_latamoxef.html
+      - text: "Lead qsp (Radulescu 2019)"
+        href: articles/Radulescu_2019_lead_qsp.html
       - text: "Lebrikizumab (Zhu 2017)"
         href: articles/Zhu_2017_lebrikizumab.html
       - text: "Lecanemab (Cao 2026)"
@@ -11448,6 +11450,7 @@ articles:
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
   - articles/Quintairos_2021_tacrolimus_mycophenolic_acid
+  - articles/Radulescu_2019_lead_qsp
   - articles/Ramachandran_2023_tuberculosis_eptb_pbpk
   - articles/Ramakrishnan_2023_amyloid_qsp
   - articles/Rambiritch_2016_glibenclamide
