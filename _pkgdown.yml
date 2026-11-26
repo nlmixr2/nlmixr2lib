@@ -5794,6 +5794,10 @@ navbar:
         href: articles/Nagy_2017_obiltoxaximab.html
       - text: "Obinutuzumab (Gibiansky 2014)"
         href: articles/Gibiansky_2014_obinutuzumab.html
+      - text: "OctocogAlfa (Abrantes 2020)"
+        href: articles/Abrantes_2020_octocogAlfa.html
+      - text: "OctocogAlfa jointBleed (Abrantes 2020)"
+        href: articles/Abrantes_2020_octocogAlfa.html
       - text: "Octreotide (Glatard 2025)"
         href: articles/Glatard_2025_octreotide.html
       - text: "Octreotide (Kapralos 2021)"
@@ -9351,6 +9355,7 @@ articles:
   - articles/Abouellil_2023_remdesivir
   - articles/Abrams_2022_sar442257_qsp
   - articles/Abrantes_2017_moroctocog
+  - articles/Abrantes_2020_octocogAlfa
   - articles/Abuhelwa_2015_itraconazole
   - articles/Abuhelwa_2022_ketamine
   - articles/Abulfathi_2021_meropenem

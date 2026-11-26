@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Abrantes 2020 octocog alfa (BAY 81-8973) PK and bleeding repeated time-to-categorical-event models ([doi:10.3324/haematol.2019.217133](https://doi.org/10.3324/haematol.2019.217133)), the Bayesian prior of Abrantes 2019 ([doi:10.1002/psp4.12464](https://doi.org/10.1002/psp4.12464)) -- children, adolescents and adults with severe hemophilia A on prophylaxis (all bleeds; joint spontaneous bleeds in patients aged 12 years or older).
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

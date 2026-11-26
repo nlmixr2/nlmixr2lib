@@ -1,0 +1,682 @@
+---
+title: "Octocog alfa PK and bleeding RTTCE (Abrantes 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Octocog alfa PK and bleeding RTTCE (Abrantes 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+rxode2::rxSetSeed(20191025)
+set.seed(20191025)
+```
+
+# Model and source
+
+Abrantes 2020 relates the dose of octocog alfa (BAY 81-8973, Kovaltry), a
+full-length recombinant factor VIII (FVIII), to plasma FVIII activity and to
+the timing and severity of bleeds in patients with severe hemophilia A on
+prophylaxis in the three LEOPOLD trials. A two-compartment population PK model
+of FVIII activity and a repeated time-to-categorical-event (RTTCE) model of
+bleeds were estimated simultaneously: the bleeding hazard is a Gompertz
+function of time since study start, inhibited by the individual predicted FVIII
+activity, and each bleed is graded mild, moderate or severe by a
+proportional-odds model. Covariates were added afterwards with full random
+effects modelling (FREM).
+
+The same model, with the same estimates, is the Bayesian prior of the
+companion forecasting study (Abrantes 2019), which predicts each patient's
+probability of a bleed in the next 24 hours from their PK samples, their bleed
+history, or both. Abrantes 2019 prints the PK equations with the IIV and
+residual variances (Supplemental Text) and the hazard with its final values
+(Equation 1).
+
+Two model files share this vignette:
+
+* `Abrantes_2020_octocogAlfa` -- PK plus the RTTCE model for all bleeds
+  (Table 2), the model used in Abrantes 2019.
+* `Abrantes_2020_octocogAlfa_jointBleed` -- the same PK with the RTTCE model
+  re-estimated on joint spontaneous bleeds in patients aged 12 years or older
+  (Table 3).
+
+* Citation: Abrantes JA, Solms A, Garmann D, Nielsen EI, Jonsson S, Karlsson
+  MO. Relationship between factor VIII activity, bleeds and individual
+  characteristics in severe hemophilia A patients. *Haematologica*.
+  2020;105(5):1443-1453.
+  [doi:10.3324/haematol.2019.217133](https://doi.org/10.3324/haematol.2019.217133)
+* Companion: Abrantes JA, Solms A, Garmann D, Nielsen EI, Jonsson S, Karlsson
+  MO. Bayesian forecasting utilizing bleeding information to support dose
+  individualization of factor VIII. *CPT Pharmacometrics Syst Pharmacol*.
+  2019;8(12):894-903.
+  [doi:10.1002/psp4.12464](https://doi.org/10.1002/psp4.12464)
+* Equations: Abrantes 2020 Online Supplementary Appendix, equations 1-12;
+  Abrantes 2019 Supplemental Text, equations 1-8, and main-text Equation 1.
+
+```{r load-models}
+mod_all <- rxode2::rxode2(readModelDb("Abrantes_2020_octocogAlfa"))
+mod_joint <- rxode2::rxode2(readModelDb("Abrantes_2020_octocogAlfa_jointBleed"))
+mod_all_typ <- rxode2::zeroRe(mod_all, "omega")
+mod_joint_typ <- rxode2::zeroRe(mod_joint, "omega")
+```
+
+## Model equations
+
+PK, with CL and Q in dL/h, V1 and V2 in dL, the dose in IU and FVIII activity
+in IU/dL (Abrantes 2019 Supplemental Text equations 1-8):
+
+$$CL = 1.93 \left(\frac{LBW}{51.1}\right)^{0.646} e^{\eta_{CL}},
+\qquad V_1 = 30.3 \left(\frac{LBW}{51.1}\right)^{0.958} e^{\eta_{V1}},
+\qquad Q = 1.69,\; V_2 = 6.29$$
+
+$$y = FVIII + (FVIII\,\varepsilon_1 + \varepsilon_2)\, e^{\eta_\varepsilon}$$
+
+Bleeding hazard, per year, with $t$ in years since study start (Abrantes 2020
+Supplementary Appendix equations 1-3):
+
+$$h_i(t) = \lambda\, e^{\gamma (t - 1)}
+\left(1 - \frac{FVIII_i(t)}{FVIII_i(t) + IF_{50}}\right) e^{\eta_i}$$
+
+$$\lambda = \frac{\lambda_{0.5}\,\lambda_{20}\,(0.5 - 20)}{0.5\,\lambda_{0.5} - 20\,\lambda_{20}},
+\qquad IF_{50} = \frac{0.5\,\lambda_{0.5} - 20\,\lambda_{20}}{\lambda_{20} - \lambda_{0.5}}$$
+
+where $\lambda_{0.5}$ and $\lambda_{20}$, the estimated parameters, are the
+hazards at a constant FVIII activity of 0.5 and 20 IU/dL one year after study
+start.
+
+Bleed severity (equations 6-12), with one random effect shared by both
+cumulative logits:
+
+$$\mathrm{logit}\,P(\text{moderate or severe}) = b_1 + \eta_b,
+\qquad \mathrm{logit}\,P(\text{severe}) = b_1 + b_2 + \eta_b$$
+
+Probability of a bleed within the next 24 hours (Abrantes 2019 Equation 2):
+
+$$P_i(\text{bleeding}) = 1 - \exp\left(-\int_t^{t+24\,h} h_i(s)\,ds\right)$$
+
+# Population
+
+The analysis pooled LEOPOLD I (NCT01029340, ages 12-64), LEOPOLD II
+(NCT01233258, ages 12-64) and LEOPOLD kids (NCT01311648, ages < 12) (Abrantes
+2020 Table 1 and Online Table S1): 1535 FVIII activity observations from 183
+previously treated patients with severe hemophilia A (endogenous FVIII
+< 1 IU/dL) and no inhibitor history, and 633 bleeds from the 172 with a
+bleeding observation period. The median patient was 22 years old (range 1-61),
+weighed 60 kg (11-124) and had a lean body weight (LBW) of 50.9 kg
+(9.25-79.2); 77% were White, 13% Asian, 4.7% Black and 4.7% Hispanic. Doses
+were 20-50 IU/kg two to three times a week (LEOPOLD I), 20-40 IU/kg two to three
+times a week (LEOPOLD II) and 25-50 IU/kg at least twice a week (LEOPOLD kids).
+The median bleeding observation period was 12 months (3.1-13.1); 116 patients
+(67%) bled at least once (median 2 bleeds, range 0-33). Of the 633 bleeds, 47%
+were mild, 44% moderate and 9.8% severe.
+
+The joint-bleed model re-estimated the RTTCE component on joint spontaneous
+bleeds in the 121 patients of LEOPOLD I and II. The forecasting study used the
+same 172 patients, split into 51 aged < 12 years and 121 aged >= 12 years.
+
+The same information is available programmatically through each model's
+`population` metadata.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| CL at LBW 51.1 kg | 1.93 dL/h | Abrantes 2020 Table 2; Abrantes 2019 Suppl. eq. 1 |
+| V1 at LBW 51.1 kg | 30.3 dL | Abrantes 2020 Table 2; Abrantes 2019 Suppl. eq. 2 |
+| Q | 1.69 dL/h | Abrantes 2020 Table 2; Abrantes 2019 Suppl. eq. 3 |
+| V2 | 6.29 dL | Abrantes 2020 Table 2; Abrantes 2019 Suppl. eq. 4 |
+| LBW exponent on CL / V1 | 0.646 / 0.958 | Abrantes 2020 Table 2 (footnote a gives the centring at 51.1 kg) |
+| IIV CL / V1 (variance) | 0.0913 / 0.0226 | Abrantes 2019 Suppl. Text; Abrantes 2020 Table 2 30.2 / 15.1 %CV |
+| IIV on the residual error (variance) | 0.398 | Abrantes 2019 Suppl. Text; Abrantes 2020 Table 2 63.1 %CV |
+| Proportional residual error | 20.3% | Abrantes 2020 Table 2; variance 0.0411 in Abrantes 2019 Suppl. Text |
+| Additive residual error | 1.52 IU/dL | Abrantes 2020 Table 2; variance 2.31 in Abrantes 2019 Suppl. Text |
+| PK structure and error model | -- | Abrantes 2019 Suppl. eq. 1-8 |
+| Hazard equation | Gompertz x Imax | Abrantes 2020 Suppl. eq. 1; Abrantes 2019 Equation 1 |
+| $\lambda$ and $IF_{50}$ from $\lambda_{0.5}$, $\lambda_{20}$ | -- | Abrantes 2020 Suppl. eq. 2-3 |
+| $\lambda_{0.5}$ / $\lambda_{20}$, all bleeds | 2.82 / 1.00 per year | Abrantes 2020 Table 2 |
+| $\gamma$, all bleeds | -0.566 per year | Abrantes 2020 Table 2; Abrantes 2019 Equation 1 |
+| $b_1$ / $b_2$, all bleeds | 0.424 / -3.43 | Abrantes 2020 Table 2 |
+| IIV hazard / severity, all bleeds | 136 %CV / SD 1.67 | Abrantes 2020 Table 2; Abrantes 2019 Equation 1 (136%) |
+| Severity model | proportional odds | Abrantes 2020 Suppl. eq. 6-12 |
+| $\lambda_{0.5}$ / $\lambda_{20}$, joint spontaneous | 1.65 / 0.386 per year | Abrantes 2020 Table 3 |
+| $\gamma$, joint spontaneous | -0.706 per year | Abrantes 2020 Table 3 |
+| $b_1$ / $b_2$, joint spontaneous | 0.831 / -3.95 | Abrantes 2020 Table 3 |
+| IIV hazard / severity, joint spontaneous | 157 %CV / SD 2.13 | Abrantes 2020 Table 3 |
+
+# Derived quantities (Tables 2 and 3)
+
+The parameters marked "derived" in Tables 2 and 3 -- $\lambda$ at zero FVIII,
+$IF_{50}$ and the typical probabilities of a mild, moderate or severe bleed --
+are functions of the estimated parameters. Reading them off the packaged models
+checks the reparameterisation (Supplementary Appendix equations 2-3) and the
+direction of the severity logits.
+
+```{r derived}
+one_row <- data.frame(id = 1, time = 0, amt = 0, cmt = NA_character_, evid = 0L, dvid = 1L, LBM = 51.1)
+derived <- function(mod) {
+  s <- rxode2::rxSolve(mod, one_row, returnType = "data.frame")
+  c(
+    lam_haz = s$lam_haz, ic50 = s$ic50,
+    mild = 100 * s$prob_bleedsev_mild,
+    moderate = 100 * s$prob_bleedsev_moderate,
+    severe = 100 * s$prob_bleedsev_severe
+  )
+}
+der <- rbind(
+  data.frame(model = "All bleeds (Table 2)", t(derived(mod_all_typ))),
+  data.frame(model = "Joint spontaneous (Table 3)", t(derived(mod_joint_typ)))
+)
+der_pub <- data.frame(
+  model = der$model,
+  lam_haz = c(2.96, 1.80), ic50 = c(10.2, 5.45),
+  mild = c(39.6, 30.3), moderate = c(55.7, 65.4), severe = c(4.72, 4.23)
+)
+der_cmp <- tidyr::pivot_longer(der, -model, values_to = "packaged") |>
+  left_join(tidyr::pivot_longer(der_pub, -model, values_to = "published"), by = c("model", "name")) |>
+  mutate(pct_diff = 100 * (packaged / published - 1))
+der_cmp |>
+  mutate(name = dplyr::recode(name,
+    lam_haz = "lambda at 0 IU/dL, 1 year (1/year)", ic50 = "IF50 (IU/dL)",
+    mild = "P(mild) (%)", moderate = "P(moderate) (%)", severe = "P(severe) (%)"
+  )) |>
+  dplyr::rename(Model = model, Quantity = name, Packaged = packaged, Published = published, "% difference" = pct_diff) |>
+  knitr::kable(digits = c(0, 0, 3, 3, 2))
+
+stopifnot(
+  # Deterministic functions of the transcribed estimates; the published
+  # values are rounded to three significant figures.
+  all(abs(der_cmp$pct_diff) < 1)
+)
+```
+
+# PK validation
+
+## Terminal half-life at the reported clearances (Figure 3)
+
+Abrantes 2020 reports, from the FREM covariate analysis, a typical CL of
+2.30 dL/h at a von Willebrand factor level of 64% (5th percentile) with a
+terminal half-life of 11.6 h, and 1.59 dL/h at 179% (95th percentile) with
+16.5 h. With V1, Q and V2 at their typical values, the terminal half-life is a
+function of the disposition parameters only, so setting CL to these values
+checks V1, Q and V2. A single 50 IU/kg dose (3000 IU) is given to a 60-kg
+adult at the reference LBW of 51.1 kg and the half-life is estimated with
+PKNCA.
+
+```{r halflife}
+hl_cases <- data.frame(
+  treatment = c("Typical (CL 1.93 dL/h)", "vWF 64% (CL 2.30 dL/h)", "vWF 179% (CL 1.59 dL/h)"),
+  cl = c(1.93, 2.30, 1.59),
+  half.life = c(NA, 11.6, 16.5)
+)
+obs_hl <- c(0, 0.25, 0.5, 1, 2, 4, 6, 8, 12, 24, 36, 48, 60, 72, 96, 120)
+sim_hl <- bind_rows(lapply(seq_len(nrow(hl_cases)), function(i) {
+  ev <- bind_rows(
+    data.frame(id = i, time = 0, amt = 3000, cmt = "central", evid = 1L, dvid = NA_integer_),
+    data.frame(id = i, time = obs_hl, amt = 0, cmt = NA_character_, evid = 0L, dvid = 1L)
+  )
+  ev$LBM <- 51.1
+  rxode2::rxSolve(mod_all_typ, ev, params = c(lcl = log(hl_cases$cl[i])), returnType = "data.frame") |>
+    mutate(id = i, treatment = hl_cases$treatment[i])
+}))
+
+conc_hl <- sim_hl |>
+  dplyr::filter(!is.na(Cc)) |>
+  select(id, treatment, time, Cc)
+dose_hl <- data.frame(id = seq_len(nrow(hl_cases)), treatment = hl_cases$treatment, time = 0, amt = 3000)
+nca_hl <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_hl, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_hl, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, half.life = TRUE, aucinf.obs = TRUE)
+))
+
+ref_hl <- hl_cases |>
+  dplyr::filter(!is.na(half.life)) |>
+  select(treatment, half.life)
+nlmixr2lib::ncaComparisonTable(
+  nca_hl, ref_hl,
+  by = "treatment",
+  units = c(half.life = "h")
+) |>
+  knitr::kable(caption = "PKNCA terminal half-life (packaged model) vs the half-lives reported with Figure 3 of Abrantes 2020.")
+```
+
+```{r halflife-check}
+hl_res <- as.data.frame(nca_hl$result) |>
+  dplyr::filter(PPTESTCD == "half.life") |>
+  left_join(ref_hl, by = "treatment")
+hl_res |>
+  select(treatment, PPORRES, half.life) |>
+  dplyr::rename(Scenario = treatment, "Simulated t1/2 (h)" = PPORRES, "Published t1/2 (h)" = half.life) |>
+  knitr::kable(digits = 2)
+stopifnot(
+  # Deterministic typical-value solves; the published values are rounded to
+  # 0.1 h, so 3% admits rounding and the terminal-phase regression.
+  all(abs(hl_res$PPORRES[!is.na(hl_res$half.life)] / hl_res$half.life[!is.na(hl_res$half.life)] - 1) < 0.03)
+)
+```
+
+## Virtual cohort and individual clearance
+
+Abrantes 2020 reports a median individual CL of 1.80 dL/h (range 0.579-4.73)
+and V1 of 29.5 dL (5.68-51.1) across the estimation cohort. A virtual cohort of
+the same age mix is built from the LBW summary of Online Table S1 (normal
+within each age group, truncated to the observed range): 24 patients aged 0-<6
+years, 27 aged 6-<12, 18 aged 12-<18 and 103 aged >= 18 years, each scaled by
+two so the cohort has 344 patients.
+
+```{r cohort}
+lbw_groups <- data.frame(
+  group = c("0-<6 years", "6-<12 years", "12-<18 years", ">=18 years"),
+  n = 2 * c(24, 27, 18, 103),
+  mean = c(17.6, 28.4, 52.5, 56.2), sd = c(3.88, 8.55, 9.79, 8.25),
+  lo = c(10.1, 9.25, 39.4, 35.5), hi = c(30.1, 48.9, 77.0, 79.2)
+)
+draw_trunc <- function(n, mean, sd, lo, hi) {
+  p <- runif(n, pnorm(lo, mean, sd), pnorm(hi, mean, sd))
+  qnorm(p, mean, sd)
+}
+cohort <- bind_rows(lapply(seq_len(nrow(lbw_groups)), function(i) {
+  g <- lbw_groups[i, ]
+  data.frame(group = g$group, LBM = draw_trunc(g$n, g$mean, g$sd, g$lo, g$hi))
+})) |>
+  mutate(id = dplyr::row_number())
+
+ev_coh <- cohort |>
+  transmute(id, time = 0, amt = 0, cmt = NA_character_, evid = 0L, dvid = 1L, LBM)
+sim_coh <- rxode2::rxSolve(mod_all, ev_coh, returnType = "data.frame")
+ind_par <- sim_coh |>
+  summarise(
+    median_cl = median(cl), min_cl = min(cl), max_cl = max(cl),
+    median_vc = median(vc), min_vc = min(vc), max_vc = max(vc)
+  )
+data.frame(
+  Parameter = c("CL (dL/h)", "V1 (dL)"),
+  "Simulated median" = c(ind_par$median_cl, ind_par$median_vc),
+  "Simulated range" = c(
+    sprintf("%.2f-%.2f", ind_par$min_cl, ind_par$max_cl),
+    sprintf("%.1f-%.1f", ind_par$min_vc, ind_par$max_vc)
+  ),
+  "Published median" = c(1.80, 29.5),
+  "Published range" = c("0.579-4.73", "5.68-51.1"),
+  check.names = FALSE
+) |>
+  knitr::kable(digits = 2)
+
+stopifnot(
+  # The published medians are of empirical Bayes estimates (shrinkage 10-16%)
+  # in the real cohort, so only a structural miss -- a wrong exponent,
+  # centring weight or typical value -- is screened for.
+  abs(ind_par$median_cl / 1.80 - 1) < 0.15,
+  abs(ind_par$median_vc / 29.5 - 1) < 0.15
+)
+```
+
+# Bleeding RTTCE validation
+
+## Hazard at a constant FVIII activity (Discussion)
+
+The Discussion gives the typical hazard at the end of the study (one year) as
+2.7, 2.0 and 1.2 per year at constant FVIII activities of 1, 5 and 15 IU/dL,
+and 5.0 per year at the start and 2.8 per year at the end of the study at
+0.5 IU/dL. These follow from the hazard function with the packaged parameters.
+
+```{r hazard-constant}
+pars_all <- rxode2::rxSolve(mod_all_typ, one_row, returnType = "data.frame")
+haz_const <- function(fviii, t_year, p) {
+  p$lam_haz * exp(p$gam_haz * (t_year - 1)) * (1 - fviii / (fviii + p$ic50))
+}
+gam_all <- mod_all$iniDf$est[mod_all$iniDf$name == "gam_haz"]
+p_all <- list(lam_haz = pars_all$lam_haz, ic50 = pars_all$ic50, gam_haz = gam_all)
+haz_tab <- data.frame(
+  scenario = c("1 IU/dL, 1 year", "5 IU/dL, 1 year", "15 IU/dL, 1 year", "0.5 IU/dL, study start", "0.5 IU/dL, 1 year"),
+  fviii = c(1, 5, 15, 0.5, 0.5),
+  t_year = c(1, 1, 1, 0, 1),
+  published = c(2.7, 2.0, 1.2, 5.0, 2.8)
+) |>
+  mutate(packaged = haz_const(fviii, t_year, p_all))
+haz_tab |>
+  select(scenario, packaged, published) |>
+  dplyr::rename(Scenario = scenario, "Packaged hazard (1/year)" = packaged, "Published (1/year)" = published) |>
+  knitr::kable(digits = 2)
+stopifnot(
+  # Published to two significant figures.
+  all(abs(haz_tab$packaged - haz_tab$published) < 0.06)
+)
+```
+
+## Cumulative bleeds at maintained troughs (Figure 5)
+
+Figure 5 of Abrantes 2020 simulates one year of 420, 1260, 2100 or 6240 IU
+every two days in a median 60-kg patient, regimens stated to give
+steady-state troughs of 1, 3, 5 and 15 IU/dL. The median cumulative number of
+bleeds ranged from 2.73 (trough 1 IU/dL) to 0.745 (trough 15 IU/dL), 1.53 at a
+trough of 5 IU/dL, and the 90th percentile from 11.2 to 3.00 (6.17 at
+5 IU/dL), "assuming only inter-individual variability on the bleeding hazard
+unexplained by any covariates" -- the 111% CV left after FREM, not the 136%
+marginal IIV of Table 2.
+
+For a hazard without a Markov term, the expected number of bleeds over a
+period is the cumulative hazard, and the random effect multiplies it. The
+typical-value cumulative hazard is therefore the median, and the 90th
+percentile is the median times $\exp(1.2816\,\omega)$. The typical patient is
+given the median LBW of 50.9 kg.
+
+```{r figure5}
+fig5 <- data.frame(
+  dose = c(420, 1260, 2100, 6240),
+  trough_pub = c(1, 3, 5, 15),
+  median_pub = c(2.73, NA, 1.53, 0.745),
+  p90_pub = c(11.2, NA, 6.17, 3.00)
+)
+t_trough <- 48 * 180 - 1e-6
+sim_fig5 <- bind_rows(lapply(seq_len(nrow(fig5)), function(i) {
+  ev <- bind_rows(
+    data.frame(id = i, time = seq(0, 8760 - 48, by = 48), amt = fig5$dose[i], cmt = "central", evid = 1L, dvid = NA_integer_),
+    data.frame(id = i, time = sort(c(seq(0, 8760, by = 4), t_trough)), amt = 0, cmt = NA_character_, evid = 0L, dvid = 1L)
+  )
+  ev$LBM <- 50.9
+  rxode2::rxSolve(mod_all_typ, ev, returnType = "data.frame") |>
+    mutate(id = i, dose = fig5$dose[i])
+}))
+z90 <- qnorm(0.9)
+fig5_res <- sim_fig5 |>
+  group_by(dose) |>
+  summarise(
+    trough = Cc[abs(time - t_trough) < 1e-3][1],
+    median = cumhaz[time == 8760]
+  ) |>
+  left_join(fig5, by = "dose") |>
+  mutate(
+    p90_111 = median * exp(z90 * 1.11),
+    p90_136 = median * exp(z90 * 1.36)
+  )
+fig5_res |>
+  select(dose, trough, trough_pub, median, median_pub, p90_111, p90_pub, p90_136) |>
+  dplyr::rename(
+    "Dose every 48 h (IU)" = dose,
+    "Trough (IU/dL)" = trough,
+    "Published trough" = trough_pub,
+    "Median bleeds, 1 year" = median,
+    "Published median" = median_pub,
+    "90th pct (IIV 111%)" = p90_111,
+    "Published 90th pct" = p90_pub,
+    "90th pct (IIV 136%)" = p90_136
+  ) |>
+  knitr::kable(digits = 3)
+
+stopifnot(
+  # Troughs: deterministic PK, published to the integer.
+  all(abs(fig5_res$trough / fig5_res$trough_pub - 1) < 0.03),
+  # Medians and 90th percentiles of a 2000-replicate simulation, read from
+  # the source's text; the trough-1 median is the furthest off (see
+  # Assumptions and deviations).
+  all(abs(fig5_res$median / fig5_res$median_pub - 1) < 0.08, na.rm = TRUE),
+  all(abs(fig5_res$p90_111 / fig5_res$p90_pub - 1) < 0.10, na.rm = TRUE)
+)
+```
+
+```{r figure5-plot, fig.height = 4}
+sim_fig5 |>
+  mutate(regimen = factor(paste0(dose, " IU q48h"), levels = paste0(fig5$dose, " IU q48h"))) |>
+  ggplot(aes(time / 24, cumhaz, colour = regimen)) +
+  geom_line() +
+  labs(
+    x = "Time since study start (days)", y = "Median cumulative number of bleeds",
+    colour = NULL,
+    caption = "Replicates the median curves of Figure 5 of Abrantes 2020 (typical patient, LBW 50.9 kg)."
+  ) +
+  theme_bw()
+```
+
+## Stochastic cohort: simulated bleed counts
+
+A stochastic check of the full random-effect model: 200 virtual patients at the
+2100 IU every-48-h regimen, with all random effects drawn. Given each
+patient's cumulative hazard, the number of bleeds in the year is Poisson. The
+expected median count is lower than the typical cumulative hazard because the
+136% IIV is wide and the count is discrete.
+
+```{r cohort-bleeds}
+n_sub <- 200
+ev_vpc <- bind_rows(lapply(seq_len(n_sub), function(i) {
+  bind_rows(
+    data.frame(id = i, time = seq(0, 8760 - 48, by = 48), amt = 2100, cmt = "central", evid = 1L, dvid = NA_integer_),
+    data.frame(id = i, time = c(seq(0, 8736, by = 24 * 7), 8760), amt = 0, cmt = NA_character_, evid = 0L, dvid = 1L)
+  )
+}))
+ev_vpc$LBM <- 50.9
+sim_vpc <- rxode2::rxSolve(mod_all, ev_vpc, returnType = "data.frame")
+year_end <- sim_vpc |>
+  dplyr::filter(time == 8760) |>
+  mutate(n_bleeds = rpois(dplyr::n(), cumhaz))
+summary_vpc <- data.frame(
+  statistic = c("Median cumulative hazard", "Median bleed count", "Patients with no bleed (%)"),
+  value = c(median(year_end$cumhaz), median(year_end$n_bleeds), 100 * mean(year_end$n_bleeds == 0))
+)
+summary_vpc |>
+  dplyr::rename(Statistic = statistic, Value = value) |>
+  knitr::kable(digits = 2)
+stopifnot(
+  # Centre of a 200-patient cohort; the typical value is 1.53.
+  abs(median(year_end$cumhaz) / 1.53 - 1) < 0.45
+)
+```
+
+```{r cohort-plot, fig.height = 4}
+sim_vpc |>
+  group_by(time) |>
+  summarise(
+    p10 = quantile(cumhaz, 0.1), p50 = median(cumhaz), p90 = quantile(cumhaz, 0.9),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time / 24)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), alpha = 0.3) +
+  geom_line(aes(y = p50)) +
+  labs(
+    x = "Time since study start (days)", y = "Cumulative hazard (expected bleeds)",
+    caption = "Median and 10th-90th percentiles, 200 virtual patients, 2100 IU every 48 h (IIV 136%)."
+  ) +
+  theme_bw()
+```
+
+## Bleed severity
+
+The typical probabilities of a mild, moderate or severe bleed (39.6, 55.7 and
+4.72%) are those at $\eta_b = 0$. Averaging over the severity random effect
+(SD 1.67) gives the population proportions, which can be set against the
+observed 47% mild, 44% moderate and 9.8% severe bleeds of Table 1.
+
+```{r severity}
+marg_sev <- function(b1, b2, sd) {
+  f <- function(fn) integrate(function(e) fn(e) * dnorm(e, 0, sd), -Inf, Inf)$value
+  p_ms <- f(function(e) plogis(b1 + e))
+  p_s <- f(function(e) plogis(b1 + b2 + e))
+  100 * c(mild = 1 - p_ms, moderate = p_ms - p_s, severe = p_s)
+}
+sev_tab <- data.frame(
+  category = c("Mild", "Moderate", "Severe"),
+  typical = c(39.6, 55.7, 4.72),
+  marginal = unname(marg_sev(0.424, -3.43, 1.67)),
+  observed = c(46.6, 43.6, 9.8)
+)
+sev_tab |>
+  dplyr::rename(
+    Severity = category, "Typical (Table 2, %)" = typical,
+    "Averaged over IIV (%)" = marginal, "Observed (Table 1, %)" = observed
+  ) |>
+  knitr::kable(digits = 1)
+stopifnot(
+  # Every observed proportion within 6 percentage points of the
+  # IIV-averaged model; the typical values alone miss severe bleeds by half.
+  all(abs(sev_tab$marginal - sev_tab$observed) < 6)
+)
+```
+
+# Bayesian bleed forecasting (Abrantes 2019)
+
+Abrantes 2019 used this model to forecast, every 24 hours, the probability of a
+bleed in the next 24 hours (Equation 2). In the "Bleed" information scenario
+only the bleed history updates the hazard random effect $\eta$. Because $\eta$
+multiplies the whole hazard, the log posterior of $\eta$ given $k$ bleeds up
+to time $t$ is, apart from terms free of $\eta$,
+$k\,\eta - H(t)\,e^{\eta} - \eta^2 / (2\omega^2)$, where $H(t)$ is the
+typical-value cumulative hazard. Its maximum (the empirical Bayes estimate used
+by the source) solves $k - H(t)\,e^{\eta} - \eta / \omega^2 = 0$.
+
+The example below, in the spirit of Figure 2 of Abrantes 2019, follows a
+typical-PK adult (LBW 51.1 kg) on 30 IU/kg (1800 IU) every Monday, Wednesday
+and Friday for 12 weeks, without bleeds or with bleeds on days 7 and 49, and
+forecasts the next-day bleeding probability with the typical $\eta$ (the "PK"
+scenario with typical PK) and with the bleed-updated $\eta$ ("Bleed").
+
+```{r forecast}
+dose_days <- sort(c(seq(0, 83, by = 7), seq(2, 83, by = 7), seq(4, 83, by = 7)))
+ev_fc <- bind_rows(
+  data.frame(id = 1, time = dose_days * 24, amt = 1800, cmt = "central", evid = 1L, dvid = NA_integer_),
+  data.frame(id = 1, time = seq(0, 84 * 24, by = 24), amt = 0, cmt = NA_character_, evid = 0L, dvid = 1L)
+)
+ev_fc$LBM <- 51.1
+sim_fc <- rxode2::rxSolve(mod_all_typ, ev_fc, returnType = "data.frame") |>
+  dplyr::filter(!duplicated(time))
+omega2 <- 1.36^2
+eta_map <- function(k, H) {
+  uniroot(function(e) k - H * exp(e) - e / omega2, c(-20, 20))$root
+}
+forecast_pat <- function(bleed_days, label) {
+  day <- 1:83
+  H_t <- sim_fc$cumhaz[match(day * 24, sim_fc$time)]
+  H_next <- sim_fc$cumhaz[match((day + 1) * 24, sim_fc$time)] - H_t
+  k <- vapply(day, function(d) sum(bleed_days <= d), numeric(1))
+  eta <- mapply(eta_map, k, H_t)
+  data.frame(
+    patient = label, day = day,
+    PK = 1 - exp(-H_next),
+    Bleed = 1 - exp(-H_next * exp(eta))
+  )
+}
+fc <- bind_rows(
+  forecast_pat(numeric(0), "No bleeds"),
+  forecast_pat(c(7, 49), "Bleeds on days 7 and 49")
+)
+fc |>
+  tidyr::pivot_longer(c(PK, Bleed), names_to = "scenario", values_to = "p") |>
+  ggplot(aes(day, p, colour = scenario)) +
+  geom_line() +
+  facet_wrap(~patient) +
+  labs(
+    x = "Study day", y = "P(bleed in the next 24 h)", colour = "Information",
+    caption = "In the spirit of Figure 2 of Abrantes 2019 (typical PK, illustrative bleed histories)."
+  ) +
+  theme_bw()
+
+no_bleed <- dplyr::filter(fc, patient == "No bleeds")
+with_bleed <- dplyr::filter(fc, patient == "Bleeds on days 7 and 49")
+stopifnot(
+  # Without bleeds the Bleed forecast falls below the PK forecast as days pass.
+  no_bleed$Bleed[no_bleed$day == 80] < no_bleed$PK[no_bleed$day == 80],
+  # A bleed raises the Bleed forecast above the bleed-free forecast.
+  with_bleed$Bleed[with_bleed$day == 8] > no_bleed$Bleed[no_bleed$day == 8],
+  # Daily probabilities of the order of the optimal thresholds of Table 2
+  # (0.0058-0.014): bleeds occurred on about 1% of forecast days.
+  median(no_bleed$PK) > 0.001, median(no_bleed$PK) < 0.05
+)
+```
+
+As in the source, the PK-only forecast follows the dosing schedule and does not
+react to bleeds, while the bleed-informed forecast falls during bleed-free
+periods and rises after each bleed.
+
+# Joint spontaneous bleeds (Table 3)
+
+The joint-bleed model uses the same PK, with lower hazards ($\lambda_{0.5}$
+1.65, $\lambda_{20}$ 0.386 per year) and a lower $IF_{50}$ (5.45 IU/dL),
+"reflecting less frequent events and higher potency for the replacement
+therapy". The typical one-year cumulative hazards for the Figure 5 regimens:
+
+```{r joint}
+sim_joint <- bind_rows(lapply(seq_len(nrow(fig5)), function(i) {
+  ev <- bind_rows(
+    data.frame(id = i, time = seq(0, 8760 - 48, by = 48), amt = fig5$dose[i], cmt = "central", evid = 1L, dvid = NA_integer_),
+    data.frame(id = i, time = 8760, amt = 0, cmt = NA_character_, evid = 0L, dvid = 1L)
+  )
+  ev$LBM <- 50.9
+  rxode2::rxSolve(mod_joint_typ, ev, returnType = "data.frame") |>
+    mutate(dose = fig5$dose[i])
+}))
+joint_tab <- sim_joint |>
+  select(dose, joint = cumhaz) |>
+  left_join(select(fig5_res, dose, all = median), by = "dose")
+joint_tab |>
+  dplyr::rename(
+    "Dose every 48 h (IU)" = dose,
+    "Joint spontaneous bleeds, 1 year" = joint,
+    "All bleeds, 1 year" = all
+  ) |>
+  knitr::kable(digits = 3)
+stopifnot(all(joint_tab$joint < joint_tab$all))
+```
+
+# Assumptions and deviations
+
+* **Covariates.** The FREM covariate model (von Willebrand factor and race on
+  CL; pre-study bleeds on the hazard; age and von Willebrand factor on
+  severity) is not encoded: FREM expresses covariate effects through the
+  covariance between covariate and parameter random effects, and neither paper
+  publishes that matrix, the covariate means or variances. Only correlation
+  coefficients (Figure 2) and graphical effect sizes (Figure 3) are given. The
+  covariates are documented in `covariatesDataExcluded`, and the IIV in both
+  files is the Table 2 / Table 3 marginal IIV (136% on the all-bleeds hazard),
+  which is the value Abrantes 2019 quotes in its Equation 1. With all
+  covariates, the unexplained IIV on the hazard falls to 111% (Abrantes 2020
+  Results); Figure 5 uses that residual value.
+* **IIV scale.** Table 2 reports IIV as %CV. The Abrantes 2019 Supplemental
+  Text gives the variances behind the PK rows (0.0913, 0.0226 and 0.398), which
+  equal (%CV/100)^2. The same convention is applied to the hazard (136% gives
+  1.8496) and to the severity SD (1.67 gives 2.7889). The Figure 5 ratio of the
+  90th percentile to the median (about 4.1) implies an SD of about 1.1 on the
+  log hazard, which matches the 111% residual CV read on this convention.
+* **Residual error labels.** The Abrantes 2019 Supplemental Text gives the
+  residual variances as 2.31 (proportional) and 0.0411 (additive). These are
+  1.52^2 and 0.203^2, so the labels are swapped: Table 2 of Abrantes 2020 gives
+  an additive SD of 1.52 IU/dL and a proportional CV of 20.3%, which are used.
+* **Rounding.** The LBW exponents are taken from Table 2 (0.646 and 0.958);
+  the Abrantes 2019 Supplemental Text prints them rounded to 0.65 and 0.96.
+* **Severity parameterisation.** The source models the logits of P(moderate or
+  severe) and P(severe). The library's proportional-odds convention models the
+  cumulative probability from the lowest grade, so `logite0` = -b1 and
+  `logitstep1` = -b2. The random effect changes sign, which leaves the model
+  unchanged because its distribution is symmetric. The ordinal output
+  `bleedsev` is 1 = mild, 2 = moderate, 3 = severe, and is meaningful only on
+  rows where a bleed occurs.
+* **Time scale.** The hazard parameters are per year and the Gompertz time is
+  years since study start; model time is hours, converted with 8760 h per year
+  (365 days). The year length is not stated in the source; 365.25 days would
+  change the hazard by less than 0.1%.
+* **Administration.** Doses are given as intravenous boluses into `central`;
+  the infusion duration is not part of the source model.
+* **Study start.** The Gompertz term and the cumulative hazard start at model
+  time 0, which must be the patient's study start. To forecast from a later
+  time, take differences of `cumhaz` as in Equation 2 of Abrantes 2019.
+* **Figure 5 medians.** The trough-1 IU/dL median (2.88 against 2.73 printed)
+  is the furthest from the source, about 5%; the troughs themselves and the
+  medians at 5 and 15 IU/dL are within 1%. The source medians are summaries of
+  2000 simulated patients and the exact regimen start (first dose or steady
+  state) is not stated.
+* **Below-quantification samples.** How the source handled FVIII activity
+  below the quantification limit in estimation does not affect simulation and
+  is not encoded.
+* **Joint-bleed model population.** The number of bleeds that were both joint
+  and spontaneous is not reported; Table 1 gives joint and spontaneous counts
+  separately. No covariate model was reported for the joint-bleed
+  re-estimation.
+* **Bayesian forecasting.** The forecasting study's predictive-performance
+  results (ROC and precision-recall areas, Table 2 of Abrantes 2019) depend on
+  the individual LEOPOLD data and are not reproduced. The forecasting section
+  above illustrates the mechanism only.
