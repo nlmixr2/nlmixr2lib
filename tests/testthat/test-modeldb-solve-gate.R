@@ -388,14 +388,73 @@ knownDeadDoseModels <- character(0)
 # Probe results keyed by model name, each model probed at most once however
 # many tests ask for it: the tests below cover overlapping sets of models. An
 # environment rather than a variable so the memo survives across test_that()
-# blocks without superassignment.
+# blocks without superassignment. `crashed` holds, per model, why the R
+# process probing it died on its own.
 .gateCache <- new.env(parent = emptyenv())
 .gateCache$res <- list()
+.gateCache$crashed <- character(0)
+
+# Why a probe child died: callr's message, the exit status (on Windows
+# -1073741819 is an access violation and -1073741571 a stack overflow) and the
+# last lines the child wrote to stderr.
+.childDeath <- function(e) {
+  err <- if (length(e$stderr) && nzchar(e$stderr)) utils::tail(strsplit(e$stderr, "\n")[[1]], 5L) else character(0)
+  paste0(
+    sub("^! ", "", conditionMessage(e)),
+    if (length(e$status)) paste0(" (exit status ", e$status, ")"),
+    if (length(err)) paste0("; stderr: ", paste(err, collapse = " | "))
+  )
+}
+
+# Probes one block in one child. When that child dies, the block is probed
+# again one model per child, so the failure names the model: each model whose
+# own child dies goes into .gateCache$crashed, and the rest keep their results.
+# When every model then solves alone, the block died as a whole (memory or
+# loaded DLLs, not one model), and a warning says so.
+.probeBlock <- function(nms) {
+  res <- tryCatch(.probeInChild(nms), callr_error = function(e) e)
+  if (!inherits(res, "callr_error")) {
+    return(res)
+  }
+  blockDeath <- .childDeath(res)
+  out <- list()
+  for (n in nms) {
+    one <- tryCatch(.probeInChild(n), callr_error = function(e) e)
+    if (inherits(one, "callr_error")) {
+      .gateCache$crashed[[n]] <- .childDeath(one)
+    } else {
+      out <- c(out, one)
+    }
+  }
+  if (!any(nms %in% names(.gateCache$crashed))) {
+    warning(
+      "The R process probing a block of ",
+      length(nms),
+      " models died (",
+      blockDeath,
+      "), but each model solves in a process of its own: ",
+      paste(nms, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  out
+}
+
 .gateProbe <- function(names_) {
-  todo <- setdiff(names_, names(.gateCache$res))
+  todo <- setdiff(names_, c(names(.gateCache$res), names(.gateCache$crashed)))
   if (length(todo)) {
     blocks <- split(todo, ceiling(seq_along(todo) / .probeBlockSize))
-    .gateCache$res <- c(.gateCache$res, do.call(c, unname(lapply(blocks, .probeInChild))))
+    for (b in blocks) {
+      .gateCache$res <- c(.gateCache$res, .probeBlock(b))
+    }
+  }
+  crashed <- intersect(names_, names(.gateCache$crashed))
+  if (length(crashed)) {
+    stop(
+      "The R process probing each of these models died with that model alone:\n",
+      paste0("  ", crashed, ": ", .gateCache$crashed[crashed], collapse = "\n"),
+      call. = FALSE
+    )
   }
   .gateCache$res[names_]
 }
