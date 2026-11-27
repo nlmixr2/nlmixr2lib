@@ -90,10 +90,18 @@ that the original column is what `Svensson_2018_rifampicin` carries
 (Table 4 percentages are SD x 100 for the random effects).
 
 ```{r table4}
-sv <- readModelDb("Svensson_2018_rifampicin")
-ke <- readModelDb("Keutzer_2020_rifampicin")
-sv_ui <- rxode2::rxode2(sv)
-ke_ui <- rxode2::rxode2(ke)
+# The occasion etas of the Svensson model are switched by OCC indicators
+# and so are not mu-referenced; rxode2 notes this with a warning on every
+# parse, which is expected for this model and is muffled here only.
+quiet_parse <- function(expr) {
+  withCallingHandlers(expr, warning = function(w) {
+    if (grepl("non-mu referenced", conditionMessage(w))) invokeRestart("muffleWarning")
+  })
+}
+sv <- quiet_parse(rxode2::rxode2(readModelDb("Svensson_2018_rifampicin")))
+ke <- rxode2::rxode2(readModelDb("Keutzer_2020_rifampicin"))
+sv_ui <- sv
+ke_ui <- ke
 
 th <- function(ui) ui$theta
 om <- function(ui) ui$omega
@@ -245,7 +253,7 @@ events <- dplyr::bind_rows(dose_rows, obs_rows) |>
 
 solve_one <- function(model, ev, label) {
   rxode2::rxSetSeed(2020)
-  rxode2::rxSolve(model, ev, keep = c("mgkg"), returnType = "data.frame", hmax = 0.02) |>
+  quiet_parse(rxode2::rxSolve(model, ev, keep = c("mgkg"), returnType = "data.frame", hmax = 0.02)) |>
     dplyr::select(id, time, Cc, mgkg) |>
     dplyr::mutate(scenario = label)
 }
@@ -447,18 +455,18 @@ fig4_events <- function(ffm, occ_last) {
 iiv_ev <- fig4_events(rep(40, n_fig4), occ_last = 0L)
 iov_ev <- fig4_events(rep(40, n_fig4), occ_last = 2L)
 
-sv_iov_only <- sv |>
+sv_iov_only <- quiet_parse(sv |>
   rxode2::ini(
     etalkm + etalvmax ~ c(1e-12, 0, 1e-12),
     etalvc ~ 1e-12,
     etalmtt ~ 1e-12,
     etalnn ~ 1e-12,
     etalka ~ 1e-12
-  )
+  ))
 
 auc_ss <- function(model, ev, label) {
   rxode2::rxSetSeed(2402)
-  s <- rxode2::rxSolve(model, ev, returnType = "data.frame", hmax = 0.02) |>
+  s <- quiet_parse(rxode2::rxSolve(model, ev, returnType = "data.frame", hmax = 0.02)) |>
     dplyr::select(id, time, Cc)
   conc <- s |> dplyr::mutate(treatment = label)
   dose <- ev |> dplyr::filter(evid == 1L) |> dplyr::select(id, time, amt) |>
@@ -539,7 +547,7 @@ typ_ev <- events |>
   dplyr::mutate(FFM = 40, DOSE = 1800, amt = ifelse(evid == 1L, 1800, 0))
 
 typ <- dplyr::bind_rows(
-  rxode2::rxSolve(rxode2::zeroRe(sv), typ_ev, returnType = "data.frame", hmax = 0.02) |>
+  quiet_parse(rxode2::rxSolve(rxode2::zeroRe(sv), typ_ev, returnType = "data.frame", hmax = 0.02)) |>
     dplyr::mutate(model = "Svensson_2018_rifampicin"),
   rxode2::rxSolve(rxode2::zeroRe(ke), typ_ev, returnType = "data.frame", hmax = 0.02) |>
     dplyr::mutate(model = "Keutzer_2020_rifampicin")
