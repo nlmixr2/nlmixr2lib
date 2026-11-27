@@ -540,9 +540,9 @@ pkTrans <- function(
             ")*",
             vc
           )),
-          str2lang(paste0(tmp, "<- sqrt(", p, "*", p, "-4*", s, ")")),
-          str2lang(paste0(k21, "<- 0.5*(-", p, "+", tmp, ")")),
-          str2lang(paste0(k31, "<- 0.5*(-", p, "-", tmp, ")")),
+          str2lang(paste0(tmp, "<- sqrt(", s, "*", s, "-4*", p, ")")),
+          str2lang(paste0(k21, "<- 0.5*(-", s, "+", tmp, ")")),
+          str2lang(paste0(k31, "<- 0.5*(-", s, "-", tmp, ")")),
           str2lang(paste0(kel, "<-", alpha, "*", beta, "*", gam, "/(", k21, "*", k31, ")")),
           str2lang(paste0(
             k12,

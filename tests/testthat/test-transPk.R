@@ -94,3 +94,19 @@ test_that("transPk -- alpha", {
   expect_true(all(c("lalpha", "lA") %in% names(pk1$theta)))
   expect_true(!any(c("lbeta", "lgam", "lB", "lC") %in% names(pk1$theta)))
 })
+
+test_that("pkTrans('alpha') matches analytical triexponential IV bolus for 3-cmt", {
+  pk3 <- readModelDb("PK_3cmt_des") |>
+    removeDepot() |>
+    pkTrans("alpha")
+  pk3 <- suppressMessages(rxode2::ini(pk3, lalpha = log(2), lbeta = log(0.5), lgam = log(0.1)))
+  pk3 <- suppressMessages(rxode2::ini(pk3, lA = log(0.5), lB = log(0.3), lC = log(0.2)))
+
+  times <- c(0, 0.25, 0.5, 1, 2, 5, 10)
+  ev <- rxode2::et(amt = 1, time = 0) |>
+    rxode2::et(times)
+  sol <- rxode2::rxSolve(pk3, ev)
+  exact <- 0.5 * exp(-2 * times) + 0.3 * exp(-0.5 * times) + 0.2 * exp(-0.1 * times)
+
+  expect_equal(sol$Cc, exact, tolerance = 1e-5)
+})
