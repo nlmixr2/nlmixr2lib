@@ -1,0 +1,413 @@
+---
+title: "Sertraline concentration-QTc (Abbas 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sertraline concentration-QTc (Abbas 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Abbas_2020_sertraline_ddQTcF")()$reference`
+* Article: <https://doi.org/10.1002/cpdd.749>
+
+Abbas et al. (2020) report the thorough-QT study of sertraline, a selective
+serotonin reuptake inhibitor. Healthy adults received, in a randomized
+3-period crossover, sertraline titrated over a week to a supratherapeutic
+400 mg/day (200 mg twice daily), matching placebo, and a single open-label dose
+of moxifloxacin 400 mg as the positive control. ECGs and plasma samples were
+taken on day 1 (after the first 50 mg dose) and on day 14 (after the last
+200 mg morning dose, at steady state).
+
+The exposure-response analysis is a linear mixed-effects model (R `nlme::lme`,
+REML) of the change from baseline in the Fridericia-corrected QT interval:
+
+DeltaQTc_ijk = (mu + TRT_j + t_k + eta_mu,i) + theta0 (BQTc_i - Bbar) +
+(theta1 + eta_C,i) C_ijk + eps_ijk
+
+fitted separately for sertraline and for its principal metabolite
+N-desmethylsertraline. The paper prints only the two slopes (0.036 ms per
+ng/mL for each analyte). It also prints three model predictions of the
+placebo-corrected effect DeltaDeltaQTcF for sertraline and draws the population
+regression line of DeltaQTcF on concentration for each analyte (Figure 3). The
+three packaged files use exactly that information:
+
+| Model file | Endpoint | Structure | Source |
+|------------|----------|-----------|--------|
+| `Abbas_2020_sertraline_ddQTcF` | DeltaDeltaQTcF (ms) | `e0 + slope * C` | slope from Results; `e0` back-solved from the three Results predictions |
+| `Abbas_2020_sertraline_dQTcF` | DeltaQTcF (ms) | `e0 + slope * C` | slope from Results; `e0` digitised from Figure 3A |
+| `Abbas_2020_desmethylsertraline_dQTcF` | DeltaQTcF (ms) | `e0 + slope * C` | slope from Results; `e0` digitised from Figure 3B |
+
+`C` is `CP_SERTRALINE_NGML` or `CP_DESMETHYLSERTRALINE_NGML` (ng/mL). The paper
+characterises the pharmacokinetics by non-compartmental analysis only
+(Table 3), so these are PD-only models: the user supplies the concentration.
+The random-effect covariance and the residual variance are not reported, so all
+three are typical-value models with `addSd = fixed(0)`.
+
+# Population
+
+```{r population}
+pop <- readModelDb("Abbas_2020_sertraline_ddQTcF")()$population
+str(pop[c("n_subjects", "age_range", "weight_range", "sex_female_pct", "race_ethnicity")])
+```
+
+Fifty-four healthy adults were enrolled at a single site in Brussels (Abbas
+2020 Table 2): mean age 36.5 years (range 20-54), 43 men and 11 women, 85.2%
+White, mean weight 74.4 kg and BMI 24.8 kg/m^2. The PK/PD data set held 1066
+sertraline-QTcF pairs and 1050 QTcF records on placebo, from days 1 and 14.
+
+# Source trace
+
+| Quantity | Value | Source |
+|----------|-------|--------|
+| Model equation | linear mixed effects, random intercept and slope | Methods 'Pharmacokinetic/Pharmacodynamic Analysis' |
+| Sertraline slope | 0.036 ms per ng/mL (90% CI 0.029-0.043) | Results 'Pharmacokinetic/Pharmacodynamic Analysis'; Abstract |
+| N-desmethylsertraline slope | 0.036 ms per ng/mL (90% CI 0.029-0.042) | Results 'Pharmacokinetic/Pharmacodynamic Analysis' |
+| DeltaDeltaQTcF predictions | 3.57 ms at 86 ng/mL; 8.93 ms at 234 ng/mL; 8.55 ms at 223.5 ng/mL | Results 'Pharmacokinetic/Pharmacodynamic Analysis' |
+| DeltaDeltaQTcF intercept `e0` | 0.49 ms | back-solved from the three predictions (below) |
+| DeltaQTcF intercept, sertraline | -5.9 ms | digitised from Figure 3A |
+| DeltaQTcF intercept, N-desmethylsertraline | -6.4 ms | digitised from Figure 3B |
+| Time-matched DeltaDeltaQTcF, day 14 | 5.597-9.651 ms | Table 4 |
+| Day 1 and day 14 NCA | Cmax, Tmax, AUC24, Cmin | Table 3 |
+| Random effects, residual error | not reported | typical-value models, `addSd = fixed(0)` |
+
+```{r load-models}
+mod_dd <- readModelDb("Abbas_2020_sertraline_ddQTcF")
+mod_d <- readModelDb("Abbas_2020_sertraline_dQTcF")
+mod_dm <- readModelDb("Abbas_2020_desmethylsertraline_dQTcF")
+
+# Typical-value prediction at a vector of concentrations. The models are
+# algebraic, so all rows sit in one subject at successive solver times.
+predict_qtc <- function(mod, conc, conc_col = "CP_SERTRALINE_NGML") {
+  ev <- data.frame(id = 1L, time = seq_along(conc), evid = 0L, amt = 0)
+  ev[[conc_col]] <- conc
+  as.data.frame(rxode2::rxSolve(mod, events = ev))$QTcF
+}
+```
+
+## Back-solving the DeltaDeltaQTcF intercept
+
+The Methods equation contains an intercept, treatment and nominal-time effects
+and a baseline term, none of which is printed. In the placebo-corrected contrast
+(sertraline minus placebo at the same time point) everything but the treatment
+effect TRT and the concentration term cancels, so DeltaDeltaQTcF = TRT +
+slope * C. The Results print that prediction at three concentrations. At the
+printed slope each anchor implies its own intercept:
+
+```{r backsolve}
+anchors <- data.frame(
+  label = c("mean therapeutic Cmax", "10 ms upper-bound crossing", "day 14 mean Cmax"),
+  conc = c(86, 223.5, 234),
+  pred = c(3.57, 8.55, 8.93)
+)
+anchors$e0_implied <- anchors$pred - 0.036 * anchors$conc
+unrounded <- stats::coef(stats::lm(pred ~ conc, data = anchors))
+knitr::kable(
+  anchors |>
+    dplyr::mutate(e0_implied = round(e0_implied, 4)) |>
+    dplyr::rename(
+      "Anchor" = label, "Concentration (ng/mL)" = conc,
+      "Printed DeltaDeltaQTcF (ms)" = pred, "Implied e0 at slope 0.036 (ms)" = e0_implied
+    ),
+  caption = "Intercepts implied by the three Abbas 2020 predictions at the printed slope."
+)
+unrounded
+stopifnot(
+  # The implied intercepts span 0.032 ms, so the packaged 0.49 (their
+  # centre) misses no anchor by more than 0.016 ms.
+  diff(range(anchors$e0_implied)) < 0.035,
+  # The unrounded line through the anchors has a slope that rounds to the
+  # printed 0.036, so the spread is the rounding of the printed slope.
+  round(unrounded[["conc"]], 3) == 0.036,
+  max(abs(stats::residuals(stats::lm(pred ~ conc, data = anchors)))) < 0.005
+)
+```
+
+No single intercept reproduces all three predictions to their 0.005 ms rounding
+at the printed slope, but the unrounded line (slope
+`r signif(unrounded[["conc"]], 4)` ms per ng/mL, intercept
+`r signif(unrounded[["(Intercept)"]], 3)` ms) does, and its slope rounds to the
+printed 0.036. The Figure 3A regression line, digitised independently below,
+has the same 0.0362 slope. The spread is therefore the rounding of the printed
+slope. The packaged model keeps the printed slope and uses the centre of the
+implied intercepts, 0.49 ms.
+
+# Virtual cohort
+
+No stochastic cohort is simulated for the QTc models. The paper reports neither
+the random-effect covariance nor the residual error, so the packaged models are
+typical-value models and a stochastic cohort would add no information. The
+concentration driver later in this article does use a simulated cohort.
+
+# Simulation and validation gate: the Results predictions
+
+```{r results-gate}
+gate <- anchors |>
+  dplyr::select(conc, pred) |>
+  dplyr::mutate(
+    model = predict_qtc(mod_dd, conc),
+    diff = model - pred,
+    # Half a unit in the third decimal of the slope, times the
+    # concentration, plus the rounding of the printed prediction.
+    tolerance = 5e-4 * conc + 0.005
+  )
+gate |>
+  dplyr::mutate(dplyr::across(c(model, diff, tolerance), ~ round(.x, 3))) |>
+  dplyr::rename(
+    "Concentration (ng/mL)" = conc, "Paper (ms)" = pred,
+    "Packaged model (ms)" = model, "Difference (ms)" = diff,
+    "Rounding tolerance (ms)" = tolerance
+  ) |>
+  knitr::kable(caption = "Replicates the DeltaDeltaQTcF predictions in the Results of Abbas 2020.")
+stopifnot(all(abs(gate$diff) <= gate$tolerance), max(abs(gate$diff)) < 0.02)
+```
+
+All three predictions are reproduced to within 0.016 ms. The paper also
+states that, by this model, the sertraline concentration has to exceed about
+2.6 times the 86 ng/mL therapeutic Cmax (223.5 ng/mL) before the upper 90%
+confidence bound crosses 10 ms; the confidence bound needs the parameter
+covariance, which is not printed, so only the point prediction is checked.
+
+# Replicate published figures
+
+## Figure 3 -- DeltaQTcF against concentration
+
+```{r fig3, fig.cap = "Replicates the regression lines of Figure 3 of Abbas 2020: DeltaQTcF against sertraline (A) and N-desmethylsertraline (B) concentration. Points are the line read from the figure by the maintainers at 100 ng/mL steps."}
+# Line positions read from the solid red line of Figure 3, at the
+# 100 ng/mL gridlines (ms).
+fig3_dig <- data.frame(
+  analyte = rep(c("A: sertraline", "B: N-desmethylsertraline"), c(6, 5)),
+  conc = c(0, 100, 200, 300, 400, 500, 0, 100, 200, 300, 400),
+  qtc = c(-5.9, -2.3, 1.3, 5.0, 8.6, 12.2, -6.4, -2.9, 0.7, 4.2, 7.8)
+)
+grid_s <- seq(0, 525, by = 5)
+grid_m <- seq(0, 450, by = 5)
+fig3_mod <- dplyr::bind_rows(
+  data.frame(analyte = "A: sertraline", conc = grid_s, qtc = predict_qtc(mod_d, grid_s)),
+  data.frame(
+    analyte = "B: N-desmethylsertraline", conc = grid_m,
+    qtc = predict_qtc(mod_dm, grid_m, "CP_DESMETHYLSERTRALINE_NGML")
+  )
+)
+ggplot(fig3_mod, aes(conc, qtc)) +
+  geom_hline(yintercept = 0, colour = "grey60") +
+  geom_line(colour = "firebrick") +
+  geom_point(data = fig3_dig, shape = 1, size = 2) +
+  facet_wrap(~analyte, ncol = 1, scales = "free_x") +
+  labs(x = "Plasma concentration (ng/mL)", y = "Change from baseline in QTcF (ms)") +
+  theme_bw()
+
+fig3_chk <- fig3_dig |>
+  dplyr::left_join(fig3_mod, by = c("analyte", "conc"), suffix = c("_fig", "_model"))
+stopifnot(max(abs(fig3_chk$qtc_fig - fig3_chk$qtc_model)) < 0.4)
+```
+
+The packaged lines run within a pixel (0.23 ms) of the published lines at zero
+concentration, where the intercepts were read, and diverge by at most
+`r round(max(abs(fig3_chk$qtc_fig - fig3_chk$qtc_model)), 2)` ms at the far end
+because the packaged slope is the printed 0.036 rather than the line's own
+0.0362 (sertraline) or 0.0356 (N-desmethylsertraline).
+
+## Figure 4A and Table 4 -- the day 14 time course
+
+Figure 4A overlays the mean day-14 sertraline concentration on the time-matched
+DeltaDeltaQTcF. Evaluating the DeltaDeltaQTcF model at the mean concentration of
+each time point and comparing it with the Table 4 least-squares mean
+differences shows the "proteresis" the authors describe: the observed effect
+peaks at 4 h while the concentration peaks at 8 h.
+
+```{r fig4a, fig.cap = "Replicates Figure 4A of Abbas 2020 with the model overlay: day 14 time-matched DeltaDeltaQTcF (Table 4, points with 90% CI) and the DeltaDeltaQTcF model evaluated at the mean sertraline concentration of each time point (line)."}
+# Mean day-14 sertraline concentration read from Figure 4A by the
+# maintainers (ng/mL); the 4 h value 213 matches the printed 213.1.
+fig4_conc <- data.frame(
+  time = c(0, 1, 2, 3, 4, 5, 6, 8, 12, 24, 48, 72),
+  conc = c(193, 190, 199, 207, 213, 220, 234, 240, 205, 147, 90, 59)
+)
+table4 <- data.frame(
+  time = c(1, 2, 3, 4, 5, 6, 8, 12, 24),
+  ddqtc = c(6.957, 7.851, 7.824, 9.651, 7.377, 6.511, 5.597, 5.677, 7.346),
+  lo = c(4.942, 5.835, 5.808, 7.635, 5.362, 4.495, 3.582, 3.662, 5.331),
+  hi = c(8.973, 9.866, 9.840, 11.666, 9.393, 8.526, 7.613, 7.693, 9.360)
+)
+fig4_conc$model <- predict_qtc(mod_dd, fig4_conc$conc)
+ggplot() +
+  geom_line(data = fig4_conc, aes(time, model), colour = "firebrick") +
+  geom_pointrange(data = table4, aes(time, ddqtc, ymin = lo, ymax = hi), colour = "steelblue") +
+  geom_hline(yintercept = 10, linetype = "dashed", colour = "grey50") +
+  labs(x = "Hours after the day 14 dose", y = "DeltaDeltaQTcF (ms)") +
+  theme_bw()
+
+t4 <- table4 |> dplyr::left_join(fig4_conc, by = "time")
+t4 |>
+  dplyr::mutate(diff = round(model - ddqtc, 2), model = round(model, 2)) |>
+  dplyr::select(time, conc, ddqtc, model, diff) |>
+  dplyr::rename(
+    "Time (h)" = time, "Mean sertraline (ng/mL)" = conc,
+    "Table 4 DeltaDeltaQTcF (ms)" = ddqtc, "Model at mean conc (ms)" = model,
+    "Model - Table 4 (ms)" = diff
+  ) |>
+  knitr::kable(caption = "Model at the Figure 4A mean concentrations against the Abbas 2020 Table 4 time-matched least-squares mean differences.")
+stopifnot(
+  # The concentration-driven prediction tracks the time-matched
+  # estimates on average; the hour-to-hour pattern is the proteresis the
+  # paper describes and the model has no term for.
+  abs(mean(t4$model - t4$ddqtc)) < 1.5,
+  max(abs(t4$model - t4$ddqtc)) < 4
+)
+```
+
+Averaged over the nine time points the model is within
+`r round(abs(mean(t4$model - t4$ddqtc)), 2)` ms of Table 4. The model, a
+direct-effect linear function of concentration, cannot reproduce the
+early peak at 4 h (Table 4: 9.65 ms against a model value of
+`r round(t4$model[t4$time == 4], 2)` ms) or the dip at 8 h; the authors attribute
+part of the pattern to a meal at about 4 h.
+
+# Driving the models from a dose
+
+The QTc models need a sertraline concentration at each ECG time. Abbas 2020 has
+no population PK model, so here the concentration comes from
+`Zhang_2024_sertraline`, a one-compartment model fitted to trough samples from
+Chinese psychiatric inpatients, run through the titration schedule of Table 1.
+Age is drawn from the reported mean and SD, truncated to the reported range.
+This is an illustration of how the PD models are used, not a test of them.
+
+```{r pk-sim, message = FALSE}
+n_sub <- 100
+pk_mod <- readModelDb("Zhang_2024_sertraline")
+
+# Table 1: 50 mg on day 1; 50 mg BID day 2; 50 mg am / 100 mg pm day 3;
+# 100 mg BID days 4-5; 100 mg am / 200 mg pm day 6; 200 mg BID days 7-13;
+# 200 mg am only on day 14. Doses 12 h apart; day 1 dose at time 0.
+dose_tbl <- data.frame(
+  time = c(0, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, seq(144, 300, by = 12), 312),
+  amt = c(50, 50, 50, 50, 100, 100, 100, 100, 100, 100, 200, rep(200, 14), 200)
+)
+obs_times <- sort(unique(c(
+  0, 0.5, 1:8, 10, 12, 16, 20, 24,
+  312 + c(0, 0.5, 1:8, 10, 12, 16, 20, 24, 36, 48, 60, 72)
+)))
+
+set.seed(20200301)
+age <- pmin(pmax(rnorm(n_sub, 36.5, 9.7), 20), 54)
+pk_events <- dplyr::bind_rows(
+  merge(data.frame(id = seq_len(n_sub)), dose_tbl |> dplyr::mutate(evid = 1L, cmt = "depot"), by = NULL),
+  merge(data.frame(id = seq_len(n_sub)), data.frame(time = obs_times, amt = 0, evid = 0L, cmt = "central"), by = NULL)
+) |>
+  dplyr::mutate(AGE = age[id]) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+pk_sim <- as.data.frame(rxode2::rxSolve(pk_mod, events = pk_events, returnType = "data.frame")) |>
+  dplyr::select(id, time, Cc)
+```
+
+## PKNCA on the driving concentrations
+
+```{r pknca}
+pk_nca <- pk_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = "sertraline")
+conc_obj <- PKNCA::PKNCAconc(pk_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(
+  merge(data.frame(id = seq_len(n_sub), treatment = "sertraline"), dose_tbl, by = NULL),
+  amt ~ time | treatment + id
+)
+intervals <- data.frame(
+  start = c(0, 312), end = c(24, 336),
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, cmin = c(FALSE, TRUE)
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+sim_long <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "cmin")) |>
+  dplyr::mutate(day = ifelse(start == 0, "Day 1 (50 mg)", "Day 14 (200 mg, 400 mg/day)")) |>
+  dplyr::select(day, PPTESTCD, PPORRES)
+# Abbas 2020 Table 3: geometric means (Cmax, AUC24, Cmin) and median tmax.
+ref_tbl <- data.frame(
+  day = c("Day 1 (50 mg)", "Day 14 (200 mg, 400 mg/day)"),
+  cmax = c(11.39, 234.2),
+  tmax = c(5.06, 7.15),
+  auclast = c(154.3, 4388),
+  cmin = c(NA, 135.3)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_long,
+  reference = ref_tbl,
+  by = "day",
+  units = c(cmax = "ng/mL", tmax = "h", auclast = "ng*h/mL", cmin = "ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated median NCA (Zhang 2024 PK driver) against Abbas 2020 Table 3. AUC0-24 is reported as AUClast over the 0-24 h interval.")
+```
+
+```{r pknca-footnote, echo = FALSE, results = "asis"}
+if (!is.null(attr(cmp, "footnote"))) cat(attr(cmp, "footnote"), "\n")
+```
+
+At day 14 steady state, where the QTc models are applied, the driver lands
+close to Table 3 (Cmax, Cmin and AUC0-24 within about 15%). After the first
+50 mg dose it over-predicts exposure about two- to three-fold with a late Tmax.
+The Zhang 2024 model was fitted to trough concentrations in patients and fixes
+its absorption rate constant (0.098 1/h) from the literature, so the
+single-dose absorption phase is not something it can describe. The flagged rows
+reflect the PK driver, not the QTc models. A user with observed or
+better-matched concentrations should supply those instead.
+
+## Predicted day 14 DeltaDeltaQTcF from the driver
+
+```{r driven-qtc, fig.cap = "DeltaDeltaQTcF over the day 14 dosing interval predicted from the Zhang 2024 sertraline concentrations (median and 5th-95th percentile band over the simulated cohort), with the Abbas 2020 Table 4 estimates (points)."}
+d14 <- pk_sim |>
+  dplyr::filter(time >= 312, time <= 336) |>
+  dplyr::mutate(tad = time - 312)
+d14$QTcF <- predict_qtc(mod_dd, d14$Cc)
+d14 |>
+  dplyr::group_by(tad) |>
+  dplyr::summarise(
+    med = stats::median(QTcF), lo = stats::quantile(QTcF, 0.05),
+    hi = stats::quantile(QTcF, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(tad, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "firebrick", alpha = 0.2) +
+  geom_line(colour = "firebrick") +
+  geom_point(data = table4, aes(time, ddqtc), colour = "steelblue") +
+  labs(x = "Hours after the day 14 dose", y = "DeltaDeltaQTcF (ms)") +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+* **Typical-value models only.** Abbas 2020 does not print the random-effect
+  covariance (random intercept and slope, unstructured) or the residual
+  variance. No etas are declared and `addSd` is `fixed(0)`. The sample-size
+  assumption of 5.36 ms intrasubject variability (Methods 'Statistical
+  Analysis') is a design input, not a model estimate, and is not used.
+* **DeltaDeltaQTcF intercept back-solved.** `e0 = 0.49` ms is the centre of the
+  intercepts implied by the three printed predictions at the printed slope; it
+  is the sertraline treatment effect TRT of the Methods equation. The printed
+  slope is kept; the unrounded line (slope 0.03622) reproduces the predictions
+  exactly.
+* **DeltaQTcF intercepts digitised.** The intercepts of the two change-from-baseline
+  models were read by the maintainers from the regression lines of Figure 3,
+  calibrated on the figure gridlines (one pixel is 0.23 ms). They are population
+  averages over the unprinted intercept, treatment, nominal-time and baseline
+  terms, so the change-from-baseline files reproduce the regression line, not a
+  time-specific prediction.
+* **No placebo-corrected metabolite model.** The paper prints no prediction for
+  N-desmethylsertraline, so its treatment effect cannot be recovered and only the
+  change-from-baseline form is packaged.
+* **Concentration driver.** The PK simulation uses `Zhang_2024_sertraline`
+  (patients, trough data) because Abbas 2020 reports NCA only. Its mismatch with
+  Table 3 is a property of that model in this population.
+* **No errata** were found for this article (Crossref and Europe PMC, checked
+  2026-11-27). The single supplementary file is a heart-rate figure (Figure S1)
+  that holds no model parameters.

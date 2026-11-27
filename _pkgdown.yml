@@ -2206,6 +2206,8 @@ navbar:
         href: articles/Lu_2024_desflurane.html
       - text: "Desipramine pbpk (Samant 2017)"
         href: articles/Samant_2017_desipramine_pbpk.html
+      - text: "Desmethylsertraline dQTcF (Abbas 2020)"
+        href: articles/Abbas_2020_sertraline_QTc.html
       - text: "Desmopressin (Agerso 2004)"
         href: articles/Agerso_2004_desmopressin.html
       - text: "Desmopressin (Schutte 2018)"
@@ -7576,6 +7578,10 @@ navbar:
         href: articles/Xia_2025_sertraline.html
       - text: "Sertraline (Zhang 2024)"
         href: articles/Zhang_2024_sertraline.html
+      - text: "Sertraline dQTcF (Abbas 2020)"
+        href: articles/Abbas_2020_sertraline_QTc.html
+      - text: "Sertraline ddQTcF (Abbas 2020)"
+        href: articles/Abbas_2020_sertraline_QTc.html
       - text: "Setrobuvir (Canini 2018)"
         href: articles/Canini_2018_setrobuvir.html
       - text: "Sevoflurane (Shin 2014)"
@@ -9332,6 +9338,7 @@ articles:
 - title: internal
   desc: Drug-specific validation vignettes. They are reached from the Specific drug models and DDMoRe models navbar dropdowns; this group hides them from the main Articles index.
   contents:
+  - articles/Abbas_2020_sertraline_QTc
   - articles/Abbasi_2023_gentamicin
   - articles/Abbiati_2021_avadomide
   - articles/Abboud_2009_epinephrine
