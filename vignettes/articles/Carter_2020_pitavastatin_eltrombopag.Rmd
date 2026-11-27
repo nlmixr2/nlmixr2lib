@@ -1,0 +1,627 @@
+---
+title: "Pitavastatin-eltrombopag hepatic uptake interaction (Carter 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pitavastatin-eltrombopag hepatic uptake interaction (Carter 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Carter et al. (2020) measured pitavastatin and eltrombopag together in
+suspended human hepatocytes, described the uptake with a structurally
+identifiable micro-rate-constant model, and scaled the estimates into a
+semimechanistic PBPK model to predict the clinical interaction. The paper
+contributes two models:
+
+* `Carter_2020_pitavastatin_eltrombopag_invitro` -- the hepatocyte model
+  (model 1 of Table 1: micro-rate constants, mutual competitive inhibition,
+  both drugs measured).
+* `Carter_2020_pitavastatin_eltrombopag_pbpk` -- the semimechanistic PBPK
+  model of oral pitavastatin (1 mg) and eltrombopag (75 mg) in healthy adults.
+
+```{r model-info}
+mod_iv <- readModelDb("Carter_2020_pitavastatin_eltrombopag_invitro")
+mod_pbpk <- readModelDb("Carter_2020_pitavastatin_eltrombopag_pbpk")
+ui_iv <- rxode2::rxode(mod_iv)
+ui_pbpk <- rxode2::rxode(mod_pbpk)
+```
+
+* Citation: `r ui_iv$reference`
+* Article: <https://doi.org/10.1002/psp4.12505>
+* Supplements (open access, PMC7179958): the Supplemental Material (ODEs of all
+  candidate in vitro models in Tables S1-S2 and of the PBPK model in Table S3)
+  and the Model Codes archive (Monolix model files and data, and the deSolve
+  PBPK script `PBPK_Model.r`).
+
+# Population
+
+**In vitro.** Cryopreserved human hepatocytes from one 10-donor pool
+(BioIVT LiverPool lot LYB: 8 Caucasian, 1 African American and 1 Hispanic
+donor) were suspended at 1e6 cells/mL in Leibovitz L15 medium at 37 C.
+Hepatocytes were pre-incubated for 15 min with vehicle or 45 nmol/mL
+eltrombopag (1.5e6 cells/mL); pitavastatin was then added at 0.3, 1, 3, 10, 30
+or 100 nmol/mL, which diluted eltrombopag to 30 nmol/mL and the cells to
+1e6 cells/mL, and the cells were sampled 0.25-30 min later by an oil-spin
+separation. There were three experiments. Each concentration in each
+experiment was fitted as an individual data set in Monolix (35 data sets).
+
+**PBPK.** No clinical data were fitted. The model was assembled from the in
+vitro estimates, scaled to a whole liver, plus literature physiology for an
+83-kg adult male, and was compared with published single-dose profiles: 1 mg
+pitavastatin (Prueksaritanont 2014, n = 8; plasma converted to blood with
+blood:plasma 0.425) and 75 mg eltrombopag (Deng 2011). The paper's figures and
+Table 3 come from 100 Monte-Carlo subjects.
+
+The same information is available programmatically via
+`readModelDb("Carter_2020_pitavastatin_eltrombopag_pbpk")()$population` (and
+likewise for the in vitro model).
+
+# Source trace
+
+## In vitro hepatocyte model
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Medium, transporter-bound and intracellular states for each drug | n/a | Supplemental Table S1, Eqs. S10-S15 (model 1); Monolix file `Pita_Etm_Micro_Model_Comp` |
+| Free transporter `T_f = T_o - S2 - I2` | n/a | Supplemental Eq. S3 |
+| `Ccell = (S2 + S3) / V_cell`, `Ccell_eltrombopag = (I2 + I3) / V_cell` | n/a | Eqs. S16-S17 |
+| `lkon` (k_aP) | 0.17 /nmol/min | Table 2 |
+| `lkoff` (k_dP) | 2.2 /min | Table 2 |
+| `lktrans` (k_tP) | 1.65 /min | Table 2 |
+| `lkmet` (k_eP) | 0.22 /min | Table 2 |
+| `lkpass_in` (k_fP) | 5.5e-4 /min | Table 2 |
+| `lkpass_out` (k_bP) | 0.21 /min | Table 2 |
+| `ltransporter_tot` (T_o) | 0.18 nmol | Table 2 |
+| `lkon_eltrombopag` (k_aE) | 0.26 /nmol/min | Table 2 |
+| `lkoff_eltrombopag` (k_dE) | 1.57 /min | Table 2 |
+| `lktrans_eltrombopag` (k_tE) | 0.27 /min | Table 2 |
+| `lkpass_in_eltrombopag` (k_fE) | 0.05 /min | Table 2 |
+| `lkpass_out_eltrombopag` (k_bE) | 0.43 /min | Table 2 |
+| `vcell` (V_cell) | 0.003 mL per 1e6 cells | Methods, Data analysis |
+| `propSd_Ccell`, `propSd_Ccell_eltrombopag` | 0 (not reported) | Methods, Parameter estimation |
+
+## PBPK model
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Stomach, GI tract, liver extracellular space, liver, gallbladder and central states | n/a | Supplemental Table S3, Eqs. S41-S51; `PBPK_Model.r` function `PitaEtmODE` |
+| Competitive uptake inhibition `Km * (1 + C_other / Km_other)` | n/a | Eqs. S43-S44, S48-S49 |
+| `lkst` (k_ge) | 0.1 /min | Table 2; script `ktransP_v` |
+| `lkehc` (k_bile) | 0.0618 /min | Table 2 (0.062); script `BiTrans_v` |
+| `lka` (K_a.P) | 0.07 /min | Table 2, Eq. 5; script `kaP_v` |
+| `lvmax` (V_max.up.P) | 29998636 ng/min | Table 2, Eq. 6 (3.0e7); script `VmP_v` |
+| `lkm` (K_m.up.P) | 9525 ng/mL | Table 2, Eq. 7; script `KmP_v` |
+| `lps_in` (P_dif.P) | 117.8 mL/min | Table 2, Eq. 8 (118); script `PdPi_v` |
+| `lps_out` (P_def.P) | 104.2 mL/min | Table 2, Eq. 9 (104); script `PdePi_v` |
+| `lclint_met` (CL_met.P) | 93 mL/min | Table 2, Eq. 10; script `CL_MePi_v` |
+| `lclint_bile` (CL_bi.P) | 165 mL/min | Table 2, Eq. 12; script `CL_BiPi_v` |
+| `lclurine` (CL_ur.P) | 11.5 mL/min | Table 2, Eq. 14 (12); script `CLur_v` |
+| `lfu_blood` (f_u.bl.P) | 0.009 | Table 2, Eq. 15; script `Cfpp_v` |
+| `lfu_liver` (f_u.L.P) | 0.02 | script `fTP_v` (Table 2 prints 0.026) |
+| `lvc` (V_c.P, blood) | 5820 mL | Table 2; script `VcP_v` |
+| `lka_eltrombopag` (K_a.E) | 11 /min | Table 2 (visual fit to tmax); script `kaE_v` |
+| `lvmax_eltrombopag` (V_max.up.E) | 5104539 ng/min | Table 2, Eq. 6 (5.1e6); script `VmE_v` |
+| `lkm_eltrombopag` (K_m.up.E) | 3138 ng/mL | Table 2, Eq. 7; script `KmE_v` |
+| `lps_in_eltrombopag` (P_dif.E) | 11784 mL/min | script `PdE_v` (Table 2 prints 1.2e5) |
+| `lps_out_eltrombopag` (P_def.E) | 307 mL/min | Table 2, Eq. 9; script `PdeE_v` |
+| `lclint_met_eltrombopag` (CL_met.E) | 6.8 mL/min | Table 2, Eq. 11; script `CL_MeE_v` |
+| `lclint_bile_eltrombopag` (CL_bi.E) | 13 mL/min | Table 2, Eq. 13; script `CL_BiE_v` |
+| `lfu_eltrombopag` (f_u.pl.E) | 0.005 | Table 2 and Methods (best visual fit); script `CfpE_v` |
+| `lfu_liver_eltrombopag` (f_u.L.E) | 0.4 | Table 2 (visual fit); script `fTE_v` |
+| `lvc_eltrombopag` (V_c.E, plasma) | 2940 mL | Table 2; script `VcE_v` |
+| `lv_liver_ext` (V_ext.H) | 556 mL | script `Vext_H_v` (Table 2 prints 469) |
+| `lv_liver` (V_L) | 1570 mL | Table 2; script `VH_v` |
+| `lv_gallbladder` (V_GaBl) | 36 mL | Table 2; script `VGaBl_v` |
+| `lq_liver` (Q_H) | 1320 mL/min | Table 2; script `Qh_v` |
+| `lq_kidney` (Q_K) | 1170 mL/min | Table 2; script `Qk_v` |
+| `eta*` variances | CV^2, CV 10-30 percent | script `rnorm(n, mean, sd = CV * mean)` for every parameter |
+
+# Part 1: in vitro hepatocyte model
+
+## Experimental design as an event table
+
+The model holds amounts per 1e6 cells. Because the pre-incubation (45 nmol/mL
+in 0.8 mL with 1.2e6 cells) and the incubation after pitavastatin addition
+(30 nmol/mL in 1.2 mL with 1.2e6 cells) both hold 30 nmol of eltrombopag per
+1e6 cells, the 15-min pre-incubation is simulated by a 30-nmol eltrombopag dose
+into the medium at time 0, followed by the pitavastatin dose at 15 min. Time is
+measured from the start of the eltrombopag pre-incubation, as in the paper's
+figures (pitavastatin is always added at 15 min).
+
+```{r iv-events}
+pita_conc <- c(0.3, 1, 3, 10, 30, 100) # nmol/mL = nmol per 1e6 cells in 1 mL
+obs_times <- sort(unique(c(seq(0, 15, by = 0.5), seq(15, 45, by = 0.25))))
+
+make_iv <- function(id, pita, etm) {
+  doses <- data.frame(
+    id = id, time = 15, amt = pita, cmt = "medium", evid = 1L, dvid = NA_integer_
+  )
+  if (etm > 0) {
+    doses <- rbind(
+      data.frame(id = id, time = 0, amt = etm, cmt = "medium_eltrombopag", evid = 1L, dvid = NA_integer_),
+      doses
+    )
+  }
+  # The model has two endpoints (cellular pitavastatin and eltrombopag);
+  # dvid = 1 attaches each observation row to the first, and both
+  # concentrations are returned as columns on every row.
+  obs <- data.frame(id = id, time = obs_times, amt = 0, cmt = "intracellular", evid = 0L, dvid = 1L)
+  out <- rbind(doses, obs)
+  out$pita_conc <- pita
+  out$arm <- if (etm > 0) "With eltrombopag" else "Pitavastatin alone"
+  out
+}
+
+iv_events <- bind_rows(
+  lapply(seq_along(pita_conc), function(i) make_iv(i, pita_conc[i], 0)),
+  lapply(seq_along(pita_conc), function(i) make_iv(10 + i, pita_conc[i], 30)),
+  # Eltrombopag-only control (Figure 3, panel '0')
+  make_iv(21, 0, 30) |> mutate(pita_conc = 0)
+) |>
+  arrange(id, time, desc(evid))
+
+# The in vitro model has no random effects and each id is a different
+# experimental condition; rxode2 warns on every multi-subject solve without
+# omega, so muffle that one warning only.
+iv_sim <- withCallingHandlers(
+  rxode2::rxSolve(mod_iv, events = iv_events, keep = c("pita_conc", "arm")),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+) |>
+  as.data.frame()
+```
+
+## Mass balance and transporter conservation
+
+Eltrombopag is not eliminated in the hepatocyte model, so the amount in medium,
+transporter and cell must stay at the 30-nmol dose; the two transporter-bound
+amounts can never exceed the total transporter. Both checks compare a solve
+against an exact identity, so tight tolerances are appropriate.
+
+```{r iv-mass-balance}
+To <- exp(ui_iv$theta[["ltransporter_tot"]])
+mb <- iv_sim |>
+  filter(id > 10) |>
+  mutate(
+    etm_total = medium_eltrombopag + transporter_bound_eltrombopag + intracellular_eltrombopag,
+    bound_total = transporter_bound + transporter_bound_eltrombopag
+  )
+stopifnot(
+  max(abs(mb$etm_total - 30)) < 1e-4,
+  min(mb$bound_total) >= -1e-9,
+  max(mb$bound_total) <= To + 1e-9
+)
+summary(mb$bound_total / To)
+```
+
+At 30 nmol eltrombopag the transporter is mostly occupied by eltrombopag, which
+is why the pitavastatin uptake falls so much in its presence.
+
+## Figure 2: cellular pitavastatin with and without eltrombopag
+
+```{r figure-2, fig.height = 6}
+iv_sim |>
+  filter(pita_conc > 0, time >= 15) |>
+  ggplot(aes(time, Ccell, colour = arm)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~pita_conc, scales = "free_y", labeller = label_both) +
+  scale_colour_manual(values = c("Pitavastatin alone" = "blue", "With eltrombopag" = "red")) +
+  labs(
+    x = "Time (min)", y = "Cellular pitavastatin (nmol/mL)", colour = NULL,
+    caption = "Replicates Figure 2 of Carter 2020 (typical-value curves)."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r figure-2-table}
+fig2_tab <- iv_sim |>
+  filter(pita_conc > 0, time %in% c(20, 25, 45)) |>
+  select(pita_conc, arm, time, Ccell) |>
+  pivot_wider(names_from = arm, values_from = Ccell) |>
+  mutate(ratio = `With eltrombopag` / `Pitavastatin alone`)
+
+fig2_tab |>
+  mutate(across(c(`Pitavastatin alone`, `With eltrombopag`), ~ signif(.x, 3)), ratio = round(ratio, 2)) |>
+  rename(
+    "Pitavastatin (nmol/mL)" = pita_conc,
+    "Time (min)" = time,
+    "Alone (nmol/mL)" = `Pitavastatin alone`,
+    "With eltrombopag (nmol/mL)" = `With eltrombopag`,
+    "Ratio" = ratio
+  ) |>
+  knitr::kable(caption = "Typical-value cellular pitavastatin concentrations.")
+
+# The inhibition is overcome as the pitavastatin concentration rises
+# (Figure 2, 10-100 nmol/mL): the with/without ratio at 25 min increases
+# monotonically with the pitavastatin concentration.
+r25 <- fig2_tab |> filter(time == 25) |> arrange(pita_conc) |> pull(ratio)
+stopifnot(all(diff(r25) > 0), r25[1] < 0.5, r25[length(r25)] > 0.5)
+```
+
+The typical-value curves reproduce the features of Figure 2: a rise to a
+maximum within about 10 min of pitavastatin addition and a slow decline from
+intracellular metabolism, saturation of uptake at the higher concentrations,
+and an inhibition by eltrombopag that is overcome as the pitavastatin
+concentration rises. Read from the figure, the median individual fits at 25 min
+are about 4.3, 12.5, 28, 68, 157 and 265 nmol/mL without eltrombopag and 1.5,
+4.7, 13, 40, 110 and 210 nmol/mL with it; the typical-value curves are within
+roughly 30 percent of the first set and 15-40 percent below the second (more
+inhibition). Figure 2 shows medians of the per-data-set fits, each with its own
+fitted initial eltrombopag amounts, which a single set of median parameters
+does not reproduce exactly.
+
+## Figure 3: cellular eltrombopag in the presence of pitavastatin
+
+Figure 3 expresses cellular eltrombopag as a percentage of the eltrombopag-only
+control.
+
+```{r figure-3}
+etm_ctrl <- iv_sim |> filter(id == 21) |> select(time, ctrl = Ccell_eltrombopag)
+max_ctrl <- max(etm_ctrl$ctrl)
+fig3 <- iv_sim |>
+  filter(arm == "With eltrombopag") |>
+  mutate(pct = 100 * Ccell_eltrombopag / max_ctrl)
+
+ggplot(fig3, aes(time, pct)) +
+  geom_line() +
+  facet_wrap(~pita_conc, nrow = 1, labeller = label_both) +
+  labs(
+    x = "Time (min)", y = "Eltrombopag (percent of max control)",
+    caption = "Replicates Figure 3 of Carter 2020 (typical values; time from the start of pre-incubation)."
+  ) +
+  theme_bw()
+
+fig3_end <- fig3 |> filter(time == 45) |> select(pita_conc, pct)
+knitr::kable(
+  fig3_end |> mutate(pct = round(pct, 1)) |>
+    rename("Pitavastatin (nmol/mL)" = pita_conc, "Eltrombopag at 45 min (percent of control max)" = pct)
+)
+pct_at <- function(p) fig3_end$pct[fig3_end$pita_conc == p]
+stopifnot(
+  # No visible effect of low pitavastatin concentrations on eltrombopag ...
+  abs(pct_at(0.3) - pct_at(0)) < 1,
+  # ... and displacement that grows over 10-100 nmol/mL pitavastatin.
+  pct_at(100) < pct_at(30), pct_at(30) < pct_at(10), pct_at(10) < pct_at(0)
+)
+```
+
+The model reproduces the direction of Figure 3 -- eltrombopag is displaced from
+the cells only at the higher pitavastatin concentrations -- but the
+typical-value displacement at 100 nmol/mL (a few percent) is smaller than the
+median fit in the figure (about 15 percent). Eltrombopag accumulates
+mainly by passive entry (`k_fE` = 0.05 /min), which pitavastatin does not
+inhibit.
+
+## Derived macro-rate constants and PBPK scaling
+
+Table 2 converts the micro-rate constants into Michaelis-Menten constants
+(Eqs. 6-7) and whole-liver clearances (Eqs. 8-9), using 139e6 hepatocytes per g
+liver (HPGL), a liver weight of 1695.6 g, 1 mL of medium per 1e6 cells, the
+molecular weights 421.46 (pitavastatin) and 442 (eltrombopag), and an
+extracellular-space correction of 469 mL x 1.08 g/mL.
+
+```{r scaling}
+th <- exp(ui_iv$theta[!grepl("^propSd|^vcell", names(ui_iv$theta))])
+vcell <- ui_iv$theta[["vcell"]]
+hpgl <- 139
+lwt <- 1695.6
+mw_p <- 421.46
+mw_e <- 442
+th_pbpk <- exp(ui_pbpk$theta)
+
+scale_tab <- tibble::tribble(
+  ~quantity, ~from_invitro, ~pbpk_value,
+  "Vmax.up.P (ng/min/liver)", th[["ltransporter_tot"]] * th[["lktrans"]] * mw_p * hpgl * lwt, th_pbpk[["lvmax"]],
+  "Km.up.P (ng/mL)", (th[["lkoff"]] + th[["lktrans"]]) / th[["lkon"]] * 1 * mw_p, th_pbpk[["lkm"]],
+  "Vmax.up.E (ng/min/liver)", th[["ltransporter_tot"]] * th[["lktrans_eltrombopag"]] * mw_e * hpgl * lwt, th_pbpk[["lvmax_eltrombopag"]],
+  "Km.up.E (ng/mL)", (th[["lkoff_eltrombopag"]] + th[["lktrans_eltrombopag"]]) / th[["lkon_eltrombopag"]] * 1 * mw_e, th_pbpk[["lkm_eltrombopag"]],
+  "Pdif.P (mL/min/liver)", th[["lkpass_in"]] * 1 * hpgl * lwt, th_pbpk[["lps_in"]],
+  "Pdif.E (mL/min/liver)", th[["lkpass_in_eltrombopag"]] * 1 * hpgl * lwt, th_pbpk[["lps_in_eltrombopag"]],
+  "Pdef.P (mL/min/liver)", th[["lkpass_out"]] * vcell * hpgl * (lwt - 469 * 1.08), th_pbpk[["lps_out"]],
+  "Pdef.E (mL/min/liver)", th[["lkpass_out_eltrombopag"]] * vcell * hpgl * (lwt - 469 * 1.08), th_pbpk[["lps_out_eltrombopag"]]
+) |>
+  mutate(pct_diff = 100 * (pbpk_value - from_invitro) / from_invitro)
+
+scale_tab |>
+  mutate(across(c(from_invitro, pbpk_value), ~ signif(.x, 4)), pct_diff = round(pct_diff, 1)) |>
+  rename(
+    "Quantity" = quantity,
+    "Scaled from Table 2 micro-rate constants" = from_invitro,
+    "Value in the PBPK model" = pbpk_value,
+    "Difference (percent)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Whole-liver PBPK constants re-derived from the in vitro estimates.")
+
+# The transporter constants reproduce the PBPK values within rounding (the
+# script used 0.302 nmol/min and 22.6 nmol/mL for the pitavastatin Vmax and Km).
+stopifnot(all(abs(scale_tab$pct_diff[1:4]) < 3))
+```
+
+The transporter constants agree within rounding. Three passive constants
+differ, and the PBPK model keeps the values of the authors' script (see
+Assumptions and deviations): P_dif.P = 117.8 mL/min corresponds to
+k_fP = 5.0e-4 /min rather than the Table 2 median 5.5e-4 /min; P_def.E =
+307 mL/min corresponds to k_bE = 0.62 /min (inside the Table 2 range 0.35-0.65
+but not the median 0.43); and P_dif.E = 11784 mL/min is the Eq. 8 value, where
+Table 2 and the Discussion print 1.2e5.
+
+# Part 2: PBPK model
+
+## Virtual subjects
+
+The authors drew 100 subjects once and used the same subjects in every
+scenario: each parameter is `rnorm(n, mean, sd = CV * mean)`. The model encodes
+this as `theta * (1 + eta)` with `eta ~ N(0, CV^2)`. The etas are drawn here
+with R's own generator, so the cohort is identical on every machine, and are
+passed to every scenario through `params`.
+
+```{r pbpk-cohort}
+n_sub <- 100
+om <- ui_pbpk$omega
+set.seed(20200305)
+etas <- as.data.frame(
+  sapply(colnames(om), function(nm) rnorm(n_sub, 0, sqrt(om[nm, nm])), simplify = FALSE)
+)
+# Factors (1 + eta) at or below zero would give a non-positive parameter. With
+# the CVs used (at most 30 percent) such a draw is a >3.3-SD event.
+stopifnot(min(1 + as.matrix(etas)) > 0)
+etas$id <- seq_len(n_sub)
+
+dose_pita <- 1e6 # 1 mg in ng
+dose_etm <- 75e6 # 75 mg in ng
+t_pita <- seq(0, 400, by = 1) # min, as in the script
+t_etm <- seq(0, 10800, by = 5) # min (180 h)
+
+make_pbpk <- function(arm, pita, etm, times) {
+  d <- NULL
+  if (pita) d <- rbind(d, data.frame(time = 0, amt = dose_pita, cmt = "stomach", evid = 1L))
+  if (etm) d <- rbind(d, data.frame(time = 0, amt = dose_etm, cmt = "stomach_eltrombopag", evid = 1L))
+  obs <- data.frame(time = times, amt = 0, cmt = "central", evid = 0L)
+  one <- rbind(d, obs)
+  out <- merge(data.frame(id = seq_len(n_sub)), one)
+  out$arm <- arm
+  out[order(out$id, out$time, -out$evid), ]
+}
+
+solve_arm <- function(ev) {
+  rxode2::rxSolve(mod_pbpk, events = ev, params = etas, keep = "arm", atol = 1e-10, rtol = 1e-10) |>
+    as.data.frame()
+}
+
+sim_pita <- solve_arm(make_pbpk("Pitavastatin alone", TRUE, FALSE, t_pita))
+sim_etm <- solve_arm(make_pbpk("Eltrombopag alone", FALSE, TRUE, t_etm))
+sim_both <- solve_arm(make_pbpk("Both", TRUE, TRUE, sort(unique(c(t_pita, t_etm)))))
+```
+
+## Figure 4: simulated profiles
+
+The script summarises each scenario by the mean profile and the 5th and 95th
+percentile profiles of the 100 subjects (labelled "95% confidence intervals"
+in the paper).
+
+```{r figure-4-data}
+summ_prof <- function(d, conc) {
+  d |>
+    group_by(time) |>
+    summarise(
+      mean = mean(.data[[conc]]),
+      q05 = quantile(.data[[conc]], 0.05),
+      q95 = quantile(.data[[conc]], 0.95),
+      .groups = "drop"
+    )
+}
+prof <- bind_rows(
+  summ_prof(sim_pita, "Cc") |> mutate(panel = "(a) Pitavastatin alone"),
+  summ_prof(sim_both |> filter(time <= 400), "Cc") |> mutate(panel = "(b) Pitavastatin + eltrombopag"),
+  summ_prof(sim_etm, "Cc_eltrombopag") |> mutate(panel = "(c) Eltrombopag alone"),
+  summ_prof(sim_both |> filter(time %in% t_etm), "Cc_eltrombopag") |> mutate(panel = "(d) Eltrombopag + pitavastatin")
+)
+```
+
+```{r figure-4ab}
+prof |>
+  filter(grepl("^\\((a|b)\\)", panel)) |>
+  ggplot(aes(time / 60)) +
+  geom_line(aes(y = mean), colour = "blue") +
+  geom_line(aes(y = q05), linetype = 2, colour = "blue") +
+  geom_line(aes(y = q95), linetype = 2, colour = "blue") +
+  facet_wrap(~panel) +
+  labs(
+    x = "Time (h)", y = "Blood pitavastatin (ng/mL)",
+    caption = "Replicates Figure 4a-b of Carter 2020 (mean and 5th-95th percentile profiles, 100 subjects)."
+  ) +
+  theme_bw()
+```
+
+```{r figure-4cd}
+prof |>
+  filter(grepl("^\\((c|d)\\)", panel), time > 0) |>
+  ggplot(aes(time / 60)) +
+  geom_line(aes(y = mean), colour = "red") +
+  geom_line(aes(y = q05), linetype = 2, colour = "red") +
+  geom_line(aes(y = q95), linetype = 2, colour = "red") +
+  facet_wrap(~panel) +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(10, 30000)) +
+  labs(
+    x = "Time (h)", y = "Plasma eltrombopag (ng/mL)",
+    caption = "Replicates Figure 4c-d of Carter 2020 (mean and 5th-95th percentile profiles, 100 subjects)."
+  ) +
+  theme_bw()
+```
+
+## PKNCA on the mean profiles (Table 3)
+
+Table 3 reports Cmax, tmax and AUC from time 0 to the last time point
+(400 min for pitavastatin, 180 h for eltrombopag) of the **mean** profile. The
+same quantities are computed here with PKNCA from the mean profiles above. The
+eltrombopag values of Table 3 are given in ug/mL and are converted to ng/mL for
+the comparison.
+
+```{r pknca}
+mean_prof <- prof |>
+  transmute(
+    treatment = sub("^\\([a-d]\\) ", "", panel),
+    id = 1L,
+    time = time / 60,
+    conc = mean
+  )
+
+conc_obj <- PKNCA::PKNCAconc(mean_prof, conc ~ time | treatment + id)
+dose_df <- mean_prof |>
+  distinct(treatment, id) |>
+  mutate(
+    time = 0,
+    amt = ifelse(grepl("^Pitavastatin", treatment), dose_pita, dose_etm)
+  )
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  treatment = unique(mean_prof$treatment),
+  start = 0,
+  end = ifelse(grepl("^Pitavastatin", unique(mean_prof$treatment)), 400 / 60, 180),
+  cmax = TRUE,
+  tmax = TRUE,
+  auclast = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax, ~auclast,
+  "Pitavastatin alone", 23.1, 0.97, 49,
+  "Pitavastatin + eltrombopag", 47.8, 1.2, 119,
+  "Eltrombopag alone", 10.6 * 1000, 5.2, 338 * 1000,
+  "Eltrombopag + pitavastatin", 10.6 * 1000, 5.2, 339 * 1000
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ng/mL", tmax = "h", auclast = "h*ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Mean-profile NCA vs. the PBPK rows of Carter 2020 Table 3. * differs by >20%."
+)
+```
+
+```{r ddi-ratio}
+res <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+auc_ratio_pita <- res$auclast[res$treatment == "Pitavastatin + eltrombopag"] /
+  res$auclast[res$treatment == "Pitavastatin alone"]
+auc_ratio_etm <- res$auclast[res$treatment == "Eltrombopag + pitavastatin"] /
+  res$auclast[res$treatment == "Eltrombopag alone"]
+c(pitavastatin_auc_ratio = auc_ratio_pita, eltrombopag_auc_ratio = auc_ratio_etm)
+stopifnot(
+  # Table 3 PBPK R value 2.4 (2.2-3) for pitavastatin and 1 for eltrombopag.
+  auc_ratio_pita > 2, auc_ratio_pita < 3,
+  abs(auc_ratio_etm - 1) < 0.02
+)
+```
+
+The packaged model reproduces the PBPK predictions of Table 3: pitavastatin
+Cmax and AUC roughly double with eltrombopag (AUC ratio
+`r round(auc_ratio_pita, 2)` vs. 2.4 in the paper), whereas pitavastatin has
+no effect on eltrombopag (ratio `r round(auc_ratio_etm, 3)`). Monte-Carlo
+draws differ from the authors', so the mean-profile values differ slightly from
+Table 3. As the paper notes, the simulated eltrombopag AUC is more than twice
+the clinical value (145 h ug/mL in Deng 2011) and its tmax later
+(2.5 h observed), while the pitavastatin-alone Cmax is lower than the observed
+38.8 ng/mL; these are properties of the published model, not of this
+implementation.
+
+## Typical-value profiles
+
+```{r typical}
+typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod_pbpk, "omega"),
+  events = make_pbpk("Both", TRUE, TRUE, t_pita) |> filter(id == 1),
+  atol = 1e-10, rtol = 1e-10
+) |> as.data.frame()
+typ_alone <- rxode2::rxSolve(
+  rxode2::zeroRe(mod_pbpk, "omega"),
+  events = make_pbpk("Pitavastatin alone", TRUE, FALSE, t_pita) |> filter(id == 1),
+  atol = 1e-10, rtol = 1e-10
+) |> as.data.frame()
+c(
+  typical_cmax_alone = max(typ_alone$Cc),
+  typical_cmax_with_eltrombopag = max(typ$Cc)
+)
+```
+
+# Assumptions and deviations
+
+* **Published code followed where it differs from the paper.** The PBPK model
+  follows the authors' deSolve script `PBPK_Model.r` (Model Codes supplement),
+  which produced Figure 4 and Table 3. With the values and equations as printed
+  in Table 2 and Table S3 the model does not reproduce Table 3 (the typical
+  pitavastatin Cmax falls to about 0.5 ng/mL), whereas with the script it does.
+  The differences, each resolved in favour of the script:
+  * Pitavastatin urinary loss is `Q_K * CL_ur.P * f_u.bl.P * C_blood` in the
+    script; Eq. S46 prints `Q_K * CL_urine.P * S6` without the unbound fraction.
+  * P_dif.E is 11784 mL/min in the script (= k_fE x 1 mL x 139 x 1695.6, Eq. 8);
+    Table 2 and the Discussion print 1.2e5.
+  * f_u.L.P is 0.02 in the script; Table 2 prints 0.026.
+  * V_ext.H is 556 mL in the script (Watanabe 2009); Table 2 prints 469 mL
+    (469 mL is still used inside the P_def scaling, Eq. 9).
+  * CL_ur.P is 11.5 mL/min (Table 2: 12), P_dif.P 117.8 (118), P_def.P 104.2
+    (104) and k_bile 0.0618 /min (0.062): rounding only.
+  * Eltrombopag passes through the stomach with the shared gastric emptying
+    rate k_ge in the script; Eq. S47 starts eltrombopag in the GI tract. Table 2
+    lists k_ge for both drugs.
+* **Scaling inputs that are not the Table 2 medians.** The script's P_dif.P
+  (117.8 mL/min) corresponds to k_fP = 5.0e-4 /min and its P_def.E (307 mL/min)
+  to k_bE = 0.62 /min, not to the Table 2 medians 5.5e-4 and 0.43 /min. Eq. 10
+  prints CL_met.P with a division by f_u.L.P, but the tabulated 93 mL/min
+  (`0.22 x 0.003 x 139 x 1695.6 x 0.6`) has none. The PBPK model uses the
+  tabulated and scripted values; the in vitro model uses the Table 2 medians.
+* **Monte-Carlo variability as eta.** The script samples every PBPK parameter
+  from a normal distribution with a 10-30 percent CV. The model encodes this as
+  `theta * (1 + eta)`, `eta ~ N(0, CV^2)`, all fixed. These are assumed, not
+  estimated, variabilities. The script shares one gastric emptying rate,
+  gallbladder volume and emptying rate, liver volumes and hepatic blood flow
+  between the two drugs of a subject, and so does the model.
+* **Eltrombopag Fa x Fg = 1 and f_u.pl.E = 0.005** were chosen by the authors
+  by visual fit to the clinical eltrombopag data (Methods); they are carried
+  as published.
+* **Body size.** The main text scales to an 83-kg adult male; the title of
+  Table S3 states 70 kg. The parameters are whole-body values, so the model
+  has no weight covariate.
+* **In vitro: no variance or residual-error magnitudes.** Monolix used
+  log-normal parameters and a proportional residual error, but Table 2 reports
+  only the median individual estimate and its range. The in vitro model is a
+  typical-value model with the proportional residual SDs fixed at 0.
+* **In vitro: initial eltrombopag amounts.** The authors fitted the eltrombopag
+  amounts at the time of pitavastatin addition as free parameters per data set
+  and do not report them. Here they are generated by simulating the 15-min
+  pre-incubation with the model itself (30 nmol per 1e6 cells), which is how
+  the authors obtained their starting values before freeing them. This is one
+  reason the typical-value curves differ from the medians of the individual
+  fits in Figures 2 and 3.
+* **In vitro cell volume.** The observation uses V_cell = 0.003 mL (3 uL per
+  1e6 cells, Methods); the Monolix code multiplies by 333, a 0.1 percent
+  difference.
+* **Supplement typographical error.** Eqs. S9 and S14 print the intracellular
+  pitavastatin efflux as `k_bA`; the Monolix code uses k_bP (`k31`), as here.
+* No erratum or correction notice for this article was found in Europe PMC
+  (checked 2026-11-27).

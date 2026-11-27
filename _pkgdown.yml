@@ -6512,6 +6512,10 @@ navbar:
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Pitavastatin (Kong 2025)"
         href: articles/Kong_2025_microdose_cocktail_esrd.html
+      - text: "Pitavastatin eltrombopag invitro (Carter 2020)"
+        href: articles/Carter_2020_pitavastatin_eltrombopag.html
+      - text: "Pitavastatin eltrombopag pbpk (Carter 2020)"
+        href: articles/Carter_2020_pitavastatin_eltrombopag.html
       - text: "Pixavir (Yang 2026)"
         href: articles/Yang_2026_pixavir.html
       - text: "Plazomicin (Trang 2019)"
@@ -9698,6 +9702,7 @@ articles:
   - articles/Carrot_2025_ovarianCancer
   - articles/Carrothers_2020_dalbavancin
   - articles/Carrothers_2023_dalbavancin
+  - articles/Carter_2020_pitavastatin_eltrombopag
   - articles/Castelli_2022_dextroamphetamine
   - articles/CatalanLatorre_2018_taurine_rat
   - articles/Cazaubon_2019_mitotane
