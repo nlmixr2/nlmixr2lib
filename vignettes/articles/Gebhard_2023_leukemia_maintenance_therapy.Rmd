@@ -285,8 +285,9 @@ mtx_reference
 ```
 
 ```{r mtx-pknca}
+# A typical-subject solve: any NA here is a failed solve, not a row to drop.
+stopifnot(!anyNA(mtx_sd$Cc))
 mtx_conc <- mtx_sd |>
-  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 mtx_conc <- dplyr::bind_rows(
@@ -485,8 +486,9 @@ mp_reference
 ```
 
 ```{r mp-pknca}
+# A typical-subject solve: any NA here is a failed solve, not a row to drop.
+stopifnot(!anyNA(mp_sd$Cc))
 mp_conc <- mp_sd |>
-  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 mp_conc <- dplyr::bind_rows(

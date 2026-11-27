@@ -2,6 +2,8 @@
 
 # development version
 
+- Seventeen validation articles no longer drop, zero or clip failed simulation output by hand: Gebhard 2023, Marques 2025, Gastonguay 2005, Milosheska 2016, Puisset 2007 and Netterberg 2017 docetaxel assert that the solved rows are complete where they filtered `NA`, `coalesce()`d to zero or kept only finite values; the geometric-mean helpers in Buil-Bruna 2015, Chan 2025, Chawla 2023, Yang 2023 and de Vries 2025 stop on a missing, non-finite or non-positive input instead of skipping it; Sun 2025 acyclovir, Hirasawa 2022, Kawata 2024 and Kaikousidis 2023 check each NCA profile is finite and non-negative to within 1e-9 of its peak before clipping round-off to zero; and Gu 2025 and Navid 2016 replace a strict non-negativity check with a floor of 1e-6 of each profile's peak. No model changed, and every article renders with the same results.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.

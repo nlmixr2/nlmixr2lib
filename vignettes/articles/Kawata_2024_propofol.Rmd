@@ -453,12 +453,19 @@ sim_nca <- dplyr::bind_rows(
 ```
 
 ```{r pknca}
+# Saleh 2023's pattern: a non-finite value or a negative beyond solver
+# round-off (1e-9 of the profile's peak) is a defect, not a value to clip.
+clean_conc <- function(y) {
+  stopifnot(all(is.finite(y)), all(y >= -1e-9 * max(y)))
+  pmax(y, 0)
+}
+
 conc_long <- sim_nca |>
   dplyr::select(id, treatment, time, Cc, Cbrain) |>
   tidyr::pivot_longer(c(Cc, Cbrain), names_to = "analyte", values_to = "conc") |>
-  dplyr::filter(!is.na(conc))
-stopifnot(all(conc_long$conc >= -1e-6 * max(conc_long$conc)))
-conc_long <- dplyr::mutate(conc_long, conc = pmax(conc, 0))
+  dplyr::group_by(id, treatment, analyte) |>
+  dplyr::mutate(conc = clean_conc(conc)) |>
+  dplyr::ungroup()
 
 dose_df <- sim_nca |>
   dplyr::distinct(id, treatment) |>

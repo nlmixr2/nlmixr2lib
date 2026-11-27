@@ -227,7 +227,7 @@ n_finite <- nrow(mech)
 
 # Add the recovery flag as a per-subject lookup against the trajectory.
 recovered_per_id <- sim_cohort |>
-  filter(is.finite(ANC), id %in% mech$id) |>
+  filter(id %in% mech$id) |>
   left_join(mech |> select(id, baseline, nadir_time), by = "id") |>
   group_by(id) |>
   summarise(recovered = any(time > nadir_time & ANC >= baseline),

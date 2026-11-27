@@ -333,7 +333,7 @@ mech <- sim_vpc |>
 n_finite <- nrow(mech)
 
 recovered_per_id <- sim_vpc |>
-  filter(is.finite(ANC), id %in% mech$id) |>
+  filter(id %in% mech$id) |>
   left_join(mech |> select(id, baseline, nadir_time), by = "id") |>
   group_by(id) |>
   summarise(recovered = any(time > nadir_time & ANC >= baseline),

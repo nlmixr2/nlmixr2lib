@@ -537,7 +537,12 @@ intervals <- data.frame(
 
 ncaResult <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 
-geoMean <- function(x) exp(mean(log(x[x > 0 & is.finite(x)])))
+geoMean <- function(x) {
+  # Fed simulated NCA results and parameters only: a missing, non-finite or
+  # non-positive value is a failed solve or NCA, so stop rather than skip it.
+  stopifnot(length(x) > 0, all(is.finite(x)), all(x > 0))
+  exp(mean(log(x)))
+}
 
 ncaWide <- as.data.frame(ncaResult) |>
   mutate(cycle = ifelse(start == 0, "Cycle 1", "Steady state")) |>

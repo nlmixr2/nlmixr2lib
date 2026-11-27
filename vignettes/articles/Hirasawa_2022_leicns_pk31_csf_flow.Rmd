@@ -568,10 +568,19 @@ this is a `PKNCA` summary of the simulated cisterna-magna profiles after each
 intra-CSF dose, by panel.
 
 ```{r nca-csf}
+# Saleh 2023's pattern: a non-finite value or a negative beyond solver
+# round-off (1e-9 of the profile's peak) is a defect, not a value to clip.
+clean_conc <- function(y) {
+  stopifnot(all(is.finite(y)), all(y >= -1e-9 * max(y)))
+  pmax(y, 0)
+}
+
 cm_long <- sims |>
   filter(grepl("^[34]", panel)) |>
-  transmute(panel = as.character(panel), time, conc = pmax(CM, 0)) |>
-  filter(!is.na(conc))
+  transmute(panel = as.character(panel), time, conc = CM) |>
+  group_by(panel) |>
+  mutate(conc = clean_conc(conc)) |>
+  ungroup()
 cm_dose <- scen |>
   filter(grepl("^[34]", panel)) |>
   transmute(panel, time = 0, dose = amt)

@@ -289,15 +289,17 @@ applied to the pooled virtual cohort.
 ```{r figure-5, fig.width = 9, fig.height = 4}
 # Read off the per-subject Cmax of plasma, RBC, and change-from-baseline p50
 # from the typical-value simulation (matches the paper's "predicted" values).
+# Typical-value solve: an NA here is a failed solve, so stop rather than drop.
+stopifnot(!anyNA(sim_typical[, c("Cc", "Crbc", "p50")]))
 fig5_summary <- sim_typical |>
   group_by(id, WT, dose_mg, cancer_type) |>
   summarise(
-    plasma_cmax = max(Cc,   na.rm = TRUE),
-    rbc_cmax    = max(Crbc, na.rm = TRUE),
-    dp50_max    = max(p50,  na.rm = TRUE) - 26.9, # change from baseline INTp50
+    plasma_cmax = max(Cc),
+    rbc_cmax    = max(Crbc),
+    dp50_max    = max(p50) - 26.9, # change from baseline INTp50
     .groups = "drop"
-  ) |>
-  filter(is.finite(plasma_cmax))
+  )
+stopifnot(all(is.finite(fig5_summary$plasma_cmax)))
 
 fig5_long <- fig5_summary |>
   select(id, WT, plasma_cmax, rbc_cmax, dp50_max) |>

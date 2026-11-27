@@ -320,7 +320,12 @@ nca_res  <- pk.nca(nca_data)
 ```{r pknca-summary}
 # Geometric-mean summary by overall, sex, and BW group, matching the
 # stratifications in Buil-Bruna 2015 Table 3.
-gmean <- function(x) exp(mean(log(x[is.finite(x) & x > 0])))
+gmean <- function(x) {
+  # Fed simulated NCA results and parameters only: a missing, non-finite or
+  # non-positive value is a failed solve or NCA, so stop rather than skip it.
+  stopifnot(length(x) > 0, all(is.finite(x)), all(x > 0))
+  exp(mean(log(x)))
+}
 
 results_long <- as.data.frame(nca_res$result) |>
   filter(PPTESTCD %in% c("cmin", "cmax", "cav", "auclast")) |>

@@ -392,10 +392,19 @@ grouped by fit. The oral curves end at the last oral sample (360 min) and the
 intranasal curves at the last intranasal sample (120 min).
 
 ```{r pknca}
+# Saleh 2023's pattern: a non-finite value or a negative beyond solver
+# round-off (1e-9 of the profile's peak) is a defect, not a value to clip.
+clean_conc <- function(y) {
+  stopifnot(all(is.finite(y)), all(y >= -1e-9 * max(y)))
+  pmax(y, 0)
+}
+
 run_nca <- function(conc_col) {
   conc <- sim |>
-    dplyr::filter(!is.na(.data[[conc_col]])) |>
-    dplyr::transmute(id = 1L, fit = as.character(fit), time, conc = pmax(.data[[conc_col]], 0))
+    dplyr::transmute(id = 1L, fit = as.character(fit), time, conc = .data[[conc_col]]) |>
+    dplyr::group_by(fit) |>
+    dplyr::mutate(conc = clean_conc(conc)) |>
+    dplyr::ungroup()
   stopifnot(all(conc |> dplyr::group_by(fit) |> dplyr::summarise(t0 = min(time)) |> dplyr::pull(t0) == 0))
   dose <- runs |>
     dplyr::transmute(id = 1L, fit, time = 0, amt = ifelse(route == "oral", 0.25, 0.1))

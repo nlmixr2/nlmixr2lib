@@ -310,19 +310,19 @@ pk_conc_parent <- sim_typ |>
   dplyr::filter(time >= last_dose_time,
                 time <= last_dose_time + tau_h) |>
   dplyr::mutate(time = time - last_dose_time) |>
-  dplyr::select(id, time, Cc, arm, WT, CRCL) |>
-  dplyr::filter(!is.na(Cc))
+  dplyr::select(id, time, Cc, arm, WT, CRCL)
+stopifnot(!anyNA(pk_conc_parent$Cc))
 
 # Guarantee a time = 0 row per (id, arm) so PKNCA anchors AUC at t = 0.
 pk_conc_parent <- dplyr::bind_rows(
   pk_conc_parent,
   pk_conc_parent |>
     dplyr::distinct(id, arm) |>
-    dplyr::mutate(time = 0)
+    dplyr::mutate(time = 0, Cc = 0)
 ) |>
   dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
-  dplyr::arrange(id, arm, time) |>
-  dplyr::mutate(Cc = dplyr::coalesce(Cc, 0))
+  dplyr::arrange(id, arm, time)
+stopifnot(!anyNA(pk_conc_parent$Cc))
 
 pk_dose_parent <- pk_conc_parent |>
   dplyr::distinct(id, arm) |>
@@ -364,18 +364,18 @@ pk_conc_gluc <- sim_typ |>
                 time <= last_dose_time + tau_h) |>
   dplyr::mutate(time = time - last_dose_time) |>
   dplyr::select(id, time, Cc_gluc, arm, WT, CRCL) |>
-  dplyr::filter(!is.na(Cc_gluc)) |>
   dplyr::rename(Cc = Cc_gluc)
+stopifnot(!anyNA(pk_conc_gluc$Cc))
 
 pk_conc_gluc <- dplyr::bind_rows(
   pk_conc_gluc,
   pk_conc_gluc |>
     dplyr::distinct(id, arm) |>
-    dplyr::mutate(time = 0)
+    dplyr::mutate(time = 0, Cc = 0)
 ) |>
   dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
-  dplyr::arrange(id, arm, time) |>
-  dplyr::mutate(Cc = dplyr::coalesce(Cc, 0))
+  dplyr::arrange(id, arm, time)
+stopifnot(!anyNA(pk_conc_gluc$Cc))
 
 conc_obj_gluc <- PKNCA::PKNCAconc(
   pk_conc_gluc, Cc ~ time | arm + id,

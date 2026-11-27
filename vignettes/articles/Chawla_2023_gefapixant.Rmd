@@ -136,7 +136,12 @@ demographics (Chawla 2023 Table S3). Each arm uses 100-200 participants.
 ```{r cohort-helpers}
 set.seed(20230815)
 
-gm <- function(x) exp(mean(log(x[is.finite(x) & x > 0])))
+gm <- function(x) {
+  # Fed simulated NCA results and parameters only: a missing, non-finite or
+  # non-positive value is a failed solve or NCA, so stop rather than skip it.
+  stopifnot(length(x) > 0, all(is.finite(x)), all(x > 0))
+  exp(mean(log(x)))
+}
 
 # Truncated-normal draw so sampled covariates stay inside the published ranges.
 rtnorm <- function(n, mean, sd, lo, hi) {

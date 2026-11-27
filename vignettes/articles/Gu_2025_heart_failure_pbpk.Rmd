@@ -335,9 +335,11 @@ sims <- lapply(seq_len(nrow(scenarios)), function(i) {
 
 nrow(sims)
 
-# No profile may dip below zero: a negative tail means the window has run past
+# Every profile must be finite and may dip below zero only by solver round-off
+# (1e-6 of its own peak): a deeper negative tail means the window has run past
 # the solver's absolute tolerance and every downstream AUC would be unreliable.
-stopifnot(all(sims$Cc >= 0))
+stopifnot(all(is.finite(sims$Cc)))
+stopifnot(all(tapply(sims$Cc, sims$id, function(x) all(x >= -1e-6 * max(x)))))
 min(sims$Cc)
 ```
 
@@ -378,9 +380,11 @@ rather than an inline trapezoidal rule, with the treatment arm as the grouping
 level so each scenario can be compared against its own published row.
 
 ```{r pknca, warning = FALSE, message = FALSE}
+# The solve chunk checked every value is finite and above the round-off floor;
+# clip that round-off to zero so PKNCA never sees a negative concentration.
 conc_data <- sims |>
-  filter(!is.na(Cc)) |>
-  select(id, treatment, time = time_h, conc = Cc)
+  select(id, treatment, time = time_h, conc = Cc) |>
+  mutate(conc = pmax(conc, 0))
 
 dose_data <- scenarios |>
   transmute(id, treatment, time = 0, dose = dose)

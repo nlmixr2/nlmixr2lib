@@ -417,13 +417,15 @@ stopifnot(
 # same subjects and the NCA below is not silently unbalanced.
 bad_ids <- sort(unique(subj_diag$id[subj_diag$failed]))
 sim <- dplyr::filter(sim, !id %in% bad_ids)
+# Every surviving subject solved: the figure and the NCA below use all rows.
+stopifnot(!anyNA(sim$Cc))
 n_kept <- dplyr::n_distinct(sim$id)
 n_kept
 ```
 
 ```{r figure-5-vpc, fig.cap = "Simulated q6h prediction interval from Table 6 as printed (median and 90% interval, N = 199). This is the analogue of Figure 5 of Marques 2025. The published VPC spans a single 0-6 h dosing interval and shows a peak about 1 h after the dose with a roughly three-fold peak-to-trough fall; the simulated profile instead rises slowly across the whole 24 h."}
 sim |>
-  dplyr::filter(treatment == "4 mg q6h", !is.na(Cc), time > 0) |>
+  dplyr::filter(treatment == "4 mg q6h", time > 0) |>
   dplyr::group_by(time) |>
   dplyr::summarise(
     med = stats::median(Cc),
@@ -450,7 +452,6 @@ PKNCA warn that the AUC interval starts before the first measurement.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 stopifnot(0 %in% sim_nca$time)

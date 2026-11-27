@@ -290,12 +290,13 @@ nca_input <- bind_rows(
     transmute(id = 1, treatment = "THP 200 mg", time = time / 60, conc = Cthp),
   single_dose("cip", 500, hours = 48, by_min = 5) |>
     transmute(id = 2, treatment = "CIP 500 mg", time = time / 60, conc = Ccip)
-) |>
-  filter(!is.na(conc))
+)
 
-# Concentrations must not have decayed into negative solver noise, which would
-# make aucinf.obs NaN without any error being raised.
-stopifnot(all(nca_input$conc >= 0))
+# Concentrations must be finite and must not have decayed into negative solver
+# noise beyond round-off (1e-6 of the profile's peak); the post-peak trim below
+# then drops what remains under that floor before the terminal-phase fit.
+stopifnot(all(is.finite(nca_input$conc)))
+stopifnot(all(tapply(nca_input$conc, nca_input$id, function(x) all(x >= -1e-6 * max(x)))))
 
 doses <- data.frame(id = c(1, 2), treatment = c("THP 200 mg", "CIP 500 mg"),
                     time = 0, dose = c(200, 500))
