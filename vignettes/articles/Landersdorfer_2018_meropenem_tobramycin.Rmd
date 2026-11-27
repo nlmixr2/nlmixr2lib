@@ -153,15 +153,16 @@ data.frame(
 
 # Solver note
 
-The meropenem Hill exponent (`hill_mem = 0.563`) is < 1. The analytical
-Jacobian of the meropenem killing term has a `c^(hill_mem - 1) = c^(-0.437)`
-factor that is singular at `cmem = 0`. The default rxode2 stiff solver
-(`lsoda`, BDF with numerical Jacobian) propagates that singularity and
-produces NaN trajectories once any subpopulation's state-2 cell count is
-non-trivial. The explicit Dormand-Prince RK8 solver (`method = "dop853"`)
-does not need the Jacobian and integrates the published equations cleanly --
-all simulations below use it. The bare `rxSolve()` defaults will fail; this
-is a property of the published Hill < 1 form, not a model-file bug.
+The meropenem Hill exponent (`hill_mem = 0.563`) is < 1, so `cmem^hill_mem`
+has an infinite slope at `cmem = 0`. In a drug-free arm, or once meropenem
+washes out, the stiff solver's numerical Jacobian and integration noise step
+`cmem` slightly below zero, where the non-integer power is NaN. The model
+files evaluate every Hill term on `max(c, 0)`, so `rxSolve()`'s default
+solver and tolerances integrate the published equations; the simulations
+below use them, with `maxsteps = 1e6`. With Hill < 1 the slope at zero stays
+infinite, and over washouts of many months the default solver can still fail
+a small fraction of parameter sets; the 4- and 10-day experiments here are not
+affected.
 
 # Carrying-capacity (growth control) check
 
@@ -181,10 +182,10 @@ ev_gc <- as.data.frame(et(seq(0, 96, by = 1)))
 
 gc <- bind_rows(
   rxode2::rxSolve(pao1,   ev_gc, returnType = "data.frame",
-                  maxsteps = 1e6, method = "dop853") |>
+                  maxsteps = 1e6) |>
     transmute(time, log10CFU = log_cfu, strain = "PAO1"),
   rxode2::rxSolve(paomut, ev_gc, returnType = "data.frame",
-                  maxsteps = 1e6, method = "dop853") |>
+                  maxsteps = 1e6) |>
     transmute(time, log10CFU = log_cfu, strain = "PAOdelta-mutS")
 )
 
@@ -302,7 +303,7 @@ sim_sctk <- function(mod, mem_nom, tob_nom, obs_times = c(0,1,3,6,24,29,48,72,96
   }
   events <- bind_rows(ev, do.call(bind_rows, doses))
   rxode2::rxSolve(mod, events, returnType = "data.frame",
-                  maxsteps = 1e6, method = "dop853") |>
+                  maxsteps = 1e6) |>
     filter(time %in% obs_times) |>
     select(time, log_cfu, cmem, ctob)
 }
@@ -413,7 +414,7 @@ sim_hfim_strain <- function(mod, strain_label) {
       mutate(regimen = names(regimens_hfim)[i])
   }))
   rxode2::rxSolve(mod, events, keep = "regimen",
-                  returnType = "data.frame", maxsteps = 1e6, method = "dop853") |>
+                  returnType = "data.frame", maxsteps = 1e6) |>
     mutate(strain = strain_label)
 }
 
@@ -526,10 +527,9 @@ hfim_sim |>
   Table 1 footnote), not fitted to the bacterial data. The continuous
   infusion of meropenem is started at the steady-state concentration of
   ~8 mg/L (paper Methods).
-* **Solver.** `method = "dop853"` and `maxsteps = 1e6` are passed to
-  `rxSolve` because the published meropenem Hill exponent (0.563) creates a
-  singular analytical Jacobian at `cmem = 0`, which causes the default
-  `lsoda` solver to fail. Steady-state (`ss=1`) dosing must not be used: it
+* **Solver.** `rxSolve()`'s default solver and tolerances are used, with
+  `maxsteps = 1e6`; the model files guard the Hill < 1 meropenem terms with
+  `max(c, 0)` (see Solver note). Steady-state (`ss=1`) dosing must not be used: it
   would reinitialize the bacterial states to their grown steady state and
   destroy the inoculum.
 * **Below limit of counting.** Displayed counts are floored at 10^1 CFU/mL

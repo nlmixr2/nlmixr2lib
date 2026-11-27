@@ -2,6 +2,8 @@
 
 # development version
 
+- Ten anti-infective PK/PD models now evaluate their non-integer Hill and power terms on `max(c, 0)`: Bergen 2017 meropenem, Cheah 2016 polymyxin (AB3070294 and ATCC19606), Kroemer 2024 ceftazidime-avibactam-fosfomycin (hollow fiber), Landersdorfer 2018 meropenem-tobramycin (PAO1 and PAOmutS), Mi 2022 ceftiofur (semi-mechanistic), Mi 2024 aditoprim (PBPK/PD), Rees 2018 meropenem-ciprofloxacin and Wicha 2017 linezolid-meropenem-vancomycin. In a drug-free arm or after washout, solver noise could take the concentration slightly negative, where the power is NaN and current rxode2 fails the subject. Simulated values are unchanged wherever they were finite before. The Bergen 2017, Kroemer 2024 and Landersdorfer 2018 articles now use `rxSolve()`'s default solver in place of `dop853` or the Fortran LSODA with tightened tolerances.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.

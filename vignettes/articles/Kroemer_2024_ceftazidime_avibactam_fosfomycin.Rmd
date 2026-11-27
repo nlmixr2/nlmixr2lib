@@ -191,10 +191,12 @@ data.frame(
 
 Four of the published exponents are below 1 (`hill_fof_s` = 0.333,
 `hill_avi_r` = 0.317, `hillint_avi_caz_s` = 0.266,
-`hillint_caz_fof_r` = 0.239). The analytic Jacobian of a `C^H` term carries a
-`C^(H-1)` factor that is singular at `C = 0` (i.e. in every drug-free arm), which
-the default BDF solver propagates. All simulations below therefore use the
-explicit Dormand-Prince solver, `method = "dop853"`, which needs no Jacobian.
+`hillint_caz_fof_r` = 0.239), so these `C^H` terms have an infinite slope at
+`C = 0`. In every drug-free arm, and once a drug washes out, the stiff solver's
+numerical Jacobian and integration noise step a concentration slightly below
+zero, where the non-integer power is NaN. The hollow fiber model evaluates
+every concentration-effect term on `max(C, 0)`, so `rxSolve()`'s default
+solver integrates it; the simulations below use it.
 
 The hollow fiber model additionally seeds `bact_resistant_cza` at
 10^-18 CFU/mL and lets it grow across twenty orders of magnitude, so the
@@ -210,7 +212,7 @@ hfim0 <- rxode2::zeroRe(hfim)
 
 SOLVE <- function(mod, ev) {
   rxode2::rxSolve(mod, ev, returnType = "data.frame", omega = NA,
-                  method = "dop853", useLinCmt = FALSE,
+                  useLinCmt = FALSE,
                   maxsteps = 1e7, atol = 1e-16, rtol = 1e-8)
 }
 ```
@@ -511,7 +513,7 @@ vpc_ev <- bind_rows(lapply(seq_len(nrow(vpc_arms)), function(k) {
 rxode2::rxSetSeed(2024)
 vpc_sim <- rxode2::rxSolve(
   hfim, select(vpc_ev, -arm), returnType = "data.frame",
-  omega = hfim$omega, method = "dop853", useLinCmt = FALSE,
+  omega = hfim$omega, useLinCmt = FALSE,
   maxsteps = 1e7, atol = 1e-16, rtol = 1e-8, keep = character()
 ) |>
   left_join(distinct(vpc_ev, id, arm), by = "id")

@@ -121,16 +121,15 @@ knitr::kable(
 
 The two-state life-cycle model is moderately stiff because `k21` (50 /h) is
 much faster than the subpopulation growth rate constants `k12` (~0.09-1.2 /h).
-Default lsoda tolerances accumulate enough error over ~24 h of growth to drive
-the trajectory to `NaN`. Tighten the absolute and relative tolerances when
-solving, and use the Fortran LSODA (`method = "lsoda"`):
+Two meropenem Hill exponents are non-integer (`hill_i` = 7.14, `hill_r` =
+2.19); in the drug-free control, and once meropenem washes out, the stiff
+solver's numerical Jacobian and integration noise step `cmem` slightly below
+zero, where those powers are NaN. The model file evaluates them on
+`max(cmem, 0)`, so `rxSolve()`'s default solver and tolerances are used, with
+`maxsteps = 1e6`:
 
 ```{r solver-opts}
-# The drug-free growth control is knife-edge on liblsoda, rxode2's default:
-# perturbing the parameters by 1e-12 makes about half of its solves fail with
-# "could not solve the system", depending on the machine. The Fortran LSODA
-# solves every case and agrees with dop853.
-solver_opts <- list(maxsteps = 1e6, atol = 1e-12, rtol = 1e-8, method = "lsoda")
+solver_opts <- list(maxsteps = 1e6)
 ```
 
 # Carrying-capacity (growth control) check
@@ -387,12 +386,10 @@ knitr::kable(cmp, digits = 2,
   state-2 fraction is ~k12/k21 (~2-3% for susceptible, < 1% for intermediate
   and resistant), so this introduces only a brief start-up transient that
   matters for the first 5-10 min but is irrelevant on the 10-day time scale.
-* **Solver tolerances.** Default lsoda settings (atol=1e-8, rtol=1e-6) drive
-  the trajectory to NaN within ~3 h because the population spans 10^6 ->
-  10^10 CFU/mL and the relative-error budget is overwhelmed. The vignette
-  uses `atol = 1e-12, rtol = 1e-8, maxsteps = 1e6` with the Fortran LSODA
-  (`method = "lsoda"`), because the default liblsoda fails on the drug-free
-  control on some machines; users should pass the same settings to `rxSolve`.
+* **Solver.** `rxSolve()`'s default solver and tolerances are used, with
+  `maxsteps = 1e6`. The model file evaluates the meropenem Hill powers on
+  `max(cmem, 0)`; without that guard the default solver failed the
+  drug-free control (see Solver settings).
 * **Below limit of counting.** Displayed total counts are floored at the
   published limit of counting (1.0 log10 CFU/mL); the underlying states are
   not floored. The limit on antibiotic-containing agar is 0.7 log10 CFU/mL
