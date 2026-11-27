@@ -53,6 +53,11 @@ test_that(".solveFailedSubjects() falls back to calculated variables, then gives
     .solveFailedSubjects(d, states = "central"),
     character(0)
   )
+  # A model without states cannot fail a solve, whatever its outputs hold.
+  expect_identical(
+    .solveFailedSubjects(d, states = character(0), lhs = "Cc"),
+    character(0)
+  )
 })
 
 test_that(".solveFailedSubjects() keys on sim.id and id together", {

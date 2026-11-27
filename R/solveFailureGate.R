@@ -27,7 +27,7 @@
 #'   `rxSolve` object or matrix with column names.
 #' @param states The model's state names (`rxode2::rxState()`).
 #' @param lhs The model's calculated variables (`rxode2::rxLhs()`), used only
-#'   when no state column is in the output.
+#'   when the model has states but none of them is in the output.
 #' @return Labels of the failed subjects, e.g. `"id=3"` or `"sim.id=2,id=3"`;
 #'   `character(0)` when every subject solved or when the output has no state
 #'   or calculated column to judge by.
@@ -40,7 +40,8 @@
     return(character(0))
   }
   cols <- intersect(states, names(res))
-  if (length(cols) == 0L) {
+  # A model without states has nothing to solve, so cannot fail.
+  if (length(cols) == 0L && length(states) > 0L) {
     cols <- intersect(lhs, names(res))
   }
   if (length(cols) == 0L) {
