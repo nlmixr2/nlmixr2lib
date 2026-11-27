@@ -192,38 +192,40 @@ test_that(".unpipe() puts the lhs where a direct `.` is, and does not add it as 
   expect_identical(.unpipe(quote(x %>% m[, .])), quote(m[, x]))
 })
 
-test_that(".unpipe() gives the value magrittr gives, for every form it rewrites", {
-  # magrittr is not a dependency of the package: it is the reference when present.
-  skip_if_not_installed("magrittr")
-  `%>%` <- getExportedValue("magrittr", "%>%")
-  env <- new.env(parent = environment())
-  env$f <- function(...) list(...)
-  env$g <- function(v) v * 10
-  env$h <- function(v, w = 1) v + w
-  env$x <- 3
-  # magrittr binds `.` to the lhs, also inside a nested call; the rewrite leaves
-  # that `.` in place, so it is bound here to the same value.
-  env$. <- env$x
-  env$y <- 7
-  env$lst <- list(a = 5)
-  env$m <- matrix(1:4, 2)
-  forms <- list(
-    quote(x %>% f(y)),
-    quote(x %>% f(y, .)),
-    quote(x %>% f(., y, .)),
-    quote(x %>% f(g(.))),
-    quote(x %>% g),
-    quote(x %>% h(1, w = .)),
-    quote(x %>% h(1, w = .)),
-    quote(lst %>% .$a),
-    quote(x %>% f(y) %>% length()),
-    quote(x %>% h(y, .) %>% g()),
-    quote(h(x %>% g, y)),
-    quote(m %>% .[1, 2])
+test_that(".unpipe() gives the call the native pipe parses to, for the forms both pipes write", {
+  # Each pair is the same pipeline written with `%>%` and with `|>`; the parser
+  # turns the native pipe into the nested call, which is the reference. Only
+  # forms without the `_` placeholder appear, since it needs R >= 4.2 and the
+  # package supports R 4.1.
+  pairs <- list(
+    list(quote(x %>% f(y)), quote(x |> f(y))),
+    list(quote(x %>% f(y, b = 2)), quote(x |> f(y, b = 2))),
+    list(quote(x %>% pkg::f(y)), quote(x |> pkg::f(y))),
+    list(quote(x %>% pkg:::f(y)), quote(x |> pkg:::f(y))),
+    list(quote(x %>% g), quote(x |> g())),
+    list(quote(x %>% g()), quote(x |> g())),
+    # A `.` that is not a direct argument stays in place in both.
+    list(quote(x %>% f(g(.))), quote(x |> f(g(.)))),
+    list(quote(x %>% f(y) %>% length()), quote(x |> f(y) |> length())),
+    list(quote(x %>% g %>% h(1)), quote(x |> g() |> h(1))),
+    list(quote(h(x %>% g, y)), quote(h(x |> g(), y))),
+    list(quote(z <- x %>% f(y)), quote(z <- x |> f(y)))
   )
-  for (form in forms) {
-    expect_identical(eval(.unpipe(form), env), eval(form, env), label = paste(deparse(form), collapse = " "))
+  for (p in pairs) {
+    expect_identical(.unpipe(p[[1L]]), p[[2L]], label = paste(deparse(p[[1L]]), collapse = " "))
   }
+})
+
+test_that(".unpipe() places the lhs at a `.` placeholder as magrittr does", {
+  # These forms put `.` where the native pipe needs `_` (R >= 4.2), or put it
+  # positionally or more than once, which `_` cannot; the expected calls are
+  # written out.
+  expect_identical(.unpipe(quote(x %>% h(1, w = .))), quote(h(1, w = x)))
+  expect_identical(.unpipe(quote(lst %>% .$a)), quote(lst$a))
+  expect_identical(.unpipe(quote(m %>% .[1, 2])), quote(m[1, 2]))
+  expect_identical(.unpipe(quote(lst %>% .[["a"]])), quote(lst[["a"]]))
+  expect_identical(.unpipe(quote(x %>% h(y, .) %>% g())), quote(g(h(y, x))))
+  expect_identical(.unpipe(quote(x %>% f(., y, .) %>% length())), quote(length(f(x, y, x))))
 })
 
 test_that("a chunk that pipes into a form the reader does not rewrite is reported, and still returned", {
