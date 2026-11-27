@@ -8984,6 +8984,8 @@ navbar:
         href: articles/Mao_2024_sirolimus.html
       - text: "Sirolimus (Wang 2019)"
         href: articles/Wang_2019_sirolimus.html
+      - text: "Sirolimus (Wang 2020)"
+        href: articles/Wang_2020_sirolimus.html
       - text: "Sirolimus (Wu 2012)"
         href: articles/Wu_2012_sirolimus.html
       - text: "Sirolimus 16odm ratio (Emoto 2016)"
@@ -14030,6 +14032,7 @@ articles:
   - articles/Wang_2020_entinostat_nivolumab_ipilimumab_qsp
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2020_polymyxinB
+  - articles/Wang_2020_sirolimus
   - articles/Wang_2020_sunitinib
   - articles/Wang_2020_vitacoxib_cat
   - articles/Wang_2021_atezolizumab_nabpaclitaxel_qsp

@@ -1,0 +1,477 @@
+---
+title: "Sirolimus (Wang 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sirolimus (Wang 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Wang_2020_sirolimus"))$meta$reference`
+* Description: `r rxode2::rxode(readModelDb("Wang_2020_sirolimus"))$meta$description`
+* Article: <https://doi.org/10.3389/fphar.2020.00890> (open access, PMC7300220)
+
+Wang et al. (2020) fitted a one-compartment model with first-order absorption
+to routine therapeutic-drug-monitoring concentrations of oral sirolimus in
+children with tuberous sclerosis complex (TSC), screened physiological and
+pharmacogenetic covariates, and retained only allometric body weight. Monte
+Carlo simulation of the final model gave weight-banded initial doses for a
+once-daily and a twice-daily regimen that reach the 5-15 ng/mL trough window.
+The absorption rate constant was fixed at 0.485 1/h from the group's earlier
+sirolimus models (Wang 2018 in TSC; Wang 2019 in kaposiform
+hemangioendothelioma, packaged as `Wang_2019_sirolimus`). The later Chen 2021
+TSC-epilepsy model from the same hospital (`Chen_2021_sirolimus`) is a
+separate, larger analysis that takes its fixed ka from this paper.
+
+# Population
+
+Fifteen Chinese children (7 boys, 8 girls) treated with sirolimus at the
+Children's Hospital of Fudan University between June 2016 and September 2019
+(Table 1): age median 5.75 (range 1.08-13.95) years, weight median 22.00
+(10.00-50.00) kg, albumin median 46.10 g/L, ALT median 7.00 IU/L. Patients on
+CYP3A4 or P-gp inhibitors or inducers were excluded. Whole-blood concentrations
+were measured with the Emit 2000 immunoassay (linear range 3.5-30 ng/mL). Table
+2 lists the genotypes of 12 genes, including CYP3A5 (*1/*3 in 7, *3/*3 in 8)
+and CYP3A4 (*1A/*1G in 6); none was retained. The number of concentrations is
+not reported.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure: 1-compartment, first-order absorption and elimination | -- | Methods, Population Pharmacokinetic Model |
+| `lka` | 0.485 1/h (fixed) | Table 3; Methods |
+| `lcl` | 6.48 L/h | Table 3; Results Eq. 7 |
+| `lvc` | 124 L | Table 3; Results Eq. 8 |
+| `e_wt_cl` | 0.75 (fixed), standard weight 70 kg | Methods Eq. 3; Results Eq. 7 |
+| `e_wt_vc` | 1 (fixed), standard weight 70 kg | Methods Eq. 3; Results Eq. 8 |
+| Exponential IIV `P = TV * exp(eta)` | -- | Methods Eq. 1 |
+| `etalcl` | 0.066^2 = 0.004356 | Table 3 (omega CL/F = 0.066, read as SD; see below) |
+| `etalvc` | 0.003^2 = 0.000009 | Table 3 (omega V/F = 0.003, read as SD) |
+| Combined error `OBS = PRE * (1 + eps1) + eps2` | -- | Methods Eq. 2 |
+| `propSd` | 0.312 | Table 3 (sigma1, proportional) |
+| `addSd` | 1.249 ng/mL | Table 3 (sigma2, additive) |
+
+# Clearance per kilogram (Figure 1E)
+
+The Results state that CL/F per kilogram falls from about 0.18 to 0.10 L/h/kg
+between 5 and 60 kg.
+
+```{r fig1e, fig.cap = "Typical sirolimus CL/F per kg body weight. Replicates Figure 1E of Wang 2020."}
+mod <- readModelDb("Wang_2020_sirolimus")
+mod_typ <- rxode2::zeroRe(mod)
+# Typical-value solves: rxode2 warns that a multi-subject solve has no omega,
+# which is the intent here, so only that warning is muffled.
+solve_typ <- function(events, keep) {
+  withCallingHandlers(
+    as.data.frame(rxode2::rxSolve(mod_typ, events = events, keep = keep)),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) invokeRestart("muffleWarning")
+    }
+  )
+}
+cl_grid <- tibble(WT = seq(5, 60, by = 1)) |>
+  mutate(id = row_number(), time = 0, amt = 0, evid = 0L, cmt = "central")
+cl_sim <- solve_typ(cl_grid, keep = "WT")
+
+ggplot(cl_sim, aes(WT, cl / WT)) +
+  geom_line() +
+  labs(x = "Body weight (kg)", y = "CL/F (L/h/kg)")
+
+cl_ends <- cl_sim$cl[cl_sim$WT %in% c(5, 60)] / c(5, 60)
+cl_ends
+# Typical values on both sides; the text gives two significant figures.
+stopifnot(abs(cl_ends[1] - 0.18) < 0.005, abs(cl_ends[2] - 0.10) < 0.005)
+```
+
+# Virtual cohort and simulation (Figures 2 and 3)
+
+Figures 2 and 3 simulate 1,000 virtual children at each of seven body weights
+(5, 10, 20, 30, 40, 50 and 60 kg) and ten daily doses (0.01-0.10 mg/kg/day),
+once daily (Figure 2) or with the daily dose split into two equal doses 12 h
+apart (Figure 3), and plot the probability that the trough lies within 5-15
+ng/mL, with the median and 95% interval of the troughs.
+
+We simulate 200 children per weight-by-regimen arm (the package cap) for 14
+days, which is past steady state at every weight (the longest half-life, at 60
+kg, is about 13 h), and read the trough at the end of the last dosing
+interval. The model is linear and `Cc` is the individual prediction without
+residual error, so each child is simulated once at 0.01 mg/kg/day and the
+trough at the other nine doses is that trough multiplied by the dose ratio.
+
+```{r sim}
+weights <- c(5, 10, 20, 30, 40, 50, 60)
+nsub <- 200
+ndays <- 14
+ref_dose <- 0.01 # mg/kg/day
+doses_grid <- round(seq(0.01, 0.10, by = 0.01), 2)
+
+regimens <- tibble::tribble(
+  ~regimen,      ~per_day, ~figure,
+  "Once daily",  1,        "Figure 2",
+  "Twice daily", 2,        "Figure 3"
+)
+
+make_arm <- function(rg, wt, id0) {
+  ids <- id0 + seq_len(nsub)
+  tau <- 24 / rg$per_day
+  dtimes <- seq(0, by = tau, length.out = ndays * rg$per_day)
+  dose <- tidyr::expand_grid(id = ids, time = dtimes) |>
+    mutate(amt = ref_dose * wt / rg$per_day, evid = 1L, cmt = "depot")
+  obs <- tibble(id = ids, time = ndays * 24, amt = 0, evid = 0L, cmt = "central")
+  bind_rows(dose, obs) |>
+    mutate(WT = wt, regimen = rg$regimen)
+}
+
+arms <- list()
+id0 <- 0
+for (i in seq_len(nrow(regimens))) {
+  for (wt in weights) {
+    arms[[length(arms) + 1]] <- make_arm(regimens[i, ], wt, id0)
+    id0 <- id0 + nsub
+  }
+}
+ev <- bind_rows(arms) |> arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(2020)
+sim <- rxode2::rxSolve(mod, events = ev, keep = c("WT", "regimen"))
+trough <- as.data.frame(sim) |>
+  filter(time == ndays * 24) |>
+  select(id, WT, regimen, Cc)
+
+troughs_all <- tidyr::expand_grid(trough, dose = doses_grid) |>
+  mutate(Ctrough = Cc * dose / ref_dose)
+
+pta <- troughs_all |>
+  group_by(regimen, WT, dose) |>
+  summarise(
+    sim_pta = 100 * mean(Ctrough >= 5 & Ctrough <= 15),
+    sim_med = median(Ctrough),
+    sim_lo = quantile(Ctrough, 0.025),
+    sim_hi = quantile(Ctrough, 0.975),
+    .groups = "drop"
+  )
+```
+
+The figures print no numbers, so the probability curves in panels A-J of
+Figures 2 and 3 were digitised by eye by the maintainers at each simulated
+weight (precision about 5 percentage points).
+
+```{r published}
+pub_vals <- list(
+  "Once daily" = list(
+    `0.01` = c(0, 0, 0, 0, 0, 0, 0),
+    `0.02` = c(0, 0, 0, 1, 4, 15, 38),
+    `0.03` = c(0, 0, 18, 75, 95, 100, 100),
+    `0.04` = c(0, 10, 93, 100, 100, 100, 100),
+    `0.05` = c(0, 65, 100, 100, 100, 100, 97),
+    `0.06` = c(15, 97, 100, 100, 97, 85, 62),
+    `0.07` = c(50, 100, 100, 95, 65, 35, 12),
+    `0.08` = c(85, 100, 97, 65, 20, 5, 0),
+    `0.09` = c(95, 100, 80, 25, 3, 0, 0),
+    `0.1` = c(100, 100, 50, 5, 0, 0, 0)
+  ),
+  "Twice daily" = list(
+    `0.01` = c(0, 0, 0, 0, 0, 0, 0),
+    `0.02` = c(0, 0, 50, 95, 100, 100, 100),
+    `0.03` = c(25, 97, 100, 100, 100, 100, 100),
+    `0.04` = c(100, 100, 100, 100, 100, 95, 85),
+    `0.05` = c(100, 100, 95, 70, 35, 10, 2),
+    `0.06` = c(100, 100, 50, 5, 0, 0, 0),
+    `0.07` = c(100, 55, 3, 0, 0, 0, 0),
+    `0.08` = c(100, 15, 0, 0, 0, 0, 0),
+    `0.09` = c(70, 5, 0, 0, 0, 0, 0),
+    `0.1` = c(30, 0, 0, 0, 0, 0, 0)
+  )
+)
+published <- lapply(names(pub_vals), function(rg) {
+  lapply(names(pub_vals[[rg]]), function(d) {
+    tibble(regimen = rg, WT = weights, dose = as.numeric(d), pub_pta = pub_vals[[rg]][[d]])
+  }) |>
+    bind_rows()
+}) |>
+  bind_rows()
+
+cmp <- inner_join(published, pta, by = c("regimen", "WT", "dose")) |>
+  mutate(diff_pp = sim_pta - pub_pta)
+```
+
+```{r compare-table}
+informative <- filter(cmp, pub_pta > 5, pub_pta < 95)
+informative |>
+  group_by(regimen) |>
+  summarise(
+    n_cells = n(),
+    median_diff = median(diff_pp),
+    median_abs_diff = median(abs(diff_pp)),
+    p90_abs_diff = quantile(abs(diff_pp), 0.9),
+    .groups = "drop"
+  ) |>
+  left_join(select(regimens, regimen, figure), by = "regimen") |>
+  select(figure, regimen, n_cells, median_diff, median_abs_diff, p90_abs_diff) |>
+  dplyr::rename(
+    "Source" = figure, "Regimen" = regimen, "Weight x dose cells" = n_cells,
+    "Median difference (pp)" = median_diff,
+    "Median |difference| (pp)" = median_abs_diff,
+    "90th percentile |difference| (pp)" = p90_abs_diff
+  ) |>
+  knitr::kable(
+    digits = 1,
+    caption = "Simulated minus digitised probability of a 5-15 ng/mL trough (percentage points), over the cells with a published probability between 5% and 95%."
+  )
+```
+
+The IIV is small (omega CL/F 0.066), so the trough distribution in each arm is
+narrow and the probability curves are steep: a shift of a few percent in
+concentration moves a cell on a slope by 10-30 percentage points. The
+percentage-point table above therefore overstates the disagreement. A measure
+on the concentration scale is the factor by which the simulated troughs of a
+cell must be multiplied to give the digitised probability (the factor closest
+to 1 when several fit).
+
+```{r implied-ratio}
+implied_log_ratio <- function(ctrough, target_pct) {
+  s_grid <- exp(seq(-0.5, 0.5, by = 0.005))
+  p <- vapply(s_grid, function(s) 100 * mean(s * ctrough >= 5 & s * ctrough <= 15), numeric(1))
+  d <- abs(p - target_pct)
+  cand <- which(d <= min(d) + 1e-9)
+  log(s_grid[cand[which.min(abs(log(s_grid[cand])))]])
+}
+
+informative$log_ratio <- vapply(seq_len(nrow(informative)), function(i) {
+  ct <- troughs_all$Ctrough[
+    troughs_all$regimen == informative$regimen[i] &
+      troughs_all$WT == informative$WT[i] &
+      troughs_all$dose == informative$dose[i]
+  ]
+  implied_log_ratio(ct, informative$pub_pta[i])
+}, numeric(1))
+
+ratio_summary <- informative |>
+  group_by(regimen) |>
+  summarise(
+    median_ratio = exp(median(log_ratio)),
+    p90_abs_pct = 100 * (exp(quantile(abs(log_ratio), 0.9)) - 1),
+    .groups = "drop"
+  )
+ratio_summary |>
+  dplyr::rename(
+    "Regimen" = regimen,
+    "Median published / simulated trough" = median_ratio,
+    "90th percentile |difference| (%)" = p90_abs_pct
+  ) |>
+  knitr::kable(digits = 3, caption = "Concentration factor implied by each digitised probability, over the same cells.")
+```
+
+```{r compare-assert}
+# A wrong typical value, allometric reference or dose unit moves the troughs
+# by tens of percent. Reading omega as a variance widens the trough
+# distributions so far that the implied factors scatter (90th percentile of
+# |difference| 33-48% per figure, against under 7% here). The digitised curves
+# imply troughs a few percent above the
+# simulated ones in both figures; the envelope uses the 90th percentile, not
+# the maximum, because a cell on a steep slope is also sensitive to Monte
+# Carlo noise and to the by-eye digitisation.
+stopifnot(
+  nrow(informative) >= 25,
+  all(abs(log(ratio_summary$median_ratio)) < log(1.08)),
+  quantile(abs(informative$log_ratio), 0.9) < log(1.12)
+)
+```
+
+```{r fig-pta, fig.height = 6, fig.cap = "Simulated probability of a 5-15 ng/mL trough against body weight, by daily dose (lines), with the curves digitised from Figures 2 and 3 (points). Replicates panels A-J of Figures 2 and 3 of Wang 2020."}
+pta |>
+  mutate(dose = factor(sprintf("%.2f", dose))) |>
+  ggplot(aes(WT, sim_pta, colour = dose)) +
+  geom_line() +
+  geom_point(
+    data = cmp |> mutate(dose = factor(sprintf("%.2f", dose))),
+    aes(y = pub_pta), size = 1.2
+  ) +
+  facet_wrap(~regimen) +
+  labs(
+    x = "Body weight (kg)", y = "Probability of 5-15 ng/mL trough (%)",
+    colour = "Dose (mg/kg/day)"
+  )
+```
+
+```{r fig-conc, fig.height = 6, fig.cap = "Simulated steady-state trough median (solid) and 95% interval (dashed) against body weight, once daily, by daily dose; dotted lines mark 5 and 15 ng/mL. Replicates panels a-j of Figure 2 of Wang 2020."}
+pta |>
+  filter(regimen == "Once daily") |>
+  ggplot(aes(WT)) +
+  geom_line(aes(y = sim_med), colour = "steelblue") +
+  geom_line(aes(y = sim_lo), colour = "darkgreen", linetype = "dashed") +
+  geom_line(aes(y = sim_hi), colour = "darkgreen", linetype = "dashed") +
+  geom_hline(yintercept = c(5, 15), colour = "red", linetype = "dotted") +
+  facet_wrap(~ sprintf("%.2f mg/kg/day", dose), ncol = 5) +
+  labs(x = "Body weight (kg)", y = "Trough sirolimus (ng/mL)")
+```
+
+At 0.10 mg/kg/day once daily and 60 kg, Figure 2j shows a median of about 24
+ng/mL with a 95% interval of about 19-30 ng/mL:
+
+```{r fig2j}
+pta |>
+  filter(regimen == "Once daily", dose == 0.10, WT == 60) |>
+  select(sim_med, sim_lo, sim_hi)
+```
+
+# Initial dose recommendations (Table 4)
+
+Table 4 gives the recommended daily dose per weight band. At each simulated
+weight the band whose lower bound is at or below the weight (upper bound
+exclusive, except the last band) is used.
+
+```{r table4}
+table4 <- tibble::tribble(
+  ~regimen,      ~lo, ~hi, ~dose,
+  "Once daily",  5,   10,  0.10,
+  "Once daily",  10,  20,  0.07,
+  "Once daily",  20,  30,  0.05,
+  "Once daily",  30,  50,  0.04,
+  "Once daily",  50,  60,  0.03,
+  "Twice daily", 5,   20,  0.04,
+  "Twice daily", 20,  40,  0.03,
+  "Twice daily", 40,  60,  0.02
+)
+
+rec <- tidyr::expand_grid(regimen = regimens$regimen, WT = weights) |>
+  rowwise() |>
+  mutate(rec_dose = {
+    rows <- table4[table4$regimen == regimen & WT >= table4$lo &
+      (WT < table4$hi | table4$hi == 60), ]
+    rows$dose[1]
+  }) |>
+  ungroup() |>
+  left_join(pta, by = c("regimen", "WT", "rec_dose" = "dose"))
+
+rec |>
+  select(regimen, WT, rec_dose, sim_pta, sim_med, sim_lo, sim_hi) |>
+  dplyr::rename(
+    "Regimen" = regimen, "Weight (kg)" = WT,
+    "Table 4 dose (mg/kg/day)" = rec_dose,
+    "Simulated P(5-15 ng/mL) (%)" = sim_pta,
+    "Median trough (ng/mL)" = sim_med,
+    "2.5th percentile (ng/mL)" = sim_lo,
+    "97.5th percentile (ng/mL)" = sim_hi
+  ) |>
+  knitr::kable(digits = 2, caption = "Table 4 recommendations evaluated with the model.")
+
+# Every Table 4 dose puts the median trough well inside the 5-15 ng/mL window
+# (the medians lie between about 7 and 12 ng/mL).
+stopifnot(all(rec$sim_med > 6 & rec$sim_med < 13))
+```
+
+# PKNCA validation
+
+The paper reports no NCA. As a structural check, typical-value children
+(`zeroRe()`) at 5, 10, 20, 40 and 60 kg receive 0.05 mg/kg once daily for 14
+days. PKNCA computes the steady-state AUC over the last dosing interval, which
+must equal the closed form `Dose / (CL/F)`.
+
+```{r pknca}
+nca_wt <- c(5, 10, 20, 40, 60)
+tlast <- (ndays - 1) * 24
+nca_grid <- tibble(WT = nca_wt) |>
+  mutate(id = row_number(), treatment = sprintf("%g kg", WT))
+ev_nca <- lapply(seq_len(nrow(nca_grid)), function(i) {
+  g <- nca_grid[i, ]
+  dose <- tibble(time = seq(0, by = 24, length.out = ndays), amt = 0.05 * g$WT, evid = 1L, cmt = "depot")
+  obs <- tibble(
+    time = tlast + c(0, 0.5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24),
+    amt = 0, evid = 0L, cmt = "central"
+  )
+  bind_rows(dose, obs) |>
+    mutate(id = g$id, WT = g$WT, treatment = g$treatment)
+}) |>
+  bind_rows() |>
+  arrange(id, time, desc(evid))
+
+sim_nca <- solve_typ(ev_nca, keep = c("WT", "treatment"))
+
+conc <- sim_nca |>
+  filter(!is.na(Cc), time >= tlast) |>
+  select(id, time, Cc, treatment)
+dose_rec <- ev_nca |>
+  filter(evid == 1, time == tlast) |>
+  select(id, time, amt, treatment)
+
+o_conc <- PKNCAconc(conc, Cc ~ time | treatment + id)
+o_dose <- PKNCAdose(dose_rec, amt ~ time | treatment + id)
+intervals <- data.frame(start = tlast, end = tlast + 24, auclast = TRUE, cmax = TRUE, cmin = TRUE, tmax = TRUE)
+nca_res <- pk.nca(PKNCAdata(o_conc, o_dose, intervals = intervals))
+
+nca_wide <- as.data.frame(nca_res) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(nca_grid, by = "treatment") |>
+  mutate(auc_closed = 1000 * 0.05 * WT / (6.48 * (WT / 70)^0.75)) |>
+  arrange(WT)
+
+nca_wide |>
+  select(treatment, auclast, auc_closed, cmax, tmax, cmin) |>
+  dplyr::rename(
+    "Group" = treatment, "AUCtau (PKNCA, ng*h/mL)" = auclast,
+    "Dose/(CL/F) (ng*h/mL)" = auc_closed, "Cmax (ng/mL)" = cmax,
+    "Tmax (h)" = tmax, "Cmin (ng/mL)" = cmin
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical-value steady-state NCA, 0.05 mg/kg once daily.")
+
+# Same typical-value parameters on both sides: the only difference is
+# trapezoidal error over a smooth 14-point interval, so a tight bound applies.
+stopifnot(all(abs(nca_wide$auclast / nca_wide$auc_closed - 1) < 0.02))
+```
+
+# Assumptions and deviations
+
+* **IIV scale.** Table 3 labels the rows "omega CL/F = 0.066" and "omega V/F =
+  0.003" without saying whether they are variances or SDs. Simulating Figures
+  2 and 3 under both readings settles it: with the values as SDs of eta
+  (variances 0.004356 and 0.000009) the simulated probability curves follow
+  the published ones (for example once daily at 0.04 mg/kg/day: about 0, 7,
+  88 and 100% at 5, 10, 20 and 30 kg, against about 0, 10, 93 and 100% in
+  Figure 2D), whereas reading them as variances flattens every curve to a
+  30-80% plateau. The SD reading is used; it is also the convention of this
+  group's other pediatric TDM models (e.g. `Chen_2021_sirolimus`,
+  `Wang_2019_sirolimus`). The IIV is very small; the paper's 15 patients and
+  wide bootstrap intervals (omega V/F 0.003-0.178) mean the estimates are
+  imprecise.
+* **Residual error scale.** sigma1 = 0.312 (proportional) and sigma2 = 1.249
+  ng/mL (additive) are taken as SDs by the same notation. The Figure 2-3
+  replication cannot test this: the published curves are reproduced by the
+  individual predictions without residual error (adding the residual error
+  lowers the 100% plateaus to about 85%).
+* **Target attainment.** The probability is read as P(5 ng/mL <= trough <=
+  15 ng/mL) at steady state, with the trough at the end of the dosing interval
+  (24 h once daily, 12 h twice daily). The digitised curves are approximate.
+  They imply published troughs about 2-4% above the simulated ones in both
+  figures, a consistent offset that a slightly earlier trough time or the
+  authors' simulation settings would explain; because the curves are so
+  steep, that offset appears as differences of 10-30 percentage points in a
+  few cells on the slopes, mostly in the twice-daily panels.
+* **Linear dose scaling.** Each child is simulated at 0.01 mg/kg/day and the
+  trough at the higher doses is obtained by proportional scaling. This is
+  exact for the linear model without residual error, and uses the same
+  children across doses rather than an independent cohort per dose as in the
+  paper.
+* **Screened covariates.** The paper lists the laboratory indices of Table 1
+  and the genotypes of Table 2 as collected and explored but does not tabulate
+  the covariate search; the Discussion states that CYP3A4 and CYP3A5 were not
+  retained. They are recorded under `covariatesDataExcluded`. Table 1 "Urea"
+  is filed under the register's `BUN` column, as in `Wang_2019_sirolimus`.
+* **Fixed ka** is inherited from the group's earlier sirolimus models and is
+  not identifiable from the TDM data.
+* The body-weight reference (70 kg) is above the observed range (10-50 kg);
+  the typical CL/F of 6.48 L/h and V/F of 124 L are adult-equivalent values.
