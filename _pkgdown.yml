@@ -7060,6 +7060,8 @@ navbar:
         href: articles/Gafar_2026_rifampicin.html
       - text: "Rifampicin (Horita 2018)"
         href: articles/Horita_2018_rifampicin.html
+      - text: "Rifampicin (Keutzer 2020)"
+        href: articles/Keutzer_2020_rifampicin.html
       - text: "Rifampicin (Kloprogge 2020)"
         href: articles/Kloprogge_2020_tuberculosis.html
       - text: "Rifampicin (Marsot 2017)"
@@ -10628,6 +10630,7 @@ articles:
   - articles/Kervezee_2014_quinidine_rat
   - articles/Ketharanathan_2023_pentobarbital
   - articles/Keunecke_2020_regorafenib
+  - articles/Keutzer_2020_rifampicin
   - articles/Khalil_2020_tapentadol
   - articles/KhanAsa_2020_voriconazole
   - articles/Khan_2015_ciprofloxacin

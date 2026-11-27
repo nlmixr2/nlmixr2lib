@@ -1,0 +1,604 @@
+---
+title: "Rifampicin without inter-occasion variability (Keutzer 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rifampicin without inter-occasion variability (Keutzer 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Keutzer_2020_rifampicin"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Keutzer_2020_rifampicin"))$description`
+* Article: <https://doi.org/10.3389/fphar.2020.00794> (open access)
+
+Keutzer and Simonsson (2020) is a simulation study of model-informed
+precision dosing (MIPD) for high-dose rifampicin. All of its simulations
+use the Svensson 2018 HIGHRIF1 population PK model, which is already in
+nlmixr2lib as `Svensson_2018_rifampicin` (one-compartment disposition,
+Erlang transit absorption, Michaelis-Menten clearance scaled by an
+auto-induced enzyme pool, dose-dependent bioavailability above 450 mg,
+inter-individual variability on Vmax, km, V, ka, MTT and NN, and
+inter-occasion variability (IOV) on km, ka, MTT and F).
+
+To show what happens when IOV is ignored, the authors also re-estimated
+that model on the original HIGHRIF1 data with all four IOV variances
+fixed to zero. This "misspecified" model, with its re-estimated
+structural, IIV and residual-error parameters (Table 4) and its full
+NM-TRAN code (Supplementary Appendix S1), is the new model contributed by
+this paper and is packaged here as `Keutzer_2020_rifampicin`. The
+original model's estimates printed in the same Table 4 agree with
+`Svensson_2018_rifampicin` to the printed precision (checked below), so
+this vignette uses that model for the paper's IOV simulations.
+
+# Population
+
+The re-estimation used the HIGHRIF1 data set: 83 adults with
+drug-susceptible pulmonary tuberculosis from Cape Town, South Africa (59
+male, 24 female), receiving 10 to 35 mg/kg rifampicin once daily. Body
+weight was 55.1 kg on average (range 40.2-84.2 kg) and fat-free mass
+40.0 kg (28.5-57.9 kg) (Keutzer 2020 Table 1). The same information is
+recorded in `readModelDb("Keutzer_2020_rifampicin")` as the `population`
+metadata.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| `lvmax` | log(309.8) mg/h at FFM 70 kg | Table 4, Vmax (S1 THETA(1) 310) |
+| `lkm` | log(15.8) mg/L | Table 4, km; S1 THETA(2) |
+| `lvc` | log(93.6) L at FFM 70 kg | Table 4, V; S1 THETA(3) |
+| `lka` | log(2.4) 1/h | Table 4, ka; S1 THETA(4) |
+| `lmtt` | log(0.812) h | Table 4, MTT 0.81; S1 THETA(8) |
+| `lnn` | log(7.568) | Table 4, NN 7.6; S1 THETA(9) |
+| `emax` | 1.219 | Table 4, Emax 1.2; S1 THETA(5) |
+| `ec50` | 0.05256 mg/L | Table 4, EC50 0.053; S1 THETA(6) |
+| `kenz` | 0.005328 1/h | Table 4, kENZ 0.0053; S1 THETA(7) |
+| `femax` | 0.401 | Table 4, Fmax 0.40; S1 THETA(10) |
+| `fed50` | 17.35 mg | Table 4, ED50 17.4; S1 THETA(11) |
+| `etalkm + etalvmax` | c(0.64996, 0.26529, 0.30515) | Table 4, IIV km 80.6%, IIV Vmax 55.2%, correlation 59.6% (variance = SD^2) |
+| `etalvc` | 0.0074218 | Table 4, IIV V 8.6% |
+| `etalmtt` | 0.34516 | Table 4, IIV MTT 58.8% |
+| `etalnn` | 0.81866 | Table 4, IIV NN 90.5% |
+| `etalka` | 0.082254 | Table 4, IIV ka 28.7% |
+| `expSd` | 0.569 | Table 4, additive error on log scale 56.9% |
+| Allometry | Vmax x (FFM/70)^0.75, V x (FFM/70) | S1 `$PK` ALLMCL, ALLMV |
+| Bioavailability | 1 + Fmax (DOSE-450)/(ED50 + DOSE-450) | Eq. 3; S1 TVBIO |
+| Absorption | Erlang transit input `transit(nn, mtt, bio)`, F1 = 0 | S1 `$PK` / `$DES` DADT(1) |
+| Elimination | Vmax/(km + Cp) x A(2)/V x enzyme | Eq. 4; S1 `$DES` DADT(2) |
+| Auto-induction | kENZ (1 + Emax Cp/(EC50 + Cp)) - kENZ enzyme | S1 `$DES` DADT(3) |
+| Initial states | central 0.0001 mg, enzyme 1 | S1 `$PK` A_0(2), A_0(3) |
+| Residual error | log-transformed DV, additive | Methods; S1 `$ERROR` |
+| No IOV | all four IOV variances 0 FIX | Table 4; S1 `$OMEGA` |
+
+## Original versus re-estimated estimates
+
+Table 4 prints the original Svensson 2018 estimates next to the
+re-estimated ones. The chunk below reads both packaged models and shows
+that the original column is what `Svensson_2018_rifampicin` carries
+(Table 4 percentages are SD x 100 for the random effects).
+
+```{r table4}
+sv <- readModelDb("Svensson_2018_rifampicin")
+ke <- readModelDb("Keutzer_2020_rifampicin")
+sv_ui <- rxode2::rxode2(sv)
+ke_ui <- rxode2::rxode2(ke)
+
+th <- function(ui) ui$theta
+om <- function(ui) ui$omega
+
+summ <- function(ui) {
+  t <- th(ui)
+  o <- om(ui)
+  c(
+    "Vmax (mg/h/70 kg)" = exp(t[["lvmax"]]),
+    "km (mg/L)" = exp(t[["lkm"]]),
+    "V (L/70 kg)" = exp(t[["lvc"]]),
+    "ka (1/h)" = exp(t[["lka"]]),
+    "MTT (h)" = exp(t[["lmtt"]]),
+    "NN" = exp(t[["lnn"]]),
+    "Emax" = t[["emax"]],
+    "EC50 (mg/L)" = t[["ec50"]],
+    "kENZ (1/h)" = t[["kenz"]],
+    "Fmax" = t[["femax"]],
+    "ED50 (mg)" = t[["fed50"]],
+    "IIV Vmax (%)" = 100 * sqrt(o["etalvmax", "etalvmax"]),
+    "IIV km (%)" = 100 * sqrt(o["etalkm", "etalkm"]),
+    "IIV V (%)" = 100 * sqrt(o["etalvc", "etalvc"]),
+    "IIV ka (%)" = 100 * sqrt(o["etalka", "etalka"]),
+    "IIV MTT (%)" = 100 * sqrt(o["etalmtt", "etalmtt"]),
+    "IIV NN (%)" = 100 * sqrt(o["etalnn", "etalnn"]),
+    "Correlation Vmax-km (%)" = 100 * o["etalkm", "etalvmax"] /
+      sqrt(o["etalkm", "etalkm"] * o["etalvmax", "etalvmax"])
+  )
+}
+
+tab4 <- tibble::tibble(
+  Parameter = names(summ(sv_ui)),
+  table4_original = c(
+    525, 35.3, 87.2, 1.77, 0.51, 23.8, 1.16, 0.0699, 0.00603, 0.504, 67.0,
+    30.0, 35.8, 7.86, 33.8, 38.2, 77.9, 38.9
+  ),
+  packaged_svensson = unname(summ(sv_ui)),
+  table4_no_iov = c(
+    309.8, 15.8, 93.6, 2.4, 0.81, 7.6, 1.2, 0.053, 0.0053, 0.40, 17.4,
+    55.2, 80.6, 8.6, 28.7, 58.8, 90.5, 59.6
+  ),
+  packaged_keutzer = unname(summ(ke_ui))
+)
+
+stopifnot(
+  # Both packaged models reproduce their Table 4 column to rounding.
+  all(abs(tab4$packaged_svensson / tab4$table4_original - 1) < 0.01),
+  all(abs(tab4$packaged_keutzer / tab4$table4_no_iov - 1) < 0.02)
+)
+
+tab4 |>
+  dplyr::mutate(dplyr::across(
+    -Parameter,
+    ~ vapply(.x, function(v) format(signif(v, 4), scientific = FALSE, drop0trailing = TRUE), "")
+  )) |>
+  dplyr::rename(
+    "Table 4, original" = table4_original,
+    "Svensson_2018_rifampicin" = packaged_svensson,
+    "Table 4, without IOV" = table4_no_iov,
+    "Keutzer_2020_rifampicin" = packaged_keutzer
+  ) |>
+  knitr::kable(caption = "Keutzer 2020 Table 4 against the two packaged models.")
+```
+
+# Virtual cohort
+
+Following the paper's Methods, sex is drawn first (71.1% male), body
+weight is then drawn from the sex-specific HIGHRIF1 distribution (mean
++/- SD 55.8 +/- 7.4 kg, range 40.7-74.0 kg for men; 53.8 +/- 10.7 kg,
+range 40.2-84.2 kg for women; normal, truncated to the observed range),
+and fat-free mass is derived with the paper's empirical relationships
+(Eq. 1 for men, `FFM = 2.541 * WT^0.728`; Eq. 2 for women,
+`FFM = 2.496 * WT^0.669`). Each dose group has 200 virtual patients.
+
+```{r cohort}
+set.seed(794)
+n_per_arm <- 200
+mgkg_groups <- c(10, 20, 25, 30, 35)
+
+make_cohort <- function(n) {
+  male <- stats::runif(n) < 0.711
+  wt <- ifelse(
+    male,
+    pmin(pmax(stats::rnorm(n, 55.8, 7.4), 40.7), 74.0),
+    pmin(pmax(stats::rnorm(n, 53.8, 10.7), 40.2), 84.2)
+  )
+  tibble::tibble(
+    male = male,
+    WT = wt,
+    FFM = ifelse(male, 2.541 * wt^0.728, 2.496 * wt^0.669)
+  )
+}
+
+cohort <- dplyr::bind_rows(lapply(seq_along(mgkg_groups), function(i) {
+  make_cohort(n_per_arm) |>
+    dplyr::mutate(mgkg = mgkg_groups[i])
+})) |>
+  dplyr::mutate(
+    id = dplyr::row_number(),
+    # Weight-band dosing: nearest 150 mg, never below the 450 mg reference.
+    DOSE = pmax(450, round(mgkg * WT / 150) * 150)
+  )
+
+cohort |>
+  dplyr::group_by(Sex = ifelse(male, "male", "female")) |>
+  dplyr::summarise(
+    N = dplyr::n(),
+    `WT mean (kg)` = mean(WT),
+    `FFM mean (kg)` = mean(FFM),
+    `FFM range (kg)` = paste(round(range(FFM), 1), collapse = "-")
+  ) |>
+  knitr::kable(digits = 1, caption = "Simulated cohort (compare Keutzer 2020 Table 1).")
+```
+
+# Simulation
+
+Daily oral dosing for 14 days with dense sampling over the 24-hour
+dosing intervals of days 1, 7 and 14 (the paper's three sampling
+occasions). `Svensson_2018_rifampicin` carries two IOV occasions
+selected by `OCC`; days 1-6 and 14 are assigned occasion 1 and days 7-13
+occasion 2, so each sampled day draws a fresh occasion effect relative
+to its neighbour. Setting `OCC = 0` switches the IOV terms off, which
+gives the paper's IIV-only simulation with the same individual (IIV)
+parameters, because the solve is seeded identically. The Keutzer model
+has no IOV, so `OCC` is not needed.
+
+A maximum solver step of 0.02 h is used: with the short MTT and large NN
+of some simulated subjects the transit input is a sub-hour pulse, and an
+unconstrained first step after time 0 can step over it entirely.
+
+```{r simulate}
+obs_tad <- c(0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24)
+sample_days <- c(1, 7, 14)
+
+dose_rows <- tidyr::expand_grid(id = cohort$id, day = 1:14) |>
+  dplyr::mutate(time = (day - 1) * 24, evid = 1L, cmt = "depot")
+obs_rows <- tidyr::expand_grid(id = cohort$id, day = sample_days, tad = obs_tad) |>
+  dplyr::mutate(time = (day - 1) * 24 + tad, evid = 0L, cmt = "central") |>
+  dplyr::select(-tad)
+
+events <- dplyr::bind_rows(dose_rows, obs_rows) |>
+  dplyr::left_join(dplyr::select(cohort, id, FFM, DOSE, mgkg), by = "id") |>
+  dplyr::mutate(
+    amt = ifelse(evid == 1L, DOSE, 0),
+    OCC = ifelse(day >= 7 & day <= 13, 2L, 1L)
+  ) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::select(id, time, amt, evid, cmt, FFM, DOSE, OCC, mgkg)
+
+solve_one <- function(model, ev, label) {
+  rxode2::rxSetSeed(2020)
+  rxode2::rxSolve(model, ev, keep = c("mgkg"), returnType = "data.frame", hmax = 0.02) |>
+    dplyr::select(id, time, Cc, mgkg) |>
+    dplyr::mutate(scenario = label)
+}
+
+sim <- dplyr::bind_rows(
+  solve_one(sv, events, "Svensson 2018: IIV + IOV"),
+  solve_one(sv, dplyr::mutate(events, OCC = 0L), "Svensson 2018: IIV only"),
+  solve_one(ke, events, "Keutzer 2020: re-estimated without IOV")
+) |>
+  dplyr::mutate(
+    day = sample_days[findInterval(time, c(0, 6 * 24, 13 * 24))],
+    tad = time - (day - 1) * 24
+  )
+```
+
+# PKNCA: AUC0-24 on days 1, 7 and 14
+
+```{r pknca}
+conc_df <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = paste0(mgkg, " mg/kg | ", scenario)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::select(id, time, amt, mgkg) |>
+  tidyr::crossing(scenario = unique(sim$scenario)) |>
+  dplyr::mutate(treatment = paste0(mgkg, " mg/kg | ", scenario)) |>
+  dplyr::select(id, time, amt, treatment)
+
+intervals <- data.frame(
+  start = (sample_days - 1) * 24,
+  end = (sample_days - 1) * 24 + 24,
+  auclast = TRUE,
+  cmax = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id, concu = "mg/L", timeu = "h"),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "mg"),
+  intervals = intervals
+))
+
+auc <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::mutate(day = sample_days[match(start, (sample_days - 1) * 24)]) |>
+  tidyr::separate(treatment, c("dose_group", "scenario"), sep = " \\| ")
+```
+
+## Table 3: day-14 AUC0-24 with and without IOV
+
+Keutzer 2020 Table 3 gives the median day-14 AUC0-24 of 1,000 simulated
+patients per dose group from the original model, simulated with IIV only
+and with IIV + IOV. The packaged Svensson model is compared against it
+with `ncaComparisonTable()` (which compares medians).
+
+```{r table3}
+published_t3 <- tibble::tribble(
+  ~treatment, ~auclast,
+  "10 mg/kg | Svensson 2018: IIV only", 39.9,
+  "20 mg/kg | Svensson 2018: IIV only", 120.3,
+  "25 mg/kg | Svensson 2018: IIV only", 151.4,
+  "30 mg/kg | Svensson 2018: IIV only", 194.3,
+  "35 mg/kg | Svensson 2018: IIV only", 248.7,
+  "10 mg/kg | Svensson 2018: IIV + IOV", 39.3,
+  "20 mg/kg | Svensson 2018: IIV + IOV", 123.5,
+  "25 mg/kg | Svensson 2018: IIV + IOV", 155.3,
+  "30 mg/kg | Svensson 2018: IIV + IOV", 202.6,
+  "35 mg/kg | Svensson 2018: IIV + IOV", 261.9
+)
+
+day14 <- as.data.frame(nca_res$result) |>
+  dplyr::filter(start == 13 * 24, grepl("Svensson", treatment))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = day14,
+  reference = published_t3,
+  by = "treatment",
+  units = c(auclast = "h*mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Day-14 median AUC0-24, simulated vs Keutzer 2020 Table 3. * differs by >20%.")
+```
+
+```{r table3-check}
+t3_check <- auc |>
+  dplyr::filter(day == 14, grepl("Svensson", scenario)) |>
+  dplyr::group_by(dose_group, scenario) |>
+  dplyr::summarise(sim = stats::median(PPORRES), .groups = "drop") |>
+  dplyr::mutate(treatment = paste(dose_group, scenario, sep = " | ")) |>
+  dplyr::inner_join(published_t3, by = "treatment") |>
+  dplyr::mutate(pct = 100 * (sim / auclast - 1))
+
+stopifnot(
+  nrow(t3_check) == 10,
+  # Doses 20-35 mg/kg: weight-band rounding has little leverage there.
+  all(abs(t3_check$pct[!grepl("^10 ", t3_check$dose_group)]) < 15),
+  # 10 mg/kg sits on the steep part of the bioavailability curve near the
+  # 450 mg reference, where the unpublished weight bands matter most.
+  all(abs(t3_check$pct[grepl("^10 ", t3_check$dose_group)]) < 35)
+)
+```
+
+The 20-35 mg/kg medians agree closely. The 10 mg/kg group is the most
+sensitive to how doses were banded by weight (bioavailability changes
+fastest just above the 450 mg reference dose and the paper does not list
+the HIGHRIF1 weight bands), so a larger difference is expected there.
+
+## Figure 5: AUC0-24 by sampling day at 35 mg/kg
+
+```{r fig5, fig.width = 7, fig.height = 4.5}
+auc35 <- auc |> dplyr::filter(dose_group == "35 mg/kg")
+
+ggplot(auc35, aes(factor(day), PPORRES, fill = scenario)) +
+  geom_boxplot(
+    outlier.shape = NA,
+    coef = Inf,
+    position = position_dodge(width = 0.8),
+    width = 0.7
+  ) +
+  coord_cartesian(ylim = c(0, 1000)) +
+  labs(
+    x = "Day",
+    y = "AUC0-24 (h*mg/L)",
+    fill = NULL,
+    title = "35 mg/kg once daily, AUC0-24 by sampling day",
+    caption = "Replicates Figure 5 of Keutzer 2020 (whiskers span the full range here)."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom", legend.direction = "vertical")
+
+auc35 |>
+  dplyr::group_by(scenario, day) |>
+  dplyr::summarise(
+    median = stats::median(PPORRES),
+    p2.5 = stats::quantile(PPORRES, 0.025),
+    p97.5 = stats::quantile(PPORRES, 0.975),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 1, caption = "AUC0-24 (h*mg/L) at 35 mg/kg by scenario and day.")
+```
+
+Figure 5 of the paper shows median AUC0-24 of about 450, 290 and 250-260
+h*mg/L on days 1, 7 and 14, falling with auto-induction; the
+Svensson simulation reproduces this. The re-estimated model without IOV
+gives a similar population median at every day: its larger IIV and
+residual error absorb the variability that the original model assigns to
+occasions. Because its km is much lower (15.8 vs 35.3 mg/L) and its
+IIV on km much larger (80.6% vs 35.8%), it also produces a heavy upper
+tail of patients whose elimination saturates at 35 mg/kg, which is
+visible in the 97.5th percentile on days 7 and 14.
+
+```{r fig5-check}
+med35 <- auc35 |>
+  dplyr::group_by(scenario, day) |>
+  dplyr::summarise(med = stats::median(PPORRES), .groups = "drop")
+ref_med <- med35$med[med35$scenario == "Svensson 2018: IIV + IOV"]
+ke_med <- med35$med[med35$scenario == "Keutzer 2020: re-estimated without IOV"]
+stopifnot(
+  # Both models were fitted to the same data, so their population medians
+  # should agree; a transcription error in the re-estimated values would
+  # move the whole distribution.
+  all(abs(ke_med / ref_med - 1) < 0.2)
+)
+```
+
+## Figure 4: magnitude of IIV and IOV in AUC0-24 at 1,800 mg
+
+The paper quantifies IIV as the spread of steady-state (day 24)
+AUC0-24 among 1,000 patients given 1,800 mg with IIV only (95% PI
+136.9-369.7 h*mg/L; SD of log AUC 25.4%), and IOV as the spread for the
+typical patient over 1,000 occasions with IOV only (95% PI 122.2-331.2
+h*mg/L; 25.8%). The covariates of these patients are not given. Both
+runs here use the HIGHRIF1 mean fat-free mass of 40 kg, so the spread
+reflects the random effects only, as in the paper; with the cohort's
+fat-free-mass distribution added, the IIV-only spread widens to about
+30%. For the IOV-only run the IIV variances of
+`Svensson_2018_rifampicin` are set to a negligible 1e-12, and the sampled
+day (day 25) is the second occasion.
+
+```{r fig4}
+n_fig4 <- 200
+ss_day <- 25
+fig4_events <- function(ffm, occ_last) {
+  doses <- tidyr::expand_grid(id = seq_along(ffm), day = 1:ss_day) |>
+    dplyr::mutate(time = (day - 1) * 24, amt = 1800, evid = 1L, cmt = "depot")
+  obs <- tidyr::expand_grid(id = seq_along(ffm), tad = obs_tad) |>
+    dplyr::mutate(day = ss_day, time = (ss_day - 1) * 24 + tad, amt = 0, evid = 0L, cmt = "central") |>
+    dplyr::select(-tad)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(
+      FFM = ffm[id],
+      DOSE = 1800,
+      OCC = ifelse(day == ss_day, occ_last, ifelse(occ_last == 0L, 0L, 1L))
+    ) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+iiv_ev <- fig4_events(rep(40, n_fig4), occ_last = 0L)
+iov_ev <- fig4_events(rep(40, n_fig4), occ_last = 2L)
+
+sv_iov_only <- sv |>
+  rxode2::ini(
+    etalkm + etalvmax ~ c(1e-12, 0, 1e-12),
+    etalvc ~ 1e-12,
+    etalmtt ~ 1e-12,
+    etalnn ~ 1e-12,
+    etalka ~ 1e-12
+  )
+
+auc_ss <- function(model, ev, label) {
+  rxode2::rxSetSeed(2402)
+  s <- rxode2::rxSolve(model, ev, returnType = "data.frame", hmax = 0.02) |>
+    dplyr::select(id, time, Cc)
+  conc <- s |> dplyr::mutate(treatment = label)
+  dose <- ev |> dplyr::filter(evid == 1L) |> dplyr::select(id, time, amt) |>
+    dplyr::mutate(treatment = label)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id, concu = "mg/L", timeu = "h"),
+    PKNCA::PKNCAdose(dose, amt ~ time | treatment + id, doseu = "mg"),
+    intervals = data.frame(start = (ss_day - 1) * 24, end = ss_day * 24, auclast = TRUE)
+  ))
+  as.data.frame(res$result) |> dplyr::filter(PPTESTCD == "auclast")
+}
+
+fig4 <- dplyr::bind_rows(
+  auc_ss(sv, iiv_ev, "IIV only (200 patients)"),
+  auc_ss(sv_iov_only, iov_ev, "IOV only (typical patient, 200 occasions)"),
+  auc_ss(ke, iiv_ev, "Keutzer 2020 without IOV (200 patients)")
+)
+
+fig4_summary <- fig4 |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    median = stats::median(PPORRES),
+    p2.5 = stats::quantile(PPORRES, 0.025),
+    p97.5 = stats::quantile(PPORRES, 0.975),
+    sd_log_pct = 100 * stats::sd(log(PPORRES)),
+    .groups = "drop"
+  )
+fig4_summary |>
+  dplyr::left_join(
+    tibble::tribble(
+      ~treatment, ~published,
+      "IIV only (200 patients)", "136.9-369.7; 25.4%",
+      "IOV only (typical patient, 200 occasions)", "122.2-331.2; 25.8%"
+    ),
+    by = "treatment"
+  ) |>
+  dplyr::rename(
+    "Scenario" = treatment,
+    "Median" = median,
+    "2.5th pct" = p2.5,
+    "97.5th pct" = p97.5,
+    "SD of log AUC (%)" = sd_log_pct,
+    "Published 95% PI; SD (%)" = published
+  ) |>
+  knitr::kable(digits = 1, caption = "Steady-state AUC0-24 (h*mg/L) at 1,800 mg (compare Keutzer 2020 Figure 4).")
+
+ggplot(fig4, aes(treatment, PPORRES)) +
+  geom_boxplot(coef = Inf) +
+  labs(
+    x = NULL,
+    y = "AUC0-24 (h*mg/L)",
+    caption = "Replicates Figure 4 of Keutzer 2020 (whiskers span the full range here)."
+  ) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 15, hjust = 1))
+
+sd_iiv <- fig4_summary$sd_log_pct[fig4_summary$treatment == "IIV only (200 patients)"]
+sd_iov <- fig4_summary$sd_log_pct[fig4_summary$treatment == "IOV only (typical patient, 200 occasions)"]
+stopifnot(
+  # Published 25.4% (IIV) and 25.8% (IOV); the Monte Carlo SE of an SD
+  # from 200 draws is about 1.3 percentage points.
+  abs(sd_iiv - 25.4) < 6,
+  abs(sd_iov - 25.8) < 6
+)
+```
+
+The packaged Svensson model reproduces the paper's finding that
+variability between occasions in the same patient is as large as the
+variability between patients. The re-estimated model without IOV, by
+construction, puts all of that variability between patients and has a
+wider IIV distribution of AUC0-24.
+
+# Typical-value profiles
+
+```{r typical, fig.width = 7, fig.height = 4}
+typ_ev <- events |>
+  dplyr::filter(id == 1) |>
+  dplyr::mutate(FFM = 40, DOSE = 1800, amt = ifelse(evid == 1L, 1800, 0))
+
+typ <- dplyr::bind_rows(
+  rxode2::rxSolve(rxode2::zeroRe(sv), typ_ev, returnType = "data.frame", hmax = 0.02) |>
+    dplyr::mutate(model = "Svensson_2018_rifampicin"),
+  rxode2::rxSolve(rxode2::zeroRe(ke), typ_ev, returnType = "data.frame", hmax = 0.02) |>
+    dplyr::mutate(model = "Keutzer_2020_rifampicin")
+) |>
+  dplyr::mutate(
+    day = sample_days[findInterval(time, c(0, 6 * 24, 13 * 24))],
+    tad = time - (day - 1) * 24
+  )
+
+ggplot(typ, aes(tad, Cc, colour = model)) +
+  geom_line() +
+  facet_wrap(~day, labeller = label_both) +
+  labs(
+    x = "Time after dose (h)",
+    y = "Rifampicin (mg/L)",
+    colour = NULL,
+    title = "Typical patient (FFM 40 kg), 1,800 mg once daily"
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# Assumptions and deviations
+
+* **Random-effect scale.** Table 4 reports IIV and the residual error as
+  percentages; for the original model these equal 100 x sqrt(variance) of
+  the published Svensson 2018 estimates, so the re-estimated values are
+  read the same way (variance = (percentage/100)^2). Supplementary
+  Appendix S1 prints the same numbers in `$OMEGA` and `$SIGMA`
+  (0.8062, 0.5957, 0.5524, ...); there they are the standard deviations
+  and the km-Vmax correlation rather than variances, since the off-diagonal
+  0.5957 equals the 59.6% correlation of Table 4. Reading them as NONMEM
+  variances would imply a correlation of 0.89 and a residual SD of 0.75,
+  contradicting Table 4.
+* **Parameter digits.** Where Appendix S1 `$THETA` gives more digits than
+  Table 4 and rounds to the Table 4 value, the S1 digits are used. Vmax
+  is taken from Table 4 (309.8), which is more precise than S1 (310).
+* **Residual error.** The model was fitted to log-transformed
+  concentrations with an additive error (SD 0.569); it is encoded as a
+  log-normal error, `lnorm(expSd)`. Below-LLOQ handling (M3, LLOQ 0.13
+  mg/L) is an estimation device and is not part of the model.
+* **Bioavailability below 450 mg.** The published function has no lower
+  bound and becomes unstable for doses just under 450 mg (its
+  denominator crosses zero at 450 - ED50 = 432.6 mg). The paper fixed F
+  to 1 at 450 mg because no lower doses were studied, so the packaged
+  model clamps the excess dose `DOSE - 450` at zero. Doses of 450 mg or
+  more, the range of the data, are unaffected.
+* **IOV terms.** The re-estimated model fixes all four IOV variances at
+  zero; they carry no information and are omitted rather than encoded as
+  zero-variance etas, so the model needs no occasion column.
+* **Simulation design.** The paper simulated 1,000 patients per dose
+  group; 200 are used here. The HIGHRIF1 weight bands are not listed, so
+  doses are mg/kg x WT rounded to the nearest 150 mg with a 450 mg
+  floor. Weight is drawn from a normal distribution truncated to the
+  sex-specific observed range rather than resampled from the individual
+  HIGHRIF1 values, which are not published. The Figure 4 simulations
+  assume a fat-free mass of 40 kg (the HIGHRIF1 mean) for every
+  patient and occasion.
+* **Not reproduced.** The MIPD results (Figures 6 and 7, bias and
+  imprecision) require Bayesian estimation of individual parameters from
+  sparse samples and a dose-selection algorithm, which are outside the
+  scope of a model library vignette.
