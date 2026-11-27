@@ -27,6 +27,7 @@ Rode_2018_turoctocogAlfaPegol_cyno <- function() {
   )
   vignette <- "Rode_2018_turoctocogAlfaPegol"
   units <- list(time = "h", dosing = "IU/kg", concentration = "IU/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     FORM_TUROCTOCOGPEGOL_SOLN5000 = list(

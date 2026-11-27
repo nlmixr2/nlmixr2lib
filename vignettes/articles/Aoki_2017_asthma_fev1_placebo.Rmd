@@ -1,0 +1,382 @@
+---
+title: "Asthma FEV1 placebo model (Aoki 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Asthma FEV1 placebo model (Aoki 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Aoki_2017_asthma_fev1_placebo"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Aoki_2017_asthma_fev1_placebo"))$description`
+* Article: <https://doi.org/10.1007/s10928-017-9550-0>
+
+Aoki 2017 is a methods paper on model selection and model averaging for
+Phase IIb dose selection. Its simulation studies are built on one fitted
+population model: a placebo model of clinic FEV1 in asthma, estimated from
+the placebo and lowest-dose (AZD1981 10 mg twice daily) arms of the AZD1981
+Phase IIb trial. That placebo model is the model packaged here. The paper's
+four candidate dose-effect functions (linear, log-linear, Emax and sigmoid
+Emax) are used only to simulate and re-estimate artificial drug effects; no
+AZD1981 drug-effect estimate is reported, so none is packaged. The last
+section of this article shows how the paper adds those simulated effects to
+the placebo model.
+
+# Population
+
+The model was fit to 324 adults with inadequately controlled atopic asthma
+(1,803 clinic FEV1 measurements) from the placebo and AZD1981 10 mg twice
+daily arms of the 12-week, multicentre AZD1981 Phase IIb trial
+(NCT01197794). The two arms were pooled as a "placebo" dataset because they
+did not differ significantly, and dosing records were not supplied to the
+authors. FEV1 was measured at seven clinic visits two weeks apart: visit 1
+was screening, visit 2 the baseline, and visits 3 to 7 followed
+randomization.
+
+Aoki 2017 does not tabulate demographics. The trial report (Bateman 2018,
+<https://doi.org/10.2147/DDDT.S147389>) gives them by arm. Pooling its
+placebo and 10 mg columns (Table 1) gives a mean age of about 45 years,
+49.8% female, and 72.0% White, 17.5% Asian, 1.2% Black and 9.2% other.
+Inclusion required a prebronchodilator FEV1 of 40-85% of predicted normal,
+at least 12% reversibility, a positive Phadiatop test and an ACQ5 score of
+at least 1, on budesonide/formoterol maintenance therapy. The trial ran in
+Europe, South and North America, Japan and South Africa.
+
+The same information is available programmatically via
+`readModelDb("Aoki_2017_asthma_fev1_placebo")$population`.
+
+# Source trace
+
+The placebo-model equation in the Models section of Aoki 2017:
+
+$$
+\mathrm{FEV1} = \left(\mathrm{FEV1}_{\mathrm{Baseline}} +
+\begin{cases} 0 & \text{visit} = 1, 2 \\ \mathrm{FEV1}_{\mathrm{Placebo}} & \text{visit} = 3, \ldots, 7 \end{cases}\right)(1 + \epsilon_1) + \epsilon_2
+$$
+
+$$
+\mathrm{FEV1}_{\mathrm{Placebo}} = \theta_1 + \eta_1, \qquad
+\mathrm{FEV1}_{\mathrm{Baseline}} = \theta_2 e^{\eta_2}
+\left(1 + \theta_3 (\mathrm{FEV1\%N} - \overline{\mathrm{FEV1\%N}})\right)
+\left(1 + \theta_4 (\mathrm{Age} - \overline{\mathrm{Age}})\right)
+\begin{cases} 1 & \text{male} \\ \theta_5 & \text{female} \end{cases}
+$$
+
+| Model element | Value | Source location |
+|---------------|------:|-----------------|
+| `plbmax` (theta1, placebo effect) | 0.169 L | Table 1 (RSE 11.9%) |
+| `lrbase` (theta2, baseline FEV1, male at reference covariates) | log(2.51 L) | Table 1 (RSE 0.828%) |
+| `e_fev1_pctpred_rbase` (theta3, FEV1 % of normal) | 0.0129 per % | Table 1 (RSE 3.87%); printed unit "L^-1" |
+| `e_age_rbase` (theta4, age) | -0.0105 1/year | Table 1 (RSE 5.01%) |
+| `e_sexf_rbase` (theta5, female factor) | 0.719 | Table 1 (RSE 1.43%) |
+| `etaplbmax` (omega1, additive IIV on the placebo effect) | SD 0.303 L, variance 0.0918 | Table 1 (RSE 8.88%) |
+| `etalrbase` (omega2, exponential IIV on baseline) | SD 0.105, variance 0.0110 | Table 1 (RSE 5.97%) |
+| `propSd_FEV1` (sigma1, proportional RUV) | 0.0832 | Table 1 (RSE 7.60%) |
+| `addSd_FEV1` (sigma2, additive RUV) | 0.102 L | Table 1 (RSE 18.8%) |
+| Step function of visit for the placebo effect | -- | Models section, placebo-model equation and the paragraph comparing it with Wang et al. 2012 |
+| Combined error `(1 + eps1) + eps2` | -- | Placebo-model equation |
+| Reference FEV1 % of normal = 62.5% | -- | Not printed; midpoint of the 40-85% inclusion range (Bateman 2018 Methods) |
+| Reference age = 45 years | -- | Not printed; rounded mean of the placebo and 10 mg arms (Bateman 2018 Table 1) |
+
+The covariate in the paper is "the percentage of FEV1 at visit 2 compared to
+the predicted normal", i.e. the baseline FEV1 % predicted, which the model
+takes as the time-fixed column `FEV1_PCTPRED`.
+
+# Typical-value checks
+
+With the random effects zeroed, the model is a closed-form expression. The
+solve below checks it against that expression, element by element, for a
+male and a female patient at the reference covariates and for patients
+10 years older or 10 percentage points higher in FEV1 % predicted. Time is
+weeks since the baseline visit; the baseline (`time = 0`) carries no placebo
+effect and every later visit carries all of it.
+
+```{r typical}
+mod <- readModelDb("Aoki_2017_asthma_fev1_placebo")
+mod_typ <- rxode2::zeroRe(mod)
+
+profiles <- tibble::tribble(
+  ~id, ~label,                           ~SEXF, ~AGE, ~FEV1_PCTPRED,
+  1L,  "Male, reference covariates",       0,     45,   62.5,
+  2L,  "Female, reference covariates",     1,     45,   62.5,
+  3L,  "Male, age 55 years",               0,     55,   62.5,
+  4L,  "Male, FEV1 72.5% predicted",       0,     45,   72.5
+)
+
+ev_typ <- tidyr::crossing(profiles, time = c(0, 2, 4, 6, 8, 10)) |>
+  mutate(evid = 0L, amt = 0) |>
+  arrange(id, time)
+
+# zeroRe() leaves the etas declared at zero variance; rxode2 notes that a
+# multi-subject solve has no omega, which is intended for a typical-value solve.
+sim_typ <- withCallingHandlers(
+  as.data.frame(rxode2::rxSolve(
+    mod_typ, ev_typ,
+    keep = c("label", "SEXF", "AGE", "FEV1_PCTPRED")
+  )),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+)
+
+expected <- with(sim_typ,
+  2.51 * (1 + 0.0129 * (FEV1_PCTPRED - 62.5)) * (1 - 0.0105 * (AGE - 45)) *
+    ifelse(SEXF == 1, 0.719, 1) + ifelse(time > 0, 0.169, 0)
+)
+# Same parameters on both sides, so the difference is pure arithmetic.
+stopifnot(max(abs(sim_typ$FEV1 - expected)) < 1e-8)
+
+sim_typ |>
+  filter(time %in% c(0, 2)) |>
+  mutate(visit = ifelse(time == 0, "Baseline (visit 2)", "Post-baseline (visits 3-7)")) |>
+  select(label, visit, FEV1) |>
+  tidyr::pivot_wider(names_from = visit, values_from = FEV1) |>
+  dplyr::rename("Patient" = label) |>
+  knitr::kable(digits = 3, caption = "Typical FEV1 (L) by patient profile.")
+```
+
+The female factor gives a baseline of 2.51 x 0.719 = 1.805 L, ten years of
+age lower the baseline by 10.5%, and ten points of FEV1 % predicted raise it
+by 12.9%. The typical placebo effect adds 0.169 L at every post-baseline
+visit.
+
+# Virtual cohort
+
+The cohort approximates the analysed trial population. Age is drawn from a
+normal distribution with the pooled mean of 45.4 years and an assumed SD of
+13 years, redrawn until it lies in 18-80 years. Baseline FEV1 % predicted is
+uniform over the 40-85% inclusion range, and 49.8% of patients are female.
+Visits 3 to 7 are placed at weeks 2 to 10 after the baseline visit.
+
+```{r cohort}
+set.seed(20171101)
+n_subj <- 200L
+
+draw_age <- function(n, mean = 45.4, sd = 13, lo = 18, hi = 80) {
+  out <- rnorm(n, mean, sd)
+  bad <- out < lo | out > hi
+  while (any(bad)) {
+    out[bad] <- rnorm(sum(bad), mean, sd)
+    bad <- out < lo | out > hi
+  }
+  out
+}
+
+cohort <- tibble::tibble(
+  id = seq_len(n_subj),
+  AGE = draw_age(n_subj),
+  FEV1_PCTPRED = runif(n_subj, 40, 85),
+  SEXF = rbinom(n_subj, 1, 0.498)
+)
+
+visits <- tibble::tibble(visit = 2:7, time = c(0, 2, 4, 6, 8, 10))
+
+ev_vpc <- tidyr::crossing(cohort, visits) |>
+  mutate(evid = 0L, amt = 0) |>
+  arrange(id, time)
+```
+
+# Simulation
+
+```{r simulate}
+rxode2::rxSetSeed(20171101)
+simdf <- as.data.frame(rxode2::rxSolve(
+  mod, ev_vpc,
+  keep = c("visit", "AGE", "FEV1_PCTPRED", "SEXF")
+))
+if (is.null(simdf$id)) simdf$id <- 1L
+```
+
+The simulated FEV1 by visit, with the 5th, 50th and 95th percentiles across
+the cohort:
+
+```{r vpc-plot}
+vpc <- simdf |>
+  group_by(visit) |>
+  summarise(
+    p05 = quantile(sim, 0.05),
+    p50 = quantile(sim, 0.50),
+    p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(simdf, aes(visit, sim)) +
+  geom_line(aes(group = id), alpha = 0.08) +
+  geom_ribbon(data = vpc, aes(x = visit, ymin = p05, ymax = p95), inherit.aes = FALSE,
+              fill = "steelblue", alpha = 0.25) +
+  geom_line(data = vpc, aes(visit, p50), colour = "steelblue", linewidth = 1) +
+  scale_x_continuous(breaks = 2:7) +
+  labs(x = "Visit (2 = baseline)", y = "Simulated FEV1 (L)",
+       title = "Simulated clinic FEV1 under placebo",
+       caption = "Lines: individual patients; band: 5th-95th percentile; thick line: median.")
+```
+
+# Placebo-effect validation
+
+The paper motivates the case study by FEV1 being highly variable relative to
+the 0.1 L target effect, with "standard deviation of 0.3 L in the placebo
+effect", which is the estimated omega1 = 0.303 L. The individual placebo
+effect `plbi` in the simulation should therefore centre on 0.169 L with a
+between-patient SD near 0.30 L. The observed change from baseline, the
+average of visits 3-7 minus visit 2 as in the trial's primary analysis,
+should centre on the same 0.169 L.
+
+```{r placebo-check}
+per_subj <- simdf |>
+  group_by(id, SEXF) |>
+  summarise(
+    plbi = first(plbi),
+    rbase = first(rbase),
+    cfb = mean(sim[visit >= 3]) - sim[visit == 2],
+    .groups = "drop"
+  )
+
+chk <- tibble::tibble(
+  Quantity = c("Median individual placebo effect (L)",
+               "SD of individual placebo effect (L)",
+               "Median observed change from baseline, visits 3-7 (L)"),
+  Simulated = c(median(per_subj$plbi), sd(per_subj$plbi), median(per_subj$cfb)),
+  Paper = c(0.169, 0.303, 0.169)
+)
+knitr::kable(chk, digits = 3)
+
+stopifnot(
+  # Centre: the SE of a 200-subject median is about 0.027 L for plbi (SD 0.30 L)
+  # and about 0.034 L for the observed change, which also carries residual
+  # error (SD about 0.38 L). The bounds sit at 3.5 SE or more and still catch a
+  # mis-signed theta1 (off by 0.34 L) or a decimal slip (0.0169 or 1.69).
+  abs(median(per_subj$plbi) - 0.169) < 0.1,
+  abs(median(per_subj$cfb) - 0.169) < 0.12,
+  # Spread: the SD of a 200-subject sample is within about 15% of omega1 at
+  # three SE; a variance entered as an SD (0.303 vs 0.092) or vice versa
+  # fails by a factor of three.
+  sd(per_subj$plbi) > 0.2,
+  sd(per_subj$plbi) < 0.4
+)
+```
+
+The baseline is log-normal around the covariate-adjusted typical value, and
+female patients have a baseline about 28% lower than male patients:
+
+```{r baseline-check}
+per_subj |>
+  mutate(Sex = ifelse(SEXF == 1, "Female", "Male")) |>
+  group_by(Sex) |>
+  summarise(N = n(), `Median baseline FEV1 (L)` = median(rbase), .groups = "drop") |>
+  knitr::kable(digits = 3)
+```
+
+# The paper's simulated drug effects
+
+To build its simulation studies the paper adds an artificial drug effect to
+the placebo data. For each simulated trial the theoretical minimum effective
+dose (tMED, the dose giving exactly 0.1 L) is drawn uniformly within a range
+(Table 2), and the dose-effect parameters are chosen so that the function
+passes through 0.1 L at tMED:
+
+* log-linear, `p1 * log(1 + p2 * dose)`: `DE(1000 mg) ~ U(0.2, 0.3)` and `DE(tMED) = 0.1`;
+* Emax, `EMAX * dose / (EC50 + dose)`: `EMAX ~ U(0.2, 0.3)` and `DE(tMED) = 0.1`;
+* sigmoid Emax: as Emax with `gamma ~ U(0.5, 4)`.
+
+The chunk below reproduces the construction of Figure 5 (Simulation Study 3,
+tMED between 40 and 100 mg). These functions are not part of the packaged
+model.
+
+```{r figure5}
+set.seed(5)
+n_curves <- 10L
+dose_grid <- exp(seq(log(1), log(1000), length.out = 120))
+
+make_loglinear <- function(tmed, de1000) {
+  # Solve p1 * log(1 + p2 * 1000) = de1000 and p1 * log(1 + p2 * tmed) = 0.1.
+  ratio <- function(lp2) log(1 + exp(lp2) * 1000) / log(1 + exp(lp2) * tmed) - de1000 / 0.1
+  p2 <- exp(uniroot(ratio, c(-30, 30))$root)
+  p1 <- 0.1 / log(1 + p2 * tmed)
+  function(dose) p1 * log(1 + p2 * dose)
+}
+make_emax <- function(tmed, emax, gamma = 1) {
+  ec50 <- tmed * (emax / 0.1 - 1)^(1 / gamma)
+  function(dose) emax * dose^gamma / (ec50^gamma + dose^gamma)
+}
+
+curves <- list()
+tmeds <- list()
+for (i in seq_len(n_curves)) {
+  tmed <- runif(3, 40, 100)
+  fns <- list(
+    `Log-linear` = make_loglinear(tmed[1], runif(1, 0.2, 0.3)),
+    Emax = make_emax(tmed[2], runif(1, 0.2, 0.3)),
+    `Sigmoid Emax` = make_emax(tmed[3], runif(1, 0.2, 0.3), runif(1, 0.5, 4))
+  )
+  for (k in seq_along(fns)) {
+    curves[[length(curves) + 1L]] <- tibble::tibble(
+      curve = paste(names(fns)[k], i), family = names(fns)[k],
+      dose = dose_grid, effect = fns[[k]](dose_grid)
+    )
+    tmeds[[length(tmeds) + 1L]] <- fns[[k]](tmed[k])
+  }
+}
+curves <- bind_rows(curves)
+
+# Every curve passes through the target effect at its own tMED by construction.
+stopifnot(max(abs(unlist(tmeds) - 0.1)) < 1e-6)
+
+ggplot(curves, aes(dose, effect, group = curve, colour = family)) +
+  geom_line() +
+  geom_hline(yintercept = 0.1, linetype = 2) +
+  geom_vline(xintercept = c(40, 100), linetype = 3) +
+  scale_x_log10() +
+  labs(x = "Dose (mg)", y = "Drug effect on FEV1 (L)", colour = NULL,
+       title = "Simulated dose-effect curves, Simulation Study 3",
+       caption = "Replicates the construction of Figure 5 of Aoki 2017 (tMED between 40 and 100 mg).")
+```
+
+In the paper's estimation models the chosen function `DE_j(dose)` enters the
+placebo model as `FEV1 = Baseline + PlaceboEffect + DE_j` at the
+post-baseline visits, inside the same combined residual error.
+
+# Assumptions and deviations
+
+* **Centring values.** The paper centres FEV1 % of normal and age on the
+  population means of its dataset but does not print them, and neither does
+  the trial report. The maintainers used 62.5% predicted (the midpoint of the
+  40-85% inclusion range) and 45 years (the 45.4-year mean of the placebo and
+  10 mg arms in Bateman 2018 Table 1, rounded). With the published
+  coefficients, a 1-point error in the FEV1 % reference moves the typical
+  baseline by 1.3%, and a 1-year error in the age reference moves it by 1.05%.
+  A user with the actual means can rescale `lrbase` accordingly.
+* **Unit of theta3.** Table 1 prints the FEV1 % of normal coefficient as
+  "0.0129 L^-1". In the printed equation it multiplies a difference of
+  percentages inside a dimensionless factor, so the model treats it as per
+  percentage point.
+* **Time axis.** The paper's placebo effect is a step in visit number. The
+  model uses time in weeks since the baseline visit (visit 2) and applies the
+  placebo effect at every `time > 0`. The screening visit (visit 1) also
+  carries no placebo effect; simulate it as a second `time = 0` record if
+  needed. The paper says FEV1 was measured every 2 weeks over the 12-week
+  study, so this article places visits 3-7 at weeks 2-10; the predictions do
+  not depend on that choice.
+* **Demographics.** Aoki 2017 gives no demographic table. Age, sex and race in
+  the `population` metadata come from Bateman 2018 Table 1, whose placebo and
+  10 mg columns add up to 325 patients against the 324 analysed by Aoki 2017.
+  The age SD of 13 years used in the virtual cohort is assumed.
+* **Drug effect.** The candidate dose-effect functions have no AZD1981
+  estimates. The bootstrap result files in the paper's electronic
+  supplementary material belong to the worked R example of the averaging
+  method, not to an estimate on the trial data. No drug-effect term is
+  packaged.
+* **Errata.** No correction notice for Aoki 2017 was found in Europe PMC as
+  of 2026-11-25.

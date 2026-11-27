@@ -1,0 +1,536 @@
+---
+title: "Romidepsin in vitro HIV-1 latency reversal and cytotoxicity (Tompkins 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Romidepsin in vitro HIV-1 latency reversal and cytotoxicity (Tompkins 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+```
+
+# Model and source
+
+```{r models}
+rluMod <- rxode2::rxode(nlmixr2lib::readModelDb("Tompkins_2026_romidepsin_rlu"))
+rluOneGlo <- rxode2::rxode(nlmixr2lib::readModelDb(
+  "Tompkins_2026_romidepsin_rlu_oneglo"
+))
+rfuMod <- rxode2::rxode(nlmixr2lib::readModelDb("Tompkins_2026_romidepsin_rfu"))
+```
+
+* Citation: `r rluMod$reference`
+* Article: <https://doi.org/10.1002/cpt.70488>
+* PubMed Central: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC13617262/>
+
+Romidepsin is a histone deacetylase inhibitor approved for cutaneous T-cell
+lymphoma. It reverses HIV-1 latency in vitro, but when it was given to people
+living with HIV as a 4-hour 5 mg/m^2 infusion (the REDUC and BCN02 trials) the
+induction of plasma viremia was weak and variable. Tompkins and colleagues ask
+whether the oncology dosing rule, built around peak concentration, is the
+wrong pharmacokinetic target for latency reversal.
+
+Their "empirical PK/PD model" is an experimental framework rather than a single
+fitted equation: exposure-response curves in a latently infected T-cell clone,
+then dose-fractionation and clinical-profile simulations in static culture,
+primary cells and a hollow-fiber system. Only the exposure-response step is a
+fitted model; the later steps are analysed by correlation and noncompartmental
+analysis. That step contributes **three** independent fits, all packaged here:
+
+| Model file | Readout (Figure) | Fitted range | Reported potency |
+|---|---|---|---|
+| `Tompkins_2026_romidepsin_rlu` | Luciferase luminescence, Luciferase Assay System (1b) | 0.78-6.25 ng/mL | EC50 3.2 ng/mL, EC90 4.2 ng/mL |
+| `Tompkins_2026_romidepsin_rlu_oneglo` | Luciferase luminescence, ONE-Glo + Tox (1d) | 0.78-6.25 ng/mL | EC50 3.7 ng/mL, EC90 5.0 ng/mL |
+| `Tompkins_2026_romidepsin_rfu` | Viable-cell fluorescence, ONE-Glo + Tox (1f) | 0.78-200 ng/mL | CC50 5.1 ng/mL, CC90 8.4 ng/mL |
+
+All three are static, deterministic curves: a constant 24-hour romidepsin
+concentration goes in as the covariate `CONC_ROMIDEPSIN_NGML`, one 24-hour
+endpoint comes out. There are no ODE states, no dosing events, no
+inter-individual variability and no residual error, so the identities below
+hold to machine precision.
+
+# Population
+
+```{r population}
+pop <- rluMod$meta$population
+tibble::tibble(
+  Field = c("Species / system", "Studies", "Disease state", "Concentration range"),
+  Value = c(pop$species, as.character(pop$n_studies), pop$disease_state, pop$dose_range)
+) |>
+  knitr::kable()
+```
+
+N6 cells are a Jurkat E6-1-derived T-cell clone with a single integrated HIV-1
+NL4-3 provirus that expresses firefly luciferase in place of `nef`; luciferase
+expression is driven by the HIV-1 LTR, so luminescence reports latency
+reversal. About 100,000 viable cells per well were incubated for 24 hours with
+twofold dilutions of romidepsin from 0.78 to 600 ng/mL, each concentration in
+triplicate wells (Methods, "Exposure-response studies"). Three independent
+experiments were run: two read with the Luciferase Assay System (Figure 1a-b)
+and one with the two-step ONE-Glo + Tox assay, which reads viable-cell
+fluorescence and then luminescence from the same well (Figure 1c-f). All fits
+were done in Phoenix PK/PD.
+
+# Source trace
+
+```{r source_trace, echo = FALSE}
+tibble::tribble(
+  ~Quantity, ~Value, ~`Source location`,
+  "RLU = E0 + Emax * C^g / (EC50^g + C^g)", "--", "Methods, 'Statistics'",
+  "RFU = E0 - Imax * C^g / (CC50^g + C^g)", "--", "Methods, 'Statistics'",
+  "rlu: ec50", "3.2 ng/mL (RSE 1.4%)", "Results paragraph on Figure 1b; Figure 1b panel",
+  "rlu: hill", "8.3 (RSE 14.6%)", "Results paragraph on Figure 1b; Figure 1b panel 'Hill slope=8.3'",
+  "rlu: e0", "746 RLU (RSE 86.7%)", "Results paragraph on Figure 1b",
+  "rlu: emax", "49,035 RLU (RSE 2.7%)", "Results paragraph on Figure 1b",
+  "rlu_oneglo: ec50", "3.7 ng/mL (RSE 0.9%)", "Results paragraph on Figure 1d; Figure 1d panel",
+  "rlu_oneglo: hill", "7.6 (RSE 3.9%)", "Results paragraph on Figure 1d; Figure 1d panel 'Hill slope=7.6'",
+  "rlu_oneglo: e0", "177 RLU (RSE 20.9%)", "Results paragraph on Figure 1d",
+  "rlu_oneglo: emax", "7,626 RLU (RSE 1.3%)", "Results paragraph on Figure 1d",
+  "rfu: ic50 (CC50)", "5.1 ng/mL (RSE 2.4%)", "Results paragraph on Figure 1f; Figure 1f panel",
+  "rfu: hill", "4.4 (printed -4.4; RSE 9.9%)", "Results paragraph on Figure 1f; Figure 1f panel 'Hill slope=-4.4' (sign: see Errata)",
+  "rfu: e0", "1.4e7 RFU (RSE 0.8%)", "Results paragraph on Figure 1f",
+  "rfu: imax", "6e6 RFU (RSE 2.0%)", "Results paragraph on Figure 1f",
+  "EC90 / CC90 (checks)", "4.2, 5.0, 8.4 ng/mL", "Results; Figure 1b, 1d, 1f panels",
+  "Residual error (all three)", "addSd = 0", "Not reported"
+) |>
+  knitr::kable()
+```
+
+The "%CV" the paper prints beside each estimate is the relative standard error
+of the estimate, not between-well variability: refitting the printed equations
+to the well readings in the paper's Supporting Data reproduces both the
+estimates and those percentages (for example `e0` 745 RLU with standard error
+646, i.e. 86.7%, for Figure 1b).
+
+## Supporting data
+
+The paper's Supporting Data workbook gives every well reading behind
+Figure 1. They are reproduced here so the figures can be replicated against
+the authors' own observations. Concentrations are the twofold dilution series
+from 600 ng/mL downward, three wells each.
+
+```{r data}
+concs <- c(
+  0.78125, 1.171875, 1.5625, 2.34375, 3.125, 4.6875, 6.25, 9.375, 12.5,
+  18.75, 25, 37.5, 50, 75, 100, 150, 200, 300, 400, 600
+)
+
+# Figure 1a/1b -- Luciferase Assay System, two experiments.
+fig1ab <- tibble::tibble(
+  experiment = rep(1:2, each = 60),
+  conc = rep(rep(concs, each = 3), 2),
+  rlu_obs = c(
+    255, 291, 235, 314, 342, 403, 542, 527, 780, 1454, 2603, 3215, 18577,
+    20706, 21969, 50590, 49616, 52565, 51742, 51921, 51297, 45264, 39090,
+    42269, 40731, 40294, 38807, 38660, 36922, 36878, 37086, 37583, 37683,
+    35279, 35365, 34809, 34345, 34249, 35756, 35273, 34469, 33738, 34087,
+    34753, 36792, 36324, 34203, 36483, 36078, 32845, 35380, 31764, 32640,
+    33247, 23717, 23904, 24707, 8747, 7908, 7477,
+    455, 443, 468, 625, 688, 737, 1127, 1022, 1279, 5656, 8714, 8596, 25778,
+    17113, 30004, 44589, 48347, 47905, 46579, 44246, 45668, 39800, 42713,
+    44544, 39329, 39970, 42084, 38238, 40082, 36721, 38840, 40075, 40098,
+    39260, 39280, 37439, 38438, 40079, 37499, 37068, 36619, 33728, 31092,
+    33714, 37432, 35276, 36547, 35255, 34407, 36197, 35209, 32820, 34025,
+    31125, 16389, 16515, 18448, 6648, 6558, 6364
+  )
+)
+
+# Figure 1c-f -- ONE-Glo + Tox, one experiment; RLU and RFU from the same wells.
+fig1cf <- tibble::tibble(
+  conc = rep(concs, each = 3),
+  rlu_obs = c(
+    99, 108, 98, 107, 159, 135, 273, 176, 198, 377, 698, 451, 1662, 1735,
+    1701, 6675, 6549, 6781, 7492, 7861, 7562, 5013, 5295, 5129, 5548, 4491,
+    5900, 4565, 4229, 4591, 4169, 3757, 3750, 4131, 3908, 4449, 3216, 3666,
+    3902, 3587, 3343, 3636, 3854, 3815, 3853, 3544, 3184, 3925, 3944, 3824,
+    4056, 3451, 3211, 3625, 2103, 2150, 2313, 555, 492, 648
+  ),
+  rfu_obs = c(
+    13559223, 13691244, 13823943, 13527123, 13788903, 13656656, 13478520,
+    14056335, 13979700, 13661857, 12699283, 13001075, 12688431, 12842154,
+    13107777, 11580725, 11527148, 11409370, 8926753, 9016499, 8919518,
+    8531822, 7951066, 7868781, 8379682, 7741055, 8136212, 7917836, 7899524,
+    7691773, 7760496, 7598861, 7560431, 7746028, 7915349, 7322613, 7166630,
+    7244396, 7460964, 7501428, 7219302, 6960235, 7906080, 7793727, 7572865,
+    7674818, 7510923, 7929139, 7474076, 7443105, 7332560, 7380486, 7219529,
+    6895807, 6845847, 6655051, 6529360, 5120539, 5282852, 5153544
+  )
+)
+
+# Untreated control wells of the Figure 1c-f experiment (n = 24).
+control_rfu <- c(
+  15271420, 15072937, 15132166, 14218647, 14362197, 14076455, 14519085,
+  14254592, 14020166, 13464503, 13053070, 14010445, 13507681, 14418035,
+  14486080, 14473194, 14681849, 14341626, 14194911, 13626138, 14623978,
+  13734197, 13597654, 13921375
+)
+control_rlu <- c(
+  94, 88, 95, 79, 58, 94, 101, 64, 75, 126, 95, 106, 65, 86, 82, 84, 67, 54,
+  82, 90, 100, 97, 76, 78
+)
+
+stopifnot(
+  nrow(fig1ab) == 120, nrow(fig1cf) == 60,
+  # The control means the Results quote: 1.42e7 RFU (SD 5.50e5) and 85 RLU (SD 17).
+  abs(mean(control_rfu) / 1.42e7 - 1) < 0.005,
+  abs(sd(control_rfu) / 5.50e5 - 1) < 0.01,
+  round(mean(control_rlu)) == 85,
+  round(sd(control_rlu)) == 17
+)
+```
+
+# Simulation helper
+
+Each model is static, so a "simulation" is one row per concentration. The
+concentrations are laid out as successive observation times of a single
+subject, which is equivalent for an algebraic model with no state and avoids
+asking rxode2 for a multi-subject simulation from a model that declares no
+eta.
+
+```{r solve_helper}
+solveStatic <- function(model, conc) {
+  ev <- data.frame(id = 1L, time = seq_along(conc) - 1, CONC_ROMIDEPSIN_NGML = conc)
+  rxode2::rxSolve(model, ev, returnType = "data.frame")
+}
+
+sigmoidChecks <- function(model, potency, out) {
+  th <- model$theta
+  p50 <- exp(th[[potency]])
+  hill <- exp(th[["lhill"]])
+  e0 <- exp(th[["le0"]])
+  amp <- exp(th[[if ("lemax" %in% names(th)) "lemax" else "limax"]])
+  sgn <- if ("lemax" %in% names(th)) 1 else -1
+  p90 <- p50 * 9^(1 / hill)
+  sim <- solveStatic(model, c(0, p50, p90, 1e6))[[out]]
+  list(
+    p50 = p50, p90 = p90, e0 = e0, amp = amp, sgn = sgn, sim = sim,
+    halfDev = sim[2] - (e0 + sgn * amp / 2),
+    ninetyDev = sim[3] - (e0 + sgn * 0.9 * amp)
+  )
+}
+```
+
+# Model 1 -- latency reversal, Luciferase Assay System
+
+Luminescence rises steeply between about 2.3 and 6 ng/mL and falls again from
+about 9 ng/mL, which the authors attribute to cytotoxicity. The Emax model was
+therefore fitted only to 0.78-6.25 ng/mL (AUC0-24h 19-150 ng*h/mL).
+
+## Replicates Figure 1a-b of Tompkins 2026
+
+```{r fig1ab, fig.cap = "Replicates Figure 1a-b of Tompkins 2026. Points are the well readings of the two experiments (circles and crosses, from the Supporting Data). The solid line is the packaged model over the fitted range, 0.78-6.25 ng/mL; the dashed line is the same curve outside it, where it does not describe the data."}
+grid <- 10^seq(log10(0.5), log10(700), length.out = 400)
+pred1 <- solveStatic(rluMod, grid) |>
+  dplyr::mutate(fitted = CONC_ROMIDEPSIN_NGML <= 6.25)
+ggplot2::ggplot() +
+  ggplot2::geom_line(
+    data = pred1,
+    ggplot2::aes(CONC_ROMIDEPSIN_NGML, luminescence, linetype = fitted),
+    linewidth = 0.8
+  ) +
+  ggplot2::geom_point(
+    data = fig1ab,
+    ggplot2::aes(conc, rlu_obs, shape = factor(experiment)),
+    size = 1.8
+  ) +
+  ggplot2::scale_shape_manual(values = c(1, 4), name = "Experiment") +
+  ggplot2::scale_linetype_manual(
+    values = c(`TRUE` = "solid", `FALSE` = "dashed"),
+    name = "Within fitted range"
+  ) +
+  ggplot2::scale_x_log10() +
+  ggplot2::labs(x = "Romidepsin concentration (ng/mL)", y = "RLU") +
+  ggplot2::theme_bw()
+```
+
+## Structural checks
+
+At `C = 0` the curve returns `e0`; at `C = ec50` it is half-way to the
+plateau; at `C = ec50 * 9^(1/hill)` it is 90% of the way, which is how the
+paper's EC90 is defined; and at a very high concentration it reaches
+`e0 + emax`. These are closed-form identities of a deterministic model, so the
+bounds are tight.
+
+```{r checks_rlu}
+ck1 <- sigmoidChecks(rluMod, "lec50", "luminescence")
+stopifnot(
+  abs(ck1$sim[1] - ck1$e0) < 1e-6,
+  abs(ck1$halfDev) < 1e-6,
+  abs(ck1$ninetyDev) < 1e-6,
+  abs(ck1$sim[4] - (ck1$e0 + ck1$amp)) < 1e-3,
+  # Published EC90 = 4.2 ng/mL.
+  round(ck1$p90, 1) == 4.2
+)
+```
+
+## Refit against the Supporting Data
+
+Refitting the Methods equation to the 42 well readings of Figure 1b (the
+0.78-6.25 ng/mL wells of both experiments) recovers the packaged values.
+The fit is deterministic least squares, so the agreement does not depend on
+the machine.
+
+```{r refit_rlu}
+refitEmax <- function(d, start) {
+  fit <- stats::nls(
+    y ~ e0 + emax * conc^g / (ec50^g + conc^g),
+    data = d, start = start
+  )
+  s <- summary(fit)$coefficients
+  tibble::tibble(
+    parameter = rownames(s),
+    estimate = s[, "Estimate"],
+    rse_pct = 100 * s[, "Std. Error"] / abs(s[, "Estimate"])
+  )
+}
+
+ref1 <- refitEmax(
+  fig1ab |> dplyr::filter(conc <= 6.25) |> dplyr::rename(y = rlu_obs),
+  start = list(e0 = 500, emax = 50000, ec50 = 3.5, g = 7)
+)
+pkg1 <- c(
+  e0 = exp(rluMod$theta[["le0"]]), emax = exp(rluMod$theta[["lemax"]]),
+  ec50 = exp(rluMod$theta[["lec50"]]), g = exp(rluMod$theta[["lhill"]])
+)
+ref1 |>
+  dplyr::mutate(packaged = pkg1[parameter], published_rse_pct = c(86.7, 2.7, 1.4, 14.6)) |>
+  dplyr::rename(
+    Parameter = parameter, `Refit estimate` = estimate, `Refit RSE (%)` = rse_pct,
+    `Packaged value` = packaged, `Published %CV` = published_rse_pct
+  ) |>
+  knitr::kable(digits = 3)
+
+stopifnot(
+  # Refit estimates agree with the (rounded) published values.
+  all(abs(ref1$estimate[ref1$parameter != "e0"] /
+    pkg1[ref1$parameter[ref1$parameter != "e0"]] - 1) < 0.01),
+  abs(ref1$estimate[ref1$parameter == "e0"] - 746) < 1
+)
+```
+
+# Model 2 -- latency reversal, ONE-Glo + Tox assay
+
+The repeat experiment read luminescence with a different assay chemistry and
+luminometer, so its RLU scale is about six-fold lower; the potency agrees
+(EC50 3.7 vs 3.2 ng/mL).
+
+## Replicates Figure 1c-d of Tompkins 2026
+
+```{r fig1cd, fig.cap = "Replicates Figure 1c-d of Tompkins 2026. Points are the triplicate well readings (Supporting Data); the dotted horizontal line is the mean of the 24 untreated control wells. The solid line is the packaged model over the fitted range, 0.78-6.25 ng/mL; the dashed line is the same curve outside it."}
+pred2 <- solveStatic(rluOneGlo, grid) |>
+  dplyr::mutate(fitted = CONC_ROMIDEPSIN_NGML <= 6.25)
+ggplot2::ggplot() +
+  ggplot2::geom_hline(yintercept = mean(control_rlu), linetype = "dotted") +
+  ggplot2::geom_line(
+    data = pred2,
+    ggplot2::aes(CONC_ROMIDEPSIN_NGML, luminescence, linetype = fitted),
+    linewidth = 0.8
+  ) +
+  ggplot2::geom_point(data = fig1cf, ggplot2::aes(conc, rlu_obs), shape = 1, size = 1.8) +
+  ggplot2::scale_linetype_manual(
+    values = c(`TRUE` = "solid", `FALSE` = "dashed"),
+    name = "Within fitted range"
+  ) +
+  ggplot2::scale_x_log10() +
+  ggplot2::labs(x = "Romidepsin concentration (ng/mL)", y = "RLU (ONE-Glo)") +
+  ggplot2::theme_bw()
+```
+
+```{r checks_rlu_oneglo}
+ck2 <- sigmoidChecks(rluOneGlo, "lec50", "luminescence")
+ref2 <- refitEmax(
+  fig1cf |> dplyr::filter(conc <= 6.25) |> dplyr::select(conc, y = rlu_obs),
+  start = list(e0 = 150, emax = 7500, ec50 = 3.5, g = 7)
+)
+pkg2 <- c(
+  e0 = exp(rluOneGlo$theta[["le0"]]), emax = exp(rluOneGlo$theta[["lemax"]]),
+  ec50 = exp(rluOneGlo$theta[["lec50"]]), g = exp(rluOneGlo$theta[["lhill"]])
+)
+ref2 |>
+  dplyr::mutate(packaged = pkg2[parameter], published_rse_pct = c(20.9, 1.3, 0.9, 3.9)) |>
+  dplyr::rename(
+    Parameter = parameter, `Refit estimate` = estimate, `Refit RSE (%)` = rse_pct,
+    `Packaged value` = packaged, `Published %CV` = published_rse_pct
+  ) |>
+  knitr::kable(digits = 3)
+
+stopifnot(
+  abs(ck2$sim[1] - ck2$e0) < 1e-6,
+  abs(ck2$halfDev) < 1e-6,
+  abs(ck2$ninetyDev) < 1e-6,
+  # Published EC90 = 5.0 ng/mL. From the rounded EC50 (3.7) and Hill (7.6)
+  # it is 4.94; the unrounded refit gives 4.99.
+  abs(ck2$p90 - 5.0) < 0.1,
+  abs(with(ref2, estimate[parameter == "ec50"] * 9^(1 / estimate[parameter == "g"])) - 5.0) < 0.05,
+  # Two significant figures: rounding alone moves EC50 by up to 1.4%
+  # (3.737 printed as 3.7).
+  all(abs(ref2$estimate / pkg2[ref2$parameter] - 1) < 0.02)
+)
+```
+
+# Model 3 -- cytotoxicity, ONE-Glo + Tox assay
+
+The CellTiter-Fluor readout of the same wells is proportional to the number of
+viable, membrane-intact cells. It falls over 0.78-6.25 ng/mL, plateaus up to
+200 ng/mL and falls again above that; the inhibitory model was fitted to
+0.78-200 ng/mL.
+
+## Replicates Figure 1e-f of Tompkins 2026
+
+```{r fig1ef, fig.cap = "Replicates Figure 1e-f of Tompkins 2026. Points are the triplicate well readings (Supporting Data); the dotted horizontal line is the mean of the 24 untreated control wells. The solid line is the packaged model over the fitted range, 0.78-200 ng/mL; the dashed line is the same curve outside it."}
+pred3 <- solveStatic(rfuMod, grid) |>
+  dplyr::mutate(fitted = CONC_ROMIDEPSIN_NGML <= 200)
+ggplot2::ggplot() +
+  ggplot2::geom_hline(yintercept = mean(control_rfu), linetype = "dotted") +
+  ggplot2::geom_line(
+    data = pred3,
+    ggplot2::aes(CONC_ROMIDEPSIN_NGML, fluorescence, linetype = fitted),
+    linewidth = 0.8
+  ) +
+  ggplot2::geom_point(data = fig1cf, ggplot2::aes(conc, rfu_obs), shape = 1, size = 1.8) +
+  ggplot2::scale_linetype_manual(
+    values = c(`TRUE` = "solid", `FALSE` = "dashed"),
+    name = "Within fitted range"
+  ) +
+  ggplot2::scale_x_log10() +
+  ggplot2::labs(x = "Romidepsin concentration (ng/mL)", y = "RFU") +
+  ggplot2::theme_bw()
+```
+
+```{r checks_rfu}
+ck3 <- sigmoidChecks(rfuMod, "lic50", "fluorescence")
+fit3 <- stats::nls(
+  rfu_obs ~ e0 - imax * conc^g / (cc50^g + conc^g),
+  data = fig1cf |> dplyr::filter(conc <= 200),
+  start = list(e0 = 1.4e7, imax = 6e6, cc50 = 5, g = 4)
+)
+ref3 <- stats::coef(fit3)
+tibble::tibble(
+  Parameter = names(ref3),
+  `Refit estimate` = unname(ref3),
+  `Packaged value` = c(
+    exp(rfuMod$theta[["le0"]]), exp(rfuMod$theta[["limax"]]),
+    exp(rfuMod$theta[["lic50"]]), exp(rfuMod$theta[["lhill"]])
+  )
+) |>
+  knitr::kable(digits = 3)
+
+stopifnot(
+  abs(ck3$sim[1] - ck3$e0) < 1e-6,
+  abs(ck3$halfDev) < 1e-6,
+  abs(ck3$ninetyDev) < 1e-6,
+  abs(ck3$sim[4] - (ck3$e0 - ck3$amp)) < 1e-3,
+  # Published CC90 = 8.4 ng/mL; it holds only with a positive Hill exponent.
+  round(ck3$p90, 1) == 8.4,
+  # The refit Hill exponent is positive, so the printed '-4.4' is a sign
+  # convention for a falling curve (see Assumptions and deviations).
+  ref3[["g"]] > 4 && ref3[["g"]] < 5,
+  abs(ref3[["cc50"]] / 5.1 - 1) < 0.01,
+  abs(ref3[["e0"]] / 1.4e7 - 1) < 0.03,
+  abs(ref3[["imax"]] / 6e6 - 1) < 0.01
+)
+```
+
+# The therapeutic window
+
+The paper's argument rests on the gap between the concentration that reverses
+latency and the one that kills cells. The three packaged curves reproduce it.
+
+```{r window}
+tibble::tibble(
+  Quantity = c("EC50 (Luciferase Assay System)", "EC90 (Luciferase Assay System)",
+               "EC50 (ONE-Glo)", "EC90 (ONE-Glo)", "CC50", "CC90"),
+  Model = c(ck1$p50, ck1$p90, ck2$p50, ck2$p90, ck3$p50, ck3$p90),
+  Published = c(3.2, 4.2, 3.7, 5.0, 5.1, 8.4)
+) |>
+  dplyr::mutate(`AUC0-24h (ng*h/mL)` = 24 * Model) |>
+  dplyr::rename(`Model (ng/mL)` = Model, `Published (ng/mL)` = Published) |>
+  knitr::kable(digits = 2)
+```
+
+At 24 hours, sustained concentrations between the EC90 (about 4-5 ng/mL,
+AUC0-24h about 100-120 ng*h/mL) and the CC90 (8.4 ng/mL, about
+200 ng*h/mL) give near-maximal luminescence without driving viability to its
+floor. The clinical 5 mg/m^2 infusion (median Cmax about 120 ng/mL, mean
+AUC0-inf 446 ng*h/mL) sits far above the CC90, which is the paper's case for a
+"low and slow" continuous infusion.
+
+```{r window_plot, fig.cap = "Fraction of the maximal effect for latency reversal (Luciferase Assay System fit) and for viable-cell loss (CC curve) against romidepsin concentration. The shaded band is EC90 to CC90."}
+frac <- dplyr::bind_rows(
+  pred1 |> dplyr::transmute(
+    conc = CONC_ROMIDEPSIN_NGML, frac = (luminescence - ck1$e0) / ck1$amp,
+    curve = "Latency reversal (RLU)"
+  ),
+  pred3 |> dplyr::transmute(
+    conc = CONC_ROMIDEPSIN_NGML, frac = (ck3$e0 - fluorescence) / ck3$amp,
+    curve = "Viable-cell loss (RFU)"
+  )
+)
+frac <- dplyr::filter(frac, conc >= 0.5, conc <= 50)
+ggplot2::ggplot(frac, ggplot2::aes(conc, frac, colour = curve)) +
+  ggplot2::annotate("rect", xmin = ck1$p90, xmax = ck3$p90, ymin = -Inf, ymax = Inf, alpha = 0.15) +
+  ggplot2::geom_line(linewidth = 0.8) +
+  ggplot2::scale_x_log10() +
+  ggplot2::labs(x = "Romidepsin concentration (ng/mL)", y = "Fraction of maximal effect", colour = NULL) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "bottom")
+```
+
+# Why there is no NCA
+
+These are static concentration-response curves: the input is a constant
+medium concentration and the output a single 24-hour reading, with no dose and
+no concentration-time course. There is nothing for PKNCA to integrate, so the
+validation is the closed-form checks, the refit against the authors' own well
+readings and the reproduction of the published EC90 and CC90 above.
+
+The paper's later experiments (dose fractionation, clinical-profile
+simulations in static culture, primary cells and the hollow-fiber system) are
+analysed by Pearson correlation and by noncompartmental analysis of the
+observed data; no model is fitted to them, so they contribute no model file.
+
+# Assumptions and deviations
+
+* **Hill coefficient units.** The Results print each Hill coefficient with
+  units of ng/mL (for example "gamma = 8.3 ng/mL"). A Hill coefficient is
+  dimensionless; the units are a typesetting error and are dropped.
+* **Sign of the cytotoxicity Hill coefficient.** The Results and the
+  Figure 1f panel print it as -4.4. Substituting -4.4 into the Methods
+  equation `RFU = E0 - Imax * C^g / (CC50^g + C^g)` with a positive Imax gives
+  a curve that rises with concentration, the opposite of the data; the printed
+  CC90 (8.4 ng/mL = 5.1 * 9^(1/4.4)) and a refit of the Methods equation to the
+  well readings both require +4.4. The minus sign is read as the plotting
+  software's convention for a falling curve, and the magnitude is encoded.
+* **Fitted range for the cytotoxicity curve.** The Results state the fit used
+  0.78-200 ng/mL; the Supporting Data sheet for Figure 1f lists wells only up
+  to 150 ng/mL. Refitting either range reproduces the printed estimates to
+  their reported precision, so the choice does not affect the packaged values.
+* **"%CV" means relative standard error.** The percentages printed beside each
+  estimate are the precision of the estimate, reproduced above by refitting.
+  They are not between-well or between-experiment variability, so no
+  inter-individual variability is encoded.
+* **No residual error.** The paper reports none. `addSd` is fixed to 0 in all
+  three models so they simulate the typical curve; the well-to-well scatter in
+  the figures is not represented.
+* **Medium concentration, not unbound or plasma concentration.** The driver is
+  the nominal concentration in RPMI with 10% FBS. The Discussion estimates the
+  unbound fraction in this medium at up to about 15% and translates the in
+  vitro EC90 of about 4.6 ng/mL to a protein-adjusted human-plasma EC90 of
+  about 10 ng/mL. That translation is the authors' estimate and is not part of
+  the packaged models.
+* **Static model.** Each curve maps a constant 24-hour concentration to a
+  24-hour endpoint. It does not represent the exposure-time dependence found in
+  the dose-fractionation experiments, and it should not be driven by a
+  time-varying concentration profile.

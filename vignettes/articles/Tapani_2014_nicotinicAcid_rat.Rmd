@@ -1,0 +1,587 @@
+---
+title: "Nicotinic acid / NEFA in normal and obese rats (Tapani 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nicotinic acid / NEFA in normal and obese rats (Tapani 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Tapani S, Almquist J, Leander J, Ahlstrom C, Peletier LA,
+  Jirstrand M, Gabrielsson J. Joint feedback analysis modeling of
+  nonesterified fatty acids in obese Zucker rats and normal Sprague-Dawley
+  rats after different routes of administration of nicotinic acid.
+  *J Pharm Sci* 2014;103(8):2571-2584.
+* Article (open access): [doi:10.1002/jps.24077](https://doi.org/10.1002/jps.24077)
+
+The paper fits a pharmacodynamic feedback model of plasma non-esterified fatty
+acids (NEFA) after nicotinic acid (NiAc) dosing to pooled data from normal
+Sprague-Dawley and obese Zucker rats. Its main result is a **joint** model in
+which three NEFA parameters (baseline `R0`, fractional turnover `kout` and the
+sigmoidicity `gamma`) differ between the strains and the rest are shared. As a
+comparator, the authors refit the same model **separately** to each strain.
+The library ships all three parameter sets:
+
+| Model | Content |
+|-------|---------|
+| `Tapani_2014_nicotinicAcid_rat` | Joint model (Table 4 "Joint Analysis"); the strain is selected by `DIS_OBESE` |
+| `Tapani_2014_nicotinicAcid_rat_normal` | Separate fit to the Sprague-Dawley rats (Table 4 "Separate Analysis") |
+| `Tapani_2014_nicotinicAcid_rat_obese` | Separate fit to the obese Zucker rats (Table 4 "Separate Analysis") |
+
+The NiAc pharmacokinetics were not re-estimated. Table 1 prints the earlier
+published estimates, and all three models fix them. Normal rats have a
+two-compartment model with two parallel Michaelis-Menten eliminations,
+endogenous synthesis and parallel linear plus saturable gut absorption (Eqs. 1-3).
+Obese rats have a one-compartment model with one Michaelis-Menten
+elimination and endogenous synthesis (Eq. 4).
+
+The NEFA model is the feedback model of Ahlstrom et al. (see also
+`Ahlstrom_2010_nicotinicAcid_rat` in this library). NiAc inhibits NEFA
+formation through `I(Cp) = 1 - Imax Cp^gamma / (IC50^gamma + Cp^gamma)`.
+A chain of eight moderator compartments, all turning over at `ktol`, provides
+the feedback: the first moderator divides the formation rate (raised to the
+power `p`), and the eighth multiplies the loss rate. `kcap` is a NiAc-independent
+formation term (Eqs. 5-10):
+
+```
+dR/dt   = kin I(Cp) / M1^p + kcap - kout R M8
+dM1/dt  = ktol (R - M1),   dMi/dt = ktol (M(i-1) - Mi),  i = 2..8
+kin     = (kout R0^2 - kcap) R0^p
+```
+
+```{r models}
+mod_joint <- readModelDb("Tapani_2014_nicotinicAcid_rat")
+mod_norm <- readModelDb("Tapani_2014_nicotinicAcid_rat_normal")
+mod_obese <- readModelDb("Tapani_2014_nicotinicAcid_rat_obese")
+```
+
+# Population
+
+The data were pooled from earlier NiAc/NEFA studies at AstraZeneca R&D
+Molndal. All animals were male, 16 weeks old at the experiment, and fasted
+14 h before dosing and throughout the experiment.
+
+- **Sprague-Dawley rats** (220-367 g) received IV infusions of vehicle, 1, 5
+  or 20 umol/kg over 30 min, or vehicle, 5, 10 or 51 umol/kg over 300 min.
+  Other groups received oral gavage of vehicle or 24.4, 81.2 or 812 umol/kg,
+  or a 5 umol/kg 30-min infusion followed by stepwise-decreasing infusion
+  rates, with or without a second 30-min infusion at 210 min.
+- **Obese Zucker (fa/fa) rats** (473-547 g) received vehicle or 20 umol/kg
+  IV over 30 min, or vehicle or 51 umol/kg IV over 300 min.
+
+The printed group sizes add up to about 99 Sprague-Dawley and 19 obese rats.
+There were 1440 NEFA observations. The same information is available
+programmatically via `readModelDb("Tapani_2014_nicotinicAcid_rat")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment that points to its table cell.
+
+| Quantity | Joint (normal / obese) | Separate normal | Separate obese | Source |
+|----------|------------------------|-----------------|----------------|--------|
+| `R0` (mmol/L) | 0.741 / 1.07 | 0.739 | 1.04 | Table 4 |
+| `kout` (L/mmol/min) | 0.290 / 0.343 | 0.316 | 0.0683 | Table 4 |
+| `ktol` (1/min) | 0.0245 | 0.0239 | 0.0697 | Table 4 |
+| `kcap` (mmol/L/min) | 0.0245 | 0.0281 | 4.94e-8 | Table 4 |
+| `p` | 1.20 | 1.15 | 3.19 | Table 4 |
+| `IC50` (umol/L) | 0.0820 | 0.0757 | 0.0433 | Table 4 |
+| `gamma` | 2.16 / 0.298 | 2.19 | 0.563 | Table 4 |
+| `Imax` | 1 (fixed) | 1 (fixed) | 1 (fixed) | Table 4, Initial Parameter Estimates |
+| IIV `R0` (%) | 19.7 / 24.0 | 19.9 | 15.8 | Table 4 |
+| IIV `kout` (%) | 71.4 / 151 | 47.4 | 29.7 | Table 4 |
+| IIV `IC50` (%) | 129 | 134 | 74.7 | Table 4 |
+| NEFA residual `sigma2` | 0.0110 | 0.0102 | 0.0111 | Table 4 |
+| NiAc PK (Vmax1, Km1, Vmax2, Km2, Vc, Vt, Cld, Synt, ka, Vmax,g, Km,g; IIV; sigma1) | normal / obese columns | normal column | obese column | Table 1 |
+| Gut absorption | Eq. 1 | Eq. 1 | n/a | Methods |
+| NiAc disposition | Eqs. 2-4 | Eqs. 2-3 | Eq. 4 | Methods |
+| NEFA, moderators, `I(Cp)`, `kin` | Eqs. 5-10 | Eqs. 5-10 | Eqs. 5-10 | Methods |
+| Strain switch | Eq. 11 (`Z = 1 - DIS_OBESE`) | n/a | n/a | Methods |
+
+The derived `kin` values match the secondary parameters that Table 4 prints:
+
+```{r kin-check}
+kin_of <- function(r0, kout, kcap, p) (kout * r0^2 - kcap) * r0^p
+kin_tab <- data.frame(
+  model = c("joint normal", "joint obese", "separate normal", "separate obese"),
+  kin_model = c(
+    kin_of(0.741, 0.290, 0.0245, 1.20), kin_of(1.07, 0.343, 0.0245, 1.20),
+    kin_of(0.739, 0.316, 0.0281, 1.15), kin_of(1.04, 0.0683, 4.94e-8, 3.19)
+  ),
+  kin_table4 = c(0.0940, 0.399, 0.102, 0.0837)
+)
+kin_tab$pct_diff <- 100 * (kin_tab$kin_model / kin_tab$kin_table4 - 1)
+knitr::kable(kin_tab, digits = c(0, 4, 4, 2))
+# Deterministic: only the rounding of the printed inputs separates the columns.
+stopifnot(all(abs(kin_tab$pct_diff) < 1))
+```
+
+# Simulation helpers
+
+The models are written per kilogram of body weight. Doses are in umol/kg,
+NiAc concentrations in umol/L and NEFA in mmol/L, with time in minutes. IV
+infusions dose `central` and oral doses dose `depot`. Both endpoints (`Cc` and
+`NEFA`) are returned by observing on `central` with `dvid = 1`.
+
+```{r helpers}
+obs_times <- sort(unique(c(seq(0, 60, by = 1), seq(62, 600, by = 2))))
+
+# One event table per subject block. `dose` umol/kg over `dur` min (IV), or an
+# oral bolus when `route = "oral"`.
+make_events <- function(n, dose, dur, route = "iv", times = obs_times,
+                        id_offset = 0L, DIS_OBESE = NULL) {
+  ids <- id_offset + seq_len(n)
+  dosing <- data.frame(
+    id = ids, time = 0, evid = 1L, amt = dose,
+    rate = if (route == "iv") dose / dur else 0,
+    cmt = if (route == "iv") "central" else "depot", dvid = NA_integer_
+  )
+  obs <- expand.grid(id = ids, time = times)
+  obs <- data.frame(
+    id = obs$id, time = obs$time, evid = 0L, amt = 0, rate = 0,
+    cmt = "central", dvid = 1L
+  )
+  ev <- dplyr::arrange(rbind(dosing, obs), id, time, dplyr::desc(evid))
+  if (!is.null(DIS_OBESE)) ev$DIS_OBESE <- DIS_OBESE
+  ev
+}
+
+solve_typical <- function(mod, ev) {
+  as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod), ev))
+}
+```
+
+# Typical NEFA profiles after a 20 umol/kg 30-min infusion (Figure 6)
+
+Figure 6 overlays the typical-individual NEFA curves for a 20 umol/kg 30-min
+infusion. Panels a and c use the separate models and panels b and d the joint
+model, for normal and obese rats respectively. The points below were digitised
+from the published figure at times where the curve is well separated from the
+observed data.
+
+```{r fig6}
+ev20 <- make_events(1, dose = 20, dur = 30)
+typ <- dplyr::bind_rows(
+  solve_typical(mod_norm, ev20) |> mutate(panel = "a: separate, normal"),
+  solve_typical(mod_joint, transform(ev20, DIS_OBESE = 0)) |> mutate(panel = "b: joint, normal"),
+  solve_typical(mod_obese, ev20) |> mutate(panel = "c: separate, obese"),
+  solve_typical(mod_joint, transform(ev20, DIS_OBESE = 1)) |> mutate(panel = "d: joint, obese")
+)
+
+fig6_digitised <- tibble::tribble(
+  ~panel, ~time, ~NEFA_pub,
+  "a: separate, normal", 10, 0.171, "a: separate, normal", 25, 0.128,
+  "a: separate, normal", 50, 1.116, "a: separate, normal", 70, 0.848,
+  "a: separate, normal", 100, 0.756, "a: separate, normal", 400, 0.756,
+  "a: separate, normal", 550, 0.732,
+  "b: joint, normal", 10, 0.171, "b: joint, normal", 25, 0.116,
+  "b: joint, normal", 50, 1.134, "b: joint, normal", 70, 0.841,
+  "b: joint, normal", 100, 0.750, "b: joint, normal", 400, 0.756,
+  "b: joint, normal", 550, 0.732,
+  "c: separate, obese", 20, 0.323, "c: separate, obese", 30, 0.348,
+  "c: separate, obese", 55, 1.049, "c: separate, obese", 200, 0.915,
+  "c: separate, obese", 400, 0.915, "c: separate, obese", 550, 0.915,
+  "d: joint, obese", 10, 0.293, "d: joint, obese", 25, 0.335,
+  "d: joint, obese", 60, 0.951, "d: joint, obese", 120, 0.829,
+  "d: joint, obese", 300, 0.902, "d: joint, obese", 550, 0.902
+)
+
+ggplot(typ, aes(time, NEFA)) +
+  geom_line() +
+  geom_point(data = fig6_digitised, aes(y = NEFA_pub), colour = "red") +
+  facet_wrap(~panel) +
+  labs(
+    x = "Time (min)", y = "NEFA (mmol/L)",
+    caption = "Replicates the typical curves of Figure 6 of Tapani 2014 (red: digitised)."
+  )
+
+fig6_cmp <- fig6_digitised |>
+  left_join(typ |> select(panel, time, NEFA), by = c("panel", "time")) |>
+  mutate(diff = NEFA - NEFA_pub)
+stopifnot(nrow(fig6_cmp) == nrow(fig6_digitised), !anyNA(fig6_cmp$NEFA))
+knitr::kable(fig6_cmp, digits = 3)
+# Deterministic typical-value solves; the tolerance covers digitising a
+# 666-pixel-wide figure (about 0.012 mmol/L per pixel) and the steep rebound
+# edge, where a pixel of time is several hundredths of mmol/L.
+stopifnot(max(abs(fig6_cmp$diff)) < 0.06)
+```
+
+All four typical curves match the published ones. In obese rats the curves
+start at `R0` and settle at about 0.9 mmol/L, not at `R0`. The model drives
+the NEFA inhibition by **total** NiAc, endogenous plus dosed. In obese rats the
+endogenous NiAc steady state (about 0.033 umol/L) is close to `IC50` and,
+with the shallow `gamma`, already inhibits NEFA formation by more than 40%.
+The published figure shows the same settling level, which supports that the
+paper's model is driven by total NiAc and starts the NEFA states at `R0`.
+
+```{r endogenous}
+# Steady state of Eq. 5 with M1 = M8 = R at a constant NiAc concentration.
+# For kin > 0 the balance falls monotonically in R and has one root. A draw
+# with kout * R0^2 < kcap has kin < 0. The balance then rises and falls, and
+# the larger root is the one where it falls (the stable one, which is R0 when
+# there is no drug). NA if no root exists.
+ss_nefa <- function(cp, r0, kout, kcap, p, ic50, gam) {
+  kin <- (kout * r0^2 - kcap) * r0^p
+  icp <- 1 - cp^gam / (ic50^gam + cp^gam)
+  f <- function(r) kin * icp / r^p + kcap - kout * r^2
+  lower <- 1e-6
+  if (kin < 0) {
+    lower <- optimize(f, c(1e-6, 10), maximum = TRUE)$maximum
+    if (f(lower) <= 0) {
+      return(NA_real_)
+    }
+  }
+  uniroot(f, c(lower, 10), tol = 1e-12)$root
+}
+late <- typ |> filter(time == 600)
+cp_end <- setNames(late$Cc, late$panel)
+ss_check <- data.frame(
+  panel = names(cp_end),
+  endogenous_Cp = cp_end,
+  NEFA_600 = late$NEFA,
+  NEFA_steady_state = c(
+    ss_nefa(cp_end[[1]], 0.739, 0.316, 0.0281, 1.15, 0.0757, 2.19),
+    ss_nefa(cp_end[[2]], 0.741, 0.290, 0.0245, 1.20, 0.0820, 2.16),
+    ss_nefa(cp_end[[3]], 1.04, 0.0683, 4.94e-8, 3.19, 0.0433, 0.563),
+    ss_nefa(cp_end[[4]], 1.07, 0.343, 0.0245, 1.20, 0.0820, 0.298)
+  )
+)
+knitr::kable(ss_check, digits = 4, row.names = FALSE)
+# The 600-min value is still on a slow, damped oscillation, so this checks the
+# level rather than convergence.
+stopifnot(max(abs(ss_check$NEFA_600 - ss_check$NEFA_steady_state)) < 0.03)
+```
+
+# Steady-state concentration-response (Figure 5)
+
+At a constant NiAc concentration all moderators equal `R`, and the steady
+state solves `kin I(Cp) / R^p + kcap = kout R^2`. Figure 5 plots that steady
+state against the NiAc concentration with 90% population bands from the IIV
+of `R0`, `kout` and `IC50`. The bands are computed below from 2000 parameter
+draws (base-R RNG, so they are identical on every machine).
+
+The paper reports IIV as a percentage without saying how it relates to the
+variance `omega^2` of the log-normal random effect. The models read the
+percentage as `100 * omega`, so `omega^2 = (IIV/100)^2`. The joint
+model's normal-rat band at high NiAc concentrations decides between the two
+usual readings. There `I(Cp)` is close to 0, so `R = sqrt(kcap / kout)` and
+the band width depends on the `kout` IIV alone (71.4%):
+
+```{r fig5}
+conc <- c(10^seq(-3, 1.8, by = 0.2), 100)
+draw_band <- function(n, r0, kout, kcap, p, ic50, gam, om_r0, om_kout, om_ic50) {
+  set.seed(20140701)
+  er0 <- rnorm(n, 0, sqrt(om_r0))
+  ekout <- rnorm(n, 0, sqrt(om_kout))
+  eic50 <- rnorm(n, 0, sqrt(om_ic50))
+  dplyr::bind_rows(lapply(conc, function(cp) {
+    r <- vapply(seq_len(n), function(i) {
+      ss_nefa(cp, r0 * exp(er0[i]), kout * exp(ekout[i]), kcap, p, ic50 * exp(eic50[i]), gam)
+    }, numeric(1))
+    data.frame(
+      conc = cp, typical = ss_nefa(cp, r0, kout, kcap, p, ic50, gam),
+      lo = unname(quantile(r, 0.05, na.rm = TRUE)), hi = unname(quantile(r, 0.95, na.rm = TRUE)),
+      pct_kin_negative = 100 * mean(kout * exp(ekout) * (r0 * exp(er0))^2 < kcap),
+      pct_no_steady_state = 100 * mean(is.na(r))
+    )
+  }))
+}
+cv2 <- function(cv) cv^2
+log1cv <- function(cv) log(1 + cv^2)
+bands <- dplyr::bind_rows(
+  draw_band(2000, 0.741, 0.290, 0.0245, 1.20, 0.0820, 2.16, cv2(0.197), cv2(0.714), cv2(1.29)) |>
+    mutate(model = "Joint", strain = "normal"),
+  draw_band(2000, 1.07, 0.343, 0.0245, 1.20, 0.0820, 0.298, cv2(0.240), cv2(1.51), cv2(1.29)) |>
+    mutate(model = "Joint", strain = "obese"),
+  draw_band(2000, 0.739, 0.316, 0.0281, 1.15, 0.0757, 2.19, cv2(0.199), cv2(0.474), cv2(1.34)) |>
+    mutate(model = "Separate", strain = "normal"),
+  draw_band(2000, 1.04, 0.0683, 4.94e-8, 3.19, 0.0433, 0.563, cv2(0.158), cv2(0.297), cv2(0.747)) |>
+    mutate(model = "Separate", strain = "obese")
+)
+bands |>
+  group_by(model, strain) |>
+  summarise(
+    pct_kin_negative = first(pct_kin_negative),
+    max_pct_no_steady_state = max(pct_no_steady_state), .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2)
+
+ggplot(bands, aes(conc, typical, colour = strain, fill = strain)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line() +
+  scale_x_log10() +
+  facet_wrap(~model) +
+  labs(
+    x = "NiAc concentration (umol/L)", y = "Steady-state NEFA (mmol/L)",
+    caption = "Replicates Figure 5 of Tapani 2014 (typical curve and 90% IIV band)."
+  )
+
+# Joint normal band at 100 umol/L under the two readings of the IIV %.
+alt <- draw_band(2000, 0.741, 0.290, 0.0245, 1.20, 0.0820, 2.16, log1cv(0.197), log1cv(0.714), log1cv(1.29))
+at100 <- dplyr::bind_rows(
+  bands |> filter(model == "Joint", strain == "normal", conc == 100) |>
+    mutate(reading = "omega^2 = (IIV/100)^2 (used)"),
+  alt |> filter(conc == 100) |> mutate(reading = "omega^2 = log(1 + (IIV/100)^2)")
+) |>
+  select(reading, lo, typical, hi) |>
+  mutate(lo_pub = 0.161, typical_pub = 0.291, hi_pub = 0.538)
+knitr::kable(at100, digits = 3)
+stopifnot(nrow(at100) == 2L)
+# 2000 base-R draws: the 5%/95% quantiles carry ~1% Monte Carlo error. The
+# reading used must sit closer to the digitised band edges than the other one.
+err <- abs(at100$lo - at100$lo_pub) + abs(at100$hi - at100$hi_pub)
+stopifnot(err[1] < err[2], err[1] < 0.05)
+
+typ_pub <- tibble::tribble(
+  ~model, ~strain, ~conc, ~pub,
+  "Joint", "normal", 0.001, 0.741, "Joint", "normal", 100, 0.291,
+  "Joint", "obese", 0.001, 0.997, "Joint", "obese", 100, 0.577
+)
+typ_cmp <- typ_pub |>
+  left_join(bands |> mutate(conc = signif(conc, 3)), by = c("model", "strain", "conc")) |>
+  select(model, strain, conc, typical, pub)
+stopifnot(nrow(typ_cmp) == 4L, !anyNA(typ_cmp$typical))
+knitr::kable(typ_cmp, digits = 3)
+stopifnot(max(abs(typ_cmp$typical - typ_cmp$pub)) < 0.02)
+```
+
+The typical curves and the normal-rat band edges match Figure 5. Under the
+`log(1 + CV^2)` reading the high-concentration band would be visibly narrower
+than the published one.
+
+# Rebound after 300-min infusions (Figure 7)
+
+Figure 7 summarises the extent of the NEFA rebound after a 300-min infusion of
+5, 10 or 51 umol/kg. The extent is the maximum NEFA after the infusion stops,
+as a percentage above baseline, over a population sample. The rows "0%" and
+"100%" degree of disease are the normal and obese rats of the joint model.
+
+Two choices behind the published figure are not stated, and both are settled
+below by reproducing it:
+
+- **Which parameters vary.** The paper fixed each animal's NiAc PK when it
+  fitted the NEFA data. Sampling only the NEFA random effects (`R0`, `kout`,
+  `IC50`) reproduces the normal-rat medians. Adding the NiAc PK random
+  effects lowers them markedly at 10 and 51 umol/kg. The simulation
+  therefore zeroes the PK random effects.
+- **Which baseline.** For normal rats `R0` and the drug-free steady state
+  coincide. In obese rats endogenous NiAc holds NEFA about 15% below `R0`
+  (see Figure 6). Measuring the rebound against `R0` gives obese medians near
+  zero, against 13-30% in the figure. Measuring it against the drug-free
+  steady state reproduces the published values, so that is the definition
+  compared below.
+
+200 animals per arm are simulated.
+
+```{r fig7}
+# NEFA random effects only: the NiAc PK random effects are set to zero.
+mod_pd <- mod_joint |>
+  rxode2::ini(
+    etalvmax_hi = 0, etalvmax_lo = 0, etalsynt = 0, etalka = 0, etaltmax_abs = 0,
+    etalvmax_hi_obese = 0, etalsynt_obese = 0
+  )
+rxode2::rxSetSeed(2014)
+rebound_times <- c(0, seq(300, 600, by = 2))
+arms <- expand.grid(dose = c(5, 10, 51), DIS_OBESE = c(0, 1))
+ev7 <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  make_events(200,
+    dose = arms$dose[i], dur = 300, times = rebound_times,
+    id_offset = (i - 1L) * 200L, DIS_OBESE = arms$DIS_OBESE[i]
+  ) |> mutate(dose = arms$dose[i])
+}))
+stopifnot(!anyDuplicated(ev7[ev7$evid == 0, c("id", "time")]))
+# Animals drawn with kout * R0^2 < kcap have kin < 0 (see Figure 5 above).
+# Under NiAc their formation term can turn the NEFA balance negative and the
+# solve may fail with solver warnings; those animals are counted and left out.
+sim7 <- as.data.frame(rxode2::rxSolve(mod_pd, ev7, keep = c("dose")))
+per_id <- sim7 |>
+  group_by(id, dose, DIS_OBESE) |>
+  summarise(
+    failed = any(!is.finite(NEFA)) || any(NEFA < 0),
+    kin = first(kin), rbase = first(rbase), Cp0 = first(Cp0), kout = first(kout),
+    kcap = first(kcap), pmod = first(pmod), ic50 = first(ic50), gam = first(gam),
+    peak = max(NEFA[time >= 300]), .groups = "drop"
+  )
+per_id |>
+  group_by(dose, DIS_OBESE) |>
+  summarise(n = n(), n_kin_negative = sum(kin < 0), n_failed = sum(failed), .groups = "drop") |>
+  knitr::kable()
+stopifnot(mean(per_id$failed) < 0.05)
+
+rebound <- per_id |>
+  filter(!failed) |>
+  rowwise() |>
+  mutate(drug_free = ss_nefa(Cp0, rbase, kout, kcap, pmod, ic50, gam)) |>
+  ungroup() |>
+  filter(!is.na(drug_free)) |>
+  mutate(
+    extent = 100 * (peak / drug_free - 1),
+    extent_vs_R0 = 100 * (peak / rbase - 1),
+    degree = ifelse(DIS_OBESE == 1, "100% (obese)", "0% (normal)")
+  )
+
+ggplot(rebound, aes(extent, degree)) +
+  geom_boxplot(coef = Inf) +
+  facet_wrap(~dose, scales = "free_x", labeller = label_both) +
+  labs(
+    x = "Extent of rebound (% above drug-free baseline)", y = "Degree of disease",
+    caption = "Replicates the 0% and 100% rows of Figure 7 of Tapani 2014."
+  )
+
+fig7_pub <- tibble::tribble(
+  ~dose, ~DIS_OBESE, ~median_pub,
+  5, 0, 12, 10, 0, 33, 51, 0, 155,
+  5, 1, 13, 10, 1, 16, 51, 1, 30
+)
+fig7_cmp <- rebound |>
+  group_by(dose, DIS_OBESE) |>
+  summarise(
+    median_sim = median(extent), q25 = quantile(extent, 0.25),
+    q75 = quantile(extent, 0.75), median_vs_R0 = median(extent_vs_R0), .groups = "drop"
+  ) |>
+  left_join(fig7_pub, by = c("dose", "DIS_OBESE"))
+stopifnot(nrow(fig7_cmp) == 6L, !anyNA(fig7_cmp$median_pub))
+knitr::kable(fig7_cmp, digits = 1)
+```
+
+```{r fig7-gate}
+# Medians of a 200-animal cohort; the bound is on the centre of the
+# distribution, not its tails. 10 points, or a third of the published median,
+# covers cohort noise and reading the medians off a 160-pixel-high figure.
+# A transcription error in R0, kout or gamma moves the 51 umol/kg medians by
+# far more.
+fig7_cmp <- fig7_cmp |>
+  mutate(tol = pmax(10, median_pub / 3), ok = abs(median_sim - median_pub) < tol)
+stopifnot(all(fig7_cmp$ok))
+```
+
+The intermediate "degrees of disease" (20-80%) are not reproduced. For those,
+the paper solved both PK models side by side and weighted their solutions, and
+the packaged joint model has only one PK structure (see Assumptions and
+deviations).
+
+# NiAc pharmacokinetics (PKNCA)
+
+The NiAc PK is inherited from earlier publications and the paper reports no
+NCA. The PKNCA summary below is therefore descriptive. It covers the two IV
+regimens given to both strains, with 200 animals per arm from the joint model.
+The pre-dose concentration is the endogenous NiAc steady state.
+
+```{r pknca}
+rxode2::rxSetSeed(20142)
+pk_arms <- expand.grid(regimen = c("20 umol/kg / 30 min", "51 umol/kg / 300 min"), DIS_OBESE = c(0, 1))
+pk_arms$dose <- ifelse(grepl("^20", pk_arms$regimen), 20, 51)
+pk_arms$dur <- ifelse(grepl("30 min$", pk_arms$regimen), 30, 300)
+ev_pk <- dplyr::bind_rows(lapply(seq_len(nrow(pk_arms)), function(i) {
+  make_events(200,
+    dose = pk_arms$dose[i], dur = pk_arms$dur[i],
+    times = c(0, 2, 5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 90, 120, 180, 240, 290, 300, 305, 310, 320, 330, 360, 420, 480, 600),
+    id_offset = (i - 1L) * 200L, DIS_OBESE = pk_arms$DIS_OBESE[i]
+  ) |> mutate(treatment = paste(ifelse(pk_arms$DIS_OBESE[i] == 1, "obese", "normal"), pk_arms$regimen[i], sep = ", "))
+}))
+sim_pk <- as.data.frame(rxode2::rxSolve(mod_joint, ev_pk, keep = c("treatment")))
+
+conc_df <- sim_pk |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+dose_df <- ev_pk |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+o_conc <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+o_data <- PKNCA::PKNCAdata(o_conc, o_dose,
+  intervals = data.frame(start = 0, end = 600, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+)
+o_nca <- PKNCA::pk.nca(o_data)
+nca_tab <- as.data.frame(summary(o_nca))
+knitr::kable(nca_tab)
+
+baseline_cp <- sim_pk |>
+  filter(time == 0) |>
+  mutate(strain = ifelse(grepl("^obese", treatment), "obese", "normal")) |>
+  group_by(strain) |>
+  summarise(median_endogenous_Cp_nmolL = 1000 * median(Cc), .groups = "drop")
+knitr::kable(baseline_cp, digits = 2)
+```
+
+The typical endogenous NiAc concentration follows from Table 1:
+`Synt Km1 / (Vmax1 - Synt)` = 33.3 nmol/L in obese rats, and about 7.8 nmol/L
+in normal rats, where two eliminations act in parallel.
+
+# Assumptions and deviations
+
+- **IIV scale.** Tables 1 and 4 give IIV as a percentage with no definition.
+  The models use `omega^2 = (IIV/100)^2`. At 100 umol/L the joint model's
+  normal-rat 90% band in Figure 5 is digitised as 0.16-0.54 mmol/L. The
+  reading used gives about 0.17-0.51 mmol/L, and `log(1 + CV^2)` gives a
+  narrower 0.17-0.48 mmol/L (see the Figure 5 table). The same reading is
+  applied to every random effect, including the NiAc PK ones from Table 1.
+- **NEFA residual error.** Table 4 lists `sigma2` (0.0110, 0.0102 and 0.0111)
+  as "Residual add. error" without units. The models read it as a variance,
+  so the additive SD is `sqrt(sigma2)`, about 0.10 mmol/L. The supporting
+  material defines the residual term by its variance `S`, and the individual
+  fits in Figure 4 scatter by about 0.1 mmol/L around their curves. That
+  scatter is incompatible with an SD of 0.011 mmol/L.
+- **NiAc residual error.** Table 1's `sigma1` (42.8% normal, 40.0% obese) is
+  encoded as a proportional SD of 0.428 and 0.400.
+- **Endogenous NiAc drives the effect.** The NiAc states start at the
+  endogenous steady state of Eqs. 2-4 ("the endogenous concentration of NiAc
+  was estimated according to the solution of the Eqs. 2 and 3 at steady
+  state"). The NEFA and moderator states start at `R0` (the paper's
+  `Mi,0 = R0`). Because `I(Cp)` acts on total NiAc, obese rats drift from `R0`
+  to about 0.9 mmol/L without any dose, as the published Figure 6c/d curves
+  also do. Users wanting a drug-free steady state at `R0` would have to
+  change the model; it is shipped as published.
+- **Joint model strain switch.** The paper's indicator `Z` (1 = normal) is
+  `1 - DIS_OBESE`. As in Eq. 11, group-specific values (`R0`, `kout`, `gamma`
+  and the two NiAc PK parameter sets) are combined linearly in `DIS_OBESE`.
+  The `R0` and `kout` random effects have strain-specific variances because
+  Table 4 prints a separate IIV for each strain.
+- **NiAc PK as one structure.** The joint model carries one PK structure. It
+  becomes the obese one-compartment model by switching off the low-affinity
+  elimination pathway and the peripheral exchange when `DIS_OBESE = 1`. This is
+  exact for `DIS_OBESE` = 0 or 1, the only values in the data. For
+  intermediate "degrees of disease", Figure 7 solved the two PK models
+  side by side and weighted their solutions. The packaged model does not
+  reproduce that, so only the 0% and 100% rows of Figure 7 are replicated
+  here.
+- **Oral dosing in obese rats.** Obese rats were not dosed orally. The joint
+  model applies the normal-rat absorption parameters if `depot` is dosed with
+  `DIS_OBESE = 1`, which is an extrapolation.
+- **Absorption IIV.** Table 1 prints the same IIV (10.8%, RSE 93.1%) for `ka`
+  and `Vmax,g`. The two are encoded as independent random effects.
+- **Fixed PK.** The paper fixed the NiAc PK parameters, including their IIV
+  and residual error, at the earlier estimates, so they are wrapped in
+  `fixed()`. The NEFA parameters are estimates from this paper.
+- **Dose labels.** The oral doses are 24.4, 81.2 and 812 umol/kg in Methods
+  but 24, 82.1 and 812 umol/kg in the Figure 3 and 4 captions; the Methods
+  values are used in `population`.
+- **Table 3 caption.** Table 3 is captioned "ratios between estimated
+  parameters in the joint and separate models". Its values
+  (`kout` 1.18, `gamma` 0.138, `R0` 1.443) are in fact the obese-to-normal
+  ratios within the joint model, for example 0.343 / 0.290 = 1.18. They are
+  not used by the models.
+- **Figure 7 settings.** The paper does not say which parameters its
+  Figure 7 Monte Carlo sampled, nor what "baseline" means for the extent of
+  rebound. Sampling only the NEFA random effects, and measuring against each
+  animal's drug-free steady state, reproduces the published medians for
+  normal and obese rats; those settings are used. The medians from
+  200 simulated animals per arm are compared with medians read off Figure 7,
+  which used 1000 animals per arm.
+- **Negative `kin`.** `kin` is derived from `R0`, `kout` and `kcap`
+  (Eq. 10). With the published IIV, about 1% of normal and 3% of obese
+  joint-model draws have `kout R0^2 < kcap` and so a negative `kin`. Such
+  an animal still sits at `R0` without drug, but NiAc then raises its NEFA
+  formation, and its NEFA solve can fail. The paper does not mention these
+  animals. The vignette counts them and leaves out any that fail to solve.

@@ -1,0 +1,328 @@
+---
+title: "DEHA and MEHA rat PBPK (Yang 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{DEHA and MEHA rat PBPK (Yang 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Yang_2026_deha_rat_pbpk"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Yang_2026_deha_rat_pbpk"))$description`
+* Article: <https://doi.org/10.3390/pharmaceutics18081001>
+
+Yang et al. (2026) developed a whole-body physiologically based pharmacokinetic
+(PBPK) model for the plasticizer and candidate pharmaceutical excipient
+di(2-ethylhexyl) adipate (DEHA) and its primary hydrolysis metabolite
+mono(2-ethylhexyl) adipate (MEHA) in Sprague-Dawley rats. Both adipates are
+labile esters that hydrolyse rapidly across many tissues. The model couples
+eleven permeability-limited tissue compartments with arterial and venous blood
+pools and a lymph compartment; DEHA that is metabolised anywhere becomes MEHA
+(complete conversion). Oral DEHA absorption is split between a portal-hepatic
+route and an intestinal-lymphatic route, with saturable DEHA hydrolysis inside
+the lymph. The ordinary differential equations and all parameter values are
+transcribed from the authors' deposited Berkeley Madonna model code.
+
+Because DEHA disposition is permeability-limited, lymphatic return enters the
+venous pool after a thoracic-duct lag implemented with `delay()`. Every
+`rxSolve()` below therefore passes `method = "dop853"` (and a large `maxsteps`),
+which is the solver rxode2 uses for delay models.
+
+# Population
+
+The model is parameterised for a 250 g male Sprague-Dawley rat using the Simcyp
+V23 rat module (Supplementary Tables S1-S2). In the in vivo studies, DEHA
+(5.94 mg/kg, a 1:1 unlabelled / deuterated mix reported as DEHA equivalents) or
+MEHA (5 mg/kg) was given as an intravenous bolus, and DEHA (99.8 mg/kg in
+soybean oil) was given orally; arterial plasma and, for the oral study,
+mesenteric lymph were sampled (Methods 2.3; Table 3). Per-cohort n was 3, except
+MEHA measured after DEHA IV (n = 6). The programmatic `population` metadata is
+available via `readModelDb("Yang_2026_deha_rat_pbpk")()$population`.
+
+# Source trace
+
+Each `ini()` entry in
+`inst/modeldb/specificDrugs/Yang_2026_deha_rat_pbpk.R` carries an in-file comment
+naming its origin. Representative entries:
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `ppampa_deha` (fitted) | 0.805e-6 cm/s | Table 4, PPAMPA,DEHA (CV 36.1%) |
+| `kp_scaler_deha` (fitted) | 0.542 | Table 4 footnote, Kp,scalar (CV 60.0%) |
+| `cl_lymph` (fitted) | 33.8 mL/min | Table 4, CLLY (CV 21.4%) |
+| `tlag_lymph` (fitted) | 66.5 min | Table 4, Tlag,LY (CV 14.2%) |
+| `km_lymph_deha` (fitted) | 4640 ng/mL | Table 4, Km,LY (CV 19.3%) |
+| `fabs_deha` (fitted) | 0.139 | Table 4, Fabs (CV 10.2%) |
+| `fup_deha`, `fup_meha` | 0.0208, 0.0278 | Table 4, fup |
+| `rbp_deha`, `rbp_meha` | 0.581, 0.592 | Table 4, R |
+| DEHA / MEHA homogenate `k` | Table 1 | Table 1 control k per matrix |
+| DEHA / MEHA `fu,homogenate` | Table 2 | Table 2, nine tissues |
+| DEHA `fBNPP` (CES fraction) | Table 1 | Table 1, % reduction by BNPP |
+| tissue volumes / flows / Seff | Tables S1-S2 | Simcyp V23 rat module |
+| GI transit, absorption | Eqs S15-S27 | deposited code / Supplementary |
+| `d/dt(...)` mass balances | n/a | Supplementary Eqs S1-S14; deposited code |
+
+```{r model}
+mod <- readModelDb("Yang_2026_deha_rat_pbpk")
+bw <- 0.25 # kg; the physiology is a 250 g rat
+```
+
+# Simulation
+
+The model is deterministic (a pooled-data PBPK fit with no between-subject
+variability and no residual-error magnitude reported), so each administration is
+a single typical-value solve. Doses are amounts in ng; intravenous doses are a
+5-second infusion matching the deposited code.
+
+```{r simulate}
+solve_scenario <- function(amt_mgkg, cmt, tgrid) {
+  amt_ng <- amt_mgkg * 1e6 * bw
+  ev <- rxode2::et(amt = amt_ng, rate = amt_ng / (5 / 60), cmt = cmt) |>
+    rxode2::et(tgrid)
+  rxode2::rxSolve(
+    mod, ev,
+    method = "dop853", maxsteps = 1e7, atol = 1e-9, rtol = 1e-9
+  )
+}
+
+# A fine early grid is essential: after the 5-second infusion the arterial
+# concentration spikes to ~10^5 ng/mL and falls to ~2200 ng/mL by 2 min, and
+# that sub-2-min spike carries most of the AUC (Table S3 reports a predicted
+# "max" of 98,150 ng/mL). The grid runs to 1000 min so the terminal AUC is
+# captured for integration.
+tgrid_iv <- sort(unique(c(seq(0, 10, by = 0.02), seq(10, 1000, by = 1))))
+tgrid_po <- seq(0, 720, by = 1)
+
+sim_deha_iv <- solve_scenario(5.94, "ven_deha", tgrid_iv)
+sim_meha_iv <- solve_scenario(5, "ven_meha", tgrid_iv)
+# Oral DEHA goes into the stomach compartment (amount in ng).
+amt_po <- 99.8 * 1e6 * bw
+ev_po <- rxode2::et(amt = amt_po, cmt = "gi_stomach") |> rxode2::et(tgrid_po)
+sim_deha_po <- rxode2::rxSolve(
+  mod, ev_po,
+  method = "dop853", maxsteps = 1e7, atol = 1e-9, rtol = 1e-9
+)
+```
+
+# Replicate published figures
+
+## Figure 3a,b - plasma DEHA and MEHA after IV DEHA
+
+Observed Cmax values (Table 3) are shown as points; the authors note that the
+mechanistic model under-predicts the earliest (2 min) concentrations.
+
+```{r figure-3ab}
+obs_3ab <- tibble::tibble(
+  analyte = c("DEHA", "MEHA"),
+  time = c(2, 2),
+  conc = c(7430, 14700) # Table 3 observed Cmax
+)
+sim_deha_iv |>
+  transmute(time, DEHA = cp_art_de, MEHA = cp_art_me) |>
+  pivot_longer(-time, names_to = "analyte", values_to = "conc") |>
+  filter(conc > 0) |>
+  ggplot(aes(time, conc, colour = analyte)) +
+  geom_line() +
+  geom_point(data = obs_3ab, aes(time, conc, colour = analyte), shape = 1, size = 3) +
+  scale_y_log10() +
+  labs(
+    x = "Time (min)", y = "Arterial plasma concentration (ng/mL)",
+    colour = NULL, title = "Figure 3a,b - plasma DEHA and MEHA after IV DEHA (5.94 mg/kg)",
+    caption = "Lines: packaged model. Open points: Table 3 observed Cmax."
+  )
+```
+
+## Figure 3c - plasma MEHA after IV MEHA
+
+```{r figure-3c}
+sim_meha_iv |>
+  filter(cp_art_me > 0) |>
+  ggplot(aes(time, cp_art_me)) +
+  geom_line(colour = "#1b7837") +
+  geom_point(
+    data = tibble::tibble(time = 2, conc = 5080), aes(time, conc),
+    shape = 1, size = 3, colour = "#1b7837"
+  ) +
+  scale_y_log10() +
+  labs(
+    x = "Time (min)", y = "Plasma MEHA (ng/mL)",
+    title = "Figure 3c - plasma MEHA after IV MEHA (5 mg/kg)",
+    caption = "Line: packaged model. Open point: Table 3 observed Cmax."
+  )
+```
+
+## Figure 3d,e - plasma and mesenteric lymph after oral DEHA
+
+The oral profile shows the characteristic double peak (early portal peak, later
+lymphatic peak) and the prolonged terminal phase driven by lymphatic transport.
+
+```{r figure-3de}
+sim_deha_po |>
+  transmute(time, `plasma DEHA` = cp_art_de, `lymph DEHA` = c_lymph_de, `lymph MEHA` = c_lymph_me) |>
+  pivot_longer(-time, names_to = "series", values_to = "conc") |>
+  filter(conc > 0) |>
+  ggplot(aes(time, conc, colour = series)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(
+    x = "Time (min)", y = "Concentration (ng/mL)", colour = NULL,
+    title = "Figure 3d,e - plasma and mesenteric lymph after oral DEHA (99.8 mg/kg)",
+    caption = "Packaged model. Lymph DEHA reaches ~10^5 ng/mL (saturable hydrolysis)."
+  )
+```
+
+# NCA validation
+
+Standard NCA (PKNCA) is computed from the simulated arterial plasma profiles at
+the paper's IV sampling times (2-480 min). Because the first sample is at 2 min,
+sparse NCA cannot see the sub-2-min infusion spike and therefore underestimates
+the true AUC and overestimates clearance -- exactly the limitation of NCA for
+rapidly disposed compounds that the paper sets out to address. The model's true
+(mechanistic) AUC is obtained by integrating the full solve, and that is what is
+compared against the authors' predictions.
+
+```{r pknca}
+nca_times <- c(2, 5, 15, 30, 60, 90, 120, 240, 480)
+
+make_nca <- function(sim, conc_col, label) {
+  df <- sim |>
+    as.data.frame() |>
+    dplyr::filter(time %in% nca_times) |>
+    dplyr::transmute(id = 1L, time, Cc = .data[[conc_col]], analyte = label)
+  dplyr::bind_rows(
+    df,
+    df |> dplyr::distinct(id, analyte) |> dplyr::mutate(time = 0, Cc = 0)
+  ) |>
+    dplyr::distinct(id, analyte, time, .keep_all = TRUE) |>
+    dplyr::arrange(id, time)
+}
+
+conc_df <- dplyr::bind_rows(
+  make_nca(sim_deha_iv, "cp_art_de", "DEHA (IV)"),
+  make_nca(sim_deha_iv, "cp_art_me", "MEHA (from DEHA IV)"),
+  make_nca(sim_meha_iv, "cp_art_me", "MEHA (IV)")
+)
+dose_df <- tibble::tibble(
+  id = 1L,
+  analyte = c("DEHA (IV)", "MEHA (from DEHA IV)", "MEHA (IV)"),
+  time = 0,
+  amt = c(5.94, 5.94, 5) * 1e6 * bw
+)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | analyte + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | analyte + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(analyte, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+# Model (mechanistic) AUC: trapezoidal integration of the full fine solve.
+trapz <- function(t, c) sum(diff(t) * (head(c, -1) + tail(c, -1)) / 2)
+model_auc <- c(
+  "DEHA (IV)" = trapz(sim_deha_iv$time, sim_deha_iv$cp_art_de),
+  "MEHA (from DEHA IV)" = trapz(sim_deha_iv$time, sim_deha_iv$cp_art_me),
+  "MEHA (IV)" = trapz(sim_meha_iv$time, sim_meha_iv$cp_art_me)
+)
+```
+
+## Comparison against the authors' model predictions (Table S3) and observed NCA (Table 3)
+
+```{r nca_compare}
+sc <- c("DEHA (IV)", "MEHA (from DEHA IV)", "MEHA (IV)")
+summary_tbl <- tibble::tibble(
+  Scenario = sc,
+  `Cmax model (ng/mL)` = round(setNames(nca_wide$cmax, nca_wide$analyte)[sc]),
+  `Cmax predicted (S3)` = c(2210, 3750, 4320),
+  `Cmax observed (T3)` = c(7430, 14700, 5080),
+  `AUC model (ng*min/mL)` = round(model_auc[sc]),
+  `AUC predicted (S3)` = c(72100, 43800, 58100),
+  `AUC observed (T3)` = c(71800, 60300, 39900),
+  `AUC sparse-NCA` = round(setNames(nca_wide$aucinf.obs, nca_wide$analyte)[sc])
+)
+knitr::kable(summary_tbl, caption = "Model vs. Yang 2026 predicted (Table S3) and observed (Table 3). The sparse-NCA AUC underestimates the mechanistic AUC because it misses the sub-2-min spike.")
+```
+
+The packaged model reproduces the authors' **predicted** exposures essentially
+exactly -- the point of this validation, that the ODE system and parameters were
+transcribed faithfully. The model 2-min Cmax values and the mechanistic AUC
+agree with Table S3 to within a few percent. As the paper discusses, the
+mechanistic model under-predicts the **observed** 2-min concentrations (DEHA
+2210 predicted vs 7430 observed): NCA back-extrapolation overestimates the true
+initial concentration for these rapidly disposed compounds. The final column
+shows that sparse NCA of the model's own output underestimates its AUC for the
+same reason.
+
+```{r gate}
+# Reproduction check: the model's Cmax (2 min) and mechanistic AUC must match
+# the authors' own model predictions (Table S3) tightly, since both come from
+# the same ODE system.
+pred_cmax <- c("DEHA (IV)" = 2210, "MEHA (from DEHA IV)" = 3750, "MEHA (IV)" = 4320)
+pred_auc <- c("DEHA (IV)" = 72100, "MEHA (from DEHA IV)" = 43800, "MEHA (IV)" = 58100)
+sim_cmax <- setNames(nca_wide$cmax, nca_wide$analyte)[names(pred_cmax)]
+stopifnot(
+  all(abs(sim_cmax / pred_cmax - 1) < 0.05),
+  all(abs(model_auc[names(pred_auc)] / pred_auc - 1) < 0.07)
+)
+
+# Structural checks on the oral profile: a distinct late (lymphatic) peak is
+# present and lymphatic DEHA reaches the ~10^5 ng/mL range the authors report.
+po <- as.data.frame(sim_deha_po)
+late <- po$cp_art_de[po$time >= 120 & po$time <= 240]
+stopifnot(
+  max(late, na.rm = TRUE) > 150,
+  max(po$c_lymph_de, na.rm = TRUE) > 5e4
+)
+```
+
+# Assumptions and deviations
+
+- **The model is deterministic.** Yang 2026 report no inter-individual
+  variability and no residual-error magnitude, so the model carries no random
+  effects and `propSd` is fixed at zero. All simulations are typical-value
+  solves.
+- **The deposited Berkeley Madonna code governs where it disagrees with the
+  printed tables.** The equations and parameter values were transcribed from the
+  authors' deposited code (Supplementary Material File S1), which is what
+  generated the published figures. Specific differences the maintainers found:
+  - The Table 4 `KpT` column does not consistently equal
+    `KpT,pred x Kp,scalar` (for example adipose DEHA prints 2.77 where
+    `3.27 x 0.542 = 1.77`). The packaged model uses the code's calculation,
+    `Kp = fup / fu,T,corrected x Kp,scalar`, built from the Table 2 homogenate
+    unbound fractions; this reproduces the figures.
+  - The DEHA adipose homogenate rate constant is 0.02436/min in the code versus
+    0.0312/min in Table 1; the code value is used (adipose has no parenchymal
+    metabolism, so this only affects the vascular-clearance term).
+  - The MEHA brain homogenate unbound fraction is 0.04432 in the code versus
+    0.443 in Table 2; the code value is used (the brain contributes negligibly
+    to plasma).
+  - MEHA molecular weight is 258.35 g/mol in the code and 258.4 in Table 4.
+- **Intravenous dosing** is encoded as a 5-second infusion (the code's
+  `dosing_time_IV = 5/60` min), matching the authors' implementation; a bolus
+  would give an indistinguishable profile from the 2 min sample onward.
+- **Observed vs predicted early-time concentrations.** The model under-predicts
+  the observed 2-min plasma concentrations, as the authors discuss (Section 4):
+  this reflects a limitation of NCA back-extrapolation for rapidly disposed
+  compounds rather than a transcription error. Exposure (AUC) and the model's
+  own predictions are reproduced faithfully.
+- **Oral peak concentrations** match the authors' predicted values to roughly
+  20-30% (versus under 1% for the IV disposition), because the oral profile
+  depends on sharp, grid-sensitive transients in the lymphatic compartment; the
+  characteristic double peak and prolonged terminal phase are reproduced.
+- No correction or erratum for this article was found as of 2026-11-16.
+```

@@ -40,7 +40,7 @@ Schropp_2019_bsab_tmdd_qe <- function() {
 
   # An i.v. dose MUST be given into `depot_iv`, never into `central`. See the
   # `kdum` comment in ini() and the vignette for why.
-  dosing <- c("depot_iv", "depot_sc")
+  dosing <- c("depot_iv", "depot_sc", "central")
 
   covariateData <- list()
 

@@ -1,0 +1,448 @@
+---
+title: "Fosmidomycin monotherapy and fosmidomycin + clindamycin in falciparum malaria (Na-Bangchang 2007)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fosmidomycin monotherapy and fosmidomycin + clindamycin in falciparum malaria (Na-Bangchang 2007)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+mod_names <- c(
+  "NaBangchang_2007_fosmidomycin_monotherapy",
+  "NaBangchang_2007_fosmidomycin_combination",
+  "NaBangchang_2007_clindamycin"
+)
+uis <- lapply(mod_names, function(nm) rxode2::rxode(readModelDb(nm)))
+names(uis) <- mod_names
+cat("* Citation: ", uis[[1]]$reference, "\n", sep = "")
+for (nm in mod_names) {
+  cat("* `", nm, "`: ", uis[[nm]]$description, "\n", sep = "")
+}
+```
+
+* Article: <https://doi.org/10.1186/1475-2875-6-70> (open access, PMC1896174)
+
+Na-Bangchang 2007 studied oral fosmidomycin in adults with acute uncomplicated
+multidrug-resistant *Plasmodium falciparum* malaria on the Thailand-Myanmar
+border, given either alone (1,200 mg every 8 h for 7 days, n = 15) or with
+clindamycin (fosmidomycin 900 mg and clindamycin 600 mg, both every 12 h for 7
+days, n = 18). Plasma concentration-time profiles of both drugs were described
+with a one-compartment model with first-order absorption, an absorption lag
+time and first-order elimination, fitted in ADAPT II (Methods,
+*Pharmacokinetics*). Table 3 reports, per arm and drug, the median of that
+model's absorption rate constant (K01), elimination rate constant (K10), lag
+time (tlag) and apparent volume (Vz/F), with secondary parameters.
+
+There is no population (nonlinear mixed-effects) analysis, so there is no
+between-subject variance and no residual-error model in the source. The
+library carries one **typical-value** model per arm and drug, each fixed at the
+Table 3 medians:
+
+* `NaBangchang_2007_fosmidomycin_monotherapy` -- fosmidomycin, monotherapy arm.
+* `NaBangchang_2007_fosmidomycin_combination` -- fosmidomycin, combination arm.
+* `NaBangchang_2007_clindamycin` -- clindamycin, combination arm.
+
+The three files share one structure. Fosmidomycin Vz/F and CL/F were smaller in
+the combination arm (Table 2, p = 0.004 and p < 0.0001). The authors could not
+say whether this came from an interaction with clindamycin or from the disease
+phase: the monotherapy arm was characterised after the first dose on day 1, in
+acute malaria, and the combination arm after the last dose on day 7
+(Discussion). The two fosmidomycin arms are therefore separate files rather than
+one model with a clindamycin covariate.
+
+# Population
+
+Thirty-three adults (15 Thai, 5 Karen, 13 Burmese; 24 male, 9 female) aged
+18-50 years and weighing more than 40 kg, with *P. falciparum* mono-infection
+and parasitaemia of 1,000-50,000/uL, were treated as inpatients at Mae Sot
+General Hospital, Tak Province, Thailand, in 2000-2002 (Patients and methods;
+Table 1). Doses were taken with 250 mL of water and a standard hospital meal
+(20-25% fat). The 28-day cure rate was 22% (2/9 evaluable) with monotherapy and
+100% (12/12) with the combination (Results).
+
+```{r population, echo = FALSE}
+pop <- tibble::tribble(
+  ~Characteristic, ~`Fosmidomycin monotherapy (N = 15)`, ~`Fosmidomycin + clindamycin (N = 18)`,
+  "Age (years), median (95% CI)", "36 (19-45)", "29 (18-48)",
+  "Body weight (kg), median (95% CI)", "55 (42-67)", "56 (40-75)",
+  "Male / female", "11 / 4", "13 / 5",
+  "Thai / Karen / Burmese", "5 / 2 / 8", "10 / 3 / 5",
+  "Creatinine (mg/dL), median (95% CI)", "1.2 (0.9-1.8)", "1.1 (0.7-1.9)",
+  "Dose regimen", "fosmidomycin 1,200 mg q8h x 7 days", "fosmidomycin 900 mg + clindamycin 600 mg q12h x 7 days"
+)
+knitr::kable(pop, caption = "Baseline characteristics (Na-Bangchang 2007 Table 1).")
+```
+
+# Source trace
+
+Every parameter is fixed at the value printed in Table 3 ("median (%C.V)"
+columns). The model equations follow the Methods description of the ADAPT II
+model.
+
+```{r source-trace, echo = FALSE}
+trace <- tibble::tribble(
+  ~Item, ~`Monotherapy fosmidomycin`, ~`Combination fosmidomycin`, ~`Combination clindamycin`, ~Source,
+  "lka: K01 (1/h)", "1.27", "1.17", "3.99", "Table 3, 'K01 (/hr)'",
+  "lkel: K10 (1/h)", "0.20", "0.18", "0.22", "Table 3, 'K10 (/hr)'",
+  "lvc: Vz/F (L)", "214.00", "138.00", "84", "Table 3, 'Vz/F (l)'",
+  "ltlag: tlag (h)", "0.5", "0.6", "0.38", "Table 3, 'tlag (hr)'",
+  "propSd", "0 (fixed)", "0 (fixed)", "0 (fixed)", "not reported (individual ADAPT II fits)",
+  "cl = kel * vc", "derived", "derived", "derived", "Methods: CL/F = K10 x Vz/F for a one-compartment model",
+  "d/dt(depot) = -ka * depot; alag(depot) = tlag", "", "", "", "Methods: first-order absorption with lag time",
+  "d/dt(central) = ka * depot - kel * central", "", "", "", "Methods: one compartment, first-order elimination",
+  "Cc = central / vc (ug/mL from mg and L)", "", "", "", "Methods; Table 3 concentration units"
+)
+knitr::kable(trace, caption = "Source location of every parameter and equation.")
+```
+
+# Closed-form check against Table 3
+
+Table 3 also prints secondary parameters of the same fitted model: the
+single-dose Cmax and tmax, AUC0-inf, the absorption and elimination half-lives
+and CL/F. For a one-compartment model with first-order absorption and a lag
+they are closed-form functions of the four primary parameters, so recomputing
+them from the packaged values tests the transcription directly. The tolerance
+is 3%, because K10 is printed with two decimals, which alone moves AUC and the
+elimination half-life by up to 2%. The fosmidomycin half-lives are printed with
+one decimal and are checked to half a unit of that decimal instead.
+
+```{r closed-form}
+doses <- c(
+  NaBangchang_2007_fosmidomycin_monotherapy = 1200,
+  NaBangchang_2007_fosmidomycin_combination = 900,
+  NaBangchang_2007_clindamycin = 600
+)
+closed <- lapply(mod_names, function(nm) {
+  p <- uis[[nm]]$theta
+  ka <- exp(p[["lka"]])
+  kel <- exp(p[["lkel"]])
+  vc <- exp(p[["lvc"]])
+  tlag <- exp(p[["ltlag"]])
+  dose <- doses[[nm]]
+  tpk <- log(ka / kel) / (ka - kel)
+  data.frame(
+    model = nm,
+    cmax = dose / vc * ka / (ka - kel) * (exp(-kel * tpk) - exp(-ka * tpk)),
+    tmax = tpk + tlag,
+    aucinf = dose / (kel * vc),
+    thalf_abs = log(2) / ka,
+    thalf_el = log(2) / kel,
+    cl = kel * vc
+  )
+}) |>
+  dplyr::bind_rows()
+
+table3 <- tibble::tribble(
+  ~model, ~cmax, ~tmax, ~aucinf, ~thalf_abs, ~thalf_el, ~cl,
+  "NaBangchang_2007_fosmidomycin_monotherapy", 3.95, 2.24, 27.67, 0.5, 3.4, 433.66,
+  "NaBangchang_2007_fosmidomycin_combination", 4.06, 2.46, 35.59, 0.6, 3.8, 252.85,
+  "NaBangchang_2007_clindamycin", 5.98, 1.14, 31.9, 0.17, 3.11, 18.79
+)
+
+cmp_closed <- closed |>
+  tidyr::pivot_longer(-model, names_to = "parameter", values_to = "computed") |>
+  dplyr::left_join(
+    table3 |> tidyr::pivot_longer(-model, names_to = "parameter", values_to = "table3"),
+    by = c("model", "parameter")
+  ) |>
+  dplyr::mutate(pct_diff = 100 * (computed / table3 - 1))
+
+cmp_closed |>
+  dplyr::mutate(computed = signif(computed, 4), pct_diff = round(pct_diff, 1)) |>
+  dplyr::rename(
+    Model = model, Parameter = parameter, `Computed from K01/K10/Vz/F/tlag` = computed,
+    `Table 3` = table3, `% difference` = pct_diff
+  ) |>
+  knitr::kable(caption = "Table 3 secondary parameters recomputed from the packaged primary parameters.")
+```
+
+Every recomputed value matches Table 3 except two kinds of entry.
+
+The combination-arm fosmidomycin Cmax is 4.64 ug/mL from the printed K01, K10,
+Vz/F and tlag, against 4.06 in Table 3, although the AUC0-inf, tmax and
+half-lives of the same column agree. The first-dose peak of the predicted line
+in Figure 1(b) is about 4.5-4.6 ug/mL, which supports the parameters rather than
+the printed Cmax; the printed value is probably a transposition of 4.6x.
+
+The two fosmidomycin CL/F entries are exactly ten times the expected value.
+Table 3 prints
+433.66 and 252.85 L/h, but dose / AUC0-inf from the same table gives
+1200 / 27.67 = 43.37 and 900 / 35.59 = 25.29 L/h -- the printed values with the
+decimal point one place too far right (the clindamycin entry, 600 / 31.9 =
+18.81 L/h, is printed correctly). The models do not use the printed CL/F: they
+carry K10 and Vz/F, the parameters ADAPT II estimated, and CL/F is derived.
+
+```{r closed-form-assert}
+# The models have no random effects, so these are deterministic.
+is_misprint <- (cmp_closed$parameter == "cl" & cmp_closed$model != "NaBangchang_2007_clindamycin") |
+  (cmp_closed$parameter == "cmax" & cmp_closed$model == "NaBangchang_2007_fosmidomycin_combination")
+# Within 3%, or within half a unit of the last printed decimal for the
+# fosmidomycin half-lives, which Table 3 prints to one decimal (0.546 h -> 0.5).
+within_print <- abs(cmp_closed$pct_diff) < 3 |
+  (cmp_closed$parameter %in% c("thalf_abs", "thalf_el") & abs(cmp_closed$computed - cmp_closed$table3) <= 0.05)
+stopifnot(sum(is_misprint) == 3, all(within_print[!is_misprint]))
+# Combination fosmidomycin Cmax: 4.64 from the parameters vs 4.06 printed.
+combo_cmax <- dplyr::filter(cmp_closed, parameter == "cmax", model == "NaBangchang_2007_fosmidomycin_combination")
+stopifnot(abs(combo_cmax$computed - 4.64) < 0.01)
+# Fosmidomycin CL/F: Table 3 is ten-fold off; the corrected value is dose / AUC0-inf.
+fos_cl <- dplyr::filter(cmp_closed, parameter == "cl", model != "NaBangchang_2007_clindamycin")
+stopifnot(all(abs(fos_cl$computed / (fos_cl$table3 / 10) - 1) < 0.03))
+```
+
+# Replicating Figures 1 and 2
+
+Figures 1(a), 1(b) and 2 plot the model-predicted median concentration over the
+7-day regimen. The predicted lines were digitised by the maintainers from the
+article's figure images (steady-state peak and trough heights, read at pixel
+level from the plotted line); they are shown as dashed reference lines below.
+
+```{r sim-regimen}
+regimen <- tibble::tribble(
+  ~model, ~drug, ~arm, ~dose, ~ii, ~n_doses, ~figure,
+  "NaBangchang_2007_fosmidomycin_monotherapy", "fosmidomycin", "monotherapy", 1200, 8, 21, "Figure 1(a)",
+  "NaBangchang_2007_fosmidomycin_combination", "fosmidomycin", "combination", 900, 12, 14, "Figure 1(b)",
+  "NaBangchang_2007_clindamycin", "clindamycin", "combination", 600, 12, 14, "Figure 2"
+)
+
+sim_one <- function(i) {
+  r <- regimen[i, ]
+  ev <- rxode2::et(amt = r$dose, ii = r$ii, addl = r$n_doses - 1, cmt = "depot") |>
+    rxode2::et(seq(0, 200, by = 0.1), cmt = "central")
+  as.data.frame(rxode2::rxSolve(uis[[r$model]], ev, returnType = "data.frame")) |>
+    dplyr::mutate(id = i, model = r$model, figure = r$figure, treatment = paste(r$drug, r$arm))
+}
+sim_md <- dplyr::bind_rows(lapply(seq_len(nrow(regimen)), sim_one))
+
+# Steady-state peak and trough of the last full dosing interval.
+ss <- sim_md |>
+  dplyr::left_join(regimen |> dplyr::select(model, ii, n_doses), by = "model") |>
+  dplyr::filter(time >= ii * (n_doses - 2), time <= ii * (n_doses - 1)) |>
+  dplyr::group_by(model, figure) |>
+  dplyr::summarise(peak = max(Cc), trough = min(Cc[time > ii * (n_doses - 2) + 1]), .groups = "drop")
+
+digitised <- tibble::tribble(
+  ~figure, ~peak_fig, ~trough_fig,
+  "Figure 1(a)", 4.9, 1.9,
+  "Figure 1(b)", 5.2, 1.15,
+  "Figure 2", 8.6, 1.0
+)
+fig_cmp <- dplyr::left_join(ss, digitised, by = "figure") |>
+  dplyr::mutate(
+    peak_pct = 100 * (peak / peak_fig - 1),
+    trough_pct = 100 * (trough / trough_fig - 1)
+  )
+fig_cmp |>
+  dplyr::mutate(dplyr::across(c(peak, trough, peak_pct, trough_pct), \(x) round(x, 2))) |>
+  dplyr::select(figure, peak, peak_fig, peak_pct, trough, trough_fig, trough_pct) |>
+  dplyr::rename(
+    Figure = figure, `Simulated peak` = peak, `Figure peak` = peak_fig, `Peak % diff` = peak_pct,
+    `Simulated trough` = trough, `Figure trough` = trough_fig, `Trough % diff` = trough_pct
+  ) |>
+  knitr::kable(caption = "Steady-state peak and trough (ug/mL): typical-value simulation vs. digitised predicted line.")
+```
+
+```{r fig-replicate, fig.height = 7}
+ggplot(sim_md, aes(time, Cc)) +
+  geom_line(colour = "steelblue") +
+  geom_hline(
+    data = tidyr::pivot_longer(digitised, -figure, values_to = "conc"),
+    aes(yintercept = conc), linetype = "dashed", colour = "firebrick"
+  ) +
+  facet_wrap(~figure, ncol = 1, scales = "free_y") +
+  labs(
+    x = "Time (h)", y = "Plasma concentration (ug/mL)",
+    caption = "Replicates Figures 1(a), 1(b) and 2 of Na-Bangchang 2007. Dashed: digitised steady-state peak and trough of the published predicted line."
+  ) +
+  theme_bw()
+```
+
+```{r fig-assert}
+fos <- dplyr::filter(fig_cmp, figure != "Figure 2")
+# Figures 1(a) and 1(b) are reproduced by the Table 3 fosmidomycin parameters
+# within the digitising error (a few percent).
+stopifnot(nrow(fos) == 2, all(abs(fos$peak_pct) < 10), all(abs(fos$trough_pct) < 10))
+```
+
+Figures 1(a) and 1(b) are reproduced: the simulated fosmidomycin peaks and
+troughs fall on the published lines in both arms. Figure 2 is not reproduced:
+the simulated clindamycin peaks are about a quarter lower and the troughs about
+a third lower than the plotted line. Figure 2 cannot have been drawn with the Table 3
+clindamycin volume. At steady state each dose raises the concentration by at
+most dose / (Vz/F) = 600 / 84 = 7.1 ug/mL, and less once elimination during
+absorption is counted. The plotted line rises from about 1.0 to about
+8.6 ug/mL, a rise of 7.6 ug/mL:
+
+```{r fig2-bound}
+max_rise <- 600 / exp(uis[["NaBangchang_2007_clindamycin"]]$theta[["lvc"]])
+fig2_rise <- digitised$peak_fig[digitised$figure == "Figure 2"] - digitised$trough_fig[digitised$figure == "Figure 2"]
+c(max_rise_with_table3_volume = max_rise, rise_in_figure_2 = fig2_rise)
+stopifnot(fig2_rise > max_rise)
+```
+
+The figures plot the prediction for the *median* concentrations, and Figure 2
+was probably drawn from a fit to those medians rather than from the median
+individual parameters of Table 3. The non-compartmental clindamycin Vz/F in
+Table 2 (67.5 L) is also smaller than the Table 3 value. The packaged models
+keep the Table 3 values; the figures were not used to adjust them.
+
+# PKNCA validation
+
+Table 2 reports a non-compartmental analysis of the observed data: after the
+first dose in the monotherapy arm and after the last (14th) dose on day 7 in
+the combination arm. The typical-value simulation is analysed the same way:
+a single 1,200 mg dose for monotherapy (to obtain AUC0-inf, CL/F and Vz/F
+without the next dose) and the full 7-day regimen for the combination arm with
+the interval after the last dose at 156 h.
+
+```{r pknca}
+ev_mono <- rxode2::et(amt = 1200, cmt = "depot") |>
+  rxode2::et(c(0, seq(0.25, 72, by = 0.25)), cmt = "central")
+sim_mono <- as.data.frame(rxode2::rxSolve(uis[["NaBangchang_2007_fosmidomycin_monotherapy"]], ev_mono, returnType = "data.frame")) |>
+  dplyr::mutate(id = 1L, treatment = "fosmidomycin monotherapy")
+
+sim_combo <- sim_md |>
+  dplyr::filter(model != "NaBangchang_2007_fosmidomycin_monotherapy")
+
+conc_df <- dplyr::bind_rows(sim_mono, sim_combo) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+conc_df <- dplyr::bind_rows(
+  conc_df,
+  conc_df |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(treatment, id, time)
+
+dose_df <- dplyr::bind_rows(
+  data.frame(id = 1L, time = 0, amt = 1200, treatment = "fosmidomycin monotherapy"),
+  data.frame(id = 2L, time = seq(0, 156, by = 12), amt = 900, treatment = "fosmidomycin combination"),
+  data.frame(id = 3L, time = seq(0, 156, by = 12), amt = 600, treatment = "clindamycin combination")
+)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- dplyr::bind_rows(
+  data.frame(
+    treatment = "fosmidomycin monotherapy", start = 0, end = Inf,
+    cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE, vz.obs = TRUE
+  ),
+  data.frame(
+    treatment = c("fosmidomycin combination", "clindamycin combination"), start = 156, end = 180,
+    cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
+  )
+)
+intervals[is.na(intervals)] <- FALSE
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published NCA (Table 2)
+
+Table 2 reports medians of the individual NCA results; the typical-value
+simulation is compared with those medians. tmax is measured from the dose. The
+monotherapy AUC0,t is not compared: the paper does not say over which interval
+it was taken after the first dose. The combination-arm CL/F and Vz/F are not
+compared either: they were computed from the AUC after the last dose
+extrapolated to infinity, which also contains the earlier doses still being
+eliminated.
+
+```{r nca-compare}
+sim_long <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "aucinf.obs", "half.life", "cl.obs", "vz.obs")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES)
+
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax, ~auclast, ~aucinf.obs, ~half.life, ~cl.obs, ~vz.obs,
+  "fosmidomycin monotherapy", 4.58, 2, NA, 29.7, 3.4, 40.08, 211.40,
+  "fosmidomycin combination", 5.86, 2, 35.00, NA, 3.5, NA, NA,
+  "clindamycin combination", 7.34, 1, 31.80, NA, 2.6, NA, NA
+)
+published_cells <- published |>
+  tidyr::pivot_longer(-treatment, names_to = "PPTESTCD", values_to = "ref") |>
+  dplyr::filter(!is.na(ref)) |>
+  dplyr::select(treatment, PPTESTCD)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = dplyr::semi_join(sim_long, published_cells, by = c("treatment", "PPTESTCD")),
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ug/mL", tmax = "h", auclast = "ug*h/mL", aucinf.obs = "ug*h/mL", half.life = "h", cl.obs = "L/h", vz.obs = "L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated typical patient vs. Na-Bangchang 2007 Table 2 (medians). * differs from the reference by more than 20%.")
+```
+
+```{r nca-assert}
+exposure <- sim_long |>
+  dplyr::inner_join(
+    published |> tidyr::pivot_longer(-treatment, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("treatment", "PPTESTCD")
+  ) |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "aucinf.obs", "cl.obs", "half.life"), !is.na(ref))
+# Exposure and elimination are what a mis-transcribed K10 or Vz/F would move;
+# the typical-value model has no random effects, so these are deterministic.
+stopifnot(nrow(exposure) == 7, all(abs(exposure$PPORRES / exposure$ref - 1) < 0.25))
+```
+
+The monotherapy AUC0-inf, CL/F, Vz/F and half-life of the typical patient lie
+within 7% of the Table 2 medians, which come from a separate
+(non-compartmental) analysis of the same patients. After the last combination
+dose the simulated AUC over 156-180 h is 10-19% above the Table 2 AUC0,t; the
+simulated value includes the tail of the earlier doses, which exceeds the
+steady-state AUC over one interval (dose / CL/F = 36.2 and 32.5 ug*h/mL), and
+Table 2 does not say over which window its AUC0,t was taken. The clindamycin
+half-life is flagged: the model's 3.15 h follows from K10 = 0.22 /h (Table 3
+also prints 3.11 h), whereas the non-compartmental lambda-z in Table 2
+(0.272 /h) gives 2.6 h, so the paper's two analyses disagree by the same
+margin.
+
+Cmax is 9-13% lower than the observed median in every arm. The observed Cmax
+is the highest measured concentration in each patient, and its median exceeds
+the peak of the median patient; the paper's own compartmental Cmax (Table 3:
+3.95 and 5.98 ug/mL for monotherapy fosmidomycin and clindamycin) is lower than
+its NCA Cmax by a similar margin.
+
+# Assumptions and deviations
+
+* **Typical-value models.** The source reports only medians of the ADAPT II
+  parameters per arm, so the models carry no between-subject variability. The
+  "%C.V" printed beside each median in Table 3 is not used: values such as 0.1%
+  for the clindamycin K10 and 2.5% for the combination fosmidomycin K01 are not
+  plausible between-patient variability, and the paper does not say what the
+  column measures.
+* **No residual error.** No residual-error model is reported; `propSd` is fixed
+  at 0.
+* **Fosmidomycin CL/F in Table 3 is ten-fold too high.** 433.66 and 252.85 L/h
+  are printed where dose / AUC0-inf from the same table gives 43.37 and
+  25.29 L/h. The models carry K10 and Vz/F and derive CL/F = K10 x Vz/F, so the
+  misprint does not enter them.
+* **Combination fosmidomycin Cmax in Table 3 is inconsistent.** The printed
+  4.06 ug/mL does not follow from the printed K01, K10, Vz/F and tlag (4.64);
+  the other secondary parameters in that column, and the first peak in
+  Figure 1(b), agree with the parameters, which the model uses.
+* **Figure 2 does not match Table 3.** The clindamycin line in Figure 2 rises by
+  more per dose than Vz/F = 84 L allows; it was probably drawn from a different
+  fit. The packaged model follows Table 3.
+* **Separate fosmidomycin files per arm.** The arms differ in dose, regimen,
+  study day of characterisation and co-medication; the authors did not
+  attribute the smaller Vz/F and CL/F of the combination arm to clindamycin, so
+  no interaction term is modelled.
+* **Bioavailability.** All volumes and clearances are apparent (divided by an
+  unknown F); the Methods assume F = 1 for the steady-state calculations.
+* **Food.** Every dose was taken with a standard hospital meal; the parameters
+  apply to fed administration.
+* **Errata.** No erratum or correction to the article was found on Europe PMC
+  (checked 2026-11-19).

@@ -35,6 +35,7 @@ Dhondt_2017_mavacoxib_cockatiel_oral_std <- function() {
     dosing = "ug",
     concentration = "ng/mL"
   )
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "mavacoxib", units = "ug", specimen = "administration site", verified = TRUE),

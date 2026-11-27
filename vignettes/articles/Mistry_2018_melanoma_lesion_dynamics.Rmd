@@ -1,0 +1,448 @@
+---
+title: "Vemurafenib, dabrafenib and trametinib lesion dynamics in melanoma (Mistry 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vemurafenib, dabrafenib and trametinib lesion dynamics in melanoma (Mistry 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Mistry_2018_vemurafenib_tumor"))$reference`
+* Article: <https://doi.org/10.1007/s00280-017-3486-3> (open access, PMC5778167)
+* Supplement: Electronic Supplementary Material 1 (model-development Tables S1-S3
+  and the final parameter Table S4).
+
+Mistry, Orrell and Eftimie fitted the same piecewise-linear mixed-effects model
+separately to the target-lesion data of three phase III trials in BRAF-mutant
+metastatic melanoma: the vemurafenib arm of BRIM-3, the dabrafenib arm of
+BREAK-3 and the trametinib arm of METRIC. The three fits are independent, so the
+package ships one model per drug:
+
+```{r models}
+drugs <- c("vemurafenib", "dabrafenib", "trametinib")
+model_names <- paste0("Mistry_2018_", drugs, "_tumor")
+mods <- lapply(model_names, function(nm) rxode2::rxode(readModelDb(nm)))
+names(mods) <- drugs
+for (d in drugs) cat(d, ":", mods[[d]]$description, "\n\n")
+```
+
+## Structure
+
+Following Mayneord, the authors argue that a tumour grows from a thin
+proliferating rim, so its radius (and longest diameter) changes linearly in
+time rather than exponentially. Each lesion's longest diameter L is modelled as
+
+* L = BSL + d t, for t < sp
+* L = BSL + d sp + g t, for t >= sp
+
+with baseline diameter BSL, shrinkage slope d, regrowth slope g (mm/day), and a
+population switch time sp = 63 days shared by all three drugs. log(BSL), d and g
+each carry two independent normal random effects: a between-patient (BP) effect
+shared by all lesions of a patient and a within-patient (WP) effect specific to
+each lesion. For vemurafenib the variance of g shrank to zero during model
+development, so g is a fixed effect only.
+
+In the packaged models the patient is the rxode2 `ID` and the lesion is the
+`LESION` column. The BP etas (`etalrbase`, `etaslope_shrink`,
+`etaslope_regrow`) are ordinary subject-level etas; the WP etas
+(`etalrbase_lesion`, ...) are declared `~ var | LESION`, which gives every lesion
+of every patient its own draw. The observation `tumor_size` is the longest
+diameter of a single lesion in mm.
+
+# Population
+
+The analysis population is the patients of each phase III arm whose first
+on-treatment scan (week 6) showed stable disease, partial or complete response:
+203 on vemurafenib, 165 on dabrafenib and 157 on trametinib (Mistry 2018 Table
+1). The authors restricted the analysis to RECIST target lesions and refer to the
+original trial publications (Chapman 2011, Hauschild 2012, Flaherty 2012) for
+demographics, which this paper does not tabulate. Baseline sum of longest
+diameters (SLD) had medians of 72, 62 and 64 mm, and the week-6 objective
+response rate in the analysis population was 60%, 63% and 29%. About 80% of
+patients had more than one target lesion (Figure 3).
+
+```{r population}
+str(readModelDb("Mistry_2018_dabrafenib_tumor")()$population)
+```
+
+# Source trace
+
+| Equation / parameter | Vemurafenib | Dabrafenib | Trametinib | Source location |
+|---|---|---|---|---|
+| Piecewise-linear lesion model | | | | Methods, equations for L_ijk |
+| `lrbase` (mean log BSL, log mm) | 3.38 | 3.25 | 3.22 | Table S4, log(BSL) mean |
+| `etalrbase` (BP variance) | 0.41^2 | 0.26^2 | 0.26^2 | Table S4, log(BSL) s.d. (BP) |
+| `etalrbase_lesion` (WP variance) | 0.34^2 | 0.40^2 | 0.42^2 | Table S4, log(BSL) s.d. (WP) |
+| `slope_shrink` (d, mm/day) | -0.26 | -0.24 | -0.13 | Table S4, d mean |
+| `etaslope_shrink` (BP variance) | 0.38^2 | 0.11^2 | 0.09^2 | Table S4, d s.d. (BP) |
+| `etaslope_shrink_lesion` (WP variance) | 0.32^2 | 0.11^2 | 0.13^2 | Table S4, d s.d. (WP) |
+| `slope_regrow` (g, mm/day) | 0.02 | 0.06 | 0.05 | Table S4, g mean |
+| `etaslope_regrow` (BP variance) | none | 0.09^2 | 0.12^2 | Table S4, g s.d. (BP); NA for vemurafenib |
+| `etaslope_regrow_lesion` (WP variance) | none | 0.07^2 | 0.03^2 | Table S4, g s.d. (WP); NA for vemurafenib |
+| `tregrow` (sp, day) | 63 (fixed) | 63 (fixed) | 63 (fixed) | Table S4 SP; Methods (grid 63 / 116 / 179); Tables S1-S3 |
+| `addSd` (mm) | 0 (fixed) | 0 (fixed) | 0 (fixed) | not reported (see Assumptions) |
+| Final model | Table S1 Model 16 | Table S2 Model 8 | Table S3 Model 8 | Supplement |
+
+# Between- and within-patient variability (Figure 5)
+
+Figure 5 of the paper plots the coefficient of variation (s.d. divided by the
+mean) of the shrinkage and regrowth slopes. Recomputing it from the packaged
+`ini()` values checks that the Table S4 standard deviations were entered as
+variances on the right parameters. The reference values are the point estimates
+read off Figure 5.
+
+```{r fig5}
+cv_from_model <- function(mod, eta, theta) {
+  om <- mod$omega
+  v <- if (eta %in% rownames(om$id)) om$id[eta, eta] else om$LESION[eta, eta]
+  100 * sqrt(v) / abs(mod$theta[[theta]])
+}
+fig5 <- tibble::tribble(
+  ~drug, ~slope, ~level, ~eta, ~theta, ~cv_fig5,
+  "vemurafenib", "shrinkage", "between patient", "etaslope_shrink", "slope_shrink", 146,
+  "vemurafenib", "shrinkage", "within patient", "etaslope_shrink_lesion", "slope_shrink", 122,
+  "dabrafenib", "shrinkage", "between patient", "etaslope_shrink", "slope_shrink", 46,
+  "dabrafenib", "shrinkage", "within patient", "etaslope_shrink_lesion", "slope_shrink", 46,
+  "trametinib", "shrinkage", "between patient", "etaslope_shrink", "slope_shrink", 69,
+  "trametinib", "shrinkage", "within patient", "etaslope_shrink_lesion", "slope_shrink", 99,
+  "dabrafenib", "regrowth", "between patient", "etaslope_regrow", "slope_regrow", 154,
+  "dabrafenib", "regrowth", "within patient", "etaslope_regrow_lesion", "slope_regrow", 113,
+  "trametinib", "regrowth", "between patient", "etaslope_regrow", "slope_regrow", 249,
+  "trametinib", "regrowth", "within patient", "etaslope_regrow_lesion", "slope_regrow", 60
+)
+fig5$cv_model <- mapply(
+  function(d, e, th) cv_from_model(mods[[d]], e, th),
+  fig5$drug, fig5$eta, fig5$theta
+)
+fig5 |>
+  mutate(cv_model = round(cv_model, 1)) |>
+  dplyr::select(drug, slope, level, cv_fig5, cv_model) |>
+  dplyr::rename(
+    "Drug" = drug, "Slope" = slope, "Level" = level,
+    "CV read off Figure 5 (%)" = cv_fig5, "CV from model (%)" = cv_model
+  ) |>
+  knitr::kable()
+
+# Deterministic: the CVs follow from Table S4 by arithmetic, so only the
+# reading precision of Figure 5 (a few percent) separates the two columns.
+# An SD entered as a variance (or the reverse) would miss by a factor.
+stopifnot(all(abs(fig5$cv_model / fig5$cv_fig5 - 1) < 0.06))
+# Shrinkage-slope variability: vemurafenib > trametinib > dabrafenib.
+cv_bp <- with(subset(fig5, slope == "shrinkage" & level == "between patient"), setNames(cv_model, drug))
+stopifnot(cv_bp[["vemurafenib"]] > cv_bp[["trametinib"]], cv_bp[["trametinib"]] > cv_bp[["dabrafenib"]])
+# Vemurafenib carries no random effect on the regrowth slope.
+stopifnot(!any(grepl("regrow", c(rownames(mods$vemurafenib$omega$id), rownames(mods$vemurafenib$omega$LESION)))))
+```
+
+The model reproduces the ordering the paper reports: shrinkage-slope variability
+is largest for vemurafenib, then trametinib, then dabrafenib.
+
+# Typical lesion trajectories
+
+The typical-value lesion (all random effects zero) starts at exp(`lrbase`) mm.
+Because the published regrowth arm is `d sp + g t` rather than
+`d sp + g (t - sp)`, the trajectory steps up by g x 63 mm at day 63 (1.3, 3.8 and
+3.2 mm for the three drugs). The dashed line shows the continuous alternative
+for comparison only; the packaged model follows the printed equation.
+
+```{r typical}
+lesion_events <- function(n_les, times) {
+  tidyr::crossing(id = 1L, LESION = seq_len(n_les), time = times) |>
+    mutate(evid = 0L) |>
+    arrange(id, time, LESION)
+}
+times_fine <- seq(0, 280, by = 1)
+typ <- bind_rows(lapply(drugs, function(d) {
+  s <- rxode2::rxSolve(
+    rxode2::zeroRe(mods[[d]]),
+    lesion_events(2L, times_fine),
+    returnType = "data.frame"
+  )
+  s |> filter(LESION == 1) |> mutate(drug = d)
+}))
+th <- bind_rows(lapply(drugs, function(d) {
+  tibble(
+    drug = d, bsl = exp(mods[[d]]$theta[["lrbase"]]),
+    dd = mods[[d]]$theta[["slope_shrink"]], gg = mods[[d]]$theta[["slope_regrow"]]
+  )
+}))
+hinge <- tidyr::crossing(th, time = times_fine) |>
+  mutate(ld_hinge = bsl + dd * pmin(time, 63) + gg * pmax(time - 63, 0))
+
+ggplot(typ, aes(time, tumor_size, colour = drug)) +
+  geom_line(linewidth = 1) +
+  geom_line(data = hinge, aes(time, ld_hinge, colour = drug), linetype = "dashed") +
+  geom_vline(xintercept = 63, linetype = "dotted") +
+  labs(
+    x = "Time since start of treatment (day)",
+    y = "Typical lesion longest diameter (mm)",
+    colour = NULL,
+    caption = "Solid: packaged model (printed equation). Dashed: continuous-hinge alternative."
+  ) +
+  theme_bw()
+```
+
+The typical-lesion percentage change at the week-6 scan (day 42) can be set
+against the median percentage change in SLD in Table 1. The two are not the same
+statistic (one lesion versus a patient's sum), but with a linear model and a
+median patient they should agree to a few percentage points.
+
+```{r typical-week6}
+wk6_typ <- typ |>
+  group_by(drug) |>
+  summarise(
+    pct = 100 * (tumor_size[time == 42] / tumor_size[time == 0] - 1),
+    .groups = "drop"
+  ) |>
+  left_join(
+    tibble(drug = drugs, pct_table1 = c(-34, -39, -18)),
+    by = "drug"
+  ) |>
+  mutate(drug = factor(drug, levels = drugs)) |>
+  arrange(drug)
+wk6_typ |>
+  mutate(pct = round(pct, 1)) |>
+  dplyr::rename(
+    "Drug" = drug,
+    "Typical lesion change at day 42 (%)" = pct,
+    "Table 1 median SLD change at week 6 (%)" = pct_table1
+  ) |>
+  knitr::kable()
+
+# Deterministic typical-value solve: a mis-transcribed baseline or slope moves
+# this by tens of percentage points.
+stopifnot(all(abs(wk6_typ$pct - wk6_typ$pct_table1) < 5))
+```
+
+# Virtual cohort
+
+Each arm is simulated with the number of target lesions per patient taken from
+Figure 3 of the paper. The vemurafenib arm (203 patients) is thinned
+evenly to 200 patients to keep within the vignette's per-arm cohort cap,
+preserving the lesion-count distribution. Imaging visits are the on-treatment
+visits named in the Methods (days 42, 84, 147 and 210) plus baseline.
+
+```{r cohort}
+lesion_counts <- list(
+  # Figure 3: number of patients with 1, 2, 3, 4, 5, (6), 7 target lesions
+  vemurafenib = c(39, 55, 40, 47, 21, 0, 1),
+  dabrafenib = c(34, 56, 29, 26, 20),
+  trametinib = c(31, 42, 34, 23, 27)
+)
+visits <- c(0, 42, 84, 147, 210)
+
+make_cohort <- function(counts, n_max = 200L) {
+  n_les <- rep(seq_along(counts), counts)
+  if (length(n_les) > n_max) {
+    n_les <- n_les[round(seq(1, length(n_les), length.out = n_max))]
+  }
+  tibble(id = seq_along(n_les), n_les = n_les) |>
+    rowwise() |>
+    reframe(id = id, LESION = seq_len(n_les)) |>
+    tidyr::crossing(time = visits) |>
+    mutate(evid = 0L) |>
+    arrange(id, time, LESION)
+}
+
+rxode2::rxSetSeed(2018)
+sim <- bind_rows(lapply(drugs, function(d) {
+  ev <- make_cohort(lesion_counts[[d]])
+  s <- rxode2::rxSolve(mods[[d]], ev, omega = mods[[d]]$omega, returnType = "data.frame")
+  s |> mutate(drug = d)
+}))
+# Every lesion of a patient carries its own draw of the lesion-level etas (the
+# drugs reuse the patient ids, so each drug is checked on its own).
+nlmixr2lib:::assertDrawsPerLevel(
+  dplyr::filter(sim, drug == "dabrafenib"),
+  eta = c("etalrbase_lesion", "etaslope_shrink_lesion", "etaslope_regrow_lesion"), by = "LESION"
+)
+nlmixr2lib:::assertDrawsPerLevel(
+  dplyr::filter(sim, drug == "trametinib"),
+  eta = c("etalrbase_lesion", "etaslope_shrink_lesion", "etaslope_regrow_lesion"), by = "LESION"
+)
+nlmixr2lib:::assertDrawsPerLevel(
+  dplyr::filter(sim, drug == "vemurafenib"),
+  eta = c("etalrbase_lesion", "etaslope_shrink_lesion"), by = "LESION"
+)
+sim |>
+  distinct(drug, id) |>
+  count(drug, name = "patients") |>
+  knitr::kable()
+```
+
+# Individual lesion time courses (Figure 2)
+
+Figure 2 of the paper shows the individual longest diameters of all lesions at
+each imaging visit. The packaged model is linear in time, so a lesion with a
+small baseline and a steep shrinkage slope can be predicted below zero; those
+predictions are shown at 0 mm, the value a disappeared lesion is recorded as.
+
+```{r fig2}
+sim |>
+  mutate(ild = pmax(tumor_size, 0), drug = factor(drug, levels = drugs)) |>
+  ggplot(aes(time, ild)) +
+  geom_jitter(width = 4, height = 0, alpha = 0.3, shape = 1) +
+  facet_wrap(~drug) +
+  labs(x = "Days", y = "ILD (mm)") +
+  theme_bw()
+```
+
+# Week-6 response (Table 1)
+
+Patient SLD is the sum over that patient's simulated lesions (negative
+predictions set to 0 mm). The objective response at week 6 is a decrease of SLD
+by at least 30% from baseline (RECIST partial or complete response).
+
+```{r table1}
+sld <- sim |>
+  mutate(ld = pmax(tumor_size, 0)) |>
+  group_by(drug, id, time) |>
+  summarise(sld = sum(ld), .groups = "drop") |>
+  group_by(drug, id) |>
+  mutate(pct = 100 * (sld / sld[time == 0] - 1)) |>
+  ungroup()
+
+tab1 <- sld |>
+  group_by(drug) |>
+  summarise(
+    sld0_med = median(sld[time == 0]),
+    sld0_q25 = quantile(sld[time == 0], 0.25),
+    sld0_q75 = quantile(sld[time == 0], 0.75),
+    pct_med = median(pct[time == 42]),
+    pct_q25 = quantile(pct[time == 42], 0.25),
+    pct_q75 = quantile(pct[time == 42], 0.75),
+    orr = 100 * mean(pct[time == 42] <= -30),
+    pd = 100 * mean(pct[time == 42] >= 20),
+    .groups = "drop"
+  ) |>
+  left_join(
+    tibble(
+      drug = drugs,
+      sld0_pub = c("72 (39, 122)", "62 (34, 100)", "64 (32, 106)"),
+      sld0_pub_med = c(72, 62, 64),
+      pct_pub = c("-34 (-47, -21)", "-39 (-53, -22)", "-18 (-31, -4)"),
+      pct_pub_med = c(-34, -39, -18),
+      orr_pub = c(60, 63, 29)
+    ),
+    by = "drug"
+  ) |>
+  mutate(drug = factor(drug, levels = drugs)) |>
+  arrange(drug)
+
+tab1 |>
+  mutate(
+    sld0_sim = sprintf("%.0f (%.0f, %.0f)", sld0_med, sld0_q25, sld0_q75),
+    pct_sim = sprintf("%.0f (%.0f, %.0f)", pct_med, pct_q25, pct_q75),
+    orr_sim = round(orr),
+    pd_sim = round(pd)
+  ) |>
+  dplyr::select(drug, sld0_pub, sld0_sim, pct_pub, pct_sim, orr_pub, orr_sim, pd_sim) |>
+  dplyr::rename(
+    "Drug" = drug,
+    "Baseline SLD, Table 1 (mm)" = sld0_pub,
+    "Baseline SLD, simulated (mm)" = sld0_sim,
+    "Week-6 SLD change, Table 1 (%)" = pct_pub,
+    "Week-6 SLD change, simulated (%)" = pct_sim,
+    "Week-6 ORR, Table 1 (%)" = orr_pub,
+    "Week-6 ORR, simulated (%)" = orr_sim,
+    "Week-6 SLD increase >= 20%, simulated (%)" = pd_sim
+  ) |>
+  knitr::kable()
+
+pct_bound <- c(vemurafenib = 22, dabrafenib = 12, trametinib = 12)
+stopifnot(
+  # Baseline SLD centre: lesion-count distribution x baseline-diameter model.
+  # Across 40 random cohorts the simulated median ran 2% below to 29% above
+  # Table 1; a baseline entered on the wrong scale misses by far more.
+  all(abs(tab1$sld0_med / tab1$sld0_pub_med - 1) < 0.4),
+  # Week-6 response centre. Vemurafenib's shrinkage-slope variance is large,
+  # so its cohort median moved from 11 points below to 17 points above Table 1
+  # across 40 random cohorts of 200 (dabrafenib and trametinib within 9
+  # points). The tight check is the deterministic typical-lesion comparison
+  # above; this one catches a slope off by a factor.
+  all(abs(tab1$pct_med - tab1$pct_pub_med) < pct_bound[as.character(tab1$drug)]),
+  # Trametinib shrinks least: at least 9 points above dabrafenib in every one
+  # of the 40 cohorts.
+  tab1$pct_med[tab1$drug == "trametinib"] > tab1$pct_med[tab1$drug == "dabrafenib"] + 3
+)
+```
+
+The medians of baseline SLD and of the week-6 SLD change are in the range of
+Table 1 for all three drugs; the simulated baseline SLD tends to run somewhat
+above the published median. The cohort median for vemurafenib varies most
+between random cohorts. For vemurafenib in particular, the simulated spread of
+the week-6 change is wider than published, and some simulated patients have an
+SLD increase of 20% or more at week 6. The analysis population excluded patients
+with progressive disease at the first scan, so the observed data cannot contain
+such patients; the model, fitted with unrestricted normal slopes, does not
+impose this selection. This is a property of the published model, not a
+transcription issue.
+
+# Shrinkage versus regrowth slopes (Figure 6)
+
+Figure 6 plots the individual decay and regrowth rates of each lesion for
+trametinib and dabrafenib and finds no correlation. Because the published
+random effects are independent, the simulated lesion-level slopes are
+uncorrelated by construction. The simulated spread is wider than in Figure 6,
+which shows shrunken empirical Bayes estimates.
+
+```{r fig6}
+sim |>
+  filter(drug != "vemurafenib", time == 0) |>
+  mutate(drug = factor(drug, levels = c("trametinib", "dabrafenib"))) |>
+  ggplot(aes(slope_regrow_i, slope_shrink_i)) +
+  geom_point(shape = 1, alpha = 0.5) +
+  facet_wrap(~drug, scales = "free") +
+  labs(x = "Re-growth rate (mm/day)", y = "Decay rate (mm/day)") +
+  theme_bw()
+```
+
+# NCA
+
+The model has no pharmacokinetic component: drug exposure is not an input, and
+the treatment effect is absorbed into the empirical slopes. A PKNCA analysis
+therefore does not apply. The validation above uses the paper's own summary
+statistics (Table 1, Figures 3 and 5) instead.
+
+# Assumptions and deviations
+
+* **Regrowth arm as printed.** Both equations for L in the Methods give the
+  regrowth arm as `BSL + d sp + g t`, not `BSL + d sp + g (t - sp)`, so the
+  model has a step of `g sp` (1.3-3.8 mm for a typical lesion) at day 63. The
+  printed equation is followed. The second equation writes the switch time as
+  `s_ij`, but the text states that sp could not vary across lesions and was
+  chosen from a grid, so a single fixed `tregrow` is used.
+* **Residual error not reported.** The model includes an additive residual
+  error e_ijk, but its standard deviation appears nowhere in the article or the
+  supplement. `addSd` is fixed to 0, so simulations are of the individual
+  predicted diameters. Add a residual error before using the model to fit data.
+* **Negative diameters.** Like the published model, the packaged model places
+  no floor on the predicted diameter. The vignette sets negative predictions to
+  0 mm when computing SLD; the model output itself is left unmodified.
+* **Switch time fixed.** sp = 63 days was chosen from the grid 63 / 116 / 179
+  days by log-likelihood and is encoded as `fixed()`.
+* **Nesting column.** The patient is the rxode2 `ID` and the lesion is the
+  `LESION` column, which rxode2 uses only as the nesting level of the
+  within-patient random effects. An event table must contain at least two
+  distinct `LESION` values.
+* **Table 1 ILD.** Table 1 reports a median individual longest diameter of
+  17-21 mm, below the exp(`lrbase`) of 25-29 mm and the simulated baseline lesion
+  median. The table does not say at which visits ILD was summarised; the
+  baseline SLD is close to the simulation, so the ILD row was not used as
+  a validation target.
+* **Dosing.** The paper does not state the doses of the three trials, and dose
+  is not a model input.
+* **Cohort thinning.** The vemurafenib cohort was thinned from 203 to 200
+  patients for the vignette's cohort cap.

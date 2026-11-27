@@ -1,0 +1,664 @@
+---
+title: "Cofetuzumab pelidotin conjugate, Aur0101 payload and exposure-response (Biesdorf 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cofetuzumab pelidotin conjugate, Aur0101 payload and exposure-response (Biesdorf 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5, message = FALSE)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+rxode2::rxSetProgressBar(FALSE)
+
+# Typical-value (zeroRe) and logistic models carry no omega; rxSolve warns
+# about that for multi-subject event tables, which is expected here.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+solve_quiet <- function(...) {
+  withCallingHandlers(rxode2::rxSolve(...), warning = muffle_no_omega)
+}
+```
+
+# Source and models
+
+```{r models, include = FALSE}
+mod_adc <- readModelDb("Biesdorf_2026_cofetuzumabPelidotin")
+mod_pay <- readModelDb("Biesdorf_2026_cofetuzumabPelidotin_aur0101")
+mod_orr <- readModelDb("Biesdorf_2026_cofetuzumabPelidotin_orr")
+mod_cbr6 <- readModelDb("Biesdorf_2026_cofetuzumabPelidotin_clinical_benefit_6mo")
+mod_neut <- readModelDb("Biesdorf_2026_cofetuzumabPelidotin_neutropenia_grade3")
+mod_pn <- readModelDb("Biesdorf_2026_cofetuzumabPelidotin_neuropathy_grade2")
+mod_rash <- readModelDb("Biesdorf_2026_cofetuzumabPelidotin_rash_grade2")
+meta_adc <- rxode2::rxode2(mod_adc)$meta
+```
+
+* Citation: `r meta_adc$reference`
+* Article (open access): <https://doi.org/10.1002/cpt.70432>
+* PubMed Central: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC13473755/>
+* Supplementary Information (Data S1; Tables S1-S5 and Figures S1-S4):
+  distributed with the open-access article.
+
+Biesdorf 2026 analysed cofetuzumab pelidotin (Cofe-P, ABBV-647, PF-06647020), an
+anti-PTK7 antibody-drug conjugate carrying the auristatin payload Aur0101, to
+choose doses for dose optimisation in non-small cell lung cancer (NSCLC). The
+paper fits **seven** models separately, and this package carries each as its
+own file:
+
+| Model file | What it describes | Source |
+|---|---|---|
+| `Biesdorf_2026_cofetuzumabPelidotin` | Conjugate (ADC) popPK, two compartments | Table 1 |
+| `Biesdorf_2026_cofetuzumabPelidotin_aur0101` | Unconjugated Aur0101 payload popPK, one compartment fed by deconjugation | Table 2 |
+| `Biesdorf_2026_cofetuzumabPelidotin_orr` | Confirmed objective response (logistic, linear in Cavg, target-population slope) | Table S4 |
+| `Biesdorf_2026_cofetuzumabPelidotin_clinical_benefit_6mo` | Clinical benefit for at least 6 months, CBR6 (logistic, linear in Cavg) | Table 3 (back-solved) |
+| `Biesdorf_2026_cofetuzumabPelidotin_neutropenia_grade3` | Grade >= 3 neutropenia (logistic on log(Cavg + 1)) | Table S5 |
+| `Biesdorf_2026_cofetuzumabPelidotin_neuropathy_grade2` | Grade >= 2 peripheral neuropathy (logistic on log(Cavg + 1)) | Table S5 |
+| `Biesdorf_2026_cofetuzumabPelidotin_rash_grade2` | Grade >= 2 rash (logistic, linear in Cavg) | Table S5 |
+
+All five exposure-response models are driven by the conjugate **Cavg** (ug/mL),
+the individual average conjugate concentration up to the response assessment or
+up to the safety event, which the source computed from post hoc estimates of the
+conjugate popPK model. They have no PK layer of their own; the column `CAV` is
+supplied as data.
+
+# Population
+
+```{r population, echo = FALSE}
+pop <- rxode2::rxode2(mod_adc)$meta$population
+knitr::kable(
+  tibble::tibble(
+    Field = c("Subjects", "Studies", "Age", "Weight", "Female (%)", "Disease", "Dosing"),
+    Value = c(pop$n_subjects, pop$n_studies, pop$age_range, pop$weight_range,
+              pop$sex_female_pct, pop$disease_state, pop$dose_range)
+  ),
+  caption = "PopPK analysis population (Biesdorf 2026 Methods and Table S3)."
+)
+```
+
+The popPK analysis pooled 202 patients: 137 from the first-in-human study
+B7661001 (NCT02222922; triple-negative breast, NSCLC and ovarian cancer,
+0.2-3.7 mg/kg Q3W or 2.1-3.2 mg/kg Q2W) and 65 from the phase 1b NSCLC study
+M19-611 (NCT04189614; 2.8 mg/kg Q3W). 161 patients (79.7%) received
+2.8 mg/kg Q3W. Every dose was a 60-minute intravenous infusion. Table S3 gives
+the demographics by study: weight 70.4 (18.0) and 70.1 (19.0) kg, albumin 36.3
+(5.17) and 39.2 (4.61) g/L, female 84.7% and 38.5%, liver metastases 29.2% and
+12.3% in B7661001 and M19-611 respectively. The exposure-efficacy set is the 60
+NSCLC patients of M19-611 (28 in the target population: PTK7 expression in at
+least 90% of tumour cells at 2+ intensity or more, non-squamous histology, EGFR
+wild-type); the exposure-safety set is 198 patients from both studies (197 for
+peripheral neuropathy).
+
+# Source trace
+
+| Quantity | Value | Source location |
+|---|---|---|
+| Conjugate structure: 2 compartments, linear elimination | - | Results, PopPK of Cofe-P (ADC) |
+| CL, Vc, Q, Vp | 0.911 L/day, 2.95 L, 0.0974 L/day, 1.09 L | Table 1 |
+| Study (M19-611) on CL, Vc | 0.794, 0.832 | Table 1 |
+| Weight exponents (fixed) | 0.75 on CL and Q; 1 on Vc and Vp | Table 1 |
+| IIV on CL, Vc (omega^2) | 0.211, 0.0913 | Table 1 |
+| Proportional, additive error (variances) | 0.118, 0.0108 (ug/mL)^2 | Table 1 |
+| Payload structure: 1 compartment, first-order input Kdeg | - | Results; Table 2 footnote |
+| Payload CL, Vc, Kdeg | 127 L/day, 19.4 L, 0.243 /day | Table 2 |
+| Study on payload Vc | 0.828 | Table 2 |
+| Weight on payload CL, Vc | 0.252, 0.451 | Table 2 |
+| Albumin on payload CL, Vc | 1.79, 1.90 | Table 2 |
+| Liver metastases on payload CL | 0.696 | Table 2 |
+| Payload IIV on CL, Vc, Kdeg (omega^2) | 0.199, 0.386, 0.0210 | Table 2 |
+| Payload proportional, additive error (variances) | 0.191, 0.00276 (ng/mL)^2 | Table 2 |
+| Covariate forms (power on covariate / reference; multiplicative categorical) | - | Methods, PopPK model development |
+| Logistic link forms | Eq. 1-4 | Methods, Logistic regression |
+| ORR: intercept, non-target slope, target slope increment | -6.56, 0.35, 0.03 per ug/mL | Table S4 |
+| CBR6: intercept, slope | -4.363, 0.3196 per ug/mL | back-solved from Table 3 |
+| Neutropenia grade >= 3: intercept, slope on log(Cavg + 1) | -8.80, 2.99 | Table S5 |
+| Peripheral neuropathy grade >= 2: intercept, slope on log(Cavg + 1) | -10.1, 2.96 | Table S5 |
+| Rash grade >= 2: intercept, slope on Cavg | -4.73, 0.17 per ug/mL | Table S5 |
+| Reference values for WT and ALB | 70 kg, 37 g/L | not printed; rounded Table S3 means (see Assumptions) |
+
+# Check 1 -- the IIV columns of Tables 1 and 2 are variances
+
+Both table footnotes define %CV as `SQRT[exp(omega^2) - 1] x 100`. Applying that
+to the first column of every IIV row reproduces the printed %CV, so the first
+column is omega^2 and enters `ini()` directly.
+
+```{r check-iiv}
+iiv <- tibble::tribble(
+  ~Row,                        ~omega2, ~cv_printed,
+  "Conjugate IIV on CL",        0.211,   48.4,
+  "Conjugate IIV on Vc",        0.0913,  30.9,
+  "Payload IIV on CL",          0.199,   47.0,
+  "Payload IIV on Vc",          0.386,   68.7,
+  "Payload IIV on Kdeg",        0.0210,  14.6
+) |>
+  dplyr::mutate(cv_from_variance = 100 * sqrt(exp(omega2) - 1),
+                cv_if_sd = 100 * sqrt(exp(omega2^2) - 1))
+knitr::kable(iiv, digits = 2, caption = "Printed %CV against the variance and SD readings.")
+stopifnot(all(abs(iiv$cv_from_variance - iiv$cv_printed) < 0.1))
+```
+
+# Check 2 -- the residual-error rows are variances too
+
+Tables 1 and 2 print the residual errors as bare numbers. For a residual
+parameter informed by `N` observations, the relative standard error expected of a
+variance is about `sqrt(2/N)` and of a standard deviation about `sqrt(1/(2N))`,
+half as large. With 3391 conjugate and 3530 payload observations:
+
+```{r check-sigma}
+sig <- tibble::tribble(
+  ~Row,                       ~N,   ~rse_printed,
+  "Conjugate proportional",   3391, 3.20,
+  "Payload proportional",     3530, 3.52,
+  "Payload additive",         3530, 5.11
+) |>
+  dplyr::mutate(rse_if_variance = 100 * sqrt(2 / N),
+                rse_if_sd = 100 * sqrt(1 / (2 * N)))
+knitr::kable(sig, digits = 2, caption = "Printed %RSE of the residual terms against the two readings.")
+stopifnot(all(sig$rse_printed > sig$rse_if_variance))
+```
+
+Every printed %RSE sits at or above the variance prediction and 2.7-4.3 times
+the SD prediction (combined error models inflate the RSE further), so the
+values are read as `$SIGMA` variances and the model files take their square
+roots. The additive terms then make physical sense: `sqrt(0.0108)` = 0.104 ug/mL
+for the conjugate sits at its 0.090 ug/mL LLOQ, and `sqrt(0.00276)` = 0.053 ng/mL
+for the payload is about 3.5 times its 0.015 ng/mL LLOQ.
+
+# Conjugate (ADC) pharmacokinetics
+
+## Virtual cohort
+
+Weights follow Table S3 by study (log-normal with the printed mean and SD). Each
+arm has 200 patients.
+
+```{r cohort}
+n_sub <- 200L
+rlnorm_ms <- function(n, mean, sd) {
+  s2 <- log(1 + (sd / mean)^2)
+  stats::rlnorm(n, log(mean) - s2 / 2, sqrt(s2))
+}
+set.seed(20260325)
+cohort_p1b <- tibble::tibble(
+  id = seq_len(n_sub),
+  WT = pmin(pmax(rlnorm_ms(n_sub, 70.1, 19.0), 35), 150),
+  ALB = pmin(pmax(stats::rnorm(n_sub, 39.2, 4.61), 25), 52),
+  LMET = stats::rbinom(n_sub, 1, 0.123),
+  STUDY_M19611 = 1L
+)
+```
+
+## Simulated profiles
+
+```{r sim-adc}
+inf_dur <- 1 / 24 # 60-minute infusion, in days
+tau <- 21
+
+sim_adc_dose <- function(mgkg, cohort, seed) {
+  rxode2::rxSetSeed(seed) # common random numbers across dose arms
+  amt <- mgkg * cohort$WT
+  dose <- data.frame(id = cohort$id, time = 0, amt = amt, rate = amt / inf_dur,
+                     evid = 1L, cmt = "central")
+  obs_t <- c(seq(0, 0.1, by = 0.01), seq(0.125, 2, by = 0.125), seq(2.25, 84, by = 0.25))
+  obs <- data.frame(id = rep(cohort$id, each = length(obs_t)), time = rep(obs_t, times = nrow(cohort)),
+                    amt = 0, rate = 0, evid = 0L, cmt = "central")
+  ev <- dplyr::bind_rows(dose, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::left_join(cohort, by = "id")
+  out <- as.data.frame(solve_quiet(mod_adc, events = ev, returnType = "data.frame"))
+  out$dose_mgkg <- mgkg
+  out
+}
+
+doses <- c(2.1, 2.4, 2.8, 3.2)
+sim_adc <- dplyr::bind_rows(lapply(doses, sim_adc_dose, cohort = cohort_p1b, seed = 20260325L))
+```
+
+```{r plot-adc, echo = FALSE, fig.cap = "Simulated conjugate concentrations after one 2.8 mg/kg dose in the phase 1b population (median and 5th-95th percentiles of the 200-patient cohort, without residual error). Compare with the 'ADC Conjugate' panel of Figure S4 of Biesdorf 2026."}
+sim_adc |>
+  dplyr::filter(dose_mgkg == 2.8, time <= tau, time > 0) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  scale_y_log10() +
+  scale_x_continuous(breaks = c(1, 3, 7, 14, 21)) +
+  labs(x = "Time since dose (days)", y = "Conjugate concentration (ug/mL)")
+```
+
+## Check 3 -- end-of-infusion predictions match the Figure S2 population-prediction bands
+
+The population-prediction panel of Figure S2 (conjugate) shows dense horizontal
+bands of end-of-infusion predictions, the strongest near 80 ug/mL and another
+near 65 ug/mL. Because Vc scales with weight to the power 1 and the dose is per
+kilogram, the typical end-of-infusion concentration depends only on the dose
+and the study. At 2.8 mg/kg, the dose most patients received:
+
+```{r check-bands}
+ev_typ <- data.frame(id = c(1, 2), time = 0, amt = 2.8 * 70, rate = 2.8 * 70 / inf_dur,
+                     evid = 1L, cmt = "central", WT = 70, STUDY_M19611 = c(0L, 1L)) |>
+  dplyr::bind_rows(data.frame(id = c(1, 2), time = inf_dur, amt = 0, rate = 0, evid = 0L,
+                              cmt = "central", WT = 70, STUDY_M19611 = c(0L, 1L))) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+eoi <- as.data.frame(solve_quiet(rxode2::zeroRe(mod_adc), events = ev_typ, returnType = "data.frame"))
+eoi_tab <- tibble::tibble(Study = c("B7661001 (first-in-human)", "M19-611 (phase 1b)"),
+                          `Typical end-of-infusion Cc (ug/mL)` = eoi$Cc,
+                          `Figure S2 band (ug/mL)` = c(65, 80))
+knitr::kable(eoi_tab, digits = 1)
+stopifnot(all(abs(eoi$Cc / c(65, 80) - 1) < 0.05))
+```
+
+This confirms Vc and the size of the study factor on Vc (0.832 is the ratio of
+the two bands). It does not say WHICH study carries the factor: swapping the
+coding only swaps the two bands between the studies. Check 4 settles that.
+
+## PKNCA analysis
+
+```{r pknca-adc}
+conc_adc <- sim_adc |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = paste0(dose_mgkg, " mg/kg Q3W")) |>
+  dplyr::select(id, time, Cc, treatment)
+conc_adc <- conc_adc |>
+  dplyr::bind_rows(conc_adc |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(treatment, id, time)
+dose_adc <- tidyr::expand_grid(cohort_p1b |> dplyr::select(id, WT), dose_mgkg = doses) |>
+  dplyr::transmute(id, time = 0, amt = dose_mgkg * WT, treatment = paste0(dose_mgkg, " mg/kg Q3W"))
+
+o_conc <- PKNCA::PKNCAconc(conc_adc, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(dose_adc, amt ~ time | treatment + id)
+o_data <- PKNCA::PKNCAdata(
+  o_conc, o_dose,
+  intervals = data.frame(
+    start = c(0, 0), end = c(tau, 84),
+    cmax = c(TRUE, FALSE), tmax = c(TRUE, FALSE), cav = c(TRUE, FALSE),
+    auclast = c(FALSE, TRUE)
+  )
+)
+nca_adc <- as.data.frame(PKNCA::pk.nca(o_data))
+```
+
+```{r pknca-adc-summary, echo = FALSE}
+nca_adc |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "cav")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename("Regimen" = treatment, "Cmax (ug/mL)" = cmax, "Tmax (day)" = tmax,
+                "Cavg cycle 1 (ug/mL)" = cav) |>
+  knitr::kable(digits = 2, caption = "Median cycle-1 NCA parameters of the simulated phase 1b cohort.")
+```
+
+## Check 4 -- steady-state Cavg against Table 3
+
+Table 3 lists the popPK-predicted median steady-state Cavg of the phase 1b
+target population at four Q3W doses. With linear PK, the steady-state AUC over
+one interval equals the single-dose AUC to infinity, so the steady-state Cavg is
+the 0-84 day AUC of one dose (more than 25 half-lives of the fast phase) divided
+by 21 days.
+
+```{r check-table3-cavg}
+cav_ss <- nca_adc |>
+  dplyr::filter(PPTESTCD == "auclast", end == 84) |>
+  dplyr::mutate(cav_ss = PPORRES / tau,
+                dose_mgkg = as.numeric(sub(" mg/kg Q3W", "", treatment)))
+cav_tab <- cav_ss |>
+  dplyr::group_by(dose_mgkg) |>
+  dplyr::summarise(simulated = median(cav_ss), .groups = "drop") |>
+  dplyr::mutate(published = c(10.1, 11.6, 13.5, 15.4),
+                pct_diff = 100 * (simulated / published - 1))
+cav_tab |>
+  dplyr::rename("Dose (mg/kg Q3W)" = dose_mgkg, "Simulated median Cavg,ss (ug/mL)" = simulated,
+                "Table 3 (ug/mL)" = published, "Difference (%)" = pct_diff) |>
+  knitr::kable(digits = 2)
+stopifnot(
+  # Structural: with the study factor on the wrong study, or a mis-transcribed
+  # CL, the median moves by 20% or more.
+  all(abs(cav_tab$pct_diff) < 12)
+)
+```
+
+```{r nca-comparison, echo = FALSE}
+knitr::kable(
+  nlmixr2lib::ncaComparisonTable(
+    simulated = cav_ss |> dplyr::filter(dose_mgkg == 2.8) |> dplyr::transmute(cav = cav_ss),
+    reference = tibble::tibble(cav = 13.5),
+    label_first_column = "NCA parameter"
+  ),
+  caption = "Median simulated steady-state Cavg at 2.8 mg/kg Q3W against Table 3."
+)
+```
+
+The simulated medians sit a few percent below Table 3 at every dose. The
+direction is consistent with what the simulation cannot reproduce: the source
+medians come from post hoc estimates of the actual target-population patients
+(28 of them), while the simulation draws a virtual phase 1b cohort from the
+Table S3 weight distribution; the reference weight used to normalise CL is not
+printed (70 kg is used here); and Table 3 shows the target subgroup, whose
+weight distribution is not reported. The dose ratios themselves (Cavg
+proportional to dose) are reproduced exactly, as linear PK requires.
+
+## Check 5 -- conjugate half-life against the phase 1b report
+
+Biesdorf 2026 quotes the harmonic-mean terminal half-life of Cofe-P at
+2.8 mg/kg Q3W in M19-611 as 3.01 days. That figure is an NCA estimate from the
+phase 1b sampling schedule (Table S1: end of infusion + 15 minutes, day 2, day 8
+and the cycle-2 pre-dose sample on day 21), which sees the distribution and
+terminal phases mixed. Applying the same schedule to the simulated profiles:
+
+```{r check-thalf}
+p1b_times <- c(inf_dur + 15 / 1440, 1 + inf_dur, 7 + inf_dur, 21)
+conc_sched <- sim_adc |>
+  dplyr::filter(dose_mgkg == 2.8) |>
+  dplyr::select(id, time, Cc)
+sched <- do.call(rbind, lapply(p1b_times, function(t) {
+  conc_sched |>
+    dplyr::group_by(id) |>
+    dplyr::slice(which.min(abs(time - t))) |>
+    dplyr::ungroup()
+}))
+sched <- dplyr::bind_rows(sched, tibble::tibble(id = cohort_p1b$id, time = 0, Cc = 0)) |>
+  dplyr::arrange(id, time) |>
+  dplyr::mutate(treatment = "2.8 mg/kg Q3W")
+o_conc_s <- PKNCA::PKNCAconc(sched, Cc ~ time | treatment + id)
+o_dose_s <- PKNCA::PKNCAdose(dose_adc |> dplyr::filter(treatment == "2.8 mg/kg Q3W"),
+                             amt ~ time | treatment + id)
+nca_s <- as.data.frame(PKNCA::pk.nca(PKNCA::PKNCAdata(
+  o_conc_s, o_dose_s,
+  intervals = data.frame(start = 0, end = 21, half.life = TRUE)
+)))
+thalf <- nca_s |> dplyr::filter(PPTESTCD == "half.life", !is.na(PPORRES)) |> dplyr::pull(PPORRES)
+thalf_hm <- 1 / mean(1 / thalf)
+knitr::kable(tibble::tibble(`Simulated harmonic mean t1/2 (day)` = thalf_hm,
+                            `Published (day)` = 3.01), digits = 2)
+# Envelope only: a three-point half-life depends on which samples the NCA
+# kept, and the source's point selection is not reported.
+stopifnot(abs(thalf_hm / 3.01 - 1) < 0.25)
+```
+
+The simulated harmonic mean is about 18% longer than the reported 3.01 days.
+This comparator is weak: a half-life fitted to three samples across a
+two-compartment profile moves by more than that depending on which samples are
+used (days 1-7 alone give about 2.2 days for a typical patient, days 7-21 about
+4.2 days), and the source does not say which points its NCA kept. Coding the
+first-in-human study as the one carrying the study factors would shorten the
+three-point half-life of a typical 70 kg patient from 3.3 to about 3.1 days,
+but it would break the much stronger Table 3
+check above (the median Cavg at 2.8 mg/kg would fall from 13.0 to about
+10 ug/mL, 24% below the published 13.5 ug/mL), so the coding is kept.
+
+# Unconjugated Aur0101 payload
+
+Biesdorf 2026 describes the payload with a one-compartment model with first-order
+input at the deconjugation rate Kdeg. The model was developed **separately**
+from the conjugate model, so its depot is dosed directly. The paper does not
+report the drug-antibody ratio, the molecular weights or the fraction of the
+conjugate dose that ends up as systemically available payload, so the depot
+must be dosed in Aur0101-equivalent micrograms. The structural checks below use
+a unit dose; only the plot applies an illustrative conversion.
+
+## Check 6 -- the payload half-life is the deconjugation half-life
+
+```{r check-payload}
+pay_t <- c(0, seq(0.05, 1, by = 0.05), seq(1.25, 28, by = 0.25))
+ev_pay <- data.frame(id = 1, time = c(0, pay_t), amt = c(1, rep(0, length(pay_t))),
+                     evid = c(1L, rep(0L, length(pay_t))), cmt = "depot",
+                     WT = 70, ALB = 37, LMET = 0L, STUDY_M19611 = 0L)
+pay_typ <- as.data.frame(solve_quiet(rxode2::zeroRe(mod_pay), events = ev_pay, returnType = "data.frame"))
+term <- pay_typ |> dplyr::filter(time >= 7, time <= 21)
+slope <- -stats::coef(stats::lm(log(Cc) ~ time, data = term))[["time"]]
+knitr::kable(tibble::tibble(
+  `Terminal slope, days 7-21 (1/day)` = slope,
+  `Kdeg (1/day)` = 0.243,
+  `t1/2 from slope (day)` = log(2) / slope,
+  `Published harmonic-mean payload t1/2 (day)` = 2.95
+), digits = 3)
+stopifnot(abs(slope / 0.243 - 1) < 0.01, abs(log(2) / slope / 2.95 - 1) < 0.10)
+```
+
+Kdeg (0.243 /day) is about 27 times slower than CL/Vc (6.5 /day), so the payload
+profile is formation-rate limited: its terminal slope is the deconjugation rate,
+and the 2.85-day half-life it implies agrees with the 2.95-day harmonic-mean
+payload half-life of the phase 1b study. The same slope, read off the median line
+of the payload pcVPC in Figure S4 between days 7 and 21 (about 1.5 to
+0.045 ng/mL), is 0.25 /day.
+
+## Payload profile on a clinical dose (illustrative)
+
+```{r illustrative-payload}
+# NOT a model parameter and NOT a published value. Biesdorf 2026 reports no
+# drug-antibody ratio, molecular weights or payload fraction. This factor was
+# back-solved so that a typical 70 kg patient given 2.8 mg/kg reaches the
+# day-1 payload median of about 5.9 ng/mL read off Figure S4, purely so that
+# the payload model can be plotted on a clinical dose. It is kept in the
+# vignette and out of the model file, and matching Figure S4 at day 1 is
+# therefore not evidence for anything.
+c1_per_ug <- pay_typ$Cc[which.min(abs(pay_typ$time - 1))]
+payload_fraction_illustrative <- 5.9 / (c1_per_ug * 2.8 * 70 * 1000)
+payload_fraction_illustrative
+```
+
+The fraction comes out near 1.9% of the conjugate mass. For orientation only,
+four auristatin molecules of roughly 0.7 kDa on a 150 kDa antibody would be about
+2% by mass, the right order of magnitude.
+
+```{r sim-payload, fig.cap = "Simulated unconjugated Aur0101 after one 2.8 mg/kg dose in the phase 1b cohort, using the illustrative payload fraction (median and 5th-95th percentiles, without residual error). Compare the SHAPE with the 'Payload' panel of Figure S4; the level is calibrated, not predicted."}
+rxode2::rxSetSeed(20260326L)
+pay_obs <- seq(0.25, 21, by = 0.25)
+ev_pc <- dplyr::bind_rows(
+  data.frame(id = cohort_p1b$id, time = 0, amt = payload_fraction_illustrative * 2.8 * cohort_p1b$WT * 1000,
+             evid = 1L, cmt = "depot"),
+  data.frame(id = rep(cohort_p1b$id, each = length(pay_obs)), time = rep(pay_obs, n_sub),
+             amt = 0, evid = 0L, cmt = "depot")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::left_join(cohort_p1b, by = "id")
+sim_pay <- as.data.frame(solve_quiet(mod_pay, events = ev_pc, returnType = "data.frame"))
+sim_pay |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  scale_y_log10() +
+  scale_x_continuous(breaks = c(1, 3, 7, 14, 21)) +
+  labs(x = "Time since dose (days)", y = "Unconjugated Aur0101 (ng/mL)")
+```
+
+# Exposure-response
+
+## Check 7 -- the logistic models reproduce Table 3
+
+Table 3 gives, for each dose, the median steady-state Cavg of the target
+population and the model-predicted probability of each endpoint at that Cavg.
+Evaluating the five model files at the printed Cavg values is therefore a direct
+check of the transcribed coefficients (and, for CBR6, of the back-solve).
+
+```{r check-table3}
+solve_prob <- function(model, output, cav, target = NULL) {
+  ev <- data.frame(id = seq_along(cav), time = 0, amt = 0, evid = 0L, CAV = cav)
+  if (!is.null(target)) ev$PTK7_HIGH_NONSQUAMOUS_EGFR_WT <- target
+  as.data.frame(solve_quiet(model, events = ev, returnType = "data.frame"))[[output]]
+}
+cav_t3 <- c(10.1, 11.6, 13.5, 15.4)
+t3 <- tibble::tibble(
+  Endpoint = rep(c("ORR (target population)", "CBR6", "Neutropenia grade >= 3",
+                   "Peripheral neuropathy grade >= 2", "Rash grade >= 2"), each = 4),
+  Cavg = rep(cav_t3, 5),
+  Published = c(6.52, 11.1, 20.6, 35.1,
+                24.3, 34.2, 48.8, 63.6,
+                16.8, 22.8, 31.0, 39.3,
+                4.81, 6.85, 10.0, 13.8,
+                4.78, 6.11, 8.28, 11.1),
+  Model = 100 * c(solve_prob(mod_orr, "prob_orr", cav_t3, target = 1L),
+                  solve_prob(mod_cbr6, "prob_clinical_benefit_6mo", cav_t3),
+                  solve_prob(mod_neut, "prob_neutropenia_grade3", cav_t3),
+                  solve_prob(mod_pn, "prob_peripheral_neuropathy_grade2", cav_t3),
+                  solve_prob(mod_rash, "prob_rash_grade2", cav_t3))
+) |>
+  dplyr::mutate(Difference = Model - Published)
+t3 |>
+  dplyr::rename("Cavg (ug/mL)" = Cavg, "Table 3 (%)" = Published, "Model (%)" = Model,
+                "Difference (percentage points)" = Difference) |>
+  knitr::kable(digits = 2, caption = "Model probabilities at the Table 3 Cavg values.")
+```
+
+The CBR6, neutropenia and neuropathy models reproduce Table 3 to within 0.15
+percentage points. The ORR and rash models fall a little short, and only
+because their slopes are printed to two significant figures. Taking each
+printed coefficient at the edge of its rounding interval brackets Table 3:
+
+```{r check-rounding}
+orr_hi <- 100 * stats::plogis(-6.555 + (0.355 + 0.035) * cav_t3)
+rash_hi <- 100 * stats::plogis(-4.725 + 0.175 * cav_t3)
+orr_mod <- t3$Model[t3$Endpoint == "ORR (target population)"]
+rash_mod <- t3$Model[t3$Endpoint == "Rash grade >= 2"]
+knitr::kable(tibble::tibble(
+  Cavg = cav_t3,
+  `ORR printed coefficients` = orr_mod, `ORR rounding upper edge` = orr_hi,
+  `ORR Table 3` = c(6.52, 11.1, 20.6, 35.1),
+  `Rash printed coefficients` = rash_mod, `Rash rounding upper edge` = rash_hi,
+  `Rash Table 3` = c(4.78, 6.11, 8.28, 11.1)
+), digits = 2)
+stopifnot(
+  # CBR6 / neutropenia / neuropathy: equal to rounding of the printed percentages.
+  all(abs(t3$Difference[!t3$Endpoint %in% c("ORR (target population)", "Rash grade >= 2")]) < 0.15),
+  # ORR and rash: Table 3 lies inside the band spanned by the rounding interval.
+  all(c(6.52, 11.1, 20.6, 35.1) >= orr_mod - 0.01 & c(6.52, 11.1, 20.6, 35.1) <= orr_hi),
+  all(c(4.78, 6.11, 8.28, 11.1) >= rash_mod - 0.01 & c(4.78, 6.11, 8.28, 11.1) <= rash_hi)
+)
+```
+
+The ORR row also fixes how the target-population term enters. Table S4 lists a
+"Slope Non-Target" of 0.35 and a "Slope Target" of 0.03; only the reading in
+which 0.03 is an *increment* to 0.35 reproduces Table 3. Read as the target
+slope itself, it would predict an ORR of 0.2% at 13.5 ug/mL instead of 20.6%.
+
+## Replicating Figure 3
+
+```{r plot-er, echo = FALSE, fig.height = 4.2, fig.cap = "Replicates Figure 3 of Biesdorf 2026: predicted efficacy and safety probabilities against conjugate Cavg, with vertical lines at the Table 3 median steady-state Cavg for 2.1, 2.4, 2.8 and 3.2 mg/kg Q3W."}
+cav_grid <- seq(5, 20, by = 0.1)
+curves <- dplyr::bind_rows(
+  tibble::tibble(CAV = cav_grid, p = solve_prob(mod_orr, "prob_orr", cav_grid, target = 1L),
+                 Endpoint = "ORR (target population)"),
+  tibble::tibble(CAV = cav_grid, p = solve_prob(mod_cbr6, "prob_clinical_benefit_6mo", cav_grid),
+                 Endpoint = "CBR6"),
+  tibble::tibble(CAV = cav_grid, p = solve_prob(mod_neut, "prob_neutropenia_grade3", cav_grid),
+                 Endpoint = "Neutropenia grade >= 3"),
+  tibble::tibble(CAV = cav_grid, p = solve_prob(mod_pn, "prob_peripheral_neuropathy_grade2", cav_grid),
+                 Endpoint = "Peripheral neuropathy grade >= 2"),
+  tibble::tibble(CAV = cav_grid, p = solve_prob(mod_rash, "prob_rash_grade2", cav_grid),
+                 Endpoint = "Rash grade >= 2")
+)
+ggplot(curves, aes(CAV, 100 * p, colour = Endpoint)) +
+  geom_line() +
+  geom_vline(xintercept = cav_t3, linetype = "dashed", colour = "grey50") +
+  labs(x = "Cofe-P (ADC) Cavg (ug/mL)", y = "Predicted probability (%)", colour = NULL) +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 2))
+```
+
+## Replicating Figure 1e -- target versus non-target ORR
+
+```{r plot-orr, echo = FALSE, fig.height = 3.4, fig.cap = "Replicates the two subgroup curves of Figure 1e of Biesdorf 2026 (ORR against conjugate Cavg up to best overall response)."}
+orr_curves <- dplyr::bind_rows(
+  tibble::tibble(CAV = cav_grid, p = solve_prob(mod_orr, "prob_orr", cav_grid, target = 1L), Group = "Target"),
+  tibble::tibble(CAV = cav_grid, p = solve_prob(mod_orr, "prob_orr", cav_grid, target = 0L), Group = "Non-target")
+)
+ggplot(orr_curves, aes(CAV, 100 * p, linetype = Group)) +
+  geom_line() +
+  labs(x = "Cofe-P (ADC) Cavg (ug/mL)", y = "ORR (%)", linetype = NULL)
+```
+
+## From dose to probability with the simulated cohort
+
+Chaining the conjugate model and the exposure-response models: the simulated
+phase 1b cohort's steady-state Cavg (Check 4) is passed to the logistic models
+and the probability at each dose's median Cavg is compared with Table 3. The
+differences carry the few-percent Cavg shortfall of Check 4 and are shown for
+information.
+
+```{r chain, echo = FALSE}
+med_cav <- cav_tab$simulated
+chain <- tibble::tibble(
+  `Dose (mg/kg Q3W)` = doses,
+  `Median Cavg,ss (ug/mL)` = med_cav,
+  `ORR (%)` = 100 * solve_prob(mod_orr, "prob_orr", med_cav, target = 1L),
+  `CBR6 (%)` = 100 * solve_prob(mod_cbr6, "prob_clinical_benefit_6mo", med_cav),
+  `Neutropenia >= 3 (%)` = 100 * solve_prob(mod_neut, "prob_neutropenia_grade3", med_cav),
+  `Neuropathy >= 2 (%)` = 100 * solve_prob(mod_pn, "prob_peripheral_neuropathy_grade2", med_cav),
+  `Rash >= 2 (%)` = 100 * solve_prob(mod_rash, "prob_rash_grade2", med_cav)
+)
+knitr::kable(chain, digits = 1,
+             caption = "Probabilities at the simulated median steady-state Cavg (compare Table 3: ORR 6.52 / 11.1 / 20.6 / 35.1%).")
+```
+
+# Assumptions and deviations
+
+* **Reference values for weight and albumin.** Biesdorf 2026 normalised
+  continuous covariates to the dataset median, which it does not print.
+  Table S3 gives only means (weight 70.3 kg, albumin 37.2 g/L overall), so the
+  models normalise to 70 kg and 37 g/L. For the conjugate this changes the
+  typical CL by `(70/ref)^0.75`; a reference of 67 or 73 kg would move typical
+  exposure by about 3%.
+* **Which study carries the study factor.** Tables 1 and 2 print "Study on CL"
+  and "Study on Vc" without naming the reference study. For the conjugate, the
+  phase 1b study M19-611 carries the factors: only that coding reproduces the
+  Table 3 Cavg of the phase 1b target population (Check 4; the reverse coding
+  gives about 10 instead of 13.5 ug/mL at 2.8 mg/kg). The Figure S2
+  end-of-infusion bands (Check 3) confirm the Vc factor's size but not its
+  direction, and the three-point half-life (Check 5) leans slightly the other
+  way but is a weak comparator. The
+  payload model is assumed to use the same coding for its "Study on Vc" (0.828);
+  no published output tests that directly.
+* **Residual errors are variances.** The residual rows of Tables 1 and 2 are
+  bare numbers. They are read as NONMEM `$SIGMA` variances (Check 2) and the
+  model files carry their square roots.
+* **Payload dose in Aur0101 equivalents.** The payload depot must be dosed in
+  Aur0101-equivalent micrograms, because the conversion from a conjugate dose
+  is not reported. The illustrative fraction used above (about 1.9%) was
+  back-solved from Figure S4 and is not part of the model.
+* **Payload concentration scale.** The payload model returns ng/mL with a
+  microgram depot. The source plots and assays the payload in ng/mL, and the
+  Table 2 additive error is only plausible on that scale.
+* **ORR link function.** The Results say a log link was selected for the
+  efficacy endpoints, but Table S4 labels the ORR model "Linear Model", and the
+  linear form reproduces Table 3 (Check 7). The table is followed.
+* **ORR target-population term.** "Slope Target" (0.03) in Table S4 is encoded
+  as an increment to the non-target slope (0.35), the only reading consistent
+  with Table 3 and with the Results statement that the target population had a
+  higher probability of response.
+* **CBR6 coefficients are back-solved.** The paper prints no CBR6 coefficients.
+  The intercept and slope were back-solved from the four Table 3 predictions,
+  which a logit linear in Cavg fits to rounding (residual SD 0.0014 logit
+  units); log(Cavg) and log(Cavg + 1) forms fit 35-40 times worse. The resulting
+  curve passes through the Figure 1c fitted line (about 24% at 10 ug/mL and 80%
+  at 18 ug/mL).
+* **Logarithm base.** The neutropenia and neuropathy models use the natural
+  logarithm of (Cavg + 1); it reproduces Table 3 to within 0.15 percentage
+  points, which a base-10 logarithm would not.
+* **Placeholder residual on the probability outputs.** The logistic models were
+  fitted with a Bernoulli likelihood and have no residual error. A fixed
+  additive SD of 0.001 is attached to each probability output only because
+  rxode2 needs an observation declaration. Sample binary outcomes with
+  `rbinom(n, 1, prob_*)` on the `rxSolve()` output.
+* **Not extracted.** The overall-population ORR curve of Figure 1b (the model
+  before the target-population covariate was added) has no printed
+  coefficients and is superseded by the final ORR model. Plain clinical benefit
+  rate had no significant exposure relationship and has no model. The 95%
+  confidence bands of Figures 1-3 depend on the coefficient covariance matrix,
+  which is not reported.
+* **Exposure metric.** The exposure-response models take Cavg up to the event
+  (or up to best overall response), which depends on each patient's actual
+  dosing history and event time. Table 3, and the dose-to-probability chain
+  above, use the steady-state Cavg instead, as Biesdorf 2026 did for its dose
+  projections.

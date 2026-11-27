@@ -159,6 +159,103 @@ test_that("a covariate used but not in covariateData is an error", {
   expect_true(any(cov$severity == "error"))
 })
 
+test_that("a template that reads a symbol it never defines is an error, even when depends lists it", {
+  # `ic50` where the template estimates `ec50`: the defect that `depends` hid
+  # in indirect_1cpt_stim_kin until the template check existed.
+  tmpl <- function() {
+    description <- "A"
+    reference <- "nlmixr2lib template"
+    depends <- c("ic50")
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lvc <- 1; label("b")
+      lkel <- 0; label("c")
+      lec50 <- 0; label("e")
+      propSd <- 0.1; label("d")
+    })
+    model({
+      vc <- exp(lvc)
+      kel <- exp(lkel)
+      ec50 <- exp(lec50)
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      effect <- Cc / (Cc + ic50)
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(tmpl, verbose = FALSE))
+  hit <- res[res$category == "template_symbols", ]
+  expect_identical(hit$name, "ic50")
+  expect_identical(hit$severity, "error")
+  expect_identical(
+    hit$message,
+    "Template reads 'ic50', which it never defines: it is not assigned in model(), not a state and not an ini() parameter."
+  )
+
+  # The same model with a literature reference: there `depends` names an input
+  # an upstream model supplies, and the template check does not apply.
+  lit <- function() {
+    description <- "A"
+    reference <- "R"
+    depends <- c("ic50")
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lvc <- 1; label("b")
+      lkel <- 0; label("c")
+      lec50 <- 0; label("e")
+      propSd <- 0.1; label("d")
+    })
+    model({
+      vc <- exp(lvc)
+      kel <- exp(lkel)
+      ec50 <- exp(lec50)
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      effect <- Cc / (Cc + ic50)
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(lit, verbose = FALSE))
+  expect_identical(nrow(res[res$category == "template_symbols", ]), 0L)
+
+  res <- suppressWarnings(checkModelConventions("indirect_1cpt_stim_kin", verbose = FALSE))
+  expect_identical(nrow(res[res$category == "template_symbols", ]), 0L)
+})
+
+test_that("no template in the library reads a symbol it never defines", {
+  # Every template, found by its reference line rather than listed by hand,
+  # so a template added later is checked too. The registry does not record
+  # references, and parsing all of it would take minutes, so the files are
+  # scanned as text and only the templates are parsed.
+  skip_on_cran()
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
+  fileLines <- lapply(files, readLines, warn = FALSE)
+  isTemplate <- vapply(
+    fileLines,
+    function(x) any(grepl('^\\s*reference\\s*<-\\s*"nlmixr2lib template"', x)),
+    logical(1)
+  )
+  # A template whose reference line is written another way (single quotes,
+  # `=`, a line break) would fail the pattern and drop out of the loop below
+  # unnoticed, so every file that names the reference must have matched it.
+  mentions <- vapply(fileLines, function(x) any(grepl("nlmixr2lib template", x, fixed = TRUE)), logical(1))
+  expect_identical(basename(files[mentions & !isTemplate]), character(0))
+  templates <- sub("[.]R$", "", basename(files[isTemplate]))
+  # Update this count when a template is added or removed.
+  expect_identical(length(templates), 44L)
+  for (nm in templates) {
+    ui <- suppressMessages(rxode2::as.rxUi(readModelDb(nm)))
+    meta <- as.list(ui$meta)
+    expect_identical(meta$reference, "nlmixr2lib template", label = paste(nm, "reference"))
+    undeclared <- .checkTemplateUndeclaredSymbols(ui, NULL, nm)$name
+    expect_identical(undeclared, character(0), label = paste(nm, "undeclared symbols"))
+    # The check ignores `depends` for a template, so one declared there would
+    # be dead metadata that reads as if it supplied a symbol.
+    expect_null(meta$depends, label = paste(nm, "depends"))
+  }
+})
+
 test_that("an ini() random-effect nesting column counts as a used covariate", {
   # `eta ~ var | OCC` reads OCC from the data without naming it in model(),
   # so ui$covariates omits it; it must still satisfy covariateData.
@@ -1533,6 +1630,58 @@ test_that("the per-dosing-day compounded clearance form is accepted with cl_time
   expect_equal(sum(res$category == "time_varying_clearance"), 0L)
 })
 
+test_that("the hyperbolic time-decline clearance form is accepted with cl_time_hyp", {
+  # Founding example: Liu_2026_sunitinib, CL/F = CL0/F / (1 + beta * week).
+  hypStyle <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+    ini({
+      lcl <- 1;             label("Clearance at the first dose (CL, L/h)")
+      lvc <- 1;             label("Central volume (Vc, L)")
+      cl_time_hyp <- 2e-5;  label("Rate of the hyperbolic decline of CL with time (1/h)")
+      propSd <- 0.1;        label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) / (1 + cl_time_hyp * t)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(hypStyle, verbose = FALSE))
+  expect_equal(sum(res$category == "time_varying_clearance"), 0L)
+})
+
+test_that("a hyperbolic time-decline clearance with a paper-style name is flagged", {
+  # The paper's `beta` hides the time-varying structure; the suggestion must
+  # name `cl_time_hyp`.
+  paperStyle <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+    ini({
+      lcl <- 1;         label("Clearance at the first dose (CL, L/h)")
+      lvc <- 1;         label("Central volume (Vc, L)")
+      betacl <- 2e-5;   label("Rate of the hyperbolic decline of CL with time (1/h)")
+      propSd <- 0.1;    label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) / (1 + betacl * t)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(paperStyle, verbose = FALSE))
+  hit <- res[res$category == "time_varying_clearance", ]
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$name, "cl")
+  expect_match(hit$suggestion, "cl_time_hyp", fixed = TRUE)
+})
+
 test_that("a per-dosing-day compounded clearance with a paper-style name is flagged", {
   # The paper's own `Ind_factor` hides the time-varying structure; the
   # suggestion must point at `cl_time_fday`.
@@ -1735,8 +1884,8 @@ test_that("the extraction skill never teaches a name the rules reject", {
   # INSTRUCTIONS, so a retired name cannot survive in the guidance that new
   # models are written from -- which is how `allo_cl`, `logitfr`, `Km` and
   # `Vmax` were still being taught after the models themselves were migrated.
-  skillDir <- testthat::test_path("..", "..", ".claude", "skills", "extract-literature-model")
-  skip_if(!dir.exists(skillDir), "extraction skill not present (installed package)")
+  skillDir <- file.path(.sourceTreeRoot(), ".claude", "skills", "extract-literature-model")
+  .skipIfNoSourceTree(skillDir, "extraction skill")
   conv <- nlmixr2lib:::.nlmixr2libConventions()
   docs <- list.files(skillDir, pattern = "[.]md$", recursive = TRUE, full.names = TRUE)
   expect_true(length(docs) > 0L)
@@ -1753,8 +1902,8 @@ test_that("the extraction skill never teaches a name the rules reject", {
 })
 
 test_that("the extraction skill never shows fixed() repeated in a label", {
-  skillDir <- testthat::test_path("..", "..", ".claude", "skills", "extract-literature-model")
-  skip_if(!dir.exists(skillDir), "extraction skill not present (installed package)")
+  skillDir <- file.path(.sourceTreeRoot(), ".claude", "skills", "extract-literature-model")
+  .skipIfNoSourceTree(skillDir, "extraction skill")
   pat <- paste0("<-\\s*fixed\\(.*\\)\\s*;\\s*label\\(\"[^\"]*", "\\bfixed(?![- ](?:effects?|dose|dosing))\\b")
   offenders <- character(0)
   for (f in list.files(skillDir, pattern = "[.]md$", recursive = TRUE, full.names = TRUE)) {
@@ -2847,4 +2996,359 @@ test_that("the model column names the model by how it was supplied", {
   expect_null(ui$modelName)
   res <- suppressWarnings(checkModelConventions(ui, verbose = FALSE))
   expect_equal(unique(res$model), "<rxUi>")
+})
+
+# Bare expression statements -------------------------------------------------
+#
+# A continuation line that starts with an operator is its own statement to R
+# but part of the equation above to rxode2. The fixture models are in
+# helper-bareStatementModels.R.
+
+test_that(".isBareStatement() tells a value from a statement", {
+  expect_true(nlmixr2lib:::.isBareStatement(quote(+k21 * peripheral1)))
+  expect_true(nlmixr2lib:::.isBareStatement(quote(-6.1 * rmp80 - 2.4 * rmp90)))
+  expect_true(nlmixr2lib:::.isBareStatement(quote(x)))
+  expect_true(nlmixr2lib:::.isBareStatement(5))
+  expect_true(nlmixr2lib:::.isBareStatement("a"))
+  expect_true(nlmixr2lib:::.isBareStatement(TRUE))
+  expect_true(nlmixr2lib:::.isBareStatement(NULL))
+  expect_false(nlmixr2lib:::.isBareStatement(quote(x <- 1)))
+  expect_false(nlmixr2lib:::.isBareStatement(quote(Cc ~ prop(propSd))))
+  expect_false(nlmixr2lib:::.isBareStatement(quote(if (a > 1) b <- 2)))
+  # rxode2 declarations are statements.
+  expect_false(nlmixr2lib:::.isBareStatement(quote(linear(INS))))
+  expect_false(nlmixr2lib:::.isBareStatement(quote(cmt(depot))))
+})
+
+test_that("an operator-led continuation line is an error", {
+  res <- suppressWarnings(checkModelConventions(.bsContinuationModel, verbose = FALSE))
+  hit <- res[res$category == "bare_statement", , drop = FALSE]
+  expect_identical(nrow(hit), 1L)
+  expect_identical(hit$severity, "error")
+  expect_identical(hit$name, "+q/vc * central")
+  expect_true(startsWith(hit$message, "`+q/vc * central` is a statement of its own in model(): a value,"))
+})
+
+test_that(".bareStatementsIn() looks inside braces, if/else, for and while bodies", {
+  # Built from text: the mix of braced and unbraced bodies is the point, and
+  # the style linter would reject it as code.
+  stmts <- as.list(str2lang(paste(
+    "{",
+    "a <- 1",
+    "if (x > 1) { b <- 2; +c } else if (x > 0) -d else { e <- 3 }",
+    "for (i in 1:2) { f }",
+    "while (FALSE) g <- 1",
+    "{ 7 }",
+    "}",
+    sep = "\n"
+  )))[-1]
+  found <- vapply(nlmixr2lib:::.bareStatementsIn(stmts), deparse, character(1))
+  expect_identical(found, c("+c", "-d", "f", "7"))
+})
+
+test_that("an operator-led continuation line inside an if block is an error", {
+  res <- suppressWarnings(checkModelConventions(.bsIfBlockModel, verbose = FALSE))
+  hit <- res[res$category == "bare_statement", , drop = FALSE]
+  expect_identical(nrow(hit), 1L)
+  expect_identical(hit$name, "+0.01")
+})
+
+test_that("the operator at the end of the line above passes, and compiles the same", {
+  res <- suppressWarnings(checkModelConventions(.bsJoinedModel, verbose = FALSE))
+  expect_identical(sum(res$category == "bare_statement"), 0L)
+  norm <- function(m) rxode2::rxModelVars(suppressMessages(nlmixr2est::nlmixr(m)))$model[["normModel"]]
+  expect_identical(norm(.bsContinuationModel), norm(.bsJoinedModel))
+})
+
+# Dose-history compartments -------------------------------------------------
+#
+# `tad(cmt)`, `podo(cmt)` and their siblings read the doses given into `cmt`.
+# When the registry's dosing compartments leave `cmt` out, nothing doses it,
+# the function is NA for every subject and every derivative that uses it is
+# NaN. The fixture models are in helper-doseTimingModels.R.
+
+.dtCategory <- function(model) {
+  res <- suppressWarnings(checkModelConventions(model, verbose = FALSE))
+  res[res$category == "dose_timing_compartment", , drop = FALSE]
+}
+
+test_that("every dose-history function takes a compartment in the installed rxode2", {
+  # The list is rxode2's syntax table, not something rxode2 exports. Parsing
+  # each one with a compartment argument fails as soon as rxode2 drops or
+  # renames one, and the dosenum() control shows the parser does refuse a
+  # compartment where the function takes none. The parser's message for that
+  # refusal depends on what it parsed before in the session, as in the test
+  # below.
+  for (fn in nlmixr2lib:::.doseTimingFunctions) {
+    mv <- tryCatch(
+      suppressMessages(rxode2::rxModelVars(paste0("d/dt(depot) <- -depot; x <- ", fn, "(depot)"))),
+      error = function(e) e
+    )
+    expect_false(inherits(mv, "error"), info = fn)
+  }
+  expect_error(
+    suppressMessages(utils::capture.output(
+      rxode2::rxModelVars("d/dt(depot) <- -depot; x <- dosenum(depot)")
+    )),
+    "syntax error|string segment too long"
+  )
+})
+
+test_that(".doseTimingCalls collects named-compartment calls at any depth", {
+  e <- quote({
+    a <- podo(stomach) * exp(-k * tad(stomach))
+    if (tafd("depot2") > 1) b <- tad() else b <- tlast0(central)
+    x[, 1] <- dosenum()
+  })
+  hits <- nlmixr2lib:::.doseTimingCalls(e)
+  expect_equal(
+    vapply(hits, paste, character(1), collapse = ":"),
+    c("podo:stomach", "tad:stomach", "tafd:depot2", "tlast0:central")
+  )
+  expect_equal(nlmixr2lib:::.doseTimingCalls(quote(tad())), list())
+  expect_equal(nlmixr2lib:::.doseTimingCalls(quote(central)), list())
+})
+
+test_that(".doseTimingCalls skips an empty first argument and a namespaced call", {
+  expect_equal(nlmixr2lib:::.doseTimingCalls(quote(tad(, depot))), list())
+  expect_equal(nlmixr2lib:::.doseTimingCalls(quote(rxode2::tad(depot))), list())
+  # rxode2 rejects all three spellings in a model, so a model-level fixture
+  # cannot carry them; the walker is pinned on bare expressions above. The
+  # parser's message depends on what it parsed before in the session:
+  # "syntax error" on its own, "string segment too long in rc_dup_str" after
+  # some earlier parses. Either way the model is refused.
+  for (code in c("x <- rxode2::tad(depot)", "x <- tad(\"depot\")")) {
+    expect_error(
+      suppressMessages(utils::capture.output(rxode2::rxModelVars(paste0("d/dt(depot) <- -depot; ", code)))),
+      "syntax error|string segment too long",
+      info = code
+    )
+  }
+  expect_error(
+    suppressMessages(utils::capture.output(rxode2::rxModelVars("d/dt(depot) <- -depot; x <- tad(, depot)")))
+  )
+})
+
+test_that("a model() block that cannot be read is reported, not passed", {
+  ui <- new.env()
+  makeActiveBinding("lstExpr", function() stop("unparseable"), ui)
+  hit <- nlmixr2lib:::.checkDoseTimingCompartments(ui, NULL)
+  expect_identical(nrow(hit), 1L)
+  expect_identical(hit$category, "dose_timing_compartment")
+  expect_identical(hit$severity, "error")
+  expect_identical(
+    hit$message,
+    "The model() block could not be read to check dose-history compartments: unparseable"
+  )
+})
+
+test_that("a timing read inside an if/else is checked like any other", {
+  hit <- .dtCategory(.dtIfElseModel)
+  expect_identical(hit$name, "stomach")
+  expect_identical(
+    hit$message,
+    paste0(
+      "`tad(stomach)` reads the doses given into 'stomach', which is not a ",
+      "dosing compartment (`dosing` declares: depot)."
+    )
+  )
+})
+
+test_that("variables named tad or dose are not dose-history reads", {
+  expect_identical(nrow(.dtCategory(.dtShadowNamesModel)), 0L)
+})
+
+test_that("a timing read of an undosed compartment is an error (fallback case)", {
+  hit <- .dtCategory(.dtStomachModel)
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$severity, "error")
+  expect_equal(hit$name, "stomach")
+  expect_equal(
+    hit$message,
+    paste0(
+      "`podo(stomach)`, `tad(stomach)` read the doses given into 'stomach', ",
+      "which is not a dosing compartment (no `dosing` metadata, so the ",
+      "depot/central fallback gives: central)."
+    )
+  )
+  expect_true(grepl("dosing <- c(\"stomach\"", hit$suggestion, fixed = TRUE))
+})
+
+test_that("declaring the read compartment in `dosing` clears the error", {
+  expect_equal(nrow(.dtCategory(.dtStomachDosedModel)), 0L)
+})
+
+test_that("a timing read of depot is covered by the depot/central fallback", {
+  ui <- suppressMessages(nlmixr2est::nlmixr(.dtFallbackDepotModel))
+  expect_null(ui$meta$dosing)
+  expect_equal(nrow(.dtCategory(.dtFallbackDepotModel)), 0L)
+})
+
+test_that("bare tad() and podo() name no compartment and are not flagged", {
+  expect_equal(nrow(.dtCategory(.dtBareTimingModel)), 0L)
+})
+
+test_that("with several dosing compartments only the undeclared one is flagged", {
+  hit <- .dtCategory(.dtTwoDepotModel)
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$name, "depot3")
+  expect_equal(
+    hit$message,
+    paste0(
+      "`tafd(depot3)` reads the doses given into 'depot3', which is not a ",
+      "dosing compartment (`dosing` declares: depot, depot2)."
+    )
+  )
+})
+
+test_that("the message says when `dosing` is empty or there is no fallback", {
+  hit <- .dtCategory(.dtEmptyDosingModel)
+  expect_equal(hit$name, "stomach")
+  expect_true(grepl("(`dosing` is declared empty)", hit$message, fixed = TRUE))
+
+  hit2 <- .dtCategory(.dtNoFallbackModel)
+  expect_equal(hit2$name, "stomach")
+  expect_true(grepl("no depot or central compartment to fall back to", hit2$message, fixed = TRUE))
+})
+
+# Expression walkers ---------------------------------------------------------
+#
+# An empty argument, as in `x[, 1]`, is a name whose text is "". Bound to a
+# variable it errors as soon as the variable is read, so every walker must test
+# `e[[i]]` in place. rxode2 model blocks do not carry one today; the walkers
+# also run on expressions built outside a model.
+
+test_that("the expression walkers handle an empty argument such as x[, 1]", {
+  e <- quote({
+    y <- 1 / (1 + exp(-x[, 1]))
+    z <- (x[, 1])
+  })
+  expect_identical(nlmixr2lib:::.assignedNamesIn(e), c("y", "z"))
+  expect_identical(nlmixr2lib:::.inverseLogitOffenders(e), "1/(1 + exp(-x[, 1]))")
+  # The empty argument is not a symbol.
+  expect_identical(nlmixr2lib:::.symbolsIn(quote(x[, 1] + y)), c("+", "[", "x", "y"))
+  expect_identical(nlmixr2lib:::.stripParens(quote((x[, 1]))), quote(x[, 1]))
+  expect_identical(nlmixr2lib:::.stripParens(quote(f((a), x[, 1]))), quote(f(a, x[, 1])))
+})
+
+# Dead states ---------------------------------------------------------------
+#
+# An ODE state with no input term, no initial condition and no `dosing` entry
+# stays at 0 in every simulation. The fixture models are in
+# helper-deadStateModels.R.
+
+.dsCategory <- function(model) {
+  res <- suppressWarnings(checkModelConventions(model, verbose = FALSE))
+  res[res$category == "dead_state", , drop = FALSE]
+}
+
+test_that(".additiveTerms and .hasStateFactor split and classify d/dt() terms", {
+  terms <- nlmixr2lib:::.additiveTerms(quote(-ka * depot + kin * (1 + e) - (k * (a - depot))))
+  expect_identical(terms, list(quote(-ka * depot), quote(kin * (1 + e)), quote(k * (a - depot))))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(-ka * depot), "depot"))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(vmax * depot / (km + depot)), "depot"))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(depot), "depot"))
+  # The state inside a difference is not a factor: other - depot can be
+  # non-zero when depot is 0.
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(k * (other - depot)), "depot"))
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(km / depot), "depot"))
+  expect_false(nlmixr2lib:::.isInputTerm(quote(-ka * depot), "depot"))
+  expect_false(nlmixr2lib:::.isInputTerm(0, "depot"))
+  expect_true(nlmixr2lib:::.isInputTerm(quote(ka * other), "depot"))
+})
+
+# The signs .signedAdditiveTerms() gives the terms of `e`, in order.
+.termSigns <- function(e, aliases = list()) {
+  vapply(nlmixr2lib:::.signedAdditiveTerms(e, aliases = aliases), `[[`, integer(1), "sign")
+}
+
+test_that(".signedAdditiveTerms gives each term the sign it enters with", {
+  # Binary and unary minus down the sum.
+  expect_identical(.termSigns(quote(a - b + c)), c(1L, -1L, 1L))
+  expect_identical(.termSigns(quote(-(a - b))), c(-1L, 1L))
+  # A negated factor inside a product: -ka * depot parses as (-ka) * depot.
+  expect_identical(.termSigns(quote(-ka * depot - cl / vc * central)), c(-1L, -1L))
+  expect_identical(.termSigns(quote(x + ka * depot * -1)), c(1L, -1L))
+  expect_identical(.termSigns(quote(x - ka * depot / (-v))), c(1L, 1L))
+  expect_identical(.termSigns(quote(-2 * -ka * depot)), 1L)
+  # A sum inside a product shows no sign.
+  expect_identical(.termSigns(quote(ka * (a - b))), 1L)
+  # A variable assigned once is followed.
+  expect_identical(.termSigns(quote(x + loss), list(loss = quote(-ka * depot))), c(1L, -1L))
+  expect_identical(
+    nlmixr2lib:::.signedAdditiveTerms(quote(a - b))[[2]],
+    list(term = quote(b), sign = -1L)
+  )
+})
+
+test_that("an undeclared second depot of a split dose is a dead state", {
+  hit <- .dsCategory(.dsSplitDoseModel)
+  expect_identical(hit$name, "depot2")
+  expect_identical(hit$severity, "warning")
+  expect_identical(
+    hit$message,
+    paste0(
+      "State 'depot2' can never leave 0: every term of its d/dt() vanishes ",
+      "when it is 0, it has no non-zero initial condition, and it is not a dosing compartment."
+    )
+  )
+  expect_identical(nrow(.dsCategory(.dsSplitDoseDeclaredModel)), 0L)
+})
+
+test_that("an initial condition, an inflow or a production term keeps a state alive", {
+  expect_identical(nrow(.dsCategory(.dsAliveModel)), 0L)
+})
+
+test_that("an operator-led continuation line counts, as rxode2 compiles it", {
+  # R parses `+ q / vc * central` as its own statement; rxode2 joins it to
+  # d/dt(peripheral1), which is then fed.
+  expect_identical(nrow(.dsCategory(.dsContinuationModel)), 0L)
+})
+
+test_that("a constant state that is never dosed is dead", {
+  hit <- .dsCategory(.dsConstantZeroModel)
+  expect_identical(hit$name, "c2")
+})
+
+test_that("powers, zero-at-zero functions, aliases and a zero start do not feed a state", {
+  hit <- .dsCategory(.dsFactorFormsModel)
+  expect_identical(sort(hit$name), c("aux_alias", "aux_pow", "aux_sqrt", "aux_zero"))
+})
+
+test_that(".hasStateFactor() reads powers, zero-at-zero functions and aliases", {
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(-ka * aux^2), "aux"))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(aux^gam), "aux"))
+  # 0^0 is 1 and 0^-1 is infinite: not factors.
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(aux^0), "aux"))
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(aux^-1), "aux"))
+  for (fn in c("sqrt", "abs", "sin", "tan", "sinh", "tanh", "asin", "atan", "asinh", "atanh", "log1p", "expm1")) {
+    expect_true(nlmixr2lib:::.hasStateFactor(call(fn, quote(k * aux)), "aux"), info = fn)
+  }
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(exp(aux)), "aux"))
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(cos(aux)), "aux"))
+  aliases <- list(cc2 = quote(ka * aux), cc3 = quote(2 * cc2), other = quote(ka * b))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(-cc2), "aux", aliases))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(cc3), "aux", aliases))
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(other), "aux", aliases))
+  # Without the alias table the variable is an input.
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(-cc2), "aux"))
+})
+
+test_that("a model with no compiled equations is reported by the dead-state check", {
+  ui <- new.env()
+  local_mocked_bindings(rxModelVars = function(...) list(model = c(normModel = "")), .package = "rxode2")
+  hit <- nlmixr2lib:::.checkDeadStates(ui, NULL)
+  expect_identical(hit$severity, "error")
+  expect_identical(
+    hit$message,
+    "The model could not be read to check for dead states: rxode2 returned no compiled equations"
+  )
+})
+
+test_that("a model that cannot be read is reported by the dead-state check", {
+  hit <- nlmixr2lib:::.checkDeadStates(new.env(), NULL)
+  expect_identical(nrow(hit), 1L)
+  expect_identical(hit$category, "dead_state")
+  expect_identical(hit$severity, "error")
+  expect_true(startsWith(hit$message, "The model could not be read to check for dead states: "))
 })

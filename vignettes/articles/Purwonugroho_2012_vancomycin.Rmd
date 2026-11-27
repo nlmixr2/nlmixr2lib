@@ -1,0 +1,494 @@
+---
+title: "Vancomycin (Purwonugroho 2012)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin (Purwonugroho 2012)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r meta}
+mod <- readModelDb("Purwonugroho_2012_vancomycin")
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article (DOI): <https://doi.org/10.1100/2012/762649>
+
+Purwonugroho et al. (2012) developed the first population PK model of
+vancomycin in Thai adults from routine therapeutic drug monitoring (TDM)
+samples. The final model is a two-compartment model in which clearance is
+proportional to Cockcroft-Gault creatinine clearance and the central volume is
+proportional to age:
+
+* `CL (L/h) = 0.044 * CLCr (mL/min)`
+* `V1 (L) = 0.542 * Age (years)`
+* `Q = 6.95 L/h`, `V2 = 44.2 L`
+
+# Population
+
+The analysis used retrospective TDM data from adults (> 18 years) in any ward
+of Ramathibodi Hospital, Mahidol University, Bangkok, Thailand, between
+January 2007 and June 2010. Patients were randomised into a modeling group and
+a validation group. The final modeling group had 212 patients with 391 serum
+concentrations (1.84 per patient, range 1-8); the validation group had 34
+patients with 68 concentrations (Table 1). In the modeling group the mean age
+was 66.62 +/- 18.38 years, mean weight 57.64 +/- 11.62 kg, 47.17% were female,
+mean serum creatinine 3.12 +/- 2.92 mg/dL and mean Cockcroft-Gault creatinine
+clearance 35.07 +/- 29.83 mL/min. About one third of the patients were in an
+ICU and 34.43% were on dialysis (Discussion). Dosing regimens varied between
+and within patients. Serum vancomycin was measured by fluorescence
+polarisation immunoassay (Axsym; limit 2.00 mg/L). The model was fit in
+NONMEM VII (ADVAN3 TRANS4).
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+| Model element | Value | Source location |
+|---|---|---|
+| `lcl` (CL slope on CRCL) | `log(0.044)` L/h per mL/min | Table 2, theta1 (CL = theta1 x CLCr) |
+| `lvc` (V1 slope on AGE) | `log(0.542)` L/year | Table 2, theta2 (V1 = theta2 x Age) |
+| `lq` | `log(6.95)` L/h | Table 2, theta3 |
+| `lvp` | `log(44.2)` L | Table 2, theta4 |
+| `etalcl` | `0.3578^2 = 0.128` | Table 2, omega CL = 35.78% |
+| `etalvc` | `0.2093^2 = 0.0438` | Table 2, omega V1 = 20.93% |
+| `etalq` | `0.3950^2 = 0.156` | Table 2, omega Q = 39.50% |
+| `etalvp` | `0.5727^2 = 0.328` | Table 2, omega V2 = 57.27% |
+| `addSd` | 4.51 mg/L | Table 2, sigma (additive intraindividual variability) |
+| Two-compartment structure, first-order elimination | n/a | Methods 2.1 (ADVAN3 TRANS4); Results (two- vs one-compartment dOFV 154.346) |
+| Proportional IIV, additive residual error | n/a | Results paragraph after Figure 1 |
+| Covariates CLCr (Cockcroft-Gault) on CL, Age on V1 | n/a | Results (forward inclusion / backward elimination); Table 2 |
+| 1 g q12h by 1-hour infusion, age 50 years, CLCr 60/80/100 mL/min | n/a | Discussion and Figure 6 |
+
+# Typical-value checks against the Discussion
+
+The Discussion reports several typical values derived from the final model at
+the modeling-group means (Table 1: CLCr 35.07 mL/min, age 66.62 years, weight
+57.64 kg).
+
+```{r typical-values}
+th <- ui$theta
+mean_crcl <- 35.07
+mean_age <- 66.62
+mean_wt <- 57.64
+
+cl_typ <- exp(th[["lcl"]]) * mean_crcl
+v1_typ <- exp(th[["lvc"]]) * mean_age
+v2_typ <- exp(th[["lvp"]])
+
+typical <- tibble::tribble(
+  ~quantity, ~published, ~packaged,
+  "CL at mean CLCr (L/h)", 1.56, cl_typ,
+  "V1 (L/kg)", 0.63, v1_typ / mean_wt,
+  "V2 (L/kg)", 0.77, v2_typ / mean_wt,
+  "VDss = V1 + V2 (L/kg)", 1.39, (v1_typ + v2_typ) / mean_wt,
+  "Residual SD / mean concentration 17.13 mg/L (%)", 26.32,
+  100 * th[["addSd"]] / 17.13
+) |>
+  mutate(pct_diff = 100 * (packaged - published) / published)
+
+typical |>
+  mutate(packaged = signif(packaged, 4), pct_diff = round(pct_diff, 1)) |>
+  dplyr::rename(
+    "Quantity" = quantity,
+    "Published (Discussion)" = published,
+    "Packaged model" = packaged,
+    "% difference" = pct_diff
+  ) |>
+  knitr::kable(caption = "Typical values quoted in the Discussion versus the packaged model at the Table 1 means.")
+
+# These are pure arithmetic on the published estimates; the only source of
+# disagreement is the rounding of theta1 to 0.044 in Table 2.
+stopifnot(all(abs(typical$pct_diff) < 2))
+```
+
+The clearance at the mean CLCr is 1.54 L/h from the printed slope 0.044; the
+Discussion's 1.56 L/h implies an unrounded slope of about 0.0445.
+
+# Figure 6: simulated profiles in a 50-year-old patient
+
+Figure 6 shows the concentration-time profile of 1 g every 12 hours (1-hour
+infusion, read from the figure) in a 50-year-old patient with CLCr of 60, 80 and
+100 mL/min. The figure has no legend in the published image; the lines are
+assigned to CLCr by their order (dotted = 60, dashed = 80, solid = 100 mL/min),
+since a lower CLCr gives higher concentrations. The points below were
+digitised by the maintainers from Figure 6 at the start of the interval, at the
+end of infusion, at 2 hours and at 12 hours.
+
+The figure is labelled as steady state, but it matches the fifth dosing
+interval (48-60 hours after the first dose) of the packaged model, not the
+true steady state: at CLCr 60 mL/min the model is still accumulating at 60
+hours (the trough rises from 17.7 to 19.3 mg/L across the interval, against
+22.6 mg/L at true steady state). The simulation below shows both intervals.
+
+```{r fig6-simulate}
+mod_typ <- rxode2::zeroRe(mod)
+
+fig6_patients <- tibble::tibble(id = 1:3, CRCL = c(60, 80, 100), AGE = 50)
+
+fig6_doses <- tidyr::crossing(fig6_patients, time = seq(0, 240, by = 12)) |>
+  mutate(evid = 1L, amt = 1000, rate = 1000, cmt = "central")
+fig6_obs <- tidyr::crossing(fig6_patients, time = seq(0, 252, by = 0.1)) |>
+  mutate(evid = 0L, amt = NA_real_, rate = NA_real_, cmt = "central")
+fig6_events <- bind_rows(fig6_doses, fig6_obs) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+fig6_sim <- rxode2::rxSolve(
+  mod_typ,
+  events = fig6_events,
+  keep = "CRCL",
+  rtol = 1e-10,
+  atol = 1e-12
+) |>
+  as.data.frame()
+
+fig6_digitised <- tibble::tribble(
+  ~CRCL, ~tad, ~Cc,
+  60, 0, 19.2,
+  60, 1, 48.3,
+  60, 2, 37.6,
+  60, 12, 19.3,
+  80, 0, 13.3,
+  80, 1, 43.4,
+  80, 2, 33.3,
+  80, 12, 13.7,
+  100, 0, 10.0,
+  100, 1, 40.0,
+  100, 2, 30.0,
+  100, 12, 10.3
+)
+
+fig6_intervals <- bind_rows(
+  fig6_sim |>
+    filter(time >= 48, time <= 60) |>
+    mutate(tad = time - 48, interval = "5th dose (48-60 h)"),
+  fig6_sim |>
+    filter(time >= 228, time <= 240) |>
+    mutate(tad = time - 228, interval = "Steady state (228-240 h)")
+) |>
+  mutate(CRCL = factor(CRCL))
+```
+
+```{r fig6-plot, fig.cap = "Replicates Figure 6 of Purwonugroho 2012: 1 g every 12 hours by 1-hour infusion in a 50-year-old patient. Lines are the packaged model; points are digitised from the published figure."}
+ggplot(fig6_intervals, aes(tad, Cc, colour = CRCL, linetype = interval)) +
+  geom_line(linewidth = 0.7) +
+  geom_point(
+    data = mutate(fig6_digitised, CRCL = factor(CRCL)),
+    aes(tad, Cc, colour = CRCL),
+    inherit.aes = FALSE,
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(0, 12, 1)) +
+  labs(
+    x = "Time after dose (h)",
+    y = "Vancomycin serum concentration (mg/L)",
+    colour = "CLCr (mL/min)",
+    linetype = NULL
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+```{r fig6-compare}
+fig6_check <- fig6_digitised |>
+  mutate(time = 48 + tad) |>
+  left_join(
+    fig6_sim |>
+      mutate(time = round(time, 1)) |>
+      select(CRCL, time, Cc_sim = Cc),
+    by = c("CRCL", "time")
+  ) |>
+  mutate(pct_diff = 100 * (Cc_sim - Cc) / Cc)
+
+fig6_check |>
+  transmute(
+    CRCL,
+    tad,
+    Cc,
+    Cc_sim = round(Cc_sim, 1),
+    pct_diff = round(pct_diff, 1)
+  ) |>
+  dplyr::rename(
+    "CLCr (mL/min)" = CRCL,
+    "Time after dose (h)" = tad,
+    "Figure 6 (mg/L)" = Cc,
+    "Packaged, 5th dose (mg/L)" = Cc_sim,
+    "% difference" = pct_diff
+  ) |>
+  knitr::kable(caption = "Figure 6 digitised values against the packaged typical-value model over the fifth dosing interval.")
+
+# Deterministic typical-value comparison. The digitisation is read to about
+# 0.5 mg/L; the pre-dose value of the dotted line is the hardest to read.
+stopifnot(
+  !anyNA(fig6_check$Cc_sim),
+  abs(median(fig6_check$pct_diff)) < 3,
+  all(abs(fig6_check$pct_diff[fig6_check$tad > 0]) < 6)
+)
+```
+
+# Steady-state AUC: PKNCA against dose / CL
+
+At true steady state the AUC over one dosing interval equals dose / CL. This
+check runs PKNCA over the last simulated interval (228-240 hours) of the three
+Figure 6 patients and compares it with `1000 mg / (0.044 * CLCr)`.
+
+```{r pknca-ss}
+ss_conc <- fig6_sim |>
+  filter(time >= 228, time <= 240, !is.na(Cc)) |>
+  mutate(time = time - 228, regimen = "1 g q12h") |>
+  select(id, regimen, CRCL, time, Cc)
+
+ss_dose <- fig6_patients |>
+  mutate(time = 0, amt = 1000, regimen = "1 g q12h")
+
+ss_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(ss_conc, Cc ~ time | regimen + id, concu = "mg/L", timeu = "h"),
+  PKNCA::PKNCAdose(ss_dose, amt ~ time | regimen + id, doseu = "mg"),
+  intervals = data.frame(start = 0, end = 12, auclast = TRUE, cmax = TRUE, cmin = TRUE)
+))
+
+ss_res <- as.data.frame(ss_nca$result) |>
+  select(id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(fig6_patients, by = "id") |>
+  mutate(
+    auc_expected = 1000 / (exp(ui$theta[["lcl"]]) * CRCL),
+    pct_diff = 100 * (auclast - auc_expected) / auc_expected
+  )
+
+ss_res |>
+  transmute(
+    CRCL,
+    auc_expected = round(auc_expected, 1),
+    auclast = round(auclast, 1),
+    pct_diff = round(pct_diff, 2),
+    cmax = round(cmax, 1),
+    cmin = round(cmin, 1)
+  ) |>
+  dplyr::rename(
+    "CLCr (mL/min)" = CRCL,
+    "Dose / CL (mg*h/L)" = auc_expected,
+    "PKNCA AUC0-12 (mg*h/L)" = auclast,
+    "% difference" = pct_diff,
+    "Cmax (mg/L)" = cmax,
+    "Cmin (mg/L)" = cmin
+  ) |>
+  knitr::kable(caption = "Steady-state AUC over one 12-hour interval: PKNCA against dose / CL.")
+
+# Same parameters on both sides; the residual is trapezoidal error on a
+# 0.1-hour grid (measured below 0.1%).
+stopifnot(all(abs(ss_res$pct_diff) < 1))
+```
+
+# Virtual cohort
+
+The virtual cohort reproduces the modeling-group covariate distributions of
+Table 1. Age is normal with the reported mean and SD, truncated to 19-95
+years. Creatinine clearance is log-normal with the reported mean and SD
+(35.07 +/- 29.83 mL/min), truncated to 5-150 mL/min. The Table 1 SD is close
+to the mean, so the distribution is strongly right-skewed, and the truncation
+removes much of its upper tail: the sampled SD is smaller than the Table 1 SD.
+Every subject receives 1 g every 12 hours by 1-hour infusion for three days,
+the regimen of Figure 6; it is not individualised to renal function, which is
+why the exposure in the lowest renal band is high.
+
+```{r cohort}
+rxode2::rxSetSeed(20120417)
+set.seed(20120417)
+n_sub <- 200L
+
+rtrunc_norm <- function(n, mean, sd, lo, hi) {
+  x <- rnorm(n, mean, sd)
+  while (any(out <- x < lo | x > hi)) x[out] <- rnorm(sum(out), mean, sd)
+  x
+}
+rtrunc_lnorm <- function(n, mean, sd, lo, hi) {
+  sdlog <- sqrt(log(1 + (sd / mean)^2))
+  meanlog <- log(mean) - sdlog^2 / 2
+  x <- rlnorm(n, meanlog, sdlog)
+  while (any(out <- x < lo | x > hi)) x[out] <- rlnorm(sum(out), meanlog, sdlog)
+  x
+}
+
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  AGE = rtrunc_norm(n_sub, 66.62, 18.38, 19, 95),
+  CRCL = rtrunc_lnorm(n_sub, 35.07, 29.83, 5, 150)
+) |>
+  mutate(
+    renal_band = cut(
+      CRCL,
+      breaks = c(0, 30, 60, Inf),
+      labels = c("CLCr < 30", "CLCr 30-60", "CLCr >= 60"),
+      right = FALSE
+    )
+  )
+
+cohort |>
+  summarise(
+    "Age mean (SD), years" = sprintf("%.1f (%.1f)", mean(AGE), sd(AGE)),
+    "CLCr mean (SD), mL/min" = sprintf("%.1f (%.1f)", mean(CRCL), sd(CRCL)),
+    "CLCr < 30 / 30-60 / >= 60 (n)" = paste(table(renal_band), collapse = " / ")
+  ) |>
+  knitr::kable(caption = "Virtual cohort covariates (Table 1 modeling group: age 66.62 +/- 18.38 years; CLCr 35.07 +/- 29.83 mL/min).")
+```
+
+```{r cohort-simulate}
+cohort_doses <- tidyr::crossing(cohort, time = seq(0, 60, by = 12)) |>
+  mutate(evid = 1L, amt = 1000, rate = 1000, cmt = "central")
+cohort_obs <- tidyr::crossing(cohort, time = seq(0, 72, by = 0.25)) |>
+  mutate(evid = 0L, amt = NA_real_, rate = NA_real_, cmt = "central")
+cohort_events <- bind_rows(cohort_doses, cohort_obs) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+cohort_sim <- rxode2::rxSolve(
+  mod,
+  events = cohort_events,
+  keep = c("renal_band", "CRCL", "AGE")
+) |>
+  as.data.frame()
+stopifnot(!anyNA(cohort_sim$Cc))
+```
+
+```{r vpc, fig.cap = "Simulated vancomycin concentrations (individual predictions without residual error) for 1 g every 12 hours in the virtual cohort, by renal-function band: median and 5th-95th percentiles. Dashed lines mark the 10-20 mg/L trough band discussed in the paper."}
+cohort_sim |>
+  group_by(renal_band, time) |>
+  summarise(
+    p05 = quantile(Cc, 0.05),
+    p50 = median(Cc),
+    p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = c(10, 20), linetype = "dashed", colour = "grey50") +
+  facet_wrap(~renal_band) +
+  scale_x_continuous(breaks = seq(0, 72, 12)) +
+  labs(x = "Time (h)", y = "Vancomycin (mg/L)") +
+  theme_minimal()
+```
+
+# PKNCA over the first and fifth dosing intervals
+
+The paper reports no NCA, so this section summarises the simulated exposure
+over the first dose and over the fifth dose (the interval shown in Figure 6)
+by renal-function band.
+
+```{r pknca-cohort}
+nca_conc <- cohort_sim |>
+  filter(!is.na(Cc)) |>
+  select(id, renal_band, time, Cc)
+
+nca_dose <- cohort_doses |>
+  select(id, renal_band, time, amt) |>
+  as.data.frame()
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_conc, Cc ~ time | renal_band + id, concu = "mg/L", timeu = "h"),
+  PKNCA::PKNCAdose(nca_dose, amt ~ time | renal_band + id, doseu = "mg"),
+  intervals = data.frame(
+    start = c(0, 48),
+    end = c(12, 60),
+    cmax = TRUE,
+    auclast = TRUE
+  )
+))
+
+# The trough at the end of each interval is read straight from the
+# simulation (the value just before the next dose).
+troughs <- nca_conc |>
+  filter(time %in% c(12, 60)) |>
+  transmute(
+    renal_band,
+    id,
+    start = time - 12,
+    PPTESTCD = "trough",
+    PPORRES = Cc
+  )
+
+nca_summary <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  select(renal_band, id, start, PPTESTCD, PPORRES) |>
+  bind_rows(troughs) |>
+  mutate(interval = ifelse(start == 0, "Dose 1 (0-12 h)", "Dose 5 (48-60 h)")) |>
+  group_by(renal_band, interval, PPTESTCD) |>
+  summarise(
+    value = sprintf(
+      "%.1f [%.1f-%.1f]",
+      median(PPORRES),
+      quantile(PPORRES, 0.05),
+      quantile(PPORRES, 0.95)
+    ),
+    .groups = "drop"
+  ) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
+
+nca_summary |>
+  dplyr::rename(
+    "Renal band" = renal_band,
+    "Interval" = interval,
+    "Cmax (mg/L)" = cmax,
+    "Trough at end of interval (mg/L)" = trough,
+    "AUC0-12 (mg*h/L)" = auclast
+  ) |>
+  knitr::kable(caption = "Simulated NCA by renal-function band, median [5th-95th percentile].")
+```
+
+# Assumptions and deviations
+
+* **Interindividual variability.** The authors selected a "proportional"
+  interindividual error model (`P_i = P_TV * (1 + eta)`) and report its
+  magnitude as a percent CV, which for that model equals `sqrt(omega^2)`. The
+  packaged model uses the exponential form `P_TV * exp(eta)` with
+  `omega^2 = (CV/100)^2`, which is the same to first order and keeps every
+  individual parameter positive. With the published 57.27% CV on V2, the
+  proportional form would give a negative V2 in about 4% of simulated
+  subjects.
+* **Infusion duration.** The paper does not state the infusion duration of the
+  clinical data. Figure 6 shows a 1-hour infusion, which is used throughout
+  this article.
+* **Figure 6 interval and legend.** The published figure has no legend, so the
+  line styles were mapped to CLCr by concentration order. Although labelled as
+  steady state, the figure agrees with the fifth dosing interval of the
+  packaged model (within 2% at the peak and at 12 hours for all three
+  patients) and not with true steady state, where the CLCr 60 mL/min trough is
+  about 17% higher.
+* **Covariate scale.** CLCr is the Cockcroft-Gault estimate in raw mL/min,
+  stored in the `CRCL` column. CL and V1 are through-origin linear functions,
+  so CL approaches zero as CLCr approaches zero and V1 is proportional to age;
+  the model was built on patients with mean CLCr 35 mL/min (34% on dialysis)
+  and mean age 67 years and should not be extrapolated far outside them.
+* **Virtual cohort.** Table 1 gives only means and SDs. The log-normal shape of
+  CLCr and the truncation limits for age and CLCr are assumptions.
+* **Inconsistent precision figures.** The precision of the fixed effects in the
+  Discussion (4.98%-28.34%) and of the omega estimates (V1 117.00%, Q
+  158.00%, CL 22.9%, V2 67.68%) do not match the estimation errors printed in
+  Table 2, and the abstract gives the RMSE as 12.2 mg/L against 12.28 mg/L in
+  the Results. None of these affects the point estimates used here, which are
+  taken from Table 2.
+* **Errata.** No erratum or correction for this article was found on
+  Europe PMC or PubMed (checked 2026-11-19).

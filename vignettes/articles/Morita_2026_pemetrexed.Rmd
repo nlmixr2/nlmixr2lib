@@ -1,0 +1,420 @@
+---
+title: "Pemetrexed-platinum neutrophil time course (Morita 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pemetrexed-platinum neutrophil time course (Morita 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Morita_2026_pemetrexed"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Morita_2026_pemetrexed"))$description`
+* Article: <https://doi.org/10.3390/pharmaceutics18080946> (open access; the
+  supplement holds the parameter table, Table S7, and the NONMEM control
+  stream, Text S1)
+
+Morita et al. modelled the absolute neutrophil count (ANC) over the first
+21-day cycle of pemetrexed plus cisplatin or carboplatin with an empirical
+mixed-effects model instead of a semi-mechanistic myelosuppression model. ANC
+falls along one parabola from the patient's own pre-treatment count to a nadir
+at time `B`, then recovers along a second parabola with a different curvature
+(Methods 2.4, Equations 2-3):
+
+$$
+\mathrm{ANC}(t) =
+\begin{cases}
+A_1 (t - B)^2 + \mathrm{Base} - A_1 B^2, & t < B \\
+A_2 (t - B)^2 + \mathrm{Base} - A_1 B^2, & t \ge B
+\end{cases}
+$$
+
+with `t` in weeks after the pemetrexed dose. The final (Step 2) model replaces
+the pemetrexed dose with an exposure term from the authors' PK-Sim
+physiologically based PK model, so plasma pemetrexed concentrations are never
+needed (Equations 7-9):
+
+* `A1 = 0.334 * (BUN / 15.2)^-0.975 * exp(eta)`: lower blood urea nitrogen
+  gives a steeper decline;
+* `A2 = 0.0443 * 0.0451^RAS * exp(eta)`: a concomitant renin-angiotensin
+  system (RAS) inhibitor all but stops the recovery within the cycle;
+* `B = 1.39 * 1.44^(AUC0-24 > 175) * exp(eta)`: a PBPK-predicted pemetrexed
+  AUC0-24 above 175 ug*h/mL delays the nadir and the start of recovery.
+
+The packaged model follows the NONMEM `$PRED` block in Text S1 line by line.
+
+# Population
+
+The development cohort was 86 Japanese adults with non-squamous non-small cell
+lung cancer treated at one hospital from 2015 to 2023 with pemetrexed (standard
+500 mg/m2; actual 469.5 +/- 51.4 mg/m2) plus cisplatin 75 mg/m2 (38 patients)
+or carboplatin AUC 5 (48 patients) on day 1 of a 21-day cycle (Methods 2.1,
+Table 1). Mean age was 68.2 +/- 7.9 years, 27.9% were women, mean weight
+58.7 +/- 11.0 kg, BUN 15.25 +/- 5.16 mg/dL, de-indexed eGFR
+71.1 +/- 19.1 mL/min, and 29.1% took a RAS inhibitor. 316 first-cycle ANC
+values were modelled, after excluding values taken after G-CSF. A validation
+cohort of 83 patients who also received pembrolizumab or bevacizumab was used
+only for external evaluation.
+
+```{r population}
+str(readModelDb("Morita_2026_pemetrexed")()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries its source in a trailing comment in
+`inst/modeldb/specificDrugs/Morita_2026_pemetrexed.R`. The table collects them.
+
+| Parameter / equation | Value | Source location |
+|---|---|---|
+| `lcurv_decline` (A1) | log(0.334) 10^3/uL/week^2 | Table S7 Step 2; Equation 7 |
+| `lcurv_recovery` (A2) | log(0.0443) 10^3/uL/week^2 | Table S7 Step 2; Equation 8 |
+| `ltnadir_anc` (B) | log(1.39) week | Table S7 Step 2; Equation 9 |
+| `e_bun_curv_decline` | -0.975 | Table S7 'BUN'; Equation 7; Text S1 `BUNP = (BUN/15.2)**THETA(4)` |
+| `e_ras_curv_recovery` | 0.0451 | Table S7 'RAS inhibitor'; Equation 8; Text S1 `rasP` |
+| `e_auc_tnadir_anc` | 1.44 | Table S7 'AUC0-24'; Equation 9; Text S1 `AUCP` |
+| `etalcurv_decline` | 0.835^2 = 0.697 | Table S7 omega A1 = 0.835 (SD) |
+| `etalcurv_recovery` | 1.96^2 = 3.84 | Table S7 omega A2 = 1.96 (SD) |
+| `etaltnadir_anc` | 0.148^2 = 0.0219 | Table S7 omega B = 0.148 (SD) |
+| `propSd` | 0.271 | Table S7 epsilon; Text S1 `Y = (N1 + N2) * exp(EPS(1))` |
+| Piecewise parabola, shared vertex | n/a | Equations 2-3; Text S1 `N1`, `N2` |
+| BUN centring value 15.2 mg/dL | n/a | Equation 7; Text S1 |
+| AUC0-24 cut-off 175 ug*h/mL | n/a | Equation 9; Table S5 (cut-off screen) |
+
+# Typical-value trajectories (Figure 1)
+
+Figure 1 of the paper illustrates each covariate effect against an "average
+patient" starting from about 2.57 x 10^3/uL. The chunk below draws the
+typical-value curves of the packaged model from the same starting count:
+the reference patient (BUN 15.2 mg/dL, no RAS inhibitor, AUC0-24 at or below
+175), and one covariate changed at a time. Low BUN uses 11.1 mg/dL, the mean of
+the low-BUN half of the cohort (Table S10). Points are read from the dashed
+(average) and solid (covariate) curves of Figure 1.
+
+```{r figure1}
+mod <- readModelDb("Morita_2026_pemetrexed")
+mod_typ <- rxode2::zeroRe(mod)
+
+# Typical-value (population-prediction) solve for several subjects at once.
+# rxode2 warns that a multi-subject simulation has no omega; with the random
+# effects zeroed that is exactly the intent, so only that message is muffled.
+solve_typical <- function(events, ...) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod_typ, events, returnType = "data.frame", ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+scenarios <- tibble::tribble(
+  ~scenario,                    ~BUN, ~CONMED_RAS_INHIBITOR, ~AUC_PEMETREXED,
+  "Reference",                  15.2, 0,                     150,
+  "(a) Low BUN (11.1 mg/dL)",   11.1, 0,                     150,
+  "(b) RAS inhibitor",          15.2, 1,                     150,
+  "(c) AUC0-24 > 175 ug*h/mL",  15.2, 0,                     200
+) |>
+  mutate(id = row_number(), NEUT = 2.57)
+
+ev_typ <- tidyr::crossing(scenarios, time = seq(0, 4, by = 0.02)) |>
+  mutate(evid = 0L) |>
+  arrange(id, time)
+
+typ <- solve_typical(ev_typ, keep = "scenario")
+
+# Read from Figure 1 by the maintainers: the average-patient curve (dashed,
+# identical in all three panels) and each panel's covariate curve (solid).
+fig1 <- tibble::tribble(
+  ~scenario,                    ~time, ~ANC,
+  "Reference",                  0,     2.57,
+  "Reference",                  1.40,  2.10,
+  "Reference",                  4,     2.62,
+  "(a) Low BUN (11.1 mg/dL)",   1.40,  1.70,
+  "(a) Low BUN (11.1 mg/dL)",   4,     2.24,
+  "(b) RAS inhibitor",          4,     2.12,
+  "(c) AUC0-24 > 175 ug*h/mL",  1.90,  1.67,
+  "(c) AUC0-24 > 175 ug*h/mL",  4,     2.02
+)
+
+ggplot(typ, aes(time, ANC, colour = scenario)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(data = fig1, shape = 4, size = 3, stroke = 1.1) +
+  labs(
+    x = "Time after pemetrexed (week)",
+    y = "Neutrophil count (x 10^3/uL)",
+    colour = NULL,
+    caption = "Lines: packaged model, typical values. Crosses: read from Figure 1 of Morita 2026."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 2))
+```
+
+The covariate DIRECTIONS match Figure 1: low BUN deepens the nadir without
+moving it, a RAS inhibitor flattens the recovery, and a high AUC0-24 moves the
+nadir later and deeper. The MAGNITUDES of the reference curve do not: Figure 1
+dips by about 0.47 and recovers by about 0.52 x 10^3/uL by week 4, whereas the
+printed typical values give a dip of `0.334 * 1.39^2 = 0.645` and a recovery
+of `0.0443 * (4 - 1.39)^2 = 0.30`. The paper describes Figure 1 as
+illustrative, and Table S7, Equations 7-9 and the control stream all agree
+with each other, so the model keeps the printed values. The prediction-
+corrected VPC below, which the authors drew from the full model, is the
+quantitative check.
+
+```{r figure1-check}
+at <- function(df, s, t) {
+  df$ANC[df$scenario == s & abs(df$time - t) < 1e-8]
+}
+ref_nadir <- at(typ, "Reference", 1.40)
+stopifnot(
+  # The model starts at the patient's own baseline count.
+  all(abs(typ$ANC[typ$time == 0] - 2.57) < 1e-10),
+  # The two parabolas meet at the nadir: the reference minimum is at B = 1.39.
+  abs(typ$time[typ$scenario == "Reference"][
+    which.min(typ$ANC[typ$scenario == "Reference"])
+  ] - 1.39) <= 0.02,
+  # AUC0-24 > 175 moves the nadir to 1.39 * 1.44 = 2.00 weeks.
+  abs(typ$time[typ$scenario == "(c) AUC0-24 > 175 ug*h/mL"][
+    which.min(typ$ANC[typ$scenario == "(c) AUC0-24 > 175 ug*h/mL"])
+  ] - 1.39 * 1.44) <= 0.02,
+  # Reference nadir = Base - A1 * B^2.
+  abs(at(typ, "Reference", 1.40) - (2.57 - 0.334 * 1.39^2 + 0.0443 * 0.01^2)) < 1e-6,
+  # A RAS inhibitor leaves the decline untouched and scales the recovery by 0.0451.
+  abs(
+    (at(typ, "(b) RAS inhibitor", 4) - ref_nadir) /
+      (at(typ, "Reference", 4) - ref_nadir) - 0.0451
+  ) < 0.01
+)
+```
+
+# Prediction-corrected VPC (Figure 3)
+
+## Virtual cohort
+
+The paper does not tabulate the individual covariates, so the cohort is built
+from the published summaries, using deterministic quantiles rather than random
+draws so that only the model's own random effects vary between runs:
+
+* BUN: log-normal with the Table 1 mean and SD (15.25 +/- 5.16 mg/dL);
+* RAS inhibitor: 29% of subjects (Table 1: 25 of 86);
+* AUC0-24: 80% of subjects above 175 ug*h/mL, spread over the 108-285 range of
+  Figure S2, where about 17 of the 86 points lie below 175;
+* baseline ANC: log-normal with median 5 x 10^3/uL, the Figure 3 median at
+  time 0. Its spread is not reported; prediction correction removes most of
+  its influence, and a log-SD of 0.35 is assumed.
+
+```{r cohort}
+n_sub <- 200L
+q <- stats::ppoints(n_sub)
+bun_cv2 <- (5.16 / 15.25)^2
+n_high_auc <- 160L
+set.seed(20260818)
+cohort <- tibble(
+  id = seq_len(n_sub),
+  NEUT = stats::qlnorm(sample(q), log(5), 0.35),
+  BUN = stats::qlnorm(
+    sample(q),
+    log(15.25) - 0.5 * log(1 + bun_cv2),
+    sqrt(log(1 + bun_cv2))
+  ),
+  CONMED_RAS_INHIBITOR = as.integer(sample(seq_len(n_sub)) <= 58L),
+  AUC_PEMETREXED = sample(c(
+    seq(108, 174, length.out = n_sub - n_high_auc),
+    seq(176, 285, length.out = n_high_auc)
+  ))
+)
+summary(cohort[, -1])
+```
+
+## Simulation
+
+Simulated values are taken at the bin centres of Figure 3 (weeks 0, 1, 1.9,
+3.15 and 4) and prediction-corrected as in the paper: each value is multiplied
+by the bin median of the population prediction (PRED) over its own PRED.
+Ten replicates of the 200-subject cohort are pooled.
+
+```{r simulate}
+bin_times <- c(0, 1, 1.9, 3.15, 4)
+ev_vpc <- tidyr::crossing(cohort, time = bin_times) |>
+  mutate(evid = 0L) |>
+  arrange(id, time)
+
+rxode2::rxSetSeed(20260818)
+sim <- rxode2::rxSolve(mod, ev_vpc, nStud = 10, returnType = "data.frame")
+pred <- solve_typical(ev_vpc) |>
+  select(id, time, PRED = ANC)
+
+vpc <- sim |>
+  left_join(pred, by = c("id", "time")) |>
+  group_by(time) |>
+  mutate(pcANC = sim * median(PRED) / PRED) |>
+  summarise(
+    sim_p05 = unname(quantile(pcANC, 0.05)),
+    sim_p50 = median(pcANC),
+    sim_p95 = unname(quantile(pcANC, 0.95)),
+    frac_negative = mean(sim < 0),
+    .groups = "drop"
+  )
+
+# Read from Figure 3 by the maintainers: the black solid (median) and black
+# dashed (5th, 95th percentile) lines of the authors' simulations, and the
+# red band (95% CI of the simulated median) at the same bins.
+fig3 <- tibble::tibble(
+  time = bin_times,
+  pub_p05 = c(2.86, 2.00, 0.54, 1.18, 0.00),
+  pub_p50 = c(5.00, 4.14, 3.60, 3.76, 3.98),
+  pub_p95 = c(8.56, 7.42, 7.20, 8.54, 15.4),
+  pub_p50_lo = c(4.72, 3.60, 3.35, 3.44, 3.87),
+  pub_p50_hi = c(5.37, 4.60, 4.30, 4.30, 4.50)
+)
+cmp_vpc <- left_join(vpc, fig3, by = "time")
+```
+
+```{r figure3}
+ggplot(cmp_vpc, aes(time)) +
+  geom_ribbon(aes(ymin = pub_p50_lo, ymax = pub_p50_hi), fill = "salmon", alpha = 0.35) +
+  geom_line(aes(y = sim_p50), colour = "black", linewidth = 0.9) +
+  geom_line(aes(y = sim_p05), colour = "black", linetype = "dashed") +
+  geom_line(aes(y = sim_p95), colour = "black", linetype = "dashed") +
+  geom_point(aes(y = pub_p50), colour = "red", size = 2.5) +
+  geom_point(aes(y = pub_p05), colour = "red", shape = 6, size = 2.5) +
+  geom_point(aes(y = pub_p95), colour = "red", shape = 2, size = 2.5) +
+  labs(
+    x = "Time after administration (week)",
+    y = "Prediction-corrected neutrophil count (x 10^3/uL)",
+    caption = paste(
+      "Black: packaged model (median solid; 5th/95th dashed).",
+      "Red: Figure 3 of Morita 2026 (simulated median, 5th, 95th; band = 95% CI of the median)."
+    )
+  ) +
+  theme_bw()
+```
+
+```{r figure3-table}
+cmp_vpc |>
+  transmute(
+    time,
+    p05 = sprintf("%.2f (%.2f)", sim_p05, pub_p05),
+    p50 = sprintf("%.2f (%.2f)", sim_p50, pub_p50),
+    p95 = sprintf("%.2f (%.2f)", sim_p95, pub_p95),
+    frac_negative = sprintf("%.1f%%", 100 * frac_negative)
+  ) |>
+  rename(
+    "Week" = time,
+    "5th pct, sim (Fig. 3)" = p05,
+    "Median, sim (Fig. 3)" = p50,
+    "95th pct, sim (Fig. 3)" = p95,
+    "Simulated ANC < 0" = frac_negative
+  ) |>
+  knitr::kable(caption = "Prediction-corrected percentiles: packaged model vs Figure 3 (in parentheses).")
+```
+
+The simulated median follows the authors' simulated median through the
+decline, the nadir and the recovery, within about 10%. The upper tail grows
+sharply in week 4, as in Figure 3, because the recovery curvature carries a
+very large between-subject SD (1.96), though it stays below the authors'
+95th-percentile line. The lower tail is clearly wider than the authors' line.
+A few percent of simulated subjects with a large decline curvature fall below
+zero, and at week 1 the simulated 5th percentile lies below Figure 3's
+confidence band for that percentile (about 1.3 to 2.9 x 10^3/uL). From week 2
+on, Figure 3's own band for the 5th percentile extends below zero (to about
+-2 x 10^3/uL, and below -5 in week 4), so the source model produces negative
+counts too; the control stream does not bound them. The paper's simulated
+covariate cohort is not available and the virtual cohort here is an
+approximation, which may account for part of the difference. Read the lower
+tail with that in mind.
+
+```{r figure3-check}
+stopifnot(
+  # Centre: a mis-transcribed curvature, nadir time or covariate effect moves
+  # the median by more than this.
+  all(abs(cmp_vpc$sim_p50 / cmp_vpc$pub_p50 - 1) < 0.15),
+  # The ANC at time 0 is the patient's own baseline, so the decline is the
+  # only thing that changes the median after time 0.
+  cmp_vpc$sim_p50[cmp_vpc$time == 1.9] < 0.85 * cmp_vpc$sim_p50[cmp_vpc$time == 0],
+  # Upper envelope: well inside the factor-of-two range around Figure 3.
+  all(cmp_vpc$sim_p95[cmp_vpc$time <= 3.15] / cmp_vpc$pub_p95[cmp_vpc$time <= 3.15] > 0.6),
+  all(cmp_vpc$sim_p95[cmp_vpc$time <= 3.15] / cmp_vpc$pub_p95[cmp_vpc$time <= 3.15] < 1.6)
+)
+```
+
+# Neutropenia before the next cycle
+
+The paper's clinical endpoint is an ANC below 1.5 x 10^3/uL immediately before
+the next cycle (days 21-28), which 10 of 86 development patients (11.6%) and 5
+of 83 validation patients (6.0%) had (Results 3.4-3.5). The share in the
+virtual cohort at day 24.5 (3.5 weeks) depends on the assumed baseline ANC
+distribution, which the paper does not report, so it is shown for orientation
+rather than checked. The simulated share with residual error exceeds the
+observed share, consistent with the wide lower tail noted above.
+
+```{r endpoint}
+ev_end <- cohort |>
+  mutate(time = 3.5, evid = 0L)
+end <- rxode2::rxSolve(mod, ev_end, nStud = 10, returnType = "data.frame")
+end_typ <- solve_typical(ev_end)
+tibble::tibble(
+  quantity = c(
+    "Simulated observations < 1.5 x 10^3/uL at 3.5 weeks",
+    "Typical-value predictions < 1.5 x 10^3/uL at 3.5 weeks",
+    "Observed (development cohort, days 21-28)"
+  ),
+  percent = c(
+    100 * mean(end$sim < 1.5),
+    100 * mean(end_typ$ANC < 1.5),
+    11.6
+  )
+) |>
+  rename("Quantity" = quantity, "Percent" = percent) |>
+  knitr::kable(digits = 1)
+```
+
+# Assumptions and deviations
+
+* **Residual error.** The control stream writes `Y = IPRED * exp(EPS(1))` on the
+  untransformed count, which first-order conditional estimation treats as
+  proportional error. The model uses `ANC ~ prop(propSd)` with
+  `propSd = 0.271`. A log-normal error (`lnorm`) is not used because the model
+  can predict a negative count, which has no logarithm.
+* **SD versus variance.** Table S7 lists omega and epsilon without saying
+  whether they are SDs or variances. The Methods define eta as having
+  variance omega^2, so the omega values are taken as SDs and squared for
+  `ini()`. Epsilon is also read as an SD: at time 0 the model reduces to
+  `Base * exp(eps)`, and the 5th-95th percentile ratio of Figure 3 at that bin
+  (about 3.0) matches an SD of 0.271 (2.4 to 2.9 for proportional or
+  exponential error) far better than an SD of `sqrt(0.271) = 0.52` (about 5.5).
+* **Sign of the BUN exponent.** Text S1 declares `THETA(4)` with a lower bound
+  of 0 (`(0, 0.002)`), but the final estimate is -0.975 (Table S7,
+  Equation 7) and Results 3.3 states that lower BUN gives a faster decline,
+  which needs a negative exponent. The control stream as printed shows
+  the initial-estimate block; the model uses the printed final estimate.
+* **Equation 2 as printed** puts `exp(eps)` on the `A1 * B^2` term only; the
+  control stream applies it to the whole prediction, which the model follows.
+* **AUC0-24 input.** The covariate `AUC_PEMETREXED` is the per-patient AUC0-24
+  predicted by the authors' PK-Sim PBPK model (Methods 2.2; Table S1), which
+  is not part of this package. Only the indicator `AUC_PEMETREXED > 175`
+  enters the model, so any value above 175 gives the same prediction.
+* **Validity range.** The model describes the first cycle only (weeks 0 to
+  about 4) and has no dosing records; time is measured from the pemetrexed
+  dose. Nothing bounds the count below zero.
+* **Figure 1** does not match the printed typical values in magnitude (see
+  above); the model keeps the printed values.
+* **Virtual cohort.** The baseline ANC distribution, the individual AUC0-24
+  values and the joint covariate distribution are not reported; the cohort
+  above approximates them from Table 1, Figure 3 and Figure S2.
+* **Step 1 model.** The paper also reports a Step 1 model with pemetrexed dose
+  in place of the PK covariates (`A1 = 0.717 * (Dose/760)^1.27`,
+  `A2 = 0.0319`, `B = 1.32`; Equations 4-6). The authors present Step 2 as the
+  final model, so only Step 2 is packaged.

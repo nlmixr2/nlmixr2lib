@@ -8,6 +8,7 @@ Yu_2025_doxorubicin_trastuzumab_bnp_ac16 <- function() {
     dosing = "nM (doxorubicin concentration applied to the culture medium at t = 0)",
     concentration = "nM (medium doxorubicin concentration); relative BNP is a dimensionless ratio to its t = 0 value"
   )
+  dosing <- "conc_dox"
 
   # bnp1-bnp3 are the paper's Figure 1 BNP compartments; bnp_tmab is the
   # paper's hypothetical BNPTmAb stimulus compartment (Eq 12); conc_dox

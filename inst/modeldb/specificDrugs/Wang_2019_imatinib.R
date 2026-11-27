@@ -29,6 +29,7 @@ Wang_2019_imatinib <- function() {
   )
   vignette <- "Yang_2025_imatinib_external_evaluation"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),

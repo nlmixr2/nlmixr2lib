@@ -38,6 +38,7 @@ Benson_2010_bhma_mouse <- function() {
     dosing = "mg/kg",
     concentration = "ng/mL (BHMA in plasma); IU/mL (IFN-alpha in plasma)"
   )
+  dosing <- c("depot", "ifna")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. All four entries were checked against Benson 2010

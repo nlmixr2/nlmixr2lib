@@ -3,6 +3,7 @@ Li_2018_PF04236921 <- function() {
   reference <- "Li C, Shoji S, Beebe J. Pharmacokinetics and C-reactive protein modelling of anti-interleukin-6 antibody (PF-04236921) in healthy volunteers and patients with autoimmune disease. Br J Clin Pharmacol. 2018;84(9):2059-2074. doi:10.1111/bcp.13641"
   vignette <- "Li_2018_PF04236921"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL", CRP = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

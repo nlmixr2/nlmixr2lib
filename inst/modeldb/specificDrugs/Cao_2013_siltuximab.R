@@ -3,6 +3,7 @@ Cao_2013_siltuximab <- function() {
   reference <- "Cao Y, Balthasar JP, Jusko WJ. Second-generation minimal physiologically-based pharmacokinetic model for monoclonal antibodies. J Pharmacokinet Pharmacodyn. 2013 Oct;40(5):597-607. doi:10.1007/s10928-013-9332-2. Siltuximab plasma data digitized from Puchalski T et al. Clin Cancer Res. 2010;16(5):1652-1661 (PMID 20179212)."
   vignette <- "Cao_2013_siltuximab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- "plasma"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

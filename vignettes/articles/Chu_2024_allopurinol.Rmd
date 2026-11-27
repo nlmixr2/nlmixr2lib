@@ -688,16 +688,18 @@ preoperative clearance and therefore higher concentrations.
   algebraically identical for both the observed concentration and the
   oxypurinol elimination rate and has the advantage that `central_oxy`
   genuinely holds milligrams of oxypurinol.
-- **Between-occasion variability.** rxode2 has no NONMEM `| occ` level, so
-  the shared-variance BOV on each clearance is expanded into three
+- **Between-occasion variability.** rxode2's `| occ` level shares one draw
+  per occasion when no subject has two or more occasions, so the
+  shared-variance BOV on each clearance is expanded into three
   indicator-multiplexed etas, one per perioperative period, with the first
   carrying the estimated variance and the other two fixed to the same value.
-  rxode2 emits `some etas defaulted to non-mu referenced ... etaiov_cl_1,
-  ...` on every solve as a result. That warning concerns an
-  estimation-time mu-referencing optimisation, not correctness; simulation,
-  which is what this model is packaged for, is unaffected, and the suggested
-  work-around ("put the mu-referenced expression on a simple line") is
-  exactly what indicator multiplexing precludes.
+  rxode2 emits
+  `some etas defaulted to non-mu referenced ... etaiov_cl_1, ...` on every
+  solve as a result. That warning concerns an estimation-time mu-referencing
+  optimisation, not correctness; simulation, which is what this model is
+  packaged for, is unaffected, and the suggested work-around ("put the
+  mu-referenced expression on a simple line") is exactly what indicator
+  multiplexing precludes.
 - **Between-subject variability declared but not reported.** The ESM S3
   control stream declares `ETA(2)` on the allopurinol volume and `ETA(3)` on
   the oxypurinol clearance, but Table 2 reports estimates for neither, so

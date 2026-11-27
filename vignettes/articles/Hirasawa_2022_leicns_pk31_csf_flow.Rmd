@@ -346,21 +346,36 @@ when `Kp,uu` is not reported directly (Section 2.1). An IV bolus for each Table 
 model, with both AUCs computed by `PKNCA`, must return the Table S2 values.
 
 ```{r gate3}
-grid <- sort(unique(c(0, exp(seq(log(0.01), log(4e6), length.out = 2500)))))
+# Each model is integrated to the first of these horizons (min) at which all
+# three concentrations have fallen below 1e-6 of their peak, so the AUC tail is
+# negligible. The slow models need up to 1e6 min; integrating a fast one that
+# long drives its states to the bottom of the double range (~1e-300, reached by
+# acetaminophen microdialysis at ~3e4 min), where the solver returns NaN.
+horizons <- c(1e4, 3e4, 1e5, 3e5, 1e6, 4e6)
+solve_bolus <- function(nm) {
+  mod <- typical_model(nm)
+  for (h in horizons) {
+    grid <- sort(unique(c(0, exp(seq(log(0.01), log(h), length.out = 2500)))))
+    s <- suppressWarnings(rxode2::rxSolve(mod,
+                                          rxode2::et(rxode2::et(amt = 1000, cmt = "central"), grid),
+                                          atol = 1e-14, rtol = 1e-11, maxsteps = 500000L,
+                                          returnType = "data.frame"))
+    y <- as.matrix(s[, c("Cc", "Cbrain_csf_cm", "Cbrain_ecf")])
+    stopifnot(all(is.finite(y)))
+    if (all(y[nrow(y), ] < 1e-6 * apply(y, 2, max))) return(s)
+  }
+  stop("no horizon brings every concentration of ", nm, " below 1e-6 of its peak")
+}
 base_models <- af_models[!grepl("_bsc_|_periventricular_", af_models)]
 auc_sims <- lapply(base_models, function(nm) {
-  s <- suppressWarnings(rxode2::rxSolve(typical_model(nm),
-                                        rxode2::et(rxode2::et(amt = 1000, cmt = "central"), grid),
-                                        atol = 1e-14, rtol = 1e-11, maxsteps = 500000L,
-                                        returnType = "data.frame"))
+  s <- solve_bolus(nm)
   tibble::tibble(model = nm, time = s$time, plasma = pmax(s$Cc, 0),
                  CM = pmax(s$Cbrain_csf_cm, 0), ECF = pmax(s$Cbrain_ecf, 0))
 }) |>
   bind_rows()
 
 conc_long <- auc_sims |>
-  pivot_longer(c(plasma, CM, ECF), names_to = "analyte", values_to = "conc") |>
-  filter(!is.na(conc))
+  pivot_longer(c(plasma, CM, ECF), names_to = "analyte", values_to = "conc")
 dose_long <- tidyr::expand_grid(model = base_models, analyte = c("plasma", "CM", "ECF")) |>
   mutate(time = 0, dose = 1000)
 o_conc <- PKNCA::PKNCAconc(as.data.frame(conc_long), conc ~ time | model + analyte)

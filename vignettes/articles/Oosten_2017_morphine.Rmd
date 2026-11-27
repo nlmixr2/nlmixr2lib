@@ -578,7 +578,12 @@ run_nca <- function(conc_col) {
   # time-zero row PKNCA needs to anchor AUC0-*.
   d <- sim |>
     dplyr::filter(!is.na(.data[[conc_col]])) |>
-    dplyr::transmute(id, time, admin_arm, Cc = .data[[conc_col]])
+    dplyr::transmute(id, time, admin_arm, Cc = .data[[conc_col]]) |>
+    # Past the peak, values below 1e-6 * Cmax are solver noise around zero
+    # and would decide the terminal-slope fit.
+    dplyr::group_by(id, admin_arm) |>
+    dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+    dplyr::ungroup()
   d <- dplyr::bind_rows(
     d,
     d |> dplyr::distinct(id, admin_arm) |> dplyr::mutate(time = 0, Cc = 0)

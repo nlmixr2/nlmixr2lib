@@ -1,0 +1,461 @@
+---
+title: "Ibritumomab tiuxetan (Morschhauser 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ibritumomab tiuxetan (Morschhauser 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Morschhauser_2018_ibritumomabTiuxetan_fraction1"))$reference`
+* Description (fraction 1): `r rxode2::rxode(readModelDb("Morschhauser_2018_ibritumomabTiuxetan_fraction1"))$description`
+* Article: <https://doi.org/10.1038/s41598-018-33160-0> (open access)
+
+Morschhauser et al. (2018) built a five-compartment pharmacokinetic model of
+ibritumomab tiuxetan, the anti-CD20 murine antibody that carries
+90Y in radioimmunotherapy (RIT). They used the 111In-labelled imaging
+surrogate, which was given before each of the two RIT fractions of the FIZZ
+trial, and quantified it by whole-body SPECT/CT at 4, 24, 96 and 168 h. The
+blood volume inside each organ was subtracted from the organ signal (their
+Figure 1), so the organ compartments hold extravascular (tissue) antibody.
+The authors used the Kinetica 5.0 Designer module to fit 30 candidate
+structures to each patient and kept the one with the best AIC (their
+Figure 3):
+
+* blood is the central compartment, which receives the infusion and is the
+  only site of elimination;
+* blood exchanges in both directions with the L2-L4 lumbar vertebrae
+  (`k12` / `k21`), the liver (`k13` / `k31`) and a deep compartment holding
+  the remaining organs and the tumor (`k15` / `k51`);
+* the spleen takes up antibody from blood (`k14`) and drains to the liver
+  (`k43`), not back to blood.
+
+The first fraction (F1) and the second fraction (F2) were fitted separately
+and were not pooled. Table 3 reports the mean (SD) of the per-patient
+estimates for each fraction, and nlmixr2lib packages each fraction as its
+own model:
+
+* `Morschhauser_2018_ibritumomabTiuxetan_fraction1` -- F1, 19 patients;
+* `Morschhauser_2018_ibritumomabTiuxetan_fraction2` -- F2, 13 patients.
+
+**Read this before using either model.** The paper never prints the deep
+compartment's constants `k15` and `k51`, and the constants it does print
+are not consistent with its own blood summary statistics (see
+[Internal consistency of the published parameters](#internal-consistency-of-the-published-parameters)).
+The packaged models implement Figure 3 as printed, as a mass-conserving
+amount model, with `k15 = k51 = 0`. They therefore reproduce the published
+structure and rate constants, but **not** the published blood
+concentration-time course, MRT or half-life. The deviations are quantified
+below.
+
+# Population
+
+The dosimetric subset of the FIZZ phase II trial (NCT01493479) treated
+adults at Lille university hospital who had previously untreated,
+CD20-positive follicular lymphoma needing treatment (paper Table 1). Imaging
+after F1 was available for 19 patients (5 men and 14 women; mean age 58.8
+years, range 28-80; mean weight 71.2 kg, range 49-100; FLIPI low /
+intermediate / high risk 6 / 4 / 9). Imaging after F2 was available for 13
+of them (3 men and 10 women; mean age 59.6 years; mean weight 72.9 kg,
+range 49-83). F2 was cancelled for six patients because of haematologic
+toxicity after F1 or because they developed human anti-mouse antibodies.
+Mean tumor volume fell from 6751 mm3 before F1 to 1850 mm3 before F2.
+
+Each fraction was preceded by two rituximab infusions (250 mg/m2) given 7-8
+days apart, to saturate circulating CD20 binding sites. The 111In-ibritumomab
+tiuxetan imaging dose (138 MBq at a specific activity of 138 MBq/mg, i.e.
+1 mg of antibody) was given intravenously with the first rituximab infusion.
+The therapeutic 90Y-ibritumomab tiuxetan dose was 11.1 MBq/kg per fraction
+(maximum 888 MBq), with the fractions 8-12 weeks apart.
+
+The same information is available programmatically:
+
+```{r population}
+readModelDb("Morschhauser_2018_ibritumomabTiuxetan_fraction1")()$population$n_subjects
+readModelDb("Morschhauser_2018_ibritumomabTiuxetan_fraction2")()$population$n_subjects
+```
+
+# Source trace
+
+Every value comes from paper Table 3. The paper reports clearance in mL/min
+and the rate constants in min^-1; the model files multiply each by 60 so
+that the models run in hours. The paper numbers the compartments 1 blood,
+2 L2-L4 vertebrae, 3 liver, 4 spleen and 5 deep, and nlmixr2lib uses
+role-based names for the same states.
+
+| Model parameter / equation | Paper symbol | F1 (Table 3) | F2 (Table 3) | Source location |
+|---|---|---|---|---|
+| `lcl` | Blood clearance | 1.03 mL/min | 0.74 mL/min | Table 3, Blood, 'Clearance' |
+| `lvc` | Blood Vd | 4131.0 mL | 4064.8 mL | Table 3, Blood, 'Vd' |
+| `lkin_bonemarrow` | k12 | 1.11E-4 min^-1 | 0.60E-4 min^-1 | Table 3, Vertebrae L2-L4 |
+| `lkout_bonemarrow` | k21 | 1.05E-4 min^-1 | 0.96E-4 min^-1 | Table 3, Vertebrae L2-L4 |
+| `lkin_liver` | k13 | 1.80E-4 min^-1 | 2.05E-4 min^-1 | Table 3, Liver |
+| `lkout_liver` | k31 | 2.32E-4 min^-1 | 1.77E-4 min^-1 | Table 3, Liver |
+| `lkin_spleen` | k14 (row printed 'k13') | 2.11E-4 min^-1 | 1.17E-4 min^-1 | Table 3, Spleen; Figure 3 |
+| `lk_spleen_liver` | k43 (row printed 'k31') | 1.26E-4 min^-1 | 1.64E-4 min^-1 | Table 3, Spleen; Figure 3 |
+| `kin_other` | k15 | not printed, fixed 0 | not printed, fixed 0 | Figure 3 only |
+| `kout_other` | k51 | not printed, fixed 0 | not printed, fixed 0 | Figure 3 only |
+| `kel <- cl / vc` | kel | derived | derived | Methods: kel is first-order elimination from blood |
+| `d/dt(central)`, `d/dt(bonemarrow)`, `d/dt(liver)`, `d/dt(spleen)`, `d/dt(other)` | -- | -- | -- | Figure 3; Results, 'Pharmacokinetic model' |
+| `Cc <- central / vc` | blood concentration | -- | -- | Table 3 Vd; Figure 2 (blood) |
+
+# Simulation
+
+Both models are typical-value models with no between-subject or residual
+variability, so one deterministic solve per fraction is enough. The 1 mg
+(1000 ug) imaging dose is given as an intravenous bolus into blood. The
+paper does not state an infusion duration, and a few minutes of infusion
+would not change anything on the hours-to-weeks time scale of the data.
+
+```{r simulate}
+dose_ug <- 1000
+
+models <- c(
+  F1 = "Morschhauser_2018_ibritumomabTiuxetan_fraction1",
+  F2 = "Morschhauser_2018_ibritumomabTiuxetan_fraction2"
+)
+
+# A long grid is needed: with k15 = k51 = 0 the terminal half-life is ~2 weeks.
+obs_times <- sort(unique(c(seq(0, 24, by = 0.25), seq(24, 4000, by = 2))))
+
+simulate_fraction <- function(fraction, id) {
+  ev <- rxode2::et(amt = dose_ug, cmt = "central") |>
+    rxode2::et(obs_times, cmt = "central") |>
+    as.data.frame() |>
+    dplyr::mutate(id = id, fraction = fraction)
+  sim <- rxode2::rxSolve(readModelDb(models[[fraction]]), events = ev, keep = "fraction")
+  as.data.frame(sim) |> dplyr::mutate(id = id)
+}
+
+sim <- dplyr::bind_rows(
+  simulate_fraction("F1", 1L),
+  simulate_fraction("F2", 2L)
+)
+```
+
+# Replicate published figures
+
+## Figure 2 -- blood concentration
+
+The observed means below were read from Figure 2 of Morschhauser 2018 by
+the maintainers, to about +/- 0.005 ug/mL. They are given only for
+comparison and are not used by the model.
+
+```{r observed-fig2}
+fig2_obs <- tibble::tribble(
+  ~fraction, ~time, ~blood, ~bonemarrow, ~liver, ~spleen,
+  "F1",       4,    0.300,  0.003,       0.010,  0.008,
+  "F1",      24,    0.215,  0.031,       0.063,  0.067,
+  "F1",      96,    0.090,  0.059,       0.121,  0.109,
+  "F1",     168,    0.050,  0.053,       0.114,  0.097,
+  "F2",       4,    0.310,  0.001,       0.010,  0.006,
+  "F2",      24,    0.235,  0.016,       0.064,  0.044,
+  "F2",      96,    0.110,  0.041,       0.134,  0.072,
+  "F2",     168,    0.060,  0.042,       0.139,  0.067
+)
+```
+
+```{r figure-2-blood, fig.width = 7, fig.height = 4}
+sim |>
+  dplyr::filter(time <= 200) |>
+  ggplot(aes(time, Cc, colour = fraction)) +
+  geom_line() +
+  geom_point(
+    data = fig2_obs, aes(time, blood, colour = fraction),
+    shape = 17, size = 2.5
+  ) +
+  labs(
+    x = "Time after dose (h)", y = "Blood 111In-ibritumomab tiuxetan (ug/mL)",
+    colour = "Fraction",
+    title = "Blood concentration: packaged model (lines) vs. Figure 2 means (points)",
+    caption = "Replicates the blood panel of Figure 2 of Morschhauser 2018."
+  )
+```
+
+```{r figure-2-blood-table}
+blood_cmp <- sim |>
+  dplyr::filter(time %in% fig2_obs$time) |>
+  dplyr::select(fraction, time, Cc) |>
+  dplyr::inner_join(fig2_obs |> dplyr::select(fraction, time, blood), by = c("fraction", "time")) |>
+  dplyr::mutate(ratio = Cc / blood)
+stopifnot(nrow(blood_cmp) == 8L)
+
+blood_cmp |>
+  dplyr::rename(
+    "Fraction" = fraction,
+    "Time (h)" = time,
+    "Model Cc (ug/mL)" = Cc,
+    "Figure 2 mean (ug/mL)" = blood,
+    "Model / observed" = ratio
+  ) |>
+  knitr::kable(digits = 3, caption = "Blood concentration, model vs. Figure 2.")
+```
+
+The modelled blood concentration falls too fast. By 96 h it is about a
+quarter of the observed mean (F1) or about a third (F2). The reasons are
+discussed under
+[Internal consistency of the published parameters](#internal-consistency-of-the-published-parameters).
+
+## Figure 2 -- organ tissue concentrations
+
+The model states hold organ tissue amounts (ug). Figure 2 plots tissue
+concentrations, but the paper does not print the tissue volumes it used. As
+an approximation, the maintainers derived organ masses from paper Table 2 as
+blood volume in the organ divided by blood volume per gram of organ (L2-L4
+vertebrae 8.15 / 0.15 = 54 g, liver 485 / 0.29 = 1672 g, spleen
+81.5 / 0.28 = 291 g), and assumed a density of 1 g/mL. Table 2 pools the two
+fractions, so the same masses are used for both.
+
+```{r figure-2-organs, fig.width = 7, fig.height = 6}
+organ_mass_g <- c(bonemarrow = 8.15 / 0.15, liver = 485 / 0.29, spleen = 81.5 / 0.28)
+
+organ_sim <- sim |>
+  dplyr::filter(time <= 200) |>
+  dplyr::transmute(
+    fraction, time,
+    bonemarrow = bonemarrow / organ_mass_g[["bonemarrow"]],
+    liver = liver / organ_mass_g[["liver"]],
+    spleen = spleen / organ_mass_g[["spleen"]]
+  ) |>
+  tidyr::pivot_longer(c(bonemarrow, liver, spleen), names_to = "organ", values_to = "conc")
+
+organ_obs <- fig2_obs |>
+  dplyr::select(-blood) |>
+  tidyr::pivot_longer(c(bonemarrow, liver, spleen), names_to = "organ", values_to = "conc")
+
+ggplot(organ_sim, aes(time, conc, colour = fraction)) +
+  geom_line() +
+  geom_point(data = organ_obs, shape = 17, size = 2.5) +
+  facet_wrap(~organ, ncol = 1, scales = "free_y") +
+  labs(
+    x = "Time after dose (h)", y = "Tissue concentration (ug/mL)",
+    colour = "Fraction",
+    title = "Organ tissue: packaged model (lines) vs. Figure 2 means (points)",
+    caption = "Replicates the organ panels of Figure 2 of Morschhauser 2018 (organ masses derived from Table 2)."
+  )
+```
+
+```{r figure-2-organ-table}
+organ_cmp <- organ_sim |>
+  dplyr::filter(time %in% c(96, 168)) |>
+  dplyr::inner_join(organ_obs, by = c("fraction", "time", "organ"), suffix = c("_model", "_obs")) |>
+  dplyr::mutate(ratio = conc_model / conc_obs)
+stopifnot(nrow(organ_cmp) == 12L)
+
+organ_cmp |>
+  dplyr::rename(
+    "Fraction" = fraction,
+    "Time (h)" = time,
+    "Organ" = organ,
+    "Model (ug/mL)" = conc_model,
+    "Figure 2 mean (ug/mL)" = conc_obs,
+    "Model / observed" = ratio
+  ) |>
+  knitr::kable(digits = 3, caption = "Organ tissue concentration at 96 and 168 h, model vs. Figure 2.")
+```
+
+With the derived masses, the liver comes out about right, the spleen several
+fold too high, and the L2-L4 vertebrae more than an order of magnitude too
+high. The vertebral result means that, read as amounts, the printed constants
+put about 10% of the dose into three vertebrae.
+
+# PKNCA validation
+
+PKNCA is run on the simulated blood concentrations, one subject per
+fraction. Table 3 gives blood Cmax, half-life, MRT, clearance and total AUC.
+The AUC is printed in ug.min/mL and is converted to ug.h/mL (divided by 60)
+for the comparison, and the clearance in mL/min is converted to mL/h.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, fraction) |>
+  dplyr::distinct(id, fraction, time, .keep_all = TRUE)
+
+dose_df <- sim_nca |>
+  dplyr::distinct(id, fraction) |>
+  dplyr::mutate(time = 0, amt = dose_ug)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | fraction + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | fraction + id, route = "intravascular")
+
+intervals <- data.frame(
+  start = 0,
+  end = Inf,
+  cmax = TRUE,
+  aucinf.obs = TRUE,
+  half.life = TRUE,
+  mrt.obs = TRUE,
+  cl.obs = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published NCA
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~fraction, ~cmax, ~aucinf.obs,     ~half.life, ~mrt.obs, ~cl.obs,
+  "F1",      0.308, 1708.1 / 60,     83.6,       114.1,    1.03 * 60,
+  "F2",      0.326, 1983.7 / 60,     83.8,       116.0,    0.74 * 60
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "fraction",
+  units = c(
+    cmax = "ug/mL", aucinf.obs = "ug*h/mL", half.life = "h",
+    mrt.obs = "h", cl.obs = "mL/h"
+  ),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated vs. published (Table 3 means) blood NCA. * differs from reference by >20%."
+)
+```
+
+Only clearance matches, and it matches by construction, because the model
+takes clearance directly from Table 3. Cmax is the concentration right after
+the bolus, Dose / Vd, which is about 20-25% below the printed mean. AUC,
+half-life and MRT are all off by a large factor. The next section explains
+why no amount-based reading of the printed constants can match them.
+
+## Structural checks
+
+These checks compare the solve with closed-form results computed from the
+same parameters, so they test the implementation rather than the paper.
+With elimination from blood only, AUC from zero to infinity must equal
+Dose / CL. For the Figure 3 topology, the steady-state volume is
+`Vss = V1 * (1 + k12/k21 + k14/k43 + (k13 + k14)/k31 + k15/k51)` (the `k15`
+term is zero here), and the blood MRT must equal `Vss / CL`.
+
+```{r structural-checks}
+nca_wide <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "mrt.obs")) |>
+  dplyr::select(fraction, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+closed_form <- dplyr::bind_rows(lapply(names(models), function(fr) {
+  p <- rxode2::rxode(readModelDb(models[[fr]]))$theta
+  k <- exp(p[c(
+    "lkin_bonemarrow", "lkout_bonemarrow", "lkin_liver", "lkout_liver",
+    "lkin_spleen", "lk_spleen_liver"
+  )])
+  cl <- exp(p[["lcl"]])
+  vc <- exp(p[["lvc"]])
+  vss_ratio <- 1 + k[["lkin_bonemarrow"]] / k[["lkout_bonemarrow"]] +
+    k[["lkin_spleen"]] / k[["lk_spleen_liver"]] +
+    (k[["lkin_liver"]] + k[["lkin_spleen"]]) / k[["lkout_liver"]]
+  tibble::tibble(
+    fraction = fr,
+    auc_closed = dose_ug / cl,
+    mrt_closed = vss_ratio * vc / cl,
+    vss_ratio = vss_ratio
+  )
+}))
+
+checks <- dplyr::inner_join(nca_wide, closed_form, by = "fraction")
+stopifnot(
+  nrow(checks) == 2L,
+  # Same parameters on both sides: the only difference is trapezoidal and
+  # extrapolation error on a fine grid, measured at < 0.5%.
+  all(abs(checks$aucinf.obs / checks$auc_closed - 1) < 0.01),
+  all(abs(checks$mrt.obs / checks$mrt_closed - 1) < 0.01)
+)
+
+checks |>
+  dplyr::rename(
+    "Fraction" = fraction,
+    "AUCinf, PKNCA (ug*h/mL)" = aucinf.obs,
+    "Dose / CL (ug*h/mL)" = auc_closed,
+    "MRT, PKNCA (h)" = mrt.obs,
+    "Vss / CL (h)" = mrt_closed,
+    "Vss / V1" = vss_ratio
+  ) |>
+  knitr::kable(digits = 2, caption = "Simulated blood AUC and MRT vs. their closed forms.")
+```
+
+# Internal consistency of the published parameters
+
+Table 3 reports the arithmetic means of per-patient estimates, and a model
+built from mean parameters need not reproduce the mean of per-patient
+summary statistics. The gaps here are too large for that to be the whole
+explanation, though, and several are structural:
+
+* **MRT and half-life.** With elimination only from blood, the MRT of an
+  amount model is `Vss / CL`. The printed `k12/k21`, `k14/k43` and
+  `(k13 + k14)/k31` alone already give `Vss / V1` of about 5.4 (F1) and 4.2
+  (F2), so the blood MRT is at least about 360-380 h. Table 3 prints
+  114.1 h and 116.0 h. Any positive `k15` / `k51` would only lengthen it.
+  The same holds for the terminal half-life, which comes out about four
+  times the printed 83.6 / 83.8 h.
+* **AUC and clearance.** For a 1 mg dose, Dose / AUC from the printed mean
+  AUC is 0.59 mL/min (F1) and 0.50 mL/min (F2), against printed clearances
+  of 1.03 and 0.74 mL/min. (The F1 clearance has a large spread, SD 0.73.)
+* **Cmax and volume.** Dose / Vd is 0.242 ug/mL (F1) against a printed blood
+  Cmax of 0.308 ug/mL.
+* **Organ amounts.** Read as amounts, the printed vertebral exchange
+  constants put about 100 ug (10% of the dose) into the L2-L4 vertebrae by
+  96 h, which is an order of magnitude more than Figure 2 shows.
+
+Kinetica can parameterise exchange on amounts or on concentrations, and the
+paper does not say which was used. A reading in which the organ
+compartments are concentration "satellites" driven by blood, without
+draining it, reproduces the organ curves better. That reading contradicts
+the mass-flow arrows of Figure 3, though, and it still needs values for
+`k15` / `k51`, which the paper does not report. The maintainers therefore
+packaged Figure 3 as drawn, with the printed values only.
+
+# Assumptions and deviations
+
+- **Deep compartment.** Figure 3 draws a deep compartment (remaining organs
+  and tumor) exchanging with blood through `k15` / `k51`, but no value is
+  printed in the text, Table 3 or the Discussion, and the article has no
+  supplement. Both are fixed to 0 (`kin_other`, `kout_other`), so the
+  `other` state stays empty. A user who has values can set them in `ini()`.
+- **State basis.** The rate constants are taken to act on amounts, so the
+  model conserves mass along every arrow of Figure 3. The paper does not
+  state the basis.
+- **Spleen row labels.** Table 3 labels the spleen rate constants 'k13' and
+  'k31', the same as the liver row. Figure 3 gives the spleen exactly two
+  arrows, uptake from blood (`k14`) and drainage to the liver (`k43`), so
+  the first spleen value is read as `k14` and the second as `k43`.
+- **Typical values.** The individual Kinetica fits were summarised as mean
+  (SD) (Table 3), and no population model was fitted. The packaged models
+  use the means and carry no between-subject variability. For reference,
+  the F1 SDs are: Vd 937.1 mL, CL 0.73 mL/min, k12 1.31E-4, k21 0.55E-4,
+  k13 (liver) 0.60E-4, k31 (liver) 1.07E-4, k14 (spleen) 1.39E-4 and
+  k43 (spleen) 0.50E-4 min^-1. No residual error model is reported, and
+  none is included.
+- **Dose.** The model is in ug of antibody. The 111In imaging dose of
+  138 MBq at 138 MBq/mg corresponds to 1 mg. Radioactive decay is not part
+  of the model: the paper decay-corrected all measurements (Methods,
+  'Determination of amounts of radiolabeled mAbs in blood').
+- **Infusion duration.** This is not reported, and the dose is simulated as
+  a bolus into blood.
+- **Volume of distribution in the Discussion.** The Discussion quotes the F2
+  Vd as 4064.3 mL, while Table 3 prints 4064.8 mL. The table value is used.
+- **Organ masses.** The organ masses used to turn simulated tissue amounts
+  into Figure 2 concentrations are derived from Table 2 (a ratio of means)
+  and are not paper values. They are used only in this article's plots,
+  not in the model.
+- **Figure 2 values** were read from the published figure by the
+  maintainers, for comparison only.
+- **Errata.** EuropePMC lists no correction notice for the article (checked
+  2026-11-25).

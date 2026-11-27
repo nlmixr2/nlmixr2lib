@@ -118,36 +118,36 @@ Lallemand_2023_benzylpenicillin_horse <- function() {
       notes = "1 = one of the 6 Japanese horses that received a single IM dose of procaine BP (Procaine BP G sol for Animals 'KS'). No IV data were collected in Japan, so plasma clearance was estimated indirectly (Bayesian) in the full model. Modifies plasma clearance, the procaine BP absorption rate constant, and the procaine BP logit bioavailability. Time-fixed per subject.",
       source_name = "Nationcode == 3"
     ),
-    FORM_BP_NA_IM = list(
+    FORM_BENZYLPENICILLIN_SODIUM_IM = list(
       description = "Sodium benzylpenicillin solution given by the intramuscular route (Geepenil) formulation indicator",
       units = "(binary)",
       type = "binary",
       reference_category = "0 (IV administration of soluble sodium or potassium BP, the reference observation block)",
-      notes = "1 = the observation was recorded after IM sodium BP. Lallemand 2023 estimated a SEPARATE additive residual-error standard deviation for each of the five observation blocks (Supplementary Table S7 rows stdev0-stdev4) while sharing one multiplicative CV across all blocks; this indicator selects the IM sodium BP additive SD (0.162677 ug/mL). Observation-level, not subject-level: a horse in the Swedish crossover contributes rows with this indicator set to 1 on its sodium BP occasion and to 0 on its procaine BP occasion. Mutually exclusive with the other three FORM_BP_* indicators.",
+      notes = "1 = the observation was recorded after IM sodium BP. Lallemand 2023 estimated a SEPARATE additive residual-error standard deviation for each of the five observation blocks (Supplementary Table S7 rows stdev0-stdev4) while sharing one multiplicative CV across all blocks; this indicator selects the IM sodium BP additive SD (0.162677 ug/mL). Observation-level, not subject-level: a horse in the Swedish crossover contributes rows with this indicator set to 1 on its sodium BP occasion and to 0 on its procaine BP occasion. Mutually exclusive with the other three FORM_BENZYLPENICILLIN_* indicators.",
       source_name = "observation block CObsPeniNa in Supplementary Data 2"
     ),
-    FORM_BP_PROC = list(
+    FORM_BENZYLPENICILLIN_PROCAINE = list(
       description = "Procaine benzylpenicillin single-ingredient IM suspension formulation indicator",
       units = "(binary)",
       type = "binary",
       reference_category = "0 (IV administration of soluble sodium or potassium BP, the reference observation block)",
-      notes = "1 = the observation was recorded after IM procaine BP from one of the four single-ingredient products (Depocilline, Penovet, Norocillin, or the Japanese 'KS' product). Selects the procaine BP additive residual SD (0.004579 ug/mL) per Lallemand 2023 Supplementary Table S7 row stdev3. Does NOT cover the procaine BP contained in the Duplocilline combination, which forms its own observation block (see FORM_BP_DUPLO). Observation-level. Mutually exclusive with the other three FORM_BP_* indicators.",
+      notes = "1 = the observation was recorded after IM procaine BP from one of the four single-ingredient products (Depocilline, Penovet, Norocillin, or the Japanese 'KS' product). Selects the procaine BP additive residual SD (0.004579 ug/mL) per Lallemand 2023 Supplementary Table S7 row stdev3. Does NOT cover the procaine BP contained in the Duplocilline combination, which forms its own observation block (see FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE). Observation-level. Mutually exclusive with the other three FORM_BENZYLPENICILLIN_* indicators.",
       source_name = "observation block CObsPROC in Supplementary Data 2"
     ),
-    FORM_BP_DUPLO = list(
+    FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE = list(
       description = "Duplocilline (procaine benzylpenicillin + benzathine benzylpenicillin fixed combination) IM suspension formulation indicator",
       units = "(binary)",
       type = "binary",
       reference_category = "0 (IV administration of soluble sodium or potassium BP, the reference observation block)",
-      notes = "1 = the observation was recorded after IM Duplocilline. Selects the Duplocilline additive residual SD (0.006537 ug/mL) per Lallemand 2023 Supplementary Table S7 row stdev2. The measured concentration is the SUM of the BP released by both prodrug components, which the model reproduces by feeding both the procaine and the benzathine depot into the same central compartment. Observation-level. Mutually exclusive with the other three FORM_BP_* indicators.",
+      notes = "1 = the observation was recorded after IM Duplocilline. Selects the Duplocilline additive residual SD (0.006537 ug/mL) per Lallemand 2023 Supplementary Table S7 row stdev2. The measured concentration is the SUM of the BP released by both prodrug components, which the model reproduces by feeding both the procaine and the benzathine depot into the same central compartment. Observation-level. Mutually exclusive with the other three FORM_BENZYLPENICILLIN_* indicators.",
       source_name = "observation block CObsBenza in Supplementary Data 2"
     ),
-    FORM_BP_PENETH = list(
+    FORM_BENZYLPENICILLIN_PENETHAMATE = list(
       description = "Penethamate hydriodide (Penetavet) IM suspension formulation indicator",
       units = "(binary)",
       type = "binary",
       reference_category = "0 (IV administration of soluble sodium or potassium BP, the reference observation block)",
-      notes = "1 = the observation was recorded after IM penethamate hydriodide. Selects the penethamate additive residual SD (0.008068 ug/mL) per Lallemand 2023 Supplementary Table S7 row stdev4. The measured concentration is the SUM of the BP released from all three injection sites, which the model reproduces by feeding the three site depots into the same central compartment. Observation-level. Mutually exclusive with the other three FORM_BP_* indicators.",
+      notes = "1 = the observation was recorded after IM penethamate hydriodide. Selects the penethamate additive residual SD (0.008068 ug/mL) per Lallemand 2023 Supplementary Table S7 row stdev4. The measured concentration is the SUM of the BP released from all three injection sites, which the model reproduces by feeding the three site depots into the same central compartment. Observation-level. Mutually exclusive with the other three FORM_BENZYLPENICILLIN_* indicators.",
       source_name = "observation block CObsPenethamate in Supplementary Data 2"
     )
   )
@@ -522,10 +522,10 @@ Lallemand_2023_benzylpenicillin_horse <- function() {
     # below returns addSd_iv when all four IM formulation flags are 0.
     # -------------------------------------------------------------------
     addSd <- addSd_iv +
-      (addSd_na_im - addSd_iv) * FORM_BP_NA_IM +
-      (addSd_proc - addSd_iv) * FORM_BP_PROC +
-      (addSd_duplo - addSd_iv) * FORM_BP_DUPLO +
-      (addSd_peneth - addSd_iv) * FORM_BP_PENETH
+      (addSd_na_im - addSd_iv) * FORM_BENZYLPENICILLIN_SODIUM_IM +
+      (addSd_proc - addSd_iv) * FORM_BENZYLPENICILLIN_PROCAINE +
+      (addSd_duplo - addSd_iv) * FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE +
+      (addSd_peneth - addSd_iv) * FORM_BENZYLPENICILLIN_PENETHAMATE
     Cc ~ add(addSd) + prop(propSd)
   })
 }

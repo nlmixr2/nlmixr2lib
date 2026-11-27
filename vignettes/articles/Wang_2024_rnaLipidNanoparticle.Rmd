@@ -489,9 +489,13 @@ human_arm <- function(dose_mgkg) {
 human_events <- dplyr::bind_rows(lapply(human_doses, human_arm))
 stopifnot(!anyDuplicated(unique(human_events[, c("id", "time", "evid")])))
 
+# Tight tolerances: the dose-proportionality check below holds dose-normalised
+# AUClast and half-life equal across arms to 1e-6. At rxSolve()'s defaults the
+# spread is already 1e-6 and differs between machines; at these tolerances it
+# measures below 5e-10.
 human_sim <- rxode2::rxSolve(mod_human, human_events,
                              keep = c("treatment", "dose_mc3_mg"),
-                             useLinCmt = FALSE) |>
+                             useLinCmt = FALSE, rtol = 1e-10, atol = 1e-12) |>
   as.data.frame() |>
   # Figure 7's y-axis is labelled mg/mL but the plotted values are ng/mL; see
   # the Errata. Cc is the ng/mL plasma concentration used for NCA below.

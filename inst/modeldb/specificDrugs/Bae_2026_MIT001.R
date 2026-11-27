@@ -3,6 +3,7 @@ Bae_2026_MIT001 <- function() {
   reference <- "Bae S, Kim E, Rhee SJ, Kim S, Yu KS, Lee S. Population Pharmacokinetic Analysis of MIT-001, a Novel Ferroptosis Inhibitor, for Dose Optimization. J Clin Pharmacol. 2026;66(4):e70189. doi:10.1002/jcph.70189"
   vignette <- "Bae_2026_MIT001"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Bae 2026 Figure 1 (model schematic:

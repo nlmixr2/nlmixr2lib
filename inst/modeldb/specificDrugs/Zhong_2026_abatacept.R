@@ -9,6 +9,7 @@ Zhong_2026_abatacept <- function() {
   )
   vignette <- "Zhong_2026_abatacept"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

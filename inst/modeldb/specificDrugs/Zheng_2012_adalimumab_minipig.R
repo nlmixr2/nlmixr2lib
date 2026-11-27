@@ -19,6 +19,7 @@ Zheng_2012_adalimumab_minipig <- function() {
   )
   vignette <- "Zheng_2012_minipig_mab"
   units <- list(time = "day", dosing = "mg/kg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

@@ -11,6 +11,7 @@ Kovalenko_2016_dupilumab <- function() {
   vignette <- "Kovalenko_2016_dupilumab"
   replicate_of <- "inst/modeldb/ddmore/Kovalenko_2016_dupilumab_ddmore.R"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
   # Final model from Table 2, column "BLQ data included".  The paper reports
   # two sets of parameter estimates: "BLQ data included" (the primary model,
   # using the Beal M3 method for BLQ observations) and "BLQ data excluded"

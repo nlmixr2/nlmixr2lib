@@ -1,0 +1,489 @@
+---
+title: "Sirolimus clearance maturation in neonates and infants (Emoto 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sirolimus clearance maturation in neonates and infants (Emoto 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Emoto_2016_sirolimus"))$reference`
+* Article (open access): <https://doi.org/10.1002/psp4.12096>
+* PMCID: PMC4999604
+
+Emoto 2016 used sirolimus whole-blood troughs from a
+concentration-controlled phase II trial in children with complicated
+vascular anomalies (NCT00975819) to describe how sirolimus clearance
+develops over the first years of life. The paper contributes three
+models, all packaged here and all described in this one article:
+
+* **`Emoto_2016_sirolimus`** -- the paper's population model (Table 2).
+  Maximum a posteriori Bayesian clearance estimates, one per sample,
+  were normalised to 70 kg with a weight exponent of 0.67 and fitted
+  in NONMEM 7.2 (FOCE-I, `$PRED`) as a sigmoid Emax function of
+  postmenstrual age (PMA), with exponential IIV on all three parameters
+  and a proportional residual error.
+* **`Emoto_2016_sirolimus_25oh_ratio`** and
+  **`Emoto_2016_sirolimus_16odm_ratio`** -- simple Emax regressions
+  (GraphPad Prism) of the 25-hydroxysirolimus and
+  16-O-demethylsirolimus to sirolimus concentration ratios on PMA
+  (Figure 3A and 3B), the CYP3A-activity markers the authors used to
+  explain the clearance maturation.
+
+None of the three is a concentration-time model. The observation of
+the first is a clearance (L/h/70kg) and of the other two a
+dimensionless metabolite / parent ratio, each a function of a PMA
+covariate. There are no doses, volumes or absorption parameters,
+because the Bayesian estimator only estimated individual clearances
+from the predominantly trough samples (Methods, "Individual clearance
+estimates by Bayesian estimation"). For that reason the PKNCA section
+of the usual validation template does not apply; the checks below are
+instead against the paper's printed estimates, Figure 1, the Figure 2
+visual predictive check and Figure 3.
+
+# Population
+
+The trial enrolled 52 patients aged 21 days to 19 years (Table 1;
+median weight 18 kg, range 4.0-101; 20 male, 32 female; 39 Caucasian,
+7 African American, 1 Asian, 4 other, 1 unknown). Oral sirolimus
+started at 0.8 mg/m^2 twice daily and was then titrated to a trough of
+10-15 ng/mL. Patients had adequate liver and renal function and no
+CYP3A4 inhibitors or inducers at entry; seven patients with
+kaposiform hemangioendothelioma received tapering steroids for 1-2
+months, which had no significant covariate effect.
+
+Two subsets were analysed:
+
+* The **maturation fit** used all 316 serial clearance estimates from
+  the 24 patients younger than 4 years (Supplemental Table 2: PMA
+  43-233 weeks, median 120; weight 4.0-18 kg, median 11; 10 male, 14
+  female). The cohort had no premature infants, so PMA was computed as
+  postnatal age + 40 weeks.
+* The **weight exponent** came from a separate log-log regression of
+  each patient's averaged first-three-month clearance on body weight in
+  the 32 patients aged 3-19 years (Supplemental Table 1 and
+  Supplemental Figure 1A: slope 0.67, 95% CI 0.47-0.88), on the
+  assumption that maturation is complete by age 3.
+
+The metabolite-ratio regressions used the samples from patients
+younger than 4 years plotted in Figure 3 (about 29 and 28 points); the
+number of contributing patients is not reported.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Sigmoid Emax `CL = CLmatured * PMA^Hill / (TM50^Hill + PMA^Hill)` | -- | Methods, "Population modeling analysis"; Supplement 2 (`$PRED`) |
+| PMA = postnatal age (weeks) + 40 | -- | Methods, "Population modeling analysis" |
+| Size normalisation `CL70 = CLobs * (70 / WT)^0.67` | -- | Results equation; Supplemental Figure 1 legend |
+| `lcl` (CLmatured) | 18.1 L/h/70kg | Table 2 (RSE 4.7%); Results; Figure 1 legend |
+| `ltm50_cl` (TM50) | 62.9 weeks | Table 2 (RSE 8.4%) |
+| `lhill` (Hill) | 2.94 | Table 2 (RSE 16.4%) |
+| `e_wt_cl` | 0.67, fixed | Results; Supplemental Figure 1A |
+| IIV form `P_i = P_pop * exp(eta_i)` | -- | Supplement 1, eq. 1; Supplement 2 |
+| `etalcl`, `etaltm50_cl`, `etalhill` | 11.3, 17.4, 102 CV% | Table 2, IIV column |
+| Residual `Y = F * (1 + eps)` | -- | Supplement 1, eq. 2; Supplement 2 |
+| `propSd` | sqrt(0.066) | Table 2 "Proportional residual error" 0.066 (variance) |
+| Ratio model `ratio = Emax * PMA / (EC50 + PMA)` | -- | Methods, "Statistical analyses"; Figure 3 |
+| 25-OH ratio `lemax`, `ltm50`, `addSd` | 0.184, 129 weeks, 0.029 | digitised from Figure 3A |
+| 16-O-DM ratio `lemax`, `ltm50`, `addSd` | 0.136, 153 weeks, 0.023 | digitised from Figure 3B |
+
+# Validation 1: the typical maturation curve (Figure 1)
+
+The clearance model is algebraic in the `PAGE` covariate. The rxode2
+time axis is not used by the model, so it is set equal to PMA in weeks
+purely to give each row a distinct time.
+
+```{r typical-sim}
+cl_mod <- readModelDb("Emoto_2016_sirolimus")
+cl_typ <- rxode2::zeroRe(cl_mod)
+
+pma_grid <- sort(unique(c(seq(40, 260, by = 1), 62.9, 144, 196)))
+grid_data <- data.frame(
+  id = 1L, time = pma_grid, evid = 0L, PAGE = pma_grid, WT = 11
+)
+typ <- rxode2::rxSolve(cl_typ, grid_data, keep = "PAGE") |>
+  as.data.frame()
+
+at_pma <- function(p) {
+  v <- typ$CL_wt70[match(p, typ$PAGE)]
+  if (anyNA(v)) stop("PMA value(s) not on the simulation grid")
+  v
+}
+```
+
+```{r typical-checks}
+clmat <- 18.1; tm50 <- 62.9; hill <- 2.94
+hand <- function(p) clmat * p^hill / (tm50^hill + p^hill)
+typ_checks <- tibble::tibble(
+  Check = c(
+    "CL at PMA = TM50 equals CLmatured / 2",
+    "Solved curve equals the Methods equation at every grid point",
+    "Fraction of CLmatured at PMA 144 weeks (about 2 years)",
+    "Fraction of CLmatured at PMA 196 weeks (about 3 years)",
+    "CL at PMA 600 weeks vs the older-patient centred value 18.2 L/h/70kg"
+  ),
+  Expected = c(clmat / 2, 0, NA, NA, 18.2),
+  Achieved = c(
+    at_pma(tm50),
+    max(abs(typ$CL_wt70 - hand(typ$PAGE))),
+    at_pma(144) / clmat,
+    at_pma(196) / clmat,
+    hand(600)
+  )
+)
+knitr::kable(typ_checks, digits = 4)
+stopifnot(
+  # Deterministic algebra: exact identities.
+  abs(at_pma(tm50) - clmat / 2) < 1e-8,
+  max(abs(typ$CL_wt70 - hand(typ$PAGE))) < 1e-8,
+  all(diff(typ$CL_wt70) > 0),
+  # Discussion: clearance "reached what was considered the mature level
+  # ... at around 2-3 years of age (PMA of 144-196 weeks)".
+  at_pma(144) / clmat > 0.90,
+  at_pma(196) / clmat > 0.95,
+  # Discussion: CLmatured agrees with the centred size-normalised clearance
+  # of the 3-19 year olds (18.2 L/h/70kg, Supplemental Figure 1B).
+  abs(hand(600) / 18.2 - 1) < 0.02
+)
+```
+
+The individual clearance in L/h is recovered from the size-normalised
+prediction with the same 0.67 exponent the authors used to normalise
+it. For a typical infant at PMA 100 weeks weighing 10 kg:
+
+```{r absolute-cl}
+one <- data.frame(id = 1L, time = 100, evid = 0L, PAGE = 100, WT = 10)
+one_sim <- as.data.frame(rxode2::rxSolve(cl_typ, one))
+stopifnot(abs(one_sim$CL_abs - hand(100) * (10 / 70)^0.67) < 1e-8)
+knitr::kable(
+  one_sim |>
+    dplyr::select(CL_wt70, CL_abs) |>
+    dplyr::rename("CL (L/h/70kg)" = CL_wt70, "CL (L/h), 10 kg" = CL_abs),
+  digits = 3
+)
+```
+
+```{r fig1, fig.cap = "Replicates Figure 1 of Emoto 2016: typical size-normalised sirolimus clearance against postmenstrual age (CLmatured 18.1 L/h/70kg, TM50 62.9 weeks, Hill 2.94). The dashed line is CLmatured; the dotted line marks TM50."}
+ggplot2::ggplot(typ, ggplot2::aes(PAGE, CL_wt70)) +
+  ggplot2::geom_line(linewidth = 0.9) +
+  ggplot2::geom_hline(yintercept = clmat, linetype = "dashed", colour = "grey40") +
+  ggplot2::geom_vline(xintercept = tm50, linetype = "dotted", colour = "grey40") +
+  ggplot2::coord_cartesian(ylim = c(0, 35)) +
+  ggplot2::labs(x = "Postmenstrual age (weeks)",
+                y = "Allometrically normalised CL (L/h/70kg)") +
+  ggplot2::theme_bw()
+```
+
+# Validation 2: the visual predictive check (Figure 2)
+
+Figure 2 shows the 5th, 50th and 95th percentiles of the model's
+simulated clearances. The maintainers digitised the black (simulated)
+percentile lines from the published figure at four PMA values; they
+are approximate (read from a 270-pixel image) and are used here only
+to adjudicate the residual-error scale, which Table 2 prints as a bare
+"0.066".
+
+```{r vpc-sim}
+fig2 <- tibble::tribble(
+  ~PAGE, ~p05,  ~p50,  ~p95,
+     82,   NA,  10.4,  19.5,
+    131,  7.5,    NA,  24.1,
+    200,  8.6,  16.1,  25.5,
+    227,  8.7,  16.4,  25.8
+)
+
+n_sub <- 200
+vpc_pma <- c(fig2$PAGE, seq(45, 245, by = 10))
+vpc_data <- tidyr::expand_grid(id = seq_len(n_sub), PAGE = sort(unique(vpc_pma))) |>
+  dplyr::mutate(time = PAGE, evid = 0L, WT = 11)
+
+rxode2::rxSetSeed(20160801)
+sim_var <- rxode2::rxSolve(cl_mod, vpc_data, keep = "PAGE") |>
+  as.data.frame()
+
+# Alternative reading: 0.066 as a standard deviation rather than a variance.
+cl_mod_sd <- cl_mod |> rxode2::ini(propSd = 0.066)
+rxode2::rxSetSeed(20160801)
+sim_sd <- rxode2::rxSolve(cl_mod_sd, vpc_data, keep = "PAGE") |>
+  as.data.frame()
+
+pct <- function(d) {
+  d |>
+    dplyr::group_by(PAGE) |>
+    dplyr::summarise(
+      p05 = stats::quantile(sim, 0.05), p50 = stats::median(sim),
+      p95 = stats::quantile(sim, 0.95), .groups = "drop"
+    )
+}
+q_var <- pct(sim_var)
+q_sd <- pct(sim_sd)
+```
+
+```{r vpc-table}
+cmp <- fig2 |>
+  dplyr::left_join(q_var, by = "PAGE", suffix = c("_fig", "_var")) |>
+  dplyr::left_join(q_sd |> dplyr::rename(p05_sd = p05, p50_sd = p50, p95_sd = p95),
+                   by = "PAGE")
+knitr::kable(
+  cmp |>
+    dplyr::select(PAGE, p05_fig, p05_var, p05_sd, p50_fig, p50_var, p50_sd,
+                  p95_fig, p95_var, p95_sd) |>
+    dplyr::rename(
+      "PMA (weeks)" = PAGE,
+      "5th, Fig 2" = p05_fig, "5th, sigma variance" = p05_var, "5th, sigma SD" = p05_sd,
+      "50th, Fig 2" = p50_fig, "50th, sigma variance" = p50_var, "50th, sigma SD" = p50_sd,
+      "95th, Fig 2" = p95_fig, "95th, sigma variance" = p95_var, "95th, sigma SD" = p95_sd
+    ),
+  digits = 1
+)
+```
+
+Reading 0.066 as the NONMEM `$SIGMA` variance (proportional SD 25.7%)
+reproduces the published prediction interval; reading it as an SD
+(6.6%) gives an interval roughly half as wide. The gate below uses
+the width of the 90% interval in the mature region (PMA 200-227 weeks,
+400 simulated values per percentile) as a ratio, which is robust to
+which simulated subjects land in the tails; the table shows the value
+read from the figure next to the two readings.
+
+```{r vpc-gate}
+mature <- function(d) {
+  x <- d$sim[d$PAGE %in% c(200, 227)]
+  unname(stats::quantile(x, 0.95) / stats::quantile(x, 0.05))
+}
+fig_ratio <- mean(c(25.5 / 8.6, 25.8 / 8.7))
+ratio_tab <- tibble::tibble(
+  Source = c("Figure 2", "propSd = sqrt(0.066) (packaged)", "propSd = 0.066"),
+  `95th / 5th percentile, PMA 200-227` = c(fig_ratio, mature(sim_var), mature(sim_sd))
+)
+knitr::kable(ratio_tab, digits = 2)
+med_mature <- stats::median(sim_var$sim[sim_var$PAGE %in% c(200, 227)])
+stopifnot(
+  abs(mature(sim_var) / fig_ratio - 1) < 0.20,
+  mature(sim_sd) < 2.3,
+  abs(med_mature / 16.25 - 1) < 0.10
+)
+```
+
+```{r fig2, fig.cap = "Replicates Figure 2 of Emoto 2016: 5th, 50th and 95th percentiles of size-normalised clearance simulated from the packaged model (lines, 200 subjects per PMA) with the maintainers' readings of the published simulated percentiles (points)."}
+fig2_long <- fig2 |>
+  tidyr::pivot_longer(c(p05, p50, p95), names_to = "pct", values_to = "value") |>
+  dplyr::filter(!is.na(value))
+q_long <- q_var |>
+  tidyr::pivot_longer(c(p05, p50, p95), names_to = "pct", values_to = "value")
+ggplot2::ggplot(q_long, ggplot2::aes(PAGE, value, linetype = pct)) +
+  ggplot2::geom_line() +
+  ggplot2::geom_point(data = fig2_long, ggplot2::aes(PAGE, value, shape = pct),
+                      inherit.aes = FALSE, size = 2.5, colour = "firebrick") +
+  ggplot2::scale_linetype_manual(values = c(p05 = "dashed", p50 = "solid", p95 = "dashed")) +
+  ggplot2::labs(x = "Postmenstrual age (weeks)",
+                y = "Allometrically normalised CL (L/h/70kg)",
+                linetype = "Simulated", shape = "Figure 2") +
+  ggplot2::theme_bw()
+```
+
+Table 2 also gives IIV only as CV%, and the paper does not say whether
+CV% was computed as `sqrt(omega^2)` or `sqrt(exp(omega^2) - 1)`. The
+packaged model uses `omega^2 = log(1 + CV^2)`. The two readings differ
+materially only for the Hill coefficient (102 CV%: 0.713 vs 1.040).
+Re-solving with the alternative, on the same random-number stream,
+shows how far the Figure 2 percentiles move:
+
+```{r omega-scale}
+cl_mod_om <- cl_mod |>
+  rxode2::ini(etalcl ~ 0.113^2, etaltm50_cl ~ 0.174^2, etalhill ~ 1.02^2)
+rxode2::rxSetSeed(20160801)
+sim_om <- rxode2::rxSolve(cl_mod_om, vpc_data, keep = "PAGE") |>
+  as.data.frame()
+q_om <- pct(sim_om)
+om_tab <- q_var |>
+  dplyr::inner_join(q_om, by = "PAGE", suffix = c("_log", "_sq")) |>
+  dplyr::filter(PAGE %in% fig2$PAGE) |>
+  dplyr::transmute(
+    PAGE,
+    d05 = p05_sq - p05_log, d50 = p50_sq - p50_log, d95 = p95_sq - p95_log
+  )
+knitr::kable(
+  om_tab |>
+    dplyr::rename(
+      "PMA (weeks)" = PAGE, "Change in 5th" = d05,
+      "Change in 50th" = d50, "Change in 95th" = d95
+    ),
+  digits = 2
+)
+```
+
+The shifts are small next to the uncertainty of reading percentiles off
+the published figure, so Figure 2 cannot tell the two conventions
+apart and the log-normal conversion is kept.
+
+# Validation 3: metabolite / parent ratios (Figure 3)
+
+Figure 3 plots the 25-OH / sirolimus and 16-O-DM / sirolimus ratios
+against PMA with a simple Emax regression line and a 95% prediction
+band; the paper prints only R^2 (0.34 and 0.30). The packaged Emax and
+half-maximal PMA were obtained by digitising each regression line along
+its whole length and fitting the Emax form to it; the line passes
+through the origin, so there is no baseline term. The residual SD comes
+from the prediction band at PMA 0, where the fitted line and its
+standard error vanish and the band half-width is
+`t(0.975, n - 2) * s`.
+
+As an independent check, the maintainers also digitised the plotted
+observations themselves and refitted the authors' stated method
+(unweighted simple Emax by nonlinear least squares). The refit should
+land near the packaged values and recover the printed R^2.
+
+```{r ratio-refit}
+pts_25oh <- data.frame(
+  PAGE = c(55, 62, 63, 67, 67, 70, 71, 73, 74, 74, 76, 79, 81, 86, 95, 96, 96,
+           109, 117, 126, 131, 161, 188, 188, 191, 191, 192, 236, 240),
+  ratio = c(0.021, 0.044, 0.049, 0.045, 0.092, 0.060, 0.103, 0.070, 0.060,
+            0.060, 0.045, 0.075, 0.104, 0.040, 0.083, 0.117, 0.112, 0.084,
+            0.112, 0.106, 0.067, 0.084, 0.057, 0.054, 0.074, 0.140, 0.156,
+            0.123, 0.155)
+)
+pts_16odm <- data.frame(
+  PAGE = c(55, 63, 67, 66, 68, 72, 73, 74, 74, 75, 80, 82, 86, 95, 97, 97,
+           109, 117, 126, 131, 161, 188, 188, 191, 192, 193, 236, 240),
+  ratio = c(0.017, 0.021, 0.017, 0.054, 0.068, 0.071, 0.036, 0.034, 0.037,
+            0.025, 0.088, 0.063, 0.028, 0.067, 0.075, 0.077, 0.042, 0.065,
+            0.040, 0.040, 0.041, 0.028, 0.070, 0.083, 0.112, 0.095, 0.071,
+            0.105)
+)
+
+refit <- function(d) {
+  f <- stats::nls(ratio ~ emax * PAGE / (tm50 + PAGE), data = d,
+                  start = list(emax = 0.2, tm50 = 100))
+  ss <- sum(stats::residuals(f)^2)
+  c(stats::coef(f),
+    R2 = 1 - ss / sum((d$ratio - mean(d$ratio))^2),
+    s = sqrt(ss / (nrow(d) - 2)))
+}
+packaged <- function(name) {
+  ini <- rxode2::rxode(readModelDb(name))$iniDf
+  th <- setNames(ini$est, ini$name)
+  c(emax = exp(th[["lemax"]]), tm50 = exp(th[["ltm50"]]), s = th[["addSd"]])
+}
+r25 <- refit(pts_25oh); r16 <- refit(pts_16odm)
+p25 <- packaged("Emoto_2016_sirolimus_25oh_ratio")
+p16 <- packaged("Emoto_2016_sirolimus_16odm_ratio")
+
+ratio_tab <- tibble::tibble(
+  Metabolite = rep(c("25-OH", "16-O-DM"), each = 4),
+  Quantity = rep(c("Emax", "PMA at half-max (weeks)", "Residual SD", "R^2"), 2),
+  Packaged = c(p25[["emax"]], p25[["tm50"]], p25[["s"]], NA,
+               p16[["emax"]], p16[["tm50"]], p16[["s"]], NA),
+  `Refit of digitised points` = c(r25[["emax"]], r25[["tm50"]], r25[["s"]], r25[["R2"]],
+                                  r16[["emax"]], r16[["tm50"]], r16[["s"]], r16[["R2"]]),
+  Published = c(NA, NA, NA, 0.34, NA, NA, NA, 0.30)
+)
+knitr::kable(ratio_tab, digits = 3)
+stopifnot(
+  abs(r25[["R2"]] - 0.34) < 0.05, abs(r16[["R2"]] - 0.30) < 0.05,
+  abs(r25[["emax"]] / p25[["emax"]] - 1) < 0.10,
+  abs(r25[["tm50"]] / p25[["tm50"]] - 1) < 0.10,
+  abs(r16[["emax"]] / p16[["emax"]] - 1) < 0.10,
+  abs(r16[["tm50"]] / p16[["tm50"]] - 1) < 0.10,
+  abs(r25[["s"]] / p25[["s"]] - 1) < 0.15,
+  abs(r16[["s"]] / p16[["s"]] - 1) < 0.15
+)
+```
+
+```{r ratio-sim}
+ratio_grid <- data.frame(id = 1L, time = seq(0, 250, by = 2), evid = 0L,
+                         PAGE = seq(0, 250, by = 2))
+sim25 <- rxode2::rxSolve(rxode2::zeroRe(readModelDb("Emoto_2016_sirolimus_25oh_ratio")),
+                         ratio_grid, keep = "PAGE") |>
+  as.data.frame()
+sim16 <- rxode2::rxSolve(rxode2::zeroRe(readModelDb("Emoto_2016_sirolimus_16odm_ratio")),
+                         ratio_grid, keep = "PAGE") |>
+  as.data.frame()
+stopifnot(
+  max(abs(sim25$mpr_25oh - p25[["emax"]] * sim25$PAGE / (p25[["tm50"]] + sim25$PAGE))) < 1e-10,
+  max(abs(sim16$mpr_16odm - p16[["emax"]] * sim16$PAGE / (p16[["tm50"]] + sim16$PAGE))) < 1e-10
+)
+band <- function(sim, value, s, n) {
+  data.frame(PAGE = sim$PAGE, fit = sim[[value]],
+             lo = sim[[value]] - stats::qt(0.975, n - 2) * s,
+             hi = sim[[value]] + stats::qt(0.975, n - 2) * s)
+}
+plot_df <- dplyr::bind_rows(
+  band(sim25, "mpr_25oh", p25[["s"]], nrow(pts_25oh)) |> dplyr::mutate(panel = "A: 25-OH / sirolimus"),
+  band(sim16, "mpr_16odm", p16[["s"]], nrow(pts_16odm)) |> dplyr::mutate(panel = "B: 16-O-DM / sirolimus")
+)
+pts_df <- dplyr::bind_rows(
+  pts_25oh |> dplyr::mutate(panel = "A: 25-OH / sirolimus"),
+  pts_16odm |> dplyr::mutate(panel = "B: 16-O-DM / sirolimus")
+)
+```
+
+```{r fig3, fig.cap = "Replicates Figure 3 of Emoto 2016: packaged simple Emax ratio models (solid) with an approximate 95% prediction band (dotted; residual SD only, ignoring parameter uncertainty) and the maintainers' digitisation of the plotted observations."}
+ggplot2::ggplot(plot_df, ggplot2::aes(PAGE)) +
+  ggplot2::geom_line(ggplot2::aes(y = fit), linewidth = 0.9) +
+  ggplot2::geom_line(ggplot2::aes(y = lo), linetype = "dotted") +
+  ggplot2::geom_line(ggplot2::aes(y = hi), linetype = "dotted") +
+  ggplot2::geom_point(data = pts_df, ggplot2::aes(PAGE, ratio), shape = 1) +
+  ggplot2::facet_wrap(~panel, scales = "free_y") +
+  ggplot2::coord_cartesian(ylim = c(0, NA)) +
+  ggplot2::labs(x = "Postmenstrual age (weeks)",
+                y = "Metabolite / sirolimus concentration ratio") +
+  ggplot2::theme_bw()
+```
+
+# Assumptions and deviations
+
+* **Not a concentration model.** The packaged clearance model predicts
+  a Bayesian clearance estimate, exactly as the authors fitted it; it
+  cannot simulate concentrations on its own, because no volume or
+  absorption rate is reported. Its observation `CL_wt70` and the ratio
+  observations `mpr_25oh` / `mpr_16odm` are not registered output
+  names, so `checkModelConventions()` reports one non-canonical-output
+  warning per model. This follows the shipped clearance-maturation
+  precedent `Kata_2025_ganciclovir_maturation` (`CL_bsa`).
+* **Residual error scale.** Table 2 prints the proportional residual
+  error as 0.066 without saying whether it is a variance or an SD.
+  Taken as the NONMEM `$SIGMA` variance (`propSd = sqrt(0.066)`),
+  because only that reading reproduces the Figure 2 prediction
+  interval (Validation 2). The bootstrap median (0.067) is consistent
+  with either reading.
+* **IIV scale.** Table 2 gives IIV as CV%. Converted with
+  `omega^2 = log(1 + CV^2)`. The paper does not say which formula it
+  used; the alternative `omega^2 = CV^2` matters only for the Hill
+  coefficient (0.713 vs 1.040); the "omega-scale" comparison in
+  Validation 2 shows the VPC cannot discriminate between them.
+* **Weight exponent fixed at 0.67.** The authors estimated it in a
+  separate regression on 3-19 year olds and applied it as a fixed
+  normalisation before the NONMEM fit, so it is `fixed()` here. The
+  Discussion also reports a sensitivity fit with exponent 0.75
+  (CLmatured 20.6 L/h/70kg, TM50 60.1 weeks, Hill 2.84, "detailed data
+  not shown"); with no IIV or residual values it is not packaged.
+* **Covariate units.** `PAGE` is supplied in weeks (the paper's scale),
+  not the register's default months; `WT` is used only to convert the
+  normalised prediction to `CL_abs` in L/h.
+* **Metabolite-ratio parameters are digitised.** Emax, half-maximal
+  PMA and the residual SD of the two ratio models were read from
+  Figure 3 by the maintainers (regression line and prediction band);
+  the refit of the digitised observations reproduces the printed R^2.
+  The ratio regressions had no random effects. The number of points
+  (29 and 28) was counted from the figure and enters only the
+  t-quantile used to convert the band to a residual SD.
+* **Not packaged.** The Simcyp PBPK simulation of Supplemental Figure 3
+  (TM50 61.3 weeks) is a platform-model output, not a model fitted in
+  this paper, and the regression of clearance on body weight
+  (Supplemental Figure 1A) survives only as the 0.67 exponent.
+* **Errata.** No erratum or correction for this article was found in
+  PubMed (record and erratum search, checked 2026-11-24).

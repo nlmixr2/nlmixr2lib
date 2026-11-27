@@ -19,6 +19,7 @@ Mohlmann_2026_prednisolone <- function() {
   )
   vignette <- "Mohlmann_2026_prednisolone"
   units <- list(time = "h", dosing = "mg", concentration = "umol/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

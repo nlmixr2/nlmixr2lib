@@ -49,6 +49,7 @@ Su_2025_gprc5dbcmacart_CD28_invitro <- function() {
     dosing = "cells (tumour and CAR T cells seeded into the well as amt)",
     concentration = "percent (tumour-cell viability relative to control)"
   )
+  dosing <- c("n_tumor", "n_cart")
 
   compartmentData <- list(
     n_tumor = list(analyte = "multiple myeloma tumour cells", units = "cells", specimen = "tissue", verified = TRUE),

@@ -1,0 +1,423 @@
+---
+title: "Vancomycin serum and CSF (Polaskova 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin serum and CSF (Polaskova 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+rxode2::rxSetSeed(20260616)
+```
+
+# Model and source
+
+```{r meta}
+mod <- readModelDb("Polaskova_2026_vancomycin")
+mod_ui <- rxode2::rxode2(mod)
+```
+
+* Citation: `r mod_ui$reference`
+* Description: `r mod_ui$description`
+* Article: <https://doi.org/10.1128/aac.00569-26> (open access, PMC13436342)
+
+Polaskova et al. fitted serum and cerebrospinal fluid (CSF) vancomycin
+concentrations from routine therapeutic drug monitoring simultaneously in
+Monolix. The structural model is printed as a Monolix model file in the
+Supplementary data: a central (serum) compartment with volume `Vd` and
+clearance `CL`, linked by an inter-compartmental clearance `Q` to a CSF
+compartment whose volume is fixed at 0.15 L and from which drug is also
+cleared out of the body by `CLCSF`. Absolute CKD-EPI eGFR (mL/min) is the only
+covariate, a power function on `CL` centred at 120 mL/min.
+
+# Population
+
+Sixty-four adult neurosurgical patients with secondary (post-neurosurgical)
+meningitis treated at the Military University Hospital Prague between January
+2017 and January 2026 (Table 1): 36 men and 28 women, median age 55 years
+(range 18-82), median body weight 85 kg (48-140), median absolute CKD-EPI eGFR
+119.8 mL/min (IQR 101.0-136.0, range 56.2-185.5). Fifty-three patients
+received a 1,500-4,000 mg loading dose; maintenance was intermittent (500-3,000
+mg every 6, 8, 12 or 24 h) in 53 patients, continuous in 4 and mixed in 7. Only
+concentrations from the first 4 days of therapy were analysed: 133 serum
+concentrations and 100 CSF observations, 38 of them below the 4.0 mg/L limit of
+quantification and handled as censored data.
+
+```{r population}
+str(mod_ui$population)
+```
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure: serum (cmt 1) + CSF (cmt 2), IV into serum, elimination from both | -- | Supplementary data, Monolix model file |
+| `k10 = CL/Vd`, `k12 = Q/Vd`, `k21 = Q/VdCSF`, `k20 = CLCSF/VdCSF` | -- | Supplementary data, Monolix model file |
+| `CL = CL_pop x (eGFR/120)^beta x exp(eta)` | -- | Table 2 equation block |
+| `lvc` | log(115.1 L) | Table 2, Vd_pop |
+| `lcl` | log(6.50 L/h) | Table 2, CL_pop |
+| `e_crcl_cl` | 1.20 | Table 2, beta_CL_eGFR |
+| `lqcsf` | log(0.0079 L/h) | Table 2, Q_pop |
+| `lcl_csf` | log(0.019 L/h) | Table 2, CLCSF_pop |
+| `lvcsf` | log(0.15 L), fixed | Table 2 equation block; Methods |
+| `etalvc` | 0.41^2 = 0.1681 | Table 2, omega_Vd 41.0% |
+| `etalcl` | 0.30^2 = 0.09 | Table 2, omega_CL 30.0% |
+| `etalqcsf` | 0.31^2 = 0.0961 | Table 2, omega_Q 31.0% |
+| `etalcl_csf` | 0.42^2 = 0.1764 | Table 2, omega_CLCSF 42.0% |
+| `propSd` | 0.15 | Table 2, Proportional (serum) |
+| `propSd_Ccsf` | 0.16 | Table 2, Proportional (CSF) |
+
+# Closed-form checks
+
+At steady state the CSF compartment receives `Q x Cserum` and loses
+`(Q + CLCSF) x Ccsf`, so the CSF-to-serum AUC ratio is `Q / (Q + CLCSF)` for
+every regimen and every renal function, and the serum AUC over 24 h is the
+daily dose over `CL`. A typical-value solve must reproduce both.
+
+```{r closed-form}
+mod_typ <- rxode2::zeroRe(mod)
+ratio_typ <- 0.0079 / (0.0079 + 0.019)
+
+make_events <- function(ids, dose, ii, crcl, obs_times, dur = 1) {
+  n_doses <- ceiling(168 / ii)
+  dose_rows <- expand.grid(id = ids, time = seq(0, by = ii, length.out = n_doses)) |>
+    dplyr::mutate(amt = dose, rate = dose / dur, evid = 1L, cmt = "central", dvid = NA_integer_)
+  obs_rows <- expand.grid(id = ids, time = obs_times) |>
+    dplyr::mutate(amt = 0, rate = 0, evid = 0L, cmt = "central", dvid = 1L)
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::left_join(data.frame(id = ids, CRCL = crcl), by = "id") |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+ev_typ <- make_events(1, dose = 1000, ii = 8, crcl = 120, obs_times = seq(144, 168, by = 0.25))
+# A single-subject solve returns no id column
+sim_typ <- rxode2::rxSolve(mod_typ, events = ev_typ, returnType = "data.frame") |>
+  dplyr::mutate(id = 1L)
+nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(
+    tidyr::pivot_longer(dplyr::select(sim_typ, id, time, Cc, Ccsf), c(Cc, Ccsf),
+                        names_to = "matrix", values_to = "conc"),
+    conc ~ time | id / matrix
+  ),
+  PKNCA::PKNCAdose(dplyr::filter(ev_typ, evid == 1L), amt ~ time | id),
+  intervals = data.frame(start = 144, end = 168, auclast = TRUE)
+))
+auc_typ <- as.data.frame(nca_typ$result)
+auc_serum <- auc_typ$PPORRES[auc_typ$matrix == "Cc"]
+auc_csf <- auc_typ$PPORRES[auc_typ$matrix == "Ccsf"]
+data.frame(
+  quantity = c("Serum AUC 144-168 h (mg*h/L)", "CSF/serum AUC ratio"),
+  simulated = c(auc_serum, auc_csf / auc_serum),
+  closed_form = c(3000 / 6.50, ratio_typ)
+) |>
+  knitr::kable(digits = 4, caption = "Typical patient, eGFR 120 mL/min, 1 g every 8 h (1-h infusions), day 7.")
+
+stopifnot(
+  abs(auc_serum / (3000 / 6.50) - 1) < 0.005,
+  abs(auc_csf / auc_serum / ratio_typ - 1) < 0.005
+)
+```
+
+The typical ratio, 0.294, is the median CSF penetration of 0.29 reported in
+Results and Table 3.
+
+# Dosing nomogram (Figure 1)
+
+The paper converts the eGFR-CL relationship into the daily dose giving a serum
+AUC24 of 500 mg*h/L, which for a linear model is `500 x CL(eGFR)`.
+
+```{r nomogram}
+nomogram <- data.frame(CRCL = seq(60, 150, by = 1)) |>
+  dplyr::mutate(daily_dose = 500 * 6.50 * (CRCL / 120)^1.20)
+
+ggplot(nomogram, aes(CRCL, daily_dose)) +
+  geom_line(linewidth = 1) +
+  labs(x = "eGFR (mL/min)", y = "Daily dose (mg)",
+       caption = "Replicates Figure 1 of Polaskova 2026.") +
+  theme_bw()
+
+nomogram |>
+  dplyr::filter(CRCL %in% c(60, 90, 120, 150)) |>
+  dplyr::rename("eGFR (mL/min)" = CRCL, "Daily dose (mg)" = daily_dose) |>
+  knitr::kable(digits = 0)
+```
+
+Figure 1 runs from about 1,410 mg at 60 mL/min through 3,250 mg at 120 mL/min
+to about 4,250 mg at 150 mL/min, which the curve above reproduces.
+
+# Regimens by renal function (Table 3, Figures S5 and S6)
+
+The paper simulated 1.5 g every 12 h, 1 g every 8 h and 0.75 g every 6 h at
+fixed eGFR values of 60, 90 and 130 mL/min, at steady state, and tabulated the
+CSF-to-serum AUC ratio. Here each of the nine arms has 100 virtual patients
+with between-subject variability on all four parameters.
+
+```{r scenarios}
+regimens <- data.frame(
+  regimen = c("1.5 g q12h", "1 g q8h", "0.75 g q6h"),
+  dose = c(1500, 1000, 750),
+  ii = c(12, 8, 6)
+)
+egfr_levels <- c(60, 90, 130)
+n_arm <- 100
+arms <- expand.grid(r = seq_len(nrow(regimens)), egfr = egfr_levels) |>
+  dplyr::mutate(arm = dplyr::row_number())
+
+obs_grid <- sort(unique(c(seq(0, 168, by = 1), seq(144, 168, by = 0.5))))
+ev_arms <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(a) {
+  reg <- regimens[arms$r[a], ]
+  ids <- (a - 1) * n_arm + seq_len(n_arm)
+  make_events(ids, dose = reg$dose, ii = reg$ii, crcl = arms$egfr[a], obs_times = obs_grid)
+}))
+arm_map <- data.frame(
+  id = seq_len(nrow(arms) * n_arm),
+  regimen = rep(regimens$regimen[arms$r], each = n_arm),
+  egfr = rep(arms$egfr, each = n_arm)
+) |>
+  dplyr::mutate(regimen = factor(regimen, levels = regimens$regimen))
+
+sim_arms <- rxode2::rxSolve(mod, events = ev_arms, returnType = "data.frame") |>
+  dplyr::select(id, time, Cc, Ccsf, qcsf, cl_csf) |>
+  dplyr::left_join(arm_map, by = "id")
+```
+
+```{r scenario-plots, fig.height = 6}
+band <- sim_arms |>
+  tidyr::pivot_longer(c(Cc, Ccsf), names_to = "matrix", values_to = "conc") |>
+  dplyr::mutate(matrix = ifelse(matrix == "Cc", "Serum", "CSF")) |>
+  dplyr::group_by(matrix, regimen, egfr, time) |>
+  dplyr::summarise(
+    p05 = quantile(conc, 0.05), p50 = median(conc), p95 = quantile(conc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(dplyr::filter(band, matrix == "Serum"), aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.35) +
+  geom_line() +
+  facet_grid(regimen ~ paste("eGFR", egfr, "mL/min")) +
+  labs(x = "Time (h)", y = "Serum vancomycin (mg/L)",
+       caption = "Replicates Figure S5 of Polaskova 2026 (median and 5th-95th percentile).") +
+  theme_bw()
+
+ggplot(dplyr::filter(band, matrix == "CSF"), aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.35) +
+  geom_line() +
+  facet_grid(regimen ~ paste("eGFR", egfr, "mL/min")) +
+  labs(x = "Time (h)", y = "CSF vancomycin (mg/L)",
+       caption = "Replicates Figure S6 of Polaskova 2026 (median and 5th-95th percentile).") +
+  theme_bw()
+```
+
+The day-7 AUCs come from PKNCA over the last 24 h, with serum and CSF as two
+analytes of the same patient.
+
+```{r scenario-nca}
+conc_arms <- sim_arms |>
+  dplyr::filter(time >= 144) |>
+  dplyr::select(id, regimen, egfr, time, Cc, Ccsf) |>
+  tidyr::pivot_longer(c(Cc, Ccsf), names_to = "matrix", values_to = "conc") |>
+  dplyr::filter(!is.na(conc))
+dose_arms <- ev_arms |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::left_join(arm_map, by = "id") |>
+  dplyr::select(id, regimen, egfr, time, amt) |>
+  dplyr::mutate(duration = 1)
+
+conc_obj <- PKNCA::PKNCAconc(conc_arms, conc ~ time | regimen + egfr + id / matrix,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_arms, amt ~ time | regimen + egfr + id,
+                             doseu = "mg", route = "intravascular", duration = "duration")
+intervals <- data.frame(start = 144, end = 168, auclast = TRUE)
+nca_arms <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+ratio_arms <- as.data.frame(nca_arms$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(regimen, egfr, id, matrix, PPORRES) |>
+  tidyr::pivot_wider(names_from = matrix, values_from = PPORRES) |>
+  dplyr::mutate(ratio = Ccsf / Cc)
+
+ratio_summary <- ratio_arms |>
+  dplyr::group_by(regimen, egfr) |>
+  dplyr::summarise(
+    median = median(ratio), p05 = quantile(ratio, 0.05), p95 = quantile(ratio, 0.95),
+    .groups = "drop"
+  )
+ratio_summary |>
+  dplyr::mutate(
+    simulated = sprintf("%.2f (%.2f-%.2f)", median, p05, p95),
+    eGFR = paste(egfr, "mL/min")
+  ) |>
+  dplyr::select(regimen, eGFR, simulated) |>
+  tidyr::pivot_wider(names_from = eGFR, values_from = simulated) |>
+  dplyr::rename("Regimen" = regimen) |>
+  knitr::kable(caption = "Simulated AUC_CSF/AUC_serum on day 7, median (5th-95th percentile). Table 3 reports 0.29 (0.15-0.47 to 0.15-0.49) in every cell.")
+```
+
+Because the ratio is `Q / (Q + CLCSF)` per patient once the CSF compartment is
+at steady state, it can also be computed straight from each patient's
+parameters. The two routes agree, and both reproduce Table 3.
+
+```{r scenario-check}
+param_ratio <- sim_arms |>
+  dplyr::distinct(id, qcsf, cl_csf) |>
+  dplyr::mutate(ratio_param = qcsf / (qcsf + cl_csf))
+chk <- dplyr::inner_join(ratio_arms, param_ratio, by = "id") |>
+  dplyr::mutate(pct_diff = 100 * (ratio / ratio_param - 1))
+
+stopifnot(
+  # Same drawn parameters on both sides, so the gap is numerical only.
+  quantile(abs(chk$pct_diff), 0.9) < 1,
+  # Table 3 median is 0.29 in every cell; a mis-transcribed Q or CLCSF moves it.
+  all(abs(ratio_summary$median - 0.29) < 0.03),
+  # Table 3 5th-95th percentiles 0.15 and 0.47-0.49, from 16,000 subjects.
+  abs(median(ratio_summary$p05) - 0.15) < 0.03,
+  abs(median(ratio_summary$p95) - 0.48) < 0.06
+)
+```
+
+# AUC-guided dosing with no variability in CL (Figure 2)
+
+For the last set of simulations the paper dosed every patient from the
+nomogram (the daily dose in three 8-hourly doses), fixed the variability in CL
+to zero so every patient reaches a serum AUC24 of 500 mg*h/L, and summarised
+the day-7 average CSF concentration. Two hundred virtual patients are drawn
+here with a log-normal eGFR matching Table 1 (median 119.8 mL/min, IQR
+101-136), truncated to the observed 56.2-185.5 mL/min.
+
+```{r nomogram-sim}
+mod_nocl <- mod |> rxode2::ini(etalcl ~ fixed(0))
+
+n_nom <- 200
+egfr_draw <- exp(rnorm(n_nom * 3, log(119.8), (log(136) - log(101)) / 1.349))
+egfr_draw <- head(egfr_draw[egfr_draw >= 56.2 & egfr_draw <= 185.5], n_nom)
+stopifnot(length(egfr_draw) == n_nom)
+nom_subj <- data.frame(id = seq_len(n_nom), CRCL = egfr_draw) |>
+  dplyr::mutate(dose = 500 * 6.50 * (CRCL / 120)^1.20 / 3)
+
+ev_nom <- dplyr::bind_rows(lapply(seq_len(n_nom), function(i) {
+  make_events(i, dose = nom_subj$dose[i], ii = 8, crcl = nom_subj$CRCL[i],
+              obs_times = sort(unique(c(seq(0, 168, by = 1), seq(144, 168, by = 0.5)))))
+}))
+sim_nom <- rxode2::rxSolve(mod_nocl, events = ev_nom, returnType = "data.frame") |>
+  dplyr::select(id, time, Cc, Ccsf)
+
+fig2 <- sim_nom |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    p05 = quantile(Ccsf, 0.05), p275 = quantile(Ccsf, 0.275), p50 = median(Ccsf),
+    p725 = quantile(Ccsf, 0.725), p95 = quantile(Ccsf, 0.95), .groups = "drop"
+  )
+ggplot(fig2, aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.3) +
+  geom_ribbon(aes(ymin = p275, ymax = p725), fill = "steelblue", alpha = 0.4) +
+  geom_line() +
+  labs(x = "Time (h)", y = "CSF concentration (mg/L)",
+       caption = "Replicates Figure 2 of Polaskova 2026 (median, 27.5th-72.5th and 5th-95th percentiles).") +
+  theme_bw()
+```
+
+```{r nomogram-nca}
+conc_nom <- sim_nom |>
+  dplyr::filter(time >= 144) |>
+  tidyr::pivot_longer(c(Cc, Ccsf), names_to = "matrix", values_to = "conc") |>
+  dplyr::mutate(scenario = "AUC-guided q8h") |>
+  dplyr::filter(!is.na(conc))
+dose_nom <- ev_nom |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::select(id, time, amt) |>
+  dplyr::mutate(duration = 1, scenario = "AUC-guided q8h")
+
+nca_nom <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_nom, conc ~ time | scenario + id / matrix, concu = "mg/L", timeu = "h"),
+  PKNCA::PKNCAdose(dose_nom, amt ~ time | scenario + id, doseu = "mg",
+                   route = "intravascular", duration = "duration"),
+  intervals = data.frame(start = 144, end = 168, auclast = TRUE, cav = TRUE)
+))
+nca_nom_res <- as.data.frame(nca_nom$result)
+
+reference <- data.frame(
+  scenario = "AUC-guided q8h",
+  matrix = c("Cc", "Ccsf"),
+  auclast = c(499.4, NA),
+  cav = c(20.8, 6.2)
+)
+nlmixr2lib::ncaComparisonTable(
+  simulated = nca_nom_res,
+  reference = reference,
+  by = c("scenario", "matrix"),
+  params = c("auclast", "cav"),
+  units = c(auclast = "mg*h/L", cav = "mg/L")
+) |>
+  dplyr::rename("Scenario" = scenario, "Matrix" = matrix) |>
+  knitr::kable(caption = "Day-7 serum AUC24 and serum/CSF average concentrations against Results (medians).")
+```
+
+```{r pta}
+cav_csf <- nca_nom_res |>
+  dplyr::filter(PPTESTCD == "cav", matrix == "Ccsf") |>
+  dplyr::pull(PPORRES)
+pta <- data.frame(
+  threshold = c(2, 4, 6, 8, 10),
+  paper = c(99.6, 86.2, 52.9, 22.4, 6.7)
+) |>
+  dplyr::mutate(simulated = vapply(threshold, function(t) 100 * mean(cav_csf >= t), numeric(1)))
+pta |>
+  dplyr::rename("Cavg,CSF threshold (mg/L)" = threshold,
+                "Polaskova 2026 (%)" = paper, "Simulated (%)" = simulated) |>
+  knitr::kable(digits = 1, caption = "Proportion of patients reaching each day-7 average CSF concentration.")
+
+stopifnot(
+  # With no CL variability the serum AUC is set by the dose alone.
+  abs(median(nca_nom_res$PPORRES[nca_nom_res$PPTESTCD == "auclast" & nca_nom_res$matrix == "Cc"]) / 500 - 1) < 0.02,
+  # Results: median Cavg,CSF 6.2 mg/L (5th-95th 3.2-10.4).
+  abs(median(cav_csf) - 6.2) < 0.6,
+  abs(quantile(cav_csf, 0.05) - 3.2) < 0.6,
+  abs(quantile(cav_csf, 0.95) - 10.4) < 1.5,
+  # The central PTA cell (>= 6 mg/L, 52.9%) is the most sensitive to a shift.
+  abs(pta$simulated[pta$threshold == 6] - 52.9) < 12
+)
+```
+
+# Assumptions and deviations
+
+* **IIV scale.** Table 2 reports between-subject variability as percentages.
+  Monolix parameterises a log-normal random effect by its standard deviation
+  omega, and the Methods define shrinkage as `1 - Var(eta_i)/omega^2`, so the
+  percentages are read as `100 x omega` and squared to the variances nlmixr2
+  uses (for example 41.0% -> 0.1681). Reading them as coefficients of variation
+  instead (`log(CV^2 + 1)`) would give variances about 8% smaller.
+* **Covariate.** The covariate column is `CRCL` carrying the ABSOLUTE CKD-EPI
+  eGFR in mL/min, not the BSA-normalized value; see the covariate notes in the
+  model file.
+* **Infusion length.** The simulation methods do not state an infusion
+  duration; 1-h infusions are used here. The AUC and average-concentration
+  checks do not depend on it.
+* **Loading dose.** Figures 2, S5 and S6 start from zero concentrations with no
+  loading dose, and the simulations here do the same.
+* **Residual error.** The paper's Monte Carlo simulations included residual
+  error. The checks here use the model predictions (`Cc`, `Ccsf`) without
+  residual error, since the AUC ratios and average concentrations are
+  properties of the exposure, not of an individual measurement.
+* **Cohort size.** The paper simulated 16,000 virtual patients; 100 per arm
+  (Table 3) and 200 (Figure 2) are used here, so the 5th and 95th percentiles
+  carry Monte-Carlo noise of a few percent.
+* **Serum AUC spread.** With CL variability set to zero, the paper reports a
+  serum AUC24 of 499.4 (485.5-503.3) mg*h/L. In this model the steady-state
+  serum AUC over a dosing interval is exactly the dose over CL, so the
+  simulated spread is far narrower; the source of the paper's small spread is
+  not stated.
+* **Table 1 typo.** Table 1 prints the female share as 44.8%; 28 of 64 is
+  43.75%, used in the population metadata.

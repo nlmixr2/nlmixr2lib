@@ -1,0 +1,395 @@
+---
+title: "Pazopanib and CYP3A4*22 (Bins 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pazopanib and CYP3A4*22 (Bins 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Bins_2019_pazopanib"))$reference`
+* Article: <https://doi.org/10.1007/s40262-018-0719-5> (open access)
+
+Bins et al. genotyped 94 of the 96 patients behind the Yu 2017 pazopanib
+population PK model and re-fitted that model with four candidate
+polymorphisms in the pazopanib elimination pathway. Only *CYP3A4\*22*
+(rs35599367) was retained: carriers have a 36% lower clearance (0.18 vs
+0.28 L/h). The packaged file is the final model of the paper's Electronic
+Supplementary Material (the NONMEM control stream) with the final estimates of
+Table 4.
+
+The structure is the Yu 2017 model:
+
+* Each dose is split over two parallel first-order absorption routes. 36% of
+  the bioavailable dose is absorbed by a fast route (KaF 0.39 1/h, no lag) and
+  64% by a slow route (KaS 0.12 1/h) that starts after a 0.97 h lag.
+* Two-compartment disposition with linear clearance.
+* Relative bioavailability falls with the dose (1 at 200 mg, an Emax decrease
+  above it with ED50 466 mg) and decays over the treatment course to 49% of
+  its starting value (rate 0.16 per day).
+* Pazopanib clearance is multiplied by the relative amount of a metabolic
+  enzyme pool that co-administered ifosfamide induces. The ifosfamide model is
+  the Kerbusch 2000 autoinduction model, fixed (`Kerbusch_2000_ifosfamide` in
+  this library). Without ifosfamide the enzyme pool stays at 1.
+
+# Population
+
+The 94 patients came from three Dutch studies: a pazopanib therapeutic drug
+monitoring study (13 patients), a phase I pazopanib + docetaxel study (40) and
+a phase I pazopanib + ifosfamide study (41); 761 plasma samples (Bins 2019
+Table 2). 71% were male and 97% Caucasian; median age 57 years (IQR 48-64).
+Starting doses ranged from 200 to 1000 mg once daily. Tumour types varied and
+were not recorded. Eleven patients were heterozygous *CYP3A4\*1/\*22* and none
+homozygous (Table 1).
+
+The same information is available programmatically via
+`readModelDb("Bins_2019_pazopanib")()$population`.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| `lka_fast` (KaF) | 0.39 1/h | Table 4 final model; control stream THETA(3) |
+| `lka_slow` (KaS) | 0.12 1/h | Table 4; THETA(4) |
+| `logitfrel` (fast fraction) | logit(0.36) | Table 4 'Fraction of fast absorption' 36%; THETA(10) is the odds, `F1 = TVFR / (1 + TVFR) * TVF` |
+| `ltlag` (slow-route lag) | 0.97 h | Table 4; THETA(5) `ALAG3` |
+| `lcl` | 0.28 L/h | Table 4; THETA(1) |
+| `e_snp_cyp3a4_rs35599367_cl` | 0.18 / 0.28 = 0.643 | Table 4 'Clearance CYP3A4\*22' 0.18 L/h; Methods `Ppop = theta_x * theta_y^pg`; THETA(13) |
+| `lvc` | 2.4 L | Table 4; THETA(2) |
+| `lq` | 0.97 L/h | Table 4; THETA(6) |
+| `lvp` | 24.3 L | Table 4; THETA(7) |
+| `lfdepot` (rF at 200 mg) | 1 FIX | Yu 2017 Table 2; control stream `TVB = 1` at `DOSE = 200` |
+| `lemax` (Emax of the dose effect) | 1 FIX | Yu 2017 Table 2; THETA(9) `VMAXDOSE` (1 FIX) |
+| `led50` | 466 mg | Table 4 'Dose level with half of bioavailability at dose 200 mg'; THETA(8) |
+| `lfdepot_exp_inf` | 1 - 0.51 = 0.49 | Table 4 'Magnitude of decrease in relative bioavailability in time' 51%; THETA(12) `DCRP` |
+| `lfdepot_exp_kdes` | 0.16 / 24 1/h | Table 4 'First-order decay constant' 0.16 per day; `LAMBDA = THETA(11) / 24` |
+| IIV KaF, CL, Vp, rF | 142%, 27%, 98%, 38% CV | Table 4 'Between-subject variability' |
+| IOV rF | 76% CV | Table 4 'Within-subject variability'; `$OMEGA BLOCK(1)` x 3 by `PKDAY` |
+| `propSd`, `addSd` | 8.0%, 2.91 mg/L | Table 4 'Residual unexplained variability'; `Y = IPRED * (1 + ERR(1)) + ERR(2)` |
+| Ifosfamide CL, V, K_enz,out, IC50 and IIV | 2.94 L/h, 43.5 L, 0.0546 1/h, 30.7 uM; 24.5%, 23.4%, 22.7% | Kerbusch 2000 Table 1 (fixed); control stream data items `ICLI`, `IVI`, `IKENZ`, `IIC50` |
+| Dose-dependent rF | `1 - Emax * (DOSE - 200) / (ED50 + DOSE - 200)` | control stream `TVB`; Yu 2017 Eq. 3 |
+| Time-dependent rF | `1 - Ad + Ad * exp(-k * TIME)` | control stream `TVF1`; Yu 2017 Eq. 4 |
+| Combined rF | `TVB * TVF1 * exp(eta_F + eta_IOV)` | control stream `TVF`; Yu 2017 Eq. 5 |
+| Pazopanib elimination | `K20 * A(5) * A(2)` | control stream `$DES` |
+| Enzyme pool | `KENZ - KENZ * A(5) * (1 - CPI / (CPI + IC50I))`, `A_0(5) = 1` | control stream `$DES`; Kerbusch 2000 Eq. 4 |
+
+# Simulation helpers
+
+The dose-dependent bioavailability reads `DOSE_PAZOPANIB_MG` and the
+time-dependent bioavailability reads `T_FIRSTDOSE` on every dose record, so the
+event tables list each dose explicitly instead of using `addl` (an
+`addl`-expanded dose would carry the covariates of its parent record and freeze
+`T_FIRSTDOSE` at 0). Each dose goes to both `depot` and `depot2`.
+
+```{r helpers}
+mod <- readModelDb("Bins_2019_pazopanib")
+
+make_pazopanib_events <- function(ids, dose, n_days, tau = 24, obs_times = numeric(0), snp = 0) {
+  dose_times <- seq(0, n_days * 24 - tau, by = tau)
+  one <- bind_rows(
+    data.frame(time = dose_times, amt = dose, cmt = "depot", evid = 1L),
+    data.frame(time = dose_times, amt = dose, cmt = "depot2", evid = 1L),
+    data.frame(time = obs_times, amt = 0, cmt = "central", evid = 0L)
+  )
+  bind_rows(lapply(ids, function(i) mutate(one, id = i))) |>
+    mutate(
+      DOSE_PAZOPANIB_MG = dose,
+      SNP_CYP3A4_RS35599367 = snp,
+      T_FIRSTDOSE = time,
+      OCC = 1L
+    ) |>
+    arrange(id, time, desc(evid))
+}
+```
+
+# Bioavailability against Yu 2017
+
+Yu 2017 reports two closed-form consequences of the bioavailability model: at
+800 mg once daily the relative bioavailability falls from 44% at the start of
+treatment to 22% after 8 weeks, and the relative bioavailability of a 400 mg
+dose is 59% higher than that of an 800 mg dose. Both follow from the packaged
+parameters (Yu 2017 used ED50 480 mg; Bins 2019 re-estimated 466 mg).
+
+```{r bioavailability}
+rf <- function(dose, t_h) {
+  (1 - (dose - 200) / (466 + dose - 200)) * (0.49 + 0.51 * exp(-0.16 / 24 * t_h))
+}
+rf_tab <- data.frame(
+  Quantity = c("rF, 800 mg, first dose", "rF, 800 mg, week 8", "rF(400 mg) / rF(800 mg)"),
+  Packaged = c(rf(800, 0), rf(800, 8 * 7 * 24), rf(400, 0) / rf(800, 0)),
+  "Yu 2017" = c(0.44, 0.22, 1.59),
+  check.names = FALSE
+)
+knitr::kable(rf_tab, digits = 3, caption = "Relative bioavailability (Yu 2017 Results and Discussion).")
+stopifnot(all(abs(rf_tab$Packaged / rf_tab$`Yu 2017` - 1) < 0.05))
+```
+
+# Steady-state troughs by genotype (ESM Table 1, Figure 2)
+
+The paper simulated 500 patients per genotype and dose (400, 600 and 800 mg
+once daily) and reported the trough 6 weeks after the start of treatment
+(Electronic Supplementary Material Table 1). The median trough of a log-normal
+cohort is the typical-value trough, so the deterministic solve with all random
+effects zeroed must reproduce the published medians.
+
+```{r typical-troughs}
+esm <- data.frame(
+  genotype = rep(c("Wild type", "*22 carrier"), each = 3),
+  SNP = rep(0:1, each = 3),
+  dose = rep(c(400, 600, 800), 2),
+  med = c(15.9, 18.4, 19.7, 26.5, 30.6, 34.6),
+  lower = c(7.2, 8.3, 8.5, 11.7, 13.5, 15.5),
+  upper = c(36.6, 42.2, 45.9, 60.7, 70.0, 77.6),
+  pct_above = c(33, 42, 46, 74, 81, 83)
+)
+trough_time <- 42 * 24
+
+typ_events <- bind_rows(lapply(seq_len(nrow(esm)), function(i) {
+  make_pazopanib_events(i, esm$dose[i], n_days = 42, obs_times = trough_time, snp = esm$SNP[i])
+}))
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = typ_events) |> as.data.frame()
+
+esm$typical <- typ$Cc[typ$time == trough_time]
+esm$pct_diff <- 100 * (esm$typical / esm$med - 1)
+esm |>
+  transmute(
+    Genotype = genotype, "Dose (mg QD)" = dose,
+    "Published median (mg/L)" = med,
+    "Typical value (mg/L)" = round(typical, 1),
+    "Difference (%)" = round(pct_diff, 1)
+  ) |>
+  knitr::kable(caption = "Week-6 trough: typical value versus ESM Table 1 median.")
+# Deterministic on our side; the published median carries Monte Carlo error
+# from 500 subjects (about 3-4%). A wrong CL, ED50, decay or CYP3A4*22 factor
+# moves these by 10% or more.
+stopifnot(all(abs(esm$pct_diff) < 6))
+```
+
+The typical-value steady-state profiles over the week-6 dosing interval
+reproduce Figure 2 of the paper:
+
+```{r figure2, fig.width = 7, fig.height = 4}
+fig2_arms <- expand.grid(SNP = 0:1, dose = c(600, 800))
+fig2_events <- bind_rows(lapply(seq_len(nrow(fig2_arms)), function(i) {
+  make_pazopanib_events(
+    i, fig2_arms$dose[i], n_days = 43,
+    obs_times = seq(41 * 24, 42 * 24, by = 0.25), snp = fig2_arms$SNP[i]
+  )
+}))
+fig2 <- rxode2::rxSolve(rxode2::zeroRe(mod), events = fig2_events) |>
+  as.data.frame() |>
+  left_join(mutate(fig2_arms, id = row_number()), by = "id") |>
+  mutate(
+    Genotype = ifelse(SNP == 1, "CYP3A4*22", "Wild type"),
+    Regimen = paste(dose, "mg QD")
+  )
+ggplot(fig2, aes(time - 41 * 24, Cc, colour = Genotype, linetype = Regimen)) +
+  geom_line() +
+  geom_hline(yintercept = 20.5, linetype = "dotted") +
+  scale_colour_manual(values = c("CYP3A4*22" = "red", "Wild type" = "black")) +
+  labs(x = "Time after dose at week 6 (h)", y = "Pazopanib (mg/L)",
+       caption = "Replicates Figure 2 of Bins 2019 (dotted line: 20.5 mg/L target trough).")
+```
+
+## Simulated cohorts
+
+The spread in ESM Table 1 is reproduced when the simulation omits the
+inter-occasion variability on bioavailability (one occasion per subject would
+add it once; the published bounds are too narrow for that). The published
+columns labelled "interquartile range" match the 5th and 95th percentiles of
+such a cohort, and the percentage of subjects above the 20.5 mg/L target is
+consistent with the same spread. The cohort below uses 200 subjects per arm
+without IOV: the model applies the IOV etas only on records with `OCC` 1-3,
+so `OCC = 0` switches it off.
+
+```{r cohort}
+n_per_arm <- 200
+cohort_events <- bind_rows(lapply(seq_len(nrow(esm)), function(i) {
+  make_pazopanib_events(
+    (i - 1) * n_per_arm + seq_len(n_per_arm), esm$dose[i],
+    n_days = 42, obs_times = trough_time, snp = esm$SNP[i]
+  ) |> mutate(arm = i, OCC = 0L)
+}))
+rxode2::rxSetSeed(20190401)
+cohort <- rxode2::rxSolve(mod, events = cohort_events, keep = "arm") |>
+  as.data.frame()
+
+cohort_tab <- cohort |>
+  filter(time == trough_time) |>
+  group_by(arm) |>
+  summarise(
+    sim_med = median(sim), sim_p05 = quantile(sim, 0.05), sim_p95 = quantile(sim, 0.95),
+    sim_pct = 100 * mean(sim > 20.5), .groups = "drop"
+  ) |>
+  bind_cols(esm)
+cohort_tab |>
+  transmute(
+    Genotype = genotype, "Dose (mg QD)" = dose,
+    "Median sim / pub" = sprintf("%.1f / %.1f", sim_med, med),
+    "5th pct sim / pub 'lower'" = sprintf("%.1f / %.1f", sim_p05, lower),
+    "95th pct sim / pub 'upper'" = sprintf("%.1f / %.1f", sim_p95, upper),
+    "% > 20.5 mg/L sim / pub" = sprintf("%.0f / %.0f", sim_pct, pct_above)
+  ) |>
+  knitr::kable(caption = "Week-6 trough distribution, 200 subjects per arm (no IOV), versus ESM Table 1.")
+# Centre: within 15% of the published median (MC error of 200 subjects is
+# about 6%). Spread: the share above target within 15 points (binomial SE
+# about 3.5 points), which would fail if the full IOV were included
+# (wild type 400 mg rises to about 42%, carriers at 800 mg fall to about 72%).
+stopifnot(
+  abs(median(cohort_tab$sim_med / cohort_tab$med - 1)) < 0.15,
+  all(abs(cohort_tab$sim_pct - cohort_tab$pct_above) < 15)
+)
+```
+
+# PKNCA: week-6 dosing interval against Yu 2017
+
+Yu 2017 simulated 800 mg once daily against 400 mg twice daily for 6 weeks and
+reported the week-6 24-hour AUC (665 vs 1056 mg*h/L) and trough (22 vs
+39 mg/L). Those numbers come from the Yu 2017 base model (CL 0.27 L/h, ED50
+480 mg, decay 0.15 per day); the Bins 2019 final model re-estimated these to
+0.28 L/h, 466 mg and 0.16 per day, which lowers the 24-hour AUC by about 7%.
+The comparison below runs PKNCA on the typical-value week-6 profiles of wild
+type patients.
+
+```{r pknca}
+nca_arms <- data.frame(treatment = c("800 mg QD", "400 mg BID"), dose = c(800, 400), tau = c(24, 12))
+t0 <- 41 * 24
+nca_events <- bind_rows(lapply(seq_len(nrow(nca_arms)), function(i) {
+  make_pazopanib_events(
+    i, nca_arms$dose[i], n_days = 42, tau = nca_arms$tau[i],
+    obs_times = seq(t0, t0 + 24, by = 0.25)
+  ) |> mutate(treatment = nca_arms$treatment[i])
+}))
+nca_sim <- rxode2::rxSolve(rxode2::zeroRe(mod), events = nca_events, keep = "treatment") |>
+  as.data.frame()
+
+# Re-base the week-6 day to start at 0 so the interval starts at 0.
+conc_df <- nca_sim |>
+  filter(!is.na(Cc), time >= t0, time <= t0 + 24) |>
+  mutate(time = time - t0) |>
+  select(id, time, Cc, treatment)
+dose_df <- nca_events |>
+  filter(evid == 1, cmt == "depot", time >= t0, time < t0 + 24) |>
+  transmute(id, time = time - t0, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 24, auclast = TRUE, cmax = TRUE, cmin = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+reference <- data.frame(
+  treatment = c("800 mg QD", "400 mg BID"),
+  auclast = c(665, 1056),
+  cmin = c(22, 39)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  nca_res, reference,
+  by = "treatment",
+  units = c(auclast = "mg*h/L", cmin = "mg/L", cmax = "mg/L")
+)
+knitr::kable(cmp, caption = "Typical-value week-6 NCA (0-24 h) versus Yu 2017 Results 3.3.")
+
+sim_auc <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "auclast") |>
+  left_join(reference, by = "treatment")
+# Different (base vs final) parameter sets on the two sides: a 15% band
+# covers the 7% parameter shift; a wrong dose split or F model is off by 40%+.
+stopifnot(all(abs(sim_auc$PPORRES / sim_auc$auclast - 1) < 0.15))
+```
+
+# Ifosfamide induction
+
+The model carries the ifosfamide-driven enzyme pool so that pazopanib can be
+simulated alongside an ifosfamide infusion. The example below gives 800 mg
+pazopanib once daily for 3 weeks and, from day 14, a 72-hour infusion of
+9 g/m^2 ifosfamide at a body-surface area of 1.8 m^2. This is the Kerbusch 2000
+regimen; the paper does not print the ifosfamide schedule of its study 3.
+Ifosfamide doses are in umol (molar mass 261.09 g/mol), the unit of the
+Kerbusch 2000 model.
+
+```{r ifosfamide, fig.width = 7, fig.height = 4}
+ifo_umol <- 9 * 1.8 * 1e6 / 261.09
+ifo_start <- 13 * 24
+paz <- make_pazopanib_events(1, 800, n_days = 21, obs_times = seq(0, 21 * 24, by = 1))
+ifo <- data.frame(
+  id = 1, time = ifo_start, amt = ifo_umol, rate = ifo_umol / 72,
+  cmt = "central_ifosfamide", evid = 1L,
+  DOSE_PAZOPANIB_MG = 800, SNP_CYP3A4_RS35599367 = 0, OCC = 1L
+) |> mutate(T_FIRSTDOSE = time)
+both <- bind_rows(paz, ifo) |> arrange(id, time, desc(evid))
+alone <- rxode2::rxSolve(rxode2::zeroRe(mod), events = paz) |> as.data.frame() |>
+  mutate(scenario = "pazopanib alone")
+combo <- rxode2::rxSolve(rxode2::zeroRe(mod), events = both) |> as.data.frame() |>
+  mutate(scenario = "with ifosfamide on days 14-16")
+
+ggplot(bind_rows(alone, combo), aes(time / 24, Cc, colour = scenario)) +
+  geom_line() +
+  labs(x = "Day", y = "Pazopanib (mg/L)", colour = NULL)
+
+# Kerbusch 2000 Results: 'during the first 24 h ... the model predicted an
+# average doubling of the relative enzyme amount'.
+enz_24 <- combo$enz_pool[combo$time == ifo_start + 24]
+enz_24
+stopifnot(
+  all(abs(alone$enz_pool - 1) < 1e-8),
+  enz_24 > 1.6, enz_24 < 2.6,
+  combo$Cc[combo$time == ifo_start + 72] < alone$Cc[alone$time == ifo_start + 72]
+)
+```
+
+# Assumptions and deviations
+
+* **CYP3A4\*22 clearance.** Table 4 prints the carrier clearance (0.18 L/h)
+  rather than the multiplier THETA(13); the multiplier is 0.18 / 0.28 = 0.643.
+  Table 3 and the Results text quote the wild-type clearance as 0.27 L/h
+  (giving the abstract's "35% lower"); the final-model column of Table 4
+  (0.28 L/h) is used, and with it the typical-value troughs reproduce ESM
+  Table 1 within 3.5%.
+* **Fraction absorbed by the fast route.** The control stream estimates the
+  odds `TVFR` with its eta fixed to 0; Table 4 prints the fraction (36%). It is
+  encoded as `logitfrel = logit(0.36)`, which is the same model.
+* **Time-dependent bioavailability.** Table 4 prints the magnitude of the
+  decrease Ad (51%); it is encoded through the registered asymptote parameter
+  `fdepot_exp_inf = 1 - Ad`. The decay constant is printed per day and divided
+  by 24 in the control stream, so `T_FIRSTDOSE` is in hours since the first
+  pazopanib dose (the control stream uses the NONMEM `TIME` item).
+* **Variance scale.** Table 4 reports between- and within-subject variability
+  as CV%. The variances use `omega^2 = log(1 + CV^2)`. Neither the paper nor
+  Yu 2017 states the conversion; the ESM Table 1 trough distribution cannot
+  separate it from `omega^2 = CV^2`, because the two readings differ materially
+  only for the fast absorption rate (142%) and the peripheral volume (98%),
+  which barely move a 24-hour trough.
+* **Simulation spread in ESM Table 1.** The published trough bounds and the
+  percentage above target are reproduced only when the inter-occasion
+  variability is omitted, and the columns labelled "interquartile range"
+  match the 5th and 95th percentiles. The packaged model keeps the IOV (it is
+  part of the fitted model); the vignette removes it only to reproduce the
+  published simulation. The table also labels concentrations in ug/L; they are
+  mg/L, the unit of the model and of the 20.5 mg/L target.
+* **Inter-occasion variability.** One eta per sampling occasion (`OCC` 1-3,
+  the control stream's `PKDAY`), each with the same variance. Records with
+  `OCC` outside 1-3 get no IOV; NONMEM would instead carry over the last
+  assigned value.
+* **Ifosfamide sub-model.** The source data supplied each patient's individual
+  ifosfamide parameters (empirical Bayes estimates from the Kerbusch 2000
+  model). The packaged model replaces them with the Kerbusch 2000 typical
+  values and between-subject variability, fixed. Ifosfamide doses and
+  concentrations are in umol and umol/L, the Kerbusch 2000 units. The
+  ifosfamide residual error is not carried because ifosfamide concentrations
+  were not an output of this model.
+* **IPRED floor.** The control stream floors the prediction at 0.001 mg/L
+  before applying the residual error; the packaged model does not.
+* **Docetaxel.** Docetaxel co-administration had no effect on pazopanib PK
+  (Yu 2017) and is not part of the model.

@@ -539,6 +539,8 @@ n_vpc <- 100L   # cap is 200 per arm
 
 vpc_events <- purrr::map_dfr(seq_len(n_vpc), \(i) make_arm(i, "50 kg", 50))
 
+# Fixed seed: the draws below feed reported results.
+rxode2::rxSetSeed(2016)
 sim_vpc <- rxode2::rxSolve(
   mod, events = vpc_events, keep = c("treatment", "wt_kg"), useLinCmt = FALSE
 ) |>

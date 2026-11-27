@@ -163,7 +163,9 @@ inv_ev <- bind_rows(
   bind_cols(tibble::as_tibble(as.list(cov_zero))) |>
   arrange(id, time, desc(evid))
 
-sim_inv <- rxode2::rxSolve(mod_typ, events = inv_ev) |> as.data.frame()
+# The absolute tolerance does not scale with the dose, so the profiles are
+# compared at tolerances far below the bound.
+sim_inv <- rxode2::rxSolve(mod_typ, events = inv_ev, rtol = 1e-10, atol = 1e-12) |> as.data.frame()
 inv_spread <- sim_inv |>
   filter(time > 0) |>
   group_by(time) |>

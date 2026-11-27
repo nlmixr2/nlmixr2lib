@@ -38,6 +38,7 @@ Kosinsky_2022_camostat_pkpd <- function() {
     dosing = "nmol",
     concentration = "nM"
   )
+  dosing <- c("depot", "central")
 
   # The modelled dose is FOY-251 in nmol (camostat mesylate is considered
   # equimolar to FOY-251, Methods). Camostat mesylate (salt) MW = 494.52

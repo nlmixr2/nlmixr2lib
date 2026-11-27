@@ -404,8 +404,15 @@ its simulated profiles (Methods 2.6; AUClast over the study window, 12 h for
 acetaminophen and 24 h for oxycodone, the time axes of Figure 5).
 
 ```{r pknca-subject}
+# Per subject, keep Cc >= 1e-6 * Cmax after the peak: the oxycodone tail of the
+# fastest-clearing subjects falls to about 1e-13 of the peak by 24 h, at the
+# integrator's absolute tolerance, where a point can fall below zero and make
+# PKNCA's AUCinf NaN.
 conc_subj <- sim |>
   filter(!is.na(Cc)) |>
+  group_by(drug, id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
   transmute(id, drug, time, conc = Cc)
 dose_subj <- bind_rows(ev_apap, ev_oxy) |>
   filter(evid == 1) |>

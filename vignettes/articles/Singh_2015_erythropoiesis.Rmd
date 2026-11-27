@@ -1,0 +1,317 @@
+---
+title: "Erythropoiesis induced by a PHD2 inhibitor in mice (Singh 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Erythropoiesis induced by a PHD2 inhibitor in mice (Singh 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(PKNCA)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Singh_2015_phi1_mouse_qsp"))$reference`
+* Article: <https://doi.org/10.1002/psp4.12>
+
+Singh and colleagues (*CPT: Pharmacometrics & Systems Pharmacology*, 2015)
+built the first parsimonious systems-pharmacology model of erythropoiesis in
+mice, driven by an orally administered small-molecule inhibitor of
+prolyl-hydroxylase-2 (PHD2) that the paper calls **PHI-1** (an undisclosed
+Pfizer compound). Inhibiting PHD2 stabilises hypoxia-inducible factor 1-alpha
+(HIF1alpha), which drives the cascade
+
+> PHI-1 -> PHD2 inhibition -> kidney HIF1alpha -> kidney EPO mRNA ->
+> plasma EPO -> reticulocytes -> red blood cells -> hemoglobin.
+
+Male BALB/c mice received single oral doses of 10 or 30 mg/kg, and the
+time courses of plasma PHI-1, kidney HIF1alpha, kidney EPO mRNA, plasma EPO,
+reticulocytes, red blood cells (RBC) and hemoglobin (HGB) were measured. The
+authors fitted the PK and the HIF1alpha / EPO-mRNA / plasma-EPO / reticulocyte
+responses sequentially by naive-pooled maximum likelihood in ADAPT 5, and used
+the model to *simulate* RBC, HGB and the (unmeasured) PHD2 activity ratio.
+
+This is a **deterministic, typical-value mechanism model**: a naive-pooled fit
+with no between-subject variability and no reported residual-error SDs, so the
+model file carries no `eta` terms and no error model. The validation below
+reproduces the published figures and checks baseline steady state and the
+endogenous-EPO half-life, rather than using a stochastic VPC.
+
+```{r model}
+mod <- readModelDb("Singh_2015_phi1_mouse_qsp")
+ui <- rxode2::rxode2(mod)
+```
+
+# Population
+
+`r paste(rxode2::rxode2(mod)$meta$population$disease_state)`. The cohort was
+male BALB/c mice, 8-10 weeks old, 3-6 per timepoint with terminal sampling
+(Singh 2015 Methods and Supplementary Material). RBC and HGB were measured only
+on day 0 and day 10; all other markers were sampled over 0.25-96 h.
+
+# Source trace
+
+Every structural parameter and equation is traced to its location in Singh 2015
+(main text Table 1 and Eqs. 1-22, the Supplementary Material derivation
+Eqs. S1-S18, and the authors' ADAPT 5 control stream reproduced in the
+Supporting Information). In-file `ini()` comments carry the same provenance.
+
+| Element | Value | Source |
+|---|---|---|
+| `ka`, `kel`, `kcp`, `kpc` | 8.5, 0.66, 0.014, 0.005 /h | Table 1 (Pharmacokinetics) |
+| `vc` (apparent central volume) | 2.4 L at 30 mg/kg; 9.15 L at 10 mg/kg | Table 1 (V2/F, V1/F); dose-dependent |
+| `kePHD2` (KE x PHD2tot0) | 9.9 /h | Table 1 (HIF1alpha); Eq. 3 / S17 |
+| `IC50`, `g1` | 1.7 uM, 2.3 | Table 1; Eq. 1 / S15 |
+| `kdeg_HIF` | 0 (fixed) | Table 1; Methods (PHD2-mediated degradation dominates) |
+| `HIF1o` | 351 AU | Table 1; Eq. 4 (baseline) |
+| `kdeg_mRNA`, `tau` | 0.43 /h, 2.7 h | Table 1; Eqs. 5-7, 11 |
+| `EPO_mRNA0`, `EPO_plasma0` | 0.8, 0.047 ng/mL | Table 1; Eqs. 8-10 (baselines) |
+| `g2` | 2.8 | Table 1; Eq. 5 |
+| `Retic0`, `Tr`, `SL` | 4.6 %, 81 h, 0.2 | Table 1; Eqs. 14-16, 18 |
+| `RBC0` | 10.76e12 cells/L (fixed) | Supplement S1 (observed baseline) |
+| `MCH_average` | 16.04e-12 g/cell (fixed) | Table 1 (16e-12, fixed); ADAPT value |
+| `Nkin` | 0.5226e10 cells/L/h | Supplement S1; ADAPT DIFFEQ code |
+| HIF1alpha turnover | Eq. 3 / S17 | Methods / Supplement |
+| EPO mRNA -> transit -> plasma | Eqs. 5-7 | Methods |
+| Reticulocyte lifespan model | Eqs. 14-16 | Methods |
+| Mature RBC, total RBC, HGB | ADAPT DIFFEQ XP(42); Eqs. 20, 22 | Supporting Information code / Methods |
+
+```{r source-trace-ini}
+knitr::kable(ui$iniDf[, c("name", "est")], caption = "Model parameters (ini).")
+```
+
+# Simulation setup
+
+The two single-dose arms differ only in the oral dose amount and in the
+dose-dependent apparent volume. PHI-1 amounts are the values coded in the
+authors' ADAPT model (25.8 and 77.4 umol for 10 and 30 mg/kg), which give
+plasma concentrations in uM when divided by the apparent volume. The 10 mg/kg
+arm overrides `lvc` to `log(9.15)` (the model default is the 30 mg/kg value).
+
+```{r simfun}
+solve_arm <- function(amt, vc, tmax = 240, by = 0.25) {
+  pars <- if (is.null(vc)) NULL else c(lvc = log(vc))
+  ev <- et(amt = amt, cmt = "depot", time = 0) |>
+    add.sampling(seq(0, tmax, by = by))
+  s <- rxSolve(mod, ev, params = pars, atol = 1e-10, rtol = 1e-10,
+               returnType = "data.frame")
+  s
+}
+
+s30 <- solve_arm(amt = 77.4, vc = NULL) # default lvc = log(2.4), 30 mg/kg
+s10 <- solve_arm(amt = 25.8, vc = 9.15) # 10 mg/kg
+sim <- bind_rows(
+  mutate(s30, dose = "30 mg/kg"),
+  mutate(s10, dose = "10 mg/kg")
+)
+```
+
+# Pharmacokinetics (Figure 2)
+
+```{r fig2-pk, fig.cap = "Plasma PHI-1 after single oral doses of 10 and 30 mg/kg. Replicates Figure 2 of Singh 2015."}
+ggplot(filter(sim, time <= 24), aes(time, Cc, colour = dose)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 1.7, linetype = "dotted") +
+  annotate("text", x = 20, y = 1.9, label = "IC50 = 1.7 uM", size = 3) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Plasma PHI-1 (uM)", colour = NULL) +
+  theme_bw()
+```
+
+# Pharmacological responses (Figure 3)
+
+```{r fig3, fig.width = 8, fig.height = 6, fig.cap = "Kidney HIF1alpha, kidney EPO mRNA (relative), plasma EPO and reticulocytes. Replicates Figure 3 of Singh 2015."}
+fig3 <- sim |>
+  select(time, dose, hif1, epo_mrna, epo_plasma, retic) |>
+  pivot_longer(c(hif1, epo_mrna, epo_plasma, retic),
+    names_to = "marker", values_to = "value"
+  ) |>
+  mutate(marker = factor(marker,
+    levels = c("hif1", "epo_mrna", "epo_plasma", "retic"),
+    labels = c(
+      "Kidney HIF1a (AU)", "Relative EPO mRNA",
+      "Plasma EPO (ng/mL)", "Reticulocytes (%)"
+    )
+  ))
+
+xmax <- c("Kidney HIF1a (AU)" = 30, "Relative EPO mRNA" = 96,
+          "Plasma EPO (ng/mL)" = 96, "Reticulocytes (%)" = 96)
+fig3 <- fig3 |> filter(time <= xmax[as.character(marker)])
+
+ggplot(fig3, aes(time, value, colour = dose)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~marker, scales = "free") +
+  labs(x = "Time (h)", y = NULL, colour = NULL) +
+  theme_bw()
+```
+
+# Red blood cells, hemoglobin and PHD2 activity (Figure 4)
+
+```{r fig4, fig.width = 8, fig.height = 6, fig.cap = "RBC, hemoglobin and the simulated active-PHD2 ratio. Replicates Figure 4 of Singh 2015."}
+rbc_hgb <- sim |>
+  select(time, dose, RBC, HGB, PHD2ratio) |>
+  mutate(RBC = RBC / 1e12)
+
+p_rbc <- ggplot(rbc_hgb, aes(time, RBC, colour = dose)) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Time (h)", y = "RBC (1e12 cells/L)", colour = NULL) +
+  coord_cartesian(ylim = c(10, 12)) +
+  theme_bw()
+p_hgb <- ggplot(rbc_hgb, aes(time, HGB, colour = dose)) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Time (h)", y = "Hemoglobin (g/dL)", colour = NULL) +
+  coord_cartesian(ylim = c(16, 19)) +
+  theme_bw()
+p_phd2 <- ggplot(filter(rbc_hgb, time <= 24), aes(time, PHD2ratio, colour = dose)) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Time (h)", y = "PHD2tot / PHD2tot0", colour = NULL) +
+  theme_bw()
+print(p_rbc)
+print(p_hgb)
+print(p_phd2)
+```
+
+# NCA characterisation of plasma PHI-1
+
+Singh 2015 reports the PK as rate constants (Table 1), not as NCA metrics. For
+orientation we summarise the simulated 30 mg/kg plasma profile with PKNCA; the
+grouping variable is the dose arm.
+
+```{r pknca}
+conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  select(dose, time, Cc)
+# Defensive time-zero rows (one per arm) so AUC starts at t = 0.
+conc <- bind_rows(
+  conc,
+  tibble(dose = unique(conc$dose), time = 0, Cc = 0)
+) |>
+  distinct(dose, time, .keep_all = TRUE) |>
+  arrange(dose, time)
+
+o_conc <- PKNCAconc(conc, Cc ~ time | dose)
+d_intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                          auclast = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+res <- pk.nca(PKNCAdata(o_conc, intervals = d_intervals))
+nca <- as.data.frame(res) |>
+  select(dose, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+knitr::kable(nca, digits = 3, caption = "NCA of simulated plasma PHI-1.")
+```
+
+# Validation checks
+
+```{r checks}
+# --- Baseline steady state (no dose): all markers constant ---------------
+base <- solve_arm(amt = 0, vc = NULL, tmax = 240, by = 4)
+rng <- function(x) max(x) / min(x) - 1
+stopifnot(
+  rng(base$hif1) < 1e-6,
+  rng(base$retic) < 1e-6,
+  rng(base$HGB) < 1e-6,
+  abs(base$hif1[1] - 351) < 1e-6,
+  abs(base$retic[1] - 4.6) < 1e-6
+)
+
+peak_fold <- function(s, col, base) max(s[[col]]) / base
+# --- 30 mg/kg response magnitudes vs the Fig. 3 / Fig. 4 model curves -----
+hif_fold <- peak_fold(s30, "hif1", 351) # Fig 3a solid ~ 23x
+mrna_fold <- peak_fold(s30, "epo_mrna", 0.8) # Fig 3b solid ~ 2000x
+epo_peak <- max(s30$epo_plasma) # Fig 3c solid ~ 45 ng/mL
+retic_peak <- max(s30$retic) # Fig 3d solid plateau ~ 9 %
+rbc_peak <- max(s30$RBC) / 1e12 # Fig 4a solid peak ~ 11.6
+rbc_d10 <- s30$RBC[s30$time == 240] / 1e12 # Fig 4a solid at 240 h ~ 11.15
+hgb_peak <- max(s30$HGB) # Fig 4b solid peak ~ 18.65
+phd2_min <- min(s30$PHD2ratio) # Fig 4c solid ~ 0
+
+stopifnot(
+  hif_fold > 18 && hif_fold < 25,
+  mrna_fold > 1800 && mrna_fold < 2600,
+  epo_peak > 38 && epo_peak < 48,
+  retic_peak > 8.6 && retic_peak < 9.6,
+  rbc_peak > 11.5 && rbc_peak < 11.8,
+  abs(rbc_d10 - 11.15) < 0.1,
+  hgb_peak > 18.5 && hgb_peak < 18.9,
+  phd2_min < 0.01
+)
+
+# --- 10 mg/kg is a minimal response (Fig. 3/4 dashed, near baseline) ------
+stopifnot(
+  max(s10$retic) < 4.8, # baseline 4.6; dashed line is flat
+  max(s10$RBC) / 1e12 < 10.9, # baseline 10.76; essentially flat
+  peak_fold(s10, "hif1", 351) < 3.5 # Fig 3a dashed ~ 2x
+)
+
+# --- Endogenous plasma EPO half-life = ln2 / (1/tau) = ln2*tau ------------
+epo_thalf <- log(2) * 2.7
+stopifnot(abs(epo_thalf - 1.87) < 0.05) # Discussion: "~1.8 hours" for mice
+
+checks <- tibble::tibble(
+  Quantity = c(
+    "HIF1a peak fold (30 mg/kg)", "EPO mRNA peak fold", "Plasma EPO peak (ng/mL)",
+    "Reticulocyte plateau (%)", "RBC peak (1e12/L)", "RBC day 10 (1e12/L)",
+    "HGB peak (g/dL)", "Active-PHD2 minimum", "Plasma EPO half-life (h)"
+  ),
+  Model = round(c(hif_fold, mrna_fold, epo_peak, retic_peak, rbc_peak,
+                  rbc_d10, hgb_peak, phd2_min, epo_thalf), 3),
+  `Paper (figure / text)` = c("~23x (Fig 3a)", "~2000x (Fig 3b)", "~45 (Fig 3c)",
+    "~9 (Fig 3d)", "~11.6 (Fig 4a)", "~11.15 (Fig 4a)", "~18.65 (Fig 4b)",
+    "~0 (Fig 4c)", "~1.8 (Discussion)")
+)
+knitr::kable(checks, caption = "Deterministic validation against Singh 2015 figures and text.")
+```
+
+# Assumptions and deviations
+
+* **Dose-dependent apparent volume.** The paper describes the nonlinear PK with
+  two apparent volumes, V1/F = 9.15 L at 10 mg/kg and V2/F = 2.4 L at 30 mg/kg
+  (Table 1). The model carries a single `vc` whose default is the 30 mg/kg
+  value; simulating the 10 mg/kg dose requires overriding `lvc` to
+  `log(9.15)`, as done above. The absorption and disposition rate constants
+  (`ka`, `kel`, `kcp`, `kpc`) are shared across doses.
+
+* **PHI-1 dose amounts.** The oral amounts (25.8 and 77.4 umol for 10 and
+  30 mg/kg) are the values coded in the authors' ADAPT model. They scale the
+  two doses 3:1 and reproduce the fitted plasma concentrations when divided by
+  the apparent volume; the mg/kg-to-umol conversion (mouse weight and molecular
+  weight) is not stated for the undisclosed compound.
+
+* **Mature-RBC production follows the authors' simulation code, not Eq. 19.**
+  The published Eq. 19 writes mature-RBC production as the reticulocyte
+  production delayed by the reticulocyte lifespan Tr, with loss at age
+  Tr + TRBC. The authors' ADAPT simulation code that produced Figure 4
+  (subroutine DIFFEQ, state `XP(42)`) instead drives mature-RBC production from
+  the **current** plasma EPO with no Tr delay and no RBC-death term. The
+  packaged model follows the code, so RBC and HGB reproduce Figure 4 (which the
+  delayed form does not: it would postpone the RBC rise by ~81 h). The assumed
+  24-day RBC lifespan therefore removes no cells within the published 10-day
+  window and is not implemented; the reticulocyte lifespan model (Eqs. 14-16)
+  is implemented exactly, including its Tr delay, and reproduces Figure 3d.
+
+* **No residual error or IIV.** The fit was naive-pooled; the ADAPT control
+  stream declares combined additive+proportional residual-error variance
+  parameters for HIF1alpha, EPO mRNA, plasma EPO and reticulocytes, but Table 1
+  reports no values for them. The model is therefore packaged as a
+  typical-value simulation with no error model (as for the other QSP models in
+  this library).
+
+* **EPO mRNA data were means only.** The authors note the EPO mRNA endpoint had
+  only mean (not individual pooled) data; the model fits the mean trajectory.
+
+* **`kdeg_HIF` fixed to 0.** In the absence of drug, PHD2-mediated hydroxylation
+  dominates HIF1alpha degradation, so the authors fixed the drug-independent
+  degradation rate to 0 (Methods; Table 1).
+```

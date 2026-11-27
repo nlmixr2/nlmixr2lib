@@ -1,0 +1,521 @@
+---
+title: "Intracellular stavudine triphosphate in children and adults (Innes 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Intracellular stavudine triphosphate in children and adults (Innes 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+set.seed(20181024)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Innes_2018_stavudine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Innes_2018_stavudine"))$description`
+* Article: <https://doi.org/10.1128/aac.00761-18> (open access, PMC6201115)
+
+Stavudine is a thymidine-analogue nucleoside reverse-transcriptase inhibitor.
+Its active moiety, stavudine triphosphate, is formed inside cells, and the
+mitochondrial toxicity that limits stavudine's use is thought to track the
+intracellular triphosphate rather than plasma stavudine. WHO lowered the adult
+dose to 30 mg twice daily; Innes 2018 asked what paediatric dose gives the same
+intracellular exposure.
+
+The model links the oral stavudine dose directly to stavudine triphosphate in
+peripheral blood mononuclear cells (PBMC). Plasma stavudine was not measured,
+so the first-order "appearance" rate `ka` lumps absorption, cell uptake and
+phosphorylation, and all clearances and volumes are apparent and expressed in
+cell units: 10^12 cells/h and 10^12 cells. Concentrations are fmol per 10^6
+cells.
+
+```{r load-model}
+mod <- readModelDb("Innes_2018_stavudine")
+mod
+```
+
+# Population
+
+Twenty-four HIV-positive adults and 24 prepubertal (Tanner stage 1-2)
+HIV-positive children were enrolled in Cape Town, South Africa; one child was
+excluded for non-adherence, leaving 23 children and 188 samples (Innes 2018
+Results and Table 1). Adults: median age 36 years (range 26-51), weight 83 kg
+(62-158), fat-free mass 47 kg (39-77), 1 of 24 male. Children: median age 8
+years (4-11), weight 23 kg (18-31), fat-free mass 19 kg (14-25), 12 of 23
+male. All were virally suppressed for more than 12 months on first-line
+antiretroviral therapy.
+
+Children received 0.5 mg/kg stavudine oral solution twice daily and adults
+20 mg capsules twice daily for 7 days. On day 7, PBMC samples were taken
+predose and at either 1, 2 and 6 h or 3, 4 and 8 h after the morning dose.
+The LLOQ was 3 to 3.47 fmol/10^6 cells; the 2 samples below it were handled
+with the M3 method.
+
+```{r population}
+str(readModelDb("Innes_2018_stavudine")()$population)
+```
+
+# Source trace
+
+```{r source-trace, echo = FALSE}
+tibble::tribble(
+  ~Quantity, ~Value, ~Source,
+  "CL", "454 x 10^12 cells/h", "Table 2 'CL (10^12 cells/h)' 454 (9% RSE)",
+  "Vc", "2,569 x 10^12 cells", "Table 2 'Vc (10^12 cells)' 2,569 (18%)",
+  "Q", "469 x 10^12 cells/h", "Table 2 'Q (10^12 cells/h)' 469 (30%)",
+  "Vp", "7,500 x 10^12 cells", "Table 2 'Vp (10^12 cells)' 7,500 (58%)",
+  "ka", "1.17 1/h", "Table 2 'ka (1/h)' 1.17 (46%), weakly informative prior (footnote c; Results)",
+  "F", "1 fixed", "Table 2 'F 1 (fixed)'; Methods 'relative bioavailability was fixed to 1'",
+  "FFM reference", "47.2 kg", "Table 2 footnote a 'adult with a median fat-free mass of 47.2 kg'",
+  "Allometric exponents", "0.75 (CL, Q), 1 (Vc, Vp), fixed", "Methods 'fixed coefficients of 3/4 and 1'",
+  "IIV CL", "30.4%", "Table 2 'IIV CL (%CV)' 30.4 (21%)",
+  "IOV F", "36.2%", "Table 2 'IOV F (%CV)' 36.2 (20%)",
+  "IOV ka", "30.6%", "Table 2 'IOV ka (%CV)' 30.6 (61%)",
+  "Occasions", "2", "Methods 'samples collected predose were treated as a separate occasion'",
+  "Additive error", "0.6 fmol/10^6 cells fixed", "Table 2 'Additive error' 0.6 (fixed), 20% of the median LLOQ (footnote d)",
+  "Proportional error", "27.4%", "Table 2 'Proportional error (%)' 27.4 (8%)",
+  "Error model", "combined", "Methods 'combined additive and proportional model'",
+  "Structure", "2-cmt, first-order appearance", "Results 'Pharmacokinetic model': biphasic vs monophasic, -24 in -2LL",
+  "Dose-to-concentration factor", "1e6 / 224.21", "Stavudine MW 224.21 g/mol (C10H12N2O4); checked below against the 30 mg adult AUC"
+) |>
+  knitr::kable(caption = "Source trace for Innes_2018_stavudine.")
+```
+
+## Units
+
+Table 2 gives clearances in 10^12 cells/h and volumes in 10^12 cells, with
+concentrations in fmol/10^6 cells, but does not state the dose unit the model
+was fitted with. The model takes the dose in mg of stavudine and converts it
+1:1 by moles to stavudine triphosphate using the stavudine molecular weight
+(224.21 g/mol): 1 mg per 10^12 cells is `1e6 / 224.21` = 4,460 fmol per 10^6
+cells. That conversion is not printed in the paper, so it is checked here
+against two printed numbers. At steady state, `AUCtau = F * Dose / CL`.
+
+```{r unit-check}
+fac <- 1e6 / 224.21
+cl_ffm <- function(ffm) 454 * (ffm / 47.2)^0.75
+unit_check <- tibble::tibble(
+  Quantity = c(
+    "Adult 30 mg AUCtau, FFM 46 kg (in silico adult median)",
+    "Adult 30 mg mean steady-state concentration, FFM 46 kg"
+  ),
+  Paper = c(300, 25),
+  `This model` = c(30 * fac / cl_ffm(46), 30 * fac / cl_ffm(46) / 12)
+)
+knitr::kable(unit_check, digits = 1,
+             caption = "Typical-value check of the mg-to-fmol conversion (Results and Discussion).")
+stopifnot(abs(unit_check$`This model` / unit_check$Paper - 1) < 0.05)
+```
+
+The adult in silico cohort median fat-free mass is 46 kg (Table S2). The
+match to within 1% on AUC and the Discussion's "simulated median steady-state
+concentration of 25 fmol/10^6 cells" confirms the molar conversion and the
+units of CL.
+
+## Variability percentages
+
+Table 2 reports IIV and IOV as "approximate coefficient of variation". Monolix
+estimates `omega`, the standard deviation of the log-normal random effect, and
+`omega` itself approximates the CV; the exact log-normal CV would be
+`sqrt(exp(omega^2) - 1)`. The model therefore encodes `omega^2` as the square
+of the printed percentage over 100 (e.g. IIV CL `0.304^2 = 0.0924`). The exact
+reading `log(1 + 0.304^2) = 0.0883` would differ by under 5% on the variance.
+
+# Typical-value checks
+
+The children's column of Table 2 is the adult typical value rescaled to the
+children's median FFM of 19.1 kg. Table S1 reports the medians of the
+individual alpha and beta half-lives.
+
+```{r typical}
+typ <- function(ffm) {
+  cl <- 454 * (ffm / 47.2)^0.75
+  vc <- 2569 * (ffm / 47.2)
+  q <- 469 * (ffm / 47.2)^0.75
+  vp <- 7500 * (ffm / 47.2)
+  k10 <- cl / vc
+  k12 <- q / vc
+  k21 <- q / vp
+  s <- k10 + k12 + k21
+  disc <- sqrt(s^2 - 4 * k10 * k21)
+  c(CL = cl, Vc = vc, Q = q, Vp = vp,
+    t_alpha = log(2) / ((s + disc) / 2), t_beta = log(2) / ((s - disc) / 2))
+}
+child_tab <- tibble::tibble(
+  Quantity = c("CL", "Vc", "Q", "Vp"),
+  `Table 2 child` = c(230, 1037, 238, 3027),
+  `This model, FFM 19.1 kg` = typ(19.1)[1:4]
+)
+knitr::kable(child_tab, digits = 0, caption = "Children's typical values (Table 2).")
+stopifnot(abs(child_tab$`This model, FFM 19.1 kg` / child_tab$`Table 2 child` - 1) < 0.01)
+
+hl_tab <- tibble::tibble(
+  Group = c("Adults (FFM 47.2 kg)", "Children (FFM 19.1 kg)"),
+  `Alpha t1/2 (h), Table S1` = c(1.8, 1.3),
+  `Alpha t1/2 (h), model` = c(typ(47.2)[["t_alpha"]], typ(19.1)[["t_alpha"]]),
+  `Beta t1/2 (h), Table S1` = c(26, 19),
+  `Beta t1/2 (h), model` = c(typ(47.2)[["t_beta"]], typ(19.1)[["t_beta"]])
+)
+knitr::kable(hl_tab, digits = 1, caption = "Disposition half-lives against Table S1 (medians of individual estimates).")
+```
+
+The typical half-lives (1.8 h and 24.7 h in adults, 1.4 h and 19.7 h in
+children) agree with the Table S1 medians of the individual estimates.
+
+# Virtual cohorts
+
+The paper simulated 100,000 adults resampled from 2,680 covariate sets and
+100,000 children resampled from 7,930, neither of which is published. The
+cohorts here reproduce their Table S2 summaries instead, with 200 subjects per
+arm:
+
+* adults: fat-free mass log-normal with median 46 kg and IQR 40-53 kg
+  (Table S2), restricted to the Table S2 range 18-62 kg;
+* children: weight log-normal with median 21 kg and IQR 16-25 kg, restricted
+  to 7-55 kg (Table S2 range 6-55 kg; the dosing table starts at 7 kg), with
+  fat-free mass taken as `WT * 17 / 21`, the ratio of the Table S2 medians.
+
+Out-of-range draws are redrawn, not clamped.
+
+```{r cohort}
+rxode2::rxSetSeed(20181024)
+set.seed(20181024)
+n_arm <- 200
+
+draw_lnorm_band <- function(n, med, q1, q3, lo, hi) {
+  sdlog <- (log(q3) - log(q1)) / (2 * qnorm(0.75))
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- stats::rlnorm(n, log(med), sdlog)
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
+
+adults <- tibble::tibble(
+  FFM = draw_lnorm_band(n_arm, 46, 40, 53, 18, 62),
+  WT = NA_real_,
+  arm = "Adult 30 mg",
+  dose = 30
+)
+
+child_wt <- draw_lnorm_band(n_arm, 21, 16, 25, 7, 55)
+
+# Table 3 weight bands: WHO 1 mg/kg guideline and the proposed 0.5-0.75 mg/kg
+# guideline (mg per dose, twice daily).
+who_dose <- function(wt) {
+  dplyr::case_when(wt < 10 ~ 9, wt < 14 ~ 15, wt < 25 ~ 20, TRUE ~ 30)
+}
+new_dose <- function(wt) {
+  dplyr::case_when(wt < 10 ~ 7.5, wt < 14 ~ 10, wt < 25 ~ 15, wt < 60 ~ 20, TRUE ~ 30)
+}
+
+children <- dplyr::bind_rows(
+  tibble::tibble(WT = child_wt, arm = "Children, WHO 1 mg/kg", dose = who_dose(child_wt)),
+  tibble::tibble(WT = child_wt, arm = "Children, proposed", dose = new_dose(child_wt))
+) |>
+  dplyr::mutate(FFM = WT * 17 / 21)
+
+cohort <- dplyr::bind_rows(adults, children) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+cohort |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    n = dplyr::n(),
+    `FFM median (kg)` = median(FFM),
+    `Dose median (mg)` = median(dose),
+    `Dose median (mg/kg)` = median(dose / WT)
+  ) |>
+  knitr::kable(digits = 2, caption = "Simulated cohorts (200 per arm).")
+```
+
+# Simulation
+
+Doses are given twice daily for 10 days (20 doses; the 26 h beta half-life
+needs about 9 half-lives to reach steady state) and the last 12-h interval is
+sampled densely. Every record carries `OCC = 2`, so each subject's
+between-occasion effects on bioavailability and ka are drawn once and held for
+the whole course (see Assumptions).
+
+```{r simulate}
+tau <- 12
+n_dose <- 20
+t_last <- (n_dose - 1) * tau
+obs_times <- t_last + c(0, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10, 12)
+
+doses <- cohort |>
+  tidyr::crossing(time = seq(0, t_last, by = tau)) |>
+  dplyr::mutate(amt = dose, evid = 1L, cmt = "depot")
+obs <- cohort |>
+  tidyr::crossing(time = obs_times) |>
+  dplyr::mutate(amt = 0, evid = 0L, cmt = "central")
+events <- dplyr::bind_rows(doses, obs) |>
+  dplyr::mutate(OCC = 2L) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::select(id, time, amt, evid, cmt, FFM, OCC)
+
+sim <- rxode2::rxSolve(mod, events = events, keep = "FFM", returnType = "data.frame") |>
+  dplyr::left_join(dplyr::select(cohort, id, arm, WT, dose), by = "id")
+```
+
+## Steady-state NCA with PKNCA
+
+Time is re-based to the start of the last dosing interval.
+
+```{r pknca}
+conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(tad = time - t_last) |>
+  dplyr::select(id, arm, tad, Cc)
+dose_df <- cohort |>
+  dplyr::mutate(tad = 0) |>
+  dplyr::select(id, arm, tad, dose)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ tad | arm + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, dose ~ tad | arm + id)
+intervals <- data.frame(start = 0, end = tau, auclast = TRUE, cmax = TRUE, cmin = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_wide <- as.data.frame(nca$result) |>
+  dplyr::select(arm, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::left_join(dplyr::select(cohort, id, WT, FFM), by = "id")
+```
+
+# Comparison against the paper's simulations
+
+Results, "Dosing optimization": adults on 30 mg twice daily, median (IQR) Cmin
+13 (10, 19), Cmax 45 (38, 53), AUC 300 (238, 380); children on the proposed
+weight bands, Cmin 13 (9, 18), Cmax 49 (40, 58), AUC 300 (238, 379).
+
+```{r nca-compare}
+fmt_q <- function(x) {
+  q <- stats::quantile(x, c(0.25, 0.5, 0.75))
+  sprintf("%.0f (%.0f, %.0f)", q[2], q[1], q[3])
+}
+summ <- nca_wide |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    cmin_med = median(cmin), cmax_med = median(cmax), auc_med = median(auclast),
+    Cmin = fmt_q(cmin), Cmax = fmt_q(cmax), AUC = fmt_q(auclast)
+  )
+
+paper <- tibble::tribble(
+  ~arm, ~Cmin_paper, ~Cmax_paper, ~AUC_paper,
+  "Adult 30 mg", "13 (10, 19)", "45 (38, 53)", "300 (238, 380)",
+  "Children, proposed", "13 (9, 18)", "49 (40, 58)", "300 (238, 379)",
+  "Children, WHO 1 mg/kg", "not reported", "up to double the adult value (Fig. 2)", "not reported"
+)
+summ |>
+  dplyr::left_join(paper, by = "arm") |>
+  dplyr::select(arm, Cmin, Cmin_paper, Cmax, Cmax_paper, AUC, AUC_paper) |>
+  dplyr::rename(
+    Arm = arm,
+    "Cmin, simulated" = Cmin, "Cmin, paper" = Cmin_paper,
+    "Cmax, simulated" = Cmax, "Cmax, paper" = Cmax_paper,
+    "AUC0-12, simulated" = AUC, "AUC0-12, paper" = AUC_paper
+  ) |>
+  knitr::kable(caption = "Steady-state exposure, median (IQR); units fmol/10^6 cells and fmol/10^6 cells x h.")
+```
+
+The paper's tables give medians, so the medians are compared through
+`ncaComparisonTable()`:
+
+```{r nca-table}
+ref_medians <- tibble::tribble(
+  ~arm, ~PPTESTCD, ~value,
+  "Adult 30 mg", "cmin", 13,
+  "Adult 30 mg", "cmax", 45,
+  "Adult 30 mg", "auclast", 300,
+  "Children, proposed", "cmin", 13,
+  "Children, proposed", "cmax", 49,
+  "Children, proposed", "auclast", 300
+)
+sim_medians <- summ |>
+  dplyr::filter(arm %in% ref_medians$arm) |>
+  dplyr::select(arm, cmin = cmin_med, cmax = cmax_med, auclast = auc_med) |>
+  tidyr::pivot_longer(-arm, names_to = "PPTESTCD", values_to = "simulated")
+cmp <- dplyr::left_join(ref_medians, sim_medians, by = c("arm", "PPTESTCD"))
+
+nlmixr2lib::ncaComparisonTable(
+  simulated = dplyr::select(cmp, arm, PPTESTCD, PPORRES = simulated),
+  reference = dplyr::select(cmp, arm, PPTESTCD, PPORRES = value),
+  by = "arm",
+  units = c(cmin = "fmol/10^6 cells", cmax = "fmol/10^6 cells", auclast = "fmol/10^6 cells*h")
+) |>
+  knitr::kable(caption = "Simulated vs published medians (* marks > 20% difference).")
+
+adult_cmp <- cmp[cmp$arm == "Adult 30 mg", ]
+child_cmp <- cmp[cmp$arm == "Children, proposed", ]
+stopifnot(
+  # Adults: the reference arm, whose cohort is summarised by FFM alone.
+  # A mis-transcribed CL, volume, dose or unit factor moves every median by
+  # tens of percent.
+  all(abs(adult_cmp$simulated / adult_cmp$value - 1) < 0.10),
+  # Children: the paper's paediatric cohort is unpublished, so the medians
+  # carry a cohort-construction difference (see below) on top of the
+  # sampling noise.
+  all(abs(child_cmp$simulated / child_cmp$value - 1) < 0.20)
+)
+
+who_vs_adult <- summ$cmax_med[summ$arm == "Children, WHO 1 mg/kg"] /
+  summ$cmax_med[summ$arm == "Adult 30 mg"]
+who_vs_adult
+stopifnot(who_vs_adult > 1.2)
+```
+
+The adult reference arm reproduces the paper's medians to within 5%. WHO
+1 mg/kg dosing gives a markedly higher median Cmax than the adult reference,
+as Figure 2 shows. The simulated IQRs are wider than the paper's; see
+Assumptions.
+
+Children on the proposed weight bands come out about 15% higher than the
+paper on AUC and Cmax (Cmin about 10% higher). The model itself is not the
+cause: the adult typical values reproduce the paper exactly and the
+children's Table 2 values to within 1%. The difference comes from the
+paediatric simulation inputs, which the paper does not publish in full:
+
+* Table 3 as printed gives 15 mg to children of 14-19.9 kg and 10 mg to
+  children of 10-13.9 kg, which is 0.72-1.07 mg/kg, mostly above the 0.5-0.75 mg/kg
+  range the table's own header and footnote state. The weight bands are
+  applied here exactly as printed; if the paper's simulations used lower
+  doses in these bands, its paediatric medians would be lower than ours.
+* The paediatric cohort here approximates the paper's 7,930-child covariate
+  set from its Table S2 summary (see Virtual cohorts).
+
+The Discussion also quotes, for children on 0.5 mg/kg, a simulated Cmin of
+10.9 and Cmax of 41.4 fmol/10^6 cells. The typical-value solve below, for a
+child at the Table S2 median weight and FFM, is about 15% lower. That gap
+goes the other way from the weight-band gap, which again points to the
+unpublished paediatric cohort rather than to the model.
+
+```{r discussion-check}
+typ_child <- tibble::tibble(id = 1L, FFM = 17, OCC = 2L)
+typ_child_ev <- dplyr::bind_rows(
+  tibble::tibble(time = seq(0, t_last, by = tau), amt = 0.5 * 21, evid = 1L, cmt = "depot"),
+  tibble::tibble(time = seq(t_last, t_last + tau, by = 0.05), amt = 0, evid = 0L, cmt = "central")
+) |>
+  dplyr::mutate(id = 1L, FFM = 17, OCC = 2L) |>
+  dplyr::arrange(time, dplyr::desc(evid))
+typ_child_sim <- rxode2::rxSolve(rxode2::zeroRe(mod), events = typ_child_ev,
+                                 returnType = "data.frame")
+tibble::tibble(
+  Metric = c("Cmin", "Cmax"),
+  `Paper Discussion (0.5 mg/kg)` = c(10.9, 41.4),
+  `Typical child, 21 kg, FFM 17 kg` = c(min(typ_child_sim$Cc), max(typ_child_sim$Cc))
+) |>
+  knitr::kable(digits = 1, caption = "Children on 0.5 mg/kg twice daily, fmol/10^6 cells.")
+```
+
+## Figures 2 and 3
+
+```{r fig23, fig.height = 8}
+adult_med <- nca_wide |>
+  dplyr::filter(arm == "Adult 30 mg") |>
+  dplyr::summarise(dplyr::across(c(auclast, cmin, cmax), median)) |>
+  tidyr::pivot_longer(dplyr::everything(), names_to = "metric", values_to = "adult")
+
+nca_wide |>
+  dplyr::filter(arm != "Adult 30 mg") |>
+  tidyr::pivot_longer(c(auclast, cmin, cmax), names_to = "metric", values_to = "value") |>
+  dplyr::left_join(adult_med, by = "metric") |>
+  dplyr::mutate(metric = factor(metric, c("auclast", "cmin", "cmax"),
+                                c("AUC0-12", "Cmin", "Cmax"))) |>
+  ggplot(aes(WT, value)) +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 0.8 * adult, ymax = 1.2 * adult),
+            fill = "grey85", inherit.aes = FALSE,
+            data = function(d) dplyr::distinct(d, arm, metric, adult)) +
+  geom_point(alpha = 0.4, size = 1) +
+  geom_smooth(method = "loess", formula = y ~ x, se = FALSE, colour = "firebrick") +
+  facet_grid(metric ~ arm, scales = "free_y") +
+  labs(x = "Body weight (kg)", y = "Stavudine triphosphate exposure (fmol/10^6 cells; x h for AUC)") +
+  theme_bw()
+```
+
+Replicates Figures 2 (WHO 1 mg/kg weight bands) and 3 (proposed 0.5-0.75 mg/kg
+weight bands) of Innes 2018. The grey band is the simulated adult median
++/- 20% on 30 mg twice daily. WHO dosing sits above the band across most of
+the weight range. The proposed bands bring exposure down towards it, with
+the highest values in the 14-19.9 kg children, where the printed 15 mg dose
+is largest per kilogram. The paper's Figure 3 shows its medians inside the
+band; ours sit at its upper edge (see above).
+
+## Typical profiles
+
+```{r typical-profiles}
+typ_ev <- tibble::tibble(
+  id = 1:2, FFM = c(47.2, 19.1), dose = c(20, 0.5 * 23),
+  label = c("Adult, 20 mg (FFM 47.2 kg)", "Child, 0.5 mg/kg at 23 kg (FFM 19.1 kg)")
+)
+typ_events <- dplyr::bind_rows(
+  typ_ev |> tidyr::crossing(time = seq(0, 6 * 24, by = 12)) |>
+    dplyr::mutate(amt = dose, evid = 1L, cmt = "depot"),
+  typ_ev |> tidyr::crossing(time = seq(6 * 24 - 1, 6 * 24 + 12, by = 0.1)) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central")
+) |>
+  dplyr::mutate(OCC = 2L) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+typ_sim <- rxode2::rxSolve(rxode2::zeroRe(mod), events = typ_events, returnType = "data.frame") |>
+  dplyr::left_join(dplyr::select(typ_ev, id, label), by = "id")
+ggplot(typ_sim, aes(time - 6 * 24, Cc, colour = label)) +
+  geom_line() +
+  labs(x = "Time after the day-7 morning dose (h)",
+       y = "Stavudine triphosphate (fmol/10^6 cells)", colour = NULL) +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+Typical-value day-7 profiles under the study regimens, on the time scale of
+Figure S1 (individual observed profiles).
+
+# Assumptions and deviations
+
+* **Dose unit and molecular weight.** The paper does not state the dose unit
+  used in fitting. The model takes mg of stavudine and converts 1:1 by moles
+  with the stavudine molecular weight 224.21 g/mol; the check above reproduces
+  the printed 30 mg adult median AUC (300) and steady-state concentration (25)
+  to within 1%, which confirms the conversion.
+* **Residual error form.** The paper says only "combined additive and
+  proportional model". The Monolix default combined form,
+  `y = f + (a + b * f) * e` (`combined1()`), is used. The additive term is
+  small (0.6 fmol/10^6 cells against concentrations of 10-50), so the choice
+  has little effect.
+* **Variability scale.** Table 2's "approximate %CV" values are read as
+  Monolix `omega` (the log-scale SD), so `omega^2 = (CV/100)^2`.
+* **Occasions.** The model has two occasions as fitted: `OCC = 1` for the
+  dose preceding the predose sample and `OCC = 2` for the sampled day-7 dose.
+  The paper does not say how occasions were assigned in its 100,000-subject
+  simulations. Here every dose carries `OCC = 2`, so the IOV on F and ka acts
+  as a per-subject effect for the whole course. If the paper redrew F for each
+  dose, the steady-state AUC would average over many doses (the 26-h beta
+  half-life spans about four dosing intervals) and its IQR would be narrower,
+  which would explain why the simulated IQRs here are wider than the printed
+  ones while the medians agree.
+* **Simulation cohorts.** The paper's in silico cohorts (2,680 adults and
+  7,930 children from Stellenbosch University) are not published. Their
+  Table S2 medians and IQRs are reproduced with log-normal draws; children's
+  FFM is taken proportional to weight with the Table S2 median ratio 17/21
+  rather than computed from height, age and sex with the Al-Sallami equation.
+* **WHO weight bands.** Table 3 lists the WHO 1 mg/kg guideline only from
+  7 kg; the 7-9.9 kg band (9 mg) is applied to the few simulated children
+  below 10 kg, and the paper's restriction to children over 2 years is not
+  modelled.
+* **Age, sex and renal function** were tested and had no effect, so the
+  model has no covariates other than FFM. The paper notes the model should
+  not be used for children younger than 2 years, where maturation is
+  expected.
+* **Table S1** (adults 20 mg: Cmin 9.3, Cmax 32, AUC 232) holds medians of
+  the 24 observed adults' individual estimates, not model predictions, so it
+  is not used as a gate. The typical adult AUC at 20 mg is
+  `r round(20 * fac / 454)` fmol/10^6 cells x h.
+* No erratum to Innes 2018 was found (Europe PMC correction links and an
+  erratum search, checked 2026-11-25).

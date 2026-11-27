@@ -5,6 +5,7 @@ Zhou_2016_warfarin_vk2 <- function() {
   paper_specific_compartments <- c("central_vk2")
 
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("central", "central_vk2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

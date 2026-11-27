@@ -4,6 +4,7 @@ AitOudhia_2024_sotatercept <- function() {
   vignette <- "AitOudhia_2024_sotatercept"
   paper_specific_residual_sds <- c("expSdHealthy", "expSdPah")
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.

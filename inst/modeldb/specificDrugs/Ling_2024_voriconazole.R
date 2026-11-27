@@ -3,6 +3,7 @@ Ling_2024_voriconazole <- function() {
   reference <- "Ling J, Yang X, Dong L, Jiang Y, Zou S, Hu N. Influence of C-reactive protein on the pharmacokinetics of voriconazole in relation to the CYP2C19 genotype: a population pharmacokinetics analysis. Front Pharmacol. 2024;15:1455721. doi:10.3389/fphar.2024.1455721"
   vignette <- "Ling_2024_voriconazole"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = TRUE),

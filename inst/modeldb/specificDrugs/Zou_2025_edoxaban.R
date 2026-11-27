@@ -32,6 +32,7 @@ Zou_2025_edoxaban <- function() {
   )
   vignette <- "Zou_2025_edoxaban"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),

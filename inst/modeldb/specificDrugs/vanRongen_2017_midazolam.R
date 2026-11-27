@@ -36,6 +36,7 @@ vanRongen_2017_midazolam <- function() {
   )
   vignette <- "vanRongen_2017_midazolam"
   units <- list(time = "min", dosing = "ug", concentration = "microgram/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

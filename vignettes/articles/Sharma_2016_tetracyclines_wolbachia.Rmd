@@ -1,0 +1,421 @@
+---
+title: "Doxycycline and minocycline anti-Wolbachia PK/PD in mice (Sharma 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Doxycycline and minocycline anti-Wolbachia PK/PD in mice (Sharma 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Sharma_2016_doxycycline_mouse"))$reference`
+* Description (doxycycline): `r rxode2::rxode(readModelDb("Sharma_2016_doxycycline_mouse"))$description`
+* Description (minocycline): `r rxode2::rxode(readModelDb("Sharma_2016_minocycline_mouse"))$description`
+* Article: <https://doi.org/10.1038/srep23458> (open access)
+* Corrigendum: <https://doi.org/10.1038/srep46934> (corrects an author's name
+  only; no value changes)
+
+This is a **preclinical (mouse)** model. Sharma and colleagues compared two
+tetracyclines, doxycycline and minocycline, as anti-Wolbachia drugs against the
+human lymphatic filarial nematode *Brugia malayi* in BALB/c SCID mice. Killing
+the worms' Wolbachia endosymbionts blocks embryogenesis and slowly kills the
+adult worms, so the pharmacodynamic endpoint is the percentage depletion of
+Wolbachia (wsp gene copies per adult female worm) relative to vehicle-treated
+mice.
+
+Each drug was fitted separately in Pmetrics (non-parametric adaptive grid) with
+the same structure, so the library carries one model file per drug:
+
+* **PK** (Methods eq. 1a/1b): one compartment with first-order oral absorption,
+  CL/F and V/F per kg (Table 2).
+* **PD** (Methods eq. 2a/2b/3): an effect compartment that exchanges drug
+  *amount* with the central compartment at rate constants `K12` (in) and `K21`
+  (out) (Table 4), and an Emax model of the effect-site concentration
+  `X3 / Vf`. EC50 is fixed to the in vitro EC50 against Wolbachia-infected
+  C6/36 insect cells (Table 1, Table 4) and Emax to 99.999 %. The effect-site
+  volume `Vf` is "proportional to the volume of distribution of the central
+  compartment".
+
+The paper reports neither the absorption rate constant nor the `Vf / V`
+proportionality constant. Both were recovered from the paper's own results:
+`ka` from the median profiles of Figure 1 and `Vf / V` from the area-under-the-
+PD-curve ratio of Table 4. Both derivations are reproduced below.
+
+```{r models}
+mod_dox <- readModelDb("Sharma_2016_doxycycline_mouse")
+mod_min <- readModelDb("Sharma_2016_minocycline_mouse")
+mods <- list(Doxycycline = mod_dox, Minocycline = mod_min)
+
+# Both models have two outputs (Cc and wolbachia_reduction), so observation
+# rows sit on the central ODE state and carry dvid = 1; rxode2 returns both
+# outputs as columns on every observation row.
+make_ev <- function(dose, ii, n_dose, obs_times, n_id = 1) {
+  one <- data.frame(
+    time = c(0, obs_times), amt = c(dose, rep(NA, length(obs_times))),
+    ii = c(ii, rep(0, length(obs_times))), addl = c(n_dose - 1, rep(0, length(obs_times))),
+    evid = c(1L, rep(0L, length(obs_times))),
+    cmt = c("depot", rep("central", length(obs_times))),
+    dvid = c(NA_integer_, rep(1L, length(obs_times)))
+  )
+  do.call(rbind, lapply(seq_len(n_id), function(i) cbind(id = i, one)))
+}
+```
+
+# Population
+
+All animals were male BALB/c SCID mice. The PK study used uninfected mice
+weighing 24-28 g, given 25 mg/kg of either drug by oral gavage, with rich
+tail-vein microsampling (20 uL whole blood) up to 8 h after a single dose and on
+day 7 of once-daily dosing; Table 2 reports the day-7 fit. The PD studies
+infected mice intraperitoneally with 100 *B. malayi* L3 larvae and started oral
+dosing 6 weeks later: 25 mg/kg once or twice daily for 7 to 42 days, and for
+minocycline also 25, 40 or 80 mg/kg twice daily for 7 days. In the Figure 3
+studies mice were necropsied 12 weeks after infection (so after a washout of
+up to 35 days); in the Figure 4 study adult worms were recovered immediately
+after the last dose. Each arm had 4-13 mice and 10-40 adult female worms
+assayed by qPCR (Table 3; Figure 3 and 4 legends). The number of PK mice is not
+stated. The same facts are in each model's `population` metadata.
+
+# Source trace
+
+| Equation / parameter | Doxycycline | Minocycline | Source location |
+|---|---|---|---|
+| One-compartment oral PK | -- | -- | Methods eq. 1a, 1b |
+| Effect compartment exchanging amount with central | -- | -- | Methods eq. 2a, 2b |
+| `effect = Emax * (X3/Vf) / (EC50 + X3/Vf)` | -- | -- | Methods eq. 3 |
+| `lcl` (CL/F, L/h/kg) | 1.2 | 3.2 | Table 2 |
+| `lvc` (V/F, L/kg) | 6.9 | 13.2 | Table 2 |
+| `etalcl` (variance) | 0.10536 | 0.0087507 | Table 2 SD 0.4 / 0.3, as `log(1 + CV^2)` |
+| `etalvc` (variance) | 0.27723 | 0.10995 | Table 2 SD 3.9 / 4.5, as `log(1 + CV^2)` |
+| `lka` (1/h) | 2.53 | 3.62 | **Not reported**; digitised from Figure 1 (below) |
+| `lk1e` (K12, 1/h) | 4.36e-7 | 1.08e-5 | Table 4 |
+| `lke1` (K21, 1/h) | 8.06e-4 | 1.49e-3 | Table 4 |
+| `lec50` (nM, fixed) | 15.32 | 11.75 | Table 4; Table 1 (in vitro) |
+| `lemax` (%, fixed) | 99.999 | 99.999 | Methods, PK/PD modelling |
+| `lveff_ratio` (Vf / V, fixed) | 0.023 | 0.023 | **Not reported**; back-solved from Table 4 AUC_PD ratio (below) |
+| Molecular weight (g/mol) | 444.43 | 457.48 | Free base, used to convert mg/L to nM |
+| `propSd`, `addSd_wolbachia_reduction` | fixed 0 | fixed 0 | Not reported |
+
+# Absorption rate constant from Figure 1
+
+Figure 1 plots the median day-7 profile of 1000 simulated mice after 25 mg/kg
+once daily. Digitised against the axis ticks, the median peaks at 3.02 ug/mL
+(doxycycline) and 1.57 ug/mL (minocycline), at about 1.1 h. With the Table 2
+CL/F and V/F, `ka` = 2.53 1/h and 3.62 1/h reproduce those peaks. The
+deterministic check below confirms the packaged values do.
+
+```{r ka-check}
+pk_times <- 144 + c(seq(0, 3, by = 0.01), seq(3.25, 24, by = 0.25))
+ev_pk <- make_ev(dose = 25, ii = 24, n_dose = 7, obs_times = pk_times)
+
+typ_pk <- bind_rows(lapply(names(mods), function(drug) {
+  as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mods[[drug]]), ev_pk)) |>
+    mutate(drug = drug)
+}))
+typ_peak <- typ_pk |>
+  group_by(drug) |>
+  summarise(cmax = max(Cc), tmax = time[which.max(Cc)] - 144, .groups = "drop")
+knitr::kable(typ_peak, digits = 3, caption = "Typical-value day-7 peak, 25 mg/kg once daily.")
+
+# Deterministic: the digitised Figure 1 median peaks are 3.02 and 1.57 ug/mL.
+stopifnot(
+  abs(typ_peak$cmax[typ_peak$drug == "Doxycycline"] / 3.02 - 1) < 0.01,
+  abs(typ_peak$cmax[typ_peak$drug == "Minocycline"] / 1.57 - 1) < 0.01
+)
+```
+
+Matching the peak *height* sets `ka`; the peak *time* is then about 1.1 h for
+doxycycline and 0.8 h for minocycline, against about 1.1 h for both in the
+figure. A Pmetrics typical value is the mean of a non-parametric marginal
+distribution rather than the parameters of any one mouse, so peak time is not
+used as a gate. `ka` has almost no influence on the PD: the AUC_PD ratio of
+Table 4 changes by less than 0.001 for `ka` anywhere between 2 and 5 1/h.
+
+# Replicate Figure 1: day-7 PK profiles
+
+```{r vpc}
+rxode2::rxSetSeed(20160321)
+vpc <- bind_rows(lapply(names(mods), function(drug) {
+  as.data.frame(rxode2::rxSolve(mods[[drug]], make_ev(25, 24, 7, pk_times, n_id = 200))) |>
+    mutate(drug = drug)
+}))
+vpc_sum <- vpc |>
+  mutate(tad = time - 144) |>
+  group_by(drug, tad) |>
+  summarise(
+    p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc_sum, aes(tad)) +
+  geom_line(aes(y = p50)) +
+  geom_line(aes(y = p05), linetype = "dashed", colour = "blue") +
+  geom_line(aes(y = p95), linetype = "dashed", colour = "blue") +
+  facet_wrap(~drug, scales = "free_y") +
+  labs(
+    x = "Time after dose (h)", y = "Blood concentration (ug/mL)",
+    caption = "Replicates Figure 1 of Sharma 2016: median and 5th / 95th percentiles of 200 simulated mice."
+  )
+
+# Peak of each percentile curve, against the peaks digitised from Figure 1.
+vpc_sum |>
+  group_by(drug) |>
+  summarise(across(c(p05, p50, p95), max), .groups = "drop") |>
+  mutate(
+    fig1_p05 = c(1.9, 0.93), fig1_p50 = c(3.02, 1.57), fig1_p95 = c(9.3, 3.2)
+  ) |>
+  dplyr::rename(
+    Drug = drug, `5th pct` = p05, Median = p50, `95th pct` = p95,
+    `Fig. 1 5th pct` = fig1_p05, `Fig. 1 median` = fig1_p50, `Fig. 1 95th pct` = fig1_p95
+  ) |>
+  knitr::kable(digits = 2, caption = "Peak concentration (ug/mL) of each percentile curve: 200 simulated mice vs. Figure 1 (digitised).")
+```
+
+The table above shows how far the simulated percentile bands match the
+published ones. The published 95th percentile at the peak is the furthest off.
+The non-parametric fit also had between-mouse variability in `ka`, which the
+paper does not report and the model therefore does not carry.
+
+# PKNCA validation against Table 2
+
+Table 2 gives the day-7 mean AUC over the 24 h dosing interval and the mean
+half-life. Means of a cohort are compared with means, so the simulated PKNCA
+results are averaged before going into the comparison table.
+
+```{r pknca}
+stopifnot(!anyNA(vpc$Cc))
+nca_in <- vpc |>
+  filter(!is.na(Cc)) |>
+  mutate(treatment = drug) |>
+  select(id, time, Cc, treatment)
+conc_obj <- PKNCA::PKNCAconc(nca_in, Cc ~ time | treatment + id)
+dose_df <- nca_in |>
+  distinct(treatment, id) |>
+  tidyr::crossing(time = seq(0, 144, by = 24)) |>
+  mutate(amt = 25)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 144, end = 168,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+sim_means <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("auclast", "half.life")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(PPORRES = mean(PPORRES), .groups = "drop")
+
+published <- tibble::tribble(
+  ~treatment, ~auclast, ~half.life,
+  "Doxycycline", 22.8, 4.4,
+  "Minocycline", 8.4, 3.0
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_means,
+  reference = published,
+  by = "treatment",
+  units = c(auclast = "h*ug/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated cohort means vs. Sharma 2016 Table 2 (day 7). * differs by >20%.")
+attr(cmp, "footnote")
+
+auc_sim <- sim_means |> filter(PPTESTCD == "auclast")
+# The mean AUC of a cohort follows the dose / CL/F of every mouse, so a
+# mistyped clearance, dose or unit moves it by tens of percent.
+stopifnot(
+  abs(auc_sim$PPORRES[auc_sim$treatment == "Doxycycline"] / 22.8 - 1) < 0.15,
+  abs(auc_sim$PPORRES[auc_sim$treatment == "Minocycline"] / 8.4 - 1) < 0.15
+)
+```
+
+The mean AUCs agree closely with Table 2. That is expected: the mean of
+`25 / CL` over a log-normal CL/F with the Table 2 CV is 23.1 and
+7.9 h.ug/mL. The mean half-lives come out somewhat longer than Table 2's
+4.4 and 3.0 h, because a log-normal V/F with a 56 % CV has a long upper
+tail. Table 2's half-life SDs (3.7 and 2.3 h) are wider than the CL/F
+and V/F SDs alone can produce, and the paper does not give the joint
+distribution, so the half-life is not gated.
+
+# Effect-site volume from Table 4
+
+Table 4 gives the ratio of the area under the PD curve (percentage Wolbachia
+depletion integrated over 0-28 days) for minocycline to doxycycline after
+25 mg/kg twice daily for 28 days: 1.7. This is the fitted model's own output,
+so it fixes the one structural constant the paper leaves out, `Vf / V`.
+The constant is assumed to be the same for both drugs, since the paper states
+one rule for both. The scan below shows how the ratio depends on it.
+
+```{r auc-pd-ratio}
+ev_bid28 <- make_ev(dose = 25, ii = 12, n_dose = 56, obs_times = seq(0, 672, by = 0.25))
+
+auc_pd <- function(mod, ratio) {
+  m <- rxode2::ini(rxode2::zeroRe(mod), lveff_ratio = log(ratio))
+  s <- as.data.frame(rxode2::rxSolve(m, ev_bid28))
+  c(
+    auc = sum(diff(s$time) * (head(s$wolbachia_reduction, -1) + tail(s$wolbachia_reduction, -1)) / 2),
+    end = tail(s$wolbachia_reduction, 1)
+  )
+}
+scan <- bind_rows(lapply(c(0.003, 0.006, 0.01, 0.02, 0.023, 0.025, 0.03, 0.1, 1), function(r) {
+  a <- auc_pd(mod_dox, r)
+  b <- auc_pd(mod_min, r)
+  data.frame(
+    `Vf / V` = r, `Doxycycline day-28 depletion (%)` = a[["end"]],
+    `Minocycline day-28 depletion (%)` = b[["end"]], `AUC_PD ratio` = b[["auc"]] / a[["auc"]],
+    check.names = FALSE
+  )
+}))
+knitr::kable(scan, digits = 3, caption = "AUC_PD ratio (minocycline / doxycycline, 0-28 days, 25 mg/kg bid) by Vf / V.")
+
+# Packaged value: the ratio is printed to two significant figures, so 1.7
+# stands for 1.65-1.75. The solves are deterministic.
+ratio_pkg <- scan$`AUC_PD ratio`[scan$`Vf / V` == 0.023]
+stopifnot(ratio_pkg > 1.65, ratio_pkg < 1.75)
+# Section 'Pharmacokinetic-Pharmacokinetic modelling': transfer into the effect
+# site is 24-fold faster for minocycline.
+k12_fold <- 1.08e-5 / 4.36e-7
+stopifnot(abs(k12_fold - 24) < 1)
+```
+
+The ratio is 1.70 at `Vf / V` = 0.023 (1.65 at 0.021, 1.75 at 0.025), and
+falls to about 1 at small values, where both drugs saturate. The value is
+close to the body weight of a 25 g mouse in kg. One possible explanation, which
+the paper does not confirm, is that the authors' code divided a per-kg amount
+by `V` in L/kg times body weight.
+
+# Observed vs. predicted Wolbachia depletion
+
+The model's typical-value predictions are set against the median depletions
+reported in the Results text, at the time the worms were recovered: day 42
+after the start of dosing for Figure 3 (12 weeks after infection) and the end
+of dosing for Figure 4.
+
+```{r pd-obs}
+regimens <- tibble::tribble(
+  ~drug, ~dose, ~ii, ~days, ~read_day, ~observed, ~source,
+  "Doxycycline", 25, 24, 42, 42, 66.30, "Fig. 3b",
+  "Doxycycline", 25, 12, 28, 42, 90.35, "Fig. 3b",
+  "Minocycline", 25, 24, 28, 42, 85.08, "Fig. 3b",
+  "Minocycline", 25, 12, 28, 42, 99.51, "Fig. 3b",
+  "Minocycline", 25, 12, 7, 7, NA, "Fig. 4b (71.65-84.08 across 25-80 mg/kg)",
+  "Minocycline", 80, 12, 7, 7, NA, "Fig. 4b (71.65-84.08 across 25-80 mg/kg)",
+  "Minocycline", 25, 12, 14, 14, 94.93, "Fig. 4b",
+  "Minocycline", 25, 12, 28, 28, 98.17, "Fig. 4b"
+)
+pred_one <- function(drug, dose, ii, days, read_day) {
+  ev <- make_ev(dose, ii, days * 24 / ii, read_day * 24)
+  s <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mods[[drug]]), ev))
+  tail(s$wolbachia_reduction, 1)
+}
+regimens$predicted <- mapply(pred_one, regimens$drug, regimens$dose, regimens$ii,
+                             regimens$days, regimens$read_day)
+regimens |>
+  mutate(regimen = paste0(dose, " mg/kg ", ifelse(ii == 12, "bid", "qd"), " x ", days, " d")) |>
+  select(drug, regimen, read_day, observed, predicted, source) |>
+  dplyr::rename(
+    Drug = drug, Regimen = regimen, `Read day` = read_day,
+    `Observed median (%)` = observed, `Predicted (%)` = predicted, Source = source
+  ) |>
+  knitr::kable(digits = 1, caption = "Wolbachia depletion: observed medians vs. typical-value prediction.")
+```
+
+```{r pd-curves, fig.height = 4}
+curve_one <- function(drug, dose, ii, days) {
+  ev <- make_ev(dose, ii, days * 24 / ii, seq(0, 42 * 24, by = 6))
+  as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mods[[drug]]), ev)) |>
+    mutate(drug = drug, regimen = paste0(dose, " mg/kg ", ifelse(ii == 12, "bid", "qd"), " x ", days, " d"))
+}
+curves <- bind_rows(
+  curve_one("Doxycycline", 25, 12, 28), curve_one("Doxycycline", 25, 24, 42),
+  curve_one("Minocycline", 25, 12, 28), curve_one("Minocycline", 25, 24, 28)
+)
+pts <- regimens |>
+  filter(!is.na(observed), read_day == 42) |>
+  mutate(regimen = paste0(dose, " mg/kg ", ifelse(ii == 12, "bid", "qd"), " x ", days, " d"))
+ggplot(curves, aes(time / 24, wolbachia_reduction, colour = regimen)) +
+  geom_line() +
+  geom_point(data = pts, aes(read_day, observed), size = 2.5) +
+  facet_wrap(~drug) +
+  labs(
+    x = "Days from first dose", y = "Wolbachia depletion (%)", colour = NULL,
+    caption = "Typical-value predictions; points are the observed medians at necropsy (Figure 3b)."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+The model ranks the regimens as the paper does: minocycline beats doxycycline
+at every matched regimen, and twice-daily dosing beats once-daily dosing. The
+once-daily regimens read at necropsy are close to the observed medians (62 %
+against 66 % for doxycycline over 42 days, 88 % against 85 % for minocycline
+over 28 days). The twice-daily 28-day regimens are underestimated: 66 %
+against 90 % for doxycycline and 94 % against 99.5 % for minocycline. The
+7-day minocycline arms of Figure 4 are overestimated (89-96 % against
+72-84 %). The Wolbachia effect is slow to build and slow to decay, so the
+day-42 prediction after a 28-day course is the day-28 value decaying through
+a 14-day washout.
+
+A smaller `Vf / V` would raise the twice-daily predictions: at 0.006 the
+day-28 depletion is 91 % (doxycycline) and 99 % (minocycline), close to the
+observations. But the AUC_PD ratio then falls to 1.24, against Table 4's 1.7
+(see the scan above), and the once-daily and 7-day arms would be
+overestimated further. No single value reproduces all of these. The packaged
+model is tied to Table 4 because Table 4 is the fitted model's own output,
+while the observations are medians of worms pooled across mice. The
+published `K12` / `K21` summarise non-parametric distributions, so a
+typical-value solve need not match the observed medians.
+
+# Assumptions and deviations
+
+* **`ka` is digitised, not reported.** It was set so the typical-value day-7
+  peak equals the median peak of Figure 1 (3.02 and 1.57 ug/mL). The paper
+  printed no value, and no between-mouse variability is carried on it.
+* **`Vf / V` = 0.023 is back-solved, not reported.** It comes from the
+  Table 4 AUC_PD ratio of 1.7, assuming the same constant for both drugs. The
+  ratio is printed to two significant figures, so 0.021-0.025 is equally
+  consistent.
+* **The units of `K12` / `K21` are not printed.** They are read as 1/h, the
+  time unit of the PK model. Per day would give doxycycline an effect-site
+  half-life of 860 days.
+* **The effect compartment is fed by the central amount**, as Methods eq. 2a/2b
+  print it (drug leaves central at `K12 * X2`). This removes a negligible
+  amount from the central compartment (`K12` is under 0.005 % of the
+  elimination rate constant).
+* **Between-mouse variability is approximated.** Pmetrics estimates a
+  non-parametric distribution, and Table 2 reports only means and SDs. CL/F and
+  V/F carry log-normal variability with the same CV, centred on the reported
+  means. No variability is carried on `ka`, `K12` or `K21`, which the paper
+  does not report.
+* **No residual error.** The Pmetrics assay-error polynomial is not reported,
+  so both residual SDs are fixed to zero.
+* **Molecular weights.** The nM EC50 is compared with the effect-site
+  concentration converted at the free-base molecular weight (444.43 and
+  457.48 g/mol). The salt form dosed is not stated. The doses are applied as
+  printed.
+* **Output name.** The depletion output `wolbachia_reduction` (a percentage of
+  the vehicle control) has no registered canonical name. It is declared in
+  `paper_specific_compartments`; a second model of this endpoint would justify
+  registering it.
+* **Parameter names.** `lk1e` / `lke1` follow the existing models that carry an
+  asymmetric amount-transfer effect compartment (`Valade_2015_emtricitabine`,
+  `Groenendaal_2007_morphine_rat_eeg`); `K12` / `K21` are not used because those
+  names are reserved for central-peripheral PK distribution. `lveff_ratio`
+  follows the shape of `lvp_ratio` (a fraction of the central volume).
+* **Text typos.** The Results text gives V/F in "L/hr" (Table 2 has L/kg). It
+  also gives once- and twice-daily 25 mg/kg daily exposures of 22.8 / 40.6
+  (doxycycline) and 7.8 / 14.9 (minocycline) ug.h/mL. A linear model gives
+  exactly twice the once-daily value for twice-daily dosing, and Table 2
+  reports 8.4, not 7.8, for minocycline. Neither affects a model parameter.
+* **Not reproduced.** The human profiles of Figure 2 come from earlier
+  published human models whose parameters this paper does not print. The
+  microfilarial counts of Figure 3c were not modelled.

@@ -1,0 +1,430 @@
+---
+title: "Moxifloxacin, gatifloxacin and levofloxacin lung-lesion penetration in rabbits (Sarathy 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Moxifloxacin, gatifloxacin and levofloxacin lung-lesion penetration in rabbits (Sarathy 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Sarathy JP, Blanc L, Alvarez-Cabrera N, et al. Fluoroquinolone
+  efficacy against tuberculosis is driven by penetration into lesions and
+  activity against resident bacterial populations. *Antimicrob Agents
+  Chemother.* 2019;63(5):e02516-18.
+* Article: <https://doi.org/10.1128/AAC.02516-18> (open access,
+  [PMC6496041](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6496041/))
+* Plasma PK parameters reprinted from: Pienaar E, Sarathy J, Prideaux B, et al.
+  *PLoS Comput Biol.* 2017;13(8):e1005650,
+  <https://doi.org/10.1371/journal.pcbi.1005650>
+
+The paper compares three fluoroquinolones in rabbits with active tuberculosis.
+Its "multi-compartment PK model" (Materials and Methods, *Computational
+modeling methods* (iv); Supplemental Figure S3A) couples a two-compartment oral
+plasma model to three site-of-action compartments: uninvolved ("normal") lung,
+the cellular areas of caseous granulomas, and the caseum of caseous granulomas.
+The paper fits it separately for each drug, so the package has one model per
+drug:
+
+```{r models}
+models <- c(
+  moxifloxacin = "Sarathy_2019_moxifloxacin_rabbit",
+  gatifloxacin = "Sarathy_2019_gatifloxacin_rabbit",
+  levofloxacin = "Sarathy_2019_levofloxacin_rabbit"
+)
+mods <- lapply(models, readModelDb)
+```
+
+The paper also uses GranSim, an agent-based spatial granuloma model (Pienaar
+2017), to predict cellular-granuloma concentrations (Figure 1, Table 2 and the
+"Cellular granuloma" row of Table S3). GranSim is a hybrid agent-based and
+partial-differential-equation simulator and is not reproduced here; the
+`lesion` compartment of these models is the multi-compartment model's
+"cellular areas of granulomas" state, calibrated to laser-capture
+microdissection data, which is a different quantity.
+
+# Population
+
+Female New Zealand White rabbits (2.2 to 2.6 kg) were infected by nose-only
+aerosol with *Mycobacterium tuberculosis* HN878 and developed mature cellular
+and necrotic lung lesions (Materials and Methods). The plasma PK parameters
+come from a nonlinear mixed-effects fit (SimBiology, stochastic EM, constant
+error model) to infected rabbits dosed daily by oral gavage: moxifloxacin 25 or
+60 mg/kg (n = 4 + 8), gatifloxacin 40 mg/kg (n = 3), levofloxacin 65 or
+100 mg/kg (n = 3 + 4) (Pienaar 2017 Table 6). The site-of-action rate constants
+were calibrated by nonlinear least squares to drug concentrations in lung
+tissue, cellular lesion areas and caseum after a single oral dose of
+moxifloxacin 100 mg/kg, gatifloxacin 100 mg/kg or levofloxacin 75 mg/kg.
+
+```{r population}
+str(mods$moxifloxacin()$population)
+```
+
+# Source trace
+
+Every value comes from Supplemental Table S1 of Sarathy 2019. The plasma rows of
+that table are identical to Table 3 of Pienaar 2017, whose footnote states that
+the values are "mean and % coefficient of variation determined by non-linear
+mixed effects modeling".
+
+| Parameter | MXF | GTX | LVX | Source |
+|---|---|---|---|---|
+| `lka` (1/h) | 0.9 (CV 57%) | 0.46 (77%) | 1.25 (50%) | Table S1, ka |
+| `lq` (L/h/kg) | 2.86 (12%) | 1.15 (44%) | 0.5 (174%) | Table S1, Q |
+| `lvc` (L/kg) | 5.35 (9%) | 1.27 (39%) | 3.48 (10%) | Table S1, Vp |
+| `lvp` (L/kg) | 80.8 (0.9%) | 90 (1.5%) | 130 (2%) | Table S1, Vpe |
+| `lcl` (L/h/kg) | 1.3 (27%) | 1 (61%) | 0.82 (96%) | Table S1, CL |
+| `lk_central_lung` (1/h) | 4.4 | 1.8 | 3.6 | Table S1, k pl-lung |
+| `lk_lung_central` (1/h) | 0.6 | 0.5 | 3.3 | Table S1, k lung-pl |
+| `lk_central_lesion` (1/h) | 6.5 | 1.8 | 1.5 | Table S1, k pl-cell |
+| `lk_lesion_central` (1/h) | 0.7 | 0.5 | 0.7 | Table S1, k cell-pl |
+| `lk_central_caseum` (1/h) | 1.8 | 2.1 | 1.2 | Table S1, k pl-cas |
+| `lk_caseum_central` (1/h) | 0.3 | 0.8 | 0.6 | Table S1, k cas-pl |
+| `etal*` variances | `log(1 + CV^2)` | | | Table S1 %CV; lognormal sampling (Pienaar 2017, *Plasma PK model*) |
+| `addSd` | `fixed(0)` | | | Constant error model, magnitude not reported (Pienaar 2017, *Plasma PK calibration*) |
+| Plasma ODEs | | | | Pienaar 2017, *Plasma PK model* |
+| Site-of-action ODEs | | | | Figure S3A; Materials and Methods (iv); see Assumptions |
+
+# Replicate Supplemental Figure S3B (single dose, typical values)
+
+Figure S3B shows the calibrated model after the single doses used in the lesion
+PK studies. The maintainers read the peak concentrations off the figure by eye;
+they are approximate (about 1 mg/L).
+
+```{r fig-s3b}
+single_dose <- c(moxifloxacin = 100, gatifloxacin = 100, levofloxacin = 75)
+
+solve_typical <- function(drug, events) {
+  rxode2::rxSolve(rxode2::zeroRe(mods[[drug]]()), events = events) |>
+    as.data.frame() |>
+    dplyr::mutate(drug = drug)
+}
+
+single_events <- function(dose) {
+  dplyr::bind_rows(
+    data.frame(id = 1L, time = 0, amt = dose, evid = 1L, cmt = "depot"),
+    data.frame(id = 1L, time = seq(0, 24, by = 0.1), amt = 0, evid = 0L, cmt = "central")
+  )
+}
+
+sim_sd <- dplyr::bind_rows(lapply(names(single_dose), function(d) {
+  solve_typical(d, single_events(single_dose[[d]]))
+}))
+
+sim_sd_long <- sim_sd |>
+  dplyr::select(drug, time, Plasma = Cc, Lung = Clung, Cellular = Clesion, Caseum = Ccaseum) |>
+  tidyr::pivot_longer(-c(drug, time), names_to = "site", values_to = "conc")
+
+ggplot(sim_sd_long, aes(time, conc, colour = site)) +
+  geom_line() +
+  facet_wrap(~drug, scales = "free_y") +
+  labs(
+    x = "Time after dose (h)", y = "Concentration (mg/L)", colour = NULL,
+    caption = "Replicates Supplemental Figure S3B of Sarathy 2019 (MXF and GTX 100 mg/kg, LVX 75 mg/kg)."
+  )
+```
+
+```{r fig-s3b-check}
+fig_s3b <- tibble::tribble(
+  ~drug,          ~site,      ~peak_fig,
+  "moxifloxacin", "Plasma",   7.5,
+  "moxifloxacin", "Lung",     34,
+  "moxifloxacin", "Cellular", 47,
+  "moxifloxacin", "Caseum",   20.5,
+  "gatifloxacin", "Plasma",   13,
+  "gatifloxacin", "Lung",     29,
+  "gatifloxacin", "Cellular", 29,
+  "gatifloxacin", "Caseum",   25,
+  "levofloxacin", "Plasma",   12.5,
+  "levofloxacin", "Lung",     13,
+  "levofloxacin", "Cellular", 21,
+  "levofloxacin", "Caseum",   17
+)
+
+peaks <- sim_sd_long |>
+  dplyr::group_by(drug, site) |>
+  dplyr::summarise(peak_model = max(conc), .groups = "drop") |>
+  dplyr::inner_join(fig_s3b, by = c("drug", "site")) |>
+  dplyr::mutate(pct_diff = 100 * (peak_model - peak_fig) / peak_fig)
+
+peaks |>
+  dplyr::mutate(dplyr::across(c(peak_model, pct_diff), \(x) round(x, 1))) |>
+  dplyr::rename(
+    "Drug" = drug, "Site" = site, "Model peak (mg/L)" = peak_model,
+    "Figure S3B peak (mg/L, read by eye)" = peak_fig, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Typical-value peak concentrations against Figure S3B.")
+
+# A deterministic typical-value solve. Every peak is within 7% of the
+# eye-read figure (realised -3.1% to +6.1%); a mis-transcribed rate constant or volume moves the
+# affected peak by far more than 15%.
+stopifnot(nrow(peaks) == 12L, all(abs(peaks$pct_diff) < 15))
+```
+
+The near-identical gatifloxacin lung and cellular curves follow from Table S1,
+which gives the same pair of rate constants (1.8 and 0.5 1/h) for both sites.
+
+# Steady state at the human-equivalent doses (Table S3)
+
+The paper simulates 14 days of once-daily dosing at the human-equivalent doses
+(moxifloxacin 60 mg/kg, and 25 mg/kg for the low-exposure arm; gatifloxacin
+40 mg/kg; levofloxacin 100 mg/kg) and reports AUC0-24 in plasma and caseum.
+Because each site compartment is driven by plasma concentration without
+returning mass to it, its steady-state AUC is exactly
+`k_central_site / k_site_central` times the plasma AUC. This is the
+structural fact the check below tests.
+
+```{r arms}
+arms <- tibble::tribble(
+  ~treatment,           ~drug,          ~dose,
+  "MXF 60 mg/kg",       "moxifloxacin", 60,
+  "MXF 25 mg/kg",       "moxifloxacin", 25,
+  "GTX 40 mg/kg",       "gatifloxacin", 40,
+  "LVX 100 mg/kg",      "levofloxacin", 100
+)
+
+ss_grid <- seq(13 * 24, 14 * 24, by = 0.25)
+
+ss_events <- function(dose, n = 1L, id_offset = 0L) {
+  ids <- id_offset + seq_len(n)
+  dplyr::bind_rows(
+    tidyr::expand_grid(id = ids, time = 24 * (0:13)) |>
+      dplyr::mutate(amt = dose, evid = 1L, cmt = "depot"),
+    tidyr::expand_grid(id = ids, time = c(0, ss_grid)) |>
+      dplyr::mutate(amt = 0, evid = 0L, cmt = "central")
+  ) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+
+typ_ss <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  solve_typical(arms$drug[i], ss_events(arms$dose[i])) |>
+    dplyr::filter(time >= 13 * 24) |>
+    dplyr::summarise(
+      plasma = trap(time, Cc), lesion = trap(time, Clesion), caseum = trap(time, Ccaseum)
+    ) |>
+    dplyr::mutate(treatment = arms$treatment[i])
+}))
+
+table_s3 <- tibble::tribble(
+  ~treatment,      ~plasma_s3, ~caseum_s3, ~cellular_gransim_s3,
+  "MXF 60 mg/kg",  45.1,       276.1,      609.3,
+  "MXF 25 mg/kg",  18.0,       109.1,      243.7,
+  "GTX 40 mg/kg",  36.0,       103.1,      192,
+  "LVX 100 mg/kg", 113.3,      237.7,      325.4
+)
+
+ss_cmp <- typ_ss |>
+  dplyr::inner_join(table_s3, by = "treatment") |>
+  dplyr::mutate(
+    plasma_pct = 100 * (plasma - plasma_s3) / plasma_s3,
+    ratio_model = caseum / plasma,
+    ratio_s3 = caseum_s3 / plasma_s3,
+    ratio_pct = 100 * (ratio_model - ratio_s3) / ratio_s3
+  )
+
+ss_cmp |>
+  dplyr::select(
+    treatment, plasma, plasma_s3, plasma_pct, caseum, caseum_s3,
+    ratio_model, ratio_s3, ratio_pct, lesion, cellular_gransim_s3
+  ) |>
+  dplyr::mutate(dplyr::across(-treatment, \(x) round(x, 2))) |>
+  dplyr::rename(
+    "Arm" = treatment,
+    "Plasma AUC, model" = plasma, "Plasma AUC, Table S3" = plasma_s3,
+    "Plasma diff (%)" = plasma_pct,
+    "Caseum AUC, model" = caseum, "Caseum AUC, Table S3" = caseum_s3,
+    "Caseum/plasma, model" = ratio_model, "Caseum/plasma, Table S3" = ratio_s3,
+    "Ratio diff (%)" = ratio_pct,
+    "Cellular-area AUC, model" = lesion,
+    "Cellular granuloma AUC, Table S3 (GranSim)" = cellular_gransim_s3
+  ) |>
+  knitr::kable(caption = "Typical-value steady-state AUC0-24 (mg*h/L) on day 14 against Table S3 means.")
+
+# Deterministic typical-value solve. Realised plasma differences are -11.1% to
+# +4.6% and caseum/plasma ratio differences -8.2% to -1.0%. Table S3 holds means
+# over 100 sampled parameter sets, so it is not exactly a typical-value
+# quantity; a transcription error in CL or in a caseum rate constant moves
+# these by far more than the bounds.
+stopifnot(
+  all(abs(ss_cmp$plasma_pct) < 15),
+  all(abs(ss_cmp$ratio_pct) < 10)
+)
+```
+
+The cellular-granuloma AUC of Table S3 comes from GranSim, not from this
+model, and the two are not expected to agree; the model's cellular-area AUC
+is shown alongside for reference only.
+
+# Replicate Figure 5A (moxifloxacin 60 versus 25 mg/kg)
+
+```{r fig-5a}
+fig5 <- dplyr::bind_rows(
+  solve_typical("moxifloxacin", ss_events(60)) |> dplyr::mutate(treatment = "MXF 60 mg/kg"),
+  solve_typical("moxifloxacin", ss_events(25)) |> dplyr::mutate(treatment = "MXF 25 mg/kg")
+) |>
+  dplyr::filter(time >= 13 * 24) |>
+  dplyr::mutate(time = time - 13 * 24) |>
+  dplyr::select(treatment, time, Plasma = Cc, Cellular = Clesion, Caseum = Ccaseum) |>
+  tidyr::pivot_longer(c(Plasma, Cellular, Caseum), names_to = "site", values_to = "conc")
+
+ggplot(fig5, aes(time, conc, colour = treatment)) +
+  geom_line() +
+  facet_wrap(~site, scales = "free_y") +
+  labs(
+    x = "Time after the 14th daily dose (h)", y = "Moxifloxacin (mg/L)", colour = NULL,
+    caption = "Typical-value analogue of Figure 5A of Sarathy 2019."
+  )
+```
+
+The model is linear, so the 25 mg/kg profiles are the 60 mg/kg profiles scaled
+by 25/60 in every compartment.
+
+# Stochastic cohort and PKNCA against the rabbit monitoring data (Table S4)
+
+Table S4 reports steady-state AUC0-24 and Cmax measured in the efficacy-study
+rabbits (3 to 5 per arm) after 2 to 3 weeks of daily dosing. A cohort of 100
+virtual rabbits per arm is simulated with between-animal variability on the
+plasma parameters.
+
+```{r stochastic}
+rxode2::rxSetSeed(2019)
+n_per_arm <- 100L
+
+sim_ss <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  ev <- ss_events(arms$dose[i], n = n_per_arm, id_offset = (i - 1L) * n_per_arm) |>
+    dplyr::mutate(treatment = arms$treatment[i])
+  rxode2::rxSolve(mods[[arms$drug[i]]](), events = ev, keep = "treatment") |>
+    as.data.frame()
+}))
+
+sim_ss_events <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  ss_events(arms$dose[i], n = n_per_arm, id_offset = (i - 1L) * n_per_arm) |>
+    dplyr::mutate(treatment = arms$treatment[i])
+}))
+stopifnot(!anyDuplicated(unique(sim_ss_events[, c("id", "time", "evid")])))
+```
+
+```{r pknca}
+nca_conc <- sim_ss |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, treatment, Cc)
+
+nca_conc <- dplyr::bind_rows(
+  nca_conc,
+  nca_conc |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(treatment, id, time)
+
+nca_dose <- sim_ss_events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id)
+intervals <- data.frame(start = 13 * 24, end = 14 * 24, cmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+table_s4 <- tibble::tribble(
+  ~treatment,      ~auclast, ~cmax,
+  "MXF 60 mg/kg",  43.9,     4.4,
+  "MXF 25 mg/kg",  13.2,     2.6,
+  "GTX 40 mg/kg",  38.5,     5.7,
+  "LVX 100 mg/kg", 129,      16.8
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = table_s4,
+  by = "treatment",
+  units = c(auclast = "mg*h/L", cmax = "mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Simulated steady-state NCA (day 14, 100 rabbits per arm) against the observed rabbit means of Table S4. * differs from the reference by more than 20%."
+)
+```
+
+The "Simulated" column is the median over the 100 virtual rabbits of each arm.
+The "Reference" column is the mean of 3 to 5 observed rabbits per arm, sampled
+at 0.5, 1, 2, 4, 6 and 24 h (Table S4 also gives the observed ranges: AUC
+30.4-55.3, 8.6-17.4, 29.5-56.5 and 90-152 mg*h/L, and Cmax 3.0-6.1, 1.9-3.4,
+5.0-6.4 and 10.2-21.3 mg/L, in the row order above). It is a small-sample
+check, not a target. The rows that differ by more than 20% are explained as
+follows:
+
+- **Moxifloxacin 25 mg/kg AUC.** The observed mean (13.2 mg*h/L) is below the
+  dose-proportional value of the observed 60 mg/kg arm (43.9 x 25/60 =
+  18.3 mg*h/L). A linear model cannot reproduce that, and the paper's own
+  simulation for this arm is 18.0 mg*h/L (Table S3).
+- **Moxifloxacin 60 mg/kg Cmax and levofloxacin 100 mg/kg AUC.** The simulated
+  medians fall inside the observed ranges of Table S4. The paper's own
+  simulated levofloxacin plasma AUC (113.3 mg*h/L, Table S3) is also below the
+  observed 129 mg*h/L.
+
+No assertion is placed on this stochastic comparison. The deterministic checks
+above are the validation gates.
+
+# Assumptions and deviations
+
+- **Site-of-action ODEs.** The paper does not print the equations of the
+  multi-compartment model. Figure S3A shows direct exchange between plasma and
+  each site, with dashed arrows for "small physiological compartments that do
+  not significantly affect plasma concentrations", and Table S1 gives a pair
+  of first-order rate constants per site with no site volumes. The maintainers
+  encoded each site as a concentration driven by plasma concentration,
+  `d/dt(C_site) = k_central_site * Cc - k_site_central * C_site`, with no mass
+  returned to plasma, following the Kjellsson 2012 lesion-penetration approach
+  the paper cites. This form reproduces the single-dose curves of Figure S3B
+  and the caseum-to-plasma AUC ratios of Table S3 (checks above). An
+  amount-based form would need site volumes that the paper does not report.
+- **Plasma model.** The two-compartment first-order-absorption ODEs are those
+  of Pienaar 2017 (*Plasma PK model*). Pienaar 2017 prints the absorption term
+  as `ka * Dose`; the maintainers read this as first-order absorption from a
+  depot, which the text states ("two-compartment model with first-order
+  absorption"). Bioavailability is not reported, so the parameters are
+  apparent (oral) values and no `F` is applied.
+- **Typical values and variability.** The Table S1 "mean" is taken as the
+  typical (median) value of the lognormal distribution, as the Pienaar 2017
+  footnote says the values were "determined by non-linear mixed effects
+  modeling". The %CV is converted to a log-scale variance as
+  `log(1 + CV^2)`. No correlations between random effects are reported, so
+  none are included. The site-of-action rate constants have no
+  between-animal variability; the paper reports 95% confidence intervals only.
+- **Stochastic means.** Table S3 reports means over 100 sampled parameter
+  sets that sit close to the typical-value AUC (for example 113.3 against a
+  typical 100.9 mg*h/L for levofloxacin). With lognormal variability of 61%
+  (gatifloxacin) and 96% (levofloxacin) on clearance, the mean of a cohort
+  simulated from these models is higher than that (the mean AUC is
+  `exp(omega^2 / 2)` times the typical value), so the stochastic cohort does
+  not reproduce the Table S3 means for those two drugs. The paper does not
+  say how its 100 parameter sets were drawn beyond "Latin hypercube sampling",
+  and the maintainers did not adjust the variances to match.
+- **Residual error.** The plasma fit used a constant error model whose
+  magnitude is not reported; it is encoded as an additive error fixed to 0.
+  The site rate constants were fitted by least squares and have no error
+  model.
+- **Levofloxacin lung rate constants.** Table S1 gives 95% confidence
+  intervals that cross zero (k pl-lung 3.6, -6 to 13; k lung-pl 3.3, -6 to
+  12), so the individual rate constants are poorly identified; their ratio
+  (about 1.1) is what determines the lung exposure.
+- **Units.** Doses are in mg/kg and volumes in L/kg, so concentrations are in
+  mg/L, matching the paper's figures. The site states hold concentrations,
+  not amounts.
+- **Drug abbreviation.** The paper uses both GTX and GFX for gatifloxacin.
+- **Errata.** No correction notice for Sarathy 2019 or Pienaar 2017 was found
+  in Europe PMC as of 2026-11-25.

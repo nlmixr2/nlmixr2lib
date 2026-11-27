@@ -57,7 +57,7 @@ vignette for the paper.
 
 `MIC` and `Conc` (the studied extracellular concentration, `2x MIC` for the
 beta-lactams and a fixed 4 mg/L for the BLIs) are columns 3 and 4 of Table 1.
-`Conc` is the value supplied to each model's `CONC_<CODE>_MGL` covariate below.
+`Conc` is the value supplied to each model's `CONC_<DRUG>_MGL` covariate below.
 
 ```{r model-list}
 pbp_drugs <- tibble::tribble(
@@ -80,7 +80,12 @@ pbp_drugs <- tibble::tribble(
 ) |>
   mutate(
     Model    = paste0("LopezArguello_2023_", Drug, "_qsp"),
-    ConcCol  = paste0("CONC_", Code, "_MGL")
+    # Each model's concentration covariate, read from the model itself: the
+    # register spells some drugs out (CONC_MEROPENEM_MGL) and abbreviates others.
+    ConcCol  = vapply(Model, function(m) {
+      cov <- names(rxode2::rxode2(readModelDb(m))$covariateData)
+      cov[grepl("^CONC_.+_MGL$", cov)]
+    }, character(1), USE.NAMES = FALSE)
   )
 
 knitr::kable(

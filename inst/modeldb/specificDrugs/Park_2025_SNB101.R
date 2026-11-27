@@ -41,6 +41,7 @@ Park_2025_SNB101 <- function() {
     ),
     concentration = "nmol/L (Cc = total irinotecan, Cc_sn38 = total SN-38, Cc_sn38g = SN-38 glucuronide)"
   )
+  dosing <- c("central_np", "central", "central_sn38_np", "central_sn38")
 
   covariateData <- list()
 

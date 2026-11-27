@@ -101,7 +101,7 @@ events_rif   <- make_rsv_events(n_sub, occ = 3, conmed_rif = 1, crif_fn = crif_f
 ```{r simulate}
 sim_alone <- rxode2::rxSolve(mod, events = events_alone, keep = c("OCC", "CONMED_RIF")) |>
   as.data.frame()
-sim_rif   <- rxode2::rxSolve(mod, events = events_rif,   keep = c("OCC", "CONMED_RIF")) |>
+sim_rif   <- rxode2::rxSolve(mod, events = events_rif,   keep = c("OCC", "CONMED_RIF"), covsInterpolation = "locf") |>
   as.data.frame()
 
 mod_typical <- rxode2::zeroRe(mod)
@@ -218,3 +218,4 @@ The typical-value simulation underestimates the published mean Cmax fold-increas
 * **Demographics.** Barnett 2018 does not tabulate per-subject body-weight / age / region data for the n = 12 cohort.
 * **Structural model carried from Tzeng 2008.** The 2-compartment + first-order absorption form was selected by Barnett 2018 based on prior literature; the rosuvastatin parameter point estimates here are refit to the Lai 2016 dataset and are not the Tzeng 2008 published values.
 * **`urine` as a compartment name.** As with the sibling CPI model, the urine compartment used here is not in the nlmixr2lib canonical compartment register (`R/conventions.R`). Precedent: `inst/modeldb/endogenous/Aksenov_2018_uricAcid.R` uses the same name for the same purpose.
+* **Covariate interpolation.** Each record carries the `CP_RIF_UM` value in force from that record until the next, so the solves in which it changes within a subject state `covsInterpolation = "locf"`, the `rxSolve()` default; solving the same tables with `"nocb"`, NONMEM's rule, moves the median subject's AUC by up to 5.4% (measured on rxode2 5.1.8.9000).

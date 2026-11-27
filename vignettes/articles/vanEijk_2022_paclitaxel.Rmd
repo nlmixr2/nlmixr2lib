@@ -468,13 +468,14 @@ stopifnot(abs(ratio / (0.97 / 0.46) - 1) < 0.25)
 * **Occasions.** "Each dose administration was considered an occasion", and
   in the analysis data no subject had more than two PK occasions. Two
   occasion slots are therefore encoded through `OCC` (1 or 2; any other value
-  switches the occasion etas off). This is used for the paclitaxel BOV on
-  rF and for the Yu 2020 within-subject variability on the ritonavir MAT and
-  absorption-time dispersion. rxode2 has no native occasion level, so these
-  etas are multiplexed with indicators. rxode2 therefore warns that they are
-  not mu-referenced. This only affects the speed of a future estimation run
-  and does not change simulation. For multi-week stochastic simulations, draw
-  a new occasion eta per dose (supply the eta columns on the dose rows).
+  switches the occasion etas off). This is used for the paclitaxel BOV on rF
+  and for the Yu 2020 within-subject variability on the ritonavir MAT and
+  absorption-time dispersion. rxode2's `| occ` level shares one draw per
+  occasion when no subject has two or more occasions, so these etas are
+  multiplexed with indicators. rxode2 therefore warns that they are not
+  mu-referenced. This only affects the speed of a future estimation run and
+  does not change simulation. For multi-week stochastic simulations, draw a
+  new occasion eta per dose (supply the eta columns on the dose rows).
   Otherwise doses beyond the second share the occasion-1 and occasion-2
   draws.
 * **Ritonavir variability.** van Eijk 2022 fitted paclitaxel on each

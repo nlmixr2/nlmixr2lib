@@ -41,6 +41,7 @@ Lower case. Snake case only when combining concepts.
   `urine_m6g`) for parent + metabolite renal-elimination models. The
   `<metab>` suffix must be a registered metabolite from
   `R/conventions.R::registeredMetabolites`.
+- `bwloss`, `hba1cred`, `nausea` — % body-weight loss, absolute HbA1c reduction (% points) and nausea prevalence (%) as integrated response states, positive = improvement / prevalence; `damage`, `repair`, `frailty`, `bioagegap` — the four arbitrary-unit states of a damage-repair aging model; `cysc`, `leptin` — cystatin C and leptin biomarker states. Founding example: `Goryanin_2026_semaglutide_aging_qsp.R`.
 - Therapeutic-area or mechanism-specific compartments: open a GitHub issue before adding new names.
 
 ### Paper-specific compartments

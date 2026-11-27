@@ -592,10 +592,11 @@ stopifnot(max(mb_tab$`Rel. error (%)`) < 1e-2)
 ## Interoccasion variability is wired up
 
 `gamma_Cl` is implemented as seven per-occasion etas selected by the `OCC`
-column, because rxode2 parses but cannot simulate the `eta ~ var | OCC`
-multi-level form from an `rxUi`. The check below gives 100 replicate subjects
-seven occasions each and confirms clearance really does move between occasions
-within a subject, at roughly the reported 16.2% coefficient of variation.
+column, because the `eta ~ var | OCC` multi-level form shares one draw per
+occasion when no subject has two or more occasions. The check below gives 100
+replicate subjects seven occasions each and confirms clearance really does
+move between occasions within a subject, at roughly the reported 16.2%
+coefficient of variation.
 
 ```{r iov}
 iov_one <- tibble::tibble(OCC = 1:7) |>

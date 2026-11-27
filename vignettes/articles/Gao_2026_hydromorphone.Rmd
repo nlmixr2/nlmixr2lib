@@ -1,0 +1,372 @@
+---
+title: "Hydromorphone (Gao 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Hydromorphone (Gao 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.width = 7, fig.height = 5, dpi = 100
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Gao_2026_hydromorphone"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Gao_2026_hydromorphone"))$description`
+* Article: <https://doi.org/10.1111/cts.70666> (open access, PMC13358379)
+* Supplement (Figures S1-S5, Tables S1-S11): Supporting Information of the article
+
+Gao 2026 describes hydromorphone given as a 72-hour weight-based continuous
+infusion (0.03 mg/kg/h) to critically ill adults on extracorporeal membrane
+oxygenation (ECMO). The distinguishing feature of the model is how it handles
+the two ECMO modes. Rather than testing ECMO mode as a covariate on one or two
+parameters, the authors estimate a **separate typical value of every
+disposition parameter for veno-venous (V-V) and veno-arterial (V-A) ECMO**, in
+one joint fit that shares a single set of inter-individual variability terms
+across both modes. They justify this by noting that the two modes alter the
+circulation differently, so a mode effect is likely to touch several
+correlated parameters at once (Methods, "Structure Pharmacokinetic Model").
+
+In the packaged model the mode is selected with the subject-level covariate
+`ECMO_VA_STATUS` (1 = V-A, 0 = V-V). Every subject in the source cohort was on
+ECMO, so `ECMO_VA_STATUS = 0` means V-V ECMO, not "no ECMO".
+
+Model time is in **minutes** because the paper reports clearances in L/min;
+the vignette converts to hours for plotting and NCA.
+
+# Population
+
+Gao 2026 enrolled 26 adults at the general ICU of Union Hospital, Wuhan,
+between September 2022 and August 2024: 12 on V-V ECMO (all for respiratory
+failure: viral pneumonia or ARDS, Pneumocystis pneumonia, post-traumatic ARDS,
+fibrotic interstitial lung disease) and 14 on V-A ECMO (acute myocardial
+infarction or viral myocarditis with cardiogenic shock) (Tables 1 and S2).
+Ages were 25-77 years and body weights 45-102 kg; 9 of 26 patients were
+female (11 of 12 V-V and 6 of 14 V-A patients were male). V-A patients had
+markedly higher aminotransferases (median AST 195.5 vs 51 U/L, ALT 97 vs
+39.5 U/L). Patients on continuous renal replacement therapy and patients
+with Child-Pugh C liver disease were excluded. The analysis used 484 arterial
+plasma concentrations (227 V-V, 257 V-A) drawn during the 72-hour infusion and
+for 12 hours after it stopped.
+
+```{r population}
+str(rxode2::rxode2(readModelDb("Gao_2026_hydromorphone"))$population)
+```
+
+# Source trace
+
+Every value below comes from Gao 2026 Table 2 ("Final model estimates").
+
+| Model element | Value | Source |
+|---|---|---|
+| Structure: 3-compartment, first-order elimination from central | -- | Methods "Structure Pharmacokinetic Model"; Results; Table S3 (OFV 2323.90) |
+| Mode-specific typical values, shared IIV | -- | Methods; Table 2 footnote (`CLVVi = exp(CLTVV + eta_i)`, `CLVAi = exp(CLTVA + eta_i)`) |
+| `lcl_vv`, `lcl_va` | 0.955, 0.657 L/min | Table 2 CLVV, CLVA |
+| `lvc_vv`, `lvc_va` | 23.6, 16.3 L | Table 2 V1VV, V1VA |
+| `lq_vv`, `lq_va` (paper Q2) | 0.112, 0.075 L/min | Table 2 Q2VV, Q2VA |
+| `lvp_vv`, `lvp_va` (paper V2) | 112, 72.8 L | Table 2 V2VV, V2VA |
+| `lq2_vv`, `lq2_va` (paper Q3) | 1.48, 0.538 L/min | Table 2 Q3VV, Q3VA |
+| `lvp2_vv`, `lvp2_va` (paper V3) | 87, 43 L | Table 2 V3VV, V3VA |
+| `etalcl` variance | 0.276^2 | Table 2 IIV of CL 27.6 (approximate CV%) |
+| `etalvc` variance | 0.572^2 | Table 2 IIV of V1 57.2 (approximate CV%) |
+| `etalcl`-`etalvc` covariance | 0.0545 | Table 2 covariance between CL and V1 |
+| `etalq` variance | 1.40^2 | Table 2 IIV of Q2 140 (approximate CV%) |
+| `propSd` | 0.185 | Table 2 proportional error 18.5% |
+| `addSd` | 1.7 ng/mL | Table 2 additive error |
+| Residual model `Cc ~ add + prop` | -- | Methods: `C(t)ij = C_hat(t)ij x (1 + eps_prop,ij) + eps_add,ij` |
+| Dose | 0.03 mg/kg/h for 72 h | Methods "Dosing of Hydromorphone" |
+
+# Virtual cohort
+
+The cohort reproduces the 26 study patients from Table S2 (ECMO mode and body
+weight, which sets the weight-based infusion rate), each replicated 8 times
+to give 96 V-V and 112 V-A virtual subjects.
+
+```{r cohort}
+table_s2 <- data.frame(
+  patient = 1:26,
+  mode = c(
+    "V-A", "V-A", "V-V", "V-V", "V-V", "V-A", "V-A", "V-V", "V-V", "V-V",
+    "V-V", "V-V", "V-V", "V-V", "V-V", "V-V", "V-A", "V-A", "V-A", "V-A",
+    "V-A", "V-A", "V-A", "V-A", "V-A", "V-A"
+  ),
+  WT = c(
+    70, 70, 70, 80, 60, 70, 62, 78, 102, 99, 78, 60, 70, 65, 75, 65,
+    45, 54, 80, 68, 70, 56, 50, 52, 75, 55
+  )
+)
+# Medians match the Table S5 footnote (72.5 kg V-V, 65 kg V-A).
+table_s2 |>
+  group_by(mode) |>
+  summarise(n = n(), median_WT = median(WT), .groups = "drop")
+
+n_rep <- 8L
+cohort <- table_s2[rep(seq_len(nrow(table_s2)), each = n_rep), ] |>
+  mutate(
+    id = seq_len(n()),
+    ECMO_VA_STATUS = as.integer(mode == "V-A")
+  )
+```
+
+# Simulation
+
+Each subject receives 0.03 mg/kg/h for 72 h (4320 min) into `central` and is
+observed on `central` every 15 min to 96 h, with a denser grid around the end
+of the infusion.
+
+```{r events}
+infusion_min <- 72 * 60
+obs_times <- sort(unique(c(
+  seq(0, 96 * 60, by = 15),
+  infusion_min + c(1, 2, 5, 10, 20, 30, 40)
+)))
+
+dose_rows <- cohort |>
+  transmute(
+    id, time = 0, evid = 1L, cmt = "central",
+    rate = 0.03 * WT / 60, # mg/min
+    amt = 0.03 * WT * 72, # mg over 72 h
+    ECMO_VA_STATUS, WT, mode
+  )
+obs_rows <- cohort |>
+  select(id, ECMO_VA_STATUS, WT, mode) |>
+  tidyr::crossing(time = obs_times) |>
+  mutate(evid = 0L, cmt = "central", rate = 0, amt = 0)
+events <- bind_rows(dose_rows, obs_rows) |>
+  arrange(id, time, desc(evid))
+```
+
+```{r simulate}
+mod <- rxode2::rxode2(readModelDb("Gao_2026_hydromorphone"))
+rxode2::rxSetSeed(20261025)
+sim <- rxode2::rxSolve(mod, events = events, keep = c("mode", "WT")) |>
+  as.data.frame() |>
+  mutate(time_h = time / 60)
+```
+
+## Individual profiles (Figure 3)
+
+```{r fig3, fig.cap = "Replicates Figure 3 of Gao 2026: individual hydromorphone profiles for the 26 study patients (one simulated replicate each; prediction without residual error)."}
+sim |>
+  filter(id %in% cohort$id[seq(1, nrow(cohort), by = n_rep)]) |>
+  ggplot(aes(time_h, Cc, group = id, colour = mode, linetype = mode)) +
+  geom_line(alpha = 0.8) +
+  scale_colour_manual(values = c("V-V" = "steelblue", "V-A" = "red")) +
+  scale_x_continuous(breaks = seq(0, 96, 24)) +
+  labs(
+    x = "Time (hour)", y = "Concentration (ng/mL)",
+    colour = NULL, linetype = NULL
+  ) +
+  theme_bw()
+```
+
+The paper's Figure 3 shows plateaus of roughly 25-70 ng/mL for V-V and
+30-80 ng/mL for V-A, with V-A sitting higher; the simulation reproduces both
+the range and the ordering.
+
+## Prediction interval by mode (Figure 2)
+
+```{r fig2, fig.cap = "Simulated median and 95% prediction interval (with residual error) by ECMO mode; compare with the pcVPC in Figure 2 of Gao 2026."}
+sim |>
+  group_by(mode, time_h) |>
+  summarise(
+    p025 = quantile(sim, 0.025), p50 = median(sim), p975 = quantile(sim, 0.975),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time_h)) +
+  geom_ribbon(aes(ymin = p025, ymax = p975), fill = "grey80") +
+  geom_line(aes(y = p50)) +
+  facet_wrap(~mode) +
+  scale_x_continuous(breaks = seq(0, 96, 24)) +
+  labs(x = "Time (hour)", y = "Hydromorphone (ng/mL)") +
+  theme_bw()
+```
+
+# PKNCA validation
+
+Gao 2026 summarises exposure as the area under the curve from 0 to 96 h
+(AUC0-96h) and the concentration at the end of the 72-h infusion (C72h),
+computed from each patient's individual (post hoc) profile (Tables S5-S11).
+Because the profiles rise monotonically during the infusion (Figure 3),
+C72h equals Cmax over 0-72 h, so both metrics are PKNCA interval
+parameters. The input is the model prediction `Cc` without residual error,
+matching the paper's post hoc profiles.
+
+```{r pknca}
+conc <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, mode, time_h, Cc)
+dose <- cohort |>
+  transmute(id, mode, time_h = 0, amt = 0.03 * WT * 72)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time_h | mode + id)
+dose_obj <- PKNCA::PKNCAdose(dose, amt ~ time_h | mode + id)
+intervals <- data.frame(
+  start = c(0, 0), end = c(96, 72),
+  auclast = c(TRUE, FALSE), cmax = c(FALSE, TRUE)
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_gm <- as.data.frame(nca) |>
+  filter(PPTESTCD %in% c("auclast", "cmax")) |>
+  group_by(mode, PPTESTCD) |>
+  summarise(PPORRES = exp(mean(log(PPORRES))), .groups = "drop")
+nca_gm
+```
+
+## Comparison with the published exposures
+
+The paper does not tabulate an overall geometric mean, but Tables S5-S11 split
+each mode into two equal halves (6 + 6 V-V, 7 + 7 V-A) and give each half's
+geometric mean, so the overall geometric mean is the square root of the
+product of the two halves. Table S5 (body-weight split) is used here; the other
+splits give the same overall value to within rounding.
+
+```{r compare}
+reference <- data.frame(
+  mode = c("V-V", "V-A"),
+  auclast = c(sqrt(2650 * 2900), sqrt(3150 * 3600)),
+  cmax = c(sqrt(37.1 * 40.3), sqrt(43.9 * 50.1))
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = tidyr::pivot_wider(nca_gm, names_from = PPTESTCD, values_from = PPORRES),
+  reference = reference,
+  by = "mode",
+  units = c(auclast = "ng*h/mL", cmax = "ng/mL")
+)
+knitr::kable(cmp, caption = "Geometric-mean AUC0-96h (Table S5) and C72h (shown as Cmax over 0-72 h), simulated vs Gao 2026.")
+```
+
+```{r compare-assert}
+pct_diff <- with(
+  dplyr::inner_join(
+    tidyr::pivot_longer(reference, -mode, names_to = "PPTESTCD", values_to = "ref"),
+    nca_gm,
+    by = c("mode", "PPTESTCD")
+  ),
+  100 * (PPORRES - ref) / ref
+)
+pct_diff
+# A mis-transcribed clearance or volume, or a minute/hour slip in the
+# infusion rate, moves these geometric means by tens of percent; the
+# Monte-Carlo error of a ~100-subject geometric mean at 28% CV is about 3%.
+stopifnot(all(abs(pct_diff) < 15))
+```
+
+The V-A / V-V exposure ratio is the paper's headline finding (V-A patients may
+need less hydromorphone):
+
+```{r ratio}
+nca_gm |>
+  tidyr::pivot_wider(names_from = mode, values_from = PPORRES) |>
+  mutate(ratio_VA_to_VV = `V-A` / `V-V`)
+```
+
+# Closed-form check: steady state
+
+For a linear model under a constant infusion, the steady-state concentration
+is the infusion rate divided by clearance, independent of the distribution
+parameters. Solving the typical-value model (no IIV) for long enough to
+reach steady state checks the ODE system and the mg/L to ng/mL conversion.
+
+```{r steady-state}
+mod_typ <- rxode2::zeroRe(mod)
+typ_pars <- data.frame(
+  mode = c("V-V", "V-A"),
+  cl = c(0.955, 0.657), vc = c(23.6, 16.3), q = c(0.112, 0.075),
+  vp = c(112, 72.8), q2 = c(1.48, 0.538), vp2 = c(87, 43)
+)
+# Slowest eigenvalue of the 3-compartment rate matrix -> terminal half-life.
+terminal_half_life_min <- function(p) {
+  k <- matrix(c(
+    -(p$cl + p$q + p$q2) / p$vc, p$q / p$vp, p$q2 / p$vp2,
+    p$q / p$vc, -p$q / p$vp, 0,
+    p$q2 / p$vc, 0, -p$q2 / p$vp2
+  ), nrow = 3, byrow = TRUE)
+  log(2) / min(abs(Re(eigen(k)$values)))
+}
+typ_pars$t_half_h <- sapply(seq_len(nrow(typ_pars)), function(i) {
+  terminal_half_life_min(typ_pars[i, ]) / 60
+})
+typ_pars
+
+rate_mg_min <- 0.03 * 70 / 60
+t_end <- ceiling(15 * max(typ_pars$t_half_h)) * 60
+# One single-subject solve per mode: the typical-value model has no omega.
+ss_conc <- sapply(c(0L, 1L), function(va) {
+  ss_events <- data.frame(
+    id = 1L,
+    time = c(0, t_end),
+    evid = c(1L, 0L),
+    cmt = "central",
+    amt = c(rate_mg_min * t_end, 0),
+    rate = c(rate_mg_min, 0),
+    ECMO_VA_STATUS = va
+  )
+  ss <- rxode2::rxSolve(mod_typ, events = ss_events, atol = 1e-10, rtol = 1e-10) |>
+    as.data.frame()
+  ss$Cc[ss$time == t_end]
+})
+ss_check <- data.frame(
+  mode = c("V-V", "V-A"),
+  simulated = ss_conc,
+  closed_form = 1000 * rate_mg_min / typ_pars$cl
+) |>
+  mutate(rel_err = abs(simulated - closed_form) / closed_form)
+ss_check
+stopifnot(all(ss_check$rel_err < 1e-4))
+```
+
+At 70 kg the typical steady-state concentrations are 36.6 ng/mL (V-V) and
+53.3 ng/mL (V-A). The paper's geometric-mean C72h values are about 39 and
+47 ng/mL. The V-A value is lower than its 70 kg steady state because the V-A
+patients were lighter (median 65 kg) and so received a lower absolute infusion
+rate, and because 72 h is about 5.5 terminal half-lives (about 13 h in both
+modes), so the slow peripheral compartment has not quite filled.
+
+# Assumptions and deviations
+
+* **Inter-individual variability scale.** Table 2 reports the IIV of CL, V1
+  and Q2 as "approximate CV%", the first-order approximation
+  CV = 100 x sqrt(omega^2), so the variances are entered as (CV/100)^2:
+  0.0762, 0.327 and 1.96. The CL-V1 covariance (0.0545) is printed on the
+  variance scale and gives a correlation of 0.345. Reading the CVs instead
+  as exact log-normal CVs (omega^2 = log(1 + CV^2)) would give 0.0734, 0.283
+  and 1.085; the difference matters only for the large Q2 term.
+* **Residual error.** The proportional error "18.5%" and the additive error
+  1.7 ng/mL are taken as standard deviations of two independent epsilons,
+  as written in the paper's residual equation; the pooled-model Table S4
+  labels the same quantities "SD".
+* **Compartment numbering.** The paper's Q2/V2 (peripheral compartment 1,
+  the slow one) maps to `q`/`vp` and Q3/V3 (peripheral compartment 2) to
+  `q2`/`vp2`. Only Q2 carries IIV; the paper estimated no IIV on V2, Q3 or
+  V3.
+* **Time unit.** Clearances are in L/min as published, so the model runs in
+  minutes; infusion rates and observation times above are in minutes.
+* **Exposure references.** The published AUC0-96h and C72h are geometric means
+  of individual post hoc profiles of the 26 patients; the comparison uses a
+  simulated cohort of the same patients (mode and weight from Table S2)
+  with IIV drawn from the model, so the two agree in expectation but not
+  patient by patient.
+* **Not reproduced.** The exploratory comparisons of exposure by albumin,
+  ALT, AST, bilirubin, creatinine clearance, lactate, age and weight
+  (Tables S5-S11) split the post hoc profiles by observed covariates that are
+  not in the model, so they cannot be reproduced by simulation. The pooled
+  sensitivity model with ECMO mode on V2 only (Table S4) is not the final
+  model and is not packaged. The post-/pre-oxygenator concentration ratio
+  (Figure 4) was close to 1 throughout, so the model has no circuit
+  sequestration term.
+* **ECMO mode covariate.** `ECMO_VA_STATUS` is the V-A member of a mode
+  indicator; the source's own mode column is coded 1 = V-V, 2 = V-A
+  (Figure S5 caption), so `ECMO_VA_STATUS = MODE - 1`.

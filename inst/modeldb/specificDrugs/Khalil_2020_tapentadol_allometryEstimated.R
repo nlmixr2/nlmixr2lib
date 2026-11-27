@@ -14,6 +14,7 @@ Khalil_2020_tapentadol_allometryEstimated <- function() {
     dosing = "mg",
     concentration = "ng/mL"
   )
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "tapentadol", units = "mg", specimen = "administration site", verified = TRUE),

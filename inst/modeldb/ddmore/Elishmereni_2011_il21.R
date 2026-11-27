@@ -26,6 +26,7 @@ Elishmereni_2011_il21 <- function() {
     dosing = "unspecified",
     concentration = "unspecified"
   )
+  dosing <- c("depot", "central", "depot2")
 
   ddmore_id <- "DDMODEL00000230"
   replicate_of <- NULL

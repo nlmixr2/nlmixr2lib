@@ -1,0 +1,480 @@
+---
+title: "[18F]F-Piflufolastat whole-body PSMA PBPK (van der Gaag 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{[18F]F-Piflufolastat whole-body PSMA PBPK (van der Gaag 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r meta, echo = FALSE, results = "asis"}
+mod <- readModelDb("vanderGaag_2026_piflufolastat_pbpk")
+ui <- rxode2::rxode(mod)
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Article: <https://doi.org/10.1111/cts.70583>\n")
+cat("* Authors' model code: <https://github.com/ibartelink/Target-Site-PBPK-in-oncology>\n")
+cat("* ODE states: ", length(ui$state), " (74 from the paper plus two cumulative-elimination states)\n", sep = "")
+```
+
+van der Gaag and co-workers rebuilt the Begum 2018 whole-body PBPK model of
+PSMA-targeting radioligands and adapted it to the diagnostic PET tracer
+[18F]F-piflufolastat ([18F]DCFPyL). The model has eleven PSMA-expressing tissues
+with receptor binding, internalisation and release of internalised ligand; a
+kidney in which the tracer is filtered into the tubular lumen, binds PSMA there,
+and is excreted in urine; and eight PSMA-negative tissues with vascular and
+interstitial spaces. All parameters are fixed physiological or literature
+values. Only the tumour PSMA receptor density was fitted, per patient, to the
+120 min PET image. The authors then used each patient's fitted density to
+predict the therapeutic ligand [177Lu]Lu-PSMA-617.
+
+The packaged model doses the injected amount in nmol (activity divided by the
+specific activity, 0.045 GBq/nmol) into `venous`. It returns the arterial serum
+concentration `Cc` (nmol/L) and decay-corrected tissue activity concentrations
+`act_<tissue>` (kBq/mL), the unit of the paper's Table S3.
+
+# Population
+
+Table 2 of the paper lists 15 men with metastatic prostate cancer from Amsterdam
+UMC. The **internal** cohort is 8 patients with dynamic PET from 0 to 120 min.
+The **external** cohort is 5 patients with a single total-body PET/CT at
+120 min. The **therapeutic** cohort is 2 patients who also had 24 h and 7 day
+SPECT after their first cycle of [177Lu]Lu-PSMA-617. Ages were 56-86 years,
+weights 64-119 kg and heights 170-191 cm; the tracer dose was 245-319 MBq. Per
+patient haematocrit and eGFR were not published. This vignette uses the Table S4
+prostate-cancer population means (43.3 % and 83 mL/min) for every patient.
+
+```{r cohort}
+tab2 <- data.frame(
+  id = 1:15,
+  cohort = rep(c("internal", "external", "therapeutic"), c(8, 5, 2)),
+  AGE = c(67, 63, 68, 65, 71, 81, 71, 56, 78, 82, 75, 86, 73, 72, 75),
+  HT = c(171, 191, 187, 181, 177, 173, 181, 186, 178, 184, 181, 184, 179, 182, 170),
+  WT = c(100, 119, 80, 81, 64, 98, 85, 104, 72, 90, 108, 77, 81, 82, 90),
+  MBq = c(319.4, 301.9, 303.8, 283.8, 303.6, 245.3, 292.8, 317.1,
+          313.5, 317.0, 308.4, 314.5, 319.1, 279.4, 285.3),
+  vol_tu1 = c(5.18, 6.66, 6.85, 14.40, 27.58, 6.27, 5.31, 5.82,
+              38.29, 36.55, 63.12, 35.83, 4.36, 1.98, 8.16),
+  vol_tu2 = c(3.58, 6.53, 2.62, 9.86, 21.38, 6.21, 4.54, 3.01, rep(NA, 5), 1.69, NA),
+  vol_rest = c(10.82, 19.20, 1.73, 14.46, 69.31, 26.24, 11.58, 3.07, rep(NA, 5), 1.82, NA),
+  # Table S2: tumour receptor density fitted to the 120 min PET (nmol/L)
+  rd_fit = c(177.954, 8.63152, 2.45811, 5.32467, 13.4815, 34.1339, 197.896, 31.7173,
+             1.11941, 7.6961, 13.4814, 2.394, 24.2184, 29.7169, 69.7354)
+)
+# External patients have only a total tumour volume, and patient 15 a single
+# lesion: that volume goes into lesion 1 and the other two lesions get a
+# negligible volume (the model needs strictly positive volumes).
+tiny <- 1e-6
+tab2 <- tab2 |>
+  mutate(
+    ORGVOL_TUMOR1 = vol_tu1,
+    ORGVOL_TUMOR2 = ifelse(is.na(vol_tu2), tiny, vol_tu2),
+    ORGVOL_TUMORREST = ifelse(is.na(vol_rest), tiny, vol_rest),
+    HCT = 43.3,
+    CRCL = 83,
+    dose_nmol = MBq / 1000 / 0.045
+  )
+knitr::kable(
+  tab2 |>
+    select(id, cohort, AGE, HT, WT, MBq, vol_tu1, vol_tu2, vol_rest, rd_fit) |>
+    rename(
+      "Patient" = id, "Cohort" = cohort, "Age (y)" = AGE, "Height (cm)" = HT,
+      "Weight (kg)" = WT, "Dose (MBq)" = MBq, "Tumour 1 (mL)" = vol_tu1,
+      "Tumour 2 (mL)" = vol_tu2, "Tumour rest (mL)" = vol_rest,
+      "Fitted receptor density (nmol/L)" = rd_fit
+    ),
+  caption = "Table 2 and Table S2 of van der Gaag 2026. For patients 9-13 the tumour 1 column holds the total tumour volume."
+)
+```
+
+# Source trace
+
+| Model element | Value / form | Source |
+|---|---|---|
+| Venous and arterial balance | Suppl. Eq 1-2 | Supporting Information Part A |
+| Kidney vascular, lumen, bound, internalised, free receptor | Suppl. Eq 3, 10, 12, 13, 15 | Part A |
+| Lung, liver (arterial + splenic + GI inflow), brain (vascular only), other tissues | Suppl. Eq 4-7, 9 | Part A |
+| PSMA-tissue interstitial, bound, internalised, free receptor | Suppl. Eq 8, 11, 13, 14 | Part A |
+| `kon` 0.046 L/nmol/min, `kd` 0.49 nmol/L | piflufolastat column | Table 1 |
+| `phi_kid` 0.75 (sieving), `fraex` 0.96 (excreted fraction) | piflufolastat column | Table 1 |
+| `aspec` 0.045 GBq/nmol | piflufolastat column | Table 1 |
+| `kint` 0.001; `krel_tumor` 1.4e-4; `krel_kidney` 2.3e-4; `krel_parotid` 3.7e-4 1/min | Labda int / Labda rel | Table S1, section 1a |
+| `fdens_tumor1` 0.1351538, `fdens_tumor2` 0.2676154 mL/min/g; `xf_tumorrest` 0.53 | F dens,tu1/2, X F | Table S1; Results "fixed at 0.135" |
+| `rdens_tumor1` 44.93846, `rdens_tumor2` 47.38462 nmol/L; `xr_tumorrest` 1.4 | R dens,tu1/2, X R | Table S1 |
+| `rdens_kidney` 18, `rdens_parotid` 42 nmol/L; prostate, liver, spleen, GI derived | R dens rows | Table S1 |
+| BSA (Du Bois), serum volume 2.8(1-H)BSA, total flow 1.23 V_ser | formulas | Table S1 |
+| Organ total, vascular and interstitial volumes; alpha ratios | formulas | Table S1 |
+| Organ flows (fractions of F_tot, flow densities, F_k,age = 4.3 - 0.026 Age) | formulas | Table S1 |
+| PS products (K_i x V_tot,i) | K rows | Table S1 |
+| F_fil = eGFR x sieving, F_ex = F_fil x Fra_ex | formulas | Table S1 with Table 1 values |
+| Covariates: age, height, weight, tumour volumes | per patient | Table 2 |
+| Fitted tumour receptor density per patient | per patient | Table S2 |
+| Haematocrit 43.3 %, eGFR 83 mL/min (population means) | used for every patient | Table S4 |
+
+# Mass balance
+
+The model conserves ligand exactly: the free, bound and internalised amounts,
+plus the cumulative urinary excretion and the cumulative release of internalised
+ligand, always sum to the injected dose. The free-receptor states are excluded
+from the sum because they count receptors, not ligand.
+
+```{r mass-balance}
+ligand_states <- setdiff(ui$state, grep("^rfree_", ui$state, value = TRUE))
+p1 <- tab2[1, ]
+ev_mb <- rbind(
+  data.frame(id = 1, time = 0, amt = p1$dose_nmol, evid = 1, cmt = "venous"),
+  data.frame(id = 1, time = c(1, 10, 60, 120, 1440, 10080), amt = 0, evid = 0, cmt = "venous")
+) |>
+  cbind(p1[, c("AGE", "HT", "WT", "HCT", "CRCL", "ORGVOL_TUMOR1", "ORGVOL_TUMOR2", "ORGVOL_TUMORREST")])
+sim_mb <- as.data.frame(rxSolve(mod, ev_mb, atol = 1e-10, rtol = 1e-8))
+sim_mb$total <- rowSums(sim_mb[, ligand_states])
+knitr::kable(
+  sim_mb |>
+    mutate(rel_err = (total - p1$dose_nmol) / p1$dose_nmol) |>
+    select(time, total, urine, released, rel_err) |>
+    rename("Time (min)" = time, "Total ligand (nmol)" = total,
+           "Cumulative urine (nmol)" = urine, "Cumulative released (nmol)" = released,
+           "Relative error vs dose" = rel_err),
+  digits = 6
+)
+stopifnot(max(abs(sim_mb$total - p1$dose_nmol)) / p1$dose_nmol < 1e-5)
+```
+
+# Internal cohort: 0-120 min profiles
+
+Figure 2 of the paper shows the tumour, arterial blood, lung and muscle
+time-activity curves of the eight internal patients. The packaged model is
+simulated twice for each patient: with the typical Table S1 tumour receptor
+densities (the model defaults) and with that patient's fitted density from
+Table S2. The fitted density is applied to both delineated lesions. The rest
+tumour follows Table S1 (1.4 times the mean lesion density). The open points
+are the paper's observed values at 120 min (Table S3).
+
+```{r internal-sim}
+covcols <- c("AGE", "HT", "WT", "HCT", "CRCL", "ORGVOL_TUMOR1", "ORGVOL_TUMOR2", "ORGVOL_TUMORREST")
+make_events <- function(pts, times) {
+  do.call(rbind, lapply(seq_len(nrow(pts)), function(i) {
+    p <- pts[i, ]
+    rbind(
+      data.frame(id = p$id, time = 0, amt = p$dose_nmol, evid = 1, cmt = "venous"),
+      data.frame(id = p$id, time = times, amt = 0, evid = 0, cmt = "venous")
+    ) |>
+      cbind(p[rep(1, length(times) + 1), c(covcols, "rd_fit")], row.names = NULL)
+  }))
+}
+internal <- tab2 |> filter(cohort == "internal")
+times_int <- c(seq(0.5, 10, by = 0.5), seq(11, 120, by = 1))
+ev_int <- make_events(internal, times_int)
+
+sim_typ <- as.data.frame(rxSolve(mod, ev_int, atol = 1e-10, rtol = 1e-8)) |>
+  mutate(density = "Table S1 typical")
+ev_fit <- ev_int |> mutate(rdens_tumor1 = rd_fit, rdens_tumor2 = rd_fit)
+sim_fit <- as.data.frame(rxSolve(mod, ev_fit, atol = 1e-10, rtol = 1e-8)) |>
+  mutate(density = "Table S2 fitted")
+sim_int <- bind_rows(sim_typ, sim_fit)
+```
+
+```{r fig2, fig.height = 8, fig.cap = "Replicates the layout of Figure 2 of van der Gaag 2026 (internal patients 1-8). Lines: packaged model; points: observed activity at 120 min (Table S3)."}
+tab_s3_int <- data.frame(
+  id = 1:8,
+  tumor1 = c(130, 41.7, 12.8, 23.2, 61.1, 65.3, 93.3, 81.4),
+  blood = c(3.70, 2.83, 4.42, 5.26, 1.79, 2.72, 3.01, 3.65),
+  lungs = c(2.69, 1.52, 2.02, 1.36, 2.83, 1.04, 1.48, 1.61),
+  muscle = c(2.94, 1.63, 2.17, 2.10, 2.01, 1.22, 0.78, 1.28)
+)
+pred_s3_int <- data.frame(
+  id = 1:8,
+  tumor1 = c(125, 33.1, 12.4, 22.4, 59.3, 62.9, 90.4, 78.7),
+  blood = c(14.0, 10.5, 11.7, 12.2, 14.0, 9.47, 10.8, 11.5),
+  lungs = c(7.99, 5.81, 7.26, 7.85, 9.09, 5.95, 7.05, 6.53),
+  muscle = c(1.18, 0.84, 1.19, 1.31, 1.55, 0.97, 1.20, 0.97)
+)
+long_sim <- sim_int |>
+  select(id, time, density, tumor1 = act_tumor1, blood = act_blood,
+         lungs = act_lungs, muscle = act_muscle) |>
+  pivot_longer(c(tumor1, blood, lungs, muscle), names_to = "tissue", values_to = "kBq_mL")
+long_obs <- tab_s3_int |>
+  pivot_longer(-id, names_to = "tissue", values_to = "kBq_mL") |>
+  mutate(time = 120)
+ggplot(long_sim, aes(time, kBq_mL, colour = tissue)) +
+  geom_line(aes(linetype = density)) +
+  geom_point(data = long_obs, shape = 1, size = 2) +
+  facet_wrap(~id, ncol = 2, labeller = label_both) +
+  scale_y_log10() +
+  labs(x = "Time after injection (min)", y = "Activity concentration (kBq/mL)",
+       colour = "Tissue", linetype = "Tumour receptor density") +
+  theme_bw()
+```
+
+## Comparison with the paper's 120 min predictions (Table S3)
+
+```{r s3-internal}
+at120 <- sim_fit |>
+  filter(time == 120) |>
+  select(id, tumor1 = act_tumor1, blood = act_blood, lungs = act_lungs, muscle = act_muscle) |>
+  pivot_longer(-id, names_to = "tissue", values_to = "sim")
+cmp_int <- pred_s3_int |>
+  pivot_longer(-id, names_to = "tissue", values_to = "paper_pred") |>
+  left_join(at120, by = c("id", "tissue")) |>
+  left_join(long_obs |> select(id, tissue, obs = kBq_mL), by = c("id", "tissue")) |>
+  mutate(ratio = sim / paper_pred)
+cmp_int |>
+  group_by(tissue) |>
+  summarise(
+    median_ratio = median(ratio), min_ratio = min(ratio), max_ratio = max(ratio),
+    .groups = "drop"
+  ) |>
+  rename("Tissue" = tissue, "Median sim / paper pred" = median_ratio,
+         "Min" = min_ratio, "Max" = max_ratio) |>
+  knitr::kable(digits = 2, caption = "Packaged model (Table S2 fitted tumour density) against the paper's predicted 120 min values, internal patients 1-8.")
+knitr::kable(
+  cmp_int |> filter(tissue == "tumor1") |>
+    select(id, obs, paper_pred, sim, ratio) |>
+    rename("Patient" = id, "Observed" = obs, "Paper predicted" = paper_pred,
+           "Packaged model" = sim, "Model / paper" = ratio),
+  digits = 2,
+  caption = "Tumour lesion 1 at 120 min (kBq/mL), Table S3 against the packaged model with the Table S2 fitted density."
+)
+blood_ratio <- cmp_int$ratio[cmp_int$tissue == "blood"]
+muscle_ratio <- cmp_int$ratio[cmp_int$tissue == "muscle"]
+# Blood and muscle depend only on the systemic physiology, so a mis-transcribed
+# flow, volume or excretion term would shift every patient together.
+stopifnot(
+  abs(median(blood_ratio) - 1) < 0.25,
+  abs(median(muscle_ratio) - 1) < 0.35
+)
+```
+
+Blood and muscle reproduce the paper's predicted values within about 20 %.
+The remaining scatter is expected: the paper used each patient's own haematocrit
+and eGFR, which were not published, and this vignette uses population means.
+
+Two tissues do **not** reproduce, and the vignette shows that openly:
+
+* **Lungs** come out at about half the paper's predicted values. The packaged
+  lung vascular volume is Table S1's `V_tot,lu x 0.055`. The authors' code uses
+  `0.105 x V_ser,body` instead, which is about four times larger. The section
+  below shows that the code's lung volume closes most of the gap.
+* **Tumour lesion 1** with the Table S2 fitted density comes out 1.5-4 times the
+  paper's predicted value. The mapping from the single fitted density in
+  Table S2 to the three tumour compartments is not described. The fitting
+  script is not in the authors' repository either. The model's own tumour
+  dynamics can be checked, but the published per-patient tumour predictions
+  cannot be regenerated from what was published.
+
+## Sensitivity: lung vascular volume
+
+```{r lung-sensitivity}
+mod_codelung <- mod |> model(vv_lungs <- 0.105 * vser)
+sim_cl <- as.data.frame(rxSolve(mod_codelung, ev_fit |> filter(time %in% c(0, 120)), atol = 1e-10, rtol = 1e-8)) |>
+  filter(time == 120)
+knitr::kable(
+  data.frame(
+    id = 1:8,
+    paper_pred = pred_s3_int$lungs,
+    table_s1 = sim_fit$act_lungs[sim_fit$time == 120],
+    code_volume = sim_cl$act_lungs
+  ) |>
+    rename("Patient" = id, "Paper predicted" = paper_pred,
+           "Packaged (Table S1 lung volume)" = table_s1,
+           "With the code's lung volume" = code_volume),
+  digits = 2,
+  caption = "Lung activity at 120 min (kBq/mL)."
+)
+```
+
+# External cohort (120 min, Table S3)
+
+The five external patients have only a total tumour volume, so it is placed in
+lesion 1. The fitted density from Table S2 is used for both lesions.
+
+```{r external}
+external <- tab2 |> filter(cohort == "external")
+ev_ext <- make_events(external, 120) |> mutate(rdens_tumor1 = rd_fit, rdens_tumor2 = rd_fit)
+sim_ext <- as.data.frame(rxSolve(mod, ev_ext, atol = 1e-10, rtol = 1e-8)) |> filter(time == 120)
+pred_s3_ext <- data.frame(
+  id = 9:13,
+  tumor1 = c(30.6, 123, 197, 46.7, 247),
+  lungs = c(12.1, 7.90, 7.05, 12.9, 8.19),
+  muscle = c(2.20, 1.23, 1.03, 2.07, 1.31),
+  kidney = c(52.3, 194, 160, 1.14, 215),
+  spleen = c(82.2, 73.7, 70.6, 92.9, 75.0),
+  liver = c(9.55, 8.12, 7.74, 11.3, 8.26),
+  parotid = c(237, 219, 201, 286, 230)
+)
+obs_s3_ext <- data.frame(
+  id = 9:13,
+  tumor1 = c(31.7, 138, 203, 48.5, 254),
+  lungs = c(1.97, 1.48, 1.42, 1.72, 1.58),
+  muscle = c(2.68, 1.27, 1.05, 1.59, 1.30),
+  kidney = c(48.7, 80.7, 164, 128, 73.6),
+  spleen = c(30.7, 7.33, 5.75, 9.68, 13.3),
+  liver = c(31.6, 20.3, 24.8, 25.7, 21.7),
+  parotid = c(83.5, 47.4, 35.3, 76.4, 97.2)
+)
+sim_ext_long <- sim_ext |>
+  select(id, tumor1 = act_tumor1, lungs = act_lungs, muscle = act_muscle,
+         kidney = act_kidney, spleen = act_spleen, liver = act_liver, parotid = act_parotid) |>
+  pivot_longer(-id, names_to = "tissue", values_to = "sim")
+cmp_ext <- pred_s3_ext |>
+  pivot_longer(-id, names_to = "tissue", values_to = "paper_pred") |>
+  left_join(obs_s3_ext |> pivot_longer(-id, names_to = "tissue", values_to = "obs"), by = c("id", "tissue")) |>
+  left_join(sim_ext_long, by = c("id", "tissue"))
+cmp_ext |>
+  group_by(tissue) |>
+  summarise(obs = median(obs), paper_pred = median(paper_pred), sim = median(sim), .groups = "drop") |>
+  rename("Tissue" = tissue, "Observed (median)" = obs,
+         "Paper predicted (median)" = paper_pred, "Packaged model (median)" = sim) |>
+  knitr::kable(digits = 2, caption = "External patients 9-13 at 120 min (kBq/mL).")
+```
+
+For tumour, muscle, spleen and parotid, the medians of the packaged model are
+close to the medians of the paper's predictions. Lung is about half, as in the
+internal cohort. Liver is lower and kidney higher than the paper's
+predictions. The paper's own predictions for spleen, liver, lung and parotid
+already miss the observed values by about two-fold or more (Table S3). The
+paper's Discussion attributes this to translating the Begum framework across
+ligands, and the packaged model shares that limitation. For patient 12, Table S3
+prints a predicted kidney value of 1.14 kBq/mL against an observed 128. That
+predicted value is almost certainly a typo.
+
+# Extrapolation to [177Lu]Lu-PSMA-617
+
+The paper swaps in the [177Lu]Lu-PSMA-617 column of Table 1 (`kon` 0.1
+L/nmol/min, `kd` 3.3 nmol/L, sieving 0.66, excreted fraction 0.67). It keeps
+each patient's fitted tumour density from the diagnostic scan and simulates a
+7.4 GBq therapeutic dose. Table 1 lists the specific activity of
+[177Lu]Lu-PSMA-617 as "not determined". The authors' code uses 82000 kBq/nmol
+(0.082 GBq/nmol), and that value is used here to convert activity to nmol. The
+SPECT data were decay-corrected to injection time, so the model carries no
+physical decay.
+
+```{r lu177}
+mod_lu <- mod |> ini(kon = 0.1, kd = 3.3, phi_kid = 0.66, fraex = 0.67, aspec = 0.082)
+thera <- tab2 |> filter(cohort == "therapeutic") |> mutate(dose_nmol = 7.4 / 0.082)
+ev_lu <- make_events(thera, c(1440, 10080)) |> mutate(rdens_tumor1 = rd_fit, rdens_tumor2 = rd_fit)
+sim_lu <- as.data.frame(rxSolve(mod_lu, ev_lu, atol = 1e-10, rtol = 1e-8)) |>
+  filter(time > 0) |>
+  select(id, time, tumor1 = act_tumor1, kidney = act_kidney, parotid = act_parotid) |>
+  pivot_longer(c(tumor1, kidney, parotid), names_to = "tissue", values_to = "sim")
+ref_lu <- data.frame(
+  id = rep(c(14, 15), each = 6),
+  time = rep(rep(c(1440, 10080), each = 3), 2),
+  tissue = rep(c("tumor1", "kidney", "parotid"), 4),
+  obs = c(2670, 306, 3054, 1346, 53.0, 160, 2058, 595, 10343, 620, NA, 750),
+  paper_pred = c(4966, 478, 2242, 1346, 62.1, 83.3, 2332, 484, 2281, 630, NA, 85.0)
+)
+knitr::kable(
+  ref_lu |>
+    left_join(sim_lu, by = c("id", "time", "tissue")) |>
+    mutate(time = ifelse(time == 1440, "24 h", "7 d")) |>
+    rename("Patient" = id, "Time" = time, "Tissue" = tissue, "Observed" = obs,
+           "Paper predicted" = paper_pred, "Packaged model" = sim),
+  digits = 1,
+  caption = "[177Lu]Lu-PSMA-617 activity (kBq/mL) after 7.4 GBq, Table S3 therapeutic rows."
+)
+```
+
+Patient 15 has one delineated lesion, and its tumour matches the paper's
+prediction within 3 % at both times. Kidney is within about 10 % of the paper's
+prediction for both patients. Patient 14 has three small lesions, and its
+tumour comes out about five times lower than the paper's prediction. This is
+the same unpublished mapping from fitted density to compartments that affects
+the internal cohort. Parotid is about half the paper's prediction, and both the
+model and the paper's prediction under-predict the observed salivary uptake.
+
+# Non-compartmental summary (PKNCA)
+
+The paper reports no NCA. To give a reproducible exposure summary of the
+diagnostic tracer, PKNCA is run on the arterial serum and tumour lesion 1
+activity curves from the internal-cohort simulation with the Table S2 fitted
+densities, over the 0-120 min imaging window.
+
+```{r pknca}
+nca_in <- sim_fit |>
+  select(id, time, blood = act_blood, tumor1 = act_tumor1) |>
+  pivot_longer(c(blood, tumor1), names_to = "tissue", values_to = "conc") |>
+  bind_rows(expand.grid(id = 1:8, time = 0, tissue = c("blood", "tumor1"), conc = 0,
+                        stringsAsFactors = FALSE)) |>
+  distinct(id, tissue, time, .keep_all = TRUE) |>
+  arrange(tissue, id, time) |>
+  filter(!is.na(conc))
+dose_in <- internal |> transmute(id, time = 0, dose = MBq)
+conc_obj <- PKNCAconc(nca_in, conc ~ time | tissue + id)
+dose_obj <- PKNCAdose(dose_in, dose ~ time | id)
+intervals <- data.frame(start = 0, end = 120, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_res)
+```
+
+# Assumptions and deviations
+
+* **Source precedence.** The authors' public code (repository
+  `ibartelink/Target-Site-PBPK-in-oncology`, PSMA files dated 2025-06-06)
+  disagrees with the paper on several constants. In the code, `kon` is 0.09,
+  sieving 0.66 and tumour flow density 0.26 mL/min/g; the organ volumes and
+  receptor densities differ; and all filtrate returns to the blood, so nothing
+  is excreted. The paper's Results ("flow density was fixed at 0.135") and its
+  Table 1 contradict the code, which appears to be an earlier version. The
+  maintainers therefore followed the paper: Table 1 (piflufolastat column),
+  Table S1 and Suppl. Eq 1-15. The code was used only where the paper is
+  internally inconsistent, as listed below.
+* **Sieving and excreted fraction.** Table 1 gives the tracer-specific sieving
+  0.75 and excreted fraction 0.96. Table S1 prints the generic values
+  `Phi kid = 1` and `Fra ex = 1`. The Table 1 values are used.
+* **Renal lumen mass balance.** Suppl. Eq 3 returns `F_ret` from the lumen to the
+  kidney vasculature, but Suppl. Eq 10 drains only `F_ex` from the lumen. With
+  `Fra_ex` = 0.96, `F_ret` = 0.04 `F_fil` is non-zero. The lumen therefore drains
+  `F_ex + F_ret`, which conserves mass and matches the code. Excreted ligand is
+  accumulated in the `urine` state.
+* **Prostate volume.** Table S1 prints `(0.016+BW)/71`, which gives a prostate
+  of about 1.1 L. The intended `0.016 x BW / 71` (the ICRP-23 form, as in the
+  code) is used.
+* **Rest-tumour flow.** Table S1 defines `F_dens,turest = X_F x mean(F_dens,tu1,
+  F_dens,tu2)` but then prints `F_turest = F_dens,pro x V_tot,turest`, which
+  leaves `F_dens,turest` unused. The defined rest-tumour flow density is used,
+  as in the code. The two give similar values (about 0.107 against 0.102
+  mL/min/g at H = 0.433).
+* **Duplicated `K_pro`.** Table S1 lists the prostate permeability density twice
+  (0.1 and 0.02 mL/min/g). The code's 0.1 is used.
+* **`K_rest`.** It is not tabulated, although `PS_rest = K_rest x V_tot,rest` is.
+  The code's 0.02 mL/min/g, the muscle-like value, is used.
+* **Brain.** Suppl. Eq 6 is vascular only, with no interstitial state.
+* **GI volume.** Table S1's coefficient sum `(0.395 + 0.548 + 0.104 + 0.15)` is
+  used. The code and Begum 2018 use 0.385 for the first term, which makes the
+  GI volume 0.8 % smaller.
+* **Sums for the rest compartment.** `V_tot,rest`, `V_vasc,rest` and `F_rest` are
+  "total minus the sum of all tissues" (Table S1). The sums include the venous
+  and arterial pools and all three tumour compartments, as in the code.
+* **`X_V`.** Table S1 lists a measured-to-actual rest-tumour volume ratio of
+  0.64, but no equation uses it, and neither does the code. The measured
+  rest-tumour volume is used directly.
+* **Receptor densities.** The model defaults are the typical Table S1 values. The
+  Table S2 per-patient fits are applied by overriding `rdens_tumor1` and
+  `rdens_tumor2`. Following Table S1, the rest-tumour, prostate, liver and GI
+  densities are derived from the lesion densities and change with them.
+* **Haematocrit and eGFR.** These were not published per patient. The Table S4
+  population means (43.3 %, 83 mL/min) are used for everyone, which explains
+  part of the blood and muscle scatter against Table S3.
+* **Blood output.** `act_blood` is the arterial serum concentration, as in the
+  model's arterial balance. The paper does not state whether its image-derived
+  blood value is whole blood or serum.
+* **[177Lu]Lu-PSMA-617 specific activity.** Table 1 gives "not determined". The
+  code's 0.082 GBq/nmol is used in the extrapolation section. Activity
+  concentrations scale with the injected activity, so this value matters only
+  through receptor saturation.
+* **Tumour and lung non-reproduction.** See the internal-cohort section. These
+  are reported, not tuned.
+* **Not reproduced.** The precision-dosing distribution (Figure 4B) needs
+  per-patient haematocrit and eGFR, which were not published.

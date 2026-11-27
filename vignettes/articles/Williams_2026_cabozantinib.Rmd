@@ -1,0 +1,405 @@
+---
+title: "Cabozantinib (Williams 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cabozantinib (Williams 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta}
+ui <- rxode2::rxode(readModelDb("Williams_2026_cabozantinib"))
+```
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.1111/cts.70738>
+* Supplementary Material (NONMEM `$PK` block, Tables S1-S4, Figures S1-S6):
+  published with the article.
+
+Williams et al. (2026) updated the cabozantinib population PK model by adding
+the phase 1b COSMIC-021 study, in which cabozantinib was given alone or with
+atezolizumab to patients with castration-resistant prostate cancer (CRPC) and
+other solid tumors. The aim was to estimate covariate effects more precisely
+from the larger dataset and to support exposure-response analyses in CRPC. The
+earlier transit-compartment absorption model was replaced with a faster-running
+dual-phase absorption model.
+
+# Population
+
+The final model was fitted to 7513 quantifiable cabozantinib concentrations
+from 2757 participants in 8 studies (Table 1; Supplementary Tables S1-S3): 63
+healthy volunteers given single 20, 40 or 60 mg tablet doses (XL184-020), and
+patients with CRPC (31.8%), renal cell carcinoma (26.4%), hepatocellular
+carcinoma (17.5%), differentiated thyroid cancer (5.3%) and, in COSMIC-021
+only, non-small cell lung cancer, urothelial carcinoma and six other tumor
+types. Median age was 66 years (range 19-95) and median weight 77.7 kg
+(35.0-191); 21.4% were female and 74.9% White. Patients took 20, 40 or 60 mg
+once daily, and 770 (27.9%) also received atezolizumab 1200 mg IV every 3
+weeks.
+
+```{r population}
+str(ui$population)
+```
+
+# Model structure
+
+Disposition is two-compartment with linear elimination. Each tablet dose is
+split between two parallel inputs (Results, "Base PopPK Model"; Supplementary
+Figure S3):
+
+* a fraction `F1 = 0.708` is released into a gut depot by a zero-order process
+  lasting `D1 = 0.385 h` after a lag of `ALAG1 = 0.359 h`, and is then absorbed
+  first-order (`Ka = 0.826 /h`) into the central compartment;
+* the remaining `1 - F1 = 0.292` enters the central compartment directly by a
+  zero-order input lasting `D2 = 5.94 h` after a long lag of `ALAG2 = 22.2 h`.
+
+The second input produces the second concentration peak about a day after each
+dose. All six absorption parameters were estimated from the healthy-volunteer
+study XL184-020 alone and then fixed while the patient data were added.
+
+An event table for this model therefore needs **two** dose records per
+administration, with the same `amt` and `rate = -2` (modelled duration): one on
+`depot` and one on `central`. The model's `f()`, `alag()` and `dur()` split
+and time the two parts, as NONMEM's `F1`/`F2`, `ALAG1`/`ALAG2` and `D1`/`D2`
+do for the ADVAN4 depot and central compartments.
+
+```{r structure}
+cat(paste(deparse(ui$model), collapse = "\n"))
+```
+
+# Source trace
+
+Every `ini()` entry in `inst/modeldb/specificDrugs/Williams_2026_cabozantinib.R`
+carries an in-file comment naming its origin. "CS" is the NONMEM code in the
+Supplementary Material.
+
+| Parameter | Value | Source location |
+|-----------|-------|-----------------|
+| `lcl` | CL/F = 2.06 L/h | Table 2; CS `CL = TVCL*EXP(ETA(1))*(BWT/78)**THETA(15)` |
+| `lvc` | V2/F = 103 L | Table 2; CS `V2 = TVV2*EXP(ETA(2))*(BWT/78)**THETA(16)` |
+| `lq` | Q/F = 19.3 L/h | Table 2; CS `Q = TVQ` |
+| `lvp` | V3/F = 192 L | Table 2; CS `V3 = TVV3*EXP(ETA(3))*(BWT/78)**THETA(16)` |
+| `lka` | Ka = 0.826 /h (fixed) | Table 2; CS `KA = THETA(5)*EXP(ETA(4)*HV)` |
+| `ltlag` | ALAG1 = 0.359 h (fixed) | Table 2; CS `ALAG1 = THETA(6)` |
+| `ld1` | D1 = 0.385 h (fixed) | Table 2; CS `D1 = THETA(7)*EXP(ETA(5)*HV)` |
+| `ltlag2` | ALAG2 = 22.2 h (fixed) | Table 2; CS `ALAG2 = THETA(8)` |
+| `ld2` | D2 = 5.94 h (fixed) | Table 2; CS `D2 = THETA(9)` |
+| `logitffo` | logit(F1 = 0.708) (fixed) | Table 2; CS `LGF = LOG(THETA(10)/(1-THETA(10)))+ETA(6)*HV`, `F2 = 1-F1` |
+| `e_wt_cl` | 0.0885 | Table 2 "Weight on CL/F"; CS `(BWT/78)**THETA(15)` |
+| `e_wt_vc_vp` | 1.04 | Table 2 "Weight on V2/F, weight on V3/F"; CS `THETA(16)` on both V2 and V3 |
+| `e_sexf_cl` | -0.201 | Table 2 "Sex on CL/F"; CS `IF(SEXN.EQ.1) CLSEXN=(1+THETA(17))` |
+| `etalcl`, `etalvc` block | 0.169 / 0.130 / 0.576 | Table 2 omega2 CL/F, V2/F x CL/F, V2/F |
+| `etalka` | 0.373 (healthy volunteers only) | Table 2 omega2 Ka; CS `ETA(4)*HV` |
+| `etald1` | 1.59 (healthy volunteers only) | Table 2 omega2 D1; CS `ETA(5)*HV` |
+| `etalogitffo` | 0.424, logit scale (healthy volunteers only) | Table 2 omega2 F1; CS `ETA(6)*HV` |
+| `propSdHealthy`, `addSdHealthy` | 21.7%, 0.351 ng/mL | Table 2 residual error, HV; CS `RUVCV`, `RUVSD` with `HV = 1` |
+| `propSdPatient`, `addSdPatient` | 30.2%, 53.7 ng/mL | Table 2 residual error, patient; CS `RUVCV`, `RUVSD` with `HV = 0` |
+| Weight reference 78 kg | -- | CS `BWT = 78`; Figure 4 legend |
+| `DIS_HEALTHY` | -- | CS `HV = 1` when `POP = 0` |
+| Residual form | combined | Supplementary Material equation `y = yhat x (1 + eps2) + eps1` |
+
+# Event-table helper
+
+```{r make-events}
+# Two dose records per administration (depot and central, same amt, rate = -2).
+# Observations sit on `central`, the ODE state; Cc is computed from it.
+make_subjects <- function(cov, dose_mg, n_doses, obs_times) {
+  dose_t <- (seq_len(n_doses) - 1) * 24
+  one <- bind_rows(
+    data.frame(time = rep(dose_t, each = 2), amt = dose_mg, evid = 1L,
+               rate = -2, cmt = rep(c("depot", "central"), n_doses)),
+    data.frame(time = obs_times, amt = 0, evid = 0L, rate = 0, cmt = "central")
+  )
+  ev <- cov[rep(seq_len(nrow(cov)), each = nrow(one)), , drop = FALSE]
+  ev <- bind_cols(ev, one[rep(seq_len(nrow(one)), nrow(cov)), ])
+  arrange(ev, id, time, desc(evid))
+}
+```
+
+# Single dose in healthy volunteers
+
+Typical-value profiles after one 20, 40 or 60 mg tablet in a 78 kg male
+healthy volunteer. The Discussion describes a first peak about 3 h after the
+dose and a second rise about 24 h after it (Figure 3, Supplementary Figure S2).
+
+```{r single-dose}
+sd_cov <- data.frame(id = 1:3, dose = c(20, 40, 60), WT = 78, SEXF = 0, DIS_HEALTHY = 1)
+sd_obs <- sort(unique(c(seq(0, 48, by = 0.25), seq(49, 504, by = 1))))
+sd_ev <- bind_rows(lapply(seq_len(nrow(sd_cov)), function(i) {
+  make_subjects(sd_cov[i, ], sd_cov$dose[i], 1, sd_obs)
+}))
+sd_typ <- rxode2::rxSolve(rxode2::zeroRe(ui), sd_ev, returnType = "data.frame",
+                          keep = "dose")
+
+ggplot(sd_typ, aes(time, Cc, colour = factor(dose))) +
+  geom_line() +
+  scale_y_log10() +
+  coord_cartesian(xlim = c(0, 504), ylim = c(1, 400)) +
+  labs(x = "Time after dose (h)", y = "Cabozantinib (ng/mL)", colour = "Dose (mg)",
+       caption = "Typical single-dose profiles; compare Figure 3 of Williams 2026.")
+```
+
+```{r single-dose-shape}
+p60 <- filter(sd_typ, dose == 60)
+tmax_first <- p60$time[which.max(p60$Cc[p60$time <= 12])]
+c20 <- p60$Cc[p60$time == 20]
+second <- filter(p60, time >= 20, time <= 48)
+tmax_second <- second$time[which.max(second$Cc)]
+c(tmax_first = tmax_first, tmax_second = tmax_second)
+# Deterministic typical-value solve: the first peak sits near 3 h and the
+# second input lifts concentrations again after the 22.2 h lag.
+stopifnot(
+  tmax_first >= 2, tmax_first <= 4,
+  tmax_second > 24, tmax_second < 32,
+  max(second$Cc) > 1.5 * c20
+)
+```
+
+## Closed-form checks
+
+With total bioavailability `F1 + F2 = 1`, a single dose gives
+`AUC0-inf = Dose / (CL/F)`, whatever the absorption parameters. The terminal
+half-life follows from the disposition parameters alone; the paper reports
+104 h.
+
+```{r closed-form}
+cl <- 2.06; vc <- 103; q <- 19.3; vp <- 192
+k10 <- cl / vc; k12 <- q / vc; k21 <- q / vp
+s <- k10 + k12 + k21
+beta <- 0.5 * (s - sqrt(s^2 - 4 * k10 * k21))
+t_half <- log(2) / beta
+t_half
+
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+auc_cf <- sd_typ |>
+  group_by(dose) |>
+  summarise(auc_sim = trap(time, Cc) + last(Cc) / beta, .groups = "drop") |>
+  mutate(auc_exact = dose * 1000 / cl,
+         pct_diff = 100 * (auc_sim - auc_exact) / auc_exact)
+auc_cf |>
+  rename("Dose (mg)" = dose, "Simulated AUC0-inf (ng*h/mL)" = auc_sim,
+         "Dose / (CL/F) (ng*h/mL)" = auc_exact, "% diff" = pct_diff) |>
+  knitr::kable(digits = c(0, 0, 0, 2))
+
+# Same parameters on both sides: the gap is trapezoidal error only.
+stopifnot(
+  abs(t_half - 104) < 1,
+  max(abs(auc_cf$pct_diff)) < 1
+)
+```
+
+# Covariate effects at steady state (Figure 4)
+
+Figure 4 shows steady-state Cmin, Cmax and Cavg for a 53 kg and a 108 kg
+patient (5th and 95th weight percentiles) and for a female patient, relative to
+a 78 kg male patient on 60 mg once daily. The maintainers digitised the plotted
+ratios. The typical-value model evaluated over the 24 h interval after 30 daily
+doses (the same 30-day horizon as Supplementary Table S4) reproduces them.
+
+```{r figure4}
+f4_cov <- data.frame(id = 1:4, label = c("Reference", "Weight 53 kg", "Weight 108 kg", "Female"),
+                     WT = c(78, 53, 108, 78), SEXF = c(0, 0, 0, 1), DIS_HEALTHY = 0)
+f4_ev <- make_subjects(f4_cov, 60, 30, seq(696, 720, by = 0.25))
+f4 <- rxode2::rxSolve(rxode2::zeroRe(ui), f4_ev, returnType = "data.frame", keep = "label") |>
+  group_by(label) |>
+  summarise(Cmin = min(Cc), Cmax = max(Cc), Cavg = trap(time, Cc) / 24, .groups = "drop")
+ref <- filter(f4, label == "Reference")
+f4_ratio <- f4 |>
+  filter(label != "Reference") |>
+  transmute(label, Cmin = Cmin / ref$Cmin, Cmax = Cmax / ref$Cmax, Cavg = Cavg / ref$Cavg) |>
+  pivot_longer(-label, names_to = "metric", values_to = "simulated")
+
+# Digitised from Williams 2026 Figure 4 (point estimates)
+f4_pub <- tibble::tribble(
+  ~label,          ~metric, ~published,
+  "Weight 53 kg",  "Cmin",  1.028,
+  "Weight 108 kg", "Cmin",  0.958,
+  "Female",        "Cmin",  1.256,
+  "Weight 53 kg",  "Cmax",  1.083,
+  "Weight 108 kg", "Cmax",  0.917,
+  "Female",        "Cmax",  1.198,
+  "Weight 53 kg",  "Cavg",  1.044,
+  "Weight 108 kg", "Cavg",  0.948,
+  "Female",        "Cavg",  1.236
+)
+f4_cmp <- inner_join(f4_ratio, f4_pub, by = c("label", "metric")) |>
+  mutate(difference = simulated - published)
+f4_cmp |>
+  rename("Covariate" = label, "Metric" = metric, "Simulated ratio" = simulated,
+         "Figure 4 ratio" = published, "Difference" = difference) |>
+  knitr::kable(digits = 3, caption = "Replicates Figure 4 of Williams 2026.")
+
+# Deterministic: typical values on both sides; digitisation precision is about
+# 0.005 (one pixel), so 0.015 still fails for any wrong exponent or sex effect.
+stopifnot(nrow(f4_cmp) == 9, max(abs(f4_cmp$difference)) < 0.015)
+```
+
+At true steady state the ratios would be slightly larger in magnitude (for
+example Cavg 1/(1 - 0.201) = 1.25 for females, 0.972 for 108 kg). After 30
+days, the accumulation phase still differs slightly between subjects with
+different clearance and volume (terminal half-life about 104 h), and the
+figure includes that difference.
+
+# Steady-state exposure by tumor type (Supplementary Table S4)
+
+Supplementary Table S4 gives post hoc steady-state Cavg, Cmax and Cmin after
+30 days of treatment. Virtual cohorts of 200 per arm are simulated for four of
+its rows, using the sex split and median weight of the matching study from
+Supplementary Table S3: RCC 40 mg (CA2099ER), RCC 60 mg (XL184-308), CRPC
+60 mg (XL184-307) and healthy volunteers at 60 mg (XL184-020).
+
+```{r cohort}
+set.seed(20261008)
+rxode2::rxSetSeed(20261008)
+n_per_arm <- 200
+arms <- tibble::tribble(
+  ~treatment,    ~dose, ~female, ~wt_med, ~wt_lo, ~wt_hi, ~hv,
+  "RCC 40 mg",      40,  0.231,    80.2,   36.0,  160,    0,
+  "RCC 60 mg",      60,  0.223,    79.5,   48.1,  162,    0,
+  "CRPC 60 mg",     60,  0,        82.0,   46.7,  161,    0,
+  "HV 60 mg",       60,  0.476,    76.5,   58.1,  114,    1
+)
+ss_obs <- seq(696, 720, by = 0.5)
+ss_ev <- bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  a <- arms[i, ]
+  cov <- data.frame(
+    id = (i - 1) * n_per_arm + seq_len(n_per_arm),
+    treatment = a$treatment,
+    WT = pmin(pmax(exp(rnorm(n_per_arm, log(a$wt_med), 0.2)), a$wt_lo), a$wt_hi),
+    SEXF = rbinom(n_per_arm, 1, a$female),
+    DIS_HEALTHY = a$hv
+  )
+  make_subjects(cov, a$dose, 30, ss_obs)
+}))
+ss_sim <- rxode2::rxSolve(ui, ss_ev, returnType = "data.frame", keep = "treatment")
+stopifnot(!anyNA(ss_sim$Cc), n_distinct(ss_sim$id) == 4 * n_per_arm)
+```
+
+`Cc` in the solved output is the individual prediction without residual error,
+which is what post hoc exposures describe.
+
+```{r pknca}
+conc <- ss_sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+doses <- ss_ev |>
+  filter(evid == 1, cmt == "depot") |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCAconc(conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCAdose(doses, amt ~ time | treatment + id)
+intervals <- data.frame(start = 696, end = 720, cmax = TRUE, cmin = TRUE, cav = TRUE)
+nca <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r nca-compare}
+# Supplementary Table S4 medians (ng/mL)
+published <- tibble::tribble(
+  ~treatment,   ~cav, ~cmax, ~cmin,
+  "RCC 40 mg",   879,   996,   807,
+  "RCC 60 mg",  1253,  1432,  1146,
+  "CRPC 60 mg", 1220,  1391,  1117,
+  "HV 60 mg",   1354,  1538,  1252
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca,
+  reference = published,
+  by = "treatment",
+  units = c(cav = "ng/mL", cmax = "ng/mL", cmin = "ng/mL"),
+  tolerance_pct = 20
+)
+cmp |>
+  rename("Population and dose" = treatment) |>
+  knitr::kable(caption = "Simulated median steady-state exposure versus Supplementary Table S4 (post hoc medians).")
+```
+
+```{r nca-gate}
+sim_med <- as.data.frame(nca$result) |>
+  filter(PPTESTCD %in% c("cav", "cmax", "cmin")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop")
+pub_long <- pivot_longer(published, -treatment, names_to = "PPTESTCD", values_to = "pub")
+gate <- inner_join(sim_med, pub_long, by = c("treatment", "PPTESTCD")) |>
+  mutate(pct_diff = 100 * (sim - pub) / pub)
+# Centre of a 200-subject cohort (CL/F IIV 43% CV, so the median carries
+# roughly 4% sampling error) against post hoc medians of the real cohorts.
+# A wrong CL/F, dose scaling or unit factor moves every row by tens of percent.
+stopifnot(nrow(gate) == 12, abs(median(gate$pct_diff)) < 10, max(abs(gate$pct_diff)) < 20)
+```
+
+```{r vpc-plot}
+ss_sim |>
+  group_by(treatment, time) |>
+  summarise(p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+            .groups = "drop") |>
+  ggplot(aes(time - 696, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~treatment) +
+  labs(x = "Time after the 30th dose (h)", y = "Cabozantinib (ng/mL)",
+       caption = "Simulated median and 5th-95th percentiles over the 30th dosing interval.")
+```
+
+# Assumptions and deviations
+
+* **NONMEM code is incomplete.** The Supplementary Material prints the `$PK`
+  block only, up to `S2 = V2/100`; `$THETA`, `$OMEGA`, `$SIGMA` and `$ERROR`
+  are not shown. Parameter values come from Table 2, and the residual-error
+  form comes from the supplement's equation `y = yhat x (1 + eps2) + eps1`
+  with the `RUVCV`/`RUVSD` assignments, read as standard deviations (Table 2
+  reports them as % and ng/mL). Independent proportional and additive errors
+  add their variances, which is nlmixr2's default `combined2` form.
+* **No IIV on V3/F.** The `$PK` code multiplies V3 by `EXP(ETA(3))`, but Table 2
+  lists no variance for it and the Results list the IIV terms as CL/F, V2/F,
+  Ka, D1 and F1 only. `ETA(3)` is taken to have been fixed to zero, and the
+  model carries no eta on `vp`.
+* **Scale factor.** The code sets `S2 = V2/100`. With doses in mg and
+  concentrations in ng/mL the factor would be `V2/1000`. The data-file dose
+  units are not reported. The model uses mg and ng/mL
+  (`Cc = central / vc * 1000`). This is confirmed by mass balance: CL/F = 2.06
+  L/h at 60 mg/day gives Cavg = 1214 ng/mL, in line with the Supplementary
+  Table S4 medians (1062-1404 ng/mL), and by the Figure 4 replication above.
+* **Reported CV% for some variances.** Table 2 gives CV% next to each omega2
+  using `CV = sqrt(exp(omega2) - 1)`. That reproduces the CL/F (42.9%) and D1
+  (198%) entries but not Ka (0.373 gives 67.2%, table 65.5%), V2/F (0.576
+  gives 88.3%, table 89.4%) or F1 (0.424 gives 72.7%, table 74.4%). The
+  variances are used as printed.
+* **Absorption IIV applies to healthy volunteers only.** This follows the
+  code (`ETA(4)*HV`, `ETA(5)*HV`, `ETA(6)*HV`). For patients
+  (`DIS_HEALTHY = 0`), Ka, D1 and F1 take their typical values.
+* **Sex coding.** `SEXN = 1` is read as female, because the Results report
+  about 20% lower CL/F in females and the estimate is -0.201.
+* **Virtual cohorts.** Body weight is drawn log-normally around each study's
+  median from Supplementary Table S3 (log-SD 0.2) and truncated to the study's
+  range; sex is drawn from the study's female fraction. Supplementary Table S4
+  uses the actual patients' post hoc parameters, so only the centre of each
+  distribution is compared.
+* **Figure 4 digitisation.** The ratios were read from the published PNG at
+  about 0.005 per pixel. The figure's error bars reflect parameter uncertainty
+  and are not reproduced.
+* **Covariates screened but not retained** (age, race, AST, ALT, total
+  bilirubin, creatinine, hepatic function, tumor type and atezolizumab
+  co-treatment) are documented in the model's `covariatesDataExcluded`
+  metadata.
+* **No erratum** for this article was found when the maintainers checked on
+  2026-11-18.

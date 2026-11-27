@@ -1,0 +1,471 @@
+---
+title: "Carboplatin myelosuppression (De Carlo 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Carboplatin myelosuppression (De Carlo 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("DeCarlo_2026_carboplatin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("DeCarlo_2026_carboplatin"))$description`
+* Article: <https://doi.org/10.1002/bcp.70413>
+* PK layer: <https://doi.org/10.1158/1078-0432.CCR-05-1076> (Ekhart 2006)
+
+De Carlo et al. built a population PK-PD model of carboplatin-induced
+thrombocytopenia and neutropenia from routine electronic-health-record data,
+for model-informed precision dosing. No carboplatin concentrations were
+available, so the PK is the Ekhart 2006 two-compartment model held fixed and
+individualised only through its covariates (age, weight, sex and serum
+creatinine). Two Friberg semi-mechanistic myelosuppression models, one for
+platelets (PLT) and one for neutrophils (NT, here `ANC`), are driven by the
+plasma carboplatin concentration through a linear inhibition of the
+proliferation rate.
+
+# Population
+
+The model was developed on 580 adult cancer patients treated with carboplatin
+at Amsterdam UMC between January 2019 and June 2022 (De Carlo 2026 Table 1):
+median age 68 years (95% range 39-84), median weight 73 kg (50-116), 49%
+female, median CKD-EPI eGFR 85.89 (37.80-115.91), median serum creatinine
+72 umol/L (45-139) and median serum albumin 37 g/L (25-47). Diagnoses were
+lung cancer (52%), gynaecological cancer (16%) and oesophageal/gastric cancer
+(32%); 51% received concomitant paclitaxel and 70% concomitant pemetrexed. The
+training data held 3635 platelet and 2726 neutrophil counts. A further 210
+patients treated between June 2022 and January 2024 (Table S1.1) were used to
+evaluate Bayesian next-cycle forecasts.
+
+The same information is available programmatically via
+`readModelDb("DeCarlo_2026_carboplatin")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing at its source. The
+table collects them in one place.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment PK, `Conc = q1 / V` | -- | De Carlo 2026 Eq. S1.1 |
+| `lcl_nonren` (CL intercept) | 115.5 mL/min (fixed) | Eq. S1.1; Ekhart 2006 Results, model 4 equation |
+| `cl_renal_fraction` | 0.212 (fixed) | Eq. S1.1; Ekhart 2006 Results |
+| `e_sexf_cl_renal` | 0.736 (fixed) | Eq. S1.1 `0.736^Gender`, Gender = 1 if female |
+| `lvc` | 16.3 L (fixed) | Ekhart 2006 Table 2 |
+| `lk12` | 0.104 1/h (fixed) | Ekhart 2006 Table 2 |
+| `lk21` | 0.171 1/h (fixed) | Ekhart 2006 Table 2 |
+| Friberg chain, `ktr = kprol = kcirc = 4 / MTT`, `Edrug = Slope * Conc` | -- | Eq. S1.2; Methods 2.2 |
+| Covariate model | -- | Eq. S2.1 |
+| `lcirc0_plt` | 293 10^9/L | Table 2 |
+| `e_tumtp_esophagogastric_circ0_plt` | -0.16 | Table 2 |
+| `e_alb_circ0_plt` | -0.503 | Table 2 |
+| `lmtt_plt` | 6.27 day | Table 2 |
+| `e_conmed_paclitaxel_mtt_plt` | 0.306 | Table 2 |
+| `lgamma_plt` | 0.188 | Table 2 |
+| `lslope_plt` | 0.282 L/mg | Table 2 |
+| `e_cycle_slope_plt` | 0.756 | Table 2; Eq. S2.1 `(1 + beta * Treat.Cycle)` |
+| `e_alb_slope_plt` | -0.26 | Table 2 |
+| `e_conmed_paclitaxel_slope_plt` | -0.562 | Table 2 |
+| `lcirc0_anc` | 5.16 10^9/L | Table 2 |
+| `e_alb_circ0_anc` | -0.471 | Table 2 |
+| `e_conmed_pemetrexed_circ0_anc` | 0.355 | Table 2 |
+| `lmtt_anc` | 6.24 day | Table 2 |
+| `lgamma_anc` | 0.074 | Table 2 |
+| `lslope_anc` | 0.509 L/mg | Table 2 |
+| `e_crcl_slope_anc` | -0.602 | Table 2 |
+| IIV SDs (omega) | 0.268, 0.190, 0.358, 0.547 (PLT); 0.326, 0.322, 0.626, 0.624 (NT) | Table 2 |
+| Correlations | rho(Circ0PLT, Circ0NT) = 0.440; rho(SlopeNT, gammaNT) = 0.725 | Table 2 |
+| `addSd_PLT`, `propSd_PLT` | 5.92 10^9/L, 0.218 | Table 2 |
+| `propSd_ANC` | 0.321 | Table 2 |
+
+# Steady state without drug
+
+With no carboplatin the feedback term is 1 and both chains must stay at their
+covariate-adjusted baselines. This is a structural check of the ODEs and the
+initial conditions.
+
+```{r steady-state}
+mod <- readModelDb("DeCarlo_2026_carboplatin")
+mod_typ <- rxode2::zeroRe(mod)
+
+cov_typ <- data.frame(
+  AGE = 68, WT = 73, SEXF = 0, CREAT = 72, ALB = 44, CRCL = 100,
+  CONMED_PACLITAXEL = 0, CONMED_PEMETREXED = 0, TUMTP_ESOPHAGOGASTRIC = 0,
+  CYCLE = 1
+)
+
+# Observation rows name an ODE state; dvid = 1 returns every endpoint column.
+obs_ss <- data.frame(
+  id = 1L, time = c(0, 10, 50, 100), amt = 0, evid = 0L,
+  cmt = "circ_plt", dvid = 1L
+)
+ss <- rxSolve(mod_typ, cbind(obs_ss, cov_typ), returnType = "data.frame")
+ss[, c("time", "PLT", "ANC")]
+stopifnot(
+  all(abs(ss$PLT - 293) < 1e-6),
+  all(abs(ss$ANC - 5.16) < 1e-6)
+)
+```
+
+# Carboplatin PK: clearance and exposure
+
+The PK is fixed, so a subject's clearance is a deterministic function of age,
+weight, sex and serum creatinine (Ekhart 2006 model 4). For a 68-year-old,
+73 kg man with creatinine 72 umol/L the clearance is
+115.5 + 0.212 x 72 x 73 / 72 = 131.0 mL/min, close to the 138.8 mL/min
+(8.33 L/h) Ekhart 2006 reported as the mean population clearance.
+
+The PK is checked with PKNCA on a single 30-minute infusion dosed by the
+Calvert formula (AUC 5 mg.min/mL, using the Cockcroft-Gault estimate of GFR)
+in a virtual cohort drawn from the Table 1 ranges. The NCA AUC must equal
+dose / CL for every subject, because the PK has no random effects.
+
+```{r pk-cohort}
+set.seed(2026)
+rxode2::rxSetSeed(2026)
+n_pk <- 100
+cohort <- data.frame(
+  id = seq_len(n_pk),
+  AGE = round(pmin(pmax(rnorm(n_pk, 66, 11), 39), 84)),
+  WT = round(pmin(pmax(rlnorm(n_pk, log(73), 0.2), 50), 116)),
+  SEXF = rbinom(n_pk, 1, 0.49),
+  CREAT = round(pmin(pmax(rlnorm(n_pk, log(72), 0.3), 45), 139))
+) |>
+  mutate(
+    crcl_cg = (140 - AGE) * WT * ifelse(SEXF == 1, 0.85, 1) / (0.815 * CREAT),
+    dose = 5 * (crcl_cg + 25),
+    cl_mlmin = 115.5 + 0.212 * (140 - AGE) * WT * 0.736^SEXF / CREAT,
+    ALB = 37, CRCL = 86, CONMED_PACLITAXEL = 0, CONMED_PEMETREXED = 1,
+    TUMTP_ESOPHAGOGASTRIC = 0, CYCLE = 1, treatment = "AUC5 single dose"
+  )
+
+t_obs <- c(0, seq(0.25, 24, by = 0.25), seq(25, 96, by = 1)) / 24
+ev_pk <- bind_rows(
+  cohort |> transmute(id, time = 0, amt = dose, rate = dose / (0.5 / 24),
+                      evid = 1L, cmt = "central", dvid = NA_integer_),
+  tidyr::expand_grid(id = cohort$id, time = t_obs) |>
+    mutate(amt = 0, rate = 0, evid = 0L, cmt = "central", dvid = 1L)
+) |>
+  left_join(cohort |> select(id, AGE, WT, SEXF, CREAT, ALB, CRCL,
+                              CONMED_PACLITAXEL, CONMED_PEMETREXED,
+                              TUMTP_ESOPHAGOGASTRIC, CYCLE, treatment),
+            by = "id") |>
+  arrange(id, time, desc(evid))
+
+# The PK has no random effects, so the typical-value model gives every
+# subject's exact concentrations; rxode2's notice about a multi-subject solve
+# without omega is expected here and is the only warning muffled.
+sim_pk <- withCallingHandlers(
+  rxSolve(mod_typ, ev_pk, returnType = "data.frame", keep = "treatment"),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w))) {
+      invokeRestart("muffleWarning")
+    }
+  }
+)
+```
+
+```{r pk-nca}
+conc <- sim_pk |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment) |>
+  distinct(id, time, .keep_all = TRUE)
+doses <- cohort |> transmute(id, time = 0, dose, treatment)
+
+conc_obj <- PKNCAconc(conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCAdose(doses, dose ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE,
+                        half.life = TRUE)
+nca <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+auc <- as.data.frame(nca$result) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  select(id, aucinf = PPORRES) |>
+  left_join(cohort |> select(id, dose, cl_mlmin), by = "id") |>
+  mutate(
+    # mg.day/L to mg.min/mL: x 1440 min/day / 1000 mL/L
+    auc_mgminml = aucinf * 1.44,
+    auc_closed = dose / cl_mlmin,
+    pct_diff = 100 * (auc_mgminml - auc_closed) / auc_closed
+  )
+summary(nca)
+```
+
+The NCA AUC and the closed form `dose / CL` use the same individual clearance,
+so they differ only by trapezoidal and extrapolation error:
+
+```{r pk-check}
+summary(auc$pct_diff)
+stopifnot(all(abs(auc$pct_diff) < 2))
+```
+
+The Calvert formula targets an AUC of 5 mg.min/mL; with the Ekhart clearance
+the achieved AUC differs, which is the mismatch the paper's discussion
+attributes to creatinine-based GFR estimates. The median achieved AUC in this
+cohort:
+
+```{r pk-calvert}
+summary(auc$auc_mgminml)
+```
+
+# Replicating Figure 5: covariate effects on platelets and neutrophils
+
+Figure 5 simulates a typical oesophageal/gastric cancer patient on weekly
+carboplatin (Calvert AUC 2, five doses on days 0-28) with paclitaxel and
+radiotherapy, varying one covariate at a time: serum albumin (25, 44 and
+47 g/L; panels A-B), CKD-EPI eGFR (38, 100 and 116; panel C) and paclitaxel
+co-medication (panel D). The paper does not give the patient's age, weight,
+sex, creatinine or the GFR used in the Calvert formula; the Table 1 medians
+(68 years, 73 kg, male, creatinine 72 umol/L) and a Calvert GFR of 100 mL/min
+(dose 250 mg) are assumed here. Each weekly dose is counted as one treatment
+cycle. Lines are medians and ribbons 90% intervals of 100 simulated patients
+per scenario.
+
+```{r fig5-sim}
+n_per <- 100
+scen <- bind_rows(
+  data.frame(panel = "A-B", level = c("ALB 25 g/L", "ALB 44 g/L", "ALB 47 g/L"),
+             ALB = c(25, 44, 47), CRCL = 100, CONMED_PACLITAXEL = 1),
+  data.frame(panel = "C", level = c("eGFR 38", "eGFR 100", "eGFR 116"),
+             ALB = 44, CRCL = c(38, 100, 116), CONMED_PACLITAXEL = 1),
+  data.frame(panel = "D", level = c("PTX no", "PTX yes"),
+             ALB = 44, CRCL = 100, CONMED_PACLITAXEL = c(0, 1))
+) |>
+  mutate(scenario = seq_len(n()))
+
+subj <- tidyr::expand_grid(scenario = scen$scenario, rep = seq_len(n_per)) |>
+  mutate(id = seq_len(n())) |>
+  left_join(scen, by = "scenario") |>
+  mutate(AGE = 68, WT = 73, SEXF = 0, CREAT = 72, CONMED_PEMETREXED = 0,
+         TUMTP_ESOPHAGOGASTRIC = 1)
+
+dose_wk <- 2 * (100 + 25)
+t_grid <- seq(0, 35, by = 0.5)
+ev5 <- bind_rows(
+  tidyr::expand_grid(id = subj$id, time = c(0, 7, 14, 21, 28)) |>
+    mutate(amt = dose_wk, rate = dose_wk / (0.5 / 24), evid = 1L,
+           cmt = "central", dvid = NA_integer_),
+  tidyr::expand_grid(id = subj$id, time = t_grid) |>
+    mutate(amt = 0, rate = 0, evid = 0L, cmt = "circ_plt", dvid = 1L)
+) |>
+  mutate(CYCLE = pmin(floor(time / 7), 4) + 1) |>
+  left_join(subj |> select(id, panel, level, AGE, WT, SEXF, CREAT, ALB, CRCL,
+                            CONMED_PACLITAXEL, CONMED_PEMETREXED,
+                            TUMTP_ESOPHAGOGASTRIC),
+            by = "id") |>
+  arrange(id, time, desc(evid))
+
+# Tight tolerances: in subjects with a large drug-effect slope the
+# proliferating pool falls many orders of magnitude, and the default
+# tolerances can step it below zero, where (circ0 / circ)^gamma is NaN.
+sim5 <- rxSolve(mod, ev5, returnType = "data.frame",
+                keep = c("panel", "level"),
+                atol = 1e-12, rtol = 1e-10, maxsteps = 1e6) |>
+  filter(time %in% t_grid)
+
+# A subject drawn far in the tail of the slope distribution can drive its
+# proliferating pool so close to zero that the solver steps it negative and
+# the trajectory diverges. Such subjects are dropped and counted.
+diverged <- unique(sim5$id[!is.finite(sim5$PLT) | !is.finite(sim5$ANC)])
+cat("Subjects with a diverged solve:", length(diverged), "of", nrow(subj), "\n")
+stopifnot(length(diverged) / nrow(subj) < 0.02)
+sim5 <- sim5 |> filter(!(id %in% diverged))
+
+sum5 <- sim5 |>
+  pivot_longer(c(PLT, ANC), names_to = "output", values_to = "count") |>
+  group_by(panel, level, output, time) |>
+  summarise(med = median(count), lo = quantile(count, 0.05),
+            hi = quantile(count, 0.95), .groups = "drop")
+```
+
+```{r fig5-plot, fig.width = 7, fig.height = 8}
+fig5 <- bind_rows(
+  sum5 |> filter(panel == "A-B", output == "PLT") |> mutate(p = "A: PLT by albumin"),
+  sum5 |> filter(panel == "A-B", output == "ANC") |> mutate(p = "B: NT by albumin"),
+  sum5 |> filter(panel == "C", output == "ANC") |> mutate(p = "C: NT by CKD-EPI eGFR"),
+  sum5 |> filter(panel == "D", output == "PLT") |> mutate(p = "D: PLT by paclitaxel")
+)
+ggplot(fig5, aes(time, med, colour = level, fill = level)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  geom_vline(xintercept = c(0, 7, 14, 21, 28), linetype = "dashed",
+             colour = "grey50") +
+  facet_wrap(~p, ncol = 1, scales = "free_y") +
+  labs(x = "Time (days)", y = "Count (10^9/L)", colour = NULL, fill = NULL,
+       caption = "Replicates Figure 5 of De Carlo 2026") +
+  theme_bw()
+```
+
+Day-35 medians from the simulation, next to values read from the published
+Figure 5:
+
+```{r fig5-table}
+fig5_pub <- data.frame(
+  p = c("A: PLT by albumin", "B: NT by albumin", "C: NT by CKD-EPI eGFR",
+        "D: PLT by paclitaxel", "D: PLT by paclitaxel"),
+  level = c("ALB 44 g/L", "ALB 44 g/L", "eGFR 100", "PTX no", "PTX yes"),
+  published_day0 = c(260, 4.75, 4.75, 260, 260),
+  published_day35 = c(110, 2.5, 2.4, 110, 170)
+)
+fig5 |>
+  filter(time %in% c(0, 35)) |>
+  select(p, level, time, med) |>
+  pivot_wider(names_from = time, values_from = med, names_prefix = "sim_day") |>
+  inner_join(fig5_pub, by = c("p", "level")) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
+  dplyr::rename(
+    "Panel" = p, "Scenario" = level,
+    "Simulated day 0" = sim_day0, "Simulated day 35" = sim_day35,
+    "Figure 5 day 0" = published_day0, "Figure 5 day 35" = published_day35
+  ) |>
+  knitr::kable()
+```
+
+The baselines and the direction and ordering of every covariate effect match
+Figure 5: low albumin raises both baselines and deepens the platelet decline,
+low eGFR deepens the neutrophil decline while 100 and 116 nearly overlap, and
+paclitaxel blunts the platelet decline.
+
+The platelet curve of panel A (paclitaxel-treated patient, albumin 44 g/L)
+is reproduced closely, about 106 against about 110 x 10^9/L at day 35.
+Two differences remain, and the model was not tuned to close either:
+
+* The neutrophil panels B and C fall further than published (about 1.5
+  against about 2.5 x 10^9/L at day 35), although neutrophils carry no
+  cycle effect. Since the platelet curve agrees at the same exposure, an
+  exposure difference alone does not explain it; the unstated PK covariates
+  of the published patient remain one possible source. A typical-value
+  dose of about 150 mg instead of 250 mg would reproduce the published
+  neutrophil curve.
+* Panel D is not consistent with panel A in the paper itself. The caption
+  places the panel A patient on paclitaxel, and panel A ends near 110,
+  but panel D's paclitaxel curve ends near 170 and its no-paclitaxel curve
+  near 110. The simulation gives about 114 (paclitaxel) and 53 (no
+  paclitaxel), which agrees with panel A rather than with panel D.
+
+```{r fig5-check}
+d35 <- fig5 |> filter(time == 35)
+alb <- d35 |> filter(p == "A: PLT by albumin")
+stopifnot(
+  # Albumin: lower albumin, higher platelet count throughout.
+  alb$med[alb$level == "ALB 25 g/L"] > alb$med[alb$level == "ALB 47 g/L"],
+  # Paclitaxel blunts the platelet decline.
+  with(d35 |> filter(p == "D: PLT by paclitaxel"),
+       med[level == "PTX yes"] > med[level == "PTX no"]),
+  # Reduced renal function deepens the neutrophil decline.
+  with(d35 |> filter(p == "C: NT by CKD-EPI eGFR"),
+       med[level == "eGFR 38"] < med[level == "eGFR 100"])
+)
+```
+
+# Cumulative platelet toxicity over cycles
+
+The platelet drug-effect slope rises linearly with the cycle number
+(`1 + 0.756 * CYCLE`), so the same dose produces deeper platelet nadirs in
+later cycles; neutrophils carry no such effect. A typical lung cancer patient
+(pemetrexed, no paclitaxel, albumin 37 g/L, eGFR 86) on four cycles of
+Calvert AUC 5 every 3 weeks:
+
+```{r cycles}
+dose_q3w <- 5 * (86 + 25)
+t_c <- seq(0, 84, by = 0.5)
+ev_c <- bind_rows(
+  data.frame(id = 1L, time = c(0, 21, 42, 63), amt = dose_q3w,
+             rate = dose_q3w / (0.5 / 24), evid = 1L, cmt = "central",
+             dvid = NA_integer_),
+  data.frame(id = 1L, time = t_c, amt = 0, rate = 0, evid = 0L,
+             cmt = "circ_plt", dvid = 1L)
+) |>
+  mutate(CYCLE = pmin(floor(time / 21), 3) + 1, AGE = 68, WT = 73, SEXF = 0,
+         CREAT = 72, ALB = 37, CRCL = 86, CONMED_PACLITAXEL = 0,
+         CONMED_PEMETREXED = 1, TUMTP_ESOPHAGOGASTRIC = 0) |>
+  arrange(time, desc(evid))
+sim_c <- rxSolve(mod_typ, ev_c, returnType = "data.frame",
+                 atol = 1e-12, rtol = 1e-10, maxsteps = 1e6) |>
+  filter(time %in% t_c) |>
+  mutate(cycle = pmin(floor(time / 21), 3) + 1)
+
+nadir <- sim_c |>
+  group_by(cycle) |>
+  summarise(PLT_nadir = min(PLT), ANC_nadir = min(ANC), .groups = "drop")
+knitr::kable(nadir, digits = 2)
+stopifnot(all(diff(nadir$PLT_nadir) < 0))
+```
+
+```{r cycles-plot, fig.width = 7, fig.height = 4}
+sim_c |>
+  select(time, PLT, ANC) |>
+  pivot_longer(-time) |>
+  ggplot(aes(time, value)) +
+  geom_line() +
+  geom_vline(xintercept = c(0, 21, 42, 63), linetype = "dashed",
+             colour = "grey50") +
+  facet_wrap(~name, scales = "free_y") +
+  labs(x = "Time (days)", y = "Count (10^9/L)") +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+* **PK layer.** The paper fixes the PK to Ekhart 2006 but prints only the
+  clearance equation (Eq. S1.1). The central volume (16.3 L) and the
+  micro-constants k12 (0.104 1/h) and k21 (0.171 1/h) are taken from
+  Ekhart 2006 Table 2, which reports them for the covariate-free reference
+  model; Ekhart 2006 does not tabulate separate values for the creatinine
+  model whose clearance equation De Carlo used. All PK parameters are fixed
+  and carry no random effects, as in the source.
+* **Unit conversions.** The clearance equation returns mL/min (x 1.44 to
+  L/day) and the Ekhart micro-constants are per hour (x 24 to 1/day); the
+  model runs in days to match the maturation times. Concentrations are in
+  mg/L, matching the L/mg units of the drug-effect slopes.
+* **Treatment cycle counter.** Eq. S2.1 writes
+  `SlopePLT * (1 + beta * Treat.Cycle)` without defining the origin of
+  `Treat.Cycle`. The model uses the 1-based cycle number (`CYCLE = 1` in the
+  first cycle), so the tabulated 0.282 L/mg is the value extrapolated to
+  `CYCLE = 0` and the first-cycle typical slope is 0.282 x 1.756. A 0-based
+  counter would make every cycle's slope 1.756-fold smaller. In the Figure 5
+  replication the 1-based counter reproduces the panel A platelet curve
+  (day 35 about 106 against about 110 x 10^9/L published), while a 0-based
+  counter gives about 135 for the typical patient. For
+  weekly regimens each weekly dose is counted as a cycle here; the paper does
+  not say how it numbered weekly administrations.
+* **Pemetrexed, not paclitaxel, on the neutrophil baseline.** Eq. S2.1 prints
+  `beta_PTX * PTX` in the Circ0NT line, but Table 2, Table S2.1, the Step 3
+  covariate list and the correlation-matrix label `beta_Circ0_NT_pem_TRUE`
+  all name pemetrexed, and the coefficient (0.355) is the Table 2 pemetrexed
+  value. The model uses pemetrexed.
+* **IIV labels.** Table 2 labels its second block of four omegas "PLT"
+  (and repeats "gammaPLT"). They are read as the neutrophil omegas in the
+  order Circ0, MTT, gamma, Slope, mirroring the platelet block and the eight
+  random effects of Eq. S2.1. Table 2 reports omegas and sigmas as SDs.
+* **Residual error.** The platelet error combines additive and proportional
+  terms; the paper does not say which Monolix form. The Monolix default
+  `combined1` (`a + b * f`, SDs added) is used.
+* **eGFR units.** The paper labels CKD-EPI eGFR as mL/min; the covariate is
+  supplied as the CKD-EPI equation computes it (mL/min/1.73 m^2). The main
+  text cites the 2009 equation and the Table S1.1 footnote the 2021 one.
+* **Time-varying covariates.** Albumin, eGFR, weight and creatinine were
+  time-varying in the source. The model reads them row by row, so a change in
+  albumin also moves the circulating baselines that the feedback term targets.
+* **Solver tolerances.** With the linear drug effect, `1 - Slope * Conc` is
+  strongly negative around each infusion, so in subjects with a large
+  slope the proliferating pool falls by many orders of magnitude before it
+  recovers. Default tolerances can then step it below zero and return `NaN`
+  from the feedback term. The simulations here use `atol = 1e-12` and
+  `rtol = 1e-10`, and the rare simulated subject whose solve still diverges
+  (a draw far in the tail of the slope distribution) is dropped from the
+  Figure 5 summaries and counted in the output.
+* **Covariates screened but not retained** (LDH, capecitabine, etoposide,
+  radiotherapy, immunotherapy, age, sex, weight and Cockcroft-Gault GFR on
+  the PD) are not in the model; the first four are listed in
+  `covariatesDataExcluded`.

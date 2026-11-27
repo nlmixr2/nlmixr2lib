@@ -1,0 +1,550 @@
+---
+title: "Vancomycin re-estimated models in paediatric oncology and CVICU patients (McCarthy 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin re-estimated models in paediatric oncology and CVICU patients (McCarthy 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+McCarthy 2026 compared the predictive performance of published vancomycin
+population PK models in two US multi-site routine-care data sets: paediatric
+oncology patients (Study 1) and paediatric cardiovascular intensive care unit
+(CVICU) patients (Study 2). It then re-estimated the best-performing models on
+its own data. Those three re-estimated ("refit") models are the models in this
+package; the published originals they started from are separate papers.
+
+| Model | Structure | Refit data | Source |
+|-------|-----------|------------|--------|
+| `McCarthy_2026_vancomycin_colin` | Colin 2019 (Onc), 2-compartment | 371 oncology + 371 matched non-oncology patients | Table 4; Supplementary file 2 |
+| `McCarthy_2026_vancomycin_moffett` | Moffett 2019, 1-compartment | 219 CVICU patients | Table 5; Supplementary file 2 |
+| `McCarthy_2026_vancomycin_shimamoto` | Shimamoto 2024, 2-compartment | 219 CVICU patients | Table 6; Supplementary file 2 |
+
+* Citation: `r rxode2::rxode(readModelDb("McCarthy_2026_vancomycin_shimamoto"))$reference`
+* Article: <https://doi.org/10.1007/s40262-026-01623-7> (open access, PMC13038739)
+
+Supplementary file 2 prints the complete NONMEM control stream of every
+evaluated model, including the three refits with their final `$THETA`,
+`$OMEGA` and `$SIGMA` estimates. The model files transcribe those streams;
+Tables 4 to 6 give the same estimates rounded to two decimals.
+
+The refit Shimamoto 2024 model performed best overall in the CVICU patients.
+In the oncology patients the re-estimated cancer-status effect (0.06) was
+indistinguishable from zero, and the refit did not improve on the published
+Colin 2019 model.
+
+```{r models}
+mod_colin <- readModelDb("McCarthy_2026_vancomycin_colin")
+mod_moffett <- readModelDb("McCarthy_2026_vancomycin_moffett")
+mod_shimamoto <- readModelDb("McCarthy_2026_vancomycin_shimamoto")
+```
+
+# Population
+
+Patients under 20 years treated with intermittent intravenous vancomycin and
+entered into the InsightRX Nova dosing software between January 2018 and
+April 2025 (Methods; Table 1). Patients on haemodialysis, CRRT, ECMO or a
+ventricular assist device, or tagged as NICU or PICU patients, were excluded.
+
+* **Study 1 (Colin refit).** 371 oncology patients from 20 sites (82%
+  haematological malignancy, 3.2% solid tumour, 15% unspecified; 13%
+  neutropenic) and 371 propensity-score matched non-oncology patients. Median
+  age 7.2 and 7.9 years (range 0.2-20.0), median weight 26 and 28 kg (range
+  5-124), median serum creatinine 0.35 and 0.34 mg/dL. 1392 + 1257 vancomycin
+  concentrations.
+* **Study 2 (Moffett and Shimamoto refits).** 219 CVICU patients from 11 sites,
+  46% female, median age 1.1 years (range 0.1-17.8), median postmenstrual age
+  99 weeks (range 46-970), median weight 9 kg (range 3-91), median serum
+  creatinine 0.31 mg/dL (range 0.06-2.44); 1136 concentrations. The matched
+  non-CVICU controls were not used in the refits.
+
+Each treatment course was treated as a separate individual in NONMEM. Race
+and ethnicity were not reported. The same information is available from each
+model's `population` metadata, e.g.
+`readModelDb("McCarthy_2026_vancomycin_shimamoto")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. "CS" is
+the refit NONMEM control stream in Supplementary file 2.
+
+| Model | Parameter | Value | Source location |
+|-------|-----------|-------|-----------------|
+| Colin | `lcl`, `lvc`, `lvp`, `lq` | 1.51077, 3.57148, 3.9105, 0.807181 (log scale) | Table 4 refit 1.51, 3.57, 3.91, 0.81; CS `$THETA(1)`-`(4)` |
+| Colin | `e_wt_cl`, `e_wt_q` | 0.75 (fixed) | CS `(V1/RV1)**0.75`, `(V2/RV2)**0.75`; Table S2 |
+| Colin | `ltdec50`, `ltmat50`, `lhill_mat`, `lhill_dec`, `le_creat_cl` | 4.12, -0.113, 1.06, 0.807, -0.433 (fixed, log scale) | CS `$THETA(5)`-`(9)` FIX (Colin 2019 values) |
+| Colin | `e_cancer_ped_cl` | 0.0563011 | Table 4 refit thetaCANC 0.06; CS `$THETA(12)` |
+| Colin | `etalcl`, `etalvc`, `etalvp` | 0.0652814, 0.171886, 0.862485 | CS `$OMEGA`; Table 4 omega 0.26, 0.41, 0.93 (square roots) |
+| Colin | `propSd`, `addSd` | 0.2226, 0.8052 | sqrt of CS `$SIGMA` 0.0495662, 0.648283; Table 4 0.22, 0.81 |
+| Colin | maturation, decline, standardised creatinine | equations | CS `$PK` (`Fmat`, `Fage`, `LnSCRstd`, `Fscr`) |
+| Moffett | `lcl`, `lvc` | log(7.4986), log(70.4378) | Table 5 refit 7.50, 70.44; CS `$THETA(1)`-`(2)` |
+| Moffett | `e_page_cl`, `tmat50` | -0.169922, 50 weeks (fixed) | Table 5 refit thetaPMA -0.17; CS `$THETA(3)`, `FMAT = 1/(1+(PMA/50)**THETA(3))` |
+| Moffett | `e_crcl_cl`, `e_wt_cl` | 0.768862, 0.75 (fixed) | Table 5 refit thetaCRCL 0.77; CS `$THETA(4)`, `(WT/70)**0.75` |
+| Moffett | `etalcl`, `etalvc` | 0.103392, 0.123482 | CS `$OMEGA`; Table 5 omega 0.32, 0.35 |
+| Moffett | `propSd`, `addSd` | 0.238867, 0.0001 (fixed) | Table 5 refit thetaPROP 0.24; CS `$THETA(5)`, `$THETA(6)` FIX |
+| Moffett | `crcl` | `0.413 * HT / CREAT` | CS `$PK` |
+| Shimamoto | `lcl`, `lvc`, `lvp` | log(3.56332), log(12.7238), log(26.7204) | Table 6 refit 3.56, 12.72, 26.72; CS `$THETA(1)`, `(2)`, `(4)` |
+| Shimamoto | `lq`, `hill_mat`, `tmat50` | log(2.95), 1.73, 36.9 weeks (fixed) | Table 6 published values (refit blank); CS `$THETA(3)`, `(6)`, `(7)` FIX |
+| Shimamoto | `e_wt_cl`, `e_crcl_cl`, `e_wt_q` | 0.559713, 0.630524, 0.75 (fixed) | Table 6 refit thetaWT 0.56, thetaCRCL 0.63; CS `$THETA(10)`, `(5)`, `(WT/70)**0.75` |
+| Shimamoto | `etalcl`, `etalvp` | 0.068973, 0.217882 | CS `$OMEGA`; Table 6 omega 0.26, 0.47 |
+| Shimamoto | `propSd`, `addSd` | 0.207734, 0.890438 | Table 6 refit 0.21, 0.89; CS `$THETA(8)`, `(9)` |
+| Shimamoto | `crcl` with age-banded `k_schwartz` | 0.244 / 0.277 / 0.296 / 0.413 | CS `$PK` ('eGFR calculated by revised Schwartz') |
+
+# Typical values against Tables 4 to 6
+
+Tables 4 to 6 print the refit estimates to two decimals and the IIV as the
+square root of the `$OMEGA` variance. The check below rebuilds each printed
+number from the packaged `ini()` values.
+
+```{r typical-values}
+ini_value <- function(mod, name) {
+  ui <- rxode2::rxode(mod)
+  ie <- ui$iniDf
+  row <- ie[!is.na(ie$name) & ie$name == name, , drop = FALSE]
+  if (nrow(row) != 1L) stop("no unique ini() row for '", name, "'")
+  row$est
+}
+
+typ <- tibble::tribble(
+  ~model, ~parameter, ~packaged, ~printed,
+  "Colin", "thetaCL (log)", ini_value(mod_colin, "lcl"), 1.51,
+  "Colin", "thetaVD1 (log)", ini_value(mod_colin, "lvc"), 3.57,
+  "Colin", "thetaVD2 (log)", ini_value(mod_colin, "lvp"), 3.91,
+  "Colin", "thetaQ2 (log)", ini_value(mod_colin, "lq"), 0.81,
+  "Colin", "thetaCANC", ini_value(mod_colin, "e_cancer_ped_cl"), 0.06,
+  "Colin", "thetaPROP", ini_value(mod_colin, "propSd"), 0.22,
+  "Colin", "thetaADD", ini_value(mod_colin, "addSd"), 0.81,
+  "Colin", "omegaCL", sqrt(ini_value(mod_colin, "etalcl")), 0.26,
+  "Colin", "omegaVD1", sqrt(ini_value(mod_colin, "etalvc")), 0.41,
+  "Colin", "omegaVD2", sqrt(ini_value(mod_colin, "etalvp")), 0.93,
+  "Moffett", "thetaCL", exp(ini_value(mod_moffett, "lcl")), 7.50,
+  "Moffett", "thetaVD", exp(ini_value(mod_moffett, "lvc")), 70.44,
+  "Moffett", "thetaPMA", ini_value(mod_moffett, "e_page_cl"), -0.17,
+  "Moffett", "thetaCRCL", ini_value(mod_moffett, "e_crcl_cl"), 0.77,
+  "Moffett", "thetaPROP", ini_value(mod_moffett, "propSd"), 0.24,
+  "Moffett", "omegaCL", sqrt(ini_value(mod_moffett, "etalcl")), 0.32,
+  "Moffett", "omegaVD", sqrt(ini_value(mod_moffett, "etalvc")), 0.35,
+  "Shimamoto", "thetaCL", exp(ini_value(mod_shimamoto, "lcl")), 3.56,
+  "Shimamoto", "thetaVD1", exp(ini_value(mod_shimamoto, "lvc")), 12.72,
+  "Shimamoto", "thetaQ", exp(ini_value(mod_shimamoto, "lq")), 2.95,
+  "Shimamoto", "thetaVD2", exp(ini_value(mod_shimamoto, "lvp")), 26.72,
+  "Shimamoto", "thetaWT", ini_value(mod_shimamoto, "e_wt_cl"), 0.56,
+  "Shimamoto", "thetaCRCL", ini_value(mod_shimamoto, "e_crcl_cl"), 0.63,
+  "Shimamoto", "thetaHILL", ini_value(mod_shimamoto, "hill_mat"), 1.73,
+  "Shimamoto", "thetaT50", ini_value(mod_shimamoto, "tmat50"), 36.90,
+  "Shimamoto", "thetaPROP", ini_value(mod_shimamoto, "propSd"), 0.21,
+  "Shimamoto", "thetaADD", ini_value(mod_shimamoto, "addSd"), 0.89,
+  "Shimamoto", "omegaCL", sqrt(ini_value(mod_shimamoto, "etalcl")), 0.26,
+  "Shimamoto", "omegaVD2", sqrt(ini_value(mod_shimamoto, "etalvp")), 0.47
+) |>
+  mutate(`Rounded to 2 dp` = round(packaged, 2), Match = abs(`Rounded to 2 dp` - printed) < 1e-9)
+
+# Every printed refit value is the packaged value rounded to two decimals.
+stopifnot(nrow(typ) == 29L, all(typ$Match))
+
+typ |>
+  mutate(packaged = signif(packaged, 6)) |>
+  rename(Model = model, Parameter = parameter, Packaged = packaged, `Table 4-6` = printed) |>
+  knitr::kable(caption = "Packaged values against the refit columns of Tables 4 to 6.")
+```
+
+# Structural checks
+
+## Colin: reference subject and standardised creatinine
+
+The Colin structure normalises maturation and decline to a 35-year-old born at
+40 weeks (`PMA_R = 35+(40/52)` years) and centres creatinine on an
+age-standardised value; the control stream notes that this is 0.84 mg/dL for
+the reference adult. A typical 70-kg reference subject whose creatinine equals
+that standard must therefore have `CL = exp(lcl)` exactly. The cancer-status
+effect multiplies CL by `1 + 0.0563`.
+
+```{r colin-reference}
+pma_ref_wk <- (35 + 40 / 52) * 52
+creat_std_ref <- exp(-1.22839 + log10(35 + 40 / 52) * 0.67190 + 6.27017 * exp(-3.10940 * (35 + 40 / 52)))
+
+ref_ev <- data.frame(
+  id = 1:2, time = 0, evid = 0, amt = 0, cmt = "central",
+  WT = 70, PAGE = pma_ref_wk, CREAT = creat_std_ref, DIS_CANCER_PED = c(0, 1)
+)
+# Typical-value solve: rxode2 warns that a multi-subject solve has no omega.
+ref_sim <- suppressWarnings(rxode2::rxSolve(rxode2::zeroRe(mod_colin), events = ref_ev, returnType = "data.frame"))
+
+colin_ref <- tibble::tibble(
+  Quantity = c(
+    "Standardised creatinine at the reference age (mg/dL)",
+    "CL, reference subject, DIS_CANCER_PED = 0 (L/h)",
+    "CL ratio, DIS_CANCER_PED = 1 vs 0"
+  ),
+  Model = c(ref_sim$creat_std[1], ref_sim$cl[1], ref_sim$cl[2] / ref_sim$cl[1]),
+  Expected = c(0.84, exp(1.51077), 1 + 0.0563011)
+)
+stopifnot(
+  # The stream comment states 0.84 to two decimals; the formula gives 0.831.
+  abs(colin_ref$Model[1] / 0.84 - 1) < 0.02,
+  abs(colin_ref$Model[2] / colin_ref$Expected[2] - 1) < 1e-8,
+  abs(colin_ref$Model[3] / colin_ref$Expected[3] - 1) < 1e-8
+)
+knitr::kable(colin_ref, digits = 4, caption = "Colin refit at the reference subject.")
+```
+
+## Shimamoto: age-banded Schwartz coefficient
+
+```{r shimamoto-schwartz}
+sch_ev <- data.frame(
+  id = 1:5, time = 0, evid = 0, amt = 0, cmt = "central",
+  AGE = c(0.2, 0.2, 5, 12, 15), WT = c(2.2, 4, 18, 40, 55),
+  HT = c(45, 55, 108, 150, 165), CREAT = 0.4, PAGE = c(50, 50, 300, 664, 820)
+)
+# Typical-value solve: rxode2 warns that a multi-subject solve has no omega.
+sch_sim <- suppressWarnings(rxode2::rxSolve(rxode2::zeroRe(mod_shimamoto), events = sch_ev, returnType = "data.frame"))
+k_expected <- c(0.244, 0.277, 0.296, 0.413, 0.413)
+stopifnot(max(abs(sch_sim$crcl / (k_expected * sch_ev$HT / sch_ev$CREAT) - 1)) < 1e-10)
+sch_ev |>
+  select(AGE, WT, HT, CREAT) |>
+  mutate(k = k_expected, `CRCL (mL/min/1.73 m^2)` = round(sch_sim$crcl, 1)) |>
+  knitr::kable(caption = "Creatinine clearance computed inside the Shimamoto refit for each Schwartz band.")
+```
+
+# Refit against published estimates
+
+Tables 4 to 6 print the published estimate next to each refit estimate, and
+the Results describe how they differ: for Moffett the refit volume and IIV were
+higher and the PMA and CRCL effects weaker; for Shimamoto the refit CL, V1 and
+weight exponent were lower and the CRCL effect stronger; for Colin the cancer
+effect fell from 0.29 to 0.06. The figure shows the typical clearance of each
+refit model and of the same structure carrying the published estimates (from
+the published-model control streams in Supplementary file 2), for a typical
+child of each age with serum creatinine 0.35 mg/dL.
+
+```{r growth}
+# Approximate median weight and height for age (CDC/WHO growth charts, both
+# sexes); used only to build plausible covariate combinations.
+growth <- tibble::tribble(
+  ~age, ~wt, ~ht,
+  0.00, 3.3, 50,
+  0.25, 6.0, 61,
+  0.50, 7.6, 67,
+  1.00, 9.6, 75,
+  2.00, 12.2, 87,
+  3.00, 14.3, 96,
+  5.00, 18.3, 110,
+  7.00, 23.0, 122,
+  10.00, 32.0, 138,
+  13.00, 46.0, 156,
+  15.00, 56.0, 167,
+  18.00, 66.0, 175,
+  20.00, 68.0, 176
+)
+wt_for_age <- function(age) stats::approx(growth$age, growth$wt, xout = age, rule = 2)$y
+ht_for_age <- function(age) stats::approx(growth$age, growth$ht, xout = age, rule = 2)$y
+```
+
+```{r refit-vs-published, fig.height = 5}
+ages <- c(0.1, 0.25, 0.5, 1, 2, 4, 7, 10, 14, 18)
+grid <- data.frame(
+  id = seq_along(ages), time = 0, evid = 0, amt = 0, cmt = "central",
+  AGE = ages, WT = wt_for_age(ages), HT = ht_for_age(ages),
+  PAGE = ages * 52 + 40, CREAT = 0.35, DIS_CANCER_PED = 1
+)
+
+typical_cl <- function(mod, label, version) {
+  # Typical-value solve: rxode2 warns that a multi-subject solve has no omega.
+  out <- suppressWarnings(rxode2::rxSolve(rxode2::zeroRe(mod), events = grid, returnType = "data.frame"))
+  tibble::tibble(AGE = grid$AGE, cl = out$cl, model = label, version = version)
+}
+
+# Published estimates, from the published-model control streams in
+# Supplementary file 2 (and the published columns of Tables 4 to 6).
+colin_pub <- mod_colin |>
+  rxode2::ini(lcl = 1.67, lvc = 3.75, lvp = 3.73, lq = 1.17, e_cancer_ped_cl = 0.294)
+moffett_pub <- mod_moffett |>
+  rxode2::ini(lcl = log(7.86), lvc = log(63.6), e_page_cl = -0.285, e_crcl_cl = 0.9)
+shimamoto_pub <- mod_shimamoto |>
+  rxode2::ini(lcl = log(4.88), lvc = log(21.6), lvp = log(21.7), e_wt_cl = 0.75, e_crcl_cl = 0.551)
+
+cl_cmp <- bind_rows(
+  typical_cl(mod_colin, "Colin 2019 (Onc), oncology patient", "Refit"),
+  typical_cl(colin_pub, "Colin 2019 (Onc), oncology patient", "Published"),
+  typical_cl(mod_moffett, "Moffett 2019", "Refit"),
+  typical_cl(moffett_pub, "Moffett 2019", "Published"),
+  typical_cl(mod_shimamoto, "Shimamoto 2024", "Refit"),
+  typical_cl(shimamoto_pub, "Shimamoto 2024", "Published")
+)
+stopifnot(!anyNA(cl_cmp$cl), nrow(cl_cmp) == 6L * length(ages))
+
+ggplot(cl_cmp, aes(AGE, cl / wt_for_age(AGE), colour = version)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~model) +
+  scale_x_log10() +
+  labs(
+    x = "Age (years)", y = "Typical clearance (L/h/kg)", colour = NULL,
+    title = "Typical vancomycin clearance: refit vs published estimates",
+    caption = "Refit estimates from Tables 4-6 of McCarthy 2026; published estimates from Supplementary file 2."
+  )
+```
+
+```{r refit-vs-published-check}
+ratio <- cl_cmp |>
+  select(AGE, model, version, cl) |>
+  pivot_wider(names_from = version, values_from = cl) |>
+  mutate(ratio = Refit / Published)
+
+ratio_at <- function(m) ratio$ratio[ratio$model == m]
+# Colin: with all other covariates equal, the refit / published CL ratio of an
+# oncology patient is exp(1.51077 - 1.67) * (1.0563 / 1.294) at every age,
+# because only CL, the cancer effect and the volumes (which cancel in V1/RV1)
+# changed.
+colin_expected <- exp(1.51077 - 1.67) * (1 + 0.0563011) / (1 + 0.294)
+stopifnot(max(abs(ratio_at("Colin 2019 (Onc), oncology patient") / colin_expected - 1)) < 1e-8)
+# Moffett and Shimamoto: the refit lowers typical CL in older children (weaker
+# CRCL effect at CRCL above the reference for Moffett; lower thetaCL for
+# Shimamoto), as Results 'Study 2: popPK Model Refitting' describes.
+stopifnot(
+  ratio_at("Moffett 2019")[length(ages)] < 1,
+  ratio_at("Shimamoto 2024")[length(ages)] < 1
+)
+ratio |>
+  mutate(ratio = round(ratio, 3)) |>
+  select(model, AGE, ratio) |>
+  pivot_wider(names_from = model, values_from = ratio) |>
+  rename(`Age (years)` = AGE) |>
+  knitr::kable(caption = "Refit / published typical clearance by age.")
+```
+
+# Virtual cohorts
+
+The original data are not public. The cohorts below approximate Table 1:
+age drawn log-normally around the reported median and inter-quartile range and
+truncated to the reported range, weight and height from approximate growth
+medians with between-child scatter, postmenstrual age as age plus 40 weeks
+(the paper's own imputation for most patients), and serum creatinine
+log-normal around the reported median. Each arm has 200 patients. All patients
+receive 15 mg/kg as a 1-hour infusion, every 6 h in Study 1 and every 8 h in
+Study 2, matching the median dose (428 mg for a median 26 kg; 125 mg for 9 kg)
+and interval in Table 1, simulated at steady state.
+
+```{r cohort}
+set.seed(2026)
+
+# rxSetSeed() fixes rxode2's draws for a given number of solver threads only;
+# every assertion below holds for any cohort the models can produce.
+rxode2::rxSetSeed(2026)
+
+draw_age <- function(n, median, iqr, range) {
+  sdlog <- diff(log(iqr)) / 1.349
+  a <- exp(rnorm(n, log(median), sdlog))
+  pmin(pmax(a, range[1]), range[2])
+}
+
+make_cohort <- function(n, cohort, age_med, age_iqr, age_range, tau, id_offset, cancer) {
+  age <- draw_age(n, age_med, age_iqr, age_range)
+  wt <- wt_for_age(age) * exp(rnorm(n, 0, 0.15))
+  ht <- ht_for_age(age) * exp(rnorm(n, 0, 0.04))
+  creat <- pmin(pmax(0.33 * exp(rnorm(n, 0, 0.4)), 0.06), 2.44)
+  subj <- tibble::tibble(
+    id = id_offset + seq_len(n), cohort = cohort, AGE = age, WT = wt, HT = ht,
+    PAGE = age * 52 + 40, CREAT = creat, DIS_CANCER_PED = cancer, tau = tau,
+    dose = 15 * wt
+  )
+  doses <- subj |>
+    mutate(time = 0, evid = 1L, amt = dose, rate = dose, ii = tau, ss = 1L, cmt = "central")
+  obs_times <- c(seq(0, 1.5, by = 0.05), seq(1.6, 8, by = 0.1))
+  obs <- subj |>
+    tidyr::crossing(time = obs_times) |>
+    filter(time <= tau) |>
+    mutate(evid = 0L, amt = 0, rate = 0, ii = 0, ss = 0L, cmt = "central")
+  bind_rows(doses, obs) |> arrange(id, time, desc(evid))
+}
+
+study1 <- bind_rows(
+  make_cohort(200, "Oncology", 7.2, c(3.4, 13.3), c(0.2, 20), 6, 0L, 1),
+  make_cohort(200, "Non-oncology", 7.9, c(3.9, 14.1), c(0.3, 18.4), 6, 200L, 0)
+)
+study2 <- make_cohort(200, "CVICU", 1.1, c(0.4, 5.2), c(0.1, 17.8), 8, 400L, 0)
+stopifnot(
+  !anyDuplicated(unique(study1[, c("id", "time", "evid")])),
+  !anyDuplicated(unique(study2[, c("id", "time", "evid")]))
+)
+
+study1 |>
+  distinct(id, .keep_all = TRUE) |>
+  bind_rows(distinct(study2, id, .keep_all = TRUE)) |>
+  group_by(cohort) |>
+  summarise(
+    n = n(), `Age (y)` = median(AGE), `PMA (wk)` = median(PAGE), `Weight (kg)` = median(WT),
+    `Height (cm)` = median(HT), `Creatinine (mg/dL)` = median(CREAT), `Dose (mg)` = median(dose),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2, caption = "Virtual cohorts (medians); compare McCarthy 2026 Table 1.")
+```
+
+# Simulation
+
+```{r simulate}
+keep_cols <- c("cohort", "tau", "dose")
+sim_colin <- rxode2::rxSolve(mod_colin, events = study1, keep = keep_cols, maxsteps = 1e6,
+  returnType = "data.frame") |>
+  mutate(model = "Colin refit")
+sim_moffett <- rxode2::rxSolve(mod_moffett, events = study2, keep = keep_cols, maxsteps = 1e6,
+  returnType = "data.frame") |>
+  mutate(model = "Moffett refit")
+sim_shimamoto <- rxode2::rxSolve(mod_shimamoto, events = study2, keep = keep_cols, maxsteps = 1e6,
+  returnType = "data.frame") |>
+  mutate(model = "Shimamoto refit")
+sim <- bind_rows(sim_colin, sim_moffett, sim_shimamoto) |>
+  mutate(treatment = paste(model, cohort, sep = ": "))
+stopifnot(!anyNA(sim$Cc))
+```
+
+```{r profiles, fig.height = 5}
+sim |>
+  group_by(treatment, time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = c(15, 20), linetype = "dotted") +
+  facet_wrap(~treatment) +
+  labs(
+    x = "Time after dose at steady state (h)", y = "Vancomycin (mg/L)",
+    title = "Steady-state profiles, 15 mg/kg as a 1-h infusion",
+    caption = paste(
+      "Median and 90% interval of individual predictions (no residual error).",
+      "Dotted lines: the 15-20 mg/L trough range used in McCarthy 2026 Methods."
+    )
+  )
+```
+
+The paper does not tabulate simulated concentrations, so the profiles are
+shown for orientation.
+
+# PKNCA validation
+
+At steady state the AUC over one dosing interval equals dose / CL for every
+patient. PKNCA's AUC over the simulated interval, divided by each patient's
+`dose / cl`, should be 1 up to trapezoidal error on the 0.05-0.1 h grid.
+McCarthy 2026 reports no NCA values, so there is no published table to compare
+against.
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_df <- sim |>
+  distinct(id, treatment, dose, tau) |>
+  mutate(time = 0, amt = dose)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- bind_rows(
+  data.frame(treatment = unique(sim$treatment[sim$tau == 6]), start = 0, end = 6),
+  data.frame(treatment = unique(sim$treatment[sim$tau == 8]), start = 0, end = 8)
+) |>
+  mutate(cmax = TRUE, cmin = TRUE, tmax = TRUE, auclast = TRUE)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_wide <- as.data.frame(nca_res) |>
+  select(treatment, id, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+cl_ind <- sim |> distinct(treatment, id, cl, dose, tau)
+mass <- nca_wide |>
+  left_join(cl_ind, by = c("treatment", "id")) |>
+  mutate(pct_diff = 100 * (auclast / (dose / cl) - 1))
+# Four model-cohort groups of 200 patients.
+stopifnot(nrow(mass) == 800L, !anyNA(mass$pct_diff))
+# The two sides use the same drawn parameters, so the difference is numerical
+# (trapezoidal) error only.
+stopifnot(max(abs(mass$pct_diff)) < 1)
+
+mass |>
+  group_by(treatment) |>
+  summarise(
+    `Cmax (mg/L)` = median(cmax), `Cmin (mg/L)` = median(cmin),
+    `AUCtau (mg*h/L)` = median(auclast), `AUC24 (mg*h/L)` = median(auclast * 24 / tau),
+    `max abs(AUCtau vs dose/CL) (%)` = max(abs(pct_diff)),
+    .groups = "drop"
+  ) |>
+  rename(`Model: cohort` = treatment) |>
+  knitr::kable(digits = 2, caption = "PKNCA steady-state results (medians) and the dose/CL mass-balance check.")
+```
+
+```{r cvicu-ratio, include = FALSE}
+auc24_med <- mass |>
+  group_by(treatment) |>
+  summarise(auc24 = median(auclast * 24 / tau), .groups = "drop")
+cvicu_ratio <- auc24_med$auc24[auc24_med$treatment == "Shimamoto refit: CVICU"] /
+  auc24_med$auc24[auc24_med$treatment == "Moffett refit: CVICU"]
+```
+
+For the same CVICU cohort the two refits predict different exposure: the
+median AUC24 of the Shimamoto refit is `r round(cvicu_ratio, 2)` times that of
+the Moffett refit. The Shimamoto refit has a small central volume (12.7 L per
+70 kg, hence the high peaks) and a lower typical clearance across the age range,
+partly because its creatinine clearance uses Schwartz coefficients of
+0.244-0.296 below 12 years, where the Moffett refit uses 0.413 at every age.
+Both were fitted to the same patients; McCarthy 2026 judged them by
+predictive performance (Fig. 3), not by agreement with each other.
+
+# Assumptions and deviations
+
+- **Refit models, not the published originals.** These files hold the
+  McCarthy 2026 re-estimates. The original Colin 2019, Moffett 2019 and
+  Shimamoto 2024 models are separate publications; their estimates appear here
+  only as the comparison in "Refit against published estimates".
+- **Control stream over Table S2.** Where Table S2's printed equations differ
+  from the refit control streams, the control streams were followed, because
+  they are what was estimated: Table S2 writes the Colin maturation in weeks,
+  while the stream (and its fixed `MAT50 = exp(-0.113)`) works in years, as a
+  comment in the stream explains; Table S2 drops the `CANC` indicator from the
+  Colin cancer term and prints the Shimamoto maturation denominator as
+  `thetaPMA50 + PMA^Hill` rather than `T50^Hill + PMA^Hill`.
+- **Colin heel-prick terms omitted.** The Colin stream carries heel-prick
+  effects on V1 and Q (fixed at the Colin 2019 values), but McCarthy 2026 set
+  heel-prick status to 0 for every patient (Table 2 footnote a), so both
+  factors are 1 and the terms are left out. They are documented under
+  `covariatesDataExcluded`.
+- **Colin standardised creatinine.** The stream uses `LOG10` of PMA in years in
+  `LnSCRstd`; this gives 0.831 mg/dL at the reference age, which matches the
+  stream's comment of 0.84 mg/dL. The model reproduces the stream exactly.
+- **Creatinine clearance equations.** Table 2 footnotes say Moffett uses the
+  original Schwartz equation and Shimamoto the bedside one. The control streams
+  instead use `0.413 * HT / CR` for Moffett and age-banded coefficients (0.244,
+  0.277, 0.296, 0.413) for Shimamoto. The models follow the streams. Supply
+  height in cm and creatinine in mg/dL.
+- **AUC compartments dropped.** The Moffett and Shimamoto streams integrate an
+  extra AUC state with no effect on the PK; it is omitted, and AUC comes from
+  PKNCA instead.
+- **Moffett additive error.** The stream fixes the additive SD at 0.0001 mg/L,
+  a numerical floor, so the model is effectively proportional-only. Table 5
+  lists only the proportional term.
+- **Table 1 dose units.** Table 1 labels the dose row "mg/kg", but its values
+  (median 428 mg in the oncology patients, up to 2500) are clearly in mg. The
+  15 mg/kg dosing above reproduces those medians.
+- **Virtual cohorts.** Weight and height come from approximate growth medians,
+  not from the study data; creatinine is drawn without an age trend; and PMA is
+  age plus 40 weeks for every child. These choices affect only the illustrative
+  simulations, not the models.
+- **Treatment courses.** Each treatment course was a separate individual in
+  the refits, so the IIV describes variability between courses as well as
+  between patients.
+- No erratum or correction notice for McCarthy 2026 was found as of
+  2026-11-12.

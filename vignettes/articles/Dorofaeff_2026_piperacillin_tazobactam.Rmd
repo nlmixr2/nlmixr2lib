@@ -1,0 +1,562 @@
+---
+title: "Piperacillin/tazobactam in critically ill children (Dorofaeff 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Piperacillin/tazobactam in critically ill children (Dorofaeff 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Dorofaeff_2026_piperacillin_tazobactam"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Dorofaeff_2026_piperacillin_tazobactam"))$description`
+* Article: <https://doi.org/10.1128/aac.00272-26>
+
+```{r model}
+mod <- readModelDb("Dorofaeff_2026_piperacillin_tazobactam")
+ui <- rxode2::rxode(mod)
+th <- ui$theta
+```
+
+Piperacillin and tazobactam are given together in a fixed 8:1 ratio
+(100/12.5 mg/kg). The model gives each drug its own one-compartment,
+first-order-elimination disposition. The two drugs were fitted jointly, with
+correlated between-subject variability, but they do not interact.
+Piperacillin uses the unsuffixed canonical names and tazobactam carries the
+`_taz` sibling-drug suffix.
+
+```{r constants}
+# Clinical and target-attainment constants, all from the source paper.
+PIP_MGKG <- 100 # piperacillin dose (mg/kg), maximum 4 g per dose
+TAZ_MGKG <- 12.5 # tazobactam dose (mg/kg), maximum 0.5 g per dose
+TAU <- 6 # dosing interval (h)
+FU <- 0.70 # unbound fraction: Methods assume 30% protein binding
+CT_TAZ <- 2 # tazobactam threshold (mg/L), target 85% fT > 2 mg/L
+MICS <- c(1, 2, 4, 8, 16, 32, 64) # piperacillin MIC range (mg/L)
+```
+
+# Population
+
+Thirty-one critically ill children (11 infants aged 1 month to < 1 year and 20
+children up to 12 years) were studied in the paediatric intensive care unit of
+Queensland Children's Hospital, Brisbane, between June 2019 and February 2023
+(Table 1). Median age was 1.8 years (range 0.1-11.8), median weight 10.80 kg
+(range 3-68) and 17/31 (54.8%) were female. Median PELOD-2 score was 5; 61.3%
+were mechanically ventilated and 38.7% received vasopressors or inotropes.
+Median Schwartz eGFR was 120.5 mL/min/1.73 m^2 (range 54.3-289) and 44.8% of
+the patients with an eGFR had augmented renal clearance (eGFR > 130).
+
+Piperacillin-tazobactam 100/12.5 mg/kg (maximum 4 g piperacillin) was given
+every 6 h as a 30-min infusion. Samples were taken before a dose and 60, 120,
+240 and 360 min after the start of the infusion: 102 piperacillin and 97
+tazobactam total plasma concentrations in all.
+
+The same information is available from the model's `population` metadata
+(`readModelDb("Dorofaeff_2026_piperacillin_tazobactam")()$population`).
+
+# Source trace
+
+Every `ini()` entry has an in-file comment naming its origin in
+`inst/modeldb/specificDrugs/Dorofaeff_2026_piperacillin_tazobactam.R`.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| One-compartment model, first-order elimination, both drugs | n/a | Results, "Population PK modeling and validation"; Table S1 |
+| `CL_i = CLpop * (WT/70)^0.75 * (eGFR/117.9)^theta * (AGE/1.8)^theta` | n/a | Results display equations (piperacillin and tazobactam) |
+| `V_i = Vpop * (WT/70)^1` | n/a | Results display equations |
+| `lcl` | log(10.31 L/h) | Table 2, CL_pip |
+| `lvc` | log(24.9 L) | Table 2, V_pip |
+| `lcl_taz` | log(9.97 L/h) | Table 2, CL_taz |
+| `lvc_taz` | log(28.61 L) | Table 2, V_taz |
+| `e_wt_cl`, `e_wt_cl_taz` | 0.75 (fixed) | Methods, "Population PK modeling and validation" |
+| `e_wt_vc`, `e_wt_vc_taz` | 1 (fixed) | Methods, "Population PK modeling and validation" |
+| `e_crcl_cl` | 0.65 | Table 2, eGFR_CL_pip (display equation prints 0.76; see Errata) |
+| `e_age_cl` | 0.2 | Table 2, AGE_CL_pip; display equation |
+| `e_crcl_cl_taz` | 0.69 | Table 2, eGFR_CL_taz; display equation |
+| `e_age_cl_taz` | 0.17 | Table 2, AGE_CL_taz; display equation |
+| `etalcl`, `etalcl_taz` | SD 0.27, 0.27; correlation 0.92 | Table 2, IIV_CL_pip, IIV_CL_taz, correlation CL_pip and CL_taz |
+| `etalvc`, `etalvc_taz` | SD 0.44, 0.41; correlation 0.96 | Table 2, IIV_V_pip, IIV_V_taz, correlation V_pip and V_taz |
+| `addSd` | 1.33 mg/L | Table 2, Constant_pip |
+| `propSd` | 0.09 | Table 2, Proportional_pip |
+| `propSd_taz` | 0.11 | Table 2, Proportional_taz |
+| Unbound fraction 0.70 (vignette only) | n/a | Methods, "Monte Carlo simulations and probability of target attainment" |
+
+# Event-table helpers
+
+```{r helpers}
+# Doses go to the real ODE states (central, central_taz). Observation rows use
+# dvid = 1 with no cmt, which is the form that works for a two-endpoint rxUi.
+dose_rows <- function(regimen, pip_mg, taz_mg, n_doses) {
+  if (regimen == "Continuous infusion") {
+    total_h <- n_doses * TAU
+    return(data.frame(
+      time = c(0, 0), evid = 1L, cmt = c("central", "central_taz"),
+      amt = c(pip_mg, taz_mg) * n_doses,
+      rate = c(pip_mg, taz_mg) * n_doses / total_h, dvid = NA_integer_
+    ))
+  }
+  dur <- switch(regimen,
+    "0.5-h infusion every 6 h" = 0.5,
+    "3-h infusion every 6 h" = 3,
+    stop("unknown regimen: ", regimen)
+  )
+  t <- rep(seq(0, by = TAU, length.out = n_doses), each = 2)
+  data.frame(
+    time = t, evid = 1L, cmt = rep(c("central", "central_taz"), n_doses),
+    amt = rep(c(pip_mg, taz_mg), n_doses),
+    rate = rep(c(pip_mg, taz_mg) / dur, n_doses), dvid = NA_integer_
+  )
+}
+
+obs_rows <- function(grid) {
+  data.frame(
+    time = grid, evid = 0L, cmt = NA_character_, amt = NA_real_,
+    rate = NA_real_, dvid = 1L
+  )
+}
+
+# One event block per subject; `subjects` has id, WT, AGE, CRCL, regimen.
+make_events <- function(subjects, n_doses, grid) {
+  bind_rows(lapply(seq_len(nrow(subjects)), function(i) {
+    s <- subjects[i, , drop = FALSE]
+    pip_mg <- min(PIP_MGKG * s$WT, 4000)
+    taz_mg <- min(TAZ_MGKG * s$WT, 500)
+    ev <- bind_rows(dose_rows(s$regimen, pip_mg, taz_mg, n_doses), obs_rows(grid))
+    cbind(s[rep(1, nrow(ev)), , drop = FALSE], ev)
+  })) |>
+    arrange(id, time, desc(evid))
+}
+
+N_DOSES <- 16 # 96 h of dosing; the last 6-h interval (90-96 h) is at steady state
+SS_GRID <- seq(90, 96, by = 0.05)
+```
+
+# Virtual cohort
+
+Individual covariates are not published. The cohort below takes its age
+strata from Table 1 (35.5% aged 1 month to < 1 year, 25.8% 1 to < 4 years,
+19.4% 4 to < 9 years and 19.4% 9 to < 12 years). Weight comes from the WHO
+weight-for-age medians (sexes averaged), with log-normal scatter; this is
+external reference data, used only to build a plausible covariate
+distribution. eGFR is log-normal around the Table 1 median of 120.5
+mL/min/1.73 m^2, truncated to the observed range 54.3-289.
+
+```{r cohort}
+# WHO weight-for-age median (kg) by age (months), sexes averaged. External
+# reference data (WHO Child Growth Standards 0-5 y; WHO Growth Reference 5-19 y).
+who_age_mo <- c(0, 1, 2, 3, 6, 9, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, 144)
+who_wt_kg <- c(
+  3.3, 4.4, 5.5, 6.3, 7.8, 8.8, 9.5, 10.8, 12.0, 14.2, 16.2,
+  18.3, 20.5, 22.9, 25.6, 28.6, 32.0, 35.9, 40.1
+)
+
+draw_egfr <- function(n) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    y <- rlnorm(3 * n, meanlog = log(120.5), sdlog = 0.4)
+    out <- c(out, y[y >= 54.3 & y <= 289])
+  }
+  out[seq_len(n)]
+}
+
+set.seed(20261018)
+N_COHORT <- 200
+stratum <- sample(1:4, N_COHORT, replace = TRUE, prob = c(11, 8, 6, 6))
+lo <- c(1 / 12, 1, 4, 9)[stratum]
+hi <- c(1, 4, 9, 12)[stratum]
+cohort <- data.frame(
+  id = seq_len(N_COHORT),
+  AGE = runif(N_COHORT, lo, hi),
+  CRCL = draw_egfr(N_COHORT),
+  regimen = "0.5-h infusion every 6 h"
+) |>
+  mutate(WT = stats::approx(who_age_mo, who_wt_kg, xout = 12 * AGE, rule = 2)$y *
+    exp(rnorm(N_COHORT, 0, 0.15)))
+
+cohort |>
+  summarise(
+    `Median age (y)` = median(AGE), `Median weight (kg)` = median(WT),
+    `Median eGFR` = median(CRCL), `% eGFR > 130` = 100 * mean(CRCL > 130)
+  ) |>
+  knitr::kable(digits = 1, caption = "Virtual cohort (Table 1: median age 1.8 y, weight 10.80 kg, eGFR 120.5, 44.8% > 130).")
+
+stopifnot(
+  abs(median(cohort$AGE) - 1.8) < 1.5,
+  abs(median(cohort$WT) - 10.8) < 4,
+  abs(median(cohort$CRCL) - 120.5) < 20
+)
+```
+
+# Visual predictive check (Figure 2)
+
+The study sampled one dosing interval of an ongoing q6h regimen, so the cohort
+is simulated to steady state and the last interval is plotted against time
+after the dose. The observed medians in the table are read by the maintainers
+from Figure 2 at the nominal sampling times.
+
+```{r vpc}
+vpc_events <- make_events(cohort, N_DOSES, seq(90, 96, by = 0.1))
+vpc <- rxode2::rxSolve(mod,
+  events = vpc_events, useLinCmt = FALSE,
+  returnType = "data.frame"
+) |>
+  filter(!is.na(Cc)) |>
+  mutate(tad = time - 90)
+
+vpc_long <- vpc |>
+  select(id, tad, Cc, Cc_taz) |>
+  pivot_longer(c(Cc, Cc_taz), names_to = "analyte", values_to = "conc") |>
+  mutate(analyte = ifelse(analyte == "Cc", "Piperacillin", "Tazobactam"))
+
+vpc_sum <- vpc_long |>
+  group_by(analyte, tad) |>
+  summarise(
+    p05 = quantile(conc, 0.05), p50 = median(conc), p95 = quantile(conc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(vpc_sum, aes(tad)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25, fill = "steelblue") +
+  geom_line(aes(y = p50), colour = "steelblue4") +
+  facet_wrap(~analyte, scales = "free_y") +
+  labs(
+    x = "Time after last dose (h)", y = "Total plasma concentration (mg/L)",
+    caption = "Replicates Figure 2 of Dorofaeff 2026 (typical 5th-50th-95th percentiles, no residual error)."
+  )
+```
+
+```{r vpc-compare}
+fig2_obs <- data.frame(
+  analyte = rep(c("Piperacillin", "Tazobactam"), each = 4),
+  tad = rep(c(1, 2, 4, 6), 2),
+  observed_median = c(172, 70, 25, 13, 20, 11, 4.6, 3)
+)
+vpc_cmp <- vpc_sum |>
+  filter(abs(tad - round(tad)) < 1e-6, round(tad) %in% c(1, 2, 4, 6)) |>
+  mutate(tad = round(tad)) |>
+  inner_join(fig2_obs, by = c("analyte", "tad")) |>
+  mutate(ratio = p50 / observed_median)
+
+vpc_cmp |>
+  select(analyte, tad, observed_median, p50, ratio) |>
+  rename(
+    Analyte = analyte, `Time after dose (h)` = tad,
+    `Figure 2 observed median (mg/L)` = observed_median,
+    `Simulated median (mg/L)` = p50, `Simulated / observed` = ratio
+  ) |>
+  knitr::kable(digits = 2)
+
+# Figure 2 medians come from 31 patients with a different covariate mix, so
+# the check is on the centre of the ratios, not on any single time point.
+stopifnot(
+  nrow(vpc_cmp) == 8,
+  abs(log(median(vpc_cmp$ratio))) < log(1.5)
+)
+```
+
+# Probability of target attainment (Figure 3)
+
+Figure 3 simulates a 2-year-old child of 11 kg at eGFR 80, 120 and 160
+mL/min/1.73 m^2, given piperacillin 100 mg/kg with tazobactam 12.5 mg/kg every
+6 h as a 0.5-h or 3-h infusion, or the same daily dose as a continuous
+infusion. Unbound concentrations are 70% of total. A subject attains the
+piperacillin target when the unbound concentration stays above the MIC for the
+whole dosing interval, and the tazobactam target when the unbound concentration
+exceeds 2 mg/L for at least 85% of it. Both are scored over the steady-state
+interval 90-96 h. The paper used 1,000 subjects per scenario; 200 are used here.
+
+```{r pta-sim}
+regimens <- c("0.5-h infusion every 6 h", "3-h infusion every 6 h", "Continuous infusion")
+N_PER_ARM <- 200
+pta_subjects <- expand.grid(
+  rep = seq_len(N_PER_ARM), CRCL = c(80, 120, 160), regimen = regimens,
+  stringsAsFactors = FALSE
+) |>
+  mutate(id = row_number(), WT = 11, AGE = 2) |>
+  select(id, WT, AGE, CRCL, regimen)
+
+pta_events <- make_events(pta_subjects, N_DOSES, SS_GRID)
+pta_sim <- rxode2::rxSolve(mod,
+  events = pta_events, keep = "regimen",
+  useLinCmt = FALSE, returnType = "data.frame"
+) |>
+  filter(!is.na(Cc)) |>
+  select(id, time, CRCL, regimen, Cc, Cc_taz, cl, cl_taz)
+
+per_subject <- pta_sim |>
+  group_by(id, CRCL, regimen) |>
+  summarise(
+    fmin_pip = min(FU * Cc),
+    taz_frac = mean(FU * Cc_taz > CT_TAZ),
+    .groups = "drop"
+  )
+
+pta <- bind_rows(lapply(MICS, function(m) {
+  per_subject |>
+    group_by(CRCL, regimen) |>
+    summarise(
+      Piperacillin = 100 * mean(fmin_pip > m),
+      Combined = 100 * mean(fmin_pip > m & taz_frac >= 0.85),
+      .groups = "drop"
+    ) |>
+    mutate(MIC = m)
+})) |>
+  pivot_longer(c(Piperacillin, Combined), names_to = "panel", values_to = "simulated")
+```
+
+```{r fig3-digitised}
+# Figure 3 of Dorofaeff 2026, read by the maintainers from the published
+# figure (approximately +/- 2 percentage points). Order: MIC 1, 2, 4, 8, 16, 32, 64.
+fig3 <- bind_rows(
+  data.frame(panel = "Piperacillin", CRCL = 80, regimen = regimens[1], MIC = MICS, published = c(90, 84, 73, 55, 33, 10.5, 1)),
+  data.frame(panel = "Piperacillin", CRCL = 80, regimen = regimens[2], MIC = MICS, published = c(97.5, 95.5, 91.5, 83, 61.5, 26.5, 3)),
+  data.frame(panel = "Piperacillin", CRCL = 80, regimen = regimens[3], MIC = MICS, published = c(100, 100, 100, 100, 100, 99.5, 45)),
+  data.frame(panel = "Piperacillin", CRCL = 120, regimen = regimens[1], MIC = MICS, published = c(75.5, 64, 48, 30.5, 13, 2, 0)),
+  data.frame(panel = "Piperacillin", CRCL = 120, regimen = regimens[2], MIC = MICS, published = c(92.5, 88.5, 78, 60, 33, 8.5, 0.5)),
+  data.frame(panel = "Piperacillin", CRCL = 120, regimen = regimens[3], MIC = MICS, published = c(100, 100, 100, 100, 100, 92.5, 14.5)),
+  data.frame(panel = "Piperacillin", CRCL = 160, regimen = regimens[1], MIC = MICS, published = c(58.5, 46.5, 31.5, 16, 5.5, 0.5, 0)),
+  data.frame(panel = "Piperacillin", CRCL = 160, regimen = regimens[2], MIC = MICS, published = c(85.5, 77, 61.5, 40, 17, 3, 0)),
+  data.frame(panel = "Piperacillin", CRCL = 160, regimen = regimens[3], MIC = MICS, published = c(100, 100, 100, 100, 100, 79, 4)),
+  data.frame(panel = "Combined", CRCL = 80, regimen = regimens[1], MIC = MICS, published = c(59, 59, 57.5, 50.5, 32.5, 10.5, 0.5)),
+  data.frame(panel = "Combined", CRCL = 80, regimen = regimens[2], MIC = MICS, published = c(87, 86.5, 86.5, 81.5, 61.5, 26.5, 3)),
+  data.frame(panel = "Combined", CRCL = 80, regimen = regimens[3], MIC = MICS, published = c(100, 100, 100, 100, 100, 99.5, 45)),
+  data.frame(panel = "Combined", CRCL = 120, regimen = regimens[1], MIC = MICS, published = c(28, 28, 27.5, 24.5, 12.5, 2, 0)),
+  data.frame(panel = "Combined", CRCL = 120, regimen = regimens[2], MIC = MICS, published = c(64, 64, 63, 55.5, 33, 8.5, 0.5)),
+  data.frame(panel = "Combined", CRCL = 120, regimen = regimens[3], MIC = MICS, published = c(100, 100, 100, 100, 100, 93, 14.5)),
+  data.frame(panel = "Combined", CRCL = 160, regimen = regimens[1], MIC = MICS, published = c(12.5, 12.5, 12.5, 11, 5, 0.5, 0)),
+  data.frame(panel = "Combined", CRCL = 160, regimen = regimens[2], MIC = MICS, published = c(39.5, 39.5, 38.5, 33.5, 17, 3, 0)),
+  data.frame(panel = "Combined", CRCL = 160, regimen = regimens[3], MIC = MICS, published = c(100, 100, 100, 100, 100, 79, 4))
+)
+
+pta_cmp <- inner_join(pta, fig3, by = c("panel", "CRCL", "regimen", "MIC")) |>
+  mutate(diff = simulated - published)
+stopifnot(nrow(pta_cmp) == 126)
+```
+
+```{r fig3-plot, fig.height = 6}
+pta_cmp |>
+  mutate(
+    panel = factor(panel,
+      levels = c("Piperacillin", "Combined"),
+      labels = c("Piperacillin (100% fT > MIC)", "Combined piperacillin-tazobactam")
+    ),
+    eGFR = paste("eGFR", CRCL)
+  ) |>
+  ggplot(aes(MIC, colour = regimen)) +
+  geom_line(aes(y = simulated)) +
+  geom_point(aes(y = published), shape = 1) +
+  geom_hline(yintercept = 90, linetype = "dotted") +
+  scale_x_continuous(trans = "log2", breaks = MICS) +
+  facet_grid(panel ~ eGFR) +
+  labs(
+    y = "PTA (%)", x = "Piperacillin MIC (mg/L)", colour = NULL,
+    caption = "Replicates Figure 3 of Dorofaeff 2026. Lines: simulated here; circles: read from the published figure."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+```{r fig3-assert}
+pta_cmp |>
+  group_by(panel, regimen) |>
+  summarise(
+    `Median |difference| (points)` = median(abs(diff)),
+    `Max |difference| (points)` = max(abs(diff)), .groups = "drop"
+  ) |>
+  rename(Panel = panel, Regimen = regimen) |>
+  knitr::kable(digits = 1)
+
+# 200 subjects per arm give a Monte Carlo standard error of up to 3.5 points
+# per cell, and the published values are read off a figure, so the gate is on
+# the centre and a robust upper quantile of the 126 differences.
+stopifnot(
+  median(abs(pta_cmp$diff)) < 3,
+  quantile(abs(pta_cmp$diff), 0.9) < 10
+)
+```
+
+## Continuous infusion in closed form
+
+Under continuous infusion the steady-state concentration is the infusion rate
+divided by clearance, so the piperacillin PTA has a closed form:
+`P(FU * R / CL > MIC) = pnorm(log(FU * R / (MIC * CL_typ)) / omega_CL)`. This
+removes Monte Carlo error and tests the clearance model directly, including the
+eGFR exponent. Table 2 gives 0.65 for that exponent and the display equation
+prints 0.76; both are scored against Figure 3 at the MICs where the PTA is not
+at a floor or ceiling.
+
+```{r ci-closed-form}
+rate_pip <- PIP_MGKG * 11 / TAU # mg/h for the 11-kg child
+omega_cl <- sqrt(ui$omega["etalcl", "etalcl"])
+cl_typ <- function(egfr, e_crcl) {
+  exp(th[["lcl"]]) * (11 / 70)^0.75 * (egfr / 117.9)^e_crcl * (2 / 1.8)^th[["e_age_cl"]]
+}
+ci_cf <- expand.grid(CRCL = c(80, 120, 160), MIC = c(32, 64)) |>
+  mutate(
+    `Table 2 (0.65)` = 100 * pnorm(log(FU * rate_pip / (MIC * cl_typ(CRCL, 0.65))) / omega_cl),
+    `Equation (0.76)` = 100 * pnorm(log(FU * rate_pip / (MIC * cl_typ(CRCL, 0.76))) / omega_cl)
+  ) |>
+  inner_join(
+    fig3 |> filter(panel == "Piperacillin", regimen == "Continuous infusion"),
+    by = c("CRCL", "MIC")
+  ) |>
+  select(CRCL, MIC, published, `Table 2 (0.65)`, `Equation (0.76)`)
+
+ci_cf |>
+  rename(eGFR = CRCL, `MIC (mg/L)` = MIC, `Figure 3 (%)` = published) |>
+  knitr::kable(digits = 1)
+
+rmse <- function(x) sqrt(mean((x - ci_cf$published)^2))
+c(table2 = rmse(ci_cf$`Table 2 (0.65)`), equation = rmse(ci_cf$`Equation (0.76)`))
+
+# Closed form against the published figure: the packaged exponent must fit
+# Figure 3 better than the display equation's.
+stopifnot(rmse(ci_cf$`Table 2 (0.65)`) < rmse(ci_cf$`Equation (0.76)`))
+```
+
+# NCA with PKNCA
+
+PKNCA is run on the steady-state interval (90-96 h) of the eGFR 120 arms of
+the Figure 3 simulation, for each drug and regimen. Dorofaeff 2026 reports no
+NCA, so the check is internal: at steady state the AUC over one interval must
+equal the dose per interval divided by the subject's clearance.
+
+```{r pknca}
+nca_in <- pta_sim |>
+  filter(CRCL == 120) |>
+  select(id, time, regimen, Cc, Cc_taz, cl, cl_taz)
+
+run_nca <- function(conc_col, label, dose_mg) {
+  dose_ss <- nca_in |>
+    distinct(id, regimen) |>
+    mutate(time = 90, amt = dose_mg)
+  conc <- nca_in |>
+    filter(!is.na(.data[[conc_col]])) |>
+    mutate(conc = .data[[conc_col]])
+  conc_obj <- PKNCA::PKNCAconc(conc, conc ~ time | regimen + id, concu = "mg/L", timeu = "h")
+  dose_obj <- PKNCA::PKNCAdose(dose_ss, amt ~ time | regimen + id, doseu = "mg")
+  intervals <- data.frame(
+    start = 90, end = 96, cmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE
+  )
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+  as.data.frame(res$result) |> mutate(analyte = label)
+}
+
+nca_res <- bind_rows(
+  run_nca("Cc", "Piperacillin", PIP_MGKG * 11),
+  run_nca("Cc_taz", "Tazobactam", TAZ_MGKG * 11)
+)
+
+nca_res |>
+  group_by(analyte, regimen, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  rename(
+    Analyte = analyte, Regimen = regimen, `Cmax,ss (mg/L)` = cmax,
+    `Cmin,ss (mg/L)` = cmin, `AUC0-6,ss (mg*h/L)` = auclast, `Cavg,ss (mg/L)` = cav
+  ) |>
+  knitr::kable(digits = 1, caption = "Median steady-state NCA, 2-year-old 11-kg child, eGFR 120.")
+
+auc_chk <- nca_res |>
+  filter(PPTESTCD == "auclast") |>
+  inner_join(distinct(nca_in, id, cl, cl_taz), by = "id") |>
+  mutate(
+    expected = ifelse(analyte == "Piperacillin", PIP_MGKG * 11 / cl, TAZ_MGKG * 11 / cl_taz),
+    ratio = PPORRES / expected
+  )
+
+# Same drawn parameters on both sides; the only difference is trapezoidal
+# error on a 0.05-h grid, so a tight bound is appropriate.
+stopifnot(abs(median(auc_chk$ratio) - 1) < 0.02)
+```
+
+# Typical concentration profiles
+
+```{r typical, fig.height = 4}
+# One single-subject solve per regimen: a typical-value (zeroRe) solve of
+# several subjects at once warns that it has no omega.
+mod_typ <- rxode2::zeroRe(mod)
+solve_typical <- function(reg) {
+  subj <- data.frame(id = 1L, WT = 11, AGE = 2, CRCL = 120, regimen = reg)
+  rxode2::rxSolve(mod_typ,
+    events = make_events(subj, N_DOSES, SS_GRID),
+    useLinCmt = FALSE, returnType = "data.frame"
+  ) |>
+    mutate(regimen = reg)
+}
+typ <- bind_rows(lapply(regimens, solve_typical)) |>
+  filter(!is.na(Cc)) |>
+  transmute(regimen, tad = time - 90, Piperacillin = FU * Cc, Tazobactam = FU * Cc_taz) |>
+  pivot_longer(c(Piperacillin, Tazobactam), names_to = "analyte", values_to = "fconc")
+
+ggplot(typ, aes(tad, fconc, colour = regimen)) +
+  geom_line() +
+  facet_wrap(~analyte, scales = "free_y") +
+  labs(
+    x = "Time after dose at steady state (h)", y = "Unbound concentration (mg/L)",
+    colour = NULL, caption = "Typical 2-year-old, 11 kg, eGFR 120; 100/12.5 mg/kg every 6 h."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+# Assumptions and deviations
+
+* **eGFR exponent on piperacillin clearance (erratum).** The Results display
+  equation prints `(eGFR/117.9)^0.76`, while Table 2 reports 0.65 with RSE
+  17.4% and a bootstrap median of 0.65 (95% CI 0.46-0.84). The model uses the
+  Table 2 value. The table is internally consistent (the bootstrap CI is
+  centred on 0.65, and 0.65 x 17.4% matches its width), and the closed-form
+  continuous-infusion check above reproduces Figure 3 better with 0.65 than
+  with 0.76. The tazobactam exponent (0.69) and both age exponents agree
+  between the equations and the table.
+* **Residual error form.** The paper reports a "combined constant-proportional"
+  error model for piperacillin but not which Monolix form. The model uses
+  Monolix's default `combined1` form, SD = a + b * f. Residual error does not
+  enter any of the target-attainment checks in this article.
+* **Tazobactam-limited combined PTA.** In Figure 3 the piperacillin-alone PTA
+  is reproduced closely in every panel. Where the combined PTA is limited by
+  tazobactam (the plateau at low MICs for the 0.5-h and 3-h infusions), the
+  simulation here runs about 3-7 percentage points above the published values
+  (checked with 2,000 subjects per arm, which removes most Monte Carlo
+  error). The paper does not give the time grid or the exact inequality used
+  to score 85% fT > 2 mg/L, and a small difference in either would explain an
+  offset of this size; no parameter was changed to close it.
+* **Trough concentrations in the VPC.** The simulated median at 6 h after the
+  dose is about half the observed median read from Figure 2 for both drugs,
+  while the 1-, 2- and 4-h medians agree within about 30%. The trough depends
+  on the elimination rate, which here depends on an assumed covariate mix:
+  the virtual cohort draws eGFR independently of age, and the study's
+  individual weights, ages and eGFR values are not published. The Figure 2
+  trough bin also holds the pre-dose samples, whose time since the previous
+  dose is not reported. The Figure 3 check, which fixes the covariates, is
+  the sharper test of the model.
+* **Reference values.** The covariate references 117.9 mL/min/1.73 m^2 (eGFR)
+  and 1.8 years (age) are those printed in the display equations. Table 1
+  gives the cohort median eGFR as 120.5 among the 29 patients with an eGFR;
+  the paper does not say how 117.9 was derived.
+* **Steady state.** The study sampled around one dose of an ongoing regimen,
+  and the paper does not report how many doses preceded sampling. The
+  simulations here assume steady state, which the trough concentrations in
+  Figure 2 support.
+* **Target-attainment window.** The paper does not state which interval its
+  Monte Carlo PTA was scored over; the steady-state interval is used here.
+  Concentrations are the individual predictions without residual error.
+* **Virtual cohort.** The weight-for-age relation comes from external WHO
+  reference data and the eGFR spread is assumed, so the VPC comparison is
+  approximate. The observed medians were read from Figure 2.
+* **Figures S3-S5.** The supplementary PTA figures for the 0.5- and 8-year-old
+  scenarios and the age-weight grid are not replicated; Figure 3 already tests
+  every parameter in the model.
+* **Covariates screened but not retained** (PELOD-2, albumin, serum creatinine,
+  mechanical ventilation, vasopressor/inotrope use) are listed in the model's
+  `covariatesDataExcluded` metadata.

@@ -1,0 +1,535 @@
+---
+title: "Nemonoxacin against Escherichia coli in an in vitro urinary tract infection model (Qi 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nemonoxacin against Escherichia coli in an in vitro urinary tract infection model (Qi 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Models and source
+
+Qi 2026 built a one-compartment dynamic dilution model that reproduces the
+urine concentrations of nemonoxacin after oral 500 mg once daily, challenged
+*Escherichia coli* isolates in two media -- cation-adjusted Mueller-Hinton
+broth (CAMHB) and synthetic human urine (SHU, pH 6.5) -- and related the
+bacterial response over 24 h to six PK/PD indices with the sigmoid Emax model
+
+E = E0 - Emax * X^H / (X^H + EC50^H)
+
+where X is the index and E is either the change in log10 CFU/mL between 0 and
+24 h (Delta log10 CFU) or the area under the log10 CFU/mL bacterial kill curve
+over 0-24 h (AUBKC). Table 2 reports 17 independent fits; all 17 are packaged,
+one file per fit, sharing this vignette.
+
+```{r fits}
+fits <- tibble::tribble(
+  ~medium, ~index,       ~endpoint, ~r2,
+  "camhb", "cmaxmic",    "dlogcfu", 0.846,
+  "camhb", "cmaxmic",    "aubkc",   0.934,
+  "camhb", "aucmic",     "dlogcfu", 0.951,
+  "camhb", "aucmic",     "aubkc",   0.958,
+  "camhb", "tmic",       "dlogcfu", 0.949,
+  "camhb", "tmic",       "aubkc",   0.981,
+  "shu",   "cmaxmic",    "dlogcfu", 0.985,
+  "shu",   "cmaxmic",    "aubkc",   0.965,
+  "shu",   "aucmic",     "dlogcfu", 0.982,
+  "shu",   "aucmic",     "aubkc",   0.972,
+  "shu",   "tmic",       "dlogcfu", 0.735,
+  "shu",   "tmic",       "aubkc",   0.849,
+  "shu",   "cmaxmicshu", "dlogcfu", 0.972,
+  "shu",   "cmaxmicshu", "aubkc",   0.951,
+  "shu",   "aucmicshu",  "aubkc",   0.950,
+  "shu",   "tmicshu",    "dlogcfu", 0.943,
+  "shu",   "tmicshu",    "aubkc",   0.943
+) |>
+  mutate(
+    fit = paste(medium, index, endpoint, sep = "_"),
+    stem = paste0("Qi_2026_nemonoxacin_", fit)
+  )
+
+index_lab <- c(
+  cmaxmic = "Cmax/MIC", aucmic = "AUC0-24/MIC", tmic = "%T>MIC",
+  cmaxmicshu = "Cmax/MICSHU", aucmicshu = "AUC0-24/MICSHU", tmicshu = "%T>MICSHU"
+)
+endpoint_lab <- c(dlogcfu = "Delta log10 CFU", aubkc = "AUBKC")
+medium_lab <- c(camhb = "CAMHB", shu = "SHU pH 6.5")
+
+fits |>
+  transmute(
+    `Model file` = paste0("`", stem, "`"),
+    Medium = medium_lab[medium],
+    `PK/PD index` = index_lab[index],
+    Endpoint = endpoint_lab[endpoint],
+    `R^2` = r2
+  ) |>
+  knitr::kable()
+```
+
+* Citation: `r rxode2::rxode(readModelDb("Qi_2026_nemonoxacin_camhb_aucmic_dlogcfu"))$reference`
+* Article: <https://doi.org/10.1128/aac.01368-25> (PMCID: PMC13321827, open access)
+
+AUC0-24/MIC is the paper's selected index: it has the highest Delta log10 CFU
+R^2 among the CAMHB-MIC indices in both media (0.951 in CAMHB, 0.982 in SHU),
+and its targets drive the paper's probability-of-target-attainment analysis.
+
+```{r description, results = "asis"}
+cat(
+  "**`Qi_2026_nemonoxacin_camhb_aucmic_dlogcfu`** -- ",
+  rxode2::rxode(readModelDb("Qi_2026_nemonoxacin_camhb_aucmic_dlogcfu"))$description,
+  "\n",
+  sep = ""
+)
+```
+
+## How exposure enters
+
+None of the files has a PK component: Qi 2026 analysed the flask concentrations
+non-compartmentally and published no structural model of the apparatus.
+Exposure therefore enters as covariates, which each model combines into its
+index:
+
+| Index | Covariates | Formed in `model()` as |
+|---|---|---|
+| Cmax/MIC | `CMAX_NEMONOXACIN` (mg/L), `MIC` (mg/L) | `CMAX_NEMONOXACIN / MIC` |
+| AUC0-24/MIC | `AUC_NEMONOXACIN` (mg*h/L), `MIC` (mg/L) | `AUC_NEMONOXACIN / MIC` |
+| %T>MIC | `FTMIC_NEMONOXACIN` (percent) | used directly |
+| Cmax/MICSHU | `CMAX_NEMONOXACIN`, `MIC_SYNTHETIC_URINE` (mg/L) | `CMAX_NEMONOXACIN / MIC_SYNTHETIC_URINE` |
+| AUC0-24/MICSHU | `AUC_NEMONOXACIN`, `MIC_SYNTHETIC_URINE` | `AUC_NEMONOXACIN / MIC_SYNTHETIC_URINE` |
+| %T>MICSHU | `FTMIC_SYNTHETIC_URINE_NEMONOXACIN` (percent) | used directly |
+
+`MIC` is always the standard CAMHB broth-microdilution MIC, even in the SHU
+fits labelled "Cmax/MIC" and "AUC0-24/MIC"; `MIC_SYNTHETIC_URINE` is the MIC
+measured with CAMHB replaced by SHU at pH 6.5.
+
+The Delta log10 CFU models integrate a bacterial density `bact` from the
+nominal 1e6 CFU/mL inoculum and return `log_cfu`; the AUBKC models are
+algebraic and return `auc_log_cfu`.
+
+# Population
+
+The models are in vitro. Twelve clinical *E. coli* isolates (five producing
+extended-spectrum beta-lactamase) and the control strain ATCC 25922 were tested
+for susceptibility in CAMHB and in SHU at pH 5.6, 6.0 and 6.5 (Table S3); two
+further isolates, NTU-001 and NTU-002, joined the high-exposure SHU arm.
+Nemonoxacin MICs were 0.5-128 mg/L in CAMHB for the clinical isolates and rose
+in SHU by on average 5 +/- 2, 4 +/- 2 and 2 +/- 1 log2 dilutions at pH 5.6, 6.0
+and 6.5.
+
+The flask was inoculated at 1e6 CFU/mL, preincubated 1 h at 35 C, and pumped
+to reproduce day-10 urine concentrations after oral 500 mg once daily in healthy
+Chinese volunteers (Table 1): the Table 1 interval **minimum** concentrations
+defined the low-exposure arm and the interval **medians** the high-exposure arm.
+Concentrations and viable counts were sampled at 0, 0.5, 1, 2, 4, 6, 8 and 24 h.
+
+```{r isolates}
+# Qi 2026 Table S3, nemonoxacin columns used by the models (mg/L).
+# "<0.03" for ATCC 25922 in CAMHB is entered at the censoring limit.
+isolates <- tibble::tribble(
+  ~isolate,      ~esbl,   ~mic_camhb, ~mic_shu65,
+  "21-W031-023", "ESBL+",   4,         16,
+  "21-W033-001", "ESBL+",   0.5,        2,
+  "21-W035-079", "ESBL+",   8,         32,
+  "21-W049-099", "ESBL+",  32,        128,
+  "21-W061-049", "ESBL+",   2,         16,
+  "21-W031-028", "ESBL-",   1,          4,
+  "21-W041-052", "ESBL-",   1,          2,
+  "21-W042-007", "ESBL-",  16,         64,
+  "21-W049-080", "ESBL-",   2,          8,
+  "21-W049-027", "ESBL-",  16,         64,
+  "ATCC 25922",  "-",       0.03,       0.5,
+  "NTU-001",     "",        1,         64,
+  "NTU-002",     "",      128,        512
+)
+isolates |>
+  rename(
+    Isolate = isolate, Type = esbl,
+    `MIC, CAMHB (mg/L)` = mic_camhb, `MIC, SHU pH 6.5 (mg/L)` = mic_shu65
+  ) |>
+  knitr::kable(caption = "Nemonoxacin MICs (Qi 2026 Table S3).")
+```
+
+```{r population}
+p <- readModelDb("Qi_2026_nemonoxacin_shu_aucmic_dlogcfu")()$population
+str(p[c("species", "medium", "experimental_arms", "dose_range")], max.level = 1, width = 78)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `effect = e0 - emax * X^hill / (X^hill + ec50^hill)` | n/a | Methods, PK/PD index and targets, sigmoid Emax equation (equation image 2) |
+| `le0`, `lemax`, `lec50`, `lhill` of each file | per file | Table 2, the row named by the file (medium / PK/PD index / PD endpoint); columns E0, Emax, EC50 and gamma |
+| `lec50` of the four `tmic` and two `tmicshu` files | Table 2 EC50 x 100 | Table 2 prints the fraction-scale EC50; the x-axes of Figure 6 run 0-1 |
+| `log10_cfu0` (Delta log10 CFU files) | 6 | Methods, In vitro UTIs model: "inoculated at 1 x 10^6 CFU/mL" |
+| `d/dt(bact) = ln(10) * (effect / 24) * bact` | n/a | Construction that reproduces the Methods endpoint "changes in log10 CFU/mL between 24 and 0 h" at 24 h |
+| `addSd` (all 17) | 0 | Not reported; Table 2 gives R^2 only |
+| `MIC`, `MIC_SYNTHETIC_URINE` | per isolate | Table S3, NEN columns CAMHB and SHU-pH6.5 |
+| Stasis and kill targets | Table 2 | Table 2 columns "Stasis effect" and "Bactericidal effect"; Results, PK/PD analysis |
+| Simulated urine exposure | Table 1 | Table 1, Median and Minimum columns |
+
+# The 17 fits
+
+```{r solve-helper}
+models <- setNames(lapply(fits$stem, readModelDb), fits$fit)
+
+# The models carry no between-isolate variability by design, so rxode2's
+# "multi-subject simulation without omega" warning is expected; muffle only it.
+rx_solve <- function(mod, ev) {
+  withCallingHandlers(
+    as.data.frame(rxode2::rxSolve(mod, ev, returnType = "data.frame")),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+# Solve one model at a vector of index values x. For a ratio index the MIC is
+# set to 1 mg/L so the exposure covariate equals the index; %T>MIC indices are
+# supplied directly in percent. Returns the model's endpoint: the 0-24 h change
+# in log_cfu for Delta log10 CFU files, auc_log_cfu for AUBKC files.
+solve_index <- function(fit, x) {
+  f <- fits[fits$fit == fit, ]
+  obs_t <- if (f$endpoint == "dlogcfu") c(0, 24) else 24
+  ev <- expand.grid(time = obs_t, id = seq_along(x))
+  ev$evid <- 0
+  ev$amt <- 0
+  xi <- x[ev$id]
+  covs <- switch(f$index,
+    cmaxmic = list(CMAX_NEMONOXACIN = xi, MIC = 1),
+    aucmic = list(AUC_NEMONOXACIN = xi, MIC = 1),
+    tmic = list(FTMIC_NEMONOXACIN = xi),
+    cmaxmicshu = list(CMAX_NEMONOXACIN = xi, MIC_SYNTHETIC_URINE = 1),
+    aucmicshu = list(AUC_NEMONOXACIN = xi, MIC_SYNTHETIC_URINE = 1),
+    tmicshu = list(FTMIC_SYNTHETIC_URINE_NEMONOXACIN = xi)
+  )
+  for (nm in names(covs)) ev[[nm]] <- covs[[nm]]
+  out <- rx_solve(models[[fit]], ev)
+  # rxSolve drops the id column when only one subject is solved.
+  if (!"id" %in% names(out)) out$id <- 1L
+  if (f$endpoint == "dlogcfu") {
+    w <- out |>
+      group_by(id) |>
+      summarise(y = log_cfu[time == 24] - log_cfu[time == 0], .groups = "drop")
+    y <- w$y[order(w$id)]
+  } else {
+    y <- out$auc_log_cfu[order(out$id)]
+  }
+  stopifnot(length(y) == length(x), !anyNA(y))
+  y
+}
+```
+
+## Replicating Figure 6
+
+The x-axis limits follow the panels of Figure 6; the %T>MIC indices are shown in
+percent, the scale of the packaged covariates (Figure 6 plots fractions, 0-1).
+
+```{r figure-6, fig.height = 9, fig.cap = "Replicates Figure 6 of Qi 2026: sigmoid Emax curves of the 17 Table 2 fits, (a) CAMHB and (b) SHU."}
+xmax <- c(
+  camhb_aucmic = 250, camhb_cmaxmic = 20, camhb_tmic = 100,
+  shu_aucmic = 5000, shu_cmaxmic = 500, shu_tmic = 100,
+  shu_aucmicshu = 250, shu_cmaxmicshu = 20, shu_tmicshu = 100
+)
+curves <- lapply(seq_len(nrow(fits)), function(i) {
+  f <- fits[i, ]
+  x <- seq(0, xmax[[paste(f$medium, f$index, sep = "_")]], length.out = 151)
+  tibble(fit = f$fit, medium = f$medium, index = f$index, endpoint = f$endpoint,
+         x = x, y = solve_index(f$fit, x))
+}) |> bind_rows()
+
+ggplot(curves, aes(x, y)) +
+  geom_line(colour = "steelblue", linewidth = 0.7) +
+  scale_x_continuous(n.breaks = 3) +
+  facet_wrap(
+    ~ factor(medium_lab[medium], levels = medium_lab) +
+      factor(index_lab[index], levels = unique(index_lab)) +
+      factor(endpoint_lab[endpoint], levels = endpoint_lab),
+    scales = "free", ncol = 4
+  ) +
+  labs(x = "PK/PD index (%T>MIC indices in percent)", y = "Delta log10 CFU/mL or AUBKC",
+       caption = "Replicates Figure 6 of Qi 2026 (curves only; the observed points are not tabulated).") +
+  theme_minimal() +
+  theme(strip.text = element_text(size = 7))
+```
+
+The plateaus agree with the panels of Figure 6 read by eye: for example the CAMHB
+AUC/MIC curves level off near -1.85 log10 CFU/mL and 85 log10 CFU/mL*h, and the
+SHU AUC/MIC curves near -3.5 log10 CFU/mL and 53 log10 CFU/mL*h. In the
+%T>MIC panels with an EC50 above 100 percent (SHU %T>MIC and %T>MICSHU, and
+CAMHB %T>MIC for AUBKC) the curve is still falling at 100 percent, as it is in
+the figure.
+
+## Validation gate: the published PK/PD targets
+
+Table 2 prints, in columns separate from the parameters, the AUC0-24/MIC values
+needed for stasis and for 1-, 2- and 3-log10 kill (Delta log10 CFU = 0, -1,
+-2, -3), and for the AUBKC endpoint the values at 50 percent (EC50) and 90
+percent (EC90) of the maximum effect. Inverting the packaged models must return
+them.
+
+```{r target-gate}
+invert <- function(fit, target, upper) {
+  uniroot(function(x) solve_index(fit, x) - target, c(1e-6, upper), tol = 1e-8)$root
+}
+# AUBKC level at a fraction p of the maximum effect: E0 - p * Emax.
+aubkc_at <- function(fit, p) {
+  th <- rxode2::rxode(models[[fit]])$theta
+  exp(th[["le0"]]) - p * exp(th[["lemax"]])
+}
+
+targets <- tibble::tribble(
+  ~fit,                    ~what,               ~level,                              ~published,
+  "camhb_aucmic_dlogcfu",  "stasis (E = 0)",     0,                                   41.6,
+  "camhb_aucmic_dlogcfu",  "1-log kill (E = -1)", -1,                                 46.5,
+  "shu_aucmic_dlogcfu",    "stasis (E = 0)",     0,                                   165,
+  "shu_aucmic_dlogcfu",    "1-log kill (E = -1)", -1,                                 199,
+  "shu_aucmic_dlogcfu",    "2-log kill (E = -2)", -2,                                 246,
+  "shu_aucmic_dlogcfu",    "3-log kill (E = -3)", -3,                                 358,
+  "camhb_aucmic_aubkc",    "EC50",               aubkc_at("camhb_aucmic_aubkc", 0.5), 18.5,
+  "camhb_aucmic_aubkc",    "EC90",               aubkc_at("camhb_aucmic_aubkc", 0.9), 68.2,
+  "shu_aucmic_aubkc",      "EC50",               aubkc_at("shu_aucmic_aubkc", 0.5),   139,
+  "shu_aucmic_aubkc",      "EC90",               aubkc_at("shu_aucmic_aubkc", 0.9),   499
+)
+targets$model <- vapply(seq_len(nrow(targets)), function(i) {
+  invert(targets$fit[i], targets$level[i], 1e4)
+}, numeric(1))
+targets <- targets |> mutate(pct_diff = 100 * (model / published - 1))
+
+targets |>
+  mutate(model = round(model, 1), pct_diff = round(pct_diff, 2)) |>
+  rename(Fit = fit, Target = what, `Published AUC0-24/MIC (h)` = published,
+         `Packaged model (h)` = model, `Difference (%)` = pct_diff) |>
+  select(-level) |>
+  knitr::kable()
+
+# Both sides are transcribed numbers and the solve is deterministic, so the
+# bound only has to absorb the rounding of the three-significant-figure
+# parameters. One wrong digit in E0, Emax, EC50 or H moves these far beyond 1%.
+stopifnot(all(abs(targets$pct_diff) < 1))
+```
+
+All ten published targets are reproduced to within 1%. The largest gap, 46.2
+versus 46.5 for the CAMHB 1-log kill, comes from the rounding of the printed
+parameters: with H = 9.98 the curve is so steep that the third significant
+figure of EC50 moves the target by about that much.
+
+## Validation gate: structural behaviour
+
+```{r structure-gate}
+chk <- curves |>
+  group_by(fit) |>
+  summarise(
+    monotone = all(diff(y) <= 1e-9),
+    at_zero = first(y),
+    .groups = "drop"
+  ) |>
+  left_join(
+    tibble(fit = fits$fit, e0 = vapply(fits$fit, function(f) {
+      exp(rxode2::rxode(models[[f]])$theta[["le0"]])
+    }, numeric(1))),
+    by = "fit"
+  )
+# Every fit starts at its drug-free E0 and falls monotonically with exposure.
+stopifnot(all(chk$monotone), all(abs(chk$at_zero - chk$e0) < 1e-3))
+
+# The %T>MIC rescaling: at an index equal to the packaged EC50 the effect is
+# exactly half of Emax below E0. Checked on the algebraic AUBKC fits; for the
+# SHU %T>MIC Delta log10 CFU fits the half-maximal change (-13 and -31 log10)
+# lies below the 1 CFU/mL floor of log_cfu.
+half <- vapply(fits$fit[fits$index %in% c("tmic", "tmicshu") & fits$endpoint == "aubkc"], function(f) {
+  th <- rxode2::rxode(models[[f]])$theta
+  (exp(th[["le0"]]) - solve_index(f, exp(th[["lec50"]]))) / exp(th[["lemax"]])
+}, numeric(1))
+stopifnot(all(abs(half - 0.5) < 1e-3))
+```
+
+# Simulated urine exposure and the isolates of Figure 5
+
+Qi 2026 does not tabulate the AUC0-24 or Cmax achieved in each experiment, but
+Table 1 gives the target urine profile. Weighting each interval concentration by
+its duration gives an approximate AUC0-24 for each arm; the 0-2 h interval
+concentration approximates Cmax.
+
+```{r exposure}
+tab1 <- tibble::tribble(
+  ~start, ~end, ~median, ~minimum,
+  0,      2,    535.34,  150.76,
+  2,      4,    176.6,    99.88,
+  4,      8,    201.81,   50.49,
+  8,      12,   127.45,   50.44,
+  12,     24,   90.16,    48.11
+)
+auc_high <- sum((tab1$end - tab1$start) * tab1$median)
+auc_low <- sum((tab1$end - tab1$start) * tab1$minimum)
+cat(sprintf("Approximate AUC0-24: low exposure %.0f mg*h/L, high exposure %.0f mg*h/L\n",
+            auc_low, auc_high))
+
+# Consistency with the Figure 6 axes, read by eye: the largest CAMHB AUC/MIC
+# point is near 200 (low exposure, lowest MIC in the CAMHB arm, 8 mg/L) and the
+# largest SHU AUC/MIC point is near 4100 (high exposure, NTU-001, MIC 1 mg/L).
+# Loose bounds: the achieved exposure differs from the Table 1 target by the
+# Figure 4 calibration slope (0.93 in CAMHB, 1.05 in SHU).
+stopifnot(
+  auc_low / 8 > 150, auc_low / 8 < 250,
+  auc_high / 1 > 3000, auc_high / 1 < 5000
+)
+```
+
+These ratios fall where the right-most points of Figure 6 sit, which supports
+splitting the indices into an absolute exposure and the Table S3 MIC.
+
+The arms of Figure 5 can then be run through the AUC0-24/MIC Delta log10 CFU
+models. The time course between 0 and 24 h is the uniform construction of the
+model, not the observed kill curve, which fell within 2-4 h and then regrew.
+
+```{r figure-5-arms, fig.cap = "Model-predicted log10 CFU/mL for the isolates of Figure 5 at the approximate Table 1 exposures (AUC0-24/MIC Delta log10 CFU fits). Only the 24 h value is a model prediction of the paper's endpoint."}
+arms <- tibble::tribble(
+  ~arm,                  ~fit,                   ~auc,     ~isolate,
+  "CAMHB, low exposure", "camhb_aucmic_dlogcfu", auc_low,  "21-W035-079",
+  "CAMHB, low exposure", "camhb_aucmic_dlogcfu", auc_low,  "21-W049-027",
+  "CAMHB, low exposure", "camhb_aucmic_dlogcfu", auc_low,  "21-W042-007",
+  "CAMHB, low exposure", "camhb_aucmic_dlogcfu", auc_low,  "21-W049-099",
+  "SHU, low exposure",   "shu_aucmic_dlogcfu",   auc_low,  "21-W049-080",
+  "SHU, low exposure",   "shu_aucmic_dlogcfu",   auc_low,  "21-W031-023",
+  "SHU, low exposure",   "shu_aucmic_dlogcfu",   auc_low,  "21-W035-079",
+  "SHU, low exposure",   "shu_aucmic_dlogcfu",   auc_low,  "21-W042-007",
+  "SHU, high exposure",  "shu_aucmic_dlogcfu",   auc_high, "21-W035-079",
+  "SHU, high exposure",  "shu_aucmic_dlogcfu",   auc_high, "21-W042-007",
+  "SHU, high exposure",  "shu_aucmic_dlogcfu",   auc_high, "NTU-001",
+  "SHU, high exposure",  "shu_aucmic_dlogcfu",   auc_high, "NTU-002"
+) |>
+  left_join(isolates |> select(isolate, mic_camhb), by = "isolate") |>
+  mutate(id = row_number())
+
+grid <- c(0, 2, 4, 6, 8, 12, 16, 20, 24)
+tc <- lapply(split(arms, arms$fit), function(a) {
+  ev <- expand.grid(time = grid, id = a$id)
+  ev$evid <- 0
+  ev$amt <- 0
+  ev <- ev |> left_join(a |> select(id, AUC_NEMONOXACIN = auc, MIC = mic_camhb), by = "id")
+  out <- rx_solve(models[[a$fit[1]]], ev)
+  out |> left_join(a |> select(id, arm, isolate), by = "id")
+}) |> bind_rows()
+
+ggplot(tc, aes(time, log_cfu, colour = isolate)) +
+  geom_line() +
+  facet_wrap(~arm) +
+  labs(x = "Time (h)", y = "log10 CFU/mL", colour = "Isolate") +
+  theme_minimal()
+
+d24 <- tc |>
+  group_by(arm, isolate) |>
+  summarise(delta = log_cfu[time == 24] - log_cfu[time == 0], .groups = "drop") |>
+  left_join(arms |> select(arm, isolate, auc, mic_camhb), by = c("arm", "isolate")) |>
+  mutate(index = auc / mic_camhb)
+d24 |>
+  transmute(Arm = arm, Isolate = isolate, `AUC0-24/MIC (h)` = round(index, 1),
+            `Predicted Delta log10 CFU/mL` = round(delta, 2)) |>
+  knitr::kable()
+
+pred <- function(a, i) d24$delta[d24$arm == a & d24$isolate == i]
+# Results: W042-007 under low exposure in SHU "by 24 h was close to the
+# control", and NTU-002 under high exposure ended with "24-h counts similar to
+# control". Both are predicted to grow, against a drug-free 24 h change of 2.72.
+stopifnot(
+  pred("SHU, low exposure", "21-W042-007") > 1.5,
+  pred("SHU, high exposure", "NTU-002") > 2.5
+)
+# Results: W035-079, W042-007 and NTU-001 under high exposure in SHU "showed
+# sustained reductions"; all three are predicted to fall by more than 1 log10.
+stopifnot(all(d24$delta[d24$arm == "SHU, high exposure" &
+                          d24$isolate != "NTU-002"] < -1))
+```
+
+The isolate-level pattern follows Results. Under high exposure in SHU the three
+lower-MIC isolates fall and NTU-002 (CAMHB MIC 128 mg/L) grows almost as the
+control does; under low exposure in SHU, W042-007 (CAMHB MIC 16 mg/L) also
+grows, as Results reports ("by 24 h was close to the control"). The predicted
+kill for the other low-exposure isolates (up to about 3.5 log10) is larger than
+the "primarily bacteriostatic" changes of at most 1 log10 that Results
+describes for those arms: each fit pools all arms and isolates, so its
+typical-value prediction for one isolate is not expected to match one time-kill
+curve.
+
+# PKNCA
+
+There is no PKNCA section. Qi 2026 published no structural PK model of the
+apparatus, so none of the 17 files simulates a concentration, and the PK/PD
+indices enter as covariates. The exposure arithmetic above is the substitute
+check on the PK side.
+
+# Assumptions and deviations
+
+* **%T>MIC on the percent scale.** Qi 2026 fits every %T>MIC index on the
+  0-1 fraction scale. The packaged EC50 values are the Table 2 values multiplied
+  by 100 (48.7, 479, 129 and 128 percent for %T>MIC; 168 and 109 percent for
+  %T>MICSHU) so the covariates are supplied in percent, the convention of the
+  `FTMIC_<DRUG>` family. The rescaling is exact, as the structural gate above
+  confirms.
+* **Indices split into exposure and MIC.** Because every isolate's MIC is
+  reported (Table S3) and those MICs reproduce the index ranges of Figure 6,
+  the ratio indices are formed inside `model()` from an absolute exposure
+  (`AUC_NEMONOXACIN`, `CMAX_NEMONOXACIN`) and an MIC covariate (`MIC` for the
+  CAMHB MIC, `MIC_SYNTHETIC_URINE` for the SHU pH 6.5 MIC), so a user can
+  re-target a model to another isolate.
+* **Delta log10 CFU as an ODE.** The paper's endpoint is the 0-24 h change. The
+  Delta log10 CFU files spread that change evenly across 24 h from the nominal
+  1e6 CFU/mL inoculum (`log10_cfu0` = 6), so the 24 h value is the paper's model
+  and the intermediate time course is a construction. A 1 CFU/mL floor in
+  `log_cfu <- log10(bact + 1)` keeps the logarithm finite; it changes the 24 h
+  change by less than 0.001 log10 for any change above -3 log10.
+* **AUBKC.** Taken as the area under the log10 CFU/mL curve over 0-24 h without
+  baseline subtraction, consistent with the drug-free E0 of 192-208 log10
+  CFU/mL*h (a mean of about 8.6 log10 CFU/mL). The output is `auc_log_cfu`.
+* **No variability.** Table 2 gives point estimates and R^2 only; there are no
+  standard errors, no between-isolate variability and no residual SD. Every
+  `addSd` is held at 0 and the models are for typical-value simulation. The fits
+  pool all isolates and experiments; the number of experiments behind each fit
+  is not stated.
+* **Exposure in the illustration is approximate.** The per-experiment AUC0-24
+  and Cmax were not published; the Table 1 interval-weighted values used above
+  are approximations of the target profile.
+* **Probability of target attainment not reproduced.** Figure 7 and the
+  cumulative fraction of response come from a Monte Carlo simulation of 5,000
+  virtual patients whose PK distribution is not reported, so they cannot be
+  rebuilt here.
+
+## Errata in the source
+
+* **One of the 18 fits is missing.** Table 2 and Figure 6 both omit the
+  AUC0-24/MICSHU fit for Delta log10 CFU (the SHU block has 11 rows, not 12, and
+  Figure 6(b) has 11 panels). Only the 17 reported fits are packaged.
+* **Figure 6(b), "Delta log10 CFU vs %T>MIC".** The panel's x-axis runs 0-500
+  and its curve has the same shape as the Cmax/MIC panel beside it, whereas the
+  index is bounded by 1 and the Table 2 parameters for that row (Emax 66.6,
+  EC50 1.29, H 9.95) describe a curve that is still near E0 at 0.8 and reaches
+  -2.2 log10 at 1. The panel appears to repeat the Cmax/MIC data. The Table 2
+  parameters are packaged. This is also the weakest fit in Table 2 (R^2 =
+  0.735), and its Emax and the Emax of the SHU %T>MIC AUBKC fit (1425) are
+  extrapolations far beyond the attainable range of the index.
+* **Target values in the text.** Results gives the CAMHB stasis target as 41.7,
+  Table 2 as 41.6 (the parameters give 41.6). The Discussion gives the CAMHB
+  1-log10 target as 46.9; Table 2, the Abstract and the Conclusion give 46.5.
+* **Footnote wording.** The Table 2 footnote calls the Delta log10 CFU < -1 /
+  EC90 targets "bacteriostatic", while the column header calls them
+  "Bactericidal effect".
+* **Abstract versus Results.** The Abstract states that 500 mg once daily
+  attains 90% PTA up to an MIC of 16 mg/L (CFR 92.1%) with CAMHB targets and
+  8 mg/L (CFR 59.4%) with SHU targets; Results gives 32 mg/L (94.3%) and 8 mg/L
+  (80.5%) for the Delta log10 CFU targets and 16 mg/L (92.1%) and 2 mg/L
+  (59.36%) for the AUBKC targets, so the Abstract mixes the two target sets.
+* **Censored MIC.** The CAMHB MIC of ATCC 25922 is reported as < 0.03 mg/L and
+  is entered at 0.03 mg/L in the isolate table; it is not used in any
+  simulation.
+* No erratum to Qi 2026 was found as of 2026-11-21.

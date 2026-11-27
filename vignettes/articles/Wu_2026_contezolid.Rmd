@@ -1,0 +1,481 @@
+---
+title: "Contezolid in plasma and epithelial lining fluid (Wu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Contezolid in plasma and epithelial lining fluid (Wu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+mod <- readModelDb("Wu_2026_contezolid")
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.1128/aac.01033-25>
+* Supplemental material (Fig. S1 to S3, Table S1): available from the article
+  page.
+
+Wu 2026 report the clinical efficacy, safety and lung penetration of oral
+contezolid in adults with pneumonia. The population PK model was fitted in
+NONMEM 7.5.6 (FOCE with interaction) to plasma and urea-corrected epithelial
+lining fluid (ELF) concentrations. The structural model, the covariate
+equations and the differential equations are given only in the supplement
+(Fig. S1 and the equation under "Supplementary Details on Population PK
+Analysis (Results)"); the estimates are in supplement Table S1.
+
+# Population
+
+Fifteen hospitalised Chinese adults with clinically confirmed or suspected
+gram-positive pneumonia (14 community-acquired, 1 hospital-acquired) at
+Zhongshan Hospital (Fudan University) and Shanghai First People's Hospital
+(Table 1): 9 men and 6 women, age 36-73 years (median 58), weight 47-105 kg
+(median 65), BMI 17.3-29.3 kg/m^2, eGFR 79-117 mL/min. All received contezolid
+tablets 800 mg every 12 h for 7 to 14 days. Serial plasma samples were taken
+after the fifth or sixth dose; 13 patients had bronchoalveolar lavage (BAL) at
+2, 4 or 6 h after the fifth or sixth dose, and 11 contributed an evaluable ELF
+concentration. The 13 BAL patients took their doses fasted (required before
+bronchoscopy) and the 2 others after a meal. The model was built on 75 plasma
+and 11 ELF concentrations.
+
+The same information is stored in the model:
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Structure: depot -> central <-> ELF, first-order absorption with lag | -- | Supplement Fig. S1 and its differential equations; main text Methods "Population PK analysis" |
+| `lka` (Ka at the albumin reference) | 0.48 1/h | Table S1 `Ka`; supplement Results equation |
+| Albumin effect on Ka, `(ALB/0.93)^8.02` | not encoded | Table S1 `Ka(ALB)` = 8.02; see Assumptions |
+| `ltlag` | 0.083 h | Table S1 `TLAG` |
+| `lcl` | 9.42 L/h | Table S1 `CL`; equation `CL (L/h) = 9.42` |
+| `lvc` | 13.11 L | Table S1 `Vc` |
+| `lvelf` | 12.82 L | Table S1 `VELF` |
+| `lk_central_elf` | 0.99 1/h | Table S1 `KCELF` |
+| `lk_elf_central` | 2.99 1/h | Table S1 `KELFC` |
+| `lfdepot` (fasted bioavailability) | 0.557 | Supplement Results equation `BIO = 0.557 x 1.83^FASTING x exp(eta3 + kappa)` |
+| `e_fed_fdepot` | 1.83 | Table S1 `BIO(FASTING)` |
+| `etalka` | 0.839 | Table S1 omega2 Ka |
+| `etalk_central_elf` | 0.47 | Table S1 omega2 KCELF |
+| `etalfdepot` | 0 (fixed) | eta3 appears in the BIO equation; no Table S1 row |
+| `etaiov_fdepot_1`, `etaiov_fdepot_2` | 0.066 | Table S1 pi2 BIO (inter-occasion) |
+| `propSd_zhongshan` | sqrt(0.26) = 0.510 | Table S1 sigma2 Zhongshan_Plasma |
+| `propSd_firsthosp` | sqrt(0.13) = 0.361 | Table S1 sigma2 First_hospital_Plasma |
+| `propSd_Celf` | sqrt(1e-6) = 0.001 | Table S1 sigma2 Zhongshan_ELF |
+| Site-stratified proportional error | -- | Supplement Methods residual-error equations |
+| `Cc = central / vc`, `Celf = elf / velf` | -- | Supplement differential equations, with bioavailability applied once (see Assumptions) |
+
+# Virtual cohort and simulation
+
+The simulated patients take 800 mg every 12 h for five days (10 doses) and are
+summarised over the last dosing interval (108-120 h), by which time the
+model is at steady state (its slowest disposition half-life is under 1.5 h).
+Each patient has a single sampled occasion (`OCC = 1`), as in the study, so
+the inter-occasion term varies bioavailability once per patient. Half the
+patients are assigned to each recruiting hospital; the site changes only the
+residual error, which the summaries below do not use (they use the individual
+prediction `Cc`). The main cohort is fasted, like the 13 patients who
+contributed both plasma and ELF.
+
+```{r events}
+make_events <- function(n, fed, id_offset = 0) {
+  ids <- id_offset + seq_len(n)
+  dose <- tidyr::expand_grid(id = ids, time = seq(0, 108, by = 12)) |>
+    dplyr::mutate(amt = 800, evid = 1L, cmt = "depot", dvid = NA_integer_)
+  obs <- tidyr::expand_grid(
+    id = ids,
+    time = c(seq(0, 104, by = 4), seq(108, 120, by = 0.25))
+  ) |>
+    # Observation rows sit on the central ODE state with dvid = 1 (the first
+    # endpoint, Cc); rxode2 returns both Cc and Celf as columns on every row.
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::mutate(
+      FED = fed,
+      OCC = 1L,
+      STUDY_SHANGHAI_FIRST = as.integer(id %% 2 == 0)
+    )
+}
+
+n_per_arm <- 200
+ev_fasted <- make_events(n_per_arm, fed = 0L)
+ev_fed <- make_events(n_per_arm, fed = 1L, id_offset = n_per_arm)
+```
+
+```{r simulate}
+rxode2::rxSetSeed(20261121)
+sim <- rxode2::rxSolve(
+  mod,
+  events = dplyr::bind_rows(ev_fasted, ev_fed),
+  keep = c("FED"),
+  returnType = "data.frame"
+) |>
+  dplyr::mutate(state = ifelse(FED == 1, "Fed", "Fasted"))
+
+ss <- sim |>
+  dplyr::filter(time >= 108) |>
+  dplyr::mutate(tad = time - 108)
+```
+
+# Typical-value profile (replicates Figure 3)
+
+Figure 3 of Wu 2026 shows the model-simulated total plasma, ELF and free
+plasma (10% of total, from the literature protein binding of 90%) profiles.
+The typical fasted patient is shown below with the observed means at 2, 4 and
+6 h after the dose from Table 4 (the patients with an evaluable ELF sample)
+overlaid.
+
+```{r typical}
+ev_typ <- make_events(1, fed = 0L)
+typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  events = ev_typ,
+  returnType = "data.frame"
+) |>
+  dplyr::filter(time >= 108) |>
+  dplyr::mutate(tad = time - 108)
+
+typ_long <- typ |>
+  dplyr::transmute(
+    tad,
+    `Total plasma` = Cc,
+    ELF = Celf,
+    `Free plasma` = 0.1 * Cc
+  ) |>
+  tidyr::pivot_longer(-tad, names_to = "matrix", values_to = "conc")
+
+table4 <- tibble::tribble(
+  ~tad, ~matrix,        ~conc,
+  2,    "Total plasma", 6.15,
+  4,    "Total plasma", 6.31,
+  6,    "Total plasma", 5.51,
+  2,    "ELF",          3.39,
+  4,    "ELF",          2.42,
+  6,    "ELF",          1.76,
+  2,    "Free plasma",  0.62,
+  4,    "Free plasma",  0.63,
+  6,    "Free plasma",  0.55
+)
+
+ggplot(typ_long, aes(tad, conc, colour = matrix)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(data = table4, size = 2.5, shape = 17) +
+  scale_x_continuous(breaks = seq(0, 12, by = 2)) +
+  labs(
+    x = "Time after dose at steady state (h)",
+    y = "Contezolid concentration (mg/L)",
+    colour = NULL,
+    caption = paste(
+      "Lines: typical fasted patient. Triangles: observed means, Wu 2026 Table 4.",
+      "Replicates Figure 3 of Wu 2026."
+    )
+  ) +
+  theme_bw()
+```
+
+# Stochastic profiles
+
+```{r vpc}
+vpc <- ss |>
+  dplyr::select(id, state, tad, `Total plasma` = Cc, ELF = Celf) |>
+  tidyr::pivot_longer(c(`Total plasma`, ELF), names_to = "matrix", values_to = "conc") |>
+  dplyr::group_by(state, matrix, tad) |>
+  dplyr::summarise(
+    p05 = quantile(conc, 0.05),
+    p50 = median(conc),
+    p95 = quantile(conc, 0.95),
+    .groups = "drop"
+  )
+
+obs4 <- table4 |>
+  dplyr::filter(matrix != "Free plasma") |>
+  dplyr::mutate(state = "Fasted")
+
+ggplot(vpc, aes(tad, p50, colour = matrix, fill = matrix)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  geom_point(data = obs4, aes(y = conc), shape = 17, size = 2.5) +
+  facet_wrap(~state) +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose at steady state (h)",
+    y = "Contezolid concentration (mg/L)",
+    colour = NULL, fill = NULL,
+    caption = "Median and 90% interval of 200 simulated patients per state; triangles: Table 4 observed means (fasted)."
+  ) +
+  theme_bw()
+```
+
+# Deterministic checks
+
+At steady state the typical plasma AUC over a dosing interval is
+`Dose x F / CL`, and the ELF-to-plasma AUC ratio is
+`(k_central_elf / k_elf_central) x (Vc / VELF)`, independent of absorption.
+Both are checked against the typical-value solve.
+
+```{r deterministic}
+auc_trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+typ_fine <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  events = make_events(1, fed = 0L) |>
+    dplyr::filter(evid == 1) |>
+    dplyr::bind_rows(tibble::tibble(
+      id = 1, time = seq(108, 120, by = 0.01), amt = NA_real_,
+      evid = 0L, cmt = "central", dvid = 1L, FED = 0L, OCC = 1L, STUDY_SHANGHAI_FIRST = 0L
+    )),
+  rtol = 1e-10, atol = 1e-12,
+  returnType = "data.frame"
+)
+auc_plasma_typ <- auc_trap(typ_fine$time, typ_fine$Cc)
+auc_elf_typ <- auc_trap(typ_fine$time, typ_fine$Celf)
+auc_closed <- 800 * 0.557 / 9.42
+ratio_closed <- (0.99 / 2.99) * (13.11 / 12.82)
+
+data.frame(
+  Quantity = c("Plasma AUC0-12,ss (mg.h/L)", "ELF/plasma AUC ratio"),
+  Solve = signif(c(auc_plasma_typ, auc_elf_typ / auc_plasma_typ), 4),
+  `Closed form` = signif(c(auc_closed, ratio_closed), 4),
+  check.names = FALSE
+) |>
+  knitr::kable(caption = "Typical fasted patient at steady state.")
+
+# Both sides use the same parameters, so the difference is numerical error
+# (trapezoid on a 0.01-h grid plus the 10 doses' residual approach to steady
+# state, together well under 0.1%). A mis-transcribed CL, F, volume or rate
+# constant moves these by tens of percent.
+stopifnot(
+  abs(auc_plasma_typ / auc_closed - 1) < 0.002,
+  abs((auc_elf_typ / auc_plasma_typ) / ratio_closed - 1) < 0.002
+)
+```
+
+# PKNCA validation
+
+```{r pknca}
+conc_df <- ss |>
+  dplyr::select(id, tad, state, Cc, Celf) |>
+  tidyr::pivot_longer(c(Cc, Celf), names_to = "matrix", values_to = "conc") |>
+  dplyr::mutate(
+    treatment = paste(state, ifelse(matrix == "Cc", "plasma", "ELF"), sep = " - ")
+  ) |>
+  dplyr::filter(!is.na(conc)) |>
+  dplyr::select(id, time = tad, conc, treatment)
+
+dose_df <- conc_df |>
+  dplyr::distinct(id, treatment) |>
+  dplyr::mutate(time = 0, amt = 800)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, conc ~ time | treatment + id, concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "mg")
+intervals <- data.frame(
+  start = 0, end = 12,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+knitr::kable(summary(nca_res), caption = "Steady-state NCA over the last dosing interval (200 simulated patients per state).")
+```
+
+## Comparison against published NCA
+
+Table 3 of Wu 2026 reports the mean non-compartmental plasma parameters from
+the observed (13 fasted, 2 fed) patients. Table 4 reports the model-based
+ELF AUC0-12,ss of the patients with an ELF sample (median 22.42 mg.h/L).
+The simulated column is the median of the fasted cohort.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~treatment,         ~cmax, ~cmin, ~tmax, ~auclast,
+  "Fasted - plasma",   9.55,  1.28,  2,     56.06,
+  "Fasted - ELF",      NA,    NA,    NA,    22.42
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "mg/L", cmin = "mg/L", tmax = "h", auclast = "mg.h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = paste(
+  "Simulated (median of 200 fasted patients) vs. published",
+  "(Table 3 NCA means for plasma; Table 4 model-based median for ELF).",
+  "* differs from the reference by more than 20%."
+))
+```
+
+```{r ratio}
+ratio <- conc_df |>
+  dplyr::filter(grepl("^Fasted", treatment)) |>
+  dplyr::group_by(id, treatment) |>
+  dplyr::summarise(auc = auc_trap(time, conc), .groups = "drop") |>
+  dplyr::mutate(matrix = ifelse(grepl("ELF", treatment), "elf", "plasma")) |>
+  dplyr::select(-treatment) |>
+  tidyr::pivot_wider(names_from = matrix, values_from = auc) |>
+  dplyr::mutate(ratio = elf / plasma)
+
+data.frame(
+  Statistic = c("Median", "Mean"),
+  Simulated = signif(c(median(ratio$ratio), mean(ratio$ratio)), 3),
+  `Wu 2026 Table 4` = c(0.35, 0.45),
+  check.names = FALSE
+) |>
+  knitr::kable(caption = "ELF-to-total-plasma AUC0-12,ss ratio, fasted patients.")
+
+# The ratio depends only on k_central_elf (which carries IIV) and fixed
+# volumes, so its median is the typical 0.339 up to sampling error (log-scale
+# SD 0.69, n = 200: standard error of the median about 6%). 15% is about 2.5
+# of those standard errors and still fails on a mis-transcribed rate constant
+# or volume.
+stopifnot(abs(median(ratio$ratio) / 0.35 - 1) < 0.15)
+```
+
+The simulated median plasma AUC0-12,ss and Cmax of the fasted cohort are
+close to the observed NCA means, and Tmax matches. The simulated Cmin is far
+below the observed mean of 1.28 mg/L; see Assumptions and deviations. The
+simulated ELF AUC is below the paper's model-based median by about the same
+proportion as the simulated plasma AUC is below the paper's model-based plasma
+median (61.05 mg.h/L, Table 4), so the shortfall is in plasma exposure, not in
+lung penetration. The
+median ELF-to-plasma AUC ratio reproduces the paper's median of 0.35, and the
+simulated mean ratio, raised by the between-subject variability on the
+central-to-ELF rate constant, is close to the paper's mean of 0.45.
+
+# Probability of target attainment (replicates Figure 4)
+
+Wu 2026 computed the probability that the free plasma AUC0-24 at steady state
+divided by the MIC reaches 2.3, with an unbound fraction of 10%, from 5000
+simulated patients on 800 mg every 12 h. Their PTA was 92.5% at an MIC of
+4 mg/L and about 13% at 8 mg/L (values read from Figure 4). The simulated
+fasted and fed cohorts are shown below.
+
+```{r pta}
+fauc24 <- conc_df |>
+  dplyr::filter(grepl("plasma", treatment)) |>
+  dplyr::group_by(id, treatment) |>
+  dplyr::summarise(fauc24 = 0.1 * 2 * auc_trap(time, conc), .groups = "drop")
+
+mics <- 2^seq(-4, 5)
+pta <- tidyr::expand_grid(fauc24, MIC = mics) |>
+  dplyr::group_by(treatment, MIC) |>
+  dplyr::summarise(PTA = 100 * mean(fauc24 / MIC >= 2.3), .groups = "drop") |>
+  dplyr::mutate(source = sub(" - plasma", "", treatment)) |>
+  dplyr::select(source, MIC, PTA)
+
+pta_paper <- tibble::tibble(
+  source = "Wu 2026 Figure 4",
+  MIC = mics,
+  PTA = c(100, 100, 100, 100, 100, 99.7, 92.5, 13, 0, 0)
+)
+
+ggplot(dplyr::bind_rows(pta, pta_paper), aes(MIC, PTA, colour = source)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 90, linetype = "dotted") +
+  scale_x_log10(breaks = mics, labels = format(mics, drop0trailing = TRUE)) +
+  labs(
+    x = "MIC (mg/L)", y = "PTA (%)", colour = NULL,
+    caption = "Target fAUC0-24/MIC >= 2.3, unbound fraction 0.1. Replicates Figure 4 of Wu 2026."
+  ) +
+  theme_bw()
+
+pta_wide <- pta |>
+  tidyr::pivot_wider(names_from = source, values_from = PTA) |>
+  dplyr::left_join(dplyr::select(pta_paper, MIC, `Wu 2026 Figure 4` = PTA), by = "MIC")
+pta_at <- function(src, mic) {
+  v <- pta_wide[[src]][pta_wide$MIC == mic]
+  if (length(v) != 1L) stop("no unique PTA for ", src, " at MIC ", mic)
+  v
+}
+pta_wide |>
+  dplyr::mutate(MIC = vapply(MIC, format, character(1), drop0trailing = TRUE)) |>
+  dplyr::rename(`MIC (mg/L)` = MIC) |>
+  knitr::kable(digits = 1, caption = "PTA (%) by MIC.")
+```
+
+The published curve lies between the simulated fasted and fed curves. At an
+MIC of 4 mg/L the simulated fasted PTA is `r round(pta_at("Fasted", 4))`%
+(published 92.5%) and the fed PTA `r round(pta_at("Fed", 4))`%; at 8 mg/L the
+fasted PTA is `r round(pta_at("Fasted", 8))`% and the fed
+`r round(pta_at("Fed", 8))`% (published 13%). The published curve implies a
+median steady-state plasma AUC0-12 near 68 mg.h/L with a log-scale spread of
+about 0.27 (the spread matches the model's inter-occasion variability on
+bioavailability, 0.066 on the variance scale). The paper does not state the
+food state or covariate values of its simulated patients, so this is not a
+validation target; see Assumptions and deviations.
+
+# Assumptions and deviations
+
+* **Bioavailability applied once.** The supplement divides CL, Vc and VELF by
+  BIO (`CL_CORR = CL/BIO` and so on) and also sets the initial depot amount to
+  `Dose x BIO`. Read literally, concentrations would scale with BIO squared
+  (typical fasted AUC0-12,ss about 26 mg.h/L, half the observed NCA value of
+  56). The model applies BIO once, through `f(depot)`, with the tabulated CL,
+  Vc and VELF; this is equivalent to either half of the printed equations on
+  its own and gives a typical fasted AUC0-12,ss of 47 mg.h/L, the reading
+  under which the fitted values reproduce the exposure they were fitted to.
+  The supplement also lists `Q_CORR = Q/BIO`, but the final model has no `Q`.
+* **Albumin effect on Ka not encoded.** The final model has
+  `Ka = 0.48 x (ALB/0.93)^8.02 x exp(eta1)`. The reference 0.93 is not serum
+  albumin in g/L or g/dL, and the paper reports neither the albumin unit nor a
+  cohort summary, so the effect cannot be applied to a measured albumin. The
+  model's Ka is the value at the albumin reference. The same group's
+  nemonoxacin analysis (`Chen_2023_nemonoxacin`) expressed albumin as the
+  measured value divided by the midpoint of the normal range, on which 0.93
+  would be a plausible median; Wu 2026 does not say so. Ka shapes only the
+  absorption profile: steady-state AUC, the ELF penetration ratio and the
+  food effect do not depend on it. The covariate is documented in the model's
+  `covariatesDataExcluded`.
+* **No variance for eta3.** The BIO equation carries `exp(eta3 + kappa)` but
+  Table S1 reports only the inter-occasion variance of BIO (0.066). eta3 is
+  kept at zero variance (`etalfdepot ~ fixed(0)`).
+* **Occasion definition.** The paper does not say how an occasion was
+  delimited. Plasma and BAL sampling both followed "the fifth or sixth dose",
+  so two occasions are provided (`OCC` 1 and 2), the second repeating the
+  first's variance. The simulations above use a single occasion per patient.
+  Because the two occasion etas are multiplexed by indicators, rxode2 prints
+  `some etas defaulted to non-mu referenced ... etaiov_fdepot_1,
+  etaiov_fdepot_2` on each solve. The warning concerns an estimation-time
+  optimisation (mu-referencing); simulation is unaffected.
+* **Fed bioavailability above 1.** `0.557 x 1.83 = 1.02`. It is kept as
+  published; only 2 of the 15 patients were fed.
+* **Residual error.** The supplement defines four site-by-matrix proportional
+  errors, but Table S1 reports only three: no ELF samples came from Shanghai
+  First People's Hospital, so the ELF residual SD (0.001, an estimate at the
+  boundary with 99.7% shrinkage) applies to every ELF observation. The main
+  text Discussion describes study site as "a random effect"; the supplement
+  equations (site-specific residual variances) are followed.
+* **Table S1 unit typo.** Table S1 gives the unit of CL as 1/h; the equation
+  gives L/h, which is used.
+* **Steady-state trough.** The simulated median Cmin of the fasted cohort is
+  far below the observed NCA mean of 1.28 mg/L (Table 3), and the model's
+  terminal half-life (about 1.4 h, set by the absorption rate) is shorter than
+  the NCA half-life of 3.33 h. The NCA was computed on composite sparse
+  samples from 15 patients, and the albumin effect (exponent 8.02), which is
+  not encoded, produced large between-patient differences in Ka that this
+  model can represent only through the Ka variance. Parameters were not
+  adjusted.
+* **Model-based AUC and PTA not reproduced.** Table 4 reports a model-based
+  mean (median) plasma AUC0-12,ss of 71.95 (61.05) mg.h/L, and Figure 4
+  implies a median near 68 mg.h/L, against the typical fasted 47 mg.h/L here
+  (fed: 87 mg.h/L). Steady-state AUC depends only on dose, BIO and CL, so the
+  gap reflects the individual bioavailability estimates and food states of
+  the patients the authors simulated, which are not reported.

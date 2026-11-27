@@ -315,7 +315,11 @@ sim <- sim |>
     # Time 0 is the last drug intake, so time after dose is the time column.
     tad  = time
   )
-stopifnot(all(!is.na(sim$Cc)), all(sim$Cc >= 0))
+# Fast-clearing subjects fall below the solver's absolute tolerance (atol 1e-8
+# mg, about 4e-7 ng/mL in Cc) by 240 h, where the integrator returns values a
+# few 1e-7 ng/mL either side of zero. The floor is relative to the peak, so it
+# still catches any real negative concentration.
+stopifnot(all(!is.na(sim$Cc)), all(sim$Cc >= -1e-6 * max(sim$Cc)))
 ```
 
 # Replicate Figure 2: steady-state Cmin by CKD stage and P-gp activity
@@ -462,15 +466,19 @@ profile. The linearity is asserted rather than assumed.
 # Verify dose-proportionality before relying on it: solve one small arm at
 # 2.5 mg and confirm the profile is exactly half the 5 mg profile.
 lin_ev <- events |> filter(id <= 5L)
-# steady-state searches for long-half-life subjects exceed the default step budget
-lin_5  <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = lin_ev, maxsteps = 1e6) |> as.data.frame()
+# steady-state searches for long-half-life subjects exceed the default step budget.
+# Tight tolerances: at the defaults the 240 h tail (about 0.007 ng/mL) carries
+# a relative integration error of 2e-5, which differs between machines.
+lin_5  <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = lin_ev, maxsteps = 1e6,
+                          rtol = 1e-10, atol = 1e-12) |> as.data.frame()
 lin_25 <- rxode2::rxSolve(mod |> rxode2::zeroRe(),
                           events = lin_ev |> mutate(amt = ifelse(evid == 1L, 2.5, amt)),
-                          maxsteps = 1e6) |>
+                          maxsteps = 1e6, rtol = 1e-10, atol = 1e-12) |>
   as.data.frame()
 stopifnot(nrow(lin_5) == nrow(lin_25))
-# Exact linearity: relative deviation is solver tolerance, not physiology.
-stopifnot(max(abs(lin_25$Cc * 2 - lin_5$Cc) / pmax(lin_5$Cc, 1e-8)) < 1e-4)
+# Exact linearity: relative deviation is solver tolerance, not physiology
+# (measures below 5e-8 at these tolerances).
+stopifnot(max(abs(lin_25$Cc * 2 - lin_5$Cc) / pmax(lin_5$Cc, 1e-8)) < 1e-6)
 ```
 
 ```{r table-3}

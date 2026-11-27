@@ -1,0 +1,470 @@
+---
+title: "Anti-oxidized-LDL antibody in cynomolgus monkeys (Kamath 2012)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Anti-oxidized-LDL antibody in cynomolgus monkeys (Kamath 2012)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Kamath 2012 characterised the pharmacokinetics of anti-oxLDL, a human
+recombinant IgG1 antibody against malondialdehyde-oxidized ApoB-100 (oxidized
+LDL), developed for secondary prevention of cardiac events in acute coronary
+syndrome. The paper does not give the antibody an INN or a development code.
+Four healthy cynomolgus monkeys received a single 10 mg/kg intravenous bolus of
+a mixture of 64Cu-DOTA-labelled and unlabelled antibody; serum was assayed
+with two ELISAs:
+
+* **Assay A** (ligand binding, MDA-ApoB100 capture) measures *free*
+  anti-oxLDL, i.e. unbound and partially (monovalently) bound antibody.
+* **Assay B** (sheep anti-human IgG capture) measures *total* anti-oxLDL.
+
+The authors fitted a two-compartment model with IV bolus input and first-order
+elimination to each animal and each assay separately in WinNonlin and reported
+the per-animal and mean estimates (Tables 1 and 2). The two assays are two
+independent fits, so the paper contributes two model files:
+
+```{r models}
+kam_models <- c(
+  free = "Kamath_2012_antiOxLDL_cyno_free", # Assay A, Table 1
+  total = "Kamath_2012_antiOxLDL_cyno_total" # Assay B, Table 2
+)
+mods <- lapply(kam_models, function(m) rxode2::rxode(readModelDb(m)))
+```
+
+* Citation: `r mods$free$reference`
+* Article: [PLoS One 2012;7(9):e45116](https://doi.org/10.1371/journal.pone.0045116)
+
+```{r description}
+for (m in names(mods)) {
+  cat(kam_models[[m]], "\n", sep = "")
+  cat(strwrap(mods[[m]]$description, 76), sep = "\n")
+  cat("\n\n")
+}
+```
+
+The PET-imaging half of the paper (64Cu biodistribution at 1, 24 and 48 h) is
+qualitative and contributes no model.
+
+# Population
+
+Two male and two female normal, healthy young cynomolgus monkeys aged 3 years
+2 months to 7 years 10 months (Methods, 'Study design in cynomolgus monkeys').
+Serum was drawn predose and at 5 min, 1 h, 24 h and 4, 8, 15 and 29 days
+post-dose; both ELISAs had a minimum quantifiable concentration of 400 ng/mL.
+Body weights are not reported; every parameter is expressed per kg body weight,
+so the models are simulated with a dose of 10 mg/kg and need no weight
+covariate. One animal (2M) had a low-level anti-therapeutic-antibody signal
+that was already present before dosing and that the authors judged to have
+minimal impact on the PK.
+
+```{r population}
+str(mods$free$population)
+```
+
+# Source trace
+
+| Equation / parameter | Free (Assay A) | Total (Assay B) | Source location |
+|---|---|---|---|
+| Two-compartment, IV bolus, first-order elimination | n/a | n/a | Methods, 'Pharmacokinetic Data Analysis' |
+| `lcl` (CL) | 14.2 mL/day/kg | 12.2 mL/day/kg | Table 1 / Table 2, Mean CL |
+| `lvc` (V1) | 57.3 mL/kg | 53.0 mL/kg | Table 1 / Table 2, Mean V1 |
+| `lvp` (V2 = Vss - V1) | 94.7 mL/kg | 87.0 mL/kg | derived: Mean Vss 152 / 140 minus Mean V1 |
+| `lq` (Q) | 23.2829 mL/day/kg | 20.7857 mL/day/kg | derived: back-solved from Mean T1/2beta 9.40 / 9.98 day |
+| `propSd` | 0 | 0 | not reported (see Assumptions) |
+
+Values are entered in the model files divided by 1000 (L/kg, L/day/kg), so a
+dose in mg/kg gives concentrations in ug/mL.
+
+## Back-solving the intercompartmental clearance
+
+Tables 1 and 2 print CL, V1, Vss and both half-lives but not Q (or the micro
+constants). For a two-compartment model, CL, V1 and V2 = Vss - V1 leave Q as the
+only free parameter, and Q fixes both half-lives. The packaged Q is the value
+that makes the beta half-life equal the mean T1/2beta; the alpha half-life is
+then an independent check against the reported mean T1/2alpha.
+
+```{r backsolve}
+# Alpha and beta half-lives (day) of a 2-compartment model.
+two_cmt_half_lives <- function(cl, v1, q, v2) {
+  k10 <- cl / v1
+  k12 <- q / v1
+  k21 <- q / v2
+  s <- k10 + k12 + k21
+  d <- sqrt(s^2 - 4 * k10 * k21)
+  c(alpha = log(2) / ((s + d) / 2), beta = log(2) / ((s - d) / 2))
+}
+
+# Q (mL/day/kg) giving the target beta half-life.
+solve_q <- function(cl, v1, vss, thalf_beta) {
+  f <- function(lq) {
+    two_cmt_half_lives(cl, v1, exp(lq), vss - v1)[["beta"]] - thalf_beta
+  }
+  exp(stats::uniroot(f, c(log(1e-3), log(1e5)), tol = 1e-12)$root)
+}
+
+# Tables 1 and 2, per animal (CL mL/day/kg; V1, Vss mL/kg; half-lives day;
+# AUCinf day*ug/mL; Cmax ug/mL).
+animals <- tibble::tribble(
+  ~assay, ~animal, ~cl, ~thalf_alpha, ~thalf_beta, ~v1, ~vss, ~aucinf, ~cmax,
+  "free", "1F", 14.7, 1.13, 8.37, 56.6, 126, 681, 177,
+  "free", "2M", 15.3, 0.565, 8.75, 64.0, 168, 642, 153,
+  "free", "3F", 9.44, 1.30, 11.8, 45.5, 116, 1102, 229,
+  "free", "4M", 17.4, 0.324, 8.68, 63.1, 198, 591, 163,
+  "total", "1F", 13.2, 1.42, 9.58, 61.4, 129, 758, 163,
+  "total", "2M", 13.7, 0.511, 8.88, 54.5, 153, 718, 180,
+  "total", "3F", 8.34, 1.13, 12.5, 43.4, 117, 1250, 239,
+  "total", "4M", 13.8, 0.323, 8.91, 52.9, 162, 748, 195
+)
+# Table 1 / Table 2 'Mean' rows.
+means <- tibble::tribble(
+  ~assay, ~cl, ~thalf_alpha, ~thalf_beta, ~v1, ~vss, ~aucinf, ~cmax,
+  "free", 14.2, 0.831, 9.40, 57.3, 152, 754, 180,
+  "total", 12.2, 0.846, 9.98, 53.0, 140, 868, 194
+)
+
+per_animal <- animals |>
+  rowwise() |>
+  mutate(
+    q = solve_q(cl, v1, vss, thalf_beta),
+    thalf_alpha_implied = two_cmt_half_lives(cl, v1, q, vss - v1)[["alpha"]]
+  ) |>
+  ungroup()
+
+per_animal |>
+  select(assay, animal, q, thalf_alpha, thalf_alpha_implied) |>
+  mutate(q = signif(q, 4), thalf_alpha_implied = signif(thalf_alpha_implied, 3)) |>
+  dplyr::rename(
+    "Assay" = assay,
+    "Animal" = animal,
+    "Back-solved Q (mL/day/kg)" = q,
+    "Reported T1/2alpha (day)" = thalf_alpha,
+    "Implied T1/2alpha (day)" = thalf_alpha_implied
+  ) |>
+  knitr::kable(caption = paste(
+    "Per-animal back-solve: Q from each animal's CL, V1, Vss and T1/2beta",
+    "(Tables 1 and 2) returns that animal's reported T1/2alpha."
+  ))
+
+# Every animal's alpha half-life is regenerated to the rounding of the
+# three-significant-figure table entries; a mis-read V1, Vss or half-life
+# moves the implied value by far more.
+stopifnot(
+  nrow(per_animal) == 8L,
+  all(abs(per_animal$thalf_alpha_implied / per_animal$thalf_alpha - 1) < 0.02)
+)
+```
+
+The same back-solve on the mean rows gives the packaged Q, and the packaged
+model's half-lives:
+
+```{r backsolve-means}
+packaged <- lapply(mods, function(m) {
+  th <- exp(stats::setNames(m$iniDf$est, m$iniDf$name)) * 1000
+  th[c("lcl", "lvc", "lvp", "lq")]
+})
+means_chk <- means |>
+  rowwise() |>
+  mutate(
+    q_solved = solve_q(cl, v1, vss, thalf_beta),
+    q_packaged = packaged[[assay]][["lq"]],
+    thalf_alpha_model = two_cmt_half_lives(
+      packaged[[assay]][["lcl"]], packaged[[assay]][["lvc"]],
+      packaged[[assay]][["lq"]], packaged[[assay]][["lvp"]]
+    )[["alpha"]],
+    thalf_beta_model = two_cmt_half_lives(
+      packaged[[assay]][["lcl"]], packaged[[assay]][["lvc"]],
+      packaged[[assay]][["lq"]], packaged[[assay]][["lvp"]]
+    )[["beta"]]
+  ) |>
+  ungroup()
+
+means_chk |>
+  select(assay, q_solved, q_packaged, thalf_alpha, thalf_alpha_model, thalf_beta, thalf_beta_model) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 4))) |>
+  dplyr::rename(
+    "Assay" = assay,
+    "Q solved" = q_solved,
+    "Q packaged" = q_packaged,
+    "Mean T1/2alpha" = thalf_alpha,
+    "Model T1/2alpha" = thalf_alpha_model,
+    "Mean T1/2beta" = thalf_beta,
+    "Model T1/2beta" = thalf_beta_model
+  ) |>
+  knitr::kable(caption = "Mean-row back-solve (Q in mL/day/kg, half-lives in day).")
+
+stopifnot(
+  # The packaged Q is the root to the 6 significant figures written in the file.
+  all(abs(means_chk$q_packaged / means_chk$q_solved - 1) < 1e-5),
+  # The packaged CL / V1 / V2 are the Table means.
+  isTRUE(all.equal(unname(packaged$free[c("lcl", "lvc", "lvp")]), c(14.2, 57.3, 94.7))),
+  isTRUE(all.equal(unname(packaged$total[c("lcl", "lvc", "lvp")]), c(12.2, 53.0, 87.0))),
+  # Independent check: the alpha half-life lands within 5% of the reported mean.
+  all(abs(means_chk$thalf_alpha_model / means_chk$thalf_alpha - 1) < 0.05)
+)
+```
+
+## Each animal's actual dose
+
+The study gave "approximately 10 mg/kg". Each table row carries its own dose
+twice over, as AUCinf x CL and as Cmax x V1 (both equal the dose for an IV
+bolus two-compartment fit), and the two products agree for every animal in both
+assays. The implied doses are 9.8-10.4 mg/kg:
+
+```{r implied-dose}
+per_animal <- per_animal |>
+  mutate(
+    dose_from_auc = aucinf * cl / 1000, # mg/kg
+    dose_from_cmax = cmax * v1 / 1000, # mg/kg
+    dose_implied = dose_from_auc
+  )
+
+per_animal |>
+  select(assay, animal, dose_from_auc, dose_from_cmax) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2))) |>
+  dplyr::rename(
+    "Assay" = assay, "Animal" = animal,
+    "AUCinf x CL (mg/kg)" = dose_from_auc,
+    "Cmax x V1 (mg/kg)" = dose_from_cmax
+  ) |>
+  knitr::kable(caption = "Dose implied by each row of Tables 1 and 2.")
+
+# Same animal, two independent products and two independent assays: all
+# within table rounding of one another.
+dose_by_animal <- tapply(
+  c(per_animal$dose_from_auc, per_animal$dose_from_cmax),
+  rep(per_animal$animal, 2),
+  function(d) max(d) / min(d) - 1
+)
+stopifnot(length(dose_by_animal) == 4L, all(dose_by_animal < 0.02))
+```
+
+The per-animal reconstructions below are dosed at the AUCinf x CL value. The
+packaged typical profile uses the nominal 10 mg/kg.
+
+# Simulation
+
+## Typical profiles and per-animal reconstructions (Figures 2 and 3)
+
+Each animal's own two-compartment curve is reconstructed from its Table 1 / 2
+parameters (with its back-solved Q) by overriding the fixed `ini()` values of the
+packaged model, and drawn together with the packaged typical (mean-parameter)
+profile. Kamath 2012 Figures 2 and 3 show the observed concentrations of the
+same four animals; the reconstructed curves are the fits behind those points.
+
+```{r simulate}
+dose_mgkg <- 10
+obs_times <- sort(unique(c(seq(0, 1, by = 1 / 24), seq(1, 29, by = 0.25))))
+
+ev <- rxode2::et(amt = dose_mgkg, cmt = "central") |>
+  rxode2::et(obs_times, cmt = "central")
+
+sim_typical <- bind_rows(lapply(names(mods), function(a) {
+  as.data.frame(rxode2::rxSolve(mods[[a]], ev, returnType = "data.frame")) |>
+    mutate(assay = a)
+}))
+
+# The models carry no between-animal variability; each animal's parameters
+# come from `params`. rxode2 warns about a multi-subject solve without omega;
+# only that message is muffled.
+muffle_no_omega <- function(w) {
+  if (grepl("multi-subject simulation without", conditionMessage(w), fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+
+sim_animals <- bind_rows(lapply(names(mods), function(a) {
+  pars <- per_animal |>
+    filter(assay == a) |>
+    transmute(
+      lcl = log(cl / 1000), lvc = log(v1 / 1000),
+      lvp = log((vss - v1) / 1000), lq = log(q / 1000)
+    ) |>
+    as.data.frame()
+  ids <- per_animal$animal[per_animal$assay == a]
+  doses <- per_animal$dose_implied[per_animal$assay == a]
+  # One subject per row of `pars`, in the order of `ids`, each dosed at its
+  # implied actual dose.
+  ev_animals <- bind_rows(lapply(seq_along(ids), function(i) {
+    mutate(as.data.frame(ev), id = i, amt = ifelse(is.na(amt), amt, doses[i]))
+  }))
+  withCallingHandlers(
+    rxode2::rxSolve(mods[[a]], ev_animals, params = pars, returnType = "data.frame"),
+    warning = muffle_no_omega
+  ) |>
+    as.data.frame() |>
+    mutate(assay = a, animal = ids[id])
+}))
+stopifnot(!anyNA(sim_typical$Cc), !anyNA(sim_animals$Cc))
+```
+
+```{r figure-2-3, fig.cap = "Replicates the fitted curves behind Figures 2 (Assay A, free) and 3 (Assay B, total) of Kamath 2012: per-animal reconstructions (thin) and the packaged typical profile (thick black), 10 mg/kg IV bolus."}
+assay_lab <- c(free = "Assay A (free)", total = "Assay B (total)")
+ggplot() +
+  geom_line(
+    data = sim_animals,
+    aes(time, Cc, colour = animal, linetype = animal)
+  ) +
+  geom_line(data = sim_typical, aes(time, Cc), linewidth = 1.1) +
+  facet_wrap(~assay, labeller = as_labeller(assay_lab)) +
+  scale_y_log10(limits = c(1, 1000)) +
+  labs(
+    x = "Time (day)", y = "Serum anti-oxLDL (ug/mL)",
+    colour = "Animal", linetype = "Animal"
+  ) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+NCA is run on the simulated typical profile (one per assay) and on the
+reconstructed per-animal profiles, over 0-29 days with extrapolation to
+infinity. `cmax` is the 0-h value, which for an IV bolus is the
+model-predicted Cmax (Dose/V1) that Tables 1 and 2 report.
+
+```{r pknca}
+nca_input <- bind_rows(
+  sim_typical |> transmute(assay, subject = "typical", time, Cc),
+  sim_animals |> transmute(assay, subject = animal, time, Cc)
+) |>
+  filter(!is.na(Cc)) |>
+  arrange(assay, subject, time)
+stopifnot(all(tapply(nca_input$time, paste(nca_input$assay, nca_input$subject), min) == 0))
+
+dose_df <- distinct(nca_input, assay, subject) |>
+  left_join(
+    select(per_animal, assay, subject = animal, dose_implied),
+    by = c("assay", "subject")
+  ) |>
+  mutate(
+    time = 0,
+    # ug/kg, so cl.obs is in mL/day/kg
+    amt = 1000 * ifelse(subject == "typical", dose_mgkg, dose_implied)
+  ) |>
+  select(-dose_implied)
+stopifnot(!anyNA(dose_df$amt))
+
+conc_obj <- PKNCA::PKNCAconc(nca_input, Cc ~ time | assay + subject)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | assay + subject)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(nca_res)
+```
+
+## Comparison against the published values
+
+```{r nca-compare}
+published <- means |>
+  transmute(assay, cmax, aucinf.obs = aucinf, half.life = thalf_beta, cl.obs = cl)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = filter(nca_tbl, subject == "typical") |> select(assay, PPTESTCD, PPORRES),
+  reference = published,
+  by = "assay",
+  params = c("cmax", "aucinf.obs", "half.life", "cl.obs"),
+  units = c(cmax = "ug/mL", aucinf.obs = "day*ug/mL", half.life = "day", cl.obs = "mL/day/kg"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = paste(
+  "Packaged typical profile versus the Table 1 (free) and Table 2 (total)",
+  "Mean rows. * marks a difference above 20%."
+))
+stopifnot(nrow(cmp) == 8L, !any(grepl("*", cmp[[ncol(cmp)]], fixed = TRUE)))
+```
+
+All rows agree within 7%. The packaged profile sits 3-7% below the mean-row
+Cmax (180 and 194 ug/mL) and AUCinf (754 and 868 day*ug/mL) for two reasons.
+Those rows average per-animal values, and the mean of Dose/V1 or Dose/CL
+exceeds Dose/V1 or Dose/CL of the mean V1 or CL (Jensen's inequality; animal
+3F, with the lowest CL and V1, pulls the means up). The animals also received
+about 10.1 mg/kg on average rather than the nominal 10 mg/kg (see 'Each animal's actual dose' above).
+CL and the terminal half-life, which the model carries directly, agree to
+within 1%.
+
+The per-animal reconstructions, by contrast, reproduce each animal's own
+Cmax, AUCinf and terminal half-life closely, which confirms the units, the
+per-kg parameterisation and the back-solved Q:
+
+```{r nca-per-animal}
+per_animal_cmp <- nca_tbl |>
+  filter(subject != "typical", PPTESTCD %in% c("cmax", "aucinf.obs", "half.life")) |>
+  select(assay, animal = subject, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(
+    select(animals, assay, animal, cmax_pub = cmax, auc_pub = aucinf, thb_pub = thalf_beta),
+    by = c("assay", "animal")
+  ) |>
+  mutate(
+    cmax_pct = 100 * (cmax / cmax_pub - 1),
+    auc_pct = 100 * (aucinf.obs / auc_pub - 1),
+    thb_pct = 100 * (half.life / thb_pub - 1)
+  )
+
+per_animal_cmp |>
+  transmute(
+    assay, animal,
+    cmax = signif(cmax, 4), cmax_pub, auc = signif(aucinf.obs, 4), auc_pub,
+    thb = signif(half.life, 3), thb_pub
+  ) |>
+  dplyr::rename(
+    "Assay" = assay, "Animal" = animal,
+    "Cmax sim" = cmax, "Cmax pub" = cmax_pub,
+    "AUCinf sim" = auc, "AUCinf pub" = auc_pub,
+    "T1/2beta sim" = thb, "T1/2beta pub" = thb_pub
+  ) |>
+  knitr::kable(caption = "Per-animal reconstructions against Tables 1 and 2 (ug/mL, day*ug/mL, day).")
+
+# Deterministic: the reconstructions use the tabulated parameters, so only
+# table rounding, the 0-29 day trapezoid and PKNCA's terminal-point choice
+# separate them from the published secondary values.
+stopifnot(
+  nrow(per_animal_cmp) == 8L,
+  all(abs(per_animal_cmp$cmax_pct) < 2),
+  all(abs(per_animal_cmp$auc_pct) < 2),
+  all(abs(per_animal_cmp$thb_pct) < 3)
+)
+```
+
+# Assumptions and deviations
+
+* **Typical values are the means of four individual fits.** Kamath 2012 did
+  not fit a population model; it fitted each animal separately (standard
+  two-stage) and reported the per-animal estimates with their mean and SD. The
+  packaged CL, V1 and Vss are the Table 1 / Table 2 means; the median of four
+  values is not reported and was not used.
+* **V2 and Q are derived.** V2 = Vss - V1 from the mean rows. Q is not printed
+  and was back-solved so the beta half-life equals the mean T1/2beta (the
+  paper's headline terminal half-life). The implied alpha half-life
+  (0.839 / 0.875 day) is within 1-4% of the reported means (0.831 / 0.846 day);
+  the same back-solve reproduces every animal's own T1/2alpha to rounding.
+* **No between-animal variability or residual error.** Neither was estimated;
+  the models carry no `eta` terms and `propSd` is held at 0. The per-animal
+  parameters above are the only information on between-animal spread (CL CV
+  about 24% for Assay A and 21% for Assay B).
+* **Nominal dose.** The typical profile is simulated at the nominal 10 mg/kg.
+  The tables imply actual doses of 9.8-10.4 mg/kg (AUCinf x CL = Cmax x V1 for
+  each animal); these are used only for the per-animal reconstructions.
+* **Per-kg parameterisation.** Body weights are not reported, so the models are
+  expressed per kg (dose in mg/kg, volumes in L/kg) rather than scaled by a
+  weight covariate.
+* **Free versus total.** The two assays are packaged as two independent models
+  because the authors fitted them separately; there is no target-mediated
+  disposition or binding term linking them, and the authors found no evidence
+  of target-mediated disposition at 10 mg/kg in normolipidaemic animals. The
+  oxidized-LDL antigen was not measured.
+* **Errata.** No correction to Kamath 2012 was found in Europe PMC (checked
+  2026-11-19).

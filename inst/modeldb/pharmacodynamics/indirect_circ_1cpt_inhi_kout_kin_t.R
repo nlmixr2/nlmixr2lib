@@ -1,8 +1,8 @@
 indirect_circ_1cpt_inhi_kout_kin_t <- function() {
   description <- "One compartment indirect response model with inhibition of kout and circadian kin_t."
-  depends <- c("vc")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+  dosing <- c("depot", "central")
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
@@ -15,17 +15,19 @@ indirect_circ_1cpt_inhi_kout_kin_t <- function() {
 
   ini({
     lka  <- 0.45 ; label("Absorption rate (Ka)")
+    lvc  <- 3.45 ; label("Central volume of distribution (Vc)")
     lkel <- 0.534; label("elimination rate (1/d)")
     lrm  <- 0.62; label ("Mean Baseline for drug response (mesor)(Rm)")
-    lra  <- 0.62; label ("Amplitude of drug response (Ra)")
+    lra  <- log(0.46); label ("Amplitude of drug response (Ra)")
     ltacro  <- 0.62; label ("peak time (Acrophase) (Tz)")
     lic50 <- 0.67; label("Drug concentration producing 50% of maximum inhibition at effect site (ic50)")
-    limax <- 0.56; label("Maximum inhibitory factor attributed to drug (imax)")
+    limax <- log(0.8); label("Maximum inhibitory factor attributed to drug (imax)")
     lkout <- 0.34; label("First-order rate constant for loss of drug response")
     lfdepot <- 0.4; label("Bioavailability (F)")
     propSd <- 0.5 ; label("Proportional residual error (fraction)")
   })
   model({
+    vc  <- exp(lvc)
     ka  <- exp(lka)
     kel <- exp(lkel)
     rm <- exp(lrm)
@@ -43,6 +45,9 @@ indirect_circ_1cpt_inhi_kout_kin_t <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -kel*central
+    # Baseline at t = 0, where rxode2 starts when record times are positive. A negative
+    # first time, or rxSetIni0(FALSE), starts at the first record, off the baseline phase.
+    effect(0) <- rm + ra*cos(0.2616*(0 - tacro))
     d/dt(effect) <- kin_t - kout*(1-imax*Cc/(Cc + ic50))*effect
     
     Cc ~ prop(propSd)

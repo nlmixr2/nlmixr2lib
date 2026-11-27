@@ -10,6 +10,7 @@ Eugene_2016b_metoprolol_enantiomers <- function() {
   )
   vignette <- "Eugene_2016b_metoprolol_gender_dose_equivalence"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot_s_enant", "depot_r_enant")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. No interconversion between the enantiomers is modelled;

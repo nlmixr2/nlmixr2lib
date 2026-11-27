@@ -849,9 +849,11 @@ occasion as "each drug intake that was followed by serum C.E.R.A. evaluation";
 Table II shows PK sampling after the doses on study days 1, 57 and 127 (AMICUS)
 or 1, 57 and 141 (MAXIMA, PROTOS), i.e. three per subject. The model encodes
 three IOV etas with occasions 2 and 3 fixed equal to occasion 1 (a NONMEM
-`$OMEGA BLOCK(1) SAME`), multiplexed by an `OCC` indicator, because `rxode2`
-parses but cannot simulate the `eta ~ var | occ` form. Records with `OCC`
-outside 1-3 carry no IOV; extend the block if you need more occasions.
+`$OMEGA BLOCK(1) SAME`), multiplexed by an `OCC` indicator, so the draws are
+per subject and occasion whatever the nesting shape of the data (the
+`eta ~ var | occ` form shares one draw per occasion when no subject has two or
+more occasions). Records with `OCC` outside 1-3 carry no IOV; extend the block
+if you need more occasions.
 
 **The DEPO covariate is gated, not extrapolated, for ESA-naive patients.**
 A normalized power term is undefined at DEPO = 0, and Chanu 2010 does not state

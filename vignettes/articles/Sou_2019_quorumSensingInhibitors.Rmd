@@ -1,0 +1,509 @@
+---
+title: "Quorum-sensing inhibitors SEN001, SEN019 and SEN032 in rats (Sou 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Quorum-sensing inhibitors SEN001, SEN019 and SEN032 in rats (Sou 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Sou et al. (2019) studied three PqsR-antagonist quorum-sensing inhibitors
+(QSIs) under development for chronic *Pseudomonas aeruginosa* lung infection.
+Each compound was given to rats by intratracheal (IT) instillation of a
+solubilised dose, and plasma, lung-homogenate and (for SEN001 only)
+bronchoalveolar-lavage (BAL) concentrations were modelled simultaneously in
+NONMEM. The three compounds share one general structure (Figure 2 of the paper)
+but have separate parameter estimates and different subsets of the
+compartments, so they are packaged as three models:
+
+* `Sou_2019_SEN001_rat`: `r rxode2::rxode(readModelDb("Sou_2019_SEN001_rat"))$description`
+* `Sou_2019_SEN019_rat`: `r rxode2::rxode(readModelDb("Sou_2019_SEN019_rat"))$description`
+* `Sou_2019_SEN032_rat`: `r rxode2::rxode(readModelDb("Sou_2019_SEN032_rat"))$description`
+* Citation: `r rxode2::rxode(readModelDb("Sou_2019_SEN001_rat"))$reference`
+* Article: <https://doi.org/10.1016/j.xphs.2018.09.017> (open access,
+  PMC6307981)
+
+The structures of SEN019 and SEN032 are not disclosed by the authors (patent
+pending); SEN001 is 3-amino-7-chloro-2-nonylquinazolin-4(3H)-one.
+
+# Population
+
+Male Sprague-Dawley rats (Methods, "Pharmacokinetic Studies"; Table 2). SEN001
+was studied at Laval University (Quebec, Canada) in 21 rats given 0.067 mg/kg,
+with plasma, lung and BAL sampled at 0.5, 2, 4, 8, 12, 24 and 48 h. SEN019
+(0.12 mg/kg) and SEN032 (0.28 mg/kg) were studied at XenoGesis / Saretius
+(Nottingham, UK) in 18 rats each, with plasma and lung (no BAL) sampled at
+0.167, 0.5, 1, 3, 6 and 24 h. Doses were limited by solubility and compound
+availability and were delivered as a solution in PEG400 2% + polysorbate 80 2%
+w/w in water (PP2%). Sampling was terminal, so the authors did not estimate
+interindividual variability; data below the LLOQ were handled with the M3
+method. Individual body weights are not reported, and the parameters are scaled
+to a typical 0.3 kg rat.
+
+The same information is available programmatically, e.g.
+`readModelDb("Sou_2019_SEN001_rat")()$population`.
+
+# Model structure
+
+With `lung` the central lung compartment (dose site), `lung_deep` the deep lung
+compartment, `central` plasma and `peripheral1` the peripheral tissue
+compartment, Equations 1-4 of the paper are
+
+$$
+\begin{aligned}
+\frac{dA_L}{dt} &= -\frac{CL_{LP}}{V_L}A_L + \frac{CL_{LP}}{V_C}A_C - \frac{Q_L}{V_L}A_L + \frac{Q_L}{V_{LP}}A_{LP} \\
+\frac{dA_C}{dt} &= \frac{CL_{LP}}{V_L}A_L - \frac{CL_{LP}}{V_C}A_C - \frac{CL_C}{V_C}A_C - \frac{Q_C}{V_C}A_C + \frac{Q_C}{V_P}A_P \\
+\frac{dA_P}{dt} &= \frac{Q_C}{V_C}A_C - \frac{Q_C}{V_P}A_P \\
+\frac{dA_{LP}}{dt} &= \frac{Q_L}{V_L}A_L - \frac{Q_L}{V_{LP}}A_{LP}
+\end{aligned}
+$$
+
+`CL_LP` (`q_lung`) is a single clearance that moves drug both from lung to
+plasma and back. SEN001 has the deep lung but no peripheral tissue compartment,
+SEN019 has neither, and SEN032 has both (Results, "Pharmacokinetic Modeling";
+Table 5 dashes).
+
+For SEN001, BAL was collected before the lung was removed. The BAL
+concentration is Equation 5, `Cbal = FBAL / VBAL * A_L`, and the lung
+homogenate holds the amount the lavage did not recover,
+`Clung_postbal = (1 - FBAL) * A_L / V_L` (Methods: "the total amount of drug in
+the central lung compartment represents the sum of drug amounts in the BAL and
+lung samples"). `Clung = A_L / V_L` is the lung concentration before lavage,
+the quantity the authors simulated in Figure 4 and the quantity measured
+directly for SEN019 and SEN032.
+
+# Source trace
+
+| Equation / parameter | SEN001 | SEN019 | SEN032 | Source location |
+|---|---|---|---|---|
+| ODEs for `lung`, `central`, `peripheral1`, `lung_deep` | yes | yes | yes | Equations 1-4; Figure 2 |
+| `Cbal = fbal / v_bal * lung` | yes | -- | -- | Equation 5 |
+| `Clung_postbal = (1 - fbal) * lung / v_lung` | yes | -- | -- | Methods text after Equation 5; checked against Figure 3 below |
+| `lq_lung` (CLLP, L/h) | 0.0175 | 0.0724 | 0.150 | Table 5 |
+| `lv_lung` (VL, L, fixed) | 0.002 | 0.002 | 0.002 | Table 5; Methods (fixed to the 2 g rat lung) |
+| `lcl` (CLC, L/h) | 0.0745 | 1.11 | 3.74 | Table 5 |
+| `lvc` (VC, L) | 0.0855 | 0.583 | 1.51 | Table 5 |
+| `lq` (QC, L/h) | -- | -- | 2.35 | Table 5 |
+| `lvp` (VP, L) | -- | -- | 1.36 | Table 5 |
+| `lq_lung_lung_deep` (QL, L/h) | 0.00596 | -- | 0.0107 | Table 5 |
+| `lv_lung_deep` (VLP, L) | 0.0582 | -- | 0.00360 | Table 5 |
+| `logitfbal` (FBAL) | logit(0.980) | -- | -- | Table 5 |
+| `lv_bal` (VBAL, L, fixed) | 0.008 | -- | -- | Not printed; back-solved from Figure 3 (see below) |
+| `propSd` (plasma) | 0.459 | 0.248 | 0.253 | Table 5, PROPPL |
+| `addSd` (plasma, ug/L) | -- | sqrt(0.284) = 0.533 | sqrt(0.505) = 0.711 | Table 5, ADDPL (variance, footnote a) |
+| `propSd_Clung` / `propSd_Clung_postbal` (lung) | 0.435 | 0.181 | 0.461 | Table 5, PROPLG |
+| `propSd_Cbal` (BAL) | 0.380 | -- | -- | Table 5, PROPBAL |
+
+```{r load-models}
+mods <- list(
+  SEN001 = readModelDb("Sou_2019_SEN001_rat"),
+  SEN019 = readModelDb("Sou_2019_SEN019_rat"),
+  SEN032 = readModelDb("Sou_2019_SEN032_rat")
+)
+# Parameters are for a typical 0.3 kg rat, so mg/kg doses become ug per rat.
+rat_wt <- 0.3
+study_dose_mgkg <- c(SEN001 = 0.067, SEN019 = 0.12, SEN032 = 0.28)
+```
+
+# Back-solving the BAL fluid volume
+
+Equation 5 divides by `VBAL`, the volume of lavage fluid, but the paper does not
+print it. It cancels from the ratio of the two SEN001 lung-side observations:
+
+$$
+\frac{C_{BAL}}{C_{lung,\,post\text{-}BAL}} = \frac{F_{BAL} \, V_L}{(1 - F_{BAL}) \, V_{BAL}}
+$$
+
+so `VBAL` follows from the observed BAL and lung medians at the same time,
+without using the fitted absorption or disposition parameters. The maintainers
+digitised the observed medians of Figure 3 (SEN001 lung and BAL panels, read
+from the solid median lines on the log axis):
+
+```{r vbal}
+fig3_sen001 <- tibble::tribble(
+  ~time, ~lung_obs, ~bal_obs,
+  0.5,   2.76,      35,
+  2,     0.44,      17,
+  4,     0.71,      9.2,
+  8,     0.21,      3.6,
+  12,    0.19,      1.94,
+  24,    0.108,     1.17,
+  48,    0.0216,    0.26
+)
+fbal <- 0.980
+v_lung <- 0.002
+vbal_by_time <- fbal * v_lung / ((1 - fbal) * fig3_sen001$bal_obs / fig3_sen001$lung_obs)
+knitr::kable(
+  data.frame(time_h = fig3_sen001$time, VBAL_mL = round(1000 * vbal_by_time, 1)),
+  caption = "VBAL implied at each SEN001 sampling time (Figure 3 medians)."
+)
+median(vbal_by_time)
+```
+
+Six of the seven times imply 6-10 mL; the 2 h lung median (a dip below the
+4 h value in Figure 3) is the outlier. The median, about 8 mL, is used:
+`lv_bal <- fixed(log(0.008))`. A second route that does use the fitted model
+(the typical-value lung amount against the observed BAL medians) is checked in
+the next section. Users who know the lavage volume of their own protocol can
+override `lv_bal`.
+
+# Replicate Figure 3 (single intratracheal dose)
+
+Figure 3 of the paper is a VPC of the final model. Because the model has no
+interindividual variability, the VPC median is the typical-value prediction.
+Below, the typical-value profile of each compound at its study dose is
+compared with the observed medians the maintainers digitised from Figure 3.
+
+```{r fig3-sim}
+solve_typical <- function(compound, times) {
+  dose_ug <- study_dose_mgkg[[compound]] * rat_wt * 1000
+  ev <- rxode2::et(amt = dose_ug, cmt = "lung") |>
+    rxode2::et(times, cmt = "central") |>
+    as.data.frame()
+  # Multiple `~` endpoints: observation rows need a dvid; dvid = 1 still
+  # returns every algebraic output column.
+  ev$dvid <- ifelse(ev$evid == 0, 1L, NA_integer_)
+  rxode2::rxSolve(mods[[compound]], ev, returnType = "data.frame", useLinCmt = FALSE) |>
+    dplyr::mutate(compound = compound)
+}
+grid <- sort(unique(c(seq(0.05, 1, by = 0.05), seq(1.25, 6, by = 0.25), seq(7, 48, by = 1),
+                      0.167, 0.5, 2, 3, 4, 8, 12, 24, 48)))
+typ <- dplyr::bind_rows(
+  solve_typical("SEN001", grid),
+  solve_typical("SEN019", grid[grid <= 6]),
+  solve_typical("SEN032", grid[grid <= 6])
+)
+typ_long <- dplyr::bind_rows(
+  typ |> dplyr::transmute(compound, time, matrix = "Plasma", conc = Cc),
+  typ |> dplyr::filter(compound != "SEN001") |>
+    dplyr::transmute(compound, time, matrix = "Lung", conc = Clung),
+  typ |> dplyr::filter(compound == "SEN001") |>
+    dplyr::transmute(compound, time, matrix = "Lung", conc = Clung_postbal),
+  typ |> dplyr::filter(compound == "SEN001") |>
+    dplyr::transmute(compound, time, matrix = "BAL", conc = Cbal)
+)
+
+fig3_obs <- dplyr::bind_rows(
+  tibble::tibble(compound = "SEN001", matrix = "Plasma",
+                 time = c(0.5, 2, 4, 8, 12, 24, 48),
+                 obs = c(185, 20, 11, 3.5, 2.3, 0.5, 0.24)),
+  tibble::tibble(compound = "SEN001", matrix = "Lung",
+                 time = fig3_sen001$time, obs = fig3_sen001$lung_obs),
+  tibble::tibble(compound = "SEN001", matrix = "BAL",
+                 time = fig3_sen001$time, obs = fig3_sen001$bal_obs),
+  tibble::tibble(compound = "SEN019", matrix = "Plasma",
+                 time = c(0.167, 0.5, 1, 3), obs = c(48.6, 24, 8.6, 0.256)),
+  tibble::tibble(compound = "SEN019", matrix = "Lung",
+                 time = c(0.167, 0.5, 1), obs = c(94, 33, 9.7)),
+  tibble::tibble(compound = "SEN032", matrix = "Plasma",
+                 time = c(0.167, 0.5, 1, 3), obs = c(33, 12, 5.5, 1.1)),
+  tibble::tibble(compound = "SEN032", matrix = "Lung",
+                 time = c(0.167, 0.5, 1), obs = c(100, 47, 14.6))
+)
+```
+
+```{r fig3-plot, fig.height = 7}
+ggplot(dplyr::filter(typ_long, conc > 1e-3), aes(time, conc)) +
+  geom_line() +
+  geom_point(data = fig3_obs, aes(time, obs), colour = "blue", shape = 1) +
+  facet_wrap(compound ~ factor(matrix, levels = c("Plasma", "Lung", "BAL")),
+             scales = "free", ncol = 3) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Concentration (ng/mL)",
+       caption = paste("Replicates Figure 3 of Sou 2019: lines are typical-value",
+                       "predictions, circles the digitised observed medians.",
+                       "SEN001 'Lung' is the homogenate collected after BAL."))
+```
+
+```{r fig3-check}
+fig3_cmp <- fig3_obs |>
+  dplyr::left_join(typ_long, by = c("compound", "matrix", "time")) |>
+  dplyr::mutate(fold = pmax(conc / obs, obs / conc))
+knitr::kable(
+  fig3_cmp |>
+    dplyr::mutate(conc = signif(conc, 3), fold = round(fold, 2)) |>
+    dplyr::rename("Observed median (digitised)" = obs, "Typical prediction" = conc,
+                  "Fold difference" = fold),
+  caption = "Typical-value predictions against the observed medians of Figure 3 (ng/mL)."
+)
+gmfe <- exp(mean(abs(log(fig3_cmp$conc / fig3_cmp$obs))))
+gmfe
+
+# Second VBAL route: typical-value lung amount against the observed BAL medians.
+vbal_model <- typ |>
+  dplyr::filter(compound == "SEN001", time %in% fig3_sen001$time) |>
+  dplyr::arrange(time) |>
+  dplyr::mutate(vbal = fbal * lung / fig3_sen001$bal_obs)
+1000 * median(vbal_model$vbal)
+stopifnot(
+  # Both VBAL routes land near the 8 mL used in the model.
+  abs(1000 * median(vbal_model$vbal) - 8) < 1.5,
+  abs(1000 * median(vbal_by_time) - 8) < 1.5
+)
+stopifnot(
+  # Deterministic typical-value solve against medians of 3 rats per time; a
+  # wrong clearance or volume (or reading the SEN001 lung homogenate as the
+  # pre-lavage lung, a 50-fold shift) moves this far past 1.5.
+  nrow(fig3_cmp) == 35,
+  !anyNA(fig3_cmp$conc),
+  gmfe < 1.5,
+  max(fig3_cmp$fold) < 3
+)
+```
+
+The largest differences are SEN001 plasma at 24 h and the SEN001 lung median at
+2 h, where the three observed values per time scatter widely (Figure 3); the
+typical prediction lies inside the paper's 95% confidence band of the predicted
+median at both times. The SEN001 BAL points are not an independent check of the
+BAL level, because `VBAL` was back-solved from them; they do check its time
+course.
+
+# Replicate Figures 4-6 (repeated dosing at 0.15 mg/kg)
+
+The authors simulated 0.15 mg/kg (the mean study dose) every 24, 12 or 8 h for
+24 h, with a log-normal interindividual variability of 30% CV on CLC only
+(Equation 6), and summarised AUC over 24 h for lung (before lavage) and plasma.
+The same exercise is repeated here with 100 virtual rats per compound and
+interval. The IIV is added to each model for this simulation only; the packaged
+models carry none, as the authors did not estimate it.
+
+```{r rep-sim}
+n_per_arm <- 100
+dose_ug <- 0.15 * rat_wt * 1000
+taus <- c(24, 12, 8)
+
+add_cl_iiv <- function(mod) {
+  mod |>
+    rxode2::model(cl <- exp(lcl + etalcl)) |>
+    rxode2::ini(etalcl ~ log(1 + 0.3^2))
+}
+
+make_regimen <- function(tau, id_offset) {
+  dose_times <- seq(0, 24 - tau, by = tau)
+  # Log-spaced sampling after every dose captures the very fast fall of the
+  # lung concentration (SEN032 lung half-life is under a minute); the last
+  # sample of each interval sits 1e-4 h before the next dose so the trough is
+  # kept, and the grid ends exactly at 24 h.
+  obs_times <- unlist(lapply(dose_times, function(d) {
+    end <- if (d + tau >= 24) 24 else d + tau - 1e-4
+    d + c(0, 10^seq(-4, log10(end - d), length.out = 60))
+  }))
+  obs_times <- sort(unique(round(pmin(obs_times, 24), 6)))
+  one <- dplyr::bind_rows(
+    data.frame(time = dose_times, evid = 1L, amt = dose_ug, cmt = "lung", dvid = NA_integer_),
+    data.frame(time = obs_times, evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+  )
+  tidyr::crossing(id = id_offset + seq_len(n_per_arm), one) |>
+    dplyr::mutate(tau = tau) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+rxode2::rxSetSeed(20190101)
+rep_sim <- dplyr::bind_rows(lapply(names(mods), function(cmpd) {
+  ev <- dplyr::bind_rows(lapply(seq_along(taus), function(i) {
+    make_regimen(taus[i], id_offset = (i - 1L) * n_per_arm)
+  }))
+  stopifnot(!anyDuplicated(unique(ev[, c("id", "time", "evid")])))
+  rxode2::rxSolve(add_cl_iiv(mods[[cmpd]]), ev, keep = "tau",
+                  returnType = "data.frame", useLinCmt = FALSE) |>
+    dplyr::mutate(compound = cmpd) |>
+    dplyr::select(compound, tau, id, time, Cc, Clung)
+}))
+rep_sim$arm <- paste0(rep_sim$compound, " q", rep_sim$tau, "h")
+```
+
+```{r fig4-5, fig.height = 7}
+rep_long <- rep_sim |>
+  tidyr::pivot_longer(c(Clung, Cc), names_to = "matrix", values_to = "conc") |>
+  dplyr::mutate(matrix = dplyr::recode(matrix, Clung = "Lung", Cc = "Plasma"))
+
+rep_long |>
+  dplyr::group_by(compound, tau, matrix, time) |>
+  dplyr::summarise(
+    lo = quantile(conc, 0.025), med = median(conc), hi = quantile(conc, 0.975),
+    .groups = "drop"
+  ) |>
+  # The paper's figures floor concentrations at 1e-3 ng/mL.
+  dplyr::mutate(dplyr::across(c(lo, med, hi), ~ pmax(.x, 1e-3))) |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.3) +
+  geom_line() +
+  facet_grid(paste(matrix, "TAU", tau) ~ compound) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Concentration (ng/mL)",
+       caption = paste("Replicates Figures 4 (lung) and 5 (plasma) of Sou 2019:",
+                       "median and 95% prediction interval, 0.15 mg/kg every TAU h."))
+```
+
+## PKNCA: AUC over 24 h (Figure 6)
+
+```{r pknca}
+nca_conc <- rep_long |>
+  dplyr::filter(!is.na(conc)) |>
+  # The solver returns values of order 1e-10 around zero once SEN019 and
+  # SEN032 are cleared; they are numerical noise, not concentrations.
+  dplyr::mutate(conc = pmax(conc, 0)) |>
+  dplyr::select(arm, matrix, id, time, conc)
+
+nca_dose <- rep_sim |>
+  dplyr::distinct(arm, tau, id) |>
+  dplyr::left_join(
+    dplyr::bind_rows(lapply(taus, function(t) {
+      data.frame(tau = t, time = seq(0, 24 - t, by = t), amt = dose_ug)
+    })),
+    by = "tau", relationship = "many-to-many"
+  ) |>
+  dplyr::select(arm, id, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, conc ~ time | arm + matrix + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | arm + id)
+intervals <- data.frame(start = 0, end = 24, auclast = TRUE)
+# SEN019 is fully cleared between doses, so its pre-dose troughs are zero.
+# PKNCA's default drops zeros in the middle of a profile (treating them as
+# BLQ), which would interpolate the next post-dose peak back across the whole
+# dosing interval. These are model predictions, not BLQ data, so keep them.
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj, intervals = intervals,
+  options = list(conc.blq = list(first = "keep", middle = "keep", last = "keep"))
+))
+
+auc <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::group_by(arm, matrix) |>
+  dplyr::summarise(mean = mean(PPORRES), cv_pct = 100 * sd(PPORRES) / mean(PPORRES),
+                   .groups = "drop")
+```
+
+The bar heights of Figure 6 (mean AUC0-24) were digitised by the maintainers.
+Bars below about 50 ng*h/mL are only a few pixels tall, so their digitised
+values carry an uncertainty of roughly +/-5 ng*h/mL.
+
+```{r fig6-compare}
+fig6 <- tibble::tribble(
+  ~arm,          ~matrix,  ~auclast,
+  "SEN001 q24h", "Lung",   3011,
+  "SEN019 q24h", "Lung",   669,
+  "SEN032 q24h", "Lung",   295,
+  "SEN001 q12h", "Lung",   5786,
+  "SEN019 q12h", "Lung",   1319,
+  "SEN032 q12h", "Lung",   630,
+  "SEN001 q8h",  "Lung",   8521,
+  "SEN019 q8h",  "Lung",   1968,
+  "SEN032 q8h",  "Lung",   925,
+  "SEN001 q24h", "Plasma", 595,
+  "SEN019 q24h", "Plasma", 42,
+  "SEN032 q24h", "Plasma", 14,
+  "SEN001 q12h", "Plasma", 1133,
+  "SEN019 q12h", "Plasma", 80,
+  "SEN032 q12h", "Plasma", 24,
+  "SEN001 q8h",  "Plasma", 1671,
+  "SEN019 q8h",  "Plasma", 123,
+  "SEN032 q8h",  "Plasma", 42
+)
+# Figure 6 plots means, so aggregate to the mean here; ncaComparisonTable()
+# would otherwise summarise per-rat results by the median.
+nca_mean <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::group_by(arm, matrix, PPTESTCD) |>
+  dplyr::summarise(PPORRES = mean(PPORRES), .groups = "drop")
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_mean,
+  reference = fig6,
+  by = c("arm", "matrix"),
+  units = c(auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste("Simulated mean AUC0-24 against Figure 6 of Sou 2019",
+                  "(digitised). * differs from the reference by >20%.")
+)
+```
+
+```{r fig6-check}
+chk <- auc |>
+  dplyr::inner_join(fig6, by = c("arm", "matrix")) |>
+  dplyr::mutate(pct_diff = 100 * (mean - auclast) / auclast)
+knitr::kable(
+  chk |>
+    dplyr::mutate(mean = signif(mean, 4), cv_pct = round(cv_pct, 1), pct_diff = round(pct_diff, 1)) |>
+    dplyr::rename("Arm" = arm, "Matrix" = matrix, "Simulated mean" = mean,
+                  "Simulated CV (%)" = cv_pct, "Figure 6" = auclast, "Difference (%)" = pct_diff),
+  caption = "AUC0-24 (ng*h/mL) and its between-rat CV."
+)
+big <- chk$auclast > 200
+stopifnot(
+  nrow(chk) == 18,
+  # Bars tall enough to digitise to within a few percent. A wrong CLLP, CLC
+  # or dose conversion moves these by tens of percent.
+  abs(median(chk$pct_diff[big])) < 10,
+  max(abs(chk$pct_diff[big])) < 20,
+  # Results text: CLC variability gives a plasma AUC CV of 28.6-31.6% but a
+  # lung AUC CV of only 1.2-5.3%. The plasma CV is a sample statistic over
+  # 100 rats (standard error about 2 points), so the bounds are wide; the lung
+  # bound still fails if lung exposure were driven by systemic clearance.
+  all(chk$cv_pct[chk$matrix == "Plasma"] > 20),
+  all(chk$cv_pct[chk$matrix == "Plasma"] < 40),
+  all(chk$cv_pct[chk$matrix == "Lung"] < 10)
+)
+lung_mean <- setNames(chk$mean[chk$matrix == "Lung"], chk$arm[chk$matrix == "Lung"])
+stopifnot(
+  # Results: SEN019 and SEN032 every 8 h stay below SEN001 every 24 h (lung
+  # AUC ratios about 1.5 and 3; lung CV is ~5%, so the margin is many SDs).
+  lung_mean[["SEN001 q24h"]] > 1.2 * lung_mean[["SEN019 q8h"]],
+  lung_mean[["SEN001 q24h"]] > 2 * lung_mean[["SEN032 q8h"]]
+)
+```
+
+The simulation reproduces the paper's two conclusions: lung exposure to SEN019
+and SEN032 dosed every 8 h stays below that to SEN001 dosed once daily (by
+about 1.5- and 3-fold over 24 h), and the 30% variability in systemic clearance
+passes almost entirely into plasma AUC while barely moving lung AUC.
+
+# Assumptions and deviations
+
+- **BAL fluid volume.** `VBAL` in Equation 5 is not reported. The maintainers
+  back-solved it from the ratio of the digitised SEN001 BAL and lung medians in
+  Figure 3 (median 8 mL across the seven sampling times, range of the six
+  non-outlying times about 6-10 mL) and fixed `lv_bal` at 0.008 L. It affects
+  only the `Cbal` output.
+- **Lung homogenate after lavage.** The paper states that the central lung
+  amount is the sum of the BAL and lung-sample amounts but prints only the BAL
+  equation. The SEN001 lung-homogenate output is encoded as
+  `(1 - FBAL) * A_L / V_L`; with `A_L / V_L` instead, the typical prediction
+  would sit about 50-fold above the observed lung medians of Figure 3.
+- **Residual error scales.** Footnote a of Table 5 says the additive errors are
+  variances; they are converted to standard deviations
+  (`addSd = sqrt(ADDPL)`). The proportional errors are reported in percent and
+  read as CVs (`propSd = PROP / 100`).
+- **FBAL scale.** Table 5 gives FBAL = 0.980 with unit "%", and the Discussion
+  reads it as ">98%"; it is encoded as the fraction 0.980, on the logit scale so
+  that it stays below 1 under refitting.
+- **Body weight.** The parameters are reported for a 0.3 kg rat and no
+  allometric exponent is given, so the models have no weight covariate. Give
+  doses in ug per 0.3 kg rat (mg/kg x 0.3 x 1000).
+- **Interindividual variability.** None was estimated (terminal sampling), so
+  the packaged models have no etas. The 30% CV on CLC used for Figures 4-6 is
+  the authors' simulation assumption (Equation 6) and is added in this vignette
+  only.
+- **BLQ handling.** The M3 likelihood used for data below the LLOQ affects
+  estimation only and is not part of the packaged models.
+- **Digitised targets.** Figure 3 medians and Figure 6 bar heights were read by
+  the maintainers from the published raster figures; they carry
+  pixel-resolution uncertainty of a few percent on the log (Figure 3) and
+  linear (Figure 6) axes.
+- No correction or erratum to the paper was found in Europe PMC (searched
+  2026-11-25).

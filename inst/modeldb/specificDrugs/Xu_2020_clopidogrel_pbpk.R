@@ -35,6 +35,7 @@ Xu_2020_clopidogrel_pbpk <- function() {
   )
   vignette <- "Xu_2020_clopidogrel_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- "stomach"
 
   paper_specific_compartments <- c(
     "wall_stomach",

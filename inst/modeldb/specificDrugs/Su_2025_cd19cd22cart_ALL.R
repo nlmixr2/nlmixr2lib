@@ -68,6 +68,7 @@ Su_2025_cd19cd22cart_ALL <- function() {
     dosing = "cells (CAR+ T cells per kg; input as amt on cartm_pb and carte_pb)",
     concentration = "cells/uL (cells output); transgene copies/ug genomic DNA (transgene output)"
   )
+  dosing <- c("cartm_pb", "carte_pb")
 
   covariateData <- list(
     AGE = list(

@@ -1,0 +1,682 @@
+---
+title: "Anti-CD33 ADC monkey-to-human non-linear PK and receptor occupancy (Figueroa 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Anti-CD33 ADC monkey-to-human non-linear PK and receptor occupancy (Figueroa 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation (both models): `r rxode2::rxode(readModelDb("Figueroa_2018_antiCD33ADC_cyno"))$reference`
+* Monkey model: `r rxode2::rxode(readModelDb("Figueroa_2018_antiCD33ADC_cyno"))$description`
+* Human projection: `r rxode2::rxode(readModelDb("Figueroa_2018_antiCD33ADC_human"))$description`
+* Article (open access): <https://doi.org/10.1080/19420862.2018.1465160>
+
+Figueroa et al. (Genentech) built a two-compartment model with linear
+non-specific clearance and a Michaelis-Menten (MM) target-mediated
+elimination term for an anti-CD33 IgG1. Because receptor occupancy (RO) of
+circulating CD33 reports how saturated the target sink is, RO was fitted
+together with total-antibody (TAB) concentrations, using the same `KM`:
+
+$$\frac{dC_1}{dt} = \frac{CL_D}{V_1}C_2 - \frac{CL_D}{V_1}C_1 - \frac{CL}{V_1}C_1 - \frac{V_{max}}{V_1(K_M + C_1)}C_1$$
+
+$$\frac{dC_2}{dt} = -\frac{CL_D}{V_2}C_2 + \frac{CL_D}{V_2}C_1, \qquad RO(\%) = \frac{C_1}{K_M + C_1}\times 100$$
+
+The model was fitted to the **unconjugated** antibody in monkeys (where higher
+doses are tolerated), used without refitting to predict the TAB PK of the
+pyrrolobenzodiazepine (PBD) **ADC** in a monkey toxicology study, and then scaled
+to humans. The paper therefore contributes two model files:
+
+* `Figueroa_2018_antiCD33ADC_cyno`: the monkey fit (Table 3, "Fitted Monkey").
+* `Figueroa_2018_antiCD33ADC_human`: the human projection (Table 3, "Predicted
+  Human"), with `Vmax` at the 1-fold monkey value. The paper explores 3- and
+  10-fold `Vmax`; the vignette sets these through `ini()`.
+
+All parameters are per kg of body weight, so a dose in ug/kg gives a
+concentration in ug/mL. Neither model has between-subject variability: the
+monkey data were fitted with a naive-pooled approach.
+
+# Population
+
+The monkey fit used six healthy cynomolgus monkeys given a single IV bolus of
+the unconjugated anti-CD33 mAb at 0.5 or 15 mg/kg (n = 3 each). Dosing-solution
+assays found 64% and 86% of the nominal concentrations, so the fit used the
+measured doses, 0.32 and 12.9 mg/kg. TAB was sampled from 15 minutes to 42 days
+(LLOQ 7.8 ng/mL); CD33 RO on monocytes and granulocytes was sampled on days 1,
+6, 21 and 42. ADA were detected in 5 of 6 animals without an apparent effect on
+TAB. The separate ADC toxicology study dosed 0.1, 0.2, 0.4 and 1 mg/kg
+(n = 4, 4, 1, 1; LLOQ 1 ug/mL). The human model is a projection for patients
+with AML; no human data were used.
+
+```{r population}
+str(readModelDb("Figueroa_2018_antiCD33ADC_cyno")()$population)
+```
+
+# Source trace
+
+| Equation / parameter | Monkey | Human | Source location |
+|---|---|---|---|
+| `lcl` (CL, mL/day/kg) | log(4.92) | fixed(log(4.92)) | Table 3, CL |
+| `lq` (CLD, mL/day/kg) | log(22.7) | fixed(log(22.7)) | Table 3, CLD |
+| `lvc` (V1, mL/kg) | log(36.7) | fixed(log(36.7)) | Table 3, V1 |
+| `lvp` (V2, mL/kg) | log(18.1) | fixed(log(18.1)) | Table 3, V2 |
+| `lvmax` (Vmax, ug/day/kg) | log(22.4) | fixed(log(22.4)); range 22.4 to 224 | Table 3, Vmax |
+| `lkm` (KM, ug/mL) | log(10^-1.22) = log(0.0603) | fixed(log(10^-1.22)) | Table 3, alpha = log(KM) = -1.22; KM = 0.0602 |
+| `propSd`, `addSd_RO` | fixed(0) | fixed(0) | Not reported (Materials and methods, 'PKPD modeling') |
+| `d/dt(central)`, `d/dt(peripheral1)` | | | Equations 1 and 2 (in amounts) |
+| `RO`, `RA` | | | Equation 3; RA = 100 - RO (Materials and methods) |
+
+The paper fitted `log(KM)` and prints alpha = -1.22 next to KM = 0.0602 ug/mL
+and CLINT = Vmax/KM = 372 mL/kg/day. Only base 10 reconciles these
+(10^-1.22 = 0.0603; exp(-1.22) = 0.295), so `lkm` is the natural log of
+10^-1.22.
+
+```{r param-check}
+mod_cyno <- readModelDb("Figueroa_2018_antiCD33ADC_cyno")
+ini_cyno <- rxode2::rxode(mod_cyno)$iniDf
+pv <- setNames(ini_cyno$est, ini_cyno$name)
+km <- exp(pv[["lkm"]])
+clint <- exp(pv[["lvmax"]]) / km
+stopifnot(
+  abs(km - 0.0602) < 0.0005,       # Table 3, KM = 0.0602 ug/mL
+  abs(clint - 372) < 2,            # Table 3, CLINT = 372 mL/kg/day
+  abs(clint / exp(pv[["lcl"]]) - 75) < 1  # text: 'roughly 75-fold' CL
+)
+c(KM = km, CLINT = clint)
+```
+
+# Helpers
+
+Both models are deterministic, so every simulation below is a typical-value
+solve; no virtual cohort is needed. Each scenario is one `id`.
+
+```{r helpers}
+# One IV bolus at time 0 into the central compartment per scenario, plus
+# observation rows at `times`. Scenario labels travel with `keep`. The models
+# have two endpoints (Cc and RO), so observation rows carry `dvid = 1L`;
+# every solve still returns Cc, RO and RA as columns.
+bolus_events <- function(scen, times) {
+  scen <- scen |> dplyr::mutate(id = dplyr::row_number())
+  dose <- scen |>
+    dplyr::mutate(time = 0, evid = 1L, cmt = "central")
+  obs <- scen |>
+    dplyr::select(-amt) |>
+    tidyr::crossing(time = times) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+# Time at which `y` first crosses `level` (linear interpolation).
+cross_time <- function(time, y, level) {
+  i <- which(diff(sign(y - level)) != 0)[1]
+  if (is.na(i)) {
+    return(NA_real_)
+  }
+  time[i] + (level - y[i]) * (time[i + 1] - time[i]) / (y[i + 1] - y[i])
+}
+
+# The models have no etas, so rxode2's "multi-subject simulation without
+# 'omega'" warning is expected here; only that warning is muffled.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+solve_det <- function(mod, ev, keep) {
+  withCallingHandlers(
+    as.data.frame(rxode2::rxSolve(
+      mod,
+      events = ev, keep = keep, rtol = 1e-10, atol = 1e-12, maxsteps = 1e6
+    )),
+    warning = muffle_no_omega
+  )
+}
+```
+
+# Monkey fit to the unconjugated antibody (Figure 3)
+
+```{r fig3}
+fine <- sort(unique(c(seq(0, 1, by = 0.01), seq(1, 50, by = 0.05))))
+scen3 <- tibble::tibble(
+  group = c("0.5 mg/kg", "15 mg/kg"),
+  amt = c(0.64 * 500, 0.86 * 15000) # measured doses, ug/kg
+)
+sim3 <- solve_det(mod_cyno, bolus_events(scen3, fine), keep = "group")
+
+# Concentrations decay into solver noise long after the target sink clears.
+stopifnot(all(sim3$Cc >= -1e-6 * max(sim3$Cc)))
+
+sim3 |>
+  dplyr::filter(Cc > 0.1) |>
+  ggplot(aes(time, Cc, colour = group)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(
+    x = "Time (day)", y = "TAB concentration (ug/mL)", colour = "Dose",
+    title = "Figure 3a: anti-CD33 mAb in cynomolgus monkeys",
+    caption = "Replicates Figure 3a of Figueroa 2018 (model curves; measured doses)."
+  )
+
+ggplot(sim3, aes(time, RA, colour = group)) +
+  geom_line() +
+  labs(
+    x = "Time (day)", y = "Receptor availability (%) = 100 - RO",
+    colour = "Dose",
+    title = "Figure 3b: CD33 receptor availability",
+    caption = "Replicates Figure 3b of Figueroa 2018."
+  )
+```
+
+Figure 3 read-offs. The fitted curves reach the 0.1 ug/mL axis floor at about
+day 9 (0.5 mg/kg) and day 45 (15 mg/kg), and receptor availability returns to
+half at about day 9.5 and day 45. These are typical-value read-offs from the
+published plot, so the bounds allow for the reading resolution of about one day.
+
+```{r fig3-check}
+fig3_cross <- sim3 |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(
+    t_c01 = cross_time(time, Cc, 0.1),
+    t_ra50 = cross_time(time, RA, 50),
+    .groups = "drop"
+  )
+knitr::kable(fig3_cross, digits = 2,
+             caption = "Model crossing times (day).")
+lo <- fig3_cross[fig3_cross$group == "0.5 mg/kg", ]
+hi <- fig3_cross[fig3_cross$group == "15 mg/kg", ]
+stopifnot(
+  nrow(lo) == 1, nrow(hi) == 1,
+  abs(lo$t_c01 - 9) < 1, abs(hi$t_c01 - 45) < 1.5,
+  abs(lo$t_ra50 - 9.5) < 1, abs(hi$t_ra50 - 45) < 1.5
+)
+```
+
+## PKNCA against Table 2
+
+Table 2 summarises observed NCA. Its CL is the **nominal** dose divided by
+AUCinf (15.5 x 32.5 = 504 and 8.63 x 1740 = 15016 ug/kg), while the model was
+fitted to the measured doses. The comparison below therefore simulates the
+measured doses on the study's sampling grid, treats values below the 7.8 ng/mL
+LLOQ as missing (as the paper did), and divides the **nominal** dose by
+AUCinf. Cmax is taken from the 15-minute first sample onward.
+
+```{r pknca-cyno}
+study_times <- c(0, 15 / 1440, 4 / 24, 12 / 24, 1, 2, 4, 7, 14, 21, 28, 35, 42)
+sim_nca_raw <- solve_det(mod_cyno, bolus_events(scen3, study_times),
+                         keep = "group")
+sim_nca <- sim_nca_raw |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::filter(time == 0 | Cc >= 0.0078) |>
+  dplyr::select(id, time, Cc, group)
+stopifnot(all(sim_nca$Cc > 0))
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | group + id)
+dose_df <- tibble::tibble(
+  id = 1:2, time = 0, group = scen3$group,
+  amt = c(500, 15000) # nominal, matching Table 2's CL = Dose / AUCinf
+)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | group + id,
+                             route = "intravascular")
+intervals <- data.frame(
+  start = c(0, 15 / 1440), end = Inf,
+  aucinf.obs = c(TRUE, FALSE), half.life = c(TRUE, FALSE),
+  cl.obs = c(TRUE, FALSE), cmax = c(FALSE, TRUE)
+)
+nca_cyno <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                           intervals = intervals))
+
+published_t2 <- tibble::tribble(
+  ~group,      ~cmax, ~aucinf.obs, ~half.life, ~cl.obs,
+  "0.5 mg/kg", 11.5,  32.5,        2.20,       15.5,
+  "15 mg/kg",  272,   1740,        5.69,       8.63
+)
+cmp_t2 <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_cyno,
+  reference = published_t2,
+  by = "group",
+  units = c(cmax = "ug/mL", aucinf.obs = "day*ug/mL", half.life = "day",
+            cl.obs = "mL/day/kg"),
+  tolerance_pct = 20,
+  label_first_column = "NCA parameter"
+)
+knitr::kable(cmp_t2, caption = paste(
+  "Model (typical value, measured dose, study sampling) vs. observed NCA",
+  "(Table 2). * differs from the reference by more than 20%."
+))
+```
+
+The terminal half-lives agree with Table 2 within about 10%. Cmax, AUCinf and
+CL differ by 22% to 39%, and this is a property of the published fit, not of
+the transcription. (PKNCA labels the dose / AUCinf row `CL/F`; for this IV
+bolus it is CL.) The naive-pooled fit with proportional weighting
+does not pass through the group means: Figure 3a shows the 15 mg/kg curve above
+the observed means on days 7 to 14, which is where most of the AUC lies, and the
+0.5 mg/kg curve below the early observations. The model reproduces the plotted
+curves (previous section), so the table is reported for context. The gate below
+checks only the internal consistency of the comparison: the model's CL is the
+nominal dose over the model's own AUCinf, and the high-dose AUC exceeds the
+low-dose AUC by more than the dose ratio, as non-linear PK requires.
+
+```{r pknca-cyno-check}
+res <- as.data.frame(nca_cyno)
+auc <- res$PPORRES[res$PPTESTCD == "aucinf.obs"]
+names(auc) <- res$group[res$PPTESTCD == "aucinf.obs"]
+cl <- res$PPORRES[res$PPTESTCD == "cl.obs"]
+names(cl) <- res$group[res$PPTESTCD == "cl.obs"]
+stopifnot(
+  length(auc) == 2, length(cl) == 2,
+  abs(cl[["0.5 mg/kg"]] * auc[["0.5 mg/kg"]] / 500 - 1) < 1e-6,
+  auc[["15 mg/kg"]] / auc[["0.5 mg/kg"]] > (0.86 * 15000) / (0.64 * 500)
+)
+```
+
+The PK-only fits of Table S1 (KM fixed at 1, 10 or 100 times KD) were reported
+to show that Vmax is not identifiable without RO data. They are sensitivity
+analyses rather than the final model and are not packaged.
+
+# Monkey prediction of the ADC toxicology study (Figure 4)
+
+```{r fig4}
+scen4 <- tibble::tibble(
+  group = c("0.1 mg/kg", "0.2 mg/kg", "0.4 mg/kg", "1 mg/kg"),
+  amt = c(100, 200, 400, 1000)
+)
+grid4 <- seq(0, 16, by = 0.01)
+sim4 <- solve_det(mod_cyno, bolus_events(scen4, grid4), keep = "group")
+stopifnot(all(sim4$Cc >= -1e-6 * max(sim4$Cc)))
+
+sim4 |>
+  dplyr::filter(Cc > 0.3, time <= 15) |>
+  ggplot(aes(time, Cc, colour = group)) +
+  geom_line() +
+  geom_hline(yintercept = 1, linetype = "dotted") +
+  scale_y_log10() +
+  labs(
+    x = "Time (day)", y = "TAB concentration (ug/mL)", colour = "ADC dose",
+    title = "Figure 4a: predicted ADC TAB (LLOQ dotted)",
+    caption = "Replicates Figure 4a of Figueroa 2018."
+  )
+
+sim4 |>
+  dplyr::filter(time <= 15) |>
+  ggplot(aes(time, RA, colour = group)) +
+  geom_line() +
+  labs(
+    x = "Time (day)", y = "Receptor availability (%)", colour = "ADC dose",
+    title = "Figure 4b: predicted receptor availability",
+    caption = "Replicates Figure 4b of Figueroa 2018."
+  )
+```
+
+The Results state that the two lowest doses fall below the 1 ug/mL LLOQ
+before day 7, that 0.4 and 1 mg/kg stay above it for about one and two weeks,
+and that 1 mg/kg keeps RO above 90% for more than 15 days. Figure 4 places the
+LLOQ crossings near days 1.5, 4.2, 8.3 and just after 15, and the 50%
+availability crossings near days 3.8, 6.7 and 10.8.
+
+```{r fig4-check}
+fig4 <- sim4 |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(
+    t_lloq = cross_time(time, Cc, 1),
+    t_ra50 = cross_time(time, RA, 50),
+    ro_cmax = max(RO),
+    ro_day15 = RO[which.min(abs(time - 15))],
+    .groups = "drop"
+  )
+knitr::kable(fig4, digits = 2,
+             caption = "Model LLOQ and 50%-availability crossings (day) and RO (%).")
+g <- function(nm, col) {
+  v <- fig4[[col]][fig4$group == nm]
+  if (length(v) != 1L) stop("no unique row for ", nm)
+  v
+}
+stopifnot(
+  g("0.1 mg/kg", "t_lloq") < 7, g("0.2 mg/kg", "t_lloq") < 7,
+  abs(g("0.1 mg/kg", "t_lloq") - 1.5) < 0.5,
+  abs(g("0.2 mg/kg", "t_lloq") - 4.2) < 0.5,
+  abs(g("0.4 mg/kg", "t_lloq") - 8.3) < 0.7,
+  g("1 mg/kg", "t_lloq") > 15,
+  abs(g("0.1 mg/kg", "t_ra50") - 3.8) < 0.5,
+  abs(g("0.2 mg/kg", "t_ra50") - 6.7) < 0.5,
+  abs(g("0.4 mg/kg", "t_ra50") - 10.8) < 0.7,
+  g("1 mg/kg", "ro_day15") > 90
+)
+```
+
+Two notes on Figure 4. In panel (b) the legend colours of 0.1 and 0.2 mg/kg are
+swapped relative to panel (a): the curve labelled 0.2 mg/kg recovers first, which
+only the lower dose can do. And the text says 0.1 mg/kg reaches "almost 90%" RO
+at Cmax, whereas Equation 3 at Cmax = 100/36.7 = 2.72 ug/mL gives
+`r round(g("0.1 mg/kg", "ro_cmax"), 1)`%, consistent with the Figure 4b curve
+starting near zero availability.
+
+# Human projection (Table 4 and Figure S1)
+
+```{r human-setup}
+mod_hum <- readModelDb("Figueroa_2018_antiCD33ADC_human")
+vmax_fold <- function(mod, fold) {
+  v <- log(22.4 * fold)
+  rxode2::ini(mod, lvmax = v)
+}
+mods_hum <- list(
+  "1x Vmax" = mod_hum,
+  "3x Vmax" = vmax_fold(mod_hum, 3),
+  "10x Vmax" = vmax_fold(mod_hum, 10)
+)
+```
+
+```{r human-sim}
+grid_h <- sort(unique(c(seq(0, 1, by = 0.002), seq(1, 6, by = 0.01))))
+scen_h <- tibble::tibble(
+  dose = c("0.25 ug/kg", "2.4 ug/kg", "21 ug/kg"),
+  amt = c(0.25, 2.4, 21)
+)
+sim_h <- dplyr::bind_rows(lapply(names(mods_hum), function(nm) {
+  solve_det(mods_hum[[nm]], bolus_events(scen_h, grid_h), keep = "dose") |>
+    dplyr::mutate(vmax = nm)
+})) |>
+  dplyr::mutate(vmax = factor(vmax, levels = names(mods_hum)))
+stopifnot(all(sim_h$Cc >= -1e-6 * max(sim_h$Cc)))
+
+sim_h |>
+  dplyr::filter(Cc > 1e-4) |>
+  ggplot(aes(time, 1000 * Cc, colour = dose)) +
+  geom_line() +
+  facet_wrap(~vmax) +
+  scale_y_log10() +
+  labs(
+    x = "Time (day)", y = "TAB concentration (ng/mL)", colour = "Dose",
+    title = "Figure S1 (a, c, e): projected human PK",
+    caption = "Replicates the central curves of Figure S1 of Figueroa 2018."
+  )
+
+ggplot(sim_h, aes(time, RA, colour = dose)) +
+  geom_line() +
+  facet_wrap(~vmax) +
+  labs(
+    x = "Time (day)", y = "Receptor availability (%)", colour = "Dose",
+    title = "Figure S1 (b, d, f): projected receptor availability",
+    caption = "Replicates the central curves of Figure S1 of Figueroa 2018."
+  )
+```
+
+Table 4 reports Cmax, RO at Cmax and AUC0-t, where t is 120, 72 and 24 h for
+1-, 3- and 10-fold `Vmax`. AUC0-t is computed with PKNCA per dose and `Vmax`
+scenario.
+
+```{r pknca-human}
+tend <- c("1x Vmax" = 5, "3x Vmax" = 3, "10x Vmax" = 1)
+h_nca <- sim_h |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(
+    scenario = paste(vmax, dose, sep = " | "),
+    Cc_ng = pmax(1000 * Cc, 0)
+  ) |>
+  dplyr::group_by(scenario) |>
+  dplyr::filter(time <= time[which.max(Cc_ng)] |
+                  Cc_ng >= 1e-6 * max(Cc_ng)) |>
+  dplyr::ungroup() |>
+  dplyr::select(scenario, vmax, dose, id, time, Cc_ng)
+h_dose <- h_nca |>
+  dplyr::distinct(scenario, vmax, dose, id) |>
+  dplyr::left_join(scen_h, by = "dose") |>
+  dplyr::mutate(time = 0)
+conc_h <- PKNCA::PKNCAconc(h_nca, Cc_ng ~ time | scenario + id)
+dose_h <- PKNCA::PKNCAdose(h_dose, amt ~ time | scenario + id,
+                           route = "intravascular")
+int_h <- h_dose |>
+  dplyr::distinct(scenario, vmax) |>
+  dplyr::mutate(start = 0, end = tend[as.character(vmax)],
+                auclast = TRUE, cmax = TRUE) |>
+  dplyr::select(scenario, start, end, auclast, cmax) |>
+  as.data.frame()
+nca_h <- as.data.frame(PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_h, dose_h, intervals = int_h)
+))
+
+table4 <- tibble::tribble(
+  ~vmax,      ~dose,        ~auc_pub, ~auc_p05, ~auc_p95, ~cmax_pub, ~ro_pub,
+  "1x Vmax",  "0.25 ug/kg", 0.515,    0.214,    2.63,     6.81,      10,
+  "3x Vmax",  "0.25 ug/kg", 0.175,    0.0611,   1.52,     6.81,      10,
+  "10x Vmax", "0.25 ug/kg", 0.052,    0.0169,   0.458,    6.81,      10,
+  "1x Vmax",  "2.4 ug/kg",  8.37,     4.49,     32.4,     65.4,      52,
+  "3x Vmax",  "2.4 ug/kg",  2.88,     1.31,     18.7,     65.4,      52,
+  "10x Vmax", "2.4 ug/kg",  0.871,    0.389,    5.80,     65.4,      52,
+  "1x Vmax",  "21 ug/kg",   236,      158,      544,      572,       90,
+  "3x Vmax",  "21 ug/kg",   90.4,     52.9,     322,      572,       90,
+  "10x Vmax", "21 ug/kg",   29.1,     16.7,     110,      572,       90
+)
+ro_cmax <- sim_h |>
+  dplyr::group_by(vmax, dose) |>
+  dplyr::summarise(ro_sim = max(RO), .groups = "drop") |>
+  dplyr::mutate(vmax = as.character(vmax))
+t4 <- nca_h |>
+  dplyr::select(scenario, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  tidyr::separate(scenario, c("vmax", "dose"), sep = " \\| ") |>
+  dplyr::inner_join(table4, by = c("vmax", "dose")) |>
+  dplyr::inner_join(ro_cmax, by = c("vmax", "dose")) |>
+  dplyr::mutate(auc_ratio = auc_pub / auclast)
+stopifnot(nrow(t4) == 9)
+t4 |>
+  dplyr::select(vmax, dose, cmax, cmax_pub, ro_sim, ro_pub,
+                auclast, auc_pub, auc_p05, auc_p95, auc_ratio) |>
+  dplyr::rename(
+    "Vmax" = vmax, "Dose" = dose,
+    "Cmax sim (ng/mL)" = cmax, "Cmax Table 4" = cmax_pub,
+    "RO at Cmax sim (%)" = ro_sim, "RO at Cmax Table 4" = ro_pub,
+    "AUC0-t sim (ng*day/mL)" = auclast, "AUC0-t Table 4" = auc_pub,
+    "Table 4 5th pct" = auc_p05, "Table 4 95th pct" = auc_p95,
+    "Table 4 / sim" = auc_ratio
+  ) |>
+  knitr::kable(digits = 3, caption = "Projected human exposure vs. Table 4.")
+```
+
+Cmax and RO at Cmax match Table 4 to its printed precision; both are set by
+`V1` and `KM` alone. The AUC0-t values printed in Table 4 are 5% to 26% below
+the typical-value solve at the Table 3 estimates, by a ratio that depends on
+dose (about 0.74, 0.88 and 0.94 at 0.25, 2.4 and 21 ug/kg) but hardly on
+the `Vmax` fold. The paper does not print the Vmax-log(KM) covariance it
+sampled from, so the source of the offset cannot be traced. A `KM` near
+0.044 ug/mL reproduces the low- and high-dose rows but not the middle one,
+so it is not a simple `KM` rounding. The packaged model keeps the printed
+estimates. Every typical-value AUC lies inside the paper's 5th to 95th
+percentile range, and the gate checks that and the exact Cmax and RO values.
+
+```{r human-check}
+stopifnot(
+  all(abs(t4$cmax / t4$cmax_pub - 1) < 0.005),
+  all(abs(t4$ro_sim - t4$ro_pub) < 1),
+  all(t4$auclast > t4$auc_p05 & t4$auclast < t4$auc_p95),
+  all(t4$auc_ratio > 0.65 & t4$auc_ratio < 1)
+)
+```
+
+# Comparison with clinical anti-CD33 molecules (Figure 5)
+
+## Lintuzumab receptor availability on day 7 (Figure 5a)
+
+Lintuzumab binds CD33 with about 20-fold lower affinity, so the paper set
+`KM` to 20 times the anti-CD33 ADC value (about 1.2 ug/mL) and kept the
+human `Vmax` range.
+
+```{r fig5a}
+doses5 <- 10^seq(2, 4, by = 0.05)
+scen5 <- tibble::tibble(dose = doses5, amt = doses5)
+sim5a <- dplyr::bind_rows(lapply(names(mods_hum), function(nm) {
+  m <- rxode2::ini(mods_hum[[nm]], lkm = log(20 * 10^-1.22))
+  solve_det(m, bolus_events(scen5, 7), keep = "dose") |>
+    dplyr::mutate(vmax = nm)
+})) |>
+  dplyr::filter(time == 7) |>
+  dplyr::mutate(vmax = factor(vmax, levels = names(mods_hum)))
+
+ggplot(sim5a, aes(dose, RA, linetype = vmax)) +
+  geom_line() +
+  scale_x_log10() +
+  labs(
+    x = "Dose (ug/kg)", y = "Receptor availability on day 7 (%)",
+    linetype = "Human Vmax",
+    title = "Figure 5a: lintuzumab (KM x 20)",
+    caption = "Replicates the model curves of Figure 5a of Figueroa 2018."
+  )
+
+ra50 <- sim5a |>
+  dplyr::group_by(vmax) |>
+  dplyr::summarise(dose_ra50 = 10^cross_time(log10(dose), RA, 50),
+                   ra_100 = RA[which.min(abs(dose - 100))],
+                   .groups = "drop")
+knitr::kable(ra50, digits = 1,
+             caption = "Dose giving 50% availability on day 7, and availability at 100 ug/kg.")
+```
+
+Figure 5a read-offs: the 1-fold curve starts near 80% at 100 ug/kg, and the
+three curves pass 50% near 250-300, 600-700 and 2000 ug/kg.
+
+```{r fig5a-check}
+r <- function(nm, col) {
+  v <- ra50[[col]][as.character(ra50$vmax) == nm]
+  if (length(v) != 1L) stop("no unique row for ", nm)
+  v
+}
+stopifnot(
+  abs(r("1x Vmax", "ra_100") - 80) < 8,
+  r("1x Vmax", "dose_ra50") > 220, r("1x Vmax", "dose_ra50") < 350,
+  r("3x Vmax", "dose_ra50") > 550, r("3x Vmax", "dose_ra50") < 800,
+  r("10x Vmax", "dose_ra50") > 1700, r("10x Vmax", "dose_ra50") < 2400
+)
+```
+
+## Clearance as a function of dose (Figure 5b)
+
+The paper compares GO and AVE9633 clearances with the model's dose / AUC over
+100 to 10000 ug/kg.
+
+```{r fig5b}
+doses5b <- c(100, 200, 500, 1000, 2000, 5000, 10000)
+grid5b <- sort(unique(c(seq(0, 2, by = 0.005), seq(2, 20, by = 0.02),
+                        seq(20, 90, by = 0.1))))
+scen5b <- tibble::tibble(dose = doses5b, amt = doses5b)
+sim5b <- dplyr::bind_rows(lapply(names(mods_hum), function(nm) {
+  solve_det(mods_hum[[nm]], bolus_events(scen5b, grid5b), keep = "dose") |>
+    dplyr::mutate(vmax = nm)
+})) |>
+  dplyr::mutate(scenario = paste(vmax, dose, sep = " | "))
+stopifnot(all(sim5b$Cc >= -1e-6 * max(sim5b$Cc)))
+
+conc5b <- sim5b |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
+  dplyr::group_by(scenario) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-9 * max(Cc)) |>
+  dplyr::ungroup() |>
+  dplyr::select(scenario, id, time, Cc)
+dose5b <- sim5b |>
+  dplyr::distinct(scenario, vmax, dose, id) |>
+  dplyr::mutate(time = 0, amt = dose)
+nca5b <- as.data.frame(PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc5b, Cc ~ time | scenario + id),
+  PKNCA::PKNCAdose(dose5b, amt ~ time | scenario + id, route = "intravascular"),
+  intervals = data.frame(start = 0, end = Inf, cl.last = TRUE)
+))) |>
+  dplyr::filter(PPTESTCD == "cl.last") |>
+  dplyr::left_join(dplyr::distinct(dose5b, scenario, vmax, dose),
+                   by = "scenario") |>
+  dplyr::mutate(vmax = factor(vmax, levels = names(mods_hum)))
+
+ggplot(nca5b, aes(dose, PPORRES, linetype = vmax)) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(
+    x = "Dose (ug/kg)", y = "CL = dose / AUC (mL/day/kg)",
+    linetype = "Human Vmax",
+    title = "Figure 5b: projected clearance versus dose",
+    caption = "Replicates the model curves of Figure 5b of Figueroa 2018."
+  )
+cl_tab <- nca5b |>
+  dplyr::arrange(vmax, dose) |>
+  dplyr::select(vmax, dose, PPORRES) |>
+  tidyr::pivot_wider(names_from = vmax, values_from = PPORRES) |>
+  dplyr::arrange(dose)
+knitr::kable(cl_tab, digits = 1, caption = "Projected CL (mL/day/kg).")
+```
+
+Figure 5b read-offs: the 1-fold curve falls from about 30 mL/day/kg at
+100 ug/kg to about 8 at 1000 and 5.5 at 10000; the 3-fold curve starts near
+65 at 100 ug/kg; all three meet near 5 to 9 at 10000 ug/kg, approaching the
+non-specific CL of 4.92.
+
+```{r fig5b-check}
+clv <- function(nm, d) {
+  v <- nca5b$PPORRES[as.character(nca5b$vmax) == nm & nca5b$dose == d]
+  if (length(v) != 1L) stop("no unique row for ", nm, " ", d)
+  v
+}
+stopifnot(
+  abs(clv("1x Vmax", 100) / 30 - 1) < 0.15,
+  abs(clv("1x Vmax", 1000) / 8 - 1) < 0.15,
+  abs(clv("1x Vmax", 10000) / 5.5 - 1) < 0.1,
+  abs(clv("3x Vmax", 100) / 65 - 1) < 0.15,
+  abs(clv("10x Vmax", 10000) / 9 - 1) < 0.15,
+  all(nca5b$PPORRES > 4.92)
+)
+```
+
+The 10-fold curve in the published Figure 5b sits about tenfold above this
+solve at the low-dose end (about 1800 versus
+`r round(clv("10x Vmax", 100))` mL/day/kg at 100 ug/kg) while agreeing at
+10000 ug/kg. No single `Vmax` multiple reproduces the published 10-fold curve
+over the whole range (a 100-fold `Vmax` gives about 1600 at 100 ug/kg but 31
+at 10000), and the 1- and 3-fold curves and the Figure 5a curves match, so the
+packaged model is left as printed and the 10-fold low-dose end is not gated.
+
+# Assumptions and deviations
+
+- **Log base of `KM`.** Table 3 prints alpha = log(KM) = -1.22 together with
+  KM = 0.0602 ug/mL and CLINT = 372 mL/kg/day. Only base 10 reconciles these,
+  so `lkm = log(10^-1.22)`.
+- **Per-kg parameterisation.** The paper reports every parameter per kg and
+  scales monkey to human with a body-weight exponent of 1, so the models use
+  ug/kg doses and mL/kg volumes rather than a body-weight covariate.
+- **Measured doses for the monkey fit.** The fit used the measured doses (64% and
+  86% of nominal: 0.32 and 12.9 mg/kg). Table 2's CL uses nominal doses, which is
+  reproduced in the PKNCA comparison.
+- **Residual error.** The paper used proportional weighting for PK and constant
+  weighting for RO but reports no magnitudes, so `propSd` and `addSd_RO` are
+  `fixed(0)`.
+- **No between-subject variability.** The fit was naive-pooled.
+- **Human `Vmax`.** Table 3 gives a 22.4 to 224 ug/day/kg range. The packaged
+  human model uses the 1-fold value; the 3- and 10-fold scenarios are set
+  through `ini()` above.
+- **Parameter uncertainty.** The paper's 5th-95th percentile bands come from
+  1000 draws of (Vmax, log KM) from the estimates' covariance matrix, which is
+  not printed (only the SEs are), so the bands are quoted, not re-simulated.
+- **Table 4 AUC0-t.** The printed values are 5% to 26% below the typical-value
+  solve at the printed estimates; they are within the paper's own percentile
+  bands. See the human projection section.
+- **Figure 5b, 10-fold curve.** It does not match a 10-fold `Vmax` at low doses;
+  see the Figure 5 section.
+- **Figure 4b legend** swaps the 0.1 and 0.2 mg/kg colours, and the text's
+  "almost 90%" RO at Cmax for 0.1 mg/kg is about 98% by Equation 3.
+- **Unconjugated antibody vs. ADC.** The monkey model was fitted to the
+  unconjugated antibody and applied to the ADC on the paper's assumption that
+  conjugation at LC K149C changes neither non-specific clearance nor target
+  binding; both models describe total antibody.
+- No correction notice for the article was found in Europe PMC (checked
+  2026-11-25).

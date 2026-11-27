@@ -1,8 +1,8 @@
 tgi_sat_genLogistic <- function() {
   description <- "One compartment TGI model with tumor growth proportional to tumor size through a generalized logistic function, with saturation."
-  depends <- c("kge")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+  dosing <- c("depot", "central")
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
@@ -19,8 +19,8 @@ tgi_sat_genLogistic <- function() {
     lka <- 0.45 ; label("Absorption rate (1/time_unit)")
     lcl <- 1 ; label("Clearance (CL)")
     lvc  <- 3.45 ; label("Central volume of distribution (V)")
-    lkgl <- 0.7; label("Zero-order linear growth rate (tumor size/time_unit)")
-    lgamma <- 0.95; label("proliferative cells as a fraction of the full tumor volume (gamma)")
+    lkge <- 0.7; label("First-order exponential growth rate (1/time_unit)")
+    lgamma <- 0.95; label("Generalized logistic shape exponent on TS/TSmax (unitless)")
     propSd <- 0.5 ; label("PK proportional residual error (fraction)")
     propSd_tumor_size <- 0.5 ; label("Tumor size proportional residual error (fraction)")
     addSd_tumor_size <- 30 ; label("Tumor size additive residual error (tumor volume)")
@@ -31,7 +31,7 @@ tgi_sat_genLogistic <- function() {
     ka <- exp(lka)
     cl <- exp(lcl)
     vc  <- exp(lvc)
-    kgl <- exp(lkgl)
+    kge <- exp(lkge)
     gamma <- exp(lgamma)
     
     kel <- cl / vc

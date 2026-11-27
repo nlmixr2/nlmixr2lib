@@ -3,6 +3,7 @@ Gibiansky_2021_rituximab <- function() {
   reference <- "Gibiansky E, Gibiansky L, Chavanne C, Frey N, Jamois C. Population pharmacokinetic and exposure-response analyses of intravenous and subcutaneous rituximab in patients with chronic lymphocytic leukemia. CPT Pharmacometrics Syst Pharmacol. 2021;10(8):914-927. doi:10.1002/psp4.12665"
   vignette <- "Gibiansky_2021_rituximab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # The IIV on the residual-error SD (NONMEM ETA(7)) has no structural
   # typical-value partner; the residual SD is the concentration-dependent

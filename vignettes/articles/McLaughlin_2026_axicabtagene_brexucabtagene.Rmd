@@ -1,0 +1,467 @@
+---
+title: "Axicabtagene ciloleucel and brexucabtagene autoleucel CAR-T kinetics (Mc Laughlin 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Axicabtagene ciloleucel and brexucabtagene autoleucel CAR-T kinetics (Mc Laughlin 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("McLaughlin_2026_axicabtagene_brexucabtagene"))$reference`
+* Description: `r rxode2::rxode(readModelDb("McLaughlin_2026_axicabtagene_brexucabtagene"))$description`
+* Article (open access): <https://doi.org/10.1002/cpt.70395>
+
+Axicabtagene ciloleucel (axi-cel) and brexucabtagene autoleucel (brexu-cel)
+carry the same anti-CD19 CAR construct but are manufactured differently. Mc
+Laughlin 2026 fitted one mechanism-based population model to the peripheral
+blood CAR-T-cell concentrations of both products. The infused cells enter a
+central CAR-T compartment that exchanges with a peripheral compartment and is
+eliminated first order. After a lag time, the central cells expand first order
+at a rate that falls as a latent tumour-burden compartment, initialised at the
+patient's baseline sum of the product of diameters (SPD), is depleted by
+second-order CAR-T killing (Figure 1, Equations 1-3):
+
+$$\frac{dA_c}{dt} = \rho \cdot A_c \cdot I(t > t_{lag}) \cdot \frac{SPD}{SPD_{BL}} - k_{12} A_c + k_{21} A_p - k_{el} A_c$$
+$$\frac{dA_p}{dt} = k_{12} A_c - k_{21} A_p \qquad \frac{dSPD}{dt} = -k_{kill} \cdot A_c \cdot SPD$$
+
+The blood concentration is the central amount divided by an estimated scaling
+factor (`vc`, 3.14 x 10^4 L; 10^6 cells/L = 1 cell/uL).
+
+```{r load-model}
+mod <- readModelDb("McLaughlin_2026_axicabtagene_brexucabtagene")
+mod_ui <- rxode2::rxode(mod)
+mod_typical <- rxode2::zeroRe(mod_ui)
+```
+
+# Population
+
+The model was developed on 473 patients with relapsed or refractory B-cell
+lymphoma (Table 1 of the paper). In ZUMA-1, ZUMA-5 and ZUMA-7, 406 received
+axi-cel for large B-cell lymphoma (DLBCL, PMBCL, transformed FL and other),
+follicular lymphoma or marginal zone lymphoma. In ZUMA-2, 67 received brexu-cel
+for mantle cell lymphoma (MCL). Median age was 60 years (21-80) and median
+body weight 82.7 kg (43.1-166); 35.5% were female and 87.5% White. Median
+baseline SPD was 2,244 mm^2 and median baseline albumin 40 g/L. Every patient
+received a single intravenous infusion at a target 2 x 10^6 CAR-T cells/kg
+after cyclophosphamide/fludarabine lymphodepletion, a median of 165 x 10^6
+CAR+ cells (51.8-201). The 2,785 concentrations came from qPCR and were
+converted to cells/uL.
+
+The same information is available programmatically:
+
+```{r population}
+str(mod_ui$population)
+```
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in
+`inst/modeldb/specificDrugs/McLaughlin_2026_axicabtagene_brexucabtagene.R`.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `d/dt(central)`, `d/dt(peripheral1)`, `d/dt(tumor)` | n/a | Equations 1-3; Figure 1 |
+| `tlag_ind` (expansion switch) | 0 for t <= tlag, 1 after | Equation 1 |
+| `tumor(0) <- TUMSZ` | baseline SPD | Results, 'Model development' |
+| `Cc <- central / vc` | n/a | Results, 'Model development' (scaling factor) |
+| `lkexp_max` (rho) | log(2.70) 1/day | Table 2 |
+| `lkel` | log(0.120) 1/day | Table 2 |
+| `lk12` | log(0.0465) 1/day | Table 2 |
+| `lk21` | log(0.0108) 1/day | Table 2 |
+| `lkkill` | log(1.33e-6) 1/(day x 10^6 cells) | Table 2 |
+| `ltlag` | log(2.47) day | Table 2 |
+| `lvc` (scaling factor) | log(3.14e4) L | Table 2 |
+| `e_wt_kel` | 0.781, on log(WT/82.7) | Table 2 and footnote a; Table 1 median |
+| `e_cart_effector_t_pct_kexp_max` | -0.00619 per %, centred at 24.7% | Table 2; Table 1 median |
+| `e_prior_bendamustine_kexp_max` | -0.241 (fractional change) | Table 2 |
+| `e_alb_kexp_max` | 0.0163 per g/L, centred at 40 g/L | Table 2; Table 1 median |
+| `e_tumtp_mcl_kkill` | -0.617 (fractional change) | Table 2 |
+| `e_study_zuma7_expSd` | 0.719 (fractional change) | Table 2 |
+| `etalkexp_max`, `etalkel`, `etalk12`, `etalk21`, `etalkkill` | 0.264^2, 0.687^2, 1.35^2, 1.97^2, 0.955^2 | Table 2 (CV, read as sqrt(omega^2)) |
+| `etaexpSd` | 0.545^2 | Table 2 'IIV RUV' |
+| `expSd` | 0.969 | Table 2 'RUV' |
+| Covariate forms (exponential centred on the median; fractional change for categories) | n/a | Methods, 'Covariate analysis' |
+
+# Typical-value simulations (Figure 5)
+
+The reference patient of Figures 4 and 5 is axi-cel in a non-MCL lymphoma,
+24.7% effector T cells in the product, no prior bendamustine, 82.7 kg, 40 g/L
+albumin, baseline SPD 2,244 mm^2 and 2 x 10^6 cells/kg. Each scenario below
+changes one of these at a time, as the paper does. Because the expansion is
+driven by the ratio `tumor / TUMSZ` and the killing is first order in tumour
+burden, the typical profile does not depend on the baseline SPD value itself.
+
+```{r tv-helpers}
+ref_cov <- data.frame(
+  WT = 82.7, ALB = 40, CART_EFFECTOR_T_PCT = 24.7, PRIOR_BENDAMUSTINE = 0,
+  TUMTP_MCL = 0, STUDY_ZUMA7 = 0, TUMSZ = 2244
+)
+inf_dur <- 0.5 / 24 # 30-min infusion, in days
+
+# One typical-value subject per scenario: `changes` is a named list of the
+# covariates that differ from the reference patient, `dose_per_kg` the dose in
+# 10^6 cells/kg.
+make_scenario <- function(id, panel, label, changes = list(), dose_per_kg = 2, times) {
+  cov <- ref_cov
+  for (nm in names(changes)) cov[[nm]] <- changes[[nm]]
+  amt <- dose_per_kg * cov$WT
+  dose <- data.frame(id = id, time = 0, evid = 1L, amt = amt, dur = inf_dur, cmt = "central")
+  obs <- data.frame(id = id, time = times, evid = 0L, amt = 0, dur = 0, cmt = "central")
+  dplyr::bind_rows(dose, obs) |>
+    cbind(cov[rep(1, nrow(dose) + nrow(obs)), , drop = FALSE]) |>
+    dplyr::mutate(panel = panel, scenario = label)
+}
+
+scenario_defs <- list(
+  list("Dose", "0.02 x 10^6 cells/kg", list(), 0.02),
+  list("Dose", "0.2 x 10^6 cells/kg", list(), 0.2),
+  list("Dose", "2 x 10^6 cells/kg", list(), 2),
+  list("Dose", "20 x 10^6 cells/kg", list(), 20),
+  list("Dose", "200 x 10^6 cells/kg", list(), 200),
+  list("Product/disease type", "Axi-cel/non-MCL", list(), 2),
+  list("Product/disease type", "Brexu-cel/MCL, no prior bendamustine", list(TUMTP_MCL = 1), 2),
+  list("Product/disease type", "Brexu-cel/MCL, prior bendamustine", list(TUMTP_MCL = 1, PRIOR_BENDAMUSTINE = 1), 2),
+  list("Body weight", "55.6 kg", list(WT = 55.6), 2),
+  list("Body weight", "82.7 kg", list(), 2),
+  list("Body weight", "120 kg", list(WT = 120), 2),
+  list("Product %TEFF", "7.76%", list(CART_EFFECTOR_T_PCT = 7.76), 2),
+  list("Product %TEFF", "24.7%", list(), 2),
+  list("Product %TEFF", "55.3%", list(CART_EFFECTOR_T_PCT = 55.3), 2),
+  list("Prior bendamustine", "No prior bendamustine", list(), 2),
+  list("Prior bendamustine", "Prior bendamustine", list(PRIOR_BENDAMUSTINE = 1), 2),
+  list("Baseline albumin", "30 g/L", list(ALB = 30), 2),
+  list("Baseline albumin", "40 g/L", list(), 2),
+  list("Baseline albumin", "46 g/L", list(ALB = 46), 2)
+)
+
+tv_times <- sort(unique(c(seq(0, 28, by = 0.02), seq(28.5, 365, by = 0.5))))
+tv_events <- dplyr::bind_rows(lapply(seq_along(scenario_defs), function(i) {
+  s <- scenario_defs[[i]]
+  make_scenario(i, s[[1]], s[[2]], s[[3]], s[[4]], times = tv_times)
+}))
+stopifnot(!anyDuplicated(unique(tv_events[, c("id", "time", "evid")])))
+
+tv <- rxode2::rxSolve(
+  mod_typical,
+  events = tv_events,
+  keep = c("panel", "scenario")
+) |>
+  as.data.frame()
+```
+
+```{r figure-5, fig.height = 8}
+tv |>
+  dplyr::filter(time >= 2) |>
+  ggplot(aes(time, Cc, colour = scenario)) +
+  geom_line() +
+  facet_wrap(~panel, ncol = 2, scales = "free_y") +
+  scale_x_log10(breaks = c(3, 10, 30, 100, 300)) +
+  scale_y_log10(breaks = c(0.01, 0.1, 1, 10, 100)) +
+  labs(
+    x = "Time since infusion (days)", y = "CAR-T cells (cells/uL)", colour = NULL,
+    caption = "Replicates Figure 5 of Mc Laughlin 2026 (typical-value profiles)."
+  ) +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 2))
+```
+
+The reference profile peaks at about 50 cells/uL around day 7-8, as in every panel
+of Figure 5. Increasing the dose shifts the peak earlier but barely raises it;
+brexu-cel in MCL peaks later and about 2.6-fold higher, and prior bendamustine
+lowers and delays the peak.
+
+```{r figure-5-check}
+ref_peak <- tv |>
+  dplyr::filter(scenario == "2 x 10^6 cells/kg") |>
+  dplyr::slice_max(Cc, n = 1)
+ref_peak[, c("time", "Cc")]
+# Read off Figure 5: the reference peak sits near 50 cells/uL between day 7
+# and day 9. A mistranscribed rho, scaling factor or dose unit moves it by
+# far more than this window.
+stopifnot(
+  ref_peak$Cc > 35, ref_peak$Cc < 70,
+  ref_peak$time > 6, ref_peak$time < 10
+)
+```
+
+# Forest plot of covariate effects (Figure 4) with PKNCA
+
+Figure 4 reports the median predicted Cmax and AUC0-28d of each covariate
+level relative to the reference patient. PKNCA computes Cmax and AUC0-28d on
+the typical-value profiles above (scenario is the grouping variable), and
+the ratios to the reference patient are compared with the published medians.
+
+```{r pknca-tv}
+tv_nca <- tv |>
+  dplyr::filter(!is.na(Cc), time <= 28) |>
+  dplyr::select(id, scenario, time, Cc)
+# Guarantee a time-zero row per subject.
+tv_nca <- dplyr::bind_rows(
+  tv_nca,
+  tv_nca |> dplyr::distinct(id, scenario) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, scenario, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+
+tv_dose <- tv_events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, scenario, time, amt)
+
+tv_data <- PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(tv_nca, Cc ~ time | scenario + id),
+  PKNCA::PKNCAdose(tv_dose, amt ~ time | scenario + id),
+  intervals = data.frame(start = 0, end = 28, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+)
+tv_res <- as.data.frame(PKNCA::pk.nca(tv_data))
+
+tv_wide <- tv_res |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  dplyr::select(scenario, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+ref_row <- tv_wide[tv_wide$scenario == "2 x 10^6 cells/kg", ]
+
+# Figure 4 statistics boxes (median relative change).
+fig4 <- tibble::tribble(
+  ~scenario,                              ~cmax_pub, ~auc_pub,
+  "Brexu-cel/MCL, no prior bendamustine", 2.6,       2.6,
+  "7.76%",                                1.1,       1.1,
+  "55.3%",                                0.80,      0.83,
+  "Prior bendamustine",                   0.71,      0.75,
+  "55.6 kg",                              1.0,       1.2,
+  "120 kg",                               0.95,      0.82,
+  "30 g/L",                               0.82,      0.84,
+  "46 g/L",                               1.1,       1.1
+)
+
+forest <- fig4 |>
+  dplyr::left_join(tv_wide, by = "scenario") |>
+  dplyr::mutate(
+    cmax_sim = cmax / ref_row$cmax,
+    auc_sim = auclast / ref_row$auclast,
+    # Half a unit of the last digit printed in Figure 4 (two significant
+    # figures) plus 2%: Figure 4 shows the median ratio over 250 parameter
+    # vectors drawn from the covariance matrix, which differs slightly from
+    # the typical-value ratio. A wrong sign or a mistranscribed coefficient
+    # moves a ratio by 10% or more.
+    tol_cmax = 0.5 * 10^(floor(log10(cmax_pub)) - 1) + 0.02 * cmax_pub,
+    tol_auc = 0.5 * 10^(floor(log10(auc_pub)) - 1) + 0.02 * auc_pub
+  )
+
+forest |>
+  dplyr::transmute(
+    "Covariate level" = scenario,
+    "Cmax ratio, simulated" = signif(cmax_sim, 3),
+    "Cmax ratio, Figure 4" = cmax_pub,
+    "AUC0-28d ratio, simulated" = signif(auc_sim, 3),
+    "AUC0-28d ratio, Figure 4" = auc_pub
+  ) |>
+  knitr::kable(caption = "Typical-value exposure relative to the reference patient vs. the Figure 4 medians.")
+
+stopifnot(
+  all(abs(forest$cmax_sim - forest$cmax_pub) <= forest$tol_cmax),
+  all(abs(forest$auc_sim - forest$auc_pub) <= forest$tol_auc)
+)
+```
+
+Every simulated ratio agrees with the Figure 4 median to within 0.01. Three
+round to a neighbouring value in the second decimal: Cmax and AUC0-28d at
+55.3% effector T cells (0.79 and 0.82 against 0.80 and 0.83) and AUC0-28d at
+30 g/L albumin (0.85 against 0.84). Figure 4 prints the median over sampled
+parameter vectors rather than the typical-value ratio, which explains
+differences of this size. The text quotes the largest effects directly: brexu-cel in MCL
+gives 160% higher Cmax and AUC0-28d, and prior bendamustine 29% lower Cmax and
+25% lower AUC0-28d.
+
+# Stochastic simulation by product (Figure 2)
+
+A virtual cohort of 200 axi-cel and 200 brexu-cel patients is drawn from the
+Table 1 distributions by product. The simulated observations (with residual
+error) at the protocol sampling days are summarised as the 5th, 50th and 95th
+percentiles, for comparison with the observed percentiles of the pcVPC in
+Figure 2. The model's censoring at the study-specific thresholds is not
+applied here, so the lower percentiles at late times fall below what the
+assay reported.
+
+```{r cohort}
+rxode2::rxSetSeed(20261025)
+set.seed(20261025)
+
+# Positive covariate drawn as log-normal from a median and a mean (Table 1),
+# truncated to the observed range.
+draw_lognormal <- function(n, median, mean, lo, hi) {
+  sdlog <- sqrt(2 * log(mean / median))
+  pmin(pmax(exp(rnorm(n, log(median), sdlog)), lo), hi)
+}
+
+make_cohort <- function(n, product, id_offset) {
+  is_brexu <- product == "Brexu-cel (MCL)"
+  wt <- if (is_brexu) draw_lognormal(n, 80.9, 81.7, 46.3, 140) else draw_lognormal(n, 82.8, 84.7, 43.1, 166)
+  teff <- if (is_brexu) draw_lognormal(n, 28.2, 29.7, 2.8, 65.2) else draw_lognormal(n, 24.7, 27.1, 1.3, 87.6)
+  alb <- pmin(pmax(rnorm(n, if (is_brexu) 38 else 39.2, if (is_brexu) 5.67 else 5.12), 19), 53)
+  data.frame(
+    id = id_offset + seq_len(n),
+    product = product,
+    WT = wt,
+    ALB = alb,
+    CART_EFFECTOR_T_PCT = teff,
+    PRIOR_BENDAMUSTINE = rbinom(n, 1, if (is_brexu) 0.537 else 0.0542),
+    TUMTP_MCL = as.integer(is_brexu),
+    STUDY_ZUMA7 = if (is_brexu) 0L else rbinom(n, 1, 161 / 406),
+    TUMSZ = if (is_brexu) draw_lognormal(n, 2158, 3280, 260, 16880) else draw_lognormal(n, 2342, 3686, 171, 34680)
+  ) |>
+    # Target 2 x 10^6 cells/kg, capped at the 200 x 10^6 cells of a full bag.
+    dplyr::mutate(amt = pmin(2 * WT, 200))
+}
+
+cohort <- dplyr::bind_rows(
+  make_cohort(200, "Axi-cel", 0L),
+  make_cohort(200, "Brexu-cel (MCL)", 200L)
+)
+
+obs_times <- sort(unique(c(seq(0, 28, by = 0.25), 56, 91, 182, 365)))
+vpc_events <- dplyr::bind_rows(
+  cohort |> dplyr::mutate(time = 0, evid = 1L, dur = inf_dur, cmt = "central"),
+  cohort |>
+    dplyr::select(-amt) |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(evid = 0L, amt = 0, dur = 0, cmt = "central")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+stopifnot(!anyDuplicated(unique(vpc_events[, c("id", "time", "evid")])))
+
+sim <- rxode2::rxSolve(mod_ui, events = vpc_events, keep = c("product")) |>
+  as.data.frame()
+```
+
+```{r figure-2}
+nominal_days <- c(1, 3, 7, 14, 28, 91, 182, 365)
+sim |>
+  dplyr::filter(time %in% nominal_days) |>
+  dplyr::group_by(product, time) |>
+  dplyr::summarise(
+    Q05 = quantile(sim, 0.05), Q50 = median(sim), Q95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~product) +
+  scale_x_log10(breaks = c(1, 10, 100, 365)) +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (days)", y = "CAR-T cells (cells/uL)",
+    caption = "Compare with the observed percentiles in Figure 2 of Mc Laughlin 2026 (5th, median, 95th)."
+  )
+```
+
+The simulated median rises from a few thousandths of a cell/uL on days 1-3
+to tens of cells/uL at days 7-14, then falls by two to three orders of
+magnitude by month 6, with a 5th-95th percentile band spanning three to four
+orders of magnitude. Figure 2 shows the same
+shape and spread, with ZUMA-2 (brexu-cel, MCL) peaking higher than the axi-cel
+studies.
+
+## PKNCA by product
+
+```{r pknca-sim}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc), time <= 28) |>
+  dplyr::select(id, product, time, Cc)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, product) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, product, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+
+sim_dose <- cohort |>
+  dplyr::mutate(time = 0) |>
+  dplyr::select(id, product, time, amt)
+
+sim_data <- PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(sim_nca, Cc ~ time | product + id),
+  PKNCA::PKNCAdose(sim_dose, amt ~ time | product + id),
+  intervals = data.frame(start = 0, end = 28, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+)
+sim_res <- PKNCA::pk.nca(sim_data)
+summary(sim_res)
+
+prod_medians <- as.data.frame(sim_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  dplyr::group_by(product, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = product, values_from = median) |>
+  dplyr::mutate(ratio = `Brexu-cel (MCL)` / `Axi-cel`)
+prod_medians
+
+# The brexu-cel/MCL cohort differs from the reference ratio of 2.6 by its
+# other covariates (more prior bendamustine), and the ratio of two cohort
+# medians carries sampling noise; it must stay clearly above 1.
+stopifnot(all(prod_medians$ratio > 1.3), all(prod_medians$ratio < 4))
+```
+
+The paper does not tabulate Cmax or AUC0-28d by product, so there is no
+published NCA to compare with. The brexu-cel cohort median is roughly two to
+three times the axi-cel median, in line with the 2.6-fold typical effect in
+Figure 4. With between-patient variability this large, a ratio of cohort
+medians does not follow typical-value arithmetic exactly. The larger
+prior-bendamustine share in the brexu-cel cohort (54% against 5%) pulls the
+ratio down, and its higher effector-T-cell share and lower albumin pull it
+down further, but these shifts are of the same order as the sampling noise
+with 200 patients per product.
+
+# Assumptions and deviations
+
+- **IIV and residual SD read as sqrt(omega^2).** Table 2 gives the IIV and
+  RUV values as "CV", and its footnote says their RSEs are "on the
+  approximate SD scale", which is how PsN reports the square root of the
+  variance. The variances in `ini()` are therefore the squares of the printed
+  values (for example 1.97^2 = 3.88 for k21), not log(1 + CV^2).
+- **Residual error.** Additive on the log scale (`lnorm`), with an
+  exponential IIV on the residual SD and a 71.9% larger SD in ZUMA-7, as
+  described in the Results and Table 2.
+- **Censoring.** The authors handled 14.6% of samples reported as zero with
+  the M3 method at study-specific thresholds (0.0001624-0.00744 cells/uL).
+  The model file simulates uncensored concentrations; apply the thresholds
+  to simulated data when comparing with observed data.
+- **Covariate centring.** Continuous covariates are exponential models
+  centred on the overall Table 1 medians (24.7% TEFF, 40 g/L albumin), with
+  body weight log-transformed so that its effect is the power form
+  `(WT/82.7)^0.781`; categorical effects are fractional changes. The Figure 4
+  ratios, reproduced above, confirm these forms.
+- **Brexu-cel / MCL composite.** Every brexu-cel patient had MCL and no
+  axi-cel patient did, so the paper estimated one composite effect. The
+  library encodes it with the MCL indicator `TUMTP_MCL`; set it to 1 to
+  simulate brexu-cel in MCL. The model cannot separate the product from the
+  disease.
+- **Covariate names.** The maintainers ratified two new covariate columns
+  for this model: `CART_EFFECTOR_T_PCT` (effector T cells, CD45RA+ CCR7-, as
+  a percentage of viable CD3+ cells in the product) and `PRIOR_BENDAMUSTINE`
+  (bendamustine in an earlier line of therapy, distinct from the concomitant
+  `CONMED_BENDAMUSTINE`).
+- **Baseline SPD.** The tumour compartment starts at the baseline SPD
+  (`TUMSZ`), and the expansion depends only on `tumor / TUMSZ`. With
+  first-order killing, the typical CAR-T profile is the same for any baseline
+  SPD; the value matters only for the predicted latent tumour burden, which
+  the authors note has not been validated against tumour measurements.
+- **Infusion and dose.** Doses are 30-minute infusions into `central` in
+  units of 10^6 cells, as in the paper. The virtual cohort uses 2 x 10^6
+  cells/kg capped at 200 x 10^6 cells, and the covariate distributions are
+  log-normal or normal draws matched to the Table 1 medians and means by
+  product, truncated to the observed ranges.
+- **Errata.** No correction notice for the article was found as of
+  2026-11-22.

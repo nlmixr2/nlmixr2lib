@@ -43,6 +43,7 @@ Chan_2025_atezolizumab <- function() {
   )
   vignette <- "Chan_2025_atezolizumab_sc_nsclc"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

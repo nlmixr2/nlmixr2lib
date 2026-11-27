@@ -1,0 +1,369 @@
+---
+title: "Tenofovir HIV pre-exposure prophylaxis protection (Wahl 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tenofovir HIV pre-exposure prophylaxis protection (Wahl 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", error = FALSE,
+  fig.width = 7, fig.height = 4.5
+)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Models and source
+
+Wahl 2017 built a preclinical pharmacokinetic-pharmacodynamic (PK-PD) model to
+predict the efficacy of systemic tenofovir disoproxil fumarate (TDF) pre-exposure
+prophylaxis (PrEP) against vaginal HIV-1 acquisition. Protection was measured in
+BLT-humanized mice (which carry a human immune system and are HIV-susceptible)
+dosed at 20, 50, 140 or 300 mg/kg TDF; the matching tenofovir (TFV) and
+tenofovir-diphosphate (TFVdp) exposures were measured in parallel BALB/c mice
+given the same doses. Protective efficacy was then related to each of five
+exposure metrics with a fractional sigmoidal Hill (Emax) model, so the paper
+contributes **five landmark exposure-response model files tied together by this
+one article**:
+
+```{r models}
+mod_dose      <- readModelDb("Wahl_2017_tenofovir_dose")
+mod_plasma    <- readModelDb("Wahl_2017_tenofovir_plasma")
+mod_frt       <- readModelDb("Wahl_2017_tenofovir_frt")
+mod_frt_tfvdp <- readModelDb("Wahl_2017_tenofovir_frt_tfvdp")
+mod_cvl       <- readModelDb("Wahl_2017_tenofovir_cvl")
+```
+
+* Citation: `r rxode2::rxode(mod_dose)$reference`
+* Article: <https://doi.org/10.1038/srep41098> (PMCID PMC5286499, open access)
+
+| Model file | Exposure driver (covariate) | What it predicts |
+|---|---|---|
+| `Wahl_2017_tenofovir_dose` | TDF dose, `DOSE_TDF_MGKG` (mg/kg) | `prob_protection` |
+| `Wahl_2017_tenofovir_plasma` | plasma TFV, `CONC_TFV_PLASMA_NGML` (ng/mL) | `prob_protection` |
+| `Wahl_2017_tenofovir_frt` | FRT tissue TFV, `CONC_TFV_FRT_NGG` (ng/g) | `prob_protection` |
+| `Wahl_2017_tenofovir_frt_tfvdp` | FRT tissue TFVdp, `CONC_TFVDP_FRT_FMOLG` (fmol/g) | `prob_protection` |
+| `Wahl_2017_tenofovir_cvl` | CVL fluid TFV, `CONC_TFV_CVL_NGML` (ng/mL) | `prob_protection` |
+
+All five share the structure of Wahl 2017 Eqn 2,
+
+$$E = E_0 + (E_{\max} - E_0)\,\frac{C^H}{EC_{50}^H + C^H},$$
+
+the fraction of animals protected, with $E_{\max}$ held at 1 for every model.
+There is no PK layer: each model takes its exposure driver as a covariate column
+and emits `prob_protection` algebraically, with no ODE and no time dimension
+(the same shape as `Jayachandran_2021_tenofovir_p24` and
+`Komatsu_2016_penicillinG_clinical_success`).
+
+The dose-response description:
+
+> `r rxode2::rxode(mod_dose)$description`
+
+# Population
+
+The protection outcomes come from BLT-humanized NSG mice challenged
+intravaginally with HIV-1(JR-CSF) 3 h after the third of seven daily TDF doses,
+with protection defined as the absence of detectable HIV-RNA in plasma at every
+time point and of HIV-DNA in blood and tissues at necropsy (Methods;
+Fig. 1a). Observed protection rose with dose (Table 1, uninfected / total): 7/14
+at 20 mg/kg, 8/12 at 50 mg/kg, 11/13 at 140 mg/kg, 11/11 at 300 mg/kg, against
+7/28 in untreated controls. The exposures that drive the models were measured in
+parallel BALB/c mice (n = 8 per dose) 3 h after the third dose, i.e. at the time
+of HIV challenge (Table S4).
+
+A 50 mg/kg TDF dose produced plasma TFV (~370 ng/mL) similar to human exposures
+and gave a 70% risk reduction, comparable to the ~70% seen in highly adherent
+women in the Partners PrEP trial -- the paper's central bridging result.
+
+The same information is available programmatically via each model's `population`
+metadata, e.g. `readModelDb("Wahl_2017_tenofovir_plasma")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source location;
+the table collects the final ADAPT5 estimates (Table 2). Values are mean
+(relative standard error [%SE]). $E_{\max}$ was fixed to 1 for all models; the
+Hill coefficient $H$ was estimated for the dose and plasma models and fixed to 1
+for the FRT TFV, FRT TFVdp and CVL models (Methods: estimating it there gave
+false minima).
+
+| Model | `e0` (E0) | `lec50` (EC50) | `lhill` (H) | Source |
+|---|---|---|---|---|
+| dose | 0.2502 | 38.7 mg/kg | 1.138 | Table 2, Dose column |
+| plasma | 0.2580 | 259 ng/mL | 0.7449 | Table 2, Plasma column |
+| FRT TFV | 0.3151 | 4101 ng/g | 1 (fixed) | Table 2, FRT TFV column |
+| FRT TFVdp | 0.2622 | 6.052e5 fmol/g | 1 (fixed) | Table 2, FRT TFVdp column |
+| CVL | 0.4016 | 238.7 ng/mL | 1 (fixed) | Table 2, CVL column |
+
+| Equation / value | Source location |
+|---|---|
+| `E = E0 + (Emax - E0) * C^H / (EC50^H + C^H)` | Eqn 2 (image `srep41098-m2.jpg`); Methods 'PD model development' |
+| `Emax` fixed to 1 (all models) | Methods: 'Emax was fixed to one for all models' |
+| `H` fixed to 1 for tissue and CVL | Methods: fixed because estimation gave false minima (H < 0.5) |
+| FRT TFV scaled by 0.78, FRT TFVdp by 0.62 (BALB/c to BLT) | Results 'Comparative TFV and TFVdp concentrations'; Fig. 4c |
+| BALB/c median exposures by dose | Table S4 |
+| `addSd_prob_protection` fixed 0.001 | NOT from source; placeholder so rxode2 accepts the observation |
+
+# Solving a landmark exposure-response model
+
+Each model is static: it is evaluated by solving at a grid of driver values, one
+observation row per value, with no dosing and no ODE.
+
+```{r solve-helper}
+# rxSolve a no-ODE landmark model at a vector of exposure-driver values and
+# return the prob_protection output. The models carry no random effects, so
+# rxSolve is deterministic and emits a benign "no omega" notice (suppressed).
+solve_prob <- function(model, driver, covname) {
+  ev <- data.frame(id = seq_along(driver), time = 0, amt = 0, evid = 0L)
+  ev[[covname]] <- driver
+  out <- suppressWarnings(as.data.frame(
+    rxode2::rxSolve(model, ev, returnType = "data.frame")
+  ))
+  out$prob_protection
+}
+
+# Closed-form Hill (Emax) to cross-check the packaged models against Eqn 2.
+hill_emax <- function(dv, e0, ec50, h, emax = 1) {
+  e0 + (emax - e0) * dv^h / (ec50^h + dv^h)
+}
+```
+
+## The packaged models encode Eqn 2 exactly
+
+A pure known-answer check: each packaged model must reproduce the closed-form
+Hill function at its own Table 2 parameters. This is deterministic arithmetic
+(no cohort), so the bound is tight.
+
+```{r eqn2-check}
+drv <- c(0, 10, 50, 100, 500, 1000, 1e4, 1e6)
+chk <- tibble::tibble(
+  dose      = max(abs(solve_prob(mod_dose, drv, "DOSE_TDF_MGKG") -
+                        hill_emax(drv, 0.2502, 38.7, 1.138))),
+  plasma    = max(abs(solve_prob(mod_plasma, drv, "CONC_TFV_PLASMA_NGML") -
+                        hill_emax(drv, 0.2580, 259, 0.7449))),
+  frt       = max(abs(solve_prob(mod_frt, drv, "CONC_TFV_FRT_NGG") -
+                        hill_emax(drv, 0.3151, 4101, 1))),
+  frt_tfvdp = max(abs(solve_prob(mod_frt_tfvdp, drv, "CONC_TFVDP_FRT_FMOLG") -
+                        hill_emax(drv, 0.2622, 6.052e5, 1))),
+  cvl       = max(abs(solve_prob(mod_cvl, drv, "CONC_TFV_CVL_NGML") -
+                        hill_emax(drv, 0.4016, 238.7, 1)))
+)
+chk
+stopifnot(all(as.numeric(chk[1, ]) < 1e-8))
+```
+
+# Dose-response model (Figure 4b)
+
+The BALB/c median exposures by dose (Table S4) and the observed protected
+fraction (Table 1) anchor the validation.
+
+```{r balbc-medians}
+# Table S4: BALB/c cohort-median exposures at the time of HIV challenge.
+medians <- tibble::tribble(
+  ~dose, ~plasma_ngml, ~cvl_ngml, ~frt_ngg,  ~frt_tfvdp_fmolg,
+  20,    184.5,        323.5,     2804,      1193083,
+  50,    370.5,        266.3,     2780,      1146214,
+  140,   1500,         43900,     12034,     8167641,
+  300,   2410,         5870,      22496.5,   6828724
+)
+
+# Table 1: observed protected fraction (uninfected / total) in BLT mice.
+observed <- tibble::tribble(
+  ~dose, ~uninfected, ~total,
+  0,     7,           28,
+  20,    7,           14,
+  50,    8,           12,
+  140,   11,          13,
+  300,   11,          11
+) |>
+  mutate(obs_protected = uninfected / total)
+```
+
+```{r figure-4b}
+dose_grid <- seq(0, 320, by = 2)
+dose_curve <- tibble::tibble(
+  dose = dose_grid,
+  prob = solve_prob(mod_dose, dose_grid, "DOSE_TDF_MGKG")
+)
+
+ggplot(dose_curve, aes(dose, prob)) +
+  geom_line(colour = "red") +
+  geom_point(data = observed, aes(dose, obs_protected), size = 3) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(
+    x = "TDF dose (mg/kg)", y = "Fraction protected",
+    title = "Figure 4b - dose-response for protection",
+    caption = paste(
+      "Replicates Figure 4b of Wahl 2017. Line is the packaged dose model;",
+      "points are the observed protected fraction (Table 1)."
+    )
+  )
+```
+
+```{r figure-4b-checks}
+dose_pred <- solve_prob(mod_dose, c(20, 50, 140, 300), "DOSE_TDF_MGKG")
+names(dose_pred) <- c("20", "50", "140", "300")
+round(100 * dose_pred, 1)
+
+# Wahl 2017 text gives the dose model's predicted efficacy at 140 and 300
+# mg/kg: 86% and 93%. Deterministic arithmetic from the published Eqn 2
+# parameters, so the bound is tight (allows rounding of the printed integers).
+stopifnot(
+  abs(100 * dose_pred["140"] - 86) < 1,
+  abs(100 * dose_pred["300"] - 93) < 1,
+  # The curve is monotone increasing in dose.
+  all(diff(dose_curve$prob) >= 0)
+)
+```
+
+# Plasma TFV model (the paper's best predictor)
+
+Wahl 2017 reports that the cohort-median plasma TFV concentrations gave
+predicted protection of **58, 67, 84 and 88%** at 20, 50, 140 and 300 mg/kg
+(Results, "PK-PD analysis of tenofovir"). Evaluating the packaged plasma model
+at the Table S4 BALB/c medians reproduces those numbers.
+
+```{r plasma-check}
+plasma_pred <- solve_prob(mod_plasma, medians$plasma_ngml, "CONC_TFV_PLASMA_NGML")
+plasma_tab <- medians |>
+  mutate(predicted_pct = round(100 * plasma_pred, 0),
+         published_pct = c(58, 67, 84, 88)) |>
+  select(dose, plasma_ngml, predicted_pct, published_pct)
+plasma_tab |>
+  dplyr::rename(
+    "TDF dose (mg/kg)" = dose,
+    "Median plasma TFV (ng/mL)" = plasma_ngml,
+    "Predicted protection (%)" = predicted_pct,
+    "Published protection (%)" = published_pct
+  ) |>
+  knitr::kable(caption = "Plasma model: predicted vs published protection at the cohort-median plasma TFV (Table S4).")
+
+# Deterministic solve at fixed published medians; the only slack is the
+# paper's integer rounding of the percentages, so a 1.5 percentage-point
+# bound is tight and still goes red on any parameter mis-transcription.
+stopifnot(max(abs(100 * plasma_pred - c(58, 67, 84, 88))) < 1.5)
+```
+
+# Tissue and CVL models (Figure 4c)
+
+For the tissue models the driver is the BLT-equivalent concentration, obtained
+by scaling the BALB/c median by 0.78 (FRT TFV) or 0.62 (FRT TFVdp); plasma and
+CVL use the BALB/c value directly (no conversion factor). Figure 4c overlays the
+three concentration-response curves against the scaled median exposures.
+
+```{r figure-4c}
+conc_curve <- function(model, covname, xmax, scale = 1, label) {
+  grid <- seq(0, xmax, length.out = 200)
+  tibble::tibble(metric = label, conc = grid,
+                 prob = solve_prob(model, grid, covname))
+}
+
+curves <- bind_rows(
+  conc_curve(mod_plasma, "CONC_TFV_PLASMA_NGML", 2600, label = "Plasma TFV (ng/mL)"),
+  conc_curve(mod_frt, "CONC_TFV_FRT_NGG", 20000, label = "FRT TFV (ng/g, BLT scale)"),
+  conc_curve(mod_frt_tfvdp, "CONC_TFVDP_FRT_FMOLG", 6e6, label = "FRT TFVdp (fmol/g, BLT scale)")
+)
+
+obs_points <- bind_rows(
+  medians |> transmute(metric = "Plasma TFV (ng/mL)", conc = plasma_ngml,
+                       prob = solve_prob(mod_plasma, plasma_ngml, "CONC_TFV_PLASMA_NGML")),
+  medians |> transmute(metric = "FRT TFV (ng/g, BLT scale)", conc = frt_ngg * 0.78,
+                       prob = solve_prob(mod_frt, frt_ngg * 0.78, "CONC_TFV_FRT_NGG")),
+  medians |> transmute(metric = "FRT TFVdp (fmol/g, BLT scale)", conc = frt_tfvdp_fmolg * 0.62,
+                       prob = solve_prob(mod_frt_tfvdp, frt_tfvdp_fmolg * 0.62, "CONC_TFVDP_FRT_FMOLG"))
+)
+
+ggplot(curves, aes(conc, prob)) +
+  geom_line(colour = "red") +
+  geom_point(data = obs_points, aes(conc, prob), size = 2) +
+  facet_wrap(~metric, scales = "free_x") +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(
+    x = "Exposure metric", y = "Fraction protected",
+    title = "Figure 4c - concentration-response for protection",
+    caption = "Replicates Figure 4c of Wahl 2017 (tissue metrics on the BLT scale)."
+  )
+```
+
+The headline tissue finding is that FRT TFVdp is **non-monotone in dose** -- its
+median is higher at 140 than at 300 mg/kg (Table S4) -- so the TFVdp model
+predicts no efficacy gain from 140 to 300 mg/kg, exactly as the paper states.
+
+```{r tfvdp-check}
+tfvdp_pred <- solve_prob(
+  mod_frt_tfvdp, medians$frt_tfvdp_fmolg * 0.62, "CONC_TFVDP_FRT_FMOLG"
+)
+names(tfvdp_pred) <- medians$dose
+round(100 * tfvdp_pred, 1)
+
+stopifnot(
+  # FRT TFVdp median is higher at 140 than 300 mg/kg, so predicted protection
+  # does NOT increase from 140 to 300 (Results: "no predicted increase in
+  # efficacy in animals dosed with 300 mg/kg").
+  tfvdp_pred["140"] >= tfvdp_pred["300"],
+  # The FRT TFV model, by contrast, is monotone in the scaled median driver.
+  all(diff(solve_prob(mod_frt, sort(medians$frt_ngg) * 0.78, "CONC_TFV_FRT_NGG")) >= 0)
+)
+```
+
+# No non-compartmental analysis
+
+These are landmark exposure-response models with no PK layer and no
+concentration-time course, so PKNCA is not applicable (the exposure metrics are
+supplied as covariate data, exactly as in `Jayachandran_2021_tenofovir_p24` and
+`Komatsu_2016_penicillinG_clinical_success`). The validation above is instead a
+deterministic reproduction of the paper's published predicted-protection
+percentages. A user who wants a closed PK-PD loop can generate the exposure
+covariates from a tenofovir population PK model (e.g.
+`modellib("Burns_2015_tenofovir")`) and feed the landmark values into these
+models.
+
+# Assumptions and deviations
+
+* **Preclinical mouse model.** Protection is measured in BLT-humanized mice and
+  exposures in BALB/c mice; the species are recorded in each model's
+  `population$species`. The paper's purpose is to bridge these preclinical
+  exposures to human PrEP, not to fit human data directly.
+* **BALB/c-to-BLT conversion factors (0.78 for FRT TFV, 0.62 for FRT TFVdp).**
+  The tissue models were fitted on BLT-equivalent concentrations obtained by
+  scaling the parallel BALB/c tissue concentrations by the BLT:BALB/c median
+  ratio (Results 'Comparative TFV and TFVdp concentrations'; Fig. 4c). The
+  covariate columns therefore carry the BLT-scale concentration; to reproduce a
+  dose cohort from the BALB/c Table S4 medians, apply the factor first (done in
+  the Figure 4c chunk). No conversion was applied to plasma (strains differed
+  <9%) or CVL (no factor was generated, because of large variability).
+* **Emax fixed to 1.** Wahl 2017 fixed the maximum protected fraction to 1 for
+  all five models ('Emax was fixed to one for all models'). Encoded as
+  `lemax <- fixed(log(1))`.
+* **Hill coefficient fixed to 1 for the tissue and CVL models.** Table 2 reports
+  `H = NA` for FRT TFV, FRT TFVdp and CVL; the Methods explain that estimating
+  `H` there gave false minima (`H < 0.5`), so it was fixed to 1. `H` was
+  estimated (1.138, 0.7449) for the dose and plasma models.
+* **Residual error.** Wahl 2017 used a proportional residual error model with
+  the assay CV% as initial estimates, but Table 2 reports no final
+  residual-error estimate. The packaged models emit a deterministic
+  typical-value probability with a tiny placeholder additive residual
+  (`addSd_prob_protection <- fixed(0.001)`, not from the source) so the nlmixr2
+  observation machinery accepts the model. Sample binary protection with
+  `rbinom(n, 1, prob_protection)` on the `rxSolve()` output rather than treating
+  that residual as meaningful.
+* **No between-subject variability.** The paper reports none for these PD
+  models, and none is invented; the models are deterministic in the exposure
+  driver.
+* **Exposure drivers as covariates.** Each model takes its exposure metric as a
+  covariate column (a dose or a matrix-specific concentration) rather than
+  computing it from a PK model, exactly as the authors related BLT protection to
+  BALB/c exposures externally.
+* **No correction notice** for this article was found as of 2026-11-25.
+
+# Session information
+
+```{r session}
+sessionInfo()
+```

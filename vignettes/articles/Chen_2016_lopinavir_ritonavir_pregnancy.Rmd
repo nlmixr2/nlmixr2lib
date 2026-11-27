@@ -1,0 +1,568 @@
+---
+title: "Unbound lopinavir and ritonavir in pregnancy (Chen 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Unbound lopinavir and ritonavir in pregnancy (Chen 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Chen 2016 fits two **separate** population PK models, one for lopinavir (LPV)
+and one for ritonavir (RTV), each describing the total and the unbound
+(protein-free) plasma concentration simultaneously in HIV-infected women
+followed through pregnancy and postpartum. The authors also tested joint
+LPV-RTV interaction models, found that none improved the fit significantly,
+and did not adopt them, so only the two individual final models are packaged.
+
+```{r models}
+mod_names <- c(
+  lopinavir = "Chen_2016_lopinavir",
+  ritonavir = "Chen_2016_ritonavir"
+)
+uis <- lapply(mod_names, function(n) rxode2::rxode(readModelDb(n)))
+```
+
+* Citation: `r uis$lopinavir$reference`
+* Article: <https://doi.org/10.1002/psp4.12065>
+* Supplementary Material S5 holds the authors' NONMEM control streams for both
+  individual models and for the three interaction models, available from the
+  [Europe PMC supplementary files for PMC4807435](https://europepmc.org/article/PMC/PMC4807435).
+
+# Population
+
+Twelve HIV-infected pregnant women taking lopinavir/ritonavir tablets with a
+nucleoside backbone were enrolled at the University of North Carolina at Chapel
+Hill and Northwestern University (NCT00766818). Each had intensive PK sampling
+at four visits: 20-24 weeks of gestation on 400/100 mg twice daily; 30 weeks on
+400/100 mg, after which the dose was increased to 500/125 mg twice daily; 32
+weeks on 500/125 mg; and about 8 weeks postpartum back on 400/100 mg. Age was
+18-35 years (median 28), screening weight 45.3-142.6 kg (median 87.4), 75% were
+African American and 67% were antiretroviral-naive. Albumin and alpha-1 acid
+glycoprotein were both significantly lower in pregnancy than postpartum. In
+total 330 plasma samples were assayed for both total and unbound drug.
+
+```{r population}
+str(uis$lopinavir$population[c("n_subjects", "age_range", "weight_median", "race_ethnicity", "ga_range")])
+```
+
+# Model structure
+
+Both drugs use the same structure (Figure 1). The central ODE state holds
+*unbound* drug, so `cl` and `vc` are the apparent unbound parameters CLu/F
+(the apparent intrinsic clearance) and Vu/F; the unbound concentration is
+`Cu = central / vc` and the total concentration is `Cc = Cu / fu`, with a
+linear (concentration-independent) unbound fraction. Absorption is first order
+with a lag time. Gestational week `EGA` (the control streams' `WEEK`, coded 0
+at the postpartum visit) raises CLu/F exponentially:
+
+`CLu/F = theta * exp(coef * EGA)` (paper Eq 14).
+
+Ritonavir CLu/F and Vu/F additionally scale with body weight (fixed exponents
+0.75 and 1 about 70 kg). Interoccasion variability is carried over the four
+study visits through the `OCC` column (1-4); `OCC = 0` gives the
+occasion-free typical value.
+
+# Source trace
+
+```{r source-trace, echo = FALSE}
+tibble::tribble(
+  ~Item, ~Lopinavir, ~Ritonavir, ~Source,
+  "Structure (1-cmt, first-order absorption + lag, unbound central, Cc = Cu/fu)", "yes", "yes", "Figure 1; Results; S5 Parts I-II $MODEL/$DES/$ERROR",
+  "CLu/F (L/h)", "167", "160 per 70 kg", "Table 2",
+  "Vu/F (L)", "3430", "1560 per 70 kg", "Table 2",
+  "ka (1/h)", "1.07", "1.01", "Table 2",
+  "fu", "0.0258", "0.149", "Table 2 (2.58%, 14.9%)",
+  "Lag time (h)", "1.77", "1.86", "Table 2",
+  "Gestational-week coefficient on CLu/F", "0.0148", "0.0184", "Table 2; Eq 14; S5 $PK",
+  "Allometric exponents CL / V", "-", "0.75 / 1 (fixed)", "Methods; S5 Part II $PK",
+  "IIV CLu/F (variance)", "0.000729", "0.0073", "Table 2 %CV squared; S5 Part III $OMEGA BLOCK(2) FIX",
+  "IIV fu (variance)", "0.002116", "0.0597", "Table 2 %CV squared; S5 Part III",
+  "IIV CLu/F-fu covariance", "-", "-0.0199 (r = -0.95)", "S5 Part III; Table 2",
+  "IOV CLu/F (variance)", "0.061009", "-", "Table 2 24.7 %CV",
+  "IOV ka (variance)", "1.9044", "2.01", "Table 2 138 / 141.8 %CV; S5 Part III",
+  "IOV fu (variance)", "0.01", "0.0551", "Table 2 10.0 / 23.5 %CV; S5 Part III",
+  "IOV F (variance)", "-", "0.131", "Table 2 36.2 %CV; S5 Part III",
+  "Proportional residual, total", "0.184", "0.269", "Table 2",
+  "Proportional residual, unbound", "0.244", "0.427", "Table 2"
+) |>
+  knitr::kable(caption = "Source of every structural element and parameter value in the two packaged models.")
+```
+
+The paper's %CV is `100 * sqrt(omega^2)`, not `sqrt(exp(omega^2) - 1)`. This
+is read off the ritonavir values the authors fixed into their interaction
+control streams, which reproduce every ritonavir %CV and the correlation in
+Table 2 exactly under that convention:
+
+```{r cv-convention}
+rtv_omega <- c(cl = 0.0073, fu = 0.0597, cov = -0.0199, iov_ka = 2.01, iov_fu = 0.0551, iov_f = 0.131)
+cv_check <- tibble::tibble(
+  Quantity = c("IIV CLu/F", "IIV fu", "IOV ka", "IOV fu", "IOV F", "r(CL, fu)"),
+  `Table 2` = c(8.5, 24.4, 141.8, 23.5, 36.2, -0.95),
+  `From S5 omegas` = c(
+    100 * sqrt(rtv_omega[c("cl", "fu", "iov_ka", "iov_fu", "iov_f")]),
+    rtv_omega[["cov"]] / sqrt(rtv_omega[["cl"]] * rtv_omega[["fu"]])
+  )
+)
+# Each Table 2 entry is printed to 2-4 significant figures; the omegas to 3.
+# The realised relative deviations are 0.02%-0.52%, while the competing
+# sqrt(exp(omega^2) - 1) reading would print the ka entry as 254%, not 141.8%.
+stopifnot(with(cv_check, max(abs(`From S5 omegas` / `Table 2` - 1)) < 0.01))
+knitr::kable(cv_check, digits = 3)
+```
+
+# Derived parameters in Table 2 and Table 3
+
+Table 2 footnotes a-b define the total-drug parameters as `CL/F = fu * CLu/F`
+and `V/F = fu * Vu/F`. Table 3 lists the post hoc median clearances at each
+visit; because lopinavir IIV on CLu/F is only 2.7%, the typical value
+`167 * exp(0.0148 * EGA)` should land on those medians (visit 1 is taken at 22
+weeks, the gestational age the Discussion uses for it).
+
+```{r derived}
+p <- lapply(uis, function(u) {
+  th <- u$theta
+  list(cl = exp(th[["lcl"]]), vc = exp(th[["lvc"]]), fu = exp(th[["lfu"]]), coef = th[["e_ega_cl"]])
+})
+derived <- tibble::tibble(
+  Quantity = c("LPV CL/F (L/h)", "LPV V/F (L)", "RTV CL/F per 70 kg (L/h)", "RTV V/F per 70 kg (L)"),
+  Published = c(4.31, 88.5, 23.8, 232),
+  Model = c(
+    p$lopinavir$fu * p$lopinavir$cl, p$lopinavir$fu * p$lopinavir$vc,
+    p$ritonavir$fu * p$ritonavir$cl, p$ritonavir$fu * p$ritonavir$vc
+  )
+)
+# Products of two 3-significant-figure values against a third: rounding alone
+# is worth up to ~0.4%.
+stopifnot(with(derived, max(abs(Model / Published - 1)) < 0.01))
+knitr::kable(derived, digits = 3, caption = "Table 2 footnotes a-b reproduced from the packaged parameters.")
+
+visits <- tibble::tibble(
+  visit = c("Visit 1 (20-24 weeks)", "Visit 2 (30 weeks)", "Visit 3 (32 weeks)", "Visit 4 (8 weeks postpartum)"),
+  EGA = c(22, 30, 32, 0),
+  OCC = 1:4,
+  dose_lpv = c(400, 400, 500, 400),
+  dose_rtv = c(100, 100, 125, 100)
+)
+tab3 <- visits |>
+  dplyr::mutate(
+    `Table 3 CLu/F median` = c(232, 261, 269, 167),
+    `Typical CLu/F` = p$lopinavir$cl * exp(p$lopinavir$coef * EGA),
+    `Table 3 CL/F median` = c(5.92, 6.69, 6.94, 4.28),
+    `Typical CL/F` = p$lopinavir$fu * `Typical CLu/F`,
+    `Increase vs postpartum (%)` = 100 * (exp(p$lopinavir$coef * EGA) - 1)
+  )
+# The typical value is not the post hoc median, but with 2.7% IIV on CLu/F
+# and 4.6% on fu the realised differences are 0%-0.3% (CLu/F) and
+# 0.3%-0.8% (CL/F). A wrong coefficient (e.g. 0.0184 for 0.0148) moves the
+# 32-week row by 12%.
+stopifnot(
+  with(tab3, max(abs(`Typical CLu/F` / `Table 3 CLu/F median` - 1))) < 0.02,
+  with(tab3, max(abs(`Typical CL/F` / `Table 3 CL/F median` - 1))) < 0.02
+)
+tab3 |>
+  dplyr::select(-OCC, -dose_lpv, -dose_rtv) |>
+  dplyr::rename("Visit" = visit) |>
+  knitr::kable(digits = 2, caption = "Lopinavir clearance by visit: typical value against the Table 3 post hoc medians (L/h).")
+```
+
+The increases over postpartum (38%, 56% and 61%) are the ones the Results
+report for 20-24, 30 and 32 weeks.
+
+# Typical-value steady-state profiles and PKNCA
+
+Each visit is simulated at steady state (20 doses every 12 h, at the visit's
+dose) for a typical woman. Ritonavir is simulated at the cohort's median
+screening weight, 87.4 kg.
+
+```{r typical}
+tau <- 12
+n_doses <- 20
+last_dose <- (n_doses - 1) * tau
+obs_t <- sort(unique(c(seq(0, 2, by = 0.25), seq(2, 6, by = 0.1), seq(6, 12, by = 0.5))))
+
+# Event table built as a plain data.frame, with cmt set to the ODE state and
+# an explicit dvid on every observation row: these models declare two
+# endpoints (1 = total Cc, 2 = unbound Cu, in the order of the residual-error
+# lines), so an observation row must say which endpoint it belongs to.
+make_ss_events <- function(dose, ids, EGA, OCC, WT) {
+  dplyr::bind_rows(
+    data.frame(
+      id = ids, time = 0, amt = dose, evid = 1L, cmt = "depot",
+      ii = tau, addl = n_doses - 1L, dvid = NA_integer_
+    ),
+    tidyr::crossing(id = ids, toff = obs_t) |>
+      dplyr::transmute(
+        id, time = last_dose + toff, amt = NA_real_, evid = 0L, cmt = "central",
+        ii = NA_real_, addl = NA_integer_, dvid = 2L
+      )
+  ) |>
+    dplyr::mutate(EGA = EGA, OCC = OCC, WT = WT) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+typ <- dplyr::bind_rows(lapply(names(uis), function(drug) {
+  dplyr::bind_rows(lapply(seq_len(nrow(visits)), function(i) {
+    v <- visits[i, ]
+    dose <- if (drug == "lopinavir") v$dose_lpv else v$dose_rtv
+    ev <- make_ss_events(dose, ids = 1L, EGA = v$EGA, OCC = v$OCC, WT = 87.4)
+    s <- rxode2::rxSolve(uis[[drug]], ev, omega = NA, sigma = NA, returnType = "data.frame")
+    s |>
+      dplyr::mutate(drug = drug, visit = v$visit, dose = dose, toff = time - last_dose)
+  }))
+}))
+```
+
+```{r typical-plot, fig.height = 6}
+typ |>
+  dplyr::select(drug, visit, toff, Total = Cc, Unbound = Cu) |>
+  tidyr::pivot_longer(c(Total, Unbound), names_to = "analyte", values_to = "conc") |>
+  ggplot(aes(toff, conc * 1000, colour = visit)) +
+  geom_line() +
+  facet_grid(analyte ~ drug, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Concentration (ng/mL)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 2))
+```
+
+PKNCA is run on the steady-state dosing interval, with `drug`, `analyte` and
+`visit` as the grouping. At steady state `Dose / AUC0-tau` (`cl.last`) is the
+apparent oral clearance, so the unbound stream returns CLu/F and the total
+stream CL/F, which Table 3 reports as post hoc medians per visit.
+
+```{r pknca}
+sim_nca <- typ |>
+  dplyr::select(drug, visit, dose, time = toff, Total = Cc, Unbound = Cu) |>
+  tidyr::pivot_longer(c(Total, Unbound), names_to = "analyte", values_to = "Cc") |>
+  dplyr::mutate(stream = paste(drug, analyte, visit, sep = " | "), id = 1L) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::arrange(stream, time)
+# The interval starts at the last dose, so the time-zero row is the
+# steady-state trough; assert it is present.
+stopifnot(
+  sim_nca |> dplyr::group_by(stream) |> dplyr::summarise(h = any(time == 0), .groups = "drop") |>
+    dplyr::pull(h) |> all(),
+  dplyr::n_distinct(sim_nca$stream) == 16L
+)
+dose_df <- sim_nca |> dplyr::distinct(stream, id, dose) |> dplyr::mutate(time = 0)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(sim_nca), Cc ~ time | stream + id, concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(dose_df), dose ~ time | stream + id, doseu = "mg")
+intervals <- data.frame(start = 0, end = tau, cmax = TRUE, cmin = TRUE, tmax = TRUE, auclast = TRUE, cav = TRUE, cl.last = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_wide <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "cmin", "tmax", "cav")) |>
+  dplyr::mutate(PPORRES = ifelse(PPTESTCD == "tmax", PPORRES, PPORRES * 1000)) |>
+  tidyr::pivot_wider(id_cols = stream, names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::mutate(dplyr::across(-stream, ~ signif(.x, 3)))
+nca_wide |>
+  dplyr::rename(
+    "Drug | analyte | visit" = stream,
+    "Cmax (ng/mL)" = cmax,
+    "Cmin (ng/mL)" = cmin,
+    "Tmax (h)" = tmax,
+    "Cavg (ng/mL)" = cav
+  ) |>
+  knitr::kable(caption = "Steady-state NCA of the typical-value profiles.")
+```
+
+```{r nca-compare}
+table3 <- tibble::tribble(
+  ~drug, ~analyte, ~visit_i, ~cl.last,
+  "lopinavir", "Unbound", 1, 232, "lopinavir", "Unbound", 2, 261,
+  "lopinavir", "Unbound", 3, 269, "lopinavir", "Unbound", 4, 167,
+  "lopinavir", "Total", 1, 5.92, "lopinavir", "Total", 2, 6.69,
+  "lopinavir", "Total", 3, 6.94, "lopinavir", "Total", 4, 4.28,
+  "ritonavir", "Unbound", 1, 273, "ritonavir", "Unbound", 2, 337,
+  "ritonavir", "Unbound", 3, 357, "ritonavir", "Unbound", 4, 178,
+  "ritonavir", "Total", 1, 38.2, "ritonavir", "Total", 2, 52.3,
+  "ritonavir", "Total", 3, 58.5, "ritonavir", "Total", 4, 26.9
+) |>
+  dplyr::mutate(stream = paste(drug, analyte, visits$visit[visit_i], sep = " | ")) |>
+  dplyr::select(stream, cl.last)
+
+cmp <- suppressWarnings(nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = table3,
+  by = "stream",
+  params = "cl.last",
+  units = c(cl.last = "L/h"),
+  tolerance_pct = 20
+))
+cmp[[1]] <- "Apparent oral clearance Dose/AUC0-12 (L/h)"
+knitr::kable(
+  cmp,
+  caption = "Typical-value Dose/AUC0-12 against the Table 3 post hoc median clearances (median, not typical value). * marks a row differing by more than 20%.",
+  align = c("l", "l", "r", "r", "r")
+)
+
+recovered <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "cl.last") |>
+  dplyr::select(stream, simulated = PPORRES) |>
+  dplyr::inner_join(table3, by = "stream") |>
+  dplyr::mutate(pct = 100 * (simulated - cl.last) / cl.last)
+lpv_rec <- dplyr::filter(recovered, grepl("^lopinavir", stream))
+rtv_u_rec <- dplyr::filter(recovered, grepl("^ritonavir \\| Unbound", stream))
+# Deterministic solves. Lopinavir: realised deviations 0%-0.8%, set by the gap
+# between a typical value and a post hoc median under 2.7% / 4.6% IIV, plus
+# trapezoidal error. Ritonavir unbound: the typical woman is the 87.4 kg
+# screening median, while the Table 3 medians pool the individual weights and
+# etas at each visit; realised deviations 2.7%-6.1%. Both bands still fail on
+# a mis-transcribed clearance, coefficient or fu, each worth >= 12%.
+stopifnot(
+  nrow(lpv_rec) == 8L, max(abs(lpv_rec$pct)) < 2,
+  nrow(rtv_u_rec) == 4L, max(abs(rtv_u_rec$pct)) < 10
+)
+```
+
+The lopinavir rows agree with Table 3 within 1%, and the ritonavir unbound
+rows within about 6%. The ritonavir
+total-clearance medians differ more (up to about 13% at visit 3). Ritonavir
+CLu/F and fu are strongly negatively correlated between subjects (r = -0.95)
+and fu varies between occasions by 23.5%, so the median of the post hoc product
+`fu * CLu/F` need not equal the product of the typical values.
+
+```{r fu-identity}
+# Cu / Cc is fu by construction; an exactness check on the encoding.
+fu_check <- typ |>
+  dplyr::group_by(drug) |>
+  dplyr::summarise(ratio = max(abs(Cu / Cc / fu - 1)), .groups = "drop")
+stopifnot(max(fu_check$ratio) < 1e-10)
+```
+
+# Visual predictive check (Figure 3)
+
+Two hundred virtual women per visit are simulated at steady state, each
+observed over one dosing interval with her own interindividual and
+interoccasion draws and residual error. Body weight (needed by ritonavir only)
+is drawn log-normally about the 87.4 kg screening median and truncated to the
+published 45.3-142.6 kg range.
+
+```{r vpc}
+rxode2::rxSetSeed(20160301)
+n_per_visit <- 200
+set.seed(20160301)
+wt_pool <- exp(rnorm(4 * n_per_visit, log(87.4), 0.28))
+wt_pool <- pmin(pmax(wt_pool, 45.3), 142.6)
+
+vpc_obs_t <- c(0, 1, 2, 3, 4, 5, 6, 8, 10, 12)
+vpc <- dplyr::bind_rows(lapply(names(uis), function(drug) {
+  ev <- dplyr::bind_rows(lapply(seq_len(nrow(visits)), function(i) {
+    v <- visits[i, ]
+    ids <- (i - 1L) * n_per_visit + seq_len(n_per_visit)
+    dose <- if (drug == "lopinavir") v$dose_lpv else v$dose_rtv
+    one <- function(dvid) {
+      dplyr::bind_rows(
+        data.frame(id = ids, time = 0, amt = dose, evid = 1L, cmt = "depot", ii = tau, addl = n_doses - 1L, dvid = NA_integer_),
+        tidyr::crossing(id = ids, toff = vpc_obs_t) |>
+          dplyr::transmute(id, time = last_dose + toff, amt = NA_real_, evid = 0L, cmt = "central", ii = NA_real_, addl = NA_integer_, dvid = dvid)
+      )
+    }
+    # Total (dvid 1) and unbound (dvid 2) observation rows at the same times;
+    # the dose rows are kept once.
+    dplyr::bind_rows(one(1L), dplyr::filter(one(2L), evid == 0L)) |>
+      dplyr::mutate(EGA = v$EGA, OCC = v$OCC, WT = wt_pool[id], visit = v$visit)
+  })) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+  rxode2::rxSolve(uis[[drug]], ev, keep = c("visit", "dvid"), returnType = "data.frame") |>
+    dplyr::mutate(drug = drug)
+}))
+
+vpc_sum <- vpc |>
+  dplyr::mutate(
+    toff = time - last_dose,
+    analyte = ifelse(dvid == 1L, "Total", "Unbound")
+  ) |>
+  dplyr::group_by(drug, analyte, visit, toff) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05) * 1000,
+    p50 = quantile(sim, 0.50) * 1000,
+    p95 = quantile(sim, 0.95) * 1000,
+    .groups = "drop"
+  )
+```
+
+```{r vpc-plot, fig.height = 9, fig.cap = "Replicates the prediction percentiles of Figure 3 of Chen 2016 (rows: unbound LPV, total LPV, unbound RTV, total RTV; columns: visits 1-4). Lines: simulated 5th, 50th and 95th percentiles."}
+vpc_sum |>
+  dplyr::mutate(
+    row = factor(paste(analyte, drug), levels = c("Unbound lopinavir", "Total lopinavir", "Unbound ritonavir", "Total ritonavir")),
+    visit = sub(" \\(.*$", "", visit)
+  ) |>
+  ggplot(aes(toff)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.2) +
+  geom_line(aes(y = p50), colour = "firebrick") +
+  facet_grid(row ~ visit, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time (hr)", y = "Concentration (ng/mL)") +
+  theme_bw()
+```
+
+The simulated medians lie in the same ranges as the Figure 3 prediction
+medians: unbound lopinavir of about 100-200 ng/mL in pregnancy and 170-240
+ng/mL postpartum, total lopinavir of about 4,000-9,000 ng/mL, unbound ritonavir
+of about 10-60 ng/mL and total ritonavir of about 80-400 ng/mL, with the
+highest concentrations of both drugs at the postpartum visit. Figure 3 is
+compared visually only; no curve was digitised from it.
+
+# Inhibitory quotients (Table 4, Supplementary Tables S7 and S8)
+
+The authors simulated 1,000 subjects at 32 weeks of gestation and postpartum
+under 400/100, 500/125 and 600/150 mg twice daily, took the unbound LPV trough
+12 h after a steady-state dose, and computed the inhibitory quotient
+`IQ = Cu,trough / IC50` with the wild-type IC50 of 0.69 ng/mL and IC50s raised
+4-, 10-, 20- and 40-fold. IQ > 15 counts as effective and IQ < 4 as
+ineffective. Here 200 subjects are simulated per arm (six arms). The IQs are
+summarised on the simulated observation (`sim`, which carries the proportional
+residual error) rather than on the individual prediction: both reproduce the
+published means, but only the former reproduces the published SDs, so the
+authors' IQs evidently included residual error.
+
+```{r iq}
+rxode2::rxSetSeed(20160302)
+n_arm <- 200
+arms <- tidyr::crossing(dose = c(400, 500, 600), EGA = c(32, 0)) |>
+  dplyr::mutate(arm = dplyr::row_number())
+iq_ev <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  ids <- (i - 1L) * n_arm + seq_len(n_arm)
+  dplyr::bind_rows(
+    data.frame(id = ids, time = 0, amt = arms$dose[i], evid = 1L, cmt = "depot", ii = tau, addl = n_doses - 1L, dvid = NA_integer_),
+    data.frame(id = ids, time = last_dose + tau, amt = NA_real_, evid = 0L, cmt = "central", ii = NA_real_, addl = NA_integer_, dvid = 2L)
+  ) |>
+    dplyr::mutate(EGA = arms$EGA[i], OCC = 1L, arm = i)
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+iq_sim <- rxode2::rxSolve(uis$lopinavir, iq_ev, keep = "arm", returnType = "data.frame") |>
+  dplyr::select(id, arm, sim) |>
+  dplyr::left_join(arms, by = "arm")
+
+ic50_wt <- 0.69 # ng/mL, wild-type protein-free IC50 (Methods 'Virologic parameters')
+iq_tab <- iq_sim |>
+  tidyr::crossing(fold = c(1, 4, 10, 20, 40)) |>
+  dplyr::mutate(IQ = sim * 1000 / (ic50_wt * fold)) |>
+  dplyr::group_by(dose, EGA, fold) |>
+  dplyr::summarise(
+    mean_sim = mean(IQ), sd_sim = sd(IQ),
+    lt4_sim = 100 * mean(IQ < 4), gt15_sim = 100 * mean(IQ > 15),
+    .groups = "drop"
+  )
+
+# Supplementary Tables S7 (third trimester) and S8 (postpartum); Table 4 repeats
+# the mean, SD and %IQ > 15 columns.
+published_iq <- tibble::tribble(
+  ~dose, ~EGA, ~fold, ~mean_pub, ~sd_pub, ~lt4_pub, ~gt15_pub,
+  400, 32, 1, 146.3, 60.4, 0, 100, 400, 32, 4, 36.6, 15.1, 0.1, 95.4,
+  400, 32, 10, 14.6, 6, 0.5, 40.9, 400, 32, 20, 7.3, 3, 11, 1.9,
+  400, 32, 40, 3.7, 1.5, 64.1, 0,
+  500, 32, 1, 182.7, 79.3, 0, 100, 500, 32, 4, 45.7, 19.8, 0, 98.7,
+  500, 32, 10, 18.3, 7.9, 0.1, 59.8, 500, 32, 20, 9.1, 4, 5.4, 8,
+  500, 32, 40, 4.6, 2, 44.6, 0,
+  600, 32, 1, 223.9, 93.6, 0, 100, 600, 32, 4, 56, 23.4, 0, 99.7,
+  600, 32, 10, 22.4, 9.4, 0, 77.3, 600, 32, 20, 11.2, 4.7, 1.6, 18.3,
+  600, 32, 40, 5.6, 2.3, 27.1, 0.3,
+  400, 0, 1, 257.9, 98.9, 0, 100, 400, 0, 4, 64.5, 24.7, 0, 99.7,
+  400, 0, 10, 25.8, 9.9, 0.1, 88.9, 400, 0, 20, 12.9, 4.9, 0.5, 30.4,
+  400, 0, 40, 6.4, 2.5, 13.9, 0.3,
+  500, 0, 1, 321.7, 129.3, 0, 100, 500, 0, 4, 80.4, 32.3, 0, 100,
+  500, 0, 10, 32.2, 12.9, 0, 95, 500, 0, 20, 16.1, 6.5, 0.1, 51.1,
+  500, 0, 40, 8, 3.2, 6.9, 3.7,
+  600, 0, 1, 394.2, 152.5, 0, 100, 600, 0, 4, 98.6, 38.1, 0, 100,
+  600, 0, 10, 39.4, 15.2, 0, 98.4, 600, 0, 20, 19.7, 7.6, 0, 69.9,
+  600, 0, 40, 9.9, 3.8, 1.8, 9.9
+)
+iq_cmp <- dplyr::inner_join(iq_tab, published_iq, by = c("dose", "EGA", "fold"))
+stopifnot(nrow(iq_cmp) == 30L)
+
+wt_rows <- dplyr::filter(iq_cmp, fold == 1)
+# The arm mean is the centre of 200 draws with a ~40% CV, so its Monte Carlo
+# SE is about 3%; the published means carry their own 1,000-subject noise.
+# A 10% band is >3 SE wide yet fails on a mis-transcribed clearance,
+# coefficient or volume, each of which shifts the trough by 12% or more.
+stopifnot(max(abs(wt_rows$mean_sim / wt_rows$mean_pub - 1)) < 0.10)
+```
+
+```{r iq-table}
+iq_cmp |>
+  dplyr::mutate(
+    State = ifelse(EGA == 32, "32 weeks", "Postpartum"),
+    Regimen = paste0(dose, "/", dose / 4, " mg BID"),
+    IC50 = ifelse(fold == 1, "wild type", paste0(fold, "-fold")),
+    `IQ mean +/- SD (sim)` = sprintf("%.1f +/- %.1f", mean_sim, sd_sim),
+    `IQ mean +/- SD (paper)` = sprintf("%.1f +/- %.1f", mean_pub, sd_pub),
+    `%IQ < 4 sim / paper` = sprintf("%.1f / %.1f", lt4_sim, lt4_pub),
+    `%IQ > 15 sim / paper` = sprintf("%.1f / %.1f", gt15_sim, gt15_pub)
+  ) |>
+  dplyr::arrange(dplyr::desc(EGA), dose, fold) |>
+  dplyr::select(State, Regimen, IC50, dplyr::starts_with("IQ mean"), dplyr::starts_with("%IQ")) |>
+  knitr::kable(caption = "Replicates Table 4 and Supplementary Tables S7-S8 of Chen 2016 (200 simulated subjects per arm here, 1,000 in the paper).")
+```
+
+The simulated means, SDs and effectiveness fractions follow the published ones
+closely across all thirty cells. The paper's conclusion is reproduced: with up
+to a 4-fold rise in IC50 more than 90% of women at 32 weeks reach an effective
+IQ on the standard 400/100 mg dose, a 10-fold rise leaves fewer than half
+effective at that dose, and with a 40-fold rise 90% or more of women fail to
+reach an effective IQ on every regimen, in pregnancy and postpartum.
+
+# Assumptions and deviations
+
+- **Unbound-side parameterisation.** `cl` and `vc` are the apparent *unbound*
+  parameters CLu/F and Vu/F, as in the authors' control streams. The total-drug
+  CL/F and V/F of Table 2 are the products with `fu` and are reproduced above.
+
+- **%CV convention.** Variances are `(CV/100)^2`, confirmed against the
+  ritonavir omegas the authors fixed into their interaction control streams
+  (see the source-trace section). The ritonavir IIV block and IOV variances are
+  taken from those control streams (0.0073, -0.0199, 0.0597; 2.01, 0.0551,
+  0.131), which carry one more significant figure than Table 2. The lopinavir
+  omegas are not printed in any control stream and come from Table 2.
+
+- **Residual errors are independent across the two streams.** Both control
+  streams estimate the correlation between the total and unbound residual
+  errors with `$SIGMA BLOCK(2)` (r = 0.614 for LPV, 0.611 for RTV, Table 2).
+  nlmixr2 has no cross-endpoint residual correlation, so `propSd` and
+  `propSd_Cu` are independent here. Marginal residual variability is correct;
+  the joint spread of a paired total/unbound simulated sample is not.
+
+- **Interaction models not packaged.** The joint LPV-RTV models of
+  Supplementary Material S4-S5 (RTV inhibition of LPV clearance by unbound RTV
+  AUC or concentration) did not improve the fit significantly and were not
+  adopted by the authors. Their LPV parameters other than CLu/F, the
+  interaction coefficient and the gestational coefficient are not reported, so
+  they could not be packaged in any case.
+
+- **A `non-mu referenced` note is expected on model load.** The occasion
+  multiplexers (`oc1 * etaiov_ka_1 + ...`) place the interoccasion etas
+  outside a mu-referenced position, so rxode2 emits "some etas defaulted to
+  non-mu referenced". This affects estimation efficiency, not simulation, and
+  is shared by every IOV-multiplexing model in the library.
+
+- **Gestational age of visit 1.** Visit 1 spanned 20-24 weeks; 22 weeks is used
+  here, the value the Discussion assigns to it when quoting the 38% increase.
+
+- **Occasion.** All simulations here use a single occasion per subject
+  (`OCC` = the visit number in the VPC, `OCC = 1` for the IQ arms), so each
+  virtual woman draws one set of occasion effects per simulated visit.
+
+- **Body weight distribution.** Only the median (87.4 kg) and range
+  (45.3-142.6 kg) of screening weight are published. The VPC cohort draws
+  weight log-normally (log-SD 0.28, an assumption) about that median, truncated
+  to that range. Weight enters only the ritonavir model, and no quantitative
+  check above depends on the weight distribution.
+
+- **No published NCA.** The paper's own NCA (Supplementary Material S3) is
+  shown only graphically as unbound AUC fractions. The PKNCA comparison above
+  therefore uses the Table 3 post hoc median clearances as the reference.

@@ -1,0 +1,414 @@
+---
+title: "Radioiodine therapy response in metastatic thyroid cancer (Barbolosi 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Radioiodine therapy response in metastatic thyroid cancer (Barbolosi 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Barbolosi_2017_radioiodine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Barbolosi_2017_radioiodine"))$description`
+* Model development article (Barbolosi 2017, Oncotarget): <https://doi.org/10.18632/oncotarget.16637>
+* Protocol-simulation article (Fusella Giuntini 2026, Scientific Reports): <https://doi.org/10.1038/s41598-026-56267-1>
+* Authors' MATLAB simulator (RAIR-Sim): <https://github.com/MarieFG49/CTD_SIMU_RAI>
+
+Barbolosi 2017 built and fitted the model (Monolix, SAEM) to stimulated
+serum thyroglobulin (Tg) from 50 patients with lung-metastatic papillary
+thyroid carcinoma. Fusella Giuntini 2026 reused the same population
+estimates, without re-estimation, to study how the number of iodine-131
+courses `n`, the interval between them `Delta t` and the activity per course
+`A` change the predicted Tg course in responders and non-responders, and
+released the MATLAB simulator that does so. This article packages the model
+once and reproduces the protocol figures of the 2026 paper.
+
+The model has three states, with time in months:
+
+* `activity` (GBq): the *effective* radioiodine activity. Each course is a
+  bolus of the administered activity; it is lost at `a * ln(2)` per month,
+  much more slowly than the 8-day physical half-life of iodine-131, because
+  it represents the delayed cell-killing effect.
+* `tumor` (cells): exponential growth with doubling time `Td` under
+  treatment, killed at rate `rho * A(t)`.
+* `thyroglobulin` (ng/mL): produced at `lambda` per tumor cell and
+  eliminated at `ke`; the observed output.
+
+A two-class Monolix mixture on `Td` separates non-responders (`Td` = 9.8
+months, 27.5%) from responders (`Td` = 66.6 months, 72.5%). The class is the
+covariate `MIX_FAST_GROW` (1 = non-responder).
+
+# Population
+
+Barbolosi 2017 (Results, "Patient characteristics"; Materials and methods)
+included 50 patients from eight French institutions, aged 8-55 years (mean
+29), with papillary thyroid carcinoma and diffuse lung metastases (all M1;
+pT1/pT2 7, pT3/pT4 43; N1 47, Nx 3). All had total thyroidectomy, with
+lymph-node dissection except in 3. Patients received iodine-131 at
+3.7-5.5 GBq per course (one 8-year-old received 1.85 GBq for the first
+course), usually every 6-8 months, with endogenous TSH stimulation, at least
+3 courses and at least 3 years of follow-up; the mean cumulative activity was
+22.2 GBq. Stimulated Tg was measured before each course. The sex distribution
+is not reported. Fusella Giuntini 2026 Appendix B describes the same cohort.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| `dA/dt = -a ln(2) A` | -- | Barbolosi 2017 Materials and methods; RAIR-Sim `Demonstrateur98f.m` (`diff(A) == -a*log(2)*A`) |
+| `dN/dt = ln(2)/Td N - rho A N`, `N(0) = N0` | -- | Barbolosi 2017 Materials and methods; Fusella Giuntini 2026 Eq. 1b |
+| `dTg/dt = -ke Tg + lambda N`, `Tg(0) = Tg0` | -- | Barbolosi 2017 Materials and methods; Fusella Giuntini 2026 Eq. 1c |
+| Course = bolus into `A`, `A(0) = 0` | -- | Fusella Giuntini 2026 "The compartmental model"; RAIR-Sim `A00 = 0` |
+| `a` (`lkdecay`, fixed) | 0.0169 /month | Barbolosi 2017 Table 1; Fusella Giuntini 2026 Table 1 |
+| `rho` (`lkkill`, fixed) | 0.00407 /(GBq month) | Barbolosi 2017 Table 1; Fusella Giuntini 2026 Table 1 |
+| `lambda` (`lksyn`, fixed) | 3.86e-9 ng/mL/month per cell | Barbolosi 2017 Table 1; Fusella Giuntini 2026 Table 1 |
+| `ke` (`lkdeg`) | 0.319 /month | Barbolosi 2017 Table 1 |
+| `N0` (`lrbase_tumor`) | 1.12e9 cells | Barbolosi 2017 Table 1 |
+| `Td`, non-responder (`ltdouble_pop1`) | 9.8 months | Barbolosi 2017 Table 1 'Td cat=1' |
+| `Td`, responder (`ltdouble_pop2`) | 66.6 months | Barbolosi 2017 Table 1 'Td cat=2' |
+| Class probability, non-responder | 0.275 | Barbolosi 2017 Table 1 'pi cat1' |
+| `Tg0` (`lrbase_thyroglobulin`, fixed) | 100 ng/mL | Fusella Giuntini 2026 "Practical implementation" |
+| IIV SD on `ke` (`etalkdeg`) | 1.16 (variance 1.3456) | Barbolosi 2017 Table 1 |
+| IIV SD on `lambda` (`etalksyn`) | 2.47 (variance 6.1009) | Barbolosi 2017 Table 1 |
+| IIV SD on `Td` (`etaltdouble`, fixed) | 0.3 (variance 0.09) | Barbolosi 2017 Table 1 |
+| IIV SD on `N0` | 2.05e-7 (numerically zero; no eta) | Barbolosi 2017 Table 1 |
+| IIV on `rho`, `a` | 0 (no eta) | Barbolosi 2017 Table 1 |
+| Proportional residual SD `b` (`propSd`) | 0.372 | Barbolosi 2017 Table 1 |
+
+# Typical-value protocol simulations
+
+All of the 2026 paper's simulations use typical values (no between-subject
+variability), `Tg0` = 100 ng/mL, the first course at time 0 and later courses
+every `Delta t` months, read out to 80 months. Because `Tg0` is 100, the
+y axis of the published figures ("Tg(t) (Unitless)") is both ng/mL and
+percent of baseline.
+
+```{r protocol-helpers}
+mod <- rxode2::rxode(readModelDb("Barbolosi_2017_radioiodine"))
+mod_typ <- rxode2::zeroRe(mod)
+
+# Typical-value solve of a multi-subject event table. rxode2 warns that a
+# multi-subject simulation has no omega, which is the intent here; only that
+# message is muffled.
+solve_typ <- function(events, ...) {
+  withCallingHandlers(
+    as.data.frame(rxode2::rxSolve(mod_typ, events, ...)),
+    warning = function(w) {
+      if (grepl("multi-subject simulation without", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+obs_times <- seq(0, 80, by = 0.25)
+
+# One subject's event table for n courses of `act` GBq every `lag` months.
+protocol_events <- function(id, n, lag, act, mix) {
+  doses <- data.frame(
+    id = id, time = (seq_len(n) - 1) * lag, amt = act, evid = 1L,
+    cmt = "activity"
+  )
+  obs <- data.frame(
+    id = id, time = obs_times, amt = 0, evid = 0L, cmt = "thyroglobulin"
+  )
+  out <- rbind(doses, obs)
+  out$MIX_FAST_GROW <- mix
+  out
+}
+
+# The three one-at-a-time sweeps of Figures 2 and 3: (a) n = 1..8,
+# (b) Delta t = 1..8 months with n = 8, (c) A = 1..8 GBq with n = 8.
+protocol_sweep <- function(mix, lag_default) {
+  sweeps <- list(
+    a = lapply(1:8, function(i) {
+      transform(protocol_events(i, i, lag_default, 3.7, mix), panel = "a", value = i)
+    }),
+    b = lapply(1:8, function(i) {
+      transform(protocol_events(100 + i, 8, i, 3.7, mix), panel = "b", value = i)
+    }),
+    c = lapply(1:8, function(i) {
+      transform(protocol_events(200 + i, 8, lag_default, i, mix), panel = "c", value = i)
+    })
+  )
+  ev <- do.call(rbind, unlist(sweeps, recursive = FALSE))
+  solve_typ(ev, keep = c("panel", "value"))
+}
+
+panel_labels <- c(
+  a = "(a) n = 1..8 courses",
+  b = "(b) interval = 1..8 months, n = 8",
+  c = "(c) activity = 1..8 GBq, n = 8"
+)
+
+plot_sweep <- function(sim) {
+  ggplot(sim, aes(time, thyroglobulin, colour = factor(value), group = factor(value))) +
+    geom_line() +
+    facet_wrap(~panel, labeller = as_labeller(panel_labels)) +
+    coord_cartesian(ylim = c(0, 100)) +
+    scale_colour_viridis_d(name = "n / months / GBq") +
+    labs(x = "Time (months)", y = "Tg (ng/mL = % of baseline)")
+}
+
+tg_at <- function(sim, pnl, val, t) {
+  sim$thyroglobulin[sim$panel == pnl & sim$value == val & abs(sim$time - t) < 1e-8]
+}
+```
+
+## Non-responders (`Td` = 9.8 months)
+
+```{r fig2, fig.height = 3.5}
+sim_nr <- protocol_sweep(mix = 1, lag_default = 3)
+plot_sweep(sim_nr) +
+  ggtitle("Non-responder: A = 3.7 GBq, interval 3 months unless varied")
+```
+
+Replicates Figure 2 of Fusella Giuntini 2026. The checks below restate the
+2026 Results text ("Influence of protocol parameters for patients with
+Td = 9.8 months") and points read off the figure:
+
+```{r fig2-checks}
+stopifnot(
+  # (a) n = 7 or 8: "decreases and stabilizes between Tg(10%) and Tg(20%)".
+  all(sapply(7:8, function(n) {
+    x <- tg_at(sim_nr, "a", n, 60)
+    x > 10 && x < 20
+  })),
+  # (a) a single course: Tg crosses 100 ng/mL near 40 months in the figure.
+  tg_at(sim_nr, "a", 1, 35) < 100, tg_at(sim_nr, "a", 1, 45) > 100,
+  # (b) interval 8 months: peak near 50 ng/mL at about 50 months, ~40 at 80.
+  abs(max(sim_nr$thyroglobulin[sim_nr$panel == "b" & sim_nr$value == 8 &
+    sim_nr$time > 20]) - 50) < 3,
+  abs(tg_at(sim_nr, "b", 8, 80) - 40) < 3,
+  # (c) 3 GBq: "remains stable between Tg(20%) and Tg(24%) up to 60 months".
+  all(sim_nr$thyroglobulin[sim_nr$panel == "c" & sim_nr$value == 3 &
+    sim_nr$time >= 15 & sim_nr$time <= 60] < 24.5),
+  all(sim_nr$thyroglobulin[sim_nr$panel == "c" & sim_nr$value == 3 &
+    sim_nr$time >= 15 & sim_nr$time <= 60] > 19.5),
+  # (c) "below Tg(10%) at 18 months for 8 GBq and around 40 months for 4 GBq".
+  abs(tg_at(sim_nr, "c", 8, 18) - 10) < 1,
+  abs(tg_at(sim_nr, "c", 4, 40) - 10) < 1
+)
+```
+
+## Responders (`Td` = 66.6 months)
+
+```{r fig3, fig.height = 3.5}
+sim_r <- protocol_sweep(mix = 0, lag_default = 6)
+plot_sweep(sim_r) +
+  ggtitle("Responder: A = 3.7 GBq, interval 6 months unless varied")
+```
+
+Replicates Figure 3 of Fusella Giuntini 2026 (whose sweeps (a) and (c) use a
+6-month interval, per the authors' `main_demonstrateur666f.m`). The checks
+restate the Results text for `Td` = 66.6 months:
+
+```{r fig3-checks}
+stopifnot(
+  # (a) n = 1: "stabilizes at Tg(14%)"; the figure plateaus at 13-14.
+  all(sim_r$thyroglobulin[sim_r$panel == "a" & sim_r$value == 1 &
+    sim_r$time >= 20] > 12),
+  all(sim_r$thyroglobulin[sim_r$panel == "a" & sim_r$value == 1 &
+    sim_r$time >= 20] < 15),
+  # (a) n = 2..8: below Tg(10%) between 20 and 30 months, below 8% at 50.
+  all(sapply(2:8, function(n) tg_at(sim_r, "a", n, 30) < 10)),
+  all(sapply(2:8, function(n) tg_at(sim_r, "a", n, 50) < 8)),
+  # (c) below Tg(10%) at about 15 months for 8 GBq and 60 months for 1 GBq.
+  abs(tg_at(sim_r, "c", 8, 15) - 10) < 1,
+  abs(tg_at(sim_r, "c", 1, 60) - 10) < 1
+)
+```
+
+## Simulator examples (Figures 4 and 5)
+
+```{r fig45}
+examples <- data.frame(
+  id = 1:4,
+  label = c(
+    "Fig 4b: non-responder, 5 x 3.7 GBq q6mo",
+    "Fig 4d: non-responder, 5 x 5.55 GBq q6mo",
+    "Fig 5b: responder, 5 x 1.85 GBq q6mo",
+    "Fig 5d: responder, 3 x 1.85 GBq q6mo"
+  ),
+  n = c(5, 5, 5, 3), act = c(3.7, 5.55, 1.85, 1.85), mix = c(1, 1, 0, 0)
+)
+ev_ex <- do.call(rbind, lapply(seq_len(nrow(examples)), function(i) {
+  with(examples[i, ], protocol_events(id, n, 6, act, mix))
+}))
+sim_ex <- solve_typ(ev_ex) |>
+  left_join(examples[, c("id", "label")], by = "id") |>
+  filter(time <= 60)
+
+ggplot(sim_ex, aes(time, thyroglobulin)) +
+  geom_line() +
+  facet_wrap(~label, scales = "free_y") +
+  labs(x = "Time (months)", y = "Tg (ng/mL)")
+
+ex_at <- function(i, t) sim_ex$thyroglobulin[sim_ex$id == i & abs(sim_ex$time - t) < 1e-8]
+stopifnot(
+  # Fig 4b: minimum about 23 ng/mL at 10 months, about 56 ng/mL at 60 months.
+  abs(ex_at(1, 10) - 23) < 2, abs(ex_at(1, 60) - 56) < 3,
+  # Fig 4d: falling after 25 months, about 15 ng/mL at 60 months.
+  ex_at(2, 40) < ex_at(2, 25), abs(ex_at(2, 60) - 15) < 2
+)
+```
+
+Replicates Figures 4(b, d) and 5(b, d) of Fusella Giuntini 2026: raising the
+activity to 5.55 GBq turns a rising non-responder Tg course into a falling
+one, and a responder keeps a falling course with 3 instead of 5 courses.
+
+# Solver check against the closed form
+
+With constant parameters the model has a closed form between courses, which
+is how RAIR-Sim solves it. With `k = a ln(2)`, the effective activity is
+`A(t) = sum_k A_k exp(-k (t - t_k))` over past courses, the tumor is
+`N(t) = N0 exp(ln(2) t / Td - rho * integral_0^t A)`, and
+`Tg(t) = Tg0 exp(-ke t) + lambda * integral_0^t N(s) exp(-ke (t - s)) ds`.
+The last integral is evaluated numerically below and compared with the ODE
+solution for the non-responder 8-course protocol.
+
+```{r closed-form}
+p <- list(
+  k = 0.0169 * log(2), rho = 0.00407, lambda = 3.86e-9, ke = 0.319,
+  n0 = 1.12e9, tg0 = 100, kgrow = log(2) / 9.8
+)
+dose_t <- (0:7) * 3
+dose_a <- rep(3.7, 8)
+int_a <- function(t) {
+  sapply(t, function(tt) {
+    on <- dose_t <= tt
+    sum(dose_a[on] / p$k * (1 - exp(-p$k * (tt - dose_t[on]))))
+  })
+}
+n_cf <- function(t) p$n0 * exp(p$kgrow * t - p$rho * int_a(t))
+tg_cf <- function(t) {
+  p$tg0 * exp(-p$ke * t) +
+    p$lambda * integrate(function(s) n_cf(s) * exp(-p$ke * (t - s)), 0, t,
+      rel.tol = 1e-10, subdivisions = 1000L
+    )$value
+}
+chk_t <- c(1, 5, 10, 20, 40, 60, 80)
+cf <- data.frame(
+  time = chk_t,
+  closed_form = sapply(chk_t, tg_cf),
+  ode = sapply(chk_t, function(t) tg_at(sim_nr, "a", 8, t))
+) |>
+  mutate(rel_diff = ode / closed_form - 1)
+knitr::kable(cf, digits = 6)
+# Same parameters on both sides, so the difference is numerical error only.
+stopifnot(all(abs(cf$rel_diff) < 1e-4))
+```
+
+# Between-subject variability and the mixture
+
+The population model adds log-normal IIV on `ke`, `lambda` and `Td`, a
+proportional residual error, and the mixture class. The simulation below
+draws 200 virtual patients with `MIX_FAST_GROW ~ Bernoulli(0.275)`, each
+treated with 6 courses of 3.7 GBq every 6 months (22.2 GBq cumulative, the
+cohort mean), with `Tg0` = 100 ng/mL. Measured `Tg0` varies between patients;
+to use it, add a `lrbase_thyroglobulin = log(Tg0)` column to the data.
+
+```{r vpc}
+set.seed(2017)
+rxode2::rxSetSeed(2017)
+n_sub <- 200
+mix <- rbinom(n_sub, 1, 0.275)
+ev_pop <- do.call(rbind, lapply(seq_len(n_sub), function(i) {
+  protocol_events(i, 6, 6, 3.7, mix[i])
+}))
+ev_pop <- ev_pop[ev_pop$evid == 1 | ev_pop$time %in% seq(0, 60, by = 2), ]
+sim_pop <- as.data.frame(rxode2::rxSolve(mod, ev_pop, keep = "MIX_FAST_GROW")) |>
+  mutate(class = ifelse(MIX_FAST_GROW == 1, "Non-responder (Td 9.8 mo)", "Responder (Td 66.6 mo)"))
+
+sim_pop |>
+  group_by(class, time) |>
+  summarise(
+    q05 = quantile(thyroglobulin, 0.05), q50 = median(thyroglobulin),
+    q95 = quantile(thyroglobulin, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(time, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~class) +
+  scale_y_log10() +
+  labs(x = "Time (months)", y = "Tg (ng/mL, 5th-50th-95th percentiles)")
+```
+
+The wide band reflects the large IIV on `lambda` (SD 2.47 on the log scale),
+which carries most of the between-patient spread in Tg level. The median
+course differs between the classes in the direction the mixture defines:
+
+```{r vpc-check}
+med48 <- sim_pop |>
+  filter(time == 48) |>
+  group_by(MIX_FAST_GROW) |>
+  summarise(median_tg = median(thyroglobulin), .groups = "drop")
+knitr::kable(med48, digits = 2)
+stopifnot(
+  med48$median_tg[med48$MIX_FAST_GROW == 1] > med48$median_tg[med48$MIX_FAST_GROW == 0]
+)
+```
+
+# NCA
+
+This is a tumor and biomarker model driven by a delayed-effect activity
+state, not a drug-concentration model, so non-compartmental analysis does not
+apply. Neither paper reports NCA. Validation is by reproducing the published
+simulations and by the closed-form check above.
+
+# Assumptions and deviations
+
+* **The model comes from Barbolosi 2017; the protocol simulations from
+  Fusella Giuntini 2026.** The 2026 paper re-prints the Barbolosi 2017
+  estimates (its Appendix A Table 1) and does not re-fit the model, so one
+  model file carries both citations. Residual error, the mixture
+  probabilities and the S.E.s are taken from Barbolosi 2017 Table 1, which
+  the 2026 table does not reproduce.
+* **`ln(2)` in the activity equation.** Fusella Giuntini 2026 Eq. (1a) prints
+  `dA/dt = -a A`. Barbolosi 2017 and the authors' MATLAB code
+  (`diff(A) == -a*log(2)*A`) both include the `ln(2)`, and the published
+  figures are reproduced only with it, so the model follows the code.
+* **`Td` in the 2026 Table 1 is a typographical error.** Fusella Giuntini
+  2026 Table 1 prints a mean `Td` of 9.98 months; Barbolosi 2017 Table 1, the
+  2026 text and the MATLAB code all use 9.8 months for the non-responder
+  class and 66.6 months for responders. The model uses 9.8 and 66.6.
+* **The 'Std' row of the 2026 Table 1 is the IIV.** Its values (`N0` and the
+  fixed parameters `< 1e-3`, `Td` 0.3, `lambda` 2.47, `ke` 1.16) are the
+  Monolix IIV standard deviations of Barbolosi 2017 Table 1, not standard
+  errors. Monolix reports omega as the SD of the log-normal random effect, so
+  the variances are their squares.
+* **Fixed or estimated.** Barbolosi 2017 states that `rho`, `a` and `lambda`
+  were fixed after showing little variability; they carry `fixed()`. The `Td`
+  IIV is printed without an S.E. and is also encoded as fixed. The `N0` IIV
+  SD of 2.05e-7 (no S.E.) is numerically zero and is omitted: as a variance of
+  4e-14 it adds nothing to a simulation and makes rxode2 rewrite the omega
+  matrix with a warning.
+* **Mixture parameterisation.** Monolix estimated `Td` for category 1 (9.8
+  months) and a category-2 effect `beta_Td` = 1.92; the model uses the two
+  printed group values directly (9.8 and 66.6 months; `9.8 exp(1.92)` =
+  66.9). The `Td` IIV is shared by both classes.
+* **`Tg0`.** In Barbolosi 2017, `Tg(0)` is each patient's first stimulated
+  Tg before treatment, so it is data rather than an estimated parameter. The
+  model fixes it at the 100 ng/mL used for every 2026 simulation; supply
+  `lrbase_thyroglobulin` per subject to use measured values. `Tg0` is not at
+  the steady state implied by `N0` (`lambda N0 / ke` = 13.6 ng/mL), which is
+  why every simulated course falls steeply over the first months.
+* **Responder fraction.** Barbolosi 2017 reports 80% clinically classified
+  responders; the mixture assigned 72.5% to the responder class. Fusella
+  Giuntini 2026 Appendix B gives "~70%" and 72.5%. The model uses the mixture
+  probability.
+* **Text versus figure in the 2026 Results.** Two statements in the 2026 text
+  do not match its own Figure 2: the 1-month interval reaches about 6%, not
+  8-12%, at 50-60 months, and the 4-month interval peaks near 24% rather than
+  having a minimum near 20%. The packaged model reproduces the figure, which
+  was generated by the published code, so the checks above follow the figure.

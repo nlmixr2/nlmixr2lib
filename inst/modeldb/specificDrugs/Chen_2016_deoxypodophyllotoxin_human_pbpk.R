@@ -36,6 +36,7 @@ Chen_2016_deoxypodophyllotoxin_human_pbpk <- function() {
     concentration = "mg/L", # numerically identical to the paper's ug/mL
     weight = "kg"
   )
+  dosing <- "venous"
 
   # Issue #482: what each ODE state holds. Every state is an AMOUNT of DPT in
   # mg; the model() block divides by the Table 1 volume to obtain the tissue

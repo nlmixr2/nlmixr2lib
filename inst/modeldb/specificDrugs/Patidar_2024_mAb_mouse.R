@@ -68,6 +68,7 @@ Patidar_2024_mAb_mouse <- function() {
   )
 
   units <- list(time = "h", dosing = "nmol", concentration = "nM")
+  dosing <- "a_p"
 
   # Issue #482: every state holds a CONCENTRATION (nM) in its sub-space, as
   # written in Patidar 2024 eqs. A1-A39 (the published system is

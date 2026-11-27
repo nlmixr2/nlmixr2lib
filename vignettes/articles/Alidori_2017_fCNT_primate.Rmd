@@ -1,0 +1,310 @@
+---
+title: "Carbon nanotube (fCNT) tissue kinetics in primates (Alidori 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Carbon nanotube (fCNT) tissue kinetics in primates (Alidori 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5,
+  error = FALSE
+)
+```
+
+```{r libraries, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+rxode2::rxSetSeed(20261125)
+```
+
+## The paper
+
+Alidori *et al.* (2017), *PLoS One* **12**(8):e0183902,
+[doi:10.1371/journal.pone.0183902](https://doi.org/10.1371/journal.pone.0183902),
+report the *in vivo* pharmacology of an ammonium-functionalized single-walled
+carbon nanotube (fCNT), tracer-radiolabelled with yttrium-86 ([86Y]fCNT) and
+imaged by dynamic whole-body PET/CT in two healthy male cynomolgus monkeys
+(*Macaca fascicularis*). The radiolabel rapidly clears the blood (blood
+t<sub>1/2</sub> ~ 7 min) and accumulates in the kidney cortex and liver before
+intact urinary elimination.
+
+The quantitative modelling is a pair of **linear two-compartment tissue models,
+one per organ, driven by a measured whole-blood input forcing function** (the
+mean activity in a heart volume-of-interest). These were fitted with the SAAM II
+software:
+
+* **Kidney** -- a *serial* (catenary) topology (Fig 3A): blood feeds the renal
+  tissue space (C1), which either eliminates tracer into urine or resorbs it
+  into a proximal-tubule-cell hold-up sink (C2) that slowly returns it.
+* **Liver** -- a *parallel* (mammillary) topology (Fig 4A): blood feeds the
+  hepatic tissue (C1) and the liver sinusoidal endothelium (C2) independently,
+  each with its own loss route back to blood or into bile.
+
+Both fits held the organ blood-volume fraction fixed (15% kidney, 20% liver).
+This article reproduces the two packaged models, traces every rate constant to
+the source, and shows the structural behaviour the models predict. Because the
+models are deterministic typical-value fits over two animals, there is no
+population simulation / NCA step; the validation is structural (the C1/C2
+decomposition the paper plots in Figs 3C and 4C) plus a terminal-half-life
+forensic.
+
+```{r models}
+kidney <- rxode2::rxode(readModelDb("Alidori_2017_fCNT_kidney_cyno"))
+liver <- rxode2::rxode(readModelDb("Alidori_2017_fCNT_liver_cyno"))
+```
+
+* Kidney description: `r kidney$description`
+* Liver description: `r liver$description`
+
+## Population
+
+Two healthy male cynomolgus monkeys (Charles River), 3.5 years old, 3.2-4.5 kg
+at dosing (Table 3), each given a single IV injection of 5 mg (5 MBq, 0.135 mCi)
+[86Y]fCNT (~ 1 mg/kg) and imaged for a 3-hour dynamic PET/CT protocol
+immediately after injection. Animal 1 was followed for 6 months, Animal 2 for
+2 weeks. A correlative mouse tissue-harvest biodistribution study in the same
+paper was not fitted with a compartmental model and is not packaged here.
+
+## Source trace
+
+Every fitted rate constant is held `fixed()` in the packaged models; the organ
+blood-volume fraction is a fixed structural constant. The values below are the
+Supporting Information table values (four significant figures), which match the
+rounded values printed in the Fig 3B / Fig 4B tables.
+
+```{r sourcetrace, echo = FALSE}
+st <- tibble::tribble(
+  ~Organ,    ~Symbol, ~Meaning,                                      ~Value,   ~Source,
+  "Kidney",  "k1",    "blood -> kidney uptake (1/min)",              0.93922,  "S1 Table; Fig 3B = 0.939",
+  "Kidney",  "k2",    "kidney -> urine elimination (1/min)",         0.15439,  "S1 Table; Fig 3B = 0.154",
+  "Kidney",  "k3",    "kidney -> proximal-tubule-cell sink (1/min)", 0.02875,  "S1 Table; Fig 3B = 0.0289",
+  "Kidney",  "k4",    "tubule-cell sink -> kidney return (1/min)",   0.00382,  "S1 Table; Fig 3B = 0.00382",
+  "Kidney",  "fvb",   "renal blood-volume fraction",                 0.15,     "S1 Table caption (fixed)",
+  "Liver",   "k1",    "blood -> liver C1 uptake (1/min)",            0.21158,  "S2 Table; Fig 4B = 0.211",
+  "Liver",   "k2",    "liver C1 -> blood/bile loss (1/min)",         0.41722,  "S2 Table; Fig 4B = 0.417",
+  "Liver",   "k3",    "blood -> sinusoidal endothelium (1/min)",     0.01003,  "S2 Table; Fig 4B = 0.0100",
+  "Liver",   "k4",    "sinusoidal endothelium -> loss (1/min)",      0.00319,  "S2 Table; Fig 4B = 0.00319",
+  "Liver",   "fvb",   "hepatic blood-volume fraction",               0.20,     "S2 Table caption (fixed)"
+)
+knitr::kable(st)
+```
+
+The Supporting Information tables also report the standard deviation, %CV and
+95% CI of each rate constant (parameter uncertainty of the deterministic
+two-animal fit, *not* between-subject variability): kidney k1-k4 at 7.0 / 14.5 /
+13.2 / 17.9 %CV; liver k1-k4 at 14.2 / 14.6 / 3.8 / 11.2 %CV.
+
+## The blood input forcing function
+
+Both models read the whole-blood activity curve as a time-varying regressor
+`SUV_BLOOD` (declared `linear(SUV_BLOOD)` so `rxode2` interpolates linearly
+between rows). The paper derived this curve from the heart VOI but **does not
+tabulate it**, so for this illustration we use a representative blood profile:
+a fast bi-exponential dominated by the reported ~ 7-minute blood half-life plus
+a small slow tail. Users with their own PET data should supply the measured
+heart-VOI SUV curve through `SUV_BLOOD`.
+
+```{r bloodinput}
+# Representative whole-blood SUV input over the 195-minute scan window.
+# Fast phase: blood t1/2 ~ 7 min (Alidori 2017, "Rapid blood compartment
+# clearance was observed (t1/2 ~ 7 min)"). Illustrative amplitude only.
+tgrid <- c(seq(0, 10, by = 0.25), seq(11, 195, by = 1))
+blood_suv <- 7 * exp(-log(2) / 7 * tgrid) + 0.6 * exp(-log(2) / 90 * tgrid)
+blood <- data.frame(time = tgrid, SUV_BLOOD = blood_suv)
+
+ggplot(blood, aes(time, SUV_BLOOD)) +
+  geom_line(colour = "#b8860b") +
+  labs(x = "Time (min)", y = "Whole-blood SUV (illustrative)") +
+  theme_bw()
+```
+
+## Structural behaviour: the C1 / C2 decomposition (Figs 3C and 4C)
+
+The characteristic signature of both organ models -- independent of the blood
+input's absolute scale -- is that the deep hold-up compartment (C2) fills slowly
+and overtakes the fast tissue compartment (C1) within the first hour, producing
+the sustained tissue plateau the paper plots in Figs 3C (kidney) and 4C (liver).
+We solve the typical-value models (`zeroRe()`) under the representative blood
+input and reproduce that decomposition.
+
+```{r solve}
+solve_organ <- function(mod, c1, c2, dose_cmt) {
+  ev <- data.frame(
+    id = 1L, time = blood$time, evid = 0L,
+    cmt = dose_cmt, SUV_BLOOD = blood$SUV_BLOOD
+  )
+  s <- rxode2::rxSolve(rxode2::zeroRe(mod), ev, returnType = "data.frame")
+  tibble::tibble(
+    time = s$time,
+    total = s$Cc,
+    C1 = s[[c1]],
+    C2 = s[[c2]]
+  )
+}
+
+kid <- solve_organ(kidney, "kidney", "kidney_ptc", "kidney")
+liv <- solve_organ(liver, "liver", "liver_lsec", "liver")
+```
+
+```{r fig3c, echo = FALSE, fig.cap = "Kidney tissue SUV and its C1 / C2 decomposition (reproduces the shape of Alidori 2017 Fig 3C)."}
+kid |>
+  pivot_longer(c(total, C1, C2), names_to = "curve", values_to = "SUV") |>
+  ggplot(aes(time, SUV, colour = curve)) +
+  geom_line() +
+  scale_colour_manual(
+    values = c(total = "forestgreen", C1 = "red", C2 = "blue"),
+    labels = c(total = "total kidney", C1 = "C1 (renal tissue)", C2 = "C2 (tubule-cell sink)")
+  ) +
+  labs(x = "Time (min)", y = "Kidney SUV", colour = NULL) +
+  theme_bw()
+```
+
+```{r fig4c, echo = FALSE, fig.cap = "Liver tissue SUV and its C1 / C2 decomposition (reproduces the shape of Alidori 2017 Fig 4C)."}
+liv |>
+  pivot_longer(c(total, C1, C2), names_to = "curve", values_to = "SUV") |>
+  ggplot(aes(time, SUV, colour = curve)) +
+  geom_line() +
+  scale_colour_manual(
+    values = c(total = "forestgreen", C1 = "red", C2 = "blue"),
+    labels = c(total = "total liver", C1 = "C1 (hepatic tissue)", C2 = "C2 (sinusoidal endothelium)")
+  ) +
+  labs(x = "Time (min)", y = "Liver SUV", colour = NULL) +
+  theme_bw()
+```
+
+```{r crossover}
+# C2 overtakes C1 within the first hour in both organs (the paper's Figs 3C/4C
+# cross-over), and the deep sink then governs the plateau.
+kid_cross <- kid$time[which(kid$C2 > kid$C1)[1]]
+liv_cross <- liv$time[which(liv$C2 > liv$C1)[1]]
+c(kidney_crossover_min = kid_cross, liver_crossover_min = liv_cross)
+
+stopifnot(
+  # Both deep compartments overtake their fast compartment inside the first hour.
+  kid_cross > 0, kid_cross < 60,
+  liv_cross > 0, liv_cross < 60,
+  # Tissue signal is sustained: the kidney total is still a large fraction of its
+  # peak at the end of the 195-min scan (the renal-cell sink, Fig 3C plateau).
+  max(kid$total) > 0,
+  kid$total[nrow(kid)] > 0.4 * max(kid$total)
+)
+```
+
+## Terminal half-life forensic
+
+Once the blood input has cleared, each model decays by its own slowest
+eigenvalue. For the **serial kidney** model the two-state loss matrix is
+
+$$ \begin{pmatrix} -(k_2+k_3) & k_4 \\ k_3 & -k_4 \end{pmatrix}, $$
+
+and for the **parallel liver** model the two compartments decay independently at
+$k_2$ (fast tissue) and $k_4$ (slow sinusoidal endothelium).
+
+```{r halflife}
+kp <- as.list(stats::setNames(kidney$theta, names(kidney$theta)))
+lp <- as.list(stats::setNames(liver$theta, names(liver$theta)))
+
+# Kidney: slowest eigenvalue of the serial loss matrix.
+A_kid <- matrix(c(-(kp$kelim + kp$kseq), kp$kret,
+                  kp$kseq, -kp$kret), nrow = 2, byrow = TRUE)
+lam_kid <- max(Re(eigen(A_kid)$values)) # slowest (least negative) rate, 1/min
+t_half_kid <- log(2) / -lam_kid / 60 # hours
+
+# Liver: parallel model, slow compartment governs the terminal phase.
+t_half_liv <- log(2) / lp$kret / 60 # hours
+
+c(kidney_terminal_t_half_h = round(t_half_kid, 2),
+  liver_terminal_t_half_h = round(t_half_liv, 2))
+```
+
+```{r halflife_check}
+# The printed rate constants give a terminal half-life near 3.6 h for both
+# organs -- NOT the 11.9 h reported in the abstract / Figs 3D & 4D legends.
+stopifnot(
+  abs(t_half_kid - 3.6) < 0.3,
+  abs(t_half_liv - 3.6) < 0.3
+)
+```
+
+The four-parameter organ models, with the published rate constants, reproduce
+the **measured** 0-195 min window (Figs 3C/4C above). They do **not** reproduce
+the ~ 11.9 h "biological half-life" or the 72-hour extrapolations in Figs 3D and
+4D: those require the whole-blood input to be carried as a slowly-declining tail
+far beyond the 195-minute scan (the organs track the slow whole-body blood
+activity, whose intrinsic clearance is slower than either organ's own
+eigenvalue). The blood tail beyond the scan is not tabulated and is not part of
+the packaged tissue model. Digitising the kidney curve in Fig 3D gives a
+terminal half-life of ~ 11 h, consistent with the stated 11.9 h and with a
+sustained blood tail rather than the ~ 3.6 h organ eigenvalue. See the
+Assumptions and deviations section.
+
+## Flux / mass-balance sanity
+
+At the C1/C2 cross-over the two compartments approach a pseudo-equilibrium in
+which the sequestration flux into the sink is close to the return flux out of
+it. For the kidney sink this is `k3 * C1` in versus `k4 * C2` out; because
+`k3 >> k4`, the sink concentrates tracer (C2 > C1), exactly as the paper notes
+("the rate constant describing loss ... (k4) is an order of magnitude smaller
+than the entrance rate constant (k3)").
+
+```{r flux}
+# Ratio of sink entrance to exit rate constants (both organs): entrance >> exit,
+# so the deep compartment accumulates. Paper: k3 an order of magnitude > k4.
+c(kidney_k3_over_k4 = round(kp$kseq / kp$kret, 1),
+  liver_k3_over_k4 = round(lp$kseq / lp$kret, 1))
+
+stopifnot(
+  kp$kseq / kp$kret > 5, # kidney sink entrance >> exit
+  lp$kseq / lp$kret > 2  # liver sink entrance > exit
+)
+```
+
+## Assumptions and deviations
+
+* **Species.** Preclinical model; `population$species = "cynomolgus monkey
+  (Macaca fascicularis)"`. The `description` of each packaged model is prefixed
+  "Preclinical (cynomolgus monkey)".
+* **Drug.** The agent is a tracer-radiolabelled ammonium-functionalized
+  single-walled carbon nanotube ([86Y]fCNT); there is no INN. The file stem uses
+  `fCNT`.
+* **Two models, one paper.** The kidney (serial) and liver (parallel) models are
+  independent SAAM II fits with different topologies, packaged as two files
+  (`Alidori_2017_fCNT_kidney_cyno`, `Alidori_2017_fCNT_liver_cyno`) and this one
+  vignette.
+* **Observation output `Cc`.** Each model's single output is the organ VOI
+  standardized uptake value (SUV), named `Cc` per the single-output convention
+  with `units$concentration = "SUV"`. There is no plasma central compartment;
+  `Cc = fvb * SUV_BLOOD + C1 + C2`, i.e. a fixed blood-volume contribution plus
+  the two tissue states.
+* **Blood input forcing function (`SUV_BLOOD`).** The heart-VOI whole-blood
+  curve used in the original fits is not tabulated in the paper. The blood
+  profile used here is **illustrative** (a bi-exponential consistent with the
+  reported ~ 7-minute blood half-life), supplied only to demonstrate structural
+  behaviour; it is not a digitised reproduction of the authors' input. Absolute
+  SUV magnitudes in the figures above are therefore illustrative; the
+  cross-over timing and the terminal eigenvalues depend only on the fitted rate
+  constants and are reproducible.
+* **Printed rate constants vs. stated 11.9 h half-life.** The published rate
+  constants (S1/S2 Tables, Figs 3B/4B) give a terminal half-life near 3.6 h for
+  both organs, which reproduces the measured 0-195 min window but not the
+  abstract's 11.9 h or the 72-hour extrapolations (Figs 3D/4D). The discrepancy
+  arises because those extrapolations are driven by a slowly-declining
+  whole-body blood tail extending far beyond the 195-minute scan, which is not
+  reported and is not part of the four-parameter tissue model. The packaged
+  models encode the published, source-traced rate constants as-fitted; they are
+  not tuned to the extrapolated half-life.
+* **No IIV / residual error.** The paper reports no between-subject random
+  effects and no residual-error model for the compartmental fit (weighted least
+  squares over two animals). A nominal fixed `propSd = 0.1` is supplied only so
+  each model carries a valid residual endpoint for simulation; it is not a
+  fitted value. Use `zeroRe()` for typical-value solves, as above.

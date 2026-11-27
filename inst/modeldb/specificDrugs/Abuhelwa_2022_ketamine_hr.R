@@ -3,6 +3,7 @@ Abuhelwa_2022_ketamine_hr <- function() {
   reference <- "Abuhelwa AY, Somogyi AA, Loo CK, Glue P, Barratt DT, Foster DJR. Population Pharmacokinetics and Pharmacodynamics of the Therapeutic and Adverse Effects of Ketamine in Patients With Treatment-Refractory Depression. Clin Pharmacol Ther. 2022;112(3):720-729. doi:10.1002/cpt.2640."
   vignette <- "Abuhelwa_2022_ketamine"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL", hr = "beats/min")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

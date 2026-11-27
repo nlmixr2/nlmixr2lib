@@ -1,0 +1,638 @@
+---
+title: "Ceftaroline fosamil and ceftaroline (Das 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ceftaroline fosamil and ceftaroline (Das 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Das_2019_ceftaroline")()$reference`
+* Article: <https://doi.org/10.1093/jac/dky439> (open access, PMC6337900)
+* Supplementary data (Supplementary Methods = covariate-model forms;
+  Table S2 = demographics; Table S3 = final parameter estimates; Tables S4-S7 =
+  probability of target attainment, PTA): supplementary data of the same DOI.
+
+Ceftaroline fosamil is an N-phosphono prodrug that plasma phosphatases convert
+rapidly to ceftaroline, an anti-MRSA cephalosporin. Das 2019 pooled 21 clinical
+studies (951 subjects) into a joint population PK model of the prodrug and the
+active moiety and used it to simulate PTA in patients with complicated skin and
+soft tissue infection (cSSTI) for ceftaroline fosamil 600 mg q12h by 1 h
+infusion and 600 mg q8h by 2 h infusion, with renal dose adjustment. Those
+simulations supported the European approval of the q8h regimen for
+*Staphylococcus aureus* with ceftaroline MICs of 2 or 4 mg/L and the EUCAST q8h
+breakpoints.
+
+The model belongs to the same development lineage as
+`Riccobene_2016_ceftaroline` and `Riccobene_2017_ceftaroline` (same sponsor,
+overlapping authors, same covariate set) but was re-estimated on a larger pooled
+dataset, so its parameter values differ from both.
+
+# Population
+
+```{r population}
+pop <- readModelDb("Das_2019_ceftaroline")()$population
+str(pop[c("n_subjects", "n_studies", "age_range", "weight_range",
+          "sex_female_pct", "race_ethnicity")])
+```
+
+The dataset (Supplementary Table S2) held 2575 ceftaroline fosamil and 8174
+ceftaroline concentrations from 951 subjects: 501 male and 450 female, median
+age 50 years (12-93), median weight 73 kg (40-134), median BSA-normalised
+creatinine clearance 95.8 mL/min/1.73 m^2 (6.7-467.4). 267 (28%) were healthy
+volunteers and 684 (72%) patients (463 cSSTI, 214 community-acquired pneumonia,
+7 suspected infection). All studies dosed intravenously except one intramuscular
+phase 1 study.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Two-compartment prodrug + two-compartment ceftaroline, 100% conversion | structure | Results, Final population PK model |
+| `lcl` (CLcf) | 268.7 L/h | Suppl Table S3 |
+| `lvc` (Vccf) | 5.6 L | Suppl Table S3 |
+| `lq` (Qcf) | 20.39 L/h | Suppl Table S3 |
+| `lvp` (Vpcf) | 8 L | Suppl Table S3 |
+| `lka` (Kacf, intramuscular) | 0.53 1/h, fixed | Suppl Table S3 |
+| `lcl_ceftaroline` (CLc) | 8.12 L/h | Suppl Table S3 |
+| `lvc_ceftaroline` (Vcc) | 9.44 L | Suppl Table S3 |
+| `lq_ceftaroline` (Qc) | 8.39 L/h | Suppl Table S3 |
+| `lvp_ceftaroline` (Vpc) | 9.58 L | Suppl Table S3 |
+| `lcl_hemodialysis_ceftaroline` | 11.18 (L/h) | Suppl Table S3, 'CLc, dialysis' |
+| `e_wt_cl_q`, `e_wt_vc_vp` | 0.75, 1 fixed; 70 kg | Suppl Methods, Covariate analysis |
+| `e_age_cl_ceftaroline` | -0.23 on (AGE/36) | Suppl Table S3 |
+| `e_crcl_cl_ceftaroline` | 0.54 on (NCrCL/80) | Suppl Table S3 |
+| `e_rrt_hemodial_status_cl_ceftaroline` | 0.34 | Suppl Table S3, 'ESRD effect on CLc' |
+| `e_dis_healthy_cl_ceftaroline` | 1.16 | Suppl Table S3, 'Patient status effect on CLc' |
+| `e_dis_healthy_vc_ceftaroline` | 1.59 | Suppl Table S3, 'Patient status effect on Vcc' |
+| `etalcl`, `etalvc` | CV 0.92, 0.92 | Suppl Table S3 |
+| `etalka` | CV 0.33, fixed | Suppl Table S3 |
+| `etalcl_ceftaroline`, `etalvc_ceftaroline` | CV 0.26, 0.24, correlation 0.65 | Suppl Table S3 |
+| `etalvp_ceftaroline` | CV 0.095 | Suppl Table S3 |
+| `etaRUV` | CV 0.6 | Suppl Table S3, 'IIV Eta on Epsilon' |
+| `propSd`, `addSd` | 0.29; 0.12 umol/L | Suppl Table S3 |
+| `propSd_ceftaroline`, `addSd_ceftaroline` | 0.18; 0.063 umol/L | Suppl Table S3 |
+| Free fraction 0.8 for fT>MIC (simulation only) | 0.8 | Methods, PTA analysis |
+
+# Virtual cohort
+
+The article simulated 5000 cSSTI patients per scenario, resampling the baseline
+covariates of the cSSTI patients in the modelling dataset for normal renal
+function and drawing covariates within each renal-function band otherwise, with
+creatinine clearance uniform within the band. Those individual covariates are
+not published, so this cohort is a stand-in (see Assumptions): 200 patients per
+arm, weight log-normal around 78 kg truncated to the dataset range 40-134 kg,
+age normal around 45 years (normal renal function) or 60 years (renal
+impairment) truncated to 18-93 years. Normal renal function draws creatinine
+clearance above 80 mL/min/1.73 m^2; because the renal term saturates at 80, the
+exact distribution above 80 does not enter clearance. Truncation is by
+reject-and-redraw, never by clamping.
+
+```{r cohort}
+rxode2::rxSetSeed(20190211)
+set.seed(20190211)
+
+draw_trunc <- function(n, gen, lo, hi) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- gen(n)
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
+
+n_per_arm <- 200
+
+arms <- tibble::tribble(
+  ~arm,           ~renal,     ~dose_mg, ~tau_h, ~dur_h, ~crcl_lo, ~crcl_hi, ~esrd,
+  "q12h normal",   "normal",   600,      12,     1,      80,       200,      0,
+  "q8h normal",    "normal",   600,       8,     2,      80,       200,      0,
+  "q12h mild",     "mild",     600,      12,     1,      50,        80,      0,
+  "q12h moderate", "moderate", 400,      12,     1,      30,        50,      0,
+  "q12h severe",   "severe",   300,      12,     1,      15,        30,      0,
+  "q12h ESRD",     "ESRD",     200,      12,     1,       5,        15,      1,
+  "q8h mild",      "mild",     600,       8,     2,      50,        80,      0,
+  "q8h moderate",  "moderate", 400,       8,     2,      30,        50,      0,
+  "q8h severe",    "severe",   300,       8,     2,      15,        30,      0,
+  "q8h ESRD",      "ESRD",     200,       8,     2,       5,        15,      1
+) |>
+  mutate(arm = factor(arm, levels = arm))
+
+cohort <- arms |>
+  rowwise() |>
+  reframe(
+    arm = arm, renal = renal, dose_mg = dose_mg, tau_h = tau_h, dur_h = dur_h,
+    WT = draw_trunc(n_per_arm, function(k) rlnorm(k, log(78), 0.22), 40, 134),
+    AGE = draw_trunc(n_per_arm,
+                     function(k) rnorm(k, if (renal == "normal") 45 else 60, 15),
+                     18, 93),
+    CRCL = if (renal == "normal") {
+      draw_trunc(n_per_arm, function(k) rlnorm(k, log(115), 0.3), 80, 300)
+    } else {
+      runif(n_per_arm, crcl_lo, crcl_hi)
+    },
+    RRT_HEMODIAL_STATUS = esrd
+  ) |>
+  mutate(id = row_number(), DIS_HEALTHY = 0, RRT_HEMODIAL_ACTIVE = 0)
+
+cohort |>
+  group_by(arm) |>
+  summarise(n = n(), WT = median(WT), AGE = median(AGE), CRCL = median(CRCL),
+            .groups = "drop") |>
+  mutate(across(c(WT, AGE, CRCL), ~ round(.x, 1))) |>
+  dplyr::rename("Arm" = arm, "N" = n, "Median weight (kg)" = WT,
+                "Median age (y)" = AGE,
+                "Median CrCL (mL/min/1.73 m^2)" = CRCL) |>
+  knitr::kable()
+```
+
+# Simulation
+
+Steady state is imposed with `ss = 1` on the first dose and one dosing interval
+is observed on a 0.05 h grid. Residual error is not used (the article fixed it
+to zero for PTA); `Cc_ceftaroline` is the individual prediction.
+
+```{r simulate}
+mod <- readModelDb("Das_2019_ceftaroline")
+
+dose_rows <- cohort |>
+  mutate(time = 0, amt = dose_mg, dur = dur_h, evid = 1L, ii = tau_h, ss = 1L,
+         cmt = "central", dvid = NA_integer_)
+
+obs_rows <- cohort |>
+  tidyr::crossing(rel = seq(0, 1, length.out = 241)) |>
+  mutate(time = rel * tau_h, amt = NA_real_, dur = NA_real_, evid = 0L, ii = 0,
+         ss = 0L, cmt = NA_character_, dvid = 2L) |>
+  select(-rel)
+
+events <- bind_rows(dose_rows, obs_rows) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+# One rxSolve call per arm keeps each call small. useLinCmt = FALSE keeps the
+# two-endpoint dvid mapping intact. The steady-state solve is knife-edge on
+# liblsoda, rxode2's default: perturbing the thetas by 1e-12 (relative) leaves
+# one subject non-finite ("excess work done") in about one solve in four. The
+# Fortran LSODA (`method = "lsoda"`) and cvode solve all of them.
+sim <- lapply(levels(events$arm), function(a) {
+  ev_a <- events[events$arm == a, , drop = FALSE]
+  rxode2::rxSolve(
+    mod, events = ev_a,
+    keep = c("arm", "renal", "dose_mg", "tau_h"),
+    useLinCmt = FALSE, maxsteps = 1e6, method = "lsoda"
+  ) |> as.data.frame()
+}) |> bind_rows()
+
+stopifnot(nrow(sim) == nrow(obs_rows), all(is.finite(sim$Cc_ceftaroline)))
+```
+
+## Structural identity: AUC over a steady-state interval is the formation rate over clearance
+
+Ceftaroline fosamil is converted completely, mol for mol, so at steady state the
+ceftaroline AUC over one dosing interval is
+`dose * (604.7 / 684.7) / CLc`. Both sides use the same drawn parameters; the
+only difference is trapezoidal error, so the bound is tight.
+
+```{r identity}
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+
+ident <- sim |>
+  group_by(id) |>
+  summarise(auc_tau = trap(time, Cc_ceftaroline), cl = first(cl_ceftaroline),
+            dose_mg = first(dose_mg), .groups = "drop") |>
+  mutate(expected = dose_mg * (604.7 / 684.7) / cl,
+         rel_err = auc_tau / expected - 1)
+
+cat("max |relative error| of AUCtau,ss vs dose x MW ratio / CLc:",
+    signif(max(abs(ident$rel_err)), 3), "\n")
+stopifnot(max(abs(ident$rel_err)) < 0.01)
+```
+
+## Steady-state profiles
+
+```{r fig-profiles, fig.height = 6}
+sim |>
+  group_by(arm, time) |>
+  summarise(med = median(Cc_ceftaroline),
+            lo = quantile(Cc_ceftaroline, 0.05),
+            hi = quantile(Cc_ceftaroline, 0.95), .groups = "drop") |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2) +
+  geom_line() +
+  facet_wrap(~arm, ncol = 5) +
+  scale_y_log10() +
+  labs(x = "Time after dose at steady state (h)",
+       y = "Total ceftaroline (mg/L)",
+       title = "Simulated steady-state ceftaroline, median and 90% interval") +
+  theme_bw(base_size = 9)
+```
+
+# PKNCA validation
+
+The article reports no noncompartmental results, so PKNCA is used to summarise
+the simulated steady-state exposures per arm and to confirm independently of
+the trapezoid above that the interval AUC equals the formation rate over
+clearance.
+
+```{r pknca}
+conc_df <- sim |>
+  select(id, arm, time, Cc_ceftaroline) |>
+  filter(!is.na(Cc_ceftaroline)) |>
+  as.data.frame()
+# The ss = 1 solve returns the steady-state trough at time 0.
+stopifnot(all(table(conc_df$id[conc_df$time == 0]) == 1))
+
+dose_df <- dose_rows |>
+  select(id, arm, time, amt, dur) |>
+  as.data.frame()
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc_ceftaroline ~ time | arm + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id, duration = "dur")
+
+intervals <- arms |>
+  select(arm, end = tau_h) |>
+  mutate(start = 0, cmax = TRUE, cmin = TRUE, auclast = TRUE) |>
+  as.data.frame()
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_tidy <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "cmin", "auclast"))
+
+nca_tidy |>
+  group_by(arm, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  mutate(across(where(is.numeric), ~ signif(.x, 3))) |>
+  dplyr::rename("Arm" = arm, "Cmax,ss (mg/L)" = cmax,
+                "Cmin,ss (mg/L)" = cmin, "AUCtau,ss (mg*h/L)" = auclast) |>
+  knitr::kable()
+
+auc_chk <- nca_tidy |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, auclast = PPORRES) |>
+  left_join(ident |> select(id, expected), by = "id")
+stopifnot(nrow(auc_chk) == nrow(cohort),
+          max(abs(auc_chk$auclast / auc_chk$expected - 1)) < 0.01)
+```
+
+# Probability of target attainment
+
+%fT>MIC is the percentage of the steady-state dosing interval during which the
+free concentration (80% of total, Methods) exceeds the MIC. The PK/PD targets
+for *S. aureus* are 27% (stasis), 31% (1-log10 kill) and 35% (2-log10 kill)
+fT>MIC (Table 1).
+
+```{r ftmic}
+mics <- c(0.015, 0.03, 0.06, 0.125, 0.25, 0.5, 1, 2, 4, 8, 16)
+fu <- 0.8
+
+# Grid points in [0, tau): the last point (time = tau) repeats time 0.
+ft <- sim |>
+  group_by(id) |>
+  filter(time < max(time)) |>
+  ungroup() |>
+  tidyr::crossing(mic = mics) |>
+  group_by(arm, renal, id, mic) |>
+  summarise(ftmic = 100 * mean(fu * Cc_ceftaroline > mic), .groups = "drop")
+
+targets <- c(stasis = 27, kill1 = 31, kill2 = 35)
+pta_sim <- ft |>
+  tidyr::crossing(tibble(target_name = names(targets), target = targets)) |>
+  group_by(arm, mic, target_name) |>
+  summarise(pta = 100 * mean(ftmic >= target), .groups = "drop")
+```
+
+## Tables 2 and 3 and Figures 1 and 2: normal renal function
+
+```{r pub-tables-2-3}
+# Das 2019 Table 2 (600 mg q12h 1 h) and Table 3 (600 mg q8h 2 h), PTA (%) by
+# MIC for 27 / 31 / 35 % fT>MIC; MIC 0.015-1 are 100 in every column.
+pub23 <- tibble::tribble(
+  ~arm,          ~mic, ~stasis, ~kill1, ~kill2,
+  "q12h normal",    2,    98.9,   96.1,   92.5,
+  "q12h normal",    4,    66.5,   49.5,   37.1,
+  "q12h normal",    8,    4.84,   2.14,   1.04,
+  "q12h normal",   16,    0.04,      0,      0,
+  "q8h normal",     2,     100,    100,    100,
+  "q8h normal",     4,    98.7,   96.8,   93.6,
+  "q8h normal",     8,    42.9,   33.1,   23.4,
+  "q8h normal",    16,    0.72,   0.38,   0.22
+) |>
+  pivot_longer(c(stasis, kill1, kill2), names_to = "target_name",
+               values_to = "pta_pub")
+
+pta_norm <- pta_sim |>
+  filter(arm %in% c("q12h normal", "q8h normal")) |>
+  mutate(arm = as.character(arm))
+
+ggplot(pta_norm, aes(mic, pta, colour = target_name)) +
+  geom_line() +
+  geom_point(data = pub23, aes(y = pta_pub), shape = 4, size = 2.5) +
+  scale_x_log10(breaks = mics, labels = format(mics, drop0trailing = TRUE)) +
+  facet_wrap(~arm) +
+  scale_colour_discrete(labels = c(kill1 = "1-log kill (31%)",
+                                   kill2 = "2-log kill (35%)",
+                                   stasis = "stasis (27%)")) +
+  labs(x = "Ceftaroline MIC (mg/L)", y = "PTA (%)", colour = "Target",
+       title = "PTA by MIC, normal renal function",
+       caption = "Lines: simulation. Crosses: Das 2019 Tables 2 and 3 (replicates Figures 1 and 2 without the AWARE MIC histograms).") +
+  theme_bw(base_size = 9) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+pta_norm |>
+  inner_join(pub23, by = c("arm", "mic", "target_name")) |>
+  mutate(pta = round(pta, 1)) |>
+  arrange(arm, mic, target_name) |>
+  dplyr::rename("Arm" = arm, "MIC (mg/L)" = mic, "Target" = target_name,
+                "Simulated PTA (%)" = pta, "Published PTA (%)" = pta_pub) |>
+  knitr::kable()
+```
+
+## Gate: the median fT>MIC across the MIC range (Tables S4 and S5)
+
+A PTA at a single target collapses towards 0 or 100% and moves steeply with
+exposure, so it is a poor assertion. Tables S4 and S5 print PTA for targets
+from 20% to 100% fT>MIC, which traces the whole distribution of fT>MIC at each
+MIC; the target at which PTA crosses 50% is the published *median* fT>MIC. The
+simulated median is compared with it at every MIC where it is not censored at
+100%.
+
+```{r gate-median}
+# Supplementary Table S4 (q12h 1 h) and S5 (q8h 2 h): PTA (%) at fT>MIC targets
+# 20, 30, ..., 100 %.
+s4s5 <- tibble::tribble(
+  ~arm,          ~mic,  ~t20,  ~t30,  ~t40,  ~t50,  ~t60,  ~t70,  ~t80,  ~t90, ~t100,
+  "q12h normal",  0.5,   100,   100,   100, 99.76,  97.1, 89.44, 74.42, 54.46,  34.5,
+  "q12h normal",    1,   100,   100, 99.28, 93.78, 78.74,  55.2, 32.14, 16.46,  7.82,
+  "q12h normal",    2,   100, 97.48, 83.14, 55.58, 28.32, 11.54,  4.24,  1.38,  0.42,
+  "q12h normal",    4,  92.2, 55.86, 22.16,  6.52,  1.54,  0.36,  0.12,  0.06,  0.02,
+  "q8h normal",     2,   100,   100,  99.9, 98.58, 93.48, 81.54, 64.34, 46.08, 29.92,
+  "q8h normal",     4, 99.82, 97.56, 85.86, 63.32, 41.14,  23.2, 11.74,  5.74,  2.32,
+  "q8h normal",     8, 64.86, 36.48,  14.6,  5.76,     2,  0.66,  0.14,  0.08,  0.02
+)
+
+# Linear interpolation of the 50% crossing of PTA (decreasing in target).
+median_from_pta <- function(pta) {
+  tg <- c(0, seq(20, 100, by = 10))
+  # approx() needs increasing x; the repeated 100s sit far from the 50% crossing.
+  approx(rev(c(100, pta)), rev(tg), xout = 50, ties = mean)$y
+}
+pub_med <- s4s5 |>
+  rowwise() |>
+  mutate(med_pub = median_from_pta(c_across(t20:t100))) |>
+  ungroup() |>
+  select(arm, mic, med_pub)
+
+sim_med <- ft |>
+  filter(arm %in% c("q12h normal", "q8h normal")) |>
+  mutate(arm = as.character(arm)) |>
+  group_by(arm, mic) |>
+  summarise(med_sim = median(ftmic), .groups = "drop")
+
+med_cmp <- pub_med |>
+  left_join(sim_med, by = c("arm", "mic")) |>
+  mutate(diff = med_sim - med_pub)
+
+med_cmp |>
+  mutate(across(c(med_pub, med_sim, diff), ~ round(.x, 1))) |>
+  dplyr::rename("Arm" = arm, "MIC (mg/L)" = mic,
+                "Published median fT>MIC (%)" = med_pub,
+                "Simulated median fT>MIC (%)" = med_sim,
+                "Difference (points)" = diff) |>
+  knitr::kable()
+
+stopifnot(
+  nrow(med_cmp) == 7, !anyNA(med_cmp$med_sim),
+  # Centre: an unrestricted renal term shifts every row down by about 13
+  # points on average.
+  abs(mean(med_cmp$diff)) < 3,
+  # Envelope, wide enough for 200-subject sampling noise in a median.
+  max(abs(med_cmp$diff)) < 7
+)
+```
+
+## Sensitivity: two readings the article leaves open
+
+Two parts of the covariate model are not fully pinned by the printed table (see
+Assumptions): whether the renal term is restricted to values below 80
+mL/min/1.73 m^2, and whether the printed CLc and Vcc are the healthy-volunteer
+or the patient values. Each alternative is re-simulated for the two
+normal-renal-function arms with the same subjects and compared with the same
+published medians.
+
+```{r sensitivity}
+med_for <- function(m) {
+  ev <- events[events$arm %in% c("q12h normal", "q8h normal"), , drop = FALSE]
+  ev$arm <- droplevels(ev$arm)
+  s <- lapply(levels(ev$arm), function(a) {
+    rxode2::rxSetSeed(20190211)
+    rxode2::rxSolve(m, events = ev[ev$arm == a, , drop = FALSE], keep = "arm",
+                    useLinCmt = FALSE, maxsteps = 1e6, method = "lsoda") |>
+      as.data.frame()
+  }) |> bind_rows()
+  s |>
+    group_by(id) |>
+    filter(time < max(time)) |>
+    ungroup() |>
+    tidyr::crossing(mic = unique(pub_med$mic)) |>
+    group_by(arm, id, mic) |>
+    summarise(ftmic = 100 * mean(fu * Cc_ceftaroline > mic), .groups = "drop") |>
+    group_by(arm, mic) |>
+    summarise(med_sim = median(ftmic), .groups = "drop") |>
+    mutate(arm = as.character(arm)) |>
+    inner_join(pub_med, by = c("arm", "mic")) |>
+    mutate(diff = med_sim - med_pub)
+}
+
+variants <- list(
+  "As packaged (renal term below 80; printed values are healthy)" = mod,
+  "Renal term unrestricted above 80" = mod |>
+    rxode2::model(crcl_cl <- (CRCL / ref_crcl)^(e_crcl_cl_ceftaroline * (1 - RRT_HEMODIAL_STATUS))),
+  "Printed CLc and Vcc are the patient values" = mod |>
+    rxode2::ini(e_dis_healthy_cl_ceftaroline = 1, e_dis_healthy_vc_ceftaroline = 1)
+)
+sens <- lapply(names(variants), function(v) med_for(variants[[v]]) |> mutate(variant = v)) |>
+  bind_rows()
+
+sens_summary <- sens |>
+  group_by(variant) |>
+  summarise(mean_diff = mean(diff), max_abs_diff = max(abs(diff)), .groups = "drop")
+
+sens_summary |>
+  mutate(across(where(is.numeric), ~ round(.x, 1))) |>
+  dplyr::rename("Variant" = variant, "Mean difference (points)" = mean_diff,
+                "Largest absolute difference (points)" = max_abs_diff) |>
+  knitr::kable()
+
+sens |>
+  select(variant, arm, mic, diff) |>
+  mutate(diff = round(diff, 1)) |>
+  pivot_wider(names_from = variant, values_from = diff) |>
+  dplyr::rename("Arm" = arm, "MIC (mg/L)" = mic) |>
+  knitr::kable(caption = "Simulated minus published median fT>MIC (points)")
+
+# The unrestricted renal term is excluded by the published PTA: it moves the
+# whole distribution down by many points.
+unres <- sens_summary$mean_diff[sens_summary$variant == "Renal term unrestricted above 80"]
+stopifnot(unres < -6)
+```
+
+The unrestricted renal term misses every published median in the same
+direction, so the restriction below 80 is retained. The two orientations of the
+patient multipliers, in contrast, both land within a few points of the
+published medians: a higher clearance and a larger central volume in patients
+act in opposite directions on fT>MIC and largely cancel. The packaged
+orientation fits somewhat closer, but the margin is small next to the
+uncertainty of the stand-in covariate cohort, so the PTA tables do not settle
+the orientation; it is taken from the wording of the table (see Assumptions).
+
+## Tables S6 and S7: renal impairment with dose adjustment
+
+```{r pub-s6-s7}
+# Supplementary Tables S6 (q12h 1 h) and S7 (q8h 2 h); MIC <= 1 (q12h) and
+# <= 2 (q8h) are ~100 in every column and are omitted.
+pub67 <- tibble::tribble(
+  ~arm,            ~mic, ~stasis, ~kill1, ~kill2,
+  "q12h mild",        4,   81.62,  69.24,  58.10,
+  "q12h mild",        8,   12.24,   6.86,   4.20,
+  "q12h moderate",    4,   72.10,  59.50,  49.50,
+  "q12h moderate",    8,    5.76,   3.24,   1.98,
+  "q12h severe",      4,   72.74,  63.70,  56.34,
+  "q12h severe",      8,    5.68,   3.84,   2.68,
+  "q12h ESRD",        4,   69.74,  63.28,  58.24,
+  "q12h ESRD",        8,    5.58,   4.42,   3.60,
+  "q8h mild",         4,   99.62,  99.02,  97.44,
+  "q8h mild",         8,   59.04,  49.28,  40.14,
+  "q8h moderate",     4,   98.10,  96.46,  94.14,
+  "q8h moderate",     8,   35.62,  29.34,  23.62,
+  "q8h severe",       4,   97.28,  95.88,  93.64,
+  "q8h severe",       8,   34.38,  29.32,  25.32,
+  "q8h ESRD",         4,   94.90,  93.68,  92.30,
+  "q8h ESRD",         8,   30.10,  27.22,  24.50
+) |>
+  pivot_longer(c(stasis, kill1, kill2), names_to = "target_name",
+               values_to = "pta_pub")
+
+renal_cmp <- pta_sim |>
+  mutate(arm = as.character(arm)) |>
+  inner_join(pub67, by = c("arm", "mic", "target_name")) |>
+  mutate(diff = pta - pta_pub)
+
+renal_cmp |>
+  filter(target_name == "stasis") |>
+  mutate(across(c(pta, diff), ~ round(.x, 1))) |>
+  select(arm, mic, pta, pta_pub, diff) |>
+  dplyr::rename("Arm" = arm, "MIC (mg/L)" = mic,
+                "Simulated PTA, stasis (%)" = pta,
+                "Published PTA, stasis (%)" = pta_pub,
+                "Difference (points)" = diff) |>
+  knitr::kable()
+
+# The ESRD multiplier replaces the creatinine-clearance term. Applying both
+# would cut ESRD clearance a further threefold ((10/80)^0.54 = 0.33) and lift
+# PTA at MIC 8 far above the published 5.6% (q12h) and 30% (q8h).
+esrd8 <- renal_cmp |> filter(grepl("ESRD", arm), mic == 8, target_name == "stasis")
+stopifnot(nrow(esrd8) == 2, all(esrd8$pta < 60))
+# Centre of all 48 renal-impairment cells.
+stopifnot(abs(median(renal_cmp$diff)) < 8)
+```
+
+The renal-impairment cohorts are the least certain part of this replication:
+the article drew their covariates from a multivariate distribution that is not
+published, and PTA near MIC 4-8 sits on the steep part of the curve. The checks
+above therefore assert only the centre of the differences and the structural
+ESRD result.
+
+# Assumptions and deviations
+
+## Errata and departures from a literal reading of the source
+
+* **Patient-status orientation.** Table S3 prints 'Patient status effect' on CLc
+  (1.16) and Vcc (1.59), and the Supplementary Methods define a categorical
+  effect as `theta_TV,REF * theta_x^X`, but the sentence defining `X` is garbled
+  ("equal to 1 or 0 dependent on an individual being categorised into the
+  reference group or not"). The model takes the printed CLc and Vcc as the
+  healthy-volunteer values and applies the multipliers to patients, because the
+  rows are labelled as the effect of patient status, the preceding sentence of
+  the Supplementary Methods applies `theta_x` to "the group different from the
+  reference group", and the sibling model `Riccobene_2017_ceftaroline` uses the
+  same orientation. The published PTA does not clearly discriminate between the
+  two orientations (Sensitivity section): both land within a few points of the
+  median fT>MIC of Tables S4 and S5, the packaged one somewhat closer. The
+  orientation matters for simulations of healthy
+  volunteers, whose clearance and central volume are 1.16- and 1.59-fold lower
+  than patients' under this reading and 1.16- and 1.59-fold higher under the
+  other.
+* **Renal term saturates at 80 mL/min/1.73 m^2.** Table S3 prints the term as
+  `(NCrCL/80)^0.54` with no restriction. Both sibling models of this lineage
+  (`Riccobene_2016_ceftaroline`, `Riccobene_2017_ceftaroline`) restrict it to
+  values below 80, and the article's normal-renal-function PTA confirms it: the
+  unrestricted form gives higher clearance in subjects above 80 and
+  under-predicts every published median fT>MIC (Sensitivity section).
+* **ESRD replaces the renal term.** The ESRD multiplier (0.34) is applied in
+  place of the creatinine-clearance term, as in the sibling models; applying
+  both contradicts the ESRD rows of Tables S6 and S7 (see the check above).
+* **Hemodialysis-session clearance.** 'CLc, dialysis' = 11.18 is printed without
+  a unit or an equation. It is encoded, as in `Riccobene_2017_ceftaroline`, as
+  the ceftaroline clearance (L/h) that replaces the body clearance while a
+  session runs (`RRT_HEMODIAL_ACTIVE = 1`). No simulation in the article
+  involves a dialysis session, so this term is not validated here.
+* **Intramuscular absorption.** The Results text calls the intramuscular input a
+  "zero-order absorption component", but Table S3 prints Kacf = 0.53 with unit
+  h^-1 (a first-order rate constant) and IIV on it. The table is followed:
+  first-order absorption from `depot`. Intramuscular bioavailability is not
+  printed and is taken as 1 (the sibling models fix it to 1). The intravenous
+  regimens validated here do not use the depot.
+* **Allometric scaling of Q and Vp.** The article says body weight was applied
+  allometrically to "CL and V of both ceftaroline and ceftaroline fosamil" with
+  exponents 0.75 and 1 at 70 kg. It is applied to every clearance (including
+  intercompartmental) and every volume, as in the sibling models.
+* **Variance scale.** Table S3 prints IIV as CVs. They are carried as
+  `omega^2 = CV^2`, the convention of the sibling models from the same sponsor,
+  where the printed CV equals the square root of the variance. For ceftaroline
+  the alternative `log(CV^2 + 1)` differs by less than 4%; it differs more for
+  the two prodrug etas (0.846 vs 0.624), which do not affect ceftaroline exposure
+  because the prodrug is converted completely within minutes.
+* **Residual error on one random effect.** 'IIV Eta on Epsilon' (CV 0.6) is
+  encoded as `etaRUV` scaling the additive and proportional SDs of both analytes.
+* **Units.** The model was fitted in micromol/L with a molar 100% conversion.
+  This implementation doses ceftaroline fosamil in mg and reports both analytes
+  in mg/L: the conversion flux is scaled by the molar-mass ratio 604.7/684.7
+  (ceftaroline / ceftaroline fosamil, g/mol; the same constants as
+  `Chauzy_2022_ceftaroline`), and the printed additive SDs are converted to mg/L
+  (0.12 umol/L x 0.6847 = 0.0822 mg/L; 0.063 umol/L x 0.6047 = 0.0381 mg/L).
+  Molar masses are not printed in the article.
+* **Age effect.** Applied to every subject as `(AGE/36)^-0.23`, the printed form
+  (also the form of `Riccobene_2016_ceftaroline`); the reference 36 years is not
+  the dataset median of 50 despite the Supplementary Methods saying reference
+  values are medians.
+
+## Simulation assumptions
+
+* The cSSTI patient covariates resampled by the article are not published. The
+  stand-in cohort (weight median 78 kg, age median 45 years for normal renal
+  function and 60 years for renal impairment) is an assumption; ceftaroline
+  clearance depends on age only weakly (exponent -0.23), and above 80
+  mL/min/1.73 m^2 not at all on creatinine clearance, so the normal-renal-
+  function comparison depends mainly on weight.
+* Creatinine clearance in mL/min (the article's renal bands) is used as the
+  BSA-normalised value.
+* ESRD subjects are flagged `RRT_HEMODIAL_STATUS = 1` with no dialysis session
+  in the simulated interval.
+* 200 simulated patients per arm, against 5000 in the article.
+* The solves use the Fortran LSODA (`method = "lsoda"`). The default liblsoda
+  fails the steady-state solve of an occasional subject after a last-bit change
+  in the parameters (see the Simulation section).

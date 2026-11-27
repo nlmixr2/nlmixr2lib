@@ -366,9 +366,16 @@ nca_sim <- bind_rows(lapply(seq_len(nrow(arms)), function(i) {
 }))
 
 run_nca <- function(conc_col) {
+  # Per profile, keep conc >= 1e-6 * Cmax after the peak: the baseline and
+  # induction midazolam tails fall to 1e-13 nM or less by 240 h, at the
+  # integrator's absolute tolerance, where a point can fall below zero and
+  # make PKNCA's AUCinf NaN.
   conc <- nca_sim |>
     filter(!is.na(.data[[conc_col]])) |>
-    transmute(id, treatment, time, conc = .data[[conc_col]])
+    transmute(id, treatment, time, conc = .data[[conc_col]]) |>
+    group_by(id, treatment) |>
+    filter(time <= time[which.max(conc)] | conc >= 1e-6 * max(conc)) |>
+    ungroup()
   conc <- bind_rows(conc, conc |> distinct(id, treatment) |> mutate(time = 0, conc = 0)) |>
     distinct(id, treatment, time, .keep_all = TRUE) |>
     arrange(treatment, id, time)

@@ -1,0 +1,355 @@
+---
+title: "Everolimus (van Erp 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Everolimus (van Erp 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("vanErp_2016_everolimus"))$reference`
+* Description: `r rxode2::rxode(readModelDb("vanErp_2016_everolimus"))$description`
+* Article: <https://doi.org/10.1007/s40262-016-0414-3> (open access, PMC5069307)
+
+van Erp et al. fitted a semi-physiological model to whole-blood everolimus
+concentrations, but parameterised it in plasma terms: each whole-blood
+observation was converted to plasma with its paired hematocrit and the fixed
+85:15 erythrocyte:plasma concentration ratio (Eq. 1). Absorption runs through
+a depot and four transit compartments into a well-stirred liver compartment.
+The liver's plasma flow, `QH * (1 - Ht)`, and the unbound intrinsic clearance
+`fu * CLint` set the hepatic extraction ratio. Drug that escapes extraction
+reaches a two-compartment plasma disposition system. The unbound plasma
+concentration drives a previously published S6K1-inhibition Imax model, which
+the paper used only for simulation.
+
+# Population
+
+Seventy-three adults (51 female, 22 male; median age 62 years, range 37-80;
+median weight 73.2 kg, range 45-105) came from two Dutch studies. Forty-one had
+progressive thyroid cancer (THYRRAD phase II) and 32 had metastatic breast
+cancer (INPRES phase IV). All received everolimus 10 mg once daily (10-15 mg
+per occasion). Median hematocrit was 38% (range 25-49.7%), and 947 whole-blood
+concentrations were analysed (van Erp 2016 Table 1). Each patient was sampled
+on two occasions: days 1 and 15 in THYRRAD, days 14 and 35 in INPRES.
+
+The same information is available programmatically via
+`readModelDb("vanErp_2016_everolimus")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lmat` (MAT) | 0.544 h | Table 2 |
+| `lclint` (CLint/F) | 198 L/h | Table 2 |
+| `lvc` (V3/F) | 207 L | Table 2 |
+| `lq` (Q) | 72.1 L/h | Table 2 |
+| `lvp` (V4/F) | 485 L | Table 2 |
+| `lqh` (QH) | 90 L/h, fixed | Methods, Structural Pharmacokinetic Model |
+| `lvliver` (Vliver) | 1 L, fixed | Methods, Structural Pharmacokinetic Model |
+| `lfu` (fu) | 0.27, fixed | Table 2; Methods Eq. 4 |
+| `rbc_plasma_ratio` | 85/15, fixed | Table 2; Methods Eq. 1 (4.667 = 85/15 - 1) |
+| `ntr` (number of transit compartments) | 4, fixed | Results, Estimation Results; Fig. 1 |
+| `imax_s6k1` | 97 %, fixed | Methods Eq. 6 (Tanaka 2008) |
+| `ic50_s6k1` | 0.05 ng/mL, fixed | Methods Eq. 6 (Tanaka 2008) |
+| `etalclint`, `etalvc` | 38.9 %, 36.1 % CV; correlation 0.347 | Table 2 |
+| `etalmat` | 62.0 % CV | Table 2 |
+| `etalfu` | 3 % CV, fixed | Table 2 |
+| `etaiov_fdepot_1`, `etaiov_fdepot_2` | 15.2 % CV | Table 2 (inter-occasion variability on F1) |
+| `propSd` | 26.0 % | Table 2 |
+| `ktr = (n + 1) / MAT` | n/a | Methods Eq. 2 |
+| `qhp = QH * (1 - Ht)` | n/a | Methods Eq. 3 |
+| `eh = CLint * fu / (qhp + CLint * fu)` | n/a | Methods Eq. 4 |
+| `clh = eh * qhp` | n/a | Methods Eq. 5 |
+| `k20`, `k23`, `k32`, `k34`, `k43` | n/a | Methods, rate-constant list after Fig. 1 |
+| Compartment layout (depot, transits, liver, central, peripheral) | n/a | Fig. 1 |
+| `Cblood = Cc * (1 + 4.667 * Ht)` | n/a | Methods Eq. 1 |
+| `Cu = fu * Cc` | n/a | Methods, Structural Pharmacokinetic Model |
+| `s6k1_inhibition = Imax * Cu / (IC50 + Cu)` | n/a | Methods Eq. 6 |
+
+# Typical-value steady state (Figure 4)
+
+The paper's Figure 4 shows the typical patient at steady state on 10 mg once
+daily, at a hematocrit of 20% and of 45%. The simulation below gives 30 daily
+doses and plots the last dosing interval.
+
+```{r typical}
+mod <- readModelDb("vanErp_2016_everolimus")
+mod_typical <- rxode2::zeroRe(mod)
+
+dose_times <- seq(0, 29 * 24, by = 24)
+obs_times <- 29 * 24 + seq(0, 24, by = 0.05)
+
+make_typical <- function(hct, id) {
+  dplyr::bind_rows(
+    data.frame(time = dose_times, evid = 1, amt = 10, cmt = "depot"),
+    data.frame(time = obs_times, evid = 0, amt = 0, cmt = "central")
+  ) |>
+    dplyr::mutate(id = id, HCT = hct, OCC = 1, hct_grp = paste0(hct, "% hematocrit")) |>
+    dplyr::arrange(time, dplyr::desc(evid))
+}
+ev_typical <- dplyr::bind_rows(make_typical(20, 1L), make_typical(45, 2L))
+
+sim_typical <- rxode2::rxSolve(mod_typical, events = ev_typical, keep = "hct_grp") |>
+  as.data.frame() |>
+  dplyr::mutate(tad = time - 29 * 24)
+```
+
+```{r figure-4, fig.height = 7, fig.width = 6}
+sim_typical |>
+  dplyr::select(tad, hct_grp,
+    `Whole blood (ng/mL)` = Cblood,
+    `Plasma (ng/mL)` = Cc,
+    `S6K1 inhibition (%)` = s6k1_inhibition
+  ) |>
+  tidyr::pivot_longer(-c(tad, hct_grp)) |>
+  dplyr::mutate(name = factor(name, levels = c("Whole blood (ng/mL)", "Plasma (ng/mL)", "S6K1 inhibition (%)"))) |>
+  ggplot(aes(tad, value, colour = hct_grp)) +
+  geom_line(linewidth = 1) +
+  facet_wrap(~name, ncol = 1, scales = "free_y") +
+  scale_x_continuous(breaks = seq(0, 24, by = 4)) +
+  labs(
+    x = "Time after dose (h)", y = NULL, colour = NULL,
+    caption = "Replicates Figure 4 of van Erp 2016 (10 mg QD, typical patient, steady state)."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+The peak and trough values below were read by the maintainers off the
+published Figure 4 and are approximate (about +/- 1 ng/mL and +/- 0.3%).
+
+```{r figure-4-check}
+fig4 <- tibble::tribble(
+  ~hct_grp, ~quantity, ~published,
+  "20% hematocrit", "Whole-blood peak (ng/mL)", 48,
+  "45% hematocrit", "Whole-blood peak (ng/mL)", 68,
+  "20% hematocrit", "Whole-blood trough (ng/mL)", 7.8,
+  "45% hematocrit", "Whole-blood trough (ng/mL)", 14,
+  "20% hematocrit", "Plasma peak (ng/mL)", 24.7,
+  "45% hematocrit", "Plasma peak (ng/mL)", 22,
+  "20% hematocrit", "Plasma trough (ng/mL)", 4.0,
+  "45% hematocrit", "Plasma trough (ng/mL)", 4.4,
+  "20% hematocrit", "S6K1 inhibition peak (%)", 96.2,
+  "45% hematocrit", "S6K1 inhibition peak (%)", 96.2,
+  "20% hematocrit", "S6K1 inhibition trough (%)", 92.8,
+  "45% hematocrit", "S6K1 inhibition trough (%)", 93.1
+)
+sim_fig4 <- sim_typical |>
+  dplyr::group_by(hct_grp) |>
+  dplyr::summarise(
+    `Whole-blood peak (ng/mL)` = max(Cblood),
+    `Whole-blood trough (ng/mL)` = Cblood[tad == 24],
+    `Plasma peak (ng/mL)` = max(Cc),
+    `Plasma trough (ng/mL)` = Cc[tad == 24],
+    `S6K1 inhibition peak (%)` = max(s6k1_inhibition),
+    `S6K1 inhibition trough (%)` = s6k1_inhibition[tad == 24],
+    .groups = "drop"
+  ) |>
+  tidyr::pivot_longer(-hct_grp, names_to = "quantity", values_to = "simulated")
+fig4_cmp <- dplyr::left_join(fig4, sim_fig4, by = c("hct_grp", "quantity")) |>
+  dplyr::mutate(pct_diff = 100 * (simulated - published) / published)
+fig4_cmp |>
+  dplyr::rename(
+    "Hematocrit" = hct_grp, "Quantity" = quantity,
+    "Figure 4 (digitised)" = published, "Simulated" = simulated,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = c(0, 0, 1, 2, 1))
+
+# Deterministic typical-value solve against a digitised figure: every value
+# within the digitisation error. A wrong CLint, fu, V or hematocrit mapping
+# moves these by far more than 6%.
+stopifnot(all(abs(fig4_cmp$pct_diff) < 6))
+```
+
+# PKNCA and the closed-form exposure check
+
+When the whole dose enters the liver compartment, the well-stirred model makes
+the apparent oral plasma clearance equal to the unbound intrinsic clearance:
+`CL_H / (1 - E_H) = fu * CLint`. The steady-state plasma AUC over one dosing
+interval is therefore `Dose / (fu * CLint)` = 10 mg / (0.27 x 198 L/h) =
+187.1 ng*h/mL, whatever the hematocrit. Hematocrit changes how much of that
+exposure reaches whole blood, not the plasma AUC. PKNCA computes the
+interval AUC on the typical-value profiles.
+
+```{r pknca}
+sim_nca <- sim_typical |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(hct_grp, id, tad, Cc, Cblood) |>
+  dplyr::rename(time = tad)
+
+dose_nca <- sim_nca |>
+  dplyr::distinct(hct_grp, id) |>
+  dplyr::mutate(time = 0, amt = 10)
+
+intervals <- data.frame(
+  start = 0, end = 24,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE
+)
+
+nca_plasma <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(sim_nca, Cc ~ time | hct_grp + id),
+  PKNCA::PKNCAdose(dose_nca, amt ~ time | hct_grp + id),
+  intervals = intervals
+))
+nca_blood <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(sim_nca, Cblood ~ time | hct_grp + id),
+  PKNCA::PKNCAdose(dose_nca, amt ~ time | hct_grp + id),
+  intervals = intervals
+))
+
+nca_tab <- dplyr::bind_rows(
+  as.data.frame(nca_plasma) |> dplyr::mutate(matrix = "Plasma"),
+  as.data.frame(nca_blood) |> dplyr::mutate(matrix = "Whole blood")
+) |>
+  dplyr::select(matrix, hct_grp, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+nca_tab |>
+  dplyr::rename(
+    "Matrix" = matrix, "Hematocrit" = hct_grp,
+    "Cmax (ng/mL)" = cmax, "Tmax (h)" = tmax, "Cmin (ng/mL)" = cmin,
+    "AUC0-24 (ng*h/mL)" = auclast
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical-value steady-state NCA (10 mg QD).")
+
+auc_closed <- 10 / (0.27 * 198) * 1000
+auc_plasma <- nca_tab$auclast[nca_tab$matrix == "Plasma"]
+auc_plasma
+auc_closed
+# Same drawn parameters on both sides (typical values), so this is pure
+# numerical error from the 0.05 h trapezoid grid: keep the bound tight.
+stopifnot(all(abs(auc_plasma / auc_closed - 1) < 0.005))
+```
+
+Neither the paper nor its figures report an NCA table, so there is no
+published NCA to compare with. The closed-form AUC check above and the
+Table 3 trough comparison below take its place.
+
+# Stochastic steady-state troughs (Table 3)
+
+Table 3 of the paper summarises steady-state pre-dose concentrations and S6K1
+inhibition for 1000 virtual patients on two occasions at each hematocrit. The
+virtual cohort below has 200 patients per hematocrit arm. Each patient takes
+10 mg once daily for 28 days: days 0-13 are occasion 1 and days 14-27
+occasion 2. One trough is read at the end of each occasion. Table 3's column
+headers print the unit as ng/L, which is a misprint for ng/mL (= ug/L, the
+unit of Figure 4 and of the assay ranges).
+
+```{r stochastic}
+make_cohort <- function(n, hct, id_offset) {
+  ids <- id_offset + seq_len(n)
+  dose <- expand.grid(id = ids, time = seq(0, 27 * 24, by = 24)) |>
+    dplyr::mutate(evid = 1, amt = 10, cmt = "depot")
+  obs <- expand.grid(id = ids, time = c(14 * 24 - 0.01, 28 * 24 - 0.01)) |>
+    dplyr::mutate(evid = 0, amt = 0, cmt = "central")
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::mutate(
+      HCT = hct,
+      OCC = ifelse(time < 14 * 24, 1, 2),
+      hct_grp = paste0(hct, "% hematocrit")
+    ) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+ev_sto <- dplyr::bind_rows(make_cohort(200, 20, 0L), make_cohort(200, 45, 200L))
+stopifnot(!anyDuplicated(unique(ev_sto[, c("id", "hct_grp")])$id))
+
+rxode2::rxSetSeed(2016)
+sim_sto <- rxode2::rxSolve(mod, events = ev_sto, keep = "hct_grp") |>
+  as.data.frame()
+
+summ <- function(x) {
+  sprintf("%.3g (%.3g-%.3g)", median(x), quantile(x, 0.05), quantile(x, 0.95))
+}
+sto_tab <- sim_sto |>
+  dplyr::group_by(hct_grp) |>
+  dplyr::summarise(
+    `Whole blood (ng/mL)` = summ(Cblood),
+    `Plasma (ng/mL)` = summ(Cc),
+    `S6K1 inhibition (%)` = summ(s6k1_inhibition),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(source = "Simulated, median (90% PI)")
+pub_tab <- tibble::tribble(
+  ~hct_grp, ~`Whole blood (ng/mL)`, ~`Plasma (ng/mL)`, ~`S6K1 inhibition (%)`,
+  "20% hematocrit", "7.85 (3.31-18.7)", "4.06 (1.71-9.65)", "92.8 (87.5-95.2)",
+  "45% hematocrit", "14.0 (6.19-30.6)", "4.51 (2.00-9.86)", "93.2 (88.9-95.2)"
+) |>
+  dplyr::mutate(source = "van Erp 2016 Table 3")
+dplyr::bind_rows(pub_tab, sto_tab) |>
+  dplyr::arrange(hct_grp, source) |>
+  dplyr::rename("Hematocrit" = hct_grp, "Source" = source) |>
+  knitr::kable(caption = "Steady-state trough concentrations and S6K1 inhibition.")
+```
+
+The simulated summaries are individual predictions without residual error.
+Table 3 describes simulated exposure rather than observations, and the
+published 90% prediction intervals match these predictions better than they
+match predictions with the 26% residual error added.
+
+```{r stochastic-check}
+pub_med <- tibble::tribble(
+  ~hct_grp, ~Cblood_pub, ~Cc_pub, ~s6k1_pub,
+  "20% hematocrit", 7.85, 4.06, 92.8,
+  "45% hematocrit", 14.0, 4.51, 93.2
+)
+med_cmp <- sim_sto |>
+  dplyr::group_by(hct_grp) |>
+  dplyr::summarise(
+    Cblood_sim = median(Cblood), Cc_sim = median(Cc),
+    s6k1_sim = median(s6k1_inhibition), .groups = "drop"
+  ) |>
+  dplyr::left_join(pub_med, by = "hct_grp")
+med_cmp
+# Centre of a random cohort, not its extremes: a mis-transcribed clearance or
+# hematocrit mapping shifts these medians by tens of percent.
+stopifnot(
+  all(abs(med_cmp$Cblood_sim / med_cmp$Cblood_pub - 1) < 0.15),
+  all(abs(med_cmp$Cc_sim / med_cmp$Cc_pub - 1) < 0.15),
+  all(abs(med_cmp$s6k1_sim - med_cmp$s6k1_pub) < 1.5)
+)
+```
+
+# Assumptions and deviations
+
+- **IIV scale.** Table 2 reports inter-individual and inter-occasion
+  variability as CV%. These are converted to log-normal variances with
+  `omega^2 = log(1 + CV^2)`. The correlation of 0.347 between CLint and V3
+  becomes a covariance of `0.347 * sqrt(omega^2_CLint * omega^2_V3)`.
+- **Occasions.** Inter-occasion variability on F1 is encoded as two
+  occasions sharing one variance, matching the two sampling occasions per
+  patient in the source studies and the two simulated occasions of Table 3.
+  A simulation that does not model occasions can set `OCC = 1` throughout.
+- **Bioavailability.** The paper reports apparent (`/F`) parameters, so the
+  typical bioavailability is 1 and only its between-occasion variability is
+  carried. `f(depot)` scales the dose before it enters the transit chain.
+- **Unbound-fraction variability.** Table 2 lists a fixed 3% IIV on fu. It is
+  kept as a fixed random effect on `fu`, which feeds both the hepatic
+  extraction ratio and the unbound concentration.
+- **Residual error.** The 26% residual error is encoded as proportional on
+  the observed whole-blood concentration (`Cblood`). The paper does not say
+  whether it is additive on the log scale or proportional; at 26% the two
+  behave almost the same.
+- **Observation names.** `Cc` is the plasma concentration (the model's
+  central compartment is plasma), `Cblood` is the whole-blood concentration
+  that was measured, and `Cu` is the unbound plasma concentration. Hematocrit
+  `HCT` is supplied in percent and divided by 100 inside the model, since
+  Eqs. 1 and 3 use the volume fraction.
+- **S6K1 model.** The Imax model (Imax 97%, IC50 0.05 ng/mL unbound) comes from
+  Tanaka et al. (J Clin Oncol 2008) and is reproduced as the paper used it in
+  its simulations. It was not fitted to these patients, and like the paper it
+  has no variability of its own.
+- **Not reproduced.** Figure 3 (prediction-corrected VPC) needs the
+  original dataset and is not reproduced. No erratum for this article was
+  found as of 2026-11-25.

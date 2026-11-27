@@ -1,0 +1,571 @@
+---
+title: "5-Fluorouracil translational PK-PD in pediatric ependymoma (Daryani 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{5-Fluorouracil translational PK-PD in pediatric ependymoma (Daryani 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Daryani 2016 built three linked models to choose and then check a pediatric
+dose of intravenous bolus 5-fluorouracil (5-FU) for recurrent ependymoma. All
+three are packaged:
+
+| Model | What it is |
+|-------|------------|
+| `Daryani_2016_fluorouracil_mouse` | Mouse plasma PK, tumor extracellular fluid (tECF) PK and tumor growth inhibition, fitted to mouse data (Table 1). |
+| `Daryani_2016_fluorouracil_scaled_adult` | Simulation model used for dose selection: the adult Terret 2000 plasma model, normalised to body surface area (Supplementary Table 1), driving the mouse tECF and tumor-growth models (Figure 4). |
+| `Daryani_2016_fluorouracil` | Pediatric population PK fitted to the phase I trial (Table 2), linked to the mouse tECF model to predict tumor exposure. |
+
+* Citation: `r rxode2::rxode(readModelDb("Daryani_2016_fluorouracil"))$reference`
+* Article: <https://doi.org/10.1002/psp4.12075> (open access, with the authors'
+  NONMEM control streams as Supplementary Material 9)
+
+All three models use hours for time, give plasma and tECF 5-FU in uM, and
+convert the mg dose with the 5-FU molecular weight 130.08 g/mol.
+
+# Population
+
+**Mouse.** CD1 nude mice. Plasma PK came from non-tumor-bearing mice given
+75 mg/kg as an i.v. bolus (n = 4) or as a 3-day subcutaneous infusion (n = 5);
+tECF PK from cerebral microdialysis in mice bearing orthotopic mEP Ephb2
+ependymoma (75 mg/kg bolus, then 13 mg/kg/h for 24 h); and tumor growth from
+luciferase bioluminescence in three efficacy experiments (55 mice), normalised to
+each animal's value 7 days after implantation (Supplementary Material 1).
+
+**Children.** 26 children and young adults with recurrent or refractory
+ependymoma in a phase I trial (median age 7.1 years, range 3.8-21.1; 18 girls;
+19 White, 5 Black, 2 other; median weight 25.5 kg, range 10.8-83.0; median BSA
+0.9 m^2, range 0.6-2.0; Supplementary Table 2), given 400, 500 or 650 mg/m^2
+5-FU as an i.v. bolus, 570 plasma concentrations.
+
+The same information is available programmatically, e.g.
+`readModelDb("Daryani_2016_fluorouracil")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. Summary:
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Mouse plasma `vmax`, `km`, `vc`, `q`, `vp` | 2040 umol/h/kg, 125 uM, 0.962 L/kg, 1.67 L/h/kg, 0.332 L/kg | Table 1, plasma PK study |
+| Mouse `fu` | 0.366 | Supplementary Material 9 (`FU = 0.366`); Table 1 prints 0.37 |
+| `vecf` | 0.001 L/kg (mouse), 0.001 L/m^2 (human) | Table 1 V3,m; Results text |
+| `kin_ecf`, `kout_ecf` | 0.00426, 3.24 1/h | Supplementary Material 9 K13, K31; Table 1 |
+| `kin_int_tumor`, `kout_int_tumor` | 1.82, 0.334 1/h | Table 1 K34,m, K43,m |
+| `vmax_ecf`, `km_ecf` | 0.00633 umol/h/kg, 0.0107 uM | Supplementary Material 9 K30, KM2; Table 1 |
+| `kgrow`, `e_study_exp23_kgrow` | 0.158, +0.102 1/h | Table 1; Equations 7-9 |
+| `kgrow_lin`, `psi` | 214,000 1/h, 0.0936 | Table 1; Equation 1 |
+| `kmax`, `ec50`, `hill` | 0.658 1/h, 2.12 uM, 1.22 | Table 1; Equation 6 |
+| `ktr` | 0.946 1/h | Table 1 Kdel,m; Equations 2-4 |
+| Mouse IIV | 12.2, 22.1, 31.1, 7.8, 26.1, 40.6, 30.4 % CV | Table 1 |
+| Mouse residual error | 35.9, 27.9, 37.0 % | Table 1 |
+| Scaled-adult `vmax`, `km`, `vc`, `k12`, `k21` | 5773 umol/h/m^2, 42.8 uM, 7.4 L/m^2, 5.35, 5.69 1/h | Supplementary Table 1 |
+| Human `fu` | 0.9 | Results, 'Application of scaled-adult model' |
+| Pediatric `cl`, `vc`, `q`, `vp` | 16.6 L/h/m^2, 4.2 L/m^2, 1.6 L/h/m^2, 20.1 L/m^2 | Table 2 |
+| Pediatric IIV / IOV | 28.8, 26.6, 80.1, 93.9 % CV; IOV on CL 13.0 % CV | Table 2; Supplementary Material 9 occasions |
+| Pediatric residual error | additive 1.98 uM, proportional 0.51 | Table 2; Supplementary Material 9 `$ERROR` |
+| tECF ODE `d/dt(ecf)` | `kin_ecf * fu * central - ...` | Supplementary Material 9 `DADT(3)` |
+| Tumor ODEs | | Equations 1-6 |
+
+# Mouse model
+
+```{r mouse-setup}
+mod_mouse <- readModelDb("Daryani_2016_fluorouracil_mouse")
+mw <- 130.08
+rxode2::rxSetSeed(2016)
+
+# One cohort of n mice; `dose_rows` is a data frame of dosing records.
+mouse_cohort <- function(n, dose_rows, obs_times, arm, exp23 = 0, id_offset = 0L) {
+  ids <- id_offset + seq_len(n)
+  doses <- tidyr::crossing(id = ids, dose_rows) |>
+    mutate(evid = 1L, cmt = "central")
+  # The model has three endpoints (Cc, Cecf, tumor_size), so observation rows
+  # carry a dvid; every observable is returned on every row regardless.
+  obs <- tidyr::crossing(id = ids, time = obs_times) |>
+    mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+  bind_rows(doses, obs) |>
+    mutate(STUDY_EXP23 = exp23, arm = arm) |>
+    arrange(id, time, desc(evid))
+}
+
+# Typical-value solve. rxode2 warns when several subjects are solved without
+# omega; that is the intent here (one subject per arm), so only that warning
+# is muffled.
+solve_typical <- function(mod, events, ...) {
+  withCallingHandlers(
+    rxode2::rxSolve(rxode2::zeroRe(mod, "omega"), events = events, ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+    }
+  )
+}
+```
+
+## Plasma and tumor ECF PK (Figure 2)
+
+```{r mouse-pk}
+pk_events <- bind_rows(
+  mouse_cohort(200, data.frame(time = 0, amt = 75, dur = 0),
+    c(0, seq(1 / 12, 3, by = 1 / 12)), "75 mg/kg i.v. bolus"),
+  mouse_cohort(200, data.frame(time = 0, amt = 75, dur = 72),
+    c(0, seq(2, 72, by = 2)), "75 mg/kg 3-day infusion", id_offset = 200L),
+  mouse_cohort(200, data.frame(time = 0, amt = 13 * 24, dur = 24),
+    c(0, seq(0.5, 24, by = 0.5)), "13 mg/kg/h for 24 h", id_offset = 400L)
+)
+stopifnot(!anyDuplicated(unique(pk_events[, c("id", "time", "evid")])))
+pk_sim <- rxode2::rxSolve(mod_mouse, events = pk_events, keep = "arm") |>
+  as.data.frame()
+```
+
+```{r figure-2, fig.height = 6}
+pk_sim |>
+  select(arm, time, Plasma = Cc, `Tumor ECF` = Cecf) |>
+  pivot_longer(c(Plasma, `Tumor ECF`), names_to = "matrix", values_to = "conc") |>
+  filter(time > 0) |>
+  group_by(arm, matrix, time) |>
+  summarise(
+    Q05 = quantile(conc, 0.05), Q50 = median(conc), Q95 = quantile(conc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = 7.1, linetype = "dotted", colour = "red") +
+  facet_grid(matrix ~ arm, scales = "free_x") +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "5-FU (uM)",
+    caption = "Replicates Figure 2 of Daryani 2016 (median and 5th-95th percentiles; dotted line: 7.1 uM in vitro IC90)."
+  )
+```
+
+The text gives plasma steady-state means of 7.11 +/- 2.64 uM (24-h infusion at
+13 mg/kg/h) and 0.43 +/- 0.18 uM (3-day infusion), tECF above the 7.1 uM target
+for about 1 hour after the bolus, and infusion tECF at least sevenfold lower.
+
+```{r mouse-pk-checks}
+mouse_typ <- solve_typical(mod_mouse, pk_events |> filter(id %in% c(1L, 201L, 401L)), keep = "arm") |>
+  as.data.frame()
+css_24h <- mouse_typ$Cc[mouse_typ$arm == "13 mg/kg/h for 24 h" & mouse_typ$time == 24]
+css_3d <- mouse_typ$Cc[mouse_typ$arm == "75 mg/kg 3-day infusion" & mouse_typ$time == 72]
+bolus <- mouse_typ[mouse_typ$arm == "75 mg/kg i.v. bolus" & mouse_typ$time > 0.2, ]
+t_above <- max(bolus$time[bolus$Cecf >= 7.1])
+cecf_inf <- mouse_typ$Cecf[mouse_typ$arm == "13 mg/kg/h for 24 h" & mouse_typ$time == 24]
+knitr::kable(
+  data.frame(
+    Quantity = c(
+      "Plasma Css, 13 mg/kg/h (uM)", "Plasma Css, 3-day infusion (uM)",
+      "Last time tECF >= 7.1 uM after bolus (h)", "tECF at 24 h of 13 mg/kg/h (uM)"
+    ),
+    Model = signif(c(css_24h, css_3d, t_above, cecf_inf), 3),
+    Paper = c("7.11 +/- 2.64", "0.43 +/- 0.18", "about 1", "about 7-fold below 7.1")
+  ),
+  caption = "Typical-value mouse predictions against the values stated in the Results."
+)
+stopifnot(
+  abs(css_24h / 7.11 - 1) < 0.25,
+  abs(css_3d / 0.43 - 1) < 0.35,
+  t_above > 0.5, t_above < 1.5,
+  # The Results say at least sevenfold below the bolus target; the model gives
+  # about 6.8-fold, so the gate checks the order of magnitude.
+  cecf_inf < 7.1 / 5
+)
+```
+
+## Tumor growth inhibition (Figure 3)
+
+Time zero is day 7 after implantation, when the bioluminescence was normalised
+to 1. Bolus arms are dosed weekly for 4 weeks; the infusion arms of experiment
+two get a 3- or 5-day infusion of 75 mg/kg every 3 weeks.
+
+```{r mouse-tgi}
+tgi_obs <- seq(0, 33 * 24, by = 6)
+bolus_wk <- function(amt) data.frame(time = c(0, 168, 336, 504), amt = amt, dur = 0)
+inf_q3w <- function(days) data.frame(time = c(0, 504), amt = 75, dur = days * 24)
+no_dose <- data.frame(time = 0, amt = 0, dur = 0)
+tgi_arms <- list(
+  list("Exp 1", "Control", no_dose, 0),
+  list("Exp 1", "75 mg/kg bolus weekly", bolus_wk(75), 0),
+  list("Exp 2", "Control", no_dose, 1),
+  list("Exp 2", "75 mg/kg 3-day infusion q3w", inf_q3w(3), 1),
+  list("Exp 2", "75 mg/kg 5-day infusion q3w", inf_q3w(5), 1),
+  list("Exp 3", "Control", no_dose, 1),
+  list("Exp 3", "75 mg/kg bolus weekly", bolus_wk(75), 1),
+  list("Exp 3", "37.5 mg/kg bolus weekly", bolus_wk(37.5), 1)
+)
+tgi_events <- bind_rows(lapply(seq_along(tgi_arms), function(i) {
+  a <- tgi_arms[[i]]
+  mouse_cohort(100, a[[3]], tgi_obs, a[[2]], exp23 = a[[4]], id_offset = (i - 1L) * 100L) |>
+    mutate(experiment = a[[1]])
+}))
+stopifnot(!anyDuplicated(unique(tgi_events[, c("id", "time", "evid")])))
+tgi_sim <- rxode2::rxSolve(mod_mouse, events = tgi_events, keep = c("arm", "experiment")) |>
+  as.data.frame()
+```
+
+```{r figure-3, fig.height = 6}
+tgi_sim |>
+  group_by(experiment, arm, time) |>
+  summarise(
+    Q05 = quantile(tumor_size, 0.05), Q50 = median(tumor_size),
+    Q95 = quantile(tumor_size, 0.95), .groups = "drop"
+  ) |>
+  mutate(day = time / 24 + 7) |>
+  ggplot(aes(day, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2) +
+  geom_line() +
+  facet_wrap(~ experiment + arm, ncol = 3) +
+  scale_y_log10() +
+  labs(
+    x = "Time after implantation (days)", y = "Fold change in bioluminescence",
+    caption = "Replicates Figure 3 of Daryani 2016 (median and 5th-95th percentiles of individual predictions)."
+  )
+```
+
+Figure 3 shows control medians of roughly 150 (experiment one) and 400
+(experiments two and three) at day 40, and about 20 for the weekly 75 mg/kg
+bolus of experiment one; the infusions have no visible effect. The Discussion
+gives a tumor growth delay of 16-19 days for 75 mg/kg weekly bolus versus
+control, measured at the control animals' day-28 (median survival) tumor burden
+(Supplementary Figure 3).
+
+```{r mouse-tgi-checks}
+# One typical animal per arm, followed to day 57 so the treated tumors can
+# reach the control day-28 burden.
+typ_events <- bind_rows(lapply(seq_along(tgi_arms), function(i) {
+  a <- tgi_arms[[i]]
+  mouse_cohort(1, a[[3]], seq(0, 50 * 24, by = 6), a[[2]], exp23 = a[[4]], id_offset = i - 1L) |>
+    mutate(experiment = a[[1]])
+}))
+typ_tgi <- solve_typical(mod_mouse, typ_events, keep = c("arm", "experiment")) |>
+  as.data.frame()
+w_end <- typ_tgi |>
+  filter(time == 33 * 24) |>
+  select(experiment, arm, tumor_size)
+knitr::kable(w_end, digits = 1, caption = "Typical-value fold change at day 40.")
+growth_delay <- function(exp_name, treated_arm) {
+  ctl <- typ_tgi |> filter(experiment == exp_name, arm == "Control")
+  trt <- typ_tgi |> filter(experiment == exp_name, arm == treated_arm)
+  w28 <- ctl$tumor_size[ctl$time == 21 * 24]
+  (min(trt$time[trt$tumor_size >= w28 & trt$time > 504]) - 21 * 24) / 24
+}
+delays <- c(
+  exp1 = growth_delay("Exp 1", "75 mg/kg bolus weekly"),
+  exp3 = growth_delay("Exp 3", "75 mg/kg bolus weekly")
+)
+delays
+w <- setNames(w_end$tumor_size, paste(w_end$experiment, w_end$arm))
+stopifnot(
+  w[["Exp 1 Control"]] > 75, w[["Exp 1 Control"]] < 300,
+  w[["Exp 2 Control"]] > 200, w[["Exp 2 Control"]] < 900,
+  w[["Exp 1 75 mg/kg bolus weekly"]] > 8, w[["Exp 1 75 mg/kg bolus weekly"]] < 50,
+  # Infusions: no more than a 30% reduction against control.
+  w[["Exp 2 75 mg/kg 3-day infusion q3w"]] > 0.7 * w[["Exp 2 Control"]],
+  all(delays > 13), all(delays < 22)
+)
+```
+
+## Plasma NCA
+
+```{r mouse-nca}
+# Sampling design of the bolus plasma study: 5, 15, 30, 60 and 120 min.
+nca_mouse <- pk_sim |>
+  filter(arm == "75 mg/kg i.v. bolus", !is.na(Cc)) |>
+  filter(time == 0 | round(time * 60) %in% c(5, 15, 30, 60, 120)) |>
+  select(id, time, Cc, arm)
+dose_mouse <- pk_events |>
+  filter(evid == 1, arm == "75 mg/kg i.v. bolus") |>
+  mutate(amt = amt * 1000 / mw) |>
+  select(id, time, amt, arm)
+nca_res_mouse <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_mouse, Cc ~ time | arm + id),
+  PKNCA::PKNCAdose(dose_mouse, amt ~ time | arm + id, route = "intravascular"),
+  intervals = data.frame(start = 1 / 12, end = 2, cmax = TRUE)
+))
+published_mouse <- tibble::tribble(
+  ~arm, ~cmax,
+  "75 mg/kg i.v. bolus", 536
+)
+nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res_mouse,
+  reference = published_mouse,
+  by = "arm",
+  units = c(cmax = "uM"),
+  tolerance_pct = 20
+) |>
+  knitr::kable(caption = "Mouse plasma Cmax (first sample at 5 min) against the Results mean of 536 +/- 162 uM. * differs by >20%.")
+```
+
+The simulated median 5-minute concentration is about a quarter below the
+reported mean Cmax and inside its standard deviation. The paper does not say
+which samples the mean was taken over; the microdialysis mice were first
+sampled at 3 minutes, where the typical prediction is about 470 uM against 400 uM
+at 5 minutes, so the earlier samples alone would close half the gap. The Figure 2a visual
+predictive check is the fuller comparison.
+
+# Scaled-adult model and dose selection (Figure 4)
+
+The scaled-adult model is deterministic: the paper gives no between-subject
+variability for it (Figure 4's band uses the Terret 2000 adult variability,
+which Daryani 2016 does not report). Concentrations do not depend on BSA when
+the dose is in mg/m^2, so a BSA of 1 m^2 is used.
+
+```{r scaled-qualification}
+mod_sa <- readModelDb("Daryani_2016_fluorouracil_scaled_adult")
+# Qualification: 80 mg/m^2/h for 12 h; the authors simulated a mean
+# steady state of 4.1 uM against 6.7 uM observed in children.
+qual <- rxode2::rxSolve(mod_sa,
+  events = data.frame(
+    id = 1L, time = c(0, 6, 11, 12), evid = c(1L, 0L, 0L, 0L),
+    amt = c(960, 0, 0, 0), dur = c(12, 0, 0, 0), cmt = "central",
+    BSA = 1, STUDY_EXP23 = 0
+  )
+) |>
+  as.data.frame()
+css_ped <- qual$Cc[qual$time == 11]
+css_ped
+stopifnot(css_ped > 6.7 / 2, css_ped < 6.7 * 2)
+```
+
+```{r scaled-sim}
+sa_events <- bind_rows(lapply(seq_along(c(400, 500, 650)), function(i) {
+  d <- c(400, 500, 650)[i]
+  obs <- sort(unique(c(seq(0, 2, by = 0.05), seq(0, 45 * 24, by = 4))))
+  bind_rows(
+    data.frame(time = c(0, 168, 336, 504), evid = 1L, amt = d),
+    data.frame(time = obs, evid = 0L, amt = 0)
+  ) |>
+    mutate(
+      id = i, cmt = "central", BSA = 1, STUDY_EXP23 = 0,
+      dose = paste(d, "mg/m^2")
+    )
+})) |>
+  arrange(id, time, desc(evid))
+sa_sim <- rxode2::rxSolve(mod_sa, events = sa_events, keep = "dose") |>
+  as.data.frame()
+```
+
+```{r figure-4, fig.height = 6}
+p_top <- sa_sim |>
+  filter(time > 0, time <= 2) |>
+  ggplot(aes(time, Cecf)) +
+  geom_line() +
+  geom_hline(yintercept = 7.1, linetype = "dashed", colour = "red") +
+  facet_wrap(~dose) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "tECF 5-FU (uM)")
+p_bottom <- sa_sim |>
+  mutate(day = time / 24 + 7) |>
+  ggplot(aes(day, tumor_size)) +
+  geom_line(colour = "red") +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  facet_wrap(~dose) +
+  scale_y_log10() +
+  labs(
+    x = "Time (days)", y = "Fold change in bioluminescence",
+    caption = "Replicates Figure 4 of Daryani 2016 (typical values; first dose on day 7)."
+  )
+print(p_top)
+print(p_bottom)
+```
+
+```{r scaled-table}
+sa_summary <- sa_sim |>
+  group_by(dose) |>
+  summarise(
+    cecf_peak = max(Cecf[time <= 2]),
+    cecf_1h = Cecf[time == 1],
+    delay_days = min(time[tumor_size >= 1 & time > 504]) / 24,
+    .groups = "drop"
+  ) |>
+  mutate(paper_delay_days = c(29, 31, 33))
+sa_summary |>
+  dplyr::rename(
+    "Dose" = dose,
+    "Peak tECF (uM)" = cecf_peak,
+    "tECF at 1 h (uM)" = cecf_1h,
+    "Model growth delay (days)" = delay_days,
+    "Figure 4 growth delay (days)" = paper_delay_days
+  ) |>
+  knitr::kable(digits = 1, caption = "Scaled-adult typical-value predictions. Growth delay is the time from the first dose until the tumor burden returns to its starting value.")
+stopifnot(all(sa_summary$cecf_1h > 7.1), all(diff(sa_summary$delay_days) > 0))
+```
+
+The model ranks the doses as the paper does and every dose keeps the typical
+tECF above 7.1 uM at 1 hour, but its typical tECF is several-fold above the
+Figure 4 median (peak about 100 uM in Figure 4) and its growth delays are about
+10 days longer than the labelled 29, 31 and 33 days; see Assumptions and
+deviations.
+
+# Pediatric population PK (Table 2, Figure 5)
+
+```{r ped-cohort}
+# The inter-occasion etas enter clearance through occasion indicators, which
+# rxode2 reports as not mu-referenced; that is expected for this structure, so
+# only that warning is muffled when the model is parsed.
+mod_ped <- withCallingHandlers(
+  rxode2::rxode(readModelDb("Daryani_2016_fluorouracil")),
+  warning = function(w) {
+    if (grepl("non-mu referenced", conditionMessage(w))) invokeRestart("muffleWarning")
+  }
+)
+ped_cohort <- function(n, dose_m2, id_offset = 0L) {
+  # BSA: log-normal around the 0.9 m^2 median, kept inside the 0.6-2.0 m^2 range.
+  bsa <- pmin(pmax(exp(rnorm(n, log(0.95), 0.3)), 0.6), 2.0)
+  subj <- data.frame(id = id_offset + seq_len(n), BSA = bsa)
+  obs_t <- c(0, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8)
+  bind_rows(
+    subj |> mutate(time = 0, evid = 1L, amt = dose_m2 * BSA),
+    tidyr::crossing(subj, time = obs_t) |> mutate(evid = 0L, amt = 0)
+  ) |>
+    mutate(cmt = "central", OCC = 1L, regimen = paste(dose_m2, "mg/m^2")) |>
+    arrange(id, time, desc(evid))
+}
+set.seed(2016)
+ped_events <- bind_rows(
+  ped_cohort(200, 400),
+  ped_cohort(200, 500, id_offset = 200L),
+  ped_cohort(200, 650, id_offset = 400L)
+)
+stopifnot(!anyDuplicated(unique(ped_events[, c("id", "time", "evid")])))
+ped_sim <- rxode2::rxSolve(mod_ped, events = ped_events, keep = c("regimen", "BSA")) |>
+  as.data.frame()
+```
+
+```{r figure-5}
+ped_sim |>
+  filter(time > 0) |>
+  group_by(regimen, time) |>
+  summarise(
+    Q05 = quantile(sim, 0.05), Q50 = median(sim), Q95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = pmax(Q05, 0.1), ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = 15, linetype = "dashed", colour = "red") +
+  facet_wrap(~regimen) +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Plasma 5-FU (uM)",
+    caption = "Replicates Figure 5d-f of Daryani 2016 (VPC with residual error; dashed line: 15 uM LLOQ)."
+  )
+```
+
+## Predicted tumor exposure
+
+The paper simulated each patient's tECF profile from their post hoc estimates:
+every patient on every occasion reached the 7.1 uM target at 1 hour, with a
+median (range) of 182.5 (51.8-754.1) uM.
+
+```{r ped-tecf}
+tecf_1h <- ped_sim |>
+  filter(time == 1) |>
+  pull(Cecf)
+round(c(median = median(tecf_1h), quantile(tecf_1h, c(0.05, 0.95))), 1)
+stopifnot(
+  abs(median(tecf_1h) / 182.5 - 1) < 0.35,
+  quantile(tecf_1h, 0.05) > 7.1
+)
+```
+
+## Pediatric plasma NCA
+
+```{r ped-nca}
+nca_ped <- ped_sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, regimen)
+dose_ped <- ped_events |>
+  filter(evid == 1) |>
+  mutate(amt = amt * 1000 / mw) |>
+  select(id, time, amt, regimen)
+nca_res_ped <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_ped, Cc ~ time | regimen + id),
+  PKNCA::PKNCAdose(dose_ped, amt ~ time | regimen + id, route = "intravascular"),
+  intervals = data.frame(
+    start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE,
+    half.life = TRUE, cl.obs = TRUE
+  )
+))
+ped_nca_tbl <- as.data.frame(nca_res_ped) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs", "half.life", "cl.obs")) |>
+  group_by(regimen, PPTESTCD) |>
+  summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median)
+ped_nca_tbl |>
+  dplyr::rename(
+    "Dose" = regimen,
+    "Cmax (uM)" = cmax,
+    "AUCinf (uM*h)" = aucinf.obs,
+    "Half-life (h)" = half.life,
+    "CL (L/h)" = cl.obs
+  ) |>
+  knitr::kable(digits = 2, caption = "Median simulated NCA by dose (the paper reports no pediatric NCA).")
+# Clearance per m^2 from NCA should sit near the Table 2 value of 16.6 L/h/m^2.
+cl_m2 <- as.data.frame(nca_res_ped) |>
+  filter(PPTESTCD == "cl.obs") |>
+  left_join(distinct(ped_sim, id, BSA), by = "id") |>
+  mutate(cl_m2 = PPORRES / BSA)
+median(cl_m2$cl_m2)
+stopifnot(abs(median(cl_m2$cl_m2) / 16.6 - 1) < 0.15)
+```
+
+# Assumptions and deviations
+
+- **Values the PK-PD control stream holds versus Table 1.** The mouse tumor
+  growth parameters were estimated with the plasma and tECF parameters held at
+  the values in the authors' PK-PD control stream (Supplementary Material 9).
+  Those are used: K13 = 0.00426 (Table 1: 0.0043), K30 = 0.00633 (0.0063),
+  fu = 0.366 (0.37) and KM2 = 0.0107 uM, where Table 1 prints 0.012 uM. The
+  KM2 difference matters only at tECF concentrations near 0.01 uM.
+- **Table 1 unit typo.** V3,m is printed in L/hr; it is a volume, 0.001 L/kg.
+- **Microdialysis fractions.** The authors fitted each 30-min or 4-h dialysate
+  fraction as its own accumulating compartment (`MTIME`). The packaged model
+  gives the instantaneous tECF concentration; a fraction equals its mean over
+  the collection interval (the control stream applies no recovery correction).
+  The tubing lag mentioned in the Methods is not in the control stream.
+- **Mouse plasma residual error.** Table 1 gives 30.7% for the plasma-only fit
+  and 35.9% for the joint plasma + tECF fit; the joint value is used.
+- **Experiment three doses.** The main text and Figure 3 give 75 and 37.5 mg/kg;
+  Supplementary Material 1 says 57 and 37 mg/kg. The main text is followed.
+- **Number of microdialysis mice.** Not stated.
+- **Human tECF link.** The control stream writes the tECF input as
+  `K13 * C1 * V1 * FU`, with V1 the plasma central volume, and V3 = 0.001. For
+  the human models the maintainers kept that form with the human V1 and V3 =
+  0.001 on the same per-m^2 scale as V1 (multiplied by BSA here). With the
+  pediatric model this reproduces the reported median 1-hour tECF of 182.5 uM.
+- **Scaled-adult model does not reproduce Figure 4 quantitatively.** With the
+  same link, the typical tECF peaks near 800-1400 uM against about 100 uM for the
+  Figure 4 median, and the tumor burden falls further than Figure 4 shows. The
+  paper does not say how the tECF volume was scaled to humans for Figure 4. The
+  maintainers tested other readings: keeping the mouse V1 in the tECF input
+  matches the Figure 4 tECF peak but not its growth delays, and no reading
+  reproduced both panels and the pediatric result. The model is packaged in the
+  control-stream form and the difference is recorded here.
+- **Scaled-adult variability and growth rate.** No variability is included,
+  because the Terret 2000 variances used for Figure 4 are not reported in
+  Daryani 2016. Which mouse experiment's growth rate Figure 4 used is not
+  stated; `STUDY_EXP23 = 0` (experiment one) is the default.
+- **Pediatric occasions.** Occasions 1-3 each have their own IOV eta on CL and
+  every later occasion shares a fourth, as in the control stream. The virtual
+  cohort uses occasion 1.
+- **Pediatric BLQ handling.** The 15 uM LLOQ and M3 method matter only for
+  fitting; simulations return all concentrations.
+- **Virtual pediatric cohort.** BSA was drawn log-normally around the reported
+  0.9 m^2 median and kept within the reported 0.6-2.0 m^2 range; age, sex and
+  race do not enter the model.
+- **Errata.** No correction notice for Daryani 2016 was found on Europe PMC as of
+  2026-11-24.

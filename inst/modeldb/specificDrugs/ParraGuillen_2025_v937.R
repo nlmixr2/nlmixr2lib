@@ -33,6 +33,7 @@ ParraGuillen_2025_v937 <- function() {
     dosing = "copies",
     concentration = "copies/mL"
   )
+  dosing <- c("peripheral1", "central")
 
   compartmentData <- list(
     central = list(analyte = "V937", units = "copies", specimen = "serum", verified = TRUE),

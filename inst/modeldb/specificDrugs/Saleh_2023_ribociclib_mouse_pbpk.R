@@ -38,6 +38,7 @@ Saleh_2023_ribociclib_mouse_pbpk <- function() {
   vignette <- "Saleh_2023_leicns_pk30_mouse_brain"
 
   units <- list(time = "min", dosing = "ng", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "ribociclib", units = "ng", specimen = "administration site", verified = TRUE),

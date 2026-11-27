@@ -46,6 +46,7 @@ Wang_2023_zoledronicAcid_mbma <- function() {
     # K-PD model, so there is no observed plasma zoledronic-acid
     # concentration anywhere in it.
   )
+  dosing <- "depot_kpd"
 
   compartmentData <- list(
     depot_kpd = list(

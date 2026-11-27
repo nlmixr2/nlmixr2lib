@@ -1,0 +1,461 @@
+---
+title: "Meals, glucose, heart rate and the QT interval (Cirincione 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meals, glucose, heart rate and the QT interval (Cirincione 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Cirincione_2017_mealQT_24h"))$reference`
+* Breakfast-window model: `r rxode2::rxode(readModelDb("Cirincione_2017_mealQT_breakfast"))$description`
+* 24-hour model: `r rxode2::rxode(readModelDb("Cirincione_2017_mealQT_24h"))$description`
+* Article: <https://doi.org/10.1002/jcph.933> (open access, PMC5518218)
+
+Cirincione 2017 describes how a meal changes the QT interval on a drug-free
+baseline day. Meal carbohydrate raises plasma glucose. The change in glucose
+stimulates the production of heart rate (HR) in an indirect-response model,
+and the predicted RR interval shortens QT through a power-law QT-RR
+relationship. A further delayed glucose effect, through one
+signal-transduction compartment, shortens QT beyond what the change in HR
+explains.
+
+The authors fitted the model twice. The **breakfast-window model** covers the
+richly sampled period from 6 am to 2 pm. The **24-hour model** covers the
+whole baseline day, with a two-harmonic circadian rhythm on HR production.
+In the 24-hour model the glucose-to-QT delay parameters (`ktr`, `STR`) are
+fixed to their breakfast-window estimates. Both are packaged, as
+`Cirincione_2017_mealQT_breakfast` and `Cirincione_2017_mealQT_24h`.
+
+No drug is involved. The study was run to design a thorough QT study of an
+antidiabetic agent, where a drug that lowers postprandial glucose could
+remove part of this meal effect and confound the comparison with placebo.
+
+# Population
+
+Twenty-one healthy adults enrolled in an open-label phase 1 pilot study in
+three cohorts (A, n = 6; B, n = 6; C, n = 9). One subject was removed for an
+abnormal postprandial glucose profile, leaving 20 (Results, "Baseline Subject
+PD and Demographics"). They were 95% male and 85% white, with mean (SD) age
+40.0 (12.4) years and weight 91.2 (12.1) kg. Subjects received a standardized
+2500 kcal/day diet. Breakfast was at 7 am (cohort A) or 6 am (cohorts B and
+C) and lunch at 2 pm. Breakfast carbohydrate was 81, 86 and 99 g, and lunch
+190, 144 and 104 g, for cohorts A, B and C. The carbohydrate amount, scaled by
+the fraction of the meal eaten, was used as the apparent glucose dose.
+Holter ECGs were read hourly (every 30 minutes around breakfast), and plasma
+glucose was measured at 14 times.
+
+The same information is available programmatically via
+`readModelDb("Cirincione_2017_mealQT_24h")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source.
+
+| Equation / parameter | Breakfast | 24 hours | Source location |
+|----------------------|-----------|----------|-----------------|
+| `d/dt(glucose) = ka_glu/Vg * depot + Kin_glu - kout_glu * glucose` | n/a | n/a | Eq. 1 |
+| `Kin_glu = kout_glu * Gluss` | n/a | n/a | Methods, text after Eq. 1 |
+| `d/dt(hr) = Kin_HR * (1 + SHR * (glucose - Gluss)) - kout_HR * hr` | n/a | n/a | Eq. 2 |
+| `... * (1 + CIRC)` on HR production | none | n/a | Eq. 9 |
+| `Kin_HR = kout_HR * HRss` | n/a | n/a | Eq. 3 |
+| `CIRC = AMP1 cos(2 pi (t - ph1)/24) + AMP2 cos(2 pi (t - ph2)/12)` | none | n/a | Eq. 10 (2 harmonics retained, Results) |
+| `RR = 60 / HR` | n/a | n/a | Eq. 5 |
+| `d/dt(effect) = ktr * (glucose - Gluss - effect)` | n/a | n/a | Eq. 7 |
+| `QT = QTint * RR^alpha + STR * effect` | n/a | n/a | Eq. 8b |
+| `mQTc = QT / RR^alpha`; `mQTcG = (QT - STR * effect) / RR^alpha` | n/a | n/a | Eq. 6; Eq. 8a (sign, see below) |
+| `lvg` (Vg, dL) | 781 | 653 | Table 1 |
+| `lkout_glucose` (1/h) | 1.52 | 1.94 | Table 1 |
+| `lka_glucose` (1/h) | 1.72 (fixed) | 1.72 (fixed) | Table 1; Methods |
+| `lrbase_glucose` (Gluss, mg/dL) | 90 | 92.8 | Table 1 |
+| `lkout_hr` (1/day) | 7.51 | 14.3 | Table 1 |
+| `lrbase_hr` (HRss, bpm) | 64.3 | 64.1 | Table 1 |
+| `lsstim_glucose_hr` (SHR, dL/mg) | 0.00407 | 0.00103 | Table 1 |
+| `lqtb` (QTint, ms) | 406 | 409 | Table 1 |
+| `lbrr` (alpha) | 0.362 | 0.425 | Table 1 |
+| `kin_circ_famp1`, `tacro1` (AMP1, ph1 h) | none | 0.062, 17.3 | Table 1 |
+| `kin_circ_famp2`, `tacro2` (AMP2, ph2 h) | none | 0.039, 10.7 | Table 1 |
+| `slope_effect_qt` (STR, ms per mg/dL) | -1.27 | -1.27 (fixed) | Table 1; Results "PD Modeling: 24-Hour Model" |
+| `lktr` (1/h) | 0.12 | 0.12 (fixed) | Table 1 |
+| IIV kout_glu, kout_HR, HRss, QTint (%) | 40.5, 113, 8.62, 2.85 | 28, 75.7, 9.2, 2.77 | Table 1 |
+| IIV SHR (%) | none | 140.4 | Table 1 |
+| `propSd_glucose`, `propSd_hr`, `propSd_qt` (%CV) | 8.78, 7, 2.48 | 11.3, 7.96, 3.01 | Table 1 (final residual rows) |
+
+# Models
+
+```{r models}
+mod_bf <- readModelDb("Cirincione_2017_mealQT_breakfast")
+mod_24 <- readModelDb("Cirincione_2017_mealQT_24h")
+```
+
+Doses are meal carbohydrate in mg (grams times 1000) into `depot`.
+Observation rows use the `glucose` state, and rxode2 returns `hr`, `qt`,
+`qtc_hr` (mQTc) and `qtc_hr_glucose` (mQTcG) at every row. In the
+breakfast-window model time 0 is 6 am. In the 24-hour model time 0 is 8 pm,
+the start of the baseline day, and the cosines read `t` directly.
+
+# Structural checks
+
+## Steady state without a meal
+
+Without a meal and without circadian variation, the breakfast-window model
+must hold glucose at `Gluss`, HR at `HRss` and QT at
+`QTint * (60 / HRss)^alpha`.
+
+```{r steady-state}
+ev_none <- rxode2::et(seq(0, 8, by = 0.5), cmt = "glucose")
+ss <- rxode2::rxSolve(rxode2::zeroRe(mod_bf), ev_none, returnType = "data.frame")
+qt_ss <- 406 * (60 / 64.3)^0.362
+stopifnot(
+  max(abs(ss$glucose - 90)) < 1e-6,
+  max(abs(ss$hr - 64.3)) < 1e-6,
+  max(abs(ss$qt - qt_ss)) < 1e-6
+)
+c(glucose = ss$glucose[1], hr = ss$hr[1], qt = ss$qt[1])
+```
+
+## Glucose against its closed form
+
+The glucose sub-model is linear: a first-order input into a one-compartment
+pool on top of a constant baseline. Above baseline it must match the
+one-compartment oral closed form
+`D / Vg * ka / (ka - k) * (exp(-k t) - exp(-ka t))`. Both sides use the same
+typical values, so the bound is a numerical-error bound.
+
+```{r glucose-closed-form}
+ev_meal <- rxode2::et(seq(0, 8, by = 0.05), cmt = "glucose") |>
+  rxode2::et(time = 0, amt = 99000, cmt = "depot")
+typ24 <- rxode2::rxSolve(rxode2::zeroRe(mod_24), ev_meal, returnType = "data.frame")
+ka <- 1.72; k <- 1.94; vg <- 653
+closed <- 99000 / vg * ka / (ka - k) * (exp(-k * typ24$time) - exp(-ka * typ24$time))
+stopifnot(max(abs((typ24$glucose - 92.8) - closed)) < 1e-3)
+c(
+  peak_rise_mg_dL = max(typ24$glucose - 92.8),
+  time_of_peak_h = typ24$time[which.max(typ24$glucose)]
+)
+```
+
+The typical-value rise of about 52.5 mg/dL at about 33 minutes matches the paper's
+predicted maximum mean change in glucose, 52.2 mg/dL (95% CI 50.6-53.7),
+30 minutes after a 99 g breakfast (Results, "PD Modeling: 24-Hour Model").
+
+# Replicate Figure 5: fed versus fasted day (24-hour model)
+
+The paper simulated 500 subjects through a fasted 24-hour day and a fed day
+with a 99 g carbohydrate breakfast at 7 am. Each subject appears in both
+scenarios. Here 200 subjects are used. Re-seeding before each solve gives
+both scenarios the same random effects, which the check below confirms.
+
+Starting HR at its 8 pm value, `HRss * (1 + CIRC(0))`, is not the periodic
+steady state of the circadian rhythm. The simulation therefore runs a 24-hour
+fasted run-in day first and plots the second day (model time 24-48 h).
+Breakfast at 7 am on the second day is model time 35 h.
+
+```{r figure5-sim}
+tg <- seq(0, 48, by = 0.5)
+ev_fast <- rxode2::et(tg, cmt = "glucose")
+ev_fed <- rxode2::et(tg, cmt = "glucose") |>
+  rxode2::et(time = 35, amt = 99000, cmt = "depot")
+
+rxode2::rxSetSeed(2017)
+s_fed <- rxode2::rxSolve(mod_24, ev_fed, nSub = 200, returnType = "data.frame")
+rxode2::rxSetSeed(2017)
+s_fast <- rxode2::rxSolve(mod_24, ev_fast, nSub = 200, returnType = "data.frame")
+stopifnot(isTRUE(all.equal(
+  s_fed$rbase_hr[s_fed$time == 0], s_fast$rbase_hr[s_fast$time == 0]
+)))
+
+day2 <- dplyr::bind_rows(
+  dplyr::mutate(s_fed, scenario = "Fed"),
+  dplyr::mutate(s_fast, scenario = "Fasting")
+) |>
+  dplyr::filter(time >= 24) |>
+  dplyr::rename(id = sim.id) |>
+  dplyr::mutate(clock = time - 24 + 20)
+
+fig5_summary <- day2 |>
+  dplyr::group_by(scenario, clock) |>
+  dplyr::summarise(
+    hr_mean = mean(hr), hr_se = sd(hr) / sqrt(dplyr::n()),
+    qt_mean = mean(qt), qt_se = sd(qt) / sqrt(dplyr::n()),
+    .groups = "drop"
+  )
+```
+
+```{r figure5ab, fig.width = 7, fig.height = 6}
+fig5_summary |>
+  tidyr::pivot_longer(
+    c(hr_mean, qt_mean), names_to = "endpoint", values_to = "mean"
+  ) |>
+  dplyr::mutate(
+    se = ifelse(endpoint == "hr_mean", hr_se, qt_se),
+    endpoint = ifelse(endpoint == "hr_mean", "A: HR (bpm)", "B: QT (ms)")
+  ) |>
+  ggplot(aes(clock, mean, colour = scenario)) +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.2) +
+  geom_line() +
+  facet_wrap(~endpoint, ncol = 1, scales = "free_y") +
+  scale_x_continuous(
+    breaks = seq(20, 44, by = 2),
+    labels = function(x) x %% 24
+  ) +
+  labs(
+    x = "Clock time (h)", y = "Mean (SE)", colour = NULL,
+    caption = "Replicates Figure 5A and 5B of Cirincione 2017."
+  )
+```
+
+```{r figure5cd, fig.width = 7, fig.height = 6}
+fed_chg <- day2 |>
+  dplyr::filter(scenario == "Fed", clock >= 30, clock <= 38) |>
+  dplyr::group_by(id) |>
+  dplyr::mutate(
+    d_hr = hr - hr[clock == 30],
+    d_glucose = glucose - glucose[clock == 30],
+    d_qt = qt - qt[clock == 30],
+    d_qtc = qtc_hr - qtc_hr[clock == 30],
+    d_qtcg = qtc_hr_glucose - qtc_hr_glucose[clock == 30]
+  ) |>
+  dplyr::ungroup() |>
+  tidyr::pivot_longer(
+    c(d_hr, d_glucose, d_qt, d_qtc, d_qtcg),
+    names_to = "quantity", values_to = "change"
+  ) |>
+  dplyr::group_by(quantity, clock) |>
+  dplyr::summarise(
+    mean = mean(change), se = sd(change) / sqrt(dplyr::n()),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    panel = ifelse(
+      quantity %in% c("d_hr", "d_glucose"),
+      "C: change in HR (bpm) and glucose (mg/dL)",
+      "D: change in QT, mQTc, mQTcG (ms)"
+    ),
+    quantity = dplyr::recode(
+      quantity,
+      d_hr = "HR", d_glucose = "Glucose", d_qt = "QT",
+      d_qtc = "mQTc", d_qtcg = "mQTcG"
+    )
+  )
+
+ggplot(fed_chg, aes(clock - 24, mean, colour = quantity)) +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.1) +
+  geom_line() +
+  facet_wrap(~panel, ncol = 1, scales = "free_y") +
+  labs(
+    x = "Clock time (h)", y = "Mean (SE) change from 6 am", colour = NULL,
+    caption = "Replicates Figure 5C and 5D of Cirincione 2017 (fed scenario)."
+  )
+```
+
+## Comparison with the published simulation
+
+HR is linear in `SHR` once the other random effects are fixed, so the
+population-mean HR curve equals the curve solved at the mean of `SHR`,
+`theta * exp(omega^2 / 2)`. Solving at that value removes the noisiest
+random effect from the check. `SHR` has 140% IIV, and its log-normal tail
+makes a 200-subject mean HR wander by about 0.7 bpm. The QT interval is not
+linear in HR, so the QT values below come from the full simulation above.
+
+```{r mean-shr}
+omega_shr <- rxode2::rxode(mod_24)$omega["etalsstim_glucose_hr", "etalsstim_glucose_hr"]
+mod_24_meanshr <- rxode2::rxode(mod_24) |>
+  rxode2::model(sstim_glucose_hr <- exp(lsstim_glucose_hr))
+rxode2::rxSetSeed(2017)
+s_mean <- rxode2::rxSolve(
+  mod_24_meanshr, ev_fed, nSub = 200, returnType = "data.frame",
+  params = c(lsstim_glucose_hr = log(0.00103) + omega_shr / 2)
+)
+mean_hr <- s_mean |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(hr = mean(hr), glucose = mean(glucose), .groups = "drop")
+base6 <- mean_hr[mean_hr$time == 34, ]
+hr_rise <- max(mean_hr$hr - base6$hr)
+hr_rise_t <- mean_hr$time[which.max(mean_hr$hr - base6$hr)] - 35
+glu_rise <- max(mean_hr$glucose - base6$glucose)
+
+fed_mean <- fed_chg |>
+  dplyr::group_by(quantity) |>
+  dplyr::summarise(
+    # Breakfast at model time 35 h is clock 31 on the shifted axis
+    min = min(mean), t_min = clock[which.min(mean)] - 31,
+    max = max(mean), .groups = "drop"
+  )
+qt_drop <- fed_mean$min[fed_mean$quantity == "QT"]
+qt_drop_t <- fed_mean$t_min[fed_mean$quantity == "QT"]
+qtc_drop <- fed_mean$min[fed_mean$quantity == "mQTc"]
+qtcg_range <- max(abs(unlist(fed_mean[fed_mean$quantity == "mQTcG", c("min", "max")])))
+
+fast_hr <- fig5_summary |> dplyr::filter(scenario == "Fasting")
+hr_min <- min(fast_hr$hr_mean)
+hr_min_clock <- fast_hr$clock[which.min(fast_hr$hr_mean)] %% 24
+
+claims <- tibble::tribble(
+  ~Quantity, ~Published, ~Simulated,
+  "Max mean glucose rise after 99 g (mg/dL)", "52.2 (50.6-53.7)", glu_rise,
+  "Max mean HR rise from 6 am (bpm)", "6.8 (6.0-7.6)", hr_rise,
+  "Time of max HR rise after the meal (h)", "1.5", hr_rise_t,
+  "Max mean QT change from 6 am (ms)", "-24 (-22.4 to -25.5)", qt_drop,
+  "Time of max QT change after the meal (h)", "2", qt_drop_t,
+  "Max mean mQTc change from 6 am (ms)", "about -10", qtc_drop,
+  "Largest mean mQTcG change from 6 am (ms)", "none", qtcg_range,
+  "Fasting mean HR minimum (bpm, Figure 5A)", "about 59", hr_min,
+  "Clock time of fasting HR minimum (h, Figure 5A)", "about 2", hr_min_clock
+)
+knitr::kable(claims, digits = 2)
+
+stopifnot(
+  # Glucose: the IIV on kout_glu barely moves the mean peak.
+  abs(glu_rise - 52.2) < 2.6,
+  # HR: the published 95% CI. Reading the Table 1 'IIV (%)' column as
+  # log(1 + CV^2) instead gives about 5.5 bpm and fails this bound.
+  hr_rise > 6.0, hr_rise < 7.6,
+  abs(hr_rise_t - 1.5) <= 0.5,
+  # QT: full-simulation means; realised -24.2 here, and the SHR tail moves
+  # a 200-subject mean by about 1-2 ms between draws.
+  qt_drop < -20, qt_drop > -30,
+  abs(qt_drop_t - 2) <= 1,
+  qtc_drop < -7, qtc_drop > -13,
+  abs(hr_min - 59.2) < 2,
+  hr_min_clock >= 1, hr_min_clock <= 3
+)
+```
+
+mQTcG removes both the HR and the glucose terms. Its value is therefore
+exactly `QTint` for every subject at every time, and the mean change is zero.
+
+```{r qtcg-identity}
+stopifnot(max(abs(s_fed$qtc_hr_glucose - s_fed$qtb)) < 1e-6)
+```
+
+# Breakfast-window model
+
+The breakfast-window model has no circadian term and no IIV on `SHR`. Below,
+100 subjects per cohort receive each cohort's breakfast: 81 g at 7 am
+(cohort A), and 86 g or 99 g at 6 am (cohorts B and C). The bands are
+5th-95th percentiles of the individual predictions (no residual error), and
+the line is the median. They are for comparison with the observed medians of
+Figure 2 and the visual predictive check of Figure 4 (top row).
+
+```{r breakfast-sim, fig.width = 7, fig.height = 6}
+make_cohort <- function(label, grams, meal_time, id_offset) {
+  ev <- rxode2::et(seq(0, 8, by = 0.25), cmt = "glucose") |>
+    rxode2::et(time = meal_time, amt = grams * 1000, cmt = "depot")
+  rxode2::rxSetSeed(id_offset + 1)
+  s <- rxode2::rxSolve(mod_bf, ev, nSub = 100, returnType = "data.frame")
+  dplyr::mutate(s, id = as.integer(sim.id) + id_offset, cohort = label)
+}
+bf <- dplyr::bind_rows(
+  make_cohort("A: 81 g at 7 am", 81, 1, 0L),
+  make_cohort("B: 86 g at 6 am", 86, 0, 100L),
+  make_cohort("C: 99 g at 6 am", 99, 0, 200L)
+)
+
+bf |>
+  dplyr::select(cohort, time, Glucose = glucose, HR = hr, QT = qt) |>
+  tidyr::pivot_longer(c(Glucose, HR, QT), names_to = "endpoint") |>
+  dplyr::group_by(cohort, endpoint, time) |>
+  dplyr::summarise(
+    lo = quantile(value, 0.05), med = median(value), hi = quantile(value, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time + 6, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  facet_grid(endpoint ~ cohort, scales = "free_y") +
+  labs(
+    x = "Clock time (h)", y = "Glucose (mg/dL), HR (bpm), QT (ms)",
+    caption = "Compare Figures 2 and 4 (top row) of Cirincione 2017."
+  )
+```
+
+Typical-value responses for cohort C, from 6 am:
+
+```{r breakfast-typical}
+ev_c <- rxode2::et(seq(0, 8, by = 0.05), cmt = "glucose") |>
+  rxode2::et(time = 0, amt = 99000, cmt = "depot")
+typ_bf <- rxode2::rxSolve(rxode2::zeroRe(mod_bf), ev_c, returnType = "data.frame")
+typ_tab <- tibble::tibble(
+  Quantity = c(
+    "Glucose rise (mg/dL)", "Time of glucose peak (h)",
+    "HR rise (bpm)", "Time of HR peak (h)",
+    "QT change (ms)", "mQTc change (ms)", "Time of mQTc nadir (h)"
+  ),
+  Value = c(
+    max(typ_bf$glucose - 90), typ_bf$time[which.max(typ_bf$glucose)],
+    max(typ_bf$hr - 64.3), typ_bf$time[which.max(typ_bf$hr)],
+    min(typ_bf$qt - typ_bf$qt[1]), min(typ_bf$qtc_hr - typ_bf$qtc_hr[1]),
+    typ_bf$time[which.min(typ_bf$qtc_hr)]
+  )
+)
+knitr::kable(typ_tab, digits = 2)
+```
+
+The observed medians of Figure 2 show the glucose peak about 1 hour after
+the meal and the HR peak about 2 hours after it, with an HR rise of about
+10 bpm. They also show a transient fall in QTcF with its nadir about 3 hours
+after the meal. The model peaks glucose earlier, at about 35 minutes,
+because `ka_glu` is fixed. The paper notes that the model slightly
+underpredicts the peak HR rise (Results, "PD Modeling: Breakfast Window").
+
+# Assumptions and deviations
+
+* **IIV scale.** Table 1 reports IIV as a percentage. Read as
+  `100 * sqrt(omega^2)`, so `omega^2 = (IIV / 100)^2`, the 24-hour model
+  reproduces the published 500-subject simulation. Its mean postprandial HR
+  rise is 6.8-7.2 bpm against the published 6.8 bpm (95% CI 6.0-7.6). Read
+  as the log-normal CV, `omega^2 = log(1 + CV^2)`, the rise is about 5.5 bpm,
+  outside that interval. The difference comes almost entirely from the 140%
+  IIV on `SHR`. The same reading is applied to the breakfast-window model.
+* **Equation 8a sign.** Equation 8a defines the HR- and glucose-corrected QT
+  as `(QT + STR * TR) / RR^alpha`. With QT from Equation 8b,
+  `QTint * RR^alpha + STR * TR`, only `(QT - STR * TR) / RR^alpha` removes
+  the glucose term and gives the flat mQTcG profile of Figure 5D ("no
+  remaining change in mQTcG was observed across time"). The model uses the
+  minus sign. This affects only the derived output `qtc_hr_glucose`, not
+  the fitted endpoints.
+* **Two glucose residual errors.** Table 1 lists "RV glucose" twice in each
+  column: 9.18% and 8.78% (breakfast), 11% and 11.3% (24 hours). The glucose
+  parameters were estimated first and then fixed at their individual Bayesian
+  estimates while the HR and QT parts were fitted. The first row belongs to the
+  glucose-only stage. The second row sits in the final residual block with
+  RV HR and RV QT and is used here.
+* **Initial conditions.** The authors set the initial glucose and HR to each
+  subject's measured value at time zero. The packaged models start glucose at
+  `Gluss` and HR at `HRss` (breakfast) or `HRss * (1 + CIRC(0))` (24 hours),
+  and the signal-transduction state at 0 as in the paper. For the 24-hour
+  model, run in one day without a meal to start from the periodic steady
+  state. The published Figure 5A starts at about 66.9 bpm at 8 pm, close to
+  this model's periodic value at 8 pm and above the typical
+  `HRss * (1 + CIRC(0))` of 65.3 bpm.
+* **Glucose reference in Equation 9.** Equation 9 writes the glucose
+  stimulus of the 24-hour model as `Glu - Glu0`, whereas Equation 2 writes
+  `Glu - Gluss`. With glucose starting at `Gluss` the two coincide, and the
+  model uses `Gluss`.
+* **Time origin.** The paper references time in the 24-hour model to "the
+  start of the baseline day", which began at 8 pm. The acrophases then place
+  the fasting HR minimum near 2 am and the maximum near 6:30 pm, as Figure 5A
+  shows. Reading them as clock times would put the minimum near 6 am. The
+  breakfast-window model starts at 6 am, the time of its initial conditions.
+* **Table 1 against the text.** The Discussion quotes the 24-hour `kout_HR`
+  as 14.8 per day, and Table 1 gives 14.3. The breakfast-window text mentions
+  an IIV on `SHR`, but Table 1 and the list of final IIV terms do not include
+  one. The model follows Table 1 in both cases.
+* **Units.** `kout_HR` is reported per day and is divided by 24 in `model()`.
+  The carbohydrate dose is in mg (grams times 1000) with bioavailability 1,
+  and `Vg` is in dL, so glucose is in mg/dL. RR is in seconds.
+* **Not modelled.** The study measured insulin, but the authors dropped it
+  from the model because a glucose-insulin feedback model was unstable on
+  these data.

@@ -1,0 +1,431 @@
+---
+title: "Docetaxel and neutropenia in older patients (Kenmotsu 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Docetaxel and neutropenia in older patients (Kenmotsu 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Kenmotsu 2017 reports two models fitted one after the other, both extracted
+here:
+
+* `Kenmotsu_2017_docetaxel` -- the population PK model for total docetaxel
+  (two compartments; CL proportional to body surface area and decreasing with
+  serum alpha-1 acid glycoprotein, AAG; central volume decreasing with serum
+  albumin; Table 2, upper half).
+* `Kenmotsu_2017_docetaxel_anc` -- the exposure-toxicity model for the percent
+  decrease in absolute neutrophil count (ANC) at nadir, a sigmoid Emax function
+  of the unbound AUC `fu * AUC` (Equation 4; Table 2, lower half). The
+  individual AUC is `Dose / CL` (Methods), so the PK model is embedded in this
+  file and the per-subject measured unbound fraction is supplied as the `FU`
+  covariate.
+
+* Citation: `r rxode2::rxode(readModelDb("Kenmotsu_2017_docetaxel"))$reference`
+* Description (PK): `r rxode2::rxode(readModelDb("Kenmotsu_2017_docetaxel"))$description`
+* Description (neutropenia): `r rxode2::rxode(readModelDb("Kenmotsu_2017_docetaxel_anc"))$description`
+* Article: <https://doi.org/10.1111/bcp.13354> (open access, PMC5651322)
+* Correction: <https://doi.org/10.1111/bcp.13694> (relabels the y-axes of
+  Figure 2 as docetaxel clearance; no estimate changed)
+
+# Population
+
+A prospective single-centre study at Shizuoka Cancer Center (Japan) enrolled
+51 Japanese patients with non-small cell lung cancer between August 2014 and
+May 2015: 34 aged < 75 years (median 63, range 34-73) and 17 aged >= 75 years
+(median 77, range 75-84); 43 men and 8 women (Table 1). Docetaxel 60 mg/m^2
+was infused over 1 h every 3 weeks after 8 mg dexamethasone, and serum was
+sampled five times in the first course (pre-dose, end of infusion, 10-60 min,
+2-5 h and 12-24 h after the end of infusion). Baseline AAG ranged 50-264 mg/dL
+and albumin 2.2-4.8 g/dL. Neutropenia was evaluable in 49 patients (two
+received prophylactic G-CSF).
+
+```{r population}
+str(readModelDb("Kenmotsu_2017_docetaxel")()$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment model, ADVAN3 TRANS3 (CL, Vc, Q, Vss); `vp = vss - vc` | n/a | Methods, Population pharmacokinetic analysis |
+| `cl = exp(lcl) * BSA * (AAG / 1.21)^e_aag_cl` | n/a | Table 2, `CL = theta1*BSA*(AAG/121)^theta2` (AAG in mg/dL; 1.21 g/L is the same reference) |
+| `vc = exp(lvc) * (ALB / 37)^e_alb_vc` | n/a | Table 2, `Vc = theta3*(ALB/3.7)^theta4` (ALB in g/dL; 37 g/L is the same reference) |
+| `lcl` | log(14.5) L/h/m^2 | Table 2, theta1 |
+| `e_aag_cl` | -0.495 | Table 2, theta2 |
+| `lvc` | log(8.89) L | Table 2, theta3 |
+| `e_alb_vc` | -0.550 | Table 2, theta4 |
+| `lvss` | log(129) L | Table 2, Vss |
+| `lq` | log(11.0) L/h | Table 2, Q |
+| `etalcl`, `etalvc`, `etalvss` | 0.0426, 0.00885, 0.0176 | Table 2, omega2 CL / Vc / Vss; log-normal (Equation 1) |
+| `propSd` (PK) | sqrt(0.0360) = 0.190 | Table 2, sigma2; exponential error (Equation 2) |
+| `auc_course = podo(central) / cl` | n/a | Methods: `AUC = Dose/CL` |
+| `fu_auc = FU * auc_course` | n/a | Methods, Exposure-toxicity analysis (fu * AUC) |
+| `nadir_anc_pct_decrease = emax * fu_auc^hill / (ec50^hill + fu_auc^hill)` | n/a | Equation 4 |
+| `lemax` | log(84.5) % | Table 2, Emax |
+| `lec50` (baseline ANC > 4341 /uL) | log(0.142) ug*h/mL | Table 2 |
+| `lec50_neutlow` (baseline ANC <= 4341 /uL) | log(0.101) ug*h/mL | Table 2; 4341 /uL is the cohort median (Table S2 footnote) |
+| `lhill` | log(3.72) | Table 2, shape parameter gamma |
+| `propSd` (neutropenia) | sqrt(0.0164) = 0.128 | Table 2, exposure-toxicity residual variability (read as a variance; see Assumptions) |
+
+# Virtual cohort
+
+The individual data are not public. Two cohorts of 200 virtual patients, one
+per age group, draw each covariate independently from a log-normal (normal for
+albumin) distribution centred on the Table 1 median, with a spread chosen so
+that the Table 1 range spans roughly +/- 2 SD, redrawing any value outside the
+reported range. The measured unbound fraction is drawn from a log-normal
+matching the Table 3 mean +/- SD within each age group and kept inside the
+3.1-15.6% range of Figure 3A.
+
+```{r cohort}
+set.seed(2017)
+
+# Reject-and-redraw inside [lo, hi] so a range is honoured without piling
+# mass on its edges.
+draw_in_range <- function(n, rfun, lo, hi) {
+  out <- rfun(n)
+  bad <- out < lo | out > hi
+  while (any(bad)) {
+    out[bad] <- rfun(sum(bad))
+    bad <- out < lo | out > hi
+  }
+  out
+}
+
+lnorm_fun <- function(median, sdlog) function(n) rlnorm(n, log(median), sdlog)
+# Log-normal with a given arithmetic mean and SD.
+lnorm_ms <- function(mean, sd) {
+  sdlog <- sqrt(log(1 + (sd / mean)^2))
+  function(n) rlnorm(n, log(mean) - sdlog^2 / 2, sdlog)
+}
+
+make_cohort <- function(n, age_group, id_offset, bsa, aag, alb, neut, fu) {
+  tibble(
+    id = id_offset + seq_len(n),
+    age_group = age_group,
+    BSA = draw_in_range(n, lnorm_fun(bsa[1], bsa[4]), bsa[2], bsa[3]),
+    AAG = draw_in_range(n, lnorm_fun(aag[1], aag[4]), aag[2], aag[3]),
+    ALB = draw_in_range(n, function(k) rnorm(k, alb[1], alb[4]), alb[2], alb[3]),
+    NEUT = draw_in_range(n, lnorm_fun(neut[1], neut[4]), neut[2], neut[3]),
+    FU = draw_in_range(n, lnorm_ms(fu[1], fu[2]), 0.031, 0.156)
+  )
+}
+
+# c(median, low, high, spread) from Table 1; AAG in g/L, ALB in g/L,
+# NEUT in cells/uL. FU = c(mean, SD) from Table 3 as fractions.
+covs <- bind_rows(
+  make_cohort(200, "Age < 75", 0L,
+    bsa = c(1.54, 1.37, 1.86, 0.075), aag = c(1.18, 0.71, 2.64, 0.31),
+    alb = c(37, 22, 48, 6.0), neut = c(4461, 2132, 9650, 0.36),
+    fu = c(0.078, 0.027)
+  ),
+  make_cohort(200, "Age >= 75", 200L,
+    bsa = c(1.64, 1.19, 2.09, 0.15), aag = c(1.28, 0.50, 2.49, 0.42),
+    alb = c(37, 27, 44, 4.5), neut = c(4001, 2088, 9911, 0.41),
+    fu = c(0.089, 0.021)
+  )
+) |>
+  mutate(dose = 60 * BSA)
+
+obs_times <- c(
+  0, 0.25, 0.5, 0.75, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 8, 12,
+  16, 24, 36, 48, 72, 96, 144, 216, 336, 504
+)
+
+events <- bind_rows(
+  covs |> mutate(time = 0, evid = 1L, amt = dose, rate = dose, cmt = "central"),
+  covs |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(evid = 0L, amt = 0, rate = 0, cmt = "central")
+) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+stopifnot(!anyDuplicated(covs$id))
+```
+
+# Simulation
+
+```{r simulate}
+mod_pk <- readModelDb("Kenmotsu_2017_docetaxel")
+mod_anc <- readModelDb("Kenmotsu_2017_docetaxel_anc")
+
+rxode2::rxSetSeed(2017)
+sim <- rxode2::rxSolve(
+  mod_anc,
+  events = events,
+  keep = c("age_group", "BSA", "AAG", "dose", "FU", "NEUT")
+) |>
+  as.data.frame()
+
+# The PK file and the PK half of the neutropenia file are the same model:
+# a deterministic solve of both must agree to solver precision.
+typ_ev <- events |> filter(id == 1)
+typ_pk <- rxode2::rxSolve(rxode2::zeroRe(mod_pk), events = typ_ev) |> as.data.frame()
+typ_anc <- rxode2::rxSolve(rxode2::zeroRe(mod_anc), events = typ_ev) |> as.data.frame()
+stopifnot(max(abs(typ_pk$Cc - typ_anc$Cc)) < 1e-8)
+```
+
+# Replicate published figures
+
+## Figure 1 -- concentration-time profile
+
+```{r figure-1}
+fig1_times <- obs_times[obs_times > 0 & obs_times <= 24]
+sim |>
+  filter(time %in% fig1_times) |>
+  group_by(time, age_group) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50, colour = age_group, fill = age_group)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2, colour = NA) +
+  geom_line() +
+  scale_y_log10(limits = c(0.01, 10)) +
+  scale_x_continuous(breaks = seq(0, 24, 6)) +
+  labs(
+    x = "Time from start of infusion (h)", y = "Docetaxel (ug/mL)",
+    colour = NULL, fill = NULL,
+    title = "Simulated median and 90% interval, first 24 h",
+    caption = "Compare with Figure 1 of Kenmotsu 2017 (observed concentrations, 51 patients)."
+  )
+```
+
+The simulated profiles cover the observed concentrations of Figure 1: about
+1-3 ug/mL at the end of the infusion, 0.03-0.2 ug/mL at 4-6 h and
+0.01-0.06 ug/mL at 18-24 h.
+
+## Figure 2B -- clearance versus AAG
+
+```{r figure-2b}
+per_id <- sim |>
+  group_by(id) |>
+  slice(1) |>
+  ungroup()
+
+aag_grid <- seq(0.5, 2.7, by = 0.05)
+typ_cl <- tibble(AAG = aag_grid, cl = 14.5 * 1.6 * (aag_grid / 1.21)^-0.495)
+
+ggplot(per_id, aes(AAG * 100, cl)) +
+  geom_point(aes(shape = age_group), alpha = 0.4) +
+  geom_line(data = typ_cl, linewidth = 1) +
+  scale_shape_manual(values = c(1, 16)) +
+  labs(
+    x = "AAG (mg/dL)", y = "Docetaxel clearance (L/h)", shape = NULL,
+    title = "Individual clearance versus AAG",
+    caption = "Compare with Figure 2B of Kenmotsu 2017 (as relabelled by the correction). Line: typical value at BSA 1.6 m^2."
+  )
+```
+
+## Figure 4A -- percent decrease in ANC at nadir versus unbound AUC
+
+The typical curves are computed with the packaged model by sweeping the unbound
+fraction at a fixed dose and typical clearance, once per baseline-ANC stratum.
+
+```{r figure-4a}
+fu_grid <- seq(0.001, 0.2, length.out = 120)
+sweep <- tidyr::crossing(FU = fu_grid, NEUT = c(3000, 6000)) |>
+  mutate(id = row_number(), BSA = 1.6, AAG = 1.21, ALB = 37)
+sweep_ev <- bind_rows(
+  sweep |> mutate(time = 0, evid = 1L, amt = 96, rate = 96, cmt = "central"),
+  sweep |> mutate(time = 504, evid = 0L, amt = 0, rate = 0, cmt = "central")
+) |>
+  arrange(id, time) |>
+  as.data.frame()
+curve <- rxode2::rxSolve(rxode2::zeroRe(mod_anc), events = sweep_ev, keep = "NEUT") |>
+  as.data.frame() |>
+  filter(time == 504) |>
+  mutate(stratum = ifelse(NEUT <= 4341, "Baseline ANC <= 4341 /uL", "Baseline ANC > 4341 /uL"))
+
+# Equation 4 at fu*AUC = EC50 gives Emax / 2 in each stratum.
+half <- curve |>
+  group_by(stratum) |>
+  summarise(at_ec50 = approx(fu_auc, nadir_anc_pct_decrease,
+    xout = ifelse(first(NEUT) <= 4341, 0.101, 0.142)
+  )$y)
+stopifnot(all(abs(half$at_ec50 - 84.5 / 2) < 0.5))
+
+sim_nadir <- sim |>
+  filter(time == 504)
+
+ggplot() +
+  geom_point(
+    data = sim_nadir,
+    aes(fu_auc, nadir_anc_pct_decrease, shape = age_group), alpha = 0.3
+  ) +
+  geom_line(data = curve, aes(fu_auc, nadir_anc_pct_decrease, linetype = stratum), linewidth = 1) +
+  scale_shape_manual(values = c(1, 16)) +
+  scale_linetype_manual(values = c("solid", "dashed")) +
+  coord_cartesian(xlim = c(0, 0.8), ylim = c(0, 100)) +
+  labs(
+    x = "fu*AUC (ug*h/mL)", y = "Percent decrease in ANC at nadir",
+    shape = NULL, linetype = NULL,
+    title = "Exposure-toxicity relationship",
+    caption = "Replicates Figure 4A of Kenmotsu 2017. Points: virtual patients without residual error."
+  )
+```
+
+# PKNCA validation
+
+```{r pknca}
+# NCA over 0-96 h (about 8 terminal half-lives): beyond that the integrated
+# concentrations decay into solver tolerance and can dip just below zero,
+# which makes PKNCA's log-down AUC undefined.
+sim_nca <- sim |>
+  filter(!is.na(Cc), time <= 96) |>
+  select(id, time, Cc, age_group)
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, age_group) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, age_group, time, .keep_all = TRUE) |>
+  arrange(id, age_group, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | age_group + id)
+dose_df <- events |>
+  filter(evid == 1) |>
+  mutate(duration = 1) |>
+  select(id, time, amt, duration, age_group)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | age_group + id, duration = "duration")
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_wide <- as.data.frame(nca_res) |>
+  select(id, age_group, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+# The paper computes AUC as Dose/CL. On the same draws, the NCA AUC must
+# agree with Dose/CL up to trapezoid and extrapolation error.
+auc_chk <- nca_wide |>
+  left_join(per_id |> select(id, auc_course), by = "id") |>
+  mutate(pct_diff = 100 * (aucinf.obs - auc_course) / auc_course)
+# The NCA reads about 1% low (linear-up trapezoids across the short
+# distribution phase); 3% and 5% still catch a dose, unit or AUC-formula error.
+stopifnot(
+  abs(median(auc_chk$pct_diff)) < 3,
+  quantile(abs(auc_chk$pct_diff), 0.9) < 5
+)
+summary(auc_chk$pct_diff)
+```
+
+## Comparison against published values
+
+Table 3 reports arithmetic means of the individual estimates by age group, so
+the simulated column below is also the arithmetic mean over each virtual
+cohort.
+
+```{r nca_compare}
+sim_mean <- nca_wide |>
+  group_by(age_group) |>
+  summarise(cmax = mean(cmax), aucinf.obs = mean(aucinf.obs), cl.obs = mean(cl.obs))
+published <- tibble::tribble(
+  ~age_group,  ~cmax, ~aucinf.obs, ~cl.obs,
+  "Age < 75",  1.76,  4.09,        25.12,
+  "Age >= 75", 2.17,  4.49,        21.49
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_mean,
+  reference = published,
+  by = "age_group",
+  params = c("cmax", "aucinf.obs", "cl.obs"),
+  units = c(cmax = "ug/mL", aucinf.obs = "ug*h/mL", cl.obs = "L/h")
+)
+knitr::kable(cmp, caption = "Mean NCA of the virtual cohorts versus Table 3 of Kenmotsu 2017 (means).")
+attr(cmp, "footnote")
+```
+
+```{r table3-unbound}
+unbound <- sim_nadir |>
+  group_by(age_group) |>
+  summarise(
+    sim_fu_auc = mean(fu_auc),
+    sim_pct = mean(nadir_anc_pct_decrease),
+    sim_pct_sd = sd(nadir_anc_pct_decrease * (1 + 0.128 * rnorm(n()))),
+    .groups = "drop"
+  ) |>
+  mutate(
+    pub_fu_auc = c(0.310, 0.389),
+    pub_pct = c(76.4, 85.2),
+    pub_pct_sd = c(13.2, 9.3)
+  )
+unbound |>
+  dplyr::rename(
+    "Age group" = age_group,
+    "fu*AUC, simulated (ug*h/mL)" = sim_fu_auc,
+    "fu*AUC, Table 3" = pub_fu_auc,
+    "% ANC decrease, simulated mean" = sim_pct,
+    "% ANC decrease, Table 3 mean" = pub_pct,
+    "% ANC decrease, simulated SD" = sim_pct_sd,
+    "% ANC decrease, Table 3 SD" = pub_pct_sd
+  ) |>
+  knitr::kable(digits = 3, caption = "Unbound exposure and depth of neutropenia versus Table 3 (means; simulated SD includes the residual error).")
+
+# Structural gate: a transcription or unit error in CL, the EC50s or FU
+# moves these means by tens of percent.
+stopifnot(
+  all(abs(unbound$sim_fu_auc / unbound$pub_fu_auc - 1) < 0.25),
+  all(abs(unbound$sim_pct - unbound$pub_pct) < 10),
+  all(abs(sim_mean$aucinf.obs / published$aucinf.obs - 1) < 0.25)
+)
+```
+
+The mean AUC, clearance, unbound AUC and depth of neutropenia of the virtual
+cohorts agree with Table 3 in both age groups. In this cohort the mean unbound
+AUC is `r round(unbound$sim_fu_auc[1], 3)` versus
+`r round(unbound$sim_fu_auc[2], 3)` ug*h/mL and the mean decrease in ANC is
+`r round(unbound$sim_pct[1], 1)`% versus `r round(unbound$sim_pct[2], 1)`%
+(age < 75 versus >= 75 years); the age difference enters only through the
+covariate distributions (fu, AAG, BSA, baseline ANC), since age itself is not
+in either model. Mean Cmax is over-predicted (flagged rows above): the model's end-of-infusion
+concentration for a 1-h infusion into a 8.9 L central volume is about
+2.5-3 ug/mL, while Table 3 gives observed means of 1.76 and 2.17 ug/mL. Table 3
+Cmax is the concentration in the sample drawn "just before the end" of the
+infusion and so sits on the steep rising limb; small differences between the
+nominal and actual infusion duration or sample time lower the observed value.
+The model is not adjusted for this.
+
+# Assumptions and deviations
+
+* **Two separate fits, two files.** The exposure-toxicity model was fitted
+  after the PK model on `fu * AUC` (Methods). It is packaged with the PK
+  model embedded so that AUC is the individual `Dose / CL`; its PK parameters
+  are identical to `Kenmotsu_2017_docetaxel`.
+* **AUC per course.** `auc_course = podo(central) / cl` uses the most recent
+  dose, so the neutropenia output refers to the course started by that dose.
+  Read it once per course (any time after the dose).
+* **Unbound fraction is data.** The paper measured fu per patient (equilibrium
+  dialysis, 10-60 min after the infusion) and did not model it from AAG, so it
+  is the `FU` covariate, as a fraction. The virtual cohort draws it
+  independently of AAG although the two correlate weakly in the paper
+  (R^2 = 0.149, Figure 3C); AAG and albumin are also drawn independently.
+* **Residual error of the neutropenia model.** Table 2 prints "Residual
+  variability 0.0164" without naming its form. It is read as the variance of
+  an exponential (proportional) error, the form the paper states for the PK
+  model (Equation 2): an additive SD of 0.13 percentage points or an additive
+  variance of 0.0164 %^2 would be far below the scatter of Figure 4A, while a
+  proportional SD of 12.8% matches it.
+* **No IIV on the neutropenia parameters.** None is reported; the between-
+  patient spread of the nadir comes from clearance, fu and baseline ANC.
+* **Units.** AAG and albumin are supplied in g/L (the register's canonical
+  units); the reference values 1.21 g/L and 37 g/L give the same ratios as the
+  paper's 121 mg/dL and 3.7 g/dL.
+* **BSA formula** is not stated in the paper.
+* **Cohort.** Independent log-normal covariates centred on the Table 1
+  medians, with spreads chosen by the maintainers so that the Table 1 ranges
+  span about +/- 2 SD; 200 virtual patients per age group.

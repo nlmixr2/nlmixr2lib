@@ -1,0 +1,519 @@
+---
+title: "Ceftolozane/tazobactam plasma and lung ELF (Xiao 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ceftolozane/tazobactam plasma and lung ELF (Xiao 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Xiao AJ, Miller BW, Huntington JA, Nicolau DP. Ceftolozane/tazobactam
+  pharmacokinetic/pharmacodynamic-derived dose justification for phase 3 studies
+  in patients with nosocomial pneumonia. J Clin Pharmacol. 2016;56(1):56-66.
+* Article: <https://doi.org/10.1002/jcph.566> (open access, PMC5049594)
+
+The paper builds its dose justification in two steps, and both are packaged:
+
+1. **Plasma-to-ELF kinetics in healthy volunteers** (Table 1). Plasma and
+   bronchoalveolar-lavage epithelial lining fluid (ELF) concentrations from 25
+   healthy adults were fitted, one model per drug, with a two-compartment
+   plasma model plus an ELF compartment exchanging with the central
+   compartment through two one-way clearances, `Qce` (in) and `Qec` (out). The
+   ELF volume is fixed at 1 L, so the parametric penetration ratio is
+   `PR = Qce / Qec`.
+   Packaged as `Xiao_2016_ceftolozane_healthy` and `Xiao_2016_tazobactam_healthy`.
+2. **Simulation model for nosocomial pneumonia** (equations after 'The final
+   PK model used in the Monte Carlo simulation'). The plasma PK of
+   complicated intra-abdominal infection (cIAI) patients from the authors'
+   earlier pooled analysis (Chandorkar 2015, packaged as
+   `Chandorkar_2015_ceftolozane` / `Chandorkar_2015_tazobactam`) is combined
+   with the healthy-volunteer ELF kinetics. Packaged as
+   `Xiao_2016_ceftolozane_pneumonia` and `Xiao_2016_tazobactam_pneumonia`.
+
+```{r models}
+mods <- c(
+  "Xiao_2016_ceftolozane_healthy", "Xiao_2016_tazobactam_healthy",
+  "Xiao_2016_ceftolozane_pneumonia", "Xiao_2016_tazobactam_pneumonia"
+)
+ui <- lapply(setNames(mods, mods), function(m) rxode2::rxode(readModelDb(m)))
+for (m in mods) cat(m, ":", ui[[m]]$description, "\n\n")
+```
+
+# Population
+
+**Healthy-volunteer models.** 25 healthy adults (14 men, 11 women), median
+[min, max] age 31 [21, 47] years, body weight 78 [56.5, 94.5] kg and
+creatinine clearance (CrCL) 119 [77.7, 155.2] mL/min (Methods). Each received
+ceftolozane/tazobactam 1.5 g (1000/500 mg) as a 60-minute infusion every 8
+hours for three doses; 150 plasma and 25 ELF samples (one bronchoalveolar
+lavage per subject, 1-8 h after the third dose) were analysed in NONMEM 7.2.
+
+**Pneumonia simulation models.** No cohort was fitted. The plasma part is the
+cIAI-patient model of Chandorkar 2015 (8 phase 1 and 2 phase 2 studies); the
+ELF part is the healthy-volunteer fit above, assumed independent of the plasma
+PK. The paper simulated 1000 patients per scenario with CrCL uniform on 90-150
+mL/min (normal renal function), 30-50 (moderate) or 15-30 (severe impairment)
+and body weight normal with mean 74 kg.
+
+The same information is in each model's `population` metadata, e.g.
+`readModelDb("Xiao_2016_ceftolozane_healthy")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. Collected:
+
+| Model | Parameter | Value | Source |
+|---|---|---|---|
+| all four | ODE structure (central, peripheral1, ELF; `Rt` as 60-min infusion) | n/a | Results equations under 'Plasma-to-ELF Kinetics'; Figure 2 |
+| all four | `lv_elf` | log(1), fixed | 'Ve (fixed as 1)' and 'Ve=1' |
+| ceftolozane healthy | `lcl`, `lvc`, `lq`, `lvp` | 6.3 L/h, 10.3 L, 3.39 L/h, 3.76 L | Table 1, ceftolozane |
+| ceftolozane healthy | `lq_c_elf`, `lq_elf_c` | 0.85, 1.66 L/h | Table 1, ceftolozane (Qce, Qec) |
+| ceftolozane healthy | `etalcl`, `etalvc`, `etalq_c_elf` | 0.0179, 0.0498, 0.174 | Table 1, 'Variance of IIV on CL / Vc / Qce' |
+| ceftolozane healthy | `propSd`, `addSd` (and `_Celf` copies) | sqrt(0.00603), sqrt(0.297) mg/L | Table 1, 'Variance of RVP / RVA' |
+| tazobactam healthy | `lcl`, `lvc`, `lq`, `lvp` | 24.5 L/h, 15.0 L (70 kg), 3.91 L/h, 4.42 L | Table 1, tazobactam |
+| tazobactam healthy | `lq_c_elf`, `lq_elf_c` | 0.792, 1.72 L/h | Table 1, tazobactam |
+| tazobactam healthy | `e_crcl_cl` | 0.438 on CrCL/119 | Table 1, 'Exponent of (CrCL/119) on CL' |
+| tazobactam healthy | `e_wt_vc` | 1, fixed, on WT/70 | Table 1 'Vc, L, at 70-kg body weight'; see Assumptions |
+| tazobactam healthy | `etalcl`, `etalq_elf_c` | 0.00412, 0.229 | Table 1, 'Variance of IIV on CL / Qec' |
+| tazobactam healthy | `propSd` (and `_Celf` copy) | sqrt(0.0233) | Table 1, 'Variance of RVP' |
+| ceftolozane pneumonia | `lcl`, `e_crcl_cl`, `e_ciai_cl`, `etalcl` | 5.11 L/h, 0.715 on CrCL/109, 0.195, 0.109 | 'CL=5.11*(CrCL/109)^0.715*exp[0.195+N(0, 109)]' |
+| ceftolozane pneumonia | `lvc`, `e_wt_vc`, `e_ciai_vc`, `etalvc` | 11.4 L, 1 on WT/74, 0.464, 0.158 | 'Vc=11.4*(WT/74)*exp[0.464+N(0, 0.158)]' |
+| ceftolozane pneumonia | `lq`, `lvp` | 1.19 L/h, 2.88 L | 'Q2=1.19; V2=2.88' |
+| ceftolozane pneumonia | `lq_c_elf`, `etalq_c_elf`, `lq_elf_c` | 0.850 L/h, 0.174, 1.66 L/h | 'Qce=0.850*exp[N(0, 0.174)]; Qec=1.66' |
+| tazobactam pneumonia | `lcl`, `e_crcl_cl`, `etalcl` | 18.0 L/h, 0.670 on CrCL/115, 0.252 | 'CL=18.0*(CrCL/115)^0.670*exp[N(0, 0.252)]' |
+| tazobactam pneumonia | `lvc`, `e_ciai_vc`, `etalvc` | 14.2 L, 0.387, 0.2756 | 'Vc=14.2*exp[N(0, 0.387)]' restored; see Assumptions |
+| tazobactam pneumonia | `lq`, `lvp` | 3.13 L/h, 4.29 L | 'Q2=3.13; V2=4.29' |
+| tazobactam pneumonia | `lq_c_elf`, `lq_elf_c`, `etalq_elf_c` | 0.792 L/h, 1.72 L/h, 0.229 | 'Qce=0.792; Qec=1.72*exp[N(0, 0.229)]' |
+| both pneumonia | residual error | 0, fixed | none specified for the simulations |
+
+# Part 1: plasma-to-ELF kinetics in healthy volunteers
+
+## Penetration ratio: structural identity
+
+In this structure `d/dt(elf) = Qce * Cc - Qec * Celf`, so over a steady-state
+dosing interval the ELF:plasma AUC ratio equals `Qce / Qec` exactly. A
+typical-value solve of each packaged model must reproduce the paper's
+parametric PR (0.51 for ceftolozane, 0.46 for tazobactam).
+
+```{r pr-identity}
+ss_events <- function(dose) {
+  bind_rows(
+    data.frame(id = 1L, time = seq(0, 72, by = 8), amt = dose, rate = dose,
+               evid = 1L, cmt = "central", dvid = NA_integer_),
+    data.frame(id = 1L, time = seq(72, 80, by = 0.01), amt = 0, rate = 0,
+               evid = 0L, cmt = "central", dvid = 1L)
+  ) |>
+    mutate(CRCL = 119, WT = 70) |>
+    arrange(time, desc(evid))
+}
+auc_trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+
+pr_tab <- bind_rows(lapply(
+  list(c("Xiao_2016_ceftolozane_healthy", 1000, 0.51),
+       c("Xiao_2016_tazobactam_healthy", 500, 0.46)),
+  function(x) {
+    s <- rxode2::rxSolve(rxode2::zeroRe(ui[[x[1]]]), ss_events(as.numeric(x[2])),
+                         rtol = 1e-10, atol = 1e-12, returnType = "data.frame") |>
+      filter(time >= 72)
+    th <- ui[[x[1]]]$theta
+    data.frame(
+      model = x[1],
+      `Qce/Qec` = exp(th[["lq_c_elf"]] - th[["lq_elf_c"]]),
+      `AUC ratio (simulated)` = auc_trap(s$time, s$Celf) / auc_trap(s$time, s$Cc),
+      `PR (paper)` = as.numeric(x[3]),
+      check.names = FALSE
+    )
+  }
+))
+knitr::kable(pr_tab, digits = 4)
+stopifnot(
+  # Same drawn (typical) parameters on both sides: pure numerical error.
+  all(abs(pr_tab$`AUC ratio (simulated)` / pr_tab$`Qce/Qec` - 1) < 1e-3),
+  # The paper's printed PR rounds Qce/Qec to two decimals.
+  all(abs(pr_tab$`Qce/Qec` - pr_tab$`PR (paper)`) < 0.005)
+)
+```
+
+## Penetration-ratio distribution
+
+The paper reports the 5th, 25th, 75th and 95th percentiles of the model-
+estimated PR distribution (Results). With log-normal IIV on `Qce`
+(ceftolozane) or `Qec` (tazobactam), these follow from the typical PR and the
+packaged variance alone.
+
+```{r pr-percentiles}
+pct <- c(0.05, 0.25, 0.75, 0.95)
+pr_pct <- function(m, eta) {
+  th <- ui[[m]]$theta
+  sd <- sqrt(ui[[m]]$omega[eta, eta])
+  # IIV on Qec enters the PR as exp(-eta); the percentiles are symmetric.
+  exp(th[["lq_c_elf"]] - th[["lq_elf_c"]] + qnorm(pct) * sd)
+}
+pr_dist <- data.frame(
+  percentile = paste0(pct * 100, "th"),
+  ceftolozane_model = pr_pct("Xiao_2016_ceftolozane_healthy", "etalq_c_elf"),
+  ceftolozane_paper = c(0.26, 0.39, 0.69, 1.02),
+  tazobactam_model = pr_pct("Xiao_2016_tazobactam_healthy", "etalq_elf_c"),
+  tazobactam_paper = c(0.21, 0.33, 0.64, 1.02)
+)
+knitr::kable(pr_dist, digits = 3)
+# Largest gap 0.012 (ceftolozane 75th: 0.678 vs 0.69), consistent with the
+# paper taking its percentiles from a simulated sample. Reading the variances
+# as CV (sqrt) instead of log-scale variances moves the 5th/95th by > 0.1.
+stopifnot(
+  abs(pr_dist$ceftolozane_model - pr_dist$ceftolozane_paper) < 0.015,
+  abs(pr_dist$tazobactam_model - pr_dist$tazobactam_paper) < 0.015
+)
+```
+
+All eight percentiles agree with the paper within 0.012 (the largest gap, the
+ceftolozane 75th percentile, 0.678 against 0.69, suggests the paper read its
+percentiles from a simulated sample), which confirms that Table 1 reports log-scale variances (CV = sqrt(variance): 42%
+and 48%, as stated in the text).
+
+## Virtual healthy-volunteer cohort
+
+```{r hv-cohort}
+set.seed(2016)
+rxode2::rxSetSeed(2016)
+n_hv <- 200
+hv_cov <- data.frame(
+  id = seq_len(n_hv),
+  CRCL = runif(n_hv, 77.7, 155.2),
+  WT = runif(n_hv, 56.5, 94.5)
+)
+hv_events <- function(dose) {
+  bind_rows(
+    tidyr::expand_grid(id = hv_cov$id, time = c(0, 8, 16)) |>
+      mutate(amt = dose, rate = dose, evid = 1L, cmt = "central", dvid = NA_integer_),
+    tidyr::expand_grid(id = hv_cov$id, time = 16 + c(seq(0, 2, by = 0.1), seq(2.25, 8, by = 0.25))) |>
+      mutate(amt = 0, rate = 0, evid = 0L, cmt = "central", dvid = 1L)
+  ) |>
+    left_join(hv_cov, by = "id") |>
+    arrange(id, time, desc(evid))
+}
+hv <- bind_rows(
+  rxode2::rxSolve(ui$Xiao_2016_ceftolozane_healthy, hv_events(1000),
+                  returnType = "data.frame") |> mutate(drug = "ceftolozane"),
+  rxode2::rxSolve(ui$Xiao_2016_tazobactam_healthy, hv_events(500),
+                  returnType = "data.frame") |> mutate(drug = "tazobactam")
+) |>
+  mutate(tad = time - 16) |>
+  select(id, time, tad, drug, Cc, Celf)
+```
+
+```{r hv-plot, fig.cap = "Simulated plasma and ELF concentrations after the third 1.5 g dose in 200 virtual healthy volunteers (median and 5th-95th percentiles). Compare with the observed data of Figure 1 of Xiao 2016."}
+hv |>
+  filter(tad >= 0) |>
+  pivot_longer(c(Cc, Celf), names_to = "matrix", values_to = "conc") |>
+  mutate(matrix = ifelse(matrix == "Cc", "Plasma", "ELF")) |>
+  group_by(drug, matrix, tad) |>
+  summarise(p05 = quantile(conc, 0.05), p50 = median(conc), p95 = quantile(conc, 0.95),
+            .groups = "drop") |>
+  ggplot(aes(tad, p50, colour = matrix, fill = matrix)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2, colour = NA) +
+  geom_line() +
+  facet_wrap(~drug, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time after third dose (h)", y = "Concentration (mg/L)", colour = NULL, fill = NULL)
+```
+
+As in Figure 1, the ELF peak is roughly half the plasma peak, ELF lags
+plasma, and tazobactam declines faster than ceftolozane in both matrices.
+
+## PKNCA: dose-3 exposure in plasma and ELF
+
+The paper's comparator is the AUC ratio: geometric mean of the individual
+Bayesian ELF:plasma AUC ratios 0.52 (ceftolozane) and 0.50 (tazobactam)
+(Results), and the Discussion's terminal half-lives of about 2.5 h
+(ceftolozane) and 1 h (tazobactam) in healthy volunteers.
+
+```{r hv-pknca}
+hv_conc <- hv |>
+  pivot_longer(c(Cc, Celf), names_to = "matrix", values_to = "conc") |>
+  filter(!is.na(conc)) |>
+  mutate(treatment = paste(drug, ifelse(matrix == "Cc", "plasma", "ELF"))) |>
+  select(id, time, conc, treatment)
+hv_dose <- hv_conc |>
+  distinct(id, treatment) |>
+  mutate(drug = sub(" .*", "", treatment)) |>
+  tidyr::expand_grid(time = c(0, 8, 16)) |>
+  mutate(amt = ifelse(drug == "ceftolozane", 1000, 500)) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(hv_conc, conc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(hv_dose, amt ~ time | treatment + id)
+intervals <- data.frame(start = 16, end = 24, cmax = TRUE, tmax = TRUE,
+                        auclast = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+hv_auc <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "auclast") |>
+  mutate(drug = sub(" .*", "", treatment), matrix = sub(".* ", "", treatment)) |>
+  select(id, drug, matrix, PPORRES) |>
+  pivot_wider(names_from = matrix, values_from = PPORRES) |>
+  group_by(drug) |>
+  summarise(`geometric mean AUC ratio (simulated)` = exp(mean(log(ELF / plasma))))
+hv_auc$`geometric mean (paper)` <- c(0.52, 0.50)
+knitr::kable(hv_auc, digits = 3)
+```
+
+```{r hv-nca-compare}
+published <- tibble::tribble(
+  ~treatment, ~half.life,
+  "ceftolozane plasma", 2.5,
+  "tazobactam plasma", 1.0
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "mg/L", auclast = "mg*h/L", tmax = "h", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated dose-3 NCA vs. the Discussion's half-lives. * differs from reference by >20%.")
+```
+
+```{r hv-gates}
+stopifnot(
+  # Geometric-mean AUC ratio within 0.08 of the paper's (its 95% CI half-widths
+  # are 0.08 and 0.09). A mis-transcribed Qce or Qec moves it by 0.1 or more.
+  abs(hv_auc$`geometric mean AUC ratio (simulated)` - hv_auc$`geometric mean (paper)`) < 0.08
+)
+```
+
+The simulated ELF:plasma AUC ratios sit on the model's parametric PR (0.51,
+0.46). The paper's tazobactam figure of 0.50 is the geometric mean of the
+individual post-hoc ratios, which it reports as consistent with the parametric
+0.46.
+
+The tazobactam half-life matches the Discussion's "approximately 1 hour". The
+ceftolozane half-life (about 1.9 h) is shorter than the Discussion's
+"approximately 2.5 hours" (flagged above). That is a property of the Table 1
+estimates themselves: CL = 6.3 L/h, Vc = 10.3 L, Q2 = 3.39 L/h and V2 = 3.76 L
+give a terminal half-life of 1.85 h. The 2.5 h figure is quoted from a
+separate multiple-dose study in healthy volunteers, not from this fit, so it is
+not used as a gate.
+
+# Part 2: simulation model for nosocomial pneumonia
+
+## Virtual patients
+
+200 virtual patients per scenario (the paper used 1000). CrCL is uniform on
+the scenario's range and body weight is normal with mean 74 kg and the paper's
+printed spread of 0.205 kg. Five scenarios are simulated to steady state
+(seventh dose, 48-56 h).
+
+```{r np-cohort}
+n_np <- 200
+np_events <- function(dose, crcl_lo, crcl_hi, scenario, id_offset) {
+  cov <- data.frame(
+    id = id_offset + seq_len(n_np),
+    CRCL = runif(n_np, crcl_lo, crcl_hi),
+    WT = rnorm(n_np, 74, 0.205)
+  )
+  bind_rows(
+    tidyr::expand_grid(id = cov$id, time = seq(0, 48, by = 8)) |>
+      mutate(amt = dose, rate = dose, evid = 1L, cmt = "central", dvid = NA_integer_),
+    tidyr::expand_grid(id = cov$id, time = seq(48, 56, by = 0.05)) |>
+      mutate(amt = 0, rate = 0, evid = 0L, cmt = "central", dvid = 1L)
+  ) |>
+    left_join(cov, by = "id") |>
+    mutate(scenario = scenario) |>
+    arrange(id, time, desc(evid))
+}
+np_solve <- function(model, events) {
+  rxode2::rxSolve(ui[[model]], events, keep = "scenario", returnType = "data.frame") |>
+    filter(time >= 48) |>
+    mutate(tad = time - 48)
+}
+cef <- bind_rows(
+  np_solve("Xiao_2016_ceftolozane_pneumonia", np_events(2000, 90, 150, "3 g, normal", 0L)),
+  np_solve("Xiao_2016_ceftolozane_pneumonia", np_events(1000, 90, 150, "1.5 g, normal", 1000L)),
+  np_solve("Xiao_2016_ceftolozane_pneumonia", np_events(1000, 30, 50, "1.5 g, moderate RI", 2000L)),
+  np_solve("Xiao_2016_ceftolozane_pneumonia", np_events(500, 15, 30, "750 mg, severe RI", 3000L))
+)
+taz <- np_solve("Xiao_2016_tazobactam_pneumonia", np_events(1000, 90, 150, "3 g, normal", 4000L))
+```
+
+## Figure 4: steady-state profiles at 3 g every 8 hours
+
+```{r fig4, fig.cap = "Replicates Figure 4 of Xiao 2016: simulated steady-state plasma and ELF concentrations after 3 g ceftolozane/tazobactam (2000/1000 mg) as a 60-minute infusion every 8 hours, normal renal function (median and 5th-95th percentiles of 200 virtual patients)."}
+fig4 <- bind_rows(
+  cef |> filter(scenario == "3 g, normal") |> mutate(drug = "ceftolozane"),
+  taz |> mutate(drug = "tazobactam")
+) |>
+  pivot_longer(c(Cc, Celf), names_to = "matrix", values_to = "conc") |>
+  mutate(matrix = ifelse(matrix == "Cc", "Plasma", "ELF")) |>
+  group_by(drug, matrix, tad) |>
+  summarise(p05 = quantile(conc, 0.05), p50 = median(conc), p95 = quantile(conc, 0.95),
+            .groups = "drop")
+ggplot(fig4, aes(tad, p50, colour = matrix, fill = matrix)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2, colour = NA) +
+  geom_line() +
+  facet_wrap(~drug, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time since last dose (h)", y = "Concentration (mg/L)", colour = NULL, fill = NULL)
+```
+
+The median peaks read from Figure 4 by the maintainers are about 98 mg/L
+(ceftolozane plasma), 38 mg/L (ceftolozane ELF), 28 mg/L (tazobactam plasma)
+and 9 mg/L (tazobactam ELF).
+
+```{r fig4-gate}
+peaks <- fig4 |>
+  group_by(drug, matrix) |>
+  summarise(median_peak = max(p50), .groups = "drop") |>
+  mutate(figure4 = c(38, 98, 9, 28)[match(paste(drug, matrix),
+    c("ceftolozane ELF", "ceftolozane Plasma", "tazobactam ELF", "tazobactam Plasma"))],
+    pct_diff = 100 * (median_peak / figure4 - 1))
+knitr::kable(peaks, digits = 1)
+stopifnot(
+  nrow(peaks) == 4,
+  # Read off a log axis, about +/-10%. The printed (shift-free) tazobactam Vc
+  # equation gives a plasma median peak near 34 mg/L, +20%.
+  all(abs(peaks$pct_diff) < 15)
+)
+```
+
+## Figures 5 and 7: probability of target attainment
+
+%fT>MIC is the fraction of the steady-state dosing interval during which the
+unbound concentration exceeds the MIC. In plasma the paper's unbound fractions
+are applied (0.79 ceftolozane, 0.70 tazobactam). In ELF the total
+concentration is used: that is the reading under which the model reproduces
+the paper's ELF figures (with 0.79 applied in ELF the 3 g, 1-log-kill PTA at
+MIC 8 mg/L falls to about 95% against the paper's 98.4%), and ELF is commonly
+taken as essentially protein-free.
+
+```{r pta}
+pta <- function(sim, col, fu, mic, target) {
+  sim |>
+    group_by(scenario, id) |>
+    summarise(ft = 100 * mean(fu * .data[[col]][tad > 0] > mic), .groups = "drop") |>
+    group_by(scenario) |>
+    summarise(pta = 100 * mean(ft >= target), .groups = "drop")
+}
+claims <- tribble(
+  ~drug, ~scenario, ~matrix, ~target, ~mic, ~paper, ~source,
+  "ceftolozane", "3 g, normal", "ELF", 32.2, 8, 98.4, "Results text",
+  "ceftolozane", "3 g, normal", "plasma", 32.2, 16, 97.1, "Results text",
+  "ceftolozane", "3 g, normal", "ELF", 40, 8, 95.6, "Results text",
+  "ceftolozane", "3 g, normal", "ELF", 50, 8, 87.7, "Results text",
+  "tazobactam", "3 g, normal", "plasma", 20, 2, 96, "Figure 7A (read)",
+  "tazobactam", "3 g, normal", "plasma", 20, 4, 88, "Figure 7A (read)",
+  "tazobactam", "3 g, normal", "plasma", 40, 1, 81, "Figure 7A (read)",
+  "tazobactam", "3 g, normal", "plasma", 40, 2, 66, "Figure 7A (read)",
+  "tazobactam", "3 g, normal", "ELF", 20, 4, 73, "Figure 7B (read)",
+  "tazobactam", "3 g, normal", "ELF", 20, 8, 33, "Figure 7B (read)",
+  "tazobactam", "3 g, normal", "ELF", 40, 2, 62, "Figure 7B (read)",
+  "ceftolozane", "1.5 g, normal", "ELF", 32.2, 8, 85, "Results text ('approximately')",
+  "ceftolozane", "1.5 g, normal", "plasma", 32.2, 16, 74, "Results text ('approximately')",
+  "ceftolozane", "1.5 g, normal", "ELF", 50, 8, 59, "Results text and Discussion",
+  "ceftolozane", "1.5 g, moderate RI", "ELF", 32.2, 8, 98.8, "Results text",
+  "ceftolozane", "750 mg, severe RI", "ELF", 32.2, 8, 94.4, "Results text"
+)
+fu <- c(ceftolozane = 0.79, tazobactam = 0.70)
+claims$model <- vapply(seq_len(nrow(claims)), function(i) {
+  r <- claims[i, ]
+  sim <- if (r$drug == "ceftolozane") cef else taz
+  res <- pta(filter(sim, scenario == r$scenario),
+             col = ifelse(r$matrix == "ELF", "Celf", "Cc"),
+             fu = ifelse(r$matrix == "ELF", 1, fu[[r$drug]]),
+             mic = r$mic, target = r$target)
+  if (nrow(res) != 1L) stop("no unique PTA for row ", i)
+  res$pta
+}, numeric(1))
+# The two 1.5 g 1-log-kill values are inconsistent with the paper's own 3 g
+# figures under linear PK (see Assumptions); shown, but not gated.
+claims$deviation <- claims$scenario == "1.5 g, normal" & claims$target == 32.2
+claims$diff <- claims$model - claims$paper
+knitr::kable(claims, digits = 1,
+             caption = "PTA (%) of the packaged simulation models vs. Xiao 2016. 'deviation' rows are documented below and excluded from the gate.")
+stopifnot(
+  sum(!claims$deviation) == 14,
+  # 200 patients: binomial SE <= 3.5 points at PTA 50-90%; figure reading +/-3.
+  # The printed shift-free tazobactam Vc moves the Figure 7A rows by 7-9 points
+  # and the plasma unbound fraction applied in ELF moves the ELF rows by 3-15.
+  all(abs(claims$diff[!claims$deviation]) < 10)
+)
+```
+
+All eleven 3 g targets are reproduced, as are the renal-impairment values
+(the paper's 98.8% for 1.5 g at CrCL 30-50 mL/min and 94.4% for 750 mg at
+CrCL 15-30 mL/min, 1-log kill at MIC 8 mg/L in ELF) and the 1.5 g value for
+50% fT>MIC. For
+tazobactam, the printed `Vc`
+equation without the cIAI shift (see Assumptions) gives plasma PTAs 5-10
+points lower than Figure 7A (for example about 72% instead of 81% for 40%
+fT>MEC at 1 mg/L).
+
+# Assumptions and deviations
+
+- **Tazobactam pneumonia `Vc` equation.** The paper prints
+  `Vc=14.2*exp[N(0, 0.387)]`. Every other printed variance equals the square of
+  the corresponding Chandorkar 2015 CV (0.330^2 = 0.109, 0.398^2 = 0.158,
+  0.502^2 = 0.252), and exp(0.387) = 1.47 is Chandorkar 2015's cIAI factor on
+  tazobactam `Vc` (Table 3B). The paper also states that the cIAI-patient
+  parameters were used for the plasma PK. The maintainers therefore read the
+  equation as `14.2*exp[0.387 + N(0, 0.2756)]`, with the variance 0.525^2 from
+  Chandorkar 2015's 52.5% BSV. The cIAI shift is required to reproduce the
+  median peaks of Figure 4B and the plasma PTAs of Figure 7A; the variance
+  could not be told apart from the printed 0.387 with those figures.
+- **Ceftolozane pneumonia `CL` variance.** Printed as `N(0, 109)`; read as
+  0.109 (= 0.330^2, Chandorkar 2015's 33.0% BSV). A variance of 109 is
+  impossible for a log-normal clearance.
+- **cIAI shifts on the typical values.** The printed coefficients 0.195
+  (ceftolozane CL), 0.464 (ceftolozane Vc) and 0.387 (tazobactam Vc) are the
+  log-scale cIAI effects of Chandorkar 2015 (exp: 1.22, 1.59, 1.47) and are
+  applied to every simulated patient.
+- **Ceftolozane pneumonia weight effect.** Chandorkar 2015 switches the
+  weight effect on ceftolozane Vc off in cIAI patients; Xiao 2016's
+  simulation equation keeps `(WT/74)`. The Xiao form is packaged. With weight
+  sampled tightly around 74 kg it makes no difference to the simulations.
+- **Central-compartment equation.** The printed `dXc/dt` has `Q2/Vc X2` for
+  the return from the peripheral compartment; the peripheral equation has
+  `Q2/V2 X2`. The mass-balance form `Q2/V2` is packaged.
+- **Tazobactam healthy-volunteer weight effect.** Table 1 gives `Vc` "at 70-kg
+  body weight" and lists no weight exponent among the estimates, so the
+  exponent was not estimated; it is packaged as fixed proportional scaling,
+  `(WT/70)^1`.
+- **Residual error.** Table 1 gives one residual model per drug; it is applied
+  to both plasma and ELF (as separate `Cc` and `Celf` parameters with the same
+  values). The simulation models carry no residual error (`fixed(0)`), as none
+  was specified for the PTA simulations.
+- **All simulation-model values are fixed.** They were carried from the two
+  component models rather than estimated, so every `ini()` entry of the two
+  `_pneumonia` models is wrapped in `fixed()`.
+- **Unbound fraction in ELF.** Not stated; total ELF concentration reproduces
+  the paper's ELF PTAs, while applying the plasma unbound fraction does not
+  (see the PTA section).
+- **1.5 g, 1-log-kill PTAs (not reproduced).** The model is linear,
+  so PTA at 1.5 g and MIC 8 mg/L must equal PTA at 3 g and MIC 16 mg/L in the
+  same population. The paper's own figures break that identity: for 1-log kill
+  in ELF, Figure 5B (3 g) at MIC 16 reads about 80% while Figure 6B (1.5 g) at
+  MIC 8 reads about 85%, which is also the value the Results quote
+  ("approximately 85%"; the Discussion says 88%). In plasma, Figure 5A at
+  MIC 32 reads about 63% against the Results' "approximately 74%" at 1.5 g and
+  MIC 16. The packaged model agrees with the 3 g figures (all eleven targets
+  above) and so falls below these two 1.5 g values, by about 7 and 11 points
+  in this cohort. No published detail explains the difference; the two rows
+  are shown and excluded from the gate.
+- **Virtual cohorts.** The healthy-volunteer cohort draws CrCL and weight
+  uniformly over the published ranges (only medians and ranges were
+  reported). The pneumonia cohorts use 200 patients per scenario instead of
+  the paper's 1000.
+- **Errata.** No correction notice for this article was found on EuropePMC
+  (checked 2026-11-24). The article has no supplementary material.

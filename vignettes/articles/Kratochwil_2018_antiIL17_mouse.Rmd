@@ -1,0 +1,330 @@
+---
+title: "Anti-IL17 IgG1 in mice (Kratochwil 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Anti-IL17 IgG1 in mice (Kratochwil 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Kratochwil_2018_antiIL17_mouse"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Kratochwil_2018_antiIL17_mouse"))$description`
+* Article: <https://doi.org/10.1371/journal.pone.0205435> (open access)
+
+Kratochwil et al. labelled a human anti-IL17 IgG1 model antibody (Roche code
+RO5310074, shown on the Figure 4B/C axes) with a 14C-propionate tag and
+measured the plasma profile in mice by cavity ring-down spectroscopy (CRDS) and
+by accelerator mass spectrometry (AMS). The pharmacokinetic data were described
+by a linear two-compartment population model (Methods, "PK modeling",
+Equations 5-9; Table 1). The tissue bio-distribution coefficients the paper
+also reports are observed tissue-to-plasma ratios, not a model, and are not
+part of this extraction.
+
+# Population
+
+Healthy male adult C57BL/6J mice (Charles River, France) received a single
+intravenous bolus via the tail vein of 75 nmol/kg anti-IL17 containing 2.1 nCi
+of 14C-labelled anti-IL17 (specific activity of the blended dose
+1.24 nCi/nmol). Plasma was sampled sparsely (one sample per mouse per time;
+composite profiles) at 1, 3, 7, 24, 48, 72 and 96 h, and at the terminal
+necropsies at 7, 24, 168 and 336 h. The paper does not print the number of
+mice. Estimation used Phoenix NLME 6.4 with FOCE-ELS.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Kratochwil_2018_antiIL17_mouse")()$population`).
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL) | log(6.69 mL/day/kg) | Table 1 |
+| `lvc` (Vc) | log(49.5 mL/kg) | Table 1 |
+| `lq` (Q) | log(84.3 mL/day/kg) | Table 1 |
+| `lvp` (Vp) | log(44.7 mL/kg) | Table 1 |
+| `etalvp` | omega^2 = 0.0871 | Table 1; exponential IIV on Vp, Equation 8 |
+| `propSd` | 0.153 | Table 1 'sigma proportional'; Equation 9 |
+| `d/dt(central)`, `d/dt(peripheral1)` | n/a | Equations 5-7 |
+| `Cc <- 1000 * central / vc` (nM) | n/a | Methods: molar units via MW 150000 g/mol; Figure 4B/C axis in nM |
+| Dose 75 nmol/kg IV bolus | n/a | Methods, "Pharmacokinetic study" |
+| t1/2 alpha 0.190 d, t1/2 beta 9.90 d, effective t1/2 9.76 d | derived | Table 1, derived parameters (used as gates below) |
+| NCA t1/2 10.4 (AMS), 10.0 (CRDS), 11.1 (gamma counting) d | n/a | Results, "Pharmacokinetics" |
+
+# Typical-value checks against Table 1
+
+Table 1 lists three derived half-lives. They follow from the four structural
+parameters in closed form, so they test the transcription directly: the two
+exponents of the biexponential, and the "effective" half-life
+`ln(2) * (Vc + Vp) / CL`.
+
+```{r closed-form}
+mod <- readModelDb("Kratochwil_2018_antiIL17_mouse")
+p <- c(cl = 6.69, vc = 49.5, q = 84.3, vp = 44.7)
+kel <- p[["cl"]] / p[["vc"]]
+k12 <- p[["q"]] / p[["vc"]]
+k21 <- p[["q"]] / p[["vp"]]
+s <- kel + k12 + k21
+disc <- sqrt(s^2 - 4 * kel * k21)
+alpha <- (s + disc) / 2
+beta <- (s - disc) / 2
+derived <- tibble::tibble(
+  Quantity = c("t1/2 alpha (day)", "t1/2 beta (day)", "effective t1/2 (day)"),
+  Model = c(log(2) / alpha, log(2) / beta,
+            log(2) * (p[["vc"]] + p[["vp"]]) / p[["cl"]]),
+  `Table 1` = c(0.190, 9.90, 9.76)
+) |>
+  mutate(`Difference (%)` = 100 * (Model / `Table 1` - 1))
+knitr::kable(derived, digits = c(0, 3, 3, 2))
+# Table 1 prints three significant figures, so each derived value can move by
+# up to about 1% from rounding of the inputs; a mis-transcribed parameter
+# moves these by far more.
+stopifnot(all(abs(derived$`Difference (%)`) < 1))
+```
+
+The typical-value solve of the packaged model must reproduce the same
+biexponential, and its AUC must equal Dose / CL.
+
+```{r typical}
+dose <- 75 # nmol/kg
+obs_days <- sort(unique(c(seq(0, 1, by = 0.01), seq(1, 30, by = 0.1),
+                          seq(30, 200, by = 1))))
+ev_typ <- rxode2::et(amt = dose, cmt = "central") |>
+  rxode2::et(obs_days)
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_typ,
+                           rtol = 1e-10, atol = 1e-12) |>
+  as.data.frame()
+
+c0 <- 1000 * dose / p[["vc"]]
+A <- c0 * (alpha - k21) / (alpha - beta)
+B <- c0 * (k21 - beta) / (alpha - beta)
+closed <- A * exp(-alpha * sim_typ$time) + B * exp(-beta * sim_typ$time)
+max_rel <- max(abs(sim_typ$Cc / closed - 1))
+max_rel
+stopifnot(max_rel < 1e-6)
+```
+
+# Virtual cohort and simulation
+
+200 virtual mice, each observed at every sampling time of the study (the real
+study used one sample per mouse; the population quantiles are the same). The
+only random effect in the model is on Vp, plus the 15.3% proportional residual
+error.
+
+```{r cohort}
+rxode2::rxSetSeed(20181017)
+n_mice <- 200
+samp_h <- c(1, 3, 7, 24, 48, 72, 96, 168, 336)
+samp_d <- samp_h / 24
+events <- dplyr::bind_rows(
+  tibble(id = seq_len(n_mice), time = 0, amt = dose, evid = 1,
+         cmt = "central"),
+  tidyr::expand_grid(id = seq_len(n_mice), time = c(0, samp_d)) |>
+    mutate(amt = 0, evid = 0, cmt = "central")
+) |>
+  mutate(treatment = "75 nmol/kg IV") |>
+  arrange(id, time, desc(evid))
+
+sim <- rxode2::rxSolve(mod, events = events, keep = "treatment") |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+## Figure 4B/C: prediction-corrected VPC
+
+Figure 4B shows the median prediction-corrected concentration and Figure 4C
+the 2.5th and 97.5th percentiles. With a single dose level and no covariates
+the prediction correction is the identity, so the simulated quantiles are
+directly comparable. The black points are the observed medians digitised by
+the maintainers from Figure 4B (approximate, read off a log axis).
+
+```{r figure-4bc}
+fig4b <- tibble::tribble(
+  ~time, ~Cc,
+  1,     700,
+  2,     700,
+  3,     600,
+  4,     560,
+  7,     520,
+  14,    280
+)
+vpc <- sim |>
+  group_by(time) |>
+  summarise(
+    q025 = quantile(sim, 0.025),
+    q50 = quantile(sim, 0.5),
+    q975 = quantile(sim, 0.975),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(time)) +
+  geom_ribbon(aes(ymin = q025, ymax = q975), alpha = 0.25) +
+  geom_line(aes(y = q50)) +
+  geom_line(data = filter(sim_typ, time <= 15), aes(time, Cc),
+            linetype = "dashed", colour = "blue") +
+  geom_point(data = fig4b, aes(time, Cc)) +
+  scale_y_log10(limits = c(100, 4000)) +
+  labs(x = "Time (days)", y = "Anti-IL17 concentration (nM)",
+       title = "Simulated median and 95% interval, 75 nmol/kg IV",
+       caption = paste("Replicates Figure 4B/C of Kratochwil 2018.",
+                       "Dashed: typical-value solve; points: digitised",
+                       "observed medians."))
+```
+
+```{r figure-4b-check}
+chk <- vpc |>
+  mutate(time = round(time, 4)) |>
+  inner_join(fig4b, by = "time") |>
+  mutate(pct_diff = 100 * (q50 / Cc - 1))
+knitr::kable(chk |> select(time, q50, Cc, pct_diff) |>
+               rename(`Time (day)` = time, `Simulated median (nM)` = q50,
+                      `Figure 4B (nM)` = Cc, `Difference (%)` = pct_diff),
+             digits = 1)
+# The observed medians are noisy composite-sampling points (Figure 4B wobbles
+# between days 3 and 7); assert on the centre and a loose envelope.
+stopifnot(
+  abs(median(chk$pct_diff)) < 15,
+  max(abs(chk$pct_diff)) < 30
+)
+```
+
+## Figure 4A: radioactivity in plasma
+
+Figure 4A plots the CRDS and AMS radioactivity in dpm/mL. With the blended
+specific activity of 1.24 nCi/nmol and 2220 dpm per nCi, the molar prediction
+converts to `Cc / 1000 * 1.24 * 2220` dpm/mL. Read off Figure 4A, the 14C
+profiles fall from roughly 5000 dpm/mL in the first hours to roughly
+800 dpm/mL at day 14.
+
+```{r figure-4a}
+dpm <- sim_typ |>
+  filter(time <= 15) |>
+  mutate(dpm_ml = Cc / 1000 * 1.24 * 2220)
+ggplot(dpm, aes(time, dpm_ml)) +
+  geom_line() +
+  scale_y_log10(limits = c(100, 1e4)) +
+  labs(x = "Time (days)", y = "Radioactivity (dpm/mL)",
+       caption = "Typical-value prediction; compare Figure 4A of Kratochwil 2018 (14C, CRDS and AMS).")
+dpm_14 <- dpm$dpm_ml[which.min(abs(dpm$time - 14))]
+dpm_14
+# Figure 4A day-14 points lie between about 600 and 1000 dpm/mL.
+stopifnot(dpm_14 > 600, dpm_14 < 1000)
+```
+
+# PKNCA validation
+
+The paper reports non-compartmental half-lives of 10.4 (AMS), 10.0 (CRDS) and
+11.1 days (125I gamma counting). The simulated cohort is analysed per mouse
+over the study's own sampling grid (to 14 days).
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+# The observation grid includes time 0; after an IV bolus rxSolve returns the
+# post-dose concentration there, which anchors AUC0-inf.
+stopifnot(all(tapply(sim_nca$time, sim_nca$id, min) == 0))
+
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             route = "intravascular")
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+summary(nca_res)
+```
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~treatment,      ~half.life,
+  "75 nmol/kg IV", 10.0
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(half.life = "day"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = paste(
+  "Simulated vs. published NCA half-life (CRDS data).",
+  "* differs from reference by >20%."
+))
+
+hl <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "half.life") |>
+  pull(PPORRES)
+median(hl)
+# The study NCA was on composite mean profiles; the three methods gave
+# 10.0-11.1 days. The simulated median must sit near that range.
+stopifnot(abs(median(hl) / 10.0 - 1) < 0.2)
+```
+
+The typical-value AUC from 0 to infinity must equal Dose / CL
+(75 / 6.69 nmol day/mL = `r format(round(1000 * 75 / 6.69), big.mark = ",")` nM day).
+
+```{r auc-identity}
+typ_nca <- sim_typ |>
+  select(time, Cc) |>
+  mutate(id = 1, treatment = "typical")
+auc_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(typ_nca, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(data.frame(id = 1, treatment = "typical", time = 0,
+                              amt = dose),
+                   amt ~ time | treatment + id, route = "intravascular"),
+  intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE)
+)) |>
+  as.data.frame() |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  pull(PPORRES)
+c(pknca = auc_typ, dose_over_cl = 1000 * dose / p[["cl"]])
+# Linear-up/log-down trapezoids on a 0.01-day early grid agree with Dose / CL
+# to about 1e-5; a 0.1% bound keeps headroom and still fails on any CL, dose
+# or unit error.
+stopifnot(abs(auc_typ / (1000 * dose / p[["cl"]]) - 1) < 1e-3)
+```
+
+# Assumptions and deviations
+
+- **Units.** Table 1 reports body-weight-normalised parameters (mL/kg,
+  mL/day/kg); the model keeps them, so doses are given in nmol/kg and the
+  concentration `Cc` is in nM (nmol/mL x 1000), the unit of Figure 4B/C. To
+  simulate a mouse of a given weight in absolute amounts, multiply the dose
+  and the volumes by its weight; concentrations are unchanged.
+- **Residual error scale.** Table 1 labels the residual parameter
+  "sigma proportional" with value 0.153, and Equation 9 is
+  `Cobs = Cpred * (1 + eps)`. Phoenix NLME estimates the residual standard
+  deviation, so 0.153 is encoded as the proportional standard deviation
+  (15.3%).
+- **Equation 8 wording.** The text calls `Vp_i` "the individual central
+  volume"; the symbol, the sentence before it and Table 1 all place the
+  inter-subject variability on the peripheral volume, which is what the model
+  uses.
+- **Pooled data.** The prediction-corrected VPC is drawn for "all data" and
+  the paper compares the 14C profiles with the 125I-labelled anti-IL17
+  profiles of Eigenmann et al. (66 nmol/kg). The paper does not say whether
+  the gamma-counting data entered the fit, but the Figure 4B/C medians have a
+  vertex at day 5, a time sampled only in the 125I study (Figure 4A), which
+  suggests they did. The model has no method or study covariate either way.
+- **Number of mice.** Not printed in the paper; `population$n_subjects` is
+  `NA`.
+- **Figure values.** The Figure 4B medians and the Figure 4A radioactivity
+  levels used as checks above were read by the maintainers from the published
+  figure and are approximate.
+- **Errata.** No correction notice was found for this article on EuropePMC as
+  of 2026-11-25.

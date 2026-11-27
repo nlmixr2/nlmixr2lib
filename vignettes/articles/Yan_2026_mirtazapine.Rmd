@@ -1,0 +1,500 @@
+---
+title: "Mirtazapine (Yan 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mirtazapine (Yan 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Yan_2026_mirtazapine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Yan_2026_mirtazapine"))$description`
+* Article: <https://doi.org/10.2147/DDDT.S601238>
+
+Yan and colleagues fitted a one-compartment model with first-order absorption
+to 210 routine therapeutic-drug-monitoring (TDM) serum concentrations of
+mirtazapine from 105 Chinese inpatients with depression. Almost every sample
+was drawn about 12 h after the nightly dose, so the absorption rate constant
+was not identifiable and was fixed at 1.2 1/h from a published analysis
+(Grasmader 2004). Three binary covariates were retained on apparent oral
+clearance, combined multiplicatively:
+
+$$CL/F = 28.9 \times (1 - 0.294\,BMI) \times (1 - 0.269\,PRX) \times (1 - 0.511\,FLV)$$
+
+where BMI is 1 for BMI >= 28 kg/m^2, PRX is concomitant paroxetine and FLV is
+concomitant fluvoxamine; V/F is 310 L. In the packaged model these are the
+canonical columns `DIS_OBESE`, `CONMED_PAROXETINE` and `CONMED_FLUVOXAMINE`.
+
+```{r load-model}
+mod <- rxode2::rxode(readModelDb("Yan_2026_mirtazapine"))
+mod_typical <- rxode2::zeroRe(mod)
+
+# Typical-value and fixed-eta solves have no omega to sample from; rxode2
+# says so with a warning that carries no information here, so only that
+# message is muffled.
+solve_fixed <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(...),
+    warning = function(w) {
+      if (grepl("multi-subject simulation without", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+```
+
+# Population
+
+105 inpatients (43 men, 62 women; age 13-79 years, mean 48.5) of Chinese
+ethnicity with depressive disorders were treated with 7.5-45 mg mirtazapine
+tablets once nightly at The Affiliated Brain Hospital of Guangzhou Medical
+University between May 2024 and September 2025 (Methods; Table 1). Mean body
+weight was 62.2 kg (25.4-104.0) and 20 patients (19%) had BMI >= 28 kg/m^2.
+Concomitant antidepressants and antipsychotics were common: venlafaxine 26,
+paroxetine 13, duloxetine 12, risperidone 10, fluvoxamine 6 and fluoxetine 5
+patients. Patients with severe hepatic disease or eGFR below
+30 mL/min/1.73 m^2 were excluded, and no smokers were included.
+
+```{r population}
+str(rxode2::rxode(readModelDb("Yan_2026_mirtazapine"))$population)
+```
+
+# Source trace
+
+| Element | Value in model | Source location |
+|---|---|---|
+| Structure: one compartment, first-order absorption | `d/dt(depot)`, `d/dt(central)` | Methods, Data Analysis (NONMEM ADVAN2) |
+| `lka` | `fixed(log(1.2))` 1/h | Methods, Base Model; Table 2 'Ka 1.2 FIX' |
+| `lcl` | `log(28.9)` L/h | Table 2; Results CL/F equation |
+| `lvc` | `log(310)` L | Table 2; Results V/F equation |
+| `e_obese_cl` | -0.294 | Table 2 'Theta CL-BMI'; Results CL/F equation |
+| `e_par_cl` | -0.269 | Table 2 'Theta CL-Paroxetine'; Results CL/F equation |
+| `e_fluvox_cl` | -0.511 | Table 2 'Theta CL-Fluvoxamine'; Results CL/F equation |
+| Covariate form `(1 + theta * COV)` | multiplicative product on CL/F | Methods, Covariate Model; Results CL/F equation |
+| `etalcl` | variance 0.0613 | Table 2, IIV column for CL/F |
+| `etalvc` | variance 0.131 | Table 2, IIV column for V/F |
+| `propSd` | `sqrt(0.0747)` | Table 2 'PRO'; Methods, proportional error model |
+| BMI coding (1 = BMI >= 28 kg/m^2) | `DIS_OBESE` | Methods, Covariate Model |
+| Concentration units ng/mL | `Cc <- 1000 * central / vc` | Table 1; Methods (therapeutic range 30-80 ng/mL) |
+
+# Structural check against the closed form
+
+A one-compartment model with first-order absorption has a closed-form
+steady-state concentration. Solving the packaged model for the typical
+patient of each subgroup and comparing against that closed form, built from
+the printed parameters only, confirms the covariate products, the unit
+conversion and the absorption rate.
+
+```{r closed-form}
+subgroups <- tibble::tribble(
+  ~group,                       ~DIS_OBESE, ~CONMED_PAROXETINE, ~CONMED_FLUVOXAMINE,
+  "None",                       0,          0,                  0,
+  "BMI >= 28",                  1,          0,                  0,
+  "Paroxetine",                 0,          1,                  0,
+  "Fluvoxamine",                0,          0,                  1,
+  "BMI >= 28 + paroxetine",     1,          1,                  0,
+  "BMI >= 28 + fluvoxamine",    1,          0,                  1
+) |>
+  mutate(
+    group = factor(group, levels = group),
+    # Results CL/F equation, written out from the printed numbers
+    cl_paper = 28.9 * (1 - 0.294 * DIS_OBESE) * (1 - 0.269 * CONMED_PAROXETINE) *
+      (1 - 0.511 * CONMED_FLUVOXAMINE)
+  )
+
+# Steady-state concentration t hours after a once-daily dose, ng/mL per mg
+css_closed <- function(t, cl, v = 310, ka = 1.2, tau = 24) {
+  k <- cl / v
+  1000 * ka / (v * (ka - k)) *
+    (exp(-k * t) / (1 - exp(-k * tau)) - exp(-ka * t) / (1 - exp(-ka * tau)))
+}
+
+ss_events <- function(covs, obs_times) {
+  covs <- mutate(covs, id = seq_len(n()))
+  dose <- mutate(covs, time = 0, amt = 1, evid = 1L, ss = 1L, ii = 24, cmt = "depot")
+  obs <- tidyr::crossing(covs, time = obs_times) |>
+    mutate(amt = 0, evid = 0L, ss = 0L, ii = 0, cmt = "central")
+  bind_rows(dose, obs) |> arrange(id, time, desc(evid))
+}
+
+ev_typ <- ss_events(select(subgroups, -cl_paper), obs_times = c(11, 12))
+sim_typ <- solve_fixed(
+  mod_typical,
+  events = ev_typ, returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12, maxsteps = 1e6
+) |>
+  left_join(mutate(subgroups, id = seq_len(n())) |> select(id, group, cl_paper), by = "id") |>
+  mutate(closed = css_closed(time, cl_paper), rel_err = Cc / closed - 1)
+
+# Same parameters on both sides, so the difference is pure integrator error.
+stopifnot(max(abs(sim_typ$rel_err)) < 1e-6)
+
+sim_typ |>
+  select(group, time, Cc, closed) |>
+  dplyr::rename(
+    "Subgroup" = group, "Hours post-dose" = time,
+    "Model (ng/mL per mg)" = Cc, "Closed form (ng/mL per mg)" = closed
+  ) |>
+  knitr::kable(digits = 4, caption = "Typical steady-state concentration per mg of daily dose.")
+```
+
+# Replicate Figure 6: dose versus typical steady-state concentration
+
+Figure 6 of Yan 2026 plots the steady-state concentration of each subgroup
+against the daily dose. The plotted points coincide with the model's typical
+value **11 h** after the dose, not 12 h (the paper describes a 20:00 dose and
+an 08:00 sample); see Assumptions and deviations. The comparison below uses the
+45 mg end points, digitised by the maintainers from Figure 6.
+
+```{r figure-6}
+doses <- c(7.5, 15, 22.5, 30, 37.5, 45)
+fig6 <- sim_typ |>
+  filter(time == 11) |>
+  select(group, Cc) |>
+  tidyr::crossing(dose = doses) |>
+  mutate(conc = Cc * dose)
+
+ggplot(fig6, aes(dose, conc, colour = group)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = c(30, 80), linetype = "dashed") +
+  geom_hline(yintercept = 160, colour = "red") +
+  labs(
+    x = "Daily dose (mg/d)", y = "Typical steady-state concentration (ng/mL)",
+    colour = NULL,
+    caption = "Replicates Figure 6 of Yan 2026 (typical value 11 h post-dose)."
+  ) +
+  theme_bw()
+
+# Figure 6, 45 mg points, digitised by the maintainers (+/- about 3 ng/mL).
+fig6_digitised <- tibble::tribble(
+  ~group,                    ~published,
+  "None",                    63,
+  "BMI >= 28",               97,
+  "Paroxetine",              92,
+  "Fluvoxamine",             137,
+  "BMI >= 28 + paroxetine",  130,
+  "BMI >= 28 + fluvoxamine", 197
+)
+fig6_cmp <- fig6 |>
+  filter(dose == 45) |>
+  mutate(group = as.character(group)) |>
+  inner_join(fig6_digitised, by = "group") |>
+  mutate(pct_diff = 100 * (conc / published - 1))
+
+# Typical values against digitised points: limited by the digitisation, not
+# by the model; a wrong covariate effect or unit moves a row by >= 25%.
+stopifnot(nrow(fig6_cmp) == 6, max(abs(fig6_cmp$pct_diff)) < 6)
+
+fig6_cmp |>
+  select(group, conc, published, pct_diff) |>
+  dplyr::rename(
+    "Subgroup" = group, "Model, 45 mg (ng/mL)" = conc,
+    "Figure 6, digitised (ng/mL)" = published, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+# Replicate Figure 5: probability of target attainment
+
+The paper's Monte Carlo simulation (1000 virtual patients per subgroup and
+dose) reports the percentage of steady-state concentrations inside the
+30-80 ng/mL therapeutic window. Because the model is linear in dose, the
+attainment can be computed without Monte Carlo noise: the packaged model is
+solved on a 12 x 12 Gauss-Hermite grid over the two random effects at 1 mg,
+scaled to each dose, and the proportional residual error is integrated
+analytically. This gives the model's exact attainment, so it can be compared
+tightly against the paper's numbers.
+
+The same calculation is repeated with the alternative reading of Table 2, in
+which the IIV and PRO entries are standard deviations rather than variances.
+
+```{r pta-grid}
+gauss_hermite <- function(n) {
+  # Golub-Welsch nodes and weights for the physicists' weight exp(-x^2)
+  j <- matrix(0, n, n)
+  off <- sqrt(seq_len(n - 1) / 2)
+  j[cbind(1:(n - 1), 2:n)] <- off
+  j[cbind(2:n, 1:(n - 1))] <- off
+  e <- eigen(j, symmetric = TRUE)
+  list(x = e$values, w = sqrt(pi) * e$vectors[1, ]^2)
+}
+
+pta_exact <- function(omega2_cl, omega2_v, sigma2, obs_time) {
+  gh <- gauss_hermite(12)
+  # Standard-normal nodes z = sqrt(2) * x with weights w / sqrt(pi)
+  grid <- tidyr::expand_grid(
+    i = seq_along(gh$x), j = seq_along(gh$x)
+  ) |>
+    mutate(
+      etalcl = sqrt(2 * omega2_cl) * gh$x[i],
+      etalvc = sqrt(2 * omega2_v) * gh$x[j],
+      w = gh$w[i] * gh$w[j] / pi
+    )
+  covs <- tidyr::crossing(select(subgroups, -cl_paper), node = seq_len(nrow(grid)))
+  ev <- ss_events(select(covs, -node), obs_times = obs_time)
+  params <- covs |>
+    mutate(id = seq_len(n())) |>
+    left_join(mutate(grid, node = seq_len(n())), by = "node") |>
+    select(id, etalcl, etalvc)
+  sim <- solve_fixed(
+    rxode2::zeroRe(mod, which = "sigma"),
+    events = ev, params = params, returnType = "data.frame",
+    rtol = 1e-8, atol = 1e-10, ssRtol = 1e-8, ssAtol = 1e-10, maxsteps = 1e6
+  )
+  sim |>
+    left_join(mutate(covs, id = seq_len(n())) |> select(id, group, node), by = "id") |>
+    left_join(mutate(grid, node = seq_len(n())) |> select(node, w), by = "node") |>
+    tidyr::crossing(dose = doses) |>
+    mutate(
+      conc = Cc * dose,
+      p_in = pnorm((80 / conc - 1) / sqrt(sigma2)) - pnorm((30 / conc - 1) / sqrt(sigma2))
+    ) |>
+    group_by(group, dose) |>
+    summarise(pta = 100 * sum(w * p_in), wsum = sum(w), .groups = "drop")
+}
+
+pta_var_11 <- pta_exact(0.0613, 0.131, 0.0747, obs_time = 11)
+pta_var_12 <- pta_exact(0.0613, 0.131, 0.0747, obs_time = 12)
+pta_sd_11 <- pta_exact(0.0613^2, 0.131^2, 0.0747^2, obs_time = 11)
+stopifnot(all(abs(pta_var_11$wsum - 1) < 1e-10))
+```
+
+```{r pta-compare}
+# Attainment percentages quoted in the Results text for Figure 5.
+pta_published <- tibble::tribble(
+  ~group,                    ~dose, ~published,
+  "None",                    15,    16.0,
+  "None",                    30,    70.0,
+  "None",                    37.5,  74.6,
+  "None",                    45,    66.5,
+  "BMI >= 28",               15,    48.8,
+  "Paroxetine",              15,    45.9,
+  "Fluvoxamine",             15,    78.4,
+  "BMI >= 28 + paroxetine",  15,    76.5,
+  "BMI >= 28 + fluvoxamine", 15,    69.8,
+  "BMI >= 28 + fluvoxamine", 37.5,  4.7,
+  "BMI >= 28 + fluvoxamine", 45,    2.0
+)
+
+pta_cmp <- pta_published |>
+  left_join(
+    mutate(pta_var_11, group = as.character(group)) |> select(group, dose, var_11 = pta),
+    by = c("group", "dose")
+  ) |>
+  left_join(
+    mutate(pta_var_12, group = as.character(group)) |> select(group, dose, var_12 = pta),
+    by = c("group", "dose")
+  ) |>
+  left_join(
+    mutate(pta_sd_11, group = as.character(group)) |> select(group, dose, sd_11 = pta),
+    by = c("group", "dose")
+  )
+
+# The model values are exact (no Monte Carlo); the paper's are from 1000
+# simulated patients, a binomial SE of at most 1.6 points. A 4-point bound is
+# 2.5 SE; the SD reading misses the first row alone by about 10 points.
+stopifnot(
+  !anyNA(pta_cmp$var_11),
+  max(abs(pta_cmp$var_11 - pta_cmp$published)) < 4,
+  median(abs(pta_cmp$sd_11 - pta_cmp$published)) > 5
+)
+
+pta_cmp |>
+  dplyr::rename(
+    "Subgroup" = group, "Dose (mg/d)" = dose, "Published PTA (%)" = published,
+    "Model, 11 h (%)" = var_11, "Model, 12 h (%)" = var_12,
+    "SD reading, 11 h (%)" = sd_11
+  ) |>
+  knitr::kable(digits = 1, caption = "Probability of 30-80 ng/mL attainment: Yan 2026 Results (Figure 5) against the packaged model.")
+```
+
+```{r pta-plot}
+ggplot(pta_var_11, aes(dose, pta, colour = group)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    x = "Daily dose (mg/d)", y = "Concentrations within 30-80 ng/mL (%)", colour = NULL,
+    caption = "Replicates the Figure 5 inset panels of Yan 2026 (exact, 11 h post-dose)."
+  ) +
+  theme_bw()
+```
+
+# Replicate Figure 4: stochastic prediction interval by dose
+
+Figure 4 compares external observations with the 95% prediction interval of
+simulated steady-state concentrations for patients without covariates. The
+simulation below draws 200 virtual patients per dose with between-subject
+and residual variability, sampled 11 h after the nightly dose (the sampling
+time that reproduces Figures 5 and 6; see Assumptions and deviations).
+
+```{r figure-4}
+rxode2::rxSetSeed(20260603)
+n_per_dose <- 200
+covs4 <- tibble::tibble(
+  dose_mg = rep(doses, each = n_per_dose),
+  DIS_OBESE = 0, CONMED_PAROXETINE = 0, CONMED_FLUVOXAMINE = 0
+) |>
+  mutate(id = seq_len(n()))
+ev4 <- bind_rows(
+  mutate(covs4, time = 0, amt = dose_mg, evid = 1L, ss = 1L, ii = 24, cmt = "depot"),
+  mutate(covs4, time = 11, amt = 0, evid = 0L, ss = 0L, ii = 0, cmt = "central")
+) |>
+  arrange(id, time, desc(evid))
+sim4 <- rxode2::rxSolve(mod, events = ev4, returnType = "data.frame", maxsteps = 1e6) |>
+  left_join(select(covs4, id, dose_mg), by = "id")
+stopifnot(!anyNA(sim4$sim))
+
+fig4 <- sim4 |>
+  group_by(dose_mg) |>
+  summarise(
+    lo = quantile(sim, 0.025), med = median(sim), hi = quantile(sim, 0.975),
+    .groups = "drop"
+  )
+
+ggplot(fig4, aes(dose_mg)) +
+  geom_errorbar(aes(ymin = lo, ymax = hi), width = 3, colour = "red") +
+  geom_point(aes(y = med), colour = "red") +
+  labs(
+    x = "Daily dose (mg/d)", y = "Steady-state concentration (ng/mL)",
+    caption = "Replicates the prediction intervals of Figure 4 of Yan 2026 (median and 95% PI)."
+  ) +
+  theme_bw()
+
+# Figure 4 medians digitised by the maintainers (+/- about 2 ng/mL).
+fig4_digitised <- tibble::tibble(dose_mg = doses, published = c(9, 19, 30, 40, 49, 57))
+fig4_cmp <- inner_join(fig4, fig4_digitised, by = "dose_mg") |>
+  mutate(pct_diff = 100 * (med / published - 1))
+
+# Cohort medians (200 patients, SE about 3%): assert on the centre only.
+stopifnot(abs(median(fig4_cmp$pct_diff)) < 10)
+
+fig4_cmp |>
+  dplyr::rename(
+    "Dose (mg/d)" = dose_mg, "2.5th pct" = lo, "Median" = med, "97.5th pct" = hi,
+    "Figure 4 median, digitised" = published, "Median difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+# PKNCA validation
+
+The paper reports no NCA values. Steady-state NCA on the typical patient of
+each subgroup (30 mg once daily for 15 days, rich sampling over the last
+dosing interval) is compared against the closed-form values implied by the
+printed parameters: AUC over the interval equals dose / (CL/F), and the trough
+follows from the closed-form steady-state profile.
+
+```{r pknca}
+nca_covs <- select(subgroups, -cl_paper) |> mutate(id = seq_len(n()))
+nca_dose <- tidyr::crossing(nca_covs, time = seq(0, 14 * 24, by = 24)) |>
+  mutate(amt = 30, evid = 1L, cmt = "depot")
+nca_obs <- tidyr::crossing(nca_covs, time = c(0, seq(14 * 24, 15 * 24, by = 0.25))) |>
+  mutate(amt = 0, evid = 0L, cmt = "central")
+nca_ev <- bind_rows(nca_dose, nca_obs) |> arrange(id, time, desc(evid))
+
+nca_sim <- solve_fixed(
+  mod_typical,
+  events = nca_ev, returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12, maxsteps = 1e6
+) |>
+  left_join(select(nca_covs, id, group), by = "id") |>
+  mutate(group = as.character(group))
+
+conc_df <- nca_sim |>
+  filter(!is.na(Cc)) |>
+  mutate(Cc = pmax(Cc, 0)) |>
+  select(id, group, time, Cc)
+dose_df <- nca_dose |>
+  mutate(group = as.character(group)) |>
+  select(id, group, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | group + id,
+  concu = "ng/mL", timeu = "h"
+)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | group + id, doseu = "mg")
+intervals <- data.frame(
+  start = 14 * 24, end = 15 * 24,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_reference <- subgroups |>
+  mutate(
+    group = as.character(group),
+    auclast = 1000 * 30 / cl_paper,
+    cav = auclast / 24,
+    cmin = 30 * css_closed(24, cl_paper)
+  ) |>
+  select(group, auclast, cav, cmin)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = nca_reference,
+  by = "group",
+  units = c(auclast = "ng*h/mL", cav = "ng/mL", cmin = "ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Typical-patient steady-state NCA (30 mg once daily) against the closed form. * differs by >20%.")
+
+nca_long <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("auclast", "cav", "cmin")) |>
+  select(group, PPTESTCD, PPORRES) |>
+  inner_join(
+    tidyr::pivot_longer(nca_reference, -group, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("group", "PPTESTCD")
+  )
+# Deterministic: the residual is the trapezoid error on a 15-min grid and the
+# 15-day approach to steady state (>99.99% for the slowest subgroup).
+stopifnot(nrow(nca_long) == 18, max(abs(nca_long$PPORRES / nca_long$ref - 1)) < 0.01)
+```
+
+# Assumptions and deviations
+
+* **IIV and residual-error magnitudes are read as variances.** Table 2 prints
+  an "IIV" column (0.0613 for CL/F, 0.131 for V/F) and a "PRO" row (0.0747)
+  without saying whether these are variances or standard deviations. The
+  Methods define both random effects through their variances (omega^2,
+  sigma^2), and with all three read as variances the packaged model reproduces
+  every attainment percentage the Results quote for Figure 5 to within about
+  1 percentage point; the standard-deviation reading misses most of
+  them by tens of points (table above). The model therefore uses `etalcl ~ 0.0613`,
+  `etalvc ~ 0.131` and `propSd = sqrt(0.0747) = 0.273`.
+* **Abstract versus Results values.** The abstract gives CL/F 29.3 L/h and V/F
+  348 L; Table 2 and the printed final-model equations give 28.9 L/h and
+  310 L. The model uses Table 2, which is also what reproduces Figures 5 and 6.
+* **Simulation sampling time.** The paper simulates a 20:00 dose with an 08:00
+  sample (12 h). The plotted Figure 6 values, the Figure 5 attainment
+  percentages and the Figure 4 medians all match the model's steady-state
+  concentration 11 h after the dose, not 12 h (the 12 h attainment column
+  above misses by up to 7 points). The figure replications therefore sample
+  at 11 h; the model itself is unaffected.
+* **Ka unit.** Table 2 labels Ka as 'L/h'; it is a rate constant in 1/h, as the
+  Methods state.
+* **BMI covariate.** The paper's BMI covariate is a dichotomy at 28 kg/m^2 (the
+  Chinese adult obesity cut-off), encoded here as the canonical obesity
+  indicator `DIS_OBESE`; the continuous BMI is not used. Users applying the
+  model elsewhere should derive `DIS_OBESE` with the same 28 kg/m^2 threshold.
+* **Covariate scope.** Fluvoxamine was taken by only 6 patients, so its 51.1%
+  effect is imprecise (the paper notes this). Smokers were not studied, so the
+  model carries no CYP1A2-induction effect.
+* **Supplement.** The supplementary document holds the covariate-screening
+  steps (Supplementary Tables 1-3) and the literature data used for external
+  evaluation (Supplementary Table 4); it carries no model parameters. The
+  screened-but-dropped covariates are listed in the model's
+  `covariatesDataExcluded`.
+* No erratum or correction was found for this article (Europe PMC search,
+  2026-11-13).

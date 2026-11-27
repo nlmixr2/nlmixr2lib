@@ -1,0 +1,480 @@
+---
+title: "Bortezomib signaling in four multiple myeloma cell lines (Ramakrishnan 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bortezomib signaling in four multiple myeloma cell lines (Ramakrishnan 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Ramakrishnan and Mager (2019) built pharmacodynamic systems models that link
+bortezomib exposure in cell culture to myeloma cell death through the dynamics
+of ten intracellular signaling proteins. One model was built per cell line, on
+data from a single 20 nM bortezomib exposure: the "less sensitive" U266 and
+RPMI8226 cells and the "more sensitive" MM.1S and NCI-H929 cells. The four
+models share a backbone (bortezomib stimulates pJNK, pNFkB and pAKT; the
+downstream proteins follow indirect-response turnover equations; growth and
+death of the cells are driven multiplicatively by the proteins) and differ in
+transit compartments, power coefficients and a few protein-protein links. The
+paper contributes four model files:
+
+```{r models}
+cell_lines <- c("U266", "RPMI8226", "MM.1S", "NCI-H929")
+model_names <- c(
+  "U266" = "Ramakrishnan_2019_bortezomib_u266",
+  "RPMI8226" = "Ramakrishnan_2019_bortezomib_rpmi8226",
+  "MM.1S" = "Ramakrishnan_2019_bortezomib_mm1s",
+  "NCI-H929" = "Ramakrishnan_2019_bortezomib_ncih929"
+)
+mods <- lapply(model_names, function(nm) rxode2::rxode(readModelDb(nm)))
+```
+
+```{r model-table, echo = FALSE}
+tibble::tibble(
+  file = unname(model_names),
+  line = cell_lines,
+  structure = c(
+    "Transit compartments: pJNK 1, pNFkB 2, pAKT 1, pBAD 2. pp53 present. Powers on pp53 -> p21, pBAD -> Bcl-2, caspase 8 -> caspase 9. Cell-equation proteins held at their 24 h values.",
+    "Transit compartments: pJNK 0, pNFkB 1, pAKT 1, pBAD 3. pp53 present. Powers on pNFkB -| caspase 8, pJNK -> pp53, pJNK -| pBAD, caspase 8 -> caspase 9 and pp53 -> p21.",
+    "Transit compartments: pJNK 2, pNFkB 2, pAKT 1, pBAD 0. No pp53; bortezomib stimulates p21 directly (power on concentration). No pAKT -| p21, no pNFkB -> Bcl-2. Cell-equation proteins held at their 24 h values.",
+    "Transit compartments: pJNK 0, pNFkB 2, pAKT 1, pBAD 1. No pp53; bortezomib stimulates p21 directly. pAKT -| p21 and pNFkB -> Bcl-2 retained. Powers on pJNK -> caspase 8, pJNK -| pBAD, pBAD -> Bcl-2."
+  )
+) |>
+  dplyr::rename("nlmixr2lib model" = file, "Cell line" = line, "Network (Figure 1)" = structure) |>
+  knitr::kable(caption = "The four model files contributed by Ramakrishnan 2019.")
+```
+
+* Citation: `r mods[[1]]$reference`
+* Article: <https://doi.org/10.1002/psp4.12358>
+* PubMed Central: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6430155/>
+
+Supplementary Data S1 prints the equations for U266 (Eqs. 1-19) and MM.1S
+(Eqs. 20-34) and describes the RPMI8226 and NCI-H929 models by their
+differences from those two. Supplementary Data S2 is the authors' ADAPT 5 code
+for the RPMI8226 model, which settles that model's equations and supplies the
+variance model and the separate growth equation of the untreated control.
+Table 1 of the article gives every parameter estimate.
+
+# Population
+
+The models were fitted to in vitro time courses from Ramakrishnan and Mager
+2018 (J Pharmacol Exp Ther 365:734-751). Each of the four human multiple
+myeloma cell lines was exposed to 20 nM bortezomib or left untreated. Ten
+signaling proteins (pNFkB, pAKT, pmTOR, Bcl-2, pJNK, pp53, p21, pBAD, caspase 8
+and caspase 9) were measured by Western blot and expressed relative to the
+untreated control at 0 h. Viable-cell numbers were followed for 96 h and
+likewise normalised to the untreated control at 0 h. Protein data after 24 h
+were left out of model development because the cells were essentially all
+dead by 24-30 h. The data were analysed by naive pooling with maximum
+likelihood in ADAPT 5, so the models carry no between-well variability.
+
+U266 and RPMI8226 carry a mutated TP53 gene and showed pp53 activation;
+MM.1S and NCI-H929 carry wild-type TP53, showed no pp53 change, and have no
+pp53 node.
+
+```{r population}
+str(mods[["U266"]]$population)
+```
+
+# Source trace
+
+Each `ini()` entry carries its source in an in-file comment. The table collects
+them. Parameter names are the same across the four files; a dash means the
+parameter is not part of that cell line's model.
+
+```{r source-trace, echo = FALSE}
+trace_param <- function(ui) {
+  d <- ui$iniDf
+  d <- d[!is.na(d$ntheta), c("name", "est", "fix")]
+  val <- ifelse(grepl("^l", d$name), exp(d$est), d$est)
+  stats::setNames(
+    ifelse(d$fix, paste0(signif(val, 4), " (fixed)"), as.character(signif(val, 4))),
+    d$name
+  )
+}
+vals <- lapply(mods, trace_param)
+all_names <- unique(unlist(lapply(vals, names)))
+trace_tab <- data.frame(parameter = all_names)
+for (cl in cell_lines) {
+  v <- vals[[cl]][all_names]
+  trace_tab[[cl]] <- ifelse(is.na(v), "-", v)
+}
+trace_tab |>
+  dplyr::rename("Parameter (back-transformed)" = parameter) |>
+  knitr::kable(caption = "Table 1 of Ramakrishnan 2019, by cell line (rate constants in 1/h, slopes in 1/nM).")
+```
+
+| Equation / parameter | Source location |
+|----------------------|-----------------|
+| Protein initial conditions = 1, synthesis rate = loss rate | Data S1 Eq. 1 |
+| Variance model `Var = (sigma1 + sigma2 * Y)^2`, separate sigma for proteins and cells | Data S1 Eq. 2; Data S2 subroutine VARMOD |
+| U266 protein equations | Data S1 Eqs. 3-18 |
+| MM.1S protein equations | Data S1 Eqs. 20-33 |
+| RPMI8226 protein equations | Data S2 subroutine DIFFEQ, XP(1)-XP(16) |
+| NCI-H929 protein equations | Data S1 'NCI-H929' paragraph applied to MM.1S Eqs. 20-33; Figure 1d |
+| Cell growth and death | Main text Eq. 1; Data S1 Eqs. 19 and 34; Data S2 XP(18) |
+| Untreated control growth `d(control)/dt = kg * control` | Data S2 XP(17) |
+| 24 h hold of the cell-equation proteins (U266, MM.1S) | Data S1, paragraphs after Eqs. 19 and 34 |
+| Bortezomib half-life in medium, 144 h | Main text Methods; Data S2 `KDEG = 0.0048135208` |
+| `lktr_*`, `lkdeg_*`, `slope_*`, `gamma_*`, `lkgrow`, `lkdeath` | Table 1, per cell line |
+| `propSd_*` (proteins), `propSd_mm_cells*` (cells) | Table 1 'sigma2 Protein' and 'sigma2 MMcell' |
+
+# Simulation
+
+Every simulation below is a typical-value solve of the deterministic model.
+Treatment is a 20 nM dose into the `media` compartment at time 0; the
+untreated arm has no dose.
+
+```{r simulate}
+obs_times <- sort(unique(c(seq(0, 96, by = 0.5), 2, 6, 12, 24)))
+proteins <- c("pnfkb", "pakt", "pmtor", "bcl2", "pjnk", "pp53", "p21", "pbad", "cas8", "cas9")
+protein_labels <- c(
+  pnfkb = "pNFkB", pakt = "pAKT", pmtor = "pmTOR", bcl2 = "Bcl-2", pjnk = "pJNK",
+  pp53 = "pp53", p21 = "p21", pbad = "pBAD", cas8 = "Cas 8", cas9 = "Cas 9"
+)
+
+solve_line <- function(ui, dose_nM, times) {
+  ev <- rxode2::et(times, cmt = "mm_cells")
+  if (dose_nM > 0) ev <- rxode2::et(ev, amt = dose_nM, cmt = "media", time = 0)
+  as.data.frame(rxode2::rxSolve(rxode2::zeroRe(ui), ev, returnType = "data.frame"))
+}
+
+sims <- bind_rows(lapply(cell_lines, function(cl) {
+  treated <- solve_line(mods[[cl]], 20, obs_times)
+  untreated <- solve_line(mods[[cl]], 0, obs_times)
+  bind_rows(
+    mutate(treated, cell_line = cl, arm = "Bortezomib 20 nM"),
+    mutate(untreated, cell_line = cl, arm = "Untreated")
+  )
+}))
+sims$cell_line <- factor(sims$cell_line, levels = cell_lines)
+```
+
+## Untreated steady state
+
+Without bortezomib every protein synthesis rate equals its loss rate, so all
+proteins stay at their initial value of 1, and the untreated control grows as
+`exp(kg * t)`. Both sides of each comparison use the same parameters, so the
+differences are pure numerical error and a tight bound is correct.
+
+```{r steady-state}
+untreated <- filter(sims, arm == "Untreated")
+max_protein_drift <- untreated |>
+  select(any_of(proteins)) |>
+  as.matrix() |>
+  (\(m) max(abs(m - 1), na.rm = TRUE))()
+kg <- sapply(cell_lines, function(cl) exp(mods[[cl]]$theta[["lkgrow"]]))
+control_err <- untreated |>
+  mutate(expected = exp(kg[as.character(cell_line)] * time)) |>
+  summarise(max_rel = max(abs(mm_cells_control / expected - 1))) |>
+  pull(max_rel)
+c(max_protein_drift = max_protein_drift, max_control_rel_err = control_err)
+stopifnot(max_protein_drift < 1e-8, control_err < 1e-5)
+```
+
+The treated-cell equation is not the untreated control: with no drug its
+right-hand side reduces to `(kg - kd) * cells`, which for RPMI8226
+(`kd > kg`) would make untreated cells decline. The paper fitted the untreated
+cells with the separate first-order growth equation of its code, and the
+models carry it as `mm_cells_control`. Use `mm_cells_control` for an untreated
+arm and `mm_cells` for a treated arm.
+
+## Figures 2 and 3: protein heatmaps
+
+The heatmaps replicate the "Model fits" panels of Figures 2a, 2c, 3a and 3c:
+log10 relative expression at the experimental sampling times. MM.1S and
+NCI-H929 have no pp53 node.
+
+```{r heatmap, fig.height = 7}
+heat <- sims |>
+  filter(arm == "Bortezomib 20 nM", time %in% c(0, 2, 6, 12, 24)) |>
+  select(cell_line, time, any_of(proteins)) |>
+  pivot_longer(any_of(proteins), names_to = "protein", values_to = "rel") |>
+  filter(!is.na(rel)) |>
+  mutate(
+    protein = factor(protein_labels[protein], levels = rev(protein_labels)),
+    log_rel = log10(rel)
+  )
+ggplot(heat, aes(factor(time), protein, fill = log_rel)) +
+  geom_tile(colour = "grey40") +
+  scale_fill_gradientn(
+    colours = c("#00008F", "#0080FF", "#80FFFF", "#FFFF00", "#FF8000", "#800000"),
+    name = "log10 relative\nexpression"
+  ) +
+  facet_wrap(~cell_line, ncol = 2) +
+  labs(x = "Time (h)", y = NULL) +
+  theme_bw()
+```
+
+## Figures 2 and 3: cell proliferation
+
+Replicates Figures 2b, 2d, 3b and 3d: viable cells relative to the untreated
+control at 0 h, untreated and under 20 nM bortezomib.
+
+```{r cells}
+ggplot(sims, aes(time, ifelse(arm == "Untreated", mm_cells_control, mm_cells), colour = arm)) +
+  geom_line(linewidth = 0.8) +
+  scale_colour_manual(values = c("Bortezomib 20 nM" = "blue", "Untreated" = "black")) +
+  facet_wrap(~cell_line, ncol = 2, scales = "free_y") +
+  labs(x = "Time (h)", y = "Cell viability (relative to untreated control at 0 h)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r cells-check}
+cell_summary <- sims |>
+  filter(time %in% c(24, 96)) |>
+  transmute(
+    cell_line, time,
+    value = ifelse(arm == "Untreated", mm_cells_control, mm_cells),
+    arm
+  ) |>
+  pivot_wider(names_from = c(arm, time), values_from = value)
+knitr::kable(cell_summary, digits = 3)
+viab24 <- setNames(cell_summary[["Bortezomib 20 nM_24"]], as.character(cell_summary$cell_line))
+control96 <- setNames(cell_summary[["Untreated_96"]], as.character(cell_summary$cell_line))
+stopifnot(
+  # Figures 2b, 2d, 3b, 3d: the untreated curves end near 6, 5, 6 and 9.
+  abs(control96[["U266"]] / 6.1 - 1) < 0.1,
+  abs(control96[["RPMI8226"]] / 5.0 - 1) < 0.1,
+  abs(control96[["MM.1S"]] / 6.2 - 1) < 0.1,
+  abs(control96[["NCI-H929"]] / 9.0 - 1) < 0.1,
+  # Sensitivity order of the paper: U266 > RPMI8226 > NCI-H929 > MM.1S
+  # surviving at 24 h (Figure 5b).
+  identical(names(sort(viab24, decreasing = TRUE)), c("U266", "RPMI8226", "NCI-H929", "MM.1S"))
+)
+```
+
+The untreated controls end at the values of the published curves. The treated
+cells of the two "more sensitive" lines are almost all dead by 12 h, and those
+of the "less sensitive" lines fall more slowly, as in the figures.
+
+# Figure 5: protein AUEC and drug sensitivity
+
+The paper correlated the area under each model-fitted protein expression
+curve from 0 to 24 h (AUEC) with cell viability at 24 h across the four
+lines. The AUEC that reproduces Figure 5b is the linear-trapezoidal area of
+relative expression minus its baseline of 1, taken over the experimental
+sampling times (0, 2, 6, 12 and 24 h). It is computed with PKNCA here: the
+`auclast` of relative expression over 0-24 h minus the baseline area of 24.
+
+```{r pknca}
+auec_input <- sims |>
+  filter(arm == "Bortezomib 20 nM", time %in% c(0, 2, 6, 12, 24)) |>
+  select(cell_line, time, any_of(proteins)) |>
+  pivot_longer(any_of(proteins), names_to = "protein", values_to = "rel") |>
+  filter(!is.na(rel)) |>
+  mutate(id = 1L, cell_line = as.character(cell_line))
+
+conc_obj <- PKNCA::PKNCAconc(auec_input, rel ~ time | cell_line + protein + id)
+nca_data <- PKNCA::PKNCAdata(
+  conc_obj,
+  intervals = data.frame(start = 0, end = 24, auclast = TRUE),
+  options = list(auc.method = "linear")
+)
+nca_res <- as.data.frame(PKNCA::pk.nca(nca_data))
+auec <- nca_res |>
+  filter(PPTESTCD == "auclast") |>
+  transmute(cell_line, protein, auec = PPORRES - 24)
+```
+
+Figure 5b plots the AUEC of pNFkB, pAKT and caspase 8 on a log axis. The
+values below were digitised by the maintainers from marker centroids against
+the axis ticks (about 3% per pixel).
+
+```{r fig5b}
+fig5b <- tibble::tribble(
+  ~cell_line, ~protein, ~published,
+  "U266", "pnfkb", 32.0,
+  "U266", "pakt", 64.0,
+  "U266", "cas8", 91.5,
+  "RPMI8226", "pnfkb", 4.52,
+  "RPMI8226", "pakt", 56.2,
+  "RPMI8226", "cas8", 10.75,
+  "MM.1S", "pnfkb", 334,
+  "MM.1S", "pakt", 125.3,
+  "MM.1S", "cas8", 1380,
+  "NCI-H929", "pnfkb", 333.6,
+  "NCI-H929", "pakt", 102.9,
+  "NCI-H929", "cas8", 253
+)
+fig5b_cmp <- fig5b |>
+  left_join(auec, by = c("cell_line", "protein")) |>
+  mutate(pct_diff = 100 * (auec / published - 1))
+fig5b_cmp |>
+  mutate(protein = protein_labels[protein]) |>
+  dplyr::rename(
+    "Cell line" = cell_line, "Protein" = protein,
+    "Figure 5b AUEC" = published, "Simulated AUEC" = auec, "% difference" = pct_diff
+  ) |>
+  knitr::kable(digits = 1)
+stopifnot(
+  nrow(fig5b_cmp) == 12, !anyNA(fig5b_cmp$auec),
+  max(abs(fig5b_cmp$pct_diff)) < 8
+)
+```
+
+All twelve digitised AUECs are reproduced within the digitisation error. They
+come from four separately fitted models, so the agreement checks every
+cell-line file, including the NCI-H929 model, whose equations are not printed
+and were assembled from the text.
+
+Figure 5a gives the Spearman rank correlation between viability at 24 h and
+the AUEC of each protein. Bcl-2 and pBAD are inhibited, so their AUEC is
+negative; the published negative coefficients for them ("increasing
+inhibition of Bcl-2 and pBAD", Discussion) correspond to correlating viability
+with the size of the inhibition, so their AUEC is taken as a magnitude.
+The simulated viabilities rank the cell lines in the same order as the
+observed viabilities of Figure 5b (U266 0.22, RPMI8226 0.11, NCI-H929 0.02,
+MM.1S 0.004), so the rank correlation is fully determined by the model.
+
+```{r fig5a}
+fig5a <- c(pnfkb = -0.8, pakt = -0.8, pmtor = -0.4, bcl2 = -0.6, pjnk = 0.2, pbad = -0.6, cas8 = -0.8, cas9 = -0.4)
+rho <- sapply(names(fig5a), function(p) {
+  a <- auec |>
+    filter(protein == p) |>
+    mutate(auec = if (p %in% c("bcl2", "pbad")) abs(auec) else auec)
+  stopifnot(nrow(a) == 4)
+  stats::cor(viab24[a$cell_line], a$auec, method = "spearman")
+})
+data.frame(protein = protein_labels[names(fig5a)], published = fig5a, simulated = rho) |>
+  dplyr::rename("Protein" = protein, "Figure 5a rho" = published, "Simulated rho" = simulated) |>
+  knitr::kable(row.names = FALSE)
+stopifnot(all(abs(rho - fig5a) < 1e-8))
+```
+
+All eight published coefficients are reproduced exactly. With four cell lines
+a Spearman coefficient moves in steps of 0.2, so this checks the rank order of
+the simulated AUECs; the pNFkB AUECs of MM.1S and NCI-H929 differ by under 1%,
+and only the sampling-time trapezoid reproduces the published -0.8 for pNFkB.
+
+# Reproduction gate: the authors' RPMI8226 code
+
+Supplementary Data S2 is the ADAPT 5 Fortran of the RPMI8226 model. Below it
+is transcribed line by line, separately from the model file and with the
+ADAPT state numbering, and solved with the Table 1 values. Both sides solve
+the same deterministic ODE with the same parameters, so the difference is
+numerical error only and a tight bound is correct.
+
+```{r adapt-code}
+adapt_rpmi <- rxode2::rxode2({
+  kspjnk <- kdpjnk
+  kspnfkb <- kdpnfkb
+  kscas8 <- kdcas8
+  kspakt <- kdpakt
+  kspmtor <- kdpmtor
+  kspp53 <- kdpp53
+  kspbad <- kdpbad
+  ksbcl2 <- kdbcl2
+  kscas9 <- kdcas9
+  ksp21 <- kdp21
+  KDEG <- 0.0048135208
+  d/dt(X1) <- -KDEG * X1
+  d/dt(X2) <- kspjnk * (1 + (smpjnk * X1)) - kdpjnk * X2
+  d/dt(X3) <- (kscas8 / (X5^GC8)) * (X2) - kdcas8 * X3
+  d/dt(X4) <- kspnfkb * (1 + (smpnfkb * X1^G)) - kdpnfkb * X4
+  d/dt(X5) <- kdpnfkb * (X4 - X5)
+  d/dt(X6) <- kspakt * (1 + smpakt * X1) - kdpakt * X6
+  d/dt(X7) <- kdpakt * (X6 - X7)
+  d/dt(X8) <- kspmtor * (X7) - kdpmtor * X8
+  d/dt(X9) <- (kspp53 / (X7)) * (X2^G53) - kdpp53 * X9
+  d/dt(X10) <- kspbad - kdpbad * (X2^GB2) * X10
+  d/dt(X11) <- kdpbad * (X10 - X11)
+  d/dt(X12) <- kdpbad * (X11 - X12)
+  d/dt(X13) <- kdpbad * (X12 - X13)
+  d/dt(X14) <- (ksbcl2 / X9) * (X13) * (X5) - kdbcl2 * X14
+  d/dt(X15) <- kscas9 * (1 / X14) * (1 / X5) * (X3^GC9) - kdcas9 * X15
+  d/dt(X16) <- (ksp21 / (X7)) * (X9^G21) - kdp21 * X16
+  d/dt(X17) <- kg * X17
+  d/dt(X18) <- (kg / (X16)) * (X8) * X7 * X18 - kd * X3 * (X15) * X18
+})
+# Table 1, RPMI8226, in the ADAPT symbol names. G (power of the bortezomib
+# term for pNFkB) is not among the estimates and is 1.
+p_adapt <- c(
+  kdpjnk = 0.07269, smpjnk = 0.2965, G = 1, kdcas8 = 0.1656, kdpnfkb = 0.07685,
+  smpnfkb = 0.04046, GC8 = 5.640, kdpakt = 0.04528, smpakt = 1.011,
+  kdpmtor = 0.0007853, kdpp53 = 0.04395, G53 = 1.746, kdpbad = 0.2257,
+  kdbcl2 = 0.008890, GB2 = 0.3705, kdcas9 = 0.008027, GC9 = 5, kdp21 = 0.01834,
+  G21 = 5, kg = 0.01680, kd = 0.05166
+)
+inits <- c(X1 = 20, stats::setNames(rep(1, 17), paste0("X", 2:18)))
+ref <- as.data.frame(rxode2::rxSolve(adapt_rpmi, p_adapt, rxode2::et(obs_times), inits = inits))
+pkg <- filter(sims, cell_line == "RPMI8226", arm == "Bortezomib 20 nM")
+stopifnot(isTRUE(all.equal(ref$time, pkg$time)))
+map <- c(
+  X2 = "pjnk", X3 = "cas8", X5 = "pnfkb", X7 = "pakt", X8 = "pmtor", X9 = "pp53",
+  X13 = "pbad", X14 = "bcl2", X15 = "cas9", X16 = "p21", X18 = "mm_cells"
+)
+rel_err <- sapply(names(map), function(x) max(abs(pkg[[map[[x]]]] / ref[[x]] - 1)))
+signif(rel_err, 2)
+stopifnot(all(rel_err < 1e-4))
+```
+
+The packaged RPMI8226 model reproduces the authors' code to solver
+precision for all ten proteins and the treated cells.
+
+# Assumptions and deviations
+
+* **Residual error.** Data S1 Eq. 2 defines the variance as
+  `(sigma1 + sigma2 * Y)^2`, and Table 1 reports only `sigma2` (one value for
+  all proteins and one for the cells) for each cell line. The intercept
+  `sigma1` is not reported, so the models carry a purely proportional error
+  with SD `sigma2`. rxode2 cannot tie one residual parameter to several
+  endpoints, so each protein endpoint carries its own copy of the shared
+  protein value (and each cell endpoint of the shared cell value); a refit
+  that wants the paper's structure should constrain them to be equal.
+* **RPMI8226 pNFkB stimulation.** The authors' code writes the bortezomib term
+  for pNFkB as `smpnfkb * X(1)**G`. `G` is not among the Table 1 estimates,
+  the text describes every bortezomib stimulation as linear, and Data S1 lists
+  the RPMI8226 power coefficients without it, so the term is linear (`G = 1`).
+  The code's unused parameter `GG` is dropped. The Figure 2c model-fit pNFkB
+  profile and the Figure 5 pNFkB AUEC (4.5) are reproduced with `G = 1`.
+* **NCI-H929 equations.** Data S1 describes the NCI-H929 model as the MM.1S
+  model with: no pJNK transit compartment; one pBAD transit compartment; power
+  coefficients on pJNK stimulation of caspase 8, pJNK-stimulated loss of pBAD
+  and pBAD stimulation of Bcl-2; no power on bortezomib in the p21 equation
+  (Table 1 has no `gamma p21` for NCI-H929); and the retained pAKT inhibition
+  of p21 and pNFkB stimulation of Bcl-2. The two retained links are written in
+  the form they take in the U266 equations (division by pAKT, multiplication
+  by pNFkB). The resulting model reproduces Figure 5 (above).
+* **NCI-H929 `k dpBAD`.** Table 1 lists the NCI-H929 pBAD rate as
+  'k dpBAD' with the description 'pBAD transit rate constant'; with one
+  transit compartment it is the shared rate of the transit chain
+  (`lktr_pbad`). Likewise the NCI-H929 'k tpJNK' acts as the pJNK turnover
+  rate (`lkdeg_pjnk`) because that line has no pJNK transit compartment.
+* **24 h hold (U266, MM.1S).** For these two lines the final cell-dynamics
+  parameters were estimated with pAKT, pmTOR, p21, caspase 8 and caspase 9
+  fixed at their 24 h values in the cell equation. The models reproduce this
+  with five `_held` states that follow the proteins until 24 h and stay
+  constant afterwards; the protein states themselves keep evolving. The hold
+  is tied to the model's time 0, so treatment should start at time 0.
+* **Untreated control.** The untreated cells follow the separate
+  `d(control)/dt = kg * control` equation of the authors' code (Data S2,
+  XP(17)), stated there for RPMI8226 and assumed for the other three lines
+  (Data S2: "the code files ... for U266, MM.1S and NCI-H929 cells were
+  implemented similarly"). The untreated curves of Figures 2 and 3 are
+  reproduced.
+* **Fixed values.** Table 1 marks five power coefficients with an asterisk and
+  no %CV (U266 `gamma Bcl-2` = 5 and `gamma p21` = 2.5, RPMI8226 `gamma p21`
+  and `gamma Cas9` = 5, MM.1S `gamma Bcl-2` = 5 and `gamma p21` = 1.2); the
+  footnote does not define the asterisk, and they are encoded as fixed.
+* **Bortezomib in the medium.** The paper takes the 144 h half-life in medium
+  from Chudasama 2015; it is fixed. Bortezomib concentration is the dose in nM
+  given to `media`; there is no volume.
+* **Scope.** Each model was fitted to a single 20 nM exposure, so responses to
+  other concentrations are extrapolations (the paper notes the models cannot
+  account for dose-dependent nonlinearities).
+* A dated check on 2026-11-25 found no erratum or correction for the article
+  in Europe PMC.

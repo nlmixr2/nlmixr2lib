@@ -1,0 +1,595 @@
+---
+title: "Efavirenz plasma, CSF and brain tissue in macaques and humans (Srinivas 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Efavirenz plasma, CSF and brain tissue in macaques and humans (Srinivas 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+PKNCA::PKNCA.options(progress = FALSE)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Srinivas_2019_efavirenz_human"))$reference`
+* Human model: `r rxode2::rxode(readModelDb("Srinivas_2019_efavirenz_human"))$description`
+* Macaque model: `r rxode2::rxode(readModelDb("Srinivas_2019_efavirenz_monkey"))$description`
+* Article: <https://doi.org/10.1111/cts.12620> (open access, PMC6510381)
+
+Srinivas et al. built one eight-compartment structure (Figure 1) for oral
+efavirenz in plasma, cerebrospinal fluid (CSF) and brain tissue, fitted it
+first to eight rhesus macaques with plasma, CSF and brain tissue
+concentrations, and then re-estimated it on sparse paired plasma / CSF samples
+from 24 adults living with HIV. Brain tissue cannot be sampled in living
+humans, so the human brain parameters are predictions: their initial estimates
+came from the macaque fit (Vbrain allometrically scaled) and the CSF data were
+used to refine them. The two fits have different parameter values and
+different structures (the macaque model has a step increase in clearance
+after 24 h), so they are packaged as two models:
+
+* `Srinivas_2019_efavirenz_human` -- adults with HIV, 600 mg once daily.
+* `Srinivas_2019_efavirenz_monkey` -- rhesus macaques, 200 mg once daily.
+
+No erratum or correction was found for this article (Europe PMC, checked
+2026-11-25).
+
+# Population
+
+```{r population}
+pop_h <- rxode2::rxode(readModelDb("Srinivas_2019_efavirenz_human"))$population
+pop_m <- rxode2::rxode(readModelDb("Srinivas_2019_efavirenz_monkey"))$population
+str(pop_h)
+str(pop_m)
+```
+
+Humans (Table 2): 24 participants of the THINC cohort on efavirenz-based
+therapy, 3 treatment-naive (cohort A, median age 32 years, 65.8 kg) and 21
+treatment-experienced with suppressed viral load (cohort B, median age 54
+years, 71.0 kg); 5 women; 13 White and 11 African American. 29 paired plasma
+and CSF samples, taken without a preselected time after dose.
+
+Macaques (Methods): 8 adult rhesus macaques (4 uninfected, 4 infected with
+RT-SHIVmac239 -- infection status did not change concentrations) dosed 200 mg
+efavirenz orally once daily for 10 days with tenofovir, emtricitabine and
+raltegravir. Plasma was sampled at 0, 4, 10 and 24 h after the first dose and
+24 h after dosing on days 4, 6, 9 and 10; CSF and brain tissue (median of four
+regions) were taken at necropsy only, 79 concentrations in all.
+
+# Model structure
+
+Figure 1 numbers the compartments: 1 depot, 2-4 transit, 5 central (plasma),
+6 peripheral, 7 CSF, 8 brain tissue. The dose moves depot -> transit1 ->
+transit2 -> transit3 at one rate constant TAU and from transit3 to central at
+Ka. Plasma disposition is two-compartment with intercompartmental clearance Q
+and linear clearance CL. CSF and brain tissue exchange with plasma and with
+each other through four pairs of first-order rate constants acting on the
+amount in the donor compartment, so a transfer such as Kplasma-brain removes
+`Kplasma-brain * A5` from central and adds it to the brain amount. That
+reading is the one that reproduces the paper's reported exposure ratios: with
+the human values the typical brain:plasma AUC ratio is
+`(Kplasma-brain / Kbrain-plasma) * V5 / Vbrain` = 3.45, against the published
+median 3.6 (range 3.2-3.8).
+
+In the macaques, the trough concentrations of four animals from day 4 onward
+were 4- to 40-fold below the first-dose trough, and the authors added a
+multiplier M on clearance: `CL/F = CL/F * M` for time > 24 h after the first
+dose. This is encoded with the library's piecewise-clearance names --
+`ltclchange` fixed at 24 h and `lcl_late = log(CL * M)` -- with the late arm
+carrying both random effects, which is the same distribution as
+`CL * M` with independent CL and M variability. Time in the macaque model must
+therefore be measured from the first dose. M is not part of the human model
+(Table 1 footnote a).
+
+# Source trace
+
+All values are Table 1 geometric means of the individual estimates, used as
+typical values, with Table 1 CV% converted to log-normal variances
+`omega^2 = log(1 + CV^2)`.
+
+| Quantity | Model name | Macaque | Human | Source |
+|---|---|---|---|---|
+| CL/F (L/h) | `lcl` | 8.70 (CV 89.8%) | 12.37 (CV 58.5%) | Table 1 |
+| V5/F (L) | `lvc` | 6.45 (51.2%) | 155.34 (39.1%) | Table 1 |
+| Ka (1/h), transit3 -> central | `lka` | 0.183 (36.4%) | 0.135 (94.6%) | Table 1; Figure 1 |
+| V6/F (L) | `lvp` | 14.6 (155.0%) | 405.4 (35.8%) | Table 1 |
+| Q/F (L/h) | `lq` | 4.66 (89.1%) | 6.31 (142.0%) | Table 1 |
+| TAU (1/h), depot -> transit chain | `lktr` | 0.95 (48.5%) | 1.00 (27.8%) | Table 1; Figure 1 |
+| M (clearance multiplier after 24 h) | `lcl_late` = log(CL x M), `ltclchange` = log(24) fixed | 2.63 (103.0%) | not in model | Table 1 and footnote a; Results; Figure 1 legend |
+| Kplasma-CSF (1/h) | `lk_central_csf` | 1.71E-06 (59.5%) | 4.27E-06 (88.8%) | Table 1 |
+| KCSF-plasma (1/h) | `lk_csf_central` | 0.18 (27.3%) | 0.244 (26.0%) | Table 1 |
+| Kplasma-brain (1/h) | `lk_central_brain` | 2.42E-03 (31.1%) | 2.00E-03 (30.2%) | Table 1 |
+| Kbrain-plasma (1/h) | `lk_brain_central` | 0.15 (26.8%) | 0.175 (31.2%) | Table 1 |
+| KCSF-brain (1/h) | `lk_csf_brain` | 2.56E-03 (36.0%) | 3.00E-03 (40.2%) | Table 1 |
+| Kbrain-CSF (1/h) | `lk_brain_csf` | 5.58E-06 (68.2%) | 2.41E-06 (70.5%) | Table 1 |
+| Vbrain/F (L) | `lv_brain` | 0.037 (21.8%) | 0.514 (25.1%) | Table 1 |
+| VCSF/F (L), fixed | `lvcsf` | 0.015 | 0.15 | Table 1; Methods |
+| Residual error | `propSd`, `addSd` (+ `_Ccsf`, `_Cbrain`) | fixed 0 | fixed 0 | Methods (additive + proportional, values not reported) |
+| ODEs | `d/dt(...)` | -- | -- | Figure 1 |
+| Concentrations | `Cc = central / vc`, `Ccsf = csf / vcsf`, `Cbrain = brain / v_brain` | -- | -- | Figure 1; Table 1 volumes |
+
+# Human: steady-state simulation
+
+A cohort of 200 virtual adults received 600 mg once daily for 8 weeks; the
+last dosing interval is observed. The model has no covariates, so the cohort
+needs no demographic draws.
+
+```{r sim-human}
+mod_h <- rxode2::rxode(readModelDb("Srinivas_2019_efavirenz_human"))
+
+n_h <- 200
+n_days <- 56
+tau <- 24
+t_ss <- tau * (n_days - 1)
+
+dose_h <- data.frame(
+  id = rep(seq_len(n_h), each = n_days),
+  time = rep((seq_len(n_days) - 1) * tau, n_h),
+  amt = 600, evid = 1L, cmt = "depot", dvid = NA_integer_
+)
+# Two declared endpoints (Cc, Ccsf): every observation row nominates one with
+# dvid; each row still returns Cc, Ccsf and Cbrain as columns.
+obs_h <- expand.grid(id = seq_len(n_h), time = t_ss + seq(0, tau, by = 0.5)) |>
+  dplyr::mutate(amt = 0, evid = 0L, cmt = NA_character_, dvid = 1L)
+ev_h <- dplyr::bind_rows(dose_h, obs_h) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+rxode2::rxSetSeed(20190125)
+sim_h <- as.data.frame(rxode2::rxSolve(mod_h, ev_h, returnType = "data.frame")) |>
+  dplyr::mutate(tad = time - t_ss)
+
+stopifnot(
+  all(c("Cc", "Ccsf", "Cbrain") %in% names(sim_h)),
+  all(rxode2::rxState(mod_h) %in% names(sim_h)),
+  nrow(sim_h) == nrow(obs_h)
+)
+```
+
+Steady state is reached well inside 8 weeks for the typical participant:
+
+```{r ss-check}
+typ_h <- rxode2::zeroRe(mod_h)
+ev_typ <- dplyr::bind_rows(
+  dose_h |> dplyr::filter(id == 1),
+  data.frame(id = 1, time = seq(0, tau * n_days, by = 0.5), amt = 0, evid = 0L, dvid = 1L)
+) |>
+  dplyr::arrange(time, dplyr::desc(evid))
+s_typ <- as.data.frame(rxode2::rxSolve(typ_h, ev_typ, returnType = "data.frame"))
+auc_trap <- function(x, y) sum(diff(x) * (head(y, -1) + tail(y, -1)) / 2)
+auc_day <- function(d, col) {
+  w <- s_typ[s_typ$time >= tau * (d - 1) & s_typ$time <= tau * d, ]
+  auc_trap(w$time, w[[col]])
+}
+ss_ratio <- c(
+  plasma = auc_day(n_days, "Cc") / auc_day(n_days - 1, "Cc"),
+  brain = auc_day(n_days, "Cbrain") / auc_day(n_days - 1, "Cbrain")
+)
+ss_ratio
+# Deterministic solve against itself: day 56 and day 55 exposures agree.
+stopifnot(all(abs(ss_ratio - 1) < 0.01))
+```
+
+## Figure 3 -- visual predictive check in plasma, CSF and brain tissue
+
+The published figure overlays the observed plasma and CSF samples (not
+reproduced here) and three post-mortem brain tissue concentrations from the
+National NeuroAIDS Tissue Consortium, printed in Table S2.
+
+```{r figure-3, fig.width = 9, fig.height = 3.5}
+nntc <- data.frame(
+  matrix = "Brain tissue",
+  tad = c(24, 21, 21),
+  conc = c(1800, 8000, 3600)
+)
+vpc_h <- sim_h |>
+  dplyr::transmute(
+    id, tad,
+    Plasma = Cc * 1000, CSF = Ccsf * 1000, `Brain tissue` = Cbrain * 1000
+  ) |>
+  tidyr::pivot_longer(c(Plasma, CSF, `Brain tissue`), names_to = "matrix", values_to = "conc") |>
+  dplyr::group_by(matrix, tad) |>
+  dplyr::summarise(
+    p05 = quantile(conc, 0.05), p25 = quantile(conc, 0.25),
+    p50 = median(conc), p75 = quantile(conc, 0.75), p95 = quantile(conc, 0.95),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(matrix = factor(matrix, levels = c("Plasma", "CSF", "Brain tissue")))
+
+ggplot(vpc_h, aes(tad)) +
+  geom_line(aes(y = p50), linewidth = 1) +
+  geom_line(aes(y = p25), linetype = "dashed", colour = "darkgreen") +
+  geom_line(aes(y = p75), linetype = "dashed", colour = "darkgreen") +
+  geom_line(aes(y = p05), linetype = "dashed", colour = "red") +
+  geom_line(aes(y = p95), linetype = "dashed", colour = "red") +
+  geom_point(
+    data = dplyr::mutate(nntc, matrix = factor(matrix, levels = levels(vpc_h$matrix))),
+    aes(y = conc), shape = 2, size = 2.5
+  ) +
+  facet_wrap(~matrix, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time after last dose (h)", y = "Efavirenz (ng/mL)",
+    caption = paste(
+      "Replicates Figure 3 of Srinivas 2019: median (solid), 25th/75th (green)",
+      "and 5th/95th (red) percentiles at steady state; triangles are the",
+      "Table S2 NNTC brain tissue concentrations."
+    )
+  ) +
+  theme_bw()
+```
+
+## PKNCA: steady-state exposure in each matrix
+
+The final dosing interval is re-based to time 0 and analysed per matrix.
+
+```{r pknca-human}
+conc_h <- sim_h |>
+  dplyr::transmute(
+    id, time = tad, treatment = "EFV 600 mg QD",
+    Plasma = Cc * 1000, CSF = Ccsf * 1000, Brain = Cbrain * 1000
+  ) |>
+  tidyr::pivot_longer(c(Plasma, CSF, Brain), names_to = "matrix", values_to = "conc") |>
+  dplyr::filter(!is.na(conc))
+dose_nca_h <- conc_h |>
+  dplyr::distinct(id, treatment, matrix) |>
+  dplyr::mutate(time = 0, amt = 600)
+
+o_conc_h <- PKNCA::PKNCAconc(conc_h, conc ~ time | treatment + matrix + id)
+o_dose_h <- PKNCA::PKNCAdose(dose_nca_h, amt ~ time | treatment + matrix + id)
+o_data_h <- PKNCA::PKNCAdata(
+  o_conc_h, o_dose_h,
+  intervals = data.frame(
+    start = 0, end = tau, auclast = TRUE, cmax = TRUE, tmax = TRUE,
+    cmin = TRUE, ctrough = TRUE, cav = TRUE
+  )
+)
+nca_h <- as.data.frame(PKNCA::pk.nca(o_data_h))
+
+nca_h_wide <- nca_h |>
+  dplyr::select(id, treatment, matrix, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+nca_h_wide |>
+  dplyr::group_by(matrix) |>
+  dplyr::summarise(
+    `AUC0-24 median (ng*h/mL)` = signif(median(auclast), 3),
+    `AUC0-24 5th-95th` = paste(signif(quantile(auclast, c(0.05, 0.95)), 3), collapse = " - "),
+    `C24 median (ng/mL)` = signif(median(ctrough), 3),
+    `Cmax median (ng/mL)` = signif(median(cmax), 3),
+    .groups = "drop"
+  ) |>
+  knitr::kable(caption = "Simulated steady-state exposure, 200 virtual adults, 600 mg once daily.")
+```
+
+## Comparison with the published predictions
+
+The paper reports the model-predicted CSF and brain tissue concentrations
+("flat", Results) and the brain:plasma and brain:CSF AUC0-24 ratios as
+medians over the 24 participants' individual (posterior) predictions. The
+simulated values below are medians over a population draw from the Table 1
+geometric means and CVs, so close but not exact agreement is expected.
+
+```{r nca-compare-human}
+ratios_h <- nca_h_wide |>
+  dplyr::select(id, matrix, auclast) |>
+  tidyr::pivot_wider(names_from = matrix, values_from = auclast) |>
+  dplyr::mutate(brain_plasma = Brain / Plasma, brain_csf = Brain / CSF)
+
+sim_cmp_h <- nca_h_wide |>
+  dplyr::filter(matrix %in% c("Brain", "CSF")) |>
+  dplyr::group_by(treatment, matrix) |>
+  dplyr::summarise(ctrough = median(ctrough), auclast = median(auclast), .groups = "drop")
+ref_cmp_h <- data.frame(
+  treatment = "EFV 600 mg QD",
+  matrix = c("Brain", "CSF"),
+  # Results: brain tissue 8,000 ng/mL (2,300-29,000) and CSF 30 ng/mL (6-170).
+  ctrough = c(8000, 30),
+  # Conclusions: brain tissue AUC0-24 150,000 ng*h/mL; no CSF median printed.
+  auclast = c(150000, NA)
+)
+cmp_h <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_cmp_h,
+  reference = ref_cmp_h,
+  by = c("treatment", "matrix"),
+  units = c(ctrough = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp_h,
+  caption = paste(
+    "Median simulated steady-state brain and CSF exposure against the values",
+    "reported by Srinivas 2019. * marks a difference above 20%."
+  )
+)
+```
+
+The exposure ratios are not NCA parameters, so they are compared separately:
+
+```{r ratio-compare-human}
+ratio_tbl <- data.frame(
+  ratio = c("Brain:plasma AUC0-24", "Brain:CSF AUC0-24"),
+  published = c("3.6 (3.2-3.8)", "213 (23-834)"),
+  sim_median = c(median(ratios_h$brain_plasma), median(ratios_h$brain_csf)),
+  ref_median = c(3.6, 213)
+) |>
+  dplyr::mutate(pct_diff = round(100 * (sim_median - ref_median) / ref_median, 1))
+ratio_tbl |>
+  dplyr::mutate(sim_median = as.character(signif(sim_median, 3))) |>
+  dplyr::select(-ref_median) |>
+  dplyr::rename(
+    "Ratio" = ratio,
+    "Published median (range)" = published,
+    "Simulated median" = sim_median,
+    "% diff" = pct_diff
+  ) |>
+  knitr::kable(caption = "Brain tissue exposure ratios (Srinivas 2019 Results).")
+```
+
+The two brain values sit within about 20% of the published figures, and the
+CSF trough and both ratios within 10%. The 150,000 ng h/mL brain AUC is a
+rounded figure from the Conclusions; the simulated median trough is below the
+quoted 8,000 ng/mL because the published value is a median over 24
+individual posterior predictions rather than a population draw. The simulated
+5th-95th percentile ranges of AUC0-24 (table above) also overlap the
+published ranges over the 24 participants: plasma 19,223-165,487, brain
+61,908-576,048 and CSF 200-9,940 ng h/mL (Discussion).
+
+```{r nca-gate-human}
+# Structural gate on the centre of the distribution. The brain:plasma ratio
+# depends only on Kplasma-brain, Kbrain-plasma, V5 and Vbrain, so a wrong rate
+# constant, volume or flow direction moves it by far more than 15%.
+pct <- function(sim, ref) 100 * (sim - ref) / ref
+brain_sim <- sim_cmp_h[sim_cmp_h$matrix == "Brain", ]
+csf_sim <- sim_cmp_h[sim_cmp_h$matrix == "CSF", ]
+gate_h <- c(
+  ratio_brain_plasma = ratio_tbl$pct_diff[1],
+  ratio_brain_csf = ratio_tbl$pct_diff[2],
+  auclast_brain = pct(brain_sim$auclast, 150000),
+  ctrough_brain = pct(brain_sim$ctrough, 8000),
+  ctrough_csf = pct(csf_sim$ctrough, 30)
+)
+round(gate_h, 1)
+stopifnot(
+  abs(gate_h[["ratio_brain_plasma"]]) < 15,
+  abs(gate_h[["ratio_brain_csf"]]) < 30,
+  abs(gate_h[["auclast_brain"]]) < 35,
+  abs(gate_h[["ctrough_brain"]]) < 35,
+  abs(gate_h[["ctrough_csf"]]) < 40
+)
+```
+
+# Macaque: 10-day course
+
+A cohort of 200 virtual macaques received 200 mg once daily for 10 days,
+observed from the first dose to necropsy 24 h after the tenth dose (240 h).
+
+```{r sim-monkey}
+mod_m <- rxode2::rxode(readModelDb("Srinivas_2019_efavirenz_monkey"))
+
+n_m <- 200
+dose_m <- data.frame(
+  id = rep(seq_len(n_m), each = 10),
+  time = rep((0:9) * tau, n_m),
+  amt = 200, evid = 1L, cmt = "depot"
+)
+# Three declared endpoints (Cc, Ccsf, Cbrain): rxode2 already owns a modelled
+# slot for each, so observation rows name one endpoint (cmt = "Cc"); every row
+# still returns all three concentrations and every ODE state.
+obs_m <- expand.grid(id = seq_len(n_m), time = seq(0, 240, by = 0.5)) |>
+  dplyr::mutate(amt = 0, evid = 0L, cmt = "Cc")
+ev_m <- dplyr::bind_rows(dose_m, obs_m) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+rxode2::rxSetSeed(20190126)
+sim_m <- as.data.frame(rxode2::rxSolve(mod_m, ev_m, returnType = "data.frame"))
+
+# Guard: the dose still lands in depot (state 1) and the endpoint rows did not
+# renumber the ODE states.
+stopifnot(
+  identical(rxode2::rxState(mod_m)[1:5], c("depot", "transit1", "transit2", "transit3", "central")),
+  all(rxode2::rxState(mod_m) %in% names(sim_m)),
+  all(c("Cc", "Ccsf", "Cbrain") %in% names(sim_m)),
+  isTRUE(all.equal(sim_m$depot[sim_m$id == 1 & sim_m$time == 0], 200))
+)
+```
+
+## Figure 2 -- plasma after the first dose and CSF / brain at steady state
+
+```{r figure-2, fig.width = 9, fig.height = 3.5}
+pi_m <- function(d, col, label) {
+  d |>
+    dplyr::group_by(t_plot) |>
+    dplyr::summarise(
+      p05 = quantile(.data[[col]] * 1000, 0.05),
+      p50 = median(.data[[col]] * 1000),
+      p95 = quantile(.data[[col]] * 1000, 0.95),
+      .groups = "drop"
+    ) |>
+    dplyr::mutate(panel = label)
+}
+fig2 <- dplyr::bind_rows(
+  pi_m(dplyr::filter(sim_m, time > 0, time <= 24) |> dplyr::mutate(t_plot = time), "Cc",
+       "(a) Plasma, first dose"),
+  pi_m(dplyr::filter(sim_m, time >= 216) |> dplyr::mutate(t_plot = time - 216), "Ccsf",
+       "(b) CSF, day 10"),
+  pi_m(dplyr::filter(sim_m, time >= 216) |> dplyr::mutate(t_plot = time - 216), "Cbrain",
+       "(c) Brain tissue, day 10")
+)
+ggplot(fig2, aes(t_plot)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2) +
+  geom_line(aes(y = p50)) +
+  facet_wrap(~panel, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (h)", y = "Efavirenz (ng/mL)",
+    caption = paste(
+      "Replicates Figure 2 of Srinivas 2019 as a population band (median and",
+      "5th-95th percentiles) rather than the eight individual fits."
+    )
+  ) +
+  theme_bw()
+```
+
+## PKNCA: first dose and day 10
+
+```{r pknca-monkey}
+conc_m <- sim_m |>
+  dplyr::filter(time <= 24 | time >= 216) |>
+  dplyr::mutate(
+    treatment = ifelse(time <= 24, "Day 1", "Day 10"),
+    time = ifelse(time <= 24, time, time - 216)
+  ) |>
+  dplyr::transmute(
+    id, time, treatment,
+    Plasma = Cc * 1000, CSF = Ccsf * 1000, Brain = Cbrain * 1000
+  ) |>
+  tidyr::pivot_longer(c(Plasma, CSF, Brain), names_to = "matrix", values_to = "conc") |>
+  dplyr::filter(!is.na(conc))
+dose_nca_m <- conc_m |>
+  dplyr::distinct(id, treatment, matrix) |>
+  dplyr::mutate(time = 0, amt = 200)
+
+o_data_m <- PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_m, conc ~ time | treatment + matrix + id),
+  PKNCA::PKNCAdose(dose_nca_m, amt ~ time | treatment + matrix + id),
+  intervals = data.frame(
+    start = 0, end = tau, auclast = TRUE, cmax = TRUE, tmax = TRUE, ctrough = TRUE
+  )
+)
+nca_m_wide <- as.data.frame(PKNCA::pk.nca(o_data_m)) |>
+  dplyr::select(id, treatment, matrix, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+nca_m_wide |>
+  dplyr::group_by(treatment, matrix) |>
+  dplyr::summarise(
+    `AUC0-24 median (ng*h/mL)` = signif(median(auclast), 3),
+    `Cmax median (ng/mL)` = signif(median(cmax), 3),
+    `Tmax median (h)` = median(tmax),
+    `C24 median (ng/mL)` = signif(median(ctrough), 3),
+    `C24 5th-95th` = paste(signif(quantile(ctrough, c(0.05, 0.95)), 3), collapse = " - "),
+    .groups = "drop"
+  ) |>
+  knitr::kable(caption = "Simulated macaque exposure, 200 virtual animals, 200 mg once daily.")
+```
+
+## Comparison with the observed necropsy concentrations
+
+The paper quotes observed (not model-predicted) necropsy concentrations: brain
+tissue medians of 687-834 ng/g across the four regions (Results), about
+775 ng/mL overall, CSF about 2 ng/mL and plasma about 200 ng/mL (Discussion);
+Figure 4 plots the eight animals' observed troughs (plasma about
+55-1,500 ng/mL, brain tissue about 4-fold higher).
+
+```{r compare-monkey}
+nec_sim <- nca_m_wide |>
+  dplyr::filter(treatment == "Day 10") |>
+  dplyr::group_by(matrix) |>
+  dplyr::summarise(ctrough = median(ctrough), .groups = "drop") |>
+  dplyr::mutate(treatment = "Necropsy (240 h)")
+nec_ref <- data.frame(
+  treatment = "Necropsy (240 h)",
+  matrix = c("Brain", "CSF", "Plasma"),
+  # Discussion: brain tissue 775, CSF ~2 and plasma ~200 ng/mL in macaques.
+  ctrough = c(775, 2, 200)
+)
+cmp_m <- nlmixr2lib::ncaComparisonTable(
+  simulated = nec_sim,
+  reference = nec_ref,
+  by = c("treatment", "matrix"),
+  units = c(ctrough = "ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp_m,
+  caption = paste(
+    "Median simulated necropsy concentrations against the observed values",
+    "quoted by Srinivas 2019. * marks a difference above 20%."
+  )
+)
+```
+
+All three simulated medians are below the observed values, by about 30% in
+brain tissue and by more in plasma and CSF. This follows from the published
+parameterisation rather than from the encoding. The clearance step was seen
+in only four of the eight animals (4- to 40-fold lower troughs from day 4),
+and the other four had none. Table 1 summarises M over all eight animals as a
+geometric mean of 2.63 (median 2.07, CV 103%). A log-normal M centred there
+gives the median virtual animal most of the clearance increase. The simulated
+day-1 plasma trough, which comes before the step, has a median of
+`r signif(median(dplyr::filter(nca_m_wide, treatment == "Day 1", matrix == "Plasma")$ctrough), 3)`
+ng/mL, in line with the about 200 ng/mL the paper quotes. At steady state,
+the shapes of the simulated CSF and brain tissue profiles (a rise to a peak
+near 10 h and a fall back by 24 h) match the individual fits in Figure 2b-c.
+
+```{r gate-monkey}
+# Order-of-magnitude gate on the observed brain tissue concentration: the
+# median simulated necropsy value lies within a factor of 2 of the observed
+# ~775 ng/mL and inside the observed regional range (190-2,440 ng/g).
+brain_nec <- nec_sim$ctrough[nec_sim$matrix == "Brain"]
+day1_plasma <- median(dplyr::filter(nca_m_wide, treatment == "Day 1", matrix == "Plasma")$ctrough)
+stopifnot(
+  brain_nec > 775 / 2, brain_nec < 775 * 2,
+  brain_nec > 190, brain_nec < 2440,
+  # Pre-step plasma trough: within a factor of 2 of the quoted ~200 ng/mL.
+  day1_plasma > 100, day1_plasma < 400
+)
+```
+
+# Assumptions and deviations
+
+* **Typical values are geometric means of individual estimates.** The paper
+  fits each species by iterative two-stage (IT2S) Bayesian estimation in
+  ADAPT 5 and reports, per parameter, the geometric mean, median and CV% of
+  the individual estimates (Table 1; Statistical analysis: "PK estimates are
+  presented as geometric means"). The geometric means are used as typical
+  values, and the CV% as between-subject variability through
+  `omega^2 = log(1 + CV^2)`. For a few human parameters the median differs
+  markedly from the geometric mean (Ka 0.025 vs 0.135 1/h, Q/F 28.33 vs
+  6.31 L/h, V6/F 200 vs 405 L), which indicates a skewed distribution over 24
+  sparsely sampled participants; the log-normal summary does not capture that
+  skew.
+* **No covariances.** None are reported, so all random effects are
+  independent.
+* **Residual error is unreported.** Methods describe a variance model with
+  additive and proportional components, while Results describe the error
+  model as log-normal; no magnitudes are given. Both additive and
+  proportional components are encoded for each observed matrix and fixed at
+  zero, so simulations carry between-subject variability only. Brain tissue
+  was not measured in humans, so the human model declares no brain residual
+  error and `Cbrain` is a derived output.
+* **Rate constants act on amounts.** The paper names the CNS transfers as
+  rate constants (1/h) without writing the equations. First-order transfer of
+  the donor-compartment amount is the reading under which the human typical
+  brain:plasma AUC ratio (3.45) matches the published 3.6 and the CSF:plasma
+  ratio (about 0.018) matches the reported CSF (30 ng/mL) and plasma
+  (2,100 ng/mL) levels.
+* **Absorption chain.** Following Figure 1, TAU governs depot -> transit1,
+  transit1 -> transit2 and transit2 -> transit3, and Ka governs
+  transit3 -> central.
+* **Macaque clearance step.** "If time > 24 hours, then CL/F = CL/F x M" is
+  encoded as a step at 24 h after the first dose with the Table 1 geometric
+  mean M = 2.63 applied to every animal. In the study only four of the eight
+  animals showed the lowered troughs; the M variability (CV 103%) is how the
+  model spreads the effect across animals, so individual virtual macaques
+  range from little change to a large increase. Because the observed effect
+  was bimodal (present or absent), the median virtual animal at necropsy has
+  lower plasma, CSF and brain concentrations than the median observed animal
+  (see the macaque comparison above).
+* **Apparent volumes and rate constants.** All volumes are apparent (/F)
+  because bioavailability was not estimated; VCSF is fixed at 0.015 L
+  (macaque, from the literature) and 0.15 L (human, allometrically scaled),
+  and Vbrain is conditioned on it.
+* **Figure comparisons are population bands.** The paper's Figure 2 shows the
+  eight individual macaque fits and Figure 3 a 1,000-replicate VPC with
+  observed data overlaid; neither the individual parameters nor the observed
+  data are published, so the vignette shows population bands from the Table 1
+  distribution.

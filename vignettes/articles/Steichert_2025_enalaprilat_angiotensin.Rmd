@@ -1,0 +1,600 @@
+---
+title: "Enalaprilat and the angiotensin II / angiotensin I ratio, adults and children with heart failure (Steichert 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Enalaprilat and the angiotensin II / angiotensin I ratio, adults and children with heart failure (Steichert 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Models and source
+
+Steichert et al. (2025) used the plasma angiotensin II / angiotensin I ratio
+as a pharmacodynamic measure of in vivo angiotensin-converting-enzyme (ACE)
+activity during enalapril treatment and fitted two independent models in
+Monolix 2024R1. Both are packaged here and share this article:
+
+* `Steichert_2025_enalaprilat_angiotensin_adult`: population PK/PD model in
+  nine healthy adults after one 20 mg tablet of enalapril maleate (enalaprilat
+  PK with transit absorption, an effect compartment and a sigmoid Imax model).
+* `Steichert_2025_enalaprilat_angiotensin_pediatric`: population PD model in 27
+  ACE-inhibitor-naive children with heart failure from the LENA studies (direct
+  Imax model on the measured serum enalaprilat concentration).
+
+```{r load-models}
+mod_adult <- readModelDb("Steichert_2025_enalaprilat_angiotensin_adult")
+mod_ped <- readModelDb("Steichert_2025_enalaprilat_angiotensin_pediatric")
+```
+
+* Citation: `r rxode2::rxode(mod_adult)$reference`
+* Adult model: `r rxode2::rxode(mod_adult)$description`
+* Paediatric model: `r rxode2::rxode(mod_ped)$description`
+* Article: <https://doi.org/10.3390/pharmaceutics17101345>
+
+# Population
+
+**Healthy adults** (Section 2.1, Table 1): nine subjects (6 male, 3 female)
+from a single-dose, open-label study at Heinrich Heine University Duesseldorf
+in 2013; age 19-30 years (median 21), weight 47-88 kg (median 74), BMI
+18-25 kg/m^2. After a fast of at least 10 h each received one 20 mg enalapril
+maleate tablet (median 0.27 mg/kg). Serum enalaprilat was sampled densely to
+8 h and at 24, 48 and 72 h (288 concentrations, 47 below the 0.70 ug/L LLOQ and
+treated as left-censored); angiotensin I and II were sampled predose and at
+0.5-8, 24, 48 and 72 h, and the 99 ratios up to 24 h were modelled.
+
+**Children with heart failure** (Sections 2.2 and 3.2, Table 1): 27
+ACE-inhibitor-naive children (15 female) from two LENA PK-bridging studies and
+their safety follow-up study (Austria, Germany, Hungary, the Netherlands and
+Serbia, 2016-2018); 24 had congenital heart disease and 3 dilated
+cardiomyopathy. Across the 54 observations, age was 0.07-2.24 years (median
+0.36), weight 3.2-13.0 kg (median 4.8) and modified Ross score 0-9 (median 4).
+Children received enalapril maleate orodispersible minitablets (median first
+dose 0.06 mg/kg). The 54 paired enalaprilat concentration / ratio observations
+were 16 before the first dose, 12 after the first dose and 26 after repeated
+doses (3.9 days to 11.8 months).
+
+The same information is available programmatically through each model's
+`population` metadata.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The table
+collects them.
+
+| Model | Parameter / equation | Value | Source location |
+|---|---|---|---|
+| adult | `ktr` | 5.31 1/h | Table 2 |
+| adult | `mtt` | 1.46 h | Table 2 |
+| adult | `ka` | 1.19 1/h | Table 2 |
+| adult | `cl` (CL/F) | 36.39 L/h | Table 2 |
+| adult | `vc` (V1/F) | 223.71 L | Table 2 |
+| adult | `q` (Q/F) | 6.38 L/h | Table 2 |
+| adult | `vp` (V2/F) | 108.26 L | Table 2 |
+| adult | `ke0` | 0.48 1/h | Table 2 |
+| adult | `hill` (gamma) | 2.02 | Table 2 |
+| adult | `e0` | 0.043 | Table 2 |
+| adult | `ic50` | 30.01 ug/L | Table 2 |
+| adult | IIV ktr, Mtt, CL/F, V1/F, E0, IC50 | 72.89, 33.7, 30.17, 46.61, 141.9, 79.35 CV% | Table 2 |
+| adult | Correlation V1/F, CL/F | 0.84 | Table 2 |
+| adult | PK residual error | proportional 0.072, additive 0.42 ug/L | Table 2; combined model, Section 3.3.1 |
+| adult | PD residual error | proportional 0.41 | Table 2; Section 3.3.1 |
+| adult | Transit + first-order absorption, two compartments, linear elimination | -- | Section 3.3.1 |
+| adult | Effect compartment `dCe/dt = ke0 (Cc - Ce)` | -- | Sections 2.4.1 and 3.3.1 |
+| adult | `E = E0 (1 - Ce^gamma / (Ce^gamma + IC50^gamma))` | -- | Section 3.3.1 (full inhibition with sigmoidicity factor; Monolix library form) |
+| paediatric | `e0` | 0.19 | Table 3 |
+| paediatric | `ic50` | 1.19 ug/L | Table 3 |
+| paediatric | IIV IC50 | 59.92 CV% | Table 3 |
+| paediatric | Residual error | proportional 0.37 | Table 3; Section 3.6.1 |
+| paediatric | `E = E0 (1 - C / (C + IC50))` | -- | Section 3.6.1 (full inhibition, no sigmoidicity factor) |
+
+The paper prints no model equations; the effect-compartment and Imax forms
+above are the standard Monolix library forms named in the text.
+
+# Dose basis: enalapril free base
+
+The enalaprilat model has no enalapril state, so the dose enters as an amount
+of enalapril that the absorption compartment converts to enalaprilat. Doses are
+entered as enalapril **free base** in ug, the same basis as the group's
+paediatric enalapril / enalaprilat PK model
+(`Steichert_2025_enalapril_enalaprilat_pediatric`). One 20 mg enalapril maleate
+tablet is `20000 * 376.45 / 492.52 = 15287` ug of enalapril base.
+
+Figure 3a plots the population predictions (PRED) of every adult PK sample;
+those are the typical-value profile evaluated at the sampling times, so the
+right-most PRED column is the typical Cmax. Read from the figure by the
+maintainers, it lies at about 46 ug/L. Figure 4a likewise shows the PRED of the
+ratio spanning about 0.018 (the typical nadir) to 0.043 (E0). The check below
+evaluates the typical profile under three candidate dose amounts.
+
+```{r dose-basis}
+MW_ENALAPRIL <- 376.45
+MW_ENALAPRILAT <- 348.40
+MW_ENALAPRIL_MALEATE <- 492.52
+dose_candidates <- c(
+  "enalapril base (used)" = 20000 * MW_ENALAPRIL / MW_ENALAPRIL_MALEATE,
+  "enalaprilat equivalent" = 20000 * MW_ENALAPRILAT / MW_ENALAPRIL_MALEATE,
+  "maleate salt mass" = 20000
+)
+DOSE_ADULT_UG <- dose_candidates[["enalapril base (used)"]]
+
+mod_adult_typ <- rxode2::zeroRe(mod_adult)
+obs_grid <- seq(0, 24, by = 0.05)
+
+# Two declared endpoints: observe on the ODE state with dvid = 1, which
+# returns every endpoint column (Cc and ang2_ang1_ratio) at each row.
+make_adult_events <- function(ids, dose_ug, times) {
+  doses <- data.frame(id = ids, time = 0, evid = 1L, amt = dose_ug, cmt = "depot", dvid = NA_integer_)
+  obs <- tidyr::expand_grid(id = ids, time = times) |>
+    dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "central", dvid = 1L)
+  dplyr::bind_rows(doses, obs) |> dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+typ_by_dose <- lapply(names(dose_candidates), function(nm) {
+  ev <- make_adult_events(1L, dose_candidates[[nm]], obs_grid)
+  s <- as.data.frame(rxode2::rxSolve(mod_adult_typ, ev))
+  data.frame(
+    dose_basis = nm,
+    amt_ug = round(dose_candidates[[nm]]),
+    Cmax = max(s$Cc),
+    tmax = s$time[which.max(s$Cc)],
+    ratio_nadir = min(s$ang2_ang1_ratio)
+  )
+}) |> dplyr::bind_rows()
+
+typ_by_dose |>
+  dplyr::mutate(Cmax = signif(Cmax, 3), ratio_nadir = signif(ratio_nadir, 3)) |>
+  dplyr::rename(
+    "Dose basis" = dose_basis, "Amount (ug)" = amt_ug,
+    "Typical Cmax (ug/L)" = Cmax, "Typical tmax (h)" = tmax,
+    "Typical ratio nadir" = ratio_nadir
+  ) |>
+  knitr::kable()
+
+stopifnot(
+  # Figure 3a right-most PRED column ~46 ug/L.
+  abs(typ_by_dose$Cmax[1] / 46 - 1) < 0.05,
+  # The salt mass would put the PRED peak near 61 ug/L.
+  typ_by_dose$Cmax[3] > 55,
+  # Figure 4a left-most PRED column ~0.018.
+  abs(typ_by_dose$ratio_nadir[1] / 0.018 - 1) < 0.10
+)
+```
+
+The base dose reproduces both PRED extremes. The enalaprilat-equivalent dose
+(43 ug/L) is close but sits visibly below the figure's PRED maximum, and the
+salt mass (61 ug/L) is far off.
+
+# Scale of the random effects
+
+Table 2 and Table 3 report IIV as "CV%". Monolix estimates the standard
+deviation omega of each log-normal random effect and reports the coefficient
+of variation `sqrt(exp(omega^2) - 1)`, so the models use
+`omega^2 = log(1 + CV^2)`. The alternative reading, `omega = CV / 100`, gives a
+very different E0 variance (2.01 instead of 1.10, because the E0 CV is 141.9%).
+
+The predose bin of the PD visual predictive check (Figure 4b) separates the
+two. Before the dose, the ratio is `E0 * (1 + 0.41 * eps)`, so its percentiles
+depend only on the E0 variance and the residual error. Read by the maintainers
+from Figure 4b at time 0, the 90% prediction interval of the 90th percentile
+spans about 0.08-0.50, and that of the median about 0.03-0.085. The Monte Carlo
+below repeats the VPC for nine subjects, 2000 times, under each reading.
+
+```{r omega-scale}
+set.seed(20251025)
+omega_e0_used <- rxode2::rxode(mod_adult)$omega["etale0", "etale0"]
+vpc_t0 <- function(omega2, n_subj = 9, n_rep = 2000) {
+  pct <- t(replicate(n_rep, {
+    e0 <- 0.043 * exp(rnorm(n_subj, 0, sqrt(omega2)))
+    y <- e0 * (1 + 0.41 * rnorm(n_subj))
+    stats::quantile(y, c(0.1, 0.5, 0.9), type = 5)
+  }))
+  apply(pct, 2, stats::quantile, c(0.05, 0.95))
+}
+pi_log <- vpc_t0(omega_e0_used)
+pi_sd <- vpc_t0(1.419^2)
+
+data.frame(
+  reading = c("omega^2 = log(1 + CV^2) (used)", "omega = CV / 100"),
+  omega2_E0 = signif(c(omega_e0_used, 1.419^2), 3),
+  p50_PI = c(sprintf("%.3f-%.3f", pi_log[1, 2], pi_log[2, 2]), sprintf("%.3f-%.3f", pi_sd[1, 2], pi_sd[2, 2])),
+  p90_PI = c(sprintf("%.3f-%.3f", pi_log[1, 3], pi_log[2, 3]), sprintf("%.3f-%.3f", pi_sd[1, 3], pi_sd[2, 3]))
+) |>
+  dplyr::rename(
+    "Reading" = reading, "omega^2 (E0)" = omega2_E0,
+    "90% PI of median" = p50_PI, "90% PI of 90th percentile" = p90_PI
+  ) |>
+  knitr::kable()
+
+stopifnot(
+  # Figure 4b at time 0: upper edge of the 90th-percentile band ~0.50.
+  abs(pi_log[2, 3] / 0.50 - 1) < 0.25,
+  pi_sd[2, 3] > 0.8
+)
+```
+
+The log-CV reading reproduces the figure's predose bands; reading the CV as
+omega would put the upper edge of the 90th-percentile band above 1.
+
+# Healthy adults: simulation
+
+```{r adult-sim}
+N_ADULT <- 200L
+pk_times <- sort(unique(c(seq(0, 3, by = 1 / 6), seq(3, 6, by = 1 / 3), seq(6, 8, by = 0.5), 12, 24, 48, 72)))
+ev_adult <- make_adult_events(seq_len(N_ADULT), DOSE_ADULT_UG, pk_times) |>
+  dplyr::mutate(treatment = "20 mg enalapril maleate")
+
+rxode2::rxSetSeed(2025)
+sim_adult <- rxode2::rxSolve(mod_adult, ev_adult, keep = "treatment") |>
+  as.data.frame()
+
+typ_adult <- as.data.frame(rxode2::rxSolve(mod_adult_typ, make_adult_events(1L, DOSE_ADULT_UG, pk_times)))
+
+vpc_summary <- function(dat, var) {
+  dat |>
+    dplyr::group_by(time) |>
+    dplyr::summarise(
+      p10 = stats::quantile(.data[[var]], 0.10),
+      p50 = stats::quantile(.data[[var]], 0.50),
+      p90 = stats::quantile(.data[[var]], 0.90),
+      .groups = "drop"
+    )
+}
+```
+
+## Figure 3b: enalaprilat VPC
+
+```{r figure-3b}
+vpc_pk <- vpc_summary(sim_adult, "sim")
+ggplot(vpc_pk, aes(time)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = p50), colour = "steelblue4") +
+  geom_line(data = typ_adult, aes(y = Cc), linetype = "dashed") +
+  labs(
+    x = "Time (h)", y = "Serum enalaprilat concentration (ug/L)",
+    title = "Simulated enalaprilat, 200 healthy adults",
+    caption = "Band: 10th-90th percentiles of simulated observations; solid: median; dashed: typical value.\nReplicates Figure 3b of Steichert 2025 (simulated percentiles only)."
+  )
+```
+
+The `sim` column of the simulation output holds the simulated observation of
+each sample's own endpoint. Because every observation row is placed on the
+enalaprilat endpoint, `sim` is the enalaprilat observation including residual
+error; the ratio observation is generated separately below.
+
+The observed percentiles in Figure 3b peak at about 88 (90th), 38 (median) and
+25 ug/L (10th) between 3 and 5 h and fall below 5 ug/L by 24 h. With nine
+subjects the observed 90th percentile is close to the sample maximum; the
+figure's 90% prediction interval for it spans about 50-96 ug/L at the peak, so
+the population 90th percentile simulated below (about 66 ug/L) is consistent
+with it.
+
+```{r adult-pk-percentile-check}
+pk_peak <- vpc_pk |>
+  dplyr::filter(time >= 2, time <= 6) |>
+  dplyr::summarise(p10 = max(p10), p50 = max(p50), p90 = max(p90))
+pk_peak |> knitr::kable(digits = 1)
+stopifnot(
+  pk_peak$p50 > 30, pk_peak$p50 < 55,
+  pk_peak$p90 > 50, pk_peak$p90 < 96,
+  vpc_pk$p50[vpc_pk$time == 24] < 5
+)
+```
+
+## Figure 4b: angiotensin II / angiotensin I ratio VPC
+
+The PD residual error is proportional on the ratio, so a simulated observation
+is `ratio * (1 + 0.41 * eps)`. The sampling grid is restricted to the PD
+schedule (predose, 0.5, 1-8 and 24 h).
+
+```{r figure-4b}
+pd_times <- c(0, 0.5, 1:8, 24)
+ev_adult_pd <- make_adult_events(seq_len(N_ADULT), DOSE_ADULT_UG, pd_times)
+# Place the PD rows on the ratio endpoint (dvid = 2) so that sim is the
+# simulated ratio observation.
+ev_adult_pd$dvid[ev_adult_pd$evid == 0L] <- 2L
+
+rxode2::rxSetSeed(2026)
+sim_adult_pd <- rxode2::rxSolve(mod_adult, ev_adult_pd) |> as.data.frame()
+
+vpc_pd <- vpc_summary(sim_adult_pd, "sim")
+ggplot(vpc_pd, aes(time)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = p50), colour = "steelblue4") +
+  geom_point(aes(y = p50), colour = "steelblue4") +
+  labs(
+    x = "Time (h)", y = "ANG II / ANG I ratio",
+    title = "Simulated ANG II / ANG I ratio, 200 healthy adults",
+    caption = "Band: 10th-90th percentiles of simulated observations; line: median.\nReplicates Figure 4b (and the adult part of Figure 5) of Steichert 2025."
+  )
+vpc_pd |> knitr::kable(digits = 3)
+
+stopifnot(
+  # Predose median near E0 (Figure 4b median band 0.03-0.085 at time 0).
+  vpc_pd$p50[vpc_pd$time == 0] > 0.025, vpc_pd$p50[vpc_pd$time == 0] < 0.065,
+  # The median falls by roughly half around 4-7 h and recovers by 24 h.
+  min(vpc_pd$p50) < 0.6 * vpc_pd$p50[vpc_pd$time == 0],
+  vpc_pd$p50[vpc_pd$time == 24] > 0.8 * vpc_pd$p50[vpc_pd$time == 0]
+)
+```
+
+The typical ratio reaches its nadir after the enalaprilat peak (3.5 h) because
+of the effect-compartment delay (`ke0` = 0.48 1/h, equilibration half-life
+1.4 h), reproducing the clockwise hysteresis of Figure 2.
+
+```{r hysteresis}
+ggplot(typ_adult |> dplyr::filter(time <= 24), aes(Cc, ang2_ang1_ratio)) +
+  geom_path() +
+  geom_point(data = typ_adult |> dplyr::filter(time %in% c(0.5, 1, 2, 3, 4, 6, 8, 24)), aes(colour = factor(time))) +
+  labs(
+    x = "Serum enalaprilat concentration (ug/L)", y = "ANG II / ANG I ratio",
+    colour = "Time (h)",
+    title = "Typical-value hysteresis loop, healthy adult",
+    caption = "Compare with the clockwise loop of one subject in Figure 2 of Steichert 2025."
+  )
+```
+
+## PKNCA: enalaprilat after a single 20 mg enalapril maleate dose
+
+The paper reports no NCA, only that the highest measured enalaprilat
+concentration in the nine adults was 109 ug/L (Section 3.4). The NCA of the
+simulated cohort is shown for reference.
+
+```{r pknca-adult}
+nca_conc <- sim_adult |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+nca_dose <- ev_adult |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(
+    median = stats::median(PPORRES, na.rm = TRUE),
+    p05 = stats::quantile(PPORRES, 0.05, na.rm = TRUE),
+    p95 = stats::quantile(PPORRES, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+nca_tbl |>
+  dplyr::mutate(dplyr::across(c(median, p05, p95), ~ signif(.x, 3))) |>
+  dplyr::rename(
+    "Treatment" = treatment, "NCA parameter" = PPTESTCD,
+    "Median" = median, "5th percentile" = p05, "95th percentile" = p95
+  ) |>
+  knitr::kable()
+
+cmax_p95 <- nca_tbl$p95[nca_tbl$PPTESTCD == "cmax"]
+stopifnot(cmax_p95 > 60, cmax_p95 < 160)
+```
+
+The simulated 95th percentile of Cmax brackets the highest measured value of
+109 ug/L in nine subjects.
+
+# Children with heart failure
+
+## Figure 6b: ratio versus serum enalaprilat concentration
+
+The paediatric model takes the serum enalaprilat concentration as the
+covariate `CP_ENALAPRILAT_NGML`. Each virtual child below is observed once at
+each concentration of a grid spanning the observed 0-18.3 ug/L.
+
+```{r ped-sim}
+N_PED <- 200L
+conc_grid <- c(0, 0.5, 1, 1.6, 2.5, 3.5, 4.7, 6, 7.9, 10, 12, 14.9, 18)
+ev_ped <- tidyr::expand_grid(id = seq_len(N_PED), CP_ENALAPRILAT_NGML = conc_grid) |>
+  dplyr::group_by(id) |>
+  dplyr::mutate(time = seq_along(CP_ENALAPRILAT_NGML) - 1, evid = 0L, amt = 0) |>
+  dplyr::ungroup()
+
+rxode2::rxSetSeed(2027)
+sim_ped <- rxode2::rxSolve(mod_ped, ev_ped, keep = "CP_ENALAPRILAT_NGML") |>
+  as.data.frame()
+
+vpc_ped <- sim_ped |>
+  dplyr::group_by(CP_ENALAPRILAT_NGML) |>
+  dplyr::summarise(
+    p10 = stats::quantile(sim, 0.10),
+    p50 = stats::quantile(sim, 0.50),
+    p90 = stats::quantile(sim, 0.90),
+    .groups = "drop"
+  )
+
+typ_curve <- data.frame(conc = seq(0, 18, by = 0.1)) |>
+  dplyr::mutate(
+    children = 0.19 * (1 - conc / (conc + 1.19)),
+    adults = 0.043 * (1 - conc^2.02 / (conc^2.02 + 30.01^2.02))
+  )
+
+ggplot(vpc_ped, aes(CP_ENALAPRILAT_NGML)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = p50), colour = "steelblue4") +
+  geom_point(aes(y = p50), colour = "steelblue4") +
+  labs(
+    x = "Serum enalaprilat concentration (ug/L)", y = "ANG II / ANG I ratio",
+    title = "Simulated ANG II / ANG I ratio, children with heart failure",
+    caption = "Band: 10th-90th percentiles of simulated observations; line: median.\nReplicates Figure 6b of Steichert 2025."
+  )
+vpc_ped |> knitr::kable(digits = 3)
+```
+
+At zero concentration the model has no random effect (IIV on E0 was removed),
+so the predose spread is the residual error alone:
+`0.19 * (1 +/- 1.2816 * 0.37)` = 0.10-0.28 for the 10th and 90th percentiles,
+matching the observed predose percentiles of Figure 6b (about 0.11, 0.19 and
+0.27).
+
+```{r ped-check}
+typ_ped <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod_ped), ev_ped |> dplyr::filter(id == 1L)))
+stopifnot(
+  # Typical value against its own closed form.
+  isTRUE(all.equal(
+    typ_ped$ang2_ang1_ratio,
+    0.19 * (1 - conc_grid / (conc_grid + 1.19)),
+    tolerance = 1e-8
+  )),
+  # Predose simulated percentiles against the residual-only expectation.
+  abs(vpc_ped$p50[1] / 0.19 - 1) < 0.08,
+  abs(vpc_ped$p90[1] / (0.19 * (1 + qnorm(0.9) * 0.37)) - 1) < 0.10
+)
+```
+
+## Comparison with the adult concentration-response curve
+
+The paediatric baseline ratio is higher (0.19 versus 0.043) and the IC50 much
+lower (1.19 versus 30.01 ug/L) than in adults (Discussion). The plot shows the
+typical curves as a fraction of baseline; the adult curve is plotted against
+the effect-site concentration.
+
+```{r compare-curves}
+typ_curve |>
+  dplyr::mutate(children = children / 0.19, adults = adults / 0.043) |>
+  tidyr::pivot_longer(c(children, adults), names_to = "population", values_to = "frac") |>
+  ggplot(aes(conc, frac, colour = population)) +
+  geom_line() +
+  labs(
+    x = "Enalaprilat concentration (ug/L; effect site for adults)",
+    y = "ANG II / ANG I ratio / baseline",
+    colour = NULL,
+    title = "Typical concentration-response, children vs adults"
+  )
+```
+
+## Ratio change four hours after the first dose
+
+Section 3.5 reports that in eight children (median age 0.22 years, range
+0.07-0.58) the ratio fell by a median of 79.3% (range 21.4-92.7%) four hours
+after a median first dose of 0.06 mg/kg enalapril maleate. The paper's
+Conclusions suggest coupling the paediatric PD model to the group's paediatric
+PK model; this section does that. Enalaprilat concentrations at 4 h are
+simulated with `Steichert_2025_enalapril_enalaprilat_pediatric` (dose entered
+as enalapril base), then passed to the PD model. The percentage change uses the
+typical-value ratio before and after, so it reflects PK and IC50 variability
+but not residual error.
+
+```{r ped-first-dose}
+mod_ped_pk <- readModelDb("Steichert_2025_enalapril_enalaprilat_pediatric")
+set.seed(79)
+N_FD <- 200L
+cohort_fd <- data.frame(
+  id = seq_len(N_FD),
+  AGE = exp(stats::runif(N_FD, log(0.07), log(0.58)))
+) |>
+  dplyr::mutate(
+    WT = pmin(pmax(4.8 * exp(stats::rnorm(N_FD, 0, 0.3)), 3.2), 13),
+    CREAT = 23.37,
+    SCORE_ROSS = 4
+  )
+ev_fd <- dplyr::bind_rows(
+  cohort_fd |> dplyr::mutate(
+    time = 0, evid = 1L, cmt = "depot", dvid = NA_integer_,
+    amt = 0.06 * WT * 1000 * MW_ENALAPRIL / MW_ENALAPRIL_MALEATE
+  ),
+  cohort_fd |> dplyr::mutate(time = 4, evid = 0L, cmt = "central", dvid = 1L, amt = NA_real_)
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+rxode2::rxSetSeed(2028)
+pk_fd <- rxode2::rxSolve(mod_ped_pk, ev_fd, keep = c("WT", "AGE")) |>
+  as.data.frame()
+
+# Pass the 4-h enalaprilat concentration (ug/L) to the PD model with IIV on
+# IC50 and no residual error: predose (C = 0) and 4 h rows for each child.
+ev_pd_fd <- dplyr::bind_rows(
+  data.frame(id = pk_fd$id, time = 0, CP_ENALAPRILAT_NGML = 0),
+  data.frame(id = pk_fd$id, time = 4, CP_ENALAPRILAT_NGML = pk_fd$Cc_enaat)
+) |>
+  dplyr::mutate(evid = 0L, amt = 0) |>
+  dplyr::arrange(id, time)
+rxode2::rxSetSeed(2029)
+pd_fd <- rxode2::rxSolve(mod_ped, ev_pd_fd, sigma = NA, keep = "CP_ENALAPRILAT_NGML") |>
+  as.data.frame()
+
+pct_change <- pd_fd |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    conc4 = CP_ENALAPRILAT_NGML[time == 4],
+    decrease = 100 * (1 - ang2_ang1_ratio[time == 4] / ang2_ang1_ratio[time == 0]),
+    .groups = "drop"
+  )
+
+data.frame(
+  quantity = c("Enalaprilat at 4 h (ug/L)", "Ratio decrease at 4 h (%)"),
+  median = c(stats::median(pct_change$conc4), stats::median(pct_change$decrease)),
+  p10 = c(stats::quantile(pct_change$conc4, 0.1), stats::quantile(pct_change$decrease, 0.1)),
+  p90 = c(stats::quantile(pct_change$conc4, 0.9), stats::quantile(pct_change$decrease, 0.9)),
+  published = c(NA, 79.3)
+) |>
+  dplyr::mutate(dplyr::across(c(median, p10, p90), ~ signif(.x, 3))) |>
+  dplyr::rename(
+    "Quantity" = quantity, "Simulated median" = median,
+    "Simulated 10th percentile" = p10, "Simulated 90th percentile" = p90,
+    "Published median (n = 8)" = published
+  ) |>
+  knitr::kable()
+
+stopifnot(
+  # The simulated median lies inside the observed range of the eight children.
+  stats::median(pct_change$decrease) > 21.4,
+  stats::median(pct_change$decrease) < 92.7
+)
+```
+
+The chained prediction (a median decrease of about 69%) is close to the
+observed median of 79.3% in eight children. The observed figure is a median of
+eight noisy ratios, each carrying the 37% residual error twice, and the eight
+children were younger than the PK model's reference subject, so an exact match
+is not expected.
+
+# Assumptions and deviations
+
+* **Dose basis.** Doses are entered as enalapril free base. The paper does not
+  state the basis; it is settled above against the population predictions of
+  Figures 3a and 4a.
+* **IIV scale.** Table 2 and Table 3 give IIV as CV%; the models use
+  `omega^2 = log(1 + CV^2)`, the Monolix definition for log-normal parameters,
+  and the predose VPC band of Figure 4b supports it over `omega = CV / 100`.
+  The CL/F-V1/F covariance is `0.84 * omega_CL * omega_V1`.
+* **Residual error forms.** The adult PK error is "combined additive and
+  proportional" without a stated form; the Monolix default `combined1`
+  (standard deviations summed, `a + b * f`) is used. The proportional errors
+  are entered as reported (0.072, 0.41, 0.37); the predose percentiles of
+  Figure 6b confirm that 0.37 is a standard deviation.
+* **Transit absorption.** Monolix's `Mtt` / `Ktr` parameterisation is
+  implemented with rxode2's `transit()`, with `n = Mtt * Ktr - 1` transit
+  stages (6.75 for the typical subject). Because IIV acts on both `Mtt` and
+  `Ktr`, `n` varies between subjects. `transit()` uses the most recent dose
+  only, which is exact for the single-dose design of the adult study but
+  approximate when doses overlap.
+* **Censoring and LLOQ handling.** Enalaprilat values below the LLOQ were
+  left-censored (M4) in the adult fit; paediatric angiotensin II values below
+  the LLOQ were replaced by LLOQ/2 before forming the ratio. Neither affects
+  simulation.
+* **Validity window.** The adult PD data were limited to 0-24 h because the
+  ratio overshot the baseline at 48 and 72 h in some subjects; the adult model
+  does not describe that rebound.
+* **Paediatric cohort for the first-dose check.** Age was drawn log-uniformly
+  over 0.07-0.58 years and weight log-normally around the Table 1 median of
+  4.8 kg (truncated to 3.2-13 kg); serum creatinine and Ross score were set to
+  the PK model's reference values (23.37 umol/L, 4). The study's individual
+  covariates are not published.
+* **Figure values** quoted for comparison (PRED extremes in Figures 3a and 4a,
+  VPC bands in Figures 3b, 4b and 6b) were read from the figures by the
+  maintainers.

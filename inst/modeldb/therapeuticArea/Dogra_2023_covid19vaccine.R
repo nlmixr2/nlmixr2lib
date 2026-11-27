@@ -34,6 +34,7 @@ Dogra_2023_covid19vaccine <- function() {
     dosing = "dimensionless (unit dose)",
     concentration = "U/mL (neutralizing antibody titer)"
   )
+  dosing <- "depot_antigen"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

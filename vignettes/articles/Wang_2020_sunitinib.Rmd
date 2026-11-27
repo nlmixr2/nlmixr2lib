@@ -257,7 +257,12 @@ sd_m <- rxode2::rxSolve(mod_m, ev_sd_m, keep = c("treatment", "dose_mg")) |> as.
 run_nca <- function(sim, conc_col) {
   conc <- sim |>
     dplyr::transmute(id, time, treatment, conc = .data[[conc_col]]) |>
-    dplyr::filter(!is.na(conc))
+    dplyr::filter(!is.na(conc)) |>
+    # Past the peak, values below 1e-6 * Cmax are solver noise around zero
+    # (some negative) and would decide the terminal-slope fit.
+    dplyr::group_by(id) |>
+    dplyr::filter(time <= time[which.max(conc)] | conc >= 1e-6 * max(conc)) |>
+    dplyr::ungroup()
   dose <- sim |>
     dplyr::distinct(id, treatment, dose_mg) |>
     dplyr::mutate(time = 0)

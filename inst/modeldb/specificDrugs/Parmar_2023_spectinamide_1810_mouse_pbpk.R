@@ -38,6 +38,7 @@ Parmar_2023_spectinamide_1810_mouse_pbpk <- function() {
     dosing = "mg (absolute amount; the paper's mg/kg dose x 0.02 kg mouse body weight, e.g. 10 mg/kg = 0.2 mg)",
     concentration = "mg/L (equivalently ug/mL for plasma and ug/g for tissue under the paper's unit-tissue-density assumption)"
   )
+  dosing <- c("depot", "venous")
 
   # No covariates: physiology is tabulated per species and held fixed, and no
   # demographic, weight or disease-status effect is estimated (Parmar 2023

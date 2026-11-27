@@ -1,0 +1,513 @@
+---
+title: "Imipenem (Qiao 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Imipenem (Qiao 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Qiao_2026_imipenem"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Qiao_2026_imipenem"))$description`
+* Article: [Drug Des Devel Ther. 2026;20:606942](https://doi.org/10.2147/DDDT.S606942)
+
+# Population
+
+Forty-six critically ill adults in the intensive care unit of Chongqing
+University Central Hospital (China), enrolled January to December 2025, who
+received imipenem-cilastatin together with continuous renal replacement therapy
+(CRRT) for at least 24 h. The cohort was 52.2% male, median age 68 years (range
+18-96) and median weight 60 kg (range 35-85); 40 patients (87%) had sepsis or
+septic shock and 17 (37%) acute kidney injury (Table 1).
+
+CRRT was continuous veno-venous hemofiltration (CVVH) in 38 patients and
+haemodiafiltration (CVVHDF) in 8, with a median blood flow of 150 mL/min
+(115-200) and a median ultrafiltration flow of 2362 mL/h (2029-3840). The
+Cockcroft-Gault creatinine clearance, computed from serum creatinine measured
+during CRRT, had a median of 40.07 mL/min and spanned 6.70-157.98 mL/min, so the
+cohort includes patients whose native renal function was recovering. The
+per-patient CRRT clearance of imipenem, calculated from the circuit flows and
+the measured effluent-to-plasma concentration ratio, had a median of 2.48 L/h
+(1.37-3.72).
+
+Patients received 0.5 g every 6 h (22 patients) or 1 g every 8 h (24 patients)
+as a 2-h intravenous infusion. 560 plasma samples (plus 280 effluent samples)
+were drawn pre-dose and 0.5-8 h after a dose at or near steady state.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Qiao_2026_imipenem")()$population`).
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Qiao_2026_imipenem.R`. The table below
+collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment model, linear elimination | n/a | Results, "PopPK Model"; Discussion |
+| `CL_TOTAL = 6.08 * (CrCl / 40.07)^0.383 * exp(eta_CL) + CL_CRRT` | n/a | Equation 10 |
+| `CL_CVVH = SC * Q_E * [Q_b / (Q_b + Q_R)] / 1000`; `CL_CVVHDF` the same with SA | n/a | Equations 1-5 |
+| Exponential IIV, `eta ~ N(0, omega^2)` | n/a | Equation 6 |
+| Proportional residual error, `Y = IPRED * (1 + eps)` | n/a | Equation 7 |
+| `lcl` | 6.08 L/h (RSE 7%) | Table 2, final model |
+| `lvc` (V1) | 24.4 L (RSE 9%) | Table 2, final model |
+| `lq` (Q) | 3.19 L/h (RSE 30%) | Table 2, final model |
+| `lvp` (V2) | 12.0 L (RSE 36%) | Table 2, final model |
+| `e_crcl_cl` | 0.383 (RSE 26%) | Table 2 row 'CLCR-CL'; Equation 10 |
+| `CRCL` centring constant | 40.07 mL/min (cohort median) | Equation 10; Table 1 |
+| `etalcl` | omega^2 = 0.192 (RSE 29%) | Table 2 row 'IIV-CL' |
+| `etalvc` | omega^2 = 0.161 (RSE 36%) | Table 2 row 'IIV-V1' |
+| `propSd` | sqrt(0.0849) = 0.291 | Table 2 row 'PROB-erro' (sigma^2) |
+| Screened, not retained | WT, AGE, ALT, BUN, RBC, neutrophil %, septic shock | Supplementary Table S1 |
+
+## Covariates the user must supply
+
+* `CRCL` - Cockcroft-Gault creatinine clearance in mL/min (not normalised to
+  body surface area), with serum creatinine in umol/L and the 0.818 divisor of
+  the Table 1 footnote.
+* `QEFF` - the patient's CRRT clearance of imipenem in L/h, added to the
+  endogenous clearance outside the random effect. The paper computes it from
+  the effluent flow, the predilution correction and the measured sieving
+  (CVVH) or saturation (CVVHDF) coefficient; it does not report those
+  coefficients.
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below mirrors
+the two administered regimens, 200 virtual patients per regimen. Creatinine
+clearance is drawn log-normally around the 40.07 mL/min median and truncated
+to the observed 6.70-157.98 mL/min range; CRRT clearance is drawn normally
+around the 2.48 L/h median and truncated to the observed 1.37-3.72 L/h range.
+The spreads of both distributions are chosen by the maintainers to fill the
+reported ranges, because Table 1 gives only medians and ranges.
+
+```{r cohort}
+# rxode2's simulation RNG is partitioned per solver thread, so the drawn
+# cohort is not reproducible across machines with different thread counts.
+# Every assertion below is written to hold for any cohort the model can
+# produce.
+rxode2::rxSetSeed(20260824)
+set.seed(20260824)
+
+mod <- readModelDb("Qiao_2026_imipenem")
+
+N_PER_ARM <- 200L
+
+rtrunc <- function(n, draw, lo, hi) {
+  x <- draw(n)
+  bad <- x < lo | x > hi
+  while (any(bad)) {
+    x[bad] <- draw(sum(bad))
+    bad <- x < lo | x > hi
+  }
+  x
+}
+
+observed_regimens <- tibble::tribble(
+  ~regimen,     ~amt, ~ii,
+  "0.5 g q6h",   500,   6,
+  "1 g q8h",    1000,   8
+)
+
+# One steady-state dosing interval per patient (`ss = 1`), 2-h infusion as
+# administered (Methods, "Patients and Medications"), observed on a 0.1-h grid.
+make_obs_arm <- function(amt, ii, regimen, id_offset) {
+  ev <- rxode2::et(amt = amt, dur = 2, ii = ii, ss = 1, cmt = "central") |>
+    rxode2::et(round(seq(0, ii, by = 0.1), 6), cmt = "central") |>
+    rxode2::et(id = seq_len(N_PER_ARM))
+  as.data.frame(ev) |>
+    # `.env$ii`: the event table has its own `ii` column (NA on observation
+    # rows), which a bare `ii` would pick up instead of the argument.
+    dplyr::mutate(id = id + id_offset, regimen = regimen, tau = .env$ii)
+}
+
+events_obs <- dplyr::bind_rows(lapply(seq_len(nrow(observed_regimens)), function(i) {
+  make_obs_arm(
+    observed_regimens$amt[i], observed_regimens$ii[i],
+    observed_regimens$regimen[i], id_offset = (i - 1L) * N_PER_ARM
+  )
+}))
+
+covs <- tibble::tibble(
+  id = sort(unique(events_obs$id)),
+  CRCL = rtrunc(length(id), function(n) rlnorm(n, log(40.07), 0.75), 6.70, 157.98),
+  QEFF = rtrunc(length(id), function(n) rnorm(n, 2.48, 0.55), 1.37, 3.72)
+)
+events_obs <- dplyr::left_join(events_obs, covs, by = "id")
+
+summary(covs[, c("CRCL", "QEFF")])
+```
+
+# Simulation
+
+```{r simulate-obs}
+sim_obs <- rxode2::rxSolve(mod, events = events_obs, returnType = "data.frame",
+                           maxsteps = 1e6) |>
+  dplyr::mutate(id = as.integer(as.character(id))) |>
+  dplyr::left_join(dplyr::distinct(events_obs, id, regimen, tau), by = "id")
+```
+
+## Concentration-time profiles
+
+```{r profiles}
+pi_obs <- sim_obs |>
+  dplyr::filter(!is.na(sim)) |>
+  dplyr::group_by(regimen, time) |>
+  dplyr::summarise(
+    p10 = quantile(sim, 0.10), p50 = median(sim), p90 = quantile(sim, 0.90),
+    .groups = "drop"
+  )
+
+ggplot(pi_obs, aes(time, p50)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), alpha = 0.25, fill = "steelblue") +
+  geom_line(colour = "steelblue4") +
+  facet_wrap(~regimen, scales = "free_x") +
+  labs(x = "Time after dose at steady state (h)", y = "Imipenem plasma concentration (mg/L)",
+       title = "Simulated median and 10th-90th percentiles (with residual error)",
+       caption = "Compare with the VPC of Figure 3 of Qiao 2026.")
+```
+
+Figure 3 of the paper is a VPC of the plasma data against time since the first
+dose. Read off the figure, the observed median lies between about 7.5 and 16
+mg/L, the observed 10th percentile near 2 mg/L and the observed 90th
+percentile between about 31 and 41 mg/L, while the simulated 90th-percentile
+confidence band reaches down to about 19-25 mg/L. The check below pools the
+simulated concentrations at the paper's sampling times (pre-dose and 0.5-8 h
+after a dose, Methods) across both regimens. The pooled median falls on the
+observed one; the simulated upper percentile sits a little below the observed
+one, which depends on the creatinine- and CRRT-clearance spreads assumed for
+the virtual cohort (Table 1 gives only medians and ranges).
+
+```{r vpc-check}
+sample_times <- c(0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8)
+pooled <- sim_obs |>
+  dplyr::filter(round(time, 6) %in% sample_times, time <= tau, !is.na(sim))
+vpc_q <- quantile(pooled$sim, c(0.10, 0.50, 0.90))
+round(vpc_q, 2)
+
+stopifnot(
+  # Structural: Css,avg is Dose / (tau * CL), so a mis-transcribed CL, V1,
+  # dose or unit moves the pooled median by tens of percent.
+  vpc_q[["50%"]] > 6, vpc_q[["50%"]] < 18,
+  # Envelope, read from Figure 3 with headroom for the digitising error and
+  # the cohort draw.
+  vpc_q[["10%"]] > 0.5, vpc_q[["10%"]] < 5,
+  vpc_q[["90%"]] > 20, vpc_q[["90%"]] < 50
+)
+```
+
+# PKNCA validation
+
+The paper reports no non-compartmental results, so the NCA below is checked
+against the steady-state identity `AUC0-tau,ss = Dose / CL`, which must hold
+for each simulated patient whatever its parameters.
+
+```{r pknca, message = FALSE}
+conc_nca <- sim_obs |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
+  dplyr::select(id, regimen, time, Cc)
+
+dose_nca <- events_obs |>
+  dplyr::filter(!is.na(amt), amt > 0) |>
+  dplyr::distinct(id, regimen, time, amt, tau)
+
+conc_obj <- PKNCA::PKNCAconc(conc_nca, Cc ~ time | regimen + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | regimen + id)
+
+intervals <- dplyr::bind_rows(
+  data.frame(regimen = "0.5 g q6h", start = 0, end = 6),
+  data.frame(regimen = "1 g q8h", start = 0, end = 8)
+) |>
+  dplyr::mutate(cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res$result)
+
+nca_tab |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "auclast", "cav")) |>
+  dplyr::group_by(regimen, PPTESTCD) |>
+  dplyr::summarise(
+    median = signif(median(PPORRES), 3),
+    p10 = signif(quantile(PPORRES, 0.10), 3),
+    p90 = signif(quantile(PPORRES, 0.90), 3),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Regimen" = regimen, "NCA parameter" = PPTESTCD,
+                "Median" = median, "10th percentile" = p10, "90th percentile" = p90) |>
+  knitr::kable(caption = "Simulated steady-state NCA (typical cohort, 2-h infusion).")
+```
+
+```{r pknca-identity}
+cl_by_id <- sim_obs |> dplyr::distinct(id, cl)
+auc_chk <- nca_tab |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::left_join(dose_nca, by = c("id", "regimen")) |>
+  dplyr::left_join(cl_by_id, by = "id") |>
+  dplyr::mutate(ratio = PPORRES / (amt / cl))
+
+summary(auc_chk$ratio)
+
+# Both sides use the same drawn parameters, so the difference is linear-up /
+# log-down trapezoid error on a 0.1-h grid plus integrator tolerance; it is
+# below 0.2% for every patient in practice.
+stopifnot(nrow(auc_chk) == 2L * N_PER_ARM, max(abs(auc_chk$ratio - 1)) < 0.01)
+```
+
+# Replicating the probability of target attainment (Figure 6)
+
+The paper's Monte Carlo simulations (Methods, "Monte Carlo Simulations";
+Figures 4-9) stratify by creatinine clearance (<= 30, 31-60, 61-90 and >= 90
+mL/min), CRRT intensity (20, 37 and 74 mL/h/kg at the 60 kg median weight)
+and modality, and score 40% fT>MIC at steady state for six regimens. Three
+inputs needed to repeat them are not stated in the paper and are set here as
+follows.
+
+* **CRRT clearance per scenario.** The paper converts the CRRT dose to an
+  imipenem clearance through Equations 4-5 but does not report the sieving or
+  saturation coefficient, the blood flow or the replacement flow it used. Here
+  `QEFF = CRRT dose x 60 kg / 1000` (L/h), i.e. the product of the sieving
+  coefficient and the predilution factor is taken as 1. Applying the
+  predilution factor at the median blood flow of 150 mL/min with a sieving
+  coefficient of 1 lowers `QEFF` at 37 mL/h/kg from 2.22 to 1.78 L/h and
+  roughly doubles the RMSE against the 24 digitised cells below (4.3 versus
+  2.2 percentage points in a 1000-patient check).
+* **Infusion duration.** The patients received 2-h infusions, but the
+  published curves are reproduced only with a 0.5-h infusion; a 2-h infusion
+  raises fT>MIC and overshoots the figure systematically (computed below).
+* **Creatinine clearance within a band.** Each band is represented by a single
+  value: 15, 45, 75 and 120 mL/min.
+
+PTA is computed on total plasma concentration, as the model predicts it; the
+paper applies no unbound-fraction correction.
+
+```{r pta-setup}
+pta_regimens <- tibble::tribble(
+  ~regimen,     ~amt, ~ii,
+  "0.5 g q6h",   500,   6,
+  "0.5 g q8h",   500,   8,
+  "0.5 g q12h",  500,  12,
+  "1 g q6h",    1000,   6,
+  "1 g q8h",    1000,   8,
+  "1 g q12h",   1000,  12
+)
+crcl_bands <- tibble::tibble(
+  band = factor(c("<= 30", "31-60", "61-90", ">= 90"),
+                levels = c("<= 30", "31-60", "61-90", ">= 90")),
+  CRCL = c(15, 45, 75, 120)
+)
+mic_grid <- c(0.0625, 0.125, 0.25, 0.5, 1, 2, 4, 8, 16, 32)
+WT_SIM <- 60  # kg, Table 1 median; Results 'Simulations and Target Attainment'
+
+pta_events <- function(regs, crrt_dose, dur) {
+  arms <- tidyr::crossing(regs, crcl_bands)
+  dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+    ev <- rxode2::et(amt = arms$amt[i], dur = dur, ii = arms$ii[i], ss = 1, cmt = "central") |>
+      rxode2::et(round(seq(0, arms$ii[i], by = 0.05), 6), cmt = "central") |>
+      rxode2::et(id = seq_len(N_PER_ARM))
+    as.data.frame(ev) |>
+      dplyr::mutate(
+        id = id + (i - 1L) * N_PER_ARM,
+        regimen = arms$regimen[i], tau = arms$ii[i], band = arms$band[i],
+        CRCL = arms$CRCL[i], QEFF = crrt_dose * WT_SIM / 1000
+      )
+  }))
+}
+
+pta_from <- function(model, ev) {
+  meta <- dplyr::distinct(ev, id, regimen, tau, band)
+  sim <- rxode2::rxSolve(model, events = ev, returnType = "data.frame", maxsteps = 1e6) |>
+    dplyr::mutate(id = as.integer(as.character(id))) |>
+    dplyr::left_join(meta, by = "id") |>
+    dplyr::filter(time < tau)
+  stopifnot(!anyNA(sim$Cc))
+  # Fraction of the dosing interval above each MIC, per patient; the grid is
+  # uniform, so the fraction of grid points equals the fraction of time.
+  ft <- sim |>
+    dplyr::group_by(id, regimen, band) |>
+    dplyr::reframe(MIC = mic_grid,
+                   ft = vapply(mic_grid, function(m) mean(Cc > m), numeric(1)))
+  ft |>
+    dplyr::group_by(regimen, band, MIC) |>
+    dplyr::summarise(PTA = 100 * mean(ft >= 0.4), .groups = "drop")
+}
+```
+
+```{r pta-figure6, fig.height = 7}
+pta37 <- pta_from(mod, pta_events(pta_regimens, crrt_dose = 37, dur = 0.5))
+
+ggplot(pta37, aes(MIC, PTA, colour = band)) +
+  geom_line() + geom_point(size = 1) +
+  geom_hline(yintercept = c(50, 80, 90), linetype = "dashed", colour = "grey60") +
+  scale_x_continuous(trans = "log2", breaks = mic_grid, labels = format(mic_grid)) +
+  facet_wrap(~factor(regimen, levels = pta_regimens$regimen), ncol = 2) +
+  labs(x = "MIC (mg/L)", y = "PTA, 40% fT>MIC (%)", colour = "CrCl (mL/min)",
+       title = "CVVH, 37 mL/h/kg",
+       caption = "Replicates Figure 6 of Qiao 2026.") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+The table compares the simulated PTA for the three 0.5 g regimens at MIC 4
+and 8 mg/L with values digitised by the maintainers from Figure 6 (panels A-C;
+the 1 g panels D-F repeat them at twice the MIC, as linear kinetics require).
+
+```{r pta-compare}
+fig6 <- tibble::tribble(
+  ~regimen,     ~MIC, ~`<= 30`, ~`31-60`, ~`61-90`, ~`>= 90`,
+  "0.5 g q6h",     4,      100,       97,       93,       83,
+  "0.5 g q8h",     4,       96,       86,       76,       57,
+  "0.5 g q12h",    4,       75,       51,       35,       18,
+  "0.5 g q6h",     8,       90,       68,       55,       37,
+  "0.5 g q8h",     8,       67,       38,       23,       10,
+  "0.5 g q12h",    8,       15,        4,        1,        0
+) |>
+  tidyr::pivot_longer(-c(regimen, MIC), names_to = "band", values_to = "published") |>
+  dplyr::mutate(band = factor(band, levels = levels(crcl_bands$band)))
+
+cmp37 <- fig6 |>
+  dplyr::left_join(pta37, by = c("regimen", "band", "MIC")) |>
+  dplyr::mutate(diff = PTA - published)
+
+cmp37 |>
+  dplyr::arrange(MIC, regimen, band) |>
+  dplyr::rename("Regimen" = regimen, "MIC (mg/L)" = MIC, "CrCl band (mL/min)" = band,
+                "Figure 6 PTA (%)" = published, "Simulated PTA (%)" = PTA,
+                "Difference" = diff) |>
+  knitr::kable(digits = 1)
+
+rmse <- function(d) sqrt(mean(d^2))
+c(RMSE = rmse(cmp37$diff), mean_bias = mean(cmp37$diff))
+```
+
+With 200 patients per arm the Monte Carlo standard error of one cell is up to
+3.5 percentage points, and in a 1000-patient check this configuration lands
+within an RMSE of 2.2 points of the digitised values. The gate below sits well
+above that and well below the 12-13 points of the two rejected readings
+(next sections).
+
+```{r pta-gate}
+stopifnot(nrow(cmp37) == 24L, !anyNA(cmp37$PTA),
+          rmse(cmp37$diff) < 7, abs(mean(cmp37$diff)) < 5)
+```
+
+## Infusion duration of the simulations
+
+```{r pta-2h, message = FALSE}
+pta37_2h <- pta_from(mod, pta_events(dplyr::filter(pta_regimens, amt == 500),
+                                     crrt_dose = 37, dur = 2))
+cmp37_2h <- fig6 |>
+  dplyr::left_join(pta37_2h, by = c("regimen", "band", "MIC")) |>
+  dplyr::mutate(diff = PTA - published)
+c(RMSE = rmse(cmp37_2h$diff), mean_bias = mean(cmp37_2h$diff))
+# The 2-h infusion overshoots by about 7.5 points on average (1000-patient
+# check); the Monte Carlo standard error of a 24-cell mean is about 1 point,
+# while the 0.5-h configuration above is gated at |bias| < 5.
+stopifnot(mean(cmp37_2h$diff) > 4)
+```
+
+A 2-h infusion, as administered to the patients, overshoots the published
+curves systematically (an RMSE of about 9 percentage points against about 3
+for the 0.5-h infusion), so the published simulations evidently used a
+shorter infusion; 0.5 h is the conventional one.
+
+## Scale of the variance estimates in Table 2
+
+Table 2 prints the inter-individual variability rows ('IIV-CL' 0.192, 'IIV-V1'
+0.161) and the proportional residual row ('PROB-erro' 0.0849) without saying
+whether they are variances or standard deviations. Methods (Equations 6-7)
+define the random effects by their variances, which is what NONMEM reports.
+Re-running the Figure 6 comparison with the two IIV values read as standard
+deviations instead (variances 0.192^2 and 0.161^2) shows which reading the
+paper's own simulations used.
+
+```{r omega-scale, message = FALSE}
+# 0.036864 = 0.192^2 and 0.025921 = 0.161^2.
+mod_sd <- rxode2::rxode2(mod) |> rxode2::ini(etalcl ~ 0.036864, etalvc ~ 0.025921)
+pta37_sd <- pta_from(mod_sd, pta_events(dplyr::filter(pta_regimens, amt == 500),
+                                        crrt_dose = 37, dur = 0.5))
+cmp37_sd <- fig6 |>
+  dplyr::left_join(pta37_sd, by = c("regimen", "band", "MIC")) |>
+  dplyr::mutate(diff = PTA - published)
+
+tibble::tibble(
+  Reading = c("Variances (model)", "Standard deviations"),
+  RMSE = c(rmse(cmp37$diff), rmse(cmp37_sd$diff))
+) |>
+  knitr::kable(digits = 1, caption = "RMSE (percentage points) against the 24 digitised Figure 6 cells.")
+
+stopifnot(rmse(cmp37_sd$diff) > rmse(cmp37$diff) + 4)
+```
+
+The standard-deviation reading makes the curves far too steep (for example
+0.5 g q12h at MIC 4 mg/L and CrCl <= 30 mL/min gives about 97% against the
+published 75%), so the model encodes the Table 2 values as variances, and the
+residual row on the same scale (`propSd = sqrt(0.0849)`).
+
+## Statements in the Results text at other CRRT intensities
+
+```{r pta-claims}
+claim_regs <- dplyr::filter(pta_regimens, regimen %in% c("1 g q6h", "1 g q8h"))
+pta74 <- pta_from(mod, pta_events(claim_regs, crrt_dose = 74, dur = 0.5))
+pta20 <- pta_from(mod, pta_events(claim_regs, crrt_dose = 20, dur = 0.5))
+
+claims <- dplyr::bind_rows(
+  pta74 |> dplyr::filter(regimen == "1 g q6h", band == ">= 90", MIC == 8) |>
+    dplyr::mutate(claim = "74 mL/h/kg, 1 g q6h, CrCl >= 90, MIC 8: 'approximately 70%'", published = 70),
+  pta20 |> dplyr::filter(regimen == "1 g q6h", band == "<= 30", MIC == 16) |>
+    dplyr::mutate(claim = "20 mL/h/kg, 1 g q6h, CrCl <= 30, MIC 16: '> 80%'", published = NA_real_),
+  pta20 |> dplyr::filter(regimen == "1 g q8h", band == "<= 30", MIC == 16) |>
+    dplyr::mutate(claim = "20 mL/h/kg, 1 g q8h, CrCl <= 30, MIC 16: 'approached 80%'", published = 80)
+)
+claims |>
+  dplyr::select(claim, PTA) |>
+  dplyr::rename("Results statement" = claim, "Simulated PTA (%)" = PTA) |>
+  knitr::kable(digits = 1)
+
+stopifnot(
+  abs(claims$PTA[1] - 70) < 12,
+  claims$PTA[2] > 80,
+  abs(claims$PTA[3] - 80) < 12
+)
+```
+
+# Assumptions and deviations
+
+* **IIV and residual scale.** Table 2 does not label its variability rows. They
+  are taken as NONMEM variances (omega^2, sigma^2), as Equations 6-7 define
+  them; the standard-deviation reading is rejected by the Figure 6 comparison
+  above.
+* **Table 2 unit label.** The 'CLCR-CL' row is labelled L/h but is the
+  dimensionless power exponent of Equation 10.
+* **Serum creatinine unit.** The Table 1 footnote writes serum creatinine in
+  mmol/L, but the tabulated values (median 126, range 34-673) and the 0.818
+  divisor of the Cockcroft-Gault form are umol/L.
+* **CRRT clearance.** `QEFF` is a per-patient input. The paper reports no
+  sieving or saturation coefficient, so a user converting a prescribed CRRT
+  dose must supply one; the PTA replication here uses `QEFF = CRRT dose x 60
+  kg / 1000`, which reproduces Figure 6 more closely than applying the
+  predilution correction at the median blood flow.
+* **Simulated infusion duration.** 0.5 h in the PTA replication (not stated by
+  the paper; the patients received 2-h infusions), because it reproduces the
+  published curves and 2 h does not.
+* **Creatinine clearance bands and cohort spreads.** Single representative
+  values per band in the PTA replication; log-normal and normal spreads for
+  creatinine clearance and CRRT clearance in the cohort simulation, chosen to
+  fill the Table 1 ranges.
+* **Modality.** CVVH and CVVHDF share one model; the paper reports nearly
+  identical PTA for the two, and only CVVH (Figure 6) is replicated here.
+* **Supplementary Table S1** (covariate screening) was retrieved from the
+  publisher; it holds no parameter values used by the model.
+* No erratum was found (Europe PMC, 2026-11-16).

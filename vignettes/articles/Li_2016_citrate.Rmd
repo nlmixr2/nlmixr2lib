@@ -1,0 +1,373 @@
+---
+title: "Citrate (Li 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Citrate (Li 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Li_2016_citrate"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Li_2016_citrate"))$description`
+* Article: [CPT Pharmacometrics Syst Pharmacol 5(3):132 (2016)](https://doi.org/10.1002/psp4.12062) (open access, CC BY-NC 4.0)
+
+Li, Erion and Maurer (Pfizer) asked how much of the citrate in human liver
+comes from plasma, because the sodium-coupled citrate transporter NaCT
+(SLC13A5), which carries plasma citrate into hepatocytes, had been proposed
+as a target for obesity and type 2 diabetes. They fitted a one-compartment
+turnover model to published mean plasma citrate profiles after intravenous
+and oral citrate (Eqs. 1-2), derived the hepatic clearance and the hepatic
+influx of plasma citrate from it (Eqs. 3-5), and used it to simulate NaCT
+inhibition (Eqs. 6-7, Figure 6). The meta-analysis of intracellular hepatic
+citrate flux (Figure 3) and the mouse and rat labelled-citrate experiments
+(Figures 4-5) are not pharmacokinetic models and are not part of this file.
+
+# Population
+
+The model was fitted to mean plasma citrate profiles from five literature
+studies in healthy adults, digitised by the authors and weighted by
+sqrt(n)/SD (Li 2016 Methods, Supporting Information II):
+
+| Study (Li 2016 ref) | Route | Citrate dose | n |
+|---|---|---|---|
+| Kramer 2003 (11) | IV infusion | 0.5 mmol/kg/h for 120 min | 16 |
+| Apsner 1997 (12) | IV infusion | 0.34 mmol/kg/h for 120 min | 6 |
+| Bauer 2005 (13) | IV infusion | 0.33 mmol/kg/h for 220 min | 11 |
+| Rudman 1980 (14) | Oral | 0.26 mmol/kg | 22 |
+| Fegan 1992 (15) | Oral | 0.19 mmol/kg | 7 |
+
+Doses and parameters are expressed per kg of body weight. The paper's
+g/day figures correspond to a 70 kg adult and citric acid (MW 192.12 g/mol);
+this vignette uses the same convention.
+
+```{r population, eval = FALSE}
+rxode2::rxode(readModelDb("Li_2016_citrate"))$population
+```
+
+# Source trace
+
+| Quantity | Value | Units | Source in Li 2016 |
+|---|---|---|---|
+| `lcl` (CLelim) | log(7.79) | mL/min/kg | Table 1 |
+| `lvc` (Vd) | log(259) | mL/kg | Table 1 |
+| `lka` (kabs) | log(0.02) | 1/min | Table 1 |
+| `lfdepot` (F) | log(0.37) | fraction | Table 1 |
+| `lbl_citrate` (Cp(0)) | log(0.13) | mmol/L | Table 1 |
+| `qh` (Qh) | 20 (fixed) | mL/min/kg | Methods, text under Eq. 4 (ref 22) |
+| `f_plasma` (fp) | 0.55 (fixed) | fraction | Methods, text under Eq. 4 |
+| `fa` (fraction absorbed) | 0.97 (fixed) | fraction | Methods, text under Eq. 4 (ref 15) |
+| `f_nact` (1 - fiNaCT) | 1 (scenario knob) | fraction | Discussion, Eqs. 6-7 and Figure 6 |
+
+| Equation | Source in Li 2016 |
+|---|---|
+| `d/dt(depot) = -ka * depot` | Eq. 1 |
+| `d/dt(central) = kprod - cl_tot/vc * central + ka * depot` | Eq. 2; amounts form from Supporting Information I `$DES` |
+| `kprod = cl * bl_citrate / 1000`, `central(0) = bl_citrate * vc / 1000` | Supporting Information I `$PK` (`k_p`, `A_0(1)`) |
+| `f(depot) = fdepot` (oral doses into the depot) | Supporting Information I `F2` |
+| `clh = qh * f_plasma * (fa - fdepot)` | Eq. 4 |
+| `cl_tot = (cl - clh) + clh * f_nact` | Discussion: NaCT assumed to carry all of CLh (Eqs. 6-7) |
+| `flux_hep = clh * f_nact * Cc / 1000` | Eq. 5 |
+
+# Steady-state hold
+
+With no citrate given, endogenous production exactly balances clearance and
+plasma citrate stays at the baseline Cp(0) = 0.13 mM.
+
+```{r steady-state}
+mod <- readModelDb("Li_2016_citrate")
+ev_none <- et(seq(0, 1440, by = 60), cmt = "central")
+ss <- rxSolve(mod, ev_none, rtol = 1e-10, atol = 1e-12, returnType = "data.frame")
+stopifnot(max(abs(ss$Cc / 0.13 - 1)) < 1e-6)
+range(ss$Cc)
+```
+
+# Derived quantities
+
+Eqs. 3-5 and the half-life follow directly from the parameters. The table
+compares the values recomputed from the packaged model with those quoted
+in the Results and Discussion.
+
+```{r derived}
+ui <- rxode2::rxode(mod)
+th <- setNames(ui$iniDf$est, ui$iniDf$name)
+cl <- exp(th[["lcl"]]); vc <- exp(th[["lvc"]]); fdepot <- exp(th[["lfdepot"]])
+bl <- exp(th[["lbl_citrate"]])
+clh <- th[["qh"]] * th[["f_plasma"]] * (th[["fa"]] - fdepot)
+mw <- 192.12 # g/mol citric acid
+wt <- 70     # kg
+mmolkgmin_to_gday <- wt * 1440 * mw / 1000
+
+derived <- data.frame(
+  Quantity = c("Hepatic clearance CLh (mL/min/kg)",
+               "CLh as % of CLelim",
+               "Oral first-pass hepatic extraction (%)",
+               "Plasma citrate turnover (g/day)",
+               "Hepatic influx of plasma citrate (g/day)",
+               "Baseline half-life (min)"),
+  Model = c(clh,
+            100 * clh / cl,
+            100 * (th[["fa"]] - fdepot) / th[["fa"]],
+            cl * bl / 1000 * mmolkgmin_to_gday,
+            clh * bl / 1000 * mmolkgmin_to_gday,
+            log(2) * vc / cl),
+  Paper = c(6.60, 85, 60, 20, 17, 23),
+  Source = c("Results (Eq. 4)", "Results", "Results", "Results (Eq. 3), approx.",
+             "Results (Eq. 5)", "Discussion")
+)
+derived$Model <- signif(derived$Model, 3)
+knitr::kable(derived)
+stopifnot(
+  abs(derived$Model[1] / 6.60 - 1) < 0.01,
+  abs(derived$Model[5] / 17 - 1) < 0.05,
+  abs(derived$Model[6] / 23 - 1) < 0.05
+)
+```
+
+# Replication of Figure 2
+
+Figure 2 overlays the fitted curves on the literature means for the five
+studies. The paper's curves include the per-study random effects on CL and
+baseline citrate, whose variances and study-level values are not reported,
+so the curves below are the typical-value predictions. They therefore sit
+somewhat away from the study-specific curves; for example, the Kramer 2003
+baseline mean was 0.065 mM against the typical 0.13 mM.
+
+```{r fig2-events}
+studies <- data.frame(
+  study = c("Kramer 2003", "Apsner 1997", "Bauer 2005", "Rudman 1980", "Fegan 1992"),
+  route = c("IV", "IV", "IV", "Oral", "Oral"),
+  amt = c(1.0, 0.68, 1.21, 0.262, 0.19), # mmol/kg, Supporting Information II
+  dur = c(120, 120, 220, NA, NA),        # min
+  tend = c(240, 240, 360, 180, 180)
+)
+studies$id <- seq_len(nrow(studies))
+
+ev_fig2 <- bind_rows(lapply(seq_len(nrow(studies)), function(i) {
+  s <- studies[i, ]
+  dose <- data.frame(id = s$id, time = 0, evid = 1, amt = s$amt,
+                     cmt = ifelse(s$route == "IV", "central", "depot"),
+                     dur = s$dur)
+  obs <- data.frame(id = s$id, time = seq(0, s$tend, by = 2), evid = 0,
+                    amt = NA_real_, cmt = "central", dur = NA_real_)
+  bind_rows(dose, obs)
+}))
+sim2 <- rxSolve(mod, ev_fig2, returnType = "data.frame") |>
+  left_join(studies[, c("id", "study", "route")], by = "id")
+```
+
+```{r fig2, fig.height = 5.5}
+ggplot(sim2, aes(time, Cc)) +
+  geom_line() +
+  facet_wrap(~ factor(study, levels = studies$study), scales = "free") +
+  labs(x = "Time (min)", y = "Plasma citrate (mM)",
+       caption = "Typical-value replication of Figure 2 of Li 2016.") +
+  theme_bw()
+```
+
+Selected literature means (read from Supporting Information II, which holds
+the data plotted in Figure 2) against the typical-value prediction:
+
+```{r fig2-table}
+lit <- data.frame(
+  study = c("Kramer 2003", "Apsner 1997", "Bauer 2005", "Rudman 1980", "Fegan 1992"),
+  time = c(120, 120, 220, 30, 30),
+  observed = c(1.050, 1.015, 1.218, 0.253, 0.167)
+)
+cmp2 <- lit |>
+  left_join(sim2 |> select(study, time, Cc), by = c("study", "time")) |>
+  mutate(pct_diff = 100 * (Cc / observed - 1))
+cmp2 |>
+  mutate(Cc = signif(Cc, 3), pct_diff = round(pct_diff, 1)) |>
+  rename("Study" = study, "Time (min)" = time, "Literature mean (mM)" = observed,
+         "Typical prediction (mM)" = Cc, "Difference (%)" = pct_diff) |>
+  knitr::kable()
+# Deterministic solve; the typical curve misses individual study means by up
+# to ~30% because the paper's per-study random effects are not reproduced.
+stopifnot(abs(median(cmp2$pct_diff)) < 20, max(abs(cmp2$pct_diff)) < 40)
+```
+
+# PKNCA check of clearance and bioavailability
+
+For an endogenous compound the exogenous dose is recovered in the
+baseline-corrected area: AUC(Cc - Cp(0)) from 0 to infinity = F * dose / CL.
+PKNCA on the baseline-subtracted typical profiles therefore returns CL from
+the intravenous arms and F from the ratio of oral to intravenous
+dose-normalised areas.
+
+```{r pknca}
+ev_nca <- bind_rows(lapply(seq_len(nrow(studies)), function(i) {
+  s <- studies[i, ]
+  dose <- data.frame(id = s$id, time = 0, evid = 1, amt = s$amt,
+                     cmt = ifelse(s$route == "IV", "central", "depot"),
+                     dur = s$dur)
+  obs <- data.frame(id = s$id, time = c(0, seq(5, 2880, by = 5)), evid = 0,
+                    amt = NA_real_, cmt = "central", dur = NA_real_)
+  bind_rows(dose, obs)
+}))
+sim_nca <- rxSolve(mod, ev_nca, returnType = "data.frame") |>
+  left_join(studies[, c("id", "study", "route", "amt")], by = "id")
+
+conc <- sim_nca |>
+  filter(!is.na(Cc)) |>
+  mutate(excess = pmax(Cc - bl, 0), treatment = route) |>
+  select(id, treatment, time, excess)
+dose_df <- studies |> transmute(id, treatment = route, time = 0, amt)
+
+# `route` is a reserved PKNCA column name, so the grouping uses `treatment`.
+o_conc <- PKNCAconc(conc, excess ~ time | treatment + id)
+o_dose <- PKNCAdose(dose_df, amt ~ time | treatment + id)
+o_data <- PKNCAdata(o_conc, o_dose,
+                    intervals = data.frame(start = 0, end = Inf,
+                                           aucinf.obs = TRUE, cmax = TRUE))
+o_nca <- pk.nca(o_data)
+res <- as.data.frame(o_nca$result) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  left_join(studies[, c("id", "study", "amt")], by = "id") |>
+  # (mmol/L * min) / (mmol/kg) = min * kg / L, i.e. F / CL with CL in L/min/kg
+  mutate(auc_per_dose = PPORRES / amt)
+
+cl_iv <- 1000 / mean(res$auc_per_dose[res$treatment == "IV"]) # mL/min/kg
+f_po <- mean(res$auc_per_dose[res$treatment == "Oral"]) /
+  mean(res$auc_per_dose[res$treatment == "IV"])
+nca_cmp <- data.frame(
+  Parameter = c("CLelim (mL/min/kg)", "F"),
+  PKNCA = signif(c(cl_iv, f_po), 3),
+  `Table 1` = c(7.79, 0.37),
+  check.names = FALSE
+)
+knitr::kable(nca_cmp)
+stopifnot(abs(cl_iv / 7.79 - 1) < 0.02, abs(f_po / 0.37 - 1) < 0.02)
+```
+
+# Replication of Figure 6 (NaCT inhibition)
+
+The paper assumes NaCT carries the whole hepatic clearance, so inhibiting a
+fraction fiNaCT of it leaves `f_nact = 1 - fiNaCT` of CLh. Figure 6 simulates
+plasma citrate and the hepatic influx of plasma citrate for a range of
+inhibition levels, starting from the uninhibited steady state.
+
+```{r fig6-sim}
+inh <- c(0, 50, 75, 90, 100)
+ev6 <- et(c(seq(0, 60, by = 1), seq(65, 1440, by = 5)), cmt = "central")
+sim6 <- bind_rows(lapply(inh, function(p) {
+  s <- rxSolve(mod, ev6, params = c(f_nact = 1 - p / 100),
+               rtol = 1e-10, atol = 1e-12, returnType = "data.frame")
+  s$inhibition <- p
+  s
+})) |>
+  mutate(flux_g_h = flux_hep * wt * 60 * mw / 1000)
+```
+
+```{r fig6ac, fig.height = 3.8}
+ggplot(sim6, aes(time / 60, Cc, linetype = factor(inhibition))) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Plasma citrate (mM)", linetype = "Inhibition (%)",
+       caption = "Replicates Figure 6a of Li 2016.") +
+  theme_bw()
+ggplot(sim6, aes(time / 60, flux_g_h, linetype = factor(inhibition))) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Hepatic influx of plasma citrate (g/h)",
+       linetype = "Inhibition (%)",
+       caption = "Replicates Figure 6c of Li 2016 (70 kg adult).") +
+  theme_bw()
+```
+
+```{r fig6bd, fig.height = 3.8}
+grid <- seq(0, 100, by = 2.5)
+ev_t <- et(c(0.24, 2.4, 24) * 60, cmt = "central")
+sim6b <- bind_rows(lapply(grid, function(p) {
+  s <- rxSolve(mod, ev_t, params = c(f_nact = 1 - p / 100),
+               rtol = 1e-10, atol = 1e-12, returnType = "data.frame")
+  s$inhibition <- p
+  s
+})) |>
+  mutate(time_h = factor(paste(time / 60, "h"), levels = c("0.24 h", "2.4 h", "24 h")),
+         flux_g_h = flux_hep * wt * 60 * mw / 1000)
+ggplot(sim6b, aes(inhibition, Cc, linetype = time_h)) +
+  geom_line() +
+  labs(x = "Inhibition of hepatic citrate uptake (%)", y = "Plasma citrate (mM)",
+       linetype = "Time", caption = "Replicates Figure 6b of Li 2016.") +
+  theme_bw()
+ggplot(sim6b, aes(inhibition, flux_g_h, linetype = time_h)) +
+  geom_line() +
+  labs(x = "Inhibition of hepatic citrate uptake (%)",
+       y = "Hepatic influx of plasma citrate (g/h)",
+       linetype = "Time", caption = "Replicates Figure 6d of Li 2016 (70 kg adult).") +
+  theme_bw()
+```
+
+At 24 h every inhibition level has reached its new steady state (the
+longest half-life, at complete inhibition, is about 2.5 h). The steady
+state must match the closed forms of Eq. 6 (plasma citrate fold-change) and
+Eq. 7 (flux ratio), with `fCL_NaCT = CLh / CLelim`:
+
+```{r eq6-7}
+fcl <- clh / cl
+ss24 <- sim6 |>
+  filter(time == 1440) |>
+  transmute(inhibition,
+            fold_model = Cc / bl,
+            fold_eq6 = 1 / (1 - fcl * inhibition / 100),
+            flux_ratio_model = flux_hep / (clh * bl / 1000),
+            flux_ratio_eq7 = (1 - inhibition / 100) / (1 - fcl * inhibition / 100))
+knitr::kable(ss24, digits = 3)
+stopifnot(
+  max(abs(ss24$fold_model / ss24$fold_eq6 - 1)) < 0.005,
+  max(abs(ss24$flux_ratio_model - ss24$flux_ratio_eq7)) < 0.005
+)
+```
+
+The Discussion quotes a 13% fall in flux at 50% inhibition and a 50% fall at
+87% inhibition; Eq. 7 at the packaged parameters gives
+`r round(100 * (1 - (1 - 0.5) / (1 - fcl * 0.5)))`% and
+`r round(100 * (1 - (1 - 0.87) / (1 - fcl * 0.87)))`%. The Figure 6a
+plateaus (about 0.85, 0.56, 0.36 and 0.22 mM at 100, 90, 75 and 50%
+inhibition, read from the figure) are reproduced by the 24 h column above.
+
+# Assumptions and deviations
+
+* **Typical values only.** The NONMEM control stream (Supporting
+  Information I) places random effects on CL and on baseline citrate with
+  one record per study, so they describe between-study variability. Their
+  final variances are not reported in the paper or supplements, so the
+  file carries no `eta` terms. The paper's Figure 2 curves include the
+  study-level effects and are not exactly reproducible; the typical-value
+  curves above differ from individual study means by up to about 30%.
+* **No residual error.** The fit used the literature standard error of
+  each mean as the residual (SIGMA fixed to 1, `W = SD/sqrt(n)`), not an
+  estimated error model, so no residual error model is encoded.
+* **kabs precision.** Table 1 reports kabs = 0.02 per min (the control
+  stream estimates a mean absorption time, `kabs = 1/MAT`); the rounded
+  table value is used.
+* **Fixed physiological constants.** Qh = 20 mL/min/kg, fp = 0.55 and 97%
+  oral absorption are the paper's stated assumptions for Eq. 4 and are
+  encoded as fixed parameters so the hepatic clearance and influx can be
+  recomputed if they are changed.
+* **NaCT-inhibition knob.** `f_nact` is not a fitted parameter. It
+  implements the Discussion's assumption that NaCT carries all of the
+  hepatic clearance, with production held at its uninhibited value.
+* **Errata in the text.** The Discussion states "a twofold increase at 87%
+  NaCT inhibition"; Eq. 6 at the Table 1 values gives a 3.8-fold increase at
+  87% (twofold is reached at about 59%), and 87% is where Eq. 7 halves the
+  flux, so the sentence appears to conflate the two equations. The
+  Discussion's half-life of "up to 2.7 hours with complete NaCT inhibition"
+  compares with about 2.5 h from the Table 1 values. The mouse section
+  quotes a human clearance of "7.2 ml/min/kg", which matches the control
+  stream's initial estimate (7.21) rather than the Table 1 final estimate
+  of 7.79 used here.
+* **Body weight for g/day figures.** The paper's turnover (about 20 g/day)
+  and influx (17 g/day) values are reproduced with a 70 kg adult and the
+  molecular weight of citric acid; the paper does not state either
+  assumption.

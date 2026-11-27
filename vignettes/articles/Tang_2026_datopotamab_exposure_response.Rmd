@@ -1,0 +1,579 @@
+---
+title: "Datopotamab deruxtecan exposure-response in breast and lung cancer (Tang 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Datopotamab deruxtecan exposure-response in breast and lung cancer (Tang 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Tang 2026 reports the exposure-response analyses supporting the datopotamab
+deruxtecan (Dato-DXd) dose of 6 mg/kg every 3 weeks, capped at 540 mg for
+patients weighing 90 kg or more. It fits **two Cox proportional-hazards models**
+for efficacy in hormone receptor-positive, HER2-negative breast cancer
+(TROPION-Breast01, n = 352) and **eight logistic-regression models** for safety
+in a pooled breast and lung cancer population (n = 1081, four studies). A ninth
+and tenth safety endpoint (adjudicated drug-related interstitial lung disease and
+TEAE leading to treatment discontinuation) showed no exposure-response
+relationship and were not modelled further. All ten fitted models are packaged;
+this vignette walks the paper as a unit.
+
+```{r models}
+erModels <- tibble::tribble(
+  ~Model,                                       ~Endpoint,                                 ~`Exposure metric`,         ~Output,
+  "Tang_2026_datopotamab_os",                   "Overall survival",                        "Dato-DXd AUC1",            "hr",
+  "Tang_2026_datopotamab_pfs",                  "Progression-free survival",               "none (tumor size only)",   "hr",
+  "Tang_2026_datopotamab_teae_grade3",          "Grade 3+ TEAE",                           "DXd Cavg (ng/mL)",         "prob_teae_grade3",
+  "Tang_2026_datopotamab_sae",                  "Serious TEAE",                            "DXd Cavg (ng/mL)",         "prob_sae",
+  "Tang_2026_datopotamab_dose_interruption",    "TEAE leading to dose interruption",       "Dato-DXd AUC1",            "prob_dose_interruption",
+  "Tang_2026_datopotamab_dose_reduction",       "TEAE leading to dose reduction",          "Dato-DXd AUC1",            "prob_dose_reduction",
+  "Tang_2026_datopotamab_stomatitis",           "Any-grade stomatitis",                    "Dato-DXd Cavg (ug/mL)",    "prob_stomatitis",
+  "Tang_2026_datopotamab_stomatitis_grade2",    "Grade 2+ stomatitis",                     "Dato-DXd AUC1",            "prob_stomatitis_grade2",
+  "Tang_2026_datopotamab_ose",                  "Any-grade ocular surface event",          "Dato-DXd Cavg (ug/mL)",    "prob_ocular_surface_event",
+  "Tang_2026_datopotamab_ose_grade2",           "Grade 2+ ocular surface event",           "Dato-DXd Cavg (ug/mL)",    "prob_ocular_surface_event_grade2"
+)
+knitr::kable(erModels, caption = "The ten packaged Tang 2026 models. AUC1 is in ug*day/mL.")
+```
+
+* Citation: `r rxode2::rxode(readModelDb("Tang_2026_datopotamab_os"))$reference`
+* Article: <https://doi.org/10.1002/jcph.70188> (open access, PMC13084299)
+* The individual exposures were empirical Bayes predictions from the population
+  PK model of Hong 2025, packaged as `Hong_2025_datopotamab`; that model is used
+  below to regenerate the Cycle-1 AUC distribution.
+
+None of the ten models has an ODE or a dose: the exposure metric is a data
+column. AUC1 (`AUC_DATODXD`) is the Cycle-1 (day 0-21) AUC of intact Dato-DXd.
+Cavg (`CAV`) is the cumulative AUC divided by the time from the first dose to
+the end of the cycle of the event (or of the last treatment for patients without
+an event), so it is endpoint-specific. **`CAV` carries two different analytes**:
+the released payload DXd in ng/mL for the grade 3+ TEAE and serious TEAE models,
+and intact Dato-DXd in ug/mL for the stomatitis and ocular-surface-event models.
+
+# Population
+
+```{r population}
+pop <- tibble::tribble(
+  ~Characteristic,             ~`Efficacy set (TROPION-Breast01)`, ~`Safety set (4 studies)`,
+  "N",                         "352",                               "1081",
+  "Age, median (range), y",    "55 (29-86)",                        "60 (26-86)",
+  "Weight, median (range), kg", "62 (35.6-141)",                    "64.2 (35.6-156)",
+  "Female",                    "98.6%",                             "67.2%",
+  "White",                     "50%",                               "47.2%",
+  "Tumour type",               "HR+/HER2- breast cancer",           "59.5% NSCLC, 36.4% HR+/HER2- BC, 4.1% TNBC",
+  "Dose",                      "6 mg/kg Q3W",                       "0.27-10 mg/kg Q3W (85% at 6 mg/kg)",
+  "Baseline albumin, median",  "41 g/L",                            "39 g/L",
+  "Baseline tumor size, median", "55 mm",                           "60 mm"
+)
+knitr::kable(pop, caption = "Tang 2026 Results (Baseline Characteristics) and Table S2.")
+```
+
+The safety set pools TROPION-PanTumor01 (phase 1, 0.27-10 mg/kg; 295 patients),
+TROPION-Lung05 (137), TROPION-Lung01 (297) and TROPION-Breast01 (352); data
+cut-off 29 April 2024. TEAE leading to dose interruption was analysed only in
+TROPION-PanTumor01 and TROPION-Breast01. Regions: USA 29.7%, Europe 27.8%,
+Japan 17.8%, mainland China 4.5%, rest of world 20.2%.
+
+# Source trace
+
+| Model | Element | Value | Source |
+|---|---|---|---|
+| os | log-HR per ug*day/mL AUC1 | -0.0031 | Results, OS equation |
+| pfs | log-HR per median-normalised tumor size | 0.28 | Results, PFS equation; Methods CPH equation |
+| pfs | tumor-size median | 55 mm | Results ('median tumor size of 55 mm') |
+| teae_grade3 | intercept; DXd Cavg; Japan; Europe; China; rest of world; ever-smoker | -1.1706039; 1.3054368; -0.6327399; -0.3466507; -0.3995153; -0.7647521; 0.4538759 | Table S4, TEAE Gr3+ |
+| sae | intercept; DXd Cavg; albumin; breast cancer; Black; Asian; multiple/other; unknown | 1.361896; 1.382566; -2.94387; -0.86092; -0.2853; -0.85655; -0.59128; 0.039894 | Table S4, Serious AE |
+| sae | albumin median | 39 g/L | Results ('median albumin level (39 g/L)') |
+| dose_interruption | intercept; AUC1 | -2.73329; 0.002195 | Table S4, Dose Interruption |
+| dose_reduction | intercept; AUC1; tumor size | -2.70582; 0.002585; -0.40425 | Table S4, Dose Reduction |
+| dose_reduction | tumor-size median | 60 mm | Results ('median tumor size baseline (60 mm)') |
+| stomatitis | intercept; Dato-DXd Cavg | -2.35939; 0.07587 | Table S4, Stomatitis Any Grade |
+| stomatitis_grade2 | intercept; AUC1 | -2.92847; 0.00288 | Table S4, Stomatitis Grade 2+ |
+| ose | intercept; Dato-DXd Cavg; breast cancer | -3.67083; 0.074398; 1.040719 | Table S4, OSE Any Grade |
+| ose_grade2 | intercept; Dato-DXd Cavg | -4.74822; 0.070107 | Table S4, OSE Grade 2+ |
+| all logistic | link: P = 1 / (1 + exp(-(theta + theta_i x_i + theta_j x_j / x_median + theta_k PK))) | -- | Methods, Exposure-Safety Analysis |
+| os, pfs | h(t) = h0(t) exp(theta_i x_i + theta_j x_j / x_median + theta_k PK) | -- | Methods, Exposure-Efficacy Analysis |
+
+The two equations in the last rows fix the covariate scaling: binary covariates
+enter as indicators, continuous non-exposure covariates are divided by their
+cohort median, and the exposure metric enters linearly and uncentred.
+
+# Structural checks: hazard and odds ratios
+
+The Results and Figures 1 and 3 print hazard and odds ratios at named covariate
+values. Each packaged model is solved at the two values and the ratio is compared
+with the printed one. This exercises the median normalisations inside `model()`:
+reading the PFS tumor-size coefficient per mm instead of per median would move
+its hazard ratio by ten orders of magnitude.
+
+```{r solve_helper}
+# The models are algebraic -- no ODE, no dose, no time dimension -- so a grid of
+# covariate values is swept along a dummy `time` axis for one subject. Scalars
+# are recycled to the grid length.
+solveStatic <- function(modelName, covs) {
+  n <- max(vapply(covs, length, integer(1)))
+  ev <- data.frame(id = 1L, time = seq_len(n), amt = 0, evid = 0L)
+  for (nm in names(covs)) ev[[nm]] <- rep_len(covs[[nm]], n)
+  s <- as.data.frame(rxode2::rxSolve(
+    rxode2::rxode(readModelDb(modelName)),
+    events = ev, returnType = "data.frame"
+  ))
+  stopifnot(nrow(s) == n)
+  s
+}
+
+hazardRatio <- function(modelName, covName, value, ref, extra = list()) {
+  h <- solveStatic(modelName, c(setNames(list(c(ref, value)), covName), extra))$hr
+  h[2] / h[1]
+}
+oddsRatio <- function(modelName, output, covName, value, ref, extra = list()) {
+  p <- solveStatic(modelName, c(setNames(list(c(ref, value)), covName), extra))[[output]]
+  (p[2] / (1 - p[2])) / (p[1] / (1 - p[1]))
+}
+
+saeBase <- list(CAV = 0.7, ALB = 39, TUMTP_BREAST = 0, RACE_BLACK = 0, RACE_ASIAN = 0,
+                RACE_OTHER = 0, RACE_MISSING = 0)
+teaeBase <- list(CAV = 0.7, REGION_JAPAN = 0, REGION_EUROPE = 0, REGION_CHINA = 0,
+                 REGION_ROW = 0, SMOKE_NEVER = 1)
+
+ratioCheck <- tibble::tribble(
+  ~Comparison,                                   ~Recovered,                                                                                     ~Published, ~Source,
+  "OS: AUC1 864 vs 650 ug*day/mL (HR)",          hazardRatio("Tang_2026_datopotamab_os", "AUC_DATODXD", 864, 650),                              0.515,      "Results / Fig 1E",
+  "OS: AUC1 467 vs 650 ug*day/mL (HR)",          hazardRatio("Tang_2026_datopotamab_os", "AUC_DATODXD", 467, 650),                              1.76,       "Results / Fig 1E",
+  "PFS: tumor 138 vs 55 mm (HR)",                hazardRatio("Tang_2026_datopotamab_pfs", "TUMSZ", 138, 55),                                    1.52,       "Results / Fig 1F",
+  "PFS: tumor 17 vs 55 mm (HR)",                 hazardRatio("Tang_2026_datopotamab_pfs", "TUMSZ", 17, 55),                                     0.825,      "Results / Fig 1F",
+  "Grade 3+ TEAE: ever vs never smoker (OR)",    oddsRatio("Tang_2026_datopotamab_teae_grade3", "prob_teae_grade3", "SMOKE_NEVER", 0, 1, teaeBase[-6]), 1.57, "Results / Fig S4A",
+  "Grade 3+ TEAE: rest of world vs USA (OR)",    oddsRatio("Tang_2026_datopotamab_teae_grade3", "prob_teae_grade3", "REGION_ROW", 1, 0, teaeBase[-5]),  0.465, "Results / Fig S4A",
+  "Grade 3+ TEAE: China vs USA (OR)",            oddsRatio("Tang_2026_datopotamab_teae_grade3", "prob_teae_grade3", "REGION_CHINA", 1, 0, teaeBase[-4]), 0.671, "Results / Fig S4A",
+  "Grade 3+ TEAE: Europe vs USA (OR)",           oddsRatio("Tang_2026_datopotamab_teae_grade3", "prob_teae_grade3", "REGION_EUROPE", 1, 0, teaeBase[-3]), 0.707, "Results / Fig S4A",
+  "Grade 3+ TEAE: Japan vs USA (OR)",            oddsRatio("Tang_2026_datopotamab_teae_grade3", "prob_teae_grade3", "REGION_JAPAN", 1, 0, teaeBase[-2]), 0.531, "Results / Fig S4A",
+  "SAE: breast vs lung cancer (OR)",             oddsRatio("Tang_2026_datopotamab_sae", "prob_sae", "TUMTP_BREAST", 1, 0, saeBase[-3]),         0.425,      "Results / Fig S4B",
+  "SAE: Asian vs White (OR)",                    oddsRatio("Tang_2026_datopotamab_sae", "prob_sae", "RACE_ASIAN", 1, 0, saeBase[-5]),           0.424,      "Results / Fig S4B",
+  "SAE: albumin 46 vs 39 g/L (OR)",              oddsRatio("Tang_2026_datopotamab_sae", "prob_sae", "ALB", 46, 39, saeBase[-2]),                0.587,      "Results / Fig S4B",
+  "SAE: albumin 29 vs 39 g/L (OR)",              oddsRatio("Tang_2026_datopotamab_sae", "prob_sae", "ALB", 29, 39, saeBase[-2]),                2.14,       "Results / Fig S4B",
+  "Dose reduction: tumor 166 vs 60 mm (OR)",     oddsRatio("Tang_2026_datopotamab_dose_reduction", "prob_dose_reduction", "TUMSZ", 166, 60, list(AUC_DATODXD = 650)), 0.489, "Results / Fig S4C",
+  "Dose reduction: tumor 18 vs 60 mm (OR)",      oddsRatio("Tang_2026_datopotamab_dose_reduction", "prob_dose_reduction", "TUMSZ", 18, 60, list(AUC_DATODXD = 650)),  1.33,  "Results / Fig S4C",
+  "Any-grade OSE: breast vs lung cancer (OR)",   oddsRatio("Tang_2026_datopotamab_ose", "prob_ocular_surface_event", "TUMTP_BREAST", 1, 0, list(CAV = 30)), 2.83, "Results / Fig S4"
+) |>
+  mutate(`% difference` = 100 * (Recovered - Published) / Published)
+
+knitr::kable(ratioCheck, digits = 3,
+             caption = "Hazard and odds ratios recovered from the packaged models versus the values printed by Tang 2026.")
+```
+
+```{r ratio_assertions}
+# Deterministic: each ratio is an exact function of the packaged coefficients, so
+# the only discrepancy is the rounding of the printed ratio and of the printed
+# covariate percentiles (138, 17, 46, 29, 166 and 18 are themselves rounded).
+# The largest observed difference is about 0.6% (SAE breast vs lung: the Table S4
+# coefficient gives 0.423 against the printed 0.425); 1% covers rounding and
+# nothing else.
+stopifnot(all(abs(ratioCheck$`% difference`) < 1))
+```
+
+# Cycle-1 exposure regenerated from Hong 2025
+
+The exposure metrics were empirical Bayes predictions from the Hong 2025
+population PK model, which is packaged. Simulating a TROPION-Breast01-like
+cohort through it and computing the Cycle-1 AUC with PKNCA reproduces the
+exposure scale that the AUC1-driven models were fitted on, and gives the
+4 and 8 mg/kg exposures needed for the dose projections further down.
+
+## Virtual cohort
+
+Covariates follow the TROPION-Breast01 column of Tang 2026 Table S2: body weight
+median 62 kg (IQR 54.9-72.7), 98.6% female, age 55.4 +/- 11.7 years, albumin
+median 41 g/L (IQR 38-44), AST median 34.1 U/L (IQR 24.1-57.5), total bilirubin
+median 0.48 mg/dL (IQR 0.345-0.645), tumor size median 55 mm (IQR 36.8-85.3) and
+the study's region mix. Log-normal spreads are set from the IQRs. Hong 2025 has
+no separate China level for DXd clearance, so mainland China is coded as rest of
+world for that model, as Hong 2025 did.
+
+```{r cohort}
+rxode2::rxSetSeed(20260416)
+nPerArm <- 200
+makeArm <- function(doseMgKg, idOffset) {
+  wt <- pmin(pmax(exp(rnorm(nPerArm, log(62), (log(72.7) - log(54.9)) / 1.349)), 35.6), 141)
+  region <- sample(c("Japan", "USA", "Europe", "China", "RoW"), nPerArm, replace = TRUE,
+                   prob = c(30, 32, 134, 44, 112))
+  data.frame(
+    id = idOffset + seq_len(nPerArm),
+    WT = wt,
+    AGE = pmin(pmax(rnorm(nPerArm, 55.4, 11.7), 29), 86),
+    SEXF = rbinom(nPerArm, 1, 0.986),
+    ALB = pmin(pmax(exp(rnorm(nPerArm, log(41), (log(44) - log(38)) / 1.349)), 24), 75.4),
+    AST = pmin(pmax(exp(rnorm(nPerArm, log(34.1), (log(57.5) - log(24.1)) / 1.349)), 11), 223),
+    TBILI = 17.1 * pmin(pmax(exp(rnorm(nPerArm, log(0.48), (log(0.645) - log(0.345)) / 1.349)), 0.17), 3.32),
+    TUMSZ = pmin(pmax(exp(rnorm(nPerArm, log(55), (log(85.3) - log(36.8)) / 1.349)), 10), 338),
+    REGION_JAPAN = as.integer(region == "Japan"),
+    REGION_EUROPE = as.integer(region == "Europe"),
+    REGION_ROW = as.integer(region %in% c("RoW", "China")),
+    CYCLE = 1L,
+    amtMg = doseMgKg * wt,
+    treatment = paste(doseMgKg, "mg/kg")
+  )
+}
+cohort <- bind_rows(makeArm(4, 0), makeArm(6, 1000), makeArm(8, 2000))
+knitr::kable(
+  cohort |>
+    group_by(treatment) |>
+    summarise(N = n(), `Median WT (kg)` = median(WT), `Female (%)` = 100 * mean(SEXF),
+              `Median dose (mg)` = median(amtMg), .groups = "drop"),
+  digits = 1, caption = "Virtual cohort, one arm per dose level."
+)
+```
+
+## Simulation
+
+One Cycle-1 dose, observed to day 21. Hong 2025 declares two endpoints (Dato-DXd
+and DXd), so observation rows name the central ODE state and carry `dvid = 1`
+(the Dato-DXd endpoint); rxode2 returns both concentration columns on every row.
+
+```{r simulate}
+obsTimes <- c(0, 0.0625, 0.125, 0.25, 0.5, 1, 1.5, 2, 3, 4, 5, 7, 10, 14, 17, 21)
+covCols <- setdiff(names(cohort), c("id", "amtMg", "treatment"))
+events <- bind_rows(
+  cohort |> transmute(id, time = 0, amt = amtMg, evid = 1L, cmt = "central", dvid = NA_integer_),
+  tidyr::crossing(id = cohort$id, time = obsTimes) |>
+    mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+) |>
+  left_join(cohort[, c("id", covCols)], by = "id") |>
+  arrange(id, time, desc(evid))
+
+simPk <- rxode2::rxSolve(
+  rxode2::rxode(readModelDb("Hong_2025_datopotamab")), events,
+  returnType = "data.frame"
+) |>
+  left_join(cohort[, c("id", "treatment", "amtMg")], by = "id")
+stopifnot(length(unique(simPk$id)) == nrow(cohort))
+```
+
+```{r pk_profile, fig.height = 4}
+simPk |>
+  group_by(treatment, time) |>
+  summarise(median = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, median, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time after first dose (day)", y = "Dato-DXd concentration (ug/mL)",
+       title = "Cycle-1 Dato-DXd profiles from Hong_2025_datopotamab",
+       subtitle = "Median and 90% prediction interval, TROPION-Breast01-like cohort") +
+  theme_bw()
+```
+
+## PKNCA
+
+```{r pknca}
+# Filter on !is.na(Cc) only: the grid includes time 0, which PKNCA needs as the
+# start of the 0-21 day interval.
+concData <- simPk |>
+  filter(!is.na(Cc)) |>
+  select(id, treatment, time, Cc)
+stopifnot(all(tapply(concData$time, concData$id, min) == 0))
+doseData <- cohort |> transmute(id, treatment, time = 0, amtMg)
+
+concObj <- PKNCA::PKNCAconc(concData, Cc ~ time | treatment + id)
+doseObj <- PKNCA::PKNCAdose(doseData, amtMg ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 21, auclast = TRUE, cmax = TRUE)
+ncaRes <- PKNCA::pk.nca(PKNCA::PKNCAdata(concObj, doseObj, intervals = intervals))
+ncaInd <- as.data.frame(ncaRes)
+auc1 <- ncaInd |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, treatment, AUC_DATODXD = PPORRES)
+stopifnot(nrow(auc1) == nrow(cohort), !any(is.na(auc1$AUC_DATODXD)))
+```
+
+## Comparison against the published exposure
+
+Tang 2026 prints the TROPION-Breast01 AUC1 median (650 ug*day/mL) and its 5th and
+95th percentiles (467 and 864 ug*day/mL) at 6 mg/kg. Figure 2C marks the pooled
+safety-set medians at 4, 6 and 8 mg/kg; read from the figure they are about 380,
+650 and 920 ug*day/mL (maintainers' reading of the dashed lines, +/- about 15).
+
+```{r nca_comparison}
+simulatedSummary <- auc1 |>
+  filter(treatment == "6 mg/kg") |>
+  summarise(median = median(AUC_DATODXD), p05 = quantile(AUC_DATODXD, 0.05),
+            p95 = quantile(AUC_DATODXD, 0.95))
+
+simulatedLong <- auc1 |>
+  group_by(treatment) |>
+  summarise(PPORRES = median(AUC_DATODXD), .groups = "drop") |>
+  mutate(PPTESTCD = "auclast")
+published <- data.frame(treatment = c("4 mg/kg", "6 mg/kg", "8 mg/kg"),
+                        auclast = c(380, 650, 920))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulatedLong, reference = published, by = "treatment",
+  units = c(auclast = "ug*day/mL"), tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Dose" = treatment) |>
+  knitr::kable(caption = paste(
+    "Median Cycle-1 Dato-DXd AUC (day 0-21): Hong 2025 simulation versus Tang 2026.",
+    "The 6 mg/kg reference is the printed TROPION-Breast01 median; 4 and 8 mg/kg are read from Figure 2C."
+  ))
+
+knitr::kable(
+  data.frame(Statistic = c("5th percentile", "median", "95th percentile"),
+             Published = c(467, 650, 864),
+             Simulated = unlist(simulatedSummary[c("p05", "median", "p95")])),
+  digits = 0, row.names = FALSE,
+  caption = "TROPION-Breast01 AUC1 distribution at 6 mg/kg (ug*day/mL)."
+)
+```
+
+```{r nca_assertions}
+med6 <- simulatedSummary$median
+# The simulated median sits a few percent above the printed 650 on the runs used
+# to write this check (about +5%). A mis-transcribed Hong 2025 clearance, a unit
+# slip or dosing in mg instead of mg/kg moves it by tens of percent. The tails
+# are wider than the published empirical-Bayes tails (shrinkage narrows the
+# latter), so only the centre is asserted.
+stopifnot(abs(100 * (med6 - 650) / 650) < 12)
+# Exposure rises more than proportionally with dose (Michaelis-Menten
+# elimination), as Figure 2C shows: the 8 mg/kg median is more than 4/3 of the
+# 6 mg/kg median and the 4 mg/kg median less than 2/3 of it.
+medByDose <- setNames(simulatedLong$PPORRES, simulatedLong$treatment)
+stopifnot(medByDose[["8 mg/kg"]] / medByDose[["6 mg/kg"]] > 4 / 3,
+          medByDose[["4 mg/kg"]] / medByDose[["6 mg/kg"]] < 2 / 3)
+```
+
+# Exposure-safety curves (Figure 2)
+
+Figure 2 shows four of the eight logistic models against their exposure metric.
+The curves below are the packaged models with every covariate at its reference
+level (USA, never-smoker for grade 3+ TEAE; White, lung cancer, median albumin
+for serious TEAE). The vertical lines are the dose-level exposure medians read
+from Figure 2.
+
+```{r fig2, fig.height = 6}
+fig2Medians <- tibble::tribble(
+  ~panel,                         ~dose,     ~x,
+  "(a) Grade 3+ TEAE",            "4 mg/kg", 0.56,
+  "(a) Grade 3+ TEAE",            "6 mg/kg", 0.77,
+  "(a) Grade 3+ TEAE",            "8 mg/kg", 1.15,
+  "(b) Serious TEAE",             "4 mg/kg", 0.56,
+  "(b) Serious TEAE",             "6 mg/kg", 0.77,
+  "(b) Serious TEAE",             "8 mg/kg", 1.15,
+  "(c) Grade 2+ stomatitis",      "4 mg/kg", 380,
+  "(c) Grade 2+ stomatitis",      "6 mg/kg", 650,
+  "(c) Grade 2+ stomatitis",      "8 mg/kg", 920,
+  "(d) Grade 2+ OSE",             "4 mg/kg", 22.3,
+  "(d) Grade 2+ OSE",             "6 mg/kg", 31.4,
+  "(d) Grade 2+ OSE",             "8 mg/kg", 42.4
+)
+
+dxdGrid <- seq(0, 1.4, length.out = 60)
+aucGrid <- seq(0, 1300, length.out = 60)
+cavGrid <- seq(0, 62, length.out = 60)
+fig2Curves <- bind_rows(
+  tibble::tibble(panel = "(a) Grade 3+ TEAE", x = dxdGrid,
+                 p = solveStatic("Tang_2026_datopotamab_teae_grade3", c(list(CAV = dxdGrid), teaeBase[-1]))$prob_teae_grade3),
+  tibble::tibble(panel = "(b) Serious TEAE", x = dxdGrid,
+                 p = solveStatic("Tang_2026_datopotamab_sae", c(list(CAV = dxdGrid), saeBase[-1]))$prob_sae),
+  tibble::tibble(panel = "(c) Grade 2+ stomatitis", x = aucGrid,
+                 p = solveStatic("Tang_2026_datopotamab_stomatitis_grade2", list(AUC_DATODXD = aucGrid))$prob_stomatitis_grade2),
+  tibble::tibble(panel = "(d) Grade 2+ OSE", x = cavGrid,
+                 p = solveStatic("Tang_2026_datopotamab_ose_grade2", list(CAV = cavGrid))$prob_ocular_surface_event_grade2)
+)
+
+ggplot(fig2Curves, aes(x, p)) +
+  geom_line(linewidth = 0.9) +
+  geom_vline(data = fig2Medians, aes(xintercept = x, colour = dose), linetype = "dashed") +
+  facet_wrap(~panel, scales = "free_x") +
+  scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
+  labs(x = "Exposure: DXd Cavg (ng/mL) in a-b; Dato-DXd AUC1 (ug*day/mL) in c; Dato-DXd Cavg (ug/mL) in d",
+       y = "Predicted event probability", colour = NULL,
+       title = "Replicates Figure 2 of Tang 2026") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+Panels (c) and (d) have no covariate other than exposure, so they are directly
+comparable with the published curves. Through the middle of the data they agree
+(for example 23% at an AUC1 of 600 ug*day/mL and 16% at a Dato-DXd Cavg of
+44 ug/mL, as plotted), but the published curves are steeper at the extremes:
+read at the right edge, Figure 2C reaches about 77% at 1300 ug*day/mL against
+69% from the Table S4 coefficients, and Figure 2D about 46% at 62 ug/mL against
+40%. The printed dose projections below side with Table S4, so the packaged
+values follow the table; see Assumptions and deviations.
+
+# Dose projections
+
+Tang 2026 projects grade 3+ TEAE rates of 33.3%, 39.5% and 51.3% at 4, 6 and
+8 mg/kg, and grade 2+ OSE increases of 3.3 and 7 percentage points from 4 to 6
+and from 6 to 8 mg/kg, using "the median PopPK-predicted PK metric values at
+each dose level". The paper does not say at which covariate values the grade 3+
+TEAE projection was made, so that check anchors on the printed 6 mg/kg rate and
+tests only the exposure slope, which is covariate-independent on the logit
+scale.
+
+```{r projections}
+logit <- function(p) log(p / (1 - p))
+expit <- function(x) 1 / (1 + exp(-x))
+dxdMed <- c(`4 mg/kg` = 0.56, `6 mg/kg` = 0.77, `8 mg/kg` = 1.15)   # Figure 2A dashed lines
+oseMed <- c(`4 mg/kg` = 22.3, `6 mg/kg` = 31.4, `8 mg/kg` = 42.4)   # Figure 2D dashed lines
+
+teae <- solveStatic("Tang_2026_datopotamab_teae_grade3", c(list(CAV = dxdMed), teaeBase[-1]))$prob_teae_grade3
+# Shift the reference-level logits so the 6 mg/kg value equals the printed 39.5%.
+offset <- logit(0.395) - logit(teae[2])
+teaeProj <- 100 * expit(logit(teae) + offset)
+
+ose <- 100 * solveStatic("Tang_2026_datopotamab_ose_grade2", list(CAV = oseMed))$prob_ocular_surface_event_grade2
+
+projCheck <- tibble::tribble(
+  ~Quantity,                                  ~Model,                   ~Published,
+  "Grade 3+ TEAE at 4 mg/kg (%)",             teaeProj[1],              33.3,
+  "Grade 3+ TEAE at 8 mg/kg (%)",             teaeProj[3],              51.3,
+  "Grade 2+ OSE increase, 4 to 6 mg/kg (points)", ose[2] - ose[1],      3.3,
+  "Grade 2+ OSE increase, 6 to 8 mg/kg (points)", ose[3] - ose[2],      7
+)
+knitr::kable(projCheck, digits = 1, caption = "Dose projections reproduced from the packaged models and the Figure 2 exposure medians.")
+```
+
+```{r projection_assertions}
+# The exposure medians are read from Figure 2 to about +/- 0.02 ng/mL and
+# +/- 0.5 ug/mL, which moves these projections by up to about 1 percentage
+# point; 2 points covers that. A slope taken from the steeper published curves
+# instead of Table S4 (about 1.7 instead of 1.305 per ng/mL for grade 3+ TEAE)
+# misses the 4 and 8 mg/kg values by 2 and 4 points.
+stopifnot(all(abs(projCheck$Model - projCheck$Published) < 2))
+```
+
+The stated increase in TEAE leading to dose reduction (7 points from 4 to
+6 mg/kg, 14 from 6 to 8) is not used as a check because the 4 mg/kg AUC1 median
+cannot be read from Figure 2C precisely enough: at the median tumor size the
+model gives `r round(100 * diff(solveStatic("Tang_2026_datopotamab_dose_reduction", list(AUC_DATODXD = c(380, 650, 920), TUMSZ = 60))$prob_dose_reduction), 1)`
+points over the two steps.
+
+# Predicted versus observed incidence
+
+The AUC1-driven models can be pushed through the simulated exposures to give a
+cohort-averaged incidence at each dose level, which Table 2 reports as observed
+incidences. The simulated cohort is TROPION-Breast01-like while the 4 and
+8 mg/kg patients in the paper came mostly from TROPION-PanTumor01, so this is a
+plausibility check, not a validation target.
+
+```{r observed}
+aucCohort <- auc1 |> left_join(cohort[, c("id", "TUMSZ")], by = "id")
+predByDose <- aucCohort |>
+  mutate(
+    stom2 = solveStatic("Tang_2026_datopotamab_stomatitis_grade2", list(AUC_DATODXD = AUC_DATODXD))$prob_stomatitis_grade2,
+    interr = solveStatic("Tang_2026_datopotamab_dose_interruption", list(AUC_DATODXD = AUC_DATODXD))$prob_dose_interruption,
+    reduc = solveStatic("Tang_2026_datopotamab_dose_reduction", list(AUC_DATODXD = AUC_DATODXD, TUMSZ = TUMSZ))$prob_dose_reduction
+  ) |>
+  group_by(treatment) |>
+  summarise(across(c(stom2, interr, reduc), ~ 100 * mean(.x)), .groups = "drop")
+
+obsTable2 <- tibble::tribble(
+  ~treatment, ~stom2_obs, ~interr_obs, ~reduc_obs,
+  "4 mg/kg",  8,          8,           2,
+  "6 mg/kg",  29,         24,          21,
+  "8 mg/kg",  34,         35,          28
+)
+predByDose |>
+  left_join(obsTable2, by = "treatment") |>
+  dplyr::rename("Dose" = treatment,
+                "Grade 2+ stomatitis, predicted (%)" = stom2, "Grade 2+ stomatitis, observed (%)" = stom2_obs,
+                "Dose interruption, predicted (%)" = interr, "Dose interruption, observed (%)" = interr_obs,
+                "Dose reduction, predicted (%)" = reduc, "Dose reduction, observed (%)" = reduc_obs) |>
+  knitr::kable(digits = 0, caption = "Cohort-averaged predictions versus Tang 2026 Table 2 observed incidences.")
+```
+
+At 6 mg/kg, where 85% of the safety set was treated, the predictions sit within
+a few points of the observed rates. The 4 mg/kg arm (n = 50) is small and the
+observed rates there are noisy.
+
+# Exposure-efficacy (Figure 1)
+
+The overall-survival model is a pure exposure-hazard relationship; its hazard
+ratios across the TROPION-Breast01 AUC1 quartile medians (Table S5) show the
+size of the association the paper reports.
+
+```{r efficacy}
+quartileMedians <- c(Q1 = 519, Q2 = 607, Q3 = 688, Q4 = 779)
+osHr <- solveStatic("Tang_2026_datopotamab_os", list(AUC_DATODXD = c(650, quartileMedians)))$hr
+tumorGrid <- c(17, 36.8, 55, 85.3, 138)
+pfsHr <- solveStatic("Tang_2026_datopotamab_pfs", list(TUMSZ = tumorGrid))$hr
+
+knitr::kable(
+  data.frame(`AUC1 quartile` = names(quartileMedians), `Median AUC1 (ug*day/mL)` = quartileMedians,
+             `OS hazard ratio vs 650` = osHr[-1] / osHr[1], check.names = FALSE),
+  digits = 3, row.names = FALSE, caption = "Overall-survival hazard ratios at the Table S5 AUC1 quartile medians."
+)
+knitr::kable(
+  data.frame(`Baseline tumor size (mm)` = tumorGrid, `PFS hazard ratio vs 55 mm` = pfsHr / pfsHr[3],
+             check.names = FALSE),
+  digits = 3, caption = "Progression-free-survival hazard ratios across the TROPION-Breast01 tumor-size distribution (5th, 25th, 50th, 75th, 95th percentiles)."
+)
+```
+
+The Cox models carry no baseline hazard, so they cannot reproduce the
+Kaplan-Meier curves of Figure 1A-D; only the hazard ratios of Figure 1E-F are
+model outputs.
+
+# Assumptions and deviations
+
+* **No baseline hazard.** Both Cox models are semiparametric; h0(t) is not a
+  parameter of the fit, so the models return the relative hazard `hr` (and its
+  log, `lhr`) only. Only ratios of `hr` between two covariate settings are
+  meaningful.
+* **PFS model has no exposure term.** Dato-DXd AUC1 entered the progression-free
+  survival model in forward addition and was removed in backward elimination
+  (p = 0.0011 against the p < 0.001 criterion); the packaged model is the final
+  model, with baseline tumor size only.
+* **PFS coefficient precision.** The coefficient is printed as 0.28. The two
+  published hazard ratios back-solve to 0.2775 and 0.2784, both of which round to
+  0.28; the printed value is used.
+* **Median normalisation.** The Methods equations divide each continuous
+  non-exposure covariate by its median; the medians used (55 mm for PFS tumor
+  size, 39 g/L for SAE albumin, 60 mm for dose-reduction tumor size) are the
+  values the Results quote as the reference of each forest plot. The
+  printed hazard and odds ratios reproduce to within 1% only under this reading.
+* **Figure 2 curves versus Table S4.** The plotted curves of Figure 2C and 2D,
+  whose models have no covariates, are steeper at the extremes than the Table S4
+  coefficients (about 77% versus 69% at 1300 ug*day/mL AUC1; 46% versus 40% at
+  62 ug/mL Cavg). The printed dose projections for grade 3+ TEAE and grade 2+ OSE
+  reproduce with the Table S4 slopes and not with the steeper plotted ones, so
+  the packaged values are the Table S4 estimates, unchanged.
+* **Two analytes under `CAV`.** The grade 3+ TEAE and serious TEAE models are
+  driven by the DXd payload Cavg in ng/mL; the stomatitis and OSE models by the
+  intact Dato-DXd Cavg in ug/mL. Each model's `covariateData` states the unit.
+  `Hong_2025_datopotamab` returns both analytes in ug/mL (`Cc`, `Cc_dxd`), so
+  DXd must be multiplied by 1000.
+* **Cavg is endpoint-specific.** Its averaging window ends at the cycle of the
+  event, so it cannot be regenerated from a fixed simulation horizon. The
+  vignette uses the dose-level medians read from Figure 2 instead.
+* **Race levels.** Table S4 gives coefficients for Black, Asian, "Multiple or
+  Other" and "Unknown or Unreported" versus White. The two patients recorded as
+  American Indian or Alaska Native or Native Hawaiian or other Pacific Islander
+  and the 8 with race missing are not assigned to a level by the paper.
+  "Multiple or Other" is carried as `RACE_OTHER` and "Unknown or Unreported" as
+  `RACE_MISSING`.
+* **Smoking.** The paper contrasts former or current smokers with never smokers;
+  the model forms the ever-smoker indicator as `1 - SMOKE_NEVER`.
+* **Region.** The grade 3+ TEAE model's reference region is the USA, with
+  separate Japan, Europe, mainland China and rest-of-world levels. Hong 2025
+  pools mainland China into rest of world, and the virtual cohort does the same
+  when it drives that PK model.
+* **Residual error.** The logistic models were fitted with a Bernoulli
+  likelihood and report no variance components. A fixed placeholder additive
+  error of 0.001 on each probability exists only because rxode2 needs an
+  observation declaration; sample outcomes with `rbinom()` on the predicted
+  probability instead.
+* **Virtual cohort.** Covariate spreads are log-normal fits to the Table S2
+  TROPION-Breast01 medians and IQRs, truncated to the observed ranges; dosing is
+  a single 6 mg/kg (or 4, 8 mg/kg) bolus without the 540 mg cap, which was
+  introduced after these studies.

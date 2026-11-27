@@ -10,6 +10,7 @@ Sanchez_2023_ro7122290_cibisatamab_qsp <- function() {
     trimer_per_tcell = "trimeric complexes per T cell",
     fold_kill = "fold increase over cibisatamab monotherapy"
   )
+  dosing <- c("central_cibisatamab", "central")
 
   # Cibisatamab has its own plasma and tumor states beside the FAP-4-1BBL
   # ones; the receptor pools and their complexes are tumor concentrations;

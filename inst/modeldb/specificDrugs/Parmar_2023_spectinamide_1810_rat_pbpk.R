@@ -34,6 +34,7 @@ Parmar_2023_spectinamide_1810_rat_pbpk <- function() {
     dosing = "mg (absolute amount; the paper's mg/kg dose x 0.225 kg rat body weight, e.g. 10 mg/kg = 2.25 mg)",
     concentration = "mg/L (equivalently ug/mL for plasma and ug/g for tissue under the paper's unit-tissue-density assumption)"
   )
+  dosing <- "venous"
 
   # No covariates. The rat physiology (Parmar 2023 Table 2, Rat (225 g)
   # column) is held fixed and no demographic or disease covariate effect is

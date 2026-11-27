@@ -40,6 +40,7 @@ Chigutsa_2021_bamlanivimab_etesevimab <- function() {
       "log10_viral_load"
     )
   )
+  dosing <- c("central", "central_ete")
 
   compartmentData <- list(
     central = list(

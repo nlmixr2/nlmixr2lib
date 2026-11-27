@@ -39,6 +39,7 @@ Karakitsios_2024_gevokizumab_mbma <- function() {
   )
   vignette <- "Karakitsios_2024_gevokizumab"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- "plasma"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. States hold antibody AMOUNTS (mg); the supplement

@@ -1,0 +1,479 @@
+---
+title: "Hydroxyurea in lactating women (Hosawi 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Hydroxyurea in lactating women (Hosawi 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Hosawi et al. fit maternal plasma and breast-milk hydroxyurea concentrations
+from the Hydroxyurea Exposure in Lactation Study (HELPS, NCT02990598) and used
+the model to estimate how much hydroxyurea a breastfed infant ingests at ages
+0-9 months.
+
+* Citation: `r rxode2::rxode(readModelDb("Hosawi_2026_hydroxyurea"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Hosawi_2026_hydroxyurea"))$description`
+* Article: <https://doi.org/10.1002/cpt.70394>
+
+The structure (Figure 1 of the paper) is a two-compartment oral model with a
+first-order absorption rate constant after a lag time, and a breast-milk
+compartment that exchanges with the central compartment in both directions
+through one clearance, `CL plasma-milk`. Drug is not eliminated from milk, so
+over a single dose the area under the milk curve equals the area under the
+plasma curve.
+
+# Population
+
+Sixteen lactating women each took a single oral 1000 mg dose of hydroxyurea
+(about 15-20 mg/kg), giving 101 plasma and 93 breast-milk concentrations.
+Plasma and milk were sampled before the dose and serially to 8-25 h after it;
+two women gave milk samples only (Methods, "Patients and sampling"). The
+paper does not tabulate demographics. A 1000 mg dose at 15-20 mg/kg implies
+body weights of roughly 50-67 kg, which is the range used for the virtual
+cohorts below. The same information is in the model's `population` metadata.
+
+# Source trace
+
+| Element | Value | Source location |
+|---|---|---|
+| Structure: depot, central, peripheral, breast milk | two-compartment, reversible milk compartment | Figure 1; Results, "Population PK modeling" |
+| `lka` | 2.5 1/h | Table 1, `KA (/h)` |
+| `ltlag` | 0.2 h | Table 1, `LAG Time (h)` |
+| `lfdepot` | 1 (fixed) | Table 1, `F` = 1 Fixed |
+| `lcl` | 8.57 L/h per 70 kg | Table 1, `CL (L/h/70 kg)` |
+| `lvc` | 39.0 L per 70 kg | Table 1, `V(L/70 kg)` |
+| `lq` | 4.4 L/h | Table 1, `Q (L/h)` |
+| `lvp` | 19.1 L | Table 1, `V2 (L)` |
+| `lq_milk` | 2.3 L/h | Table 1, `CL plasma-milk (L/h)` |
+| `lvmilk` | 0.79 L | Table 1, `VM (L)` |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed), reference 70 kg | Methods, "Covariate analysis"; Table 1 units and footnote |
+| `etalcl`, `etalvc`, `etalka`, `etaltlag`, `etalq_milk`, `etalvmilk` | 27.4, 42.3, 114, 43.7, 51.7, 23.2 CV% | Table 1, IIV rows; converted with Eq. 2, omega^2 = log(1 + CV^2) |
+| `propSd` (plasma) | 0.15 | Table 1, `Prop.Err.(CV%)` = 15.0 |
+| `addSd_Cmilk` (milk) | 1.12 ug/mL | Table 1, `Add.Err.` = 1.12 ug/mL |
+| Infant milk intake, Eq. 3 | 160.39 x 0.232/(0.232 - 0.00252) x (exp(-0.00252 age) - exp(-0.232 age)) mL/kg/day, age in days | Methods, Eq. 3 (vignette only) |
+| Infant daily dose, Eqs. 4-5 | sum over feeds of Cmilk x feed volume | Methods, Eqs. 4-5 (vignette only) |
+
+# Single-dose profiles and the visual predictive check
+
+The HELPS design is reproduced with 200 virtual women given 1000 mg, with body
+weight drawn uniformly between 50 and 67 kg. Observation rows are on the
+`central` state so both `Cc` and `Cmilk` come back at every time.
+
+```{r helps-sim}
+mod <- readModelDb("Hosawi_2026_hydroxyurea")
+
+n_women <- 200
+set.seed(20261025)
+rxode2::rxSetSeed(20261025)
+cohort <- tibble(id = seq_len(n_women), WT = runif(n_women, 50, 67))
+
+grid <- sort(unique(c(0, 0.25, 0.5, 0.75, seq(1, 12, by = 0.5), seq(13, 48, by = 1))))
+ev_helps <- bind_rows(
+  cohort |> mutate(time = 0, amt = 1000, evid = 1L, cmt = "depot", dvid = NA_integer_),
+  tidyr::expand_grid(cohort, time = grid) |>
+    mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+) |>
+  mutate(treatment = "1000 mg single dose") |>
+  arrange(id, time, desc(evid))
+
+sim_helps <- rxode2::rxSolve(
+  mod, ev_helps,
+  returnType = "data.frame", keep = c("WT", "treatment")
+)
+```
+
+Figure 4 of the paper is a VPC of the observed data. The points below are the
+observed medians read off Figure 4 by the maintainers (approximate, to the
+nearest 0.5 ug/mL), drawn over the simulated 10th, 50th and 90th percentiles
+of the model prediction without residual error.
+
+```{r vpc, fig.width = 7, fig.height = 6}
+obs_median <- tibble::tribble(
+  ~matrix, ~time, ~conc,
+  "Maternal plasma", 0.5, 4.5,
+  "Maternal plasma", 1, 18,
+  "Maternal plasma", 2, 16.5,
+  "Maternal plasma", 3, 12,
+  "Maternal plasma", 4, 10,
+  "Maternal plasma", 6, 7,
+  "Maternal plasma", 8, 4.5,
+  "Breast milk", 1, 3.5,
+  "Breast milk", 2, 13.5,
+  "Breast milk", 3, 11,
+  "Breast milk", 4, 8,
+  "Breast milk", 6, 5.5,
+  "Breast milk", 8, 4,
+  "Breast milk", 11, 2.5
+)
+
+vpc <- sim_helps |>
+  filter(time <= 14) |>
+  select(id, time, `Maternal plasma` = Cc, `Breast milk` = Cmilk) |>
+  pivot_longer(-c(id, time), names_to = "matrix", values_to = "conc") |>
+  group_by(matrix, time) |>
+  summarise(
+    p10 = quantile(conc, 0.1), p50 = median(conc), p90 = quantile(conc, 0.9),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(time)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), fill = "grey80") +
+  geom_line(aes(y = p50)) +
+  geom_point(data = obs_median, aes(y = conc), colour = "red") +
+  facet_wrap(~ factor(matrix, c("Maternal plasma", "Breast milk")), ncol = 1, scales = "free_y") +
+  labs(
+    x = "Time after dose (h)", y = "Hydroxyurea (ug/mL)",
+    caption = "Replicates Figure 4 of Hosawi 2026. Red points: observed medians read off Figure 4."
+  ) +
+  theme_bw()
+```
+
+```{r vpc-table}
+vpc_cmp <- obs_median |>
+  inner_join(vpc |> select(matrix, time, p50), by = c("matrix", "time")) |>
+  mutate(pct_diff = round(100 * (p50 / conc - 1)))
+vpc_cmp |>
+  rename(
+    Matrix = matrix, `Time (h)` = time, `Observed median (Fig. 4)` = conc,
+    `Simulated median` = p50, `Difference (%)` = pct_diff
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+From 1 h onward the simulated plasma medians fall within the scatter of the
+observed medians in Figure 4. The largest plasma differences are at 0.5 h, on
+the steep rising limb, where the lag time and the 114% CV on KA make the
+median very sensitive to the exact sampling time. Milk is different: from
+2 h onward the simulated milk median runs 30-40% above the observed medians
+(plasma: within about 10%), and above the model-predicted median band that the
+paper draws in Figure 4, which sits at roughly 0.8-0.85 times plasma. The printed structure cannot put
+milk below plasma (see "Milk concentrations run above the paper's" under
+Assumptions and deviations).
+
+# PKNCA: clearance and the milk-plasma mass balance
+
+The paper reports no NCA. Two checks follow from the model structure itself:
+the apparent clearance from NCA, dose / AUC0-inf of plasma, must equal each
+woman's own `cl`; and because milk has no elimination, milk AUC0-inf must
+equal plasma AUC0-inf. Both are compared within each woman, on the same
+drawn parameters, so the remaining difference is only extrapolation and
+trapezoidal error.
+
+```{r pknca}
+conc_nca <- sim_helps |>
+  filter(!is.na(Cc)) |>
+  select(id, time, treatment, `Maternal plasma` = Cc, `Breast milk` = Cmilk) |>
+  pivot_longer(c(`Maternal plasma`, `Breast milk`), names_to = "matrix", values_to = "conc")
+dose_nca <- ev_helps |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_nca, conc ~ time | treatment + matrix + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca <- as.data.frame(nca_res)
+
+nca |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  group_by(matrix, PPTESTCD) |>
+  summarise(
+    median = signif(median(PPORRES, na.rm = TRUE), 3),
+    p5 = signif(quantile(PPORRES, 0.05, na.rm = TRUE), 3),
+    p95 = signif(quantile(PPORRES, 0.95, na.rm = TRUE), 3),
+    .groups = "drop"
+  ) |>
+  rename(Matrix = matrix, `NCA parameter` = PPTESTCD, Median = median, `5th pct` = p5, `95th pct` = p95) |>
+  knitr::kable(caption = "Simulated NCA after a single 1000 mg dose (200 women, 50-67 kg).")
+```
+
+```{r pknca-checks}
+indiv_cl <- sim_helps |>
+  group_by(id) |>
+  summarise(cl_model = first(cl), .groups = "drop")
+
+cl_chk <- nca |>
+  filter(PPTESTCD == "cl.obs", matrix == "Maternal plasma") |>
+  select(id, cl_nca = PPORRES) |>
+  inner_join(indiv_cl, by = "id") |>
+  mutate(pct_diff = 100 * (cl_nca / cl_model - 1))
+
+auc_chk <- nca |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  select(id, matrix, PPORRES) |>
+  pivot_wider(names_from = matrix, values_from = PPORRES) |>
+  mutate(pct_diff = 100 * (`Breast milk` / `Maternal plasma` - 1))
+
+summary(cl_chk$pct_diff)
+summary(auc_chk$pct_diff)
+
+stopifnot(
+  # NCA CL/F against each woman's own model clearance: extrapolation and
+  # trapezoidal error only.
+  abs(median(cl_chk$pct_diff)) < 3,
+  # Milk and plasma AUC0-inf agree within a woman (mass balance; milk has no
+  # elimination route). The milk curve lags plasma, so the extrapolated tail
+  # carries slightly more of the milk AUC.
+  abs(median(auc_chk$pct_diff)) < 3
+)
+```
+
+For the typical 70 kg woman, NCA clearance reproduces the paper's estimate of
+8.57 L/h (Table 1 and Discussion):
+
+```{r pknca-typical}
+ev_typ <- bind_rows(
+  tibble(id = 1L, time = 0, amt = 1000, evid = 1L, cmt = "depot", dvid = NA_integer_),
+  tibble(id = 1L, time = grid, amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+) |>
+  mutate(WT = 70, treatment = "1000 mg, typical 70 kg")
+# A one-subject solve returns no id column; add it back for PKNCA.
+typ <- rxode2::rxSolve(mod, ev_typ, omega = NA, sigma = NA, returnType = "data.frame", keep = "treatment") |>
+  mutate(id = 1L)
+
+typ_nca <- as.data.frame(PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(typ |> filter(!is.na(Cc)), Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(ev_typ |> filter(evid == 1), amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE, cl.obs = TRUE)
+)))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = typ_nca |> filter(PPTESTCD == "cl.obs"),
+  reference = tibble(treatment = "1000 mg, typical 70 kg", cl.obs = 8.57),
+  by = "treatment",
+  units = c(cl.obs = "L/h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Typical-subject NCA clearance vs the Table 1 CL estimate.")
+stopifnot(abs(typ_nca$PPORRES[typ_nca$PPTESTCD == "cl.obs"] / 8.57 - 1) < 0.02)
+```
+
+# Infant exposure through breastfeeding (Table 2 and Figure 5)
+
+The paper simulated 1000 women given 20 mg/kg at time zero and predicted milk
+concentrations over the following 24 h. Infant daily milk intake comes from
+the weight-normalised intake curve (Eq. 3, age in days); each feed volume is
+the daily intake divided by the number of feeds per day, the dose per feed is
+the milk concentration at the feed time times the feed volume (Eq. 4), and
+the infant's daily dose is the sum over feeds (Eq. 5).
+
+Eq. 3 is checked against the peak the paper reports, 152.6 mL/kg/day at 19.7
+days:
+
+```{r milk-intake}
+milk_intake <- function(age_days) {
+  160.39 * 0.232 / (0.232 - 0.00252) *
+    (exp(-0.00252 * age_days) - exp(-0.232 * age_days))
+}
+peak_age <- log(0.232 / 0.00252) / (0.232 - 0.00252)
+c(peak_age_days = peak_age, peak_intake = milk_intake(peak_age))
+stopifnot(
+  abs(peak_age - 19.7) < 0.05,
+  abs(milk_intake(peak_age) - 152.6) < 0.05
+)
+```
+
+Feeding frequency follows the paper's age groups as tabulated in Table 2: 12
+feeds/day up to 30 days, 9 up to 60 days, 8 up to 90 days, 6 up to 180 days
+and 4 thereafter. The paper does not state the clock times of the feeds;
+they are taken here as evenly spaced, the first one dosing interval after the
+maternal dose (at 24/n, 2 x 24/n, ..., 24 h).
+
+```{r infant-sim}
+rxode2::rxSetSeed(20261026)
+cohort20 <- tibble(id = seq_len(n_women), WT = runif(n_women, 50, 67))
+# Every feed time of every feeding frequency is put on the grid (24/9 h is
+# not a multiple of 0.25 h); rounding makes the later matching exact.
+feed_grid <- unlist(lapply(c(12, 9, 8, 6, 4), function(n) seq_len(n) * 24 / n))
+grid24 <- sort(unique(round(c(seq(0, 24, by = 0.25), feed_grid), 6)))
+ev20 <- bind_rows(
+  cohort20 |> mutate(time = 0, amt = 20 * WT, evid = 1L, cmt = "depot", dvid = NA_integer_),
+  tidyr::expand_grid(cohort20, time = grid24) |>
+    mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+) |>
+  arrange(id, time, desc(evid))
+sim20 <- rxode2::rxSolve(mod, ev20, returnType = "data.frame", keep = "WT") |>
+  select(id, time, Cmilk)
+
+# Upper bounds inclusive, as Table 2 assigns 12 feeds to month 1 and 9 to
+# month 2; Figure 5 steps down just after 60, 90 and 180 days.
+feeds_per_day <- function(age_days) {
+  dplyr::case_when(
+    age_days <= 30 ~ 12L,
+    age_days <= 60 ~ 9L,
+    age_days <= 90 ~ 8L,
+    age_days <= 180 ~ 6L,
+    TRUE ~ 4L
+  )
+}
+
+infant_dose <- function(age_days, intake = milk_intake(age_days)) {
+  n_feed <- feeds_per_day(age_days)
+  feed_times <- round(seq_len(n_feed) * 24 / n_feed, 6)
+  fed <- sim20 |>
+    filter(round(time, 6) %in% feed_times)
+  stopifnot(nrow(fed) == n_feed * n_women)
+  fed |>
+    group_by(id) |>
+    # Cmilk ug/mL x feed volume mL/kg = ug/kg per feed; /1000 -> mg/kg.
+    summarise(dose_mgkg = sum(Cmilk * intake / n_feed) / 1000, .groups = "drop") |>
+    mutate(age_days = age_days, n_feed = n_feed, intake = intake)
+}
+```
+
+Table 2 lists its milk intakes per month; those values are used directly so
+that the comparison isolates the pharmacokinetic part of the calculation.
+
+```{r table2}
+table2 <- tibble::tribble(
+  ~month, ~intake, ~feeds, ~median, ~p5, ~p95,
+  1, 150.3, 12, 0.75, 0.44, 1.30,
+  2, 139.6, 9, 0.71, 0.41, 1.23,
+  3, 129.5, 8, 0.59, 0.34, 1.03,
+  4, 120.1, 6, 0.49, 0.28, 0.87,
+  5, 111.4, 6, 0.46, 0.26, 0.80,
+  6, 103.4, 6, 0.43, 0.24, 0.75,
+  7, 95.9, 4, 0.32, 0.18, 0.56,
+  8, 89.0, 4, 0.30, 0.17, 0.52,
+  9, 82.6, 4, 0.27, 0.16, 0.48
+)
+
+sim_t2 <- bind_rows(lapply(seq_len(nrow(table2)), function(i) {
+  infant_dose(table2$month[i] * 30, intake = table2$intake[i]) |>
+    mutate(month = table2$month[i])
+})) |>
+  group_by(month) |>
+  summarise(
+    n_feed = first(n_feed),
+    sim_median = median(dose_mgkg),
+    sim_p5 = quantile(dose_mgkg, 0.05),
+    sim_p95 = quantile(dose_mgkg, 0.95),
+    .groups = "drop"
+  ) |>
+  inner_join(table2, by = "month") |>
+  mutate(pct_diff = 100 * (sim_median / median - 1))
+
+stopifnot(all(sim_t2$n_feed == sim_t2$feeds))
+
+sim_t2 |>
+  transmute(
+    month, intake, feeds,
+    published = sprintf("%.2f (%.2f-%.2f)", median, p5, p95),
+    simulated = sprintf("%.2f (%.2f-%.2f)", sim_median, sim_p5, sim_p95),
+    pct_diff = round(pct_diff)
+  ) |>
+  rename(
+    `Age (months)` = month, `Milk intake (mL/kg/day)` = intake,
+    `Feeds/day` = feeds, `Table 2 median (5th-95th)` = published,
+    `Simulated median (5th-95th)` = simulated, `Median difference (%)` = pct_diff
+  ) |>
+  knitr::kable(caption = "Infant daily hydroxyurea dose (mg/kg/day): simulated vs Table 2.")
+
+stopifnot(
+  # Centre: a mis-transcribed CL, V or milk parameter, or a ug/mL vs mg/L
+  # slip, moves every month by far more than this.
+  abs(median(sim_t2$pct_diff)) < 30,
+  # The paper's conclusion: every age stays below the 10% RID threshold of
+  # 2 mg/kg/day, including the upper 95th percentile.
+  all(sim_t2$sim_p95 < 2)
+)
+```
+
+The simulated medians run about 10-25% above Table 2 in every month. The
+month-to-month pattern matches closely, including the drop each time the
+number of feeds per day falls: with fewer, more widely spaced feeds, the feed
+times miss more of the milk concentration peak. The constant offset is the
+same milk over-prediction seen in the VPC above; it comes from the printed
+model structure, not from the virtual cohort (see "Milk concentrations run
+above the paper's" under Assumptions and deviations). Every month stays well
+below the 2 mg/kg/day threshold, so the paper's conclusion is unchanged.
+
+```{r fig5, fig.width = 7, fig.height = 4}
+ages <- c(0, 2, 4, 7, seq(10, 40, by = 5), seq(50, 270, by = 10))
+fig5 <- bind_rows(lapply(ages, infant_dose))
+
+ggplot(fig5, aes(factor(age_days), dose_mgkg)) +
+  geom_boxplot(outlier.shape = NA, fill = "steelblue", width = 0.6) +
+  geom_hline(yintercept = 2, colour = "blue", linewidth = 1) +
+  scale_x_discrete(breaks = as.character(seq(0, 260, by = 20))) +
+  labs(
+    x = "Infant age (days)", y = "Infant daily dose (mg/kg/day)",
+    caption = "Replicates Figure 5 of Hosawi 2026. Blue line: 10% RID threshold (2 mg/kg/day)."
+  ) +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+* **Milk concentrations run above the paper's.** The model is transcribed
+  exactly as printed: Figure 1 draws one bidirectional plasma-milk clearance
+  between central and the milk compartment, with elimination from central
+  only, and Table 1 gives that clearance (2.3 L/h) and the milk volume
+  (0.79 L) but no milk:plasma partition coefficient, no second (asymmetric)
+  transfer clearance and no loss from milk. With symmetric exchange and no
+  loss, milk AUC0-inf must equal plasma AUC0-inf (the PKNCA check above
+  confirms it) and milk sits at or above plasma after its peak. The paper's
+  own outputs imply milk at about 0.8-0.85 times plasma: the model-predicted
+  milk median in Figure 4 is about 11, 9.6, 7.9 and 5.4 ug/mL at 2, 3, 4 and
+  6 h (read off the figure), while this model gives about 17.0, 13.7, 10.6
+  and 6.9 ug/mL for a typical 70 kg woman; and the Table 2 infant doses imply
+  a mean milk concentration about 15-20% below this model's. The authors'
+  NONMEM implementation therefore probably contains a term that the paper
+  does not report. No such term was added here, because its value would have
+  to be tuned to the figures rather than taken from the paper. Plasma is
+  unaffected. Infant doses from this model are 10-25% higher than Table 2,
+  and the paper's conclusion (every age below the 10% relative infant dose
+  threshold of 2 mg/kg/day) holds either way.
+* **Allometric scaling applies to CL and V only.** The Methods say body
+  weight was evaluated with theoretical exponents on CL and Q (0.75) and on V
+  and V2 (1). Table 1, however, reports CL and V per 70 kg and Q, V2, the
+  plasma-milk clearance and VM in plain L/h and L, and its footnote names
+  only CL and V as size-standardised; the Discussion likewise says body
+  weight influenced "clearance and volume of distribution". The model follows
+  Table 1 and scales CL and V only. For women near 70 kg the choice makes
+  little difference.
+* **Residual error values are standard deviations.** The Methods state that
+  CV% values for omega^2 and sigma^2 were computed from the square roots of
+  the variances, so the proportional 15.0% is taken as an SD of 0.15 and the
+  additive 1.12 ug/mL as an SD.
+* **IIV conversion.** Table 1 IIV values are CV%; Eq. 2 is the log-normal
+  formula, so omega^2 = log(1 + CV^2).
+* **Body weight of the cohorts.** The paper does not tabulate HELPS
+  demographics, and its infant-exposure simulation used NHANES-based women
+  with weights "consistent with the HELPS study population" without giving
+  the distribution. Both virtual cohorts here draw weight uniformly from 50
+  to 67 kg, the range implied by a 1000 mg dose at about 15-20 mg/kg. The
+  cohorts have 200 women, not the paper's 1000.
+* **Feed timing.** The paper does not give feed clock times. Feeds are
+  evenly spaced, the first one dosing interval (24/n h) after the maternal
+  dose. Starting the feeds at the time of the dose instead lowers each
+  infant dose by a few percent and does not change the conclusions.
+* **Ages in Table 2.** Month k is evaluated at 30k days. The Table 2 milk
+  intakes themselves are used for the comparison, because Eq. 3 at 30k days
+  gives values up to 0.5 mL/kg/day lower than Table 2 (for example 150.2
+  versus 150.3 at 1 month and 129.2 versus 129.5 at 3 months).
+* **Feeding-frequency age bands.** The Methods define the groups as 0 to <1
+  month (12/day), 1 to <2 months (9), 2-3 months (8), 4-6 months (6) and 7-9
+  months (4-5), but Table 2 gives 12 feeds at 1 month and 9 at 2 months, and
+  Figure 5 steps down just after 60, 90 and 180 days. The vignette follows
+  Table 2 and Figure 5: 12 feeds up to 30 days, 9 up to 60, 8 up to 90, 6 up
+  to 180 and 4 thereafter (Table 2 uses 4, not 5, for 7-9 months).
+* **Clinical status of the HELPS women.** The paper does not say whether the
+  women had sickle cell anaemia, so the model's `population` metadata leaves
+  it unstated.

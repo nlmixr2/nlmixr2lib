@@ -1,0 +1,420 @@
+---
+title: "Tamoxifen CYP2D6-guided dosing: whole-body PBPK and virtual TARGET-1 (Nakamura 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tamoxifen CYP2D6-guided dosing: whole-body PBPK and virtual TARGET-1 (Nakamura 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+rxode2::rxSetSeed(20180622)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Nakamura_2018_tamoxifen_pbpk")()$reference`
+* Article: <https://doi.org/10.1002/psp4.12307> (PMC6063740, open access)
+* Supplementary material used here, all from the same open-access archive:
+  the Supplementary Methods (the complete ordinary differential equation
+  system), Table S1 (fixed physiological and physicochemical constants),
+  Table S2 (the eight Cluster Newton method parameter sets), Table S3
+  (between-subject variability), Table 1 (CYP2D6 activity-based diplotype
+  distribution and tumoral-ER frequencies), and the authors' deposited MATLAB
+  (CNM) and R (virtual clinical study) code.
+
+Nakamura and colleagues built a whole-body physiologically-based
+pharmacokinetic (PBPK) model of tamoxifen and its four metabolites
+(N-desmethyltamoxifen, 4-hydroxytamoxifen, 4-OHT-glucuronide and endoxifen),
+and used it to run a prospective *virtual clinical study* (VCS): repeated
+in-silico TARGET-1 trials of Japanese breast-cancer patients drawn with
+realistic CYP2D6 diplotype frequencies and realistic between-subject
+variability. The purpose was to predict, before the real TARGET-1 study
+reported out, the probability that escalating tamoxifen from 20 to 40 mg/day in
+CYP2D6-variant carriers would demonstrate superior 6-month progression-free
+survival.
+
+The whole model is packaged in one file,
+`Nakamura_2018_tamoxifen_pbpk.R`: five structurally identical PBPK modules (one
+per chemical species) coupled by hepatic and intestinal metabolic clearances,
+88 ODE states in all. The clinical-response layer -- the stepwise endoxifen x
+tumoral-ER probability model and the virtual trial -- is reproduced here as
+post-processing on the simulated endoxifen concentrations, exactly as the
+authors implemented it in their deposited R code, rather than as ODE states.
+
+```{r load-model}
+ui <- rxode2::rxode2(readModelDb("Nakamura_2018_tamoxifen_pbpk")())
+length(ui$state) # 88 ODE states
+```
+
+# Source trace
+
+Every model equation and every `ini()` parameter is traced to a specific
+location in the paper. The parameters below are the Cluster Newton method
+set ID 1 (the authors' deposited VCS worked example).
+
+| Quantity | Source |
+|---|---|
+| ODE system (central, tissue, 5-unit liver, EHC chain, segregated-flow intestine, sinks) | Supplementary Methods, "Ordinary differential equations" |
+| Fixed physiology (`Vliver`, `Qhep`, tissue volumes/flows, `AR`) | Table S1 |
+| Fixed physicochemistry per compound (`fp`, `RB`, `Kp,*`, `fgut`) | Table S1B |
+| CNM kinetic parameters per compound (`Vcentral`, `SFKp`, `ka`, `kbile`, `PSdif`, `kfeces`, `CLR`, `CLbile`) | Table S2a-e, row ID 1 |
+| CNM metabolic clearances (CYP3A/CYP2D6/CYP2C9/UGT formation, "other") | Table S2a-e, row ID 1 |
+| 4-OHT formation fractions by CYP2D6 / CYP2C9 (0.45 / 0.46) | Table S1B footnote; Coller 2002 |
+| Between-subject variability (normal physiology, lognormal kinetics/enzymes) | Table S3 |
+| CYP2D6 activity-based diplotype relative activity and %CV | Table 1 |
+| Tumoral-ER expression frequencies and endoxifen response thresholds (14.3, 35.1 nM) | Table 1; Methods "Calibration of a probability model"; WHEL study |
+
+# Population
+
+The PK was calibrated against the mean blood concentration-time profiles of
+30 healthy postmenopausal US women; the virtual TARGET-1 study simulated
+Japanese breast-cancer patients. The two populations differ in body weight,
+CYP2D6 diplotype frequency and tumoral-ER expression (Table 1).
+
+```{r population}
+# Table 1: CYP2D6 activity-based diplotype relative activity (reference *1/*1 = 1),
+# between-subject %CV, and diplotype frequencies (%) in each population.
+cyp2d6 <- tibble::tribble(
+  ~diplotype,          ~activity, ~cv_pct, ~freq_white, ~freq_japanese,
+  "increase/normal",   1.13,      64.3,    2.4,         1.4,
+  "normal/normal",     0.89,      47.9,    43.1,        33.4,
+  "normal/decrease",   0.71,      53.6,    11.2,        37.3,
+  "normal/null",       0.42,      99.0,    31.8,        9.5,
+  "decrease/decrease", 0.24,      66.0,    1.1,         12.5,
+  "decrease/null",     0.20,      109.0,   4.3,         5.5,
+  "null/null",         0.004,     103.0,   6.2,         0.5
+)
+knitr::kable(cyp2d6, caption = "Table 1: CYP2D6 activity-based diplotypes.")
+```
+
+# Helpers
+
+Tamoxifen is dosed orally into the gut lumen; the absorbed fraction emerges
+from the `ka` / `kfeces` competition. States are concentrations in nM and the
+dose is supplied in nmol (tamoxifen base MW 371.51, so 20 mg = 53834 nmol).
+
+```{r helpers}
+MW_TAM <- 371.51
+mg_to_nmol <- function(mg) mg / MW_TAM * 1e6
+
+# Build an event table: once-daily oral tamoxifen to `days`, then an
+# observation at `obs_h` (default the last trough). Observation rows use the
+# first endpoint (`Cc`) so rxSolve returns every Cc* output column.
+buildEvents <- function(subjects, dose_mg, days, obs_h) {
+  dose_t <- seq(0, by = 24, length.out = days)
+  do.call(rbind, lapply(seq_len(nrow(subjects)), function(i) {
+    nd <- length(dose_t)
+    no <- length(obs_h)
+    ev <- data.frame(
+      id = subjects$id[i],
+      time = c(dose_t, obs_h),
+      amt = c(rep(mg_to_nmol(dose_mg), nd), rep(NA_real_, no)),
+      evid = c(rep(1L, nd), rep(0L, no)),
+      cmt = c(rep("gut_lumen", nd), rep("Cc", no))
+    )
+    ev <- ev[order(ev$time, -ev$evid), ]
+    cbind(ev, subjects[rep(i, nd + no), setdiff(names(subjects), "id"), drop = FALSE])
+  }))
+}
+
+# A typical subject with all enzyme activities at the wild-type reference.
+typicalSubject <- function(WT = 67.58, CYP2D6 = 1, CYP3A4 = 1, CYP2C9 = 1) {
+  data.frame(id = 1L, WT = WT, CYP2D6 = CYP2D6, CYP3A4 = CYP3A4, CYP2C9 = CYP2C9)
+}
+
+ssEndox <- function(cyp2d6_activity, dose_mg = 20, days = 56) {
+  ev <- buildEvents(typicalSubject(CYP2D6 = cyp2d6_activity), dose_mg, days,
+                    obs_h = 24 * days)
+  s <- rxode2::rxSolve(rxode2::zeroRe(ui), ev, atol = 1e-6, rtol = 1e-6,
+                       maxsteps = 1e6, returnType = "data.frame")
+  s$Cc_endox[nrow(s)]
+}
+```
+
+# Structural check: the CYP2D6 genotype selection criterion
+
+The authors selected their eight parameter sets precisely because they
+reproduce the reported ratio of steady-state endoxifen in CYP2D6\*10/\*10
+carriers (relative activity 0.24) to that in \*1/\*1 wild-type carriers
+(activity 1.0): a ratio between **0.397 and 0.472** (Supplementary Methods,
+citing Lim 2007/2011 and Kiyotani 2012). Reproducing that ratio from the
+packaged set ID 1 is therefore a direct, known-answer check on the whole
+metabolic network and the CYP2D6 covariate action.
+
+```{r cyp2d6-ratio}
+e_wt <- ssEndox(1.00)   # *1/*1
+e_dd <- ssEndox(0.24)   # *10/*10 (decrease/decrease)
+e_null <- ssEndox(0.004) # null/null
+ratio_dd <- e_dd / e_wt
+
+tibble::tibble(
+  genotype = c("*1/*1", "*10/*10", "null/null"),
+  activity = c(1.00, 0.24, 0.004),
+  endoxifen_nM = round(c(e_wt, e_dd, e_null), 2),
+  ratio_to_wt = round(c(1, ratio_dd, e_null / e_wt), 3)
+) |>
+  dplyr::rename(
+    "CYP2D6 genotype" = genotype, "Relative activity" = activity,
+    "Steady-state endoxifen (nM)" = endoxifen_nM, "Ratio to *1/*1" = ratio_to_wt
+  ) |>
+  knitr::kable(caption = "Steady-state endoxifen by CYP2D6 activity (20 mg/day, typical subject).")
+
+stopifnot(
+  # The paper's selection criterion for the *10/*10 : *1/*1 endoxifen ratio.
+  ratio_dd > 0.397, ratio_dd < 0.472,
+  # Reduced CYP2D6 lowers endoxifen monotonically; null/null is lowest.
+  e_wt > e_dd, e_dd > e_null,
+  # A normal metaboliser at 20 mg/day sits in the therapeutic endoxifen band
+  # (the paper's lower and upper cut-offs are 14.3 and 35.1 nM).
+  e_wt > 14.3
+)
+```
+
+The packaged set ID 1 reproduces the ratio (`r round(ratio_dd, 3)`), inside the
+0.397-0.472 window the authors required.
+
+# Replicating Figure 3: endoxifen across CYP2D6 diplotypes
+
+Figure 3 shows steady-state blood endoxifen falling as CYP2D6 activity falls.
+Here is the typical-value trajectory across the seven activity-based
+diplotypes of Table 1.
+
+```{r figure3, fig.height = 4}
+fig3 <- cyp2d6 |>
+  dplyr::rowwise() |>
+  dplyr::mutate(endoxifen_nM = ssEndox(activity)) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(diplotype = factor(diplotype, levels = cyp2d6$diplotype))
+
+ggplot2::ggplot(fig3, ggplot2::aes(diplotype, endoxifen_nM)) +
+  ggplot2::geom_col(fill = "grey70") +
+  ggplot2::geom_hline(yintercept = c(14.3, 35.1), linetype = 2, colour = "steelblue") +
+  ggplot2::labs(
+    x = "CYP2D6 activity-based diplotype", y = "Steady-state endoxifen (nM)",
+    title = "Replicates Figure 3 of Nakamura 2018 (typical subject, 20 mg/day)",
+    subtitle = "Dashed lines: 14.3 and 35.1 nM response thresholds"
+  ) +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1))
+
+stopifnot(
+  # Endoxifen is monotone decreasing in CYP2D6 activity order.
+  all(diff(fig3$endoxifen_nM[order(-fig3$activity)]) <= 0)
+)
+```
+
+# Single-dose pharmacokinetics and NCA
+
+The PK was calibrated against single-oral-dose profiles (Figure S1). A
+single-dose simulation of the typical subject, with PKNCA non-compartmental
+analysis of the parent and the active metabolite, confirms the disposition is
+well-behaved (tamoxifen and endoxifen rise and fall, endoxifen peaking much
+later because it is formation-limited).
+
+```{r single-dose}
+sd_grid <- sort(unique(c(seq(0, 24, by = 1), seq(30, 168, by = 6),
+                         seq(192, 672, by = 24))))
+sd <- rxode2::rxSolve(
+  rxode2::zeroRe(ui),
+  buildEvents(typicalSubject(), dose_mg = 20, days = 1, obs_h = sd_grid),
+  atol = 1e-6, rtol = 1e-6, maxsteps = 1e6, returnType = "data.frame"
+)
+sd <- sd[!duplicated(sd$time), ]
+
+conc <- dplyr::bind_rows(
+  data.frame(id = 1L, time = sd$time, conc = sd$Cc, analyte = "tamoxifen"),
+  data.frame(id = 1L, time = sd$time, conc = sd$Cc_endox, analyte = "endoxifen")
+) |>
+  dplyr::filter(!is.na(conc))
+
+o_conc <- PKNCA::PKNCAconc(conc, conc ~ time | id / analyte)
+o_dose <- PKNCA::PKNCAdose(
+  data.frame(id = 1L, time = 0, dose = mg_to_nmol(20)), dose ~ time | id
+)
+res <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose))
+nca <- as.data.frame(res$result)
+knitr::kable(
+  nca[nca$PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life"),
+      c("analyte", "PPTESTCD", "PPORRES")],
+  digits = 3, row.names = FALSE,
+  caption = "Single-dose NCA (typical subject, 20 mg oral tamoxifen)."
+)
+
+stopifnot(
+  # Endoxifen peaks later than tamoxifen (it is a downstream, formation-limited
+  # metabolite), which is the qualitative signature of Figure S1.
+  nca$PPORRES[nca$analyte == "endoxifen" & nca$PPTESTCD == "tmax"] >
+    nca$PPORRES[nca$analyte == "tamoxifen" & nca$PPTESTCD == "tmax"]
+)
+```
+
+# Virtual TARGET-1 study
+
+One run of the virtual TARGET-1 study. CYP2D6 diplotypes are drawn at the
+Japanese frequencies of Table 1; each subject's CYP2D6 activity is drawn
+lognormally about its diplotype mean using the diplotype %CV (the deposited
+`generatePol` routine). Variant carriers (any decreased/null allele) are
+randomised to arm A (20 mg/day) or arm B (40 mg/day); wild-type/wild-type
+subjects form arm C (20 mg/day). The response probability combines a stepwise
+endoxifen score and a tumoral-ER score (deposited `determineProbability`:
+endoxifen >=35.1 nM scores 1.0, >=14.3 scores 0.53, else 0.1; high ER scores
+1.0, moderate ER 0.5; product times an adjustment factor 0.9).
+
+The cohort here is deliberately small (the solve is 88 stiff ODEs per subject);
+the paper ran 200 trials of 180 patients. The point is to show the machinery
+reproduces an expected arm-B-over-arm-A superiority probability near the
+paper's 0.47, not to reproduce the full 200-run distribution.
+
+```{r vcs-population}
+set.seed(20180622)
+n_per_arm <- 24L
+
+draw_cyp2d6 <- function(n, japanese = TRUE) {
+  freq <- if (japanese) cyp2d6$freq_japanese else cyp2d6$freq_white
+  idx <- sample(seq_len(nrow(cyp2d6)), n, replace = TRUE, prob = freq / sum(freq))
+  mu <- log(cyp2d6$activity[idx])
+  sd <- sqrt(log((cyp2d6$cv_pct[idx] / 100)^2 + 1))
+  list(activity = exp(stats::rnorm(n, mu, sd)), diplotype = cyp2d6$diplotype[idx])
+}
+is_variant <- function(dip) !dip %in% c("increase/normal", "normal/normal")
+
+# Draw enough subjects to fill the variant arms A and B and the wild-type arm C.
+pool <- draw_cyp2d6(3000L)
+variant <- which(is_variant(pool$diplotype))
+wildtype <- which(!is_variant(pool$diplotype))
+armA <- variant[seq_len(n_per_arm)]
+armB <- variant[n_per_arm + seq_len(n_per_arm)]
+armC <- wildtype[seq_len(n_per_arm)]
+
+mk_arm <- function(sel, dose, arm) {
+  data.frame(
+    id = seq_along(sel), arm = arm, dose_mg = dose,
+    WT = pmax(35, stats::rnorm(length(sel), 54.44, 54.44 * 0.15)),
+    CYP2D6 = pool$activity[sel], CYP3A4 = 1, CYP2C9 = 1
+  )
+}
+arms <- list(A = mk_arm(armA, 20, "A"), B = mk_arm(armB, 40, "B"),
+             C = mk_arm(armC, 20, "C"))
+```
+
+```{r vcs-simulate}
+ss_days <- 56L # ~8 weeks; endoxifen is near plateau
+sim_arm <- function(df) {
+  df$id <- seq_len(nrow(df))
+  ev <- buildEvents(df, df$dose_mg[1], ss_days, obs_h = 24 * ss_days)
+  s <- rxode2::rxSolve(rxode2::zeroRe(ui), ev, atol = 1e-6, rtol = 1e-6,
+                       maxsteps = 1e6, returnType = "data.frame")
+  s <- s[!duplicated(s$id), ]
+  df$endoxifen <- s$Cc_endox[match(df$id, s$id)]
+  df
+}
+vcs <- dplyr::bind_rows(lapply(arms, sim_arm))
+
+# Tumoral-ER status drawn at the Japanese TARGET-1 frequencies (Table 1:
+# strong 0.802, moderate 0.198 among ER-positive patients).
+vcs$ER <- sample(c("High", "Moderate"), nrow(vcs), replace = TRUE,
+                 prob = c(0.802, 0.198))
+
+# Deposited determineProbability().
+prob_response <- function(endoxifen, ER) {
+  cProb <- ifelse(endoxifen >= 35.1, 1.0, ifelse(endoxifen >= 14.3, 0.53, 0.1))
+  eProb <- ifelse(ER == "High", 1.0, 0.5)
+  cProb * eProb * (1 - 0.1)
+}
+vcs$p <- prob_response(vcs$endoxifen, vcs$ER)
+```
+
+```{r vcs-plot, fig.height = 4}
+vcs$armlab <- factor(vcs$arm, levels = c("A", "B", "C"),
+  labels = c("A: variant 20 mg", "B: variant 40 mg", "C: wild-type 20 mg"))
+ggplot2::ggplot(vcs, ggplot2::aes(armlab, endoxifen)) +
+  ggplot2::geom_boxplot(outlier.shape = NA, fill = "grey90") +
+  ggplot2::geom_jitter(width = 0.15, alpha = 0.5, size = 1) +
+  ggplot2::geom_hline(yintercept = c(14.3, 35.1), linetype = 2, colour = "steelblue") +
+  ggplot2::labs(x = NULL, y = "Steady-state endoxifen (nM)",
+    title = "Virtual TARGET-1 endoxifen by arm (one run)",
+    subtitle = "Dashed lines: 14.3 and 35.1 nM response thresholds")
+```
+
+```{r vcs-outcome}
+arm_mean_p <- tapply(vcs$p, vcs$arm, mean)
+tibble::tibble(
+  arm = c("A (variant, 20 mg)", "B (variant, 40 mg)", "C (wild-type, 20 mg)"),
+  mean_response_probability = round(as.numeric(arm_mean_p[c("A", "B", "C")]), 3)
+) |>
+  dplyr::rename("Arm" = arm, "Mean response probability" = mean_response_probability) |>
+  knitr::kable(caption = "Mean clinical-response probability by arm (one virtual run).")
+
+stopifnot(
+  # Dose escalation in variant carriers raises the mean response probability:
+  # arm B (40 mg) above arm A (20 mg). This is the qualitative outcome the
+  # paper's 200-run probability (0.469) quantifies.
+  arm_mean_p[["B"]] > arm_mean_p[["A"]],
+  # Escalated variant carriers (arm B) approach the wild-type standard-dose
+  # arm C, the paper's equivalence comparison.
+  arm_mean_p[["B"]] > 0.5 * arm_mean_p[["C"]]
+)
+```
+
+A single small run cannot reproduce the paper's 0.469 point estimate (that is
+the fraction of 200 runs of 180 patients in which arm B was *statistically*
+superior to arm A), but the per-arm mean response probabilities move in the
+reported direction: escalation raises the variant-carrier response, bringing
+arm B toward the wild-type arm C.
+
+# Assumptions and deviations
+
+* **Single-chain dispersion liver.** The Supplementary Methods and the
+  deposited MATLAB code both represent the liver as five well-stirred
+  sub-compartments in series (a dispersion-model approximation), each a single
+  well-mixed pool -- there is no separate hepatocyte/sinusoid split and no
+  active hepatic uptake transporter. The model is coded exactly that way.
+* **Inter-liver transport (mass-balance reading).** The printed inter-liver
+  flow term drops the partition divisor on the inflow; the deposited MATLAB
+  code divides both the inflow and the outflow by `Kp,liver * SFKp`, so the
+  packaged model uses the blood-equivalent concentration `Qhep * Cliver /
+  (Kp,liver * SFKp)` at both ends.
+* **Metabolite formation source terms (mass-balance reading).** The printed
+  `Xi(t)` and `Z(t)` formation terms omit the parent's free-fraction factor
+  and, in the liver, the one-fifth dispersion weight that the matching loss
+  term in the parent equation carries. Both are restored so that what leaves
+  the parent exactly arrives in the metabolite.
+* **Tamoxifen "other" hepatic clearance.** Table S2a reports a single lumped
+  `CL Other,hep` (0.966 L/h/kg); the deposited code splits it 50/50 into a
+  CYP3A-dependent and a CYP3A-independent half. Because CYP3A4 is held at the
+  reference activity in every simulation the paper runs, the two readings are
+  numerically identical, so the packaged model carries the Table S2a lump
+  without a CYP3A multiplier.
+* **No residual error.** The CNM minimises a weighted sum of squares and
+  reports no residual-error model, so the five `propSd` values are syntactic
+  placeholders, not estimates.
+* **Central-volume IIV.** The deposited parameter file carries a 30%
+  lognormal between-subject variability on the central volume that is not in
+  Supplementary Table S3; it is included here (shared across compounds) as the
+  authors ran it.
+* **Shared-process IIV names.** The between-subject random effects are applied
+  once per biochemical process and shared across the five compounds (matching
+  the deposited parameter file's "same"-linkage of the kinetic constants).
+  Five of them (the CYP3A, UGT, "other-enzyme", intestinal-CYP3A and endoxifen
+  active-efflux processes) do not correspond to a single fixed-effect
+  parameter, so `checkModelConventions()` reports five IIV naming warnings;
+  this is intrinsic to a coupled multi-compound PBPK, as in the
+  `Toshimoto_2017_irinotecan_pbpk` sibling.
+* **CYP2D6 variability.** The CYP2D6-pathway between-subject variability is
+  carried by the per-subject CYP2D6 activity covariate (Table 1 diplotype
+  %CV), drawn in the virtual study, rather than by a model eta.
+* **Response layer in the vignette.** The stepwise endoxifen x tumoral-ER
+  probability model and the virtual trial are post-processing on the simulated
+  endoxifen, not ODE states (sidecar q2 option A).
+* **Parameter set.** `ini()` uses CNM set ID 1 (the authors' deposited VCS
+  worked example). Set ID 3 was the authors' Grubbs outlier and was dropped
+  from their analyses; the other six sets can be substituted by editing the
+  `ini()` block with the Table S2 values.
+```

@@ -34,6 +34,7 @@ Kim_2024_carmrna_mouse_qsp <- function() {
     dosing = "pM",
     concentration = "percent surface CAR expression"
   )
+  dosing <- "mrna_central"
 
   # No patient covariates: typical-value mechanism with IIV on the CAR-formation
   # parameters only. Dose amount and timing are supplied through the event table.

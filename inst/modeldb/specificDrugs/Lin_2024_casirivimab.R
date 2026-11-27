@@ -11,6 +11,7 @@ Lin_2024_casirivimab <- function() {
   )
   vignette <- "Lin_2024_casirivimab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

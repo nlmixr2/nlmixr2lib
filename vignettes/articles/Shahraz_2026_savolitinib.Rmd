@@ -1,0 +1,593 @@
+---
+title: "Savolitinib population PK and exposure-response (Shahraz 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Savolitinib population PK and exposure-response (Shahraz 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Shahraz_2026_savolitinib"))$reference`
+* Article: <https://doi.org/10.1111/cts.70700> (open access; Data S1 holds the
+  covariate equations, the second supplement Figures S1-S31 and their
+  regression footnotes, the third Tables S1-S4)
+
+Shahraz 2026 reports a pooled population PK model for savolitinib, a selective
+MET tyrosine-kinase inhibitor, and uses its individual exposures in a set of
+logistic exposure-response analyses. The paper contributes seven models:
+
+| Model | What it is | Driver |
+|-------|------------|--------|
+| `Shahraz_2026_savolitinib` | One-compartment popPK with a depot and two transit compartments | dose |
+| `Shahraz_2026_savolitinib_orr_allcomers` | Objective response, SAVANNAH all comers without prior chemotherapy or immunotherapy (Figure 3a) | `CTROUGH` |
+| `Shahraz_2026_savolitinib_orr_highmet` | Objective response, high MET biomarker without prior chemotherapy or immunotherapy (Figure 3b) | `CTROUGH` |
+| `Shahraz_2026_savolitinib_orr_lowmet` | Objective response, low MET biomarker without prior chemotherapy or immunotherapy (Figure 3c) | `CTROUGH` |
+| `Shahraz_2026_savolitinib_orr_highmet_2l` | Objective response, high MET biomarker in second line (Figure 3d) | `CTROUGH` |
+| `Shahraz_2026_savolitinib_safety_auc` | 23 adverse-event logistic regressions (Figures 5a, 5c, S11a-S31a) | `AUC_SAVOLITINIB` |
+| `Shahraz_2026_savolitinib_safety_cmax` | 22 adverse-event logistic regressions (Figures 5b, 5d, S11b-S31b) | `CMAX` |
+
+The exposure-response models carry no PK layer: the exposure is a column the
+user supplies, usually derived from the popPK model as shown below.
+
+# Population
+
+The popPK analysis pooled 998 patients and 9706 plasma concentrations from 10
+phase I-III studies (Table S1) of savolitinib alone (40.9%) or with osimertinib
+80 mg once daily (59.1%), at 100-1000 mg once daily or 100-600 mg twice daily.
+Patients had locally advanced or metastatic solid tumours, mostly EGFR-mutated
+MET-altered non-small cell lung cancer after osimertinib (SAVANNAH, TATTON),
+papillary renal cell carcinoma, and NSCLC with MET exon 14 alterations. Median
+age was 63 years (range 23-92), median weight 62.2 kg (36.0-177); 48.5% were
+female; 55.7% were Asian, 40.5% White, 1.4% Black and 2.4% Other; 38.0% took a
+proton pump inhibitor (Tables S2 and S3). The exposure-safety analyses used the
+same 998 patients. The exposure-efficacy analyses used 360 SAVANNAH patients,
+excluding the 24 on savolitinib plus placebo; Figure 3 reports 87 to 261
+patients per subgroup.
+
+```{r population}
+str(rxode2::rxode(readModelDb("Shahraz_2026_savolitinib"))$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The popPK
+values:
+
+| Parameter | Value | Source |
+|-----------|-------|--------|
+| `lka` (KA, all three absorption steps) | log(2.64) 1/h | Table 1 theta1; Figure S3 (Tr0 -> Tr1 -> Tr2 -> central, each at KA) |
+| `lvc` (V/F) | log(173) L | Table 1 theta2 |
+| `lcl` (CL/F) | log(31.7) L/h | Table 1 theta3 |
+| `e_wt_vc` | 0.364 on (WT/62.2) | Table 1 theta6; Data S1 Vd/F equation |
+| `e_alp_vc`, `e_alp_cl` | -0.0866, -0.0932 on (ALP/89) | Table 1 theta23, theta24; Data S1 |
+| `e_tbili_cl` | -0.118 on (TBILI/8.5) | Table 1 theta8; Data S1 |
+| `e_conmed_osimertinib_cl` | 0.119 | Table 1 theta10 (COMB); Data S1 |
+| `e_sexf_vc`, `e_sexf_cl` | -0.160, -0.197 | Table 1 theta11, theta12; Data S1; Figure 2 labels SEX = 1 female |
+| `e_race_white_vc`, `_cl`, `_ka` | 0.198, 0.212, 0.326 | Table 1 theta13, theta16, theta19; Data S1; Figure 2 labels RACE = 1 White |
+| `e_conmed_ppi_vc`, `e_conmed_ppi_ka` | 0.0981, -0.164 | Table 1 theta9, theta22; Data S1 |
+| `etalka`, `etalvc`, `etalcl` | 0.435, 0.0560, 0.135 | Table 1 Omega(1,1)-(3,3) |
+| `addSd` | 1.07 ng/mL | Table 1 theta4 (err_add) |
+| `propSd` | 0.495 | Table 1 theta5 (err_prop) |
+| `Cc = 1000 * central / vc` | ng/mL | dose in mg, V/F in L |
+
+The exposure-response coefficients, and where each came from:
+
+```{r er_trace}
+er_trace <- tibble::tribble(
+  ~Output, ~`AUC24,ss model`, ~`Cmax,ss model`,
+  "prob_teae_drug_related", "Back-solved, Results text + Fig 5a", "Back-solved, Results text + Fig 5b",
+  "prob_teae_drug_related_grade3", "Back-solved, Results text + Fig 5c", "Back-solved, Results text + Fig 5d",
+  "prob_teae_dosemod", "Printed, Fig S11a", "Printed, Fig S11b",
+  "prob_dose_reduction", "Printed, Fig S12a", "Printed, Fig S12b",
+  "prob_dose_interruption", "Printed, Fig S13a", "Printed, Fig S13b",
+  "prob_treatment_discontinuation", "Printed, Fig S14a", "Digitised (log), Fig S14b",
+  "prob_hepatotoxicity", "Printed, Fig S15a", "Printed, Fig S15b",
+  "prob_hepatotoxicity_grade3", "Printed, Fig S16a", "Printed, Fig S16b",
+  "prob_hypersensitivity", "Printed, Fig S17a", "Printed, Fig S17b",
+  "prob_hypersensitivity_grade3", "Printed, Fig S18a", "Printed, Fig S18b",
+  "prob_pyrexia", "Printed, Fig S19a", "Printed, Fig S19b",
+  "prob_pyrexia_grade3", "Printed, Fig S20a", "Not available (S20b reprints S17b)",
+  "prob_alt_increase", "Printed, Fig S21a", "Printed, Fig S21b",
+  "prob_alt_increase_grade3", "Printed, Fig S22a", "Printed, Fig S22b",
+  "prob_ast_increase", "Printed, Fig S23a", "Printed, Fig S23b",
+  "prob_ast_increase_grade3", "Printed, Fig S24a", "Printed, Fig S24b",
+  "prob_alp_increase", "Printed, Fig S25a", "Printed, Fig S25b",
+  "prob_bilirubin_increase", "Printed, Fig S26a", "Printed, Fig S26b",
+  "prob_edema", "Printed, Fig S27a", "Printed, Fig S27b",
+  "prob_edema_grade3", "Digitised (log), Fig S28a", "Printed, Fig S28b",
+  "prob_hypoalbuminemia", "Printed, Fig S29a", "Printed, Fig S29b",
+  "prob_diarrhea", "Printed, Fig S30a", "Printed, Fig S30b",
+  "prob_venous_thromboembolism", "Printed, Fig S31a", "Printed, Fig S31b"
+)
+knitr::kable(er_trace, caption = paste(
+  "'Printed': the footnote of the supplementary figure states the fitted",
+  "regression, e.g. 'Predictor=-1.17+ AUC24ss*2.57e-05'. 'Back-solved': a",
+  "linear logit fitted to the nine probabilities the Results text prints for",
+  "each Figure 5 panel. 'Digitised (log)': fitted to the plotted curve,",
+  "logistic in log(exposure)."
+))
+```
+
+The four ORR models are digitised from the Figure 3 curves; the paper prints no
+ORR coefficients.
+
+# Population PK
+
+## Typical-value covariate effects (Figure 2)
+
+Figure 2 shows the steady-state AUC24,ss, Cmax,ss and Cmin,ss of a patient at
+the 10th and 90th percentile of each continuous covariate, or in each category,
+relative to the reference patient (62.2 kg, ALP 89 U/L, bilirubin 8.5 umol/L,
+male, non-White, no osimertinib, no PPI). The figure does not state the regimen;
+300 mg twice daily reproduces all three metrics, and the AUC ratios do not
+depend on the regimen.
+
+```{r fig2}
+mod_pk <- readModelDb("Shahraz_2026_savolitinib")
+ref <- data.frame(
+  WT = 62.2, ALP = 89, TBILI = 8.5, SEXF = 0, RACE_WHITE = 0,
+  CONMED_OSIMERTINIB = 0, CONMED_PPI = 0
+)
+scenarios <- list(
+  "WT 85.43 kg (q90)" = list(WT = 85.43), "WT 47.47 kg (q10)" = list(WT = 47.47),
+  "BBILI 14 umol/L (q90)" = list(TBILI = 14), "BBILI 4.9877 umol/L (q10)" = list(TBILI = 4.9877),
+  "BALP 217.3 U/L (q90)" = list(ALP = 217.3), "BALP 53 U/L (q10)" = list(ALP = 53),
+  "With osimertinib" = list(CONMED_OSIMERTINIB = 1), "White" = list(RACE_WHITE = 1),
+  "PPI" = list(CONMED_PPI = 1), "Female" = list(SEXF = 1)
+)
+# Figure 2a-c medians, in the order of `scenarios`
+published <- tibble::tribble(
+  ~scenario, ~auc, ~cmax, ~cmin,
+  "WT 85.43 kg (q90)", 1.00, 0.946, 1.14,
+  "WT 47.47 kg (q10)", 1.00, 1.05, 0.878,
+  "BBILI 14 umol/L (q90)", 1.06, 1.03, 1.14,
+  "BBILI 4.9877 umol/L (q10)", 0.938, 0.969, 0.862,
+  "BALP 217.3 U/L (q90)", 1.09, 1.08, 1.10,
+  "BALP 53 U/L (q10)", 0.953, 0.955, 0.947,
+  "With osimertinib", 0.893, 0.947, 0.765,
+  "White", 0.827, 0.874, 0.771,
+  "PPI", 1.00, 0.924, 1.16,
+  "Female", 1.24, 1.22, 1.32
+)
+
+ss_metrics <- function(params) {
+  ev <- rxode2::et(amt = 300, ii = 12, addl = 49, cmt = "depot") |>
+    rxode2::et(seq(576, 600, by = 0.05), cmt = "central")
+  s <- rxode2::rxSolve(mod_pk, ev, params = params, omega = NA, sigma = NA, returnType = "data.frame")
+  s <- s[s$time >= 576 & s$time <= 600, ]
+  data.frame(
+    auc = sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2),
+    cmax = max(s$Cc), cmin = min(s$Cc)
+  )
+}
+base <- ss_metrics(ref)
+fig2 <- bind_rows(lapply(names(scenarios), function(nm) {
+  p <- ref
+  p[names(scenarios[[nm]])] <- unlist(scenarios[[nm]])
+  m <- ss_metrics(p)
+  data.frame(scenario = nm, auc_sim = m$auc / base$auc, cmax_sim = m$cmax / base$cmax, cmin_sim = m$cmin / base$cmin)
+})) |>
+  left_join(published, by = "scenario")
+stopifnot(nrow(fig2) == length(scenarios), !anyNA(fig2))
+
+fig2 |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  dplyr::rename(
+    "Scenario" = scenario, "AUC ratio (model)" = auc_sim, "AUC ratio (Fig 2a)" = auc,
+    "Cmax ratio (model)" = cmax_sim, "Cmax ratio (Fig 2b)" = cmax,
+    "Cmin ratio (model)" = cmin_sim, "Cmin ratio (Fig 2c)" = cmin
+  ) |>
+  knitr::kable(caption = "Typical-value steady-state exposure ratios, 300 mg twice daily, vs Shahraz 2026 Figure 2.")
+
+# Deterministic typical-value solve against two-to-three-digit printed values.
+# The AUC ratio is exactly 1 / (CL multiplier), so it tests every CL term and
+# both category codings (SEX = 1 female, RACE = 1 White); Cmax and Cmin add
+# the V/F and KA terms. Achieved maximum differences: 0.005, 0.006 and 0.006.
+stopifnot(
+  max(abs(fig2$auc_sim - fig2$auc)) < 0.01,
+  max(abs(fig2$cmax_sim - fig2$cmax)) < 0.012,
+  max(abs(fig2$cmin_sim - fig2$cmin)) < 0.012
+)
+```
+
+## Virtual cohort
+
+The cohort mirrors the pooled demographics: log-normal weight, bilirubin and
+alkaline phosphatase matched to the pooled median and interquartile range of
+Table S2, and Bernoulli sex, race, PPI use and osimertinib co-administration at
+the Table S3 proportions. Three regimens of 200 patients each cover the doses
+of interest of the exposure-response analyses.
+
+```{r cohort}
+set.seed(70700)
+rxode2::rxSetSeed(70700)
+n_per_arm <- 200
+regimens <- tibble::tribble(
+  ~regimen, ~amt, ~ii, ~daily,
+  "300 mg QD", 300, 24, 300,
+  "600 mg QD", 600, 24, 600,
+  "300 mg BID", 300, 12, 600
+)
+# sdlog from the IQR: log(Q3 / Q1) / 1.349 (Table S2 pooled column)
+make_cohort <- function(reg, id_offset) {
+  covs <- tibble(
+    id = id_offset + seq_len(n_per_arm),
+    regimen = reg$regimen,
+    daily_dose = reg$daily,
+    WT = 62.2 * exp(rnorm(n_per_arm, 0, log(73.6 / 54.0) / 1.349)),
+    TBILI = 8.45 * exp(rnorm(n_per_arm, 0, log(10.7 / 6.00) / 1.349)),
+    ALP = 89 * exp(rnorm(n_per_arm, 0, log(128 / 67.3) / 1.349)),
+    SEXF = rbinom(n_per_arm, 1, 0.485),
+    RACE_WHITE = rbinom(n_per_arm, 1, 0.405),
+    CONMED_PPI = rbinom(n_per_arm, 1, 0.380),
+    CONMED_OSIMERTINIB = rbinom(n_per_arm, 1, 0.591)
+  )
+  n_dose <- 240 / reg$ii
+  doses <- tidyr::crossing(covs, time = seq(0, by = reg$ii, length.out = n_dose)) |>
+    mutate(evid = 1L, amt = reg$amt, cmt = "depot")
+  obs <- tidyr::crossing(covs, time = c(0, seq(216, 240, by = 0.25))) |>
+    mutate(evid = 0L, amt = 0, cmt = "central")
+  bind_rows(doses, obs) |> arrange(id, time, desc(evid))
+}
+events <- bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  make_cohort(regimens[i, ], id_offset = (i - 1L) * n_per_arm)
+}))
+stopifnot(length(unique(events$id)) == 3 * n_per_arm)
+```
+
+## Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod_pk, events,
+  keep = c("regimen", "daily_dose"), returnType = "data.frame"
+)
+sim_day10 <- sim |> filter(time >= 216)
+```
+
+```{r fig1, fig.width = 7, fig.height = 4}
+# In the spirit of Figure 1 / Figure S1: day-10 profiles by regimen, with the
+# 17.3 ng/mL IC95 of phosphorylated MET.
+sim_day10 |>
+  mutate(tad = time - 216) |>
+  group_by(regimen, tad) |>
+  summarise(
+    p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.25) +
+  geom_line(colour = "steelblue4") +
+  geom_hline(yintercept = 17.3, linetype = "dashed", colour = "darkgreen") +
+  facet_wrap(~regimen) +
+  scale_y_log10() +
+  labs(
+    x = "Time after the day-10 morning dose (h)", y = "Savolitinib (ng/mL)",
+    caption = "Median and 5th-95th percentile of 200 virtual patients per regimen; dashed: IC95 17.3 ng/mL."
+  )
+```
+
+## PKNCA validation against Table S4
+
+Table S4 summarises the model-predicted AUC24,ss, Cmax,ss and Cmin,ss of all
+998 patients by most prevalent regimen. The simulated day-10 values (steady
+state; the half-life is about 4 h) are compared with its medians.
+
+```{r pknca}
+conc <- sim |>
+  filter(!is.na(Cc), time == 0 | time >= 216) |>
+  select(id, regimen, time, Cc)
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, regimen, time, amt)
+intervals <- data.frame(start = 216, end = 240, cmax = TRUE, cmin = TRUE, auclast = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc, Cc ~ time | regimen + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id),
+  intervals = intervals
+))
+table_s4 <- tibble::tribble(
+  ~regimen, ~cmax, ~auclast, ~cmin,
+  "300 mg QD", 1376, 8829, 13,
+  "600 mg QD", 2444, 18354, 52,
+  "300 mg BID", 1346, 16220, 167
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca, reference = table_s4, by = "regimen",
+  units = c(cmax = "ng/mL", auclast = "ng*h/mL", cmin = "ng/mL"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Regimen" = regimen) |>
+  knitr::kable(caption = paste(
+    "Simulated day-10 medians vs Shahraz 2026 Table S4 medians (AUC over",
+    "24 h, i.e. two intervals for BID). * differs by more than 20%."
+  ), digits = 1)
+```
+
+```{r pknca_check}
+nca_med <- as.data.frame(nca$result) |>
+  group_by(regimen, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop") |>
+  inner_join(
+    tidyr::pivot_longer(table_s4, -regimen, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("regimen", "PPTESTCD")
+  ) |>
+  mutate(pct = 100 * (sim / ref - 1))
+stopifnot(nrow(nca_med) == 9)
+# AUC24,ss is dose / CL and is the structural check: a mis-transcribed CL/F,
+# dose or unit moves it by tens of percent. Cmax adds V/F and KA. Cmin,ss is
+# shown but not asserted: it sits in the far tail of a 4-h half-life and its
+# median is dominated by the KA and V/F variability of the cohort.
+stopifnot(
+  all(abs(nca_med$pct[nca_med$PPTESTCD == "auclast"]) < 20),
+  all(abs(nca_med$pct[nca_med$PPTESTCD == "cmax"]) < 25)
+)
+```
+
+AUC24,ss and Cmax,ss agree with Table S4. The simulated Cmin,ss medians
+of the 300 mg once- and twice-daily regimens sit well above the Table S4
+medians (flagged rows). Table S4 summarises empirical Bayes predictions, which
+shrink KA and V/F towards the typical value for sparsely sampled patients,
+whereas the virtual cohort draws the full IIV; with a 4-h half-life the trough
+lies far down the elimination phase and is the metric most sensitive to that
+difference and to the covariate mix of the cohort. Table S4 itself shows that
+its regimens are different patient mixes: from 300 to 600 mg once daily its
+median AUC24,ss doubles (8829 to 18354 ng*h/mL) but its median Cmin,ss
+quadruples (13 to 52 ng/mL), which no linear one-compartment model can do for
+a single population, whereas the virtual cohort gives every regimen the same
+covariate distribution. The 600 mg once-daily trough agrees.
+
+The individual exposures feed the exposure-response models:
+
+```{r exposures}
+expo <- as.data.frame(nca$result) |>
+  filter(PPTESTCD %in% c("auclast", "cmax", "cmin")) |>
+  select(id, regimen, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  transmute(id, regimen, AUC_SAVOLITINIB = auclast, CMAX = cmax, CTROUGH = cmin)
+stopifnot(nrow(expo) == 3 * n_per_arm, all(expo$CTROUGH > 0))
+```
+
+# Exposure-efficacy: objective response (Figure 3)
+
+The ORR models are logistic in the natural log of Cmin,ss, digitised from the
+plotted curves. A logistic regression with an intercept, fitted by maximum
+likelihood, predicts on average exactly the observed response rate of its own
+data. The printed responder counts of each panel therefore test the digitised
+intercept: the mean predicted probability over the virtual SAVANNAH-like
+patients (the three combination regimens, equally weighted) should be close to
+the observed rate. Because the slopes are shallow, the comparison is
+insensitive to the exact exposure distribution.
+
+```{r orr}
+orr_models <- c(
+  "All comers (3a)" = "Shahraz_2026_savolitinib_orr_allcomers",
+  "High biomarker (3b)" = "Shahraz_2026_savolitinib_orr_highmet",
+  "Low biomarker (3c)" = "Shahraz_2026_savolitinib_orr_lowmet",
+  "High biomarker, 2L (3d)" = "Shahraz_2026_savolitinib_orr_highmet_2l"
+)
+observed <- c(99 / 261, 87 / 174, 12 / 87, 67 / 126)
+orr_eval <- function(model_name, ctrough) {
+  d <- data.frame(id = seq_along(ctrough), time = 0, CTROUGH = ctrough)
+  rxode2::rxSolve(readModelDb(model_name), d, returnType = "data.frame")$prob_orr
+}
+orr_check <- tibble(
+  Subgroup = names(orr_models),
+  observed = observed,
+  predicted = vapply(orr_models, \(m) mean(orr_eval(m, expo$CTROUGH)), numeric(1))
+)
+knitr::kable(orr_check, digits = 3, caption = "Observed ORR (Figure 3 counts) vs mean predicted ORR over the virtual cohort.")
+# Tolerance 0.05 absolute: the cohort is not SAVANNAH (regimen mix and
+# covariates differ), but a misread intercept moves the mean by more.
+stopifnot(all(abs(orr_check$predicted - orr_check$observed) < 0.05))
+
+grid <- 10^seq(log10(0.7), log10(2500), length.out = 100)
+bind_rows(lapply(names(orr_models), function(nm) {
+  data.frame(Subgroup = nm, CTROUGH = grid, prob = orr_eval(orr_models[[nm]], grid))
+})) |>
+  ggplot(aes(CTROUGH, prob)) +
+  geom_line() +
+  geom_vline(xintercept = 17.3, linetype = "dashed", colour = "darkgreen") +
+  facet_wrap(~Subgroup) +
+  scale_x_log10() +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(x = "Savolitinib Cmin,ss (ng/mL)", y = "Probability of objective response",
+       caption = "Replicates the fitted curves of Shahraz 2026 Figure 3a-d.")
+```
+
+# Exposure-safety
+
+## Probabilities printed in the Results (Figure 5)
+
+The Results text prints the predicted probability of any related TEAE and of a
+grade >= 3 related TEAE at the median and at the 5th and 95th percentile
+exposure of each regimen; Table S4 gives those exposures. The four Figure 5
+regressions were back-solved from these 36 values, so the table below checks
+the transcription and shows how closely a linear logit reproduces them.
+
+```{r fig5}
+tab_s4_pct <- tibble::tribble(
+  ~regimen, ~pct, ~AUC_SAVOLITINIB, ~CMAX,
+  "300 mg BID", "q05", 9768, 885, "300 mg BID", "median", 16220, 1346, "300 mg BID", "q95", 32091, 2088,
+  "300 mg QD", "q05", 5394, 890, "300 mg QD", "median", 8829, 1376, "300 mg QD", "q95", 14997, 2043,
+  "600 mg QD", "q05", 10881, 1445, "600 mg QD", "median", 18354, 2444, "600 mg QD", "q95", 37850, 3908
+)
+printed <- tibble::tribble(
+  ~endpoint, ~metric, ~values,
+  "any related TEAE", "AUC", c(.74, .76, .79, .74, .75, .76, .75, .76, .80),
+  "any related TEAE", "Cmax", c(.74, .75, .76, .74, .75, .77, .75, .77, .79),
+  "grade >= 3 related TEAE", "AUC", c(.21, .24, .29, .21, .22, .24, .22, .25, .31),
+  "grade >= 3 related TEAE", "Cmax", c(.18, .21, .25, .20, .22, .25, .21, .26, .33)
+)
+safety_eval <- function(model_name, d) {
+  rxode2::rxSolve(readModelDb(model_name), cbind(id = seq_len(nrow(d)), time = 0, d), returnType = "data.frame")
+}
+s_auc <- safety_eval("Shahraz_2026_savolitinib_safety_auc", tab_s4_pct["AUC_SAVOLITINIB"])
+s_cmax <- safety_eval("Shahraz_2026_savolitinib_safety_cmax", tab_s4_pct["CMAX"])
+fig5 <- bind_rows(lapply(seq_len(nrow(printed)), function(i) {
+  s <- if (printed$metric[i] == "AUC") s_auc else s_cmax
+  col <- if (grepl("grade", printed$endpoint[i])) "prob_teae_drug_related_grade3" else "prob_teae_drug_related"
+  tibble(tab_s4_pct[c("regimen", "pct")],
+    endpoint = printed$endpoint[i], metric = printed$metric[i],
+    printed = printed$values[[i]], model = s[[col]]
+  )
+}))
+fig5 |>
+  mutate(model = round(model, 3)) |>
+  tidyr::pivot_wider(id_cols = c(endpoint, metric, regimen), names_from = pct, values_from = c(printed, model)) |>
+  knitr::kable(caption = "Printed probability (Results) vs packaged model at the Table S4 exposures.")
+# Deterministic. The medians reproduce to within 0.007, all 36 values to
+# within 0.015: the bracketed exposures used in the text may not be exactly
+# the Table S4 percentiles (two Cmax values 5 ng/mL apart are printed as 0.18
+# and 0.20), which no monotone curve can reproduce.
+stopifnot(
+  nrow(fig5) == 36,
+  max(abs(fig5$model - fig5$printed)[fig5$pct == "median"]) < 0.008,
+  max(abs(fig5$model - fig5$printed)) < 0.016
+)
+```
+
+## The printed regressions and the plotted curves
+
+Every supplementary panel prints its regression in the footnote and draws a
+fitted curve. The two are not the same model. The printed regression is linear
+in the exposure, and its Wald p-value is the one shown on the panel; the plotted
+curve is a logistic regression in log(exposure), the fit a smoother produces on
+a log-scaled axis. They agree near the middle of the exposure distribution and
+diverge in the tails. The packaged models use the printed regressions. For
+Figure S15a (grade >= 1 hepatotoxicity), the maintainers' fit to the plotted
+curve is logit = -5.855 + 0.5348 * log(AUC24,ss):
+
+```{r printed_vs_plotted, fig.width = 6, fig.height = 3.5}
+auc_grid <- 10^seq(log10(2500), log10(90000), length.out = 100)
+heptox <- safety_eval("Shahraz_2026_savolitinib_safety_auc", data.frame(AUC_SAVOLITINIB = auc_grid))
+cmp_curves <- bind_rows(
+  data.frame(AUC = auc_grid, prob = heptox$prob_hepatotoxicity, curve = "Printed regression (packaged)"),
+  data.frame(AUC = auc_grid, prob = plogis(-5.855 + 0.5348 * log(auc_grid)), curve = "Plotted curve (digitised)")
+)
+ggplot(cmp_curves, aes(AUC, prob, linetype = curve)) +
+  geom_line() +
+  scale_x_log10() +
+  labs(x = "Savolitinib AUC24,ss (ng*h/mL)", y = "P(grade >= 1 hepatotoxicity)", linetype = NULL) +
+  theme(legend.position = "bottom")
+# Near the centre of the data (10000 ng*h/mL) the two agree to 0.01.
+stopifnot(abs(plogis(-5.855 + 0.5348 * log(1e4)) - plogis(-1.17 + 2.57e-5 * 1e4)) < 0.01)
+```
+
+Two panels have no footnote (Figures S14b and S28a) and are packaged from the
+plotted curve, i.e. on the log scale; see Assumptions and deviations.
+
+## All endpoints over the observed exposure range
+
+```{r safety_curves, fig.width = 8, fig.height = 9}
+auc_curves <- safety_eval("Shahraz_2026_savolitinib_safety_auc", data.frame(AUC_SAVOLITINIB = auc_grid))
+cmax_grid <- 10^seq(log10(300), log10(6000), length.out = 100)
+cmax_curves <- safety_eval("Shahraz_2026_savolitinib_safety_cmax", data.frame(CMAX = cmax_grid))
+long_curves <- bind_rows(
+  auc_curves |> select(AUC_SAVOLITINIB, starts_with("prob_")) |>
+    tidyr::pivot_longer(-AUC_SAVOLITINIB, names_to = "endpoint", values_to = "prob") |>
+    mutate(metric = "AUC24,ss (ng*h/mL)", x = AUC_SAVOLITINIB),
+  cmax_curves |> select(CMAX, starts_with("prob_")) |>
+    tidyr::pivot_longer(-CMAX, names_to = "endpoint", values_to = "prob") |>
+    mutate(metric = "Cmax,ss (ng/mL)", x = CMAX)
+)
+stopifnot(all(long_curves$prob >= 0 & long_curves$prob <= 1))
+ggplot(long_curves, aes(x, prob, colour = metric)) +
+  geom_line() +
+  facet_wrap(~ sub("^prob_", "", endpoint), ncol = 4) +
+  scale_x_log10() +
+  labs(x = "Exposure", y = "Probability", colour = NULL) +
+  theme(legend.position = "bottom", strip.text = element_text(size = 7), axis.text.x = element_text(size = 6))
+```
+
+The paper reports two statistically significant (p < 0.001) positive
+relationships: Cmax,ss with discontinuation (Figure S14b) and AUC24,ss with
+grade >= 1 hepatotoxicity (Figure S15a). Both packaged slopes are positive.
+
+```{r significant}
+ini_cmax <- rxode2::rxode(readModelDb("Shahraz_2026_savolitinib_safety_cmax"))$iniDf
+ini_auc <- rxode2::rxode(readModelDb("Shahraz_2026_savolitinib_safety_auc"))$iniDf
+stopifnot(
+  ini_cmax$est[ini_cmax$name == "e_logcmax_discont"] > 0.5,
+  ini_auc$est[ini_auc$name == "e_auc_heptox"] > 2e-5
+)
+```
+
+The virtual cohort's exposures give the expected incidence of each endpoint by
+regimen:
+
+```{r safety_cohort}
+auc_cohort <- safety_eval("Shahraz_2026_savolitinib_safety_auc", expo["AUC_SAVOLITINIB"])
+auc_cohort$regimen <- expo$regimen
+auc_cohort |>
+  group_by(regimen) |>
+  summarise(across(starts_with("prob_"), mean)) |>
+  tidyr::pivot_longer(-regimen, names_to = "endpoint", values_to = "p") |>
+  tidyr::pivot_wider(names_from = regimen, values_from = p) |>
+  knitr::kable(digits = 3, caption = "Mean predicted probability by regimen, AUC24,ss models.")
+```
+
+# Assumptions and deviations
+
+* **Race coding.** Table 1's footnote expands RACE (1) as Asian, but the
+  Results state that Asian is the reference group and Figure 2 shows White as
+  the only race whose exposure differs from the reference (AUC24,ss ratio
+  0.827 = 1 / 1.212), with Asian, Black and Other at 1.00. The model therefore
+  applies the RACE (1) effects to `RACE_WHITE`; the Figure 2 reproduction above
+  confirms the coding.
+* **Sex coding.** Data S1 writes the sex effects for SEX = 1 without naming the
+  level; Figure 2 labels it female (AUC24,ss ratio 1.24 = 1 / 0.803).
+* **Residual error.** Table 1 lists err_add and err_prop as thetas (theta4,
+  theta5) and gives no CV, so they are taken as standard deviations (1.07
+  ng/mL, 49.5%) of a combined error model; the table footnote's generic rule
+  'CV% of sigma = sqrt(estimate)' is not applied to them.
+* **Transit absorption.** Figure S3 names three absorption compartments
+  (Tr0-Tr2) with every transfer at KA; the dose enters Tr0 (`depot`), so there
+  are two transit compartments between the depot and the central compartment.
+* **Covariates are baseline values.** Weight, bilirubin and alkaline
+  phosphatase are baseline values (WT, BBILI, BALP); PPI use and osimertinib
+  co-administration are subject-level in the source data.
+* **ORR models are digitised from the plotted curves.** The paper prints no
+  ORR regression. The curves are logistic in log(Cmin,ss) (RMS 0.002 on the
+  probability scale). In the safety figures the plotted curves are of the same
+  log form while the printed regressions are linear in exposure, so the
+  regressions the authors used for the ORR inference may be linear in
+  Cmin,ss; the two forms agree near the middle of the data. Use positive
+  `CTROUGH` values.
+* **Figure 5 regressions are back-solved.** The main-text Figure 5 panels have
+  no footnote; the linear logits were fitted by least squares to the
+  probabilities printed in the Results, read as the predictions at the median
+  and the 5th and 95th percentile exposures of Table S4. The plotted Figure 5
+  curves (log form) reproduce the printed medians less well than a linear
+  logit does, consistent with the printed values coming from the linear
+  regressions.
+* **Two safety regressions are digitised on the log scale.** Figures S14b
+  (discontinuation vs Cmax,ss) and S28a (grade >= 3 oedema vs AUC24,ss) lack
+  the footnote, so the packaged coefficients reproduce the plotted curve, in
+  log(exposure), unlike their 43 siblings. Their quartile event rates and the
+  totals on the panels (138 and 30 events of 998) agree with the digitised
+  curves.
+* **Figure S20b is missing.** The published supplement reprints the Figure
+  S17b panel (hypersensitivity vs Cmax,ss) in place of grade >= 3 pyrexia vs
+  Cmax,ss, so `Shahraz_2026_savolitinib_safety_cmax` has no
+  `prob_pyrexia_grade3`.
+* **Exposure definition.** The paper derives each patient's exposures from the
+  empirical Bayes estimates at the most prevalent dose. The AUC24,ss of a
+  twice-daily regimen spans two dosing intervals.
+* **Virtual cohort.** Covariates were drawn independently (no correlation
+  between weight and sex, for example) from distributions matched to the
+  pooled medians and interquartile ranges; Table S4 pools all 998 patients and
+  all 13 regimens, so only the three regimens of interest are compared.

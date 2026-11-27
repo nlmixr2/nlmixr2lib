@@ -1,0 +1,311 @@
+---
+title: "2,4-Toluenediamine from breast implants PBPK (Luu 1998)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{2,4-Toluenediamine from breast implants PBPK (Luu 1998)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+```
+
+```{r libraries, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Luu, Hutter and Bushar (1998, *Environ Health Perspect* 106:393-400,
+[doi:10.1289/ehp.98106393](https://doi.org/10.1289/ehp.98106393)) built a
+whole-body physiologically based pharmacokinetic (PBPK) model for
+**2,4-toluenediamine (2,4-TDA)**, a rodent carcinogen released by hydrolytic
+degradation of the polyester-urethane (PU) foam cover of Meme / Replicon
+silicone breast implants. The goal was a quantitative cancer-risk assessment:
+the free plasma 2,4-TDA produced by a breast implant is far below analytical
+detection, so a mechanistic model is needed to relate the slow foam
+degradation to the internal (target-organ) dose.
+
+This is a toxicokinetic PBPK for a medical-device leachate, not a therapeutic
+drug.
+
+The paper contributes **two** model files sharing one material-balance
+structure:
+
+| Model file | Role |
+| --- | --- |
+| `Luu_1998_toluenediamine_rat` | Female F-344 rat, calibrated to iv / sc 2,4-TDA (Table 1/3 rat) |
+| `Luu_1998_toluenediamine_human` | Human 58 kg breast-implant scale-up (Table 1/3 human) |
+
+The structure (Figure 1 and the Appendix, equations 1-15) is five
+flow-limited tissue compartments - slowly perfused (`Cs`), richly perfused
+(`Cr`), liver (`Cl`), kidney (`Ck`) and GI tract (`Cg`) - for the parent
+2,4-TDA, plus the same five compartments (`Ms`, `Mr`, `Ml`, `Mk`, `Mg`) for
+its liver metabolite 4-N-acetyl-2-amino toluene (4-AAT), coupled through an
+algebraic blood mix point. Parent 2,4-TDA is extensively plasma-protein bound
+(9.7% free), encoded as a bound:free ratio `K` that scales the perfusion
+terms by `(1 + K) = 1 / 0.097`. The liver metabolises 2,4-TDA by
+Michaelis-Menten kinetics; a fixed selectivity `sel = 0.32` of the
+metabolised 2,4-TDA becomes 4-AAT. Three exposure routes share the structure:
+an intravenous forcing function, first-order oral release into the GI tract,
+and a constant zero-order implant degradation source `k0 * mi`. The states are
+concentrations (mol/mL); the model reports the free plasma concentrations
+`Cc` (2,4-TDA) and `Caat` (4-AAT) in ng/mL.
+
+```{r models}
+rat <- rxode2::rxode2(readModelDb("Luu_1998_toluenediamine_rat"))
+hum <- rxode2::rxode2(readModelDb("Luu_1998_toluenediamine_human"))
+# Tight tolerances: the implant free concentrations are ~1e-16 mol/mL.
+so <- list(atol = 1e-26, rtol = 1e-8, method = "lsoda", maxsteps = 1e7)
+solve1 <- function(mod, times, pars = NULL) {
+  a <- list(object = mod, events = rxode2::et(times))
+  if (!is.null(pars)) a$params <- pars
+  as.data.frame(do.call(rxode2::rxSolve, c(a, so)))
+}
+```
+
+* Rat citation: `r readModelDb("Luu_1998_toluenediamine_rat")()$reference`
+
+# Population
+
+The rat model was calibrated against three independent low-dose data sets
+(Luu, on file): plasma 2,4-TDA and 4-AAT after a 0.52 mg/kg iv bolus in five
+female CDF (F-344)/Crl rats; urinary 2,4-TDA / 4-AAT after a 0.44 mg/kg sc
+dose (n = 5); and tissue / excreta radioactivity after an 80 mg/kg
+`14`C-foam implant. The human model is an allometric scale-up (no human
+2,4-TDA kinetic data were fitted) representing a 58 kg patient carrying a
+4.87 g PU-foam Meme implant for 10 years. The programmatic metadata are in
+each model's `population` list (e.g.
+`readModelDb("Luu_1998_toluenediamine_rat")()$population`).
+
+# Source trace
+
+Each `ini()` entry carries an in-file comment pointing to its source location.
+The calibrated metabolism / excretion / distribution parameters are Table 3;
+the physiologic volumes and flows are Table 1, fixed numeric constants in
+`model()` and likewise commented.
+
+| Parameter | Rat | Human | Source |
+|-----------|-----|-------|--------|
+| `Vmax` 2,4-TDA metabolism (mol/hr) | 0.12 | 5.43 | Table 3 (human = rat x 45.27; see Errata) |
+| `km` (mol/mL) | 7e-7 | 7e-7 | Table 3 |
+| `Vmmax` 4-AAT metabolism (mol/hr) | 0.01 | 0.46 | Table 3 |
+| `kmm` (mol/mL) | 3e-7 | 3e-7 | Table 3 |
+| `fu` free fraction | 0.097 | 0.097 | Methods (9.7% free) |
+| `sel` 4-AAT selectivity | 0.32 | 0.32 | Appendix |
+| 2,4-TDA `Ds/Dr/Dl/Dk/Dg` | 1/1/5/3/5 | 1/1/5/3/5 | Table 3 |
+| 4-AAT `Dms/Dmr/Dml/Dmk/Dmg` | 1/0.4/1/10/10 | 1/0.4/1/10/10 | Table 3 |
+| urine flow / `Durine` / `Dmurine` | 0.75 / 0.5 / 10 | 90 / 0.5 / 10 | Table 3 |
+| feces flow (mL/hr) | 0.60 | 18 | Table 3 |
+| `k0` implant degradation | 3.0e-11 mol/hr/g | same | 88 ng/g/day (Methods) |
+| `mi` implant mass (g) | 0.021 | 4.872 | Table 2 |
+| `d/dt` material balances | n/a | n/a | Appendix equations 1-15 |
+
+# Mass balance: elimination is almost entirely metabolic
+
+The paper's central physiological finding is that after a low dose almost all
+2,4-TDA is metabolised and very little (< 0.3%) is excreted unchanged, by any
+route. The cumulative excretion states let us confirm this directly for the
+rat iv bolus.
+
+```{r mass-balance}
+dose <- 1.064e-6 # mol, 0.52 mg/kg x 0.25 kg / 122.17
+s_iv <- solve1(rat, seq(0, 48, by = 0.01))
+last <- s_iv[nrow(s_iv), ]
+pct_urine_tda <- 100 * last$AurineTDA / dose
+pct_feces_tda <- 100 * last$AfecesTDA / dose
+cat(sprintf("rat iv: 2,4-TDA excreted unchanged = %.3f%% urine + %.3f%% feces\n",
+            pct_urine_tda, pct_feces_tda))
+# Paper: < 0.3% of the dose excreted unchanged; the rest is metabolised.
+stopifnot(pct_urine_tda + pct_feces_tda < 1)
+```
+
+# Rat: route comparison (replicates Figures 2-4)
+
+The same low molar dose (0.52 mg/kg) is given by three routes. The iv bolus
+produces a rapid, high plasma spike that is cleared within hours; oral
+feeding introduces the dose gradually (first-order release, `ka = 0.9 / h`),
+giving a lower but more sustained profile; the breast-implant foam releases
+2,4-TDA at a constant, extremely slow rate, holding the plasma at a steady
+state orders of magnitude below either bolus route. 2,4-TDA is heavily
+protein-bound, so the reported free plasma concentration is small even after
+the iv bolus (the total would be ~10-fold higher).
+
+```{r rat-routes}
+tg <- sort(unique(c(seq(0, 2, 0.01), seq(2, 6, 0.05))))
+mk <- function(pars) {
+  solve1(rat, tg, pars) |>
+    transmute(time, TDA = Cc, AAT = Caat)
+}
+iv <- mk(c(iv_dose = dose, oral_dose = 0, mi = 0))
+oral <- mk(c(iv_dose = 0, oral_dose = dose, mi = 0))
+routes <- bind_rows(
+  mutate(iv, Route = "iv bolus"),
+  mutate(oral, Route = "oral feeding")
+)
+```
+
+```{r rat-plot-tda, fig.cap = "Replicates Figure 2/3 of Luu 1998: free plasma 2,4-TDA after a 0.52 mg/kg iv bolus vs oral feeding in the rat. Protein binding keeps the free concentration low; oral dosing sustains it longer."}
+# The log axis cannot show the t = 0 zeros or solver-tolerance values at or
+# below zero, so plot only the positive concentrations.
+ggplot(filter(routes, TDA > 0), aes(time, TDA, colour = Route)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Free plasma 2,4-TDA (ng/mL)",
+       title = "Rat 0.52 mg/kg: iv bolus vs oral feeding") +
+  theme_bw()
+```
+
+```{r rat-plot-aat, fig.cap = "Replicates Figure 4 of Luu 1998: free plasma 4-AAT after iv bolus vs oral feeding in the rat."}
+ggplot(filter(routes, AAT > 0), aes(time, AAT, colour = Route)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Free plasma 4-AAT (ng/mL)",
+       title = "Rat 0.52 mg/kg: metabolite 4-AAT") +
+  theme_bw()
+```
+
+Oral dosing sustains both the parent and the metabolite longer than the iv
+bolus, as the paper reports ("a sustained level ... longer residence time").
+
+```{r rat-route-check}
+# Oral feeding keeps 2,4-TDA in the body longer: its late-time plasma exceeds
+# the iv-bolus plasma once the bolus has been cleared.
+late <- routes |> filter(time > 3)
+iv_late <- max(late$TDA[late$Route == "iv bolus"])
+oral_late <- max(late$TDA[late$Route == "oral feeding"])
+cat(sprintf("late (t>3h) max free 2,4-TDA: oral %.3g vs iv %.3g ng/mL\n", oral_late, iv_late))
+stopifnot(oral_late > iv_late)
+```
+
+# The implant produces undetectable free plasma 2,4-TDA
+
+The headline result: a continuously-degrading foam implant holds the free
+plasma 2,4-TDA at a steady state far below the 0.1 ng/mL analytical detection
+limit, so free plasma 2,4-TDA cannot be used to monitor foam breakdown. This
+conclusion is robust - it depends on the slow degradation rate and the
+protein binding, not on the exact metabolic clearance.
+
+```{r implant-ss}
+ss <- function(mod, pars) {
+  s <- solve1(mod, seq(0, 20000, 20), pars)
+  s[nrow(s), ]
+}
+rat_im <- ss(rat, c(iv_dose = 0, oral_dose = 0, mi = 0.021))
+hum_im <- ss(hum, NULL) # human default scenario is the 4.872 g implant
+
+tbl <- tibble::tibble(
+  Quantity = c("Free plasma 2,4-TDA Css (ng/mL)", "Free plasma 4-AAT Css (ng/mL)"),
+  Rat = c(rat_im$Cc, rat_im$Caat),
+  Human = c(hum_im$Cc, hum_im$Caat),
+  `Paper rat` = c(3.4e-5, 5.77e-5),
+  `Paper human` = c(1.55e-4, 2.58e-4)
+)
+knitr::kable(tbl, digits = 7,
+             caption = "Implant steady-state free plasma concentrations. The model reproduces the paper's qualitative conclusion (orders of magnitude below the 0.1 ng/mL detection limit) but runs ~5x lower in absolute terms; see Errata.")
+
+detection_limit <- 0.1
+stopifnot(
+  rat_im$Cc < detection_limit / 100,
+  hum_im$Cc < detection_limit / 100,
+  rat_im$Cc > 0, hum_im$Cc > 0
+)
+```
+
+# Tissue accumulation and the urinary 4-AAT biomarker
+
+The model reproduces the paper's tissue-accumulation ranking (Table 2),
+including the species difference - in the rat the GI tract accumulates more
+than the slowly-perfused tissue, whereas in the human the ordering reverses.
+Because 4-AAT concentrates in urine (`Dmurine = 10`), the paper proposes
+urinary 4-AAT, not plasma 2,4-TDA, as the practical biomarker.
+
+```{r tissue-rank}
+Vr <- c(SP = 19.1, RP = 144.9, Liver = 8.8, Kidney = 1.7, GI = 6.0)
+Vh <- c(SP = 13562, RP = 40672, Liver = 1419, Kidney = 243, GI = 948)
+amt <- function(s, V) {
+  a <- c(RP = s$Cr * V["RP"], GI = s$Cg * V["GI"], SP = s$Cs * V["SP"],
+         Kidney = s$Ck * V["Kidney"], Liver = s$Cl * V["Liver"])
+  names(a) <- c("RP", "GI", "SP", "Kidney", "Liver")
+  names(sort(a, decreasing = TRUE))
+}
+rat_rank <- amt(rat_im, Vr)
+hum_rank <- amt(hum_im, Vh)
+cat("rat implant accumulation rank: ", paste(rat_rank, collapse = " > "), "\n")
+cat("human implant accumulation rank:", paste(hum_rank, collapse = " > "), "\n")
+# Paper Table 2: rat RP>GI>SP>Kidney>Liver; human RP>SP>GI>Kidney>Liver.
+stopifnot(
+  identical(rat_rank, c("RP", "GI", "SP", "Kidney", "Liver")),
+  identical(hum_rank, c("RP", "SP", "GI", "Kidney", "Liver"))
+)
+
+# Urinary 4-AAT concentration (Dmurine * Mk) far exceeds free plasma 4-AAT.
+urine_aat <- 10.0 * rat_im$Mk * 164.2 * 1e9
+cat(sprintf("rat implant: urine 4-AAT %.3g ng/mL vs free plasma 4-AAT %.3g ng/mL\n",
+            urine_aat, rat_im$Caat))
+stopifnot(urine_aat > 10 * rat_im$Caat)
+```
+
+# Assumptions and deviations / Errata
+
+* **Absolute clearance runs ~5x higher than the paper reports; distribution
+  and conclusions are faithful.** With the Appendix equations transcribed
+  verbatim (the `(1 + K)` factor appears on both the inflow and outflow
+  perfusion terms of equations 4-8, confirmed from the source) and the Table 3
+  parameters entered as printed, the model's systemic clearance is ~5x the
+  paper's reported value: the rat iv AUC is ~12 vs 62 ng*h/mL (Table 2) and the
+  implant steady-state free plasma concentrations are ~5x below the reported
+  Css. The discrepancy is a steady-state property (it is present in the
+  implant scenario, which has no injection-timing ambiguity), so it reflects
+  the Table 3 metabolism / excretion parameters, not the dosing. These
+  parameters are internally inconsistent with the paper's own reported
+  clearance by a roughly uniform factor across the metabolic and renal routes:
+  Table 3's `Vmax/km` implies a near-flow-limited hepatic extraction, whereas
+  the reported clearance implies an extraction ratio near 0.25. The scanned
+  1998 source deposited no model code (Mathcad PLUS 6.0) to adjudicate, and
+  **no parameter was tuned to close the gap** (per the project's standing
+  rule). What the model *does* reproduce faithfully, with no tuning, is the
+  structure, the tissue-accumulation ranking (exactly, including the
+  species-specific GI/SP reversal), the metabolic mass balance (< 0.3%
+  excreted unchanged), the oral-vs-iv residence-time difference, the urinary
+  4-AAT biomarker, and - robustly - the central conclusion that implant free
+  plasma 2,4-TDA sits orders of magnitude below detection.
+* **Table 3 human `Vmax` is a typo.** Table 3 prints the human 2,4-TDA `Vmax`
+  as 0.54, but the paper's own stated allometric rule scales the rat value by
+  `(58/0.25)^0.7 = 45.27`, giving 0.12 x 45.27 = 5.43; the metabolite `Vmmax`
+  does follow that rule (rat 0.01 -> human 0.46). The scaling-consistent 5.43
+  is used in the human file. (The human `Css` is insensitive enough to this
+  choice that both values keep the "undetectable" conclusion.)
+* **Protein binding via `(1 + K)`.** 2,4-TDA is 9.7% free; `K = (1-fu)/fu` and
+  the perfusion terms carry `(1 + K) = 1/fu`, so blood transports total
+  (free + bound) drug while the tissue states are on a free basis. The reported
+  "free plasma" observable is the venous mix-point concentration `Cv`
+  (`Cc = Cv x MW x 1e9`); total plasma would be ~10-fold higher.
+* **Blood volume not used.** Table 3 lists a blood volume (rat 20 mL, human
+  4,700 mL), but it appears in none of the published Appendix equations
+  (the blood mix point is algebraic, equations 1 and 14). It is not used here.
+  A consequence is that the iv-bolus peak is governed by the (unreported)
+  injection duration rather than by an initial blood concentration.
+* **IV injection timing `tinj`.** The individual injection parameters
+  (`Qinj`, `Cinj`, `tinj`) are not reported. A near-bolus `tinj = 0.01` h is
+  used; it affects only the first minutes of the iv profile and none of the
+  steady-state or excretion results.
+* **Feces distribution coefficients.** Table 3 tabulates urine distribution
+  coefficients but not feces ones; feces excretion is < 0.1% of dose and the
+  sensitivity analysis reports excretion is insensitive to it, so a neutral
+  `Dfeces = 1.0` is used for both analytes (documented in the model file).
+* **Mechanistic validation, not PKNCA.** As a deterministic toxicokinetic
+  model whose purpose is the implant steady state and tissue distribution,
+  validation is by mass balance, steady state, tissue ranking and route
+  comparison rather than a single-dose NCA table.
+* **Deterministic model.** No IIV or residual-error model is reported; the
+  `propSd` entry is a fixed placeholder carrying no information from the paper.
+* **Scope not implemented.** The paper's downstream cancer risk-assessment
+  arithmetic (lifetime average daily dose, potency factor, 1-in-400,000 excess
+  risk) is a post-hoc calculation on the model's steady-state output, not part
+  of the dynamical model, and is not reproduced here.

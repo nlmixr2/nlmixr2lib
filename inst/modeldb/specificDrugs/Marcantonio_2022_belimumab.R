@@ -26,6 +26,7 @@ Marcantonio_2022_belimumab <- function() {
     dosing = "Belimumab dose amount into depot (SC) or Ab_00 (IV) in nmol; MW = 147000 Da so 200 mg = 1361 nmol.",
     concentration = "Free belimumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
+  dosing <- c("depot", "Ab_00")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

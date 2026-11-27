@@ -3,6 +3,7 @@ Naik_2013_peginesatide <- function() {
   reference <- "Naik H, Tsai MC, Fiedler-Kelly J, Qiu P, Vakilynejad M. A Population Pharmacokinetic and Pharmacodynamic Analysis of Peginesatide in Patients with Chronic Kidney Disease on Dialysis. PLoS ONE. 2013;8(6):e66422. doi:10.1371/journal.pone.0066422"
   vignette <- "Naik_2013_peginesatide"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL", hemoglobin = "g/dL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

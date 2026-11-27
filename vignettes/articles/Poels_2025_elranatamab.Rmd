@@ -49,7 +49,10 @@ solve_qsp <- function(dose_time, dose_mg, obs_time, params = NULL, n_id = 1L,
   )
   out <- as.data.frame(out)
   if (is.null(out$id)) out$id <- 1L         # rxSolve drops `id` for one subject
-  out[!is.na(out$Cc), , drop = FALSE]
+  # Every observation row must be finite; a non-finite row means the solve
+  # broke down and must not be dropped silently.
+  stopifnot(nrow(out) > 0L, all(is.finite(out$Cc)))
+  out
 }
 
 ## Untreated run: no dose records at all.

@@ -7,8 +7,17 @@
 #' file-level metadata (description, reference, units, covariateData);
 #' parameter names (log-prefix PK params, `eta`-prefix IIV, `propSd`/`addSd`
 #' residual error); parameter labels; covariates (canonical register, units,
-#' declared aliases); compartment names; the observation variable (`Cc`); and
-#' a syntactic dosing-vs-concentration unit cross-check.
+#' declared aliases); in a template, any symbol read but never defined;
+#' compartment names; the observation variable (`Cc`); a syntactic
+#' dosing-vs-concentration unit cross-check; that every dose-history call
+#' naming a compartment (`tad(cmt)`, `podo(cmt)`, `tafd(cmt)`, ...) names one
+#' the model is dosed into (its `dosing` metadata, or else `depot` and/or
+#' `central`); that every ODE state can leave zero, through an input term in
+#' its `d/dt()`, a non-zero initial condition, or a dose; that no model()
+#' statement is a bare expression (an operator-led continuation line that R
+#' parses as a statement of its own); and, in a source tree, that the article
+#' of a model with a below-subject `eta ~ variance | G` eta calls the internal
+#' `assertDrawsPerLevel()` on its simulation (category `nesting_assertion`).
 #'
 #' When any issue of severity `"error"` or `"warning"` is found, a `warning()`
 #' is emitted whose message directs the user to call this function for the
@@ -50,11 +59,16 @@ checkModelConventions <- function(model, verbose = TRUE) {
   invisible(issues)
 }
 
-.checkOneModel <- function(model, verbose) {
+# `packageDir` is the source directory of the package whose inst/modeldb holds
+# the model, when the caller knows it; otherwise .resolveModel() finds it.
+.checkOneModel <- function(model, verbose, packageDir = NULL) {
   resolved <- .resolveModel(model)
   ui <- resolved$ui
   model_name <- resolved$name
   conv <- .nlmixr2libConventions()
+  if (is.null(packageDir)) {
+    packageDir <- resolved$packageDir
+  }
 
   checks <- list(
     .checkFileMetadata(ui, conv),
@@ -63,6 +77,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkParameterUnits(ui, conv),
     .checkUnitSpellings(ui, conv),
     .checkCovariates(ui, conv, model_name),
+    .checkTemplateUndeclaredSymbols(ui, conv, model_name),
     .checkCompartments(ui, conv),
     .checkObservation(ui, conv),
     .checkUnits(ui, conv),
@@ -73,7 +88,11 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkFmFamily(ui, conv),
     .checkLogitBackTransform(ui, conv),
     .checkHandWrittenInverseLogit(ui, conv),
-    .checkCentralConcentrationName(ui, conv)
+    .checkCentralConcentrationName(ui, conv),
+    .checkBareStatements(ui, conv),
+    .checkDoseTimingCompartments(ui, conv),
+    .checkDeadStates(ui, conv),
+    .checkNestingAssertion(ui, model_name, packageDir)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -95,7 +114,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     checkmate::assertCharacter(model, len = 1, any.missing = FALSE, min.chars = 1)
     fun <- readModelDb(model)
     ui <- nlmixr2est::nlmixr(fun)
-    return(list(ui = ui, name = model))
+    return(list(ui = ui, name = model, packageDir = .packageDirOfModelFile(.modelDbFile(model))))
   }
   if (inherits(model, "rxUi")) {
     # `ui$modelName` is a single character string, or NULL for an anonymous
@@ -104,7 +123,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     if (is.null(nm)) {
       nm <- "<rxUi>"
     }
-    return(list(ui = model, name = nm))
+    # buildModelDb() tags the ui with the source tree its file is in.
+    return(list(ui = model, name = nm, packageDir = attr(model, "nlmixr2libPackageDir", exact = TRUE)))
   }
   if (is.function(model)) {
     ui <- nlmixr2est::nlmixr(model)
@@ -1014,6 +1034,47 @@ checkModelConventions <- function(model, verbose = TRUE) {
   issues
 }
 
+# A template (reference "nlmixr2lib template") is self-contained: every
+# symbol its model() reads is assigned there, is a state or is an ini()
+# parameter. rxode2 lists anything else as a covariate. .checkCovariates()
+# requires a covariate to be declared in covariateData unless it is in
+# `depends`, which names inputs an upstream model supplies when models are
+# composed. No template composes that way: in every template whose `depends`
+# covered a name it read, the name was a typo or a parameter the template
+# forgot to define (an `ic50` where it estimates `ec50`, a `vc` with no
+# `lvc`), and the template could not be solved as shipped. So for a template,
+# `depends` declares nothing.
+.checkTemplateUndeclaredSymbols <- function(ui, conv, model_name) {
+  issues <- .emptyIssues()
+  meta <- as.list(ui$meta)
+  if (!identical(meta$reference, "nlmixr2lib template")) {
+    return(issues)
+  }
+  undeclared <- setdiff(
+    ui$covariates %||% character(),
+    c(names(meta$covariateData %||% list()), .reservedDataItems)
+  )
+  for (nm in undeclared) {
+    issues <- rbind(
+      issues,
+      .issue(
+        "template_symbols",
+        "error",
+        nm,
+        sprintf(
+          paste0(
+            "Template reads '%s', which it never defines: ",
+            "it is not assigned in model(), not a state and not an ini() parameter."
+          ),
+          nm
+        ),
+        "Define it in ini() or model(), or correct the name; a template's `depends` does not declare it."
+      )
+    )
+  }
+  issues
+}
+
 .checkCompartments <- function(ui, conv) {
   issues <- .emptyIssues()
   cmts <- ui$props$cmt %||% character()
@@ -1663,16 +1724,9 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .reservedDataItems <- "DV"
 
 # Data columns that ini() uses as random-effect nesting levels
-# (`eta ~ var | OCC`). In rxode2's iniDf an eta row carries its level in
-# `condition` ("id" for between-subject etas); residual-error rows also use
-# `condition`, for the endpoint name, so only eta rows are read.
+# (`eta ~ var | OCC`); see .nestedEtaRows().
 .etaNestingColumns <- function(ui) {
-  iniDf <- ui$iniDf
-  if (is.null(iniDf) || !all(c("neta1", "condition") %in% names(iniDf))) {
-    return(character())
-  }
-  lev <- iniDf$condition[!is.na(iniDf$neta1)]
-  unique(setdiff(lev[!is.na(lev)], "id"))
+  unique(.nestedEtaRows(ui)$group)
 }
 
 # Issue #481: a clearance that depends on time must say so in its parameter
@@ -1694,8 +1748,19 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # switch and the breakpoint is what identifies the structure. `cl_time_slope`
 # is the fractional slope of the linear-in-time form `cl * (1 + slope * t)`;
 # `cl_time_fday` is the fraction compounded once per dosing day in
-# `cl * (1 + cl_time_fday)^floor(t / 24)`.
-.timeVaryingClearanceAcceptPattern <- "cl_time_max|cl_t50|cl_time_hill|cl_time_slope|cl_time_fday|cl_exp_|tclchange"
+# `cl * (1 + cl_time_fday)^floor(t / 24)`; `cl_time_hyp` is the rate of the
+# hyperbolic decline `cl0 / (1 + cl_time_hyp * t)`.
+.timeVaryingClearanceAcceptPattern <- paste(
+  "cl_time_max",
+  "cl_t50",
+  "cl_time_hill",
+  "cl_time_slope",
+  "cl_time_fday",
+  "cl_time_hyp",
+  "cl_exp_",
+  "tclchange",
+  sep = "|"
+)
 
 # The `ini({})` block declares parameters and their labels; only `model({})`
 # contains the equations. Scanning the whole function makes label prose such as
@@ -1745,6 +1810,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
           "Use cl_time_max / cl_t50 / cl_time_hill for a sigmoidal-in-time",
           "clearance, cl_time_slope for a linear-in-time clearance,",
           "cl_time_fday for a clearance compounded once per dosing day,",
+          "cl_time_hyp for a hyperbolic decline cl0 / (1 + rate * t),",
           "cl_exp_inf / cl_exp_component / cl_exp_kdes for an exponential",
           "decay, or tclchange / cl_late for a piecewise-constant step, so",
           "the structure can be found by name (issue #481)."
@@ -1944,13 +2010,13 @@ checkModelConventions <- function(model, verbose = TRUE) {
   if (!is.call(e)) {
     return(acc)
   }
-  op <- tryCatch(as.character(e[[1]]), error = function(e) character(0))
-  if (length(op) && op[[1]] %in% c("<-", "=") && length(e) >= 2L && is.name(e[[2]])) {
+  if (is.name(e[[1]]) && as.character(e[[1]]) %in% c("<-", "=") && length(e) >= 2L && is.name(e[[2]])) {
     acc <- c(acc, as.character(e[[2]]))
   }
+  # `e[[i]]` is tested in place: bound to a variable, an empty argument such
+  # as the one in `x[, 1]` errors when the variable is read.
   for (i in seq_along(e)) {
-    part <- tryCatch(e[[i]], error = function(e) NULL)
-    if (is.call(part)) acc <- .assignedNamesIn(part, acc)
+    if (is.call(e[[i]])) acc <- .assignedNamesIn(e[[i]], acc)
   }
   acc
 }
@@ -2053,10 +2119,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
     return(c(acc, as.character(e)))
   }
   if (is.call(e)) {
+    # `e[[i]]` is tested in place: bound to a variable, an empty argument such
+    # as the one in `x[, 1]` errors when the variable is read. The empty
+    # argument is a name whose text is "", and is not a symbol of the model.
     for (i in seq_along(e)) {
-      part <- tryCatch(e[[i]], error = function(e) NULL)
-      if (!is.null(part) && (is.call(part) || is.name(part))) {
-        acc <- .symbolsIn(part, acc)
+      if (is.call(e[[i]]) || (is.name(e[[i]]) && nzchar(as.character(e[[i]])))) {
+        acc <- .symbolsIn(e[[i]], acc)
       }
     }
   }
@@ -2506,10 +2574,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
     e <- e[[2]]
   }
   if (is.call(e)) {
+    # Only calls can hold a `(`. `e[[i]]` is tested in place: bound to a
+    # variable, an empty argument such as the one in `x[, 1]` errors when the
+    # variable is read.
     for (i in seq_along(e)) {
-      part <- tryCatch(e[[i]], error = function(e) NULL)
-      if (!is.null(part) && (is.call(part) || is.name(part))) {
-        e[[i]] <- .stripParens(part)
+      if (is.call(e[[i]])) {
+        e[[i]] <- .stripParens(e[[i]])
       }
     }
   }
@@ -2569,9 +2639,10 @@ checkModelConventions <- function(model, verbose = TRUE) {
   if (!is.na(hit)) {
     acc <- c(acc, hit)
   }
+  # `e[[i]]` is tested in place: bound to a variable, an empty argument such
+  # as the one in `x[, 1]` errors when the variable is read.
   for (i in seq_along(e)) {
-    part <- tryCatch(e[[i]], error = function(e) NULL)
-    if (is.call(part)) acc <- .inverseLogitOffenders(part, acc)
+    if (is.call(e[[i]])) acc <- .inverseLogitOffenders(e[[i]], acc)
   }
   acc
 }
@@ -2602,6 +2673,782 @@ checkModelConventions <- function(model, verbose = TRUE) {
           "2 ulp of `exp(x)/(1+exp(x))`. For the negative convention write",
           "`expit(-x)`."
         )
+      )
+    )
+  }
+  issues
+}
+
+# Bare expression statements ------------------------------------------------
+#
+# R ends a statement at a line break when the line is a complete expression,
+# so a continuation line that starts with an operator,
+#
+#   d/dt(central) <- -kel * central
+#                    + k21 * peripheral1
+#
+# becomes a statement of its own. rxode2's parser joins it to the equation
+# above, so the model simulates as written, but ui$lstExpr holds the truncated
+# d/dt() and a dangling `+k21 * peripheral1`, and anything that reads or edits
+# the model through lstExpr (model piping, these checks) sees the wrong
+# equation.
+
+# Operators that head an arithmetic or logical expression, never a statement.
+.bareStatementHeads <- c(
+  "+",
+  "-",
+  "*",
+  "/",
+  "^",
+  "(",
+  "!",
+  "&",
+  "|",
+  "&&",
+  "||",
+  "==",
+  "!=",
+  "<",
+  ">",
+  "<=",
+  ">=",
+  "%%",
+  "%/%"
+)
+
+# A model() statement that is only a value: a symbol, a constant, or a call
+# whose head is an operator. Assignments, `~` error lines, if/else blocks and
+# rxode2's declarations (`linear(INS)`, `cmt(x)`, `dvid(...)`) are statements.
+.isBareStatement <- function(st) {
+  if (is.name(st) || is.null(st) || is.numeric(st) || is.character(st) || is.logical(st)) {
+    return(TRUE)
+  }
+  is.call(st) && is.name(st[[1]]) && as.character(st[[1]]) %in% .bareStatementHeads
+}
+
+# The statements of a block: the body of a `{`, or a single statement used as
+# a body without braces (`if (a) b <- 1`).
+.blockStatements <- function(b) {
+  if (is.call(b) && identical(b[[1]], as.name("{"))) as.list(b)[-1] else list(b)
+}
+
+# Every bare statement in a statement list, including those inside the bodies
+# of `{`, if/else, for and while: a continuation line inside an if block is
+# split by R just as one at the top level is.
+.bareStatementsIn <- function(stmts, acc = list()) {
+  for (st in stmts) {
+    if (.isBareStatement(st)) {
+      acc[[length(acc) + 1L]] <- st
+      next
+    }
+    if (!is.call(st) || !is.name(st[[1]])) {
+      next
+    }
+    op <- as.character(st[[1]])
+    bodies <- switch(
+      op,
+      "{" = list(st),
+      "if" = as.list(st)[-(1:2)],
+      "for" = list(st[[4]]),
+      "while" = list(st[[3]]),
+      list()
+    )
+    for (b in bodies) {
+      acc <- .bareStatementsIn(.blockStatements(b), acc)
+    }
+  }
+  acc
+}
+
+.checkBareStatements <- function(ui, conv) {
+  issues <- .emptyIssues()
+  exprs <- tryCatch(ui$lstExpr, error = function(e) e)
+  if (inherits(exprs, "error")) {
+    return(.issue(
+      "bare_statement",
+      "error",
+      NA_character_,
+      paste0("The model() block could not be read to check for bare statements: ", conditionMessage(exprs)),
+      "Check that the model parses with rxode2::rxode2()."
+    ))
+  }
+  for (st in .bareStatementsIn(exprs)) {
+    txt <- paste(deparse(st, width.cutoff = 500L), collapse = " ")
+    issues <- rbind(
+      issues,
+      .issue(
+        "bare_statement",
+        "error",
+        substr(txt, 1, 60),
+        paste0(
+          "`",
+          substr(txt, 1, 120),
+          "` is a statement of its own in model(): a value, not an assignment ",
+          "or a declaration. If it is a continuation line that starts with an ",
+          "operator, rxode2 joins it to the line above but R does not, so ",
+          "ui$lstExpr holds a truncated equation. Otherwise it is a stray value ",
+          "with no effect."
+        ),
+        paste(
+          "For a continuation line, move the operator to the end of the previous",
+          "line so the expression continues across the line break; remove a stray value."
+        )
+      )
+    )
+  }
+  issues
+}
+
+# rxode2's dose-history functions that take a compartment argument (the
+# syntax table in `?rxode2`). Each one reads the doses given into that
+# compartment, and with none given it returns NA (or 0 for the `*0` forms) for
+# every subject: a derivative that uses it is NaN, and newer rxode2 builds fail
+# the subject outright. `dosenum()` takes no compartment.
+.doseTimingFunctions <- c(
+  "tad",
+  "tad0",
+  "tafd",
+  "tafd0",
+  "tlast",
+  "tlast0",
+  "tfirst",
+  "tfirst0",
+  "dose",
+  "dose0",
+  "podo",
+  "podo0"
+)
+
+# Every `f(cmt)` call to a dose-history function in an expression, as
+# c(fn = , cmt = ) pairs. A bare `tad()` refers to any compartment's doses and
+# is not collected. A namespaced `rxode2::tad(depot)` is not collected either:
+# rxode2's model syntax has no `::` and rejects it, as it rejects a quoted
+# compartment, so only an expression built outside a model can carry either.
+# The quoted form is still collected.
+.doseTimingCalls <- function(e, acc = list()) {
+  if (!is.call(e)) {
+    return(acc)
+  }
+  # `e[[i]]` is tested in place throughout: bound to a variable, an empty
+  # argument such as the one in `x[, 1]` or `tad(, 1)` errors when the variable
+  # is read. The empty argument is a name whose text is "".
+  if (
+    is.name(e[[1]]) &&
+      as.character(e[[1]]) %in% .doseTimingFunctions &&
+      length(e) >= 2L &&
+      ((is.name(e[[2]]) && nzchar(as.character(e[[2]]))) || (is.character(e[[2]]) && length(e[[2]]) == 1L))
+  ) {
+    acc[[length(acc) + 1L]] <- c(fn = as.character(e[[1]]), cmt = as.character(e[[2]]))
+  }
+  for (i in seq_along(e)[-1L]) {
+    if (is.call(e[[i]])) acc <- .doseTimingCalls(e[[i]], acc)
+  }
+  acc
+}
+
+# A dose-history function must name a compartment the model is dosed into. A
+# model that reads `podo(stomach)` but declares no `dosing` gets the
+# depot/central fallback in the registry, so anything that doses the registry's
+# compartment never doses `stomach` and every derivative using it is NaN.
+.checkDoseTimingCompartments <- function(ui, conv) {
+  issues <- .emptyIssues()
+  # A model() block that cannot be read is reported, not treated as one with no
+  # dose-history calls: the rule must be able to go red.
+  exprs <- tryCatch(ui$lstExpr, error = function(e) e)
+  if (inherits(exprs, "error")) {
+    return(.issue(
+      "dose_timing_compartment",
+      "error",
+      NA_character_,
+      paste0("The model() block could not be read to check dose-history compartments: ", conditionMessage(exprs)),
+      "Check that the model parses with rxode2::rxode2()."
+    ))
+  }
+  calls <- list()
+  for (e in exprs) {
+    calls <- .doseTimingCalls(e, calls)
+  }
+  if (!length(calls)) {
+    return(issues)
+  }
+  fns <- vapply(calls, `[[`, character(1), "fn")
+  cmts <- vapply(calls, `[[`, character(1), "cmt")
+  declared <- ui$meta$dosing
+  dosing <- trimws(unlist(strsplit(as.character(.modelDosingCmts(ui)), ",", fixed = TRUE)))
+  where <- if (!is.null(declared)) {
+    if (length(dosing)) {
+      sprintf("`dosing` declares: %s", paste(dosing, collapse = ", "))
+    } else {
+      "`dosing` is declared empty"
+    }
+  } else if (length(dosing)) {
+    sprintf("no `dosing` metadata, so the depot/central fallback gives: %s", paste(dosing, collapse = ", "))
+  } else {
+    "no `dosing` metadata, and no depot or central compartment to fall back to"
+  }
+  for (cm in setdiff(unique(cmts), dosing)) {
+    used <- unique(sprintf("%s(%s)", fns[cmts == cm], cm))
+    issues <- rbind(
+      issues,
+      .issue(
+        "dose_timing_compartment",
+        "error",
+        cm,
+        sprintf(
+          "%s read%s the doses given into '%s', which is not a dosing compartment (%s).",
+          paste0("`", used, "`", collapse = ", "),
+          if (length(used) == 1L) "s" else "",
+          cm,
+          where
+        ),
+        paste0(
+          "If the paper doses into '",
+          cm,
+          "', declare it in the metadata (`dosing <- c(\"",
+          cm,
+          "\", ...)`, first if it is the usual route); buildModelDb() records ",
+          "it and the solve probe doses the first entry. Otherwise the ",
+          "function is NA for every subject and any derivative using it is NaN."
+        )
+      )
+    )
+  }
+  issues
+}
+
+# A state that can never leave zero ----------------------------------------
+#
+# A state with no input term in its d/dt(), no initial condition and no dose
+# stays at 0 in every simulation. Usually it is a dose route missing from the
+# `dosing` metadata, such as a second depot or a stomach. Such a state reads no
+# dose history, so .checkDoseTimingCompartments() cannot see it.
+
+# The additive terms of an expression, the decomposition rxode2's internal
+# .collectAddTerms() makes, each with its sign: a list of
+# list(term = , sign = ), sign 1 or -1. The sign follows binary and unary
+# minus down the sum, then the term's own factors (.factorSign()), so
+# `x - ka * depot` and `x + -ka * depot` both give `ka * depot` (or
+# `-ka * depot`) the sign -1.
+.signedAdditiveTerms <- function(e, sign = 1L, aliases = list()) {
+  if (is.call(e) && is.name(e[[1]])) {
+    op <- as.character(e[[1]])
+    if (op %in% c("+", "-") && length(e) == 3L) {
+      return(c(
+        .signedAdditiveTerms(e[[2]], sign, aliases),
+        .signedAdditiveTerms(e[[3]], if (op == "-") -sign else sign, aliases)
+      ))
+    }
+    if (op %in% c("+", "-", "(") && length(e) == 2L) {
+      return(.signedAdditiveTerms(e[[2]], if (op == "-") -sign else sign, aliases))
+    }
+  }
+  list(list(term = e, sign = sign * .factorSign(e, aliases)))
+}
+
+# The additive terms of an expression as a list of expressions, without
+# their signs: the dead-state check needs only which terms exist.
+.additiveTerms <- function(e) {
+  lapply(.signedAdditiveTerms(e), `[[`, "term")
+}
+
+# The sign a term's factors give it: -1 when an odd number of them is
+# negated (a unary minus or a negative literal, through `*`, `/`, `(` and a
+# variable assigned once, followed through `aliases` as .hasStateFactor()
+# does), else 1. A factor whose sign the expression does not show, such as a
+# parameter or a sum, counts as positive.
+.factorSign <- function(term, aliases = list(), depth = 0L) {
+  if (is.numeric(term) && length(term) == 1L) {
+    return(if (!is.na(term) && term < 0) -1L else 1L)
+  }
+  if (is.name(term)) {
+    nm <- as.character(term)
+    if (depth < .aliasDepth && nm %in% names(aliases)) {
+      return(.factorSign(aliases[[nm]], aliases, depth + 1L))
+    }
+    return(1L)
+  }
+  if (!is.call(term) || !is.name(term[[1]])) {
+    return(1L)
+  }
+  op <- as.character(term[[1]])
+  if (op %in% c("*", "/") && length(term) == 3L) {
+    return(.factorSign(term[[2]], aliases, depth) * .factorSign(term[[3]], aliases, depth))
+  }
+  if (op == "-" && length(term) == 2L) {
+    return(-.factorSign(term[[2]], aliases, depth))
+  }
+  if (op %in% c("+", "(") && length(term) == 2L) {
+    return(.factorSign(term[[2]], aliases, depth))
+  }
+  1L
+}
+
+# Functions that are 0 at 0, so `f(x)` vanishes with `x`. `exp()`, `cos()` and
+# the like are not, and leave the term an input.
+.zeroAtZeroFunctions <- c(
+  "sqrt",
+  "abs",
+  "sin",
+  "tan",
+  "sinh",
+  "tanh",
+  "asin",
+  "atan",
+  "asinh",
+  "atanh",
+  "log1p",
+  "expm1"
+)
+
+# A number written literally, with or without a leading minus (`-1` parses as
+# a call); NA for anything else.
+.signedLiteral <- function(x) {
+  if (is.numeric(x) && length(x) == 1L) {
+    return(as.numeric(x))
+  }
+  if (is.call(x) && identical(x[[1]], as.name("-")) && length(x) == 2L && is.numeric(x[[2]]) && length(x[[2]]) == 1L) {
+    return(-as.numeric(x[[2]]))
+  }
+  NA_real_
+}
+
+# How many levels of algebraic assignment .hasStateFactor() follows from a
+# variable to its definition (`cc2 <- ka * aux; d/dt(aux) <- -cc2`).
+.aliasDepth <- 5L
+
+# Does the term vanish whenever `state` is 0, because `state` is one of its
+# multiplicative factors (or the numerator's), the base of a power, or the
+# argument of a function that is 0 at 0? `-ka * depot`,
+# `vmax * depot / (km + depot)`, `depot^2` and `sqrt(depot)` do; `ka * other`,
+# `k * (other - depot)` and `exp(depot)` do not. A variable assigned once is
+# followed to its definition through `aliases`, a named list of expressions.
+.hasStateFactor <- function(term, state, aliases = list(), depth = 0L) {
+  if (is.name(term)) {
+    nm <- as.character(term)
+    if (identical(nm, state)) {
+      return(TRUE)
+    }
+    if (depth < .aliasDepth && nm %in% names(aliases)) {
+      return(.hasStateFactor(aliases[[nm]], state, aliases, depth + 1L))
+    }
+    return(FALSE)
+  }
+  if (!is.call(term) || !is.name(term[[1]])) {
+    return(FALSE)
+  }
+  op <- as.character(term[[1]])
+  if (op == "*" && length(term) == 3L) {
+    return(.hasStateFactor(term[[2]], state, aliases, depth) || .hasStateFactor(term[[3]], state, aliases, depth))
+  }
+  if (op == "/" && length(term) == 3L) {
+    return(.hasStateFactor(term[[2]], state, aliases, depth))
+  }
+  if (op %in% c("-", "(") && length(term) == 2L) {
+    return(.hasStateFactor(term[[2]], state, aliases, depth))
+  }
+  if (op == "^" && length(term) == 3L) {
+    # 0^p is 0 only for p > 0; a literal exponent at or below 0 is not.
+    expo <- .signedLiteral(term[[3]])
+    return(!(!is.na(expo) && expo <= 0) && .hasStateFactor(term[[2]], state, aliases, depth))
+  }
+  if (op %in% .zeroAtZeroFunctions && length(term) == 2L) {
+    return(.hasStateFactor(term[[2]], state, aliases, depth))
+  }
+  FALSE
+}
+
+# A term that can be non-zero while `state` is 0: an inflow, a production or
+# an exogenous input. A literal 0 is not one.
+.isInputTerm <- function(term, state, aliases = list()) {
+  !.hasStateFactor(term, state, aliases) && !(is.numeric(term) && length(term) == 1L && term == 0)
+}
+
+# `d/dt(state)`, which parses as `/`(d, dt(state)).
+.isDdtLhs <- function(lhs) {
+  is.call(lhs) &&
+    identical(lhs[[1]], as.name("/")) &&
+    length(lhs) == 3L &&
+    identical(lhs[[2]], as.name("d")) &&
+    is.call(lhs[[3]]) &&
+    identical(lhs[[3]][[1]], as.name("dt")) &&
+    is.name(lhs[[3]][[2]])
+}
+
+# `state(0)`, the left-hand side of an initial condition.
+.isInitialLhs <- function(lhs) {
+  is.call(lhs) && is.name(lhs[[1]]) && length(lhs) == 2L && is.numeric(lhs[[2]]) && identical(as.numeric(lhs[[2]]), 0)
+}
+
+# From a statement list, at any depth (an ODE may be defined in each branch of
+# an if/else):
+# - rhs: the right-hand sides of every `d/dt(state)` assignment, keyed by state;
+# - init: the states given a non-zero initial condition `state(0) <- ...`;
+#   `state(0) <- 0` changes nothing and is not counted;
+# - alg / algCount: algebraic assignments `x <- ...` (or `=` or `~`) and how
+#   many times each name is assigned.
+.odeDefinitions <- function(e, acc = list(rhs = list(), init = character(0), alg = list(), algCount = integer(0))) {
+  if (!is.call(e)) {
+    return(acc)
+  }
+  isAssign <- is.name(e[[1]]) && as.character(e[[1]]) %in% c("<-", "=", "~") && length(e) == 3L
+  if (isAssign && is.name(e[[2]])) {
+    nm <- as.character(e[[2]])
+    acc$alg[[nm]] <- e[[3]]
+    acc$algCount[[nm]] <- if (is.na(acc$algCount[nm])) 1L else acc$algCount[[nm]] + 1L
+    return(acc)
+  }
+  if (isAssign && .isDdtLhs(e[[2]])) {
+    st <- as.character(e[[2]][[3]][[2]])
+    acc$rhs[[st]] <- c(acc$rhs[[st]], list(e[[3]]))
+    return(acc)
+  }
+  if (isAssign && .isInitialLhs(e[[2]])) {
+    if (!identical(.signedLiteral(e[[3]]), 0)) {
+      acc$init <- c(acc$init, as.character(e[[2]][[1]]))
+    }
+    return(acc)
+  }
+  # `e[[i]]` is tested in place: bound to a variable, an empty argument such
+  # as the one in `x[, 1]` errors when the variable is read.
+  for (i in seq_along(e)[-1L]) {
+    if (is.call(e[[i]])) acc <- .odeDefinitions(e[[i]], acc)
+  }
+  acc
+}
+
+# Every ODE state needs a way to become non-zero: an input term in its
+# d/dt(), an initial condition, or a dose. One with none of the three stays
+# at 0 in every simulation.
+# The .odeDefinitions() of the equations rxode2 compiles, plus `aliases`, the
+# algebraic definitions a term can be followed through (only a variable
+# assigned exactly once has one). An error condition when the model cannot be
+# read. The compiled equations, not ui$lstExpr: rxode2's parser joins a
+# continuation line that starts with an operator to the equation above it,
+# but R ends the statement at the line break, so ui$lstExpr can hold a
+# truncated d/dt(). The text is parsed inside braces because rxode2 writes
+# `}` and `else` on separate lines, which R accepts only within a block.
+.compiledOdeDefinitions <- function(ui) {
+  norm <- tryCatch(rxode2::rxModelVars(ui)$model[["normModel"]], error = function(e) e)
+  if (!inherits(norm, "error") && (!is.character(norm) || length(norm) != 1L || !nzchar(trimws(norm)))) {
+    norm <- simpleError("rxode2 returned no compiled equations")
+  }
+  exprs <- if (inherits(norm, "error")) {
+    norm
+  } else {
+    tryCatch(as.list(parse(text = paste0("{\n", norm, "\n}"))[[1]])[-1], error = function(e) e)
+  }
+  if (inherits(exprs, "error")) {
+    return(exprs)
+  }
+  defs <- list(rhs = list(), init = character(0), alg = list(), algCount = integer(0))
+  for (e in exprs) {
+    defs <- .odeDefinitions(e, defs)
+  }
+  defs$aliases <- defs$alg[names(defs$algCount)[defs$algCount == 1L]]
+  defs
+}
+
+.checkDeadStates <- function(ui, conv) {
+  issues <- .emptyIssues()
+  defs <- .compiledOdeDefinitions(ui)
+  if (inherits(defs, "error")) {
+    return(.issue(
+      "dead_state",
+      "error",
+      NA_character_,
+      paste0("The model could not be read to check for dead states: ", conditionMessage(defs)),
+      "Check that the model parses with rxode2::rxode2()."
+    ))
+  }
+  aliases <- defs$aliases
+  dosing <- trimws(unlist(strsplit(as.character(.modelDosingCmts(ui)), ",", fixed = TRUE)))
+  for (st in names(defs$rhs)) {
+    if (st %in% dosing || st %in% defs$init) {
+      next
+    }
+    terms <- unlist(lapply(defs$rhs[[st]], .additiveTerms), recursive = FALSE)
+    if (any(vapply(terms, .isInputTerm, logical(1), state = st, aliases = aliases))) {
+      next
+    }
+    issues <- rbind(
+      issues,
+      .issue(
+        "dead_state",
+        "warning",
+        st,
+        sprintf(
+          paste(
+            "State '%s' can never leave 0: every term of its d/dt() vanishes when it is 0,",
+            "it has no non-zero initial condition, and it is not a dosing compartment."
+          ),
+          st
+        ),
+        paste0(
+          "If the paper doses into '",
+          st,
+          "', add it to the `dosing` metadata. If it starts non-zero, give it ",
+          "an initial condition `",
+          st,
+          "(0) <- ...`. Otherwise it is unused and can be removed."
+        )
+      )
+    )
+  }
+  issues
+}
+
+# Nested random effects (`eta ~ variance | G`).
+#
+# rxode2 draws such an eta per subject and level of G only when some subject has
+# two or more levels. With one level per subject, G is read as a level ABOVE the
+# subject and every subject on a level shares one draw, without an error or a
+# warning (see assertDrawsPerLevel()). A model whose G is an occasion or a
+# catheter therefore needs its article to assert the draws on its own simulation:
+# the rule finds the article through the model's `vignette` field and requires a
+# call of assertDrawsPerLevel() whose literal `eta` and `by` arguments cover the
+# model's eta and group. The call runs when the article renders; the rule checks
+# that it is there. What the rule does not see: which simulation the call is
+# given (one call covers every model of the article that has the same eta and
+# group, as the ElKhateeb variants share one article that simulates only the
+# base model with random effects), and a call that never runs (inside a function
+# the article does not call, or under `if (FALSE)`).
+#
+# The rule applies to a model that lives in the `inst/modeldb` of a package
+# source tree, and reads the articles of that tree (`vignettes/articles`). A
+# model given as a function, or found in an installed package, belongs to no
+# source tree and is not checked; a source tree without `vignettes/articles`
+# skips the rule with a message.
+#
+# (model, G) pairs where G is a level above the subject on purpose, so that one
+# draw per level is the model; each with the evidence for it. Anything not
+# listed is below-subject.
+.nestingAboveSubjectGroups <- data.frame(
+  model = c("Qi_2024_vosoritide", "Rosenborg_2025_salmeterol", "Saqr_2024_tacrolimus", "Jung_2026_pcab_mbma"),
+  group = c("SIDN", "SIDN", "SITEN", "DIDN"),
+  evidence = c(
+    paste(
+      "Qi 2024 Sect. 3.2: SIDN is the study identity number; StudyCL and StudyV",
+      "are an additional hierarchical level of effect above the subject"
+    ),
+    "Rosenborg 2025: SIDN maps to the STUD column, studies 1 to 3, one study per subject",
+    paste(
+      "Saqr 2024 Table 3: inter-site variability of CL/F (18.9% CV); patients are",
+      "nested within transplant centres, one centre per patient"
+    ),
+    paste(
+      "Jung 2026 Table 2: inter-drug variability (IDV) of the P-CAB model-based",
+      "meta-analysis; each study arm (the subject) belongs to one drug"
+    )
+  ),
+  stringsAsFactors = FALSE
+)
+
+# The `eta ~ variance | G` etas of a model, one row per (eta, G). Residual-error
+# rows also carry a `condition` (the endpoint), so only eta rows are read, and
+# only the diagonal of a correlated block.
+.nestedEtaRows <- function(ui) {
+  empty <- data.frame(eta = character(), group = character(), stringsAsFactors = FALSE)
+  iniDf <- ui$iniDf
+  if (is.null(iniDf) || !all(c("name", "neta1", "neta2", "condition") %in% names(iniDf))) {
+    return(empty)
+  }
+  keep <- !is.na(iniDf$neta1) & !is.na(iniDf$neta2) & iniDf$neta1 == iniDf$neta2
+  keep <- keep & !is.na(iniDf$condition) & iniDf$condition != "id"
+  if (!any(keep)) {
+    return(empty)
+  }
+  data.frame(eta = iniDf$name[keep], group = iniDf$condition[keep], stringsAsFactors = FALSE)
+}
+
+# The source directory of the package whose `inst/modeldb` holds the model file
+# `file`, or NULL when the file is not in one (a model of the user's own, or one
+# of an installed package, where `inst/` is flattened into the package root).
+.packageDirOfModelFile <- function(file) {
+  if (is.null(file) || length(file) != 1L || is.na(file) || !nzchar(file)) {
+    return(NULL)
+  }
+  path <- normalizePath(file, winslash = "/", mustWork = FALSE)
+  if (!grepl("/inst/modeldb/", path, fixed = TRUE)) {
+    return(NULL)
+  }
+  dir <- sub("^(.*)/inst/modeldb/.*$", "\\1", path)
+  if (!file.exists(file.path(dir, "DESCRIPTION"))) {
+    return(NULL)
+  }
+  # normalizePath() leaves a file that does not exist as given, so the tree is
+  # normalized again once it is known to exist (macOS: /var -> /private/var).
+  normalizePath(dir, winslash = "/")
+}
+
+# The directory of the internal articles of the package source tree `packageDir`,
+# or NULL when it has none.
+.nestingArticleDir <- function(packageDir) {
+  dir <- file.path(packageDir, "vignettes", "articles")
+  if (dir.exists(dir)) dir else NULL
+}
+
+# The strings of a literal character vector (`"a"`, `c("a", "b")`), or NULL.
+.literalStrings <- function(e) {
+  if (is.character(e) && length(e) > 0L && !anyNA(e)) {
+    return(e)
+  }
+  if (is.call(e) && identical(e[[1L]], as.name("c")) && length(e) > 1L) {
+    parts <- lapply(as.list(e)[-1L], .literalStrings)
+    if (all(lengths(parts) > 0L)) {
+      return(unlist(parts, use.names = FALSE))
+    }
+  }
+  NULL
+}
+
+# Every assertDrawsPerLevel() call in the running chunks of an article, with its
+# `eta` and `by` where both are literal (NULL otherwise).
+.articleDrawCalls <- function(chunks) {
+  acc <- new.env(parent = emptyenv())
+  acc$calls <- list()
+  for (ch in chunks) {
+    .walkCalls(ch, function(e) {
+      if (!identical(.calledName(e), "assertDrawsPerLevel")) {
+        return(invisible(NULL))
+      }
+      matched <- tryCatch(match.call(assertDrawsPerLevel, e), error = function(err) NULL)
+      eta <- if (is.null(matched)) NULL else .literalStrings(matched$eta)
+      by <- if (is.null(matched)) NULL else .literalStrings(matched$by)
+      if (length(by) != 1L) {
+        by <- NULL
+      }
+      acc$calls[[length(acc$calls) + 1L]] <- list(eta = eta, by = by, call = paste(deparse(e), collapse = " "))
+    })
+  }
+  acc$calls
+}
+
+# Why a nested eta has no assertion, or NULL when its article has one and reads
+# in full.
+.nestingProblem <- function(eta, group, calls, unreadable) {
+  covered <- any(vapply(
+    calls,
+    function(cl) !is.null(cl$eta) && !is.null(cl$by) && identical(cl$by, group) && eta %in% cl$eta,
+    logical(1L)
+  ))
+  broken <- if (length(unreadable) > 0L) {
+    paste(sprintf("the chunk at line %d %s", unreadable, names(unreadable)), collapse = "; ")
+  }
+  if (covered) {
+    return(if (!is.null(broken)) paste0(broken, ", so the article cannot be read in full"))
+  }
+  nonliteral <- sum(vapply(calls, function(cl) is.null(cl$eta) || is.null(cl$by), logical(1L)))
+  missing <- if (length(calls) == 0L) {
+    "the article has no assertDrawsPerLevel() call"
+  } else {
+    sprintf(
+      "no assertDrawsPerLevel() call in the article has `eta` containing \"%s\" and `by = \"%s\"`%s",
+      eta,
+      group,
+      if (nonliteral > 0L) {
+        sprintf(" (%d call(s) have an `eta` or `by` that is not a string literal)", nonliteral)
+      } else {
+        ""
+      }
+    )
+  }
+  paste(c(missing, broken), collapse = "; ")
+}
+
+# An `info` issue for each below-subject eta of a model whose article the rule
+# could not read, so that the caller (buildModelDb() in particular, whose
+# workers cannot message the build session) can say that the rule did not run.
+.nestingNotChecked <- function(nested, reason) {
+  do.call(
+    rbind,
+    lapply(nested$eta, function(eta) .issue("nesting_assertion", "info", eta, paste("not checked:", reason)))
+  )
+}
+
+.checkNestingAssertion <- function(ui, model_name, packageDir = NULL) {
+  issues <- .emptyIssues()
+  nested <- .nestedEtaRows(ui)
+  if (nrow(nested) == 0L) {
+    return(issues)
+  }
+  above <- .nestingAboveSubjectGroups
+  nested <- nested[!(paste(model_name, nested$group) %in% paste(above$model, above$group)), , drop = FALSE]
+  if (nrow(nested) == 0L) {
+    return(issues)
+  }
+  if (is.null(packageDir)) {
+    return(.nestingNotChecked(
+      nested,
+      paste0(
+        "the model is not in the inst/modeldb of a package source tree, ",
+        "so the article that asserts its draws cannot be found"
+      )
+    ))
+  }
+  articleDir <- .nestingArticleDir(packageDir)
+  if (is.null(articleDir)) {
+    return(.nestingNotChecked(
+      nested,
+      paste0(packageDir, " has no vignettes/articles, so the article that asserts the draws cannot be read")
+    ))
+  }
+  vignette <- ui$meta$vignette
+  has_vignette <- is.character(vignette) && length(vignette) == 1L && !is.na(vignette) && nzchar(vignette)
+  article <- NA_character_
+  if (has_vignette) {
+    candidates <- file.path(c(articleDir, dirname(articleDir)), paste0(vignette, ".Rmd"))
+    article <- candidates[file.exists(candidates)][1L]
+  }
+  suggestion <- paste(
+    "In the model's article, call",
+    "`nlmixr2lib:::assertDrawsPerLevel(sim, eta = \"<eta>\", by = \"<G>\")` on the",
+    "simulation, with `eta` and `by` as string literals. rxode2 shares one draw per",
+    "level, without a message, when no subject has two or more levels of <G>."
+  )
+  problem <- NULL
+  calls <- list()
+  unreadable <- integer()
+  if (is.na(article)) {
+    problem <- if (!has_vignette) {
+      "the model has no `vignette` field, so no article asserts the draws"
+    } else {
+      sprintf(
+        "the article `%s.Rmd` named by the model's `vignette` field is not in vignettes/articles or vignettes",
+        vignette
+      )
+    }
+  } else {
+    parsed <- tryCatch(.articleExprs(article), error = function(e) NULL)
+    if (is.null(parsed)) {
+      problem <- sprintf("the article `%s` could not be read", basename(article))
+    } else {
+      calls <- .articleDrawCalls(parsed$chunks)
+      unreadable <- parsed$unreadable
+    }
+  }
+  for (i in seq_len(nrow(nested))) {
+    why <- if (!is.null(problem)) {
+      problem
+    } else {
+      .nestingProblem(nested$eta[[i]], nested$group[[i]], calls, unreadable)
+    }
+    if (is.null(why)) {
+      next
+    }
+    issues <- rbind(
+      issues,
+      .issue(
+        "nesting_assertion",
+        "error",
+        nested$eta[[i]],
+        sprintf(
+          "`%s ~ ... | %s` is drawn per level of %s: %s.",
+          nested$eta[[i]],
+          nested$group[[i]],
+          nested$group[[i]],
+          why
+        ),
+        suggestion
       )
     )
   }

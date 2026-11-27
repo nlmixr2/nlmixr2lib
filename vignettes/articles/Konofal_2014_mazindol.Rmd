@@ -1,0 +1,457 @@
+---
+title: "Mazindol (Konofal 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mazindol (Konofal 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Konofal_2014_mazindol"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Konofal_2014_mazindol"))$description`
+* Article: <https://doi.org/10.2147/DDDT.S65495> (open access; PMC4266272)
+
+# Population
+
+Konofal et al. ran an open-label pilot phase II study (NCT00508677) at Robert
+Debre Hospital, Paris, in children with attention deficit/hyperactivity
+disorder (ADHD) who had responded poorly to methylphenidate. Of the 24 children
+enrolled, 21 received mazindol 1 mg orally once daily at 7 am for 7 days
+(Table 1). They were 10.7 (SD 1.0) years old (range 9.0-12.8) and weighed
+34.9 (SD 9.1) kg (range 27.5-68.0). They were 140.3 (SD 7.6) cm tall, and 19
+of the 21 (90.5%) were boys. Race was not reported. Plasma was sampled at 0.5,
+2, 4, 6 and 12 h after the first dose and at 12, 24, 36 and 48 h after the
+seventh dose. This gave 183 concentrations, 73 of them below the 0.5 ng/mL
+lower limit of quantification (LLOQ). The authors fitted the data in NONMEM VI
+with the M3 method for below-LLOQ data.
+
+The same information is available programmatically via
+`readModelDb("Konofal_2014_mazindol")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Structure: one compartment, first-order absorption with lag, first-order elimination | n/a | Results, 'Pharmacokinetics'; Table 3 |
+| `ltlag` (lag time) | 0.3 h, fixed | Table 3; Results ('the value of 0.3 hour was fixed') |
+| `lka` (Ka) | 1.02 1/h | Table 3, final model |
+| `lcl` (CL/F at FFM 28 kg) | 27.9 L/h | Table 3, final model; Results |
+| `lvc` (V/F at age 10 years) | 234 L | Table 3, final model; Results |
+| `e_ffm_cl` | 1.24 | Table 3 (theta1); Results equation `CL/Fi = CL/Fref x (FFMi/FFMref)^theta1` |
+| `e_age_vc` | 2.28 | Table 3 (theta2); Results equation `V/Fi = V/Fref x (agei/ageref)^theta2` |
+| FFM and age reference values | 28 kg, 10 years | Results ('median values of the present population') |
+| `etalcl` | 24.5% CV, so omega^2 = 0.0583 | Table 3, final model IIV |
+| `etalvc` | 11.4% CV, so omega^2 = 0.0129 | Table 3, final model IIV |
+| `addSd` | 0.31 ng/mL | Table 3, 'Residual variability (constant SD)' |
+| FFM formula (virtual cohort only) | Janmahasatian, with the sex-specific WHSmax and WHS50 | Methods, 'Pharmacokinetic analysis' |
+
+# Virtual cohort
+
+The study's individual data are not public. The virtual cohort below follows
+the Table 1 summaries, with 200 children in a single arm. Covariates come from
+base R's random number generator. They are therefore the same on every
+machine, unlike the rxode2 random effects.
+
+```{r cohort}
+set.seed(20141215)
+n_sub <- 200
+
+rtrunc_norm <- function(n, mean, sd, lo, hi) {
+  x <- rnorm(n, mean, sd)
+  while (any(out <- x < lo | x > hi)) {
+    x[out] <- rnorm(sum(out), mean, sd)
+  }
+  x
+}
+
+# Weight is right-skewed (mean 34.9, SD 9.1, range 27.5-68.0 kg): model the
+# excess over the 27.5 kg minimum as log-normal with the Table 1 mean and SD,
+# truncated at the 68.0 kg maximum.
+wt_excess_mean <- 34.9 - 27.5
+wt_sdlog <- sqrt(log(1 + (9.1 / wt_excess_mean)^2))
+wt_meanlog <- log(wt_excess_mean) - wt_sdlog^2 / 2
+draw_wt <- function(n) {
+  x <- 27.5 + rlnorm(n, wt_meanlog, wt_sdlog)
+  while (any(out <- x > 68)) {
+    x[out] <- 27.5 + rlnorm(sum(out), wt_meanlog, wt_sdlog)
+  }
+  x
+}
+
+# Janmahasatian fat-free mass, with the coefficients printed in Konofal 2014
+# Methods (HT in metres).
+ffm_janmahasatian <- function(wt, ht_cm, sexf) {
+  ht2 <- (ht_cm / 100)^2
+  whs_max <- ifelse(sexf == 1, 37.99, 42.92)
+  whs_50 <- ifelse(sexf == 1, 35.98, 30.93)
+  whs_max * ht2 * wt / (whs_50 * ht2 + wt)
+}
+
+cohort <- tibble(
+  id = seq_len(n_sub),
+  AGE = rtrunc_norm(n_sub, 10.7, 1.0, 9.0, 12.8),
+  WT = draw_wt(n_sub),
+  HT = rtrunc_norm(n_sub, 140.3, 7.6, 123.1, 153.9),
+  SEXF = rbinom(n_sub, 1, 2 / 21)
+) |>
+  mutate(FFM = ffm_janmahasatian(WT, HT, SEXF))
+
+cohort |>
+  summarise(
+    `Age median (y)` = median(AGE),
+    `Weight mean (kg)` = mean(WT),
+    `Weight SD (kg)` = sd(WT),
+    `FFM median (kg)` = median(FFM),
+    `FFM range (kg)` = paste(round(range(FFM), 1), collapse = "-")
+  ) |>
+  knitr::kable(digits = 1, caption = "Virtual cohort covariates.")
+
+# The paper's reference values are the cohort medians: FFM 28 kg and age 10
+# years. A cohort whose FFM median missed 28 kg by several kg would mean the
+# FFM formula or the weight/height draws are wrong. The covariates come from
+# base R's RNG, so this check is the same on every machine.
+stopifnot(
+  abs(median(cohort$FFM) - 28) < 3,
+  abs(median(cohort$AGE) - 10.5) < 0.5
+)
+```
+
+The cohort's median age is about 10.7 years, while the paper gives 10 years as
+the population median. The Table 1 mean of 10.7 years does not fit a median of
+10 years for a roughly symmetric age distribution, and the paper gives no
+other age data. The Table 1 summary is used for the cohort. Age enters V/F
+with an exponent of 2.28, so in this cohort V/F is centred about 17% above
+the 234 L typical value.
+
+# Simulation
+
+Two event tables are used:
+
+* **first dose only**: a single 1 mg dose with dense sampling to 96 h. This
+  gives the first-dose Cmax and AUC0-inf that the authors derived from the
+  individual post hoc parameters.
+* **study design**: seven daily 1 mg doses at 0, 24, ..., 144 h, observed at
+  the protocol times (0.5, 2, 4, 6, 12 h and 156, 168, 180, 192 h) plus a
+  denser grid for plotting.
+
+```{r events}
+make_events <- function(cohort, dose_times, obs_times) {
+  doses <- cohort |>
+    select(id, FFM, AGE) |>
+    tidyr::crossing(time = dose_times) |>
+    mutate(evid = 1L, amt = 1, cmt = "depot")
+  obs <- cohort |>
+    select(id, FFM, AGE) |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(evid = 0L, amt = 0, cmt = "central")
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid)) |>
+    as.data.frame()
+}
+
+protocol_times <- c(0.5, 2, 4, 6, 12, 156, 168, 180, 192)
+
+ev_single <- make_events(
+  cohort,
+  dose_times = 0,
+  obs_times = sort(unique(c(seq(0, 12, by = 0.25), seq(13, 96, by = 1))))
+)
+ev_study <- make_events(
+  cohort,
+  dose_times = seq(0, 144, by = 24),
+  obs_times = sort(unique(c(
+    protocol_times,
+    seq(0, 12, by = 0.25),
+    seq(144, 192, by = 1)
+  )))
+)
+ev_single$treatment <- "1 mg, first dose"
+ev_study$treatment <- "1 mg once daily x 7"
+```
+
+```{r simulate}
+mod <- readModelDb("Konofal_2014_mazindol")
+rxode2::rxSetSeed(20141215)
+sim_single <- rxode2::rxSolve(
+  mod,
+  events = ev_single,
+  keep = c("treatment", "FFM", "AGE")
+) |>
+  as.data.frame()
+sim_study <- rxode2::rxSolve(
+  mod,
+  events = ev_study,
+  keep = c("treatment", "FFM", "AGE")
+) |>
+  as.data.frame()
+```
+
+## Typical-value check
+
+At the reference covariates (FFM 28 kg, age 10 years), with the random effects
+zeroed, a one-compartment model with first-order absorption gives
+AUC0-inf = Dose / (CL/F) = 1000 / 27.9 = 35.84 ng*h/mL. Its Cmax and Tmax also
+have closed forms. These checks fix the dose-unit conversion and the
+parameter transcription.
+
+```{r typical}
+typ_ev <- data.frame(
+  id = 1L,
+  time = c(0, seq(0, 96, by = 0.01)),
+  evid = c(1L, rep(0L, 9601)),
+  amt = c(1, rep(0, 9601)),
+  cmt = c("depot", rep("central", 9601)),
+  FFM = 28,
+  AGE = 10
+)
+sim_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  events = typ_ev,
+  rtol = 1e-10,
+  atol = 1e-12
+) |>
+  as.data.frame()
+
+ka <- 1.02
+ke <- 27.9 / 234
+tlag <- 0.3
+tmax_cf <- tlag + log(ka / ke) / (ka - ke)
+cmax_cf <- 1000 / 234 * ka / (ka - ke) *
+  (exp(-ke * (tmax_cf - tlag)) - exp(-ka * (tmax_cf - tlag)))
+auc_num <- sum(diff(sim_typ$time) *
+  (head(sim_typ$Cc, -1) + tail(sim_typ$Cc, -1)) / 2)
+auc_tail <- tail(sim_typ$Cc, 1) / ke
+
+typ_tab <- tibble(
+  Quantity = c("Cmax (ng/mL)", "Tmax (h)", "AUC0-inf (ng*h/mL)"),
+  `Closed form` = c(cmax_cf, tmax_cf, 1000 / 27.9),
+  Simulated = c(
+    max(sim_typ$Cc),
+    sim_typ$time[which.max(sim_typ$Cc)],
+    auc_num + auc_tail
+  )
+)
+knitr::kable(typ_tab, digits = 3, caption = "Typical child (FFM 28 kg, age 10 y).")
+
+stopifnot(
+  abs(max(sim_typ$Cc) / cmax_cf - 1) < 1e-4,
+  abs(sim_typ$time[which.max(sim_typ$Cc)] - tmax_cf) < 0.02,
+  # trapezoid on a 0.01 h grid: error well below 0.1%
+  abs((auc_num + auc_tail) / (1000 / 27.9) - 1) < 1e-3
+)
+```
+
+# Replicate published figures
+
+## Figure 5B: visual predictive check
+
+The paper's VPC (Figure 5B) plots the 10th, 50th and 90th percentiles of
+1,000 simulated replicates over 0-12 h after the first dose and 155-185 h
+(12-41 h after the seventh dose), with below-LLOQ values set to 0.25 ng/mL.
+The chunk below applies the same summary to the simulated concentrations
+including residual error (`sim`). In the published figure the simulated
+median is about 2.5 ng/mL at 2 to 4 h. It falls to about 1 ng/mL by 12 h and
+is about 1.2 ng/mL at 156 h. These figure readings are approximate.
+
+```{r figure-5b, fig.width = 7, fig.height = 4}
+vpc <- sim_study |>
+  filter(time <= 12 | time >= 155) |>
+  mutate(
+    obs = ifelse(sim < 0.5, 0.25, sim),
+    window = ifelse(time <= 12, "Day 1 (0-12 h)", "After 7th dose (155-192 h)")
+  ) |>
+  group_by(window, time) |>
+  summarise(
+    P10 = quantile(obs, 0.10),
+    P50 = quantile(obs, 0.50),
+    P90 = quantile(obs, 0.90),
+    .groups = "drop"
+  ) |>
+  mutate(window = factor(window, levels = c("Day 1 (0-12 h)", "After 7th dose (155-192 h)")))
+
+ggplot(vpc, aes(time, P50)) +
+  geom_ribbon(aes(ymin = P10, ymax = P90), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = 0.5, linetype = "dotted") +
+  facet_wrap(~window, scales = "free_x") +
+  labs(
+    x = "Time after first dose (h)",
+    y = "Mazindol plasma concentration (ng/mL)",
+    title = "Simulated 10th / 50th / 90th percentiles",
+    caption = "Replicates Figure 5B of Konofal 2014. Dotted line: LLOQ 0.5 ng/mL."
+  )
+
+vpc |>
+  filter(time %in% protocol_times) |>
+  select(-window) |>
+  knitr::kable(digits = 2, caption = "Simulated percentiles at the protocol sampling times.")
+```
+
+## Below-LLOQ fraction
+
+The authors report that their model simulated 35% of concentrations below the
+LLOQ at the protocol sampling times, against 40% (73 of 183) observed.
+
+```{r blq}
+blq <- sim_study |>
+  filter(time %in% protocol_times) |>
+  summarise(pct_blq = 100 * mean(sim < 0.5))
+blq
+
+# The model-true value is about 35% (the authors' own simulation). With
+# 200 subjects x 9 samples the between-machine noise is a few points; a
+# mis-transcribed CL/F, V/F or a dropped x1000 unit factor moves this by
+# tens of points.
+stopifnot(abs(blq$pct_blq - 35) < 10)
+```
+
+Concentrations at 24 h after the seventh dose (168 h) are reported to range
+from below 0.5 to 2.09 ng/mL:
+
+```{r ss24}
+sim_study |>
+  filter(time == 168) |>
+  summarise(
+    `median (ng/mL)` = median(sim),
+    `P95 (ng/mL)` = quantile(sim, 0.95),
+    `% < LLOQ` = 100 * mean(sim < 0.5)
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+# PKNCA validation
+
+The authors derived first-dose Cmax and AUC0-inf from each child's post hoc
+parameters, without residual error. They reported means of 2.99 (SD 0.73)
+ng/mL and 32.91 (SD 7.73) ng*h/mL in 20 children (Results, 'Relationship
+between exposure, efficacy, and safety'). The comparable simulated quantity
+is `Cc`, the individual prediction.
+
+```{r pknca}
+sim_nca <- sim_single |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_df <- ev_single |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- data.frame(
+  start = 0,
+  end = Inf,
+  cmax = TRUE,
+  tmax = TRUE,
+  aucinf.obs = TRUE,
+  half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published values
+
+The paper reports means, and `ncaComparisonTable()` summarises per-subject
+results by the median by default. The simulated results are therefore
+averaged by the mean first.
+
+```{r nca-compare}
+sim_mean <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(PPORRES = mean(PPORRES), .groups = "drop")
+
+published <- tibble(
+  treatment = "1 mg, first dose",
+  cmax = 2.99,
+  aucinf.obs = 32.91
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_mean,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ng/mL", aucinf.obs = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Simulated mean vs. published mean first-dose exposure. * differs by >20%."
+)
+
+pct <- setNames(
+  100 * (sim_mean$PPORRES / unlist(published[sim_mean$PPTESTCD]) - 1),
+  sim_mean$PPTESTCD
+)
+# Centre statistics of a 200-subject cohort; a transcription or unit error
+# moves either one by tens of percent.
+stopifnot(all(abs(pct) < 15))
+```
+
+```{r nca-summary}
+as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  group_by(PPTESTCD) |>
+  summarise(
+    mean = mean(PPORRES),
+    sd = sd(PPORRES),
+    median = median(PPORRES),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2, caption = "Simulated first-dose NCA, all parameters.")
+```
+
+Simulated mean Cmax and AUC0-inf are within about 10% of the published means.
+Simulated AUC runs a little high. Two things push it up. The virtual cohort
+truncates weight at the 68 kg maximum, so it has fewer high-FFM (and
+therefore high-clearance) children than the study's skewed weight
+distribution. And the log-normal IIV on CL/F raises the mean AUC about 3%
+above the typical-value AUC, since exp(omega^2 / 2) = exp(0.058 / 2) = 1.03.
+
+# Assumptions and deviations
+
+- **IIV scale.** Table 3 reports between-subject variability as a percentage
+  for an exponential model. It is read as a log-normal CV, so
+  omega^2 = log(1 + CV^2). At 24.5% and 11.4%, the alternative reading
+  omega = CV/100 differs by less than 3% in omega^2.
+- **Below-LLOQ handling.** The authors fitted with the M3 likelihood. The
+  packaged model carries the additive residual error only; censoring is a
+  property of the estimation data, not of the structural model.
+- **FFM formula.** The paper applies the adult Janmahasatian formula to
+  9-12.8-year-old children, without a paediatric correction. The same
+  formula is used here to build the virtual cohort. Users who pass FFM from
+  another equation will shift CL/F by (ratio)^1.24.
+- **Covariate distributions.** Age, weight and height are drawn independently
+  from the Table 1 means, SDs and ranges, and sex from the 2/21 female
+  fraction. Truncating the log-normal weight excess at 68 kg gives a weight
+  SD of about 4 kg rather than the published 9.1 kg. The published SD
+  reflects a few heavy children, up to 68 kg, whom the truncated draw rarely
+  reproduces. The cohort's median FFM still matches the paper's 28 kg
+  reference. In reality the covariates are correlated (the paper reports a Spearman
+  correlation of 0.706 between FFM and age). The paper's own
+  reference-population median age of 10 years sits below the Table 1 mean of
+  10.7 years. The cohort follows Table 1.
+- **Typographical errors in the source.** The Methods print the FFM formula
+  as 'FEM', and the Discussion prints the FFM range 22.9-47.2 with the unit
+  'kg/m2'. Both are read as FFM in kg.
+- **Errata.** No correction notice was found for this article as of
+  2026-11-23.

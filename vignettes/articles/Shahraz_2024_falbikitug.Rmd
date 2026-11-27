@@ -143,6 +143,9 @@ make_events <- function(ids, amt, tau, n_dose, grid, label) {
   dose$dur <- 1
   dose$evid <- 1L
   dose$dvid <- NA_integer_
+  # A zero dose gets no dose record: rxode2 5.1.8.9000 fails the subject on a
+  # zero-amount infusion with a duration.
+  if (amt == 0) dose <- dose[0, ]
   obs <- expand.grid(id = ids, time = grid)
   obs$amt <- 0
   obs$dur <- 0

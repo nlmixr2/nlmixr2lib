@@ -1,0 +1,496 @@
+---
+title: "Tacrolimus in connective tissue disease-associated interstitial lung disease (Zhang 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tacrolimus in connective tissue disease-associated interstitial lung disease (Zhang 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+mod <- readModelDb("Zhang_2026_tacrolimus")
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.2147/DDDT.S620915>
+
+Zhang and colleagues built a one-compartment population PK model for oral
+tacrolimus from routine trough concentrations in 22 Chinese adults with
+connective tissue disease-associated interstitial lung disease (CTD-ILD).
+Only body weight was retained, through fixed allometric exponents.
+Posaconazole lowered the objective function significantly but was left out
+because the effect rested on a single patient with two concentrations. The
+model was then used in a Monte Carlo simulation to propose a starting dose of
+0.10 mg/kg/day (in two doses) for adults of 50-100 kg, targeting a trough of
+5-10 ng/mL.
+
+# Population
+
+The analysis used 22 adults with CTD-ILD treated at a single centre
+(Affiliated Hospital of Xuzhou Medical University, Jiangsu, China) between
+August 2022 and September 2025: 17 with idiopathic inflammatory myopathy, 3
+with Sjogren syndrome and 2 with undifferentiated connective tissue disease.
+Baseline characteristics (Table 1 of the source) were: 6 men / 16 women; age
+mean 59.29 years (SD 10.23), range 42-75; body weight mean 66.07 kg
+(SD 8.94), median 66.50, range 47.5-93. Concomitant medication counts are
+Table 2; prednisone (14/22) and co-trimoxazole (12/22) were the most common.
+
+The 31 observations (1-3 per patient) are all troughs taken before the next
+dose, assayed by enzyme-multiplied immunoassay (Emit 2000; routine range
+2-30 ng/mL, LLOQ 2 ng/mL). The single value below the LLOQ (1.6 ng/mL) was
+kept as reported. The paper reports no administered doses.
+
+```{r population}
+str(ui$population, max.level = 1)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL/F at 70 kg) | 20.3 L/h | Table 3 and Equation (8); RSE 12.7%, bootstrap median 18.9 [12.2, 24.2] |
+| `lvc` (V/F at 70 kg) | 1920 L | Table 3 and Equation (9); RSE 35.3%, bootstrap median 1905 [990, 6639] |
+| `lka` (absorption rate constant) | 4.48 1/h, **fixed** | Table 3 "4.48 (fixed)"; Methods, Modeling, citing references 32-34 |
+| `e_wt_cl` (allometric exponent, CL/F) | 0.75, **fixed** | Methods, Equation (5), citing Anderson & Holford 2008; Equation (8) |
+| `e_wt_vc` (allometric exponent, V/F) | 1, **fixed** | Methods, Equation (5); Equation (9) |
+| `etalcl` (IIV on CL/F) | 0.480 as an **SD** (variance 0.2304) | Table 3 (omega_CL/F, RSE 20.8%); bootstrap median 0.447 [0.092, 0.617]; scale settled in Check 2 |
+| `propSd` (proportional residual error) | 0.346 | Table 3 (sigma1, "proportional error"); bootstrap median 0.339 [0.073, 0.516] |
+| `addSd` (additive residual error) | 0.322 ng/mL | Table 3 (sigma2, "additive error"); bootstrap median 0.411 [0.010, 1.456] |
+| Structural model: 1-compartment, first-order oral absorption | n/a | Methods, Modeling (CL/F, V/F and Ka) |
+| IIV form `A_i = TV(A) * exp(eta_i)` | n/a | Methods, Equation (1) |
+| Residual form `B_i = C_i + C_i * eps_1 + eps_2` | n/a | Methods, Equation (4); Table 3 lists both sigma1 and sigma2 |
+| Reference weight 70 kg | n/a | Methods, Equation (5) |
+| Simulation regimen: daily dose split evenly into two doses; target 5-10 ng/mL | n/a | Methods, Simulation |
+
+The nine equations are images in the article; the values above were read
+from the typeset equations and cross-checked against Table 3.
+
+# Simulation design
+
+The paper's Methods state that every simulated daily dose (0.01-0.14
+mg/kg/day) "was split evenly into twice a day", in six weight groups of
+50-100 kg, but not when the simulated trough was read. With a typical
+half-life of about 66 h (V/F 1920 L, CL/F 20.3 L/h) steady state takes more
+than two weeks, so the answer matters: a steady-state trough at
+0.10 mg/kg/day averages about 14 ng/mL, well above the published centre of
+about 7 ng/mL in Figure 4. Check 2 shows that the published curves are
+reproduced by the trough **12 h after the sixth dose** (72 h, just before the
+morning dose of day 4), which fits the paper's focus on the *initial* dose.
+
+Because the model has a single random effect (`etalcl`), the between-subject
+distribution is represented by a deterministic lattice of 200 equally spaced
+normal quantiles rather than by random draws, so every number in this
+vignette is identical on every machine. The model is linear, so each weight
+is solved once at 1 mg/kg/day and the troughs are scaled by the dose. One
+solve gives troughs after several dose counts, read 0.01 h before each
+scheduled dose so the sample does not include the dose given at that time.
+
+```{r cohort}
+n_lattice <- 200L
+omega_sd <- 0.480 # Table 3, read as a standard deviation (see Check 2)
+z_grid <- stats::qnorm((seq_len(n_lattice) - 0.5) / n_lattice)
+
+weights <- c(50, 60, 70, 80, 90, 100)
+doses <- c(0.01, 0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.14) # mg/kg/day
+n_doses_candidates <- c(4L, 5L, 6L, 7L, 8L, 14L, 80L)
+n_doses_used <- 6L
+trough_time <- function(n) 12 * n - 0.01
+
+make_events <- function(wt, w_index) {
+  ids <- (w_index - 1L) * n_lattice + seq_len(n_lattice)
+  dose <- tibble::tibble(
+    id = ids, time = 0, evid = 1L, amt = wt * 1 / 2, ii = 12,
+    addl = max(n_doses_candidates) - 1L, cmt = "depot"
+  )
+  # Observations on the ODE state `central`; Cc is returned alongside it.
+  obs <- tidyr::expand_grid(id = ids, n_doses = n_doses_candidates) |>
+    dplyr::mutate(
+      time = trough_time(n_doses), evid = 0L, amt = NA_real_, ii = 0,
+      addl = 0L, cmt = "central"
+    ) |>
+    dplyr::select(-n_doses)
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::mutate(WT = wt, etalcl = z_grid[match(id, ids)] * omega_sd)
+}
+
+events <- dplyr::bind_rows(lapply(seq_along(weights), function(i) {
+  make_events(weights[i], i)
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(dplyr::n_distinct(events$id) == length(weights) * n_lattice)
+```
+
+```{r simulate}
+sim1 <- suppressWarnings(rxode2::rxSolve(
+  mod,
+  events = events, omega = NA, returnType = "data.frame"
+))
+tr_all <- sim1 |>
+  dplyr::mutate(n_doses = round((time + 0.01) / 12)) |>
+  dplyr::filter(n_doses %in% n_doses_candidates) |>
+  dplyr::select(id, WT, cl, n_doses, trough_per_mgkgday = Cc) |>
+  dplyr::mutate(z = z_grid[((id - 1L) %% n_lattice) + 1L])
+stopifnot(
+  nrow(tr_all) == length(weights) * n_lattice * length(n_doses_candidates),
+  !anyNA(tr_all$trough_per_mgkgday)
+)
+
+troughs <- tr_all |>
+  dplyr::filter(n_doses == n_doses_used) |>
+  tidyr::expand_grid(dose = doses) |>
+  dplyr::mutate(Cc = trough_per_mgkgday * dose)
+```
+
+# Check 1 -- target attainment (Figure 5)
+
+The paper's primary endpoint is the probability that the trough lies in the
+5-10 ng/mL target window, plotted against weight for each dose in Figure 5.
+The published probabilities below were read from that figure by the
+maintainers (precision about 1 percentage point); the paper simulated 1,000
+patients per scenario, so its own Monte Carlo error is about 1-1.5 points.
+The 0.01, 0.02 and 0.04 mg/kg/day curves lie on zero.
+
+```{r published-pta}
+# Rows: dose (mg/kg/day); columns: body weight (kg). Read from Figure 5.
+fig5 <- rbind(
+  `0.01` = c(0, 0, 0, 0, 0, 0),
+  `0.02` = c(0, 0, 0, 0, 0, 0),
+  `0.04` = c(0, 0, 0, 0, 0, 0),
+  `0.06` = c(13.2, 15.8, 17.4, 18.8, 20.2, 22.2),
+  `0.08` = c(68.5, 72.3, 74.8, 77.3, 78.6, 80.0),
+  `0.1` = c(89.1, 90.9, 92.3, 92.9, 93.6, 93.5),
+  `0.12` = c(83.3, 81.2, 80.2, 79.2, 78.5, 76.5),
+  `0.14` = c(54.1, 51.0, 48.2, 45.8, 42.6, 41.3)
+)
+colnames(fig5) <- weights
+published <- as.data.frame(as.table(fig5), stringsAsFactors = FALSE) |>
+  dplyr::transmute(dose = as.numeric(Var1), WT = as.numeric(Var2), pta_published = Freq)
+```
+
+```{r pta}
+in_window <- function(c) mean(c >= 5 & c <= 10)
+
+pta <- troughs |>
+  dplyr::group_by(WT, dose) |>
+  dplyr::summarise(pta_model = 100 * in_window(Cc), .groups = "drop") |>
+  dplyr::left_join(published, by = c("WT", "dose")) |>
+  dplyr::mutate(diff = pta_model - pta_published)
+
+pta |>
+  dplyr::select(dose, WT, pta_model) |>
+  dplyr::mutate(dose = sprintf("%.2f", dose)) |>
+  tidyr::pivot_wider(names_from = WT, values_from = pta_model) |>
+  dplyr::rename("Dose (mg/kg/day)" = dose) |>
+  knitr::kable(digits = 1, caption = "Model probability (%) of a 5-10 ng/mL trough after six doses, by body weight (kg).")
+
+knitr::kable(
+  tibble::tibble(
+    Statistic = c("Median abs. difference", "90th percentile abs. difference", "Max abs. difference"),
+    `Percentage points` = c(
+      stats::median(abs(pta$diff)),
+      stats::quantile(abs(pta$diff), 0.9),
+      max(abs(pta$diff))
+    )
+  ),
+  digits = 1,
+  caption = "Model vs published target attainment over all 48 dose-weight cells of Figure 5."
+)
+```
+
+```{r pta-gate}
+stopifnot(
+  # Structural: a mis-transcribed CL/F, V/F, exponent or regimen moves the
+  # curves by tens of points.
+  stats::median(abs(pta$diff)) < 1.5,
+  # Envelope: published values are digitised and carry Monte Carlo error.
+  stats::quantile(abs(pta$diff), 0.9) < 3,
+  max(abs(pta$diff)) < 5
+)
+```
+
+```{r figure-5, fig.cap = "Replicates Figure 5 of Zhang 2026: probability of a 5-10 ng/mL trough after six doses. Lines: model; points: values read from the published figure."}
+pta |>
+  ggplot(aes(WT, pta_model, colour = factor(dose))) +
+  geom_line() +
+  geom_point(aes(y = pta_published), shape = 1) +
+  labs(
+    x = "Body weight (kg)", y = "Probability of 5-10 ng/mL (%)",
+    colour = "Dose (mg/kg/day)"
+  )
+```
+
+# Check 2 -- trough timing and which quantities are on which scale
+
+Table 3 prints `omega_CL/F = 0.480`, `sigma1 = 0.346` and `sigma2 = 0.322`
+without saying whether they are standard deviations or variances, the paper
+does not say whether its Monte Carlo included residual error, and it does not
+say when the trough was read. Each combination makes a different prediction,
+so they are compared against Figure 5. Residual error is added analytically
+(normal error with variance `addSd^2 + (propSd * C)^2`), keeping the
+comparison deterministic.
+
+```{r scale-check}
+prop_sd <- ui$theta[["propSd"]]
+add_sd <- ui$theta[["addSd"]]
+
+pta_variant <- function(n_doses, omega_scale, prop, add) {
+  tr_all |>
+    dplyr::filter(n_doses == !!n_doses) |>
+    dplyr::mutate(c1 = trough_per_mgkgday * exp(z * (omega_scale - omega_sd))) |>
+    tidyr::expand_grid(dose = doses) |>
+    dplyr::mutate(Cc_v = c1 * dose, sd_v = sqrt(add^2 + (prop * Cc_v)^2)) |>
+    dplyr::group_by(WT, dose) |>
+    dplyr::summarise(
+      pta = if (prop == 0 && add == 0) {
+        100 * in_window(Cc_v)
+      } else {
+        100 * mean(stats::pnorm((10 - Cc_v) / sd_v) - stats::pnorm((5 - Cc_v) / sd_v))
+      },
+      .groups = "drop"
+    ) |>
+    dplyr::left_join(published, by = c("WT", "dose")) |>
+    dplyr::summarise(
+      median_abs = stats::median(abs(pta - pta_published)),
+      max_abs = max(abs(pta - pta_published))
+    )
+}
+
+variants <- dplyr::bind_rows(
+  tibble::tibble(
+    reading = sprintf("omega SD, no residual error, trough after %d doses", n_doses_candidates),
+    n_doses = n_doses_candidates, omega_scale = omega_sd, prop = 0, add = 0
+  ),
+  tibble::tribble(
+    ~reading, ~n_doses, ~omega_scale, ~prop, ~add,
+    "omega variance (SD 0.693), no residual error, 6 doses", 6L, sqrt(0.480), 0, 0,
+    "omega SD, residual SDs included, 6 doses", 6L, 0.480, prop_sd, add_sd,
+    "omega variance, residual variances included, 6 doses", 6L, sqrt(0.480), sqrt(prop_sd), sqrt(add_sd)
+  )
+)
+variants <- dplyr::bind_cols(
+  variants,
+  dplyr::bind_rows(Map(pta_variant, variants$n_doses, variants$omega_scale, variants$prop, variants$add))
+)
+
+variants |>
+  dplyr::select(reading, median_abs, max_abs) |>
+  dplyr::rename(
+    "Reading" = reading, "Median abs. difference (points)" = median_abs,
+    "Max abs. difference (points)" = max_abs
+  ) |>
+  knitr::kable(digits = 1, caption = "Agreement with Figure 5 under each reading of Table 3 and each trough time. The last candidate (80 doses, 40 days) is effectively steady state.")
+
+packaged <- variants$n_doses == n_doses_used & variants$omega_scale == omega_sd & variants$prop == 0
+stopifnot(
+  sum(packaged) == 1,
+  variants$median_abs[packaged] < 1.5,
+  all(variants$median_abs[!packaged] > 3 * variants$median_abs[packaged])
+)
+```
+
+Only one combination reproduces the paper: `omega_CL/F` a standard deviation,
+probabilities computed on individual predictions without residual error, and
+the trough read 12 h after the sixth dose. One dose more or fewer misses by
+7-9 points on average and by up to 26-33 points in a single cell, and
+steady-state troughs miss by nearly 40 points on average. Reading the omega
+as a variance widens the distribution enough to miss by about 8 points on
+average, and adding the residual error misses by about 10. (The medians
+include the 18 cells at 0.01-0.04 mg/kg/day, where every reading gives
+zero.) This check settles the omega scale only: residual error is absent
+from the paper's simulations, so the figure says nothing about whether
+`sigma1` and `sigma2` are SDs or variances. They are packaged as SDs, the
+convention the same group's Table 3 format follows (compare
+`Wang_2019b_tacrolimus`).
+
+# Check 3 -- Table 4 recommended dose
+
+```{r table4}
+t4 <- troughs |>
+  dplyr::filter(dose == 0.10) |>
+  dplyr::group_by(WT) |>
+  dplyr::summarise(
+    in_window = 100 * in_window(Cc),
+    below_5 = 100 * mean(Cc < 5),
+    above_10 = 100 * mean(Cc > 10),
+    .groups = "drop"
+  )
+
+tibble::tibble(
+  Quantity = c("Probability 5-10 ng/mL (%)", "Probability below 5 ng/mL (%)", "Probability above 10 ng/mL (%)"),
+  Published = c("89.1-93.5", "6.3-10.9", "0-0.2"),
+  Model = c(
+    sprintf("%.1f-%.1f", min(t4$in_window), max(t4$in_window)),
+    sprintf("%.1f-%.1f", min(t4$below_5), max(t4$below_5)),
+    sprintf("%.1f-%.1f", min(t4$above_10), max(t4$above_10))
+  )
+) |>
+  knitr::kable(caption = "Table 4 of Zhang 2026: 0.10 mg/kg/day across 50-100 kg.")
+
+stopifnot(
+  abs(min(t4$in_window) - 89.1) < 3,
+  abs(max(t4$in_window) - 93.5) < 3,
+  max(t4$above_10) < 2
+)
+```
+
+```{r figure-4, fig.cap = "Replicates Figure 4 of Zhang 2026: simulated troughs after six doses by dose and weight. Dashed lines: 5-10 ng/mL target."}
+troughs |>
+  ggplot(aes(factor(dose), Cc)) +
+  geom_boxplot(outlier.size = 0.4) +
+  geom_hline(yintercept = c(5, 10), linetype = "dashed", colour = "red") +
+  facet_wrap(~ paste(WT, "kg"), ncol = 3) +
+  labs(x = "Daily dose (mg/kg/day, in two doses)", y = "Trough (ng/mL)")
+```
+
+The published Figure 4 clouds have a sharp upper edge at roughly 100 times
+the daily dose in mg/kg (10 ng/mL at 0.10 mg/kg/day). That edge is the
+accumulated dose over volume for a subject with very low clearance: six half
+doses of 0.05 mg/kg each into 1920 L per 70 kg give at most
+6 x 0.05 x 70 / 1920 x 1000 = 10.9 ng/mL. The model shows the same
+bounded upper tail.
+
+# PKNCA validation
+
+The paper reports no non-compartmental analysis, so `ncaComparisonTable()` is
+not used. Instead PKNCA is run on a single 5 mg oral dose to a 70 kg lattice
+and compared with the model's closed-form solution. Both sides use the same
+parameters, so the difference is purely numerical and the bound is tight.
+
+```{r pknca}
+nca_times <- sort(unique(c(seq(0, 3, by = 0.02), seq(3.5, 24, by = 0.5), seq(26, 480, by = 2))))
+nca_events <- dplyr::bind_rows(
+  tibble::tibble(
+    id = seq_len(n_lattice), time = 0, evid = 1L, amt = 5, cmt = "depot"
+  ),
+  tidyr::expand_grid(id = seq_len(n_lattice), time = nca_times) |>
+    dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "central")
+) |>
+  dplyr::mutate(WT = 70, etalcl = z_grid[id] * omega_sd, treatment = "5 mg single oral dose") |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+nca_sim <- suppressWarnings(rxode2::rxSolve(
+  mod,
+  events = nca_events, omega = NA, returnType = "data.frame",
+  keep = "treatment"
+))
+
+sim_nca <- nca_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+
+dose_df <- nca_events |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::select(id, time, amt, treatment)
+
+nca_data <- PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id),
+  intervals = data.frame(
+    start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+    aucinf.obs = TRUE, half.life = TRUE
+  )
+)
+nca_res <- PKNCA::pk.nca(nca_data)
+summary(nca_res)
+```
+
+```{r pknca-vs-closed-form}
+closed_form <- nca_sim |>
+  dplyr::distinct(id, cl, vc, ka) |>
+  dplyr::mutate(
+    kel = cl / vc,
+    aucinf_cf = 1000 * 5 / cl,
+    halflife_cf = log(2) / kel,
+    tmax_cf = log(ka / kel) / (ka - kel)
+  )
+
+cmp <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "half.life", "tmax")) |>
+  dplyr::select(id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::mutate(id = as.integer(as.character(id))) |>
+  dplyr::left_join(closed_form, by = "id") |>
+  dplyr::mutate(
+    auc_pct = 100 * (aucinf.obs - aucinf_cf) / aucinf_cf,
+    hl_pct = 100 * (half.life - halflife_cf) / halflife_cf,
+    tmax_pct = 100 * (tmax - tmax_cf) / tmax_cf
+  )
+
+knitr::kable(
+  tibble::tibble(
+    Parameter = c("AUC0-inf vs Dose/(CL/F)", "Half-life vs ln(2)/kel", "Tmax vs ln(ka/kel)/(ka-kel)"),
+    `Median % difference` = c(stats::median(cmp$auc_pct), stats::median(cmp$hl_pct), stats::median(cmp$tmax_pct)),
+    `Max abs % difference` = c(max(abs(cmp$auc_pct)), max(abs(cmp$hl_pct)), max(abs(cmp$tmax_pct)))
+  ),
+  digits = 3,
+  caption = "PKNCA on the simulation vs the model's own closed-form solution."
+)
+
+# Same parameters on both sides: differences are numerical only. Tmax is
+# resolved to half a 0.02 h grid step (under 1% of the ~1.3 h Tmax).
+stopifnot(
+  max(abs(cmp$auc_pct)) < 1,
+  max(abs(cmp$hl_pct)) < 1,
+  max(abs(cmp$tmax_pct)) < 2
+)
+```
+
+# Assumptions and deviations
+
+- **`omega_CL/F = 0.480` is read as a standard deviation** (about 50% CV;
+  see Check 2): the variance reading cannot reproduce Figure 5.
+- **`sigma1 = 0.346` and `sigma2 = 0.322 ng/mL` are read as SDs** of the
+  proportional and additive components of Equation (4). The paper's dosing
+  simulations do not use them, so nothing in the paper tests this reading;
+  it follows the convention of the same group's earlier tacrolimus model
+  (`Wang_2019b_tacrolimus`). `sigma2` is poorly determined (RSE 100.5%,
+  bootstrap bias +27.6%).
+- **Published attainment excludes residual error.** The paper does not say
+  so, but only the individual-prediction calculation reproduces Figure 5
+  (Check 2).
+- **Trough time in the simulations.** The paper does not state it. Reading the
+  trough 12 h after the sixth dose (72 h) reproduces Figure 5; earlier, later
+  and steady-state troughs do not (Check 2). This concerns only how the
+  vignette replicates the paper's figure; the packaged model is unaffected.
+  Note that tacrolimus is far from steady state at that point with these
+  parameters (typical half-life about 66 h), so the paper's 0.10 mg/kg/day
+  recommendation targets the day-4 trough, and a typical patient continuing
+  that dose would accumulate to a steady-state trough of about 14 ng/mL.
+- **V/F is poorly determined.** The bootstrap 95% interval is 990-6639 L
+  (Table 3), and the authors note that sparse troughs carry little
+  information on V/F. Because the half-life depends on V/F, so do the early
+  troughs the paper's simulations rely on.
+- **Posaconazole.** Its effect on CL/F was significant (Table S1) but the
+  authors did not report its size and excluded it from the final model; the
+  packaged model has no posaconazole effect and should not be used to predict
+  that interaction.
+- **Matrix.** The paper names the assay (Emit 2000 Tacrolimus, a whole-blood
+  immunoassay) but not the matrix; the central compartment is recorded as
+  whole blood on that basis.
+- **Fixed `ka`.** 4.48 1/h is carried from the source's references 32-34
+  (Wang 2020, two Xenobiotica tacrolimus analyses, and Cai 2020), as also
+  used by `Wang_2019b_tacrolimus`.
+- **Figure values were digitised by eye** from Figure 5 to about 1 percentage
+  point. The gate is set on the median and 90th percentile of the absolute
+  differences, not on individual cells.

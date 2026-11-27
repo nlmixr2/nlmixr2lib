@@ -1,0 +1,753 @@
+---
+title: "[177Lu]Lu-PSMA I&T whole-body PBPK for peptide amount and activity optimisation (Kletting 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{[177Lu]Lu-PSMA I&T whole-body PBPK for peptide amount and activity optimisation (Kletting 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r meta, echo = FALSE, results = "asis"}
+ui <- rxode2::rxode(readModelDb("Kletting_2016_lu177psmaIT_pbpk"))
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Article: <https://doi.org/10.1371/journal.pone.0162303>\n")
+cat("* Supplement: S1 File (equations, parameters and compartments), S2 File (per-patient fits and simulations)\n")
+cat("* ODE states: ", length(ui$state), "\n", sep = "")
+```
+
+Kletting and co-workers adapted their whole-body physiologically based
+pharmacokinetic (PBPK) model for receptor-targeted peptides to the
+PSMA-targeting radioligand [177Lu]Lu-PSMA I&T, fitted it individually to planar
+gamma-camera time-activity curves of five men with metastasizing prostate
+cancer, and then used it to ask how the injected **peptide amount** and
+**activity** should be chosen to maximise the tumour biologically effective
+dose (BED) while keeping the kidney BED at 10 Gy2.5, the salivary gland
+absorbed dose at 7.5 Gy and the red marrow BED below 0.25 Gy15 per cycle.
+
+The model carries two parallel circulations with identical physiology: one for
+177Lu-labelled peptide and one for unlabelled peptide. They are coupled by
+competition for the same finite pool of PSMA binding sites and by physical
+decay, which turns a labelled molecule into an unlabelled one in place. Nine
+PSMA-positive regions -- two delineated tumour lesions, a lumped tumour
+remainder, salivary glands, liver, spleen, GI tract plus pancreas, prostate and
+kidneys -- carry vascular, interstitial, receptor-bound and internalised
+peptide; the kidneys add glomerular filtration into a tubular space, tubular
+excretion (96 % of the filtered load under amino-acid co-infusion) and an
+unspecific proximal-tubular-cell pool. Eight PSMA-negative tissues carry a
+vascular and an interstitial space, the brain a vascular space only, and
+arteries, veins and a serum-protein-bound pool close the circulation.
+
+# Population
+
+Five patients with metastasizing prostate cancer treated at Zentralklinik Bad
+Berka (Table 1): age 53-78 years (mean 66), body surface area 1.8-2.1 m^2,
+99mTc-MAG3 tubular extraction rate 136-252 mL/min. One therapy cycle per
+patient (cycle 2 for patient 1, cycle 1 otherwise) of 74-302 nmol PSMA I&T
+labelled with 5.4-6.0 GBq 177Lu, infused intravenously over 10 minutes with a
+lysine/arginine co-infusion. CT volumes were measured for the parotid glands
+(17-54 mL), kidneys (268-394 mL) and two tumour lesions per patient (one bone,
+one lymph node; 0.5-34 mL). Planar whole-body images were acquired 4-5 times
+between 0.5 h and 5 days.
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+Every `ini()` entry in
+`inst/modeldb/specificDrugs/Kletting_2016_lu177psmaIT_pbpk.R` carries an
+in-file comment naming its source. "S1" is the S1 File (Equations, parameters
+and compartments), "S2" the S2 File (Fitting results and simulations).
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Free binding sites `R_0,i = R_i + RP_i + RP*_i` | n/a | S1 Eq 1 |
+| Internalised peptide `d/dt(pintern_*)` | n/a | S1 Eq 2 |
+| Receptor-bound peptide `d/dt(rp_*)` | n/a | S1 Eq 3 |
+| Free peptide, vascular (general organ; brain with PS = 0) | n/a | S1 Eq 4 |
+| Free peptide, vascular (lungs) | n/a | S1 Eq 5 (see Assumptions) |
+| Free peptide, vascular (kidneys) | n/a | S1 Eq 6 |
+| Veins | n/a | S1 Eq 7 (see Assumptions) |
+| Arteries | n/a | S1 Eq 8 (see Assumptions) |
+| Free peptide, interstitial (kidneys) | n/a | S1 Eq 9 |
+| Free peptide, interstitial (PSMA-negative) | n/a | S1 Eq 10 |
+| Free peptide, interstitial (PSMA-positive) | n/a | S1 Eq 11 |
+| Peptide in kidney cells (unspecific) | n/a | S1 Eq 12 |
+| Peptide bound to serum protein | n/a | S1 Eq 13 |
+| Liver inflow = arterial + spleen + GI | n/a | S1 compartment diagram B2 |
+| Gamma-camera ROI contents, tumour background fraction `x_tu` | n/a | S1 'Assigning data to compartments' |
+| `kon` | 0.046 L/nmol/min | Methods; S1 Table A |
+| `kd` | 1 nmol/L (`koff` = 0.046 /min, Model 1) | Methods 'PBPK Model validation and selection'; Results (Model 1 selected) |
+| `kint` | 0.001 /min | Methods; S1 Table A |
+| `kpr` | 4.7e-4 /min | S1 Table A |
+| `lambda_phy` | 7.15e-5 /min | S1 Table A |
+| `krel_kidney`, `krel_salgland` | 2.9e-4, 3.7e-4 /min | Table 2, Median row |
+| `krel_tumor1`, `krel_tumor2` | 2.0e-4 (median), 1.76e-4 (mean) /min | Table 2, Median and Mean rows |
+| tumour remainder release = mean of the two lesion rates | n/a | S1 Table A |
+| `rdens_kidney`, `rdens_salgland` | 24, 42 nmol/L | Table 2, Median row |
+| `rdens_tumor1`, `rdens_tumor2` | 110 (median), 380 (mean) nmol/L | Table 2, Median and Mean rows |
+| `rdens_tumorrest` | 266 nmol/L | S1 Table A |
+| `rdens_prostate` = `rdens_tumorrest` x 0.1 | 26.6 nmol/L | S1 Table A |
+| `rdens_liver` / `rdens_spleen` / `rdens_gi` = `rdens_prostate` x 0.05 / 0.02 / 0.06 | 1.33 / 0.532 / 1.596 nmol/L | S1 Table A |
+| `fperf_tumor` | 0.5 mL/min/g | Methods; S1 Table A |
+| `fperf_prostate` | 0.18 mL/min/g (times 1 - H) | S1 Table A |
+| `fperf_salgland` | 0.16 mL/min/g | Table 2, Median row |
+| `kps_tumor`, `kps_prostate`, `kps_muscle`, `kps_liver` | 0.6, 0.1, 0.02, 2 mL/min/g | S1 Table A |
+| `phi_gfr`, `f_ex` | 0.66, 0.96 | S1 Table A |
+| `bgcorr_tumor1`, `bgcorr_tumor2` | 0 | Typical patient; per-patient fits in S2 (see Assumptions) |
+| `V_P = 2.8 (1 - H) BSA`, `F = 1.23 V_P` per min | n/a | S1 Table A and footnote b |
+| Organ volumes `c x BW/71`; vascular and interstitial fractions; alpha ratios | n/a | S1 Table A |
+| `GFR = TER/3 x 20/15`, filtration `GFR x phi`, excretion `x f_ex` | n/a | S1 Table A |
+| Per-patient binding-site densities, release rates, `f_SAL`, `c1`, `c2` | n/a | S2 File, patient slides |
+| Injected labelled / unlabelled amounts | n/a | S1 Table A, `P*_inj` / `P_inj` rows |
+| Patient measurements | n/a | Table 1 |
+| Absorbed dose, BED, Lea-Catcheside factor | n/a | Eqs 1-4; S1 Eqs 14-18 |
+| Activity for kidney BED 10 Gy2.5 / salivary D 7.5 Gy | n/a | Eqs 5-6; S1 Eqs 19-21 |
+| `S_KK`, `alpha/beta` and repair rates | 4.82e-6 Gy/min/MBq; see code | S1 Table B |
+| Tumour and salivary S-values by volume | n/a | S1 Table C |
+
+# Virtual cohort
+
+The original gamma-camera data are not public. The five patients below are
+rebuilt from their published measurements (Table 1), injected amounts (S1
+Table A) and individual parameter estimates (S2 File), so this is the actual
+study cohort rather than a sampled one. Body weight and hematocrit were not
+published and are set to 71 kg and 45 % (see *Assumptions and deviations*).
+
+```{r cohort}
+patients <- tibble::tribble(
+  ~id, ~AGE, ~BSA, ~TER_MAG3, ~ORGVOL_SALGLAND, ~ORGVOL_KIDNEY,
+  ~ORGVOL_TUMOR1, ~ORGVOL_TUMOR2, ~R_REST, ~Plab, ~Punl, ~A_GBq,
+  1L, 76, 2.0, 198, 54, 321, 0.5,  1, 13.0, 8.4, 139, 6.0,
+  2L, 69, 1.9, 201, 21, 311, 1.0, 34,  2.6, 7.5,  91, 5.4,
+  3L, 78, 1.8, 136, 17, 394, 2.0, 13, 13.0, 7.5,  81, 5.4,
+  4L, 54, 2.1, 252, 52, 268, 4.0,  3,  2.6, 7.5,  67, 5.4,
+  5L, 53, 2.0, 176, 29, 296, 1.5,  1, 13.0, 7.8, 294, 5.6
+) |>
+  # S1 Table A: tumour-remainder volume = R_TU,Rest,0 / [R_TU,Rest,0]
+  mutate(ORGVOL_TUMORREST = R_REST / 266 * 1000, WT = 71, HCT = 45)
+
+# S2 File, one slide per patient. A single tumour release rate was fitted per
+# patient and applies to both lesions.
+fits <- tibble::tribble(
+  ~id, ~rdens_salgland, ~rdens_kidney, ~rdens_tumor1, ~rdens_tumor2,
+  ~krel_salgland, ~krel_kidney, ~krel_tumor, ~fperf_salgland,
+  ~bgcorr_tumor1, ~bgcorr_tumor2,
+  1L,  41, 31, 520, 2412, 3.7e-4, 3.7e-4, 2.4e-4,  0.075, 0.016,  0.013,
+  2L,  38, 14,  57,   19, 4.2e-4, 2.9e-4, 1.5e-4,  0.074, 0.0064, 0.0013,
+  3L, 108, 22, 282,   83, 3.5e-4, 2.4e-4, 0.88e-4, 0.53,  0.53,   0.039,
+  4L,  41, 24,  52,   51, 3.3e-4, 2.3e-4, 2.0e-4,  0.16,  0.16,   0.020,
+  5L,  80, 46, 136,  190, 4.8e-4, 3.1e-4, 2.0e-4,  0.18,  0.18,   0.0084
+)
+
+# The S2 estimates reproduce every Table 2 summary that uses them.
+stopifnot(
+  abs(mean(fits$rdens_kidney) - 27) < 0.5,
+  median(fits$rdens_kidney) == 24,
+  abs(mean(c(fits$rdens_tumor1, fits$rdens_tumor2)) - 380) < 0.5,
+  abs(median(c(fits$rdens_tumor1, fits$rdens_tumor2)) - 110) < 1,
+  abs(mean(fits$krel_kidney) - 2.88e-4) < 1e-6,
+  abs(mean(fits$krel_tumor) - 1.76e-4) < 1e-6,
+  abs(mean(fits$fperf_salgland) - 0.20) < 0.005,
+  median(fits$fperf_salgland) == 0.16
+)
+
+COVS <- c("WT", "HCT", "BSA", "TER_MAG3", "ORGVOL_KIDNEY", "ORGVOL_SALGLAND",
+          "ORGVOL_TUMOR1", "ORGVOL_TUMOR2", "ORGVOL_TUMORREST")
+
+knitr::kable(
+  patients |>
+    select(id, AGE, BSA, TER_MAG3, ORGVOL_SALGLAND, ORGVOL_KIDNEY,
+           ORGVOL_TUMOR1, ORGVOL_TUMOR2, Plab, Punl, A_GBq) |>
+    rename(
+      "Patient" = id, "Age (y)" = AGE, "BSA (m^2)" = BSA,
+      "TER (mL/min)" = TER_MAG3, "Parotids (mL)" = ORGVOL_SALGLAND,
+      "Kidneys (mL)" = ORGVOL_KIDNEY, "Tumour 1 (mL)" = ORGVOL_TUMOR1,
+      "Tumour 2 (mL)" = ORGVOL_TUMOR2, "Labelled (nmol)" = Plab,
+      "Unlabelled (nmol)" = Punl, "Activity (GBq)" = A_GBq
+    ),
+  caption = "Cohort: Table 1 and the P*_inj / P_inj rows of S1 Table A."
+)
+```
+
+# Simulation
+
+The model has no random effects: the paper fitted each patient individually
+and did not estimate a population distribution, so every simulation below is
+deterministic. `fit_params()` turns one row of `fits` into the `ini()`
+overrides for that patient; `simulate_one()` infuses the labelled and the
+unlabelled peptide into the veins over 10 minutes.
+
+```{r simulate}
+mod <- rxode2::rxode(readModelDb("Kletting_2016_lu177psmaIT_pbpk"))
+
+fit_params <- function(i, background = TRUE) {
+  f <- fits[fits$id == i, ]
+  c(rdens_salgland = f$rdens_salgland, rdens_kidney = f$rdens_kidney,
+    rdens_tumor1 = f$rdens_tumor1, rdens_tumor2 = f$rdens_tumor2,
+    krel_salgland = f$krel_salgland, krel_kidney = f$krel_kidney,
+    krel_tumor1 = f$krel_tumor, krel_tumor2 = f$krel_tumor,
+    fperf_salgland = f$fperf_salgland,
+    bgcorr_tumor1 = if (background) f$bgcorr_tumor1 else 0,
+    bgcorr_tumor2 = if (background) f$bgcorr_tumor2 else 0)
+}
+
+simulate_one <- function(cov, lab, unl, times, params = NULL) {
+  ev <- rxode2::et(amt = lab, rate = lab / 10, cmt = "pven_lab") |>
+    rxode2::et(amt = unl, rate = unl / 10, cmt = "pven_unl") |>
+    rxode2::et(times, cmt = "pven_lab") |>
+    as.data.frame()
+  for (nm in COVS) ev[[nm]] <- cov[[nm]]
+  out <- rxode2::rxSolve(mod, ev, params = params, atol = 1e-12, rtol = 1e-10,
+                         returnType = "data.frame")
+  as.data.frame(out)
+}
+
+grid <- sort(unique(c(seq(0, 600, 1), seq(600, 30000, 5))))
+clinical <- bind_rows(lapply(patients$id, function(i) {
+  p <- patients[patients$id == i, ]
+  simulate_one(p, p$Plab, p$Punl, grid, fit_params(i)) |> mutate(id = i)
+}))
+stopifnot(!anyNA(clinical$Pkidney), !anyNA(clinical$Ptumor2))
+```
+
+## Time-activity curves
+
+```{r tac, fig.cap = "Replicates the fitted curves of the S2 File patient slides (and of Figure 2 for patient 2): labelled peptide in each region of interest after the clinical cycle."}
+clinical |>
+  filter(between(time, 1, 6000)) |>
+  select(id, time, `Salivary glands` = Psalgland, `Tumour 1` = Ptumor1,
+         `Tumour 2` = Ptumor2, Kidneys = Pkidney, `Total body` = Pbody) |>
+  pivot_longer(-c(id, time), names_to = "region", values_to = "amount") |>
+  ggplot(aes(time, amount, colour = region)) +
+  geom_line() +
+  facet_wrap(~ paste("Patient", id)) +
+  scale_y_log10() +
+  labs(x = "Time (min)", y = "Labelled peptide (nmol)", colour = NULL,
+       caption = "Replicates the S2 File fit panels and Figure 2 of Kletting 2016.")
+```
+
+Figure 2 shows patient 2's data with the fitted curves. Its markers at the
+three late imaging times (about 20, 44 and 68 h) were digitised; markers that
+overlap on the figure (salivary glands and tumour 2 at 20 and 44 h) are left
+out because they cannot be told apart.
+
+```{r fig2}
+fig2 <- tibble::tribble(
+  ~time, ~region,    ~digitised,
+  1209,  "Pbody",    0.916,
+  2664,  "Pbody",    0.461,
+  4074,  "Pbody",    0.235,
+  1209,  "Pkidney",  0.192,
+  2664,  "Pkidney",  0.0952,
+  4074,  "Pkidney",  0.0553,
+  1209,  "Ptumor1",  0.00318,
+  2664,  "Ptumor1",  0.00158,
+  4074,  "Ptumor1",  0.00130,
+  4074,  "Ptumor2",  0.0135,
+  4074,  "Psalgland", 0.0078
+)
+p2 <- patients[patients$id == 2, ]
+p2_sim <- simulate_one(p2, p2$Plab, p2$Punl, sort(unique(fig2$time)), fit_params(2)) |>
+  select(time, Pbody, Pkidney, Ptumor1, Ptumor2, Psalgland) |>
+  pivot_longer(-time, names_to = "region", values_to = "simulated")
+fig2_cmp <- fig2 |>
+  left_join(p2_sim, by = c("time", "region")) |>
+  mutate(pct = 100 * (simulated / digitised - 1))
+knitr::kable(
+  fig2_cmp |>
+    rename("Time (min)" = time, "Region" = region,
+           "Figure 2 marker (nmol)" = digitised, "Model (nmol)" = simulated,
+           "Difference (%)" = pct),
+  digits = c(0, 0, 4, 4, 0),
+  caption = "Patient 2: model against the digitised Figure 2 data markers."
+)
+# The markers are measurements, not the fitted curve, so they scatter about
+# it; the centre of the comparison is the structural check.
+stopifnot(median(abs(fig2_cmp$pct)) < 15)
+```
+
+The kidney, salivary and tumour markers are matched to within 2-13 %. The
+largest gaps are whole body at 20 and 44 h, 19-24 % low; the published fitted
+curve also runs below those two markers, and body weight and hematocrit are not
+known.
+
+## Mass balance
+
+Labelled peptide leaves the body only through urinary excretion or release
+from the internalised pool (S1 Eq 2 gives release no destination), and it is
+destroyed only by physical decay. After a 10 min constant-rate infusion of
+`P*` nmol, the labelled amount still in existence at time `t` is therefore
+`P* exp(-lambda t) (exp(10 lambda) - 1) / (10 lambda)`.
+
+```{r massbalance}
+lam <- 7.15e-5
+mb <- clinical |>
+  filter(time >= 10) |>
+  left_join(patients |> select(id, Plab), by = "id") |>
+  mutate(expected = Plab * exp(-lam * time) * (exp(10 * lam) - 1) / (10 * lam),
+         rel_err = (Pbody + urine_lab + cleared_lab) / expected - 1)
+knitr::kable(
+  mb |> group_by(id) |> summarise(`Max relative error` = max(abs(rel_err))) |>
+    rename("Patient" = id),
+  digits = 10
+)
+stopifnot(max(abs(mb$rel_err)) < 1e-6)
+```
+
+# Validation against the published dosimetry
+
+## Dose and BED machinery
+
+The paper turns each simulated time-activity curve into an absorbed dose and
+a BED (Eqs 1-4, S1 Eqs 14-18). With `a(t)` the fraction of the injected
+activity in an organ, `S` its self-dose S-value and `A` the injected activity,
+
+* `D = A S int a(t) dt` over `T` = 30 000 min,
+* `BED = D + A^2 S^2 Q / (alpha/beta)`, with
+  `Q = 2 int a(t) int_0^t a(w) exp(-mu (t - w)) dw dt` (the Lea-Catcheside
+  term),
+
+so the activity giving a kidney BED of 10 Gy2.5 is the positive root of a
+quadratic (Eq 5) and the activity giving a salivary dose of 7.5 Gy is linear
+(Eq 6). Labelled and unlabelled peptide share the same physiology, so `a(t)`
+depends only on the total peptide amount: each amount below is simulated with
+5 % of it labelled and `a(t)` is the labelled content divided by the labelled
+dose. Tumour doses use the lesion content without the fitted ROI background
+fraction, which only corrected the gamma-camera measurement.
+
+```{r dosimetry}
+s_vol <- c(0.5, 1, 1.5, 2, 3, 4, 13, 17, 21, 29, 34, 52, 54)
+s_val <- c(2.77e-3, 1.40e-3, 9.00e-4, 7.02e-4, 4.50e-4, 3.52e-4, 1.10e-4,
+           8.30e-5, 6.90e-5, 4.80e-5, 4.30e-5, 2.67e-5, 2.65e-5)
+# S1 Table C; other volumes by logarithmic interpolation, as the paper does.
+s_sphere <- function(v) exp(approx(log(s_vol), log(s_val), log(v))$y)
+S_KK <- 4.82e-6                       # Gy/min/MBq, S1 Table B
+rb <- list(                           # alpha/beta (Gy), repair rate (1/min), S1 Table B
+  K   = c(ab = 2.5,             mu = log(2) / 60 / 2.8),
+  SAL = c(ab = 0.053 / 0.0118,  mu = 0.0077),
+  TU  = c(ab = 3.9,             mu = log(2) / 60 / 0.5)
+)
+
+trapz <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+# Q by exact exponential update of the inner convolution on the solve grid.
+lea_q <- function(t, a, mu) {
+  y <- numeric(length(t))
+  for (k in seq_along(t)[-1]) {
+    h <- t[k] - t[k - 1]
+    e <- exp(-mu * h)
+    y[k] <- y[k - 1] * e + h / 2 * (a[k - 1] * e + a[k])
+  }
+  2 * trapz(t, a * y)
+}
+
+# Time-integrated activity coefficient (min) and Q for each region, at one
+# total peptide amount.
+organ_kinetics <- function(cov, amount, params = NULL) {
+  lab <- 0.05 * amount
+  s <- simulate_one(cov, lab, amount - lab, grid, params)
+  a <- list(K = s$Pkidney / lab, SAL = s$Psalgland / lab,
+            TU1 = s$Ptumor1 / lab, TU2 = s$Ptumor2 / lab)
+  mu <- c(K = rb$K[["mu"]], SAL = rb$SAL[["mu"]], TU1 = rb$TU[["mu"]], TU2 = rb$TU[["mu"]])
+  data.frame(region = names(a),
+             atilde = vapply(a, function(x) trapz(s$time, x), 0),
+             Q = vapply(names(a), function(r) lea_q(s$time, a[[r]], mu[[r]]), 0))
+}
+
+dose_bed <- function(A, S, atilde, Q, ab) {
+  D <- A * S * atilde
+  c(D = D, BED = D + A^2 * S^2 * Q / ab)
+}
+
+# Activities (MBq) for kidney BED = 10 Gy2.5 (case 1) and salivary D = 7.5 Gy
+# (case 2), and the doses they deliver.
+plan_amount <- function(cov, amount, params = NULL) {
+  k <- organ_kinetics(cov, amount, params)
+  g <- function(r, col) k[[col]][k$region == r]
+  S_SAL <- s_sphere(cov$ORGVOL_SALGLAND)
+  S_TU <- c(TU1 = s_sphere(cov$ORGVOL_TUMOR1), TU2 = s_sphere(cov$ORGVOL_TUMOR2))
+  qa <- S_KK^2 * g("K", "Q") / rb$K[["ab"]]
+  qb <- S_KK * g("K", "atilde")
+  A1 <- (-qb + sqrt(qb^2 + 4 * qa * 10)) / (2 * qa)
+  A2 <- 7.5 / (g("SAL", "atilde") * S_SAL)
+  res <- list(amount = amount, A1_GBq = A1 / 1000, A2_GBq = A2 / 1000)
+  for (cs in c("1", "2")) {
+    A <- if (cs == "1") A1 else A2
+    for (tu in c("TU1", "TU2")) {
+      v <- dose_bed(A, S_TU[[tu]], g(tu, "atilde"), g(tu, "Q"), rb$TU[["ab"]])
+      res[[paste0("c", cs, "_", tu, "_D")]] <- v[["D"]]
+      res[[paste0("c", cs, "_", tu, "_BED")]] <- v[["BED"]]
+    }
+    vs <- dose_bed(A, S_SAL, g("SAL", "atilde"), g("SAL", "Q"), rb$SAL[["ab"]])
+    vk <- dose_bed(A, S_KK, g("K", "atilde"), g("K", "Q"), rb$K[["ab"]])
+    res[[paste0("c", cs, "_SAL_D")]] <- vs[["D"]]
+    res[[paste0("c", cs, "_SAL_BED")]] <- vs[["BED"]]
+    res[[paste0("c", cs, "_K_D")]] <- vk[["D"]]
+    res[[paste0("c", cs, "_K_BED")]] <- vk[["BED"]]
+  }
+  as.data.frame(res)
+}
+```
+
+## Table 3: activities and doses at the published optimal amounts
+
+Table 3 lists, for each patient and lesion, the optimal amount and the
+activity that puts the kidneys at 10 Gy2.5 BED (case 1) or the salivary glands
+at 7.5 Gy (case 2), with the doses that follow. The comparison below simulates
+each patient at each published amount, so the optimisation itself is not
+repeated; what is tested is the time-activity curves and the dose arithmetic.
+
+```{r table3}
+table3 <- tibble::tribble(
+  ~id, ~lesion, ~amt1, ~A1, ~TUD1, ~TUBED1, ~SALD1, ~SALBED1, ~amt2, ~A2, ~TUD2, ~TUBED2, ~KD2, ~KBED2,
+  1L, 1L,  512, 22.5, 156, 234, 10,  11,    512, 16.5, 114, 156,  5.7, 6.9,
+  1L, 2L,  512, 22.5, 390, 850, 10,  11,    512, 16.5, 285, 530,  5.7, 6.9,
+  2L, 1L,   64, 13.9,  46,  52, 20,  24,      2,  4.4,  23,  24,  4.3, 4.9,
+  2L, 2L,    2,  8.0,  16,  17, 14,  16,      2,  4.4, 9.0, 9.2,  4.3, 4.9,
+  3L, 1L,  256, 14.1, 171, 223, 40,  53,    512,  4.3,  33,  35,  1.6, 1.6,
+  3L, 2L,  128,  9.4,  46,  50, 40,  54,   2048, 12.3, 8.6, 8.7,  1.8, 1.9,
+  4L, 1L,   64,  7.9,  24,  26, 8.9, 9.7,     2,  4.9,  23,  24,  8.3, 11,
+  4L, 2L,   64,  7.9,  14,  14, 8.9, 9.7,     2,  4.9,  13,  14,  8.3, 11,
+  5L, 1L,  256,  9.3,  29,  32, 14,  15,      2,  2.4,  17,  18,  6.0, 7.4,
+  5L, 2L,  256,  9.3,  42,  47, 14,  15,    512,  8.2,  23,  25,  4.4, 5.1
+)
+
+runs <- distinct(bind_rows(
+  table3 |> transmute(id, amount = amt1),
+  table3 |> transmute(id, amount = amt2)
+))
+planned <- bind_rows(lapply(seq_len(nrow(runs)), function(k) {
+  i <- runs$id[k]
+  plan_amount(patients[patients$id == i, ], runs$amount[k],
+              fit_params(i, background = FALSE)) |>
+    mutate(id = i)
+}))
+
+case1 <- table3 |>
+  left_join(planned, by = c("id", "amt1" = "amount")) |>
+  mutate(sim_A = A1_GBq,
+         sim_TUD = ifelse(lesion == 1L, c1_TU1_D, c1_TU2_D),
+         sim_TUBED = ifelse(lesion == 1L, c1_TU1_BED, c1_TU2_BED),
+         sim_OAR_D = c1_SAL_D) |>
+  transmute(id, lesion, case = "1: kidney BED 10 Gy2.5", amount = amt1,
+            pub_A = A1, sim_A, pub_TUD = TUD1, sim_TUD, pub_TUBED = TUBED1,
+            sim_TUBED, pub_OAR_D = SALD1, sim_OAR_D)
+case2 <- table3 |>
+  left_join(planned, by = c("id", "amt2" = "amount")) |>
+  mutate(sim_A = A2_GBq,
+         sim_TUD = ifelse(lesion == 1L, c2_TU1_D, c2_TU2_D),
+         sim_TUBED = ifelse(lesion == 1L, c2_TU1_BED, c2_TU2_BED),
+         sim_OAR_D = c2_K_D) |>
+  transmute(id, lesion, case = "2: salivary D 7.5 Gy", amount = amt2,
+            pub_A = A2, sim_A, pub_TUD = TUD2, sim_TUD, pub_TUBED = TUBED2,
+            sim_TUBED, pub_OAR_D = KD2, sim_OAR_D)
+t3 <- bind_rows(case1, case2) |>
+  mutate(pct_A = 100 * (sim_A / pub_A - 1),
+         pct_TUD = 100 * (sim_TUD / pub_TUD - 1),
+         pct_OAR = 100 * (sim_OAR_D / pub_OAR_D - 1))
+
+knitr::kable(
+  t3 |>
+    select(case, id, lesion, amount, pub_A, sim_A, pct_A, pub_TUD, sim_TUD,
+           pct_TUD, pub_OAR_D, sim_OAR_D, pct_OAR) |>
+    rename("Case" = case, "Patient" = id, "Lesion" = lesion,
+           "Amount (nmol)" = amount, "Activity, Table 3 (GBq)" = pub_A,
+           "Activity, model (GBq)" = sim_A, "Activity diff (%)" = pct_A,
+           "Tumour D, Table 3 (Gy)" = pub_TUD, "Tumour D, model (Gy)" = sim_TUD,
+           "Tumour D diff (%)" = pct_TUD,
+           "Other organ D, Table 3 (Gy)" = pub_OAR_D,
+           "Other organ D, model (Gy)" = sim_OAR_D,
+           "Other organ D diff (%)" = pct_OAR),
+  digits = 1,
+  caption = "Replicates Table 3 of Kletting 2016. 'Other organ' is the salivary glands in case 1 and the kidneys in case 2."
+)
+```
+
+```{r table3-checks}
+# Footnote b of Table 3: a kidney BED of 10 Gy2.5 corresponds to D = 7.9 +/- 0.2 Gy,
+# and a salivary D of 7.5 Gy to BED = 8.1 +/- 0.1 Gy4.5. This tests the BED and
+# Lea-Catcheside arithmetic on every simulated curve.
+stopifnot(
+  all(abs(planned$c1_K_D - 7.9) < 0.5),
+  all(abs(planned$c2_SAL_BED - 8.1) < 0.3)
+)
+by_patient <- t3 |>
+  group_by(id) |>
+  summarise(median_abs_pct_A = median(abs(pct_A)), max_abs_pct_A = max(abs(pct_A)))
+knitr::kable(
+  by_patient |>
+    rename("Patient" = id, "Median |activity diff| (%)" = median_abs_pct_A,
+           "Max |activity diff| (%)" = max_abs_pct_A),
+  digits = 1
+)
+stopifnot(
+  # Structural: a wrong flow, volume, S-value or BED term moves every row.
+  median(abs(t3$pct_A)) < 20,
+  # Patients 1, 2 and 5 reproduce to within a quarter in every cell.
+  all(abs(t3$pct_A[t3$id %in% c(1L, 2L, 5L)]) < 25)
+)
+```
+
+The model reproduces the footnote-b conversions on every curve: kidney dose
+`r sprintf("%.2f-%.2f", min(planned$c1_K_D), max(planned$c1_K_D))` Gy at 10
+Gy2.5 against 7.9 +/- 0.2, and salivary BED
+`r sprintf("%.2f-%.2f", min(planned$c2_SAL_BED), max(planned$c2_SAL_BED))`
+Gy4.5 at 7.5 Gy against 8.1 +/- 0.1. For patients 1, 2 and 5 the activities
+are mostly within 10 % of Table 3. Patients 3 and 4 are off by about a quarter,
+in opposite directions: patient 3's kidney time-integrated activity
+coefficient is roughly a third above the one implied by Table 3, and patient 4's is
+about 15 % below. That is more than unknown body weight or hematocrit can
+explain (both were varied without closing the gap); the cause is not resolved
+and is listed under *Assumptions and deviations*. Where the activity matches,
+the tumour doses match as well (for example, patient 1 lesion 1 and patient 2
+lesion 2 in case 1, and patient 5 in case 1). Patient 1's lesion 2 has the
+highest binding-site density of the cohort (2412 nmol/L, the least precise
+estimate at 33 % CV) and the model gives it about 30-40 % more dose than Table 3;
+the paper itself flags the BED for that lesion as outside the range of the
+linear-quadratic model (footnote c). The tumour dose per GBq is
+reproduced for patient 3 too, which locates that patient's gap in the
+normal-organ curves rather than the tumour curves.
+
+## Figure 3: the typical patient
+
+Figure 3 shows the activity-amount combinations and the tumour-to-organ BED
+ratios for the typical patient: median normal-tissue parameters, with one
+tumour at the median and one at the mean tumour parameters of Table 2. These
+are the values shipped in `ini()`, so this check exercises the packaged model
+with no overrides. The paper does not state that patient's volumes or renal
+function; the Table 1 Mean row (BSA 2.0 m^2, TER 193 mL/min, parotids 35 mL,
+kidneys 318 mL, tumour 6 mL) is used, with a 48.9 mL tumour remainder.
+
+```{r fig3}
+typical <- data.frame(WT = 71, HCT = 45, BSA = 2.0, TER_MAG3 = 193,
+                      ORGVOL_KIDNEY = 318, ORGVOL_SALGLAND = 35,
+                      ORGVOL_TUMOR1 = 6, ORGVOL_TUMOR2 = 6,
+                      ORGVOL_TUMORREST = 13 / 266 * 1000)
+amounts <- 2^(1:13)
+sweep <- bind_rows(lapply(amounts, function(j) plan_amount(typical, j))) |>
+  mutate(r_med_K  = c1_TU1_BED / c1_K_BED,
+         r_mean_K = c1_TU2_BED / c1_K_BED,
+         r_med_S  = c2_TU1_BED / c2_SAL_BED,
+         r_mean_S = c2_TU2_BED / c2_SAL_BED)
+
+# Digitised from Figure 3 (panels A-D) at the simulated amounts.
+fig3 <- tibble::tribble(
+  ~amount, ~A_kidney, ~A_salivary, ~med_K, ~mean_K, ~med_S, ~mean_S,
+     2,     5.00,  3.50, 3.59,  7.64, 3.01,  6.29,
+     8,     5.24,  3.59, 3.69,  8.22, 3.01,  6.48,
+    32,     6.48,  4.04, 4.27, 10.6,  3.01,  7.45,
+    64,     8.21,  4.88, 4.75,   NA,  3.21,  8.99,
+   128,    11.4,   6.48, 4.94, 19.1,  3.21,    NA,
+   256,    16.3,   9.46, 4.85,   NA,  3.21, 14.1,
+   512,    25.6,  14.8,  4.75,   NA,  3.21, 14.6,
+  1024,    41.0,  25.0,  4.46, 21.4,  3.21, 14.4,
+  2048,    64.3,  43.0,  4.07, 19.3,  3.21, 14.1,
+  4096,      NA,  72.4,  3.50,   NA,  3.11, 13.5,
+  8192,      NA,    NA,  2.82, 12.4,  3.01, 12.7
+)
+fig3_cmp <- fig3 |>
+  pivot_longer(-amount, names_to = "quantity", values_to = "figure") |>
+  filter(!is.na(figure)) |>
+  left_join(
+    sweep |>
+      transmute(amount, A_kidney = A1_GBq, A_salivary = A2_GBq,
+                med_K = r_med_K, mean_K = r_mean_K, med_S = r_med_S,
+                mean_S = r_mean_S) |>
+      pivot_longer(-amount, names_to = "quantity", values_to = "model"),
+    by = c("amount", "quantity")
+  ) |>
+  mutate(pct = 100 * (model / figure - 1))
+
+knitr::kable(
+  fig3_cmp |>
+    group_by(quantity) |>
+    summarise(n = n(), `Median diff (%)` = median(pct),
+              `Max abs diff (%)` = max(abs(pct)), .groups = "drop") |>
+    rename("Figure 3 quantity" = quantity),
+  digits = 1,
+  caption = "Packaged model against Figure 3 (A_kidney / A_salivary: activity in GBq for panel A / B; med_ / mean_: tumour-to-kidney (K) or tumour-to-salivary (S) BED ratio for the median / mean tumour, panels C / D)."
+)
+stopifnot(
+  # Panel A: the kidney-limited activity is set by the normal-tissue
+  # parameters alone and must track the figure tightly.
+  all(abs(fig3_cmp$pct[fig3_cmp$quantity == "A_kidney"]) < 10),
+  all(abs(fig3_cmp$pct[fig3_cmp$quantity == "A_salivary"]) < 20),
+  all(abs(fig3_cmp$pct[fig3_cmp$quantity == "med_K"]) < 15),
+  # Panel D's median curve is flat near 3, where one pixel of the figure is
+  # about 0.2 (6 %); the model runs a uniform 9-15 % above it.
+  all(abs(fig3_cmp$pct[fig3_cmp$quantity == "med_S"]) < 20),
+  median(abs(fig3_cmp$pct)) < 12,
+  # The optimum amount of each tumour-to-kidney ratio, Figure 3A markers.
+  sweep$amount[which.max(sweep$r_med_K)] == 128,
+  sweep$amount[which.max(sweep$r_mean_K)] %in% c(256, 512)
+)
+```
+
+```{r fig3-plot, fig.height = 6, fig.cap = "Replicates Figure 3 of Kletting 2016: activity for kidney BED 10 Gy2.5 or salivary D 7.5 Gy (top) and the tumour-to-organ BED ratios along those lines (bottom), packaged model (lines) against digitised figure values (points)."}
+plot_model <- sweep |>
+  transmute(amount,
+            `A: kidney BED 10 Gy2.5 (GBq)` = A1_GBq,
+            `B: salivary D 7.5 Gy (GBq)` = A2_GBq,
+            `C: tumour / kidney BED, median` = r_med_K,
+            `C: tumour / kidney BED, mean` = r_mean_K,
+            `D: tumour / salivary BED, median` = r_med_S,
+            `D: tumour / salivary BED, mean` = r_mean_S) |>
+  pivot_longer(-amount, names_to = "series", values_to = "value") |>
+  mutate(panel = substr(series, 1, 1))
+plot_fig <- fig3 |>
+  transmute(amount,
+            `A: kidney BED 10 Gy2.5 (GBq)` = A_kidney,
+            `B: salivary D 7.5 Gy (GBq)` = A_salivary,
+            `C: tumour / kidney BED, median` = med_K,
+            `C: tumour / kidney BED, mean` = mean_K,
+            `D: tumour / salivary BED, median` = med_S,
+            `D: tumour / salivary BED, mean` = mean_S) |>
+  pivot_longer(-amount, names_to = "series", values_to = "value") |>
+  filter(!is.na(value)) |>
+  mutate(panel = substr(series, 1, 1))
+ggplot(plot_model, aes(amount, value, colour = series)) +
+  geom_line() +
+  geom_point(data = plot_fig) +
+  scale_x_log10() +
+  facet_wrap(~panel, scales = "free_y") +
+  labs(x = "Total peptide amount (nmol)", y = NULL, colour = NULL,
+       caption = "Replicates Figure 3 of Kletting 2016 (points digitised).") +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 2))
+```
+
+The kidney-limited activity of panel A is reproduced to within a few percent
+from 2 to 2048 nmol, the median-tumour/kidney ratio of panel C to within about
+10 %, and the flat median-tumour/salivary ratio of panel D to within 9-15 %
+(a uniform offset). The model puts the optimum amounts where the paper's markers sit:
+128 nmol for the median tumour against the kidneys, and 256-512 nmol for the
+mean tumour. The mean-tumour ratios are about 20 % high at small amounts and
+agree at the plateau. The tumour volume of the typical patient is not given,
+and the absolute ratio scales with the tumour S-value, so that offset is
+expected.
+
+# Non-compartmental analysis of venous serum
+
+The paper reports no serum pharmacokinetics, so this is a descriptive summary
+of the labelled peptide in venous serum (`Cc`, nmol/L) after each patient's
+clinical cycle, with two physical checks: the peak falls at the end of the
+10 min infusion, and the terminal half-life cannot be longer than the
+physical half-life of 177Lu (6.65 days), because the label decays at that rate
+whatever the peptide does.
+
+```{r pknca}
+nca_in <- clinical |>
+  filter(!is.na(Cc)) |>
+  transmute(id, patient = factor(id), time, Cc)
+nca_in <- bind_rows(
+  nca_in,
+  nca_in |> distinct(id, patient) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(patient, id, time, .keep_all = TRUE) |>
+  arrange(id, time)
+
+conc_obj <- PKNCA::PKNCAconc(nca_in, Cc ~ time | patient + id)
+dose_obj <- PKNCA::PKNCAdose(
+  patients |> transmute(id, patient = factor(id), time = 0, amt = Plab),
+  amt ~ time | patient + id
+)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res) |>
+  select(patient, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+knitr::kable(
+  nca_tab |>
+    mutate(half_life_d = half.life / 1440) |>
+    select(patient, cmax, tmax, aucinf.obs, half_life_d) |>
+    rename("Patient" = patient, "Cmax (nmol/L)" = cmax, "Tmax (min)" = tmax,
+           "AUCinf (nmol*min/L)" = aucinf.obs,
+           "Terminal half-life (days)" = half_life_d),
+  digits = 3,
+  caption = "Venous serum labelled peptide after the clinical cycle."
+)
+stopifnot(
+  all(nca_tab$tmax >= 9 & nca_tab$tmax <= 11),
+  all(nca_tab$half.life <= log(2) / 7.15e-5)
+)
+```
+
+# Assumptions and deviations
+
+- **Body weight and hematocrit are not published.** S1 Table A lists both as
+  measured, but neither the paper nor its supplements give the values. `WT`
+  and `HCT` are model covariates; this article uses 71 kg, the Reference Man
+  weight that the model's `BW/71` organ-volume scaling encodes, and 45 %.
+  Body weight hardly moves the dosimetry (organ volumes enter mostly through
+  the PSMA-negative tissues); hematocrit moves it more, through the serum
+  volume and flow.
+- **Shipped `ini()` values are the typical patient of Figure 3**, not one of
+  the five patients: median normal-tissue parameters from Table 2, tumour 1 at
+  the median and tumour 2 at the mean tumour parameters. Table 2 has a single
+  tumour release-rate row, so the two lesions take its median (2.0e-4 /min) and
+  mean (1.76e-4 /min). The model keeps a separate release rate per lesion,
+  because S1 Table A defines the tumour-remainder rate as the mean of the two;
+  in the individual fits the two lesions share one rate. Per-patient values
+  (S2 File) are supplied as `ini()` overrides above.
+- **Table 2 prints a median salivary binding-site density of 42 nmol/L**, while
+  the five S2 estimates (41, 38, 108, 41, 80) give 41. The shipped value is the
+  printed 42; every other Table 2 summary checked above matches S2.
+- **Tumour ROI background fraction.** The fits added a fitted fraction of the
+  muscle content to each tumour ROI (S1 'Assigning data to compartments'). It
+  corrects the measurement, not the physiology, and Table 2 does not summarise
+  it, so the typical patient ships with `bgcorr_tumor1 = bgcorr_tumor2 = 0`. All
+  dosimetry here uses the lesion content without it. In the S2 slides of
+  patients 3, 4 and 5 the printed `c1` equals that patient's `f_SAL` (0.53,
+  0.16, 0.18), which looks like a copied cell; the values are used as printed
+  for the Figure 2 comparison, which involves only patient 2.
+- **`K_D` / `k_off`.** Two binding models were fitted: `k_off` = 0.046 /min
+  (Model 1) and 0.46 /min (Model 2), with `k_on` = 0.046 L/nmol/min. Model 1
+  had an Akaike weight above 0.9 in every patient and was the only one carried
+  forward, so `kd = 1` nmol/L is shipped. S1 Table A gives `K_D` as "1 or 8"
+  nmol/L, which does not match the 10-fold `k_off` of Model 2; Model 2 has no
+  published estimates either way.
+- **Circulation closure.** S1 Eq 7 (veins) prints no outflow term, S1 Eq 8
+  (arteries) prints its outflow as `F_i P_i,v / V_ART` (an evident `P_ART`),
+  and S1 Eqs 5 and 8 print the cardiac flow as `F`. S1 Table A defines
+  `F_TOTAL = F + F_TU,1 + F_TU,2 + F_TU,REST`, which no printed equation uses.
+  The model uses `F_TOTAL` as the venous outflow, the lung flow and the arterial
+  inflow, which is the only reading under which the circulation conserves mass
+  (checked above to 1e-6).
+- **Rest-of-body serum.** `V_REST,v = V_P - sum of V_i,v` over all organs except
+  the tumours; the arterial and venous serum pools are counted among the organs
+  subtracted.
+- **Kidney ROI** includes the unspecific tubular-cell pool `P*_K,intra`, as
+  printed in S1 'Assigning data to compartments'.
+- **Dosing compartment.** The S1 File states an intravenous 10 min infusion
+  without naming the receiving compartment; it is given into the veins.
+- **Bookkeeping states.** `urine_*` (excreted peptide) and `cleared_*`
+  (peptide released from the internalised pools, which S1 Eq 2 removes from the
+  body) are not in the paper; they only close the mass balance.
+- **Table 3 for patients 3 and 4** reproduces to about 25 % rather than 10 %.
+  The tumour dose per GBq agrees for patient 3, so the gap is in the
+  normal-organ curves. It is not explained by body weight or hematocrit, both
+  varied over plausible ranges. Patient 4's Table 1 tumour volumes may also
+  differ from those used for Table 3: its two lesions err in opposite
+  directions on the tumour dose per GBq.
+- **Figure 3 patient.** The paper does not give the covariates of its typical
+  patient; the Table 1 Mean row and a 6 mL tumour are used.
+- **Red marrow.** The paper excluded combinations whose red-marrow BED exceeded
+  0.25 Gy15, using a remainder-to-marrow S-value corrected per patient (Hindorf
+  et al.) that cannot be rebuilt from what is published. The Table 3
+  comparison therefore takes the published optimal amounts as given, and the
+  red-marrow constraint is not recomputed.

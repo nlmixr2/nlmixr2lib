@@ -552,11 +552,11 @@ sprintf("Day (10:00, 14:00) versus night (22:00, 02:00) median oral Cmax ratio: 
   constant at 0 (oral) or 1 (intravenous).
 
 * **Six inter-occasion slots.** Table 2 reports one inter-occasion variability
-  magnitude for bioavailability. rxode2 cannot simulate the `eta ~ var | OCC`
-  form, so it is expanded into six occasion-multiplexed slots -- one per
-  administration occasion, which is how the paper defines the occasion -- with
-  occasions 2-6 held at occasion 1's variance, the equivalent of NONMEM
-  `$OMEGA BLOCK(1) SAME`.
+  magnitude for bioavailability. The `eta ~ var | OCC` form shares one draw
+  per occasion when no subject has two or more occasions, so it is expanded
+  into six occasion-multiplexed slots -- one per administration occasion,
+  which is how the paper defines the occasion -- with occasions 2-6 held at
+  occasion 1's variance, the equivalent of NONMEM `$OMEGA BLOCK(1) SAME`.
 
 * **IIV scale.** Table 2 reports interindividual and interoccasion variability
   as CV percentages for random effects the Methods describe as log-normally

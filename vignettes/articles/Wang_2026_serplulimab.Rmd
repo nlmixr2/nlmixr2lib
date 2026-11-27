@@ -264,7 +264,7 @@ ref_cov <- list(
 #' Solve one typical subject on a flat or weight-based regimen.
 #' `cmt = "central"` is the ODE state name, never the observable "Cc".
 solve_typical <- function(dose, tau, ndose, cov = ref_cov,
-                          tmax = tau * ndose, by = 0.05) {
+                          tmax = tau * ndose, by = 0.05, ...) {
   # rxode2 warns when ii is set with addl = 0, so only add the repeat
   # specification for genuinely multiple-dose regimens.
   ev <- if (ndose > 1L) {
@@ -276,7 +276,7 @@ solve_typical <- function(dose, tau, ndose, cov = ref_cov,
   ev <- ev |> rxode2::et(seq(0, tmax, by = by), cmt = "central")
   d <- as.data.frame(ev)
   for (nm in names(cov)) d[[nm]] <- cov[[nm]]
-  as.data.frame(rxode2::rxSolve(mod0, d, returnType = "data.frame"))
+  as.data.frame(rxode2::rxSolve(mod0, d, returnType = "data.frame", ...))
 }
 
 trapz <- function(x, y) sum(diff(x) * (head(y, -1) + tail(y, -1)) / 2)
@@ -303,7 +303,9 @@ stopifnot(abs(eliminated / 300 - 1) < 0.005)
 ## Time-varying clearance reaches the published asymptote
 
 ```{r emax-asymptote}
-s_long <- solve_typical(300, 21, 1L, tmax = 100000, by = 50)
+# The amount underflows to zero long before 100000 days (about 2000
+# half-lives); liblsoda then returns non-finite amounts, dop853 zero.
+s_long <- solve_typical(300, 21, 1L, tmax = 100000, by = 50, method = "dop853")
 asymptote <- tail(s_long$cl, 1) / s_long$cl[1]
 
 c(`CL(inf) / CL(0) from the solve` = round(asymptote, 4),

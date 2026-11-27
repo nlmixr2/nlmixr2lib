@@ -1,0 +1,411 @@
+---
+title: "Hydroxyurea (Sabo 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Hydroxyurea (Sabo 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Sabo_2026_hydroxyurea"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Sabo_2026_hydroxyurea"))$description`
+* Article: [Pharmaceutics 18(6):654 (2026)](https://doi.org/10.3390/pharmaceutics18060654)
+* Supplement: <https://www.mdpi.com/article/10.3390/pharmaceutics18060654/s1>
+
+# Population
+
+The model was fitted to the OPTIMDREP randomised trial (NCT06464458) in
+Strasbourg, France: 22 patients with sickle cell disease (14 male, 8 female)
+taking once-daily oral hydroxyurea, of whom 20 were children (median age 9.7
+years, range 2.5-16.4; median weight 31.0 kg, range 11.4-60.0 kg) and 2 were
+adult women (29.1 and 35.7 years). Across the whole cohort the mean age was
+12.2 +/- 7.7 years and the mean weight 35.8 +/- 16.7 kg. The daily dose was
+20.3 +/- 2.4 mg/kg; 17 of 22 patients were already at steady state and 5 were
+starting treatment. Renal function was normal (cystatin C-based eGFR 126.7
++/- 14.2 mL/min/1.73 m2). Sources: Sabo 2026 Table 1 and Results 3.1.
+
+Full pharmacokinetic profiles (pre-dose, 10 and 20 min, 1, 2, 4 and 6 h) were
+taken at the first visit (V0) and the fifth (V5), and a two-hour concentration
+at visits V1-V4: 391 concentrations in all. Non-compartmental analysis split the
+44 full profiles into two absorption phenotypes by their observed Tmax: rapid
+(Tmax < 1 h, 16 profiles, 36.4%) and slow (Tmax >= 1 h). The phenotype is the
+model's covariate on the absorption rate constant.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Sabo_2026_hydroxyurea")()$population`).
+
+# Source trace
+
+Every `ini()` value carries an in-file comment in
+`inst/modeldb/specificDrugs/Sabo_2026_hydroxyurea.R`. The table collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (ka, slow absorber) | log(1.36) 1/h | Table 2, ka row (RSE 14.80%) |
+| `lcl` (CL/F at 34.9 kg) | log(9.06) L/h | Table 2, Cl/F row (RSE 4.71%) |
+| `lvc` (V/F at 34.9 kg) | log(25.23) L | Table 2, Vd/F row (RSE 7.69%) |
+| `e_abs_rapid_ka` | 1.99 | Table 2, beta_ka_KINETIC row (RSE 21.20%); Results 3.2.2 (ka 9.93 vs 1.36 1/h) |
+| `e_wt_cl` | 0.64 | Table 2, beta_Cl_NBW row (RSE 13.90%) |
+| `e_wt_vc` | 0.80 | Table 2, beta_Vd_NBW row (RSE 14.80%) |
+| `etalka` | log(1 + 0.6407^2) | Table 2 IIV-ka 64.07%; Supplementary Table S3 'IIV final model (CV%)' |
+| `etalcl` | log(1 + 0.3299^2) | Table 2 IIV-Cl/F 32.99%; Supplementary Table S3 |
+| `etalvc` | log(1 + 0.3473^2) | Table 2 IIV-Vd/F 34.73%; Supplementary Table S3 |
+| `addSd` | 1.60 mg/L | Table 2 residual error a (RSE 8.88%) |
+| `propSd` | 0.35 | Table 2 residual error b (RSE 6.33%) |
+| `ka <- exp(lka + e_abs_rapid_ka * ABS_RAPID + etalka)` | n/a | Eq. 2 |
+| `vc <- exp(lvc + etalvc) * (WT / 34.9)^e_wt_vc` | n/a | Eq. 3; Table 4 (34.9 kg = median weight) |
+| `cl <- exp(lcl + etalcl) * (WT / 34.9)^e_wt_cl` | n/a | Eq. 4 |
+| One compartment, first-order absorption, linear elimination | n/a | Results 3.2.2; Supplementary Table S2 'Final model' |
+| `Cc ~ add(addSd) + prop(propSd) + combined1()` | n/a | Results 3.2.2 ('combined additive ... and proportional') |
+
+# Typical-value checks
+
+The rapid-absorber ka follows from Eq. 2, and with linear elimination the
+exposure after a single dose is `dose / CL`. Both are checked against a
+typical-value solve.
+
+```{r typical}
+mod <- readModelDb("Sabo_2026_hydroxyurea")
+mod_typ <- rxode2::zeroRe(mod)
+
+# Eq. 2: ka for a rapid absorber = 1.36 * exp(1.99); the paper reports 9.93 1/h.
+ka_rapid <- 1.36 * exp(1.99)
+stopifnot(abs(ka_rapid / 9.93 - 1) < 0.005)
+
+wt_ref <- 34.9
+dose_ref <- 20.3 * wt_ref
+ev_typ <- rxode2::et(amt = dose_ref, cmt = "depot") |>
+  rxode2::et(seq(0, 48, by = 0.05), cmt = "central")
+typ <- dplyr::bind_rows(
+  as.data.frame(rxode2::rxSolve(mod_typ, ev_typ,
+    params = c(WT = wt_ref, ABS_RAPID = 1), rtol = 1e-10, atol = 1e-12
+  )) |> dplyr::mutate(phenotype = "rapid"),
+  as.data.frame(rxode2::rxSolve(mod_typ, ev_typ,
+    params = c(WT = wt_ref, ABS_RAPID = 0), rtol = 1e-10, atol = 1e-12
+  )) |> dplyr::mutate(phenotype = "slow")
+)
+
+typ_summary <- typ |>
+  dplyr::group_by(phenotype) |>
+  dplyr::summarise(
+    ka = ka[1],
+    Cmax = max(Cc),
+    Tmax = time[which.max(Cc)],
+    AUC0_48 = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(AUC_closed_form = dose_ref / 9.06)
+knitr::kable(typ_summary, digits = 3,
+  caption = "Typical 34.9-kg patient after a single 20.3 mg/kg dose.")
+
+# Linear elimination: AUC is dose / CL whatever the absorption phenotype. The
+# trapezoid on a 0.05-h grid to 48 h (about 25 half-lives) is within 0.1%.
+stopifnot(all(abs(typ_summary$AUC0_48 / typ_summary$AUC_closed_form - 1) < 0.002))
+stopifnot(abs(typ_summary$ka[typ_summary$phenotype == "rapid"] - ka_rapid) < 1e-8)
+```
+
+The half-life of a typical patient is `log(2) * 25.23 / 9.06` =
+`r round(log(2) * 25.23 / 9.06, 2)` h, so once-daily dosing leaves
+`r signif(100 * exp(-24 * 9.06 / 25.23), 2)`% of a dose at the next one.
+Steady state and a first dose therefore give the same profile, and the
+simulations below use a single dose.
+
+# Virtual cohort
+
+The individual data are not public. Weights are log-normal with the Table 1
+mean and SD (35.8 +/- 16.7 kg), truncated to 11.4-70 kg, and doses are drawn
+around the Table 1 mean of 20.3 +/- 2.4 mg/kg. Three cohorts of 200 are
+simulated: all rapid absorbers, all slow absorbers, and a mixed cohort in which
+each patient is rapid with probability 0.364, the fraction of rapid profiles in
+the study.
+
+```{r cohort}
+set.seed(654)
+rxode2::rxSetSeed(654)
+
+# The paper's full-profile sampling times plus a denser grid for the figures.
+t_paper <- c(0, 1 / 6, 1 / 3, 1, 2, 4, 6)
+t_obs <- sort(unique(c(t_paper, seq(0, 8, by = 0.1))))
+
+make_cohort <- function(n, phenotype, p_rapid, id_offset) {
+  sdlog <- sqrt(log(1 + (16.7 / 35.8)^2))
+  wt <- exp(rnorm(n, log(35.8) - sdlog^2 / 2, sdlog))
+  wt <- pmin(pmax(wt, 11.4), 70)
+  subj <- tibble::tibble(
+    id = id_offset + seq_len(n),
+    WT = wt,
+    ABS_RAPID = rbinom(n, 1, p_rapid),
+    dose = round(rnorm(n, 20.3, 2.4) * wt),
+    phenotype = phenotype
+  )
+  dplyr::bind_rows(
+    subj |> dplyr::mutate(time = 0, evid = 1L, amt = dose, cmt = "depot"),
+    subj |>
+      tidyr::crossing(time = t_obs) |>
+      dplyr::mutate(evid = 0L, amt = 0, cmt = "central")
+  ) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- dplyr::bind_rows(
+  make_cohort(200, "rapid", 1, 0L),
+  make_cohort(200, "slow", 0, 200L),
+  make_cohort(200, "mixed", 0.364, 400L)
+)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events,
+  keep = c("phenotype", "ABS_RAPID", "WT", "dose")
+) |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+```{r figure-1b}
+# Replicates Figure 1b of Sabo 2026: mean concentration-time profile by
+# absorption phenotype over the 0-6 h sampling window.
+sim |>
+  dplyr::filter(phenotype != "mixed", time <= 6) |>
+  dplyr::group_by(phenotype, time) |>
+  dplyr::summarise(mean_Cc = mean(Cc), .groups = "drop") |>
+  ggplot(aes(time, mean_Cc, colour = phenotype)) +
+  geom_line(linewidth = 1) +
+  labs(x = "Time after dose (h)", y = "Mean hydroxyurea concentration (mg/L)",
+    colour = "Absorption phenotype",
+    caption = "Replicates Figure 1b of Sabo 2026 (individual predictions).")
+```
+
+```{r figure-4}
+# Replicates Figure 4b-c of Sabo 2026: VPC by absorption phenotype (simulated
+# observations including residual error; 5th, 50th and 95th percentiles).
+sim |>
+  dplyr::filter(phenotype != "mixed", time <= 6) |>
+  dplyr::group_by(phenotype, time) |>
+  dplyr::summarise(
+    Q05 = quantile(sim, 0.05),
+    Q50 = quantile(sim, 0.50),
+    Q95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~phenotype) +
+  labs(x = "Time after dose (h)", y = "Hydroxyurea concentration (mg/L)",
+    caption = "Replicates Figure 4b-c of Sabo 2026 (KINETIC = 0 slow, 1 rapid).")
+```
+
+# PKNCA validation
+
+The paper's non-compartmental analysis used the observed concentrations at the
+seven sampling times, AUC0-6h by the trapezoidal rule, and AUCinf = AUC0-6h +
+C6h / lambda_z with lambda_z from the last two points (Methods 2.4.1). The same
+calculation is repeated here at the same times, on two versions of the
+simulated data: the individual predictions (`Cc`), and simulated observations
+including residual error (`sim`), from which values below the 0.79 mg/L lower
+limit of quantification are removed. The second is the like-for-like
+comparison with observed data for Cmax and Tmax, because the maximum of seven
+noisy samples sits above the maximum of the noise-free curve. AUCinf and CL/F
+are computed on the individual predictions only: with a 35% proportional error
+the two-point lambda_z of a simulated profile is often near zero or negative,
+and the extrapolated area is then unbounded.
+
+```{r pknca}
+nca_input <- sim |>
+  dplyr::filter(time %in% t_paper, !is.na(Cc)) |>
+  dplyr::select(id, time, phenotype, Cc, sim) |>
+  tidyr::pivot_longer(c(Cc, sim), names_to = "prediction", values_to = "conc") |>
+  dplyr::mutate(
+    prediction = dplyr::recode(prediction,
+      Cc = "individual prediction",
+      sim = "with residual error"
+    ),
+    # Pre-dose concentration is zero for both versions; elsewhere drop simulated
+    # observations below the assay LLOQ.
+    conc = dplyr::if_else(time == 0, 0, conc)
+  ) |>
+  dplyr::filter(time == 0 | prediction == "individual prediction" | conc >= 0.79) |>
+  dplyr::mutate(hl_points = time %in% c(4, 6))
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, phenotype) |>
+  tidyr::crossing(prediction = c("individual prediction", "with residual error"))
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | phenotype + prediction + id)
+
+# Cmax, Tmax and AUC0-6h for every profile.
+nca_main <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_input, conc ~ time | phenotype + prediction + id),
+  dose_obj,
+  intervals = data.frame(
+    start = 0, end = c(6, Inf),
+    auclast = c(TRUE, FALSE), cmax = c(FALSE, TRUE), tmax = c(FALSE, TRUE)
+  )
+))
+
+# AUCinf and CL/F use the paper's two-point lambda_z from the 4-h and 6-h
+# samples, on the individual predictions only. With a 35% proportional error
+# the two-point slope of simulated observations is often near zero or
+# negative, and the resulting AUCinf values are unbounded.
+ipred_only <- function(x) dplyr::filter(x, prediction == "individual prediction")
+# A two-point fit has no adjusted r-squared; PKNCA warns once per such fit.
+# That warning is expected here and is the only one muffled.
+nca_tail <- withCallingHandlers(
+  PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(ipred_only(nca_input),
+      conc ~ time | phenotype + prediction + id,
+      include_half.life = "hl_points"
+    ),
+    PKNCA::PKNCAdose(ipred_only(dose_df), amt ~ time | phenotype + prediction + id),
+    intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE, cl.obs = TRUE)
+  )),
+  warning = function(w) {
+    if (grepl("adj.r.squared", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+)
+
+nca_long <- dplyr::bind_rows(as.data.frame(nca_main), as.data.frame(nca_tail))
+```
+
+## Comparison against published NCA
+
+The paper reports arithmetic means (Results 3.2.1), so the simulated values are
+summarised as means too.
+
+```{r nca-compare}
+sim_means <- nca_long |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "aucinf.obs", "cl.obs")) |>
+  dplyr::group_by(phenotype, prediction, PPTESTCD) |>
+  dplyr::summarise(PPORRES = mean(PPORRES, na.rm = TRUE), .groups = "drop")
+
+# The paper's overall means come from all 44 profiles, a mix of rapid and slow;
+# they are compared with the mixed cohort.
+published <- tibble::tribble(
+  ~phenotype, ~prediction, ~cmax, ~tmax, ~auclast, ~aucinf.obs, ~cl.obs,
+  "mixed", "individual prediction", 27.5, 1.07, 72.9, 101.2, 9.1,
+  "mixed", "with residual error", 27.5, 1.07, 72.9, NA, NA,
+  "rapid", "individual prediction", 36.5, NA, NA, NA, NA,
+  "rapid", "with residual error", 36.5, NA, NA, NA, NA,
+  "slow", "individual prediction", 22.3, NA, NA, NA, NA,
+  "slow", "with residual error", 22.3, NA, NA, NA, NA
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_means,
+  reference = published,
+  by = c("phenotype", "prediction"),
+  units = c(cmax = "mg/L", tmax = "h", auclast = "mg*h/L",
+    aucinf.obs = "mg*h/L", cl.obs = "L/h"),
+  tolerance_pct = 20
+) |>
+  # Keep only rows with a published value (the others carry a dash).
+  dplyr::filter(grepl("[0-9]", Reference))
+
+knitr::kable(cmp,
+  caption = paste(
+    "Simulated vs. published mean NCA (Sabo 2026 Results 3.2.1).",
+    "AUC0-6h is reported as AUClast over 0-6 h.",
+    "* differs from reference by >20%."
+  )
+)
+```
+
+```{r nca-gate}
+get_mean <- function(pheno, pred, code) {
+  v <- sim_means$PPORRES[sim_means$phenotype == pheno &
+    sim_means$prediction == pred & sim_means$PPTESTCD == code]
+  if (length(v) != 1L) stop("no unique simulated mean for ", pheno, "/", pred, "/", code)
+  v
+}
+ipred <- "individual prediction"
+obs <- "with residual error"
+# Exposure and clearance carry the structural parameters (CL/F, its weight
+# exponent, the dose), so a mis-transcription moves them by tens of percent.
+# The mean of 200 subjects with 33% CV on CL/F has a standard error near 3%.
+# Realised about -18% (AUCinf), -14% (AUC0-6h) and +5% (CL/F); the AUC
+# shortfall is discussed below, and 30% still fails on a doubled or halved
+# clearance, volume or dose.
+stopifnot(
+  abs(get_mean("mixed", ipred, "aucinf.obs") / 101.2 - 1) < 0.30,
+  abs(get_mean("mixed", ipred, "cl.obs") / 9.1 - 1) < 0.30,
+  abs(get_mean("mixed", ipred, "auclast") / 72.9 - 1) < 0.30
+)
+# The phenotype acts on Cmax: the paper's rapid/slow ratio of means is
+# 36.5 / 22.3 = 1.64. An effect lost or inverted (e_abs_rapid_ka = 0 or
+# negative) gives a ratio at or below 1.
+cmax_ratio <- get_mean("rapid", obs, "cmax") / get_mean("slow", obs, "cmax")
+stopifnot(cmax_ratio > 1.3, cmax_ratio < 2.2)
+```
+
+The simulated mean CL/F agrees with the observed mean (about +5%), and the
+rapid/slow Cmax ratio (about 1.6) matches the observed 36.5 / 22.3 = 1.64.
+Exposure is lower than observed: AUC0-6h by about 14% and AUCinf by about 18%.
+The simulated Cmax is lower in both phenotypes, by about 30% for the
+individual predictions and about 13% once residual error is added and the
+maximum is read from the seven sampled concentrations, as for the observed
+data. The flagged Tmax with residual error reflects noisy samples near the
+peak moving the observed maximum to a later sampling time.
+
+Two features of the study, rather than of the parameters, are the likely
+reasons for the lower exposure. First, the observed means pool the profiles
+taken at V0 and at V5, and V5 follows dose adjustment (by AUC at V1 in one
+arm, by 5 mg/kg/day steps every 3 months up to 35 mg/kg/day in the other),
+whereas the simulation doses every patient at the inclusion mean of 20.3
+mg/kg; the paper does not report the V5 doses. Second, the paper's AUCinf
+uses a two-point lambda_z on observed data, which is sensitive to assay noise
+in the tail. The remaining Cmax shortfall is in the absorption phase and
+matches the paper's own diagnostics: the phenotype-split VPC shows "the
+slight underestimation of absorption predictions for rapid profiles"
+(Results 3.2.2, Figure 4c), and a deviation at 10 min in the overall VPC
+(Figure 4a). The parameters are used as published.
+
+# Assumptions and deviations
+
+- **IIV scale.** Table 2 reports IIV as percentages and Supplementary Table S3
+  labels the same values 'IIV final model (CV%)'. They are read as the
+  coefficient of variation of a log-normal parameter, so
+  `omega^2 = log(1 + CV^2)`. If they were instead Monolix standard deviations
+  (`omega = 0.6407` on ka), the variances would be 0.410 / 0.109 / 0.121 on
+  ka / CL / V instead of 0.344 / 0.103 / 0.114; typical values are unaffected.
+- **Residual error form.** The paper reports a combined additive (a = 1.60
+  mg/L) and proportional (b = 0.35) model fitted in Monolix without naming the
+  variant. Monolix's default 'combined1' form (`a + b * f` as the standard
+  deviation) is used, which is `combined1()` in nlmixr2.
+- **Weight covariate.** Table 2 labels beta_Cl_NBW 'Effect of body surface on
+  Cl/F', but Eq. 4, the text and Supplementary Table S3 all apply it to body
+  weight normalised to 34.9 kg. Body weight is used.
+- **Absorption phenotype.** The covariate is observed, not estimated: a profile
+  is rapid when its observed Tmax is under 1 h. It was assigned per profile in
+  the study, and two patients changed from rapid to slow between visits. It is
+  held constant per simulated patient here. The register name `ABS_RAPID` was
+  ratified by the maintainers for this observed classification, kept separate
+  from the latent mixture-class indicator `MIX_FAST_ABS`.
+- **Virtual cohort.** Weight is log-normal with the Table 1 mean and SD,
+  truncated at 11.4 kg (lightest child) and 70 kg (an upper bound for the
+  adults, whose weights are not reported). Doses are normal around 20.3
+  mg/kg with SD 2.4 mg/kg, the inclusion (V0) dose; the doses at V5, after
+  adjustment, are not reported. A single dose is simulated because accumulation
+  over a 24-h interval is negligible (Typical-value checks).
+- **Pharmacodynamics.** The haematological analysis (MCV, reticulocytes, HbF,
+  neutrophils) is a set of correlations and group comparisons, not a fitted
+  model, so only the PK model is packaged.
+- No erratum or correction notice for the article was found as of 2026-11-21.

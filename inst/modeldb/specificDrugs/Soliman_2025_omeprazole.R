@@ -43,6 +43,7 @@ Soliman_2025_omeprazole <- function() {
     dosing = "mL of ingested meal / milk volume, dosed into the gastric_volume compartment (omeprazole itself enters only through the CP_OMEPRAZOLE_NGML covariate)",
     concentration = "ng/mL (omeprazole plasma concentration via CP_OMEPRAZOLE_NGML); hplus is in mmol/L and gastric_ph in pH units"
   )
+  dosing <- "gastric_volume"
 
   # Mechanistic PD states that have no canonical compartment name: the
   # relative proton-pump activity, the secreted intragastric H+ concentration

@@ -50,6 +50,7 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
   )
   vignette <- "Larson_2026_sulbactam_durlobactam_pediatric"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central", "central_sbt")
 
   # Durlobactam plasma residual variability is stratified by study phase in the
   # adult parent model. The poster's second approach removed covariate

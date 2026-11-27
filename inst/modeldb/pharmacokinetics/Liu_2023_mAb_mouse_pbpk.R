@@ -7,6 +7,7 @@ Liu_2023_mAb_mouse_pbpk <- function() {
     dosing = "nmol",
     concentration = "nmol/L"
   )
+  dosing <- "plasma"
 
   compartmentData <- list(
     # Tissue vascular (plasma) space: mAb amount

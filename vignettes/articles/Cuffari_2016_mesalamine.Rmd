@@ -1,0 +1,501 @@
+---
+title: "Mesalamine and N-acetyl-5-ASA in pediatric ulcerative colitis (Cuffari 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mesalamine and N-acetyl-5-ASA in pediatric ulcerative colitis (Cuffari 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Cuffari_2016_mesalamine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Cuffari_2016_mesalamine"))$description`
+* Article (open access): <https://doi.org/10.2147/DDDT.S95316>
+
+Cuffari et al. ran a Phase I randomised open-label study (NCT01130844) of
+once-daily multimatrix mesalamine (5-aminosalicylic acid, 5-ASA) at 30, 60 or
+100 mg/kg/day (capped at 4800 mg/day) for 7 days in children and adolescents with
+ulcerative colitis. Plasma and 0-24 h urine 5-ASA and N-acetyl-5-ASA (Ac-5-ASA)
+were measured on day 7 and analysed by non-compartmental analysis (Table 2) and by
+a joint parent-metabolite population PK model (Figure S1, Table S2). The model was
+then used to simulate steady-state exposures by weight band for the Phase III dose
+proposal (Figure 3, Tables S3 and S4).
+
+# Population
+
+Fifty-two subjects aged 5-17 years (mean 13.3 years; 25 children 5-12 years and
+36 adolescents 13-17 years across arms) weighing 18-82 kg were randomised to 30
+(n = 21), 60 (n = 22) or 100 (n = 9) mg/kg/day. Randomisation was stratified by
+body weight (18-24, 25-49 and 50-82 kg); the lightest stratum received only 60 or
+100 mg/kg/day and the heaviest only 30 or 60 mg/kg/day. 57.7% were female and
+98.1% White (Table 1). Total daily doses ranged from 900 to 4800 mg, made up from
+300, 600 and 1200 mg tablets.
+
+The same information is available programmatically:
+
+```{r population}
+str(readModelDb("Cuffari_2016_mesalamine")()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. They are
+collected here.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Structure: two parallel lagged first-order depots into a one-compartment 5-ASA central pool; renal (to urine) and metabolic (to Ac-5-ASA) clearance; one-compartment Ac-5-ASA with renal (to urine) and non-renal clearance | n/a | Results "Population pharmacokinetics"; Figure S1 |
+| `lka` (Ka1) | 0.0334 1/h | Table S2 |
+| `lka2` (Ka3) | 0.273 1/h | Table S2 |
+| `ltlag` (ALAG1) | 5.10 h | Table S2 |
+| `ldtlag2` (ALAG3, added to ALAG1) | 15.0 h | Table S2 and its abbreviation footnote; Results text |
+| `logitfrel` (F1) | logit(0.734) | Table S2 |
+| `lcl_renal` (CLR/F) | 1.15 L/h | Table S2; Results text |
+| `lcl_met` (CLM/F) | 85.6 L/h | Table S2; Results text |
+| `lvc` (Vc/F) | 109 L | Table S2; Results text |
+| `lcl_renal_ac5asa` (CLRM/F) | 2.54 L/h | Table S2; Results text |
+| `lcl_nonren_ac5asa` (CLNRM/F) | 74.4 L/h | Table S2; Results text |
+| `lvc_ac5asa` (VcM/F) | 7.10 L | Table S2; Results text |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | Table S2 "~WT" rows; reference 70 kg from footnote a |
+| IIV variances (11 etas) | 0.181, 0.115, 0.412, 0.133, 0.0823, 0.0225 FIX, 2.72, 1.87, 0.256, 0.0225 FIX, 0.662 | Table S2 omega^2 column |
+| `propSd`, `propSd_ac5asa` | sqrt(0.136), sqrt(0.0829) | Table S2 sigma^2 (plasma) |
+| `propSd_urine`, `propSd_urine_ac5asa` | 0.06 (fixed) | Table S2 sigma^2 = 0.0036 FIX (urine) |
+| Ac-5-ASA formed per mg 5-ASA: 195.15 / 153.14 | 1.2743 | Molecular weights in Methods "Non-compartmental pharmacokinetic analysis"; see Assumptions |
+
+# Virtual cohorts
+
+Individual data are not public. Two virtual cohorts are built.
+
+* **Study cohort** (Table 2 and Figure 2): 200 subjects per dose arm, with body
+  weight drawn uniformly over the strata each arm was open to (30 mg/kg: 25-82 kg;
+  60 mg/kg: 18-82 kg; 100 mg/kg: 18-49 kg). The daily dose is the mg/kg dose
+  rounded to the nearest 300 mg tablet increment, at least 900 mg and at most
+  4800 mg.
+* **Dose-proposal cohort** (Tables S3 and S4): 200 subjects per weight band and
+  dose level, weight uniform within the band (18-23, 24-35, 36-50 and 51-90 kg),
+  with the paper's fixed low and high doses.
+
+Both cohorts are dosed once daily for 7 days, as in the study, and summarised
+over the day-7 dosing interval (144-168 h). Every dose is entered into both
+depots; the model splits it with F1 and 1 - F1.
+
+```{r cohort}
+set.seed(2016)
+rxode2::rxSetSeed(2016)
+
+n_per_arm <- 200
+n_days <- 7
+dose_times <- (seq_len(n_days) - 1) * 24
+day7_start <- (n_days - 1) * 24
+
+# One subject per row: id, WT, daily dose, and grouping labels.
+make_events <- function(subjects, obs_tad) {
+  doses <- subjects |>
+    tidyr::crossing(time = dose_times, cmt = c("depot", "depot2")) |>
+    dplyr::mutate(amt = dose, evid = 1L, dvid = NA_integer_)
+  obs <- subjects |>
+    tidyr::crossing(time = day7_start + obs_tad) |>
+    dplyr::mutate(cmt = NA_character_, amt = 0, evid = 0L, dvid = 1L)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+arms <- tibble::tribble(
+  ~treatment,       ~mgkg, ~wt_lo, ~wt_hi,
+  "30 mg/kg/day",      30,     25,     82,
+  "60 mg/kg/day",      60,     18,     82,
+  "100 mg/kg/day",    100,     18,     49
+)
+study_subjects <- arms |>
+  dplyr::slice(rep(seq_len(dplyr::n()), each = n_per_arm)) |>
+  dplyr::mutate(
+    id = dplyr::row_number(),
+    WT = stats::runif(dplyr::n(), wt_lo, wt_hi),
+    dose = pmin(4800, pmax(900, 300 * round(mgkg * WT / 300)))
+  ) |>
+  dplyr::select(id, treatment, WT, dose)
+
+# 0.25 h grid over the day-7 interval for the profile figure; the paper's
+# sampling times (0, 2, 4, 6, 9, 12, 16, 24 h) are a subset of it.
+study_events <- make_events(study_subjects, obs_tad = seq(0, 24, by = 0.25))
+
+bands <- tibble::tribble(
+  ~band,      ~wt_lo, ~wt_hi, ~low, ~high,
+  "18-23 kg",     18,     23,  900,  1800,
+  "24-35 kg",     24,     35, 1200,  2400,
+  "36-50 kg",     36,     50, 1800,  3600,
+  "51-90 kg",     51,     90, 2400,  4800
+)
+proposal_subjects <- bands |>
+  tidyr::pivot_longer(c(low, high), names_to = "level", values_to = "dose") |>
+  dplyr::slice(rep(seq_len(dplyr::n()), each = n_per_arm)) |>
+  dplyr::mutate(
+    id = dplyr::row_number() + 10000L,
+    WT = stats::runif(dplyr::n(), wt_lo, wt_hi),
+    level = factor(level, levels = c("low", "high"))
+  ) |>
+  dplyr::select(id, band, level, WT, dose)
+proposal_events <- make_events(proposal_subjects, obs_tad = seq(0, 24, by = 0.5))
+
+stopifnot(
+  !anyDuplicated(c(unique(study_subjects$id), unique(proposal_subjects$id)))
+)
+```
+
+# Simulation
+
+Concentrations are summarised without residual error (`Cc` and `Cc_ac5asa` are
+the individual predictions), and the urine states are cumulative amounts in mg.
+
+```{r simulate}
+mod <- readModelDb("Cuffari_2016_mesalamine")
+
+sim_study <- rxode2::rxSolve(
+  mod,
+  events = study_events,
+  keep = c("treatment", "WT", "dose"),
+  returnType = "data.frame"
+) |>
+  dplyr::mutate(
+    tad = time - day7_start,
+    treatment = factor(treatment, levels = arms$treatment)
+  )
+
+sim_proposal <- rxode2::rxSolve(
+  mod,
+  events = proposal_events,
+  keep = c("band", "level", "WT", "dose"),
+  returnType = "data.frame"
+) |>
+  dplyr::mutate(tad = time - day7_start)
+```
+
+# Replicate published figures
+
+## Figure 2: day-7 plasma profiles by dose arm
+
+```{r figure-2, fig.width = 7, fig.height = 6}
+sim_study |>
+  tidyr::pivot_longer(c(Cc, Cc_ac5asa), names_to = "analyte", values_to = "conc") |>
+  dplyr::mutate(
+    analyte = dplyr::recode(analyte, Cc = "(A) 5-ASA", Cc_ac5asa = "(B) Ac-5-ASA")
+  ) |>
+  dplyr::group_by(analyte, treatment, tad) |>
+  dplyr::summarise(mean = mean(conc), sd = stats::sd(conc), .groups = "drop") |>
+  ggplot(aes(tad, mean, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = pmax(mean - sd, 0), ymax = mean + sd), alpha = 0.12, colour = NA) +
+  geom_line() +
+  facet_wrap(~analyte, ncol = 1) +
+  scale_x_continuous(breaks = seq(0, 24, by = 4)) +
+  labs(
+    x = "Time after the day-7 dose (h)", y = "Plasma concentration (ug/L)",
+    colour = NULL, fill = NULL,
+    title = "Simulated mean (+/- SD) day-7 profiles",
+    caption = "Compare with Figure 2 of Cuffari 2016."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+The simulated profiles have the shape of Figure 2: nearly flat over the dosing
+interval, a broad maximum around 6-9 h, a trough near 16 h, and a rise towards
+24 h. The late rise is the depot-2 input, lagged by about 20 h after each dose,
+and is the paper's "secondary peak at 24 hours post-dose". The 30 and 60
+mg/kg/day levels (5-ASA about 1000 and 2000 ug/L) match Figure 2. The 100
+mg/kg/day arm is higher than observed (about 3000 ug/L simulated against about
+2000-2500 ug/L observed after the first hours); see the PKNCA section.
+
+## Figure 3 and Tables S3 / S4: steady-state AUC by weight band
+
+```{r tables-s3-s4}
+auc_tau <- function(t, c) sum(diff(t) * (utils::head(c, -1) + utils::tail(c, -1)) / 2)
+
+proposal_auc <- sim_proposal |>
+  dplyr::group_by(id, band, level, dose) |>
+  dplyr::arrange(tad, .by_group = TRUE) |>
+  dplyr::summarise(
+    auc_asa = auc_tau(tad, Cc),
+    auc_ac = auc_tau(tad, Cc_ac5asa),
+    .groups = "drop"
+  )
+
+proposal_summary <- proposal_auc |>
+  tidyr::pivot_longer(c(auc_asa, auc_ac), names_to = "analyte", values_to = "auc") |>
+  dplyr::group_by(analyte, band, level, dose) |>
+  dplyr::summarise(
+    sim_mean = mean(auc),
+    sim_cv = 100 * stats::sd(auc) / mean(auc),
+    sim_median = stats::median(auc),
+    .groups = "drop"
+  )
+
+published_s3_s4 <- tibble::tribble(
+  ~analyte,  ~band,      ~level, ~pub_mean, ~pub_cv, ~pub_median,
+  "auc_asa", "18-23 kg", "low",     24100,    50.6,      22100,
+  "auc_asa", "18-23 kg", "high",    47000,    50.0,      43100,
+  "auc_asa", "24-35 kg", "low",     24600,    49.7,      22800,
+  "auc_asa", "24-35 kg", "high",    49600,    50.0,      45700,
+  "auc_asa", "36-50 kg", "low",     27000,    48.3,      25000,
+  "auc_asa", "36-50 kg", "high",    54000,    49.1,      50000,
+  "auc_asa", "51-90 kg", "low",     29700,    48.2,      27500,
+  "auc_asa", "51-90 kg", "high",    59700,    47.5,      55500,
+  "auc_ac",  "18-23 kg", "low",     33000,    42.1,      30800,
+  "auc_ac",  "18-23 kg", "high",    66500,    42.7,      63100,
+  "auc_ac",  "24-35 kg", "low",     34200,    43.9,      32400,
+  "auc_ac",  "24-35 kg", "high",    68300,    44.6,      64700,
+  "auc_ac",  "36-50 kg", "low",     37800,    42.5,      35700,
+  "auc_ac",  "36-50 kg", "high",    75200,    42.3,      71600,
+  "auc_ac",  "51-90 kg", "low",     41200,    41.8,      39200,
+  "auc_ac",  "51-90 kg", "high",    82900,    41.4,      78900
+)
+
+s3_s4 <- proposal_summary |>
+  dplyr::mutate(level = as.character(level)) |>
+  dplyr::inner_join(published_s3_s4, by = c("analyte", "band", "level")) |>
+  dplyr::mutate(
+    analyte = dplyr::recode(analyte, auc_asa = "5-ASA (Table S3)", auc_ac = "Ac-5-ASA (Table S4)"),
+    pct_diff_mean = 100 * (sim_mean - pub_mean) / pub_mean
+  ) |>
+  dplyr::arrange(analyte, band, level)
+
+s3_s4 |>
+  dplyr::transmute(
+    Analyte = analyte, `Weight band` = band, `Dose (mg)` = dose,
+    `Mean, simulated` = signif(sim_mean, 3), `Mean, published` = pub_mean,
+    `Mean diff (%)` = round(pct_diff_mean, 1),
+    `CV% simulated` = round(sim_cv, 1), `CV% published` = pub_cv,
+    `Median, simulated` = signif(sim_median, 3), `Median, published` = pub_median
+  ) |>
+  knitr::kable(caption = "Day-7 AUC(0-24) (ng*h/mL): simulated vs. Cuffari 2016 Tables S3 and S4.")
+```
+
+```{r figure-3, fig.width = 7, fig.height = 6}
+proposal_auc |>
+  tidyr::pivot_longer(c(auc_asa, auc_ac), names_to = "analyte", values_to = "auc") |>
+  dplyr::mutate(
+    analyte = dplyr::recode(analyte, auc_asa = "5-ASA", auc_ac = "Ac-5-ASA"),
+    level = dplyr::recode(level, low = "Low dose", high = "High dose")
+  ) |>
+  ggplot(aes(band, auc / 1000)) +
+  geom_boxplot(outlier.size = 0.5) +
+  facet_grid(analyte ~ level) +
+  labs(
+    x = "Weight band", y = "AUC(0-24) at day 7 (ug*h/mL)",
+    caption = "Compare with Figure 3 of Cuffari 2016."
+  )
+```
+
+```{r tables-s3-s4-check}
+stopifnot(
+  # A mis-transcribed clearance, volume or molecular-weight factor moves every
+  # band by 20% or more; the band-to-band spread is weight-distribution noise.
+  abs(stats::median(s3_s4$pct_diff_mean)) < 10,
+  stats::quantile(abs(s3_s4$pct_diff_mean), 0.9) < 20
+)
+```
+
+The simulated means agree with Tables S3 and S4 to within about 15% in every
+band (median difference `r round(stats::median(s3_s4$pct_diff_mean), 1)`%). The
+largest shortfall is in the 51-90 kg band, where the simulated cohort is spread
+uniformly over 51-90 kg; a cohort skewed towards the lighter end, as a pediatric
+population would be, raises the AUC of a fixed dose. The ratio of Ac-5-ASA to
+5-ASA AUC (about 1.4) matches the tables only with the molecular-weight conversion
+in the formation term; without it the ratio would be about 1.1 (see
+Assumptions).
+
+The simulated CV is about 40% for 5-ASA and 35% for Ac-5-ASA against the
+published 48-51% and 41-45%, and the simulated 2.5th-97.5th percentile range is
+narrower than the published one (for example 22,100 (906-96,900) ng*h/mL for the
+18-23 kg low dose). The published simulation design is not described beyond "80
+subjects with 1,000 replications" in Trial Simulator, so the source of the extra
+spread (uncertainty in the parameters, residual error, the number of doses before
+steady state, or the eta scale of F1) cannot be identified; the centres agree.
+
+# PKNCA validation against Table 2
+
+NCA uses the paper's day-7 sampling times (0, 2, 4, 6, 9, 12, 16 and 24 h after
+the dose), with the interval 0-24 h after the day-7 dose.
+
+```{r pknca}
+sampling <- c(0, 2, 4, 6, 9, 12, 16, 24)
+nca_input <- sim_study |>
+  dplyr::filter(tad %in% sampling) |>
+  dplyr::select(id, treatment, tad, Cc, Cc_ac5asa, dose)
+
+run_nca <- function(conc_col) {
+  conc_df <- nca_input |>
+    dplyr::transmute(id, treatment, time = tad, conc = .data[[conc_col]]) |>
+    dplyr::filter(!is.na(conc))
+  dose_df <- nca_input |>
+    dplyr::distinct(id, treatment, dose) |>
+    dplyr::mutate(time = 0)
+  conc_obj <- PKNCA::PKNCAconc(conc_df, conc ~ time | treatment + id)
+  dose_obj <- PKNCA::PKNCAdose(dose_df, dose ~ time | treatment + id)
+  intervals <- data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+  as.data.frame(res) |>
+    dplyr::select(treatment, id, PPTESTCD, PPORRES) |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+    dplyr::group_by(treatment) |>
+    dplyr::summarise(
+      cmax = mean(cmax), auclast = mean(auclast), tmax = stats::median(tmax),
+      .groups = "drop"
+    )
+}
+
+nca_asa <- run_nca("Cc")
+nca_ac <- run_nca("Cc_ac5asa")
+
+published_asa <- tibble::tribble(
+  ~treatment,      ~cmax, ~auclast, ~tmax,
+  "30 mg/kg/day",   1884,    21411,  6.00,
+  "60 mg/kg/day",   3825,    46173,  8.98,
+  "100 mg/kg/day",  4314,    49213,  1.98
+)
+published_ac <- tibble::tribble(
+  ~treatment,      ~cmax, ~auclast, ~tmax,
+  "30 mg/kg/day",   2396,    30942,  9.00,
+  "60 mg/kg/day",   4113,    58119,  7.48,
+  "100 mg/kg/day",  4968,    63067,  1.98
+)
+
+nca_units <- c(cmax = "ug/L", auclast = "ug*h/L", tmax = "h")
+cmp_asa <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_asa |> dplyr::mutate(treatment = as.character(treatment)),
+  reference = published_asa,
+  by = "treatment", units = nca_units, tolerance_pct = 20
+)
+cmp_ac <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_ac |> dplyr::mutate(treatment = as.character(treatment)),
+  reference = published_ac,
+  by = "treatment", units = nca_units, tolerance_pct = 20
+)
+knitr::kable(cmp_asa, caption = paste(
+  "5-ASA day-7 NCA, simulated vs. Cuffari 2016 Table 2.",
+  "Cmax and AUC are arithmetic means, tmax a median. * marks a difference above 20%."
+))
+knitr::kable(cmp_ac, caption = paste(
+  "Ac-5-ASA day-7 NCA, simulated vs. Cuffari 2016 Table 2.",
+  "Cmax and AUC are arithmetic means, tmax a median. * marks a difference above 20%."
+))
+```
+
+```{r pknca-check}
+auc_ratio <- c(
+  nca_asa$auclast / published_asa$auclast[match(nca_asa$treatment, published_asa$treatment)],
+  nca_ac$auclast / published_ac$auclast[match(nca_ac$treatment, published_ac$treatment)]
+)
+stopifnot(abs(stats::median(auc_ratio) - 1) < 0.2)
+```
+
+In the 30 and 60 mg/kg/day arms (43 of the 52 subjects) simulated mean Cmax and
+AUC(0-24) agree with Table 2 within about 15% for both analytes, including the
+dose-proportional step between the two arms. The 100 mg/kg/day arm is
+over-predicted by 30-75%. The observed exposure in that arm (nine subjects) rose
+less than proportionally from 60 mg/kg/day, which the paper notes and attributes
+possibly to the 4800 mg cap and the lighter subjects in that arm; the published
+model is linear in dose and scales clearance with weight, so it predicts close to
+proportional exposure for a mg/kg dose, as the simulation shows. The
+over-prediction is a property of the published model against its smallest arm,
+not of the transcription, and the arm is too small to say more. Observed tmax is
+spread over the whole interval (0-24 h in every arm) because the profiles are
+flat, so the tmax medians are not informative.
+
+# Urinary excretion against Table 2
+
+```{r urine}
+urine_day7 <- sim_study |>
+  dplyr::filter(tad %in% c(0, 24)) |>
+  dplyr::group_by(id, treatment, dose) |>
+  dplyr::arrange(tad, .by_group = TRUE) |>
+  dplyr::summarise(
+    xu_asa = diff(urine),
+    xu_ac = diff(urine_ac5asa),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(pct_absorbed = 100 * (xu_asa + 0.7847 * xu_ac) / dose)
+
+urine_published <- tibble::tribble(
+  ~treatment,      ~pub_xu_asa, ~pub_xu_ac, ~pub_pct,
+  "30 mg/kg/day",          162,        532,     29.4,
+  "60 mg/kg/day",          298,        708,     27.0,
+  "100 mg/kg/day",         235,        593,     22.1
+)
+
+urine_day7 |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    sim_xu_asa = mean(xu_asa), sim_xu_ac = mean(xu_ac),
+    sim_pct = mean(pct_absorbed), .groups = "drop"
+  ) |>
+  dplyr::mutate(treatment = as.character(treatment)) |>
+  dplyr::inner_join(urine_published, by = "treatment") |>
+  dplyr::transmute(
+    Arm = treatment,
+    `Xu 5-ASA sim (mg)` = round(sim_xu_asa, 1), `Xu 5-ASA Table 2 (mg)` = pub_xu_asa,
+    `Xu Ac-5-ASA sim (mg)` = round(sim_xu_ac, 1), `Xu Ac-5-ASA Table 2 (mg)` = pub_xu_ac,
+    `% dose absorbed sim` = round(sim_pct, 1), `% dose absorbed Table 2` = pub_pct
+  ) |>
+  knitr::kable(caption = "Day-7 0-24 h urinary recovery: simulated vs. Cuffari 2016 Table 2.")
+```
+
+**The published renal clearances do not reproduce the observed urinary
+recovery.** With CLR/F = 1.15 L/h against CLM/F = 85.6 L/h, the model sends about
+1.3% of the systemic 5-ASA to urine, and with CLRM/F = 2.54 L/h against CLNRM/F =
+74.4 L/h about 3.3% of Ac-5-ASA. The simulated 0-24 h urinary amounts are
+therefore one-eighth to one-fifth of the Table 2 means, and the "% dose absorbed"
+is about 5% rather than 22-29%. The non-compartmental renal clearances in Table 2
+(5.0-6.5 L/h for 5-ASA and 10-16 L/h for Ac-5-ASA, as true rather than apparent
+clearances) are also several-fold larger than the model's apparent values, which
+should be the larger of the two. The plasma predictions, which depend only on the
+sums CLR/F + CLM/F and CLRM/F + CLNRM/F, are unaffected. The renal clearances are
+packaged exactly as printed in Table S2 and the Results text, which agree with
+each other; the urine compartments should not be used for prediction until the
+discrepancy is resolved.
+
+# Assumptions and deviations
+
+* **Molecular-weight conversion in metabolite formation.** The paper does not say
+  how the acetylation flux is converted. Ac-5-ASA is carried in mg of Ac-5-ASA,
+  and each mg of 5-ASA cleared by CLM/F forms 195.15 / 153.14 = 1.274 mg of
+  Ac-5-ASA (the molecular weights printed in Methods). This is the reading that
+  reproduces the paper's own simulations: Tables S3 and S4 give an Ac-5-ASA to
+  5-ASA AUC ratio of 1.37-1.39 in every band, which the model gives with the
+  conversion (about 1.4) and not without it (about 1.1).
+* **F1 and its random effect.** F1 is the fraction of each dose entering depot 1,
+  and the remainder enters depot 2, so the total bioavailability is 1 and all
+  clearances and volumes are apparent. The scale of the F1 random effect is not
+  stated. An exponential effect with variance 0.662 would put F1 above 1, and the
+  depot-2 fraction below 0, in about a third of subjects, so the effect is
+  applied on the logit scale with the published variance. The printed 95% CI
+  (0.413-1.06) is symmetric on the natural scale, which suggests F1 itself was the
+  estimated quantity with a transformed random effect. Steady-state AUC does not
+  depend on F1, so this choice affects only the shape of the profile.
+* **Depot-2 lag.** ALAG3 is "the absorption lag time from depot 3 in addition to
+  the lag time from depot 1", so the depot-2 lag is ALAG1 + ALAG3, each with its
+  own random effect.
+* **Allometric exponents.** Table S2 lists separate fixed exponents for each
+  clearance (all 0.75) and each volume (both 1); they are carried as one shared
+  exponent per parameter type, with the same values.
+* **IIV variances.** Table S2's footnote gives CV = sqrt(exp(omega^2) - 1) for
+  omega^2 above 0.15, but every printed CV equals sqrt(omega^2) x 100 (for
+  example Ka1: sqrt(2.72) = 165%). The omega^2 column is used as the variance.
+* **Virtual cohorts.** Weights are drawn uniformly over each arm's strata or each
+  band, the daily dose is rounded to the nearest 300 mg tablet increment within
+  900-4800 mg, and both cohorts are dosed for 7 days. The paper does not give the
+  weight distribution of either cohort, the tablet combination per subject, or
+  the number of doses in its steady-state simulation.
+* **Urine.** The urine compartments and their residual errors are packaged as
+  published, but they do not reproduce the observed urinary recovery (see
+  "Urinary excretion against Table 2").
+* No erratum or correction for this article was found (checked 2026-11-24).

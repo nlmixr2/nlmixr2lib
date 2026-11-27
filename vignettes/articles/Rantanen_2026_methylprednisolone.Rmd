@@ -1,0 +1,474 @@
+---
+title: "Methylprednisolone (Rantanen 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Methylprednisolone (Rantanen 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Rantanen_2026_methylprednisolone"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Rantanen_2026_methylprednisolone"))$description`
+* Article: <https://doi.org/10.1007/s00228-026-04168-7> (open access; PMC13486032)
+
+Rantanen and colleagues pooled four prospective Finnish trials of
+high-dose methylprednisolone given to neonates and infants at the start of
+open-heart surgery with cardiopulmonary bypass (CPB), and fitted a
+population PK model in NONMEM 7.5. Time was modelled in minutes, doses in
+mg, concentrations in ng/mL, clearance in L/min and volume in L (Methods,
+"Pharmacometric analysis"); the packaged model keeps those units. A
+two-compartment model lowered the OFV by about 25 units but did not improve
+the diagnostics, so the authors kept the one-compartment model.
+
+# Population
+
+Ninety-three patients contributed 278 plasma concentrations (median three
+per patient; Table 1 and Results). Postnatal age was 1-574 days (median 140)
+and postmenstrual age 270-854 days (median 424); mean (SD) body weight was
+5.8 (1.9) kg, and 53 of 93 were girls. The four cohorts, which are also the
+four operation groups of the final model, were:
+
+| Operation group | Study | n | Weight, kg (mean, SD) | Postnatal age, d (median, range) | Dose |
+|---|---|---|---|---|---|
+| OPER 0, neonates (reference) | Keski-Nisula 2013 | 20 | 3.6 (0.41) | 7 (1-27) | 30 mg/kg IV |
+| OPER 1, tetralogy of Fallot | Keski-Nisula 2016 | 28 | 7.0 (1.9) | 164 (71-311) | 5 or 30 mg/kg IV, randomized |
+| OPER 2, VSD/AVSD | Keski-Nisula 2015 | 30 | 5.8 (1.5) | 144 (98-574) | 30 mg/kg IV or into the CPB prime, randomized |
+| OPER 3, Glenn procedure | Keski-Nisula 2020 | 15 | 6.7 (1.1) | 180 (94-371) | 30 mg/kg IV |
+
+Arterial samples were taken 30 min after the start of CPB, 5 min after
+protamine and 6 h after the end of CPB, giving sampling times of 23-758 min
+after the dose.
+
+```{r population}
+pop <- rxode2::rxode(readModelDb("Rantanen_2026_methylprednisolone"))$population
+tibble::tibble(
+  Field = names(pop),
+  Value = vapply(pop, function(x) paste(as.character(x), collapse = "; "), character(1))
+) |>
+  knitr::kable(caption = "Population metadata recorded with the model.")
+```
+
+# Source trace
+
+Every `ini()` entry in
+`inst/modeldb/specificDrugs/Rantanen_2026_methylprednisolone.R` carries an
+in-file comment giving its source. They are collected here.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| One-compartment model, first-order elimination, IV bolus | -- | Methods "Pharmacometric analysis"; Results "Population pharmacokinetic model" |
+| `lcl` (CL at 5.7 kg, PMA 424 d) | log(0.0761 L/min) | Table 2, THETA(1) |
+| `lvc` (V at 5.7 kg, OPER 0) | log(27.1 L) | Table 2, THETA(2) |
+| `e_wt_cl` | 0.75, fixed | Table 2, fixed scaling parameters; Methods "Covariate analysis" |
+| `e_wt_vc` | 1, fixed | Table 2, fixed scaling parameters; Methods "Covariate analysis" |
+| `e_page_cl` | 0.503 | Table 2, THETA(3) |
+| `e_study_2008_007413_76_tof_vc` | -0.404 | Table 2, THETA(4) |
+| `e_study_2008_007413_76_vsd_avsd_vc` | -0.475 | Table 2, THETA(5) |
+| `e_study_2008_007413_76_glenn_vc` | -0.884 | Table 2, THETA(6) |
+| `etalcl` variance | 0.208 | Table 2, OMEGA(1,1) |
+| `etalvc` variance | 0.0388 | Table 2, OMEGA(2,2) |
+| `propSd_neonate` | sqrt(0.0851) = 0.2917 | Table 2, SIGMA(1,1) |
+| `propSd_tof` | sqrt(0.179) = 0.4231 | Table 2, SIGMA(2,2) |
+| `propSd_vsd_avsd` | sqrt(0.0428) = 0.2069 | Table 2, SIGMA(3,3) |
+| `propSd_glenn` | sqrt(0.0197) = 0.1404 | Table 2, SIGMA(4,4) |
+| CL = CL_TV (WT/5.7)^0.75 (PMA/424)^theta_PMA | -- | Methods "Covariate analysis", CL equation |
+| V = V_TV exp(theta_OPER) (WT/5.7) | -- | Methods "Covariate analysis" (multiplicative log-scale categorical effects); Table 2 |
+| theta_i = theta exp(eta_i) | -- | Methods "Pharmacometric analysis" |
+| y = ipred (1 + eps_prop), one sigma per operation group | -- | Methods "Pharmacometric analysis"; Table 2 |
+
+## Derived quantities against Table 2
+
+Table 2 reports derived values next to the estimates. They follow from the
+packaged parameters:
+
+```{r derived}
+mod <- rxode2::rxode(readModelDb("Rantanen_2026_methylprednisolone"))
+th <- mod$theta
+om <- mod$omega
+
+derived <- tibble::tibble(
+  Quantity = c(
+    "Typical CL (L/h)",
+    "V ratio, tetralogy of Fallot vs neonates",
+    "V ratio, VSD/AVSD vs neonates",
+    "V ratio, Glenn vs neonates",
+    "IIV CV% on CL",
+    "IIV CV% on V",
+    "Residual SD%, neonates",
+    "Residual SD%, tetralogy of Fallot",
+    "Residual SD%, VSD/AVSD",
+    "Residual SD%, Glenn"
+  ),
+  Packaged = c(
+    exp(th[["lcl"]]) * 60,
+    exp(th[["e_study_2008_007413_76_tof_vc"]]),
+    exp(th[["e_study_2008_007413_76_vsd_avsd_vc"]]),
+    exp(th[["e_study_2008_007413_76_glenn_vc"]]),
+    100 * sqrt(exp(om["etalcl", "etalcl"]) - 1),
+    100 * sqrt(exp(om["etalvc", "etalvc"]) - 1),
+    100 * th[["propSd_neonate"]],
+    100 * th[["propSd_tof"]],
+    100 * th[["propSd_vsd_avsd"]],
+    100 * th[["propSd_glenn"]]
+  ),
+  Published = c(4.57, 0.668, 0.622, 0.413, 48.1, 19.9, 29.2, 42.3, 20.7, 14.0)
+) |>
+  mutate(`Difference (%)` = 100 * (Packaged / Published - 1))
+
+knitr::kable(derived, digits = 3, caption = "Derived values: packaged model versus Table 2 and Results text.")
+
+# Same-parameter arithmetic: only rounding of the published figures separates them.
+stopifnot(all(abs(derived$`Difference (%)`) < 0.5))
+```
+
+# Virtual cohort
+
+Each operation group is drawn from its Table 1 summary. Weight is normal
+with the published mean and SD, truncated to plausible bounds; postnatal age
+is log-normal around the published median and truncated to the published
+range. Postmenstrual age follows the paper: the neonatal cohort's PMA is
+drawn directly from its 270-316 day range, and the other cohorts are given
+PMA = 280 days + postnatal age (Table 1, footnote a). PMA is converted to
+months for the canonical `PAGE` column.
+
+```{r cohort}
+set.seed(20260818)
+rxode2::rxSetSeed(20260818)
+
+draw_trunc_norm <- function(n, mean, sd, lo, hi) {
+  pmin(pmax(rnorm(n, mean, sd), lo), hi)
+}
+
+draw_pna <- function(n, median, lo, hi) {
+  pmin(pmax(median * exp(rnorm(n, 0, 0.45)), lo), hi)
+}
+
+n_per <- 100L
+
+groups <- tibble::tribble(
+  ~group,           ~wt_mean, ~wt_sd, ~pna_med, ~pna_lo, ~pna_hi, ~tof, ~vsd_avsd, ~glenn,
+  "Neonates",       3.6,      0.41,   7,        1,       27,      0,    0,         0,
+  "TOF",            7.0,      1.9,    164,      71,      311,     1,    0,         0,
+  "VSD/AVSD",       5.8,      1.5,    144,      98,      574,     0,    1,         0,
+  "Glenn",          6.7,      1.1,    180,      94,      371,     0,    0,         1
+)
+
+make_group <- function(row, id_offset) {
+  pna <- draw_pna(n_per, row$pna_med, row$pna_lo, row$pna_hi)
+  pma_days <- if (row$group == "Neonates") {
+    stats::runif(n_per, 270, 316)
+  } else {
+    280 + pna
+  }
+  # The tetralogy of Fallot trial randomized 5 versus 30 mg/kg; the other
+  # cohorts all received 30 mg/kg.
+  dose_mgkg <- if (row$group == "TOF") rep(c(5, 30), length.out = n_per) else rep(30, n_per)
+  tibble::tibble(
+    id = id_offset + seq_len(n_per),
+    group = row$group,
+    dose_mgkg = dose_mgkg,
+    WT = draw_trunc_norm(n_per, row$wt_mean, row$wt_sd, 2.5, 13),
+    PAGE = pma_days / 30.4375,
+    STUDY_2008_007413_76_TOF = row$tof,
+    STUDY_2008_007413_76_VSD_AVSD = row$vsd_avsd,
+    STUDY_2008_007413_76_GLENN = row$glenn
+  )
+}
+
+subjects <- dplyr::bind_rows(lapply(seq_len(nrow(groups)), function(i) {
+  make_group(groups[i, ], id_offset = (i - 1L) * n_per)
+})) |>
+  mutate(
+    treatment = ifelse(group == "TOF", paste0(group, " ", dose_mgkg, " mg/kg"), group),
+    amt = dose_mgkg * WT
+  )
+stopifnot(!anyDuplicated(subjects$id))
+
+obs_times <- c(0, seq(5, 720, by = 5))
+
+events <- dplyr::bind_rows(
+  subjects |> mutate(time = 0, evid = 1L, cmt = "central"),
+  subjects |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(evid = 0L, amt = 0, cmt = "central")
+) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+subjects |>
+  group_by(group) |>
+  summarise(
+    n = dplyr::n(),
+    `WT mean (kg)` = mean(WT),
+    `PMA median (d)` = median(PAGE * 30.4375),
+    `Dose mean (mg)` = mean(amt)
+  ) |>
+  knitr::kable(digits = 1, caption = "Virtual cohort by operation group.")
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod, events,
+  keep = c("group", "treatment", "WT", "dose_mgkg")
+) |>
+  as.data.frame()
+
+# Typical values: omega = NA and sigma = NA solve with every eta and epsilon at
+# zero. zeroRe() is avoided because it shares state with the population solve
+# above.
+sim_typ <- suppressWarnings(rxode2::rxSolve(
+  mod, events,
+  omega = NA, sigma = NA,
+  keep = c("group", "treatment", "WT", "dose_mgkg")
+)) |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+## Figure 1: observed concentration-time profiles
+
+Figure 1 of Rantanen 2026 plots all 278 observed concentrations against time
+after the dose. The maintainers digitised the figure (274 of the 278 points
+were recovered; a few overlap) and summarised the observations by time
+window. The simulated cohort, with residual error, is summarised over the
+same windows.
+
+```{r fig1, fig.cap = "Simulated observations at the protocol sampling windows (replicates the layout of Figure 1 of Rantanen 2026)."}
+sample_windows <- sim |>
+  filter(time %in% c(seq(30, 240, by = 5), seq(400, 720, by = 5))) |>
+  group_by(id) |>
+  slice_sample(n = 3) |>
+  ungroup()
+
+ggplot(sample_windows, aes(time, sim, group = id, colour = group)) +
+  geom_line(alpha = 0.15) +
+  geom_point(size = 0.8, alpha = 0.6) +
+  coord_cartesian(xlim = c(0, 800), ylim = c(0, 15000)) +
+  labs(
+    x = "Time after dose (min)",
+    y = "Methylprednisolone Cp (ng/mL)",
+    colour = "Operation group"
+  ) +
+  theme_bw()
+```
+
+```{r fig1-windows}
+# Digitised from Figure 1 of Rantanen 2026: number of observations and their
+# median (ng/mL) in each time window.
+fig1_obs <- tibble::tibble(
+  window = c("(0,100]", "(100,200]", "(200,300]", "(300,450]", "(450,600]", "(600,800]"),
+  n_obs = c(53, 92, 33, 18, 63, 15),
+  obs_median = c(6966, 5646, 4622, 1668, 885, 901)
+)
+
+window_breaks <- c(0, 100, 200, 300, 450, 600, 800)
+
+fig1_sim <- sim |>
+  filter(time > 0) |>
+  mutate(window = as.character(cut(time, window_breaks))) |>
+  group_by(window) |>
+  summarise(sim_median = median(sim), .groups = "drop")
+
+fig1_check <- dplyr::inner_join(fig1_obs, fig1_sim, by = "window") |>
+  mutate(ratio = sim_median / obs_median)
+
+fig1_check |>
+  dplyr::rename(
+    "Time window (min)" = window,
+    "Observed n" = n_obs,
+    "Observed median (ng/mL)" = obs_median,
+    "Simulated median (ng/mL)" = sim_median,
+    "Simulated / observed" = ratio
+  ) |>
+  knitr::kable(digits = 2, caption = "Simulated versus digitised observed medians by time window (Figure 1).")
+
+# Windows with at least 30 observations. The simulated cohort samples every
+# subject uniformly in time, while the trials sampled at CPB-anchored times that
+# differ by cohort, so only agreement within two-fold is asserted; a unit slip in
+# CL or V moves these medians by an order of magnitude.
+fig1_main <- dplyr::filter(fig1_check, n_obs >= 30)
+stopifnot(
+  nrow(fig1_main) == 4L,
+  all(fig1_main$ratio > 0.5 & fig1_main$ratio < 2)
+)
+```
+
+## Figure 4: prediction-corrected VPC
+
+Figure 4 is a prediction-corrected VPC of all four cohorts, plotted in hours
+on a log scale. Its simulated median falls from about 8000 ng/mL at 0.5 h to
+about 950 ng/mL at 15 h (read off the figure by the maintainers). Prediction
+correction rescales each observation to the median population prediction of
+its time bin, so in the wide late bins the corrected values sit above the
+raw concentrations: Figure 1's raw observations at 450-600 min have a median
+near 900 ng/mL, while Figure 4 plots about 2000 ng/mL at 8 h. The
+uncorrected simulated median below therefore matches Figure 4 early and
+falls below it late; it is shown for orientation, and the quantitative check
+is the one against Figure 1 above.
+
+```{r fig4, fig.cap = "Pooled 5th/50th/95th percentiles of the simulated cohort (not prediction-corrected) with the Figure 4 simulated median (points) of Rantanen 2026."}
+fig4_median <- tibble::tibble(
+  time_h = c(0.5, 2, 4, 8, 15),
+  conc = c(8000, 5500, 3900, 2000, 950)
+)
+
+pooled <- sim |>
+  filter(time > 0) |>
+  group_by(time) |>
+  summarise(
+    p05 = quantile(sim, 0.05),
+    p50 = median(sim),
+    p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(time_h = time / 60)
+
+ggplot(pooled, aes(time_h)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.25) +
+  geom_line(aes(y = p50), linewidth = 1) +
+  geom_point(data = fig4_median, aes(time_h, conc), colour = "red", size = 2) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Methylprednisolone concentration (ng/mL)") +
+  theme_bw()
+```
+
+## Typical profiles by operation group
+
+```{r typical, fig.cap = "Typical-value concentration-time profiles for each operation group at its cohort's simulated weight and age."}
+sim_typ |>
+  filter(time > 0) |>
+  group_by(treatment, time) |>
+  summarise(Cc = median(Cc), .groups = "drop") |>
+  ggplot(aes(time, Cc, colour = treatment)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time after dose (min)", y = "Methylprednisolone (ng/mL)", colour = NULL) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+The paper reports no NCA. The check below runs PKNCA on the typical-value
+(no random effects) simulation and compares each operation group's AUC and
+half-life with the closed-form one-compartment values computed from the same
+covariates: AUC = dose / CL and t1/2 = ln 2 V / CL.
+
+```{r pknca}
+conc_df <- sim_typ |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_sim <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("aucinf.obs", "half.life")) |>
+  select(treatment, id, PPTESTCD, PPORRES)
+
+# Closed form, per subject, from the same covariates and typical parameters
+closed <- subjects |>
+  mutate(
+    cl = exp(th[["lcl"]]) * (WT / 5.7)^0.75 * (PAGE * 30.4375 / 424)^th[["e_page_cl"]],
+    vc = exp(th[["lvc"]] +
+      th[["e_study_2008_007413_76_tof_vc"]] * STUDY_2008_007413_76_TOF +
+      th[["e_study_2008_007413_76_vsd_avsd_vc"]] * STUDY_2008_007413_76_VSD_AVSD +
+      th[["e_study_2008_007413_76_glenn_vc"]] * STUDY_2008_007413_76_GLENN) * (WT / 5.7),
+    aucinf.obs = 1000 * amt / cl,
+    half.life = log(2) * vc / cl
+  ) |>
+  select(treatment, id, aucinf.obs, half.life) |>
+  tidyr::pivot_longer(c(aucinf.obs, half.life), names_to = "PPTESTCD", values_to = "closed")
+
+nca_chk <- dplyr::inner_join(nca_sim, closed, by = c("treatment", "id", "PPTESTCD")) |>
+  mutate(pct_diff = 100 * (PPORRES / closed - 1))
+
+# Same parameters on both sides: only extrapolation and trapezoid error differ.
+stopifnot(
+  nrow(nca_chk) == 2L * nrow(subjects),
+  abs(median(nca_chk$pct_diff)) < 2,
+  quantile(abs(nca_chk$pct_diff), 0.9) < 5
+)
+
+nca_simulated <- nca_sim |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(PPORRES = median(PPORRES), .groups = "drop")
+nca_reference <- closed |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(PPORRES = median(closed), .groups = "drop")
+
+nlmixr2lib::ncaComparisonTable(
+  simulated = nca_simulated,
+  reference = nca_reference,
+  by = "treatment"
+) |>
+  knitr::kable(caption = "Median PKNCA AUC0-inf (min*ng/mL) and half-life (min) versus the closed-form one-compartment values, by operation group.")
+```
+
+The half-lives range from roughly 1.7 h in the Glenn cohort (smallest
+volume) to over 4 h in neonates (lowest clearance, set by both weight and
+postmenstrual age).
+
+# Assumptions and deviations
+
+* **Operation-group indicators.** The source covariate `OPER` (0 = neonates,
+  1 = tetralogy of Fallot, 2 = VSD/AVSD, 3 = Glenn) is carried as three
+  binary study indicators, `STUDY_2008_007413_76_TOF`,
+  `STUDY_2008_007413_76_VSD_AVSD` and `STUDY_2008_007413_76_GLENN`, with the
+  neonatal cohort as the reference when all three are 0. Each operation group
+  is one source trial, and the authors caution that the group effects on V
+  mix developmental, anatomical and perioperative differences (Discussion),
+  so the maintainers carry them as study indicators rather than as
+  procedure-type covariates. All four trials were registered under the one
+  EudraCT number 2008-007413-76 (Methods; EU Clinical Trials Register,
+  sponsor protocol code "steroiditutkimus", checked 2026-11-22), so the
+  indicator names combine that number with the cohort label.
+* **Per-group residual error.** The paper estimated "separate residual error
+  models ... for each study"; Table 2 labels the four sigmas by operation
+  group. Because each study is one operation group, the residual SD is
+  selected by the same indicators.
+* **Postmenstrual age units.** The source centres PMA in days on 424 days.
+  The packaged model takes the canonical `PAGE` column in months and converts
+  with 30.4375 days per month inside `model()`.
+* **Units.** Time is in minutes and CL in L/min, as the source fitted them.
+  Concentration is returned in ng/mL (dose in mg divided by V in L, times
+  1000).
+* **Route.** Doses given into the CPB-circuit priming solution were modelled
+  as intravenous boluses by the authors and are dosed into `central` here.
+* **Virtual cohort.** Weight and postnatal-age distributions within each
+  cohort are reconstructed from the Table 1 summaries (mean/SD for weight,
+  median/range for age); the individual data are not published. The
+  tetralogy of Fallot cohort is split evenly between 5 and 30 mg/kg because
+  the number given each dose is not reported.
+* **Figure comparisons.** The Figure 1 window medians come from the
+  maintainers' digitisation of the published scatter (274 of 278 points
+  recovered) and the Figure 4 median points were read off the figure; both
+  are approximate. Figure 4 is prediction-corrected and is shown for
+  orientation only.
+* **Errata.** Europe PMC lists no erratum or correction for this article (checked
+  2026-11-16).

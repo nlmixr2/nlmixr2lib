@@ -1,0 +1,329 @@
+---
+title: "Metoprolol (Chai 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Metoprolol (Chai 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+ui <- rxode2::rxode(readModelDb("Chai_2026_metoprolol"))
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: [Clin Transl Sci 2026;19(8):e70677](https://doi.org/10.1111/cts.70677)
+  (open access)
+
+# Population
+
+Chai 2026 analysed 83 sparse plasma trough concentrations of metoprolol from 42
+older Chinese adults (60-93 years, mean 75.5; 21 aged 60-74 and 21 aged 75 or
+older) with cardiovascular-kidney-metabolic (CKM) syndrome stage 3 or 4,
+treated at Peking University Third Hospital in a non-interventional study
+(NCT05893849). All received immediate-release metoprolol tartrate, 6.25-50 mg
+per administration and mostly 12.5-25 mg twice daily. 40.5% were female; mean
+body weight was 68.3 kg (44-102 kg); median eGFR was 72 mL/min/1.73 m^2
+(24-104). Patients taking CYP2D6 inhibitors or CYP3A4 inducers were excluded.
+Twelve patients (28.6%) were rs1065852 T/T and 18 (42.9%) had a CKM2S2-BAG
+score above the cohort median of 11 (Chai 2026 Table 2 and Table S2).
+
+Samples were drawn mostly 14-16 h after the previous dose; no absorption-phase
+samples were collected, which is why the absorption rate constant was fixed to
+a literature value.
+
+The same information is available programmatically:
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Structure | One compartment, first-order absorption, first-order elimination, no lag time | Results "PopPK Model Analysis Identifying Significant Factors"; Discussion (lag time tested and not retained) |
+| `lka` | `fixed(log(0.235))` 1/h | Table 3, Ka 0.235 (fixed), from Eugene 2016 (paper ref 31; packaged as `Eugene_2016a_metoprolol`) |
+| `lcl` | `log(126)` L/h | Table 3 Final, CL/F 126 L/h (RSE 35%); CL/F equation |
+| `lvc` | `log(570)` L | Table 3 Final, V/F 570 L (RSE 78%) |
+| `e_cyp2d6_star10_hom_cl` | -0.318 | Table 3 Final, genotype on CL/F; CL/F equation factor `(1 - 0.318)^rs1065852` |
+| `e_ckm2s2_bag_gt11_cl` | -0.302 | Table 3 Final, CKM2S2-BAG score on CL/F; CL/F equation factor `(1 - 0.302)^CKM2S2-BAG` |
+| `etalcl` | omega^2 = 0.159 | Table 3 Final, IIV CL/F 39.9%; CL/F equation prints the random effect as `e^0.159` (0.399^2 = 0.159) |
+| `propSd` | 0.347 | Table 3 Final, proportional RUV CV 34.7% |
+| CKM2S2-BAG dichotomy | score > 11 | Methods "PopPK Modeling" (cohort-median binary classification); Table S3 footnote a |
+| CKM2S2-BAG definition | 7-item point score | Table 1 (after Yang 2025, iScience 28:112780) |
+
+# Typical-value check against the published simulations
+
+Chai 2026 simulated metoprolol tartrate 6.25, 12.5, 25 and 50 mg every 12 h in
+four subgroups (rs1065852 C/C or C/T vs T/T, crossed with CKM2S2-BAG <= 11 vs
+> 11) and tabulated the median steady-state trough (Table 4), peak (Table S4)
+and AUC over the dosing interval (Table S5). Because only CL/F carries
+inter-individual variability and the model is linear, the median of each of
+these steady-state quantities sits close to the typical-value prediction, so
+the typical-value solve below is a direct transcription check.
+
+```{r scenarios}
+doses <- c(50, 25, 12.5, 6.25)
+tau <- 12
+n_dose <- 40 # 480 h of twice-daily dosing; steady state is reached within ~1 day
+t_ss <- (n_dose - 1) * tau # start of the last dosing interval
+
+# Any score above 11 gives the high-score clearance; 8 and 14 are arbitrary
+# values on either side of the cut.
+subgroups <- tibble::tribble(
+  ~subgroup, ~CYP2D6_STAR10_HOM, ~SCORE_CKM2S2_BAG,
+  "C/C or C/T; low score", 0L, 8,
+  "C/C or C/T; high score", 0L, 14,
+  "T/T; low score", 1L, 8,
+  "T/T; high score", 1L, 14
+)
+scen <- tidyr::crossing(subgroups, dose = doses) |>
+  dplyr::mutate(
+    subgroup = factor(subgroup, levels = subgroups$subgroup),
+    dose_lab = factor(paste(dose, "mg BID"), levels = paste(doses, "mg BID"))
+  )
+
+make_events <- function(scen, n_per, obs_times) {
+  ids <- scen[rep(seq_len(nrow(scen)), each = n_per), ]
+  ids$id <- seq_len(nrow(ids))
+  dose_rows <- ids[rep(seq_len(nrow(ids)), each = n_dose), ]
+  dose_rows$time <- rep(seq(0, by = tau, length.out = n_dose), nrow(ids))
+  dose_rows$amt <- dose_rows$dose
+  dose_rows$evid <- 1L
+  dose_rows$cmt <- "depot"
+  obs_rows <- ids[rep(seq_len(nrow(ids)), each = length(obs_times)), ]
+  obs_rows$time <- rep(obs_times, nrow(ids))
+  obs_rows$amt <- 0
+  obs_rows$evid <- 0L
+  obs_rows$cmt <- "central"
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    as.data.frame()
+}
+
+ev_tv <- make_events(scen, n_per = 1, obs_times = t_ss + seq(0, tau, by = 0.05))
+sim_tv <- withCallingHandlers(
+  rxode2::rxSolve(
+    rxode2::zeroRe(ui), ev_tv,
+    keep = c("subgroup", "dose_lab", "dose"),
+    returnType = "data.frame"
+  ),
+  # Typical-value solve with zeroRe(): this warning is expected.
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+)
+
+tv <- sim_tv |>
+  dplyr::group_by(subgroup, dose_lab, dose) |>
+  dplyr::summarise(
+    cmin = Cc[which.max(time)],
+    cmax = max(Cc),
+    auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    .groups = "drop"
+  )
+
+published <- tibble::tribble(
+  ~subgroup, ~dose, ~cmin_pub, ~cmax_pub, ~auc_pub,
+  "C/C or C/T; low score", 50, 18.3, 42.7, 395.8,
+  "C/C or C/T; low score", 25, 9.1, 21.4, 197.9,
+  "C/C or C/T; low score", 12.5, 4.6, 10.7, 99.0,
+  "C/C or C/T; low score", 6.25, 2.3, 5.3, 49.5,
+  "C/C or C/T; high score", 50, 31.4, 57.3, 568.2,
+  "C/C or C/T; high score", 25, 15.7, 28.7, 284.1,
+  "C/C or C/T; high score", 12.5, 7.8, 14.3, 142.1,
+  "C/C or C/T; high score", 6.25, 4.0, 7.2, 71.0,
+  "T/T; low score", 50, 32.1, 58.2, 578.2,
+  "T/T; low score", 25, 16.1, 29.1, 289.1,
+  "T/T; low score", 12.5, 8.0, 14.5, 144.5,
+  "T/T; low score", 6.25, 3.9, 7.3, 72.3,
+  "T/T; high score", 50, 52.8, 79.6, 836.4,
+  "T/T; high score", 25, 26.4, 39.8, 418.2,
+  "T/T; high score", 12.5, 13.2, 19.9, 209.1,
+  "T/T; high score", 6.25, 6.6, 9.9, 104.6
+) |>
+  dplyr::mutate(subgroup = factor(subgroup, levels = subgroups$subgroup))
+
+tv_cmp <- tv |>
+  dplyr::inner_join(published, by = c("subgroup", "dose")) |>
+  dplyr::mutate(
+    pct_cmin = 100 * (cmin / cmin_pub - 1),
+    pct_cmax = 100 * (cmax / cmax_pub - 1),
+    pct_auc = 100 * (auc / auc_pub - 1)
+  )
+
+tv_cmp |>
+  dplyr::arrange(subgroup, dplyr::desc(dose)) |>
+  dplyr::transmute(
+    subgroup, dose_lab,
+    cmin = round(cmin, 1), cmin_pub, cmax = round(cmax, 1), cmax_pub,
+    auc = round(auc, 1), auc_pub
+  ) |>
+  dplyr::rename(
+    "Subgroup" = subgroup, "Regimen" = dose_lab,
+    "Cmin,ss model" = cmin, "Cmin,ss Table 4" = cmin_pub,
+    "Cmax,ss model" = cmax, "Cmax,ss Table S4" = cmax_pub,
+    "AUCtau model" = auc, "AUCtau Table S5" = auc_pub
+  ) |>
+  knitr::kable(caption = "Typical-value steady-state exposure (ng/mL, ng*h/mL) versus the published simulated medians.")
+```
+
+```{r tv-gate}
+# Deterministic solve against printed medians of a stochastic simulation:
+# the printed values carry one decimal and the paper's medians include
+# Monte-Carlo noise, so the bound is a few percent rather than numerical
+# precision. A mis-transcribed CL/F, V/F or covariate effect moves these by
+# 20-50%.
+stopifnot(
+  all(abs(tv_cmp$pct_cmin) < 5),
+  all(abs(tv_cmp$pct_cmax) < 5),
+  all(abs(tv_cmp$pct_auc) < 5)
+)
+```
+
+The typical-value apparent clearance in rs1065852 T/T patients with a high
+CKM2S2-BAG score is 126 x 0.682 x 0.698 = `r round(126 * 0.682 * 0.698, 1)`
+L/h, which the paper reports as 60.0 L/h, a 52.4% reduction.
+
+# Stochastic simulation (replicates Figure 3)
+
+A virtual cohort of 100 subjects per subgroup and regimen (1,600 in total) is
+simulated with the model's inter-individual variability on CL/F. Residual
+error is not added, so the curves are individual predictions.
+
+```{r stochastic}
+rxode2::rxSetSeed(20260724)
+ev_sto <- make_events(scen, n_per = 100, obs_times = t_ss + seq(0, tau, by = 0.25))
+sim_sto <- rxode2::rxSolve(
+  rxode2::zeroRe(ui, which = "sigma"), ev_sto,
+  keep = c("subgroup", "dose_lab", "dose"),
+  returnType = "data.frame"
+) |>
+  dplyr::mutate(tad = time - t_ss)
+```
+
+```{r figure3, fig.height = 7, fig.cap = "Replicates Figure 3 of Chai 2026: simulated steady-state metoprolol concentrations (median, 5th and 95th percentiles) by subgroup and twice-daily regimen. Dashed lines mark the 8.0 ng/mL beta1-blockade reference (green) and the 16.95 ng/mL fall-risk threshold (red)."}
+sim_sto |>
+  dplyr::group_by(subgroup, dose_lab, tad) |>
+  dplyr::summarise(
+    p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.25) +
+  geom_line(colour = "steelblue4") +
+  geom_hline(yintercept = 16.95, colour = "red", linetype = "dashed") +
+  geom_hline(yintercept = 8.0, colour = "darkgreen", linetype = "dashed") +
+  facet_grid(dose_lab ~ subgroup, scales = "free_y") +
+  labs(x = "Time after dose at steady state (h)", y = "Metoprolol (ng/mL)") +
+  theme_bw(base_size = 9)
+```
+
+# PKNCA validation
+
+```{r pknca}
+conc_df <- sim_sto |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, subgroup, dose_lab)
+dose_df <- ev_sto |>
+  dplyr::filter(evid == 1, time >= t_ss) |>
+  dplyr::select(id, time, amt, subgroup, dose_lab)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | subgroup + dose_lab + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | subgroup + dose_lab + id)
+intervals <- data.frame(
+  start = t_ss, end = t_ss + tau,
+  cmax = TRUE, cmin = TRUE, auclast = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r nca-compare}
+reference_wide <- published |>
+  dplyr::mutate(dose_lab = factor(paste(dose, "mg BID"), levels = levels(scen$dose_lab))) |>
+  dplyr::transmute(
+    subgroup = as.character(subgroup), dose_lab = as.character(dose_lab),
+    cmax = cmax_pub, cmin = cmin_pub, auclast = auc_pub
+  )
+sim_long <- as.data.frame(nca_res$result) |>
+  dplyr::mutate(subgroup = as.character(subgroup), dose_lab = as.character(dose_lab))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_long,
+  reference = reference_wide,
+  by = c("subgroup", "dose_lab"),
+  params = c("cmax", "cmin", "auclast"),
+  units = c(cmax = "ng/mL", cmin = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Subgroup" = subgroup, "Regimen" = dose_lab) |>
+  knitr::kable(
+    caption = paste(
+      "Median steady-state NCA of the stochastic cohort versus Chai 2026",
+      "Table 4 (Cmin), Table S4 (Cmax) and Table S5 (AUCtau).",
+      "* differs from the published median by more than 20%."
+    ),
+    digits = 1
+  )
+```
+
+```{r nca-gate}
+pct <- as.numeric(gsub("[%*+]", "", cmp[["% diff"]]))
+stopifnot(!anyNA(pct), length(pct) == 48)
+# Each row is the median of 100 subjects with omega = 0.40 on CL/F, so its
+# Monte-Carlo SD is about 1.25 * 40% / sqrt(100) = 5%; the 48 rows are
+# independent cohorts. Assert on the centre and a robust envelope, never the
+# extremes: a mis-transcribed CL/F or covariate effect shifts every row of a
+# subgroup by 30-50%.
+stopifnot(
+  abs(median(pct)) < 7.5,
+  quantile(abs(pct), 0.9) < 20
+)
+```
+
+# Assumptions and deviations
+
+* **Dosing unit.** Doses are milligrams of metoprolol tartrate, as in the
+  paper; CL/F and V/F are apparent values on that basis. The typical-value
+  AUC over a dosing interval (dose / CL/F) reproduces Table S5 without any
+  salt correction, which confirms the convention.
+* **IIV scale.** The 39.9% reported for CL/F is the square root of the
+  NONMEM variance: the printed CL/F equation carries the random effect as
+  `e^0.159`, and 0.399^2 = 0.159. The model uses omega^2 = 0.159.
+* **CKM2S2-BAG covariate.** The model takes the raw CKM2S2-BAG score and
+  forms the paper's cohort-median dichotomy (> 11 vs <= 11) inside
+  `model()`. Users holding only the binary class can supply any score on the
+  matching side of 11 (for example 11 and 12).
+* **rs1065852.** The paper genotyped rs1065852 alone and treated it as a
+  marker related to CYP2D6\*10, not a full star-allele call. The model's
+  `CYP2D6_STAR10_HOM` column is 1 for rs1065852 T/T. Carriers of other alleles
+  that share the T variant (for example \*4) would be coded T-positive here.
+* **Covariates not retained.** Chronic heart failure entered at the second
+  forward step but was removed at backward elimination; eGFR was significant
+  univariately but not once the CKM2S2-BAG split was included (Table S3).
+  Both are listed in `covariatesDataExcluded`.
+* **Absorption.** Ka is fixed at the Eugene 2016 elderly-patient value; the
+  data hold no information on absorption, so peak concentrations and the
+  shape of the dosing-interval profile are inherited from that study.
+* **Simulation design.** The paper's simulation cohort size and seed are not
+  reported. The comparison above uses 100 subjects per subgroup and regimen
+  without residual error.
+* **Errata.** Europe PMC lists no erratum or correction linked to Chai 2026
+  as of 2026-11-14.

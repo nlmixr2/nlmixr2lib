@@ -1,0 +1,592 @@
+---
+title: "4beta-hydroxycholesterol and midazolam as CYP3A4 biomarkers (Leil 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{4beta-hydroxycholesterol and midazolam as CYP3A4 biomarkers (Leil 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Leil_2014_4betaHydroxycholesterol"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Leil_2014_4betaHydroxycholesterol"))$description`
+* Article: <https://doi.org/10.1038/psp.2014.18> (open access; the NONMEM
+  control stream for MCMC chain 1 is in the Supplementary Data)
+
+Leil et al. built a Bayesian mechanism-based PK/PD model to ask how well plasma
+4beta-hydroxycholesterol (4betaHC) reports CYP3A4 inhibition and induction
+compared with the midazolam (MDZ) probe. One jointly fitted model carries:
+
+* **Midazolam PK** -- oral dosing through a three-state gut chain (`depot`,
+  `transit1`, `transit2`; transit rate `3 / MTT`) whose middle state loses drug
+  to gut-wall CYP3A4, then two-compartment disposition with well-stirred hepatic
+  clearance built on a Michaelis-Menten intrinsic clearance.
+* **Ketoconazole PK** (perpetrator, not measured in the study) -- oral
+  two-compartment PK with saturable well-stirred hepatic clearance. Its
+  unbound concentration competitively inhibits midazolam intrinsic clearance
+  (`Ki`) and reversibly inhibits 4betaHC formation (`Ki_4B`).
+* **Rifampin induction** -- not a PK model: a step-on drive on the liver and
+  gut CYP3A4 synthesis rates while the subject is inside the rifampin dosing
+  window (`CONMED_RIFAMPICIN = 1`), with CYP3A4 turning over at a 70 h
+  half-life.
+* **Endogenous sterols** -- total cholesterol turnover feeds the
+  CYP3A4-dependent formation of 4betaHC and the CYP3A4-independent formation of
+  4alpha-hydroxycholesterol (4alphaHC).
+
+## Using the model
+
+| Input | Compartment / column | Units |
+|-------|----------------------|-------|
+| Oral midazolam | `depot` | mg |
+| Intravenous midazolam | `central` | mg |
+| Oral ketoconazole | `depot_ketoconazole` | mg |
+| Rifampin co-administration | `CONMED_RIFAMPICIN` (0/1, time-varying) | -- |
+
+Outputs are `Cc` (midazolam, nmol/L), `total_cholesterol` (umol/L),
+`hydroxycholesterol_4beta` and `hydroxycholesterol_4alpha` (nmol/L), and the
+relative CYP3A4 pools `enzyme_liver` and `enzyme_gut` (1 at baseline). Because
+the model declares four residual endpoints, observation records place `cmt`
+on an ODE state (here `central`) and carry `dvid = 1`; rxode2 then returns
+every output as a column on those rows.
+
+# Population
+
+`r readModelDb("Leil_2014_4betaHydroxycholesterol")()$population$notes`
+
+Thirty-four healthy adults aged 18-45 years were randomised to 14 days of
+once-daily ketoconazole 400 mg, rifampin 600 mg or placebo. Each subject
+received oral (2 mg) and intravenous (0.4 mg) midazolam on day 1 or 2 and again
+on day 15 or 16, and was followed to day 30 with daily predose sampling of
+4betaHC, 4alphaHC and total cholesterol (Leil 2014 Methods). The paper does not
+tabulate weight, sex or race; the model has no subject covariates beyond the
+rifampin indicator.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing at its source. Posterior
+means are from Table 1; the model structure, fixed design constants and unit
+conversions are from the NONMEM control stream in the Supplementary Data.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lfpe` (FPE, gut first-pass scaling) | 1.0 | Table 1 'F_M' posterior mean; `FPE` in `$PK` |
+| `lka` (KAm) | 3.91 1/h | Table 1 |
+| `lq` (Qm) | 13.4 L/h | Table 1 |
+| `lvc` (VCm) | 45.3 L | Table 1 |
+| `lvp` (VPm) | 114 L | Table 1 |
+| `lvmax` (Vmax_m) | 1,100 umol/h | Table 1 |
+| `lkm` (Km_m) | 2.10 umol/L | Table 1 |
+| `lfu` (Fus) | 0.040 | Table 1 |
+| `lqh` (QH) | 80 L/h | Table 1 |
+| `lmtt` (MTT) | 0.544 h | Table 1 |
+| `logitfdepot_ketoconazole` (FK) | logit(0.70) | Table 1 'F_K'; logit form from `$PK` (`F4 = 1 - EXP(FK)/(1+EXP(FK))`) |
+| `lka_ketoconazole` | 0.61 1/h | Table 1 |
+| `lq_ketoconazole` | 3.22 L/h | Table 1 |
+| `lvc_ketoconazole` | 20.4 L | Table 1 |
+| `lvp_ketoconazole` | 24.5 L | Table 1 |
+| `lvmax_ketoconazole` | 23.0 umol/h | Table 1 |
+| `lkm_ketoconazole` | 0.48 umol/L | Table 1 |
+| `lfu_ketoconazole` (Fuk) | 0.029 | Table 1 |
+| `lrbase_hydroxycholesterol_4beta` (B_BHCH) | 81.2 nmol/L | Table 1 |
+| `lthalf_hydroxycholesterol_4beta` (BHC_HL) | 124 h | Table 1 |
+| `lthalf_total_cholesterol` (CH_HL) | 192 h, fixed | Table 1; `$THETA (192 FIX)` |
+| `lrbase_total_cholesterol` (BCH) | 4,244 umol/L | Table 1 |
+| `lrbase_hydroxycholesterol_4alpha` (B_AHCH) | 10.6 nmol/L | Table 1 |
+| `lthalf_enzyme` (CYP_HL) | 70 h, fixed | Table 1; `$THETA (70 FIX)` |
+| `lki` (Ki, midazolam) | 0.125 nmol/L | Table 1; Results text |
+| `lki_hydroxycholesterol_4beta` (Ki_4B) | 50 nmol/L | Table 1; Results text |
+| `lfoldind_liver` (FOLDINDS) | 3.43 | Table 1 |
+| `lfoldind_gut` (FOLDINDG) | 29.6 | Table 1 |
+| `tind` (TIND) | 312 h, fixed | `$PK`: `INDEND - INDSTART = 360 - 48` |
+| `eta*` variances | (posterior ISV)^2 | Table 1 'Posterior ISV' column, read as SD |
+| `etalthalf_total_cholesterol`, `etalthalf_enzyme` | 0.001, fixed | `$OMEGA 0.001 FIX` |
+| `propSd`, `addSd` (midazolam) | 0.36, 0.046 nmol/L | Table 1 sigma_1, sigma_2 |
+| `addSd_total_cholesterol` | 1,170 umol/L | Table 1 sigma_3 (see deviations) |
+| `addSd_hydroxycholesterol_4beta` | 28.3 nmol/L | Table 1 sigma_4 |
+| `addSd_hydroxycholesterol_4alpha` | 4.19 nmol/L | Table 1 sigma_5 |
+| Gut chain, first-pass loss `cl_gut * fpe * transit1` | -- | `$DES` `DADT(1)`, `DADT(14)`, `DADT(15)` |
+| Well-stirred MDZ clearance, `INH = 1 + Cu_keto / Ki` on Km | -- | `$DES` `CLINTmS`, `CLINTmG`, `CLmS`, `CLmG`; Figure 1 |
+| Ketoconazole saturable clearance on total concentration | -- | `$DES` `CLINT`, `CL` |
+| Ketoconazole peripheral input from the depot amount | -- | `$DES` `DADT(6) = Q/VC*A(4) - Q/VP*A(6)` |
+| 4betaHC formation `kform * enzyme_liver * INH4B * total_cholesterol` | -- | `$DES` `DADT(8)`; Figure 1 |
+| 4alphaHC elimination at `0.693 / CH_HL` | -- | `$PK` `KELA = 0.693/CH_HL` |
+| CYP3A4 synthesis `kdeg * (1 + FOLD * (1 - exp(-kdeg * TIND)))` | -- | `$DES` `INDS`, `INDG` |
+| Unit conversions (MW 326 midazolam, 531 ketoconazole) | -- | `$PK` `S2`; `$DES` `CPMUM`, `CPKUMUB` |
+
+# Virtual cohort
+
+The study design is reproduced for three arms (placebo, ketoconazole,
+rifampin). Ketoconazole is dosed once daily for 14 days from 48 h (day 3) to
+360 h (day 16), and the rifampin indicator is on over the same window, which is
+the `INDSTART = 48` / `INDEND = 360` window of the control stream. Midazolam is
+given at 0 h (day 1) and 336 h (day 15). Oral and intravenous midazolam are
+simulated in separate virtual subjects so that the 24 h AUC of one route does
+not carry the tail of the other; the study gave the two routes on consecutive
+days. With 100 subjects per arm and route the cohort is 600 subjects.
+
+```{r cohort}
+n_per_group <- 100L
+mdz_dose <- c(oral = 2, iv = 0.4)
+perp_times <- 48 + 24 * 0:13
+mdz_times <- c(0, 336)
+
+obs_grid <- sort(unique(c(
+  seq(0, 24, by = 0.25),
+  seq(336, 360, by = 0.25),
+  seq(24, 720, by = 12),
+  48, 360
+)))
+
+make_group <- function(arm, mdz_route, id_offset) {
+  ids <- id_offset + seq_len(n_per_group)
+  mdz <- tidyr::expand_grid(id = ids, time = mdz_times) |>
+    mutate(
+      amt = mdz_dose[[mdz_route]], evid = 1L,
+      cmt = if (mdz_route == "oral") "depot" else "central"
+    )
+  keto <- if (arm == "Ketoconazole") {
+    tidyr::expand_grid(id = ids, time = perp_times) |>
+      mutate(amt = 400, evid = 1L, cmt = "depot_ketoconazole")
+  } else {
+    NULL
+  }
+  obs <- tidyr::expand_grid(id = ids, time = obs_grid) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central")
+  bind_rows(mdz, keto, obs) |>
+    mutate(
+      dvid = ifelse(evid == 0L, 1L, NA_integer_),
+      # Indicator on over [48, 360) h; a record exists at both switch times.
+      CONMED_RIFAMPICIN = as.numeric(arm == "Rifampin" & time >= 48 & time < 360),
+      arm = arm,
+      mdz_route = mdz_route
+    ) |>
+    arrange(id, time, desc(evid))
+}
+
+groups <- tidyr::expand_grid(
+  arm = c("Placebo", "Ketoconazole", "Rifampin"),
+  mdz_route = c("oral", "iv")
+)
+events <- bind_rows(lapply(seq_len(nrow(groups)), function(i) {
+  make_group(groups$arm[i], groups$mdz_route[i], id_offset = (i - 1L) * n_per_group)
+}))
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- rxode2::rxode2(readModelDb("Leil_2014_4betaHydroxycholesterol"))
+
+rxode2::rxSetSeed(20140618)
+sim <- rxode2::rxSolve(
+  mod, events = events,
+  keep = c("arm", "mdz_route"),
+  covsInterpolation = "locf",
+  useLinCmt = FALSE
+) |>
+  as.data.frame()
+
+# Typical-value solve: one subject per arm and mdz_route.
+events_typ <- events |>
+  group_by(arm, mdz_route) |>
+  filter(id == min(id)) |>
+  ungroup()
+sim_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = events_typ,
+  keep = c("arm", "mdz_route"),
+  covsInterpolation = "locf",
+  useLinCmt = FALSE
+) |>
+  as.data.frame()
+```
+
+# Steady-state hold
+
+Without a perpetrator, the sterol and enzyme states must sit at their baselines
+for the whole 30 days, because each starts at `kin / kout`. The placebo
+typical-value solve uses the same parameters on both sides of the comparison,
+so the tolerance is numerical.
+
+```{r steady-state}
+pl <- sim_typ |> filter(arm == "Placebo", mdz_route == "oral")
+theta <- mod$theta
+ss_dev <- c(
+  total_cholesterol = max(abs(pl$total_cholesterol / exp(theta[["lrbase_total_cholesterol"]]) - 1)),
+  hydroxycholesterol_4beta = max(abs(pl$hydroxycholesterol_4beta / exp(theta[["lrbase_hydroxycholesterol_4beta"]]) - 1)),
+  hydroxycholesterol_4alpha = max(abs(pl$hydroxycholesterol_4alpha / exp(theta[["lrbase_hydroxycholesterol_4alpha"]]) - 1)),
+  enzyme_liver = max(abs(pl$enzyme_liver - 1)),
+  enzyme_gut = max(abs(pl$enzyme_gut - 1))
+)
+knitr::kable(
+  data.frame(state = names(ss_dev), max_relative_deviation = signif(ss_dev, 3)),
+  caption = "Placebo typical value: largest relative departure from baseline over 0-720 h."
+)
+stopifnot(all(ss_dev < 1e-4))
+```
+
+# Replicate published figures
+
+## Figure 2a-f: midazolam concentration-time profiles
+
+Leil 2014 Figure 2 shows the posterior median and 90% interval of midazolam on
+the day-15 occasion of each arm (day 1 for the placebo panels). The panels
+below show the simulated median and 5th-95th percentiles over the 24 h after the
+day-15 dose (day 1 for placebo).
+
+```{r figure-2-mdz, fig.height = 6}
+mdz_profiles <- sim |>
+  mutate(period = ifelse(time < 336, "day 1", "day 15")) |>
+  filter(
+    (arm == "Placebo" & period == "day 1" & time <= 24) |
+      (arm != "Placebo" & period == "day 15" & time <= 360)
+  ) |>
+  mutate(tad = ifelse(period == "day 1", time, time - 336)) |>
+  filter(tad > 0) |>
+  group_by(arm, mdz_route, tad) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(
+    arm = factor(arm, levels = c("Placebo", "Ketoconazole", "Rifampin")),
+    mdz_route = factor(mdz_route, levels = c("oral", "iv"), labels = c("Oral midazolam 2 mg", "i.v. midazolam 0.4 mg"))
+  )
+
+ggplot(mdz_profiles, aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_grid(mdz_route ~ arm) +
+  scale_y_log10() +
+  labs(
+    x = "Time after midazolam dose (h)", y = "Midazolam (nmol/L)",
+    caption = "Replicates Figure 2a-f of Leil 2014 (median and 5th-95th percentiles)."
+  )
+```
+
+## Figure 2g-h: 4beta-hydroxycholesterol over the study
+
+```{r figure-2-4bhc}
+hc_profiles <- sim |>
+  filter(mdz_route == "oral", time >= 72, arm != "Placebo") |>
+  group_by(arm, time) |>
+  summarise(
+    Q05 = quantile(hydroxycholesterol_4beta, 0.05),
+    Q50 = median(hydroxycholesterol_4beta),
+    Q95 = quantile(hydroxycholesterol_4beta, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(hc_profiles, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~arm, scales = "free_y") +
+  labs(
+    x = "Time (h)", y = "4beta-hydroxycholesterol (nmol/L)",
+    caption = "Replicates Figure 2g (ketoconazole) and 2h (rifampin) of Leil 2014."
+  )
+```
+
+Read by eye from the published figure, the ketoconazole panel's median dips to
+about 55 nmol/L near 350 h and recovers to about 75 nmol/L by 700 h; the
+simulated median is about 59 nmol/L at 348 h and 80 nmol/L at 696 h. The
+rifampin panel's median rises to about 200 nmol/L between 350 and 450 h and
+falls to about 140 nmol/L by 700 h. The simulated median has the same timing
+but peaks higher, at about 255 nmol/L, and is about 150 nmol/L at 696 h.
+The per-subject day-14 ratio, which removes the baseline, agrees with Table 2
+within 10% (next section), so the difference is mostly in the absolute level
+read off the figure.
+
+# PKNCA validation
+
+Midazolam AUC over 0-24 h is computed for the day-1 and day-15 doses of every
+subject.
+
+```{r pknca}
+# LSODA undershoots zero by about its absolute tolerance late after a dose
+# (measured: the most negative value is under 1e-7 of the subject's peak). PKNCA's
+# log-down trapezoid returns NaN on a negative value, so assert the undershoot
+# is integrator noise relative to each subject's peak, then floor it at zero.
+undershoot <- sim |>
+  group_by(id) |>
+  summarise(rel = min(Cc) / max(Cc), .groups = "drop")
+stopifnot(!anyNA(sim$Cc), all(undershoot$rel > -1e-4))
+
+sim_nca <- sim |>
+  filter(!is.na(Cc), (time <= 24) | (time >= 336 & time <= 360)) |>
+  mutate(Cc = pmax(Cc, 0)) |>
+  select(id, time, Cc, arm, mdz_route)
+
+dose_df <- events |>
+  filter(evid == 1L, cmt %in% c("depot", "central")) |>
+  select(id, time, amt, arm, mdz_route)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + mdz_route + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + mdz_route + id)
+intervals <- data.frame(start = c(0, 336), end = c(24, 360), auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+auc <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "auclast") |>
+  mutate(period = ifelse(start == 0, "day1", "day15")) |>
+  select(id, arm, mdz_route, period, auc = PPORRES) |>
+  tidyr::pivot_wider(names_from = period, values_from = auc) |>
+  mutate(ratio = day15 / day1)
+```
+
+## Comparison against published NCA
+
+Table 2 of Leil 2014 reports geometric-mean midazolam AUC0-24 for the observed
+data and for the model's posterior predictions. The reference column below is
+the posterior prediction, which is what a simulation from the published
+parameters should reproduce; the observed geometric means are listed in the
+next table. Baseline AUC is pooled over all arms on day 1.
+
+```{r nca-compare}
+geo <- function(x) exp(mean(log(x)))
+sim_auc <- bind_rows(
+  auc |> group_by(mdz_route) |> summarise(auclast = geo(day1), .groups = "drop") |>
+    mutate(condition = "alone (day 1)"),
+  auc |> filter(arm != "Placebo") |> group_by(arm, mdz_route) |>
+    summarise(auclast = geo(day15), .groups = "drop") |>
+    mutate(condition = paste("with", tolower(arm), "(day 15)"))
+) |>
+  mutate(group = paste(ifelse(mdz_route == "oral", "Oral", "i.v."), "midazolam", condition)) |>
+  select(group, auclast)
+
+published_auc <- tibble::tribble(
+  ~group, ~auclast, ~observed,
+  "Oral midazolam alone (day 1)", 76.5, 72.8,
+  "i.v. midazolam alone (day 1)", 61.1, 55.95,
+  "Oral midazolam with ketoconazole (day 15)", 932, 963.7,
+  "i.v. midazolam with ketoconazole (day 15)", 339, 271,
+  "Oral midazolam with rifampin (day 15)", 6.09, 4.35,
+  "i.v. midazolam with rifampin (day 15)", 25, 24.49
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_auc,
+  reference = published_auc |> select(group, auclast),
+  by = "group",
+  units = c(auclast = "nmol*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated vs. Leil 2014 Table 2 posterior-predicted geometric-mean AUC0-24.",
+    "* differs from the reference by more than 20%."
+  )
+)
+```
+
+The ratios (day 15 over day 1, per subject, summarised by the median as in
+Table 2) and the 4betaHC endpoints follow. Table 2 reports the 4betaHC change
+"at day 14" of treatment; the simulation reads it at 360 h, the last day of the
+14-day perpetrator window. Baseline 4betaHC is a geometric mean over all
+subjects and the rifampin change from baseline a geometric mean, so the
+simulated summaries use the same statistics; the ketoconazole change is
+negative, so its simulated summary is the median.
+
+```{r ratio-compare}
+ratio_sim <- auc |>
+  filter(arm != "Placebo") |>
+  group_by(arm, mdz_route) |>
+  summarise(simulated = median(ratio), .groups = "drop") |>
+  mutate(endpoint = paste(ifelse(mdz_route == "oral", "Oral", "i.v."), "midazolam AUC ratio,", tolower(arm))) |>
+  select(endpoint, simulated)
+
+hc <- sim |>
+  filter(mdz_route == "oral", time %in% c(0, 360)) |>
+  select(id, arm, time, hydroxycholesterol_4beta) |>
+  tidyr::pivot_wider(names_from = time, values_from = hydroxycholesterol_4beta, names_prefix = "t") |>
+  mutate(change = t360 - t0, ratio = t360 / t0)
+
+hc_sim <- bind_rows(
+  tibble(endpoint = "Baseline 4betaHC (nmol/L)", simulated = geo(hc$t0)),
+  tibble(
+    endpoint = "4betaHC change from baseline at day 14, rifampin (nmol/L)",
+    simulated = geo(hc$change[hc$arm == "Rifampin"])
+  ),
+  tibble(
+    endpoint = "4betaHC ratio at day 14, rifampin",
+    simulated = median(hc$ratio[hc$arm == "Rifampin"])
+  ),
+  tibble(
+    endpoint = "4betaHC change from baseline at day 14, ketoconazole (nmol/L)",
+    simulated = median(hc$change[hc$arm == "Ketoconazole"])
+  ),
+  tibble(
+    endpoint = "4betaHC ratio at day 14, ketoconazole",
+    simulated = median(hc$ratio[hc$arm == "Ketoconazole"])
+  )
+)
+
+published_ratio <- tibble::tribble(
+  ~endpoint, ~observed, ~predicted,
+  "Oral midazolam AUC ratio, ketoconazole", 11.41, 12.3,
+  "i.v. midazolam AUC ratio, ketoconazole", 4.612, 4.84,
+  "Oral midazolam AUC ratio, rifampin", 0.06096, 0.102,
+  "i.v. midazolam AUC ratio, rifampin", 0.4255, 0.411,
+  "Baseline 4betaHC (nmol/L)", 81.9, 79.1,
+  "4betaHC change from baseline at day 14, rifampin (nmol/L)", 291, 214,
+  "4betaHC ratio at day 14, rifampin", 3.91, 3.14,
+  "4betaHC change from baseline at day 14, ketoconazole (nmol/L)", -32.5, -27.7,
+  "4betaHC ratio at day 14, ketoconazole", 0.675, 0.723
+)
+
+ratio_cmp <- published_ratio |>
+  left_join(bind_rows(ratio_sim, hc_sim), by = "endpoint") |>
+  mutate(pct_diff_vs_predicted = round(100 * (simulated / predicted - 1), 1))
+
+ratio_cmp |>
+  mutate(simulated = signif(simulated, 3)) |>
+  dplyr::rename(
+    "Endpoint" = endpoint,
+    "Observed (Table 2)" = observed,
+    "Predicted (Table 2)" = predicted,
+    "Simulated" = simulated,
+    "% diff vs predicted" = pct_diff_vs_predicted
+  ) |>
+  knitr::kable(caption = "Interaction ratios and 4betaHC endpoints vs. Leil 2014 Table 2.")
+
+typ_ratio <- sim_typ |>
+  filter(arm != "Placebo") |>
+  group_by(arm, mdz_route) |>
+  summarise(
+    auc1 = sum(diff(time[time <= 24]) * (head(Cc[time <= 24], -1) + tail(Cc[time <= 24], -1)) / 2),
+    auc15 = sum(diff(time[time >= 336 & time <= 360]) *
+      (head(Cc[time >= 336 & time <= 360], -1) + tail(Cc[time >= 336 & time <= 360], -1)) / 2),
+    .groups = "drop"
+  ) |>
+  mutate(typical_ratio = auc15 / auc1)
+knitr::kable(
+  typ_ratio |> select(arm, mdz_route, typical_ratio) |> mutate(typical_ratio = signif(typical_ratio, 3)),
+  caption = "Typical-value (no between-subject variability) midazolam AUC0-24 ratios."
+)
+```
+
+```{r assertions}
+get_ratio <- function(e) ratio_cmp$simulated[ratio_cmp$endpoint == e]
+stopifnot(
+  # Inhibition strength: a 1000-fold unit slip in Ki (0.125 nmol/L read as
+  # umol/L) drops the oral ratio to about 2; the posterior-predicted median is
+  # 12.3.
+  get_ratio("Oral midazolam AUC ratio, ketoconazole") > 8,
+  get_ratio("Oral midazolam AUC ratio, ketoconazole") < 20,
+  get_ratio("i.v. midazolam AUC ratio, ketoconazole") > 2.2,
+  get_ratio("i.v. midazolam AUC ratio, ketoconazole") < 7,
+  # Induction: gut (29.6-fold) and liver (3.43-fold) drives.
+  get_ratio("Oral midazolam AUC ratio, rifampin") < 0.2,
+  get_ratio("i.v. midazolam AUC ratio, rifampin") > 0.3,
+  get_ratio("i.v. midazolam AUC ratio, rifampin") < 0.6,
+  # 4betaHC: the induction raises it about threefold and ketoconazole
+  # lowers it by about a quarter.
+  abs(get_ratio("4betaHC ratio at day 14, rifampin") / 3.14 - 1) < 0.25,
+  abs(get_ratio("4betaHC ratio at day 14, ketoconazole") / 0.723 - 1) < 0.15,
+  abs(get_ratio("Baseline 4betaHC (nmol/L)") / 79.1 - 1) < 0.15
+)
+```
+
+The simulation reproduces the direction and size of every interaction in Table
+2. Baseline midazolam AUCs, the oral ketoconazole ratio and the 4betaHC
+endpoints land within about 20% of the posterior predictions, and the
+4betaHC ratios within 10%.
+
+Two rows differ by more than 20%, both at the extremes of the model's range:
+
+- **i.v. midazolam with ketoconazole** (AUC about 38% and median ratio about
+  35% below the prediction; typical-value ratio 3.5 against 4.84). At the
+  packaged `Ki` of 0.125 nmol/L, the unbound ketoconazole concentration exceeds
+  `Ki` by more than a hundredfold for most of the dosing interval, so hepatic
+  midazolam clearance is almost abolished. The 24 h i.v. AUC is then limited
+  by distribution into the peripheral volume (between-subject SD 1.6) and by how
+  fast ketoconazole washes out, which depends on the time of the midazolam dose
+  relative to the ketoconazole dose. The paper does not report that timing.
+- **Oral midazolam with rifampin** (AUC about 68% and median ratio about 30%
+  above the prediction). The oral ratio is the product of the gut escape
+  fraction, about 0.29 at the 29.6-fold gut induction, and the hepatic
+  clearance ratio, about 0.40 at the 3.43-fold liver induction. The product,
+  about 0.12, follows from the control-stream equations with the Table 1 means;
+  the simulated i.v. rifampin ratio (0.47 against 0.41) agrees.
+
+The packaged parameters are the Table 1 posterior means. Table 2's
+predictions are medians over 500 posterior parameter sets, which integrate
+over parameter uncertainty. That uncertainty is large where the two rows
+differ: the posterior SD of `Ki` (0.226 nmol/L) exceeds its mean. In a model
+this nonlinear, the prediction at the posterior mean need not equal the
+posterior-predictive median. The parameters are reported as published, not
+adjusted.
+
+# Assumptions and deviations
+
+- **Published code followed over the figure.** Two places in the control
+  stream depart from Figure 1, and the code (what was fitted) is used:
+  ketoconazole enters its peripheral compartment from the absorption depot
+  (`DADT(6) = Q/VC*A(4) - Q/VP*A(6)`), and the 4alphaHC elimination rate is
+  computed from the cholesterol half-life (`KELA = 0.693/CH_HL`). As a result
+  the Table 1 parameter `AHC_HL` (234 h, fixed) does not enter the model and is
+  not carried in `ini()`.
+- **`F_M` is not a bioavailability.** Table 1 labels `F_M` as "MDZ
+  bioavailability"; in the control stream the same parameter (`FPE`) scales the
+  gut-wall CYP3A4 clearance in the first-pass transit state. It is encoded as
+  `lfpe` with that role.
+- **Between-subject variability as SD.** Table 1's "Posterior ISV" column is
+  read as the SD of each eta and squared to a variance. The prior-ISV column
+  confirms the scale: the `$OMEGA` priors of 0.1, 0.2 and 0.001 print as 0.32,
+  0.45 and 0.032, and the two etas fixed at 0.001 variance print as 0.031 and
+  0.032 posterior.
+- **Ketoconazole bioavailability.** The control stream writes
+  `F4 = 1 - expit(FK + eta)`, which equals `expit(-FK - eta)`; the model uses
+  `expit(logit(0.70) + eta)`, which has the same distribution because the eta
+  is symmetric.
+- **Units of the Ki values.** The control stream computes the unbound
+  ketoconazole concentration in umol/L; Table 1 reports both Ki values and
+  their priors in nmol/L (prior 0.014 umol/L in the stream, 14 nmol/L in the
+  table). The model computes the unbound concentration in nmol/L and uses the
+  Table 1 values as printed, `Ki = 0.125` and `Ki_4B = 50` nmol/L. Reading
+  0.125 as umol/L gives an oral midazolam ratio of about 2, against an observed
+  11.4.
+- **Unit of the cholesterol residual error.** Table 1 lists sigma_3 as 1,170
+  "nmol/l". The control stream holds cholesterol in nmol/L
+  (`BCH = exp(...) * 1000` from a umol/L parameter) with an initial variance of
+  1.38E12 nmol^2/L^2 (SD 1.17E6 nmol/L), so the 1,170 is in umol/L, which is
+  the unit the model uses for `total_cholesterol`. The baseline 4,244 umol/L is
+  the same 4.2 mmol/L.
+- **Intravenous midazolam dose.** The Methods give 0.4 mg; the Figure 2
+  caption says 0.8 mg. With 0.4 mg the typical-value baseline i.v. AUC0-24
+  is about 65 nmol*h/L against 61.1 predicted in Table 2; 0.8 mg would double
+  it, so 0.4 mg is used.
+- **Perpetrator timing.** The paper states 14 days of treatment before the day
+  15/16 midazolam doses. The ketoconazole doses (48-360 h) and the rifampin
+  window follow the control stream's `INDSTART = 48` / `INDEND = 360`. The
+  stream gates ketoconazole inhibition on the treatment arm; here it follows
+  from the presence of ketoconazole doses.
+- **Rifampin as an indicator.** Rifampin PK is not modelled. The induction
+  drive is `1 + FOLD * CONMED_RIFAMPICIN * (1 - exp(-kdeg * TIND))`, with the
+  fixed `TIND = 312` h exactly as in the control stream, so the drive is a
+  constant step while the indicator is on and the time course comes from the
+  70 h CYP3A4 turnover. For other inducers the paper supplies a fold-induction
+  value directly (Figures 3 and 4), which here means editing
+  `lfoldind_liver` / `lfoldind_gut`.
+- **Posterior means, not posterior draws.** The model carries the Table 1
+  posterior means. The paper's Table 2 predictions integrate over the posterior
+  distribution of the parameters, which explains the two rows above that
+  differ by more than 20%.
+- **Oral and intravenous midazolam in separate virtual subjects.** The study
+  gave the two routes on consecutive days in randomised order, which the
+  paper does not report per subject.
+- **Prior distributions are not part of the model.** The Bayesian priors in
+  Table 1 shaped the posterior; only the posterior means and ISVs are packaged.
+- No erratum or correction notice for this article was found on 2026-11-25.

@@ -1,0 +1,591 @@
+---
+title: "Ipatasertib exposure-response in metastatic prostate cancer (Zhu 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ipatasertib exposure-response in metastatic prostate cancer (Zhu 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5,
+  dpi = 100
+)
+```
+
+```{r libraries, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(ggplot2)
+```
+
+Zhu R, Poland B, Wada R, Liu Q, Musib L, Maslyar D, Cho E, Yu W, Ma H, Jin JY,
+Budha N. *Exposure-response-based product profile-driven clinical utility
+index for ipatasertib dose selection in prostate cancer.* CPT Pharmacometrics
+Syst Pharmacol. 2019;8(4):240. doi:10.1002/psp4.12394.
+
+Zhu 2019 relates the exposure of ipatasertib, an oral AKT inhibitor, to
+radiographic progression-free survival (rPFS) and to diarrhea and rash in the
+randomised phase II part of the A.MARTIN study, then combines the projected
+dose-responses in a clinical utility index (CUI) that supported the 400 mg
+once-daily phase III dose. The paper contributes ten landmark models to the
+library: a logistic regression for each of four adverse-event endpoints and a
+Cox regression for rPFS, each fitted on two exposure metrics.
+
+* `AUC_IPAT_EVT` -- the steady-state daily AUC from the average **actual**
+  dose up to the event (source `AUCss,event`, the primary metric). Dose
+  interruptions and reductions are folded in.
+* `AUC_IPAT_SS` -- the steady-state daily AUC at the **nominal** dose (source
+  `AUCss`, the exploratory metric). Models on this metric carry the suffix
+  `_nominal`.
+
+Both are the daily dose divided by the individual apparent clearance of an
+ipatasertib population PK model, in ng\*h/mL. None of the ten models has a PK
+layer or an ODE: exposure is a data column.
+
+# Population
+
+All 253 randomised patients of the A.MARTIN phase II study (NCT01485861)
+contributed: men with metastatic castration-resistant prostate cancer after
+docetaxel, randomised 1:1:1 to ipatasertib 400 mg (n = 84), 200 mg (n = 87)
+or placebo (n = 82) once daily, each with abiraterone 1000 mg and prednisone
+10 mg daily (Zhu 2019 Methods, Study design; Results). Placebo patients enter
+every regression with zero exposure. Dose modifications, mostly for adverse
+events, occurred in 14.6%, 14.9% and 39.3% of the placebo, 200 mg and 400 mg
+arms. Age, weight and race are not reported in Zhu 2019; the primary trial
+publication is de Bono 2019 (Clin Cancer Res 25:928).
+
+# The ten models
+
+```{r models}
+er_models <- tibble::tribble(
+  ~model, ~output, ~exposure, ~source, ~endpoint,
+  "diarrhea_grade2", "prob_diarrhea_grade2", "AUC_IPAT_EVT", "Table S2", "Diarrhea, grade >= 2",
+  "diarrhea_grade3", "prob_diarrhea_grade3", "AUC_IPAT_EVT", "Table S2", "Diarrhea, grade >= 3",
+  "rash_grade2", "prob_rash_grade2", "AUC_IPAT_EVT", "Table S2", "Rash, grade >= 2",
+  "rash_grade3", "prob_rash_grade3", "AUC_IPAT_EVT", "Table S2", "Rash, grade >= 3",
+  "rpfs", "hr", "AUC_IPAT_EVT", "Table S1", "rPFS hazard ratio vs placebo (Cox)",
+  "diarrhea_grade2_nominal", "prob_diarrhea_grade2", "AUC_IPAT_SS", "Table S2", "Diarrhea, grade >= 2",
+  "diarrhea_grade3_nominal", "prob_diarrhea_grade3", "AUC_IPAT_SS", "Table S2", "Diarrhea, grade >= 3",
+  "rash_grade2_nominal", "prob_rash_grade2", "AUC_IPAT_SS", "Table S2", "Rash, grade >= 2",
+  "rash_grade3_nominal", "prob_rash_grade3", "AUC_IPAT_SS", "Table S2", "Rash, grade >= 3",
+  "rpfs_nominal", "hr", "AUC_IPAT_SS", "Table S1", "rPFS hazard ratio vs placebo (Cox)"
+) |>
+  dplyr::mutate(model = paste0("Zhu_2019_ipatasertib_", model))
+
+mods <- lapply(setNames(er_models$model, er_models$model), function(m) {
+  rxode2::rxode(readModelDb(m))
+})
+
+er_models |>
+  dplyr::rename(
+    "Model" = model, "Output" = output, "Exposure column" = exposure,
+    "Source" = source, "Endpoint" = endpoint
+  ) |>
+  knitr::kable(caption = "The ten exposure-response models from Zhu 2019.")
+```
+
+The logistic models return `prob_<endpoint> = expit(logit_ref + e_auc_logit *
+AUC)`; the Cox models return the hazard ratio versus placebo, `hr =
+exp(e_auc_haz * AUC)`. A Cox regression leaves the baseline hazard
+unspecified, so no survivor function is available.
+
+# Source trace
+
+| Quantity | Value(s) | Source |
+|---|---|---|
+| Logistic form `logit(P) = alpha + beta * AUC` | -- | Equation beneath Table S2; Methods, E-R analysis (R `glm`, binomial, logit link) |
+| Cox form `lambda(t) = lambda0(t) * exp(beta * AUC)` | -- | Equation beneath Table S1 |
+| `logit_ref`, `e_auc_logit` (8 logistic models) | see table below | Table S2 |
+| `e_auc_haz` (2 Cox models) | -0.0000739 (actual dose), -0.0000488 (nominal) | Table S1 |
+| Exposure unit, ng\*h/mL | -- | x-axis of Figures 3 and S3 |
+| Exposure definitions | -- | Methods, Response and exposure data; Additional exploratory E-R analysis |
+| Dose-intensity model form (Eqs. 1-2) | -- | Methods, DI modeling |
+| Dose-intensity coefficients (5 endpoints) | see table below | digitised from Figure S2 |
+| CUI attributes, cut-offs and weights | -- | Table 1; Results |
+| Population counts and dose modifications | -- | Methods, Study design; Results |
+
+```{r tables2}
+# Table S2 (logistic) and Table S1 (Cox), transcribed: estimate, standard
+# error and 95% confidence interval.
+pub <- tibble::tribble(
+  ~model, ~param, ~est, ~se, ~lo, ~hi,
+  "diarrhea_grade2", "logit_ref", -3.04, 0.363, -3.81, -2.38,
+  "diarrhea_grade2", "e_auc_logit", 0.000769, 0.000133, 0.000521, 0.00104,
+  "diarrhea_grade2_nominal", "logit_ref", -2.94, 0.354, -3.69, -2.29,
+  "diarrhea_grade2_nominal", "e_auc_logit", 0.000669, 0.000120, 0.000444, 0.000917,
+  "diarrhea_grade3", "logit_ref", -4.56, 0.689, -6.12, -3.38,
+  "diarrhea_grade3", "e_auc_logit", 0.000798, 0.000235, 0.000362, 0.00130,
+  "diarrhea_grade3_nominal", "logit_ref", -4.38, 0.661, -5.87, -3.24,
+  "diarrhea_grade3_nominal", "e_auc_logit", 0.000640, 0.000204, 0.000259, 0.00107,
+  "rash_grade2", "logit_ref", -5.53, 0.840, -7.45, -4.10,
+  "rash_grade2", "e_auc_logit", 0.00112, 0.000251, 0.000669, 0.00167,
+  "rash_grade2_nominal", "logit_ref", -5.73, 0.932, -7.89, -4.17,
+  "rash_grade2_nominal", "e_auc_logit", 0.00107, 0.000251, 0.000627, 0.00163,
+  "rash_grade3", "logit_ref", -6.04, 0.984, -8.32, -4.40,
+  "rash_grade3", "e_auc_logit", 0.00118, 0.000282, 0.000684, 0.00181,
+  "rash_grade3_nominal", "logit_ref", -6.47, 1.16, -9.19, -4.57,
+  "rash_grade3_nominal", "e_auc_logit", 0.00119, 0.000300, 0.000673, 0.00187,
+  "rpfs", "e_auc_haz", -0.0000739, 0.0000619, -0.000195, 0.0000473,
+  "rpfs_nominal", "e_auc_haz", -0.0000488, 0.0000549, -0.000156, 0.0000588
+) |>
+  dplyr::mutate(model = paste0("Zhu_2019_ipatasertib_", model))
+
+pub$packaged <- mapply(function(m, p) {
+  idf <- mods[[m]]$iniDf
+  idf$est[idf$name == p]
+}, pub$model, pub$param, USE.NAMES = FALSE)
+# Wald half-width implied by the printed SE, relative to the printed CI
+# half-width (the CIs are profile-likelihood intervals, so they are mildly
+# asymmetric on the intercepts).
+pub$ci_over_wald <- ((pub$hi - pub$lo) / 2) / (qnorm(0.975) * pub$se)
+
+pub |>
+  dplyr::mutate(model = sub("Zhu_2019_ipatasertib_", "", model)) |>
+  dplyr::rename(
+    "Model" = model, "Parameter" = param, "Estimate" = est, "SE" = se,
+    "CI lower" = lo, "CI upper" = hi, "Packaged value" = packaged,
+    "CI half-width / (1.96 SE)" = ci_over_wald
+  ) |>
+  knitr::kable(digits = 7, caption = "Zhu 2019 Tables S1 and S2 against the packaged models.")
+
+stopifnot(
+  # Every packaged coefficient is exactly the printed estimate.
+  isTRUE(all.equal(pub$packaged, pub$est)),
+  # Each estimate sits inside its own CI, and each CI half-width agrees
+  # with its SE to within 15%: a mistyped estimate, SE or bound fails here.
+  all(pub$est > pub$lo & pub$est < pub$hi),
+  all(abs(pub$ci_over_wald - 1) < 0.15)
+)
+```
+
+# Exposure-response curves (Figures 3a-b and S3)
+
+```{r er-eval}
+# Evaluate a packaged model at a vector of exposures: one observation row
+# per value, exposure supplied as the covariate column.
+er_eval <- function(model, output, cov_name, auc) {
+  ev <- data.frame(id = 1L, time = seq_along(auc), amt = 0, evid = 0L)
+  ev[[cov_name]] <- auc
+  s <- as.data.frame(rxode2::rxSolve(model, events = ev, returnType = "data.frame"))
+  stopifnot(nrow(s) == length(auc))
+  s[[output]]
+}
+row_of <- function(m) er_models[er_models$model == m, ]
+eval_model <- function(m, auc) {
+  r <- row_of(m)
+  er_eval(mods[[m]], r$output, r$exposure, auc)
+}
+
+grid <- seq(0, 7000, by = 50)
+curves <- dplyr::bind_rows(lapply(er_models$model[!grepl("rpfs", er_models$model)], function(m) {
+  r <- row_of(m)
+  tibble::tibble(
+    model = m, endpoint = r$endpoint, exposure = r$exposure,
+    auc = grid, p = eval_model(m, grid)
+  )
+}))
+
+ggplot(curves, aes(auc, p, colour = exposure)) +
+  geom_line() +
+  facet_wrap(~endpoint) +
+  labs(
+    x = "Ipatasertib steady-state daily AUC (ng*h/mL)", y = "Probability",
+    colour = "Exposure metric",
+    caption = "Replicates the model curves of Figure S3 (AUC_IPAT_EVT) and Figure 3a-b of Zhu 2019."
+  )
+```
+
+Figure 3 draws the grade >= 2 diarrhea curves out to 6600 ng\*h/mL, where they
+end at about 0.88 (actual-dose metric, panel a) and 0.81 (nominal-dose metric,
+panel b); both curves start near 0.05 at zero exposure.
+
+```{r fig3-check}
+fig3 <- c(
+  evt = eval_model("Zhu_2019_ipatasertib_diarrhea_grade2", c(0, 6600)),
+  ss = eval_model("Zhu_2019_ipatasertib_diarrhea_grade2_nominal", c(0, 6600))
+)
+round(fig3, 3)
+stopifnot(
+  abs(fig3[["evt2"]] - 0.88) < 0.02,
+  abs(fig3[["ss2"]] - 0.81) < 0.02,
+  abs(fig3[["evt1"]] - 0.05) < 0.01
+)
+```
+
+# Dose-intensity model (Figure S2)
+
+To project a nominal dose onto `AUC_IPAT_EVT`, Zhu 2019 fits an
+endpoint-specific dose-intensity (DI) model (Methods, Eqs. 1-2): DI is the
+total dose up to the event divided by the treatment duration and the nominal
+dose. A logistic regression gives `P(DI >= 1)`, and the logit of DI among
+patients with DI < 1 is normal:
+
+* `logit(P(DI >= 1)) = Intercept1 + Slope1 * Dose`
+* `logit(DI | DI < 1) = Intercept2 + Slope2 * Dose + eps`, `eps ~ N(0, sigma^2)`
+
+The paper prints no coefficients. The values below were digitised by the
+maintainers from the raster panels of Figure S2 (one logit-linear fit across
+every pixel column of each drawn curve, R `lm`). The left-panel regression lines
+are reproduced with a residual SD of 0.003 on the logit scale, which confirms
+the form. In the right panels the drawn central curve is `expit(mu)` and the
+lower edge of the 90% band is `expit(mu - 1.645 * sigma)`. The two run
+parallel on the logit scale (the sigma implied at low and at high doses agrees
+within 1.5% in every panel), which is what a constant sigma predicts.
+
+```{r di-model}
+di <- tibble::tribble(
+  ~endpoint, ~panel, ~int1, ~slope1, ~int2, ~slope2, ~sigma,
+  "rpfs", "A", -0.0642, -0.002175, 3.3906, -0.003240, 1.856,
+  "diarrhea_grade2", "B", 0.1593, -0.001898, 3.8542, -0.003929, 1.703,
+  "diarrhea_grade3", "C", 0.2261, -0.003365, 3.7616, -0.004279, 1.810,
+  "rash_grade2", "D", 0.2449, -0.003044, 3.7949, -0.003866, 1.813,
+  "rash_grade3", "E", 0.2220, -0.003059, 3.7340, -0.003759, 1.796
+)
+di |>
+  dplyr::rename(
+    "Endpoint" = endpoint, "Figure S2 panel" = panel,
+    "Intercept1" = int1, "Slope1 (1/mg)" = slope1,
+    "Intercept2" = int2, "Slope2 (1/mg)" = slope2, "sigma" = sigma
+  ) |>
+  knitr::kable(digits = 6, caption = "Dose-intensity coefficients digitised from Zhu 2019 Figure S2.")
+
+di_curves <- tidyr::crossing(di, dose = seq(0, 500, by = 10)) |>
+  dplyr::mutate(
+    p_full = plogis(int1 + slope1 * dose),
+    di_median = plogis(int2 + slope2 * dose),
+    di_lo = plogis(int2 + slope2 * dose - qnorm(0.95) * sigma)
+  )
+ggplot(di_curves, aes(dose)) +
+  geom_line(aes(y = p_full, linetype = "P(DI >= 1)")) +
+  geom_line(aes(y = di_median, linetype = "Median DI given DI < 1")) +
+  geom_line(aes(y = di_lo, linetype = "5th percentile DI given DI < 1")) +
+  facet_wrap(~endpoint) +
+  labs(
+    x = "Nominal dose (mg)", y = NULL, linetype = NULL,
+    caption = "Replicates the fitted curves of Zhu 2019 Figure S2."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+# Exposure generator
+
+The population PK model behind both exposure metrics (two compartments,
+first-order absorption, relative bioavailability increasing with dose) is not
+printed in Zhu 2019. As a stand-in, exposures here are generated from the
+published Yoshida 2021 ipatasertib model (`Yoshida_2021_ipatasertib`), fitted to
+five phase I and II studies that include A.MARTIN, with abiraterone
+co-administration and the multiple-dose bioavailability step switched on. Its
+steady-state daily AUC is `1000 * F * Dose / (CL/F)`, linear in dose.
+
+PKNCA first confirms that this closed form is what the ODE model delivers
+over a dosing interval at steady state (typical patient: 64 years, 75 kg, with
+abiraterone; day 14 of once-daily dosing).
+
+```{r pk-check}
+pk_full <- rxode2::rxode(readModelDb("Yoshida_2021_ipatasertib"))
+th <- setNames(pk_full$iniDf$est, pk_full$iniDf$name)
+pk <- rxode2::zeroRe(pk_full)
+auc_per_mg_typ <- 1000 * exp(th[["lfdepot"]]) * (1 + th[["e_md_fdepot"]]) /
+  (exp(th[["lcl"]]) * (1 + th[["e_abi_cl"]]))
+
+doses_pk <- c(200, 400)
+dose_times <- seq(0, 13 * 24, by = 24)
+obs_times <- sort(unique(c(seq(312, 336, by = 0.25), seq(0, 312, by = 6))))
+ev_pk <- dplyr::bind_rows(lapply(seq_along(doses_pk), function(i) {
+  d <- doses_pk[[i]]
+  dplyr::bind_rows(
+    data.frame(id = i, time = dose_times, amt = d, evid = 1L, rate = -2, cmt = "depot"),
+    data.frame(id = i, time = dose_times, amt = d, evid = 1L, rate = -2, cmt = "depot_m1"),
+    data.frame(id = i, time = obs_times, amt = 0, evid = 0L, rate = 0, cmt = "central")
+  ) |>
+    dplyr::mutate(
+      treatment = paste(d, "mg QD"), AGE = 64, WT = 75, CONMED_ABI = 1,
+      # The model has two endpoints (parent Cc and metabolite); dvid = 1
+      # maps these observation rows to the parent.
+      dvid = ifelse(evid == 0L, 1L, NA_integer_)
+    )
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim_pk <- as.data.frame(rxode2::rxSolve(pk, events = ev_pk, keep = "treatment", returnType = "data.frame"))
+
+conc <- sim_pk |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment) |>
+  dplyr::bind_rows(data.frame(id = seq_along(doses_pk), time = 0, Cc = 0, treatment = paste(doses_pk, "mg QD"))) |>
+  dplyr::distinct(id, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+doses_df <- ev_pk |>
+  dplyr::filter(evid == 1L, cmt == "depot") |>
+  dplyr::select(id, time, amt, treatment)
+
+o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(doses_df, amt ~ time | treatment + id)
+ints <- data.frame(start = 312, end = 336, auclast = TRUE, cmax = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = ints))
+nca_tab <- as.data.frame(nca$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::mutate(
+    closed_form = auc_per_mg_typ * as.numeric(sub(" mg QD", "", treatment)),
+    pct_diff = 100 * (PPORRES - closed_form) / closed_form
+  )
+nca_tab |>
+  dplyr::select(treatment, PPORRES, closed_form, pct_diff) |>
+  dplyr::rename(
+    "Treatment" = treatment, "PKNCA AUC(day 14) (ng*h/mL)" = PPORRES,
+    "1000 * F * Dose / (CL/F) (ng*h/mL)" = closed_form, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 1, caption = "Steady-state daily AUC of the typical patient: ODE versus closed form.")
+stopifnot(all(abs(nca_tab$pct_diff) < 3))
+```
+
+The two agree within about 2%, with the same percentage at both doses, as a
+model linear in dose requires.
+
+The virtual cohort is a deterministic grid of 200 quantiles of the lognormal
+individual AUC per mg implied by the Yoshida 2021 between-subject variances on
+CL/F and F, so the projections below involve no random numbers. For the
+actual-dose models each patient is split by the DI model: with probability
+`P(DI >= 1)` the patient keeps the nominal exposure, otherwise the exposure is
+scaled by DI drawn on a grid of 40 quantiles of the logit-normal DI
+distribution. This mirrors the paper's simulation (Methods, Dose-response
+projections), which used 1000 replicates of 1000 random patients.
+
+```{r cohort}
+n_pk <- 200L
+n_di <- 40L
+z_pk <- qnorm(((1:n_pk) - 0.5) / n_pk)
+z_di <- qnorm(((1:n_di) - 0.5) / n_di)
+# log(AUC) = log(F) - log(CL/F) + const, so its variance is the sum of the
+# two independent Yoshida 2021 variances.
+auc_per_mg <- auc_per_mg_typ * exp(sqrt(th[["etalcl"]] + th[["etalfdepot"]]) * z_pk)
+summary(auc_per_mg * 400)
+
+# Mean model output over the cohort at a nominal dose. `scale` multiplies
+# every patient's exposure (1 = the Yoshida 2021 exposures).
+project <- function(m, dose, scale = 1) {
+  r <- row_of(m)
+  auc_nom <- dose * auc_per_mg * scale
+  if (r$exposure == "AUC_IPAT_SS") {
+    return(mean(eval_model(m, auc_nom)))
+  }
+  d <- di[di$endpoint == sub("Zhu_2019_ipatasertib_", "", m), ]
+  p_full <- plogis(d$int1 + d$slope1 * dose)
+  di_part <- plogis(d$int2 + d$slope2 * dose + d$sigma * z_di)
+  out <- eval_model(m, c(auc_nom, as.vector(outer(auc_nom, di_part))))
+  full <- out[seq_len(n_pk)]
+  part <- rowMeans(matrix(out[-seq_len(n_pk)], nrow = n_pk))
+  mean(p_full * full + (1 - p_full) * part)
+}
+```
+
+# Dose-response projections (Figures 1 and 2)
+
+The model-predicted central values of Figures 1 and 2 (grey triangles) were
+read from the published figures by the maintainers.
+
+```{r projections}
+fig_pred <- tibble::tribble(
+  ~model, ~dose, ~published,
+  "rpfs", 200, 0.913, "rpfs", 300, 0.86, "rpfs", 400, 0.80, "rpfs", 500, 0.77,
+  "diarrhea_grade2", 0, 0.05, "diarrhea_grade2", 200, 0.12, "diarrhea_grade2", 300, 0.25,
+  "diarrhea_grade2", 400, 0.41, "diarrhea_grade2", 500, 0.56,
+  "diarrhea_grade3", 0, 0.01, "diarrhea_grade3", 200, 0.03, "diarrhea_grade3", 300, 0.08,
+  "diarrhea_grade3", 400, 0.17, "diarrhea_grade3", 500, 0.28,
+  "rash_grade2", 0, 0.004, "rash_grade2", 200, 0.02, "rash_grade2", 300, 0.08,
+  "rash_grade2", 400, 0.21, "rash_grade2", 500, 0.37,
+  "rash_grade3", 0, 0.002, "rash_grade3", 200, 0.02, "rash_grade3", 300, 0.06,
+  "rash_grade3", 400, 0.18, "rash_grade3", 500, 0.35
+) |>
+  dplyr::mutate(model = paste0("Zhu_2019_ipatasertib_", model))
+
+proj <- fig_pred |>
+  dplyr::rowwise() |>
+  dplyr::mutate(yoshida = project(model, dose)) |>
+  dplyr::ungroup()
+
+proj |>
+  dplyr::mutate(model = sub("Zhu_2019_ipatasertib_", "", model)) |>
+  dplyr::rename(
+    "Model" = model, "Dose (mg)" = dose, "Zhu 2019 Figure 1/2" = published,
+    "Projected, Yoshida 2021 exposures" = yoshida
+  ) |>
+  knitr::kable(digits = 3, caption = "Projected rPFS hazard ratio and adverse-event probabilities by nominal dose.")
+
+stopifnot(
+  # At 400 mg, the dose the stand-in PK model and the source PK model agree
+  # on, every adverse-event projection is within 0.05 of the published one.
+  with(dplyr::filter(proj, dose == 400, !grepl("rpfs", model)), all(abs(yoshida - published) < 0.05))
+)
+```
+
+At 400 mg the projections agree with the published ones. At 200 and 300 mg
+they run high and at 500 mg slightly low, the signature of the dose-dependent
+relative bioavailability of the paper's own PK model, which the linear
+Yoshida 2021 model lacks: the source model gives lower exposure than a linear
+model below 400 mg and higher above it.
+
+## Cross-check with exposure calibrated to Figure 1
+
+The rPFS hazard ratio of Figure 1 depends on the PK only through the exposure
+it is evaluated at. Solving, at each dose, for the factor on the Yoshida 2021
+exposures that reproduces the Figure 1 hazard ratio recovers the exposure the
+paper's PK model delivered. Feeding the same factor to the four adverse-event
+models then predicts Figure 2 with no reference to Figure 2, so agreement
+tests all four logistic transcriptions together with the DI model.
+
+```{r calibrated}
+scale_fig1 <- vapply(c(200, 300, 400, 500), function(dz) {
+  target <- fig_pred$published[fig_pred$model == "Zhu_2019_ipatasertib_rpfs" & fig_pred$dose == dz]
+  stats::uniroot(function(s) project("Zhu_2019_ipatasertib_rpfs", dz, s) - target, c(0.2, 3))$root
+}, numeric(1))
+names(scale_fig1) <- c(200, 300, 400, 500)
+round(scale_fig1, 3)
+
+cal <- fig_pred |>
+  dplyr::filter(!grepl("rpfs", model), dose > 0) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(calibrated = project(model, dose, scale_fig1[[as.character(dose)]])) |>
+  dplyr::ungroup()
+
+cal |>
+  dplyr::mutate(model = sub("Zhu_2019_ipatasertib_", "", model)) |>
+  dplyr::rename(
+    "Model" = model, "Dose (mg)" = dose, "Zhu 2019 Figure 2" = published,
+    "Projected, exposure calibrated to Figure 1" = calibrated
+  ) |>
+  knitr::kable(digits = 3, caption = "Adverse-event projections with exposure calibrated to the rPFS hazard ratios of Figure 1.")
+
+stopifnot(
+  # The implied exposure rises with dose relative to a linear model.
+  scale_fig1[["200"]] < scale_fig1[["300"]], scale_fig1[["300"]] < scale_fig1[["400"]],
+  # Over the studied and interpolated doses all four endpoints match.
+  with(dplyr::filter(cal, dose <= 400), all(abs(calibrated - published) < 0.05))
+)
+```
+
+The calibrated exposure rises faster than dose from 200 to 400 mg, as the
+paper's dose-dependent bioavailability requires, and every adverse-event
+projection from 200 to 400 mg then lands within 0.035 of the published
+value. At 500 mg, outside the studied doses, the projections fall short of
+Figure 2. The Figure 1 hazard ratio flattens between 400 and 500 mg (0.80 to
+0.77) and its confidence band is very wide there, so the factor solved at
+500 mg is poorly determined.
+
+## Projections
+
+```{r projection-plot}
+dose_grid <- c(0, 100, 200, 300, 400, 500)
+proj_all <- tidyr::crossing(model = er_models$model, dose = dose_grid) |>
+  dplyr::filter(!(grepl("rpfs", model) & dose == 0)) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(value = project(model, dose)) |>
+  dplyr::ungroup() |>
+  dplyr::left_join(er_models, by = "model")
+
+ggplot(proj_all, aes(dose, value, colour = exposure)) +
+  geom_line() +
+  geom_point() +
+  geom_point(
+    data = dplyr::left_join(fig_pred, er_models, by = "model"),
+    aes(dose, published), colour = "black", shape = 2, inherit.aes = FALSE
+  ) +
+  facet_wrap(~endpoint, scales = "free_y") +
+  labs(
+    x = "Nominal ipatasertib dose (mg once daily)", y = "Probability, or hazard ratio vs placebo",
+    colour = "Model exposure metric",
+    caption = "Lines: projections with Yoshida 2021 exposures. Triangles: Zhu 2019 Figures 1 and 2."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+The nominal-dose models need no DI model. Zhu 2019 reports that the two
+metrics give similar dose-response projections (Figure 3c-d, Figure S4).
+
+# Clinical utility index (Table 1)
+
+The CUI is a weighted sum of linear utilities that equal 0 at the minimal and
+1 at the optimistic product profile of each attribute (Methods, Benefit-risk
+analysis). Scenario 2 weights the rPFS hazard ratio 0.6, grade >= 3 diarrhea
+0.3 and grade >= 3 rash 0.1. Because the utilities are linear, the expected
+CUI is the CUI of the expected attributes, so it can be evaluated directly at
+the projections; the paper's CUI distributions (10th-90th percentiles, Figure
+4b) also propagate the projection uncertainty, which is not repeated here. The
+efficacy attribute uses the Figure 1 hazard ratios and the safety attributes
+the projections calibrated to them. Figure 4a values were read from the
+published figure by the maintainers; "Safety" is the diarrhea-plus-rash
+utility `(0.3 * U_diarrhea + 0.1 * U_rash) / 0.4`.
+
+```{r cui}
+util <- function(x, x0, x1) (x - x0) / (x1 - x0)
+cui <- tibble::tibble(dose = c(200, 300, 400, 500)) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    hr = fig_pred$published[fig_pred$model == "Zhu_2019_ipatasertib_rpfs" & fig_pred$dose == dose],
+    d3 = project("Zhu_2019_ipatasertib_diarrhea_grade3", dose, scale_fig1[[as.character(dose)]]),
+    r3 = project("Zhu_2019_ipatasertib_rash_grade3", dose, scale_fig1[[as.character(dose)]]),
+    safety = (0.3 * util(d3, 0.20, 0.10) + 0.1 * util(r3, 0.15, 0.05)) / 0.4,
+    cui = 0.6 * util(hr, 0.73, 0.65) + 0.4 * safety
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(
+    fig4a_safety = c(1.50, 1.12, 0.20, -1.18),
+    fig4a_cui = c(-0.78, -0.47, -0.47, -0.75)
+  )
+cui |>
+  dplyr::rename(
+    "Dose (mg)" = dose, "rPFS HR" = hr, "P(diarrhea grade >= 3)" = d3,
+    "P(rash grade >= 3)" = r3, "Safety utility" = safety,
+    "Safety utility, Figure 4a" = fig4a_safety,
+    "CUI, scenario 2" = cui, "CUI, Figure 4a" = fig4a_cui
+  ) |>
+  knitr::kable(digits = 3, caption = "Scenario 2 expected clinical utility index (Zhu 2019 Table 1 and Figure 4a).")
+
+stopifnot(
+  # The expected CUI from 200 to 400 mg reproduces Figure 4a, including its
+  # near-equal maximum at 300 and 400 mg.
+  with(dplyr::filter(cui, dose <= 400), all(abs(cui - fig4a_cui) < 0.1))
+)
+```
+
+From 200 to 400 mg the expected CUI reproduces Figure 4a: it rises from 200 to
+a near-equal maximum at 300 and 400 mg, all values below 0 because the
+projected rPFS hazard ratio never reaches the minimal product profile of 0.73.
+At 500 mg the safety utility is less negative than in Figure 4a, a consequence
+of the 500 mg adverse-event projections falling short of Figure 2 (above).
+
+# Assumptions and deviations
+
+* **No PK layer.** Each model takes its exposure as a data column. The paper's
+  own population PK model (two compartments with dose-dependent relative
+  bioavailability) is not printed, so the projections above use the published
+  Yoshida 2021 model as a stand-in. Because that model is linear in dose, it
+  over-predicts exposure at 200-300 mg and under-predicts it at 500 mg relative
+  to the source model; the Figure 1 calibration quantifies the difference.
+* **Dose-intensity model digitised.** Zhu 2019 prints the DI model form but no
+  coefficients; the values were digitised from Figure S2 and are used only in
+  this article to project nominal doses onto `AUC_IPAT_EVT`. They are not part
+  of the packaged models.
+* **Published projections read from figures.** The Figure 1 and Figure 2
+  central values, and the Figure 3 curve end points, were read from the raster
+  figures to about 0.01.
+* **No residual error.** The logistic regressions have a Bernoulli
+  likelihood. Each logistic model carries a fixed placeholder additive
+  residual SD of 0.001 on the probability so that rxode2 has an error model;
+  it is not a published quantity. The Cox models declare no endpoint.
+* **No baseline hazard.** The Cox models return the hazard ratio versus
+  placebo only; the semiparametric fit has no baseline hazard to package.
+  Both rPFS relationships are not statistically significant (P = 0.232 and
+  0.374).
+* **Exposure units.** Tables S1 and S2 give no unit; ng\*h/mL is the x-axis
+  unit of Figures 3 and S3, and the coefficients reproduce those curves.
+* **Endpoint names.** `prob_rash_grade3` is registered with this paper as its
+  founding example; the diarrhea and grade >= 2 rash outputs reuse existing
+  canonical names.

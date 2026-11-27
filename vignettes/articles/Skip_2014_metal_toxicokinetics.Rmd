@@ -1,0 +1,352 @@
+---
+title: "Cadmium and nickel toxicokinetics in ground beetles (Skip 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cadmium and nickel toxicokinetics in ground beetles (Skip 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Skip, Bednarska and Laskowski (2014) argue that the one-compartment models
+used for metal toxicokinetics in invertebrates are usually not the exact
+solution of the underlying differential equation, and propose two exact
+solutions: a two-stage model whose assimilation and elimination rate
+constants step at the transfer to clean food, and a three-stage model with an
+extra, estimated switch time inside the uptake phase. They fit each one to a
+published ground-beetle data set. Both fits are packaged here.
+
+* Citation: `r rxode2::rxode(readModelDb("Skip_2014_cadmium"))$reference`
+* Description (cadmium): `r rxode2::rxode(readModelDb("Skip_2014_cadmium"))$description`
+* Description (nickel): `r rxode2::rxode(readModelDb("Skip_2014_nickel"))$description`
+* Article: <https://doi.org/10.1371/journal.pone.0108740> (open access)
+
+Both models share one structure. The state `central` is the whole-body metal
+concentration `CI` (mg/kg dry weight), which starts at the measured
+pre-exposure concentration `CI0` and follows
+
+`d/dt(central) = kassim * cfood - kel * central`
+
+where `cfood` is the metal concentration in the food (Skip 2014 Eq. 1). There
+is no dose. Exposure enters through the food concentration, and the food
+concentrations and the transfer time are fixed scenario parameters in `ini()`
+that a user can override to simulate another exposure.
+
+# Population
+
+* **Cadmium** (`Skip_2014_cadmium`). The data are from Kramarz (1999). Adult
+  *Poecilus cupreus* from a laboratory culture were fed housefly larvae
+  reared on Cd-spiked medium (larvae measured at 154.6 mg/kg) for 90 days,
+  then control larvae (0.92 mg/kg) to day 121. Twenty beetles were analysed
+  at day 0 and six per sampling time after that. The model was fitted to the
+  mean concentration at each time.
+* **Nickel** (`Skip_2014_nickel`). The data are from Laskowski et al. (2010).
+  Adult *Pterostichus oblongopunctatus* were fed artificial food spiked with
+  Ni (measured 2525 mg/kg) for 64 days, then uncontaminated food (5.95 mg/kg)
+  to day 96. Twenty-one beetles were analysed at day 0 and four per sampling
+  time after that. The model was fitted to the geometric-mean concentration
+  at each time.
+
+Both fits used nonlinear least squares in MATLAB (Skip 2014, The Models
+section). The paper does not report between-animal variability or a residual
+error model.
+
+# Source trace
+
+| Quantity | Model / name | Value | Source |
+|---|---|---|---|
+| ODE, two stages | cadmium | `kA*CE - kE*CI`, constants and CE step at tc | Eqs. 6-7 |
+| Closed form, two stages | cadmium | used for the check below | Eqs. 8-10 |
+| ODE, three stages | nickel | constants step at ts; constants and CE step at tc | Eqs. 12-14 |
+| Closed form, three stages | nickel | used for the check below | Eqs. 15-19 |
+| `cfood_uptake` (CEu) | cadmium | 154.6 mg/kg | Figure 1 caption (c, d) |
+| `cfood_depur` (CEd) | cadmium | 0.92 mg/kg | Figure 1 caption; Case Studies text |
+| `tdepur` (tc) | cadmium | 90 day | Case Studies text |
+| `lc0` (CI0) | cadmium | log(0.15) mg/kg | Figure 1 caption (a, b) |
+| `lkassim` (kA1) | cadmium | log(0.0018) 1/day | Table 2, last column |
+| `lkel` (kE1) | cadmium | log(0.0396) 1/day | Table 2, last column |
+| `lkassim_depur` (kA2) | cadmium | log(0.1115) 1/day | Table 2, last column |
+| `lkel_depur` (kE2) | cadmium | log(0.321) 1/day | Table 2, last column |
+| `cfood_uptake` (CEu) | nickel | 2525 mg/kg | Case Studies text |
+| `cfood_depur` (CEd) | nickel | 5.95 mg/kg | Case Studies text |
+| `tdepur` (tc) | nickel | 64 day | Case Studies text |
+| `lc0` (CI0) | nickel | log(0.71) mg/kg | Case Studies text |
+| `tkchange` (ts) | nickel | 1.978 day | Table 3, model 3E2 |
+| `lkassim` (kA1) | nickel | log(0.0751) 1/day | Table 3, model 3E2 |
+| `lkel` (kE1) | nickel | log(0.6583) 1/day | Table 3, model 3E2 |
+| `lkassim_late` (kA2) | nickel | log(0.0132) 1/day | Table 3, model 3E2 |
+| `lkel_late` (kE2) | nickel | log(0.9497) 1/day | Table 3, model 3E2 |
+| `lkassim_depur` (kA3) | nickel | log(0.1916) 1/day | Table 3, model 3E2 |
+| `lkel_depur` (kE3) | nickel | log(0.3311) 1/day | Table 3, model 3E2 |
+| `addSd` | both | fixed(0) | not reported |
+
+# Simulation
+
+There is no virtual cohort. The published fits are typical-value curves with
+no between-animal variability, so each model is solved once,
+deterministically. The observation grid includes the switch times exactly, so
+the solver restarts at each step change.
+
+```{r models}
+mod_cd <- rxode2::rxode2(readModelDb("Skip_2014_cadmium"))
+mod_ni <- rxode2::rxode2(readModelDb("Skip_2014_nickel"))
+
+# The paper's alternative fits, applied as ini() overrides. Cadmium: one kA
+# and one kE for both phases (Table 2, third column). Nickel model 3E1: one kA
+# throughout, kE1 before ts, and kE2 from ts onward, including the
+# decontamination phase (Table 3, middle column; text: final concentration
+# 'CEd * kA / kE2').
+mod_cd_common <- mod_cd |>
+  rxode2::ini(
+    lkassim = log(0.0057), lkassim_depur = log(0.0057),
+    lkel = log(0.1565), lkel_depur = log(0.1565)
+  )
+mod_ni_3e1 <- mod_ni |>
+  rxode2::ini(
+    tkchange = 3.004,
+    lkassim = log(0.0408), lkassim_late = log(0.0408), lkassim_depur = log(0.0408),
+    lkel = log(1e-5), lkel_late = log(2.781), lkel_depur = log(2.781)
+  )
+```
+
+```{r solve}
+times_cd <- sort(unique(c(seq(0, 121, by = 0.25), 90)))
+times_ni <- sort(unique(c(seq(0, 96, by = 0.1), 1.978, 3.004, 64)))
+
+solve_typical <- function(mod, times, label) {
+  ev <- rxode2::et(time = times, cmt = "central")
+  sim <- rxode2::rxSolve(mod, events = ev, returnType = "data.frame")
+  data.frame(time = sim$time, Cc = sim$Cc, model = label)
+}
+
+sim_cd <- solve_typical(mod_cd, times_cd, "Separate kA, kE per phase (packaged)")
+sim_cd_common <- solve_typical(mod_cd_common, times_cd, "One kA and kE")
+sim_ni <- solve_typical(mod_ni, times_ni, "Model 3E2 (packaged)")
+sim_ni_3e1 <- solve_typical(mod_ni_3e1, times_ni, "Model 3E1")
+```
+
+## Figure 1 (cadmium)
+
+```{r fig1, fig.width = 7, fig.height = 4}
+bind_rows(sim_cd_common, sim_cd) |>
+  ggplot(aes(time, Cc)) +
+  geom_line() +
+  geom_vline(xintercept = 90, linetype = "dashed") +
+  facet_wrap(~model) +
+  labs(
+    x = "Time (days)", y = "Cd concentration (mg/kg dry weight)",
+    caption = "Replicates Figure 1c (left) and Figure 1d (right) of Skip 2014 (model curves only)."
+  )
+```
+
+## Figure 2 (nickel)
+
+```{r fig2, fig.width = 7, fig.height = 4}
+bind_rows(sim_ni_3e1, sim_ni) |>
+  ggplot(aes(time, Cc)) +
+  geom_line() +
+  geom_vline(xintercept = 64, linetype = "dashed") +
+  facet_wrap(~model, scales = "free_y") +
+  labs(
+    x = "Time (days)", y = "Ni concentration (mg/kg dry weight)",
+    caption = "Replicates Figure 2b (left) and Figure 2c (right) of Skip 2014 (model curves only)."
+  )
+```
+
+# Validation
+
+PKNCA does not apply. There is no dose, and the quantity of interest is a
+body concentration driven by a food concentration. The checks below follow
+the steady-state and closed-form patterns used for mechanistic models.
+
+## Agreement with the paper's exact solutions
+
+The paper gives the integrated solution of each model: Eqs. 8-10 for two
+stages and Eqs. 15-19 for three. Each closed form below is written straight
+from those equations, with no reference to the model file. It is evaluated
+with the same parameters as the ODE solve, so any difference is numerical
+error and a tight bound applies.
+
+```{r closed-form}
+# Skip 2014 Eqs. 8-10: two stages, switching at tc.
+ci_two_stage <- function(t, ci0, ceu, ced, tc, ka1, ke1, ka2, ke2) {
+  citc <- ci0 * exp(-ke1 * tc) + ceu * ka1 / ke1 * (1 - exp(-ke1 * tc))
+  ifelse(
+    t <= tc,
+    ci0 * exp(-ke1 * t) + ceu * ka1 / ke1 * (1 - exp(-ke1 * t)),
+    citc * exp(-ke2 * (t - tc)) + ced * ka2 / ke2 * (1 - exp(-ke2 * (t - tc)))
+  )
+}
+
+# Skip 2014 Eqs. 15-19: three stages, switching at ts and tc.
+ci_three_stage <- function(t, ci0, ceu, ced, ts, tc, ka1, ke1, ka2, ke2, ka3, ke3) {
+  cits <- ci0 * exp(-ke1 * ts) + ceu * ka1 / ke1 * (1 - exp(-ke1 * ts))
+  citc <- cits * exp(-ke2 * (tc - ts)) + ceu * ka2 / ke2 * (1 - exp(-ke2 * (tc - ts)))
+  ifelse(
+    t <= ts,
+    ci0 * exp(-ke1 * t) + ceu * ka1 / ke1 * (1 - exp(-ke1 * t)),
+    ifelse(
+      t <= tc,
+      cits * exp(-ke2 * (t - ts)) + ceu * ka2 / ke2 * (1 - exp(-ke2 * (t - ts))),
+      citc * exp(-ke3 * (t - tc)) + ced * ka3 / ke3 * (1 - exp(-ke3 * (t - tc)))
+    )
+  )
+}
+
+cf_cd <- ci_two_stage(sim_cd$time, 0.15, 154.6, 0.92, 90, 0.0018, 0.0396, 0.1115, 0.321)
+cf_cd_common <- ci_two_stage(sim_cd_common$time, 0.15, 154.6, 0.92, 90, 0.0057, 0.1565, 0.0057, 0.1565)
+cf_ni <- ci_three_stage(
+  sim_ni$time, 0.71, 2525, 5.95, 1.978, 64,
+  0.0751, 0.6583, 0.0132, 0.9497, 0.1916, 0.3311
+)
+cf_ni_3e1 <- ci_three_stage(
+  sim_ni_3e1$time, 0.71, 2525, 5.95, 3.004, 64,
+  0.0408, 1e-5, 0.0408, 2.781, 0.0408, 2.781
+)
+
+rel_err <- function(sim, ref) max(abs(sim - ref) / pmax(abs(ref), 1e-3))
+cf_check <- data.frame(
+  model = c("Cd, separate constants", "Cd, one kA and kE", "Ni 3E2", "Ni 3E1"),
+  max_rel_error = c(
+    rel_err(sim_cd$Cc, cf_cd), rel_err(sim_cd_common$Cc, cf_cd_common),
+    rel_err(sim_ni$Cc, cf_ni), rel_err(sim_ni_3e1$Cc, cf_ni_3e1)
+  )
+)
+knitr::kable(cf_check, digits = 8)
+
+stopifnot(all(cf_check$max_rel_error < 1e-4))
+```
+
+## Derived concentrations printed in the paper
+
+The paper derives several concentrations from its estimates: the
+bioaccumulation factor `kA1 / kE1` (Table 2), the semi-steady Ni
+concentration of stage II (`CEu * kA2 / kE2`), and the final
+post-decontamination concentration (`CEd * kA3 / kE3`, text after Table 3).
+The simulated values are read from the ODE solution, not computed from the
+parameters. The BAF is the day-400 body concentration divided by `CEu`, with
+the transfer to clean food moved out of range. The semi-steady value is read
+at the end of the uptake phase, and the final value at day 400. These rows
+therefore test the packaged structure, not just the arithmetic.
+
+```{r derived}
+at_time <- function(sim, t) sim$Cc[which.min(abs(sim$time - t))]
+long_solve <- function(mod) {
+  ev <- rxode2::et(time = c(0, 400), cmt = "central")
+  rxode2::rxSolve(mod, events = ev, returnType = "data.frame")$Cc[2]
+}
+
+derived <- data.frame(
+  quantity = c(
+    "Cd BAF, separate constants (kA1/kE1)",
+    "Cd BAF, one kA and kE",
+    "Ni 3E2 semi-steady concentration (mg/kg), at day 64",
+    "Ni 3E1 semi-steady concentration (mg/kg), at day 64",
+    "Ni 3E2 final concentration (mg/kg), day 400",
+    "Ni 3E1 final concentration (mg/kg), day 400"
+  ),
+  simulated = c(
+    long_solve(mod_cd |> rxode2::ini(tdepur = fixed(1000))) / 154.6,
+    long_solve(mod_cd_common |> rxode2::ini(tdepur = fixed(1000))) / 154.6,
+    at_time(sim_ni, 64),
+    at_time(sim_ni_3e1, 64),
+    long_solve(mod_ni),
+    long_solve(mod_ni_3e1)
+  ),
+  published = c(0.045, 0.036, 35.1, 37.0, 3.44, 0.087)
+) |>
+  mutate(pct_diff = 100 * (simulated - published) / published)
+
+derived |>
+  rename(
+    "Quantity" = quantity, "Simulated" = simulated,
+    "Skip 2014" = published, "% difference" = pct_diff
+  ) |>
+  knitr::kable(digits = 3)
+
+# The published values are rounded to 2-3 significant figures.
+stopifnot(all(abs(derived$pct_diff) < 1.5))
+```
+
+## Features read from the published figures
+
+The paper does not print the observed data or the curve peaks. The values
+below were read by eye from Figures 1 and 2 and are approximate (about one
+minor gridline). A transposed rate constant or a wrong switch time would move
+them by far more than the reading error.
+
+```{r figure-features}
+fig_check <- data.frame(
+  feature = c(
+    "Fig 1d, Cd at day 90 (mg/kg)",
+    "Fig 1c, Cd plateau at day 90 (mg/kg)",
+    "Fig 1d, Cd at day 121 (mg/kg)",
+    "Fig 2c, Ni peak (mg/kg)",
+    "Fig 2b, Ni peak (mg/kg)"
+  ),
+  simulated = c(
+    at_time(sim_cd, 90), at_time(sim_cd_common, 90), at_time(sim_cd, 121),
+    max(sim_ni$Cc), max(sim_ni_3e1$Cc)
+  ),
+  read_from_figure = c(6.8, 5.6, 0.3, 207, 310)
+) |>
+  mutate(pct_diff = 100 * (simulated - read_from_figure) / read_from_figure)
+
+fig_check |>
+  rename(
+    "Feature" = feature, "Simulated" = simulated,
+    "Read from figure" = read_from_figure, "% difference" = pct_diff
+  ) |>
+  knitr::kable(digits = 2)
+
+stopifnot(all(abs(fig_check$pct_diff) < 10))
+```
+
+The Ni peaks sit at the switch time `ts` (1.978 days for 3E2 and 3.004 days
+for 3E1), matching the sharp maxima in Figures 2c and 2b.
+
+# Assumptions and deviations
+
+* **No residual error or between-animal variability.** The paper fits mean
+  (Cd) or geometric-mean (Ni) concentrations by least squares and reports
+  neither. Both models carry `addSd = fixed(0)` and have no random effects.
+  The very wide 95% confidence intervals for the stage-I Ni parameters
+  (Table 3) are not encoded.
+* **Cd initial concentration.** `CI0 = 0.15 mg/kg` is stated in the Figure 1
+  caption for panels a and b. The caption for panels c and d (the
+  exact-solution fits) does not restate it, and the same value is assumed.
+* **Cd food concentration.** The Figure 1 caption gives `CEu = 154.6 mg/kg`,
+  which is used here. The Case Studies text rounds the same measurement to
+  155 +/- 2.2 mg/kg. The decontamination-phase value of 0.92 mg/kg was taken
+  by the authors from another study, because the control larvae were below
+  the detection limit.
+* **Switch times are step changes in continuous time.** The paper's closed
+  forms switch exactly at `ts` and `tc`. The model does the same with `if`
+  statements on `t`, and the closed-form check above confirms the two agree.
+  `tkchange` is estimated (Table 3) and `tdepur` is a design value, so only
+  `tdepur` is `fixed()`.
+* **Comparator models not packaged.** The paper also refits the Janssen
+  (1991), Kramarz (1999) and Laskowski (2010, "3L") models, which it argues
+  are not exact solutions of the one-compartment equation. Their full
+  decontamination-phase equations (and the asymptote / final-concentration
+  form of 3L) are not printed in this paper, so they are not packaged. The
+  paper's own alternative fits (the common-rate Cd model and Ni model 3E1)
+  are shown above as `ini()` overrides of the packaged models.
+* **Model 3E1 in the decontamination phase.** Table 3 lists a single kA and
+  two elimination constants for 3E1. The text computes its final
+  concentration as `CEd * kA / kE2`, so kE2 is applied to both stage II and
+  stage III. That is how the override above is set up, and it reproduces the
+  published 0.087 mg/kg.
+* **Observed data not reproduced.** The figures show the observed means, but
+  the paper does not tabulate them, and they were not digitised. The figures
+  above reproduce only the model curves.

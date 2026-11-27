@@ -1,0 +1,478 @@
+---
+title: "Exenatide glucose, heart rate and QT interval (Cirincione 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Exenatide glucose, heart rate and QT interval (Cirincione 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Cirincione_2017_exenatide_qt"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Cirincione_2017_exenatide_qt"))$description`
+* Article: <https://doi.org/10.1002/jcph.882> (open access, PMC5518197)
+* Companion baseline-day analysis that supplies the fixed glucose-heart rate-QT
+  parameters: <https://doi.org/10.1002/jcph.933> (PMC5518218)
+
+The paper extends a semimechanistic glucose-heart rate (HR)-QT model, developed
+by the same group on the 24-h baseline day of the same pilot study, with the
+effects of a stepped continuous IV infusion of exenatide. Exenatide speeds the
+disposition of meal glucose and stimulates HR production; once both are
+accounted for, no direct exenatide effect on QT was needed. Model time `t = 0`
+is 8 pm at the start of the 24-h baseline day (the circadian acrophases are
+measured from it), and the infusion starts 24 h later.
+
+# Population
+
+Twenty-one healthy subjects were enrolled in an open-label phase 1 pilot study
+designed to inform the exenatide thorough-QT study, in three sequential cohorts
+(A n = 6, B n = 6, C n = 9). Eighteen had exenatide exposure and glycemic
+measurements beyond the baseline day and form the analysis population. After a
+24-h baseline day, exenatide was infused for 4 days at stepped rates (1.0 to
+6.3 ug/h) targeting 200, 300, 500 and 700 pg/mL; only the baseline day and the
+first three infusion days (up to the 500 pg/mL target) were analysed. Subjects
+ate a standardised 2500 kcal/day diet (breakfast 7 am in cohort A, 6 am in
+cohorts B and C; lunch 2 pm; dinner 8 pm), with the carbohydrate content and the
+percent of each meal consumed recorded (Figure 1). The paper does not tabulate
+demographics; the companion baseline-day analysis reports 20 evaluable subjects,
+95% male and 85% white, mean age 40.0 years and mean weight 91.2 kg.
+
+```{r population}
+str(rxode2::rxode(readModelDb("Cirincione_2017_exenatide_qt"))$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source; the table
+collects them.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `d/dt(central)`: `-kel*A - Vmax*A/(Km + A)` | n/a | Equation 1 |
+| `d/dt(glucose)` | n/a | Equation 2 (with the production term discussed below) |
+| `d/dt(hr)` | n/a | Equation 3 plus the glucose term `S_HR` of Figure 2 and the companion's Equation 9 |
+| `circ` (24-h and 12-h cosines) | n/a | Equation 4 |
+| `d/dt(transduction)`: `ktr*(Glu - Gluss - TR)` | n/a | Figure 2; companion Equation 7 |
+| `qt = QTint*(60/HR)^alpha + S_TR*TR` | n/a | Figure 2 (equation printed on the diagram) |
+| `QTc = qt/RR^alpha` (mQTc) | n/a | Figure 6; companion Equation 6 |
+| `lkel` | log(0.424) 1/h | Table 1 |
+| `lkm` | log(5.3) ug | Table 1 (Km/V = 453 pg/mL, Results) |
+| `lvmax` | log(1.79) ug/h | Table 1 |
+| `lvc` | log(11.7) L | Table 1 |
+| `lemax_glucose` | log(0.77) | Table 1, Smax glu/exen |
+| `lec50_glucose` | log(90) pg/mL, fixed | Table 1 (NE) and PK/PD Modeling text |
+| `lka_glucose` | log(1.72) 1/h, fixed | Table 1 ka_glu day 1 (NE); Supplemental Table S1 |
+| `lka_glucose_occ2`, `_occ3`, `_occ4` | log(0.162), log(0.121), log(0.194) 1/h | Table 1 ka_glu days 2-4 |
+| `lemax_hr` | log(0.527) | Table 1, Smax HR/exen |
+| `lec50_hr` | log(584) pg/mL | Table 1, SC50 HR/exen |
+| `lvc_glucose` | log(653) dL, fixed | Supplemental Table S1, Vg |
+| `lkout_glucose` | log(1.94) 1/h, fixed | Supplemental Table S1 |
+| `lrbase_glucose` | log(92.8) mg/dL, fixed | Supplemental Table S1, Gluss |
+| `lkout_hr` | log(14.3/24) 1/h, fixed | Supplemental Table S1 (14.3 1/day) |
+| `lrbase_hr` | log(64.1) bpm, fixed | Supplemental Table S1, HRss |
+| `lslope_glucose_hr` | log(0.00103) dL/mg, fixed | Supplemental Table S1, S_HR |
+| `kin_circ_famp1`, `tacro1` | 0.062, 17.3 h, fixed | Supplemental Table S1, AMP1 and ph1 |
+| `kin_circ_famp2`, `tacro2` | 0.039, 10.7 h, fixed | Supplemental Table S1, AMP2 and ph2 |
+| `lrbase_qt` | log(409) ms, fixed | Supplemental Table S1, QTint |
+| `e_rr_qt` | 0.425, fixed | Supplemental Table S1, alpha |
+| `lktr` | log(0.12) 1/h, fixed | Supplemental Table S1 (NE) |
+| `e_transduction_qt` | -1.27 ms per mg/dL, fixed | Supplemental Table S1, S_TR (NE) |
+| `etalkel` | 0.179^2 | Table 1, IIV 17.9% |
+| `etalvc + etalkm` | 0.246^2, 0.23, 1.04^2 | Table 1, IIV 24.6% and 104%, cov 0.23 |
+| `etalemax_glucose` | 0.937^2 | Table 1, IIV 93.7% |
+| `etalec50_hr` | 0.834^2 | Table 1, IIV 83.4% |
+| `etalkout_glucose`, `etalkout_hr`, `etalrbase_hr`, `etalslope_glucose_hr`, `etalrbase_qt` | 0.28^2, 0.757^2, 0.092^2, 1.404^2, 0.0277^2, fixed | Supplemental Table S1 |
+| `propSd`, `propSd_glucose`, `propSd_hr`, `propSd_qt` | 0.0903, 0.104, 0.0782, 0.029 | Table 1, RVexen, RVGlu, RVHR, RVQT (%CV) |
+
+## The glucose production term (Equation 2)
+
+Equation 2 is printed as `dGlu/dt = ka/Vglu*Ameal + Kin_glu - kout_glu*(1 + Smax*Cp/(SC50 + Cp))*Glu`,
+with `Kin_glu = kout_glu*Gluss`. Read literally, a constant exenatide
+concentration lowers the *fasting* glucose to `Gluss/(1 + Smax*Cp/(SC50 + Cp))`,
+about 61 mg/dL at 200 pg/mL, and the transduction state then settles at about
+-32 mg/dL, which lengthens QT by about 40 ms. The paper's own figures rule this
+out: the Figure 5 VPC median glucose stays between about 87 and 100 mg/dL
+through all three infusion days, the observed and simulated QT medians *fall*
+from about 400 to about 355 ms, and the text states that no exenatide effect on
+QT was needed. The packaged model therefore applies the stimulation to the
+whole turnover, `Kin_glu = kout_glu*stimulation*Gluss`, so exenatide speeds the
+return of each meal excursion to `Gluss` while fasting glucose stays at
+`Gluss`. This is the smallest change to Equation 2 consistent with the figures.
+The section "Equation 2 as printed" below simulates both readings and asserts
+the comparison.
+
+# Closed-form checks of reported numbers
+
+```{r closed-form}
+ui <- rxode2::rxode(readModelDb("Cirincione_2017_exenatide_qt"))
+th <- setNames(ui$iniDf$est, ui$iniDf$name)
+
+kel <- exp(th[["lkel"]]); km <- exp(th[["lkm"]])
+vmax <- exp(th[["lvmax"]]); vc <- exp(th[["lvc"]])
+
+# Results: Km/Vc = 453 pg/mL (ug/L * 1000 = pg/mL)
+km_conc <- 1000 * km / vc
+# Results: total clearance ~8 L/h at 200 pg/mL
+amt200 <- 0.2 * vc
+cl_total_200 <- kel * vc + vmax / (km + amt200) * vc
+# Discussion: ~9 bpm HR increase at 208 pg/mL (typical HRss)
+hr_inc_208 <- exp(th[["lrbase_hr"]]) * exp(th[["lemax_hr"]]) * 208 /
+  (exp(th[["lec50_hr"]]) + 208)
+
+data.frame(
+  quantity = c("Km / V (pg/mL)", "Total CL at 200 pg/mL (L/h)",
+               "Linear CL kel*V (L/h)", "HR increase at 208 pg/mL (bpm)"),
+  paper = c("453", "approximately 8", "approximately 4.7", "approximately 9"),
+  model = signif(c(km_conc, cl_total_200, kel * vc, hr_inc_208), 3)
+)
+
+stopifnot(
+  abs(km_conc - 453) < 1,
+  abs(cl_total_200 - 8) < 0.5,
+  abs(hr_inc_208 - 9) < 0.5
+)
+```
+
+# Virtual cohort and events
+
+Each cohort follows its own Figure 1 infusion schedule and meal table. The
+infusion step times (0, 6, 30, 48, 54 h after the start of the infusion) were
+digitised from the Figure 1 schema; the carbohydrate content of each meal and
+the average percent consumed are the Figure 1 tables. Meal carbohydrate enters
+the `gut` compartment in mg. `OCC` is the study day (1 = baseline day, 2-4 =
+infusion days 1-3); a study day runs 8 pm to 8 pm, so the dinner that closes a
+day carries that day's `OCC`.
+
+```{r events}
+infusion_schedule <- function(cohort) {
+  rates <- if (cohort == "A") c(1.0, 1.8, 2.7, 3.6, 4.5) else c(1.0, 1.8, 2.5, 3.2, 3.9)
+  start <- c(0, 6, 30, 48, 54)
+  end <- c(6, 30, 48, 54, 72)
+  data.frame(time = 24 + start, amt = rates * (end - start), rate = rates,
+             cmt = "central")
+}
+
+meal_table <- function(cohort) {
+  carb <- switch(cohort,
+    A = c(81, 190, 175, 100, 121, 203, 69, 130, 132, 101, 170, 168),
+    B = c(86, 104, 146, 99, 129, 150, 86, 103, 148, 111, 129, 131),
+    C = c(99, 104, 146, 99, 129, 150, 99, 103, 148, 99, 129, 131)
+  )
+  pct <- switch(cohort,
+    A = c(96, 100, 100, 60, 96, 100, 75, 55, 79, 60, 50, 63),
+    B = c(75, 96, 58, 65, 55, 75, 45, 65, 60, 56, 56, 40),
+    C = c(92, 100, 92, 67, 67, 92, 79, 75, 63, 40, 70, 55)
+  )
+  breakfast <- if (cohort == "A") 11 else 10 # 7 am or 6 am, hours after 8 pm
+  day <- rep(0:3, each = 3)
+  data.frame(time = 24 * day + rep(c(breakfast, 18, 24), 4),
+             amt = carb * 1000 * pct / 100, rate = 0, cmt = "gut")
+}
+
+study_day <- function(time) pmin(4, pmax(1, ceiling(time / 24)))
+
+make_cohort <- function(cohort, n, id_offset) {
+  doses <- dplyr::bind_rows(infusion_schedule(cohort), meal_table(cohort)) |>
+    dplyr::mutate(evid = 1L, dvid = NA_integer_)
+  obs <- data.frame(time = seq(0, 96, by = 0.5), amt = 0, rate = 0,
+                    cmt = "central", evid = 0L, dvid = 1L)
+  one <- dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(time, dplyr::desc(evid))
+  ids <- id_offset + seq_len(n)
+  dplyr::bind_rows(lapply(ids, function(i) dplyr::mutate(one, id = i))) |>
+    dplyr::mutate(OCC = study_day(time), cohort = cohort) |>
+    dplyr::select(id, time, amt, rate, evid, cmt, dvid, OCC, cohort)
+}
+
+events <- dplyr::bind_rows(
+  make_cohort("A", 100, 0L),
+  make_cohort("B", 100, 100L),
+  make_cohort("C", 100, 200L)
+)
+stopifnot(!anyDuplicated(events[events$evid == 0, c("id", "time")]))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Cirincione_2017_exenatide_qt")
+mod_tv <- rxode2::zeroRe(rxode2::rxode(mod))
+
+rxode2::rxSetSeed(20170525)
+sim <- rxode2::rxSolve(mod, events = events, keep = c("cohort", "OCC")) |>
+  as.data.frame() |>
+  dplyr::mutate(t_inf = time - 24,
+                regimen = ifelse(cohort == "A", "Cohort A", "Cohorts B and C"))
+
+sim_tv <- rxode2::rxSolve(mod_tv, events = events[events$id %in% c(1, 101, 201), ],
+                          keep = c("cohort", "OCC")) |>
+  as.data.frame() |>
+  dplyr::mutate(t_inf = time - 24)
+```
+
+# Replicate published figures
+
+## Figure 4: exenatide PK
+
+```{r figure-4, fig.width = 7, fig.height = 4}
+sim |>
+  dplyr::filter(t_inf >= 0, t_inf <= 72) |>
+  dplyr::group_by(regimen, t_inf) |>
+  dplyr::summarise(Q05 = quantile(Cc, 0.05), Q50 = median(Cc),
+                   Q95 = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(t_inf, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~regimen) +
+  labs(x = "Hours from start of infusion", y = "Exenatide (pg/mL)",
+       caption = "Replicates Figure 4 of Cirincione 2017 (median and 5th-95th percentiles).")
+```
+
+## Figure 5: glucose, heart rate and QT
+
+The bands are model predictions without residual error.
+
+```{r figure-5, fig.width = 7, fig.height = 4}
+sim |>
+  dplyr::select(t_inf, glucose, hr, qt) |>
+  tidyr::pivot_longer(-t_inf, names_to = "endpoint") |>
+  dplyr::group_by(endpoint, t_inf) |>
+  dplyr::summarise(Q05 = quantile(value, 0.05), Q50 = median(value),
+                   Q95 = quantile(value, 0.95), .groups = "drop") |>
+  dplyr::mutate(endpoint = factor(endpoint, c("glucose", "hr", "qt"),
+                                  c("Glucose (mg/dL)", "HR (bpm)", "QT (ms)"))) |>
+  ggplot(aes(t_inf, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~endpoint, scales = "free_y") +
+  labs(x = "Hours from start of infusion", y = NULL,
+       caption = "Replicates Figure 5 of Cirincione 2017 (all three cohorts).")
+```
+
+The Results report median HR rising from about 65 bpm on the baseline day to 74,
+77 and 80 bpm on infusion days 1-3. The typical-value prediction for cohort C,
+averaged over each study day, reproduces this:
+
+```{r hr-by-day}
+hr_day <- sim_tv |>
+  dplyr::filter(cohort == "C") |>
+  dplyr::mutate(day = study_day(time)) |>
+  dplyr::group_by(day) |>
+  dplyr::summarise(Cc = mean(Cc), glucose = mean(glucose), hr = mean(hr),
+                   qt = mean(qt), .groups = "drop") |>
+  dplyr::mutate(hr_paper = c(65, 74, 77, 80),
+                pct_diff = 100 * (hr - hr_paper) / hr_paper)
+knitr::kable(hr_day, digits = 1)
+
+stopifnot(
+  all(abs(hr_day$pct_diff) < 5),
+  # QT shortens with the rising HR, as in the Figure 5 VPC (about 400 to 355 ms)
+  hr_day$qt[4] < hr_day$qt[1] - 25
+)
+```
+
+## Figure 6: change in mQTc after breakfast, placebo versus exenatide
+
+Figure 6 simulates a typical subject (baseline glucose 92.8 mg/dL, HR 64.1 bpm)
+eating a 99 g carbohydrate breakfast at 6 am, without drug and at a constant
+200 pg/mL. The exenatide arm uses the day-2 (200 pg/mL target) meal absorption
+rate and a loading dose plus infusion that holds 200 pg/mL from 8 pm onward.
+
+```{r figure-6}
+amt200 <- 0.2 * vc
+rate200 <- kel * amt200 + vmax * amt200 / (km + amt200)
+fig6_events <- function(exenatide) {
+  ev <- data.frame(time = 10, amt = 99000, rate = 0, cmt = "gut", evid = 1L,
+                   dvid = NA_integer_)
+  if (exenatide) {
+    ev <- dplyr::bind_rows(ev, data.frame(
+      time = 0, amt = c(amt200, rate200 * 24), rate = c(0, rate200),
+      cmt = "central", evid = 1L, dvid = NA_integer_))
+  }
+  obs <- data.frame(time = seq(0, 24, by = 0.25), amt = 0, rate = 0,
+                    cmt = "central", evid = 0L, dvid = 1L)
+  dplyr::bind_rows(ev, obs) |>
+    dplyr::arrange(time, dplyr::desc(evid)) |>
+    dplyr::mutate(id = 1L, OCC = if (exenatide) 2L else 1L)
+}
+fig6_solve <- function(model, exenatide) {
+  rxode2::rxSolve(model, events = fig6_events(exenatide)) |>
+    as.data.frame() |>
+    dplyr::mutate(dQTc = QTc - QTc[time == 10],
+                  arm = if (exenatide) "Exenatide 200 pg/mL" else "Placebo")
+}
+fig6 <- dplyr::bind_rows(fig6_solve(mod_tv, FALSE), fig6_solve(mod_tv, TRUE))
+
+ggplot(dplyr::filter(fig6, time >= 10, time <= 18),
+       aes(time - 4, dQTc, linetype = arm)) +
+  geom_line() +
+  labs(x = "Clock time (h)", y = "Change in mQTc from 6 am (ms)", linetype = NULL,
+       caption = "Replicates Figure 6 of Cirincione 2017.")
+
+# Values read from Figure 6 at 7, 8, 9, 10, 11, 12 and 14 h clock time
+fig6_cmp <- data.frame(
+  clock = c(7, 8, 9, 10, 11, 12, 14),
+  placebo_paper = c(-5.9, -9.7, -10.0, -9.2, -8.2, -7.3, -5.7),
+  exenatide_paper = c(-0.3, -0.85, -1.3, -1.55, -1.65, -1.65, -1.45)
+) |>
+  dplyr::mutate(
+    placebo_model = fig6$dQTc[fig6$arm == "Placebo"][match(clock + 4, fig6$time[fig6$arm == "Placebo"])],
+    exenatide_model = fig6$dQTc[fig6$arm != "Placebo"][match(clock + 4, fig6$time[fig6$arm != "Placebo"])]
+  )
+knitr::kable(fig6_cmp, digits = 2)
+
+stopifnot(
+  # Placebo arm: the meal-driven suppression reproduces within 1 ms throughout
+  max(abs(fig6_cmp$placebo_model - fig6_cmp$placebo_paper)) < 1,
+  # Exenatide arm: the suppression is largely abolished (see Assumptions)
+  min(fig6_cmp$exenatide_model) > -5,
+  min(fig6_cmp$exenatide_model) / min(fig6_cmp$placebo_model) < 0.5
+)
+```
+
+## Equation 2 as printed
+
+The literal Equation 2 (production fixed at `kout_glu*Gluss`) is simulated next
+to the packaged model for the cohort C course.
+
+```{r equation-2-literal}
+mod_literal <- rxode2::rxode(mod) |>
+  rxode2::model(d/dt(glucose) <- ka_glucose * gut / vc_glucose +
+    kout_glucose * rbase_glucose - kout_glucose * stim_glucose * glucose) |>
+  rxode2::zeroRe()
+
+ev_c <- events[events$id == 201, ]
+by_day <- function(model, label) {
+  rxode2::rxSolve(model, events = ev_c) |>
+    as.data.frame() |>
+    dplyr::mutate(day = study_day(time)) |>
+    dplyr::group_by(day) |>
+    dplyr::summarise(glucose = mean(glucose), hr = mean(hr), qt = mean(qt),
+                     .groups = "drop") |>
+    dplyr::mutate(model = label)
+}
+eq2 <- dplyr::bind_rows(by_day(mod_tv, "packaged"), by_day(mod_literal, "as printed"))
+knitr::kable(eq2, digits = 1)
+
+lit <- eq2[eq2$model == "as printed", ]
+pkg <- eq2[eq2$model == "packaged", ]
+stopifnot(
+  # Figure 5 VPC: glucose medians stay between about 87 and 100 mg/dL on
+  # infusion days; the printed form falls below 70 mg/dL
+  all(pkg$glucose[2:4] > 87), all(lit$glucose[2:4] < 70),
+  # Figure 5 VPC: QT falls through the infusion; the printed form does not
+  pkg$qt[4] < pkg$qt[1] - 25, lit$qt[4] > lit$qt[1]
+)
+```
+
+# PKNCA validation
+
+The paper reports geometric mean steady-state concentrations for infusion days
+1-3 in cohort A (221, 394, 834 pg/mL) and in cohorts B and C combined (213,
+333, 549 pg/mL). The average concentration over the last part of each rate
+plateau (infusion hours 12-30, 36-48 and 60-72) is computed with PKNCA.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, regimen)
+
+dose_nca <- events |>
+  dplyr::filter(evid == 1, cmt == "central") |>
+  dplyr::mutate(regimen = ifelse(cohort == "A", "Cohort A", "Cohorts B and C"),
+                dur = amt / rate) |>
+  dplyr::select(id, time, amt, dur, regimen)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | regimen + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | regimen + id,
+                             route = "intravascular", duration = "dur")
+intervals <- data.frame(start = 24 + c(12, 36, 60), end = 24 + c(30, 48, 72),
+                        cav = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+day_label <- c("36" = "Infusion day 1", "60" = "Infusion day 2", "84" = "Infusion day 3")
+sim_cav <- as.data.frame(nca) |>
+  dplyr::filter(PPTESTCD == "cav") |>
+  dplyr::mutate(day = day_label[as.character(start)]) |>
+  dplyr::group_by(regimen, day, PPTESTCD) |>
+  dplyr::summarise(PPORRES = exp(mean(log(PPORRES))), .groups = "drop")
+
+ref_cav <- data.frame(
+  regimen = rep(c("Cohort A", "Cohorts B and C"), each = 3),
+  day = rep(c("Infusion day 1", "Infusion day 2", "Infusion day 3"), 2),
+  cav = c(221, 394, 834, 213, 333, 549)
+)
+
+tbl <- nlmixr2lib::ncaComparisonTable(sim_cav, ref_cav, by = c("regimen", "day"),
+                                      units = c(cav = "pg/mL"))
+knitr::kable(tbl)
+pct <- as.numeric(gsub("[^0-9.+-]", "", tbl[["% diff"]]))
+stopifnot(length(pct) == 6, median(abs(pct)) < 10, max(abs(pct)) < 25)
+```
+
+The largest difference is cohort A on infusion day 3 (4.5 ug/h), where the
+model's geometric mean is below the observed 834 pg/mL. That cohort's higher
+than expected exposure is why the infusion algorithm was changed for cohorts B
+and C, and with six subjects its geometric mean is imprecise.
+
+# Assumptions and deviations
+
+* **Equation 2 production term.** The literal Equation 2 holds `Kin_glu`
+  at `kout_glu*Gluss` while exenatide stimulates `kout_glu`. That drives fasting
+  glucose to about 61 mg/dL and QT upward, which contradicts the Figure 5 VPC and
+  the Results. The packaged model stimulates the whole turnover
+  (`kout_glu*stimulation*(Glu - Gluss)`); see "Equation 2 as printed" above.
+* **Equation 3.** Equation 3 is printed with a loss term `kout_HR*HR0`. That is
+  read as `kout_HR*HR`, since a constant loss term would make HR grow without
+  bound. Equation 3 also omits the glucose stimulation of HR production `S_HR`
+  that Figure 2 draws and the baseline-day model (companion Equation 9)
+  contains, and whose value is in Supplemental Table S1. It is included as
+  `(1 + S_HR*(Glu - Gluss))`. The companion writes the reference glucose as the
+  individual initial value `Glu0`; the packaged model starts glucose at `Gluss`,
+  so the two coincide.
+* **Initial conditions.** The paper set glucose and HR to each subject's
+  measured value at time 0. The packaged model starts them at the typical
+  `Gluss` and the individual `HRss`; simulate a run-in day (as here, the
+  baseline day) before comparing.
+* **Fixed baseline-day parameters.** Glucose, HR and QT system parameters,
+  including their IIV, are fixed at the Supplemental Table S1 values ("prior
+  parameter estimates"). Table S1 lists two glucose residual errors (11% and
+  11.3%); neither is used, because Table 1 re-estimated `RVGlu` = 10.4%.
+* **Units.** `kout_HR` is printed in 1/day (14.3) and converted to 1/h. The
+  12-h acrophase `ph2` is printed with "(1/h)" in Table S1 and is taken as hours,
+  as in the companion's Table 1. `SC50glu/exen` has no unit in Table 1; the text
+  gives 90 pg/mL. Meal carbohydrate is dosed in mg into `gut` with `Vglu` in dL,
+  which reproduces the companion's predicted 52 mg/dL post-meal glucose rise for
+  a 99 g breakfast.
+* **IIV scale.** "IIV (%)" is taken as `sqrt(omega^2)`. Only this reading makes
+  the printed `cov(IIV V, IIV Km)` = 0.23 a valid covariance (correlation 0.90);
+  with `omega^2 = log(1 + CV^2)` the implied correlation is 1.11.
+* **Time origin.** The circadian acrophases are hours after 8 pm, the start of
+  the baseline day. Event tables must put `t = 0` at 8 pm, or shift the dosing
+  times accordingly.
+* **Study-day meal absorption.** `ka_glu` was estimated per study day, not as a
+  function of exenatide concentration. `OCC` selects it and is defined only for
+  study days 1-4. The infusion step times were digitised from Figure 1.
+* **Figure 6, exenatide arm.** The packaged model's mQTc nadir in the exenatide
+  arm is about -3.5 ms, against about -1.6 ms in Figure 6; the placebo arm
+  reproduces within 1 ms. The exenatide arm does not discriminate between the
+  two readings of Equation 2 (both give the same meal excursion once the
+  transduction state has equilibrated), and the source of the remaining
+  difference is not identified.
+* **Linear clearance.** `kel*V` is 4.96 L/h; the Discussion quotes
+  "approximately 4.7 L/h".
+* **Fasting glucose level.** The packaged model keeps fasting glucose at
+  `Gluss` = 92.8 mg/dL (slightly above it while slow meal absorption is still
+  running on infusion days). The Figure 5 VPC median dips to about 87-90 mg/dL
+  between meals on infusion days.

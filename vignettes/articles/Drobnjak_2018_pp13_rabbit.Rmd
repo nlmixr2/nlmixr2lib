@@ -1,0 +1,409 @@
+---
+title: "Placental protein 13 in rabbits (Drobnjak 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Placental protein 13 in rabbits (Drobnjak 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r model-load, include = FALSE}
+mod <- readModelDb("Drobnjak_2018_pp13_rabbit")
+ui <- rxode2::rxode(mod)
+```
+
+# Model and source
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.2147/DDDT.S167926> (open access, PMC6037268)
+
+Placental protein 13 (PP13, galectin-13) is a placenta-specific galectin
+whose low first-trimester serum concentrations mark a higher risk of
+preeclampsia, and which is being considered as a replacement therapy.
+Drobnjak and colleagues gave recombinant human PP13 to rabbits as a single
+intravenous (IV) bolus at three dose levels and as a single subcutaneous (SC)
+injection at the highest level, measured serum PP13 by ELISA, and fitted a
+two-compartment model with linear elimination to each animal's profile. The
+paper reports the group means of the individual estimates (Table 1). It
+found the disposition dose dependent: clearance more than doubled between
+1.3 and 12.8 ng/kg.
+
+The packaged model therefore holds one two-compartment parameter set per IV
+dose group, selected by the `DOSE_PP13_NGKG` covariate, and adds first-order
+SC absorption with the reported bioavailability on top of the 12.8 ng/kg
+disposition.
+
+# Population
+
+Twelve nonpregnant female New Zealand White rabbits (3.9 +/- 0.3 kg) were
+rotated through four groups of six with a one-week washout (Methods,
+"Animals" and "Experimental procedure"). Groups 1-3 received an IV bolus of
+1.3, 2.6 or 12.8 ng/kg (1 mL of 5, 10 or 50 ng/mL) into the marginal ear
+vein; Group 4 received 12.8 ng/kg SC at the neck. Serum was sampled before
+dosing and at 10, 30, 60 and 90 min and 2, 4, 6 and 24 h.
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl_dose1p3`, `lcl_dose2p6`, `lcl_dose12p8` | 14.0, 20.3, 33.5 mL/h | Table 1, `Cltot` (printed as mL/kg/h; per animal, see below) |
+| `lvc_dose1p3`, `lvc_dose2p6`, `lvc_dose12p8` | 93.333, 126.875, 223.333 mL | Derived: Table 1 `Cltot` / `ke` (ke 0.15, 0.16, 0.15 1/h) |
+| `lalpha_dose1p3`, `lalpha_dose2p6`, `lalpha_dose12p8` | 0.36, 0.50, 0.60 1/h | Table 1, `alpha` |
+| `lbeta_dose1p3`, `lbeta_dose2p6`, `lbeta_dose12p8` | 0.09, 0.13, 0.04 1/h | Table 1, `beta` |
+| `lka` | 1.78 1/h | Table 1, Group 4 `kabs` |
+| `lfdepot` | 0.571 | Table 1, Group 4 `F%` = 57.1; Results, "SC administration" |
+| `propSd` | 0 (fixed) | Not reported (individual fits) |
+| Two-compartment model, linear elimination, IV and SC | n/a | Methods, "Pharmacokinetics and statistical analysis" |
+| `kel = cl / vc`, `k21 = alpha * beta / kel`, `k12 = alpha + beta - kel - k21` | n/a | Standard two-compartment identities |
+| Dose-group selection by `DOSE_PP13_NGKG` | n/a | Table 1 (one parameter set per group); breakpoints are the geometric midpoints between the studied levels |
+| Per-animal doses 5, 10, 50 ng | n/a | Methods, "Experimental procedure" (1 mL of 5, 10, 50 ng/mL) |
+
+# How the parameter set was reconstructed
+
+## Units of Table 1
+
+Table 1 labels total clearance `mL/kg/h` and `Vd` in `L`, but both are per
+animal. With the per-animal doses of 5000, 10000 and 50000 pg, `Dose/AUC`
+reproduces the printed clearances; with per-kilogram doses it misses them by
+a factor of about 3.5. Likewise the dose divided by the printed `Vd` (read as
+mL) reproduces the 10-min concentrations, and the `AUC/dose (h/mL)` column
+is AUC over the per-animal dose.
+
+```{r units}
+tab1 <- data.frame(
+  group = c("1.3 ng/kg IV", "2.6 ng/kg IV", "12.8 ng/kg IV"),
+  dose_pg = c(5000, 10000, 50000),
+  dose_pg_per_kg = c(1300, 2600, 12800),
+  auc24 = c(315, 495, 1360),
+  cl = c(14.0, 20.3, 33.5),
+  ke = c(0.15, 0.16, 0.15),
+  vd = c(110, 132, 228),
+  alpha = c(0.36, 0.50, 0.60),
+  beta = c(0.09, 0.13, 0.04),
+  cmax = c(58.4, 78.9, 217.0),
+  thalf = c(5.16, 4.42, 4.60)
+)
+tab1 |>
+  dplyr::transmute(
+    group,
+    `Printed Cltot` = cl,
+    `Dose per animal / AUC (mL/h)` = round(dose_pg / auc24, 1),
+    `Dose per kg / AUC (mL/kg/h)` = round(dose_pg_per_kg / auc24, 1),
+    `Printed AUC/dose` = c(0.07, 0.05, 0.03),
+    `AUC / dose per animal (h/mL)` = round(auc24 / dose_pg, 3)
+  ) |>
+  knitr::kable(caption = "Table 1 clearances are per animal (mL/h), not per kg.")
+```
+
+## Central volume: `Cltot / ke` rather than the printed `Vd`
+
+Table 1 prints both `ke` and `Vd`, and because each is the mean of per-animal
+estimates they do not satisfy `ke = Cltot / Vd` exactly. Any four of
+`Cltot`, `ke`, `Vd`, `alpha` and `beta` fix a two-compartment model. The two
+candidate central volumes were compared against the Table 1 Cmax (the
+10-min sample) and the Table 1 half-life, which equals `ln(2)/ke` rather than
+either hybrid half-life:
+
+```{r vc-choice}
+biexp <- function(t, dose, v, kel, a, b) {
+  k21 <- a * b / kel
+  dose / v * ((a - k21) / (a - b) * exp(-a * t) + (k21 - b) / (a - b) * exp(-b * t))
+}
+vc_cmp <- tab1 |>
+  dplyr::mutate(
+    vc_ke = cl / ke,
+    c10_ke = biexp(1 / 6, dose_pg, vc_ke, ke, alpha, beta),
+    c10_vd = biexp(1 / 6, dose_pg, vd, cl / vd, alpha, beta),
+    th_ke = log(2) / ke,
+    th_vd = log(2) / (cl / vd)
+  )
+vc_cmp |>
+  dplyr::transmute(
+    group,
+    `Table 1 Cmax` = cmax,
+    `C(10 min), Vc = Cltot/ke` = round(c10_ke, 1),
+    `C(10 min), Vc = Vd` = round(c10_vd, 1),
+    `Table 1 t1/2` = thalf,
+    `ln2/kel, Vc = Cltot/ke` = round(th_ke, 2),
+    `ln2/kel, Vc = Vd` = round(th_vd, 2)
+  ) |>
+  knitr::kable(caption = "Choosing the central volume.")
+stopifnot(all(abs(vc_cmp$c10_ke - vc_cmp$cmax) < abs(vc_cmp$c10_vd - vc_cmp$cmax)))
+```
+
+`Cltot / ke` is closer to the Table 1 Cmax in all three groups and to the
+half-life in two of three, and it keeps the printed `ke` exact, so it is
+the central volume used.
+
+# Simulation
+
+The model has no between-animal variability, so every profile below is the
+typical value. Each group is dosed at the per-animal dose of the study.
+
+```{r events}
+groups <- data.frame(
+  id = 1:4,
+  treatment = c("1.3 ng/kg IV", "2.6 ng/kg IV", "12.8 ng/kg IV", "12.8 ng/kg SC"),
+  DOSE_PP13_NGKG = c(1.3, 2.6, 12.8, 12.8),
+  amt = c(5000, 10000, 50000, 50000),
+  cmt = c("central", "central", "central", "depot")
+)
+paper_times <- c(1 / 6, 0.5, 1, 1.5, 2, 4, 6, 24)
+obs_times <- sort(unique(c(0, paper_times, seq(0, 24, by = 0.05))))
+
+make_events <- function(g, times) {
+  dose <- data.frame(
+    id = g$id, time = 0, amt = g$amt, cmt = g$cmt, evid = 1L
+  )
+  obs <- data.frame(
+    id = g$id, time = times, amt = 0, cmt = "central", evid = 0L
+  )
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::mutate(treatment = g$treatment, DOSE_PP13_NGKG = g$DOSE_PP13_NGKG)
+}
+events <- dplyr::bind_rows(lapply(seq_len(nrow(groups)), function(i) {
+  make_events(groups[i, ], obs_times)
+}))
+
+sim <- rxode2::rxSolve(mod, events, keep = "treatment") |>
+  as.data.frame()
+```
+
+## Check: the ODE matches the closed-form biexponential
+
+For the IV groups the solved profile must equal the closed-form
+biexponential built from the same `cl`, `vc`, `alpha` and `beta`; this
+confirms the micro-constant identities and the dose-group lookup.
+
+```{r closed-form}
+cf <- sim |>
+  dplyr::filter(treatment != "12.8 ng/kg SC", time > 0) |>
+  dplyr::left_join(groups[, c("treatment", "amt")], by = "treatment") |>
+  dplyr::mutate(cf = biexp(time, amt, vc, kel, alpha, beta),
+                rel = abs(Cc - cf) / cf)
+stopifnot(max(cf$rel) < 1e-4)
+max(cf$rel)
+```
+
+## Replicate Figure 1 (IV dose groups)
+
+The points are the group means read by eye from the published Figure 1
+(approximate, for orientation only).
+
+```{r fig1-digitised}
+fig_obs <- tibble::tribble(
+  ~treatment, ~time, ~Cc,
+  "1.3 ng/kg IV", 1 / 6, 48, "1.3 ng/kg IV", 0.5, 33, "1.3 ng/kg IV", 1, 31,
+  "1.3 ng/kg IV", 1.5, 32, "1.3 ng/kg IV", 2, 27, "1.3 ng/kg IV", 4, 17,
+  "1.3 ng/kg IV", 6, 17, "1.3 ng/kg IV", 24, 3,
+  "2.6 ng/kg IV", 1 / 6, 77, "2.6 ng/kg IV", 0.5, 68, "2.6 ng/kg IV", 1, 52,
+  "2.6 ng/kg IV", 1.5, 40, "2.6 ng/kg IV", 2, 37, "2.6 ng/kg IV", 4, 27,
+  "2.6 ng/kg IV", 6, 24, "2.6 ng/kg IV", 24, 4,
+  "12.8 ng/kg IV", 1 / 6, 207, "12.8 ng/kg IV", 0.5, 195, "12.8 ng/kg IV", 1, 136,
+  "12.8 ng/kg IV", 1.5, 85, "12.8 ng/kg IV", 2, 75, "12.8 ng/kg IV", 4, 50,
+  "12.8 ng/kg IV", 6, 26, "12.8 ng/kg IV", 24, 6,
+  "12.8 ng/kg SC", 1 / 6, 57, "12.8 ng/kg SC", 0.5, 71, "12.8 ng/kg SC", 1, 116,
+  "12.8 ng/kg SC", 1.5, 125, "12.8 ng/kg SC", 2, 121, "12.8 ng/kg SC", 4, 63,
+  "12.8 ng/kg SC", 6, 40, "12.8 ng/kg SC", 24, 4
+)
+```
+
+```{r fig1, fig.width = 7, fig.height = 4.5}
+sim |>
+  dplyr::filter(treatment != "12.8 ng/kg SC") |>
+  ggplot(aes(time, Cc, colour = treatment)) +
+  geom_line() +
+  geom_point(data = dplyr::filter(fig_obs, treatment != "12.8 ng/kg SC")) +
+  labs(x = "Time (h)", y = "Serum PP13 (pg/mL)", colour = NULL,
+       caption = "Replicates Figure 1 of Drobnjak 2018. Lines: model; points: published means (read by eye).")
+```
+
+## Replicate Figure 2 (IV vs SC at 12.8 ng/kg)
+
+```{r fig2, fig.width = 7, fig.height = 4.5}
+sim |>
+  dplyr::filter(DOSE_PP13_NGKG == 12.8) |>
+  ggplot(aes(time, Cc, colour = treatment)) +
+  geom_line() +
+  geom_point(data = dplyr::filter(fig_obs, grepl("12.8", treatment))) +
+  labs(x = "Time (h)", y = "Serum PP13 (pg/mL)", colour = NULL,
+       caption = "Replicates Figure 2 of Drobnjak 2018. Lines: model; points: published means (read by eye).")
+```
+
+# PKNCA validation
+
+The paper derived Cmax and tmax from the observed samples and AUC(0-24 h) by
+the linear trapezoidal rule. The typical-value profiles are therefore
+evaluated on the study's sampling times. The study's time-zero sample was
+drawn before dosing, so the time-zero concentration is set to the pre-dose
+value of 0 rather than the post-bolus concentration rxode2 reports at
+time 0; otherwise the IV Cmax would be the back-extrapolated C0, which the
+study never sampled.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::filter(time %in% c(0, paper_times)) |>
+  dplyr::mutate(Cc = ifelse(time == 0, 0, Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+stopifnot(nrow(sim_nca) == 4L * (length(paper_times) + 1L))
+
+dose_df <- groups |>
+  dplyr::mutate(time = 0) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                             concu = "pg/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "pg")
+intervals <- data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE,
+                        auclast = TRUE)
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals,
+                   options = list(auc.method = "linear"))
+)
+```
+
+## Comparison against published NCA
+
+Published values are Table 1 (Cmax and AUC(0-24 h) as group means;
+AUC(0-24 h) is a harmonic mean; SC tmax 90 min).
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax, ~auclast,
+  "1.3 ng/kg IV", 58.4, NA, 315,
+  "2.6 ng/kg IV", 78.9, NA, 495,
+  "12.8 ng/kg IV", 217.0, NA, 1360,
+  "12.8 ng/kg SC", 130.0, 1.5, 805
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "pg/mL", tmax = "h", auclast = "h*pg/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Typical-value NCA on the study sampling times vs. Drobnjak 2018 Table 1.",
+    "* differs from reference by >20%."
+  )
+)
+```
+
+```{r nca-gates}
+res <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::left_join(published, by = "treatment", suffix = c("_sim", "_pub")) |>
+  dplyr::mutate(cmax_ratio = cmax_sim / cmax_pub,
+                auc_ratio = auclast_sim / auclast_pub)
+res <- res[match(groups$treatment, res$treatment), ]
+stopifnot(identical(res$treatment, groups$treatment))
+iv <- res$treatment != "12.8 ng/kg SC"
+low_iv <- res$treatment %in% c("1.3 ng/kg IV", "2.6 ng/kg IV")
+iv3 <- res$treatment == "12.8 ng/kg IV"
+sc <- res$treatment == "12.8 ng/kg SC"
+stopifnot(
+  # IV Cmax (the 10-min sample) within 15% in every group
+  all(abs(res$cmax_ratio[iv] - 1) < 0.15),
+  # IV AUC(0-24 h) at 1.3 and 2.6 ng/kg: within 20% (documented over-prediction)
+  all(abs(res$auc_ratio[low_iv] - 1) < 0.20),
+  # 12.8 ng/kg IV AUC(0-24 h): documented under-prediction (mean beta)
+  res$auc_ratio[iv3] > 0.70, res$auc_ratio[iv3] < 0.90,
+  # SC/IV AUC(0-24 h) ratio reproduces F = 57.1%
+  abs(res$auclast_sim[sc] / res$auclast_sim[iv3] - 0.571) < 0.02,
+  # SC Cmax: documented under-prediction (see Assumptions)
+  res$cmax_ratio[sc] > 0.5, res$cmax_ratio[sc] < 0.75
+)
+res |>
+  dplyr::select(treatment, cmax_ratio, auc_ratio) |>
+  dplyr::rename("Simulated / published Cmax" = cmax_ratio,
+                "Simulated / published AUC(0-24 h)" = auc_ratio) |>
+  knitr::kable(digits = 2)
+```
+
+## Clearance and half-life
+
+```{r derived}
+derived <- sim |>
+  dplyr::filter(time == 0) |>
+  dplyr::distinct(treatment, cl, vc, kel, alpha, beta) |>
+  dplyr::mutate(
+    `ln2/kel (h)` = log(2) / kel,
+    `ln2/beta (h)` = log(2) / beta,
+    `Table 1 t1/2 (h)` = c(5.16, 4.42, 4.60, 11.40)
+  )
+knitr::kable(derived, digits = 3)
+```
+
+The Table 1 IV half-lives agree with `ln(2)/kel` (4.6, 4.3, 4.6 h), not with
+the terminal `ln(2)/beta`. The SC half-life of 11.4 h is the SC group's own
+`ke` of 0.06 1/h (see below).
+
+# Assumptions and deviations
+
+* **Per-animal units.** Table 1 labels `Cltot` mL/kg/h and `Vd` L; both are
+  per animal (mL/h and mL), as shown above. Doses are therefore given per
+  animal (5000, 10000, 50000 pg) and the model has no body-weight scaling;
+  the paper reports none. The parameters describe a rabbit of about 3.9 kg.
+* **Means of individual fits.** Each parameter is the arithmetic mean of six
+  individual estimates, so the parameter set does not exactly reproduce the
+  mean profile. The central volume is `Cltot / ke` (93, 127, 223 mL) rather
+  than the printed `Vd` (110, 132, 228 mL), chosen on the Table 1 Cmax as
+  shown above.
+* **No variability.** Between-animal SDs are printed for each mean, but no
+  population model was fitted, so no IIV is encoded. No residual-error model
+  was reported; `propSd` is fixed to 0. The ELISA intra- and inter-assay CVs
+  (10% and 11%) are assay precision, not model error.
+* **Dose dependence is a lookup.** The paper fitted each dose group
+  separately and gives no dose-exposure function. `DOSE_PP13_NGKG` selects
+  the nearest studied group (breakpoints 1.84 and 5.77 ng/kg); predictions
+  at other doses are not supported by the paper.
+* **IV AUC(0-24 h).** At 1.3 and 2.6 ng/kg the simulated AUC(0-24 h) is
+  17% and 12% above Table 1, because the mean `alpha` and `beta` give a
+  slower 30 min to 4 h decline than the published mean profiles. At
+  12.8 ng/kg it is about 20% below: the mean `beta` of 0.04 1/h
+  (t1/2 17 h) gives about 18 pg/mL at 24 h, where the published mean is
+  about 6 pg/mL, so much of the dose/CL exposure falls after 24 h. The
+  mean of a skewed per-animal `beta` (SD 0.03) is the likely cause. Not
+  tuned.
+* **SC arm.** The Group 4 row of Table 1 cannot define a two-compartment
+  disposition on its own: `ke` 0.06, `alpha` 0.24 and `beta` 0.14 1/h give
+  `k12 = alpha + beta - ke - alpha*beta/ke = -0.24` 1/h, and `beta`
+  exceeds `ke`, which is impossible for a mammillary model. The SC group
+  received the same 12.8 ng/kg as Group 3, and F was computed against
+  Group 3, so the model applies the reported `kabs` (1.78 1/h) and F (57.1%)
+  to the Group 3 disposition. This keeps the SC/IV AUC ratio at F but
+  under-predicts the SC peak (about 80 vs 130 pg/mL, at 1 h rather than
+  1.5 h); the published SC
+  profile stays above the IV profile from 1.5 to 6 h with 57% of the
+  dose, which no common linear disposition reproduces and which is
+  consistent with the paper's dose-dependent clearance.
+* **Absorption half-life.** Table 1 prints `t1/2 abs` 4.5 h, which does not
+  match `kabs` 1.78 1/h (ln2/kabs = 0.39 h). The rate constant is used
+  because the observed tmax of 90 min requires fast absorption; with
+  `ka = ln(2)/4.5` the simulated tmax would be about 5 h.
+* **MRT and Vdss.** Table 1 MRT (1.84, 1.23, 0.62 h) and Vdss
+  (`Cltot * MRT`) are shorter and smaller than `1/ke` and the central volume
+  allow for a two-compartment model and were not used.
+* **Figure points** in the plots above were read by eye from the published
+  figures for orientation only; no assertion uses them.
+* No erratum was found for this article (PubMed and the publisher page,
+  checked 2026-11-25).

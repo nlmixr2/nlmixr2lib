@@ -1,0 +1,380 @@
+---
+title: "Efavirenz (Kitabi 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Efavirenz (Kitabi 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Kitabi_2018_efavirenz"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Kitabi_2018_efavirenz"))$description`
+* Article: <https://doi.org/10.1038/s41598-018-34674-3> (open access; the
+  Supplementary Information holds the NONMEM control stream of the final model)
+
+# Population
+
+Kitabi 2018 enrolled 56 treatment-naive Tanzanian adults with HIV and CD4
+counts below 200 cells/uL at Muhimbili National Hospital, Dar es Salaam. Arm 1
+(n = 20, HIV only) started efavirenz 600 mg once daily with lamivudine and
+zidovudine, stavudine or tenofovir, and gave an intensive steady-state profile
+at week 16. Arm 2 (n = 36, HIV with tuberculosis) started rifampicin,
+isoniazid, pyrazinamide and ethambutol and added the same antiretroviral
+regimen 4 weeks later; it gave intensive profiles at week 20 of anti-TB therapy
+(about 16 weeks of efavirenz) and again at week 32, 8 weeks after anti-TB
+therapy ended. Samples were drawn at about 0, 1, 3, 6, 12, 16 and 24 h after an
+evening dose; all 556 concentrations were above the 10 ng/mL limit of
+quantification. Median (IQR) age was 42 (36-50) years and weight 48 (43-60) kg.
+Arm 1 was 75% female with mean weight 45.5 kg; arm 2 was 36% female with mean
+weight 55.1 kg (Table 1). CYP2B6 c.516G>T (\*6) genotype was available for 37
+subjects: \*1/\*1 18, \*1/\*6 13, \*6/\*6 6 (Table 1).
+
+The same information is available programmatically via
+`readModelDb("Kitabi_2018_efavirenz")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL/F, \*1/\*1, arm 1, 70 kg) | log(23.4) L/h | Table 2 'CL11'; stream THETA(1) |
+| `lvc` (V/F, 70 kg) | log(209) L | Table 2 'V'; stream THETA(2) |
+| `lka` | log(0.344) 1/h | Table 2 'KA'; stream THETA(3) |
+| `lq` (Q/F, 70 kg) | log(59.2) L/h | Table 2 'Q'; stream THETA(4) |
+| `lvp` (VP/F, 70 kg) | log(912) L | Table 2 'VP'; stream THETA(5) |
+| `e_wt_cl_q` | 0.75 (fixed) | Methods; stream LTVCL and MU_4 |
+| `e_wt_vc_vp` | 1 (fixed) | stream LTVV and MU_5 |
+| `e_cyp2b6_6het_cl` | 0.618 | Table 2 'Theta12'; stream THETA(8) |
+| `e_cyp2b6_6hom_cl` | 0.311 | Table 2 'Theta13'; stream THETA(9) |
+| `e_tb_cyp2b6_6wt_cl` | 0.915 | Table 2 'theta211'; stream THETA(10) |
+| `e_tb_cyp2b6_6het_cl` | 0.852 | Table 2 'theta212'; stream THETA(11) |
+| `e_tb_cyp2b6_6hom_cl` | 1.02 | Table 2 'theta213'; stream THETA(12) |
+| `e_occ2_cyp2b6_6wt_cl` | 1.19 | Table 2 'phi221'; stream THETA(13) |
+| `e_occ2_cyp2b6_6het_cl` | 1.19 | Table 2 'phi222'; stream THETA(14) |
+| `e_occ2_cyp2b6_6hom_cl` | 1.05 | Table 2 'phi223'; stream THETA(15) |
+| `e_male_cl` | 1.02 | Table 2 'thetaSEX'; stream THETA(18) |
+| `etalcl`, `etalvc` variances | 0.104, 0.91 | Table 2 'Between Subject Variance' |
+| `etalcl`-`etalvc` covariance | 0.300906 | stream `$OMEGA BLOCK(2)` |
+| `etalka`, `etalq` | 0.412, 0.556 | Table 2 'Between Subject Variance' |
+| VP/F IIV | 0 (fixed; omitted) | Table 2 'VP' footnote a; stream `$OMEGA ... FIX 0` |
+| `etaiov_cl_1`, `etaiov_cl_2` | 0.0934925 (second SAME) | Table 2 'Between Occasion Variance'; stream BOVCL21 / BOVCL22 |
+| `addSd` | 0.0873 mg/L | Table 2 'ADD'; stream THETA(6) |
+| `propSd` | 0.242 | Table 2 'PROP'; stream THETA(7) |
+| CL/F covariate model | n/a | Methods equation (3); stream LTVCL |
+| Two-compartment ODEs | n/a | Results; Supplementary Figure S2; stream `$DES` |
+| Combined residual error | n/a | stream `$ERROR` `W = SQRT(ADD**2 + PROP**2)`, `$SIGMA 1 FIX` |
+
+# Typical-value clearance check
+
+Equation (3) makes CL/F a product of genotype, arm and occasion fractions. The
+table below recomputes the typical CL/F of a 70 kg woman in every stratum from
+the packaged model and compares it to the product of the Table 2 estimates.
+Both sides use the same parameters, so the agreement must be exact.
+
+```{r typical-cl}
+mod <- readModelDb("Kitabi_2018_efavirenz")
+mod_typ <- rxode2::zeroRe(mod)
+
+strata <- tibble::tribble(
+  ~stratum,              ~TB_POS, ~OCC,
+  "Arm 1 EFV (WK16)",    0,       1,
+  "Arm 2 RIF/EFV (WK20)", 1,      1,
+  "Arm 2 EFV (WK32)",    1,       2
+) |>
+  tidyr::crossing(SNP_CYP2B6_RS3745274_T_COUNT = 0:2)
+
+ev_typ <- strata |>
+  dplyr::mutate(id = dplyr::row_number(), time = 0, evid = 0, cmt = "central",
+                WT = 70, SEXF = 1)
+
+typ <- rxode2::rxSolve(mod_typ, events = ev_typ,
+                       keep = c("stratum", "SNP_CYP2B6_RS3745274_T_COUNT")) |>
+  as.data.frame()
+
+expected <- strata |>
+  dplyr::mutate(
+    geno = c(1, 0.618, 0.311)[SNP_CYP2B6_RS3745274_T_COUNT + 1],
+    arm = ifelse(TB_POS == 1, c(0.915, 0.852, 1.02)[SNP_CYP2B6_RS3745274_T_COUNT + 1], 1),
+    occ = ifelse(TB_POS == 1 & OCC == 2, c(1.19, 1.19, 1.05)[SNP_CYP2B6_RS3745274_T_COUNT + 1], 1),
+    cl_expected = 23.4 * geno * arm * occ
+  )
+
+cl_tab <- typ |>
+  dplyr::select(stratum, SNP_CYP2B6_RS3745274_T_COUNT, cl) |>
+  dplyr::left_join(expected, by = c("stratum", "SNP_CYP2B6_RS3745274_T_COUNT")) |>
+  dplyr::mutate(genotype = c("*1/*1", "*1/*6", "*6/*6")[SNP_CYP2B6_RS3745274_T_COUNT + 1])
+
+stopifnot(all(abs(cl_tab$cl / cl_tab$cl_expected - 1) < 1e-8))
+
+cl_tab |>
+  dplyr::select(stratum, genotype, cl, cl_expected) |>
+  dplyr::mutate(genotype = gsub("*", "\\*", genotype, fixed = TRUE)) |>
+  dplyr::rename(
+    "Stratum" = stratum, "CYP2B6 genotype" = genotype,
+    "Model CL/F (L/h)" = cl, "Table 2 product (L/h)" = cl_expected
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical CL/F for a 70 kg woman.")
+```
+
+The derived percentages match the Results: CL/F is 38% (1 - 0.618) and 69%
+(1 - 0.311) lower for CYP2B6\*1/\*6 and \*6/\*6 than for \*1/\*1 in arm 1; during
+anti-TB co-treatment the \*1/\*6 stratum is 15% lower than in arm 1
+(0.852), and after co-treatment the \*1/\*1 stratum is 19% higher than during it
+(1.19).
+
+# Virtual cohort
+
+Each arm gets 200 virtual subjects. Weight is drawn from a normal distribution
+with the arm's Table 1 mean and SD, redrawing values outside 30-100 kg; sex
+follows the arm's Table 1 split. Genotype frequencies combine the observed
+genotypes of Table 1 with the subjects the mixture model assigned (Results:
+2 arm-1 and 13 arm-2 subjects with missing genotype to \*1/\*1, and 2 in each
+arm to \*6/\*6), giving \*1/\*1 : \*1/\*6 : \*6/\*6 = 9 : 7 : 4 in arm 1 and
+24 : 6 : 6 in arm 2. Arm-2 subjects are simulated on both occasions with the
+same between-subject etas and independent between-occasion etas.
+
+```{r cohort}
+set.seed(2018)
+rxode2::rxSetSeed(2018)
+
+draw_wt <- function(n, mean, sd) {
+  wt <- rnorm(n, mean, sd)
+  bad <- wt < 30 | wt > 100
+  while (any(bad)) {
+    wt[bad] <- rnorm(sum(bad), mean, sd)
+    bad <- wt < 30 | wt > 100
+  }
+  wt
+}
+
+n_arm <- 200
+obs_times <- seq(0, 24, by = 0.5)
+
+make_subjects <- function(n, tb_pos, wt_mean, wt_sd, p_female, p_geno, id_offset) {
+  tibble::tibble(
+    id = id_offset + seq_len(n),
+    TB_POS = tb_pos,
+    WT = draw_wt(n, wt_mean, wt_sd),
+    SEXF = rbinom(n, 1, p_female),
+    SNP_CYP2B6_RS3745274_T_COUNT = sample(0:2, n, replace = TRUE, prob = p_geno)
+  )
+}
+
+# One steady-state dosing occasion starting at `t0`.
+make_occasion <- function(subj, occ, t0, label) {
+  dose <- subj |>
+    dplyr::mutate(time = t0, evid = 1, amt = 600, ii = 24, ss = 1, cmt = "depot")
+  obs <- subj |>
+    tidyr::crossing(tad = obs_times) |>
+    dplyr::mutate(time = t0 + tad, evid = 0, amt = 0, ii = 0, ss = 0, cmt = "central") |>
+    dplyr::select(-tad)
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::mutate(OCC = occ, treatment = label, t0 = t0)
+}
+
+arm1 <- make_subjects(n_arm, 0, 45.50, 13.15, 15 / 20, c(9, 7, 4) / 20, 0L)
+arm2 <- make_subjects(n_arm, 1, 55.14, 13.45, 13 / 36, c(24, 6, 6) / 36, n_arm)
+
+events <- dplyr::bind_rows(
+  make_occasion(arm1, 1, 0, "Arm 1 EFV (WK16)"),
+  make_occasion(arm2, 1, 0, "Arm 2 RIF/EFV (WK20)"),
+  make_occasion(arm2, 2, 1000, "Arm 2 EFV (WK32)")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod, events = events,
+  keep = c("treatment", "t0", "SNP_CYP2B6_RS3745274_T_COUNT")
+) |>
+  as.data.frame() |>
+  dplyr::mutate(
+    tad = time - t0,
+    genotype = factor(c("CYP2B6*1/*1", "CYP2B6*1/*6", "CYP2B6*6/*6")[SNP_CYP2B6_RS3745274_T_COUNT + 1]),
+    treatment = factor(treatment, levels = c("Arm 1 EFV (WK16)", "Arm 2 RIF/EFV (WK20)", "Arm 2 EFV (WK32)"))
+  )
+```
+
+# Replicate published figures
+
+```{r figure-3, fig.width = 8, fig.height = 4}
+sim |>
+  dplyr::group_by(treatment, tad) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "steelblue", alpha = 0.3) +
+  geom_line() +
+  facet_wrap(~treatment) +
+  labs(x = "Time after dose (h)", y = "Efavirenz concentration (ug/mL)",
+       title = "Steady-state profiles, 5th-50th-95th percentiles",
+       caption = "Replicates the layout of Figure 3 of Kitabi 2018.")
+```
+
+```{r figure-1, fig.width = 8, fig.height = 4}
+fig1 <- sim |>
+  dplyr::group_by(treatment, genotype, tad) |>
+  dplyr::summarise(
+    Q25 = quantile(Cc, 0.25), Q50 = median(Cc), Q75 = quantile(Cc, 0.75),
+    .groups = "drop"
+  )
+
+ggplot(fig1, aes(tad, Q50, colour = genotype, fill = genotype)) +
+  geom_ribbon(aes(ymin = Q25, ymax = Q75), alpha = 0.15, colour = NA) +
+  geom_line() +
+  facet_wrap(~treatment) +
+  labs(x = "Time after dose (h)", y = "Efavirenz concentration (ug/mL)",
+       colour = NULL, fill = NULL,
+       title = "Median and interquartile range by CYP2B6*6 genotype",
+       caption = "Compare with the observed medians of Figure 1 of Kitabi 2018.")
+```
+
+Figure 1 of the paper shows observed 24 h concentrations near 0.7-1 ug/mL in
+CYP2B6\*1/\*1 subjects and near 4-5 ug/mL in \*6/\*6 subjects, with \*1/\*6 in
+between, and the three panels look alike. The simulated medians reproduce that
+ordering and magnitude. The check below uses wide bands that a mis-transcribed
+clearance or a unit error (both of which move the trough several-fold) would
+leave, and that sampling variation in a 200-subject cohort will not.
+
+```{r figure-1-check}
+trough <- sim |>
+  dplyr::filter(tad == 24) |>
+  dplyr::group_by(treatment, genotype) |>
+  dplyr::summarise(median_trough = median(Cc), n = dplyr::n(), .groups = "drop")
+
+trough |>
+  dplyr::mutate(genotype = gsub("*", "\\*", as.character(genotype), fixed = TRUE)) |>
+  dplyr::rename("Stratum" = treatment, "Genotype" = genotype,
+                "Median 24 h concentration (ug/mL)" = median_trough, "N" = n) |>
+  knitr::kable(digits = 2,
+             caption = "Simulated median 24 h concentration (ug/mL).")
+
+wt_trough <- trough$median_trough[trough$genotype == "CYP2B6*1/*1"]
+hom_trough <- trough$median_trough[trough$genotype == "CYP2B6*6/*6"]
+stopifnot(
+  all(wt_trough > 0.4 & wt_trough < 2),
+  all(hom_trough > 2 & hom_trough < 9)
+)
+```
+
+# PKNCA validation
+
+At steady state the AUC over one 24 h dosing interval equals Dose / (CL/F) for
+each subject. PKNCA computes AUC0-24 from the simulated profile; the ratio to
+600 / CL/F tests the dosing, the steady-state solve and the units together. The
+only difference between the two sides is trapezoidal error on the 0.5 h grid.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(subj = paste(id, treatment)) |>
+  dplyr::select(subj, id, treatment, genotype, tad, Cc)
+
+dose_df <- sim_nca |>
+  dplyr::distinct(subj, id, treatment, genotype) |>
+  dplyr::mutate(tad = 0, amt = 600)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ tad | treatment + genotype + subj)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ tad | treatment + genotype + subj)
+intervals <- data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE,
+                        cmin = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_wide <- as.data.frame(nca_res$result) |>
+  dplyr::select(treatment, genotype, subj, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+cl_subj <- sim |>
+  dplyr::mutate(subj = paste(id, treatment)) |>
+  dplyr::group_by(subj) |>
+  dplyr::summarise(cl = dplyr::first(cl), .groups = "drop")
+
+chk <- nca_wide |>
+  dplyr::left_join(cl_subj, by = "subj") |>
+  dplyr::mutate(pct_diff = 100 * (auclast / (600 / cl) - 1))
+
+stopifnot(
+  abs(median(chk$pct_diff)) < 2,
+  quantile(abs(chk$pct_diff), 0.9) < 5
+)
+
+chk |>
+  dplyr::group_by(treatment, genotype) |>
+  dplyr::summarise(
+    cmax = median(cmax), tmax = median(tmax), cmin = median(cmin),
+    auclast = median(auclast), cl = median(cl), .groups = "drop"
+  ) |>
+  dplyr::mutate(genotype = gsub("*", "\\*", as.character(genotype), fixed = TRUE)) |>
+  dplyr::rename(
+    "Stratum" = treatment, "Genotype" = genotype,
+    "Cmax (ug/mL)" = cmax, "Tmax (h)" = tmax, "Cmin (ug/mL)" = cmin,
+    "AUC0-24 (ug*h/mL)" = auclast, "CL/F (L/h)" = cl
+  ) |>
+  knitr::kable(digits = 2, caption = "Median simulated steady-state NCA by stratum.")
+```
+
+The paper reports no NCA table, so there is no published Cmax or AUC to set
+beside these values.
+
+# Assumptions and deviations
+
+- **Final estimates.** Table 2 is used for every value. The supplement control
+  stream's `$THETA` and `$OMEGA` initial values equal the Table 2 estimates to
+  rounding (for example CL 23.3545 vs 23.4, V 208.817 vs 209), so the two
+  sources agree. The Results paragraph and abstract quote different values
+  (CL/F 23.6 L/h, KA 0.37 1/h, V/F 314 L, Q/F 68 and VP/F 947 L) that match
+  neither Table 2 nor the final run in Supplementary Table S1; Table 2 is
+  used.
+- **CL/F-V/F covariance.** Table 2 prints only the variances. The control
+  stream estimates them as `$OMEGA BLOCK(2)` with covariance 0.300906
+  (correlation about 0.98); that covariance is used with the Table 2
+  variances.
+- **VP/F variability** was fixed to 0 in the final model and is omitted.
+- **Between-occasion variability** applies only to the HIV/TB arm (control
+  stream `BOVCL = 1` unless GROUP is 21 or 22), with one eta per occasion
+  sharing the Table 2 variance 0.0934925 (the stream's value is 0.093522).
+- **Additive residual error unit.** Table 2 labels 'ADD' in ug/L, but the
+  concentrations are in ug/mL (Figure 1 axis; the model scales the central
+  amount in mg by V/F in L), so `addSd` is 0.0873 mg/L.
+- **Table 2 row labels.** The rows for theta213 and phi223 both say
+  'CYP2B6\*1/\*6'; equation (3) and the control stream (THETA(12) and THETA(15)
+  are the 'CP2B3' terms) make them the \*6/\*6 fractions.
+- **Results text vs Table 2.** The Results say CL/F in \*1/\*1 subjects was 10%
+  lower during co-treatment than in arm 1 (Table 2: 0.915, 8.5% lower) and
+  that CL/F rose 5% after co-treatment in \*1/\*6 subjects (Table 2 and the
+  stream: 1.19 for \*1/\*6 and 1.05 for \*6/\*6). The model follows Table 2 and
+  the stream. The Results also attribute both mixture proportions (78% and
+  22%) to \*1/\*1; the second is \*6/\*6 (stream: P(1) = 0.784, P(2) fixed to 0,
+  P(3) = 1 - P(1)).
+- **Missing-genotype mixture.** The authors imputed missing CYP2B6\*6
+  genotypes with a NONMEM `$MIX` model. The packaged model takes genotype as a
+  covariate; the mixture probabilities are recorded in the covariate's notes
+  for users who need to impute.
+- **Arm and occasion covariates.** The arm indicator A2 is carried as `TB_POS`
+  (HIV/TB patients) and occasion 2 as `OCC = 2`. The arm-2 fractions combine
+  TB disease and the rifampicin/isoniazid co-medication, which this design
+  cannot separate.
+- **Virtual cohort.** Weights are drawn from normal distributions with the
+  Table 1 arm means and SDs, limited to 30-100 kg by redrawing. Genotype
+  frequencies use the observed genotypes plus the mixture-model assignments
+  reported in the Results. Each arm-2 subject is simulated on both occasions.
+- No erratum or correction for this article was found on Europe PMC
+  (checked 2026-11-25).

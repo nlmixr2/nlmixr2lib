@@ -1,0 +1,457 @@
+---
+title: "Naloxegol spontaneous bowel movements and diary discontinuation (Al-Huniti 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Naloxegol spontaneous bowel movements and diary discontinuation (Al-Huniti 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("AlHuniti_2016_naloxegol_sbm"))$reference`
+* Article: <https://doi.org/10.1002/psp4.12099> (open access, PMC4961079)
+* Models:
+  * `AlHuniti_2016_naloxegol_sbm`: `r rxode2::rxode(readModelDb("AlHuniti_2016_naloxegol_sbm"))$description`
+  * `AlHuniti_2016_naloxegol_ded`: `r rxode2::rxode(readModelDb("AlHuniti_2016_naloxegol_ded"))$description`
+
+Naloxegol is a peripherally acting mu-opioid receptor antagonist (a PEGylated
+naloxone) for opioid-induced constipation (OIC). Al-Huniti 2016 analysed the
+two identical phase III studies KODIAC 4 and KODIAC 5 with two separately
+fitted models: a longitudinal ordered-categorical Markov model of the daily
+number of spontaneous bowel movements (SBMs), and a time-to-event model of
+diary entry discontinuation (DED). The paper then combined the two by
+simulation to predict the protocol responder rate. Both models use the
+naloxegol **dose**; individual predicted concentrations from the population PK
+model did not improve the fit (Supplementary Table S3), so no PK model is
+needed.
+
+# Population
+
+1,331 adults in the intention-to-treat population of KODIAC 4 (NCT01309841)
+and KODIAC 5 (NCT01323790), randomized to placebo or naloxegol 12.5 or 25 mg
+once daily for 12 weeks after a 2-week OIC confirmation (baseline) period
+(Table 1). All took stable maintenance opioids (30-1000 mg/day oral morphine
+equivalents) for noncancer pain and reported fewer than 3 SBMs per week. Mean
+age was 52 years, 62% were women, about 79% were White and 19% Black, and the
+mean baseline SBM frequency was 1.3-1.6 per week by arm. About two thirds took
+a strong opioid at baseline. The SBM analysis used 108,051 daily diary entries
+(day -13 to day 84); the DED analysis used day 0 to day 84.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Ordinal model form, logit P(SBM >= m) = sum of betas + f_nd + f_d + eta | | Methods equation; final control stream (Supplement) |
+| `b1_post_pdv0`, `b1_post_pdv1` | -0.344, -0.676 | Table S4, beta1 post baseline [prior SBM = 0 / != 0] |
+| `b1_base_pdv0`, `b1_base_pdv1` | -1.42, -2.15 | Table S4, beta1 baseline [prior SBM = 0 / != 0] |
+| `lb2_*` (post0, post1, base0, base1) | 1.21, 1.29, 1.30, 1.17 | Table S4, LN beta2 rows |
+| `lb3_*` (post0, post1, base0, base1) | 0.634, 0.704, 0.995, 0.845 | Table S4, LN beta3 rows |
+| `lb4_post_*`, `lb5_post_*`, `lb6_post_*` | 0.381/0.293, 0.018/0.331, 0.0122/0.0558 | Table S4, LN beta4-6 post-baseline rows |
+| Baseline decrements for thresholds 4-6 = 20 | 20 | Control stream (`B4 = 20` etc. when TSFD <= 0) |
+| `emax_placebo` (NDM) | 0.189 | Table S4; Results "0.189 logit units" |
+| `lthalf_placebo` (LN ND t1/2) | 2.92 | Table S4; Results "achieved in ~93 days (five half-lives)" |
+| f_nd = NDM (1 - exp(-ln2/t1/2 (t - 1))) for t >= 1 | | Supplement equation; control stream `FND` |
+| `emax` | 1.46 | Table S4; Results |
+| `e_opioid_weak_only_emax` | -0.978 | Table S4; Results "Emax decreased by 67%" |
+| `led50` | 2.94 (ED50 18.9 mg) | Table S4; Results |
+| f_d = Emax DOSE / (ED50 + DOSE) | | Table S3 run 8; control stream `FD` |
+| IIV block (post, base, NDM, Emax) | 1.91; 0.347, 0.288; -0.566, -0.0225, 1.59; -1.56, -0.207, -0.472, 7.14 | Table S4 random effects (variances and lower-triangle covariances) |
+| DED hazard log(lambda) = base_arm + slp_arm m + theta_end (m - 80) I(m >= 80) | | Supplement equation; DED control stream `$DES` |
+| `lhaz_placebo`, `lhaz_nal12p5`, `lhaz_nal25` | -6.28, -6.18, -5.54 | Table S6 |
+| `slope_haz_placebo`, `slope_haz_nal12p5`, `slope_haz_nal25` | 0.00970, 0.00818, -0.00114 | Table S6 |
+| `slope_haz_end` | 1.08 | Table S6 |
+
+The correlations printed in the upper triangle of the Table S4 random-effects
+matrix (0.467, -0.324, -0.423, -0.0332, -0.145, -0.140) are reproduced from the
+packaged variances and covariances to within rounding.
+
+```{r models}
+mod_sbm <- rxode2::rxode(readModelDb("AlHuniti_2016_naloxegol_sbm"))
+mod_ded <- rxode2::rxode(readModelDb("AlHuniti_2016_naloxegol_ded"))
+
+om <- mod_sbm$omega
+round(cov2cor(om), 3)
+```
+
+# Typical-value checks
+
+## Threshold probabilities
+
+For a typical patient (all random effects zero) the model gives the
+probability of each daily SBM count in each period. In the baseline period
+the probability of four or more SBMs is effectively zero, by construction.
+
+```{r typical-probs}
+typ <- expand.grid(
+  time = c(-1, 84),
+  PDV = c(0, 1),
+  DOSE = c(0, 12.5, 25),
+  OPIOID_WEAK_ONLY = 0
+) |>
+  filter(!(time < 0 & DOSE > 0)) |>
+  mutate(id = seq_len(n()), evid = 0)
+
+typ_sim <- rxSolve(rxode2::zeroRe(mod_sbm), typ, returnType = "data.frame") |>
+  mutate(
+    period = ifelse(time > 0, "treatment (day 84)", "baseline"),
+    PDV = typ$PDV,
+    DOSE = typ$DOSE
+  )
+
+typ_sim |>
+  select(period, PDV, DOSE, p0, p1, p2, p3, p4, p5, p6, sbm_mean) |>
+  mutate(across(p0:sbm_mean, \(x) signif(x, 3))) |>
+  rename("Previous-day SBM" = PDV, "Dose (mg)" = DOSE, "Mean SBM/day" = sbm_mean) |>
+  knitr::kable()
+
+# Probabilities sum to one in every stratum.
+stopifnot(all(abs(rowSums(typ_sim[, paste0("p", 0:6)]) - 1) < 1e-10))
+```
+
+## Non-drug effect plateau
+
+The placebo effect rises with half-life exp(2.92) = 18.5 days and is 97% of
+its plateau of 0.189 logit units by day 93, the "five half-lives" quoted in the
+Results.
+
+```{r nd-plateau}
+nd <- data.frame(id = 1, time = c(1, 19.5, 93), evid = 0, PDV = 0, DOSE = 0, OPIOID_WEAK_ONLY = 0)
+nd_sim <- rxSolve(rxode2::zeroRe(mod_sbm), nd, returnType = "data.frame")
+nd_sim[, c("time", "fnd")]
+stopifnot(
+  abs(nd_sim$fnd[1]) < 1e-12,
+  abs(nd_sim$fnd[2] - 0.189 / 2) < 1e-3,
+  abs(nd_sim$fnd[3] / 0.189 - (1 - 2^-5)) < 0.01
+)
+```
+
+## Diary entry discontinuation against the closed-form survival
+
+The DED model has no random effects, so its survival is deterministic. The
+packaged ODE solution matches direct numerical integration of the published
+hazard, and the day-84 DED rates are compared with the population simulations
+of Table 3 (which also sampled parameter uncertainty).
+
+```{r ded-check}
+ded_ev <- expand.grid(id = 1:3, time = c(0, seq(1, 84, by = 1))) |>
+  mutate(DOSE = c(0, 12.5, 25)[id], evid = 0) |>
+  arrange(id, time)
+ded_sim <- rxSolve(mod_ded, ded_ev, returnType = "data.frame") |>
+  mutate(DOSE = ded_ev$DOSE)
+
+ded_closed <- function(base, slp, end = 1.08, tmax = 84) {
+  h <- function(t) exp(base + slp * t + ifelse(t >= 80, end * (t - 80), 0))
+  cumh <- integrate(h, 0, min(tmax, 80))$value
+  if (tmax > 80) cumh <- cumh + integrate(h, 80, tmax)$value
+  exp(-cumh)
+}
+ded_tab <- tibble(
+  arm = c("Placebo", "Naloxegol 12.5 mg/day", "Naloxegol 25 mg/day"),
+  DOSE = c(0, 12.5, 25),
+  closed = c(ded_closed(-6.28, 0.00970), ded_closed(-6.18, 0.00818), ded_closed(-5.54, -0.00114)),
+  published = c(42.0, 41.9, 43.4)
+) |>
+  left_join(ded_sim |> filter(time == 84) |> select(DOSE, sur), by = "DOSE") |>
+  mutate(simulated = 100 * (1 - sur))
+
+stopifnot(all(abs(ded_tab$sur - ded_tab$closed) < 1e-5))
+# The typical-value DED rate sits within 3 percentage points of the
+# uncertainty-propagated population mean in Table 3.
+stopifnot(all(abs(ded_tab$simulated - ded_tab$published) < 3))
+
+ded_tab |>
+  select(arm, simulated, published) |>
+  mutate(simulated = round(simulated, 1)) |>
+  rename(
+    "Treatment group" = arm,
+    "Model DED rate by day 84 (%)" = simulated,
+    "Table 3 DED rate (%)" = published
+  ) |>
+  knitr::kable()
+```
+
+```{r ded-plot, fig.width = 7, fig.height = 4}
+ggplot(ded_sim, aes(time, sur, colour = factor(DOSE))) +
+  geom_step() +
+  labs(
+    x = "Time after first dose (days)", y = "Fraction providing diary entries",
+    colour = "Naloxegol (mg/day)",
+    title = "Diary entry discontinuation survival by arm",
+    caption = "Compare with the simulated bands of Figure 4 of Al-Huniti 2016."
+  ) +
+  coord_cartesian(ylim = c(0.5, 1))
+```
+
+# Virtual cohort and simulation
+
+The SBM model is a first-order Markov model: the threshold logits depend on
+whether the patient had at least one SBM on the previous day (`PDV`). To
+simulate it, the model is solved once per subject with every day duplicated,
+one row with `PDV = 0` and one with `PDV = 1`, so each subject's random
+effects are shared across both rows. The daily count is then drawn in R,
+day by day, from the row that matches the count drawn the day before.
+
+Each cohort has 200 patients. Figure 2 of the paper separates patients who
+did and did not use strong opioids at baseline, so the cohorts below are one
+per dose and opioid group. The responder-rate cohorts mix the groups with 34%
+weak-opioid-only patients, the share implied by the widths of the observed
+confidence intervals in Table 2 (about 155 of 443 placebo and 140 of 440
+naloxegol 12.5 mg patients).
+
+```{r cohort}
+rxode2::rxSetSeed(20160701)
+set.seed(20160701)
+n_per <- 200
+days <- -13:84
+
+make_events <- function(n, dose, weak, id0 = 0) {
+  base <- expand.grid(id = id0 + seq_len(n), time = days, PDV = c(0, 1))
+  base |>
+    mutate(
+      evid = 0,
+      DOSE = ifelse(time > 0, dose, 0),
+      OPIOID_WEAK_ONLY = weak[id - id0]
+    ) |>
+    arrange(id, time, PDV)
+}
+
+simulate_sbm <- function(n, dose, weak, label, id0 = 0) {
+  ev <- make_events(n, dose, weak, id0)
+  sim <- rxSolve(mod_sbm, ev, returnType = "data.frame")
+  stopifnot(nrow(sim) == nrow(ev))
+  sim$PDV <- ev$PDV
+  pcols <- paste0("p", 0:6)
+  # cumulative probabilities, one matrix per PDV state, rows = (id, day)
+  cum0 <- t(apply(as.matrix(sim[sim$PDV == 0, pcols]), 1, cumsum))
+  cum1 <- t(apply(as.matrix(sim[sim$PDV == 1, pcols]), 1, cumsum))
+  nd <- length(days)
+  counts <- matrix(NA_integer_, n, nd)
+  prev <- rep(0L, n)
+  for (j in seq_len(nd)) {
+    rows <- (seq_len(n) - 1) * nd + j
+    cp <- ifelse(prev > 0, 1, 0) * cum1[rows, , drop = FALSE] +
+      ifelse(prev > 0, 0, 1) * cum0[rows, , drop = FALSE]
+    u <- runif(n)
+    counts[, j] <- rowSums(u > cp)
+    prev <- counts[, j]
+  }
+  tibble(
+    id = rep(id0 + seq_len(n), times = nd),
+    day = rep(days, each = n),
+    sbm = as.vector(counts),
+    group = label,
+    DOSE = dose,
+    OPIOID_WEAK_ONLY = rep(weak, times = nd)
+  )
+}
+
+fig2_groups <- expand.grid(DOSE = c(0, 12.5, 25), OPIOID_WEAK_ONLY = c(0, 1))
+fig2 <- bind_rows(lapply(seq_len(nrow(fig2_groups)), function(i) {
+  simulate_sbm(
+    n_per, fig2_groups$DOSE[i], rep(fig2_groups$OPIOID_WEAK_ONLY[i], n_per),
+    label = paste0(fig2_groups$DOSE[i], " mg"), id0 = (i - 1) * n_per
+  )
+}))
+```
+
+# Replicate published figures
+
+## Figure 2: mean SBMs per week by dose and baseline opioid potency
+
+```{r fig2, fig.width = 8, fig.height = 4}
+weekly <- fig2 |>
+  mutate(week = ifelse(day <= 0, ifelse(day <= -7, -2, -1), ceiling(day / 7))) |>
+  group_by(DOSE, OPIOID_WEAK_ONLY, id, week) |>
+  summarise(sbm_week = sum(sbm) * 7 / n(), .groups = "drop") |>
+  group_by(DOSE, OPIOID_WEAK_ONLY, week) |>
+  summarise(mean_sbm = mean(sbm_week), .groups = "drop") |>
+  mutate(opioid = ifelse(OPIOID_WEAK_ONLY == 1, "Not using strong opioids", "Using strong opioids"))
+
+ggplot(weekly, aes(week, mean_sbm, colour = opioid)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~DOSE, labeller = label_both) +
+  labs(
+    x = "Time (weeks)", y = "Mean number of SBM per week", colour = NULL,
+    caption = "Replicates Figure 2 of Al-Huniti 2016 (one simulated cohort of 200 per panel and group)."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+Figure 2 of the paper (population means with parameter uncertainty) shows
+about 1.4 SBMs per week at baseline and, at week 12, about 3.5 per week on
+placebo, 4.4 (strong opioids) and 3.75 (weak only) on 12.5 mg, and 4.85 and
+3.9 on 25 mg. These values were read from the figure by the maintainers.
+
+```{r fig2-compare}
+fig2_ref <- tribble(
+  ~DOSE, ~OPIOID_WEAK_ONLY, ~week, ~published,
+  0, 0, 12, 3.5,
+  0, 1, 12, 3.5,
+  12.5, 0, 12, 4.4,
+  12.5, 1, 12, 3.75,
+  25, 0, 12, 4.85,
+  25, 1, 12, 3.9
+)
+fig2_cmp <- weekly |>
+  inner_join(fig2_ref, by = c("DOSE", "OPIOID_WEAK_ONLY", "week")) |>
+  mutate(simulated = round(mean_sbm, 2))
+fig2_cmp |>
+  select(DOSE, opioid, simulated, published) |>
+  rename(
+    "Dose (mg/day)" = DOSE, "Baseline opioids" = opioid,
+    "Simulated week-12 mean SBM/week" = simulated,
+    "Figure 2 (digitised)" = published
+  ) |>
+  knitr::kable()
+
+base_mean <- weekly |> filter(week < 0) |> pull(mean_sbm)
+stopifnot(
+  # Baseline frequency of Table 1 (1.3-1.6 per week by arm).
+  abs(median(base_mean) - 1.4) < 0.3,
+  # Cohort means of 200 patients carry a Monte Carlo SD of roughly 0.25.
+  median(abs(fig2_cmp$mean_sbm - fig2_cmp$published)) < 0.5
+)
+```
+
+## Responder rate (Tables 2 and 3)
+
+A responder had at least 3 SBMs per week and an increase of at least 1 SBM
+per week over baseline in at least 9 of the 12 treatment weeks, and in at
+least 3 of the final 4 weeks. Days on or after a patient's diary entry
+discontinuation, drawn from the DED model, carry no diary entries, so they
+contribute no SBMs to their week.
+
+```{r responder}
+draw_ded <- function(n, dose) {
+  surv <- ded_sim |> filter(DOSE == dose)
+  u <- runif(n)
+  # Survival falls monotonically, so invert it on the daily grid; a draw below
+  # the day-84 survival means no discontinuation within the study.
+  t_ded <- approx(rev(surv$sur), rev(surv$time), xout = u)$y
+  ifelse(u < min(surv$sur), Inf, t_ded)
+}
+
+resp_cohorts <- lapply(seq_along(c(0, 12.5, 25)), function(i) {
+  dose <- c(0, 12.5, 25)[i]
+  weak <- rbinom(n_per, 1, 0.34)
+  s <- simulate_sbm(n_per, dose, weak, label = paste0(dose, " mg"), id0 = 10000 + (i - 1) * n_per)
+  ded <- tibble(id = 10000 + (i - 1) * n_per + seq_len(n_per), t_ded = draw_ded(n_per, dose))
+  s |> left_join(ded, by = "id")
+})
+
+resp_daily <- bind_rows(resp_cohorts) |>
+  mutate(sbm_obs = ifelse(day > 0 & day >= t_ded, 0L, sbm))
+
+resp_base <- resp_daily |>
+  filter(day <= 0) |>
+  group_by(id) |>
+  summarise(baseline_week = sum(sbm_obs) / 2, .groups = "drop")
+
+responder <- resp_daily |>
+  filter(day > 0) |>
+  mutate(week = ceiling(day / 7)) |>
+  group_by(DOSE, OPIOID_WEAK_ONLY, id, week) |>
+  summarise(sbm_week = sum(sbm_obs), .groups = "drop") |>
+  left_join(resp_base, by = "id") |>
+  mutate(resp_week = sbm_week >= 3 & sbm_week >= baseline_week + 1) |>
+  group_by(DOSE, OPIOID_WEAK_ONLY, id) |>
+  summarise(
+    responder = sum(resp_week) >= 9 & sum(resp_week[week >= 9]) >= 3,
+    .groups = "drop"
+  )
+
+resp_tab <- responder |>
+  group_by(DOSE) |>
+  summarise(simulated = 100 * mean(responder), .groups = "drop") |>
+  mutate(
+    placebo_adjusted = simulated - simulated[DOSE == 0],
+    published = c(33.2, 43.5, 44.2),
+    published_adjusted = c(NA, 10.4, 11.1)
+  )
+resp_tab |>
+  mutate(across(c(simulated, placebo_adjusted), \(x) round(x, 1))) |>
+  rename(
+    "Dose (mg/day)" = DOSE,
+    "Simulated responder rate (%)" = simulated,
+    "Simulated placebo-adjusted (%)" = placebo_adjusted,
+    "Table 3 responder rate (%)" = published,
+    "Table 3 placebo-adjusted (%)" = published_adjusted
+  ) |>
+  knitr::kable()
+
+responder |>
+  group_by(DOSE, OPIOID_WEAK_ONLY) |>
+  summarise(n = n(), simulated = round(100 * mean(responder), 1), .groups = "drop") |>
+  mutate(opioid = ifelse(OPIOID_WEAK_ONLY == 1, "Weak only", "Strong (or weak + strong)")) |>
+  select(DOSE, opioid, n, simulated) |>
+  rename(
+    "Dose (mg/day)" = DOSE, "Baseline opioids" = opioid, "N" = n,
+    "Simulated responder rate (%)" = simulated
+  ) |>
+  knitr::kable()
+
+# 200 patients per arm give a binomial SD of about 3.4 percentage points.
+stopifnot(abs(median(resp_tab$simulated - resp_tab$published)) < 6)
+```
+
+Table 2 reports model-predicted responder rates of 33.0 / 32.9% (placebo,
+weak / strong opioids), 36.5 / 45.6% (12.5 mg) and 35.8 / 46.2% (25 mg): the
+treatment benefit lies in the patients taking strong opioids, as above.
+
+# Assumptions and deviations
+
+* **Errata.** A Europe PMC search on 2026-11-24 found no erratum or
+  correction for this article.
+* **Two model files, one paper.** The SBM and DED models were fitted
+  separately (different datasets, different control streams) and are packaged
+  as two files; the paper's responder-rate prediction combines them by
+  simulation, as done above.
+* **Markov state supplied as data.** The previous-day SBM count is a data
+  column (`PDV`, source `PDVORD`) exactly as in the control stream, which keeps
+  the model fittable. Simulation must update it from the previously drawn
+  count, which this vignette does in R. The paper dropped each patient's first
+  record (no previous day); the simulation above starts day -13 from
+  `PDV = 0`.
+* **Dose during the baseline period.** The control stream applies
+  `FD = EMAX * DOSE / (ED50 + DOSE)` on every record. The packaged model
+  assumes, as the analysis dataset must have, that `DOSE` is 0 for all
+  baseline-period days and for placebo.
+* **Baseline thresholds 4-6.** The control stream fixes the baseline-period
+  decrements for thresholds 4-6 at 20 logit units rather than estimating them;
+  they are hard-coded in `model()` the same way.
+* **Day-80 switch in the DED hazard.** The paper defines the end-of-study
+  indicator as 1 for times at or after day 80. The control stream evaluates
+  it in `$PK` at each daily record, so NONMEM applies it over the whole
+  interval ending at day 80; the packaged model switches it on continuously at
+  day 80. The day-84 DED rate differs by less than 0.1 percentage point.
+* **25 mg DED time slope.** Supplementary Table S6 prints -0.00114 for the
+  25 mg time slope, while the model-building summary (Table S5, run 3, the
+  same run and objective function value) prints -0.00143. The packaged model
+  uses the final-estimate table (S6); the alternative changes the 25 mg
+  day-84 DED rate from 42.0% to 41.5%.
+* **Responder computation.** The paper does not state how incomplete weeks
+  were handled. Here a day after diary entry discontinuation contributes no
+  SBMs to its week. The paper's population simulations (Table 3) also sampled
+  parameter uncertainty by a smoothed bootstrap, which this vignette does not
+  do, and used 2,000 patients per arm against 200 here.
+* **Opioid potency mix.** The share of weak-opioid-only patients (34%) is
+  derived from the confidence-interval widths of the observed responder rates
+  in Table 2; the paper reports only that about two thirds took strong opioids.
+* **Placeholder residual on DED survival.** The DED model exposes the survival
+  probability `sur` with a fixed additive SD of 0.001 so that nlmixr2 accepts
+  it; the paper's likelihood is the time-to-event likelihood of its control
+  stream.
+* **No PKNCA.** Both models are dose-driven exposure-response models with no
+  concentration output, so the noncompartmental analysis section of the
+  standard template does not apply.

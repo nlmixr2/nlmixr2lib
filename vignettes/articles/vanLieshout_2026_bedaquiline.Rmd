@@ -1,0 +1,441 @@
+---
+title: "Bedaquiline zebrafish-to-human EBA translation (van Lieshout 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bedaquiline zebrafish-to-human EBA translation (van Lieshout 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+PKNCA::PKNCA.options(progress = FALSE)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("vanLieshout_2026_bedaquiline"))$reference`
+* Description: `r rxode2::rxode(readModelDb("vanLieshout_2026_bedaquiline"))$description`
+* Article: <https://doi.org/10.1002/cpt.70430> (open access; PMC13503988)
+
+van Lieshout et al. (2026) did not fit a model to clinical data. They built a
+forward prediction of the sputum early bactericidal activity (EBA) of
+bedaquiline from two sources:
+
+1. **Human PK**: the Svensson 2016 population PK model of bedaquiline and its
+   metabolite M2, with its covariate effects (weight, age, Black race and a
+   time-varying serum albumin) and its between-subject variability. Between-
+   occasion variability was dropped. The same PK model is in this package as
+   `Svensson_2016_bedaquiline`.
+2. **Zebrafish PD**: an Emax exposure-response relationship for bedaquiline
+   against *Mycobacterium marinum* in zebrafish larvae (Forn-Cuni et al. 2026).
+   Its EC50 of 26.5 mg/L (whole-body concentration) was scaled to humans by the
+   ratio of the bedaquiline MICs for *M. tuberculosis* and *M. marinum*
+   (Equation 1). Its maximum effect, 109% of the *M. marinum* growth rate
+   constant (0.0853 1/h) and then 137%, became the maximum kill rate. Net
+   growth of *M. tuberculosis* was set to zero.
+
+They compared the predictions with two phase 2a trials, Rustomjee 2008 (7 days,
+aggregate data) and Diacon 2013 (14 days, individual data from TB-PACTS).
+Supplementary Materials give the full NONMEM simulation code, and every value in
+the packaged model is taken from that code.
+
+# Population
+
+The predictions target adults with smear-positive pulmonary tuberculosis who had
+not received bedaquiline before, in two randomised, double-blind,
+placebo-controlled phase 2a EBA trials:
+
+* **Rustomjee 2008**: 45 participants, 25, 100 or 400 mg once daily for
+  7 days.
+* **Diacon 2013**: 60 participants. Each arm had two loading doses and then a
+  daily maintenance dose: 200/100/100, 400/300/200, 500/400/300 or
+  700/500/400 mg (day 1 / day 2 / day 3 onward). The arms are labelled by the
+  maintenance dose (100-400 mg).
+
+The paper does not tabulate demographics for either trial. The PK model was
+developed in 335 patients with MDR-TB (Svensson 2016).
+
+```{r population}
+str(readModelDb("vanLieshout_2026_bedaquiline")()$population)
+```
+
+# Source trace
+
+All `$THETA` values are `FIX` in the Supplementary Materials model code. The
+code's own comments trace THETA(9)-THETA(24) to Svensson 2016 Table 3.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lmat` (MAT) | 6 x 0.662045 = 3.972 h | Model code THETA(9); `MAT = 6*EXP(PHI)/(EXP(PHI)+1)` with IOV = 0 |
+| `fr` | 0.466443 | THETA(10) |
+| `lcl`, `lvc` | 2.61592 L/h, 198.34 L | THETA(11), THETA(12) |
+| `lq`, `lvp` | 3.658 L/h, 8549.06 L | THETA(13), THETA(14) |
+| `lq2`, `lvp2` | 7.33504 L/h, 2690.91 L | THETA(15), THETA(16) |
+| `lcl_m2`, `lvc_m2` | 10.0496 L/h, 2203.71 L | THETA(17), THETA(18) |
+| `e_wt_cl`, `e_wt_vc` | 0.180912, 1 | THETA(19), THETA(20); reference weight 70 kg |
+| `e_alb_vc` | 1 | THETA(21), unbound-fraction effect on the observation volumes |
+| `e_alb_cl` | 1.64021 | THETA(22) |
+| `e_race_black_cl` | 0.838743 | THETA(23) |
+| `e_age_cl` | 0.00880756 /year | THETA(24); `AGECL = 1 + (32-AGE)*THETA(24)` |
+| `lalb0`, `lalb_ss` | 3.64865, 4.04068 g/dL | THETA(1), THETA(2) |
+| `lkrep_alb` | 0.03399109 /week | THETA(3) |
+| `bc_alb0`, `bc_alb_ss` | -2.43936, -5.37749 | THETA(4), THETA(5) (Box-Cox shapes) |
+| `lkg_mm` | 0.0853 /h | `GROWTH_Mm`; Methods, 'Translational predictions' |
+| `kg` | 0 | `GROWTH_MTB` |
+| `f_emax_kg`, `f_emax_kg_late` | 1.09, 1.37 | `EMAX_BASE`, `IF(T.GT.72) EMAX_BASE = 1.37` |
+| `t_emax_switch` | 72 h | `IF(T.GT.72)` |
+| `lec50_zf` | 26.5 mg/L | `BDQ_EC50 = 26.5 * (...)`; Methods |
+| `mic_mtb`, `mic_mm` | 0.04145085, 0.1 mg/L | `MIC_MTB_TARGET`, `MIC_Mm_ORIGIN` |
+| `hill` | 1 | `BDQ_GAMMA` |
+| `etalalb0 + etalalb_ss + etalkrep_alb` | block | `$OMEGA BLOCK(5)` elements 1-3 |
+| `etalfdepot` | 0.0803271 | `$OMEGA` 10 |
+| `etalcl + etalcl_m2` | 0.152776, 0.13486, 0.212124 | `$OMEGA BLOCK(2)` 11-12 |
+| `etalvc`, `etalq`, `etalvc_m2` | 0.171909, 0.181182, 0.150223 | `$OMEGA` 13-15 |
+| `expSd`, `expSd_m2` | sqrt(0.0518161), sqrt(0.0366836) | `$SIGMA BLOCK(2)` diagonal |
+| Albumin trajectory | `ALB(t) = Xss / (1 + (Xss/X0 - 1) exp(-krep t))` | Closed form of `DADT(8)` |
+| PK ODEs | 2 transits, 3-cmt BDQ, 1-cmt M2 | `DADT(1)`-`DADT(7)` |
+| Kill rate | `Emax C / (C + EC50)`, `C = A(2)/V` | `BDQ_EFFECT` in `$DES` |
+| Bacterial load | `d cfu/dt = kg cfu - kill cfu`, `cfu(0) = 10^baseline` | `DADT(9)`, `A_0(9)` |
+| Observation volumes | `V * (Xss_pop/ALB)^1` | `VE`, `VM2E` in `$ERROR` |
+
+## Translation constants
+
+Equation 1 and the Methods give the human EC50 and the maximum kill rate
+("0.093-0.117 h-1") directly. The packaged parameters reproduce them exactly:
+
+```{r constants}
+mod <- readModelDb("vanLieshout_2026_bedaquiline")
+ini_df <- rxode2::rxode(mod)$iniDf
+p <- setNames(ini_df$est, ini_df$name)
+ec50_human <- exp(p[["lec50_zf"]]) * p[["mic_mtb"]] / p[["mic_mm"]]
+emax_early <- p[["f_emax_kg"]] * exp(p[["lkg_mm"]])
+emax_late <- p[["f_emax_kg_late"]] * exp(p[["lkg_mm"]])
+knitr::kable(
+  data.frame(
+    Quantity = c("Human EC50 (mg/L)", "Emax, t <= 72 h (1/h)", "Emax, t > 72 h (1/h)"),
+    Packaged = signif(c(ec50_human, emax_early, emax_late), 4),
+    Paper = c("26.5 x 0.0415 / 0.1", "0.093", "0.117")
+  )
+)
+stopifnot(
+  abs(ec50_human - 26.5 * 0.04145085 / 0.1) < 1e-9,
+  abs(emax_early - 0.093) < 0.0005,
+  abs(emax_late - 0.117) < 0.0005
+)
+```
+
+# Virtual cohort
+
+The 14-day predictions used each participant's own covariates and the
+7-day predictions used study means. Neither set is published, so every
+simulated participant here has the median weight (56 kg, between the 55 and
+57 kg stage medians of the Svensson 2016 cohort), the reference age of 32 years
+and non-Black race. The baseline bacterial load is set to each regimen's
+published mean (Results, 'Simulated exposures and baselines'). Each arm has 200
+participants, and the PK parameters vary through the model's between-subject
+variability.
+
+```{r cohort}
+set.seed(2026)
+arms <- tibble::tribble(
+  ~study,           ~arm,     ~d1, ~d2, ~dm, ~ndose, ~bl,
+  "Diacon 2013",    "100 mg", 200, 100, 100, 14,     5.96,
+  "Diacon 2013",    "200 mg", 400, 300, 200, 14,     5.69,
+  "Diacon 2013",    "300 mg", 500, 400, 300, 14,     5.82,
+  "Diacon 2013",    "400 mg", 700, 500, 400, 14,     6.20,
+  "Rustomjee 2008", "25 mg",  25,  25,  25,  7,      6.66,
+  "Rustomjee 2008", "100 mg", 100, 100, 100, 7,      6.32,
+  "Rustomjee 2008", "400 mg", 400, 400, 400, 7,      6.82
+) |>
+  mutate(group = paste(study, arm, sep = ", "))
+
+n_per_arm <- 200
+make_arm <- function(k) {
+  a <- arms[k, ]
+  ids <- (k - 1) * n_per_arm + seq_len(n_per_arm)
+  amts <- c(a$d1, a$d2, rep(a$dm, a$ndose - 2))
+  doses <- tidyr::expand_grid(id = ids, dose_no = seq_len(a$ndose)) |>
+    mutate(time = (dose_no - 1) * 24, amt = amts[dose_no], evid = 1L, cmt = "depot", dvid = NA_integer_) |>
+    select(-dose_no)
+  obs_times <- sort(unique(c(seq(0, a$ndose * 24, by = 24), seq(144, 168, by = 1))))
+  obs <- tidyr::expand_grid(id = ids, time = obs_times) |>
+    mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  bind_rows(doses, obs) |>
+    mutate(
+      WT = 56, AGE = 32, RACE_BLACK = 0,
+      SPUTUM_BL_LOG10CFU = a$bl,
+      study = a$study, arm = a$arm, group = a$group
+    )
+}
+events <- bind_rows(lapply(seq_len(nrow(arms)), make_arm)) |>
+  arrange(id, time, desc(evid))
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+rxode2::rxSetSeed(2026)
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep = c("study", "arm", "group"),
+  returnType = "data.frame"
+)
+```
+
+# Replicate published figures
+
+## Figure 1: bacterial burden over time
+
+```{r figure-1, fig.height = 4}
+# Replicates Figure 1 of van Lieshout 2026: median and 95% prediction interval
+# of log10 CFU/mL by treatment arm.
+vpc <- sim |>
+  filter(time %% 24 == 0) |>
+  group_by(study, arm, group, day = time / 24) |>
+  summarise(
+    lo = quantile(log_cfu, 0.025),
+    med = median(log_cfu),
+    hi = quantile(log_cfu, 0.975),
+    .groups = "drop"
+  ) |>
+  mutate(group = factor(group, levels = arms$group))
+ggplot(vpc, aes(day, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "steelblue", alpha = 0.3) +
+  geom_line(linetype = "dashed", colour = "navy") +
+  facet_wrap(~group, nrow = 2) +
+  coord_cartesian(ylim = c(0, 8)) +
+  labs(
+    x = "Time since start of treatment (days)",
+    y = "Bacterial burden (log10 CFU/mL)",
+    caption = "Replicates Figure 1 of van Lieshout 2026 (baseline fixed at the regimen mean)."
+  )
+```
+
+The ribbons are narrower than the published ones at day 0. Here every
+participant in an arm starts at the regimen mean, while the published
+intervals also spread over the individual (14-day study) or simulated (7-day
+study) baselines. The decline over time is what the model predicts, and the
+EBA comparison below checks it directly.
+
+## Figure 2a: EBA0-14d
+
+Killing is first order in the bacterial load, so the EBA,
+log10 CFU(day 0) - log10 CFU(day 14), does not depend on the baseline. That
+makes it the cleanest quantitative check against the paper. The text reports
+the 95% prediction interval for each 14-day arm.
+
+```{r eba-baseline-free}
+# Same typical participant, two different baselines: identical EBA.
+ev_bl <- events |>
+  filter(id == 3 * n_per_arm + 1) |>
+  mutate(id = 1L)
+eba_typ <- sapply(c(4, 8), function(bl) {
+  s <- rxode2::rxSolve(
+    rxode2::zeroRe(mod),
+    events = mutate(ev_bl, SPUTUM_BL_LOG10CFU = bl),
+    returnType = "data.frame"
+  )
+  s$log_cfu[s$time == 0][1] - s$log_cfu[s$time == 336][1]
+})
+eba_typ
+stopifnot(abs(diff(eba_typ)) < 1e-6)
+```
+
+```{r figure-2a}
+eba <- sim |>
+  filter(study == "Diacon 2013", time %in% c(0, 336)) |>
+  group_by(id, arm) |>
+  summarise(eba = log_cfu[time == 0][1] - log_cfu[time == 336][1], .groups = "drop")
+
+published_eba <- tibble::tribble(
+  ~arm,     ~obs_mean, ~pi_lo, ~pi_hi,
+  "100 mg", 0.828,     0.287,  1.09,
+  "200 mg", 0.975,     0.595,  2.05,
+  "300 mg", 1.18,      0.825,  2.81,
+  "400 mg", 1.61,      1.12,   3.61
+)
+eba_cmp <- eba |>
+  group_by(arm) |>
+  summarise(
+    sim_med = median(eba),
+    sim_lo = quantile(eba, 0.025),
+    sim_hi = quantile(eba, 0.975),
+    .groups = "drop"
+  ) |>
+  left_join(published_eba, by = "arm")
+
+eba_cmp |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
+  rename(
+    "Arm (maintenance dose)" = arm,
+    "Simulated median" = sim_med,
+    "Simulated 2.5%" = sim_lo,
+    "Simulated 97.5%" = sim_hi,
+    "Observed mean" = obs_mean,
+    "Published 2.5%" = pi_lo,
+    "Published 97.5%" = pi_hi
+  ) |>
+  knitr::kable(caption = "EBA0-14d (log10 CFU/mL): simulated versus the published 95% prediction interval (Results).")
+
+ggplot(eba, aes(arm, eba)) +
+  geom_violin(fill = "navy", alpha = 0.6) +
+  geom_errorbar(
+    data = published_eba,
+    aes(x = arm, ymin = pi_lo, ymax = pi_hi),
+    inherit.aes = FALSE, colour = "darkorange", width = 0.3, linewidth = 1
+  ) +
+  geom_point(
+    data = published_eba, aes(x = arm, y = obs_mean),
+    inherit.aes = FALSE, colour = "darkorange", size = 3
+  ) +
+  labs(
+    x = "Daily bedaquiline dose (Diacon 2013 arm)",
+    y = "EBA0-14d (log10 CFU/mL)",
+    caption = paste(
+      "Violins: simulated. Orange: published 95% PI and observed mean.",
+      "Replicates Figure 2a of van Lieshout 2026."
+    )
+  )
+
+pct_bounds <- with(eba_cmp, 100 * c((sim_lo - pi_lo) / pi_lo, (sim_hi - pi_hi) / pi_hi))
+stopifnot(
+  # The simulated median lies inside every published 95% PI.
+  all(eba_cmp$sim_med > eba_cmp$pi_lo & eba_cmp$sim_med < eba_cmp$pi_hi),
+  # Envelope: a mis-transcribed EC50, MIC ratio or Emax moves every
+  # interval by tens of percent.
+  median(abs(pct_bounds)) < 20
+)
+```
+
+The simulated intervals agree closely with the published ones, which also
+include spread from the participants' own covariates. The median EBA rises
+from about 0.6 to 2.2 log10 CFU/mL from the 100 mg arm to the 400 mg arm. The
+observed mean in the 400 mg arm (1.61) sits below the predicted median, the
+"slight overprediction of the drug effect in the highest dosing group" that the
+paper reports.
+
+# PKNCA validation
+
+Supplementary Figure S1B shows the simulated median bedaquiline concentration
+over the seventh dosing interval (144-168 h) of the 7-day study. The table
+compares Cmax and the end-of-interval concentration with values the
+maintainers digitised from that figure. Those are medians of the authors' own
+simulation and not observed data.
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(study == "Rustomjee 2008", time >= 144, time <= 168, !is.na(Cc)) |>
+  transmute(id, time, conc = Cc * 1000, treatment = arm)
+
+dose_nca <- events |>
+  filter(study == "Rustomjee 2008", evid == 1, time == 144) |>
+  transmute(id, time, amt, treatment = arm)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, conc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id)
+intervals <- data.frame(start = 144, end = 168, cmax = TRUE, tmax = TRUE, clast.obs = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+# Digitised medians from Supplementary Figure S1B (log10 axis, ng/mL).
+published_nca <- tibble::tribble(
+  ~treatment, ~cmax, ~clast.obs,
+  "25 mg",    132,   39,
+  "100 mg",   531,   157,
+  "400 mg",   2138,  646
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published_nca,
+  by = "treatment",
+  params = c("cmax", "clast.obs"),
+  units = c(cmax = "ng/mL", clast.obs = "ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Day 7 (144-168 h) bedaquiline exposure: simulated median versus Supplementary Figure S1B. * differs by >20%."
+)
+
+cmax_sim <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "cmax") |>
+  group_by(treatment) |>
+  summarise(cmax = median(PPORRES), .groups = "drop") |>
+  left_join(select(published_nca, treatment, ref = cmax), by = "treatment")
+stopifnot(abs(median(100 * (cmax_sim$cmax - cmax_sim$ref) / cmax_sim$ref)) < 25)
+```
+
+Cmax agrees with the figure to within about 6%. The end-of-interval
+concentration is 8-13% higher than the digitised medians. That is within what
+the assumed covariates (the trial's demographics are not reported, and Black
+race raises clearance by 84%) and reading values off a log axis can explain.
+
+```{r pk-profile}
+sim |>
+  filter(study == "Rustomjee 2008", time >= 144, time <= 168) |>
+  group_by(arm, time) |>
+  summarise(
+    lo = quantile(Cc, 0.025) * 1000,
+    med = median(Cc) * 1000,
+    hi = quantile(Cc, 0.975) * 1000,
+    .groups = "drop"
+  ) |>
+  mutate(arm = factor(arm, levels = c("25 mg", "100 mg", "400 mg"))) |>
+  ggplot(aes(time, med, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line() +
+  scale_y_log10() +
+  labs(
+    x = "Time after first dose (h)",
+    y = "Bedaquiline plasma concentration (ng/mL)",
+    colour = "Daily dose", fill = "Daily dose",
+    caption = "Replicates Supplementary Figure S1B of van Lieshout 2026."
+  )
+```
+
+# Assumptions and deviations
+
+* **Covariates.** The paper used individual covariates for the 14-day study and
+  study means for the 7-day study, but publishes neither. The virtual cohort
+  gives every participant 56 kg, 32 years and non-Black race.
+* **Baseline bacterial load** is a covariate (`SPUTUM_BL_LOG10CFU`), as in the
+  model code (`A_0(9) = 10**BASELINE`). The paper derived it from the clinical
+  data: individual empirical Bayes estimates from an intercept model for the
+  14-day study, and values simulated from the regimen means and pooled variance
+  for the 7-day study. The intercept model itself is not published. The
+  vignette uses the regimen means. The EBA does not depend on this choice.
+* **Emax switch time.** The Methods say the maximum effect "increased to 137%
+  after 24 hours of BDQ exposure" in zebrafish. The model code applies the
+  switch when the simulation time exceeds 72 h (`IF(T.GT.72)`), and the packaged
+  model follows the code. The switch is on absolute time `t`, so the first
+  bedaquiline dose must be given at `t = 0`.
+* **Albumin.** The code integrates a logistic albumin ODE from `t = 0`. The
+  packaged model uses its exact closed-form solution, so it has no extra state.
+  The albumin observation and its residual error (`$SIGMA` 1) are not included
+  as an output.
+* **Weight.** The Svensson 2016 weight-trajectory model is legacy code in the
+  supplement ("disabled for simulations"). Its parameters, THETA(6)-THETA(8)
+  and `$OMEGA` elements 4-5, are not carried, and the subject's `WT` is used
+  directly, as in the code.
+* **Between-occasion variability** on F and MAT is `0 FIX` in the code and is
+  omitted.
+* **Residual error.** The code's between-subject variability on the residual
+  error (`IIV_RUV1`, `IIV_RUV2`) and the BDQ-M2 residual covariance are not
+  carried. The log-scale additive errors are kept as independent `lnorm()`
+  terms. The bacterial load has no residual error ("0 RUV for bacteria").
+* **Sensitivity analyses.** The two alternative translational factors in the
+  supplement (allometric zebrafish central volume, whole-body human
+  concentration) predicted worse and are not part of the packaged model.

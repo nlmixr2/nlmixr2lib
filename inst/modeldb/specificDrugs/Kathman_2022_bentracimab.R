@@ -3,6 +3,7 @@ Kathman_2022_bentracimab <- function() {
   reference <- "Kathman SJ, Wheeler JJ, Bhatt DL, Arnold SE, Lee JS. Population pharmacokinetic-pharmacodynamic modeling of PB2452, a monoclonal antibody fragment being developed as a ticagrelor reversal agent, in healthy volunteers. CPT Pharmacometrics Syst Pharmacol. 2022;11(1):68-81. doi:10.1002/psp4.12734"
   vignette <- "Kathman_2022_bentracimab"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  dosing <- c("depot", "target")
 
   covariateData <- list(
     WT = list(

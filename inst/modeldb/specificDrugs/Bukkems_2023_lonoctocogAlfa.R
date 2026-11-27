@@ -17,6 +17,7 @@ Bukkems_2023_lonoctocogAlfa <- function() {
   )
   vignette <- "Bukkems_2023_lonoctocogAlfa"
   units <- list(time = "h", dosing = "IU", concentration = "IU/dL")
+  dosing <- c("central", "prior_dose")
 
   # Bookkeeping state for the residual FVIII from an unknown pre-study dose
   # (Appendix S2: IPRED = BASE + CSA + EXTR * TERM, TERM = EXP(-BETA * TIME)

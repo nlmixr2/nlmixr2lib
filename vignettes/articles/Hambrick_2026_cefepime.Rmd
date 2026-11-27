@@ -1,0 +1,705 @@
+---
+title: "Cefepime (Hambrick 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cefepime (Hambrick 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Hambrick_2026_cefepime"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Hambrick_2026_cefepime"))$description`
+* Article: <https://doi.org/10.1016/j.ijantimicag.2026.107741>
+* Supplement (positive cultures, dosing summary, diagnostic plots): <https://doi.org/10.1016/j.ijantimicag.2026.107741>, supplementary material
+* Base model: `MoralesJunior_2025_cefepime` in this package
+  (<https://doi.org/10.1007/s40262-025-01485-5>)
+
+Hambrick 2026 asks whether urine neutrophil gelatinase-associated lipocalin
+(uNGAL), a marker of real-time tubular injury, predicts cefepime clearance
+beyond what serum-creatinine eGFR already explains. The authors took the
+validated Morales Junior 2025 PICU cefepime model, held every structural,
+variability and residual-error parameter at its published value, re-estimated
+only the eGFR exponent, and tested uNGAL in several forms. The retained form is
+a binary indicator: an admission uNGAL of 500 ng/mL or more lowers clearance by
+a factor of `exp(-0.42) = 0.657`. The authors also added inter-occasion
+variability (IOV) on clearance and central volume, with the first 48 h of PICU
+admission as occasion 1 and the time thereafter as occasion 2.
+
+# Population
+
+Fifty patients were enrolled at the Cincinnati Children's Hospital Medical
+Center PICU; one (a patient with paraplegia whose low muscle mass gave a
+supra-normal eGFR of about 200 mL/min/1.73 m^2) was excluded, leaving 49
+patients and 296 scavenged plasma concentrations (2-11 per patient, median 6;
+59% in the first 48 h of PICU admission). Enrolment required a renal angina
+index of 8 or more, which triggers a reflex uNGAL order, and cefepime started
+within 48 h of PICU admission. Median age was 11.5 years (IQR 5-17, range 3
+months to 31 years), median study-day-1 weight 29.4 kg (IQR 20-50) and 50% were
+female (Table 1).
+
+Kidney function was impaired on average: median SCr-eGFR on PICU admission
+62.2 mL/min/1.73 m^2 (IQR 41-122), with 68% meeting KDIGO creatinine criteria
+for AKI on admission (66% stage 2-3). Median admission uNGAL was 154.5 ng/mL
+(IQR 118-2065); 15 patients (30%) had uNGAL of 500 ng/mL or more. Illness was
+severe: 74% were mechanically ventilated, 66% received vasopressors and the
+median number of organ failures was 2. Patients on dialysis or any
+extracorporeal therapy at screening were excluded.
+
+The same information is available programmatically via
+`readModelDb("Hambrick_2026_cefepime")()$population`.
+
+# Source trace
+
+Per-parameter origins are also recorded as comments next to each `ini()` entry
+in `inst/modeldb/specificDrugs/Hambrick_2026_cefepime.R`. Values marked "held"
+carry an asterisk in Table 2 and are the Morales Junior 2025 final estimates.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `cl <- exp(lcl + etalcl + iov_cl + e_urine_ngal_cl * (URINE_NGAL >= 500)) * (WT/70)^0.75 * (CRCL/147.6)^e_crcl_cl` | n/a | Table 2 CL equation `CL = CLpop x (WT/70)^0.75 x (eGFR/147.6)^beta x e^(beta_NGAL x NGAL(1 or 0)) x e^etaCl`; threshold 500 ng/mL from Results ("Modelling uNGAL as a binary variable using a threshold of 500 ng/mL yielded the greatest reduction in the OFV") |
+| `lcl` | `log(6.38)`, held | Table 2, CLpop 6.38* |
+| `e_wt_cl_q` | 0.75, held | Table 2 CL and Q equations |
+| `e_crcl_cl` | 0.40 | Table 2, beta eGFR 0.40 (RSE 25.5%; bootstrap 0.22-0.54) |
+| `e_urine_ngal_cl` | -0.42 | Table 2, beta NGAL -0.42 (RSE 36.9%; bootstrap -0.76 to -0.13) |
+| `vc <- exp(lvc + etalvc + iov_vc) * (WT/70) * exp(0.026 * CUM_FLUID_BAL_PCT)` | n/a | Table 2 V1 equation (exponential fluid-balance form as printed in Morales Junior 2025 Table 2) |
+| `lvc` | `log(15)`, held | Table 2, V1pop 15* |
+| `e_wt_vc_vp` | 1, held | Table 2 V1 and V2 equations (bare `(WT/70)`) |
+| `e_cum_fluid_bal_pct_vc` | 0.026, held | Table 2, beta Cum%FB 0.026* |
+| `lq`, `q <- exp(lq) * (WT/70)^0.75` | `log(3.65)`, held | Table 2, Qpop 3.65* and Q equation |
+| `lvp`, `vp <- exp(lvp) * (WT/70)` | `log(8.91)`, held | Table 2, V2pop 8.91* and V2 equation |
+| `etalcl` | 0.1355452 (38.1% CV), held | Table 2, IIV CL 38.1%*; footnote CV = sqrt(e^omega^2 - 1) x 100 |
+| `etalvc` | 0.0219581 (14.9% CV), held | Table 2, IIV V1 14.9%* |
+| `etaiov_cl_1`, `etaiov_cl_2` | 0.0878360 (30.3% CV) | Table 2, IOV CL 30.3% (RSE 16.0%) |
+| `etaiov_vc_1`, `etaiov_vc_2` | 0.0199634 (14.2% CV) | Table 2, IOV V1 14.2% (RSE 73.3%) |
+| Occasions | 1 = first 48 h of PICU admission, 2 = after | Methods, 'Population pharmacokinetic modelling' |
+| `propSd` | 0.319, held | Table 2, error model proportional only, b 31.9%* |
+| Unbound fraction 0.80 | outside the model | Methods, 'Monte Carlo simulations' ("We assumed 20% protein binding") |
+
+```{r load-model}
+# Two expected messages are muffled, and only these two: random effects are
+# passed as data columns with `omega = NA` ("multi-subject simulation without
+# 'omega'"), and the IOV etas enter clearance and volume through derived
+# occasion terms, which rxode2 reports as "non-mu referenced".
+quiet_known <- function(expr) {
+  withCallingHandlers(expr, warning = function(w) {
+    if (grepl("without 'omega'|non-mu referenced", conditionMessage(w))) {
+      invokeRestart("muffleWarning")
+    }
+  })
+}
+solve_quiet <- function(...) quiet_known(rxode2::rxSolve(...))
+
+ui <- quiet_known(rxode2::rxode(readModelDb("Hambrick_2026_cefepime")))
+mod <- ui
+```
+
+# Structural verification
+
+These checks are deterministic (no random draws), so their tolerances are
+tight.
+
+## Typical values and the uNGAL effect
+
+At 70 kg, eGFR 147.6 mL/min/1.73 m^2, zero fluid balance and uNGAL below 500
+ng/mL the model must return the Table 2 population values; at uNGAL of 500
+ng/mL or more, clearance must fall by `1 - exp(-0.42)`, the "~35% lower CL" of
+the Abstract.
+
+```{r typical-values}
+mod_typ <- quiet_known(mod |> rxode2::zeroRe())
+
+typ_events <- tidyr::crossing(
+  id = 1:3, time = c(0, 1)
+) |>
+  mutate(
+    evid = 0L, cmt = "central", amt = NA_real_,
+    WT = 70, CRCL = c(147.6, 147.6, 62.2)[id],
+    URINE_NGAL = c(100, 500, 100)[id],
+    CUM_FLUID_BAL_PCT = 0, OCC = 1L
+  )
+typ_events <- dplyr::bind_rows(
+  typ_events |> distinct(id, .keep_all = TRUE) |>
+    mutate(evid = 1L, amt = 2000, time = 0),
+  typ_events
+) |> arrange(id, time, desc(evid))
+
+typ_sim <- solve_quiet(mod_typ, typ_events, returnType = "data.frame") |>
+  distinct(id, cl, vc, q, vp)
+
+typ <- tibble::tibble(
+  Quantity = c(
+    "CL, eGFR 147.6, uNGAL < 500 (L/h)",
+    "V1 (L)", "Q (L/h)", "V2 (L)",
+    "CL ratio, uNGAL >= 500 vs < 500",
+    "CL ratio, eGFR 62.2 vs 147.6"
+  ),
+  Expected = c(6.38, 15, 3.65, 8.91, exp(-0.42), (62.2 / 147.6)^0.40),
+  Model = c(
+    typ_sim$cl[1], typ_sim$vc[1], typ_sim$q[1], typ_sim$vp[1],
+    typ_sim$cl[2] / typ_sim$cl[1], typ_sim$cl[3] / typ_sim$cl[1]
+  )
+) |>
+  mutate(`% diff` = 100 * (Model - Expected) / Expected)
+
+# Same arithmetic on both sides; only floating-point error remains.
+stopifnot(max(abs(typ$`% diff`)) < 1e-8)
+
+knitr::kable(typ, digits = c(0, 4, 4, 10))
+```
+
+The threshold is inclusive: a uNGAL of exactly 500 ng/mL takes the lower
+clearance, matching the paper's "uNGAL >= 500 ng/mL" wording.
+
+## Occasion switching
+
+The occasion index `OCC` selects which IOV eta applies. With the two IOV etas
+supplied as data (+0.2 on occasion 1, -0.2 on occasion 2) and every other
+random effect at zero, clearance must be `6.38 * exp(0.2)` on occasion-1
+records and `6.38 * exp(-0.2)` on occasion-2 records.
+
+```{r occasion-check}
+occ_events <- data.frame(
+  id = 1L, time = c(0, 24, 47, 49, 72), evid = c(1L, 0L, 0L, 0L, 0L),
+  amt = c(2000, NA, NA, NA, NA), cmt = "central",
+  OCC = c(1L, 1L, 1L, 2L, 2L), WT = 70, CRCL = 147.6, URINE_NGAL = 100,
+  CUM_FLUID_BAL_PCT = 0,
+  etalcl = 0, etalvc = 0,
+  etaiov_cl_1 = 0.2, etaiov_cl_2 = -0.2, etaiov_vc_1 = 0, etaiov_vc_2 = 0
+)
+occ_sim <- solve_quiet(mod, occ_events, omega = NA, returnType = "data.frame")
+occ_cl <- occ_sim |>
+  mutate(OCC = ifelse(time < 48, 1L, 2L)) |>
+  group_by(OCC) |>
+  summarise(cl = unique(cl))
+stopifnot(
+  abs(occ_cl$cl[1] / (6.38 * exp(0.2)) - 1) < 1e-8,
+  abs(occ_cl$cl[2] / (6.38 * exp(-0.2)) - 1) < 1e-8
+)
+knitr::kable(occ_cl, digits = 4)
+```
+
+## Variability round-trips through the Table 2 footnote
+
+```{r variability-roundtrip}
+om <- ui$omega
+cv <- tibble::tibble(
+  Eta = c("etalcl", "etalvc", "etaiov_cl_1", "etaiov_vc_1"),
+  `Published CV (%)` = c(38.1, 14.9, 30.3, 14.2),
+  `Model CV (%)` = 100 * sqrt(exp(diag(om)[Eta]) - 1)
+)
+# Stored variances are rounded to seven decimals.
+stopifnot(max(abs(cv$`Model CV (%)` - cv$`Published CV (%)`)) < 1e-3)
+knitr::kable(cv, digits = 4)
+```
+
+# Virtual cohort
+
+The cohort follows the Monte Carlo design of the Methods ('Monte Carlo
+simulations'): body weight uniform on 5-40 kg (weight-based dosing) or 40-100
+kg (fixed dosing), eGFR uniform within 30-60, 60-90 or 90-150
+mL/min/1.73 m^2, uNGAL placed on one side of the 500 ng/mL threshold, and
+cumulative fluid balance 0% for everyone. That gives twelve cells; each holds
+200 virtual patients, and the same patients are re-used under every regimen so
+regimen comparisons are paired.
+
+Covariates and random effects are drawn with base R's random-number generator
+and passed to `rxSolve()` as data columns (`omega = NA`), so the cohort is the
+same on every machine and at every solver thread count. Only the occasion-1 IOV
+etas are drawn: the paper evaluates target attainment at 48 h, inside occasion
+1. The main replication sets the IOV etas to zero, because that is what
+reproduces the published tables (see 'Inter-occasion variability in the Monte
+Carlo simulations' below); the IOV draws are kept for the sensitivity analysis.
+
+```{r cohort}
+n_per_cell <- 200L
+set.seed(20260521)
+
+cells <- tidyr::expand_grid(
+  band = c("5-40 kg", "40-100 kg"),
+  egfr = c("30-60", "60-90", "90-150"),
+  ngal = c(">= 500", "< 500")
+)
+egfr_lim <- list("30-60" = c(30, 60), "60-90" = c(60, 90), "90-150" = c(90, 150))
+wt_lim <- list("5-40 kg" = c(5, 40), "40-100 kg" = c(40, 100))
+sd_eta <- sqrt(diag(om))
+
+cohort <- dplyr::bind_rows(lapply(seq_len(nrow(cells)), function(k) {
+  tibble::tibble(
+    band = cells$band[k],
+    egfr = cells$egfr[k],
+    ngal = cells$ngal[k],
+    WT = stats::runif(n_per_cell, wt_lim[[cells$band[k]]][1], wt_lim[[cells$band[k]]][2]),
+    CRCL = stats::runif(n_per_cell, egfr_lim[[cells$egfr[k]]][1], egfr_lim[[cells$egfr[k]]][2]),
+    URINE_NGAL = if (cells$ngal[k] == ">= 500") 1000 else 100,
+    CUM_FLUID_BAL_PCT = 0,
+    OCC = 1L,
+    etalcl = stats::rnorm(n_per_cell, 0, sd_eta[["etalcl"]]),
+    etalvc = stats::rnorm(n_per_cell, 0, sd_eta[["etalvc"]]),
+    iov_cl_draw = stats::rnorm(n_per_cell, 0, sd_eta[["etaiov_cl_1"]]),
+    iov_vc_draw = stats::rnorm(n_per_cell, 0, sd_eta[["etaiov_vc_1"]])
+  )
+})) |>
+  mutate(id = dplyr::row_number(), etaiov_cl_2 = 0, etaiov_vc_2 = 0)
+
+stopifnot(nrow(cohort) == 12L * n_per_cell, !anyDuplicated(cohort$id))
+
+cohort |>
+  group_by(band, egfr) |>
+  summarise(
+    n = dplyr::n(),
+    `WT median (kg)` = median(WT),
+    `eGFR median` = median(CRCL),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 1, caption = "Virtual cohort by weight band and eGFR stratum (both uNGAL groups).")
+```
+
+# Simulation
+
+The six regimens of Tables 3 and 4: 50 mg/kg (maximum 2000 mg) every 12 or 8 h
+as a 30-min standard infusion (SI) or 3-h extended infusion (EI), and 100 or 150
+mg/kg/day (maximum 4000 / 6000 mg/day) as a continuous infusion (CI). The
+40-100 kg cohort receives the fixed caps (2000 mg per dose, 4000 or 6000
+mg/day). Dosing starts at time 0 and target attainment is read off the dosing
+interval that ends at 48 h.
+
+```{r simulate}
+regimens <- tibble::tribble(
+  ~regimen,   ~ii, ~dur, ~per_kg, ~cap,
+  "q12h SI",   12,  0.5,      50, 2000,
+  "q12h EI",   12,  3.0,      50, 2000,
+  "q8h SI",     8,  0.5,      50, 2000,
+  "q8h EI",     8,  3.0,      50, 2000,
+  "100 mg/kg/d CI", 24, 24,  100, 4000,
+  "150 mg/kg/d CI", 24, 24,  150, 6000
+)
+
+simulate_regimen <- function(k, coh) {
+  ii <- regimens$ii[k]
+  coh <- coh |>
+    mutate(amt = ifelse(band == "5-40 kg", pmin(regimens$per_kg[k] * WT, regimens$cap[k]), regimens$cap[k]))
+  dose <- coh |>
+    tidyr::crossing(time = seq(0, 48 - ii, by = ii)) |>
+    mutate(evid = 1L, cmt = "central", dur = regimens$dur[k])
+  obs <- coh |>
+    tidyr::crossing(time = seq(48 - ii, 48, by = 0.1)) |>
+    mutate(evid = 0L, cmt = "central", amt = NA_real_, dur = NA_real_)
+  ev <- dplyr::bind_rows(dose, obs) |> arrange(id, time, desc(evid))
+  solve_quiet(mod, ev, omega = NA, returnType = "data.frame", keep = c("band", "egfr", "ngal")) |>
+    mutate(regimen = regimens$regimen[k])
+}
+
+cohort_main <- cohort |> mutate(etaiov_cl_1 = 0, etaiov_vc_1 = 0)
+sim <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), simulate_regimen, coh = cohort_main))
+
+stopifnot(!anyNA(sim$Cc))
+```
+
+## Concentration profiles
+
+```{r profiles}
+sim |>
+  filter(band == "5-40 kg", regimen == "q8h SI") |>
+  group_by(egfr, ngal, time) |>
+  summarise(Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, Q50, colour = ngal, fill = ngal)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2, colour = NA) +
+  geom_line() +
+  geom_hline(yintercept = 8 / 0.8, linetype = "dotted") +
+  facet_wrap(~egfr, labeller = label_both) +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Total plasma cefepime (mg/L)",
+    colour = "uNGAL (ng/mL)", fill = "uNGAL (ng/mL)",
+    title = "50 mg/kg q8h over 30 min, 5-40 kg, dosing interval ending at 48 h",
+    caption = "Median and 5th-95th percentiles. Dotted line: total concentration equal to free 8 mg/L at fu = 0.80."
+  )
+```
+
+At every eGFR stratum the uNGAL >= 500 ng/mL group sits higher, because its
+clearance is 34% lower.
+
+## Clearance against eGFR and uNGAL
+
+Figure 1 of the paper plots individual clearance from the base model (before
+uNGAL was added) against admission uNGAL; the individual estimates are not
+public. The panel below shows the relationship the final model encodes: typical
+weight-normalised clearance against eGFR, for each uNGAL group, with the
+paper's 3.75 L/h/70 kg^0.75 reference line.
+
+```{r figure-1-analogue}
+cl_curve <- tidyr::crossing(CRCL = seq(30, 200, by = 2), URINE_NGAL = c(100, 1000)) |>
+  mutate(
+    cl70 = 6.38 * (CRCL / 147.6)^0.40 * exp(-0.42 * (URINE_NGAL >= 500)),
+    group = ifelse(URINE_NGAL >= 500, ">= 500", "< 500")
+  )
+ggplot(cl_curve, aes(CRCL, cl70, colour = group)) +
+  geom_line() +
+  geom_hline(yintercept = 3.75, linetype = "dotted") +
+  labs(
+    x = "eGFR (mL/min/1.73 m^2)", y = "Typical CL (L/h per 70 kg^0.75)",
+    colour = "uNGAL (ng/mL)",
+    caption = "Model-side counterpart of Figure 1 of Hambrick 2026 (typical values, no random effects)."
+  )
+```
+
+# PKNCA validation
+
+The paper reports no NCA. The check below runs PKNCA on a steady-state (`ss =
+1`) solve of the 5-40 kg cohort under 50 mg/kg q8h SI, grouped by uNGAL group
+and eGFR stratum, and compares the interval AUC against the exact steady-state
+identity `AUC0-tau = Dose / CL` computed from each subject's own clearance.
+
+```{r pknca}
+nca_coh <- cohort_main |>
+  filter(band == "5-40 kg") |>
+  mutate(group = paste0("eGFR ", egfr, ", uNGAL ", ngal), amt = pmin(50 * WT, 2000))
+
+ss_dose <- nca_coh |> mutate(time = 0, evid = 1L, cmt = "central", dur = 0.5, ii = 8, ss = 1L)
+ss_obs <- nca_coh |>
+  tidyr::crossing(time = seq(0, 8, by = 0.02)) |>
+  mutate(evid = 0L, cmt = "central", amt = NA_real_, dur = NA_real_, ii = NA_real_, ss = NA_integer_)
+ss_sim <- solve_quiet(
+  mod, dplyr::bind_rows(ss_dose, ss_obs) |> arrange(id, time, desc(evid)),
+  omega = NA, returnType = "data.frame", keep = "group", maxsteps = 1e6
+)
+
+conc_df <- ss_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, group)
+conc_df <- dplyr::bind_rows(
+  conc_df,
+  conc_df |> distinct(id, group) |> mutate(time = 0, Cc = NA_real_)
+) |>
+  distinct(id, group, time, .keep_all = TRUE) |>
+  arrange(id, time)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | group + id, concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(
+  nca_coh |> mutate(time = 0) |> dplyr::select(id, time, amt, group),
+  amt ~ time | group + id,
+  doseu = "mg"
+)
+intervals <- data.frame(start = 0, end = 8, cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(nca_res$result)
+stopifnot(nrow(nca_tbl) > 0)
+```
+
+## AUC0-tau against the closed form
+
+```{r auc-closed-form}
+auc_chk <- nca_tbl |>
+  filter(PPTESTCD == "auclast") |>
+  mutate(id = as.integer(as.character(id))) |>
+  dplyr::select(id, group, auc_nca = PPORRES) |>
+  left_join(ss_sim |> distinct(id, cl), by = "id") |>
+  left_join(nca_coh |> dplyr::select(id, amt), by = "id") |>
+  mutate(auc_closed = amt / cl, pct_diff = 100 * (auc_nca - auc_closed) / auc_closed)
+
+stopifnot(nrow(auc_chk) == nrow(nca_coh), !anyNA(auc_chk$pct_diff))
+# Same drawn parameters on both sides, so the difference is trapezoidal error on
+# a 0.02-h grid plus LSODA tolerance (realised max about 0.01%). 1% still
+# catches a mis-encoded dose cap, infusion duration or unit.
+stopifnot(max(abs(auc_chk$pct_diff)) < 1)
+
+reference <- auc_chk |>
+  group_by(group) |>
+  summarise(auclast = median(auc_closed), .groups = "drop")
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = reference,
+  by = "group",
+  params = "auclast",
+  units = c(auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Steady-state AUC0-8 from PKNCA vs the exact Dose/CL reference, 50 mg/kg q8h SI, 5-40 kg. * differs by >20%."
+)
+```
+
+No row is starred. Exposure summary by group:
+
+```{r nca-summary}
+nca_tbl |>
+  filter(PPTESTCD %in% c("cmax", "cmin", "cav", "auclast")) |>
+  group_by(group, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename(
+    "Group" = group,
+    "Cmax (mg/L)" = cmax,
+    "Cmin (mg/L)" = cmin,
+    "Cavg (mg/L)" = cav,
+    "AUC0-8 (mg*h/L)" = auclast
+  ) |>
+  knitr::kable(digits = 1, caption = "Median steady-state NCA, 50 mg/kg q8h SI, 5-40 kg.")
+```
+
+# Probability of target attainment (Tables 3 and 4)
+
+The target is 100% fT > MIC: the free concentration (0.80 x total) stays above
+the MIC for the whole dosing interval ending at 48 h. MICs of 2, 8 and 32 mg/L
+cover 1x and 4x the 2025 CLSI breakpoints for Enterobacterales (2 mg/L) and
+*Pseudomonas aeruginosa* (8 mg/L).
+
+```{r pta}
+fu <- 0.80
+cmin_48 <- function(s) {
+  s |>
+    group_by(band, egfr, ngal, regimen, id) |>
+    summarise(fcmin = min(fu * Cc), .groups = "drop")
+}
+pta_from <- function(cm) {
+  cm |>
+    tidyr::crossing(MIC = c(2, 8, 32)) |>
+    group_by(band, egfr, ngal, regimen, MIC) |>
+    summarise(pta = 100 * mean(fcmin > MIC), .groups = "drop")
+}
+pta <- pta_from(cmin_48(sim))
+
+published <- tibble::tribble(
+  ~band, ~egfr, ~regimen, ~h2, ~h8, ~h32, ~l2, ~l8, ~l32,
+  "5-40 kg", "30-60", "q12h SI", 98.8, 87.8, 36.8, 90.3, 56.8, 8.7,
+  "5-40 kg", "30-60", "q12h EI", 99.5, 92.4, 44.4, 94.6, 66.7, 12.2,
+  "5-40 kg", "30-60", "q8h SI", 100, 98.3, 73.3, 99, 87.7, 35.1,
+  "5-40 kg", "30-60", "q8h EI", 100, 99.5, 82.7, 99.8, 94, 46.7,
+  "5-40 kg", "30-60", "100 mg/kg/d CI", 100, 100, 95.7, 100, 100, 76.5,
+  "5-40 kg", "30-60", "150 mg/kg/d CI", 100, 100, 99.7, 100, 100, 95.4,
+  "5-40 kg", "60-90", "q12h SI", 96.4, 75.2, 19.2, 79.5, 36.7, 2.8,
+  "5-40 kg", "60-90", "q12h EI", 98.3, 82.4, 25.4, 87.1, 49.6, 4.5,
+  "5-40 kg", "60-90", "q8h SI", 99.9, 95.2, 54.7, 97, 74.8, 18,
+  "5-40 kg", "60-90", "q8h EI", 100, 98.1, 66.8, 99.2, 85.5, 27.4,
+  "5-40 kg", "60-90", "100 mg/kg/d CI", 100, 100, 89, 100, 100, 58.9,
+  "5-40 kg", "60-90", "150 mg/kg/d CI", 100, 100, 98.6, 100, 100, 88.3,
+  "5-40 kg", "90-150", "q12h SI", 91.3, 59.3, 9.5, 65, 21.4, 0.8,
+  "5-40 kg", "90-150", "q12h EI", 95.3, 69.1, 13.5, 75.5, 30.2, 1.5,
+  "5-40 kg", "90-150", "q8h SI", 99.3, 88.5, 36.9, 92.5, 58.6, 8.6,
+  "5-40 kg", "90-150", "q8h EI", 99.9, 94.6, 49.1, 97.3, 73, 14.6,
+  "5-40 kg", "90-150", "100 mg/kg/d CI", 100, 100, 78.1, 100, 100, 40.6,
+  "5-40 kg", "90-150", "150 mg/kg/d CI", 100, 100, 96, 100, 100, 77.1,
+  "40-100 kg", "30-60", "q12h SI", 100, 99.1, 65.4, 99.7, 90.9, 90.9,
+  "40-100 kg", "30-60", "q12h EI", 100, 99.7, 74.7, 100, 95.4, 36.6,
+  "40-100 kg", "30-60", "q8h SI", 100, 99.2, 72.4, 99.8, 91.5, 32.7,
+  "40-100 kg", "30-60", "q8h EI", 100, 99.7, 80.3, 100, 95.7, 43.1,
+  "40-100 kg", "30-60", "100 mg/kg/d CI", 100, 100, 87.2, 100, 100, 56.8,
+  "40-100 kg", "30-60", "150 mg/kg/d CI", 100, 100, 98.2, 100, 100, 86.7,
+  "40-100 kg", "60-90", "q12h SI", 100, 97, 45.2, 99.1, 79.3, 12.6,
+  "40-100 kg", "60-90", "q12h EI", 100, 98.9, 56.2, 99.7, 88.2, 19.6,
+  "40-100 kg", "60-90", "q8h SI", 100, 97.1, 52.7, 99.1, 80.2, 16.4,
+  "40-100 kg", "60-90", "q8h EI", 100, 99, 63.1, 99.7, 88.8, 24.2,
+  "40-100 kg", "60-90", "100 mg/kg/d CI", 100, 100, 74.4, 100, 99.9, 38.1,
+  "40-100 kg", "60-90", "150 mg/kg/d CI", 100, 100, 94.6, 100, 100, 73.5,
+  "40-100 kg", "90-150", "q12h SI", 99.9, 91.7, 28.4, 96.6, 63.3, 5.4,
+  "40-100 kg", "90-150", "q12h EI", 100, 95.9, 38.7, 98.9, 75.8, 9.6,
+  "40-100 kg", "90-150", "q8h SI", 99.9, 92.3, 35, 96.7, 64.9, 7.6,
+  "40-100 kg", "90-150", "q8h EI", 100, 96.2, 45, 98.9, 76.7, 12.3,
+  "40-100 kg", "90-150", "100 mg/kg/d CI", 100, 100, 58.7, 100, 99.4, 23.4,
+  "40-100 kg", "90-150", "150 mg/kg/d CI", 100, 100, 87.9, 100, 100, 57.5
+) |>
+  tidyr::pivot_longer(h2:l32, values_to = "published") |>
+  mutate(
+    ngal = ifelse(substr(name, 1, 1) == "h", ">= 500", "< 500"),
+    MIC = as.numeric(substring(name, 2))
+  ) |>
+  dplyr::select(-name)
+
+# The 40-100 kg CI regimens are fixed 4000 and 6000 mg/day in Table 4.
+pta_cmp <- pta |>
+  inner_join(published, by = c("band", "egfr", "regimen", "ngal", "MIC")) |>
+  mutate(diff = pta - published)
+stopifnot(nrow(pta_cmp) == 216L)
+```
+
+## Table 3: 5-40 kg, weight-based dosing
+
+```{r table-3}
+t3 <- pta_cmp |> filter(band == "5-40 kg")
+
+t3 |>
+  mutate(cell = sprintf("%.1f (%.1f)", pta, published)) |>
+  dplyr::select(egfr, regimen, ngal, MIC, cell) |>
+  tidyr::pivot_wider(names_from = c(ngal, MIC), values_from = cell, names_glue = "uNGAL {ngal}, MIC {MIC}") |>
+  dplyr::rename("eGFR" = egfr, "Regimen" = regimen) |>
+  knitr::kable(caption = "PTA (%) for 100% fT > MIC, simulated (published Table 3 in brackets).")
+
+# Cells strictly between 2% and 98% carry information; the saturated ones agree
+# trivially. With 200 patients per cell the Monte Carlo SE of a PTA near 50% is
+# 3.5 points. Realised: median diff -0.5, 90th percentile |diff| 6.5 (an
+# independent 200-per-cell cohort, scored on the cells with published PTA
+# between 5% and 95%, gave -0.6 / 5.0). A mis-transcribed
+# clearance, eGFR exponent or uNGAL coefficient shifts these cells by 10-30
+# points.
+t3_inf <- t3 |> filter(published > 2, published < 98)
+stopifnot(
+  abs(median(t3_inf$diff)) < 4,
+  quantile(abs(t3_inf$diff), 0.9) < 12
+)
+```
+
+Simulated attainment reproduces Table 3: across the
+`r nrow(t3_inf)` informative cells the median difference is
+`r sprintf("%.1f", median(t3_inf$diff))` percentage points and the 90th
+percentile of the absolute difference is
+`r sprintf("%.1f", quantile(abs(t3_inf$diff), 0.9))` points, about what 200
+patients per cell allow.
+
+## Table 4: 40-100 kg, fixed dosing
+
+```{r table-4}
+t4 <- pta_cmp |> filter(band == "40-100 kg")
+
+t4 |>
+  mutate(cell = sprintf("%.1f (%.1f)", pta, published)) |>
+  dplyr::select(egfr, regimen, ngal, MIC, cell) |>
+  tidyr::pivot_wider(names_from = c(ngal, MIC), values_from = cell, names_glue = "uNGAL {ngal}, MIC {MIC}") |>
+  dplyr::rename("eGFR" = egfr, "Regimen" = regimen) |>
+  knitr::kable(caption = "PTA (%) for 100% fT > MIC, simulated (published Table 4 in brackets).")
+
+t4_inf <- t4 |> filter(published > 2, published < 98)
+t4_q8_ci <- t4_inf |> filter(!grepl("^q12h", regimen))
+t4_q12 <- t4_inf |> filter(grepl("^q12h", regimen))
+# q8h and continuous-infusion rows: same tolerance as Table 3.
+stopifnot(
+  abs(median(t4_q8_ci$diff)) < 4,
+  quantile(abs(t4_q8_ci$diff), 0.9) < 12
+)
+```
+
+The q8h and continuous-infusion rows of Table 4 agree as closely as Table 3
+(median difference `r sprintf("%.1f", median(t4_q8_ci$diff))` points). The
+**q12h rows do not**: the simulated q12h attainment is a median
+`r sprintf("%.1f", -median(t4_q12$diff))` points below the published value.
+Table 4 itself shows why: its q12h and q8h rows are nearly identical (for
+example 99.1% vs 99.2% at eGFR 30-60, uNGAL >= 500, MIC 8), although giving the
+same 2000 mg dose every 12 h instead of every 8 h must lower the trough. The
+published q12h rows instead match a q8h simulation:
+
+```{r table-4-q12h}
+q8_as_q12 <- pta |>
+  filter(band == "40-100 kg", grepl("^q8h", regimen)) |>
+  mutate(regimen = sub("q8h", "q12h", regimen)) |>
+  inner_join(published, by = c("band", "egfr", "regimen", "ngal", "MIC")) |>
+  mutate(diff = pta - published)
+
+q12_compare <- t4_q12 |>
+  dplyr::select(egfr, regimen, ngal, MIC, published, q12h_sim = pta) |>
+  left_join(
+    q8_as_q12 |> dplyr::select(egfr, regimen, ngal, MIC, q8h_sim = pta),
+    by = c("egfr", "regimen", "ngal", "MIC")
+  )
+
+q12_compare |>
+  dplyr::rename(
+    "eGFR" = egfr, "Regimen (as labelled)" = regimen, "uNGAL" = ngal,
+    "Published" = published, "Simulated q12h" = q12h_sim, "Simulated q8h" = q8h_sim
+  ) |>
+  knitr::kable(digits = 1, caption = "Table 4 'q12h' rows against q12h and q8h simulations, informative cells.")
+
+# The published q12h rows sit with the q8h simulation and far from the q12h one.
+# Realised: median |q8h - published| 2.6, median (q12h - published) -26.5.
+q8_fit <- q12_compare |> filter(!(egfr == "30-60" & ngal == "< 500" & MIC == 32 & grepl("SI", regimen)))
+stopifnot(
+  median(abs(q8_fit$q8h_sim - q8_fit$published)) < 5,
+  median(q12_compare$q12h_sim - q12_compare$published) < -10
+)
+```
+
+The one exception is the eGFR 30-60, uNGAL < 500, MIC 32 mg/L cell of the 2000
+mg q12h SI row, which reads 90.9%, the same as the MIC 8 mg/L cell beside it and
+far above the 36.6% of the q12h EI row below it; it is treated as a copy error
+and excluded from the check. Table S2's adult recommendations of 2000 mg q12h
+rest on the q12h rows, so they inherit the problem. None of this touches the
+model parameters, which come from Table 2.
+
+## Inter-occasion variability in the Monte Carlo simulations
+
+The packaged model carries the Table 2 IOV. The paper does not say whether its
+Simulx runs sampled it. Adding the occasion-1 IOV draws widens the clearance
+distribution (total log-scale variance on CL rises from 0.136 to 0.223), and
+the simulated attainment then falls below Table 3 in the informative cells:
+
+```{r iov-sensitivity}
+cohort_iov <- cohort |>
+  filter(band == "5-40 kg") |>
+  mutate(etaiov_cl_1 = iov_cl_draw, etaiov_vc_1 = iov_vc_draw)
+sim_iov <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), simulate_regimen, coh = cohort_iov))
+pta_iov <- pta_from(cmin_48(sim_iov)) |>
+  inner_join(published, by = c("band", "egfr", "regimen", "ngal", "MIC")) |>
+  filter(published > 2, published < 98) |>
+  mutate(diff = pta - published)
+
+iov_summary <- tibble::tibble(
+  Simulation = c("IIV only", "IIV + IOV"),
+  `Median diff (points)` = c(median(t3_inf$diff), median(pta_iov$diff)),
+  `90th pct |diff| (points)` = c(quantile(abs(t3_inf$diff), 0.9), quantile(abs(pta_iov$diff), 0.9))
+)
+knitr::kable(iov_summary, digits = 1, caption = "Table 3 informative cells, simulated minus published PTA.")
+```
+
+The IIV-only simulation centres on the published values, while adding IOV
+pulls attainment down by about two points in the median (an independent
+cohort, scored on the cells with published PTA between 5% and 95%, gave -0.6
+without and -2.8 with IOV), so the published tables were most likely generated
+without IOV. Use IIV only to reproduce the paper's
+dosing tables; include IOV (the default when `rxSolve()` samples the model's
+omega) to describe a patient's variability across the two PICU periods.
+
+# Assumptions and deviations
+
+* **uNGAL as a continuous column.** The model takes the measured admission
+  uNGAL (`URINE_NGAL`, ng/mL) and applies the 500 ng/mL threshold inside
+  `model()`. The threshold is inclusive (`>=`), as the paper writes it. Any
+  value on the correct side of 500 gives the same result; the cohort above uses
+  1000 and 100 ng/mL.
+* **V1 equation.** The Table 2 V1 row is typeset as `V1pop x (WT/70) x beta x
+  Cum%FB x e^etaV1`, which drops the exponential. The exponential form
+  `exp(0.026 x Cum%FB)` is taken from the Morales Junior 2025 Table 2 equation,
+  whose value Hambrick 2026 holds; Hambrick's text describes the model as
+  "cumulative fluid balance as a covariate on central volume" without changing
+  its form. The Monte Carlo design sets fluid balance to 0%, so the
+  replication does not test this term.
+* **Held parameters.** Every value with an asterisk in Table 2 is encoded with
+  `fixed()`, since the authors did not estimate it in this fit. Only the eGFR
+  exponent, the uNGAL coefficient and the two IOV variances are estimates of
+  Hambrick 2026.
+* **Occasions.** Occasion 1 is the first 48 h after PICU admission and
+  occasion 2 everything after (Methods). The clock is PICU admission, not the
+  first cefepime dose, which could precede admission by up to 48 h; users must
+  build `OCC` from admission time. The two occasions share one variance per
+  parameter, encoded as a free occasion-1 variance and a `fixed()` occasion-2
+  copy.
+* **Abstract typo.** The Abstract says IOV "at 4 h post-PICU admission"; the
+  Methods, Results and Discussion all give 48 h, which is used.
+* **Monte Carlo set-up.** The paper reports "simulated concentration-time
+  profiles at 48 h" without more detail. Here dosing starts at time 0 and 100%
+  fT > MIC is evaluated over the dosing interval ending at 48 h (the whole
+  24-48 h day for continuous infusion), on the individual predictions without
+  residual error. Cohorts are 200 patients per cell rather than 10 000.
+* **IOV not in the replication.** See the sensitivity section above: the
+  published PTA tables are reproduced without IOV.
+* **Table 4 q12h rows.** The published 40-100 kg q12h rows match a q8h
+  simulation, and one cell (eGFR 30-60, uNGAL < 500, MIC 32, q12h SI = 90.9%)
+  duplicates its neighbour. This is documented above and does not affect the
+  model.
+* **Unbound fraction.** Free concentration is 0.80 x total, the paper's
+  assumed 20% protein binding; it is not part of the model.
+* **Scope.** The model must not be used for patients on dialysis, CRRT, ECMO
+  or plasma exchange (excluded), or for anuric patients, who cannot provide
+  uNGAL. The authors note the model has not been externally validated and that
+  predictions for high-normal kidney function rest partly on extrapolation.

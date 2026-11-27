@@ -1,0 +1,459 @@
+---
+title: "Velsecorat peak expiratory flow hidden Markov model in asthma (Jakobsson 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Velsecorat peak expiratory flow hidden Markov model in asthma (Jakobsson 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7.5, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r load-model}
+mod <- readModelDb("Jakobsson_2026_velsecorat")
+ui <- rxode2::rxode2(mod)
+
+# Typical-value solve. With the random effects zeroed and the within-state
+# SD computed in the model, rxode2 warns that there is no sigma and no omega;
+# both are expected here and only those two warnings are muffled.
+muffle_typical <- function(w) {
+  if (grepl("No sigma parameters|without 'omega'", conditionMessage(w))) {
+    invokeRestart("muffleWarning")
+  }
+}
+solve_typical <- function(events) {
+  withCallingHandlers(
+    rxode2::rxSolve(rxode2::zeroRe(ui), events, returnType = "data.frame"),
+    warning = muffle_typical
+  )
+}
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article (open access): <https://doi.org/10.1002/psp4.70281>
+* Parent trial: AstraZeneca phase 2b dose-finding study of velsecorat
+  (AZD7594), <https://clinicaltrials.gov/study/NCT03622112>
+
+Jakobsson 2026 models twice-daily home-measured peak expiratory flow (PEF)
+with a two-state mixed-effects hidden Markov model (MEHMM). Each patient is,
+at every measurement, in one of two unobserved states: a high-PEF state
+(normal health, mean `m0`) or a low-PEF state (worsened health, mean
+`d * m0`). The state follows a discrete-time Markov chain whose two
+transition probabilities, `p01` (high to low) and `p10` (low to high), apply
+once per measurement. Given the state, each PEF reading is normal around the
+state's mean with a patient-specific variance `sigma^2`. The five
+parameters are transformed (`log m0`, `logit d`, `log sigma^2`,
+`logit(2 p01)`, `logit(2 p10)`); each is a typical value plus a dose effect
+plus a normally distributed random effect with a diagonal covariance
+matrix. The factor 2 caps each transition probability at 0.5.
+
+The final "mixed" dose-response model (supplement Table S4) keeps three
+dose effects: a constant shift on `logit d` for any active dose, and Emax
+terms in dose on `log sigma^2` and on `logit(2 p10)`. Velsecorat therefore
+makes the worsened state milder, makes readings within a state less
+variable, and speeds recovery from the worsened state; it has no estimated
+effect on `m0` or `p01`.
+
+**This is a simulation model.** The latent state is drawn with `rxunif()`
+and carried from one record to the next with `lag()`. That reproduces the
+data-generating process exactly, but it is not the likelihood the paper
+maximised (the paper sums over the hidden path with the forward
+recursion), so the packaged model cannot be used to re-estimate the
+parameters with nlmixr2. Every record of a simulation event table is one
+PEF reading, and the chain advances by one step per record; the record
+spacing does not enter the model.
+
+# Population
+
+The analysis used patient-level data of the phase 2b trial NCT03622112
+(Jakobsson 2026 Section 2.5): adults with asthma symptomatic on low-dose
+inhaled corticosteroid, randomised to placebo or to once-daily inhaled
+velsecorat 50, 90, 180, 360 or 720 ug for 12 weeks, with twice-daily
+home-measured PEF. The paper reports neither the number of patients
+analysed nor their baseline demographics; it notes substantial dropout in
+the placebo arm. `population` in the model file records what the paper
+states.
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+Every value is from the final "mixed" dose-response model in the
+supplement Table S4. Equations are in Section 2.3; the parameter
+back-transformation `inv_g = (exp, invlogit, exp, invlogit / 2,
+invlogit / 2)`, the Emax form `Emax * x / (exp(logED50) + x)`, and the
+start-in-the-high-state rule are confirmed against the authors' published
+R code (<https://github.com/fcc-ludvig-jakobsson/pef-mehmm>, function
+`simulate_two_state_model()`).
+
+| Model element | Value | Source |
+|---|---|---|
+| `lpef_high` (mu1, log m0) | 5.755 | Table S4 |
+| `logitd_low` (mu2, logit d) | 1.984 | Table S4 |
+| `lvar_pef` (mu3, log sigma^2) | 6.837 | Table S4 |
+| `logit2p_hl` (mu4, logit 2 p01) | -2.716 | Table S4 |
+| `logit2p_lh` (mu5, logit 2 p10) | -3.008 | Table S4 |
+| `e_active_logitd` (beta2, constant effect) | 0.212 | Table S4 |
+| `emax_lvar` (Emax,3) | -0.447 | Table S4 |
+| `led50_lvar` (log ED50,3, ug) | 5.039 | Table S4 |
+| `emax_logit2p_lh` (Emax,5) | 0.705 | Table S4 |
+| `led50_logit2p_lh` (log ED50,5, ug) | 3.811 | Table S4 |
+| `etalpef_high` variance (omega1^2) | 0.129 | Table S4 |
+| `etalogitd_low` variance (omega2^2) | 0.390 | Table S4 |
+| `etalvar_pef` variance (omega3^2) | 0.681 | Table S4 |
+| `etalogit2p_hl` variance (omega4^2) | 0.839 | Table S4 |
+| `etalogit2p_lh` variance (omega5^2) | 1.038 | Table S4 |
+| Observation model `PEF = m_Z + eps`, `eps ~ N(0, sigma^2)` | -- | Section 2.3 |
+| Transition `P(Z_t = l given Z_t-1 = j) = p_jl` | -- | Section 2.3 |
+| `phi = mu + beta(x) + eta`, diagonal Omega | -- | Sections 2.1 and 2.3 |
+| Constant and Emax dose-response forms | -- | Section 2.3 |
+| Start in the high state; transition drawn before each reading | -- | authors' code |
+
+# Typical values: Table 2
+
+Table 2 of the paper gives the back-transformed typical parameters for the
+placebo and the 720 ug arms. A typical-value solve (`zeroRe()`) evaluates
+them inside the model, one record per arm.
+
+```{r table2}
+typ_events <- data.frame(
+  id = 1:2, time = 0, evid = 0,
+  DOSE_VELSECORAT_UG = c(0, 720)
+)
+typ <- solve_typical(typ_events)
+
+tab2 <- data.frame(
+  parameter = c("m0", "d", "sigma", "p01", "p10"),
+  sim_placebo = c(typ$pef_high[1], typ$d_low[1], typ$sd_pef[1], typ$p_hl[1], typ$p_lh[1]),
+  sim_720 = c(typ$pef_high[2], typ$d_low[2], typ$sd_pef[2], typ$p_hl[2], typ$p_lh[2]),
+  paper_placebo = c(317, 0.879, 30.5, 0.031, 0.023),
+  paper_720 = c(317, 0.900, 25.4, 0.031, 0.043)
+)
+tab2 |>
+  dplyr::mutate(dplyr::across(dplyr::starts_with("sim_"), ~ signif(.x, 4))) |>
+  dplyr::rename(
+    "Parameter" = parameter,
+    "Model, placebo" = sim_placebo,
+    "Model, 720 ug" = sim_720,
+    "Table 2, placebo" = paper_placebo,
+    "Table 2, 720 ug" = paper_720
+  ) |>
+  knitr::kable()
+```
+
+```{r table2-check}
+# Deterministic: both sides use the same typical values, so the only
+# difference is the rounding of Table 2. Every entry except m0 agrees to the
+# printed precision (half a unit in the last printed digit, plus slack for
+# the paper's own rounding of 0.0235 to 0.023 and 0.0437 to 0.043).
+rest <- tab2$parameter != "m0"
+stopifnot(
+  all(abs(tab2$sim_placebo[rest] - tab2$paper_placebo[rest]) <=
+    c(0.0011, 0.11, 0.0011, 0.0011)),
+  all(abs(tab2$sim_720[rest] - tab2$paper_720[rest]) <=
+    c(0.0011, 0.11, 0.0011, 0.0011)),
+  # exp(5.755) = 315.8 against the printed 317: 0.4% (see Assumptions).
+  abs(tab2$sim_placebo[1] / 317 - 1) < 0.01
+)
+```
+
+# Dose-response curves: Figure 3
+
+Figure 3 of the paper plots the fitted dose effect on the transformed
+`logit d`, `log sigma^2` and `logit(2 p10)` against dose. The curves below
+are read back from the model (the transformed value at each dose minus its
+value at placebo). The points are the categorical per-arm effects of the
+exploratory model in supplement Table S3.
+
+```{r fig3}
+dose_grid <- c(0, seq(1, 720, by = 1))
+dr <- solve_typical(
+  data.frame(id = seq_along(dose_grid), time = 0, evid = 0, DOSE_VELSECORAT_UG = dose_grid)
+)
+dr_long <- data.frame(
+  dose = dose_grid,
+  d = qlogis(dr$d_low) - qlogis(dr$d_low[1]),
+  sigma2 = log(dr$var_pef) - log(dr$var_pef[1]),
+  p10 = qlogis(2 * dr$p_lh) - qlogis(2 * dr$p_lh[1])
+) |>
+  tidyr::pivot_longer(-dose, names_to = "parameter", values_to = "effect") |>
+  dplyr::mutate(parameter = factor(parameter, levels = c("d", "sigma2", "p10")))
+
+# Supplement Table S3, exploratory model with categorical treatment effects.
+s3 <- data.frame(
+  dose = rep(c(50, 90, 180, 360, 720), 3),
+  parameter = rep(c("d", "sigma2", "p10"), each = 5),
+  effect = c(
+    0.267, 0.136, 0.283, 0.227, 0.288,
+    -0.084, -0.179, -0.250, -0.256, -0.370,
+    0.203, 0.295, 0.633, 0.610, 0.465
+  ),
+  se = c(
+    0.100, 0.099, 0.103, 0.100, 0.095,
+    0.113, 0.112, 0.113, 0.112, 0.108,
+    0.226, 0.226, 0.235, 0.221, 0.214
+  )
+) |>
+  dplyr::mutate(parameter = factor(parameter, levels = c("d", "sigma2", "p10")))
+
+ggplot(dr_long, aes(dose, effect)) +
+  geom_hline(yintercept = 0, colour = "grey50") +
+  geom_line(colour = "firebrick", linewidth = 1) +
+  geom_pointrange(
+    data = s3,
+    aes(ymin = effect - 1.96 * se, ymax = effect + 1.96 * se),
+    colour = "steelblue"
+  ) +
+  facet_wrap(~parameter, scales = "free_y") +
+  labs(
+    x = "Velsecorat dose (ug)", y = "Dose effect (transformed scale)",
+    caption = "Replicates Figure 3 of Jakobsson 2026 (points: Table S3 estimates +/- 1.96 SE)."
+  ) +
+  theme_bw()
+```
+
+```{r fig3-check}
+# A lookup that matched no row would make the checks below vacuously TRUE.
+eff_at <- function(param, dose) {
+  x <- dr_long$effect[dr_long$parameter == param & dr_long$dose == dose]
+  stopifnot(length(x) == 1)
+  x
+}
+# Deterministic closed forms of the Table S4 dose-response terms.
+stopifnot(
+  abs(eff_at("d", 50) - 0.212) < 1e-6,
+  abs(eff_at("d", 720) - 0.212) < 1e-6,
+  abs(eff_at("sigma2", 720) - (-0.447 * 720 / (exp(5.039) + 720))) < 1e-6,
+  abs(eff_at("p10", 720) - (0.705 * 720 / (exp(3.811) + 720))) < 1e-6,
+  # Half of Emax at ED50 = exp(3.811) = 45.2 ug.
+  abs(eff_at("p10", 45) / 0.705 - 45 / (exp(3.811) + 45)) < 1e-6
+)
+```
+
+The fitted curves end at the values Figure 3 shows at 720 ug: about -0.37
+on `log sigma^2` and about 0.66 on `logit(2 p10)`. The categorical points
+of Figure 3 differ slightly from Table S3 (for example, about 0.35 against
+0.267 for `d` at 50 ug). The paper does not say which categorical fit
+the figure shows.
+
+# Latent chain check
+
+With the random effects zeroed, every subject in an arm has the same
+transition probabilities, so the simulated latent paths can be compared
+with the Markov-chain closed forms. Starting in the high state, the
+probability of being in the low state after `n` steps is
+`pi_low * (1 - (1 - p01 - p10)^n)`, with stationary fraction
+`pi_low = p01 / (p01 + p10)`.
+
+```{r chain}
+n_sub <- 200
+times <- seq(0, 83.5, by = 0.5) # 168 twice-daily readings over 12 weeks
+chain_events <- tidyr::expand_grid(
+  arm = c(0, 720), sub = seq_len(n_sub), time = times
+) |>
+  dplyr::mutate(
+    id = sub + (arm > 0) * n_sub, evid = 0,
+    DOSE_VELSECORAT_UG = arm
+  ) |>
+  dplyr::select(id, time, evid, DOSE_VELSECORAT_UG) |>
+  as.data.frame()
+
+rxode2::rxSetSeed(20261121)
+# rxSolve carries the covariate column into its output.
+chain <- solve_typical(chain_events) |>
+  dplyr::arrange(id, time) |>
+  dplyr::group_by(id) |>
+  dplyr::mutate(step = dplyr::row_number(), prev = dplyr::lag(state_low, default = 0)) |>
+  dplyr::ungroup()
+
+trans <- chain |>
+  dplyr::group_by(DOSE_VELSECORAT_UG) |>
+  dplyr::summarise(
+    p01_sim = mean(state_low[prev == 0] == 1),
+    n01 = sum(prev == 0),
+    p10_sim = mean(state_low[prev == 1] == 0),
+    n10 = sum(prev == 1),
+    p01_model = p_hl[1],
+    p10_model = p_lh[1],
+    .groups = "drop"
+  )
+knitr::kable(trans, digits = 4)
+```
+
+```{r chain-check}
+# Monte Carlo check of the chain: each empirical transition frequency must
+# sit within 5 binomial standard errors of the model probability. Transitions
+# are clustered within subject only through the shared state history, which
+# leaves each step a Bernoulli draw given the previous state.
+mc_ok <- function(p_sim, p, n) abs(p_sim - p) < 5 * sqrt(p * (1 - p) / n)
+stopifnot(
+  all(mc_ok(trans$p01_sim, trans$p01_model, trans$n01)),
+  all(mc_ok(trans$p10_sim, trans$p10_model, trans$n10))
+)
+
+occ <- chain |>
+  dplyr::group_by(DOSE_VELSECORAT_UG, step) |>
+  dplyr::summarise(
+    sim = mean(state_low),
+    p01 = p_hl[1], p10 = p_lh[1], .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    pi_low = p01 / (p01 + p10),
+    exact = pi_low * (1 - (1 - p01 - p10)^step)
+  )
+
+ggplot(occ, aes(step / 2, sim, colour = factor(DOSE_VELSECORAT_UG))) +
+  geom_line(alpha = 0.6) +
+  geom_line(aes(y = exact), linetype = 2, linewidth = 1) +
+  labs(
+    x = "Day", y = "Fraction of subjects in the low-PEF state",
+    colour = "Dose (ug)",
+    caption = "Typical patient, 200 per arm. Dashed: closed-form occupancy."
+  ) +
+  theme_bw()
+
+# Centre of the occupancy curve over the 12 weeks, not its extremes.
+occ_summary <- occ |>
+  dplyr::group_by(DOSE_VELSECORAT_UG) |>
+  dplyr::summarise(sim = mean(sim), exact = mean(exact), .groups = "drop")
+stopifnot(all(abs(occ_summary$sim - occ_summary$exact) < 0.08))
+```
+
+The faster recovery at 720 ug (`p10` 0.044 against 0.024) lowers the
+long-run fraction of time spent in the low state from about 57% to about
+41% for the typical patient.
+
+# Stochastic simulation: Figures 2 and 4
+
+A virtual trial with between-subject variability: 100 patients in each of
+the six arms, 168 twice-daily readings each. The paper reports no baseline
+covariates, and the model needs none besides the dose.
+
+```{r cohort}
+n_arm <- 100
+arms <- c(0, 50, 90, 180, 360, 720)
+vpc_events <- tidyr::expand_grid(
+  arm_i = seq_along(arms), sub = seq_len(n_arm), time = times
+) |>
+  dplyr::mutate(
+    id = (arm_i - 1) * n_arm + sub, evid = 0,
+    DOSE_VELSECORAT_UG = arms[arm_i]
+  ) |>
+  dplyr::select(id, time, evid, DOSE_VELSECORAT_UG) |>
+  as.data.frame()
+
+rxode2::rxSetSeed(42)
+sim <- rxode2::rxSolve(ui, vpc_events, returnType = "data.frame")
+# `PEF` is the mean of the current latent state; `sim` adds the within-state
+# normal error, i.e. it is the simulated reading.
+stopifnot(
+  nrow(sim) == nrow(vpc_events),
+  # IIV was sampled: high-state means differ between subjects.
+  sd(dplyr::distinct(sim, id, pef_high)$pef_high) > 0
+)
+```
+
+```{r fig4}
+one_per_arm <- sim |>
+  dplyr::group_by(DOSE_VELSECORAT_UG) |>
+  dplyr::filter(id == min(id) + 3) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(
+    arm = factor(ifelse(DOSE_VELSECORAT_UG == 0, "Placebo", paste(DOSE_VELSECORAT_UG, "ug")),
+      levels = c("Placebo", paste(arms[-1], "ug"))
+    ),
+    state = ifelse(state_low == 1, "Low PEF", "High PEF")
+  )
+
+ggplot(one_per_arm, aes(time, sim, colour = state, shape = state)) +
+  geom_point(size = 1.2) +
+  geom_step(aes(y = PEF, group = 1), colour = "grey30", linewidth = 0.3) +
+  facet_wrap(~arm, scales = "free_y") +
+  labs(
+    x = "Day", y = "PEF (L/min)", colour = "Simulated state", shape = "Simulated state",
+    caption = paste(
+      "Compare with Figures 2 and 4 of Jakobsson 2026. Points: simulated readings;",
+      "line: mean of the simulated latent state."
+    )
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The simulated series show the sustained high and low episodes of
+Figure 4. Unlike the figure, the colours here are the simulated true
+states, not states decoded from the readings.
+
+```{r arm-summary}
+arm_summary <- sim |>
+  dplyr::group_by(DOSE_VELSECORAT_UG) |>
+  dplyr::summarise(
+    `Median PEF (L/min)` = median(sim),
+    `Fraction of readings in low state` = mean(state_low),
+    `Median within-state SD (L/min)` = median(sd_pef[!duplicated(id)]),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Dose (ug)" = DOSE_VELSECORAT_UG)
+knitr::kable(arm_summary, digits = 3)
+```
+
+```{r arm-check}
+# Cohort-derived statistics: assert on medians and on robust contrasts only.
+pl <- arm_summary[arm_summary$`Dose (ug)` == 0, ]
+hi <- arm_summary[arm_summary$`Dose (ug)` == 720, ]
+stopifnot(
+  # The placebo median sits near the typical high-state mean, below it
+  # because part of the time is spent in the low state (m0 = 316 L/min).
+  abs(pl$`Median PEF (L/min)` / 316 - 1) < 0.15,
+  # The within-state SD median tracks the typical sigma of each arm
+  # (30.5 and 25.4 L/min, Table 2).
+  abs(pl$`Median within-state SD (L/min)` / 30.5 - 1) < 0.2,
+  abs(hi$`Median within-state SD (L/min)` / 25.4 - 1) < 0.2
+)
+```
+
+# PKNCA
+
+This model has no pharmacokinetics: dose enters as a covariate, and PEF is
+a lung-function response, not a concentration. Noncompartmental analysis
+does not apply. The checks above (Table 2 identity, the dose-response
+closed forms, and the Markov-chain occupancy) replace it.
+
+# Assumptions and deviations
+
+* **Simulation only.** The hidden state is simulated, not marginalised.
+  An nlmixr2 fit of this model would treat each drawn path as known and
+  would not reproduce the paper's forward-recursion likelihood.
+* **One record, one reading.** The transition probabilities are per
+  twice-daily reading. A simulation must put exactly one record at each
+  reading time; adding other records (such as dose rows) would advance the
+  chain. Dose enters through the `DOSE_VELSECORAT_UG` covariate, so no dose
+  events are needed.
+* **Initial state.** Following the authors' code, the chain starts in the
+  high state and a transition is drawn before the first reading, so the
+  first reading is in the low state with probability `p01`.
+* **Instantaneous dose effect.** As in the paper, the dose effect applies
+  in full from randomisation; the paper notes that a gradual onset is
+  likely in reality.
+* **m0 in Table 2.** `exp(5.755)` = 315.8 L/min, against 317 printed in
+  Table 2 (0.4% higher). The other Table 2 entries match Table S4 to the
+  printed precision. The model uses the Table S4 estimate.
+* **Figure 3 points.** The categorical points in Figure 3 are not exactly
+  the Table S3 estimates; this article plots Table S3.
+* **Population.** The paper reports neither the number of patients nor
+  their demographics; the virtual cohort uses 100 patients per arm.
+* **Dropout.** The paper reports substantial placebo-arm dropout but
+  does not model it; the simulation has no dropout.

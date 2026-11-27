@@ -19,6 +19,7 @@ Toutain_2025_doxycycline_pig <- function() {
   # clearances in L/kg/h, exactly as published. central/vc is therefore already
   # mg/L = ug/mL and no unit conversion is applied.
   units <- list(time = "h", dosing = "mg/kg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "doxycycline", units = "mg/kg", specimen = "administration site", verified = TRUE),

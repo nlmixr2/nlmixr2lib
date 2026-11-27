@@ -1,0 +1,479 @@
+---
+title: "Two-drug hepatic dispersion-model design template (Calvier 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Two-drug hepatic dispersion-model design template (Calvier 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Calvier_2018_iv1cmt_dispersion")()$meta$reference`
+* Description: `r readModelDb("Calvier_2018_iv1cmt_dispersion")()$meta$description`
+* Article: <https://doi.org/10.1007/s11095-018-2487-1>
+
+Calvier et al. ask whether two hepatic PBPK parameters that cannot be
+measured directly in children -- the whole-liver unbound intrinsic
+clearance (CLint,u,WL) and the hepatic blood flow (Qh) -- can be
+estimated by population modelling of clinical PK data. One drug cannot
+separate them, because its plasma clearance is a single equation in two
+unknowns. Two drugs metabolised by the same isoenzyme can, provided the
+ratio of their intrinsic clearances (CLintratio, measurable in vitro) is
+known: the two drugs then share the same Qh and the same CLint,u,WL.
+
+The paper is a methodology study. Its PK content is a pair of
+*hypothetical* drugs A and B, each infused to its own arm of 45
+one-year-old children, whose plasma clearance follows the hepatic
+dispersion model. That model is packaged here as a reusable design
+template. All of its values are design constants chosen by the authors,
+so all are `fixed()`; none is an estimate of a real molecule.
+
+# Population
+
+There are no real subjects. The design population is 1-year-old
+children; the typical Qh of 20.3 L/h was obtained by the authors from
+500 male and 500 female 1-year-olds simulated in Simcyp V15 (Methods,
+Hypothetical Drug Combinations; Table III). The trial has two arms of
+45 patients with seven samples each (Fig. 2).
+
+```{r population-meta}
+mod_fun <- readModelDb("Calvier_2018_iv1cmt_dispersion")
+str(mod_fun()$meta$population, max.level = 1)
+```
+
+# Source trace
+
+| Quantity | Value packaged | Source |
+|---|---|---|
+| Plasma clearance, dispersion model | `CLp = Qh * ER * B:P`, `ER = 1 - FH`, `FH = 4a / ((1+a)^2 exp((a-1)/(2DN)) - (1-a)^2 exp(-(a+1)/(2DN)))`, `a = sqrt(1 + 4 RN DN)`, `RN = (fu/B:P) CLint,u,WL / Qh` | Equations 1-6; Supplementary material 1 'Model equations'; Supplementary material 2 (PFIM model code) |
+| Shared CLint, drug B = drug A x ratio | `CLint,u,WL_B = CLint,u,WL * CLintratio` | Equations 7-9 |
+| One-compartment disposition per drug | `dA/dt = K0 - CL/V * A`, `C = A/V` | Supplementary material 1; Supplementary material 2 |
+| `lqh` | log(20.30106) L/h | Supplementary material 3 `beta` QH = 0.338351 L/min; Table I 20.3 L/h |
+| `lclint` | log(80.31137) L/h | Supplementary table 1 row with ER 0.94 (clint 1.338522914 L/min) |
+| `clint_ratio` | 0.05818729 | Supplementary table 1 rows with ER 0.20 and 0.94 (0.077884914 / 1.338522914) |
+| `dn` | 0.17 | Text after equation 6; Table I; Supplementary material 2 |
+| `fu`, `fu_drugb`, `bp`, `bp_drugb` | 1 | Table I; Supplementary material 2 |
+| `lvc`, `lvc_drugb` | log(4) L | Table I; Supplementary material 3 |
+| `etalqh`, `etalclint` | 0.1 | Supplementary material 3 `omega` (scenario 'OMEGA QH = 0.1 & OMEGA CLINT = 0.1'); Table I ranges 0.1-0.6 and 0.1-0.8 |
+| `etalvc`, `etalvc_drugb` | 0.25 | Table I; Supplementary material 3 |
+| `propSd`, `propSd_drugb` | 0.1 | Table I; Supplementary material 3 `sig.slopeA` / `sig.slopeB` |
+| Infusion rate | `CLp * 70 mg/L` | Clinical Trial Design; Supplementary table 1 (`k0 / CL = 70` on every row) |
+| Sampling times | every half-life from 1 to 7 half-lives | Clinical Trial Design; Supplementary material 3 `protA` / `protB` |
+
+```{r model}
+mod <- mod_fun()
+mod_typ <- rxode2::zeroRe(mod)
+# The explicit ODEs must be the ones solved (no automatic linCmt solve).
+stopifnot(is.null(mod$linCmt))
+```
+
+# Known-answer check: the dispersion model against the authors' drug table
+
+Supplementary table 1 lists, for every hypothetical drug, the whole-liver
+intrinsic clearance the authors fed to PFIM together with its extraction
+ratio and plasma clearance (all per minute). Evaluating the packaged
+model at those intrinsic clearances, with the deposited Qh, must return
+the tabulated extraction ratios. The rows below are transcribed from the
+supplement; they include the paper's two thresholds (ER 0.27 and 0.93)
+and the two drugs packaged here (ER 0.20 and 0.94).
+
+```{r er-known-answer}
+supp_t1 <- data.frame(
+  row = c(1, 10, 20, 21, 28, 42, 56, 70, 84, 94, 95, 100),
+  clint_per_min = c(
+    0.001696914, 0.032335914, 0.073423914, 0.077884914, 0.111228914,
+    0.191892914, 0.300866914, 0.462498914, 0.751832914, 1.244823914,
+    1.338522914, 2.604655914
+  ),
+  cl_per_min = c(
+    0.001691472, 0.030452038, 0.064287123, 0.067670263, 0.091354766,
+    0.138723934, 0.186093370, 0.233462589, 0.280831698, 0.314666866,
+    0.318050407, 0.334967973
+  ),
+  er_published = c(
+    0.004999155, 0.090001196, 0.190001006, 0.199999899, 0.269999598,
+    0.409999480, 0.550000154, 0.690000185, 0.829999892, 0.929999950,
+    0.940000027, 0.990000002
+  )
+)
+
+# Evaluate the model's own clearance block at each tabulated CLint by
+# setting lclint per row (typical values, both drugs at the same CLint).
+er_grid <- supp_t1 |>
+  dplyr::mutate(id = row_number())
+ev_grid <- data.frame(
+  id = er_grid$id, time = 0, amt = 0, evid = 0, dvid = 1L
+)
+params_grid <- data.frame(
+  id = er_grid$id,
+  lclint = log(er_grid$clint_per_min * 60),
+  clint_ratio = 1
+)
+sol_grid <- rxode2::rxSolve(
+  mod_typ, ev_grid,
+  params = params_grid, returnType = "data.frame"
+)
+er_check <- er_grid |>
+  dplyr::mutate(
+    er_model = sol_grid$eh,
+    cl_model_per_min = sol_grid$cl / 60
+  )
+knitr::kable(
+  er_check |>
+    dplyr::select(row, clint_per_min, er_published, er_model, cl_per_min, cl_model_per_min) |>
+    dplyr::rename(
+      "Supp. table 1 row" = row,
+      "CLint,u,WL (L/min)" = clint_per_min,
+      "ER (published)" = er_published,
+      "ER (model)" = er_model,
+      "CLp (published, L/min)" = cl_per_min,
+      "CLp (model, L/min)" = cl_model_per_min
+    ),
+  digits = 7
+)
+# Same equation, same inputs: the residual is the 7-9 digit rounding of
+# the supplement, so a tight bound is correct here.
+stopifnot(
+  max(abs(er_check$er_model - er_check$er_published)) < 1e-5,
+  max(abs(er_check$cl_model_per_min - er_check$cl_per_min)) < 1e-5
+)
+```
+
+The packaged typical drugs have extraction ratios 0.94 (drug A) and 0.20
+(drug B), the pair the authors used for their stochastic simulation and
+estimation (Results, Step 3: Investigation of Bias):
+
+```{r typical-er}
+typ <- rxode2::rxSolve(
+  mod_typ,
+  data.frame(id = 1, time = 0, amt = 0, evid = 0, dvid = 1L),
+  returnType = "data.frame"
+)
+knitr::kable(
+  data.frame(
+    Drug = c("A", "B"),
+    `Extraction ratio` = c(typ$eh, typ$eh_drugb),
+    `CLp (L/h)` = c(typ$cl, typ$cl_drugb),
+    `Half-life (h)` = log(2) * 4 / c(typ$cl, typ$cl_drugb),
+    check.names = FALSE
+  ),
+  digits = 4
+)
+stopifnot(
+  abs(typ$eh - 0.94) < 1e-5,
+  abs(typ$eh_drugb - 0.20) < 1e-5
+)
+```
+
+# Table III: extraction-ratio thresholds as plasma clearances
+
+With fu and B:P equal to 1, equations 1-2 reduce to `CLp = Qh * ER`.
+Table III uses that relation to convert the paper's two thresholds
+(ER 0.27 and 0.93) into plasma clearances at eight ages, from the
+Simcyp-derived Qh at each age.
+
+```{r table3}
+table3 <- data.frame(
+  age = c("25 years", "15 years", "5 years", "2 years", "1 year", "6 months", "1 month", "1 day"),
+  qh = c(87.0, 89.2, 41.5, 30.0, 20.3, 13.0, 7.5, 6.4),
+  clp027_published = c(23.5, 24.1, 11.2, 8.1, 5.5, 3.5, 2.0, 1.7),
+  clp093_published = c(80.9, 83.0, 38.6, 27.9, 18.9, 12.1, 7.0, 6.0)
+)
+table3 <- table3 |>
+  dplyr::mutate(
+    clp027_model = qh * 0.27,
+    clp093_model = qh * 0.93
+  )
+knitr::kable(
+  table3 |>
+    dplyr::rename(
+      "Age" = age,
+      "Qh (L/h)" = qh,
+      "CLp at ER 0.27 (published)" = clp027_published,
+      "CLp at ER 0.27 (model)" = clp027_model,
+      "CLp at ER 0.93 (published)" = clp093_published,
+      "CLp at ER 0.93 (model)" = clp093_model
+    ),
+  digits = 2
+)
+stopifnot(
+  max(abs(round(table3$clp027_model, 1) - table3$clp027_published)) <= 0.1,
+  max(abs(round(table3$clp093_model, 1) - table3$clp093_published)) <= 0.1
+)
+```
+
+# Extraction ratio as a function of intrinsic clearance
+
+The relationship the design exploits (the paper's Fig. 1 shows it
+schematically): at low intrinsic clearance the plasma clearance tracks
+CLint,u,WL, at high intrinsic clearance it saturates at Qh. Points are
+the transcribed rows of Supplementary table 1.
+
+```{r er-curve, fig.width = 6, fig.height = 4}
+clint_grid <- exp(seq(log(0.05), log(300), length.out = 200))
+curve_sol <- rxode2::rxSolve(
+  mod_typ,
+  data.frame(id = seq_along(clint_grid), time = 0, amt = 0, evid = 0, dvid = 1L),
+  params = data.frame(id = seq_along(clint_grid), lclint = log(clint_grid)),
+  returnType = "data.frame"
+)
+ggplot(data.frame(clint = clint_grid, er = curve_sol$eh), aes(clint, er)) +
+  geom_line() +
+  geom_point(
+    data = supp_t1,
+    aes(clint_per_min * 60, er_published),
+    colour = "firebrick"
+  ) +
+  geom_hline(yintercept = c(0.27, 0.93), linetype = "dashed", colour = "grey50") +
+  scale_x_log10() +
+  labs(
+    x = "Whole-liver unbound intrinsic clearance (L/h)",
+    y = "Hepatic extraction ratio",
+    caption = "Line: dispersion model at Qh = 20.3 L/h, DN = 0.17, fu = B:P = 1. Points: Supplementary table 1. Dashed: ER 0.27 and 0.93."
+  )
+```
+
+# The two-arm design
+
+Each arm receives one drug as a constant-rate infusion started at time
+zero, with the rate set to `CLp * 70` so the typical patient approaches
+70 mg/L, and is sampled once per typical half-life from the first to the
+seventh. Rates and sampling times are design constants computed from the
+typical drug, as in the authors' PFIM input file, not from each
+individual.
+
+```{r design}
+cl_a <- typ$cl
+cl_b <- typ$cl_drugb
+thalf_a <- log(2) * 4 / cl_a
+thalf_b <- log(2) * 4 / cl_b
+rate_a <- cl_a * 70
+rate_b <- cl_b * 70
+infusion_dur <- 10 # h, longer than seven half-lives of either drug
+stopifnot(7 * max(thalf_a, thalf_b) < infusion_dur)
+
+make_arm <- function(ids, cmt, rate, obs_times, dvid) {
+  dose <- data.frame(
+    id = ids, time = 0, amt = rate * infusion_dur, rate = rate,
+    evid = 1, cmt = cmt, dvid = NA_integer_
+  )
+  obs <- expand.grid(id = ids, time = obs_times) |>
+    dplyr::mutate(amt = 0, rate = 0, evid = 0, cmt = NA_character_, dvid = dvid)
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+```
+
+## Typical-value profiles against the closed form
+
+For the typical patient the solution is `C(t) = 70 * (1 - exp(-kel t))`,
+so the solve must match it to numerical precision.
+
+```{r typical-profile, fig.width = 6, fig.height = 4}
+grid_a <- sort(unique(c(0, seq(0, 7 * thalf_a, length.out = 141))))
+grid_b <- sort(unique(c(0, seq(0, 7 * thalf_b, length.out = 141))))
+ev_typ <- dplyr::bind_rows(
+  make_arm(1, "central", rate_a, grid_a, 1L) |> dplyr::mutate(arm = "Drug A (ER 0.94)"),
+  make_arm(2, "central_drugb", rate_b, grid_b, 2L) |> dplyr::mutate(arm = "Drug B (ER 0.20)")
+)
+sim_typ <- rxode2::rxSolve(
+  mod_typ, ev_typ |> dplyr::select(-arm),
+  returnType = "data.frame", keep = "dvid"
+) |>
+  dplyr::mutate(
+    arm = ifelse(id == 1, "Drug A (ER 0.94)", "Drug B (ER 0.20)"),
+    conc = ifelse(id == 1, Cc, Cc_drugb),
+    kel_typ = ifelse(id == 1, cl_a / 4, cl_b / 4),
+    conc_closed = 70 * (1 - exp(-kel_typ * time))
+  )
+stopifnot(max(abs(sim_typ$conc - sim_typ$conc_closed)) < 1e-4)
+
+ggplot(sim_typ, aes(time / ifelse(id == 1, thalf_a, thalf_b), conc, colour = arm)) +
+  geom_line() +
+  labs(
+    x = "Time (typical half-lives)",
+    y = "Plasma concentration (mg/L)",
+    colour = NULL,
+    caption = "Typical-value profiles under the design infusion; both approach 70 mg/L."
+  )
+```
+
+## Stochastic simulation of the trial (45 patients per arm)
+
+```{r vpc, fig.width = 7, fig.height = 4}
+rxode2::rxSetSeed(20180914)
+n_arm <- 45
+ev_sim <- dplyr::bind_rows(
+  make_arm(1:n_arm, "central", rate_a, thalf_a * 1:7, 1L),
+  make_arm(n_arm + 1:n_arm, "central_drugb", rate_b, thalf_b * 1:7, 2L)
+)
+sim_rx <- rxode2::rxSolve(mod, ev_sim, keep = "dvid")
+sim_par <- as.data.frame(sim_rx$params)
+sim <- as.data.frame(sim_rx) |>
+  dplyr::mutate(
+    id = as.integer(as.character(id)),
+    arm = ifelse(id <= n_arm, "Drug A (ER 0.94)", "Drug B (ER 0.20)"),
+    thalf = ifelse(id <= n_arm, thalf_a, thalf_b),
+    n_half = round(time / thalf)
+  )
+
+vpc <- sim |>
+  dplyr::group_by(arm, n_half) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(n_half, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  geom_point(data = sim, aes(n_half, sim), alpha = 0.2, size = 0.8) +
+  facet_wrap(~arm) +
+  labs(
+    x = "Sample (typical half-lives after the start of the infusion)",
+    y = "Plasma concentration (mg/L)",
+    caption = "Median and 90% interval of 45 simulated patients per arm, with residual error."
+  )
+```
+
+The two drugs respond very differently to the shared random effects.
+Drug A (high ER) clearance follows the individual Qh almost one to one,
+while drug B (low ER) clearance follows the individual CLint,u,WL; that
+contrast is what makes the two parameters jointly estimable. The
+correlations of the individual clearances with the shared random effects
+show it:
+
+```{r eta-sensitivity}
+indiv <- sim |>
+  dplyr::distinct(id, .keep_all = TRUE) |>
+  dplyr::select(id, cl, cl_drugb) |>
+  dplyr::inner_join(
+    sim_par |>
+      dplyr::mutate(id = as.integer(as.character(id))) |>
+      dplyr::select(id, etalqh, etalclint),
+    by = "id"
+  )
+stopifnot(nrow(indiv) == 2 * n_arm)
+sens <- data.frame(
+  Clearance = c("Drug A (ER 0.94)", "Drug B (ER 0.20)"),
+  `cor(log CL, eta Qh)` = c(
+    cor(log(indiv$cl), indiv$etalqh), cor(log(indiv$cl_drugb), indiv$etalqh)
+  ),
+  `cor(log CL, eta CLint)` = c(
+    cor(log(indiv$cl), indiv$etalclint), cor(log(indiv$cl_drugb), indiv$etalclint)
+  ),
+  check.names = FALSE
+)
+knitr::kable(sens, digits = 2)
+# Structural, not a tail statistic: the high-ER drug is flow-limited and
+# the low-ER drug capacity-limited.
+stopifnot(
+  sens[1, 2] > sens[1, 3],
+  sens[2, 3] > sens[2, 2]
+)
+```
+
+# NCA of the typical-value profiles (PKNCA)
+
+The paper reports no NCA. As a numerical check, PKNCA is run on the
+dense typical-value profiles over the seven-half-life sampling window and
+compared with the closed-form AUC
+`70 * (T - (1 - exp(-kel T)) / kel)` and the closed-form concentration at
+`T = 7` half-lives, `70 * (1 - 2^-7)`.
+
+```{r pknca}
+conc_df <- sim_typ |>
+  dplyr::filter(!is.na(conc)) |>
+  dplyr::select(id, time, conc, arm)
+dose_df <- ev_typ |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, arm)
+
+end_time <- c(7 * thalf_a, 7 * thalf_b)
+intervals <- data.frame(
+  id = 1:2, start = 0, end = end_time,
+  cmax = TRUE, auclast = TRUE
+)
+o_conc <- PKNCA::PKNCAconc(conc_df, conc ~ time | arm + id)
+o_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+nca_res <- as.data.frame(nca$result) |>
+  dplyr::select(arm, PPTESTCD, PPORRES)
+
+kel_typ <- c(cl_a, cl_b) / 4
+reference <- data.frame(
+  arm = c("Drug A (ER 0.94)", "Drug B (ER 0.20)"),
+  cmax = 70 * (1 - 2^-7),
+  auclast = 70 * (end_time - (1 - exp(-kel_typ * end_time)) / kel_typ)
+) |>
+  tidyr::pivot_longer(-arm, names_to = "PPTESTCD", values_to = "reference")
+
+nca_cmp <- nca_res |>
+  dplyr::inner_join(reference, by = c("arm", "PPTESTCD")) |>
+  dplyr::mutate(pct_diff = 100 * (PPORRES - reference) / reference)
+knitr::kable(
+  nca_cmp |>
+    dplyr::rename(
+      "Arm" = arm,
+      "NCA parameter" = PPTESTCD,
+      "PKNCA (typical value)" = PPORRES,
+      "Closed form" = reference,
+      "Difference (%)" = pct_diff
+    ),
+  digits = 3
+)
+stopifnot(max(abs(nca_cmp$pct_diff)) < 0.5)
+```
+
+# Assumptions and deviations
+
+* **Methodology model, no fitted estimates.** Every value is a design
+  constant chosen by the authors; all are `fixed()`. The paper's own
+  results are relative standard errors from PFIM (Fig. 3) and estimation
+  errors from a NONMEM stochastic simulation and estimation with
+  parameter uncertainty (Table IV); neither can be reproduced by a
+  forward simulation and neither is a model parameter.
+* **Which drug pair.** The paper's optimal-design step sweeps every
+  pair of its hypothetical drugs; its stochastic simulation and
+  estimation uses one pair, ER 0.94 and ER 0.2 in 1-year-olds. That pair
+  is packaged, with the intrinsic clearances taken from the
+  Supplementary table 1 rows whose ER is 0.94 and 0.20. Other pairs are
+  obtained by changing `lclint` and `clint_ratio`.
+* **Which drug is A.** The paper does not say which of the two
+  simulation drugs was drug A. Table I gives CLintratio = CLint B /
+  CLint A in the range 0.00065-0.97, i.e. drug B has the lower intrinsic
+  clearance, so drug A is the ER 0.94 drug here. The deposited PFIM loop
+  assigns A to the earlier row of the drug table (the lower ER), which
+  gives ratios above 1; because drug B's intrinsic clearance is drug A's
+  times a fixed ratio with the same random effect, the two assignments
+  describe the same model.
+* **Which variance scenario.** The paper evaluates four combinations of
+  omega^2 for CLint,u,WL (0.1 or 0.8) and Qh (0.1 or 0.6) and, in the
+  stochastic simulation, samples them uniformly over those ranges. The
+  deposited PFIM input file carries the 0.1 / 0.1 scenario, which is
+  packaged. Users exploring the paper's other scenarios should change
+  `etalclint` and `etalqh`.
+* **Constant-rate infusion as a dose event.** The PFIM model carries the
+  infusion rate as a fixed parameter `K0` inside the ODE; here it is an
+  ordinary infusion dose (`rate` and `amt`) into `central` or
+  `central_drugb`, so the model file has no design constants in it.
+* **Units.** The deposited PFIM files run in minutes (Qh 0.338351 L/min,
+  intrinsic clearances in L/min); they are converted to hours. Dose is in
+  mg and concentration in mg/L, consistent with the 70 mg/L target.
+* **Drug count.** The methods text says 99 hypothetical drugs were
+  generated; Supplementary table 1 has 100 rows (ER 0.005 to 0.99). This
+  does not affect the packaged model.
+* **Names.** Drug A takes the bare canonical names (`central`, `lvc`,
+  `lclint`, `fu`, `bp`, `Cc`, `propSd`) and drug B the `_drugb` suffix,
+  following the library's convention that the second analyte is
+  suffixed. Qh and DN are shared by both drugs and carry no suffix.

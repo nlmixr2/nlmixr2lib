@@ -38,6 +38,7 @@ Saleh_2023_prexasertib_mouse_pbpk <- function() {
   vignette <- "Saleh_2023_leicns_pk30_mouse_brain"
 
   units <- list(time = "min", dosing = "ng", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "prexasertib", units = "ng", specimen = "administration site", verified = TRUE),

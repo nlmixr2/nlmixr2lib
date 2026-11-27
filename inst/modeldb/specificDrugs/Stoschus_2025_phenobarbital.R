@@ -23,6 +23,7 @@ Stoschus_2025_phenobarbital <- function() {
   )
   vignette <- "Stoschus_2025_phenobarbital"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(

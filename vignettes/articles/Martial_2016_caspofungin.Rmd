@@ -1,0 +1,459 @@
+---
+title: "Caspofungin (Martial 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Caspofungin (Martial 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Martial_2016_caspofungin"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Martial_2016_caspofungin"))$description`
+* Article (open access, CC BY-NC): <https://doi.org/10.1007/s40262-015-0347-2>
+
+Martial 2016 developed a population pharmacokinetic model of caspofungin in
+intensive care unit (ICU) patients and used it to compare the licensed
+maintenance doses (including the label's reduction to 35 mg/day for
+Child-Pugh B or C) with three higher-dose alternatives, judged by the day-14
+AUC24 and by attainment of the preclinical *Candida albicans* target
+AUC/MIC > 865.
+
+# Population
+
+Twenty-one adult ICU patients (8 women, 38%) from a single Dutch study
+(NCT01533558) contributed 419 caspofungin concentrations. Median age was 71
+years (range 45-80), median weight 75 kg (range 50-99) and median BMI 24.9
+kg/m^2 (range 19.0-36.4). All patients were classified Child-Pugh B, all had
+hypoalbuminaemia (25-34 g/L in 19%, 15-24 g/L in 68%, < 15 g/L in 14%), and
+none were neutropenic. Caspofungin was given for an infection at a normally
+sterile site (76%), in blood (19%) or as prophylaxis (5%), as a 70 mg loading
+dose followed by 50 mg/day (70 mg/day above 80 kg), each infused over about
+1 h (Martial 2016 Table 1 and Methods).
+
+The same information is available programmatically via
+`readModelDb("Martial_2016_caspofungin")$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (CL at 70 kg) | log(0.55) L/h | Table 2 (CL 0.55 L/h [RSE 7%]) |
+| `lvc` (V1 at 70 kg) | log(8.93) L | Table 2 (V1 8.93 L [RSE 8%]) |
+| `lq` (Q) | log(0.707) L/h | Table 2 (Q 0.707 L/h [RSE 3%]) |
+| `lvp` (V2) | log(4.98) L | Table 2 (V2 4.98 L [RSE 17%]) |
+| `e_wt_cl` | 0.75, not estimated | Methods, 'Pharmacokinetic Model'; Discussion |
+| `e_wt_vc` | 1, not estimated | Methods, 'Pharmacokinetic Model'; Discussion |
+| Reference weight | 70 kg | Methods; Table 2 footnote b |
+| No weight on Q, V2 | -- | Table 2 footnote c; Discussion (BW on CL and V1) |
+| `etalcl` | 30.7% CV | Table 2 |
+| `etalvc` | 25.6% CV | Table 2 |
+| `etalvp` | 75.8% CV | Table 2 |
+| IIV on Q | none (0 in the source) | Table 2 |
+| `propSd` | 0.148 | Table 2 |
+| `addSd` | 0.01 mg/L, not estimated | Table 2 |
+| `d/dt(central)`, `d/dt(peripheral1)` | two-compartment, first-order elimination from central | Results, 'Population Pharmacokinetic Model' |
+| `Cc ~ add + prop` | combined residual error | Results, 'Population Pharmacokinetic Model' |
+| 1 h IV infusion | dose record (`rate`) | Methods, 'Study Design' |
+
+# Virtual cohort
+
+The paper simulated its regimens in the body weights of 1706 adult hospital
+patients (median 76 kg, range 39-154 kg; Methods, 'Monte-Carlo Simulations').
+That cohort is not published, so weights here are drawn log-normally with
+median 76 kg and a log-scale SD of 0.21, which puts the 1st and 99th
+percentiles near 47 and 124 kg, truncated to the published 39-154 kg range.
+Each regimen gets 200 subjects.
+
+The five regimens (Methods) are given as 14 daily 1-h infusions:
+
+* I: 70 mg on day 1, then 50 mg/day (BW <= 80 kg) or 70 mg/day (BW > 80 kg)
+* II: 70 mg, then 35 mg/day (label for Child-Pugh B or C)
+* III: 100 mg, then 50 mg/day
+* IV: 100 mg, then 70 mg/day
+* V: 100 mg, then 100 mg/day
+
+```{r cohort}
+set.seed(2016)
+rxode2::rxSetSeed(2016)
+n_per <- 200L
+regimens <- c("I", "II", "III", "IV", "V")
+dose_times <- 24 * (0:13)
+
+# Dense sampling over the day-3 (48-72 h) and day-14 (312-336 h) dosing
+# intervals for NCA, hourly elsewhere for the concentration-time figure.
+obs_times <- sort(unique(c(
+  seq(0, 336, by = 1),
+  seq(48, 72, by = 0.25),
+  seq(312, 336, by = 0.25)
+)))
+
+regimen_amt <- function(regimen, wt) {
+  load <- c(I = 70, II = 70, III = 100, IV = 100, V = 100)[[regimen]]
+  maint <- switch(
+    regimen,
+    I = if (wt <= 80) 50 else 70,
+    II = 35,
+    III = 50,
+    IV = 70,
+    V = 100
+  )
+  c(load, rep(maint, length(dose_times) - 1L))
+}
+
+subject_events <- function(id, regimen, wt) {
+  amt <- regimen_amt(regimen, wt)
+  doses <- data.frame(
+    id = id, time = dose_times, evid = 1L, amt = amt, rate = amt,
+    cmt = "central"
+  )
+  obs <- data.frame(
+    id = id, time = obs_times, evid = 0L, amt = 0, rate = 0, cmt = "central"
+  )
+  out <- rbind(doses, obs)
+  out$WT <- wt
+  out$regimen <- regimen
+  out
+}
+
+wt_all <- pmin(pmax(rlnorm(n_per * length(regimens), log(76), 0.21), 39), 154)
+cohort <- data.frame(
+  id = seq_along(wt_all),
+  regimen = rep(regimens, each = n_per),
+  WT = wt_all
+)
+events <- do.call(
+  rbind,
+  Map(subject_events, cohort$id, cohort$regimen, cohort$WT)
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+summary(cohort$WT)
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Martial_2016_caspofungin")
+sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "WT")) |>
+  as.data.frame()
+stopifnot(!anyNA(sim$Cc))
+```
+
+# Replicate published figures
+
+## Figure 4: concentration-time profiles
+
+```{r figure-4, fig.height = 6}
+# Replicates Figure 4 of Martial 2016 (median and 5th/95th percentiles over
+# 14 days of treatment for regimens I-V).
+sim |>
+  dplyr::filter(time %in% seq(0, 336, by = 1)) |>
+  dplyr::group_by(regimen, time) |>
+  dplyr::summarise(
+    q05 = quantile(Cc, 0.05),
+    q50 = median(Cc),
+    q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, q50)) +
+  geom_line(aes(y = q05), linetype = "dashed", colour = "red") +
+  geom_line(aes(y = q95), linetype = "dashed", colour = "red") +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~regimen, ncol = 2, labeller = label_both) +
+  scale_x_continuous(breaks = seq(0, 336, by = 48)) +
+  labs(
+    x = "Time (h)",
+    y = "Caspofungin concentration (mg/L)",
+    caption = "Replicates Figure 4 of Martial 2016: median (solid) and 5th/95th percentiles (dashed)."
+  )
+```
+
+# PKNCA validation
+
+AUC24 over the day-3 (48-72 h) and day-14 (312-336 h) dosing intervals is
+computed per subject with PKNCA, grouped by regimen.
+
+```{r pknca}
+conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::filter(time >= 48 & time <= 72 | time >= 312) |>
+  dplyr::select(id, time, Cc, regimen)
+dose <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, regimen)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | regimen + id, concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose, amt ~ time | regimen + id, doseu = "mg")
+intervals <- data.frame(
+  start = c(48, 312),
+  end = c(72, 336),
+  auclast = TRUE,
+  cmax = TRUE,
+  cmin = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca <- as.data.frame(nca_res$result) |>
+  dplyr::mutate(day = ifelse(start == 48, "Day 3", "Day 14"))
+
+auc <- nca |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(id, regimen, day, auc24 = PPORRES) |>
+  dplyr::left_join(cohort |> dplyr::select(id, WT), by = "id")
+```
+
+## Steady-state identity
+
+By day 14 every subject is at steady state, where the AUC over one dosing
+interval equals the maintenance dose divided by the individual clearance.
+Both sides use the same simulated subject, so the only differences are
+trapezoidal error and any residual approach to steady state in subjects
+with a large peripheral volume.
+
+```{r ss-identity}
+indiv_cl <- sim |>
+  dplyr::filter(time == 312) |>
+  dplyr::distinct(id, cl)
+maint <- events |>
+  dplyr::filter(evid == 1, time == 312) |>
+  dplyr::select(id, amt)
+ss_chk <- auc |>
+  dplyr::filter(day == "Day 14") |>
+  dplyr::left_join(indiv_cl, by = "id") |>
+  dplyr::left_join(maint, by = "id") |>
+  dplyr::mutate(pct_diff = 100 * (auc24 / (amt / cl) - 1))
+summary(ss_chk$pct_diff)
+stopifnot(
+  abs(median(ss_chk$pct_diff)) < 1,
+  quantile(abs(ss_chk$pct_diff), 0.95) < 3
+)
+```
+
+## Figure 3: AUC24 by regimen
+
+```{r figure-3}
+# Replicates Figure 3 of Martial 2016 (AUC24 on day 3 and day 14 per regimen;
+# dashed line at the healthy-volunteer AUC24 of about 100 mg*h/L).
+auc |>
+  dplyr::mutate(day = factor(day, levels = c("Day 3", "Day 14"))) |>
+  ggplot(aes(regimen, auc24)) +
+  geom_boxplot(fill = "grey70", outlier.shape = NA) +
+  geom_hline(yintercept = 100, linetype = "dashed", colour = "red") +
+  facet_wrap(~day) +
+  coord_cartesian(ylim = c(0, 400)) +
+  labs(
+    x = "Regimen",
+    y = "AUC24 (mg*h/L)",
+    caption = "Replicates Figure 3 of Martial 2016."
+  )
+```
+
+## Comparison against the published AUC24
+
+The paper reports median (range) AUC24 for each regimen on days 3 and 14
+(Results, 'Monte-Carlo Simulations of Alternative Dosing Regimens').
+
+```{r nca-compare}
+published <- data.frame(
+  regimen = rep(regimens, 2),
+  day = rep(c("Day 3", "Day 14"), each = 5),
+  auclast = c(96, 65, 93, 122, 167, 105, 65, 93, 130, 186)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca |> dplyr::filter(PPTESTCD == "auclast"),
+  reference = published,
+  by = c("regimen", "day"),
+  params = "auclast",
+  units = c(auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Median AUC24: Martial 2016 (Reference) vs this model (Simulated). * differs by > 20%."
+)
+attr(cmp, "footnote")
+
+typical <- data.frame(
+  regimen = c("II", "III", "IV", "V"),
+  maintenance_mg = c(35, 50, 70, 100)
+) |>
+  dplyr::mutate(
+    typical_auc = maintenance_mg / (0.55 * (76 / 70)^0.75),
+    published = c(65, 93, 130, 186),
+    ratio = published / typical_auc
+  )
+typical |>
+  dplyr::rename(
+    "Regimen" = regimen,
+    "Maintenance dose (mg)" = maintenance_mg,
+    "Dose / CL at 76 kg (mg*h/L)" = typical_auc,
+    "Published day-14 median" = published,
+    "Published / typical" = ratio
+  ) |>
+  knitr::kable(
+    digits = 2,
+    caption = "Closed-form steady-state AUC24 at the cohort median weight vs the published day-14 medians."
+  )
+```
+
+The simulated medians sit 5-11% below the published ones (about 8% in the
+middle), on both days and in every regimen. The closed-form table shows the
+same offset without any simulation: at steady state the median AUC24 is the
+maintenance dose over the clearance of a median-weight patient, and the
+published day-14 medians are a constant 1.09 times that value. The offset is
+therefore not a structural or dosing error in the model but most likely
+reflects the unpublished weight distribution of the paper's simulation cohort
+(a median weight near 68 kg would reproduce it) or unrounded parameter
+estimates. The accumulation from day 3 to day 14, which depends on the
+distribution parameters rather than on CL alone, matches the paper: the
+day-3/day-14 ratio of the medians is 0.90 for regimen V both here and in the
+paper (167/186).
+
+```{r nca-assert}
+# Centre-of-distribution check: a mis-transcribed CL, unit or dose moves every
+# median by tens of percent; the systematic offset discussed above is ~8%.
+auc_pct <- auc |>
+  dplyr::group_by(regimen, day) |>
+  dplyr::summarise(sim = median(auc24), .groups = "drop") |>
+  dplyr::left_join(published, by = c("regimen", "day")) |>
+  dplyr::mutate(pct_diff = 100 * (sim / auclast - 1))
+auc_pct
+stopifnot(
+  abs(median(auc_pct$pct_diff)) < 15,
+  all(abs(auc_pct$pct_diff) < 25)
+)
+```
+
+The paper reports a coefficient of variation of the AUC24 of 44-47% for
+every regimen; the simulated value is computed below.
+
+```{r auc-cv}
+auc |>
+  dplyr::group_by(day, regimen) |>
+  dplyr::summarise(cv_pct = 100 * sd(auc24) / mean(auc24), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = day, values_from = cv_pct) |>
+  dplyr::rename("Regimen" = regimen) |>
+  knitr::kable(digits = 1, caption = "Simulated CV% of AUC24 (published: 44-45% on day 3, 46-47% on day 14).")
+```
+
+# Target attainment (Figure 5 and Table 3)
+
+Target attainment is the fraction of patients with day-14 AUC24/MIC > 865
+(Methods, 'Pharmacokinetic Target Attainment').
+
+```{r pta}
+mics <- c(0.007, 0.016, 0.03, 0.06, 0.125, 0.25, 0.5, 1)
+d14 <- auc |> dplyr::filter(day == "Day 14")
+pta <- tidyr::expand_grid(d14, mic = mics) |>
+  dplyr::mutate(
+    bw_group = ifelse(WT <= 80, "BW <= 80 kg", "BW > 80 kg"),
+    hit = auc24 / mic > 865
+  )
+
+pta_all <- pta |>
+  dplyr::group_by(regimen, mic) |>
+  dplyr::summarise(pta = 100 * mean(hit), .groups = "drop")
+
+ggplot(pta_all, aes(mic, pta, colour = regimen)) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10(breaks = mics) +
+  labs(
+    x = "MIC (ug/mL)",
+    y = "Target attainment (%)",
+    colour = "Regimen",
+    caption = "Replicates Figure 5 of Martial 2016 (AUC/MIC > 865)."
+  )
+```
+
+```{r pta-table}
+published_pta <- data.frame(
+  regimen = c("I", "II", "III", "IV", "V"),
+  published = c(47, 14, 36, 69, 94)
+)
+pta_all |>
+  dplyr::filter(mic == 0.125) |>
+  dplyr::left_join(published_pta, by = "regimen") |>
+  dplyr::select(regimen, pta, published) |>
+  dplyr::rename(
+    "Regimen" = regimen,
+    "Simulated (%)" = pta,
+    "Published (%)" = published
+  ) |>
+  knitr::kable(digits = 0, caption = "Target attainment at MIC 0.125 ug/mL (published values: Abstract).")
+
+pta |>
+  dplyr::filter(mic %in% c(0.06, 0.125, 0.25)) |>
+  dplyr::group_by(regimen, bw_group, mic) |>
+  dplyr::summarise(pta = 100 * mean(hit), n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = mic, values_from = pta, names_prefix = "MIC ") |>
+  dplyr::rename("Regimen" = regimen, "Body weight" = bw_group, "N" = n) |>
+  knitr::kable(digits = 0, caption = "Simulated target attainment (%) by body-weight group; compare with Table 3 of Martial 2016.")
+```
+
+```{r pta-assert}
+# The paper's conclusion: at MIC 0.125 the 100/100 mg regimen (V) attains
+# the target far more often than the label's 35 mg reduction (II), published
+# 94% vs 14%. Model-true values here are near 90% and under 5%; with 200 subjects
+# per regimen a binomial SE is at most 3.5 points, so a 50-point margin is
+# many SEs from either side.
+p125 <- setNames(pta_all$pta[pta_all$mic == 0.125], pta_all$regimen[pta_all$mic == 0.125])
+stopifnot(p125[["V"]] - p125[["II"]] > 50)
+```
+
+# Assumptions and deviations
+
+- **CL-V1 correlation not encoded.** The Results state that allowing a
+  correlation between the IIV of CL and V1 improved the fit (OFV drop 8.6),
+  but no correlation or covariance value is reported in Table 2 or the text,
+  and the article has no supplement. The IIV is encoded as diagonal. At
+  steady state the AUC24 depends on CL only, so the AUC and
+  target-attainment results are unaffected; peak concentrations would be
+  slightly more variable with the correlation omitted.
+- **IIV and residual error conventions.** Table 2 reports IIV as CV%; the
+  variances are `omega^2 = log(1 + CV^2)`. The proportional residual error
+  (0.148) is read as a standard deviation (14.8%), and the additive term
+  (0.01 mg/L, not estimated) as a standard deviation in mg/L, matching the
+  units printed in the table.
+- **Weight scaling of Q and V2.** The Methods say weight was included on CL
+  and 'Vd'; the Discussion specifies CL (exponent 0.75) and V1 (exponent 1),
+  and Table 2 footnote c says Q and V2 are 'scaled to the mean of the
+  population' while footnote b says CL and V1 are standardised to 70 kg. The
+  model therefore applies weight to CL and V1 only, with Q and V2 at their
+  population typical values.
+- **Simulation cohort.** The paper simulated the weights of 1706 hospital
+  patients (median 76 kg, range 39-154 kg); the individual weights are not
+  published, so a log-normal distribution with that median, truncated to that
+  range, is used with 200 subjects per regimen rather than one 1706-patient
+  cohort. The paper's AUC24 medians are a constant 8-9% above the closed-form
+  steady-state value at 76 kg (see the comparison above), which points to a
+  difference in the weight distribution or unrounded estimates rather than
+  in model structure. The simulated AUC24 CV% (about 29-37%) is also lower
+  than the published 44-47%; a CL IIV of 30.7% CV combined with the weight
+  spread cannot produce a 45% CV of AUC24 at steady state, so the paper's
+  simulation must have carried additional variability (for example a wider
+  weight distribution or residual error in the simulated concentrations)
+  that is not described. Together with the lower median, this places the
+  simulated target attainment at MIC 0.125 ug/mL 2-12 percentage points
+  below the published values, with the same ranking of regimens.
+- **Residual error in AUC.** AUC24 here is computed from the individual
+  predictions (`Cc`) without residual error; the paper does not say whether
+  its AUCs included residual error.
+- **Errata.** No correction notice is linked to the article in its PubMed
+  Central record (checked 2026-11-24).

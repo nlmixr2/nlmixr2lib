@@ -1,0 +1,206 @@
+---
+title: "Cinobufotalin (Zhang 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cinobufotalin (Zhang 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zhang_2019_cinobufotalin_rat"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Zhang_2019_cinobufotalin_rat"))$description`
+* Article: [Front Pharmacol 10:521 (doi:10.3389/fphar.2019.00521)](https://doi.org/10.3389/fphar.2019.00521)
+
+Zhang 2019 characterised the plasma pharmacokinetics of cinobufotalin, a
+bufadienolide from toad venom and the active component of Cinobufacini
+injection, after a single 2.5 mg/kg intravenous bolus in male Sprague-Dawley
+rats. The disposition was described by a two-compartment IV-bolus model fitted
+individually in WinNonlin 3.3; the paper contrasts normal rats against a
+diethylnitrosamine (DEN)-induced hepatocellular carcinoma model, in which
+clearance and the distribution rate constant are markedly higher.
+
+# Population
+
+Zhang 2019 studied male Sprague-Dawley rats (200-220 g). A DEN-injured
+hepatocellular carcinoma model was induced with 50 mg/kg intraperitoneal
+diethylnitrosamine twice weekly for 14 weeks; control rats received saline on
+the same schedule. Each rat was given a single 2.5 mg/kg cinobufotalin bolus
+through a jugular-vein cannula, and plasma was sampled at 5, 10, 15, 30, 45 min
+and 1, 1.5, 2, 4, 6, 8, 12 and 24 h. The two-compartment PK parameters in
+Table 4 are reported as mean +/- SD with n = 6 rats per group.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Zhang_2019_cinobufotalin_rat")()$population`).
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Zhang_2019_cinobufotalin_rat.R`. The table
+below collects them in one place for review. Values are the per-group means of
+Zhang 2019 Table 4; the macro set (V, V2, CL, CL2) is used because it
+reproduces the printed K10/K12/K21 micro-constants, both half-lives
+(t1/2alpha, t1/2beta) and the printed AUC via `dose/CL` for both groups.
+
+| Equation / parameter | Normal | DEN-injured | Source location |
+|----------------------|--------|-------------|-----------------|
+| `vc` (V, L/kg) | 2.1 | 2.4 | Table 4, V |
+| `vp` (V2, L/kg) | 13.1 | 31.5 | Table 4, V2 |
+| `cl` (CL, L/h/kg) | 1.0 | 2.4 | Table 4, CL |
+| `q` (CL2, L/h/kg) | 3.3 | 8.1 | Table 4, CL2 |
+| `TUMTP_HCC` group selector | 0 | 1 | Experimental Design (saline vs DEN) |
+| `d/dt(central)`, `d/dt(peripheral1)` | n/a | n/a | Two-compartment IV-bolus model (Figure 2, Equation 3) |
+| K10 (derived `cl/vc`) | 0.48 | 1.0 | Table 4, K10 = 0.5 / 1.0 (consistency check) |
+| K12 (derived `q/vc`) | 1.57 | 3.38 | Table 4, K12 = 1.8 / 3.2 (consistency check) |
+| K21 (derived `q/vp`) | 0.25 | 0.26 | Table 4, K21 = 0.3 / 0.3 (consistency check) |
+| AUC (derived `dose/cl`) | 2.5 | 1.04 | Table 4, AUC = 2.6 / 1.1 (consistency check) |
+
+# Virtual cohort
+
+The model has no between-subject variability or residual-error model (Zhang 2019
+fitted each rat individually and reported two-stage means), so the simulation
+reproduces the two typical-value profiles. One subject per group is simulated on
+the published sampling grid extended to 24 h.
+
+```{r cohort}
+# Observation grid (the published sampling times) with an explicit t=0 record.
+# For an i.v. bolus the t=0 concentration is the peak C0 = dose/V, not zero, so
+# rxode2 returns it after the dose and PKNCA can anchor AUC at time 0.
+times <- c(0, 5, 10, 15, 30, 45, 60, 90, 120, 240, 360, 480, 720, 1440) / 60 # min -> h
+
+make_cohort <- function(group, hcc, id) {
+  dose <- data.frame(id = id, time = 0, amt = 2.5, evid = 1, cmt = "central", TUMTP_HCC = hcc)
+  obs <- data.frame(id = id, time = times, amt = 0, evid = 0, cmt = "central", TUMTP_HCC = hcc)
+  dplyr::bind_rows(dose, obs) |> dplyr::mutate(group = group)
+}
+
+events <- dplyr::bind_rows(
+  make_cohort("Normal rats", 0, 1L),
+  make_cohort("DEN-injured rats", 1, 2L)
+)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Zhang_2019_cinobufotalin_rat")
+sim <- rxode2::rxSolve(mod, events = events, keep = c("group")) |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+```{r figure-5c, fig.width = 6, fig.height = 4}
+# Replicates Figure 5C of Zhang 2019: semilog plasma cinobufotalin vs. time,
+# normal rats above DEN-injured rats.
+sim |>
+  dplyr::filter(time > 0) |>
+  ggplot(aes(time, Cc, colour = group)) +
+  geom_line() +
+  geom_point() +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Cinobufotalin (ug/mL)",
+    colour = NULL,
+    title = "Figure 5C - predicted plasma profiles",
+    caption = "Replicates Figure 5C of Zhang 2019."
+  )
+```
+
+The DEN-injured profile sits below the normal profile at every time point and
+declines faster in the distribution phase, matching Figure 5C and the lower
+AUC reported for DEN-injured rats (Table 4).
+
+# PKNCA validation
+
+```{r pknca}
+# The event table already carries a genuine t=0 observation = the i.v.-bolus
+# peak C0, so only the NA filter is needed (no synthetic row, no time>0 filter).
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, group) |>
+  dplyr::arrange(id, group, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | group + id)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, group)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | group + id)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res <- PKNCA::pk.nca(nca_data)
+```
+
+## Comparison against published NCA
+
+Zhang 2019 Table 4 reports the initial concentration (C0), AUC and the terminal
+elimination half-life (t1/2beta) per group. C0 is compared against the
+simulated Cmax (the bolus peak), AUC against `aucinf.obs`, and t1/2beta against
+the NCA terminal half-life.
+
+```{r nca_compare}
+published <- tibble::tribble(
+  ~group,              ~cmax, ~aucinf.obs, ~half.life,
+  "Normal rats",       1.4,   2.6,         13.2,
+  "DEN-injured rats",  1.1,   1.1,         13.4
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "group",
+  units = c(cmax = "ug/mL", aucinf.obs = "ug*h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated vs. published NCA (Zhang 2019 Table 4). * differs from reference by >20%.",
+  align = c("l", "l", "r", "r")
+)
+```
+
+The simulated AUC and terminal half-life reproduce the published values within
+tolerance for both groups, and the clearance and distribution contrasts between
+normal and DEN-injured rats are preserved. The simulated Cmax tracks the
+extrapolated C0; small differences reflect that the published C0 is an
+individual-fit back-extrapolation whereas the model peak is `dose/V`.
+
+# Assumptions and deviations
+
+- **Macro parameter set used.** Table 4 prints both a macro set (V, V2, CL,
+  CL2) and the micro-constants (K10, K12, K21). The maintainers used the macro
+  set because it is the canonical nlmixr2lib parameterisation (`vc`, `vp`,
+  `cl`, `q`) and because it reproduces the printed micro-constants, both
+  half-lives and the printed AUC (`dose/CL`); the two sets are mutually
+  consistent for this table, unlike many two-stage mean tables.
+- **No IIV or residual error.** Zhang 2019 fitted each rat individually and
+  reported two-stage means +/- SD, with no population residual-error model. The
+  residual SD is fixed at zero and no between-subject random effects are
+  encoded; the Table 4 SDs on the macro and micro sets are not mutually
+  consistent and were not converted to IIV.
+- **Group as a selector.** The normal and DEN-injured groups were fitted as two
+  independent models, so `TUMTP_HCC` selects the group-specific parameter set
+  rather than scaling a typical value by an estimated covariate function.
+- **Per-kg parameters.** Volumes and clearances are per kg body weight; the
+  2.5 mg/kg bolus is simulated directly against the per-kg disposition, giving
+  concentrations in ug/mL.
+- No correction notice for this article was found as of 2026-11-25.

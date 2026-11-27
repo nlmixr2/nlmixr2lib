@@ -1,0 +1,512 @@
+---
+title: "S-531011 anti-CCR8 tumor receptor occupancy (Yamaguchi 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{S-531011 anti-CCR8 tumor receptor occupancy (Yamaguchi 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Yamaguchi et al. (2026) built a semi-mechanistic PK / receptor-occupancy (RO)
+model of S-531011, a humanized anti-CCR8 IgG1 antibody in development for solid
+tumors, to predict CCR8 occupancy in human tumor tissue, which the
+first-in-human study does not measure. A mouse version of the same model was
+compared with tumor RO measured in CT26.WT tumor-bearing human CCR8 knock-in
+mice, the in vitro Kd was multiplied by 30 to match those data, and the refined
+Kd was carried into the final human model. The paper therefore contributes two
+model files that share one structure:
+
+* `Yamaguchi_2026_s531011_human` -- the final human model (Table 1 Human column,
+  Data S1).
+* `Yamaguchi_2026_s531011_mouse` -- the refined mouse model (Table 1 Mouse
+  column).
+
+* Citation: `r rxode2::rxode(readModelDb("Yamaguchi_2026_s531011_human"))$reference`
+* Description (human): `r rxode2::rxode(readModelDb("Yamaguchi_2026_s531011_human"))$description`
+* Description (mouse): `r rxode2::rxode(readModelDb("Yamaguchi_2026_s531011_mouse"))$description`
+* Article: <https://doi.org/10.1002/psp4.70332>
+
+# Population
+
+The human PK parameters were fitted to the mean serum concentrations of the
+three participants in the 24 mg cohort (2-h IV infusion) of Part A-1 of the
+first-in-human Phase 1b/2 study, which enrolled adults (18 years or older) with
+locally advanced or metastatic solid tumors and ECOG performance status 0-1.
+Part A-1 escalated S-531011 monotherapy at 8, 24, 80, 240, 800 and 1600 mg every
+3 weeks (40 participants in total). No demographic table is reported. The
+binding parameters come from in vitro KinExA and internalization assays, the
+tumor-distribution parameters from a CT26.WT mouse study and the literature,
+and the CCR8 expression levels and T-cell counts from published human data.
+
+The mouse PK parameters were fitted to the mean serum concentrations of four
+female BALB/c human CCR8 knock-in mice (10 weeks old, dosed 8 days after
+subcutaneous CT26.WT implantation) given 5 mg/kg IV. Tumor RO was measured in a
+separate group of 5 mice per dose and day at 0.05, 0.5 and 5 mg/kg.
+
+```{r population}
+readModelDb("Yamaguchi_2026_s531011_human")()$population$notes
+readModelDb("Yamaguchi_2026_s531011_mouse")()$population$species
+```
+
+# Source trace
+
+The per-parameter origin is recorded next to each `ini()` entry in
+`inst/modeldb/specificDrugs/Yamaguchi_2026_s531011_human.R` and
+`..._mouse.R`. "Data S1" is the authors' SimBiology model report of the final
+human model (`S-531011_PKRO_human_modified`), which lists every parameter,
+initial assignment, reaction and ODE.
+
+| Equation / parameter | Human | Mouse | Source location |
+|---|---|---|---|
+| `kel` (1/h) | 4.79e-3 | 0.0324 | Table 1; Table S5 |
+| `k12` (1/h) | 6.95e-3 | 0.136 | Table 1; Table S5 |
+| `k21` (1/h) | 5.75e-3 | 0.0907 | Table 1; Table S5 |
+| `vc` (L) | 2.47 | 1.14e-3 | Table 1 (Vcen); Table S5 |
+| `vp` (L) | 2.99 | 1.71e-3 | Table 1 (Vper); Table S5 |
+| `vtumor` (L) | 0.01 | 1.70e-4 | Table 1 (Vtum); Methods |
+| `pdist` | 0.61 | 0.61 | Results (tumor-to-serum ratio at 24 h); Data S1 #29 |
+| `fint` | 0.55 | 0.55 | Methods; Data S1 #30 |
+| `kon` (L/nmol/h) | 11.85 | 11.85 | Table 1; Table S4 |
+| `kd` (nmol/L, in vitro) | 0.01862 | 0.01862 | Table S4 (18.62 pmol/L); Data S1 #31 |
+| `fadj` | 30 | 30 | Results ("30 times the initial value"); Data S1 #70 |
+| `thalf_cpx` (h) | 1.71 | 1.71 | Table S4; Data S1 #47 |
+| `mw` (g/mol) | 148653.5 | 148653.5 | Data S1 #67 |
+| CCR8 expression per Treg / Tconv / CD8 (central, peripheral, tumor) | 400 / 575 / 0; 1803 / 812 / 1274; 3573 / 906 / 1790 | -- | Data S1 #32-40 |
+| `n_cd4_cen`, `n_cd8_cen` (cells/uL) | 861, 505 | -- | Data S1 #41-42 |
+| `f_treg_cd4_cen`, `n_treg_tum`, `f_treg_cd4_tum`, `r_cd4_cd8_tum` | 0.07, 62.31 cells/mm^2, 0.189, 1.56 | -- | Data S1 #43-46 |
+| `funit` (mm^3/mm^2), `dens` (uL/mm^3) | 0.707, 1 | -- | Data S1 #62-63 |
+| Baseline CCR8, central / peripheral / tumor (nmol) | computed (1.987e-3 / 4.204e-3 / 1.980e-5) | 8.476e-7 / 5.791e-8 / 4.679e-7 | Table 1; Table S2-S3; Data S1 initial assignments 13-15 |
+| `k13`, `k31` | computed (1.712e-5, 6.933e-3) | computed (0.01134, 0.1247) | Table S2; Table 1 |
+| `koff = kd * fadj * kon` | computed (6.619) | computed (6.619) | Table S2; Data S1 initial assignment 2 |
+| `kdeg = 0.693 / thalf_cpx`, `ksyn = kdeg * CCR8(0)` | computed | computed | Table S2, Table S4; Data S1 initial assignments 16-19 |
+| IIV (30 percent CV on kel, Vc; 50 percent CV on kon, Pdist, fint, Kd, Thalf,CPX, Vtum) | yes | Kd only (50 percent CV) | Methods (Simulation); Figure S5 caption |
+| ODEs for drug, CCR8, 1:1 and 1:2 complexes in three compartments | | | Table S1; Data S1 ODEs 1-12 |
+| RO = 100 (1 - CCR8(t) / CCR8(0)) | | | Methods equations; Data S1 repeated assignments 1-3 |
+
+# Derived constants against the authors' code
+
+The human file computes the CCR8 baselines, `k13`, `k31`, `koff`, `kdeg` and the
+synthesis rates from the primitive inputs, exactly as the SimBiology model does.
+The typical values must equal the values Data S1 prints.
+
+```{r derived}
+mod_h <- readModelDb("Yamaguchi_2026_s531011_human")
+mod_h_typ <- rxode2::zeroRe(mod_h)
+one <- rxode2::et(amt = 0, cmt = "central") |> rxode2::et(0)
+der <- rxode2::rxSolve(mod_h_typ, one, returnType = "data.frame")[1, ]
+
+data_s1 <- c(
+  k13 = 1.7122e-05, k31 = 0.0069329, koff = 6.6194, kdeg = 0.40526,
+  ccr8_cen_int = 0.0019873, ccr8_per_int = 0.0042044, ccr8_tum_int = 1.9803e-05,
+  ksyn_cen = 0.00080538, ksyn_per = 0.0017039, ksyn_tum = 8.0256e-06
+)
+derived_tab <- tibble::tibble(
+  quantity = names(data_s1),
+  model = signif(unlist(der[names(data_s1)]), 5),
+  data_s1 = data_s1
+) |>
+  mutate(rel_diff_pct = round(100 * (model - data_s1) / data_s1, 3))
+derived_tab |>
+  dplyr::rename("Quantity" = quantity, "Model" = model, "Data S1" = data_s1, "Difference (%)" = rel_diff_pct) |>
+  knitr::kable(caption = "Typical-value derived constants of the human model vs the SimBiology report (Data S1).")
+
+# Deterministic: same inputs and formulas, so only print rounding separates them.
+stopifnot(all(abs(derived_tab$rel_diff_pct) < 0.05))
+```
+
+# Human serum PK (Figure S2)
+
+Figure S2 shows the two-compartment fit to the mean serum concentrations after
+a single 24 mg dose infused over 2 h. Because the tumor volume is tiny relative
+to Vc and Vp, the full PK/RO model reproduces the two-compartment curve.
+
+```{r fig-s2}
+ev_24 <- rxode2::et(amt = 24, dur = 2, cmt = "central") |>
+  rxode2::et(sort(unique(c(seq(0, 504, by = 2), 1, 3, 5))))
+pk24 <- rxode2::rxSolve(mod_h_typ, ev_24, returnType = "data.frame")
+
+# Observed means read by the maintainers from Figure S2 (open circles).
+fig_s2_obs <- tibble::tribble(
+  ~time, ~Cc,
+  2, 9.6,
+  3, 9.5,
+  5, 9.1,
+  24, 7.85,
+  48, 5.65,
+  72, 4.7,
+  168, 2.6,
+  336, 1.62,
+  504, 1.12
+)
+
+ggplot(dplyr::filter(pk24, time > 0), aes(time / 24, Cc)) +
+  geom_line(colour = "blue") +
+  geom_point(data = fig_s2_obs, shape = 1, colour = "red", size = 2.5) +
+  scale_y_log10() +
+  labs(
+    x = "Time after the start of the infusion (day)", y = "Serum S-531011 (ug/mL)",
+    caption = "Replicates Figure S2B of Yamaguchi 2026 (24 mg, 2-h infusion). Points: digitised observed means."
+  )
+
+s2_chk <- fig_s2_obs |>
+  mutate(pred = approx(pk24$time, pk24$Cc, xout = time)$y, pct_diff = 100 * (pred - Cc) / Cc)
+s2_chk |>
+  mutate(pred = signif(pred, 3), pct_diff = round(pct_diff, 1)) |>
+  dplyr::rename(
+    "Time (h)" = time, "Figure S2 observed mean (ug/mL)" = Cc,
+    "Model (ug/mL)" = pred, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Typical-value serum concentrations vs the digitised Figure S2 means.")
+
+# Deterministic typical-value curve vs digitised points: the fit is
+# least-squares through these means, so a mis-transcribed volume or rate
+# shifts the curve by tens of percent.
+stopifnot(abs(median(s2_chk$pct_diff)) < 5, max(abs(s2_chk$pct_diff)) < 12)
+```
+
+## PKNCA on the 24 mg profile
+
+The paper reports no NCA table. PKNCA is run on a simulated 24 mg cohort (with
+the authors' simulation variability on kel and Vc) and the typical-value Cmax
+is compared against the end-of-infusion mean read from Figure S2. The
+simulated value is the median of individual Cmax values; with 30% variability
+on Vc it sits a few percent below the typical-value Cmax (9.6 ug/mL, table
+above).
+
+```{r pknca}
+mod_h_pk <- readModelDb("Yamaguchi_2026_s531011_human")
+rxode2::rxSetSeed(20261025)
+ev_nca <- rxode2::et(amt = 24, dur = 2, cmt = "central") |>
+  rxode2::et(c(0, 1, 2, 3, 5, 8, 12, 24, 48, 72, 96, 168, 240, 336, 420, 504)) |>
+  rxode2::et(id = 1:100) |>
+  as.data.frame() |>
+  mutate(treatment = "24 mg")
+sim_nca <- rxode2::rxSolve(mod_h_pk, ev_nca, keep = "treatment", returnType = "data.frame")
+
+conc_df <- sim_nca |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+conc_df <- dplyr::bind_rows(
+  conc_df,
+  conc_df |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+dose_df <- ev_nca |>
+  dplyr::filter(evid != 0) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 504, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published <- tibble::tibble(treatment = "24 mg", cmax = 9.6)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ug/mL", tmax = "h", auclast = "h*ug/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated NCA (median of 100 virtual participants) vs the Figure S2 end-of-infusion mean. * differs from reference by >20%.")
+```
+
+# Final human model: tumor RO time course (Figure 2)
+
+The authors simulated 8, 24, 80, 240, 800 and 1600 mg every 3 weeks with 1-h
+infusions (Data S1 repeat doses: four infusions, at 0, 504, 1008 and 1512 h)
+with their assumed between-subject variability. 200 virtual participants are
+simulated per dose here.
+
+```{r fig2-sim}
+doses <- c(8, 24, 80, 240, 800, 1600)
+obs_times <- sort(unique(c(seq(0, 1512, by = 6), 0.5, 1, 2, 3, 503.99, 1007.99, 1511.99)))
+
+make_cohort <- function(dose, n, id_offset) {
+  rxode2::et(amt = dose, dur = 1, ii = 504, addl = 3, cmt = "central") |>
+    rxode2::et(obs_times) |>
+    rxode2::et(id = id_offset + seq_len(n)) |>
+    as.data.frame() |>
+    mutate(dose_mg = dose)
+}
+events_q3w <- dplyr::bind_rows(lapply(seq_along(doses), function(i) {
+  make_cohort(doses[i], n = 200, id_offset = (i - 1) * 200)
+}))
+stopifnot(!anyDuplicated(unique(events_q3w[, c("id", "time", "evid")])))
+
+rxode2::rxSetSeed(20261025)
+sim_q3w <- rxode2::rxSolve(mod_h, events_q3w, keep = "dose_mg", returnType = "data.frame")
+```
+
+```{r fig2-plot}
+sim_q3w |>
+  group_by(dose_mg, time) |>
+  summarise(
+    lo = quantile(ro_tumor, 0.025), med = median(ro_tumor), hi = quantile(ro_tumor, 0.975),
+    .groups = "drop"
+  ) |>
+  mutate(dose = factor(paste(dose_mg, "mg"), levels = paste(doses, "mg"))) |>
+  ggplot(aes(time / 168, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line(colour = "blue") +
+  facet_wrap(~dose) +
+  scale_x_continuous(breaks = 0:9) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(
+    x = "Time after the start of the 1st infusion (week)", y = "Receptor occupancy in tumor (%)",
+    caption = "Replicates Figure 2 of Yamaguchi 2026: median and 2.5th-97.5th percentiles."
+  )
+```
+
+The paper states that the tumor RO at 1512 h (trough after the third dose) of
+80 mg stays above 90%.
+
+```{r ro-80mg}
+trough_80 <- sim_q3w |> dplyr::filter(dose_mg == 80, time == 1511.99)
+c(median = median(trough_80$ro_tumor), p2.5 = unname(quantile(trough_80$ro_tumor, 0.025)))
+# Results: RO at 1512 h after 80 mg 'could be maintained at more than 90%'.
+# The median sits near 98 and the 2.5th percentile near 91; the paper's claim
+# is about the central prediction, so only the median is asserted.
+stopifnot(median(trough_80$ro_tumor) > 90)
+```
+
+# Cycle 2 pre-dose RO, base and conservative Pdist (Figure 3)
+
+Figure 3 shows the RO in tumor just before the second dose (C2D1 pre, 504 h)
+for the final model and for the conservative condition in which Pdist is one
+tenth of its final-model value. The medians were read by the maintainers from
+Figure 3.
+
+```{r fig3}
+mod_h_cons <- mod_h |> rxode2::ini(lpdist = log(0.061))
+events_c2 <- events_q3w |> dplyr::filter(evid != 0 | time == 503.99)
+
+rxode2::rxSetSeed(20261025)
+c2_base <- rxode2::rxSolve(mod_h, events_c2, keep = "dose_mg", returnType = "data.frame") |>
+  mutate(scenario = "Base")
+rxode2::rxSetSeed(20261025)
+c2_cons <- rxode2::rxSolve(mod_h_cons, events_c2, keep = "dose_mg", returnType = "data.frame") |>
+  mutate(scenario = "Conservative (1/10 Pdist)")
+
+c2 <- dplyr::bind_rows(c2_base, c2_cons) |>
+  group_by(scenario, dose_mg) |>
+  summarise(
+    lo = quantile(ro_tumor, 0.025), med = median(ro_tumor), hi = quantile(ro_tumor, 0.975),
+    .groups = "drop"
+  )
+
+ggplot(c2, aes(factor(dose_mg), med)) +
+  geom_crossbar(aes(ymin = lo, ymax = hi), fill = "lightblue", colour = "blue", width = 0.7) +
+  geom_hline(yintercept = 90, colour = "red") +
+  facet_wrap(~scenario) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(
+    x = "Dose level (mg)", y = "RO in tumor at C2D1 pre (%)",
+    caption = "Replicates Figure 3 of Yamaguchi 2026: median and 2.5th-97.5th percentiles."
+  )
+
+fig3_digitised <- tibble::tribble(
+  ~scenario, ~dose_mg, ~fig_median,
+  "Base", 8, 77.5,
+  "Base", 24, 91.8,
+  "Base", 80, 97.5,
+  "Base", 240, 99.0,
+  "Base", 800, 99.8,
+  "Base", 1600, 100,
+  "Conservative (1/10 Pdist)", 8, 22.5,
+  "Conservative (1/10 Pdist)", 24, 49.0,
+  "Conservative (1/10 Pdist)", 80, 78.0,
+  "Conservative (1/10 Pdist)", 240, 91.8,
+  "Conservative (1/10 Pdist)", 800, 97.5,
+  "Conservative (1/10 Pdist)", 1600, 98.8
+)
+
+# Typical-value prediction at 503.99 h for each scenario and dose.
+ev_typ <- function(dose) {
+  rxode2::et(amt = dose, dur = 1, cmt = "central") |> rxode2::et(503.99)
+}
+typ_c2 <- function(m, dose) {
+  utils::tail(rxode2::rxSolve(rxode2::zeroRe(m), ev_typ(dose), returnType = "data.frame")$ro_tumor, 1)
+}
+fig3_cmp <- fig3_digitised |>
+  rowwise() |>
+  mutate(typical = typ_c2(if (scenario == "Base") mod_h else mod_h_cons, dose_mg)) |>
+  ungroup() |>
+  left_join(c2 |> dplyr::select(scenario, dose_mg, sim_median = med), by = c("scenario", "dose_mg")) |>
+  mutate(diff_typical = typical - fig_median)
+
+fig3_cmp |>
+  mutate(across(c(typical, sim_median, diff_typical), ~ round(.x, 1))) |>
+  dplyr::rename(
+    "Scenario" = scenario, "Dose (mg)" = dose_mg, "Figure 3 median" = fig_median,
+    "Typical value" = typical, "Simulated median" = sim_median, "Typical - Figure (RO points)" = diff_typical
+  ) |>
+  knitr::kable(caption = "RO in tumor at C2D1 pre-dose (%): digitised Figure 3 medians vs the packaged model.")
+
+# Deterministic typical value vs digitised medians: observed agreement is
+# within 1 RO point; a wrong Kd adjustment, k13/k31 or CCR8 baseline moves
+# the low-dose values by tens of points.
+stopifnot(max(abs(fig3_cmp$diff_typical)) < 3)
+```
+
+# Mouse model (Figures S1 and S5)
+
+The mouse model is dosed in mg. The paper doses in mg/kg and does not state the
+body weight it used; the predicted curve of Figure S1 (5 mg/kg) starts at about
+110 ug/mL in a 1.14 mL central volume, i.e. an absolute dose of about 0.125 mg,
+so the maintainers use 25 g per mouse throughout.
+
+```{r mouse-pk}
+mod_m <- readModelDb("Yamaguchi_2026_s531011_mouse")
+mod_m_typ <- rxode2::zeroRe(mod_m)
+bw_kg <- 0.025
+
+ev_m5 <- rxode2::et(amt = 5 * bw_kg, cmt = "central") |> rxode2::et(seq(0, 168, by = 1))
+pk_m <- rxode2::rxSolve(mod_m_typ, ev_m5, returnType = "data.frame")
+
+# Observed means read by the maintainers from Figure S1 (open circles).
+fig_s1_obs <- tibble::tribble(
+  ~time, ~Cc,
+  0.25, 105,
+  6, 51,
+  24, 26.5,
+  96, 13,
+  168, 4.8
+)
+ggplot(dplyr::filter(pk_m, time > 0), aes(time / 24, Cc)) +
+  geom_line(colour = "blue") +
+  geom_point(data = fig_s1_obs, shape = 1, colour = "red", size = 2.5) +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (day)", y = "Serum S-531011 (ug/mL)",
+    caption = "Replicates Figure S1B of Yamaguchi 2026 (mouse, 5 mg/kg, 25 g body weight assumed)."
+  )
+s1_chk <- fig_s1_obs |>
+  mutate(pred = approx(pk_m$time, pk_m$Cc, xout = time)$y, pct_diff = 100 * (pred - Cc) / Cc)
+s1_chk |>
+  mutate(pred = signif(pred, 3), pct_diff = round(pct_diff, 1)) |>
+  dplyr::rename("Time (h)" = time, "Figure S1 mean (ug/mL)" = Cc, "Model (ug/mL)" = pred, "Difference (%)" = pct_diff) |>
+  knitr::kable(caption = "Typical-value mouse serum concentrations vs digitised Figure S1 means.")
+stopifnot(abs(median(s1_chk$pct_diff)) < 10)
+```
+
+Figure S5 shows the tumor RO of the refined mouse model with a 50% CV on Kd
+(the authors used 500 animals; 200 per dose here), against the adjusted
+observed RO at 24 h.
+
+```{r mouse-ro}
+mouse_doses <- c(0.05, 0.5, 5)
+m_times <- sort(unique(c(seq(0, 168, by = 2), 0.25, 0.5, 1, 10)))
+events_m <- dplyr::bind_rows(lapply(seq_along(mouse_doses), function(i) {
+  rxode2::et(amt = mouse_doses[i] * bw_kg, cmt = "central") |>
+    rxode2::et(m_times) |>
+    rxode2::et(id = (i - 1) * 200 + seq_len(200)) |>
+    as.data.frame() |>
+    mutate(dose_mgkg = mouse_doses[i])
+}))
+stopifnot(!anyDuplicated(unique(events_m[, c("id", "time", "evid")])))
+rxode2::rxSetSeed(20261025)
+sim_m <- rxode2::rxSolve(mod_m, events_m, keep = "dose_mgkg", returnType = "data.frame")
+
+sum_m <- sim_m |>
+  group_by(dose_mgkg, time) |>
+  summarise(
+    lo = quantile(ro_tumor, 0.025), mean = mean(ro_tumor), hi = quantile(ro_tumor, 0.975),
+    .groups = "drop"
+  ) |>
+  mutate(dose = factor(paste(dose_mgkg, "mg/kg"), levels = paste(mouse_doses, "mg/kg")))
+
+ggplot(sum_m, aes(time, mean)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line(colour = "blue") +
+  facet_wrap(~dose) +
+  scale_x_continuous(breaks = seq(0, 168, by = 24)) +
+  coord_cartesian(ylim = c(0, 110)) +
+  labs(
+    x = "Time after dose (h)", y = "Receptor occupancy in tumor (%)",
+    caption = "Replicates Figure S5 of Yamaguchi 2026: mean and 2.5th-97.5th percentiles."
+  )
+
+# Mean simulated RO at 168 h read by the maintainers from Figure S5.
+fig_s5 <- tibble::tribble(
+  ~dose_mgkg, ~fig_mean_168,
+  0.05, 28.5,
+  0.5, 79.0,
+  5, 97.3
+)
+s5_cmp <- fig_s5 |>
+  mutate(typical = sapply(dose_mgkg, function(d) {
+    e <- rxode2::et(amt = d * bw_kg, cmt = "central") |> rxode2::et(168)
+    utils::tail(rxode2::rxSolve(mod_m_typ, e, returnType = "data.frame")$ro_tumor, 1)
+  })) |>
+  left_join(sum_m |> dplyr::filter(time == 168) |> dplyr::select(dose_mgkg, sim_mean = mean), by = "dose_mgkg")
+s5_cmp |>
+  mutate(across(c(typical, sim_mean), ~ round(.x, 1))) |>
+  dplyr::rename(
+    "Dose (mg/kg)" = dose_mgkg, "Figure S5 mean at 168 h" = fig_mean_168,
+    "Typical value" = typical, "Simulated mean" = sim_mean
+  ) |>
+  knitr::kable(caption = "Mouse tumor RO at 168 h (%): digitised Figure S5 vs the packaged model.")
+# Deterministic typical value; observed agreement is within 1 RO point at
+# 0.5 and 5 mg/kg and within 1 point at 0.05 mg/kg (where the Kd spread
+# makes the mean sit about 1 point above the typical value).
+stopifnot(max(abs(s5_cmp$typical - s5_cmp$fig_mean_168)) < 5)
+```
+
+# Assumptions and deviations
+
+- **Kd adjustment.** Table 1 prints the optimized koff as 6.621 1/h; the
+  authors' SimBiology report (Data S1) computes `koff = Kd x Fadj x kon` =
+  0.01862 x 30 x 11.85 = 6.6194 1/h, and that is what both files use. The
+  difference is rounding in Table 1.
+- **ln 2.** The SimBiology code uses `ln2 = 0.693` for `Tdist` and `kdeg`;
+  the files keep that constant, so `kdeg` = 0.40526 1/h exactly as in Data S1
+  (Table 1 prints 0.4053).
+- **Primitive inputs from the model code.** The human CCR8 expression levels,
+  T-cell counts, `funit` and the molecular weight appear only in Data S1, not
+  in the article tables; the human file takes them from there and computes the
+  CCR8 baselines, which reproduce the Table 1 amounts. The mouse file uses the
+  Table 1 baseline CCR8 amounts directly because the mouse expression inputs
+  (CCR8 per CCR8-positive CD4 T cell, fraction of CCR8-positive CD4 T cells) are
+  not tabulated.
+- **Between-subject variability.** The Methods give "30% (coefficient of
+  variation; CV)" for kel and Vc and "50%" for kon, Pdist, fint, Kd,
+  Thalf,CPX and Vtum. They are encoded as log-normal with variance
+  log(1 + CV^2). The mouse Figure S5 percentiles are reproduced closely with
+  this reading. With a 50% CV, fint exceeds 1 in roughly one simulated subject
+  in ten; the source does not say whether the authors truncated it, so no
+  truncation is applied.
+- **IIV on Vc and Vtum propagates into the CCR8 baselines, k13 and k31**, because
+  the human file computes them from the individual volumes as SimBiology's
+  initial assignments do.
+- **Residual error.** None in the source (the PK parameters were fitted to mean
+  concentrations and the RO model is a simulation model); `propSd` is set to
+  zero.
+- **Dosing in mg.** The SimBiology model doses in nmol (for example 8 mg as
+  53.82 nmol). The packaged models take doses in mg and convert with the
+  molecular weight (1 mg = 1e6 / 148653.5 nmol); drug states are in mg and
+  CCR8 and complex states in nmol.
+- **Infusion duration.** The simulations, like the authors', use 1-h infusions
+  for every cycle; in the clinical study the first infusion lasted 2 h, which
+  is what the Figure S2 replication uses.
+- **Mouse body weight.** Not reported; 25 g, back-calculated from the start of
+  the Figure S1 predicted curve, is used to convert mg/kg to mg.
+- **Fadj in the mouse file** is left estimable (it is the parameter the
+  authors selected against mouse tumor RO); in the human file it is carried as
+  a constant.
+- **Pdist conservative scenarios** (1/3 and 1/10 of 0.61, Figures S8, S9 and
+  3) are obtained by changing `lpdist` with `rxode2::ini()`, as shown above.
+- No erratum for the article was found as of 2026-11-17.

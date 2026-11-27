@@ -1,0 +1,180 @@
+---
+title: "Cationic liposomal subunit-antigen TB vaccine (Badhan 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cationic liposomal subunit-antigen TB vaccine (Badhan 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Badhan et al. (2017) applied pharmacokinetic modelling to a cationic liposomal
+subunit-tuberculosis vaccine: the two-component adjuvant DDA:TDB
+(dimethyldioctadecylammonium bromide + trehalose 6,6-dibehenate, the CAF01
+system) carrying the Ag85B-ESAT-6 (H1) subunit antigen, administered
+intramuscularly in mice. A dual radiolabel (liposome tracked with 3-H, antigen
+with 125-I) gave injection-site and draining-lymph-node biodistribution at 1, 4
+and 14 days. The authors fit two kinds of model: empirical compartmental models
+of the injection-site kinetics (Table 2), and a minimal, semi-mechanistic PBPK
+model (Equations 7-10) later extrapolated to a 71 kg human.
+
+**This vignette ships the two empirical compartmental models**, which are fully
+and cleanly reproducible from Table 2. The minimal-PBPK model is described
+below with the reasons it is not shipped as a packaged model (see *The
+minimal-PBPK model* and *Assumptions and deviations*).
+
+* Citation: `r readModelDb("Badhan_2017_liposome_mouse_1cmt")()$reference`
+* Article: <https://doi.org/10.3390/pharmaceutics9040057> (PMCID PMC5750663)
+
+| File | Class | Molecule | Source |
+|------|-------|----------|--------|
+| `Badhan_2017_liposome_mouse_1cmt` | empirical 1-cmt | DDA:TDB liposome | Eq 1, Table 2 |
+| `Badhan_2017_antigen_mouse_2cmt` | empirical 2-cmt | Ag85B-ESAT-6 antigen | Eq 2-3, Table 2 |
+
+# Population
+
+The data are mouse (28 g) biodistribution profiles of a dual radio-labelled
+DDA:TDB liposome (250 ug DDA + 50 ug TDB) adsorbing 2 ug of Ag85B-ESAT-6 (H1)
+antigen, injected IM in 50 uL and sampled at the site of injection and draining
+lymph nodes at 1, 4 and 14 days (plus a 0.25-day in-vitro point). The models are
+deterministic: a best-fit model was selected by AIC and only point estimates are
+reported (no inter-individual variability or residual error).
+
+```{r population}
+readModelDb("Badhan_2017_liposome_mouse_1cmt")()$population$disease_state
+```
+
+# Source trace
+
+The injection-site ("central") kinetics were fit with a 1-, 2- or
+3-compartment model (Equations 1-6) and selected by AIC: a 1-compartment model
+for the liposome and a 2-compartment model for the antigen (Table 2). The
+central compartment is the quadriceps site of injection; `k10` is the
+first-order loss from that site and `k12`/`k21` the antigen distribution
+micro-constants. No volume was reported, so the packaged models use an apparent
+volume of 1 and `Cc` is the site-of-injection amount.
+
+| Parameter | Liposome (1-cmt) | Antigen (2-cmt) | Source |
+|-----------|------------------|------------------|--------|
+| k10 | 0.0306 /day | 0.34 /day | Table 2 |
+| k12 | - | 22.26 /day | Table 2 |
+| k21 | - | 77.58 /day | Table 2 |
+| distribution t1/2 (alpha) | - | 0.0069 day | Table 2 |
+| terminal t1/2 (beta) | 22.6 day | 2.62 day | Table 2 |
+| MRT | 32.6 day | 3.78 day | Table 2 |
+
+# Injection-site kinetics (replicates Table 2 / Figure 3)
+
+The liposome persists at the muscle depot (terminal half-life 22.6 days) while
+the antigen is cleared an order of magnitude faster (terminal half-life 2.62
+days), the central finding of the compartmental analysis.
+
+```{r profiles}
+sim_cmt <- function(model_name, dose, cmt = "central", tmax = 60) {
+  mod <- readModelDb(model_name)
+  ev <- et(amt = dose, cmt = cmt) |> et(seq(0, tmax, by = 0.1))
+  rxSolve(mod, ev, returnType = "data.frame")
+}
+lip <- sim_cmt("Badhan_2017_liposome_mouse_1cmt", dose = 300)
+ant <- sim_cmt("Badhan_2017_antigen_mouse_2cmt", dose = 2)
+
+prof <- bind_rows(
+  transform(lip[, c("time", "Cc")], molecule = "Liposome", pct = lip$Cc / 300 * 100),
+  transform(ant[, c("time", "Cc")], molecule = "Antigen", pct = ant$Cc / 2 * 100)
+)
+ggplot(prof, aes(time, pct, colour = molecule)) +
+  geom_line(linewidth = 0.9) +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "% of dose remaining at injection site (log scale)",
+       colour = NULL, title = "Injection-site kinetics: liposome vs antigen (Table 2)") +
+  theme_bw()
+```
+
+# Half-life checks (Table 2)
+
+```{r halflife}
+hl <- function(s, t_a, t_b) {
+  ca <- approx(s$time, s$Cc, t_a)$y
+  cb <- approx(s$time, s$Cc, t_b)$y
+  log(2) / (log(ca / cb) / (t_b - t_a))
+}
+lip_hl <- hl(lip, 10, 40)
+ant_hl <- hl(ant, 5, 15)
+cat(sprintf("Liposome 1-cmt terminal t1/2 = %.1f day (Table 2: 22.6)\n", lip_hl))
+cat(sprintf("Antigen  2-cmt terminal t1/2 = %.2f day (Table 2: 2.62)\n", ant_hl))
+
+stopifnot(
+  abs(lip_hl - 22.6) < 1.0,
+  abs(ant_hl - 2.62) < 0.2
+)
+```
+
+The antigen distribution (alpha) half-life is governed by the fast
+`k12`/`k21` exchange; the early concentration drop reproduces the reported
+`t1/2alpha` of 0.0069 day.
+
+```{r alpha-halflife}
+ant_fast <- sim_cmt("Badhan_2017_antigen_mouse_2cmt", dose = 2, tmax = 0.1)
+cat(sprintf("Antigen central amount drops from %.3f (t=0) to %.3f by t=0.02 d\n",
+            ant_fast$Cc[1], approx(ant_fast$time, ant_fast$Cc, 0.02)$y))
+```
+
+# The minimal-PBPK model (described, not shipped)
+
+The paper's headline contribution is a four-compartment minimal-PBPK model
+(muscle, popliteal lymph node (PLN), rest of body, plasma; Figure 2,
+Equations 7-10) with mouse and human physiology (Table 1) and tissue
+degradation constants (Table 4, mouse only), extrapolated to a human antigen
+prediction. The maintainers evaluated it carefully and did **not** package it,
+for three reasons:
+
+1. **The printed equations are dimensionally inconsistent.** Equations 7-10 are
+   written with a `V * dA/dt` left-hand side while the loss terms are
+   `rate * concentration`, so the units do not close, and the transvascular
+   flux definition `tv_tissue = Q_tissue / V_tissue * fe` admits several
+   readings.
+
+2. **The PLN compartment cannot be reproduced.** Across every plausible reading
+   of the equations the muscle depot reproduces the paper well (e.g. the human
+   deltoid Cmax is approximately dose / deltoid volume, matching the reported
+   0.25 ug/mL), but the popliteal-lymph-node concentration comes out
+   10^3-10^4 times the reported value, with the wrong time of maximum. The
+   authors themselves report the PLN as their least reliable prediction
+   (precision errors up to 74%, Table 3).
+
+3. **The human degradation constant is unreported.** Table 4 tabulates `kdeg`
+   for the mouse only. Reproducing the reported human muscle half-life of 13.2
+   days requires `kdeg,muscle` near 0.05/day, whereas the tabulated mouse antigen
+   value (0.320/day) gives about 2.2 days; no human `kdeg` exists in the paper
+   or any supplement (there is no supplement and no deposited code).
+
+A faithful, reproducible packaged model therefore could not be built for the
+minimal-PBPK arm from the on-disk sources, so only the compartmental models
+(which are exact) are shipped.
+
+# Assumptions and deviations
+
+* **Scope (operator ruling, 2026-11-25).** Only the two empirical compartmental
+  models (Table 2) are packaged. The minimal-PBPK model is documented above and
+  not shipped, because it is not reproducible from the printed equations (see
+  the three reasons above): dimensional inconsistency, a PLN compartment off by
+  ~10^4x, and an unreported human degradation constant.
+
+* **Apparent volume.** The Table 2 models report only rate constants (no
+  volume), so the packaged files use an apparent volume of 1; `Cc` is the
+  site-of-injection amount and only the half-lives and profile shapes are
+  meaningful.
+
+* **No variability.** A single best-fit model was selected by AIC and only point
+  estimates are reported; the models are deterministic (no IIV, no residual
+  error).
+```

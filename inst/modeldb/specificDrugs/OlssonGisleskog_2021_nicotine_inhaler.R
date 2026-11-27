@@ -29,7 +29,7 @@ OlssonGisleskog_2021_nicotine_inhaler <- function() {
   vignette <- "OlssonGisleskog_2021_nicotine"
   # Each session is two zero-order records, depot_buccal and depot_oral (the
   # swallowed share); central takes only the virtual pre-washout bolus.
-  dosing <- c("depot_buccal", "depot_oral", "central")
+  dosing <- c("depot_buccal", "depot_oral", "central", "transit1")
 
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

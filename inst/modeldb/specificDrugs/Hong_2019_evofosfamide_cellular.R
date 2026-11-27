@@ -71,6 +71,7 @@ Hong_2019_evofosfamide_cellular <- function() {
     ),
     concentration = "uM"
   )
+  dosing <- c("th302_ec", "bripm_ec")
 
   covariateData <- list(
     STIM_OXYGEN_UM = list(

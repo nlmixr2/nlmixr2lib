@@ -1,0 +1,500 @@
+---
+title: "Lidocaine with or without adrenaline in dogs (Choquette 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lidocaine with or without adrenaline in dogs (Choquette 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Choquette_2017_lidocaine_dog"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Choquette_2017_lidocaine_dog"))$description`
+* Article: <https://doi.org/10.1371/journal.pone.0169745> (open access)
+* Supplement: S1 Table, the individual plasma lidocaine concentrations
+  (<https://doi.org/10.1371/journal.pone.0169745.s001>)
+
+Choquette et al. compared three compartmental models fitted jointly to the
+plain and the adrenalinated formulation. The selected Model C (Fig 1C of the
+paper) has one disposition compartment with apparent clearance CL/F and volume
+V/F shared by both formulations, and two parallel zero-order inputs per
+formulation:
+
+* a fraction `f` of the dose enters the plasma at a constant rate
+  `k01 = f * Dose / Dur1` from the dose time until `Dur1`;
+* the remaining `1 - f` enters at `k02 = (1 - f) * Dose / Dur2` from the delay
+  `tau` until `tau + Dur2`.
+
+`f`, `Dur1`, `Dur2` and `tau` were estimated separately for each formulation.
+In the packaged model the binary covariate `CONMED_EPI` (1 = adrenalinated)
+selects the parameter set. Each administration is two dose records carrying the
+same amount, one into `depot` (the early absorption compartment `Xa1`) and one
+into `depot2` (the late compartment `Xa2`); `f()` splits the dose and `alag()`
+applies `tau`.
+
+# Population
+
+Eight healthy female beagles aged 2 to 5 years and weighing 11 (SD 1.3) kg
+received a paravertebral brachial plexus block under isoflurane anaesthesia
+(Methods, Animals and Study design). Lidocaine hydrochloride 20 mg/mL, alone or
+with adrenaline 0.01 mg/mL, was diluted 1:1 with saline and injected at 2 mg/kg
+on each of three nerve roots (C6, C7 and C8-T1), 6 mg/kg in total, within four
+minutes. A randomised, blinded crossover over three periods gave 10 plain and 9
+adrenalinated profiles, each sampled 13 times to 180 minutes (Results). The
+population was fitted by maximum-likelihood expectation maximisation in ADAPT 5
+with log-normal parameters and a diagonal covariance matrix.
+
+```{r population}
+str(readModelDb("Choquette_2017_lidocaine_dog")()$population)
+```
+
+# Source trace
+
+Table 1 of the paper reports each model parameter as the arithmetic mean (SD) of
+a log-normal distribution. The model stores the median,
+`mean / sqrt(1 + CV^2)`, and the log-scale variance `log(1 + CV^2)`, with
+`CV = SD / mean`.
+
+| Equation / parameter | Value (Table 1, mean (SD)) | Source location |
+|----------------------|----------------------------|-----------------|
+| One-compartment disposition with two parallel zero-order inputs | n/a | Fig 1C; Methods, Pharmacokinetic analysis |
+| `lcl` (CL/F, both formulations) | 0.017 (0.005) L/min/kg | Table 1 |
+| `lvc` (V/F, both formulations) | 1.850 (0.580) L/kg | Table 1 |
+| `lfdepot_plain`, `lfdepot_adr` (f) | 0.56 (0.22); 0.54 (0.15) | Table 1 |
+| `ld1_plain`, `ld1_adr` (Dur1) | 5.77 (3.24); 11.30 (7.05) min | Table 1 |
+| `ld2_plain`, `ld2_adr` (Dur2) | 18.10 (4.87); 254.00 (129.00) min | Table 1 |
+| `ltlag_plain`, `ltlag_adr` (tau) | 6.52 (0.02); 3.87 (0.03) min | Table 1 |
+| `eta*` variances | `log(1 + (SD/mean)^2)` of each row above | Table 1; Methods (diagonal covariance) |
+| `k01`, `k02` | derived, `f * Dose / Dur` | Fig 1C |
+| `propSd` | fixed at 0 | not reported |
+| Per-kg scaling of CL/F and V/F by `WT` | n/a | Table 1 units (L/min/kg, L/kg) |
+
+# Structural checks
+
+A typical-value solve of each input path on its own must reproduce the
+closed-form constant-rate infusion into one compartment, and the two paths
+must add up to the combined solve. A dense grid and tight tolerances make the
+comparison a test of the model code rather than of the integrator.
+
+```{r structure, message = FALSE}
+mod <- readModelDb("Choquette_2017_lidocaine_dog")
+mod_typ <- rxode2::zeroRe(mod)
+th <- mod_typ$theta
+
+wt <- 11
+dose <- 6 * wt # mg lidocaine hydrochloride (6 mg/kg)
+cl <- exp(th[["lcl"]]) * wt
+vc <- exp(th[["lvc"]]) * wt
+kel <- cl / vc
+
+grid <- c(0, seq(0.05, 600, by = 0.05))
+
+path_events <- function(epi, cmts) {
+  dplyr::bind_rows(
+    data.frame(time = 0, evid = 1, amt = dose, cmt = cmts),
+    data.frame(time = grid, evid = 0, amt = 0, cmt = "central")
+  ) |>
+    dplyr::mutate(id = 1L, WT = wt, CONMED_EPI = epi)
+}
+
+infusion <- function(t, rate, t0, dur) {
+  ifelse(
+    t <= t0, 0,
+    ifelse(
+      t <= t0 + dur,
+      rate / kel * (1 - exp(-kel * (t - t0))),
+      rate / kel * (1 - exp(-kel * dur)) * exp(-kel * (t - t0 - dur))
+    )
+  ) / vc
+}
+
+checks <- lapply(c(plain = 0, adrenalinated = 1), function(epi) {
+  sfx <- if (epi == 0) "plain" else "adr"
+  f <- exp(th[[paste0("lfdepot_", sfx)]])
+  d1 <- exp(th[[paste0("ld1_", sfx)]])
+  d2 <- exp(th[[paste0("ld2_", sfx)]])
+  tau <- exp(th[[paste0("ltlag_", sfx)]])
+  solve <- function(cmts) {
+    as.data.frame(rxode2::rxSolve(mod_typ, path_events(epi, cmts),
+      rtol = 1e-10, atol = 1e-12, maxsteps = 1e6
+    ))
+  }
+  early <- solve("depot")
+  late <- solve("depot2")
+  both <- solve(c("depot", "depot2"))
+  ref_early <- infusion(early$time, f * dose / d1, 0, d1)
+  ref_late <- infusion(late$time, (1 - f) * dose / d2, tau, d2)
+  data.frame(
+    formulation = if (epi == 0) "plain" else "adrenalinated",
+    max_abs_err_early = max(abs(early$Cc - ref_early)),
+    max_abs_err_late = max(abs(late$Cc - ref_late)),
+    max_abs_err_sum = max(abs(both$Cc - (early$Cc + late$Cc))),
+    tmax_early = early$time[which.max(early$Cc)],
+    Dur1 = d1,
+    peak = max(both$Cc)
+  )
+})
+checks <- dplyr::bind_rows(checks)
+knitr::kable(checks, digits = 6)
+
+stopifnot(
+  # Each path is the closed-form infusion (the table shows < 1e-6 mg/L).
+  all(checks$max_abs_err_early < 1e-5),
+  all(checks$max_abs_err_late < 1e-5),
+  # Superposition: the two paths add up to the combined dose.
+  all(checks$max_abs_err_sum < 1e-5),
+  # A constant-rate input with no other input peaks at the end of the input.
+  all(abs(checks$tmax_early - checks$Dur1) <= 0.05)
+)
+```
+
+The total exposure of a combined dose obeys `CL * AUC(0-inf) = Dose` (CL/F and
+V/F are apparent values, so the absorbed fraction is folded into them). Both
+formulations share CL/F, so they must give the same AUC(0-inf) even though the
+adrenalinated input lasts more than four hours.
+
+```{r mass-balance, message = FALSE}
+long_grid <- c(0, seq(0.5, 3000, by = 0.5))
+auc_inf <- sapply(c(0, 1), function(epi) {
+  ev <- dplyr::bind_rows(
+    data.frame(time = 0, evid = 1, amt = dose, cmt = c("depot", "depot2")),
+    data.frame(time = long_grid, evid = 0, amt = 0, cmt = "central")
+  ) |>
+    dplyr::mutate(id = 1L, WT = wt, CONMED_EPI = epi)
+  s <- as.data.frame(rxode2::rxSolve(mod_typ, ev, rtol = 1e-10, atol = 1e-12))
+  sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)
+})
+auc_inf
+stopifnot(all(abs(cl * auc_inf / dose - 1) < 1e-3))
+```
+
+# Virtual cohort
+
+Two arms of 200 virtual beagles, one per formulation, with body weight drawn
+from the reported 11 (SD 1.3) kg and kept inside 8 to 14 kg by redrawing. Each
+dog receives 6 mg/kg lidocaine hydrochloride as one administration at time 0
+(the paper treats the three injections given within four minutes as a single
+dose). Observations are on the `central` state.
+
+```{r cohort}
+set.seed(20170109)
+rxode2::rxSetSeed(20170109)
+
+draw_wt <- function(n) {
+  w <- rnorm(n, 11, 1.3)
+  while (any(bad <- w < 8 | w > 14)) w[bad] <- rnorm(sum(bad), 11, 1.3)
+  w
+}
+
+obs_times <- sort(unique(c(seq(0, 30, by = 0.5), seq(31, 180, by = 1))))
+
+make_arm <- function(n, epi, id_offset) {
+  subj <- data.frame(
+    id = id_offset + seq_len(n),
+    WT = draw_wt(n),
+    CONMED_EPI = epi
+  )
+  doses <- subj |>
+    tidyr::crossing(cmt = c("depot", "depot2")) |>
+    dplyr::mutate(time = 0, evid = 1L, amt = 6 * WT)
+  obs <- subj |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(cmt = "central", evid = 0L, amt = 0)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::mutate(
+      formulation = if (epi == 0) "Plain" else "Adrenalinated"
+    )
+}
+
+events <- dplyr::bind_rows(
+  make_arm(200, 0, 0L),
+  make_arm(200, 1, 200L)
+)
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid", "cmt")]))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events, keep = c("formulation", "WT")) |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+Figure 2 of the paper shows the individual profiles. The observed summaries
+below were computed by the maintainers from the paper's S1 Table: the 19
+profiles were pooled by formulation, grouped into sampling-time windows, and
+summarised as the median and interquartile range of the concentrations in each
+window.
+
+```{r observed}
+observed <- data.frame(
+  formulation = rep(c("Plain", "Adrenalinated"), each = 12),
+  n = c(
+    12, 9, 9, 7, 13, 14, 8, 12, 11, 10, 10, 10,
+    9, 10, 7, 9, 16, 12, 8, 9, 9, 9, 9, 9
+  ),
+  time = c(
+    3.4, 7.4, 12.7, 16.9, 21.0, 30.7, 47.0, 62.1, 83.0, 104.5, 134.0, 182.5,
+    3.2, 7.5, 11.4, 15.9, 20.6, 32.3, 46.7, 64.7, 85.0, 103.0, 134.0, 180.0
+  ),
+  cmed = c(
+    1.185, 1.879, 2.136, 2.721, 2.666, 2.660, 2.344, 1.857, 1.539, 1.169,
+    0.996, 0.598,
+    0.374, 1.248, 1.164, 1.031, 1.728, 1.542, 1.508, 1.437, 1.232, 1.157,
+    1.039, 0.740
+  ),
+  c25 = c(
+    0.889, 1.261, 1.870, 2.123, 1.657, 1.667, 1.952, 1.474, 1.287, 0.942,
+    0.888, 0.561,
+    0.207, 0.644, 1.104, 0.682, 1.123, 1.338, 1.219, 1.191, 0.842, 0.825,
+    0.789, 0.678
+  ),
+  c75 = c(
+    1.621, 2.160, 2.645, 2.877, 3.025, 3.081, 2.586, 2.372, 1.930, 1.459,
+    1.197, 0.693,
+    0.812, 2.101, 1.280, 2.199, 2.016, 1.824, 1.945, 1.828, 1.484, 1.438,
+    1.218, 0.823
+  )
+)
+```
+
+```{r figure-2, fig.width = 8, fig.height = 4}
+# Replicates Figure 2 of Choquette 2017: plasma lidocaine after 6 mg/kg
+# paravertebral lidocaine, plain (A) and adrenalinated (B).
+vpc <- sim |>
+  dplyr::group_by(formulation, time) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05),
+    Q50 = quantile(Cc, 0.50),
+    Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  geom_pointrange(
+    data = observed,
+    aes(time, cmed, ymin = c25, ymax = c75),
+    colour = "firebrick", size = 0.3
+  ) +
+  facet_wrap(~ factor(formulation, c("Plain", "Adrenalinated"))) +
+  labs(
+    x = "Time after the first injection (min)",
+    y = "Plasma lidocaine (mg/L)",
+    title = "Simulated median and 90% interval vs observed median and IQR",
+    caption = "Replicates Figure 2 of Choquette 2017 (observed data from S1 Table)."
+  )
+```
+
+The simulated median follows the observed median through the absorption,
+peak and elimination phases for both formulations, including the plateau of
+the adrenalinated profile, in which the late input (median duration about four
+hours) runs slower than elimination.
+
+```{r figure-2-check}
+sim_at_obs <- observed |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    sim_med = {
+      ff <- formulation
+      tt <- time
+      v <- vpc[vpc$formulation == ff, ]
+      stats::approx(v$time, v$Q50, xout = min(tt, 180))$y
+    }
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(log_ratio = log(sim_med / cmed))
+
+sim_at_obs |>
+  dplyr::filter(time > 10) |>
+  dplyr::group_by(formulation) |>
+  dplyr::summarise(
+    `median log(sim/obs)` = median(log_ratio),
+    `90th pct abs log(sim/obs)` = unname(quantile(abs(log_ratio), 0.9)),
+    `max abs log(sim/obs)` = max(abs(log_ratio)),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 3)
+
+# Windows before 10 min mix samples taken 2 min after each of the three
+# injections and are left out. After that the simulated median is centred on
+# the observed medians; the largest misses are in the adrenalinated windows
+# between 10 and 20 min, where the observed median itself goes 1.16, 1.03,
+# 1.73 mg/L from one window to the next (7 to 16 samples each). The gate is on
+# the centre and on the 90th percentile of the misses: a mis-transcribed CL/F,
+# V/F, f or duration shifts a whole phase and breaks both.
+stopifnot(
+  with(subset(sim_at_obs, time > 10), abs(median(log_ratio)) < 0.15),
+  with(subset(sim_at_obs, time > 10), quantile(abs(log_ratio), 0.9) < 0.4)
+)
+```
+
+# PKNCA validation
+
+```{r pknca}
+conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, formulation)
+conc <- dplyr::bind_rows(
+  conc,
+  conc |> dplyr::distinct(id, formulation) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, formulation, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1, cmt == "depot") |>
+  dplyr::select(id, time, amt, formulation)
+stopifnot(nrow(dose_df) == 400L)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | formulation + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | formulation + id)
+intervals <- data.frame(
+  start = 0, end = 180,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+# Comparison against published NCA
+
+Table 1 of the paper reports Cmax, tmax and AUC(0-tlast) from the observed data
+(last sample at 180 min) as log-normal means. The simulated values are
+the medians of 200 virtual dogs per formulation.
+
+```{r nca-compare}
+published <- data.frame(
+  formulation = c("Plain", "Adrenalinated"),
+  cmax = c(2.944, 1.847),
+  tmax = c(19.72, 13.53),
+  auclast = c(281.8, 215.9)
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca,
+  reference = published,
+  by = "formulation",
+  units = c(cmax = "mg/L", tmax = "min", auclast = "min*mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp)
+if (!is.null(attr(cmp, "footnote"))) cat(attr(cmp, "footnote"))
+
+sim_med <- as.data.frame(nca$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  dplyr::group_by(formulation, PPTESTCD) |>
+  dplyr::summarise(med = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = med) |>
+  dplyr::left_join(published, by = "formulation", suffix = c("_sim", "_pub"))
+
+# Cmax and AUC are the exposure metrics; a wrong CL/F, V/F, f or duration
+# moves them by tens of percent. tmax is not gated: the adrenalinated
+# profiles are nearly flat after the early input, so tmax is ill-defined.
+stopifnot(
+  all(abs(sim_med$cmax_sim / sim_med$cmax_pub - 1) < 0.15),
+  all(abs(sim_med$auclast_sim / sim_med$auclast_pub - 1) < 0.15)
+)
+```
+
+The disposition parameters give a terminal half-life of
+`r signif(log(2) / (0.017 / 1.850), 3)` min from the Table 1 means of CL/F and
+V/F, matching the paper's 75.0 min. Adrenaline lowers the simulated median
+Cmax by about
+`r round(100 * (1 - sim_med$cmax_sim[sim_med$formulation == "Adrenalinated"] / sim_med$cmax_sim[sim_med$formulation == "Plain"]))`%
+(paper Table 1: 37%) and AUC(0-180) by about
+`r round(100 * (1 - sim_med$auclast_sim[sim_med$formulation == "Adrenalinated"] / sim_med$auclast_sim[sim_med$formulation == "Plain"]))`%
+(paper: 23%).
+
+The plain-formulation tmax is flagged: the simulated median is about 24 min
+against the 19.7 min of Table 1. The observed tmax in the S1 Table, computed by
+the maintainers from the individual profiles, has a median of 23.6 min and a
+mean of 23.4 min for the plain formulation, close to the simulation; the
+plain profiles have a broad peak between about 17 and 31 min (Figure 2), so a
+small change in the samples moves tmax by several minutes.
+
+# Reported zero-order rates
+
+Table 1 also lists `k01` and `k02` in mg/min. In Model C the zero-order rates
+are fixed by the other three parameters, `k0 = f * Dose / Dur`, so the packaged
+model derives them rather than carrying them as separate parameters. Their
+tabulated values are not on the same scale as the doses used in the study: the
+Table 1 means imply rates near `f / Dur` per unit dose, and products such as
+`k01 * Dur1` (0.43 plain, 0.42 adrenalinated) fall short of the reported `f`
+(0.56, 0.54). The table below shows the rates implied by the Table 1 means of
+`f` and `Dur` for a 6 mg/kg dose.
+
+```{r k0}
+k0 <- data.frame(
+  formulation = c("Plain", "Adrenalinated"),
+  f = c(0.56, 0.54), Dur1 = c(5.77, 11.30), Dur2 = c(18.10, 254.00),
+  k01_table = c(0.075, 0.037), k02_table = c(0.013, 0.001)
+) |>
+  dplyr::mutate(
+    `k01 implied (mg/min/kg)` = f * 6 / Dur1,
+    `k02 implied (mg/min/kg)` = (1 - f) * 6 / Dur2,
+    `k01 * Dur1 (Table 1)` = k01_table * Dur1,
+    `k02 * Dur2 (Table 1)` = k02_table * Dur2
+  )
+knitr::kable(k0, digits = 3)
+```
+
+The ratios between formulations agree with the paper either way (k01 halved and
+k02 about 90% lower with adrenaline), and the typical-value solve built from
+`f` and `Dur` reproduces the observed Cmax and AUC, which a rate on the scale
+of the tabulated `k01` and `k02` would not.
+
+# Assumptions and deviations
+
+* **Parameter scale.** Table 1 gives each parameter as "log-normal mean
+  (log-normal SD)". These were read as the arithmetic mean and SD of a
+  log-normal distribution and converted to the median and the log-scale
+  variance (see Source trace). Reading the means as medians instead would raise
+  every typical value by between under 0.001% (tau) and 18% (Dur1, adrenalinated).
+* **Parameterisation of the inputs.** Model C lists `f`, `Dur1`, `Dur2`, `tau`,
+  `k01` and `k02` for each formulation, but a zero-order input that empties its
+  compartment ties `k0 = f * Dose / Dur`. The model carries `f`, `Dur1`, `Dur2`
+  and `tau` (the quantities in Fig 1C's dose split and arrows) with their
+  Table 1 variability; the Table 1 SDs of `k01` and `k02` are not used. See
+  "Reported zero-order rates" for why the tabulated `k0` values cannot be used
+  as rates directly.
+* **`tau` is measured from the dose time.** The paper calls `tau` the delay to
+  the onset of the late absorption phase and draws it on the late compartment
+  only (Fig 1B/1C). The adrenalinated `tau` (3.87 min) is shorter than its
+  `Dur1` (11.30 min), so the two inputs overlap; the model allows this.
+* **Cap on `f`.** `f` is log-normal, so about 4% of plain and 1% of
+  adrenalinated draws exceed 1. The model caps `f` at 1 so that the late
+  fraction `1 - f` is never negative.
+* **Residual error.** The ADAPT 5 variance model is not reported. `propSd` is
+  fixed at 0, so simulations carry between-dog variability only.
+* **Repeated dosing.** The zero-order rates use the amount and time of the
+  most recent dose into each absorption compartment, which is exact for a
+  single administration and for administrations whose inputs do not overlap.
+  The study gave one administration (three injections within four minutes,
+  treated by the authors as a single dose).
+* **Abstract wording.** The abstract and Results state that adrenaline
+  decreased Cmax and `tau` "by approximately 60%". Table 1 gives ratios of
+  0.63 (Cmax) and 0.59 (`tau`), that is a decrease of about 40%; the "60%" is
+  the ratio. The other percentages (k01 -50%, k02 -90%, Dur1 +90%, Dur2
+  +1300%, AUC -23%) agree with Table 1 as decreases or increases.
+* **Dose.** Doses are of lidocaine hydrochloride and concentrations are of
+  lidocaine, as in the paper; CL/F and V/F absorb the salt factor and the
+  unknown bioavailability.
+* **Covariates.** CL/F and V/F are per kg (Table 1 units); no other covariates
+  were tested. The isoflurane anaesthesia during the block and the
+  medetomidine/butorphanol premedication may have influenced disposition, as
+  the authors discuss.

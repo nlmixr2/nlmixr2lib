@@ -23,6 +23,7 @@ Nel_2026_ceftriaxone <- function() {
   )
   vignette <- "Nel_2026_ceftriaxone"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Ceftriaxone was measured in capillary dried blood spots (LC-MS/MS, LOQ
   # 0.1 mg/L) and the model was fitted to those whole-blood concentrations

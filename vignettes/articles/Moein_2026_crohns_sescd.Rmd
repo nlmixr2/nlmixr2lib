@@ -1,0 +1,514 @@
+---
+title: "Crohn's disease placebo endoscopic disease progression, SES-CD (Moein 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Crohn's disease placebo endoscopic disease progression, SES-CD (Moein 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Moein A, Langenhorst J, Kassir N. A Longitudinal Disease
+  Progression Model Characterizing Endoscopic Response and Remission in
+  Crohn's Disease. J Pharmacokinet Pharmacodyn. 2026.
+  doi:10.1007/s10928-026-10042-x
+* Article: <https://doi.org/10.1007/s10928-026-10042-x> (PMC free full text:
+  PMC13356052)
+* Supplementary Material 1 is the NONMEM control stream of the final model;
+  Supplementary Material 2 holds the baseline tables (S1-S4) and the FREM
+  covariate forest plot (Figure S5).
+
+```{r load-model}
+mod <- readModelDb("Moein_2026_crohns_sescd")
+ui <- rxode2::rxode(mod)
+```
+
+There is **no drug, no dose and no ODE** in this model. It describes how the
+Simple Endoscopic Score for Crohn's Disease (SES-CD) evolves in placebo-treated
+patients, so that a drug effect can later be added on top of it. The source is
+a NONMEM `$PRED` model, so the packaged model is purely algebraic in time.
+
+# Population
+
+The analysis set was the 155 patients of the phase 3 BERGAMOT trial
+(NCT02394028) who received placebo in the 14-week induction phase and, if they
+reached a CDAI-70 clinical response (a decrease of at least 70 points from the
+baseline Crohn's Disease Activity Index) at week 14, placebo again in the
+52-week maintenance phase; 117 entered maintenance. Patients had
+moderately-to-severely active Crohn's disease. At induction baseline
+(Tables S2 and S3) the mean age was 36.9 years (range 18-79), mean body weight
+70.9 kg (39.7-118.4), 44.5% were female, 65.8% had prior anti-TNF exposure,
+the mean CDAI was 324.9 (211-479) and the mean SES-CD 13.6 (4-36). Disease
+location was ileum and colon in 62.6%, ileum only in 18.7% and colon only in
+18.7%. The data were 6,202 endoscopic subscore observations from ileocolonoscopies
+at baseline, end of induction (week 14) and end of maintenance (week 66).
+
+```{r population}
+str(mod()$population)
+```
+
+# Model structure
+
+SES-CD scores four variables -- size of ulcers, ulcerated surface, affected
+surface and presence of narrowings -- each 0-3 in each of five segments (ileum,
+right colon, transverse colon, left colon and sigmoid, rectum), giving 20
+subscores (items). Each item is a **bounded-integer** ordinal endpoint: a latent
+normal value with item location `mean` and dispersion `sd` on the probit scale
+is cut at `qnorm(1/4)`, `qnorm(2/4)` and `qnorm(3/4)`, so
+
+$$P(\text{score} = k) = \Phi\!\left(\frac{c_{k+1} - \text{mean}}{\text{sd}}\right) - \Phi\!\left(\frac{c_k - \text{mean}}{\text{sd}}\right), \quad c_0 = -\infty,\; c_4 = +\infty.$$
+
+For subject *i* and item *j* in segment *s* (Moein 2026 Equations 1 and 2):
+
+* `mean_ij = probitbase_j + etaprobitbase_s,i + pbo_i`, where the baseline
+  random effect is shared by the four items of a segment;
+* `sd_ij = exp(lsd_j + etalsd_i)`, one dispersion random effect shared by all
+  20 items;
+* `pbo_i = (pmax + etapmax_i) * (1 - exp(-log(2) / thalf_pbo * t))`, the single
+  latent placebo trajectory that shifts every item equally (the IRT link).
+
+A negative `pmax` lowers every item location, i.e. improves the endoscopy. The
+model also returns each item's expected subscore `escore_<segment>_<item>` and
+their sum `escore_sescd`.
+
+The control stream also contains a logistic **dropout** submodel for the end of
+induction, `prob_dropout = expit(logitp_dropout + e_score_cdai_delta_p_dropout *
+SCORE_CDAI_DELTA)`, the probability that a subject does not enter maintenance
+given the change in CDAI from baseline at week 14. The authors used it to decide
+which simulated subjects enter maintenance in their visual predictive checks.
+
+# Source trace
+
+| Element | Value in the model | Source |
+|---|---|---|
+| 20 item baselines `probitbase_<segment>_<item>` | Table 1 'BASE' rows | Table 1; control stream THETA(1, 3, 5, ..., 39) |
+| 20 item dispersions `lsd_<segment>_<item>` | log of Table 1 'SD' rows | Table 1; control stream THETA(2, 4, ..., 40) |
+| `pmax` | -0.329 | Table 1 'R MaxPL'; THETA(41) |
+| `lthalf_pbo` | log(13.8 week) | Table 1 'T50 PL'; THETA(42) |
+| `logitp_dropout` | 4.36 | Table 1 'Intercept Dropout End of Induction'; THETA(43) |
+| `e_score_cdai_delta_p_dropout` | 0.0607 per CDAI point | Table 1 'Slope Dropout End of Induction'; THETA(44) |
+| `etaprobitbase_ileum` ... `_rectum` | 0.712, 0.521, 1.07, 0.923, 1.11 | Table 1 'IIVBASE' rows (variances); $OMEGA 1-5 |
+| `etalsd` | 0.0923 | Table 1 'IIVSD IRT'; $OMEGA 6, exponential on SD |
+| `etapmax` | 0.648 | Table 1 'IIV RMaxPL'; $OMEGA 7, additive on RMaxPL |
+| Placebo trajectory | `(pmax + eta) * (1 - exp(-log(2)/thalf * t))` | Equation 1; control stream `PLEFF` |
+| Item location and dispersion | `mean = BASE + eta_segment + Response`, `SD = SD_j * exp(eta)` | Equation 2; control stream `BASE`, `SD` |
+| Cut points | `qnorm(1:3 / 4)` = -0.6745, 0, 0.6745 | control stream `CO1`-`CO3` |
+| Category probabilities | normal CDF differences | control stream `P0`-`P3` |
+| Dropout logit | `INT + SLOPE * CEOICDAI` | control stream `P_EOIDROP` |
+| Score-scale transform | `3 * Phi(E)` | Equation 3 (diagnostic only) |
+
+The individual Table 1 values and their control-stream counterparts are listed
+next to every `ini()` line of the model file.
+
+# Reproducing the Table 1 score-scale column
+
+Table 1 prints, beside each bounded-integer estimate, an "approximate mean
+SES-CD subscore" obtained with Equation 3, `3 * Phi(E)`. Recomputing it from
+the packaged baselines checks the transcription of all 20 locations. The
+reported score-scale value of `pmax` (-0.220) is the mean over the 20 items of
+`3 * (Phi(BASE + RMaxPL) - Phi(BASE))`, which the paper rounds to a reduction of
+about 4.4 points in total SES-CD.
+
+```{r score-scale}
+ini_df <- ui$iniDf
+base_df <- ini_df[grepl("^probitbase_", ini_df$name), c("name", "est")]
+table1_score_scale <- c(
+  1.44, 1.28, 1.409, 0.312, 0.879, 0.736, 0.821, 0.017, 0.503, 0.414,
+  0.529, 0.002, 0.933, 0.752, 0.910, 0.025, 0.595, 0.527, 0.672, 0.007
+)
+score_scale <- base_df |>
+  mutate(
+    computed = 3 * pnorm(est),
+    table1 = table1_score_scale,
+    difference = computed - table1
+  )
+knitr::kable(score_scale, digits = 4)
+
+pmax_val <- ini_df$est[ini_df$name == "pmax"]
+pmax_score_scale <- mean(3 * (pnorm(base_df$est + pmax_val) - pnorm(base_df$est)))
+c(pmax_score_scale = pmax_score_scale, total_sescd_change = 20 * pmax_score_scale)
+
+stopifnot(
+  max(abs(score_scale$difference)) < 0.0015,
+  abs(pmax_score_scale - (-0.220)) < 0.0015
+)
+```
+
+# Typical-subject trajectory
+
+```{r typical}
+items <- base_df$name |> sub(pattern = "^probitbase_", replacement = "")
+item_label <- function(x) {
+  seg <- c(
+    ileum = "Ileum", rcolon = "Right colon", tcolon = "Transverse colon",
+    lcolon = "Left colon", rectum = "Rectum"
+  )
+  var <- c(
+    ulcersize = "Size of ulcers", ulcerated = "Ulcerated surface",
+    affected = "Affected surface", narrowing = "Presence of narrowings"
+  )
+  parts <- strsplit(x, "_", fixed = TRUE)
+  vapply(parts, function(p) paste0(var[[p[2]]], ": ", seg[[p[1]]]), "")
+}
+
+ev_typ <- data.frame(
+  id = 1, time = seq(0, 462, by = 7), evid = 0,
+  cmt = "sescd_ileum_ulcersize", SCORE_CDAI_DELTA = 0
+)
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod, which = "omega"), ev_typ, returnType = "data.frame")
+
+ggplot(typ, aes(time / 7, escore_sescd)) +
+  geom_line() +
+  labs(
+    x = "Time since first dose (weeks)",
+    y = "Expected total SES-CD",
+    title = "Typical placebo patient (all random effects at zero)"
+  ) +
+  theme_bw()
+```
+
+The typical patient's placebo response reaches about a fifth of its maximum by
+week 5 and half of it at 13.8 weeks.
+
+# Virtual cohort and simulation
+
+The simulation reproduces the paper's visual predictive checks: 100 replicate
+trials of 155 placebo patients, each with endoscopy at baseline, week 14 (end of
+induction, day 98) and week 66 (end of maintenance, day 462). Only one
+observation record per visit is solved: every item's category probabilities
+come back as columns of that record, and the 20 subscores are then drawn from
+them in R. This is equivalent to solving one record per item, at a twentieth of
+the cost.
+
+The SES-CD part of the model does not depend on the CDAI change, so the
+dropout covariate is set to 0 here and is examined separately below.
+
+```{r simulate}
+n_sub <- 155
+n_trials <- 100
+visits <- c(0, 98, 462)
+ev <- expand.grid(time = visits, id = seq_len(n_sub)) |>
+  mutate(evid = 0, cmt = "sescd_ileum_ulcersize", SCORE_CDAI_DELTA = 0) |>
+  arrange(id, time)
+
+rxode2::rxSetSeed(20261025)
+sim <- rxode2::rxSolve(mod, ev, nStud = n_trials, returnType = "data.frame")
+```
+
+Each simulated subscore is drawn from its four category probabilities. Two
+draw schemes are compared:
+
+* **independent**: one uniform draw per item and visit, which is what rxode2's
+  ordinal endpoints (`sescd_<segment>_<item> ~ c(p0, p1, p2)`) do;
+* **authors' scheme**: the simulation block of the published control stream
+  draws one uniform number `R1` per subject (`IF(NEWIND.NE.2) CALL RANDOM(2,R)`)
+  and reuses it for every item and every visit of that subject.
+
+```{r draw}
+long <- sim |>
+  select(sim.id, id, time, starts_with("p0_"), starts_with("p1_"), starts_with("p2_")) |>
+  pivot_longer(
+    -c(sim.id, id, time),
+    names_to = c(".value", "item"),
+    names_pattern = "^(p[012])_(.*)$"
+  ) |>
+  mutate(c0 = p0, c1 = p0 + p1, c2 = p0 + p1 + p2)
+
+set.seed(20261025)
+u_subject <- sim |>
+  distinct(sim.id, id) |>
+  mutate(u_subj = runif(n()))
+long <- long |>
+  left_join(u_subject, by = c("sim.id", "id")) |>
+  mutate(
+    u_ind = runif(n()),
+    score_ind = (u_ind > c0) + (u_ind > c1) + (u_ind > c2),
+    score_auth = (u_subj > c0) + (u_subj > c1) + (u_subj > c2)
+  )
+```
+
+# Replicate Figure 3 -- mean subscores over time
+
+Replicates Figure 3 of Moein 2026 (mean SES-CD subscore by item over time with
+the 90% interval of 100 simulated trial means). The black points are the
+observed baseline (week 0) and week-14 means of Table S4; the week-14 values
+are those of the 117 patients who entered maintenance.
+
+```{r fig3, fig.height = 9}
+table_s4 <- data.frame(
+  item = items,
+  wk0 = c(
+    1.42, 1.27, 1.44, 0.66, 1.02, 0.81, 0.94, 0.31, 0.81, 0.65,
+    0.85, 0.10, 1.06, 0.87, 1.05, 0.12, 0.83, 0.72, 0.88, 0.06
+  ),
+  wk14 = c(
+    1.44, 1.29, 1.38, 0.64, 0.77, 0.62, 0.76, 0.24, 0.60, 0.50,
+    0.63, 0.09, 0.83, 0.67, 0.84, 0.13, 0.61, 0.53, 0.69, 0.08
+  )
+)
+obs_s4 <- table_s4 |>
+  pivot_longer(c(wk0, wk14), names_to = "visit", values_to = "mean_obs") |>
+  mutate(week = ifelse(visit == "wk0", 0, 14), label = item_label(item))
+
+trial_means <- long |>
+  group_by(sim.id, time, item) |>
+  summarise(m = mean(score_ind), .groups = "drop")
+band <- trial_means |>
+  group_by(time, item) |>
+  summarise(
+    lo = quantile(m, 0.05), med = median(m), hi = quantile(m, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(week = time / 7, label = item_label(item))
+
+ggplot(band, aes(week)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "steelblue", alpha = 0.4) +
+  geom_line(aes(y = med), colour = "steelblue4") +
+  geom_point(data = obs_s4, aes(y = mean_obs), colour = "black") +
+  facet_wrap(~label, ncol = 4) +
+  coord_cartesian(ylim = c(0, 2)) +
+  labs(x = "Time since first dose (weeks)", y = "SES-CD subscore (0-3)") +
+  theme_bw(base_size = 8)
+```
+
+```{r baseline-table}
+baseline_cmp <- band |>
+  filter(time == 0) |>
+  left_join(table_s4, by = "item") |>
+  transmute(
+    Item = label,
+    "Simulated median" = med,
+    "Simulated 90% interval" = sprintf("%.2f-%.2f", lo, hi),
+    "Observed (Table S4)" = wk0
+  )
+knitr::kable(baseline_cmp, digits = 2)
+```
+
+# Replicate Figure 4 -- endoscopic response and remission
+
+Endoscopic response is a reduction of at least 50% from the baseline total
+SES-CD and remission a total SES-CD of 0-2 (FDA 2022 guidance), assessed at the
+end of induction (week 14) and the end of maintenance (week 66). Figure 4 of
+Moein 2026 prints the observed rates (17%, 41%, 8% and 14%) and the median
+misprediction of the simulations (+3%, 0%, +2% and +9%), i.e. simulated medians
+of about 20%, 41%, 10% and 23%. The maintenance rates in the paper are among
+patients who entered maintenance; in this model entry depends only on the CDAI
+change, which is independent of the latent SES-CD trajectory, so it does not
+alter the expected maintenance-phase SES-CD distribution and every simulated
+subject is carried to week 66.
+
+```{r fig4}
+totals <- long |>
+  group_by(sim.id, id, time) |>
+  summarise(
+    independent = sum(score_ind),
+    authors = sum(score_auth),
+    .groups = "drop"
+  ) |>
+  pivot_longer(c(independent, authors), names_to = "scheme", values_to = "total")
+
+endpoints <- totals |>
+  group_by(sim.id, id, scheme) |>
+  mutate(baseline = total[time == 0]) |>
+  ungroup() |>
+  filter(time > 0) |>
+  mutate(
+    response = baseline > 0 & total <= 0.5 * baseline,
+    remission = total <= 2
+  )
+
+rates <- endpoints |>
+  group_by(scheme, sim.id, time) |>
+  summarise(
+    response = 100 * mean(response),
+    remission = 100 * mean(remission),
+    .groups = "drop"
+  ) |>
+  pivot_longer(c(response, remission), names_to = "endpoint", values_to = "pct") |>
+  group_by(scheme, time, endpoint) |>
+  summarise(
+    median = median(pct), lo = quantile(pct, 0.05), hi = quantile(pct, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(phase = ifelse(time == 98, "End of induction", "End of maintenance"))
+
+published <- data.frame(
+  endpoint = c("response", "response", "remission", "remission"),
+  phase = rep(c("End of induction", "End of maintenance"), 2),
+  observed = c(17, 41, 8, 14),
+  paper_sim_median = c(17 + 3, 41 + 0, 8 + 2, 14 + 9)
+)
+fig4_cmp <- rates |>
+  left_join(published, by = c("endpoint", "phase")) |>
+  arrange(endpoint, phase, scheme)
+fig4_cmp |>
+  transmute(
+    Endpoint = endpoint, Visit = phase, "Draw scheme" = scheme,
+    "Simulated median (%)" = median,
+    "Simulated 90% interval (%)" = sprintf("%.1f-%.1f", lo, hi),
+    "Paper simulated median (%)" = paper_sim_median,
+    "Observed (%)" = observed
+  ) |>
+  knitr::kable(digits = 1)
+
+ggplot(fig4_cmp, aes(scheme, median)) +
+  geom_pointrange(aes(ymin = lo, ymax = hi)) +
+  geom_hline(aes(yintercept = observed), colour = "red", linetype = 2) +
+  facet_grid(endpoint ~ phase, scales = "free_y") +
+  labs(
+    x = "Draw scheme", y = "Patients (%)",
+    caption = "Red dashed line: observed rate printed in Figure 4."
+  ) +
+  theme_bw()
+```
+
+With the authors' draw scheme the simulated rates reproduce the simulated
+medians the paper prints in Figure 4 at both visits, including the
+over-prediction of remission at the end of maintenance (about 23% simulated
+against 14% observed) that the authors report. The draw scheme matters for these
+binary endpoints because they depend on the *sum* of 20 subscores: reusing one
+uniform number for all items of a subject makes the subscores move together and
+widens the spread of the total. The item means of Figure 3 are the same under
+either scheme.
+
+# End-of-induction dropout submodel
+
+```{r dropout}
+cdai_grid <- data.frame(
+  id = 1, time = 98, evid = 0, cmt = "dropout",
+  SCORE_CDAI_DELTA = seq(-250, 50, by = 5)
+) |>
+  mutate(id = seq_len(n()))
+# rxSolve returns the covariate column alongside the outputs.
+drop_typ <- rxode2::rxSolve(rxode2::zeroRe(mod, which = "omega"), cdai_grid, returnType = "data.frame")
+
+ggplot(drop_typ, aes(SCORE_CDAI_DELTA, prob_dropout)) +
+  geom_line() +
+  geom_vline(xintercept = -70, linetype = 2) +
+  labs(
+    x = "CDAI change from baseline at week 14 (points)",
+    y = "Probability of not entering maintenance",
+    caption = "Dashed line: the CDAI-70 response required to enter maintenance."
+  ) +
+  theme_bw()
+
+p_ini <- setNames(ini_df$est, ini_df$name)
+cdai_half <- -p_ini[["logitp_dropout"]] / p_ini[["e_score_cdai_delta_p_dropout"]]
+cdai_half
+stopifnot(abs(cdai_half - (-70)) < 5)
+```
+
+The dropout probability is one half at a CDAI change of about -72 points,
+reproducing the protocol rule that only CDAI-70 responders continued placebo
+into maintenance.
+
+# FREM covariates on the maximum placebo response
+
+The covariate analysis used the full random effects model (FREM). It reports
+relative changes in RMaxPL at the 5th and 95th percentiles of each covariate,
+not a parametric covariate model, so none of these effects is coded in the
+packaged model; they are recorded in its `covariatesDataExcluded` metadata.
+Values transcribed from Figure S5 (median and 90% CI of the RMaxPL ratio to the
+reference subject):
+
+| Covariate | Value | RMaxPL ratio [90% CI] |
+|---|---|---|
+| C-reactive protein | 75.86 / 0.59 mg/L | 0.53 [-0.19, 0.95] / 1.5 [1.1, 2.4] |
+| Fecal calprotectin | 8511 / 66.07 ug/g | 0.40 [-0.15, 0.89] / 1.5 [1.1, 2.1] |
+| Anti-TNF status | TNF-naive / prior TNF | 1.6 [1.3, 2.1] / 0.69 [0.41, 0.83] |
+| Body weight | 102 / 49 kg | 1.1 [1.0, 1.2] / 0.91 [0.79, 0.97] |
+| Albumin | 48.98 / 33.11 g/L | 1.0 [1.0, 1.1] / 0.96 [0.90, 1.0] |
+| White blood cells | 14.13 / 4.27 x10^9/L | 1.0 [0.93, 1.2] / 0.96 [0.75, 1.1] |
+| Neutrophils | 11.48 / 2.75 x10^9/L | 1.1 [0.89, 1.3] / 0.93 [0.71, 1.1] |
+| Baseline SES-CD | 25.70 / 4.68 | 0.85 [0.63, 1.0] / 1.2 [0.94, 1.4] |
+| Baseline CDAI | 457 / 234 | 0.96 [0.87, 1.0] / 1.0 [0.97, 1.1] |
+| Smoking | current / previous / never | 1.2 [0.84, 1.6] / 1.3 [1.0, 1.9] / 0.78 [0.50, 0.95] |
+| Disease location | ileum and colon / colon / ileum | 0.99 [0.76, 1.2] / 1.1 [0.64, 1.5] / 0.93 [0.42, 1.5] |
+
+A ratio below 1 means a smaller placebo response.
+
+# Validation
+
+There is no drug exposure in this model, so there is no NCA; PKNCA is loaded
+only to keep the article set uniform. The checks are:
+
+* the Table 1 score-scale column and the -0.220 RMaxPL score-scale value are
+  reproduced to the printed precision (above);
+* the dropout logit crosses one half at the CDAI-70 entry rule (above);
+* the simulated baseline item means match the observed means of Table S4;
+* the simulated response and remission rates at both visits bracket the
+  paper's own simulated medians.
+
+```{r validation}
+base_check <- band |>
+  filter(time == 0) |>
+  left_join(table_s4, by = "item") |>
+  mutate(diff = med - wk0)
+summary(base_check$diff)
+
+fig4_cmp |>
+  filter(scheme == "authors") |>
+  select(endpoint, phase, median, lo, hi, paper_sim_median, observed)
+
+stopifnot(
+  # Structural: a mis-transcribed baseline or a wrong cut point shifts the
+  # simulated item means by tenths of a point.
+  abs(median(base_check$diff)) < 0.1,
+  quantile(abs(base_check$diff), 0.9) < 0.25,
+  # The paper's simulated medians (both visits) lie inside the 90%
+  # interval of this simulation under the authors' draw scheme.
+  all(with(
+    filter(fig4_cmp, scheme == "authors"),
+    paper_sim_median >= lo & paper_sim_median <= hi
+  ))
+)
+```
+
+# Assumptions and deviations
+
+* **Final estimates.** All values come from Table 1. The control stream
+  `$THETA`/`$OMEGA` records carry the same estimates; five thetas and four
+  omegas differ in the last printed digit (for example THETA(1) -0.0503 versus
+  Table 1 -0.050, and $OMEGA(1) 0.713 versus 0.712). Table 1 is used.
+* **IIV values are variances.** Table 1 prints the IIV estimates without a
+  scale; they agree with the control-stream `$OMEGA` records, which are
+  variances, and are used as such.
+* **Time unit.** The control stream evaluates the placebo trajectory in weeks
+  (`TSFDD / 7`). The packaged model takes time in days and divides by 7
+  internally; `thalf_pbo` stays in weeks as printed.
+* **Ordinal likelihood.** Each SES-CD subscore is an rxode2 ordinal endpoint
+  `~ c(p0, p1, p2)`, which reproduces the control stream's categorical
+  likelihood (`Y = P0`, ..., `Y = P3`). rxode2 numbers the categories 1-4, so
+  simulated category k is subscore k - 1. The dropout endpoint is a two-category
+  ordinal endpoint (category 1 = continues, category 2 = drops out).
+* **Simulation draw scheme.** The control stream's simulation block reuses one
+  uniform number per subject for every item and visit; rxode2's ordinal
+  endpoints draw independently per record. Both are shown above. The item means
+  are unaffected; the response and remission rates depend on the choice.
+* **Dropout covariate.** The CDAI change at the end of induction is the
+  control-stream column `CEOICDAI`, encoded as `SCORE_CDAI_DELTA` (CDAI at
+  week 14 minus baseline). Its distribution is not reported, so the simulations
+  carry every subject to week 66; because the covariate does not enter the
+  SES-CD part of the model, this leaves the simulated maintenance-phase
+  subscore distribution unchanged.
+* **Baseline eligibility.** BERGAMOT enrolled patients with a minimum baseline
+  SES-CD, and the observed minimum was 4. Simulated baselines are not
+  truncated, as in the paper's own simulations, so some simulated patients
+  start in remission.
+* **Unused active-treatment terms.** The control stream contains commented-out
+  `ACTMAX`/`ACT50` placeholders for a future drug effect and a treatment
+  indicator that is 1 for every analysed (placebo) patient; neither is part of
+  the estimated model and neither is packaged.
+* **FREM covariates.** Covariate effects on RMaxPL are available only as the
+  Figure S5 forest plot and are not coded in the model (see above).

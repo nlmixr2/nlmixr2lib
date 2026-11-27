@@ -1,0 +1,556 @@
+---
+title: "Plasmodium falciparum gametocyte carriage after ACT and primaquine (Bousema 2010)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Plasmodium falciparum gametocyte carriage after ACT and primaquine (Bousema 2010)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Bousema et al. (2010) fitted two simple deterministic compartmental models
+to Pfs25 QT-NASBA gametocyte data from two antimalarial trials in East
+African children, each trial separately:
+
+* a **density model** -- sequestered gametocytes `S` are released into the
+  circulation at rate `rho`, and circulating gametocytes `G` decay at rate
+  `mu`, so that `1 / mu` is the mean circulation time of a gametocyte;
+* a **prevalence model** -- a gametocyte-negative patient `E` becomes
+  gametocyte-positive `I` at rate `f`, and a positive patient clears
+  gametocytes at rate `r`, so that `1 / r` is the mean duration of
+  gametocyte carriage.
+
+The treatment arms enter as arm-specific circulation times, day-3 densities
+and durations of carriage. The paper's four fits are packaged as four model
+files:
+
+| Model | Trial | Arms (indicator) |
+|---|---|---|
+| `Bousema_2010_malaria_gametocyte_density_kenya` | Kenya 2003-2004 | non-ACT (reference) / ACT (`TRT_ARTEMISININ`) |
+| `Bousema_2010_malaria_gametocyte_density_tanzania` | Tanzania 2006 | ACT (reference) / ACT + primaquine (`TRT_PRIMAQUINE`) |
+| `Bousema_2010_malaria_gametocyte_prevalence_kenya` | Kenya 2003-2004 | non-ACT / ACT (`TRT_ARTEMISININ`) |
+| `Bousema_2010_malaria_gametocyte_prevalence_tanzania` | Tanzania 2006 | ACT / ACT + primaquine (`TRT_PRIMAQUINE`) |
+
+* Citation: `r rxode2::rxode2(readModelDb("Bousema_2010_malaria_gametocyte_density_kenya"))$reference`
+* Article: <https://doi.org/10.1186/1475-2875-9-136> (open access)
+* Additional file 1 (sensitivity of the circulation time to the size of the
+  sequestered pool): published with the article.
+
+**Time origin.** The density models describe the second phase of carriage
+only, after the drugs' direct effect has waned: their time zero is **day 3
+after the start of treatment**, and their initial states are the day-3
+densities. The prevalence models start at the start of treatment (day 0).
+
+# Population
+
+The Kenya trial (Mbita, 2003-2004, about 70 infectious bites per person per
+year) enrolled children aged 0.5-10 years (median 3) with uncomplicated
+falciparum malaria; 36 children treated with sulfadoxine-pyrimethamine +
+amodiaquine (non-ACT) and 90 treated with sulfadoxine-pyrimethamine +
+artesunate or artemether-lumefantrine (ACT, pooled) entered the model fits.
+The Tanzania trial (Mnyuzi, 2006, about 10 infectious bites per person per
+year) enrolled children aged 3-15 years (median 5); 36 children treated with
+sulfadoxine-pyrimethamine + artesunate (ACT) and 41 treated with the same ACT
+plus a single 0.75 mg/kg primaquine dose on the third treatment day (ACT-PQ)
+entered the fits (Bousema 2010 Table 1). Only children cured of asexual
+parasites without re-infection and gametocyte-positive by QT-NASBA at least
+once between day 0 and day 28 were included; weight and sex were not
+reported.
+
+```{r population}
+str(readModelDb("Bousema_2010_malaria_gametocyte_density_kenya")()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. They are
+collected here.
+
+| Model / parameter | Value | Source location |
+|---|---|---|
+| Density ODEs `dS/dt = -rho S`, `dG/dt = rho S - mu G` | -- | Methods, first density-model equation |
+| Density closed form `G(t)` | -- | Methods, second density-model equation (checked below) |
+| Prevalence ODEs `dE/dt = -f E`, `dI/dt = f E - r I` | -- | Methods, first prevalence-model equation |
+| Prevalence closed form `I(t)` | -- | Methods, second prevalence-model equation (checked below) |
+| `lmst` (both density models) | log(11) day, fixed | Table 2 `1/rho` = 1/11; Methods (best fit within 4-12 days) |
+| Kenya `lmct_nonact` | log(6.53) day | Figure 2 caption 6.53 (4.84-8.80); Results 6.5 |
+| Kenya `lmct_act` | log(5.04) day | Figure 2 caption 5.04 (4.20-6.06); Results 5.0 |
+| Kenya `lg3_nonact` | log(1.45) /uL | Table 2 G3 non-ACT 1.45 (0.44-4.74) |
+| Kenya `lg3_act` | log(0.13) /uL | Table 2 G3 ACT 0.13 (0.03-0.52) |
+| Kenya `ls3_nonact` | log(0.0263) /uL, fixed | Table 2 S3; Additional file 1 best-fit row (ln -3.64) |
+| Kenya `ls3_act` | log(0.0263) - 3, fixed | Methods ('3 log lower'); Table 2 S3 ACT 0.0013 (ln -6.64) |
+| Tanzania `lmct_act` | log(4.61) day | Figure 3 caption 4.61 (2.92-7.26); Results 4.6 |
+| Tanzania `lmct_actpq` | log(0.53) day | Figure 3 caption 0.53 (0.24-1.19); Results 0.5 |
+| Tanzania `lg3_act` | log(1.88) /uL | Table 2 G3 ACT 1.88 (0.37-9.52) |
+| Tanzania `lg3_actpq` | log(0.07) /uL | Table 2 G3 ACT-PQ 0.07 (0.01-0.86) |
+| Tanzania `ls3` | log(0.0013) /uL | Table 2 S3 0.0013 (0.0001-0.0237) |
+| Kenya `lmtpos` | log(5.60) day | Table 2 `1/f` 5.60 (1.06-29.4), estimated in the Kenya trial |
+| Tanzania `lmtpos` | log(5.60) day, fixed | Table 2 `1/f` footnote: estimated from the Kenya data |
+| Kenya `lmdur_nonact` | log(55.6) day | Table 3 55.6 (28.7-107.7); Figure 4 caption |
+| Kenya `lmdur_act` | log(13.4) day | Table 3 13.4 (10.2-17.5); Figure 4 caption |
+| Tanzania `lmdur_act` | log(28.6) day | Table 3 28.6 (17.0-48.0); Figure 5 caption |
+| Tanzania `lmdur_actpq` | log(6.3) day | Table 3 6.3 (4.7-8.5); Figure 5 caption |
+| `etalg3`, `expSd`, `etalogitgam` | 0, fixed | Methods name these random effects; their variances are not reported |
+
+Units of every ODE term:
+
+| Term | Units |
+|---|---|
+| `gametocyte_sequestered`, `gametocyte_circulating` (S, G) | gametocytes per uL blood |
+| `rho * S`, `mu * G` | gametocytes per uL per day |
+| `s_gametocyteneg`, `s_gametocytepos` (E, I) | probability (unitless) |
+| `f * E`, `I * r` | probability per day |
+
+# Load the models
+
+```{r load}
+mod_dk <- rxode2::rxode2(readModelDb("Bousema_2010_malaria_gametocyte_density_kenya"))
+mod_dt <- rxode2::rxode2(readModelDb("Bousema_2010_malaria_gametocyte_density_tanzania"))
+mod_pk <- rxode2::rxode2(readModelDb("Bousema_2010_malaria_gametocyte_prevalence_kenya"))
+mod_pt <- rxode2::rxode2(readModelDb("Bousema_2010_malaria_gametocyte_prevalence_tanzania"))
+```
+
+The random-effect variances and the residual SD are not reported, so the
+models carry them as `fixed(0)`; the simulations below are typical-value
+solves.
+
+# Density model
+
+## Typical-value solve and the published closed form
+
+One typical patient per arm is solved on a daily grid from day 3 to day 28
+after the start of treatment (model time 0 to 25). The solve is checked
+against the paper's closed-form solution
+`G(t) = exp(-mu t) G0 + rho S0 (exp(-mu t) - exp(-rho t)) / (rho - mu)`.
+
+```{r density-solve}
+model_days <- seq(0, 25, by = 0.25)
+
+# One typical patient per solve: with every random effect fixed at zero,
+# rxode2 warns about a multi-subject simulation without omega.
+dens_solve <- function(mod, trt_col, trt_value) {
+  ev <- data.frame(time = model_days, evid = 0, cmt = "gametocyte_circulating")
+  ev[[trt_col]] <- trt_value
+  as.data.frame(rxode2::rxSolve(mod, ev))
+}
+
+sim_dk <- bind_rows(
+  dens_solve(mod_dk, "TRT_ARTEMISININ", 0) |> mutate(arm = "non-ACT"),
+  dens_solve(mod_dk, "TRT_ARTEMISININ", 1) |> mutate(arm = "ACT")
+) |>
+  mutate(trial = "Kenya")
+sim_dt <- bind_rows(
+  dens_solve(mod_dt, "TRT_PRIMAQUINE", 0) |> mutate(arm = "ACT"),
+  dens_solve(mod_dt, "TRT_PRIMAQUINE", 1) |> mutate(arm = "ACT-PQ")
+) |>
+  mutate(trial = "Tanzania")
+
+dens_par <- tribble(
+  ~trial,     ~arm,      ~g3,   ~s3,                 ~mct,
+  "Kenya",    "non-ACT", 1.45,  0.0263,              6.53,
+  "Kenya",    "ACT",     0.13,  exp(log(0.0263) - 3), 5.04,
+  "Tanzania", "ACT",     1.88,  0.0013,              4.61,
+  "Tanzania", "ACT-PQ",  0.07,  0.0013,              0.53
+)
+
+dens_sim <- bind_rows(sim_dk, sim_dt) |>
+  select(trial, arm, time, gametocyte_density) |>
+  left_join(dens_par, by = c("trial", "arm")) |>
+  mutate(
+    rho = 1 / 11,
+    mu = 1 / mct,
+    closed_form = exp(-mu * time) * g3 +
+      rho * s3 * (exp(-mu * time) - exp(-rho * time)) / (rho - mu),
+    rel_diff = abs(gametocyte_density - closed_form) / closed_form,
+    day = time + 3
+  )
+
+# The ODE solve and the closed form use the same parameters, so they agree
+# to solver tolerance.
+stopifnot(max(dens_sim$rel_diff) < 1e-4)
+max(dens_sim$rel_diff)
+```
+
+At late times the circulating density decays at close to `mu`, so the
+slope of log density against time between days 14 and 28 recovers the
+published mean circulation time to within a few percent (the slow release
+of the sequestered pool flattens it slightly):
+
+```{r density-slope}
+dens_sim |>
+  filter(day %in% c(14, 28)) |>
+  group_by(trial, arm) |>
+  summarise(
+    published_mct = first(mct),
+    slope_mct = -(28 - 14) / diff(log(gametocyte_density)),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+The ACT-PQ arm is the exception: its circulating pool is gone within days
+and the density thereafter tracks the slow release of the small sequestered
+pool (`1 / rho` = 11 days), as the paper describes for Figure 3.
+
+## Comparison with Figures 2 and 3
+
+The fitted lines of Figures 2 and 3 were digitised by the maintainers at the
+sampling days (natural-log density; the plots' dotted detection limit,
+0.02 gametocytes/uL, sits at about -3.8).
+
+```{r density-figure, fig.width = 7, fig.height = 4.5}
+fig_dens <- tribble(
+  ~trial,     ~arm,      ~day, ~published_line,
+  "Kenya",    "non-ACT",  3,    0.643,
+  "Kenya",    "non-ACT",  7,    0.136,
+  "Kenya",    "non-ACT", 14,   -0.724,
+  "Kenya",    "non-ACT", 28,   -2.077,
+  "Kenya",    "ACT",      3,   -1.290,
+  "Kenya",    "ACT",      7,   -1.788,
+  "Kenya",    "ACT",     14,   -2.541,
+  "Kenya",    "ACT",     28,   -3.509,
+  "Tanzania", "ACT",      3,    1.372,
+  "Tanzania", "ACT",      7,    0.626,
+  "Tanzania", "ACT",     14,   -0.379,
+  "Tanzania", "ACT",     28,   -1.981,
+  "Tanzania", "ACT-PQ",   3,   -0.910,
+  "Tanzania", "ACT-PQ",   7,   -3.378,
+  "Tanzania", "ACT-PQ",  14,   -3.709,
+  "Tanzania", "ACT-PQ",  28,   -3.714
+)
+
+dens_cmp <- fig_dens |>
+  left_join(
+    dens_sim |> select(trial, arm, day, gametocyte_density),
+    by = c("trial", "arm", "day")
+  ) |>
+  mutate(model_log_typical = log(gametocyte_density))
+
+dens_cmp |>
+  select(trial, arm, day, published_line, model_log_typical) |>
+  rename(
+    "Trial" = trial, "Arm" = arm, "Day" = day,
+    "Published fitted line, ln(G)" = published_line,
+    "Model typical value, ln(G)" = model_log_typical
+  ) |>
+  knitr::kable(digits = 2)
+
+ggplot(dens_sim, aes(day, log(gametocyte_density), colour = arm)) +
+  geom_line() +
+  geom_point(data = dens_cmp, aes(y = published_line), shape = 1, size = 2.5) +
+  geom_hline(yintercept = log(0.02), linetype = "dotted") +
+  facet_wrap(~trial) +
+  coord_cartesian(ylim = c(-8, 3)) +
+  labs(
+    x = "Days since start of treatment",
+    y = "ln gametocyte density (/uL)",
+    colour = "Arm",
+    caption = "Lines: model typical value. Circles: fitted lines digitised from Figures 2 and 3."
+  )
+```
+
+At day 3 the model's typical density sits 0.3-0.8 natural-log units below
+the published lines (1.8 for ACT-PQ), and the published lines decline more
+slowly than `exp(-mu t)`: from day 3 to day 28 the Kenya non-ACT line falls
+`r with(dens_cmp, round(published_line[arm == "non-ACT" & day == 3] - published_line[arm == "non-ACT" & day == 28], 1))`
+natural-log units where the model falls
+`r with(dens_cmp, round(model_log_typical[arm == "non-ACT" & day == 3] - model_log_typical[arm == "non-ACT" & day == 28], 1))`. The lines are
+therefore not the typical-value curve `ln G(t)` at the Table 2 estimates.
+They are consistent in direction with the expected value of a log-normal
+observation left-censored at the detection limit -- the lines flatten as
+they approach it, and the ACT-PQ line runs along it -- but the random-effect
+and residual variances needed to compute that expectation are not reported,
+so the figures cannot be reproduced exactly. The circulation times, which
+are the paper's headline result, are carried by the packaged rates (see the
+slope table above).
+
+# Prevalence model
+
+## Typical-value solve and the published closed form
+
+The paper's closed form
+`I(t) = exp(-r t) I0 + f (1 - I0) (exp(-r t) - exp(-f t)) / (f - r)` is the
+prevalence in a cohort whose fraction `I0` is positive at day 0. In the
+packaged model `I0` is the patient's enrolment status `GAMETOCYTE_POS_BASE`;
+averaging the patient-level solve over a cohort gives the closed form, which
+is checked here with a virtual cohort per arm built from the enrolment
+gametocyte-negative counts in the Table 2 footnote.
+
+```{r prevalence-cohort}
+cohort <- tribble(
+  ~trial,     ~arm,      ~n, ~n_neg,
+  "Kenya",    "non-ACT", 36,  4,
+  "Kenya",    "ACT",     90, 12,
+  "Tanzania", "ACT",     36,  6,
+  "Tanzania", "ACT-PQ",  41,  4
+) |>
+  mutate(I0 = 1 - n_neg / n)
+
+prev_days <- seq(0, 28, by = 0.5)
+
+prev_events <- function(trial_name, trt_col) {
+  arms <- cohort |> filter(trial == trial_name) |> mutate(trt = row_number() - 1)
+  subj <- arms |>
+    group_by(arm, trt) |>
+    reframe(GAMETOCYTE_POS_BASE = rep(c(0, 1), c(n_neg, n - n_neg))) |>
+    mutate(id = row_number())
+  expand.grid(time = prev_days, id = subj$id) |>
+    left_join(subj, by = "id") |>
+    mutate(evid = 0, cmt = "s_gametocytepos", !!trt_col := trt)
+}
+
+sim_pk <- rxode2::rxSolve(rxode2::zeroRe(mod_pk, which = "omega"), prev_events("Kenya", "TRT_ARTEMISININ"),
+  keep = c("arm", "GAMETOCYTE_POS_BASE")
+) |>
+  as.data.frame() |>
+  mutate(trial = "Kenya")
+sim_pt <- rxode2::rxSolve(rxode2::zeroRe(mod_pt, which = "omega"), prev_events("Tanzania", "TRT_PRIMAQUINE"),
+  keep = c("arm", "GAMETOCYTE_POS_BASE")
+) |>
+  as.data.frame() |>
+  mutate(trial = "Tanzania")
+
+prev_par <- tribble(
+  ~trial,     ~arm,      ~dur,
+  "Kenya",    "non-ACT", 55.6,
+  "Kenya",    "ACT",     13.4,
+  "Tanzania", "ACT",     28.6,
+  "Tanzania", "ACT-PQ",  6.3
+)
+
+prev_cohort <- bind_rows(sim_pk, sim_pt) |>
+  group_by(trial, arm, time) |>
+  summarise(prevalence = mean(p_gametocytepos), .groups = "drop") |>
+  left_join(prev_par, by = c("trial", "arm")) |>
+  left_join(cohort |> select(trial, arm, I0), by = c("trial", "arm")) |>
+  mutate(
+    f = 1 / 5.60,
+    r = 1 / dur,
+    closed_form = exp(-r * time) * I0 +
+      f * (1 - I0) * (exp(-r * time) - exp(-f * time)) / (f - r)
+  )
+
+stopifnot(max(abs(prev_cohort$prevalence - prev_cohort$closed_form)) < 1e-5)
+max(abs(prev_cohort$prevalence - prev_cohort$closed_form))
+```
+
+## Mean duration of carriage
+
+For a patient who is gametocyte-positive at enrolment, the expected time
+spent gametocyte-positive is the area under `s_gametocytepos`, which must
+equal `1 / r` -- the duration of carriage in Table 3.
+
+```{r duration}
+long_days <- seq(0, 1500, by = 0.5)
+dur_check <- bind_rows(
+  rxode2::rxSolve(rxode2::zeroRe(mod_pk, which = "omega"),
+    data.frame(id = rep(1:2, each = length(long_days)), time = long_days, evid = 0,
+      cmt = "s_gametocytepos", TRT_ARTEMISININ = rep(c(0, 1), each = length(long_days)),
+      GAMETOCYTE_POS_BASE = 1)
+  ) |> as.data.frame() |> mutate(trial = "Kenya", arm = ifelse(id == 1, "non-ACT", "ACT")),
+  rxode2::rxSolve(rxode2::zeroRe(mod_pt, which = "omega"),
+    data.frame(id = rep(1:2, each = length(long_days)), time = long_days, evid = 0,
+      cmt = "s_gametocytepos", TRT_PRIMAQUINE = rep(c(0, 1), each = length(long_days)),
+      GAMETOCYTE_POS_BASE = 1)
+  ) |> as.data.frame() |> mutate(trial = "Tanzania", arm = ifelse(id == 1, "ACT", "ACT-PQ"))
+) |>
+  group_by(trial, arm) |>
+  summarise(
+    simulated_duration = sum(diff(time) * (head(s_gametocytepos, -1) + tail(s_gametocytepos, -1)) / 2),
+    .groups = "drop"
+  ) |>
+  left_join(prev_par, by = c("trial", "arm")) |>
+  mutate(pct_diff = 100 * (simulated_duration - dur) / dur)
+
+dur_check |>
+  rename(
+    "Trial" = trial, "Arm" = arm,
+    "Area under P(positive), days" = simulated_duration,
+    "Table 3 duration, days" = dur,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2)
+
+# Trapezoidal integration of a smooth exponential on a 0.5-day grid.
+stopifnot(max(abs(dur_check$pct_diff)) < 0.1)
+```
+
+The fourfold reductions the paper reports follow directly: non-ACT to ACT
+in Kenya `r round(55.6 / 13.4, 1)`-fold, ACT to ACT-PQ in Tanzania
+`r round(28.6 / 6.3, 1)`-fold.
+
+## Comparison with Figures 4 and 5 and Table 3
+
+The fitted lines of Figures 4 and 5 were digitised by the maintainers at the
+sampling days. Those lines are the paper's *marginal* predictions: 10,000
+draws of the patient random effect added on the logit scale and averaged.
+The typical-value prediction is computed here with `I0` set to each line's
+digitised day-0 value.
+
+```{r prevalence-figure, fig.width = 7, fig.height = 4.5}
+fig_prev <- tribble(
+  ~trial,     ~arm,      ~time, ~published_line,
+  "Kenya",    "non-ACT",  0,    0.903,
+  "Kenya",    "non-ACT",  3,    0.854,
+  "Kenya",    "non-ACT",  7,    0.787,
+  "Kenya",    "non-ACT", 14,    0.703,
+  "Kenya",    "non-ACT", 28,    0.570,
+  "Kenya",    "ACT",      0,    0.893,
+  "Kenya",    "ACT",      3,    0.706,
+  "Kenya",    "ACT",      7,    0.564,
+  "Kenya",    "ACT",     14,    0.396,
+  "Kenya",    "ACT",     28,    0.200,
+  "Tanzania", "ACT",      0,    0.985,
+  "Tanzania", "ACT",      3,    0.851,
+  "Tanzania", "ACT",      7,    0.725,
+  "Tanzania", "ACT",     14,    0.580,
+  "Tanzania", "ACT",     28,    0.401,
+  "Tanzania", "ACT-PQ",   0,    0.984,
+  "Tanzania", "ACT-PQ",   3,    0.585,
+  "Tanzania", "ACT-PQ",   7,    0.362,
+  "Tanzania", "ACT-PQ",  14,    0.157,
+  "Tanzania", "ACT-PQ",  28,    0.020
+)
+
+i0_fig <- fig_prev |> filter(time == 0) |> select(trial, arm, I0_fig = published_line)
+
+fig_events <- bind_rows(
+  expand.grid(time = prev_days, id = 1:2) |>
+    mutate(trial = "Kenya", TRT_ARTEMISININ = id - 1, arm = ifelse(id == 1, "non-ACT", "ACT")),
+  expand.grid(time = prev_days, id = 3:4) |>
+    mutate(trial = "Tanzania", TRT_PRIMAQUINE = id - 3, arm = ifelse(id == 3, "ACT", "ACT-PQ"))
+) |>
+  left_join(i0_fig, by = c("trial", "arm")) |>
+  mutate(evid = 0, cmt = "s_gametocytepos", GAMETOCYTE_POS_BASE = I0_fig) |>
+  arrange(id, time)
+
+prev_fig_sim <- bind_rows(
+  rxode2::rxSolve(rxode2::zeroRe(mod_pk, which = "omega"), filter(fig_events, trial == "Kenya") |> select(-TRT_PRIMAQUINE),
+    keep = c("trial", "arm")
+  ) |> as.data.frame(),
+  rxode2::rxSolve(rxode2::zeroRe(mod_pt, which = "omega"), filter(fig_events, trial == "Tanzania") |> select(-TRT_ARTEMISININ),
+    keep = c("trial", "arm")
+  ) |> as.data.frame()
+)
+
+table3 <- tribble(
+  ~trial,     ~arm,      ~time, ~observed,
+  "Kenya",    "non-ACT", 14,    28 / 36,
+  "Kenya",    "non-ACT", 28,    14 / 29,
+  "Kenya",    "ACT",     14,    50 / 90,
+  "Kenya",    "ACT",     28,    10 / 84,
+  "Tanzania", "ACT",     14,    21 / 36,
+  "Tanzania", "ACT",     28,    14 / 36,
+  "Tanzania", "ACT-PQ",  14,     2 / 41,
+  "Tanzania", "ACT-PQ",  28,     5 / 41
+)
+
+prev_cmp <- fig_prev |>
+  left_join(prev_fig_sim |> select(trial, arm, time, model_typical = p_gametocytepos),
+    by = c("trial", "arm", "time")
+  ) |>
+  left_join(table3, by = c("trial", "arm", "time"))
+
+prev_cmp |>
+  rename(
+    "Trial" = trial, "Arm" = arm, "Day" = time,
+    "Published fitted line (marginal)" = published_line,
+    "Model typical value" = model_typical,
+    "Observed, Table 3" = observed
+  ) |>
+  knitr::kable(digits = 3)
+
+ggplot(prev_fig_sim, aes(time, p_gametocytepos, colour = arm)) +
+  geom_line() +
+  geom_point(data = prev_cmp, aes(y = published_line), shape = 1, size = 2.5) +
+  geom_point(data = table3, aes(y = observed), shape = 4, size = 2.5) +
+  facet_wrap(~trial) +
+  labs(
+    x = "Days since start of treatment",
+    y = "Gametocyte prevalence",
+    colour = "Arm",
+    caption = paste(
+      "Lines: model typical value. Circles: fitted lines digitised from Figures 4 and 5.",
+      "Crosses: observed prevalence, Table 3."
+    )
+  )
+```
+
+The typical-value curves track the published lines, and every difference
+points the way a logit-scale random effect moves a marginal mean: averaging
+over the random effect pulls probabilities toward one half, so the
+published line lies below the typical value while the prevalence is above
+0.5 (Kenya non-ACT, for example 0.570 against
+`r round(prev_cmp$model_typical[prev_cmp$arm == "non-ACT" & prev_cmp$time == 28], 3)`
+at day 28) and above it once the prevalence has fallen below 0.5 (Kenya
+ACT, 0.200 against
+`r round(prev_cmp$model_typical[prev_cmp$trial == "Kenya" & prev_cmp$arm == "ACT" & prev_cmp$time == 28], 3)`
+at day 28). The random-effect variance is not reported, so the marginal
+curve itself cannot be recomputed.
+
+# NCA
+
+There is no drug concentration in these models -- the treatments enter as
+arm indicators, not as doses -- so a PKNCA analysis does not apply. The
+checks above (closed forms, circulation-time slopes, and the area under the
+probability of carriage) take its place.
+
+# Assumptions and deviations
+
+* **Four files for four fits.** The paper fitted each model to each trial
+  separately (Methods: 'Each trial was fitted separately'), with the arms of a
+  trial fitted jointly; the four files follow that structure.
+* **Density-model time origin.** Table 2 reports the initial states as the
+  day-3 values (S3, G3) and Figures 2-3 draw the fitted lines from day 3, so
+  the density models' time zero is day 3 after the start of treatment. The
+  direct drug effect on days 0-2 is not modelled; the paper folds it into G3
+  and S3.
+* **Unreported variances.** The density models' patient random effect on
+  overall log density (`etalg3`, applied to both pools) and residual SD on
+  log density (`expSd`), and the prevalence models' logit-scale patient
+  random effect (`etalogitgam`), are named in the Methods but their variances
+  are not reported; all three are `fixed(0)`. Simulations are typical-value.
+* **Censoring.** Densities below 0.02 gametocytes/uL were treated as
+  left-censored in the fit. Censoring lives in the data (for example a
+  `CENS` column when estimating with nlmixr2), not in the model file.
+* **Published fitted lines not reproduced.** The density lines of Figures 2-3
+  are flatter and higher than the typical-value curve; the prevalence lines
+  of Figures 4-5 are marginal predictions. Neither can be recomputed without
+  the unreported variances (see the comparisons above).
+* **Circulation times from the figure captions.** The captions give three
+  significant figures (6.53, 5.04, 4.61, 0.53 days) where the Results text
+  rounds to two; the caption values are used and agree with Additional
+  file 1.
+* **Sequestered pool S3.** Kenya non-ACT S3 = 0.0263 is the best-fitting value
+  of the Additional file 1 sensitivity grid and is fixed; the Kenya ACT pool
+  is fixed three natural-log units lower (Methods), coded exactly as
+  `log(0.0263) - 3` (Table 2 prints 0.0013). Table 2 gives the Tanzania S3 of
+  0.0013 with a confidence interval, which by its footnote marks an
+  estimated value, so it is not fixed; it equals the Kenya ACT value.
+* **Time to positivity in Tanzania.** Table 2 prints `1/f` = 5.60 with a
+  confidence interval in the Tanzania column, but its footnote says the
+  value was estimated from the Kenya data. It is estimated in the Kenya file
+  and fixed in the Tanzania file.
+* **Enrolment status.** The paper's `I0` is the patient's gametocyte status at
+  day 0 (`GAMETOCYTE_POS_BASE`). The Table 3 footnote says every analysed
+  child was gametocyte-positive at enrolment, while the Table 2 footnote
+  counts 4, 12, 6 and 4 gametocyte-negative children in the four arms, and
+  the day-0 points of Figures 4-5 (about 0.90, 0.89, 0.98 and 0.98) match
+  neither exactly. The virtual cohort uses the Table 2 counts; the figure
+  comparison uses the figures' own day-0 values.
+* **New names.** The maintainers registered `TRT_ARTEMISININ` (ACT arm,
+  pooling artesunate and artemether regimens), `TRT_PRIMAQUINE` and
+  `GAMETOCYTE_POS_BASE` as covariates, and `gametocyte_density`,
+  `gametocyte_status`, `s_gametocyteneg` and `s_gametocytepos` as states and
+  outputs. The sequestered and circulating gametocyte pools are declared
+  paper-specific compartments.

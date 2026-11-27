@@ -22,6 +22,7 @@ Apgar_2018_ALXN1540_human_qsp <- function() {
     "bil_surge"
   )
   units <- list(time = "h", dosing = "mg/kg", concentration = "nM")
+  dosing <- "lnp_central"
 
   compartmentData <- list(
     lnp_central = list(

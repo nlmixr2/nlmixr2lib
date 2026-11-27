@@ -10,6 +10,7 @@ Ohk_2022_sumatriptan <- function() {
   )
   vignette <- "Ohk_2022_sumatriptan"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "depot2")
 
   covariateData <- list(
     SEXF = list(

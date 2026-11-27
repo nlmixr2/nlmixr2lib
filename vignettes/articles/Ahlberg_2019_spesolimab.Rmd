@@ -1,0 +1,428 @@
+---
+title: "Spesolimab (MAB92) and its mouse surrogate MAB04: translational TMDD (Ahlberg 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Spesolimab (MAB92) and its mouse surrogate MAB04: translational TMDD (Ahlberg 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Ahlberg et al. predicted the human pharmacokinetics of MAB92 (BI 655130,
+spesolimab), a humanized anti-IL-36R IgG1 that binds neither monkey nor mouse
+IL-36R, before its first-in-human study. Target-mediated drug disposition
+(TMDD) was characterised in mice with MAB04, a rat/mouse chimeric IgG2a
+surrogate against mouse IL-36R; the linear PK came from Dedrick-scaled
+cynomolgus monkey data; and the human target baseline was set by scaling the
+mouse estimate with FANTOM5 transcriptome data. The paper reports four models,
+packaged here as four files:
+
+| Model | Species | Role |
+|-------|---------|------|
+| `Ahlberg_2019_MAB04_mouse_mm` | mouse | 2-compartment parallel linear + Michaelis-Menten fit (Table 3) |
+| `Ahlberg_2019_MAB04_mouse` | mouse | 2-compartment rapid-binding TMDD fit, R0 estimated (Table 4, mouse) |
+| `Ahlberg_2019_spesolimab_dedrick` | monkey, Dedrick-scaled | linear 2-compartment fit on the human scale (Table 4, monkey) |
+| `Ahlberg_2019_spesolimab` | human | rapid-binding TMDD prediction, R0 = 0.010 nM (Table 4, translated human) |
+
+```{r models}
+nms <- c(
+  "Ahlberg_2019_MAB04_mouse_mm", "Ahlberg_2019_MAB04_mouse",
+  "Ahlberg_2019_spesolimab_dedrick", "Ahlberg_2019_spesolimab"
+)
+uis <- setNames(lapply(nms, function(n) rxode2::rxode(readModelDb(n))), nms)
+```
+
+* Citation: `r uis[["Ahlberg_2019_spesolimab"]]$reference`
+* Article: <https://doi.org/10.1080/19420862.2019.1615345> (open access,
+  PMC6601564)
+
+# Population
+
+* **Mouse:** female C57BL/6 mice given a single intraperitoneal dose of MAB04
+  at 0.3, 1.5 or 10 mg/kg (N = 3 per group), sampled by 10 uL whole-blood
+  microsampling over one (0.3 mg/kg) or two weeks. Body weight is not
+  reported. Both mouse models were fitted to the mean profile of each group.
+* **Monkey:** nine male drug-naive cynomolgus monkeys (2.3-2.7 kg) received a
+  single 10-min intravenous infusion of spesolimab at 0.3, 1.5 or 10 mg/kg.
+  Only the 10 mg/kg mean profile was Dedrick-transformed and fitted.
+* **Human:** healthy male volunteers in the Phase 1 single-rising-dose study
+  NCT02525679, intravenous doses of 0.03-10 mg/kg. No parameter was fitted to
+  human data; observed Cmax and AUC0-inf (Table 5) were used only to test the
+  prediction. The paper does not report the number, age or weight of the
+  volunteers.
+
+```{r population}
+str(uis[["Ahlberg_2019_spesolimab"]]$population)
+```
+
+# Source trace
+
+The model equations are printed in the Results section ("Modeling approach").
+With A0 = depot, A1 = central, A2 = peripheral1 and Rtot = total_target:
+
+* dA0/dt = -ka A0
+* dA1/dt = ka A0 - ke A1 - k12 A1 + k21 A2 - Rtot kint A1 / (KD + A1/V)
+* dA2/dt = k12 A1 - k21 A2
+* dRtot/dt = kin - kdeg Rtot - (kint - kdeg) Rtot (A1/V) / (KD + A1/V)
+* C = A1/V, with kin = kdeg R0 so the drug-free target sits at R0.
+
+The human model has no depot (intravenous dosing). The parallel-elimination
+model (Figure 2) replaces the target terms with Vmax C / (Km + C).
+
+| Parameter | MM mouse | TMDD mouse | Dedrick monkey | Human | Source |
+|-----------|----------|------------|----------------|-------|--------|
+| Vc (L) | 0.000403 | 0.000403 (fixed) | 3.0 | 3.0 | Table 3; Table 4 |
+| k10 / kel (1/h) | 0.00506 | 0.00506 (fixed) | 0.0021 | 0.0021 | Table 3; Table 4 |
+| k12 (1/h) | 0.086 (fixed) | 0.086 (fixed) | 0.0056 | 0.0089 | Table 3; Table 4 |
+| k21 (1/h) | 0.063 (fixed) | 0.063 (fixed) | 0.0074 | 0.0110 | Table 3; Table 4 |
+| ka (1/h) | 0.152 (fixed) | 0.152 (fixed) | - | - | Table 3; Table 4 |
+| F | 1 (fixed) | 1 (fixed) | - | - | Modeling approach text |
+| Vmax (nmol/h) | 0.000533 | - | - | - | Table 3 |
+| Km (nM) | 1.18 | - | - | - | Table 3 |
+| R0 (nM) | - | 0.794 | - | 0.010 | Table 4 (human = 0.794 x 0.013, text) |
+| KD (nM) | - | 0.24 (fixed) | - | 0.020 (fixed) | Table 4 (SPR) |
+| kdeg (1/h) | - | 1.39 (fixed) | - | 1.39 (fixed) | Table 4; text (0.5 h turnover) |
+| kint (1/h) | - | 1.39 (fixed) | - | 1.39 (fixed) | Table 4; text |
+
+The tables carry no inter-individual or residual variability: every model is a
+mean (typical-value) fit, so the packaged models are deterministic.
+
+# Assumptions and deviations
+
+* **Rate-constant units.** Tables 3 and 4 label every rate constant
+  "day-1", but the models were run in hours. Vmax is given in nmol/h; the
+  time axes of Figures 4 and 5 are in hours; kdeg = kint = 1.39 is
+  ln(2)/0.5 h, the plasma-membrane turnover the text cites; Vc x k10 in 1/h
+  reproduces the mouse NCA clearance (Table 2); and with 1/h the human model
+  reproduces the Figure 6 and Figure 8 AUCs (below). With day-1 the human
+  linear clearance would be 0.006 L/day, about 30-fold below any IgG. The
+  values are used as printed, in 1/h.
+* **Sign of the redistribution term.** The printed equation for A1 reads
+  "- A2*k21". The packaged models use + k21 A2, which is what the printed A2
+  equation (A1 K12 - A2 K21) requires for mass balance.
+* **Monkey versus translated-human k12 and k21.** Table 4 gives 0.0056 and
+  0.0074 1/h in the "Monkey mean" column but 0.0089 and 0.0110 1/h in the
+  "Translated human parameter" column, although the text says the human
+  linear parameters came from the Dedrick fit. The paper does not explain
+  the difference; each file uses its own column as printed.
+* **Dose input.** Doses are entered in nmol. The paper gives neither the
+  molecular weight nor the body weight it used. Table 5 predicted Cmax is
+  179.5 nM per mg/kg at every dose from 0.05 to 10 mg/kg, which with
+  Vc = 3.0 L pins the human dose input at 538.5 nmol per mg/kg (for example
+  80.8 kg at 150 kDa). The human and Dedrick simulations use that factor, so
+  the Cmax comparison with Table 5 predictions is a consequence of this
+  choice and not an independent check; AUC is. The mouse simulations assume
+  a 20 g mouse and 150 kDa.
+* **Infusion duration.** The human infusion duration is not reported; doses
+  are simulated as intravenous boluses. The monkey 10 mg/kg dose is
+  simulated as the reported 10-min infusion.
+* **Table 5 predicted AUC column.** The predicted AUC0-inf values printed for
+  3, 6 and 10 mg/kg (199,440; 549,062; 822,862 nM.h) are within 3% of the
+  observed values in the next column, yet the printed Pred./Obs. ratios for
+  those rows are 1.2, 0.9 and 1.1, and Figure 8 plots predictions of about
+  245, 510 and 860 uM.h. The dose-normalised predicted AUC also falls from
+  1 to 3 mg/kg, which no Michaelis-Menten or TMDD model can produce. The
+  comparison below therefore uses the observed AUC with the paper's
+  Pred./Obs. ratios and the Figure 6 / Figure 8 predictions, and reports the
+  printed predicted column for completeness.
+
+# Mouse: replicate Figure 4 and the Table 2 clearance
+
+```{r mouse-sim}
+mw_kda <- 150
+mouse_wt_kg <- 0.020
+mouse_doses <- c(0.3, 1.5, 10)
+mouse_times <- sort(unique(c(0, exp(seq(log(0.05), log(1000), length.out = 300)))))
+
+mouse_events <- bind_rows(lapply(seq_along(mouse_doses), function(i) {
+  amt <- mouse_doses[i] * mouse_wt_kg * 1000 / mw_kda # mg/kg -> nmol
+  bind_rows(
+    tibble(id = i, time = 0, evid = 1, amt = amt, cmt = "depot"),
+    tibble(id = i, time = mouse_times, evid = 0, amt = 0, cmt = "central")
+  ) |>
+    mutate(dose_mgkg = mouse_doses[i])
+}))
+
+sim_mouse <- bind_rows(
+  as.data.frame(rxSolve(uis[["Ahlberg_2019_MAB04_mouse_mm"]], mouse_events,
+    keep = "dose_mgkg"
+  )) |> mutate(model = "Parallel linear + MM (Table 3)"),
+  as.data.frame(rxSolve(uis[["Ahlberg_2019_MAB04_mouse"]], mouse_events,
+    keep = "dose_mgkg"
+  )) |> mutate(model = "Rapid-binding TMDD (Table 4)")
+)
+```
+
+```{r figure-4, fig.width = 7, fig.height = 4}
+sim_mouse |>
+  filter(time > 0, time <= 400, Cc > 0.1) |>
+  ggplot(aes(time, Cc, colour = factor(dose_mgkg), linetype = model)) +
+  geom_line() +
+  scale_y_log10(limits = c(0.1, 1e4)) +
+  labs(
+    x = "Time (h)", y = "Free MAB04 (nM)", colour = "Dose (mg/kg i.p.)",
+    linetype = NULL,
+    caption = "Replicates Figure 4 of Ahlberg 2019 (mean mouse profiles; 20 g mouse assumed)."
+  ) +
+  theme(legend.position = "bottom", legend.box = "vertical")
+```
+
+Figure 4 shows peaks of about 40, 250 and 1,500 nM for 0.3, 1.5 and
+10 mg/kg, a fall below 1 nM by 72 h at 0.3 mg/kg and below 1 nM by 336 h at
+1.5 mg/kg, and about 500 nM at 336 h for 10 mg/kg.
+
+```{r mouse-nca}
+mouse_conc <- sim_mouse |>
+  filter(!is.na(Cc)) |>
+  select(model, dose_mgkg, id, time, Cc)
+mouse_dose <- mouse_events |>
+  filter(evid == 1) |>
+  select(dose_mgkg, id, time, amt) |>
+  tidyr::crossing(model = unique(mouse_conc$model))
+
+nca_mouse <- pk.nca(PKNCAdata(
+  PKNCAconc(mouse_conc, Cc ~ time | model + dose_mgkg + id),
+  PKNCAdose(mouse_dose, amt ~ time | model + dose_mgkg + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE)
+))
+
+mouse_cl <- as.data.frame(nca_mouse) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  left_join(distinct(mouse_dose, model, dose_mgkg, amt), by = c("model", "dose_mgkg")) |>
+  # CL/F in mL/h/kg: nmol / (nM h) = L/h; x 1000 mL/L; / body weight.
+  mutate(cl_mlhkg = amt / PPORRES * 1000 / mouse_wt_kg) |>
+  select(model, dose_mgkg, cl_mlhkg) |>
+  left_join(tibble(dose_mgkg = mouse_doses, nca_table2 = c(1.62, 0.47, 0.13)), by = "dose_mgkg")
+
+mouse_cl |>
+  mutate(cl_mlhkg = signif(cl_mlhkg, 3), ratio = round(cl_mlhkg / nca_table2, 2)) |>
+  rename(
+    "Model" = model, "Dose (mg/kg)" = dose_mgkg,
+    "Simulated CL/F (mL/h/kg)" = cl_mlhkg, "Table 2 NCA CL/F (mL/h/kg)" = nca_table2,
+    "Ratio" = ratio
+  ) |>
+  knitr::kable(caption = "Mouse CL/F from the simulated profiles versus the Table 2 NCA.")
+```
+
+The parallel-elimination model and the TMDD model carry nearly the same
+target-mediated capacity: R0 x kint x Vc = 0.794 x 1.39 x 0.000403 =
+`r signif(0.794 * 1.39 * 0.000403, 3)` nmol/h, against the Michaelis-Menten
+Vmax of 0.000533 nmol/h, and the paper notes that R0 (0.794 nM) is close to
+Km (1.18 nM).
+
+```{r mouse-checks}
+stopifnot(
+  # Dose-dependent clearance falls with dose in both models, as in Table 2.
+  all(tapply(mouse_cl$cl_mlhkg, mouse_cl$model, function(x) all(diff(x) < 0))),
+  # Each simulated CL/F is within a factor of 1.5 of the mean NCA value.
+  all(abs(log(mouse_cl$cl_mlhkg / mouse_cl$nca_table2)) < log(1.5)),
+  abs(0.794 * 1.39 * 0.000403 / 0.000533 - 1) < 0.2
+)
+```
+
+# Monkey: replicate Figure 5
+
+```{r monkey, fig.width = 6, fig.height = 4}
+dose_factor <- 538.5 # nmol per mg/kg, from Table 5 predicted Cmax x Vc
+monkey_events <- bind_rows(
+  tibble(id = 1, time = 0, evid = 1, amt = 10 * dose_factor, rate = 10 * dose_factor / (10 / 60), cmt = "central"),
+  tibble(id = 1, time = c(seq(0.25, 24, by = 0.25), seq(25, 2000, by = 5)), evid = 0, amt = 0, rate = 0, cmt = "central")
+)
+sim_monkey <- as.data.frame(rxSolve(uis[["Ahlberg_2019_spesolimab_dedrick"]], monkey_events))
+
+ggplot(sim_monkey, aes(time, Cc)) +
+  geom_line() +
+  scale_y_log10(limits = c(10, 1e4)) +
+  labs(
+    x = "Time (h)", y = "Spesolimab (nM)",
+    caption = "Replicates Figure 5 of Ahlberg 2019 (Dedrick-transformed 10 mg/kg, human time scale)."
+  )
+
+conc_at <- function(t) approx(sim_monkey$time, sim_monkey$Cc, xout = t)$y
+t_half_sim <- log(2) * 1000 / log(conc_at(1000) / conc_at(2000))
+t_half_sim
+```
+
+The fitted line in Figure 5 falls from about 270 nM at 1,000 h to about
+82 nM at 2,000 h (digitised by the maintainers), a half-life of about 580 h.
+
+```{r monkey-check}
+stopifnot(abs(t_half_sim / 580 - 1) < 0.15)
+```
+
+# Human: Table 5, Figure 6 and Figure 8
+
+Two target baselines are simulated: R0 = 0.794 nM, the mouse value (equal
+expression, Figure 6), and the packaged R0 = 0.010 nM, the mouse value times
+the human-to-mouse FANTOM5 transcript ratio of 0.013 (Figure 8, Table 5).
+
+```{r human-sim}
+human_doses <- c(0.03, 0.05, 0.1, 0.3, 1, 3, 6, 10)
+human_times <- sort(unique(c(0, exp(seq(log(0.01), log(20000), length.out = 600)))))
+human_events <- bind_rows(lapply(seq_along(human_doses), function(i) {
+  bind_rows(
+    tibble(id = i, time = 0, evid = 1, amt = human_doses[i] * dose_factor, cmt = "central"),
+    tibble(id = i, time = human_times, evid = 0, amt = 0, cmt = "central")
+  ) |>
+    mutate(dose_mgkg = human_doses[i])
+}))
+
+mod_h <- uis[["Ahlberg_2019_spesolimab"]]
+mod_h_equal <- mod_h |> rxode2::ini(lrbase = log(0.794))
+
+sim_human <- bind_rows(
+  as.data.frame(rxSolve(mod_h, human_events, keep = "dose_mgkg")) |>
+    mutate(scenario = "FANTOM5-corrected R0 (0.010 nM)"),
+  as.data.frame(rxSolve(mod_h_equal, human_events, keep = "dose_mgkg")) |>
+    mutate(scenario = "Mouse R0 (0.794 nM)")
+)
+```
+
+```{r human-profiles, fig.width = 7, fig.height = 4.5}
+sim_human |>
+  filter(time > 0, time <= 5000, Cc > 0.01) |>
+  ggplot(aes(time, Cc, colour = factor(dose_mgkg))) +
+  geom_line() +
+  facet_wrap(~scenario) +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Free spesolimab (nM)", colour = "Dose (mg/kg i.v.)",
+    caption = "Predicted human profiles behind Figures 6 and 8 of Ahlberg 2019."
+  )
+```
+
+```{r human-nca}
+# Once free drug falls below KD the target-mediated clearance drives it to
+# values below the solver tolerance (1e-100 and lower, some slightly
+# negative). Those are set to zero, which PKNCA treats as trailing BLQ, so
+# AUC0-inf is the AUC to the last quantifiable value; the omitted tail is
+# below 1e-6 nM.
+human_conc <- sim_human |>
+  filter(!is.na(Cc)) |>
+  mutate(Cc = ifelse(Cc < 1e-6, 0, Cc)) |>
+  select(scenario, dose_mgkg, id, time, Cc)
+human_dose <- human_events |>
+  filter(evid == 1) |>
+  select(dose_mgkg, id, time, amt) |>
+  tidyr::crossing(scenario = unique(human_conc$scenario))
+
+nca_human <- pk.nca(PKNCAdata(
+  PKNCAconc(human_conc, Cc ~ time | scenario + dose_mgkg + id),
+  PKNCAdose(human_dose, amt ~ time | scenario + dose_mgkg + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE)
+))
+human_res <- as.data.frame(nca_human) |>
+  select(scenario, dose_mgkg, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+table5 <- tibble(
+  dose_mgkg = human_doses,
+  cmax_pred = c(5, 9, 18, 54, 179, 538, 1077, 1795),
+  cmax_obs = c(3, 7, 12, 43, 131, 409, 1033, 1587),
+  auc_pred_printed = c(374, 1510, 4259, 20376, 84217, 199440, 549062, 822862),
+  auc_obs = c(381, 2108, 4492, 20595, 91297, 204324, 548108, 823784),
+  auc_ratio_printed = c(1.0, 0.7, 0.9, 1.0, 0.9, 1.2, 0.9, 1.1)
+)
+```
+
+The FANTOM5-corrected model against Table 5 (Cmax in nM, AUC0-inf in nM.h):
+
+```{r table-5}
+fantom <- human_res |>
+  filter(scenario == "FANTOM5-corrected R0 (0.010 nM)") |>
+  left_join(table5, by = "dose_mgkg") |>
+  mutate(auc_ratio_sim = aucinf.obs / auc_obs)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = fantom |> select(dose_mgkg, cmax, aucinf.obs),
+  reference = table5 |>
+    transmute(dose_mgkg, cmax = cmax_pred, aucinf.obs = auc_obs * auc_ratio_printed),
+  by = "dose_mgkg",
+  units = c(cmax = "nM", aucinf.obs = "nM*h"),
+  tolerance_pct = 20
+)
+cmp |>
+  rename("Dose (mg/kg)" = dose_mgkg) |>
+  knitr::kable(caption = paste(
+    "Simulated versus published predictions. Reference Cmax is the Table 5",
+    "predicted Cmax; reference AUC0-inf is the Table 5 observed AUC times the",
+    "printed Pred./Obs. ratio (one decimal place, so +/-5% rounding)."
+  ))
+
+fantom |>
+  transmute(
+    dose_mgkg, cmax_obs, cmax_sim = signif(cmax, 3), auc_obs,
+    auc_sim = signif(aucinf.obs, 3), auc_pred_printed,
+    ratio_sim = round(auc_ratio_sim, 2), auc_ratio_printed
+  ) |>
+  rename(
+    "Dose (mg/kg)" = dose_mgkg, "Cmax obs" = cmax_obs, "Cmax sim" = cmax_sim,
+    "AUC obs" = auc_obs, "AUC sim" = auc_sim, "AUC pred (Table 5, printed)" = auc_pred_printed,
+    "Sim/Obs" = ratio_sim, "Pred/Obs (Table 5)" = auc_ratio_printed
+  ) |>
+  knitr::kable(caption = "Simulated versus observed human exposure (Table 5).")
+```
+
+At the doses where TMDD is saturated (3-10 mg/kg) the simulated
+AUC0-inf reproduces the paper's Pred./Obs. ratios and the Figure 8
+predictions (about 245, 510 and 860 uM.h). Between 0.05 and 1 mg/kg the
+simulated AUC is 15-30% below the published ratios, and at 0.03 mg/kg about
+20% above; Figure 8, which
+plots about 72 uM.h for 1 mg/kg, agrees with the simulation (69 uM.h)
+rather than with Table 5 (84 uM.h). Both columns of Table 5 are kept above so
+the difference is visible.
+
+```{r figure-6-8, fig.width = 7, fig.height = 4}
+human_res |>
+  left_join(table5, by = "dose_mgkg") |>
+  ggplot(aes(auc_obs / 1000, aucinf.obs / 1000)) +
+  geom_abline(slope = 1, intercept = 0, colour = "grey50") +
+  geom_point(colour = "red") +
+  geom_line(colour = "red") +
+  facet_wrap(~scenario) +
+  coord_cartesian(xlim = c(0, 1000), ylim = c(0, 1000)) +
+  labs(
+    x = "Observed AUC0-inf (uM.h, Table 5)", y = "Simulated AUC0-inf (uM.h)",
+    caption = "Replicates the AUC panels of Figures 6 (mouse R0) and 8 (FANTOM5 R0) of Ahlberg 2019."
+  )
+```
+
+Figure 6 plots predictions of about 55, 180 and 385 uM.h at 3, 6 and
+10 mg/kg for the equal-expression scenario (digitised by the maintainers).
+
+```{r human-checks}
+fig6 <- human_res |>
+  filter(scenario == "Mouse R0 (0.794 nM)", dose_mgkg %in% c(3, 6, 10)) |>
+  arrange(dose_mgkg) |>
+  mutate(fig = c(55, 180, 385) * 1000)
+sat <- fantom |> filter(dose_mgkg >= 3)
+fig8_1mgkg <- fantom$aucinf.obs[fantom$dose_mgkg == 1]
+equal_vs_fantom <- inner_join(
+  human_res |> filter(scenario == "Mouse R0 (0.794 nM)"),
+  fantom |> select(dose_mgkg, aucinf.obs),
+  by = "dose_mgkg"
+)
+stopifnot(nrow(equal_vs_fantom) == length(human_doses))
+
+stopifnot(
+  # Equal-expression scenario against the Figure 6 AUC panel.
+  all(abs(fig6$aucinf.obs / fig6$fig - 1) < 0.15),
+  # Saturated doses against the printed Pred./Obs. ratios (+/-5% rounding).
+  all(abs(sat$auc_ratio_sim - sat$auc_ratio_printed) < 0.15),
+  # 1 mg/kg against the Figure 8 AUC panel (about 72 uM.h).
+  abs(fig8_1mgkg / 72000 - 1) < 0.15,
+  # Equal expression underpredicts AUC at every dose (the paper's conclusion).
+  all(equal_vs_fantom$aucinf.obs.x < equal_vs_fantom$aucinf.obs.y)
+)
+```

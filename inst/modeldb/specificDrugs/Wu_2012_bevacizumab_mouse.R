@@ -39,6 +39,7 @@ Wu_2012_bevacizumab_mouse <- function() {
     dosing = "ug",
     concentration = "ug/mL"
   )
+  dosing <- c("depot", "central")
 
   # Per-kg normalisation: Table II reports Vc and VLN in mL/kg and the dose
   # is 0.45 mg/kg, so state amounts are ug/kg and amount / volume is

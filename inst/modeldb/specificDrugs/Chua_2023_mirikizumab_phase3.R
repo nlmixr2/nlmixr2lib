@@ -3,6 +3,7 @@ Chua_2023_mirikizumab_phase3 <- function() {
   reference <- "Chua L, Friedrich S, Zhang XC. Mirikizumab Pharmacokinetics in Patients with Moderately to Severely Active Ulcerative Colitis: Results from Phase III LUCENT Studies. Clin Pharmacokinet. 2023;62(10):1479-1491. doi:10.1007/s40262-023-01281-z"
   vignette <- "Chua_2023_mirikizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "mirikizumab", units = "mg", specimen = "administration site", verified = TRUE),

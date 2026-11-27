@@ -1,0 +1,458 @@
+---
+title: "Model-evaluation tutorial simulation models: hypothetical IV two-compartment drug and warfarin PK/PCA (Nguyen 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Model-evaluation tutorial simulation models: hypothetical IV two-compartment drug and warfarin PK/PCA (Nguyen 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Nguyen_2017_iv2cmt")()$meta$reference`
+* Article: <https://doi.org/10.1002/psp4.12161>
+
+Nguyen 2017 is the first tutorial of the ISoP Model Evaluation Group. Its
+product is a catalogue of goodness-of-fit graphics and metrics (PRED / CPRED /
+PPRED, WRES / CWRES / PWRES, IWRES, EBE plots, VPC, NPC, npd / npde) and a
+proposed core set of evaluation graphs. That catalogue is not a model and is
+not packaged.
+
+To illustrate the graphics, the authors simulated data from two fully
+specified "true" models and fitted the true model plus several deliberately
+misspecified ones. The two data-generating models are packaged here:
+
+* `Nguyen_2017_iv2cmt` -- the pharmacokinetic case example: a hypothetical drug
+  given as a single IV bolus, two-compartment disposition, a binary
+  concomitant-treatment effect on clearance and a weight effect on central
+  volume (main text Eqs. 1-6; Supplementary Table S1).
+* `Nguyen_2017_warfarin` -- the PK/PD case example: total warfarin after a
+  single oral dose with a one-compartment, lagged first-order absorption model
+  driving an inhibitory turnover model of prothrombin complex activity (PCA)
+  (Eqs. 24-25; Supplementary Table S2).
+
+The misspecified models (one-compartment, no covariates, no correlation,
+constant or proportional error only; immediate-effect and effect-compartment
+PD) were fitted to simulated data, and the paper prints no estimates for them,
+so they are not packaged.
+
+```{r models}
+mod_pk <- readModelDb("Nguyen_2017_iv2cmt")()
+mod_wf <- readModelDb("Nguyen_2017_warfarin")()
+```
+
+# Population
+
+There is no real population. The PK case example simulates 180 virtual
+subjects, 60 at each of 10, 100 and 1000 mg IV, sampled at 0.5, 1, 4, 12 and
+24 h; body weight is Normal(70, 15) kg and half of the subjects receive the
+concomitant treatment. The PK/PD case example simulates the design of the
+O'Reilly warfarin studies: 32 subjects (27 male, 5 female) of 40-102 kg given
+1.5 mg/kg orally, with total warfarin concentrations (mg/L) and PCA. The
+subject weights and doses used below are those of the deposited simulated
+dataset (`datafit.csv` in the Supplementary R codes and data).
+
+```{r population}
+str(mod_pk$meta$population)
+str(mod_wf$meta$population)
+```
+
+# Source trace
+
+| Item | Value | Source |
+|---|---|---|
+| **iv2cmt** structure | 2-cmt, IV bolus, linear elimination | Eq. 1 |
+| CL at CONMED_DRUGX = 0 | 0.1 L/h (Table S1 prints 1) | Supp Table S1; as-run value, see below |
+| V1 at 70 kg | 0.5 L (Table S1 prints 5) | Supp Table S1; as-run value |
+| Q | 0.1 L/h (Table S1 prints 1) | Supp Table S1; as-run value |
+| V2 | 1 L (Table S1 prints 10) | Supp Table S1; as-run value |
+| Concomitant-treatment effect on CL | `exp(0.5 * CONMED_DRUGX)` | Eq. 5; Supp Table S1 |
+| Weight effect on V1 | `exp(0.75 * log(WT/70))` | Eqs. 5-6; Supp Table S1 |
+| IIV | SD 0.5 on all four, corr(CL, V1) = 0.5 | Statistical model text; Supp Table S1 |
+| Residual error | `(0.3 + 0.15 f)` SD | Eq. 3; Supp Table S1 |
+| **warfarin** structure | 1-cmt, lagged first-order absorption, turnover PCA | Eq. 24 |
+| CL, V at 70 kg | 0.135 L/h, 8.03 L | Supp Table S2 |
+| Weight exponents on CL, V | 0.75, 1 (fixed) | Eq. 25; Supp Table S2 |
+| Absorption half-life, lag | 0.588 h, 0.842 h | Supp Table S2 |
+| PCA0, C50, Teq | 96.6, 1.17 mg/L, 13.0 h | Supp Table S2 |
+| Maximal inhibition | 1 (Table S2: -1, fixed) | Supp Table S2; sign discussed below |
+| IIV variances | CL 0.0703, V 0.0195, Tabs 0.551, Tlag 0.347, PCA0 0.00286, C50 0.2, Teq 0.0114 | Supp Table S2 |
+| Residual variances | PK additive 0.094 (mg/L)^2, proportional 0.00677; PCA additive 14.6 | Supp Table S2 |
+
+# Part 1 -- hypothetical IV two-compartment drug
+
+## Typical-value solve against the closed form
+
+With all random effects at zero the model must reproduce the bi-exponential
+solution of Eq. 1 for a bolus.
+
+```{r pk-closed-form}
+mod_pk_typ <- rxode2::zeroRe(mod_pk)
+tgrid <- c(0, 0.25, 0.5, 1, 2, 4, 8, 12, 24, 48)
+ev_typ <- data.frame(
+  id = rep(1:2, each = length(tgrid) + 1),
+  time = rep(c(0, tgrid), 2),
+  amt = rep(c(100, rep(0, length(tgrid))), 2),
+  evid = rep(c(1L, rep(0L, length(tgrid))), 2),
+  cmt = "central",
+  WT = 70,
+  CONMED_DRUGX = rep(0:1, each = length(tgrid) + 1)
+)
+typ <- rxode2::rxSolve(mod_pk_typ, ev_typ, addDosing = FALSE, rtol = 1e-10, atol = 1e-12) |>
+  as.data.frame()
+
+closed_2cmt <- function(t, dose, cl, v1, q, v2) {
+  k10 <- cl / v1; k12 <- q / v1; k21 <- q / v2
+  s <- k10 + k12 + k21
+  alpha <- (s + sqrt(s^2 - 4 * k10 * k21)) / 2
+  beta <- (s - sqrt(s^2 - 4 * k10 * k21)) / 2
+  dose / v1 * ((alpha - k21) / (alpha - beta) * exp(-alpha * t) +
+    (k21 - beta) / (alpha - beta) * exp(-beta * t))
+}
+typ$closed <- with(typ, closed_2cmt(time, 100, ifelse(id == 1, 0.1, 0.1 * exp(0.5)), 0.5, 0.1, 1))
+rel_err <- max(abs(typ$Cc / typ$closed - 1))
+rel_err
+stopifnot(rel_err < 1e-6)
+```
+
+## As-run values versus Supplementary Table S1
+
+Supplementary Table S1 prints CL = 1 L/h, V1 = 5 L, Q = 1 L/h and V2 = 10 L.
+The deposited simulation was not generated with those numbers. The geometric
+means of the 180 deposited empirical-Bayes individual parameters, with the
+covariate effects removed, are 0.102 L/h, 0.528 L, 0.113 L/h and 0.998 L. The
+deposited figure script carries the true-model fit as 0.0977, 0.518, 0.113 and
+1.01. Published Figure 1 shows observations up to about 4500 mg/L, which a
+1000 mg bolus can reach only if V1 is near 0.5 L. The packaged model therefore
+uses one tenth of each printed value.
+
+Because all four disposition parameters scale by the same factor, the Table S1
+values give the same curve shape at exactly one tenth of the concentration:
+
+```{r pk-table-s1}
+mod_s1 <- rxode2::ini(mod_pk_typ, lcl = log(1), lvc = log(5), lq = log(1), lvp = log(10))
+typ_s1 <- rxode2::rxSolve(mod_s1, ev_typ, addDosing = FALSE, rtol = 1e-10, atol = 1e-12) |>
+  as.data.frame()
+ratio <- typ$Cc / typ_s1$Cc
+range(ratio)
+stopifnot(max(abs(ratio / 10 - 1)) < 1e-6)
+```
+
+## Known-answer check against the deposited simulated data
+
+The median concentrations of the deposited 180-subject dataset
+(`pkdata_5pt_180.csv`, computed by the maintainers) are compared with the
+median of a fresh cohort of the same design (200 subjects per dose).
+
+```{r pk-cohort}
+dep_pk <- data.frame(
+  dose = rep(c(10, 100, 1000), 5),
+  time = rep(c(0.5, 1, 4, 12, 24), each = 3),
+  dep_median = c(13.93, 144.4, 1449, 12.55, 114.2, 1127, 3.896, 36.23, 360.6,
+                 1.301, 13.96, 123.4, 0.6797, 7.456, 59.73)
+)
+
+rxode2::rxSetSeed(20170201)
+n_arm <- 200
+subj_pk <- data.frame(id = seq_len(3 * n_arm), dose = rep(c(10, 100, 1000), each = n_arm))
+subj_pk$WT <- rnorm(nrow(subj_pk), 70, 15)
+subj_pk$CONMED_DRUGX <- rep(0:1, length.out = nrow(subj_pk))
+stopifnot(all(subj_pk$WT > 0))
+
+ev_pk <- bind_rows(
+  subj_pk |> mutate(time = 0, amt = dose, evid = 1L, cmt = "central"),
+  subj_pk[rep(seq_len(nrow(subj_pk)), each = 5), ] |>
+    mutate(time = rep(c(0.5, 1, 4, 12, 24), nrow(subj_pk)), amt = 0, evid = 0L, cmt = "central")
+) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, amt, evid, cmt, dose, WT, CONMED_DRUGX)
+
+sim_pk <- rxode2::rxSolve(mod_pk, ev_pk, keep = "dose", addDosing = FALSE) |> as.data.frame()
+
+cmp_pk <- sim_pk |>
+  group_by(dose, time) |>
+  summarise(sim_median = median(sim), .groups = "drop") |>
+  left_join(dep_pk, by = c("dose", "time")) |>
+  mutate(log_ratio = log(sim_median / dep_median))
+knitr::kable(cmp_pk, digits = 3)
+
+stopifnot(
+  # Structural: the Table S1 values would put every cell near log(10) = 2.3.
+  median(abs(cmp_pk$log_ratio)) < 0.2,
+  # Envelope over the 15 dose-time cells; robust to which subjects land in the tails.
+  quantile(abs(cmp_pk$log_ratio), 0.9) < 0.4
+)
+```
+
+```{r pk-figure, fig.cap = "Simulated individual predictions (grey) and their medians (line) by dose, with the deposited-data medians (points). Compare Supplementary Figure S1 of Nguyen 2017."}
+# Individual predictions without residual error: the additive error makes some
+# low concentrations negative, which a log axis cannot show.
+ggplot(sim_pk, aes(time, Cc)) +
+  geom_line(aes(group = id), colour = "grey80", alpha = 0.4) +
+  stat_summary(fun = median, geom = "line", colour = "black") +
+  geom_point(data = dep_pk, aes(time, dep_median), colour = "red", inherit.aes = FALSE) +
+  facet_wrap(~ dose, labeller = label_both) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Concentration (mg/L)")
+```
+
+## PKNCA
+
+The paper reports no NCA. Each simulated subject's AUC0-inf must equal
+dose / CL_i for this linear model, which tests clearance, the covariate effect
+on it and the bolus input together.
+
+```{r pk-nca}
+subj_nca <- subj_pk |> group_by(dose) |> slice_head(n = 60) |> ungroup()
+nca_grid <- c(0, 0.25, 0.5, 1, 2, 4, 6, 8, 12, 24, 48, 72, 96, 120, 168, 240, 336)
+ev_nca <- bind_rows(
+  subj_nca |> mutate(time = 0, amt = dose, evid = 1L, cmt = "central"),
+  subj_nca[rep(seq_len(nrow(subj_nca)), each = length(nca_grid)), ] |>
+    mutate(time = rep(nca_grid, nrow(subj_nca)), amt = 0, evid = 0L, cmt = "central")
+) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, amt, evid, cmt, dose, WT, CONMED_DRUGX)
+sim_nca <- rxode2::rxSolve(mod_pk, ev_nca, keep = "dose", addDosing = FALSE,
+                           rtol = 1e-8, atol = 1e-10) |>
+  as.data.frame() |>
+  mutate(treatment = paste(dose, "mg"))
+
+conc <- sim_nca |>
+  filter(!is.na(Cc)) |>
+  mutate(Cc = pmax(Cc, 0)) |>
+  select(id, time, Cc, treatment)
+doses <- sim_nca |> distinct(id, treatment, dose) |> mutate(time = 0)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(doses, dose ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+nca_pk <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_pk)
+
+auc_chk <- as.data.frame(nca_pk$result) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  left_join(sim_nca |> distinct(id, cl, dose), by = "id") |>
+  mutate(ratio = PPORRES * cl / dose)
+summary(auc_chk$ratio)
+stopifnot(
+  # Measured median 1.008: trapezoidal bias on the sampling grid.
+  abs(median(auc_chk$ratio) - 1) < 0.03,
+  quantile(abs(auc_chk$ratio - 1), 0.9) < 0.1
+)
+```
+
+# Part 2 -- warfarin PK and prothrombin complex activity
+
+## The sign of the maximal effect
+
+Eq. 24 prints the production term as `Rin * (1 - Emax * C / (C + C50))` while
+Supplementary Table S2 gives `Emax = -1 (fixed)`. Taken together literally,
+warfarin would *stimulate* PCA production. The deposited simulated dataset
+shows the opposite: median PCA falls from about 96 at baseline to about 21 at
+48-72 h (below). The packaged model therefore uses complete inhibition,
+`kin * (1 - imax * Cc / (Cc + ic50))` with `imax = 1`, which is the magnitude
+in Table S2 and the direction of the simulated data. The -1 is the sign
+convention of the estimation software for an inhibitory effect.
+
+## Drug-free steady state
+
+```{r wf-baseline}
+mod_wf_typ <- rxode2::zeroRe(mod_wf)
+ev_base <- data.frame(id = 1L, time = c(0, 24, 72, 144), amt = 0, evid = 0L,
+                      cmt = "central", dvid = 1L, WT = 70)
+base <- rxode2::rxSolve(mod_wf_typ, ev_base, addDosing = FALSE) |> as.data.frame()
+base$PCA
+stopifnot(max(abs(base$PCA / 96.6 - 1)) < 1e-6)
+```
+
+## Virtual cohort
+
+The 32 subjects of the deposited simulated dataset (the O'Reilly design),
+replicated five times for 160 simulated subjects.
+
+```{r wf-cohort}
+subj_wf <- data.frame(
+  WT = c(66.7, 66.7, 66.7, 80, 40, 75.3, 60, 90, 50, 70, 82, 75.3, 75.3, 50, 56.7, 58,
+         78, 74.7, 63.7, 59, 62, 58, 73.3, 76.7, 74.7, 80, 80, 80, 102, 70, 83.3, 62),
+  dose_mg = c(100, 100, 100, 120, 60, 113, 90, 135, 75, 105, 123, 113, 113, 75, 85, 87,
+          117, 112, 95.5, 88.5, 93, 87, 110, 115, 112, 120, 120, 120, 153, 105, 125, 93)
+)
+c(range(subj_wf$WT), median(subj_wf$dose_mg / subj_wf$WT))
+
+tobs_wf <- c(0, 0.5, 1, 1.5, 2, 3, 6, 9, 12, 24, 36, 48, 72, 96, 120, 144)
+coh_wf <- subj_wf[rep(seq_len(nrow(subj_wf)), 5), ]
+coh_wf$id <- seq_len(nrow(coh_wf))
+
+make_wf_events <- function(coh, times) {
+  bind_rows(
+    coh |> mutate(time = 0, amt = dose_mg, evid = 1L, cmt = "depot"),
+    coh[rep(seq_len(nrow(coh)), each = length(times)), ] |>
+      mutate(time = rep(times, nrow(coh)), amt = 0, evid = 0L, cmt = "central")
+  ) |>
+    arrange(id, time, desc(evid)) |>
+    # Two declared endpoints: every observation row nominates one with dvid;
+    # both Cc and PCA are returned as columns at every observation time.
+    mutate(dvid = ifelse(evid == 0L, 1L, NA_integer_)) |>
+    select(id, time, amt, evid, cmt, dvid, WT, dose_mg)
+}
+
+rxode2::rxSetSeed(1968)
+sim_wf <- rxode2::rxSolve(mod_wf, make_wf_events(coh_wf, tobs_wf), keep = "dose_mg",
+                          addDosing = FALSE) |>
+  as.data.frame()
+```
+
+## Known-answer check against the deposited simulated data
+
+Medians of the deposited 32-subject simulated dataset (`datafit.csv`, computed
+by the maintainers; times with at least 8 observations) against the medians of
+the simulated cohort. `Cc` and `PCA` are the model predictions; the residual
+errors are symmetric, so they do not move a median.
+
+```{r wf-known-answer}
+dep_cc <- data.frame(time = c(3, 6, 9, 12, 24, 36, 48, 72, 96, 120),
+                     dep_median = c(8.194, 10.67, 11.05, 10.77, 9.255, 7.422, 6.267, 4.559, 3.274, 2.009))
+dep_pca <- data.frame(time = c(0, 24, 36, 48, 72, 96, 120, 144),
+                      dep_median = c(96.4, 36.71, 25.16, 20.52, 20.52, 25.42, 28.63, 43.0))
+
+med_wf <- sim_wf |> group_by(time) |> summarise(Cc = median(Cc), PCA = median(PCA))
+cmp_cc <- inner_join(med_wf |> select(time, sim_median = Cc), dep_cc, by = "time") |>
+  mutate(log_ratio = log(sim_median / dep_median))
+cmp_pca <- inner_join(med_wf |> select(time, sim_median = PCA), dep_pca, by = "time") |>
+  mutate(log_ratio = log(sim_median / dep_median))
+knitr::kable(cmp_cc, digits = 3, caption = "Warfarin concentration (mg/L)")
+knitr::kable(cmp_pca, digits = 3, caption = "PCA")
+
+stopifnot(
+  median(abs(cmp_cc$log_ratio)) < 0.15,
+  quantile(abs(cmp_cc$log_ratio), 0.9) < 0.4,
+  # A stimulatory reading of Emax = -1 would put PCA above baseline, a log
+  # ratio of about 1.5 at the nadir.
+  median(abs(cmp_pca$log_ratio)) < 0.1,
+  quantile(abs(cmp_pca$log_ratio), 0.9) < 0.25
+)
+```
+
+## Typical profile (Figure 7b)
+
+The population-prediction curves (red) of Figure 7b reach a PCA nadir of about
+18-20 between 48 and 72 h and recover to about 40 by 144 h, for subjects of
+about 70 kg given about 100 mg.
+
+```{r wf-typical, fig.cap = "Typical-value warfarin concentration and PCA for a 66.7 kg subject given 100 mg. Compare the red PRED curves of Figure 7b."}
+ev_typ_wf <- make_wf_events(data.frame(id = 1L, WT = 66.7, dose_mg = 100), seq(0, 144, by = 0.5))
+typ_wf <- rxode2::rxSolve(mod_wf_typ, ev_typ_wf, addDosing = FALSE) |> as.data.frame()
+nadir <- typ_wf[which.min(typ_wf$PCA), c("time", "PCA")]
+nadir
+typ_wf$PCA[typ_wf$time == 144]
+stopifnot(
+  nadir$PCA > 12, nadir$PCA < 26,
+  nadir$time >= 40, nadir$time <= 80
+)
+
+typ_wf |>
+  select(time, `Warfarin (mg/L)` = Cc, `PCA` = PCA) |>
+  tidyr::pivot_longer(-time) |>
+  ggplot(aes(time, value)) +
+  geom_line() +
+  facet_wrap(~ name, scales = "free_y") +
+  labs(x = "Time (h)", y = NULL)
+```
+
+## Visual predictive check (Figure 7d)
+
+```{r wf-vpc, fig.cap = "10th, 50th and 90th percentiles of simulated PCA with residual error (lines) and the deposited-data medians (points). Compare Figure 7d."}
+rxode2::rxSetSeed(1963)
+ev_pca <- make_wf_events(coh_wf, c(0, 24, 36, 48, 72, 96, 120, 144)) |>
+  mutate(dvid = ifelse(evid == 0L, 2L, NA_integer_))
+sim_pca <- rxode2::rxSolve(mod_wf, ev_pca, addDosing = FALSE) |> as.data.frame()
+vpc <- sim_pca |>
+  group_by(time) |>
+  summarise(p10 = quantile(sim, 0.1), p50 = median(sim), p90 = quantile(sim, 0.9))
+knitr::kable(vpc, digits = 1)
+ggplot(vpc, aes(time)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = p50), colour = "steelblue") +
+  geom_point(data = dep_pca, aes(time, dep_median), colour = "red") +
+  labs(x = "Time (h)", y = "PCA")
+```
+
+## PKNCA
+
+The paper reports no NCA for warfarin. AUC0-inf must equal dose / CL_i, and
+the typical terminal half-life is log(2) * 8.03 / 0.135 = 41.2 h.
+
+```{r wf-nca}
+nca_t <- c(0, 0.5, 1, 1.5, 2, 3, 4, 6, 9, 12, 24, 36, 48, 72, 96, 120, 144, 192, 240, 336, 480)
+coh_nca <- subj_wf |> mutate(id = seq_len(n()))
+sim_wf_nca <- rxode2::rxSolve(mod_wf, make_wf_events(coh_nca, nca_t), keep = "dose_mg",
+                              addDosing = FALSE, rtol = 1e-8, atol = 1e-10) |>
+  as.data.frame() |>
+  mutate(treatment = "1.5 mg/kg oral")
+
+conc_wf <- sim_wf_nca |>
+  filter(!is.na(Cc)) |>
+  mutate(Cc = pmax(Cc, 0)) |>
+  select(id, time, Cc, treatment)
+dose_wf <- sim_wf_nca |> distinct(id, treatment, dose_mg) |> mutate(time = 0)
+nca_wf <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_wf, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_wf, dose_mg ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                         aucinf.obs = TRUE, half.life = TRUE)
+))
+summary(nca_wf)
+
+res_wf <- as.data.frame(nca_wf$result) |>
+  left_join(sim_wf_nca |> distinct(id, cl, vc, dose_mg), by = "id")
+auc_wf <- res_wf |> filter(PPTESTCD == "aucinf.obs") |> mutate(ratio = PPORRES * cl / dose_mg)
+hl_wf <- res_wf |> filter(PPTESTCD == "half.life") |> mutate(ratio = PPORRES / (log(2) * vc / cl))
+summary(auc_wf$ratio)
+summary(hl_wf$ratio)
+stopifnot(
+  abs(median(auc_wf$ratio) - 1) < 0.02,
+  quantile(abs(auc_wf$ratio - 1), 0.9) < 0.05,
+  abs(median(hl_wf$ratio) - 1) < 0.05
+)
+```
+
+# Assumptions and deviations
+
+* **Hypothetical-drug typical values are one tenth of Supplementary Table S1.**
+  The deposited simulation, the deposited figure script and published Figure 1
+  all use CL = 0.1 L/h, V1 = 0.5 L, Q = 0.1 L/h and V2 = 1 L; Table S1 prints
+  ten times each. The packaged model follows the as-run values; the Table S1
+  values give the same curve at one tenth of the concentration (checked above).
+  The deposited data do not reveal the exact as-run numbers, only their
+  agreement to within sampling error with one tenth of Table S1.
+* **The Table S1 IIV row label is missing.** The row reading 0.5 has lost its
+  symbol in the published supplement; the Methods state that every diagonal
+  element of Omega equals omega^2 with omega the SD, so each variance is 0.25.
+* **Concomitant-treatment covariate.** The paper's binary "concomitant
+  treatment" (Figure 1d: "co-administration with drug X") is carried as
+  `CONMED_DRUGX`. The deposited files name this column `Sex`.
+* **Residual-error forms.** The PK case example uses Eq. 3, SD =
+  sigma_add + sigma_prop * f (`combined1`). For warfarin, Table S2 reports
+  variances from a NONMEM simulation, and the variance-additive form
+  (`combined2`) is assumed.
+* **Warfarin maximal effect.** Encoded as complete inhibition (`imax = 1`); see
+  "The sign of the maximal effect". Table S2 marks the Emax random effect as
+  fixed to 0 and absent from the true model, so `imax` carries no IIV.
+* **Absorption lag.** Eq. 24's piecewise absorption (no absorption before
+  Tlag) is encoded with `alag(depot)`.
+* **All values are `fixed()`.** They are the authors' data-generating
+  constants, not estimates; the misspecified-model fits have no printed
+  estimates and are not packaged.
+* **PCA units.** The paper reports "PCA units"; PCA in the O'Reilly data is a
+  percentage of normal activity.
+* **Cohort weights.** Weight is drawn from Normal(70, 15) kg as stated, without
+  truncation; the paper gives no bounds.

@@ -1,0 +1,490 @@
+---
+title: "Uremic toxin removal by hemodialysis (Eloot 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Uremic toxin removal by hemodialysis (Eloot 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Eloot_2016_urea"))$reference`
+* Article: [PLoS One 2016;11(1):e0147159](https://doi.org/10.1371/journal.pone.0147159) (open access)
+
+Eloot et al. measured urea and five protein-bound uremic solutes during one
+midweek high-flux hemodialysis session in ten patients and, separately for each
+solute, fitted a two-compartment kinetic model (their Fig 1, Eq. 1-2):
+
+* a plasmatic compartment `V1`, directly accessible to the dialyzer, into which
+  the solute is generated at a constant rate `G`;
+* an extraplasmatic compartment `V2 = Vtot - V1`, exchanging with plasma by an
+  intercompartment clearance `K21`;
+* removal from plasma by the dialyzer clearance `K` while a session runs;
+* net ultrafiltration `QUF` shrinking both volumes in proportion to their size.
+
+The calibrated models were then used to compare seven dialysis schedules
+(Table 1) by total solute removal (TSR), steady-state time-averaged
+concentration (TAC1) and steady-state predialysis concentration (C1_pre)
+(Table 4). nlmixr2lib packages one model per solute:
+
+```{r models}
+solutes <- c(
+  urea = "Eloot_2016_urea",
+  PCG = "Eloot_2016_pCresylGlucuronide",
+  HA = "Eloot_2016_hippuricAcid",
+  IAA = "Eloot_2016_indoleAceticAcid",
+  IS = "Eloot_2016_indoxylSulfate",
+  PCS = "Eloot_2016_pCresylSulfate"
+)
+mods <- lapply(solutes, function(nm) rxode2::rxode2(readModelDb(nm)))
+data.frame(
+  abbreviation = names(solutes),
+  model = unname(solutes),
+  protein_binding = c("0%", "13%", "47%", "73%", "93%", "95%")
+) |>
+  dplyr::rename("Solute" = abbreviation, "Model" = model, "Protein binding (Table 2)" = protein_binding) |>
+  knitr::kable()
+```
+
+PCG = p-cresylglucuronide, HA = hippuric acid, IAA = indole acetic acid,
+IS = indoxyl sulfate, PCS = p-cresylsulfate.
+
+# Population
+
+Ten stable patients on chronic thrice-weekly 4-h high-flux hemodialysis at
+Ghent University Hospital (2 women, 8 men), aged 69 +/- 12 years, body weight
+75.0 [69.9;82.6] kg, 50 [30;62] months on dialysis, residual renal function
+2.6 [0.4;3.8] mL/min, hematocrit 37.2 +/- 4.2% and total plasma protein
+61.4 +/- 6.4 g/L. The study session lasted 240 min with blood and dialysate
+flows of 300 and 700 mL/min and ultrafiltration of 0.41 +/- 0.29 L/h
+(Methods, "Patients"). The same information is stored in each model's
+`population` metadata.
+
+# Source trace
+
+Every model shares one structure; only the six estimated values differ.
+
+| Model element | Source location |
+|---|---|
+| Two-compartment structure, generation into `V1`, dialyzer clearance out of `V1` | Fig 1 |
+| Mass balances `d(V1 C1)/dt = G - K C1 + K21 (C2 - C1)`, `d(V2 C2)/dt = -K21 (C2 - C1)` | Eq. 1-2 |
+| Ultrafiltration distributed over both compartments in proportion to their volumes | Methods, "Calculations and kinetic modeling" |
+| Both compartments start at the measured predialysis plasma concentration | Methods, "Calculations and kinetic modeling" |
+| Dialyzer clearance constant through the session | Methods, "Calculations and kinetic modeling" |
+| `lksyn` (G), `lcl_hemodialysis` (K), `lrbase` (Cpre) | Table 2 |
+| `lvc` (V1), `lvp` (Vtot - V1), `lq` (K21) | Table 3 |
+| `qpfr` (QUF = 0.41 L/h) | Methods, "Patients" |
+| `qgain` (interdialytic regain) | Not printed; derived so the weekly fluid balance is zero (see Assumptions) |
+| Strategy definitions (session count, length, blood flow, QUF, extraction ratio) | Table 1 and Methods, "Kinetic analysis to determine optimal removal" |
+| Validation targets TSR, TAC1, C1_pre | Table 4 |
+
+```{r ini-values}
+ini_tab <- dplyr::bind_rows(lapply(names(mods), function(ab) {
+  ini <- mods[[ab]]$iniDf
+  v <- stats::setNames(ini$est, ini$name)
+  data.frame(
+    solute = ab,
+    G = exp(v[["lksyn"]]),
+    K = exp(v[["lcl_hemodialysis"]]) * 1000,
+    V1 = exp(v[["lvc"]]),
+    Vtot = exp(v[["lvc"]]) + exp(v[["lvp"]]),
+    K21 = exp(v[["lq"]]) * 1000,
+    Cpre = exp(v[["lrbase"]])
+  )
+}))
+ini_tab |>
+  dplyr::rename(
+    "Solute" = solute, "G (mg/min)" = G, "K (mL/min)" = K, "V1 (L)" = V1,
+    "Vtot (L)" = Vtot, "K21 (mL/min)" = K21, "Cpre (mg/L)" = Cpre
+  ) |>
+  knitr::kable(digits = 3)
+```
+
+# Calibration session
+
+Figure 2 of the paper shows measured plasma concentrations and the fitted
+plasmatic (C1) and extraplasmatic (C2) profiles of one representative patient.
+The packaged models carry the typical values, so the curves below are the
+typical patient rather than that individual: one 240-min session starting from
+the predialysis concentration, with ultrafiltration at 0.41 L/h.
+
+```{r calibration}
+cal_events <- data.frame(
+  id = 1L,
+  time = 0:240,
+  evid = 0L,
+  amt = 0,
+  cmt = "central",
+  RRT_HEMODIAL_ACTIVE = 1
+)
+cal <- dplyr::bind_rows(lapply(names(mods), function(ab) {
+  r <- rxode2::rxSolve(mods[[ab]], events = cal_events, returnType = "data.frame")
+  data.frame(solute = ab, time = r$time, C1 = r$Cc, C2 = r$Cp, fluid = r$fluid_balance)
+}))
+cal$solute <- factor(cal$solute, levels = names(solutes))
+```
+
+```{r fig2, fig.width = 8, fig.height = 5, fig.cap = "Replicates the layout of Figure 2 of Eloot 2016 (typical patient, not the paper's representative individual): plasmatic C1 (bold) and extraplasmatic C2 (thin) during one 240-min session."}
+cal |>
+  tidyr::pivot_longer(c(C1, C2), names_to = "compartment", values_to = "conc") |>
+  ggplot(aes(time, conc, linewidth = compartment)) +
+  geom_line() +
+  scale_linewidth_manual(values = c(C1 = 1.2, C2 = 0.5)) +
+  facet_wrap(~solute, scales = "free_y") +
+  labs(x = "Time since start of dialysis (min)", y = "Concentration (mg/L)", linewidth = NULL)
+```
+
+The paper's qualitative finding, a markedly slower decline in the
+extraplasmatic compartment for every solute, holds for every model, and the
+session removes 0.41 L/h x 4 h = 1.64 L of fluid:
+
+```{r calibration-checks}
+cal_end <- cal |>
+  dplyr::group_by(solute) |>
+  dplyr::summarise(
+    rr_C1 = 1 - C1[time == 240] / C1[time == 0],
+    rr_C2 = 1 - C2[time == 240] / C2[time == 0],
+    fluid_end = fluid[time == 240]
+  )
+knitr::kable(cal_end, digits = 3)
+stopifnot(
+  all(cal_end$rr_C1 > cal_end$rr_C2),
+  all(cal_end$rr_C2 > 0),
+  # Fluid removed in one session is exactly QUF x 240 min.
+  all(abs(cal_end$fluid_end + 0.41 / 60 * 240) < 1e-6)
+)
+```
+
+# Dialysis strategies (Table 4)
+
+## Simulation design
+
+Table 1 defines seven schedules. Sessions start at the same clock time on
+Monday, Wednesday and Friday (thrice weekly) or Monday to Saturday (six times
+weekly). For a blood flow of 150 mL/min the paper scales the extraction ratio by
+1.33 for urea and 1.00 for the protein-bound solutes; since dialyzer clearance
+is the extraction ratio times the flow, the clearance at 150 mL/min is
+`0.5 x 1.33 = 0.665` times the 300-mL/min clearance for urea and `0.5` times it
+for the protein-bound solutes. The ultrafiltration rate is set so that the
+weekly fluid removal equals the 3 x 4 h reference (Table 1 `QUF` column), and
+`qgain` returns the same volume between sessions. These three quantities are
+the only parameters a strategy changes, and they are passed to `rxSolve()` as
+parameter overrides.
+
+As in the paper, each strategy starts from the steady state of the 3 x 4 h
+schedule. TSR is the solute collected in the first session of the new schedule
+(the sum of the first two sessions for six-times-weekly schedules), and TAC1 and
+C1_pre are taken once the new steady state is reached. The switch is made at the
+start of a Wednesday session, the midweek session the model was calibrated on,
+and C1_pre is the concentration before the Wednesday session in the steady-state
+week.
+
+```{r strategy-functions}
+week <- 10080
+n_weeks <- 10
+
+strategies <- data.frame(
+  strategy = c(
+    "3x4h_300/w", "3x8h_150/w", "6x4h_150/w", "6x2h_300/w",
+    "3x8h_300/w", "6x4h_300/w", "6x8h_150/w"
+  ),
+  n = c(3, 3, 6, 6, 3, 6, 6),
+  dur = c(240, 480, 240, 120, 480, 240, 480),
+  qb = c(300, 150, 150, 300, 300, 300, 150)
+)
+strategies$blood_volume <- strategies$n * strategies$dur * strategies$qb / 1000
+
+# Session start times (min) when the solve starts `offset` minutes after a
+# Monday session start.
+session_starts <- function(n, n_weeks, offset = 0) {
+  day <- if (n == 3) c(0, 2, 4) else 0:5
+  st <- as.vector(outer(day * 1440, (0:n_weeks) * week, "+")) - offset
+  sort(st[st >= 0 & st < n_weeks * week])
+}
+
+make_events <- function(n, dur, n_weeks, init = NULL, offset = 0) {
+  st <- session_starts(n, n_weeks, offset)
+  tt <- sort(unique(c(seq(0, n_weeks * week, by = 10), st, st + dur)))
+  on <- vapply(tt, function(x) any(x >= st & x < st + dur), logical(1))
+  ev <- data.frame(
+    id = 1L, time = tt, evid = 0L, amt = 0, cmt = "central",
+    RRT_HEMODIAL_ACTIVE = as.numeric(on)
+  )
+  if (!is.null(init)) {
+    # evid = 5 replaces the compartment amounts with the 3 x 4 h steady state.
+    ev <- dplyr::bind_rows(
+      data.frame(
+        id = 1L, time = 0, evid = 5L, amt = unname(init), cmt = names(init),
+        RRT_HEMODIAL_ACTIVE = 1
+      ),
+      ev
+    )
+  }
+  ev
+}
+
+strategy_params <- function(mod, s, is_urea) {
+  ini <- mod$iniDf
+  lk <- ini$est[ini$name == "lcl_hemodialysis"]
+  kfac <- if (s$qb == 150) (if (is_urea) 0.5 * 1.33 else 0.5) else 1
+  quf <- 0.41 / 60 * 12 / (s$n * s$dur / 60)
+  c(
+    lcl_hemodialysis = lk + log(kfac),
+    qpfr = quf,
+    qgain = quf * s$n * s$dur / (week - s$n * s$dur)
+  )
+}
+
+summarise_run <- function(r, n, dur, n_weeks, offset) {
+  st <- session_starts(n, n_weeks, offset)
+  collected <- function(t) r$dialysate[match(t, r$time)]
+  first <- st[seq_len(if (n == 6) 2 else 1)]
+  last_week <- r[r$time >= (n_weeks - 1) * week, ]
+  c(
+    TSR = sum(collected(first + dur) - collected(first)),
+    TAC1 = sum(diff(last_week$time) *
+      (head(last_week$Cc, -1) + tail(last_week$Cc, -1)) / 2) / week,
+    C1_pre = r$Cc[match((n_weeks - 1) * week + 2 * 1440 - offset, r$time)],
+    removed_last_week = collected(n_weeks * week) - collected((n_weeks - 1) * week)
+  )
+}
+```
+
+```{r strategy-simulation}
+wednesday <- 2 * 1440
+sim <- list()
+for (ab in names(mods)) {
+  mod <- mods[[ab]]
+  ref <- rxode2::rxSolve(mod, events = make_events(3, 240, n_weeks), returnType = "data.frame")
+  t_switch <- (n_weeks - 1) * week + wednesday
+  init <- c(
+    central = ref$central[ref$time == t_switch],
+    peripheral1 = ref$peripheral1[ref$time == t_switch]
+  )
+  for (i in seq_len(nrow(strategies))) {
+    s <- strategies[i, ]
+    r <- rxode2::rxSolve(
+      mod,
+      params = strategy_params(mod, s, ab == "urea"),
+      events = make_events(s$n, s$dur, n_weeks, init, wednesday),
+      returnType = "data.frame"
+    )
+    sim[[length(sim) + 1]] <- data.frame(
+      solute = ab, strategy = s$strategy,
+      t(summarise_run(r, s$n, s$dur, n_weeks, wednesday))
+    )
+  }
+}
+sim <- dplyr::bind_rows(sim)
+# Table 4 reports urea in g and g/L, the other solutes in mg and mg/L.
+urea_rows <- sim$solute == "urea"
+sim[urea_rows, c("TSR", "TAC1", "C1_pre")] <- sim[urea_rows, c("TSR", "TAC1", "C1_pre")] / 1000
+```
+
+## Mass balance
+
+Over the steady-state week the solute collected in the dialysate must equal the
+solute generated, `G x 10080 min`:
+
+```{r mass-balance}
+mb <- sim |>
+  dplyr::left_join(ini_tab[, c("solute", "G")], by = "solute") |>
+  dplyr::mutate(pct_diff = 100 * (removed_last_week / (G * week) - 1))
+stopifnot(all(abs(mb$pct_diff) < 0.5))
+range(mb$pct_diff)
+```
+
+## Comparison with Table 4
+
+```{r table4}
+paper <- data.frame(
+  strategy = rep(strategies$strategy, 6),
+  solute = rep(names(solutes), each = 7),
+  TSR = c(
+    28.3, 33.8, 41.3, 30.9, 37.4, 46.4, 51.0,
+    111, 126, 151, 139, 152, 185, 201,
+    679, 743, 891, 843, 907, 1114, 1178,
+    17.1, 18.7, 20.4, 19.1, 27.4, 30.1, 32.4,
+    83.5, 88.5, 95.3, 92.2, 131, 143, 149,
+    153, 163, 177, 170, 235, 258, 273
+  ),
+  TAC1 = c(
+    0.80, 0.62, 0.52, 0.71, 0.52, 0.40, 0.30,
+    5.37, 4.54, 4.08, 4.65, 3.31, 2.63, 2.20,
+    32.2, 29.0, 26.2, 28.6, 20.5, 16.1, 14.2,
+    1.62, 1.47, 1.52, 1.59, 0.93, 0.84, 0.87,
+    12.8, 11.9, 12.2, 12.9, 7.3, 7.0, 7.4,
+    28.8, 29.1, 29.9, 30.0, 16.3, 15.6, 17.6
+  ),
+  C1_pre = c(
+    1.13, 0.93, 0.66, 0.86, 0.83, 0.54, 0.41,
+    7.26, 6.31, 4.92, 5.56, 5.11, 3.49, 2.90,
+    44.3, 40.3, 31.8, 34.3, 32.1, 21.4, 18.4,
+    1.89, 1.72, 1.66, 1.72, 1.14, 0.99, 0.98,
+    14.5, 13.6, 13.2, 13.8, 9.0, 8.1, 8.1,
+    33.0, 33.0, 32.0, 32.0, 20.6, 17.9, 19.3
+  )
+)
+
+cmp <- sim |>
+  dplyr::select(solute, strategy, TSR, TAC1, C1_pre) |>
+  tidyr::pivot_longer(c(TSR, TAC1, C1_pre), names_to = "metric", values_to = "simulated") |>
+  dplyr::left_join(
+    tidyr::pivot_longer(paper, c(TSR, TAC1, C1_pre), names_to = "metric", values_to = "published"),
+    by = c("solute", "strategy", "metric")
+  ) |>
+  dplyr::mutate(ratio = published / simulated, pct_diff = 100 * (simulated / published - 1))
+
+cmp |>
+  dplyr::mutate(solute = factor(solute, levels = names(solutes))) |>
+  dplyr::arrange(solute, metric, strategy) |>
+  dplyr::rename(
+    "Solute" = solute, "Strategy" = strategy, "Metric" = metric,
+    "Simulated" = simulated, "Published (Table 4)" = published,
+    "Published / simulated" = ratio, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 3)
+```
+
+The ratio of published to simulated values, summarised per solute over the 21
+comparisons (7 strategies x 3 metrics):
+
+```{r ratio-summary}
+ratio_summary <- cmp |>
+  dplyr::group_by(solute) |>
+  dplyr::summarise(
+    median_ratio = median(ratio),
+    cv_ratio_pct = 100 * sd(ratio) / mean(ratio),
+    median_abs_pct_diff = median(abs(pct_diff)),
+    max_abs_pct_diff = max(abs(pct_diff))
+  ) |>
+  dplyr::arrange(match(solute, names(solutes)))
+knitr::kable(ratio_summary, digits = 3)
+```
+
+Two patterns are visible.
+
+* **Urea, IAA, IS and PCS**, for which Tables 2 and 3 print the mean
+  generation rate, reproduce Table 4 within 3-7% in the median and within
+  20% for every strategy and metric. The paper simulated "the average
+  dataset emanating out of our primary kinetic analysis", which need not
+  coincide with the per-parameter means of individual fits, so close but not
+  exact agreement is expected.
+* **PCG and HA** are low by a near-constant factor (coefficient of variation
+  of the ratio 2-3.5% across all 21 comparisons). For these two solutes
+  Table 2 prints only the median generation rate with a right-skewed
+  inter-quartile range. All three outputs are proportional to `G` in this linear
+  model, so a constant ratio across strategies and metrics points to `G`: the
+  paper's average dataset used a generation rate above the median. The implied
+  rate, `median ratio x G`, lies inside the printed inter-quartile range. The
+  packaged models keep the printed median (see Assumptions).
+
+```{r table4-gates}
+mean_g <- ratio_summary$solute %in% c("urea", "IAA", "IS", "PCS")
+median_g <- ratio_summary$solute %in% c("PCG", "HA")
+implied <- ini_tab |>
+  dplyr::filter(solute %in% c("PCG", "HA")) |>
+  dplyr::left_join(ratio_summary, by = "solute") |>
+  dplyr::mutate(
+    G_implied = G * median_ratio,
+    G_q1 = c(PCG = 0.016, HA = 0.123)[solute],
+    G_q3 = c(PCG = 0.049, HA = 0.321)[solute]
+  )
+knitr::kable(implied[, c("solute", "G", "G_implied", "G_q1", "G_q3")], digits = 4)
+stopifnot(
+  # The model is deterministic, so these bounds are exact properties of the
+  # packaged parameters rather than of a random cohort.
+  all(abs(ratio_summary$median_abs_pct_diff[mean_g]) < 12),
+  all(ratio_summary$max_abs_pct_diff[mean_g] < 25),
+  all(ratio_summary$cv_ratio_pct[median_g] < 5),
+  all(implied$G_implied > implied$G_q1 & implied$G_implied < implied$G_q3)
+)
+```
+
+## Processed blood volume drives removal of strongly bound solutes
+
+The paper's main conclusion is that, for strongly protein-bound solutes, the
+weekly processed blood volume rather than the timeframe determines adequacy:
+every 432-L/week schedule gives a lower TAC1 than every 216-L/week schedule.
+
+```{r blood-volume}
+bv <- sim |>
+  dplyr::left_join(strategies[, c("strategy", "blood_volume")], by = "strategy") |>
+  dplyr::filter(solute %in% c("IAA", "IS", "PCS")) |>
+  dplyr::group_by(solute) |>
+  dplyr::summarise(
+    max_TAC1_432L = max(TAC1[blood_volume == 432]),
+    min_TAC1_216L = min(TAC1[blood_volume == 216])
+  )
+knitr::kable(bv, digits = 2)
+stopifnot(all(bv$max_TAC1_432L < bv$min_TAC1_216L))
+```
+
+```{r fig4, fig.width = 8, fig.height = 6, fig.cap = "Replicates Figure 4 of Eloot 2016: TSR, TAC1 and C1_pre of hippuric acid and indoxyl sulfate for the seven strategies, simulated (bars) and published in Table 4 (points)."}
+cmp |>
+  dplyr::filter(solute %in% c("HA", "IS")) |>
+  dplyr::mutate(
+    strategy = factor(strategy, levels = strategies$strategy),
+    metric = factor(metric, levels = c("TSR", "TAC1", "C1_pre"))
+  ) |>
+  ggplot(aes(strategy, simulated)) +
+  geom_col(fill = "grey70") +
+  geom_point(aes(y = published), colour = "black") +
+  facet_grid(metric ~ solute, scales = "free_y") +
+  labs(x = NULL, y = "TSR (mg); TAC1 and C1_pre (mg/L)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+# Assumptions and deviations
+
+* **Typical values only.** The paper fitted each patient separately and
+  reports the between-patient mean +/- SD or median [IQR] of the individual
+  estimates (Tables 2-3). It is not a population model, so the packaged models
+  carry no between-subject or residual variability.
+* **Mixed summary statistics.** Where a table prints a median rather than a
+  mean (PCG and HA generation rate and predialysis concentration, PCG and PCS
+  `Vtot`, IS `V1`), the median is used. `V2` is `Vtot - V1` from the printed
+  values, so for PCG, IS and PCS it combines a median with a mean.
+* **Generation rate of PCG and HA.** Table 4 implies a generation rate about
+  1.6 (HA) and 1.8 (PCG) times the printed median, consistent with the mean of
+  a right-skewed distribution. The mean is not printed; the models keep the
+  median and do not back-solve it from Table 4.
+* **Urea predialysis concentration unit.** Table 2 prints urea `Cpre` as 0.95
+  under a mg/dL header. A urea level of 9.5 mg/L is not physiological for a
+  dialysis patient, and the paper's own Table 4 gives a predialysis urea of
+  1.13 g/L for the same schedule. The value is read as 0.95 g/L (950 mg/L).
+* **Concentration units.** Table 2 reports concentrations in mg/dL; the models
+  use mg/L (the unit of Table 4) and the source-trace comments show the factor
+  of 10.
+* **Interdialytic fluid regain.** The paper states that ultrafiltration
+  shrinks both volumes but not how the fluid returns between sessions. The
+  models restore it at the constant rate `qgain`, which equals the weekly
+  ultrafiltrate of the 3 x 4 h schedule (0.41 L/h x 12 h) spread over the
+  156 interdialytic hours. The paper keeps weekly weight loss the same across
+  strategies, so the strategies above reset `qgain` for their own interdialytic
+  time.
+* **Ultrafiltration at the cohort mean.** `qpfr` is fixed at the cohort mean
+  of 0.41 L/h. Users with patient-specific ultrafiltration should override it
+  (and `qgain`).
+* **Residual renal function** (median 2.6 mL/min) was not part of the paper's
+  model and is not included.
+* **Session timing.** The paper does not give clock times. Sessions start at
+  the same time of day; TSR is the first session after a Wednesday switch and
+  C1_pre is the Wednesday predialysis concentration. With a Monday switch the
+  first-session TSR is about 25% higher for urea, because the long interdialytic
+  interval precedes it, while TAC1 and C1_pre are unchanged.
+* **External validation not reproduced.** Fig 5 compares the model with
+  reduction ratios from Meijers et al., Sirich et al. and the group's own
+  4 h / 8 h HD and HDF cross-over study. The dialyzer clearances,
+  ultrafiltration rates and predialysis concentrations of those studies are not
+  given in this paper, so that comparison is not repeated here.

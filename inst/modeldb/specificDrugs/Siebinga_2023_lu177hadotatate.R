@@ -34,6 +34,7 @@ Siebinga_2023_lu177hadotatate <- function() {
   )
   vignette <- "Siebinga_2023_hadotatate"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
+  dosing <- "blood"
 
   covariateData <- list(
     TUM_VOL_TARGET = list(

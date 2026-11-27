@@ -1,0 +1,709 @@
+---
+title: "Cinacalcet (Chen 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cinacalcet (Chen 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Chen_2019_cinacalcet"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Chen_2019_cinacalcet"))$description`
+* Article: <https://doi.org/10.1111/bcp.13900> (open access, PMC6533487)
+
+Chen et al. pooled cinacalcet plasma concentrations, serum intact parathyroid
+hormone (iPTH) and corrected serum calcium (cCa) from eight Amgen studies in
+adults and children with secondary hyperparathyroidism (SHPT) on dialysis, plus
+healthy adults. Cinacalcet PK is a two-compartment model with lagged first-order
+absorption and allometric weight scaling on CL/F and the central volume. The
+PK/PD model is semi-mechanistic (Chen 2019 Table 2 and Figure 1):
+
+* Calcium-sensing-receptor (CaSR) occupancy by ionized calcium,
+  `rho = x / (x + 1)` with `x = (0.45 * cCa / KD) * (1 + Ratio * Cp)`, where
+  cinacalcet acts as a positive allosteric modulator (Ratio = alpha / Ki).
+* Pseudo-steady-state iPTH, `iPTH = PTH0 * (rho / rho0)^lambda`, with
+  `lambda < 0` so that higher occupancy suppresses PTH.
+* Corrected-calcium turnover,
+  `d cCa / dt = Kin,Ca * (iPTH / PTH0)^gamma - Kout,Ca * cCa`, with
+  `Kin,Ca = Ca0 * Kout,Ca`.
+
+Healthy volunteers and patients have separate PD parameter sets (Table 4); in
+the packaged model the `DIS_HEALTHY` covariate selects the set.
+
+# Population
+
+The analysis used 648 subjects from eight studies (Chen 2019 Table 1): four
+paediatric SHPT studies on dialysis (n = 84, age 28 days to 18 years), three
+adult SHPT studies (n = 485, including the 403-subject phase 3 study 20000172)
+and one healthy-adult study (n = 79). Doses were 1-300 mg orally, as single
+doses, fixed once-daily regimens and titrated once-daily regimens. Children
+contributed fewer than 15% of samples. The paper prints no table of baseline
+demographics (weight, sex or race), and 34.7% of PK samples were below the
+0.1 ng/mL limit of quantification.
+
+The same information is available programmatically via
+`readModelDb("Chen_2019_cinacalcet")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| PK structure (2-cmt, lag, first-order absorption and elimination) | n/a | Results paragraph 1; Figure 1 |
+| `lka` | log(0.80) 1/h | Table 3 'Ka' (unit printed as L/h) |
+| `lcl` | log(287.74) L/h | Table 3 'CL/F'; Abstract |
+| `lvc` | log(4104.15) L | Table 3 'V2/F' |
+| `lvp` | log(19824.20) L | Table 3 'V3/F' |
+| `lq` | log(296.3) L/h | Table 3 'Q/F' |
+| `ltlag` | log(0.36) h | Table 3 'Tlag' |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | Results after Table 2; Discussion |
+| Reference weight | 70 kg (assumed) | not printed; see Assumptions |
+| `kd_ca` | 1.2 mM (fixed) | Table 2, Equation 1 |
+| `f_ionized_ca` | 0.45 (fixed) | Table 2, Equation 1 |
+| Occupancy with drug | n/a | Table 2, Equations 4-5 |
+| Pseudo-steady-state iPTH | n/a | Table 2, Equation 2 |
+| cCa turnover, `Kin = Ca0 * Kout` | n/a | Table 2, Equations 3 and 6 |
+| `lrbase_pth_patient` / `_hv` | log(54.29) / log(2.38) pM | Table 4 'PTH0' |
+| `lrbase_ca_patient` / `_hv` | log(2.45) / log(2.30) mM | Table 4 'Ca0' |
+| `lratio_patient` / `_hv` | log(0.072) / log(0.02) | Table 4 'Ratio' |
+| `lkout_ca_patient` / `_hv` | log(0.03) / log(0.01) 1/h | Table 4 'Kout,Ca' (unit printed as L/h) |
+| `lgamma_pth_patient` / `_hv` | log(0.07) / log(1.80) | Table 4 'Power on PTH' |
+| `lambda_ro_patient` / `_hv` | -3.30 / -10.03 | Table 4 'Power on RO' |
+| IIV Ka, CL/F, V2/F, V3/F, Q/F, Tlag; corr(CL, V2) | 102, 76, 69, 86, 68, 34% CV; 0.85 | Table 3 |
+| IIV PTH0, Ca0, Ratio, power on PTH, power on RO | 64, 6.6, 80.51, 112.51, 75.07% CV | Table 4 |
+| PK residual, phase 3 / other studies | 72% / 50% CV | Table 3 |
+| iPTH residual, patients / HV | 43% / 23% CV | Table 4 |
+| cCa residual, patients / HV | 7% / 3.73% CV | Table 4 |
+
+Variances are `omega^2 = log(1 + CV^2)`. The residual errors are additive on the
+log scale (Methods: 'additive error models after natural logarithmic
+transformation'), encoded as `lnorm()` with `SD = sqrt(log(1 + CV^2))`.
+
+# Typical-value checks
+
+```{r typical-setup}
+mod <- readModelDb("Chen_2019_cinacalcet")
+ui <- rxode2::rxode2(mod)
+ini_val <- setNames(ui$iniDf$est, ui$iniDf$name)
+mod_typ <- rxode2::zeroRe(ui)
+
+# Calcium turnover half-life. Chen 2019 Results: 'slow turnover of Ca with a
+# half-life of 23.1 hours'.
+t_half_ca <- log(2) / exp(ini_val[["lkout_ca_patient"]])
+t_half_ca
+stopifnot(abs(t_half_ca - 23.1) < 0.05)
+
+# Distribution-phase half-life of a typical subject at a given weight,
+# from the two-compartment micro-constants.
+alpha_half_life <- function(wt) {
+  cl <- exp(ini_val[["lcl"]]) * (wt / 70)^0.75
+  vc <- exp(ini_val[["lvc"]]) * (wt / 70)
+  q <- exp(ini_val[["lq"]])
+  vp <- exp(ini_val[["lvp"]])
+  k10 <- cl / vc
+  k12 <- q / vc
+  k21 <- q / vp
+  s <- k10 + k12 + k21
+  alpha <- (s + sqrt(s^2 - 4 * k10 * k21)) / 2
+  log(2) / alpha
+}
+tibble(WT = c(15, 25, 40, 70, 90)) |>
+  mutate(`Distribution t1/2 (h)` = signif(alpha_half_life(WT), 3)) |>
+  knitr::kable(caption = "Typical distribution-phase half-life by body weight.")
+```
+
+The paper reports median distribution-phase half-lives of 4.27 h in adults and
+2.29 h in children. The typical 70 kg adult gives
+`r signif(alpha_half_life(70), 3)` h and a typical 25 kg child
+`r signif(alpha_half_life(25), 3)` h; both are of the right size, and the
+cohort medians below are compared directly.
+
+The concentration unit of the allosteric ratio (see Assumptions and deviations)
+is checked against Figure 3, panel II-A, where adults on the 30 mg starting dose
+show a mean iPTH fall of roughly 20% over the first weeks.
+
+```{r typical-30mg}
+ev30 <- rxode2::et(amt = 30, ii = 24, addl = 27, cmt = "depot") |>
+  rxode2::et(c(0, 27 * 24 + 23.99), cmt = "ca") |>
+  as.data.frame() |>
+  mutate(WT = 70, DIS_HEALTHY = 0L, STUDY_PHASE3 = 0L)
+typ30 <- rxode2::rxSolve(mod_typ, events = ev30, returnType = "data.frame")
+pth_trough_chg <- 100 * (typ30$pth[2] / typ30$pth[1] - 1)
+pth_trough_chg
+# With the concentration in ng/mL the typical trough fall is about 21%; read
+# in nmol/L (x 2.8) it would be about 43%, and in mmol/L about 0%.
+stopifnot(pth_trough_chg > -30, pth_trough_chg < -12)
+```
+
+# Virtual cohorts
+
+The paper does not print the weight distributions it simulated: adult weights
+were 'sampled from demographics in cinacalcet clinical trials' and paediatric
+age and weight were drawn jointly from NHANES. The cohorts below approximate
+them. Adult weight is log-normal (median 75 kg, SD 0.2 on the log scale,
+redrawn outside 40-150 kg). Paediatric weight is the CDC 50th-percentile weight
+for an age drawn uniformly between 2 and 18 years, with log-normal scatter (SD
+0.15), redrawn below 12.5 kg (the lightest band of the dosing tables).
+
+```{r cohort}
+set.seed(20190212)
+
+draw_adult_wt <- function(n) {
+  wt <- stats::rlnorm(n, log(75), 0.2)
+  bad <- wt < 40 | wt > 150
+  while (any(bad)) {
+    wt[bad] <- stats::rlnorm(sum(bad), log(75), 0.2)
+    bad <- wt < 40 | wt > 150
+  }
+  wt
+}
+
+# CDC 50th percentile weight-for-age, averaged across sexes.
+growth <- tibble::tribble(
+  ~age, ~wt,
+  2, 12.2,
+  3, 14.3,
+  4, 16.3,
+  5, 18.3,
+  6, 20.6,
+  7, 23.0,
+  8, 25.6,
+  10, 32.0,
+  12, 40.5,
+  14, 50.0,
+  16, 58.0,
+  18, 63.0
+)
+draw_ped <- function(n) {
+  age <- stats::runif(n, 2, 18)
+  wt <- stats::approx(growth$age, growth$wt, xout = age)$y *
+    exp(stats::rnorm(n, 0, 0.15))
+  bad <- wt < 12.5
+  while (any(bad)) {
+    age[bad] <- stats::runif(sum(bad), 2, 18)
+    wt[bad] <- stats::approx(growth$age, growth$wt, xout = age[bad])$y *
+      exp(stats::rnorm(sum(bad), 0, 0.15))
+    bad <- wt < 12.5
+  }
+  tibble(AGE = age, WT = wt)
+}
+```
+
+# Paediatric starting doses vs the adult 30 mg dose (Supporting Information S6-S7)
+
+Chen 2019 simulated 4 weeks of once-daily dosing at the paediatric starting
+doses of the SmPC dosing table (Supporting Information Table S2.1, based on dry
+weight) and concluded that every paediatric starting dose gives a PK exposure
+'less than or similar to' the adult 30 mg dose. Below, 150 virtual children
+are assigned their weight-band starting dose and compared with 150 adults on
+30 mg.
+
+```{r startdose-cohort}
+n_adult <- 150L
+n_ped <- 150L
+ped <- draw_ped(n_ped)
+start_dose <- function(wt) {
+  dplyr::case_when(
+    wt < 12.5 ~ 1,
+    wt < 25 ~ 2.5,
+    wt < 50 ~ 5,
+    wt < 75 ~ 10,
+    TRUE ~ 15
+  )
+}
+subjects <- bind_rows(
+  tibble(id = seq_len(n_adult), WT = draw_adult_wt(n_adult), dose = 30, treatment = "Adult 30 mg"),
+  tibble(id = n_adult + seq_len(n_ped), WT = ped$WT) |>
+    mutate(
+      dose = start_dose(WT),
+      treatment = sprintf("Paediatric %s mg", dose)
+    )
+) |>
+  mutate(DIS_HEALTHY = 0L, STUDY_PHASE3 = 0L)
+count(subjects, treatment)
+
+obs_times <- sort(unique(c(
+  0:24, 216:240, 648:672, seq(0, 672, by = 24)
+)))
+doses <- subjects |>
+  tidyr::crossing(time = seq(0, 27 * 24, by = 24)) |>
+  mutate(evid = 1L, amt = dose, cmt = "depot")
+obs <- subjects |>
+  tidyr::crossing(time = obs_times) |>
+  mutate(evid = 0L, amt = 0, cmt = "ca")
+events <- bind_rows(doses, obs) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, evid, amt, cmt, WT, DIS_HEALTHY, STUDY_PHASE3, treatment)
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep = c("treatment", "WT"),
+  returnType = "data.frame"
+)
+```
+
+```{r startdose-figure, fig.width = 7, fig.height = 5}
+sim |>
+  filter(time >= 648, time <= 672) |>
+  group_by(treatment, time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time - 648, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~treatment) +
+  labs(
+    x = "Time after the day-28 dose (h)", y = "Cinacalcet (ng/mL)",
+    title = "Steady-state cinacalcet by starting dose",
+    caption = "Median and 90% prediction interval. Compare Supporting Information S6-S7 of Chen 2019."
+  )
+```
+
+## PKNCA
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = c(0, 216, 648),
+  end = c(24, 240, 672),
+  cmax = TRUE,
+  tmax = c(TRUE, FALSE, TRUE),
+  auclast = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = intervals,
+  options = list(conc.blq = list(first = "keep", middle = "keep", last = "keep"))
+))
+nca_tbl <- as.data.frame(nca_res$result)
+
+nca_tbl |>
+  filter(PPTESTCD %in% c("cmax", "auclast"), start %in% c(0, 648)) |>
+  mutate(
+    interval = ifelse(start == 0, "Day 1", "Day 28"),
+    param = paste(PPTESTCD, interval)
+  ) |>
+  group_by(treatment, param) |>
+  summarise(median = signif(median(PPORRES), 3), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = param, values_from = median) |>
+  dplyr::rename(
+    "Group" = treatment,
+    "Cmax day 1 (ng/mL)" = `cmax Day 1`,
+    "AUC0-24 day 1 (ng*h/mL)" = `auclast Day 1`,
+    "Cmax day 28 (ng/mL)" = `cmax Day 28`,
+    "AUC0-24 day 28 (ng*h/mL)" = `auclast Day 28`
+  ) |>
+  knitr::kable(caption = "Median simulated NCA by starting-dose group.")
+```
+
+```{r startdose-check}
+auc_ss <- nca_tbl |>
+  filter(PPTESTCD == "auclast", start == 648) |>
+  group_by(treatment) |>
+  summarise(med = median(PPORRES), .groups = "drop")
+adult_auc <- auc_ss$med[auc_ss$treatment == "Adult 30 mg"]
+ped_auc <- auc_ss$med[auc_ss$treatment != "Adult 30 mg"]
+# 'Less than or similar to' the adult 30 mg exposure. The largest paediatric
+# starting dose (15 mg at >= 75 kg) is half the adult dose at a similar weight.
+stopifnot(all(ped_auc < 0.8 * adult_auc))
+```
+
+Every paediatric starting-dose group has a median steady-state AUC below the
+adult 30 mg median (`r signif(adult_auc, 3)` ng*h/mL), as the paper concludes.
+The paper reports no NCA table, so there is nothing numeric to place beside
+these values in a comparison table.
+
+## Accumulation and distribution half-life
+
+Chen 2019 reports a median accumulation ratio on day 10 of 1.69 in adults and
+1.93 across paediatric ages, and median distribution-phase half-lives of 4.27 h
+(adults) and 2.29 h (children).
+
+```{r accumulation}
+acc <- nca_tbl |>
+  filter(PPTESTCD == "auclast", start %in% c(0, 216)) |>
+  select(id, treatment, start, PPORRES) |>
+  tidyr::pivot_wider(names_from = start, values_from = PPORRES) |>
+  mutate(rac = `216` / `0`, adult = treatment == "Adult 30 mg")
+
+hl <- sim |>
+  distinct(id, treatment, kel, k12, k21) |>
+  mutate(
+    s = kel + k12 + k21,
+    t_half_alpha = log(2) / ((s + sqrt(s^2 - 4 * kel * k21)) / 2),
+    adult = treatment == "Adult 30 mg"
+  )
+
+acc_sum <- acc |>
+  group_by(adult) |>
+  summarise(rac = median(rac), .groups = "drop") |>
+  left_join(
+    hl |> group_by(adult) |> summarise(t_half = median(t_half_alpha), .groups = "drop"),
+    by = "adult"
+  ) |>
+  mutate(
+    Group = ifelse(adult, "Adults", "Children"),
+    `Published Rac day 10` = ifelse(adult, 1.69, 1.93),
+    `Published t1/2 alpha (h)` = ifelse(adult, 4.27, 2.29)
+  )
+acc_sum |>
+  transmute(
+    Group,
+    `Simulated Rac day 10` = signif(rac, 3),
+    `Published Rac day 10`,
+    `Simulated t1/2 alpha (h)` = signif(t_half, 3),
+    `Published t1/2 alpha (h)`
+  ) |>
+  knitr::kable(caption = "Median accumulation ratio (AUC0-24 day 10 / day 1) and distribution half-life.")
+```
+
+# Titrated-dose trial simulations (Figure 3, Table 5)
+
+Chen 2019 simulated 24 weeks of titrated once-daily dosing in adults (the Study
+20000172 algorithm, Supporting Information S3) and in children (the Study
+20070208 algorithm with weekly calcium monitoring, Supporting Information S4-S5).
+The helper below steps the trial forward one week at a time. Individual random
+effects are drawn once per subject and held fixed, each week's dose is chosen
+from the observed (residual-error-perturbed) trough iPTH and cCa, and the
+deterministic model is re-solved over the whole dose history.
+
+```{r titration-helpers}
+omega <- ui$omega
+pd_sd <- c(
+  pth = ini_val[["expSd_pth_patient"]],
+  ca = ini_val[["expSd_ca_patient"]]
+)
+
+draw_eta <- function(n) {
+  eta <- rxode2::rxRmvn(n, rep(0, nrow(omega)), omega)
+  colnames(eta) <- rownames(omega)
+  as.data.frame(eta)
+}
+
+# Trough predictions (just before the next dose) at the end of weeks 0..max(week)
+# for a list of per-subject daily dose vectors (one value per day).
+solve_troughs <- function(cohort, eta, daily_dose, n_week) {
+  n_day <- 7 * n_week
+  dose_rows <- do.call(rbind, lapply(seq_len(nrow(cohort)), function(i) {
+    d <- daily_dose[[i]][seq_len(n_day)]
+    data.frame(id = cohort$id[i], time = 24 * (seq_len(n_day) - 1), amt = d)
+  }))
+  dose_rows <- dose_rows[dose_rows$amt > 0, ]
+  dose_rows$evid <- 1L
+  dose_rows$cmt <- "depot"
+  obs_rows <- tidyr::crossing(id = cohort$id, week = 0:n_week) |>
+    mutate(time = pmax(168 * week - 0.01, 0), evid = 0L, amt = 0, cmt = "ca") |>
+    select(-week)
+  ev <- bind_rows(dose_rows, obs_rows) |>
+    left_join(cohort |> select(id, WT, DIS_HEALTHY, STUDY_PHASE3), by = "id") |>
+    arrange(id, time, desc(evid))
+  out <- rxode2::rxSolve(
+    mod_typ,
+    events = ev,
+    params = cbind(id = cohort$id, eta),
+    returnType = "data.frame"
+  )
+  out |>
+    as.data.frame() |>
+    mutate(week = round((time + 0.01) / 168)) |>
+    select(id, week, Cc, pth, ca)
+}
+```
+
+```{r titration-adult}
+# Study 20000172 (Supporting Information S3): start 30 mg; at weeks 3, 6, 9
+# and 12 step up 30 -> 60 -> 90 -> 120 -> 180 mg unless the mean of the iPTH
+# values from the two preceding weeks is <= 200 pg/mL (21.2 pmol/L) or serum
+# calcium is < 7.8 mg/dL (1.95 mmol/L).
+run_adult_trial <- function(n, n_week = 26) {
+  cohort <- tibble(id = seq_len(n), WT = draw_adult_wt(n), DIS_HEALTHY = 0L, STUDY_PHASE3 = 1L)
+  eta <- draw_eta(n)
+  ladder <- c(30, 60, 90, 120, 180)
+  level <- rep(1L, n)
+  daily <- lapply(seq_len(n), function(i) rep(30, 7 * n_week))
+  eps_pth <- matrix(stats::rnorm(n * (n_week + 2), 0, pd_sd[["pth"]]), n)
+  eps_ca <- matrix(stats::rnorm(n * (n_week + 2), 0, pd_sd[["ca"]]), n)
+  for (w in c(3, 6, 9, 12)) {
+    tr <- solve_troughs(cohort, eta, daily, w) |> arrange(id, week)
+    pth_obs <- matrix(tr$pth, n, byrow = TRUE) * exp(eps_pth[, 1:(w + 1)])
+    ca_obs <- matrix(tr$ca, n, byrow = TRUE) * exp(eps_ca[, 1:(w + 1)])
+    mean_pth <- rowMeans(pth_obs[, c(w, w + 1), drop = FALSE])
+    up <- mean_pth > 21.2 & ca_obs[, w + 1] >= 1.95 & level < length(ladder)
+    level[up] <- level[up] + 1L
+    for (i in which(up)) daily[[i]][(7 * w + 1):(7 * n_week)] <- ladder[level[i]]
+  }
+  tr <- solve_troughs(cohort, eta, daily, n_week) |> arrange(id, week)
+  tr$pth_obs <- tr$pth * exp(as.vector(t(eps_pth[, 1:(n_week + 1)])))
+  tr$ca_obs <- tr$ca * exp(as.vector(t(eps_ca[, 1:(n_week + 1)])))
+  base_obs <- tibble(id = cohort$id, pth_base_obs = tr$pth[tr$week == 0] * exp(eps_pth[, n_week + 2]))
+  tr$dose <- vapply(seq_len(nrow(tr)), function(j) {
+    daily[[tr$id[j]]][min(7 * tr$week[j] + 1, 7 * n_week)]
+  }, numeric(1))
+  tr |> left_join(base_obs, by = "id")
+}
+
+summarise_trial <- function(tr) {
+  tr |>
+    group_by(id) |>
+    mutate(pth0 = pth[week == 0], ca0 = ca[week == 0]) |>
+    ungroup() |>
+    group_by(week) |>
+    summarise(
+      pth_chg = mean(100 * (pth / pth0 - 1)),
+      pth_resp = 100 * mean(pth_obs <= 0.7 * pth_base_obs),
+      ca_chg = mean(100 * (ca / ca0 - 1)),
+      ca_low = 100 * mean(ca_obs <= 2.1),
+      mean_dose = mean(dose),
+      .groups = "drop"
+    )
+}
+
+adult_trial <- run_adult_trial(200)
+adult_sum <- summarise_trial(adult_trial)
+```
+
+```{r titration-ped}
+# Study 20070208 (Supporting Information S4, Table S4.1): weight-band dose
+# ladders; step up at weeks 4, 8, ..., 24 if iPTH >= 300 pg/mL (31.8 pmol/L)
+# and cCa >= 8.4 mg/dL (2.1 mmol/L); step down if 100 <= iPTH < 150 pg/mL
+# (10.6-15.9 pmol/L) or 8.0 <= cCa < 8.4 mg/dL (2.0-2.1 mmol/L); withhold if
+# iPTH < 100 pg/mL or cCa < 8.0 mg/dL, restarting one level lower once iPTH
+# > 150 pg/mL and cCa >= 8.4 mg/dL. Calcium and iPTH are checked weekly.
+ped_ladder <- function(wt) {
+  if (wt <= 14) return(c(2.5, 5, 10, 15, 30, 30, 30))
+  if (wt <= 21) return(c(2.5, 5, 10, 15, 30, 60, 60))
+  if (wt <= 25) return(c(2.5, 5, 10, 15, 30, 60, 90))
+  if (wt <= 28) return(c(5, 10, 15, 30, 60, 90, 90))
+  if (wt <= 49) return(c(5, 10, 15, 30, 60, 90, 120))
+  if (wt < 75) return(c(10, 15, 30, 60, 90, 120, 180))
+  c(15, 30, 60, 90, 120, 180, 180)
+}
+
+run_ped_trial <- function(n, n_week = 26) {
+  # Screening (Supporting Information S5): iPTH >= 350 pg/mL (37.1 pmol/L)
+  # and cCa >= 8.8 mg/dL (2.2 mmol/L) in at least one of three simulated
+  # screening observations.
+  cohort <- tibble(id = integer(0))
+  eta <- NULL
+  while (nrow(cohort) < n) {
+    cand <- draw_ped(4 * n) |> mutate(DIS_HEALTHY = 0L, STUDY_PHASE3 = 0L)
+    e <- draw_eta(4 * n)
+    pth0 <- exp(ini_val[["lrbase_pth_patient"]] + e$etalrbase_pth)
+    ca0 <- exp(ini_val[["lrbase_ca_patient"]] + e$etalrbase_ca)
+    ok <- vapply(seq_len(4 * n), function(i) {
+      any(pth0[i] * exp(stats::rnorm(3, 0, pd_sd[["pth"]])) >= 37.1 &
+        ca0[i] * exp(stats::rnorm(3, 0, pd_sd[["ca"]])) >= 2.2)
+    }, logical(1))
+    cohort <- bind_rows(cohort, cand[ok, ])
+    eta <- rbind(eta, e[ok, ])
+  }
+  cohort <- cohort[seq_len(n), ] |> mutate(id = seq_len(n))
+  eta <- eta[seq_len(n), ]
+  ladders <- lapply(cohort$WT, ped_ladder)
+  level <- rep(1L, n)
+  held <- rep(FALSE, n)
+  daily <- lapply(seq_len(n), function(i) rep(ladders[[i]][1], 7 * n_week))
+  eps_pth <- matrix(stats::rnorm(n * (n_week + 2), 0, pd_sd[["pth"]]), n)
+  eps_ca <- matrix(stats::rnorm(n * (n_week + 2), 0, pd_sd[["ca"]]), n)
+  for (w in 1:(n_week - 1)) {
+    tr <- solve_troughs(cohort, eta, daily, w) |> filter(week == w) |> arrange(id)
+    pth_obs <- tr$pth * exp(eps_pth[, w + 1])
+    ca_obs <- tr$ca * exp(eps_ca[, w + 1])
+    for (i in seq_len(n)) {
+      if (held[i]) {
+        if (pth_obs[i] > 15.9 && ca_obs[i] >= 2.1) {
+          held[i] <- FALSE
+          level[i] <- max(1L, level[i] - 1L)
+        }
+      } else if (ca_obs[i] < 2.0 || pth_obs[i] < 10.6) {
+        held[i] <- TRUE
+      } else if (pth_obs[i] < 15.9 || ca_obs[i] < 2.1) {
+        level[i] <- max(1L, level[i] - 1L)
+      } else if (w %% 4 == 0 && w <= 24 && pth_obs[i] >= 31.8 && level[i] < 7L) {
+        level[i] <- level[i] + 1L
+      }
+      daily[[i]][(7 * w + 1):(7 * n_week)] <- if (held[i]) 0 else ladders[[i]][level[i]]
+    }
+  }
+  tr <- solve_troughs(cohort, eta, daily, n_week) |> arrange(id, week)
+  tr$pth_obs <- tr$pth * exp(as.vector(t(eps_pth[, 1:(n_week + 1)])))
+  tr$ca_obs <- tr$ca * exp(as.vector(t(eps_ca[, 1:(n_week + 1)])))
+  base_obs <- tibble(id = cohort$id, pth_base_obs = tr$pth[tr$week == 0] * exp(eps_pth[, n_week + 2]))
+  tr$dose <- vapply(seq_len(nrow(tr)), function(j) {
+    daily[[tr$id[j]]][min(7 * tr$week[j] + 1, 7 * n_week)]
+  }, numeric(1))
+  tr |> left_join(base_obs, by = "id")
+}
+
+ped_trial <- run_ped_trial(200)
+ped_sum <- summarise_trial(ped_trial)
+```
+
+```{r figure-3, fig.width = 7, fig.height = 7}
+# Replicates Figure 3 of Chen 2019 (one simulated trial per population, so the
+# lines are single-trial means rather than means across replicate trials).
+bind_rows(
+  adult_sum |> mutate(population = "II. Adults (Study 20000172 algorithm)"),
+  ped_sum |> mutate(population = "I. Children (Study 20070208 algorithm)")
+) |>
+  select(population, week, pth_chg, pth_resp, ca_chg, ca_low) |>
+  pivot_longer(-c(population, week)) |>
+  mutate(name = factor(
+    name,
+    levels = c("pth_chg", "pth_resp", "ca_chg", "ca_low"),
+    labels = c(
+      "A. iPTH change from baseline (%)",
+      "B. Subjects with iPTH decrease >= 30% (%)",
+      "C. cCa change from baseline (%)",
+      "D. Subjects with cCa <= 8.4 mg/dL (%)"
+    )
+  )) |>
+  ggplot(aes(week, value, colour = population)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y") +
+  labs(
+    x = "Time (weeks)", y = NULL, colour = NULL,
+    caption = "Replicates Figure 3 of Chen 2019."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+```{r table-5}
+wk24 <- bind_rows(
+  adult_sum |> filter(week == 24) |> mutate(population = "Adults"),
+  ped_sum |> filter(week == 24) |> mutate(population = "Children")
+)
+published5 <- tibble::tribble(
+  ~population, ~pub_resp, ~pub_pth_chg, ~pub_ca_chg, ~pub_ca_low, ~pub_dose,
+  "Children", 49, -20.76, -3.33, 8, 34.8,
+  "Adults", 70.1, -42.1, -7.4, 23.6, 134
+)
+cmp5 <- wk24 |>
+  left_join(published5, by = "population") |>
+  transmute(
+    population,
+    `iPTH >= 30% decrease, sim / pub (%)` = sprintf("%.1f / %.1f", pth_resp, pub_resp),
+    `iPTH change, sim / pub (%)` = sprintf("%.1f / %.1f", pth_chg, pub_pth_chg),
+    `cCa change, sim / pub (%)` = sprintf("%.1f / %.1f", ca_chg, pub_ca_chg),
+    `cCa <= 8.4 mg/dL, sim / pub (%)` = sprintf("%.1f / %.1f", ca_low, pub_ca_low),
+    `Mean dose, sim / pub (mg)` = sprintf("%.1f / %.1f", mean_dose, pub_dose)
+  )
+cmp5 |>
+  dplyr::rename("Population" = population) |>
+  knitr::kable(caption = "Week 24 summary, simulated vs Chen 2019 Table 5 (mean dose from the Results text).")
+```
+
+```{r titration-check}
+a24 <- wk24[wk24$population == "Adults", ]
+p24 <- wk24[wk24$population == "Children", ]
+stopifnot(
+  # Adults: mean iPTH and cCa change at week 24 (published -42.1% and -7.4%).
+  # The tolerance covers a single 200-subject trial and the unpublished
+  # adult weight distribution; a transcription error in PTH0, Ca0, Kout or a
+  # power exponent moves these by more.
+  abs(a24$pth_chg - (-42.1)) < 15,
+  abs(a24$ca_chg - (-7.4)) < 3,
+  # Children respond less than adults (Results, Figure 3, Table 5).
+  p24$pth_chg > a24$pth_chg,
+  p24$ca_chg > a24$ca_chg
+)
+```
+
+Before the first dose (week 0), the simulated fraction of subjects whose
+observed iPTH is already 30% below their observed baseline is
+`r sprintf("%.0f%%", adult_sum$pth_resp[adult_sum$week == 0])` (adults) and
+`r sprintf("%.0f%%", ped_sum$pth_resp[ped_sum$week == 0])` (children), and the
+fraction with observed cCa <= 8.4 mg/dL is
+`r sprintf("%.0f%%", adult_sum$ca_low[adult_sum$week == 0])` and
+`r sprintf("%.0f%%", ped_sum$ca_low[ped_sum$week == 0])`. Figure 3 starts at
+about 22% and about 5% rather than at zero, so the published fractions include
+residual error, as the simulation here does. Two independent iPTH draws with
+the patient residual SD give a pre-dose 'responder' fraction of
+`r sprintf("%.0f%%", 100 * pnorm(log(0.7) / (sqrt(2) * pd_sd[["pth"]])))`.
+
+# Assumptions and deviations
+
+* **Reference weight for allometry.** Chen 2019 states that CL/F and the
+  central V/F carry fixed allometric exponents (0.75 and 1) but does not print
+  the reference weight. The maintainers assumed 70 kg. With that choice the
+  typical distribution half-life is close to the published medians (see the
+  typical-value checks), but those medians depend on the unpublished weight
+  distributions and cannot pin the reference weight. Q/F and V3/F are not
+  weight-scaled (Discussion: allometry applied to 'clearance and the apparent
+  volume of distribution for the central compartment').
+* **Concentration unit in the occupancy term.** Table 4 prints the allosteric
+  ratio in 'L mM-1' and the Results text in 'mM-1'. A plasma cinacalcet
+  concentration in mmol/L (about 1e-5 mM at clinical doses) would make the drug
+  effect vanish. With the concentration in ng/mL, the model reproduces the
+  adult iPTH and cCa responses of Figure 3 and Table 5; with the concentration
+  in nmol/L it overshoots them about two-fold (a typical adult on 30 mg falls
+  42% in trough iPTH rather than the roughly 20% of Figure 3, panel II-A). The
+  packaged model therefore multiplies `ratio` by `Cc` in ng/mL.
+* **Unit typos.** Table 3 prints Ka in 'L h-1' and Table 4 prints Kout,Ca in
+  'L h-1'; both are first-order rate constants in 1/h (the Ca half-life of
+  23.1 h equals log(2) / 0.03 h).
+* **Parameter naming in the text.** The Results text calls the power on the
+  change of receptor occupancy 'gamma' (-3.3), while Table 2 calls it lambda
+  (Equation 2) and uses gamma for the power on the iPTH change (Equation 3).
+  The packaged model follows Tables 2 and 4: `lambda_ro` = -3.30 (power on RO),
+  `gamma_pth` = 0.07 (power on PTH). The text quotes PD IIV of '78-133% CV'
+  while Table 4 prints 64-112.51%; the table values are used.
+* **IIV on a negative parameter.** The power on receptor occupancy is negative;
+  its exponential IIV (Table 2 Equation 7) is applied as
+  `lambda_ro * exp(eta)`, keeping the sign.
+* **Residual error scale.** Tables 3 and 4 give the log-scale additive residual
+  errors as '% CV'. They are converted with `SD = sqrt(log(1 + CV^2))`, the
+  same conversion as the IIV. Reading them directly as SDs (0.50, 0.72, 0.43,
+  0.07, 0.23, 0.0373) differs by at most 0.07 on the log scale. The week-0
+  fractions in Figure 3 (about 22% of subjects already 'responding' and about
+  5% with cCa <= 8.4 mg/dL before treatment) are consistent with the published
+  simulations including residual error, which the trial simulation above does.
+* **Shared IIV across strata.** Table 4 prints one IIV per PD parameter; it is
+  applied to both the patient and the healthy-volunteer parameter sets.
+  `Kout,Ca` has no IIV.
+* **Healthy-volunteer and phase 3 strata.** `DIS_HEALTHY = 1` selects the
+  healthy-volunteer PD parameters and residual errors; `STUDY_PHASE3 = 1`
+  selects the phase 3 PK residual error. Both default to the patient /
+  non-phase-3 case in the simulations above unless stated.
+* **Virtual cohorts.** Adult weights and paediatric age-weight pairs are
+  assumptions (see Virtual cohorts); the paper sampled NHANES for children and
+  unspecified trial demographics for adults. Children are restricted to 2-18
+  years and at least 12.5 kg, the range covered by the Study 20070208 dose
+  table; the paper's paediatric simulations also included younger children.
+* **Titration algorithms.** The adult algorithm decides on the trough iPTH of
+  the two preceding weekly visits; the paediatric algorithm checks trough iPTH
+  and cCa weekly (the paper's simulation used weekly cCa monitoring) and
+  applies the Study 20070208 step-up, step-down and withhold rules. Adverse-event
+  criteria cannot be simulated and are omitted. No adult inclusion criteria are
+  printed, so all simulated adults are enrolled.
+* **Errata.** No correction notice for this article was found on EuropePMC as
+  of 2026-11-25.

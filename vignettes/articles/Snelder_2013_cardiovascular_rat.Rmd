@@ -216,9 +216,14 @@ conc_for_eff <- function(eff, emax, ic50) {
   ic50 * r / (1 - r)
 }
 
+# Tight tolerances: the steady-state, Equation 5 and flux-balance checks are
+# exact identities held to 1e-6 or 1e-8. At rxSolve()'s defaults a last-bit
+# offset from the exact equilibrium lets the stiff solver drift MAP by up to
+# 8e-5 mmHg over 240 h; at these tolerances the drift is below 4e-9 mmHg.
 solve_cvs <- function(events, params = NULL) {
   rxode2::rxSolve(mod, events = events, params = params,
-                  covsInterpolation = "locf", returnType = "data.frame")
+                  covsInterpolation = "locf", returnType = "data.frame",
+                  rtol = 1e-10, atol = 1e-12)
 }
 ```
 

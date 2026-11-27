@@ -4,6 +4,7 @@ Brenner_2016_pamrevlumab_rat <- function() {
   vignette <- "Brenner_2016_pamrevlumab_rat"
 
   units <- list(time = "h", dosing = "nmol", concentration = "nM")
+  dosing <- c("central", "target_ctgfn", "target_ctgf")
 
   # Two target species (intact CTGF and its N-terminal fragment), each free and
   # antibody-bound, each with a plasma and a tissue state. The canonical

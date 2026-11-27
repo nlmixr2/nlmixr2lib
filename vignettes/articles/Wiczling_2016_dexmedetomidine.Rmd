@@ -1,0 +1,456 @@
+---
+title: "Dexmedetomidine, paediatric ICU long-term infusion (Wiczling 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dexmedetomidine, paediatric ICU long-term infusion (Wiczling 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Wiczling_2016_dexmedetomidine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Wiczling_2016_dexmedetomidine"))$description`
+* Article: [J Pharmacokinet Pharmacodyn 2016;43(3):315-324](https://doi.org/10.1007/s10928-016-9474-0) (open access)
+
+Wiczling 2016 fitted a two-compartment model to dexmedetomidine
+concentrations from critically ill children who received the drug as a
+continuous infusion for two to ten days. The analysis was fully Bayesian
+(WinBUGS), with informative priors on the typical values and the
+between-subject variability taken from the pooled paediatric analysis of
+Potts 2009 (Table 1). Clearances and volumes are scaled allometrically to a
+70-kg adult, clearance matures with postmenstrual age, and every disposition
+parameter is allowed to differ between the two sampling occasions (the first
+24 h of the infusion and the 8 h after it stopped). The central volume was
+1.5-fold larger on the second occasion and clearance 1.3-fold larger.
+
+```{r model}
+mod <- rxode2::rxode(readModelDb("Wiczling_2016_dexmedetomidine"))
+mod
+```
+
+# Population
+
+Thirty-eight children (23 male, 15 female) were studied in the paediatric ICU
+of Poznan University of Medical Sciences: median (range) age 70 (1.4-188.6)
+months and weight 18.5 (4.7-60) kg (Table 2). Diagnoses were acute
+respiratory failure (18), severe sepsis or septic shock (10), multiple or brain
+trauma (8) and acute cardiac insufficiency (2); the median PRISM score was 0.5
+(0-11). Dexmedetomidine was added to sufentanil + midazolam sedation, started
+at 0.8 ug/kg/h and titrated in 0.2 ug/kg/h steps (maximum 1.4 ug/kg/h) to a
+Cook score of 7-14, then stepped down to the minimum rate before stopping.
+The median infusion lasted 97.3 h (45.0-229.2) and the median total dose was
+1153.8 ug. Plasma was sampled at 1, 4, 8, 12, 16, 20 and 24 h after the start
+(occasion 1) and just before and 5, 10, 20 min and 1, 2, 4 and 6 h after the
+end of the infusion (occasion 2); 470 concentrations were analysed.
+
+```{r population}
+str(mod$population)
+```
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Two-compartment structure, infusion into central | -- | Methods equations 1-2; supplement Component Pascal ODE `DexTwoCptModelTCLRK45OCC` |
+| `lcl` | log(41.6) L/h per 70 kg | Table 3, theta CL mean |
+| `lq` | log(56.8) L/h per 70 kg | Table 3, theta Q mean |
+| `lvc` | log(52.0) L per 70 kg | Table 3, theta V1 mean |
+| `lvp` | log(70.4) L per 70 kg | Table 3, theta V2 mean |
+| `ltm50_cl` | log(42.5) weeks | Table 3, theta TE50 mean |
+| `lhill_cl` | log(2.45) | Table 3, theta Hill mean |
+| `e_wt_cl`, `e_wt_q` | 0.75 (fixed) | Methods equation 5 |
+| `e_wt_vc`, `e_wt_vp` | 1 (fixed) | Methods equation 5 |
+| `e_occ2_cl` | 0.31 | Table 3, f CL = 1.31 |
+| `e_occ2_q` | 0.02 | Table 3, f Q = 1.02 |
+| `e_occ2_vc` | 0.50 | Table 3, f V1 = 1.50 |
+| `e_occ2_vp` | -0.14 | Table 3, f V2 = 0.86 |
+| Postmenstrual age = 4 x age (months) + 40 weeks | -- | supplement WinBUGS code, `logthetaMean[i, 1]` |
+| Occasion switch `expit(t - 30)` | -- | supplement ODE component (`NNN` = 1, `TCL50` = 30) and WinBUGS `Vc[i]` |
+| IIV covariance (CL, Q, V1, V2) | see model | Table 2S, Omega posterior means |
+| `expSd` | 0.275 | Table 2S, sigma C |
+| `nu` | 1.75 | Table 2S, nu |
+
+The variances reproduce the coefficients of variation quoted in the Results
+(56, 83, 152 and 68% for CL, Q, V1 and V2) and the Q-V1 correlation of 0.7:
+
+```{r iiv-check}
+om <- mod$omega
+cv <- sqrt(exp(diag(om)) - 1) * 100
+corr_qv1 <- om["etalq", "etalvc"] / sqrt(om["etalq", "etalq"] * om["etalvc", "etalvc"])
+knitr::kable(
+  data.frame(
+    Parameter = c("CL", "Q", "V1", "V2"),
+    `Model CV (%)` = round(cv, 0),
+    `Paper CV (%)` = c(56, 83, 152, 68),
+    check.names = FALSE
+  ),
+  row.names = FALSE,
+  caption = "IIV as %CV from the Table 2S covariance matrix vs the Results text."
+)
+stopifnot(
+  all(abs(round(cv) - c(56, 83, 152, 68)) <= 1),
+  abs(corr_qv1 - 0.68) < 0.01
+)
+corr_qv1
+```
+
+# Typical clearance and volume by age (Figure 3)
+
+Figure 3 plots each child's clearance and steady-state volume, both absolute
+and per kg of body weight, against age. The per-kg volume is the same for
+every child, 1.73 L/kg, because volumes scale linearly with weight and have no
+age term: it equals (V1 + V2) / 70 kg. The per-kg clearance falls from about
+0.85 L/h/kg in pre-school children to about 0.65 L/h/kg in adolescents (the
+0.75 allometric exponent) and is lower again in the youngest infants
+(maturation).
+
+The virtual children below take the median weight for age from a reference
+growth curve (CDC/WHO 50th percentile, sexes pooled); the points read from the
+lower panels of Figure 3 are bin medians digitised by the maintainers.
+
+```{r fig3}
+growth <- data.frame(
+  age_mo = c(0, 3, 6, 12, 24, 36, 60, 96, 120, 144, 168, 192),
+  wt = c(3.4, 6.0, 7.6, 9.6, 12.2, 14.3, 18.4, 25.6, 32.0, 40.0, 50.0, 58.0)
+)
+typ <- data.frame(PNA = seq(1, 192, by = 1)) |>
+  dplyr::mutate(WT = approx(growth$age_mo, growth$wt, PNA)$y)
+
+ev_typ <- typ |>
+  dplyr::mutate(id = dplyr::row_number(), time = 1, evid = 0, cmt = "central")
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, keep = c("PNA", "WT")) |>
+  as.data.frame() |>
+  dplyr::mutate(cl_per_kg = cl / WT, vss_per_kg = (vc + vp) / WT)
+
+fig3_digitised <- data.frame(
+  age_bin = c("< 6 months", "35-110 months", "140-195 months"),
+  PNA = c(3, 70, 175),
+  cl_per_kg_paper = c(0.69, 0.82, 0.64)
+)
+
+ggplot(sim_typ, aes(PNA, cl_per_kg)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  geom_point(data = fig3_digitised, aes(PNA, cl_per_kg_paper), shape = 1, size = 3) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Age (months)", y = "CL / BW (L/h/kg)",
+    caption = paste(
+      "Line: typical CL per kg at the median weight for age (occasion 1).",
+      "Circles: bin medians read from Figure 3 (lower left) of Wiczling 2016."
+    )
+  ) +
+  theme_bw()
+
+fig3_cmp <- fig3_digitised |>
+  dplyr::left_join(dplyr::select(sim_typ, PNA, cl_per_kg), by = "PNA") |>
+  dplyr::mutate(pct_diff = 100 * (cl_per_kg - cl_per_kg_paper) / cl_per_kg_paper)
+fig3_cmp |>
+  dplyr::rename(
+    "Age bin" = age_bin, "Age (months)" = PNA,
+    "Figure 3 CL/BW (L/h/kg)" = cl_per_kg_paper,
+    "Model CL/BW (L/h/kg)" = cl_per_kg, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical CL per kg vs Figure 3.")
+
+vss_per_kg <- unique(signif(sim_typ$vss_per_kg, 6))
+vss_per_kg
+stopifnot(
+  # Volumes are exactly proportional to weight, so Vss/BW is one number.
+  length(vss_per_kg) == 1,
+  abs(vss_per_kg / 1.73 - 1) < 0.03,
+  # Digitised from a scatter of individual values, weights approximated by a
+  # growth curve: a centre check, not a point-by-point one.
+  all(abs(fig3_cmp$pct_diff) < 15)
+)
+```
+
+# Occasion switch and steady state
+
+For a typical 18.5-kg, 70-month-old child on the starting rate of 0.8 ug/kg/h,
+the concentration at 24 h is within a few percent of the occasion-1 steady
+state, rate / CL. After 30 h the occasion-2 parameters take over: the larger
+central volume and clearance lower the concentration toward the new steady
+state rate / (1.31 CL).
+
+```{r typical}
+wt <- 18.5
+rate <- 0.8 * wt
+ev_t <- rxode2::et(amt = rate * 97, rate = rate, cmt = "central") |>
+  rxode2::et(sort(unique(c(seq(0, 96, by = 0.5), 97 + seq(0, 8, by = 1 / 12)))), cmt = "central") |>
+  as.data.frame() |>
+  dplyr::mutate(WT = wt, PNA = 70)
+sim_t <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_t) |> as.data.frame()
+
+ggplot(sim_t, aes(time, Cc)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  geom_vline(xintercept = 30, linetype = 2) +
+  labs(
+    x = "Time after infusion start (h)", y = "Dexmedetomidine (ng/mL)",
+    caption = "Typical child, 0.8 ug/kg/h for 97 h; dashed line = occasion switch at 30 h."
+  ) +
+  theme_bw()
+
+# At 24 h the logistic switch is at expit(-6) = 0.25%, so the occasion-1
+# clearance is taken at t = 0 for the ratio check.
+cl_occ1 <- sim_t$cl[sim_t$time == 0]
+css1 <- rate / sim_t$cl[sim_t$time == 24]
+c24 <- sim_t$Cc[sim_t$time == 24]
+c96 <- sim_t$Cc[sim_t$time == 96]
+css2 <- rate / sim_t$cl[sim_t$time == 96]
+c(c24 = c24, css_occ1 = css1, c96 = c96, css_occ2 = css2)
+stopifnot(
+  abs(c24 / css1 - 1) < 0.03,
+  abs(c96 / css2 - 1) < 0.01,
+  abs(sim_t$cl[sim_t$time == 96] / cl_occ1 - 1.31) < 1e-3
+)
+```
+
+# Virtual cohort and posterior predictive check (Figure 2)
+
+The study's infusions were individually titrated and the published material
+does not give each child's rate history, so an exact replication of Figure 2
+is not possible. As an illustration, 200 virtual children receive the starting
+rate of 0.8 ug/kg/h for 97 h (the median infusion duration) and are sampled on
+the study schedule. Age is drawn to match Table 2 (median about 70 months,
+range 1.4-188.6) and weight from the growth curve above with 15% scatter.
+
+```{r cohort}
+set.seed(20160601)
+n_sub <- 200
+cohort <- data.frame(id = seq_len(n_sub)) |>
+  dplyr::mutate(
+    PNA = 1.4 + 187.2 * rbeta(n_sub, 1.1, 1.9),
+    WT = approx(growth$age_mo, growth$wt, PNA)$y * exp(rnorm(n_sub, 0, 0.15)),
+    WT = pmin(pmax(WT, 4.7), 60)
+  )
+c(median_age = median(cohort$PNA), median_wt = median(cohort$WT))
+
+t_end <- 97
+obs_t <- c(1, 4, 8, 12, 16, 20, 24, t_end - 0.01, t_end + c(5, 10, 20) / 60, t_end + c(1, 2, 4, 6))
+ev_c <- cohort |>
+  dplyr::rowwise() |>
+  dplyr::reframe(
+    id = id,
+    time = c(0, obs_t),
+    evid = c(1, rep(0, length(obs_t))),
+    amt = c(0.8 * WT * t_end, rep(0, length(obs_t))),
+    rate = c(0.8 * WT, rep(0, length(obs_t))),
+    cmt = "central",
+    WT = WT, PNA = PNA
+  )
+
+rxode2::rxSetSeed(20160602)
+sim_c <- rxode2::rxSolve(mod, ev_c, keep = c("WT", "PNA")) |>
+  as.data.frame()
+
+vpc <- sim_c |>
+  dplyr::mutate(
+    occasion = ifelse(time < 30, "Occasion 1: time after infusion start (h)",
+                      "Occasion 2: time after infusion end (h)"),
+    tplot = ifelse(time < 30, time, pmax(time - t_end, 0))
+  ) |>
+  dplyr::group_by(occasion, tplot) |>
+  dplyr::summarise(
+    p10 = quantile(sim, 0.1), p50 = quantile(sim, 0.5), p90 = quantile(sim, 0.9),
+    ipred50 = median(Cc),
+    .groups = "drop"
+  )
+
+# Observed medians read from Figure 2 by the maintainers.
+fig2_median <- data.frame(
+  occasion = c(rep("Occasion 1: time after infusion start (h)", 7),
+               rep("Occasion 2: time after infusion end (h)", 5)),
+  tplot = c(1, 4, 8, 12, 16, 20, 24, 0, 1, 2, 4, 6),
+  obs50 = c(0.40, 0.60, 0.75, 0.85, 0.80, 0.75, 0.75, 0.22, 0.12, 0.08, 0.055, 0.045)
+)
+
+ggplot(vpc, aes(tplot)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), fill = "steelblue", alpha = 0.25) +
+  geom_line(aes(y = p50), colour = "steelblue", linewidth = 1) +
+  geom_point(data = fig2_median, aes(tplot, obs50), shape = 1, size = 2.5) +
+  facet_wrap(~occasion, scales = "free_x") +
+  scale_y_log10() +
+  labs(
+    x = NULL, y = "Dexmedetomidine (ng/mL)",
+    caption = paste(
+      "Simulated median and 10th-90th percentiles (with residual error) at a",
+      "constant 0.8 ug/kg/h; circles: observed medians read from Figure 2."
+    )
+  ) +
+  theme_bw()
+
+occ1_cmp <- vpc |>
+  dplyr::filter(grepl("Occasion 1", occasion)) |>
+  dplyr::inner_join(fig2_median, by = c("occasion", "tplot")) |>
+  dplyr::mutate(pct_diff = 100 * (p50 - obs50) / obs50) |>
+  dplyr::select(tplot, obs50, p50, pct_diff)
+occ1_cmp |>
+  dplyr::rename(
+    "Time after start (h)" = tplot,
+    "Figure 2 observed median (ng/mL)" = obs50,
+    "Simulated median (ng/mL)" = p50,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, caption = "Occasion 1: simulated median at 0.8 ug/kg/h vs the observed median of Figure 2.")
+```
+
+During the first 24 h the simulated median at the constant starting rate
+has the shape of the observed median of Figure 2 and lies about 20% above it
+(11-42% at the individual times). The children's rates were titrated from the
+first hours on, and the observed end-of-infusion median (about 0.2 ng/mL) is
+far below the simulation because rates had been stepped down before stopping,
+so the absolute level is not a calibrated comparison. The shape of the
+post-infusion decline is compared below on a scale normalised to the
+end-of-infusion value.
+
+```{r decline}
+decline <- sim_c |>
+  dplyr::filter(time >= t_end - 0.01) |>
+  dplyr::group_by(id) |>
+  dplyr::mutate(rel = Cc / Cc[which.min(time)], tafter = pmax(time - t_end, 0)) |>
+  dplyr::ungroup() |>
+  dplyr::filter(tafter %in% c(1, 2, 4, 6)) |>
+  dplyr::group_by(tafter) |>
+  dplyr::summarise(model_rel = median(rel), .groups = "drop") |>
+  dplyr::left_join(
+    fig2_median |>
+      dplyr::filter(grepl("Occasion 2", occasion)) |>
+      dplyr::mutate(paper_rel = obs50 / 0.22) |>
+      dplyr::select(tafter = tplot, paper_rel),
+    by = "tafter"
+  )
+decline |>
+  dplyr::rename(
+    "Time after end (h)" = tafter,
+    "Model median C/C_end" = model_rel,
+    "Figure 2 median ratio" = paper_rel
+  ) |>
+  knitr::kable(digits = 2, caption = "Post-infusion decline relative to the end-of-infusion concentration.")
+
+early <- decline |> dplyr::filter(tafter %in% c(1, 2))
+stopifnot(
+  # Occasion 1: same level as the observed median despite the unknown
+  # titration; a mis-transcribed CL or V moves this by far more.
+  abs(median(occ1_cmp$pct_diff)) < 40,
+  # First 2 h after the infusion: the fast decline driven by the larger
+  # occasion-2 central volume matches the observed medians.
+  all(abs(early$model_rel / early$paper_rel - 1) < 0.25)
+)
+```
+
+The simulated decline over the first two hours matches the observed medians.
+Later, the observed medians flatten more than the simulation; the observed
+ratio of medians also reflects which children were still sampled at 4-6 h
+and their stepped-down rates, so this is a qualitative comparison only.
+
+# PKNCA validation
+
+Non-compartmental analysis of the cohort without residual error (`Cc`, IIV
+retained): Cmax and AUC over the first 24 h (occasion 1) and the terminal
+half-life over the 6 h after the infusion. The paper reports no NCA results,
+so there is no published comparator; the table summarises the simulation.
+
+```{r pknca}
+grid <- sort(unique(c(seq(0, 24, by = 1), t_end - 0.01, t_end + c(5, 10, 20) / 60, t_end + seq(0.5, 6, by = 0.5))))
+ev_n <- cohort |>
+  dplyr::rowwise() |>
+  dplyr::reframe(
+    id = id,
+    time = c(0, grid),
+    evid = c(1, rep(0, length(grid))),
+    amt = c(0.8 * WT * t_end, rep(0, length(grid))),
+    rate = c(0.8 * WT, rep(0, length(grid))),
+    cmt = "central",
+    WT = WT, PNA = PNA
+  )
+rxode2::rxSetSeed(20160603)
+sim_n <- rxode2::rxSolve(mod, ev_n) |>
+  as.data.frame() |>
+  dplyr::mutate(treatment = "0.8 ug/kg/h x 97 h")
+
+conc_df <- sim_n |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_df <- cohort |>
+  dplyr::mutate(time = 0, amt = 0.8 * WT * t_end, treatment = "0.8 ug/kg/h x 97 h") |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id, concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "ug")
+intervals <- data.frame(
+  start = c(0, t_end),
+  end = c(24, t_end + 6),
+  cmax = c(TRUE, FALSE),
+  auclast = c(TRUE, FALSE),
+  half.life = c(FALSE, TRUE)
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_res)
+
+hl <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "half.life")
+stopifnot(
+  # Post-infusion terminal phase within the 6-h window: hours, not minutes
+  # or days, for a drug with CL ~ 0.8 L/h/kg and Vss ~ 1.7 L/kg.
+  median(hl$PPORRES, na.rm = TRUE) > 1,
+  median(hl$PPORRES, na.rm = TRUE) < 10
+)
+```
+
+# Assumptions and deviations
+
+- **Posterior means as point estimates.** Table 3 and Table 2S report the
+  posterior mean and 90% highest-density interval; the model uses the means.
+  The fractional occasion changes `fP` are entered as `e_occ2_<param> = fP - 1`
+  so that the occasion-2 value is `P * (1 + e_occ2_<param>)`, which is the
+  ratio the paper reports.
+- **Occasion switch follows the authors' code.** The text describes the two
+  occasions as separate parameter sets. The deposited WinBUGS / Component
+  Pascal code implements them as a smooth logistic switch in time,
+  `1 / (1 + exp(t - 30))`, with a slope of 1/h and a midpoint of 30 h after the
+  infusion started, applied to CL, Q, V1, V2 in the ODEs and to V1 in the
+  observation. The model reproduces that switch, so time zero must be the start
+  of the infusion. For infusions shorter than about 30 h the occasion-2
+  parameters would never take effect; the studied infusions all lasted at
+  least 45 h.
+- **Amount-based ODEs.** Methods equations 1-2 are written in concentrations,
+  but the code integrates amounts with time-varying micro-constants and
+  divides by the time-varying V1 to give the concentration. The model follows
+  the code, so when V1 increases across the switch the concentration falls
+  while the amount is conserved.
+- **Postmenstrual age.** The code computes postmenstrual age in weeks as
+  `4 * age_months + 40` (term birth, 4 weeks per month); `model()` uses the
+  same conversion from the canonical postnatal-age column `PNA` (months).
+  Baseline weight and age were used in the fit.
+- **Residual error.** The paper uses a Student-t distribution on the log
+  scale with scale 0.275 and 1.75 degrees of freedom, encoded as
+  `lnorm(expSd) + dt(nu)`. With fewer than 2 degrees of freedom the residual
+  variance is infinite, so simulated observations (`sim`) have very heavy
+  tails; summarise them with medians and percentiles, not means. `nu` is the
+  paper's name for the degrees of freedom, so `checkModelConventions()` warns
+  that it is not one of the canonical residual-error names.
+- **Covariate screen.** Sex, dose, infusion duration and PRISM score were
+  examined graphically against the random effects and not retained (Figures
+  6S and 7S); sex is listed in `covariatesDataExcluded`.
+- **Table 3 typo.** The 90% interval for TE50 is printed as 61.7-47.8 weeks,
+  which does not contain the mean of 42.5 weeks; only the mean is used.
+- **Prior precision for the occasion fractions.** The Results select
+  sigma_fP = 0.2; the printed code uses a precision `tau` of 100
+  (sigma = 0.1). This affects only the prior, not the posterior means used
+  here.
+- **Validation targets** are digitised from Figures 2 and 3; the paper
+  reports no NCA results. Infusion-rate histories were not published, so the
+  cohort simulation uses the starting rate throughout.
+- **Errata.** No erratum or correction was found (PubMed Central and the
+  publisher's page, checked 2026-11-24).

@@ -1,0 +1,523 @@
+---
+title: "Oral oncology drugs: intestinal organoid-based GI toxicity (Pin 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Oral oncology drugs: intestinal organoid-based GI toxicity (Pin 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Pin 2026 quantifies the toxicity of six oral oncology drugs in human
+small-intestinal organoids (hSIOs) with a cell-dynamics model, then carries the
+organoid toxicity function into a human model of the small-intestinal
+epithelium to predict villus injury and the probability of diarrhea at clinical
+doses. The drugs are the CDK4/6 inhibitors abemaciclib and ribociclib and the
+EGFR tyrosine kinase inhibitors poziotinib, lazertinib, mobocertinib and
+osimertinib.
+
+The paper contributes twelve model files: an organoid model and a human
+epithelium model for each drug.
+
+* `Pin_2026_<drug>_organoid` --- proliferative (MCM2+), non-proliferative and
+  dead hSIO cells and toxic medium waste (Eqs 1-4), with the drug killing
+  proliferative cells through a Hill function of the free drug concentration
+  (Eqs 5-6). Parameters from Table 1.
+* `Pin_2026_<drug>_human` --- the crypt-villus epithelium of Gall 2023 (stem,
+  proliferative and non-proliferative crypt cells, villus cells, plus arrested
+  and dead crypt and villus cells; Eqs E7-E15) driven by the same kill function
+  at the free drug concentration in the crypt, and a cumulative-logit model of
+  the probability of diarrhea of any grade and of grade 3 or higher
+  (Eqs E16-E17).
+
+In both models the drug exposure is the time-varying covariate `CEFFECT`
+(free concentration at the site of action, uM). In the organoid it is the
+measured medium concentration. In patients the authors used Simcyp V24 to
+predict the free drug concentration in enterocytes (ileum I, M-ADAM), their
+preferred surrogate for the crypt, and in plasma; that PBPK layer is not part of
+the model files.
+
+* Citation: `r readModelDb("Pin_2026_abemaciclib_human")()$reference`
+* Article: [CPT Pharmacometrics Syst Pharmacol 15(5):e70256](https://doi.org/10.1002/psp4.70256)
+
+# Population
+
+The organoid data come from one adult stem-cell-derived hSIO line from a single
+donor (HUB Organoid Technology biobank), grown in serum-free medium and sampled
+at 0, 24, 48, 72 and 96 h without medium refreshment, with 3-4 replicate wells
+per drug concentration and a vehicle control on the same plates. MCM2+
+proliferative and MCM2- non-proliferative cells were counted by
+immunofluorescence image analysis.
+
+The human epithelium is a typical-value model parametrised from human
+small-intestine literature values (Table S3). Its diarrhea sub-model was fitted
+to the reported diarrhea counts of 13 clinical-study arms of the six drugs
+(Table 2): breast cancer for the CDK4/6 inhibitors and lung adenocarcinoma or
+non-small cell lung cancer for the EGFR inhibitors.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The table
+below collects the structure.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| hSIO cell dynamics (P, N, D, waste W) | Eqs 1-4 | Main text Eqs 1-4; deposited `HIOs_DynamicModel_Abema.m` |
+| hSIO parameters per drug | `lambda_p`, `delta_pn`, `delta_nd`, `p_ref`, `n_ref`, initial values | Table 1 |
+| Kill and arrest functions | `k * C^h / (C^h + C50^h)` | Eqs 5-6; Table 1 'Drug effects' |
+| Human epithelium (S, P, D, V, arrested, dead) | Eqs E7-E14 | Supporting Information; deposited `GI_human_ODEs_Abema.m` |
+| Steady-state-derived transfer rates | `delta_sp`, `delta_pd`, `delta_dv`, `tau_v` | Table S3 |
+| Human cell-dynamics constants | `gamma = 3.41394`, `m = 1.468566`, `s_ss = 2`, `p_ss = 19.446`, `tau_Dead = ln(2)/12` | deposited `GI_human_Integr_Abema.m` (Table S3 prints other values, see below) |
+| Crypt-to-villus crowding term | `((S+P+D)/(s_ss+p_ss+d_ss+C_Arr+C_Dead))^m` | deposited code (Eq E15 differs, see below) |
+| Villus injury | `max(0, 1 - (V + V_Arr + V_Dead)/v_ss)` | Eq E16 |
+| Diarrhea model | `P(grade <= k) = expit(g_k + r * I^h/(I^h + I_k^h))` | Eq E17; SAS NLMIXED output in the Supporting Information |
+| Diarrhea estimates | `g0 = 1.7535`, `g2 = 6.2109`, `r_inj = -5.1074`, `I0 = 0.4818`, `I2 = 0.3998`, `h = 5` | Supporting Information SAS 'Parameter Estimates' |
+
+# Organoid models: Figure 1
+
+Figure 1C-H shows, for one representative concentration of each drug, the
+fitted model for the vehicle and the treated wells on a `log10(1 + cells)` scale
+over 96 h. The abemaciclib medium concentration was measured over the
+experiment; the profile below is the deposited one (Data S2, `PK.mat`) at 24 h
+spacing. For the other drugs the figure labels the concentration and the
+medium is held constant at that value.
+
+```{r organoid-setup}
+abema_medium <- tibble::tribble(
+  ~time, ~c0.37, ~c1.1, ~c3.3, ~c10,
+  0, 0.2990, 0.8438, 1.5775, 2.1550,
+  24, 0.2710, 0.6948, 1.7725, 1.9550,
+  48, 0.2492, 0.6398, 1.7750, 2.0075,
+  72, 0.2655, 0.8597, 1.5525, 1.8975,
+  96, 0.2655, 0.8598, 1.5525, 1.8975
+)
+
+# Concentration shown in each Figure 1 panel (uM).
+fig1_conc <- c(
+  ribociclib = 1.0, poziotinib = 0.0057, lazertinib = 0.06,
+  mobocertinib = 0.037, osimertinib = 0.14
+)
+
+organoid_run <- function(drug, ceffect, params = NULL, tmax = 96) {
+  mod <- readModelDb(paste0("Pin_2026_", drug, "_organoid"))
+  if (!is.null(params)) {
+    mod <- rxode2::ini(mod, params)
+  }
+  grid <- seq(0, tmax, by = 1)
+  ev <- data.frame(
+    id = 1, time = grid, evid = 0, cmt = "prolif",
+    CEFFECT = ceffect(grid)
+  )
+  as.data.frame(rxode2::rxSolve(
+    mod, ev, covsInterpolation = "linear", atol = 1e-10, rtol = 1e-8
+  ))
+}
+const_conc <- function(value) function(t) rep(value, length(t))
+abema_conc <- function(t) stats::approx(abema_medium$time, abema_medium$c3.3, t, rule = 2)$y
+
+drugs <- c("abemaciclib", "ribociclib", "poziotinib", "lazertinib", "mobocertinib", "osimertinib")
+fig1 <- lapply(drugs, function(drug) {
+  # Figure 1C starts from about 553 proliferative and 230 non-proliferative
+  # cells, not from the Table 1 abemaciclib inoculum (1993 / 1110); see the
+  # assumptions section.
+  ic <- if (drug == "abemaciclib") list(p0 = 553, n0 = 230) else NULL
+  treated <- if (drug == "abemaciclib") abema_conc else const_conc(fig1_conc[[drug]])
+  dplyr::bind_rows(
+    dplyr::mutate(organoid_run(drug, const_conc(0), ic), arm = "Vehicle"),
+    dplyr::mutate(organoid_run(drug, treated, ic), arm = "Drug")
+  ) |>
+    dplyr::mutate(drug = drug)
+}) |>
+  dplyr::bind_rows()
+```
+
+```{r organoid-figure, fig.height = 7}
+fig1 |>
+  dplyr::select(drug, arm, time, lprolif, lnonprolif) |>
+  tidyr::pivot_longer(c(lprolif, lnonprolif), names_to = "cells", values_to = "value") |>
+  dplyr::mutate(
+    cells = dplyr::recode(cells, lprolif = "MCM2+ proliferative", lnonprolif = "MCM2- non-proliferative"),
+    drug = factor(drug, levels = drugs)
+  ) |>
+  ggplot(aes(time, value, colour = arm)) +
+  geom_line() +
+  facet_grid(drug ~ cells) +
+  scale_colour_manual(values = c(Vehicle = "pink3", Drug = "royalblue3")) +
+  labs(x = "Time (h)", y = "log10(1 + cells)", colour = NULL,
+       caption = "Replicates Figure 1C-H of Pin 2026.") +
+  theme_bw()
+```
+
+The 96-h model values read from the Figure 1 panels (to about 0.05 log units)
+are compared with the packaged models below.
+
+```{r organoid-check}
+fig1_published <- tibble::tribble(
+  ~drug, ~arm, ~lprolif_pub, ~lnonprolif_pub,
+  "abemaciclib", "Vehicle", 4.00, 3.60,
+  "abemaciclib", "Drug", 3.25, 2.65,
+  "ribociclib", "Vehicle", 3.85, 3.50,
+  "ribociclib", "Drug", 3.80, 3.40,
+  "poziotinib", "Vehicle", 3.25, 3.05,
+  "poziotinib", "Drug", 2.15, 2.35,
+  "lazertinib", "Vehicle", 3.25, 3.05,
+  "lazertinib", "Drug", 2.95, 2.80,
+  "mobocertinib", "Vehicle", 3.20, 3.05,
+  "mobocertinib", "Drug", 2.10, 2.35,
+  "osimertinib", "Vehicle", 3.65, 3.40,
+  "osimertinib", "Drug", 2.50, 2.60
+)
+fig1_cmp <- fig1 |>
+  dplyr::filter(time == 96) |>
+  dplyr::select(drug, arm, lprolif, lnonprolif) |>
+  dplyr::left_join(fig1_published, by = c("drug", "arm")) |>
+  dplyr::mutate(
+    d_prolif = lprolif - lprolif_pub,
+    d_nonprolif = lnonprolif - lnonprolif_pub
+  )
+fig1_cmp |>
+  dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, 2))) |>
+  dplyr::rename(
+    Drug = drug, Arm = arm,
+    "Model log10(1+P)" = lprolif, "Figure log10(1+P)" = lprolif_pub,
+    "Model log10(1+N)" = lnonprolif, "Figure log10(1+N)" = lnonprolif_pub,
+    "Diff P" = d_prolif, "Diff N" = d_nonprolif
+  ) |>
+  knitr::kable(caption = "Organoid cell counts at 96 h: packaged models versus Figure 1.")
+
+# Panels C, D, E and G and the panel F vehicle arm agree to within the reading
+# precision plus a small margin. The panel F drug arm and the panel H vehicle
+# arm do not follow from Table 1 (see the assumptions section).
+fig1_cg <- dplyr::filter(
+  fig1_cmp,
+  drug != "osimertinib",
+  !(drug == "lazertinib" & arm == "Drug")
+)
+stopifnot(
+  max(abs(fig1_cg$d_prolif)) < 0.2,
+  max(abs(fig1_cg$d_nonprolif)) < 0.2
+)
+```
+
+## The EGFR-TKI non-proliferative reference number
+
+Table 1 prints the EGFR-TKI `n_ref` as "1026". The same row prints the
+ribociclib value as 1.3 x 10^7 with a superscript, so a lost superscript is the
+likely cause, and the models use 10^26. That reading makes the senescence of
+non-proliferative cells negligible over 96 h. Read literally as 1026 cells,
+the term would remove about 45 cells per hour from the initial 230
+non-proliferative cells. The vehicle non-proliferative cells would then fall
+before recovering, which no panel of Figure 1E-H shows.
+
+```{r nref-reading}
+nref_compare <- dplyr::bind_rows(
+  organoid_run("poziotinib", const_conc(0)) |> dplyr::mutate(reading = "1e26 (packaged)"),
+  organoid_run("poziotinib", const_conc(0), params = list(nref = 1026)) |>
+    dplyr::mutate(reading = "1026 (as printed)")
+) |>
+  dplyr::filter(time %in% c(0, 24, 48, 72, 96)) |>
+  dplyr::select(reading, time, lnonprolif)
+nref_compare |>
+  tidyr::pivot_wider(names_from = reading, values_from = lnonprolif) |>
+  dplyr::mutate(dplyr::across(-time, \(x) round(x, 2))) |>
+  dplyr::rename("Time (h)" = time) |>
+  knitr::kable(caption = "Vehicle log10(1 + non-proliferative cells), EGFR-TKI control fit. Figure 1E-G read about 2.35, 2.5, 2.7, 2.9, 3.05.")
+```
+
+# Human epithelium: homeostasis
+
+With no drug, the epithelium must stay at its homeostatic composition: the
+transfer and shedding rates are derived so that the initial cell numbers are an
+equilibrium. Villus injury stays at zero, so the diarrhea probabilities are the
+baseline rates of the logistic model, `1 - expit(g0)` and `1 - expit(g2)`.
+
+```{r steady-state}
+mod_abema_h <- readModelDb("Pin_2026_abemaciclib_human")
+ss <- as.data.frame(rxode2::rxSolve(
+  mod_abema_h,
+  data.frame(id = 1, time = seq(0, 2000, by = 10), evid = 0, cmt = "villus", CEFFECT = 0),
+  atol = 1e-10, rtol = 1e-8
+))
+stopifnot(
+  diff(range(ss$villus)) < 1e-6,
+  diff(range(ss$prolif)) < 1e-6,
+  max(ss$injury) < 1e-8,
+  abs(ss$prob_diarrhea[1] - (1 - plogis(1.7535))) < 1e-6
+)
+c(baseline_any_grade = ss$prob_diarrhea[1], baseline_grade3 = ss$prob_diarrhea_grade3[1])
+```
+
+# Human abemaciclib: Figure 2B-C and Table 2
+
+The authors deposited the Simcyp free abemaciclib profiles for 150 mg and
+200 mg twice daily in enterocytes and in plasma (Data S2). The first 28 days
+are supplied here at a 0.4-h step; the villus nadir falls on about day 11.
+
+```{r abema-human}
+abema_pk <- utils::read.csv(file.path("data", "Pin_2026_abemaciclib_simcyp.csv")) |>
+  tidyr::pivot_longer(c(bid150, bid200), names_to = "regimen", values_to = "CEFFECT") |>
+  dplyr::mutate(regimen = dplyr::recode(regimen, bid150 = "150 mg BID", bid200 = "200 mg BID"))
+
+abema_sim <- abema_pk |>
+  dplyr::group_by(surrogate, regimen) |>
+  dplyr::group_modify(function(d, key) {
+    ev <- data.frame(id = 1, time = d$time, evid = 0, cmt = "villus", CEFFECT = d$CEFFECT)
+    as.data.frame(rxode2::rxSolve(
+      mod_abema_h, ev, covsInterpolation = "linear", atol = 1e-10, rtol = 1e-8
+    )) |>
+      dplyr::select(time, CEFFECT, stem, prolif, nonprolif, villus, varr, vdead,
+                    injury, prob_diarrhea, prob_diarrhea_grade3)
+  }) |>
+  dplyr::ungroup()
+```
+
+```{r abema-figure, fig.height = 5}
+abema_sim |>
+  dplyr::mutate(
+    `Prol crypt (S + P)` = stem + prolif,
+    `Villus (V + V_Arr + V_Dead)` = villus + varr + vdead
+  ) |>
+  tidyr::pivot_longer(c(`Prol crypt (S + P)`, `Villus (V + V_Arr + V_Dead)`),
+                      names_to = "cells", values_to = "value") |>
+  ggplot(aes(time / 24, value, colour = regimen)) +
+  geom_line() +
+  facet_grid(cells ~ surrogate, scales = "free_y") +
+  labs(x = "Time (days)", y = "Cells", colour = NULL,
+       caption = "Replicates Figure 2B (plasma) and 2C (enterocyte) of Pin 2026, first 28 days.") +
+  theme_bw()
+```
+
+Table 2 reports the maximum predicted villus injury and the predicted incidence
+of diarrhea, taken as the maximum probability over the course of treatment.
+
+```{r abema-table2}
+table2_abema <- tibble::tribble(
+  ~surrogate, ~regimen, ~injury_pub, ~any_pub, ~g34_pub,
+  "enterocyte", "150 mg BID", 0.465, 64, 6,
+  "enterocyte", "200 mg BID", 0.518, 78, 10,
+  "plasma", "150 mg BID", 0.018, NA, NA,
+  "plasma", "200 mg BID", 0.026, NA, NA
+)
+abema_cmp <- abema_sim |>
+  dplyr::group_by(surrogate, regimen) |>
+  dplyr::summarise(
+    injury = max(injury),
+    any = 100 * max(prob_diarrhea),
+    g34 = 100 * max(prob_diarrhea_grade3),
+    .groups = "drop"
+  ) |>
+  dplyr::left_join(table2_abema, by = c("surrogate", "regimen"))
+abema_cmp |>
+  dplyr::mutate(
+    injury = round(injury, 3),
+    dplyr::across(c(any, g34), \(x) round(x, 0))
+  ) |>
+  dplyr::select(surrogate, regimen, injury, injury_pub, any, any_pub, g34, g34_pub) |>
+  dplyr::rename(
+    Surrogate = surrogate, Regimen = regimen,
+    "Max injury (model)" = injury, "Max injury (Table 2)" = injury_pub,
+    "Any grade % (model)" = any, "Any grade % (Table 2)" = any_pub,
+    "Grade >= 3 % (model)" = g34, "Grade >= 3 % (Table 2)" = g34_pub
+  ) |>
+  knitr::kable(caption = "Abemaciclib: packaged human model versus Pin 2026 Table 2.")
+
+ent <- dplyr::filter(abema_cmp, surrogate == "enterocyte")
+stopifnot(
+  # Injury within 3% of Table 2. The Hill coefficient of 5 steepens the
+  # incidence curve, so a 1.5% injury difference moves the any-grade
+  # incidence by about 2 points; the diarrhea model itself is checked
+  # exactly in the next section.
+  max(abs(ent$injury / ent$injury_pub - 1)) < 0.03,
+  max(abs(ent$any - ent$any_pub)) < 3,
+  max(abs(ent$g34 - ent$g34_pub)) < 3,
+  # Plasma exposure leaves the villus essentially intact (Table 2: < 0.03).
+  max(dplyr::filter(abema_cmp, surrogate == "plasma")$injury) < 0.03
+)
+```
+
+# Diarrhea sub-model: Table 2 for all six drugs
+
+The diarrhea model maps the maximum villus injury to the predicted incidence.
+The check below evaluates Eq E17 with the parameter values in the packaged
+model at the Table 2 enterocyte-driven injury of each regimen. The six human
+model files share these values.
+
+```{r diarrhea-table2}
+ini_df <- function(model) rxode2::rxode2(readModelDb(model))$iniDf
+th <- with(ini_df("Pin_2026_abemaciclib_human"), setNames(est, name))
+diarrhea <- function(injury, g, i50) {
+  hill <- injury^th[["hill_inj"]] / (injury^th[["hill_inj"]] + i50^th[["hill_inj"]])
+  100 * (1 - plogis(g + th[["r_inj"]] * hill))
+}
+table2 <- tibble::tribble(
+  ~compound, ~regimen, ~injury, ~any_pub, ~g34_pub, ~any_obs, ~g34_obs,
+  "Abemaciclib", "150 mg BID", 0.465, 64, 6, 80, 9,
+  "Abemaciclib", "200 mg BID", 0.518, 78, 10, 89, 19,
+  "Ribociclib", "600 mg QD 3w on/1w off", 0.152, 15, 0, 15, 1,
+  "Poziotinib", "16 mg QD", 0.538, 82, 11, 83, 32,
+  "Lazertinib", "240 mg QD", 0.032, 15, 0, 26, 0,
+  "Mobocertinib", "160 mg QD", 1.000, 96, 24, 96, 20,
+  "Osimertinib", "80 mg QD", 0.440, 56, 5, 47, 1
+) |>
+  dplyr::mutate(
+    any = diarrhea(injury, th[["g0"]], th[["inj50_0"]]),
+    g34 = diarrhea(injury, th[["g2"]], th[["inj50_2"]])
+  )
+table2 |>
+  dplyr::mutate(dplyr::across(c(any, g34), \(x) round(x, 1))) |>
+  dplyr::select(compound, regimen, injury, any, any_pub, any_obs, g34, g34_pub, g34_obs) |>
+  dplyr::rename(
+    Compound = compound, Regimen = regimen, "Injury (Table 2)" = injury,
+    "Any grade % (model)" = any, "Any grade % (Table 2 predicted)" = any_pub,
+    "Any grade % (observed, one study)" = any_obs,
+    "Grade >= 3 % (model)" = g34, "Grade >= 3 % (Table 2 predicted)" = g34_pub,
+    "Grade >= 3 % (observed, one study)" = g34_obs
+  ) |>
+  knitr::kable(caption = "Predicted diarrhea incidence from the Table 2 villus injury. Observed values are from one study per row; Table 2 lists every study.")
+
+# Table 2 prints whole percentages.
+stopifnot(
+  max(abs(table2$any - table2$any_pub)) < 1,
+  max(abs(table2$g34 - table2$g34_pub)) < 1
+)
+```
+
+# Human models for the other five drugs
+
+The Simcyp exposure profiles of ribociclib, poziotinib, lazertinib, mobocertinib
+and osimertinib are shown only graphically (Figure S2) and were not deposited,
+so the full Table 2 chain cannot be rerun for them. As a check that each human
+file wires its own kill function, the sketch below holds the crypt exposure
+constant for 28 days at 0.1, 1 and 10 times the drug's `C50kill`. Because every
+drug shares the epithelial parameters, the injury at a given multiple of
+`C50kill` orders the drugs by their maximal kill rate `k_kill`. A constant
+exposure is far more injurious than a clinical regimen at the same peak: the
+enterocyte concentration in Figure 2C stays high only for a few hours after
+each dose.
+
+```{r other-drugs}
+constant_exposure <- expand.grid(drug = drugs, multiple = c(0.1, 1, 10), stringsAsFactors = FALSE) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    c50kill = with(ini_df(paste0("Pin_2026_", drug, "_human")), est[name == "c50kill"]),
+    kkill = with(ini_df(paste0("Pin_2026_", drug, "_human")), est[name == "kkill"]),
+    max_injury = {
+      mod <- readModelDb(paste0("Pin_2026_", drug, "_human"))
+      ev <- data.frame(id = 1, time = seq(0, 672, by = 2), evid = 0, cmt = "villus",
+                       CEFFECT = multiple * c50kill)
+      max(as.data.frame(rxode2::rxSolve(mod, ev, atol = 1e-10, rtol = 1e-8))$injury)
+    }
+  ) |>
+  dplyr::ungroup()
+constant_exposure |>
+  dplyr::mutate(max_injury = round(max_injury, 3)) |>
+  tidyr::pivot_wider(id_cols = c(drug, kkill, c50kill), names_from = multiple,
+                     values_from = max_injury, names_prefix = "x") |>
+  dplyr::rename(
+    Drug = drug, "k_kill" = kkill, "C50kill (uM)" = c50kill,
+    "Max injury at 0.1 x C50" = x0.1, "at 1 x C50" = x1, "at 10 x C50" = x10
+  ) |>
+  knitr::kable(caption = "Maximum villus injury over 28 days at a constant crypt free concentration.")
+
+at_c50 <- dplyr::filter(constant_exposure, multiple == 1)
+stopifnot(
+  # Same epithelium, so injury at C50kill is monotone in k_kill.
+  all(diff(at_c50$max_injury[order(at_c50$kkill)]) >= 0),
+  # For every drug the injury rises with the exposure multiple.
+  all(tapply(constant_exposure$max_injury[order(constant_exposure$multiple)],
+             constant_exposure$drug[order(constant_exposure$multiple)],
+             function(x) all(diff(x) > 0)))
+)
+```
+
+# Why there is no PKNCA section
+
+The model files carry no pharmacokinetics. The drug exposure enters as an
+external time-varying covariate, and the outputs are cell numbers, villus injury
+and probabilities. The checks above follow the endogenous and mechanistic
+validation pattern: homeostasis with no drug, then the paper's tabulated
+outputs (Table 2) and the published trajectories (Figures 1 and 2).
+
+# Assumptions and deviations
+
+- **Human epithelial constants follow the deposited code, not Table S3.**
+  Table S3 lists `s_ss = 4`, `p_ss = 17.446`, `gamma = 5.31`, `m = 1.46` and
+  `tau_Dead = 1/12`. The deposited MATLAB script (Data S2,
+  `GI_human_Integr_Abema.m`) uses `s_ss = 2`, `p_ss = 19.446`,
+  `gamma = 3.41394`, `m = 1.468566` and `tau_A = ln(2)/12`, which are the
+  Gall 2023 human values. With the code values, the deposited abemaciclib
+  enterocyte profiles give a maximum villus injury of 0.472 / 0.527 (0.473 /
+  0.528 with the 0.4-h profiles used above) against
+  0.465 / 0.518 in Table 2. With the Table S3 values the injury is
+  0.349 / 0.393. Almost all of that gap comes from `gamma`. The models
+  therefore use the code values, which are the values that produced the
+  published results.
+- **Diarrhea estimates follow the SAS output, not Table S3.** Table S3 prints
+  `g0 = 2.94`, `g2 = 7.047`, `I0 = 0.2627`, `I2 = 0.22`, `r_inj = -5.56`. The SAS
+  NLMIXED "Parameter Estimates" printed in the Supporting Information give
+  `g0 = 1.7535`, `g12 = 6.2109`, `r_inj = -5.1074`, `Dam0_50 = 0.4818`,
+  `Dam12_50 = 0.3998`. The same values are in the deposited script. Only the
+  SAS values reproduce the Table 2 predicted incidences (checked above for all
+  seven regimens). With the Table S3 values the abemaciclib 150 mg BID any-grade
+  incidence would be 91% instead of 64%.
+- **Crowding term.** Eq E15 prints the crypt crowding as
+  `((S + P + D + C_Arr + C_Dead)/(s_ss + p_ss + d_ss))^m`. The deposited code
+  places the arrested and dead crypt cells in the denominator instead. The
+  models follow the code. For the six drugs, which induce no arrest and few
+  dead crypt cells, the two forms give the same maximum injury to three
+  decimals.
+- **Citrulline is omitted.** The deposited human script still carries the
+  Gall 2023 plasma-citrulline state. Pin 2026 neither describes nor reports it,
+  so it is not in the model files; the Gall 2023 human models in this library
+  include it.
+- **EGFR-TKI `n_ref` read as 10^26** (see the organoid section): the printed
+  "1026" contradicts Figure 1E-H.
+- **Abemaciclib organoid inoculum.** Table 1 and the deposited organoid script
+  start abemaciclib from 1993 proliferative and 1110 non-proliferative cells,
+  but Figure 1C starts from about 10^2.74 and 10^2.36 cells (the EGFR-TKI
+  inoculum, 553 / 230). The paper notes that experiment-specific inoculum sizes
+  were used. The model files keep the Table 1 values as `p0` / `n0`; the
+  Figure 1 replication above overrides them.
+- **Figure 1H (osimertinib).** The vehicle arm in Figure 1H rises to about
+  10^3.65 proliferative cells and starts from about 10^2.65 non-proliferative
+  cells, unlike the shared EGFR-TKI control fit in Table 1 (about 10^3.2 at
+  96 h). The osimertinib panel appears to come from a separate control fit that
+  the paper does not tabulate. The packaged osimertinib drug arm still ends
+  close to the figure (log10 values 2.55 and 2.59 against about 2.5 and 2.6).
+- **Figure 1F (lazertinib).** At the labelled 60 nM the Table 1 lazertinib
+  kill function lowers the 96-h counts by about 0.11 (proliferative) and
+  0.14 (non-proliferative) log units against the vehicle. Figure 1F draws a
+  drop of about 0.3 log units for both. The label may give the nominal rather
+  than the measured medium concentration. The measured lazertinib profile was
+  not deposited, so the panel cannot be rerun, and the Table 1 values are kept.
+- **Arrest function.** Table 1 reports `k_arrest = 0` for all six drugs and
+  gives no arrest `C50` or Hill coefficient. The models keep the arrest pathway
+  (Eqs 5, E11-E12), with `c50arrest = 1` and `hillarrest = 1` taken from the
+  placeholders in the deposited code; they have no effect while `karrest = 0`.
+- **Kill-function precision.** Table 1 prints the abemaciclib kill parameters
+  as 1.90 and 3.51 uM; the deposited scripts carry 1.9021 and 3.5143. The
+  models use the Table 1 values for all six drugs.
+- **Exposure surrogate.** The crypt free concentration is not measurable. The
+  authors bracketed it between the Simcyp-predicted free plasma and free
+  enterocyte (ileum I) concentrations and concluded the enterocyte surrogate
+  predicts the clinical incidence. The Simcyp PBPK models are not reproduced;
+  users supply `CEFFECT` from their own exposure model. Physicochemical and
+  ADME inputs are listed in Tables S1-S2.
+- **Mobocertinib regimen.** Table 2 lists mobocertinib at 120 and 160 mg once
+  daily; the Figure 2G legend reads "BID". Table 2 is followed here.
+- **Deterministic typical-value models.** No inter-individual variability and
+  no residual error are reported, so the files carry none. The organoid fits
+  used log-transformed counts with weighted least squares (Supporting
+  Information fit statistics).
+- No correction notice for this article was found in Europe PMC as of
+  2026-11-13.

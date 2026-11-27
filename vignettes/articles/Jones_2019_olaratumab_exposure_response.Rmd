@@ -1,0 +1,478 @@
+---
+title: "Olaratumab exposure-survival in soft tissue sarcoma (Jones 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Olaratumab exposure-survival in soft tissue sarcoma (Jones 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Jones 2019 related the serum exposure of olaratumab, an anti-PDGFR-alpha IgG1
+antibody, to overall survival (OS) and progression-free survival (PFS) in the
+randomised phase 2 trial JGDG (NCT01185964) of olaratumab plus doxorubicin
+versus doxorubicin alone in soft tissue sarcoma. Each endpoint was fitted twice,
+once with each of two exposure metrics, giving four separately estimated
+parametric time-to-event models, packaged as four files:
+
+* `modellib("Jones_2019_olaratumab_os_cmin1")` -- OS driven by the trough
+  concentration at the end of cycle 1 (Cmin1, Table 2).
+* `modellib("Jones_2019_olaratumab_os_cavg")` -- OS driven by the average
+  concentration over the patient's entire treatment (Cavg, Table 2).
+* `modellib("Jones_2019_olaratumab_pfs_cmin1")` -- PFS driven by Cmin1
+  (Table 3).
+* `modellib("Jones_2019_olaratumab_pfs_cavg")` -- PFS driven by Cavg (Table 3).
+
+* Citation: `r rxode2::rxode(readModelDb("Jones_2019_olaratumab_os_cmin1"))$reference`
+* Article: <https://doi.org/10.1007/s00280-018-3723-4>
+
+All four models have a constant (exponential) baseline hazard, reduced by an
+inhibitory sigmoid Imax function of the olaratumab exposure $C$:
+
+$$h = h_0 \, (1 + \theta_{ECOG} \, ECOG_{\ge 1}) \, (1 + \theta_{1L} \, LINE_{1L})
+\left(1 - \frac{I_{max} \, C^{\gamma}}{EC_{50}^{\gamma} + C^{\gamma}}\right),
+\qquad S(t) = e^{-h t}.$$
+
+The ECOG and prior-line factors are present only in the OS models; no covariate
+was retained for PFS. The Hill coefficient $\gamma$ was fixed to 8 in all four
+models. Time is in days and the exposure in ug/mL; the doxorubicin-alone arm
+has $C = 0$ and therefore the baseline hazard alone. The exposures are
+individual predictions from the population PK model of Mo 2018, packaged as
+`modellib("Mo_2018_olaratumab")`, so the survival models carry no PK layer of
+their own: `CTROUGH` (Cmin1) or `CAV` (Cavg) is supplied as a data column.
+
+# Population
+
+Survival data came from all 133 randomised patients with histologically
+confirmed locally advanced or metastatic soft tissue sarcoma: 66 received
+olaratumab 15 mg/kg IV on days 1 and 8 plus doxorubicin 75 mg/m2 on day 1 of
+each 21-day cycle, and 67 received doxorubicin alone, for up to eight cycles.
+Olaratumab could continue alone after the doxorubicin cycles until progression.
+Tumour response was assessed every 6 weeks by RECIST 1.1. Individual olaratumab
+exposures were available for 62 patients of the experimental arm (Table 4).
+Jones 2019 does not tabulate baseline demographics; the trial's observed
+medians, quoted in its Introduction, were OS 26.5 versus 14.7 months
+(HR 0.46) and PFS 6.6 versus 4.1 months (HR 0.67).
+
+```{r population}
+str(rxode2::rxode(readModelDb("Jones_2019_olaratumab_os_cmin1"))$population)
+```
+
+# Source trace
+
+| Quantity | OS, Cmin1 | OS, Cavg | PFS, Cmin1 | PFS, Cavg | Source |
+|---|---|---|---|---|---|
+| Baseline hazard `lhaz_base` (1/day) | 0.00205 | 0.00203 | 0.00604 | 0.00616 | Table 2 / Table 3, BaseHazard |
+| Maximal fractional decrease `limax` | 0.765 | 0.756 | 0.571 | 0.614 | Table 2 / Table 3, EMAX |
+| `lec50` (ug/mL) | 66.1 | 134 | 82.0 | 179 | Table 2 / Table 3, ECmin150 / ECavg50 |
+| Hill `lhill` | 8 (fixed) | 8 (fixed) | 8 (fixed) | 8 (fixed) | Table 2 / Table 3, Hill |
+| ECOG >= 1 on baseline hazard `e_ecog_ge1_haz` | 0.862 | 0.802 | -- | -- | Table 2, EGRPBase; Results text |
+| No prior line on baseline hazard `e_line1l_haz` | -0.583 | -0.535 | -- | -- | Table 2, PRVTRTBase; Results text |
+| Exponential (constant) baseline hazard | yes | yes | yes | yes | Methods "Survival models"; Results |
+| Inhibitory Imax drug effect as fractional hazard decrease | yes | yes | yes | yes | Methods "Survival models"; Results; Figures 1b, 2b |
+| Covariate form `(1 + theta * indicator)` | yes | yes | -- | -- | Results: "86.2% increase", "58.3% decrease" |
+| Time unit day | yes | yes | yes | yes | Figures 1a and 2a x-axes, "Time (Days)" |
+
+# Hazard ratio against exposure
+
+The hazard ratio for olaratumab against no olaratumab is `hr_drug`. This
+replicates the red curves of Figures 1b and 2b.
+
+```{r hr-curves}
+models <- c(
+  "Jones_2019_olaratumab_os_cmin1", "Jones_2019_olaratumab_os_cavg",
+  "Jones_2019_olaratumab_pfs_cmin1", "Jones_2019_olaratumab_pfs_cavg"
+)
+exposure_col <- c(
+  Jones_2019_olaratumab_os_cmin1 = "CTROUGH",
+  Jones_2019_olaratumab_os_cavg = "CAV",
+  Jones_2019_olaratumab_pfs_cmin1 = "CTROUGH",
+  Jones_2019_olaratumab_pfs_cavg = "CAV"
+)
+mods <- lapply(models, function(m) rxode2::rxode(readModelDb(m)))
+names(mods) <- models
+
+# Evaluate hr_drug on a concentration grid: one subject per concentration,
+# a single observation at day 1.
+hr_grid <- function(m, conc) {
+  d <- data.frame(id = seq_along(conc), time = 1, evid = 0, cmt = "cumhaz")
+  d[[exposure_col[[m]]]] <- conc
+  d$ECOG_GE1 <- 0
+  d$LINE_1L <- 0
+  s <- rxode2::rxSolve(mods[[m]], events = d, returnType = "data.frame")
+  data.frame(model = m, conc = conc, hr_drug = s$hr_drug)
+}
+conc <- seq(0, 350, by = 1)
+hr_df <- bind_rows(lapply(models, hr_grid, conc = conc)) |>
+  mutate(
+    endpoint = ifelse(grepl("_os_", model), "OS", "PFS"),
+    metric = ifelse(grepl("cmin1", model), "Cmin1", "Cavg")
+  ) |>
+  filter(!(metric == "Cmin1" & conc > 200))
+
+ggplot(hr_df, aes(conc, hr_drug, colour = endpoint)) +
+  geom_line(linewidth = 1) +
+  facet_wrap(~metric, scales = "free_x") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Olaratumab exposure (ug/mL)", y = "Predicted hazard ratio",
+    colour = NULL,
+    caption = "Replicates the hazard-ratio curves of Figures 1b and 2b of Jones 2019."
+  ) +
+  theme_bw()
+```
+
+Three properties of these curves can be read from the paper. The plateau is
+`1 - Imax`: the Results describe a maximal improvement in the OS hazard ratio
+of about 75% and an Imax of about 0.60 for PFS. The hazard ratio is 1 at zero
+exposure. And the EC50 values were reported to coincide with the 25th
+percentile of the exposure distribution for OS and with its median for PFS;
+the quartile boundaries are printed in Table 4.
+
+```{r hr-checks}
+hr_at <- function(m, c) hr_grid(m, c)$hr_drug
+ini_of <- function(m) {
+  x <- mods[[m]]$theta
+  c(imax = exp(x[["limax"]]), ec50 = exp(x[["lec50"]]))
+}
+hr_tab <- bind_rows(lapply(models, function(m) {
+  p <- ini_of(m)
+  data.frame(
+    model = m,
+    hr_zero = hr_at(m, 0),
+    hr_ec50 = hr_at(m, p[["ec50"]]),
+    expected_hr_ec50 = 1 - p[["imax"]] / 2,
+    hr_plateau = hr_at(m, 5 * p[["ec50"]]),
+    expected_plateau = 1 - p[["imax"]]
+  )
+}))
+knitr::kable(hr_tab, digits = 3)
+
+# Table 4 quartile boundaries (ug/mL): Q1/Q2, median, Q3/Q4.
+q_cmin1 <- c(q25 = 62.8, q50 = 86.9, q75 = 105.6)
+q_cavg <- c(q25 = 134.4, q50 = 175.2, q75 = 249.9)
+ec50_vs_quartile <- data.frame(
+  model = models,
+  ec50 = sapply(models, function(m) ini_of(m)[["ec50"]]),
+  paper_quantile = c(q_cmin1[["q25"]], q_cavg[["q25"]], q_cmin1[["q50"]], q_cavg[["q50"]]),
+  quantile_named = c("25th", "25th", "median", "median")
+) |>
+  mutate(pct_diff = 100 * (ec50 / paper_quantile - 1))
+knitr::kable(ec50_vs_quartile, digits = 1, row.names = FALSE)
+
+stopifnot(
+  # hr_drug is an algebraic function of the same parameters, so these hold to
+  # rounding, not to sampling noise.
+  all(abs(hr_tab$hr_zero - 1) < 1e-9),
+  all(abs(hr_tab$hr_ec50 - hr_tab$expected_hr_ec50) < 1e-9),
+  all(abs(hr_tab$hr_plateau - hr_tab$expected_plateau) < 0.001),
+  # Results: OS maximal HR improvement ~75%, PFS Imax ~0.60.
+  all(abs(hr_tab$expected_plateau[1:2] - 0.25) < 0.02),
+  all(abs(hr_tab$expected_plateau[3:4] - 0.40) < 0.04),
+  # Results: EC50 at the 25th percentile (OS) and median (PFS) of exposure.
+  all(abs(ec50_vs_quartile$pct_diff) < 6)
+)
+```
+
+# Survival curves
+
+## Analytic check of the integrated hazard
+
+The models integrate the hazard as an ODE. With a constant hazard the survival
+function must equal $e^{-h t}$ exactly, so this is a check of the ODE encoding
+against its own closed form, using the same parameter values on both sides.
+
+```{r closed-form}
+grid_t <- seq(0, 1500, by = 10)
+one_subject <- function(m, conc, ecog = 0, line1l = 0) {
+  d <- data.frame(id = 1, time = grid_t, evid = 0, cmt = "cumhaz")
+  d[[exposure_col[[m]]]] <- conc
+  d$ECOG_GE1 <- ecog
+  d$LINE_1L <- line1l
+  d
+}
+cf_err <- sapply(models, function(m) {
+  s <- rxode2::rxSolve(
+    mods[[m]],
+    events = one_subject(m, conc = 100, ecog = 1, line1l = 1),
+    rtol = 1e-10, atol = 1e-12, returnType = "data.frame"
+  )
+  max(abs(s$sur / exp(-s$hazard * s$time) - 1))
+})
+cf_err
+stopifnot(all(cf_err < 1e-6))
+```
+
+## Virtual cohort
+
+Jones 2019 does not publish individual exposures, but Table 4 prints the
+quartile boundaries of Cmin1 and Cavg in the 62 patients with PK. The
+experimental arm below draws 200 patients, 50 per quartile, uniformly within
+each quartile's printed range; the doxorubicin-alone arm has zero exposure. The
+paper does not report the proportions of ECOG >= 1 or of first-line patients,
+so OS is shown separately for each of the four covariate combinations rather
+than as an arm-level mixture.
+
+```{r cohort}
+set.seed(20190101)
+n_per_q <- 50
+draw_quartiles <- function(b) {
+  unlist(lapply(1:4, function(k) runif(n_per_q, b[k], b[k + 1])))
+}
+cmin1_bounds <- c(12.3, 62.8, 86.9, 105.6, 188.1) # Table 4, Cmin1 range
+cavg_bounds <- c(56.0, 134.4, 175.2, 249.9, 347.3) # Table 4, Cavg range
+cohort <- data.frame(
+  id = seq_len(4 * n_per_q),
+  CTROUGH = draw_quartiles(cmin1_bounds),
+  CAV = draw_quartiles(cavg_bounds)
+)
+summary(cohort[, c("CTROUGH", "CAV")])
+```
+
+```{r survival-sim}
+grid_t <- seq(0, 1500, by = 5)
+sim_arm <- function(m, arm, ecog = 0, line1l = 0, times = grid_t) {
+  ids <- if (arm == "Doxorubicin") 1L else cohort$id
+  d <- tidyr::expand_grid(id = ids, time = times) |>
+    mutate(evid = 0, cmt = "cumhaz", ECOG_GE1 = ecog, LINE_1L = line1l)
+  if (arm == "Doxorubicin") {
+    d$CTROUGH <- 0
+    d$CAV <- 0
+  } else {
+    d <- left_join(d, cohort, by = "id")
+  }
+  s <- rxode2::rxSolve(mods[[m]], events = as.data.frame(d), returnType = "data.frame")
+  s |>
+    group_by(time) |>
+    summarise(sur = mean(sur), .groups = "drop") |>
+    mutate(model = m, arm = arm, ECOG_GE1 = ecog, LINE_1L = line1l)
+}
+median_time <- function(time, sur) {
+  o <- order(sur)
+  approx(sur[o], time[o], xout = 0.5, ties = mean)$y
+}
+days_per_month <- 365.25 / 12
+```
+
+### Progression-free survival
+
+PFS has no covariates, so the arm-level curves can be compared directly with
+the trial's observed medians.
+
+```{r pfs-curves}
+pfs <- bind_rows(lapply(models[3:4], function(m) {
+  bind_rows(sim_arm(m, "Doxorubicin"), sim_arm(m, "Olaratumab + doxorubicin"))
+}))
+ggplot(pfs, aes(time, 100 * sur, colour = arm)) +
+  geom_line(linewidth = 1) +
+  facet_wrap(~model) +
+  labs(
+    x = "Time (days)", y = "Progression-free survival (%)", colour = NULL,
+    caption = "Model-predicted counterpart of Figure 2a of Jones 2019 (exposures drawn from Table 4 quartiles)."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+pfs_med <- pfs |>
+  group_by(model, arm) |>
+  summarise(median_days = median_time(time, sur), .groups = "drop") |>
+  mutate(
+    median_months = median_days / days_per_month,
+    observed_months = ifelse(arm == "Doxorubicin", 4.1, 6.6),
+    pct_diff = 100 * (median_months / observed_months - 1)
+  )
+knitr::kable(pfs_med, digits = 2)
+```
+
+The doxorubicin-alone medians are within 10% of the observed 4.1 months. The
+experimental-arm medians are about 15% below the observed 6.6 months: an
+exponential hazard spreads events evenly in time, while the Kaplan-Meier curve
+in Figure 2a has a flat stretch between the 6-weekly tumour assessments, and
+the uniform-within-quartile exposure draw is an approximation.
+
+```{r pfs-checks}
+dox <- pfs_med$arm == "Doxorubicin"
+stopifnot(
+  # Closed form: ln(2) / 0.00604 = 114.8 days = 3.77 months.
+  all(abs(pfs_med$pct_diff[dox]) < 12),
+  all(abs(pfs_med$pct_diff[!dox]) < 25),
+  # Olaratumab prolongs median PFS by about half in both models.
+  all(pfs_med$median_days[!dox] / pfs_med$median_days[dox] > 1.3)
+)
+```
+
+### Overall survival
+
+```{r os-curves}
+strata <- expand.grid(ECOG_GE1 = 0:1, LINE_1L = 0:1)
+# The longest stratum median is beyond 1500 days, so OS is solved to 3000 days
+# and only the plot is clipped to the 1500 days of Figure 1a.
+grid_os <- seq(0, 3000, by = 5)
+os <- bind_rows(lapply(models[1:2], function(m) {
+  bind_rows(lapply(seq_len(nrow(strata)), function(i) {
+    bind_rows(
+      sim_arm(m, "Doxorubicin", strata$ECOG_GE1[i], strata$LINE_1L[i], grid_os),
+      sim_arm(m, "Olaratumab + doxorubicin", strata$ECOG_GE1[i], strata$LINE_1L[i], grid_os)
+    )
+  }))
+})) |>
+  mutate(stratum = paste0("ECOG>=1: ", ECOG_GE1, ", first line: ", LINE_1L))
+
+ggplot(filter(os, model == "Jones_2019_olaratumab_os_cmin1"), aes(time, 100 * sur, colour = arm)) +
+  geom_line(linewidth = 1) +
+  facet_wrap(~stratum) +
+  coord_cartesian(xlim = c(0, 1500)) +
+  labs(
+    x = "Time (days)", y = "Overall survival (%)", colour = NULL,
+    caption = "Model-predicted counterpart of Figure 1a of Jones 2019 (Cmin1 model), by covariate stratum."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+os_med <- os |>
+  group_by(model, stratum, arm) |>
+  summarise(median_months = median_time(time, sur) / days_per_month, .groups = "drop") |>
+  tidyr::pivot_wider(names_from = arm, values_from = median_months)
+knitr::kable(os_med, digits = 1)
+```
+
+The observed doxorubicin-alone median of 14.7 months lies inside the range of
+the stratum-specific predictions, and the reported effects of the covariates
+are reproduced exactly: ECOG >= 1 raises the baseline hazard by 86.2% and no
+prior line lowers it by 58.3% (Cmin1 model).
+
+```{r os-checks}
+os_ctrl <- os_med$Doxorubicin[os_med$model == "Jones_2019_olaratumab_os_cmin1"]
+stopifnot(
+  min(os_ctrl) < 14.7, max(os_ctrl) > 14.7,
+  # Olaratumab lengthens the median in every stratum.
+  all(os_med[["Olaratumab + doxorubicin"]] > os_med$Doxorubicin)
+)
+
+# Closed-form hazard ratios between strata: the covariate factors.
+h_os <- function(ecog, line1l) {
+  d <- one_subject("Jones_2019_olaratumab_os_cmin1", conc = 0, ecog = ecog, line1l = line1l)[1, ]
+  rxode2::rxSolve(mods[["Jones_2019_olaratumab_os_cmin1"]], events = d, returnType = "data.frame")$hazard
+}
+cov_ratio <- c(ecog = h_os(1, 0) / h_os(0, 0), first_line = h_os(0, 1) / h_os(0, 0))
+cov_ratio
+stopifnot(
+  abs(cov_ratio[["ecog"]] - 1.862) < 1e-9,
+  abs(cov_ratio[["first_line"]] - 0.417) < 1e-9
+)
+```
+
+# Exposure from the population PK model
+
+The survival models take Cmin1 as an input. As a consistency check on the
+exposure scale, the Mo 2018 population PK model is simulated for cycle 1 of
+15 mg/kg IV over 1 hour on days 1 and 8, and the concentration at day 21 is
+compared with the Cmin1 distribution of Table 4. Jones 2019 does not report the
+body weight or tumour size of the sarcoma patients, so the cohort is set at the
+Mo 2018 population medians (79.7 kg, 86.5 mm), with that model's
+between-subject variability.
+
+```{r mo2018-cmin1}
+mo <- rxode2::rxode(readModelDb("Mo_2018_olaratumab"))
+n_pk <- 200
+wt <- 79.7
+dose_mg <- 15 * wt
+ev_pk <- rxode2::et(
+  amt = dose_mg, cmt = "central", rate = dose_mg, time = c(0, 168)
+) |>
+  rxode2::et(seq(0, 504, by = 12)) |>
+  rxode2::et(id = seq_len(n_pk)) |>
+  as.data.frame() |>
+  mutate(WT = wt, TUMSZ = 86.5)
+rxode2::rxSetSeed(2019)
+pk <- rxode2::rxSolve(mo, events = ev_pk, returnType = "data.frame") |>
+  mutate(treatment = "olaratumab 15 mg/kg D1, D8")
+```
+
+The trough at the end of cycle 1 is computed with PKNCA as `ctrough` over the
+interval 0 to 504 h.
+
+```{r pknca}
+conc_pk <- pk |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment) |>
+  distinct(id, time, .keep_all = TRUE)
+dose_pk <- ev_pk |>
+  filter(evid == 1) |>
+  mutate(treatment = "olaratumab 15 mg/kg D1, D8") |>
+  select(id, time, amt, treatment)
+o_conc <- PKNCA::PKNCAconc(conc_pk, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(dose_pk, amt ~ time | treatment + id)
+o_data <- PKNCA::PKNCAdata(
+  o_conc, o_dose,
+  intervals = data.frame(start = 0, end = 504, ctrough = TRUE, cmax = TRUE)
+)
+o_nca <- PKNCA::pk.nca(o_data)
+nca <- as.data.frame(o_nca$result) |>
+  filter(PPTESTCD == "ctrough")
+cmin1_sim <- quantile(nca$PPORRES, c(0.25, 0.5, 0.75))
+cmin1_cmp <- data.frame(
+  quantile = c("25th", "median", "75th"),
+  simulated = as.numeric(cmin1_sim),
+  table4 = c(62.8, 86.9, 105.6)
+) |>
+  mutate(pct_diff = 100 * (simulated / table4 - 1))
+knitr::kable(cmin1_cmp, digits = 1)
+
+stopifnot(
+  # The simulated median trough falls inside the Table 4 interquartile range.
+  cmin1_sim[["50%"]] > 62.8, cmin1_sim[["50%"]] < 105.6
+)
+```
+
+The simulated quartiles depend on the assumed body weight and tumour size and
+on any difference between the pooled four-study PK population and the sarcoma
+patients, so only the median is checked, against the Table 4 interquartile
+range.
+
+# Assumptions and deviations
+
+* **Time unit.** The tables do not state the unit of the baseline hazard. Days
+  are taken from the "Time (Days)" axes of Figures 1a and 2a, and are confirmed
+  by the doxorubicin-alone PFS median: $\ln 2 / 0.00604 = 115$ days, 3.8
+  months, against the observed 4.1 months.
+* **Covariate form.** The equations are not printed. The Results describe the
+  ECOG effect as an 86.2% increase and the no-prior-line effect as a 58.3%
+  decrease of the baseline hazard, matching the Table 2 estimates 0.862 and
+  -0.583, so each enters as a factor $(1 + \theta \cdot indicator)$. The two
+  factors are multiplied: the Results state each effect as an unconditional
+  percentage change, which holds for every patient only in the multiplicative
+  form.
+* **Covariate coding.** "EGRP" is coded as `ECOG_GE1` (ECOG >= 1 versus 0) per
+  the Results text, although randomisation was stratified as ECOG 0-1 versus 2.
+  "PRVTRT" is coded as `LINE_1L`, equal to 1 for patients with no prior line of
+  treatment, per the Results text.
+* **Drug effect.** "Inhibitory EMAX" with a Hill coefficient, applied "as a
+  fractional decrease to the hazard function", is encoded as
+  $1 - I_{max} C^{\gamma} / (EC_{50}^{\gamma} + C^{\gamma})$; Figures 1b and 2b
+  confirm a hazard ratio of 1 at zero exposure and a plateau at $1 - I_{max}$.
+  The paper's EMAX is named `limax` here because it is an inhibitory fraction.
+* **Typeset standard errors.** Table 3 prints the %SEE of three PFS estimates
+  as "2-52", "15-4" and "6-15", read as 2.52, 15.4 and 6.15. Standard errors
+  do not enter the model.
+* **Exposure distribution.** The virtual cohort draws exposures uniformly within
+  each Table 4 quartile range. The real distribution (histograms of Figures 1b
+  and 2b) is not uniform within quartiles.
+* **No random effects or residual error.** The paper reports none; the models
+  return the survival probability `sur`, the hazard and its closed-form median.
+* **Safety.** The exposure-safety analysis (Table 4) is a tabulation of adverse
+  event rates by exposure quartile with no fitted model, so nothing from it is
+  packaged.
+* **Errata.** No erratum was found for this article (Europe PMC, checked
+  2026-11-25).

@@ -1,0 +1,577 @@
+---
+title: "Abrilumab monkey-to-human TMDD translation (Li 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Abrilumab monkey-to-human TMDD translation (Li 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Li_2015_abrilumab_cyno"))$reference`
+* Article: [Pharmacol Res Perspect 2015;3(1):e00098](https://doi.org/10.1002/prp2.98)
+  (open access)
+
+Abrilumab (AMG 181, MEDI7183) is a human IgG2 monoclonal antibody against the
+alpha4beta7 integrin on gut-homing T cells. Li 2015 fits a two-compartment
+target-mediated drug disposition (TMDD) model with the quasi-equilibrium (QE)
+approximation to serum abrilumab from five cynomolgus monkey studies, relates
+free alpha4beta7 on CD4+ T cells to concentration with an inhibitory Emax
+model, and scales the monkey PK allometrically to humans to choose the
+first-in-human (FIH) doses. The paper contributes two models:
+
+| Model | Species | Content | Source |
+|---|---|---|---|
+| `Li_2015_abrilumab_cyno` | cynomolgus monkey | fitted TMDD-QE PK with IIV and residual error; Emax PD of free alpha4beta7 | Table 2; Results text |
+| `Li_2015_abrilumab_human` | human (projection) | typical-value TMDD-QE PK scaled from the monkey | Table 3; Methods |
+
+Both models take doses in mg and report `Cc`, the **free** abrilumab
+concentration, in nmol/L (molecular weight about 144 kDa, so 1 nmol/L =
+0.144 ug/mL). The paper fitted molar concentrations with the free
+concentration computed by the QE equation of Figure 1, and its human
+predictions (Table 4) are reproduced by the free concentration only (shown
+below).
+
+# Population
+
+* **Monkey** (`Li_2015_abrilumab_cyno`). 119 actively treated cynomolgus
+  monkeys (73 male, 46 female; 86 SC, 33 IV) from two single-dose PK/PD
+  studies (A, C), a two-dose non-GLP toxicology study (B) and 3- and 6-month
+  GLP toxicology studies (D, E), dosed at 0.01-80 mg/kg (Table 1). Body
+  weight 2.1-6.4 kg, median 2.8 kg. Anti-drug antibodies were common except
+  at 80 mg/kg; 120 of 1743 ADA-affected concentrations were excluded. The PD
+  model used Study A only.
+* **Human** (`Li_2015_abrilumab_human`). No human data were fitted. The
+  monkey model was scaled to a 70 kg adult and compared afterwards with the
+  FIH study (7 mg SC to 420 mg IV; Figure 7).
+
+The same information is in the `population` element of each model, e.g.
+`readModelDb("Li_2015_abrilumab_cyno")()$population`.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure: 2-compartment TMDD, QE approximation, SC first-order absorption | -- | Methods 'PK structural models'; Figure 1 |
+| Free drug `Cf = 0.5 * ((Ctot - Rtot - Kd) + sqrt((Ctot - Rtot - Kd)^2 + 4 Kd Ctot))` | -- | Figure 1 |
+| KA (both species) | 0.846 /day | Table 2; Table 3 |
+| CL monkey / human | 12.9 / 144 mL/day | Table 2 / Table 3 |
+| Vc monkey / human | 116 / 2900 mL | Table 2 / Table 3 |
+| K12 monkey / human | 0.617 / 0.276 /day | Table 2 / Table 3 |
+| K21 monkey / human | 0.877 / 0.392 /day | Table 2 / Table 3 |
+| Kd monkey (fixed) | 0.013 nmol/L | Table 2; Methods |
+| Kd human (fixed) | 0.031 nmol/L | Methods 'Allometric scaling and simulation of human PK' (Table 3 prints 0.013; see below) |
+| Rtot (both species) | 9.18 nmol/L | Table 2; Table 3 |
+| Kint (both species) | 0.0215 /day | Table 2; Table 3 |
+| F1 (fixed) | 1 | Results text; Table 3 |
+| IIV CL, Vc, correlation | 44.1%, 46.1%, 0.642 | Table 2 |
+| IIV Rtot | 180% | Table 2 |
+| Proportional / additive residual error | 20.1% / 1.11 nmol/L | Table 2 |
+| PD: `E = E0 * (1 - Emax * C / (EC50 + C))` | -- | Methods equation |
+| E0, Emax, EC50 | 531 MFI, 0.922, 0.0140 ug/mL | Results 'Modeling of AMG 181 PD in cynomolgus monkeys' |
+| Allometric exponents CL 0.75, Vc 1, K12/K21 -0.25; 2.8 kg monkey to 70 kg human | -- | Methods |
+| Molecular weight | about 144 kDa | Methods 'In vitro pharmacology studies' |
+
+```{r models}
+mod_cyno <- readModelDb("Li_2015_abrilumab_cyno")
+mod_human <- readModelDb("Li_2015_abrilumab_human")
+mw_factor <- 0.144 # ug/mL per nmol/L
+
+# PKNCA Cmax and AUC over one interval of a simulated profile; time in days
+# is converted to hours so AUC is in h*ug/mL as in the paper.
+nca_interval <- function(sim, group, doses, start, end, auc = "aucinf.obs") {
+  conc <- sim |>
+    transmute(id, grp = .data[[group]], time_h = time * 24, conc = conc_ug)
+  dose <- doses |>
+    transmute(id, grp = .data[[group]], time_h = time * 24, dose = amt)
+  intervals <- data.frame(start = start * 24, end = end * 24, cmax = TRUE)
+  intervals[[auc]] <- TRUE
+  o_data <- PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, conc ~ time_h | grp + id),
+    PKNCA::PKNCAdose(dose, dose ~ time_h | grp + id),
+    intervals = intervals
+  )
+  as.data.frame(PKNCA::pk.nca(o_data)) |>
+    select(grp, PPTESTCD, PPORRES) |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+}
+```
+
+# Allometric scaling reproduces Table 3
+
+The human values in Table 3 follow from Table 2 and the stated exponents.
+
+```{r scaling}
+ratio <- 70 / 2.8
+scaling <- data.frame(
+  parameter = c("CL (mL/day)", "Vc (mL)", "K12 (1/day)", "K21 (1/day)"),
+  monkey = c(12.9, 116, 0.617, 0.877),
+  exponent = c(0.75, 1, -0.25, -0.25),
+  table3 = c(144, 2900, 0.276, 0.392)
+) |>
+  mutate(scaled = monkey * ratio^exponent, pct_diff = 100 * (scaled - table3) / table3)
+stopifnot(all(abs(scaling$pct_diff) < 0.5))
+scaling |>
+  dplyr::rename(
+    "Parameter" = parameter, "Monkey (Table 2)" = monkey, "Exponent" = exponent,
+    "Table 3 human" = table3, "Scaled" = scaled, "% diff" = pct_diff
+  ) |>
+  knitr::kable(digits = 3)
+```
+
+# Monkey model
+
+## Typical single- and multiple-dose profiles (Figure 2)
+
+Figure 2 shows the mean of individual predictions per cohort. Below are the
+typical-value profiles for a 2.8 kg (median-weight) monkey; doses in mg/kg
+are converted with that weight. Because Rtot carries a large IIV, the
+typical curve sits below the mean of individual predictions at the lowest
+doses, where target binding dominates.
+
+```{r cyno-fig2}
+wt_monkey <- 2.8
+cohorts_single <- tibble::tribble(
+  ~cohort, ~mgkg, ~cmt,
+  "0.01 mg/kg IV", 0.01, "central",
+  "0.1 mg/kg IV", 0.1, "central",
+  "1 mg/kg IV", 1, "central",
+  "3 mg/kg IV", 3, "central",
+  "3 mg/kg SC", 3, "depot",
+  "9 mg/kg IV", 9, "central",
+  "9 mg/kg SC", 9, "depot"
+)
+cohorts_multi <- tibble::tribble(
+  ~cohort, ~mgkg, ~cmt, ~ndose,
+  "0.5 mg/kg SC QW x 2", 0.5, "depot", 2,
+  "80 mg/kg SC QW x 2", 80, "depot", 2,
+  "5 mg/kg SC QW x 13", 5, "depot", 13,
+  "20 mg/kg SC QW x 13", 20, "depot", 13,
+  "80 mg/kg SC QW x 13", 80, "depot", 13,
+  "80 mg/kg IV QW x 13", 80, "central", 13,
+  "20 mg/kg SC QW x 24", 20, "depot", 24,
+  "80 mg/kg SC QW x 24", 80, "depot", 24
+)
+
+make_events <- function(id, cohort, dose_mg, cmt, ndose, obs_times) {
+  doses <- data.frame(
+    id = id, cohort = cohort, time = 7 * (seq_len(ndose) - 1), amt = dose_mg,
+    evid = 1L, cmt = cmt
+  )
+  obs <- data.frame(id = id, cohort = cohort, time = obs_times, amt = 0, evid = 0L, cmt = "central")
+  rbind(doses, obs)
+}
+
+ev_single <- do.call(rbind, lapply(seq_len(nrow(cohorts_single)), function(i) {
+  make_events(i, cohorts_single$cohort[i], cohorts_single$mgkg[i] * wt_monkey,
+    cohorts_single$cmt[i], 1, c(seq(0, 2, by = 0.05), seq(2.25, 28, by = 0.25)))
+}))
+ev_multi <- do.call(rbind, lapply(seq_len(nrow(cohorts_multi)), function(i) {
+  make_events(100 + i, cohorts_multi$cohort[i], cohorts_multi$mgkg[i] * wt_monkey,
+    cohorts_multi$cmt[i], cohorts_multi$ndose[i], seq(0, 364, by = 0.5))
+}))
+
+# zeroRe() removes the omega matrix, so rxode2 warns that a multi-subject
+# solve has no omega; the typical-value solve is what is wanted here.
+sim_cyno_typ <- function(ev) {
+  suppressWarnings(rxode2::rxSolve(rxode2::zeroRe(mod_cyno), events = ev, keep = "cohort",
+    returnType = "data.frame", atol = 1e-10, rtol = 1e-8)) |>
+    mutate(conc_ug = Cc * mw_factor)
+}
+typ_single <- sim_cyno_typ(ev_single)
+typ_multi <- sim_cyno_typ(ev_multi)
+
+ggplot(typ_single |> filter(time > 0, conc_ug >= 1e-4), aes(time, conc_ug, colour = cohort)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time after dose (days)", y = "Abrilumab (ug/mL)", colour = NULL,
+    title = "Replicates Figure 2A of Li 2015 (typical 2.8 kg monkey)")
+
+ggplot(typ_multi |> filter(time > 0, conc_ug >= 1e-4), aes(time, conc_ug, colour = cohort)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time post first dose (days)", y = "Abrilumab (ug/mL)", colour = NULL,
+    title = "Replicates Figure 2B of Li 2015 (typical 2.8 kg monkey)")
+```
+
+## Visual predictive check (Figure 4)
+
+The 10th, 50th and 90th percentiles of 100 simulated monkeys per cohort,
+with IIV and residual error, for three cohorts spanning the dose range.
+
+```{r cyno-vpc}
+rxode2::rxSetSeed(20150101)
+n_vpc <- 100
+vpc_cohorts <- tibble::tribble(
+  ~cohort, ~mgkg, ~cmt, ~ndose,
+  "0.1 mg/kg IV", 0.1, "central", 1,
+  "9 mg/kg SC", 9, "depot", 1,
+  "80 mg/kg SC QW x 13", 80, "depot", 13
+)
+ev_vpc <- do.call(rbind, lapply(seq_len(nrow(vpc_cohorts)), function(i) {
+  obs_t <- if (vpc_cohorts$ndose[i] == 1) c(0, 0.1, 0.25, 0.5, 1, 2, 3, 5, 7, 10, 14, 21, 28) else seq(0, 280, by = 7)
+  do.call(rbind, lapply(seq_len(n_vpc), function(j) {
+    make_events(1000 * i + j, vpc_cohorts$cohort[i], vpc_cohorts$mgkg[i] * wt_monkey,
+      vpc_cohorts$cmt[i], vpc_cohorts$ndose[i], obs_t)
+  }))
+}))
+vpc <- rxode2::rxSolve(mod_cyno, events = ev_vpc, keep = "cohort", returnType = "data.frame") |>
+  mutate(conc_ug = sim * mw_factor) |>
+  filter(time > 0) |>
+  group_by(cohort, time) |>
+  summarise(
+    p10 = quantile(conc_ug, 0.1), p50 = median(conc_ug), p90 = quantile(conc_ug, 0.9),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(time)) +
+  geom_ribbon(aes(ymin = pmax(p10, 1e-4), ymax = p90), alpha = 0.25) +
+  geom_line(aes(y = p50)) +
+  facet_wrap(~cohort, scales = "free") +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Abrilumab (ug/mL)",
+    title = "Simulated 10th-50th-90th percentiles (cf. Figure 4 of Li 2015)")
+```
+
+The additive residual error (1.11 nmol/L = 0.16 ug/mL) makes the lower
+percentile negative at the lowest concentrations, as in any additive-error
+simulation; the ribbon is floored for the log axis.
+
+## Half-lives stated in the text
+
+The text gives a linear elimination half-life of about 12 days and a
+receptor-internalization half-life of about 32 days (0.693 / Kint).
+
+```{r cyno-halflife}
+kel <- 12.9 / 116
+k12 <- 0.617
+k21 <- 0.877
+beta <- ((kel + k12 + k21) - sqrt((kel + k12 + k21)^2 - 4 * kel * k21)) / 2
+t_half_beta <- log(2) / beta
+t_half_kint <- log(2) / 0.0215
+c(linear_terminal_half_life_day = t_half_beta, kint_half_life_day = t_half_kint)
+stopifnot(abs(t_half_kint - 32) < 0.5, abs(t_half_beta - 12) < 1.5)
+```
+
+The terminal half-life of the linear two-compartment part is
+`r round(t_half_beta, 1)` days against the stated "12 days"; the paper does
+not say how its figure was computed.
+
+## NOAEL exposure (Methods, 'Exposure margins')
+
+The observed Cmax and AUC at the 80 mg/kg IV QW NOAEL in Study D were
+4850 ug/mL and 485,000 h*ug/mL. The paper does not state the dosing
+interval to which these refer; the model values for the last (13th) weekly
+interval of a typical 2.8 kg monkey are shown for orientation only. They are
+somewhat lower than observed, in line with the paper's remark that the model
+had to reconcile higher SC than IV exposure at 80 mg/kg.
+
+```{r cyno-noael}
+noael_sim <- typ_multi |>
+  filter(cohort == "80 mg/kg IV QW x 13")
+noael_dose <- ev_multi |>
+  filter(evid == 1, cohort == "80 mg/kg IV QW x 13")
+nca_interval(noael_sim, "cohort", noael_dose, start = 84, end = 91, auc = "auclast") |>
+  dplyr::rename("Cohort" = grp, "Cmax (ug/mL)" = cmax, "AUC day 84-91 (h*ug/mL)" = auclast) |>
+  knitr::kable(digits = 0)
+```
+
+## Free alpha4beta7 Emax model (Figure 5)
+
+The PD model is the algebraic output `mfi_a4b7` of `Li_2015_abrilumab_cyno`.
+The text derives EC75, EC90 and EC99 of 0.042, 0.126 and 1.38 ug/mL from it;
+for this model ECx = EC50 * x / (100 - x).
+
+```{r cyno-pd}
+ec50 <- 0.0140
+ecx <- c(EC75 = 75, EC90 = 90, EC99 = 99)
+ec_check <- data.frame(
+  level = names(ecx), paper = c(0.042, 0.126, 1.38),
+  model = unname(ec50 * ecx / (100 - ecx))
+) |>
+  mutate(pct_diff = 100 * (model - paper) / paper)
+stopifnot(all(abs(ec_check$pct_diff) < 1))
+ec_check |>
+  dplyr::rename("Level" = level, "Paper (ug/mL)" = paper, "Model (ug/mL)" = model, "% diff" = pct_diff) |>
+  knitr::kable(digits = 4)
+
+pd_curve <- typ_single |>
+  filter(cohort %in% c("0.01 mg/kg IV", "0.1 mg/kg IV", "3 mg/kg IV"), time > 0)
+ggplot(pd_curve, aes(conc_ug, mfi_a4b7)) +
+  geom_line() +
+  geom_vline(xintercept = ec_check$model, linetype = "dashed", colour = "grey50") +
+  scale_x_log10() +
+  labs(x = "Abrilumab (ug/mL)", y = "Free alpha4beta7 on CD4+ T cells (MFI)",
+    title = "Replicates the Emax curve of Figure 5 of Li 2015",
+    caption = "Dashed lines: EC75, EC90, EC99")
+```
+
+# Human projection
+
+## Kd: Methods text versus Table 3
+
+The Methods state that the human Kd was fixed at 0.031 nmol/L, the in vitro
+EC50 on human primary T cells, while Table 3 lists Kd = 0.013 nmol/L
+"not scaled". The Kd only matters at the lowest doses, where the target
+binds almost all drug, so the 0.7 and 2.1 mg SC predictions of Table 4
+discriminate. Only 0.031 nmol/L reproduces them, and that value is used in
+`Li_2015_abrilumab_human`.
+
+```{r kd-check}
+sad_low <- tibble::tribble(
+  ~dose, ~paper_cmax, ~paper_auc,
+  0.7, 0.0009, 0.985,
+  2.1, 0.004, 3.81
+)
+low_grid <- c(seq(0, 30, by = 0.05), seq(30.5, 600, by = 0.5))
+sim_low <- function(kd) {
+  ev <- do.call(rbind, lapply(seq_len(nrow(sad_low)), function(i) {
+    data.frame(id = i, dose = sad_low$dose[i],
+      time = c(0, low_grid), amt = c(sad_low$dose[i], rep(0, length(low_grid))),
+      evid = c(1L, rep(0L, length(low_grid))), cmt = c("depot", rep("central", length(low_grid))))
+  }))
+  sim <- suppressWarnings(rxode2::rxSolve(mod_human, events = ev, params = c(lkd = log(kd)), keep = "dose",
+    returnType = "data.frame", atol = 1e-12, rtol = 1e-10)) |>
+    mutate(conc_ug = Cc * mw_factor)
+  nca_interval(sim, "dose", filter(ev, evid == 1), start = 0, end = Inf) |>
+    transmute(dose = grp, cmax, auc = aucinf.obs, kd = kd)
+}
+kd_cmp <- bind_rows(sim_low(0.031), sim_low(0.013)) |>
+  left_join(sad_low, by = "dose") |>
+  mutate(auc_pct_diff = 100 * (auc - paper_auc) / paper_auc)
+kd_cmp |>
+  dplyr::rename(
+    "Dose (mg SC)" = dose, "Kd (nmol/L)" = kd, "Cmax (ug/mL)" = cmax,
+    "Paper Cmax" = paper_cmax, "AUC0-inf (h*ug/mL)" = auc, "Paper AUC" = paper_auc,
+    "AUC % diff" = auc_pct_diff
+  ) |>
+  knitr::kable(digits = 4)
+stopifnot(
+  all(abs(kd_cmp$auc_pct_diff[kd_cmp$kd == 0.031]) < 5),
+  all(kd_cmp$auc_pct_diff[kd_cmp$kd == 0.013] < -40)
+)
+```
+
+## Single and multiple dose profiles (Figure 6)
+
+```{r human-sims}
+sad <- tibble::tribble(
+  ~regimen, ~dose, ~cmt,
+  "0.7 mg SC", 0.7, "depot",
+  "2.1 mg SC", 2.1, "depot",
+  "7 mg SC", 7, "depot",
+  "21 mg SC", 21, "depot",
+  "70 mg SC", 70, "depot",
+  "210 mg SC", 210, "depot",
+  "70 mg IV", 70, "central",
+  "210 mg IV", 210, "central",
+  "420 mg IV", 420, "central"
+)
+mad <- tibble::tribble(
+  ~regimen, ~dose,
+  "7 mg SC Q4W x 3", 7,
+  "21 mg SC Q4W x 3", 21,
+  "70 mg SC Q4W x 3", 70,
+  "210 mg SC Q4W x 3", 210
+)
+sad_grid <- c(seq(0, 30, by = 0.05), seq(30.5, 600, by = 0.5))
+ev_sad <- do.call(rbind, lapply(seq_len(nrow(sad)), function(i) {
+  data.frame(id = i, regimen = sad$regimen[i],
+    time = c(0, sad_grid), amt = c(sad$dose[i], rep(0, length(sad_grid))),
+    evid = c(1L, rep(0L, length(sad_grid))), cmt = c(sad$cmt[i], rep("central", length(sad_grid))))
+}))
+mad_grid <- c(seq(0, 84, by = 0.05), seq(84.5, 400, by = 0.5))
+ev_mad <- do.call(rbind, lapply(seq_len(nrow(mad)), function(i) {
+  data.frame(id = 100 + i, regimen = mad$regimen[i],
+    time = c(0, 28, 56, mad_grid), amt = c(rep(mad$dose[i], 3), rep(0, length(mad_grid))),
+    evid = c(rep(1L, 3), rep(0L, length(mad_grid))),
+    cmt = c(rep("depot", 3), rep("central", length(mad_grid))))
+}))
+sim_human <- function(ev) {
+  # The human projection has no omega; rxode2 warns for any multi-subject solve.
+  suppressWarnings(rxode2::rxSolve(mod_human, events = ev, keep = "regimen", returnType = "data.frame",
+    atol = 1e-12, rtol = 1e-10)) |>
+    mutate(conc_ug = Cc * mw_factor)
+}
+hum_sad <- sim_human(ev_sad)
+hum_mad <- sim_human(ev_mad)
+
+ec_lines <- data.frame(level = c("EC50", "EC75", "EC90", "EC99"), conc = c(0.014, 0.042, 0.126, 1.38))
+ggplot(hum_sad |> filter(time > 0, time <= 252, conc_ug >= 1e-4), aes(time, conc_ug, colour = regimen)) +
+  geom_line() +
+  geom_hline(yintercept = 0.126, linetype = "dashed") +
+  scale_y_log10() +
+  labs(x = "Time after dose (days)", y = "Abrilumab (ug/mL)", colour = NULL,
+    title = "Replicates Figure 6A of Li 2015", caption = "Dashed line: EC90 = 0.126 ug/mL")
+
+ggplot(hum_mad |> filter(time > 0, time <= 392, conc_ug >= 1e-4), aes(time, conc_ug, colour = regimen)) +
+  geom_line(linetype = "dashed") +
+  geom_hline(data = ec_lines, aes(yintercept = conc), colour = "grey40", linetype = "dotted") +
+  scale_y_log10() +
+  labs(x = "Time post first dose (days)", y = "Abrilumab (ug/mL)", colour = NULL,
+    title = "Replicates Figure 6B of Li 2015", caption = "Dotted lines: EC50, EC75, EC90, EC99")
+```
+
+The text states that 21, 70, 210 and 420 mg cover EC90 for about 2, 3, 5 and
+6 months, and that the four Q4W x 3 regimens stay above EC90 for 3-8 months.
+
+```{r human-ec90}
+dur_ec90 <- function(d) {
+  d |>
+    group_by(regimen) |>
+    summarise(months_above_ec90 = max(c(0, time[conc_ug >= 0.126])) / 30.4, .groups = "drop")
+}
+bind_rows(dur_ec90(hum_sad), dur_ec90(hum_mad)) |>
+  dplyr::rename("Regimen" = regimen, "Months above EC90 (from first dose)" = months_above_ec90) |>
+  knitr::kable(digits = 1)
+```
+
+## PKNCA against Table 4
+
+Table 4 lists the predicted Cmax and AUC0-inf for the single-dose regimens,
+and Cmax and an "AUCtau" after the third dose for the Q4W x 3 regimens. Its
+footnote defines AUCtau as the AUC within the third dosing interval, but the
+printed values are the AUC from the third dose (day 56) to infinity: the
+day 56-84 AUC is 16-43% lower, while the day 56-infinity AUC matches all four
+rows to 0.1%. The comparison below therefore uses the AUC from day 56 to
+infinity. NCA is run with PKNCA on the free concentration in ug/mL, with time
+in hours so the AUC units match Table 4.
+
+```{r human-nca}
+nca_sad_conc <- hum_sad |>
+  transmute(id, regimen, time_h = time * 24, conc = conc_ug)
+nca_sad_dose <- sad |>
+  mutate(id = row_number(), time_h = 0) |>
+  select(id, regimen, time_h, dose)
+o_conc_sad <- PKNCA::PKNCAconc(nca_sad_conc, conc ~ time_h | regimen + id)
+o_dose_sad <- PKNCA::PKNCAdose(nca_sad_dose, dose ~ time_h | regimen + id)
+o_data_sad <- PKNCA::PKNCAdata(o_conc_sad, o_dose_sad,
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE))
+nca_sad <- PKNCA::pk.nca(o_data_sad)
+
+nca_mad_conc <- hum_mad |>
+  transmute(id, regimen, time_h = time * 24, conc = conc_ug)
+nca_mad_dose <- ev_mad |>
+  filter(evid == 1) |>
+  transmute(id, regimen, time_h = time * 24, dose = amt)
+o_conc_mad <- PKNCA::PKNCAconc(nca_mad_conc, conc ~ time_h | regimen + id)
+o_dose_mad <- PKNCA::PKNCAdose(nca_mad_dose, dose ~ time_h | regimen + id)
+o_data_mad <- PKNCA::PKNCAdata(o_conc_mad, o_dose_mad,
+  intervals = data.frame(start = 56 * 24, end = Inf, cmax = TRUE, aucinf.obs = TRUE))
+nca_mad <- PKNCA::pk.nca(o_data_mad)
+
+published_sad <- tibble::tribble(
+  ~regimen, ~cmax, ~aucinf.obs,
+  "0.7 mg SC", 0.0009, 0.985,
+  "2.1 mg SC", 0.004, 3.81,
+  "7 mg SC", 0.604, 186,
+  "21 mg SC", 3.48, 1940,
+  "70 mg SC", 13.5, 9500,
+  "210 mg SC", 42.4, 32300,
+  "70 mg IV", 22.7, 9520,
+  "210 mg IV", 70.8, 32300,
+  "420 mg IV", 143, 67000
+)
+published_mad <- tibble::tribble(
+  ~regimen, ~cmax, ~aucinf.obs,
+  "7 mg SC Q4W x 3", 1.69, 782,
+  "21 mg SC Q4W x 3", 6.29, 4120,
+  "70 mg SC Q4W x 3", 22.4, 17100,
+  "210 mg SC Q4W x 3", 68.4, 55300
+)
+cmp_sad <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_sad, reference = published_sad, by = "regimen",
+  units = c(cmax = "ug/mL", aucinf.obs = "h*ug/mL"), tolerance_pct = 20
+)
+cmp_mad <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_mad, reference = published_mad, by = "regimen",
+  units = c(cmax = "ug/mL", aucinf.obs = "h*ug/mL"), tolerance_pct = 20
+)
+cmp_table4 <- bind_rows(cmp_sad, cmp_mad)
+cmp_table4 |>
+  dplyr::rename("Regimen" = regimen) |>
+  knitr::kable(digits = 4,
+  caption = "Typical-value human prediction vs Li 2015 Table 4 (single doses: Cmax and AUC0-inf; Q4W x 3: Cmax and AUC from the third dose on day 56 to infinity). * marks rows differing by >20%.")
+```
+
+```{r human-nca-assert}
+pct <- as.numeric(gsub("[^0-9eE.+-]", "", cmp_table4[["% diff"]]))
+stopifnot(
+  # A wrong Kd, molecular weight, volume or bioavailability moves these by
+  # tens of percent; the typical-value solve is deterministic.
+  abs(median(pct)) < 3,
+  all(abs(pct) < 15)
+)
+```
+
+All `r nrow(cmp_table4)` Table 4 values are reproduced within
+`r round(max(abs(pct)), 1)`%. The largest differences are the Cmax values of
+the two lowest SC doses, which Table 4 prints with one significant digit.
+
+# Assumptions and deviations
+
+* **Human Kd.** Table 3 lists Kd = 0.013 nmol/L ("not scaled") while the
+  Methods fix the human Kd at 0.031 nmol/L, the human in vitro EC50. The
+  human model uses 0.031 nmol/L because only that value reproduces the
+  paper's own Table 4 predictions at 0.7 and 2.1 mg SC (section "Kd" above);
+  0.013 nmol/L under-predicts their AUC by more than half. The Table 3 entry
+  is taken to be a transcription error (0.013 is the monkey value).
+* **Observed quantity.** Both models report the free concentration Cf. The
+  Methods fit molar concentration data "with the free AMG 181 concentration
+  (Cf) calculated using the equation shown in Figure 1", and Table 4 is
+  reproduced only by Cf (total drug at 0.7 mg SC would give a Cmax of about
+  0.2 ug/mL, not 0.0009 ug/mL). The PD model is driven by the same
+  concentration converted to ug/mL.
+* **Constant total receptor.** Figure 1 draws receptor synthesis (ksyn) and
+  degradation (kdeg), but Table 2 reports only Rtot and Kint and no kdeg.
+  The model therefore uses the constant-Rtot form of the QE approximation
+  (receptor degradation equal to complex internalization), in which bound
+  drug is `Ctot - Cf = Rtot * Cf / (Kd + Cf)` and is eliminated at Kint.
+  This form reproduces Table 4.
+* **Distribution of free drug only.** Linear elimination (CL) and transfer
+  to the peripheral compartment (K12) act on free drug, the standard QE-TMDD
+  form; the paper does not print the differential equations.
+* **Table 4 multiple-dose AUC.** The Table 4 footnote calls the Q4W x 3
+  AUC "AUCtau: AUC within the 3rd dosing interval", but the printed values
+  equal the AUC from the third dose to infinity (see "PKNCA against
+  Table 4"); the exposure ratios in Table 4 were computed from those values.
+* **Units and molecular weight.** Doses are in mg and drug amounts in mg;
+  the molar conversion uses the "~144 kD" molecular weight from the Methods.
+* **IIV scale.** Table 2 gives IIV as percentages without a definition. They
+  are read as CV% of a log-normal eta, omega^2 = log(1 + CV^2). If the
+  authors reported sqrt(omega^2) x 100 instead, the Rtot variance would be
+  3.24 rather than 1.44; the CL and Vc variances would change by less than
+  10%. The CL-Vc correlation 0.642 is converted to a covariance.
+* **Residual error.** "A mixture of proportional plus additive" error is
+  encoded as `add(addSd) + prop(propSd)` with the Table 2 values (20.1% and
+  1.11 nmol/L), on the free concentration.
+* **PD model.** Emax, E0 and EC50 were fitted to Study A only, with no IIV
+  or residual error reported; `mfi_a4b7` is therefore an algebraic output
+  without an error model. The paper reports the EC50 as
+  0.0140 +/- 0.0082 ug/mL (estimate +/- standard error). The human projection
+  uses the monkey EC values only as reference concentrations, so the human
+  model carries no PD output.
+* **Human projection.** All human parameters are fixed typical values; the
+  model has no IIV and a zero residual error, as the paper simulated typical
+  profiles only.
+* **Monkey weight.** The monkey model has no weight covariate. The figures
+  above use the median weight of 2.8 kg to convert mg/kg doses to mg; the
+  toxicology-study animals were heavier on average (mean 3.43 kg).
+* **Study A IV dose levels.** Table 1 lists the Study A IV doses as 0.01,
+  0.1, 0.3 and 3 mg/kg, while the Figure 2A legend shows 0.01, 0.1, 1 and
+  3 mg/kg IV. The Figure 2A replication above follows the figure legend.
+* **Low-dose monkey cohort.** The paper notes that the model under-predicts
+  the 0.01 mg/kg IV cohort; that misfit is part of the published model.
+* **Errata.** No erratum or correction was found for this article (PubMed,
+  checked 2026-11-24).

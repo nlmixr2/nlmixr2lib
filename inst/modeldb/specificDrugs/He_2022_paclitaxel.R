@@ -3,6 +3,7 @@ He_2022_paclitaxel <- function() {
   reference <- "He J, Jackson CGCA, Deva S, Hung T, Clarke K, Segelov E, Chao TY, Dai MS, Yeh HT, Ma WW, Kramer D, Chan WK, Kwan R, Cutler D, Zhi J. Population pharmacokinetics for oral paclitaxel in patients with advanced/metastatic solid tumors. CPT Pharmacometrics Syst Pharmacol. 2022;11(7):867-879. doi:10.1002/psp4.12799"
   vignette <- "He_2022_paclitaxel"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

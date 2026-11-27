@@ -1,0 +1,408 @@
+---
+title: "Denosumab bone mineral density: reduced bone-biology QSP and empirical models (Hasegawa 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Denosumab bone mineral density: reduced bone-biology QSP and empirical models (Hasegawa 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Hasegawa and Duffull (2018) reduced the 28-state calcium-homeostasis and
+bone-remodelling model of Peterson and Riggs to eight nonlinear states by
+inductive linearization followed by automated proper lumping, then fitted the
+reduced model, and two empirical comparators, to the first 12 months of mean
+lumbar spine BMD data after denosumab and used all three to predict the
+following 36 months. The paper contributes three model files:
+
+| Model file | Structure |
+|---|---|
+| `Hasegawa_2018_denosumab_qsp` | Reduced eight-state bone-biology QSP model (Eqs 21-28 and 4) |
+| `Hasegawa_2018_denosumab_bmd_direct` | Empirical direct response with time-varying Emax (Eq 11) |
+| `Hasegawa_2018_denosumab_bmd_turnover` | Empirical turnover model with Imax inhibition of BMD loss (Eq 12) |
+
+All three share the same fixed two-compartment quasi-steady-state TMDD model of
+subcutaneous denosumab (Sutjandra 2011, as coded by the authors; Appendix S1).
+
+* Citation: `r rxode2::rxode(readModelDb("Hasegawa_2018_denosumab_qsp"))$reference`
+* Article: <https://doi.org/10.1002/psp4.12324>
+* Open-access full text: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6157701/>
+
+```{r load-models}
+nms <- c(
+  qsp = "Hasegawa_2018_denosumab_qsp",
+  direct = "Hasegawa_2018_denosumab_bmd_direct",
+  turnover = "Hasegawa_2018_denosumab_bmd_turnover"
+)
+uis <- lapply(nms, function(n) rxode2::rxode(readModelDb(n)))
+```
+
+# Population
+
+The models were fitted to arm-mean lumbar spine BMD (percent change from
+baseline) digitized by the authors from the phase 2 dose-ranging study of
+denosumab in postmenopausal women with low bone mineral density (McClung 2006,
+48-month extension reported by Miller 2008). The every-6-month arms used for
+estimation enrolled 54, 47, 42 and 47 women at 14, 60, 100 and 210 mg
+(Hasegawa 2018 Results). Only months 0-12 entered the fits; the 60 mg arm over
+months 12-48 was the extrapolation test. The digitized data are Table S2 of the
+paper. Because the data are arm means, the models are typical-value models with
+an additive residual error and no between-subject variability.
+
+```{r population}
+str(uis$qsp$population)
+```
+
+# Source trace
+
+The authors published their NONMEM control stream for the final nonlinear
+lumped model (Appendix S3, `nonlinear_lumped.mod`) and their MATLAB lumping
+code (Appendix S2). The stream is the as-run implementation and is followed
+wherever it is more precise than the printed Table 1. The stream works in
+30-day months (every per-hour rate is multiplied by 24 x 30); the packaged models
+work in hours with the same values, and one "month" in this article is 720 h.
+
+| Element | Value | Source |
+|---|---|---|
+| Reduced model ODEs | Eqs 21-28 | Paper Results; stream `$DES` |
+| BMD indirect response | Eq 4, R_in = k_out x 100 | Paper Methods; stream `RIN_BMD`, `K_BMD` |
+| Initial conditions | L1 30,082; L2 1.4001; CMX 2.2283e-4; OC 0.0012; TGF 0.2281; ROB 0.0010; FOB 0.0040; SOB 0.0010 | Eqs 13-20; stream `IC1`-`IC8` |
+| Fixed bone rate constants | Table 1 "before estimation" | Table 1; stream `$THETA` |
+| `ld_oc` | 0.0898 /h | Table 1, after estimation (5.4% RSE) |
+| `lr_lumped2` | 0.00337 /h | Table 1, after estimation (9.1% RSE) |
+| `lkss_rankl` | 63.4 ng/mL | Table 1, after estimation (63.7% RSE) |
+| `lkout` (QSP) | 0.000533 /h | Results text (24.6% RSE) |
+| `gam_ob_bmd`, `gam_oc_bmd` | 0.0739, 0.0779 | Stream `$THETA` 19-20 (FIX); not printed in the paper |
+| Hill constants (rho, a, delta, gamma) | see derivation check below | Stream `$PK` derivations; Table 1 |
+| Denosumab CL, V1, Q, V2, ka, F | 3.06 mL/h, 2.49 L, 37.9 mL/h, 1.36 L, 0.212 /day x (66/71.5)^-0.577, 0.638 | Stream `$THETA` 22-27 |
+| `lkint` | 0.00795 /h | Table 1; stream `$DES` |
+| `lkss` (PK) | 1380 ng/mL | MATLAB `Model_parameter_values0.m` (`Kss = 138*10`); see below |
+| `lrbase_target`, `lkdeg` | 614 ng/mL, 0.00148 /h | MATLAB `Model_parameter_values0.m` |
+| Direct model Emax, T1/2, C50 | 5.92 %, 3.12 months, 2.05 ng/mL | Table 2 |
+| Turnover model Imax, k_out, C50 | 0.0577, 0.000336 /h, 52.5 ng/mL | Table 2 |
+| Residual variances | 0.382, 0.328, 0.387 (%BMD)^2 | Tables 1 and 2; `addSd` is the square root |
+
+## Derived constants against Table 1
+
+The stream parameterizes each Hill function by its baseline fraction and span
+and derives the half-maximal driver so the reduced model reproduces the original
+model's values at `t0`. Recomputing those derivations reproduces the rounded
+Table 1 entries.
+
+```{r derived-constants}
+ini_val <- function(ui, nm) ui$iniDf$est[ui$iniDf$name == nm]
+q <- uis$qsp
+tgf0 <- ini_val(q, "tgfb_act0")
+oc0 <- ini_val(q, "oc0")
+pil0 <- ini_val(q, "rank_rankl0") / 10
+rho3 <- ini_val(q, "frho_tgf_rob") * tgf0
+emax3 <- ini_val(q, "emax_tgf_rob")
+rho1 <- ini_val(q, "frho_tgf_oc") * tgf0
+emax1 <- ini_val(q, "emax_tgf_oc")
+a2 <- ini_val(q, "a_cmx_oc")
+rho2 <- ini_val(q, "rho_cmx_oc")
+g2 <- ini_val(q, "gam_cmx_oc")
+derived <- data.frame(
+  quantity = c("rho3", "a3", "delta3", "rho1", "a1", "delta1", "delta2", "k_OC->TGF"),
+  table1 = c(0.202, 4.18, 34.0, 0.200, 2.18, 16.2, 0.000013, 5.66),
+  packaged = c(
+    rho3, rho3 + emax3, emax3 * tgf0 / (tgf0 - rho3) - tgf0,
+    rho1, rho1 + emax1, emax1 * tgf0 / (tgf0 - rho1) - tgf0,
+    ((a2 - rho2) * (pil0^g2 / (a2 - 1)) - pil0^g2)^(1 / g2),
+    exp(ini_val(q, "ld_tgf")) * tgf0 / oc0
+  )
+)
+derived$rel_diff_pct <- round(100 * (derived$packaged / derived$table1 - 1), 2)
+knitr::kable(derived, digits = 6)
+# Every derived constant matches its rounded Table 1 entry to within rounding,
+# except a1 (see Assumptions and deviations).
+stopifnot(abs(derived$rel_diff_pct[derived$quantity != "a1"]) < 2.5)
+```
+
+# Simulation
+
+The trial design is denosumab every 6 months (4320 h) subcutaneously. Each arm
+is simulated as one typical subject on a 0-48-month grid.
+
+```{r simulate}
+h_per_month <- 720
+doses_mg <- c(14, 60, 100, 210)
+make_events <- function(dose_mg, id, n_doses = 8, end_month = 48) {
+  obs <- data.frame(
+    id = id, time = seq(0, end_month, by = 0.25) * h_per_month, amt = 0, evid = 0,
+    cmt = "BMD_LS"
+  )
+  if (dose_mg > 0) {
+    dose <- data.frame(
+      id = id, time = (seq_len(n_doses) - 1) * 6 * h_per_month, amt = dose_mg * 1000,
+      evid = 1, cmt = "depot"
+    )
+    obs <- rbind(dose, obs)
+  }
+  obs[order(obs$id, obs$time, -obs$evid), ]
+}
+ev <- do.call(rbind, Map(make_events, doses_mg, seq_along(doses_mg)))
+arm_key <- data.frame(id = seq_along(doses_mg), dose = paste(doses_mg, "mg"))
+
+solve_bmd <- function(ui, events, key) {
+  ev_direct <- events
+  if (!"BMD_LS" %in% rxode2::rxModelVars(ui)$state) {
+    ev_direct$cmt[ev_direct$evid == 0] <- "central"
+  }
+  out <- as.data.frame(rxode2::rxSolve(ui, ev_direct, returnType = "data.frame"))
+  if (is.null(out$id)) out$id <- 1L
+  dplyr::left_join(out, key, by = "id") |>
+    dplyr::mutate(month = time / h_per_month)
+}
+sims <- dplyr::bind_rows(lapply(names(uis), function(m) {
+  solve_bmd(uis[[m]], ev, arm_key) |>
+    dplyr::select(id, dose, month, Cc, bmd_pcfb) |>
+    dplyr::mutate(model = m)
+}))
+```
+
+## Denosumab PK
+
+```{r pk-plot}
+pk <- dplyr::filter(sims, model == "qsp", month <= 12)
+ggplot(pk, aes(month, Cc, colour = dose)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(
+    x = "Time (months)", y = "Free serum denosumab (ng/mL)", colour = "Dose",
+    title = "Free denosumab, every-6-month dosing"
+  ) +
+  theme_bw()
+```
+
+## Replicate Figure 5a: fits to months 0-12
+
+```{r data}
+# Table S2 of Hasegawa 2018 (digitized by the authors); percent change from
+# baseline in lumbar spine BMD.
+obs <- data.frame(
+  month = c(0, 1, 3, 6, 12, 18, 24, 36, 48),
+  `14 mg` = c(0, 1.66, 2.03, 0.906, 2.31, 2.5, 2.5, 7.09, 10.2),
+  `60 mg` = c(0, 2.51, 2.98, 4.21, 5.72, 6.3, 7.53, 8.21, 9.37),
+  `100 mg` = c(0, 1.32, 3.21, 4.15, 6.13, 6.13, 5.75, 11.4, 12.6),
+  `210 mg` = c(0, 1.36, 2.41, 4.21, 4.59, 6.58, 6.58, 0.601, 3.26),
+  check.names = FALSE
+) |>
+  tidyr::pivot_longer(-month, names_to = "dose", values_to = "bmd_pcfb")
+```
+
+```{r fig5a, fig.height = 6}
+model_labels <- c(qsp = "Reduced QSP", direct = "Direct response", turnover = "Turnover")
+ggplot(dplyr::filter(sims, month <= 12), aes(month, bmd_pcfb)) +
+  geom_line(aes(colour = model_labels[model], linetype = model_labels[model])) +
+  geom_point(data = dplyr::filter(obs, month <= 12), shape = 1, size = 2) +
+  facet_wrap(~ factor(dose, levels = paste(doses_mg, "mg"))) +
+  coord_cartesian(ylim = c(-5, 15)) +
+  labs(
+    x = "Time (months)", y = "BMD % change from baseline", colour = NULL, linetype = NULL,
+    title = "Replicates Figure 5a of Hasegawa 2018"
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+## Replicate Figure 5b: extrapolation of the 60 mg arm to 48 months
+
+After month 24 the 14 mg and 100 mg arms were switched to 60 mg and the 210 mg
+arm stopped treatment, so, as in the paper, only the 60 mg arm is extrapolated.
+
+```{r fig5b}
+ggplot(dplyr::filter(sims, dose == "60 mg"), aes(month, bmd_pcfb)) +
+  geom_line(aes(colour = model_labels[model], linetype = model_labels[model])) +
+  geom_point(data = dplyr::filter(obs, dose == "60 mg"), shape = 1, size = 2) +
+  geom_vline(xintercept = 12, linetype = "dotted") +
+  coord_cartesian(ylim = c(-5, 15)) +
+  scale_x_continuous(breaks = seq(0, 48, 12)) +
+  labs(
+    x = "Time (months)", y = "BMD % change from baseline", colour = NULL, linetype = NULL,
+    title = "Replicates Figure 5b of Hasegawa 2018"
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+## Comparison against the published curves
+
+Figure 5 draws each model's prediction as straight segments between the visit
+months, so the published values at those months can be read off the figure.
+The maintainers read them from the article's Figure 5 to about 0.2 percentage
+points. All three models are deterministic typical-value models, so the packaged
+predictions are compared to those readings directly.
+
+```{r fig5-compare}
+fig5 <- tibble::tribble(
+  ~model, ~dose, ~month, ~published,
+  "qsp", "60 mg", 1, 1.4,
+  "qsp", "60 mg", 3, 3.0,
+  "qsp", "60 mg", 6, 3.8,
+  "qsp", "60 mg", 12, 4.9,
+  "qsp", "60 mg", 24, 6.3,
+  "qsp", "60 mg", 36, 7.5,
+  "qsp", "60 mg", 48, 8.45,
+  "qsp", "14 mg", 3, 2.7,
+  "qsp", "14 mg", 6, 1.8,
+  "qsp", "14 mg", 12, 2.5,
+  "qsp", "100 mg", 12, 5.4,
+  "qsp", "210 mg", 12, 5.5,
+  "direct", "60 mg", 12, 5.3,
+  "direct", "60 mg", 48, 5.7,
+  "direct", "14 mg", 6, 1.5,
+  "direct", "14 mg", 12, 1.9,
+  "turnover", "60 mg", 12, 4.9,
+  "turnover", "60 mg", 48, 5.2,
+  "turnover", "14 mg", 12, 2.5
+)
+cmp <- dplyr::inner_join(fig5, sims, by = c("model", "dose", "month")) |>
+  dplyr::mutate(simulated = round(bmd_pcfb, 2), diff = round(simulated - published, 2)) |>
+  dplyr::select(model, dose, month, published, simulated, diff)
+knitr::kable(cmp)
+stopifnot(
+  nrow(cmp) == nrow(fig5),
+  # A transcription error in a rate constant, a dose unit or the PK binding
+  # constant moves these curves by whole percentage points; figure-reading
+  # error is a few tenths.
+  max(abs(cmp$diff)) < 0.5
+)
+```
+
+The extrapolation result of the paper is reproduced: from month 12 to month 48
+the reduced model continues to gain BMD (about 3.6 percentage points), while
+both empirical models plateau (gains below 0.5 percentage points).
+
+```{r extrapolation-check}
+gain <- sims |>
+  dplyr::filter(dose == "60 mg", month %in% c(12, 48)) |>
+  dplyr::select(model, month, bmd_pcfb) |>
+  tidyr::pivot_wider(names_from = month, values_from = bmd_pcfb, names_prefix = "m") |>
+  dplyr::mutate(gain_12_to_48 = m48 - m12)
+knitr::kable(gain, digits = 2)
+stopifnot(
+  gain$gain_12_to_48[gain$model == "qsp"] > 3,
+  all(gain$gain_12_to_48[gain$model != "qsp"] < 1)
+)
+```
+
+## Fit to the training data
+
+```{r training-fit}
+train <- dplyr::inner_join(
+  dplyr::filter(obs, month > 0, month <= 12),
+  dplyr::select(sims, model, dose, month, pred = bmd_pcfb),
+  by = c("dose", "month")
+) |>
+  dplyr::group_by(model) |>
+  dplyr::summarise(rmse = sqrt(mean((bmd_pcfb - pred)^2)), .groups = "drop")
+knitr::kable(train, digits = 2)
+```
+
+All three root-mean-square errors are of the size of the residual standard
+deviations the paper estimated (0.62, 0.57 and 0.62 percentage points).
+
+## Untreated reduced model
+
+The reduced model does not start at a steady state. Its baseline-derived
+constants were computed from the original model's state at `t0`, but four
+parameters were then re-estimated, and the estimated osteoclast degradation rate
+(0.0898 /h, against 0.0292 /h before estimation) drives the osteoclast pool
+toward a lower level from time zero. Without denosumab the reduced model
+therefore predicts a slow BMD gain.
+
+```{r placebo}
+pbo <- solve_bmd(uis$qsp, make_events(0, 1), data.frame(id = 1L, dose = "0 mg"))
+pbo_tab <- dplyr::filter(pbo, month %in% c(3, 12, 24, 48)) |>
+  dplyr::transmute(month, bmd_pcfb = round(bmd_pcfb, 2), oc_relative_to_t0 = round(oc / 0.0012, 3))
+knitr::kable(pbo_tab)
+```
+
+This drift is a property of the published model, not of the packaging. In the
+denosumab arms it is part of the fitted trajectory, so the model should be used
+for drug-treated scenarios relative to its own untreated prediction, or as
+published, rather than as a model of untreated BMD.
+
+# PKNCA of the shared denosumab PK
+
+The paper reports no NCA of denosumab; the shared PK model is the published
+Sutjandra (2011) model with fixed parameters. NCA of the first dosing interval
+is provided for orientation. Tmax is resolved only to the 0.25-month (180 h)
+simulation grid.
+
+```{r pknca}
+nca_dat <- dplyr::filter(sims, model == "qsp", month <= 6) |>
+  dplyr::mutate(time = month * h_per_month, treatment = dose) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::distinct(id, time, .keep_all = TRUE) |>
+  dplyr::select(id, time, Cc, treatment)
+nca_dose <- data.frame(
+  id = seq_along(doses_mg), time = 0, amt = doses_mg * 1000,
+  treatment = paste(doses_mg, "mg")
+)
+conc_obj <- PKNCA::PKNCAconc(nca_dat, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 6 * h_per_month, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::arrange(as.numeric(sub(" mg", "", treatment))) |>
+  dplyr::rename(
+    "Dose" = treatment, "Cmax free (ng/mL)" = cmax, "Tmax (h)" = tmax,
+    "AUC0-6 months free (ng*h/mL)" = auclast
+  )
+knitr::kable(nca_tab, digits = 1)
+cmax <- as.data.frame(nca_res) |> dplyr::filter(PPTESTCD == "cmax")
+# Free exposure rises more than dose-proportionally (target-mediated
+# disposition): the 210 mg Cmax exceeds 15 times the 14 mg Cmax.
+stopifnot(cmax$PPORRES[cmax$treatment == "210 mg"] > 15 * cmax$PPORRES[cmax$treatment == "14 mg"])
+```
+
+# Assumptions and deviations
+
+* **PK binding constant, baseline RANKL and RANKL degradation.** The NONMEM
+  stream reads these three PK constants from data columns (`KSSINI`, `R00`,
+  `KDEG`) that were not published. The authors' MATLAB code for the same
+  analysis sets `Kss = 138*10` (1380 ng/mL), `R0 = 614` ng/mL and
+  `kdeg = 0.00148` /h, whereas Table 1 lists `K_SS = 138` ng/mL (the
+  pre-estimation value of the bone-model `K_SS`, a separate parameter). The
+  maintainers settled the PK value with the paper's own Figure 5: the published
+  direct-response curve at 14 mg implies a free denosumab trough of about
+  1.1 ng/mL at months 6 and 12 (from `5.92 x (1 - exp(-k t)) x C / (2.05 + C)` equal to the
+  plotted 1.5 and 1.9), and the PK model gives 1.08 and 1.11 ng/mL with
+  `Kss = 1380` ng/mL but about 3e-5 ng/mL with 138 ng/mL. The 1380 ng/mL value,
+  with `R0` and `kdeg` as in the MATLAB code, is used for all three models.
+* **TGF-beta Hill constant a1.** Table 1 prints a1 = 2.18; the
+  stream derives a1 = rho1 + 2 = 2.20. The stream (as run) is followed; the
+  difference is 1%.
+* **Unprinted BMD exponents.** The powers of the osteoblast and osteoclast
+  ratios in Eq 4 (0.0739 and 0.0779) are not in the paper; they are taken from
+  the stream, where they are fixed.
+* **Body weight.** The stream evaluates the Sutjandra allometric term on ka at
+  a fixed 66 kg; the packaged models do the same and have no covariates.
+* **Time unit.** The NONMEM fits used a 30-day month. The packaged models are in
+  hours; dosing every 6 months is every 4320 h, and the empirical T1/2 of
+  3.12 months is 2246.4 h.
+* **Residual error.** The paper reports variances; `addSd` is their square root.
+  The fitted output was the percent change from baseline (`bmd_pcfb`), which is
+  `BMD_LS - 100`; an additive error on either is the same.
+* **Positive-reference model not packaged.** The paper also refitted the
+  semi-mechanistic bone cycle model of Zheng et al. (2015) as a positive
+  reference (Table S1). Its equations in the supplement use a symbol (`PL`) that
+  is not defined there, and its initial bone-cycle-unit amounts, which set the
+  scale of the off-treatment term, are given only in Zheng 2015. That model is
+  not included here.
+* **Untreated drift.** See the untreated reduced model section above.

@@ -1,0 +1,695 @@
+---
+title: "Vincristine and peripheral neuropathy in Dutch and Kenyan children (Centanni 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vincristine and peripheral neuropathy in Dutch and Kenyan children (Centanni 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Centanni_2026_vincristine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Centanni_2026_vincristine"))$description`
+* Article: <https://doi.org/10.1002/psp4.70303> (open access)
+
+Centanni et al. pooled the vincristine concentrations and CTCAE neuropathy
+grades of 35 Dutch children (the bolus-versus-infusion trial of van de Velde
+et al. 2020) and 15 Kenyan children (the CHAPATI feasibility study) and
+re-estimated the PK and PK-neuropathy models of Centanni et al. 2024 (see
+`Centanni_2024_vincristine`). The question was why Kenyan children tolerate
+higher vincristine doses with little vincristine-induced peripheral
+neuropathy (VIPN), and how two kinds of selection bias distort a model
+extrapolated from Dutch to Kenyan children: informative censoring (Type I)
+and population differences in effect modifiers (Type II).
+
+The packaged model is the final model of Table 2, estimated on the pooled
+data:
+
+* **PK.** Three compartments: linear elimination from the central
+  compartment, linear distribution to a peripheral compartment, and
+  saturable uptake into a binding compartment,
+  `Bmax x A_central / (Kb + A_central)`, with first-order return `kp`.
+  CL, Vc, Q and Vp scale allometrically to 70 kg (exponents 0.75 and 1,
+  fixed). One shared coefficient lowers CL and Vp in Kenyan children,
+  `exp(-0.786 x Kenyan)` (Equation 4). Infusions start after a lag time;
+  the residual error is additive on log concentrations, larger for infusion
+  samples, with IIV on the infusion residual.
+* **Neuropathy.** A proportional-odds model with a Markov element for each of
+  four CTCAE subscores (peripheral sensory and motor neuropathy,
+  constipation, neuralgia) on three levels (0, 1, >= 2):
+  `logit P(>= 1) = B1|0 + Emax x AUC / (AUC50 + AUC) + B1|0,Grade>0 x [previous grade > 0]`
+  and `logit P(>= 2) = logit P(>= 1) + B2|0`. `Emax` and `B2|0` differ
+  between neuralgia/motor and constipation/sensory. `AUC = dose / CL` of the
+  current occasion. In Kenyan children `Emax = exp(-100 x 20)`, effectively
+  zero.
+* **Censoring.** A separate logistic model (Equation 2) for the probability
+  that an assessment is censored: a baseline logit with step increases from
+  the first, second and third dosing occasions, and an increase after a
+  previous grade >= 2 in any subscore. The VIPN probabilities are scaled by
+  `1 - P(censored)` so the four categories sum to 1 (Equation 3).
+
+The model outputs the cumulative VIPN probabilities `p_vipn_ge1_nm`,
+`p_vipn_ge2_nm` (neuralgia and motor) and `p_vipn_ge1_cs`, `p_vipn_ge2_cs`
+(constipation and sensory), not yet scaled for censoring, and the censoring
+probabilities `p_cens_vipn` (no previous grade >= 2) and `p_cens_prev_vipn`
+(a previous grade >= 2 in any subscore). The Markov state of a subscore
+enters through `PREV_AE_SCORE`, the dosing occasion through `CYCLE` and the
+Kenyan cohort through `REGION_KENYA`.
+
+The paper's structure is taken from its published NONMEM code (Supporting
+Information S2), and the values from Table 2.
+
+# Population
+
+The Dutch cohort comprised 35 children aged 2-17 years (64% with acute
+lymphoblastic leukemia, ALL), randomized to an IV bolus (20) or an infusion
+(15; 60 min standard, of which 38 min vincristine and 22 min flushing).
+They received 1.5 or 2 mg/m^2 (cap 2 mg) on one to five occasions and were
+sampled at 10, 20, 30, 40, 60, 75 and 140 min and at 24 h when still
+hospitalised. The Kenyan cohort comprised 15 children aged 5-14 years
+(ALL, Hodgkin lymphoma, rhabdomyosarcoma, neuroblastoma, nephroblastoma)
+given 2 mg/m^2 (cap 2.5 mg) as a bolus, sampled at 60, 90 and 240 min on two
+occasions. The analysis used 513 plasma concentrations and 800 neuropathy
+assessments from 50 children (Methods; Supporting Methods S1). The article
+reports no demographic table beyond the age ranges.
+
+The same information is available programmatically via
+`readModelDb("Centanni_2026_vincristine")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Centanni_2026_vincristine.R`.
+The table below collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` | log(42.2) L/h at 70 kg | Table 2 CL |
+| `lvc` | log(14.5) L | Table 2 Vc |
+| `lq` | log(71.6) L/h | Table 2 Q |
+| `lvp` | log(541.5) L | Table 2 Vp |
+| `e_region_kenya_cl_vp` | -0.786 (shared on CL and Vp) | Table 2; Equation 4; S2 `THETA(7)` |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed), 70 kg | Methods 'Pharmacokinetic Model'; Table 2 footnote a |
+| `ltlag` | log(0.02) h, fixed (infusions only) | S2 `THETA(6)` 0.02 FIX; Table 2 prints 2 min |
+| `lvmax_bind` | log(7.17) mg/h | Table 2 Bmax |
+| `lkm_bind` | log(5.03) ug | Table 2 Kb |
+| `lk31` | log(28.3) 1/h | Table 2 kp |
+| `etalcl` | 0.77705 (108.4%) | Table 2 IIV CL |
+| `etalvc` | 1.16386 (148.4%) | Table 2 IIV Vc |
+| `etaltlag` | 0.419665 (72.2%), fixed | Table 2 IIV LAG; S2 `$OMEGA` ETA(3) |
+| `etaRUV` | 0.46846 (77.3%) | Table 2 IIV RUVprop, infusion |
+| `expSd_bolus`, `expSd_infusion` | 0.36, 0.38 | Table 2 RUV (log scale, footnote c) |
+| `b1_vipn` | -10, fixed | Table 2 B1\|0 |
+| `b_prev_vipn` | 2.989 | Table 2 B1\|0, if Grade > 0 |
+| `b2b1_nm_vipn`, `b2b1_cs_vipn` | -1.102, -3.583 | Table 2 B2\|0 |
+| `emax_nm_vipn`, `emax_cs_vipn` | 8.697, 9.149 | Table 2 Emax |
+| `e_region_kenya_emax_vipn` | 20, fixed | Table 2 Kenyan Emax parameter |
+| `auc50_vipn` | 2.587 ng\*h/mL | Table 2 AUC50 |
+| `b_cens_vipn` | -144.7 | Table 2 PX0 B3 \| Baseline |
+| `b_cens_occ1_vipn`, `_occ2_`, `_occ3_` | 136.9, 5.764, 1.502 | Table 2 Censoring \| OCC > 0, > 1, > 2 |
+| `b_cens_prev_vipn` | 3.05 | Table 2 Censoring \| Grade > 0; S2 applies it when a previous subscore is > 1 |
+| Three-compartment ODEs with saturable binding | -- | Results 'Pharmacokinetic Model'; S2 `$DES` |
+| Allometry and Kenyan effect | -- | Equation 4; S2 `$PK` |
+| VIPN logits, Markov term, Kenyan Emax | -- | Results 'Pharmacodynamic Model'; S2 `$PRED` |
+| Censoring logit and outcome scaling | -- | Equations 2-3; S2 `$PRED` |
+| Omega from CV% | `log(1 + CV^2)` | Table 2 footnote b |
+
+# Pharmacokinetics: typical profiles
+
+```{r typical-pk}
+mod <- readModelDb("Centanni_2026_vincristine")
+
+# The typical-value solves below remove all random effects, so rxode2 reports
+# that the model has no sigma and that several subjects are simulated without
+# omega. Those two warnings, and only those, are expected here.
+muffle_typical <- function(w) {
+  if (grepl("No sigma parameters|multi-subject simulation without",
+            conditionMessage(w))) {
+    invokeRestart("muffleWarning")
+  }
+}
+mod_typ <- withCallingHandlers(rxode2::zeroRe(mod), warning = muffle_typical)
+
+pk_times <- c(0, 0.017, 0.033, 0.05, 0.083, 0.117, 0.167, 0.25, 0.333, 0.5,
+              0.667, 0.75, 1, 1.25, 1.5, 2, 2.33, 3, 4, 6, 8, 12, 16, 24, 36,
+              48, 72, 96, 120, 144, 168)
+
+typ_cases <- tibble::tibble(
+  id = 1:3,
+  case = c("Dutch, 1.5 mg bolus", "Dutch, 1.5 mg over 1 h",
+           "Kenyan, 1.5 mg bolus"),
+  TINF = c(0, 1, 0),
+  REGION_KENYA = c(0, 0, 1)
+)
+typ_ev <- dplyr::bind_rows(
+  dplyr::mutate(typ_cases, time = 0, evid = 1L, amt = 1.5,
+                rate = ifelse(TINF > 0, -2, 0)),
+  tidyr::expand_grid(typ_cases, time = pk_times) |>
+    dplyr::mutate(evid = 0L, amt = 0, rate = 0)
+) |>
+  dplyr::mutate(cmt = "central", WT = 30, CYCLE = 1, PREV_AE_SCORE = 0) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+typ_sim <- withCallingHandlers(
+  rxode2::rxSolve(mod_typ, events = typ_ev, keep = "case",
+                  returnType = "data.frame"),
+  warning = muffle_typical
+)
+
+ggplot(dplyr::filter(typ_sim, time <= 24), aes(time, Cc, colour = case)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time after start of dose (h)", y = "Vincristine (ng/mL)",
+       colour = NULL,
+       title = "Typical-value profiles for a 30 kg child")
+```
+
+Kb = 5.03 ug corresponds to about 0.35 ng/mL in the central compartment of
+a 70 kg patient (Discussion), below the early concentrations, so uptake
+into the binding compartment runs close to `Bmax` right after the dose and
+stays above half of it for the first day:
+
+```{r kb-check}
+kb_conc <- 5.03 / 14.5
+bolus_typ <- dplyr::filter(typ_sim, id == 1) |>
+  dplyr::mutate(frac_bmax = central / (5.03e-3 + central))
+stopifnot(
+  abs(kb_conc - 0.35) < 0.01,
+  all(bolus_typ$frac_bmax[bolus_typ$time > 0 & bolus_typ$time <= 0.25] > 0.9),
+  all(bolus_typ$frac_bmax[bolus_typ$time <= 16] > 0.5)
+)
+bolus_typ |>
+  dplyr::filter(time %in% c(0.083, 0.25, 1, 4, 24)) |>
+  dplyr::select(time, Cc, frac_bmax) |>
+  dplyr::rename("Time (h)" = time, "Cc (ng/mL)" = Cc,
+                "Uptake rate / Bmax" = frac_bmax) |>
+  knitr::kable(digits = 3)
+```
+
+Because all elimination leaves the central compartment linearly and the
+binding compartment returns everything it takes up, the area under the
+concentration curve of a single dose is `dose / CL` despite the saturable
+step. The paper's exposure metric for the neuropathy model rests on that
+identity. The trapezoidal AUC of the typical profiles confirms it:
+
+```{r auc-identity}
+auc_check <- typ_sim |>
+  dplyr::group_by(id, case) |>
+  dplyr::summarise(
+    auc_trap = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    auc_dose_cl = 1.5 / cl[1] * 1000,
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(ratio = auc_trap / auc_dose_cl)
+stopifnot(all(abs(auc_check$ratio - 1) < 0.03))
+auc_check |>
+  dplyr::rename("Case" = case, "Trapezoidal AUC0-168 (ng*h/mL)" = auc_trap,
+                "Dose / CL (ng*h/mL)" = auc_dose_cl, "Ratio" = ratio) |>
+  dplyr::select(-id) |>
+  knitr::kable(digits = 3)
+```
+
+# Virtual cohort and simulation scenarios
+
+The paper simulated 100,000 children per scenario with age drawn from the
+age-specific incidence of ALL (1-18 years), weight and height from CDC growth
+references for Dutch children and adjusted Kenyan growth charts, and BSA by
+DuBois (Methods). Those growth inputs are not reported. The cohort below is
+a stand-in built by the maintainers: ages 1-18 years weighted towards the
+ALL peak at 2-5 years, weight and height from approximate CDC median
+growth curves with log-normal scatter (weight CV 15%, height CV 4%,
+correlation 0.7), and the same cohort used for every scenario. Absolute
+exposures therefore differ from Table 3; the comparisons that do not depend
+on the cohort (ratios between scenarios, censoring) are the validation.
+
+```{r cohort}
+n_per_arm <- 200
+
+growth <- tibble::tibble(
+  age = c(1, 2, 4, 6, 8, 10, 12, 14, 16, 18),
+  wt = c(10, 12.5, 16.3, 20.5, 25.6, 32.5, 41, 51, 59, 64),
+  ht = c(76, 87, 103, 116, 128, 139, 151, 163, 170, 173)
+)
+age_weights <- c(0.04, rep(0.11, 4), rep(0.06, 4), rep(0.025, 9))
+age_weights <- age_weights / sum(age_weights)
+
+set.seed(2026)
+cohort <- tibble::tibble(id = seq_len(n_per_arm)) |>
+  dplyr::mutate(
+    age = sample(1:18, n_per_arm, replace = TRUE, prob = age_weights) +
+      stats::runif(n_per_arm),
+    z_wt = stats::rnorm(n_per_arm),
+    z_ht = 0.7 * z_wt + sqrt(1 - 0.7^2) * stats::rnorm(n_per_arm),
+    WT = stats::approx(growth$age, growth$wt, xout = pmin(age, 18))$y *
+      exp(0.15 * z_wt),
+    HT = stats::approx(growth$age, growth$ht, xout = pmin(age, 18))$y *
+      exp(0.04 * z_ht),
+    BSA = 0.007184 * WT^0.425 * HT^0.725
+  ) |>
+  dplyr::select(id, age, WT, HT, BSA)
+
+summary(dplyr::select(cohort, age, WT, BSA))
+```
+
+Table 1 of the paper defines five scenarios. Scenarios 0-3 use models
+estimated on the Dutch data alone (Supporting Information Tables S2 and S3),
+which have no Kenyan covariate effects; Scenario 4 is the packaged pooled
+model. Scenario 3 adds two literature corrections: a CYP3A5 mixture on CL
+(1.87-fold CL in the 90% of Kenyan children who are high expressers) and an
+intercept shift of -0.52 (ABCB1 rs4728709) - 0.19 (CEP72 rs924607) = -0.71
+on the VIPN logits.
+
+```{r scenario-models}
+omega_cv <- function(cv) log(1 + cv^2)
+
+# Table S2: Dutch data, no censoring (PK identical in Table S3)
+mod_s2 <- rxode2::ini(
+  mod,
+  lcl = log(39.99), lvc = log(13.17), lq = log(70.18), lvp = log(555.7),
+  lvmax_bind = log(7.5), lk31 = log(28.5), lkm_bind = log(5.56),
+  e_region_kenya_cl_vp = 0,
+  etalcl ~ 1.04906, etalvc ~ 1.82504,
+  b2b1_nm_vipn = -1.101, emax_nm_vipn = 8.688, emax_cs_vipn = 9.138,
+  auc50_vipn = 2.541
+)
+# Table S3: Dutch data with censoring (Bmax printed in ug/h, 7504 = 7.504 mg/h)
+mod_s3 <- rxode2::ini(
+  mod,
+  lcl = log(39.99), lvc = log(13.17), lq = log(70.18), lvp = log(555.7),
+  lvmax_bind = log(7.504), lk31 = log(28.47), lkm_bind = log(5.561),
+  e_region_kenya_cl_vp = 0,
+  etalcl ~ 1.04906, etalvc ~ 1.82504
+)
+mod_s3_high <- rxode2::ini(mod_s3, lcl = log(39.99 * 1.87), b1_vipn = -10.71)
+mod_s3_low <- rxode2::ini(mod_s3, b1_vipn = -10.71)
+
+stopifnot(
+  abs(omega_cv(1.362) - 1.04906) < 1e-4,
+  abs(omega_cv(2.281) - 1.82504) < 1e-4
+)
+```
+
+Each scenario gives one dose to every child (1.5 mg/m^2, cap 2 mg, in the
+Dutch Scenario 0; 2 mg/m^2, cap 2.5 mg, in the Kenyan scenarios), observes
+the plasma profile for 168 h, and then evaluates the neuropathy and
+censoring probabilities at occasions 1-5 for a previous subscore grade of 0
+and of > 0. The dose and CL do not change between occasions in the paper's
+simulation (Table 3 shows constant AUC in Scenarios 0 and 1), so one dose
+fixes the occasion AUC.
+
+```{r scenario-events}
+prob_rows <- tidyr::expand_grid(CYCLE = 1:5, PREV_AE_SCORE = 0:1) |>
+  dplyr::mutate(time = 200 + seq_len(dplyr::n()))
+
+make_events <- function(cohort, mg_per_m2, cap_mg, kenya) {
+  doses <- cohort |>
+    dplyr::mutate(amt = pmin(mg_per_m2 * BSA, cap_mg), time = 0, evid = 1L,
+                  CYCLE = 1, PREV_AE_SCORE = 0)
+  pk_obs <- tidyr::expand_grid(dplyr::select(cohort, id, WT), time = pk_times) |>
+    dplyr::mutate(evid = 0L, amt = 0, CYCLE = 1, PREV_AE_SCORE = 0)
+  pd_obs <- tidyr::expand_grid(dplyr::select(cohort, id, WT), prob_rows) |>
+    dplyr::mutate(evid = 0L, amt = 0)
+  dplyr::bind_rows(dplyr::select(doses, id, WT, time, evid, amt, CYCLE,
+                                 PREV_AE_SCORE),
+                   pk_obs, pd_obs) |>
+    dplyr::mutate(cmt = "central", rate = 0, TINF = 0, REGION_KENYA = kenya) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+ev_dutch <- make_events(cohort, 1.5, 2, kenya = 0)
+ev_kenya <- make_events(cohort, 2, 2.5, kenya = 0)
+ev_kenya_pooled <- make_events(cohort, 2, 2.5, kenya = 1)
+
+n_high <- round(0.9 * n_per_arm)
+high_ids <- cohort$id[seq_len(n_high)]
+
+run_scenario <- function(model, events, seed) {
+  rxode2::rxSetSeed(seed)
+  rxode2::rxSolve(model, events = events, returnType = "data.frame")
+}
+
+sims <- dplyr::bind_rows(
+  run_scenario(mod_s2, ev_dutch, 101) |> dplyr::mutate(scenario = "0"),
+  run_scenario(mod_s2, ev_kenya, 102) |> dplyr::mutate(scenario = "1"),
+  run_scenario(mod_s3, ev_kenya, 102) |> dplyr::mutate(scenario = "2"),
+  dplyr::bind_rows(
+    run_scenario(mod_s3_high, dplyr::filter(ev_kenya, id %in% high_ids), 104),
+    run_scenario(mod_s3_low, dplyr::filter(ev_kenya, !id %in% high_ids), 105)
+  ) |> dplyr::mutate(scenario = "3"),
+  run_scenario(mod, ev_kenya_pooled, 106) |> dplyr::mutate(scenario = "4")
+)
+stopifnot(!anyNA(sims$Cc))
+```
+
+# Exposure: PKNCA and Table 3
+
+```{r pknca}
+# Children with a high CL reach integrator noise (a tiny negative undershoot)
+# within 168 h: assert the undershoot is noise, floor it, and drop the
+# numerically-zero tail so the half-life fit does not follow it.
+pk_part <- dplyr::filter(sims, time <= 168, !is.na(Cc))
+stopifnot(all(pk_part$Cc >= -1e-6 * max(pk_part$Cc)))
+conc <- pk_part |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
+  dplyr::group_by(scenario, id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
+  dplyr::select(scenario, id, time, Cc)
+dose_df <- dplyr::bind_rows(
+  dplyr::mutate(dplyr::select(ev_dutch, id, time, evid, amt), scenario = "0"),
+  dplyr::mutate(dplyr::select(ev_kenya, id, time, evid, amt),
+                scenario = list(c("1", "2", "3"))) |>
+    tidyr::unnest(scenario),
+  dplyr::mutate(dplyr::select(ev_kenya_pooled, id, time, evid, amt),
+                scenario = "4")
+) |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(scenario, id, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | scenario + id,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | scenario + id,
+                             doseu = "mg", route = "intravascular")
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+
+per_subject <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "aucinf.obs") |>
+  dplyr::select(scenario, id, aucinf = PPORRES) |>
+  dplyr::left_join(
+    sims |>
+      dplyr::filter(time == 0) |>
+      dplyr::distinct(scenario, id, cl, auc_occ),
+    by = c("scenario", "id")
+  ) |>
+  dplyr::mutate(ratio = aucinf / auc_occ)
+
+# PKNCA AUC0-inf against the closed-form dose / CL used by the neuropathy model
+stopifnot(
+  abs(median(per_subject$ratio) - 1) < 0.03,
+  quantile(abs(per_subject$ratio - 1), 0.9) < 0.08
+)
+summary(per_subject$ratio)
+```
+
+Table 3 reports the mean AUC and CL of each scenario. Occasion 1 is
+compared below; later occasions differ only by who remains uncensored.
+
+```{r table3}
+sim_means <- per_subject |>
+  dplyr::group_by(scenario) |>
+  dplyr::summarise(aucinf.obs = mean(aucinf), cl = mean(cl), .groups = "drop")
+
+published_t3 <- tibble::tibble(
+  scenario = c("0", "1", "2", "3", "4"),
+  aucinf.obs = c(110.47, 154.75, 155.59, 90.38, 330.26),
+  cl = c(30.22, 25.52, 25.30, 45.61, 11.32)
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = dplyr::select(sim_means, scenario, aucinf.obs),
+  reference = dplyr::select(published_t3, scenario, aucinf.obs),
+  by = "scenario",
+  units = c(aucinf.obs = "ng*h/mL"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Scenario" = scenario) |>
+  knitr::kable(caption = paste(
+    "Mean AUC at occasion 1, simulated (maintainers' cohort, 200 children)",
+    "versus Table 3. * differs by more than 20%."
+  ), digits = 1)
+
+dplyr::left_join(sim_means, published_t3, by = "scenario",
+                 suffix = c("_sim", "_paper")) |>
+  dplyr::select(scenario, cl_sim, cl_paper) |>
+  dplyr::rename("Scenario" = scenario, "Mean CL, simulated (L/h)" = cl_sim,
+                "Mean CL, Table 3 (L/h)" = cl_paper) |>
+  knitr::kable(digits = 2)
+```
+
+The absolute means depend on the stand-in cohort and, with a 136% CV on CL
+in Scenarios 0-3, carry a sampling error of roughly 10% at 200 children;
+the Scenario 3 row is the one outside 20%. The cohort cancels out of the
+ratios between scenarios that share it. Using
+the expected mean `E[CL] = CL_typ x exp(omega^2 / 2)` over the cohort's
+weights:
+
+```{r cl-ratios}
+wt_term <- mean((cohort$WT / 70)^0.75)
+mean_cl <- c(
+  s2 = 39.99 * exp(1.04906 / 2) * wt_term,
+  s3 = 39.99 * (0.9 * 1.87 + 0.1) * exp(1.04906 / 2) * wt_term,
+  s4 = 42.2 * exp(-0.786) * exp(0.77705 / 2) * wt_term
+)
+ratios <- tibble::tibble(
+  Comparison = c("Scenario 4 / Scenario 1", "Scenario 3 / Scenario 2"),
+  `Expected from the model` = c(mean_cl[["s4"]] / mean_cl[["s2"]],
+                                mean_cl[["s3"]] / mean_cl[["s2"]]),
+  `Table 3, occasion 1` = c(11.32 / 25.52, 45.61 / 25.30)
+)
+stopifnot(all(abs(ratios[[2]] / ratios[[3]] - 1) < 0.1))
+knitr::kable(ratios, digits = 3)
+```
+
+The pooled model's lower Kenyan CL (Scenario 4) and the CYP3A5 mixture's
+higher CL (Scenario 3) are both reproduced to within 6%.
+
+```{r figure3, fig.cap = "Replicates Figure 3 of Centanni 2026 at occasion 1 (AUC per child; maintainers' cohort)."}
+ggplot(per_subject, aes(scenario, aucinf)) +
+  geom_boxplot(outlier.shape = NA, fill = "mistyrose") +
+  geom_hline(yintercept = c(80, 100), linetype = 2) +
+  coord_cartesian(ylim = c(0, 200)) +
+  labs(x = "Scenario", y = "AUC (ng*h/mL)")
+```
+
+# Censoring: patients remaining per occasion
+
+Figures 3 and 4 print the number of the 100,000 simulated children still
+under observation at each occasion. In Scenario 4 the Kenyan Emax is
+effectively zero, no child reaches grade >= 2, and the retention is set by
+the censoring model alone. Each child has four subscore assessments per
+occasion and is lost once any of them is censored, so the expected number
+remaining after occasion `k` is
+`100,000 x prod_{j <= k} (1 - Pc_j)^4`:
+
+```{r retention}
+pc <- sims |>
+  dplyr::filter(scenario == "4", time > 200, PREV_AE_SCORE == 0) |>
+  dplyr::distinct(CYCLE, p_cens_vipn) |>
+  dplyr::arrange(CYCLE)
+stopifnot(nrow(pc) == 5)
+retention <- tibble::tibble(
+  Occasion = 1:5,
+  `P(censored), one subscore` = pc$p_cens_vipn,
+  `Expected n remaining` = 1e5 * cumprod((1 - pc$p_cens_vipn)^4),
+  `Figure 3/4 n, Scenario 4` = c(100000, 61120, 9621, 1534, 241)
+)
+stopifnot(all(abs(retention[[3]] / retention[[4]] - 1) < 0.02))
+knitr::kable(retention, digits = c(0, 4, 0, 0))
+```
+
+The expected numbers agree with the printed ones to within the sampling
+error of a 100,000-child simulation. This pins the occasion coding
+(`CYCLE = 1` for the assessment after the first dose, so the first dose
+occasion sees only the `OCC > 0` step) and the per-subscore censoring.
+
+# Neuropathy over occasions: Figure 4
+
+The Markov simulation below follows the paper's scheme: at each occasion,
+each of the four subscores of a child draws grade 0, 1, >= 2 or censored
+from Equation 3, given its own previous grade; the censoring probability
+uses the higher value when any subscore was >= 2 at the previous
+assessment; a child with a censored subscore leaves the simulation.
+Scenarios 0 and 1 use models without censoring. Each of the 200 simulated
+children is followed through 50 independent outcome histories.
+
+```{r markov-functions}
+prob_table <- function(sims, scen) {
+  sims |>
+    dplyr::filter(scenario == scen, time > 200) |>
+    dplyr::select(id, CYCLE, PREV_AE_SCORE, p_vipn_ge1_nm, p_vipn_ge2_nm,
+                  p_vipn_ge1_cs, p_vipn_ge2_cs, p_cens_vipn, p_cens_prev_vipn)
+}
+
+simulate_vipn <- function(probs, n_rep, censoring, seed) {
+  set.seed(seed)
+  ids <- sort(unique(probs$id))
+  n <- length(ids) * n_rep
+  row_id <- rep(seq_along(ids), times = n_rep)
+  grade <- matrix(0, n, 4) # columns: constipation, sensory, motor, neuralgia
+  active <- rep(TRUE, n)
+  any_ge2_prev <- rep(FALSE, n)
+  out <- vector("list", 5)
+  for (occ in 1:5) {
+    p_occ <- dplyr::filter(probs, CYCLE == occ) |> dplyr::arrange(PREV_AE_SCORE, id)
+    p0 <- dplyr::filter(p_occ, PREV_AE_SCORE == 0)[row_id, ]
+    p1 <- dplyr::filter(p_occ, PREV_AE_SCORE == 1)[row_id, ]
+    pc <- if (censoring) ifelse(any_ge2_prev, p0$p_cens_prev_vipn, p0$p_cens_vipn) else 0
+    censored <- rep(FALSE, n)
+    new_grade <- grade
+    for (k in 1:4) {
+      grp <- if (k <= 2) "cs" else "nm"
+      prev_pos <- grade[, k] > 0
+      ge1 <- ifelse(prev_pos, p1[[paste0("p_vipn_ge1_", grp)]], p0[[paste0("p_vipn_ge1_", grp)]])
+      ge2 <- ifelse(prev_pos, p1[[paste0("p_vipn_ge2_", grp)]], p0[[paste0("p_vipn_ge2_", grp)]])
+      u <- stats::runif(n)
+      censored <- censored | u < pc
+      v <- (u - pc) / (1 - pc)
+      new_grade[, k] <- ifelse(v < ge2, 2, ifelse(v < ge1, 1, 0))
+    }
+    active <- active & !censored
+    grade <- new_grade
+    any_ge2_prev <- apply(grade >= 2, 1, any)
+    out[[occ]] <- tibble::tibble(
+      occasion = occ,
+      n_fraction = mean(active),
+      pct_ge2 = 100 * mean(any_ge2_prev[active])
+    )
+  }
+  dplyr::bind_rows(out)
+}
+```
+
+```{r markov-run}
+n_rep <- 50
+vipn <- dplyr::bind_rows(
+  simulate_vipn(prob_table(sims, "0"), n_rep, censoring = FALSE, seed = 201) |>
+    dplyr::mutate(scenario = "0"),
+  simulate_vipn(prob_table(sims, "1"), n_rep, censoring = FALSE, seed = 202) |>
+    dplyr::mutate(scenario = "1"),
+  simulate_vipn(prob_table(sims, "2"), n_rep, censoring = TRUE, seed = 203) |>
+    dplyr::mutate(scenario = "2"),
+  simulate_vipn(prob_table(sims, "3"), n_rep, censoring = TRUE, seed = 204) |>
+    dplyr::mutate(scenario = "3"),
+  simulate_vipn(prob_table(sims, "4"), n_rep, censoring = TRUE, seed = 205) |>
+    dplyr::mutate(scenario = "4")
+)
+
+published_f4 <- tibble::tibble(
+  scenario = rep(c("0", "1", "2", "3", "4"), each = 5),
+  occasion = rep(1:5, 5),
+  pct_paper = c(2.7, 11.1, 16.1, 19.0, 20.9,
+                2.9, 12.5, 18.2, 21.4, 23.4,
+                2.9, 12.3, 16.4, 19.0, 15.9,
+                1.2, 3.4, 4.3, 5.5, 2.9,
+                0.001, 0, 0, 0, 0),
+  n_paper = c(rep(100000, 10),
+              100000, 59161, 8178, 1113, 170,
+              100000, 60467, 9411, 1431, 206,
+              100000, 61120, 9621, 1534, 241)
+)
+
+vipn_cmp <- dplyr::left_join(vipn, published_f4, by = c("scenario", "occasion")) |>
+  dplyr::mutate(n_sim = 1e5 * n_fraction)
+
+# Scenario 4: Kenyan Emax is effectively zero, so grade >= 2 is (almost) absent
+stopifnot(max(vipn_cmp$pct_ge2[vipn_cmp$scenario == "4"]) < 0.5)
+
+vipn_cmp |>
+  dplyr::select(scenario, occasion, pct_ge2, pct_paper, n_sim, n_paper) |>
+  dplyr::rename("Scenario" = scenario, "Occasion" = occasion,
+                "Grade >= 2, simulated (%)" = pct_ge2,
+                "Grade >= 2, Figure 4 text (%)" = pct_paper,
+                "n remaining per 100,000, simulated" = n_sim,
+                "n remaining, Figure 4" = n_paper) |>
+  knitr::kable(digits = c(0, 0, 1, 3, 0, 0))
+```
+
+```{r figure4, fig.cap = "Replicates Figure 4 of Centanni 2026: proportion of children still observed with grade >= 2 VIPN (any subscore) per occasion. Points: values reported in the Results text."}
+ggplot(vipn_cmp, aes(occasion, pct_ge2)) +
+  geom_col(fill = "#b5476b", alpha = 0.7) +
+  geom_point(aes(y = pct_paper), shape = 21, fill = "white", size = 2) +
+  facet_wrap(~scenario, labeller = label_both) +
+  labs(x = "Dose occasion", y = "Grade >= 2 VIPN (%)")
+```
+
+**The neuropathy incidence of Figure 4 is not reproduced.** With the Table 2
+(and Table S2/S3) estimates, AUC50 = 2.6 ng\*h/mL lies far below the
+occasion AUCs of 30-300 ng\*h/mL, so the drug effect is saturated at
+`Emax` for nearly every child, the grade >= 1 logit of a neuralgia or motor
+subscore at occasion 1 is about -10 + 8.7 = -1.3, and roughly 12-15% of
+children are predicted to reach grade >= 2 in at least one subscore after
+the first dose. The paper reports 2.7-2.9% in Scenarios 0-2, rising to
+about 21% by occasion 5. The packaged model's Scenario 0-3 percentages are
+several-fold higher at every occasion and do not match the published
+trajectory; the maintainers found no reading of the printed parameters or
+the published code that yields both the occasion-1 value and the later rise
+without changing an estimate, and did not tune any. The parts of Figure 4
+that the model does reproduce are the qualitative ordering of the scenarios
+(Scenario 3 below Scenario 2, Scenario 4 essentially zero) and the
+censoring-driven retention. The retention of Scenarios 2 and 3 is lower
+than published because more simulated children reach grade >= 2, which
+raises their censoring probability.
+
+# Assumptions and deviations
+
+* **Model code over the printed table.** The structure follows the NONMEM
+  code of Supporting Information S2. Where the code and Table 2 disagree,
+  the code is used: the infusion lag time is fixed at 0.02 h (1.2 min;
+  Table 2 prints 2 min), and the censoring shift `Censoring | Grade > 0`
+  applies when any subscore was above grade 1 at the previous assessment
+  (`PDV.GT.1`; the Table 2 label and the Results text say grade > 0). The
+  second reading is supported by Figure 3/4: the 3% shortfall of Scenario 2
+  against Scenario 4 at occasion 2 (59,161 vs 61,120) matches the 2.9% of
+  children with grade >= 2 at occasion 1, not the larger fraction with
+  grade >= 1. The code otherwise lists initial estimates; all values come
+  from Table 2.
+* **Exposure metric.** The paper names the occasion AUC as the exposure
+  driving neuropathy, as in Centanni 2024, where it is defined as
+  `dose / CL`; the same definition is used here. The published code
+  reads the exposure from a placeholder (`BM = A(1)`) that does not define
+  it.
+* **Figure 4 not reproduced.** See the section above. The VIPN parameters
+  are transcribed as printed (Table 2, which equals Table S3 except for the
+  Kenyan Emax, and Table S2).
+* **Units.** Bmax is printed in Table 2 as 7.17 'mg'; it is a rate (mg/h)
+  in the code's differential equations, where it appears in ug/h (Table S3
+  prints 7504). Kb is an amount in ug and is converted to mg in the model,
+  whose amounts are in mg.
+* **Unused code terms.** The PK code carries an IIV term on an unused
+  quantity (`PBP`, THETA(8) = 0 FIX) and the neuropathy code a drug effect
+  on censoring fixed at 0 (THETA(9)) and an IIV fixed at 0; none affects the
+  model and none is included.
+* **Covariates.** `REGION_KENYA` is the paper's nationality indicator (0 =
+  Dutch, 1 = Kenyan); nationality, enrollment country and study coincide.
+  Censoring after a grade >= 2 in any subscore spans the four subscore
+  chains, so it is returned as two outputs (`p_cens_vipn`,
+  `p_cens_prev_vipn`) rather than read from a covariate. Platelet count was
+  tested on CL and binding and not retained.
+* **Infusions.** `TINF` sets the infusion duration (the code's `D1 = INFT`)
+  and marks infusion samples for the lag time and the infusion residual
+  error. The paper does not say whether INFT was the 60-min total or the
+  38-min vincristine time; the Kenyan doses were all boluses.
+* **Scenario models.** Tables S2 and S3 list no lag time or residual-error
+  terms; the packaged values are kept for those, which affect neither AUC
+  nor the neuropathy model. Tables S2 and S3 also list IIV on Q (54.2%),
+  which the packaged model has no term for; Q does not change `dose / CL`.
+  For Scenario 3 the CYP3A5 mixture multiplies the Table S3 CL by 1.87 in
+  90% of children, which reproduces the Table 3 CL ratio of Scenario 3 to
+  Scenario 2, and the -0.71 intercept shift is applied to `B1|0`, shifting
+  both VIPN logits.
+* **Virtual cohort.** The maintainers' stand-in cohort (above) replaces the
+  paper's age-incidence and growth-chart sampling, one cohort is used for
+  Dutch and Kenyan scenarios, and 200 children per scenario replace
+  100,000; each dose is a bolus and doses do not change between occasions.
+* **Load-time note.** rxode2 reports "some etas defaulted to non-mu
+  referenced" for `etaRUV` whenever the model is parsed: the IIV on the
+  infusion residual error multiplies the residual SD rather than sitting in
+  a mu-referenced parameter. It affects estimation efficiency, not
+  simulation (the same note appears for `Centanni_2024_vincristine`).
+* **Not reproduced.** Figure 2 (the VPC of the observed neuropathy grades)
+  needs the observed data. Figures S1-S4 are diagnostics of the fit.

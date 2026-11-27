@@ -3,6 +3,7 @@ Almquist_2016_ticagrelor <- function() {
   reference <- "Almquist J, Penney M, Pehrsson S, Sandinge AS, Janefeldt A, Maqbool S, Madalli S, Goodman J, Nylander S, Gennemark P. Unraveling the Pharmacokinetic Interaction of Ticagrelor and MEDI2452 (Ticagrelor Antidote) by Mathematical Modeling. CPT Pharmacometrics Syst Pharmacol. 2016;5(6):313-323. doi:10.1002/psp4.12089"
   vignette <- "Almquist_2016_ticagrelor"
   units <- list(time = "min", dosing = "nmol/kg", concentration = "nmol/L")
+  dosing <- c("central", "target")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

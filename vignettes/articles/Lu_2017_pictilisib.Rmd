@@ -1,0 +1,424 @@
+---
+title: "Pictilisib (Lu 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pictilisib (Lu 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Lu_2017_pictilisib"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Lu_2017_pictilisib"))$description`
+* Article: <https://doi.org/10.1002/psp4.12228> (open access, PMC5702897)
+* Supplement: the NONMEM control stream of the final population PK model
+  (Supporting Information, plain-text file) and Tables S1-S4.
+
+Lu 2017 combines a "top-down" population PK analysis with a "bottom-up"
+GastroPlus PBPK model to explain the effect of a high-fat meal and of the
+proton-pump inhibitor (PPI) rabeprazole on the absorption of the weakly basic
+PI3K inhibitor pictilisib. This article packages the population PK model.
+The PBPK model is a GastroPlus (ACAT) platform model whose equations are not
+published; see "Assumptions and deviations".
+
+# Population
+
+The model was fitted to 1,202 plasma concentrations from 31 healthy
+volunteers in a single-center, four-period, two-sequence, open-label,
+randomized crossover study (NCT00999128). Every subject received a single
+40 mg pictilisib dose in each of four periods: fasted, fed (standard high-fat
+meal within 30 min of dosing), fasted after 4 days of rabeprazole 20 mg daily,
+and fed after rabeprazole. Lu 2017 does not tabulate the volunteers'
+demographics (the clinical study is reported in Ware et al., Mol Pharm
+2013;10:4074-4081), and no demographic covariate enters the model.
+
+```{r population}
+readModelDb("Lu_2017_pictilisib")()$population
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. Table 1 of
+Lu 2017 holds the final estimates; the supplementary NONMEM control stream
+(final-model run, `$TABLE ... FILE=RES22`, matching run 22 of Table S3)
+fixes the equation forms but carries initial estimates only.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL/F, fasted, no PPI) | log(26.0) L/h | Table 1 'Clearance (CL/F)' and its footnote |
+| `lvc` (Vc/F) | log(304.9) L | Table 1 'Central volume (Vc/F)' |
+| `lq` (Q/F) | log(13.9) L/h | Table 1 'Distribution clearance (Q/F)' |
+| `lvp` (Vp/F) | log(175.9) L | Table 1 'Peripheral volume (Vp/F)' |
+| `lka` (fasted, no PPI) | log(2.63) 1/h | Table 1 'Ka, PPI=0, Fasted' |
+| `e_fed_ka` | log(0.297 / 2.63) = -2.181 | Table 1 'Ka, PPI=0, Fed' / 'Ka, PPI=0, Fasted' |
+| `e_conmed_ppi_ka` | log(1.361 / 2.63) = -0.659 | Table 1 'Ka, PPI=1, Fasted' / 'Ka, PPI=0, Fasted' |
+| `ltlag` | log(0.47) h | Table 1 'Absorption lag time (Tlag)' |
+| `lfdepot` | fixed(log(1)) | Table 1 'F, PPI=0, Fasted' = 100%; control stream THETA(8) '1 FIX' |
+| `e_conmed_ppi_f` | -0.571 | Table 1 'F, PPI=1, Fasted' = 42.9% |
+| `e_fed_f` | 0.184 | Table 1 'F, PPI=0, Fed' = 118.4% |
+| `etalcl`, `etalvc` | 0.230^2, 0.377^2 | Table 1 BSV 23.0%, 37.7% |
+| `etalka` | 0.519^2 | Table 1 BSV 51.9% (shared by all four states) |
+| `etaltlag` | 0.030^2 | Table 1 BSV 3.00% |
+| `etalfdepot_fasted` / `_fastedppi` / `_fed` / `_fedppi` | 0.27^2 / 0.64^2 / 0.089^2 / 0.32^2 | Table 1 F BSV 27% / 64% / 8.9% / 32%; Results text |
+| `expSd` | 0.561 | Table 1 'Residual error (proportional)' 56.1% |
+| `ka = exp(lka + e_fed_ka*FED + e_conmed_ppi_ka*CONMED_PPI + etalka)` | n/a | control stream `KA=EXP(THETA(5)+THETA(7)*FOOD+THETA(9)*PPI+ETA(6))` |
+| `fdepot = (1 + e_conmed_ppi_f*CONMED_PPI + e_fed_f*FED) * exp(eta_f)` | n/a | control stream `F1 = (THETA(8)+THETA(10)*PPI+THETA(11)*FOOD)*EXP(FETA)` |
+| `eta_f` selects one of four etas by state | n/a | control stream `FETA=ETA(7)*OCC1+ETA(8)*OCC2+ETA(9)*OCC3+ETA(10)*OCC4` |
+| Two-compartment disposition, lag on depot | n/a | Results 'two-compartment model with first-order absorption with lag time'; control stream `ADVAN4 TRANS4`, `ALAG1` |
+| `Cc = 1000 * central / vc` (ng/mL) | n/a | control stream `S2=V2/1000`, `;CONC IN NG/ML`, `;AMT IN mg` |
+| `Cc ~ lnorm(expSd)` | n/a | Methods 'additive error model on the log-transformed data'; control stream `Y=IPRED+EPS(1)`, `IPRED=LOG(F)` |
+
+The model's typical relative bioavailability and absorption rate in each
+state reproduce every row of Table 1:
+
+```{r table1-check}
+mod <- readModelDb("Lu_2017_pictilisib")
+p <- rxode2::rxode(mod)$theta
+states <- tibble::tibble(
+  state = c("Fasted", "Fasted with PPI", "Fed", "Fed with PPI"),
+  FED = c(0, 0, 1, 1),
+  CONMED_PPI = c(0, 1, 0, 1),
+  ka_table1 = c(2.63, 1.361, 0.297, 0.154),
+  f_table1 = c(1.000, 0.429, 1.184, 0.613)
+) |>
+  mutate(
+    ka_model = exp(p[["lka"]] + p[["e_fed_ka"]] * FED + p[["e_conmed_ppi_ka"]] * CONMED_PPI),
+    f_model = exp(p[["lfdepot"]]) + p[["e_conmed_ppi_f"]] * CONMED_PPI + p[["e_fed_f"]] * FED
+  )
+# Ka for fed with PPI is the one value not used to derive a coefficient, so
+# it is an independent check of the log-additive form; F for fed with PPI
+# checks the additive form.
+stopifnot(
+  max(abs(states$ka_model / states$ka_table1 - 1)) < 0.005,
+  max(abs(states$f_model - states$f_table1)) < 1e-9
+)
+states |>
+  dplyr::select(state, ka_table1, ka_model, f_table1, f_model) |>
+  dplyr::rename(
+    "State" = state,
+    "Ka, Table 1 (1/h)" = ka_table1,
+    "Ka, model (1/h)" = ka_model,
+    "F, Table 1" = f_table1,
+    "F, model" = f_model
+  ) |>
+  knitr::kable(digits = 3, caption = "Typical Ka and relative bioavailability by state.")
+```
+
+# Virtual cohort
+
+The four study periods are simulated as four arms of 150 virtual subjects
+each, with disjoint subject IDs. Because each subject in the source study
+met each state exactly once, the state-specific bioavailability etas are
+drawn once per subject per state either way; the arm design simply does not
+carry a subject's CL/F, Vc/F and Ka etas across periods, which does not
+change the per-state distributions that the paper's VPC summarises.
+
+```{r cohort}
+set.seed(20170825)
+rxode2::rxSetSeed(20170825)
+
+n_per_arm <- 150L
+obs_times <- sort(unique(c(
+  seq(0, 2, by = 0.25), seq(2.5, 12, by = 0.5), seq(13, 24, by = 1),
+  seq(26, 72, by = 2)
+)))
+
+make_arm <- function(state, fed, ppi, id_offset) {
+  ids <- id_offset + seq_len(n_per_arm)
+  dose <- tibble(
+    id = ids, time = 0, amt = 40, evid = 1L, cmt = "depot"
+  )
+  obs <- tidyr::expand_grid(id = ids, time = obs_times) |>
+    mutate(amt = 0, evid = 0L, cmt = "central")
+  bind_rows(dose, obs) |>
+    mutate(state = state, FED = fed, CONMED_PPI = ppi) |>
+    arrange(id, time, desc(evid))
+}
+
+state_levels <- c("Fasted", "Fasted with PPI", "Fed", "Fed with PPI")
+events <- bind_rows(
+  make_arm("Fasted", 0, 0, 0L),
+  make_arm("Fasted with PPI", 0, 1, 1000L),
+  make_arm("Fed", 1, 0, 2000L),
+  make_arm("Fed with PPI", 1, 1, 3000L)
+)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep = c("state", "FED", "CONMED_PPI"),
+  returnType = "data.frame"
+) |>
+  mutate(state = factor(state, levels = state_levels))
+
+sim_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  events = events |> dplyr::filter(id %in% c(1L, 1001L, 2001L, 3001L)),
+  keep = c("state"),
+  returnType = "data.frame"
+) |>
+  mutate(state = factor(state, levels = state_levels))
+```
+
+# Replicate published figures
+
+## Figure 3 (top four panels): VPC by state
+
+```{r figure-3-vpc, fig.width = 8, fig.height = 6}
+vpc <- sim |>
+  dplyr::filter(time > 0) |>
+  group_by(state, time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "lightskyblue", alpha = 0.6) +
+  geom_line(colour = "firebrick") +
+  geom_line(data = sim_typ |> dplyr::filter(time > 0), aes(time, Cc), linetype = "dashed") +
+  facet_wrap(~state) +
+  scale_y_log10(limits = c(0.1, 1000)) +
+  scale_x_continuous(breaks = seq(0, 72, by = 6)) +
+  labs(
+    x = "Time (h)", y = "Plasma pictilisib concentration (ng/mL)",
+    title = "Simulated 5th-95th percentile band and median after 40 mg",
+    caption = paste(
+      "Replicates the VPC panels of Figure 3 of Lu 2017 (observations not",
+      "available). Dashed: typical-value profile."
+    )
+  )
+```
+
+The typical profiles peak at about 112 ng/mL (fasted, 1.7 h), 44 ng/mL
+(fasted with PPI, 2.4 h), 83 ng/mL (fed, 5.7 h) and 33 ng/mL (fed with PPI,
+8.1 h) (table in the PKNCA section), close to the model medians drawn in the
+source figure (about 100, 40, 70-80 and 30 ng/mL), and the 5th-95th
+percentile band spans roughly 1-7 ng/mL at 72 h, as there.
+
+## Figure 3 (bottom panels): individual F and Ka by state
+
+```{r figure-3-box, fig.width = 8, fig.height = 3.5}
+indiv <- sim |>
+  group_by(id, state) |>
+  summarise(F = 100 * first(fdepot), Ka = first(ka), .groups = "drop") |>
+  pivot_longer(c(F, Ka), names_to = "parameter", values_to = "value") |>
+  mutate(parameter = factor(parameter,
+    levels = c("F", "Ka"),
+    labels = c("Relative bioavailability F (%)", "Absorption rate constant Ka (1/h)")
+  ))
+
+ggplot(indiv, aes(state, value)) +
+  geom_boxplot(outlier.size = 0.5) +
+  facet_wrap(~parameter, scales = "free_y") +
+  labs(
+    x = NULL, y = NULL,
+    caption = paste(
+      "Replicates the boxplots of Figure 3 of Lu 2017 (the paper plots",
+      "post hoc estimates of the 31 subjects; these are simulated draws)."
+    )
+  ) +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+```
+
+# PKNCA validation
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, state)
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, state) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, state, time, .keep_all = TRUE) |>
+  arrange(id, state, time)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, state)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | state + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | state + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Typical-value AUC identity
+
+For the typical subject in each state, `AUC(0-inf) = 1000 * Dose * F / (CL/F)`
+in ng*h/mL. A deterministic solve on a fine grid run out to 600 h (about 34
+terminal half-lives) must reproduce it; the remaining difference is
+trapezoidal error.
+
+```{r auc-identity}
+typ_times <- sort(unique(c(seq(0, 12, by = 0.05), seq(12.5, 600, by = 0.5))))
+typ_events <- bind_rows(lapply(seq_along(state_levels), function(i) {
+  fed <- c(0, 0, 1, 1)[i]
+  ppi <- c(0, 1, 0, 1)[i]
+  bind_rows(
+    tibble(id = i, time = 0, amt = 40, evid = 1L, cmt = "depot"),
+    tibble(id = i, time = typ_times, amt = 0, evid = 0L, cmt = "central")
+  ) |>
+    mutate(state = state_levels[i], FED = fed, CONMED_PPI = ppi)
+}))
+typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  events = typ_events, keep = "state", returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12
+)
+auc_typ <- typ |>
+  group_by(state) |>
+  summarise(auc_trap = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2), .groups = "drop") |>
+  left_join(states |> dplyr::select(state, f_table1), by = "state") |>
+  mutate(auc_closed = 1000 * 40 * f_table1 / exp(p[["lcl"]]))
+# Measured difference about 0.01% (linear trapezoids on a 0.05 h grid).
+stopifnot(max(abs(auc_typ$auc_trap / auc_typ$auc_closed - 1)) < 0.005)
+auc_typ |>
+  dplyr::select(state, f_table1, auc_closed, auc_trap) |>
+  dplyr::rename(
+    "State" = state, "F" = f_table1,
+    "AUC0-inf, 1000*Dose*F/CL (ng*h/mL)" = auc_closed,
+    "AUC0-inf, solve (ng*h/mL)" = auc_trap
+  ) |>
+  knitr::kable(digits = c(0, 3, 1, 1))
+
+# Typical-value Cmax and Tmax by state, from the same deterministic solve.
+typ |>
+  group_by(state) |>
+  summarise(Cmax = max(Cc), Tmax = time[which.max(Cc)], .groups = "drop") |>
+  dplyr::rename("State" = state, "Typical Cmax (ng/mL)" = Cmax, "Typical Tmax (h)" = Tmax) |>
+  knitr::kable(digits = c(0, 1, 2))
+```
+
+## Comparison against published NCA
+
+Lu 2017 reports the median AUCinf (1,760, 2,070, 906 and 1,180 ng*h/mL) and
+median Tmax (2, 4, 2 and 6 h) for fasted, fed, fasted with PPI and fed with
+PPI (Results, 'Results of the clinical pharmacology study'; from the
+noncompartmental analysis of Ware 2013). `ncaComparisonTable()` summarises the
+simulated subjects by their median.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~state, ~aucinf.obs, ~tmax,
+  "Fasted", 1760, 2,
+  "Fasted with PPI", 906, 2,
+  "Fed", 2070, 4,
+  "Fed with PPI", 1180, 6
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "state",
+  units = c(aucinf.obs = "ng*h/mL", tmax = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated (median) vs. published (median) NCA. * differs by more than 20%.")
+```
+
+```{r nca-gate}
+sim_auc <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "aucinf.obs") |>
+  group_by(state) |>
+  summarise(med = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  left_join(published, by = "state") |>
+  mutate(ratio = med / aucinf.obs)
+# Structural gate on the centre only. The model-true median AUCinf is the
+# typical 1538 * F ng*h/mL (13-27% below the published NCA medians, see
+# the narrative). With 150 subjects per arm the SD of log AUC is at most
+# about 0.68 (fasted with PPI), so the sample median carries about 7% error;
+# a mis-transcribed CL/F, F or dose moves the ratio far outside 0.55-1.10.
+stopifnot(all(sim_auc$ratio > 0.55), all(sim_auc$ratio < 1.10))
+```
+
+The model's median AUCinf in each state is the typical
+`1000 * 40 * F / 26.0` ng*h/mL (1,538, 660, 1,822 and 943 ng*h/mL; table
+above), which is 13% (fasted), 27% (fasted with PPI), 12% (fed) and 20% (fed
+with PPI) below the published NCA medians. The simulated sample medians
+scatter around those values by sampling error, most in the fasted-with-PPI
+arm, where the SD of log AUC is about 0.68 and 150 subjects leave the median
+uncertain by roughly 7% (one standard error), so the flagged difference in
+that row can exceed the 27% structural offset. The **relative** food and PPI effects
+agree with the observations: the model's fed / fasted ratio is 1.18 against
+an observed 1.18 (2,070 / 1,760), and its PPI ratios are 0.43 (fasted) and
+0.52 (fed) against observed 0.51 and 0.57. The model's CL/F and F are its
+final estimates and are not adjusted. The absolute offset is the difference
+between the NONMEM fit and a noncompartmental summary of the same 31
+subjects; Lu 2017 does not report model-based AUCs to compare against.
+
+The model reproduces the direction and rough size of the food delay in Tmax
+(typical 1.7 h fasted versus 5.7 h fed), but its Tmax in the two fed states
+falls later than the observed medians of 4 and 6 h (typical 5.7 and 8.1 h),
+and the typical fasted-with-PPI Tmax (2.4 h) is slightly later than the
+observed 2 h. A
+single first-order absorption with one lag time cannot reproduce the
+segmented gastric emptying that the authors' PBPK analysis attributes the
+fed-state profile to (Figure 1c, Table 2); the source VPC (Figure 3) shows
+the same flat, late fed-state median.
+
+# Assumptions and deviations
+
+- **Population PK model only.** The PBPK half of Lu 2017 is a GastroPlus 8.5
+  ACAT model (Johnson dissolution, segmented stomach transit time and pH
+  for the fed states, Table 2 and Appendix S1; drug properties in Table
+  S1). GastroPlus's ACAT equations, its PEAR physiology and its default
+  fasted/fed physiologies are not published in the paper, so that model
+  cannot be reproduced from the source and is not packaged.
+- **BSV convention.** Table 1 reports BSV as percentages without stating
+  the transformation. They are read as `omega = BSV/100` on the log scale
+  (`omega^2 = (BSV/100)^2`), the convention under which the same table's
+  log-scale residual SD reads as 56.1%. Under the alternative
+  `omega^2 = log(1 + CV^2)` every variance would be 2-4% smaller, except for
+  F fasted with PPI (0.343 instead of 0.410).
+- **CL/F-Vc/F correlation omitted.** Table S3 retains a CL/F-Vc/F OMEGA
+  block (`base model with BLOCK(CL,Vc)`, -2LL drop 25.2), but Table 1 does
+  not report the final covariance or correlation, and the control stream
+  carries only initial estimates. The two etas are therefore independent
+  here. This does not change typical profiles or AUC (AUC depends on CL/F
+  only) but narrows the spread of early concentrations slightly.
+- **Covariate coefficients derived from Table 1.** Table 1 reports Ka and F
+  per state rather than the THETAs. The log-additive Ka coefficients are the
+  log ratios of the fasted rows, and the additive F coefficients are the
+  differences from 100%; the fed-with-PPI rows, which were not used, are
+  reproduced to within 0.4% (Ka) and exactly (F). The Results text says Ka
+  'decreased by ~80% with food'; Table 1 gives 89% (2.63 to 0.297), and the
+  table values are used.
+- **Bioavailability between-subject variability by state.** The control
+  stream applies one of four etas to F1 according to the food/PPI state of
+  the period (Table S3 'IOV on F1'). Each subject met each state once, so
+  the four etas act as state-specific between-subject variability and are
+  implemented as four subject-level etas selected by `FED` and
+  `CONMED_PPI`. The Ka eta is shared by all four states, as in the control
+  stream.
+- **Residual error.** The paper fits log-transformed concentrations with an
+  additive error, labelled 'proportional' in Table 1; it is encoded as a
+  log-normal error with SD 0.561.
+- **Covariates.** The source columns `FOOD` and `PPI` map to the canonical
+  `FED` and `CONMED_PPI`. Fed means a standard high-fat meal within 30 min
+  of dosing; PPI means rabeprazole 20 mg daily for 4 days before dosing.
+- **No demographic data.** Lu 2017 does not report age, weight, sex or race
+  of the 31 volunteers, and the model has no demographic covariate.
+- **Errata.** No correction notice for Lu 2017 was found in Europe PMC as of
+  2026-11-25.

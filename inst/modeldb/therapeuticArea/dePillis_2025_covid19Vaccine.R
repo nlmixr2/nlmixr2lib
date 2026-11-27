@@ -32,6 +32,7 @@ dePillis_2025_covid19Vaccine <- function() {
     dosing = "dimensionless (unit vaccine pulse)",
     concentration = "fraction neutralization (0-1)"
   )
+  dosing <- "depot_antigen"
 
   paper_specific_compartments <- c("depot_antigen", "antibody")
 

@@ -1,0 +1,378 @@
+---
+title: "Cyclosporine A (Liu 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cyclosporine A (Liu 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+# rxode2 warns that the occasion-indicator IOV etas are not mu-referenced;
+# that affects estimation only, not simulation.
+mod <- suppressMessages(suppressWarnings(rxode2::rxode(readModelDb("Liu_2019_cyclosporine"))))
+cat("* Citation: ", mod$reference, "\n", sep = "")
+cat("* Description: ", mod$description, "\n", sep = "")
+cat("* Article: <https://doi.org/10.3389/fphar.2019.00518>\n")
+```
+
+Liu 2019 asked whether a single oral dose of baicalin, a flavone glucuronide
+used in traditional Chinese medicine whose aglycone baicalein inhibits CYP3A
+and P-glycoprotein in vitro, changes the pharmacokinetics of cyclosporine A.
+The study analysed whole-blood cyclosporine A by non-compartmental analysis
+(the bioequivalence comparison) and by a NONMEM population PK model, which is
+the model shipped here. The final model is a two-compartment model with linear
+elimination and Savic transit-compartment absorption. Baicalin was tested as a
+factor on every structural parameter and had no clinically relevant effect, so
+the final model carries no baicalin term.
+
+# Population
+
+Sixteen healthy Chinese volunteers (8 men, 8 women), aged 19-34 years with a
+body mass index of 19.4-25.6 kg/m^2 (Methods, "Study Population"), took part in
+a single-centre, open-label, two-period, fixed-sequence study. After an
+overnight fast each received 200 mg cyclosporine A orally as eight 25 mg
+Sandimmun Neoral microemulsion capsules: alone in period 1, and with 500 mg
+oral baicalin in period 2 after a 2-week washout. Whole blood was sampled
+pre-dose and at 0.5, 1, 1.5, 2, 2.5, 3, 4, 6, 8, 10, 12, 16, 24, 36 and 48 h
+after each dose; the UHPLC-MS/MS assay had an LLOQ of 10 ng/mL. Body weight is
+not reported. The same information is available from
+`readModelDb("Liu_2019_cyclosporine")()$population`.
+
+# Source trace
+
+Table 3 prints the median and 95% CI of 1000 bootstrap runs of the final model;
+it prints no separate point estimate, so the bootstrap medians are encoded.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Two-compartment disposition, linear elimination, proportional error | -- | Results, "Model Development" |
+| Savic transit absorption into an absorption compartment emptied at ka | -- | Methods, "Absorption Model Selection"; Table 2 model M8 |
+| `lcl` (CL/F) | 62.8 L/h | Table 3 |
+| `lvc` (Vc/F) | 254 L | Table 3 |
+| `lvp` (Vp/F) | 388 L | Table 3 |
+| `lq` (Q/F) | 23.6 L/h | Table 3 |
+| `lka` (Ka) | 12.4 1/h | Table 3 |
+| `lmtt` (MTT) | 0.812 h | Table 3 |
+| `lntr` (N) | 20.2 | Table 3 |
+| `etalcl` | 12.6% CV | Table 3, IIV CL |
+| `etalka` | 155% CV | Table 3, IIV Ka |
+| `etalq` | 25.7% CV | Table 3, IIV Q |
+| `etalntr` | 20.2% CV | Table 3, IIV N |
+| `etaiov_mtt_1`, `etaiov_mtt_2` | 4.39% CV | Table 3, IOV MTT |
+| `etaiov_ntr_1`, `etaiov_ntr_2` | 17.6% CV | Table 3, IOV N |
+| CV% to variance, `omega^2 = log(1 + CV^2)` | -- | Table 3 footnote |
+| `propSd` | 19.4% CV, `sqrt(log(1 + 0.194^2))` | Table 3, PRV and footnote |
+| Baicalin factor `PAR = TVPAR * theta_test^test`, not retained | -- | Methods Eq. 1; Results; Figure 4 |
+
+# Typical-value profile
+
+The typical-value solve below (all random effects zero) is the check against
+which the printed parameters are tested. Mass balance must hold exactly:
+`CL/F * AUC(0-inf)` equals the dose. If the analytical transit input silently
+returned zero, this check would fail.
+
+```{r typical}
+mod_typ <- rxode2::zeroRe(mod)
+dense <- sort(unique(c(seq(0, 48, by = 0.01), seq(48, 600, by = 0.5))))
+ev_typ <- data.frame(
+  id = 1, time = c(0, dense), evid = c(1, rep(0, length(dense))),
+  amt = c(200, rep(0, length(dense))), cmt = c(rep("depot", 1), rep("central", length(dense))),
+  OCC = 1
+)
+typ <- as.data.frame(rxode2::rxSolve(mod_typ, events = ev_typ))
+auc_typ <- sum(diff(typ$time) * (head(typ$Cc, -1) + tail(typ$Cc, -1)) / 2) # ng*h/mL
+mass_balance <- exp(mod$theta[["lcl"]]) * auc_typ / 1000 / 200
+mass_balance
+# Exact identity between two sides that use the same parameters; only the
+# trapezoid error on a 0.01 h grid and the truncation at 600 h remain.
+stopifnot(abs(mass_balance - 1) < 2e-3)
+```
+
+# Replicate published figures
+
+## Population predictions (Figure 2B)
+
+Figure 2B plots the observations against the population predictions (PRED) of
+the final model. Because every subject received the same dose at the same
+nominal times, the PRED values form vertical columns, one per sampling time.
+The maintainers read the column positions from the figure by pixel analysis
+(axis ticks 200/400/600 ng/mL at 83.5 px per 200 ng/mL). The 6 h column is
+wider than the others and is not used.
+
+```{r figure-2b}
+fig2b <- tibble::tribble(
+  ~time, ~pred_fig2b,
+  1.0,   398.8,
+  1.5,   474.3,
+  2.0,   398.8,
+  2.5,   338.9,
+  3.0,   288.6,
+  4.0,   209.6,
+  8.0,   68.3
+)
+cmp_pred <- fig2b |>
+  left_join(typ |> mutate(time = round(time, 2)) |> select(time, Cc), by = "time") |>
+  mutate(ratio = Cc / pred_fig2b)
+knitr::kable(
+  cmp_pred |>
+    rename(
+      "Time (h)" = time,
+      "Figure 2B PRED (ng/mL)" = pred_fig2b,
+      "Table 3 typical value (ng/mL)" = Cc,
+      "Ratio" = ratio
+    ),
+  digits = c(1, 1, 1, 3),
+  caption = "Typical-value concentrations from the Table 3 parameters vs the PRED columns of Figure 2B."
+)
+```
+
+The printed Table 3 parameters reproduce the shape of the paper's own
+population prediction at every sampling time, but every concentration is about
+1.35 times higher. A constant ratio across the absorption peak and the
+distribution phase means that only the scale differs: the ratios between the
+clearances, the volumes and the absorption constants are right. The same factor
+appears in the non-compartmental results below. The 200 mg dose divided by
+the typical CL/F of 62.8 L/h gives an AUC(0-inf) of 3.18 ug.h/mL, against a
+geometric mean of 2.33 ug.h/mL (CL/F 85.7 L/h) in Table 1, a ratio of 1.36.
+No unit, molar-mass or dose reading accounts for this factor, so the model
+ships with the parameters as printed. See "Assumptions and deviations" below.
+
+```{r figure-2b-gate}
+# Deterministic typical-value solve vs digitised points. A mis-transcribed
+# absorption parameter would change the ratio between time points; a
+# mis-transcribed CL or V would move the level away from the documented 1.35.
+stopifnot(
+  sd(cmp_pred$ratio) / mean(cmp_pred$ratio) < 0.03,
+  abs(median(cmp_pred$ratio) - 1.355) < 0.04
+)
+```
+
+# Virtual cohort
+
+There are 200 virtual subjects. Each receives 200 mg at time 0 (period 1,
+cyclosporine alone, `OCC = 1`) and again 336 h later (period 2, with baicalin,
+`OCC = 2`), matching the 2-week washout. Observations fall at the study's
+nominal sampling times plus a denser grid for plotting. The final model has no
+covariates and no baicalin term, so the two periods differ only by the
+inter-occasion draws on MTT and N.
+
+```{r cohort}
+n_sub <- 200
+t_period2 <- 336
+nominal <- c(0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 6, 8, 10, 12, 16, 24, 36, 48)
+obs_times <- sort(unique(c(nominal, seq(0, 6, by = 0.25), seq(6, 48, by = 1))))
+
+doses <- tidyr::expand_grid(id = seq_len(n_sub), period = 1:2) |>
+  mutate(time = (period - 1) * t_period2, evid = 1, amt = 200, cmt = "depot")
+obs <- tidyr::expand_grid(id = seq_len(n_sub), period = 1:2, tad_nom = obs_times) |>
+  mutate(time = (period - 1) * t_period2 + tad_nom, evid = 0, amt = 0, cmt = "central") |>
+  select(-tad_nom)
+events <- bind_rows(doses, obs) |>
+  mutate(
+    OCC = period,
+    treatment = ifelse(period == 1, "CsA alone", "CsA + baicalin")
+  ) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, evid, amt, cmt, period, treatment, OCC)
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
+```
+
+# Simulation
+
+```{r simulate}
+rxode2::rxSetSeed(2019)
+sim <- rxode2::rxSolve(mod, events = events, keep = c("treatment", "period")) |>
+  as.data.frame() |>
+  mutate(tad_h = round(time - (period - 1) * t_period2, 4))
+# A silently zero transit input would leave every concentration at 0.
+stopifnot(median(sim$Cc[sim$tad_h == 1.5]) > 300)
+```
+
+## Visual predictive check (Figure 3)
+
+```{r figure-3, fig.cap = "Replicates Figure 3 of Liu 2019: simulated 2.5th, 50th and 97.5th percentiles of whole-blood cyclosporine A (both periods pooled, residual error included)."}
+sim |>
+  group_by(tad_h) |>
+  summarise(
+    Q025 = quantile(sim, 0.025), Q50 = quantile(sim, 0.5), Q975 = quantile(sim, 0.975),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad_h, Q50)) +
+  geom_ribbon(aes(ymin = Q025, ymax = Q975), alpha = 0.25, fill = "steelblue") +
+  geom_line(colour = "firebrick") +
+  labs(x = "Time after dose (h)", y = "Blood cyclosporine concentration (ng/mL)")
+```
+
+# PKNCA validation
+
+The NCA uses the study's nominal sampling times and the simulated observations
+with residual error (`sim`). Values below the 10 ng/mL LLOQ are excluded, as in
+the study. The treatment grouping is the study period.
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(tad_h %in% nominal) |>
+  mutate(Cc = dplyr::case_when(
+    tad_h == 0 ~ 0,
+    sim < 10 ~ NA_real_,
+    TRUE ~ sim
+  )) |>
+  filter(!is.na(Cc)) |>
+  select(id, treatment, time = tad_h, Cc)
+stopifnot(all(tapply(sim_nca$time == 0, paste(sim_nca$id, sim_nca$treatment), any)))
+
+dose_nca <- events |>
+  filter(evid == 1) |>
+  mutate(time = 0) |>
+  select(id, treatment, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = 48,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published NCA
+
+Table 1 reports geometric means for AUC, Cmax and t1/2 and the median for Tmax,
+so the simulated results are summarised the same way. AUC is reported in
+ng.h/mL here (Table 1 prints ug.h/mL).
+
+```{r nca-compare}
+geomean <- function(x) exp(mean(log(x[is.finite(x) & x > 0])))
+sim_summary <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "aucinf.obs", "half.life")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(
+    PPORRES = if (PPTESTCD[1] == "tmax") median(PPORRES, na.rm = TRUE) else geomean(PPORRES),
+    .groups = "drop"
+  )
+
+published <- tibble::tribble(
+  ~treatment,       ~cmax, ~tmax, ~auclast, ~aucinf.obs, ~half.life,
+  "CsA alone",      541,   1.5,   2190,     2330,        7.44,
+  "CsA + baicalin", 558,   1.5,   2220,     2380,        7.60
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_summary,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ng/mL", tmax = "h", auclast = "h*ng/mL", aucinf.obs = "h*ng/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs. published NCA (Liu 2019 Table 1, geometric means; Tmax median). * differs from the published value by more than 20%.")
+```
+
+The simulated AUCs are 33-36% above Table 1 in both periods. This is the same
+scale factor seen against the Figure 2B population predictions, and it follows
+directly from the printed CL/F (AUC(0-inf) = 200 mg / 62.8 L/h =
+3.18 ug.h/mL). Cmax is 19-26% above Table 1, in line with the typical-value
+peak of 639 ng/mL, which is 18% above the observed geometric mean of 541 ng/mL.
+Tmax matches.
+The simulated NCA half-life (8.9-9.2 h, from the same 48 h window and LLOQ) is
+about 20% longer than Table 1's 7.4-7.6 h. The printed micro-constants put the
+terminal disposition half-life at about 16.6 h, so in both cases the 48 h NCA
+half-life mixes the distribution and terminal phases. The two periods agree
+with each other, as in the study, because the final model has no baicalin
+effect.
+
+```{r nca-gate}
+pct <- sim_summary |>
+  mutate(treatment = as.character(treatment)) |>
+  inner_join(
+    published |> pivot_longer(-treatment, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("treatment", "PPTESTCD")
+  ) |>
+  mutate(ratio = PPORRES / ref)
+auc_ratio <- pct$ratio[pct$PPTESTCD %in% c("auclast", "aucinf.obs")]
+# Structural: the documented ~1.36 scale factor of the printed CL/F. A wrong
+# clearance, dose or unit conversion moves this centre by tens of percent.
+stopifnot(
+  abs(median(auc_ratio) - 1.36) < 0.12,
+  # Both periods share every structural parameter, so their AUCs must agree.
+  abs(diff(pct$PPORRES[pct$PPTESTCD == "aucinf.obs"])) /
+    mean(pct$PPORRES[pct$PPTESTCD == "aucinf.obs"]) < 0.1
+)
+```
+
+# Effect of baicalin (Figure 4)
+
+Baicalin co-administration was tested as a multiplicative factor
+(`PAR = TVPAR * theta_test^test`, Methods Eq. 1) on each structural parameter
+in turn, each with a 1000-sample bootstrap. The maintainers digitised the
+bootstrap medians and 95% CIs from Figure 4. Every CI includes 1, and only Ka
+and Q extend beyond the 0.80-1.25 range, which the authors attribute to
+pronounced between-subject variability rather than to an interaction. None of
+these factors is part of the final model; they are recorded under
+`covariatesDataExcluded$CONMED_BAICALIN` in the model file.
+
+```{r figure-4}
+fig4 <- tibble::tribble(
+  ~Parameter, ~Median, ~Lower, ~Upper,
+  "CL/F",     0.99,    0.95,   1.04,
+  "Ka",       0.98,    0.29,   1.49,
+  "N",        1.02,    0.89,   1.17,
+  "MTT",      1.02,    0.98,   1.05,
+  "Vc/F",     0.97,    0.90,   1.03,
+  "Vp/F",     1.07,    0.98,   1.15,
+  "Q/F",      1.07,    0.95,   1.26
+)
+knitr::kable(
+  fig4 |> rename("Bootstrap median" = Median, "2.5th percentile" = Lower, "97.5th percentile" = Upper),
+  caption = "Baicalin effect factors, digitised from Figure 4 of Liu 2019 (not in the final model)."
+)
+```
+
+# Assumptions and deviations
+
+- **The printed parameters give exposures about 1.35 times the paper's own.**
+  The Table 3 typical-value profile is 1.35 times the Figure 2B population
+  predictions at every sampling time (CV of the ratio below 3%). The printed
+  CL/F of 62.8 L/h gives an AUC(0-inf) 1.36 times the Table 1 geometric mean,
+  whose CL/F is 85.7 L/h. The paper's Figure 2B, Figure 3 VPC and Table 1 all
+  agree with the observed data, so the defect lies in the printed scale of the
+  clearances and volumes (CL/F, Vc/F, Vp/F and Q/F would all need to be about
+  1.35 times larger), not in the model structure. No unit, molar-mass,
+  blood-to-plasma or dose reading explains the factor; for example a 150 mg
+  dose would give 1.33, outside the precision of the Figure 2B reading.
+  Rescaling the parameters to match would tune the model to a validation
+  target, so the parameters ship exactly as printed. No erratum was found
+  (literature check, 2026-11-25). Users who need the observed exposure level
+  of this study should be aware of this.
+- **Bootstrap medians, not final estimates.** Table 3 prints only the bootstrap
+  median and 95% CI of each parameter, so the medians are encoded.
+- **Transit-compartment form.** The paper names the transit compartment model
+  but prints no equation. The Savic 2007 form with a non-integer N
+  (`ktr = (N + 1) / MTT`) and a separate absorption rate constant Ka into the
+  central compartment is assumed, since N is estimated as a continuous value
+  (20.2) with between-subject and between-occasion variability.
+- **Variability scales.** IIV and IOV are encoded as log-normal with
+  `omega^2 = log(1 + CV^2)`, following the CV% formula in the Table 3
+  footnote. The proportional residual SD is `sqrt(log(1 + 0.194^2)) = 0.1922`
+  from the same footnote; the plain `CV = sigma` reading (0.194) differs by
+  less than 1%.
+- **Occasions.** One occasion per study period (`OCC = 1` cyclosporine alone,
+  `OCC = 2` with baicalin), with the occasion-2 IOV variances fixed equal to
+  occasion 1. The paper does not state the occasion definition; the
+  two-period design makes this the only natural reading.
+- **No baicalin effect, no covariates.** None of the tested covariates (age,
+  weight, sex, hematocrit, ALT, AST, total bilirubin, albumin) and no baicalin
+  factor was retained, so the model has no covariate terms. They are documented
+  under `covariatesDataExcluded`.

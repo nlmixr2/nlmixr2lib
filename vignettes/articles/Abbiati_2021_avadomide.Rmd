@@ -318,6 +318,17 @@ stopifnot(setequal(fig3_panels$panel, names(fig3_digitised)))
 ```
 
 ```{r fig3-sim}
+# Sampling records every 2 h, each paired with a zero-amount bolus into
+# `central`. rxode2 restarts cvode only at records that can change the state
+# (rxode2 issue 1790), and cvode cannot carry this model's stiff egress
+# feedback through a dose-free stretch without a restart. The bolus makes
+# every sampling time such a record and adds nothing to the solution.
+with_samples <- function(ev, times) {
+  ev |>
+    rxode2::et(amt = 0, time = times, cmt = "central") |>
+    rxode2::et(times)
+}
+
 fig3_sim <- lapply(seq_len(nrow(fig3_panels)), function(i) {
   p <- fig3_panels[i, ]
   mod <- if (p$cohort == "GBM") mod_gbm else mod_dlbcl
@@ -327,7 +338,7 @@ fig3_sim <- lapply(seq_len(nrow(fig3_panels)), function(i) {
     time = 24 * (1 + schedule_days(p$on, p$period, 56)),
     cmt = "depot"
   ) |>
-    rxode2::et(seq(0, 57 * 24, by = 2))
+    with_samples(seq(0, 57 * 24, by = 2))
   s <- as.data.frame(rxode2::rxSolve(
     mod,
     events = ev, params = c(lcirc0 = log(dig[1])),
@@ -546,7 +557,7 @@ vp_sim <- lapply(seq_len(nrow(table2_regimens)), function(i) {
     time = schedule_days(r$on, r$period, 36) * 24,
     cmt = "depot"
   ) |>
-    rxode2::et(seq(0, 36 * 24, by = 2))
+    with_samples(seq(0, 36 * 24, by = 2))
   # The egress feedback exponent (beta = 20) makes the system extremely stiff
   # once the ANC falls well below baseline: the egress factor (Circ0/circ)^20
   # reaches ~1e14 and the reservoir is emptied to ~1e-14. The default
@@ -689,7 +700,7 @@ vp_sim |>
       mod_dlbcl,
       params = vp_params,
       events = rxode2::et(amt = 6, time = schedule_days(21, 28, 36) * 24, cmt = "depot") |>
-        rxode2::et(seq(0, 36 * 24, by = 2)),
+        with_samples(seq(0, 36 * 24, by = 2)),
       method = "cvode", atol = 1e-10, rtol = 1e-10
     )) |>
       mutate(treatment = "6 mg 21/28")
@@ -749,7 +760,7 @@ not reproduce (see Assumptions).
 
 ```{r cohorts, fig.height = 4}
 ev_cmp <- rxode2::et(amt = 4, time = schedule_days(5, 7, 28) * 24, cmt = "depot") |>
-  rxode2::et(seq(0, 28 * 24, by = 2))
+  with_samples(seq(0, 28 * 24, by = 2))
 lapply(list(GBM = mod_gbm, DLBCL = mod_dlbcl, MM = mod_mm), function(m) {
   as.data.frame(rxode2::rxSolve(m, events = ev_cmp, method = "cvode", atol = 1e-10, rtol = 1e-10))
 }) |>
@@ -826,10 +837,12 @@ drop, which matches the authors' reading of Table I.
 * **Solver.** The egress feedback exponent (beta = 20) makes the system
   extremely stiff once the ANC falls well below baseline, especially for
   patients with a high baseline ANC. The neutrophil simulations here use the
-  CVODE BDF solver (`method = "cvode"`, atol = rtol = 1e-10). The default
-  liblsoda solver fails for part of the cohort on the long-holiday and
-  high-dose schedules (2% to half of the patients, depending on the
-  tolerance), and gives the same answer (to ~1e-7) where it succeeds.
+  CVODE BDF solver (`method = "cvode"`, atol = rtol = 1e-10), with a
+  zero-amount bolus at every sampling time so that the solver restarts
+  there (rxode2 issue 1790). The default liblsoda solver fails for part
+  of the cohort on the long-holiday and high-dose schedules (2% to half of
+  the patients, depending on the tolerance), and gives the same answer (to
+  ~1e-7) where it succeeds.
 * **No residual error or IIV.** The model was fitted by minimising a
   weighted sum of absolute normalised differences in Matlab (fminsearch).
   Variability is represented only by the virtual population, so the packaged

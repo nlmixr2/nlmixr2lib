@@ -1,0 +1,561 @@
+---
+title: "Oseltamivir PK and influenza viral dynamics (Wang 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Oseltamivir PK and influenza viral dynamics (Wang 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+suppressPackageStartupMessages({
+  library(nlmixr2lib)
+  library(PKNCA)
+  library(rxode2)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+})
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Wang_2026_oseltamivir"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Wang_2026_oseltamivir"))$description`
+* Article: <https://doi.org/10.1002/bcp.70623>
+
+Wang 2026 re-analysed the CASG 114 study of oral oseltamivir in infants and
+toddlers (birth through 23 months) with influenza. A parent-metabolite
+population PK model (oseltamivir two-compartment, two conversion-delay
+compartments, one-compartment oseltamivir carboxylate, OC) was linked to an
+influenza viral-load model in which the plasma OC concentration drives an
+Imax signal through three delay compartments; the delayed signal scales a
+maximal virion death rate in a logistic viral-growth equation. The fitted
+model was then used for a 164-dose simulation from 0.6 to 500 mg twice daily
+to relate the OC steady-state AUC12 and 12-h trough (C12h) to the decrease in
+the time-averaged area under the log10 viral-load curve over Days 0-5 minus
+baseline (AAUCMB). The model was fitted in ADAPT 5 (MLEM).
+
+The packaged model returns three outputs: `Cc` (oseltamivir, ng/mL),
+`Cc_oselcarb` (OC, ng/mL) and `log10_viral_load` (log10 copies/mL). Time is
+in hours; the viral-dynamic rate constants, reported per day, are converted
+inside `model()`.
+
+# Population
+
+```{r population}
+mod <- readModelDb("Wang_2026_oseltamivir")
+str(rxode2::rxode(mod)$population)
+```
+
+CASG 114 enrolled infants into five age cohorts, all dosed twice daily for 5
+days (Methods): Cohort IA (12-23 months, 30 mg fixed dose, n = 10), IB
+(12-23 months, 3.5 mg/kg, n = 3 per the Discussion), IIA (9-11 months, 3.0
+mg/kg, n = 6), IIB (9-11 months, 3.5 mg/kg, n = 7), III (6-8 months, n =
+22), IV (3-5 months, n = 10) and V (birth through 2 months, n = 19), the
+last three at 3.0 mg/kg. PK sampling was at steady state on treatment Day 3
+(predose, 1, 2-3, 5-7 and 10-12 h). In total 373 oseltamivir and 382 OC
+concentrations from 78 infants (median 8 months, 8 kg) and 239 viral loads
+from 62 infants over 12 days were analysed. Sex and race are not reported in
+Wang 2026.
+
+# Source trace
+
+| Item | Value | Source |
+|---|---|---|
+| Parent structure (2-cmt, first-order absorption, micro-constants) | Eq. 1-3 | Methods, Equations 1-3; Figure 1 |
+| Conversion delay (two compartments, rate tau) into one-cmt OC | Eq. 4-6 | Methods, Equations 4-6 |
+| `lka` | Ka 0.878 1/h | Table 1 |
+| `lkel` | Ke 0.653 1/h | Table 1 |
+| `lvc` | Vc/F 86.8 L | Table 1 |
+| `lk12` | Kcp 0.226 1/h | Table 1 |
+| `lk21` | Kpc 0.0805 1/h | Table 1 |
+| `lktr`, `e_pna_ktr` | tau1 6.15 1/h, tau2 0.0949 | Table 1; Equation 14, tau = tau1 + tau2 * (age - 8) |
+| `lcl_oselcarb`, `e_wt_cl_oselcarb` | CLm1 5.93 L/h, CLm2 0.151 | Table 1; Equation 12, CLm/fm = CLm1 + CLm2 * (weight - 8) |
+| `lvc_oselcarb`, `e_wt_vc_oselcarb` | Vm1 68.2 L, Vm2 0.182 | Table 1; Equation 13, Vm/fm = Vm1 + Vm2 * (weight - 8) |
+| Effect delay chain and viral ODE | Eq. 7-10 | Methods, Equations 7-10 (lambda = c1 * (1 - v / vmax)) |
+| `lic50` | IC50 7.02 ng/mL | Table 1 |
+| `limax` | Imax 1, fixed | Results, 'Imax and Vmax were fixed to 1 and 10^9 copies/mL' |
+| `ltau` | T1 0.274 d | Table 1 |
+| `lkkill` | c 3.11 1/d (printed mL/d) | Table 1 |
+| `lp` | c1 0.515 1/d (printed mL/d) | Table 1 |
+| `lvirus_max` | vmax 1e9 copies/mL, fixed | Table 1; Results |
+| `eta*` (12 terms) | omega^2 = log(1 + CV^2) | Table 1 'IIV CV%' column |
+| Residual error | proportional + fixed additive, magnitudes not reported | Results; carried as `fixed(0)` |
+| `virus(0)` | `INFLUENZA_VLOAD` | Methods: viral data from baseline through Day 10 were fitted |
+
+# Virtual cohort
+
+Body weight is drawn around sex-averaged WHO Child Growth Standards median
+weight-for-age (transcribed by the maintainers at monthly ages; 12 % log-scale
+spread) because Wang 2026 reports only the overall medians. Ages are uniform
+within each cohort's age band. The Day-0 viral load is drawn as log10 copies/mL
+~ Normal(5, 1) truncated to 3-7, matching the spread of the Day-0 points in
+Figure 3. Fifty infants per cohort keep the render light.
+
+```{r cohort}
+set.seed(20261023)
+rxode2::rxSetSeed(20261023)
+
+who_age <- c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 18, 21, 24)
+who_wt <- c(3.25, 4.35, 5.35, 6.10, 6.70, 7.20, 7.60, 7.95, 8.25, 8.55, 8.85,
+            9.05, 9.25, 9.95, 10.55, 11.20, 11.85)
+
+cohorts <- tibble::tribble(
+  ~cohort, ~age_lo, ~age_hi, ~dose_type, ~dose_value,
+  "1A", 12, 24, "mg", 30,
+  "1B", 12, 24, "mg/kg", 3.5,
+  "2A", 9, 12, "mg/kg", 3.0,
+  "2B", 9, 12, "mg/kg", 3.5,
+  "3", 6, 9, "mg/kg", 3.0,
+  "4", 3, 6, "mg/kg", 3.0,
+  "5", 0, 3, "mg/kg", 3.0
+)
+n_per <- 50
+
+pop <- cohorts |>
+  dplyr::slice(rep(seq_len(dplyr::n()), each = n_per)) |>
+  dplyr::mutate(
+    id = dplyr::row_number(),
+    PNA = stats::runif(dplyr::n(), age_lo, age_hi),
+    WT = stats::approx(who_age, who_wt, PNA)$y * exp(stats::rnorm(dplyr::n(), 0, 0.12)),
+    log10_vl0 = pmin(pmax(stats::rnorm(dplyr::n(), 5, 1), 3), 7),
+    INFLUENZA_VLOAD = 10^log10_vl0,
+    amt = ifelse(dose_type == "mg", dose_value, dose_value * WT)
+  )
+
+pop |>
+  dplyr::group_by(cohort) |>
+  dplyr::summarise(
+    n = dplyr::n(),
+    `median age (months)` = round(stats::median(PNA), 1),
+    `median weight (kg)` = round(stats::median(WT), 1),
+    `median dose (mg)` = round(stats::median(amt), 1)
+  ) |>
+  knitr::kable()
+```
+
+The CASG 114 cohort sizes weight the overall median toward the younger
+cohorts; re-weighting the virtual cohorts to those sizes recovers the
+published overall medians of 8 months and 8 kg.
+
+```{r cohort-check}
+n_obs <- c("1A" = 10, "1B" = 3, "2A" = 6, "2B" = 7, "3" = 22, "4" = 10, "5" = 19)
+wmed <- function(x, w) {
+  o <- order(x)
+  x[o][which(cumsum(w[o]) >= sum(w) / 2)[1]]
+}
+w <- n_obs[pop$cohort] / n_per
+c(age = wmed(pop$PNA, w), weight = wmed(pop$WT, w))
+stopifnot(
+  abs(wmed(pop$PNA, w) - 8) < 2,
+  abs(wmed(pop$WT, w) - 8) < 1
+)
+```
+
+# Simulation
+
+Ten doses (5 days twice daily) are given into `depot`. Concentrations are
+observed every 0.25 h over the Day-3 dosing interval (48-60 h, the PK sampling
+day), and viral load every 2 h through Day 10. Residual error is not reported
+and is zero in the model, so the simulated values are individual predictions.
+
+```{r simulate}
+make_events <- function(d, obs_times) {
+  dose <- d |>
+    dplyr::select(id, cohort, WT, PNA, INFLUENZA_VLOAD, amt) |>
+    tidyr::crossing(time = seq(0, 108, by = 12)) |>
+    dplyr::mutate(evid = 1L, cmt = "depot", dvid = NA_integer_)
+  obs <- d |>
+    dplyr::select(id, cohort, WT, PNA, INFLUENZA_VLOAD) |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    as.data.frame()
+}
+
+obs_times <- sort(unique(c(seq(48, 60, by = 0.25), seq(0, 240, by = 2))))
+ev <- make_events(pop, obs_times)
+sim <- rxode2::rxSolve(mod, events = ev, keep = c("cohort", "WT", "PNA"),
+                       returnType = "data.frame")
+```
+
+## Day-3 concentration-time profiles
+
+```{r pk-profiles, fig.cap = "Simulated oseltamivir and OC concentrations over the Day-3 dosing interval by cohort (median and 5th-95th percentiles). Compare with the VPC in Figure 2B of Wang 2026."}
+sim |>
+  dplyr::filter(time >= 48, time <= 60) |>
+  dplyr::select(id, cohort, time, Oseltamivir = Cc, `Oseltamivir carboxylate` = Cc_oselcarb) |>
+  tidyr::pivot_longer(c(Oseltamivir, `Oseltamivir carboxylate`), names_to = "analyte", values_to = "conc") |>
+  dplyr::group_by(analyte, cohort, tad = time - 48) |>
+  dplyr::summarise(
+    med = stats::median(conc), lo = stats::quantile(conc, 0.05), hi = stats::quantile(conc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, med, colour = cohort, fill = cohort)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.08, colour = NA) +
+  geom_line() +
+  facet_wrap(~analyte, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time after the Day-3 morning dose (h)", y = "Concentration (ng/mL)",
+       colour = "Cohort", fill = "Cohort")
+```
+
+## PKNCA: OC steady-state AUC12 and C12h by cohort
+
+```{r pknca}
+conc_df <- sim |>
+  dplyr::filter(time >= 48, time <= 60, !is.na(Cc_oselcarb)) |>
+  dplyr::select(id, cohort, time, Cc_oselcarb)
+dose_df <- ev |>
+  dplyr::filter(evid == 1, time == 48) |>
+  dplyr::select(id, cohort, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc_oselcarb ~ time | cohort + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | cohort + id)
+intervals <- data.frame(start = 48, end = 60, auclast = TRUE, clast.obs = TRUE, cmax = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(id, cohort, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+```
+
+Wang 2026 Figure 4 shows non-compartmental AUC12 and C12h per cohort as box
+plots. The 1A and 1B AUC12 medians are quoted in the Discussion (2354 and
+3073 ng*h/mL); the other medians were digitised by the maintainers from
+Figure 4 (AUC12 to about 0.05 mg*h/L, C12h to about 0.01 mg/L). In the
+tables, AUC12 is PKNCA's AUClast and C12h its Clast over the 12-h dosing
+interval (the last sample is at 12 h).
+
+```{r nca-compare}
+reference <- data.frame(
+  cohort = c("1A", "1B", "2A", "2B", "3", "4", "5"),
+  auclast = c(2354, 3073, 3380, 4060, 3910, 4290, 4720),
+  clast.obs = c(122, 210, 196, 270, 240, 300, 276)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  nca_res, reference, by = "cohort",
+  params = c("auclast", "clast.obs"),
+  units = c(auclast = "ng*h/mL", clast.obs = "ng/mL")
+)
+knitr::kable(cmp)
+attr(cmp, "footnote")
+```
+
+The simulated AUC12 rises with age and weight across the 3 mg/kg cohorts
+(cohort 5 lowest, cohorts 1-2 highest), whereas the observed medians fall
+from cohort 5 to cohort 2A. This follows directly from Equation 12 as printed:
+OC clearance is `5.93 + 0.151 * (WT - 8)` L/h, so it rises only from about 5.4
+L/h at 4.3 kg to 6.4 L/h at 11 kg, and at a fixed mg/kg dose AUC12 = dose /
+CLm/fm therefore grows almost in proportion to weight. The youngest cohort
+(V) is under-predicted by about half and the 12-23-month cohorts are
+over-predicted by up to about two-fold. The model is packaged with Equations
+12-14 exactly as printed; see Assumptions and deviations for the alternative
+readings that were examined.
+
+At the median subject (8 kg, 8 months, 3 mg/kg = 24 mg), where all readings
+of Equations 12-14 coincide, the typical-value Day-3 AUC12 matches the
+observed cohort-III median (6-8 months). Large inter-individual variability in
+the parent's peripheral distribution (Kcp CV 93.6%) leaves some simulated
+infants short of steady state on Day 3, so the stochastic medians run a little
+below the typical value.
+
+```{r typical-check}
+typ8 <- data.frame(id = 1L, cohort = "typical", WT = 8, PNA = 8,
+                   INFLUENZA_VLOAD = 1e5, amt = 24)
+ev8 <- make_events(typ8, seq(48, 60, by = 0.25))
+s8 <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev8, returnType = "data.frame")
+auc8 <- PKNCA::pk.calc.auc.last(s8$Cc_oselcarb, s8$time - 48)
+c(typical_day3_auc12 = auc8, steady_state_dose_over_cl = 24 / 5.93 * 1000)
+# Typical-value solve: no sampling noise, so a tight bound is appropriate.
+stopifnot(abs(auc8 / 3910 - 1) < 0.05)
+
+# Direction of the printed weight effect: simulated AUC12 at 3 mg/kg is
+# markedly higher in 9-11-month-olds (2A) than in 0-2-month-olds (5),
+# while the observed medians run the other way (3380 vs 4720).
+med_auc <- tapply(nca_wide$auclast, nca_wide$cohort, stats::median)
+med_auc[["2A"]] / med_auc[["5"]]
+stopifnot(med_auc[["2A"]] / med_auc[["5"]] > 1.3)
+```
+
+# Replicate Figure 3: viral-load decay
+
+```{r figure-3, fig.cap = "Replicates Figure 3 of Wang 2026: simulated log10 viral load by cohort (median and 5th-95th percentiles of the virtual cohort), with the assay lower limit (about 1.7 log10 copies/mL, dashed) for orientation."}
+# Below the assay limit the values only matter as "undetectable"; a virus
+# state tens of log10 units below baseline can underflow through zero, so
+# non-finite log10 values are set to the plot floor before summarising.
+sim |>
+  dplyr::filter(time %in% seq(0, 240, by = 2)) |>
+  dplyr::mutate(log10_viral_load = ifelse(is.finite(log10_viral_load), log10_viral_load, -Inf)) |>
+  dplyr::group_by(cohort, day = time / 24) |>
+  dplyr::summarise(
+    med = pmax(stats::median(log10_viral_load), -2),
+    lo = pmax(stats::quantile(log10_viral_load, 0.05, type = 1), -2),
+    hi = pmax(stats::quantile(log10_viral_load, 0.95, type = 1), -2),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(day, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2) +
+  geom_line() +
+  geom_hline(yintercept = 1.7, linetype = "dashed") +
+  facet_wrap(~cohort) +
+  coord_cartesian(ylim = c(-2, 8)) +
+  labs(x = "Time (day)", y = "Log10 viral load (copies/mL)")
+```
+
+The median declines roughly linearly on the log scale and crosses the assay
+limit around Days 4-6, in line with the individual fits of Figure 3. The
+three-stage effect delay (T1 = 0.274 d per stage, about 0.8 d in total) lets
+infants with fast viral growth (c1, CV 88.5%) rise for a day or two before
+declining, as several Figure 3 curves do, and with the large variability in
+the death rate (c, CV 66.2%) the upper percentile stays near baseline through
+Day 10.
+
+```{r figure-3-check}
+vl_day <- sim |>
+  dplyr::filter(time %in% c(0, 120)) |>
+  dplyr::select(id, time, log10_viral_load) |>
+  tidyr::pivot_wider(names_from = time, values_from = log10_viral_load, names_prefix = "t")
+drop5 <- vl_day$t0 - vl_day$t120
+stats::quantile(drop5, c(0.1, 0.5, 0.9))
+# Figure 3 shows most infants falling 3-6 log10 copies/mL by Day 5.
+stopifnot(stats::median(drop5) > 2.5, stats::median(drop5) < 7)
+```
+
+# Replicate Figure 4: exposure-response dose ranging
+
+The paper simulated the typical subject (median 8 kg and 8 months) at 164
+doses from 0.6 to 500 mg twice daily, computed the OC steady-state AUC12 and
+C12h and the decrease in AAUCMB (Days 0-5), and fitted an Emax model
+(Equation 11). The baseline viral load of that typical subject is not stated;
+1e5 copies/mL is used here (the AAUCMB decrease is insensitive to it because
+the viral equation is near-exponential well below vmax). The dose grid is
+log-spaced, which reproduces the spacing of the open circles in Figure 4.
+
+```{r figure-4-sim}
+mod_typ <- rxode2::zeroRe(mod)
+doses <- exp(seq(log(0.6), log(500), length.out = 164))
+typ <- data.frame(id = seq_along(doses), cohort = "typical", WT = 8, PNA = 8,
+                  INFLUENZA_VLOAD = 1e5, amt = doses)
+ev_typ <- make_events(typ, sort(unique(c(seq(0, 120, by = 0.25)))))
+sim_typ <- rxode2::rxSolve(mod_typ, events = ev_typ, returnType = "data.frame")
+
+ss_conc <- sim_typ |>
+  dplyr::filter(time >= 96, time <= 108) |>
+  dplyr::select(id, time, Cc_oselcarb) |>
+  dplyr::mutate(cohort = "typical")
+ss_dose <- ev_typ |>
+  dplyr::filter(evid == 1, time == 96) |>
+  dplyr::select(id, cohort, time, amt)
+nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(ss_conc, Cc_oselcarb ~ time | cohort + id),
+  PKNCA::PKNCAdose(ss_dose, amt ~ time | cohort + id),
+  intervals = data.frame(start = 96, end = 108, auclast = TRUE, clast.obs = TRUE)
+))
+er <- as.data.frame(nca_typ) |>
+  dplyr::select(id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+aaucmb <- sim_typ |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    decrease = log10_viral_load[time == 0] -
+      PKNCA::pk.calc.auc.last(log10_viral_load, time) / 120
+  )
+er <- dplyr::left_join(er, aaucmb, by = "id")
+
+fit_auc <- stats::nls(decrease ~ emax * auclast / (ec50 + auclast), er,
+                      start = list(emax = 1.8, ec50 = 150))
+fit_c12 <- stats::nls(decrease ~ emax * clast.obs / (ec50 + clast.obs), er,
+                      start = list(emax = 1.8, ec50 = 10))
+```
+
+```{r figure-4, fig.cap = "Replicates Figure 4 of Wang 2026: decrease in AAUCMB against OC steady-state AUC12 (left) and C12h (right) for 164 doses of 0.6-500 mg twice daily in the typical 8-kg, 8-month infant. Points are simulated; the solid line is the Emax fit to these points, the dashed line the published Emax curve (Emax 1.8, EC50 140 ng*h/mL or 9.42 ng/mL)."}
+er_long <- dplyr::bind_rows(
+  data.frame(metric = "AUC12 (mg*h/L)", x = er$auclast / 1000, decrease = er$decrease,
+             fit = stats::fitted(fit_auc), paper = 1.8 * er$auclast / (140 + er$auclast)),
+  data.frame(metric = "C12h (mg/L)", x = er$clast.obs / 1000, decrease = er$decrease,
+             fit = stats::fitted(fit_c12), paper = 1.8 * er$clast.obs / (9.42 + er$clast.obs))
+)
+ggplot(er_long, aes(x, decrease)) +
+  geom_point(shape = 1, colour = "steelblue") +
+  geom_line(aes(y = fit), colour = "purple") +
+  geom_line(aes(y = paper), linetype = "dashed") +
+  facet_wrap(~metric, scales = "free_x") +
+  coord_cartesian(ylim = c(0.4, 1.9)) +
+  labs(x = NULL, y = "Decrease in AAUCMB (log10 copies/mL)")
+```
+
+```{r figure-4-table}
+ec_tab <- function(fit, paper) {
+  ec50 <- unname(stats::coef(fit)["ec50"])
+  data.frame(
+    Quantity = c("Emax", "EC50", "EC90", "EC95"),
+    Simulated = signif(c(stats::coef(fit)["emax"], ec50, 9 * ec50, 19 * ec50), 3),
+    Published = paper
+  )
+}
+dplyr::bind_rows(
+  cbind(Metric = "AUC12 (ng*h/mL)", ec_tab(fit_auc, c(NA, 140, 1280, 2710))),
+  cbind(Metric = "C12h (ng/mL)", ec_tab(fit_c12, c(NA, 9.42, 84.7, 179)))
+) |>
+  knitr::kable(row.names = FALSE)
+```
+
+The simulated points reproduce the published open circles: the plateau is
+about 1.8 log10 copies/mL and the lowest dose (0.6 mg) gives a decrease of
+about 0.57 at an AUC12 of about 100 ng*h/mL, matching the first circle of
+Figure 4.
+
+```{r figure-4-check}
+plateau <- max(er$decrease)
+lowest <- er$decrease[which.min(er$auclast)]
+c(plateau = plateau, lowest_dose_decrease = lowest, lowest_auc12 = min(er$auclast))
+stopifnot(
+  abs(plateau - 1.8) < 0.1,
+  abs(lowest - 0.57) < 0.1
+)
+```
+
+Refitting Equation 11 to these points gives EC50 values higher than the
+printed ones (about 184 vs 140 ng*h/mL for AUC12 and about 12 vs 9.42 ng/mL
+for C12h). The published Emax = 1.8 / EC50 = 140 curve (dashed) itself lies
+above the low-AUC circles of Figure 4 (at the first circle it predicts about
+0.75 against the plotted 0.57), so the difference arises in the paper's
+curve-fitting step rather than in the drug-disease model; because EC90 and
+EC95 are fixed multiples (9 and 19) of EC50 in an Emax model with Hill
+coefficient 1, they inherit the same ratio. Note also that 1280 / 140 = 9.1
+and 2710 / 140 = 19.4, consistent with that relationship.
+
+# Replicate Figure 5: weight-based dosing in 12-23-month-olds
+
+```{r figure-5-sim}
+rxode2::rxSetSeed(20261024)
+set.seed(20261024)
+mgkg <- c(3.00, 3.25, 3.50, 3.75, 4.00, 4.25)
+n5 <- 100
+tod <- tibble::tibble(
+  id = seq_len(n5 * length(mgkg)),
+  dose_mgkg = rep(mgkg, each = n5),
+  cohort = sprintf("%.2f mg/kg", dose_mgkg),
+  PNA = stats::runif(n5 * length(mgkg), 12, 24),
+  INFLUENZA_VLOAD = 1e5
+) |>
+  dplyr::mutate(
+    WT = stats::approx(who_age, who_wt, PNA)$y * exp(stats::rnorm(dplyr::n(), 0, 0.12)),
+    amt = dose_mgkg * WT
+  )
+ev5 <- make_events(tod, seq(48, 60, by = 0.25))
+sim5 <- rxode2::rxSolve(mod, events = ev5, keep = c("cohort"), returnType = "data.frame")
+nca5 <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(dplyr::filter(sim5, !is.na(Cc_oselcarb)), Cc_oselcarb ~ time | cohort + id),
+  PKNCA::PKNCAdose(dplyr::filter(ev5, evid == 1, time == 48), amt ~ time | cohort + id),
+  intervals = data.frame(start = 48, end = 60, auclast = TRUE)
+))
+auc5 <- as.data.frame(nca5) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::mutate(auc_mgh_l = PPORRES / 1000)
+```
+
+```{r figure-5, fig.cap = "Replicates Figure 5 of Wang 2026: simulated OC AUC12 in 12-23-month-olds at 3.00-4.25 mg/kg twice daily, with the published EC90 (1.28 mg*h/L) and EC95 (2.71 mg*h/L)."}
+ggplot(auc5, aes(auc_mgh_l, cohort)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(height = 0.15, alpha = 0.3, size = 0.8) +
+  geom_vline(xintercept = c(1.28, 2.71), linetype = "dashed") +
+  labs(x = "AUC12 (mg*h/L)", y = "Dose")
+```
+
+```{r figure-5-table}
+auc5 |>
+  dplyr::group_by(Dose = cohort) |>
+  dplyr::summarise(`Simulated median AUC12 (mg*h/L)` = round(stats::median(auc_mgh_l), 2)) |>
+  dplyr::mutate(`Figure 5 median (digitised)` = c(3.05, 3.30, 3.55, 3.80, 4.06, 4.32)) |>
+  knitr::kable()
+```
+
+The simulated medians are about 1.5-1.6-fold above those of Figure 5, for
+the same reason as the cohort 1A/1B over-prediction above: with the additive
+weight effect of Equation 12 as printed, OC clearance at 10.6 kg is 6.3 L/h,
+and 3 mg/kg then gives a steady-state AUC12 of 5.0 mg*h/L rather than the
+published 3.05 mg*h/L. Both the simulated and published medians rise with
+the mg/kg dose (the published ones by 42% from 3.00 to 4.25 mg/kg, as linear
+PK requires).
+
+```{r figure-5-check}
+med5 <- tapply(auc5$auc_mgh_l, auc5$cohort, stats::median)
+med5
+# Steady-state typical value at the WHO median weight for 17.5 months.
+wt_toddler <- stats::approx(who_age, who_wt, 17.5)$y
+auc_typ_3 <- 3 * wt_toddler / (5.93 + 0.151 * (wt_toddler - 8))
+c(weight = wt_toddler, typical_auc12_3mgkg = auc_typ_3)
+stopifnot(
+  # Centre of the 3 mg/kg arm sits at the printed-equation typical value.
+  abs(med5[["3.00 mg/kg"]] / auc_typ_3 - 1) < 0.2,
+  # Dose proportionality across the full 3.00-4.25 mg/kg span.
+  med5[["4.25 mg/kg"]] > med5[["3.00 mg/kg"]] * 1.15
+)
+```
+
+# Assumptions and deviations
+
+* **Equations 12-14 are packaged exactly as printed** (additive linear
+  effects centred on 8 kg and 8 months, with the Table 1 values unchanged).
+  As shown above, the printed weight effect on OC clearance is so shallow that
+  the model predicts AUC12 rising with weight at a fixed mg/kg dose, whereas
+  the paper's own non-compartmental cohort medians (Figure 4) fall; the
+  youngest cohort is under-predicted by about half and the 12-23-month cohorts,
+  and Figure 5, over-predicted by up to about two-fold. The maintainers also
+  examined an exponential reading, `CLm1 * exp(CLm2 * (WT - 8))`, and a
+  proportional reading, `CLm1 * (1 + CLm2 * (WT - 8))`; both reproduce the
+  cohort trend much better (typical/observed AUC12 ratios about 0.8-1.5), and
+  the exponential form agrees with the Kamal 2014 model of the same CASG 114
+  infants (`Kamal_2014_oseltamivir`) at 15 kg. The paper offers nothing that
+  separates the two, so neither was adopted. Users who need cohort-accurate OC
+  exposures across the full weight range should prefer
+  `Kamal_2014_oseltamivir` for the PK layer. The viral-dynamic layer, which is
+  driven by OC concentration, reproduces Figure 4 at the paper's 8-kg typical
+  subject, where all three readings coincide.
+* The Results state that age was a covariate 'on the absorption rate constant
+  (ka)', but Equation 14, the -2LL sequence ('With age on tau') and the Table
+  1 footnote all place it on the conversion-delay rate constant tau; the
+  equation is followed.
+* Table 1 prints the units of c and c1 as 'mL/d'; Equation 10 requires a
+  first-order rate, so they are read as 1/d and converted to 1/h in `model()`.
+  T1 (days) is likewise converted to hours.
+* Table 1 reports inter-individual variability as CV% of log-normal
+  parameters (ADAPT output). The variances are `omega^2 = log(1 + CV^2)`; no
+  covariances are reported, so the matrix is diagonal. Because the covariate
+  effects are additive, the eta multiplies the whole covariate expression
+  (for example `CLm/fm = (CLm1 + CLm2 * (WT - 8)) * exp(eta)`).
+* Residual error was 'a proportional model with fixed additive error', but no
+  magnitudes were reported, and the viral-load error model is not described.
+  All residual-error parameters are carried as `fixed(0)`, so simulations
+  return individual predictions.
+* The baseline viral load enters as the covariate `INFLUENZA_VLOAD` (linear
+  copies/mL), the initial condition of the `virus` state; the paper fitted
+  each infant from the observed Day-0 value and reports no initial-condition
+  parameter. The virtual cohort's baseline distribution is an assumption read
+  from Figure 3.
+* The viral-load equation has no lower limit, so in infants with a high
+  virion death rate the simulated viral load keeps falling far below the
+  assay limit (to -20 log10 copies/mL and lower by Day 5). In about 1% of
+  simulated infants the `virus` state eventually underflows through zero
+  (after about Day 6), and `log10_viral_load` is then `NaN`. Values below
+  the assay limit (about 1.7 log10 copies/mL in Figure 3) should be treated
+  as censored; Figure 3 above floors them for display.
+* Cohort body weights are not reported; the virtual cohort uses sex-averaged
+  WHO median weight-for-age with a 12% log-scale spread, and the re-weighted
+  overall medians reproduce the published 8 months and 8 kg.
+* The non-compartmental cohort medians other than 1A and 1B, and the Figure 5
+  medians, were digitised from the figures by the maintainers.
+* The baseline viral load of the typical subject in the Figure 4 dose ranging
+  is not stated; 1e5 copies/mL was used, and the AAUCMB decrease changes by
+  less than 1% between 1e3 and 1e7 copies/mL.
+* The packaged model assumes complete parent-to-OC conversion with all
+  oseltamivir elimination passing through the conversion delay, as in
+  Equations 1-6; the apparent OC parameters (CLm/fm, Vm/fm) absorb the
+  unknown fraction metabolised.
+* No erratum or correction linked to Wang 2026 was found in Europe PMC
+  (checked 2026-11-23).

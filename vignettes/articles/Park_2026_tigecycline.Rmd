@@ -1,0 +1,527 @@
+---
+title: "Tigecycline against Mycobacterium abscessus in vitro (Park 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tigecycline against Mycobacterium abscessus in vitro (Park 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 8, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Park 2026 fitted two mechanism-based in vitro PK/PD models of tigecycline (TGC)
+against *Mycobacterium abscessus* (Mab). Both are packaged:
+
+* `Park_2026_tigecycline_invitro` -- the main model (Table 2), fitted to the
+  24-well microscale dynamic time-kill assays in Middlebrook 7H9 broth, in which
+  the chemical degradation of TGC in the medium is the PK.
+* `Park_2026_tigecycline_invitro_media` -- the modified model (Table 3), fitted
+  jointly to the 72 h bacterial time courses of the broth-microdilution MIC
+  assay run in 7H9 and in Mueller-Hinton II broth (MHB II).
+
+* Citation: `r rxode2::rxode(readModelDb("Park_2026_tigecycline_invitro"))$reference`
+* Article: <https://doi.org/10.1128/aac.01025-25>
+
+Description of the main model:
+`r rxode2::rxode(readModelDb("Park_2026_tigecycline_invitro"))$description`
+
+Description of the media model:
+`r rxode2::rxode(readModelDb("Park_2026_tigecycline_invitro_media"))$description`
+
+# Population
+
+Both models describe one bacterial strain, the *M. abscessus* reference strain
+ATCC 19977. The main model was fitted to three independent 24-well dynamic
+time-kill assays at 37 C in 7H9 with OADC, run in triplicate wells with CFU
+counted in duplicate. The inoculum was about 1e6 CFU/mL, and TGC was spiked to
+initial concentrations of 0 to 48 mg/L. Doses were given once, or every 24 h
+for five days. Sampling ran to 336 h for a single dose and to 624 h for
+multiple doses. TGC concentrations were measured by LC-MS/MS in parallel
+uninoculated wells. The standard broth-microdilution MIC was 3.125 mg/L in 7H9
+and 0.782 mg/L in MHB II (Results and Table 1). The media model was fitted to
+the second plate of that MIC test, counted at 0, 24, 48 and 72 h.
+
+```{r population}
+readModelDb("Park_2026_tigecycline_invitro")()$population$species
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The table
+collects them.
+
+| Equation / parameter | Main model (Table 2) | Media model (Table 3) | Source location |
+|---|---|---|---|
+| `d/dt(central) <- -kdeg * central` | yes | yes | Equation 3 (one-compartment well, first-order degradation) |
+| `d/dt(bact)` logistic growth minus Emax kill | yes | yes, alpha omitted | Equation 4, Figure 1; Table 3 footnote e |
+| proportional residual error | C and N | N only | Equation 5; Tables 2 and 3 |
+| `lvc` (V) | 2.0 mL, fixed | 0.2 mL, fixed | Table 2 footnote a / Table 3 footnote a |
+| `lkdeg` (Kdeg in 7H9) | 0.041 1/h, fixed | -- | Table 2 footnote b |
+| `lkdeg_7h9`, `lkdeg_mhb` | -- | 0.044, 0.017 1/h, fixed | Table 3 footnote b |
+| `linoc` (N0) | 6.70e5 CFU/mL | 5.11e5 CFU/mL | Tables 2 and 3 |
+| `lkgrow` (K0) | 0.12 1/h | 0.19 1/h (7H9) | Tables 2 and 3 |
+| `e_mhb_kgrow` (CovK0) | -- | -0.73 | Table 3 and footnote d |
+| `lbmax` (Nmax) | 1.40e9 CFU/mL | 2.68e9 CFU/mL | Tables 2 and 3 |
+| `lkmax` (Kkill,max) | 0.20 1/h | 0.18 1/h | Tables 2 and 3 |
+| `lec50` (KC50) | 0.65 ug/mL | 0.11 ug/mL | Tables 2 and 3 |
+| `lalpha` (alpha) | 0.017 1/h | omitted | Table 2; Table 3 footnote e |
+| `lbeta` (beta) | 0.069 1/h | 0.16 1/h | Tables 2 and 3 |
+| `etalinoc`, `etalbmax`, `etalalpha`, `etalbeta` | 45.0, 14.2, 20.3, 57.7 CV% | -- | Table 2 random effects |
+| `etalkgrow` | -- | omega 0.43 | Table 3 random effects |
+| `propSd` (TGC concentration) | 0.19 | -- | Table 2 |
+| `propSd_cfu` (CFU) | 0.47 | 0.47 | Tables 2 and 3 |
+
+# Main model: in vitro PK of the well
+
+In this assay system the PK is the chemical degradation of TGC in 7H9. The
+model doses an amount in ug into a well of fixed volume in mL, so `Cc` is in
+ug/mL (= mg/L). A dose that gives an initial concentration of `C0` mg/L is
+`amt = C0 * 2` ug.
+
+```{r models}
+mod1 <- readModelDb("Park_2026_tigecycline_invitro")
+mod2 <- readModelDb("Park_2026_tigecycline_invitro_media")
+typ1 <- rxode2::zeroRe(mod1)
+typ2 <- rxode2::zeroRe(mod2)
+vol1 <- 2 # mL, Table 2
+vol2 <- 0.2 # mL, Table 3
+kdeg1 <- 0.041 # 1/h, Table 2
+
+# A typical-value model has no omega, so rxode2 warns when it solves more
+# than one subject; that warning is expected here and muffled.
+solve_typical <- function(model, events, ...) {
+  withCallingHandlers(
+    rxode2::rxSolve(model, events, returnType = "data.frame", ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w))) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+```
+
+The main model has two observed outputs: the TGC concentration (`dvid = 1`)
+and the bacterial count (`dvid = 2`). Observation rows below sit on the ODE
+state that backs each output: `central` for `Cc` and `bact` for `cfu`.
+
+## Multiple-dose concentration profile (Equation 2)
+
+Park 2026 confirmed the multiple-dose concentrations in uninoculated wells
+against the superposition formula of Equation 2. The model solve must
+reproduce that closed form exactly, because both sides use the same Kdeg.
+
+```{r pk_closed_form}
+c0 <- 12 # mg/L per daily dose
+tau <- 24
+dose_times <- seq(0, 96, by = tau)
+obs_times <- sort(unique(c(seq(0, 200, by = 2), dose_times + 23.9)))
+pk_ev <- bind_rows(
+  data.frame(id = 1L, time = dose_times, amt = c0 * vol1, evid = 1L, cmt = "central"),
+  data.frame(id = 1L, time = obs_times, amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+)
+pk_sim <- rxode2::rxSolve(typ1, pk_ev, returnType = "data.frame",
+                          atol = 1e-10, rtol = 1e-10)
+
+# Equation 2: C(t) = C0 * exp(-kdeg * t') * (1 - exp(-kdeg * nd * tau)) /
+# (1 - exp(-kdeg * tau)), t' = time since the last of nd doses.
+pk_chk <- pk_sim |>
+  mutate(
+    nd = pmin(floor(time / tau) + 1, length(dose_times)),
+    tprime = time - (nd - 1) * tau,
+    c_eq2 = c0 * exp(-kdeg1 * tprime) * (1 - exp(-kdeg1 * nd * tau)) /
+      (1 - exp(-kdeg1 * tau))
+  )
+max_rel_err <- max(abs(pk_chk$Cc - pk_chk$c_eq2) / pk_chk$c_eq2)
+max_rel_err
+stopifnot(max_rel_err < 1e-6)
+```
+
+```{r pk_plot, fig.cap = "TGC concentration in a 2 mL 7H9 well after five daily additions of 12 mg/L (compare Figure S2 of Park 2026). Points: Equation 2; line: model solve."}
+ggplot(pk_chk, aes(time, Cc)) +
+  geom_line() +
+  geom_point(data = filter(pk_chk, time %% 24 == 0), aes(y = c_eq2), colour = "red") +
+  labs(x = "Time (h)", y = "TGC concentration (mg/L)")
+```
+
+## Degradation half-life (PKNCA)
+
+The stability study (3 mg/L in 7H9, samples at 0, 1, 3, 7, 24 and 48 h)
+reported a degradation half-life of 15.8 h, with less than 20% of the drug
+remaining at 48 h. PKNCA on the model's stability-study profile recovers the
+half-life implied by Table 2's Kdeg.
+
+```{r pknca}
+stab_times <- c(0, 1, 3, 7, 24, 48)
+stab_ev <- bind_rows(
+  data.frame(id = 1L, time = 0, amt = 3 * vol1, evid = 1L, cmt = "central"),
+  data.frame(id = 1L, time = stab_times, amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+) |>
+  mutate(treatment = "3 mg/L in 7H9")
+stab_sim <- rxode2::rxSolve(typ1, stab_ev, returnType = "data.frame",
+                            keep = "treatment")
+
+# A one-subject solve returns no `id` column.
+conc_df <- stab_sim |>
+  filter(!is.na(Cc)) |>
+  mutate(id = 1L) |>
+  select(id, time, Cc, treatment)
+dose_df <- stab_ev |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = 48, cmax = TRUE, half.life = TRUE,
+                         auclast = TRUE)
+))
+
+published <- data.frame(treatment = "3 mg/L in 7H9", half.life = 15.8)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  params = "half.life",
+  units = c(half.life = "h"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Condition" = treatment) |>
+  knitr::kable(caption = "Simulated versus published TGC degradation half-life in 7H9 (Park 2026 Results, 'Drug stability in incubation media').")
+
+hl_sim <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "half.life") |>
+  pull(PPORRES)
+remaining_48 <- stab_sim$Cc[stab_sim$time == 48] / 3
+c(half_life = hl_sim, fraction_remaining_48h = remaining_48)
+stopifnot(
+  abs(hl_sim - log(2) / kdeg1) / (log(2) / kdeg1) < 0.01,
+  abs(hl_sim - 15.8) / 15.8 < 0.10,
+  remaining_48 < 0.20
+)
+```
+
+The simulated half-life is `log(2) / 0.041 = 16.9` h, 7% longer than the 15.8 h
+in the Results text. Table 2 fixed Kdeg to 0.041 1/h, whereas the half-life
+quoted in the text corresponds to 0.044 1/h, the value Table 3 uses for 7H9.
+The packaged main model keeps the Table 2 value.
+
+# Main model: dynamic time-kill (Figure 3)
+
+Typical-value curves for the single-dose and five-day regimens of Figure 3,
+with 90% prediction bands from 50 simulated wells per regimen. The bands
+reflect the between-well variability in N0, Nmax, alpha and beta.
+
+```{r tk_events}
+make_tk <- function(c0, regimen, n, tmax, id_offset) {
+  ids <- id_offset + seq_len(n)
+  dt <- if (regimen == "single") 0 else seq(0, 96, by = 24)
+  obs_t <- seq(0, tmax, by = 6)
+  dose <- if (c0 > 0) {
+    tidyr::crossing(id = ids, time = dt) |>
+      mutate(amt = c0 * vol1, evid = 1L, cmt = "central")
+  } else {
+    NULL
+  }
+  obs <- tidyr::crossing(id = ids, time = obs_t) |>
+    mutate(amt = 0, evid = 0L, cmt = "bact", dvid = 2L)
+  bind_rows(dose, obs) |>
+    mutate(c0 = c0, regimen = regimen) |>
+    arrange(id, time, desc(evid))
+}
+tk_doses <- c(0, 0.75, 1.5, 3, 6, 12, 24, 48)
+tk_grid <- tidyr::crossing(
+  regimen = c("single", "multiple"),
+  c0 = tk_doses
+) |>
+  mutate(g = row_number())
+n_tk <- 50L
+tk_ev <- bind_rows(lapply(seq_len(nrow(tk_grid)), function(i) {
+  make_tk(tk_grid$c0[i], tk_grid$regimen[i], n_tk,
+          tmax = if (tk_grid$regimen[i] == "single") 336 else 624,
+          id_offset = (i - 1L) * n_tk)
+}))
+stopifnot(!anyDuplicated(tk_ev[, c("id", "time", "evid")]))
+```
+
+```{r tk_sim}
+rxode2::rxSetSeed(2026)
+tk_vpc <- rxode2::rxSolve(mod1, tk_ev, returnType = "data.frame",
+                          keep = c("c0", "regimen"))
+tk_typ_ev <- tk_ev |> filter(id %% n_tk == 1L)
+tk_typ <- solve_typical(typ1, tk_typ_ev, keep = c("c0", "regimen"))
+
+# Plot the structural prediction (no residual error); censor at 1 CFU/mL.
+tk_band <- tk_vpc |>
+  group_by(regimen, c0, time) |>
+  summarise(lo = quantile(bact, 0.05), hi = quantile(bact, 0.95),
+            .groups = "drop")
+```
+
+```{r tk_plot, fig.height = 6, fig.cap = "Replicates Figure 3 of Park 2026: typical-value time-kill curves (lines) and 90% between-well prediction bands, single dose (top) and once-daily for five days (bottom). Dotted line: limit of counting, 1e2 CFU/mL."}
+tk_plot_df <- tk_typ |>
+  mutate(regimen = factor(regimen, c("single", "multiple")),
+         dose = factor(c0))
+ggplot() +
+  geom_ribbon(data = mutate(tk_band, regimen = factor(regimen, c("single", "multiple")),
+                            dose = factor(c0)),
+              aes(time, ymin = pmax(lo, 1), ymax = pmax(hi, 1), fill = dose),
+              alpha = 0.15) +
+  geom_line(data = tk_plot_df, aes(time, pmax(bact, 1), colour = dose)) +
+  geom_hline(yintercept = 1e2, linetype = "dotted", colour = "red") +
+  scale_y_log10() +
+  facet_wrap(~regimen, ncol = 1, scales = "free_x") +
+  labs(x = "Time (h)", y = "CFU/mL", colour = "Dose (mg/L)", fill = "Dose (mg/L)")
+```
+
+Park 2026 reports that after a single dose the 0.75 to 6 mg/L wells resumed
+growth and reached the plateau, that 12 mg/L wells regrew at about 192 h, and
+that the five-day regimens suppressed growth during dosing at every dose. The
+typical-value curves reproduce the plateau after single doses up to 12 mg/L,
+the later nadir with each higher dose, and the suppression during five-day
+dosing. The typical 12 mg/L single-dose curve turns upward at about 100 h,
+earlier than the observed regrowth. Figure 3 plots the observed counts, not
+model fits, and the between-well variability in alpha and beta (57.7% CV on
+beta) spreads the turning point widely.
+
+```{r tk_checks}
+tk_typ_tab <- tk_typ |>
+  group_by(regimen, c0) |>
+  summarise(
+    nadir = min(bact),
+    t_nadir = time[which.min(bact)],
+    end = bact[which.max(time)],
+    at_120 = bact[time == 120],
+    .groups = "drop"
+  )
+tk_typ_tab |>
+  dplyr::rename("Regimen" = regimen, "Dose (mg/L)" = c0,
+                "Nadir (CFU/mL)" = nadir, "Time of nadir (h)" = t_nadir,
+                "End of follow-up (CFU/mL)" = end,
+                "At 120 h (CFU/mL)" = at_120) |>
+  knitr::kable(digits = 3, format.args = list(big.mark = ","),
+               caption = "Typical-value nadir, time of nadir, count at the end of follow-up and count at 120 h.")
+single <- filter(tk_typ_tab, regimen == "single")
+multiple <- filter(tk_typ_tab, regimen == "multiple")
+nmax1 <- 1.40e9
+stopifnot(
+  # Untreated wells plateau at Nmax.
+  abs(single$end[single$c0 == 0] / nmax1 - 1) < 0.05,
+  # Single doses up to 12 mg/L regrow to within 2-fold of Nmax by 336 h.
+  all(single$end[single$c0 %in% c(0.75, 1.5, 3, 6, 12)] > nmax1 / 2),
+  # The time of the nadir moves later as the single dose rises.
+  all(diff(single$t_nadir[single$c0 > 0]) >= 0),
+  # Every five-day regimen holds the count below the inoculum at 120 h.
+  all(multiple$at_120[multiple$c0 > 0] < 6.70e5)
+)
+```
+
+The ODE does not reproduce the complete eradication (no regrowth to 336 h)
+that Park 2026 observed at single doses of 24 and 48 mg/L. A continuous model
+cannot represent extinction. The typical-value nadirs at these doses stay above
+the limit of counting, so the regrowth that follows is not seen in the
+experiment.
+
+# Main model: static exposure and the intrinsic MIC (Figure 5)
+
+Park 2026 set Kdeg to zero to simulate static exposure and called the lowest
+concentration that held the 72 h count below the resazurin colour-change
+criterion the intrinsic MIC (MICint = 0.5 mg/L). Kdeg is a fixed `ini()`
+value, so the static scenario overrides it with a negligible rate.
+
+```{r static}
+static1 <- typ1 |> rxode2::ini(lkdeg = log(1e-10))
+static_concs <- c(0, 0.25, 0.5, 0.6, 0.7, 3.125, 6.25)
+st_ev <- bind_rows(lapply(seq_along(static_concs), function(i) {
+  ci <- static_concs[i]
+  dose <- if (ci > 0) {
+    data.frame(id = i, time = 0, amt = ci * vol1, evid = 1L, cmt = "central")
+  } else {
+    NULL
+  }
+  bind_rows(dose, data.frame(id = i, time = seq(0, 168, by = 2), amt = 0,
+                             evid = 0L, cmt = "bact", dvid = 2L)) |>
+    mutate(conc = ci)
+}))
+st_sim <- solve_typical(static1, st_ev, keep = "conc")
+```
+
+```{r static_plot, fig.cap = "Replicates Figure 5 of Park 2026: typical-value bacterial counts at static TGC concentrations. Dashed line: the MIC criterion digitised from Figure 5A (about 3.0e6 CFU/mL)."}
+criterion <- 10^6.48
+ggplot(st_sim, aes(time, bact)) +
+  geom_line() +
+  geom_hline(yintercept = criterion, linetype = "dashed", colour = "blue") +
+  scale_y_log10() +
+  facet_wrap(~conc, nrow = 1, labeller = label_both) +
+  labs(x = "Time (h)", y = "CFU/mL")
+```
+
+The maintainers digitised the 72 h values of the Figure 5A median curves
+against the panel gridlines. The digitisation uses 57.7 pixels per decade,
+calibrated on the 1e6 and 1e9 gridlines.
+
+```{r static_check}
+fig5a <- data.frame(
+  conc = c(0.25, 0.5, 0.6, 0.7),
+  log10_published = c(7.32, 6.52, 6.27, 6.14)
+)
+st72 <- st_sim |>
+  filter(time == 72, conc %in% fig5a$conc) |>
+  transmute(conc, log10_simulated = log10(bact))
+st_cmp <- left_join(fig5a, st72, by = "conc") |>
+  mutate(diff = log10_simulated - log10_published)
+st_cmp |>
+  dplyr::rename("TGC (mg/L)" = conc, "Figure 5A log10 CFU/mL" = log10_published,
+                "Simulated log10 CFU/mL" = log10_simulated,
+                "Difference (log10)" = diff) |>
+  knitr::kable(digits = 2, caption = "72 h bacterial count at static exposure: model typical value versus Figure 5A.")
+stopifnot(all(abs(st_cmp$diff) < 0.15))
+```
+
+The 0.5 mg/L curve ends at 72 h within a few percent of the criterion line,
+and 0.6 and 0.7 mg/L end below it. This matches the paper's MICint of 0.5 mg/L.
+Figure 5A plots the Monte-Carlo median, which differs slightly from the
+typical-value curve shown here.
+
+# Media model: MIC-assay time courses in 7H9 and MHB II (Figure 6)
+
+The media model doses into a 0.2 mL well. `MEDIUM_MHB` selects the medium:
+1 = MHB II, 0 = 7H9. Figure 6 shows the observed counts with the model fits,
+and at the higher concentrations those fits sit well away from the typical
+value. In 7H9 the typical growth rate (0.19 1/h) exceeds the maximum kill rate
+(0.18 1/h), so the typical curve cannot decline. The per-well random effect on
+K0 (SD 0.43) carries the observed suppression. The check below therefore asks
+whether each digitised 72 h observation lies inside the 95% prediction band
+(between-well variability plus residual error), using 200 simulated wells per
+condition. Because the error is proportional on the untransformed count, a
+few percent of simulated observations are negative; the lower band edge is
+floored at 1 CFU/mL, so in several panels only the upper edge is
+informative.
+
+```{r media_sim}
+media_concs <- c(0, 0.098, 0.391, 1.56, 6.25)
+media_grid <- tidyr::crossing(MEDIUM_MHB = c(0L, 1L), conc = media_concs) |>
+  mutate(g = row_number())
+n_media <- 200L
+media_ev <- bind_rows(lapply(seq_len(nrow(media_grid)), function(i) {
+  ids <- (i - 1L) * n_media + seq_len(n_media)
+  ci <- media_grid$conc[i]
+  dose <- if (ci > 0) {
+    data.frame(id = ids, time = 0, amt = ci * vol2, evid = 1L, cmt = "central")
+  } else {
+    NULL
+  }
+  obs <- tidyr::crossing(id = ids, time = seq(0, 72, by = 4)) |>
+    mutate(amt = 0, evid = 0L, cmt = "bact")
+  bind_rows(dose, obs) |>
+    mutate(MEDIUM_MHB = media_grid$MEDIUM_MHB[i], conc = ci) |>
+    arrange(id, time, desc(evid))
+}))
+rxode2::rxSetSeed(2026)
+media_vpc <- rxode2::rxSolve(mod2, media_ev, returnType = "data.frame",
+                             keep = c("MEDIUM_MHB", "conc"))
+media_typ <- solve_typical(typ2, filter(media_ev, id %% n_media == 1L),
+                           keep = c("MEDIUM_MHB", "conc"))
+```
+
+```{r media_plot, fig.height = 5, fig.cap = "Replicates Figure 6 of Park 2026: media-model typical value (line), 95% prediction band including residual error (ribbon) and the digitised Figure 6 observations (points) for 7H9 (top) and MHB II (bottom)."}
+# Maintainers' digitisation of Figure 6 (30.75 pixels per decade, calibrated
+# on the 1e4 and 1e10 gridlines; the 0 h points read 5.8 log10 against the
+# fitted N0 of 5.71).
+fig6 <- data.frame(
+  MEDIUM_MHB = rep(c(0L, 1L), each = 5),
+  conc = rep(media_concs, 2),
+  log10_72h = c(9.56, 9.50, 9.11, 6.78, 5.84, 8.34, 6.37, 5.82, 4.96, 3.02)
+)
+# Observations carry the proportional residual error, so the band is a
+# prediction band on `sim`, the simulated observation (between-well
+# variability plus residual error); `cfu` is the error-free prediction.
+# The untreated 7H9 counts at 72 h lie above Nmax, which only the residual
+# error can reach. A proportional error can draw a non-positive count, so the
+# lower edge is floored at 1 CFU/mL before taking logs.
+media_band <- media_vpc |>
+  group_by(MEDIUM_MHB, conc, time) |>
+  summarise(lo = max(quantile(sim, 0.025), 1), hi = quantile(sim, 0.975),
+            .groups = "drop")
+lab_medium <- c(`0` = "7H9", `1` = "MHB II")
+ggplot() +
+  geom_ribbon(data = media_band, aes(time, ymin = lo, ymax = hi), alpha = 0.2) +
+  geom_line(data = media_typ, aes(time, bact)) +
+  geom_point(data = fig6, aes(72, 10^log10_72h), colour = "red") +
+  scale_y_log10() +
+  facet_grid(MEDIUM_MHB ~ conc, labeller = labeller(MEDIUM_MHB = lab_medium,
+                                                    conc = label_both)) +
+  labs(x = "Time (h)", y = "CFU/mL")
+```
+
+```{r media_check}
+media_cmp <- media_band |>
+  filter(time == 72) |>
+  inner_join(fig6, by = c("MEDIUM_MHB", "conc")) |>
+  mutate(
+    medium = lab_medium[as.character(MEDIUM_MHB)],
+    log10_lo = log10(lo),
+    log10_hi = log10(hi),
+    inside = log10_72h > log10_lo & log10_72h < log10_hi
+  )
+media_cmp |>
+  select(medium, conc, log10_72h, log10_lo, log10_hi, inside) |>
+  dplyr::rename("Medium" = medium, "TGC (mg/L)" = conc,
+                "Figure 6 log10 CFU/mL" = log10_72h,
+                "Band 2.5%" = log10_lo, "Band 97.5%" = log10_hi,
+                "Inside" = inside) |>
+  knitr::kable(digits = 2, caption = "72 h observations of Figure 6 against the media model's 95% prediction band.")
+stopifnot(all(media_cmp$inside))
+
+# The medium effect itself: K0 in MHB II is K0 * exp(CovK0) = 0.092 1/h
+# (Results), and the typical untreated MHB II well grows less than the
+# 7H9 well over 72 h.
+k0_mhb <- 0.19 * exp(-0.73)
+stopifnot(abs(k0_mhb - 0.092) < 0.001)
+untreated <- media_typ |> filter(conc == 0, time == 72)
+stopifnot(untreated$bact[untreated$MEDIUM_MHB == 1] <
+            untreated$bact[untreated$MEDIUM_MHB == 0] / 5)
+```
+
+# Assumptions and deviations
+
+* **Random-effect scale.** Table 2 reports the random effects of the main
+  model as CV%. Monolix's log-normal CV is `sqrt(exp(omega^2) - 1)`, so the
+  variances are `log(1 + CV^2)`. Table 3 reports the media model's K0 random
+  effect as `omega = 0.43`, which in Monolix is the standard deviation of the
+  log-normal random effect, so its variance is `0.43^2`. The two readings agree
+  in magnitude: 45% CV gives `omega = 0.43`. Only the width of the
+  between-well bands depends on these values.
+* **Kdeg in the main model.** Table 2 fixes Kdeg to 0.041 1/h, while the
+  stability half-life in the text (15.8 h) corresponds to 0.044 1/h, the value
+  Table 3 uses. The packaged model keeps the Table 2 value used in the fit.
+* **Time origin.** `t` in the exponential onset and susceptibility terms is
+  the time since the start of the experiment, which coincides with the first
+  dose. A user simulating a delayed first dose should shift time accordingly.
+* **Static exposure.** Park 2026 set Kdeg to zero. The vignette overrides the
+  fixed `lkdeg` with `log(1e-10)` 1/h, which is numerically identical over
+  the simulated window.
+* **Culture-medium covariate.** The media model's medium indicator is encoded
+  as `MEDIUM_MHB` (1 = MHB II, 0 = 7H9). Kdeg is selected per medium, and K0
+  is multiplied by `exp(CovK0)` in MHB II (Table 3 footnote d).
+* **Residual error.** Equation 5 is a proportional error on untransformed
+  CFU/mL, encoded as `prop()`. The media model's residual estimate and RSE
+  (0.47, 5.43%) are printed identically to the main model's N row in Table 2.
+  They are carried as printed.
+* **Extinction.** The continuous ODE cannot represent eradication. Simulated
+  counts that fall below about 1 CFU per well (0.5 CFU/mL in 2 mL) should be
+  read as eradicated.
+* **Figure digitisation.** The Figure 5A and Figure 6 reference values were
+  digitised by the maintainers from the publisher's figure files. No observed
+  data were published.

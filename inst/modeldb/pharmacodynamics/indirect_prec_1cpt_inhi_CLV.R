@@ -2,6 +2,7 @@ indirect_prec_1cpt_inhi_CLV <- function() {
   description <- "One compartment precursor-dependent indirect response model with inhibition of drug response. Parameterized with clearance and volume. (effect)."
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+  dosing <- c("depot", "central")
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
@@ -17,7 +18,7 @@ indirect_prec_1cpt_inhi_CLV <- function() {
     lka  <- 0.45 ; label("Absorption rate (Ka)")
     lvc <- 3.45  ; label("Central volume of distribution (Vc)")
     lcl   <- 0.04 ; label("Clearance (CL)")
-    limax <- 0.56 ; label("Maximum inhibitory factor attributed to drug (imax)")
+    limax <- log(0.8) ; label("Maximum inhibitory factor attributed to drug (imax)")
     lic50 <- 0.67; label("Drug concentration producing 50% of maximum inhibition at effect site (ic50)")
     lkin <- 0.48; label("First-order rate constant for production of drug response(1/d)")
     lkout <- 0.34; label("First-order rate constant for loss of drug response")
@@ -44,7 +45,9 @@ indirect_prec_1cpt_inhi_CLV <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot-kel*central
+    precursor1(0) <- kpin/(kin + kpout)
     d/dt(precursor1)  <- kpin -(kin + kpout)*(1-imax*Cc/(Cc + ic50))*precursor1
+    effect(0) <- kin*kpin/(kout*(kin + kpout))
     d/dt(effect)   <- kin*(1-imax*Cc/(Cc + ic50))*precursor1-kout*effect
     
     Cc ~ prop(propSd)

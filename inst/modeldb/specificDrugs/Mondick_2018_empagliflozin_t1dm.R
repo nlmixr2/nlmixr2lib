@@ -25,6 +25,7 @@ Mondick_2018_empagliflozin_t1dm <- function() {
   )
   vignette <- "Mondick_2018_empagliflozin"
   units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
+  dosing <- c("depot", "central")
 
   # `glu_urine` follows the naming already established for cumulative excreted
   # urinary glucose in Lu_2014_sglt_qsp.R (same analyte, same role).

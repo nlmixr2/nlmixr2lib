@@ -25,6 +25,7 @@ Taubert_2016_linezolid <- function() {
     dosing = "mg",
     concentration = "mg/L"
   )
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

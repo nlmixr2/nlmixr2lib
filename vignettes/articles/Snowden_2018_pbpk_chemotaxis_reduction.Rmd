@@ -1,0 +1,512 @@
+---
+title: "Linked PBPK and E. coli chemotaxis model (Snowden 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Linked PBPK and E. coli chemotaxis model (Snowden 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Snowden TJ, van der Graaf PH, Tindall MJ. Model reduction in
+  mathematical pharmacology: integration, reduction and linking of PBPK and
+  systems biology models. *J Pharmacokinet Pharmacodyn* 2018;45(4):537-555.
+  [doi:10.1007/s10928-018-9584-y](https://doi.org/10.1007/s10928-018-9584-y)
+  (PMC6061126, open access).
+* Electronic Supplementary Material 1 (ESM1, PDF) prints the PBPK equations
+  (Eq. 15), the system matrix of the midazolam PBPK model (section 2.1), the
+  chemotaxis reactions, equations, parameters and initial conditions
+  (Eqs. 20-23, Table 1), and the reduced models (Eqs. 18-19 and 24-33).
+  ESM2 (ZIP) holds MATLAB symbolic files for the ERK-activation reduction.
+
+The paper is about **model reduction**: it reduces the linear part of a
+whole-body PBPK model by balanced truncation and the nonlinear signalling
+network it drives by proper lumping, then links the reduced pieces. Its
+demonstrations run published models:
+
+* the perfusion-limited whole-body PBPK framework of Jones and Rowland-Yeo
+  (2013; packaged separately as `Jones_2013_perfusionLimited_pbpk`), with the
+  physiology of main-text Table 1 and three compound parameter sets in Table 2;
+* the 11-species E. coli chemotaxis signalling model of Tindall et al. (2009);
+* the 99-species ERK-activation model of Sasagawa et al. (2005).
+
+The compounds are hypothetical. In the authors' words, the examples "do not
+relate to specific clinical cases of experimentally tested drugs": a strong
+base, a weak base and an acid are given the parameters of pindolol,
+midazolam and thiopental, and in the chemotaxis example the compound acts
+as the bacterial attractant.
+
+**What is packaged.** One model per compound, each the *unreduced linked
+model* of the chemotaxis example (Figure 6, "25D"): a 14-state PBPK model plus
+the 11-state chemotaxis network. The PBPK half alone also reproduces Figure 5,
+so these three files cover both figures.
+
+| Model | Compound parameter set |
+|---|---|
+| `Snowden_2018_pindolol_chemotaxis_qsp` | strong base (pindolol, Table 2) |
+| `Snowden_2018_midazolam_chemotaxis_qsp` | weak base (midazolam, Table 2) |
+| `Snowden_2018_thiopental_chemotaxis_qsp` | acid (thiopental, Table 2) |
+
+**What is not packaged, and why** (details under Errata):
+
+* the reduced models (the 3-state balanced-truncation PBPK of ESM1
+  Eqs. 18-19, the 4-state lumped chemotaxis model of ESM1 Eq. 31, and the
+  7-state reduced linked model of ESM1 Eqs. 32-33). They are approximations
+  of the packaged models, and the printed lumped chemotaxis equations do not
+  hold their own steady state;
+* the ERK-activation example. The rate constants of the hypothetical EGFR
+  antagonist that links the PBPK to the ERK network are not printed, and the
+  network itself is BioModels BIOMD0000000049 from Sasagawa et al. (2005).
+
+## The as-run model differs from the printed equations
+
+The authors' calculation is not the 16-compartment model that ESM1 Eq. 15
+writes out. Four printed artefacts agree that it had 14 states, with no
+testes and no rest-of-body compartment:
+
+* the midazolam system matrix in ESM1 section 2.1 is 14 x 14;
+* main-text Table 3 starts its reductions at 13 dimensions;
+* Figure 6 labels the unreduced linked model "25D", which is 14 + 11;
+* Table 1 prints no blood flow for testes or rest of body, and Table 2
+  prints no partition coefficient for them.
+
+The flows of those two tissues are therefore not returned: the lung (and
+arterial blood) carries the whole cardiac output, but only 88.5% of it is
+routed to tissues. That arterial leak, 44.8 L/h of blood, is the dominant
+route of drug loss in the as-run model. The printed matrix also has
+essentially no hepatic metabolic clearance. Both features are kept here, so
+that the model reproduces the published curves. Neither is physiology, and
+**these models are a record of the published simulations, not usable
+pharmacokinetic models of pindolol, midazolam or thiopental.**
+
+# Population
+
+There are no subjects. The physiology is a single 70 kg male reference adult
+(main-text Table 1). The chemotaxis network describes one E. coli cell, with
+species concentrations in umol/L.
+
+# Source trace
+
+| Element | Source location | Value / form |
+|---|---|---|
+| Body weight, cardiac output | Table 1 rows BW, QC | 70 kg, 390 L/h |
+| 13 fractional tissue volumes | Table 1 rows FVad ... FVar | as printed |
+| 11 fractional blood flows | Table 1 rows FQad ... FQsp | as printed; hepatic artery = FQh - FQgu - FQsp |
+| BP, Ka, 11 Kp per compound | Table 2 | as printed |
+| Tissue mass balances | ESM1 Eq. 15a-15p, in amount form | matches the ESM1 section 2.1 matrix |
+| Testes, rest of body | absent | ESM1 section 2.1 matrix (14 x 14); Figure 6 "25D" |
+| Hepatic clearance `clint` | ESM1 Eq. 15g term; value from ESM1 section 2.1 matrix | 0 (Table 2 CLbl recorded, not used) |
+| Renal clearance, oral F | ESM1 Eq. 15f, 15p | not printed; absent |
+| Chemotaxis reactions and ODEs | ESM1 Eqs. 20a-20h, 21a-21k | mass action |
+| Chemotaxis rate constants, K, h | ESM1 Table 1 | as printed (per s, per M s) |
+| Initial conditions | ESM1, below Eq. 21 | zero-ligand steady state |
+| Ligand input | ESM1 Eqs. 22-23 | u = 1 - L^h / (K^h + L^h) |
+| Linkage L = gut tissue concentration | ESM1 section 4 | mg/L used as umol/L, unconverted |
+| Output `Cc` | Figure 5 y-axis | venous blood concentration x BP |
+| Output `cheyp_total` | Figure 6 y-axis | CheY-P + CheA.CheY-P + CheY-P.CheZ |
+
+```{r load}
+drugs <- c("pindolol", "midazolam", "thiopental")
+mods <- lapply(drugs, function(d) {
+  rxode2::rxode2(readModelDb(paste0("Snowden_2018_", d, "_chemotaxis_qsp")))
+})
+names(mods) <- drugs
+mods$midazolam$state
+```
+
+# Check 1: the printed midazolam system matrix
+
+ESM1 section 2.1 prints the 14 x 14 matrix `A` of the midazolam PBPK model in
+amount form. Any mistyped Table 1 or Table 2 value, or a wrong flow route,
+changes an entry. The matrix is recovered here from the packaged model as a
+numerical Jacobian. Each PBPK state is started at 1 mg, and the forward
+difference is Richardson-extrapolated over two step sizes.
+
+```{r jacobian}
+pbpk_states <- c(
+  "adipose", "bone", "brain", "gut", "heart", "kidney", "liver", "lung",
+  "muscle", "skin", "spleen", "venous", "arterial", "depot"
+)
+jacobian_col <- function(mod, j, dt) {
+  inits <- setNames(rep(0, length(pbpk_states)), pbpk_states)
+  inits[j] <- 1
+  ev <- rxode2::et(c(0, dt, 2 * dt), cmt = "depot")
+  s <- rxode2::rxSolve(mod, ev, inits = inits, atol = 1e-14, rtol = 1e-13,
+                       returnType = "data.frame")
+  d1 <- (unlist(s[2, pbpk_states]) - inits) / dt
+  d2 <- (unlist(s[3, pbpk_states]) - inits) / (2 * dt)
+  2 * d1 - d2
+}
+A_model <- sapply(pbpk_states, function(j) jacobian_col(mods$midazolam, j, 1e-4))
+dimnames(A_model) <- list(pbpk_states, pbpk_states)
+
+# ESM1 section 2.1, transcribed as printed (rows = d/dt of the state,
+# columns = contributing state; same order as pbpk_states).
+A_printed <- matrix(0, 14, 14, dimnames = list(pbpk_states, pbpk_states))
+A_printed["adipose", c("adipose", "arterial")] <- c(-0.29, 10.84)
+A_printed["bone", c("bone", "arterial")] <- c(-0.76, 10.84)
+A_printed["brain", c("brain", "arterial")] <- c(-3.46, 26.01)
+A_printed["gut", c("gut", "arterial", "depot")] <- c(-4.70, 31.75, 6.11)
+A_printed["heart", c("heart", "arterial")] <- c(-11.15, 8.67)
+A_printed["kidney", c("kidney", "arterial")] <- c(-50.85, 41.19)
+A_printed["liver", c("gut", "liver", "spleen", "arterial")] <- c(4.70, -10.96, 13.29, 11.21)
+A_printed["lung", c("lung", "venous")] <- c(-116.66, 108.39)
+A_printed["muscle", c("muscle", "arterial")] <- c(-0.78, 36.85)
+A_printed["skin", c("skin", "arterial")] <- c(-0.51, 10.84)
+A_printed["spleen", c("spleen", "arterial")] <- c(-13.29, 3.74)
+A_printed["venous", c("adipose", "bone", "brain", "heart", "kidney", "liver", "muscle", "skin", "venous")] <-
+  c(0.29, 0.76, 3.46, 11.15, 50.85, 10.95, 0.78, 0.51, -108.39)
+A_printed["arterial", c("lung", "arterial")] <- c(116.66, -216.78)
+A_printed["depot", "depot"] <- -6.11
+
+cmp_A <- data.frame(
+  row = rep(pbpk_states, times = 14),
+  col = rep(pbpk_states, each = 14),
+  printed = as.vector(A_printed),
+  model = as.vector(A_model)
+) |>
+  # 0.05 is the resolution of the printed two-decimal matrix and sits well
+  # above the O(dt^2) residue of the extrapolated difference (< 0.02).
+  filter(printed != 0 | abs(model) > 0.05) |>
+  mutate(rel_diff_pct = 100 * (model - printed) / printed)
+knitr::kable(cmp_A, digits = 3)
+```
+
+Every printed entry is reproduced except the oral-absorption pair, which is
+discussed under Errata. The printed matrix uses 6.11 1/h, while Table 2 gives
+midazolam Ka = 1.13 1/h. No entry appears where the printed matrix has a
+zero, so there is no testes, no rest-of-body and no renal or appreciable
+hepatic elimination. The largest relative differences (0.8%) fall on the
+smallest entries, such as adipose 0.2876 printed as 0.29, which is two-decimal
+rounding of the matrix itself. The largest absolute one (gut inflow 31.65
+against 31.75) is the three-figure rounding of FQgu = 0.146 in Table 1.
+
+```{r jacobian-check}
+non_ka <- cmp_A |> filter(col != "depot")
+stopifnot(
+  # the model has exactly the printed sparsity pattern
+  all(non_ka$printed != 0),
+  # every non-absorption coefficient to within the rounding of Tables 1 and 2
+  max(abs(non_ka$rel_diff_pct)) < 1.5,
+  # the arterial column leaks 11.5% of cardiac output, as printed (-24.84)
+  abs(sum(A_model[, "arterial"]) - sum(A_printed[, "arterial"])) < 0.3
+)
+```
+
+# Simulation
+
+A single 500 mg oral dose of each compound, observed to 30 hours. The
+observation grid is finer over the first hour, because thiopental
+(Ka = 5.64 1/h) peaks at about 15 minutes.
+
+```{r simulate}
+obs_times <- sort(unique(c(seq(0, 1, by = 0.01), seq(1, 48, by = 0.05))))
+run <- function(mod, dose, params = NULL) {
+  ev <- rxode2::et(amt = dose, cmt = "depot") |>
+    rxode2::et(obs_times, cmt = "depot")
+  as.data.frame(rxode2::rxSolve(mod, ev, params = params, atol = 1e-10, rtol = 1e-10))
+}
+sims <- bind_rows(lapply(drugs, function(d) run(mods[[d]], 500) |> mutate(drug = d)))
+sims$drug <- factor(sims$drug, levels = drugs)
+```
+
+# Check 2: mass balance against the closed form
+
+Drug leaves the 14-state model only through the arterial leak (clearance
+`q_leak` times the arterial blood concentration), because `clint` is zero and
+there is no renal term. So the dose that is no longer in any compartment must
+equal `q_leak * AUC(c_arterial)`. This checks the flow routing independently
+of every partition coefficient.
+
+```{r mass-balance}
+mass <- sims |>
+  group_by(drug) |>
+  summarise(
+    q_leak = 390 * (1 - (0.05 + 0.05 + 0.12 + 0.146 + 0.04 + 0.19 +
+      (0.215 - 0.146 - 0.0172) + 0.17 + 0.05 + 0.0172)),
+    auc_arterial = sum(diff(time) * (head(c_arterial, -1) + tail(c_arterial, -1)) / 2),
+    remaining = last(depot + adipose + bone + brain + gut + heart + kidney +
+      liver + lung + muscle + skin + spleen + venous + arterial),
+    .groups = "drop"
+  ) |>
+  mutate(
+    lost_via_leak = q_leak * auc_arterial,
+    balance_pct = 100 * (lost_via_leak + remaining - 500) / 500
+  )
+knitr::kable(mass, digits = 4)
+stopifnot(all(abs(mass$balance_pct) < 0.5))
+```
+
+# Check 3: the chemotaxis network starts at its zero-ligand steady state
+
+The printed initial conditions satisfy the four conservation totals of ESM1
+Table 1 exactly (AT = 7.9, BT = 0.28, YT = 9.7, ZT = 3.8 umol/L). Without
+drug they also hold the network at steady state, so the output stays at
+6.808 umol/L. The totals must also be conserved during the drug-driven
+excursion.
+
+```{r chemotaxis-ss}
+no_drug <- run(mods$midazolam, 0)
+totals <- sims |>
+  mutate(
+    a_total = chea + cheap + cheap_chey + chea_cheyp + chea_chey,
+    b_total = cheb + chebp,
+    y_total = cheap_chey + chea_cheyp + chea_chey + cheyp_chez + chey + cheyp,
+    z_total = cheyp_chez + chez
+  ) |>
+  summarise(
+    across(c(a_total, b_total, y_total, z_total), ~ max(abs(.x - first(.x)))),
+    .by = drug
+  )
+knitr::kable(totals, digits = 8)
+stopifnot(
+  abs(no_drug$cheyp_total[1] - 6.808) < 0.001,
+  max(no_drug$cheyp_total) - min(no_drug$cheyp_total) < 0.01,
+  all(as.matrix(totals[, -1]) < 1e-5)
+)
+```
+
+# Replicate Figure 5: venous drug concentration
+
+Figure 5 plots a "plasma concentration" after 500 mg orally. It is
+reproduced by the venous *blood* concentration multiplied by BP, which is the
+packaged `Cc`. Dividing by BP, as the physiology would require, misses all
+three panels by the factor 1/BP^2 (3.6 for midazolam). The points are read
+from the solid "Original System" curves of Figure 5.
+
+```{r fig5, fig.cap = "Replicates Figure 5 of Snowden 2018 (solid lines: packaged model; points: values read from the published original-system curves)."}
+fig5_ref <- tibble::tribble(
+  ~drug,        ~time, ~ref,
+  "pindolol",    1.0,  1.50,
+  "pindolol",    8.0,  0.36,
+  "midazolam",   1.0,  0.93,
+  "midazolam",   5.0,  0.39,
+  "thiopental",  0.3,  5.70,
+  "thiopental",  3.0,  0.55
+) |> mutate(drug = factor(drug, levels = drugs))
+xmax <- c(pindolol = 8, midazolam = 5, thiopental = 3)
+ggplot(sims |> filter(time <= xmax[as.character(drug)]), aes(time, Cc)) +
+  geom_line() +
+  geom_point(data = fig5_ref, aes(time, ref), shape = 5, size = 2.5) +
+  facet_wrap(~drug, scales = "free") +
+  labs(x = "Time (h)", y = "Cc, Figure 5 'plasma concentration' (mg/L)")
+```
+
+```{r fig5-check}
+fig5_cmp <- fig5_ref |>
+  rowwise() |>
+  mutate(model = approx(sims$time[sims$drug == drug], sims$Cc[sims$drug == drug], time)$y) |>
+  ungroup() |>
+  mutate(ratio = model / ref)
+knitr::kable(fig5_cmp, digits = 3)
+stopifnot(all(abs(fig5_cmp$ratio - 1) < 0.12))
+```
+
+# Replicate Figure 6: total phosphorylated CheY
+
+The compound reaches the gut tissue, suppresses CheA autophosphorylation
+through the receptor term, and total CheY-P falls within minutes from 6.81 to
+about 0.1 umol/L. It recovers as the gut concentration falls below
+K = 2.6. The points are read from the solid "unreduced linked model" curves
+(for pindolol and midazolam, from the reduced-model markers that lie on
+them).
+
+```{r fig6, fig.cap = "Replicates Figure 6 of Snowden 2018 (lines: packaged model after 500 mg orally; points: values read from the published unreduced-model curves)."}
+fig6_ref <- tibble::tribble(
+  ~drug,        ~time, ~ref,
+  "pindolol",    3.5,  1.35,
+  "pindolol",    9.4,  2.90,
+  "pindolol",   15.2,  4.50,
+  "pindolol",   22.0,  5.85,
+  "midazolam",   4.5,  1.40,
+  "midazolam",   9.5,  3.10,
+  "midazolam",  14.6,  4.85,
+  "midazolam",  21.5,  6.20,
+  "thiopental",  1.0,  1.75,
+  "thiopental",  2.0,  3.65,
+  "thiopental",  3.0,  5.20,
+  "thiopental",  4.0,  5.95,
+  "thiopental",  6.0,  6.45
+) |> mutate(drug = factor(drug, levels = drugs))
+xmax6 <- c(pindolol = 30, midazolam = 25, thiopental = 8)
+ggplot(sims |> filter(time <= xmax6[as.character(drug)]), aes(time, cheyp_total)) +
+  geom_line() +
+  geom_point(data = fig6_ref, aes(time, ref), shape = 1, size = 2.5) +
+  facet_wrap(~drug, scales = "free_x") +
+  labs(x = "Time (h)", y = "Total CheY-P (umol/L)")
+```
+
+```{r fig6-check}
+fig6_cmp <- fig6_ref |>
+  rowwise() |>
+  mutate(model = approx(sims$time[sims$drug == drug], sims$cheyp_total[sims$drug == drug], time)$y) |>
+  ungroup() |>
+  mutate(diff = model - ref)
+knitr::kable(fig6_cmp, digits = 3)
+stopifnot(all(abs(fig6_cmp$diff) < 0.5))
+```
+
+# The literal readings of the text do not reproduce the figures
+
+Two statements in the paper disagree with the curves it publishes. The
+packaged models follow the curves, and these checks pin that choice. If a
+later correction makes the text right, they go red.
+
+**Dose.** The main text gives the attractant dose of Figure 6 as 150 mg.
+At 150 mg the gut concentration falls below K much sooner, and CheY-P
+recovers hours earlier than published.
+
+**Hepatic clearance.** Table 2 gives a hepatic blood clearance (CLbl,
+mL/min/kg). Converted to L/h and applied as the ESM1 Eq. 15g clearance term,
+it removes most of the drug, and the Figure 5 terminal concentrations come
+out several-fold too low.
+
+```{r contrasts}
+mid150 <- run(mods$midazolam, 150)
+clbl_lh <- c(pindolol = 4.20, midazolam = 8.70, thiopental = 2.02) * 70 * 60 / 1000
+literal_cl <- bind_rows(lapply(drugs, function(d) {
+  run(mods[[d]], 500, params = c(clint = clbl_lh[[d]])) |> mutate(drug = d)
+}))
+contrast <- tibble::tibble(
+  check = c(
+    "midazolam total CheY-P at 9.5 h, 150 mg (published 3.1)",
+    "pindolol Cc at 8 h with CLbl (published 0.36)",
+    "midazolam Cc at 5 h with CLbl (published 0.39)",
+    "thiopental Cc at 3 h with CLbl (published 0.55)"
+  ),
+  value = c(
+    approx(mid150$time, mid150$cheyp_total, 9.5)$y,
+    with(subset(literal_cl, drug == "pindolol"), approx(time, Cc, 8)$y),
+    with(subset(literal_cl, drug == "midazolam"), approx(time, Cc, 5)$y),
+    with(subset(literal_cl, drug == "thiopental"), approx(time, Cc, 3)$y)
+  )
+)
+knitr::kable(contrast, digits = 3)
+stopifnot(
+  contrast$value[1] > 3.1 + 1.5,
+  all(contrast$value[2:4] / c(0.36, 0.39, 0.55) < 0.6)
+)
+```
+
+# PKNCA
+
+The paper reports no NCA, so the table below is descriptive. It records the
+exposure of the as-run model for the 500 mg oral dose of Figure 5, computed
+on `Cc` (the Figure 5 quantity).
+
+```{r pknca}
+conc_data <- sims |>
+  filter(!is.na(Cc)) |>
+  mutate(id = as.integer(drug), treatment = as.character(drug)) |>
+  select(id, treatment, time, Cc)
+dose_data <- tibble::tibble(
+  id = 1:3, treatment = drugs, time = 0, amt = 500
+)
+o_conc <- PKNCA::PKNCAconc(conc_data, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(dose_data, amt ~ time | treatment + id)
+o_data <- PKNCA::PKNCAdata(
+  o_conc, o_dose,
+  intervals = data.frame(start = 0, end = 48, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+)
+res <- PKNCA::pk.nca(o_data)
+nca_wide <- as.data.frame(res) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+nca_wide |>
+  rename(Compound = treatment, `Cmax (mg/L)` = cmax, `Tmax (h)` = tmax, `AUC0-48 (mg*h/L)` = auclast) |>
+  knitr::kable(digits = 3)
+stopifnot(
+  nrow(nca_wide) == 3,
+  # Tmax follows Ka: thiopental (5.64/h) earliest, then pindolol and midazolam at about 1 h
+  nca_wide$tmax[nca_wide$treatment == "thiopental"] < 0.4,
+  all(abs(nca_wide$tmax[nca_wide$treatment != "thiopental"] - 1) < 0.15)
+)
+```
+
+# Assumptions and deviations
+
+* **Structure follows the as-run calculation, not ESM1 Eq. 15.** The testes
+  and rest-of-body compartments are omitted, as in the printed midazolam
+  system matrix, the 13-dimension start of Table 3, and the "25D" label of
+  Figure 6. Their blood flows are not returned to venous blood. The result
+  is an 11.5% arterial leak, and that leak dominates elimination.
+* **Hepatic clearance is zero.** The ESM1 Eq. 15g clearance term is kept as
+  the parameter `clint`, fixed to 0. The printed matrix shows no more than
+  rounding between the liver diagonal (-10.96) and the liver-to-vein entry
+  (10.95), and Figures 5 and 6 are reproduced with zero and not with Table 2's
+  CLbl. CLbl is recorded in the model metadata, and supplying a value for
+  `clint` (L/h) switches metabolism on.
+* **Absorption uses Table 2 Ka, not the printed matrix.** For midazolam the
+  matrix has 6.11 1/h against 1.13 1/h in Table 2. Table 2's value reproduces
+  the timing of Figure 5 (peak near 1 h). The matrix value would put the
+  venous peak at about 0.4 h.
+* **Unprinted constants are omitted, not guessed.** These are the renal
+  clearance and oral fraction F of Eq. 15 and the testes and rest-of-body
+  flows and partition coefficients. The printed matrix has zero renal
+  clearance, and F enters Eq. 15p only as a multiplier of Ka.
+* **`Cc` is the Figure 5 quantity**: venous blood concentration times BP. It
+  is not a physiological plasma concentration, which would be divided by BP.
+  The venous blood concentration is available as `c_blood`.
+* **Linkage units are as the authors ran them.** The gut tissue
+  concentration in mg/L enters the Hill term as if it were in umol/L (K =
+  2.6 umol/L). No molecular weight conversion is applied.
+* **Time.** The chemotaxis constants are printed per second; the model runs
+  in hours, so rates are multiplied by 3600 (and second-order rates also by
+  1e-6 to convert per molar to per umol/L). The network equilibrates in
+  seconds and is stiff. The vignette solves with tight tolerances.
+* **Dose.** Figures 5 and 6 are both reproduced with 500 mg. The main text's
+  150 mg for Figure 6 does not reproduce it (see above).
+
+# Errata
+
+* **Main text, chemotaxis section:** "the E. coli cells were limited to the
+  liver and that this represented the effective compartment". ESM1 section 4
+  links the *gut* compartment, and only the gut reproduces Figure 6. With
+  liver concentration as the ligand, the required ligand-to-model ratio
+  varies four-fold between compounds; with gut concentration it is constant.
+* **Main text:** Figure 6 dose "150 mg". The figure is reproduced by 500 mg,
+  the dose of Figure 5 and Table 3.
+* **ESM1 Eq. 15** describes 16 compartments; the as-run model had 14 (see
+  above). The concentration-form equations of Eq. 15 also omit the
+  volume ratios that the printed (amount-form) matrix contains. For example,
+  15a's arterial inflow coefficient is printed as Q/V(adipose), but the matrix
+  has Q/V(arterial) = 10.84. The packaged model follows the matrix.
+* **ESM1 Eq. 15m:** the testes term divides by V(testes) rather than V(vein),
+  and the rest-of-body term by V(rest of body). These are moot in the as-run
+  model.
+* **ESM1 section 2.1 matrix, oral absorption:** 6.11 1/h, against Table 2
+  midazolam Ka = 1.13 1/h (see above).
+* **ESM1 Eqs. 21c and 21e** print the ligand-modulated CheA.CheY
+  phosphorylation as `k1 u`. ESM1 Eqs. 20c and 22 name it `k10(L)`, and Table 1
+  gives k10 = k1 = 3.75 1/s, so the result is identical either way.
+* **Reduced models (not packaged).** The 3-state balanced-truncation model
+  (ESM1 Eqs. 18-19) is the reduction of the printed matrix, including its
+  6.11 1/h absorption rate. Its gut output reproduces the late phase of the
+  midazolam curve in Figure 6. Its venous output does not reproduce Figure 5
+  (peak about 12.7 mg/L at 0.3 h against 0.93 at 1 h). The printed 4-state
+  lumped chemotaxis model (ESM1 Eq. 31, carried into Eq. 32) does not hold
+  its own initial state at zero ligand. Equation 31b carries a term
+  `2 (...) alpha9 gamma3 x2`, which comes from adding Eqs. 29c and 29f.
+  But Eq. 29f prints the CheA + CheY-P association with the wrong sign: Eq.
+  21h has `-k-8 x1 x8`, and the conservation substitution of Eq. 28 cannot
+  reverse it. With the factor 2 the printed system diverges. With the
+  physically correct 0 it settles at a total CheY-P of 11.0 rather than 6.81
+  umol/L, so a further discrepancy remains unidentified. The reduced models
+  are approximations of the packaged ones in any case.
+* **ERK-activation example (not packaged).** The hypothetical EGFR
+  antagonist's binding constants are not printed, and the ERK network is
+  BioModels BIOMD0000000049 (Sasagawa et al. 2005). ESM2 provides MATLAB
+  Symbolic Math files for the reduction only.
+* A literature check on 2026-11-25 found no erratum or correction for this
+  article.

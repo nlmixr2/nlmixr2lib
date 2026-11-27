@@ -1,0 +1,472 @@
+---
+title: "Gabapentin (Glerum 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Gabapentin (Glerum 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+```{r load-model}
+ui <- rxode2::rxode(readModelDb("Glerum_2018_gabapentin"))
+```
+
+# Model and source
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+
+**Read this first.** The parameter values Glerum 2018 publishes (Table 3) do
+not reproduce the paper's own data. Simulated from those values, gabapentin
+peak concentration and AUC are about half of what the study observed, and the
+typical terminal half-life (2.8 h) is about a third of the observed mean (8.2
+h). The model is packaged as published, with
+nothing adjusted, so that the published estimates are available and the
+discrepancy can be examined. It should not be used to predict gabapentin
+exposure without that in mind. The sections
+[Typical-value checks](#typical-value-checks) and
+[Comparison with the observed NCA](#comparison-with-the-observed-nca) quantify
+the gap.
+
+Glerum 2018 re-analysed a four-way crossover comparative bioavailability study
+of oral 800 mg immediate-release gabapentin: the originator and three generic
+formulations registered as bioequivalent in the Netherlands, one per period, in
+24 healthy volunteers. The analysis was nonparametric (Pmetrics 1.5, NPAG
+algorithm). Its aim was a model that later simulations could use to look for
+individuals whose exposure changes by more than the 80-125% bioequivalence
+margin when they switch formulation.
+
+The final model (Equation 3) has two compartments, first-order absorption with
+an absorption lag time, and an elimination rate constant proportional to
+Cockcroft-Gault creatinine clearance (Equation 2, `Ke = Kr * CrCl`):
+
+```
+dose --(Tlag)--> depot --ka--> central <--k12/k21--> peripheral1
+                                  |
+                                  kel = Kr * CRCL
+```
+
+Every parameter was estimated separately for each formulation by splitting each
+volunteer's four periods into four "pseudo subjects" (96 in all). Only one
+pooled set of weighted medians and the between-occasion coefficients of
+variation are published, so the package model carries those medians as typical
+values with four-occasion inter-occasion variability and no inter-individual
+variability.
+
+```{r structure}
+cat("ODE states:", paste(ui$state, collapse = " -> "), "\n")
+cat("Observation:", paste(ui$predDf$var, collapse = ", "), "\n")
+stopifnot(identical(ui$state, c("depot", "central", "peripheral1")))
+```
+
+# Population
+
+From Methods ('Gabapentin pharmacokinetic data'): 24 healthy volunteers (14
+female, 10 male) completed all four periods. Mean age was 35 years (range
+21-55), mean body-mass index 23.6 kg/m^2 (19.9-30.0), mean body weight 71.0 kg
+(52.7-97.0) and mean Cockcroft-Gault creatinine clearance 120 mL/min
+(71.2-183.3). Plasma was sampled before the dose and at 0.5, 1, 1.5, 2, 2.5, 3,
+3.5, 4, 4.5, 5, 6, 8, 12, 24, 36 and 48 h after it in each period; 1610
+concentrations entered the analysis.
+
+```{r population}
+str(readModelDb("Glerum_2018_gabapentin")()$population, give.attr = FALSE)
+```
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| `lka` | log(0.26) 1/h | Table 3, Ka 0.26 (95% CI 0.23-0.31) |
+| `ltlag` | log(0.30) h | Table 3, Tlag 0.30 (0.21-0.35) |
+| `lvc` | log(90.0) L | Table 3, V 90.0 (83.5-106) |
+| `lk12` | log(0.16) 1/h | Table 3, KCP 0.16 (0.12-0.36) |
+| `lk21` | log(0.82) 1/h | Table 3, KPC 0.82 (0.30-1.69) |
+| `lkel` | log(0.32) 1/h at CRCL 120 mL/min | Table 3, Ke 0.32 (0.29-0.36), 'recalculated from rate per ml/min creatinine clearance' |
+| `kel = exp(lkel) * CRCL / 120` | -- | Equation 2, `Ke = Kr * CrCl`; reference 120 mL/min = cohort mean (Methods) |
+| `lfdepot` | log(1), held constant | Equation 3 'Fabs'; no value published (see Assumptions) |
+| `etaiov_ka_*` | log(0.35^2 + 1) | Table 3, Ka BOV 35% |
+| `etaiov_tlag_*` | log(0.75^2 + 1) | Table 3, Tlag BOV 75% |
+| `etaiov_vc_*` | log(0.34^2 + 1) | Table 3, V BOV 34% |
+| `etaiov_k12_*` | log(1.10^2 + 1) | Table 3, KCP BOV 110% |
+| `etaiov_k21_*` | log(0.68^2 + 1) | Table 3, KPC BOV 68% |
+| `etaiov_kel_*` | log(0.34^2 + 1) | Table 3, Ke BOV 34% |
+| `addSd`, `propSd` | 0.02 mg/L, 0.0075 | Methods: assay SD = 0.02 + 0.0075 * concentration |
+| `lambdaSd` | 0.2990 mg/L | Discussion 'Model uncertainties': lambda fitted by NPAG |
+| Error = sqrt(SD^2 + lambda^2) | -- | Methods, 'error = (SD2 + Lambda2)0.5' |
+| ODEs and `alag(depot)` | -- | Equation 3 |
+| `Cc = central / vc` | -- | Equation 3, `concentration_blood = ammnt_blood / vol_blood` |
+
+# Typical-value checks {#typical-value-checks}
+
+These quantities follow from the parameters alone and are checked exactly.
+
+```{r typical-checks}
+p <- as.list(ui$theta)
+ka <- exp(p$lka)
+vc <- exp(p$lvc)
+k12 <- exp(p$lk12)
+k21 <- exp(p$lk21)
+kel <- exp(p$lkel)
+kr <- kel / 120
+
+# Disposition eigenvalues of the two-compartment system.
+sum_k <- k12 + k21 + kel
+beta <- (sum_k - sqrt(sum_k^2 - 4 * k21 * kel)) / 2
+alpha <- k21 * kel / beta
+auc_closed <- 800 / (kel * vc)
+
+# Pmetrics assay-error CV at 1 and 10 mg/L.
+cv_assay <- (p$addSd + p$propSd * c(1, 10)) / c(1, 10)
+
+checks <- data.frame(
+  Quantity = c(
+    "Kr (1/h per mL/min)",
+    "Assay-error CV at 1 mg/L (%)",
+    "Assay-error CV at 10 mg/L (%)",
+    "Clearance kel * V at CRCL 120 (L/h)",
+    "Clearance kel * V at CRCL 120 (mL/min)",
+    "Distribution half-life (h)",
+    "Terminal half-life (h)",
+    "AUC0-inf, 800 mg, F = 1 (mg*h/L)"
+  ),
+  Value = vapply(
+    c(kr, 100 * cv_assay, kel * vc, kel * vc * 1000 / 60, log(2) / alpha, log(2) / beta, auc_closed),
+    function(v) format(signif(v, 4), scientific = FALSE, trim = TRUE),
+    character(1)
+  ),
+  Paper = c(
+    "upper search bound 0.008",
+    "2.75", "0.95",
+    "--", "cohort CrCl mean 120",
+    "--", "observed mean 8.24",
+    "observed 62.4-64.5 (Table 2)"
+  )
+)
+knitr::kable(checks, caption = "Derived typical values. Assay-error CV range from the Discussion ('a coefficient of variation between 2.75-0.95%').")
+
+stopifnot(
+  # Kr inside the Pmetrics search range (Methods: upper bound 0.008 h.ml-1).
+  kr > 0, kr < 0.008,
+  # The paper's own statement of the assay-error polynomial pins C0 and C1.
+  abs(100 * cv_assay - c(2.75, 0.95)) < 0.005
+)
+```
+
+The derived clearance is the first sign that the published medians do not form
+a consistent model. Gabapentin is not metabolised and is eliminated unchanged
+by the kidney, yet `kel * V` is 28.8 L/h (480 mL/min), four times the cohort's
+mean creatinine clearance. The observed AUC0-inf of about 62 mg*h/L implies an
+apparent clearance of about 12.9 L/h. Likewise, the micro-constants give a
+terminal half-life of 2.8 h against the observed mean of 8.24 h.
+
+A typical-value solve reproduces the closed-form AUC, which confirms the ODE
+encoding:
+
+```{r typical-solve}
+grid <- c(0, seq(0.01, 120, by = 0.01))
+ev_typ <- data.frame(
+  id = 1L, time = grid,
+  evid = c(1L, rep(0L, length(grid) - 1)),
+  amt = c(800, rep(0, length(grid) - 1)),
+  cmt = c("depot", rep("central", length(grid) - 1)),
+  OCC = 1L, CRCL = 120
+)
+typ <- rxode2::rxSolve(rxode2::zeroRe(ui), ev_typ, returnType = "data.frame")
+auc_num <- sum(diff(typ$time) * (head(typ$Cc, -1) + tail(typ$Cc, -1)) / 2)
+cat(sprintf(
+  "Typical Cmax %.2f mg/L at %.2f h; AUC0-120 %.2f vs closed-form AUC0-inf %.2f mg*h/L\n",
+  max(typ$Cc), typ$time[which.max(typ$Cc)], auc_num, auc_closed
+))
+# Same parameters on both sides, so only integration and trapezoid error
+# separate them; the 120-h tail beyond is negligible at a 2.8-h half-life.
+stopifnot(abs(auc_num / auc_closed - 1) < 0.002)
+```
+
+# Virtual cohort
+
+A crossover cohort of 200 virtual volunteers receives all four formulations,
+one 800 mg dose per period, sampled on the study schedule. Periods are 168 h
+apart; the source does not state its washout, and at the model's half-life
+there is no carry-over. The model has no formulation effect (the
+per-formulation estimates are not published), so the four periods differ only
+by the occasion draw. Creatinine clearance is normal around the cohort mean of
+120 mL/min with an assumed SD of 25 mL/min, truncated to the observed 71.2-183.3
+mL/min.
+
+```{r cohort}
+n_sub <- 200
+period_h <- 168
+sample_times <- c(0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 8, 12, 24, 36, 48)
+
+set.seed(20181023)
+crcl <- numeric(0)
+while (length(crcl) < n_sub) {
+  draw <- rnorm(2 * n_sub, 120, 25)
+  crcl <- c(crcl, draw[draw >= 71.2 & draw <= 183.3])
+}
+crcl <- crcl[seq_len(n_sub)]
+
+dose_rows <- tidyr::expand_grid(id = seq_len(n_sub), OCC = 1:4) |>
+  dplyr::mutate(time = (OCC - 1) * period_h, evid = 1L, amt = 800, cmt = "depot")
+obs_rows <- tidyr::expand_grid(id = seq_len(n_sub), OCC = 1:4, tad = sample_times) |>
+  dplyr::mutate(time = (OCC - 1) * period_h + tad, evid = 0L, amt = 0, cmt = "central") |>
+  dplyr::select(-tad)
+
+events <- dplyr::bind_rows(dose_rows, obs_rows) |>
+  dplyr::mutate(CRCL = crcl[id]) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::select(id, time, evid, amt, cmt, OCC, CRCL)
+
+stopifnot(
+  !anyNA(events),
+  dplyr::n_distinct(events$id) == n_sub,
+  sum(events$evid == 1) == 4 * n_sub
+)
+```
+
+# Simulation
+
+```{r simulate}
+rxode2::rxSetSeed(20181023)
+sim <- rxode2::rxSolve(ui, events, returnType = "data.frame")
+sim <- sim |>
+  dplyr::select(-dplyr::any_of("OCC")) |>
+  dplyr::mutate(
+    OCC = as.integer(floor(time / period_h)) + 1L,
+    tad_h = time - (OCC - 1) * period_h,
+    formulation = paste("Formulation", OCC)
+  )
+stopifnot(
+  nrow(sim) == n_sub * 4 * length(sample_times),
+  !anyNA(sim$Cc),
+  all(sim$tad_h %in% sample_times)
+)
+```
+
+## Visual predictive check (replicates Figure 3)
+
+Figure 3 of Glerum 2018 overlays the 5th, 50th and 95th percentiles of 1000
+simulations from the final NPAG distribution on the observed concentrations,
+all four formulations pooled. The bands below are the same percentiles
+simulated from the published medians (with residual error). The points are
+the Figure 3 percentile lines, digitised by the maintainers where they are
+not hidden by the observations.
+
+```{r vpc, fig.width = 7, fig.height = 4.5}
+vpc <- sim |>
+  dplyr::filter(tad_h > 0) |>
+  dplyr::group_by(tad_h) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05),
+    p50 = quantile(sim, 0.50),
+    p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+fig3 <- data.frame(
+  tad_h = c(8, 12, 24, 36, 12, 24, 36, 48, 12),
+  value = c(2.65, 1.63, 0.40, 0.12, 4.29, 1.45, 0.63, 0.35, 0.17),
+  percentile = c(rep("50th", 4), rep("95th", 4), "5th")
+)
+ggplot(vpc, aes(tad_h)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = p50), colour = "steelblue4") +
+  geom_point(data = fig3, aes(y = value, shape = percentile), colour = "firebrick", size = 2.5) +
+  labs(
+    x = "Time after dose (h)",
+    y = "Gabapentin concentration (mg/L)",
+    shape = "Figure 3\npercentile",
+    caption = "Band: simulated 5th-95th percentiles; line: simulated median. Replicates Figure 3 of Glerum 2018."
+  ) +
+  theme_bw()
+```
+
+```{r vpc-table}
+vpc |>
+  dplyr::filter(tad_h %in% c(8, 12, 24, 36, 48)) |>
+  dplyr::left_join(
+    fig3 |>
+      dplyr::filter(percentile == "50th") |>
+      dplyr::select(tad_h, fig3_median = value),
+    by = "tad_h"
+  ) |>
+  dplyr::rename(
+    "Time after dose (h)" = tad_h,
+    "Simulated 5th" = p05,
+    "Simulated median" = p50,
+    "Simulated 95th" = p95,
+    "Figure 3 median (digitised)" = fig3_median
+  ) |>
+  knitr::kable(digits = 2, caption = "Simulated percentiles against the digitised Figure 3 median.")
+```
+
+The simulated median runs about a third below the paper's at 8 and 12 h, is
+half of it at 24 h and is near zero by 36 h, where Figure 3 still shows about
+0.1 mg/L. The upper band also decays much faster than Figure 3's. The lower
+simulated percentiles go negative once concentrations fall below the 0.3 mg/L
+additive process noise (lambda).
+
+# Comparison with the observed NCA {#comparison-with-the-observed-nca}
+
+NCA is run with PKNCA on the individual predictions (`Cc`, no residual error)
+on the study schedule, one group per formulation. The reference is Glerum 2018
+Table 2, NCA of the observed concentrations (means, and medians for Tmax).
+`ncaComparisonTable()` summarises the simulated cohort by its median.
+
+```{r pknca}
+conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(conc = pmax(Cc, 0)) |>
+  dplyr::select(id, formulation, time = tad_h, conc)
+dose <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::transmute(id, formulation = paste("Formulation", OCC), time = 0, amt)
+
+conc_obj <- PKNCA::PKNCAconc(conc, conc ~ time | formulation + id)
+dose_obj <- PKNCA::PKNCAdose(dose, amt ~ time | formulation + id)
+intervals <- data.frame(
+  start = c(0, 0),
+  end = c(48, Inf),
+  cmax = c(TRUE, FALSE),
+  tmax = c(TRUE, FALSE),
+  auclast = c(TRUE, FALSE),
+  aucinf.obs = c(FALSE, TRUE),
+  half.life = c(FALSE, TRUE)
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_long <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "aucinf.obs", "half.life"))
+```
+
+```{r nca-compare}
+reference <- data.frame(
+  formulation = paste("Formulation", 1:4),
+  cmax = c(5.33, 5.43, 5.48, 5.62),
+  tmax = c(4.0, 4.25, 3.50, 3.75),
+  auclast = c(63.42, 61.55, 61.16, 62.08),
+  aucinf.obs = c(64.49, 62.39, 62.45, 63.03),
+  half.life = c(8.12, 8.08, 9.08, 7.66)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_long,
+  reference = reference,
+  by = "formulation",
+  units = c(cmax = "mg/L", tmax = "h", auclast = "mg*h/L", aucinf.obs = "mg*h/L", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Glerum 2018 Table 2 (observed) vs simulated cohort medians from the published",
+    "Table 3 medians. AUC0-t is AUC over 0-48 h. * differs by more than 20%."
+  )
+)
+```
+
+```{r nca-gate}
+ratio <- nca_long |>
+  dplyr::group_by(formulation, PPTESTCD) |>
+  dplyr::summarise(sim = median(PPORRES), .groups = "drop") |>
+  dplyr::inner_join(
+    tidyr::pivot_longer(reference, -formulation, names_to = "PPTESTCD", values_to = "pub"),
+    by = c("formulation", "PPTESTCD")
+  ) |>
+  dplyr::mutate(ratio = sim / pub)
+auc_ratio <- ratio$ratio[ratio$PPTESTCD %in% c("auclast", "aucinf.obs")]
+cmax_ratio <- ratio$ratio[ratio$PPTESTCD == "cmax"]
+hl_ratio <- ratio$ratio[ratio$PPTESTCD == "half.life"]
+# These pin the documented discrepancy of the published medians rather than
+# agreement. AUC is set by dose / (kel * V) = 27.8 mg*h/L against about
+# 62 observed, a ratio near 0.45 that cohort noise moves by a few percent; a
+# mis-transcribed volume, rate constant or dose moves it far outside the band.
+# The same holds for Cmax (typical 2.68 vs about 5.4 mg/L) and for the
+# terminal half-life (about 2.8 h vs 8.2 h).
+stopifnot(
+  length(auc_ratio) == 8, length(cmax_ratio) == 4, length(hl_ratio) == 4,
+  median(auc_ratio) > 0.35, median(auc_ratio) < 0.60,
+  median(cmax_ratio) > 0.35, median(cmax_ratio) < 0.70,
+  median(hl_ratio) > 0.20, median(hl_ratio) < 0.60
+)
+```
+
+Every AUC and Cmax row is about half the observed value, and the simulated
+half-life is less than half the observed one (about 3.7 h by NCA on the study
+schedule, whose 12-48 h window still carries some of the distribution phase;
+2.8 h from the micro-constants). Tmax is close. Table
+2 also lists the NCA of each volunteer's Bayesian posterior predictions from
+the final model (Cmax 4.87-5.16 mg/L, AUC0-inf 58.3-60.2 mg*h/L), which agree
+with the observations. The full nonparametric model therefore fits the data;
+it is the published summary of it that does not.
+
+# Assumptions and deviations
+
+* **The published medians do not reproduce the source's data.** At the cohort
+  mean creatinine clearance, the Table 3 medians give a typical Cmax of 2.68
+  mg/L, AUC0-inf of 27.8 mg*h/L and a terminal half-life of 2.8 h, against
+  observed means of 5.3-5.6 mg/L, 62-64 mg*h/L and 7.7-9.1 h (Table 2).
+  Implied clearance (28.8 L/h, 480 mL/min) is four times the mean creatinine
+  clearance of a cohort whose drug is cleared unchanged by the kidney. No single
+  value in Table 3 explains this. Raising Ke's reference creatinine clearance
+  or lowering Ke to match AUC leaves the curve shape wrong against Figure 3,
+  and halving V to match Cmax keeps the 2.8-h half-life. Marginal medians of a
+  nonparametric joint distribution can differ from the median subject, but for
+  roughly symmetric log-scale marginals the median of `Ke * V` is close to the
+  product of the medians whatever their correlation, and the published
+  between-occasion CVs of about 34% on both cannot produce a twofold gap.
+  Nothing has been adjusted: the values are those printed. No erratum had been
+  published as of November 2026, and the article has no supplementary material.
+* **Unpublished parts of the final model.** The final model is a support-point
+  distribution with every parameter estimated per formulation. Neither the
+  distribution, the per-formulation estimates, the bioavailability `Fabs` nor
+  `Kr` itself is published; only the pooled medians in Table 3. The package
+  model therefore has no formulation effect.
+* **Ke reference creatinine clearance.** Table 3 gives Ke 'recalculated from
+  rate per ml/min creatinine clearance' without the creatinine clearance used.
+  The cohort mean, 120 mL/min, is assumed, so `kel = 0.32 * CRCL / 120` and
+  `Kr = 0.00267` per h per mL/min, inside the Pmetrics search range (upper
+  bound 0.008).
+* **Bioavailability.** Equation 3 multiplies the dose by `Fabs`, which is not
+  given a value. The Discussion says F was not estimated, because it could not
+  be separated from Ka without intravenous data. It is held at 1.
+* **Equation 3 central-compartment term.** The printed central equation
+  removes drug at `(KPC + Ke)` while the peripheral equation receives it at
+  `KCP`. That pairing does not conserve mass and contradicts the Methods,
+  which define KCP as the central-to-peripheral rate. The model uses KCP in
+  both places. The printed pairing would lower exposure further (typical Cmax
+  1.4 mg/L, AUC about 9 mg*h/L), and swapping the KCP and KPC labels leaves AUC
+  unchanged, so neither alternative removes the discrepancy above.
+* **Variability.** Table 3's between-occasion variability is the mean, over
+  volunteers, of the CV of each volunteer's four per-period estimates. It is
+  encoded as four-occasion inter-occasion variability with
+  `omega^2 = log(CV^2 + 1)`, one occasion per crossover period. Because each
+  period was a different formulation, it combines formulation and occasion
+  effects, which the design cannot separate (Discussion). No between-subject
+  variability is published, so the model has none; simulated variability
+  between volunteers comes only from creatinine clearance. rxode2 warns that
+  the per-occasion etas are not mu-referenced; this affects estimation, not
+  simulation.
+* **Residual error.** The Pmetrics lambda model,
+  `SD = sqrt((0.02 + 0.0075 * C)^2 + 0.2990^2)`, is encoded directly as the
+  standard deviation of an additive error. The assay polynomial was chosen by
+  the authors from other gabapentin assays, so its coefficients are held
+  constant; lambda was estimated.
+* **Covariates screened but not retained.** Weight on V (Equation 1) worsened
+  the AIC by 25 and was dropped. Age, sex, race, height and serum creatinine
+  were screened by regression only. These are listed in
+  `covariatesDataExcluded`.
+* **Virtual cohort.** Creatinine clearance is normal (mean 120, assumed SD 25
+  mL/min) truncated to the observed range; the source reports only mean and
+  range. Periods are 168 h apart. The NCA comparison uses simulated cohort
+  medians against the source's means.
+* **Figure 3 values** were digitised by the maintainers from the published
+  image and are approximate (about +/-0.1 mg/L).

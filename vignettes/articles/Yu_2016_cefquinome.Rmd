@@ -1,0 +1,531 @@
+---
+title: "Cefquinome PK/PD in a mouse Staphylococcus aureus mastitis model (Yu 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cefquinome PK/PD in a mouse Staphylococcus aureus mastitis model (Yu 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Yu 2016 studied **cefquinome**, a fourth-generation veterinary cephalosporin,
+given by intramammary infusion to lactating CD-1 mice with experimental
+*Staphylococcus aureus* mastitis, as a model for bovine mastitis therapy. The
+study has two layers:
+
+1. **Plasma pharmacokinetics.** Single intramammary doses of 25 to 400 ug per
+   gland were infused into both the L4 and R4 glands, and plasma cefquinome was
+   fitted per dose group in WinNonlin with a one-compartment model with
+   first-order absorption (Table 1).
+2. **PK/PD integration.** Twenty-one regimens (12.5 to 800 ug per gland every
+   8, 12 or 24 h for 24 h) were given to infected mice; the change in gland
+   bacterial count over the 24 h was related to the PK/PD indices of each
+   regimen, simulated by the authors from the single-dose PK (equation 1,
+   S2 Table), with an inhibitory sigmoid Emax model (equation 2, Table 2).
+
+The paper concluded that both %T>MIC and AUC0-24/MIC drive the effect and
+reported a separate fit for each. Each fit is packaged as its own model, with
+the shared plasma PK layer inside it, so a dosing regimen goes in and the
+24 h change in bacterial count comes out:
+
+* `Yu_2016_cefquinome_mouse_aucmic` -- index AUC0-24/MIC (R^2 = 0.908).
+* `Yu_2016_cefquinome_mouse_tmic` -- index %T>MIC (R^2 = 0.8466).
+
+Article: <https://doi.org/10.1371/journal.pone.0156273>
+
+```{r models}
+mod_auc <- readModelDb("Yu_2016_cefquinome_mouse_aucmic")
+mod_tmic <- readModelDb("Yu_2016_cefquinome_mouse_tmic")
+ui_auc <- rxode2::rxode(mod_auc)
+ui_tmic <- rxode2::rxode(mod_tmic)
+cat(ui_auc$reference, "\n")
+```
+
+# Population
+
+PK was measured in healthy lactating CD-1 mice (10-12 days post partum, body
+weight 35-45 g), six per dose group. The PD experiments used the same strain
+of mouse, infected 9 h before treatment by infusing about 4 x 10^3 CFU of
+*S. aureus* Newbould 305 (ATCC 29740) into each L4 and R4 gland; at the start
+of treatment the mean burden was 7.61 log10 CFU per gland. Each regimen used
+4 mice (8 glands). The cefquinome MIC of Newbould 305 is 0.5 ug/mL, which is
+also the MIC90 of 38 bovine mastitis isolates from Inner Mongolia (S1 Table).
+
+```{r population}
+str(ui_auc$population)
+```
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Structure: one compartment, first-order absorption | -- | Results, 'Plasma PK of cefquinome'; equation 1 |
+| `ka` | 9.727 1/h | Table 1, mean of ln(2)/T1/2Ka over the five dose groups |
+| `kel` | 1.7803 1/h | Table 1, mean of ln(2)/T1/2Kel over the five dose groups |
+| `vc` (V/F per total dose, both glands) | 27.66 mL | Back-solved from S2 Table AUC/MIC column (see below) |
+| `mic` | 0.5 ug/mL | Results, 'MICs of cefquinome' |
+| Effect equation | E = Emax - (Emax - E0) Ce^N / (EC50^N + Ce^N) | Equation 2 |
+| AUC/MIC fit: `e0`, `emax`, `ec50`, `hill` | 3.00, -2.04, 4.44 h, 0.88 | Table 2, AUC/MIC column |
+| %T>MIC fit: `e0`, `emax`, `ec50`, `hill` | 2.94, -2.11, 6.12, 1.54 | Table 2, %T>MIC column |
+| `log10_cfu0` | 7.61 log10 CFU per gland | Results, 'PD effectiveness of 21 dosing regimens' |
+| Index window | 0-24 h from the first dose | Methods, 'PK/PD analysis' |
+
+Equation 2 names the drug-free 24 h change "Emax" and the maximal drug effect
+"E0", the reverse of the usual convention; the packaged models carry them as
+the canonical `e0` (effect at zero exposure) and `emax` (maximal effect)
+without changing any value, as do the library's other cefquinome PK/PD-index
+models (`Gao_2025_cefquinome_pkpd_index`, `Wei_2026_*`).
+
+## Helper functions
+
+```{r helpers}
+mic <- 0.5
+
+# One "subject" per regimen; doses every tau h over the first 24 h, into the
+# depot, in ug per mouse (twice the per-gland dose, both glands infused).
+make_regimen_events <- function(regimens, obs_times) {
+  dplyr::bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+    dose_times <- seq(0, 24 - 1e-9, by = regimens$tau[i])
+    doses <- data.frame(
+      id = i, time = dose_times, evid = 1L, amt = 2 * regimens$dose[i],
+      cmt = "depot"
+    )
+    obs <- data.frame(id = i, time = obs_times, evid = 0L, amt = 0, cmt = "central")
+    dplyr::bind_rows(doses, obs)
+  })) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+solve_regimens <- function(mod, regimens, obs_times) {
+  ev <- make_regimen_events(regimens, obs_times)
+  sim <- as.data.frame(rxode2::rxSolve(mod, ev, returnType = "data.frame"))
+  regimens$id <- seq_len(nrow(regimens))
+  dplyr::left_join(sim, regimens, by = "id")
+}
+```
+
+# Part 1 - Plasma pharmacokinetics
+
+## Recovering V/F from S2 Table
+
+Table 1 reports the absorption and elimination half-lives of each dose group
+but not the apparent volume, although Methods state that "Ka, Kel and F/V are
+achieved in PK test". S2 Table gives the AUC0-24/MIC, %T>MIC and Cmax/MIC of
+all 21 PD regimens, which the authors computed with equation 1 from a single
+set of PK parameters. Three of its features pin those parameters:
+
+* AUC/MIC is exactly proportional to the daily dose, at 0.0406188 h*mL^-1 per
+  ug per gland (e.g. 194.97 x 0.5 / 2400 for 800 ug/gland every 8 h). For a
+  one-compartment model AUC = (F/V) x dose / kel.
+* %T>MIC rises by 1.622 percentage points of 24 h (0.389 h) for every doubling
+  of a once-daily dose, which is ln(2)/kel and gives kel = 1.781 1/h. That is
+  the mean of the five per-group rate constants of Table 1 (1.7803 1/h), not
+  ln(2) divided by the mean half-life (1.733 1/h).
+* Cmax/MIC divided by the (F/V) x dose fixes ka/kel; it gives ka = 9.747 1/h,
+  against 9.727 1/h for the mean of the five per-group absorption rate
+  constants of Table 1.
+
+So ka and kel are the per-group means of Table 1, and F/V = 0.0406188 x
+1.7803 = 0.072314 per mL per ug per gland. The packaged model doses the total
+amount per mouse, so V/F = 2 / 0.072314 = 27.66 mL.
+
+```{r vf-derivation}
+auc_per_ug_gland <- 194.97 * mic / (3 * 800)
+kel_t1 <- log(2) * mean(1 / c(0.49, 0.41, 0.34, 0.35, 0.39))
+ka_t1 <- log(2) * mean(1 / c(0.07, 0.07, 0.11, 0.08, 0.05))
+vf_mouse <- 2 / (auc_per_ug_gland * kel_t1)
+pk_derivation <- data.frame(
+  quantity = c("ka (1/h)", "kel (1/h)", "V/F per mouse (mL)"),
+  derived = c(ka_t1, kel_t1, vf_mouse),
+  packaged = exp(c(
+    ui_auc$theta[["lka"]], ui_auc$theta[["lkel"]], ui_auc$theta[["lvc"]]
+  ))
+)
+knitr::kable(pk_derivation, digits = 4)
+# The packaged values are the derivations rounded to four or five significant
+# figures; pin that rounding so a mistyped value goes red.
+stopifnot(all(abs(pk_derivation$packaged / pk_derivation$derived - 1) < 5e-4))
+# The two index models share one PK layer.
+stopifnot(all(
+  ui_auc$theta[c("lka", "lkel", "lvc", "mic", "log10_cfu0")] ==
+    ui_tmic$theta[c("lka", "lkel", "lvc", "mic", "log10_cfu0")]
+))
+```
+
+## Replicating Figure 2
+
+```{r fig2}
+pk_doses <- data.frame(dose = c(25, 50, 100, 200, 400), tau = 24)
+pk_grid <- sort(unique(c(seq(0, 1, by = 0.005), seq(1, 12, by = 0.05))))
+sim_pk <- solve_regimens(mod_auc, pk_doses, pk_grid)
+
+ggplot(sim_pk[sim_pk$time > 0, ], aes(time, Cc, colour = factor(dose))) +
+  geom_line() +
+  geom_hline(yintercept = mic, linetype = "dotted") +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(0.01, 50)) +
+  labs(
+    x = "Time after intramammary infusion (h)",
+    y = "Plasma cefquinome (ug/mL)",
+    colour = "Dose (ug/gland)",
+    caption = "Replicates Figure 2 of Yu 2016 (typical values; dotted line = MIC90)."
+  )
+```
+
+## PKNCA validation against Table 1
+
+Table 1 lists, per dose group, the Cmax, Tmax and AUC0-4 of the individual
+WinNonlin fits. The packaged model carries one set of parameters for all
+doses, so the comparison measures how dose-proportional the data were rather
+than the transcription.
+
+```{r pknca-table1}
+conc_t1 <- sim_pk |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = as.character(dose)) |>
+  dplyr::select(id, time, Cc, treatment)
+stopifnot(all(conc_t1$Cc[conc_t1$time == 0] == 0))
+dose_t1 <- make_regimen_events(pk_doses, 0) |>
+  dplyr::filter(evid == 1) |>
+  dplyr::mutate(treatment = as.character(pk_doses$dose[id])) |>
+  dplyr::select(id, time, amt, treatment)
+
+nca_t1 <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_t1, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_t1, amt ~ time | treatment + id),
+  intervals = data.frame(
+    start = 0, end = 4, cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
+  )
+))
+
+# Yu 2016 Table 1 means. The AUC cell of the 400 ug/gland group is printed as
+# '18.57.28' and cannot be read unambiguously, so it is left NA.
+published_t1 <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax, ~auclast, ~half.life,
+  "25",       1.03,  0.22,  0.99,     0.49,
+  "50",       3.02,  0.21,  2.55,     0.41,
+  "100",      5.83,  0.27,  4.93,     0.34,
+  "200",      10.29, 0.22,  8.03,     0.35,
+  "400",      24.33, 0.17,  NA,       0.39
+)
+
+nlmixr2lib::ncaComparisonTable(
+  simulated = nca_t1,
+  reference = published_t1,
+  by = "treatment",
+  units = c(cmax = "ug/mL", tmax = "h", auclast = "ug*h/mL", half.life = "h")
+) |>
+  dplyr::rename("Dose (ug/gland)" = treatment) |>
+  knitr::kable(
+    caption = paste(
+      "Typical-value Cmax, Tmax, AUC0-4 and terminal half-life versus the",
+      "per-dose-group WinNonlin fits of Table 1. * differs by more than 20%."
+    ),
+    digits = 3
+  )
+
+nca_res <- as.data.frame(nca_t1$result)
+sim_hl <- nca_res$PPORRES[nca_res$PPTESTCD == "half.life"]
+# The model half-life is ln(2)/kel by construction and sits inside the range
+# of the five per-group fits (0.34-0.49 h).
+stopifnot(all(sim_hl > 0.34 & sim_hl < 0.49))
+```
+
+The simulated Cmax and AUC are proportional to dose by construction; Table 1's
+are not (Cmax per ug ranges from 0.041 at 25 ug to 0.061 at 400 ug per gland),
+which is why individual dose groups fall on both sides of the single
+parameter set the authors used for S2 Table. The simulated Cmax and AUC0-4
+are within about 20% of every dose group; the Tmax and half-life differences
+reflect the spread of the per-group fits themselves (Tmax 0.17-0.27 h,
+half-life 0.34-0.49 h).
+
+# Part 2 - The PK/PD indices of the 21 regimens (S2 Table)
+
+The packaged models accumulate the plasma AUC and the time above the MIC over
+the first 24 h after the first dose. Read at t = 24 h, they should reproduce
+the authors' S2 Table.
+
+```{r s2-table}
+s2 <- data.frame(
+  dose = rep(c(12.5, 25, 50, 100, 200, 400, 800), each = 3),
+  tau = rep(c(8, 12, 24), 7),
+  aucmic = c(
+    3.29, 2.19, 1.10, 6.09, 4.06, 2.03, 12.19, 8.12, 4.06, 24.37, 16.25, 8.12,
+    48.74, 32.50, 16.25, 97.49, 64.99, 32.50, 194.97, 129.98, 64.99
+  ),
+  tmic = c(
+    6.10, 4.07, 2.03, 10.96, 7.31, 3.65, 15.83, 10.55, 5.28, 20.70, 13.80, 6.90,
+    25.56, 17.04, 8.52, 30.43, 20.28, 10.14, 35.29, 23.53, 11.76
+  ),
+  cmaxmic = rep(c(1.24, 2.47, 4.95, 9.89, 19.78, 39.57, 79.13), each = 3)
+)
+
+s2_grid <- sort(unique(c(seq(0, 24, by = 0.01), 24)))
+sim_s2_auc <- solve_regimens(mod_auc, s2[, c("dose", "tau")], s2_grid)
+sim_s2_tmic <- solve_regimens(mod_tmic, s2[, c("dose", "tau")], s2_grid)
+
+idx_auc <- sim_s2_auc |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    aucmic_sim = auc_0_24[time == 24] / mic,
+    cmaxmic_sim = max(Cc) / mic,
+    dlog10cfu_auc = dlog10cfu[time == 24],
+    .groups = "drop"
+  )
+idx_tmic <- sim_s2_tmic |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    tmic_sim = 100 * t_above_mic[time == 24] / 24,
+    dlog10cfu_tmic = dlog10cfu[time == 24],
+    .groups = "drop"
+  )
+s2_chk <- s2 |>
+  dplyr::mutate(id = dplyr::row_number()) |>
+  dplyr::left_join(idx_auc, by = "id") |>
+  dplyr::left_join(idx_tmic, by = "id") |>
+  dplyr::mutate(
+    auc_pct = 100 * (aucmic_sim / aucmic - 1),
+    cmax_pct = 100 * (cmaxmic_sim / cmaxmic - 1),
+    tmic_diff = tmic_sim - tmic
+  )
+
+s2_chk |>
+  dplyr::select(
+    dose, tau, aucmic, aucmic_sim, cmaxmic, cmaxmic_sim, tmic, tmic_sim
+  ) |>
+  dplyr::rename(
+    "Dose (ug/gland)" = dose, "Interval (h)" = tau,
+    "AUC/MIC S2" = aucmic, "AUC/MIC model" = aucmic_sim,
+    "Cmax/MIC S2" = cmaxmic, "Cmax/MIC model" = cmaxmic_sim,
+    "%T>MIC S2" = tmic, "%T>MIC model" = tmic_sim
+  ) |>
+  knitr::kable(digits = 2, caption = "Packaged models versus S2 Table of Yu 2016.")
+```
+
+```{r s2-gates}
+# AUC/MIC and Cmax/MIC: same parameters on both sides, so the only residual is
+# the authors' two-decimal rounding and the 0.01 h grid. The 12.5 ug/gland
+# AUC/MIC rows are the exception (see Errata) and are excluded here.
+auc_rows <- s2_chk$dose > 12.5
+stopifnot(
+  all(abs(s2_chk$auc_pct[auc_rows]) < 0.5),
+  all(abs(s2_chk$cmax_pct) < 1)
+)
+# %T>MIC: the S2 values sit a near-constant ~0.2 percentage points above the
+# time the simulated curve spends above the MIC at doses >= 50 ug/gland per
+# 24 h (larger at the two lowest doses, where the whole curve barely clears
+# the MIC); see Errata.
+stopifnot(
+  all(abs(s2_chk$tmic_diff[s2_chk$dose >= 50 & s2_chk$tau == 24]) < 0.35),
+  all(abs(s2_chk$tmic_diff[s2_chk$dose >= 50]) < 2)
+)
+```
+
+AUC/MIC (doses of 25 ug/gland and above) and Cmax/MIC reproduce to rounding.
+The largest %T>MIC difference is `r round(max(abs(s2_chk$tmic_diff)), 2)`
+percentage points of 24 h, at 12.5 ug/gland every 8 h.
+
+# Part 3 - PK/PD integration
+
+## Back-solving the published targets
+
+Table 2 also prints the index values for bacteriostasis (E = 0) and for a
+1.8 log10 CFU per gland reduction (E = -1.8). Inverting the packaged
+equation at those effects should return them.
+
+```{r targets}
+invert_emax <- function(effect, e0, emax, ec50, hill) {
+  frac <- (e0 - effect) / (e0 - emax)
+  ec50 * (frac / (1 - frac))^(1 / hill)
+}
+pd_par <- function(ui) {
+  th <- ui$theta
+  c(e0 = th[["e0"]], emax = th[["emax"]], ec50 = exp(th[["lec50"]]), hill = exp(th[["lhill"]]))
+}
+p_auc <- pd_par(ui_auc)
+p_tmic <- pd_par(ui_tmic)
+sigmoid_effect <- function(x, p) {
+  p[["e0"]] - (p[["e0"]] - p[["emax"]]) * x^p[["hill"]] / (x^p[["hill"]] + p[["ec50"]]^p[["hill"]])
+}
+targets <- data.frame(
+  index = rep(c("%T>MIC", "AUC0-24/MIC (h)"), each = 2),
+  endpoint = rep(c("bacteriostasis (E = 0)", "1.8 log10 reduction (E = -1.8)"), 2),
+  published = c(7.59, 35.98, 6.91, 137.43),
+  model = c(
+    invert_emax(0, p_tmic[["e0"]], p_tmic[["emax"]], p_tmic[["ec50"]], p_tmic[["hill"]]),
+    invert_emax(-1.8, p_tmic[["e0"]], p_tmic[["emax"]], p_tmic[["ec50"]], p_tmic[["hill"]]),
+    invert_emax(0, p_auc[["e0"]], p_auc[["emax"]], p_auc[["ec50"]], p_auc[["hill"]]),
+    invert_emax(-1.8, p_auc[["e0"]], p_auc[["emax"]], p_auc[["ec50"]], p_auc[["hill"]])
+  )
+) |>
+  dplyr::mutate(pct_diff = 100 * (model / published - 1))
+knitr::kable(targets, digits = 2)
+# The %T>MIC targets and the AUC bacteriostatic target reproduce to rounding.
+# The 1.8-log AUC target sits where the curve is nearly flat (95% of the way
+# to emax), so the two-decimal rounding of e0, emax and N moves it by several
+# percent: with e0 - emax = 5.03 (Table 2's own difference row) instead of
+# 3.00 + 2.04 = 5.04 it is 140.3 h; the printed 137.43 lies between.
+stopifnot(
+  all(abs(targets$pct_diff[1:3]) < 0.5),
+  abs(targets$pct_diff[4]) < 3
+)
+```
+
+## Replicating Figure 4
+
+The curves are the packaged models evaluated over each index; the points are
+the 21 regimens, solved through the full PK/PD chain and read at 24 h.
+
+```{r fig4, fig.height = 4}
+curve_df <- dplyr::bind_rows(
+  data.frame(index = "%T>MIC", x = seq(0, 40, by = 0.1)) |>
+    dplyr::mutate(E = sigmoid_effect(x, p_tmic)),
+  data.frame(index = "AUC0-24/MIC (h)", x = seq(0, 200, by = 0.5)) |>
+    dplyr::mutate(E = sigmoid_effect(x, p_auc))
+)
+pts_df <- dplyr::bind_rows(
+  data.frame(index = "%T>MIC", x = s2_chk$tmic_sim, E = s2_chk$dlog10cfu_tmic),
+  data.frame(index = "AUC0-24/MIC (h)", x = s2_chk$aucmic_sim, E = s2_chk$dlog10cfu_auc)
+)
+ggplot(curve_df, aes(x, E)) +
+  geom_line() +
+  geom_point(data = pts_df, shape = 1) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  facet_wrap(~index, scales = "free_x") +
+  labs(
+    x = "PK/PD index", y = "Change over 24 h (log10 CFU/gland)",
+    caption = "Replicates Figure 4 of Yu 2016 (model curves; points = the 21 regimens)."
+  )
+
+# The packaged ODE chain must land on the closed-form curve at its own index.
+chain_chk <- pts_df |>
+  dplyr::mutate(
+    closed = ifelse(index == "%T>MIC", sigmoid_effect(x, p_tmic), sigmoid_effect(x, p_auc))
+  )
+stopifnot(all(abs(chain_chk$closed - chain_chk$E) < 1e-6))
+
+# Effect of the S2 Table %T>MIC offset (Errata): the predicted change at the
+# S2 index versus at the index of the simulated curve.
+tmic_effect_gap <- abs(sigmoid_effect(s2_chk$tmic, p_tmic) - s2_chk$dlog10cfu_tmic)
+stopifnot(
+  all(tmic_effect_gap[s2_chk$dose >= 50] < 0.1),
+  all(tmic_effect_gap[s2_chk$dose == 25] < 0.25)
+)
+```
+
+Figure 4 of Yu 2016 levels off at about -1.8 log10 CFU/gland at the largest
+indices studied (%T>MIC 35, AUC/MIC 195), well short of `emax`, as does the
+model: at the 800 ug/gland every-8-h regimen it predicts
+`r round(s2_chk$dlog10cfu_tmic[19], 2)` (%T>MIC) and
+`r round(s2_chk$dlog10cfu_auc[19], 2)` (AUC/MIC) log10 CFU/gland.
+
+## Gland burden after 24 h of treatment (S2 Fig)
+
+S2 Fig plots the gland count after 24 h of each regimen as a three-dimensional
+bar chart whose perspective offsets each interval's baseline, so its bars
+cannot be read precisely. The packaged `log_cfu` (7.61 plus the predicted
+change) is tabulated instead. It has the same ordering as S2 Fig: the burden
+falls as the dose rises and as the dosing interval shortens.
+
+```{r s2fig}
+s2_chk |>
+  dplyr::mutate(
+    log_cfu_auc = 7.61 + dlog10cfu_auc,
+    log_cfu_tmic = 7.61 + dlog10cfu_tmic
+  ) |>
+  dplyr::select(dose, tau, log_cfu_auc, log_cfu_tmic) |>
+  tidyr::pivot_wider(
+    names_from = tau, values_from = c(log_cfu_auc, log_cfu_tmic),
+    names_glue = "{.value}_q{tau}h"
+  ) |>
+  dplyr::rename("Dose (ug/gland)" = dose) |>
+  knitr::kable(digits = 2, caption = "Predicted log10 CFU per gland after 24 h of treatment.")
+```
+
+## Single-dose time-kill (Figure 3)
+
+The in vivo time-kill experiment (Figure 3) started from a different burden
+(7.76 log10 CFU per gland) and was not part of the Emax fit. The text reports
+no net change after single doses of 50 and 100 ug/gland and about 2.3-2.9
+log10 CFU/gland reduction after 200 and 400 ug/gland at 24 h. The Emax models,
+fitted to the 21-regimen experiment, predict a smaller effect for those single
+doses:
+
+```{r fig3}
+single <- s2_chk |>
+  dplyr::filter(tau == 24, dose %in% c(50, 100, 200, 400)) |>
+  dplyr::select(dose, aucmic_sim, dlog10cfu_auc, tmic_sim, dlog10cfu_tmic) |>
+  dplyr::rename(
+    "Dose (ug/gland)" = dose, "AUC/MIC" = aucmic_sim,
+    "Change, AUC/MIC model" = dlog10cfu_auc,
+    "%T>MIC" = tmic_sim, "Change, %T>MIC model" = dlog10cfu_tmic
+  )
+knitr::kable(single, digits = 2)
+```
+
+This is a property of the published fits, not of the transcription: in
+Figure 4 the observed once-daily 200 and 400 ug/gland points (AUC/MIC 16 and
+32) lie between about -0.5 and -2 log10 CFU/gland.
+
+# Assumptions and deviations
+
+* **V/F is derived, not printed.** Yu 2016 does not print the apparent volume.
+  It is recovered from S2 Table, which the authors computed from their PK
+  parameters with equation 1; the recovery is exact for the AUC/MIC and
+  Cmax/MIC columns (Part 2).
+* **ka and kel are means of per-group rate constants.** Table 1 gives one
+  WinNonlin fit per dose group. S2 Table shows that the authors used the mean
+  of the per-group rate constants (kel = 1.7803 1/h, ka = 9.73 1/h), not the
+  rate constants implied by the mean half-lives printed in the last column of
+  Table 1 (0.4 and 0.08 h). The packaged model follows S2 Table, which is what
+  the Emax fit was built on.
+* **Dosing unit.** The paper doses per gland into both L4 and R4 glands; the
+  packaged models take the total amount per mouse, so a per-gland dose `D`
+  is entered as `amt = 2 * D` into `depot`.
+* **Total plasma drug.** The index uses total plasma cefquinome; the paper
+  treats it as largely free (17% protein binding in mice) and applies no
+  unbound fraction.
+* **Index window.** Both indices accumulate over the first 24 h after the
+  first dose, the duration of every PD regimen; `dlog10cfu` and `log_cfu` are
+  the paper's 24 h endpoint and are meaningful at t = 24 h.
+* **No variability.** No between-animal variability or residual error was
+  reported (only R^2), so both models are typical-value only, with `addSd`
+  held at 0.
+
+# Errata
+
+* **%T>MIC in S2 Table** is about 0.2 percentage points of 24 h higher than
+  the time the equation-1 curve spends above the MIC at doses of 50 ug/gland
+  and more (up to 2 points at 12.5 ug/gland every 8 h). The S2 values match an
+  elimination-phase formula T = ln(B x dose / MIC) / kel with B = 0.0953 per mL
+  per ug per gland, which is not the equation-1 intercept for the parameters
+  that reproduce the other two columns. The packaged models compute the time
+  above the MIC from the simulated curve, which is the quantity the index is
+  defined as. The effect on the predicted 24 h change is below 0.1 log10
+  CFU/gland for every regimen of 50 ug/gland and more and below 0.25 at
+  25 ug/gland, but reaches `r round(max(tmic_effect_gap), 2)` log10 CFU/gland
+  at 12.5 ug/gland every 8 h, where the curve barely clears the MIC and the
+  model predicts less kill than the published index would give. The
+  AUC/MIC model does not have this issue and is the better choice for the
+  lowest doses.
+* **AUC/MIC of the 12.5 ug/gland regimens in S2 Table** (3.29, 2.19, 1.10)
+  is about 8% above dose-proportionality with every other row (3.05, 2.03,
+  1.02); the other columns of those rows are proportional.
+* **Table 1, 400 ug/gland AUC** is printed as '18.57.28 +/- 1.9' and is not
+  used.
+* **Table 2 units.** The %T>MIC EC50 and targets are printed with unit 'h' but
+  are percentages of 24 h.
+* **Discussion PK summary.** The Discussion quotes T1/2Ka 0.09 +/- 0.03 h,
+  Tmax 0.24 +/- 0.04 h and T1/2Kel 0.44 +/- 0.09 h, which differ from the
+  Table 1 means (0.08, 0.22 and 0.4 h); Table 1 and S2 Table are used.

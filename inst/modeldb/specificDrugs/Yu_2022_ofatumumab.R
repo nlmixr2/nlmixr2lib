@@ -312,7 +312,11 @@ Yu_2022_ofatumumab <- function() {
     # The 2-B-cell-compartment exchange terms cancel at steady state because
     # Bp(0) = B0 * Vb / Vc is the exact algebraic solution of dBp/dt = 0.
     kin      <- kout * b0_ind
-    stim     <- emax * lc^hill / (ec50^hill + lc^hill)
+    # max(lc, 0): near zero free drug (low doses, washout) the quadratic's
+    # cancellation and integration noise can make lc slightly negative,
+    # where the non-integer Hill power is NaN.
+    lc_pos   <- max(lc, 0)
+    stim     <- emax * lc_pos^hill / (ec50^hill + lc_pos^hill)
     d/dt(bcell)         <- kin - kout * (1 + stim) * bcell - (qb / vc) * bcell + (qb / vb) * bcell_periph
     d/dt(bcell_periph)  <-                                    (qb / vc) * bcell - (qb / vb) * bcell_periph
 

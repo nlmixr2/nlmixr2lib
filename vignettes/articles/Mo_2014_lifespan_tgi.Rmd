@@ -1,0 +1,519 @@
+---
+title: "Lifespan-based tumor growth inhibition: paclitaxel, AZ968 and AZD1208 (Mo 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lifespan-based tumor growth inhibition: paclitaxel, AZ968 and AZD1208 (Mo 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Mo G, Gibbons F, Schroeder P, Krzyzanski W. Lifespan based
+  pharmacokinetic-pharmacodynamic model of tumor growth inhibition by
+  anticancer therapeutics. PLoS One. 2014;9(10):e109747.
+* Article: <https://doi.org/10.1371/journal.pone.0109747> (open access, with
+  the authors' MATLAB implementation as Supporting Information S4-S9)
+
+Mo 2014 propose a lifespan-based tumor growth inhibition (LS TGI) model. Every
+tumor cell lives for a common lifespan `T` and then divides; the number of
+daughter cells that actually join the tumor, the division efficiency `p(w)`,
+falls from `p0` towards 1 as the tumor weight `w` grows past a threshold
+`wth`. A drug either removes proliferating cells at any point of their life
+(non-cycle-specific) or only at the moment they divide (cycle-specific); the
+removed cells enter a non-proliferating apoptotic pool that dies after a
+second lifespan `TA`. The paper validates the model in three mouse xenograft
+case studies, each packaged here:
+
+```{r models}
+models <- c(
+  "Mo_2014_paclitaxel_mouse",
+  "Mo_2014_az968_mouse",
+  "Mo_2014_az968_simeoni_mouse",
+  "Mo_2014_azd1208_mouse"
+)
+ui <- lapply(setNames(models, models), function(nm) rxode2::rxode(readModelDb(nm)))
+knitr::kable(
+  data.frame(
+    Model = models,
+    Description = vapply(ui, function(u) substr(u$description, 1, 160), "")
+  ),
+  caption = "Models contributed by Mo 2014 (descriptions truncated)."
+)
+```
+
+| Model | Case study | Drug effect | Source tables |
+|---|---|---|---|
+| `Mo_2014_paclitaxel_mouse` | 1: paclitaxel, HCT116 xenograft (data of Simeoni 2004) | cycle-specific, Emax | Table 2; PK from Methods |
+| `Mo_2014_az968_mouse` | model comparison: AZ968, HCT116 xenograft | non-cycle-specific, linear (`k2 C`), linear-growth `p(w)` | Tables 3, 4 (left) |
+| `Mo_2014_az968_simeoni_mouse` | same AZ968 data, reference Simeoni TGI model | linear, three damaged-cell transits | Tables 3, 4 (right); Eq. 33 |
+| `Mo_2014_azd1208_mouse` | 2: AZD1208, MOLM-16 xenograft | non-cycle-specific, Emax; exponential growth (`p = p0`) | Tables 5, 6 |
+
+# Population
+
+All three case studies are mouse xenograft experiments, fitted to mean
+tumor-size profiles by unweighted nonlinear least squares (MATLAB `nlinfit`).
+None of the models carries between-animal variability, and Mo 2014 reports no
+residual-error estimate, so every packaged model is a deterministic
+typical-value model with its additive residual error held at 0.
+
+* **Paclitaxel (Case Study 1).** Mean tumor weights of HCT116 human colon
+  carcinoma xenografts digitized by Mo 2014 from Simeoni et al. 2004: untreated
+  controls and 30 mg/kg paclitaxel intravenously every 4 days for 3 doses from
+  day 8 after inoculation. Tumor weight 0.033 g at inoculation.
+* **AZ968 (model comparison).** AstraZeneca data in female NCr nude mice
+  (5-6 weeks old) bearing HCT116 xenografts, randomized at 150-200 mm^3 and
+  given AZ968 10, 20 or 30 mg/kg intraperitoneally once weekly for three weeks;
+  plasma PK after single 10, 20 or 30 mg/kg intraperitoneal doses in female CD1
+  mice (3 per dose). Initial tumor volume 180 mm^3.
+* **AZD1208 (Case Study 2).** AstraZeneca data in MOLM-16 acute myeloid
+  leukemia xenografts given AZD1208 orally at 0.3, 1, 3, 10 or 30 mg/kg; plasma
+  PK after single 3, 10 or 30 mg/kg oral doses. Day 1 is the first dose and the
+  initial tumor volume is 170 mm^3.
+
+The same information is available programmatically:
+
+```{r population}
+str(ui$Mo_2014_az968_mouse$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. The
+equations are Mo 2014 Equations 13 (division efficiency), 16 (linear-phase
+efficiency), 17 (`w = M + A`), 18 (linear kill), 22-24 (non-cycle-specific
+model), 27 (Emax), 29-32 (cycle-specific model) and 33 (Simeoni comparator);
+the implementation follows the supplement MATLAB functions S5 (`FOKill`,
+non-cycle-specific) and S8 (`CSKill`, cycle-specific).
+
+| Parameter | Model(s) | Value | Source |
+|---|---|---|---|
+| `td_div` (T) | paclitaxel / AZ968 / AZD1208 | 1.46 / 1.28 / 3 day (held constant) | Tables 2 / 4 / 6 |
+| `td_apo` (TA) | paclitaxel / AZ968 / AZD1208 | 0.536 / 5.56 / 1.92 day (held constant) | Tables 2 / 4 / 6 |
+| `p0` | paclitaxel / AZD1208 | 1.44 / 1.57 | Tables 2 / 6 |
+| `kin0` | paclitaxel / AZ968 / AZD1208 | 0.0404 g/day / 49.9 / 27.8 mm^3/day | Tables 2 / 4 / 6 |
+| `wth` | paclitaxel | 2.48 g | Table 2 |
+| `pwth` | AZ968 | 80.8 mm^3 | Table 4 |
+| `psi` | paclitaxel | 20 | Eq. 13-14, Figure 2B; S5 / S8 code |
+| `emax`, `ec50` | paclitaxel | 1 (held constant), 9.45 ng/mL | Table 2 |
+| `emax`, `ec50` | AZD1208 | 0.159 1/day, 182 ng/mL | Table 6 |
+| `drugSlope` (k2) | AZ968 lifespan / Simeoni | 2.30e-3 / 2.0e-3 mL/ng/day | Table 4 |
+| `tumorLinGrowth` (lambda1), `damageTransit` (k1) | AZ968 Simeoni | 43.8 mm^3/day, 1.12 1/day | Table 4 |
+| `rbase` (w0) | paclitaxel / AZ968 / AZD1208 | 0.033 g / 180 / 170 mm^3 | Figure 7 / 8 / 9 captions |
+| paclitaxel `vc`, `kel`, `k12`, `k21` | paclitaxel | 0.81 L/kg; 0.868, 0.006, 0.0838 1/h | Methods, Literature Data Acquisition |
+| AZ968 `ka`, `k12`, `k21` | AZ968 (both) | 46.8 (held constant), 8.74, 11.2 1/day | Table 3 |
+| AZ968 `kel`, `vc` at 10 / 20 / 30 mg/kg | AZ968 (both) | 33.9 / 26.0 / 24.7 1/day; 2.70 / 2.07 / 1.97 L/kg | Table 3 |
+| AZD1208 `ka` (= `kel`), `vc` (V/F) | AZD1208 | 5.52 1/day, 4.86 L/kg | Table 5 and Case Study 2 text |
+
+# How the lifespan recursion is encoded
+
+Because a cell divides exactly one lifespan after it was born, the production
+rate obeys the recursion `kin(t) = p(w(t)) kin(t - T)` with `kin = kin0`
+before the experiment, so `kin(t)` is a product of one division efficiency per
+elapsed lifespan (Equation 7). The model is therefore a delay differential
+equation with one delayed tumor size per elapsed lifespan. The packaged files
+spell out those delayed terms with `rxode2::delay()` for 40 lifespans (and, for
+the cycle-specific model, 40 more shifted by `TA`), so they are valid up to
+40.5 lifespans (59 days for paclitaxel, 52 days for AZ968). The AZD1208 model
+needs no delayed tumor sizes: with the threshold far above the observed
+volumes, `p(w)` is the constant `p0`, and the product is simply `p0^n(t)`.
+Every solve below uses `method = "dop853"`, which `delay()` requires.
+
+Equations 7, 22, 30 and 31 count the elapsed lifespans with the floor function
+`INT(t / T)`. The authors' MATLAB code (supplement S5 and S8) counts them with
+`round(t / T)` instead, so each new lifespan factor enters half a lifespan
+early, evaluated at the pre-experiment tumor size. The packaged models follow
+the code, because it reproduces the published fits and the printed equations
+do not. With the Table 1 parameters the floor version under-predicts the
+Figure 7A curve by 4-25% (median 6.5% over the 14 digitized points), while the
+code version matches it within 1% after day 13.
+
+```{r solve-helper}
+solve_det <- function(mod, events) {
+  out <- as.data.frame(rxode2::rxSolve(mod, events, method = "dop853", maxsteps = 1e7))
+  if (is.null(out$id)) out$id <- 1L
+  out
+}
+pct_diff <- function(sim, ref) 100 * (sim - ref) / ref
+```
+
+# Case Study 1: paclitaxel (Figure 7)
+
+The untreated arm is first fitted alone (Table 1); the packaged model holds the
+simultaneous control-plus-treated fit of Table 2. Figure 7A is reproduced by
+overriding the two Table 1 values that differ.
+
+```{r pac-solve}
+pac <- ui$Mo_2014_paclitaxel_mouse
+pac_t1 <- pac |> rxode2::ini(lkin0 = log(3.86e-2), lwth = log(2.54))
+obs_pac <- seq(0, 35, by = 0.05)
+ev_ctrl <- rxode2::et(obs_pac)
+ev_pac <- rxode2::et(amt = 30, time = c(8, 12, 16), cmt = "central") |>
+  rxode2::et(obs_pac)
+
+sim_7a <- solve_det(pac_t1, ev_ctrl)
+sim_7b_ctrl <- solve_det(pac, ev_ctrl)
+sim_7b_trt <- solve_det(pac, ev_pac)
+```
+
+The model curves of Figure 7 were digitized by the maintainers from the
+original-resolution figure:
+
+```{r pac-digitized}
+dig_7a <- data.frame(
+  time = c(7.5, 8, 9, 13, 19, 21, 23, 25, 26, 28, 30, 32, 34, 34.9),
+  fig = c(0.47, 0.55, 0.70, 1.83, 5.57, 7.00, 8.45, 9.90, 10.65, 12.10, 13.59, 15.08, 16.57, 17.24)
+)
+dig_7b <- bind_rows(
+  data.frame(
+    arm = "Control",
+    time = c(8, 9, 13, 19, 21, 23, 25, 26, 28, 30, 32, 34, 34.9),
+    fig = c(0.56, 0.71, 1.86, 5.51, 6.89, 8.28, 9.74, 10.43, 11.80, 13.23, 14.67, 16.13, 16.79)
+  ),
+  data.frame(
+    arm = "30 mg/kg",
+    time = c(3, 5, 6, 7.5, 12, 13, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 30, 32, 34, 34.9),
+    fig = c(0.15, 0.26, 0.34, 0.47, 0.67, 0.71, 0.50, 0.49, 0.55, 0.61, 0.86, 1.10, 1.45, 1.92, 2.39, 2.92, 4.04, 5.44, 6.98, 8.44, 9.07)
+  )
+)
+dig_7a$sim <- approx(sim_7a$time, sim_7a$tumor_vol, dig_7a$time)$y
+dig_7b$sim <- ifelse(
+  dig_7b$arm == "Control",
+  approx(sim_7b_ctrl$time, sim_7b_ctrl$tumor_vol, dig_7b$time)$y,
+  approx(sim_7b_trt$time, sim_7b_trt$tumor_vol, dig_7b$time)$y
+)
+dig_7a$pct <- pct_diff(dig_7a$sim, dig_7a$fig)
+dig_7b$pct <- pct_diff(dig_7b$sim, dig_7b$fig)
+```
+
+```{r fig7, fig.cap = "Replicates Figure 7 of Mo 2014. Lines: packaged model (A: Table 1 control-only fit; B: Table 2 simultaneous fit, 30 mg/kg paclitaxel IV on days 8, 12 and 16). Points: model curves digitized from the published figure."}
+plot_7 <- bind_rows(
+  data.frame(panel = "A: control only (Table 1)", arm = "Control", time = sim_7a$time, tumor = sim_7a$tumor_vol),
+  data.frame(panel = "B: simultaneous fit (Table 2)", arm = "Control", time = sim_7b_ctrl$time, tumor = sim_7b_ctrl$tumor_vol),
+  data.frame(panel = "B: simultaneous fit (Table 2)", arm = "30 mg/kg", time = sim_7b_trt$time, tumor = sim_7b_trt$tumor_vol)
+)
+dig_plot_7 <- bind_rows(
+  dig_7a |> mutate(panel = "A: control only (Table 1)", arm = "Control"),
+  dig_7b |> mutate(panel = "B: simultaneous fit (Table 2)")
+)
+ggplot(plot_7, aes(time, tumor, colour = arm)) +
+  geom_line() +
+  geom_point(data = dig_plot_7, aes(time, fig), shape = 1) +
+  facet_wrap(~panel) +
+  labs(x = "Time after inoculation (days)", y = "Tumor size (g)", colour = NULL) +
+  theme_bw()
+```
+
+```{r fig7-check}
+summ <- function(d) {
+  data.frame(
+    n = nrow(d),
+    median_abs_pct = round(median(abs(d$pct)), 1),
+    q90_abs_pct = round(unname(quantile(abs(d$pct), 0.9)), 1)
+  )
+}
+fig7_check <- bind_rows(
+  cbind(curve = "7A control (Table 1)", summ(dig_7a)),
+  cbind(curve = "7B control (Table 2)", summ(filter(dig_7b, arm == "Control"))),
+  cbind(curve = "7B 30 mg/kg (Table 2)", summ(filter(dig_7b, arm == "30 mg/kg")))
+)
+knitr::kable(fig7_check, caption = "Packaged model vs digitized Figure 7 curves (absolute % difference).")
+stopifnot(
+  fig7_check$median_abs_pct[1:2] < 5,
+  fig7_check$median_abs_pct[3] < 15
+)
+```
+
+The two controls match the published curves within a few percent; the treated
+arm follows the published curve closely after day 20, with larger relative
+differences only during the small, rapidly changing dip between days 12 and
+19, where the curve is a few pixels high.
+
+**EC50.** The Results text gives EC50 = 83.28 ng/mL, Table 2 gives 9.45 ng/mL.
+The packaged model uses the Table 2 value, because only it reproduces the
+treated curve:
+
+```{r ec50-check}
+sim_ec50_text <- solve_det(pac |> rxode2::ini(lec50 = log(83.28)), ev_pac)
+trt <- filter(dig_7b, arm == "30 mg/kg")
+ec50_cmp <- data.frame(
+  EC50 = c("9.45 ng/mL (Table 2)", "83.28 ng/mL (Results text)"),
+  median_abs_pct = round(c(
+    median(abs(trt$pct)),
+    median(abs(pct_diff(approx(sim_ec50_text$time, sim_ec50_text$tumor_vol, trt$time)$y, trt$fig)))
+  ), 1)
+)
+knitr::kable(ec50_cmp, caption = "Treated arm of Figure 7B under the two printed EC50 values.")
+stopifnot(ec50_cmp$median_abs_pct[2] > 3 * ec50_cmp$median_abs_pct[1])
+```
+
+# Model comparison: AZ968 (Figure 8)
+
+AZ968 shows dose-dependent PK, so Table 3 gives separate `kel` and `V` for each
+dose level, selected in the models by the `DOSE_AZ968_MGKG` covariate.
+
+```{r az-pk, fig.cap = "Replicates Figure 8A of Mo 2014: AZ968 plasma concentrations after a single intraperitoneal dose."}
+obs_pk <- sort(unique(c(seq(0, 25 / 24, length.out = 301), 0.01 / 24)))
+az_pk <- bind_rows(lapply(c(10, 20, 30), function(d) {
+  ev <- rxode2::et(amt = d, time = 0, cmt = "depot") |> rxode2::et(obs_pk)
+  ev <- as.data.frame(ev)
+  ev$DOSE_AZ968_MGKG <- d
+  solve_det(ui$Mo_2014_az968_mouse, ev) |> mutate(dose = d)
+}))
+ggplot(az_pk[az_pk$time > 0, ], aes(time * 24, Cc, colour = factor(dose))) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "AZ968 plasma concentration (ng/mL)", colour = "Dose (mg/kg)") +
+  theme_bw()
+```
+
+The tumor study gave AZ968 once weekly for three weeks (days 0, 7 and 14);
+the abrupt falls in the lifespan curves of Figure 8B, one apoptosis duration
+`TA` = 5.56 days after each dose, locate the doses.
+
+```{r az-tgi}
+obs_az <- seq(0, 23, by = 0.05)
+az_arm <- function(mod, d) {
+  ev <- if (d == 0) {
+    rxode2::et(obs_az)
+  } else {
+    rxode2::et(amt = d, time = c(0, 7, 14), cmt = "depot") |> rxode2::et(obs_az)
+  }
+  ev <- as.data.frame(ev)
+  ev$DOSE_AZ968_MGKG <- d
+  solve_det(mod, ev) |>
+    mutate(arm = if (d == 0) "Control" else paste(d, "mg/kg"))
+}
+az_ls <- bind_rows(lapply(c(0, 10, 20, 30), az_arm, mod = ui$Mo_2014_az968_mouse)) |>
+  mutate(model = "B: lifespan TGI")
+az_sim <- bind_rows(lapply(c(0, 10, 20, 30), az_arm, mod = ui$Mo_2014_az968_simeoni_mouse)) |>
+  mutate(model = "C: Simeoni TGI")
+arm_levels <- c("Control", "10 mg/kg", "20 mg/kg", "30 mg/kg")
+
+dig_8 <- bind_rows(
+  expand.grid(time = c(11, 17, 18, 22), arm = arm_levels, stringsAsFactors = FALSE) |>
+    arrange(time) |>
+    mutate(model = "B: lifespan TGI", fig = c(613, 511, 335, 232, 924, 705, 404, 274, 980, 748, 435, 296, 1198, 831, 434, 294)),
+  expand.grid(time = c(6.5, 11, 17, 20.5), arm = arm_levels, stringsAsFactors = FALSE) |>
+    arrange(time) |>
+    mutate(model = "C: Simeoni TGI", fig = c(468, 415, 318, 255, 664, 520, 309, 206, 926, 667, 345, 216, 1078, 776, 415, 280))
+)
+az_all <- bind_rows(az_ls, az_sim)
+dig_8$sim <- mapply(function(m, a, tt) {
+  d <- az_all[az_all$model == m & az_all$arm == a, ]
+  approx(d$time, d$tumor_vol, tt)$y
+}, dig_8$model, dig_8$arm, dig_8$time)
+dig_8$pct <- pct_diff(dig_8$sim, dig_8$fig)
+```
+
+```{r fig8, fig.cap = "Replicates Figure 8B (lifespan TGI) and 8C (Simeoni TGI) of Mo 2014. Lines: packaged models; points: model curves digitized from the published figure."}
+ggplot(az_all, aes(time, tumor_vol, colour = factor(arm, arm_levels))) +
+  geom_line() +
+  geom_point(data = dig_8, aes(time, fig), shape = 1) +
+  facet_wrap(~model) +
+  labs(x = "Time (days)", y = expression(Tumor ~ size ~ (mm^3)), colour = NULL) +
+  theme_bw()
+```
+
+```{r fig8-check}
+fig8_check <- dig_8 |>
+  group_by(model) |>
+  summarise(
+    n = n(),
+    median_abs_pct = round(median(abs(pct)), 1),
+    q90_abs_pct = round(unname(quantile(abs(pct), 0.9)), 1),
+    .groups = "drop"
+  )
+knitr::kable(fig8_check, caption = "Packaged models vs digitized Figure 8 curves (absolute % difference).")
+stopifnot(fig8_check$median_abs_pct < 5, fig8_check$q90_abs_pct < 15)
+```
+
+As the paper notes, the two models give similar potency estimates (k2 = 0.0023
+vs 0.0020 mL/ng/day) and comparable delays (`TA` = 5.56 days vs a mean transit
+time of 2.68 days through the three damaged-cell compartments, 3 / k1; the paper
+writes the transit time as 4 / k1, but 2.68 days is 3 / 1.12).
+
+# Case Study 2: AZD1208 (Figure 9)
+
+```{r azd-pk, fig.cap = "Replicates Figure 9A of Mo 2014: AZD1208 plasma concentrations after a single oral dose."}
+azd <- ui$Mo_2014_azd1208_mouse
+azd_pk <- bind_rows(lapply(c(3, 10, 30), function(d) {
+  ev <- rxode2::et(amt = d, time = 0, cmt = "depot") |> rxode2::et(obs_pk)
+  solve_det(azd, ev) |> mutate(dose = d)
+}))
+ggplot(azd_pk[azd_pk$time > 0, ], aes(time * 24, Cc, colour = factor(dose))) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "AZD1208 plasma concentration (ng/mL)", colour = "Dose (mg/kg)") +
+  theme_bw()
+```
+
+Mo 2014 does not restate the dosing regimen of the AZD1208 efficacy study. The
+cited source study (Keeton et al., Blood 2014) dosed MOLM-16 xenografts orally
+once daily for 14 days, but the published Figure 9B curves are reproduced only
+with once-daily dosing for 21 days (days 1-21): with 14 days the treated
+tumors regrow about 4 days earlier than published. The figure below uses 21
+days and shows the 14-day regimen for comparison. The model time starts at day
+0 with the tumor at 170 mm^3, which is where the published curves start.
+
+```{r azd-tgi}
+obs_azd <- seq(0, 35, by = 0.05)
+azd_doses <- c(0, 0.3, 1, 3, 10, 30)
+azd_arm <- function(d, last) {
+  ev <- if (d == 0) {
+    rxode2::et(obs_azd)
+  } else {
+    rxode2::et(amt = d, time = seq(1, last), cmt = "depot") |> rxode2::et(obs_azd)
+  }
+  solve_det(azd, ev) |>
+    mutate(arm = if (d == 0) "Control" else paste(d, "mg/kg"), regimen = paste0("QD days 1-", last))
+}
+azd_levels <- c("Control", paste(azd_doses[-1], "mg/kg"))
+azd_sim <- bind_rows(
+  lapply(azd_doses, azd_arm, last = 21),
+  lapply(azd_doses[-1], azd_arm, last = 14)
+)
+
+dig_9 <- data.frame(
+  time = c(13, 13, 13, 13, 13, 13, 17, 17, 17, 17, 17, 21, 21, 21, 21, 25, 25, 25, 28, 28, 31, 31, 34.8),
+  arm = c(azd_levels, azd_levels[1:5], azd_levels[3:6], azd_levels[4:6], azd_levels[5:6], azd_levels[5:6], azd_levels[6]),
+  fig = c(805, 729, 618, 459, 305, 223, 1426, 1244, 982, 654, 371, 1598, 947, 461, 262, 1474, 640, 331, 999, 513, 1560, 807, 1409)
+)
+main_21 <- filter(azd_sim, regimen == "QD days 1-21")
+dig_9$sim <- mapply(function(a, tt) {
+  d <- main_21[main_21$arm == a, ]
+  approx(d$time, d$tumor_vol, tt)$y
+}, dig_9$arm, dig_9$time)
+dig_9$pct <- pct_diff(dig_9$sim, dig_9$fig)
+```
+
+```{r fig9, fig.cap = "Replicates Figure 9B of Mo 2014. Solid lines: packaged model with once-daily oral AZD1208 on days 1-21; dotted lines: the same doses on days 1-14; points: model curves digitized from the published figure."}
+ggplot(filter(azd_sim, tumor_vol <= 2000), aes(time, tumor_vol, colour = factor(arm, azd_levels), linetype = regimen)) +
+  geom_line() +
+  geom_point(data = dig_9, aes(time, fig, colour = factor(arm, azd_levels)), inherit.aes = FALSE, shape = 1) +
+  scale_linetype_manual(values = c("QD days 1-21" = "solid", "QD days 1-14" = "dotted")) +
+  labs(x = "Time (days)", y = expression(Tumor ~ size ~ (mm^3)), colour = NULL, linetype = NULL) +
+  theme_bw()
+```
+
+```{r fig9-check}
+fig9_check <- data.frame(
+  n = nrow(dig_9),
+  median_abs_pct = round(median(abs(dig_9$pct)), 1),
+  q90_abs_pct = round(unname(quantile(abs(dig_9$pct), 0.9)), 1)
+)
+knitr::kable(fig9_check, caption = "Packaged model (days 1-21 regimen) vs digitized Figure 9B curves (absolute % difference).")
+stopifnot(fig9_check$median_abs_pct < 10, fig9_check$q90_abs_pct < 25)
+```
+
+# PKNCA validation
+
+Mo 2014 reports no NCA, so the checks below compare PKNCA on the packaged PK
+models against values the paper implies. For paclitaxel the Results give a peak
+plasma concentration of 37040 ng/mL after 30 mg/kg. For the linear
+first-order-absorption models the area is exactly `AUCinf = 1000 dose / (kel V)`,
+and for the one-compartment AZD1208 model with `ka = kel` the peak is
+`Cmax = 1000 dose e^-1 / V` at `tmax = 1 / ka`.
+
+```{r pknca}
+pac_pk <- solve_det(pac, rxode2::et(amt = 30, time = 0, cmt = "central") |> rxode2::et(c(0, seq(0.001, 7, length.out = 400)))) |>
+  mutate(treatment = "paclitaxel 30 mg/kg IV", dose = 30)
+conc <- bind_rows(
+  pac_pk,
+  az_pk |> mutate(treatment = paste("AZ968", dose, "mg/kg IP")),
+  azd_pk |> mutate(treatment = paste("AZD1208", dose, "mg/kg PO"))
+) |>
+  mutate(id = as.integer(factor(treatment))) |>
+  select(id, treatment, time, Cc, dose) |>
+  filter(!is.na(Cc))
+doses <- conc |>
+  distinct(id, treatment, dose) |>
+  mutate(time = 0)
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(doses, dose ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+az_par <- data.frame(dose = c(10, 20, 30), kel = c(33.9, 26.0, 24.7), vc = c(2.70, 2.07, 1.97))
+reference <- bind_rows(
+  data.frame(treatment = "paclitaxel 30 mg/kg IV", cmax = 37040, aucinf.obs = 1000 * 30 / (0.868 * 24 * 0.81)),
+  az_par |> transmute(treatment = paste("AZ968", dose, "mg/kg IP"), aucinf.obs = 1000 * dose / (kel * vc)),
+  data.frame(dose = c(3, 10, 30)) |>
+    transmute(
+      treatment = paste("AZD1208", dose, "mg/kg PO"),
+      cmax = 1000 * dose * exp(-1) / 4.86,
+      tmax = 1 / 5.52,
+      aucinf.obs = 1000 * dose / (5.52 * 4.86)
+    )
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = reference,
+  by = "treatment",
+  units = c(cmax = "ng/mL", tmax = "day", aucinf.obs = "ng*day/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "PKNCA on the packaged PK models vs values implied by the paper. * marks rows differing by more than 20%.")
+stopifnot(!any(grepl("\\*", cmp[["% diff"]])))
+```
+
+All rows agree; the paclitaxel peak reproduces the 37040 ng/mL quoted in the
+Results (30 mg/kg / 0.81 L/kg).
+
+# Assumptions and deviations
+
+* **round() instead of INT().** The printed Equations 7, 22, 30 and 31 count
+  elapsed lifespans with the floor `INT(t / T)`; the packaged models use
+  `round(t / T)` as in the supplement MATLAB code S5 and S8 (with the S5 code's
+  extra rule that the first lifespan factor waits until `t = T` in the
+  non-cycle-specific model). Only the code version reproduces Figure 7 with the
+  published parameters (see "How the lifespan recursion is encoded").
+* **Finite number of lifespans.** The delayed terms are written out for 40
+  lifespans, so the paclitaxel and AZ968 models are valid for `t < 40.5 * T`
+  (59 and 52 days at the published `T`). A simulation beyond that, or with a
+  much shorter `T`, silently truncates the lifespan product.
+* **EC50 for paclitaxel.** The Results text gives 83.28 ng/mL; Table 2 gives
+  9.45 ng/mL. The Table 2 value is used because only it reproduces Figure 7B.
+  The Results text also prints kin0 = 0.404 g/day and wth = 2.461 g where Table
+  2 has 0.0404 and 2.48, and different CV% values; the table is used
+  throughout.
+* **Apoptotic pool of the cycle-specific model.** Its outflow is `kin(t - TA)
+  E(C(t - TA))` (Equation 32), evaluated from tumor sizes and concentrations
+  delayed by `TA + i T`, exactly as in the supplement S8 code.
+* **Cumulative kill hazard.** The surviving fraction `exp(-integral of E(C))`
+  of Equation 22 is carried in the canonical `cumhaz` state, which the
+  supplement S5 code carries as the surviving fraction itself.
+* **AZD1208 threshold.** Mo 2014 sets `wth` to "a very large value" without
+  stating it; the model uses the limit `p(w) = p0`, which the Equation 13
+  efficiency approaches for any `w` far below `wth`.
+* **AZD1208 Emax units.** Table 6 prints Emax as unitless, but it replaces the
+  rate `k2 C` of Equation 18 and is therefore a kill rate in 1/day.
+* **AZD1208 regimen.** Not stated in Mo 2014; the vignette uses once-daily
+  oral dosing on days 1-21, which reproduces Figure 9B. The cited Keeton 2014
+  study reports 14 days for its MOLM-16 xenograft experiment; that regimen
+  regrows the treated tumors about 4 days earlier than the published curves.
+* **AZ968 regimen.** The Methods describe both once-daily and once-weekly
+  AZ968 dosing, and the Figure 8 caption says oral where the Methods say
+  intraperitoneal. The vignette uses intraperitoneal doses on days 0, 7 and 14,
+  which places the drops of the lifespan curves where Figure 8B shows them.
+* **Simeoni comparator units.** Table 4 prints lambda1 in 1/day; in the linear
+  form of Equation 33 it is a growth rate in mm^3/day. The Results write the
+  mean transit time as 4 / k1 = 2.68 days; 2.68 days is 3 / k1, the transit
+  time through the three damaged-cell compartments of Equation 33.
+* **Dose-specific AZ968 PK.** `DOSE_AZ968_MGKG` takes the 10 mg/kg PK for any
+  value other than 20 or 30 mg/kg (including controls, where it is unused).
+* **No variability.** No between-animal variability or residual error is
+  reported (mean-profile least-squares fits); the additive residual errors are
+  held at 0.
+* **Literature check.** No erratum or correction was found for this article
+  (EuropePMC and Crossref, checked 2026-11-23).

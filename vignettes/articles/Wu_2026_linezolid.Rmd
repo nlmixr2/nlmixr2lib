@@ -1,0 +1,744 @@
+---
+title: "Linezolid (Wu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Linezolid (Wu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+ui <- rxode2::rxode(readModelDb("Wu_2026_linezolid"))
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Description: ", ui$description, "\n", sep = "")
+```
+
+* Article: <https://doi.org/10.3389/fphar.2026.1766346>
+* Supplement: <https://www.frontiersin.org/articles/10.3389/fphar.2026.1766346/full#supplementary-material>
+
+Wu 2026 develops a one-compartment population PK model for intravenous
+linezolid from 20 critically ill adults who received 600 mg every 12 h as a 1-h
+or a 3-h infusion, then uses it in Monte Carlo simulations to ask how the
+infusion duration (0.5 h to a 12-h continuous infusion) trades efficacy against
+trough-driven toxicity. The supplement holds the covariate-selection steps
+(Supplementary Table S1) and diagnostic figures; it carries no additional
+parameter values or model code.
+
+# Population
+
+Twenty critically ill adults in the Emergency ICU of the First Affiliated
+Hospital of Bengbu Medical University, China, were enrolled between January 2017
+and January 2021 (Methods 2.1). All received intravenous linezolid 600 mg q12h:
+ten as a 1-h standard infusion and ten as a 3-h prolonged intermittent
+infusion. Patients on renal replacement therapy were excluded. Blood was drawn
+before the first dose and 0.5, 1, 2, 3, 4, 6, 8 and 12 h after the start of the
+infusion, giving 90 samples per group.
+
+Table 1 reports the two groups separately:
+
+| Characteristic | 1-h infusion (n = 10) | 3-h infusion (n = 10) |
+|---|---|---|
+| Male / female | 7 / 3 | 4 / 6 |
+| Age (years), mean +/- SD (range) | 60.8 +/- 6.1 (51-68) | 55.7 +/- 8.2 (40-67) |
+| Weight (kg), mean +/- SD (range) | 65.2 +/- 11.7 (55-96) | 58.9 +/- 4.7 (52-65) |
+| Albumin (g/L), mean +/- SD | 44.1 +/- 6.0 | 43.0 +/- 6.9 |
+| Cockcroft-Gault CLcr (mL/min), mean +/- SD (range) | 107.2 +/- 14 (71-124) | 99.1 +/- 17.6 (72-128) |
+
+The same information is available programmatically via the model's
+`population` metadata (`readModelDb("Wu_2026_linezolid")()$population`).
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Wu_2026_linezolid.R`. The table below
+collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| One compartment, zero-order input, first-order elimination | n/a | Results 3.2.1 |
+| `d/dt(central) <- -kel * central`, dose by IV infusion into `central` | n/a | Results 3.2.1; Methods 2.1 (IV infusion over 1 or 3 h) |
+| `vc` equation | `30.7 * (WT/61.5)^2.16` | Results 3.2.2 |
+| `cl` equation | `7.37 * (CLcr/106.5)^1.35` | Results 3.2.2 |
+| `lvc` | log(30.7) | Table 2, final model, V |
+| `lcl` | log(7.37) | Table 2, final model, CL |
+| `e_wt_vc` | 2.16 | Table 2, WT_V |
+| `e_crcl_cl` | 1.35 | Table 2, CLcr_CL |
+| `etalvc` | 0.241^2 = 0.058081 | Table 2, omega V = 24.1%; CV% = sqrt(omega^2) x 100 (Methods 2.2.1) |
+| `etalcl` | 0.208^2 = 0.043264 | Table 2, omega CL = 20.8% |
+| `expSd` | 0.217 | Table 2, epsilon = 21.7%; exponential residual (Methods Equation 2) |
+
+# Structural verification
+
+The packaged model must reproduce the two printed covariate equations exactly.
+Both sides use the same numbers, so the check is gated tightly.
+
+```{r covariate-equations}
+mod <- readModelDb("Wu_2026_linezolid")
+
+grid <- tidyr::crossing(
+  WT   = c(50, 61.5, 75, 96),
+  CRCL = c(60, 90, 106.5, 130)
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+# One dose and one observation per grid point; observations are on the ODE
+# state `central`, never on the algebraic observable `Cc`.
+grid_events <- dplyr::bind_rows(
+  grid |> dplyr::mutate(time = 0, amt = 600, evid = 1L, cmt = "central"),
+  grid |> dplyr::mutate(time = 1, amt = NA_real_, evid = 0L, cmt = "central")
+) |>
+  dplyr::arrange(id, time)
+
+# zeroRe() removes the etas on purpose, so rxode2's warning that a
+# multi-subject solve has no omega is expected and muffled; any other warning
+# still surfaces.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) invokeRestart("muffleWarning")
+}
+
+sim_grid <- withCallingHandlers(
+  rxode2::rxSolve(
+    rxode2::zeroRe(mod),
+    events = grid_events,
+    keep   = c("WT", "CRCL")
+  ),
+  warning = muffle_no_omega
+) |>
+  as.data.frame()
+
+chk_cov <- sim_grid |>
+  dplyr::distinct(id, WT, CRCL, cl, vc) |>
+  dplyr::mutate(
+    cl_paper = 7.37 * (CRCL / 106.5)^1.35,
+    vc_paper = 30.7 * (WT / 61.5)^2.16,
+    cl_rel   = abs(cl - cl_paper) / cl_paper,
+    vc_rel   = abs(vc - vc_paper) / vc_paper
+  )
+
+stopifnot(
+  nrow(chk_cov) == nrow(grid),
+  max(chk_cov$cl_rel) < 1e-8,
+  max(chk_cov$vc_rel) < 1e-8
+)
+
+chk_cov |>
+  dplyr::filter(WT %in% c(50, 61.5, 96), CRCL %in% c(60, 106.5, 130)) |>
+  dplyr::select(WT, CRCL, cl, cl_paper, vc, vc_paper) |>
+  dplyr::rename(
+    "WT (kg)"          = WT,
+    "CLcr (mL/min)"    = CRCL,
+    "CL model (L/h)"   = cl,
+    "CL paper (L/h)"   = cl_paper,
+    "V model (L)"      = vc,
+    "V paper (L)"      = vc_paper
+  ) |>
+  knitr::kable(
+    digits  = 3,
+    caption = "Model-computed CL and V against the Wu 2026 Results 3.2.2 equations."
+  )
+```
+
+The reference patient (61.5 kg, CLcr 106.5 mL/min) has CL = 7.37 L/h and
+V = 30.7 L, an elimination half-life of
+`r sprintf("%.2f", log(2) * 30.7 / 7.37)` h.
+
+# Replicate Figure 2 -- visual predictive check
+
+Figure 2 is the VPC of the first 600 mg dose given over 1 h (panel a) or 3 h
+(panel b). The observed data are not public, so the virtual patients below
+draw weight and creatinine clearance from a normal distribution with each
+group's Table 1 mean and SD, truncated to the group's observed range. The
+predicted medians of Figure 2 were digitised by the maintainers and are shown
+as points.
+
+```{r vpc-cohort}
+# `set.seed()` seeds R's RNG for the covariate draws. It does not fix
+# rxode2's eta draws across machines (those streams are split per solver
+# thread), so every assertion below is written to hold for any cohort.
+set.seed(20260630)
+
+n_vpc <- 200L
+
+# Normal draws truncated to [lo, hi] by inverse-CDF sampling.
+rtrunc_norm <- function(n, mean, sd, lo, hi) {
+  p <- stats::runif(n, stats::pnorm(lo, mean, sd), stats::pnorm(hi, mean, sd))
+  stats::qnorm(p, mean, sd)
+}
+
+vpc_groups <- tibble::tribble(
+  ~group,         ~dur, ~wt_m, ~wt_sd, ~wt_lo, ~wt_hi, ~cr_m, ~cr_sd, ~cr_lo, ~cr_hi,
+  "1-h infusion",    1,  65.2,   11.7,     55,     96, 107.2,     14,     71,    124,
+  "3-h infusion",    3,  58.9,    4.7,     52,     65,  99.1,   17.6,     72,    128
+)
+
+vpc_subj <- dplyr::bind_rows(lapply(seq_len(nrow(vpc_groups)), function(i) {
+  g <- vpc_groups[i, ]
+  tibble::tibble(
+    id    = (i - 1L) * n_vpc + seq_len(n_vpc),
+    group = g$group,
+    dur   = g$dur,
+    WT    = rtrunc_norm(n_vpc, g$wt_m, g$wt_sd, g$wt_lo, g$wt_hi),
+    CRCL  = rtrunc_norm(n_vpc, g$cr_m, g$cr_sd, g$cr_lo, g$cr_hi)
+  )
+}))
+
+vpc_events <- dplyr::bind_rows(
+  vpc_subj |>
+    dplyr::mutate(time = 0, amt = 600, rate = 600 / dur, evid = 1L, cmt = "central"),
+  vpc_subj |>
+    tidyr::crossing(time = sort(unique(c(seq(0, 12, by = 0.25), 0.5)))) |>
+    dplyr::mutate(amt = NA_real_, rate = NA_real_, evid = 0L, cmt = "central")
+) |>
+  dplyr::select(-dur) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim_vpc <- rxode2::rxSolve(
+  mod,
+  events = vpc_events,
+  keep   = c("group", "WT", "CRCL")
+) |>
+  as.data.frame()
+
+stopifnot(nrow(sim_vpc) > 0, !anyNA(sim_vpc$Cc))
+```
+
+```{r vpc-figure, fig.height = 4}
+# Medians read off Wu 2026 Figure 2 at the nominal sampling times: the
+# predicted median (blue line) by pixel colour against the axis box, the
+# observed median (red line) by eye.
+fig2_dig <- tibble::tribble(
+  ~group,         ~time, ~pred, ~obs,
+  "1-h infusion",   0.5,   8.1,  5.6,
+  "1-h infusion",   1,    15.2, 14.2,
+  "1-h infusion",   2,    12.3,  9.1,
+  "1-h infusion",   3,     9.6,  7.3,
+  "1-h infusion",   4,     7.7,  6.5,
+  "1-h infusion",   6,     4.7,  5.5,
+  "1-h infusion",   8,     3.1,  3.4,
+  "1-h infusion",  12,     1.6,  1.4,
+  "3-h infusion",   0.5,   2.7,  5.3,
+  "3-h infusion",   1,     5.0,  9.0,
+  "3-h infusion",   2,     9.0, 11.9,
+  "3-h infusion",   3,    12.0, 14.7,
+  "3-h infusion",   4,     9.7, 10.8,
+  "3-h infusion",   6,     6.0,  7.5,
+  "3-h infusion",   8,     4.0,  5.2,
+  "3-h infusion",  12,     1.7,  1.7
+)
+
+vpc_sum <- sim_vpc |>
+  dplyr::group_by(group, time) |>
+  dplyr::summarise(
+    Q05 = stats::quantile(sim, 0.05),
+    Q50 = stats::median(sim),
+    Q95 = stats::quantile(sim, 0.95),
+    .groups = "drop"
+  )
+
+fig2_long <- fig2_dig |>
+  tidyr::pivot_longer(c(pred, obs), names_to = "series", values_to = "conc") |>
+  dplyr::mutate(series = ifelse(series == "pred", "Figure 2 predicted median", "Figure 2 observed median"))
+
+ggplot(vpc_sum, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "grey70", alpha = 0.5) +
+  geom_line(linewidth = 0.8) +
+  geom_point(data = fig2_long, aes(time, conc, colour = series, shape = series), size = 2) +
+  scale_colour_manual(values = c("Figure 2 predicted median" = "blue", "Figure 2 observed median" = "red")) +
+  facet_wrap(~group) +
+  labs(
+    x = "Time after start of infusion (h)",
+    y = "Linezolid concentration (mg/L)",
+    colour = NULL, shape = NULL,
+    caption = paste(
+      "Replicates Figure 2 of Wu 2026: simulated median (black) and 90%",
+      "prediction interval (grey) of the first 600 mg dose, n = 200 per group."
+    )
+  ) +
+  theme(legend.position = "bottom")
+```
+
+```{r vpc-compare}
+vpc_cmp <- fig2_dig |>
+  dplyr::left_join(vpc_sum, by = c("group", "time")) |>
+  dplyr::mutate(
+    pct_pred = 100 * (Q50 - pred) / pred,
+    pct_obs  = 100 * (Q50 - obs) / obs
+  )
+
+stopifnot(nrow(vpc_cmp) == nrow(fig2_dig), !anyNA(vpc_cmp$Q50))
+
+# Centre-of-distribution checks: a mis-transcribed V, CL or dose moves the
+# whole profile by tens of percent. The bounds leave room for the gap between
+# the paper's own predicted and observed medians in the 3-h panel.
+stopifnot(
+  abs(stats::median(vpc_cmp$pct_pred)) < 30,
+  abs(stats::median(vpc_cmp$pct_obs)) < 30
+)
+
+vpc_cmp |>
+  dplyr::select(group, time, pred, obs, Q50, pct_pred, pct_obs) |>
+  dplyr::rename(
+    "Group"                       = group,
+    "Time (h)"                    = time,
+    "Figure 2 predicted (mg/L)"   = pred,
+    "Figure 2 observed (mg/L)"    = obs,
+    "Simulated median (mg/L)"     = Q50,
+    "% diff vs predicted"         = pct_pred,
+    "% diff vs observed"          = pct_obs
+  ) |>
+  knitr::kable(digits = 1, caption = "Simulated against digitised Figure 2 medians.")
+```
+
+In the 1-h panel the simulated median follows the paper's predicted median
+closely through the peak and the elimination phase. In the 3-h panel it runs
+about 20-30% above the paper's predicted median and close to the paper's
+**observed** median; the paper's own predicted line sits below its observed
+data there. The cohort is drawn from the 3-h group's Table 1 covariates
+(lighter and with lower CLcr than the 1-h group, so a smaller V and a lower
+CL), whereas the paper does not say which covariates its VPC simulations used.
+See *Assumptions and deviations*.
+
+# Virtual cohort for the Monte Carlo simulations
+
+The paper simulated 1,000 virtual patients "using demographic variances (Mean
+WT = 61.5 kg; Mean CLcr = 106.5 mL/min) derived from the study population"
+(Methods 2.4) without stating the SDs. Here weight and CLcr are drawn from
+normal distributions with those means and the pooled whole-cohort SDs implied
+by Table 1 (9.3 kg and 16.0 mL/min), truncated symmetrically at 3 SD so the
+means stay at the stated values. Each infusion duration gets 200 virtual
+patients.
+
+Linezolid is linear in this model, so concentrations scale exactly with dose:
+each duration is simulated once at 100 mg q12h and rescaled to every dose
+level, which means the dose arms of one duration share the same 200 patients.
+
+```{r mc-cohort}
+set.seed(20260701)
+
+n_mc  <- 200L
+durs  <- c(0.5, 1:12)
+doses <- seq(300, 900, by = 100)
+
+wt_sd_pool <- sqrt((9 * (11.7^2 + 4.7^2) + 10 * ((65.2 - 62.05)^2 + (58.9 - 62.05)^2)) / 19)
+cr_sd_pool <- sqrt((9 * (14^2 + 17.6^2) + 10 * ((107.2 - 103.15)^2 + (99.1 - 103.15)^2)) / 19)
+
+# Truncation is symmetric (+/- 3 SD) so the cohort means stay at the stated
+# 61.5 kg and 106.5 mL/min.
+mc_subj <- tibble::tibble(
+  id   = seq_len(n_mc * length(durs)),
+  dur  = rep(durs, each = n_mc),
+  WT   = rtrunc_norm(n_mc * length(durs), 61.5, wt_sd_pool, 61.5 - 3 * wt_sd_pool, 61.5 + 3 * wt_sd_pool),
+  CRCL = rtrunc_norm(n_mc * length(durs), 106.5, cr_sd_pool, 106.5 - 3 * cr_sd_pool, 106.5 + 3 * cr_sd_pool)
+)
+
+# 14 doses (0-156 h) so that 144-168 h is a full steady-state day, matching
+# the paper's 'seventh day (144-168 h)' window. Dosing continues through it.
+mc_events <- dplyr::bind_rows(
+  mc_subj |>
+    dplyr::mutate(
+      time = 0, amt = 100, rate = 100 / dur, ii = 12, addl = 13L,
+      evid = 1L, cmt = "central"
+    ),
+  mc_subj |>
+    tidyr::crossing(time = seq(144, 168, by = 0.1)) |>
+    dplyr::mutate(
+      amt = NA_real_, rate = NA_real_, ii = NA_real_, addl = NA_integer_,
+      evid = 0L, cmt = "central"
+    )
+) |>
+  # `dur` is an rxode2 event column (infusion duration), so it must not reach
+  # rxSolve alongside `rate`; it is joined back on by id after the solve.
+  dplyr::select(-dur) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+c(wt_sd = wt_sd_pool, crcl_sd = cr_sd_pool)
+```
+
+# Simulation
+
+```{r mc-simulate}
+sim_mc <- rxode2::rxSolve(
+  mod,
+  events = mc_events,
+  keep   = c("WT", "CRCL")
+) |>
+  as.data.frame() |>
+  dplyr::select(id, time, cl, Cc100 = Cc) |>
+  dplyr::left_join(dplyr::select(mc_subj, id, dur), by = "id")
+
+stopifnot(
+  nrow(sim_mc) == n_mc * length(durs) * length(seq(144, 168, by = 0.1)),
+  !anyNA(sim_mc$Cc100)
+)
+```
+
+`Cc` is the individual prediction without residual error; the PTA analysis,
+like the paper's, uses it.
+
+```{r figure3, fig.height = 6}
+fig3 <- sim_mc |>
+  dplyr::filter(dur %in% c(0.5, 6, 12)) |>
+  tidyr::crossing(dose = c(300, 600, 900)) |>
+  dplyr::mutate(Cc = Cc100 * dose / 100) |>
+  dplyr::group_by(dose, dur, time) |>
+  dplyr::summarise(
+    Q025 = stats::quantile(Cc, 0.025),
+    Q50  = stats::median(Cc),
+    Q975 = stats::quantile(Cc, 0.975),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    panel = factor(
+      paste0(dose, " mg (DUR = ", dur, " h)"),
+      levels = paste0(rep(c(300, 600, 900), each = 3), " mg (DUR = ", c(0.5, 6, 12), " h)")
+    )
+  )
+
+ggplot(fig3, aes(time - 144, Q50)) +
+  geom_ribbon(aes(ymin = Q025, ymax = Q975), alpha = 0.25) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~panel, scales = "free_y") +
+  scale_x_continuous(breaks = seq(0, 24, by = 6)) +
+  labs(
+    x = "Time after 144 h (h)",
+    y = "Linezolid concentration (mg/L)",
+    caption = paste(
+      "Replicates the steady-state day of Figure 3 of Wu 2026: median and",
+      "95% interval, q12h, n = 200 per duration."
+    )
+  )
+```
+
+# PKNCA validation
+
+Steady-state NCA over 144-168 h for 600 mg q12h at five infusion durations,
+grouped by treatment. Cmin and Cmax over a 24 h window at steady state equal
+those of either 12 h dosing interval.
+
+```{r pknca}
+nca_durs <- c(0.5, 1, 3, 6, 12)
+
+sim_nca <- sim_mc |>
+  dplyr::filter(dur %in% nca_durs, abs(time * 4 - round(time * 4)) < 1e-6) |>
+  dplyr::mutate(
+    Cc = Cc100 * 6,
+    treatment = paste0("600 mg q12h, DUR ", dur, " h")
+  ) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+stopifnot(all(c(144, 168) %in% sim_nca$time))
+
+dose_nca <- mc_subj |>
+  dplyr::filter(dur %in% nca_durs) |>
+  tidyr::crossing(time = seq(0, 156, by = 12)) |>
+  dplyr::mutate(amt = 600, treatment = paste0("600 mg q12h, DUR ", dur, " h")) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id, concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id, doseu = "mg")
+
+intervals <- data.frame(start = 144, end = 168, cmax = TRUE, cmin = TRUE, auclast = TRUE)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(nca_res$result)
+
+stopifnot(nrow(nca_tbl) > 0, !anyNA(nca_tbl$PPORRES))
+```
+
+## Comparison against the paper's steady-state equations
+
+Wu 2026 summarises its simulations in Equation 4, an exponential fit of the
+steady-state extremes against the infusion duration,
+`Cmin,ss = Dose/300 x 0.67 x exp(0.1308 x DUR)` and
+`Cmax,ss = Dose/300 x 9.158 x exp(-0.0878 x DUR)`, and states
+`AUC24,ss = 0.2687 x Dose` independent of duration (Results 3.3). These are
+regressions through the simulated summaries rather than reported NCA, so they
+are the reference values here.
+
+```{r nca-compare}
+nca_ref <- tibble::tibble(dur = nca_durs) |>
+  dplyr::mutate(
+    treatment = paste0("600 mg q12h, DUR ", dur, " h"),
+    cmin      = 600 / 300 * 0.67 * exp(0.1308 * dur),
+    cmax      = 600 / 300 * 9.158 * exp(-0.0878 * dur),
+    auclast   = 0.2687 * 600
+  ) |>
+  dplyr::select(-dur)
+
+nca_cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = as.data.frame(nca_ref),
+  by        = "treatment",
+  units     = c(cmax = "mg/L", cmin = "mg/L", auclast = "mg*h/L")
+)
+
+knitr::kable(
+  nca_cmp,
+  digits  = 2,
+  caption = paste(
+    "Simulated median steady-state NCA (144-168 h, AUC over 24 h) against",
+    "Wu 2026 Equation 4 and AUC24,ss = 0.2687 x Dose."
+  )
+)
+if (!is.null(attr(nca_cmp, "footnote"))) cat(attr(nca_cmp, "footnote"))
+
+# Equation 4 is an exponential curve fitted through simulated summaries, so it
+# is not an exact target at every duration. The gate is on the centre across
+# the five durations: a mis-transcribed V or CL shifts every row together.
+eq4_chk <- nca_tbl |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "cmin")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(sim = stats::median(PPORRES), .groups = "drop") |>
+  dplyr::left_join(
+    tidyr::pivot_longer(nca_ref, c(cmax, cmin), names_to = "PPTESTCD", values_to = "ref"),
+    by = c("treatment", "PPTESTCD")
+  ) |>
+  dplyr::mutate(pct = 100 * (sim - ref) / ref)
+
+stopifnot(
+  nrow(eq4_chk) == 2 * length(nca_durs), !anyNA(eq4_chk$pct),
+  abs(stats::median(eq4_chk$pct)) < 15,
+  max(abs(eq4_chk$pct)) < 35
+)
+```
+
+AUC24,ss agrees with the paper's slope to within a few percent at every
+duration, as it must for a linear model. Cmax,ss and Cmin,ss agree best at
+3-6 h; at the shortest infusions the simulated Cmax,ss is higher and Cmin,ss
+lower than Equation 4, because a single exponential in DUR cannot follow the
+true duration dependence across the whole 0.5-12 h range that the paper
+fitted it to.
+
+```{r auc-closed-form}
+# At steady state, AUC over 24 h of q12h dosing is the daily dose / CL for a
+# linear one-compartment model. Both sides use the same drawn CL, so this is a
+# numerical identity (trapezoid error on a 0.25 h grid) and is gated tightly.
+auc_id <- nca_tbl |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(id, auc = PPORRES) |>
+  dplyr::left_join(dplyr::distinct(sim_mc, id, cl), by = "id") |>
+  dplyr::mutate(pct = 100 * (auc - 1200 / cl) / (1200 / cl))
+
+stopifnot(
+  nrow(auc_id) == n_mc * length(nca_durs),
+  abs(stats::median(auc_id$pct)) < 0.5,
+  stats::quantile(abs(auc_id$pct), 0.9) < 2
+)
+
+# The paper's AUC24,ss = 0.2687 x Dose is the slope of the simulated
+# exposure against dose. 0.2687 sits within 1% of 2 / 7.37 = 0.2714 for the
+# typical patient, so a mis-transcribed CL moves the cohort median far
+# outside this band.
+auc_slope <- stats::median(auc_id$auc) / 600
+stopifnot(abs(auc_slope / 0.2687 - 1) < 0.10)
+auc_slope
+```
+
+# Replicate Table 3 -- composite probability of target attainment
+
+The composite target (Methods 2.5) is met when AUC24,ss/MIC >= 100 **and**
+%T>MIC >= 85% (efficacy) **and** Cmin,ss < 8 mg/L (safety). Table 3 splits the
+patients who miss it into "above the range" (Cmin,ss >= 8 mg/L) and "below the
+range" (efficacy not met and Cmin,ss < 8 mg/L); the three parts add up to 100%.
+%T>MIC is computed over the 144-168 h day on the 0.1 h grid.
+
+```{r pta}
+mics <- c(0.125, 0.25, 0.5, 1, 2, 3, 4)
+
+subj_ss <- sim_mc |>
+  dplyr::filter(time < 168 - 1e-9) |>
+  dplyr::group_by(id, dur, cl) |>
+  dplyr::summarise(
+    cmin100 = min(Cc100),
+    conc    = list(Cc100),
+    .groups = "drop"
+  )
+
+pta_subj <- subj_ss |>
+  tidyr::crossing(dose = doses, MIC = mics) |>
+  dplyr::mutate(
+    auc24  = 2 * dose / cl,
+    cmin   = cmin100 * dose / 100,
+    ftmic  = mapply(function(cc, d, m) mean(cc * d / 100 > m), conc, dose, MIC),
+    over   = cmin >= 8,
+    eff    = auc24 / MIC >= 100 & ftmic >= 0.85,
+    ok     = eff & !over,
+    under  = !eff & !over
+  ) |>
+  dplyr::select(-conc)
+
+pta_tab <- pta_subj |>
+  dplyr::group_by(dose, dur, MIC) |>
+  dplyr::summarise(
+    PTA   = 100 * mean(ok),
+    below = 100 * mean(under),
+    above = 100 * mean(over),
+    .groups = "drop"
+  )
+
+stopifnot(all(abs(pta_tab$PTA + pta_tab$below + pta_tab$above - 100) < 1e-8))
+```
+
+```{r table3}
+# Wu 2026 Table 3, composite PTA (%) for the printed dose / duration cells.
+table3 <- tibble::tribble(
+  ~dose, ~dur, ~`0.125`, ~`0.25`, ~`0.5`, ~`1`, ~`2`, ~`4`,
+  300, 0.5, 92.3, 87.9, 76.0, 24.2, 0.4, 0,
+  300, 3,   96.6, 92.3, 83.7, 25.2, 0.4, 0,
+  300, 6,   99.4, 98.2, 90.8, 26.3, 0.3, 0,
+  300, 9,   99.8, 99.8, 93.5, 26.7, 0.3, 0,
+  300, 12,  99.2, 99.2, 92.9, 26.1, 0,   0,
+  500, 0.5, 95.0, 91.0, 85.8, 67.8, 11.6, 0,
+  500, 3,   96.3, 94.0, 89.2, 74.1, 11.2, 0,
+  500, 6,   97.2, 96.8, 94.7, 78.1, 10.4, 0,
+  500, 9,   94.3, 94.3, 94.2, 77.3, 7.6, 0,
+  500, 12,  84.5, 84.5, 84.4, 67.5, 0,   0,
+  700, 0.5, 93.3, 90.0, 85.8, 76.9, 33.0, 0.2,
+  700, 3,   93.4, 91.8, 88.3, 82.2, 34.6, 0.1,
+  700, 6,   91.3, 91.1, 90.1, 86.2, 33.0, 0.1,
+  700, 9,   83.0, 83.0, 83.0, 81.1, 24.9, 0,
+  700, 12,  52.8, 52.8, 52.8, 50.9, 0,   0,
+  900, 0.5, 89.9, 87.4, 83.3, 77.3, 55.4, 3.2,
+  900, 3,   88.5, 87.1, 84.6, 79.5, 58.1, 2.9,
+  900, 6,   83.0, 82.9, 82.4, 80.0, 55.8, 1.2,
+  900, 9,   67.1, 67.1, 67.1, 67.0, 41.7, 0,
+  900, 12,  22.4, 22.4, 22.4, 22.3, 0,   0
+) |>
+  tidyr::pivot_longer(-c(dose, dur), names_to = "MIC", values_to = "PTA_paper") |>
+  dplyr::mutate(MIC = as.numeric(MIC))
+
+# Over-exposure (the up-arrow column) does not depend on the MIC.
+table3_above <- tibble::tribble(
+  ~dose, ~dur, ~above_paper,
+  300, 0.5, 0.1, 300, 3, 0.1, 300, 6, 0.2, 300, 9, 0.2, 300, 12, 0.8,
+  500, 0.5, 0.4, 500, 3, 1.6, 500, 6, 2.7, 500, 9, 5.7, 500, 12, 15.5,
+  700, 0.5, 3.5, 700, 3, 5.3, 700, 6, 8.7, 700, 9, 17.0, 700, 12, 47.2,
+  900, 0.5, 7.4, 900, 3, 10.5, 900, 6, 17.0, 900, 9, 32.9, 900, 12, 77.6
+)
+
+pta_cmp <- table3 |>
+  dplyr::left_join(pta_tab, by = c("dose", "dur", "MIC")) |>
+  dplyr::mutate(diff = PTA - PTA_paper)
+
+above_cmp <- table3_above |>
+  dplyr::left_join(dplyr::distinct(pta_tab, dose, dur, above), by = c("dose", "dur")) |>
+  dplyr::mutate(diff = above - above_paper)
+
+stopifnot(
+  nrow(pta_cmp) == nrow(table3), !anyNA(pta_cmp$diff),
+  nrow(above_cmp) == nrow(table3_above), !anyNA(above_cmp$diff)
+)
+
+pta_cmp |>
+  dplyr::mutate(cell = sprintf("%.1f (%.1f)", PTA, PTA_paper)) |>
+  dplyr::select(dose, dur, MIC, cell) |>
+  tidyr::pivot_wider(names_from = MIC, values_from = cell, names_prefix = "MIC ") |>
+  dplyr::rename("Dose q12h (mg)" = dose, "DUR (h)" = dur) |>
+  knitr::kable(caption = "Composite PTA (%), simulated (Wu 2026 Table 3 in parentheses).")
+
+above_cmp |>
+  dplyr::select(dose, dur, above, above_paper) |>
+  dplyr::rename(
+    "Dose q12h (mg)"          = dose,
+    "DUR (h)"                 = dur,
+    "Cmin,ss >= 8, simulated (%)" = above,
+    "Cmin,ss >= 8, Table 3 (%)"   = above_paper
+  ) |>
+  knitr::kable(digits = 1, caption = "Over-exposure (Table 3 up-arrow column).")
+
+# n = 200 per duration gives a binomial SE of up to 3.5 percentage points per
+# cell, and cells near a threshold cliff (CI at 700-900 mg) are the most
+# sensitive to the unreported covariate SDs. A mis-transcribed CL, V or
+# exponent moves whole rows by tens of points.
+stopifnot(
+  stats::median(abs(pta_cmp$diff)) < 6,
+  stats::quantile(abs(pta_cmp$diff), 0.9) < 15,
+  stats::median(abs(above_cmp$diff)) < 6,
+  stats::quantile(abs(above_cmp$diff), 0.9) < 15
+)
+
+tibble::tibble(
+  Comparison = c("Composite PTA, 120 cells", "Over-exposure, 20 cells"),
+  `Median |diff| (points)` = c(stats::median(abs(pta_cmp$diff)), stats::median(abs(above_cmp$diff))),
+  `90th percentile |diff|` = c(stats::quantile(abs(pta_cmp$diff), 0.9), stats::quantile(abs(above_cmp$diff), 0.9)),
+  `Max |diff|` = c(max(abs(pta_cmp$diff)), max(abs(above_cmp$diff)))
+) |>
+  knitr::kable(digits = 1, caption = "Simulated minus Wu 2026 Table 3, percentage points.")
+```
+
+The simulated composite PTA follows Table 3 closely, including its central
+finding: at 300 mg PTA rises monotonically with infusion duration, while at
+700-900 mg it falls steeply beyond about 6 h because the steady-state trough
+crosses 8 mg/L (the over-exposure column). The largest differences sit at the
+continuous-infusion cells of 700 and 900 mg, where the attainment depends on
+how many patients straddle Cmin,ss = 8 mg/L and is therefore most sensitive
+to the unreported spread of the virtual covariates.
+
+```{r figure5, fig.height = 4}
+pta_tab |>
+  dplyr::filter(MIC %in% c(0.25, 0.5)) |>
+  ggplot(aes(dur, PTA, colour = factor(dose), group = dose)) +
+  geom_line() +
+  geom_point(size = 1.2) +
+  facet_wrap(~MIC, labeller = labeller(MIC = function(x) paste0("MIC = ", x, " mg/L"))) +
+  scale_x_continuous(breaks = c(0.5, 2, 4, 6, 8, 10, 12)) +
+  scale_y_continuous(limits = c(0, 100)) +
+  labs(
+    x = "Infusion duration (h)", y = "Composite PTA (%)", colour = "Dose q12h (mg)",
+    caption = "Replicates Figure 5 of Wu 2026. n = 200 per duration."
+  )
+```
+
+# Assumptions and deviations
+
+* **Covariate centring.** Methods Equation 3 describes the centring value as
+  the covariate median, but the final equations (Results 3.2.2) print 61.5 kg
+  and 106.5 mL/min, which the Monte Carlo section calls the study-population
+  means. Table 1 reports only per-group summaries (whole-cohort means 62.1 kg
+  and 103.2 mL/min), so neither description can be checked. The printed
+  equation values are used as written.
+* **Typical values in the Discussion.** The Discussion quotes CL = 7.06 L/h and
+  V = 31.3 L, which match neither the base (6.96 L/h, 30.9 L) nor the final
+  (7.37 L/h, 30.7 L) estimates of Table 2. The model uses the Table 2 final
+  estimates, which agree with the Results 3.2.2 equations.
+* **Input.** Methods 2.2.1 mentions models "with first-order absorption",
+  but every dose was intravenous and Results 3.2.1 selects "zero-order input
+  and first-order elimination". The model has no depot; doses are infusions
+  into `central`.
+* **Variability scale.** Methods 2.2.1 defines CV% = sqrt(omega^2) x 100, so
+  the Table 2 percentages are the SDs of the etas (omega^2 = 0.241^2 and
+  0.208^2). The residual 21.7% is read on the same scale as the SD of the
+  exponential (log-normal) residual. No eta covariance is reported.
+* **Virtual cohort.** The SDs and truncation of the Monte Carlo covariate
+  distributions are not reported; the pooled Table 1 SDs and a symmetric
+  3-SD truncation are an assumption. The paper simulated 1,000 patients per regimen; this
+  vignette uses 200 per infusion duration and rescales them across doses, so
+  Table 3 cells carry a binomial standard error of up to 3.5 percentage
+  points.
+* **Protein binding.** The Limitations mention "a fixed protein binding
+  fraction" but no value is given. The PTA here is computed on total
+  concentrations; the published AUC24,ss/MIC pattern (for example near-zero
+  attainment at 300 mg and MIC 2 mg/L, where total AUC24 is about 80 mg*h/L)
+  is consistent with total rather than unbound exposure.
+* **Figure 2 digitisation and VPC cohort.** The Figure 2 medians were read
+  off the published image (658 x 241 pixels) at the nominal sampling times
+  and carry reading error of roughly 0.3 mg/L. The paper does not state which
+  covariates its VPC simulations used; here each panel uses its own group's
+  Table 1 weight and CLcr distribution. The resulting 3-h panel matches the
+  paper's observed medians more closely than its predicted medians.
+* **Erratum search.** No correction notice for this article was found on the
+  EuropePMC record of the article, which lists no comment or correction
+  (checked 2026-11-14).

@@ -1,0 +1,569 @@
+---
+title: "Olmesartan concentration-QTc (Song 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Olmesartan concentration-QTc (Song 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+rxode2::rxSetSeed(20160101)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Song_2016_olmesartan_QTcF")()$reference`
+* Article: <https://doi.org/10.1002/jcph.572>
+* Companion study report (design, demographics, NCA): Mendell J, Matsushima N,
+  O'Reilly TE, Lee J. A thorough QTc study demonstrates that olmesartan
+  medoxomil does not prolong the QTc interval. J Clin Pharmacol.
+  2016;56(4):484-491. <https://doi.org/10.1002/jcph.610>
+
+Song et al. (2016) analysed the thorough QTc study of olmesartan medoxomil, an
+angiotensin II receptor blocker, in healthy adults. Each subject received single
+oral doses of olmesartan medoxomil 40 mg (highest approved dose) and 160 mg
+(supratherapeutic), placebo and moxifloxacin 400 mg in a four-period crossover.
+The ECG endpoints were placebo-adjusted and baseline-adjusted ("double delta").
+Fridericia's correction (QTcF) and a population correction (QTcP) both left some
+heart-rate dependence at high heart rates. The authors therefore put the
+baseline-adjusted, placebo-adjusted RR interval (DeltaDeltaRR) into the model as
+a regressor beside the olmesartan concentration. They fitted the same linear
+mixed-effects model to three endpoints. The package carries one file for each:
+
+| Model file | Endpoint | Output | Source |
+|---|---|---|---|
+| `Song_2016_olmesartan_QTc` | DeltaDeltaQT, no formula correction (the paper's "DeltaDeltaQTc") | `QTc` | Table 2, "QTc" columns |
+| `Song_2016_olmesartan_QTcF` | DeltaDeltaQTcF, QTcF = QT / RR^0.33 | `QTcF` | Table 2, "QTcF" columns |
+| `Song_2016_olmesartan_QTcP` | DeltaDeltaQTcP, QTcP = QT / RR^(1/3.265) | `QTcP` | Table 2, "QTcP" columns |
+
+All three share Song 2016 Equation 1 with the additive residual error of
+Equation 2:
+
+$$
+\Delta\Delta \mathrm{QTc}_{ij} = \theta_1 (1 + \omega_1)
+  + \theta_2\,\Delta\Delta \mathrm{RR}_{ij} (1 + \omega_2)
+  + \theta_3\,\mathrm{OMconc}_{ij} (1 + \omega_3) + \sigma_i
+$$
+
+The random effects are proportional to each coefficient. In the model files the
+three coefficients are `e0` (intercept), `e_rr_delta_e0` (DeltaDeltaRR) and
+`slope` (olmesartan concentration). Their random effects are `etae0`,
+`etae_rr_delta_e0` and `etaslope`, and the residual is `addSd`.
+
+The "QTc" columns of Table 2 are the uncorrected QT interval. Figure 1 and
+Supplemental Figure S1 label the same endpoint "DeltaDeltaQT". Its DeltaDeltaRR
+coefficient, 0.128 ms/ms, matches the slope of raw QT on RR in Figure 1
+(0.124 ms/ms), and Song 2016 states it is 380-fold and 20-fold larger than the
+QTcF and QTcP coefficients. The model's own DeltaDeltaRR term does the heart-rate
+correction. The file keeps the paper's name and the generic `QTc` output.
+
+Covariates in the model files:
+
+* `CP_OLMESARTAN_NGML` -- olmesartan plasma concentration at the ECG time
+  (ng/mL).
+* `RR_DELTA` -- baseline-adjusted, time-matched placebo-adjusted RR interval
+  (ms). Set it to 0 for the heart-rate-neutral prediction.
+
+These are PD-only models: concentrations are inputs. The library's olmesartan
+population PK model, `Song_2013_olmesartan`, is used below to drive them over
+the study's ECG schedule.
+
+# Population
+
+The study randomised 56 healthy subjects (28 men, 28 women), and 51
+completed. The cardiodynamic and pharmacokinetic analysis sets each had 55
+subjects (Song 2016 Methods). Mean age was 31.9 years (range 19-45) and mean
+body mass index 26.2 kg/m^2 (range 19.1-30.6). The companion report (Mendell
+2016 Table 1) gives 91.1% White, 7.1% Black or African American, 1.8% American
+Indian or Alaska Native and 85.7% Hispanic or Latino. Triplicate ECGs were
+extracted from Holter recordings at the PK sampling times, predose and at 0.5,
+1, 1.5, 2, 2.5, 3, 4, 6, 8, 10, 12 and 24 h postdose. Only the two olmesartan
+treatments entered the concentration-QTc model, which was fitted with NONMEM
+7.1.0 (FOCE with interaction).
+
+# Source trace
+
+| Element | QTc model | QTcF model | QTcP model | Source |
+|---|---|---|---|---|
+| Model structure | Equations 1 and 2 | same | same | Results, "Exposure-Response Analysis" |
+| `e0` (intercept, ms) | -0.15 | -0.129 | -0.156 | Table 2 |
+| `slope` (ms per ng/mL) | 0.000807 | 0.000816 | 0.000800 | Table 2; Results text |
+| `e_rr_delta_e0` (ms per ms) | 0.128 | 0.000336 | 0.00646 | Table 2 |
+| `etae0` (printed "omega2 Intercept") | 4.81 -> 23.1361 | -5.73 -> 32.8329 | 4.63 -> 21.4369 | Table 2; see Assumptions |
+| `etaslope` (printed "omega2 beta OMconc") | 3.37 -> 11.3569 | 3.27 -> 10.6929 | 3.31 -> 10.9561 | Table 2; see Assumptions |
+| `etae_rr_delta_e0` (printed "omega2 ddRR") | -0.315 -> 0.099225 | -108 -> 11664 | -5.58 -> 31.1364 | Table 2; see Assumptions |
+| `addSd` (printed "sigma2", ms) | 4.03 | 3.99 | 3.99 | Table 2; see Assumptions |
+| QTcP correction coefficient | -- | -- | 3.265 | Methods, "Evaluation of Population QT Correction Coefficients" |
+| Validation targets | DeltaDeltaQTc 1.815 ms at 2440 ng/mL | slope CV 0.99% across endpoints | RR coefficient ratios 380 and 20 | Results |
+
+# Models
+
+```{r models}
+mod <- list(
+  QTc = readModelDb("Song_2016_olmesartan_QTc"),
+  QTcF = readModelDb("Song_2016_olmesartan_QTcF"),
+  QTcP = readModelDb("Song_2016_olmesartan_QTcP")
+)
+mod_typ <- lapply(mod, rxode2::zeroRe)
+
+# Table 2 values, used below for the identity and published-number checks
+tab2 <- data.frame(
+  endpoint = c("QTc", "QTcF", "QTcP"),
+  e0 = c(-0.15, -0.129, -0.156),
+  slope = c(0.000807, 0.000816, 0.000800),
+  rr = c(0.128, 0.000336, 0.00646),
+  w_e0 = c(4.81, -5.73, 4.63),
+  w_slope = c(3.37, 3.27, 3.31),
+  w_rr = c(-0.315, -108, -5.58),
+  sigma = c(4.03, 3.99, 3.99)
+)
+
+# PD-only event table: no dosing records and no ODE states; both covariates are
+# columns. The models are algebraic, so typical-value rows can share one id.
+pd_events <- function(conc, rr_delta = 0) {
+  n <- max(length(conc), length(rr_delta))
+  data.frame(
+    id = 1L, time = seq_len(n), evid = 0L, amt = 0,
+    CP_OLMESARTAN_NGML = rep_len(conc, n),
+    RR_DELTA = rep_len(rr_delta, n)
+  )
+}
+
+solve_typ <- function(endpoint, ev) {
+  as.data.frame(rxode2::rxSolve(mod_typ[[endpoint]], events = ev))[[endpoint]]
+}
+```
+
+# Structural checks
+
+With the random effects at zero, each model must equal
+`e0 + e_rr_delta_e0 * RR_DELTA + slope * C` for any concentration and
+DeltaDeltaRR. These are identities of the encoding and are asserted at machine
+precision.
+
+```{r structural}
+grid <- expand.grid(conc = c(0, 500, 2440, 4500), rr = c(-300, 0, 150))
+for (k in seq_len(nrow(tab2))) {
+  ep <- tab2$endpoint[k]
+  got <- solve_typ(ep, pd_events(grid$conc, grid$rr))
+  want <- tab2$e0[k] + tab2$rr[k] * grid$rr + tab2$slope[k] * grid$conc
+  stopifnot(isTRUE(all.equal(got, want, tolerance = 1e-12)))
+}
+```
+
+# Published numbers
+
+Song 2016 reports three numbers derived from the final models:
+
+* the predicted mean DeltaDeltaQTc of 1.815 ms at 2440 ng/mL. That
+  concentration is the mean Cmax after 160 mg in Mendell 2016, which Song 2016
+  calls the highest observed concentration. The prediction has DeltaDeltaRR at
+  0 and uses the "QTc" model;
+* a coefficient of variation of 0.99% among the three concentration slopes;
+* DeltaDeltaRR coefficients for QTc that are 380-fold and 20-fold those for QTcF
+  and QTcP.
+
+```{r published}
+pred_2440 <- solve_typ("QTc", pd_events(2440))
+slope_cv <- 100 * sd(tab2$slope) / mean(tab2$slope)
+rr_ratio <- tab2$rr[1] / tab2$rr[2:3]
+
+stopifnot(
+  # 1.815 is printed to 0.001 ms; the 6-significant-figure slope reproduces it
+  # to within that rounding of the slope (2440 * 0.0000005 = 0.0012 ms).
+  abs(pred_2440 - 1.815) < 0.005,
+  abs(slope_cv - 0.99) < 0.005,
+  abs(rr_ratio[1] - 380) / 380 < 0.01,
+  abs(rr_ratio[2] - 20) / 20 < 0.02
+)
+
+data.frame(
+  Quantity = c(
+    "DeltaDeltaQTc at 2440 ng/mL (ms)",
+    "CV of the three olmesartan slopes (%)",
+    "RR coefficient ratio QTc / QTcF",
+    "RR coefficient ratio QTc / QTcP"
+  ),
+  Published = c(1.815, 0.99, 380, 20),
+  Model = c(pred_2440, slope_cv, rr_ratio)
+) |>
+  knitr::kable(digits = 3, caption = "Numbers stated in the Results of Song 2016.")
+```
+
+The 90% confidence interval that Song 2016 gives at 2440 ng/mL (0.024 to 3.606
+ms) depends on the sampling covariance of the intercept and slope, which is not
+reported, so it is not reproduced.
+
+Figure 1 (panels 4-6) also prints ordinary least-squares slopes of each
+DeltaDelta endpoint on DeltaDeltaRR, with no concentration term and no random
+effects. These are not model parameters, but they are of the same size as the
+fitted RR coefficients: 0.125 versus 0.128 ms/ms for QT, -0.005 versus 0.0003
+for QTcF and 0.006 versus 0.0065 for QTcP.
+
+```{r fig-cr, fig.cap = "Typical DeltaDelta prediction against olmesartan concentration at DeltaDeltaRR = 0, for the three endpoints. Points mark the mean Cmax after 40 mg (863 ng/mL) and 160 mg (2440 ng/mL) from Mendell 2016; the dotted line is the 10 ms threshold of ICH E14."}
+conc_grid <- seq(0, 4500, by = 50)
+curve_df <- dplyr::bind_rows(lapply(tab2$endpoint, function(ep) {
+  data.frame(endpoint = ep, conc = conc_grid, value = solve_typ(ep, pd_events(conc_grid)))
+}))
+cmax_df <- dplyr::bind_rows(lapply(tab2$endpoint, function(ep) {
+  data.frame(endpoint = ep, conc = c(863.3, 2440), value = solve_typ(ep, pd_events(c(863.3, 2440))))
+}))
+ggplot(curve_df, aes(conc, value, colour = endpoint)) +
+  geom_line() +
+  geom_point(data = cmax_df, size = 2) +
+  geom_hline(yintercept = 10, linetype = "dotted") +
+  labs(
+    x = "Olmesartan concentration (ng/mL)",
+    y = "Typical DeltaDelta interval (ms)",
+    colour = "Endpoint"
+  ) +
+  theme_bw()
+```
+
+# Scale of the random effects
+
+Table 2 heads the random-effect rows "omega2", but four of the nine printed
+values are negative (-5.73, -0.315, -108 and -5.58). A variance cannot be
+negative. So the printed values are the standard deviations of the proportional
+random effects, each a NONMEM THETA multiplying a unit-variance ETA, whose sign
+does not matter. The model files use the square of each printed value as the
+eta variance.
+
+A second check confirms this reading. QT, QTcF and QTcP for one subject differ
+only by a correction applied to that subject's QT. A subject's own sensitivity
+to DeltaDeltaRR should therefore shift between endpoints by about the same
+amount for everyone, and its spread across subjects should not depend on the
+endpoint. The absolute between-subject SD of each coefficient is
+`|theta| * SD(eta)`. Under the SD reading it is nearly constant across the
+three endpoints for all three coefficients. Under the variance reading,
+`|theta| * sqrt(omega2)`, the DeltaDeltaRR coefficient's SD differs 20-fold
+between endpoints.
+
+```{r re-scale}
+sd_reading <- with(tab2, cbind(
+  intercept = abs(e0 * w_e0), slope = abs(slope * w_slope), rr = abs(rr * w_rr)
+))
+var_reading <- with(tab2, cbind(
+  intercept = abs(e0) * sqrt(abs(w_e0)), slope = abs(slope) * sqrt(abs(w_slope)),
+  rr = abs(rr) * sqrt(abs(w_rr))
+))
+spread <- function(m) apply(m, 2, function(x) max(x) / min(x))
+
+# The model files carry exactly the SD reading.
+for (k in seq_len(nrow(tab2))) {
+  om <- diag(rxode2::rxode2(mod[[tab2$endpoint[k]]])$omega)
+  stopifnot(isTRUE(all.equal(
+    unname(om[c("etae0", "etaslope", "etae_rr_delta_e0")]),
+    c(tab2$w_e0[k], tab2$w_slope[k], tab2$w_rr[k])^2
+  )))
+}
+
+stopifnot(
+  all(spread(sd_reading) < 1.15),
+  spread(var_reading)[["rr"]] > 10
+)
+
+rbind(
+  data.frame(reading = "SD (used)", endpoint = tab2$endpoint, sd_reading),
+  data.frame(reading = "variance", endpoint = tab2$endpoint, var_reading)
+) |>
+  dplyr::rename(
+    "Reading of 'omega2'" = reading,
+    "Endpoint" = endpoint,
+    "Intercept SD (ms)" = intercept,
+    "Slope SD (ms per ng/mL)" = slope,
+    "DeltaDeltaRR coefficient SD (ms/ms)" = rr
+  ) |>
+  knitr::kable(
+    digits = 5,
+    caption = "Absolute between-subject SD of each coefficient under the two readings of Table 2."
+  )
+```
+
+The residual row ("sigma2") is read the same way, as an SD of 4.03 or 3.99 ms
+(see Assumptions).
+
+# Simulation of the thorough QTc study
+
+## Olmesartan concentrations
+
+The models need a concentration at each ECG time. The library's olmesartan
+population PK model `Song_2013_olmesartan` provides one. It was developed in
+hypertensive patients and healthy volunteers at 20-40 mg, so it is not a model
+of this study. Its covariates are set to the reference values (creatinine
+clearance 111 mL/min, weight 91.5 kg), and the dose is the nominal olmesartan
+medoxomil dose. As a check on how well it describes this study, its
+typical-value profiles are compared below, with PKNCA, against the mean NCA
+results of Mendell 2016.
+
+```{r pk-typical}
+pk_mod <- readModelDb("Song_2013_olmesartan")
+pk_typ <- rxode2::zeroRe(pk_mod)
+
+pk_grid <- sort(unique(c(seq(0, 12, by = 0.25), seq(13, 72, by = 1))))
+pk_events <- function(ids, doses, times) {
+  dplyr::bind_rows(lapply(seq_along(ids), function(k) {
+    rbind(
+      data.frame(id = ids[k], time = 0, evid = 1L, amt = doses[k], cmt = "depot"),
+      data.frame(id = ids[k], time = times, evid = 0L, amt = 0, cmt = "central")
+    )
+  }))
+}
+ev_pk_typ <- pk_events(1:2, c(40, 160), pk_grid)
+ev_pk_typ$CRCL <- 111
+ev_pk_typ$WT <- 91.5
+
+pk_typ_sim <- as.data.frame(rxode2::rxSolve(pk_typ, events = ev_pk_typ)) |>
+  dplyr::mutate(treatment = ifelse(id == 1, "40 mg", "160 mg"))
+
+conc_pk <- pk_typ_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, treatment, time, Cc)
+dose_pk <- data.frame(id = 1:2, treatment = c("40 mg", "160 mg"), time = 0, amt = c(40, 160))
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_pk, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_pk, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+))
+
+mendell <- data.frame(
+  treatment = c("40 mg", "160 mg"),
+  cmax = c(863.3, 2440),
+  aucinf.obs = c(5544, 18243),
+  half.life = c(10.2, 12.0)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = mendell,
+  by = "treatment",
+  units = c(cmax = "ng/mL", aucinf.obs = "ng*h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Typical-value NCA of Song_2013_olmesartan against the mean NCA of the thorough QTc study (Mendell 2016).")
+```
+
+```{r pk-footnote, echo = FALSE, results = "asis"}
+if (!is.null(attr(cmp, "footnote"))) cat(attr(cmp, "footnote"), "\n")
+```
+
+At 40 mg the typical Cmax and AUC are within 15% of the study means. The
+typical terminal half-life (16.3 h) is longer than the study's 10.2-12.0 h,
+which come from single-dose NCA over 72 h in healthy adults. The half-life does
+not enter the concentration-QTc models, which use only the concentration at
+each ECG time. At 160 mg the linear PK model also overpredicts Cmax and AUC, because
+olmesartan exposure rises less than in proportion to dose. Mendell 2016 reports a 3.3-fold rise in AUC
+and a 2.8-fold rise in Cmax for the 4-fold rise in dose. The QTc predictions
+below at 160 mg are therefore made at higher concentrations than the study
+achieved. They are conservative, and they do not test the concentration-QTc
+models.
+
+## Virtual crossover cohort
+
+Each of 200 virtual subjects receives both doses in separate periods. One
+subject's random effects on the QTc coefficients are shared across periods.
+Olmesartan concentrations come from a stochastic solve of `Song_2013_olmesartan`
+at the 12 postdose ECG times, with between-subject variability. DeltaDeltaRR is
+not modelled by the paper. Each ECG draws it independently from a normal
+distribution with mean 0 and SD 100 ms, a spread read from the -350 to +300 ms
+range of Figure 1 (panels 4-6). The three endpoint models are solved on the
+same records.
+
+```{r cohort}
+set.seed(20160101)
+n_sub <- 200
+ecg_times <- c(0.5, 1, 1.5, 2, 2.5, 3, 4, 6, 8, 10, 12, 24)
+
+# PK: one id per subject-period, so each period is a separate single dose
+pk_ids <- data.frame(
+  pk_id = seq_len(2 * n_sub),
+  subject = rep(seq_len(n_sub), times = 2),
+  treatment = rep(c("40 mg", "160 mg"), each = n_sub),
+  dose = rep(c(40, 160), each = n_sub)
+)
+ev_pk <- pk_events(pk_ids$pk_id, pk_ids$dose, ecg_times)
+ev_pk$CRCL <- 111
+ev_pk$WT <- 91.5
+pk_sim <- as.data.frame(rxode2::rxSolve(pk_mod, events = ev_pk)) |>
+  dplyr::select(pk_id = id, tad = time, Cc) |>
+  dplyr::left_join(pk_ids, by = "pk_id")
+
+# QTc records: one id per subject, the 160 mg period offset by 100 h so the
+# two periods share the subject's random effects without overlapping in time.
+qt_records <- pk_sim |>
+  dplyr::mutate(
+    id = subject,
+    time = tad + ifelse(treatment == "160 mg", 100, 0),
+    evid = 0L, amt = 0,
+    CP_OLMESARTAN_NGML = Cc,
+    RR_DELTA = rnorm(dplyr::n(), 0, 100)
+  ) |>
+  dplyr::arrange(id, time)
+
+sims <- dplyr::bind_rows(lapply(tab2$endpoint, function(ep) {
+  ev <- qt_records |> dplyr::select(id, time, evid, amt, CP_OLMESARTAN_NGML, RR_DELTA)
+  s <- as.data.frame(rxode2::rxSolve(mod[[ep]], events = ev))
+  data.frame(
+    endpoint = ep, id = s$id, time = s$time,
+    conc = s$CP_OLMESARTAN_NGML, rr_delta = s$RR_DELTA,
+    ipred = s[[ep]], sim = s$sim
+  )
+})) |>
+  dplyr::mutate(
+    treatment = ifelse(time > 50, "160 mg", "40 mg"),
+    tad = ifelse(time > 50, time - 100, time)
+  )
+```
+
+```{r fig-time, fig.cap = "Simulated DeltaDeltaQTcF over time after single doses of 40 mg and 160 mg olmesartan medoxomil (median and 5th-95th percentiles of the individual predictions, 200 subjects, DeltaDeltaRR drawn as described). The dotted line is the 10 ms threshold."}
+sims |>
+  dplyr::filter(endpoint == "QTcF") |>
+  dplyr::group_by(treatment, tad) |>
+  dplyr::summarise(
+    med = median(ipred), lo = quantile(ipred, 0.05), hi = quantile(ipred, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, med, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line() +
+  geom_hline(yintercept = 10, linetype = "dotted") +
+  labs(x = "Time after dose (h)", y = "DeltaDeltaQTcF individual prediction (ms)",
+       colour = "Dose", fill = "Dose") +
+  theme_bw()
+```
+
+```{r fig-gof, fig.cap = "Simulated observations against individual predictions for the three endpoints. Compare with the left column of Supplemental Figure S1 of Song 2016."}
+ggplot(sims, aes(ipred, sim)) +
+  geom_point(alpha = 0.15, size = 0.6) +
+  geom_abline(colour = "red") +
+  facet_wrap(~endpoint, scales = "free") +
+  labs(x = "Individual prediction (ms)", y = "Simulated observation (ms)") +
+  theme_bw()
+```
+
+## Checks on the stochastic simulation
+
+Three properties are checked on the robust centre and spread of the cohort.
+
+* The residual (simulated value minus individual prediction) has the `addSd`
+  SD. With 4800 records per endpoint the standard error of an SD estimate is
+  about 1%, so a 10% band is wide against sampling noise.
+* The random effects have zero mean, so the median of the individual predictions
+  minus the typical prediction at each record's own covariates is near 0.
+* The spread of the individual predictions for QTcF and QTcP comes mainly from
+  the between-subject variation in the DeltaDeltaRR and concentration
+  coefficients. In Supplemental Figure S1 the individual predictions of
+  DeltaDeltaQTcF and DeltaDeltaQTcP span about -20 to +19 ms (a full range of
+  about 39 ms) around population predictions within a few ms of 0. The same
+  records are also evaluated with random effects drawn under the variance
+  reading. Under the SD reading the 1st-99th percentile width of the individual
+  predictions is about 30 ms, consistent with the figure's full range. Under the
+  variance reading it is less than half the figure's range. The check requires
+  the SD-reading width to lie between 20 and 50 ms and to be at least 1.5 times
+  the variance-reading width. The uncorrected QT endpoint is not included,
+  because its spread comes from the fixed 0.128 ms/ms DeltaDeltaRR coefficient
+  under either reading.
+
+```{r stochastic-checks}
+typ <- dplyr::bind_rows(lapply(tab2$endpoint, function(ep) {
+  ev <- qt_records |> dplyr::mutate(id = 1L, time = seq_len(dplyr::n()))
+  data.frame(endpoint = ep, typ = solve_typ(ep, ev |> dplyr::select(id, time, evid, amt, CP_OLMESARTAN_NGML, RR_DELTA)))
+}))
+sims$typ <- typ$typ
+
+# Individual predictions on the same records with the per-subject random
+# effects drawn under the variance reading (SD of eta = sqrt(|printed value|)).
+var_w98_all <- vapply(seq_len(nrow(tab2)), function(k) {
+  eta <- data.frame(
+    id = seq_len(n_sub),
+    e_e0 = rnorm(n_sub, 0, sqrt(abs(tab2$w_e0[k]))),
+    e_slope = rnorm(n_sub, 0, sqrt(abs(tab2$w_slope[k]))),
+    e_rr = rnorm(n_sub, 0, sqrt(abs(tab2$w_rr[k])))
+  )
+  x <- dplyr::left_join(qt_records, eta, by = "id") |>
+    dplyr::mutate(ipred = tab2$e0[k] * (1 + e_e0) + tab2$rr[k] * (1 + e_rr) * RR_DELTA +
+      tab2$slope[k] * (1 + e_slope) * CP_OLMESARTAN_NGML)
+  unname(diff(quantile(x$ipred, c(0.01, 0.99))))
+}, numeric(1))
+names(var_w98_all) <- tab2$endpoint
+
+sim_check <- sims |>
+  dplyr::group_by(endpoint) |>
+  dplyr::summarise(
+    resid_sd = sd(sim - ipred),
+    med_dev = median(ipred - typ),
+    ipred_w98 = unname(diff(quantile(ipred, c(0.01, 0.99)))),
+    .groups = "drop"
+  ) |>
+  dplyr::left_join(tab2 |> dplyr::select(endpoint, sigma), by = "endpoint") |>
+  dplyr::mutate(
+    resid_pct = 100 * (resid_sd - sigma) / sigma,
+    var_w98 = unname(var_w98_all[endpoint])
+  )
+
+stopifnot(
+  all(abs(sim_check$resid_pct) < 10),
+  all(abs(sim_check$med_dev) < 1),
+  all(dplyr::between(sim_check$ipred_w98[sim_check$endpoint %in% c("QTcF", "QTcP")], 20, 50)),
+  all(with(sim_check[sim_check$endpoint %in% c("QTcF", "QTcP"), ], ipred_w98 / var_w98) > 1.5)
+)
+
+sim_check |>
+  dplyr::select(endpoint, sigma, resid_sd, resid_pct, med_dev, ipred_w98, var_w98) |>
+  dplyr::rename(
+    "Endpoint" = endpoint,
+    "Model residual SD (ms)" = sigma,
+    "Simulated residual SD (ms)" = resid_sd,
+    "% diff" = resid_pct,
+    "Median individual minus typical (ms)" = med_dev,
+    "Width of 1st-99th percentile of individual predictions (ms)" = ipred_w98,
+    "Same, variance reading (ms)" = var_w98
+  ) |>
+  knitr::kable(digits = 2, caption = "Summary of the simulated cohort.")
+```
+
+# Assumptions and deviations
+
+* **Random-effect scale.** Table 2 heads the random-effect rows "omega2", but
+  four printed values are negative, which a variance cannot be. The models read
+  each printed value as the SD of a proportional random effect, the coefficient
+  of a unit-variance eta (eta variance = printed value squared). Two checks
+  support this reading. The absolute between-subject SD of each coefficient is
+  consistent across the three endpoints (Scale of the random effects, above).
+  The spread of the individual predictions in Supplemental Figure S1 also
+  matches it (Checks on the stochastic simulation). The variance reading fails
+  both checks.
+* **Residual scale.** Table 2 heads the residual row "sigma2". It is read as an
+  SD (4.03 and 3.99 ms), for consistency with the "omega2" rows. Supplemental
+  Figure S1 supports this: the observed values scatter about the individual
+  predictions with a band of roughly +/-10 ms and many points 15-20 ms away. An
+  SD of 2.0 ms (the square root, if "sigma2" were a variance) would put those
+  points 8 or more SDs out.
+* **Standard error printed as "2.6.1".** The standard error of the QTcF
+  DeltaDeltaRR random effect (-108) is printed as "2.6.1". It is not used by
+  the model.
+* **"QTc" is uncorrected QT.** Table 2's footnote expands "QTc" as "corrected QT
+  interval", while Figure 1 and Supplemental Figure S1 label the same endpoint
+  "DeltaDeltaQT" (uncorrected). The DeltaDeltaRR coefficient of 0.128 ms/ms
+  matches the raw QT-RR slope. The file `Song_2016_olmesartan_QTc` is therefore
+  the uncorrected QT model, with heart rate corrected by its own DeltaDeltaRR
+  term.
+* **"Highest observed" concentration.** Song 2016 calls 2440 ng/mL the highest
+  observed concentration after 160 mg. The companion study report gives it as
+  the mean Cmax after 160 mg (2440 +/- 678 ng/mL). This does not change the
+  1.815 ms check, which is a prediction at a stated concentration.
+* **Not packaged.** The intermediate models of Table 1 (intercept only, with
+  DeltaDeltaRR, without the intercept) are not packaged. The paper presents
+  them as model-building steps toward the final model.
+* **Simulation inputs.** The PK driver (`Song_2013_olmesartan`, typical
+  covariates, nominal medoxomil dose, linear in dose) and the DeltaDeltaRR
+  distribution (normal, SD 100 ms, independent between ECGs and of
+  concentration) are assumptions of this vignette. They do not affect the
+  model files.

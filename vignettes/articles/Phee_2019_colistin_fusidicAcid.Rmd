@@ -1,0 +1,488 @@
+---
+title: "Colistin + fusidic acid against MDR Acinetobacter baumannii (Phee 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Colistin + fusidic acid against MDR Acinetobacter baumannii (Phee 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Article: <https://doi.org/10.1093/jac/dky524> (open access, PMC6419616)
+* Supplementary data: individual CFU-time plots by experiment type (Figures
+  S1-S4) and inoculum-stratified visual predictive checks (Figures S5-S8). The
+  supplement holds no equations or parameter values.
+
+```{r citation}
+mod <- rxode2::rxode2(readModelDb("Phee_2019_colistin_fusidicAcid"))
+mod_broth <- rxode2::rxode2(readModelDb("Phee_2019_colistin_broth"))
+cat(mod$reference, sep = "\n")
+```
+
+Phee 2019 fits one PK/PD model to 312 static time-kill curves of six
+*Acinetobacter baumannii* strains exposed to colistin and fusidic acid, alone
+and in combination. The library ships the paper's two models:
+
+* `Phee_2019_colistin_fusidicAcid` -- the final CFU model (Methods Eqs 3-8,
+  Table 2). Logistic growth with a lag, a sigmoidal Emax kill per drug, an
+  additive combined effect, and an empirical loss of effect over time and
+  concentration that stands in for resistance development. Fusidic acid lowers
+  the colistin EC50 and colistin raises the fusidic acid Emax through
+  categorical (present / absent) interaction terms. Strains AB205 and AB12
+  differ from the reference strains through categorical covariates.
+* `Phee_2019_colistin_broth` -- the separate fit of the drug concentrations in
+  bacteria-free broth (Eqs 1-2): first-order loss of colistin at 0.0175 1/h.
+  Fusidic acid was stable. The final CFU model does not use this loss, because
+  it did not improve the fit (P > 0.05).
+
+The drug concentrations are static covariates (`CONC_COLISTIN_MGL`,
+`CONC_FUS_MGL`, mg/L) and the observed starting inoculum
+(`INOC_LOG10CFU`) sets the initial bacterial count. Each `id` in the
+simulations below is one time-kill condition, not a subject.
+
+# Population (biological context)
+
+Six strains (Methods, Bacterial strains): the antibiotic-susceptible type
+strain ATCC 19606 and five MDR clinical isolates -- OXA-23 UK clone I (AB14,
+AB315), OXA-23 UK clone II (AB16), SE clone (AB12) and the colistin-resistant
+AB205.
+
+```{r strains}
+strains <- data.frame(
+  Strain = c("ATCC 19606", "AB14", "AB16", "AB12", "AB315", "AB205"),
+  `Colistin MIC (mg/L)` = c("0.25", "0.5", "0.5", "1", "1", "> 256"),
+  `Fusidic acid MIC (mg/L)` = c("128", "128", "512", "64", "256", "32"),
+  `Model covariate` = c(
+    "reference", "reference (model developed on AB14)", "reference",
+    "STRAIN_AB12 = 1", "reference", "STRAIN_AB205 = 1"
+  ),
+  check.names = FALSE
+)
+knitr::kable(strains, caption = "Strains and broth microdilution MICs (Methods).")
+```
+
+Time-kill assays ran in 10 mL Iso-Sensitest broth at 37 degrees C from about
+10^6 CFU/mL over 24 h, with colistin at 0.25-8192 mg/L and fusidic acid at
+1-8192 mg/L. Counts below 10 CFU/mL were handled with the M3 method.
+
+# Source trace
+
+| Element | Source location | Value / form |
+|---|---|---|
+| Growth, logistic (`d/dt(cfu)` without drug) | Eq 3 | `k * cfu * (1 - cfu / cfumax)` |
+| Growth rate with lag (`kg`) | Eq 4 | `-net + 2 * net * t^20 / (lag^20 + t^20)` |
+| `kgrow` | Table 2 | theta_net 1.87 1/h |
+| `log10bmax` | Table 2 | theta_cfumax 9.41 (log10 CFU/mL) |
+| `tlag50` | Table 2 | theta_lag 0.352 h |
+| Drug effect (`eff_col`, `eff_fus`, `tde`) | Eq 5 | sigmoidal Emax times `1 - beta * (1 - exp(-t * tau * C))` |
+| Growth with kill | Eq 6 | `(k - E) * cfu * (1 - cfu / cfumax)` |
+| Covariate form | Eq 7 | `theta * (1 + theta_cov)` |
+| Combination loss of effect (`tde`) | Eq 8 | `1 - beta * (1 - exp(-t * (tau_col C_col + tau_fus C_fus + tau_comb C_col C_fus)))` |
+| `ec50_col`, `emax_col`, `hill_col`, `tau_col`, `beta_col` | Table 2 | 9.86, 39.5 1/h, 0.855, 0.177, 0.895 |
+| `e_ab205_ec50_col` | Table 2 | 65.2 |
+| `ec50_fus`, `emax_fus`, `hill_fus`, `tau_fus` | Table 2 | 310, 23.2 1/h, 0.776, 0.0102 |
+| `beta_fus` | Table 2; Methods after Eq 6 | 0.895, fixed to the colistin value |
+| `e_ab205_tau_fus`, `e_ab205_beta_fus` | Table 2 | 2.12, -0.124 |
+| `e_fus_ec50_col`, `e_fus_ec50_col_ab205` | Table 2 | -0.826, -0.986 |
+| `e_col_emax_fus` | Table 2 | 0.579 |
+| `tau_comb` | Table 2 | 1.44 |
+| `beta_comb` | Table 2; Methods after Eq 6 | 0.895, fixed to the colistin value |
+| `e_ab12_beta_comb` | Table 2 | -0.0523 |
+| `addSd_growth`, `addSd_col`, `addSd_fus`, `addSd_comb` | Table 2 | 0.129, 2.8, 0.698, 5.14 (log10 CFU/mL) |
+| Broth model, `lkdeg` | Eq 2; Results, Drug degradation experiments | log(0.0175 1/h) |
+
+# Simulation helpers
+
+```{r helpers}
+p <- mod$theta
+
+# One row per sampling time and condition. Each id is a time-kill condition.
+make_events <- function(cond, times) {
+  cond$id <- seq_len(nrow(cond))
+  out <- merge(cond, data.frame(time = times), by = NULL)
+  out$evid <- 0
+  out$cmt <- "cfu"
+  out[order(out$id, out$time), ]
+}
+
+# The model has no between-experiment variability, so rxode2 warns about a
+# multi-subject solve without omega; only that message is muffled.
+solve_typical <- function(model, events, ...) {
+  withCallingHandlers(
+    as.data.frame(rxode2::rxSolve(model, events, returnType = "data.frame", ...)),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+    }
+  )
+}
+
+default_cov <- function(col, fus, ab205 = 0, ab12 = 0, inoc = 6) {
+  expand.grid(
+    CONC_COLISTIN_MGL = col, CONC_FUS_MGL = fus,
+    STRAIN_AB205 = ab205, STRAIN_AB12 = ab12, INOC_LOG10CFU = inoc
+  )
+}
+
+times <- sort(unique(c(seq(0, 24, by = 0.25), 0.352)))
+```
+
+# Typical time-kill curves (strain AB14)
+
+The curves below are the typical-value predictions for the reference strains
+(AB14 and those sharing its parameters). They reproduce the patterns of the
+paper's raw data (Figures S1-S4) and of the median lines of the Figure 2
+visual predictive checks: growth to the carrying capacity by about 6 h,
+colistin kill followed by regrowth by 24 h, a weak and transient fusidic acid
+effect, and a sustained kill in combination.
+
+```{r curves-ab14, fig.height = 6}
+cond_ab14 <- rbind(
+  data.frame(default_cov(col = c(0, 0.25, 0.5, 2, 8, 32), fus = 0), arm = "Colistin alone"),
+  data.frame(default_cov(col = 0, fus = c(0, 8, 32, 128, 512)), arm = "Fusidic acid alone"),
+  data.frame(default_cov(col = c(0.25, 0.5, 2), fus = c(8, 32)), arm = "Combination")
+)
+cond_ab14$label <- paste0("col ", cond_ab14$CONC_COLISTIN_MGL, " + fus ", cond_ab14$CONC_FUS_MGL)
+sim_ab14 <- solve_typical(mod, make_events(cond_ab14, times))
+sim_ab14 <- merge(sim_ab14, transform(cond_ab14, id = seq_len(nrow(cond_ab14)))[, c("id", "arm", "label")], by = "id")
+
+ggplot(sim_ab14, aes(time, pmax(log_cfu, 0), colour = label)) +
+  geom_line() +
+  geom_hline(yintercept = 1, linetype = "dotted") +
+  facet_wrap(~arm, ncol = 1) +
+  labs(
+    x = "Time (h)", y = "log10 CFU/mL (floored at 0)", colour = "mg/L",
+    caption = "Dotted line: 10 CFU/mL lower limit. Compare with Figures 2 and S1-S4 of Phee 2019."
+  ) +
+  theme_bw()
+```
+
+## Strain AB205 (colistin-resistant)
+
+```{r curves-ab205}
+cond_205 <- rbind(
+  data.frame(default_cov(col = c(0, 2, 8, 64), fus = 0, ab205 = 1), arm = "Colistin alone"),
+  data.frame(default_cov(col = c(2, 8, 64), fus = 32, ab205 = 1), arm = "Colistin + fusidic acid 32 mg/L")
+)
+cond_205$label <- paste0("col ", cond_205$CONC_COLISTIN_MGL)
+sim_205 <- solve_typical(mod, make_events(cond_205, times))
+sim_205 <- merge(sim_205, transform(cond_205, id = seq_len(nrow(cond_205)))[, c("id", "arm", "label")], by = "id")
+
+ggplot(sim_205, aes(time, pmax(log_cfu, 0), colour = label)) +
+  geom_line() +
+  facet_wrap(~arm) +
+  labs(x = "Time (h)", y = "log10 CFU/mL (floored at 0)", colour = "Colistin (mg/L)") +
+  theme_bw()
+```
+
+AB205 grows through colistin alone up to 64 mg/L (its colistin EC50 is
+`r signif(p[["ec50_col"]] * (1 + p[["e_ab205_ec50_col"]]), 3)` mg/L), and
+fusidic acid restores colistin activity at the higher colistin
+concentrations.
+
+# Closed-form check of the ODE
+
+Because the growth rate and the kill rate both multiply the same logistic
+factor `cfu * (1 - cfu / bmax)` (Eq 6), the model has an exact solution for
+static concentrations:
+`cfu(t) = bmax / (1 + (bmax / cfu0 - 1) * exp(-G(t)))`, where `G(t)` is the
+time integral of `kg(t) - E(t)`. The drug part integrates analytically,
+`integral of E = E0 * ((1 - beta) * t + beta * (1 - exp(-a t)) / a)` with `a`
+the sum of the `tau * C` terms; the lag part is integrated numerically. Both
+sides use the same parameters, so the difference is pure solver error and the
+bound is tight.
+
+```{r closed-form}
+closed_form <- function(time, col, fus, ab205 = 0, ab12 = 0, inoc = 6) {
+  on_col <- as.numeric(col > 0)
+  on_fus <- as.numeric(fus > 0)
+  e_fus <- if (ab205 == 1) p[["e_fus_ec50_col_ab205"]] else p[["e_fus_ec50_col"]]
+  ec50c <- p[["ec50_col"]] * (1 + p[["e_ab205_ec50_col"]] * ab205) * (1 + e_fus * on_fus)
+  emaxf <- p[["emax_fus"]] * (1 + p[["e_col_emax_fus"]] * on_col)
+  tauf <- p[["tau_fus"]] * (1 + p[["e_ab205_tau_fus"]] * ab205)
+  beta <- if (on_col && on_fus) {
+    p[["beta_comb"]] * (1 + p[["e_ab12_beta_comb"]] * ab12)
+  } else if (on_fus) {
+    p[["beta_fus"]] * (1 + p[["e_ab205_beta_fus"]] * ab205)
+  } else {
+    p[["beta_col"]]
+  }
+  e0 <- p[["emax_col"]] * col^p[["hill_col"]] / (ec50c^p[["hill_col"]] + col^p[["hill_col"]]) +
+    emaxf * fus^p[["hill_fus"]] / (p[["ec50_fus"]]^p[["hill_fus"]] + fus^p[["hill_fus"]])
+  a <- p[["tau_col"]] * col + tauf * fus + p[["tau_comb"]] * col * fus
+  int_e <- if (a > 0) e0 * ((1 - beta) * time + beta * (1 - exp(-a * time)) / a) else 0 * time
+  lagfun <- function(s) s^20 / (p[["tlag50"]]^20 + s^20)
+  int_k <- -p[["kgrow"]] * time +
+    2 * p[["kgrow"]] * vapply(time, function(tt) {
+      if (tt == 0) 0 else integrate(lagfun, 0, tt, rel.tol = 1e-12, abs.tol = 0, subdivisions = 1000L)$value
+    }, numeric(1))
+  bmax <- 10^p[["log10bmax"]]
+  log10(bmax / (1 + (bmax / 10^inoc - 1) * exp(-(int_k - int_e))))
+}
+
+cond_cf <- rbind(
+  default_cov(col = c(0, 0.5, 2), fus = c(0, 32)),
+  default_cov(col = c(2, 8), fus = c(0, 128), ab205 = 1),
+  default_cov(col = 0.5, fus = 32, ab12 = 1)
+)
+cf_times <- c(0.1, 0.3, 0.352, 0.5, 1, 2, 4, 6, 12, 24)
+sim_cf <- solve_typical(mod, make_events(cond_cf, cf_times), atol = 1e-12, rtol = 1e-12)
+cond_cf$id <- seq_len(nrow(cond_cf))
+sim_cf$closed <- unlist(lapply(cond_cf$id, function(i) {
+  r <- cond_cf[i, ]
+  closed_form(cf_times, r$CONC_COLISTIN_MGL, r$CONC_FUS_MGL, r$STRAIN_AB205, r$STRAIN_AB12)
+}))
+cf_check <- dplyr::filter(sim_cf, closed > 1)
+max_abs <- max(abs(cf_check$log_cfu - cf_check$closed))
+cat("Rows compared:", nrow(cf_check), " max |ODE - closed form| (log10):", signif(max_abs, 3), "\n")
+stopifnot(nrow(cf_check) > 50, max_abs < 1e-3)
+```
+
+Rows below 10 CFU/mL are excluded: there the solver's absolute tolerance, not
+the model, sets the error.
+
+# Growth-model and interaction checks
+
+```{r growth-checks}
+growth <- dplyr::filter(sim_ab14, label == "col 0 + fus 0", arm == "Colistin alone")
+k0 <- growth$log_cfu[growth$time == 0]
+k24 <- growth$log_cfu[growth$time == 24]
+cat("Drug-free: log10 CFU/mL at 0 h =", k0, "; at 24 h =", round(k24, 3), "\n")
+stopifnot(
+  abs(k0 - 6) < 1e-8, # starts at the inoculum
+  abs(k24 - p[["log10bmax"]]) < 0.01 # reaches theta_cfumax = 9.41 by 24 h (Figure S1)
+)
+```
+
+The interaction terms in Table 2 are proportional changes; the Results and
+Discussion restate them as "fusidic acid reducing EC50col by 82.6%",
+"colistin increasing Emaxfus by 57.9%" and AB205 being "65.2-fold" less
+susceptible to colistin. The covariate-adjusted parameters the model computes
+reproduce these numbers.
+
+```{r interaction-checks}
+cond_int <- rbind(
+  default_cov(col = 1, fus = 0), default_cov(col = 1, fus = 1),
+  default_cov(col = 1, fus = 0, ab205 = 1), default_cov(col = 1, fus = 1, ab205 = 1),
+  default_cov(col = 0, fus = 1)
+)
+int <- solve_typical(mod, make_events(cond_int, 1))
+ratio_fus_on_col <- int$ec50_col_i[2] / int$ec50_col_i[1]
+ratio_col_on_fus <- int$emax_fus_i[2] / int$emax_fus_i[5]
+ratio_ab205 <- int$ec50_col_i[3] / int$ec50_col_i[1]
+ec50_205_fus <- int$ec50_col_i[4]
+knitr::kable(data.frame(
+  Quantity = c(
+    "Colistin EC50 with / without fusidic acid", "Fusidic acid Emax with / without colistin",
+    "Colistin EC50, AB205 / reference strain", "Colistin EC50, AB205 with fusidic acid (mg/L)"
+  ),
+  Model = signif(c(ratio_fus_on_col, ratio_col_on_fus, ratio_ab205, ec50_205_fus), 4),
+  Paper = c("1 - 0.826 (82.6% reduction)", "1 + 0.579 (57.9% increase)", "1 + 65.2", "9.86 x 66.2 x (1 - 0.986)")
+))
+stopifnot(
+  abs(ratio_fus_on_col - (1 - 0.826)) < 1e-10,
+  abs(ratio_col_on_fus - (1 + 0.579)) < 1e-10,
+  abs(ratio_ab205 - (1 + 65.2)) < 1e-10,
+  abs(ec50_205_fus - 9.86 * 66.2 * (1 - 0.986)) < 1e-8
+)
+```
+
+# EC50 units: mg/L, not ng/mL
+
+Table 2 prints both EC50 values in ng/mL, while the experimental concentrations
+are in mg/L. If the model were fitted with concentrations in ng/mL, the
+equivalent mg/L parameters would be an EC50 1000-fold lower and every `tau`
+1000-fold (and `tau_comb` 10^6-fold) higher. That reading contradicts the
+paper in three independent ways:
+
+1. **Figure 2 colistin VPC.** The colistin median falls to about 6 h and then
+   regrows by 24 h. Under the ng/mL reading, colistin at the MIC loses its
+   transient effect within minutes and then kills steadily, with no regrowth.
+2. **AB205 MIC.** AB205 has a colistin MIC above 256 mg/L. Under the mg/L
+   reading its colistin EC50 is 9.86 x 66.2 = 653 mg/L; under the ng/mL
+   reading, 0.65 mg/L, far below its MIC.
+3. **`tau_comb`.** Under the ng/mL reading, `tau_comb * C_col * C_fus` at
+   0.5 mg/L colistin and 32 mg/L fusidic acid would be 1.44 x 500 x 32000 =
+   2.3e7 1/h, which removes the combination effect almost at once.
+
+```{r ec50-units}
+mod_ng <- mod |>
+  rxode2::ini(
+    ec50_col = 9.86 / 1000, ec50_fus = 310 / 1000,
+    tau_col = 0.177 * 1000, tau_fus = 0.0102 * 1000, tau_comb = 1.44 * 1e6
+  )
+cond_u <- default_cov(col = 0.5, fus = 0)
+u_mg <- solve_typical(mod, make_events(cond_u, c(6, 24)))
+u_ng <- solve_typical(mod_ng, make_events(cond_u, c(6, 24)))
+knitr::kable(data.frame(
+  Reading = c("mg/L (packaged)", "ng/mL (as printed)"),
+  `log10 CFU/mL at 6 h` = round(c(u_mg$log_cfu[1], u_ng$log_cfu[1]), 2),
+  `log10 CFU/mL at 24 h` = round(c(u_mg$log_cfu[2], u_ng$log_cfu[2]), 2),
+  check.names = FALSE
+), caption = "Colistin 0.5 mg/L (AB14 MIC), inoculum 10^6 CFU/mL.")
+stopifnot(
+  u_mg$log_cfu[2] - u_mg$log_cfu[1] > 2, # regrowth between 6 and 24 h, as in Figure 2
+  u_ng$log_cfu[2] < u_ng$log_cfu[1] # no regrowth under the printed units
+)
+```
+
+# Residual error: standard deviations
+
+Table 2 lists the four residual-variability values in its "Fixed effect"
+column, i.e. as THETAs, which in a NONMEM residual model are usually
+standard deviations. The growth-control panel of Figure 2 gives a check:
+growth-control counts are reproducible and its prediction-corrected 5th-95th
+percentile band spans about 0.5 log10 (about 7000 to 22000 on the plotted
+scale, read by the maintainers from the figure).
+
+```{r residual}
+band_sd <- 2 * qnorm(0.95) * p[["addSd_growth"]]
+band_var <- 2 * qnorm(0.95) * sqrt(p[["addSd_growth"]])
+knitr::kable(data.frame(
+  Reading = c("0.129 is an SD", "0.129 is a variance"),
+  `Predicted 5th-95th width (log10)` = round(c(band_sd, band_var), 2),
+  check.names = FALSE
+))
+stopifnot(abs(band_sd - 0.5) < abs(band_var - 0.5))
+```
+
+The SD reading matches the figure. The colistin-only and combination SDs (2.8
+and 5.14 log10) are large; they absorb the misfit of the empirical
+resistance term across very different concentration pairs (the Discussion
+notes that the stepwise fixing "may inflate unexplained variability").
+
+## Stochastic simulation
+
+```{r stochastic}
+rxode2::rxSetSeed(20190401)
+cond_vpc <- rbind(
+  data.frame(default_cov(col = 0, fus = 0), arm = "Growth control"),
+  data.frame(default_cov(col = 0.5, fus = 0), arm = "Colistin 0.5 mg/L"),
+  data.frame(default_cov(col = 0, fus = 32), arm = "Fusidic acid 32 mg/L"),
+  data.frame(default_cov(col = 0.5, fus = 32), arm = "Colistin 0.5 + fusidic acid 32 mg/L")
+)
+nrep <- 100
+cond_rep <- cond_vpc[rep(seq_len(nrow(cond_vpc)), each = nrep), ]
+sim_vpc <- solve_typical(mod, make_events(cond_rep, c(0.5, 1, 2, 4, 6, 24)))
+sim_vpc$arm <- rep(cond_rep$arm, each = 6)
+vpc <- sim_vpc |>
+  dplyr::mutate(obs = pmax(sim, 1)) |>
+  dplyr::group_by(arm, time) |>
+  dplyr::summarise(
+    p05 = quantile(obs, 0.05), p50 = quantile(obs, 0.5), p95 = quantile(obs, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2) +
+  geom_line(aes(y = p50)) +
+  facet_wrap(~arm) +
+  labs(
+    x = "Time (h)", y = "Simulated log10 CFU/mL (values below 1 set to 1)",
+    caption = "Median and 5th-95th percentiles of 100 simulated replicates per condition."
+  ) +
+  theme_bw()
+```
+
+# Broth stability model and PKNCA
+
+The broth model reproduces the reported colistin loss. A PKNCA half-life over
+0-24 h recovers `ln(2) / 0.0175` = `r round(log(2) / 0.0175, 1)` h, and 34%
+of the colistin is lost by 24 h.
+
+```{r broth}
+ev_broth <- rxode2::et(amt = 4, cmt = "central") |>
+  rxode2::et(seq(0, 24, by = 1)) |>
+  as.data.frame()
+ev_broth$id <- 1
+broth <- solve_typical(rxode2::zeroRe(mod_broth), ev_broth)
+broth$id <- 1 # a single-subject solve returns no id column
+broth$treatment <- "colistin 4 mg/L in broth"
+broth <- dplyr::filter(broth, !is.na(Cc))
+
+conc_obj <- PKNCA::PKNCAconc(broth, Cc ~ time | treatment + id)
+dose_df <- data.frame(id = 1, time = 0, amt = 4, treatment = "colistin 4 mg/L in broth")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 24, cmax = TRUE, half.life = TRUE, auclast = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_res <- as.data.frame(nca$result)
+thalf <- nca_res$PPORRES[nca_res$PPTESTCD == "half.life"]
+
+ref <- data.frame(
+  `NCA parameter` = c("t1/2 (h)", "C(24 h) / C(0)"),
+  Simulated = signif(c(thalf, broth$Cc[broth$time == 24] / 4), 4),
+  Reference = signif(c(log(2) / 0.0175, exp(-0.0175 * 24)), 4),
+  check.names = FALSE
+)
+knitr::kable(ref, caption = "Reference: Results, 'Drug degradation experiments', k = 0.0175 1/h.")
+stopifnot(
+  abs(thalf / (log(2) / 0.0175) - 1) < 1e-3,
+  abs(broth$Cc[broth$time == 24] / 4 - exp(-0.0175 * 24)) < 1e-6
+)
+```
+
+# Figure 3 (clinical probability of target attainment)
+
+Figure 3 simulates free concentrations from a colistimethate PK model
+(Karaiskos 2015, packaged as `Karaiskos_2015_colistin`) and an oral fusidic
+acid PK model (Bulitta 2013, *Antimicrob Agents Chemother* 57:498-507), with
+unbound fractions of 64% and 10%, through this PD model. The fusidic acid PK
+model is not in the package, so Figure 3 is not reproduced here. The
+packaged PD model accepts time-varying `CONC_COLISTIN_MGL` and `CONC_FUS_MGL`
+for such simulations. Note that the CFU model's `t` is time since the start
+of drug exposure, because the loss-of-effect term was estimated in static
+24-h experiments; the paper itself did not extrapolate beyond 24 h.
+
+# Assumptions and deviations
+
+* **EC50 units.** Table 2 prints both EC50 values in ng/mL. The packaged
+  model uses mg/L (the units of the experimental concentrations), for the
+  three reasons shown in "EC50 units" above. The `tau` values are read in
+  L/mg/h (`tau_comb` in L^2/mg^2/h), consistently with the same
+  concentrations.
+* **Carrying capacity.** Table 2 prints theta_cfumax = 9.41 "cfu/mL". The
+  value is log10 CFU/mL: the logistic model runs on the linear count
+  (`bmax = 10^9.41`), matching the plateau of the growth curves in Figure S1
+  and population predictions down to 10^-12 CFU/mL in Figure 2.
+* **Residual error.** The four residual-variability values are read as
+  standard deviations of an additive error on log10 CFU/mL (see "Residual
+  error" above). The residual SD is selected by experiment type: growth
+  control, colistin only, fusidic acid only, or both drugs.
+* **AB205 and the fusidic-acid-on-colistin EC50 term.** Table 2 reports a
+  "proportional decrease in theta_EC50col with fusidic acid" (-0.826) and a
+  separate one "for AB205" (-0.986). The model applies the AB205 value in
+  place of the reference-strain value, as one level of a three-level
+  categorical covariate (no fusidic acid / fusidic acid with a reference
+  strain / fusidic acid with AB205). Stacking both terms for AB205 would make
+  its colistin EC50 with fusidic acid (1.6 mg/L) lower than that of AB14
+  (1.7 mg/L), whereas Figure 3 shows the combination much less effective
+  against AB205 than against AB14 under the high-dose regimen.
+* **Choice of beta.** Colistin alone uses theta_beta_col, fusidic acid alone
+  theta_beta_fus (with the AB205 change), and both drugs theta_beta_comb
+  (with the AB12 change), following Eq 8 and the Methods statement that the
+  fusidic acid and combination values were fixed to the colistin estimate.
+  The AB205 change in theta_beta_fus therefore applies to fusidic acid alone
+  only, and the AB205 change in tau_fus applies wherever fusidic acid is
+  present.
+* **Initial condition.** Table 2 has no inoculum parameter; each experiment
+  starts from its observed baseline, supplied as `INOC_LOG10CFU`.
+* **Growth lag.** The exponent 20 in Eq 4 is a fixed constant of the
+  equation. As printed, the growth rate is -theta_net before the lag time, so
+  the count falls by about 0.3 log10 in the first 0.35 h.
+* **Broth model residual error.** The paper does not report the residual
+  error of the concentration model; `propSd` is held at zero, so the broth
+  model simulates the typical profile only. Fusidic acid, which was stable,
+  has no model of its own.
+* **Below the limit of quantification.** The fit used the M3 method for
+  counts below 10 CFU/mL; simulated values below that limit are reported as
+  they are, and the plots floor them for display only. The `log10()` in the
+  model has a 10^-30 CFU/mL floor that only guards against a numerically
+  non-positive state.

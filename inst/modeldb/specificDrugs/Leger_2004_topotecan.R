@@ -3,6 +3,7 @@ Leger_2004_topotecan <- function() {
   reference <- "Leger F, Loos WJ, Fourcade J, Bugat R, Goffinet M, Mathijssen RHJ, Verweij J, Sparreboom A, Chatelut E. Factors affecting pharmacokinetic variability of oral topotecan: a population analysis. Br J Cancer. 2004;90(2):343-347. doi:10.1038/sj.bjc.6601469"
   vignette <- "Leger_2004_topotecan"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

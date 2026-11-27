@@ -21,6 +21,7 @@ Voller_2017_phenobarbital <- function() {
   )
   vignette <- "Voller_2017_phenobarbital"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   ddmore_id <- "DDMODEL00000256"
   replicate_of <- NULL

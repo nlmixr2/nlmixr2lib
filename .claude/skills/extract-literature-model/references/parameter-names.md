@@ -592,6 +592,18 @@ Three boundaries to respect:
   `kp_bound`, `kp_preg`) or index a loop (`kp_i`) are local `model()`
   intermediates, not canonicals.
 
+## Linear drug-drug coupling slopes
+
+`ddi_ka`, `ddi_k12`, `ddi_k21`, `ddi_kel` are signed slopes (1 / (amount *
+time)) that shift one drug's micro rate constant linearly with a
+co-administered drug's amount in the compartment the process leaves
+(`kel_X = kel + ddi_kel * central_Y`; negative = inhibition). The bare name
+modifies the unsuffixed drug; `ddi_<param>_<drug>` modifies the drug carrying
+that registered suffix. Keep them untransformed. Founding examples:
+`Huang_2026_metoprolol_captopril.R`, `Huang_2026_imeglimin_metformin.R`. Not
+the same as `slope_drug` / `slope_placebo` (PD slopes) or `ka_slope` (time
+ramp).
+
 ## Transform prefixes
 
 - `l` — natural log (`lka`, `lcl`, `lfdepot`)
@@ -669,6 +681,13 @@ Prefix `eta` + the **transformed** parameter name. Example: IIV on `lcl` is `eta
 Do **not** use `iiv_`, `IIV_`, or `bsv_` prefixes for new models. The two most recent existing models (`Clegg_2024_nirsevimab`, `Hu_2026_clesrovimab`) write `etacl` without the `l`; this skill standardizes on `etalcl` going forward. Existing files are not migrated.
 
 Document `omega²` = `log(CV² + 1)` in a comment when translating CV% to the internal variance scale.
+
+Non-normal eta distributions are written out in `model()` with structural shape THETAs named after the transformed parameter (spelled as in `ini()`):
+
+- `boxcox_<param>` -- Box-Cox lambda on `exp(eta<param>)` (Siebinga 2024).
+- `logitskew_<param>` / `logitwidth_<param>` -- logit-transformed eta, `<param>_i = <param> + (expit(logitskew_<param> + eta<param>) - expit(logitskew_<param>)) * logitwidth_<param>` (paper `LGT1` / `LGT2`; founding example `Du_2026_cendakimab.R`).
+
+A combined uniform-binomial (CUB) count likelihood's mixture weight is `logitpinform` (bare `pinform`, the probability a record is informative/binomial rather than uniform; founding example `Du_2026_cendakimab.R`). It mixes likelihoods per record, unlike the subject-level mixing weights `frac` / `alfm`.
 
 ## Covariate-effect parameters
 
@@ -783,6 +802,7 @@ Recommended patterns:
 - `kint`, `kcat`, `kpro`, `krmr` — fractional rate constants (1/time). When a rate is recomputed at steady state vs. dynamically, suffix the steady-state value with `_0` (e.g., `kcat_0`) and leave the dynamic one unsuffixed.
 - `bl_<species>` — baseline concentration of an endogenous species (e.g., `bl_phe`, `bl_gut`). Use this as the initial condition: `<species>(0) <- bl_<species>`.
 - `f_<fraction>` — unitless fractional-activity scalars (e.g., `f_pah` = fraction of healthy PAH activity).
+- Response-state and aging-layer rate constants: `k<state>` fills a named state (`kbwloss`, `khba1cred`, `knausea`), `emax_<state>` is its logistic plateau, `kdam` / `krep_clear` / `krep_deg` / `krapa` drive `damage` / `repair`, `kfra` / `kfra_rep` / `kbag` drive `frailty` / `bioagegap`, and `drug_d` / `drug_r` are `fixed()` time-averaged combination-therapy scalars. Founding example: `Goryanin_2026_semaglutide_aging_qsp.R`.
 - `vd` — body-weight-normalized volume of distribution (L/kg) when the paper uses it that way. Don't rename to `vc` if the paper's mechanism makes `vd` meaningful.
 
 Constants spelled out in the `model()` block (molecular weights, stoichiometric conversion factors, reference weights) should sit at the **top** of `model()` before any derived quantity, with a unit comment.
@@ -901,6 +921,7 @@ clearance expression references `t` / `time` without one of these.
 | Linear in time: `cl <- cl_base * (1 + slope * t)` | `cl_time_` | `cl_time_slope` (1/time; a percent per unit time is divided by 100). Founding example: `Cloesmeijer_2020_clonidine.R` |
 | Piecewise-constant step: `cl <- cl * (t < tclchange) + cl_late * (t >= tclchange)` | `tclchange` | `ltclchange`, `lcl_late` |
 | Fractional exponential change: `cl <- cl_base * (1 + cl_exp_famp * (1 - exp(-cl_exp_kdes * t)))` | `cl_exp_` | `cl_exp_famp` (signed fraction, linear scale), `lcl_exp_kdes`. Founding example: `Wojciechowski_2022_abrocitinib.R` |
+| Exponential relaxation to a multiplicative fraction of the baseline: `vmax <- vmax * (vmax_exp_finf + (1 - vmax_exp_finf) * exp(-vmax_exp_kdes * t))` | `<p>_exp_` | `l<p>_exp_finf` (log scale, asymptote / baseline ratio; `finf = 1 + famp`, used when the source estimates the ratio with multiplicative covariate effects), `l<p>_exp_kdes`. Founding example: `BravoPadros_2026_odronextamab.R` (on `vmax`) |
 
 The third form carries two sigmoidicities and they sit on different axes:
 `cl_conc_hill` is the Hill coefficient on CONCENTRATION (the `C^g/(ec50^g +

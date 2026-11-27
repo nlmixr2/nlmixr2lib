@@ -47,6 +47,7 @@ Hughes_2023_chemotherapy_gcsf_anc <- function() {
       "concentration, as in the published NONMEM code."
     )
   )
+  dosing <- c("depot", "central", "depot_kpd")
 
   covariateData <- list(
     NEUT = list(

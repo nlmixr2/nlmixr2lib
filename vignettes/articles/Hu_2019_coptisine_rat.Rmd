@@ -1,0 +1,446 @@
+---
+title: "Coptisine in LPS-challenged rats (Hu 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Coptisine in LPS-challenged rats (Hu 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Hu_2019_coptisine_rat"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Hu_2019_coptisine_rat"))$description`
+* Article: <https://doi.org/10.1038/s41598-018-38164-4> (open access, PMC6363730)
+
+**Read this first.** Two halves of this model behave very differently.
+The coptisine PK and the plasma TNF-alpha layer (formation inhibited by
+coptisine) reproduce the paper's own numbers. The downstream lung
+TNF-alpha -> iNOS -> NO cascade, encoded exactly as Table 1 prints it,
+does **not** reproduce the paper's observations: it is about a thousand-fold
+too low and peaks hours too early. The model is packaged as published, without
+retuning, and the gap is measured and pinned below. Use the cascade outputs
+(`tnf_lung`, `inos`, `no`) for structure only, not for quantitative
+prediction.
+
+# Population
+
+Hu 2019 pooled four studies in male Sprague-Dawley rats (200 +/- 20 g; 152
+animals and 1118 observations; Table 2). Every rat that received LPS was given
+100 ug/kg *E. coli* O55:B5 lipopolysaccharide IV at time 0. Coptisine (1.94,
+3.87 or 7.74 mg/kg, or vehicle) was given as an IV bolus 0.5 h later. Studies 1
+and 2 sampled tail-vein blood serially (coptisine; plasma TNF-alpha and NO).
+Studies 3 and 4 were terminal designs that collected abdominal-artery blood and
+lungs at 0.667-12 h, n = 2-3 per group and time. Those samples gave plasma and
+lung coptisine, plasma and lung TNF-alpha, lung iNOS (Western blot, relative to
+the time-0 control) and plasma NO (nitrite + nitrate). No covariates were
+tested. The same information is available programmatically via
+`rxode2::rxode(readModelDb("Hu_2019_coptisine_rat"))$population`.
+
+# Source trace
+
+All parameter values are the Table 1 estimates, unchanged. The table's `CV%`
+column is the relative standard error of each estimate.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `d/dt(central)`, `d/dt(peripheral1)` | 2-cmt, linear | Eq 1-2 |
+| `d/dt(lung)` (leaf compartment) | `k13 * amount - k31 * lung` | Eq 3 + Fig 2 (amount basis, see Errata) |
+| `d/dt(tnf)` | `k0 * (1 - InhibitCon * cop) - Vm * TNF / (km + TNF)` | Eq 4, 11, 12 |
+| `d/dt(tnf_lung)` | `kTNFapl * amount - koutTNFa * TNFlung` | Eq 5 + Fig 2 (amount basis, see Errata) |
+| `d/dt(inos_mrna)`, `d/dt(inos)` | first-order chain | Eq 6-7 |
+| `d/dt(inos_plasma)` | first-order transfer | Eq 8 |
+| `d/dt(no_pre)`, `d/dt(no)` | `kiNOSNO * iNOSp^Delta`, then first order | Eq 9-10 |
+| `lvc` | log(2630) mL per rat | Table 1 'V1' = 2.63x10^3 (printed 'L/kg') |
+| `lkel` | log(0.458) 1/h | Table 1 'k10' |
+| `lk12` | log(2.05) 1/h | Table 1 'k12' |
+| `lk21` | log(0.668) 1/h | Table 1 'K21' |
+| `lk13` | log(0.0121) 1/h | Table 1 'k13' |
+| `lk31` | log(3.77) 1/h | Table 1 'k31' |
+| `lkin_tnf1` | log(645.73) pg/mL/h | Table 1 'k0,0-0.33h' |
+| `lkin_tnf2` | log(5881.32) pg/mL/h | Table 1 'k0,0.33-1h' |
+| `lslope_tnf` | log(8.83e-4) mL/ng | Table 1 'InhibitCon'; Results text |
+| `lvmax_tnf` | log(5990) pg/mL/h | Table 1 'Vm' (printed 'h-1') |
+| `lkm_tnf` | log(5180) pg/mL | Table 1 'km' |
+| `lk_tnf_lung` | log(3.54e-7) 1/h | Table 1 'kTNFapl' |
+| `lkout_tnf_lung` | log(0.234) 1/h | Table 1 'koutTNFa' |
+| `lkin_inos_mrna` | log(3.38e-3) 1/h | Table 1 'kiNOSmRNA' |
+| `lkout_inos_mrna` | log(2.36) 1/h | Table 1 'koutiNOSmRNA' |
+| `lkin_inos` | log(0.299) 1/h | Table 1 'kiNOS' |
+| `lkout_inos` | log(3.72) 1/h | Table 1 'koutiNOS' |
+| `lk_inos_lp` | log(23.41) 1/h | Table 1 'kiNOSlp' |
+| `lkout_inosp` | log(1.92) 1/h | Table 1 'koutiNOSp' |
+| `lkin_nopre` | log(772.17) 1/h | Table 1 'kiNOSNO' |
+| `ldelta` | log(1.23) | Table 1 'Delta'; exponent in Eq 9 |
+| `lkin_no` | log(354.68) 1/h | Table 1 'kinNO' |
+| `lkout_no` | log(3.46) 1/h | Table 1 'koutNO' |
+| `addSd*` (6 outputs) | fixed(0) | Methods: additive residual model, variances not reported |
+
+# Virtual cohort and simulation
+
+The model has no between-animal variability (it was estimated but not
+reported), so one typical rat per arm reproduces the population prediction.
+Doses are entered per rat: each mg/kg dose is multiplied by the nominal 0.2 kg
+body weight (Methods, 'Animals').
+
+```{r simulate}
+mod <- readModelDb("Hu_2019_coptisine_rat")
+ui <- rxode2::rxode(mod)
+
+bw_kg <- 0.2
+arms <- tibble::tibble(
+  treatment = c("LPS", "LPS + coptisine 1.94 mg/kg", "LPS + coptisine 3.87 mg/kg", "LPS + coptisine 7.74 mg/kg"),
+  dose_mgkg = c(0, 1.94, 3.87, 7.74)
+) |>
+  mutate(id = seq_len(n()), treatment = factor(treatment, levels = treatment))
+
+obs_times <- sort(unique(c(seq(0, 12, by = 0.02), 0.33, 1)))
+
+# Six endpoints are declared, so observation rows name an ODE state and
+# carry dvid = 1 (rxode2 still returns every endpoint column).
+obs_rows <- arms |>
+  tidyr::crossing(time = obs_times) |>
+  mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+dose_rows <- arms |>
+  filter(dose_mgkg > 0) |>
+  mutate(time = 0.5, evid = 1L, amt = dose_mgkg * bw_kg, cmt = "central", dvid = NA_integer_)
+events <- bind_rows(obs_rows, dose_rows) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, evid, amt, cmt, dvid, treatment, dose_mgkg)
+
+# One typical rat per arm and no etas: rxode2 warns that a multi-subject
+# solve has no omega, which is expected here.
+sim <- withCallingHandlers(
+  rxode2::rxSolve(ui, events = events, keep = c("treatment", "dose_mgkg"),
+                  returnType = "data.frame"),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+)
+stopifnot(nrow(sim) == nrow(obs_rows))
+```
+
+# Coptisine PK
+
+```{r fig-pk}
+# Typical-value profiles corresponding to Figure 3 panels a (plasma) and b (lung).
+sim |>
+  filter(dose_mgkg > 0, time > 0.5) |>
+  select(time, treatment, `Plasma (ng/mL)` = Cc, `Lung (ng/g)` = Clung) |>
+  pivot_longer(-c(time, treatment), names_to = "matrix", values_to = "conc") |>
+  ggplot(aes(time, conc, colour = treatment)) +
+  geom_line() +
+  facet_wrap(~matrix, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time after LPS (h)", y = "Coptisine concentration", colour = NULL,
+       caption = "Typical-value prediction; compare Figure 3a-b of Hu 2019.") +
+  theme(legend.position = "bottom")
+```
+
+PKNCA computes plasma and lung coptisine exposure over 0-12 h after LPS, the
+interval the paper uses for its trapezoidal AUC0-12h values (Results,
+'Pharmacokinetics of Coptisine').
+
+```{r pknca}
+nca_conc <- sim |>
+  filter(dose_mgkg > 0) |>
+  select(id, time, treatment, Cc, Clung) |>
+  pivot_longer(c(Cc, Clung), names_to = "analyte", values_to = "conc") |>
+  filter(!is.na(conc))
+nca_dose <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, conc ~ time | treatment + id / analyte)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 12, auclast = TRUE, cmax = TRUE, tmax = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+ref_pk <- tibble::tribble(
+  ~treatment, ~analyte, ~auclast,
+  "LPS + coptisine 1.94 mg/kg", "Cc", 289.79,
+  "LPS + coptisine 3.87 mg/kg", "Cc", 492.57,
+  "LPS + coptisine 7.74 mg/kg", "Cc", 1173.01,
+  "LPS + coptisine 3.87 mg/kg", "Clung", 3123.74,
+  "LPS + coptisine 7.74 mg/kg", "Clung", 5082.12
+)
+
+pk_cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = ref_pk,
+  by = c("treatment", "analyte"),
+  params = "auclast",
+  units = c(auclast = "ng.h/mL (plasma) or ng.h/g (lung)"),
+  tolerance_pct = 20
+)
+knitr::kable(pk_cmp, caption = paste(
+  "Coptisine AUC0-12h after LPS: typical-value simulation vs. the paper's",
+  "observed-data trapezoidal values (Results). * differs by more than 20%."
+))
+```
+
+The plasma AUCs scale linearly with dose, as the paper reports, and fall 6-21%
+below the observed-data AUCs. The paper does not give its model-predicted AUCs,
+so the observed values are the nearest available target. Lung AUCs are
+24-52% above the observed values. The model's lung-to-plasma AUC ratio is fixed
+by the rate constants (`k13 * V1 / k31` = `r signif(0.0121 * 2630 / 3.77, 3)`
+on the amount basis), while the observed ratios are 6.34 (3.87 mg/kg) and 4.33
+(7.74 mg/kg).
+
+```{r pk-gate}
+pk_wide <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "auclast") |>
+  select(treatment, analyte, sim = PPORRES) |>
+  mutate(treatment = as.character(treatment)) |>
+  inner_join(ref_pk, by = c("treatment", "analyte"))
+stopifnot(nrow(pk_wide) == nrow(ref_pk))
+pct_pk <- with(pk_wide, 100 * (sim / auclast - 1))
+round(setNames(pct_pk, paste(pk_wide$analyte, pk_wide$treatment)), 1)
+# Typical-value ODE solve: no random draws, so the bounds only absorb solver
+# tolerance. A mis-transcribed V1, k10, k13 or k31 moves these by far more.
+stopifnot(
+  all(abs(pct_pk[pk_wide$analyte == "Cc"]) < 25),
+  all(pct_pk[pk_wide$analyte == "Clung"] > 0 & pct_pk[pk_wide$analyte == "Clung"] < 60)
+)
+```
+
+# Plasma TNF-alpha and its inhibition by coptisine
+
+```{r fig-tnf}
+# Typical-value plasma TNF-alpha; compare the plasma panel of Figure 4 and Figure 3c.
+sim |>
+  filter(time <= 4) |>
+  ggplot(aes(time, tnf, colour = treatment)) +
+  geom_line() +
+  geom_vline(xintercept = c(0.33, 0.5, 1), linetype = "dotted") +
+  labs(x = "Time after LPS (h)", y = "Plasma TNF-alpha (pg/mL)", colour = NULL,
+       caption = paste("Dotted lines: end of the first formation stage (0.33 h),",
+                       "coptisine dose (0.5 h), end of formation (1 h).")) +
+  theme(legend.position = "bottom")
+```
+
+The paper's own model-based check is the inhibition of TNF-alpha formation
+at each dose's coptisine Cmax, `InhibitCon * Cmax`. It reports 54.73%, 26.49%
+and 13.25% ('calculated from the simulation model').
+
+```{r inhibition}
+slope_tnf <- exp(ui$theta[["lslope_tnf"]])
+inh <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "cmax", analyte == "Cc") |>
+  transmute(treatment = as.character(treatment), cmax = PPORRES,
+            inhibition_pct = 100 * slope_tnf * cmax) |>
+  left_join(tibble::tibble(
+    treatment = c("LPS + coptisine 1.94 mg/kg", "LPS + coptisine 3.87 mg/kg", "LPS + coptisine 7.74 mg/kg"),
+    paper_pct = c(13.25, 26.49, 54.73)
+  ), by = "treatment") |>
+  mutate(pct_diff = 100 * (inhibition_pct / paper_pct - 1))
+inh |>
+  dplyr::rename(
+    "Arm" = treatment, "Simulated Cmax (ng/mL)" = cmax,
+    "Inhibition at Cmax, simulated (%)" = inhibition_pct,
+    "Inhibition at Cmax, paper (%)" = paper_pct, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2)
+# Deterministic. The 2-5% shortfall matches the paper's figures if the arms
+# weighed 0.203-0.211 kg rather than the nominal 0.2 kg used here. Reading V1
+# as 2630 L/kg would give at most 0.3% inhibition, and 2.63 L/kg about 260%.
+stopifnot(nrow(inh) == 3L, all(abs(inh$pct_diff) < 7))
+```
+
+The paper also gives the observed-data plasma TNF-alpha AUC0-12h per arm. PKNCA
+integrates the simulated TNF-alpha, lung iNOS and plasma NO over the same
+interval. Those observed values are compared with the predictions below.
+
+```{r pknca-pd}
+pd_conc <- sim |>
+  select(id, time, treatment, tnf, inos, no) |>
+  pivot_longer(c(tnf, inos, no), names_to = "analyte", values_to = "conc") |>
+  filter(!is.na(conc)) |>
+  # Plasma NO undershoots zero by ~1e-13 umol/L before any input reaches it
+  # (ODE solver tolerance); PKNCA would flag it and return NaN log-down slopes.
+  mutate(conc = pmax(conc, 0))
+pd_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(pd_conc, conc ~ time | treatment + id / analyte),
+  intervals = data.frame(start = 0, end = 12, auclast = TRUE, cmax = TRUE, tmax = TRUE)
+))
+
+ref_pd <- tibble::tribble(
+  ~treatment, ~analyte, ~auclast,
+  "LPS", "tnf", 5461.63,
+  "LPS + coptisine 7.74 mg/kg", "tnf", 2333.54,
+  "LPS + coptisine 3.87 mg/kg", "tnf", 3258.53,
+  "LPS + coptisine 1.94 mg/kg", "tnf", 4097.53,
+  "LPS", "inos", 55.75,
+  "LPS + coptisine 7.74 mg/kg", "inos", 28.2,
+  "LPS + coptisine 3.87 mg/kg", "inos", 30.72,
+  "LPS", "no", 6447.87,
+  "LPS + coptisine 7.74 mg/kg", "no", 3924.59,
+  "LPS + coptisine 3.87 mg/kg", "no", 4072.68,
+  "LPS + coptisine 1.94 mg/kg", "no", 7381.51
+)
+pd_cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = pd_res,
+  reference = ref_pd,
+  by = c("treatment", "analyte"),
+  params = "auclast",
+  units = c(auclast = "pg.h/mL (tnf), h (inos ratio), umol.h/L (no)"),
+  tolerance_pct = 20
+)
+knitr::kable(pd_cmp, caption = paste(
+  "AUC0-12h of plasma TNF-alpha (tnf), lung iNOS ratio (inos) and plasma NO (no):",
+  "typical-value simulation vs. the paper's observed-data values (Results).",
+  "* differs by more than 20%."
+))
+```
+
+```{r tnf-gate}
+pd_tab <- as.data.frame(pd_res$result) |>
+  mutate(treatment = as.character(treatment)) |>
+  select(treatment, analyte, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+tnf_lps <- filter(pd_tab, analyte == "tnf", treatment == "LPS")
+tnf_auc <- filter(pd_tab, analyte == "tnf") |>
+  inner_join(filter(ref_pd, analyte == "tnf"), by = c("treatment", "analyte"),
+             suffix = c("_sim", "_pub"))
+tnf_auc
+# LPS arm: the plasma TNF-alpha peak falls at the end of the formation phase
+# (1 h after LPS), as the paper reports, and the AUC is within 20% of the
+# observed value. Every coptisine arm has a lower AUC, in dose order.
+stopifnot(
+  abs(tnf_lps$tmax - 1) < 0.05,
+  abs(tnf_lps$auclast / 5461.63 - 1) < 0.2,
+  all(diff(tnf_auc$auclast_sim[order(tnf_auc$auclast_pub, decreasing = TRUE)]) < 0)
+)
+```
+
+Coptisine reduces the simulated TNF-alpha AUC much less than it reduces
+the observed AUC. The observed reductions are 24.98%, 40.33% and 57.27%. In the
+model the drug acts only on the 0.5-1 h formation window, since formation stops
+at 1 h. The paper compares its observed AUC reductions with the inhibition at
+Cmax above, not with model-predicted AUCs.
+
+# Lung TNF-alpha -> iNOS -> NO cascade (does not reproduce)
+
+```{r fig-cascade, fig.height = 6}
+# Typical-value cascade outputs; compare the lung TNF-alpha, lung iNOS and
+# plasma NO panels of Figure 4 (observed peaks ~8000 pg/g at 2 h, ~7 h, ~8 h).
+sim |>
+  filter(treatment == "LPS") |>
+  select(time, `Lung TNF-alpha (pg/g)` = tnf_lung, `Lung iNOS (ratio)` = inos,
+         `Plasma NO (umol/L)` = no) |>
+  pivot_longer(-time, names_to = "output", values_to = "value") |>
+  ggplot(aes(time, value)) +
+  geom_line() +
+  facet_wrap(~output, ncol = 1, scales = "free_y") +
+  labs(x = "Time after LPS (h)", y = NULL,
+       caption = "LPS arm, typical value. Note the y-axis scales against Figure 4.")
+```
+
+```{r cascade-gate}
+cascade <- sim |>
+  filter(treatment == "LPS") |>
+  summarise(
+    tnf_lung_peak = max(tnf_lung), tnf_lung_tmax = time[which.max(tnf_lung)],
+    inos_peak = max(inos), inos_tmax = time[which.max(inos)],
+    no_peak = max(no), no_tmax = time[which.max(no)]
+  )
+knitr::kable(tidyr::pivot_longer(cascade, everything(), names_to = "quantity", values_to = "simulated"),
+             digits = 4, caption = paste(
+  "LPS arm. Paper: lung TNF-alpha peak ~8000 pg/g at ~2 h (Figure 4);",
+  "lung iNOS rises from 1 to ~7 at ~7 h (Figure 4-5); plasma NO peak ~800",
+  "umol/L at ~8 h (Results, Figure 4)."
+))
+# Pins the documented non-reproduction, so an edit that changes the cascade
+# (or a fix that makes it reproduce) is noticed and the Errata are revisited.
+stopifnot(
+  cascade$tnf_lung_peak < 80,            # < 1% of the observed ~8000 pg/g
+  cascade$inos_tmax > 3, cascade$inos_tmax < 4,   # paper: ~7 h
+  cascade$no_tmax > 4, cascade$no_tmax < 5,       # paper: ~8 h
+  cascade$no_peak < 8                    # < 1% of the observed ~800 umol/L
+)
+```
+
+# Assumptions and deviations
+
+* **V1 is per animal (mL), not L/kg.** Table 1 prints V1 = 2.63x10^3 'L/kg'.
+  Read that way, a 7.74 mg/kg dose gives C0 =
+  `r signif(7.74e6 / (2630 * 1000), 2)` ng/mL. The paper reports AUC0-12h of
+  1173 ng.h/mL and coptisine Cmax values that inhibit TNF-alpha formation by up
+  to 55%. As 2.63 L/kg, C0 would be `r signif(7.74e6 / 2630, 4)` ng/mL. Read as
+  2630 mL per rat, with the dose entered per rat, the model reproduces the
+  paper's own model-derived inhibition percentages (table above). That is
+  about 13.2 L/kg at the nominal 0.2 kg. Doses in this model are mg per rat.
+* **Lung coptisine and lung TNF-alpha are driven by the amount in V1.** Eq 3 and
+  Eq 5 multiply the transfer constants by `cop` and `TNFa`, which the text
+  calls concentrations. Fig 2 places both species in V1. Driven by plasma
+  concentration, the lung-to-plasma coptisine AUC ratio is
+  `k13 / k31` = `r signif(0.0121 / 3.77, 2)`, against observed ratios of 4.33-6.34.
+  Driven by the amount (concentration x V1) it is
+  `r signif(0.0121 * 2630 / 3.77, 3)`. The amount basis is the only one that
+  gives the observed order of magnitude, so both lung equations use it.
+* **TNF-alpha formation stages.** Table 1's row label and supplement Fig S1
+  give the second stage as 0.33-1 h, while the definition column says
+  0.33-0.67 h. The observed and simulated peak at 1 h agrees with 0.33-1 h,
+  so the model uses 0.33-1 h. The 0.33 h boundary is taken as printed (the
+  20 min sampling time).
+* **LPS is implicit.** The model has no LPS input. TNF-alpha formation is a
+  function of time since LPS, and LPS 100 ug/kg is assumed at time 0. A
+  simulation without LPS, or with another LPS dose, is outside the model.
+* **Linear inhibition domain.** `1 - InhibitCon * Cc` is negative above
+  `r signif(1 / 8.83e-4, 4)` ng/mL. The highest tested dose reaches about
+  590 ng/mL. The model applies the printed linear form without a floor, so
+  doses above about 15 mg/kg drive TNF-alpha formation negative.
+* **Units printed as 1/h.** Vm is printed in 'h-1'. Eq 4 needs pg/mL/h, the
+  unit of the zero-order input it opposes.
+* **No variability.** Between-animal variances were estimated (log-normal,
+  Methods) and the additive residual variances were fitted, but neither is
+  reported. The model carries no etas, and every residual SD is `fixed(0)`.
+* **Initial conditions are zero.** The paper writes no baselines or initial
+  conditions. iNOS is a ratio equal to 1 at time 0, plasma NO is about
+  50 umol/L before LPS, and lung TNF-alpha plateaus near 1500-2000 pg/g late
+  in Figure 4. The model starts every state at 0, so its cascade outputs are
+  increments above an unmodelled baseline at best.
+* **`max(inos_plasma, 0)`** guards the non-integer power in Eq 9 against a
+  solver undershoot near time 0. It has no effect for non-negative values.
+
+## Errata: the cascade as printed does not reproduce the paper
+
+The checks above measure the gap. Nothing was tuned.
+
+* **Lung TNF-alpha level.** With kTNFapl = 3.54x10^-7 1/h (RSE 177%), the
+  lung TNF-alpha peak is `r signif(cascade$tnf_lung_peak, 3)` pg/g on the
+  amount basis, and about 0.001 pg/g on the concentration basis. Figure 4
+  shows about 8000 pg/g at 2 h. No unit reading of kTNFapl closes a gap of
+  10^3 to 10^7.
+* **iNOS and NO timing.** The printed rate constants are all fast
+  (koutiNOSmRNA 2.36, koutiNOS 3.72, koutiNOSp 1.92, kinNO 354.68,
+  koutNO 3.46 1/h). They place the iNOS peak at
+  `r round(cascade$inos_tmax, 1)` h and the NO peak at
+  `r round(cascade$no_tmax, 1)` h. The paper reports about 7 h to iNOS
+  expression and the plasma NO peak at 8 h (Results). A scale factor cannot
+  move a peak time, so the gap is not a units problem.
+* **iNOS and NO levels.** The simulated lung iNOS and plasma NO AUCs are
+  orders of magnitude below the observed values (PD table above).
+* **Figure 2 shows a 'T1'** on the plasma-to-lung TNF-alpha arrow (perhaps a
+  lag time). It appears in neither the equations nor Table 1, so it is not
+  encoded.
+* The authors have been asked about the V1 and kTNFapl units, the amount or
+  concentration basis of Eq 3 and Eq 5, the baselines and initial
+  conditions, 'T1', and the variance estimates. The model will be updated if
+  they reply.
+
+The model is sound for coptisine plasma PK, lung exposure to within about
+1.5-fold, and the coptisine inhibition of plasma TNF-alpha formation. It is not
+sound for absolute predictions of lung TNF-alpha, iNOS or NO.

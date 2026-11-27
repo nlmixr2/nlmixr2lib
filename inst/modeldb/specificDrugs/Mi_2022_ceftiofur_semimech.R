@@ -42,6 +42,7 @@ Mi_2022_ceftiofur_semimech <- function() {
     dosing = "mg/kg",
     concentration = "mg/L (unbound DFC, Cc); log10 CFU/mL (log_cfu observation)"
   )
+  dosing <- c("depot", "central")
 
   # Growing (G) and resting (R) bacterial states of Mi 2022 Figure 7,
   # following the naming of the Nielsen-lineage model

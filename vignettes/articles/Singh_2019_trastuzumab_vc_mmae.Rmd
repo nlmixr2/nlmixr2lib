@@ -1,0 +1,547 @@
+---
+title: "Trastuzumab-vc-MMAE ADC, cell-level systems PK-PD in N87 and GFP-MCF7 xenografts (Singh 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Trastuzumab-vc-MMAE ADC, cell-level systems PK-PD in N87 and GFP-MCF7 xenografts (Singh 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+model_name <- "Singh_2019_trastuzumab_vc_mmae_mouse_qsp"
+mod <- modellib(model_name)
+meta <- {
+  fun <- readModelDb(model_name)
+  if (is.function(fun)) fun() else fun
+}
+```
+
+* Citation: `r meta$reference`
+* Description: `r meta$description`
+* Article: <https://doi.org/10.3390/pharmaceutics11020098>
+
+Singh, Guo, Verma, Wong and Shah (2019) extended their single-cell
+pharmacokinetic model of the HER2-targeting antibody-drug conjugate
+trastuzumab-vc-MMAE (T-vc-MMAE) to tumor-bearing mice. The model (Figure 1 and
+Equations 1-23 of the paper) joins four layers:
+
+* **plasma PK**: a two-compartment ADC model with linear catabolic clearance and
+  first-order non-specific deconjugation, which also lowers the average
+  drug-to-antibody ratio (DAR); unconjugated MMAE is formed by both pathways and
+  has its own two-compartment disposition;
+* **tumor distribution**: vascular (Krogh cylinder) and surface exchange of ADC
+  and MMAE between plasma and the tumor extracellular space, with the tumor
+  radius recomputed from the current tumor volume;
+* **single-cell disposition**: HER2 binding, internalization and lysosomal
+  degradation of the ADC, MMAE influx/efflux and binding to tubulin, all in
+  molecules per average tumor cell and diluted at the tumor growth rate;
+* **cell-level killing**: tubulin occupancy drives a sigmoid kill rate that moves
+  proliferating tumor volume into a three-stage death transit chain; dying
+  cells return their ADC and MMAE content to the tumor extracellular space.
+
+The plasma PK parameters were estimated first, the tumor and cell parameters
+were fixed from the literature except the in-vivo HER2 receptor counts, and the
+kill parameters were then estimated from the tumor growth inhibition (TGI) data
+of both xenografts with one shared set of values. The cell line is selected by
+`CELLLINE_NCIN87` (1 = NCI-N87, 0 = GFP-MCF7).
+
+# Population
+
+```{r population}
+pop <- meta$population
+tibble::tibble(
+  Field = names(pop),
+  Value = vapply(pop, function(x) paste(as.character(x), collapse = "; "), character(1))
+) |>
+  knitr::kable()
+```
+
+Male SCID mice (NOD.CB17-Prkdcscid/J, Jackson Laboratory) were implanted at
+8 weeks with about 10 million NCI-N87 or GFP-MCF7 cells (Section 2.3). Eighteen
+mice (9 per tumor line, tumors ~500 mm^3) received a single 10 mg/kg IV dose for
+plasma and tumor PK with terminal sampling at 1, 3 and 7 days (Section 2.5);
+56 mice (7 per arm, tumors ~350-400 mm^3) entered the TGI study at 0, 3, 5 or
+10 mg/kg (GFP-MCF7) and 0, 1, 3 or 10 mg/kg (N87) (Section 2.6). The paper does
+not report body weights.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| `lcl`, `lq` | 0.033, 0.0585 L/day/kg | Table 1 (CLADC, CLDADC) |
+| `lvc`, `lvp` | 0.084, 0.051 L/kg | Table 1 (V1ADC, V2ADC) |
+| `lkdec` | 0.323 1/day | Table 1 (KdecP) |
+| `dar0` | 4 | Section 2.2 ('average DAR of ~4'); initial condition of Eq 7 |
+| `lcl_mmae`, `lq_mmae` | 18.40, 1.84 L/day/kg | Table 1 (CLDrug, CLDDrug, from ref 11) |
+| `lvc_mmae`, `lvp_mmae` | 0.136, 0.523 L/kg | Table 1 (V1Drug, V2Drug, from ref 11) |
+| `rcap`, `rkrogh` | 8.0, 75.0 um | Table 1 |
+| `perm`, `perm_mmae` | 334, 21000 um/day | Table 1 (PADC, PDrug) |
+| `dif`, `dif_mmae` | 0.022, 0.25 cm^2/day | Table 1 (DADC, DDrug) |
+| `eps`, `eps_mmae` | 0.24, 0.44 | Table 1 (tumor void fractions) |
+| `kon`, `koff` | 0.03 1/nM/h, 0.014 1/h | Table 1 (KonADC, KoffADC) |
+| `kint`, `kdeg` | 0.11, 0.353 1/h | Table 1 (KintADC, KdegADC) |
+| `kon_tub`, `koff_tub` | 0.0183 1/nM/h, 0.545 1/h | Table 1 (KonTub, KoffTub) |
+| `tub_tot` | 65 nM | Table 1 (Tubtot) |
+| `kin_mmae`, `kout_mmae` | 8.33, 0.046 1/h | Table 1 (KinDrug, KoutDrug) |
+| `vcell_n87`, `vcell_mcf7` | 3.12, 8.14 pL | Singh and Shah 2017 (Drug Metab Dispos 45:1120), Table 2 |
+| SF (in `model()`) | 10^9 / 6.023e23 nmol per molecule | Singh and Shah 2017, Table 2 |
+| `lag_n87`, `lag_mcf7` | 185,000, 22,400 receptors/cell | Table 1 (AgN87ex, AgMCF7ex) |
+| `ldt_n87`, `ldt_mcf7` | 13.5, 10.6 day | Table 1 (DTN87, DTMCF7) |
+| `lkmax`, `lkc50` | 1.03 1/day, 96.8 % | Table 1 (Kmax, KC50) |
+| `ltau`, `lhill` | 2.03 day, 15.02 | Table 1 (tau, gamma) |
+| `etalkmax`, `etaltau` | omega 0.1016, 0.194 | Table 1 (IIVKmax 10.16 %, IIVtau 19.4 %) |
+| `propSd`, `propSd_tumor_volume` | 0 (fixed) | not reported |
+| Tumor growth, radius | Eqs 1-2, 15 | Section 2.7.3 |
+| Plasma ADC, MMAE, DAR | Eqs 3-7 | Section 2.7.3 |
+| Tumor extracellular ADC, MMAE | Eqs 22-23 (supersede Eqs 8-9) | Section 2.7.5 |
+| Single-cell states | Eqs 10-13 | Section 2.7.3 |
+| Tubulin occupancy, kill, transit | Eqs 14, 16-21 | Sections 2.7.4-2.7.5 |
+| Cells per tumor volume | 10^8 cells/g = 10^5 cells/mm^3 | Section 2.7.3; factor 10^5 in Eqs 22-23 |
+| Deconjugated antibody in plasma | `mab_central`, `mab_peripheral` | reconstructed from Figure 4A (see deviations) |
+
+# Simulation setup
+
+Doses are entered in nmol of antibody. The paper reports neither body weight
+nor the molecular weight of the ADC, so this vignette uses a 25 g mouse and
+150,000 g/mol (the molecular weight of an IgG1 carrying about four vc-MMAE
+drug-linkers); 10 mg/kg is then 1.67 nmol.
+
+```{r helpers}
+wt <- 0.025 # kg
+mw_adc <- 150000 # g/mol
+dose_nmol <- function(mgkg) mgkg * wt * 1e6 / mw_adc
+
+# Two declared endpoints (Cc and tumor_volume): observation rows carry dvid = 1
+# and every output column comes back on each row.
+make_events <- function(mgkg, n87, tv0, times, n_id = 1L) {
+  ev <- rxode2::et(amt = dose_nmol(mgkg), cmt = "central") |>
+    rxode2::et(times)
+  if (n_id > 1L) ev <- rxode2::et(ev, id = seq_len(n_id))
+  d <- as.data.frame(ev)
+  d$dvid <- ifelse(d$evid == 0, 1L, NA_integer_)
+  d$CELLLINE_NCIN87 <- n87
+  d$TUM_VOL <- tv0
+  d$WT <- wt
+  d
+}
+mod_typ <- rxode2::zeroRe(mod)
+solve_typ <- function(mgkg, n87, tv0, times) {
+  as.data.frame(rxode2::rxSolve(mod_typ, make_events(mgkg, n87, tv0, times),
+    returnType = "data.frame"
+  ))
+}
+line_lab <- function(n87) ifelse(n87 == 1, "N87", "GFP-MCF7")
+```
+
+# Plasma and tumor PK after 10 mg/kg (Figure 4)
+
+```{r pk-sim}
+pk_times <- sort(unique(c(seq(0, 7, by = 0.05), 10 / 1440)))
+pk <- dplyr::bind_rows(
+  solve_typ(10, 0, 500, pk_times) |> dplyr::mutate(line = "GFP-MCF7"),
+  solve_typ(10, 1, 500, pk_times) |> dplyr::mutate(line = "N87")
+)
+pk_long <- pk |>
+  dplyr::select(line, time,
+    `Total trastuzumab` = Cc,
+    `Total MMAE` = plasma_total_mmae,
+    `Unconjugated MMAE` = plasma_free_mmae
+  ) |>
+  tidyr::pivot_longer(-c(line, time), names_to = "analyte", values_to = "conc")
+```
+
+```{r fig4a, fig.cap = "Replicates Figure 4A of Singh 2019: plasma total trastuzumab, total MMAE and unconjugated MMAE after a single 10 mg/kg IV dose (typical values). Points are the paper's fitted lines at 0, 3 and 7 days, digitized by the maintainers."}
+fig4a_ref <- tibble::tribble(
+  ~analyte, ~time, ~conc,
+  "Total trastuzumab", 0, 740, "Total trastuzumab", 3, 214, "Total trastuzumab", 7, 82,
+  "Total MMAE", 0, 2900, "Total MMAE", 3, 162, "Total MMAE", 7, 10.5,
+  "Unconjugated MMAE", 0, 10.5, "Unconjugated MMAE", 3, 0.58, "Unconjugated MMAE", 7, 0.034
+)
+ggplot(pk_long |> dplyr::filter(conc > 0), aes(time, conc, colour = analyte)) +
+  geom_line(aes(linetype = line)) +
+  geom_point(data = fig4a_ref, size = 2) +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "Concentration (nM)", colour = NULL, linetype = NULL) +
+  theme_bw()
+```
+
+```{r fig4a-check}
+ref_at <- fig4a_ref |>
+  dplyr::filter(time %in% c(3, 7)) |>
+  dplyr::rename(paper = conc)
+ratio <- pk_long |>
+  dplyr::filter(time %in% c(3, 7)) |>
+  dplyr::inner_join(ref_at, by = c("analyte", "time")) |>
+  dplyr::mutate(ratio = conc / paper)
+ratio |>
+  dplyr::select(`Tumor line` = line, Analyte = analyte, `Time (day)` = time,
+    `Simulated (nM)` = conc, `Figure 4A line (nM)` = paper, `Simulated / paper` = ratio) |>
+  knitr::kable(digits = 3, caption = "Simulated versus the digitized Figure 4A fitted lines.")
+r_of <- function(ln, an) ratio$ratio[ratio$line == ln & ratio$analyte == an]
+stopifnot(
+  # GFP-MCF7 mice, whose small HER2 sink leaves plasma closest to the
+  # plasma-only fit the paper plots: total trastuzumab and total MMAE within
+  # 30% at 3 and 7 days. A wrong clearance, volume, deconjugation rate or
+  # initial DAR moves at least one of them by far more.
+  all(abs(log(r_of("GFP-MCF7", "Total trastuzumab"))) < log(1.3)),
+  all(abs(log(r_of("GFP-MCF7", "Total MMAE"))) < log(1.3)),
+  # N87 mice: the tumor HER2 sink lowers plasma exposure (envelope check).
+  all(abs(log(r_of("N87", "Total trastuzumab"))) < log(1.5)),
+  # Unconjugated MMAE at 3 days (formation-rate limited), both lines.
+  all(abs(log(ratio$ratio[ratio$analyte == "Unconjugated MMAE" & ratio$time == 3])) < log(1.3))
+)
+```
+
+The plasma profiles of GFP-MCF7 mice reproduce the paper's fitted lines. In N87
+mice the larger tumor HER2 sink, which the full model carries, lowers plasma
+total trastuzumab and total MMAE by 20-50 % at 7 days; the paper's Figure 4A
+lines come from the plasma model fitted before the tumor was added and are
+drawn once for both lines. Unconjugated MMAE at 7 days is about twice the
+paper's line (0.065 versus 0.034 nM); the line declines more steeply than its
+two-compartment MMAE parameters give when MMAE is formed from the ADC, which
+the maintainers could not resolve from the printed equations.
+
+```{r fig4bc, fig.height = 5.5, fig.cap = "Replicates Figure 4B-C of Singh 2019: tumor total trastuzumab, unconjugated MMAE and total MMAE (nM over the whole tumor volume) after 10 mg/kg. Points are the paper's tumor data at 1, 3 and 7 days, digitized by the maintainers from the low-resolution figure."}
+tumor_long <- pk |>
+  dplyr::filter(time > 0) |>
+  dplyr::select(line, time,
+    `Total trastuzumab` = tumor_total_trastuzumab,
+    `Unconjugated MMAE` = tumor_free_mmae,
+    `Total MMAE` = tumor_total_mmae
+  ) |>
+  tidyr::pivot_longer(-c(line, time), names_to = "analyte", values_to = "conc")
+fig4bc_ref <- tibble::tribble(
+  ~line, ~analyte, ~time, ~conc,
+  "GFP-MCF7", "Total trastuzumab", 1, 7, "GFP-MCF7", "Total trastuzumab", 3, 5,
+  "GFP-MCF7", "Total trastuzumab", 7, 1.2,
+  "GFP-MCF7", "Unconjugated MMAE", 1, 180, "GFP-MCF7", "Unconjugated MMAE", 3, 220,
+  "GFP-MCF7", "Unconjugated MMAE", 7, 180,
+  "GFP-MCF7", "Total MMAE", 1, 380, "GFP-MCF7", "Total MMAE", 3, 290,
+  "GFP-MCF7", "Total MMAE", 7, 160,
+  "N87", "Total trastuzumab", 1, 85, "N87", "Total trastuzumab", 3, 55,
+  "N87", "Total trastuzumab", 7, 6,
+  "N87", "Unconjugated MMAE", 1, 320, "N87", "Unconjugated MMAE", 3, 400,
+  "N87", "Unconjugated MMAE", 7, 150,
+  "N87", "Total MMAE", 1, 700, "N87", "Total MMAE", 3, 550,
+  "N87", "Total MMAE", 7, 180
+)
+ggplot(tumor_long, aes(time, conc, colour = line)) +
+  geom_line() +
+  geom_point(data = fig4bc_ref, size = 2) +
+  facet_wrap(~analyte) +
+  scale_y_log10(limits = c(0.1, 1000)) +
+  scale_colour_manual(values = c("GFP-MCF7" = "forestgreen", N87 = "red")) +
+  labs(x = "Time (day)", y = "Tumor concentration (nM)", colour = NULL) +
+  theme_bw()
+```
+
+Tumor unconjugated and total MMAE, and N87 total trastuzumab, follow the paper's
+data. GFP-MCF7 total trastuzumab is several-fold above the paper's data and
+fitted line (see the deviations section): with the printed exchange constants
+the unbound ADC in the tumor extracellular space approaches the void fraction
+times the plasma ADC concentration in both tumor lines, which caps how far the
+GFP-MCF7 tumor can fall below the N87 tumor.
+
+# Intracellular tubulin occupancy (Figure 5)
+
+```{r occ-sim}
+occ_times <- seq(0, 40, by = 0.1)
+dose_grid <- c(1, 3, 5, 10)
+occ <- dplyr::bind_rows(lapply(c(0, 1), function(n87) {
+  dplyr::bind_rows(lapply(dose_grid, function(dd) {
+    solve_typ(dd, n87, 400, occ_times) |>
+      dplyr::mutate(dose = paste(dd, "mg/kg"), line = line_lab(n87))
+  }))
+}))
+occ$dose <- factor(occ$dose, levels = paste(dose_grid, "mg/kg"))
+```
+
+```{r fig5, fig.cap = "Replicates Figure 5 of Singh 2019: simulated intracellular tubulin occupancy by MMAE after single IV doses of 1-10 mg/kg (typical values, no TGI feedback needed at this scale)."}
+ggplot(occ, aes(time, tubulin_occupancy, colour = dose)) +
+  geom_line() +
+  facet_wrap(~line) +
+  labs(x = "Time (day)", y = "% tubulin occupancy", colour = NULL) +
+  theme_bw()
+```
+
+```{r fig5-check}
+occ_peak <- occ |>
+  dplyr::group_by(line, dose) |>
+  dplyr::summarise(sim_peak = max(tubulin_occupancy), .groups = "drop")
+# Peaks digitized by the maintainers from Figure 5.
+occ_peak$paper_peak <- c(64.4, 80.1, 86.4, 92.3, 94, 97, 98, 98)
+occ_peak |>
+  dplyr::rename(`Tumor line` = line, Dose = dose, `Simulated peak (%)` = sim_peak,
+    `Figure 5 peak (%)` = paper_peak) |>
+  knitr::kable(digits = 1)
+stopifnot(
+  # Peak occupancy within 6 percentage points of Figure 5 in every arm. The
+  # occupancy chain runs through the per-cell volume, SF, the tubulin unit
+  # conversion and the HER2 counts; an error in any of them shifts the
+  # GFP-MCF7 peaks by tens of points.
+  all(abs(occ_peak$sim_peak - occ_peak$paper_peak) < 6),
+  # Dose ordering of Figure 5 within each tumor line.
+  all(tapply(occ_peak$sim_peak, occ_peak$line, function(x) all(diff(x) > 0)))
+)
+```
+
+# Tumor growth inhibition (Figure 6)
+
+```{r tgi-typ}
+tgi_times <- seq(0, 60, by = 0.5)
+arms <- tibble::tribble(
+  ~line, ~n87, ~mgkg, ~tv0,
+  "GFP-MCF7", 0, 0, 480, "GFP-MCF7", 0, 3, 450, "GFP-MCF7", 0, 5, 380, "GFP-MCF7", 0, 10, 450,
+  "N87", 1, 0, 330, "N87", 1, 1, 380, "N87", 1, 3, 400, "N87", 1, 10, 420
+)
+tgi_typ <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  solve_typ(arms$mgkg[i], arms$n87[i], arms$tv0[i], tgi_times) |>
+    dplyr::mutate(line = arms$line[i], arm = paste(arms$mgkg[i], "mg/kg"))
+}))
+```
+
+```{r tgi-vpc}
+rxode2::rxSetSeed(20190225)
+n_per_arm <- 100L
+tgi_vpc <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  ev <- make_events(arms$mgkg[i], arms$n87[i], arms$tv0[i], seq(0, 60, by = 1),
+    n_id = n_per_arm
+  )
+  as.data.frame(rxode2::rxSolve(mod, ev, returnType = "data.frame")) |>
+    dplyr::mutate(line = arms$line[i], arm = paste(arms$mgkg[i], "mg/kg"))
+})) |>
+  dplyr::group_by(line, arm, time) |>
+  dplyr::summarise(
+    lo = stats::quantile(tumor_volume, 0.05),
+    med = stats::median(tumor_volume),
+    hi = stats::quantile(tumor_volume, 0.95),
+    .groups = "drop"
+  )
+```
+
+```{r fig6, fig.height = 6, fig.cap = "Replicates Figure 6 of Singh 2019: tumor volume after a single IV dose (line: typical value; band: 5th-95th percentile of 100 simulated mice per arm with the between-mouse variability on Kmax and tau). Initial volumes are read from Figure 6."}
+arm_levels <- c("0 mg/kg", "1 mg/kg", "3 mg/kg", "5 mg/kg", "10 mg/kg")
+ggplot(
+  tgi_vpc |> dplyr::mutate(arm = factor(arm, levels = arm_levels)),
+  aes(time)
+) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line(
+    data = tgi_typ |> dplyr::mutate(arm = factor(arm, levels = arm_levels)),
+    aes(y = tumor_volume, colour = line)
+  ) +
+  facet_grid(arm ~ line) +
+  coord_cartesian(ylim = c(0, 3000)) +
+  scale_colour_manual(values = c("GFP-MCF7" = "forestgreen", N87 = "red"), guide = "none") +
+  labs(x = "Time (day)", y = expression("Tumor volume (mm"^3 * ")")) +
+  theme_bw()
+```
+
+```{r tgi-check}
+tv_at <- function(ln, a, t) tgi_typ$tumor_volume[tgi_typ$line == ln & tgi_typ$arm == a & tgi_typ$time == t]
+stopifnot(
+  # Untreated tumors double in their Table 1 doubling time (Eq 1); this pins
+  # the 0.693 / DT growth rate and the tumor1 initial condition.
+  abs(tv_at("GFP-MCF7", "0 mg/kg", 10.5) / 480 - 2^(10.5 / 10.6)) < 0.01,
+  abs(tv_at("N87", "0 mg/kg", 13.5) / 330 - 2^(13.5 / 13.5)) < 0.01,
+  # 10 mg/kg regresses N87 tumors almost completely (Figure 6 B4).
+  tv_at("N87", "10 mg/kg", 20) < 0.15 * 420,
+  # GFP-MCF7 at 10 mg/kg is held near its starting volume for about 3 weeks
+  # (Figure 6 A4).
+  tv_at("GFP-MCF7", "10 mg/kg", 20) < 1.2 * 450,
+  # Dose ordering at day 20 in both lines.
+  all(diff(sapply(c("0 mg/kg", "3 mg/kg", "5 mg/kg", "10 mg/kg"), function(a) tv_at("GFP-MCF7", a, 20))) < 0),
+  all(diff(sapply(c("0 mg/kg", "1 mg/kg", "3 mg/kg", "10 mg/kg"), function(a) tv_at("N87", a, 20))) < 0)
+)
+```
+
+The controls, GFP-MCF7 at 3 mg/kg and the complete N87 regression at 10 mg/kg
+match Figure 6. Regrowth after GFP-MCF7 5 and 10 mg/kg comes roughly a week
+earlier than the paper's fitted lines, and N87 tumors at 1 and 3 mg/kg shrink
+more than the paper shows. With a sigmoidicity of 15 and a KC50 of 96.8 %, the
+kill rate exceeds the N87 growth rate for any occupancy above about 85 %, and
+Figure 5 itself shows N87 occupancy above 85 % for several days after 1 mg/kg;
+the printed Table 1 kill parameters and the Figure 5 occupancies therefore
+predict a stronger low-dose N87 effect than Figure 6 displays. The parameters
+are kept as printed.
+
+# NCA comparison
+
+The paper reports non-compartmental half-lives from its observed plasma and
+tumor data (Section 4.1) and tumor AUC(0-7 d) ratios between the two lines.
+PKNCA is run on the typical-value profiles sampled at the study times
+(10 min, 1, 3 and 7 days).
+
+```{r pknca}
+nca_times <- c(0, 10 / 1440, 1, 3, 7)
+nca_src <- pk |>
+  dplyr::filter(time %in% nca_times) |>
+  dplyr::select(line, time,
+    plasma_total_trastuzumab = Cc,
+    plasma_total_mmae, plasma_free_mmae,
+    tumor_total_trastuzumab, tumor_free_mmae, tumor_total_mmae
+  ) |>
+  tidyr::pivot_longer(-c(line, time), names_to = "analyte", values_to = "conc") |>
+  dplyr::mutate(id = 1L, treatment = paste(line, analyte, sep = " | ")) |>
+  dplyr::filter(!is.na(conc))
+dose_df <- nca_src |>
+  dplyr::distinct(treatment, id) |>
+  dplyr::mutate(time = 0, dose = dose_nmol(10))
+o_conc <- PKNCA::PKNCAconc(nca_src, conc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(dose_df, dose ~ time | treatment + id)
+# Half-lives for the plasma analytes (falling over 1-7 days); AUC(0-7 d) for
+# the tumor analytes, whose 1-7 day samples include the plateau.
+nca_intervals <- dplyr::distinct(nca_src, treatment) |>
+  dplyr::mutate(
+    start = 0, end = 7,
+    half.life = grepl("plasma", treatment),
+    auclast = grepl("tumor", treatment)
+  )
+o_data <- PKNCA::PKNCAdata(o_conc, o_dose, intervals = as.data.frame(nca_intervals))
+nca_res <- as.data.frame(PKNCA::pk.nca(o_data))
+```
+
+```{r nca-table}
+sim_hl <- nca_res |>
+  dplyr::filter(PPTESTCD == "half.life") |>
+  dplyr::select(treatment, PPTESTCD, PPORRES)
+ref_hl <- tibble::tribble(
+  ~treatment, ~half.life,
+  "GFP-MCF7 | plasma_total_trastuzumab", 1.4,
+  "N87 | plasma_total_trastuzumab", 1.2,
+  "GFP-MCF7 | plasma_total_mmae", 0.9,
+  "N87 | plasma_total_mmae", 0.8,
+  "GFP-MCF7 | plasma_free_mmae", 1.07,
+  "N87 | plasma_free_mmae", 1.14
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_hl,
+  reference = ref_hl,
+  by = "treatment",
+  units = c(half.life = "day")
+)
+knitr::kable(cmp, caption = "Half-lives: Section 4.1 of Singh 2019 (NCA of observed data) versus PKNCA on the simulated typical profiles.")
+attr(cmp, "footnote")
+```
+
+```{r auc-ratio}
+auc <- nca_res |>
+  dplyr::filter(PPTESTCD == "auclast", grepl("^tumor", sub(".*\\| ", "", treatment))) |>
+  dplyr::mutate(
+    line = sub(" \\|.*", "", treatment),
+    analyte = sub(".*\\| ", "", treatment)
+  ) |>
+  dplyr::select(line, analyte, PPORRES) |>
+  tidyr::pivot_wider(names_from = line, values_from = PPORRES) |>
+  dplyr::mutate(sim_ratio = N87 / `GFP-MCF7`)
+auc$paper_ratio <- c(
+  tumor_total_trastuzumab = 12, tumor_free_mmae = 1.6, tumor_total_mmae = 1.8
+)[auc$analyte]
+auc |>
+  dplyr::select(Analyte = analyte, `Simulated N87/MCF7` = sim_ratio, `Paper N87/MCF7` = paper_ratio) |>
+  knitr::kable(digits = 2, caption = "Tumor AUC(0-7 d) ratio, N87 over GFP-MCF7 (Section 4.1).")
+stopifnot(
+  # N87 tumors see more of every analyte than GFP-MCF7 tumors, and the MMAE
+  # ratios stay small (saturable tubulin binding caps intracellular MMAE).
+  all(auc$sim_ratio > 1),
+  all(auc$sim_ratio[auc$analyte != "tumor_total_trastuzumab"] < 2)
+)
+# Tumor MMAE concentrations against the digitized Figure 4B-C data, both lines,
+# 1-7 days.
+mmae_cmp <- tumor_long |>
+  dplyr::filter(analyte != "Total trastuzumab") |>
+  dplyr::mutate(time = round(time, 6)) |>
+  dplyr::inner_join(
+    fig4bc_ref |> dplyr::rename(paper = conc),
+    by = c("line", "analyte", "time")
+  )
+stopifnot(
+  abs(stats::median(log(mmae_cmp$conc / mmae_cmp$paper))) < log(1.3),
+  all(abs(log(mmae_cmp$conc / mmae_cmp$paper)) < log(2))
+)
+```
+
+Plasma total and unconjugated MMAE half-lives agree with the paper. The total
+trastuzumab half-lives in the paper come from three mice per time point and
+are shorter than its own fitted plasma line, which falls from about 214 to
+82 nM between days 3 and 7 (a 2.9-day half-life); the simulation follows the
+fitted line. The tumor half-lives of total trastuzumab (2.14 and 1.58 days)
+cannot be estimated from three post-peak samples on the typical profile and
+are not compared.
+
+Tumor MMAE concentrations agree with the paper's data within a factor of 2 at
+every sampled time, but the simulated N87/GFP-MCF7 exposure ratios (about 1.1)
+are smaller than the paper's 1.6-1.8 because simulated GFP-MCF7 MMAE runs above
+the data at 1-3 days. The total-trastuzumab ratio is the GFP-MCF7 discrepancy
+discussed under Figure 4.
+
+# Assumptions and deviations
+
+* **Cell volume and SF are taken from the single-cell source.** Equations 9 and
+  12 use the volume of one tumor cell (VCell) and a molecule-to-nmol scaling
+  factor (SF), neither of which the 2019 paper prints. Both come from Table 2
+  of Singh and Shah 2017 (Drug Metab Dispos 45:1120): VCell = 3.12 pL (N87) and
+  8.14 pL (GFP-MCF7), SF = 10^9 / 6.023e23. Following that paper, tubulin
+  (65 nM) and its association rate (1/nM/h) are converted to molecules per cell
+  with VCell and SF, which puts Equations 12-14 on consistent units.
+* **Tumor exchange in Equation 5 is mass-balanced.** The printed Equation 5
+  subtracts the plasma-to-tumor MMAE flux as a concentration rate without the
+  tumor-volume / V1Drug factor that Equation 23 uses for the matching tumor
+  gain (and that Equation 3 uses for the ADC). The model scales the term by
+  `tv / vc_mmae`. As printed, plasma unconjugated MMAE at 7 days would be
+  about 0.59 nM, against 0.034 nM on the paper's fitted line; the
+  mass-balanced form gives 0.065 nM.
+* **Plasma total trastuzumab includes deconjugated antibody.** Equation 3
+  removes deconjugated antibody from the ADC state, but the paper's fitted
+  total-trastuzumab line in Figure 4A (about 740, 214 and 82 nM at 0, 3 and
+  7 days) declines like ADC plus the antibody left behind by deconjugation,
+  cleared with the ADC parameters (simulated: 794, 210 and 85 nM), whereas the
+  ADC state alone falls to 21 nM by day 7. The model therefore carries that
+  antibody in plasma (`mab_central`, `mab_peripheral`) for the `Cc` output
+  only; it does not enter the tumor. The ADC state alone is output as
+  `plasma_adc`, and total MMAE uses the ADC state times the DAR, which matches
+  the paper's total-MMAE line.
+* **Tumor output definitions are inferred.** The paper does not write the
+  observation equations. Tumor total trastuzumab is extracellular ADC plus
+  HER2-bound and internalized ADC; unconjugated MMAE is extracellular plus
+  cytoplasmic plus tubulin-bound MMAE; total MMAE adds the conjugated payload
+  (tumor total trastuzumab times the DAR). All are nM over the whole tumor
+  volume.
+* **GFP-MCF7 tumor total trastuzumab is not reproduced.** It is several-fold
+  above the paper's data and line, and the N87/GFP-MCF7 AUC ratio is about 1.4
+  rather than 12. N87 total trastuzumab and both MMAE analytes in both tumors
+  are within a factor of 2 of the data. No reading of the printed equations that the maintainers tried
+  removes the extracellular unbound ADC that dominates the GFP-MCF7 signal.
+* **TGI.** Low-dose N87 tumors shrink more, and treated GFP-MCF7 tumors regrow
+  earlier, than in Figure 6 (see the Figure 6 section). No parameter was
+  adjusted.
+* **Number of cells.** NC = 10^5 cells per mm^3 of total tumor volume (all four
+  transit compartments, since cellular processing continues in non-growing
+  cells, Section 2.7.5), from the 10^8 cells/g assumption and the 10^5 factor in
+  Equations 22-23.
+* **Body weight and ADC molecular weight.** Table 1 PK parameters are per kg,
+  while Equation 3 exchanges whole-tumor amounts with the central compartment,
+  so the model scales clearances and volumes by `WT`. Weight is not reported;
+  25 g is assumed here. Doses use 150,000 g/mol for the ADC.
+* **Initial DAR.** Set to 4 from the 'average DAR of ~4' in Section 2.2; the
+  single-cell source measured 4.5 for its own batch.
+* **Between-mouse variability.** Table 1 reports IIVKmax and IIVtau as
+  percentages (10.16 and 19.4) with RSEs in parentheses; they are read as the
+  Monolix omega (standard deviation of the log-normal random effect) times 100.
+* **Residual error.** Neither the ADAPT variance-model coefficients (Equation 24)
+  nor the Monolix TGI error model are reported; both residual SDs are fixed to
+  zero.
+* **Units.** Time is in days throughout; the per-hour single-cell constants of
+  Table 1 are multiplied by 24 inside the model.

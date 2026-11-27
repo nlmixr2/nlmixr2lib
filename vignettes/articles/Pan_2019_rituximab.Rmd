@@ -1,0 +1,414 @@
+---
+title: "Rituximab (Pan 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rituximab (Pan 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Pan_2019_rituximab")()$meta$reference`
+* Description: `r readModelDb("Pan_2019_rituximab")()$meta$description`
+* Article: <https://doi.org/10.1111/bcp.13970> (open access, PMC6624401)
+
+Rituximab concentrations were not measured in this retrospective cohort, so
+Pan 2019 fitted a kinetic-pharmacodynamic (K-PD) model: each dose (in mg) is
+added to a virtual compartment that decays first-order, and the residual dose
+drives a saturable increase in the loss rate of a CD19+ lymphocyte turnover
+pool. Pan 2019 Eqs 1-2 and the `$DES` block of the NONMEM file in the
+supplementary material:
+
+```
+dA1/dt = -KE * A1
+DG     = EMAX * A1 / (ED50 + A1)
+dA2/dt = KIN - KOUT * (1 + DG) * A2,   A2(0) = BSL,  KIN = BSL * KOUT
+EMAX   = THETA_EMAX * (1 + 0.381 * CTX) * (1 + 0.657 * MTX)
+```
+
+In the packaged model `A1` is `depot_kpd` (mg) and `A2` is `bcell`
+(CD19+ count, 10^6/L), which is also the observed output.
+
+# Population
+
+Thirty-nine children treated with rituximab for autoimmune disease at Great
+Ormond Street Hospital, London, between 2010 and 2016 contributed 258 CD19+
+lymphocyte counts (Pan 2019 Table 1). Median age was 13.2 years (range
+3.9-18); 34 of 39 were female. Twenty-two had systemic lupus erythematosus;
+the others had granulomatosis with polyangiitis (6), juvenile dermatomyositis
+(4), anti-SRP positive myositis (3), and one each of juvenile idiopathic
+arthritis, lupus overlap syndrome, ANCA-positive vasculitis and polyarteritis
+nodosa. Rituximab was given as 2 x 750 mg/m^2 (days 1 and 15) or
+4 x 375 mg/m^2 (days 1, 8, 15 and 22); the per-infusion dose had a median of
+1000 mg (range 413-1000). All children received prednisolone and
+methylprednisolone; 25.6% received methotrexate and 43.6% cyclophosphamide.
+The median baseline CD19+ count was 170 x 10^6/L (range 10-940). 108 counts
+reported as zero were set to 5 x 10^6/L (half the lowest detectable count).
+
+The same information is in the model's `population` metadata.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Virtual-dose ODE `d/dt(depot_kpd) = -kel * depot_kpd` | | Eq 1; supplement `$DES` |
+| B-cell ODE with `1 + Emax * A1 / (ED50 + A1)` on the loss rate | | Eq 2; supplement `$DES` |
+| `kin = rbase * kout`, `bcell(0) = rbase` | | Methods; supplement `$PK` (`KIN = BSL * KOUT`, `A_0(2) = BSL`) |
+| Comedication effects multiply Emax | | supplement `$PK` (`EMAX = THETA(4) * (1 + CCOV) * (1 + CCOV1)`) |
+| `lkel` | log(0.0359064) 1/day | supplement `$THETA(1)`; Table 2 ke 0.036 |
+| `lrbase` | log(266.449) 10^6/L | supplement `$THETA(2)`; Table 2 Baseline 266.4 |
+| `lkout` | log(0.0160064) 1/day | supplement `$THETA(3)`; Table 2 kout 0.02 |
+| `lemax` | log(35.1538) | supplement `$THETA(4)`; Table 2 Emax 35.2 |
+| `led50` | log(0.811751) mg | supplement `$THETA(5)`; Table 2 ED50 0.81 |
+| `e_conmed_cyclophosphamide_emax` | 0.381171 | supplement `$THETA(7)`; Table 2 covCYC 0.38 |
+| `e_conmed_mtx_emax` | 0.657277 | supplement `$THETA(8)`; Table 2 covMTX 0.66 |
+| `etalkel` | 0.54598 | supplement `$OMEGA`; Table 2 BSV 73.88% = 100 * sqrt(0.54598) |
+| `etalrbase` | 0.96308 | supplement `$OMEGA`; Table 2 BSV 98.13% |
+| `etalkout` | 0.803053 | supplement `$OMEGA`; Table 2 BSV 89.61% |
+| `propSd` | sqrt(0.351255) = 0.5927 | supplement `$THETA(6)` (a variance, see below); Table 2 59.3% |
+| `addSd` | fixed(0.01) 10^6/L | supplement `$ERROR`: `SD = SQRT(0.0001 + CV * IPRED**2)` |
+
+The supplement `$ERROR` block is `SD = SQRT(0.0001 + CV * IPRED**2)` with
+`$SIGMA 1 FIX`, so `THETA(6)` is the proportional variance and 0.0001 a fixed
+additive variance. Table 2 confirms this: its 59.3% is `sqrt(0.351255)`. The
+packaged model writes this as `add(addSd) + prop(propSd) + combined2()`.
+
+# Simulation set-up
+
+Doses are prescribed in mg/m^2 but the model takes mg. Pan 2019 does not give
+the body-surface area used for its simulations; this vignette uses 1.33 m^2,
+for which 750 mg/m^2 equals the cohort's median per-infusion dose of 1000 mg
+(Table 1). The four regimens are those of Pan 2019 Figure 4 and Table 3.
+
+```{r setup-sim}
+mod <- readModelDb("Pan_2019_rituximab")
+bsa <- 1.33
+regimens <- tibble::tribble(
+  ~regimen,                   ~dose_mg_m2,
+  "750 mg/m2: 2 infusions",   750,
+  "375 mg/m2: 4 infusions",   375,
+  "750 mg/m2: 1 infusion",    750,
+  "375 mg/m2: 1 infusion",    375
+)
+dose_days <- list(
+  "750 mg/m2: 2 infusions" = c(0, 14),
+  "375 mg/m2: 4 infusions" = c(0, 7, 14, 21),
+  "750 mg/m2: 1 infusion" = 0,
+  "375 mg/m2: 1 infusion" = 0
+)
+
+make_events <- function(reg, ids, obs_times) {
+  row <- regimens[regimens$regimen == reg, ]
+  doses <- expand.grid(id = ids, time = dose_days[[reg]]) |>
+    mutate(amt = row$dose_mg_m2 * bsa, evid = 1L, cmt = "depot_kpd")
+  obs <- expand.grid(id = ids, time = obs_times) |>
+    mutate(amt = 0, evid = 0L, cmt = "bcell")
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid)) |>
+    mutate(regimen = reg, CONMED_MTX = 0L, CONMED_CYCLOPHOSPHAMIDE = 0L)
+}
+```
+
+# Typical-value profiles (Figure 4, right panel)
+
+```{r typical}
+typ <- bind_rows(lapply(regimens$regimen, function(reg) {
+  ev <- make_events(reg, 1L, seq(0, 364, by = 0.5))
+  s <- rxode2::rxSolve(rxode2::zeroRe(mod), ev, returnType = "data.frame")
+  s$regimen <- reg
+  s
+}))
+typ$regimen <- factor(typ$regimen, levels = regimens$regimen)
+
+ggplot(typ, aes(time / 7, bcell, colour = regimen)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  scale_colour_manual(values = c("purple", "darkgreen", "blue", "red")) +
+  labs(
+    x = "Time (weeks)", y = "CD19+ lymphocyte count (10^6/L)", colour = NULL,
+    caption = "Replicates Figure 4 (right panel) of Pan 2019: typical patient, no comedication."
+  ) +
+  theme_bw()
+```
+
+The four curves fall to the same nadir and separate during recovery, lower
+doses recovering first, as in the published panel. The digitised values below
+were read from that panel by the maintainers (log axis calibrated on its 10
+and 100 gridlines; the green curve overlaps the others before week 40).
+
+```{r fig4-compare}
+fig4 <- tibble::tribble(
+  ~regimen,                  ~week, ~published,
+  "750 mg/m2: 2 infusions",  20,    7.8,
+  "750 mg/m2: 2 infusions",  30,    12.3,
+  "750 mg/m2: 2 infusions",  40,    47.1,
+  "750 mg/m2: 2 infusions",  50,    139.6,
+  "375 mg/m2: 4 infusions",  40,    37.9,
+  "375 mg/m2: 4 infusions",  50,    125.7,
+  "750 mg/m2: 1 infusion",   20,    8.4,
+  "750 mg/m2: 1 infusion",   30,    19.5,
+  "750 mg/m2: 1 infusion",   40,    78.2,
+  "750 mg/m2: 1 infusion",   50,    174,
+  "375 mg/m2: 1 infusion",   20,    9.5,
+  "375 mg/m2: 1 infusion",   30,    29.1,
+  "375 mg/m2: 1 infusion",   40,    104.8,
+  "375 mg/m2: 1 infusion",   50,    194
+)
+fig4_cmp <- fig4 |>
+  left_join(
+    typ |> filter(time %in% (7 * c(20, 30, 40, 50))) |>
+      transmute(regimen = as.character(regimen), week = time / 7, simulated = bcell),
+    by = c("regimen", "week")
+  ) |>
+  mutate(pct_diff = 100 * (simulated - published) / published)
+stopifnot(nrow(fig4_cmp) == nrow(fig4), !anyNA(fig4_cmp$simulated))
+fig4_cmp |>
+  mutate(simulated = signif(simulated, 3), pct_diff = round(pct_diff, 1)) |>
+  rename(
+    Regimen = regimen, Week = week, "Figure 4 (digitised)" = published,
+    Simulated = simulated, "% difference" = pct_diff
+  ) |>
+  knitr::kable()
+```
+
+```{r fig4-assert}
+# Deterministic typical-value solve against values digitised from a 2-pixel
+# line on a log axis (1 pixel is ~1% of the value). The BSA used by the authors
+# is unknown and shifts the recovery limb of each curve, so the bound allows
+# for that; a wrong kel, kout or Emax moves the week-40 values by far more.
+stopifnot(
+  median(abs(fig4_cmp$pct_diff)) < 15,
+  max(abs(fig4_cmp$pct_diff)) < 35
+)
+```
+
+The simulated curves sit 2-16% below the digitised ones on the recovery limb,
+that is, the published curves recover slightly sooner. The BSA is the obvious
+unreported input: the same comparison with 1.0 m^2 in place of 1.33 m^2 gives
+a median absolute difference of 0.5% (largest 15.6%), while simulating with
+the rounded Table 2 `kout` of 0.02 per day instead of the fitted 0.0160 gives
+4.2% (largest 14.6%). Either could explain the gap, so neither the BSA
+assumption nor any parameter is changed to close it.
+
+## Deterministic checks
+
+* While the drug effect is saturated the count settles at
+  `rbase / (1 + Emax)` = 266.449 / 36.1538 = 7.37 x 10^6/L, the flat
+  nadir of every curve in Figure 4.
+* Doubling a single dose keeps the virtual dose above any level for an extra
+  `log(2) / kel` = 19.3 days, so the 750 mg/m^2 single-infusion curve should
+  recover to 100 x 10^6/L about 19.3 days after the 375 mg/m^2 curve.
+* Without rituximab the count stays at its baseline.
+
+```{r deterministic}
+nadir <- typ |> group_by(regimen) |> summarise(nadir = min(bcell))
+nadir_expected <- 266.449 / (1 + 35.1538)
+stopifnot(all(abs(nadir$nadir / nadir_expected - 1) < 0.01))
+
+t_recover <- function(reg, level = 100) {
+  d <- typ[typ$regimen == reg & typ$time > 28, ]
+  d$time[which(d$bcell >= level)[1]]
+}
+shift_days <- t_recover("750 mg/m2: 1 infusion") - t_recover("375 mg/m2: 1 infusion")
+stopifnot(abs(shift_days - log(2) / 0.0359064) < 1.5)
+
+nodose <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  rxode2::et(seq(0, 365, by = 5), cmt = "bcell"),
+  params = c(CONMED_MTX = 0, CONMED_CYCLOPHOSPHAMIDE = 0),
+  returnType = "data.frame"
+)
+stopifnot(max(abs(nodose$bcell - 266.449)) < 1e-6 * 266.449)
+
+data.frame(
+  check = c("Nadir (10^6/L)", "Recovery shift 750 vs 375 mg/m2 single (days)"),
+  expected = c(nadir_expected, log(2) / 0.0359064),
+  simulated = c(mean(nadir$nadir), shift_days)
+) |>
+  mutate(across(c(expected, simulated), \(x) signif(x, 4))) |>
+  rename(Check = check, Expected = expected, Simulated = simulated) |>
+  knitr::kable()
+```
+
+Pan 2019 also reports 6.2% and 3.3% of baseline remaining after 6 months for
+the single and the four-infusion 375 mg/m^2 regimens:
+
+```{r six-month}
+typ |>
+  filter(time == 182, regimen %in% c("375 mg/m2: 1 infusion", "375 mg/m2: 4 infusions")) |>
+  transmute(
+    Regimen = regimen,
+    "Simulated % of baseline at 26 weeks" = round(100 * bcell / 266.449, 1),
+    "Pan 2019 Results" = c(3.3, 6.2)[match(regimen, c("375 mg/m2: 4 infusions", "375 mg/m2: 1 infusion"))]
+  ) |>
+  knitr::kable()
+```
+
+The four-infusion value matches. The single-infusion value is on the steep
+recovery limb, where it depends on the dose in mg and therefore on the BSA
+assumed above.
+
+# Virtual dose: PKNCA
+
+There is no measured rituximab exposure in Pan 2019, but the K-PD virtual
+dose has a half-life that the paper reports (19 days, Results; median 19.3,
+Discussion). PKNCA is run on the typical-value virtual-dose amount after a
+single 750 mg/m^2 infusion.
+
+```{r pknca}
+vd <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  make_events("750 mg/m2: 1 infusion", 1L, c(0, 0.25, 0.5, 1, 2, seq(7, 182, by = 7))),
+  returnType = "data.frame"
+) |>
+  mutate(id = 1L, treatment = "750 mg/m2 single infusion") |>
+  filter(!is.na(depot_kpd))
+dose_df <- data.frame(id = 1L, time = 0, amt = 750 * bsa, treatment = "750 mg/m2 single infusion")
+conc_obj <- PKNCA::PKNCAconc(vd, depot_kpd ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = data.frame(treatment = "750 mg/m2 single infusion", half.life = 19.3),
+  by = "treatment",
+  units = c(half.life = "day"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Virtual-dose half-life against the Pan 2019 value.")
+hl <- as.data.frame(nca_res) |> filter(PPTESTCD == "half.life") |> pull(PPORRES)
+stopifnot(length(hl) == 1L, abs(hl / 19.3 - 1) < 0.02)
+```
+
+# Suppression time (Table 3)
+
+Pan 2019 Table 3 gives the median (95% prediction interval) time spent below
+10 and below 100 x 10^6/L "for patients starting with normal CD19+ counts"
+(above 200 x 10^6/L). Every lower 95% bound in Table 3 is above zero, so in
+the published simulation every patient went below 10 x 10^6/L. With the
+baseline drawn from its full between-subject distribution that is impossible:
+a patient without comedication bottoms out at `baseline / 36.2`, which stays
+above 10 x 10^6/L for any baseline above 362 x 10^6/L, about 60% of patients
+whose baseline exceeds 200. The simulation below therefore holds the baseline
+at its typical value, 266.4 x 10^6/L, and draws between-subject variability
+on `kel` and `kout` only, without comedication. Time below a level is counted
+from the first to the last day spent below it, over 5 years.
+
+```{r table3-sim}
+mod_t3 <- rxode2::ini(mod, etalrbase = 0)
+n_sub <- 200
+cohort <- bind_rows(lapply(regimens$regimen, function(reg) {
+  ev <- make_events(reg, seq_len(n_sub), seq(0, 7 * 260, by = 1))
+  rxode2::rxSetSeed(2019)
+  s <- rxode2::rxSolve(mod_t3, ev, returnType = "data.frame")
+  s$regimen <- reg
+  s
+}))
+
+time_below <- function(time, value, level) {
+  below <- time[value < level]
+  if (length(below) == 0) 0 else (max(below) - min(below)) / 7
+}
+durations <- cohort |>
+  group_by(regimen, id) |>
+  summarise(
+    below10 = time_below(time, bcell, 10),
+    below100 = time_below(time, bcell, 100),
+    .groups = "drop"
+  )
+stopifnot(nrow(durations) == 4 * n_sub)
+
+pi_fmt <- function(x) {
+  sprintf("%.1f (%.1f-%.1f)", median(x), quantile(x, 0.025), quantile(x, 0.975))
+}
+table3 <- tibble::tribble(
+  ~regimen,                  ~pub10_med, ~pub10,               ~pub100_med, ~pub100,
+  "750 mg/m2: 2 infusions",  26.0,       "26.0 (6.4-94.0)",    42.7,        "42.7 (11.3-182.5)",
+  "375 mg/m2: 4 infusions",  27.2,       "27.2 (7.6-95.2)",    44.1,        "44.1 (12.9-183.7)",
+  "750 mg/m2: 1 infusion",   21.4,       "21.4 (4.3-82.5)",    38.6,        "38.6 (9.1-167.8)",
+  "375 mg/m2: 1 infusion",   18.0,       "18.0 (3.7-71.6)",    35.7,        "35.7 (8.2-154.2)"
+)
+t3 <- durations |>
+  group_by(regimen) |>
+  summarise(
+    sim10_med = median(below10), sim10 = pi_fmt(below10),
+    sim100_med = median(below100), sim100 = pi_fmt(below100)
+  ) |>
+  right_join(table3, by = "regimen") |>
+  mutate(regimen = factor(regimen, levels = regimens$regimen)) |>
+  arrange(regimen)
+stopifnot(nrow(t3) == 4, !anyNA(t3$sim10_med))
+
+t3 |>
+  select(regimen, pub10, sim10, pub100, sim100) |>
+  rename(
+    Regimen = regimen,
+    "Below 10: Pan 2019 (weeks)" = pub10, "Below 10: simulated" = sim10,
+    "Below 100: Pan 2019 (weeks)" = pub100, "Below 100: simulated" = sim100
+  ) |>
+  knitr::kable()
+```
+
+```{r table3-assert}
+pct <- with(t3, c(
+  100 * (sim10_med - pub10_med) / pub10_med,
+  100 * (sim100_med - pub100_med) / pub100_med
+))
+# Across rxSetSeed() values 11, 222, 3333, 44 and 2019 the median of the eight
+# differences was 1.8-14.6% and the largest 11-18.8%.
+stopifnot(
+  # Centre: halving kel or kout moves these medians by 40% or more.
+  abs(median(pct)) < 30,
+  # Envelope over the eight medians of a 200-subject cohort.
+  max(abs(pct)) < 45
+)
+round(pct, 1)
+```
+
+The simulated medians run about 5-20% longer than Table 3, the lower 2.5%
+bounds agree closely, and the simulated upper bounds are longer. The ordering
+of the regimens and the spacing between them, about `log(2) / kel` = 2.8
+weeks per doubling of a single dose, match Table 3. The remaining gap is
+in the same direction as the Figure 4 comparison (published recovery slightly
+sooner) and is consistent with an unreported detail of the published
+simulation (the BSA, the baseline value or distribution, or the simulation
+horizon); it is not tuned away.
+
+# Assumptions and deviations
+
+* **Parameter precision.** Values are the final estimates in the NONMEM file
+  of the supplementary material, which round to Table 2. The largest rounding
+  is `kout`: 0.0160 per day, printed 0.02 in Table 2. The 35-day B-cell
+  half-life in the Results and Discussion is `log(2) / 0.02`; the as-fitted
+  value gives `log(2) / 0.0160` = 43.3 days.
+* **Residual error.** The NONMEM error model has a fixed additive variance of
+  0.0001 (an additive SD of 0.01 x 10^6/L) besides the estimated proportional
+  term; it is kept as `addSd = fixed(0.01)`. The zero counts were replaced by
+  5 x 10^6/L before fitting (M6 method); the model does not encode a limit of
+  quantification.
+* **Comedication coding.** `CONMED_MTX` and `CONMED_CYCLOPHOSPHAMIDE` are the
+  `MTX` and `CTX` columns of the NONMEM data. The paper does not say whether
+  they were time-varying or fixed per patient.
+* **Body-surface area.** Not reported for the simulations; 1.33 m^2 is used
+  here so that 750 mg/m^2 equals the cohort's median dose of 1000 mg. The
+  per-infusion cap of 1000 mg seen in Table 1 is not applied.
+* **Table 3 cohort.** Simulated with the baseline held at its typical value,
+  between-subject variability on `kel` and `kout` only, and no comedication,
+  for the reason given above.
+* **Covariates screened but not retained** (age and sex on `kin`; azathioprine
+  and mycophenolate on Emax and ED50) are listed in the model's
+  `covariatesDataExcluded`.
+* **Errata.** A EuropePMC search on 2026-11-25 found no correction to
+  Pan 2019.

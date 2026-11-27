@@ -61,6 +61,7 @@ Minucci_2024_CART_qsp <- function() {
     dosing = "cells (CAR T-cells; input as amt on t_cd8_inf and t_cd4_inf compartments)",
     concentration = "cells/uL (CAR T-cell density in blood; matches Ying et al. 2021 Figure 2A units)"
   )
+  dosing <- c("t_cd8_inf", "t_cd4_inf")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

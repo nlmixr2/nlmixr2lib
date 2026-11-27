@@ -1,0 +1,663 @@
+---
+title: "Multi-compartmental CNS distribution of nine drugs in rat and human (Yamamoto 2017b)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Multi-compartmental CNS distribution of nine drugs in rat and human (Yamamoto 2017b)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Yamamoto Y, Valitalo PA, van den Berg DJ, *et al.* A Generic
+  Multi-Compartmental CNS Distribution Model Structure for 9 Drugs Allows
+  Prediction of Human Brain Target Site Concentrations. *Pharm Res*
+  2017;34(2):333-351.
+* Article: <https://doi.org/10.1007/s11095-016-2065-3> (open access,
+  CC BY 4.0; PubMed Central PMC5236087)
+
+The paper fits one common brain-distribution structure, separately, to rich
+rat plasma and microdialysis data for nine drugs, and then translates the
+acetaminophen and morphine fits to humans. Each of those eleven fits is a
+separate model in nlmixr2lib:
+
+```{r models}
+rat_models <- c(
+  acetaminophen = "Yamamoto_2017b_acetaminophen_rat",
+  atenolol      = "Yamamoto_2017b_atenolol_rat",
+  methotrexate  = "Yamamoto_2017b_methotrexate_rat",
+  morphine      = "Yamamoto_2017b_morphine_rat",
+  paliperidone  = "Yamamoto_2017b_paliperidone_rat",
+  phenytoin     = "Yamamoto_2017b_phenytoin_rat",
+  quinidine     = "Yamamoto_2017b_quinidine_rat",
+  remoxipride   = "Yamamoto_2017b_remoxipride_rat",
+  risperidone   = "Yamamoto_2017b_risperidone_rat"
+)
+human_models <- c(
+  acetaminophen = "Yamamoto_2017b_acetaminophen_human",
+  morphine      = "Yamamoto_2017b_morphine_human"
+)
+rat_ui <- lapply(rat_models, function(n) rxode2::rxode(readModelDb(n)))
+human_ui <- lapply(human_models, function(n) rxode2::rxode(readModelDb(n)))
+```
+
+The same authors published a different, fully physiologically based CNS
+model for the same rat data later in 2017 (Yamamoto *et al.*, *CPT
+Pharmacometrics Syst Pharmacol* 6:765-777); it is packaged separately as the
+`Yamamoto_2017_<drug>_rat_pbpk` models.
+
+## Model structure
+
+All eleven models share the structure of the paper's Figure 2:
+
+* an empirical plasma model -- one compartment (paliperidone, risperidone),
+  two compartments (acetaminophen, atenolol, phenytoin, quinidine,
+  remoxipride, and both human models) or three compartments (methotrexate,
+  morphine) -- with linear clearance;
+* a brain extracellular-fluid compartment (`brain_ecf`) that receives drug
+  from plasma through a one-way clearance `clin` (the paper's Q_PL_ECF);
+* four cerebrospinal-fluid compartments in series -- lateral ventricle
+  (`brain_csf_lv`), third + fourth ventricle (`brain_csf_tfv`), cisterna
+  magna (`brain_csf_cm`) and subarachnoid space (`brain_csf_sas`). One drug
+  dispersion flow `q_diff` (Q_DIFF) carries drug from brain ECF through the
+  four CSF compartments and back to plasma;
+* drug-specific additions where the data supported them: a brain
+  intracellular-fluid compartment exchanging with brain ECF (paliperidone,
+  quinidine), a one-way efflux from lateral-ventricle CSF to plasma across the
+  blood-CSF barrier (methotrexate), enterohepatic recirculation
+  (acetaminophen), a categorical dose effect on Q_PL_ECF (morphine), and
+  transporter-inhibitor effects on Q_PL_ECF (and, for methotrexate, on the
+  CSF efflux) of the form `P = P_PAT * (1 + theta * Cov)` (Eq. 3);
+* brain volumes fixed to rat (Table III) or human (Table IV) physiology.
+
+Every concentration is unbound: plasma data were converted with the measured
+unbound fraction, and microdialysate was corrected for in-vivo probe
+recovery. The rat fits used naive pooling, so the rat models carry no
+between-animal variability. In the human models the brain-side drug
+parameters are the rat estimates scaled allometrically to 70 kg (Eq. 9), so
+their brain concentrations are predictions; only the plasma parameters were
+estimated from human data.
+
+# Population
+
+**Rat (model development, Table I).** Male Wistar rats, 225-275 g, Leiden
+University. Data for six drugs were previously published (acetaminophen,
+atenolol, methotrexate, morphine from two studies, quinidine, remoxipride);
+data for paliperidone, phenytoin and risperidone were newly produced. Each
+drug was given as a short intravenous infusion and sampled in plasma and by
+microdialysis in brain ECF, and for some drugs in lateral-ventricle and/or
+cisterna-magna CSF, for up to 300-480 min. Six drugs were also studied with a
+transporter inhibitor: probenecid (MRPs, OATs, OATPs) for methotrexate and
+phenytoin, and the P-gp inhibitors GF120918 (elacridar) for morphine and
+tariquidar for paliperidone, phenytoin, quinidine and risperidone.
+
+**Human (translation, Table II and Tables SIII-SIV).** Acetaminophen:
+Study 1, 7 neurointensive-care patients with an external ventricular drain
+(EVD) given 1 g over 30 min, with plasma and EVD-collected CSF; Study 2, a
+published mean profile of plasma and subarachnoid CSF in patients with
+nerve-root compression pain after 2 g propacetamol. Morphine: two published
+studies (3 patients) with traumatic brain injury given 10 mg over 10 min,
+with plasma and brain-ECF microdialysis from the "normal" and the "injured"
+side of the brain.
+
+```{r population}
+pop <- do.call(rbind, lapply(c(rat_ui, human_ui), function(u) {
+  data.frame(
+    species = u$population$species,
+    n_subjects = u$population$n_subjects,
+    dose_range = u$population$dose_range
+  )
+}))
+pop$model <- c(rat_models, human_models)
+knitr::kable(pop[, c("model", "species", "n_subjects", "dose_range")], row.names = FALSE)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The table
+below collects the rat estimates (Table III) as packaged.
+
+```{r source-trace-rat}
+theta_of <- function(ui, nm) {
+  v <- ui$iniDf$est[match(nm, ui$iniDf$name)]
+  if (is.na(v)) NA_real_ else v
+}
+rat_tab <- do.call(rbind, lapply(names(rat_ui), function(d) {
+  u <- rat_ui[[d]]
+  data.frame(
+    drug = d,
+    CL_PL = exp(theta_of(u, "lcl")),
+    V_PL = exp(theta_of(u, "lvc")),
+    Q_PL_PER1 = exp(theta_of(u, "lq")),
+    V_PER1 = exp(theta_of(u, "lvp")),
+    Q_PL_PER2 = exp(theta_of(u, "lq2")),
+    V_PER2 = exp(theta_of(u, "lvp2")),
+    Q_PL_ECF = exp(theta_of(u, "lclin")),
+    Q_DIFF = exp(theta_of(u, "lq_diff")),
+    Q_ECF_ICF = exp(theta_of(u, "lq_brain_ecf_brain_icf")),
+    Q_LV_PL = exp(theta_of(u, "lcl_csf"))
+  )
+}))
+knitr::kable(rat_tab, digits = 5, row.names = FALSE,
+             caption = "Rat structural estimates as packaged (Table III; mL/min and mL). NA = not part of that drug's model.")
+```
+
+| Quantity | Source location |
+|----------|-----------------|
+| Model structure (compartments, flow directions) | Figure 2; Table III footnotes ("clearance from the central compartment to brainECF", "clearance from CSFLV to the central compartment", "inter-compartmental clearance between brainECF and brainICF") |
+| Rat plasma, brain and residual-error estimates | Table III, one column per drug |
+| Morphine Q_PL_ECF at 4 mg/kg (0.00750 mL/min) vs 10/40 mg/kg (0.00458 mL/min) | Table III footnotes c and d; Results (categorical dose effect) |
+| Transporter-inhibitor effects | Table III "Impact of active transport on" rows; Eq. 3 |
+| Acetaminophen enterohepatic fraction (93.3 %) | Table III "fraction" |
+| Rat brain volumes (V_ECF 0.29, V_ICF 1.44, V_LV 0.05, V_TFV 0.05, V_CM 0.017, V_SAS 0.18 mL) | Table III, footnote e |
+| Human plasma estimates, between-subject SDs, residual SD | Table IV |
+| Human Q_PL_ECF and Q_DIFF | Table IV (allometric scaling, Eq. 9 with 70 kg and 0.25 kg) |
+| Human brain volumes (V_ECF 240, V_LV 22.5, V_TFV 22.5, V_CM 7.5, V_SAS 90 mL) | Table IV, footnote a |
+| EVD drainage flow Q_LV_EVD | Methods "Adding Clinical Sampling Procedure Related Fixed Parameters"; Table SIV |
+| Between-subject variability model (exponential) | Eq. 6 |
+| Residual error model (proportional) | Eq. 7 |
+
+The human translation can be checked directly: Table IV's drug-specific
+brain parameters should equal the rat estimates times
+(70 / 0.25)^0.75 = `r signif((70 / 0.25)^0.75, 4)`.
+
+```{r allometric-check}
+scale_f <- (70 / 0.25)^0.75
+allo <- data.frame(
+  parameter = c("acetaminophen Q_PL_ECF", "acetaminophen Q_DIFF",
+                "morphine Q_PL_ECF (4 mg/kg rat value)", "morphine Q_DIFF"),
+  rat = c(exp(theta_of(rat_ui$acetaminophen, "lclin")),
+          exp(theta_of(rat_ui$acetaminophen, "lq_diff")),
+          exp(theta_of(rat_ui$morphine, "lclin") + theta_of(rat_ui$morphine, "e_dose_low_clin")),
+          exp(theta_of(rat_ui$morphine, "lq_diff"))),
+  human_table_iv = c(exp(theta_of(human_ui$acetaminophen, "lclin")),
+                     exp(theta_of(human_ui$acetaminophen, "lq_diff")),
+                     exp(theta_of(human_ui$morphine, "lclin")),
+                     exp(theta_of(human_ui$morphine, "lq_diff")))
+)
+allo$rat_scaled <- allo$rat * scale_f
+allo$ratio <- allo$human_table_iv / allo$rat_scaled
+knitr::kable(allo, digits = 4, row.names = FALSE)
+# Table IV prints three significant figures, so the ratio must be 1 within
+# rounding. A wrong rat value or a wrong exponent moves it by far more.
+stopifnot(all(abs(allo$ratio - 1) < 0.01))
+```
+
+The morphine human Q_PL_ECF (0.513 mL/min) matches the scaled **4 mg/kg**
+rat value; the 10/40 mg/kg value would scale to
+`r signif(0.00458 * scale_f, 3)` mL/min.
+
+# Virtual cohort and simulation helpers
+
+The rat models describe a typical (naive-pooled) animal, so the rat
+simulations are single typical-value profiles at the body weight the paper
+uses for scaling, 0.25 kg (Eq. 9). All doses are converted to ng per animal.
+
+```{r helpers}
+cov_defaults <- list(DOSE_LOW = 0L, CONMED_PROBENECID = 0L, CONMED_ELACRIDAR = 0L,
+                     CONMED_TARIQUIDAR = 0L, CSF_DRAIN_VOL_24H = 0)
+
+# One subject's event table: a zero-order infusion into `central` plus
+# observation rows on the `central` state; every algebraic output (Cc,
+# Cbrain_ecf, ...) is returned at those rows.
+make_events <- function(id, dose_ng, dur, obs_times, covs = list()) {
+  covs <- utils::modifyList(cov_defaults, covs)
+  d <- dplyr::bind_rows(
+    tibble::tibble(id = id, time = 0, amt = dose_ng, rate = dose_ng / dur,
+                   evid = 1L, cmt = "central", dvid = NA_integer_),
+    tibble::tibble(id = id, time = obs_times, amt = NA_real_, rate = NA_real_,
+                   evid = 0L, cmt = "central", dvid = 1L)
+  )
+  for (n in names(covs)) d[[n]] <- covs[[n]]
+  d
+}
+
+out_cols <- c("time", "Cc", "Cbrain_ecf", "Cbrain_icf", "Cbrain_csf_lv",
+              "Cbrain_csf_tfv", "Cbrain_csf_cm", "Cbrain_csf_sas")
+
+# Typical-value solve. The rat models have no random effects; the human
+# models do, and without zeroRe() a one-subject solve would draw a random
+# patient rather than the typical one.
+solve_typical <- function(model_name, events) {
+  m <- readModelDb(model_name)
+  if (any(!is.na(rxode2::rxode(m)$iniDf$neta1))) m <- rxode2::zeroRe(m)
+  s <- as.data.frame(rxode2::rxSolve(m, events,
+                                     useLinCmt = FALSE, returnType = "data.frame"))
+  if (is.null(s$id)) s$id <- events$id[1]
+  s[, intersect(c("id", out_cols), names(s))]
+}
+
+rat_design <- tibble::tribble(
+  ~drug,           ~dose_mgkg, ~dur, ~inhibitor,
+  "acetaminophen", 16,         10,   NA,
+  "atenolol",      10,         1,    NA,
+  "methotrexate",  40,         10,   "CONMED_PROBENECID",
+  "morphine",      10,         10,   "CONMED_ELACRIDAR",
+  "paliperidone",  0.5,        20,   "CONMED_TARIQUIDAR",
+  "phenytoin",     30,         10,   "CONMED_TARIQUIDAR",
+  "quinidine",     10,         10,   "CONMED_TARIQUIDAR",
+  "remoxipride",   8,          30,   NA,
+  "risperidone",   2,          20,   "CONMED_TARIQUIDAR"
+)
+rat_bw_kg <- 0.25
+obs_rat <- sort(unique(c(seq(0, 30, by = 1), seq(32, 480, by = 4))))
+```
+
+# Rat: replicate Figure 4a
+
+Figure 4a of the paper shows the observed acetaminophen (16 mg/kg) and
+morphine profiles with the mean model prediction. The acetaminophen profile
+carries the enterohepatic return as a plateau after 120 min.
+
+```{r fig4a}
+sim_apap <- solve_typical(rat_models[["acetaminophen"]],
+                          make_events(1L, 16 * rat_bw_kg * 1e6, 10, obs_rat))
+sim_mor <- solve_typical(rat_models[["morphine"]],
+                         make_events(1L, 10 * rat_bw_kg * 1e6, 10, obs_rat))
+fig4a <- dplyr::bind_rows(
+  sim_apap |> dplyr::mutate(drug = "Acetaminophen 16 mg/kg") |>
+    dplyr::select(drug, time, Plasma = Cc, BrainECF = Cbrain_ecf,
+                  CSF_LV = Cbrain_csf_lv, CSF_CM = Cbrain_csf_cm),
+  sim_mor |> dplyr::mutate(drug = "Morphine 10 mg/kg") |>
+    dplyr::select(drug, time, Plasma = Cc, BrainECF = Cbrain_ecf)
+) |>
+  tidyr::pivot_longer(c(Plasma, BrainECF, CSF_LV, CSF_CM),
+                      names_to = "site", values_to = "conc") |>
+  dplyr::filter(!is.na(conc), time > 0, time <= 250) |>
+  dplyr::mutate(site = factor(site, c("Plasma", "BrainECF", "CSF_LV", "CSF_CM")))
+ggplot(fig4a, aes(time, conc)) +
+  geom_line(colour = "red") +
+  facet_grid(drug ~ site) +
+  scale_y_log10() +
+  labs(x = "Time (min)", y = "Unbound concentration (ng/mL)",
+       caption = "Replicates the mean predictions of Figure 4a of Yamamoto 2017b (typical rat, 0.25 kg).")
+```
+
+```{r fig4a-check}
+at <- function(s, tt, col) s[[col]][match(tt, s$time)]
+# Read off Figure 4a: acetaminophen plasma peaks near 1e4 ng/mL and then
+# plateaus near 100 ng/mL from 120 to 240 min; morphine plasma peaks near
+# 5e3 ng/mL and brain ECF falls to about 20 ng/mL by 240 min. Typical-value
+# solves are deterministic, so these bounds test the transcription (a wrong
+# volume or a dropped recirculation would move a value by far more than 2-fold).
+stopifnot(
+  max(sim_apap$Cc) > 5000, max(sim_apap$Cc) < 20000,
+  at(sim_apap, 240, "Cc") > 30, at(sim_apap, 240, "Cc") < 300,
+  at(sim_apap, 240, "Cc") / at(sim_apap, 116, "Cc") > 0.5,
+  max(sim_mor$Cc) > 2000, max(sim_mor$Cc) < 10000,
+  at(sim_mor, 240, "Cbrain_ecf") > 5, at(sim_mor, 240, "Cbrain_ecf") < 60
+)
+```
+
+# Rat: all nine drugs, with and without transporter inhibition
+
+Representative dose of each study (Table I), typical animal, with and
+without the inhibitor where one was studied (paper Figure S1).
+
+```{r rat-all}
+rat_runs <- list()
+for (i in seq_len(nrow(rat_design))) {
+  r <- rat_design[i, ]
+  arms <- if (is.na(r$inhibitor)) "none" else c("none", r$inhibitor)
+  for (a in arms) {
+    covs <- if (a == "none") list() else stats::setNames(list(1L), a)
+    s <- solve_typical(rat_models[[r$drug]],
+                       make_events(1L, r$dose_mgkg * rat_bw_kg * 1e6, r$dur, obs_rat, covs))
+    s$drug <- r$drug
+    s$arm <- if (a == "none") "no inhibitor" else "with inhibitor"
+    rat_runs[[length(rat_runs) + 1]] <- s
+  }
+}
+rat_all <- dplyr::bind_rows(rat_runs)
+rat_all |>
+  dplyr::select(drug, arm, time, Plasma = Cc, BrainECF = Cbrain_ecf) |>
+  tidyr::pivot_longer(c(Plasma, BrainECF), names_to = "site", values_to = "conc") |>
+  dplyr::filter(time > 0) |>
+  ggplot(aes(time, conc, colour = site, linetype = arm)) +
+  geom_line() +
+  facet_wrap(~drug, scales = "free_y", ncol = 3) +
+  scale_y_log10() +
+  labs(x = "Time (min)", y = "Unbound concentration (ng/mL)", colour = NULL, linetype = NULL,
+       caption = "Typical rat profiles for the nine drugs (cf. Figure S1 of Yamamoto 2017b).")
+```
+
+## Steady-state check of the brain structure
+
+Because drug enters brain ECF only through `clin` and leaves only through
+`q_diff`, the unbound brain-ECF-to-plasma ratio at steady state is exactly
+`clin / q_diff`, and the CSF compartments in series all share the ECF
+concentration -- except for methotrexate, whose lateral-ventricle efflux
+lowers every CSF compartment by `q_diff / (q_diff + cl_csf)`. A long constant
+infusion checks the ODEs against these closed forms.
+
+```{r steady-state}
+ss_rows <- list()
+for (i in seq_len(nrow(rat_design))) {
+  r <- rat_design[i, ]
+  arms <- if (is.na(r$inhibitor)) "none" else c("none", r$inhibitor)
+  u <- rat_ui[[r$drug]]
+  for (a in arms) {
+    covs <- if (a == "none") list() else stats::setNames(list(1L), a)
+    ev <- make_events(1L, 1e5 * 6000, 6000, c(5990, 6000), covs)
+    s <- solve_typical(rat_models[[r$drug]], ev)
+    s <- s[s$time == 5990, ]
+    clin <- exp(theta_of(u, "lclin"))
+    eff <- if (a == "none") 0 else theta_of(u, paste0("e_", tolower(a), "_clin"))
+    clin <- clin * (1 + eff)
+    qd <- exp(theta_of(u, "lq_diff"))
+    clcsf <- exp(theta_of(u, "lcl_csf"))
+    if (is.na(clcsf)) clcsf <- 0
+    if (a != "none" && r$drug == "methotrexate") {
+      clcsf <- clcsf * (1 + theta_of(u, "e_conmed_probenecid_cl_csf"))
+    }
+    ss_rows[[length(ss_rows) + 1]] <- data.frame(
+      drug = r$drug,
+      arm = if (a == "none") "no inhibitor" else a,
+      kpuu_sim = s$Cbrain_ecf / s$Cc,
+      kpuu_closed = clin / qd,
+      sas_over_ecf_sim = s$Cbrain_csf_sas / s$Cbrain_ecf,
+      sas_over_ecf_closed = qd / (qd + clcsf)
+    )
+  }
+}
+ss <- dplyr::bind_rows(ss_rows)
+knitr::kable(ss, digits = 4, row.names = FALSE,
+             caption = "Unbound brain-ECF/plasma ratio (Kp,uu) and subarachnoid-CSF/ECF ratio at steady state.")
+# Both sides use the same parameter values, so the difference is pure ODE
+# solver error after a 100-hour infusion.
+stopifnot(
+  all(abs(ss$kpuu_sim / ss$kpuu_closed - 1) < 1e-3),
+  all(abs(ss$sas_over_ecf_sim / ss$sas_over_ecf_closed - 1) < 1e-3)
+)
+```
+
+The P-gp inhibitors raise Kp,uu by 162 % (morphine), 43.4 % (paliperidone),
+35.5 % (phenytoin), 443 % (quinidine) and 124 % (risperidone), and
+probenecid raises methotrexate's by 409 %, the percentages quoted in the
+paper's Results.
+
+# Rat: PKNCA validation
+
+The same mass balance holds over a single dose: everything that enters
+brain ECF leaves it through `q_diff`, so AUC(brain ECF) / AUC(plasma) =
+`clin / q_diff`. PKNCA computes both AUCs from the typical profiles (no
+inhibitor); the published paper reports no NCA values, so this closed form
+is the reference.
+
+```{r pknca-rat}
+obs_nca <- sort(unique(c(seq(0, 60, by = 1), seq(62, 600, by = 4), seq(610, 4320, by = 30))))
+nca_runs <- list()
+for (i in seq_len(nrow(rat_design))) {
+  r <- rat_design[i, ]
+  s <- solve_typical(rat_models[[r$drug]],
+                     make_events(i, r$dose_mgkg * rat_bw_kg * 1e6, r$dur, obs_nca))
+  s$treatment <- r$drug
+  s$amt <- r$dose_mgkg * rat_bw_kg * 1e6
+  nca_runs[[i]] <- s
+}
+nca_in <- dplyr::bind_rows(nca_runs) |>
+  dplyr::select(id, treatment, time, Cc, Cbrain_ecf, amt)
+dose_df <- nca_in |> dplyr::distinct(id, treatment, amt) |> dplyr::mutate(time = 0)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+
+# Past the peak, values below 1e-6 * Cmax are solver noise around zero (some
+# negative, for quinidine's plasma tail) and would decide the terminal-slope fit.
+trim_tail <- function(d, conc) {
+  d |>
+    dplyr::filter(!is.na(.data[[conc]])) |>
+    dplyr::group_by(treatment, id) |>
+    dplyr::filter(time <= time[which.max(.data[[conc]])] | .data[[conc]] >= 1e-6 * max(.data[[conc]])) |>
+    dplyr::ungroup()
+}
+nca_plasma <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(trim_tail(nca_in, "Cc"), Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id),
+  intervals = intervals
+))
+nca_ecf <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(trim_tail(nca_in, "Cbrain_ecf"), Cbrain_ecf ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id),
+  intervals = intervals
+))
+auc_of <- function(res) {
+  as.data.frame(res) |>
+    dplyr::filter(PPTESTCD == "aucinf.obs") |>
+    dplyr::select(treatment, PPORRES)
+}
+auc_cmp <- dplyr::inner_join(
+  auc_of(nca_plasma) |> dplyr::rename(auc_plasma = PPORRES),
+  auc_of(nca_ecf) |> dplyr::rename(auc_ecf = PPORRES),
+  by = "treatment"
+) |>
+  dplyr::mutate(
+    ratio_pknca = auc_ecf / auc_plasma,
+    ratio_closed = vapply(treatment, function(d) {
+      exp(theta_of(rat_ui[[d]], "lclin")) / exp(theta_of(rat_ui[[d]], "lq_diff"))
+    }, numeric(1)),
+    pct_diff = 100 * (ratio_pknca / ratio_closed - 1)
+  )
+auc_cmp |>
+  dplyr::rename("Drug" = treatment, "AUCinf plasma (ng*min/mL)" = auc_plasma,
+                "AUCinf brain ECF (ng*min/mL)" = auc_ecf,
+                "AUC ratio (PKNCA)" = ratio_pknca,
+                "clin / q_diff" = ratio_closed, "% difference" = pct_diff) |>
+  knitr::kable(digits = 3, row.names = FALSE)
+# Both sides come from the same parameters; the residual is trapezoidal and
+# extrapolation error on a dense 72-hour grid.
+stopifnot(all(abs(auc_cmp$pct_diff) < 3))
+```
+
+```{r pknca-rat-table}
+as.data.frame(nca_plasma) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "half.life")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::rename("Drug" = treatment, "Cmax (ng/mL)" = cmax, "Tmax (min)" = tmax,
+                "Terminal t1/2 (min)" = half.life) |>
+  knitr::kable(digits = 1, row.names = FALSE,
+               caption = "Plasma NCA of the typical rat profiles at the representative doses.")
+```
+
+# Human: replicate Figure 6
+
+Figure 6 shows 95 % prediction intervals and medians of 200 simulations for
+the translated models. The same is done here: 200 virtual patients per drug
+with the Table IV between-subject variability, unbound concentrations.
+
+```{r human-vpc}
+rxode2::rxSetSeed(20170201)
+n_sub <- 200
+obs_apap <- sort(unique(c(seq(0, 60, by = 2), seq(65, 720, by = 10))))
+obs_mor <- sort(unique(c(seq(0, 30, by = 1), seq(32, 170, by = 4))))
+ev_apap <- dplyr::bind_rows(lapply(seq_len(n_sub), function(i) {
+  make_events(i, 1e9, 30, obs_apap)
+}))
+ev_mor <- dplyr::bind_rows(lapply(seq_len(n_sub), function(i) {
+  make_events(i, 1e7, 10, obs_mor)
+}))
+stopifnot(!anyDuplicated(unique(ev_apap[, c("id", "time", "evid")])))
+vpc_apap <- as.data.frame(rxode2::rxSolve(readModelDb(human_models[["acetaminophen"]]),
+                                          ev_apap, useLinCmt = FALSE))
+vpc_mor <- as.data.frame(rxode2::rxSolve(readModelDb(human_models[["morphine"]]),
+                                         ev_mor, useLinCmt = FALSE))
+vpc <- dplyr::bind_rows(
+  vpc_apap |> dplyr::select(time, Plasma = Cc, CSF_SAS = Cbrain_csf_sas, CSF_LV = Cbrain_csf_lv) |>
+    tidyr::pivot_longer(-time, names_to = "site", values_to = "conc") |>
+    dplyr::mutate(drug = "Acetaminophen 1 g / 30 min"),
+  vpc_mor |> dplyr::select(time, Plasma = Cc, BrainECF = Cbrain_ecf) |>
+    tidyr::pivot_longer(-time, names_to = "site", values_to = "conc") |>
+    dplyr::mutate(drug = "Morphine 10 mg / 10 min")
+) |>
+  dplyr::filter(time > 0) |>
+  dplyr::group_by(drug, site, time) |>
+  dplyr::summarise(lo = quantile(conc, 0.025), med = median(conc),
+                   hi = quantile(conc, 0.975), .groups = "drop")
+ggplot(vpc, aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "red", alpha = 0.2) +
+  geom_line(colour = "red") +
+  facet_wrap(drug ~ site, scales = "free", ncol = 3) +
+  scale_y_log10() +
+  labs(x = "Time (min)", y = "Unbound concentration (ng/mL)",
+       caption = "Replicates the prediction medians and 95% intervals of Figure 6 of Yamamoto 2017b.")
+```
+
+The typical-value comparison against Figure 6 below uses values read off the
+figure by the maintainers (approximate; log-scale panels).
+
+```{r human-typical}
+typ_apap <- solve_typical(human_models[["acetaminophen"]],
+                          make_events(1L, 1e9, 30, obs_apap))
+typ_mor <- solve_typical(human_models[["morphine"]],
+                         make_events(1L, 1e7, 10, obs_mor))
+fig6 <- tibble::tribble(
+  ~panel,                                    ~time, ~figure_median, ~model,
+  "Acetaminophen plasma",                    300,   1700,  at(typ_apap, 305, "Cc"),
+  "Acetaminophen plasma",                    480,   320,   at(typ_apap, 485, "Cc"),
+  "Acetaminophen CSF subarachnoid (peak)",   NA,    3500,  max(typ_apap$Cbrain_csf_sas),
+  "Acetaminophen CSF subarachnoid",          720,   100,   at(typ_apap, 715, "Cbrain_csf_sas"),
+  "Acetaminophen CSF EVD (peak)",            NA,    20000, max(typ_apap$Cbrain_csf_lv),
+  "Morphine plasma (peak)",                  NA,    125,   max(typ_mor$Cc),
+  "Morphine plasma",                         170,   2.3,   at(typ_mor, 168, "Cc"),
+  "Morphine brain ECF, normal side",         50,    8.4,   at(typ_mor, 52, "Cbrain_ecf"),
+  "Morphine brain ECF, normal side",         170,   3.5,   at(typ_mor, 168, "Cbrain_ecf")
+) |>
+  dplyr::mutate(ratio = model / figure_median)
+knitr::kable(fig6, digits = 3, row.names = FALSE,
+             caption = "Typical-value prediction vs the Figure 6 median (figure values approximate).")
+# Plasma in both drugs and acetaminophen subarachnoid CSF reproduce the
+# published medians within the reading accuracy of a log-scale figure. The
+# EVD and morphine brain-ECF rows are known deviations (see Assumptions and
+# deviations) and are deliberately not gated.
+gate <- fig6[!grepl("EVD|brain ECF", fig6$panel), ]
+stopifnot(all(gate$ratio > 0.5 & gate$ratio < 2))
+```
+
+## External ventricular drainage
+
+For the EVD patients of Study 1 the lateral-ventricle CSF is drained into
+the EVD at a measured, time-varying flow (Table SIV). The model removes it
+from `brain_csf_lv` at `CSF_DRAIN_VOL_24H / 24 / 60` mL/min and accumulates
+the drained drug in the `evd` state, so the concentration of a collected
+sample is the increase of `evd` over the collection interval divided by the
+volume collected. Patient 1 of Table SIV (typical parameters, single 1 g
+dose, no pre-study acetaminophen):
+
+```{r evd}
+# Table SIV patient 1: Q_LV_EVD (mL/h) per collection interval
+evd_iv <- tibble::tribble(
+  ~start_h, ~end_h, ~q_ml_h,
+  0,   0.5, 8,
+  0.5, 1,   8,
+  1,   1.5, 10,
+  1.5, 2,   17,
+  2,   2.5, 3,
+  2.5, 3,   8,
+  3,   3.5, 7,
+  3.5, 4,   7,
+  4,   5,   2,
+  5,   6,   13,
+  6,   7,   3,
+  7,   8,   7
+)
+edges <- sort(unique(c(evd_iv$start_h, evd_iv$end_h))) * 60
+obs_evd <- sort(unique(c(edges, seq(0, 480, by = 5))))
+ev_evd <- make_events(1L, 1e9, 30, obs_evd)
+# Time-varying covariate: the flow of the interval that a row opens.
+idx <- findInterval(ev_evd$time / 60, evd_iv$start_h, rightmost.closed = TRUE)
+ev_evd$CSF_DRAIN_VOL_24H <- evd_iv$q_ml_h[pmax(idx, 1)] * 24
+s_evd <- as.data.frame(rxode2::rxSolve(
+  rxode2::zeroRe(readModelDb(human_models[["acetaminophen"]])),
+  ev_evd, useLinCmt = FALSE, returnType = "data.frame"
+))
+evd_amt <- s_evd$evd[match(edges, s_evd$time)]
+evd_samples <- evd_iv |>
+  dplyr::mutate(
+    vol_ml = q_ml_h * (end_h - start_h),
+    drained_ng = diff(evd_amt),
+    C_evd = drained_ng / vol_ml,
+    C_lv_mid = s_evd$Cbrain_csf_lv[match(round((start_h + end_h) / 2 * 60 / 5) * 5, s_evd$time)]
+  )
+knitr::kable(evd_samples, digits = 1, row.names = FALSE,
+             caption = "Simulated EVD sample concentrations (ng/mL) for the Table SIV patient-1 drainage record.")
+# The collected sample is lateral-ventricle CSF averaged over the interval,
+# so it must lie within the range of C_LV over the whole simulation.
+stopifnot(all(evd_samples$C_evd > 0),
+          all(evd_samples$C_evd <= max(s_evd$Cbrain_csf_lv) * 1.0001))
+```
+
+# Assumptions and deviations
+
+* **Model structure from Figure 2.** The paper describes the structure in a
+  diagram rather than in equations. The flow directions follow the arrows of
+  Figure 2 and the wording of the Table III footnotes: Q_PL_ECF and Q_LV_PL
+  are one-way ("from ... to"), Q_PER and Q_ECF_ICF are bidirectional
+  ("inter-compartmental clearance between"), and Q_DIFF carries drug one way
+  from brain ECF through the four CSF compartments to plasma. Drug leaving
+  plasma into the brain, and returning from the subarachnoid space, is
+  booked against the plasma compartment so that mass is conserved; with
+  brain volumes of a few hundred microlitres this has no visible effect on
+  plasma.
+* **Brain ICF and blood-CSF-barrier transport only where estimated.** Table
+  III lists the rat V_ICF for every drug, but Q_ECF_ICF was estimable only
+  for paliperidone and quinidine and Q_LV_PL only for methotrexate; the other
+  models omit those compartments and flows, as the paper's fits did. The
+  human models likewise carry no ICF compartment (Table IV has no Q_ECF_ICF).
+* **Acetaminophen enterohepatic recirculation.** The paper gives the
+  recirculated fraction (93.3 %) but not the equations. The packaged model
+  uses the structure of the same group's control stream for the same rat
+  acetaminophen data (Yamamoto *et al.* 2017, *CPT Pharmacometrics Syst
+  Pharmacol*, Supplementary Material S3): eliminated drug collects in a
+  gallbladder compartment that empties at the elimination rate constant, and
+  from 120 min after the dose the recirculated fraction of the emptied drug
+  returns to plasma. The resulting plateau reproduces Figure 4a.
+* **Residual error.** The rat Table III and human Table IV give one residual
+  standard deviation per site; the proportional model of Eq. 7 is used,
+  which is the only error model in the paper with a single parameter.
+* **Acetaminophen rat dose.** Table I gives the acetaminophen dose as
+  16 mg/kg; the later paper on the same data gives 15 mg/kg. The vignette
+  uses 16 mg/kg; the model itself does not depend on the dose.
+* **Human EVD drainage.** The paper adds the EVD flow Q_LV_EVD and the EVD
+  volume V_EVD per patient from Table SIV but does not write the equations.
+  The model drains lateral-ventricle CSF at the recorded flow into a
+  cumulative `evd` state; V_EVD is then the volume collected in an interval
+  (Table SIV volumes equal flow times interval length), not a model
+  parameter. The patients' pre-study acetaminophen, which the paper entered
+  as an initial plasma amount, is not part of the packaged model.
+* **Known deviation, acetaminophen CSF EVD.** The median EVD prediction in
+  Figure 6a reaches about 2 x 10^4 ng/mL, above the concurrent plasma
+  median. In this structure the lateral-ventricle concentration cannot
+  exceed what plasma drives through Q_PL_ECF / Q_DIFF = 0.50, so the
+  packaged model predicts EVD concentrations about five-fold lower (see the
+  table above). The plasma and subarachnoid-CSF panels of the same figure are
+  reproduced, so the difference is specific to how the paper's EVD
+  compartment was implemented, which is not described.
+* **Known deviation, morphine brain ECF.** The Figure 6b median for the
+  physiologically normal brain side rises to about 8 ng/mL within 15 min,
+  while the packaged model, using the Table IV values exactly, rises over
+  about 60 min to about 4 ng/mL; the two converge by 170 min (about 3.2
+  versus 3.5 ng/mL). Plasma is reproduced. The values were not adjusted.
+* **Morphine dose effect.** Table III reports separate Q_PL_ECF estimates for
+  the 4 mg/kg group and the 10/40 mg/kg groups. The model carries the
+  10/40 mg/kg value as `lclin` and the 4 mg/kg value through the
+  `DOSE_LOW` indicator as the log-ratio `e_dose_low_clin`, so both printed
+  values are returned exactly.
+* **Phenytoin inhibitor arms.** Phenytoin was studied with tariquidar and
+  with tariquidar + probenecid; only a P-gp effect was identified, so
+  `CONMED_TARIQUIDAR = 1` for both arms and probenecid has no separate
+  effect.
+* **External rat validation.** The paper re-estimated the plasma parameters
+  of the external acetaminophen and remoxipride rat datasets (Figure 5) but
+  does not report them, so Figure 5 is not reproduced here.
+* No erratum or correction notice was found for this article (Europe PMC,
+  checked 2026-11-25).

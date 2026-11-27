@@ -34,6 +34,7 @@ Xu_2025_enrofloxacin_largemouthBass_oral <- function() {
     dosing = "mg/kg",
     concentration = "ug/mL"
   )
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Both states hold enrofloxacin; the amounts are

@@ -3,6 +3,7 @@ Ferl_2018_mosunetuzumab_cyno_covariates <- function() {
   reference <- "Ferl GZ, Reyes A, Sun LL, Cheu M, Oldendorp A, Ramanujan S, Stefanich EG. A Preclinical Population Pharmacokinetic Model for Anti-CD20/CD3 T-Cell-Dependent Bispecific Antibodies. Clin Transl Sci. 2018;11(3):296-304. doi:10.1111/cts.12535"
   vignette <- "Ferl_2018_mosunetuzumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     FORM_MOSU_CHO = list(

@@ -18,6 +18,7 @@ Liu_2022_tacrolimus <- function() {
   )
   vignette <- "Liu_2022_tacrolimus"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

@@ -29,6 +29,7 @@ Wang_2024_ionizableLipid_rat_pbpk <- function() {
   )
   vignette <- "Wang_2024_rnaLipidNanoparticle"
   units <- list(time = "h", dosing = "mg", concentration = "mg/mL")
+  dosing <- "venous_np"
 
   covariateData <- list(
     FORM_LNP_SM102 = list(

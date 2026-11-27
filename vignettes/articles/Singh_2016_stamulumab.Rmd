@@ -1,0 +1,579 @@
+---
+title: "Stamulumab (MYO-029) translational PK/PD in mouse, rat, monkey and human (Singh 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Stamulumab (MYO-029) translational PK/PD in mouse, rat, monkey and human (Singh 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Singh et al. (2016) analysed the anti-myostatin (GDF-8) human IgG1
+monoclonal antibody MYO-029 (INN stamulumab) across four species to ask
+whether the exposures reached in the phase I/II muscular dystrophy trial
+were high enough to grow muscle. The paper contributes six models, each an
+independent fit, packaged as six files that share this article:
+
+| Model | Species | Content |
+|-------|---------|---------|
+| `Singh_2016_stamulumab_mouse` | C57/SCID mouse | 1-compartment PK, linear + Michaelis-Menten elimination |
+| `Singh_2016_stamulumab_rat` | Sprague-Dawley rat | 2-compartment PK, linear elimination |
+| `Singh_2016_stamulumab_cyno` | cynomolgus monkey | 2-compartment PK, linear elimination |
+| `Singh_2016_stamulumab` | healthy human | 2-compartment PK, linear elimination |
+| `Singh_2016_stamulumab_mouse_muscle` | SCID mouse | Emax of weekly steady-state AUC on EDL, gastrocnemius and quadriceps weight |
+| `Singh_2016_stamulumab_cyno_circumference` | female cynomolgus monkey | Emax of weekly steady-state AUC on left-quadriceps circumference growth (days 135 and 271) |
+
+```{r load}
+nms <- c(
+  "Singh_2016_stamulumab_mouse", "Singh_2016_stamulumab_rat",
+  "Singh_2016_stamulumab_cyno", "Singh_2016_stamulumab",
+  "Singh_2016_stamulumab_mouse_muscle", "Singh_2016_stamulumab_cyno_circumference"
+)
+mods <- setNames(lapply(nms, function(n) rxode2::rxode(readModelDb(n))), nms)
+```
+
+* Citation: `r mods[["Singh_2016_stamulumab"]]$reference`
+* Article: <https://doi.org/10.1111/cts.12420> (open access, PMC5351001)
+
+All PK parameters are reported per kg body weight, so each PK model scales
+CL, V and Vmax linearly with the `WT` covariate and doses are entered as
+`mg/kg * WT` in mg. Concentrations are therefore independent of the weight
+chosen; the simulations below use 0.025, 0.25, 3 and 70 kg for mouse, rat,
+monkey and human. Concentrations are in mg/L (= ug/mL); the paper's nM
+values use the molecular weight 145.4 kDa (Table 2 footnote).
+
+```{r mw}
+mw_kda <- 145.4
+to_nM <- function(mg_per_L) mg_per_L / mw_kda * 1000
+```
+
+# Population
+
+* **Mouse PK**: C57/SCID mice dosed IV at 1, 5, 20 and 100 mg/kg (weekly for
+  4 weeks), 1-2 serum samples per mouse between 3 and 648 h; no IIV estimated.
+* **Rat PK**: 18 male Sprague-Dawley rats, single 15-min IV infusion of 2, 10
+  or 50 mg/kg (6 per dose), sampled to 1056 h.
+* **Monkey PK**: male and female cynomolgus monkeys in a 5-week and a 39-week
+  toxicology study (10, 30, 100 mg/kg IV once weekly; 4/sex/group in the
+  39-week study).
+* **Human PK**: US phase I single ascending dose study in healthy adults aged
+  18-45 years (n = 61 including placebo), 0.3, 1, 3, 7.5 and 11.25 mg/kg IV.
+* **Mouse PD**: female SCID mice, 8 per group, PBS or 1, 2.5, 5, 10
+  mg/kg/week IP for 12 weeks (double first dose); muscles weighed at sacrifice.
+* **Monkey PD**: female cynomolgus monkeys of the 39-week study (4 per
+  group); left-quadriceps circumference by tape at predose, day 135 and day
+  271 (Table 3).
+
+The same information is available programmatically, e.g.
+`mods[["Singh_2016_stamulumab"]]$population`.
+
+# Source trace
+
+| Model | Equation / parameter | Value | Source location |
+|-------|----------------------|-------|-----------------|
+| all PK | per-kg scaling `cl = CL * WT / 1000` etc. | -- | Table 1 units (mL/h/kg, mL/kg, ug/h/kg) |
+| mouse | `lcl`, `lvc` | 0.245 mL/h/kg, 103 mL/kg | Table 1, Mouse |
+| mouse | `lvmax` | 189 ug/h/kg | Table 1, Mouse; Results text '189 ug/h/kg (or 0.11 mg/day)' |
+| mouse | `lkm` | 2.67 printed 'ug/mL', used as 2670 mg/L | Table 1, Mouse; reinterpreted against Figure 1a (see Errata) |
+| mouse | `d/dt(central) = -CL/V*A - Vmax*C/(Km + C)` | -- | Results: 'one-compartment model with linear and nonlinear clearance' |
+| rat | `lcl`, `lvc`, `lq`, `lvp` | 0.542, 58.9, 1.79, 95.3 | Table 1, Rat |
+| rat | `etalcl`, `etalvc` | 0.15, 0.12 | Table 1, omega^2 rows |
+| monkey | `lcl`, `lvc`, `lq`, `lvp` | 0.228, 41.8, 0.815, 27.8 | Table 1, Monkey |
+| monkey | `etalcl`, `etalvc` | 0.27, 0.35 | Table 1, omega^2 rows |
+| human | `lcl`, `lvc`, `lq`, `lvp` | 0.38, 65, 0.31, 33 | Table 1, Human |
+| human | `etalcl`, `etalvc` | 0.04, 0.03 | Table 1, omega^2 rows |
+| human | `propSd` | 0.16 | Table 1, sigma1 'Proportional error' |
+| rat, monkey, mouse | `propSd` | fixed(0) | not reported (Table 1 '-') |
+| mouse PD | `e0_edl`, `emax_edl`, `lauc50_edl` | 16.7 mg, 29.9%, 1152.6 ug*h/mL | Table 2, Mouse EDL |
+| mouse PD | `e0_gastro`, `emax_gastro`, `lauc50_gastro` | 0.24 g, 23.2%, 1560.5 ug*h/mL | Table 2, Mouse Gastro |
+| mouse PD | `e0_quad`, `emax_quad`, `lauc50_quad` | 0.34 g, 27.2%, 1762.6 ug*h/mL | Table 2, Mouse Quad |
+| monkey PD | `e0_d135`, `emax_d135`, `lauc50_d135` | 4.1%, 274.1%, 32092 ug*h/mL | Table 2, Female quad-L (135d) |
+| monkey PD | `e0_d271`, `emax_d271`, `lauc50_d271` | 6.1%, 200.5%, 32428 ug*h/mL | Table 2, Female quad-L (271d) |
+| PD | `E = E0 * (1 + Emax/100 * AUC/(AUC50 + AUC))` | -- | Table 2 footnote ('maximum % change over vehicle'); checked against Table 3 and Figure 3 below |
+
+# PK: typical profiles at the study doses (Figure 1)
+
+```{r helpers}
+# Build an event table for one species: doses in mg/kg, WT in kg.
+make_ev <- function(dose_mgkg, wt, obs, dur = 0, id = 1, ii = 0, addl = 0, first_mult = 1) {
+  dose_rows <- data.frame(
+    id = id, time = 0, evid = 1, cmt = "central", amt = dose_mgkg * wt * first_mult,
+    dur = dur, ii = 0, addl = 0
+  )
+  if (addl > 0) {
+    dose_rows <- rbind(dose_rows, data.frame(
+      id = id, time = ii, evid = 1, cmt = "central", amt = dose_mgkg * wt,
+      dur = dur, ii = ii, addl = addl - 1
+    ))
+  }
+  obs_rows <- data.frame(id = id, time = obs, evid = 0, cmt = "central", amt = 0, dur = 0, ii = 0, addl = 0)
+  out <- rbind(dose_rows, obs_rows)
+  out$WT <- wt
+  out[order(out$time, -out$evid), ]
+}
+
+solve_typ <- function(mod, ev) {
+  args <- list(object = mod, events = ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-12, maxsteps = 1e6)
+  if (any(!is.na(mod$iniDf$neta1))) args$omega <- NA
+  s <- do.call(rxode2::rxSolve, args)
+  if (is.null(s$id)) s$id <- 1L
+  s
+}
+
+pk_designs <- list(
+  mouse = list(mod = "Singh_2016_stamulumab_mouse", wt = 0.025, doses = c(1, 5, 20, 100), dur = 0, tmax = 700),
+  rat = list(mod = "Singh_2016_stamulumab_rat", wt = 0.25, doses = c(2, 10, 50), dur = 0.25, tmax = 1100),
+  monkey = list(mod = "Singh_2016_stamulumab_cyno", wt = 3, doses = c(10, 30, 100), dur = 0, tmax = 170),
+  human = list(mod = "Singh_2016_stamulumab", wt = 70, doses = c(0.3, 1, 3, 7.5, 11.25), dur = 1, tmax = 1350)
+)
+
+fig1 <- bind_rows(lapply(names(pk_designs), function(sp) {
+  d <- pk_designs[[sp]]
+  ev <- bind_rows(lapply(seq_along(d$doses), function(i) {
+    make_ev(d$doses[i], d$wt, obs = seq(0, d$tmax, length.out = 300), dur = d$dur, id = i)
+  }))
+  s <- solve_typ(mods[[d$mod]], ev)
+  s$species <- sp
+  s$dose <- d$doses[s$id]
+  s
+}))
+```
+
+```{r fig1, fig.height = 6}
+fig1 |>
+  mutate(Cc = replace(Cc, Cc <= 0, NA)) |>
+  ggplot(aes(time, Cc * 1000, colour = factor(dose))) +
+  geom_line(na.rm = TRUE) +
+  scale_y_log10() +
+  facet_wrap(~ factor(species, c("mouse", "rat", "monkey", "human")), scales = "free") +
+  labs(x = "Time (h)", y = "Stamulumab (ng/mL)", colour = "Dose (mg/kg)") +
+  theme_bw()
+```
+
+Replicates Figure 1 of Singh 2016 (single-dose typical-value lines; the
+figure overlays observed data that are not available here).
+
+## Mouse: the Michaelis-Menten constant against Figure 1a
+
+Table 1 prints the mouse Km as 2.67 ug/mL. Taken literally, Vmax/Km =
+70.8 mL/h/kg, about 290 times the linear clearance, and a 1 mg/kg dose would
+be gone within a day. Figure 1a instead shows the 1 mg/kg fitted line falling
+only from about 1e4 to 1.5e3 ng/mL over 650 h. Reading Km as 2.67 mg/mL
+(2670 ug/mL) restores agreement. The four fitted lines of Figure 1a were
+digitised by the maintainers (line pixels on the log-linear axes, then a
+straight-line fit per dose):
+
+```{r mouse-fig1a}
+fig1a <- tribble(
+  ~dose, ~time, ~conc_ngml,
+  1,   50,  8370,   1, 300,  3910,   1, 600,  1570,
+  5,   50, 41800,   5, 300, 19700,   5, 600,  7990,
+  20,  50, 172000, 20, 300, 83500,  20, 600, 35100,
+  100, 50, 835000, 100, 300, 433000, 100, 600, 197000
+)
+mouse_pred <- function(mod, params = NULL) {
+  ev <- bind_rows(lapply(seq_along(c(1, 5, 20, 100)), function(i) {
+    make_ev(c(1, 5, 20, 100)[i], 0.025, obs = c(50, 300, 600), id = i)
+  }))
+  args <- list(object = mod, events = ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-14, maxsteps = 1e6)
+  if (!is.null(params)) args$params <- params
+  s <- do.call(rxode2::rxSolve, args)
+  data.frame(dose = c(1, 5, 20, 100)[s$id], time = s$time, pred_ngml = s$Cc * 1000)
+}
+mouse_mod <- mods[["Singh_2016_stamulumab_mouse"]]
+cmp_mouse <- fig1a |>
+  left_join(mouse_pred(mouse_mod), by = c("dose", "time")) |>
+  left_join(
+    mouse_pred(mouse_mod, params = c(lkm = log(2.67))) |> rename(pred_km_as_printed = pred_ngml),
+    by = c("dose", "time")
+  ) |>
+  mutate(log10_ratio = log10(pred_ngml / conc_ngml))
+cmp_mouse |>
+  mutate(across(c(pred_ngml, pred_km_as_printed), ~ signif(.x, 3)), log10_ratio = round(log10_ratio, 3)) |>
+  rename(
+    "Dose (mg/kg)" = dose, "Time (h)" = time, "Figure 1a (ng/mL)" = conc_ngml,
+    "Model, Km = 2670 mg/L (ng/mL)" = pred_ngml, "Model, Km = 2.67 mg/L (ng/mL)" = pred_km_as_printed,
+    "log10(model / figure)" = log10_ratio
+  ) |>
+  knitr::kable()
+
+bias_by_dose <- cmp_mouse |> group_by(dose) |> summarise(bias = mean(log10_ratio))
+stopifnot(
+  nrow(cmp_mouse) == 12, !anyNA(cmp_mouse$pred_ngml),
+  # Km = 2670 mg/L: every dose within 0.1 log10 (26%) of the fitted line;
+  # measured |bias| <= 0.04 log10.
+  all(abs(bias_by_dose$bias) < 0.1),
+  # Km as printed: 1 mg/kg falls below 1/1000 of the fitted line by 300 h.
+  all(cmp_mouse$pred_km_as_printed[cmp_mouse$dose == 1 & cmp_mouse$time >= 300] <
+        1e-3 * cmp_mouse$conc_ngml[cmp_mouse$dose == 1 & cmp_mouse$time >= 300])
+)
+```
+
+The nonlinear arm is active in the solve (rxode2 is not reducing the model
+to its linear `cl`/`vc` part): switching Vmax off raises the predicted
+concentrations by up to about 50% at 600 h.
+
+```{r mouse-mm-gate}
+p_on <- mouse_pred(mouse_mod)
+p_off <- mouse_pred(mouse_mod, params = c(lvmax = log(1e-9)))
+rel <- abs(p_off$pred_ngml / p_on$pred_ngml - 1)
+round(max(rel), 3)
+stopifnot(max(rel) > 0.05)
+```
+
+# PK: NCA with PKNCA
+
+The paper reports no NCA table, so PKNCA is used to check the solved
+profiles against the model's own identities: AUC(0-inf) * CL = Dose for the
+linear species and the terminal half-life of each species.
+
+```{r pknca-single}
+sd_designs <- pk_designs[c("rat", "monkey", "human")]
+nca_sim <- bind_rows(lapply(names(sd_designs), function(sp) {
+  d <- sd_designs[[sp]]
+  grid <- sort(unique(c(0, 10^seq(-2, log10(6000), length.out = 250))))
+  ev <- bind_rows(lapply(seq_along(d$doses), function(i) {
+    make_ev(d$doses[i], d$wt, obs = grid, dur = d$dur, id = i)
+  }))
+  s <- solve_typ(mods[[d$mod]], ev)
+  s |>
+    filter(!is.na(Cc)) |>
+    mutate(species = sp, dose_mgkg = d$doses[id], treatment = paste(sp, dose_mgkg, "mg/kg"),
+           Cc = pmax(Cc, 0), dose_mg = d$doses[id] * d$wt)
+}))
+stopifnot(!any(is.na(nca_sim$Cc)))
+
+conc_obj <- PKNCAconc(nca_sim, Cc ~ time | species + treatment + id)
+dose_df <- nca_sim |> distinct(species, treatment, id, dose_mg) |> mutate(time = 0)
+dose_obj <- PKNCAdose(dose_df, dose_mg ~ time | species + treatment + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+cl_per_kg <- c(rat = 0.542, monkey = 0.228, human = 0.38)
+wt_sp <- c(rat = 0.25, monkey = 3, human = 70)
+nca_tab <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("aucinf.obs", "half.life", "cmax")) |>
+  select(species, treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(dose_df |> select(treatment, dose_mg), by = "treatment") |>
+  mutate(
+    cl_L_h = cl_per_kg[species] * wt_sp[species] / 1000,
+    auc_x_cl_over_dose = aucinf.obs * cl_L_h / dose_mg
+  )
+nca_tab |>
+  transmute(
+    Treatment = treatment, "Cmax (ug/mL)" = signif(cmax, 3), "AUC0-inf (ug*h/mL)" = signif(aucinf.obs, 4),
+    "t1/2 (h)" = round(half.life), "AUC0-inf * CL / Dose" = round(auc_x_cl_over_dose, 4)
+  ) |>
+  knitr::kable()
+stopifnot(nrow(nca_tab) == 11, all(abs(nca_tab$auc_x_cl_over_dose - 1) < 0.01))
+```
+
+Terminal half-lives are about 220 h (9 days) in rat, monkey and human.
+
+# Human: steady-state projections (Supplementary Table S1)
+
+The paper simulated the trial regimen -- 1, 3 and 10 mg/kg as a 1-h IV
+infusion every 2 weeks -- with the human model and tabulated the median and
+90% interval of the steady-state profile in nM (Supplementary Table S1).
+
+```{r ts1}
+ts1 <- tribble(
+  ~dose, ~tad, ~median, ~lo, ~hi,
+  1, 0, 24, 9, 56, 1, 1, 130, 88, 199, 1, 12, 116, 78, 173, 1, 24, 106, 70, 156,
+  1, 48, 89, 55, 134, 1, 72, 74, 48, 118, 1, 168, 46, 23, 84, 1, 336, 24, 10, 52,
+  3, 0, 71, 28, 167, 3, 1, 390, 264, 597, 3, 12, 349, 233, 520, 3, 24, 317, 210, 467,
+  3, 48, 267, 164, 401, 3, 72, 223, 142, 355, 3, 168, 138, 69, 251, 3, 336, 72, 30, 157,
+  10, 0, 238, 94, 557, 10, 1, 1301, 879, 1992, 10, 12, 1164, 777, 1733, 10, 24, 1057, 699, 1557,
+  10, 48, 888, 546, 1338, 10, 72, 745, 475, 1183, 10, 168, 459, 230, 835, 10, 336, 241, 99, 524
+)
+tss <- 29 * 336 # 30th dose: steady state (terminal t1/2 about 220 h)
+hum <- mods[["Singh_2016_stamulumab"]]
+ev_h <- bind_rows(lapply(1:3, function(i) {
+  make_ev(c(1, 3, 10)[i], 70, obs = tss + c(0, 1, 12, 24, 48, 72, 168, 336), dur = 1, id = i, ii = 336, addl = 29)
+}))
+typ_h <- solve_typ(hum, ev_h) |>
+  mutate(dose = c(1, 3, 10)[id], tad = time - tss, typ_nM = to_nM(Cc))
+cmp_ts1 <- ts1 |> left_join(typ_h |> select(dose, tad, typ_nM), by = c("dose", "tad")) |>
+  mutate(pct_diff = 100 * (typ_nM / median - 1))
+cmp_ts1 |>
+  transmute("Dose (mg/kg q2w)" = dose, "Time after dose (h)" = tad, "Table S1 median (nM)" = median,
+            "Model typical value (nM)" = round(typ_nM), "% difference" = round(pct_diff, 1)) |>
+  knitr::kable()
+stopifnot(nrow(cmp_ts1) == 24, !anyNA(cmp_ts1$typ_nM), max(abs(cmp_ts1$pct_diff)) < 5)
+```
+
+All 24 medians are reproduced within a few percent by the typical-value solve.
+
+## Residual-error scale
+
+Table 1 prints the human residual error as sigma1 = 0.16 without a square,
+whereas the IIV rows are labelled omega^2. Simulating the 1-h post-infusion
+peak with IIV and residual error shows which reading the projection used. The
+cohort pools 200 subjects per dose and dose-normalises to 1 mg/kg (the model
+is linear).
+
+```{r ts1-intervals}
+rxode2::rxSetSeed(20161001)
+n_per_arm <- 200
+ev_c <- bind_rows(lapply(1:3, function(arm) {
+  bind_rows(lapply(seq_len(n_per_arm), function(j) {
+    make_ev(c(1, 3, 10)[arm], 70, obs = tss + c(0, 1, 168, 336), dur = 1,
+            id = (arm - 1) * n_per_arm + j, ii = 336, addl = 29)
+  }))
+}))
+sim_c <- rxode2::rxSolve(hum, ev_c, returnType = "data.frame", maxsteps = 1e6) |>
+  mutate(dose = c(1, 3, 10)[(id - 1) %/% n_per_arm + 1], tad = time - tss,
+         ipred_n = to_nM(ipredSim) / dose, eps_z = (sim - ipredSim) / (0.16 * ipredSim))
+# The same draws with the residual SD rescaled to 0.4 (sigma1 read as a variance).
+qtab <- sim_c |>
+  mutate(y_sd016 = ipred_n * (1 + 0.16 * eps_z), y_sd040 = ipred_n * (1 + 0.40 * eps_z)) |>
+  group_by(tad) |>
+  summarise(across(c(y_sd016, y_sd040), list(p05 = ~ quantile(.x, 0.05), p95 = ~ quantile(.x, 0.95))), .groups = "drop") |>
+  left_join(ts1 |> filter(dose == 1) |> select(tad, lo, hi), by = "tad")
+qtab |> mutate(across(-tad, round)) |>
+  rename("Time after dose (h)" = tad, "SD 0.16: 5th" = y_sd016_p05, "SD 0.16: 95th" = y_sd016_p95,
+         "SD 0.40: 5th" = y_sd040_p05, "SD 0.40: 95th" = y_sd040_p95,
+         "Table S1 5th" = lo, "Table S1 95th" = hi) |>
+  knitr::kable()
+pk1 <- qtab |> filter(tad == 1)
+stopifnot(
+  nrow(pk1) == 1,
+  # The peak interval is dominated by residual error. SD 0.16 lands within
+  # about 10% of Table S1 (88-199 nM); SD 0.40 gives about 42-223 nM.
+  abs(log(pk1$y_sd016_p05 / pk1$lo)) < log(1.25),
+  abs(log(pk1$y_sd040_p05 / pk1$lo)) > log(1.25)
+)
+```
+
+SD 0.16 reproduces the published peak interval; a variance of 0.16 does not.
+The published trough intervals (e.g. 9-56 nM at 1 mg/kg) are wider than this
+model gives (about 12-42 nM); the paper does not describe its simulation
+beyond "2-compartment PK parameters estimated from Phase 1 data", so the
+source of the extra trough spread is not identifiable.
+
+```{r ts1-plot}
+ev_p <- bind_rows(lapply(1:3, function(i) {
+  make_ev(c(1, 3, 10)[i], 70, obs = tss + seq(0, 336, by = 2), dur = 1, id = i, ii = 336, addl = 29)
+}))
+solve_typ(hum, ev_p) |>
+  mutate(dose = paste(c(1, 3, 10)[id], "mg/kg q2w"), tad = time - tss) |>
+  ggplot(aes(tad, to_nM(Cc), colour = dose)) +
+  geom_line() +
+  geom_point(data = ts1 |> mutate(dose = paste(dose, "mg/kg q2w")), aes(tad, median), inherit.aes = FALSE) +
+  geom_errorbar(data = ts1 |> mutate(dose = paste(dose, "mg/kg q2w")), aes(tad, ymin = lo, ymax = hi, colour = dose),
+                inherit.aes = FALSE, width = 6) +
+  scale_y_log10() +
+  labs(x = "Time after the 30th dose (h)", y = "Stamulumab (nM)", colour = NULL,
+       caption = "Lines: model typical value. Points and bars: Supplementary Table S1 median and 90% interval.") +
+  theme_bw()
+```
+
+# PD: mouse muscle weight (Figure 3a-c)
+
+The mouse PD models take the steady-state weekly AUC as the
+`AUC_STAMULUMAB` covariate. The efficacy study dosed intraperitoneally and
+the paper does not say how the AUC on the Figure 3 x-axis was derived. The IV
+mouse PK model gives the AUCs below over the 12th week (double first dose);
+they are about 1.2-1.4 times the Figure 3 positions (about 2200, 6500, 13000
+and 26500 ug*h/mL), consistent with incomplete intraperitoneal
+bioavailability, which the paper did not model.
+
+```{r mouse-auc}
+mouse_auc <- bind_rows(lapply(seq_along(c(1, 2.5, 5, 10)), function(i) {
+  make_ev(c(1, 2.5, 5, 10)[i], 0.025, obs = seq(11 * 168, 12 * 168, by = 2), id = i, ii = 168, addl = 11, first_mult = 2)
+})) |>
+  (\(ev) solve_typ(mouse_mod, ev))() |>
+  mutate(dose = c(1, 2.5, 5, 10)[id], time = time - 11 * 168)
+auc_wk12 <- pk.nca(PKNCAdata(
+  PKNCAconc(mouse_auc, Cc ~ time | dose + id),
+  intervals = data.frame(start = 0, end = 168, auclast = TRUE)
+)) |>
+  as.data.frame() |>
+  filter(PPTESTCD == "auclast") |>
+  transmute(dose, auc_model = PPORRES) |>
+  left_join(data.frame(dose = c(1, 2.5, 5, 10), auc_fig3 = c(2200, 6500, 13000, 26500)), by = "dose")
+stopifnot(nrow(auc_wk12) == 4, !anyNA(auc_wk12$auc_fig3))
+knitr::kable(auc_wk12 |> mutate(across(-dose, round)) |>
+  rename("Dose (mg/kg/week)" = dose, "IV model AUC week 12 (ug*h/mL)" = auc_model, "Figure 3 x-position (ug*h/mL)" = auc_fig3))
+```
+
+```{r mouse-pd}
+mpd <- mods[["Singh_2016_stamulumab_mouse_muscle"]]
+auc_grid <- seq(0, 30000, by = 250)
+mpd_sim <- rxode2::rxSolve(mpd, data.frame(id = seq_along(auc_grid), time = 0, evid = 0, AUC_STAMULUMAB = auc_grid),
+                           returnType = "data.frame")
+mpd_sim |>
+  select(AUC_STAMULUMAB, muscle_edl, muscle_gastro, muscle_quad) |>
+  pivot_longer(-AUC_STAMULUMAB) |>
+  mutate(name = recode(name, muscle_edl = "EDL (mg)", muscle_gastro = "Gastrocnemius (g)", muscle_quad = "Quadriceps (g)")) |>
+  ggplot(aes(AUC_STAMULUMAB, value)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y") +
+  labs(x = "Steady-state AUC0-168h (ug*h/mL)", y = "Muscle weight") +
+  theme_bw()
+```
+
+Replicates Figure 3a-c of Singh 2016 (fitted curves). The maintainers read
+the fitted curves at the top dose (AUC about 26500 ug*h/mL) as about 21.5 mg
+(EDL), 0.294 g (gastrocnemius) and 0.422 g (quadriceps):
+
+```{r mouse-pd-check}
+top <- rxode2::rxSolve(mpd, data.frame(id = 1, time = 0, evid = 0, AUC_STAMULUMAB = 26500), returnType = "data.frame")
+fig3_top <- c(muscle_edl = 21.5, muscle_gastro = 0.294, muscle_quad = 0.422)
+pd_top <- data.frame(muscle = names(fig3_top), figure3 = fig3_top,
+                     model = unlist(top[1, names(fig3_top)])) |>
+  mutate(pct_diff = 100 * (model / figure3 - 1))
+knitr::kable(pd_top |> mutate(model = signif(model, 4), pct_diff = round(pct_diff, 1)), row.names = FALSE)
+stopifnot(nrow(pd_top) == 3, all(abs(pd_top$pct_diff) < 3))
+```
+
+# PD: monkey quadriceps circumference (Table 3, Figure 3d)
+
+Table 3 gives the mean predose circumference and mean change for each
+group; the percentage change is their ratio. The Figure 3d x-positions of the
+10, 30 and 100 mg/kg/week groups (about 0.45e5, 1.4e5 and 2.8e5 ug*h/mL,
+read by the maintainers) are the measured day-169 AUCs the fit used.
+
+```{r monkey-pd}
+cpd <- mods[["Singh_2016_stamulumab_cyno_circumference"]]
+tab3 <- tribble(
+  ~group, ~auc_fig3d, ~predose, ~chg_d135, ~chg_d271,
+  "Vehicle", 0, 9.9, 0.4, 0.7,
+  "10 mg/kg", 45000, 9.9, 1.2, 1.3,
+  "30 mg/kg", 140000, 10.1, 1.2, 1.6,
+  "100 mg/kg", 280000, 10.0, 1.5, 1.7
+)
+cpred <- rxode2::rxSolve(cpd, data.frame(id = 1:4, time = 0, evid = 0, AUC_STAMULUMAB = tab3$auc_fig3d),
+                         returnType = "data.frame")
+cmp_cyno <- tab3 |>
+  mutate(obs_d135 = 100 * chg_d135 / predose, obs_d271 = 100 * chg_d271 / predose,
+         pred_d135 = cpred$pct_circ_quadl_d135, pred_d271 = cpred$pct_circ_quadl_d271)
+cmp_cyno |>
+  transmute(Group = group, "AUC (ug*h/mL)" = auc_fig3d,
+            "Day 135 observed (%)" = round(obs_d135, 1), "Day 135 model (%)" = round(pred_d135, 1),
+            "Day 271 observed (%)" = round(obs_d271, 1), "Day 271 model (%)" = round(pred_d271, 1)) |>
+  knitr::kable()
+pdiff <- 100 * c(cmp_cyno$pred_d135 / cmp_cyno$obs_d135 - 1, cmp_cyno$pred_d271 / cmp_cyno$obs_d271 - 1)
+round(pdiff, 1)
+stopifnot(length(pdiff) == 8, abs(median(pdiff)) < 5, max(abs(pdiff)) < 20)
+```
+
+The fitted curves pass through the observed group means within the scatter
+of four animals per group; the day-271 fit, which the paper reports as the
+precise one, is within 2% at every treated dose (the vehicle mean, 7.1%, sits
+14% above E0 = 6.1%).
+
+The cynomolgus PK model's own steady-state weekly AUC is close to Dose/CL;
+the measured day-169 AUC at 100 mg/kg (Figure 3d, about 2.8e5) is below the
+model's 4.4e5 ug*h/mL.
+
+```{r monkey-auc}
+ev_m <- bind_rows(lapply(1:3, function(i) {
+  make_ev(c(10, 30, 100)[i], 3, obs = 24 * 168 + seq(0, 168, by = 1), id = i, ii = 168, addl = 38)
+}))
+m_ss <- solve_typ(mods[["Singh_2016_stamulumab_cyno"]], ev_m) |>
+  mutate(dose = c(10, 30, 100)[id], time = time - 24 * 168)
+auc_m <- pk.nca(PKNCAdata(PKNCAconc(m_ss, Cc ~ time | dose + id),
+                          intervals = data.frame(start = 0, end = 168, auclast = TRUE))) |>
+  as.data.frame() |>
+  filter(PPTESTCD == "auclast") |>
+  transmute(dose, auc_model = PPORRES, dose_over_cl = dose * 1000 / 0.228) |>
+  left_join(data.frame(dose = c(10, 30, 100), auc_fig3d = c(45000, 140000, 280000)), by = "dose")
+knitr::kable(auc_m |> mutate(across(-dose, round)) |>
+  rename("Dose (mg/kg/week)" = dose, "Model AUC0-168, week 25 (ug*h/mL)" = auc_model,
+         "Dose/CL (ug*h/mL)" = dose_over_cl, "Figure 3d (ug*h/mL)" = auc_fig3d))
+stopifnot(nrow(auc_m) == 3, all(abs(auc_m$auc_model / auc_m$dose_over_cl - 1) < 0.03))
+```
+
+# Cross-species comparison (Figure 4)
+
+Figure 4 normalises each Emax curve to its maximum and plots it against
+concentration, using Cave50 = AUC50 / 168 (in nM) as the half-maximal
+concentration, then marks the projected human steady-state peak and trough at
+10 mg/kg every 2 weeks.
+
+```{r fig4}
+cave50 <- c(
+  "Mouse EDL" = 1152.6, "Mouse gastrocnemius" = 1560.5, "Mouse quadriceps" = 1762.6,
+  "Monkey quad-L (day 271)" = 32428
+) / 168
+cave50_nM <- to_nM(cave50)
+round(cave50_nM, 1) # Table 2: 47.2, 63.9, 72.2 and 1327.5 nM
+stopifnot(max(abs(cave50_nM / c(47.2, 63.9, 72.2, 1327.5) - 1)) < 0.005)
+
+h10 <- typ_h |> filter(dose == 10)
+cmax_10 <- h10$typ_nM[h10$tad == 1]
+ctrough_10 <- h10$typ_nM[h10$tad == 336]
+conc <- 10^seq(-3, 5, length.out = 300)
+f4 <- expand.grid(conc = conc, curve = names(cave50_nM)) |>
+  mutate(effect = 100 * conc / (cave50_nM[as.character(curve)] + conc))
+ggplot(f4, aes(conc, effect, colour = curve)) +
+  geom_line() +
+  geom_vline(xintercept = c(cmax_10, ctrough_10), linetype = c("dashed", "solid")) +
+  scale_x_log10() +
+  labs(x = "Concentration (nM)", y = "% of maximum effect", colour = NULL,
+       caption = "Vertical lines: model steady-state Cmax (dashed) and Ctrough (solid), 10 mg/kg q2w.") +
+  theme_bw()
+
+frac_monkey <- function(c) c / (cave50_nM[["Monkey quad-L (day 271)"]] + c)
+c(cmax_nM = round(cmax_10), ctrough_nM = round(ctrough_10),
+  monkey_effect_at_cmax = round(frac_monkey(cmax_10), 2), monkey_effect_at_ctrough = round(frac_monkey(ctrough_10), 2))
+stopifnot(abs(frac_monkey(cmax_10) - 0.5) < 0.05)
+```
+
+Replicates Figure 4 of Singh 2016 (the in-vitro Kd projection is omitted).
+At the projected human steady-state peak the monkey curve gives 50% of the
+maximum effect, as the paper states; at the trough it gives about 15%, which
+the paper rounds to "approximately 10%".
+
+# Assumptions and deviations
+
+* **Mouse Km unit.** Table 1 prints Km = 2.67 ug/mL. With Vmax = 189 ug/h/kg
+  (confirmed by the paper's own conversion to 0.11 mg/day) that Km makes the
+  nonlinear arm 290 times the linear clearance and eliminates a 1 mg/kg dose
+  within a day, contradicting the fitted lines of Figure 1a by more than three
+  orders of magnitude. The model uses Km = 2.67 mg/mL (2670 mg/L), which
+  reproduces the four digitised Figure 1a lines within 0.04 log10 (10%) on
+  average per dose; the largest single deviation is 0.08 log10, on the
+  100 mg/kg line at 600 h. Reading Vmax instead as 0.189 ug/h/kg (ng/h/kg
+  mislabelled) fits worse (0.045 to 0.075 log10 high on average per dose) and
+  conflicts with the printed 0.11 mg/day.
+* **Mouse EDL E0 unit.** Table 2 labels all mouse E0 values in grams; the EDL
+  value 16.7 can only be milligrams (Figure 3a's axis, labelled g, spans 16-22).
+  `muscle_edl` is in mg; gastrocnemius and quadriceps are in g. The muscle
+  weights are probably the sum of both legs, which the paper does not state.
+* **Per-kg scaling.** All PK parameters scale linearly with `WT` because Table
+  1 reports them per kg; the paper fitted each species in per-kg units. The
+  interspecies allometric exponents of Supplementary Figure S2 (0.94 CL, 1.02
+  V1, 0.69 Q, 0.82 V2, from three species) are a regression across species
+  and are not part of any packaged model.
+* **IIV and residual error.** Table 1 omega^2 values are variances of
+  log-normal etas. Residual error is reported only for the human model; it is
+  `fixed(0)` in the mouse, rat and monkey models. The mouse fit has no IIV.
+  Human sigma1 = 0.16 is used as a proportional SD (checked against
+  Supplementary Table S1 above).
+* **PD models.** Table 2's "CV%" column is read as estimation precision (the
+  fits used group means), so the PD models carry no IIV or residual error. The
+  Emax form `E0 * (1 + Emax/100 * AUC/(AUC50 + AUC))` follows the Table 2
+  definition of Emax as "maximum % change over vehicle" and is confirmed by
+  the Figure 3 curves and the Table 3 group means. The day-135 and day-271
+  monkey fits are separate outputs of one file.
+* **Dosing route of the mouse PD study.** The efficacy study dosed
+  intraperitoneally; the paper's PK model is IV only and gives no
+  bioavailability, and does not say how the efficacy AUCs were obtained.
+* **Human SAD infusion duration** is not reported; simulations use the 1-h
+  infusion of the paper's own projections.
+* No erratum or correction to Singh 2016 was found (Europe PMC correction
+  links and erratum search, checked November 2026).

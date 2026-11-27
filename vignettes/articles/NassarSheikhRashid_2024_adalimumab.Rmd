@@ -327,7 +327,10 @@ solve_pop <- function(ev) {
   rxode2::rxSolve(
     ui, events = ev, omega = ui$omega,
     keep = c("arm", "WT", "ADA_POS", "CONMED_MTX", "DIS_UVEITIS", "CRP", "dose_mg"),
-    returnType = "data.frame"
+    returnType = "data.frame",
+    # Tight enough that the trough identity below holds to 1e-8: at the default
+    # tolerances a slow absorber's minimum can sit a step after the dose.
+    rtol = 1e-10, atol = 1e-12
   )
 }
 

@@ -52,6 +52,7 @@ Sokolov_2020_sglt_qsp <- function() {
     dosing = "mg",
     concentration = "ng/mL"
   )
+  dosing <- c("depot_canagliflozin", "depot_dapagliflozin", "depot_empagliflozin")
 
   covariateData <- list(
     GLU = list(

@@ -1,0 +1,496 @@
+---
+title: "Calaspargase pegol translational tumor-growth inhibition (Hoeben 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Calaspargase pegol translational tumor-growth inhibition (Hoeben 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+rxode2::rxSetSeed(20261117)
+```
+
+# Models and source
+
+Hoeben 2026 builds a translational framework for the PEGylated
+L-asparaginase calaspargase pegol (CalPEG) in hepatocellular carcinoma (HCC).
+A Simeoni tumor-growth-inhibition (TGI) model is fitted to JHH-5 xenograft
+mice, driven by a mouse PK model of plasma asparaginase activity (PAA); the
+TGI parameters are then linked to the population PK model of PAA fitted in
+patients with acute lymphoblastic leukemia (ALL) to predict tumor response in
+adults with HCC. The paper therefore contributes two model files and this one
+vignette.
+
+```{r models}
+modMouse <- rxode2::rxode(readModelDb("Hoeben_2026_calaspargasePegol_mouse_tgi"))
+modHuman <- rxode2::rxode(readModelDb("Hoeben_2026_calaspargasePegol_human_tgi"))
+```
+
+* Citation: `r modMouse$reference`
+* Article (open access): <https://doi.org/10.1007/s13318-026-01010-4>
+* Supplement: Electronic Supplementary Material 1 of the article (Tables
+  S1-S5, Figures S1-S7), distributed with the PubMed Central record
+  `PMC13558373`.
+
+| File | What it is |
+|---|---|
+| `Hoeben_2026_calaspargasePegol_mouse_tgi` | Mouse PAA model (fixed from an earlier mouse PK analysis) + Simeoni TGI fitted to JHH-5 xenografts |
+| `Hoeben_2026_calaspargasePegol_human_tgi` | Human PAA model fitted in ALL (BSA, sex and age covariates) + the xenograft TGI parameters |
+
+# Population
+
+**Mice.** 40 female BALB/c nude mice bearing subcutaneous JHH-5 HCC
+xenografts (an ASNS promoter-hypermethylated line), 10 per group, received
+vehicle or 20, 40 or 100 IU/kg CalPEG IV every 4 days for 28 days (8 doses;
+Methods "Data Collection", Supplementary Table S1). The mean tumor volume at
+the start of treatment was 175 mm^3. The fit used 527 tumor volumes and 87 PAA
+samples. The PK sub-model had been estimated earlier on 344 PAA samples from
+90 non-grafted and grafted mice (6-300 IU/kg, Supplementary Table S2) and was
+held fixed.
+
+**Humans.** The PK model was fitted to 1680 PAA observations from 144
+patients with ALL in three studies (AALL07P4, N = 111; DFCI-11-001, N = 13;
+CL2-95015-001, N = 20) dosed at 1000-2500 IU/m^2 (Supplementary Table S3A).
+Age ranged 1-73 years (median 12.5), BSA 0.42-2.80 m^2 (median 1.47), weight
+8.45-152 kg (median 48.5); 51% were female and 81% White (Supplementary
+Tables S3B-S3C). The HCC predictions simulate a 55-year-old man (BSA
+2.05 m^2) and woman (BSA 1.81 m^2) receiving 500-2500 IU/m^2 as a 2-h
+infusion every 3 weeks.
+
+```{r population}
+str(readModelDb("Hoeben_2026_calaspargasePegol_human_tgi")()$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Mouse PK: `dAc/dt = -Vmax*Ac*Ae/(Km*V + Ac)`, `dAe/dt = kout*(1 - Aspa/(Aspa + EC50)) - kout*Ae`, `Ae(0) = 1` | -- | Supplementary Figure S1B |
+| `lvc` (mouse V) | 0.0636 L/kg (IIV SD 0.0765) | Table 1, Mice PK |
+| `lvmax` (mouse Vm) | 5.07 IU/kg/h (IIV SD 0.164) | Table 1, Mice PK |
+| `lkm` (mouse Km) | 4000 IU/L (IIV SD 0.0625) | Table 1, Mice PK |
+| `lkout` | 0.000813 1/h | Table 1, Mice PK |
+| `lec50` | 107 IU/L | Table 1, Mice PK |
+| TGI: `dTS/dt = kg*TS/(1 + (kg/kgl*TS)^psi)^(1/psi) - Ed*TS`, three dying-cell transits at `1/tau` | -- | Equations 1-2 |
+| `Ed = slp * PAA` (linear) | -- | Methods, Results "PKPD TGI Modeling" |
+| `ltumorExpGrowth` (kg) | 0.00708 1/h (IIV SD 0.224) | Table 1, Mice PKPD TGI |
+| `ltumorLinGrowth` (kgl) | 70.0 mm^3/h | Table 1, Mice PKPD TGI |
+| `ldrugSlope` (slp) | 3.22e-5 L/IU/h (IIV SD 0.359) | Table 1, Mice PKPD TGI |
+| `ldamageTransit` (1/tau) | 1/41.1 1/h | Table 1, Mice PKPD TGI (tau = 41.1 h) |
+| `lrbase_tumor` (W0) | 152 mm^3 (IIV SD 0.114) | Table 1, Mice PKPD TGI |
+| `psi` | 20 (fixed) | Table 1, Mice PKPD TGI |
+| `addSd_tumor_vol`, `propSd_tumor_vol` | 0.827 mm^3, 0.437 | Table 1, RUV1 / RUV2 |
+| Human PK structure: linear CL + saturable Vmax/Km elimination, saturable VmaxTR/KmTR transfer to the periphery, k21 return | -- | Methods "PK Model in Pediatric and Adult Patients with ALL"; Figure 5 |
+| `lvc`, `lcl` | 1.78 L (IIV SD 0.150), 0.00245 L/h (IIV SD 0.441) | Table 1, Human PK |
+| `lvmax_tr`, `lkm_tr` | 21.4 IU/h, 58.8 IU/L | Table 1, Human PK |
+| `lk21` | 0.0395 1/h (IIV SD 0.519; corr. with CL 0.582) | Table 1, Human PK |
+| `lvmax`, `lkm` | 0.583 IU/h, 0.00100 IU/L | Table 1, Human PK |
+| `e_bsa_vc`, `e_bsa_cl`, `e_bsa_vmax_tr`, `e_bsa_vmax` | 1.23, 1.19, 0.726, 1.24 | Table 1, Human PK |
+| `e_sexf_vc` | -0.0928 | Table 1, Human PK ("Female on Vc") |
+| `e_age_vmax` | -0.0166 1/year | Table 1, Human PK ("AGE on Vmax") |
+| BSA normalised to 1.47 m^2 | -- | Supplementary Table S3B (dataset median); see Assumptions |
+| Human TGI parameters | as mouse, fixed | Results "PKPD Translation to Humans"; Figure 5 |
+
+# Mouse PK and tumor growth inhibition
+
+The xenograft design: Q4D IV doses on days 0-28 (8 doses), 200 virtual mice
+per arm.
+
+```{r mouse-events}
+n_mouse <- 200
+mouse_doses <- c(0, 20, 40, 100)
+obs_mouse <- sort(unique(c(seq(0, 672, by = 4), c(96, 192, 288, 384, 672) - 5 / 60)))
+make_mouse <- function(dose, arm) {
+  ids <- (arm - 1) * n_mouse + seq_len(n_mouse)
+  obs <- expand.grid(id = ids, time = obs_mouse) |>
+    mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+  if (dose > 0) {
+    dosing <- expand.grid(id = ids, time = seq(0, 672, by = 96)) |>
+      mutate(evid = 1L, amt = dose, cmt = "central", dvid = NA_integer_)
+    obs <- bind_rows(dosing, obs)
+  }
+  obs |> mutate(dose_grp = dose)
+}
+ev_mouse <- bind_rows(lapply(seq_along(mouse_doses), function(i) make_mouse(mouse_doses[i], i))) |>
+  arrange(id, time, desc(evid))
+sim_mouse <- rxSolve(modMouse, ev_mouse, keep = "dose_grp", returnType = "data.frame") |>
+  mutate(day = time / 24, dose_lab = factor(paste(dose_grp, "IU/kg"), levels = paste(mouse_doses, "IU/kg")))
+```
+
+## PAA in the xenograft study (Figure 1)
+
+The Discussion reports the predicted median predose PAA on day 12 as 71.3,
+167 and 596 IU/L at 20, 40 and 100 IU/kg.
+
+```{r mouse-day12}
+day12 <- sim_mouse |>
+  filter(dose_grp > 0, abs(time - (288 - 5 / 60)) < 1e-6) |>
+  group_by(dose_grp) |>
+  summarise(simulated = median(Cc), .groups = "drop") |>
+  mutate(published = c(71.3, 167, 596), pct_diff = 100 * (simulated / published - 1))
+stopifnot(nrow(day12) == 3)
+knitr::kable(day12 |> rename("Dose (IU/kg)" = dose_grp, "Simulated median (IU/L)" = simulated,
+  "Published median (IU/L)" = published, "% difference" = pct_diff), digits = 1)
+# PK IIV is small (SD <= 0.164), so the medians are stable across cohorts
+# (realised 2-7%). A wrong volume, Km or dose unit moves them by > 50%.
+stopifnot(all(abs(day12$pct_diff) < 15))
+```
+
+```{r mouse-fig1, fig.cap = "Replicates Figure 1 of Hoeben 2026: PAA median and 90% prediction interval in the JHH-5 xenograft study."}
+sim_mouse |>
+  filter(dose_grp > 0, time > 0) |>
+  group_by(dose_lab, day) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(day, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line() +
+  facet_wrap(~dose_lab) +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "PAA (IU/L)")
+```
+
+## Tumor volume (Figure 3)
+
+The minimal PAA for tumor regression is `CT = kg / slp`; the paper reports
+220 IU/L.
+
+```{r mouse-ct}
+ct <- exp(modMouse$theta[["ltumorExpGrowth"]]) / exp(modMouse$theta[["ldrugSlope"]])
+ct
+stopifnot(abs(ct - 220) < 1)
+```
+
+```{r mouse-fig3, fig.cap = "Replicates Figure 3 of Hoeben 2026: tumor volume median and 90% prediction interval by dose."}
+tv_mouse <- sim_mouse |>
+  group_by(dose_lab, dose_grp, day) |>
+  summarise(med = median(tumor_vol), lo = quantile(tumor_vol, 0.05), hi = quantile(tumor_vol, 0.95), .groups = "drop")
+ggplot(tv_mouse, aes(day, med)) +
+  geom_ribbon(aes(ymin = pmax(lo, 0.1), ymax = hi), fill = "grey80") +
+  geom_line() +
+  facet_wrap(~dose_lab) +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Tumor volume (mm^3)")
+```
+
+The typical-value trajectories are compared with simulated medians read
+from Figure 3 by the maintainers (vehicle about 1100 mm^3 on day 12; 20 IU/kg
+about 430 mm^3 on day 28; 40 IU/kg about 10 mm^3 on day 28; 100 IU/kg about
+15 mm^3 on day 12).
+
+```{r mouse-fig3-check}
+# One subject per solve: a multi-subject solve of a zeroRe() model warns.
+typ_mouse <- bind_rows(lapply(c(0, 1, 2, 3) * n_mouse + 1, function(i) {
+  rxSolve(rxode2::zeroRe(modMouse), ev_mouse |> filter(id == i), keep = "dose_grp", returnType = "data.frame")
+}))
+fig3 <- data.frame(dose_grp = c(0, 20, 40, 100), time = c(288, 672, 672, 288), figure = c(1100, 430, 10, 15)) |>
+  left_join(typ_mouse |> select(dose_grp, time, tumor_vol), by = c("dose_grp", "time")) |>
+  mutate(ratio = tumor_vol / figure)
+stopifnot(nrow(fig3) == 4, !anyNA(fig3$tumor_vol))
+knitr::kable(fig3 |> rename("Dose (IU/kg)" = dose_grp, "Time (h)" = time, "Figure 3 (mm^3)" = figure,
+  "Typical value (mm^3)" = tumor_vol, "Ratio" = ratio), digits = 2)
+# Deterministic; the figure values are read by eye from a log-scale panel.
+stopifnot(all(abs(log(fig3$ratio)) < log(1.5)))
+```
+
+## Mouse NCA (first dosing interval)
+
+```{r mouse-nca}
+conc_mouse <- sim_mouse |>
+  filter(dose_grp > 0, time <= 96, !is.na(Cc)) |>
+  distinct(id, time, .keep_all = TRUE) |>
+  mutate(treatment = paste(dose_grp, "IU/kg")) |>
+  select(id, time, Cc, treatment)
+dose_mouse <- ev_mouse |>
+  filter(evid == 1, time == 0) |>
+  mutate(treatment = paste(dose_grp, "IU/kg")) |>
+  select(id, time, amt, treatment)
+nca_mouse <- pk.nca(PKNCAdata(
+  PKNCAconc(conc_mouse, Cc ~ time | treatment + id),
+  PKNCAdose(dose_mouse, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = 96, cmax = TRUE, auclast = TRUE, cmin = TRUE)
+))
+knitr::kable(summary(nca_mouse))
+```
+
+The paper reports no NCA for the mice; the table documents the first-interval
+exposure of the packaged model. Cmax rises roughly in proportion to dose
+(Km = 4000 IU/L is far above the concentrations reached), while the troughs
+rise more than proportionally because the enzyme pool that eliminates
+CalPEG is depleted faster at higher PAA.
+
+# Human PK in HCC patients (Table 2, Supplementary Table S4)
+
+## Dose convention used by the published simulations
+
+The model takes the dose as an amount in IU (IU/m^2 x BSA), the form in which
+the ALL data were fitted. The paper's simulated exposure tables are
+reproduced, for both sexes at once, only when the simulated amount equals the
+**nominal per-m^2 number** (500 IU for "500 IU/m^2"). Scaling by BSA instead
+doubles every concentration and gets the male-to-female ratio wrong:
+
+```{r dose-convention}
+cinf_check <- function(sexf, bsa, amt) {
+  ev <- data.frame(id = 1, time = c(0, 2), evid = c(1L, 0L), amt = c(amt, 0), dur = c(2, NA),
+    cmt = "central", dvid = c(NA, 1L), BSA = bsa, SEXF = sexf, AGE = 55)
+  sim <- rxSolve(rxode2::zeroRe(modHuman), ev, returnType = "data.frame")
+  sim$Cc[sim$time == 2]
+}
+conv <- data.frame(
+  Sex = c("Male", "Female"), BSA = c(2.05, 1.81), published = c(188, 241)
+) |>
+  mutate(
+    nominal = mapply(cinf_check, c(0, 1), BSA, 500),
+    bsa_scaled = mapply(cinf_check, c(0, 1), BSA, 500 * BSA)
+  )
+knitr::kable(conv |> rename("BSA (m^2)" = BSA, "Published Cinf, dose 1 (IU/L)" = published,
+  "Typical Cinf, 500 IU (IU/L)" = nominal, "Typical Cinf, 500 x BSA IU (IU/L)" = bsa_scaled), digits = c(0, 2, 0, 0, 0))
+stopifnot(
+  all(abs(conv$nominal / conv$published - 1) < 0.10),
+  all(conv$bsa_scaled / conv$published > 1.7)
+)
+```
+
+The comparisons below therefore follow the paper's convention. Use the
+BSA-scaled amount to simulate the clinical regimen as labelled.
+
+## Exposure after the 1st, 3rd and 5th dose
+
+200 virtual 55-year-old men (BSA 2.05 m^2) and 200 women (BSA 1.81 m^2) per
+dose level, 2-h infusions every 3 weeks.
+
+```{r human-events}
+n_human <- 200
+human_doses <- c(500, 750, 1000, 1250, 1500, 2000, 2500)
+tau <- 504
+obs_human <- sort(unique(c(seq(0, 168 * 24, by = 12), tau * (0:7) + 2, tau * (0:7) + 1, tau * (0:7) + 6)))
+make_human <- function(dose, sexf, arm, scale_bsa = FALSE) {
+  bsa <- if (sexf == 1) 1.81 else 2.05
+  amt <- if (scale_bsa) dose * bsa else dose
+  ids <- (arm - 1) * n_human + seq_len(n_human)
+  dosing <- expand.grid(id = ids, time = tau * (0:7)) |>
+    mutate(evid = 1L, amt = amt, dur = 2, cmt = "central", dvid = NA_integer_)
+  obs <- expand.grid(id = ids, time = obs_human) |>
+    mutate(evid = 0L, amt = 0, dur = NA_real_, cmt = "central", dvid = 1L)
+  bind_rows(dosing, obs) |>
+    mutate(dose_grp = dose, SEXF = sexf, BSA = bsa, AGE = 55)
+}
+arms <- expand.grid(dose = human_doses, sexf = c(0, 1))
+ev_human <- bind_rows(lapply(seq_len(nrow(arms)), function(i) make_human(arms$dose[i], arms$sexf[i], i))) |>
+  arrange(id, time, desc(evid))
+sim_human <- rxSolve(modHuman, ev_human, keep = c("dose_grp", "SEXF"), returnType = "data.frame") |>
+  mutate(sex = ifelse(SEXF == 1, "Female", "Male"), day = time / 24)
+```
+
+Each administration is analysed as its own 0-504 h interval (time re-anchored
+to the start of the dose), so PKNCA returns Cinf as `cmax`, Ctrough as
+`ctrough` and Cavg as `cav`.
+
+```{r human-nca}
+conc_human <- bind_rows(lapply(c(1, 3, 5), function(k) {
+  start <- tau * (k - 1)
+  sim_human |>
+    filter(time >= start, time <= start + tau, !is.na(Cc)) |>
+    mutate(time = time - start, admin = k)
+})) |>
+  distinct(id, admin, time, .keep_all = TRUE) |>
+  mutate(treatment = paste(sex, dose_grp)) |>
+  select(id, time, Cc, sex, dose_grp, admin, treatment)
+nca_human <- pk.nca(PKNCAdata(
+  PKNCAconc(conc_human, Cc ~ time | sex + dose_grp + admin + treatment + id),
+  intervals = data.frame(start = 0, end = tau, cmax = TRUE, ctrough = TRUE, cav = TRUE)
+))
+
+published <- data.frame(
+  sex = rep(c("Male", "Female"), each = 7),
+  dose_grp = rep(human_doses, 2),
+  t1 = c(19.3, 43.6, 76.3, 109, 149, 235, 326, 26.8, 57.2, 95.9, 137, 184, 291, 409),
+  i1 = c(188, 283, 385, 481, 573, 780, 959, 241, 365, 494, 617, 745, 994, 1255),
+  a1 = c(46.3, 90.1, 146, 201, 260, 391, 519, 60.8, 119, 186, 258, 334, 497, 670),
+  t3 = c(57.2, 133, 219, 312, 397, 590, 743, 78.6, 167, 267, 368, 472, 687, 918),
+  i3 = c(232, 383, 554, 722, 879, 1251, 1562, 305, 495, 704, 910, 1125, 1553, 2012),
+  a3 = c(103, 220, 348, 478, 599, 871, 1104, 143, 282, 440, 588, 749, 1053, 1390),
+  t5 = c(83.9, 177, 276, 378, 472, 691, 851, 111, 211, 321, 423, 547, 780, 1046),
+  i5 = c(267, 450, 651, 849, 1032, 1455, 1796, 350, 577, 809, 1040, 1277, 1751, 2280),
+  a5 = c(140, 287, 428, 578, 706, 1029, 1269, 188, 354, 520, 688, 857, 1198, 1576)
+) |>
+  pivot_longer(-c(sex, dose_grp), names_to = c(".value", "admin"), names_pattern = "([tia])([135])") |>
+  transmute(sex, dose_grp, admin = as.numeric(admin), ctrough = t, cmax = i, cav = a)
+
+cmp <- ncaComparisonTable(nca_human, published, by = c("sex", "dose_grp", "admin"),
+  params = c("cmax", "ctrough", "cav"))
+knitr::kable(cmp)
+```
+
+```{r human-nca-check}
+sim_med <- as.data.frame(nca_human$result) |>
+  filter(PPTESTCD %in% c("cmax", "ctrough", "cav")) |>
+  group_by(sex, dose_grp, admin, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop")
+chk <- published |>
+  pivot_longer(c(cmax, ctrough, cav), names_to = "PPTESTCD", values_to = "ref") |>
+  inner_join(sim_med, by = c("sex", "dose_grp", "admin", "PPTESTCD")) |>
+  mutate(pct_diff = 100 * (sim / ref - 1))
+stopifnot(nrow(chk) == 126, !anyNA(chk$sim))
+summary(chk$pct_diff)
+# Structural: a wrong BSA normalisation, sex or age form, or dose convention
+# moves the whole table by 10-100% (see the dose-convention chunk and the
+# age-form comparison below). Envelope on a robust quantile, not the extremes.
+stopifnot(
+  abs(median(chk$pct_diff)) < 12,
+  quantile(abs(chk$pct_diff), 0.9) < 25
+)
+```
+
+The simulated medians sit a few percent below the published ones (median
+difference about -6%, range about -22% to +4%; Cinf is about 5% low
+throughout). See Assumptions and deviations.
+
+```{r human-fig4, fig.cap = "Replicates Figure 4 of Hoeben 2026: PAA median and 90% prediction interval in men (BSA 2.05 m^2, 55 years); red line = 100 IU/L."}
+sim_human |>
+  filter(sex == "Male", time > 0) |>
+  group_by(dose_grp, day) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(day, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line() +
+  geom_hline(yintercept = 100, colour = "red") +
+  facet_wrap(~ paste(dose_grp, "IU/m^2 Q3W")) +
+  labs(x = "Time (days)", y = "PAA (IU/L)")
+```
+
+# Human tumor-growth predictions (Figure 6)
+
+```{r human-fig6, fig.cap = "Replicates Figure 6 of Hoeben 2026 (men): tumor volume median and 90% prediction interval; red line = 90% regression from 152 mm^3."}
+tv_human <- sim_human |>
+  group_by(sex, dose_grp, day) |>
+  summarise(med = median(tumor_vol), lo = quantile(tumor_vol, 0.05), hi = quantile(tumor_vol, 0.95), .groups = "drop")
+tv_human |>
+  filter(sex == "Male") |>
+  ggplot(aes(day, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = pmin(hi, 3000)), fill = "grey80") +
+  geom_line() +
+  geom_hline(yintercept = 15.2, colour = "red") +
+  facet_wrap(~ paste(dose_grp, "IU/m^2 Q3W")) +
+  coord_cartesian(ylim = c(0, 3000)) +
+  labs(x = "Time (days)", y = "Tumor volume (mm^3)")
+```
+
+Day on which the median tumor volume first falls to 10% of the 152 mm^3
+baseline (`NA` = not within 168 days). The paper reports, for men, complete
+regression at 750 IU/m^2 after the 5th dose (days 84-105), at 1000 IU/m^2
+after the 3rd (days 42-63) and at 1250 IU/m^2 between the 2nd and 3rd
+(days 21-42).
+
+```{r human-regression}
+first_day <- function(day, med) {
+  hit <- day[med <= 0.1 * 152]
+  if (length(hit) == 0) NA_real_ else min(hit)
+}
+reg <- tv_human |>
+  group_by(sex, dose_grp) |>
+  summarise(day_90pct = first_day(day, med), .groups = "drop") |>
+  pivot_wider(names_from = sex, values_from = day_90pct)
+knitr::kable(reg |> rename("Dose (IU/m^2)" = dose_grp), digits = 1)
+stopifnot(
+  nrow(reg) == 7,
+  # At 500 IU/m^2 the average PAA stays below the 220 IU/L threshold
+  # (Table 2 Cavg <= 140 IU/L), so the tumor never regresses (Figure 6).
+  is.na(reg$Male[reg$dose_grp == 500]),
+  # 2500 IU/m^2 regresses within the first two cycles in both sexes.
+  reg$Male[reg$dose_grp == 2500] < 42, reg$Female[reg$dose_grp == 2500] < 42
+)
+```
+
+The model reaches 90% regression later than Figure 6 shows at 750-1250
+IU/m^2. This is not resolvable from the published values: with the paper's own
+Table 2 exposures (Cavg 90, 220 and 287 IU/L after the 1st, 3rd and 5th
+750 IU/m^2 dose) and its kg and slp (threshold 220 IU/L), the typical tumor
+grows about eightfold during the first cycle and is still above baseline at
+day 84 (a hand calculation over the five cycles), whereas Figure 6 shows a median peak near 1000 mm^3 and regression by
+day 84. The Figure 6 simulations therefore used higher exposure than the
+Table 2 simulations; see Assumptions and deviations.
+
+# Assumptions and deviations
+
+* **BSA normalisation (1.47 m^2).** Neither the paper nor the 2018 FDA review
+  of the earlier model version states the value BSA is normalised to. The
+  model uses 1.47 m^2, the median of the 144-subject PK dataset
+  (Supplementary Table S3B). With the paper's dose convention (next item),
+  this value reproduces the published first-dose Cinf for men and women
+  (188 and 241 IU/L) together.
+* **Dose convention of the published simulations.** Table 2 and
+  Supplementary Table S4 are reproduced only when the simulated amount equals
+  the nominal per-m^2 number (500 IU for 500 IU/m^2). The model itself takes
+  the dose in IU, the form in which the ALL data were fitted; multiply the
+  per-m^2 dose by BSA to simulate a labelled regimen.
+* **Age effect on Vmax: uncentred exponential.** Table 1 gives "AGE on Vmax =
+  -0.0166" without the functional form or a centring value. The model uses
+  `Vmax * exp(-0.0166 * AGE)`. The maintainers compared this with an
+  exponential centred on the 12.5-year dataset median and with a linear form
+  centred on the median (which would make Vmax negative for the 73-year-old
+  oldest patient). Against Table 2 and Supplementary Table S4, the uncentred
+  form reproduces the trough PAA closely (within about 4% after the 1st, 3rd
+  and 5th 500 IU/m^2 dose in men); median centring puts the troughs about 20%
+  lower. The chunk below makes the comparison on a paired cohort.
+* **Sex effect.** "Female on Vc = -0.0928" is encoded as
+  `Vc * (1 - 0.0928 * SEXF)`; an exponential form differs by less than 0.5%.
+* **Residual error not reported.** The proportional residual error of both
+  PK models is named but not quantified, so `propSd` is `fixed(0)` in both
+  files; the tumor-volume error (additive 0.827 mm^3, proportional 0.437) is
+  that of the xenograft fit and is carried unchanged into the human file.
+* **Tumor volume = replicating + dying cells.** Equation 1 uses the
+  replicating cells TS in the exponential-to-linear switch, as printed; the
+  observed volume is the sum of TS and the three dying-cell stages (Simeoni
+  2004). This reproduces the Figure 3 VPC medians.
+* **Human TGI.** The human file carries the xenograft TGI parameters,
+  including their IIV, as fixed values, and starts every tumor at 152 mm^3,
+  as the paper did. Figure 6 is not reproduced at 750-1250 IU/m^2 (see the
+  previous section).
+* **Not packaged.** The re-estimation of the TGI model with the M3 method for
+  values below 1 mm^3 (Supplementary Table S5) is a sensitivity analysis; the
+  final model is the one in Table 1.
+
+```{r age-form}
+# Paired cohort: the same base-R eta draws for both age forms, passed as data
+# columns, so the comparison carries no between-cohort noise.
+set.seed(20261117)
+om <- modHuman$omega[c("etalvc", "etalcl", "etalk21"), c("etalvc", "etalcl", "etalk21")]
+eta <- matrix(rnorm(n_human * 3), n_human) %*% chol(om)
+colnames(eta) <- colnames(om)
+ev_age <- bind_rows(
+  expand.grid(id = seq_len(n_human), time = tau * (0:4)) |>
+    mutate(evid = 1L, amt = 500, dur = 2, dvid = NA_integer_),
+  expand.grid(id = seq_len(n_human), time = c(1, 3, 5) * tau) |>
+    mutate(evid = 0L, amt = 0, dur = NA_real_, dvid = 1L)
+) |>
+  mutate(cmt = "central", BSA = 2.05, SEXF = 0, AGE = 55,
+    etaltumorExpGrowth = 0, etaldrugSlope = 0, etalrbase_tumor = 0) |>
+  left_join(data.frame(id = seq_len(n_human), eta), by = "id") |>
+  arrange(id, time, desc(evid))
+troughs <- function(mod) {
+  rxSolve(mod, ev_age, omega = NA, sigma = NA, returnType = "data.frame") |>
+    group_by(time) |>
+    summarise(median_trough = median(Cc), .groups = "drop") |>
+    mutate(published = c(19.3, 57.2, 83.9))
+}
+# Median centring is equivalent to scaling Vmax by exp(0.0166 * 12.5).
+modCentred <- modHuman |> rxode2::ini(lvmax = log(0.583 * exp(0.0166 * 12.5)))
+age_cmp <- bind_rows(
+  troughs(modHuman) |> mutate(form = "Uncentred (packaged)"),
+  troughs(modCentred) |> mutate(form = "Centred on 12.5 years")
+) |>
+  mutate(admin = time / tau, pct_diff = 100 * (median_trough / published - 1))
+knitr::kable(age_cmp |> select(form, admin, median_trough, published, pct_diff) |>
+  rename("Age form" = form, "Administration" = admin, "Simulated median Ctrough (IU/L)" = median_trough,
+    "Table 2 (IU/L)" = published, "% difference" = pct_diff), digits = 1)
+err <- age_cmp |> group_by(form) |> summarise(mae = mean(abs(pct_diff)))
+stopifnot(nrow(age_cmp) == 6, err$mae[err$form == "Uncentred (packaged)"] < err$mae[err$form == "Centred on 12.5 years"])
+```

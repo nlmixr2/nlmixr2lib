@@ -852,7 +852,11 @@ Without a dose every receptor, mRNA and protein state must stay at its baseline
 ss <- bind_rows(lapply(c("mouse", "rat", "monkey", "human"), function(sp) {
   mod <- readModelDb(paste0("Sten_2023_fitusiran_mpbpk_", sp))
   th <- mod()$theta
-  out <- as.data.frame(rxSolve(mod, et(seq(0, 2000, by = 500)), returnType = "data.frame"))
+  # Tight tolerances: at rxSolve()'s defaults a last-bit offset from the exact
+  # baseline drifts the turnover states by about 1e-7 relative over 2000 h;
+  # at these tolerances the drift is below 4e-14.
+  out <- as.data.frame(rxSolve(mod, et(seq(0, 2000, by = 500)), returnType = "data.frame",
+                               rtol = 1e-10, atol = 1e-12))
   data.frame(
     species = sp,
     target_dev = max(abs(out$target / th[["rtot"]] - 1)),

@@ -299,10 +299,8 @@ troughs <- sim_vpc |> filter(time == 12)
 stopifnot(nrow(troughs) == n_sub * n_occ, !anyNA(troughs$sim))
 # One occasion effect per subject-occasion, not one per occasion: if rxode2's
 # detection of the nesting changes, the render fails instead of sharing silently.
-iov_per_occasion <- troughs |>
-  group_by(OCC) |>
-  summarise(n_distinct_iov = n_distinct(round(etaiov_lclint, 8)), .groups = "drop")
-stopifnot(nrow(iov_per_occasion) == n_occ, all(iov_per_occasion$n_distinct_iov == n_sub))
+nlmixr2lib:::assertDrawsPerLevel(troughs, eta = "etaiov_lclint", by = "OCC", n = n_sub)
+stopifnot(length(unique(troughs$OCC)) == n_occ)
 # Follow-up day of the occasion, for the plot (occasions are 5000 h apart).
 troughs$day <- ((troughs$OCC - 1) * 5000 + 12) / 24
 vpc_tab <- tibble(
