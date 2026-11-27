@@ -182,13 +182,16 @@ events <- bind_rows(dose_rows, obs_rows) |>
   as.data.frame()
 
 # One rxSolve call per arm keeps each call small. useLinCmt = FALSE keeps the
-# two-endpoint dvid mapping intact.
+# two-endpoint dvid mapping intact. The steady-state solve is knife-edge on
+# liblsoda, rxode2's default: perturbing the thetas by 1e-12 (relative) leaves
+# one subject non-finite ("excess work done") in about one solve in four. The
+# Fortran LSODA (`method = "lsoda"`) and cvode solve all of them.
 sim <- lapply(levels(events$arm), function(a) {
   ev_a <- events[events$arm == a, , drop = FALSE]
   rxode2::rxSolve(
     mod, events = ev_a,
     keep = c("arm", "renal", "dose_mg", "tau_h"),
-    useLinCmt = FALSE, maxsteps = 1e6
+    useLinCmt = FALSE, maxsteps = 1e6, method = "lsoda"
   ) |> as.data.frame()
 }) |> bind_rows()
 
@@ -437,7 +440,7 @@ med_for <- function(m) {
   s <- lapply(levels(ev$arm), function(a) {
     rxode2::rxSetSeed(20190211)
     rxode2::rxSolve(m, events = ev[ev$arm == a, , drop = FALSE], keep = "arm",
-                    useLinCmt = FALSE, maxsteps = 1e6) |>
+                    useLinCmt = FALSE, maxsteps = 1e6, method = "lsoda") |>
       as.data.frame()
   }) |> bind_rows()
   s |>
@@ -630,3 +633,6 @@ ESRD result.
 * ESRD subjects are flagged `RRT_HEMODIAL_STATUS = 1` with no dialysis session
   in the simulated interval.
 * 200 simulated patients per arm, against 5000 in the article.
+* The solves use the Fortran LSODA (`method = "lsoda"`). The default liblsoda
+  fails the steady-state solve of an occasional subject after a last-bit change
+  in the parameters (see the Simulation section).
