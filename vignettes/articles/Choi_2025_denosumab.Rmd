@@ -505,7 +505,10 @@ percentages are `omega * 100` directly -- is common enough in the literature to
 be worth falsifying rather than assuming, and the two readings diverge sharply
 for the parameters with very large CVs (`Q/F` at 295.99% and `R0` at 158.3%).
 
-The paper's own Table 5 prediction interval settles it.
+The paper's own Table 5 prediction interval settles it. Under either reading a
+few extreme draws fail to integrate, as in the population simulation above;
+they are counted in the "Failed to solve" column, their rate is asserted below
+10%, and they are left out of the percentiles.
 
 ```{r omega-convention}
 eta_names <- c("etalka", "etalvc", "etalq", "etalrbase_target", "etalksyn",
@@ -530,15 +533,29 @@ ev_den <- make_events(n_per_arm, obs_times, id_offset = 0L,
 
 run_convention <- function(omega_sd, label) {
   rxode2::rxSetSeed(20250909)
-  do.call(rxode2::rxSolve, c(list(
+  # As in the population simulation above, a few extreme draws fail to
+  # integrate; they are counted, rate-asserted and dropped below, so tell the
+  # render gate for failed subjects not to stop the render on this solve.
+  old_opts <- options(nlmixr2lib.expectFailedSubjects = TRUE)
+  on.exit(options(old_opts))
+  sim_conv <- do.call(rxode2::rxSolve, c(list(
     object = mod, events = ev_den, omega = make_omega(omega_sd)
   ), solve_opts)) |>
-    as.data.frame() |>
-    dplyr::filter(is.finite(Cc), time >= 2 * month_h) |>
+    as.data.frame()
+  failed_conv <- unique(sim_conv$id[!is.finite(sim_conv$Cc)])
+  # A large failure rate would mean a mis-transcribed omega rather than a few
+  # extreme draws. Measured at 2 solver threads: 4 of 150 under reading A,
+  # 8 of 150 under the wider reading B.
+  stopifnot(length(failed_conv) / n_per_arm < 0.10)
+  sim_conv <- dplyr::filter(sim_conv, !id %in% failed_conv)
+  stopifnot(all(is.finite(sim_conv$Cc)))
+  sim_conv |>
+    dplyr::filter(time >= 2 * month_h) |>
     dplyr::group_by(id) |>
     dplyr::summarise(cmax = max(Cc), .groups = "drop") |>
     dplyr::summarise(
       reading = label,
+      `Failed to solve` = length(failed_conv),
       `Cmax 5th` = quantile(cmax, 0.05),
       `Cmax 50th` = quantile(cmax, 0.50),
       `Cmax 95th` = quantile(cmax, 0.95),
