@@ -1,0 +1,639 @@
+---
+title: "JNJ-54175446 PK, IL-1beta release and brain P2X7 receptor occupancy (Xu 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{JNJ-54175446 PK, IL-1beta release and brain P2X7 receptor occupancy (Xu 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Xu 2020 used a stepwise translational analysis to choose the doses of a human
+PET study of JNJ-54175446, a brain-penetrant P2X7 receptor antagonist:
+
+1. a human population PK/PD model of the single and multiple ascending dose
+   studies, with the ex vivo stimulated IL-1beta release as the PD readout;
+2. an exposure-occupancy model fitted to monkey PET data and translated to
+   human by correcting the EC50 for plasma protein binding;
+3. simulation of human brain occupancy with the population PK model and the
+   translated occupancy model, later compared with the human PET data, to
+   which the same exposure-occupancy model was also fitted.
+
+The paper contributes three models, all documented here:
+
+| Model | Content |
+|---|---|
+| `Xu_2020_jnj54175446` | Human population PK (Table 1) and the IL-1beta release PD model (Eq. 2) |
+| `Xu_2020_jnj54175446_ro` | Human brain receptor occupancy vs. average plasma concentration over the PET scan (Table 2, human) |
+| `Xu_2020_jnj54175446_ro_monkey` | Rhesus monkey brain receptor occupancy vs. average plasma concentration over the PET scan (Table 2, monkey) |
+
+* Citation: `r rxode2::rxode(readModelDb("Xu_2020_jnj54175446"))$reference`
+* Article: <https://doi.org/10.1111/cts.12711> (open access, PMC7070800)
+
+```{r models}
+mod_pk <- readModelDb("Xu_2020_jnj54175446")
+mod_ro <- readModelDb("Xu_2020_jnj54175446_ro")
+mod_ro_monkey <- readModelDb("Xu_2020_jnj54175446_ro_monkey")
+ui_pk <- rxode2::rxode(mod_pk)
+ui_ro <- rxode2::rxode(mod_ro)
+ui_ro_monkey <- rxode2::rxode(mod_ro_monkey)
+```
+
+# Population
+
+The population PK/PD model was fitted to 2,560 plasma concentrations from 107
+healthy adults in the phase 1 single ascending dose (SAD, NCT02475148) and
+multiple ascending dose (MAD, NCT02515955) studies: median age 31 years (range
+18-69), median weight 77.3 kg (46.5-113.4), 87% White and 97% men. All doses
+were an oral liquid formulation: single 0.5-300 mg doses fasted, single 50, 300
+and 600 mg doses after a high-fat breakfast, and 50-450 mg once daily for 10
+days with a standard breakfast (Results; Table S1). Of the subjects, 39% were
+fasted, 16% had a high-fat meal and 45% a standard meal.
+
+The human occupancy model was fitted to 16 PET occupancy measures from 8
+healthy men given two single oral doses each (5-300 mg with a standard
+breakfast), with plasma sampled at about 4, 4.75 and 6 h after the dose. The
+monkey occupancy model was fitted to 5 measures from two rhesus macaques (one
+male, 12.1 kg; one female, 8.7 kg) given intravenous doses of 0.1-5.3 mg/kg 10
+min before the tracer.
+
+The same information is available programmatically via the `population`
+metadata of each model, e.g. `readModelDb("Xu_2020_jnj54175446")()$population`.
+
+# Source trace
+
+Each `ini()` value carries an in-file comment naming its source. Table numbers
+refer to Xu 2020; File S1 is the paper's example NONMEM code.
+
+| Model | Parameter / equation | Value | Source |
+|---|---|---|---|
+| PK/PD | `lka` | log(0.428) 1/h | Table 1 'K a' |
+| PK/PD | `lcl` | log(5.10) L/h | Table 1 'CL/F' (70 kg) |
+| PK/PD | `lvc` | log(272) L | Table 1 'V/F' (70 kg) |
+| PK/PD | `e_wt_cl`, `e_wt_vc` | 0.426, 1.14 | Table 1 'BWT on CL/F', 'BWT on V/F'; footnotes c, e |
+| PK/PD | `logitffo` | logit(1 - 0.0760) | Table 1 'FK0'; Results '92.4%' first-order |
+| PK/PD | `ld2` | log(1.05) h | Table 1 'TK0'; File S1 `D2=TK0` |
+| PK/PD | `ltlag`, `ltlag2` | log(0.287), log(2.03) h | Table 1 'ALAG1', 'ALAG2' |
+| PK/PD | `e_dose_fdepot` | 0.178 | Table 1 'beta'; Eq. 1 |
+| PK/PD | `e_fed_fdepot`, `e_fed_highfat_fdepot` | 1.63, 1.76 | Table 1 'E FOOD' rows; Results '76% and 63% higher' |
+| PK/PD | `etalka`, `etalcl`, `etalvc` | 1.04^2, 0.300^2, 0.198^2 | Table 1 IIV rows (CV% = sqrt(omega^2) x 100) |
+| PK/PD | `propSd` | 0.175 | Table 1 'Proportional residual error' |
+| PK/PD | `e0`, `etae0` | 798 pg/mL, 206^2 | Table 1 'E 0', 'IIV of E 0' (normal IIV, Methods) |
+| PK/PD | `limax` | log(747) pg/mL | Table 1 'Emax' |
+| PK/PD | `lic50`, `etalic50` | log(67.0) ng/mL, 0.449^2 | Table 1 'EC50,IL1beta' (0.0670 ug/mL), IIV row |
+| PK/PD | `lhill` | log(4.9) | Not tabulated; digitised from Figure 5 (see below) |
+| PK/PD | `addSd_il1b` | 199 pg/mL | Table 1 'Additive residual error' |
+| PK/PD | Absorption: depot (F1, ALAG1) + central zero-order (F2, ALAG2, D2) | -- | Figure 2; File S1 `$PK` |
+| PK/PD | `Fr = exp(-beta * DOSE / 150) * EFOOD` | -- | Eq. 1; File S1 `F1`, `F2` |
+| PK/PD | `Cc = 1000 * central / vc` (ng/mL) | -- | File S1 `S2 = V/1000` |
+| PK/PD | `il1b = E0 - Imax * Cc^gamma / (IC50^gamma + Cc^gamma)` | -- | Eq. 2 |
+| RO, human | `lemax`, `lec50`, `lhill` | log(78.3) %, log(44.3) ng/mL, log(1.43) | Table 2, human |
+| RO, monkey | `lemax`, `lec50`, `lhill` | log(56.0) %, log(43.2) ng/mL, log(3.71) | Table 2, monkey |
+| RO | `ro = Emax * CAV^gamma / (EC50^gamma + CAV^gamma)` | -- | Eq. 3 |
+| Translation | EC50 human = EC50 monkey x fu,monkey / fu,human = 43.2 x 17.0 / 11.2 | 65.6 ng/mL | Eq. 4; Results |
+
+# Event-table helper
+
+Every oral administration is two dose records: the first-order arm into
+`depot`, and the zero-order arm into `central` with `rate = -2` so that the
+modelled duration `dur(central)` is used. `f()` and `alag()` in the model
+apply each arm's fraction and lag, so both records carry the full dose amount
+at the nominal dosing time. The dose level enters relative bioavailability
+through the `DOSE_JNJ54175446_MG` column.
+
+```{r helpers}
+meal_cols <- function(meal) {
+  data.frame(
+    FED = as.integer(meal %in% c("standard", "high-fat")),
+    FED_HIGHFAT = as.integer(meal == "high-fat")
+  )
+}
+
+# Weight: log-normal around the cohort median 77.3 kg, truncated to the
+# observed 46.5-113.4 kg range (Results).
+draw_wt <- function(n) {
+  wt <- exp(rnorm(3 * n, log(77.3), 0.15))
+  wt <- wt[wt >= 46.5 & wt <= 113.4]
+  wt[seq_len(n)]
+}
+
+make_cohort <- function(n, dose, meal, n_doses = 1, obs_times, treatment,
+                        id_offset = 0L, wt = draw_wt(n)) {
+  ids <- id_offset + seq_len(n)
+  dose_times <- (seq_len(n_doses) - 1) * 24
+  doses <- tidyr::expand_grid(id = ids, time = dose_times, cmt = c("depot", "central")) |>
+    dplyr::mutate(
+      amt = dose, evid = 1L,
+      rate = ifelse(cmt == "central", -2, 0),
+      dvid = NA_integer_
+    )
+  obs <- tidyr::expand_grid(id = ids, time = obs_times) |>
+    dplyr::mutate(amt = 0, evid = 0L, rate = 0, cmt = NA_character_, dvid = 1L)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::left_join(data.frame(id = ids, WT = wt), by = "id") |>
+    dplyr::mutate(
+      DOSE_JNJ54175446_MG = dose,
+      meal_cols(meal)[rep(1, dplyr::n()), ],
+      treatment = treatment
+    ) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+```
+
+Observation rows carry `dvid = 1` and no `cmt`: the model has two endpoints
+(`Cc` and `il1b`), and a forward solve returns every model variable as a
+column on those rows.
+
+# Structural checks (typical values)
+
+```{r structural}
+mod_typ <- rxode2::zeroRe(ui_pk)
+
+grid_sd <- sort(unique(c(seq(0, 12, by = 0.05), seq(12, 2000, by = 1))))
+cases <- data.frame(
+  dose = c(0.5, 50, 150, 600, 50, 300),
+  meal = c("fasted", "fasted", "fasted", "fasted", "high-fat", "standard")
+)
+ev_typ <- dplyr::bind_rows(lapply(seq_len(nrow(cases)), function(i) {
+  make_cohort(1, cases$dose[i], cases$meal[i], obs_times = grid_sd,
+              treatment = paste(cases$dose[i], "mg", cases$meal[i]),
+              id_offset = i - 1L, wt = 70)
+}))
+sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, keep = "treatment",
+                           rtol = 1e-10, atol = 1e-12, returnType = "data.frame")
+stopifnot(!anyNA(sim_typ$Cc))
+
+# Closed form: AUC0-inf = Fr * dose / (CL/F) * 1000 (ng*h/mL); 2000 h is
+# about 54 half-lives, so the truncation is negligible.
+food <- c(fasted = 1, standard = 1.63, `high-fat` = 1.76)
+cases$fr <- exp(-0.178 * cases$dose / 150) * food[cases$meal]
+cases$auc_closed <- cases$fr * cases$dose / 5.10 * 1000
+cases$auc_sim <- sapply(seq_len(nrow(cases)), function(i) {
+  x <- sim_typ[sim_typ$id == i, ]
+  sum(diff(x$time) * (head(x$Cc, -1) + tail(x$Cc, -1)) / 2)
+})
+cases$rel_err <- cases$auc_sim / cases$auc_closed - 1
+knitr::kable(cases, digits = c(1, 0, 3, 0, 0, 5),
+             caption = "Typical-value AUC0-inf (70 kg) against the closed form Fr x dose / (CL/F).")
+# The trapezoid on a 0.05-h / 1-h grid carries ~1e-4 discretisation error;
+# a wrong Fr factor, unit or dose record moves this by tens of percent.
+stopifnot(max(abs(cases$rel_err)) < 2e-3)
+
+# Zero-order arm: a closed-form one-compartment solution of both arms for
+# 150 mg fasted. The zero-order input runs from ALAG2 = 2.03 h to
+# 2.03 + 1.05 = 3.08 h.
+fr <- exp(-0.178)
+ka <- 0.428; kel <- 5.10 / 272
+first_order <- function(t) {
+  tt <- pmax(t - 0.287, 0)
+  fr * 0.924 * 150 * ka / (ka - kel) * (exp(-kel * tt) - exp(-ka * tt))
+}
+zero_order <- function(t) {
+  r0 <- fr * 0.076 * 150 / 1.05
+  infused <- pmax(pmin(t, 3.08) - 2.03, 0)
+  r0 / kel * (1 - exp(-kel * infused)) * exp(-kel * pmax(t - 3.08, 0))
+}
+chk <- sim_typ[sim_typ$id == 3 & sim_typ$time <= 12, ]
+closed <- 1000 * (first_order(chk$time) + zero_order(chk$time)) / 272
+stopifnot(max(abs(chk$Cc - closed)) < 1e-4 * max(closed))
+```
+
+The packaged model reproduces the closed-form AUC for every dose and meal
+condition, and the full 0-12 h profile of the parallel zero-order /
+first-order absorption, including the delayed zero-order arm.
+
+# Population PK: visual predictive check (Figure 3)
+
+Figure 3 of Xu 2020 shows the VPC by study and dose. The SAD panels at 50 and
+300 mg pool a fasted and a high-fat arm; they are simulated fasted here, and
+600 mg (given only with a high-fat meal) with a high-fat meal. The MAD arms
+received once-daily doses for 10 days with a standard breakfast.
+
+```{r vpc_sim}
+rxode2::rxSetSeed(20200309)
+set.seed(20200309)
+n_arm <- 100
+t_sad <- c(0, 0.5, 1, 1.5, 2, 3, 4, 6, 9, 12, 18, 24, 36, 48, 72, 96, 120, 144)
+t_mad <- sort(unique(c(seq(0, 24, by = 1), seq(24, 216, by = 24),
+                       216 + c(1, 2, 3, 4, 6, 9, 12, 24, 36, 48, 72, 96, 120, 144))))
+arms <- tibble::tribble(
+  ~study, ~dose, ~meal, ~n_doses,
+  "SAD", 0.5, "fasted", 1,
+  "SAD", 2.5, "fasted", 1,
+  "SAD", 10, "fasted", 1,
+  "SAD", 50, "fasted", 1,
+  "SAD", 150, "fasted", 1,
+  "SAD", 300, "fasted", 1,
+  "SAD", 600, "high-fat", 1,
+  "MAD", 50, "standard", 10,
+  "MAD", 100, "standard", 10,
+  "MAD", 150, "standard", 10,
+  "MAD", 300, "standard", 10,
+  "MAD", 450, "standard", 10
+) |>
+  dplyr::mutate(treatment = factor(paste(study, dose, "mg"), levels = paste(study, dose, "mg")))
+
+ev_vpc <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  make_cohort(n_arm, arms$dose[i], arms$meal[i], n_doses = arms$n_doses[i],
+              obs_times = if (arms$study[i] == "SAD") t_sad else t_mad,
+              treatment = as.character(arms$treatment[i]),
+              id_offset = (i - 1L) * n_arm)
+}))
+sim_vpc <- rxode2::rxSolve(ui_pk, ev_vpc, keep = "treatment", returnType = "data.frame")
+stopifnot(!anyNA(sim_vpc$Cc))
+sim_vpc$treatment <- factor(sim_vpc$treatment, levels = levels(arms$treatment))
+```
+
+```{r vpc_plot, fig.height = 8, fig.cap = "Replicates Figure 3 of Xu 2020: simulated median (line) and 5th-95th percentiles (band) of JNJ-54175446 plasma concentration, including residual error, by study and dose (100 virtual subjects per arm)."}
+vpc <- sim_vpc |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "grey80") +
+  geom_line() +
+  facet_wrap(~treatment, scales = "free", ncol = 3) +
+  labs(x = "Time (h)", y = "JNJ-54175446 (ng/mL)") +
+  theme_bw()
+```
+
+The simulated medians follow the published VPC panels: a peak of about
+350 ng/mL after 150 mg fasted (published model median about 300 ng/mL),
+about 550 ng/mL after 300 mg, and day-9 to day-10 levels of roughly
+1300-1800 ng/mL at 150 mg and 2600-3600 ng/mL at 450 mg once daily. The one
+arm that sits visibly high is 600 mg with a high-fat meal: the simulated
+median peak is about 1400 ng/mL, against about 1000-1100 ng/mL in the
+published panel. That arm combines the strongest dose effect on Fr
+(exp(-0.178 x 4) = 0.49) with the high-fat factor, and no parameter was
+adjusted to close the gap.
+
+```{r vpc_assert}
+# Medians read from the published VPC panels (Figure 3) with generous bands:
+# a transcription error in CL/F, V/F, Fr or the dose effect moves these by
+# far more than the band.
+med_at <- function(trt, t) vpc$p50[vpc$treatment == trt & vpc$time == t]
+stopifnot(
+  med_at("SAD 150 mg", 6) > 200, med_at("SAD 150 mg", 6) < 450,
+  med_at("MAD 150 mg", 216) > 1000, med_at("MAD 150 mg", 216) < 2500,
+  med_at("MAD 450 mg", 216) > 2000, med_at("MAD 450 mg", 216) < 5000
+)
+```
+
+# PKNCA: single-dose NCA
+
+```{r pknca}
+sad <- sim_vpc |>
+  dplyr::filter(grepl("^SAD", treatment), !is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment) |>
+  dplyr::mutate(treatment = as.character(treatment))
+sad <- dplyr::bind_rows(
+  sad,
+  sad |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+dose_sad <- ev_vpc |>
+  dplyr::filter(evid == 1, cmt == "depot", grepl("^SAD", treatment)) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sad, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_sad, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_sum <- as.data.frame(nca_res$result) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::arrange(as.numeric(sub("SAD ([0-9.]+) mg", "\\1", treatment)))
+nca_sum |>
+  dplyr::select(treatment, cmax, tmax, aucinf.obs, half.life) |>
+  dplyr::rename(
+    "Arm" = treatment, "Cmax (ng/mL)" = cmax, "Tmax (h)" = tmax,
+    "AUC0-inf (ng*h/mL)" = aucinf.obs, "t1/2 (h)" = half.life
+  ) |>
+  knitr::kable(digits = 1, caption = "Median simulated single-dose NCA by SAD arm (100 subjects per arm).")
+```
+
+Xu 2020 does not tabulate NCA results; its Introduction summarises the SAD
+study as a median Tmax of 2-4 h under fasted conditions and an elimination
+half-life of about 35 h. The comparison below uses the 150 mg fasted arm.
+
+```{r nca_compare}
+published <- tibble::tibble(treatment = "SAD 150 mg", tmax = 3, half.life = 35)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res |> (\(x) {
+    x$result <- x$result[x$result$treatment == "SAD 150 mg", ]
+    x
+  })(),
+  reference = published,
+  by = "treatment",
+  units = c(tmax = "h", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs. reported (Xu 2020 Introduction) NCA, 150 mg fasted. * differs from the reference by >20%.")
+
+hl <- nca_sum$half.life[nca_sum$treatment == "SAD 150 mg"]
+# Expected median: log(2) * V/F / CL/F at the 77.3 kg cohort median weight,
+# 0.693 * 272 * 1.104^1.14 / (5.10 * 1.104^0.426) = 39.7 h, i.e. about 13%
+# above the rounded '~35 h'. Median-of-100 Monte-Carlo SE is about 2 h
+# (CV of t1/2 ~36%), so the 35% band sits more than 3 SE from 39.7 h, while
+# a CL/F or V/F transcription error of 2-fold or more fails it.
+stopifnot(abs(hl / 35 - 1) < 0.35)
+```
+
+The median half-life (about 40 h at the cohort's median weight of 77.3 kg;
+37 h at 70 kg) agrees with the reported ~35 h. The simulated median Tmax is
+later than the 2-4 h reported for the fasted SAD arms. This is a property of
+the published model rather than of the implementation (the typical-value
+profile above matches its closed form): the population typical ka of 0.428 1/h
+places the typical Tmax near 8 h, and Xu 2020 itself notes that the fit was
+less good in the absorption phase. No parameter was adjusted.
+
+# Food and dose effects on exposure
+
+```{r food}
+auc_of <- function(d, m) cases$auc_sim[cases$dose == d & cases$meal == m]
+ratio_hf <- auc_of(50, "high-fat") / auc_of(50, "fasted")
+ratio_hf
+stopifnot(abs(ratio_hf - 1.76) < 0.01)
+```
+
+With the high-fat meal the AUC rises by 76% at the same dose, in the range
+of the 50-70% (50 mg) and 50-111% (300 mg) increases observed in the SAD food
+cohorts (Discussion). Exposure is less than dose-proportional:
+`r round(cases$auc_sim[cases$dose == 600] / cases$auc_sim[cases$dose == 0.5] / 1200, 2)`
+is the ratio of dose-normalised AUC at 600 mg to that at 0.5 mg, equal to
+exp(-0.178 x (600 - 0.5) / 150).
+
+# Ex vivo IL-1beta release (Figure 5, red)
+
+```{r il1b_curve, fig.cap = "Replicates the IL-1beta curve of Xu 2020 Figure 5: typical ex vivo stimulated IL-1beta release against plasma concentration."}
+conc_grid <- 10^seq(0, 4, length.out = 200)
+il1b_typ <- 798 - 747 * conc_grid^4.9 / (67^4.9 + conc_grid^4.9)
+ggplot(data.frame(conc = conc_grid, il1b = il1b_typ), aes(conc, il1b)) +
+  geom_line(colour = "firebrick") +
+  scale_x_log10() +
+  coord_cartesian(ylim = c(-500, 2500)) +
+  labs(x = "Concentration (ng/mL)", y = "IL-1beta (pg/mL)") +
+  theme_bw()
+```
+
+The IL-1beta model is evaluated inside the packaged model; the check below
+reads `il1b` from the typical-value solve and compares it with the Eq. 2
+expression at the solved concentration.
+
+```{r il1b_check}
+x <- sim_typ[sim_typ$id == 3, ]
+il1b_eq2 <- 798 - 747 * x$Cc^4.9 / (67^4.9 + x$Cc^4.9)
+stopifnot(max(abs(x$il1b - il1b_eq2)) < 1e-6)
+
+# MAD: 'approximately full and continuous antagonism of IL-1beta stimulation
+# at doses >= 50 mg/day' (Introduction). Typical value at the day-10 trough
+# (216 h, i.e. 24 h after the ninth dose) of 50 mg once daily.
+ev_mad50 <- make_cohort(1, 50, "standard", n_doses = 10, obs_times = c(24, 216),
+                        treatment = "MAD 50 mg", wt = 70)
+mad50 <- rxode2::rxSolve(mod_typ, ev_mad50, returnType = "data.frame")
+knitr::kable(mad50[, c("time", "Cc", "il1b")], digits = 1,
+             caption = "Typical trough concentration and IL-1beta release, 50 mg once daily.")
+stopifnot(all(mad50$il1b < 798 - 0.9 * 747))
+```
+
+Already 24 h after the first 50 mg dose the typical trough concentration is
+well above the IL-1beta IC50 of 67 ng/mL, so the release is inhibited by more
+than 90% throughout the dosing interval.
+
+# Brain receptor occupancy
+
+## Monkey model (Figure 4a)
+
+```{r ro_monkey, fig.cap = "Replicates Xu 2020 Figure 4a: monkey brain P2X7 receptor occupancy vs. average plasma concentration over the PET scan."}
+cav_grid <- 10^seq(0, 3.5, length.out = 200)
+ro_ev <- function(cav) {
+  data.frame(id = seq_along(cav), time = 0, evid = 0L, amt = 0, CAV = cav)
+}
+ro_mk <- rxode2::rxSolve(ui_ro_monkey, ro_ev(cav_grid), returnType = "data.frame")
+ggplot(data.frame(cav = cav_grid, ro = ro_mk$ro), aes(cav, ro)) +
+  geom_line(colour = "blue") +
+  scale_x_log10() +
+  coord_cartesian(ylim = c(0, 80)) +
+  labs(x = "Average concentration (ng/mL)", y = "Receptor occupancy (%)") +
+  theme_bw()
+stopifnot(abs(rxode2::rxSolve(ui_ro_monkey, ro_ev(43.2), returnType = "data.frame")$ro - 28) < 1e-6)
+```
+
+## Translation to human and dose selection (Figure 4b, Table S3)
+
+Eq. 4 scales the monkey EC50 by the ratio of plasma fractions unbound,
+43.2 x 17.0 / 11.2 = `r round(43.2 * 17.0 / 11.2, 1)` ng/mL, keeping Emax and
+gamma. Xu 2020 then simulated occupancy 4-6 h after single doses with a
+standard meal, with EC50 at 0.2 to 5 times this value. Here the average
+concentration over 4-6 h is taken from the typical-value PK model and passed
+to the monkey model with its EC50 overridden.
+
+```{r table_s3}
+doses_s3 <- c(5, 10, 12.5, 25, 50, 100, 150, 200, 300, 450, 600)
+ev_s3 <- dplyr::bind_rows(lapply(seq_along(doses_s3), function(i) {
+  make_cohort(1, doses_s3[i], "standard", obs_times = seq(4, 6, by = 0.05),
+              treatment = paste(doses_s3[i], "mg"), id_offset = i - 1L, wt = 70)
+}))
+pk_s3 <- rxode2::rxSolve(mod_typ, ev_s3, returnType = "data.frame")
+cav_s3 <- pk_s3 |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cav = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2) / 2)
+ec50_h <- 43.2 * 17.0 / 11.2
+mult <- c(0.2, 0.5, 1, 2, 5)
+s3_sim <- sapply(mult, function(m) {
+  rxode2::rxSolve(ui_ro_monkey, ro_ev(cav_s3$cav),
+                  params = c(lec50 = log(m * ec50_h)), returnType = "data.frame")$ro
+})
+s3_pub <- matrix(c(
+  49.3, 11.0, 1.02, 0.0800, 0.00266,
+  55.4, 42.6, 11.0, 1.03, 0.0347,
+  55.7, 49.2, 20.0, 2.30, 0.0794,
+  56.0, 55.4, 49.2, 20.1, 1.02,
+  56.0, 56.0, 55.4, 49.3, 11.0,
+  56.0, 56.0, 56.0, 55.4, 42.6,
+  56.0, 56.0, 56.0, 55.9, 52.3,
+  56.0, 56.0, 56.0, 56.0, 54.7,
+  56.0, 56.0, 56.0, 56.0, 55.7,
+  56.0, 56.0, 56.0, 56.0, 55.9,
+  56.0, 56.0, 56.0, 56.0, 56.0
+), ncol = 5, byrow = TRUE)
+s3_tab <- data.frame(dose = doses_s3, cav = cav_s3$cav)
+for (j in seq_along(mult)) {
+  s3_tab[[paste0(mult[j], "x sim")]] <- s3_sim[, j]
+  s3_tab[[paste0(mult[j], "x pub")]] <- s3_pub[, j]
+}
+knitr::kable(s3_tab, digits = 1,
+             caption = "Simulated (typical value) vs. published (Table S3) human brain occupancy (%) by dose and EC50 multiple; cav is the 4-6 h average concentration (ng/mL).")
+# Absolute occupancy difference, percentage points; the curve is steep
+# (gamma 3.71), so a few-percent concentration difference moves the
+# mid-range entries by a few points.
+stopifnot(max(abs(s3_sim - s3_pub)) < 6, median(abs(s3_sim - s3_pub)) < 0.5)
+```
+
+```{r fig4b, fig.cap = "Replicates Xu 2020 Figure 4b: simulated human brain occupancy 4-6 h after single doses with a standard meal, EC50 at 0.2 to 5 times the value translated from monkey."}
+s3_long <- data.frame(dose = rep(doses_s3, length(mult)),
+                      ro = as.vector(s3_sim),
+                      ec50 = factor(rep(paste0(mult, "x EC50"), each = length(doses_s3)),
+                                    levels = paste0(mult, "x EC50")))
+ggplot(s3_long, aes(dose, ro, colour = ec50)) +
+  geom_line() +
+  scale_x_log10() +
+  labs(x = "Dose (mg)", y = "Receptor occupancy (%)", colour = NULL) +
+  theme_bw()
+```
+
+All five EC50 values give near-maximal occupancy at 150 mg, the basis on which
+Xu 2020 chose 150 mg as the first PET dose. The simulated occupancies agree
+with Table S3 to within a few percentage points; the differences sit on the
+steep part of each curve.
+
+The concentrations behind Table S3 can be recovered by inverting the Emax
+function. They are exactly proportional to dose, about 4.48 ng/mL per mg from
+5 to 150 mg, whereas the packaged model's Fr declines with dose as Eq. 1
+specifies (the 4-6 h average falls from 4.9 to 4.1 ng/mL per mg over the same
+range). The Table S3 simulation therefore did not apply the dose effect on Fr;
+its constant scale matches Fr = 1.76 x exp(-0.178), i.e. the Eq. 1 value at
+150 mg with the factor 1.76. The packaged model follows Eq. 1 and the File S1
+code.
+
+```{r table_s3_implied}
+implied <- function(ro, ec50) ec50 * (ro / (56 - ro))^(1 / 3.71)
+per_mg <- c(
+  implied(1.02, ec50_h) / 5, implied(1.03, 2 * ec50_h) / 10,
+  implied(20.0, ec50_h) / 12.5, implied(20.1, 2 * ec50_h) / 25,
+  implied(11.0, 5 * ec50_h) / 50, implied(42.6, 5 * ec50_h) / 100,
+  implied(52.3, 5 * ec50_h) / 150
+)
+round(per_mg, 2)
+stopifnot(diff(range(per_mg)) < 0.05)
+```
+
+## Human PET data (Figure 4c, 4d)
+
+```{r fig4cd, fig.cap = "Replicates Xu 2020 Figures 4c and 4d: human brain occupancy vs. average concentration over the PET scan, predicted from monkey (EC50 65.6 ng/mL, Emax 56%, gamma 3.71) and fitted to the human PET data (Table 2)."}
+ro_h <- rxode2::rxSolve(ui_ro, ro_ev(cav_grid), returnType = "data.frame")
+ro_tr <- rxode2::rxSolve(ui_ro_monkey, ro_ev(cav_grid),
+                         params = c(lec50 = log(ec50_h)), returnType = "data.frame")
+dplyr::bind_rows(
+  data.frame(cav = cav_grid, ro = ro_tr$ro, model = "Translated from monkey (Fig. 4c)"),
+  data.frame(cav = cav_grid, ro = ro_h$ro, model = "Fitted to human PET (Fig. 4d)")
+) |>
+  ggplot(aes(cav, ro, colour = model)) +
+  geom_line() +
+  scale_x_log10() +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = "Average concentration (ng/mL)", y = "Receptor occupancy (%)", colour = NULL) +
+  theme_bw()
+stopifnot(
+  abs(rxode2::rxSolve(ui_ro, ro_ev(44.3), returnType = "data.frame")$ro - 78.3 / 2) < 1e-6
+)
+```
+
+## Occupancy in the PET study design
+
+Combining the population PK model with the human occupancy model reproduces
+the integrated PK/occupancy analysis for the PET study doses (single doses with
+a standard breakfast, plasma averaged over the 4-6 h scan).
+
+```{r pet_design, fig.cap = "Simulated human brain occupancy (median and 90% interval, 100 virtual subjects per dose) for the PET-study doses, from the population PK model and the human occupancy model."}
+rxode2::rxSetSeed(20191109)
+set.seed(20191109)
+pet_doses <- c(5, 10, 20, 50, 150, 300)
+ev_pet <- dplyr::bind_rows(lapply(seq_along(pet_doses), function(i) {
+  make_cohort(100, pet_doses[i], "standard", obs_times = seq(4, 6, by = 0.25),
+              treatment = paste(pet_doses[i], "mg"), id_offset = (i - 1L) * 100L)
+}))
+pk_pet <- rxode2::rxSolve(ui_pk, ev_pet, keep = c("treatment", "DOSE_JNJ54175446_MG"),
+                          returnType = "data.frame")
+cav_pet <- pk_pet |>
+  dplyr::group_by(id, DOSE_JNJ54175446_MG) |>
+  dplyr::summarise(cav = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2) / 2,
+                   .groups = "drop")
+cav_pet$ro <- rxode2::rxSolve(ui_ro, ro_ev(cav_pet$cav), returnType = "data.frame")$ro
+pet_sum <- cav_pet |>
+  dplyr::group_by(dose = DOSE_JNJ54175446_MG) |>
+  dplyr::summarise(cav_median = median(cav), ro_p05 = quantile(ro, 0.05),
+                   ro_median = median(ro), ro_p95 = quantile(ro, 0.95))
+knitr::kable(pet_sum, digits = 1)
+ggplot(pet_sum, aes(dose, ro_median)) +
+  geom_pointrange(aes(ymin = ro_p05, ymax = ro_p95)) +
+  scale_x_log10() +
+  labs(x = "Dose (mg)", y = "Receptor occupancy (%)") +
+  theme_bw()
+stopifnot(
+  pet_sum$ro_median[pet_sum$dose == 150] > 0.9 * 78.3,
+  pet_sum$ro_median[pet_sum$dose == 5] < 0.5 * 78.3
+)
+```
+
+# Assumptions and deviations
+
+- **IL-1beta Hill coefficient digitised.** Eq. 2 has a sigmoidicity factor
+  gamma, but Table 1 reports none, and a simple Emax model (gamma = 1) cannot
+  produce the Figure 5 curve, which falls from E0 to E0 - Emax between about
+  40 and 110 ng/mL. The maintainers digitised seven points on the falling limb
+  of the Figure 5 model curve and fitted the logit of the fractional inhibition
+  against log concentration: gamma = 4.94, with the midpoint at 67.5 ng/mL,
+  which reproduces the tabulated EC50 of 67.0 ng/mL. The model uses
+  gamma = 4.9.
+- **No IIV on the IL-1beta Emax.** The Methods say IIV was assumed for Emax
+  and EC50, but Table 1 reports IIV only for E0 and EC50; the final model is
+  taken to have none on Emax.
+- **IIV on E0 read as an SD.** Table 1 gives 206 for the normally distributed
+  E0 IIV without a CV, which is read as an SD in pg/mL (variance 206^2); a
+  variance of 206 pg^2/mL^2 would be negligible next to the 199 pg/mL residual
+  error.
+- **Fr at the reference dose.** The text says Fr = 1 at 150 mg fasted, but
+  Eq. 1 and the File S1 code give Fr = exp(-0.178 x DOSE / 150), which is 0.837
+  at 150 mg. The model follows the equation and the code, so CL/F and V/F are
+  apparent values relative to Fr = 1 at zero dose; the half-life is unaffected.
+  Table 1 lists beta in 1/h, but it multiplies a dimensionless dose ratio and is
+  itself dimensionless.
+- **Meal coding.** The Methods and File S1 code FOOD = 1 as a high-fat and
+  FOOD = 2 as a standard meal, while the Table 1 rows label the codes the
+  other way round. The Methods, the Table 1 descriptions and the Results
+  ('76% and 63% higher', for high-fat and standard meals respectively) all
+  pair 1.76 with the high-fat meal and 1.63 with the standard meal, which is
+  what the model encodes through `FED` and `FED_HIGHFAT`. Taken literally,
+  the Table 1 code labels together with the File S1 coding would give the
+  opposite pairing; the Table S3 scale (below) is also consistent with 1.76
+  for a standard meal, and the 600 mg high-fat VPC arm runs high. Neither is
+  decisive against three explicit statements, so the stated pairing is kept;
+  swapping the two factors changes exposure by 8%.
+- **Table S3 used dose-proportional exposure.** See the section above: the
+  published occupancies imply 4.48 ng/mL per mg at every dose, so that
+  simulation did not apply the dose effect on Fr. The packaged model is not
+  altered to match it. The Results text also gives the EC50 range as
+  '13-325 ug/mL'; the values are ng/mL (Table S3: 13.1-328 ng/mL).
+- **Residual error.** File S1 shows a combined proportional and additive error
+  model, but Table 1 reports only a proportional term (17.5%); the model is
+  proportional only.
+- **Receptor-occupancy models are typical-value only.** Table 2 reports no IIV
+  and no residual error for either occupancy model, so `ro` is a derived
+  output with no error model. The occupancy models take the average plasma
+  concentration over the PET scan (`CAV`) as input, as in the paper; for
+  simulation, compute it from `Xu_2020_jnj54175446` over the scan window
+  (4-6 h after an oral dose in human).
+- **SAD arms of Figure 3.** The 50 and 300 mg SAD panels pool fasted and
+  high-fat subjects; the VPC here simulates them fasted.
+- **Virtual cohort.** Weight was drawn log-normal around the 77.3 kg median,
+  truncated to 46.5-113.4 kg. The PET cohort's demographics are not reported,
+  so the same distribution was used.
+- **Errata.** No correction notice for Xu 2020 was found (Europe PMC search,
+  2026-11-27).
