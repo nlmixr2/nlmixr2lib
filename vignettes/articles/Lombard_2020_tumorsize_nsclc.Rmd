@@ -1,0 +1,298 @@
+---
+title: "NSCLC lesion size under cisplatin +/- gemcitabine, local vs central reads (Lombard 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{NSCLC lesion size under cisplatin +/- gemcitabine, local vs central reads (Lombard 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Lombard_2020_tumorsize_nsclc_local"))$reference`
+* Article: <https://doi.org/10.1007/s00280-020-04049-5> (open access, PMC7125250)
+* Supplement (Online Resource: individual profiles, goodness-of-fit plots and
+  prediction-corrected VPCs): available from the article page.
+
+Lombard et al. studied how much the reader of a CT scan changes a tumour growth
+inhibition (TGI) model. In a phase III trial of cisplatin alone versus
+gemcitabine plus cisplatin in non-small cell lung cancer (Sandler 2000), the
+same CT scans were measured twice: once by the radiologists of the treating
+hospital ("local") and once at a centralised review centre ("central"). The
+authors fitted the same Stein bi-exponential model (their Eq. 1) to each set of
+readings separately, so the paper reports two parameter sets (Table 1). Both
+are packaged:
+
+* `Lombard_2020_tumorsize_nsclc_local` -- fitted to the hospital readings.
+* `Lombard_2020_tumorsize_nsclc_central` -- fitted to the central readings.
+
+```{r models}
+mod_local <- readModelDb("Lombard_2020_tumorsize_nsclc_local")
+mod_central <- readModelDb("Lombard_2020_tumorsize_nsclc_central")
+rxode2::rxode(mod_local)$description
+```
+
+The model has no dose input. Both treatment arms were pooled without an arm
+effect, so the decay rate `kse` (the paper's `Kd`, "drug effect") is the pooled
+empirical shrinkage rate under platinum-based chemotherapy, and the growth
+rate `kge` (`Kg`) is the rate of the treatment-resistant fraction.
+
+# Population
+
+The analysis used a subset of the trial: 120 lesions in 62 of the 522 patients,
+selected because the same CT scan had been measured at both sites. This gives
+714 observations (357 paired measurements), on average 3 (1-5) time points per
+lesion with a median of 59 (19-116) days between measurements. Patients had
+stage IIIA, IIIB or IV NSCLC and received cisplatin alone or gemcitabine plus
+cisplatin for up to six cycles (August 1995 to February 1997, 28 sites).
+Baseline longest diameters had a median of 3.0 cm (0.25-13.0) for the local and
+2.8 cm (0.6-13.6) for the central readings, with a median of 2 (1-6) lesions per
+patient. The unit of analysis is the individual lesion (individual longest
+diameter, not the RECIST sum), so the random effects describe variability
+between lesions. Age, sex and other demographics of the subset are not reported.
+
+```{r population}
+str(rxode2::rxode(mod_local)$population)
+```
+
+# Source trace
+
+| Equation / parameter | Local | Central | Source location |
+|---|---|---|---|
+| `TS = TS(0) * (exp(kge t) + exp(-kse t) - 1)` | -- | -- | Eq. 1 |
+| `P_i = theta_P * exp(eta_i)` | -- | -- | Eq. 2 |
+| `lrbase` (TS(0), cm) | log(3.1) | log(2.9) | Table 1 |
+| `lkge` (Kg, 1/day) | log(0.0012) | log(0.00091) | Table 1 |
+| `lkse` (Kd, 1/day) | log(0.0077) | log(0.0070) | Table 1 |
+| `etalrbase` (variance) | 0.31 | 0.33 | Table 1, IIV-TS(0) |
+| `etalkge` (variance) | 0.20 | 0.43 | Table 1, IIV-Kg |
+| `etalkse` (variance) | 0.44 | 0.59 | Table 1, IIV-Kd |
+| `addSd` (cm) | 0.43 | 0.40 | Table 1, additive residual error |
+
+# Structural check: ODE solution against Eq. 1
+
+The packaged model writes Eq. 1 as two exponential sub-states (`growth`,
+`shrink`) that share the initial value TS(0). The solved typical-value
+trajectory must reproduce the closed form to numerical precision.
+
+```{r closed-form}
+times <- seq(0, 730, by = 5)
+typ <- function(mod, set) {
+  rxode2::rxSolve(rxode2::zeroRe(mod), events = rxode2::et(times)) |>
+    as.data.frame() |>
+    dplyr::mutate(set = set)
+}
+sim_typ <- dplyr::bind_rows(typ(mod_local, "Local"), typ(mod_central, "Central"))
+
+closed <- function(t, ts0, kg, kd) ts0 * (exp(kg * t) + exp(-kd * t) - 1)
+chk <- sim_typ |>
+  dplyr::mutate(
+    eq1 = ifelse(
+      set == "Local",
+      closed(time, 3.1, 0.0012, 0.0077),
+      closed(time, 2.9, 0.00091, 0.0070)
+    )
+  )
+max(abs(chk$TS - chk$eq1))
+# Same parameters on both sides, so the difference is solver error only.
+stopifnot(max(abs(chk$TS - chk$eq1)) < 1e-4)
+```
+
+# Typical lesion trajectories
+
+```{r typical-plot, fig.width = 7, fig.height = 4}
+ggplot(sim_typ, aes(time, TS, colour = set)) +
+  geom_line(linewidth = 1) +
+  labs(
+    x = "Time (days)", y = "Longest diameter (cm)", colour = "Reader",
+    title = "Typical-lesion longest diameter, local vs central fit",
+    caption = "Typical values of Lombard 2020 Table 1 through Eq. 1."
+  ) +
+  theme_bw()
+```
+
+# Checks against values quoted in the paper
+
+The Discussion converts the population rate constants into a halving time for
+the decay (3.0 months local, 3.3 months central) and a doubling time for the
+growth (19 months local, 25 months central), and Table 1 gives the relative
+error ratio (RER, Eq. 3: difference over mean, in %) between the local and
+central population estimates. Both follow directly from the packaged values.
+
+```{r quoted-values}
+pars <- function(mod) {
+  ini <- rxode2::rxode(mod)$iniDf
+  th <- setNames(ini$est, ini$name)
+  c(
+    ts0 = exp(th[["lrbase"]]), kg = exp(th[["lkge"]]),
+    kd = exp(th[["lkse"]]), sd = th[["addSd"]]
+  )
+}
+p_loc <- pars(mod_local)
+p_cen <- pars(mod_central)
+days_per_month <- 365.25 / 12
+
+halving <- tibble::tibble(
+  Quantity = c("Kd halving time (months)", "Kg doubling time (months)"),
+  `Local (packaged)` = c(log(2) / p_loc[["kd"]], log(2) / p_loc[["kg"]]) / days_per_month,
+  `Local (paper)` = c(3.0, 19),
+  `Central (packaged)` = c(log(2) / p_cen[["kd"]], log(2) / p_cen[["kg"]]) / days_per_month,
+  `Central (paper)` = c(3.3, 25)
+)
+knitr::kable(halving, digits = 2, caption = "Halving and doubling times (Lombard 2020 Discussion).")
+stopifnot(
+  abs(halving$`Local (packaged)` - halving$`Local (paper)`) < 0.1 * halving$`Local (paper)`,
+  abs(halving$`Central (packaged)` - halving$`Central (paper)`) < 0.1 * halving$`Central (paper)`
+)
+
+rer <- tibble::tibble(
+  Parameter = c("TS(0)", "Kg", "Kd", "Additive residual error"),
+  Local = p_loc[c("ts0", "kg", "kd", "sd")],
+  Central = p_cen[c("ts0", "kg", "kd", "sd")]
+) |>
+  dplyr::mutate(
+    `RER (packaged, %)` = (Local - Central) / ((Local + Central) / 2) * 100,
+    `RER (Table 1, %)` = c(6, 28, 9, 7)
+  )
+knitr::kable(rer, digits = 4, caption = "Local-central relative error ratios (Lombard 2020 Table 1).")
+# The paper's RERs come from unrounded estimates; recomputing them from the
+# printed two-significant-figure values agrees to within about one point.
+stopifnot(abs(rer$`RER (packaged, %)` - rer$`RER (Table 1, %)`) < 1.5)
+```
+
+The time of the typical nadir of a Stein trajectory is
+`log(kse / kge) / (kge + kse)`; it is later for the central fit because its
+growth rate is lower.
+
+```{r nadir}
+nadir <- function(p) log(p[["kd"]] / p[["kg"]]) / (p[["kg"]] + p[["kd"]])
+tibble::tibble(
+  Reader = c("Local", "Central"),
+  `Typical nadir time (days)` = c(nadir(p_loc), nadir(p_cen)),
+  `Typical nadir size (cm)` = c(
+    closed(nadir(p_loc), p_loc[["ts0"]], p_loc[["kg"]], p_loc[["kd"]]),
+    closed(nadir(p_cen), p_cen[["ts0"]], p_cen[["kg"]], p_cen[["kd"]])
+  )
+) |>
+  knitr::kable(digits = 2)
+```
+
+# Virtual cohort and VPC
+
+The supplement's prediction-corrected VPCs (Online Resource, panels A and B)
+show observations up to about 220 days, binned at 0, 11-110 and 110-222 days.
+A virtual set of 200 lesions per reader is simulated with an observation at
+baseline and then roughly every 59 days (the median spacing in the data), with
+log-normal inter-lesion variability and the additive residual error.
+
+```{r vpc-sim}
+rxode2::rxSetSeed(20200413)
+n_lesion <- 200L
+obs_times <- c(0, 59, 118, 177, 222)
+ev <- rxode2::et(obs_times) |> rxode2::et(id = seq_len(n_lesion))
+
+sim_vpc <- dplyr::bind_rows(
+  rxode2::rxSolve(mod_local, events = ev) |> as.data.frame() |> dplyr::mutate(set = "Local"),
+  rxode2::rxSolve(mod_central, events = ev) |> as.data.frame() |> dplyr::mutate(set = "Central")
+)
+```
+
+```{r vpc-plot, fig.width = 7, fig.height = 4}
+vpc_sum <- sim_vpc |>
+  dplyr::group_by(set, time) |>
+  dplyr::summarise(
+    Q05 = quantile(sim, 0.05), Q50 = median(sim), Q95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc_sum, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~set) +
+  labs(
+    x = "Time (days)", y = "Longest diameter (cm)",
+    title = "Simulated 5th, 50th and 95th percentiles",
+    caption = "Compare with the prediction-corrected VPCs of the Lombard 2020 Online Resource."
+  ) +
+  theme_bw()
+```
+
+The maintainers read the shaded 95% confidence intervals of the predicted
+median and 95th percentile off the supplement VPCs (approximate, to about
+0.2 cm). The typical-value trajectory is shown alongside the simulated median:
+with log-normal variability on both rate constants the population median of a
+Stein curve sits above the typical curve once growth starts to dominate, so it
+is the simulated median, not the typical value, that is compared with the band.
+Late bins in the data also hold only the lesions still being imaged, which the
+simulation does not mimic.
+
+```{r vpc-compare}
+bands <- tibble::tribble(
+  ~set,      ~bin,      ~mid, ~med_lo, ~med_hi, ~p95_lo, ~p95_hi,
+  "Local",   "0",          0,     2.6,     3.6,     7.1,    11.7,
+  "Local",   "11-110",    59,     1.8,     2.5,     4.9,     9.2,
+  "Local",   "110-222",  165,     1.6,     2.2,     4.2,     9.5,
+  "Central", "0",          0,     2.4,     3.4,     6.7,    11.3,
+  "Central", "11-110",    59,     1.7,     2.4,     4.8,     9.0,
+  "Central", "110-222",  165,     1.5,     2.1,     4.1,     9.6
+)
+pv <- c(Local = list(p_loc), Central = list(p_cen))
+bands$typical <- mapply(
+  function(s, t) closed(t, pv[[s]][["ts0"]], pv[[s]][["kg"]], pv[[s]][["kd"]]),
+  bands$set, bands$mid
+)
+sim_bins <- sim_vpc |>
+  dplyr::mutate(bin = cut(time, c(-Inf, 11, 110, Inf), labels = c("0", "11-110", "110-222"))) |>
+  dplyr::group_by(set, bin) |>
+  dplyr::summarise(sim_median = median(sim), sim_p95 = quantile(sim, 0.95), .groups = "drop")
+cmp <- bands |>
+  dplyr::left_join(sim_bins, by = c("set", "bin"))
+cmp |>
+  dplyr::select(
+    Reader = set, `Bin (days)` = bin, `Typical value` = typical,
+    `Median band lo` = med_lo, `Median band hi` = med_hi, `Simulated median` = sim_median,
+    `95th band lo` = p95_lo, `95th band hi` = p95_hi, `Simulated 95th` = sim_p95
+  ) |>
+  knitr::kable(digits = 2, caption = "Simulated percentiles against the supplement VPC bands (maintainers' reading).")
+# Centre-of-distribution check: the simulated median per bin lies within the
+# band of the predicted median, widened by 0.3 cm for the reading precision and
+# the Monte-Carlo error of a 200-lesion median.
+stopifnot(all(cmp$sim_median >= cmp$med_lo - 0.3 & cmp$sim_median <= cmp$med_hi + 0.3))
+```
+
+The 95th-percentile band at baseline is what fixes the scale of the
+inter-lesion variability: reading Table 1's IIV of TS(0) as a variance (0.31)
+puts the typical 95th percentile at
+`r round(3.1 * exp(qnorm(0.95) * sqrt(0.31)), 1)` cm, inside the 7.1-11.7 cm
+band, while reading it as a standard deviation would put it at
+`r round(3.1 * exp(qnorm(0.95) * 0.31), 1)` cm, well below the band.
+
+# Assumptions and deviations
+
+* **IIV scale.** Table 1 labels the variability rows only "IIV". They are read
+  as NONMEM omega-squared variances. Two pieces of evidence support this: the
+  baseline 95th-percentile band of the supplement VPCs (see above), and the
+  spread of the individual TS(0), Kg and Kd estimates in Figure 3, which is
+  wider than a standard deviation of 0.31 (TS(0)) would allow after shrinkage.
+* **No drug input.** The paper pooled the cisplatin and gemcitabine plus
+  cisplatin arms without an arm covariate and reports no exposure term, so the
+  models carry no dose and `kse` is the pooled chemotherapy effect.
+* **Values below the quantification limit.** About 10% of measurements were
+  below 0.5 cm and were replaced by 0.25 cm before fitting. The packaged
+  additive error model can simulate values below 0.5 cm or below zero; apply
+  the same substitution to simulated data before comparing with observed data.
+* **Lesion, not patient.** Each lesion was an individual in the fit (120 lesions
+  in 62 patients); there is no patient-level random effect, so lesions of one
+  patient are simulated as independent.
+* **VPC bands.** The supplement VPC bands were read by eye; they are used only
+  for a widened centre-of-distribution check and for display.
+* **Reference.** The co-author surname is reproduced as printed in the article
+  and its supplement ("Gueoguieva").

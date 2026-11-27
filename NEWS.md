@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lombard 2020 NSCLC lesion-size Stein TGI models, hospital and central reads ([doi:10.1007/s00280-020-04049-5](https://doi.org/10.1007/s00280-020-04049-5)) -- adults with stage IIIA-IV NSCLC on cisplatin with or without gemcitabine.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
