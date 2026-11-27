@@ -1,0 +1,42 @@
+# Diagnostic only; this branch is never merged. On windows-latest the testthat
+# process dies with an access violation (exit -1073741819) during R CMD check
+# with the r-universe rxode2, while macOS and Linux pass. Each job runs part of
+# the tests against the installed package, serially, printing each test's start
+# to stderr (unbuffered), so the log shows which test was running when R died.
+on:
+  push:
+    branches: ['ci-probe/windows-crash-*']
+
+name: windows-crash-probe
+
+permissions: read-all
+
+jobs:
+  probe:
+    runs-on: windows-latest
+    name: windows probe (${{ matrix.part }})
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [checkModelConventions, modeldb-solve-gate, all]
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      NOT_CRAN: 'true'
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          extra-repositories: https://nlmixr2.r-universe.dev
+          use-public-rspm: true
+          r-version: release
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: probe-1
+          extra-packages: any::rcmdcheck, local::.
+          needs: check
+
+      - name: Run the tests with each test's start on stderr
+        shell: bash
+        run: Rscript .github/scripts/probe-test-file.R "${{ matrix.part }}"
