@@ -137,11 +137,16 @@ Rees_2018_meropenem_ciprofloxacin <- function() {
 
     # 5. Subpopulation killing rates (Eq 2 killing term): Hill-type meropenem
     #    killing (with synergy on KC50,MEM) plus Emax ciprofloxacin killing.
-    kill_ss <- kmax_mem * cmem^hill_mem / (cmem^hill_mem + (syn * kc50_ss_mem)^hill_mem) +
+    #    max(x, 0): past washout, integration noise can take the meropenem
+    #    concentration slightly negative, where the non-integer Hill power is
+    #    NaN; the synergy factor in the KC50 base is guarded the same way.
+    cmem_pos <- max(cmem, 0)
+    syn_pos  <- max(syn, 0)
+    kill_ss <- kmax_mem * cmem_pos^hill_mem / (cmem_pos^hill_mem + (syn_pos * kc50_ss_mem)^hill_mem) +
       kmax_cip * ccip / (ccip + kc50_ss_cip)
-    kill_ri <- kmax_mem * cmem^hill_mem / (cmem^hill_mem + (syn * kc50_ri_mem)^hill_mem) +
+    kill_ri <- kmax_mem * cmem_pos^hill_mem / (cmem_pos^hill_mem + (syn_pos * kc50_ri_mem)^hill_mem) +
       kmax_cip * ccip / (ccip + kc50_ri_cip)
-    kill_ir <- kmax_mem * cmem^hill_mem / (cmem^hill_mem + (syn * kc50_ir_mem)^hill_mem) +
+    kill_ir <- kmax_mem * cmem_pos^hill_mem / (cmem_pos^hill_mem + (syn_pos * kc50_ir_mem)^hill_mem) +
       kmax_cip * ccip / (ccip + kc50_ir_cip)
 
     # 6. Plateau factor (logistic carrying-capacity limit on successful replication)

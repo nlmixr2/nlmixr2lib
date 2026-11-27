@@ -146,7 +146,10 @@ Mi_2022_ceftiofur_semimech <- function() {
 
     # ---- PD (Section 4.8.2 equations) ---------------------------------------
     # EFFECT = Emax * C^gamma / (EC50^gamma + C^gamma)
-    effect <- emax * Cc^hill / (ec50^hill + Cc^hill)
+    # max(Cc, 0): past washout, integration noise can take the concentration
+    # slightly negative, where the non-integer Hill power is NaN.
+    cc_pos <- max(Cc, 0)
+    effect <- emax * cc_pos^hill / (ec50^hill + cc_pos^hill)
 
     # kGR = (kgrowth - kdeath) * (G + R) / Bmax -- main-text form. The
     # supplement prints (1 - (G + R) / Bmax), which has no carrying

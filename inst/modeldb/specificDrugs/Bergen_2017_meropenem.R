@@ -154,9 +154,12 @@ Bergen_2017_meropenem <- function() {
     #    (Methods: "An Inh_Rep_S value of 0.50 resulted in net stasis, whereas an
     #    Inh_Rep_S value of > 0.50 led to bacterial killing due to the
     #    elimination of bacteria that replicate unsuccessfully").
-    inh_rep_s <- imax_rep_s * cmem^hill_s / (ic50_rep_s^hill_s + cmem^hill_s)
-    inh_rep_i <- imax_rep_i * cmem^hill_i / (ic50_rep_i^hill_i + cmem^hill_i)
-    inh_rep_r <- imax_rep_r * cmem^hill_r / (ic50_rep_r^hill_r + cmem^hill_r)
+    #    max(cmem, 0): past washout, integration noise can take the meropenem
+    #    concentration slightly negative, where the non-integer Hill power is NaN.
+    cmem_pos <- max(cmem, 0)
+    inh_rep_s <- imax_rep_s * cmem_pos^hill_s / (ic50_rep_s^hill_s + cmem_pos^hill_s)
+    inh_rep_i <- imax_rep_i * cmem_pos^hill_i / (ic50_rep_i^hill_i + cmem_pos^hill_i)
+    inh_rep_r <- imax_rep_r * cmem_pos^hill_r / (ic50_rep_r^hill_r + cmem_pos^hill_r)
     irep_s <- 1 - inh_rep_s
     irep_i <- 1 - inh_rep_i
     irep_r <- 1 - inh_rep_r

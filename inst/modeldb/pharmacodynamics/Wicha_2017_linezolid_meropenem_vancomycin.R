@@ -197,9 +197,12 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
     # ---- Hill drug-effect terms (pure 0-to-1 sigmoidal, Eq. 4) ----
     # Emax is held as a separate multiplier when needed (MER Eagle, VAN). For
     # LZD, MER, and the VAN-on-MER adaption-suppression term, Emax is implicit 1.
+    # max(mer, 0): past washout, integration noise can take the meropenem
+    # concentration slightly negative, where the non-integer Hill power is NaN.
+    mer_pos <- max(mer, 0)
     eff_lzd      <- lzd  ^ hill_lzd     / (ec50_lzd     ^ hill_lzd     + lzd  ^ hill_lzd)
-    eff_mer      <- mer  ^ hill_mer     / (ec50_mer     ^ hill_mer     + mer  ^ hill_mer)
-    eff_mer_eagle <- mer ^ hill_mer_eagle / (ec50_mer_eagle ^ hill_mer_eagle + mer ^ hill_mer_eagle)
+    eff_mer      <- mer_pos ^ hill_mer     / (ec50_mer     ^ hill_mer     + mer_pos ^ hill_mer)
+    eff_mer_eagle <- mer_pos ^ hill_mer_eagle / (ec50_mer_eagle ^ hill_mer_eagle + mer_pos ^ hill_mer_eagle)
     eff_van      <- van  ^ hill_van     / (ec50_van     ^ hill_van     + van  ^ hill_van)
     eff_van_ari  <- van  ^ hill_van_ari / (ec50_van_ari ^ hill_van_ari + van  ^ hill_van_ari)
 

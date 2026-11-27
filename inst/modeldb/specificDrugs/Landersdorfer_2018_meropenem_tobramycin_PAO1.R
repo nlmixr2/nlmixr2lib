@@ -143,12 +143,18 @@ Landersdorfer_2018_meropenem_tobramycin_PAO1 <- function() {
 
     # 5. Subpopulation killing rates (Eq 2 killing term): Hill-type killing by
     #    both meropenem (with synergy on KC50,MEM) and tobramycin.
-    kill_ss <- kmax_mem_ss * cmem^hill_mem / (cmem^hill_mem + (om_effect * kc50_ss_mem)^hill_mem) +
-      kmax_tob_ss * ctob^hill_tob / (ctob^hill_tob + kc50_ss_tob^hill_tob)
-    kill_ri <- kmax_mem_ri * cmem^hill_mem / (cmem^hill_mem + (om_effect * kc50_ri_mem)^hill_mem) +
-      kmax_tob_ri * ctob^hill_tob / (ctob^hill_tob + kc50_ri_tob^hill_tob)
-    kill_ir <- kmax_mem_ir * cmem^hill_mem / (cmem^hill_mem + (om_effect * kc50_ir_mem)^hill_mem) +
-      kmax_tob_ir * ctob^hill_tob / (ctob^hill_tob + kc50_ir_tob^hill_tob)
+    #    max(x, 0): past washout, integration noise can take a concentration
+    #    slightly negative, where the non-integer Hill power is NaN; the
+    #    synergy factor in the KC50 base is guarded the same way.
+    cmem_pos      <- max(cmem, 0)
+    ctob_pos      <- max(ctob, 0)
+    om_effect_pos <- max(om_effect, 0)
+    kill_ss <- kmax_mem_ss * cmem_pos^hill_mem / (cmem_pos^hill_mem + (om_effect_pos * kc50_ss_mem)^hill_mem) +
+      kmax_tob_ss * ctob_pos^hill_tob / (ctob_pos^hill_tob + kc50_ss_tob^hill_tob)
+    kill_ri <- kmax_mem_ri * cmem_pos^hill_mem / (cmem_pos^hill_mem + (om_effect_pos * kc50_ri_mem)^hill_mem) +
+      kmax_tob_ri * ctob_pos^hill_tob / (ctob_pos^hill_tob + kc50_ri_tob^hill_tob)
+    kill_ir <- kmax_mem_ir * cmem_pos^hill_mem / (cmem_pos^hill_mem + (om_effect_pos * kc50_ir_mem)^hill_mem) +
+      kmax_tob_ir * ctob_pos^hill_tob / (ctob_pos^hill_tob + kc50_ir_tob^hill_tob)
 
     # 6. Replication factor (Eq 3): REP = 2 at low CFU, REP = 1 when CFU = CFUmax.
     #    Equivalent to 2 * (1 - CFUall / (2 * CFUmax)); stationary plateau at CFUmax.

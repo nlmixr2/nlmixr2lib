@@ -172,29 +172,36 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_hfim <- function() {
     int_caz_fof_r     <- exp(lint_caz_fof_r) - 1
     ec50int_caz_fof_r <- exp(lec50int_caz_fof_r)
 
+    # max(x, 0): past washout, integration noise can take a concentration
+    # slightly negative, where the non-integer Hill or power-model exponent is
+    # NaN.
+    conc_avi_pos <- max(conc_avi, 0)
+    conc_caz_pos <- max(conc_caz, 0)
+    conc_fof_pos <- max(conc_fof, 0)
+
     ec50_caz_s_eff <- ec50_caz_s *
-      (1 + int_avi_caz_s * conc_avi^hillint_avi_caz_s /
-         (ec50int_avi_caz_s^hillint_avi_caz_s + conc_avi^hillint_avi_caz_s))
+      (1 + int_avi_caz_s * conc_avi_pos^hillint_avi_caz_s /
+         (ec50int_avi_caz_s^hillint_avi_caz_s + conc_avi_pos^hillint_avi_caz_s))
     ec50_caz_r_eff <- ec50_caz_r *
-      (1 + int_avi_caz_r * conc_avi^hillint_avi_caz_r /
-         (ec50int_avi_caz_r^hillint_avi_caz_r + conc_avi^hillint_avi_caz_r))
+      (1 + int_avi_caz_r * conc_avi_pos^hillint_avi_caz_r /
+         (ec50int_avi_caz_r^hillint_avi_caz_r + conc_avi_pos^hillint_avi_caz_r))
     ec50_fof_r_eff <- ec50_fof_r *
-      (1 + int_caz_fof_r * conc_caz^hillint_caz_fof_r /
-         (ec50int_caz_fof_r^hillint_caz_fof_r + conc_caz^hillint_caz_fof_r))
+      (1 + int_caz_fof_r * conc_caz_pos^hillint_caz_fof_r /
+         (ec50int_caz_fof_r^hillint_caz_fof_r + conc_caz_pos^hillint_caz_fof_r))
 
     # ---- 4. Mono-drug kill of the susceptible and resistant subpopulations ----
     #        (Text S3 Eq 3 sigmoidal Emax, Eq 4 power)
-    e_caz_s <- emax_caz_s * conc_caz^hill_caz_s /
-      (ec50_caz_s_eff^hill_caz_s + conc_caz^hill_caz_s)
-    e_avi_s <- emax_avi_s * conc_avi^hill_avi_s /
-      (ec50_avi_s^hill_avi_s + conc_avi^hill_avi_s)
-    e_fof_s <- slope_fof_s * conc_fof^hill_fof_s
+    e_caz_s <- emax_caz_s * conc_caz_pos^hill_caz_s /
+      (ec50_caz_s_eff^hill_caz_s + conc_caz_pos^hill_caz_s)
+    e_avi_s <- emax_avi_s * conc_avi_pos^hill_avi_s /
+      (ec50_avi_s^hill_avi_s + conc_avi_pos^hill_avi_s)
+    e_fof_s <- slope_fof_s * conc_fof_pos^hill_fof_s
 
-    e_caz_r <- emax_caz_r * conc_caz^hill_caz_r /
-      (ec50_caz_r_eff^hill_caz_r + conc_caz^hill_caz_r)
-    e_fof_r <- emax_fof_r * conc_fof^hill_fof_r /
-      (ec50_fof_r_eff^hill_fof_r + conc_fof^hill_fof_r)
-    e_avi_r <- slope_avi_r * conc_avi^hill_avi_r
+    e_caz_r <- emax_caz_r * conc_caz_pos^hill_caz_r /
+      (ec50_caz_r_eff^hill_caz_r + conc_caz_pos^hill_caz_r)
+    e_fof_r <- emax_fof_r * conc_fof_pos^hill_fof_r /
+      (ec50_fof_r_eff^hill_fof_r + conc_fof_pos^hill_fof_r)
+    e_avi_r <- slope_avi_r * conc_avi_pos^hill_avi_r
 
     # ---- 5. Combined kill (Text S3 Eqs 5-7) ----
     # Susceptible: Bliss independence collapses to effect addition (Eq 7).
@@ -213,10 +220,10 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_hfim <- function() {
     # Text S5: the inhibitory effects of ceftazidime and avibactam were merged for
     # the subpopulation synergy and estimated as a function of the CEFTAZIDIME
     # concentration alone, so conc_avi does not enter these four terms.
-    i_cza_rcza <- conc_caz^hill_cza_rcza / (ec50_cza_rcza^hill_cza_rcza + conc_caz^hill_cza_rcza)
-    i_fof_rcza <- conc_fof^hill_fof_rcza / (ec50_fof_rcza^hill_fof_rcza + conc_fof^hill_fof_rcza)
-    i_fof_rfof <- conc_fof^hill_fof_rfof / (ec50_fof_rfof^hill_fof_rfof + conc_fof^hill_fof_rfof)
-    i_cza_rfof <- conc_caz^hill_cza_rfof / (ec50_cza_rfof^hill_cza_rfof + conc_caz^hill_cza_rfof)
+    i_cza_rcza <- conc_caz_pos^hill_cza_rcza / (ec50_cza_rcza^hill_cza_rcza + conc_caz_pos^hill_cza_rcza)
+    i_fof_rcza <- conc_fof_pos^hill_fof_rcza / (ec50_fof_rcza^hill_fof_rcza + conc_fof_pos^hill_fof_rcza)
+    i_fof_rfof <- conc_fof_pos^hill_fof_rfof / (ec50_fof_rfof^hill_fof_rfof + conc_fof_pos^hill_fof_rfof)
+    i_cza_rfof <- conc_caz_pos^hill_cza_rfof / (ec50_cza_rfof^hill_cza_rfof + conc_caz_pos^hill_cza_rfof)
 
     # ---- 7. Bacterial ODEs (Text S3 Eqs 9-12) ----
     # NOTE ON EQ 10: as in the static model (Eq 2), the supplement prints the kill

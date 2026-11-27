@@ -168,12 +168,17 @@ Cheah_2016_polymyxin_AB3070294 <- function() {
     f_bound_cations <- c_cations / denom_total
 
     not_occ          <- 1 - f_bound_cations
-    not_occ_h        <- not_occ ^ hill_binding
+    # max(x, 0): past washout, integration noise can take Cc slightly
+    # negative, which carries these bases below zero, where the non-integer
+    # Hill power is NaN.
+    not_occ_pos      <- max(not_occ, 0)
+    not_occ_h        <- not_occ_pos ^ hill_binding
     ec50_h           <- ec50 ^ hill_binding
     f_polymyxin_eff  <- not_occ_h / ((ec50_h) + (not_occ_h))
     c_polymyxin_eff  <- f_polymyxin_eff * Cc / (1 + r_adapt)
 
-    c_eff_hk   <- c_polymyxin_eff ^ hill_killing
+    c_eff_pos  <- max(c_polymyxin_eff, 0)
+    c_eff_hk   <- c_eff_pos ^ hill_killing
     killc50_hk <- killc50 ^ hill_killing
     kill       <- kill_max * c_eff_hk / ((killc50_hk) + (c_eff_hk))
 

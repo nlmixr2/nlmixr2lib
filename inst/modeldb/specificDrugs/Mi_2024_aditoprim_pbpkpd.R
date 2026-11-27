@@ -365,8 +365,11 @@ Mi_2024_aditoprim_pbpkpd <- function() {
 
     # Sigmoid Emax killing, common Emax and gamma, subpopulation-specific
     # potency. Suppl 3.2 `((Emax*Cc^gama)/(Cc^gama+EC50_E^gama))`.
-    kill_s <- emax * cdrive^hill / (cdrive^hill + ec50_s^hill)
-    kill_r <- emax * cdrive^hill / (cdrive^hill + ec50_r^hill)
+    # max(cdrive, 0): past washout, integration noise can take the
+    # concentration slightly negative, where the non-integer Hill power is NaN.
+    cdrive_pos <- max(cdrive, 0)
+    kill_s <- emax * cdrive_pos^hill / (cdrive_pos^hill + ec50_s^hill)
+    kill_r <- emax * cdrive_pos^hill / (cdrive_pos^hill + ec50_r^hill)
 
     d/dt(S) <- logistic_growth * S - kill_s * S       # Mi 2024 Eq 2; Suppl 3.2 `ddt_E`
     d/dt(R) <- logistic_growth * R - kill_r * R       # Mi 2024 Eq 3; Suppl 3.2 `ddt_R`
