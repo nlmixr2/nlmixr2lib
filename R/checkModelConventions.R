@@ -1751,8 +1751,14 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # `cl * (1 + cl_time_fday)^floor(t / 24)`; `cl_time_hyp` is the rate of the
 # hyperbolic decline `cl0 / (1 + cl_time_hyp * t)`.
 .timeVaryingClearanceAcceptPattern <- paste(
-  "cl_time_max", "cl_t50", "cl_time_hill", "cl_time_slope", "cl_time_fday",
-  "cl_time_hyp", "cl_exp_", "tclchange",
+  "cl_time_max",
+  "cl_t50",
+  "cl_time_hill",
+  "cl_time_slope",
+  "cl_time_fday",
+  "cl_time_hyp",
+  "cl_exp_",
+  "tclchange",
   sep = "|"
 )
 

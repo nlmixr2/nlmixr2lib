@@ -475,8 +475,18 @@ Chu_2016_vegf165b_human_qsp <- function() {
       verified = TRUE
     ),
     bld_sR1 = list(analyte = "free sVEGFR1", units = "mol/cm3 blood", specimen = "whole blood", verified = TRUE),
-    bld_V165_sR1 = list(analyte = "VEGF165a:sVEGFR1", units = "mol/cm3 blood", specimen = "whole blood", verified = TRUE),
-    bld_V121_sR1 = list(analyte = "VEGF121:sVEGFR1", units = "mol/cm3 blood", specimen = "whole blood", verified = TRUE),
+    bld_V165_sR1 = list(
+      analyte = "VEGF165a:sVEGFR1",
+      units = "mol/cm3 blood",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    bld_V121_sR1 = list(
+      analyte = "VEGF121:sVEGFR1",
+      units = "mol/cm3 blood",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
     bld_sR1_N1_L_norm = list(
       analyte = "sVEGFR1:luminal NRP1 (normal-tissue endothelium)",
       units = "mol/cm3 blood",
@@ -543,7 +553,12 @@ Chu_2016_vegf165b_human_qsp <- function() {
       specimen = "tissue",
       verified = TRUE
     ),
-    bld_a2M = list(analyte = "alpha-2-macroglobulin", units = "mol/cm3 blood", specimen = "whole blood", verified = TRUE),
+    bld_a2M = list(
+      analyte = "alpha-2-macroglobulin",
+      units = "mol/cm3 blood",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
     bld_V165_a2M = list(
       analyte = "VEGF165a:alpha-2-macroglobulin",
       units = "mol/cm3 blood",
@@ -803,7 +818,12 @@ Chu_2016_vegf165b_human_qsp <- function() {
       specimen = "whole blood",
       verified = TRUE
     ),
-    bld_V165b_sR1 = list(analyte = "VEGF165b:sVEGFR1", units = "mol/cm3 blood", specimen = "whole blood", verified = TRUE),
+    bld_V165b_sR1 = list(
+      analyte = "VEGF165b:sVEGFR1",
+      units = "mol/cm3 blood",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
     nrm_V165b_R1 = list(
       analyte = "VEGF165b:VEGFR1",
       units = "mol/cm3 normal tissue",
