@@ -1,0 +1,333 @@
+---
+title: "Body weight versus postmenstrual age in Korean children (Guk 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Body weight versus postmenstrual age in Korean children (Guk 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+ui <- rxode2::rxode(readModelDb("Guk_2017_bodyWeight"))
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Article (open access, PMC7042011): <https://doi.org/10.12793/tcp.2017.25.2.101>\n")
+```
+
+Guk 2017 is not a drug model. It is a **body-weight covariate model** for
+children: a curve of weight against postmenstrual age (PMA, gestational age
+plus postnatal age) fitted to one weight per child from 83,014 Korean pediatric
+patients. The authors intended it for imputing missing weights when PMA is
+known, and for simulating weight as a time-varying covariate in pediatric
+pharmacokinetic studies.
+
+The final model (Eq. 2) multiplies a sigmoid (Hill) function of PMA by a
+logistic function of PMA:
+
+$$
+\mathrm{BW} = \frac{W_{\max}\,\mathrm{PMA}^{\gamma}}{\mathrm{PMA}_{50}^{\gamma} + \mathrm{PMA}^{\gamma}}
+\times \frac{1}{e^{-\alpha\,\mathrm{PMA}} + \beta/\alpha}
+$$
+
+The sigmoid describes the rapid perinatal and infant growth; it has saturated
+by about two years of age. The logistic factor describes the slower growth of
+childhood and tends to $\alpha/\beta$ at large PMA. All parameters except the
+logistic rate $\alpha$ differ between boys and girls (Table 2). Each child
+contributed one weight, so no between-subject variability was estimated; the
+residual error is proportional.
+
+In the packaged model the rxode2 `time` variable **is** PMA in weeks, and the
+output `bw` is body weight in kg. `SEXF` (1 = girl, 0 = boy) is required.
+
+# Population
+
+```{r population, echo = FALSE, results = "asis"}
+pop <- ui$population
+for (nm in names(pop)) cat("* **", nm, "**: ", paste(pop[[nm]], collapse = "; "), "\n", sep = "")
+```
+
+The data are electronic medical records from Severance Hospital, Seoul, from
+January 2012 to March 2017: 83,014 patients younger than 12 years with one
+weight each (Methods, Data; Table 1). Where gestational age was missing, the
+child was assumed to have been born at term (40 weeks). The median PMA was
+193.9 weeks (range 24.6 to 718.3) and the median weight 14.0 kg (range 0.4 to
+97.0); 56.7% were boys.
+
+# Source trace
+
+Each `ini()` entry in `inst/modeldb/endogenous/Guk_2017_bodyWeight.R` has an
+in-file comment giving its origin. The table below collects them.
+
+| Model component | Paper symbol | Value (boys / girls) | Source location |
+|---|---|---|---|
+| Weight equation (`fsig`, `flogis`, `bw`) | Eq. (2) | -- | Methods, "A model for weight", Eq. (2) |
+| `lbwmax_male`, `lbwmax_female` | WMAX | 8.42 / 8.22 kg | Table 2 |
+| `ltmat50_male`, `ltmat50_female` | PMA50 | 44.13 / 44.88 weeks | Results paragraph 2 (Table 2: 44.1 / 44.8) |
+| `lhill_male`, `lhill_female` | $\gamma$ | 4.53 / 4.11 | Table 2; Results paragraph 2 |
+| `lkgrow` | $\alpha$ | 0.003299 /week (both sexes) | Table 2 |
+| `llogismax_male`, `llogismax_female` | $\alpha/\beta$ | 14.3 / 12.7 | Table 2 |
+| `propSd` | $\sigma$ (CV) | 17.9% | Table 2, "Residual variability" |
+| No IIV | -- | -- | Results paragraph 1 ("only one measurement per patient") |
+| Sex selection via `SEXF` | gender | -- | Results paragraph 2; Table 2 |
+
+## Units
+
+| Symbol | Units | Note |
+|---|---|---|
+| `time` / `pma` | week | the rxode2 time variable **is** postmenstrual age |
+| `bw`, `bwmax` | kg | |
+| `tmat50` | week | PMA at half of `bwmax` in the sigmoid component |
+| `hill` | unitless | |
+| `kgrow` | 1/week | |
+| `logismax` | unitless | maximum of the logistic factor, $\alpha/\beta$ |
+| `propSd` | fraction | |
+
+# Parameter table
+
+```{r param-table, echo = FALSE}
+ui$iniDf |>
+  dplyr::filter(!is.na(.data$ntheta)) |>
+  dplyr::transmute(
+    Parameter = .data$name,
+    Estimate = signif(ifelse(grepl("^l", .data$name), exp(.data$est), .data$est), 4),
+    Label = .data$label
+  ) |>
+  dplyr::rename("Value (back-transformed)" = "Estimate") |>
+  knitr::kable()
+```
+
+# Simulation
+
+## Typical curves
+
+The typical weight does not depend on the residual error, so `bw` is read
+directly from the solve. One "subject" per sex is solved on a weekly PMA grid
+spanning the fitted range.
+
+```{r simulate}
+mod <- readModelDb("Guk_2017_bodyWeight")
+
+solve_sex <- function(sexf, pma) {
+  ev <- data.frame(id = 1L, time = pma, evid = 0L, SEXF = sexf)
+  out <- rxode2::rxSolve(mod, ev, returnType = "data.frame")
+  out$SEXF <- sexf
+  out$sex <- ifelse(sexf == 1, "Girl", "Boy")
+  out
+}
+
+pma_grid <- seq(25, 718, by = 1)
+typ <- dplyr::bind_rows(solve_sex(0, pma_grid), solve_sex(1, pma_grid))
+nrow(typ)
+```
+
+```{r fig4, fig.cap = "Typical body weight against PMA for boys and girls. Replicates the median prediction lines of Figure 4 of Guk 2017."}
+ggplot(typ, aes(.data$time, .data$bw, linetype = .data$sex)) +
+  geom_line() +
+  labs(x = "PMA (weeks)", y = "Weight (kg)", linetype = "Sex") +
+  theme_bw()
+```
+
+## Stochastic cohort
+
+A cross-sectional virtual cohort has 200 children per sex at each of eight PMAs,
+one weight each with the proportional residual error, as in the source data.
+
+```{r stochastic}
+rxode2::rxSetSeed(20170601)
+pma_vpc <- c(30, 40, 60, 100, 200, 400, 600, 700)
+n_per_sex <- 200
+cohort <- expand.grid(id = seq_len(2 * n_per_sex), time = pma_vpc) |>
+  dplyr::mutate(evid = 0L, SEXF = as.integer(.data$id > n_per_sex)) |>
+  dplyr::arrange(.data$id, .data$time)
+
+# The model has no between-subject variability by design (one weight per
+# child), so rxode2's warning about a multi-subject solve without omega is
+# expected and muffled; any other warning still surfaces.
+vpc <- withCallingHandlers(
+  rxode2::rxSolve(mod, cohort, keep = "SEXF", returnType = "data.frame"),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+) |>
+  dplyr::mutate(sex = ifelse(.data$SEXF == 1, "Girl", "Boy"))
+nrow(vpc)
+```
+
+```{r vpc-plot, fig.height = 4.5, fig.cap = "Virtual cohort (200 per sex at each PMA) with the typical curves. Compare with the body weight versus PMA panel of Figure 2 and with Figure 3 of Guk 2017."}
+ggplot(vpc, aes(.data$time, .data$sim)) +
+  geom_jitter(width = 4, alpha = 0.15, size = 0.6) +
+  geom_line(data = typ, aes(.data$time, .data$bw), colour = "firebrick") +
+  facet_wrap(~sex) +
+  labs(x = "PMA (weeks)", y = "Body weight (kg)") +
+  theme_bw()
+```
+
+# Validation
+
+This is an anthropometric model with no drug, so there is no NCA. The checks
+below test the equation, the published curves and the residual error.
+
+## 1. The model returns Eq. (2)
+
+The output must equal Eq. (2) evaluated by hand from the paper's numbers. Both
+sides use the same values, so any difference is a transcription or algebra
+error and the bound is tight.
+
+```{r exact-check}
+eq2 <- function(pma, wmax, pma50, gam, alpha, alpha_over_beta) {
+  wmax * pma^gam / (pma50^gam + pma^gam) / (exp(-alpha * pma) + 1 / alpha_over_beta)
+}
+chk <- typ |>
+  dplyr::filter(.data$time %in% c(25, 40, 52, 92, 144, 194, 300, 500, 718)) |>
+  dplyr::mutate(
+    bw_hand = ifelse(
+      .data$SEXF == 1,
+      eq2(.data$time, 8.22, 44.88, 4.11, 0.003299, 12.7),
+      eq2(.data$time, 8.42, 44.13, 4.53, 0.003299, 14.3)
+    )
+  )
+stopifnot(
+  nrow(chk) == 18,
+  all(abs(chk$bw - chk$bw_hand) < 1e-8)
+)
+chk |>
+  dplyr::select("sex", "time", "bw") |>
+  dplyr::rename("Sex" = "sex", "PMA (weeks)" = "time", "Typical weight (kg)" = "bw") |>
+  knitr::kable(digits = 2)
+```
+
+At 40 weeks (a term newborn) the typical weights are about 3.5 kg (boys) and
+3.3 kg (girls); at 92 weeks (one year after a term birth) about 10 kg.
+
+## 2. Curves against Figure 4
+
+The maintainers read the end of the median prediction lines in Figure 4 by eye:
+about 51.5 kg for boys and 47.5 kg for girls at the right edge of the plot
+(about 718 weeks). The Discussion also states that boys are heavier than girls
+at every PMA. With the published estimates this holds from 34 weeks PMA onwards;
+below about 33.7 weeks the girls' lower Hill coefficient makes their typical
+weight slightly higher (0.68 versus 0.60 kg at 25 weeks), a region where the two
+lines of Figure 4 overlap.
+
+```{r fig4-check}
+fig4 <- data.frame(sex = c("Boy", "Girl"), fig4_kg = c(51.5, 47.5))
+end_pts <- typ |>
+  dplyr::filter(.data$time == 718) |>
+  dplyr::select("sex", "bw") |>
+  dplyr::left_join(fig4, by = "sex") |>
+  dplyr::mutate(pct_diff = 100 * (.data$bw / .data$fig4_kg - 1))
+
+boys <- typ$bw[typ$SEXF == 0 & typ$time >= 34]
+girls <- typ$bw[typ$SEXF == 1 & typ$time >= 34]
+crossover <- typ$time[typ$SEXF == 1][typ$bw[typ$SEXF == 1] >= typ$bw[typ$SEXF == 0]]
+range(crossover)
+stopifnot(
+  all(abs(end_pts$pct_diff) < 5),
+  all(boys > girls),
+  max(crossover) < 34
+)
+end_pts |>
+  dplyr::rename(
+    "Sex" = "sex", "Model at 718 weeks (kg)" = "bw",
+    "Figure 4 (kg, read by eye)" = "fig4_kg", "Difference (%)" = "pct_diff"
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+## 3. Median weight at the median PMA (Table 1)
+
+The typical weight increases monotonically with PMA, so for one sex the median
+of the predictions equals the prediction at the median PMA. Table 1 gives a
+median PMA of 193.9 weeks and a median weight of 14.0 kg for the pooled cohort.
+The sex-weighted typical weight at 193.9 weeks should be close to 14.0 kg. A
+mis-transcribed WMAX or $\alpha/\beta$ would move it by more than the 5%
+tolerance.
+
+```{r table1-check}
+med <- dplyr::bind_rows(solve_sex(0, 193.9), solve_sex(1, 193.9))
+bw_pooled <- 0.567 * med$bw[med$SEXF == 0] + 0.433 * med$bw[med$SEXF == 1]
+stopifnot(abs(bw_pooled / 14.0 - 1) < 0.05)
+data.frame(
+  quantity = c("Boys", "Girls", "Pooled (56.7% boys)", "Table 1 median weight"),
+  kg = c(med$bw[med$SEXF == 0], med$bw[med$SEXF == 1], bw_pooled, 14.0)
+) |>
+  dplyr::rename("Typical weight at PMA 193.9 weeks" = "quantity", "kg" = "kg") |>
+  knitr::kable(digits = 2)
+```
+
+## 4. The sigmoid component saturates by two years of age
+
+The Discussion states that the sigmoid component "only exerts a significant
+role in describing the change in weight up to 2 year-old". At 144 weeks PMA (two
+years after a term birth) the sigmoid factor should be essentially at its
+maximum for both sexes.
+
+```{r sigmoid-check}
+sig <- typ |>
+  dplyr::filter(.data$time == 144) |>
+  dplyr::select("sex", "fsig")
+stopifnot(all(sig$fsig > 0.99))
+sig |>
+  dplyr::rename("Sex" = "sex", "Sigmoid factor at 144 weeks" = "fsig") |>
+  knitr::kable(digits = 4)
+```
+
+## 5. Residual variability of the stochastic cohort
+
+The spread of `sim / pred` in the virtual cohort must recover the 17.9% CV.
+Both sides come from the same draw, so the only difference is Monte-Carlo error;
+with 1,600 draws per sex the standard error of the SD is about 2% of its value.
+
+```{r cv-check}
+cv_chk <- vpc |>
+  dplyr::group_by(.data$sex) |>
+  dplyr::summarise(n = dplyr::n(), cv_sim = stats::sd(.data$sim / .data$bw), .groups = "drop")
+stopifnot(
+  all(cv_chk$n == n_per_sex * length(pma_vpc)),
+  all(abs(cv_chk$cv_sim / 0.179 - 1) < 0.10)
+)
+cv_chk |>
+  dplyr::rename("Sex" = "sex", "N draws" = "n", "Simulated CV" = "cv_sim") |>
+  knitr::kable(digits = 3)
+```
+
+# Assumptions and deviations
+
+* **PMA is the time axis.** The rxode2 `time` variable is PMA in weeks; the
+  model has no dosing and no ODE states. To use it as a covariate generator,
+  solve it on the PMA grid of interest (PMA = gestational age at birth +
+  postnatal age, both in weeks) and pass `bw` on as `WT`. The fit covers 24.6
+  to 718.3 weeks (children under 12 years); the authors caution against
+  extrapolating to adolescents.
+* **PMA50 uses the two-decimal values of the Results text.** The Results give
+  44.13 weeks (boys) and 44.88 weeks (girls); Table 2 prints 44.1 and 44.8,
+  which are the same values truncated to one decimal. The difference in
+  predicted weight is under 0.3%.
+* **Sex-specific values are encoded directly.** Table 2 reports a separate
+  estimate for each sex rather than a covariate coefficient, so the model
+  carries one parameter per sex and selects it with `SEXF`. The large RSEs of
+  the girls' rows (for example 37.2% for WMAX) suggest the girls' values were
+  estimated as a shift from the boys' values; that parameterisation is not
+  reported and does not change the typical curves.
+* **Boys versus girls below 34 weeks PMA.** The Discussion says boys are
+  heavier at every PMA, but the published estimates give girls a slightly
+  higher typical weight below about 33.7 weeks PMA (very preterm infants). The
+  values are kept as published and not adjusted.
+* **Residual error.** Table 2 labels the residual row "$\sigma^2$ (CV %)" with
+  the value 17.9; it is read as a proportional error with a CV of 17.9%
+  (`propSd = 0.179`). The Results state that a combined error model was tried
+  and the additive part was negligible.
+* **Not extracted:** the candidate sigmoid-times-exponential model (Eq. 1),
+  which was rejected on AIC and whose estimates are not reported.
