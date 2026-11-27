@@ -64,6 +64,8 @@ navbar:
         href: articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric.html
       - text: "Abacavir (Jullien 2005)"
         href: articles/Jullien_2005_abacavir.html
+      - text: "Abacavir (Rabie 2020)"
+        href: articles/Rabie_2020_abacavir.html
       - text: "Abacavir (Tikiso 2021)"
         href: articles/Tikiso_2021_abacavir.html
       - text: "Abacavir (Zhao 2012)"
@@ -11448,6 +11450,7 @@ articles:
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
   - articles/Quintairos_2021_tacrolimus_mycophenolic_acid
+  - articles/Rabie_2020_abacavir
   - articles/Ramachandran_2023_tuberculosis_eptb_pbpk
   - articles/Ramakrishnan_2023_amyloid_qsp
   - articles/Rambiritch_2016_glibenclamide

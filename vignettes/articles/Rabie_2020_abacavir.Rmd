@@ -1,0 +1,589 @@
+---
+title: "Abacavir (Rabie 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Abacavir (Rabie 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r libraries, message = FALSE, warning = FALSE}
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta}
+# Two rxode2 messages are expected here and muffled by name only: the
+# occasion-indicator expansion makes the between-occasion etas
+# non-mu-referenced (relevant to SAEM estimation, not to simulation), and the
+# typical-value solves below run several subjects with the random effects
+# removed.
+muffle_known <- function(w) {
+  msg <- conditionMessage(w)
+  if (grepl("etas defaulted to non-mu referenced", msg, fixed = TRUE) ||
+      grepl("multi-subject simulation without", msg, fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+mod <- readModelDb("Rabie_2020_abacavir")
+mod_ui <- withCallingHandlers(rxode2::rxode(mod), warning = muffle_known)
+mod_typ <- withCallingHandlers(rxode2::zeroRe(mod), warning = muffle_known)
+```
+
+* Citation: `r mod_ui$reference`
+* Description: `r mod_ui$description`
+* Article: <https://doi.org/10.1128/AAC.01923-19> (open access, PMC7179606)
+
+Rabie 2020 describes abacavir pharmacokinetics in young South African
+children with HIV and tuberculosis who needed lopinavir/ritonavir (LPV/r) and
+rifampin at the same time. To counter rifampin's induction of lopinavir
+metabolism, extra ritonavir was added during TB treatment ("superboosting",
+LPV/r 4:4). The model quantifies how this regimen changes abacavir exposure
+relative to standard LPV/r 4:1 once rifampin has stopped.
+
+# Population
+
+Eighty-seven children (weight 3 to 15 kg at enrolment) were studied at five
+South African sites between 2013 and 2015 (NCT02348177). Each child had
+intensive sampling (predose and 1, 2, 4, 6 and 10 h after an observed morning
+dose) at up to three visits: PK visit 1 in the second month and PK visit 2 in
+the last month of TB treatment, both on rifampin + LPV/r 4:4, and PK visit 3
+four to six weeks after standard LPV/r 4:1 had been reinstated (Rabie 2020
+Table 1):
+
+| | PK visit 1 | PK visit 2 | PK visit 3 |
+|---|---|---|---|
+| Children (male, %) | 86 (43) | 74 (36) | 71 (39) |
+| Median (IQR) age, months | 19 (4 to 64) | 23 (8 to 68) | 26 (10 to 70) |
+| Median (IQR) weight, kg | 8.7 (3.9 to 14.9) | 9.6 (5.7 to 15.9) | 10.2 (6.8 to 15.9) |
+| Median weight-for-age Z-score | -2.43 | -1.93 | -1.50 |
+| Median abacavir dose, mg/kg BID | 9.52 | 9.72 | 9.60 |
+| Rifampin + LPV/r 4:4 | yes | yes | no |
+
+Abacavir was given as a 20 mg/mL oral solution by the weight bands of Rabie
+2020 Table 4. The metadata are available programmatically as
+`mod_ui$population`.
+
+# Source trace
+
+Every `ini()` value carries a trailing source comment in
+`inst/modeldb/specificDrugs/Rabie_2020_abacavir.R`; the table collects them.
+
+| Equation / parameter | Value | Source location (Rabie 2020) |
+|---|---|---|
+| `lcl` | log(9.67) L/h | Table 2, clearance (9.4 kg child on LPV/r 4:1) |
+| `lvc` | log(8.76) L | Table 2, central volume |
+| `lvp` | log(3.32) L | Table 2, peripheral volume |
+| `lq` | log(1.35) L/h | Table 2, intercompartmental clearance |
+| `lka` | log(2.22) 1/h | Table 2, absorption rate constant |
+| `lmtt` | log(3.60 / 60) h | Table 2, absorption mean transit time 3.60 min |
+| `lnn` | log(1.03) | Table 2, number of transit compartments |
+| `lfdepot` | fixed(log(1)) | Table 2, bioavailability "1 (fixed)" |
+| `ltlag` | log(2.62) h | Table 2, delay in absorption for night dose |
+| `e_wt_cl_q`, `e_wt_vc_vp` | fixed 0.75, fixed 1 | Methods, allometric exponents; Table 2 footnote c (9.4 kg reference) |
+| `ltm50_cl` | log(10.7) months | Table 2, PMAGE50 |
+| `lhill_cl` | log(4.35) | Table 2, gamma |
+| `e_rif_lpvr4_fdepot` | -0.360 | Table 2, LPV/r-4:4 + rifampin effect on bioavailability -36.0% |
+| `etalcl`, `etalvp`, `etalq` | log(1 + CV^2) of 14.4, 29.0, 13.5% | Table 2, BSV; footnote a (lognormal, reported as CV) |
+| `etabvv_cl_1..3` | log(1 + 0.184^2) | Table 2, CL BVV 18.4% |
+| `etabvv_tlag_1..3` | log(1 + 0.099^2) | Table 2, night-dose delay BVV 9.90% |
+| `etaiov_ka_1..6` | log(1 + 0.555^2) | Table 2, ka BOV 55.5% |
+| `etaiov_fdepot_1..6` | log(1 + 0.448^2) | Table 2, bioavailability BOV 44.8% |
+| `etaiov_mtt_1..6` | log(1 + 1.75^2) | Table 2, MTT BOV 175% |
+| `propSd` | 0.230 | Table 2, proportional error 23.0% |
+| `addSd` | 0.000310 mg/L | Table 2, additive error 0.310 ug/L |
+| additive floor `0.2 * 0.0243` mg/L | 0.00486 mg/L | Methods: additive error bound to at least 20% of the LLOQ (0.0243 ug/mL) |
+| Maturation `PAGE^hill / (tm50^hill + PAGE^hill)` | -- | Equation 1 |
+| Two-compartment disposition, transit absorption | -- | Results, first paragraph |
+| Occasion structure (each dose an occasion; evening + morning dose = one visit) | -- | Methods, Statistical analysis (i) |
+
+# Typical-value checks
+
+## Maturation of clearance (Figure 2)
+
+Equation 1 is used as printed, so `lcl` is the clearance of a fully mature
+9.4 kg child. The Results state that maturation reaches half its mature value
+at about 2 months and is essentially complete by about 2 years of age
+(postmenstrual age = postnatal age + 9 months).
+
+```{r maturation}
+mat <- function(page) page^4.35 / (10.7^4.35 + page^4.35)
+mat_df <- tibble(pna_months = seq(0, 48, by = 0.25)) |>
+  mutate(fmat = mat(pna_months + 9))
+
+stopifnot(
+  abs(mat(10.7) - 0.5) < 1e-12,
+  mat(24 + 9) > 0.99,
+  abs(mat(2 + 9) - 0.5) < 0.05
+)
+
+ggplot(mat_df, aes(pna_months, fmat)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  geom_vline(xintercept = c(12, 24), linetype = "dashed") +
+  labs(
+    x = "Postnatal age (months; PMA = PNA + 9)",
+    y = "Fraction of mature clearance",
+    caption = "Replicates Figure 2 of Rabie 2020."
+  ) +
+  theme_bw()
+```
+
+## Steady-state exposure against its closed form
+
+With random effects removed, steady-state AUC over a dosing interval must equal
+`F * dose / CL`. For a fully mature 9.4 kg child receiving 80 mg twice daily
+(the 9-9.9 kg band of Table 4), that is 80 / 9.67 = 8.27 mg*h/L on LPV/r 4:1
+and 0.64 times that on rifampin + LPV/r 4:4. Both sides use the same
+parameters, so the bound is tight.
+
+```{r closed-form}
+cf_events <- bind_rows(
+  tibble(id = 1L, CONMED_RIF_LPVR4 = 0L),
+  tibble(id = 2L, CONMED_RIF_LPVR4 = 1L)
+) |>
+  tidyr::crossing(
+    bind_rows(
+      tibble(time = seq(0, 72, by = 12), evid = 1L, amt = 80),
+      tibble(time = seq(72, 84, by = 0.02), evid = 0L, amt = 0)
+    )
+  ) |>
+  mutate(
+    cmt = "depot", WT = 9.4, PAGE = 600, OCC = 0L, DOSETIME_EVENING = 0L
+  ) |>
+  mutate(cmt = ifelse(evid == 0L, "central", cmt)) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+cf_sim <- withCallingHandlers(
+  rxode2::rxSolve(mod_typ, events = cf_events, returnType = "data.frame"),
+  warning = muffle_known
+)
+
+cf_conc <- cf_sim |>
+  filter(time >= 72, !is.na(Cc)) |>
+  mutate(time = time - 72, treatment = ifelse(id == 1, "LPV/r 4:1", "RIF + LPV/r 4:4")) |>
+  select(id, treatment, time, Cc)
+cf_dose <- tibble(
+  id = 1:2, treatment = c("LPV/r 4:1", "RIF + LPV/r 4:4"), time = 0, amt = 80
+)
+cf_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(cf_conc, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(cf_dose, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = 12, auclast = TRUE)
+))
+cf_auc <- as.data.frame(cf_nca) |>
+  filter(PPTESTCD == "auclast") |>
+  mutate(expected = 80 * c(1, 1 - 0.36)[match(treatment, c("LPV/r 4:1", "RIF + LPV/r 4:4"))] / 9.67)
+
+knitr::kable(
+  cf_auc |>
+    select(treatment, PPORRES, expected) |>
+    rename("Regimen" = treatment, "PKNCA AUC0-12" = PPORRES, "F * dose / CL" = expected),
+  digits = 3,
+  caption = "Typical steady-state AUC0-12 (mg*h/L), 9.4 kg mature child, 80 mg BID."
+)
+stopifnot(all(abs(cf_auc$PPORRES / cf_auc$expected - 1) < 0.005))
+```
+
+## Higher morning predose than 10-h concentrations (Table 3)
+
+The authors observed that the morning predose concentration (C0) was higher
+than the 10-h concentration (C10) and explained it with an extra absorption
+delay on the evening dose taken at home the night before. With the delay
+switched on (`DOSETIME_EVENING = 1` on that dose) the typical C0 must exceed
+C10; switching it off removes the effect.
+
+```{r night-delay}
+nd_events <- function(evening_flag) {
+  doses <- tibble(time = seq(0, 72, by = 12), evid = 1L, amt = 80, cmt = "depot") |>
+    mutate(DOSETIME_EVENING = as.integer(time == 60) * evening_flag)
+  obs <- tibble(time = c(71.99, 82), evid = 0L, amt = 0, cmt = "central", DOSETIME_EVENING = 0L)
+  bind_rows(doses, obs) |>
+    mutate(id = 1L, WT = 9.4, PAGE = 600, OCC = 0L, CONMED_RIF_LPVR4 = 0L) |>
+    arrange(time, desc(evid)) |>
+    as.data.frame()
+}
+c_with <- rxode2::rxSolve(mod_typ, events = nd_events(1L), returnType = "data.frame")
+c_without <- rxode2::rxSolve(mod_typ, events = nd_events(0L), returnType = "data.frame")
+nd_tab <- tibble(
+  `Evening-dose delay` = c("on (2.62 h)", "off"),
+  `C0 (mg/L)` = c(c_with$Cc[1], c_without$Cc[1]),
+  `C10 (mg/L)` = c(c_with$Cc[2], c_without$Cc[2])
+)
+knitr::kable(nd_tab, digits = 4, caption = "Typical C0 and C10 around the observed morning dose (9.4 kg, LPV/r 4:1).")
+stopifnot(c_with$Cc[1] > c_with$Cc[2], c_without$Cc[1] < c_without$Cc[2])
+```
+
+# Virtual cohort
+
+Separate cohorts of 200 children are drawn for each PK visit. Ages are
+lognormal around the visit medians of Table 1; weights are approximate WHO
+median weight-for-age values scaled down in proportion to the visit's median
+weight-for-age Z-score (7.5% of the median per Z unit, chosen so that the
+cohort's median weights approximate Table 1), restricted to the 3 to 15.9 kg
+range of the study. Doses follow the weight bands of Rabie 2020 Table 4.
+
+```{r cohort}
+rxode2::rxSetSeed(2020)
+set.seed(2020)
+n_per_visit <- 200
+
+who_age <- c(0, 1, 2, 3, 4, 6, 9, 12, 18, 24, 36, 48, 60, 72)
+who_wt <- c(3.3, 4.4, 5.4, 6.1, 6.6, 7.6, 8.6, 9.4, 10.8, 12.0, 14.1, 16.1, 18.1, 20.2)
+wt_per_z <- 0.075
+who_median_wt <- function(age_months) approx(who_age, who_wt, xout = pmin(age_months, 72), rule = 2)$y
+
+abacavir_dose <- function(wt) {
+  dplyr::case_when(
+    wt < 5 ~ 40, wt < 7 ~ 60, wt < 10 ~ 80, wt < 14 ~ 120, TRUE ~ 160
+  )
+}
+
+visits <- tibble(
+  visit = c("PK visit 1", "PK visit 2", "PK visit 3"),
+  age_med = c(19, 23, 26),
+  waz = c(-2.43, -1.93, -1.50),
+  CONMED_RIF_LPVR4 = c(1L, 1L, 0L),
+  k = 1:3
+)
+
+draw_visit <- function(v) {
+  out <- tibble()
+  while (nrow(out) < n_per_visit) {
+    cand <- tibble(
+      AGE = pmax(3, v$age_med * exp(rnorm(400, 0, 0.84))),
+      WT = who_median_wt(AGE) * (1 + wt_per_z * v$waz) * exp(rnorm(400, 0, 0.10))
+    ) |>
+      filter(WT >= 3, WT < 16, AGE <= 80)
+    out <- bind_rows(out, cand)
+  }
+  out[seq_len(n_per_visit), ] |>
+    mutate(visit = v$visit, k = v$k, CONMED_RIF_LPVR4 = v$CONMED_RIF_LPVR4)
+}
+
+cohort <- bind_rows(lapply(split(visits, visits$k), draw_visit)) |>
+  mutate(
+    id = row_number(),
+    PAGE = AGE + 9,
+    amt = abacavir_dose(WT),
+    band = cut(WT, c(3, 5, 10, 14, 17), right = FALSE,
+               labels = c("3-4.9", "5-9.9", "10-13.9", "14-16.9"))
+  )
+
+cohort |>
+  group_by(visit) |>
+  summarise(
+    n = n(),
+    `Median age (months)` = median(AGE),
+    `Median weight (kg)` = median(WT),
+    `Median dose (mg/kg)` = median(amt / WT),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2, caption = "Virtual cohort by PK visit (compare Table 1).")
+```
+
+Each child takes abacavir every 12 h for three days. The evening dose at 60 h
+is the home dose of the night before the visit (`DOSETIME_EVENING = 1`, occasion
+`2k - 1`); the observed morning dose at 72 h starts occasion `2k`. Earlier doses
+share the evening occasion, so the visit's clearance is constant over the run.
+
+```{r events}
+obs_grid <- sort(unique(c(71.99, 72 + seq(0, 12, by = 0.25))))
+
+cohort_cov <- cohort |>
+  select(id, visit, band, k, WT, PAGE, CONMED_RIF_LPVR4)
+
+dose_rows <- cohort |>
+  select(id, k, amt) |>
+  tidyr::crossing(time = seq(0, 72, by = 12)) |>
+  mutate(
+    evid = 1L, cmt = "depot",
+    DOSETIME_EVENING = as.integer(time == 60),
+    OCC = ifelse(time < 72, 2L * k - 1L, 2L * k)
+  )
+obs_rows <- cohort |>
+  select(id, k) |>
+  tidyr::crossing(time = obs_grid) |>
+  mutate(
+    evid = 0L, cmt = "central", amt = 0, DOSETIME_EVENING = 0L,
+    OCC = ifelse(time < 72, 2L * k - 1L, 2L * k)
+  )
+events <- bind_rows(dose_rows, obs_rows) |>
+  left_join(cohort_cov |> select(-k), by = "id") |>
+  select(id, time, evid, amt, cmt, WT, PAGE, CONMED_RIF_LPVR4, DOSETIME_EVENING, OCC) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+```
+
+# Simulation
+
+```{r simulate}
+sim <- withCallingHandlers(
+  rxode2::rxSolve(mod, events = events, returnType = "data.frame"),
+  warning = muffle_known
+) |>
+  left_join(cohort_cov |> select(id, visit, band), by = "id") |>
+  mutate(tad = time - 72)
+```
+
+## Concentration-time profiles by visit (Figure 1)
+
+```{r vpc, fig.width = 8, fig.height = 4}
+vpc <- sim |>
+  filter(tad >= 0) |>
+  group_by(visit, tad) |>
+  summarise(
+    p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(tad)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = p50), colour = "steelblue4") +
+  geom_hline(yintercept = 0.0243, linetype = "dotted") +
+  facet_wrap(~visit) +
+  labs(
+    x = "Time after observed morning dose (h)",
+    y = "Abacavir (mg/L)",
+    caption = paste(
+      "Simulated 5th, 50th and 95th percentiles with residual error.",
+      "Dotted line: LLOQ 0.0243 mg/L. Replicates the layout of Figure 1 of Rabie 2020."
+    )
+  ) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+AUC0-12 and Cmax are computed with PKNCA over the interval after the observed
+morning dose, from the individual predictions (`Cc`, no residual error), per
+visit.
+
+```{r pknca}
+nca_conc <- sim |>
+  filter(tad >= 0, !is.na(Cc)) |>
+  transmute(id, treatment = visit, time = tad, Cc)
+nca_dose <- cohort |>
+  transmute(id, treatment = visit, time = 0, amt)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id, concu = "mg/L", timeu = "h"),
+  PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id, doseu = "mg"),
+  intervals = data.frame(start = 0, end = 12, auclast = TRUE, cmax = TRUE, tmax = TRUE)
+))
+summary(nca_res) |>
+  knitr::kable(caption = "Simulated NCA after the observed morning dose, by PK visit.")
+```
+
+## Comparison with the published model-predicted exposures (Table 3)
+
+```{r compare}
+published <- tibble::tribble(
+  ~treatment,   ~auclast, ~cmax,
+  "PK visit 1", 6.36,     3.32,
+  "PK visit 2", 7.01,     3.34,
+  "PK visit 3", 10.2,     4.93
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  params = c("auclast", "cmax"),
+  units = c(auclast = "mg*h/L", cmax = "mg/L"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("PK visit" = treatment) |>
+  knitr::kable(
+    digits = 2,
+    caption = paste(
+      "Median simulated AUC0-12 and Cmax versus the medians of Rabie 2020 Table 3.",
+      "* differs from the published median by more than 20%."
+    )
+  )
+
+auc_med <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "auclast") |>
+  group_by(treatment) |>
+  summarise(med = median(PPORRES), .groups = "drop") |>
+  left_join(published, by = "treatment") |>
+  mutate(pct = 100 * (med / auclast - 1))
+# The published values are post hoc medians of the real cohort; the virtual
+# cohort only approximates their weight and age mix, so each visit's centre is
+# held to 20%; a wrong clearance, dose or bioavailability effect moves it more.
+stopifnot(all(abs(auc_med$pct) < 20))
+
+# The regimen effect: visit 3 (LPV/r 4:1) over visits 1-2 (rifampin + 4:4).
+ratio <- auc_med$med[auc_med$treatment == "PK visit 3"] /
+  mean(auc_med$med[auc_med$treatment != "PK visit 3"])
+cat(sprintf("Median AUC0-12 ratio, visit 3 / visits 1-2: %.2f (published 10.2 / 6.7 = %.2f)\n",
+            ratio, 10.2 / mean(c(6.36, 7.01))))
+```
+
+## AUC0-12 by weight band and visit (Figure 4)
+
+```{r figure4, fig.width = 8, fig.height = 4}
+auc_ind <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "auclast") |>
+  mutate(id = as.integer(as.character(id))) |>
+  left_join(cohort |> select(id, band), by = "id")
+ggplot(auc_ind, aes(band, PPORRES)) +
+  geom_boxplot(fill = "salmon", outlier.size = 0.5) +
+  geom_hline(yintercept = 6.02, colour = "red", linewidth = 1) +
+  facet_wrap(~treatment, scales = "free_x") +
+  coord_cartesian(ylim = c(0, 26)) +
+  labs(
+    x = "Weight band (kg)", y = "AUC0-12 (mg*h/L)",
+    caption = "Red line: adult reference median AUC0-12 6.02 mg*h/L. Replicates Figure 4 of Rabie 2020."
+  ) +
+  theme_bw()
+```
+
+# Dosing simulation by weight (Figure 3)
+
+Figure 3 shows the steady-state AUC0-12 for Table 4 doses in 1-kg bands from
+3 to 15 kg, on rifampin + LPV/r 4:4 and on LPV/r 4:1. The medians are
+reproduced here with typical values (no random effects), at each band's
+midpoint weight and an age from the same approximate weight-for-age relation
+(Z = -2). The 3 and 4 kg bands depend strongly on that age assumption through
+maturation and are shown but not asserted. Published medians were read from
+Figure 3 by the maintainers and are approximate (about +/- 0.5 mg*h/L).
+
+```{r figure3}
+age_for_wt <- function(wt) {
+  grid <- seq(0, 72, by = 0.05)
+  approx(who_median_wt(grid) * (1 - wt_per_z * 2), grid, xout = wt, rule = 2, ties = mean)$y
+}
+fig3 <- tibble(band_kg = 3:15) |>
+  mutate(WT = band_kg + 0.5, AGE = age_for_wt(WT), PAGE = AGE + 9, amt = abacavir_dose(WT)) |>
+  tidyr::crossing(CONMED_RIF_LPVR4 = 0:1) |>
+  mutate(id = row_number())
+
+f3_events <- bind_rows(
+  fig3 |> tidyr::crossing(time = seq(0, 72, by = 12)) |> mutate(evid = 1L, cmt = "depot"),
+  fig3 |> tidyr::crossing(time = seq(72, 84, by = 0.1)) |> mutate(evid = 0L, cmt = "central", amt = 0)
+) |>
+  mutate(OCC = 0L, DOSETIME_EVENING = 0L) |>
+  select(id, time, evid, amt, cmt, WT, PAGE, CONMED_RIF_LPVR4, OCC, DOSETIME_EVENING) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+f3_sim <- withCallingHandlers(
+  rxode2::rxSolve(mod_typ, events = f3_events, returnType = "data.frame"),
+  warning = muffle_known
+)
+f3_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(f3_sim |> filter(!is.na(Cc)) |> mutate(time = time - 72) |> select(id, time, Cc),
+                   Cc ~ time | id),
+  PKNCA::PKNCAdose(fig3 |> transmute(id, time = 0, amt), amt ~ time | id),
+  intervals = data.frame(start = 0, end = 12, auclast = TRUE)
+))
+
+fig3_pub <- tibble(
+  band_kg = rep(3:15, 2),
+  CONMED_RIF_LPVR4 = rep(1:0, each = 13),
+  auc_pub = c(14, 9.5, 9.5, 7, 7, 5.5, 5, 7.5, 7, 6.5, 6, 7.5, 7.5,
+              25.5, 15.5, 15.5, 11.5, 11.5, 10, 8.5, 12, 11.5, 10.5, 10, 12.5, 12)
+)
+fig3_cmp <- as.data.frame(f3_nca) |>
+  filter(PPTESTCD == "auclast") |>
+  mutate(id = as.integer(as.character(id))) |>
+  left_join(fig3, by = "id") |>
+  left_join(fig3_pub, by = c("band_kg", "CONMED_RIF_LPVR4")) |>
+  mutate(
+    regimen = ifelse(CONMED_RIF_LPVR4 == 1, "RIF + LPV/r 4:4", "LPV/r 4:1"),
+    pct = 100 * (PPORRES / auc_pub - 1)
+  )
+
+fig3_cmp |>
+  select(regimen, band_kg, AGE, amt, PPORRES, auc_pub, pct) |>
+  arrange(regimen, band_kg) |>
+  rename(
+    "Regimen" = regimen, "Weight band (kg)" = band_kg, "Assumed age (months)" = AGE,
+    "Dose (mg)" = amt, "Typical AUC0-12" = PPORRES, "Figure 3 median (read)" = auc_pub,
+    "% diff" = pct
+  ) |>
+  knitr::kable(digits = 1, caption = "Typical steady-state AUC0-12 (mg*h/L) by 1-kg weight band versus Figure 3.")
+
+# Bands of 5 kg and above, where maturation is essentially complete.
+chk <- fig3_cmp |> filter(band_kg >= 5)
+stopifnot(abs(median(chk$pct)) < 10, quantile(abs(chk$pct), 0.9) < 20)
+```
+
+```{r figure3-plot, fig.width = 8, fig.height = 4}
+ggplot(fig3_cmp, aes(band_kg)) +
+  geom_col(aes(y = PPORRES), fill = "palegreen3", colour = "darkgreen") +
+  geom_point(aes(y = auc_pub), colour = "navy") +
+  geom_hline(yintercept = 6.02, colour = "red", linetype = "dashed") +
+  facet_wrap(~regimen) +
+  labs(
+    x = "Weight band (kg)", y = "AUC0-12 (mg*h/L)",
+    caption = paste(
+      "Bars: typical-value simulation; points: medians read from Figure 3.",
+      "Red dashed line: adult reference 6.02 mg*h/L. Replicates Figure 3 of Rabie 2020 (children)."
+    )
+  ) +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+* **Additive error floor.** Table 2 reports an estimated additive error of
+  0.310 ug/L, but the Methods state that the additive error "for all samples
+  was bound to be at least 20% of the lower limit of quantification",
+  0.2 x 0.0243 = 0.00486 mg/L. The model applies the bound as
+  `max(addSd, 0.00486)`, so the effective additive SD is 0.00486 mg/L.
+  Whether the authors added the bound to the estimate or took the larger of
+  the two is not stated; the two readings differ by under 7% of the effective
+  SD.
+* **Coefficient of variation.** Table 2 footnote a states that the random
+  effects are lognormal and "reported as the coefficient of variation", so
+  every variance is `log(1 + CV^2)`. The confidence intervals are SIR
+  percentiles, which cannot discriminate this from `CV^2`; the difference is
+  material only for the 175% MTT BOV (variance 1.40 versus 3.06).
+* **Occasions.** "Each dose was treated as a separate occasion, while
+  consecutive evening and morning doses were grouped within the same visit."
+  The model therefore has six occasions (`OCC` 1-6: evening and morning dose of
+  each of three visits) for the BOV on ka, F and MTT, and shares the visit-level
+  BVV etas on CL and the evening-dose delay across each pair. `OCC` outside 1-6
+  turns BOV and BVV off. Simulations beyond the study design must choose an
+  occasion coding; this vignette assigns all doses before the observed morning
+  dose to the evening occasion.
+* **Evening-dose delay.** The model applies the 2.62 h delay to the unobserved
+  evening dose before a PK visit (`DOSETIME_EVENING = 1`), the only dose it was
+  fitted to. The authors do not say whether it reflects late dosing, food or
+  diurnal variation; the Figure 3 replication omits it, as the published
+  steady-state dosing simulations describe children "dosed every 12 h".
+* **Maturation reference.** Equation 1 is not normalised to a reference age,
+  so the typical clearance of 9.67 L/h is the fully mature value; for the
+  median-age child of the data set the maturation factor is about 0.98.
+* **Postmenstrual age** is postnatal age + 9 months for every child, as in the
+  source.
+* **rxode2 mu-referencing message.** The occasion-indicator expansion routes
+  the between-occasion and between-visit etas through intermediate variables,
+  so rxode2 reports them as non-mu-referenced at parse. This matters for SAEM
+  estimation only, not for simulation, and is the construction used by the
+  other occasion-variability models in the library (e.g. Kengo 2025
+  atazanavir); the vignette muffles that one message.
+* **BLQ data** were handled with the M6 method during estimation; this affects
+  fitting only, not simulation.
+* **Virtual cohort.** Rabie 2020 reports only summary demographics. Ages and
+  weights here come from approximate WHO median weight-for-age values scaled by
+  the reported Z-scores; the age-weight relation the authors used for their
+  dosing simulations (a weight-for-age model from children with tuberculosis)
+  is not reproduced. Adult extrapolations (25-59.9 kg, 600 mg once daily) in
+  Figure 3 are not reproduced.
+* **Table 3 comparison.** The published AUC0-12 and Cmax are medians of
+  individual post hoc predictions in the real cohort; the comparison above uses
+  stochastic simulations in the virtual cohort.
+* **Errata.** Europe PMC lists no erratum, correction or comment linked to
+  this article (PMID 32071055; checked 2026-11-27).
