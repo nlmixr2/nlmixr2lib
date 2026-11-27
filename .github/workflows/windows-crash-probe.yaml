@@ -1,13 +1,13 @@
 # Diagnostic only; this branch is never merged. On windows-latest the R process
-# dies with a segfault in test-checkModelConventions.R, at the first
-# rxModelVars() call that hands rxode2's parser a model it must reject. macOS
-# and Linux pass. Each job installs rxode2 alone and replays that mix of parses
-# in a loop (.github/scripts/probe-parse-errors.R), printing each parse before
-# it starts, so the log shows the parse that killed R:
-#   - runiverse: the r-universe development binaries, as CI installs them;
-#   - cran: CRAN's rxode2 5.1.8 binaries, to tell a development regression
-#     from an older bug;
-#   - runiverse-gdb: the r-universe binaries under gdb, for a backtrace.
+# dies with a segfault (access violation) while test-checkModelConventions.R
+# runs; macOS and Linux pass. The rejected-model parses it reaches when it dies
+# do not crash on their own (probe-parse-errors.R, 40 rounds, r-universe and
+# CRAN builds), so this runs the whole file against the installed package:
+#   - gdb-file: r-universe binaries, under gdb, for a backtrace at the crash;
+#   - file-runiverse: r-universe binaries, plainly, to see whether the crash
+#     point repeats;
+#   - file-cran: CRAN's rxode2 5.1.8 family, to tell a development regression
+#     from an older bug.
 on:
   push:
     branches: ['ci-probe/windows-crash-*']
@@ -19,44 +19,53 @@ permissions: read-all
 jobs:
   probe:
     runs-on: windows-latest
-    name: windows probe (${{ matrix.source }})
-    timeout-minutes: 40
+    name: windows probe (${{ matrix.name }})
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        source: [runiverse, cran, runiverse-gdb]
+        include:
+          - name: gdb-file
+            repo: https://nlmixr2.r-universe.dev
+            gdb: true
+          - name: file-runiverse
+            repo: https://nlmixr2.r-universe.dev
+            gdb: false
+          - name: file-cran
+            repo: ''
+            gdb: false
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      NOT_CRAN: 'true'
     steps:
       - uses: actions/checkout@v6
 
       - uses: r-lib/actions/setup-r@v2
         with:
+          extra-repositories: ${{ matrix.repo }}
+          use-public-rspm: true
           r-version: release
-          use-public-rspm: false
 
-      - name: Install rxode2
-        shell: Rscript {0}
-        run: |
-          src <- "${{ matrix.source }}"
-          repos <- c(CRAN = "https://cloud.r-project.org")
-          if (startsWith(src, "runiverse")) repos <- c(nlmixr2 = "https://nlmixr2.r-universe.dev", repos)
-          options(repos = repos)
-          install.packages("rxode2", type = "binary")
-          print(utils::packageDescription("rxode2")[c("Version", "RemoteSha", "Repository", "Built")])
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: probe3-${{ matrix.name }}
+          extra-packages: any::rcmdcheck, local::.
+          needs: check
 
-      - name: Replay the parses
-        if: matrix.source != 'runiverse-gdb'
+      - name: Run the file
+        if: ${{ !matrix.gdb }}
         shell: bash
-        run: Rscript .github/scripts/probe-parse-errors.R 40
+        run: Rscript .github/scripts/probe-test-file.R checkModelConventions
 
       - name: Install gdb (MSYS2 ucrt64)
-        if: matrix.source == 'runiverse-gdb'
+        if: ${{ matrix.gdb }}
         shell: bash
         run: |
           /c/msys64/usr/bin/pacman -Sy --noconfirm --needed mingw-w64-ucrt-x86_64-gdb
           /c/msys64/ucrt64/bin/gdb.exe --version | head -1
 
-      - name: Replay the parses under gdb
-        if: matrix.source == 'runiverse-gdb'
+      - name: Run the file under gdb
+        if: ${{ matrix.gdb }}
         shell: bash
         run: |
           RTERM="$(Rscript -e 'cat(file.path(R.home("bin"), "Rterm.exe"))')"
@@ -65,6 +74,8 @@ jobs:
             -ex "set pagination off" \
             -ex "handle SIGSEGV stop print" \
             -ex run \
-            -ex "bt 40" \
+            -ex "bt 60" \
+            -ex "info registers" \
+            -ex "x/8i \$pc" \
             -ex "info sharedlibrary" \
-            --args "$RTERM" --vanilla --no-echo -f .github/scripts/probe-parse-errors.R --args 40
+            --args "$RTERM" --vanilla --no-echo -f .github/scripts/probe-test-file.R --args checkModelConventions
