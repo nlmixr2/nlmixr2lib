@@ -184,6 +184,25 @@ say so. Never solve a table built for one rule with the other. Where a
 result depends on the rule, pass `covsInterpolation = "locf"` explicitly
 and say which rule the table follows.
 
+## Subjects that cannot be solved
+
+When `rxSolve()` cannot solve a subject, rxode2 sets all of that subject's
+output to `NA` and only warns ("some ID(s) could not solve the ODEs
+correctly"). The article renders on CI and in the consolidation merge gate
+stop at such a solve, naming the article and the failed subjects, so an
+`NA` filter or an `na.rm = TRUE` summary cannot hide the failure. Fix the
+cause where you can (a power of a state that undershoots zero, the step
+budget). When failures are expected, count them, assert the count or rate,
+say so in the text, and declare it around that solve only:
+
+```{r expect-failed-subjects, eval = FALSE}
+old_opts <- options(nlmixr2lib.expectFailedSubjects = TRUE)
+sim <- rxode2::rxSolve(mod, events = ev)
+options(old_opts)
+failed_ids <- unique(sim$id[is.na(sim$Cc)])
+stopifnot(length(failed_ids) / n_subjects < 0.05)
+```
+
 ## Drug effects
 
 Different drug effects may be investigated during model building.  And, multiple

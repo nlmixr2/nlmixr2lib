@@ -366,6 +366,10 @@ solve_arm <- function(dts, label) {
     dplyr::left_join(etas, by = "id") |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
     as.data.frame()
+  # One subject is expected to fail (counted and asserted below), so tell the
+  # render gate for failed subjects not to stop the render on this solve.
+  old_opts <- options(nlmixr2lib.expectFailedSubjects = TRUE)
+  on.exit(options(old_opts))
   suppressWarnings(
     rxode2::rxSolve(mod_ode, ev, params = theta, keep = "treatment",
                     returnType = "data.frame")

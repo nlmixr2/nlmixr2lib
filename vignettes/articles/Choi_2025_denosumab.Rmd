@@ -436,6 +436,10 @@ solve_arm <- function(trt, label) {
   rxode2::rxSetSeed(20250909)
   ev <- make_events(n_per_arm, obs_times, id_offset = 0L, TRT_SB16 = trt,
                     arm = label)
+  # A few subjects are expected to fail (counted and asserted below), so tell
+  # the render gate for failed subjects not to stop the render on this solve.
+  old_opts <- options(nlmixr2lib.expectFailedSubjects = TRUE)
+  on.exit(options(old_opts))
   do.call(rxode2::rxSolve, c(list(
     object = mod, events = ev, keep = c("arm", "TRT_SB16")
   ), solve_opts)) |>

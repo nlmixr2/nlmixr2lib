@@ -760,10 +760,14 @@ pkpd_events <- make_pkpd_arm(MP_DOSE_MGM2, "57.1 mg/m2/day", n = N_PER_ARM,
                              id_offset = 0L)
 stopifnot(!anyDuplicated(unique(pkpd_events[, c("id", "time", "evid")])))
 
+# Some subjects are expected to fail (counted and asserted below), so tell the
+# render gate for failed subjects not to stop the render on this solve.
+old_opts <- options(nlmixr2lib.expectFailedSubjects = TRUE)
 pkpd_all <- rxode2::rxSolve(
   mod_pkpd, events = pkpd_events, keep = c("treatment"), useLinCmt = FALSE
 ) |>
   as.data.frame()
+options(old_opts)
 
 # A handful of subjects in the upper tail of the V_mm / K_eff variability push
 # E-TGN past the ceiling where Edrug = slope x E-TGN exceeds 1; the

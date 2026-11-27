@@ -11,6 +11,8 @@
 # PKGDOWN_KEEP_GOING (non-empty), or a run started by a PR comment, renders
 # every article instead and stops at the end, listing all failures. Either way
 # a failed article's objects are written out by dump_failure_state() below.
+# Each worker also fails its article when rxSolve() could not solve a subject
+# (nlmixr2lib:::.installSolveFailureGate(), in R/solveFailureGate.R).
 # After the parallel pass, call pkgdown::build_site_github_pages(lazy = TRUE,
 # clean = FALSE) so pkgdown handles the non-article sections (reference, news,
 # search, ...) and skips already-rendered articles via its mtime lazy check.
@@ -201,18 +203,38 @@ launch_one <- function(name) {
       ns = "pkgdown"
     ), silent = TRUE)
 
+    # Fail the article when rxode2 could not solve a subject. rxode2 replaces
+    # such a subject's output with NA and only warns, and knitr captures the
+    # warning, so an article that filters NA rows would render as if nothing
+    # failed. The gate traces the exit of rxode2:::rxSolve.default in this
+    # fork and stops the solve; an article whose failures are expected sets
+    # options(nlmixr2lib.expectFailedSubjects = TRUE) around it. See
+    # R/solveFailureGate.R.
+    nlmixr2lib:::.installSolveFailureGate(name)
+
     t_start <- Sys.time()
     before <- ls(globalenv(), all.names = TRUE)
     tryCatch({
       pkgdown::build_article(name = name, pkg = pkg,
                              new_process = FALSE, quiet = TRUE)
+      # The article may have caught the gate's error (try(), tryCatch(), a
+      # chunk with error = TRUE) and rendered on.
+      fired <- nlmixr2lib:::.solveFailureGateFired()
+      if (length(fired) > 0L) stop(fired[[1L]], call. = FALSE)
       list(ok = TRUE, name = name,
            secs = as.numeric(difftime(Sys.time(), t_start, units = "secs")))
     }, error = function(e) {
       out <- pkg$vignettes$file_out[match(name, pkg$vignettes$name)]
       try(unlink(file.path(pkg$dst_path, out)), silent = TRUE)
       try(dump_failure_state(name, before), silent = TRUE)
-      list(ok = FALSE, name = name, err = conditionMessage(e))
+      # pkgdown wraps a chunk error in "Failed to render ..."; lead with the
+      # gate's own message, which names the failed subjects.
+      fired <- nlmixr2lib:::.solveFailureGateFired()
+      err <- conditionMessage(e)
+      if (length(fired) > 0L && !identical(fired[[1L]], err)) {
+        err <- paste0(fired[[1L]], "\n", err)
+      }
+      list(ok = FALSE, name = name, err = err)
     })
   }, name = name)
 }
