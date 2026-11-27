@@ -1,0 +1,445 @@
+---
+title: "Remifentanil (Traynard 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Remifentanil (Traynard 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Traynard_2020_remifentanil"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Traynard_2020_remifentanil"))$description`
+* Article: <https://doi.org/10.1002/psp4.12500> (open access)
+
+Traynard et al. (2020) is a CPT: Pharmacometrics & Systems Pharmacology
+tutorial on the MonolixSuite workflow. It builds a population PK model of
+remifentanil step by step, starting from a two-compartment model (run PK_01)
+and ending with the final model PK_16. The final model has three compartments,
+power effects of age on CL, Q2, Q3 and V3, and of lean body mass (LBM) on CL
+and V1, a sex effect on V3, correlated random effects on (CL, Q3, V3) and on
+(Q2, V2), and a proportional residual error. The main text describes the final
+model but does not print its parameter table. The estimates come from the
+authors' deposited Monolix project (Supporting Information, Supinfo 2), file
+`final_workflow/PK_16/populationParameters.txt`.
+
+# Population
+
+The tutorial re-analyses the publicly available remifentanil data set of
+Minto et al. (Anesthesiology 1997;86:10-23; reference 7 of the tutorial). It
+holds dense concentration measurements from 65 healthy adults after a single
+constant-rate intravenous infusion of 1-8 ug/kg/min lasting 4-20 min, 1992
+concentrations in all. Ages range from 20 to 85 years and lean body mass from
+36.5 to 75.6 kg; 27 subjects are female and 38 male.
+
+The same data set ships with R as `nlme::Remifentanil`. The maintainers
+checked it against the deposited tutorial file `PK_reminfentanil.csv`
+(Supinfo 2): every subject's infusion rate, total dose, age, LBM and sex match
+exactly, and both hold the same 1992 concentrations. This vignette therefore
+uses `nlme::Remifentanil` as the observed data.
+
+The same information is available programmatically via
+`readModelDb("Traynard_2020_remifentanil")()$population`.
+
+# Source trace
+
+Unless noted otherwise, every value comes from the deposited final run
+`final_workflow/PK_16/populationParameters.txt` (Supinfo 2). Monolix reports
+`omega` as the SD of the normal random effect on the log scale, so the
+variances in `ini()` are `omega^2` and each covariance is the correlation
+times `omega_i * omega_j`.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Structure: 3-compartment, i.v. infusion, linear elimination | n/a | Main text 'Final model overview'; `PK_16.mlxtran` uses library model `infusion_3cpt_ClV1Q2V2Q3V3` |
+| `lcl` (CL, L/min) | log(2.56943) | `Cl_pop` |
+| `lvc` (V1, L) | log(4.85867) | `V1_pop` |
+| `lq` (Q2, L/min) | log(0.0825548) | `Q2_pop` |
+| `lvp` (V2, L) | log(7.59029) | `V2_pop` |
+| `lq2` (Q3, L/min) | log(1.92566) | `Q3_pop` |
+| `lvp2` (V3, L) | log(8.20430) | `V3_pop` |
+| Age centering `log(AGE/36.6299)` | 36.6299 years | Main text, covariate section; `PK_16.mlxtran` `[COVARIATE]` |
+| LBM centering `log(LBM/55.1554)` | 55.1554 kg | `PK_16.mlxtran` `[COVARIATE]` |
+| `e_age_cl` | -0.320405 | `beta_Cl_logtAGE` |
+| `e_lbm_cl` | 0.410657 | `beta_Cl_logtLBM` |
+| `e_lbm_vc` | 1.26150 | `beta_V1_logtLBM` |
+| `e_age_q` | -0.950579 | `beta_Q2_logtAGE` |
+| `e_age_q2` | -0.869000 | `beta_Q3_logtAGE` |
+| `e_age_vp2` | -0.462430 | `beta_V3_logtAGE` |
+| `e_sex_vp2` (male vs female, log scale) | 0.271176 | `beta_V3_SEX_1`; SEX coding 1 = male, 0 = female from Supinfo 1 'Data set' |
+| `etalcl`, `etalq2`, `etalvp2` block | omega 0.142692, 0.412362, 0.313035; r(Q3,Cl) 0.675947, r(V3,Cl) 0.709079, r(V3,Q3) 0.821229 | `omega_Cl`, `omega_Q3`, `omega_V3`, `corr_*`; main text Table 1 rows PK_12, PK_13 |
+| `etalq`, `etalvp` block | omega 0.385790, 0.853822; r 0.650297 | `omega_Q2`, `omega_V2`, `corr_V2_Q2`; main text Table 1 row PK_15 |
+| `etalvc` | omega 0.264638 | `omega_V1` |
+| `propSd` | 0.112461 | `b`; main text 'Error model' (proportional error, run PK_16) |
+
+The deposited runs agree with the numbers quoted in the main text. Run PK_02
+has `omega_Cl` = 0.228 and run PK_03 has 0.164 (main text: "decreased from
+0.228 to 0.164"). Run PK_15 has an additive error `a` = 0.00076 with an RSE of
+209% (main text: "a = 0.00076 ... RSE for a is high (209%)").
+
+# Observed data and event table
+
+```{r data}
+remi <- as.data.frame(nlme::Remifentanil)
+
+subjects <- remi |>
+  group_by(ID) |>
+  summarise(
+    amt = sum(Amt),
+    rate = first(Rate),
+    AGE = first(Age),
+    LBM = first(LBM),
+    SEXF = as.integer(first(Sex) == "Female"),
+    WT = first(Wt),
+    HT = first(Ht),
+    .groups = "drop"
+  ) |>
+  mutate(
+    tinf = round(amt / rate),
+    tinf_group = cut(
+      tinf,
+      breaks = c(0, 6, 9, 12, 30),
+      labels = c("4-5 min", "7-8 min", "10 min", "14-20 min")
+    )
+  )
+
+# The LBM column is the James formula from weight, height and sex.
+james <- with(
+  subjects,
+  ifelse(SEXF == 1, 1.07 * WT - 148 * (WT / HT)^2, 1.1 * WT - 128 * (WT / HT)^2)
+)
+stopifnot(max(abs(james - subjects$LBM)) < 0.01)
+
+dose_rows <- subjects |>
+  transmute(
+    id = ID, time = 0, amt, rate, evid = 1L, cmt = "central",
+    AGE, LBM, SEXF, tinf_group, obs_conc = NA_real_
+  )
+obs_rows <- remi |>
+  filter(!is.na(conc)) |>
+  transmute(id = ID, time = Time, obs_conc = conc) |>
+  left_join(subjects |> select(id = ID, AGE, LBM, SEXF, tinf_group), by = "id") |>
+  mutate(amt = 0, rate = 0, evid = 0L, cmt = "central")
+events <- bind_rows(dose_rows, obs_rows) |>
+  arrange(id, time, desc(evid))
+
+c(subjects = nrow(subjects), observations = nrow(obs_rows))
+table(subjects$tinf_group)
+```
+
+# Known-answer check against the Monolix population predictions
+
+Monolix writes the population prediction `popPred` for every observation
+(`final_workflow/PK_16/predictions.txt`, Supinfo 2). It is the model solved
+with all random effects at zero and each subject's own covariates. The rows
+below cover young and old subjects of both sexes, at the end of infusion and
+in the terminal phase. Both sides use the same parameters, so any difference
+is numerical error, and the check uses a tight bound.
+
+```{r known-answer}
+mod <- readModelDb("Traynard_2020_remifentanil")
+mod_typical <- rxode2::zeroRe(mod, "omega")
+
+solve_quiet <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w))) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+pred <- solve_quiet(
+  mod_typical,
+  events = events,
+  keep = c("obs_conc", "tinf_group"),
+  returnType = "data.frame"
+) |>
+  as_tibble()
+
+monolix_poppred <- tribble(
+  ~id, ~time, ~popPred,
+  24, 2.52, 30.1907,
+  24, 18.13, 8.66205,
+  24, 60.18, 0.272058,
+  17, 7.03, 56.1953,
+  17, 70.18, 0.23843,
+  64, 3.99, 67.0946,
+  64, 66.97, 0.12134,
+  55, 4.06, 78.527,
+  55, 67.24, 0.115821
+)
+
+ka_check <- monolix_poppred |>
+  left_join(distinct(pred, id, time, Cc), by = c("id", "time")) |>
+  left_join(subjects |> select(id = ID, AGE, LBM, SEXF), by = "id") |>
+  mutate(pct_diff = 100 * (Cc / popPred - 1))
+
+ka_check |>
+  mutate(Cc = signif(Cc, 6), pct_diff = signif(pct_diff, 2)) |>
+  rename(
+    "Subject" = id, "Time (min)" = time, "Monolix popPred (ng/mL)" = popPred,
+    "nlmixr2lib (ng/mL)" = Cc, "% diff" = pct_diff
+  ) |>
+  knitr::kable()
+
+stopifnot(nrow(ka_check) == 9, all(abs(ka_check$pct_diff) < 0.01))
+```
+
+# Population predictions against the observed data
+
+```{r obs-vs-pred, fig.width = 6, fig.height = 5}
+ggplot(pred, aes(Cc, obs_conc)) +
+  geom_point(alpha = 0.3, size = 0.8) +
+  geom_abline(slope = 1, intercept = 0, colour = "red") +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(
+    x = "Population prediction (ng/mL)",
+    y = "Observed concentration (ng/mL)",
+    title = "Observed vs population-predicted remifentanil",
+    caption = "Population-prediction counterpart of the individual-prediction plot in Figure 3c."
+  )
+```
+
+```{r ratio}
+ratio <- pred |>
+  filter(!is.na(obs_conc)) |>
+  mutate(r = obs_conc / Cc)
+ratio_summary <- c(
+  median = median(ratio$r),
+  q10 = unname(quantile(ratio$r, 0.1)),
+  q90 = unname(quantile(ratio$r, 0.9))
+)
+signif(ratio_summary, 3)
+# The fixed effects are centred on the data, so the median observed /
+# predicted ratio sits close to 1. Deterministic: observed data and typical
+# predictions involve no random draws.
+stopifnot(abs(log(ratio_summary[["median"]])) < log(1.15))
+```
+
+```{r spaghetti, fig.width = 7, fig.height = 5}
+ggplot(pred, aes(time, group = id)) +
+  geom_point(aes(y = obs_conc), alpha = 0.3, size = 0.6) +
+  geom_line(aes(y = Cc), alpha = 0.4, colour = "steelblue") +
+  facet_wrap(~tinf_group) +
+  scale_y_log10() +
+  labs(
+    x = "Time (min)", y = "Remifentanil (ng/mL)",
+    title = "Observed data (points) and population predictions (lines)",
+    caption = "Layout after Figure 1a: one panel per infusion-duration group."
+  )
+```
+
+# Visual predictive check
+
+The stochastic simulation reuses the observed design (dose, rate, sampling
+times and covariates of every subject), replicated three times (195 virtual
+subjects). It is plotted as a prediction-corrected VPC with 10 time bins, as
+in Figure 5a. The band is the simulated 5th-95th percentile and the line the
+simulated median; the points are the observed median (filled) and 5th and
+95th percentiles (open).
+
+```{r vpc, fig.width = 6, fig.height = 5}
+rxode2::rxSetSeed(20200212)
+n_rep <- 3L
+events_rep <- bind_rows(lapply(seq_len(n_rep), function(k) {
+  events |> mutate(orig_id = id, id = id + (k - 1L) * 1000L, rep = k)
+}))
+stopifnot(length(unique(events_rep$id)) == n_rep * nrow(subjects))
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events_rep,
+  keep = c("orig_id", "tinf_group"),
+  returnType = "data.frame"
+) |>
+  as_tibble() |>
+  select(id, orig_id, tinf_group, time, sim)
+
+bins <- quantile(pred$time, probs = seq(0, 1, length.out = 11))
+pred_binned <- pred |>
+  mutate(bin = cut(time, bins, include.lowest = TRUE)) |>
+  group_by(bin) |>
+  mutate(pred_bin = median(Cc), pc = pred_bin / Cc) |>
+  ungroup()
+
+obs_pc <- pred_binned |>
+  transmute(bin, time, pc_obs = obs_conc * pc)
+sim_pc <- sim |>
+  left_join(
+    pred_binned |> select(orig_id = id, time, bin, pc),
+    by = c("orig_id", "time")
+  ) |>
+  mutate(pc_sim = sim * pc)
+
+summ <- function(x) {
+  c(q05 = quantile(x, 0.05, na.rm = TRUE), q50 = median(x, na.rm = TRUE),
+    q95 = quantile(x, 0.95, na.rm = TRUE))
+}
+bin_time <- pred_binned |> group_by(bin) |> summarise(t = median(time))
+vpc_obs <- obs_pc |>
+  group_by(bin) |>
+  summarise(
+    q05 = quantile(pc_obs, 0.05), q50 = median(pc_obs),
+    q95 = quantile(pc_obs, 0.95), .groups = "drop"
+  ) |>
+  left_join(bin_time, by = "bin")
+vpc_sim <- sim_pc |>
+  group_by(bin) |>
+  summarise(
+    q05 = quantile(pc_sim, 0.05, na.rm = TRUE), q50 = median(pc_sim, na.rm = TRUE),
+    q95 = quantile(pc_sim, 0.95, na.rm = TRUE), .groups = "drop"
+  ) |>
+  left_join(bin_time, by = "bin")
+
+ggplot() +
+  geom_ribbon(data = vpc_sim, aes(t, ymin = q05, ymax = q95), fill = "steelblue", alpha = 0.2) +
+  geom_line(data = vpc_sim, aes(t, q50), colour = "steelblue") +
+  geom_point(data = vpc_obs, aes(t, q50), colour = "black") +
+  geom_point(data = vpc_obs, aes(t, q05), colour = "black", shape = 1) +
+  geom_point(data = vpc_obs, aes(t, q95), colour = "black", shape = 1) +
+  scale_y_log10() +
+  labs(
+    x = "Time (min)", y = "Prediction-corrected remifentanil (ng/mL)",
+    title = "Prediction-corrected VPC",
+    caption = "Replicates Figure 5a of Traynard 2020."
+  )
+```
+
+# PKNCA validation
+
+The paper reports no NCA. The comparison below runs PKNCA on the observed
+concentrations and on the stochastic simulation from the VPC section (three
+replicates of the observed design, with between-subject variability and
+residual error), using the same sampling times and grouped by infusion
+duration. A time-zero row with concentration 0 anchors the AUC; the infusion
+starts at time 0.
+
+```{r pknca}
+nca_input <- function(df, conc_col) {
+  out <- df |>
+    filter(!is.na(.data[[conc_col]])) |>
+    transmute(id, time, conc = .data[[conc_col]], treatment = tinf_group)
+  bind_rows(
+    out,
+    out |> distinct(id, treatment) |> mutate(time = 0, conc = 0)
+  ) |>
+    distinct(id, treatment, time, .keep_all = TRUE) |>
+    arrange(id, time)
+}
+
+nca_intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
+)
+run_nca <- function(df) {
+  conc_obj <- PKNCA::PKNCAconc(df, conc ~ time | treatment + id)
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, intervals = nca_intervals))
+}
+
+nca_obs <- run_nca(nca_input(pred, "obs_conc"))
+nca_sim <- run_nca(nca_input(sim, "sim"))
+
+nca_tbl <- ncaComparisonTable(
+  simulated = nca_sim,
+  reference = nca_obs,
+  by = "treatment",
+  params = c("cmax", "tmax", "auclast", "half.life"),
+  units = c(cmax = "ng/mL", tmax = "min", auclast = "min*ng/mL", half.life = "min")
+)
+knitr::kable(
+  nca_tbl,
+  caption = "Median NCA: observed data (Reference) vs stochastic simulation of the same design (Simulated)."
+)
+```
+
+`r if (!is.null(attr(nca_tbl, "footnote"))) attr(nca_tbl, "footnote")`
+
+```{r pknca-check}
+nca_median <- function(res) {
+  as.data.frame(res) |>
+    filter(PPTESTCD %in% c("cmax", "auclast")) |>
+    group_by(treatment, PPTESTCD) |>
+    summarise(value = median(PPORRES, na.rm = TRUE), .groups = "drop")
+}
+cmp <- inner_join(
+  nca_median(nca_obs) |> rename(observed = value),
+  nca_median(nca_sim) |> rename(simulated = value),
+  by = c("treatment", "PPTESTCD")
+) |>
+  mutate(pct_diff = 100 * (simulated / observed - 1))
+cmp
+# Medians over 33-90 simulated subjects per group: robust to which subjects
+# a given rxode2 build draws. The 4-5 min group (3 observed subjects) is
+# excluded from the bound; see the text below.
+big_groups <- cmp |> filter(treatment != "4-5 min")
+stopifnot(nrow(big_groups) == 6, all(abs(big_groups$pct_diff) < 25))
+```
+
+In the three infusion-duration groups with 11 to 30 subjects, the simulated
+median Cmax, AUClast and terminal half-life are close to the observed
+medians. The 4-5 min group holds only 3 subjects (one 4-min and two 5-min
+infusions), so its observed medians are dominated by individual
+variability; its larger Cmax difference is not a sign of misfit.
+
+# Covariate effects
+
+```{r covariates}
+th <- rxode2::rxode(mod)$theta
+typical <- expand.grid(AGE = c(20, 40, 60, 80), SEXF = c(1, 0)) |>
+  mutate(
+    CL = exp(th[["lcl"]]) * (AGE / 36.6299)^th[["e_age_cl"]],
+    Q2 = exp(th[["lq"]]) * (AGE / 36.6299)^th[["e_age_q"]],
+    Q3 = exp(th[["lq2"]]) * (AGE / 36.6299)^th[["e_age_q2"]],
+    V3 = exp(th[["lvp2"]]) * (AGE / 36.6299)^th[["e_age_vp2"]] *
+      exp(th[["e_sex_vp2"]] * (1 - SEXF)),
+    Sex = ifelse(SEXF == 1, "female", "male")
+  )
+typical |>
+  select(Sex, AGE, CL, Q2, Q3, V3) |>
+  mutate(across(c(CL, Q2, Q3, V3), \(x) signif(x, 3))) |>
+  rename(
+    "Age (years)" = AGE, "CL (L/min)" = CL, "Q2 (L/min)" = Q2,
+    "Q3 (L/min)" = Q3, "V3 (L)" = V3
+  ) |>
+  knitr::kable(caption = "Typical parameters at LBM 55.2 kg.")
+```
+
+# Assumptions and deviations
+
+* **Parameter source.** The main text gives the final model structure and
+  covariate model but no table of final estimates (Figure 2b shows only the
+  first run, PK_01). The values come from the authors' deposited
+  `final_workflow/PK_16/populationParameters.txt`. The `<PARAMETER>` block of
+  `PK_16.mlxtran` holds the *initial* values of that run (carried over from
+  PK_15 with "Use last estimates") and was not used.
+* **Sex encoding.** The data set codes SEX as 1 = male and 0 = female
+  (Supinfo 1), and Monolix estimates the effect for SEX = 1 with female as
+  the reference. The model stores the canonical `SEXF` (1 = female) and
+  applies `exp(e_sex_vp2 * (1 - SEXF))`. The known-answer check above
+  includes subjects of both sexes and reproduces the Monolix predictions.
+* **Lean body mass.** The tutorial does not state how LBM was derived. The
+  data set's LBM column reproduces the James formula from weight, height and
+  sex (checked above), so users should compute LBM the same way.
+* **Compartment naming.** The Monolix V2/Q2 pair maps to `vp`/`q`
+  (`peripheral1`) and V3/Q3 to `vp2`/`q2` (`peripheral2`). In this fit the
+  V2 compartment is the slowly equilibrating one (Q2 = 0.083 L/min).
+* **Relation to Minto 1997.** The data are those of Minto et al. (1997), but
+  this model is the tutorial's own Monolix fit, not a transcription of the
+  model Minto et al. published.
+* **Units.** Time is in minutes, doses in ug and concentrations in ug/L
+  (= ng/mL), as in the tutorial data set; clearances are in L/min.

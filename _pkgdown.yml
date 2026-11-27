@@ -6952,6 +6952,8 @@ navbar:
         href: articles/Gallo_2021_remdesivir_pbpk.html
       - text: "Remifentanil (Choi 2011)"
         href: articles/Choi_2011_remifentanil.html
+      - text: "Remifentanil (Traynard 2020)"
+        href: articles/Traynard_2020_remifentanil.html
       - text: "Remifentanil (Yang 2017)"
         href: articles/Yang_2017_remifentanil.html
       - text: "Remimazolam (Chen 2024)"
@@ -11949,6 +11951,7 @@ articles:
   - articles/Trang_2019_plazomicin
   - articles/Trang_2021_meropenem_vaborbactam
   - articles/Traynard_2017_prostateSignaling_qsp
+  - articles/Traynard_2020_remifentanil
   - articles/Tremoulet_2014_ampicillin
   - articles/Trivedi_2021_omecamtivMecarbil
   - articles/Troisi_2024_meropenem
