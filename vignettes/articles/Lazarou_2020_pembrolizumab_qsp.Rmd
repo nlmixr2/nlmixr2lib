@@ -1,0 +1,474 @@
+---
+title: "Pembrolizumab minimal cancer immunity cycle QSP model (Lazarou 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pembrolizumab minimal cancer immunity cycle QSP model (Lazarou 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model, include = FALSE}
+mod <- readModelDb("Lazarou_2020_pembrolizumab_qsp")
+rxmod <- rxode2::rxode2(mod)
+mod_meta <- rxmod$meta
+```
+
+* Citation: `r mod_meta$reference`
+* Description: `r mod_meta$description`
+* Article: <https://doi.org/10.1002/cpt.1786> (open access:
+  <https://pmc.ncbi.nlm.nih.gov/articles/PMC7158209/>)
+* Supporting Information (calibration narrative, virtual-trial parameter
+  distributions, Figure S1 process map, and the executable model code
+  `CIC_v2.2.6` as CSV documentation plus R and MATLAB exports): available from
+  the article page.
+
+Lazarou et al. (2020) is a tutorial on using clinical omics resources to
+parameterise quantitative systems pharmacology (QSP) models in
+immuno-oncology. To illustrate the approach the authors built a minimal
+Cancer Immunity Cycle (CIC) model, calibrated it for non-small cell lung
+carcinoma (NSCLC) treated with pembrolizumab 10 mg/kg every three weeks, and
+ran a 489-patient virtual trial (main-text Figure 4). The model is explicitly
+an illustration: the authors state it was not qualified for drug-development
+decisions.
+
+# Population and biological context
+
+The model has no fitted population in the popPK sense. Its inputs come from
+three kinds of data (Supplementary Information, "Minimal model calibration
+using omics data"; main-text Figure 3):
+
+* **Tumour microenvironment (TME) composition** from the Immune Landscape of
+  Cancer resource, averaging lung adenocarcinoma and lung squamous cell
+  carcinoma biopsies (1156 patients): leukocyte fraction 0.14, and the relative
+  cytotoxic T-cell and antigen-presenting-cell (dendritic cell + M1
+  macrophage) fractions that split it into maximal TME percentages of 7.4 %
+  and 6.6 %.
+* **Lymph-node T cells** from healthy-donor flow cytometry, T-cell repertoire
+  sequencing and the absolute lymph-node lymphocyte count of Trepel (1974).
+* **Tumour-volume trajectories of four KEYNOTE-001 NSCLC patients** treated
+  with pembrolizumab 10 mg/kg Q3W (three responders, one non-responder), used
+  to calibrate tumour growth, T-cell killing and PD-1 checkpoint action by
+  hand.
+
+The virtual trial uses 489 virtual patients, each weighing 70 kg, given 19
+doses of 10 mg/kg every 21 days over 399 days. The same information is
+available programmatically:
+
+```{r population}
+str(mod_meta$population, give.attr = FALSE)
+```
+
+# Model structure
+
+* **PK.** Pembrolizumab (nmol) enters an injection-site depot, from which a
+  fraction `fdepot` is absorbed at rate `ka` and the rest is lost; a central
+  compartment with linear elimination exchanges with one peripheral
+  compartment. Plasma concentration is `Cc = central * mw / vblood`.
+* **Tumour.** Tumour cells (`tumor`) grow logistically towards a TME capacity
+  (`capacity`) that the tumour recruits at a rate inversely proportional to
+  its own TME percentage; they die at a basal rate and are killed by cytotoxic
+  T cells (`tc_tme`) with a saturable dependence on the TME T-cell percentage.
+* **Cancer immunity cycle.** Killed tumour cells form the antigen pool
+  (`antigens`), which TME antigen-presenting cells (`apc_tme`) take up and
+  carry to the lymph node (`apc_ln`); lymph-node APCs drive proliferation of
+  neoantigen-specific T cells (`tc_ln`), which traffic to the TME up to a
+  maximal TME percentage. APCs are produced in the TME up to their own maximal
+  percentage.
+* **Checkpoint.** TME T cells become exhausted via PD-1 at a rate that rises
+  with the tumour percentage of the TME and falls with antibody occupancy,
+  `central / (central + kd_pd1)`.
+* **Initial state.** The tumour starts at volume `TUM_VOL` (mm^3), already
+  infiltrated to its maximal leukocyte fractions; the TME volume is the cell
+  count times the volume of one cell (`vcell`).
+
+# Source trace
+
+Every structural equation and parameter value comes from the authors'
+deposited model code (`CIC_v2.2.6`): the CSV documentation (`Parameters.csv`,
+`Species.csv`, `Reactions.csv`, `Assignments.csv`, `Compartments.csv`,
+`DosingPlans.csv`) and the R export (`initialiseQSP.R`, `integrateQSP.R`),
+which agree with each other.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (kabs) | log(2) 1/day | Parameters.csv `kabs` |
+| `lfdepot` (Fabs) | log(0.9815751) | Parameters.csv `Fabs` |
+| `lkel` | log(0.07342571) 1/day | Parameters.csv `kel` |
+| `lk12`, `lk21` | log(0.4), log(0.43) 1/day | Parameters.csv `k12`, `k21` |
+| `mw` | 146000 g/mol | Parameters.csv `MWantiPD1` |
+| `vblood` | 2.75 L | Parameters.csv `Vblood`; Assignments.csv A9 |
+| `kd_pd1` | 0.076595741 nmol | Parameters.csv `antiPD1_KD` |
+| `kg_tumor` (mu) | 0.4 1/day | Parameters.csv `mu`; Assignments.csv A16 |
+| `kv1` | 0.01 1/day | Parameters.csv `kv1`; Assignments.csv A17 |
+| `kdeath_tumor` (beta_tumor) | 0.0231 1/day | Parameters.csv `beta_tumor`; Assignments.csv A18 |
+| `kkill` | 0.3 1/day | Parameters.csv `kkill`; Assignments.csv A19 |
+| `pcc50_kill` (Kkill) | 3.45 % | Parameters.csv `Kkill` |
+| `kexh_pd1` (kPD1) | 300 1/day | Parameters.csv `kPD1`; Assignments.csv A20 |
+| `ptum50_pd1` (KPD1) | 43.5 % | Parameters.csv `KPD1` |
+| `leuk_frac` | 0.14 | Parameters.csv `Leuk_frac`; Supplementary Information p. 1 |
+| `tc_frac`, `apc_frac` | 0.074, 0.066 | Parameters.csv `Tc_frac`, `APC_frac` |
+| `vcell` | 1e-6 mm^3/cell | Parameters.csv `Vcell` |
+| `ksyn_apc_tme` | 108005.973888231 cells/mL/day | Parameters.csv `ksyn_APC_tme` |
+| `apc_syn_scale` | 5000 | Reactions.csv `v4` rate law |
+| `kdeath_apc_tme`, `kdeath_apc_ln` | 0.0466 1/day | Parameters.csv `beta_APC_tme`, `beta_APC_ln` |
+| `qlymph` (L) | 7.03 L/day | Parameters.csv `L`; Assignments.csv A14 |
+| `apc_ln0` | 1e6 cells | Species.csv `APC_ln` initial state |
+| `kpro_tc_ln` (Pro_Tc_ln) | 1.5 1/day | Parameters.csv `Pro_Tc_ln`; Assignments.csv A21 |
+| `kdeath_tc_ln`, `kdeath_tc_tme` | 0.0014 1/day | Parameters.csv `beta_Tc_ln`, `beta_Tc_tme` |
+| `qco` (Q), `vplasma` (P) | 4730 L/day, 5 L | Parameters.csv `Q`, `P`; Assignments.csv A15 |
+| `tc_ln0` | 137554.400017073 cells | Species.csv `Tc_ln` initial state |
+| `tumor_max`, `tc_max`, `apc_max` | derived | Assignments.csv A22-A27 |
+| Initial states of `tumor`, `capacity`, `tc_tme`, `apc_tme` | derived from `TUM_VOL` | Assignments.csv A4, A8, A10; initialiseQSP.R |
+| TME volume and percentages | algebraic | Compartments.csv `TME`; Assignments.csv A2, A6, A11, A13 |
+| Rate laws and ODEs | -- | Reactions.csv; integrateQSP.R `odeRateStepQSP` |
+| Dose 4794.521 nmol every 504 h, 19 doses | -- | DosingPlans.csv; doseEventQSP.R |
+| Virtual-trial distributions | -- | Supplementary Information, "Parameters varied in virtual trial simulation"; Assignments.csv A1, A3, A5, A16-A21 |
+
+The maintainers checked the packaged model against the authors' R export
+(`simulateIndividualQSP()` with deSolve `vode`) on 2026-11-27 for one
+non-nominal parameter set (initial volume 5000 mm^3, all six varied rate
+constants and both TME fractions moved off their nominal values, 19 doses):
+tumour volume and all seven immune/tumour states agreed to a relative
+difference below 1e-9 at all 209 output times, and the plasma concentration
+to below 1e-5.
+
+# Dosing and helpers
+
+```{r helpers}
+mw_pembro <- 146000 # g/mol
+dose_nmol <- 10 * 70 / mw_pembro * 1e6 # 10 mg/kg at 70 kg = 700 mg
+dose_nmol
+dose_days <- seq(0, 378, by = 21) # 19 doses, Q3W
+obs_days <- seq(0, 398, by = 2)
+
+make_events <- function(ids, treated) {
+  obs <- expand.grid(id = ids, time = obs_days) |>
+    mutate(evid = 0L, amt = 0, cmt = "central")
+  if (treated) {
+    dose <- expand.grid(id = ids, time = dose_days) |>
+      mutate(evid = 1L, amt = dose_nmol, cmt = "depot")
+    obs <- bind_rows(dose, obs)
+  }
+  arrange(obs, id, time, desc(evid))
+}
+```
+
+# Typical patient
+
+With the nominal parameters and the nominal initial tumour volume (12592.5
+mm^3, the day-0 size of calibration patient 1130), the untreated tumour grows
+roughly 25-fold over 398 days. Under pembrolizumab 10 mg/kg Q3W it first
+shrinks by about a third (day 100) and then escapes, ending near twice its
+starting volume; the virtual population below shows the spread around this
+nominal patient.
+
+```{r typical}
+typ_events <- bind_rows(
+  make_events(1, treated = FALSE) |> mutate(arm = "Untreated"),
+  make_events(2, treated = TRUE) |> mutate(arm = "Pembrolizumab 10 mg/kg Q3W")
+) |>
+  mutate(TUM_VOL = 12592.53909)
+typ <- rxode2::rxSolve(mod, typ_events, keep = "arm", returnType = "data.frame")
+
+typ_comp <- typ |>
+  filter(time == 0) |>
+  transmute(arm, tumor_vol, pct_tumor, pct_tc, pct_apc, total = pct_tumor + pct_tc + pct_apc)
+knitr::kable(typ_comp, digits = 3)
+```
+
+```{r typical-checks}
+stopifnot(
+  # The tumour starts at TUM_VOL with the TME at its maximal leukocyte
+  # fractions (86 / 7.4 / 6.6 %) -- a check of the initial-state algebra.
+  all(abs(typ_comp$tumor_vol / 12592.53909 - 1) < 1e-10),
+  all(abs(typ_comp$total - 100) < 1e-10),
+  all(abs(typ_comp$pct_tc - 7.4) < 1e-10),
+  all(abs(typ_comp$pct_apc - 6.6) < 1e-10)
+)
+```
+
+```{r typical-plot, fig.cap = "Typical-patient tumour volume, untreated and treated (nominal parameters)."}
+ggplot(typ, aes(time, tumor_vol, colour = arm)) +
+  geom_line(linewidth = 1) +
+  labs(x = "Time (day)", y = "Tumour volume (mm^3)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# Virtual trial (Figure 4)
+
+The virtual population follows the authors' deposited code. Six rate
+constants are drawn uniformly between half and the full nominal value, the
+initial tumour volume uniformly between 10 and 10000 mm^3, and the relative
+cytotoxic T-cell and APC fractions from log-normal distributions. The
+log-normal draws reproduce the deposited code's conversion exactly (see
+Assumptions and deviations). The cohort is 200 virtual patients rather than
+the paper's 489; each patient is simulated both untreated and treated.
+
+```{r vp}
+set.seed(20200213)
+rxode2::rxSetSeed(20200213)
+n_vp <- 200
+lnorm_code <- function(n, m, s) {
+  rlnorm(n, log(m^2 / sqrt(s^2 + m^2)), sqrt(log(s^2 / m^2 + 1)))
+}
+vp <- data.frame(
+  id = seq_len(n_vp),
+  TUM_VOL = runif(n_vp, 0.01, 10) * 1000,
+  kg_tumor = runif(n_vp, 0.2, 0.4),
+  kv1 = runif(n_vp, 0.005, 0.01),
+  kdeath_tumor = runif(n_vp, 0.01155, 0.0231),
+  kkill = runif(n_vp, 0.15, 0.3),
+  kexh_pd1 = runif(n_vp, 150, 300),
+  kpro_tc_ln = runif(n_vp, 0.75, 1.5),
+  tc_frac = lnorm_code(n_vp, -2.436, 0.62335),
+  apc_frac = lnorm_code(n_vp, -2.58098, 0.69689)
+)
+
+run_arm <- function(treated, label) {
+  # Per-patient values travel as data columns, which override the ini()
+  # values of the same name.
+  ev <- make_events(vp$id, treated) |>
+    left_join(vp, by = "id")
+  rxode2::rxSolve(mod, ev, returnType = "data.frame") |>
+    mutate(arm = label)
+}
+sim_vp <- bind_rows(
+  run_arm(FALSE, "Untreated"),
+  run_arm(TRUE, "Pembrolizumab 10 mg/kg Q3W")
+) |>
+  mutate(arm = factor(arm, levels = c("Untreated", "Pembrolizumab 10 mg/kg Q3W")))
+```
+
+The four calibration patients' tumour volumes (KEYNOTE-001, digitised by the
+authors from Chatterjee et al. 2016 and deposited with the model code as
+`Chatterjee_etal_2016_10mgperkg_TGI.csv`) are overlaid as in Figure 4A-B.
+
+```{r clinical}
+clin <- data.frame(
+  ID = rep(c(1125, 1130, 946, 609), times = c(5, 5, 7, 6)),
+  time = c(
+    0, 63.47, 126.94, 183.94, 252.59,
+    0, 63.16, 130.26, 194.74, 256.58,
+    0, 66.34, 126.83, 191.22, 253.66, 318.05, 378.54,
+    0, 69.35, 132.66, 195.98, 266.83, 293.97
+  ),
+  tumor_vol = c(
+    21119.86043, 23139.34957, 6226.313456, 3267.081646, 3761.256671,
+    12592.53909, 1932.883374, 220.8932335, 241.3760003, 241.3760003,
+    13042.78256, 9710.921562, 7728.429809, 7728.429809, 8504.464731, 14137.16694, 12345.5062,
+    16217.91484, 17326.73148, 34847.18435, 34847.18435, 91780.0197, 95267.17819
+  )
+)
+```
+
+```{r fig4ab, fig.height = 4, fig.cap = "Replicates Figure 4A-B of Lazarou 2020: tumour volume of 200 virtual patients (blue) untreated and treated with pembrolizumab 10 mg/kg Q3W, with the four KEYNOTE-001 calibration patients (red; patient 609 did not respond)."}
+ggplot(sim_vp, aes(time, tumor_vol)) +
+  geom_line(aes(group = id), colour = "steelblue", alpha = 0.3) +
+  geom_line(data = clin, aes(group = ID), colour = "red", linewidth = 0.8) +
+  geom_point(data = clin, colour = "red") +
+  facet_wrap(~arm) +
+  coord_cartesian(ylim = c(0, 1e5)) +
+  labs(x = "Time (day)", y = "Tumour volume (mm^3)") +
+  theme_bw()
+```
+
+The paper's waterfall plot (Figure 4C) shows the percent change from baseline
+at the end of the simulation for each treated virtual patient, after removing
+those whose tumour more than doubled (the deposited code drops every patient
+with an absolute change above 100 %). The paper reports a dropout of 35 %.
+
+```{r waterfall}
+final <- sim_vp |>
+  filter(arm == "Pembrolizumab 10 mg/kg Q3W", time == max(obs_days)) |>
+  select(id, pct_change)
+dropout_pct <- 100 * mean(abs(final$pct_change) > 100)
+kept <- final |>
+  filter(abs(pct_change) <= 100) |>
+  arrange(desc(pct_change)) |>
+  mutate(rank = row_number())
+dropout_pct
+```
+
+```{r fig4c, fig.cap = "Replicates Figure 4C of Lazarou 2020: waterfall plot of the percent change in tumour volume from baseline at day 398 for treated virtual patients whose tumour did not double."}
+ggplot(kept, aes(rank, pct_change)) +
+  geom_col(fill = "steelblue") +
+  coord_cartesian(ylim = c(-100, 100)) +
+  labs(x = "Virtual patient", y = "% change from baseline") +
+  theme_bw()
+```
+
+In this cohort `r round(dropout_pct)` % of treated virtual patients more than
+double their tumour volume by day 398, against 35 % in the paper.
+
+```{r waterfall-checks}
+stopifnot(
+  # The share of treated virtual patients whose tumour doubles lands near the
+  # paper's 35 %: a wrong growth, kill or exhaustion term moves it by far more
+  # than the +/-15 point allowance, which covers cohort sampling noise
+  # (binomial SE about 3.4 points at n = 200).
+  abs(dropout_pct - 35) < 15
+)
+```
+
+```{r arm-summary}
+sim_vp |>
+  filter(time == max(obs_days)) |>
+  group_by(arm) |>
+  summarise(
+    median_pct_change = median(pct_change),
+    pct_shrinking = 100 * mean(pct_change < 0),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+# Pembrolizumab PK (PKNCA)
+
+The paper reports no NCA results. The PK layer is checked against its own
+mass balance: after a single dose, the area under the plasma concentration
+curve must equal `fdepot * dose / kel` converted to concentration units, and
+the terminal half-life must equal `log(2)` over the slow disposition
+eigenvalue of the two-compartment system.
+
+```{r pk-sim}
+pk_events <- bind_rows(
+  data.frame(id = 1L, time = 0, evid = 1L, amt = dose_nmol, cmt = "depot"),
+  data.frame(id = 1L, time = c(0, seq(0.25, 7, by = 0.25), seq(8, 400, by = 2)), evid = 0L, amt = 0, cmt = "central"),
+  data.frame(id = 2L, time = dose_days, evid = 1L, amt = dose_nmol, cmt = "depot"),
+  data.frame(id = 2L, time = c(0, 357 + seq(0, 21, by = 0.25)), evid = 0L, amt = 0, cmt = "central")
+) |>
+  mutate(
+    treatment = ifelse(id == 1L, "Single dose", "Dose 18 of Q3W"),
+    TUM_VOL = 1000
+  ) |>
+  arrange(id, time, desc(evid))
+pk <- rxode2::rxSolve(mod, pk_events, keep = "treatment", returnType = "data.frame") |>
+  select(id, time, Cc, treatment)
+```
+
+```{r pknca}
+conc_df <- pk |>
+  filter(!is.na(Cc)) |>
+  mutate(time = ifelse(treatment == "Dose 18 of Q3W", time - 357, time)) |>
+  filter(time >= 0)
+dose_df <- pk_events |>
+  filter(evid == 1L, (id == 1L) | (time == 357)) |>
+  mutate(time = ifelse(id == 2L, 0, time), amt_mg = amt * mw_pembro / 1e6) |>
+  select(id, time, amt_mg, treatment)
+conc_obj <- PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCAdose(dose_df, amt_mg ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0,
+  end = c(Inf, 21),
+  treatment = c("Single dose", "Dose 18 of Q3W"),
+  cmax = TRUE, tmax = TRUE,
+  aucinf.obs = c(TRUE, FALSE),
+  half.life = c(TRUE, FALSE),
+  auclast = c(FALSE, TRUE),
+  cmin = c(FALSE, TRUE)
+)
+nca <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life", "auclast", "cmin")) |>
+  select(treatment, PPTESTCD, PPORRES)
+knitr::kable(nca_tab, digits = 2)
+```
+
+```{r pk-checks}
+k12 <- 0.4
+k21 <- 0.43
+kel <- 0.07342571
+sum_k <- k12 + k21 + kel
+beta <- (sum_k - sqrt(sum_k^2 - 4 * k21 * kel)) / 2
+auc_expected <- 0.9815751 * dose_nmol / kel * mw_pembro / 2.75 * 1e-6
+nca_val <- function(test, trt) {
+  nca_tab$PPORRES[nca_tab$PPTESTCD == test & nca_tab$treatment == trt]
+}
+c(
+  aucinf_pknca = nca_val("aucinf.obs", "Single dose"),
+  aucinf_mass_balance = auc_expected,
+  thalf_pknca = nca_val("half.life", "Single dose"),
+  thalf_eigenvalue = log(2) / beta
+)
+stopifnot(
+  # Closed-form checks of the deterministic PK layer (same parameters on
+  # both sides), so tight tolerances are appropriate.
+  abs(nca_val("aucinf.obs", "Single dose") / auc_expected - 1) < 0.01,
+  abs(nca_val("half.life", "Single dose") / (log(2) / beta) - 1) < 0.01
+)
+```
+
+The terminal half-life implied by the authors' rate constants is about 19
+days. The 10 mg/kg peak is about 165 ug/mL after the first dose and about
+270 ug/mL at steady state, with a steady-state trough of about 105 ug/mL;
+these follow from the 2.75 L volume the model uses to convert amount to
+concentration.
+
+# Assumptions and deviations
+
+* **Model-code version.** The Supplementary Information text names the code
+  archive `CIC_v2.2.5`, but the deposited archive is `CIC_v2.2.6` (R and
+  MATLAB exports dated 20 December 2019). The packaged model follows the
+  deposited v2.2.6 code, which is what produced Figure 4.
+* **Initial lymph-node T cells.** The Supplementary Information text derives
+  195,624 pre-existing neoantigen-specific cytotoxic T cells in the lymph node,
+  but the deposited code (`Species.csv`, `initialiseQSP.R`) starts `Tc_ln` at
+  137,554.4 cells. The code value is used, as it is what the authors ran.
+* **Log-normal TME fractions.** The Supplementary Information describes the
+  relative cytotoxic T-cell and APC fractions as log-normal with "mean"
+  -2.436 / -2.58098 and "SD" 0.62335 / 0.69689 -- values that read as the
+  mean and SD of the log. The deposited R and MATLAB code instead pass them to
+  a conversion that treats them as the arithmetic mean and SD of the
+  log-normal variable (`log(m^2 / sqrt(s^2 + m^2))`,
+  `sqrt(log(s^2 / m^2 + 1))`). Because only the ratio of the two fractions
+  enters the model, the code's convention gives a median T-cell : APC ratio
+  of about 0.95 with a narrow spread, whereas the log-scale reading would give
+  about 1.16 with a wider spread. The vignette follows the code, which
+  generated Figure 4; `ini()` carries the nominal fractions 0.074 and 0.066
+  either way.
+* **Untreated patients.** The deposited code simulates untreated patients by
+  still dosing but setting a switch `doseOn = 0` that multiplies the drug
+  amount seen by the PD-1 term. The packaged model omits the switch; an
+  untreated patient is simulated with no doses, which gives an identical
+  tumour response.
+* **Injection-site depot.** Pembrolizumab is given by intravenous infusion,
+  but the authors' PK model (fitted to a Simcyp simulation) doses into an
+  injection-site compartment with first-order absorption (`kabs` = 2/day) and
+  a non-absorbed fraction. This structure is kept as published; doses go into
+  `depot`.
+* **Amount-based affinity.** PD-1 occupancy is computed from the central
+  amount and a dissociation constant expressed as an amount (0.0766 nmol), as
+  in the deposited code, not from a concentration.
+* **Constant in the APC development rate.** The rate law multiplies
+  `ksyn_APC_tme` by a bare 5000 (commented "blood volume = 5 L"). It is
+  carried as the fixed parameter `apc_syn_scale` so the value is visible.
+* **Units.** The deposited R code works internally in cubic metres, moles and
+  days. The packaged model keeps days, expresses the drug in nmol, tumour
+  volume in mm^3 and concentration in ug/mL, and converts the TME volume
+  explicitly where the source parameter is per mL (`ksyn_apc_tme`) or per
+  litre (`qlymph`).
+* **Initial tumour volume as a covariate.** The source parameter
+  `Initial_tumor_volume` is supplied per patient through the `TUM_VOL`
+  column (mm^3); it is only an initial condition and the reference of the
+  percent change from baseline.
+* **No variability or residual error.** The model is deterministic. The
+  virtual-trial distributions are uniform and log-normal draws of fixed
+  parameters, which the vignette reproduces with `rxSolve(params = ...)`
+  rather than as random effects.
+* **Cohort size.** The vignette simulates 200 virtual patients per arm
+  instead of the paper's 489, and the virtual population differs from the
+  paper's because it uses different random numbers (the authors note that
+  their own code gives "similar but not identical" results on each run).

@@ -6268,6 +6268,8 @@ navbar:
         href: articles/MilenkovicGrisic_2024_tumor_dynamics.html
       - text: "Pembrolizumab qol mbma (Zou 2026)"
         href: articles/Zou_2026_pembrolizumab_qol.html
+      - text: "Pembrolizumab qsp (Lazarou 2020)"
+        href: articles/Lazarou_2020_pembrolizumab_qsp.html
       - text: "Pemetrexed (Cao 2022)"
         href: articles/Cao_2022_pemetrexed.html
       - text: "Pemetrexed ckdepicr (deRouw 2024)"
@@ -10805,6 +10807,7 @@ articles:
   - articles/Launay_2024_ceftazidime
   - articles/Law_2017_teacatechins_pbpk
   - articles/Lawson_2022_busulfan
+  - articles/Lazarou_2020_pembrolizumab_qsp
   - articles/LeJouan_2005_quinine
   - articles/LeTilly_2021_trastuzumab
   - articles/Le_2015_lampalizumab
