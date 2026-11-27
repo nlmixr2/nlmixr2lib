@@ -24,6 +24,7 @@ Rebello_2026_fluticasone <- function() {
     "doi:10.1007/s13318-026-00989-0"
   )
   vignette <- "Rebello_2026_fluticasone"
+  dosing <- c("depot", "depot2", "depot3")
   units <- list(time = "h", dosing = "ug", concentration = "pg/mL")
 
   covariateData <- list(

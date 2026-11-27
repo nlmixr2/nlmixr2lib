@@ -2,6 +2,7 @@ Pan_2015_Hu714MuXHu_cyno <- function() {
   description <- "Preclinical (cynomolgus monkey). Population PK/PD model for Hu714MuXHu, a chimeric murine-human anti-IL-15 IgG1 monoclonal antibody (cynomolgus surrogate of AMG 714), fitted simultaneously to serum concentrations and peripheral NK cell counts (Pan 2015): two-compartment PK with linear elimination, first-order SC absorption and estimated SC bioavailability, linked to an indirect-response model in which serum Hu714MuXHu inhibits NK cell production (Emax). Parameters are body-weight normalised (per kg) and doses are in mg/kg."
   reference <- "Pan WJ, Li H, Xiao JJ, Horner MJ, Lebrec HN, Butz EA, Kaliyaperumal A, Cheah TC, Ortiz RC, Prokop SP, Buntich SA, Boren BM, Wolford ST, Tsuji WH, Wienkers LC, Kock K. Modeling the pharmacokinetic-pharmacodynamic relationship of the monoclonal anti-macaque-IL-15 antibody Hu714MuXHu in cynomolgus monkeys. Pharmacol Res Perspect. 2015;3(6):e00199. doi:10.1002/prp2.199. PMCID: PMC4777250."
   vignette <- "Pan_2015_Hu714MuXHu_cyno"
+  dosing <- c("depot", "central")
   units <- list(time = "day", dosing = "mg/kg", concentration = "ug/mL")
 
   # Peripheral-blood NK cell count is the PD turnover state; it has no

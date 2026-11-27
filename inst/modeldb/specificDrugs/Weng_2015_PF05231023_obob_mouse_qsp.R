@@ -29,6 +29,7 @@ Weng_2015_PF05231023_obob_mouse_qsp <- function() {
     "doi:10.1371/journal.pone.0119104."
   )
   vignette <- "Weng_2015_PF05231023_mouse_qsp"
+  dosing <- c("depot_1111", "central_1111")
   units <- list(
     time = "h",
     dosing = "mg/kg",

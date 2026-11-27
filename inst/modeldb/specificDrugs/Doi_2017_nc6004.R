@@ -18,6 +18,7 @@ Doi_2017_nc6004 <- function() {
     "doi:10.1007/s00280-017-3254-4"
   )
   vignette <- "Doi_2017_nc6004"
+  dosing <- "central_np"
   units <- list(
     time = "h",
     dosing = paste(

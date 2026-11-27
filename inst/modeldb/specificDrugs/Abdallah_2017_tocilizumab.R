@@ -2,6 +2,7 @@ Abdallah_2017_tocilizumab <- function() {
   description <- "Two-compartment population PK model for intravenous and subcutaneous tocilizumab in adults with rheumatoid arthritis (Abdallah 2017; pooled SUMMACTA and BREVACTA), with first-order SC absorption, SC bioavailability, parallel linear and Michaelis-Menten elimination from the central compartment, and power body-weight effects on clearances and volumes. Typical-value model: the source reports no IIV or residual-error estimates."
   reference <- "Abdallah H, Hsu JC, Lu P, Fettner S, Zhang X, Douglass W, Bao M, Rowell L, Burmester GR, Kivitz A. Pharmacokinetic and Pharmacodynamic Analysis of Subcutaneous Tocilizumab in Patients With Rheumatoid Arthritis From 2 Randomized, Controlled Trials: SUMMACTA and BREVACTA. J Clin Pharmacol. 2017;57(4):459-468. doi:10.1002/jcph.826"
   vignette <- "Abdallah_2017_tocilizumab"
+  dosing <- c("depot", "central")
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(

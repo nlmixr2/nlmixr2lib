@@ -15,6 +15,7 @@ Li_2015_abrilumab_cyno <- function() {
     "doi:10.1002/prp2.98"
   )
   vignette <- "Li_2015_abrilumab"
+  dosing <- c("depot", "central")
   units <- list(time = "day", dosing = "mg", concentration = "nmol/L")
 
   covariateData <- list()

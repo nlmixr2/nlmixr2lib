@@ -13,6 +13,7 @@ Sanche_2017_efavirenz_tenofovir_emtricitabine_qsp_tauleap <- function() {
     sep = " "
   )
   vignette <- "Sanche_2017_hiv_virological_failure"
+  dosing <- c("depot", "depot_tfv", "depot_ftc")
 
   # Productively infected CD4+ T cells per viral strain (wild type, five single
   # mutants, ten double mutants) have no canonical compartment analogue.

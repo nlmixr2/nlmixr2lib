@@ -2,6 +2,7 @@ Vu_2017_erenumab <- function() {
   description <- "Two-compartment quasi-steady-state target-mediated drug disposition (QSS-TMDD) population PK model for erenumab (AMG 334), an anti-CGRP-receptor monoclonal antibody, with first-order SC absorption, allometric body-weight scaling of linear clearance and central volume, and a time-varying total CGRP-receptor pool; linked to a direct sigmoid inhibitory (Imax) model of the capsaicin-induced dermal blood flow (CIDBF) response in healthy subjects and migraine patients (Vu 2017)."
   reference <- "Vu T, Ma P, Chen JS, de Hoon J, Van Hecken A, Yan L, Wu LS, Hamilton L, Vargas G. Pharmacokinetic-Pharmacodynamic Relationship of Erenumab (AMG 334) and Capsaicin-Induced Dermal Blood Flow in Healthy and Migraine Subjects. Pharm Res. 2017;34(9):1784-1795. doi:10.1007/s11095-017-2183-6"
   vignette <- "Vu_2017_erenumab"
+  dosing <- c("depot", "central")
 
   # Time in days; doses in mg; all concentrations (erenumab, the total
   # receptor pool, Kss, ksyn, IC50) in ng/mL as printed in Tables III-IV.

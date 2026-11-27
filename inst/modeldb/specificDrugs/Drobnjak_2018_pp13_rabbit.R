@@ -22,6 +22,7 @@ Drobnjak_2018_pp13_rabbit <- function() {
     "12:1977-1983. doi:10.2147/DDDT.S167926"
   )
   vignette <- "Drobnjak_2018_pp13_rabbit"
+  dosing <- c("depot", "central")
   units <- list(time = "h", dosing = "pg", concentration = "pg/mL")
 
   covariateData <- list(

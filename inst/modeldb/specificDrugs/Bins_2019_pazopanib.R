@@ -24,6 +24,7 @@ Bins_2019_pazopanib <- function() {
     "doi:10.1046/j.1365-2125.2000.00217.x."
   )
   vignette <- "Bins_2019_pazopanib"
+  dosing <- c("depot", "depot2", "central_ifosfamide")
   units <- list(
     time = "h",
     dosing = "mg (pazopanib, depot and depot2); umol (ifosfamide, central_ifosfamide)",

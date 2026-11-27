@@ -16,6 +16,7 @@ Hoch_2014_etirinotecanPegol_tumorpk_mouse <- function() {
     sep = " "
   )
   vignette <- "Hoch_2014_etirinotecanPegol"
+  dosing <- "tumor_ep"
   paper_specific_compartments <- c("tumor_ep")
 
   units <- list(

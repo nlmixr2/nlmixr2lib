@@ -49,6 +49,7 @@ Nakamura_2018_tamoxifen_pbpk <- function() {
     sep = " "
   )
   vignette <- "Nakamura_2018_tamoxifen_pbpk"
+  dosing <- "gut_lumen"
 
   # Compartment vocabulary. `central`, `muscle`, `skin`, `adipose`,
   # `gut_lumen`, `a_feces` and `a_urine` are canonical

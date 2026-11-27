@@ -13,6 +13,7 @@ Das_2019_ceftaroline <- function() {
     sep = " "
   )
   vignette <- "Das_2019_ceftaroline"
+  dosing <- c("depot", "central")
   paper_specific_etas <- c("etaRUV")
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

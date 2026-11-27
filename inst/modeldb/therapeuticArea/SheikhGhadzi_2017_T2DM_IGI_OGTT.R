@@ -15,6 +15,7 @@ SheikhGhadzi_2017_T2DM_IGI_OGTT <- function() {
     sep = " "
   )
   vignette <- "SheikhGhadzi_2017_T2DM_IGI_OGTT"
+  dosing <- c("depot", "glucose_depot")
   # Glucose amounts are in the NONMEM code's (mg/dL) x L units, i.e. 10 mg:
   # the glucose dose is in mg and f(glucose_depot) carries the 1/10 'L -> dL'
   # correction of Supplement 3 (F6 = BIOG/10).

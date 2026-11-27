@@ -10,6 +10,7 @@ Cuffari_2016_mesalamine <- function() {
     sep = " "
   )
   vignette <- "Cuffari_2016_mesalamine"
+  dosing <- c("depot", "depot2")
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(

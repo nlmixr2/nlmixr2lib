@@ -58,13 +58,51 @@ articleStateDoses <- rbind(
 
 # Doses the reader credits to a registry model that the article solves with
 # another model. Each record is named so the entry can be checked by hand.
-articleMiscreditedDoses <- data.frame(
-  model = "Aoki_2024_intratarget_microdosing_pbpk",
-  state = "target",
-  reason = paste(
-    "`ev_auth` in the xcheck chunk doses state 9 (`cmt = 9L`, the free receptor",
-    "X_FreeR) of the inline `authors` model, inside a loop that also solves the",
-    "packaged model; the packaged model sets `target(0) <- rtot` instead"
+articleMiscreditedDoses <- rbind(
+  data.frame(
+    model = c("Ahlberg_2019_MAB04_mouse", "Ahlberg_2019_MAB04_mouse_mm"),
+    state = "central",
+    reason = paste(
+      "`monkey_events` and `human_events` dose `central` of Ahlberg_2019_spesolimab_dedrick",
+      "and Ahlberg_2019_spesolimab (`rxSolve(uis[[...]], ...)`); the reader credits them",
+      "through `uis`, which holds every Ahlberg 2019 model. The mouse doses go into `depot`"
+    )
+  ),
+  data.frame(
+    model = "Aoki_2024_intratarget_microdosing_pbpk",
+    state = "target",
+    reason = paste(
+      "`ev_auth` in the xcheck chunk doses state 9 (`cmt = 9L`, the free receptor",
+      "X_FreeR) of the inline `authors` model, inside a loop that also solves the",
+      "packaged model; the packaged model sets `target(0) <- rtot` instead"
+    )
+  ),
+  data.frame(
+    model = "Dolder_2017_lysergide",
+    state = "central",
+    reason = paste(
+      "`make_events(\"central\")` in the iv-check chunk is solved only with",
+      "`solve_model(\"Dolder_2017_lysergide_anydrugeffect\", ...)`; the reader credits it",
+      "through `solve_model()`, which reads `mods`, the list of both Dolder 2017 models"
+    )
+  ),
+  data.frame(
+    model = c("Mo_2014_az968_mouse", "Mo_2014_az968_simeoni_mouse", "Mo_2014_azd1208_mouse"),
+    state = "central",
+    reason = paste(
+      "`ev_pac` (Figure 7) and the pknca chunk's `rxode2::et(amt = 30, time = 0, cmt =",
+      "\"central\")` are paclitaxel IV doses solved with `pac <- ui$Mo_2014_paclitaxel_mouse`;",
+      "the reader credits them through `ui`, which holds every Mo 2014 model"
+    )
+  ),
+  data.frame(
+    model = "Nguyen_2017_warfarin",
+    state = "central",
+    reason = paste(
+      "`ev_typ`, `ev_pk` and `ev_nca` are solved with `mod_pk <-",
+      "readModelDb(\"Nguyen_2017_iv2cmt\")()`; the reader does not see a model named in",
+      "the called position of `readModelDb(...)()`, so it credits them to every model"
+    )
   )
 )
 

@@ -11,6 +11,7 @@ Leil_2014_4betaHydroxycholesterol <- function() {
     sep = " "
   )
   vignette <- "Leil_2014_4betaHydroxycholesterol"
+  dosing <- c("depot", "central", "depot_ketoconazole")
   units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
 
   compartmentData <- list(

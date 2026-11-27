@@ -10,6 +10,7 @@ Cirincione_2017_exenatide_qt <- function() {
     "QT Interval Dynamics. J Clin Pharmacol. 2017;57(8):966-976. doi:10.1002/jcph.933."
   )
   vignette <- "Cirincione_2017_exenatide_qt"
+  dosing <- c("central", "gut")
   units <- list(
     time = "h",
     dosing = "ug",

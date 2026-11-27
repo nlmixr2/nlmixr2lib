@@ -23,6 +23,7 @@ Dolder_2017_lysergide_anydrugeffect <- function() {
     "doi:10.1007/s40262-017-0513-9"
   )
   vignette <- "Dolder_2017_lysergide"
+  dosing <- c("depot", "central")
   units <- list(
     time = "h",
     dosing = "ug",

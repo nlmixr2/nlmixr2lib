@@ -29,6 +29,7 @@ Huang_2026_metoprolol_captopril <- function() {
     "healthy volunteers. Chin Pharm J. 2001;36(2):111-2."
   )
   vignette <- "Huang_2026_coupled_pk_ddi"
+  dosing <- c("depot", "depot_captopril")
 
   # Amounts are carried in mg. Huang 2026 states amounts in g ('1 g of Cap
   # ... reduces the rate of Met absorption by 1.27 h-1'; Table 1 'Initial

@@ -19,6 +19,7 @@ Hoch_2014_etirinotecanPegol_h460_mouse <- function() {
     sep = " "
   )
   vignette <- "Hoch_2014_etirinotecanPegol"
+  dosing <- c("depot", "depot2", "tumor_sn38_irinotecan")
   paper_specific_compartments <- c("tumor_sn38", "tumor_sn38_irinotecan")
 
   units <- list(

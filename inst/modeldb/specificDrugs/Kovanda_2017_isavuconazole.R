@@ -18,6 +18,7 @@ Kovanda_2017_isavuconazole <- function() {
     sep = " "
   )
   vignette <- "Kovanda_2017_isavuconazole"
+  dosing <- c("depot", "central")
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what

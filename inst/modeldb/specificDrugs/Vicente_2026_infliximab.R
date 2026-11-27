@@ -8,6 +8,7 @@ Vicente_2026_infliximab <- function() {
     sep = " "
   )
   vignette <- "Vicente_2026_infliximab"
+  dosing <- c("depot", "central")
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # What each ODE state holds. Vicente 2026 Methods 2.3: "a one-compartment

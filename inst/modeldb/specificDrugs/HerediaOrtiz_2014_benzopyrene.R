@@ -39,7 +39,7 @@ HerediaOrtiz_2014_benzopyrene <- function() {
   # compartments. In the paper's exposure scenarios, D_route(t) is a time-varying
   # input over the work shift; in an event table it is a bolus or a zero-order
   # infusion (rate) into the matching depot.
-  dosing <- c("depot_inh", "depot_der")
+  dosing <- c("depot_inh", "depot_der", "body_der")
 
   # Paper-mechanistic states. The single whole-body pool B of Eq. 31 is split by
   # route of entry (body_inh / body_der) so that the route-specific urinary

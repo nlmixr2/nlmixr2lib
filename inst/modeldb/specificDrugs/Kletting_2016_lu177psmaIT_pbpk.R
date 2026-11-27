@@ -33,6 +33,7 @@ Kletting_2016_lu177psmaIT_pbpk <- function() {
     sep = " "
   )
   vignette <- "Kletting_2016_lu177psmaIT_pbpk"
+  dosing <- c("pven_lab", "pven_unl")
   units <- list(time = "min", dosing = "nmol", concentration = "nmol/L")
 
   paper_specific_compartment_pattern <- "^(pv|pint|rp|pintern|pintra|part|pven|pprp|urine|cleared)_"

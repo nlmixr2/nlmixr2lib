@@ -18,6 +18,7 @@ Brill_2015_midazolam <- function() {
     "doi:10.1007/s11095-015-1752-9."
   )
   vignette <- "Brill_2015_midazolam"
+  dosing <- c("depot", "central")
   units <- list(time = "min", dosing = "ug", concentration = "ng/mL")
 
   covariateData <- list(

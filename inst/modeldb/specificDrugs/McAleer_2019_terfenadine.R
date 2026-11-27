@@ -34,6 +34,7 @@ McAleer_2019_terfenadine <- function() {
     sep = " "
   )
   vignette <- "McAleer_2019_terfenadine"
+  dosing <- "media"
   units <- list(
     time = "min",
     dosing = "umol/L (nominal terfenadine concentration added to the 2 mL recirculating medium)",

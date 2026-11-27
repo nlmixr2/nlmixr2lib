@@ -2,6 +2,7 @@ Li_2016_citrate <- function() {
   description <- "One-compartment endogenous turnover model for plasma citrate in healthy adults (Li 2016), fitted to literature mean profiles after intravenous citrate infusion and oral citrate. Citrate is produced at a constant zero-order rate that holds plasma citrate at its baseline, distributes in a single body-weight-normalised volume, and is cleared by first-order elimination; oral citrate is absorbed first-order with bioavailability F. Hepatic clearance (Eq. 4) and the hepatic influx of plasma citrate (Eq. 5) are derived outputs, and a scenario knob f_nact scales the hepatic (NaCT-mediated) clearance to reproduce the NaCT-inhibition simulations of Eqs. 6-7 and Figure 6."
   reference <- "Li Z, Erion DM, Maurer TS. Model-Based Assessment of Plasma Citrate Flux Into the Liver: Implications for NaCT as a Therapeutic Target. CPT Pharmacometrics Syst Pharmacol. 2016;5(3):132. doi:10.1002/psp4.12062"
   vignette <- "Li_2016_citrate"
+  dosing <- c("depot", "central")
   units <- list(time = "min", dosing = "mmol/kg", concentration = "mmol/L")
 
   compartmentData <- list(

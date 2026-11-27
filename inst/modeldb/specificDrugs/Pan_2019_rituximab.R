@@ -11,6 +11,7 @@ Pan_2019_rituximab <- function() {
     sep = " "
   )
   vignette <- "Pan_2019_rituximab"
+  dosing <- "depot_kpd"
   units <- list(time = "day", dosing = "mg", concentration = "10^6 cells/L")
 
   # Model structure (Pan 2019 Eqs 1-2 and the supplement $DES block):

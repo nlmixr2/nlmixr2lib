@@ -27,6 +27,7 @@ Guiastrennec_2018_bile_acids <- function() {
     "5(12):692-700, doi:10.1002/psp4.12152."
   )
   vignette <- "Guiastrennec_2018_bile_acids"
+  dosing <- "stomach"
   units <- list(
     time = "min",
     dosing = "kcal (energy content of the test drink, dosed into the stomach)",

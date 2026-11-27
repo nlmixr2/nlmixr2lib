@@ -34,6 +34,7 @@ Calvier_2018_iv1cmt_dispersion <- function() {
     sep = " "
   )
   vignette <- "Calvier_2018_iv1cmt_dispersion"
+  dosing <- c("central", "central_drugb")
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Both drugs are hypothetical, so the analyte names carry the paper's

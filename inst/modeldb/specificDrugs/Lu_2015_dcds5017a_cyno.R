@@ -2,6 +2,15 @@ Lu_2015_dcds5017a_cyno <- function() {
   description <- "Preclinical (cynomolgus monkey). Semi-mechanistic multiple-analyte population PK model for the anti-CD79b-MMAE antibody-drug conjugate DCDS5017A (Lu 2015): nine DAR species (DAR0-DAR8), each two-compartment, sharing Vc, Vp and CLd; per-species Michaelis-Menten proteolytic degradation and sequential one-MMAE-at-a-time deconjugation whose rate constant depends on DAR through a Weibull function; unconjugated MMAE two-compartment with input from both catabolic pathways. Outputs antibody-conjugated MMAE (acMMAE), total antibody (Tab) and unconjugated MMAE."
   reference <- "Lu D, Jin JY, Girish S, Agarwal P, Li D, Prabhu S, Dere R, Saad O, Nazzal D, Koppada N, Ramanujan S, Ng CM. Semi-mechanistic Multiple-Analyte Pharmacokinetic Model for an Antibody-Drug-Conjugate in Cynomolgus Monkeys. Pharm Res. 2015;32(6):1907-1919. doi:10.1007/s11095-014-1585-y. PMID 25467958; PMCID PMC4422865."
   vignette <- "Lu_2015_dcds5017a_cyno"
+  dosing <- c(
+    "dar8_central",
+    "dar6_central",
+    "dar4_central",
+    "dar2_central",
+    "dar1_central",
+    "dar0_central",
+    "central_mmae"
+  )
   units <- list(
     time = "h",
     dosing = "nmol",

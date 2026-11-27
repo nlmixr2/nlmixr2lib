@@ -20,6 +20,7 @@ Tapani_2014_nicotinicAcid_rat_normal <- function() {
     "J Pharm Sci. 2014;103(8):2571-2584. doi:10.1002/jps.24077"
   )
   vignette <- "Tapani_2014_nicotinicAcid_rat"
+  dosing <- c("depot", "central")
   units <- list(
     time = "min",
     dosing = "umol/kg",
