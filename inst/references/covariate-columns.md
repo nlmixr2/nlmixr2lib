@@ -4606,6 +4606,28 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Shah_2019_cefotiam.R` (three-compartment unbound-referenced popPK in cystic-fibrosis patients and healthy volunteers, with total plasma concentration and percent of dose excreted unchanged in urine fitted simultaneously).
 - **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. [[DOSE_MTX_MGM2]], [[DOSE_CARBOPLATIN_MGKG]], [[DOSE_ELA_MG]]). A dedicated dose column rather than a `podo()`-derived amount because the endpoint is a CUMULATIVE recovery across the whole 24 h collection, so it must normalize to the total dose administered rather than to the most recent dose event; `podo()` would silently give the wrong denominator the moment a second dose is given. The alternative encoding -- keeping the urinary endpoint as a cumulative amount in mg, as `Bulitta_2011_cefpirome.R` does with `urineAmt` -- needs no dose column, but it cannot carry Shah 2019's published additive residual SD of 0.384% without first multiplying it by a study-specific dose, which would hard-code 1027.5 mg into the residual model. Models whose urinary endpoint is an amount should continue to use the `urineAmt` form and should NOT introduce this column.
 
+### DOSE_BENAPENEM_MG (**canonical for the benapenem dose per administration in milligrams**)
+- **Description:** Milligram dose of benapenem per administration, carried as a covariate because both clearance and central volume scale as power functions of the dose (less-than-dose-proportional exposure). Constant over a regimen; per-subject.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- continuous, centred at 250 mg: `CL = CL_pop * (DOSE / 250)^0.183`, `V1 = V1_pop * (DOSE / 250)^0.184 * (WT / 70)` (Ji 2020 Equations 3 and 4). 250 mg is the lowest phase I dose.
+- **Source aliases:**
+  - `dose` -- Ji 2020 Equations 3 and 4. Same orientation and units, no value transformation.
+- **Example models:** `Ji_2020_benapenem.R` (two-compartment popPK in healthy volunteers after 250, 500 or 1,000 mg 30-min infusions, with a two-site plasma protein-binding model for the unbound concentration).
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. [[DOSE_CEFOTIAM_MG]], [[DOSE_ELA_MG]]). A dedicated column rather than a `podo()`-derived amount because `podo()` inside the ODE system returns the infusion rate, not the amount, for infused doses. The mouse sibling model takes the mg/kg dose in [[DOSE_BENAPENEM_MGKG]].
+
+### DOSE_BENAPENEM_MGKG (**canonical for the benapenem dose per administration in mg/kg**)
+- **Description:** Benapenem dose per administration normalised to body weight, in mg/kg, carried as a covariate because both clearance and central volume rise with dose. Per-subject (per dose group).
+- **Units:** mg/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- continuous, scaled by 58.4 mg/kg inside a `1 + (DOSE / 58.4)^theta` term: `CL = 0.913 * [1 + (DOSE / 58.4)^1.46]` mL/h and `V1 = 3.62 * [1 + (DOSE / 58.4)^1.06]` mL (Ji 2020 Equations 1 and 2). 58.4 mg/kg is the third of the four PK-study dose levels (1.9, 14.6, 58.4, 233 mg/kg).
+- **Source aliases:**
+  - `dose` -- Ji 2020 Equations 1 and 2. Same orientation and units, no value transformation.
+- **Example models:** `Ji_2020_benapenem_mouse.R` (two-compartment popPK in neutropenic thigh-infected ICR mice after a single IV bolus, with a two-site plasma protein-binding model for the unbound concentration).
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. [[DOSE_CARBOPLATIN_MGKG]], [[DOSE_DYP688_MGKG]]). Carried in mg/kg because the dose records hold the amount per mouse (ug), from which the mg/kg level cannot be recovered without the body weight, which the source does not report. The human sibling model takes the mg dose in [[DOSE_BENAPENEM_MG]].
+
 ### DOSE_ELA_MG (**canonical for the administered elafibranor dose in milligrams**)
 - **Description:** Milligram dose of elafibranor on the dose record, carried as a covariate because relative bioavailability rises with dose through a sigmoidal Emax function of the dose itself. Time-varying across study periods in dose-escalation trials.
 - **Units:** mg

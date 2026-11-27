@@ -1,0 +1,614 @@
+---
+title: "Benapenem in mice and humans (Ji 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Benapenem in mice and humans (Ji 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+for (nm in c("Ji_2020_benapenem", "Ji_2020_benapenem_mouse")) {
+  ui <- rxode2::rxode(readModelDb(nm))
+  cat("**", nm, "**\n\n", sep = "")
+  cat("* Citation: ", ui$reference, "\n", sep = "")
+  cat("* Description: ", ui$description, "\n\n", sep = "")
+}
+```
+
+* Article: <https://doi.org/10.1128/AAC.01751-19>
+
+Benapenem is a carbapenem developed for infections caused by
+Enterobacteriaceae, including ESBL-producing strains. Ji and colleagues used a
+model-informed approach to choose a clinical regimen and a PK/PD
+susceptibility cutoff. The paper has four modelling pieces, all fitted in
+NONMEM 7 by FOCE-I:
+
+1. **Mouse popPK** (`Ji_2020_benapenem_mouse`). A two-compartment model for
+   single IV bolus doses of 1.9 to 233 mg/kg in neutropenic thigh-infected
+   mice. Clearance and central volume both rise with the dose,
+   `CL = 0.913 x [1 + (dose / 58.4)^1.46]` mL/h and
+   `V1 = 3.62 x [1 + (dose / 58.4)^1.06]` mL (Equations 1 and 2).
+2. **Human popPK** (`Ji_2020_benapenem`). A two-compartment model for 250,
+   500 and 1,000 mg 30-min IV infusions in 12 healthy volunteers.
+   `CL = 0.825 x (dose / 250)^0.183` L/h and
+   `V1 = 5.03 x (dose / 250)^0.184 x (WT / 70)` L (Equations 3 and 4), with an
+   estimated infusion duration of 0.404 h.
+3. **Plasma protein binding**, one fit per species. A two-site model,
+   `Cb = Bmax x Cu / (C50 + Cu) + slope x Cu` (Equation 9), converts the
+   total concentration to the unbound concentration through the positive
+   root of a quadratic (Equations 10 to 12). Both model files carry their
+   species' binding parameters and return the unbound concentration as
+   `Cunbound`.
+4. **PK/PD.** The authors related %fT>MIC, fCmax/MIC and fAUC/MIC in the
+   mice to the 24-h change in log10 CFU per gram of thigh. They chose
+   %fT>MIC as the index and set targets of 40% (bacteriostatic) and 60%
+   (bactericidal). Those relationships are straight trend lines through
+   per-strain data (Figures S1 to S12), with no tabulated parameters, so they
+   are not packaged. The targets are used below for the probability of target
+   attainment (PTA).
+
+Benapenem exposure rises less than in proportion to dose in both species. The
+authors attribute this to saturable plasma protein binding: more drug is
+unbound at higher concentrations and is cleared faster.
+
+# Population
+
+**Mice.** Male and female ICR mice aged 5 to 6 weeks were made neutropenic
+with cyclophosphamide (150 then 100 mg/kg intraperitoneally, 3 days apart) and
+infected in the thigh with *Escherichia coli* ATCC 25922 (ESBL-negative). Two
+hours later they received a single tail-vein dose of 1.9, 14.6, 58.4 or
+233 mg/kg. Six mice were sampled at each of 10 times from 0 to 24 h. Body
+weights and the number of mice are not reported.
+
+**Humans.** The benapenem phase I trial enrolled 12 healthy Chinese
+volunteers: 6 female and 6 male, median age 28 years (range 21-35), median
+weight 61.5 kg (51.8-78.3) and median height 165.3 cm (153.5-181) (Table 1).
+They received single 250, 500 or 1,000 mg doses as 30-min IV infusions, with
+sampling to 48 h.
+
+The same information is available programmatically via each model's
+`population` metadata, for example
+`readModelDb("Ji_2020_benapenem")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Ji_2020_benapenem.R` and
+`inst/modeldb/specificDrugs/Ji_2020_benapenem_mouse.R`. The table below
+collects them in one place.
+
+| Model | Equation / parameter | Value | Source location |
+|-------|----------------------|-------|-----------------|
+| mouse | `lcl` | log(0.913) mL/h | Table 3 CL; Equation 1 |
+| mouse | `lvc` | log(3.62) mL | Table 3 V1; Equation 2 |
+| mouse | `lq` | log(0.09) mL/h | Table 3 Q |
+| mouse | `lvp` | log(1.65) mL | Table 3 V2 |
+| mouse | `e_dose_cl` | 1.46 | Table 3 Dose_CL; Equation 1 |
+| mouse | `e_dose_vc` | 1.06 | Table 3 Dose_V1; Equation 2 |
+| mouse | `etalcl` | log(1 + 0.365^2) | Table 3 IIV_CL 36.5 |
+| mouse | `propSd` | 0.301 | Table 3 Prop. error 30.1% (additive fixed to 0) |
+| mouse | `lbmax`, `lkd`, `kns` | log(164), log(0.232), 1.02 | Table 5, mouse row |
+| human | `lcl` | log(0.825) L/h | Table 4 CL; Equation 3 |
+| human | `lvc` | log(5.03) L | Table 4 V1; Equation 4 |
+| human | `lq` | log(1.14) L/h | Table 4 Q |
+| human | `lvp` | log(2.93) L | Table 4 V2 |
+| human | `ld1` | log(0.404) h | Table 4 D1 |
+| human | `e_dose_cl` | 0.183 | Table 4 Dose_CL; Equation 3 |
+| human | `e_dose_vc` | 0.184 | Table 4 Dose_V1; Equation 4 |
+| human | `(WT / 70)` on V1 | exponent 1 | Equation 4 |
+| human | `etalcl`, `etalvc` | log(1 + 0.105^2), log(1 + 0.076^2) | Table 4 IIV_CL 10.5, IIV_V1 7.6 |
+| human | `propSd`, `addSd` | 0.074, 0.233 mg/L | Table 4 Prop. error 7.4%, Add. error 0.233 |
+| human | `lbmax`, `lkd`, `kns` | log(115), log(8.63), 0.666 | Table 5, human row |
+| both | IIV form | `P = Ppop x exp(eta)` | Equation 5 |
+| both | Residual error | `Cobs = Cpred x (1 + eps1) + eps2` | Equation 6 |
+| both | `Cunbound` | positive root of `a Cu^2 + b Cu + c = 0` | Equations 9-12 |
+| both | Two-compartment ODEs | n/a | Results, "PK/PD model and mouse and human Pop-PK models" |
+
+# Protein binding
+
+The bound concentration is a saturable high-affinity term plus a linear
+low-affinity term. The figure below redraws Figure 5 from the Table 5
+parameters. Its curves pass through the end points of the published curves:
+about 565 ug/mL bound at 390 ug/mL unbound in mouse plasma, and about
+310 ug/mL bound at 300 ug/mL unbound in human plasma.
+
+```{r binding}
+bind_par <- tibble::tribble(
+  ~species, ~bmax, ~kd,   ~kns,
+  "Mouse",  164,   0.232, 1.02,
+  "Human",  115,   8.63,  0.666
+)
+bound_curve <- tidyr::crossing(bind_par, cu = seq(0, 400, by = 1)) |>
+  mutate(cb = bmax * cu / (kd + cu) + kns * cu) |>
+  filter(species == "Mouse" | cu <= 300)
+
+ggplot(bound_curve, aes(cu, cb)) +
+  geom_line() +
+  facet_wrap(~species, scales = "free") +
+  labs(
+    x = "Free drug concentration (ug/mL)",
+    y = "Bound drug concentration (ug/mL)",
+    caption = "Replicates the model curves of Figure 5 of Ji 2020."
+  )
+```
+
+The models take the total concentration and must recover the unbound one. To
+check that inversion, the next chunk passes a grid of known unbound
+concentrations through Equation 10 to get totals. It then gives each total as
+a bolus into the typical 5.03 L central volume (250 mg, 70 kg) of the packaged
+human model and checks that `Cunbound` at time 0 returns the starting value.
+Both sides use the same parameters, so any difference is floating-point error
+and the bound is tight.
+
+```{r binding-roundtrip}
+# Typical-value solves of several subjects use zeroRe(), for which rxode2's
+# "multi-subject simulation without 'omega'" warning is expected.
+solve_typical <- function(model, events) {
+  withCallingHandlers(
+    rxode2::rxSolve(rxode2::zeroRe(model), events, returnType = "data.frame"),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+mod_h <- readModelDb("Ji_2020_benapenem")
+hb <- bind_par[bind_par$species == "Human", ]
+cu_grid <- c(0.01, 0.1, 1, 5, 20, 100, 300)
+ct_grid <- cu_grid + hb$bmax * cu_grid / (hb$kd + cu_grid) + hb$kns * cu_grid
+
+ev_rt <- data.frame(
+  id = rep(seq_along(ct_grid), each = 2), time = 0, evid = c(1, 0),
+  amt = as.vector(rbind(ct_grid * 5.03, 0)), cmt = "central",
+  WT = 70, DOSE_BENAPENEM_MG = 250
+)
+rt <- solve_typical(mod_h, ev_rt)
+stopifnot(
+  nrow(rt) == length(cu_grid),
+  all(abs(rt$Cc / ct_grid - 1) < 1e-10),
+  all(abs(rt$Cunbound / cu_grid - 1) < 1e-8)
+)
+
+binding_tab <- data.frame(
+  unbound = cu_grid,
+  total = signif(ct_grid, 4),
+  fu_pct = round(100 * cu_grid / ct_grid, 1)
+)
+knitr::kable(
+  binding_tab |>
+    dplyr::rename(
+      "Unbound (ug/mL)" = unbound,
+      "Total (ug/mL)" = total,
+      "Unbound (%)" = fu_pct
+    ),
+  caption = "Human plasma: total concentration and unbound percentage for a grid of unbound concentrations."
+)
+fu_pct <- binding_tab$fu_pct
+```
+
+Human benapenem is about `r fu_pct[1]`% unbound at low concentrations and
+about `r fu_pct[length(fu_pct)]`% unbound at 300 ug/mL unbound. The authors'
+in vitro binding table (Table S2) shows the same saturation, with the bound
+fraction falling from about 92% to 50% as the concentration rises.
+
+# Mouse PK (Figure 3)
+
+```{r mouse-c0, include = FALSE}
+mouse_wt_kg <- 0.020
+mouse_doses <- c(1.9, 14.6, 58.4, 233)
+# Equation 2: V1 = 3.62 * [1 + (dose / 58.4)^1.06] mL; amount in ug.
+c0_typ_m <- mouse_doses * mouse_wt_kg * 1000 / (3.62 * (1 + (mouse_doses / 58.4)^1.06))
+```
+
+The dose records hold the amount per mouse. The paper does not report body
+weights, so a 20 g mouse is assumed: the amount in ug is the mg/kg dose times
+20. With that weight the typical initial concentrations (dose over V1) are
+`r paste(round(c0_typ_m), collapse = ", ")` mg/L for 1.9, 14.6, 58.4 and
+233 mg/kg. Each sits inside the spread of the earliest observations in the
+matching panel of Figure 3 (roughly 6-12, 40-105, 100-210 and 150-470 mg/L).
+
+```{r mouse-sim}
+mod_m <- readModelDb("Ji_2020_benapenem_mouse")
+n_mouse <- 200
+obs_times_m <- c(0, 0.083, 0.25, 0.5, seq(1, 24, by = 0.5))
+
+make_mouse <- function(dose_mgkg, offset) {
+  ids <- offset + seq_len(n_mouse)
+  amt_ug <- dose_mgkg * mouse_wt_kg * 1000
+  dplyr::bind_rows(
+    data.frame(id = ids, time = 0, evid = 1, amt = amt_ug),
+    tidyr::crossing(id = ids, time = obs_times_m) |> mutate(evid = 0, amt = 0)
+  ) |>
+    mutate(cmt = "central", DOSE_BENAPENEM_MGKG = dose_mgkg, treatment = paste(dose_mgkg, "mg/kg")) |>
+    arrange(id, time, desc(evid))
+}
+ev_m <- dplyr::bind_rows(lapply(seq_along(mouse_doses), function(i) {
+  make_mouse(mouse_doses[i], (i - 1) * n_mouse)
+}))
+stopifnot(!anyDuplicated(ev_m[, c("id", "time", "evid")]))
+
+rxode2::rxSetSeed(2020)
+sim_m <- rxode2::rxSolve(mod_m, ev_m, keep = c("treatment", "DOSE_BENAPENEM_MGKG"), returnType = "data.frame")
+sim_m$treatment <- factor(sim_m$treatment, levels = paste(mouse_doses, "mg/kg"))
+```
+
+```{r mouse-vpc, fig.height = 6}
+vpc_m <- sim_m |>
+  filter(time > 0) |>
+  group_by(treatment, time) |>
+  summarise(
+    med = median(sim),
+    lo = quantile(sim, 0.05),
+    hi = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc_m, aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  scale_y_log10() +
+  facet_wrap(~treatment, scales = "free_y") +
+  labs(
+    x = "Time (h)", y = "Total benapenem (mg/L)",
+    caption = "Replicates Figure 3 (log scale) of Ji 2020: simulated median and 90% interval, 20 g mice."
+  )
+```
+
+The paper reports that exposure rises less than in proportion to the dose.
+The typical-value AUC per unit dose from the model should therefore fall
+across the four dose levels. This check uses no random draws. In the mouse
+model the effect is strong: clearance doubles at 58.4 mg/kg and rises about
+8.5-fold at 233 mg/kg, so the typical AUC barely changes between the two
+highest doses.
+
+```{r mouse-dose-prop}
+ev_typ_m <- dplyr::bind_rows(lapply(seq_along(mouse_doses), function(i) {
+  data.frame(
+    id = i, time = c(0, seq(0, 48, by = 0.05)), evid = c(1, rep(0, 961)),
+    amt = c(mouse_doses[i] * mouse_wt_kg * 1000, rep(0, 961)),
+    cmt = "central", DOSE_BENAPENEM_MGKG = mouse_doses[i]
+  )
+}))
+typ_m <- solve_typical(mod_m, ev_typ_m)
+auc_typ_m <- typ_m |>
+  group_by(id) |>
+  summarise(auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2)) |>
+  mutate(
+    dose_mgkg = mouse_doses[id],
+    auc_per_dose = auc / dose_mgkg
+  )
+knitr::kable(
+  auc_typ_m |>
+    transmute(dose_mgkg, auc = signif(auc, 3), auc_per_dose = signif(auc_per_dose, 3)) |>
+    dplyr::rename(
+      "Dose (mg/kg)" = dose_mgkg,
+      "Typical AUC0-48 (mg*h/L)" = auc,
+      "AUC per mg/kg" = auc_per_dose
+    ),
+  caption = "Typical-value total AUC by dose in 20 g mice (trapezoids on a 0.05 h grid)."
+)
+# Clearance doubles at 58.4 mg/kg and is about 8.5-fold higher at 233 mg/kg, so
+# AUC per unit dose falls by a large factor from the lowest to the highest dose.
+stopifnot(
+  all(diff(auc_typ_m$auc_per_dose) < 0),
+  auc_typ_m$auc_per_dose[1] / auc_typ_m$auc_per_dose[4] > 3
+)
+```
+
+# Human PK (Figure 4)
+
+The phase I cohort is represented by 200 virtual subjects per dose group. Body
+weight is drawn from a normal distribution with mean 62.5 kg and SD 7 kg,
+truncated to the observed range 51.8-78.3 kg (Table 1). Doses use the
+estimated infusion duration `d1` (dose records with `rate = -2`), as in the
+fitted data.
+The plot uses the linear scale of the left-hand panels of Figure 4: with the
+additive residual error, the lower 5% of simulated concentrations is below
+zero by 24-48 h and cannot be drawn on a log scale.
+
+```{r human-sim}
+n_h <- 200
+human_doses <- c(250, 500, 1000)
+obs_times_h <- sort(unique(c(seq(0, 2, by = 0.05), seq(2.25, 12, by = 0.25), seq(12.5, 48, by = 0.5))))
+set.seed(2020)
+make_human <- function(dose, offset) {
+  ids <- offset + seq_len(n_h)
+  wt <- pmin(pmax(rnorm(n_h, 62.5, 7), 51.8), 78.3)
+  dplyr::bind_rows(
+    data.frame(id = ids, time = 0, evid = 1, amt = dose, rate = -2, WT = wt),
+    tidyr::crossing(id = ids, time = obs_times_h) |>
+      mutate(evid = 0, amt = 0, rate = 0) |>
+      left_join(data.frame(id = ids, WT = wt), by = "id")
+  ) |>
+    mutate(cmt = "central", DOSE_BENAPENEM_MG = dose, treatment = paste(dose, "mg")) |>
+    arrange(id, time, desc(evid))
+}
+ev_h <- dplyr::bind_rows(lapply(seq_along(human_doses), function(i) {
+  make_human(human_doses[i], (i - 1) * n_h)
+}))
+stopifnot(!anyDuplicated(ev_h[, c("id", "time", "evid")]))
+
+rxode2::rxSetSeed(2020)
+sim_h <- rxode2::rxSolve(mod_h, ev_h, keep = c("treatment", "DOSE_BENAPENEM_MG"), returnType = "data.frame")
+sim_h$treatment <- factor(sim_h$treatment, levels = paste(human_doses, "mg"))
+```
+
+```{r human-vpc, fig.height = 6}
+vpc_h <- sim_h |>
+  filter(time > 0) |>
+  group_by(treatment, time) |>
+  summarise(
+    med = median(sim),
+    lo = quantile(sim, 0.05),
+    hi = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc_h, aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~treatment, ncol = 1, scales = "free_y") +
+  labs(
+    x = "Time (h)", y = "Total benapenem (mg/L)",
+    caption = "Replicates Figure 4 (linear scale) of Ji 2020: simulated median and 90% interval."
+  )
+```
+
+The median simulated peak should match the peak of the median line in Figure
+4 (about 45, 80 and 140 mg/L for 250, 500 and 1,000 mg, read from the plot).
+The check is on the median, which a wrong clearance, volume, dose exponent or
+infusion duration would move by tens of percent. The simulated peaks run about
+12-14% above the figure at every dose. A constant offset like this is what to
+expect from comparing a true peak with a VPC median that is binned over the
+first sampling times, not from a structural error, which would change with
+dose.
+
+```{r human-peak}
+peak_fig4 <- c("250 mg" = 45, "500 mg" = 80, "1000 mg" = 140)
+peak_sim <- sim_h |>
+  group_by(treatment, id) |>
+  summarise(cmax = max(Cc), .groups = "drop") |>
+  group_by(treatment) |>
+  summarise(median_cmax = median(cmax), .groups = "drop") |>
+  mutate(
+    fig4 = peak_fig4[as.character(treatment)],
+    pct_diff = round(100 * (median_cmax / fig4 - 1), 1)
+  )
+knitr::kable(
+  peak_sim |>
+    mutate(median_cmax = round(median_cmax, 1)) |>
+    dplyr::rename(
+      "Dose" = treatment,
+      "Simulated median Cmax (mg/L)" = median_cmax,
+      "Figure 4 peak (mg/L, digitised)" = fig4,
+      "Difference (%)" = pct_diff
+    )
+)
+stopifnot(all(abs(peak_sim$pct_diff) < 20))
+```
+
+# PKNCA validation
+
+The paper reports no NCA results, so the PKNCA summary below has no published
+column to compare against. It shows the less-than-proportional exposure: AUC
+rises about 3-fold for a 4-fold dose increase.
+
+```{r pknca}
+sim_nca <- sim_h |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+dose_df <- ev_h |>
+  filter(evid == 1) |>
+  transmute(id, time, amt, treatment = factor(treatment, levels = levels(sim_h$treatment)), duration = 0.404)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, route = "intravascular", duration = "duration")
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_sum <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life", "cl.obs")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(median = signif(median(PPORRES, na.rm = TRUE), 3), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+knitr::kable(
+  nca_sum |>
+    select(treatment, cmax, tmax, aucinf.obs, half.life, cl.obs) |>
+    dplyr::rename(
+      "Dose" = treatment,
+      "Cmax (mg/L)" = cmax,
+      "Tmax (h)" = tmax,
+      "AUC0-inf (mg*h/L)" = aucinf.obs,
+      "t1/2 (h)" = half.life,
+      "CL (L/h)" = cl.obs
+    ),
+  caption = "Median simulated NCA parameters by dose (total benapenem)."
+)
+
+auc_ratio <- nca_sum$aucinf.obs[nca_sum$treatment == "1000 mg"] /
+  nca_sum$aucinf.obs[nca_sum$treatment == "250 mg"]
+# Typical CL rises by 4^0.183 = 1.29 from 250 to 1000 mg, so the median AUC
+# ratio is near 4 / 1.29 = 3.1; a dose-proportional model would give 4.
+stopifnot(auc_ratio > 2.7, auc_ratio < 3.5)
+```
+
+# Probability of target attainment (Figures S57 and S60)
+
+The authors simulated 250, 500 and 1,000 mg regimens given every 6, 8, 12 or
+24 h as 0.5- to 3-h infusions. They computed %fT>MIC from the unbound
+concentration and the PTA for targets of 40% and 60%. The dose in the captions
+of Figures S55 to S60 is the total daily dose: "1,000 mg" given every 12 h
+means 500 mg per infusion. %fT>MIC is taken over the first 24 h. That reading
+reproduces all eight PTA curves of Figures S57 and S60 below. Giving the full
+1,000 mg per infusion would put the q12h curves at about twice the MIC; using
+steady state instead of the first day would move the q24h curves well away
+from the published ones.
+
+The simulation uses 200 subjects per regimen with the same weight
+distribution as above. The dose covariate is the per-infusion amount, and each
+infusion takes the nominal 0.5 h.
+
+```{r pta-sim}
+n_pta <- 200
+pta_reg <- data.frame(tau = c(24, 12, 8, 6)) |>
+  mutate(amt = 1000 * tau / 24, regimen = paste0("q", tau, "h"))
+grid_pta <- seq(0, 24, by = 0.02)
+set.seed(2021)
+ev_pta <- dplyr::bind_rows(lapply(seq_len(nrow(pta_reg)), function(i) {
+  ids <- (i - 1) * n_pta + seq_len(n_pta)
+  wt <- pmin(pmax(rnorm(n_pta, 62.5, 7), 51.8), 78.3)
+  dose_times <- seq(0, 24 - pta_reg$tau[i], by = pta_reg$tau[i])
+  dplyr::bind_rows(
+    tidyr::crossing(id = ids, time = dose_times) |>
+      mutate(evid = 1, amt = pta_reg$amt[i], rate = pta_reg$amt[i] / 0.5),
+    tidyr::crossing(id = ids, time = grid_pta) |> mutate(evid = 0, amt = 0, rate = 0)
+  ) |>
+    left_join(data.frame(id = ids, WT = wt), by = "id") |>
+    mutate(cmt = "central", DOSE_BENAPENEM_MG = pta_reg$amt[i], regimen = pta_reg$regimen[i])
+})) |>
+  arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(2021)
+sim_pta <- rxode2::rxSolve(mod_h, ev_pta, keep = "regimen", returnType = "data.frame") |>
+  filter(time < 24)
+
+mic_grid <- seq(0.2, 4.4, by = 0.1)
+ft <- sim_pta |>
+  group_by(regimen, id) |>
+  summarise(
+    ft = list(vapply(mic_grid, function(m) 100 * mean(Cunbound > m), numeric(1))),
+    .groups = "drop"
+  ) |>
+  tidyr::unnest_longer(ft, indices_to = "k") |>
+  mutate(mic = mic_grid[k])
+pta <- tidyr::crossing(ft, target = c(40, 60)) |>
+  group_by(regimen, target, mic) |>
+  summarise(pta = 100 * mean(ft >= target), .groups = "drop") |>
+  mutate(regimen = factor(regimen, levels = c("q24h", "q12h", "q8h", "q6h")))
+```
+
+```{r pta-plot}
+ggplot(pta, aes(mic, pta, linetype = factor(target))) +
+  geom_line() +
+  facet_wrap(~regimen) +
+  labs(
+    x = "MIC (mg/L)", y = "Probability of target attainment (%)", linetype = "%fT>MIC target",
+    caption = "Replicates the 0.5 h infusion curves of Figures S57 and S60 of Ji 2020 (1,000 mg/day)."
+  )
+```
+
+The MIC at which PTA crosses 50% sits at the centre of the exposure
+distribution, so it checks the model's structure rather than the tails. The
+published values below are read from Figures S57 and S60 by interpolating
+between the plotted points on either side of 50%.
+
+```{r pta-compare}
+mic50_pub <- tibble::tribble(
+  ~regimen, ~target, ~mic50_pub,
+  "q24h", 40, 2.73, "q12h", 40, 3.10, "q8h", 40, 3.32, "q6h", 40, 3.53,
+  "q24h", 60, 1.50, "q12h", 60, 2.18, "q8h", 60, 2.50, "q6h", 60, 2.71
+)
+mic50_sim <- pta |>
+  group_by(regimen, target) |>
+  arrange(mic, .by_group = TRUE) |>
+  summarise(
+    mic50_sim = {
+      j <- which(pta < 50)[1]
+      mic[j - 1] + (50 - pta[j - 1]) * (mic[j] - mic[j - 1]) / (pta[j] - pta[j - 1])
+    },
+    .groups = "drop"
+  ) |>
+  mutate(regimen = as.character(regimen))
+mic50 <- left_join(mic50_pub, mic50_sim, by = c("regimen", "target")) |>
+  mutate(pct_diff = round(100 * (mic50_sim / mic50_pub - 1), 1), mic50_sim = round(mic50_sim, 2))
+knitr::kable(
+  mic50 |>
+    dplyr::rename(
+      "Regimen (1,000 mg/day)" = regimen,
+      "%fT>MIC target" = target,
+      "Published MIC at PTA 50% (mg/L)" = mic50_pub,
+      "Simulated MIC at PTA 50% (mg/L)" = mic50_sim,
+      "Difference (%)" = pct_diff
+    )
+)
+# A wrong clearance, binding constant or dose reading moves these by tens of
+# percent (giving the full 1,000 mg per q12h infusion doubles them).
+stopifnot(all(abs(mic50$pct_diff) < 12))
+
+pta_cutoff <- pta$pta[pta$regimen == "q24h" & pta$target == 60 & abs(pta$mic - 1) < 1e-9]
+```
+
+The authors chose 1,000 mg every 24 h as a 0.5-h infusion and a 60% target,
+which gives a PK/PD cutoff of 1 mg/L (the highest MIC with PTA of at least
+90%). The packaged model gives a PTA of `r round(pta_cutoff)`% at 1 mg/L for
+that regimen.
+
+# Assumptions and deviations
+
+* **Mouse body weight.** The mouse model's dose covariate is in mg/kg and its
+  volumes are in mL per mouse, so the dose records need the amount per mouse.
+  The paper does not report mouse weights. This vignette assumes 20 g, which
+  puts the simulated concentrations on the scale of Figure 3. Users should
+  enter each mouse's actual dose in ug.
+* **IIV scale.** Tables 3 and 4 print IIV_CL and IIV_V1 as 36.5, 10.5 and 7.6
+  without defining them. They are read as CV percentages and converted with
+  `omega^2 = log(1 + CV^2)`. Reading them as `100 x sqrt(omega^2)` instead
+  would change the variances by less than 7% (mouse) and 1% (human).
+* **Residual error.** Equation 6 is the combined form
+  `Cobs = Cpred x (1 + eps1) + eps2`; the proportional SD (7.4%, 30.1%) and
+  the human additive SD (0.233, read as mg/L, the plotted concentration unit)
+  are taken as standard deviations. The mouse additive term was fixed to 0
+  and is omitted.
+* **Protein-binding parameters are fixed.** They were fitted to in vitro
+  binding data in a separate step before the PK models were built (Methods,
+  "Protein binding model"), so they enter both model files as fixed values.
+  The binding fits' own proportional errors (5.4% mouse, 16.3% human,
+  Table 5) are not part of the PK models.
+* **Infusion duration.** The human model estimated the infusion duration
+  (D1 = 0.404 h) instead of using the nominal 0.5 h. Dose records with
+  `rate = -2` use it; records with an explicit rate or duration use theirs,
+  as the PTA simulation does.
+* **Dose covariate in multiple-dose use.** `DOSE_BENAPENEM_MG` is the amount
+  per infusion. The PTA comparison above shows that the authors used the
+  per-infusion amount, not the daily total, when they split a daily dose.
+* **Human weight distribution for simulation.** The paper does not describe
+  the simulated population. A truncated normal (mean 62.5 kg, SD 7 kg,
+  51.8-78.3 kg) approximates the phase I cohort.
+* **Not packaged.** The mouse %fT>MIC versus change in log10 CFU/g
+  relationships (Figures S1 to S12) are linear trend lines with no reported
+  parameters. Ertapenem was used as a comparator with PK data from the
+  literature (Table S1), but no ertapenem model parameters are reported, so
+  Figure 7 cannot be reproduced.
+
+## Errata
+
+* The Figure 3 caption labels the mouse dose groups "1.9-mg", "14.6-mg",
+  "58.4-mg" and "233-mg"; the Methods give these doses in mg/kg.
+* The Results text gives the unit of V1 in the mouse model as "hours"; Table 3
+  gives mL.
+* Equation 6's legend calls eps1 and eps2 the additive and proportional
+  errors, respectively. In the equation as printed, eps1 is the proportional
+  and eps2 the additive term, and the model follows the equation.

@@ -908,6 +908,10 @@ navbar:
         href: articles/Jadhav_2023_bempedoicAcid.html
       - text: "BempedoicAcid ldlc (Jadhav 2023)"
         href: articles/Jadhav_2023_bempedoicAcid.html
+      - text: "Benapenem (Ji 2020)"
+        href: articles/Ji_2020_benapenem.html
+      - text: "Benapenem mouse (Ji 2020)"
+        href: articles/Ji_2020_benapenem.html
       - text: "Benazepril pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "Benralizumab (Jin 2025)"
@@ -10518,6 +10522,7 @@ articles:
   - articles/Jermain_2020_ivermectin_pbpk
   - articles/Ji_2017_vancomycin
   - articles/Ji_2018_tacrolimus
+  - articles/Ji_2020_benapenem
   - articles/Ji_2022_pemigatinib
   - articles/Ji_2025_TDI01
   - articles/Ji_2025_eravacycline
