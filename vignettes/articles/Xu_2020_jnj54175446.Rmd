@@ -160,6 +160,18 @@ column on those rows.
 ```{r structural}
 mod_typ <- rxode2::zeroRe(ui_pk)
 
+# Typical-value solves of several subjects at once: rxode2 warns that a
+# multi-subject simulation has no omega, which is the intent here. Only that
+# message is muffled.
+solve_typical <- function(events, ...) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod_typ, events, returnType = "data.frame", ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+    }
+  )
+}
+
 grid_sd <- sort(unique(c(seq(0, 12, by = 0.05), seq(12, 2000, by = 1))))
 cases <- data.frame(
   dose = c(0.5, 50, 150, 600, 50, 300),
@@ -170,8 +182,7 @@ ev_typ <- dplyr::bind_rows(lapply(seq_len(nrow(cases)), function(i) {
               treatment = paste(cases$dose[i], "mg", cases$meal[i]),
               id_offset = i - 1L, wt = 70)
 }))
-sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, keep = "treatment",
-                           rtol = 1e-10, atol = 1e-12, returnType = "data.frame")
+sim_typ <- solve_typical(ev_typ, keep = "treatment", rtol = 1e-10, atol = 1e-12)
 stopifnot(!anyNA(sim_typ$Cc))
 
 # Closed form: AUC0-inf = Fr * dose / (CL/F) * 1000 (ng*h/mL); 2000 h is
@@ -422,8 +433,11 @@ than 90% throughout the dosing interval.
 
 ```{r ro_monkey, fig.cap = "Replicates Xu 2020 Figure 4a: monkey brain P2X7 receptor occupancy vs. average plasma concentration over the PET scan."}
 cav_grid <- 10^seq(0, 3.5, length.out = 200)
+# The occupancy models are algebraic in CAV and carry no IIV, so each input
+# value is one row of a single subject (a multi-subject solve of a model
+# without omega warns).
 ro_ev <- function(cav) {
-  data.frame(id = seq_along(cav), time = 0, evid = 0L, amt = 0, CAV = cav)
+  data.frame(id = 1L, time = seq_along(cav) - 1, evid = 0L, amt = 0, CAV = cav)
 }
 ro_mk <- rxode2::rxSolve(ui_ro_monkey, ro_ev(cav_grid), returnType = "data.frame")
 ggplot(data.frame(cav = cav_grid, ro = ro_mk$ro), aes(cav, ro)) +
@@ -450,7 +464,7 @@ ev_s3 <- dplyr::bind_rows(lapply(seq_along(doses_s3), function(i) {
   make_cohort(1, doses_s3[i], "standard", obs_times = seq(4, 6, by = 0.05),
               treatment = paste(doses_s3[i], "mg"), id_offset = i - 1L, wt = 70)
 }))
-pk_s3 <- rxode2::rxSolve(mod_typ, ev_s3, returnType = "data.frame")
+pk_s3 <- solve_typical(ev_s3)
 cav_s3 <- pk_s3 |>
   dplyr::group_by(id) |>
   dplyr::summarise(cav = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2) / 2)
