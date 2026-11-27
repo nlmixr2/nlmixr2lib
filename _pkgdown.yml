@@ -4890,6 +4890,10 @@ navbar:
         href: articles/Weatherley_2009_maraviroc_iv.html
       - text: "Maraviroc rcyp3a4 (Hyland 2008)"
         href: articles/Hyland_2008_maraviroc_invitro.html
+      - text: "Marbofloxacin methylGallate rat (Birhanu 2020)"
+        href: articles/Birhanu_2020_marbofloxacin.html
+      - text: "Marbofloxacin rat (Birhanu 2020)"
+        href: articles/Birhanu_2020_marbofloxacin.html
       - text: "Maribavir (Sun 2023)"
         href: articles/Sun_2023_maribavir.html
       - text: "Maribavir (Sun 2025)"
@@ -9567,6 +9571,7 @@ articles:
   - articles/Bindellini_2025_cefazolin
   - articles/Birgersson_2016_artemisinin
   - articles/Birgersson_2019_artesunate
+  - articles/Birhanu_2020_marbofloxacin
   - articles/Bisaso_2014_albumin
   - articles/Bista_2015_fentanyl
   - articles/Bizzotto_2011_The_AAPS_Journal

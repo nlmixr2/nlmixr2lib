@@ -1,0 +1,474 @@
+---
+title: "Marbofloxacin with methyl gallate in rats (Birhanu 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Marbofloxacin with methyl gallate in rats (Birhanu 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Birhanu 2020 studied whether the plant phenolic **methyl gallate** (MG) changes
+the pharmacokinetics of the veterinary fluoroquinolone **marbofloxacin** (MAR)
+in rats, and how the combination's plasma kills *Salmonella* Typhimurium
+*ex vivo*. Ten rats received 5 mg/kg MAR alone or with 20 mg/kg MG,
+intravenously and orally, in a four-way crossover. Plasma from the orally dosed
+rats was then incubated with *S.* Typhimurium for 24 h, and the change in
+bacterial count was related to the sample's AUC0-24/MIC by a sigmoid Imax
+model.
+
+The authors fitted every quantity separately for the two treatments, so the
+package carries one file per treatment. Each file holds the one-compartment
+marbofloxacin PK and the *ex vivo* effect of a plasma sample drawn at any time.
+
+* Article: <https://doi.org/10.1371/journal.pone.0234211>
+
+```{r models}
+mods <- c("Birhanu_2020_marbofloxacin_rat", "Birhanu_2020_marbofloxacin_methylGallate_rat")
+uis <- lapply(mods, function(m) rxode2::rxode(readModelDb(m)))
+names(uis) <- mods
+cat(uis[[1]]$reference, "\n")
+```
+
+| Model file | Treatment | Source |
+|---|---|---|
+| `Birhanu_2020_marbofloxacin_rat` | MAR 5 mg/kg alone | Tables 2-5, Figures 2-4 |
+| `Birhanu_2020_marbofloxacin_methylGallate_rat` | MAR 5 mg/kg + MG 20 mg/kg | Tables 2-5, Figures 2-4 |
+
+```{r descriptions, results = "asis"}
+for (m in mods) cat("**", m, "** -- ", uis[[m]]$description, "\n\n", sep = "")
+```
+
+# Population
+
+Ten clinically healthy male Sprague-Dawley rats (OrientBio, Korea), five weeks
+old on arrival, acclimated for a week, weighing 180-215 g. Each rat received a
+single 5 mg/kg MAR dose alone or with 20 mg/kg MG, intravenously or orally, in a
+four-way crossover with two-week washouts. Tail-vein blood was taken at 0,
+0.25, 0.5, 0.75, 1, 2, 4, 8, 12 and 24 h and marbofloxacin measured by HPLC-UV
+(LOQ 0.16 ug/mL). Plasma from six rats was used for the *ex vivo* study
+(Methods, Pharmacokinetics study; Ex vivo antibacterial effect).
+
+The bacterium was *S.* Typhimurium; the marbofloxacin MIC was 0.031 ug/mL for
+the ATCC 14028 reference strain and field strain S-2, and 0.5 ug/mL for field
+strain S-15 (Table 1).
+
+```{r population}
+str(uis[["Birhanu_2020_marbofloxacin_rat"]]$population, max.level = 1)
+```
+
+# Source trace
+
+| Equation / parameter | MAR alone | MAR + MG | Source location |
+|---|---|---|---|
+| `lcl` (CL) | 1.0994 L/h/kg | 0.7291 L/h/kg | Table 3, CL (mL/h/kg) |
+| `lvc` (V) | 5.986 L/kg | 4.1343 L/kg | Table 3, V (mL/kg) |
+| `lka` (ka) | 7.6397 1/h | 1.0846 1/h | **Derived**: root of ln(ka/kel)/(ka - kel) = Tmax, Table 2 Tmax 0.5 / 2 h |
+| `lfdepot` (F) | 1.31 | 0.891 | Results text, F = 131% / 89.1% |
+| `e0` | 4.05 | 3.6 | Table 4, E0 |
+| `limax` (Imax) | 10.86 | 10.66 | Table 4, Imax |
+| `lic50` (IC50) | 405.99 h | 584.75 h | Table 4, IC50 (the Results text prints 504.8 for MAR + MG; see Errata) |
+| `lhill` (gamma) | 5.41 | 10 | Table 4, Gamma |
+| `mic` | 0.03125 ug/mL | 0.016 ug/mL | Table 1 (0.031, i.e. 1/32 ug/mL) / **derived** from Table 5 (see Part 3) |
+| `log10_cfu0` | 6 | 6 | Methods, ex vivo inoculum 10^6 CFU/mL |
+| `addSd`, `addSd_log_cfu` | 0 (fixed) | 0 (fixed) | Not reported |
+| One-compartment disposition | | | Methods, Pharmacokinetics study; Table 3 |
+| E = E0 - Imax Ce^gamma / (IC50^gamma + Ce^gamma) | | | Methods equation (sign corrected, see Errata); Figure 4 |
+| Ce = C x 24 h / MIC | | | Methods, "Ce is the AUC0-24/MIC of the plasma"; Figure 4 x-axis |
+
+# Part 1 - Marbofloxacin pharmacokinetics
+
+```{r pk-sim}
+grid <- sort(unique(c(seq(0, 24, by = 0.05), 0.25, 0.75)))
+arms <- tibble::tribble(
+  ~model, ~treatment, ~route, ~cmt,
+  mods[1], "MAR", "IV", "central",
+  mods[1], "MAR", "PO", "depot",
+  mods[2], "MGM", "IV", "central",
+  mods[2], "MGM", "PO", "depot"
+)
+
+sim_arm <- function(i) {
+  a <- arms[i, ]
+  ev <- dplyr::bind_rows(
+    data.frame(id = i, time = 0, amt = 5, evid = 1L, cmt = a$cmt),
+    # Two declared endpoints (Cc and log_cfu): observation rows name the ODE
+    # state and carry dvid = 1L, which returns both endpoint columns.
+    data.frame(id = i, time = grid, amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
+  )
+  rxode2::rxSolve(readModelDb(a$model), events = ev, rtol = 1e-10, atol = 1e-12) |>
+    as.data.frame() |>
+    dplyr::mutate(id = i, treatment = a$treatment, route = a$route)
+}
+pk_sim <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), sim_arm))
+
+stopifnot(
+  nrow(pk_sim) == 4L * length(grid),
+  all(is.finite(pk_sim$Cc)),
+  all(is.finite(pk_sim$log_cfu))
+)
+```
+
+## Closed-form checks against Tables 2 and 3
+
+For a one-compartment model the intravenous `C0 = Dose/V` and `AUC = Dose/CL`,
+the oral `AUC = F x Dose/CL`, and the oral `Cmax = (F x Dose/V) x exp(-kel x Tmax)`.
+`Tmax` is reproduced by construction of `ka`; `Cmax` and both AUCs are not used
+by any derivation and test the transcription.
+
+```{r closed-form}
+cf <- dplyr::bind_rows(lapply(mods, function(m) {
+  th <- uis[[m]]$theta
+  cl <- exp(th[["lcl"]])
+  v <- exp(th[["lvc"]])
+  ka <- exp(th[["lka"]])
+  fb <- exp(th[["lfdepot"]])
+  k <- cl / v
+  tmax <- log(ka / k) / (ka - k)
+  tibble::tibble(
+    model = m,
+    `IV C0 (ug/mL)` = 5 / v,
+    `IV AUC (h*ug/mL)` = 5 / cl,
+    `IV t1/2 (h)` = log(2) / k,
+    `PO Tmax (h)` = tmax,
+    `PO Cmax (ug/mL)` = fb * 5 / v * exp(-k * tmax),
+    `PO AUC (h*ug/mL)` = fb * 5 / cl
+  )
+}))
+pub_cf <- tibble::tibble(
+  model = mods,
+  `IV C0 (ug/mL)` = c(0.84, 1.21),
+  `IV AUC (h*ug/mL)` = c(4.55, 6.86),
+  `IV t1/2 (h)` = c(3.77, 3.93),
+  `PO Tmax (h)` = c(0.5, 2),
+  `PO Cmax (ug/mL)` = c(1.04, 0.78),
+  `PO AUC (h*ug/mL)` = c(5.98, 6.11)
+)
+cf_long <- cf |>
+  tidyr::pivot_longer(-model, names_to = "Quantity", values_to = "Model") |>
+  dplyr::left_join(
+    pub_cf |> tidyr::pivot_longer(-model, names_to = "Quantity", values_to = "Published"),
+    by = c("model", "Quantity")
+  ) |>
+  dplyr::mutate(`% diff` = 100 * (Model / Published - 1))
+knitr::kable(cf_long, digits = 3,
+             caption = "Closed-form model quantities versus Birhanu 2020 Tables 2 and 3 (IV Cmax = C0).")
+
+stopifnot(
+  # Disposition reproduces the IV fit: values used to build the model.
+  all(abs(cf_long$`% diff`[cf_long$Quantity %in% c("IV AUC (h*ug/mL)", "IV t1/2 (h)", "PO Tmax (h)")]) < 0.5),
+  # Independent checks: the oral AUC and Cmax were never used to derive anything.
+  all(abs(cf_long$`% diff`[cf_long$Quantity == "PO AUC (h*ug/mL)"]) < 1),
+  all(abs(cf_long$`% diff`[cf_long$Quantity == "PO Cmax (ug/mL)"]) < 5)
+)
+```
+
+The model's solved profile agrees with the closed form:
+
+```{r ode-vs-closed-form}
+cf_iv <- pk_sim |>
+  dplyr::filter(route == "IV") |>
+  dplyr::mutate(
+    v = ifelse(treatment == "MAR", exp(uis[[1]]$theta[["lvc"]]), exp(uis[[2]]$theta[["lvc"]])),
+    cl = ifelse(treatment == "MAR", exp(uis[[1]]$theta[["lcl"]]), exp(uis[[2]]$theta[["lcl"]])),
+    closed = 5 / v * exp(-cl / v * time)
+  )
+stopifnot(max(abs(cf_iv$Cc / cf_iv$closed - 1)) < 1e-6)
+```
+
+## Replicating Figure 2
+
+```{r figure-2}
+# Replicates Figure 2 of Birhanu 2020: panels A/B oral (semi-log, 0-12 h),
+# panels C/D intravenous (linear, 0-24 h). Points are the means read from
+# Figure 2 by the maintainers for orientation only; they are not fitted.
+fig2_obs <- tibble::tribble(
+  ~treatment, ~route, ~time, ~Cc,
+  "MAR", "PO", 0.25, 0.32, "MAR", "PO", 0.5, 1.05, "MAR", "PO", 0.75, 0.93,
+  "MAR", "PO", 1, 0.92, "MAR", "PO", 2, 0.58, "MAR", "PO", 4, 0.39,
+  "MAR", "PO", 8, 0.26, "MAR", "PO", 12, 0.22,
+  "MGM", "PO", 0.25, 0.43, "MGM", "PO", 0.5, 0.47, "MGM", "PO", 0.75, 0.53,
+  "MGM", "PO", 1, 0.77, "MGM", "PO", 2, 0.78, "MGM", "PO", 4, 0.47,
+  "MGM", "PO", 8, 0.26, "MGM", "PO", 12, 0.19,
+  "MAR", "IV", 0.25, 1.55, "MAR", "IV", 0.5, 1.04, "MAR", "IV", 0.75, 0.79,
+  "MAR", "IV", 1, 0.62, "MAR", "IV", 2, 0.45, "MAR", "IV", 4, 0.30,
+  "MAR", "IV", 8, 0.21, "MAR", "IV", 12, 0.13,
+  "MGM", "IV", 0.25, 1.94, "MGM", "IV", 0.5, 1.57, "MGM", "IV", 0.75, 1.25,
+  "MGM", "IV", 1, 1.02, "MGM", "IV", 2, 0.80, "MGM", "IV", 4, 0.40,
+  "MGM", "IV", 8, 0.27, "MGM", "IV", 12, 0.14
+)
+
+ggplot(pk_sim, aes(time, Cc)) +
+  geom_line(colour = "steelblue", linewidth = 0.8) +
+  geom_point(data = fig2_obs, colour = "firebrick") +
+  facet_grid(route ~ treatment, scales = "free_y") +
+  labs(x = "Time (h)", y = "Plasma marbofloxacin (ug/mL)",
+       title = "Figure 2 - marbofloxacin after 5 mg/kg",
+       caption = "Replicates Figure 2 of Birhanu 2020. Line: packaged model; points: figure means.")
+```
+
+The intravenous lines are the authors' own one-compartment fits, which, like
+the published Figure 2C/D curves, underpredict the first samples: the data are
+visibly biexponential but only a one-compartment fit was reported. The oral terminal phase in Figure 2A/B is flatter than the
+intravenous one, which is why the oral non-compartmental half-lives (7.62 and
+6.01 h) exceed the intravenous ones (3.77 and 3.93 h); the model carries the
+intravenous disposition for both routes.
+
+## PKNCA validation against Tables 2 and 3
+
+```{r pknca}
+sim_nca <- pk_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(group = paste(treatment, route)) |>
+  dplyr::select(id, time, Cc, group)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | group + id)
+dose_df <- sim_nca |>
+  dplyr::distinct(id, group) |>
+  dplyr::mutate(time = 0, amt = 5)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | group + id)
+intervals <- data.frame(
+  start = 0, end = 24,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r nca-compare}
+# Birhanu 2020 Table 2 (oral; AUCall, HL_Lambda_z) and Table 3 (IV; AUC,
+# K10_HL, Cmax). The IV AUC of Table 3 is the model-fit AUC to infinity,
+# compared here with AUC0-24, which is 98% of it.
+published <- tibble::tribble(
+  ~group, ~cmax, ~tmax, ~auclast, ~half.life,
+  "MAR PO", 1.04, 0.5, 5.98, 7.62,
+  "MGM PO", 0.78, 2, 6.11, 6.01,
+  "MAR IV", 0.84, NA, 4.55, 3.77,
+  "MGM IV", 1.21, NA, 6.86, 3.93
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "group",
+  units = c(cmax = "ug/mL", tmax = "h", auclast = "h*ug/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated versus Birhanu 2020 Tables 2 and 3. * differs by >20%.")
+```
+
+The two starred rows are the oral half-lives, explained under Figure 2. Every
+other row is within the tolerance.
+
+# Part 2 - Ex vivo antibacterial effect
+
+## Replicating Figure 4
+
+The *ex vivo* effect is a function of the sample's index only, so the curves can
+be drawn directly from the packaged parameters.
+
+```{r figure-4}
+pd_par <- dplyr::bind_rows(lapply(mods, function(m) {
+  th <- uis[[m]]$theta
+  tibble::tibble(
+    model = m,
+    treatment = ifelse(m == mods[1], "MAR", "MGM"),
+    e0 = th[["e0"]], imax = exp(th[["limax"]]), ic50 = exp(th[["lic50"]]),
+    hill = exp(th[["lhill"]]), mic = th[["mic"]]
+  )
+}))
+effect_of <- function(ce, p) p$e0 - p$imax * ce^p$hill / (ce^p$hill + p$ic50^p$hill)
+
+fig4 <- tidyr::crossing(pd_par, ce = seq(0, 1200, by = 5)) |>
+  dplyr::mutate(E = e0 - imax * ce^hill / (ce^hill + ic50^hill))
+
+ggplot(fig4, aes(ce, E)) +
+  geom_line(colour = "steelblue", linewidth = 0.8) +
+  facet_wrap(~treatment) +
+  labs(x = "AUC/MIC 0-24 (h)", y = "Effect (log10 CFU/mL)",
+       title = "Figure 4 - ex vivo sigmoid Imax model",
+       caption = "Replicates Figure 4 of Birhanu 2020.")
+```
+
+Both curves start at `e0` (+4.05 and +3.6) and fall to `e0 - imax` (-6.81 and
+-7.06), as in Figure 4A/B. The equation printed in the Methods has a `+` in
+front of `Imax`, which would make the effect *rise* to +14.9; Figure 4 shows
+the fall, so the packaged models use the minus sign.
+
+## The packaged model's ex vivo output
+
+`log_cfu` is the predicted count after 24 h of incubation of a plasma sample
+drawn at the current time. Its value at the sampling times of Figure 3 is
+shown below, together with the windows the paper reports.
+
+```{r exvivo-windows}
+draws <- c(0.25, 0.5, 0.75, 1, 2, 4, 8, 12, 24)
+win <- pk_sim |>
+  dplyr::filter(route == "PO", time %in% draws) |>
+  dplyr::mutate(E = log_cfu - 6) |>
+  dplyr::select(treatment, time, Cc, log_cfu, E)
+knitr::kable(
+  win |> tidyr::pivot_wider(id_cols = time, names_from = treatment, values_from = E) |>
+    dplyr::rename(`Draw time (h)` = time, `MAR alone: E (log10)` = MAR, `MAR + MG: E (log10)` = MGM),
+  digits = 2,
+  caption = "Predicted 24 h ex vivo change for plasma drawn after oral dosing (negative = inhibition)."
+)
+
+stopifnot(
+  # The output is log10_cfu0 + E exactly, with E bounded by e0 and e0 - imax.
+  all(win$log_cfu <= 6 + max(pd_par$e0) + 1e-8),
+  all(win$log_cfu >= 6 + min(pd_par$e0 - pd_par$imax) - 1e-8)
+)
+```
+
+Birhanu 2020 reports inhibition for plasma drawn from 0.25 to 2 h after oral MAR
+alone and from 0.25 to 4 h with MG. The model inhibits from 0.25 to 4 h for MAR
+alone and from 0.5 to 4 h with MG. The packaged PK is the mean intravenous fit
+of ten rats with a reconstructed oral input, whereas the *ex vivo* plasma came
+from six rats, so a one-sample shift at either edge is expected; the windows
+were not used to set any parameter.
+
+# Part 3 - PK/PD indices and dosages (Table 5)
+
+## The MIC behind each index
+
+Table 5 prints the indices from the oral Table 2 values. For MAR alone they
+follow from the Table 1 MIC; for MAR + MG they require an MIC of 0.016 ug/mL,
+which the paper never states.
+
+```{r indices}
+idx <- tibble::tibble(
+  treatment = c("MAR", "MGM"),
+  auc = c(5.98, 6.11), cmax = c(1.04, 0.78),
+  `AUC24/MIC published` = c(191.22, 381.93),
+  `Cmax/MIC published` = c(33.39, 49.06),
+  mic = pd_par$mic
+) |>
+  dplyr::mutate(
+    `AUC24/MIC with model mic` = auc / mic,
+    `Cmax/MIC with model mic` = cmax / mic,
+    `AUC24/MIC with MIC 0.031` = auc / 0.031,
+    `AUC24/MIC with MIC 0.008` = auc / 0.008
+  )
+knitr::kable(idx |> dplyr::mutate(mic = format(mic)), digits = 2,
+             caption = "Table 5 indices reconstructed from Table 2 means (mic in ug/mL).")
+
+stopifnot(
+  abs(idx$`AUC24/MIC with model mic` / idx$`AUC24/MIC published` - 1) < 0.01,
+  abs(idx$`Cmax/MIC with model mic` / idx$`Cmax/MIC published` - 1) < 0.02
+)
+```
+
+The same 0.016 ug/mL places the largest MAR + MG plasma sample of Figure 4B
+(about 0.78 ug/mL) at `r sprintf("%.0f", 0.78 * 24 / 0.016)` h on the x-axis,
+where the figure's last points sit; the checkerboard combination value of
+0.008 ug/mL would place it beyond 2300 h.
+
+## Dosages
+
+Birhanu 2020 computes the dose for each endpoint as
+`Dose = (AUC/MIC) x CL x MIC / (fu x F)`. The three targets are the indices at
+which the fitted Imax curve gives a 24 h change of 0 (bacteriostatic), -3
+(bactericidal) and -4 log10 (bacterial elimination). The published dosages are
+reproduced exactly with `fu = 1`, the oral `CL/F` from Table 2 and the oral `F`,
+using an MIC of 0.03125 ug/mL for MAR alone and **0.008 ug/mL** for MAR + MG.
+
+```{r dosages}
+index_for <- function(target, p) {
+  fr <- (p$e0 - target) / p$imax
+  p$ic50 * (fr / (1 - fr))^(1 / p$hill)
+}
+dose_tab <- tidyr::crossing(pd_par, target = c(0, -3, -4)) |>
+  dplyr::arrange(treatment, dplyr::desc(target)) |>
+  dplyr::mutate(
+    index = index_for(target, list(e0 = e0, imax = imax, ic50 = ic50, hill = hill)),
+    clf = ifelse(treatment == "MAR", 0.70542, 0.75398), # Table 2 Cl_F_obs (L/h/kg)
+    fbio = ifelse(treatment == "MAR", 1.31, 0.891), # Results text
+    mic_dose = ifelse(treatment == "MAR", 0.03125, 0.008),
+    `Dose, reconstructed` = index * mic_dose * clf / fbio,
+    `Dose, model mic` = index * mic * clf / fbio,
+    `Dose, Table 5` = c(6.20, 7.65, 8.3, 3.70, 4.16, 4.34)[match(paste(treatment, target),
+      paste(rep(c("MAR", "MGM"), each = 3), rep(c(0, -3, -4), 2)))]
+  )
+knitr::kable(
+  dose_tab |>
+    dplyr::select(treatment, target, index, mic_dose, `Dose, reconstructed`, `Dose, Table 5`, `Dose, model mic`) |>
+    dplyr::mutate(mic_dose = format(mic_dose)) |>
+    dplyr::rename(Treatment = treatment, `Target E (log10)` = target, `Index (h)` = index,
+                  `MIC used (ug/mL)` = mic_dose),
+  digits = 3,
+  caption = "Table 5 dosages reconstructed from the packaged Table 4 parameters."
+)
+
+stopifnot(max(abs(dose_tab$`Dose, reconstructed` - dose_tab$`Dose, Table 5`)) < 0.011)
+```
+
+This check pins every Table 4 parameter: with the Results-text IC50 of 504.8
+for MAR + MG the three dosages would be
+`r paste(sprintf("%.2f", vapply(c(0, -3, -4), function(t) index_for(t, dplyr::mutate(pd_par[2, ], ic50 = 504.8)) * 0.008 * 0.75398 / 0.891, numeric(1))), collapse = ", ")`
+mg/kg instead of 3.70, 4.16 and 4.34, and with a plus sign in the Imax
+equation no negative target could be reached at all.
+
+# Assumptions and deviations
+
+- **Oral absorption is reconstructed.** Birhanu 2020 analysed the oral data
+  non-compartmentally and published no absorption rate constant. `ka` is the
+  root of the one-compartment `Tmax` identity at the published `Tmax`, with the
+  intravenous `kel`; `F` is the published bioavailability. The oral `Cmax` and
+  AUC, which were not used, are reproduced within about 4% and 0.4%.
+- **The oral terminal half-life is not reproduced.** The model gives the
+  intravenous half-life (3.77 and 3.93 h) for both routes; the oral
+  non-compartmental values are 7.62 and 6.01 h. A single disposition cannot carry
+  both, and the authors' fitted model is the intravenous one.
+- **Bioavailability above 100%.** The published `F` for MAR alone is 131%
+  (oral AUC 5.98 over intravenous AUC 4.55 h\*ug/mL). It is kept as printed; it
+  is a ratio of separately averaged crossover arms, not a physical fraction.
+- **Methyl gallate is not modelled.** It was not quantifiable in plasma. The
+  combination file describes marbofloxacin when MG 20 mg/kg is co-administered
+  by the same route, and its *ex vivo* parameters describe the combined activity
+  of that plasma.
+- **Ex vivo index.** A plasma sample is incubated at its fixed concentration, so
+  its AUC0-24 is `C x 24 h`. The paper's index uses the undiluted plasma
+  concentration (the Figure 4 axes match it), not the 1:10 in-well
+  concentration. The sigmoid parameters were fitted to plasma from orally dosed
+  rats; the packaged models apply the same concentration-effect relation after
+  either route.
+- **MIC values.** MAR alone uses 0.03125 ug/mL, the twofold-dilution value
+  printed as 0.031; it reproduces the Table 5 dosages (0.031 gives 6.16 rather
+  than 6.20 mg/kg). MAR + MG uses 0.016 ug/mL, derived from Table 5 and
+  Figure 4B as shown in Part 3.
+- **No variability.** The `+/-` values are standard deviations of per-rat
+  estimates, not variance components, so there are no `eta` terms and both
+  residual SDs are fixed at zero.
+
+# Errata
+
+- **Sign of the Imax equation.** The Methods print
+  `E = E0 + Imax x Ce^gamma / (IC50^gamma + Ce^gamma)`. Figure 4 and the Table 5
+  dosages both require `E0 - Imax x ...`; the models use the minus sign.
+- **IC50 for MAR + MG.** The Results text gives 504.8; Table 4 gives 584.75.
+  Figure 4B and the Table 5 dosages confirm 584.75, which is used.
+- **The MAR + MG dosages use a different MIC from the MAR + MG index.** The
+  Table 5 indices and Figure 4B are built on an MIC of 0.016 ug/mL, but the
+  Table 5 dosages are reproduced only with 0.008 ug/mL, the marbofloxacin
+  concentration in the checkerboard combination (Table 1 text). With the
+  0.016 ug/mL that defines the fitted IC50, the same equation gives
+  `r paste(sprintf("%.2f", dose_tab[["Dose, model mic"]][dose_tab$treatment == "MGM"]), collapse = ", ")`
+  mg/kg for MAR + MG, so the reported 40% dose reduction from the
+  combination depends on mixing the two MICs.
+- **Small transcription differences.** The abstract gives AUC24/MIC 192.8 and
+  intravenous AUC 4.54 h\*ug/mL for MAR alone; Tables 3 and 5 give 191.22 and
+  4.55. The tables are used. Table 3 labels its `K10` as 0.18 1/h for both arms;
+  the printed `CL` and `V` give 0.184 and 0.176 1/h, consistent with the printed
+  half-lives and MRTs.
+- No erratum or correction notice for this article was found in Europe PMC as
+  of 2026-11-27.
