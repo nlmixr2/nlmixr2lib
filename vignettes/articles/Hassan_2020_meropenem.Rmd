@@ -1,0 +1,553 @@
+---
+title: "Meropenem (Hassan 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meropenem (Hassan 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Hassan_2020_meropenem"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Hassan_2020_meropenem"))$description`
+* Article: [Clin Transl Sci 2020;13(2):301-308](https://doi.org/10.1111/cts.12710)
+
+# Population
+
+Hassan 2020 built one population PK model for meropenem across the whole
+paediatric age range by pooling two data sources (Methods 'Data'):
+
+* 188 infants of 23-40 weeks gestational age (GA) and 1-92 days postnatal
+  age (PNA) with suspected or complicated intra-abdominal infection, whose
+  780 serum concentrations from Smith 2011 were obtained from the NICHD
+  Pediatric Trials Network data repository; and
+* 100 virtual children aged 2-200 months, simulated by the authors from the
+  published Du 2006 population model (which already pooled the Blumer 1995
+  and Parker 1995 cohorts) because the original data were not available.
+  Each virtual child contributed eight concentrations after 20 mg/kg every
+  8 hours infused over 30 minutes.
+
+The pooled data set (Table 2) had a median (range) PNA of 0.11 years
+(0.002-16.3), GA of 33 weeks (22.5-40; 40 weeks imputed for subjects older
+than 120 days), body weight of 2.36 kg (0.39-88.3) and serum creatinine of
+0.50 mg/dL (0.1-1.9). The model was fitted with Phoenix NLME (FOCE-ELS).
+The same information is available programmatically via
+`rxode2::rxode(readModelDb("Hassan_2020_meropenem"))$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment model, proportional error | n/a | Results 'PopPK model development and qualification'; Appendix S1 'Variability models' |
+| CL = TVCL (WT/70)^dCLdWT PNA^g/(PNA^g + Age50) SCR^dCLdSCR (GA/40)^dCLdGA exp(eta) | n/a | Results, final-model CL equation |
+| CL2 = TVCL2 (WT/70)^dCLdWT PNA^g/(PNA^g + Age50) exp(eta) | n/a | Results, final-model CL2 equation |
+| V = TVV (WT/70)^dVdWT exp(eta); V2 = TVV2 (WT/70)^dVdWT exp(eta) | n/a | Results, final-model V and V2 equations |
+| CObs = C (1 + eps) | n/a | Results, final-model residual equation |
+| `lcl` | log(37.1) L/h | Table 3, TVCL 37.1 L/hour/70 kg |
+| `lvc` | log(29.1) L | Table 3, TVV 29.1 L/70 kg |
+| `lq` | log(6.10) L/h | Table 3, TVCL2 6.10 L/hour/70 kg |
+| `lvp` | log(31.9) L | Table 3, TVV2 31.9 L/70 kg |
+| `e_wt_cl_q` | 1.20 | Table 3, dCLdWT |
+| `e_wt_vc_vp` | 0.97 | Table 3, dVdWT |
+| `lpna50` | log(0.39) years | Table 3, Age 50 (unit 'y') |
+| `lhill` | log(0.27) | Table 3, gamma |
+| `e_creat_cl` | -0.25 | Table 3, dCLdSCR |
+| `e_ga_cl` | 0.84 | Table 3, dCLdGA |
+| `etalcl` | 0.315 | Table 3, intersubject variability CL |
+| `etalvc` | 0.186 | Table 3, intersubject variability V |
+| `etalq` | 1.14 | Table 3, intersubject variability CL2 |
+| `etalvp` | 0.319 | Table 3, intersubject variability V2 |
+| `propSd` | 0.38 | Table 3, residual error 'Proportional' |
+| Dosing groups and regimens | n/a | Table 1; Table 4 |
+| Targets: > 2 mg/L for 75% and > 4 mg/L for 50% of the interval (groups 1-4); > 2 or > 4 mg/L for 40% (groups 5-6) | n/a | Methods 'Simulation for dosing recommendations' |
+
+# Virtual cohort
+
+The authors simulated "each subject group" of their pooled data set; those
+covariates are not published. A virtual cohort of 200 subjects per group is
+therefore built from the published ranges, with the following assumptions:
+
+* **Groups 1-4 (infants under 3 months).** GA is uniform over 23-32 weeks
+  (groups 1-2) or 32-40 weeks (groups 3-4), and PNA uniform over 1-14 days
+  (groups 1, 3) or 14-90 days (groups 2, 4), matching the Smith 2011 ranges
+  quoted in Methods 'Data'. Birth weight is interpolated from approximate
+  median birth weight for GA, and current weight grows 1.5% per day of life;
+  both carry 15% log-normal variability. Serum creatinine is uniform over
+  0.4-1.0 mg/dL for GA < 32 weeks and 0.2-0.7 mg/dL otherwise.
+* **Groups 5-6 (3 months to 17 years).** Age is drawn uniformly within the
+  four Du 2006 age bands the authors used (2-14, 14-38, 38-66 and 66-200
+  months; truncated below at 3 months). Weight comes from approximate CDC
+  median weight-for-age with 15% log-normal variability; serum creatinine is
+  uniform between age-dependent limits, with 10% of subjects raised 1.2- to
+  3.3-fold, as in Methods 'Data'. GA is 40 weeks. Subjects under 50 kg form
+  group 5 and those of 50 kg or more group 6.
+
+```{r cohort}
+set.seed(20200123)
+n_per_group <- 200L
+
+# Approximate median birth weight (kg) by gestational age (weeks).
+bw_ga <- data.frame(
+  ga = c(23, 26, 28, 30, 32, 34, 36, 38, 40),
+  bw = c(0.60, 0.85, 1.10, 1.40, 1.75, 2.20, 2.70, 3.10, 3.40)
+)
+# Approximate CDC median weight (kg) for age (years), sexes averaged.
+wt_age <- data.frame(
+  age = c(0.25, 0.5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 17),
+  wt = c(6.0, 7.6, 9.6, 12.2, 14.3, 16.3, 18.4, 20.7, 25.6, 32.0, 40.5, 50.0, 58.0, 61.0)
+)
+
+make_infants <- function(group, ga_lo, ga_hi, pna_lo, pna_hi) {
+  ga <- runif(n_per_group, ga_lo, ga_hi)
+  pna_d <- runif(n_per_group, pna_lo, pna_hi)
+  bw <- approx(bw_ga$ga, bw_ga$bw, xout = ga)$y * exp(rnorm(n_per_group, 0, 0.15))
+  creat <- if (ga_hi <= 32) runif(n_per_group, 0.4, 1.0) else runif(n_per_group, 0.2, 0.7)
+  tibble(group = group, GA = ga, PNA = pna_d / 30.4375, WT = bw * (1 + 0.015 * pna_d), CREAT = creat)
+}
+
+infants <- bind_rows(
+  make_infants("Group 1", 23, 32, 1, 14),
+  make_infants("Group 2", 23, 32, 14, 90),
+  make_infants("Group 3", 32, 40, 1, 14),
+  make_infants("Group 4", 32, 40, 14, 90)
+)
+
+# Children: a pool in the four Du 2006 age bands (the oldest band
+# over-sampled so enough subjects reach 50 kg). Group 5 takes 50 subjects
+# under 50 kg from each band; group 6 takes 200 subjects of 50 kg or more.
+n_band <- 1500L
+bands <- tibble(
+  band = 1:4,
+  lo = c(3, 14, 38, 66),
+  hi = c(14, 38, 66, 204),
+  n = c(n_band, n_band, n_band, 3L * n_band)
+)
+pool <- bands |>
+  rowwise() |>
+  reframe(band = band, PNA = runif(n, lo, hi)) |>
+  mutate(
+    age_yr = PNA / 12,
+    GA = 40,
+    WT = approx(wt_age$age, wt_age$wt, xout = age_yr, rule = 2)$y *
+      exp(rnorm(n(), 0, 0.15)),
+    CREAT = runif(n(), 0.20 + 0.02 * age_yr, 0.40 + 0.05 * age_yr),
+    outlier = runif(n()) < 0.10,
+    CREAT = ifelse(outlier, CREAT * runif(n(), 1.2, 3.3), CREAT)
+  )
+children <- bind_rows(
+  pool |>
+    filter(WT < 50) |>
+    group_by(band) |>
+    slice_head(n = n_per_group / 4) |>
+    ungroup() |>
+    mutate(group = "Group 5"),
+  pool |>
+    filter(WT >= 50) |>
+    slice_sample(n = n_per_group) |>
+    mutate(group = "Group 6")
+) |>
+  select(group, GA, PNA, WT, CREAT)
+stopifnot(nrow(children) == 2 * n_per_group)
+
+cohort <- bind_rows(infants, children)
+
+cohort |>
+  group_by(group) |>
+  summarise(
+    N = n(),
+    `GA median (weeks)` = median(GA),
+    `PNA median (years)` = median(PNA / 12),
+    `WT median (kg)` = median(WT),
+    `SCR median (mg/dL)` = median(CREAT),
+    .groups = "drop"
+  ) |>
+  rename(Group = group) |>
+  knitr::kable(digits = 2, caption = "Virtual cohort covariates by dosing group.")
+```
+
+# Typical-value parameters
+
+The typical-value clearance in a 5-year-old, 18-kg child with serum
+creatinine 0.4 mg/dL is about 0.4 L/h/kg, and in a 7-day-old, 1.2-kg
+preterm infant (GA 30 weeks, serum creatinine 0.8 mg/dL) about
+0.09 L/h/kg, in line with the paediatric meropenem literature the paper
+pools.
+
+```{r typical}
+mod <- readModelDb("Hassan_2020_meropenem")
+
+typ_ev <- data.frame(
+  id = 1:3, time = 0, evid = 0L, amt = 0, cmt = "central",
+  WT = c(70, 18, 1.2), PNA = c(17 * 12, 5 * 12, 7 / 30.4375),
+  GA = c(40, 40, 30), CREAT = c(1, 0.4, 0.8)
+)
+# One solve per subject: a typical-value solve of several subjects at once
+# warns about simulating multiple subjects without between-subject variability.
+mod_typ <- rxode2::zeroRe(mod)
+typ <- lapply(split(typ_ev, typ_ev$id), function(d) {
+  as.data.frame(rxode2::rxSolve(mod_typ, d))
+}) |>
+  bind_rows()
+
+# Closed form of the printed equations for the 70-kg, SCR 1 mg/dL, GA 40
+# reference adolescent (17 years): only the maturation factor differs from 1.
+f17 <- 17^0.27 / (17^0.27 + 0.39)
+stopifnot(
+  abs(typ$cl[1] / (37.1 * f17) - 1) < 1e-6,
+  abs(typ$vc[1] / 29.1 - 1) < 1e-6,
+  abs(typ$q[1] / (6.10 * f17) - 1) < 1e-6,
+  abs(typ$vp[1] / 31.9 - 1) < 1e-6
+)
+
+typ |>
+  transmute(
+    Subject = c("17 y, 70 kg", "5 y, 18 kg", "7 d, 1.2 kg, GA 30"),
+    `CL (L/h/kg)` = cl / typ_ev$WT,
+    `V1 (L/kg)` = vc / typ_ev$WT,
+    `Q (L/h/kg)` = q / typ_ev$WT,
+    `V2 (L/kg)` = vp / typ_ev$WT
+  ) |>
+  knitr::kable(digits = 3, caption = "Typical-value weight-normalised parameters.")
+```
+
+# Simulation
+
+Each group receives the regimens of Table 4: the FDA-approved regimen for
+all six groups, and for groups 5 and 6 the three alternatives (doubled dose
+every 8 hours; the approved dose every 6 hours; the approved dose infused
+over 3 hours instead of 30 minutes). Twenty doses are given and the last
+dosing interval is analysed as steady state (Figure 1 legend); the slow
+peripheral exchange of preterm infants needs that many doses to reach it.
+
+```{r regimens}
+regimens <- tribble(
+  ~group,    ~regimen,         ~mgkg, ~cap, ~tau, ~tinf,
+  "Group 1", "FDA",               20, 1000,   12,   0.5,
+  "Group 2", "FDA",               20, 1000,    8,   0.5,
+  "Group 3", "FDA",               20, 1000,    8,   0.5,
+  "Group 4", "FDA",               30, 1000,    8,   0.5,
+  "Group 5", "FDA",               20, 1000,    8,   0.5,
+  "Group 5", "Increased dose",    40, 2000,    8,   0.5,
+  "Group 5", "Q6h",               20, 1000,    6,   0.5,
+  "Group 5", "3-h infusion",      20, 1000,    8,   3,
+  "Group 6", "FDA",               NA, 1000,    8,   0.5,
+  "Group 6", "Increased dose",    NA, 2000,    8,   0.5,
+  "Group 6", "Q6h",               NA, 1000,    6,   0.5,
+  "Group 6", "3-h infusion",      NA, 1000,    8,   3
+)
+
+n_dose <- 20L
+dt <- 0.05
+
+design <- cohort |>
+  mutate(subj = row_number()) |>
+  inner_join(regimens, by = "group", relationship = "many-to-many") |>
+  mutate(
+    id = row_number(),
+    # Group 6 doses are flat (1 g or 2 g); the others are mg/kg, capped.
+    dose = ifelse(is.na(mgkg), cap, pmin(mgkg * WT, cap)),
+    treatment = paste(group, regimen, sep = ": ")
+  )
+
+doses <- design |>
+  cross_join(tibble(dose_n = seq_len(n_dose))) |>
+  mutate(
+    time = (dose_n - 1) * tau, evid = 1L, amt = dose,
+    rate = dose / tinf, cmt = "central"
+  )
+obs <- design |>
+  cross_join(tibble(k = 0:round(12 / dt))) |>
+  filter(k * dt <= tau + 1e-9) |>
+  mutate(
+    time = (n_dose - 1) * tau + k * dt,
+    evid = 0L, amt = 0, rate = 0, cmt = "central"
+  )
+events <- bind_rows(doses, obs) |>
+  select(id, time, evid, amt, rate, cmt, WT, PNA, GA, CREAT, tau, treatment) |>
+  arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(20200123)
+sim <- rxode2::rxSolve(mod, events = events, keep = c("treatment", "tau")) |>
+  as.data.frame() |>
+  select(id, time, Cc, cl, treatment, tau) |>
+  left_join(design |> select(id, group, regimen), by = "id") |>
+  mutate(tad = time - (n_dose - 1) * tau)
+stopifnot(!anyNA(sim$Cc))
+```
+
+# Replicate Figure 1: steady-state concentration percentiles
+
+```{r figure1, fig.width = 8, fig.height = 6}
+fig1 <- sim |>
+  filter(regimen == "FDA") |>
+  group_by(group, tad) |>
+  summarise(
+    P50 = quantile(Cc, 0.50), P25 = quantile(Cc, 0.25),
+    P10 = quantile(Cc, 0.10), P05 = quantile(Cc, 0.05),
+    .groups = "drop"
+  ) |>
+  pivot_longer(c(P50, P25, P10, P05), names_to = "percentile", values_to = "Cc")
+
+ggplot(fig1, aes(tad, Cc, colour = percentile)) +
+  geom_line() +
+  geom_hline(yintercept = c(2, 4), linetype = "dashed") +
+  scale_y_log10() +
+  facet_wrap(~group, scales = "free_x") +
+  labs(
+    x = "Time after dose at steady state (h)",
+    y = "Meropenem concentration (mg/L)",
+    colour = "Percentile",
+    caption = "Replicates Figure 1 of Hassan 2020 (FDA-approved regimens, Table 1)."
+  )
+```
+
+# Replicate Table 4: target attainment
+
+A subject meets the target when the concentration exceeds the MIC for at
+least the target fraction of the steady-state dosing interval: 75% (MIC
+2 mg/L) or 50% (MIC 4 mg/L) for groups 1-4, and 40% for groups 5-6.
+
+```{r table4}
+ft <- sim |>
+  filter(tad < tau) |>
+  group_by(id, group, regimen) |>
+  summarise(ft2 = mean(Cc > 2), ft4 = mean(Cc > 4), .groups = "drop") |>
+  mutate(
+    infant = group %in% paste("Group", 1:4),
+    hit2 = ft2 >= ifelse(infant, 0.75, 0.40),
+    hit4 = ft4 >= ifelse(infant, 0.50, 0.40)
+  )
+
+pta <- ft |>
+  group_by(group, regimen) |>
+  summarise(`2` = 100 * mean(hit2), `4` = 100 * mean(hit4), .groups = "drop") |>
+  pivot_longer(c(`2`, `4`), names_to = "mic", values_to = "PTA")
+
+# Table 4; '> 97.5' is entered as 97.5.
+published <- tribble(
+  ~group,    ~regimen,          ~mic, ~PTA_published,
+  "Group 1", "FDA",              "2",           95.1,
+  "Group 1", "FDA",              "4",           95.8,
+  "Group 2", "FDA",              "2",           94.2,
+  "Group 2", "FDA",              "4",           94.4,
+  "Group 3", "FDA",              "2",           94.8,
+  "Group 3", "FDA",              "4",           95.7,
+  "Group 4", "FDA",              "2",           82.9,
+  "Group 4", "FDA",              "4",           86.6,
+  "Group 5", "FDA",              "2",           68.4,
+  "Group 5", "FDA",              "4",           41.7,
+  "Group 5", "Increased dose",   "2",           85.5,
+  "Group 5", "Increased dose",   "4",           68.6,
+  "Group 5", "Q6h",              "2",           97.5,
+  "Group 5", "Q6h",              "4",           94.9,
+  "Group 5", "3-h infusion",     "2",           97.5,
+  "Group 5", "3-h infusion",     "4",           90.7,
+  "Group 6", "FDA",              "2",           41.3,
+  "Group 6", "FDA",              "4",           17.0,
+  "Group 6", "Increased dose",   "2",           64.7,
+  "Group 6", "Increased dose",   "4",           41.2,
+  "Group 6", "Q6h",              "2",           93.9,
+  "Group 6", "Q6h",              "4",           80.1,
+  "Group 6", "3-h infusion",     "2",           94.5,
+  "Group 6", "3-h infusion",     "4",           79.6
+)
+
+pta_cmp <- published |>
+  inner_join(pta, by = c("group", "regimen", "mic")) |>
+  mutate(diff = PTA - PTA_published)
+stopifnot(nrow(pta_cmp) == nrow(published))
+
+pta_cmp |>
+  rename(
+    Group = group, Regimen = regimen, "MIC (mg/L)" = mic,
+    "% achieving target, Hassan 2020" = PTA_published,
+    "% achieving target, simulated" = PTA,
+    "Difference (points)" = diff
+  ) |>
+  knitr::kable(digits = 1, caption = "Table 4 target attainment: published versus virtual cohort.")
+```
+
+```{r table4-gate}
+# The FDA-regimen cells are the paper's headline result. The virtual cohort
+# approximates the authors' covariates, and each simulated percentage carries
+# a binomial SE of up to 3.5 points at n = 200, so the gate is on the centre of
+# the twelve differences. A mis-transcribed CL, V, exponent or maturation
+# constant moves these percentages by tens of points. Realised: median
+# difference -4.6 points, median absolute difference 7.4 points.
+fda <- pta_cmp |> filter(regimen == "FDA")
+stopifnot(
+  abs(median(fda$diff)) < 10,
+  median(abs(fda$diff)) < 14
+)
+```
+
+For the approved regimens the virtual cohort reproduces the paper's
+pattern: high target attainment in infants under 3 months, and markedly
+lower attainment in children over 3 months, lowest in those of 50 kg or
+more. The simulated attainment in the first two weeks of life (groups 1
+and 3) runs about 10 points below the published values, which is within
+what the assumed neonatal weight and serum creatinine distributions can
+shift. Of the alternative regimens, the doubled dose and the 3-hour
+infusion are reproduced to within about 12 points. The every-6-hours regimen is not: the simulated attainment for
+it is well below the published > 97.5% / 94.9% (group 5) and 93.9% / 80.1%
+(group 6), and close to that of the doubled dose, which is what the model
+structure implies (shortening the interval from 8 to 6 hours lowers the
+required time above the MIC by 0.8 hours; doubling the dose extends the
+time above the MIC by about one elimination half-life of 0.7-1 hours). See
+Assumptions and deviations.
+
+# Replicate Figure 2: target attainment across MICs
+
+```{r figure2, fig.width = 8, fig.height = 4}
+mics <- c(0.25, 0.5, 1, 2, 4, 8, 16)
+fig2 <- sim |>
+  filter(group %in% c("Group 5", "Group 6"), tad < tau) |>
+  cross_join(tibble(mic = mics)) |>
+  group_by(id, group, regimen, mic) |>
+  summarise(ft = mean(Cc > mic), .groups = "drop") |>
+  group_by(group, regimen, mic) |>
+  summarise(PTA = 100 * mean(ft >= 0.4), .groups = "drop")
+
+ggplot(fig2, aes(mic, PTA, colour = regimen)) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10(breaks = mics) +
+  facet_wrap(~group) +
+  labs(
+    x = "MIC (mg/L)",
+    y = "Subjects achieving 40% fT > MIC (%)",
+    colour = "Regimen",
+    caption = "Replicates Figure 2 of Hassan 2020."
+  )
+```
+
+# PKNCA validation
+
+Steady-state NCA over the last (twentieth) dosing interval of the FDA-approved
+regimen in each group.
+
+```{r pknca}
+conc_df <- sim |>
+  filter(regimen == "FDA", !is.na(Cc), tad <= tau) |>
+  select(id, time, Cc, treatment)
+
+dose_df <- doses |>
+  filter(regimen == "FDA", dose_n == n_dose) |>
+  transmute(id, time, amt, duration = tinf, treatment)
+
+t_start <- conc_df |>
+  group_by(treatment) |>
+  summarise(start = min(time), end = max(time), .groups = "drop")
+
+intervals <- t_start |>
+  mutate(cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             doseu = "mg", duration = "duration")
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+knitr::kable(summary(nca_res),
+             caption = "Simulated steady-state NCA for the FDA-approved regimens.")
+```
+
+At steady state the AUC over one dosing interval equals dose / CL for each
+subject; the check compares PKNCA's AUC with that identity.
+
+```{r auc-identity}
+cl_df <- sim |>
+  filter(regimen == "FDA") |>
+  group_by(id) |>
+  summarise(cl = first(cl), .groups = "drop")
+
+auc_chk <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, treatment, auclast = PPORRES) |>
+  inner_join(cl_df, by = "id") |>
+  inner_join(dose_df |> select(id, amt), by = "id") |>
+  mutate(pct_diff = 100 * (auclast / (amt / cl) - 1))
+
+auc_chk |>
+  group_by(treatment) |>
+  summarise(
+    `Median % difference` = median(pct_diff),
+    `90th percentile of abs % difference` = quantile(abs(pct_diff), 0.9),
+    .groups = "drop"
+  ) |>
+  rename(Treatment = treatment) |>
+  knitr::kable(digits = 2, caption = "PKNCA AUC0-tau versus dose / CL.")
+
+# After twenty doses only the slowest-equilibrating preterm infants fall
+# short of steady state, and the 0.05-h trapezoid grid adds a small bias. A dose, unit
+# or clearance error shifts every subject by far more than these bounds.
+stopifnot(
+  abs(median(auc_chk$pct_diff)) < 1,
+  quantile(abs(auc_chk$pct_diff), 0.9) < 5
+)
+```
+
+The paper reports no NCA parameters, so no published-versus-simulated NCA
+table is shown.
+
+# Assumptions and deviations
+
+- **Maturation function as printed.** Both the final-model equations in
+  the Results and the maturation equation in Appendix S1 write the
+  postnatal-age term as PNA^gamma / (PNA^gamma + Age50), with Age50 not
+  raised to gamma (the usual Hill form is PNA^gamma / (PNA^gamma +
+  Age50^gamma)). The model follows the printed equation. As a consequence
+  Age50 (0.39 years) is not literally the age of half-maximal clearance:
+  with gamma = 0.27 the maturation factor reaches 0.5 at about 11 days of
+  life and 0.67 at 0.39 years.
+- **Postnatal-age units.** Table 3 gives Age50 in years ('y') and Table 2
+  reports PNA in years, so PNA enters the maturation term in years. Appendix
+  S1 describes TM50 'in weeks' while introducing the maturation function for
+  the initial analysis of the neonatal data alone; the final-model units of
+  Table 3 are used. The package's canonical `PNA` column is in months, and
+  `model()` converts with PNA / 12.
+- **Serum creatinine and gestational age.** Serum creatinine enters CL
+  un-normalised, in mg/dL, as printed, so the typical CL in Table 3 refers to
+  serum creatinine 1 mg/dL. Gestational age is normalised to 40 weeks; the
+  authors imputed 40 weeks for subjects older than 120 days with missing GA,
+  so supply GA = 40 for children when it is unknown.
+- **Shared exponents.** One weight exponent (dCLdWT) scales both CL and Q,
+  and one (dVdWT) scales both V1 and V2, as the Results describe; the
+  maturation term applies to both CL and Q.
+- **IIV read as variances.** Table 3 does not label its intersubject
+  variability values. They are taken as omega^2 variances of the
+  exponential random effects (the quantity Phoenix NLME reports). The
+  published target attainment does not discriminate between this reading
+  and a standard-deviation reading: both land within the cohort uncertainty
+  of Table 4 for the approved regimens. The residual-error entry
+  'Proportional (%)' = 0.38 is taken as a proportional SD of 0.38 (38%),
+  the only reading consistent with a fraction.
+- **Target attainment without residual error.** Time above the MIC is
+  computed from the individual predicted concentration; the paper does not
+  say whether its simulations added residual error.
+- **Virtual cohort.** The authors' per-group covariates are not published.
+  The cohort here is built from the published ranges with approximate
+  birth-weight-for-GA and CDC weight-for-age medians and assumed serum
+  creatinine ranges (see Virtual cohort), so target attainment is an
+  approximation of Table 4, not a replication of the authors' simulation.
+- **Every-6-hours regimen.** The simulated target attainment for the
+  every-6-hours alternative falls well below the published values in both
+  groups 5 and 6, whereas the approved regimen, the doubled dose and the
+  3-hour infusion are reproduced to within the Monte Carlo and cohort
+  uncertainty. The discrepancy is the same under either reading of the IIV
+  values and is not explained by the printed model; the paper does not
+  describe how its every-6-hours simulations differed from the others.
+- **Data provenance.** Of the 288 subjects, 100 are virtual children
+  simulated by the authors from the Du 2006 model rather than observed
+  patients, so the parameters for children over 3 months partly reflect
+  that earlier model.

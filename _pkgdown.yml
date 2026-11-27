@@ -5040,6 +5040,8 @@ navbar:
         href: articles/Gijsen_2022_meropenem.html
       - text: "Meropenem (Hanberg 2018)"
         href: articles/Hanberg_2018_meropenem.html
+      - text: "Meropenem (Hassan 2020)"
+        href: articles/Hassan_2020_meropenem.html
       - text: "Meropenem (Kim 2024)"
         href: articles/Kim_2024_meropenem.html
       - text: "Meropenem (Le 2025)"
@@ -10325,6 +10327,7 @@ articles:
   - articles/Harun_2019_cysticFibrosis
   - articles/Harwood_2025_tobramycin
   - articles/Hashimoto_1994_zonisamide
+  - articles/Hassan_2020_meropenem
   - articles/Hassouneh_2024_dasatinib
   - articles/Hawwa_2008_mercaptopurine
   - articles/Hawwa_2013_ranitidine
