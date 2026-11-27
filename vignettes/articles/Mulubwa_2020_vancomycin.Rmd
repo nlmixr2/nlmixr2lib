@@ -1,0 +1,396 @@
+---
+title: "Vancomycin (Mulubwa 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin (Mulubwa 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Mulubwa_2020_vancomycin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Mulubwa_2020_vancomycin"))$description`
+* Article: [Drugs R D 2020;20(2):105-113](https://doi.org/10.1007/s40268-020-00302-7)
+
+# Population
+
+Nineteen preterm neonates (8 male, 11 female) with suspected nosocomial
+MRSA infection were enrolled in a randomised double-blind comparison of
+two vancomycin brands (Aspen-Vancomycin and Sandoz-Vancocin CP) in two
+neonatal intensive care units in Cape Town, South Africa. Every neonate
+received 15 mg/kg every 12 h as a 60-min intravenous infusion. Median
+(range) postnatal age was 14 (3-58) days, gestational age 31 (23-34)
+weeks, postmenstrual age 33 (30-34.7) weeks, birth weight 1.27
+(0.63-2.69) kg and current weight 1.48 (0.925-2.62) kg (Mulubwa 2020
+Table 1). Neonates with renal dysfunction were excluded. Only trough
+concentrations were drawn, before the 3rd, 6th and 9th doses, giving 45
+concentrations in total. Parameters were estimated in Monolix 2018R2 by
+maximum a posteriori Bayesian estimation, with priors from a published
+neonatal vancomycin model fitted to peak and trough data. The same
+information is available programmatically via
+`rxode2::rxode(readModelDb("Mulubwa_2020_vancomycin"))$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` | log(0.102 L/h) at 1.48 kg | Table 2 'CL (L/h)' 0.102 (RSE 8.19%); Eq. 2 |
+| `lvc` | log(0.884 L) at 1.48 kg | Table 2 'Vd (L)' 0.884 (RSE 24%); Eq. 3 |
+| `e_wt_cl` | 0.75, fixed | Methods 'Pharmacokinetic Analysis'; Results; Eq. 2 |
+| `e_wt_vc` | 1, fixed | Methods 'Pharmacokinetic Analysis'; Results; Eq. 3 |
+| `etalcl` | 0.0015987 = log(1 + 0.04^2) | Table 2 BSV CL 4 %CV; footnote b CV = sqrt(exp(SD^2) - 1) |
+| `etalvc` | 0.25588 = log(1 + 0.54^2) | Table 2 BSV Vd 54 %CV; footnote b |
+| `expSd` | 0.284 | Table 2 residual error 'Exponential' 0.284 (RSE 13.2%) |
+| Reference weight | 1.48 kg | Table 1 median current weight; Table 2 footnote a; Eqs. 2-3 |
+| One-compartment, linear elimination | n/a | Results 'Pharmacokinetic Model'; Abstract |
+| `CL = 0.102 * (WT/1.48)^0.75 * exp(eta)` | n/a | Eq. 2 |
+| `V = 0.884 * (WT/1.48) * exp(eta)` | n/a | Eq. 3 |
+| Exponential residual error `Cc ~ lnorm(expSd)` | n/a | Results 'Pharmacokinetic Model'; Table 2 |
+| 60-min IV infusion, 15 mg/kg every 12 h | n/a | Methods 'Vancomycin Dosing, Blood Sampling and Plasma Assay' |
+
+# Virtual cohort
+
+The paper reports current weight only as a median and range. The
+virtual cohort draws weight from a log-normal distribution with median
+1.48 kg and log-scale SD 0.25, truncated to the observed range
+0.925-2.62 kg.
+
+```{r cohort}
+set.seed(20200302) # weight draw (base R)
+rxode2::rxSetSeed(20200302) # rxode2 random effects
+n_per_arm <- 200
+
+draw_weight <- function(n) {
+  wt <- numeric(0)
+  while (length(wt) < n) {
+    cand <- exp(rnorm(n, log(1.48), 0.25))
+    wt <- c(wt, cand[cand >= 0.925 & cand <= 2.62])
+  }
+  wt[seq_len(n)]
+}
+
+cohort <- data.frame(id = seq_len(n_per_arm), WT = draw_weight(n_per_arm))
+summary(cohort$WT)
+```
+
+```{r model}
+mod <- rxode2::rxode(readModelDb("Mulubwa_2020_vancomycin"))
+```
+
+# Visual predictive check of trough concentrations (Figure 3)
+
+The study regimen of 15 mg/kg every 12 h (60-min infusion) is simulated
+for 9 doses, with trough samples just before the 3rd, 6th and 9th doses
+(23.8, 59.8 and 95.8 h, the nominal times of Figure 3 and Table 3).
+Simulated observations include the exponential residual error (`sim`
+column).
+
+```{r events-helper}
+make_events <- function(cohort, dose_mgkg, tau, n_doses, obs_times,
+                        treatment, id_offset = 0) {
+  doses <- cohort |>
+    tidyr::crossing(dose_num = seq_len(n_doses)) |>
+    dplyr::mutate(
+      time = (dose_num - 1) * tau,
+      amt = dose_mgkg * WT,
+      rate = amt / 1,
+      evid = 1L
+    ) |>
+    dplyr::select(-dose_num)
+  obs <- cohort |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(amt = 0, rate = 0, evid = 0L)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(
+      id = id + id_offset,
+      cmt = "central",
+      treatment = treatment
+    ) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+```
+
+```{r vpc}
+trough_times <- c(23.8, 59.8, 95.8)
+ev_vpc <- make_events(
+  cohort, dose_mgkg = 15, tau = 12, n_doses = 9,
+  obs_times = trough_times, treatment = "15 mg/kg q12h"
+)
+sim_vpc <- rxode2::rxSolve(mod, events = ev_vpc, keep = c("WT", "treatment")) |>
+  as.data.frame()
+
+vpc_summary <- sim_vpc |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05),
+    p50 = median(sim),
+    p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+knitr::kable(vpc_summary, digits = 2,
+             caption = "Simulated 5th, 50th and 95th percentiles of trough concentrations (mg/L).")
+```
+
+Table 3 of the paper gives the observed median trough concentrations
+by brand (pooled range 1-19 mg/L):
+
+```{r observed}
+observed <- data.frame(
+  time = c(23.8, 59.8, 95.8, 23.8, 59.8, 95.8),
+  brand = rep(c("Aspen-Vancomycin", "Sandoz-Vancocin CP"), each = 3),
+  median = c(11.5, 9, 13.5, 10, 9, 7.5)
+)
+```
+
+```{r vpc-plot, fig.cap = "Replicates Figure 3 of Mulubwa 2020: simulated 5th, 50th and 95th percentiles of trough concentrations with the observed per-brand medians from Table 3 (points)."}
+ggplot(vpc_summary, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.25) +
+  geom_line(aes(y = p50), colour = "steelblue4") +
+  geom_point(data = observed, aes(y = median, shape = brand), size = 2.5) +
+  scale_x_continuous(breaks = trough_times) +
+  labs(x = "Time (h)", y = "Vancomycin trough concentration (mg/L)", shape = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+Figure 3 shows a simulated median trough of about 10 mg/L at each
+sampling time, a 5th percentile of about 5 mg/L and a 95th percentile
+of 15-18 mg/L. The simulated median trough from the packaged model is
+about 8-9 mg/L, roughly 15-20% below the Figure 3 median; the
+simulated 95th percentile matches Figure 3 and the simulated 5th
+percentile is lower (about 3 versus 5 mg/L). Figure 3 was simulated on
+the study's own design (each neonate's actual weight and sampling
+times), whereas this cohort draws weights from a distribution, which
+may account for part of the difference. The observed per-brand
+medians in Table 3 (7.5-13.5 mg/L) lie within the simulated 5th-95th
+percentile band.
+
+```{r vpc-check}
+p50_598 <- vpc_summary$p50[vpc_summary$time == 59.8]
+stopifnot(
+  # Figure 3 median trough at 59.8 h is about 10 mg/L and the packaged
+  # model gives about 8.3 mg/L. A mis-transcribed CL or V (or a missed
+  # weight normalisation) moves the median by far more than 30%.
+  abs(p50_598 / 10 - 1) < 0.30
+)
+```
+
+# Steady-state exposure for the current and optimised regimens (Figure 4)
+
+The paper's Monte Carlo simulation compared the study regimen (15 mg/kg
+every 12 h) with the proposed regimen (12 mg/kg every 8 h), both as
+60-min infusions, reporting AUC0-24h and trough concentration at steady
+state. Here each arm is dosed for 10 days and the NCA interval is the
+last 24 h (216-240 h), with the trough taken at 240 h.
+
+```{r ss-sim}
+obs_grid <- seq(216, 240, by = 0.25)
+ev_bid <- make_events(cohort, 15, 12, n_doses = 20, obs_times = obs_grid,
+                      treatment = "15 mg/kg q12h")
+ev_tid <- make_events(cohort, 12, 8, n_doses = 30, obs_times = obs_grid,
+                      treatment = "12 mg/kg q8h", id_offset = n_per_arm)
+ev_ss <- dplyr::bind_rows(ev_bid, ev_tid)
+
+sim_ss <- rxode2::rxSolve(mod, events = ev_ss, keep = c("WT", "treatment")) |>
+  as.data.frame()
+```
+
+```{r ss-pknca}
+conc_ss <- sim_ss |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+dose_ss <- ev_ss |>
+  dplyr::filter(evid == 1, time == 216) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_ss, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_ss, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 216, end = 240,
+  auclast = TRUE, cmax = TRUE, cmin = TRUE
+)
+nca_ss <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r ss-compare}
+reference_fig4 <- data.frame(
+  treatment = c("15 mg/kg q12h", "12 mg/kg q8h"),
+  auclast = c(366, 440),
+  cmin = c(5.88, 9.4)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_ss,
+  reference = reference_fig4,
+  by = "treatment",
+  params = c("auclast", "cmin"),
+  units = c(auclast = "mg*h/L", cmin = "mg/L")
+)
+knitr::kable(cmp, caption = "Median steady-state AUC0-24h (AUClast over 216-240 h) and trough (Cmin) versus Mulubwa 2020 Results / Figure 4.")
+```
+
+```{r ss-attain}
+attain <- as.data.frame(nca_ss) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    median_auc = median(PPORRES),
+    pct_auc_ge_400 = 100 * mean(PPORRES >= 400),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(paper_pct = c(`12 mg/kg q8h` = 70.7, `15 mg/kg q12h` = 27.5)[treatment])
+knitr::kable(
+  attain |>
+    dplyr::rename(
+      "Regimen" = treatment,
+      "Median AUC0-24h (mg*h/L)" = median_auc,
+      "% with AUC0-24h >= 400 (simulated)" = pct_auc_ge_400,
+      "% with AUC0-24h >= 400 (paper)" = paper_pct
+    ),
+  digits = 1
+)
+```
+
+```{r ss-plot, fig.cap = "Replicates Figure 4 of Mulubwa 2020: steady-state AUC0-24h and trough concentration for the current and optimised regimens. Dashed lines: the 400 mg*h/L target and the 8-14 mg/L trough interquartile range the paper associates with it."}
+nca_wide <- as.data.frame(nca_ss) |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmin")) |>
+  dplyr::mutate(
+    metric = dplyr::recode(PPTESTCD, auclast = "AUC0-24h (mg*h/L)", cmin = "Ctrough (mg/L)"),
+    treatment = factor(treatment, levels = c("15 mg/kg q12h", "12 mg/kg q8h"))
+  )
+ref_lines <- data.frame(
+  metric = c("AUC0-24h (mg*h/L)", "Ctrough (mg/L)", "Ctrough (mg/L)"),
+  y = c(400, 8, 14)
+)
+ggplot(nca_wide, aes(treatment, PPORRES)) +
+  geom_boxplot() +
+  geom_hline(data = ref_lines, aes(yintercept = y), linetype = "dashed") +
+  facet_wrap(~metric, scales = "free_y") +
+  labs(x = NULL, y = NULL) +
+  theme_bw()
+```
+
+The steady-state exposures simulated from the Table 2 parameters are
+higher than the summaries the paper reports for its own Monte Carlo
+simulation (see the starred rows and the assumptions below). The ratio
+between the two regimens matches, because both scale with the daily
+dose (36 versus 30 mg/kg/day):
+
+```{r ss-ratio}
+med_auc <- setNames(attain$median_auc, attain$treatment)
+ratio_sim <- unname(med_auc["12 mg/kg q8h"] / med_auc["15 mg/kg q12h"])
+ratio_paper <- 440 / 366
+c(simulated = ratio_sim, paper = ratio_paper)
+stopifnot(
+  # AUC is dose / CL, so the regimen ratio is fixed by the daily doses
+  # (36 / 30 = 1.2); this is exact up to the weight draw being shared.
+  abs(ratio_sim - 1.2) < 0.01,
+  # Closed form for the typical neonate: AUC0-24h,ss = daily dose / CL.
+  abs(median(attain$median_auc[attain$treatment == "15 mg/kg q12h"]) /
+        (30 * 1.48 / 0.102) - 1) < 0.1
+)
+```
+
+For comparison, the typical neonate's AUC over the first 24 h of
+therapy (not at steady state) is computed with a typical-value solve:
+
+```{r first-day}
+typical <- data.frame(id = 1L, WT = 1.48)
+ev_day1 <- dplyr::bind_rows(
+  make_events(typical, 15, 12, n_doses = 2, obs_times = seq(0, 24, by = 0.05),
+              treatment = "15 mg/kg q12h"),
+  make_events(typical, 12, 8, n_doses = 3, obs_times = seq(0, 24, by = 0.05),
+              treatment = "12 mg/kg q8h", id_offset = 1)
+)
+mod_typical <- rxode2::zeroRe(mod)
+# One single-subject typical-value solve per regimen; rxSolve() drops the
+# id column for a single subject, so it is restored from the event table.
+sim_day1 <- ev_day1 |>
+  split(ev_day1$id) |>
+  lapply(function(ev) {
+    out <- as.data.frame(rxode2::rxSolve(mod_typical, events = ev))
+    out$id <- ev$id[1]
+    out$treatment <- ev$treatment[1]
+    out
+  }) |>
+  dplyr::bind_rows()
+nca_day1 <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(
+    sim_day1 |> dplyr::filter(!is.na(Cc)) |> dplyr::select(id, time, Cc, treatment),
+    Cc ~ time | treatment + id
+  ),
+  PKNCA::PKNCAdose(
+    ev_day1 |> dplyr::filter(evid == 1, time == 0) |> dplyr::select(id, time, amt, treatment),
+    amt ~ time | treatment + id
+  ),
+  intervals = data.frame(start = 0, end = 24, auclast = TRUE)
+))
+day1_auc <- as.data.frame(nca_day1) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(treatment, PPORRES)
+knitr::kable(
+  day1_auc |>
+    dplyr::rename("Regimen" = treatment, "Typical AUC 0-24 h, day 1 (mg*h/L)" = PPORRES),
+  digits = 0
+)
+```
+
+# Assumptions and deviations
+
+* **Weight distribution.** The paper reports current weight only as a
+  median (range); the virtual cohort uses a truncated log-normal around
+  the median. Because CL scales with weight to the 0.75 power and dosing
+  is per kilogram, AUC0-24h depends on weight only to the 0.25 power, so
+  the choice has little effect on exposure.
+* **Monte Carlo summaries not reproduced.** The packaged parameters
+  (Table 2, Eqs. 2-3) give a typical steady-state AUC0-24h of
+  30 mg/kg x 1.48 kg / 0.102 L/h = 435 mg*h/L for 15 mg/kg every 12 h,
+  about 19% above the median of 366 mg*h/L the paper reports for its
+  Simulx simulation, and a typical steady-state trough of about 9 mg/L
+  versus the reported median of 5.88 mg/L. The target attainment
+  (27.5% and 70.7%) is likewise not reproduced: with the 4% CV on
+  clearance, almost all simulated neonates exceed 400 mg*h/L. The
+  paper's reported spread of AUC0-24h (about 220-630 mg*h/L under the
+  current regimen in Figure 4) is also much wider than the 4% CV on
+  clearance allows. The model values are kept as published. Two
+  observations support the published Table 2 parameters rather than the
+  Monte Carlo summary: the observed troughs in Table 3 (medians
+  7.5-13.5 mg/L) and the Figure 3 VPC median (about 10 mg/L) are
+  closer to the simulated steady-state trough (about 9 mg/L) than to
+  the reported 5.88 mg/L, and the AUC over the first 24 h of
+  therapy (rather than at steady state) for the typical neonate is
+  363 mg*h/L for 15 mg/kg every 12 h, close to the reported 366, and
+  408 mg*h/L for 12 mg/kg every 8 h, against the reported 440. The
+  paper's simulation settings (sampling of weight, inclusion of
+  parameter uncertainty, the dosing day used) are not reported, so the
+  source of the difference cannot be confirmed.
+* **Supplementary 70-kg normalisation.** The supplementary table
+  reports CL = 4.8 L/h/70 kg, which equals 0.102 x (70/1.48) -- linear
+  scaling -- whereas Eq. 2, the Methods and the Results all state a
+  fixed exponent of 0.75 on clearance (giving 1.84 L/h at 70 kg). The
+  model follows Eq. 2. The supplementary V (41.8 L/70 kg) is consistent
+  with Eq. 3.
+* **Bayesian (MAP) estimation.** The estimates in Table 2 are posterior
+  modes obtained with priors from a published neonatal vancomycin
+  model; the priors themselves are not reported and are not part of the
+  packaged model.
+* **Brand.** The two randomised brands were not tested as a covariate
+  in the population model, so the model describes both pooled.
+* **eGFR units.** Table 1 prints eGFR as 0.28 (0.12-0.51)
+  mL/min/1.73 m^2, which matches Eq. 1 evaluated with serum creatinine
+  in umol/L rather than mg/dL. eGFR was not retained in the model, so
+  this does not affect the packaged model.
+* **Specimen.** Samples were collected in serum-separator tubes and
+  allowed to clot (serum), though the paper reports 'plasma'
+  concentrations.
