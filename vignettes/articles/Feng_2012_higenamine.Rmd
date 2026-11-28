@@ -131,6 +131,7 @@ make_cohort <- function(n, id_offset = 0L, seed = NULL) {
       amt  = rates * dose_dur,
       rate = rates,
       cmt  = "central",
+      dvid = NA_integer_,
       WT   = wt,
       AGE  = age,
       SEXF = sf
@@ -147,7 +148,8 @@ make_cohort <- function(n, id_offset = 0L, seed = NULL) {
       evid = 0L,
       amt  = NA_real_,
       rate = NA_real_,
-      cmt  = "Cc",
+      cmt  = "central",
+      dvid = 1L,
       WT   = wt,
       AGE  = age,
       SEXF = sf

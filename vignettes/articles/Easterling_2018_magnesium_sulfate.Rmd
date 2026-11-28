@@ -153,7 +153,7 @@ times_obs <- c(seq(0, 0.5, by = 0.05),
 obs_rows <- function(c) {
   c |>
     tidyr::expand_grid(time = times_obs) |>
-    dplyr::mutate(evid = 0L, amt = 0, rate = 0, cmt = "Cc")
+    dplyr::mutate(evid = 0L, amt = 0, rate = 0, cmt = "central")
 }
 
 ci_dose_rows <- cohort_ci |>

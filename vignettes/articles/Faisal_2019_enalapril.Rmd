@@ -158,16 +158,16 @@ reproduce: enalapril reaches Cmax in *"almost 1 h"* and enalaprilat in *"around
 Because the model declares four endpoints, typical-value solves use
 `omega = NA, sigma = NA` rather than `zeroRe()`, and `useLinCmt = FALSE`.
 
-Note on the event tables below: observation rows carry `cmt = "Cc"`, naming the
-algebraic observable rather than an ODE state. For a single-endpoint model that
-would be wrong -- it injects a compartment slot and renumbers the states -- but
-this model declares four endpoints, and rxode2 then *requires* observation
-records to resolve to a declared endpoint: `cmt = "central"` and `cmt = NA` both
-fail with `'dvid'->'cmt' or 'cmt' on observation record or on a undefined
-compartment`. Here the four observables are appended as slots 16-19 behind the
-fifteen ODE states, doses are placed by name (`cmt = "transit1"`) rather than by
-number, and every solve returns all four outputs. The exact mass-balance check
-below is the independent proof that nothing was renumbered.
+Note on the event tables below: observation rows carry `cmt = "central"` (the
+ODE state `Cc` is computed from) together with `dvid = 1`, the position of `Cc`
+among the four declared endpoints. With more than one endpoint, rxode2 rejects
+an observation record that names a state without a `dvid` (`'dvid'->'cmt' or
+'cmt' on observation record or on a undefined compartment`). Naming the
+observable itself (`cmt = "Cc"`) would instead append compartment slots for the
+observables behind the fifteen ODE states. Doses are placed by name
+(`cmt = "transit1"`), and every solve returns all four outputs as columns. The
+exact mass-balance check below is the independent proof that nothing was
+renumbered.
 
 ```{r typical}
 doseUg <- 10000 # 10 mg enalapril maleate, as labelled (see Errata)
@@ -177,8 +177,9 @@ mPooled <- rxode2::rxode2(readModelDb("Faisal_2019_enalapril"))
 
 solveTypical <- function(model, form = NULL, tmax = 72, by = 0.02) {
   ev <- rxode2::et(amt = doseUg, cmt = "transit1") |>
-    rxode2::et(seq(0, tmax, by = by), cmt = "Cc")
+    rxode2::et(seq(0, tmax, by = by), cmt = "central")
   ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$WT <- wtRef
   if (!is.null(form)) ev$FORM_ODMT <- form
   rxode2::rxSolve(
@@ -378,7 +379,7 @@ subj <- data.frame(
 doseRows <- subj |>
   transmute(id, time = 0, amt = doseUg, evid = 1L, cmt = "transit1")
 obsRows <- tidyr::expand_grid(id = subj$id, time = serumTimes) |>
-  transmute(id, time, amt = NA_real_, evid = 0L, cmt = "Cc")
+  transmute(id, time, amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
 
 events <- bind_rows(doseRows, obsRows) |>
   arrange(id, time, desc(evid)) |>

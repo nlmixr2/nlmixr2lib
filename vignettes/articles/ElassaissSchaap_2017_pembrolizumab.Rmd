@@ -167,7 +167,7 @@ build_events <- function(pop, mgkg, label) {
     dplyr::rename(id = ID)
   d_obs <- pop |>
     tidyr::crossing(time = obs_times_d) |>
-    dplyr::mutate(amt = 0, evid = 0L, cmt = "Cc", dur = NA_real_,
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L, dur = NA_real_,
                   treatment = label) |>
     dplyr::rename(id = ID)
   dplyr::bind_rows(d_dose, d_obs) |>

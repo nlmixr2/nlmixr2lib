@@ -141,7 +141,8 @@ build_band <- function(band_label, wt_lo, wt_hi,
 
     obs_rows <- expand.grid(id = ids, time = sample_times) |>
       dplyr::left_join(per_subject[, c("id", "WT", "band")], by = "id") |>
-      dplyr::mutate(amt = 0, evid = 0L, cmt = "Cc", arm = arm_label)
+      dplyr::mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L,
+                    arm = arm_label)
 
     dplyr::bind_rows(dose_rows, obs_rows) |>
       dplyr::arrange(id, time, evid)
@@ -219,8 +220,10 @@ ev_typical_one <- function(wt, dose, arm_label, band_label) {
              rep(0,    length(sample_times))),
     evid = c(rep(1L,   length(dose_times)),
              rep(0L,   length(sample_times))),
-    cmt  = c(rep("depot", length(dose_times)),
-             rep("Cc",    length(sample_times))),
+    cmt  = c(rep("depot",   length(dose_times)),
+             rep("central", length(sample_times))),
+    dvid = c(rep(NA_integer_, length(dose_times)),
+             rep(1L,          length(sample_times))),
     WT   = wt,
     band = band_label,
     arm  = arm_label

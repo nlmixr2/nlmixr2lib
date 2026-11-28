@@ -97,7 +97,9 @@ cohorts_unbound <- tibble::tibble(
 # dosing interval (156-168 h).
 build_unbound_events <- function(cohort_row) {
   ev <- rxode2::et(amt = 400, time = 0, addl = 13, ii = 12, cmt = "depot") |>
-    rxode2::et(seq(0, 168, by = 0.25), cmt = "Cc")
+    rxode2::et(seq(0, 168, by = 0.25), cmt = "central") |>
+    as.data.frame()
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$ALB <- cohort_row$ALB
   ev$AAG <- cohort_row$AAG
   ev
@@ -166,7 +168,9 @@ cohorts_mfla <- tibble::tibble(
 
 build_mfla_events <- function(cohort_row) {
   ev <- rxode2::et(amt = 400, time = 0, addl = 13, ii = 12, cmt = "depot") |>
-    rxode2::et(seq(0, 168, by = 0.25), cmt = "Cc")
+    rxode2::et(seq(0, 168, by = 0.25), cmt = "central") |>
+    as.data.frame()
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$PREG <- cohort_row$PREG
   ev
 }

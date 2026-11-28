@@ -138,7 +138,7 @@ single_dose_cohort <- function(dose_mg, id_offset) {
                 264, 312, 384, 480)
   obs <- expand_grid(id = ids, time = obs_grid) |>
     left_join(subj, by = "id") |>
-    mutate(amt = NA_real_, evid = 0L, cmt = "Cc")
+    mutate(amt = NA_real_, evid = 0L, cmt = "central")
   bind_rows(doses, obs) |>
     mutate(cohort = sprintf("HV %.1f mg single", dose_mg),
            dose_mg = dose_mg)
@@ -159,7 +159,7 @@ multi_dose_cohort <- function(dose_mg, interval_days, n_sub, id_offset, label) {
                 264, 312, 384, 480)
   obs <- expand_grid(id = ids, time = obs_grid) |>
     left_join(subj, by = "id") |>
-    mutate(amt = NA_real_, evid = 0L, cmt = "Cc")
+    mutate(amt = NA_real_, evid = 0L, cmt = "central")
   bind_rows(doses, obs) |>
     mutate(cohort = label, dose_mg = dose_mg)
 }

@@ -124,15 +124,15 @@ dose_rows <- scenarios |>
 
 pk_obs_rows <- scenarios |>
   tidyr::expand_grid(time = pk_obs_times) |>
-  dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "Cc")
+  dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "central", dvid = 1L)
 
 pd_obs_rows <- scenarios |>
   tidyr::expand_grid(time = pd_obs_times) |>
-  dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "PLT")
+  dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "circ", dvid = 2L)
 
 events <- dplyr::bind_rows(dose_rows, pk_obs_rows, pd_obs_rows) |>
   dplyr::arrange(id, time, dplyr::desc(evid)) |>
-  dplyr::select(id, time, evid, amt, cmt,
+  dplyr::select(id, time, evid, amt, cmt, dvid,
                 treatment, SEXF, RACE_ASIAN_NORTHEAST,
                 RACE_ASIAN_SOUTHCENTRAL, HEPIMP_CP_SCORE)
 
@@ -153,10 +153,11 @@ sim <- rxode2::rxSolve(
   returnType = "data.frame"
 )
 
-# Tag each output row by the observable it carries; PK observations land on the
-# `Cc`-tagged rows from `events`, PD observations on the `PLT`-tagged rows.
-sim_pk <- sim |> dplyr::filter(cmt == "Cc",  !is.na(Cc))
-sim_pd <- sim |> dplyr::filter(cmt == "PLT", !is.na(PLT))
+# Split the output by the sampling grid each row came from: PK observations sit
+# on the `central` rows of `events` (dvid 1, Cc), PD observations on the `circ`
+# rows (dvid 2, PLT).
+sim_pk <- sim |> dplyr::filter(cmt == "central", !is.na(Cc))
+sim_pd <- sim |> dplyr::filter(cmt == "circ",    !is.na(PLT))
 ```
 
 The simulation returns one row per subject x time x evid; `Cc` is in ug/mL and
