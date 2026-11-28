@@ -155,10 +155,13 @@ make_events <- function(dose_bd_mmolkg = 0, dose_ghb_mmolkg = 0,
   obs <- tidyr::expand_grid(
     id   = id,
     time = seq(0, tmax, by = dt),
-    cmt  = c("Cc", "Cc_ghb", "Cc_etoh")
+    tibble::tibble(
+      cmt  = c("central", "central_ghb", "central_etoh"),
+      dvid = 1:3
+    )
   ) %>%
     dplyr::mutate(evid = 0, amt = 0, rate = 0) %>%
-    dplyr::select(id, time, evid, amt, rate, cmt)
+    dplyr::select(id, time, evid, amt, rate, cmt, dvid)
 
   dplyr::bind_rows(doses, obs)
 }

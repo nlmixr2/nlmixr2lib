@@ -131,10 +131,10 @@ build_cohort <- function(dose_mg_per_kg, n, id_offset, study_az = 0L) {
     paste0(format(dose_mg_per_kg), " mg/kg") else "vehicle"
 
   # Build via rxode2::et(). The model declares two endpoints (HR and CTRM);
-  # observation rows carry `cmt = "HR"` to identify the primary endpoint (a
-  # requirement of the multi-endpoint rxode2 event grammar). rxSolve returns
-  # HR, CTRM, CO, MAP, Cc, and all ODE states as columns regardless of the
-  # observation `cmt` value.
+  # observation rows sit on the `hr` state with dvid = 1 (HR, the primary
+  # endpoint); rxode2 rejects a state cmt on a multi-endpoint model unless a
+  # dvid names the endpoint. rxSolve returns HR, CTRM, CO, MAP, Cc, and all
+  # ODE states as columns regardless of the observation `cmt` value.
   dplyr::bind_rows(lapply(ids, function(sid) {
     # Units are recorded STATICALLY in the comments below (and canonically in
     # the model's own `units` field: time = hours, dosing = mg/kg) rather than
@@ -152,8 +152,9 @@ build_cohort <- function(dose_mg_per_kg, n, id_offset, study_az = 0L) {
       ev <- ev |>
         rxode2::et(amt = dose_mg_per_kg, cmt = "depot", time = 168)
     }
-    ev <- ev |> rxode2::et(time = tobs, cmt = "HR")   # tobs in hours
+    ev <- ev |> rxode2::et(time = tobs, cmt = "hr")   # tobs in hours
     df <- as.data.frame(ev)
+    df$dvid            <- ifelse(df$evid == 0L, 1L, NA_integer_)
     df$id              <- sid
     df$STUDY_FU2022_AZ <- study_az
     df$treatment       <- treatment_lbl

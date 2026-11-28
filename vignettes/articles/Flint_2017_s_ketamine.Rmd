@@ -139,7 +139,7 @@ dose_rows <- cohort |>
   )
 
 obs_rows <- tidyr::crossing(id = cohort$id, time = obs_times) |>
-  mutate(amt = 0, rate = 0, evid = 0L, cmt = "Cc") |>
+  mutate(amt = 0, rate = 0, evid = 0L, cmt = "central", dvid = 1L) |>
   left_join(cohort |> select(id, WT, rate_mg_per_h), by = "id")
 
 events <- bind_rows(dose_rows, obs_rows) |>

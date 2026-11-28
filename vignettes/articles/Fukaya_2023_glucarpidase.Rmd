@@ -303,9 +303,9 @@ make_p2_events <- function(cov, t_cpg2) {
     cov |> mutate(time = t_cpg2, amt = cpg2_dose, dur = 5 / 60, evid = 1,
                   cmt = "central_cpg2"),
     tidyr::crossing(cov, time = obs_t) |>
-      mutate(amt = 0, dur = 0, evid = 0, cmt = "Cc")
+      mutate(amt = 0, dur = 0, evid = 0, cmt = "central", dvid = 1L)
   ) |>
-    select(id, time, amt, dur, evid, cmt, everything()) |>
+    select(id, time, amt, dur, evid, cmt, dvid, everything()) |>
     select(-mtx_umol, -cpg2_dose) |>
     arrange(id, time, desc(evid))
 }

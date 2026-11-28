@@ -128,13 +128,16 @@ build_events <- function(cov_df, obs_times, dose_events) {
         CRCL     = row$CRCL,
         scenario = as.character(row$scenario)
       )
-    # One observation row per output per time point. Use the algebraic
-    # observable name in cmt (rxode2 / rxUi auto-injects cmt(<observable>)
-    # slots so the observable name is accepted on observation rows for
-    # multi-output models).
+    # One observation row per output per time point. Each row names the ODE
+    # state its output is computed from, and dvid picks the endpoint (its
+    # position among the model's three residual-error lines); rxode2 returns
+    # all three outputs as columns on every observation row.
     obs_rows <- tidyr::expand_grid(
       time = obs_times,
-      cmt  = c("Cc", "Cc_1ohm", "Cc_1ohmg")
+      tibble::tibble(
+        cmt  = c("central", "central_1ohm", "central_1ohmg"),
+        dvid = 1:3
+      )
     ) |>
       dplyr::mutate(
         id       = row$id,

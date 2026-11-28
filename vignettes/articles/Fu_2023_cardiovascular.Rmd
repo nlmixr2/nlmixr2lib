@@ -133,10 +133,10 @@ around BSLHR = 310 beats/min, CO tracking HR (SV changes little at
 steady state), and MAP essentially stable (baroreflex-like negative feedback
 holds it near BSLMAP = 155 mmHg).
 
-Following the Ahn 2014 vignette pattern, observation records use
-`cmt = "HR"` (an algebraic-observable name) as a single anchor; rxode2
-returns every declared observable (`HR`, `CO`, `MAP`) plus the drug
-compartment `Cc` as output columns regardless of the observation `cmt`.
+Observation records sit on the `hr` ODE state with `dvid = 1` (the `HR`
+endpoint) as a single anchor; rxode2 returns every declared observable (`HR`,
+`CO`, `MAP`) plus the drug compartment `Cc` as output columns regardless of the
+observation `cmt`.
 
 ```{r steady-state}
 ev_ss <- data.frame(
@@ -144,7 +144,8 @@ ev_ss <- data.frame(
   time = seq(0, 48, by = 0.25),
   amt  = 0,
   evid = 0L,
-  cmt  = "HR"
+  cmt  = "hr",
+  dvid = 1L
 )
 
 sim_ss <- rxode2::rxSolve(mod_typ, events = ev_ss, returnType = "data.frame")
@@ -251,8 +252,10 @@ scenario_grid <- tidyr::expand_grid(
 # output.
 run_scenario <- function(ec50_val, dose) {
   events <- rbind(
-    data.frame(id = 1L, time = 0, amt = dose, evid = 1L, cmt = "central"),
-    data.frame(id = 1L, time = seq(0, 24, by = 0.25), amt = 0, evid = 0L, cmt = "HR")
+    data.frame(id = 1L, time = 0, amt = dose, evid = 1L, cmt = "central",
+               dvid = NA_integer_),
+    data.frame(id = 1L, time = seq(0, 24, by = 0.25), amt = 0, evid = 0L, cmt = "hr",
+               dvid = 1L)
   )
   events <- events[order(events$time), ]
   # Override lec50 for the scenario via the params argument.

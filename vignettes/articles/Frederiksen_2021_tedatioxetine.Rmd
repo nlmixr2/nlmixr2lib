@@ -161,12 +161,12 @@ make_arm <- function(n, fed, label, id_offset = 0L) {
   ages <- draw_age(n)
   covs <- tibble(id = ids, FED = fed, AGE = ages)
   dosing <- tibble(id = ids, time = 0, amt = dose_mg, evid = 1L, cmt = "depot")
-  # Two endpoints are declared, so observation rows must name the OBSERVABLE
-  # (cmt = "Cc"); cmt = "central" fails for a multi-endpoint model. Both Cc and
-  # Cc_luaa37208 are returned as columns at every output row, so one set of
-  # rows serves both analytes.
+  # Two endpoints are declared, so observation rows on the `central` state also
+  # carry dvid = 1 (Cc); without a dvid, rxode2 rejects a state cmt on a
+  # multi-endpoint model. Both Cc and Cc_luaa37208 are returned as columns at
+  # every output row, so one set of rows serves both analytes.
   obs <- tidyr::expand_grid(id = ids, time = sample_times) |>
-    mutate(amt = NA_real_, evid = 0L, cmt = "Cc")
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
   bind_rows(dosing, obs) |>
     left_join(covs, by = "id") |>
     mutate(arm = label) |>
@@ -201,7 +201,8 @@ mod_typical <- rxode2::zeroRe(mod)
 typ_events <- function(fed, age, id) {
   bind_rows(
     tibble(id = id, time = 0, amt = dose_mg, evid = 1L, cmt = "depot"),
-    tibble(id = id, time = c(0, seq(0.1, 336, by = 0.1)), amt = NA_real_, evid = 0L, cmt = "Cc")
+    tibble(id = id, time = c(0, seq(0.1, 336, by = 0.1)), amt = NA_real_, evid = 0L,
+           cmt = "central", dvid = 1L)
   ) |>
     mutate(FED = fed, AGE = age) |>
     arrange(time, desc(evid))

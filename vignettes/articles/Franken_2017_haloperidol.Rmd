@@ -91,7 +91,7 @@ events <- tibble::tibble(id = seq_len(n_subj)) |>
 obs_times <- seq(0, 72, by = 0.5)
 obs_events <- tibble::tibble(id = seq_len(n_subj)) |>
   tidyr::expand_grid(
-    tibble::tibble(time = obs_times, amt = NA_real_, evid = 0L, cmt = "Cc")
+    tibble::tibble(time = obs_times, amt = NA_real_, evid = 0L, cmt = "central")
   )
 
 events <- dplyr::bind_rows(events, obs_events) |>

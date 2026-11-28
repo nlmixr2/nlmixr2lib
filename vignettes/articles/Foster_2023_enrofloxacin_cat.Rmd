@@ -315,13 +315,13 @@ ev_typ_tfq <- bind_rows(
   arrange(time, desc(evid))
 
 # The parent + metabolite model declares two endpoints (Cc and Cc_cipro), so
-# observation records must name an endpoint; rxode2 returns both output
-# columns on every observation row.
+# observation records on the `central` state also carry `dvid = 1` (Cc);
+# rxode2 returns both output columns on every observation row.
 ev_typ_met <- bind_rows(
   tibble(id = 1L, WT = typ_wt, BUN = typ_bun, time = 0, amt = typ_dose,
          rate = typ_dose / inf_dur, evid = 1L, cmt = "central"),
   tibble(id = 1L, WT = typ_wt, BUN = typ_bun, time = obs_times,
-         amt = NA_real_, rate = NA_real_, evid = 0L, cmt = "Cc")
+         amt = NA_real_, rate = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
 ) |>
   arrange(time, desc(evid))
 
