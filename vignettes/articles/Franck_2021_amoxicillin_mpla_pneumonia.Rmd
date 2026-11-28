@@ -343,7 +343,14 @@ pd_sim <- rxode2::rxSolve(
     arm = factor(arm, levels = levels(pd_arms$arm)),
     time_after_treatment = time - t_treat
   )
-stopifnot(dplyr::n_distinct(pd_sim$id) == nrow(pd_arms))
+# Over the plotted 48 h the spleen log10 count is -Inf (log10 of 0) until
+# bacteria arrive, and otherwise finite: the Figure S3 `is.finite()` filter
+# removes only those -Inf rows.
+stopifnot(
+  dplyr::n_distinct(pd_sim$id) == nrow(pd_arms),
+  !anyNA(pd_sim$log_cfu_lung),
+  !anyNA(pd_sim$log_cfu_spleen[pd_sim$time <= 48])
+)
 ```
 
 ## Figure 2A: lung bacterial burden

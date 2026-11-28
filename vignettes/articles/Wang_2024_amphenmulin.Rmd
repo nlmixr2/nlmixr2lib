@@ -370,8 +370,8 @@ ev_dyn <- dplyr::bind_rows(
 stopifnot(!anyDuplicated(unique(ev_dyn[, c("id", "time", "evid")])))
 
 sim_dyn <- rxode2::rxSolve(mod_kr, ev_dyn, useLinCmt = FALSE,
-                           keep = "regimen", returnType = "data.frame") |>
-  dplyr::filter(!is.na(logCfu))
+                           keep = "regimen", returnType = "data.frame")
+stopifnot(!anyNA(sim_dyn$Cc), !anyNA(sim_dyn$logCfu))
 ```
 
 ```{r figure-5a}
@@ -437,7 +437,7 @@ self-consistency check.
 
 ```{r pknca-dyn}
 sim_dyn_nca <- sim_dyn |>
-  dplyr::filter(!is.na(Cc), regimen %in% c("0.1 ug/mL", "1.5 ug/mL")) |>
+  dplyr::filter(regimen %in% c("0.1 ug/mL", "1.5 ug/mL")) |>
   dplyr::select(id, time, Cc, regimen)
 
 conc_dyn <- PKNCA::PKNCAconc(sim_dyn_nca, Cc ~ time | regimen + id,
