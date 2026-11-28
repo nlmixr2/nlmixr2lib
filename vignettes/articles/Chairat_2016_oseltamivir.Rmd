@@ -114,7 +114,8 @@ make_cohort <- function(n, dose_mg, treatment, id_offset = 0L) {
     time = 0,
     evid = 1L,
     amt  = dose_mg,
-    cmt  = "depot"
+    cmt  = "depot",
+    dvid = NA_integer_
   )
 
   # Observation grid matching the Chairat 2016 sampling schedule (dense
@@ -126,12 +127,11 @@ make_cohort <- function(n, dose_mg, treatment, id_offset = 0L) {
     dplyr::mutate(
       evid = 0L,
       amt  = NA_real_,
-      # cmt = "Cc" picks the parent oseltamivir observation slot; the
-      # metabolite Cc_oselcarb lands in the same output dataframe as a column.
-      # For this multi-output rxUi model rxode2 requires the cmt to point
-      # at one of the modeled observation slots (Cc or Cc_oselcarb), not at an
-      # ODE state (depot / central / metabolism / central_oselcarb).
-      cmt  = "Cc"
+      # Observe on the `central` ODE state; dvid = 1 selects the parent
+      # oseltamivir endpoint (Cc) of this two-endpoint model. The metabolite
+      # Cc_oselcarb lands in the same output dataframe as a column.
+      cmt  = "central",
+      dvid = 1L
     )
 
   covars <- tibble::tibble(id = id, CRCL = crcl, treatment = treatment)
@@ -172,12 +172,14 @@ typical_events <- dplyr::bind_rows(
   tibble::tibble(id = 1L,  time = c(0, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 10, 12, 16, 20, 24, 30, 36),
                   evid = c(1L, rep(0L, 20)),
                   amt  = c(75, rep(NA_real_, 20)),
-                  cmt  = c("depot", rep("Cc", 20)),
+                  cmt  = c("depot", rep("central", 20)),
+                  dvid = c(NA_integer_, rep(1L, 20)),
                   treatment = "75 mg", CRCL = 73),
   tibble::tibble(id = 2L,  time = c(0, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 10, 12, 16, 20, 24, 30, 36),
                   evid = c(1L, rep(0L, 20)),
                   amt  = c(150, rep(NA_real_, 20)),
-                  cmt  = c("depot", rep("Cc", 20)),
+                  cmt  = c("depot", rep("central", 20)),
+                  dvid = c(NA_integer_, rep(1L, 20)),
                   treatment = "150 mg", CRCL = 73)
 ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))

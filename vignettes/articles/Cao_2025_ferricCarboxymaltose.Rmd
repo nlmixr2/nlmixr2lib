@@ -175,7 +175,14 @@ them determinable: `RET0/CFUE0 = 2^MNOR` and `CFUE0/BFUE0 = 2^MCFU`, and both
 ratios evaluate to 32, so `MCFU = MNOR = 5`.
 
 ```{r secondary-params}
-ev_base <- rxode2::et(0, cmt = "RBC")
+# Observation rows sit on the `rbc` ODE state; dvid = 1 maps them to the
+# first endpoint (RBC) of this three-endpoint model.
+obs_rbc <- function(ev) {
+  ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
+  ev
+}
+ev_base <- obs_rbc(rxode2::et(0, cmt = "rbc"))
 s0 <- rxode2::rxSolve(mod, ev_base, returnType = "data.frame", useLinCmt = FALSE)
 
 secondary <- tibble::tibble(
@@ -206,7 +213,7 @@ therefore hold every state perfectly flat forever.
 
 ```{r steady-state}
 mod_healthy <- rxode2::ini(mod, dfprog = 0)
-ev_ss <- rxode2::et(seq(0, 100 * 24, by = 12), cmt = "RBC")
+ev_ss <- obs_rbc(rxode2::et(seq(0, 100 * 24, by = 12), cmt = "rbc"))
 ss <- rxode2::rxSolve(mod_healthy, ev_ss, returnType = "data.frame", useLinCmt = FALSE)
 
 drift <- tibble::tibble(
@@ -274,13 +281,14 @@ arms <- tibble::tribble(
 )
 
 solve_arm <- function(dose_mgkg, tmax_h = 42 * 24, by = 3) {
-  obs <- rxode2::et(seq(0, tmax_h, by = by), cmt = "RBC")
+  obs <- rxode2::et(seq(0, tmax_h, by = by), cmt = "rbc")
   ev <- if (dose_mgkg > 0) {
     rxode2::et(amt = dose_mgkg, cmt = "central", time = c(0, 168)) |>
-      rxode2::et(seq(0, tmax_h, by = by), cmt = "RBC")
+      rxode2::et(seq(0, tmax_h, by = by), cmt = "rbc")
   } else {
     obs
   }
+  ev <- obs_rbc(ev)
   rxode2::rxSolve(mod, ev, returnType = "data.frame", useLinCmt = FALSE)
 }
 
@@ -540,9 +548,9 @@ canonical names from the nlmixr2lib register. The erythroid-lineage states
 `paper_specific_compartments` mechanism pending maintainer ratification as a
 canonical hematopoiesis family.
 
-**Event tables use `cmt` on the observable.** This model declares three
-endpoints, so observation rows carry `cmt = "RBC"` rather than an ODE-state
-name; dose rows use `cmt = "central"`. `useLinCmt = FALSE` is passed to every
+**Event tables use ODE-state `cmt` plus `dvid`.** This model declares three
+endpoints, so observation rows carry `cmt = "rbc"` (an ODE state) with
+`dvid = 1` to select the RBC endpoint; dose rows use `cmt = "central"`. `useLinCmt = FALSE` is passed to every
 solve to avoid rxode2's ODE-to-linCmt auto-conversion corrupting the endpoint
 mapping.
 

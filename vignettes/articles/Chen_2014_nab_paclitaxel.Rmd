@@ -130,11 +130,14 @@ build_subject_events <- function(subj_id, ALB_val, AGE_val, BSA_val,
     dur  = 0.5,
     rate = NA_real_
   )
+  # Observation rows sit on the ODE state each endpoint is computed from;
+  # dvid picks the endpoint (1 = Cc from `central`, 2 = ANC from `circ`).
   pk_obs <- tibble(
     id   = subj_id,
     time = t_pk,
     evid = 0L,
-    cmt  = "Cc",
+    cmt  = "central",
+    dvid = 1L,
     amt  = NA_real_,
     dur  = NA_real_,
     rate = NA_real_
@@ -143,7 +146,8 @@ build_subject_events <- function(subj_id, ALB_val, AGE_val, BSA_val,
     id   = subj_id,
     time = t_anc,
     evid = 0L,
-    cmt  = "ANC",
+    cmt  = "circ",
+    dvid = 2L,
     amt  = NA_real_,
     dur  = NA_real_,
     rate = NA_real_

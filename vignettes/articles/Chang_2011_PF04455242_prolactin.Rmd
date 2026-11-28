@@ -155,8 +155,9 @@ n_rat <- 60L
 
 # Build one cohort's event table. Uses uppercase event-column names
 # (ID, TIME, EVID, CMT, AMT, DV) to satisfy rxode2's event-table
-# convention and CMT = "Cc" on observation rows so rxSolve returns all
-# defined outputs (Cc, Cspir, PRL) regardless of the listed cmt.
+# convention. Observation rows sit on the `central` ODE state with DVID = 1
+# (the Cc endpoint); rxSolve returns all defined outputs (Cc, Cspir, PRL) at
+# every observation row. Dose rows get DVID = NA from bind_rows().
 make_rat_cohort <- function(pf_dose_mgkg, label, id_offset) {
   ids <- id_offset + seq_len(n_rat)
   obs_times <- seq(-0.5, 2, by = 0.05)
@@ -172,7 +173,7 @@ make_rat_cohort <- function(pf_dose_mgkg, label, id_offset) {
     mutate(EVID = 1L, CMT = "depot_spiradoline", AMT = 0.32, DV = NA_real_)
 
   obs <- expand.grid(ID = ids, TIME = obs_times) |>
-    mutate(EVID = 0L, CMT = "Cc", AMT = NA_real_, DV = NA_real_)
+    mutate(EVID = 0L, CMT = "central", DVID = 1L, AMT = NA_real_, DV = NA_real_)
 
   ev <- bind_rows(doses_pf, doses_sp, obs)
   ev$DOSE <- pf_dose_mgkg
@@ -340,7 +341,8 @@ make_human_cohort <- function(pf_dose_mg, label, id_offset) {
   }
 
   obs <- expand.grid(ID = ids, TIME = obs_times) |>
-    mutate(EVID = 0L, CMT = "Cc", AMT = NA_real_, RATE = NA_real_, DV = NA_real_)
+    mutate(EVID = 0L, CMT = "central", DVID = 1L, AMT = NA_real_, RATE = NA_real_,
+           DV = NA_real_)
 
   ev <- bind_rows(doses, obs)
   ev$cohort <- label

@@ -175,18 +175,19 @@ knitr::kable(summary_bmi, caption = "Simulated cohort BMI vs. Cantillon 2018 Tab
 
 ```{r event-builder}
 # Build event tables as plain data frames. Both endpoints (Cc and PANSS) are
-# declared in the model, so observation rows must name an observable; PANSS and
-# auc_central are still returned as columns at those rows.
+# declared in the model, so observation rows sit on the `central` ODE state
+# with dvid = 1 (the Cc endpoint); PANSS and auc_central are still returned as
+# columns at those rows.
 make_events <- function(cohort, times, n_doses, ii = 24) {
   doses <- cohort |>
     tidyr::expand_grid(dose_idx = seq_len(n_doses)) |>
     transmute(id, treatment, BMI, REGION_MOLDOVA,
               time = (dose_idx - 1) * ii, amt = dose_mg,
-              evid = 1L, cmt = "depot")
+              evid = 1L, cmt = "depot", dvid = NA_integer_)
   obs <- cohort |>
     tidyr::expand_grid(time = times) |>
     transmute(id, treatment, BMI, REGION_MOLDOVA,
-              time, amt = NA_real_, evid = 0L, cmt = "Cc")
+              time, amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
   bind_rows(doses, obs) |> arrange(id, time, desc(evid))
 }
 ```

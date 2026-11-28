@@ -150,13 +150,17 @@ the typical adult CAPS patient.
 ```{r cohort}
 set.seed(20250509)
 
+# Observation rows sit on the `central` ODE state; dvid = 1 selects the Cc
+# endpoint of this two-endpoint model (Cc, totalIL1b).
+
 n_per_arm <- 50L
 obs_times <- c(0.0833, 0.5, 1, 2, 3, 5, 7, 10, 14, 21, 28, 42, 56, 70, 84)
 
 build_sc_arm <- function(n, dose_mg, regimen, id_offset) {
   ev <- rxode2::et(amt = dose_mg, cmt = "depot", id = id_offset + seq_len(n)) |>
-    rxode2::et(obs_times, cmt = "Cc")
+    rxode2::et(obs_times, cmt = "central")
   ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$regimen <- regimen
   ev$WT  <- exp(rnorm(n, log(70), 0.15))[match(ev$id, unique(ev$id))]
   ev$AGE <- runif(n, 18, 65)             [match(ev$id, unique(ev$id))]
@@ -169,8 +173,9 @@ build_iv_arm <- function(n, dose_mg, regimen, id_offset) {
   amt_nmol <- dose_mg / 149.117 * 1000
   ev <- rxode2::et(amt = amt_nmol, cmt = "central", dur = 2 / 24,
                    id = id_offset + seq_len(n)) |>
-    rxode2::et(obs_times, cmt = "Cc")
+    rxode2::et(obs_times, cmt = "central")
   ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$regimen <- regimen
   ev$WT  <- exp(rnorm(n, log(70), 0.15))[match(ev$id, unique(ev$id))]
   ev$AGE <- runif(n, 18, 65)             [match(ev$id, unique(ev$id))]
@@ -302,7 +307,9 @@ verifies the typical-value model behaviour against this benchmark.
 
 ```{r ss-accumulation}
 ev_q8w <- rxode2::et(amt = 150, cmt = "depot", ii = 56, until = 280) |>
-  rxode2::et(seq(0, 280, by = 7), cmt = "Cc")
+  rxode2::et(seq(0, 280, by = 7), cmt = "central") |>
+  as.data.frame()
+ev_q8w$dvid <- ifelse(ev_q8w$evid == 0L, 1L, NA_integer_)
 ev_q8w$WT  <- 70
 ev_q8w$AGE <- 34
 ev_q8w$ALB <- 43

@@ -91,16 +91,20 @@ pop <- tibble(
 
 # Dose records (single 500 mg oral dose into depot at t = 0)
 d_dose <- pop |>
-  dplyr::mutate(TIME = 0, EVID = 1L, AMT = 500, CMT = "depot", DV = NA_real_)
+  dplyr::mutate(TIME = 0, EVID = 1L, AMT = 500, CMT = "depot", DVID = NA_integer_,
+                DV = NA_real_)
 
-# Observation records (sampling schedule covers absorption peak and terminal phase)
+# Observation records (sampling schedule covers absorption peak and terminal
+# phase) on the `central` ODE state; DVID = 1 selects the Cc endpoint of this
+# two-endpoint model.
 obs_times <- c(0, 0.25, 0.5, 1, 1.5, 2, 2.5, 3, 4, 6, 8, 10, 12)
 d_obs <- pop[rep(seq_len(n_sub), each = length(obs_times)), ] |>
   dplyr::mutate(
     TIME = rep(obs_times, times = n_sub),
     EVID = 0L,
     AMT  = 0,
-    CMT  = "Cc",
+    CMT  = "central",
+    DVID = 1L,
     DV   = NA_real_
   )
 

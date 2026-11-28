@@ -171,12 +171,10 @@ make_cohort <- function(cohort_id, dose_mg, interval_h, n_subj, id_offset,
   dose_times <- seq(0, dur_h - 0.1, by = interval_h)
   # Two observation grids: dense on the PK observable Cc during the first
   # dosing interval to capture Cmax; sparser on the VK observable log10_viral_load
-  # across the 14-day treatment window. rxode2 requires cmt = <observable
-  # name> for multi-output models (Cc from the `central` state, log10_viral_load from
-  # the `virus` state); this is acceptable when the algebraic
-  # observables are declared AFTER all ODE states in the model body (as
-  # they are here  -  the auto-injected cmt(Cc), cmt(log10_viral_load) slots sit at
-  # positions 5, 6 with no downstream ODE state to renumber).
+  # across the 14-day treatment window. Each grid sits on the ODE state its
+  # observable is computed from (Cc from `central`, log10_viral_load from
+  # `virus`), and dvid picks the endpoint of this multi-output model
+  # (1 = Cc, 2 = log10_viral_load).
   obs_times_pk <- sort(unique(c(
     seq(0,   interval_h,     by = 0.25),
     seq(interval_h,   24,    by = 1),
@@ -192,6 +190,7 @@ make_cohort <- function(cohort_id, dose_mg, interval_h, n_subj, id_offset,
       evid = 1L,
       amt  = dose_mg,
       cmt  = "central",
+      dvid = NA_integer_,
       rate = -2,             # rxode2: use dur(central) = d1 for zero-order abs
       cohort = cohort_id,
       patient_type = patient_type,
@@ -202,7 +201,8 @@ make_cohort <- function(cohort_id, dose_mg, interval_h, n_subj, id_offset,
     dplyr::mutate(
       evid = 0L,
       amt  = 0,
-      cmt  = "Cc",
+      cmt  = "central",
+      dvid = 1L,
       rate = 0,
       cohort = cohort_id,
       patient_type = patient_type,
@@ -213,7 +213,8 @@ make_cohort <- function(cohort_id, dose_mg, interval_h, n_subj, id_offset,
     dplyr::mutate(
       evid = 0L,
       amt  = 0,
-      cmt  = "log10_viral_load",
+      cmt  = "virus",
+      dvid = 2L,
       rate = 0,
       cohort = cohort_id,
       patient_type = patient_type,

@@ -124,23 +124,22 @@ obs_times_h  <- sort(unique(c(
 # BID dosing over `days_total` days: doses every 12 h at t = 0, 12, 24, ...
 dose_times_h <- seq(0, hours_total - 12, by = 12)
 
-# Cohort builder. Observation rows carry cmt = "Cc" (an observation
-# variable declared via `Cc ~ add(addSd) + prop(propSd)` in the model);
-# rxode2 auto-injects the Cc slot after the ODE-state slots and returns
-# BOTH the Cc and log10_viral_load columns in the output data frame at each such
+# Cohort builder. Observation rows sit on the `central` ODE state with
+# dvid = 1 (the Cc endpoint of this two-endpoint model); rxode2 returns
+# BOTH the Cc and log10_viral_load columns in the output data frame at each
 # observation row, so a single set of obs rows exercises both the PK and
-# the VK observation paths in one simulation. This is the same pattern the
-# Wang_2018_daclatasvir_asunaprevir vignette uses.
+# the VK observation paths in one simulation.
 make_arm <- function(dose_mg, hcv_gt1b, n, id_offset) {
   ids <- id_offset + seq_len(n)
   dose_grid <- expand.grid(id = ids, time = dose_times_h,
                            stringsAsFactors = FALSE)
   dose_rows <- dose_grid |>
-    mutate(evid = 1L, amt = dose_mg, cmt = "depot", rate = 0)
+    mutate(evid = 1L, amt = dose_mg, cmt = "depot", rate = 0,
+           dvid = NA_integer_)
   obs_grid <- expand.grid(id = ids, time = obs_times_h,
                           stringsAsFactors = FALSE)
   obs_rows <- obs_grid |>
-    mutate(evid = 0L, amt = 0, cmt = "Cc", rate = 0)
+    mutate(evid = 0L, amt = 0, cmt = "central", rate = 0, dvid = 1L)
   bind_rows(dose_rows, obs_rows) |>
     mutate(
       HCV_GT1B  = hcv_gt1b,

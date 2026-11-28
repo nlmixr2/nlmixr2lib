@@ -183,10 +183,10 @@ obs_times  <- sort(unique(c(
 )))
 
 # Two dose events per administration (one to depot, one to depot_ftc).
-# Observation rows use cmt = "Cc" -- rxSolve returns every defined
-# output variable for each observation row regardless of which output
-# name is in cmt, but specifying an existing output keeps the event
-# table valid.
+# Observation rows sit on the `central` ODE state with DVID = 1 (the Cc
+# endpoint of this multi-output model); rxSolve returns every defined
+# output variable for each observation row. Dose rows get DVID = NA from
+# bind_rows().
 make_events <- function(pop_df, dose_times, obs_times) {
   dose_tfv <- pop_df %>%
     crossing(TIME = dose_times) %>%
@@ -198,7 +198,7 @@ make_events <- function(pop_df, dose_times, obs_times) {
            EVID = 1L, CMT = "depot_ftc", DV = NA_real_)
   obs <- pop_df %>%
     crossing(TIME = obs_times) %>%
-    mutate(AMT = NA_real_, EVID = 0L, CMT = "Cc", DV = NA_real_)
+    mutate(AMT = NA_real_, EVID = 0L, CMT = "central", DVID = 1L, DV = NA_real_)
   bind_rows(dose_tfv, dose_ftc, obs) %>%
     arrange(ID, TIME, desc(EVID)) %>%
     as.data.frame()
@@ -532,7 +532,7 @@ make_ipergay_events <- function(pop_df) {
            EVID = 1L, CMT = "depot_ftc", DV = NA_real_)
   obs <- pop_df %>%
     crossing(TIME = sort(unique(c(seq(0, 7, by = 0.05))))) %>%
-    mutate(AMT = NA_real_, EVID = 0L, CMT = "Cc", DV = NA_real_)
+    mutate(AMT = NA_real_, EVID = 0L, CMT = "central", DVID = 1L, DV = NA_real_)
   bind_rows(dose_tfv, dose_ftc, obs) %>%
     arrange(ID, TIME, desc(EVID)) %>%
     as.data.frame()

@@ -103,7 +103,7 @@ make_events <- function(dose_mg, route = c("iv", "po"), nut = 0, tmax = 12,
     time = seq(0, tmax, by = dt),
     evid = 0,
     amt  = 0,
-    cmt  = "Cc",
+    cmt  = "central",
     MAL_NOURISH = nut
   )
   if (dose_mg > 0) {
@@ -313,7 +313,7 @@ build_cohort <- function(dose_mg, route, nut, id_offset, tmax = 8) {
   )
   obs$evid <- 0L
   obs$amt  <- 0
-  obs$cmt  <- "Cc"
+  obs$cmt  <- "central"
   obs$MAL_NOURISH <- nut
   dose <- data.frame(
     id   = ids,

@@ -163,12 +163,13 @@ sample_times <- c(0.083, 0.25, 0.5, 1, 1.5, 2, 3, 4, 5)
 events <- bind_rows(
   # one dosing event per subject at t = 0 into central
   cohort_df |>
-    mutate(time = 0, amt = dose_umol_per_kg, evid = 1L, cmt = "central"),
-  # observation rows: replicate sample times per subject, use 'Cc' as cmt so
-  # rxode2 can assign a valid output mapping; all six outputs are written
-  # at every row of the simulation regardless of which cmt is named.
+    mutate(time = 0, amt = dose_umol_per_kg, evid = 1L, cmt = "central",
+           dvid = NA_integer_),
+  # observation rows: replicate sample times per subject on the `central`
+  # ODE state; dvid = 1 maps them to the first endpoint (Cc) of this
+  # multi-output model. All six outputs are written at every row.
   expand_grid(cohort_df, time = sample_times) |>
-    mutate(amt = NA_real_, evid = 0L, cmt = "Cc")
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
 )
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
@@ -186,8 +187,10 @@ sim <- rxode2::rxSolve(mod, events = events, keep = c("cohort")) |>
 mod_typical <- rxode2::zeroRe(mod)
 typical_times <- c(0, seq(0.05, 5, length.out = 200))
 typical_events <- bind_rows(
-  tibble(id = 1L, time = 0, amt = dose_umol_per_kg, evid = 1L, cmt = "central"),
-  tibble(id = 1L, time = typical_times, amt = NA_real_, evid = 0L, cmt = "Cc")
+  tibble(id = 1L, time = 0, amt = dose_umol_per_kg, evid = 1L, cmt = "central",
+         dvid = NA_integer_),
+  tibble(id = 1L, time = typical_times, amt = NA_real_, evid = 0L,
+         cmt = "central", dvid = 1L)
 )
 typical <- rxode2::rxSolve(mod_typical, events = typical_events) |>
   as.data.frame()
