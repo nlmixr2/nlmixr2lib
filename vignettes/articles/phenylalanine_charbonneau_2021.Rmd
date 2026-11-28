@@ -1,0 +1,481 @@
+---
+title: "Phenylalanine with dietary intake (Charbonneau 2021)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Phenylalanine with dietary intake (Charbonneau 2021)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("phenylalanine_charbonneau_2021"))$reference`
+* Description: `r rxode2::rxode(readModelDb("phenylalanine_charbonneau_2021"))$description`
+* Article: [Commun Biol 4:898 (2021)](https://doi.org/10.1038/s42003-021-02183-1) (open access, PMC8298439)
+
+Charbonneau 2021 builds three deterministic models to estimate how much
+phenylalanine (Phe) the synthetic biotic SYNB1618 must consume in the upper
+gastrointestinal tract to lower blood Phe in patients with phenylketonuria
+(PKU). This package carries the third of them, the blood Phe metabolism
+model (Methods, "Extension of Phe metabolism model to incorporate dietary Phe
+intake", p. 10; Eqs. 15-20; Table 4). It extends the Kaufman 1999 model
+(`Kaufman_1999_phenylalanine` in this package) with gut absorption of meal
+Phe and renal elimination. The SYNB1618 in vitro and upper-GI activity models
+(Eqs. 1-14, Tables 1-3) are not in the package.
+
+There is no published erratum for Charbonneau 2021 (checked in Crossref and
+Europe PMC). The paper itself implements Kaufman 1999 with that paper's
+2019 correction (ref 30).
+
+# Population
+
+The model fits no data. Its kinetic constants come from Kaufman 1999 and from
+Kitagawa 1974 (renal clearance), and the paper uses it to simulate:
+
+* classical PKU (0, 1 and 2% of normal phenylalanine hydroxylase (PAH)
+  activity), a PKU heterozygote and a healthy subject on a 2.5 g/day Phe diet
+  (50 g protein/day) split over meals at 0, 4 and 10 h of each day;
+* healthy subjects given a single 1.0 g oral Phe load, compared with the
+  placebo arm (n = 8 per study day) of the first-in-human SYNB1618 trial
+  (SYNB1618-CP-001, NCT03516487).
+
+Body weight is fixed at 70 kg (Table 4).
+
+```{r population, eval = FALSE}
+readModelDb("phenylalanine_charbonneau_2021")()$population
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing at Table 4 (p. 10)
+of the paper. They are collected here for review.
+
+| Symbol       | Value      | Units       | Charbonneau 2021 source                       |
+|--------------|------------|-------------|-----------------------------------------------|
+| `bl_phe`     | 1.18       | mmol/L      | Table 4, Phe initial value                    |
+| `bl_gut`     | 0          | mg          | Table 4, Gut initial value                    |
+| `ka_gut`     | 0.25       | 1/h         | Table 4, K_a,gut                              |
+| `v_npd`      | 0.012      | (mmol/L)/h  | Table 4, V_npd                                |
+| `vmax_pah`   | 0.9        | (mmol/L)/h  | Table 4, V_max,PAH                            |
+| `f_pah`      | 0          | unitless    | Table 4, F_PAH (0.0-1.0); 0 = classical PKU   |
+| `km_pah`     | 0.51       | mmol/L      | Table 4, K_m,PAH                              |
+| `kact_pah`   | 0.54       | mmol/L      | Table 4, K_a,PAH                              |
+| `vmax_trans` | 0.063      | (mmol/L)/h  | Table 4, V_max,trans                          |
+| `km_trans`   | 1.37       | mmol/L      | Table 4, K_m,trans                            |
+| `lcl_renal`  | log(5.696e-4) | (L/kg)/h | Table 4, CL_renal                             |
+| `vd`         | 0.5        | L/kg        | Table 4, V_d                                  |
+| `mw_phe`     | 165.19     | g/mol       | Table 4, MW_Phe (constant in `model()`)       |
+| `WT`         | 70         | kg          | Table 4, W (covariate)                        |
+
+| Model line                                              | Source        |
+|---------------------------------------------------------|---------------|
+| `v_pah <- vmax_pah*f_pah / (1 + km_pah/phe + km_pah*kact_pah/phe^2)` | Eq. 15 |
+| `v_trans <- vmax_trans / (1 + km_trans/phe)`            | Eq. 16        |
+| `v_renal <- phe * cl_renal * vd`                        | Eq. 17        |
+| `d/dt(gut) <- -ka_gut*gut`                              | Eq. 18        |
+| `f_gut_plasma <- 1/(mw_phe * vd * WT)`                  | Eq. 19        |
+| `d/dt(phe) <- ka_gut*gut*f_gut_plasma + v_npd - v_pah - v_trans - v_renal` | Eq. 20 |
+| `daily_phe_intake`                                      | Not in the paper; package augmentation (see below) |
+
+# Dimensional analysis
+
+Every term of `d/dt(phe)` should be in (mmol/L)/h.
+
+| Term | Units |
+|------|-------|
+| `ka_gut*gut*f_gut_plasma` | (1/h) x mg x (mmol/L)/mg = (mmol/L)/h |
+| `v_npd` | (mmol/L)/h |
+| `v_pah`, `v_trans` | (mmol/L)/h over a dimensionless denominator |
+| `v_renal = phe * cl_renal * vd` | (mmol/L) x (L/kg)/h x (L/kg) |
+
+`f_gut_plasma = 1/(mw_phe * vd * WT)` is 1/((g/mol) x (L/kg) x kg) =
+mol/(g L) = mmol/(mg L), as Table 4 states. The renal term is the exception:
+as printed in Eq. 17 it carries an extra (L/kg)^2, where `phe * cl_renal / vd`
+would balance. The model keeps Eq. 17 as published. The paper's own statement
+that renal elimination is ~1% of classical-PKU elimination (Methods, p. 10) is
+reproduced by the printed form and not by the balanced one (next sections),
+and so are the authors' simulated values in Supplementary Data 1.
+
+# Simulation helpers
+
+Meals are bolus doses of Phe (mg) into the `gut` compartment at 0, 4 and
+10 h of each day (Methods, p. 10). "Fasting" blood Phe is read 14 h after the
+last meal of a day, i.e. just before the next day's first meal, as in
+Fig. 3b.
+
+```{r helpers}
+mod <- readModelDb("phenylalanine_charbonneau_2021")
+
+meal_times <- function(ndays) {
+  as.vector(outer(c(0, 4, 10), 24 * (seq_len(ndays) - 1), "+"))
+}
+
+# One subject eating `daily_mg` of Phe per day for `ndays` days, observed at
+# `obs_times` (h).
+meal_events <- function(daily_mg, ndays, obs_times) {
+  dose_t <- meal_times(ndays)
+  bind_rows(
+    data.frame(time = dose_t, amt = daily_mg / 3, evid = 1L, cmt = "gut"),
+    data.frame(time = obs_times, amt = 0, evid = 0L, cmt = "phe")
+  ) |>
+    arrange(time, desc(evid))
+}
+
+solve_phe <- function(events, f_pah, bl_phe = 1.18, wt = 70) {
+  rxSolve(
+    mod, events,
+    params = c(f_pah = f_pah, bl_phe = bl_phe, WT = wt),
+    atol = 1e-10, rtol = 1e-10, maxsteps = 1e6,
+    returnType = "data.frame"
+  )
+}
+
+# Fasting blood Phe (umol/L) after `ndays` days on `daily_mg` Phe per day.
+fasting_phe <- function(daily_mg, f_pah, ndays = 180) {
+  s <- solve_phe(meal_events(daily_mg, ndays, 24 * ndays), f_pah = f_pah)
+  s$phe_umol[s$time == 24 * ndays]
+}
+```
+
+# Steady-state blood Phe by PAH activity
+
+Results (p. 4-5): on 2.5 g Phe/day, simulated classical-PKU patients with 0,
+1 and 2% of normal PAH activity reach 1180, 860 and 660 umol/L, and simulated
+heterozygote and healthy subjects reach 96 and 65 umol/L. The paper does not
+state the heterozygote's PAH fraction; `f_pah = 0.5` reproduces 96 umol/L and
+is used here. The text does not say which point of the day it reports; the
+fasting value is used, matching Fig. 3b. Note that the text's 1180 umol/L for
+0% PAH is the Table 4 initial value: the authors' own source data for
+Fig. 3b and 3c (Supplementary Data 1) put the 2.5 g/day fasting steady state
+at 1161.4 umol/L.
+
+```{r steady-state}
+ss <- tibble(
+  subject = c("Classical PKU, 0% PAH", "Classical PKU, 1% PAH", "Classical PKU, 2% PAH",
+              "Heterozygote", "Healthy"),
+  f_pah = c(0, 0.01, 0.02, 0.5, 1),
+  published_umol = c(1180, 860, 660, 96, 65)
+) |>
+  rowwise() |>
+  mutate(simulated_umol = fasting_phe(2500, f_pah)) |>
+  ungroup() |>
+  mutate(pct_diff = 100 * (simulated_umol / published_umol - 1))
+kable(ss, digits = c(0, 2, 0, 1, 1),
+      caption = "Fasting blood Phe after 180 days on 2.5 g Phe/day vs Charbonneau 2021 Results p. 4-5.")
+
+stopifnot(
+  # Centre: the five published values are matched on average to within 2%.
+  abs(median(ss$pct_diff)) < 2,
+  # Envelope: no scenario misses its rounded published value by 5% or more.
+  max(abs(ss$pct_diff)) < 5
+)
+```
+
+# Elimination split in classical PKU
+
+Methods (p. 10): with 0% PAH activity, PAH, transaminase and renal
+elimination are responsible for ~0%, 99% and 1% of Phe elimination.
+
+```{r elimination-split}
+s_pku <- solve_phe(meal_events(2500, 180, seq(24 * 179, 24 * 180, by = 0.25)), f_pah = 0)
+day180 <- s_pku |> filter(time >= 24 * 179)
+split <- with(day180, c(
+  PAH = mean(v_pah), transaminase = mean(v_trans), renal = mean(v_renal)
+))
+split_pct <- 100 * split / sum(split)
+kable(t(round(split_pct, 2)), caption = "Share of Phe elimination (%) over day 180, 0% PAH, 2.5 g/day.")
+
+# The dimensionally balanced alternative to Eq. 17 (phe * cl_renal / vd)
+# would quadruple the renal flux.
+renal_balanced <- with(day180, mean(phe * 5.696e-4 / 0.5))
+pct_balanced <- 100 * renal_balanced / (split[["transaminase"]] + renal_balanced)
+pct_balanced
+
+stopifnot(
+  split_pct[["PAH"]] == 0,
+  abs(split_pct[["transaminase"]] - 99) < 0.5,
+  abs(split_pct[["renal"]] - 1) < 0.5,
+  # Only Eq. 17 as printed gives the published ~1% renal share.
+  pct_balanced > 3
+)
+```
+
+# Figure 3b: fasting blood Phe vs dietary Phe and Phe removal
+
+Fig. 3b shows fasting blood Phe (14 h after a meal) after 180 days for a
+classical-PKU patient (0% PAH activity) across daily dietary Phe intakes, with
+10-50% of the dietary Phe removed. The published values are transcribed from
+the "Figure 3b" sheet of Supplementary Data 1. Because removal simply lowers
+the intake, the simulation depends only on the net intake.
+
+```{r fig3b}
+fig3b_pub <- tribble(
+  ~daily_g, ~r0.0,    ~r0.1,    ~r0.2,    ~r0.3,    ~r0.4,    ~r0.5,
+  1,         569.694,  540.750,  512.780,  485.741,  459.591,  434.292,
+  2,         924.659,  842.602,  766.649,  696.190,  630.694,  569.694,
+  3,        1455.449, 1271.126, 1110.006,  968.192,  842.602,  730.768,
+  4,        2313.615, 1915.126, 1593.628, 1329.768, 1110.006,  924.659,
+  5,        3857.929, 2963.621, 2313.615, 1828.412, 1455.449, 1161.394
+) |>
+  pivot_longer(-daily_g, names_to = "removed", values_to = "published_umol") |>
+  mutate(removed = as.numeric(sub("^r", "", removed)))
+
+fig3b <- fig3b_pub |>
+  mutate(net_mg = round(1000 * daily_g * (1 - removed), 6)) |>
+  group_by(net_mg) |>
+  mutate(simulated_umol = fasting_phe(first(net_mg), f_pah = 0)) |>
+  ungroup() |>
+  mutate(pct_diff = 100 * (simulated_umol / published_umol - 1))
+
+summary(fig3b$pct_diff)
+
+stopifnot(
+  abs(median(fig3b$pct_diff)) < 2,
+  quantile(abs(fig3b$pct_diff), 0.9) < 3
+)
+
+ggplot(fig3b, aes(daily_g, simulated_umol, colour = factor(100 * removed))) +
+  geom_line() +
+  geom_point(aes(y = published_umol), shape = 1, size = 2) +
+  labs(x = "Daily dietary Phe (g)", y = "Fasting blood Phe (umol/L)",
+       colour = "Phe removed (%)",
+       title = "Figure 3b: classical PKU (0% PAH), day 180",
+       caption = "Lines: this model. Open circles: Charbonneau 2021 Supplementary Data 1.")
+```
+
+The Results (p. 4) also give the effect of diet reduction at 2.5 g/day:
+removing 20%, 30% and 50% of dietary Phe lowers blood Phe by 21%, 30% and
+45%.
+
+```{r diet-reduction}
+base_25 <- fasting_phe(2500, f_pah = 0)
+reduction <- tibble(removed_pct = c(20, 30, 50), published_lowering_pct = c(21, 30, 45)) |>
+  rowwise() |>
+  mutate(simulated_lowering_pct =
+           100 * (1 - fasting_phe(2500 * (1 - removed_pct / 100), f_pah = 0) / base_25)) |>
+  ungroup()
+kable(reduction, digits = 1, caption = "Blood Phe lowering at 2.5 g/day, 0% PAH.")
+
+# Percentage-point differences against the integer-rounded published values.
+stopifnot(max(abs(reduction$simulated_lowering_pct - reduction$published_lowering_pct)) < 1.5)
+```
+
+# Figure 3c: 28-day time course after Phe removal
+
+Fig. 3c starts a classical-PKU patient at the Table 4 initial value
+(1.18 mmol/L) on 2.5 g Phe/day with 0-50% of the dietary Phe removed from
+day 0. The Results (p. 5) note that blood Phe approaches the new steady state
+about 5 days after the change. Published fasting values at whole days are
+transcribed from the "Figure 3c" sheet of Supplementary Data 1.
+
+```{r fig3c}
+fig3c_pub <- tribble(
+  ~day, ~r0.0,    ~r0.1,    ~r0.2,    ~r0.3,    ~r0.4,    ~r0.5,
+  0,    1180.000, 1180.000, 1180.000, 1180.000, 1180.000, 1180.000,
+  1,    1170.005, 1134.986, 1100.126, 1065.428, 1030.899,  996.543,
+  2,    1167.666, 1106.831, 1046.776,  987.535,  929.141,  871.629,
+  3,    1165.971, 1086.608, 1009.098,  933.517,  859.939,  788.439,
+  5,    1163.830, 1061.858,  964.513,  871.872,  783.983,  700.864,
+  7,    1162.690, 1049.368,  943.286,  844.312,  752.249,  666.843,
+  10,   1161.897, 1041.282,  930.563,  829.098,  736.197,  651.151,
+  14,   1161.536, 1037.981,  925.929,  824.185,  731.629,  647.238,
+  21,   1161.410, 1036.989,  924.745,  823.125,  730.802,  646.648,
+  28,   1161.396, 1036.903,  924.665,  823.070,  730.769,  646.630
+) |>
+  pivot_longer(-day, names_to = "removed", values_to = "published_umol") |>
+  mutate(removed = as.numeric(sub("^r", "", removed)))
+
+obs_c <- seq(0, 28 * 24, by = 0.5)
+fig3c_sim <- bind_rows(lapply(c(0, 0.1, 0.2, 0.3, 0.4, 0.5), function(r) {
+  solve_phe(meal_events(2500 * (1 - r), 28, obs_c), f_pah = 0) |>
+    distinct(time, .keep_all = TRUE) |>
+    transmute(removed = r, day = time / 24, phe_umol)
+}))
+
+fig3c <- fig3c_pub |>
+  left_join(fig3c_sim, by = c("removed", "day")) |>
+  mutate(pct_diff = 100 * (phe_umol / published_umol - 1))
+stopifnot(!anyNA(fig3c$phe_umol))
+
+summary(fig3c$pct_diff)
+
+# Share of the day-0 to day-28 fasting change reached by day 5.
+progress <- fig3c |>
+  filter(removed > 0) |>
+  group_by(removed) |>
+  summarise(
+    sim_day5 = (phe_umol[day == 0] - phe_umol[day == 5]) / (phe_umol[day == 0] - phe_umol[day == 28]),
+    pub_day5 = (published_umol[day == 0] - published_umol[day == 5]) /
+      (published_umol[day == 0] - published_umol[day == 28])
+  )
+kable(progress, digits = 3, caption = "Fraction of the 28-day change in fasting Phe reached by day 5.")
+
+stopifnot(
+  abs(median(fig3c$pct_diff)) < 1,
+  quantile(abs(fig3c$pct_diff), 0.9) < 2,
+  # About 5 days to approach the new steady state (Results, p. 5): the
+  # authors' own curves cover ~80-85% of the 28-day change by day 5.
+  abs(median(progress$sim_day5 - progress$pub_day5)) < 0.03,
+  median(progress$sim_day5) > 0.75
+)
+
+ggplot(fig3c_sim, aes(day, phe_umol, colour = factor(100 * removed))) +
+  geom_line(linewidth = 0.3) +
+  geom_point(data = fig3c_pub, aes(y = published_umol), shape = 1, size = 2) +
+  labs(x = "Days since Phe reduction", y = "Blood Phe (umol/L)", colour = "Phe removed (%)",
+       title = "Figure 3c: classical PKU (0% PAH), 2.5 g Phe/day",
+       caption = "Lines: this model. Open circles: published fasting values, Supplementary Data 1.")
+```
+
+# Figure 3d: a 1.0 g Phe load in healthy subjects
+
+Fig. 3d simulates a healthy subject (100% PAH activity) given 1.0 g Phe,
+starting from 0.06 mmol/L (Results, p. 6). The authors' simulated curve starts
+at 0.0604345 mmol/L, the mean of the placebo-arm baselines on study days -1
+and 7 (Supplementary Data 1, "Figure 3d"), and that value is used here. The
+observed placebo-arm means (n = 8 per day) are plotted for context. The paper
+notes that the observed Phe returns to baseline faster than the model
+predicts.
+
+```{r fig3d}
+fig3d_pub <- tribble(
+  ~time, ~sim_pub, ~day_m1_mean, ~day_m1_sd, ~day7_mean, ~day7_sd,
+  0, 0.0604345, 0.062958, 0.020293, 0.057911, 0.012721,
+  1, 0.0904003, 0.092984, 0.039831, 0.089647, 0.038830,
+  2, 0.1023876, 0.084426, 0.028433, 0.087891, 0.024075,
+  3, 0.1044344, 0.080816, 0.021952, 0.083480, 0.031128,
+  4, 0.1016981, 0.070797, 0.022336, 0.066144, 0.030556,
+  5, 0.0969942, 0.066340, 0.019262, 0.055557, 0.019380,
+  6, 0.0917493, 0.067120, 0.030213, 0.062019, 0.026383
+)
+
+ev_d <- bind_rows(
+  data.frame(time = 0, amt = 1000, evid = 1L, cmt = "gut"),
+  data.frame(time = seq(0, 12, by = 0.1), amt = 0, evid = 0L, cmt = "phe")
+)
+fig3d_sim <- solve_phe(ev_d, f_pah = 1, bl_phe = 0.0604345) |>
+  distinct(time, .keep_all = TRUE)
+
+fig3d <- fig3d_pub |>
+  left_join(select(fig3d_sim, time, phe), by = "time") |>
+  mutate(pct_diff = 100 * (phe / sim_pub - 1))
+kable(select(fig3d, time, sim_pub, phe, pct_diff), digits = c(0, 4, 4, 2),
+      caption = "Blood Phe (mmol/L) after 1.0 g Phe, 100% PAH: this model vs the authors' simulation.")
+
+# A single load from the same baseline: the two implementations agree to
+# solver precision, so the bound is tight.
+stopifnot(
+  abs(median(fig3d$pct_diff)) < 0.1,
+  max(abs(fig3d$pct_diff)) < 0.5
+)
+
+obs_long <- fig3d_pub |>
+  select(time, starts_with("day")) |>
+  pivot_longer(-time, names_to = c("day", ".value"), names_pattern = "(day_m1|day7)_(mean|sd)") |>
+  mutate(day = recode(day, day_m1 = "Placebo day -1", day7 = "Placebo day 7"))
+
+ggplot() +
+  geom_line(data = fig3d_sim, aes(time, phe, colour = "This model")) +
+  geom_point(data = fig3d_pub, aes(time, sim_pub, colour = "Authors' simulation"), shape = 1, size = 2) +
+  geom_pointrange(data = obs_long,
+                  aes(time, mean, ymin = mean - sd, ymax = mean + sd, shape = day),
+                  position = position_dodge(width = 0.3), colour = "grey40") +
+  labs(x = "Time after dose (h)", y = "Blood Phe (mmol/L)", colour = NULL, shape = NULL,
+       title = "Figure 3d: healthy subjects, 1.0 g oral Phe",
+       caption = "Observed: SYNB1618-CP-001 placebo arm, mean +/- SD, n = 8 (Supplementary Data 1).") +
+  theme(legend.position = "bottom")
+```
+
+# Figure 3e: blood Phe lowering vs daily Phe removal
+
+Fig. 3e gives the blood Phe lowering for a classical-PKU patient (0% PAH) on
+2.5 g Phe/day when a synthetic biotic removes 0-1000 mg of dietary Phe per
+day for 28 days. The Results (p. 6) quote ~780 mg/day for a 30% lowering.
+The published curve is from the "Figure 3e" sheet of Supplementary Data 1.
+Lowering is computed here from fasting Phe after 28 days, which reproduces
+that sheet.
+
+```{r fig3e}
+fig3e_pub <- tibble(
+  removed_mg = seq(0, 1000, by = 100),
+  published_pct = c(0, 4.424277, 8.664698, 12.731667, 16.634873, 20.383322,
+                    23.985400, 27.448912, 30.781132, 33.988843, 37.078376)
+)
+base_28 <- fasting_phe(2500, f_pah = 0, ndays = 28)
+fig3e <- fig3e_pub |>
+  rowwise() |>
+  mutate(simulated_pct = 100 * (1 - fasting_phe(2500 - removed_mg, f_pah = 0, ndays = 28) / base_28)) |>
+  ungroup() |>
+  mutate(diff_points = simulated_pct - published_pct)
+kable(fig3e, digits = 2, caption = "Blood Phe lowering (%) vs Phe removed (mg/day).")
+
+lowering_780 <- 100 * (1 - fasting_phe(2500 - 780, f_pah = 0, ndays = 28) / base_28)
+lowering_780
+
+stopifnot(
+  # Percentage points: lowering is already a relative quantity.
+  abs(median(fig3e$diff_points)) < 0.5,
+  max(abs(fig3e$diff_points)) < 1,
+  # ~780 mg/day removal gives a 30% lowering (Results, p. 6).
+  abs(lowering_780 - 30) < 1
+)
+
+ggplot(fig3e, aes(removed_mg, simulated_pct)) +
+  geom_line() +
+  geom_point(aes(y = published_pct), shape = 1, size = 2) +
+  geom_hline(yintercept = 30, linetype = "dashed") +
+  geom_vline(xintercept = 780, linetype = "dashed") +
+  labs(x = "Phe removed (mg/day)", y = "Blood Phe lowering (%)",
+       title = "Figure 3e: classical PKU (0% PAH), 2.5 g Phe/day, day 28",
+       caption = "Line: this model. Open circles: Supplementary Data 1. Dashed: 780 mg/day, 30%.")
+```
+
+# The `daily_phe_intake` augmentation
+
+`daily_phe_intake` is not in the paper. It is the daily Phe intake (mg/day)
+that would hold the current blood Phe level steady:
+`24 * (v_pah + v_trans + v_renal - v_npd) / f_gut_plasma`, i.e. the net
+elimination flux converted back through Eq. 19. Its units are
+h/day x (mmol/L)/h / ((mmol/L)/mg) = mg/day. At the classical-PKU daily mean
+blood Phe on 2.5 g/day, it should return roughly 2500 mg/day.
+
+```{r augmentation}
+mean_intake <- mean(day180$daily_phe_intake)
+mean_intake
+stopifnot(abs(mean_intake / 2500 - 1) < 0.05)
+```
+
+# Not reproduced
+
+* **Figure 3f** (blood Phe lowering vs SYNB1618 dose) needs the SYNB1618
+  upper-GI PAL activity model (Eqs. 1-14, Tables 1-2), which is not in the
+  package.
+* **Figures 1 and 2** belong to the SYNB1618 in vitro and upper-GI models.
+
+# Assumptions and deviations
+
+* The heterozygote PAH fraction is not stated in the paper; `f_pah = 0.5`
+  reproduces the published 96 umol/L.
+* The Results' 1180 umol/L for 0% PAH equals the Table 4 initial value; the
+  authors' Supplementary Data 1 gives 1161.4 umol/L for the same steady state,
+  and this model gives 1153.6 umol/L (fasting) after 180 days. The remaining
+  0.7% is an implementation difference in how repeated meals enter: the
+  authors solved the ODEs in Python/SciPy (Code availability, p. 11), and in
+  their repeated-meal curves (Fig. 3c source data) the post-meal rise lags an
+  instantaneous bolus into `gut` by up to about an hour. The single 1.0 g load
+  of Fig. 3d, where that does not arise, is reproduced to four decimals.
+* Fig. 3d starts at 0.0604345 mmol/L, the source-data value, rather than the
+  text's rounded 0.06 mmol/L.
+* Eq. 17 is kept as printed although it does not balance dimensionally; see
+  "Dimensional analysis".
+* Body weight is 70 kg throughout (Table 4).

@@ -2,6 +2,8 @@
 
 # development version
 
+- `phenylalanine_charbonneau_2021` now has a validation article reproducing Charbonneau 2021 ([doi:10.1038/s42003-021-02183-1](https://doi.org/10.1038/s42003-021-02183-1)) Figure 3b-e against the authors' Supplementary Data 1, along with the steady-state blood Phe by PAH activity from the Results. The model file gains `units`, `dosing` (`gut`), `population` metadata, verified `compartmentData` and a Table 4 citation on every `ini()` value. The Phe activation constant label now gives its units (mmol/L). Equations and parameter values are unchanged.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.
