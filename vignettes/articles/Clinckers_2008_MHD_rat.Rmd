@@ -138,16 +138,16 @@ events <- cohort |>
       bind_rows(
         # depot dose (first-order portion)
         tibble(time = 0, evid = 1L, amt = unique(dose_mg), cmt = "depot",
-               DV = NA_real_),
+               dvid = NA_integer_, DV = NA_real_),
         # central dose (zero-order portion); rxode2 dur(central) applies
         tibble(time = 0, evid = 1L, amt = unique(dose_mg), cmt = "central",
-               DV = NA_real_),
-        # plasma observations (Cc)
-        tibble(time = sample_times, evid = 0L, amt = NA_real_, cmt = "Cc",
-               DV = NA_real_),
-        # brain observations (Cbrain)
-        tibble(time = sample_times, evid = 0L, amt = NA_real_, cmt = "Cbrain",
-               DV = NA_real_)
+               dvid = NA_integer_, DV = NA_real_),
+        # plasma observations (Cc, endpoint 1, from the `central` state)
+        tibble(time = sample_times, evid = 0L, amt = NA_real_, cmt = "central",
+               dvid = 1L, DV = NA_real_),
+        # brain observations (Cbrain, endpoint 2, from the `effect` state)
+        tibble(time = sample_times, evid = 0L, amt = NA_real_, cmt = "effect",
+               dvid = 2L, DV = NA_real_)
       )
     )
   ) |>

@@ -108,16 +108,20 @@ Build an event table for 600 mg po qd for 5 days, with dense post-dose sampling 
 dose_times <- seq(0, 96, by = 24)
 obs_times  <- sort(unique(c(seq(0, 120, by = 0.5), 98, 100)))
 
-# Multi-output observation rows must specify the output via cmt = "Cc",
-# "Celf", or "Cac"; we use rxode2::et() to build one event table per
-# subject with one observation row per (time, output) and bind them with
-# disjoint IDs.
+# Multi-output observation rows sit on the ODE state each output is
+# computed from and carry a dvid naming the endpoint (1 = Cc from
+# `central`, 2 = Celf from `effect1`, 3 = Cac from `effect2`); we use
+# rxode2::et() to build one event table per subject with one observation
+# row per (time, output) and bind them with disjoint IDs.
 make_subj_events <- function(sub) {
   ev <- rxode2::et(amt = 600, time = dose_times, cmt = "depot") |>
-    rxode2::et(obs_times, cmt = "Cc")   |>
-    rxode2::et(obs_times, cmt = "Celf") |>
-    rxode2::et(obs_times, cmt = "Cac")
+    rxode2::et(obs_times, cmt = "central") |>
+    rxode2::et(obs_times, cmt = "effect1") |>
+    rxode2::et(obs_times, cmt = "effect2")
   ev_df <- as.data.frame(ev)
+  ev_df$dvid <- ifelse(ev_df$evid == 0L,
+                       match(ev_df$cmt, c("central", "effect1", "effect2")),
+                       NA_integer_)
   ev_df$id   <- sub$id
   ev_df$WT   <- sub$WT
   ev_df$HT   <- sub$HT

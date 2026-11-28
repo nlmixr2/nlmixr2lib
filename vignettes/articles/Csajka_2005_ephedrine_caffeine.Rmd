@@ -87,8 +87,10 @@ make_cohort <- function(n, cohort_label, oc_status, id_offset) {
     cov |> mutate(time = 0, amt = 25,  cmt = "depot",     evid = 1L),
     cov |> mutate(time = 0, amt = 200, cmt = "depot_caf", evid = 1L)
   )
+  # Observation rows sit on the `central` ODE state; dvid = 1 selects the Cc
+  # endpoint of this three-endpoint model. Dose rows get dvid = NA.
   obs <- tidyr::crossing(cov, tibble(time = obs_times)) |>
-    mutate(amt = NA_real_, cmt = "Cc", evid = 0L)
+    mutate(amt = NA_real_, cmt = "central", dvid = 1L, evid = 0L)
   bind_rows(doses, obs) |>
     arrange(id, time, evid) |>
     mutate(cohort = cohort_label)

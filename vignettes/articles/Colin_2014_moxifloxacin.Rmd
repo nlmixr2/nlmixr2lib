@@ -103,7 +103,7 @@ make_oral_cohort <- function(n, lbm_value, label, id_offset = 0L) {
     dplyr::mutate(
       amt    = NA_real_,
       rate   = NA_real_,
-      cmt    = "Cc",
+      cmt    = "central",
       evid   = 0L,
       LBM    = lbm_value,
       cohort = label
@@ -238,7 +238,7 @@ events_typ <- dplyr::bind_rows(
   ),
   data.frame(
     id   = 1L, time = obs_times, amt = NA_real_, rate = NA_real_,
-    cmt = "Cc",      evid = 0L,
+    cmt = "central", evid = 0L,
     LBM = typical_lbm, regimen = "Oral 400 mg"
   ),
   data.frame(
@@ -248,7 +248,7 @@ events_typ <- dplyr::bind_rows(
   ),
   data.frame(
     id   = 2L, time = obs_times, amt = NA_real_, rate = NA_real_,
-    cmt = "Cc",      evid = 0L,
+    cmt = "central", evid = 0L,
     LBM = typical_lbm, regimen = "IV 400 mg (1-h infusion)"
   )
 ) |>
