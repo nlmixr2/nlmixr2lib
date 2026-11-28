@@ -3109,6 +3109,22 @@ test_that(".doseTimingCalls collects named-compartment calls at any depth", {
   expect_equal(nlmixr2lib:::.doseTimingCalls(quote(central)), list())
 })
 
+test_that(".doseTimingCalls reads a list of statements, such as ui$lstExpr, in order", {
+  stmts <- list(
+    quote(a <- tad(depot2)),
+    quote(b <- 1),
+    quote(if (podo(stomach) > 0) c <- tlast(central))
+  )
+  expected <- c("tad:depot2", "podo:stomach", "tlast:central")
+  hits <- nlmixr2lib:::.doseTimingCalls(stmts)
+  expect_identical(vapply(hits, paste, character(1), collapse = ":"), expected)
+  # An expression vector is read the same way.
+  hits <- nlmixr2lib:::.doseTimingCalls(as.expression(stmts))
+  expect_identical(vapply(hits, paste, character(1), collapse = ":"), expected)
+  expect_identical(nlmixr2lib:::.doseTimingCalls(list()), list())
+  expect_identical(nlmixr2lib:::.doseTimingCalls(NULL), list())
+})
+
 test_that(".doseTimingCalls skips an empty first argument and a namespaced call", {
   expect_equal(nlmixr2lib:::.doseTimingCalls(quote(tad(, depot))), list())
   expect_equal(nlmixr2lib:::.doseTimingCalls(quote(rxode2::tad(depot))), list())

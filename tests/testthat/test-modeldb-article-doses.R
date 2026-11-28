@@ -58,13 +58,24 @@ articleStateDoses <- rbind(
 
 # Doses the reader credits to a registry model that the article solves with
 # another model. Each record is named so the entry can be checked by hand.
-articleMiscreditedDoses <- data.frame(
-  model = "Aoki_2024_intratarget_microdosing_pbpk",
-  state = "target",
-  reason = paste(
-    "`ev_auth` in the xcheck chunk doses state 9 (`cmt = 9L`, the free receptor",
-    "X_FreeR) of the inline `authors` model, inside a loop that also solves the",
-    "packaged model; the packaged model sets `target(0) <- rtot` instead"
+articleMiscreditedDoses <- rbind(
+  data.frame(
+    model = "Aoki_2024_intratarget_microdosing_pbpk",
+    state = "target",
+    reason = paste(
+      "`ev_auth` in the xcheck chunk doses state 9 (`cmt = 9L`, the free receptor",
+      "X_FreeR) of the inline `authors` model, inside a loop that also solves the",
+      "packaged model; the packaged model sets `target(0) <- rtot` instead"
+    )
+  ),
+  data.frame(
+    model = "Maskawa_2025_vancomycin_mouse_firstorder",
+    state = "cecum",
+    reason = paste(
+      "`ev_vpc1 <- make_vpc_events(\"cecum\", -2)` is solved with `mod1` (the",
+      "zero-order model) and `ev_vpc2` (stomach) with `mod2`, but both solves are",
+      "in one `vpc <- bind_rows(...)` statement, which refers to both models"
+    )
   )
 )
 
@@ -226,6 +237,84 @@ test_that("a compartment is read through pipes, variables and helper functions",
   )
 })
 
+test_that("every call is visited, through a `:::` prefix, a default argument and an invoked function", {
+  expect_identical(.doseCmtsOfCode('ev <- rxode2:::et(dose = 1, cmt = "central")'), "central")
+  expect_identical(.doseCmtsOfCode('mk <- function(ev = rxode2::et(amt = 1, cmt = "depot")) ev'), "depot")
+  expect_identical(.doseCmtsOfCode('ev <- (function() rxode2::et(amt = 1, cmt = "depot2"))()'), "depot2")
+  # A `{` block inside a call is assembled column by column at any depth.
+  expect_identical(
+    .doseCmtsOfCode("ev <- lapply(1:2, function(i) { d <- data.frame(time = i, amt = 1); d$cmt <- 'depot'; d })"),
+    "depot"
+  )
+})
+
+test_that("an article is read as knitr runs it: R chunks that are evaluated, in order", {
+  rmd <- tempfile(fileext = ".Rmd")
+  on.exit(unlink(rmd))
+  writeLines(
+    c(
+      "```{r, eval = FALSE}",
+      'a <- rxode2::et(amt = 1, cmt = "off_header")',
+      "```",
+      "```{r}",
+      "#| eval: false",
+      'b <- rxode2::et(amt = 1, cmt = "off_option")',
+      "```",
+      "```{python}",
+      'c = et(amt = 1, cmt = "python")',
+      "```",
+      "````markdown",
+      "```{r}",
+      'd <- rxode2::et(amt = 1, cmt = "shown_not_run")',
+      "```",
+      "````",
+      "```{r}",
+      'route <- "depot"',
+      "```",
+      "```{r}",
+      "e <- rxode2::et(amt = 1, cmt = route)",
+      "```"
+    ),
+    rmd
+  )
+  d <- articleDoseCmts(rmd, "M")
+  # A variable assigned in one chunk names the compartment in a later one.
+  expect_identical(d$cmt, "depot")
+  expect_identical(d$via, "variable")
+  expect_length(attr(d, "unreadable"), 0L)
+})
+
+test_that("a chunk the reader cannot take at face value is reported with the doses it does read", {
+  rmd <- tempfile(fileext = ".Rmd")
+  on.exit(unlink(rmd))
+  writeLines(
+    c(
+      "```{r}",
+      'a <- rxode2::et(amt = 1, cmt = "depot")',
+      "```",
+      "",
+      "```{r}",
+      "b <- (",
+      "```"
+    ),
+    rmd
+  )
+  d <- articleDoseCmts(rmd, "M")
+  expect_identical(d$cmt, "depot")
+  expect_identical(attr(d, "unreadable"), c("does not parse" = 5L))
+
+  articleDir <- file.path(tempfile(), "articles")
+  dir.create(articleDir, recursive = TRUE)
+  on.exit(unlink(dirname(articleDir), recursive = TRUE), add = TRUE)
+  writeLines(c("```{r}", "x <- 1", "```", "", "```{r}", "b <- (", "```"), file.path(articleDir, "Broken.Rmd"))
+  writeLines(c("```{r}", "x <- 1", "```"), file.path(articleDir, "Fine.Rmd"))
+  db <- data.frame(name = c("A", "B"), vignette = c("Broken", "Fine"), dosing = NA_character_)
+  res <- articleDoseGaps(articleDir, db, data.frame(model = character(0), state = character(0)))
+  expect_identical(res$unreadable$article, "Broken")
+  expect_identical(res$unreadable$line, 5L)
+  expect_identical(res$unreadable$reason, "does not parse")
+})
+
 test_that("each dose is credited to the model it is solved with", {
   d <- .dosesOfCode(
     c(
@@ -258,6 +347,24 @@ test_that("each dose is credited to the model it is solved with", {
     models = "A"
   )
   expect_identical(nrow(d), 0L)
+})
+
+test_that("a model referred to in the head of a call, `readModelDb(\"A\")()`, is a reference", {
+  d <- .dosesOfCode(
+    c(
+      'mB <- readModelDb("B")()',
+      'mA <- readModelDb("A")()',
+      's <- rxode2::rxSolve(mA, rxode2::et(amt = 1, cmt = "depot"))'
+    ),
+    models = c("A", "B")
+  )
+  expect_identical(d$model, "A")
+  expect_identical(d$owner, "referenced")
+})
+
+test_that("`pkg::f` reads no article variable, wherever it is written", {
+  expect_identical(.symbolsRead(quote(tibble::tibble(a = x, b = y$z))), c("x", "$", "y"))
+  expect_identical(.symbolsRead(quote(lapply(l, pkg:::f))), c("lapply", "l"))
 })
 
 test_that("a model whose article is missing is an error, not a skip", {
@@ -336,4 +443,13 @@ test_that("every compartment an article doses is in its model's `dosing`", {
     )
   )
   expect_identical(setdiff(listed, found), character(0))
+  # A chunk the reader cannot take at face value may hide doses.
+  expect_identical(
+    nrow(res$unreadable),
+    0L,
+    info = paste(
+      sprintf("%s.Rmd line %d %s", res$unreadable$article, res$unreadable$line, res$unreadable$reason),
+      collapse = "\n"
+    )
+  )
 })

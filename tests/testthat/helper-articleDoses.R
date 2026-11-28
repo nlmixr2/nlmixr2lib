@@ -1,8 +1,9 @@
 # The compartments an article doses, read from its code without running it.
 #
-# An article's R chunks are extracted with knitr::purl() and parsed, and
-# magrittr pipes are rewritten into nested calls, the form the native pipe
-# already parses to. A call is a dose record when it has an `evid` of 1 or 4
+# An article's running R chunks are read with .articleExprs()
+# (R/articleReader.R), which also rewrites magrittr pipes into nested calls,
+# the form the native pipe already parses to, and its calls are visited with
+# .walkCalls(). A call is a dose record when it has an `evid` of 1 or 4
 # (a dose, or a reset and dose), or else an `amt` that is not a literal 0 or
 # NA. Its compartment is its own `cmt` argument or, when it has none, the
 # `cmt` of the call piped into it (`crossing(cmt = c("depot", "depot2")) |>
@@ -17,39 +18,15 @@
 # dose positions count. A numeric `cmt` is returned as "#<n>".
 #
 # What is not seen: a compartment passed positionally into a helper function,
-# or built some other way. The result is a lower bound.
+# or built some other way, and the code of a chunk .articleExprs() cannot
+# read (articleDoseGaps() reports those chunks). The result is a lower bound.
 
-# The R code of an article, parsed, with magrittr pipes nested.
+# The R code of an article, parsed, with magrittr pipes nested, as one list
+# of top-level expressions in the order the chunks run; the chunks
+# .articleExprs() cannot take at face value are the attribute "unreadable".
 .articleDoseExprs <- function(rmd) {
-  out <- tempfile(fileext = ".R")
-  on.exit(unlink(out))
-  # purl() evaluates chunk options, and one that reads an article variable
-  # (`eval = have_data`) prints an error it then recovers from.
-  utils::capture.output(
-    invisible(suppressMessages(knitr::purl(rmd, output = out, quiet = TRUE, documentation = 0L))),
-    type = "message"
-  )
-  lapply(parse(out, keep.source = FALSE), .articleDoseUnpipe)
-}
-
-# `lhs %>% f(x)` becomes `f(lhs, x)`; `lhs %>% f` becomes `f(lhs)`.
-.articleDoseUnpipe <- function(e) {
-  if (!is.call(e)) {
-    return(e)
-  }
-  for (i in seq_along(e)[-1]) {
-    if (is.call(e[[i]])) e[[i]] <- .articleDoseUnpipe(e[[i]])
-  }
-  if (identical(e[[1]], as.name("%>%")) && length(e) == 3L) {
-    rhs <- e[[3]]
-    if (is.call(rhs)) {
-      return(as.call(c(rhs[[1]], e[[2]], as.list(rhs)[-1])))
-    }
-    if (is.name(rhs)) {
-      return(as.call(list(rhs, e[[2]])))
-    }
-  }
-  e
+  read <- .articleExprs(rmd)
+  structure(c(list(), unlist(read$chunks, recursive = FALSE)), unreadable = read$unreadable)
 }
 
 # Every string literal in an expression.
@@ -57,14 +34,19 @@
   if (is.character(e)) {
     return(e)
   }
-  if (!is.call(e)) {
-    return(character(0))
-  }
+  acc <- new.env(parent = emptyenv())
+  acc$out <- character(0)
+  .walkCalls(e, function(x) acc$out <- c(acc$out, .stringArgs(x)))
+  acc$out
+}
+
+# The string literals among the arguments of call `x`. `x[[i]]` is tested in
+# place: bound to a variable, an empty argument such as the one in `x[, 1]`
+# errors when the variable is read.
+.stringArgs <- function(x) {
   out <- character(0)
-  # `e[[i]]` is tested in place: bound to a variable, an empty argument such
-  # as the one in `x[, 1]` errors when the variable is read.
-  for (i in seq_along(e)[-1]) {
-    if (is.call(e[[i]]) || is.character(e[[i]])) out <- c(out, .stringsIn(e[[i]]))
+  for (i in seq_along(x)[-1]) {
+    if (is.character(x[[i]])) out <- c(out, x[[i]])
   }
   out
 }
@@ -73,7 +55,9 @@
 # its whole-number literals as "#<n>". The conditions of `if`, ifelse() and
 # if_else(), comparisons, sequences, pasted strings and subscripts are
 # skipped: `if (route == "iv") "central" else "depot"` names central and
-# depot, not "iv", and `d["cmt"]` names nothing.
+# depot, not "iv", and `d["cmt"]` names nothing. It recurses by hand rather
+# than through .walkCalls(), which visits every call and so cannot skip the
+# calls below a condition or a subscript.
 .cmtLiteralsIn <- function(e) {
   if (is.character(e)) {
     return(e)
@@ -105,21 +89,29 @@
   if (is.name(e)) {
     return(as.character(e))
   }
-  if (!is.call(e)) {
+  acc <- new.env(parent = emptyenv())
+  acc$out <- character(0)
+  .walkCalls(e, function(x) acc$out <- c(acc$out, .symbolArgs(x)))
+  acc$out
+}
+
+# The symbols call `x` reads directly: the function it calls, when named, and
+# the arguments that are symbols. `x$name` and `x@name` read `x`, not a
+# variable called `name`; their third element is never a call, so the walk
+# below them adds nothing either. `pkg::f` and `pkg:::f` name a package and
+# one of its functions, never an article variable, and read nothing.
+.symbolArgs <- function(x) {
+  if (identical(x[[1]], as.name("::")) || identical(x[[1]], as.name(":::"))) {
     return(character(0))
   }
-  out <- if (is.name(e[[1]])) as.character(e[[1]]) else character(0)
-  # `x$name` and `x@name` read `x`, not a variable called `name`.
-  idx <- seq_along(e)[-1]
-  if (identical(e[[1]], as.name("$")) || identical(e[[1]], as.name("@"))) {
+  out <- if (is.name(x[[1]])) as.character(x[[1]]) else character(0)
+  idx <- seq_along(x)[-1]
+  if (identical(x[[1]], as.name("$")) || identical(x[[1]], as.name("@"))) {
     idx <- 2L
   }
+  # `x[[i]]` is tested in place: an empty argument is a symbol whose text is "".
   for (i in idx) {
-    if (is.name(e[[i]]) && nzchar(as.character(e[[i]]))) {
-      out <- c(out, as.character(e[[i]]))
-    } else if (is.call(e[[i]])) {
-      out <- c(out, .symbolsRead(e[[i]]))
-    }
+    if (is.name(x[[i]]) && nzchar(as.character(x[[i]]))) out <- c(out, as.character(x[[i]]))
   }
   out
 }
@@ -149,9 +141,14 @@
 # the variables the value reads), as a `for` loop's values, or as a function
 # argument's default.
 .stringVarsIn <- function(e, vars = list()) {
-  if (!is.call(e)) {
-    return(vars)
-  }
+  acc <- new.env(parent = emptyenv())
+  acc$vars <- vars
+  .walkCalls(e, function(x) acc$vars <- .stringVarsOf(x, acc$vars))
+  acc$vars
+}
+
+# Adds to `vars` what the call `e` itself assigns (see .stringVarsIn()).
+.stringVarsOf <- function(e, vars) {
   head <- e[[1]]
   isAssign <- identical(head, as.name("<-")) || identical(head, as.name("="))
   if (isAssign && length(e) == 3L && is.name(e[[2]])) {
@@ -170,9 +167,6 @@
       }
     }
   }
-  for (i in seq_along(e)[-1]) {
-    if (is.call(e[[i]])) vars <- .stringVarsIn(e[[i]], vars)
-  }
   vars
 }
 
@@ -180,11 +174,9 @@
   is.atomic(x) && length(x) == 1L
 }
 
+# Is `x` a call to one of `fns`, with or without a `pkg::` or `pkg:::` prefix?
 .isCallTo <- function(x, fns) {
-  is.call(x) &&
-    (is.name(x[[1]]) &&
-      as.character(x[[1]]) %in% fns ||
-      is.call(x[[1]]) && identical(x[[1]][[1]], as.name("::")) && as.character(x[[1]][[3]]) %in% fns)
+  .calledName(x) %in% fns
 }
 
 # One element of a column: a literal scalar, `rep(<literal>, n)`, or an
@@ -403,23 +395,25 @@
 # Every dose record in an expression: its compartments, how each was read,
 # and the record's code.
 .doseRecordsIn <- function(e, vars, acc = list()) {
-  if (!is.call(e)) {
-    return(acc)
-  }
-  for (row in .tribbleRows(e)) {
-    acc <- .doseRecordsIn(row, vars, acc)
-  }
-  if (.isDoseCall(e)) {
-    rc <- .recordCmts(e, vars)
-    if (NROW(rc)) {
-      rc$record <- paste(deparse(e, width.cutoff = 500L, nlines = 1L), collapse = "")
-      acc[[length(acc) + 1L]] <- rc
+  out <- new.env(parent = emptyenv())
+  out$recs <- acc
+  .walkCalls(e, function(x) .addDoseRecords(x, vars, out))
+  out$recs
+}
+
+# Adds to `out$recs` the dose record the call `e` is, and those its rows are
+# when it is a tribble (see .tribbleRows()). A row's cells are the tribble's
+# own arguments, which the walk visits anyway.
+.addDoseRecords <- function(e, vars, out) {
+  for (x in c(.tribbleRows(e), list(e))) {
+    if (.isDoseCall(x)) {
+      rc <- .recordCmts(x, vars)
+      if (NROW(rc)) {
+        rc$record <- paste(deparse(x, width.cutoff = 500L, nlines = 1L), collapse = "")
+        out$recs[[length(out$recs) + 1L]] <- rc
+      }
     }
   }
-  for (i in seq_along(e)[-1]) {
-    if (is.call(e[[i]])) acc <- .doseRecordsIn(e[[i]], vars, acc)
-  }
-  acc
 }
 
 # The names of a call's arguments, "" for an unnamed one.
@@ -509,19 +503,15 @@
 }
 
 # Column-by-column dose records in the `{` blocks inside one statement.
-.nestedColumnRecords <- function(e, acc = list()) {
-  if (!is.call(e)) {
-    return(acc)
-  }
-  if (identical(e[[1]], as.name("{"))) {
-    for (r in .assembleColumns(as.list(e)[-1])) {
-      acc[[length(acc) + 1L]] <- r$record
+.nestedColumnRecords <- function(e) {
+  out <- new.env(parent = emptyenv())
+  out$recs <- list()
+  .walkCalls(e, function(x) {
+    if (identical(x[[1]], as.name("{"))) {
+      out$recs <- c(out$recs, lapply(.assembleColumns(as.list(x)[-1]), `[[`, "record"))
     }
-  }
-  for (i in seq_along(e)[-1]) {
-    if (is.call(e[[i]])) acc <- .nestedColumnRecords(e[[i]], acc)
-  }
-  acc
+  })
+  out$recs
 }
 
 # The article's own functions that build dose records from an argument: a
@@ -545,41 +535,42 @@
 }
 
 # Every dose record call in an expression.
-.doseCallsIn <- function(e, acc = list()) {
-  if (!is.call(e)) {
-    return(acc)
-  }
-  if (.isDoseCall(e) && !is.null(.recordCmt(e))) {
-    acc[[length(acc) + 1L]] <- e
-  }
-  for (i in seq_along(e)[-1]) {
-    if (is.call(e[[i]])) acc <- .doseCallsIn(e[[i]], acc)
-  }
-  acc
+.doseCallsIn <- function(e) {
+  out <- new.env(parent = emptyenv())
+  out$calls <- list()
+  .walkCalls(e, function(x) {
+    if (.isDoseCall(x) && !is.null(.recordCmt(x))) {
+      out$calls[[length(out$calls) + 1L]] <- x
+    }
+  })
+  out$calls
 }
 
 # Dose records made by calling the article's own dose functions: a call
 # `F(..., cmt = "depot")` doses what it passes for F's dose argument. Adds
 # .recordCmts() rows, with the call as the record, to `acc`.
 .doseFunctionCallsIn <- function(e, doseFns, vars, acc = list()) {
-  if (!is.call(e)) {
-    return(acc)
-  }
+  out <- new.env(parent = emptyenv())
+  out$recs <- acc
+  .walkCalls(e, function(x) .addDoseFunctionCall(x, doseFns, vars, out))
+  out$recs
+}
+
+# Adds to `out$recs` the doses the call `e` makes when it calls one of the
+# article's dose functions by name (see .doseFunctionCallsIn()).
+.addDoseFunctionCall <- function(e, doseFns, vars, out) {
   f <- if (is.name(e[[1]])) as.character(e[[1]])
-  if (!is.null(f) && f %in% names(doseFns)) {
-    for (p in doseFns[[f]]$params) {
-      arg <- .argFor(e, doseFns[[f]]$formals, p)
-      rc <- if (!is.null(arg)) .recordCmts(call("data.frame", amt = quote(dose), cmt = arg), vars)
-      if (NROW(rc)) {
-        rc$record <- paste(deparse(e, width.cutoff = 500L, nlines = 1L), collapse = "")
-        acc[[length(acc) + 1L]] <- rc
-      }
+  if (is.null(f) || !f %in% names(doseFns)) {
+    return(invisible(NULL))
+  }
+  for (p in doseFns[[f]]$params) {
+    arg <- .argFor(e, doseFns[[f]]$formals, p)
+    rc <- if (!is.null(arg)) .recordCmts(call("data.frame", amt = quote(dose), cmt = arg), vars)
+    if (NROW(rc)) {
+      rc$record <- paste(deparse(e, width.cutoff = 500L, nlines = 1L), collapse = "")
+      out$recs[[length(out$recs) + 1L]] <- rc
     }
   }
-  for (i in seq_along(e)[-1]) {
-    if (is.call(e[[i]])) acc <- .doseFunctionCallsIn(e[[i]], doseFns, vars, acc)
-  }
-  acc
 }
 
 # The models an expression refers to: by a model name written as a string,
@@ -591,18 +582,12 @@
 
 # Does an expression call `fn` anywhere?
 .hasCallTo <- function(e, fn) {
-  if (!is.call(e)) {
-    return(FALSE)
-  }
-  if (.isCallTo(e, fn)) {
-    return(TRUE)
-  }
-  for (i in seq_along(e)) {
-    if (is.call(e[[i]]) && .hasCallTo(e[[i]], fn)) {
-      return(TRUE)
-    }
-  }
-  FALSE
+  acc <- new.env(parent = emptyenv())
+  acc$found <- FALSE
+  .walkCalls(e, function(x) {
+    if (.isCallTo(x, fn)) acc$found <- TRUE
+  })
+  acc$found
 }
 
 # Does a top-level expression define a model in the article itself
@@ -732,14 +717,13 @@
 #' @return A data frame with one row per credited compartment and dose
 #'   record: `model`, `cmt` (a numeric `cmt` is "#<n>"), `via` ("literal" or
 #'   "variable"), `owner` ("referenced", "used", "recent" or "all") and
-#'   `record`, the record's code.
+#'   `record`, the record's code. Its attribute "unreadable" holds the
+#'   chunks .articleExprs() cannot take at face value (the line each opens on,
+#'   named by the reason), whose doses may be missing.
 #' @noRd
 articleDoseCmts <- function(rmd, models) {
   exprs <- .articleDoseExprs(rmd)
-  vars <- list()
-  for (e in exprs) {
-    vars <- .stringVarsIn(e, vars)
-  }
+  vars <- .stringVarsIn(exprs)
   info <- .articleModelRefs(exprs, models)
   doseFns <- .doseFunctions(exprs, vars)
   topColumns <- .assembleColumns(exprs)
@@ -772,16 +756,18 @@ articleDoseCmts <- function(rmd, models) {
     }
     if (info[[i]]$defines) current <- character(0)
   }
-  if (!length(rows)) {
-    return(data.frame(
+  out <- if (length(rows)) {
+    unique(do.call(rbind, rows))
+  } else {
+    data.frame(
       model = character(0),
       cmt = character(0),
       via = character(0),
       record = character(0),
       owner = character(0)
-    ))
+    )
   }
-  unique(do.call(rbind, rows))
+  structure(out, unreadable = attr(exprs, "unreadable"))
 }
 
 # The ODE states a model file declares with `d/dt()`, in file order, then
@@ -857,7 +843,9 @@ articleDoseCmts <- function(rmd, models) {
 #'   `exempted`, the `exempt` rows the articles do dose; and `unknown`, one
 #'   row per article and compartment name written in a dose record that is a
 #'   state of no registry model (`article`, `cmt`, `record`), such as a typo
-#'   or an observable.
+#'   or an observable; and `unreadable`, one row per chunk the reader cannot
+#'   take at face value (`article`, `line`, `reason`; see .articleExprs()),
+#'   whose doses may be missing from `gaps`.
 #' @noRd
 articleDoseGaps <- function(articleDir, db, exempt, noArticle = character(0)) {
   files <- list.files(system.file("modeldb", package = "nlmixr2lib"), "[.]R$", recursive = TRUE, full.names = TRUE)
@@ -883,9 +871,14 @@ articleDoseGaps <- function(articleDir, db, exempt, noArticle = character(0)) {
   }
   rows <- list()
   unknown <- list()
+  unreadable <- list()
   for (j in which(!is.na(rmds))) {
     a <- articles[j]
     d <- articleDoseCmts(rmds[j], named$name[named$vignette == a])
+    ur <- attr(d, "unreadable")
+    if (length(ur)) {
+      unreadable[[a]] <- data.frame(article = a, line = unname(ur), reason = names(ur))
+    }
     if (!nrow(d)) {
       next
     }
@@ -917,6 +910,10 @@ articleDoseGaps <- function(articleDir, db, exempt, noArticle = character(0)) {
   list(
     gaps = all[!isExempt, ],
     exempted = exempt[paste(exempt$model, exempt$state) %in% paste(all$model, all$state), ],
-    unknown = unknown
+    unknown = unknown,
+    unreadable = do.call(
+      rbind,
+      c(list(data.frame(article = character(0), line = integer(0), reason = character(0))), unreadable)
+    )
   )
 }

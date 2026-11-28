@@ -520,10 +520,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
   if (inherits(exprs, "error")) {
     return(TRUE)
   }
-  calls <- list()
-  for (e in exprs) {
-    calls <- .doseTimingCalls(e, calls)
-  }
+  calls <- .doseTimingCalls(exprs)
   "central" %in% vapply(calls, `[[`, character(1), "cmt")
 }
 

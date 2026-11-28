@@ -1,7 +1,9 @@
 # Read the R code an Rmd article runs, without evaluating it and without knitr
 # (knitr is only in Suggests). Used by the `nesting_assertion` rule of
-# checkModelConventions(); any check that has to know what an article does reads
-# it through .articleExprs().
+# checkModelConventions() and by the article-dose gate
+# (tests/testthat/helper-articleDoses.R); any check that has to know what an
+# article does reads it through .articleExprs(). .walkCalls() is also the walker
+# behind .doseTimingCalls(), which reads a model() block.
 
 # Spellings of FALSE that a YAML 1.1 parser (the one knitr uses for `#| eval:`)
 # reads as a logical.

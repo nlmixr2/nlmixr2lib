@@ -2819,31 +2819,38 @@ checkModelConventions <- function(model, verbose = TRUE) {
   "podo0"
 )
 
-# Every `f(cmt)` call to a dose-history function in an expression, as
-# c(fn = , cmt = ) pairs. A bare `tad()` refers to any compartment's doses and
-# is not collected. A namespaced `rxode2::tad(depot)` is not collected either:
-# rxode2's model syntax has no `::` and rejects it, as it rejects a quoted
-# compartment, so only an expression built outside a model can carry either.
-# The quoted form is still collected.
-.doseTimingCalls <- function(e, acc = list()) {
-  if (!is.call(e)) {
-    return(acc)
-  }
-  # `e[[i]]` is tested in place throughout: bound to a variable, an empty
-  # argument such as the one in `x[, 1]` or `tad(, 1)` errors when the variable
-  # is read. The empty argument is a name whose text is "".
+# Every `f(cmt)` call to a dose-history function in an expression, or in a
+# list of expressions such as `ui$lstExpr`, as c(fn = , cmt = ) pairs, in the
+# depth-first order .walkCalls() visits them. A bare `tad()` refers to any
+# compartment's doses and is not collected. A namespaced `rxode2::tad(depot)`
+# is not collected either: rxode2's model syntax has no `::` and rejects it, as
+# it rejects a quoted compartment, so only an expression built outside a model
+# can carry either. The quoted form is still collected.
+.doseTimingCalls <- function(e) {
+  acc <- new.env(parent = emptyenv())
+  acc$calls <- list()
+  .walkCalls(e, function(x) {
+    hit <- .doseTimingCall(x)
+    if (!is.null(hit)) acc$calls[[length(acc$calls) + 1L]] <- hit
+  })
+  acc$calls
+}
+
+# The c(fn = , cmt = ) pair of the call `e` when it is `f(cmt)` with `f` a
+# dose-history function (see .doseTimingCalls()), or NULL. `e[[2]]` is tested
+# in place: bound to a variable, an empty argument such as the one in
+# `tad(, 1)` errors when the variable is read. The empty argument is a name
+# whose text is "".
+.doseTimingCall <- function(e) {
   if (
     is.name(e[[1]]) &&
       as.character(e[[1]]) %in% .doseTimingFunctions &&
       length(e) >= 2L &&
       ((is.name(e[[2]]) && nzchar(as.character(e[[2]]))) || (is.character(e[[2]]) && length(e[[2]]) == 1L))
   ) {
-    acc[[length(acc) + 1L]] <- c(fn = as.character(e[[1]]), cmt = as.character(e[[2]]))
+    return(c(fn = as.character(e[[1]]), cmt = as.character(e[[2]])))
   }
-  for (i in seq_along(e)[-1L]) {
-    if (is.call(e[[i]])) acc <- .doseTimingCalls(e[[i]], acc)
-  }
-  acc
+  NULL
 }
 
 # A dose-history function must name a compartment the model is dosed into. A
@@ -2864,10 +2871,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
       "Check that the model parses with rxode2::rxode2()."
     ))
   }
-  calls <- list()
-  for (e in exprs) {
-    calls <- .doseTimingCalls(e, calls)
-  }
+  calls <- .doseTimingCalls(exprs)
   if (!length(calls)) {
     return(issues)
   }
