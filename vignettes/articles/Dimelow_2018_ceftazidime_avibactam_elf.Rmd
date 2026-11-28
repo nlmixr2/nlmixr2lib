@@ -156,7 +156,9 @@ above. Checked against a typical-value solve so the identity is exact:
 ```{r link-in-model}
 solve_typical <- function(mod, amt) {
   ev <- rxode2::et(amt = amt, dur = 2, cmt = "central") |>
-    rxode2::et(seq(0, 8, by = 0.02), cmt = "Cc")
+    rxode2::et(seq(0, 8, by = 0.02), cmt = "central") |>
+    as.data.frame() |>
+    dplyr::mutate(dvid = ifelse(evid == 0L, 1L, NA_integer_))
   as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod), ev, useLinCmt = FALSE))
 }
 tv_cef <- solve_typical(cef, 2000)
@@ -196,10 +198,10 @@ obs_grid <- sort(unique(c(seq(0, tau, by = 0.1), seq(t_last, t_last + tau, by = 
 
 make_events <- function(amt, n, id_offset, cohort) {
   rxode2::et(amt = amt, dur = 2, ii = tau, addl = n_doses - 1L, cmt = "central") |>
-    rxode2::et(obs_grid, cmt = "Cc") |>
+    rxode2::et(obs_grid, cmt = "central") |>
     rxode2::et(id = id_offset + seq_len(n)) |>
     as.data.frame() |>
-    dplyr::mutate(cohort = cohort)
+    dplyr::mutate(dvid = ifelse(evid == 0L, 1L, NA_integer_), cohort = cohort)
 }
 
 ev_cef <- dplyr::bind_rows(
@@ -231,15 +233,13 @@ Two rxode2 details are load-bearing for these models.
 silently drops the second peripheral compartment of a `k12`/`k21`/`k13`/`k31`
 parameterisation and mis-maps the two endpoints onto compartment slots.
 
-**Observation rows use `cmt = "Cc"`, not `cmt = "central"`.** Both models declare
-*two* endpoints (`Cc ~ prop(...)` and `Celf ~ prop(...)`), so rxode2 builds a
-`dvid`-to-`cmt` map onto the endpoint slots that follow the three ODE states;
-an observation row pointing at `central` is then rejected outright. Because
-`Cc` and `Celf` are already declared endpoints, naming one on an observation row
-appends nothing and renumbers nothing -- the usual hazard of writing an
-algebraic observable into `cmt` does not apply here. The assertion below pins
-that: the ODE states must still be the three named compartments in order, and
-`peripheral2` must actually carry drug.
+**Observation rows use `cmt = "central"` with `dvid = 1`.** Both models declare
+*two* endpoints (`Cc ~ prop(...)` and `Celf ~ prop(...)`), so an observation
+row on the `central` ODE state needs a `dvid` to say which endpoint it belongs
+to (without one, rxode2 rejects it); `dvid = 1` selects `Cc`, and both `Cc` and
+`Celf` are returned as columns regardless. The assertion below pins that the ODE
+states are still the three named compartments in order, and that
+`peripheral2` actually carries drug.
 
 ```{r simulate}
 sim_cef <- rxode2::rxSolve(cef, events = ev_cef, keep = "cohort", useLinCmt = FALSE) |>

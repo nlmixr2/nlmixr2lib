@@ -105,7 +105,7 @@ iv_inf_dur <- 10 / 60   # 10-min IV infusion per Dunn 2025 Methods
 build_obs <- function(c) {
   c |>
     tidyr::expand_grid(time = times_obs) |>
-    dplyr::mutate(evid = 0L, amt = 0, rate = 0, cmt = "Cc")
+    dplyr::mutate(evid = 0L, amt = 0, rate = 0, cmt = "central")
 }
 
 build_dose_iv <- function(c, amt_mg) {

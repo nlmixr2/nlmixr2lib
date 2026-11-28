@@ -2,6 +2,8 @@
 
 # development version
 
+- Articles whose names start with C or D (42 articles) now put an ODE state in `cmt` on event-table observation rows instead of an algebraic observable (`Cc`, `RBC`, `log_cfu`, `tumor_vol`, a numeric endpoint slot, and the like). Multi-endpoint models get a `dvid` column on those rows to keep the endpoint choice. The rendered results are unchanged.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.

@@ -162,7 +162,8 @@ build_events <- function(cohort, infusion_h, obs_grid, treatment_label) {
     select(id, AGE, SEXF, WT, HT, BMI, GFR_IO, renal_gp) |>
     tidyr::crossing(time = obs_grid) |>
     mutate(amt = NA_real_, dur = NA_real_,
-           evid = 0L, cmt = "Cc",
+           evid = 0L, cmt = "central",
+           dvid = 1L,  # Cc, the first of the model's two endpoints
            treatment = treatment_label)
   bind_rows(dose_rows, obs_rows) |>
     arrange(id, time, desc(evid)) |>

@@ -191,7 +191,7 @@ d_obs <- pop |>
   mutate(
     AMT  = 0,
     EVID = 0,
-    CMT  = "Cc",
+    CMT  = "central",
     RATE = 0,
     DV   = NA_real_
   )
@@ -398,7 +398,7 @@ one_dose <- function(dose_mg) {
   d_obs_typ <- tibble(
     ID = 1L,
     TIME = sort(unique(c(seq(0, 2 * week_h, by = 1), c(0, week_h) + 1))),
-    AMT = 0, EVID = 0L, CMT = "Cc", RATE = 0, DV = NA_real_,
+    AMT = 0, EVID = 0L, CMT = "central", RATE = 0, DV = NA_real_,
     WT = wt_med, IBW = ibw_med, WBC = wbc_med
   )
   d <- bind_rows(d_dose_typ, d_obs_typ) |> arrange(TIME, desc(EVID))

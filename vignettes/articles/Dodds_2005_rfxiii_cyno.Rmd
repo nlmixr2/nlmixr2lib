@@ -95,6 +95,14 @@ The 2 (on the `B`-loss term) and 3 (on the `A2B2`-gain term) coefficients arise 
 ```{r load}
 mod <- readModelDb("Dodds_2005_rfxiii_cyno")
 mod_typical <- rxode2::zeroRe(mod)
+
+# Observation rows sit on the `A2` ODE state; dvid = 1 selects the first
+# endpoint (total_a2_assay) of this three-endpoint model.
+obs_a2 <- function(ev) {
+  ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
+  ev
+}
 ```
 
 # Steady-state hold
@@ -103,7 +111,7 @@ With no dose administered, the analytical initial conditions (Equations 4-7) sho
 
 ```{r ss-hold}
 times_ss  <- seq(0, 28 * 24, by = 6)
-ev_ss     <- rxode2::et(times_ss, cmt = "total_a2_assay")
+ev_ss     <- obs_a2(rxode2::et(times_ss, cmt = "A2"))
 sim_ss    <- rxode2::rxSolve(mod_typical, ev_ss)
 
 ss_ranges <- sapply(
@@ -142,7 +150,8 @@ Displacing one state and letting the system relax tests both the (i) signed dire
 pulse_A2 <- 2 * sim_ss$A2[1]
 ev_pert  <- rxode2::et() |>
   rxode2::et(amt = pulse_A2 - sim_ss$A2[1], cmt = "A2", time = 0) |>
-  rxode2::et(seq(0, 72, by = 0.25), cmt = "total_a2_assay")
+  rxode2::et(seq(0, 72, by = 0.25), cmt = "A2") |>
+  obs_a2()
 sim_pert <- rxode2::rxSolve(mod_typical, ev_pert)
 
 ggplot(sim_pert, aes(time, A2)) +
@@ -205,7 +214,8 @@ Dodds 2005 Figure 6 shows the typical-value predictions for a single 5 mg/kg IV 
 ```{r fig6-single, fig.cap="Replicates the top panel of Figure 6: typical-value response to a single 5 mg/kg IV bolus of rA2 at t = 0, with 100 h of pre-dose baseline."}
 ev_single <- rxode2::et() |>
   rxode2::et(amt = 5, cmt = "A2", time = 0) |>
-  rxode2::et(seq(-100, 30 * 24, by = 1), cmt = "total_a2_assay")
+  rxode2::et(seq(-100, 30 * 24, by = 1), cmt = "A2") |>
+  obs_a2()
 sim_single <- rxode2::rxSolve(mod_typical, ev_single) |> as.data.frame()
 
 sim_single_long <- sim_single |>
@@ -233,7 +243,8 @@ ggplot(sim_single_long, aes(time, conc_mg_L, colour = assay, linetype = assay)) 
 ```{r fig6-multi, fig.cap="Replicates the bottom panel of Figure 6: typical-value response to 14 daily 6 mg/kg IV boluses of rA2, with 100 h of pre-dose baseline. Dose-induced accumulation of A2B2 builds over the dosing window and decays slowly thereafter."}
 ev_multi <- rxode2::et() |>
   rxode2::et(amt = 6, cmt = "A2", time = 0, ii = 24, addl = 13) |>
-  rxode2::et(seq(-100, 30 * 24, by = 1), cmt = "total_a2_assay")
+  rxode2::et(seq(-100, 30 * 24, by = 1), cmt = "A2") |>
+  obs_a2()
 sim_multi <- rxode2::rxSolve(mod_typical, ev_multi) |> as.data.frame()
 
 sim_multi_long <- sim_multi |>
@@ -268,8 +279,9 @@ n_sub <- 100
 times <- c(0, 0.25, 1, 2, 4, 8, 24, 72, 120, 168, 240, 336, 504, 672)
 ev_vpc <- rxode2::et() |>
   rxode2::et(amt = 5, cmt = "A2", time = 0) |>
-  rxode2::et(times, cmt = "total_a2_assay") |>
-  rxode2::et(id = seq_len(n_sub))
+  rxode2::et(times, cmt = "A2") |>
+  rxode2::et(id = seq_len(n_sub)) |>
+  obs_a2()
 
 sim_vpc <- rxode2::rxSolve(mod, ev_vpc) |> as.data.frame()
 

@@ -105,14 +105,18 @@ set.seed(20260515)
 # 469 days = 67 weeks (full study duration: 6-week run-in + 60-week treatment).
 sample_times <- c(0, seq(7, 469, by = 7))
 
-build_obs <- function(id_vec, cmt) {
+# Observation rows sit on the `weight` ODE state; dvid = 1 selects the WGT
+# endpoint, the first of the model's four (WGT, FSI, FPG, HbA1c). Every output
+# is returned as a column on every row.
+build_obs <- function(id_vec) {
   expand.grid(id = id_vec, time = sample_times) |>
     dplyr::transmute(
       id   = id,
       time = time,
       evid = 0L,
       amt  = 0,
-      cmt  = cmt
+      cmt  = "weight",
+      dvid = 1L
     )
 }
 ```
@@ -127,7 +131,7 @@ mod_tv <- rxode2::zeroRe(mod)   # typical-value (no IIV)
 Replicates the population (typical-value) prediction lines from Choy 2016 Figures 2 (`EFW`), 3 (weight, FSI, FPG, HbA1c), and 4 (fractional change from baseline). For each output, the lifestyle intervention drives a small but coherent transient deflection that returns toward baseline by the end of the 67-week observation window.
 
 ```{r tv-sim}
-ev_tv <- build_obs(1L, cmt = 5L)
+ev_tv <- build_obs(1L)
 
 sim_tv <- rxode2::rxSolve(mod_tv, events = ev_tv) |>
   as.data.frame() |>
@@ -294,7 +298,7 @@ A 200-subject VPC of weight, FSI, FPG, and HbA1c uses the published diagonal IIV
 
 ```{r vpc-cohort}
 n_sub <- 200L
-ev_vpc <- build_obs(seq_len(n_sub), cmt = 5L)
+ev_vpc <- build_obs(seq_len(n_sub))
 
 sim_vpc <- rxode2::rxSolve(mod, events = ev_vpc) |>
   as.data.frame()

@@ -180,7 +180,8 @@ events <- cohort %>%
       time = obs_grid,
       amt  = 0,
       evid = 0L,
-      cmt  = "Cc",
+      cmt  = "central",
+      dvid = 1L,   # Cc, the first of the model's two endpoints
       WT   = row$WT,
       BSA  = row$BSA,
       DOSE = row$dose_mg,
