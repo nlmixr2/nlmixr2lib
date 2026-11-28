@@ -2,6 +2,8 @@
 
 # development version
 
+- Articles starting with B: observation rows in the event tables now name the ODE state an endpoint is computed from (`cmt = "central"` and the like) instead of an algebraic observable such as `Cc`; for multi-endpoint models they select the endpoint with `dvid`. Simulated results are unchanged.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.
