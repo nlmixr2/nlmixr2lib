@@ -139,7 +139,7 @@ build_events <- function(cohort_df) {
   # would create per-time duplicates that PKNCA rejects.
   obs_rows <- cohort_df[rep(seq_len(nrow(cohort_df)), each = length(obs_times)), ] %>%
     transmute(id, time = rep(obs_times, nrow(cohort_df)), evid = 0L,
-              amt = 0, cmt = "Cc_r", treatment, WT)
+              amt = 0, cmt = "central_r", dvid = 1L, treatment, WT)
   dplyr::bind_rows(dose_rows, obs_rows) %>%
     dplyr::arrange(id, time, dplyr::desc(evid))
 }

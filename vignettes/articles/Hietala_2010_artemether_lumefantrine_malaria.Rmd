@@ -158,6 +158,7 @@ build_arm_events <- function(subjects, obs_times, dose_times) {
       evid      = 1L,
       amt       = dose_amt,
       cmt       = "depot",
+      dvid      = NA_integer_,
       WT        = s$WT,
       OCC       = seq_along(dose_times),
       treatment = s$treatment
@@ -167,7 +168,8 @@ build_arm_events <- function(subjects, obs_times, dose_times) {
       time      = obs_times,
       evid      = 0L,
       amt       = 0,
-      cmt       = "Cc",
+      cmt       = "central",
+      dvid      = 1L,
       WT        = s$WT,
       OCC       = occ_at(obs_times),
       treatment = s$treatment
@@ -242,7 +244,7 @@ build_lum_events <- function(subjects, obs_times, dose_times) {
       time      = obs_times,
       evid      = 0L,
       amt       = 0,
-      cmt       = "Cc",
+      cmt       = "central",
       WT        = s$WT,
       treatment = s$treatment
     )
@@ -327,6 +329,7 @@ build_pd_events <- function(subjects, obs_times_pd, dose_times_pd) {
       evid      = 1L,
       amt       = dose_amt,
       cmt       = "depot",
+      dvid      = NA_integer_,
       WT        = s$WT,
       OCC       = seq_along(dose_times_pd),
       treatment = s$treatment
@@ -338,7 +341,8 @@ build_pd_events <- function(subjects, obs_times_pd, dose_times_pd) {
       time      = obs_times_pd,
       evid      = 0L,
       amt       = 0,
-      cmt       = "visibleParasitemia",
+      cmt       = "parasite_tinyrings",
+      dvid      = 3L,
       WT        = s$WT,
       OCC       = obs_occ,
       treatment = s$treatment

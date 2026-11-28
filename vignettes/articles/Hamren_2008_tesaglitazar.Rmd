@@ -145,7 +145,7 @@ make_cohort <- function(row, n_per_cohort) {
     )
   obs <- tidyr::expand_grid(id = ids, time = obs_times) |>
     dplyr::mutate(
-      cmt = "Cc", amt = NA_real_, evid = 0L
+      cmt = "central", dvid = 1L, amt = NA_real_, evid = 0L
     )
   dplyr::bind_rows(doses, obs) |>
     dplyr::mutate(
@@ -188,7 +188,7 @@ mod_typical <- rxode2::zeroRe(mod)
 events_typical <- cohorts |>
   dplyr::mutate(id = dplyr::row_number()) |>
   tidyr::expand_grid(time = obs_times) |>
-  dplyr::mutate(cmt = "Cc", amt = NA_real_, evid = 0L) |>
+  dplyr::mutate(cmt = "central", dvid = 1L, amt = NA_real_, evid = 0L) |>
   dplyr::bind_rows(
     cohorts |>
       dplyr::mutate(id = dplyr::row_number()) |>

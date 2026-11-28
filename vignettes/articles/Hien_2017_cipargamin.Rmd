@@ -122,21 +122,17 @@ make_cohort <- function(dose_mg, n, id_offset) {
     mutate(time = 0, evid = 1L, amt = dose_mg, cmt = "depot")
 
   # Observation rows (evid = 0). The model has two ~ prop() residual
-  # endpoints (Cc, parasitemia_total); observation rows target the
-  # observable name directly so rxode2 routes the residual to the right
-  # endpoint. Following the Hietala 2010 vignette precedent
-  # (`Hietala_2010_artemether_lumefantrine_malaria.Rmd` uses
-  # `cmt = "visibleParasitemia"` for parasite-density observations),
-  # the observable-name-in-cmt idiom is safe when the model uses ODE
-  # state names throughout (no reliance on numeric slot indices past
-  # the auto-injected observable slots). rxode2 still returns BOTH
+  # endpoints (Cc, parasitemia_total); each observation row sits on an ODE
+  # state the observable is computed from (central for Cc,
+  # parasite_sensitive for parasitemia_total) and names the endpoint by
+  # dvid in the order of the model's `~` lines. rxode2 still returns BOTH
   # observables as columns at every observation row.
   obs_rows_pk <- subj |>
     tidyr::crossing(time = obs_times) |>
-    mutate(evid = 0L, amt = NA_real_, cmt = "Cc")
+    mutate(evid = 0L, amt = NA_real_, cmt = "central", dvid = 1L)
   obs_rows_pd <- subj |>
     tidyr::crossing(time = obs_times) |>
-    mutate(evid = 0L, amt = NA_real_, cmt = "parasitemia_total")
+    mutate(evid = 0L, amt = NA_real_, cmt = "parasite_sensitive", dvid = 2L)
 
   bind_rows(dose_row, obs_rows_pk, obs_rows_pd) |>
     arrange(id, time, desc(evid))

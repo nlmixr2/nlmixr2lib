@@ -100,9 +100,11 @@ sim_scenario <- function(mod_typical, amt_aml, amt_val, id = 1L) {
   # dur values match the population D1 estimates (aml 5.28 h; val 4.39 h). A
   # drug a scenario leaves out gets no dose record: rxode2 5.1.8.9000 fails the
   # subject on a zero-amount infusion with a duration.
-  ev <- rxode2::et(seq(0, 24, by = 0.25), cmt = "Cc")
+  ev <- rxode2::et(seq(0, 24, by = 0.25), cmt = "central")
   if (amt_aml > 0) ev <- rxode2::et(ev, amt = amt_aml, cmt = "central", dur = 5.28, time = 0)
   if (amt_val > 0) ev <- rxode2::et(ev, amt = amt_val, cmt = "central_val", dur = 4.39, time = 0)
+  ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$WT <- 70
   ev$id <- id
   rxode2::rxSolve(mod_typical, ev) |>
@@ -288,8 +290,9 @@ events <- purrr::map_dfr(seq_len(n_sub), function(i) {
   ev <- rxode2::et(amt = 10,  cmt = "central",     dur = 5.28, time = 0) |>
         rxode2::et(amt = 160, cmt = "central_val", dur = 4.39, time = 0) |>
         rxode2::et(c(0, 0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10, 12, 16, 24,
-                     36, 48, 72, 96, 144, 192), cmt = "Cc")
+                     36, 48, 72, 96, 144, 192), cmt = "central")
   df <- as.data.frame(ev)
+  df$dvid <- ifelse(df$evid == 0L, 1L, NA_integer_)
   df$id <- i
   df$WT <- wt
   df

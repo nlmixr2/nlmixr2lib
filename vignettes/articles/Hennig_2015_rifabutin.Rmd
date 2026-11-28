@@ -193,7 +193,8 @@ events <- cohort |>
       time = sample_t,
       amt  = 0,
       evid = 0L,
-      cmt  = "Cc"
+      cmt  = "central",
+      dvid = 1L
     )
     bind_rows(dose_rows, obs_rows)
   }) |>
@@ -310,7 +311,7 @@ events_strata <- strata |>
     )
     obs_rows <- tibble::tibble(
       id = one$id, time = last_dose_t + plot_grid,
-      amt = 0, evid = 0L, cmt = "Cc"
+      amt = 0, evid = 0L, cmt = "central", dvid = 1L
     )
     bind_rows(dose_rows, obs_rows)
   }) |>

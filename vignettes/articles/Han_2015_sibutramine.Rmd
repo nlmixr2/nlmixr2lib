@@ -107,7 +107,7 @@ build_events <- function(demo_df) {
   # Body-weight observation grid (every 28 days, 4-weekly, like the trial).
   obs_times <- sort(unique(c(0, seq(28, 365, by = 28), 365)))
   expand_grid(id = demo_df$id, time = obs_times) %>%
-    mutate(evid = 0L, amt = 0, cmt = "BW") %>%
+    mutate(evid = 0L, amt = 0, cmt = "bw", dvid = 3L) %>%
     left_join(demo_df %>% select(id, AGE, SEXF, BMI, DOSE, arm),
               by = "id") %>%
     arrange(id, time)
@@ -248,11 +248,11 @@ build_pk_events <- function(subjects, dose) {
   # Dense PK sampling over the 30th (steady-state) dosing interval (days 29-30).
   pk_obs_times <- 29 + c(0, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 20, 24) / 24
   pk_obs <- expand_grid(id = subjects$id, time = pk_obs_times) %>%
-    mutate(evid = 0L, amt = 0, cmt = "Cc", ii = 0, addl = 0, ss = 0) %>%
+    mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L, ii = 0, addl = 0, ss = 0) %>%
     left_join(subjects %>% select(id, AGE, SEXF, BMI, DOSE), by = "id")
   bind_rows(pk_doses, pk_obs) %>%
     arrange(id, time, desc(evid)) %>%
-    select(id, time, evid, amt, cmt, ii, addl, ss, AGE, SEXF, BMI, DOSE)
+    select(id, time, evid, amt, cmt, dvid, ii, addl, ss, AGE, SEXF, BMI, DOSE)
 }
 
 pk_events <- build_pk_events(pk_subjects, dose = 12.55)

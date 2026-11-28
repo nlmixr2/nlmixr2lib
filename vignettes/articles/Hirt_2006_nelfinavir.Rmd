@@ -154,8 +154,9 @@ build_events <- function(row) {
   amt_mg <- row$WT * mg_per_kg_tid[[row$cohort]]
   dose_times <- seq(0, by = tau, length.out = n_doses)
   ev <- rxode2::et(amt = amt_mg, cmt = "depot", time = dose_times)
-  ev <- rxode2::et(ev, time = obs_grid, cmt = "Cc")
+  ev <- rxode2::et(ev, time = obs_grid, cmt = "central")
   ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$id <- row$id
   ev$AGE <- row$AGE
   ev$WT <- row$WT
@@ -204,8 +205,9 @@ ref_wt <- 1  # plot CL/F per kg so the curve is comparable to Figure 3
 
 events_age <- {
   ev <- rxode2::et(amt = 100, cmt = "depot", time = 0)
-  ev <- rxode2::et(ev, time = c(0.1, 1, 2, 4, 6, 8, 12, 24), cmt = "Cc")
+  ev <- rxode2::et(ev, time = c(0.1, 1, 2, 4, 6, 8, 12, 24), cmt = "central")
   ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   out <- do.call(rbind, lapply(seq_along(age_grid), function(i) {
     e <- ev
     e$id <- i

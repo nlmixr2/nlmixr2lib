@@ -121,7 +121,9 @@ Without an external glucose challenge, both models should approach the drug-free
 The HGC model carries a small caveat: the Gaussian first-phase insulin pulse fires at t = Tsec = 3.54 min by construction (it is not gated by glucose elevation), so even a drug-free simulation shows a transient insulin spike and a small glucose dip in the first ~10 min. This is the paper's design choice -- t = 0 is implicitly the start of the HGC challenge -- and is documented in Assumptions and deviations below.
 
 ```{r ss-hgc}
-ss_events <- rxode2::et(seq(0, 1000, by = 10), cmt = "Gc")
+ss_events <- rxode2::et(seq(0, 1000, by = 10), cmt = "glucose") |>
+  as.data.frame()
+ss_events$dvid   <- 1L
 ss_events$FPG    <- 1300
 ss_events$INS_BL <- 13
 ss_events$OCC    <- 1        # occasion index for the IOV terms; see Assumptions
@@ -168,7 +170,9 @@ gir_rate <- 200
 hgc_events <- rxode2::et() |>
   rxode2::et(amt = loading_dose, cmt = "glucose", time = 0) |>
   rxode2::et(amt = gir_rate * 120, cmt = "glucose", time = 0, rate = gir_rate) |>
-  rxode2::et(seq(0, 240, by = 2), cmt = "Gc")
+  rxode2::et(seq(0, 240, by = 2), cmt = "glucose") |>
+  as.data.frame()
+hgc_events$dvid   <- ifelse(hgc_events$evid == 0L, 1L, NA_integer_)
 hgc_events$FPG    <- gcss
 hgc_events$INS_BL <- icss
 hgc_events$OCC    <- 1
@@ -205,7 +209,9 @@ The MTT model takes a dummy 100 g (= 100000 mg) meal-glucose dose and absorbs it
 ```{r mtt-perturb}
 mtt_events <- rxode2::et() |>
   rxode2::et(amt = 100000, cmt = "glucose", time = 0) |>
-  rxode2::et(seq(0, 240, by = 2), cmt = "Gc")
+  rxode2::et(seq(0, 240, by = 2), cmt = "glucose") |>
+  as.data.frame()
+mtt_events$dvid   <- ifelse(mtt_events$evid == 0L, 1L, NA_integer_)
 mtt_events$FPG    <- gcss
 mtt_events$INS_BL <- icss
 mtt_events$OCC    <- 1
@@ -260,8 +266,9 @@ cohort_baseline <- tibble::tibble(
 hgc_one <- rxode2::et() |>
   rxode2::et(amt = loading_dose, cmt = "glucose", time = 0) |>
   rxode2::et(amt = gir_rate * 120, cmt = "glucose", time = 0, rate = gir_rate) |>
-  rxode2::et(seq(0, 180, by = 5), cmt = "Gc") |>
-  as.data.frame()
+  rxode2::et(seq(0, 180, by = 5), cmt = "glucose") |>
+  as.data.frame() |>
+  dplyr::mutate(dvid = ifelse(evid == 0L, 1L, NA_integer_))
 
 hgc_pop_events <- tidyr::crossing(cohort_baseline, hgc_one) |>
   dplyr::arrange(id, time)
@@ -311,8 +318,9 @@ mtt_cohort <- tibble::tibble(
 
 mtt_one <- rxode2::et() |>
   rxode2::et(amt = 100000, cmt = "glucose", time = 0) |>
-  rxode2::et(seq(0, 240, by = 5), cmt = "Gc") |>
-  as.data.frame()
+  rxode2::et(seq(0, 240, by = 5), cmt = "glucose") |>
+  as.data.frame() |>
+  dplyr::mutate(dvid = ifelse(evid == 0L, 1L, NA_integer_))
 
 mtt_pop_events <- tidyr::crossing(mtt_cohort, mtt_one) |>
   dplyr::arrange(id, time)

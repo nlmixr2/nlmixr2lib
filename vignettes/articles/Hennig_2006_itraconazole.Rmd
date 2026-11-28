@@ -137,7 +137,7 @@ make_cohort <- function(n, capsule, id_offset = 0L) {
   obs <- base |>
     select(id, WT, FORM_CAPSULE) |>
     tidyr::crossing(time = obs_grid) |>
-    mutate(evid = 0L, cmt = "Cc", amt = NA_real_)
+    mutate(evid = 0L, cmt = "central", dvid = 1L, amt = NA_real_)
   bind_rows(doses, obs) |>
     arrange(id, time, desc(evid)) |>
     mutate(treatment = ifelse(FORM_CAPSULE == 1, "capsule", "oral solution"))
@@ -195,7 +195,7 @@ events_typ <- bind_rows(
 ) |>
   bind_rows(
     tidyr::crossing(id = c(1L, 2L), time = seq(0.05, 24, length.out = 240)) |>
-      mutate(evid = 0L, cmt = "Cc", amt = NA_real_) |>
+      mutate(evid = 0L, cmt = "central", dvid = 1L, amt = NA_real_) |>
       mutate(WT = 35,
              FORM_CAPSULE = ifelse(id == 1L, 1L, 0L),
              treatment = ifelse(id == 1L, "capsule", "oral solution"))

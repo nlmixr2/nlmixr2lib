@@ -113,8 +113,9 @@ subj <- tibble::tibble(
 # Build the event table: daily dosing at t = 0, 24, ..., 24 * (n_days - 1) hours,
 # with observation sampling every 6 h across the full simulation horizon (60
 # days) so we can characterise both the approach to steady state and the
-# steady-state plateau. cmt = "Cc_tgn" is a placeholder that triggers rxSolve
-# to return every output column (Cc_tgn and Cc_mmpn) at each observation row.
+# steady-state plateau. Observation rows sit on the 6-TGN state `central_tgn`
+# with dvid = 1 (the Cc_tgn endpoint); rxSolve returns every output column
+# (Cc_tgn and Cc_mmpn) at each observation row.
 n_days     <- 60L
 dose_times <- seq(0, by = 24, length.out = n_days)
 obs_times  <- seq(0, n_days * 24, by = 6)
@@ -123,8 +124,9 @@ make_one_subject <- function(i) {
   row <- subj[i, ]
   ev <- rxode2::et(amt = row$daily_dose_mg, cmt = "depot",
                    time = dose_times)
-  ev <- rxode2::et(ev, time = obs_times, cmt = "Cc_tgn")
+  ev <- rxode2::et(ev, time = obs_times, cmt = "central_tgn")
   ev <- as.data.frame(ev)
+  ev$dvid     <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$id       <- row$id
   ev$WT       <- row$WT
   ev$BSA      <- row$BSA
@@ -172,8 +174,9 @@ TPMT wild-type vs. TPMT mutation.
 median_subj <- function(tpmt_mut) {
   ev <- rxode2::et(amt = 86, cmt = "depot",
                    time = dose_times)
-  ev <- rxode2::et(ev, time = obs_times, cmt = "Cc_tgn")
+  ev <- rxode2::et(ev, time = obs_times, cmt = "central_tgn")
   ev <- as.data.frame(ev)
+  ev$dvid     <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$id       <- 1L
   ev$WT       <- 33.4
   ev$BSA      <- 1.14
@@ -309,8 +312,9 @@ vs-simulated comparison.
 ```{r pknca-events}
 pknca_events <- {
   ev <- rxode2::et(amt = 50, cmt = "depot", time = 0)
-  ev <- rxode2::et(ev, time = seq(0, 28 * 24, by = 2), cmt = "Cc_tgn")
+  ev <- rxode2::et(ev, time = seq(0, 28 * 24, by = 2), cmt = "central_tgn")
   ev <- as.data.frame(ev)
+  ev$dvid     <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$id       <- 1L
   ev$WT       <- 33.4
   ev$BSA      <- 1.14

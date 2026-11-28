@@ -166,10 +166,11 @@ obs_rows <- table3 |>
     amt  = NA_real_,
     rate = NA_real_,
     dv   = NA_real_,
-    cmt  = "Cc",
+    cmt  = "central",
+    dvid = 1L,
     CRCL = ecclcr
   ) |>
-  dplyr::select(id, time, evid, amt, rate, dv, cmt, CRCL)
+  dplyr::select(id, time, evid, amt, rate, dv, cmt, dvid, CRCL)
 
 events_table3 <- dplyr::bind_rows(dose_rows, obs_rows) |>
   dplyr::arrange(id, time, -evid)
@@ -388,7 +389,8 @@ build_regimen_doses <- function(rg, ecclcr, id_offset, sim_horizon_h = 24,
       amt  = NA_real_,
       rate = NA_real_,
       dv   = NA_real_,
-      cmt  = "Cc"
+      cmt  = "central",
+      dvid = 1L
     )
 
   out <- dplyr::bind_rows(dose_grid, obs_grid)

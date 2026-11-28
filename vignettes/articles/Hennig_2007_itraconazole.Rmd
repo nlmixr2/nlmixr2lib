@@ -150,7 +150,8 @@ build_events <- function(n, capsule_value, treatment_label, id_offset) {
     time      = 0,
     evid      = 1L,
     amt       = 200,    # mg
-    cmt       = 1L,     # depot
+    cmt       = "depot",
+    dvid      = NA_integer_,
     treatment = treatment_label,
     FORM_CAPSULE   = capsule_value
   )
@@ -161,8 +162,9 @@ build_events <- function(n, capsule_value, treatment_label, id_offset) {
   )
   obs_rows$evid      <- 0L
   obs_rows$amt       <- 0
-  obs_rows$cmt       <- 5L  # Cc (parent itraconazole); Cc_ohi is read from the
-                            # sim's wide-format columns alongside Cc.
+  obs_rows$cmt       <- "central"  # parent itraconazole; Cc_ohi is read from the
+                                   # sim's wide-format columns alongside Cc.
+  obs_rows$dvid      <- 1L         # Cc endpoint
   obs_rows$treatment <- treatment_label
   obs_rows$FORM_CAPSULE   <- capsule_value
   out <- rbind(dose_rows, obs_rows)
@@ -433,7 +435,8 @@ build_ss_events <- function(n, capsule_value, treatment_label,
   )
   dose_rows$evid      <- 1L
   dose_rows$amt       <- dose_mg
-  dose_rows$cmt       <- 1L  # depot
+  dose_rows$cmt       <- "depot"
+  dose_rows$dvid      <- NA_integer_
   dose_rows$treatment <- treatment_label
   dose_rows$FORM_CAPSULE   <- capsule_value
   obs_rows <- expand.grid(
@@ -443,7 +446,8 @@ build_ss_events <- function(n, capsule_value, treatment_label,
   )
   obs_rows$evid      <- 0L
   obs_rows$amt       <- 0
-  obs_rows$cmt       <- 5L  # Cc (parent itraconazole)
+  obs_rows$cmt       <- "central"  # parent itraconazole
+  obs_rows$dvid      <- 1L         # Cc endpoint
   obs_rows$treatment <- treatment_label
   obs_rows$FORM_CAPSULE   <- capsule_value
   out <- rbind(dose_rows, obs_rows)

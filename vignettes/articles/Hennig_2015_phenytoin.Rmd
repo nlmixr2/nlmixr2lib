@@ -171,11 +171,11 @@ build_events <- function(cohort, route = c("PO", "IV"), dose_mg_per_kg) {
   route <- match.arg(route)
   obs_grid <- c(seq(0.05, 4, by = 0.25), seq(5, 24, by = 1),
                 seq(28, 72, by = 4))
-  # rxode2 requires cmt on observation rows to identify which output to record;
-  # it returns Cc and Cb in the output frame regardless. Use Cc here.
+  # Observation rows sit on the central state with dvid = 1 (the Cc endpoint);
+  # rxode2 returns Cc and Cb in the output frame regardless.
   obs <- tibble::tibble(id = cohort$id) |>
     tidyr::crossing(time = obs_grid) |>
-    dplyr::mutate(amt = 0, evid = 0, cmt = "Cc", rate = 0)
+    dplyr::mutate(amt = 0, evid = 0, cmt = "central", dvid = 1L, rate = 0)
   dose <- cohort |>
     dplyr::transmute(
       id   = id,

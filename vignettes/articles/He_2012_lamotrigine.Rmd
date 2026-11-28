@@ -135,7 +135,7 @@ make_aed_cohort <- function(n, aed_name, vpa, cbz, pb, id_offset = 0L) {
     mutate(amt = amt_per_dose)
   obs_grid <- seq((n_doses - 1) * tau + 0.25, n_doses * tau, by = 0.5)
   obs <- tidyr::crossing(id = base$id, time = obs_grid) |>
-    mutate(evid = 0L, cmt = "Cc", amt = NA_real_) |>
+    mutate(evid = 0L, cmt = "central", amt = NA_real_) |>
     left_join(base, by = "id")
   bind_rows(doses, obs) |>
     arrange(id, time, desc(evid))

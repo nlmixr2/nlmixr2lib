@@ -132,7 +132,9 @@ events <- cohorts |>
   do({
     row <- .
     et_obj <- rxode2::et(time = 0, amt = row$dose, cmt = "depot") |>
-      rxode2::et(obs_times, cmt = "Cc")
+      rxode2::et(obs_times, cmt = "central") |>
+      as.data.frame()
+    et_obj$dvid  <- ifelse(et_obj$evid == 0L, 1L, NA_integer_)
     et_obj$id    <- row$id
     et_obj$WT    <- row$WT
     et_obj$IGE   <- row$IGE
@@ -285,7 +287,9 @@ this small drift.
 
 ```{r mechanism-check}
 mod_typ <- rxode2::zeroRe(mod)
-ev_nodose <- rxode2::et(seq(0, 30, by = 1), cmt = "Cc")
+ev_nodose <- rxode2::et(seq(0, 30, by = 1), cmt = "central") |>
+  as.data.frame() |>
+  dplyr::mutate(dvid = 1L)
 sim_nodose <- rxode2::rxSolve(mod_typ, events = ev_nodose,
                               params = c(WT = 61.1, IGE = 482.4),
                               returnType = "data.frame", addDosing = FALSE)

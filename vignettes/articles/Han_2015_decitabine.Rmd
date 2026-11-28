@@ -164,13 +164,13 @@ make_events <- function(id) {
     dur  = NA_real_
   )
   ev_obs_Cc  <- data.frame(id = id, time = pk_obs_times,
-                           evid = 0L, amt = 0, cmt = "Cc",
+                           evid = 0L, amt = 0, cmt = "central", dvid = 1L,
                            rate = NA_real_, dur = NA_real_)
   ev_obs_ANC <- data.frame(id = id, time = pd_obs_times,
-                           evid = 0L, amt = 0, cmt = "ANC",
+                           evid = 0L, amt = 0, cmt = "circ_anc", dvid = 2L,
                            rate = NA_real_, dur = NA_real_)
   ev_obs_PLT <- data.frame(id = id, time = pd_obs_times,
-                           evid = 0L, amt = 0, cmt = "PLT",
+                           evid = 0L, amt = 0, cmt = "circ_plt", dvid = 3L,
                            rate = NA_real_, dur = NA_real_)
   dplyr::bind_rows(ev_dose, ev_obs_Cc, ev_obs_ANC, ev_obs_PLT)
 }

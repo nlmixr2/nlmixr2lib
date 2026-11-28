@@ -155,7 +155,7 @@ build_events <- function(subjects, obs_times) {
     time = obs_times
   ) |>
     dplyr::left_join(dplyr::select(subjects, id, band, WT, HGB), by = "id") |>
-    dplyr::mutate(evid = 0L, amt = 0, cmt = "Cc", rate = 0, dur = 0)
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L, rate = 0, dur = 0)
   dplyr::bind_rows(dose_rows, obs_rows) |>
     dplyr::arrange(id, time, dplyr::desc(evid))
 }

@@ -146,18 +146,16 @@ make_cohort <- function(n, arm_label, dose_ug_per_kg, dur_days, start_day,
     dose_rows <- rad_row[0, ]
   }
 
-  # Multi-output model (Cc + ANC residual endpoints) requires per-endpoint
-  # observation rows so rxode2's dvid mapping resolves. The observables
-  # come AFTER all ODE states in this model, so referencing them as cmt =
-  # does not renumber any state-referencing slot (the slot-renumbering
-  # bug only fires when downstream ODE-state references would be
-  # displaced).
+  # Multi-output model (Cc + ANC residual endpoints): each observation row
+  # sits on the ODE state its observable is computed from (central for Cc,
+  # circ for ANC) and names the endpoint by dvid, in the order of the
+  # model's `~` lines (Cc = 1, ANC = 2).
   obs_cc <- tidyr::expand_grid(
     tibble::tibble(id = ids, WT = WT),
     tibble::tibble(time = obs_grid_h)
   ) |>
-    dplyr::mutate(amt = NA_real_, cmt = "Cc",  evid = 0L, arm = arm_label)
-  obs_anc <- obs_cc |> dplyr::mutate(cmt = "ANC")
+    dplyr::mutate(amt = NA_real_, cmt = "central", dvid = 1L, evid = 0L, arm = arm_label)
+  obs_anc <- obs_cc |> dplyr::mutate(cmt = "circ", dvid = 2L)
 
   dplyr::bind_rows(rad_row, dose_rows, obs_cc, obs_anc) |>
     dplyr::arrange(id, time, dplyr::desc(evid))
@@ -349,9 +347,9 @@ obs_grid_h <- c(seq(0, 0.5, by = 0.1), seq(0.6, 4, by = 0.2),
 ev_pk <- dplyr::bind_rows(
   ev_pk,
   tibble::tibble(id = 1L, time = obs_grid_h, amt = NA_real_,
-                 cmt = "Cc",  evid = 0L, WT = 70),
+                 cmt = "central", dvid = 1L, evid = 0L, WT = 70),
   tibble::tibble(id = 1L, time = obs_grid_h, amt = NA_real_,
-                 cmt = "ANC", evid = 0L, WT = 70)
+                 cmt = "circ", dvid = 2L, evid = 0L, WT = 70)
 )
 
 sim_pk <- rxode2::rxSolve(mod_typ, events = ev_pk, keep = "WT",
@@ -364,7 +362,7 @@ sim_pk$id <- 1L
 # MW = 18,800 g/mol so 1 nM = 18.8 ng/mL; the model parameterises in nM
 # but NCA descriptors are conventionally in ng/mL). The simulation has
 # duplicate (id, time) rows because every observation time has both a
-# cmt = "Cc" and a cmt = "ANC" entry; keep one row per time via distinct.
+# Cc (dvid 1) and an ANC (dvid 2) entry; keep one row per time via distinct.
 sim_pk <- sim_pk |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::distinct(id, time, .keep_all = TRUE) |>
