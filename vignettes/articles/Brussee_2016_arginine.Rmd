@@ -136,11 +136,15 @@ make_cohort <- function(n, dose_g, treatment, id_offset = 0L) {
   }
   ev_obs <- cohort |>
     crossing(time = obs_times, output = c("Cc", "NO", "EF")) |>
-    mutate(amt = 0, rate = 0, cmt = output, evid = 0L) |>
+    # Three declared endpoints, all computed from `central`: observation rows
+    # name that ODE state and select the endpoint with dvid (1 = Cc, 2 = NO,
+    # 3 = EF).
+    mutate(amt = 0, rate = 0, cmt = "central",
+           dvid = match(output, c("Cc", "NO", "EF")), evid = 0L) |>
     select(-output)
   bind_rows(ev_dose, ev_obs) |>
     arrange(id, time, desc(evid)) |>
-    select(id, time, amt, rate, cmt, evid, WT, RACE_PAPUAN, treatment, dose_g)
+    select(id, time, amt, rate, cmt, dvid, evid, WT, RACE_PAPUAN, treatment, dose_g)
 }
 
 events <- bind_rows(
@@ -190,11 +194,15 @@ ev_typ <- function(dose_g, treatment) {
   }
   ev_obs <- cohort |>
     crossing(time = obs_times, output = c("Cc", "NO", "EF")) |>
-    mutate(amt = 0, rate = 0, cmt = output, evid = 0L) |>
+    # Three declared endpoints, all computed from `central`: observation rows
+    # name that ODE state and select the endpoint with dvid (1 = Cc, 2 = NO,
+    # 3 = EF).
+    mutate(amt = 0, rate = 0, cmt = "central",
+           dvid = match(output, c("Cc", "NO", "EF")), evid = 0L) |>
     select(-output)
   bind_rows(ev_dose, ev_obs) |>
     arrange(id, time, desc(evid)) |>
-    select(id, time, amt, rate, cmt, evid, WT, RACE_PAPUAN, treatment, dose_g)
+    select(id, time, amt, rate, cmt, dvid, evid, WT, RACE_PAPUAN, treatment, dose_g)
 }
 
 sim_typ <- bind_rows(
@@ -321,7 +329,11 @@ make_typ_events <- function(dose_g, dur_h) {
   }
   ev_obs <- cohort |>
     crossing(time = obs_times, output = c("Cc", "NO", "EF")) |>
-    mutate(amt = 0, rate = 0, cmt = output, evid = 0L) |>
+    # Three declared endpoints, all computed from `central`: observation rows
+    # name that ODE state and select the endpoint with dvid (1 = Cc, 2 = NO,
+    # 3 = EF).
+    mutate(amt = 0, rate = 0, cmt = "central",
+           dvid = match(output, c("Cc", "NO", "EF")), evid = 0L) |>
     select(-output)
   bind_rows(ev_dose, ev_obs) |>
     arrange(id, time, desc(evid))

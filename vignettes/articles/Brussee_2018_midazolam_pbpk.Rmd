@@ -114,17 +114,19 @@ make_events <- function(cohort, route, dose_per_kg = 0.1, infusion_h = 0.5) {
       RATE = ifelse(route == "iv30",
                     dose_per_kg * WT * 1000 / infusion_h,
                     NA_real_),
+      DVID = NA_integer_,
       route = route
     ) |>
-    dplyr::select(id, EVID, AMT, RATE, TIME, CMT, WT, route)
+    dplyr::select(id, EVID, AMT, RATE, TIME, CMT, DVID, WT, route)
 
   obs <- tidyr::expand_grid(
     cohort,
     TIME = obs_times
   ) |>
+    # Two declared endpoints (Cc, Cc_1ohm): the ODE state plus DVID = 1 (Cc).
     dplyr::mutate(EVID = 0L, AMT = 0, RATE = NA_real_,
-                  CMT = "Cc", route = route) |>
-    dplyr::select(id, EVID, AMT, RATE, TIME, CMT, WT, route)
+                  CMT = "central", DVID = 1L, route = route) |>
+    dplyr::select(id, EVID, AMT, RATE, TIME, CMT, DVID, WT, route)
 
   dplyr::bind_rows(doses, obs) |>
     dplyr::arrange(id, TIME, dplyr::desc(EVID))

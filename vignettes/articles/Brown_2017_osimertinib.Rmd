@@ -162,10 +162,10 @@ dose_rows <- tidyr::expand_grid(id = cohort$id, dose_idx = seq_len(n_doses)) |>
 
 # Observation grid: dense over day 0 (single-dose phase) plus the final
 # (steady-state) dosing interval; one trough sample per day in between
-# to keep the simulation lean. Observation rows use cmt = "Cc" so
-# rxode2 can resolve the observation compartment unambiguously; both
-# Cc and Cc_az5104 are emitted at every observation time regardless
-# of which output cmt label is set on the row.
+# to keep the simulation lean. The model declares two endpoints, so
+# observation rows name the ODE state `central` and select Cc with
+# dvid = 1; both Cc and Cc_az5104 are emitted at every observation time
+# regardless of which endpoint the row selects.
 ss_start <- (n_doses - 1) * dose_int
 obs_times <- sort(unique(c(
   c(0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24),
@@ -174,7 +174,7 @@ obs_times <- sort(unique(c(
 )))
 
 obs_rows <- tidyr::expand_grid(id = cohort$id, time = obs_times) |>
-  dplyr::mutate(evid = 0L, amt = 0, cmt = "Cc")
+  dplyr::mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
 
 events <- dplyr::bind_rows(dose_rows, obs_rows) |>
   dplyr::left_join(cohort, by = "id") |>

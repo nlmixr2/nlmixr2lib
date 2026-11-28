@@ -47,12 +47,11 @@ Two features make the model unusual for a popPK extraction:
 mod <- readModelDb("Bursi_2017_lidocaine")
 ui <- rxode2::rxode(mod)
 
-# Four ODE states, four declared endpoints. rxode2 assigns the endpoint
-# compartment slots AFTER the ODE states, so observation records in the event
-# tables below must carry `cmt = "Cc"` (an endpoint name), not `cmt =
-# "central"`. This is the multi-endpoint case: with two or more `~` residual
-# lines the endpoint appears in `predDf` and is part of the model definition,
-# so nothing is auto-injected and no compartment is renumbered.
+# Four ODE states, four declared endpoints. Every observation record must say
+# which endpoint it belongs to, so the event tables below name the ODE state
+# `central` and select the Cc endpoint with `dvid = 1L`; all four analytes come
+# back as columns on every row. et() does not carry dvid, so it is set on the
+# data-frame form.
 ui$state
 ui$predDf[, c("var", "cmt", "dvid")]
 ```
@@ -283,8 +282,9 @@ solve_typical <- function(n_plaster, times, addl = 0L, covs = cov_ref) {
     amt = 1800 * n_plaster * 12, rate = 1800 * n_plaster,
     cmt = "central", ii = 24, addl = addl
   )
-  ev <- rxode2::et(ev, times, cmt = "Cc")
+  ev <- rxode2::et(ev, times, cmt = "central")
   d <- as.data.frame(ev)
+  d$dvid <- ifelse(d$evid == 0, 1L, NA_integer_)
   d$DLVL <- n_plaster
   for (nm in names(covs)) d[[nm]] <- covs[[nm]]
   rxode2::rxSolve(rxode2::zeroRe(mod), d, returnType = "data.frame",
@@ -386,11 +386,12 @@ make_arm <- function(n, n_plaster, label, id_offset = 0L) {
     amt = 1800 * n_plaster * 12, rate = 1800 * n_plaster,
     cmt = "central", ii = 24, addl = 3L
   )
-  ev <- rxode2::et(ev, seq(0, 96, by = 0.5), cmt = "Cc")
+  ev <- rxode2::et(ev, seq(0, 96, by = 0.5), cmt = "central")
   ev <- rxode2::et(ev, id = seq_len(n))
   # Materialise before adding covariate columns: assigning into an rxEt object
   # silently drops the column.
   d <- as.data.frame(ev)
+  d$dvid <- ifelse(d$evid == 0, 1L, NA_integer_)
   d$id <- d$id + id_offset
   d$DLVL <- n_plaster
   d$TBILI <- cov_ref$TBILI

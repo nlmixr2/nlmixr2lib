@@ -240,18 +240,14 @@ cohort |>
 
 ## Simulation
 
-The model declares four endpoints, so observation rows must name the
-*observable* rather than the ODE state, and `useLinCmt = FALSE` is required so
-the endpoint-to-compartment map is built over the real ODE system.
-
-`lint_vignette.R` flags `cmt = "Cc"` as an algebraic observable being used as a
-compartment. That warning is a false positive here: the slot-renumbering hazard
-it guards against applies when the named observable is *not* already a declared
-endpoint, so naming it injects a new slot. All four names used below are in
-`mod$predDf$cond`, so their slots already exist and nothing moves. The
-`stopifnot()` after the solve is a permanent guard that proves it rather than
-asserting it - it pins the exact ODE state order and confirms that the
-recirculation and peripheral compartments are still being integrated.
+The model declares four endpoints, so every observation row must say which
+endpoint it belongs to: it names the ODE state the endpoint is computed from
+(`central` for `Cc`, `urine`, `urine_norflox` and `urine_noxpeflox` for the
+three cumulative urinary amounts) and selects the endpoint with `dvid` (1 to 4,
+in that order). `useLinCmt = FALSE` is required so the endpoint-to-compartment
+map is built over the real ODE system. The `stopifnot()` after the solve pins
+the exact ODE state order and confirms that the recirculation and peripheral
+compartments are still being integrated.
 
 ```{r events}
 dose_mg <- 400
@@ -271,13 +267,16 @@ make_events <- function(cohort, route) {
       dv = NA_real_
     )
   obs_conc <- tidyr::expand_grid(id = cohort$id, time = obs_times) |>
-    mutate(amt = NA_real_, evid = 0L, cmt = "Cc", rate = NA_real_, dv = NA_real_)
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L, rate = NA_real_, dv = NA_real_)
   # Cumulative urinary amounts, observed at the end of the 48 h collection.
   obs_urine <- tidyr::expand_grid(
     id = cohort$id, time = 48,
-    cmt = c("Aurine", "Aurine_norflox", "Aurine_noxpeflox")
+    cmt = c("urine", "urine_norflox", "urine_noxpeflox")
   ) |>
-    mutate(amt = NA_real_, evid = 0L, rate = NA_real_, dv = NA_real_)
+    mutate(
+      dvid = match(cmt, c("urine", "urine_norflox", "urine_noxpeflox")) + 1L,
+      amt = NA_real_, evid = 0L, rate = NA_real_, dv = NA_real_
+    )
 
   bind_rows(doses, obs_conc, obs_urine) |>
     left_join(select(cohort, id, DIS_CF, FFM), by = "id") |>
@@ -311,7 +310,7 @@ sim <- bind_rows(sim_iv, sim_po) |>
   distinct(id, arm, time, .keep_all = TRUE) |>
   left_join(select(cohort, id, group), by = "id")
 
-# Permanent guard: the endpoint slots must not have renumbered the ODE states.
+# Guard: the ODE state order is the one the event table names.
 stopifnot(
   identical(
     mod$state,

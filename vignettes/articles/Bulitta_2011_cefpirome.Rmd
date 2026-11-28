@@ -156,7 +156,10 @@ obs_rows <- cohorts |>
   mutate(
     evid = 0L,
     amt  = NA_real_,
-    cmt  = "Cc",
+    # Two declared endpoints: observation rows name the ODE state each is
+    # computed from and select it with dvid (1 = Cc, 2 = urineAmt).
+    cmt  = "central",
+    dvid = 1L,
     rate = 0,
     dv   = NA_real_
   )
@@ -171,7 +174,8 @@ urine_rows <- cohorts |>
   mutate(
     evid = 0L,
     amt  = NA_real_,
-    cmt  = "urineAmt",
+    cmt  = "urine",
+    dvid = 2L,
     rate = 0,
     dv   = NA_real_
   )

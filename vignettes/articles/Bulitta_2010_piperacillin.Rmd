@@ -131,7 +131,9 @@ make_subject <- function(i, wt) {
     amt  = NA_real_,
     rate = NA_real_,
     evid = 0L,
-    cmt  = "Cc",
+    # Two declared endpoints (Cc, Aurine): the ODE state plus dvid = 1 (Cc).
+    cmt  = "central",
+    dvid = 1L,
     WT   = wt
   )
   dplyr::bind_rows(dose_row, obs_rows)
