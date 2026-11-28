@@ -143,7 +143,7 @@ make_bolus_arm <- function(dose_mgkg, n, id_offset) {
     mutate(time = 0, amt = dose_mgkg * WT, rate = 0, evid = 1L, cmt = "central")
   obs <- subj |>
     tidyr::crossing(time = obs_times) |>
-    mutate(amt = NA_real_, rate = NA_real_, evid = 0L, cmt = "Cc")
+    mutate(amt = NA_real_, rate = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
   bind_rows(doses, obs) |> arrange(id, time, desc(evid))
 }
 
@@ -166,7 +166,7 @@ inf_doses <- bind_rows(
 )
 inf_obs <- inf_subj |>
   tidyr::crossing(time = obs_times) |>
-  mutate(amt = NA_real_, rate = NA_real_, evid = 0L, cmt = "Cc")
+  mutate(amt = NA_real_, rate = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
 
 events <- bind_rows(events, inf_doses, inf_obs) |> arrange(id, time, desc(evid))
 
@@ -176,13 +176,11 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 stopifnot(length(unique(events$id)) == 8L * n_per_arm)
 ```
 
-Note the `cmt = "Cc"` on the observation rows. This model declares three
-endpoints (`Cc`, `Cc_cns7054`, `BIS`), so rxode2 builds a `dvid`-to-`cmt`
-mapping in which the endpoints occupy compartment slots *after* the seven ODE
-states; observation records must therefore name an endpoint, not an ODE state.
-This is the documented exception to the usual "point `cmt` at the ODE state"
-rule, which applies to models with a single implicit endpoint. rxode2 returns
-all three endpoints as columns at every observation row regardless.
+Note the `cmt = "central", dvid = 1L` on the observation rows. This model
+declares three endpoints (`Cc`, `Cc_cns7054`, `BIS`), so an observation row
+on an ODE state needs a `dvid` to say which endpoint it belongs to; `dvid = 1`
+selects `Cc`. Dose rows get `dvid = NA` from `bind_rows()`. rxode2 returns all
+three endpoints as columns at every observation row regardless.
 
 # Simulation
 
@@ -324,7 +322,7 @@ typ_times <- sort(unique(c(seq(0, 20, by = 0.25), seq(20, 120, by = 1),
 typ_events <- bind_rows(
   typ_subj |> mutate(time = 0, amt = dose_mgkg * WT, rate = 0, evid = 1L, cmt = "central"),
   typ_subj |> tidyr::crossing(time = typ_times) |>
-    mutate(amt = NA_real_, rate = NA_real_, evid = 0L, cmt = "Cc")
+    mutate(amt = NA_real_, rate = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
 ) |>
   arrange(id, time, desc(evid))
 
@@ -483,7 +481,7 @@ dash_times <- sort(unique(c(seq(0, 20, by = 0.25), seq(20, 400, by = 1))))
 dash_events <- bind_rows(
   tibble(id = 1L, time = 0, amt = 0.1 * dash_wt,        rate = 0,         evid = 1L, cmt = "central"),
   tibble(id = 1L, time = 0, amt = dash_rate * dash_dur, rate = dash_rate, evid = 1L, cmt = "central"),
-  tibble(id = 1L, time = dash_times, amt = NA_real_,    rate = NA_real_,  evid = 0L, cmt = "Cc")
+  tibble(id = 1L, time = dash_times, amt = NA_real_,    rate = NA_real_,  evid = 0L, cmt = "central", dvid = 1L)
 ) |>
   mutate(WT = dash_wt) |>
   arrange(time, desc(evid))

@@ -89,8 +89,8 @@ are in `inst/modeldb/specificDrugs/Choi_2016_gcc4401c.R` and
 
 # Simulation helpers
 
-Both models are multi-endpoint, so observation records carry the endpoint name
-in `cmt`. `useLinCmt = FALSE` keeps rxode2 from attempting an ODE-to-`linCmt()`
+Both models are multi-endpoint, so observation records sit on the `central`
+ODE state with `dvid = 1` to select the `Cc` endpoint. `useLinCmt = FALSE` keeps rxode2 from attempting an ODE-to-`linCmt()`
 conversion that would discard the custom absorption structure.
 
 ```{r helpers}
@@ -98,8 +98,9 @@ conversion that would discard the custom absorption structure.
 solve_typical <- function(ui, dose, times, extra = list(), addl = NULL, ii = NULL) {
   ev <- rxode2::et(amt = dose, rate = -2, cmt = "depot")
   if (!is.null(addl)) ev <- rxode2::et(amt = dose, rate = -2, cmt = "depot", addl = addl, ii = ii)
-  ev <- ev |> rxode2::et(times, cmt = "Cc")
+  ev <- ev |> rxode2::et(times, cmt = "central")
   ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   for (nm in names(extra)) ev[[nm]] <- extra[[nm]]
   rxode2::rxSolve(ui, ev, omega = NA, useLinCmt = FALSE, returnType = "data.frame")
 }
@@ -171,7 +172,8 @@ ev_vpc <- dplyr::bind_rows(
     time = 0, evid = 1L, amt = 40, rate = -2, cmt = "depot"
   ),
   tidyr::expand_grid(cohort, time = obs_times) |>
-    dplyr::mutate(evid = 0L, amt = NA_real_, rate = NA_real_, cmt = "Cc")
+    dplyr::mutate(evid = 0L, amt = NA_real_, rate = NA_real_, cmt = "central",
+                  dvid = 1L)
 ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 stopifnot(!anyDuplicated(unique(ev_vpc[, c("id", "time", "evid")])))
@@ -260,8 +262,9 @@ occ_md <- pmin(floor(grid_md / 24) + 1, 7)
 
 solve_md <- function(ui, dose, extra) {
   ev <- rxode2::et(amt = dose, rate = -2, cmt = "depot", addl = 6, ii = 24) |>
-    rxode2::et(grid_md, cmt = "Cc")
+    rxode2::et(grid_md, cmt = "central")
   ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$OCC <- pmin(floor(ev$time / 24) + 1, 7)
   for (nm in names(extra)) ev[[nm]] <- extra[[nm]]
   rxode2::rxSolve(ui, ev, omega = NA, useLinCmt = FALSE, returnType = "data.frame")

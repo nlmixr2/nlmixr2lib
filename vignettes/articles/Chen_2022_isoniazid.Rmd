@@ -164,8 +164,12 @@ sim_allele_typ <- function(label, counts) {
     SNP_NAT2_RS1799931_A_COUNT = counts[3]
   )
   dose <- data.frame(id = 1, time = 0, amt = 300, evid = 1L, cmt = "depot")
-  obs <- tidyr::expand_grid(id = 1, time = tgrid, cmt = c("Cc", "Cc_acinh")) |>
-    dplyr::mutate(amt = NA_real_, evid = 0L)
+  # Observation rows sit on the ODE states; dvid picks the endpoint
+  # (1 = Cc from `central`, 2 = Cc_acinh from `central_acinh`).
+  obs <- tidyr::expand_grid(id = 1, time = tgrid,
+                            cmt = c("central", "central_acinh")) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L,
+                  dvid = match(cmt, c("central", "central_acinh")))
   ev <- dplyr::bind_rows(dose, obs) |>
     dplyr::arrange(time, cmt) |>
     cbind(cov)
@@ -252,8 +256,12 @@ acinh_auc <- function(df) {
 sim_class_typ <- function(label, rapid, slow) {
   cov <- data.frame(NAT2_RAPID = rapid, NAT2_SLOW = slow)
   dose <- data.frame(id = 1, time = 0, amt = 300, evid = 1L, cmt = "depot")
-  obs <- tidyr::expand_grid(id = 1, time = tgrid, cmt = c("Cc", "Cc_acinh")) |>
-    dplyr::mutate(amt = NA_real_, evid = 0L)
+  # Observation rows sit on the ODE states; dvid picks the endpoint
+  # (1 = Cc from `central`, 2 = Cc_acinh from `central_acinh`).
+  obs <- tidyr::expand_grid(id = 1, time = tgrid,
+                            cmt = c("central", "central_acinh")) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L,
+                  dvid = match(cmt, c("central", "central_acinh")))
   ev <- dplyr::bind_rows(dose, obs) |> dplyr::arrange(time, cmt) |> cbind(cov)
   s <- rxode2::rxSolve(mod_class, ev, omega = NA, sigma = NA,
                        returnType = "data.frame")
@@ -321,8 +329,8 @@ sim_cohort <- function(label, counts) {
   dose <- tidyr::expand_grid(id = seq_len(nsub), time = 0) |>
     dplyr::mutate(amt = 300, evid = 1L, cmt = "depot")
   obs <- tidyr::expand_grid(id = seq_len(nsub), time = seq(0, 14, by = 0.5),
-                            cmt = "Cc") |>
-    dplyr::mutate(amt = NA_real_, evid = 0L)
+                            cmt = "central") |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, dvid = 1L)
   ev <- dplyr::bind_rows(dose, obs) |>
     dplyr::arrange(id, time) |>
     cbind(cov)

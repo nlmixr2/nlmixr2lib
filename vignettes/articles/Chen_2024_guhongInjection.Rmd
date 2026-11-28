@@ -155,8 +155,11 @@ grid_h <- sort(unique(c(
 
 make_profile <- function(row, id) {
   ev <- rxode2::et(amt = row$amt, cmt = "central") |>
-    rxode2::et(grid_h, cmt = "Cc") |>
+    rxode2::et(grid_h, cmt = "central") |>
     as.data.frame()
+  # Observation rows sit on the `central` ODE state; dvid = 1 selects the Cc
+  # endpoint, which is the first endpoint of every constituent model.
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$id <- id
   ev$DOSE_GHI_MLKG <- row$ghi_dose
   ev$group <- as.character(row$group)

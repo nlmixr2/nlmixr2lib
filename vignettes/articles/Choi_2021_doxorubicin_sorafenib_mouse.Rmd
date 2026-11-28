@@ -308,16 +308,18 @@ reported here, not asserted.
 # Combination therapy (Figure 3)
 
 The combination files declare three endpoints (`Cc_dox`, `Cc_sorafenib`,
-`tumor_vol`). With three endpoints rxode2 requires the observation row to name
-the endpoint itself, so these rows use `cmt = "tumor_vol"`; the guard below
+`tumor_vol`). The observation rows sit on the `cycling_cells` ODE state and
+select `tumor_vol`, the third endpoint, with `dvid = 3`; the guard below
 confirms that the doses still land in the named ODE states.
 
 ```{r combo-setup}
 combo_events <- function(dox_scale = 1, sor_scale = 1) {
   dplyr::bind_rows(
-    data.frame(time = dox_times, amt = dox_amts * dox_scale, cmt = "central_dox", evid = 1L),
-    data.frame(time = sor_times, amt = sor_amt * sor_scale, cmt = "depot_sorafenib", evid = 1L),
-    data.frame(time = grid, amt = NA_real_, cmt = "tumor_vol", evid = 0L)
+    data.frame(time = dox_times, amt = dox_amts * dox_scale, cmt = "central_dox", evid = 1L,
+               dvid = NA_integer_),
+    data.frame(time = sor_times, amt = sor_amt * sor_scale, cmt = "depot_sorafenib", evid = 1L,
+               dvid = NA_integer_),
+    data.frame(time = grid, amt = NA_real_, cmt = "cycling_cells", evid = 0L, dvid = 3L)
   ) |>
     dplyr::arrange(time, -evid) |>
     dplyr::mutate(id = 1L, .before = 1)

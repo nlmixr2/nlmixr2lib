@@ -109,9 +109,11 @@ set.seed(1024)
 mod <- readModelDb("CherkaouiRbati_2023_dsm265")
 
 # The model has two residual-error endpoints (Cc and lparasitemia_blood), so
-# rxode2 requires every observation row to name one of them in `cmt`; an
-# observation row on an ODE state such as "central" is rejected. Both
-# observables, and every state, are still returned as columns on every row.
+# observation rows sit on the ODE state each endpoint is computed from and
+# carry a dvid naming the endpoint (1 = Cc from `central`, 2 =
+# lparasitemia_blood from `parasite_blood`); dose rows get dvid = NA from
+# bind_rows(). Both observables, and every state, are still returned as columns
+# on every row.
 n_pk <- 150L
 pk_obs_times <- c(seq(0, 48, by = 1), seq(52, 480, by = 4))
 pk_dose <- data.frame(
@@ -120,7 +122,7 @@ pk_dose <- data.frame(
 pk_obs <- tidyr::crossing(
   id = seq_len(n_pk), time = pk_obs_times
 ) |>
-  dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "Cc")
+  dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "central", dvid = 1L)
 pk_events <- dplyr::bind_rows(pk_dose, pk_obs) |>
   dplyr::arrange(id, time, dplyr::desc(evid)) |>
   dplyr::mutate(treatment = "400 mg")
@@ -229,7 +231,8 @@ pd_obs_times <- seq(-168, 28 * 24, by = 6)
 one_dose <- data.frame(id = 1, time = -168, evid = 1L, amt = 400, cmt = "central")
 one_spz <- data.frame(id = 1, time = 0, evid = 1L, amt = 3200, cmt = "parasite_liver")
 one_obs <- data.frame(
-  id = 1, time = pd_obs_times, evid = 0L, amt = NA_real_, cmt = "lparasitemia_blood"
+  id = 1, time = pd_obs_times, evid = 0L, amt = NA_real_, cmt = "parasite_blood",
+  dvid = 2L
 )
 one_events <- dplyr::bind_rows(one_dose, one_spz, one_obs) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
@@ -284,7 +287,7 @@ make_arm <- function(arm_label, dose_time, id_offset) {
   spz <- data.frame(id = ids, time = 0, evid = 1L, amt = 3200, cmt = "parasite_liver")
   # One observation at Day 28 (the landmark) plus a coarse grid for stability.
   obs <- tidyr::crossing(id = ids, time = c(seq(0, 28 * 24, by = 24))) |>
-    dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "lparasitemia_blood")
+    dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "parasite_blood", dvid = 2L)
   dplyr::bind_rows(drug, spz, obs) |>
     dplyr::mutate(arm = arm_label)
 }
