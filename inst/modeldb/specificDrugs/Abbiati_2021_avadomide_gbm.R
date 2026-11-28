@@ -190,12 +190,18 @@ Abbiati_2021_avadomide_gbm <- function() {
     # -----------------------------------------------------------------------
     # PD: fractional maturation rate relative to homeostasis (Eq. 9)
     # -----------------------------------------------------------------------
-    eff_mat <- 1 - emax * Cc^hill / (ec50^hill + Cc^hill)
+    # Past washout, integration noise can take Cc slightly negative, where the
+    # non-integer Hill power is NaN.
+    Cc_pos <- max(Cc, 0)
+    eff_mat <- 1 - emax * Cc_pos^hill / (ec50^hill + Cc_pos^hill)
 
     # -----------------------------------------------------------------------
     # Neutrophil life cycle (Eqs. 1-8)
     # -----------------------------------------------------------------------
-    fb_prol <- (tran0 / transit2)^gamma # Eq. 7, feedback proliferation
+    # Integration noise can take transit2 slightly negative, where the
+    # non-integer feedback power is NaN.
+    tran_ratio_pos <- max(tran0 / transit2, 0)
+    fb_prol <- tran_ratio_pos^gamma # Eq. 7, feedback proliferation
     # With beta = 20 the egress feedback makes the system extremely stiff once
     # the ANC falls well below baseline: (circ0 / circ)^beta can reach ~1e14
     # and the reservoir is emptied to ~1e-14. The default liblsoda solver can

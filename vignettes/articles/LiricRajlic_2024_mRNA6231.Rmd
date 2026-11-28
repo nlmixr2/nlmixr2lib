@@ -136,6 +136,7 @@ mod <- readModelDb("LiricRajlic_2024_mRNA6231")
 sim <- rxode2::rxSolve(mod, events = events,
   sigma = NA, useLinCmt = FALSE,
   keep = c("dose_lbl"), returnType = "data.frame")
+stopifnot(!anyNA(sim$Cc), !anyNA(sim$treg))
 ```
 
 # Replicate published figures
@@ -143,7 +144,7 @@ sim <- rxode2::rxSolve(mod, events = events,
 ```{r figure-2a}
 # Replicates Figure 2a of Liric Rajlic 2024: multiple-dose HSA-IL2m in plasma.
 sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(Cc > 0) |> # log axis: drops the pre-synthesis zeros
   dplyr::group_by(dose_lbl, time) |>
   dplyr::summarise(
     Q05 = quantile(Cc, 0.05), Q50 = quantile(Cc, 0.50),
@@ -161,7 +162,6 @@ sim |>
 ```{r figure-2b}
 # Replicates Figure 2b of Liric Rajlic 2024: multiple-dose percentage Tregs.
 sim |>
-  dplyr::filter(!is.na(treg)) |>
   dplyr::group_by(dose_lbl, time) |>
   dplyr::summarise(
     Q05 = quantile(treg, 0.05), Q50 = quantile(treg, 0.50),
@@ -186,7 +186,7 @@ tabulates.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time <= 14 * 24) |>
+  dplyr::filter(time <= 14 * 24) |>
   dplyr::select(id, time, Cc, dose_lbl)
 
 # Guarantee a time = 0 row per subject (pre-dose HSA-IL2m is 0).

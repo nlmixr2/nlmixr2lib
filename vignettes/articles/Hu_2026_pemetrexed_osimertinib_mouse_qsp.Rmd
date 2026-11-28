@@ -356,8 +356,8 @@ pk_osi <- as.data.frame(rxode2::rxSolve(
   transmute(id = 1L, time, conc = Cc_osimertinib,
             treatment = "Osimertinib 1 mg/kg p.o.")
 
+stopifnot(!anyNA(pk_pem$conc), !anyNA(pk_osi$conc))
 sim_nca <- bind_rows(pk_pem, pk_osi) |>
-  filter(!is.na(conc)) |>
   # Per subject, keep conc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
   group_by(treatment, id) |>
   filter(time <= time[which.max(conc)] | conc >= 1e-6 * max(conc)) |>

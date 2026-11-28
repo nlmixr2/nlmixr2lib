@@ -367,7 +367,10 @@ Kim_2026_lenacapavir <- function() {
 
     # ---- 4. Drug effect (Equation 5) ------------------------------------------
     ic50 <- exp(lic50)
-    eta_wt <- Cc^hill / (Cc^hill + ic50^hill)
+    # Past washout, integration noise can take Cc slightly negative, where the
+    # non-integer Hill power is NaN.
+    Cc_pos <- max(Cc, 0)
+    eta_wt <- Cc_pos^hill / (Cc_pos^hill + ic50^hill)
 
     # ---- 5. HIV-1 viral dynamics (Equations S1-S8; rates in 1/day, / 24) ----
     # LEN converts infectious into non-infectious virion production: NT and
@@ -451,19 +454,19 @@ Kim_2026_lenacapavir <- function() {
     # Equation (8): R_t(C, i) = R0 * s(i) * (1 - eta(C, FC(i)))
     rt_wt <- r0_wt * (1 - eta_wt)
     rt_q67h <- r0_wt * fit_q67h *
-      (1 - Cc^hill / (Cc^hill + (fc_q67h * ic50)^hill))
+      (1 - Cc_pos^hill / (Cc_pos^hill + (fc_q67h * ic50)^hill))
     rt_n74d <- r0_wt * fit_n74d *
-      (1 - Cc^hill / (Cc^hill + (fc_n74d * ic50)^hill))
+      (1 - Cc_pos^hill / (Cc_pos^hill + (fc_n74d * ic50)^hill))
     rt_q67h_n74d <- r0_wt * fit_q67h_n74d *
-      (1 - Cc^hill / (Cc^hill + (fc_q67h_n74d * ic50)^hill))
+      (1 - Cc_pos^hill / (Cc_pos^hill + (fc_q67h_n74d * ic50)^hill))
     rt_q67h_t107n <- r0_wt * fit_q67h_t107n *
-      (1 - Cc^hill / (Cc^hill + (fc_q67h_t107n * ic50)^hill))
+      (1 - Cc_pos^hill / (Cc_pos^hill + (fc_q67h_t107n * ic50)^hill))
     rt_m66i_t107a <- r0_wt * fit_m66i_t107a *
-      (1 - Cc^hill / (Cc^hill + (fc_m66i_t107a * ic50)^hill))
+      (1 - Cc_pos^hill / (Cc_pos^hill + (fc_m66i_t107a * ic50)^hill))
     rt_q67h_k70r <- r0_wt * fit_q67h_k70r *
-      (1 - Cc^hill / (Cc^hill + (fc_q67h_k70r * ic50)^hill))
+      (1 - Cc_pos^hill / (Cc_pos^hill + (fc_q67h_k70r * ic50)^hill))
     rt_q67h_k70r_t107n <- r0_wt * fit_q67h_k70r_t107n *
-      (1 - Cc^hill / (Cc^hill + (fc_q67h_k70r_t107n * ic50)^hill))
+      (1 - Cc_pos^hill / (Cc_pos^hill + (fc_q67h_k70r_t107n * ic50)^hill))
 
     # Equation (9), P_inf = max(0, Lambda * (1 - 1 / R_t)), per transmitted
     # virion; Equation (10), phi = 1 - P_inf / P_inf(wild type, no drug).

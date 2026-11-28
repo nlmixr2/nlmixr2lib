@@ -215,7 +215,10 @@ Bouhaddou_2020_iadademstat_mouse <- function() {
     kdeg_grp <- exp(lkdeg_grp)
     m_grp <- b_grp - kdeg_grp
     kmax_grp <- -m_grp * grp + b_grp
-    d/dt(grp) <- kmax_grp * te50^hill_te / (te50^hill_te + TE^hill_te) -
+    # Past washout, integration noise can take TE slightly negative, where the
+    # non-integer Hill power is NaN.
+    TE_pos <- max(TE, 0)
+    d/dt(grp) <- kmax_grp * te50^hill_te / (te50^hill_te + TE_pos^hill_te) -
       kdeg_grp * grp
     grp(0) <- 1
 
@@ -232,7 +235,10 @@ Bouhaddou_2020_iadademstat_mouse <- function() {
     bmqp <- 1 - bm_grp
     vp <- kp * (1 - prolif / (k50p + prolif)) * prolif
     vpq <- kmaxpq * bmpq^hill_pq / (k50pq^hill_pq + bmpq^hill_pq) * prolif
-    vqp <- kmaxqp * (bmqp^hill_qp / (k50qp^hill_qp + bmqp^hill_qp) + bs) * quiesc
+    # Integration noise can take bmqp slightly negative, where the non-integer
+    # Hill power is NaN.
+    bmqp_pos <- max(bmqp, 0)
+    vqp <- kmaxqp * (bmqp_pos^hill_qp / (k50qp^hill_qp + bmqp_pos^hill_qp) + bs) * quiesc
     d/dt(prolif) <- vp - vpq + vqp
     d/dt(quiesc) <- vpq - vqp
     prolif(0) <- prolif0

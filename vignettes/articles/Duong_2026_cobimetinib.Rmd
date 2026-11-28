@@ -168,8 +168,8 @@ nca_conc <- dplyr::bind_rows(
     dplyr::mutate(treatment = "Day 9", tad = time - 192)
 ) |>
   dplyr::mutate(id = 1L) |>
-  dplyr::filter(!is.na(Cu)) |>
   dplyr::select(id, treatment, tad, Cu)
+stopifnot(!anyNA(nca_conc$Cu))
 nca_dose <- data.frame(id = 1L, treatment = c("Day 1", "Day 9"), tad = 0, amt = 60)
 
 conc_obj <- PKNCA::PKNCAconc(nca_conc, Cu ~ tad | treatment + id)

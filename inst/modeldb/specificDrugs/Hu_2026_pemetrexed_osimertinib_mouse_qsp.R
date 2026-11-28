@@ -296,7 +296,10 @@ Hu_2026_pemetrexed_osimertinib_mouse_qsp <- function() {
     # ==================================================================
     d/dt(enzyme_folate) <- kout_enzyme -
       kout_enzyme * enzyme_folate * (1 + emax_enzyme * Cc / (ec50_enzyme + Cc))
-    d/dt(folate) <- kout_folate * enzyme_folate^gamma_enzyme - kout_folate * folate
+    # Integration noise can take enzyme_folate slightly negative, where the
+    # non-integer power is NaN.
+    enzyme_folate_pos <- max(enzyme_folate, 0)
+    d/dt(folate) <- kout_folate * enzyme_folate_pos^gamma_enzyme - kout_folate * folate
 
     # ==================================================================
     # 5. Tumour bookkeeping -- Hu 2026 Equations (14)-(16), Table S18
@@ -323,11 +326,14 @@ Hu_2026_pemetrexed_osimertinib_mouse_qsp <- function() {
     # ==================================================================
     # 6. EGFR module -- Hu 2026 Equation (9), Table S17 row 18
     # ==================================================================
+    # Past washout, integration noise can take Cc_osimertinib slightly
+    # negative, where the non-integer Hill power is NaN.
+    Cc_osimertinib_pos <- max(Cc_osimertinib, 0)
     d/dt(egfr_signal) <-
       kout_egfr_signal * (1 + kfeedback_egfr_signal * damaged_frac^gamma_feedback_egfr_signal) -
       kout_egfr_signal * egfr_signal *
-        (1 + imax_osimertinib * Cc_osimertinib^gamma_osimertinib /
-               (ec50_osimertinib^gamma_osimertinib + Cc_osimertinib^gamma_osimertinib))
+        (1 + imax_osimertinib * Cc_osimertinib_pos^gamma_osimertinib /
+               (ec50_osimertinib^gamma_osimertinib + Cc_osimertinib_pos^gamma_osimertinib))
 
     # ==================================================================
     # 7. Tumour growth inhibition -- Hu 2026 Equations (10)-(13) and (17),
@@ -355,11 +361,13 @@ Hu_2026_pemetrexed_osimertinib_mouse_qsp <- function() {
     bim_effect     <- 1 + kbim * egfr_deviation^gamma_bim
 
     # X1 -> X2 flux: folate depletion accelerates it, EGFR-driven G1 arrest
-    # (egfr_signal^gamma_g1) antagonises it.
+    # (egfr_signal^gamma_g1) antagonises it. Integration noise can take
+    # egfr_signal slightly negative, where the non-integer powers are NaN.
+    egfr_signal_pos <- max(egfr_signal, 0)
     damage_flux <- damageRate * cycling_cells * folate_effect *
-      egfr_signal^gamma_g1_egfr_signal
+      egfr_signal_pos^gamma_g1_egfr_signal
 
-    d/dt(cycling_cells)  <- prolif * egfr_signal^gamma_prolif_egfr_signal - damage_flux
+    d/dt(cycling_cells)  <- prolif * egfr_signal_pos^gamma_prolif_egfr_signal - damage_flux
     d/dt(damaged_cells1) <- damage_flux - damageTransit * damaged_cells1 * bim_effect
     d/dt(damaged_cells2) <- damageTransit * bim_effect * (damaged_cells1 - damaged_cells2)
     d/dt(damaged_cells3) <- damageTransit * bim_effect * (damaged_cells2 - damaged_cells3)

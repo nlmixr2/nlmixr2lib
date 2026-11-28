@@ -168,7 +168,10 @@ Kim_2024_carmrna_mouse_qsp <- function() {
     # 2. Derived terms: sigmoidal (Hill) CAR-formation rate driven by free
     #    intracellular mRNA, and the proliferation dilution flux.
     # ----------------------------------------------------------------------
-    carprod <- emax * mrna_free^hill / (ec50^hill + mrna_free^hill)
+    #    Past washout, integration noise can take mrna_free slightly
+    #    negative, where the non-integer Hill power is NaN.
+    mrna_free_pos <- max(mrna_free, 0)
+    carprod <- emax * mrna_free_pos^hill / (ec50^hill + mrna_free_pos^hill)
     dilflux <- kg_cell * rc_complex
 
     # ----------------------------------------------------------------------

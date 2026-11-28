@@ -2,6 +2,8 @@
 
 # development version
 
+- `Abbiati_2021_avadomide_gbm`, `Bouhaddou_2020_iadademstat_mouse`, `Duong_2026_cobimetinib`, `Hornik_2019_methylprednisolone_il6`, `Hu_2026_pemetrexed_osimertinib_mouse_qsp`, `Kim_2024_carmrna_invitro_qsp`, `Kim_2024_carmrna_mouse_qsp`, `Kim_2026_lenacapavir`, `Li_2012_dexamethasone_rat`, `LiricRajlic_2024_mRNA6231`, `Na_2025_hosu53_mouse` and `Yang_2026_encorafenib` no longer fail a subject on rxode2 builds that stop at a non-finite state. Each now floors the base of its non-integer Hill or power term at zero with `max(x, 0)` (the drug concentration, or the washed-out state the term reads), because integration noise could take it slightly negative long after the last dose, where the power is NaN. Where the old forms were finite, the simulated values are unchanged. The Abbiati 2021, Bouhaddou 2020, Duong 2026, Hornik 2019, Hu 2026, Kim 2026, Liric Rajlic 2024, Na 2025 and Yang 2026 articles now assert that their simulations have no missing values instead of filtering them out, and Hornik 2019 checks non-negativity against a relative floor instead of clipping concentrations at zero before NCA.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.

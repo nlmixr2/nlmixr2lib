@@ -221,7 +221,10 @@ Hornik_2019_methylprednisolone_il6 <- function() {
     kout <- exp(lkout)
     kin <- kout * rbase # Eq. 4
 
-    dfx <- imax * Cc^hill / (ic50^hill + Cc^hill) # Eq. 5
+    # Past washout, integration noise can take Cc slightly negative, where the
+    # non-integer Hill power is NaN.
+    Cc_pos <- max(Cc, 0)
+    dfx <- imax * Cc_pos^hill / (ic50^hill + Cc_pos^hill) # Eq. 5
 
     # Eq. 3 (partial interaction). The paper's STRT switch is not needed here:
     # before CPB starts cpbfx = 0 and both branches reduce to kin * (1 - DFX).

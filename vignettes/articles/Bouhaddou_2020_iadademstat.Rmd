@@ -512,8 +512,8 @@ must return `CL = 117.66 mL/h` at every dose, while the apparent clearance
 itself falls steeply with dose.
 
 ```{r pknca}
+stopifnot(!anyNA(sim_pk$Cc))
 conc_pk <- sim_pk |>
-  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(treatment = paste(dose_ugkg, "ug/kg")) |>
   dplyr::select(id, time, Cc, treatment)
 dose_pk <- ev_pk |>

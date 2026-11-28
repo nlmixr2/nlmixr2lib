@@ -192,7 +192,10 @@ Na_2025_hosu53_mouse <- function() {
     imax  <- exp(limax)
 
     kin_dho <- rbase * kout
-    inh_dho <- imax * Cc^hill / (Cc^hill + ic50^hill)
+    # Past washout, integration noise can take Cc slightly negative, where the
+    # non-integer Hill power is NaN.
+    Cc_pos <- max(Cc, 0)
+    inh_dho <- imax * Cc_pos^hill / (Cc_pos^hill + ic50^hill)
 
     dho(0)    <- rbase
     d/dt(dho) <- kin_dho - kout * (1 - inh_dho) * dho

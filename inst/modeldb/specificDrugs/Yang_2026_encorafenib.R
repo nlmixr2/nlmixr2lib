@@ -285,7 +285,10 @@ Yang_2026_encorafenib <- function() {
     #        concentration (Fig. 1: "the EFF of encorafenib concentration in
     #        the central compartment increased the K_ENZ").
     Cc  <- 1000 * central / vc
-    eff <- emax * Cc ^ hill / (ec50 ^ hill + Cc ^ hill)
+    # Past washout, integration noise can take Cc slightly negative, where
+    # the non-integer Hill power is NaN.
+    Cc_pos <- max(Cc, 0)
+    eff <- emax * Cc_pos ^ hill / (ec50 ^ hill + Cc_pos ^ hill)
 
     # --- 4. Time-varying apparent clearance (Yang 2026 Fig. 1: CL/F * ENZ). --
     #        enz_pool is unity at baseline, so cl equals cl_base before the

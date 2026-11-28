@@ -185,7 +185,10 @@ LiricRajlic_2024_mRNA6231 <- function() {
     # 6. Indirect-response Treg turnover, stimulated production (equation 5);
     # drug-free steady state kin/kout at baseline (equation 6).
     treg(0) <- kin / kout
-    d/dt(treg) <- kin * (1 + emax * effect^hill / (ec50^hill + effect^hill)) -
+    # Past washout, integration noise can take effect slightly negative,
+    # where the non-integer Hill power is NaN.
+    effect_pos <- max(effect, 0)
+    d/dt(treg) <- kin * (1 + emax * effect_pos^hill / (ec50^hill + effect_pos^hill)) -
       kout * treg
 
     # 7. Observations and residual error

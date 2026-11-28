@@ -213,9 +213,9 @@ Study 3 was observed for 9 days only, and the paper's model values for it
 Study 3 profiles above stop at day 9.
 
 ```{r pknca}
+stopifnot(!anyNA(pk_sim$Cc))
 nca_in <- pk_sim |>
   mutate(id = 1L, time_day = time / 24) |>
-  filter(!is.na(Cc)) |>
   select(id, treatment, time_day, Cc)
 dose_df <- scenarios |>
   transmute(id = 1L, treatment, dose, time_day = 0)

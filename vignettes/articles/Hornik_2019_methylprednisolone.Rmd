@@ -486,9 +486,9 @@ sim_pk <- as.data.frame(rxode2::rxSolve(typ6, ev_pk,
 sim_pk$treatment <- "30 mg/kg x 1"
 sim_pk$id <- 1L # a single-subject solve returns no id column
 
+stopifnot(!anyNA(sim_pk$Cc), all(sim_pk$Cc >= -1e-6 * max(sim_pk$Cc)))
 conc_pk <- sim_pk |>
-  dplyr::filter(!is.na(Cc)) |>
-  dplyr::mutate(time = time - t_cpb_start, conc = pmax(Cc, 0) / 1000) |>
+  dplyr::mutate(time = time - t_cpb_start, conc = Cc / 1000) |>
   dplyr::filter(time >= 0) |>
   dplyr::select(id, time, conc, treatment)
 conc_pk <- dplyr::bind_rows(conc_pk, dplyr::distinct(conc_pk, id, treatment) |> dplyr::mutate(time = 0, conc = 0)) |>

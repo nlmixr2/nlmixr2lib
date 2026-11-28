@@ -208,8 +208,9 @@ pk_doses <- lapply(seq_len(nrow(pk_regimens)), function(i) {
 ```
 
 ```{r pk-nca}
+stopifnot(!anyNA(pk_sim$Cc))
 conc_obj <- PKNCA::PKNCAconc(
-  pk_sim |> dplyr::filter(!is.na(Cc)),
+  pk_sim,
   Cc ~ time | treatment + id
 )
 dose_obj <- PKNCA::PKNCAdose(pk_doses, amt ~ time | treatment + id)

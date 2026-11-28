@@ -468,8 +468,9 @@ nca_conc <- dplyr::bind_rows(
   single_dose(dog_mod,   20000, 100, "PO", "dog"),
   single_dose(mouse_mod, 20,    336, "IV", "mouse"),
   single_dose(mouse_mod, 20,    336, "PO", "mouse")
-) |>
-  dplyr::filter(!is.na(Cc)) |>
+)
+stopifnot(!anyNA(nca_conc$Cc))
+nca_conc <- nca_conc |>
   # Per profile, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
   dplyr::group_by(treatment, id) |>
   dplyr::filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>

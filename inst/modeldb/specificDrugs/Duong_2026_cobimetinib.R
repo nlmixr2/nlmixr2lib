@@ -84,8 +84,11 @@ Duong_2026_cobimetinib <- function() {
     # the sigma_C = 0.01 diffusion term is omitted (see vignette).
     d/dt(int_tumor) <- kin_int_tumor * Cu - kout_int_tumor * int_tumor
 
-    # Sigmoid-Emax death rate in 1/day; the hazard integrates on the hour scale
-    hazard <- emax * int_tumor^hill / (ec50^hill + int_tumor^hill)
+    # Sigmoid-Emax death rate in 1/day; the hazard integrates on the hour scale.
+    # Past washout, integration noise can take int_tumor slightly negative,
+    # where the non-integer Hill power is NaN.
+    int_tumor_pos <- max(int_tumor, 0)
+    hazard <- emax * int_tumor_pos^hill / (ec50^hill + int_tumor_pos^hill)
     d/dt(cumhaz) <- hazard / 24
 
     # Probability that the cell is still alive at time t

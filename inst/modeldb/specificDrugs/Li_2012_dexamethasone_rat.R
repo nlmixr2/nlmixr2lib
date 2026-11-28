@@ -328,9 +328,11 @@ Li_2012_dexamethasone_rat <- function() {
 
     # Fractional occupancy of the DNA-responsive elements by the DEX-PXR
     # complex (Eq 3). Computed from the DEX plasma concentration Cc with a
-    # per-isoform Hill exponent.
-    fo_cyp3a1 <- Cc^hill_cyp3a1 / (sc50_cyp3a1^hill_cyp3a1 + Cc^hill_cyp3a1)
-    fo_cyp3a2 <- Cc^hill_cyp3a2 / (sc50_cyp3a2^hill_cyp3a2 + Cc^hill_cyp3a2)
+    # per-isoform Hill exponent. Past washout, integration noise can take Cc
+    # slightly negative, where the non-integer Hill power is NaN.
+    Cc_pos <- max(Cc, 0)
+    fo_cyp3a1 <- Cc_pos^hill_cyp3a1 / (sc50_cyp3a1^hill_cyp3a1 + Cc_pos^hill_cyp3a1)
+    fo_cyp3a2 <- Cc_pos^hill_cyp3a2 / (sc50_cyp3a2^hill_cyp3a2 + Cc_pos^hill_cyp3a2)
 
     # Stimulation signal entering the first transit (Eq 4).
     s0_cyp3a1 <- smax_cyp3a1 * fo_cyp3a1
@@ -371,8 +373,12 @@ Li_2012_dexamethasone_rat <- function() {
     kdeg_cyp3a2 <- exp(lkdeg_cyp3a2)
     m_cyp3a2    <- exp(lgamma_cyp3a2)
 
-    d/dt(prot_cyp3a1) <- ksyn_cyp3a1 * mrna_cyp3a1^m_cyp3a1 - kdeg_cyp3a1 * prot_cyp3a1
-    d/dt(prot_cyp3a2) <- ksyn_cyp3a2 * mrna_cyp3a2^m_cyp3a2 - kdeg_cyp3a2 * prot_cyp3a2
+    # Integration noise can take an mRNA state slightly negative, where the
+    # non-integer power is NaN.
+    mrna_cyp3a1_pos <- max(mrna_cyp3a1, 0)
+    mrna_cyp3a2_pos <- max(mrna_cyp3a2, 0)
+    d/dt(prot_cyp3a1) <- ksyn_cyp3a1 * mrna_cyp3a1_pos^m_cyp3a1 - kdeg_cyp3a1 * prot_cyp3a1
+    d/dt(prot_cyp3a2) <- ksyn_cyp3a2 * mrna_cyp3a2_pos^m_cyp3a2 - kdeg_cyp3a2 * prot_cyp3a2
 
     # Protein initial conditions (Eq 10): prot_i(0) = ksyn,i/kdeg,i * mRNAi(0)^m_i.
     prot_cyp3a1(0) <- (ksyn_cyp3a1 / kdeg_cyp3a1) * (kin_cyp3a1 / kout_cyp3a1)^m_cyp3a1
