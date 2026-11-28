@@ -168,8 +168,9 @@ make_subject <- function(id, wt_kg, sexf_ind, age_y, alb_g_L, ast_U_L,
     rxode2::et(amt = dose_mg, cmt = "central", ii = cycle_dy,
                addl = n_cycles - 1L, time = 0)
   obs <- rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 180),  # downsampled from 420 for vignette build budget
-                    cmt = "Cc")
-  ev <- rbind(doses, obs)
+                    cmt = "central")
+  ev <- as.data.frame(rbind(doses, obs))
+  ev$dvid         <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$id           <- id
   ev$WT           <- wt_kg
   ev$AGE          <- age_y
@@ -206,7 +207,9 @@ typ <- readModelDb("Hong_2025_datopotamab") |> rxode2::zeroRe()
 typ_events <- rxode2::et() |>
   rxode2::et(amt = 6 * 66, cmt = "central", ii = cycle_dy,
              addl = n_cycles - 1L, time = 0) |>
-  rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 400), cmt = "Cc")  # downsampled from 1500 for vignette build budget
+  rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 400), cmt = "central") |>  # downsampled from 1500 for vignette build budget
+  as.data.frame()
+typ_events$dvid          <- ifelse(typ_events$evid == 0L, 1L, NA_integer_)
 
 typ_events$WT            <- 66
 typ_events$AGE           <- 62
@@ -426,7 +429,9 @@ simulate_typ_wt <- function(wt_kg) {
   ev <- rxode2::et() |>
     rxode2::et(amt = dose_mg, cmt = "central", ii = cycle_dy,
                addl = 2L, time = 0) |>            # 3 cycles total
-    rxode2::et(seq(0.05, 3 * cycle_dy, length.out = 300), cmt = "Cc")  # downsampled from 1000 for vignette build budget
+    rxode2::et(seq(0.05, 3 * cycle_dy, length.out = 300), cmt = "central") |>  # downsampled from 1000 for vignette build budget
+    as.data.frame()
+  ev$dvid          <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$WT            <- wt_kg
   ev$AGE           <- 62
   ev$SEXF          <- 0

@@ -147,7 +147,7 @@ build_events <- function(cohort_df, regimen) {
     rows  <- list()
     rows[[1]] <- data.frame(
       id = s$id, time = 0, amt = if (regimen == "12 mg bolus") 12 else (200/1000)*s$WT,
-      evid = 1L, cmt = "central", rate = NA_real_,
+      evid = 1L, cmt = "central", dvid = NA_integer_, rate = NA_real_,
       WT = s$WT, DIS_HEALTHY = s$DIS_HEALTHY, regimen = s$regimen,
       stringsAsFactors = FALSE
     )
@@ -156,19 +156,19 @@ build_events <- function(cohort_df, regimen) {
       rows[[2]] <- data.frame(
         id = s$id, time = 0,
         amt  = (if (regimen == "200 ug/kg + 200 ug/kg/h 24 h") 200 else 400) / 1000 * s$WT * 24,
-        evid = 1L, cmt = "central",
+        evid = 1L, cmt = "central", dvid = NA_integer_,
         rate = (if (regimen == "200 ug/kg + 200 ug/kg/h 24 h") 200 else 400) / 1000 * s$WT,
         WT = s$WT, DIS_HEALTHY = s$DIS_HEALTHY, regimen = s$regimen,
         stringsAsFactors = FALSE
       )
     }
     rows[[length(rows) + 1]] <- data.frame(
-      id = s$id, time = obs_t, amt = 0, evid = 0L, cmt = "Cc", rate = 0,
+      id = s$id, time = obs_t, amt = 0, evid = 0L, cmt = "central", dvid = 1L, rate = 0,
       WT = s$WT, DIS_HEALTHY = s$DIS_HEALTHY, regimen = s$regimen,
       stringsAsFactors = FALSE
     )
     rows[[length(rows) + 1]] <- data.frame(
-      id = s$id, time = obs_t, amt = 0, evid = 0L, cmt = "pawp", rate = 0,
+      id = s$id, time = obs_t, amt = 0, evid = 0L, cmt = "central", dvid = 2L, rate = 0,
       WT = s$WT, DIS_HEALTHY = s$DIS_HEALTHY, regimen = s$regimen,
       stringsAsFactors = FALSE
     )
@@ -183,7 +183,7 @@ events <- rbind(
 )
 events <- events[order(events$id, events$time, -events$evid), ]
 rownames(events) <- NULL
-stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt", "dvid")])))
 ```
 
 # Simulation

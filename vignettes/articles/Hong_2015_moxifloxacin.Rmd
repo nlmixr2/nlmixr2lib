@@ -146,7 +146,7 @@ make_cohort <- function(dose_mg, id_offset) {
   )
 
   obs_rows <- tidyr::expand_grid(id = ids, time = obs_hours) |>
-    dplyr::mutate(amt = 0, evid = 0L, cmt = "Cc", DOSE = dose_mg)
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L, DOSE = dose_mg)
 
   dplyr::bind_rows(dose_rows, obs_rows) |>
     dplyr::arrange(id, time, dplyr::desc(evid))

@@ -176,9 +176,9 @@ build_events <- function(subjects) {
   obs_cc <- subjects |>
     select(id, ADA_POS, dose) |>
     cross_join(tibble(time = sample_days)) |>
-    mutate(amt = NA_real_, evid = 0L, cmt = "Cc")
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
   obs_pd <- obs_cc |>
-    mutate(cmt = "pdIL13")
+    mutate(cmt = "target", dvid = 2L)
   bind_rows(doses_ev, obs_cc, obs_pd) |>
     arrange(id, time, evid, cmt) |>
     mutate(dose_grp = factor(paste0(dose, " mg"),

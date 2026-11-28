@@ -112,8 +112,8 @@ events <- cohort |>
         tibble(time = 0, evid = 1L, amt = unique(dose_mg), cmt = "central",
                DV = NA_real_),
         # observation rows -- rxode2 returns Cc and Cprostate on every row
-        tibble(time = obs_times, evid = 0L, amt = NA_real_, cmt = "Cc",
-               DV = NA_real_)
+        tibble(time = obs_times, evid = 0L, amt = NA_real_, cmt = "central",
+               dvid = 1L, DV = NA_real_)
       )
     )
   ) |>
@@ -153,7 +153,7 @@ events_typical <- cohort_typical |>
     rec = list(
       bind_rows(
         tibble(time = 0,                              evid = 1L, amt = unique(dose_mg), cmt = "central", DV = NA_real_),
-        tibble(time = seq(0, 12, length.out = 241L), evid = 0L, amt = NA_real_,        cmt = "Cc",       DV = NA_real_)
+        tibble(time = seq(0, 12, length.out = 241L), evid = 0L, amt = NA_real_,        cmt = "central",  dvid = 1L, DV = NA_real_)
       )
     )
   ) |>

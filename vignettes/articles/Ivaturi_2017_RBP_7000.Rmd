@@ -112,8 +112,9 @@ make_events <- function(dose_mg, treatment) {
   hour_grid <- seq(0, 57 * 24, by = 6)
   ev <- rxode2::et(amt = dose_mg, time = 0,       cmt = "depot")
   ev <- rxode2::et(ev, amt = dose_mg, time = 28 * 24, cmt = "depot")
-  ev <- rxode2::et(ev, hour_grid, cmt = "Cc")
+  ev <- rxode2::et(ev, hour_grid, cmt = "central")
   out <- as.data.frame(ev)
+  out$dvid <- ifelse(out$evid == 0L, 1L, NA_integer_)
   out$CYP2D6_PM <- 0
   out$CYP2D6_IM <- 0
   out$treatment <- treatment

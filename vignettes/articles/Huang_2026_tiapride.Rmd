@@ -184,16 +184,15 @@ The typical-value solve is deterministic, so it is checked against exact
 closed-form identities rather than tolerance bands.
 
 Note on `cmt` in the event tables below. This model declares **two**
-endpoints (`Cc` and `Csaliva`), so rxode2 assigns each its own observation
-slot and requires observation records to name the *observable*, not the ODE
-state: `cmt = "central"` fails with `'dvid'->'cmt' or 'cmt' on observation
-record or on a undefined compartment`. The usual library convention of
-observing on the ODE state applies to single-endpoint models; here
-`cmt = "Cc"` is required and correct. `useLinCmt = FALSE` is passed to every
-`rxSolve()` for the same reason -- rxode2's automatic conversion to an
-analytic solution corrupts the endpoint mapping for multi-output models. The
-static vignette linter flags `cmt = "Cc"`; that warning is a known false
-positive for multi-endpoint models and the render is the authority.
+endpoints (`Cc` and `Csaliva`), so an observation record on an ODE state
+must also say which endpoint it belongs to: the records below observe on
+`cmt = "central"` (the state `Cc` is computed from) with `dvid = 1` (the
+first `~` line, `Cc`). Without `dvid`, `cmt = "central"` fails with
+`'dvid'->'cmt' or 'cmt' on observation record or on a undefined
+compartment`. rxode2 returns both `Cc` and `Csaliva` as output columns
+whatever the `cmt`. `useLinCmt = FALSE` is passed to every `rxSolve()` to
+keep the ODE solution: rxode2's automatic conversion to an analytic solution
+interferes with the endpoint mapping for multi-output models.
 
 ```{r typical-solve}
 dose_mg <- 75
@@ -203,12 +202,14 @@ ev_typ <- data.frame(
   time = c(0, sort(unique(c(seq(0, 4, by = 0.02), seq(0, 48, by = 0.1))))),
   amt  = NA_real_,
   evid = 0L,
-  cmt  = "Cc",
+  cmt  = "central",
+  dvid = 1L,
   FFM  = 30.62
 )
 ev_typ$amt[1] <- dose_mg
 ev_typ$evid[1] <- 1L
 ev_typ$cmt[1] <- "depot"
+ev_typ$dvid[1] <- NA_integer_
 
 sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_typ,
                            keep = "FFM", useLinCmt = FALSE) |>
@@ -346,7 +347,7 @@ make_arm <- function(label, dose, ii, id_offset) {
   doses <- tidyr::expand_grid(subj, time = seq(0, 120, by = ii)) |>
     dplyr::mutate(amt = dose, evid = 1L, cmt = "depot")
   obs <- tidyr::expand_grid(subj, time = seq(120, 132, by = 0.1)) |>
-    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "Cc")
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
   dplyr::bind_rows(doses, obs) |>
     dplyr::mutate(regimen = label) |>
     dplyr::arrange(id, time, dplyr::desc(evid))
@@ -482,7 +483,9 @@ ev_ss <- data.frame(
   evid = c(rep(1L, length(seq(0, 120, by = 8))),
            rep(0L, length(seq(120, 128, by = 0.02)))),
   cmt = c(rep("depot", length(seq(0, 120, by = 8))),
-          rep("Cc", length(seq(120, 128, by = 0.02)))),
+          rep("central", length(seq(120, 128, by = 0.02)))),
+  dvid = c(rep(NA_integer_, length(seq(0, 120, by = 8))),
+           rep(1L, length(seq(120, 128, by = 0.02)))),
   FFM = 30.62
 ) |>
   dplyr::arrange(time, dplyr::desc(evid))
