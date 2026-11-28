@@ -227,16 +227,6 @@ knownLsodaFailModels <- c(
   "Svensson_2016_rifampicin"
 )
 
-# liblsoda fails these in the probe's drug-free control on some platforms only,
-# so the probe may or may not fall back to dop853 and neither outcome is pinned.
-# The bacterial growth goes NaN after about 6 h, or "could not solve the
-# system", on Linux workstations and on Windows; on macOS both models solve
-# under liblsoda, and on the Ubuntu runners the control model does.
-platformLsodaFailModels <- c(
-  "Zazo_2024_ceftazidime_avibactam_control",
-  "Zazo_2024_ceftazidime_avibactam_icu"
-)
-
 # An absorption lag longer than the probe's default grid (3): the dose changes
 # nothing until 85.7 h (Jeon 2013), 235 h (Khwarg 2024) and 299 h (Park 2025),
 # past the 48 h grid, so the probe retries on a grid ten times longer.
@@ -882,12 +872,13 @@ test_that("the probe moves the dosed solve and its control to dop853 when liblso
   expect_identical(r$method, "dop853")
   expect_identical(r$nonFiniteStates, character(0))
   expect_gt(r$doseEffect, 0)
-  # Whichever solver the platform needs, the compared pair comes from one solver
-  # and is finite.
-  for (n in platformLsodaFailModels) {
+  # The Zazo 2024 time-kill models floor the ceftazidime concentration at zero
+  # inside its non-integer Hill power (max(Cc_caz, 0)), so integration noise
+  # below zero cannot make the term NaN and liblsoda solves the pair.
+  for (n in c("Zazo_2024_ceftazidime_avibactam_control", "Zazo_2024_ceftazidime_avibactam_icu")) {
     r <- probeSolveModel(n, db, useLinCmt = FALSE)
     expect_identical(r$status, "ok", info = n)
-    expect_true(r$method %in% c("default", "dop853"), info = n)
+    expect_identical(r$method, "default", info = n)
     expect_identical(r$nonFiniteStates, character(0), info = n)
     expect_gt(r$doseEffect, 0)
   }
@@ -1116,7 +1107,7 @@ test_that("only the known models need the probe's solver or grid fallback", {
   solver <- names_[vapply(names_, function(n) .usedSolverFallback(res[[n]]), logical(1))]
   grid <- names_[vapply(names_, function(n) .usedLongGrid(res[[n]]), logical(1))]
   expect_equal(
-    setdiff(solver, c(knownLsodaFailModels, platformLsodaFailModels)),
+    setdiff(solver, knownLsodaFailModels),
     character(0),
     info = "Model(s) the probe solved only with dop853; add them to knownLsodaFailModels with the evidence."
   )

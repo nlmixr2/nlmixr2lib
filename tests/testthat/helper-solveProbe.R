@@ -888,10 +888,10 @@ probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100, solverArgs = 
 # The dosed and no-dose solves on one time grid, and what the dose changed.
 # The dosed solve and its drug-free control from the first solver after `skip`
 # that gives finite states in both, as list(attempt, undosed), or NULL when none
-# does. A stiff time-kill model can defeat liblsoda in the drug-free control
-# only (Zazo_2024_ceftazidime_avibactam: the control goes NaN after 6 h, which
-# newer rxode2 builds refuse as "could not solve the system"), and the two
-# solves are compared, so they must come from one solver.
+# does. liblsoda can fail the drug-free control only (Courlet_2023_cabamiquine:
+# every state NaN from 1 h, which newer rxode2 builds refuse as "could not
+# solve the system"), and the two solves are compared, so they must come from
+# one solver.
 .probeFinitePair <- function(ui, doseCmt, amt, times, covValues, useLinCmt, solverArgs, forms, skip) {
   for (m in setdiff(names(.probeSolverMethods), skip)) {
     args <- utils::modifyList(.probeSolverMethods[[m]], solverArgs)

@@ -122,7 +122,10 @@ Nielsen_2011_vancomycin <- function() {
 
     btot <- bact_sensitive + bact_resting
     ksr <- (kgrowth - kdeath) / bmax * btot
-    drug_kill <- emax * effect^hill / (ec50^hill + effect^hill)
+    # max(effect, 0): past washout, integration noise can take the effect
+    # compartment slightly negative, where the non-integer Hill power is NaN.
+    effect_pos <- max(effect, 0)
+    drug_kill <- emax * effect_pos^hill / (ec50^hill + effect_pos^hill)
 
     d/dt(central) <- -ke * central - kdeg * central
     d/dt(effect) <- ke0 * central - ke0 * effect

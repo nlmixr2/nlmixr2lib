@@ -170,7 +170,10 @@ Nielsen_2011_benzylpenicillin <- function() {
     ksr <- (kgrowth - kdeath) / bmax * btot
 
     # Sigmoidal Emax killing on the sensitive stage (Eq 6).
-    drug_kill <- emax * effect^hill / (ec50^hill + effect^hill)
+    # max(effect, 0): past washout, integration noise can take the effect
+    # compartment slightly negative, where the non-integer Hill power is NaN.
+    effect_pos <- max(effect, 0)
+    drug_kill <- emax * effect_pos^hill / (ec50^hill + effect_pos^hill)
 
     # =============================================================
     # ODE system (Eqs 1-4)

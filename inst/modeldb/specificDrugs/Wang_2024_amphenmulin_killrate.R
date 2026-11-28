@@ -120,7 +120,10 @@ Wang_2024_amphenmulin_killrate <- function() {
     # decline of log10(CFU/mL) in log10 units per hour; it is negative
     # at zero concentration (the control grows) and rises towards
     # e0 + emax at saturating concentration.
-    kill_log10 <- e0 + emax * Cc^hill / (ec50^hill + Cc^hill)
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer Hill power is NaN.
+    Cc_pos <- max(Cc, 0)
+    kill_log10 <- e0 + emax * Cc_pos^hill / (ec50^hill + Cc_pos^hill)
 
     # d(log10 N)/dt = -kill_log10  =>  d(N)/dt = -ln(10)*kill_log10*N
     d/dt(bact) <- -log(10) * kill_log10 * bact

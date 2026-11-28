@@ -216,7 +216,10 @@ Zazo_2024_ceftazidime_avibactam_icu <- function() {
     # ---- 4. Ceftazidime kill of the active population (Eq 6) ----
     # Avibactam lowers the ceftazidime EC50 biexponentially.
     ec50_caz <- ec50_a * exp(-alpha * Cc_avi) + ec50_b * exp(-beta * Cc_avi)
-    kdeath1  <- emax * Cc_caz^hill / (ec50_caz^hill + Cc_caz^hill)
+    # max(Cc_caz, 0): past washout, integration noise can take Cc_caz
+    # slightly negative, where the non-integer Hill power is NaN.
+    Cc_caz_pos <- max(Cc_caz, 0)
+    kdeath1  <- emax * Cc_caz_pos^hill / (ec50_caz^hill + Cc_caz_pos^hill)
 
     # ---- 5. Delay functions (Eq 8) ----
     # I = 1 in the absence of ceftazidime (the drug-free growth control);
@@ -242,8 +245,12 @@ Zazo_2024_ceftazidime_avibactam_icu <- function() {
     # constant the same first-order rate applies to the amount. Km is the
     # log10-transformed CFU density (text under Eq 9), so the Hill term is
     # driven by bact_active rather than by the linear count p1.
-    degrate <- degmax * bact_active^hill_deg /
-      (km_deg^hill_deg + bact_active^hill_deg) *
+    # max(bact_active, 0): bact_active decays towards zero once the active
+    # population is killed, and integration noise can take it slightly
+    # negative, where the non-integer Hill power is NaN.
+    bact_active_pos <- max(bact_active, 0)
+    degrate <- degmax * bact_active_pos^hill_deg /
+      (km_deg^hill_deg + bact_active_pos^hill_deg) *
       (1 - Cc_avi / (ic50_deg + Cc_avi))
 
     d/dt(central_caz) <- -(cl_caz / vc_caz) * central_caz - degrate * central_caz

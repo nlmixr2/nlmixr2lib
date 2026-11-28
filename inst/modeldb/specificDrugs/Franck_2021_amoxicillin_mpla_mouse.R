@@ -251,7 +251,10 @@ Franck_2021_amoxicillin_mpla_mouse <- function() {
 
     kmpla_spleen <- exp(lkmpla_spleen)
     kamx_spleen <- exp(lkamx_spleen)
-    kill_amx_spleen <- kamx_spleen * effect_spleen^hill_spleen
+    # max(effect_spleen, 0): past washout, integration noise can take the
+    # effect compartment slightly negative, where the non-integer power is NaN.
+    effect_spleen_pos <- max(effect_spleen, 0)
+    kill_amx_spleen <- kamx_spleen * effect_spleen_pos^hill_spleen
     d/dt(bacteria_spleen) <- transit_in_spleen - kill_amx_spleen * bacteria_spleen -
       kmpla_spleen * CONMED_MPLA * bacteria_spleen
 

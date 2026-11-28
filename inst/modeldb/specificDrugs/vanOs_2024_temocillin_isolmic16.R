@@ -192,8 +192,11 @@ vanOs_2024_temocillin_isolmic16 <- function() {
     cfu0scale <- log10cfu0_total - log10(10^log10cfu0_s + 10^log10cfu0_ls)
 
     # ---- 4. Drug effect (Equations 1-3) -------------------------------------
-    kdrug_s   <- emax_s  * Cu^hill_s  / (ec50_s^hill_s   + Cu^hill_s)
-    kdrug_ls  <- emax_ls * Cu^hill_ls / (ec50_ls^hill_ls + Cu^hill_ls)
+    # max(Cu, 0): past washout, integration noise can take Cu slightly
+    # negative, where the non-integer Hill powers are NaN.
+    Cu_pos    <- max(Cu, 0)
+    kdrug_s   <- emax_s  * Cu_pos^hill_s  / (ec50_s^hill_s   + Cu_pos^hill_s)
+    kdrug_ls  <- emax_ls * Cu_pos^hill_ls / (ec50_ls^hill_ls + Cu_pos^hill_ls)
     kdrug_res <- klin_res * Cu
 
     # ---- 5. Bacterial subpopulations (Equations 1-3) ------------------------

@@ -2,6 +2,8 @@
 
 # development version
 
+- Ten time-kill models no longer fail a subject on rxode2 builds that stop at a non-finite state: `Nielsen_2011_benzylpenicillin`, `Nielsen_2011_cefuroxime`, `Nielsen_2011_vancomycin`, `Nielsen_2011_erythromycin`, `Wang_2024_amphenmulin_killrate`, `Zazo_2024_ceftazidime_avibactam_control`, `Zazo_2024_ceftazidime_avibactam_icu`, `vanOs_2024_temocillin_isolmic16`, `Franck_2021_amoxicillin_mpla_mouse` and `Chen_2017_TB_MTP_rifampicin_mouse`. Each floors the drug concentration (or effect compartment) at zero inside its non-integer Hill or power term, and the Zazo models also floor the log10 active bacterial count in the ceftazidime-degradation Hill term, because after washout integration noise could take these slightly negative, where the power is NaN. Where the old forms were finite, the simulated values are unchanged. The Nielsen 2011 article solves at the default tolerances again, the Wang 2024 article asserts that the kill-rate simulation has no missing values where it used to drop them, and both Zazo models now solve under the default liblsoda solver in the package's solve gate.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.

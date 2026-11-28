@@ -248,7 +248,10 @@ Chen_2017_TB_MTP_rifampicin_mouse <- function() {
     sdk <- exp(lksd_rif)
 
     ifg <- fgimax * Cc / (fgic50 + Cc) # inhibition of F growth (Eq. 3)
-    efd <- fdemax * Cc^gamma_fd_r / (fdec50^gamma_fd_r + Cc^gamma_fd_r) # death of F (Eq. 4)
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer Hill power is NaN.
+    Cc_pos <- max(Cc, 0)
+    efd <- fdemax * Cc_pos^gamma_fd_r / (fdec50^gamma_fd_r + Cc_pos^gamma_fd_r) # death of F (Eq. 4)
     esd <- sdk * Cc # death of S (Eq. 5)
 
     # ---- Three-state bacterial system (Eqs. 6-8) ----
