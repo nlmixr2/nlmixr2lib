@@ -117,7 +117,7 @@ make_cohort <- function(n, age, semester, id_offset = 0L) {
   ) |>
     # 25-hour observation grid at 15-min resolution.
     tidyr::crossing(time = seq(0, 24, by = 0.25)) |>
-    dplyr::mutate(evid = 0, amt = 0, cmt = "Cc") |>
+    dplyr::mutate(evid = 0, amt = 0, cmt = NA_character_) |> # algebraic model; no ODE state
     dplyr::arrange(id, time) |>
     as.data.frame()
 }

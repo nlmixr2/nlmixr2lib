@@ -133,18 +133,24 @@ dyads <- tibble::tribble(
 
 #' Solve one dyad for one maternal regimen.
 #'
-#' Observation records use `cmt = "Cc"` deliberately. The model declares three
-#' endpoints (Cc, Cmilk, Cinfant), so every observation record must map to one
-#' of them; `cmt = "blood"` is rejected with "'cmt' on observation record or on
-#' a undefined compartment". Because `Cc` is already a declared endpoint it
-#' resolves to an existing slot and injects nothing -- `mod$state` is the same
-#' 26 states before and after. One endpoint's worth of observation rows is
-#' enough: `rxSolve` returns every derived variable as a column, so Cmilk and
-#' Cinfant come back on the same rows.
+#' Observation records sit on the `blood` ODE state (`Cc <- blood / v_blood`)
+#' with `dvid = 1`, the position of `Cc` among the three declared endpoints
+#' (Cc, Cmilk, Cinfant). Without a `dvid`, `cmt = "blood"` is rejected with
+#' "'cmt' on observation record or on a undefined compartment"; naming the
+#' observable (`cmt = "Cc"`) is avoided because an observable in `cmt` can make
+#' rxode2 append compartment slots behind the ODE states. One endpoint's worth
+#' of observation rows is enough: `rxSolve` returns every derived variable as
+#' a column, so Cmilk and Cinfant come back on the same rows.
+obs_on_blood <- function(ev, times) {
+  ev <- as.data.frame(rxode2::et(ev, times, cmt = "blood"))
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
+  ev
+}
+
 solve_dyad <- function(NAT2_SLOW, NAT2_SLOW_INFANT, dose, ii, addl, tmax = 24) {
   ev <-
     rxode2::et(amt = dose, cmt = "depot", ii = ii, addl = addl) |>
-    rxode2::et(seq(0, tmax, by = 0.01), cmt = "Cc")
+    obs_on_blood(seq(0, tmax, by = 0.01))
   rxode2::rxSolve(
     mod, ev,
     params = c(NAT2_SLOW = NAT2_SLOW, NAT2_SLOW_INFANT = NAT2_SLOW_INFANT),
@@ -221,7 +227,7 @@ on the hepatic flow split and the clearance placement together.
 ```{r bioavailability}
 auc_inf <- function(cmt, NAT2_SLOW) {
   ev <- rxode2::et(amt = 300, cmt = cmt) |>
-    rxode2::et(seq(0, 120, by = 0.02), cmt = "Cc")
+    obs_on_blood(seq(0, 120, by = 0.02))
   s <- rxode2::rxSolve(
     mod, ev, params = c(NAT2_SLOW = NAT2_SLOW, NAT2_SLOW_INFANT = 0),
     returnType = "data.frame", atol = 1e-12, rtol = 1e-12
@@ -497,7 +503,7 @@ auc_perturbed <- function(m, pars = NULL, dose = 300) {
   p <- c(NAT2_SLOW = 0, NAT2_SLOW_INFANT = 0)
   if (!is.null(pars)) p <- c(p, pars)
   ev <- rxode2::et(amt = dose, cmt = "depot") |>
-    rxode2::et(seq(0, 120, by = 0.02), cmt = "Cc")
+    obs_on_blood(seq(0, 120, by = 0.02))
   s <- rxode2::rxSolve(m, ev, params = p, returnType = "data.frame",
                        atol = 1e-12, rtol = 1e-12)
   sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)

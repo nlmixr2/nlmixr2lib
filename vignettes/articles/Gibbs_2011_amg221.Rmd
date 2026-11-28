@@ -95,8 +95,10 @@ tier (F1 = 1); the virtual cohort therefore does not need age / weight / sex
 covariates.
 
 The model has three outputs (`Cc`, `Ccadipose`, `activity`); for multi-output
-simulation, each output requires its own observation rows tagged with the
-matching `cmt` value. The helper below builds one dose row plus three sets of
+simulation, each output gets its own observation rows, placed on the ODE state
+the output is computed from (`central` for `Cc`, `effect` for `Ccadipose` and
+`activity`) and tagged with the output's `dvid` (its position among the model's
+residual-error lines). The helper below builds one dose row plus three sets of
 observation rows per subject; downstream code filters to a single `CMT` value so
 each `(id, time)` pair yields one row with all three outputs as columns.
 
@@ -106,7 +108,12 @@ set.seed(20260709)
 dose_levels <- c(3, 30, 100)          # mg
 n_per_arm   <- 100L                    # per-dose cohort size (well below the 200/arm cap)
 obs_times   <- c(0, 0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24)  # h; matches Gibbs 2011 sampling grid
-outputs     <- c("Cc", "Ccadipose", "activity")
+obs_map     <- data.frame(
+  output = c("Cc", "Ccadipose", "activity"),
+  cmt    = c("central", "effect", "effect"),
+  dvid   = 1:3,
+  stringsAsFactors = FALSE
+)
 
 make_cohort <- function(dose_mg, n, id_offset = 0L) {
   ids <- id_offset + seq_len(n)
@@ -117,16 +124,18 @@ make_cohort <- function(dose_mg, n, id_offset = 0L) {
     stringsAsFactors = FALSE
   )
   obs_rows <- expand.grid(
-    id = ids, time = obs_times, cmt = outputs,
-    stringsAsFactors = FALSE
+    id = ids, time = obs_times, k = seq_len(nrow(obs_map))
   )
+  obs_rows$cmt <- obs_map$cmt[obs_rows$k]
+  obs_rows$dvid <- obs_map$dvid[obs_rows$k]
+  dose_rows$dvid <- NA_integer_
   obs_rows$amt <- 0
   obs_rows$evid <- 0L
   obs_rows$DOSE_LOW_AMG221 <- is_low_dose
   obs_rows$dose_mg <- dose_mg
   rbind(
-    dose_rows[, c("id", "time", "amt", "cmt", "evid", "DOSE_LOW_AMG221", "dose_mg")],
-    obs_rows[,  c("id", "time", "amt", "cmt", "evid", "DOSE_LOW_AMG221", "dose_mg")]
+    dose_rows[, c("id", "time", "amt", "cmt", "dvid", "evid", "DOSE_LOW_AMG221", "dose_mg")],
+    obs_rows[,  c("id", "time", "amt", "cmt", "dvid", "evid", "DOSE_LOW_AMG221", "dose_mg")]
   )
 }
 
@@ -250,10 +259,11 @@ the simulated cohort's percent inhibition.
 mod_typical <- rxode2::zeroRe(mod)
 grid_times  <- seq(0.1, 48, by = 0.25)
 typ_events  <- rbind(
-  data.frame(id = 1L, time = 0, evid = 1L, cmt = "depot",
+  data.frame(id = 1L, time = 0, evid = 1L, cmt = "depot", dvid = NA_integer_,
              amt = 3, DOSE_LOW_AMG221 = 1L, stringsAsFactors = FALSE),
-  do.call(rbind, lapply(outputs, function(o) {
-    data.frame(id = 1L, time = grid_times, evid = 0L, cmt = o,
+  do.call(rbind, lapply(seq_len(nrow(obs_map)), function(k) {
+    data.frame(id = 1L, time = grid_times, evid = 0L, cmt = obs_map$cmt[k],
+               dvid = obs_map$dvid[k],
                amt = 0, DOSE_LOW_AMG221 = 1L, stringsAsFactors = FALSE)
   }))
 )

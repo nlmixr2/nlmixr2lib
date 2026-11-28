@@ -110,7 +110,7 @@ make_arm <- function(treatment_label, n, dose_mgkg, id_offset = 0L) {
     dose_mgkg = dose_mgkg
   )
   obs_ecf <- tidyr::expand_grid(id = ids, time = obs_times) |>
-    dplyr::mutate(amt = 0, dur = 0, evid = 0L, cmt = "Cecf",
+    dplyr::mutate(amt = 0, dur = 0, evid = 0L, cmt = "brain_total", dvid = 1L,
                   treatment = treatment_label, dose_mgkg = dose_mgkg)
   dplyr::bind_rows(dose_rows, obs_ecf)
 }

@@ -136,8 +136,9 @@ build_events <- function(label, dose_acet, dose_fat, dose_prot, dose_carb,
     rxode2::et(amt = dose_fat,  cmt = "stom_fat",  time = 0) |>
     rxode2::et(amt = dose_prot, cmt = "stom_prot", time = 0) |>
     rxode2::et(amt = dose_carb, cmt = "stom_carb", time = 0) |>
-    rxode2::et(times,           cmt = "Cc")
+    rxode2::et(times,           cmt = "central")
   ev <- as.data.frame(ev)
+  ev$dvid       <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   ev$id         <- id
   ev$WT         <- wt
   ev$AGE        <- age

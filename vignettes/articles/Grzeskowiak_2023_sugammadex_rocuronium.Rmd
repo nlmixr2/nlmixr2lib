@@ -131,7 +131,7 @@ build_sim <- function(arms, eta_df, obs_rel) {
   obs <- data.frame(
     id = rep(subj$id, each = length(obs_rel)),
     time = rep(subj$tsgx, each = length(obs_rel)) + rep(obs_rel, nrow(subj)),
-    amt = 0, cmt = "NMB", evid = 0L
+    amt = 0, cmt = "effect_roc", dvid = 3L, evid = 0L
   )
   ev <- dplyr::bind_rows(roc, sgx, obs) |>
     dplyr::left_join(subj[, c("id", "WT")], by = "id") |>

@@ -144,13 +144,14 @@ make_cohort <- function(n, dose_mg, id_offset = 0L) {
   ev_dose$amt  <- dose_mg
   ev_dose$cmt  <- "depot"
 
-  # Observation rows on three outputs (Cc, SDMA, PLT)
+  # Observation rows on three outputs (Cc, SDMA, PLT), each placed on the ODE
+  # state the output is computed from and tagged with the output's dvid
   ev_obs_Cc   <- expand.grid(id = ids, time = obs_grid)
-  ev_obs_Cc$evid <- 0L; ev_obs_Cc$amt <- 0; ev_obs_Cc$cmt <- "Cc"
+  ev_obs_Cc$evid <- 0L; ev_obs_Cc$amt <- 0; ev_obs_Cc$cmt <- "central"; ev_obs_Cc$dvid <- 1L
   ev_obs_SD   <- expand.grid(id = ids, time = obs_grid)
-  ev_obs_SD$evid <- 0L; ev_obs_SD$amt <- 0; ev_obs_SD$cmt <- "SDMA"
+  ev_obs_SD$evid <- 0L; ev_obs_SD$amt <- 0; ev_obs_SD$cmt <- "sdma"; ev_obs_SD$dvid <- 2L
   ev_obs_PLT  <- expand.grid(id = ids, time = obs_grid)
-  ev_obs_PLT$evid <- 0L; ev_obs_PLT$amt <- 0; ev_obs_PLT$cmt <- "PLT"
+  ev_obs_PLT$evid <- 0L; ev_obs_PLT$amt <- 0; ev_obs_PLT$cmt <- "circ"; ev_obs_PLT$dvid <- 3L
 
   out <- dplyr::bind_rows(ev_dose, ev_obs_Cc, ev_obs_SD, ev_obs_PLT)
   out$treatment <- sprintf("%g mg q.d.", dose_mg)

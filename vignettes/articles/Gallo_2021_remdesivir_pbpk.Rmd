@@ -108,8 +108,8 @@ The model has `r length(ui$state)` ODE states: four forcing-function states,
 three arterial-plasma states, five PBMC states, and seven states in each of
 twelve tissues plus the lung extracellular GS-704277 relay.
 
-The three plasma analytes are declared endpoints, so observation rows name
-the endpoint (`cmt = "Cc"`). The chunk below confirms the dose still lands in
+The three plasma analytes are declared endpoints, so observation rows sit on
+the `central` state with `dvid = 1` (the `Cc` endpoint). The chunk below confirms the dose still lands in
 `central` and every state is returned.
 
 ```{r helpers}
@@ -122,12 +122,14 @@ make_events <- function(n, dose_times, dose_amts, tinf, grid, etas = NULL) {
   dose$rate <- dose$amt / tinf
   dose$evid <- 1L
   dose$cmt <- "central"
+  dose$dvid <- NA_integer_
   dose$k <- NULL
   obs <- expand.grid(id = seq_len(n), time = grid)
   obs$amt <- 0
   obs$rate <- 0
   obs$evid <- 0L
-  obs$cmt <- "Cc"
+  obs$cmt <- "central"
+  obs$dvid <- 1L
   ev <- rbind(dose, obs)
   if (!is.null(etas)) {
     ev <- merge(ev, etas, by = "id")
