@@ -165,7 +165,10 @@ Qin_2026_ropeginterferon_plt <- function() {
     ep <- expit(logitep + etalogitep)
     hill <- exp(lhill)
 
-    inh <- imax * Cc^hill / (ic50^hill + Cc^hill)
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer power is NaN.
+    Cc_pos <- max(Cc, 0)
+    inh <- imax * Cc_pos^hill / (ic50^hill + Cc_pos^hill)
 
     # DADT(4) = KINH*(1 - INHH)*(1 - EP) - A(4)*KOUTH, A_0(4) = PLT0;
     # EP applies from TIME >= 0.

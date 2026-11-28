@@ -211,8 +211,10 @@ Qin_2026_ropeginterferon_wbc <- function() {
     hill <- exp(lhill)
 
     # INHH = IMAXH*CTOT**HILLH/(IC50H**HILLH + CTOT**HILLH), driven by
-    # TOTAL serum ropeg.
-    inh <- imax * Cc^hill / (ic50^hill + Cc^hill)
+    # TOTAL serum ropeg. max(Cc, 0): past washout, integration noise can
+    # take Cc slightly negative, where the non-integer power is NaN.
+    Cc_pos <- max(Cc, 0)
+    inh <- imax * Cc_pos^hill / (ic50^hill + Cc_pos^hill)
 
     # DADT(4) = KINH*(1 - INHH)*(1 - EP) - A(4)*KOUTH, A_0(4) = WBC0.
     # EP = EPH for TIME >= 0, i.e. from the first record, so the drug-

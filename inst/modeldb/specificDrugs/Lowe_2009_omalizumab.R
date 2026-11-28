@@ -132,9 +132,12 @@ Lowe_2009_omalizumab <- function() {
     # 2. Concentration-dependent equilibrium dissociation constant Kd
     # (Lowe 2009 Eq. 2 page 64): Kd = Kd0 * (XT / ET)^alpha. At t = 0 with
     # central = 0 the ratio is 0 and Kd = 0 (0^alpha = 0 for alpha > 0),
-    # so no complex forms initially.
+    # so no complex forms initially. max(., 0): past washout, integration
+    # noise can take central slightly negative, where the non-integer
+    # power is NaN.
     # ------------------------------------------------------------------
-    kd <- kd0 * (central / total_target)^alpha
+    ratio_pos <- max(central / total_target, 0)
+    kd <- kd0 * ratio_pos^alpha
 
     # ------------------------------------------------------------------
     # 3. Equilibrium-binding solution for the complex amount X_C from the

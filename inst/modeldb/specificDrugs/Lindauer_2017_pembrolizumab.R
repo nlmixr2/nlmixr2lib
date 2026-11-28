@@ -295,7 +295,10 @@ Lindauer_2017_pembrolizumab <- function() {
     R0_tumor <- 100 * PD1t / C_PD1_t
 
     # ---- Drug effect on tumor (Lindauer 2017 supplement) ----
-    DE <- sltg * R0_tumor^gamma
+    # max(R0_tumor, 0): past washout, integration noise can take R0_tumor
+    # slightly negative, where the non-integer power is NaN.
+    R0_tumor_pos <- max(R0_tumor, 0)
+    DE <- sltg * R0_tumor_pos^gamma
 
     # ============================================================
     # ODE system. Equations follow Lindauer 2017 supplement

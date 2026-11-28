@@ -161,7 +161,10 @@ Jones_2011_PF04878691_oas <- function() {
 
     oas(0) <- rbase
 
-    d/dt(oas) <- kin_oas * (1 + slope_oas * Cc^gamma_oas) - kout * oas
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer power is NaN.
+    Cc_pos <- max(Cc, 0)
+    d/dt(oas) <- kin_oas * (1 + slope_oas * Cc_pos^gamma_oas) - kout * oas
 
     oas ~ prop(propSd_oas)
   })

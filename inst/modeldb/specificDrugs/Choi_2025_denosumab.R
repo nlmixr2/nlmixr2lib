@@ -296,9 +296,12 @@ Choi_2025_denosumab <- function() {
       (kint - kdeg) * complex  # Eq 4
 
     # 7. Indirect response: free denosumab inhibits the BMD loss rate constant
-    #    through a sigmoid Imax function (Eq 8).
+    #    through a sigmoid Imax function (Eq 8). max(cfree, 0): past washout,
+    #    integration noise can take cfree slightly negative, where the
+    #    non-integer power is NaN.
+    cfree_pos <- max(cfree, 0)
     d/dt(BMD_LS) <- kin -
-      kout * (1 - imax * cfree^hill / (ic50^hill + cfree^hill)) * BMD_LS
+      kout * (1 - imax * cfree_pos^hill / (ic50^hill + cfree_pos^hill)) * BMD_LS
 
     # 8. Observations. Cc is the total serum denosumab concentration; BMD_LS is
     #    itself the ODE state, so event-table observation rows use

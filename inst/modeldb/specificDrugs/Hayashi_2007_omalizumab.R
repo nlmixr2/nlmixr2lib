@@ -134,9 +134,12 @@ Hayashi_2007_omalizumab <- function() {
     # 2. Concentration-dependent dissociation constant Kd
     #    (Hayashi 2007 "The dissociation constant" page 552):
     #    Kd = Kd0 * (central / total_target)^alpha. At t = 0, central = 0 so Kd = 0
-    #    (0^alpha = 0 for alpha > 0) and no complex forms.
+    #    (0^alpha = 0 for alpha > 0) and no complex forms. max(., 0): past
+    #    washout, integration noise can take central slightly negative,
+    #    where the non-integer power is NaN.
     # ------------------------------------------------------------------
-    kd <- kd0 * (central / total_target)^alpha
+    ratio_pos <- max(central / total_target, 0)
+    kd <- kd0 * ratio_pos^alpha
 
     # ------------------------------------------------------------------
     # 3. Equilibrium-binding solution for the complex amount X_C.

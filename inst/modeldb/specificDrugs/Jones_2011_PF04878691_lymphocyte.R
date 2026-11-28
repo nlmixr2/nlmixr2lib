@@ -162,7 +162,10 @@ Jones_2011_PF04878691_lymphocyte <- function() {
 
     lymph(0) <- rbase
 
-    d/dt(lymph) <- kin_lymph - kout_lymph * (1 + slope_lymph * Cc^gamma_lymph) * lymph
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer power is NaN.
+    Cc_pos <- max(Cc, 0)
+    d/dt(lymph) <- kin_lymph - kout_lymph * (1 + slope_lymph * Cc_pos^gamma_lymph) * lymph
 
     lymph ~ prop(propSd_lymph)
   })

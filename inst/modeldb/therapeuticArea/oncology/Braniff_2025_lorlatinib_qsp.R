@@ -359,8 +359,11 @@ Braniff_2025_lorlatinib_qsp <- function() {
     #    Each species relaxes toward its input with the common rate kout.
     #    All are normalised so that the untreated steady state is 1.
     # =====================================================================
-    inh <- imax * conc_nm ^ hill_drug /
-           (ic50_drug ^ hill_drug + conc_nm ^ hill_drug)
+    # max(conc_nm, 0): past washout, integration noise can take conc_nm
+    # slightly negative, where the non-integer power is NaN.
+    conc_nm_pos <- max(conc_nm, 0)
+    inh <- imax * conc_nm_pos ^ hill_drug /
+           (ic50_drug ^ hill_drug + conc_nm_pos ^ hill_drug)
 
     d/dt(palk) <- kout * ((1 - inh) - palk)
     d/dt(ras)  <- kout * ((palk + gfr_act) / (1 + gfr_act) - ras)

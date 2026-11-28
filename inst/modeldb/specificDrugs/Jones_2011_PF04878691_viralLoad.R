@@ -189,7 +189,10 @@ Jones_2011_PF04878691_viralLoad <- function() {
 
     oas(0) <- rbase_oas
 
-    d/dt(oas) <- kin_oas * (1 + slope_oas * Cc^gamma_oas) - kout_oas * oas
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer power is NaN.
+    Cc_pos <- max(Cc, 0)
+    d/dt(oas) <- kin_oas * (1 + slope_oas * Cc_pos^gamma_oas) - kout_oas * oas
 
     # ----------------------------------------------------------------------
     # OAS-driven HCV viral RNA inhibition (Jones 2011 Table 4). The input

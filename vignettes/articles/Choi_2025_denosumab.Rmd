@@ -176,8 +176,8 @@ mod <- readModelDb("Choi_2025_denosumab")
 # The model has two endpoints (Cc and BMD_LS), which triggers rxode2's
 # ODE-to-linCmt auto-conversion bug on the dvid-to-cmt mapping, so every solve
 # passes useLinCmt = FALSE. The QSS binding quadratic is stiff, so tolerances
-# are tightened: at default tolerances a percent or so of simulated subjects
-# fail to integrate.
+# are tightened: at the default tolerances the deep troughs of the population
+# solve integrate to negative total concentrations, which PKNCA rejects.
 solve_opts <- list(useLinCmt = FALSE, atol = 1e-10, rtol = 1e-8,
                    maxsteps = 200000L)
 
@@ -451,28 +451,10 @@ sim <- dplyr::bind_rows(
 # (arm, id).
 stopifnot(nrow(dplyr::distinct(sim, arm, id)) == 2L * n_per_arm)
 
-# A minority of extreme parameter draws (very large R0 or Q/F) fail to
-# integrate even at tightened tolerances. Report the rate rather than hiding
-# it. A subject that fails in either arm is dropped from BOTH, so the paired
-# comparison stays balanced.
-failed <- sim |>
-  dplyr::group_by(id) |>
-  dplyr::summarise(bad = any(!is.finite(Cc)) || any(!is.finite(BMD_LS)),
-                   .groups = "drop") |>
-  dplyr::filter(bad) |>
-  dplyr::pull(id)
-
-cat(sprintf("Subjects failing to integrate in at least one arm: %d of %d (%.2f%%)\n",
-            length(failed), n_per_arm, 100 * length(failed) / n_per_arm))
-
-# A large failure rate would mean the ODE system or the omega matrix has been
-# mis-transcribed rather than that a few draws are extreme.
-stopifnot(length(failed) / n_per_arm < 0.05)
-
-sim <- dplyr::filter(sim, !id %in% failed)
+# Every subject must integrate in both arms. A failed subject returns NA rows,
+# which the quantile summaries below would silently skip, so it is an error
+# here rather than a filter.
 stopifnot(all(is.finite(sim$Cc)), all(is.finite(sim$BMD_LS)))
-# Both arms must retain the same subjects for the pairing to hold.
-stopifnot(length(unique(table(dplyr::distinct(sim, arm, id)$arm))) == 1L)
 ```
 
 ```{r vpc-plot}
@@ -526,11 +508,14 @@ ev_den <- make_events(n_per_arm, obs_times, id_offset = 0L,
 
 run_convention <- function(omega_sd, label) {
   rxode2::rxSetSeed(20250909)
-  do.call(rxode2::rxSolve, c(list(
+  sim_conv <- do.call(rxode2::rxSolve, c(list(
     object = mod, events = ev_den, omega = make_omega(omega_sd)
   ), solve_opts)) |>
-    as.data.frame() |>
-    dplyr::filter(is.finite(Cc), time >= 2 * month_h) |>
+    as.data.frame()
+  # A failed subject would drop out of the Cmax quantiles and bias the gate.
+  stopifnot(all(is.finite(sim_conv$Cc)))
+  sim_conv |>
+    dplyr::filter(time >= 2 * month_h) |>
     dplyr::group_by(id) |>
     dplyr::summarise(cmax = max(Cc), .groups = "drop") |>
     dplyr::summarise(
@@ -615,7 +600,7 @@ concentration record at the interval start is continuous and unambiguous.
 tau <- month_h
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time >= 2 * month_h) |>
+  dplyr::filter(time >= 2 * month_h) |>
   dplyr::mutate(time = time - 2 * month_h) |>
   dplyr::select(id, time, Cc, arm)
 
@@ -802,15 +787,17 @@ stopifnot(abs(bmd_diff) < 0.05)
   It does not affect any validation target in this vignette, because percent
   change from baseline is exactly independent of BMD0 in this model: the
   turnover system is linear in BMD0 once `kin = kout * BMD0`.
-- **A small fraction of simulated subjects fails to integrate.** The QSS
-  binding quadratic combined with the very large reported IIV on `R0`
-  (158.3% CV) and `Q/F` (295.99% CV) produces occasional extreme draws that the
-  solver cannot integrate even with tightened tolerances. The rate is reported
-  and gated above rather than silently absorbed; those subjects are excluded
-  from the summaries. Stochastic simulation of the healthy-volunteer arm is
-  markedly more expensive for the same reason -- `Q/F` is 5.7-fold higher there
-  and carries the same 295.99% CV -- which is a further reason the subgroup
-  comparisons are run deterministically.
+- **Free denosumab is floored at zero in the BMD inhibition term.** The model
+  evaluates the Imax function on `max(cfree, 0)`. Free drug is non-negative
+  for every admissible trajectory, but once it washes out integration noise
+  can take it slightly negative, where `cfree^hill` (non-integer `hill`) is
+  `NaN` and the solver abandons the subject. The guard changes no admissible
+  trajectory; with it every simulated subject integrates, which the
+  population chunks assert. The very large reported IIV on `R0` (158.3% CV)
+  and `Q/F` (295.99% CV) still makes stochastic simulation of the
+  healthy-volunteer arm markedly more expensive -- `Q/F` is 5.7-fold higher
+  there and carries the same 295.99% CV -- which is a further reason the
+  subgroup comparisons are run deterministically.
 - **`useLinCmt = FALSE` is required.** The model has two endpoints, and
   rxode2's automatic ODE-to-linCmt conversion corrupts the `dvid`-to-`cmt`
   mapping for multi-output models of this shape. Observation rows use
