@@ -138,6 +138,10 @@ mgkg_to_nmolkg <- function(amt_mgkg, mw) amt_mgkg * 1e6  / mw
 ```
 
 ```{r cohort}
+# Observation rows sit on the ODE state `central`; with five declared
+# endpoints, `dvid = 1L` selects the Cc endpoint. Every observable is returned
+# as a column whatever the endpoint.
+#
 # Study 2: IV bolus of 2000 ug/kg ticagrelor at t = 0; observation grid
 # 0-150 min mirroring the paper's sampling schedule (2,5,10,30,60,90,120,150).
 tica_bolus <- ugkg_to_nmolkg(2000, mw_ticagrelor)
@@ -146,7 +150,8 @@ events_s2 <- data.frame(
   time = c(0, seq(0.5, 150, length.out = 200)),
   amt  = c(tica_bolus, rep(NA_real_, 200)),
   rate = c(NA_real_,    rep(NA_real_, 200)),
-  cmt  = c("central",   rep("Cc",      200)),
+  cmt  = c("central",   rep("central", 200)),
+  dvid = c(NA_integer_, rep(1L,        200)),
   evid = c(1L,          rep(0L,        200)),
   treatment = "Study 2: 2000 ug/kg IV bolus, no MEDI"
 )
@@ -163,7 +168,8 @@ events_s1 <- data.frame(
   time = c(0, 5, 20, seq(0.5, 100, length.out = 200)),
   amt  = c(rate1 * 5, rate2 * 15, medi_bolus, rep(NA_real_, 200)),
   rate = c(rate1,     rate2,      0,          rep(NA_real_, 200)),
-  cmt  = c("central", "central",  "target",   rep("Cc",      200)),
+  cmt  = c("central", "central",  "target",   rep("central", 200)),
+  dvid = c(NA_integer_, NA_integer_, NA_integer_, rep(1L,    200)),
   evid = c(1L,        1L,         1L,         rep(0L,        200)),
   treatment = "Study 1: ticagrelor infusion + 100 mg/kg MEDI at t=20"
 )
@@ -175,7 +181,8 @@ events_s1_veh <- data.frame(
   time = c(0, 5, seq(0.5, 100, length.out = 200)),
   amt  = c(rate1 * 5, rate2 * 15, rep(NA_real_, 200)),
   rate = c(rate1,     rate2,      rep(NA_real_, 200)),
-  cmt  = c("central", "central",  rep("Cc",      200)),
+  cmt  = c("central", "central",  rep("central", 200)),
+  dvid = c(NA_integer_, NA_integer_, rep(1L,     200)),
   evid = c(1L,        1L,         rep(0L,        200)),
   treatment = "Study 1 vehicle: ticagrelor infusion only, no MEDI"
 )

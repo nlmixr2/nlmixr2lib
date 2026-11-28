@@ -185,7 +185,7 @@ events <- ocs |>
   dplyr::mutate(id = dplyr::row_number()) |>
   tidyr::expand_grid(time = times_obs) |>
   dplyr::mutate(evid = 0L, amt = 0, rate = 0,
-                cmt = "Cc",
+                cmt = "central", dvid = 1L,
                 WT = 70, URINE_FLOW = 100) |>
   dplyr::bind_rows(
     ocs |>

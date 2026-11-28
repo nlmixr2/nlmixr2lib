@@ -134,7 +134,7 @@ make_cohort <- function(wt, dose_mg, regimen_label, ii, addl,
     regimen = regimen_label
   )
   obs_df <- expand.grid(id = ids, time = obs_times) |>
-    dplyr::mutate(evid = 0, amt = 0, cmt = "Cc", ii = 0, addl = 0)
+    dplyr::mutate(evid = 0, amt = 0, cmt = "central", dvid = 1L, ii = 0, addl = 0)
   obs_df$WT      <- wt[match(obs_df$id, ids)]
   obs_df$regimen <- regimen_label
   dplyr::bind_rows(dose_df, obs_df) |>

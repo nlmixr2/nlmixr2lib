@@ -165,7 +165,7 @@ build_single_dose <- function(amt_mg, n_sub, ifngs_high_pct = 100,
   )
   obs <- tibble(id = ids, WT = wt, BGENE21_HIGH = bgene) |>
     cross_join(tibble(time = obs_grid)) |>
-    mutate(amt = NA_real_, evid = 0L, cmt = "Cc")
+    mutate(amt = NA_real_, evid = 0L, cmt = "central")
   bind_rows(doses, obs) |>
     arrange(id, time, evid) |>
     mutate(dose_grp = paste0(amt_mg, " mg"))
@@ -205,7 +205,7 @@ build_q4w <- function(n_sub, dose_mg = 300, n_doses = 13, ifngs_high_pct = 81,
     cross_join(tibble(time = dose_times, amt = dose_mg, evid = 1L,
                       cmt = "central"))
   obs <- tibble(id = ids, WT = wt, BGENE21_HIGH = bgene) |>
-    cross_join(tibble(time = obs_grid, amt = NA_real_, evid = 0L, cmt = "Cc"))
+    cross_join(tibble(time = obs_grid, amt = NA_real_, evid = 0L, cmt = "central"))
   bind_rows(doses, obs) |>
     arrange(id, time, evid) |>
     mutate(dose_grp = paste0(dose_mg, " mg Q4W"))

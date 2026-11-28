@@ -102,7 +102,8 @@ make_drug_free_events <- function(gfr_mlmin, t_end = 500, dt = 4) {
     time = seq(0, t_end, by = dt),
     evid = 0L,
     amt = 0,
-    cmt = 3L,                      # 3 -> sUA observation
+    cmt = "serum",                 # sUA is computed from the serum state
+    dvid = 1L,                     # two endpoints: 1 selects sUA
     CRCL = gfr_mlmin,
     CP_OXY_NGML = 0,
     CP_FBX_NGML = 0,
@@ -206,7 +207,8 @@ make_lsn_events <- function(dose_mg, gfr_mlmin = 130,
     time = times,
     evid = 0L,
     amt = 0,
-    cmt = 3L,
+    cmt = "serum",
+    dvid = 1L,
     CRCL = gfr_mlmin,
     CP_OXY_NGML = 0,
     CP_FBX_NGML = 0,
@@ -267,7 +269,8 @@ combo_ev <- data.frame(
   time = combo_times,
   evid = 0L,
   amt = 0,
-  cmt = 3L,
+  cmt = "serum",
+  dvid = 1L,
   CRCL = 130,
   CP_OXY_NGML = 0,
   CP_FBX_NGML = ifelse(combo_times <= 24*7, 1500,           # febuxostat days 1-7

@@ -158,7 +158,8 @@ ev_ss <- data.frame(
   time       = seq(0, 24, by = 0.5),
   amt        = 0,
   evid       = 0L,
-  cmt        = "Cc",
+  cmt        = "ca", # Cc <- ca; two endpoints, so dvid selects Cc
+  dvid       = 1L,
   FORM_CACO3 = 0
 )
 
@@ -185,9 +186,9 @@ each treatment arm. Per the paper's K-PD convention the depot is dosed with
 make_typical_events <- function(form_caco3, times = seq(0, 8, by = 0.1)) {
   rbind(
     data.frame(id = 1L, time = 0, amt = 1, evid = 1L, cmt = "depot",
-               FORM_CACO3 = form_caco3),
-    data.frame(id = 1L, time = times, amt = 0, evid = 0L, cmt = "Cc",
-               FORM_CACO3 = form_caco3)
+               dvid = NA_integer_, FORM_CACO3 = form_caco3),
+    data.frame(id = 1L, time = times, amt = 0, evid = 0L, cmt = "ca",
+               dvid = 1L, FORM_CACO3 = form_caco3)
   )
 }
 
@@ -239,9 +240,11 @@ obs_times <- c(0, 0.5, 1, 1.5, 2, 3, 4, 6, 8)
 make_cohort <- function(n, form_caco3, id_offset = 0L) {
   ids <- id_offset + seq_len(n)
   dose_rows <- data.frame(id = ids, time = 0, amt = 1, evid = 1L,
-                          cmt = "depot", FORM_CACO3 = form_caco3)
+                          cmt = "depot", dvid = NA_integer_,
+                          FORM_CACO3 = form_caco3)
   obs_rows  <- expand.grid(id = ids, time = obs_times) |>
-    transform(amt = 0, evid = 0L, cmt = "Cc", FORM_CACO3 = form_caco3)
+    transform(amt = 0, evid = 0L, cmt = "ca", dvid = 1L,
+              FORM_CACO3 = form_caco3)
   rbind(dose_rows, obs_rows[order(obs_rows$id, obs_rows$time), ])
 }
 

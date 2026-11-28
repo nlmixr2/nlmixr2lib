@@ -146,8 +146,10 @@ obs_times <- sort(unique(c(
   seq(0, horizon, by = 24)                 # daily anchors
 )))
 
+# Observations sit on the ODE state `central`; with four declared endpoints
+# `dvid = 1L` selects the Cc endpoint. Every observable is returned as a column.
 obs_rows <- tibble(
-  time = obs_times, amt = NA_real_, evid = 0L, cmt = "Cc"
+  time = obs_times, amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L
 )
 
 make_subject <- function(id) {
@@ -157,7 +159,7 @@ make_subject <- function(id) {
 }
 
 events <- bind_rows(lapply(seq_len(n_sim), make_subject)) |>
-  select(id, time, amt, evid, cmt, TUM_VOL)
+  select(id, time, amt, evid, cmt, dvid, TUM_VOL)
 ```
 
 # Simulation

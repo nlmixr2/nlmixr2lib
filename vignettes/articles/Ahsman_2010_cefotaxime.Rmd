@@ -115,16 +115,21 @@ make_cohort <- function(n, dose_mg_per_kg, dose_freq_h, label,
     transform(
       evid = 1L,
       amt  = dose_amt,
-      cmt  = "central"
+      cmt  = "central",
+      dvid = NA_integer_
     )
   obs <- expand.grid(id = ids, time = obs_times) |>
     transform(
       evid = 0L,
       amt  = NA_real_,
-      cmt  = "Cc"
+      cmt  = "central",
+      dvid = 1L
     )
+  # Observation rows sit on ODE states; with two declared endpoints, `dvid`
+  # selects the endpoint (1 = Cc on `central`, 2 = Cc_dact on `central_dact`).
   obs2 <- obs
-  obs2$cmt <- "Cc_dact"
+  obs2$cmt  <- "central_dact"
+  obs2$dvid <- 2L
   out <- rbind(dosing, obs, obs2)
   out$WT          <- wt
   out$Q_CVVH      <- q_cvvh
@@ -151,11 +156,11 @@ sim <- rxode2::rxSolve(mod, events = events,
                        keep = c("treatment", "WT", "Q_CVVH", "T_POST_ECMO", "cmt"))
 
 # rxSolve emits one row per observation event, so each (id, time) pair appears
-# twice (one for the Cc observation slot, one for the Cc_dact slot). The Cc
-# and Cc_dact columns are however populated for every row. Deduplicate to one
-# row per (id, time) so PKNCA's `duplicate_check()` is happy downstream.
+# twice (one for the Cc endpoint, one for the Cc_dact endpoint). The Cc and
+# Cc_dact columns are however populated for every row. Deduplicate to one row
+# per (id, time) so PKNCA's `duplicate_check()` is happy downstream.
 sim_unique <- sim |>
-  dplyr::filter(cmt == "Cc") |>
+  dplyr::filter(cmt == "central") |>
   dplyr::select(-cmt)
 ```
 

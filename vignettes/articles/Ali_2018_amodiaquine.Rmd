@@ -120,17 +120,19 @@ make_subject <- function(i, label, wt_kg, page_months, dose_mg) {
     time  = c(0, 24, 48),
     evid  = 1L,
     amt   = dose_mg,
-    cmt   = 1L,         # depot
+    cmt   = "depot",
     CYCLE = c(1L, 2L, 3L)
   )
   obs_aq <- data.frame(
     id    = i, time = obs_times, evid = 0L, amt = 0,
-    cmt   = 9L,         # Cc (AQ) output dvid
+    cmt   = "central",  # Cc (AQ): observed on its ODE state;
+    dvid  = 1L,         # two endpoints, so dvid selects Cc
     CYCLE = 3L          # CYCLE carried forward; only matters on dose rows
   )
   obs_deaq <- data.frame(
     id    = i, time = obs_times, evid = 0L, amt = 0,
-    cmt   = 10L,        # Cc_deaq output dvid
+    cmt   = "central_deaq", # Cc_deaq (DEAQ)
+    dvid  = 2L,
     CYCLE = 3L
   )
   out <- dplyr::bind_rows(doses, obs_aq, obs_deaq)
@@ -180,15 +182,15 @@ vpc_events <- vpc_profiles |>
   purrr::pmap_dfr(\(id, WT, PAGE, dose_mg, i) {
     doses <- data.frame(
       id    = id, time = c(0, 24, 48), evid = 1L,
-      amt   = dose_mg, cmt = 1L, CYCLE = c(1L, 2L, 3L)
+      amt   = dose_mg, cmt = "depot", CYCLE = c(1L, 2L, 3L)
     )
     obs_aq <- data.frame(
       id    = id, time = obs_times, evid = 0L, amt = 0,
-      cmt   = 9L, CYCLE = 3L
+      cmt   = "central", dvid = 1L, CYCLE = 3L
     )
     obs_deaq <- data.frame(
       id    = id, time = obs_times, evid = 0L, amt = 0,
-      cmt   = 10L, CYCLE = 3L
+      cmt   = "central_deaq", dvid = 2L, CYCLE = 3L
     )
     df <- dplyr::bind_rows(doses, obs_aq, obs_deaq)
     df$WT <- WT

@@ -94,11 +94,12 @@ set.seed(20260619)
 n_subj <- 80L
 er_grid <- c(0, 0.5, 0.734, 1, 2, 5, 13.80, 18.63, 30, 50)
 
+# The model is purely algebraic (no ODE states) with the single endpoint
+# Cc26, so observation rows need no `cmt`.
 events <- expand.grid(id = seq_len(n_subj), time = seq_along(er_grid)) |>
   dplyr::mutate(
     evid      = 0L,
     amt       = 0,
-    cmt       = "Cc26",
     CP_ER_MGL = er_grid[time]
   )
 ```
