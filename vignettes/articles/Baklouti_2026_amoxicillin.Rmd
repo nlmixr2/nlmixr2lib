@@ -163,14 +163,13 @@ are at steady state before the analysis interval.
 Both `Cc` and `Cmilk` are declared endpoints of this model, so rxode2 returns
 each of them at every observation row and a single observation grid is enough.
 
-Observation rows must name a declared **endpoint** (`cmt = "Cc"`), not an ODE
-state. This model has two error models, so its endpoints occupy compartments 4
-and 5 and rxode2 rejects an observation that maps anywhere else: `cmt = "central"`,
-`cmt = "milk"`, `cmt = 2`, a bare `dvid = 1L` and an event table with no `cmt`
-at all each fail with `'dvid'->'cmt' on observation record or on a undefined
-compartment`. This is the declared-endpoint case, which is legal and does not
-renumber anything -- it is not the "referencing an algebraic observable injects
-a `cmt()` slot" trap, because `Cc` here is already a slot.
+Observation rows name the ODE state the endpoint is computed from
+(`cmt = "central"`) and select the endpoint with `dvid = 1L` (`Cc`; `Cmilk` is
+`dvid = 2L`). This model has two error models, so an observation row must say
+which endpoint it belongs to: `cmt = "central"` without a `dvid` fails with
+`'dvid'->'cmt' on observation record or on a undefined compartment`.
+`rxode2::et()` does not carry a `dvid` column, so the event table is converted
+to a data frame and `dvid` is added there.
 
 ```{r cohort}
 rxode2::rxSetSeed(20260902)
@@ -182,7 +181,9 @@ ss_start <- (n_dose - 1) * tau
 ss_end   <- ss_start + tau
 
 ev <- rxode2::et(amt = 2000, ii = tau, addl = n_dose - 1, cmt = "depot") |>
-  rxode2::et(seq(ss_start, ss_end, by = 0.05), cmt = "Cc")
+  rxode2::et(seq(ss_start, ss_end, by = 0.05), cmt = "central") |>
+  as.data.frame()
+ev$dvid <- ifelse(ev$evid == 0, 1L, NA_integer_)
 
 sim <- rxode2::rxSolve(
   mod, ev, nSub = n_sub,

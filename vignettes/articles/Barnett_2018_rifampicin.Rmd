@@ -73,7 +73,7 @@ make_cohort_events <- function(n, time_grid = seq(0.1, 24, by = 0.1), occ = 1) {
     time = rep(time_grid, times = n),
     evid = 0L,
     amt  = NA_real_,
-    cmt  = "Cc",
+    cmt  = "central",
     OCC  = occ
   )
   dplyr::bind_rows(doses, obs) |>

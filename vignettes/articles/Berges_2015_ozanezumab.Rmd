@@ -135,19 +135,21 @@ make_events <- function(cohort, dose_mg_per_kg, second_dose_day = NA_real_,
   }
   obs_cc <- cohort |>
     tidyr::crossing(time = obs_times) |>
-    dplyr::mutate(amt = 0, rate = 0, cmt = "Cc", evid = 0L)
+    dplyr::mutate(amt = 0, rate = 0, cmt = "central", dvid = 1L, evid = 0L)
   obs_pd <- cohort |>
     tidyr::crossing(time = obs_times) |>
-    dplyr::mutate(amt = 0, rate = 0, cmt = "nogoColoc", evid = 0L)
+    dplyr::mutate(amt = 0, rate = 0, cmt = "effect", dvid = 2L, evid = 0L)
   rows <- c(rows, list(obs_cc, obs_pd))
 
   dplyr::bind_rows(rows) |>
-    dplyr::select(id, time, amt, rate, cmt, evid, WT) |>
+    dplyr::select(id, time, amt, rate, cmt, dvid, evid, WT) |>
     dplyr::arrange(id, time, dplyr::desc(evid))
 }
 
-# Compartment ordering follows the d/dt() and observation-equation declaration
-# order in model(): central=1, peripheral1=2, effect=3, Cc=4, nogoColoc=5.
+# Observation rows name the ODE state each endpoint is computed from and select
+# the endpoint with dvid (1 = Cc, 2 = nogoColoc). rxSolve reports each row's
+# endpoint slot in CMT; slots follow the d/dt() states and then the endpoints:
+# central=1, peripheral1=2, effect=3, Cc=4, nogoColoc=5.
 cmt_cc        <- 4L
 cmt_nogoColoc <- 5L
 ```
@@ -277,14 +279,15 @@ build_repeat_dose_events <- function(per_dose_mg_kg, interval_days, end_day = 84
     amt  = per_dose_mg_kg * 70,
     rate = (per_dose_mg_kg * 70) / infusion_day,
     cmt  = "central",
+    dvid = NA_integer_,
     evid = 1L,
     WT   = 70
   )
   obs_grid <- seq(0, end_day, by = 0.25)
   obs_cc <- tibble::tibble(id = 1L, time = obs_grid, amt = 0, rate = 0,
-                           cmt = "Cc", evid = 0L, WT = 70)
+                           cmt = "central", dvid = 1L, evid = 0L, WT = 70)
   obs_pd <- tibble::tibble(id = 1L, time = obs_grid, amt = 0, rate = 0,
-                           cmt = "nogoColoc", evid = 0L, WT = 70)
+                           cmt = "effect", dvid = 2L, evid = 0L, WT = 70)
   dplyr::bind_rows(dose_rows, obs_cc, obs_pd) |>
     dplyr::arrange(time, dplyr::desc(evid))
 }

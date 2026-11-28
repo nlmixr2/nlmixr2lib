@@ -145,6 +145,7 @@ make_subject <- function(sid, crcl) {
     evid = 1L,
     amt  = dose_tfv_mg,
     cmt  = "depot",
+    dvid = NA_integer_,
     CRCL = crcl
   )
   obs_cc <- tibble::tibble(
@@ -152,7 +153,8 @@ make_subject <- function(sid, crcl) {
     time = t_observe,
     evid = 0L,
     amt  = 0,
-    cmt  = "Cc",
+    cmt  = "central",
+    dvid = 1L,
     CRCL = crcl
   )
   obs_tfvdp <- tibble::tibble(
@@ -160,9 +162,13 @@ make_subject <- function(sid, crcl) {
     time = t_observe[seq(1, length(t_observe), by = 8)],   # every 4 h
     evid = 0L,
     amt  = 0,
-    cmt  = "TFVDP",
+    cmt  = "effect",
+    dvid = 2L,
     CRCL = crcl
   )
+  # Two declared endpoints (Cc, TFVDP): observation rows name the ODE state the
+  # endpoint is computed from and select the endpoint with `dvid` (1 = Cc,
+  # 2 = TFVDP). Both endpoints come back as columns on every row.
   dplyr::bind_rows(dose_rows, obs_cc, obs_tfvdp)
 }
 

@@ -147,8 +147,14 @@ build_events <- function(ada_status, alb_value) {
   for (td in induction_days) {
     ev <- et(ev, amt = dose_mg, cmt = "central", time = td, id = 1)
   }
-  ev <- et(ev, time = obs_t, cmt = "Cc",   id = 1)
-  ev <- et(ev, time = obs_t, cmt = "Rtot", id = 1)
+  # Two declared endpoints: observation rows name the ODE state each endpoint
+  # is computed from and select it with dvid (1 = Cc, 2 = Rtot). et() does not
+  # carry dvid, so it is set on the data-frame form.
+  ev <- et(ev, time = obs_t, cmt = "central",      id = 1)
+  ev <- et(ev, time = obs_t, cmt = "total_target", id = 1)
+  ev <- as.data.frame(ev)
+  ev$dvid <- c(central = 1L, total_target = 2L)[as.character(ev$cmt)]
+  ev$dvid[ev$evid != 0] <- NA_integer_
   list(ev = ev,
        iCov = data.frame(id = 1, ALB = alb_value, ADA_POS = ada_status))
 }
@@ -278,7 +284,9 @@ sd_obs_t <- sort(unique(c(0, 0.04, 0.083, 0.25, 0.5, 1, 2, 3, 4, 5, 7,
 
 ev_sd <- et(id = 1) |>
   et(amt = dose_mg, cmt = "central", time = 0, id = 1) |>
-  et(time = sd_obs_t, cmt = "Cc", id = 1)
+  et(time = sd_obs_t, cmt = "central", id = 1) |>
+  as.data.frame()
+ev_sd$dvid <- ifelse(ev_sd$evid == 0, 1L, NA_integer_)
 
 icov_sd <- data.frame(id = 1, ALB = 38, ADA_POS = 0)
 sim_sd <- rxode2::rxSolve(mod_typical, ev_sd, iCov = icov_sd,

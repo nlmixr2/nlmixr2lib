@@ -120,22 +120,26 @@ No inter-individual variability is encoded (the paper reports none - see
 Errata), so every simulation below is deterministic. The implant is dosed as a
 zero-order infusion whose rate is the in vivo release rate.
 
-A note on `cmt = "Cc"` in the event tables below, because it looks like the
-observable-as-compartment mistake and is not. These models declare **three**
-endpoints, so `predDf` reserves compartment slots for them *after* the four ODE
-states (`Cc` = 5, `Cc_tfv` = 6, `Cpbmc_tfvdp` = 7) and rxode2 requires every
-observation record to name one of those endpoints: `cmt = "central"`,
-`cmt = "pbmc_tfvdp"` and a bare `et(times)` all error with "'cmt' on
-observation record or on a undefined compartment". Naming an already-declared
-endpoint injects nothing and renumbers nothing - Gate 1 below confirms the
-solve still matches the closed form to four decimal places. Do not "fix" this
-to an ODE state name; it will stop working.
+A note on the event tables below. These models declare **three** endpoints
+(`Cc`, `Cc_tfv`, `Cpbmc_tfvdp`), so every observation record must say which
+endpoint it belongs to: a bare `et(times)` or `cmt = "central"` alone errors
+with "'cmt' on observation record or on a undefined compartment". Observation
+rows therefore name the ODE state `central` and select the `Cc` endpoint with
+`dvid = 1L`; all three analytes come back as columns on every row regardless.
+`rxode2::et()` does not carry a `dvid` column, so `withDvid()` converts the
+event table to a data frame and adds it.
 
 ```{r helper}
+withDvid <- function(ev, dvid = 1L) {
+  ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0, dvid, NA_integer_)
+  ev
+}
+
 simZero <- function(doseMg, durH, wt = 70.8, followH = 0, by = 24) {
   totUg <- doseMg * 1000
   ev <- rxode2::et(amt = totUg, rate = totUg / durH, cmt = "central")
-  ev <- rxode2::et(ev, seq(0, durH + followH, by = by), cmt = "Cc")
+  ev <- withDvid(rxode2::et(ev, seq(0, durH + followH, by = by), cmt = "central"))
   rxode2::rxSolve(
     modZero, ev,
     params = c(WT = wt, DOSE_TAF_MG = doseMg),
@@ -209,7 +213,7 @@ ncaFor <- function(concCol, followH, doseUg) {
   cd <- lapply(doseGrid, function(d) {
     totUg <- d * 1000
     ev <- rxode2::et(amt = totUg, rate = totUg / durH, cmt = "central")
-    ev <- rxode2::et(ev, tms, cmt = "Cc")
+    ev <- withDvid(rxode2::et(ev, tms, cmt = "central"))
     rxode2::rxSolve(modZero, ev, params = c(WT = 70.8, DOSE_TAF_MG = d),
                     returnType = "data.frame") |>
       mutate(id = 1L, treatment = paste0(d, " mg"))
@@ -333,7 +337,7 @@ reproduce the printed cumulative-release function exactly.
 ```{r gate5}
 totUg <- 22000
 evW <- rxode2::et(amt = totUg, cmt = "depot")
-evW <- rxode2::et(evW, seq(0, 20000, by = 100), cmt = "Cc")
+evW <- withDvid(rxode2::et(evW, seq(0, 20000, by = 100), cmt = "central"))
 dW <- rxode2::rxSolve(modWeib, evW, params = c(WT = 70.8, DOSE_TAF_MG = 22),
                       returnType = "data.frame")
 relOde <- (1.46 * totUg - dW$depot) / totUg

@@ -90,12 +90,16 @@ mod <- readModelDb("Benson_2014_PF04457845_qsp") |> rxode2::zeroRe()
 
 # Helper: build an event table for a single-dose oral PF-04457845 study.
 # The `DOSE` covariate is required by the model to compute the saturable
-# oral bioavailability F_PFM. amt is in ng (dose_mg * 1e6).
+# oral bioavailability F_PFM. amt is in ng (dose_mg * 1e6). The model declares
+# eight endpoints, so observation rows name the ODE state `pf_p_amt` (from
+# which Cc is computed) and select the Cc endpoint with dvid = 1; every
+# endpoint comes back as a column on every row.
 make_dose_events <- function(dose_mg, times_h = seq(0, 96, by = 0.5),
                              id_offset = 0L) {
   bolus <- rxode2::et(amt = dose_mg * 1e6, cmt = "pf_gut", time = 0) |>
-    rxode2::et(times_h, cmt = "Cc")
+    rxode2::et(times_h, cmt = "pf_p_amt")
   df <- as.data.frame(bolus)
+  df$dvid <- ifelse(df$evid == 0, 1L, NA_integer_)
   df$id <- id_offset + 1L
   df$DOSE <- dose_mg
   df
@@ -111,7 +115,7 @@ mechanistic ODE system is at steady state at t = 0.
 
 ```{r ss-check}
 ev_ss <- data.frame(
-  id = 1L, time = seq(0, 96, by = 6), evid = 0L, cmt = "Cc",
+  id = 1L, time = seq(0, 96, by = 6), evid = 0L, cmt = "pf_p_amt", dvid = 1L,
   amt = 0, DOSE = 10
 )
 sim_ss <- rxode2::rxSolve(mod, events = ev_ss) |> as.data.frame()

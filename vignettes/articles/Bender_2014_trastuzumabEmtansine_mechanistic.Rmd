@@ -91,7 +91,13 @@ for (cmt in names(dar_fracs)) {
                        amt = dose_mg * dar_fracs[[cmt]],
                        cmt = cmt, time = 0)
 }
-events <- rxode2::et(events, seq(0.05, 42, length.out = 150), cmt = "Cc")
+# Two declared endpoints (Cc = conjugated antibody, the DAR1-7 sum; Ctt =
+# total antibody): observation rows name an ODE state Cc is computed from and
+# select Cc with dvid = 1. et() does not carry dvid, so it is added on the
+# data-frame form. Both endpoints come back as columns on every row.
+events <- rxode2::et(events, seq(0.05, 42, length.out = 150), cmt = "dar1_central") |>
+  as.data.frame()
+events$dvid <- ifelse(events$evid == 0, 1L, NA_integer_)
 
 sim <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = events)
 ```

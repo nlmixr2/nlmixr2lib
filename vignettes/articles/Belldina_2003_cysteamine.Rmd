@@ -137,14 +137,16 @@ dose_rows <- cohort |>
 # Schedule only Cc observations -- both Cc (plasma cysteamine) and cystine
 # (WBC cystine PD output) are produced at every observation time as columns
 # of the rxSolve return value, so there is no need to schedule separate
-# event-table rows for each output.
+# event-table rows for each output. The model declares both as endpoints, so
+# each observation row names the ODE state `central` and selects Cc with
+# dvid = 1.
 obs_rows <- cohort |>
   tidyr::crossing(time = obs_grid) |>
-  dplyr::mutate(amt = NA_real_, cmt = "Cc", evid = 0L,
+  dplyr::mutate(amt = NA_real_, cmt = "central", dvid = 1L, evid = 0L,
                 ii = NA_real_, addl = NA_integer_)
 
 events <- dplyr::bind_rows(dose_rows, obs_rows) |>
-  dplyr::select(id, time, amt, cmt, evid, ii, addl, WT, dose_mg, treatment) |>
+  dplyr::select(id, time, amt, cmt, dvid, evid, ii, addl, WT, dose_mg, treatment) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
@@ -185,10 +187,10 @@ typical_dose <- typical_cohort |>
                 ii = 6, addl = 4L)
 typical_obs <- typical_cohort |>
   tidyr::crossing(time = obs_grid) |>
-  dplyr::mutate(amt = NA_real_, cmt = "Cc", evid = 0L,
+  dplyr::mutate(amt = NA_real_, cmt = "central", dvid = 1L, evid = 0L,
                 ii = NA_real_, addl = NA_integer_)
 typical_events <- dplyr::bind_rows(typical_dose, typical_obs) |>
-  dplyr::select(id, time, amt, cmt, evid, ii, addl, WT, dose_mg, treatment) |>
+  dplyr::select(id, time, amt, cmt, dvid, evid, ii, addl, WT, dose_mg, treatment) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
 sim_typical <- rxode2::rxSolve(

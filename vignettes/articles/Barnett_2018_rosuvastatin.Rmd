@@ -64,6 +64,7 @@ make_rsv_events <- function(n, occ, conmed_rif, crif_fn = NULL,
     evid = 1L,
     amt  = 5,
     cmt  = "depot",
+    dvid = NA_integer_,
     OCC  = occ,
     CONMED_RIF = conmed_rif
   )
@@ -73,7 +74,9 @@ make_rsv_events <- function(n, occ, conmed_rif, crif_fn = NULL,
     time = rep(time_grid, times = n),
     evid = 0L,
     amt  = NA_real_,
-    cmt  = "Cc",
+    # Two declared endpoints (Cc, Ursv): the ODE state plus dvid = 1 (Cc).
+    cmt  = "central",
+    dvid = 1L,
     OCC  = occ,
     CONMED_RIF = conmed_rif
   )
@@ -85,7 +88,7 @@ make_rsv_events <- function(n, occ, conmed_rif, crif_fn = NULL,
 # RIF perpetrator PK trajectory for the RIF arm
 mod_rif_typical <- rxode2::zeroRe(readModelDb("Barnett_2018_rifampicin"))
 ev_rif <- rxode2::et(amt = 600, cmt = "depot", time = 0) |>
-  rxode2::et(time = seq(0.05, 24, by = 0.05), cmt = "Cc") |>
+  rxode2::et(time = seq(0.05, 24, by = 0.05), cmt = "central") |>
   as.data.frame()
 ev_rif$OCC <- 1
 sim_rif <- rxode2::rxSolve(mod_rif_typical, events = ev_rif) |> as.data.frame()

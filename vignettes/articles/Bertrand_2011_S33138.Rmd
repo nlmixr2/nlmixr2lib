@@ -166,7 +166,9 @@ make_cell <- function(dose_mg, cyp_pm, id_offset) {
       time = time,
       amt  = 0,
       evid = 0L,
-      cmt  = "Cc"
+      # Two declared endpoints (Cc, Cc_s35424): the ODE state plus dvid = 1 (Cc).
+      cmt  = "central",
+      dvid = 1L
     )
   dplyr::bind_rows(dosing, obs) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>

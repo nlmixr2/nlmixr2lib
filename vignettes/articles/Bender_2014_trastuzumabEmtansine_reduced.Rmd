@@ -78,8 +78,13 @@ monkeys is ~4 kg, giving a nominal 120 mg absolute dose.
 
 ```{r cyno-sim}
 dose_mg <- 120  # 30 mg/kg * 4 kg body weight
+# Two declared endpoints (Cc, Ctt): observation rows name the ODE state
+# `central` and select Cc with dvid = 1. et() does not carry dvid, so it is
+# added on the data-frame form. Both endpoints come back as columns.
 events  <- rxode2::et(amt = dose_mg, cmt = "central", time = 0) |>
-  rxode2::et(seq(0.1, 42, length.out = 120), cmt = "Cc")
+  rxode2::et(seq(0.1, 42, length.out = 120), cmt = "central") |>
+  as.data.frame()
+events$dvid <- ifelse(events$evid == 0, 1L, NA_integer_)
 
 sim <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = events)
 ```
@@ -124,7 +129,9 @@ mod_rat <- mod |>
 
 rat_dose <- 3  # 10 mg/kg * 0.3 kg typical rat BW
 events_rat <- rxode2::et(amt = rat_dose, cmt = "central", time = 0) |>
-  rxode2::et(seq(0.05, 28, length.out = 120), cmt = "Cc")
+  rxode2::et(seq(0.05, 28, length.out = 120), cmt = "central") |>
+  as.data.frame()
+events_rat$dvid <- ifelse(events_rat$evid == 0, 1L, NA_integer_)
 
 sim_rat <- rxode2::rxSolve(mod_rat |> rxode2::zeroRe(), events = events_rat)
 ```

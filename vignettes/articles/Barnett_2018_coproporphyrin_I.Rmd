@@ -73,7 +73,9 @@ make_cpi_events <- function(t_end = 120, dt = 2, conmed_rif = 0, crif = 0, occ =
     time = seq(0, t_end, by = dt),
     evid = 0L,
     amt  = 0,
-    cmt  = "Cc",
+    # Two declared endpoints (Cc, Ucpi): the ODE state plus dvid = 1 (Cc).
+    cmt  = "central",
+    dvid = 1L,
     OCC  = occ,
     CONMED_RIF = conmed_rif,
     CP_RIF_UM  = crif
@@ -135,7 +137,7 @@ Barnett 2018 Figure 3 shows the VPC of CPI plasma data superimposed under the ri
 # Step 1: simulate the rifampicin typical-value PK over 24 h
 mod_rif <- rxode2::zeroRe(readModelDb("Barnett_2018_rifampicin"))
 ev_rif <- rxode2::et(amt = 600, cmt = "depot", time = 0) |>
-  rxode2::et(time = seq(0.05, 24, by = 0.05), cmt = "Cc") |>
+  rxode2::et(time = seq(0.05, 24, by = 0.05), cmt = "central") |>
   as.data.frame()
 ev_rif$OCC <- 1
 sim_rif <- rxode2::rxSolve(mod_rif, events = ev_rif) |> as.data.frame()
@@ -148,7 +150,8 @@ ev_cpi_rif <- data.frame(
   time = seq(0, 24, by = 0.1),
   evid = 0L,
   amt = 0,
-  cmt = "Cc",
+  cmt = "central",
+  dvid = 1L,
   OCC = 1,
   CONMED_RIF = 1
 )
