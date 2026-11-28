@@ -254,8 +254,12 @@ VargasChristensen_2019_rfviii_rat <- function() {
     # rFVIII:VWF complex LOCI signal (cps) via the 4-parametric logistic;
     # no absolute complex concentration is measured because no rat VWF-FVIII
     # calibrator was available (Methods / Discussion).
+    # max(complex, 0): past washout, cancellation in the QSS root and
+    # integration noise can take complex slightly negative, where the
+    # non-integer Hill power is NaN.
+    complex_pos <- max(complex, 0)
     lociComplex <- base_cps + (max_cps - base_cps) *
-                   complex ^ hill_cps / (cps50 ^ hill_cps + complex ^ hill_cps)
+                   complex_pos ^ hill_cps / (cps50 ^ hill_cps + complex_pos ^ hill_cps)
 
     # Residual error (all proportional, per Table 1).
     Cc          ~ prop(propSd)

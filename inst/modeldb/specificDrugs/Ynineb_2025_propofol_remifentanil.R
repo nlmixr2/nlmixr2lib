@@ -353,6 +353,10 @@ Ynineb_2025_propofol_remifentanil <- function() {
     u_prop <- effect / ec50
     u_remi <- effect_remifentanil / ec50_remifentanil
     inter <- u_prop + u_remi + greco_int * u_prop * u_remi
-    BIS <- e0 - emax * inter^hill / (1 + inter^hill)
+    # max(inter, 0): past washout, integration noise can take the
+    # effect-site concentrations, and so inter, slightly negative, where the
+    # non-integer Hill power is NaN.
+    inter_pos <- max(inter, 0)
+    BIS <- e0 - emax * inter_pos^hill / (1 + inter_pos^hill)
   })
 }

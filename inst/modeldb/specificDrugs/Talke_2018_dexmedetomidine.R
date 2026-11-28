@@ -142,7 +142,11 @@ Talke_2018_dexmedetomidine <- function() {
     d/dt(effect) <- keo * (Cc - effect)                            # Ce in the effect compartment (ug/L)
 
     # Sigmoid Emax PD: ADC vasoconstriction response (Talke 2018 Methods Eq. for Effect)
-    vasocon <- e0 + emax * effect^hill / (c50^hill + effect^hill)
+    # max(effect, 0): past washout, integration noise can take the
+    # effect-site concentration slightly negative, where the non-integer
+    # Hill power is NaN.
+    effect_pos <- max(effect, 0)
+    vasocon <- e0 + emax * effect_pos^hill / (c50^hill + effect_pos^hill)
 
     # Observation models
     Cc      ~ add(addSd)         + prop(propSd)                    # plasma concentration residual error

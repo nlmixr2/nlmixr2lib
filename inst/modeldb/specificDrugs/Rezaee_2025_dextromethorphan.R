@@ -242,8 +242,11 @@ Rezaee_2025_dextromethorphan <- function() {
     # imax * D^n / (1 + D^n) written as imax / (1 + D^-n): identical for D > 0,
     # and finite when the very wide IC50 variability (omega^2 = 13.96) makes D^n
     # overflow to Inf, where the printed form gives Inf / Inf = NaN. At D = 0
-    # it evaluates to imax / Inf = 0.
-    inh <- imax / (1 + drive^(-hill))
+    # it evaluates to imax / Inf = 0. max(drive, 0): past washout, integration
+    # noise can take drive slightly negative, where the non-integer power is
+    # NaN; the guard maps it onto the D = 0 limit, inh = 0.
+    drive_pos <- max(drive, 0)
+    inh <- imax / (1 + drive_pos^(-hill))
     cough <- cough_placebo * (1 - inh)
 
     # Residual errors are period-specific

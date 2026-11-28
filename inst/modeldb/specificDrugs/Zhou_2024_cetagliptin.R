@@ -298,7 +298,10 @@ Zhou_2024_cetagliptin <- function() {
     # drug effect". The canonical Phoenix Sigmoid-Emax form named in
     # Results section 3.6.2 is used instead; with the estimated Hill
     # coefficient of 1.008 the two forms differ by under 0.1%.
-    dpp4Inhibition <- emax * Cc^hill / (ec50^hill + Cc^hill)
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer Hill power is NaN.
+    Cc_pos <- max(Cc, 0)
+    dpp4Inhibition <- emax * Cc_pos^hill / (ec50^hill + Cc_pos^hill)
 
     Cc ~ prop(propSd)
     dpp4Inhibition ~ add(addSd_dpp4Inhibition)

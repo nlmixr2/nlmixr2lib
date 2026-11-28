@@ -262,8 +262,12 @@ Yang_2024_naloxone_fentanyl <- function() {
     # Naloxone shifts the fentanyl EC50 to the right without changing
     # the attainable maximum, the signature of competitive antagonism.
     naleff <- 1 + effect_naloxone / ec50_naloxone
-    VE <- e0 * (1 - alpha * effect^hill /
-      (effect^hill + (ec50 * naleff)^hill))
+    # max(effect, 0): past washout, integration noise can take the fentanyl
+    # effect-site concentration slightly negative, where the non-integer
+    # Hill power is NaN.
+    effect_pos <- max(effect, 0)
+    VE <- e0 * (1 - alpha * effect_pos^hill /
+      (effect_pos^hill + (ec50 * naleff)^hill))
     ERATIO <- VE / e0
 
     Cc ~ prop(propSd)

@@ -191,15 +191,24 @@ Sun_2025_hydroxysafflorYellowA_calycosin_rat <- function() {
     # Independent sigmoid effects combined linearly (Eq. 4-5): E = alpha * E1 + beta * E2.
     # The text describes fitting Caspase-9 and IL-1beta after E~ = max(E) - E;
     # Figure 8 follows the direct form, which is what is encoded here.
-    casp9 <- emax_casp9 * effect_casp9^hill_casp9 / (ec50_casp9^hill_casp9 + effect_casp9^hill_casp9) +
-      emax_casp9_calycosin * effect_casp9_calycosin^hill_casp9_calycosin /
-        (ec50_casp9_calycosin^hill_casp9_calycosin + effect_casp9_calycosin^hill_casp9_calycosin)
-    il1b <- emax_il1b * effect_il1b^hill_il1b / (ec50_il1b^hill_il1b + effect_il1b^hill_il1b) +
-      emax_il1b_calycosin * effect_il1b_calycosin^hill_il1b_calycosin /
-        (ec50_il1b_calycosin^hill_il1b_calycosin + effect_il1b_calycosin^hill_il1b_calycosin)
-    sod <- emax_sod * effect_sod^hill_sod / (ec50_sod^hill_sod + effect_sod^hill_sod) +
-      emax_sod_calycosin * effect_sod_calycosin^hill_sod_calycosin /
-        (ec50_sod_calycosin^hill_sod_calycosin + effect_sod_calycosin^hill_sod_calycosin)
+    # max(effect_*, 0): past washout, integration noise can take the
+    # effect-site amounts slightly negative, where the non-integer Hill
+    # power is NaN.
+    effect_casp9_pos <- max(effect_casp9, 0)
+    effect_casp9_calycosin_pos <- max(effect_casp9_calycosin, 0)
+    effect_il1b_pos <- max(effect_il1b, 0)
+    effect_il1b_calycosin_pos <- max(effect_il1b_calycosin, 0)
+    effect_sod_pos <- max(effect_sod, 0)
+    effect_sod_calycosin_pos <- max(effect_sod_calycosin, 0)
+    casp9 <- emax_casp9 * effect_casp9_pos^hill_casp9 / (ec50_casp9^hill_casp9 + effect_casp9_pos^hill_casp9) +
+      emax_casp9_calycosin * effect_casp9_calycosin_pos^hill_casp9_calycosin /
+        (ec50_casp9_calycosin^hill_casp9_calycosin + effect_casp9_calycosin_pos^hill_casp9_calycosin)
+    il1b <- emax_il1b * effect_il1b_pos^hill_il1b / (ec50_il1b^hill_il1b + effect_il1b_pos^hill_il1b) +
+      emax_il1b_calycosin * effect_il1b_calycosin_pos^hill_il1b_calycosin /
+        (ec50_il1b_calycosin^hill_il1b_calycosin + effect_il1b_calycosin_pos^hill_il1b_calycosin)
+    sod <- emax_sod * effect_sod_pos^hill_sod / (ec50_sod^hill_sod + effect_sod_pos^hill_sod) +
+      emax_sod_calycosin * effect_sod_calycosin_pos^hill_sod_calycosin /
+        (ec50_sod_calycosin^hill_sod_calycosin + effect_sod_calycosin_pos^hill_sod_calycosin)
 
     Cc <- central
     Cc_calycosin <- central_calycosin

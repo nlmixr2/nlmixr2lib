@@ -334,7 +334,10 @@ Retlich_2015_linagliptin <- function() {
 
     # Sigmoid Emax: DPP-4 activity = BSL * (1 - Emax * Cc_nmolL^HILL / (EC50^HILL + Cc_nmolL^HILL))
     # The PD formula uses linagliptin in nmol/L (matches Retlich 2015 Table 5 units of EC50).
-    Dpp4Act <- bsl * (1 - emax * ctot_c^hill / (ec50^hill + ctot_c^hill))
+    # max(ctot_c, 0): past washout, integration noise can take ctot_c
+    # slightly negative, where the non-integer Hill power is NaN.
+    ctot_c_pos <- max(ctot_c, 0)
+    Dpp4Act <- bsl * (1 - emax * ctot_c_pos^hill / (ec50^hill + ctot_c_pos^hill))
     Dpp4Act ~ prop(propSd_Dpp4Act)
   })
 }

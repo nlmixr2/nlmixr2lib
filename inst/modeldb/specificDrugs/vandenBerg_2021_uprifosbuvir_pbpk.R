@@ -489,7 +489,10 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
     ec50   <- exp(lec50)
     hill   <- exp(lhill)
     emax   <- exp(lemax)
-    eff    <- 1 + emax * (uxp^hill) / ((ec50^hill) + (uxp^hill))
+    # max(uxp, 0): past washout, integration noise can take uxp slightly
+    # negative, where the non-integer Hill power is NaN.
+    uxp_pos <- max(uxp, 0)
+    eff    <- 1 + emax * (uxp_pos^hill) / ((ec50^hill) + (uxp_pos^hill))
 
     # Multi-output residual error. rxode2 auto-injects DVID slots for the
     # three algebraic observables (Cc, Cc_m5, Cc_m6) AFTER the 21 ODE-state

@@ -241,7 +241,10 @@ Wright_2016_allopurinol <- function() {
     # Direct-effect sigmoidal Emax inhibition of urate (Wright 2016
     # equation set):
     #   Eurate = U0 * (1 - Emax * Cc^lambda / (C50^lambda + Cc^lambda))
-    Eurate <- rbase * (1 - emax_pd * Cc^hill / (ec50_pd^hill + Cc^hill))
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer Hill power is NaN.
+    Cc_pos <- max(Cc, 0)
+    Eurate <- rbase * (1 - emax_pd * Cc_pos^hill / (ec50_pd^hill + Cc_pos^hill))
 
     # Residual error: combined add + prop on Cc (Wright 2016 Table 3,
     # oxypurinol additive fixed); additive on Eurate (Wright 2016

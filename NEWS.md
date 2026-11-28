@@ -2,6 +2,8 @@
 
 # development version
 
+- `Retlich_2015_linagliptin`, `Rezaee_2025_dextromethorphan`, `Sun_2025_hydroxysafflorYellowA_calycosin_rat`, `Talke_2018_dexmedetomidine`, `vandenBerg_2021_uprifosbuvir_pbpk`, `VargasChristensen_2019_rfviii_rat`, `Wright_2016_allopurinol`, `Yang_2024_naloxone_fentanyl`, `Ynineb_2025_propofol_remifentanil` and `Zhou_2024_cetagliptin` no longer return `NaN` pharmacodynamic outputs (DPP-4 activity or inhibition, cough inhibition, Caspase-9 / IL-1beta / SOD, vasoconstriction, viral-inhibition factor, the rFVIII:VWF complex LOCI signal, urate, ventilation, BIS) long after the last dose. Each Hill term now floors its base (the concentration, effect-site amount, QSS complex or Greco interaction term) at zero, because integration noise could take it slightly negative after washout, where the non-integer power is `NaN`. Where the old form was finite, the simulated values are unchanged.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.
