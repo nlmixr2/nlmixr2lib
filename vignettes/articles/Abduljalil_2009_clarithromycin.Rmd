@@ -72,13 +72,14 @@ make_cohort <- function(n, dose_mg, id_offset = 0L, tau = 12, ndoses = 7,
   dose_rows <- expand.grid(id = ids, time = seq(0, by = tau, length.out = ndoses)) |>
     dplyr::mutate(evid = 1L, amt = dose_mg, cmt = "depot")
 
-  # One observation cmt is enough; the model computes Cc and Cc_ohcla
-  # together at every solve step (and at every evid=0 observation row),
-  # so a single Cc-cmt observation grid keeps the output one-row-per-time
-  # without sacrificing the metabolite output.
+  # One observation grid is enough; the model computes Cc and Cc_ohcla
+  # together at every evid=0 observation row, so a single grid on the ODE
+  # state `central` keeps the output one-row-per-time without sacrificing the
+  # metabolite output. With two declared endpoints the rows also carry
+  # `dvid = 1L` (the Cc endpoint) so rxode2 can map them.
   obs_grid <- sort(unique(c(seq(0, obs_end, by = 0.25), seq(0, 12, by = 0.05))))
   obs_rows <- expand.grid(id = ids, time = obs_grid) |>
-    dplyr::mutate(evid = 0L, amt = 0, cmt = "Cc")
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
 
   wt_lookup <- tibble::tibble(id = ids, WT = wts, dose_mg = dose_mg)
 
@@ -200,7 +201,7 @@ make_long_cohort <- function(n, dose_mg, tau = 12, ndoses = 30,
     dplyr::mutate(evid = 1L, amt = dose_mg, cmt = "depot")
   obs_grid <- seq(0, obs_end, by = 0.5)
   obs_rows  <- expand.grid(id = ids, time = obs_grid) |>
-    dplyr::mutate(evid = 0L, amt = 0, cmt = "Cc")
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
   dplyr::bind_rows(dose_rows, obs_rows) |>
     dplyr::mutate(WT = 70, dose_mg = dose_mg) |>
     dplyr::arrange(id, time, dplyr::desc(evid))

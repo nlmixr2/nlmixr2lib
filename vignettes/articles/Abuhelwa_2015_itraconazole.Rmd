@@ -113,7 +113,7 @@ make_arm <- function(n, dose_mg, fed, form_suba, id_offset = 0L) {
   obs <- base |>
     select(id, FED, FORM_ITR_SUBA) |>
     tidyr::crossing(time = obs_grid) |>
-    mutate(evid = 0L, cmt = "Cc", amt = NA_real_)
+    mutate(evid = 0L, cmt = "central", dvid = 1L, amt = NA_real_)
   bind_rows(doses, obs) |>
     arrange(id, time, desc(evid)) |>
     mutate(

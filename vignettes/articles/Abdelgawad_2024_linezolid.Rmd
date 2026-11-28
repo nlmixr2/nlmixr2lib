@@ -156,16 +156,16 @@ make_arm <- function(dose, id_offset) {
     time = seq(0, tau * (n_dose - 1), by = tau)
   ) |>
     dplyr::mutate(amt = dose, evid = 1L, cmt = "depot")
-  # Observations are written on the endpoint name "Cc". This model declares two
-  # endpoints (Cc and Ccsf), so rxode2 assigns each an endpoint slot after the
-  # ODE states; naming one endpoint maps the row unambiguously and rxSolve
-  # returns BOTH observables as columns. Using an ODE state name here instead
-  # fails with "'dvid'->'cmt' on observation record".
+  # Observations sit on the ODE state `central`. This model declares two
+  # endpoints (Cc and Ccsf), so each observation row also carries `dvid = 1L`
+  # (the Cc endpoint) to select an endpoint; without it rxSolve fails with
+  # "'dvid'->'cmt' on observation record". rxSolve returns BOTH observables as
+  # columns whatever the endpoint.
   obs <- tidyr::expand_grid(
     id = ids,
     time = seq(0, t_end, by = 0.25)
   ) |>
-    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "Cc")
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
   dplyr::bind_rows(dosing, obs) |>
     dplyr::mutate(
       FFM = 45,        # cohort median fat-free mass, Table 1
@@ -261,7 +261,8 @@ ppc_grid <- tibble::tibble(
   tidyr::expand_grid(time = c(0, 1)) |>
   dplyr::mutate(amt = ifelse(time == 0, 1200, NA_real_),
                 evid = ifelse(time == 0, 1L, 0L),
-                cmt = ifelse(time == 0, "depot", "Cc"))
+                cmt = ifelse(time == 0, "depot", "central"),
+                dvid = ifelse(time == 0, NA_integer_, 1L))
 
 ppc_curve <- rxode2::rxSolve(mod_typical, events = ppc_grid,
                              keep = "CSF_TPRO", useLinCmt = FALSE) |>

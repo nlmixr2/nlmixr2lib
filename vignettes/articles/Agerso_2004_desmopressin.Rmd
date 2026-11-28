@@ -106,12 +106,14 @@ dose_rows <- cohort %>%
   transmute(id, time = 0, amt = dose_ng, evid = 1L, cmt = "central",
             group, CRCL)
 
+# Observation rows sit on ODE states; with two declared endpoints, `dvid`
+# selects the endpoint (1 = Cc on `central`, 2 = urineAmt on `urine`).
 obs_rows_cc <- tidyr::expand_grid(cohort, time = obs_times) %>%
-  transmute(id, time, amt = NA_real_, evid = 0L, cmt = "Cc",
+  transmute(id, time, amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L,
             group, CRCL)
 
 obs_rows_urine <- tidyr::expand_grid(cohort, time = c(3, 6, 9, 12, 15, 18, 21, 24)) %>%
-  transmute(id, time, amt = NA_real_, evid = 0L, cmt = "urineAmt",
+  transmute(id, time, amt = NA_real_, evid = 0L, cmt = "urine", dvid = 2L,
             group, CRCL)
 
 events <- bind_rows(dose_rows, obs_rows_cc, obs_rows_urine) %>%

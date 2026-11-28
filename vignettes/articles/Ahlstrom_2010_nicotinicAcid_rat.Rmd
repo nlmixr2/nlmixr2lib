@@ -93,15 +93,17 @@ mod_typical <- rxode2::zeroRe(mod)
 ```
 
 Helper to build an event table with one IV infusion plus matched
-observation rows on the `Cc` (NiAc) and `NEFA` outputs:
+observation rows for the `Cc` (NiAc) and `NEFA` outputs. The rows sit on the
+ODE states the outputs are computed from (`central`, `nefa`); with two
+declared endpoints, `dvid` selects the endpoint (1 = Cc, 2 = NEFA):
 
 ```{r helper}
 make_events <- function(dose_umolkg, dur_min, tmax = 600, dt = 1, id_offset = 0L) {
   times <- seq(-30, tmax, by = dt)
   obs_Cc   <- data.frame(id = id_offset + 1L, time = times,
-                         evid = 0, amt = 0, rate = NA_real_, cmt = "Cc")
+                         evid = 0, amt = 0, rate = NA_real_, cmt = "central", dvid = 1L)
   obs_NEFA <- data.frame(id = id_offset + 1L, time = times,
-                         evid = 0, amt = 0, rate = NA_real_, cmt = "NEFA")
+                         evid = 0, amt = 0, rate = NA_real_, cmt = "nefa", dvid = 2L)
   if (dose_umolkg > 0) {
     dose <- data.frame(
       id   = id_offset + 1L,

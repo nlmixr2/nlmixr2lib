@@ -50,11 +50,10 @@ mod_pda
 
 Each model declares three endpoints (biomarker plasma `Cc`, cumulative urinary
 amount `Upda` / `Uhva`, probenecid plasma `Cc_prob`), so rxode2 places their
-slots after the four ODE states. Observation records below therefore name the
-endpoint (`cmt = "Cc"`): with more than one declared endpoint, an observation
-on `cmt = "central"` is rejected. `Cc` already has an endpoint slot from the
-model definition, so naming it injects no new compartment and renumbers
-nothing, and `rxSolve()` returns every model variable as a column regardless.
+slots after the four ODE states. Observation records below sit on the ODE
+state `central` and carry `dvid = 1L` (the `Cc` endpoint): with more than one
+declared endpoint, an observation on `cmt = "central"` without a `dvid` is
+rejected. `rxSolve()` returns every model variable as a column regardless.
 
 ```{r endpoint-map}
 mod_pda$predDf[, c("var", "cmt", "dvid")]
@@ -133,7 +132,7 @@ design_events <- function(design = c("MD", "SD1000", "SD2000"), tobs, id = 1L) {
   amt <- dose_umol(c(MD = 500, SD1000 = 1000, SD2000 = 2000)[[design]])
   ev <- dplyr::bind_rows(
     data.frame(time = dose_t, amt = amt, evid = 1L, cmt = "depot_prob"),
-    data.frame(time = c(tobs, T2 + tobs), amt = 0, evid = 0L, cmt = "Cc")
+    data.frame(time = c(tobs, T2 + tobs), amt = 0, evid = 0L, cmt = "central", dvid = 1L)
   )
   ev$id <- id
   ev$OCC <- ifelse(ev$time >= 480, 2L, 1L)
@@ -163,7 +162,7 @@ stated in the Results.
 mod_pda0 <- rxode2::zeroRe(mod_pda)
 mod_hva0 <- rxode2::zeroRe(mod_hva)
 
-ev_base <- data.frame(id = 1L, time = seq(0, 168, by = 1), amt = 0, evid = 0L, cmt = "Cc", OCC = 1L)
+ev_base <- data.frame(id = 1L, time = seq(0, 168, by = 1), amt = 0, evid = 0L, cmt = "central", dvid = 1L, OCC = 1L)
 
 bl <- function(m, ksyn, clr, clnr) {
   s <- rxode2::rxSolve(m, ev_base, returnType = "data.frame")

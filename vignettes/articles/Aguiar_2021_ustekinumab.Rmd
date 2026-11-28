@@ -216,17 +216,19 @@ obs <- cohort |>
     phase = NA_character_
   )
 
-# Use the variable-name CMT for observations: "Cc" for ustekinumab
-# concentration, "fc" for fecal calprotectin. Aguiar 2021's PD output is on
-# the fc compartment; observing only "Cc" plus "fc" gives both endpoints.
-obs_cc <- obs |> mutate(CMT = "Cc")
+# Observation rows sit on ODE states. Ustekinumab concentration is observed on
+# `central` with DVID = 1 (the Cc endpoint, needed because the model declares
+# two endpoints); fecal calprotectin is observed on its own state `fc`, which
+# is itself the second endpoint. The output CMT column carries the endpoint
+# slot: 7 for Cc, 6 for fc.
+obs_cc <- obs |> mutate(CMT = "central", DVID = 1L)
 obs_fc <- cohort |>
   tidyr::crossing(TIME = c(0, 8, 16, 24, 32) * week) |>
   mutate(AMT = 0, EVID = 0L, CMT = "fc", DV = NA_real_, phase = NA_character_)
 
 events <- bind_rows(iv_induction, sc_maintenance, obs_cc, obs_fc) |>
   arrange(ID, TIME, desc(EVID)) |>
-  select(ID, TIME, AMT, EVID, CMT, DV,
+  select(ID, TIME, AMT, EVID, CMT, DVID, DV,
          FFM, ALB, CRP, PRIOR_BIO, FCGR3A_VV, ENDO_ULCER, phase)
 
 stopifnot(!anyDuplicated(unique(events[, c("ID", "TIME", "EVID", "CMT")])))
@@ -426,7 +428,7 @@ ref_obs <- ref_subj |>
     TIME = c(0.5, 1, 7, 14, 21, 28, 42, 56,
              seq(56, 32 * week, by = 7))
   ) |>
-  mutate(AMT = 0, EVID = 0L, CMT = "Cc", DV = NA_real_)
+  mutate(AMT = 0, EVID = 0L, CMT = "central", DVID = 1L, DV = NA_real_)
 
 ref_events <- bind_rows(ref_iv, ref_sc, ref_obs) |>
   arrange(ID, TIME, desc(EVID))

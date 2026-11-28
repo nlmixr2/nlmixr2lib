@@ -107,6 +107,16 @@ observation variables `Cc`, `Cc_gs704277` and `Cc_gs441524` are in nmol/L.
 mw_rdv <- 602.58
 mg_to_umol <- function(mg) mg / mw_rdv * 1000
 
+# Three endpoints are declared, so observation rows on the ODE state `central`
+# also need `dvid = 1L` (the Cc endpoint) to select an endpoint; every
+# observable is returned on every row regardless. rxode2::et() drops a `dvid`
+# argument, so it is set on the data frame.
+with_cc_dvid <- function(ev) {
+  ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
+  ev
+}
+
 # Single-ascending-dose design of the fitted study: a 2-h infusion of 96% of
 # the dose followed by 4% as a bolus at the end of the infusion, which is how
 # Abouellil 2023 Methods represent the saline flush.
@@ -118,9 +128,7 @@ sad_events <- function(dose_mg, obs_times, flush = TRUE) {
   } else {
     rxode2::et(amt = amt, dur = 2, cmt = "central")
   }
-  # Three endpoints are declared, so observation rows must name one of them;
-  # every observable is returned on every row regardless.
-  rxode2::et(ev, obs_times, cmt = "Cc")
+  rxode2::et(ev, obs_times, cmt = "central") |> with_cc_dvid()
 }
 
 sad_times <- sort(unique(c(seq(0, 2, by = 0.05), 2 + 1e-4,
@@ -128,10 +136,9 @@ sad_times <- sort(unique(c(seq(0, 2, by = 0.05), 2 + 1e-4,
 sad_doses <- c(3, 10, 30, 75, 150, 225)
 ```
 
-Observation rows carry `cmt = "Cc"`. With three declared endpoints, an
-observation row on an ODE state is rejected by rxode2. `Cc` already has its
-own endpoint slot, so naming it adds no compartment and does not renumber the
-ODE states. The guard below checks this: the dose must land in `central`.
+Observation rows carry `cmt = "central"` with `dvid = 1L`. With three
+declared endpoints, an observation row on an ODE state without a `dvid` is
+rejected by rxode2. The guard below checks that the dose lands in `central`.
 
 ```{r sad-typical}
 sad <- dplyr::bind_rows(lapply(sad_doses, function(d) {
@@ -179,7 +186,8 @@ c704_ss <- (p[["clmc"]] * cc_ss + p[["clmp"]] * cp_ss) / (p[["cl704"]] + p[["clm
 c441_ss <- p[["clm441"]] * c704_ss / p[["cl441"]]
 
 ss_ev <- rxode2::et(amt = rate * 2000, rate = rate, cmt = "central") |>
-  rxode2::et(1500, cmt = "Cc")
+  rxode2::et(1500, cmt = "central") |>
+  with_cc_dvid()
 ss <- as.data.frame(rxode2::rxSolve(mod_typ, ss_ev, returnType = "data.frame",
                                     atol = 1e-10, rtol = 1e-10))
 ss_tab <- data.frame(
@@ -245,8 +253,9 @@ n_sub <- 200
 clin_times <- sort(unique(c(seq(0, 120, by = 0.1), 0.5 + 24 * 0:4)))
 clin_ev <- rxode2::et(amt = mg_to_umol(200), dur = 0.5, cmt = "central") |>
   rxode2::et(amt = mg_to_umol(100), dur = 0.5, time = 24 * 1:4, cmt = "central") |>
-  rxode2::et(clin_times, cmt = "Cc") |>
-  rxode2::et(id = seq_len(n_sub))
+  rxode2::et(clin_times, cmt = "central") |>
+  rxode2::et(id = seq_len(n_sub)) |>
+  with_cc_dvid()
 clin <- as.data.frame(rxode2::rxSolve(mod, clin_ev, returnType = "data.frame"))
 clin$treatment <- "200 mg LD + 100 mg QD"
 stopifnot(!anyNA(clin$Cc), !anyNA(clin$Cc_gs704277), !anyNA(clin$Cc_gs441524),
@@ -391,7 +400,7 @@ ld <- function(flush) {
     rxode2::et(amt = amt, dur = 0.5, cmt = "central")
   }
   out <- as.data.frame(rxode2::rxSolve(
-    mod_typ, rxode2::et(ev, seq(0, 3, by = 0.01), cmt = "Cc"),
+    mod_typ, with_cc_dvid(rxode2::et(ev, seq(0, 3, by = 0.01), cmt = "central")),
     returnType = "data.frame"
   ))
   max(out$Cc)

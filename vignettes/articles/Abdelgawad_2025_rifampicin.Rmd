@@ -213,14 +213,14 @@ solve_typical <- function(dose, dose_high, day28, route = "depot",
     amt = dose, evid = 1L, cmt = route,
     rate = if (identical(route, "central")) -2 else 0
   )
-  # Observation rows are written on the ENDPOINT name "Cc". This model declares
-  # two endpoints (Cc and Ccsf), so rxode2 gives each an endpoint slot after the
-  # ODE states; naming one endpoint maps the row unambiguously and rxSolve
-  # returns BOTH observables as columns. Using an ODE state name here instead
-  # fails with "'dvid'->'cmt' on observation record".
+  # Observation rows sit on the ODE state `central`. This model declares two
+  # endpoints (Cc and Ccsf), so each observation row also carries `dvid = 1L`
+  # (the Cc endpoint) to select an endpoint; without it rxSolve fails with
+  # "'dvid'->'cmt' on observation record". rxSolve returns BOTH observables as
+  # columns whatever the endpoint.
   obs <- data.frame(
     id = 1L, time = ss_start + seq(0, tau, by = grid),
-    amt = NA_real_, evid = 0L, cmt = "Cc", rate = 0
+    amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L, rate = 0
   )
   ev <- dplyr::bind_rows(dosing, obs) |>
     dplyr::mutate(FFM = ffm, DOSE_HIGH = dose_high, DAY28 = day28, OCC = 1) |>
@@ -306,7 +306,7 @@ inf_dur <- 48
 dosing <- data.frame(id = 1L, time = 0, amt = dose_std, evid = 1L,
                      cmt = "central", rate = dose_std / inf_dur)
 obs <- data.frame(id = 1L, time = seq(0, inf_dur, by = 0.02),
-                  amt = NA_real_, evid = 0L, cmt = "Cc", rate = 0)
+                  amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L, rate = 0)
 ev <- dplyr::bind_rows(dosing, obs) |>
   dplyr::mutate(FFM = 46, DOSE_HIGH = 0, DAY28 = 0, OCC = 1) |>
   dplyr::arrange(time, dplyr::desc(evid))
@@ -546,7 +546,7 @@ events <- dplyr::bind_rows(
   cohort |>
     dplyr::mutate(amt = NA_real_) |>
     tidyr::expand_grid(time = ss_start + seq(0, tau, by = 0.25)) |>
-    dplyr::mutate(evid = 0L, cmt = "Cc")
+    dplyr::mutate(evid = 0L, cmt = "central", dvid = 1L)
 ) |>
   dplyr::mutate(OCC = 1) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
