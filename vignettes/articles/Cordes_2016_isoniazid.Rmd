@@ -418,11 +418,11 @@ pk_profiles <- lapply(seq_len(nrow(phenotypes)), function(i) {
   s
 }) |>
   bind_rows() |>
-  filter(!is.na(Cc)) |>
   mutate(
     phenotype = factor(phenotype, levels = phenotypes$phenotype),
     ceffect = FU_INH * Cc * 1000 / MW_INH # mg/L -> unbound umol/L
   )
+stopifnot(!anyNA(pk_profiles$Cc))
 ```
 
 ```{r pk-fig, fig.cap = "Typical-value unbound isoniazid concentrations by NAT2 phenotype from Vinnard_2017_isoniazid, 300 mg QD, converted to the molar effect-site scale the Cordes 2016 PD model expects."}
@@ -437,7 +437,10 @@ ggplot(pk_profiles, aes(time, ceffect, colour = phenotype)) +
 ```
 
 Feeding each trajectory into the PD model. Note the time-unit change: the PK
-model runs in hours, the PD model in days.
+model runs in hours, the PD model in days. The profile is supplied on the PK
+model's 0.25 h grid and solved with `covsInterpolation = "linear"`; rxode2's
+default last-observation-carried-forward would hold `CEFFECT` flat between grid
+points.
 
 ```{r chain-pd, fig.cap = "Mycobacterial burden over two days of 300 mg QD isoniazid, driven by the illustrative NAT2-specific exposures above."}
 pd_runs <- lapply(levels(pk_profiles$phenotype), function(ph) {
@@ -446,7 +449,9 @@ pd_runs <- lapply(levels(pk_profiles$phenotype), function(ph) {
     transmute(time = time / 24, CEFFECT = ceffect) |> # h -> day
     distinct(time, .keep_all = TRUE) |>
     arrange(time)
-  s <- rxode2::rxSolve(mod, prof, returnType = "data.frame")
+  s <- rxode2::rxSolve(mod, prof, returnType = "data.frame",
+                       covsInterpolation = "linear")
+  stopifnot(!anyNA(s$bact))
   s$phenotype <- ph
   s
 }) |>

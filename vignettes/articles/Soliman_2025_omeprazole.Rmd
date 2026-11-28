@@ -238,7 +238,8 @@ make_events <- function(g, id) {
       rate = ifelse(dur > 0, vol / dur, 0)
     )
   obs_t <- seq(0, 192, by = 0.05)
-  # The day-8 concentration profile is repeated on every day (see Assumptions).
+  # The day-8 concentration profile is repeated on every day (see Assumptions),
+  # and the solve interpolates it linearly between the 0.05 h rows.
   cp_fun <- approxfun(tc, cp_dig[[g]], rule = 2)
   obs <- data.frame(
     id = id, time = obs_t, evid = 0, amt = 0, cmt = "gastric_volume", rate = 0
@@ -251,7 +252,8 @@ make_events <- function(g, id) {
 sim_fig5 <- bind_rows(lapply(seq_along(groups), function(i) {
   g <- groups[i]
   s <- as.data.frame(rxSolve(ui, make_events(g, i),
-    params = c(lrbase = log(base_mm[[g]])), method = "dop853", returnType = "data.frame"
+    params = c(lrbase = log(base_mm[[g]])), method = "dop853", returnType = "data.frame",
+    covsInterpolation = "linear"
   ))
   s |>
     filter(time >= 168) |>
@@ -324,7 +326,10 @@ adult_dig <- data.frame(tad = tp, ph = ph_dig$adult)
 score_adult <- function(params, meal_scale = 1) {
   ev <- make_events("adult", 1) |>
     mutate(amt = amt * meal_scale, rate = rate * meal_scale)
-  s <- as.data.frame(rxSolve(ui, ev, params = params, method = "dop853", returnType = "data.frame")) |>
+  s <- as.data.frame(rxSolve(ui, ev,
+    params = params, method = "dop853", returnType = "data.frame",
+    covsInterpolation = "linear"
+  )) |>
     filter(time >= 168)
   model <- approx(s$time - 168, s$gastric_ph, xout = adult_dig$tad)$y
   night <- adult_dig$tad >= 20.5

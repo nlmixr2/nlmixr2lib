@@ -184,7 +184,8 @@ simulate_miltefosine <- function(daily_mg, n_days, regimen) {
   dat$FFM <- 29.9
   dat$MIL_REGIMEN <- regimen
   out <- rxode2::rxSolve(mil_mod, dat, omega = NA, returnType = "data.frame")
-  out <- out[!is.na(out$Cc), c("time", "Cc")]
+  stopifnot(!anyNA(out$Cc))
+  out <- out[, c("time", "Cc")]
   # Dorlo 2017 reports Cc in ug/mL, which is the unit the Verrest 2024
   # driver needs (see "Unit scale of the concentration-driven kill
   # slopes" below); no conversion is applied.
@@ -313,6 +314,8 @@ tibble::tibble(
 # (never on an algebraic observable name).
 obs_grid_h <- seq(0, 210 * 24, by = 6)
 
+# The miltefosine profile is evaluated on the 6 h observation grid; the solves
+# below interpolate it linearly between rows (covsInterpolation = "linear").
 interpolate_mil <- function(times_h, profile) {
   if (is.null(profile)) return(rep(0, length(times_h)))
   stats::approx(profile$day * 24, profile$conc_ugmL,
@@ -380,7 +383,8 @@ mod_typ <- mod |> rxode2::zeroRe()
 sim_5a <- rxode2::rxSolve(
   mod_typ, events_typical,
   params = c(limax = log(1e-12)),   # Fig 5A: no immune response
-  omega = NA, keep = "treatment", returnType = "data.frame"
+  omega = NA, keep = "treatment", returnType = "data.frame",
+  covsInterpolation = "linear"
 )
 stopifnot(!anyNA(sim_5a$parasites))
 
@@ -415,7 +419,7 @@ ev_5b <- make_regimen(1, "MF 150 mg/day x 28 days", mil_profile = mil_150)
 sim_5b <- bind_rows(lapply(c(1000, 5000, 100000), function(it50) {
   out <- rxode2::rxSolve(
     mod_typ, ev_5b, params = c(lt50 = log(it50)),
-    omega = NA, returnType = "data.frame"
+    omega = NA, returnType = "data.frame", covsInterpolation = "linear"
   )
   out$it50_h <- it50
   out
@@ -493,7 +497,8 @@ stopifnot(!anyDuplicated(unique(events_pop[, c("id", "time", "evid")])))
 
 sim_pop <- rxode2::rxSolve(
   mod, events_pop, omega = rxode2::rxode2(mod)$omega,
-  keep = "treatment", returnType = "data.frame"
+  keep = "treatment", returnType = "data.frame",
+  covsInterpolation = "linear"
 )
 
 # rxSolve occasionally drops subjects silently; assert the count.

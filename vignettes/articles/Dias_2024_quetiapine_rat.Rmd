@@ -132,7 +132,9 @@ The paper contains no PK layer, so the unbound brain quetiapine profiles must
 be supplied. They are published only as figures (Figure 4a, Figure S2), so the
 values below were **digitised from Figure 4a** of the rendered article at 400
 dpi. They are approximate (roughly +/- 0.01 ng/mL) and are used here only to
-drive the figure replication; no model parameter is derived from them.
+drive the figure replication; no model parameter is derived from them. Every
+solve below evaluates the digitised profile on its output grid and interpolates
+it linearly between rows (`covsInterpolation = "linear"`).
 
 ```{r driver}
 driver <- tibble::tribble(
@@ -228,7 +230,8 @@ solveGroup <- function(g, times = seq(0, 6.3, by = 0.02), inits = NULL) {
     e_score_ppi_eqtp = 0.0243
   )
   out <- rxode2::rxSolve(mod, ev, params = pars, omega = NA,
-                         inits = inits, returnType = "data.frame")
+                         inits = inits, returnType = "data.frame",
+                         covsInterpolation = "linear")
   out$group <- g
   out
 }
@@ -377,7 +380,7 @@ altPeak <- dplyr::bind_rows(lapply(groups, function(g) {
                                  rule = 2)$y
   )
   s <- rxode2::rxSolve(altMod, ev, params = c(ke0 = gp$Keo),
-                       returnType = "data.frame")
+                       returnType = "data.frame", covsInterpolation = "linear")
   tibble::tibble(group = g, `Printed Eq (3) peak Ce` = max(s$effect))
 }))
 
@@ -557,7 +560,7 @@ nanoCompare <- dplyr::bind_rows(lapply(c(0, 1), function(q) {
                                  rule = 2)$y
   )
   s <- rxode2::rxSolve(
-    mod, ev, omega = NA, returnType = "data.frame",
+    mod, ev, omega = NA, returnType = "data.frame", covsInterpolation = "linear",
     params = c(lrbase_precursor1 = log(gp$Pool0), lkpin = log(gp$Kin),
                lrbase_dopamine = log(gp$DA0), leqtp = log(gp$EQTP),
                lke0 = log(gp$Keo), lkmod = log(gp$Kmod),
@@ -620,7 +623,7 @@ vpcEv <- dplyr::bind_rows(lapply(seq_along(groups), function(i) {
 }))
 
 vpc <- rxode2::rxSolve(mod, vpcEv, keep = c("group"),
-                       returnType = "data.frame")
+                       returnType = "data.frame", covsInterpolation = "linear")
 
 vpc |>
   dplyr::group_by(group, time) |>

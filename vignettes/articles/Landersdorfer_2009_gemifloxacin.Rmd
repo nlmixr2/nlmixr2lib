@@ -69,54 +69,83 @@ Original observed data are not publicly available. The figures below use a virtu
 
 The simulation builds two cohorts of 200 subjects each so the with- and without-probenecid arms can be compared side by side. IDs across cohorts are made disjoint via the `id_offset` argument.
 
+## Probenecid exposure (Landersdorfer 2009 Fig. 1C)
+
+The paper fitted a one-compartment-with-lag probenecid model jointly with gemifloxacin but did not tabulate its parameters, so the probenecid concentration that drives the competitive inhibition term is taken from the observed mean profile instead. The values below were digitised from Landersdorfer 2009 Fig. 1C (mean +/- SD of the 17 subjects; p. 3904) by locating each diamond marker and error-bar cap on the published 300 dpi figure raster, with the axes calibrated on the tick marks (x: 0-48 h, y: 0-160 mg/L; calibration residual below 0.5 pixel, about 0.2 mg/L). The 0 h value is the pre-gemifloxacin sample, taken 2 h after the second 1000 mg probenecid dose.
+
+```{r probenecid-profile}
+prb_fig1c <- data.frame(
+  time    = c(0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 36, 48),
+  conc    = c(93.9, 118.5, 118.1, 115.7, 113.3, 108.9, 98.8, 89.3, 93.3, 75.2, 73.0, 40.7, 32.6, 26.4),
+  conc_sd = c(NA, 29.8, 23.8, 26.2, 26.2, 26.2, 18.5, 15.1, 18.7, 16.3, 18.5, 14.5, 12.5, 10.7)
+)
+# Linear between the digitised means; the 48 h mean is held to 72 h, the end of
+# the paper's urine collection, while the 500 mg doses at 48 h and 60 h continue.
+cp_prb_fig1c <- function(t) approx(prb_fig1c$time, prb_fig1c$conc, xout = t, rule = 2)$y
+
+ggplot(prb_fig1c, aes(time, conc)) +
+  geom_errorbar(aes(ymin = conc, ymax = conc + conc_sd), width = 0.8, na.rm = TRUE) +
+  geom_point(shape = 5, size = 2.5) +
+  geom_line(data = data.frame(time = seq(0, 72, by = 0.25)) |> mutate(conc = cp_prb_fig1c(time)), linetype = 2) +
+  scale_x_continuous(breaks = seq(0, 72, by = 12)) +
+  labs(
+    x       = "Time after gemifloxacin dose (h)",
+    y       = "Plasma probenecid (mg/L)",
+    title   = "Probenecid profile driving CP_PRB_MGL",
+    caption = "Points and upper error bars: digitised Landersdorfer 2009 Fig. 1C (mean + SD). Dashed: covariate as supplied to rxSolve."
+  )
+```
+
+## Event table
+
+Each subject is observed every 0.05 h to 72 h so that the amount excreted renally can be integrated accurately below; the paper's 14 sampling times are all on this grid and are used for the NCA. In the probenecid arm `CP_PRB_MGL` is set from the digitised profile on every row and the solve uses `covsInterpolation = "linear"`. Under rxode2's default last-observation-carried-forward interpolation, the covariate would be held flat between rows.
+
 ```{r cohort}
 set.seed(20260607)
 
-make_cohort <- function(n, treatment, conmed_prob, cp_prb, id_offset = 0L,
-                        dose_mg = 320, sample_times = c(0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 36, 48)) {
+paper_times <- c(0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 36, 48)
+sim_times   <- sort(unique(round(c(seq(0, 72, by = 0.05), prb_fig1c$time), 2)))
+
+make_cohort <- function(n, treatment, conmed_prob, cp_fun, id_offset = 0L,
+                        dose_mg = 320, sample_times = sim_times) {
   ids <- id_offset + seq_len(n)
   dose_rows <- tibble(
     id        = ids,
     time      = 0,
     amt       = dose_mg,
     evid      = 1,
-    cmt       = "depot",
-    treatment = treatment,
-    CONMED_PROBENECID = conmed_prob,
-    CP_PRB_MGL = cp_prb
+    cmt       = "depot"
   )
   obs_rows <- expand.grid(id = ids, time = sample_times) |>
     as_tibble() |>
     mutate(
       amt       = 0,
       evid      = 0,
-      cmt       = NA_character_,
-      treatment = treatment,
-      CONMED_PROBENECID = conmed_prob,
-      CP_PRB_MGL = cp_prb
+      cmt       = "central"
     )
-  bind_rows(dose_rows, obs_rows) |> arrange(id, time, desc(evid))
+  bind_rows(dose_rows, obs_rows) |>
+    mutate(
+      treatment         = treatment,
+      CONMED_PROBENECID = conmed_prob,
+      CP_PRB_MGL        = cp_fun(time)
+    ) |>
+    arrange(id, time, desc(evid))
 }
 
 # Arm 1: gemifloxacin alone (CONMED_PROBENECID = 0, CP_PRB_MGL = 0).
 events_alone <- make_cohort(n = 200, treatment = "Gemifloxacin alone",
-                            conmed_prob = 0, cp_prb = 0, id_offset = 0L)
+                            conmed_prob = 0, cp_fun = function(t) 0 * t, id_offset = 0L)
 
-# Arm 2: gemifloxacin + probenecid. Per the model file's CP_PRB_MGL covariate
-# documentation, the paper does NOT report a probenecid PK sub-model, so the
-# instantaneous probenecid plasma concentration must be supplied externally.
-# A piecewise-constant placeholder of 40 mg/L throughout the 48 h gemifloxacin
-# sampling window is used here, motivated by the visual probenecid concentration
-# range in Landersdorfer 2009 Fig. 1C (peaks ~50-60 mg/L between doses, troughs
-# ~20-30 mg/L). The constant value is a simplification that captures the
-# central tendency of the published profile; users who need a more accurate
-# representation should digitise Fig. 1C or use an independent probenecid popPK
-# source.
+# Arm 2: gemifloxacin + probenecid, CP_PRB_MGL from the digitised Fig. 1C profile.
 events_combo <- make_cohort(n = 200, treatment = "Gemifloxacin + probenecid",
-                            conmed_prob = 1, cp_prb = 40, id_offset = 200L)
+                            conmed_prob = 1, cp_fun = cp_prb_fig1c, id_offset = 200L)
 
 events <- bind_rows(events_alone, events_combo)
-stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+stopifnot(
+  !anyDuplicated(unique(events[, c("id", "time", "evid")])),
+  !anyNA(events$CP_PRB_MGL),
+  all(paper_times %in% sim_times)
+)
 ```
 
 # Simulation
@@ -127,9 +156,11 @@ mod <- readModelDb("Landersdorfer_2009_gemifloxacin")
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("treatment", "CONMED_PROBENECID", "CP_PRB_MGL")
+  keep   = c("treatment", "CONMED_PROBENECID", "CP_PRB_MGL"),
+  covsInterpolation = "linear"
 ) |>
   as.data.frame()
+stopifnot(!anyNA(sim$Cc))
 ```
 
 A typical-value (no between-subject variability) simulation is also produced so the per-arm population median can be compared against the paper's reported per-subject medians without the smearing introduced by lognormal IIV on Ka and Tlag (both with CV 100%+).
@@ -138,10 +169,12 @@ A typical-value (no between-subject variability) simulation is also produced so 
 mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(
   mod_typical,
-  events = events |> dplyr::filter(id %in% c(1L, 201L)),
-  keep   = c("treatment")
+  events = events |> dplyr::filter(id %in% c(1L, 201L), time <= 48),
+  keep   = c("treatment"),
+  covsInterpolation = "linear"
 ) |>
   as.data.frame()
+stopifnot(!anyNA(sim_typical$Cc))
 ```
 
 # Replicate published figures
@@ -170,12 +203,12 @@ And the same comparison with the full stochastic simulation, summarised as media
 
 ```{r fig-1a-vpc}
 sim |>
-  dplyr::filter(time > 0) |>
+  dplyr::filter(time > 0, time <= 48) |>
   dplyr::group_by(time, treatment) |>
   dplyr::summarise(
-    Q10 = quantile(Cc, 0.10, na.rm = TRUE),
-    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
-    Q90 = quantile(Cc, 0.90, na.rm = TRUE),
+    Q10 = quantile(Cc, 0.10),
+    Q50 = quantile(Cc, 0.50),
+    Q90 = quantile(Cc, 0.90),
     .groups = "drop"
   ) |>
   ggplot(aes(time, Q50, colour = treatment, fill = treatment)) +
@@ -196,10 +229,16 @@ sim |>
 
 # PKNCA validation
 
+The NCA uses the simulated concentrations at the paper's pre-dose and 13 post-dose plasma sampling times (0-48 h), so the extrapolation to infinity follows the same design as the published NCA. The pre-dose row matters: without a concentration at the dose time PKNCA cannot start the AUC at 0 and returns no AUCinf or CL/F.
+
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(time > 0, !is.na(Cc)) |>
+  dplyr::filter(round(time, 2) %in% c(0, paper_times)) |>
   dplyr::select(id, time, Cc, treatment)
+stopifnot(
+  !anyNA(sim_nca$Cc),
+  nrow(sim_nca) == 400 * (1 + length(paper_times))
+)
 
 conc_obj <- PKNCA::PKNCAconc(
   sim_nca,
@@ -231,10 +270,13 @@ intervals <- data.frame(
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
 
-nca_summary <- as.data.frame(nca_res$result) |>
-  dplyr::filter(!is.na(PPORRES), PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life", "cl.obs")) |>
+nca_long <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life", "cl.obs"))
+stopifnot(!anyNA(nca_long$PPORRES))
+
+nca_summary <- nca_long |>
   dplyr::group_by(treatment, PPTESTCD) |>
-  dplyr::summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
   tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
 
 knitr::kable(
@@ -246,24 +288,94 @@ knitr::kable(
 
 ## Comparison against published NCA
 
-Landersdorfer 2009 Results paragraph 2 reports the per-subject median NCA values across the 17-subject crossover:
+Landersdorfer 2009 (Results, "NCA", pp. 3903-3904) reports the per-subject median NCA values across the 17-subject crossover:
 
-| Parameter           | Gemifloxacin alone (paper median) | Gemifloxacin + probenecid (paper median) | Paper-reported change       |
-|---------------------|-----------------------------------|-------------------------------------------|-----------------------------|
-| Renal CL (L/h)      | 13.1                              | 6.49                                      | -51% (P < 0.01)            |
-| Non-renal CL (L/h)  | 24.2                              | 19.0                                      | -19% (P < 0.01)            |
-| Total CL (L/h)      | ~37.3 (sum)                       | ~25.5 (sum)                               | -31% (P < 0.01)            |
-| Terminal half-life (h) | 8.09                            | 9.49                                      | +22% (P < 0.01, longer t1/2)|
+| Parameter              | Gemifloxacin alone (paper median) | Gemifloxacin + probenecid (paper median) | Paper-reported change        |
+|------------------------|-----------------------------------|------------------------------------------|------------------------------|
+| Renal CL (L/h)         | 13.1                              | 6.49                                     | -51% (P < 0.01)              |
+| Non-renal CL (L/h)     | 24.2                              | 19.0                                     | -19% (P < 0.01)              |
+| Total CL/F (L/h)       | ~37.3 (sum of medians)            | ~25.5 (sum of medians)                   | -31% (P < 0.01)              |
+| Terminal half-life (h) | 8.09                              | 9.49                                     | +22% (P < 0.01)              |
 
-The simulated CL/F (`cl.obs` from PKNCA, equivalent to dose / AUC_inf) for the alone arm should land near 37 L/h and the combo arm near 25 L/h; the simulated terminal half-life should rise from ~8 h to ~9.5 h. Both responses are driven by the model's mechanism (competitive Kic inhibition raising the apparent Km of the saturable secretion arm, plus the -16.7% static probenecid effect on CL_NR) and serve as the principal validation against the paper's NCA-based summary.
+The paper does not report total clearance directly; the sums of the renal and non-renal medians are used, and their ratio (0.684) agrees with the stated 31% reduction. The model has no urine compartment, so the simulated renal clearance is the amount excreted renally over the paper's 0-72 h urine collection divided by the plasma AUC over the same interval. The renal elimination rate is the sum of the two renal terms of the model's `d/dt(central)` equation, filtration (2 L/h) plus the competitively inhibited saturable secretion, evaluated on the 0.05 h grid. Total CL/F is the PKNCA `cl.obs` (dose / AUCinf from the paper's sampling design), and non-renal CL is their difference.
 
-The simulated NCA table above can be read alongside this published table to confirm the per-arm direction and approximate magnitude. Differences in the absolute number for the gemifloxacin-alone arm beyond a 20% gap are expected when the typical-value Cmax / Tmax do not match the per-subject median Cmax / Tmax (the paper's Ka CV 62% and Tlag CV 104% imply substantial absorption-phase smearing); the validation focuses on the directional change between arms rather than absolute reproduction.
+```{r clearance-comparison}
+renal_rate <- function(Cc, vmax, km, ki, cp_prb) {
+  2 * Cc + vmax * Cc / (km * (1 + cp_prb / ki) + Cc)
+}
+
+clr_subject <- sim |>
+  dplyr::filter(time <= 72) |>
+  dplyr::group_by(treatment, id) |>
+  dplyr::summarise(
+    auc_0_72 = PKNCA::pk.calc.auc(Cc, time, interval = c(0, 72), auc.type = "AUClast", method = "linear"),
+    ae_0_72  = PKNCA::pk.calc.auc(renal_rate(Cc, vmax, km, ki, CP_PRB_MGL), time,
+                                  interval = c(0, 72), auc.type = "AUClast", method = "linear"),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(clr = ae_0_72 / auc_0_72)
+
+clf_subject <- nca_long |>
+  dplyr::filter(PPTESTCD %in% c("cl.obs", "half.life")) |>
+  dplyr::select(treatment, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+cl_subject <- dplyr::inner_join(clr_subject, clf_subject, by = c("treatment", "id")) |>
+  dplyr::mutate(clnr = cl.obs - clr)
+stopifnot(nrow(cl_subject) == 400, !anyNA(cl_subject[, c("clr", "cl.obs", "half.life")]))
+
+cl_median <- cl_subject |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    clr = median(clr), clnr = median(clnr), clf = median(cl.obs), thalf = median(half.life),
+    .groups = "drop"
+  )
+
+paper <- data.frame(
+  treatment = c("Gemifloxacin alone", "Gemifloxacin + probenecid"),
+  clr = c(13.1, 6.49), clnr = c(24.2, 19.0), clf = c(13.1 + 24.2, 6.49 + 19.0), thalf = c(8.09, 9.49)
+)
+
+cl_compare <- dplyr::inner_join(cl_median, paper, by = "treatment", suffix = c("_sim", "_paper"))
+knitr::kable(
+  cl_compare[, c("treatment", "clr_sim", "clr_paper", "clnr_sim", "clnr_paper",
+                 "clf_sim", "clf_paper", "thalf_sim", "thalf_paper")],
+  digits  = 2,
+  caption = "Simulated per-arm medians (n = 200 per arm) against the paper's NCA medians (L/h; half-life in h)."
+)
+
+arm_ratio <- function(x) x[cl_compare$treatment == "Gemifloxacin + probenecid"] / x[cl_compare$treatment == "Gemifloxacin alone"]
+ratios <- data.frame(
+  quantity = c("Renal CL", "Non-renal CL", "Total CL/F", "Half-life"),
+  sim      = c(arm_ratio(cl_compare$clr_sim), arm_ratio(cl_compare$clnr_sim),
+               arm_ratio(cl_compare$clf_sim), arm_ratio(cl_compare$thalf_sim)),
+  paper    = c(arm_ratio(cl_compare$clr_paper), arm_ratio(cl_compare$clnr_paper),
+               arm_ratio(cl_compare$clf_paper), arm_ratio(cl_compare$thalf_paper))
+)
+knitr::kable(ratios, digits = 3, caption = "With-probenecid / alone ratio of the per-arm medians.")
+
+pct_diff <- function(sim, ref) 100 * (sim / ref - 1)
+alone <- cl_compare$treatment == "Gemifloxacin alone"
+stopifnot(
+  # Alone arm: renal and total CL/F reproduce the paper's medians closely.
+  abs(pct_diff(cl_compare$clr_sim[alone], cl_compare$clr_paper[alone])) < 10,
+  abs(pct_diff(cl_compare$clf_sim[alone], cl_compare$clf_paper[alone])) < 10,
+  # Probenecid arm: within 20% (renal) and 15% (total) of the paper's medians.
+  abs(pct_diff(cl_compare$clr_sim[!alone], cl_compare$clr_paper[!alone])) < 20,
+  abs(pct_diff(cl_compare$clf_sim[!alone], cl_compare$clf_paper[!alone])) < 15,
+  # The interaction: probenecid ratios within 0.1 (renal) and 0.08 (total) of the paper's.
+  abs(ratios$sim[1] - ratios$paper[1]) < 0.10,
+  abs(ratios$sim[3] - ratios$paper[3]) < 0.08
+)
+```
+
+Driven by the digitised probenecid profile, the model reproduces the gemifloxacin-alone renal and total clearances and most of the probenecid interaction. The simulated reduction in renal clearance is smaller than the paper's 51%, which leaves the simulated renal and total CL/F with probenecid somewhat above the paper's medians. Several differences between the two calculations may contribute: the paper's medians are of individual NCA estimates from 17 subjects with their own probenecid profiles (Kic is applied here to a mean profile, and the inhibition is non-linear in probenecid); renal clearance from urine collections versus the model's integrated renal elimination; and the probenecid peaks after the 24 h and 36 h doses, which fall between the paper's samples and are not in the digitised profile. The non-renal clearance ratio matches the paper's (about 0.79), as expected from the fixed static CL_NR effect. The simulated NCA half-life is shorter than the paper's in both arms (about 6.8 and 7.9 h against 8.09 and 9.49 h), but probenecid lengthens it by the same factor (about 1.17).
 
 # Assumptions and deviations
 
 - **Residual error (`propSd = 0.10`) is a placeholder.** Landersdorfer 2009 Table 3 reports inter-subject %CV per structural parameter but does not tabulate a residual-error magnitude. The Methods report bioanalytical interday CV of 3.7-7.2% for gemifloxacin in plasma; a 10% proportional residual is used here as a placeholder slightly above the bioanalytical floor to allow simulation-of-individuals through `rxSolve`. Users who wish to refit the model to data should re-estimate this term.
 
-- **CP_PRB_MGL during the with-probenecid arm is a piecewise-constant placeholder (40 mg/L).** Landersdorfer 2009 does NOT report a probenecid PK sub-model parameter table -- the Methods describes the structural form (1-compartment + lag + parallel first-order + mixed-order elimination) but the corresponding parameter estimates are not in any available table. The 40 mg/L constant used in this vignette is a simplification motivated by the visual probenecid concentration range in Landersdorfer 2009 Fig. 1C; a more realistic time-varying probenecid profile (digitised from Fig. 1C or supplied from an independent probenecid popPK source) is expected to yield slightly larger absolute predictions for the combo-arm AUC because the probenecid concentration peaks > 40 mg/L between probenecid doses (which strengthens the Kic inhibition during the gemifloxacin Tmax window).
+- **CP_PRB_MGL during the with-probenecid arm is the digitised mean profile of Landersdorfer 2009 Fig. 1C**, interpolated linearly between the 14 sampling times and held at the 48 h mean (26.4 mg/L) from 48 to 72 h. The paper's probenecid model (one compartment with lag, selected from candidates with parallel first-order and mixed-order elimination; Results, "Compartmental modeling") has no published parameter estimates, so the profile cannot be simulated from it. Every subject in the probenecid arm receives the same mean profile; the paper's between-subject variability in probenecid exposure (SD 11-30 mg/L in Fig. 1C) is not represented.
 
 - **IIV is single-CV per parameter even though Table 3 reports per-arm CVs for Ka, Tlag, and CL_NR.** The without-probenecid CV is used as the population reference (Ka 62%, Tlag 104%, CL_NR 26%). The with-probenecid CVs differ slightly (Ka 104%, Tlag 104%, CL_NR 23%) but only one population CV is carried per parameter in the model. This is a simplification of the published parameter table; the gemifloxacin-alone arm should be the most accurate.
 

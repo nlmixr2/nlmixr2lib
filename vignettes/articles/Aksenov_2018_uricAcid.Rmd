@@ -180,29 +180,148 @@ stopifnot(abs(prod - intest - renal) < 1e-9)
 
 The intestinal pathway carries about 6% of the elimination flux in a typical normouricemic adult (0.27 / (0.27 + 7.8 * 0.07) = 6.6%); the rest goes to urine. The urinary excretion of approximately 800 mg/day is consistent with reference values cited in Aksenov 2018 (Bianchi et al. 1979).
 
-# Drug-effect dynamics: replicating Aksenov 2018 Figure 4 (single-dose lesinurad)
+# Drug exposures supplied to the model
 
-Figure 4 of Aksenov 2018 shows model-predicted and observed time profiles of fractional excretion of UA, serum UA, and cumulative urinary UA after single doses of lesinurad (50, 200, 600 mg) in healthy subjects. The model takes lesinurad plasma concentration (`CP_LSN_NGML`) as a time-varying covariate; because the source paper does not tabulate lesinurad PK parameters, the vignette uses a simple first-order-absorption / first-order-elimination one-compartment model with parameters approximated from the published Phase I PK literature (Fleischmann et al. 2014; Shen et al. 2015) for illustration only. The UA-disposition model parameters themselves are unchanged.
+The model takes the plasma concentrations of the drugs as time-varying covariates. Aksenov 2018 fitted a two-compartment PK model per treatment group (Appendix 1, Eq. A1) to unpublished Ardea Biosciences data and did not tabulate the estimates, so the profiles the paper used cannot be reproduced. The profiles below come from published sources instead. Each is checked against the source's non-compartmental Cmax and AUC, and is supplied on a 0.5 h grid that contains every source time point and solved with `covsInterpolation = "linear"`.
 
-```{r single-dose-lsn}
-# Approximate one-compartment lesinurad PK for illustration:
-# ka ~ 1/h, t1/2 ~ 5 h, V/F ~ 30 L (Fleischmann 2014, Shen 2015 -- order-of-magnitude only).
-ka_lsn <- 1.0
-ke_lsn <- log(2) / 5.0
-v_lsn  <- 30.0  # L
+## Lesinurad (Shen 2015)
 
-lsn_conc <- function(t, dose_mg) {
-  # Single oral dose, one-compartment, returns ng/mL
-  conc_mgL <- (dose_mg * ka_lsn / (v_lsn * (ka_lsn - ke_lsn))) *
-              (exp(-ke_lsn * t) - exp(-ka_lsn * t))
-  conc_mgL * 1000  # mg/L -> ng/mL
+Shen et al. 2015 (Drug Des Devel Ther 9:3423-3434; open access, PMC4494180) report the Phase I lesinurad studies that are part of the paper's estimation dataset. Its Fig. 3 shows median plasma profiles after single fed doses of the 200, 400 and 600 mg tablets (the marketed formulation). The values below were digitised from that figure (published 631 x 499 pixel raster; log axis calibrated on the decade ticks, residual below 0.01 log10 unit) by locating the centre of each marker. Two kinds of marker are not visible in the figure: the 200 mg marker at 0.5 h, which is below the 1 h median of 0.23 ug/mL and is set to 0; and the 400 mg markers at 1 and 1.5 h, which are left out, so the profile is interpolated between 0.5 and 2 h. The 50 mg profile is the 200 mg profile scaled by 1/4; Shen 2015 (Fig. 4A) reports dose-proportional exposure over 5-600 mg. Beyond 24 h each profile declines exponentially at its 16-24 h slope.
+
+```{r lesinurad-profile}
+lsn_fig3 <- data.frame(
+  time   = c(0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 16, 24),
+  lsn200 = c(0, 0, 0.23, 2.3, 1.71, 4.06, 4.71, 3.95, 2.15, 0.757, 0.511, 0.336, 0.147, 0.036),
+  lsn400 = c(0, 0.0153, NA, NA, 5.47, 11.8, 11.7, 7.78, 3.85, 1.98, 1.11, 0.627, 0.298, 0.0738),
+  lsn600 = c(0, 0.0526, 0.747, 3.59, 7.47, 13.9, 15.1, 17.3, 8.32, 3.5, 1.98, 1.09, 0.618, 0.178)
+)  # ug/mL
+
+# Single-dose lesinurad concentration (ng/mL) at time tau after a dose.
+lsn_single <- function(tau, dose_mg) {
+  col   <- if (dose_mg == 50) "lsn200" else paste0("lsn", dose_mg)
+  scale <- if (dose_mg == 50) 0.25 else 1
+  ok    <- !is.na(lsn_fig3[[col]])
+  tt    <- lsn_fig3$time[ok]
+  cc    <- lsn_fig3[[col]][ok]
+  k_tail <- log(cc[tt == 16] / cc[tt == 24]) / 8
+  out <- ifelse(
+    tau <= 24,
+    approx(tt, cc, xout = pmin(pmax(tau, 0), 24))$y,
+    cc[tt == 24] * exp(-k_tail * (tau - 24))
+  )
+  out[tau < 0] <- 0
+  1000 * scale * out
 }
 
-times <- seq(-24, 72, by = 1)
-make_lsn_events <- function(dose_mg, gfr_mlmin = 130,
-                            p50_lsn = 11000, hyperuric = FALSE) {
-  ev <- data.frame(
-    id = 1L,
+# Linear PK: a multiple-dose profile is the sum of single-dose profiles.
+superpose <- function(t, dose_times, single, ...) {
+  rowSums(vapply(dose_times, function(td) single(t - td, ...), numeric(length(t))))
+}
+
+nca_auc <- function(t, conc, end) {
+  PKNCA::pk.calc.auc(conc, t, interval = c(0, end), auc.type = "AUClast", method = "linear")
+}
+
+lsn_check <- data.frame(dose_mg = c(200, 400, 600)) |>
+  rowwise() |>
+  mutate(
+    cmax_digitised  = max(lsn_single(seq(0, 24, by = 0.5), dose_mg)),
+    auc24_digitised = nca_auc(seq(0, 24, by = 0.5), lsn_single(seq(0, 24, by = 0.5), dose_mg), 24)
+  ) |>
+  ungroup() |>
+  mutate(
+    # Shen 2015 Table S2, fed tablets: geometric means (ng/mL, ng*h/mL).
+    cmax_shen  = c(6110, 15400, 21900),
+    auc24_shen = c(28100, 60700, 95600),
+    cmax_pct   = 100 * (cmax_digitised / cmax_shen - 1),
+    auc24_pct  = 100 * (auc24_digitised / auc24_shen - 1)
+  )
+knitr::kable(lsn_check, digits = 0,
+             caption = "Digitised median lesinurad profiles against Shen 2015 Table S2 (fed tablets).")
+stopifnot(
+  # AUC of the median profile within 20% of the geometric-mean AUC0-24.
+  all(abs(lsn_check$auc24_pct) < 20),
+  # The peak of a median profile is lower than the geometric-mean Cmax of the
+  # individual profiles, whose peaks fall at different times (Tmax 1.5-6 h).
+  all(lsn_check$cmax_pct < 0 & lsn_check$cmax_pct > -30)
+)
+```
+
+The median profiles' AUC0-24 is 11-18% below the geometric means, and their peaks are about 22% below the geometric-mean Cmax. That is the expected direction: averaging profiles whose peaks fall at different times flattens the peak.
+
+## Febuxostat (Hill-McManus 2017 shape, gout-patient exposure)
+
+Aksenov 2018 cites the FDA clinical pharmacology review (Bhattaram and Gobburu 2017) and Fleischmann et al. 2014 (Rheumatology 53:2167, not open access) for febuxostat; neither is available here. The steady-state exposure of febuxostat 40 mg once daily in gout patients is taken from the open-access verinurad combination study (Fleischmann et al. 2018, RMD Open 4:e000647, PMC5892780, Table 3, febuxostat 40 mg alone, n = 59): geometric mean Cmax 0.698 ug/mL and AUC0-24 3.10 ug*h/mL. The profile's shape comes from the febuxostat PK of `HillMcManus_2017_febuxostat_lesinurad` (two compartments with lag; Hill-McManus 2017 Table 2, reproduced from Khosravan 2006), solved for Aksenov's 75-kg reference subject at GFR 130 mL/min. Its concentrations are scaled by one factor so that the steady-state AUC0-24 equals 3.10 ug*h/mL. The Cmax of the scaled profile is not fitted and is the check.
+
+```{r febuxostat-profile}
+mod_hm <- readModelDb("HillMcManus_2017_febuxostat_lesinurad") |> rxode2::zeroRe()
+hm_times <- seq(0, 96, by = 0.5)
+fbx_hm <- rxode2::rxSolve(
+  mod_hm,
+  events = rxode2::et(amt = 40, cmt = "depot_febx") |> rxode2::et(hm_times),
+  params = data.frame(CRCL = 130, WT = 75),
+  rtol = 1e-10, atol = 1e-12
+) |>
+  as.data.frame()
+stopifnot(!anyNA(fbx_hm$Cc_febx))
+fbx_sd_ngml <- fbx_hm$Cc_febx * 1e4  # mg/dL -> ng/mL
+
+# Under linear PK the steady-state AUC0-24 equals the single-dose AUC0-inf; 96 h
+# is more than ten terminal half-lives.
+fbx_scale <- 3100 / nca_auc(hm_times, fbx_sd_ngml, 96)
+
+# Single-dose febuxostat 40 mg concentration (ng/mL) at time tau after a dose.
+fbx_single <- function(tau) {
+  out <- fbx_scale * approx(hm_times, fbx_sd_ngml, xout = pmin(pmax(tau, 0), 96))$y
+  out[tau < 0 | tau > 96] <- 0
+  out
+}
+
+fbx_ss_t <- seq(0, 24, by = 0.5)
+fbx_ss   <- superpose(fbx_ss_t + 9 * 24, (0:9) * 24, fbx_single)  # day 10, steady state
+fbx_check <- data.frame(
+  quantity  = c("Cmax (ng/mL)", "AUC0-24 (ng*h/mL)"),
+  profile   = c(max(fbx_ss), nca_auc(fbx_ss_t, fbx_ss, 24)),
+  published = c(698, 3100)
+) |>
+  mutate(pct_diff = 100 * (profile / published - 1))
+knitr::kable(fbx_check, digits = 1,
+             caption = paste0("Steady-state febuxostat 40 mg profile (scale factor ", signif(fbx_scale, 3),
+                              ") against the verinurad study's febuxostat-alone arm."))
+stopifnot(
+  abs(fbx_check$pct_diff[2]) < 1,   # construction: AUC0-24 matched by the scale factor
+  abs(fbx_check$pct_diff[1]) < 10   # independent: Cmax within 10%
+)
+```
+
+The scale factor is about 0.6. The Hill-McManus febuxostat PK describes healthy subjects, whose exposure on 40 mg is higher than in the heavier gout patients of the verinurad study (mean weight 99 kg). The scaled profile reproduces the published Cmax without being fitted to it.
+
+```{r exposure-plot, fig.height = 3.5}
+bind_rows(
+  data.frame(drug = "Lesinurad (single dose, Shen 2015 Fig. 3)", time = seq(0, 24, by = 0.25)) |>
+    tidyr::crossing(dose = c(50, 200, 400, 600)) |>
+    rowwise() |>
+    mutate(conc = lsn_single(time, dose)) |>
+    ungroup() |>
+    mutate(label = paste(dose, "mg")),
+  data.frame(drug = "Febuxostat 40 mg qd (steady state)", time = fbx_ss_t, conc = fbx_ss, label = "40 mg")
+) |>
+  ggplot(aes(time, conc / 1000, colour = label)) +
+  geom_line() +
+  facet_wrap(~ drug, scales = "free_y") +
+  labs(x = "Time after dose (h)", y = "Plasma concentration (ug/mL)", colour = NULL) +
+  theme_minimal()
+```
+
+# Drug-effect dynamics: replicating Aksenov 2018 Figure 4 (single-dose lesinurad)
+
+Figure 4 of Aksenov 2018 shows model-predicted and observed time profiles of fractional excretion of UA, serum UA, and cumulative urinary UA after single doses of lesinurad (50, 200, 600 mg) in healthy subjects (Studies 101, 102, 103, 109 and 125). `CP_LSN_NGML` is the lesinurad profile above. The Shen 2015 profiles are for fed tablets, whereas the Figure 4 studies pooled fed and fasted doses; fasted lesinurad peaks earlier and about twice as high (Shen 2015 Table 1). The UA-disposition model parameters themselves are unchanged.
+
+```{r single-dose-lsn}
+times <- seq(-24, 72, by = 0.5)
+make_lsn_events <- function(dose_mg, id, gfr_mlmin = 130) {
+  data.frame(
+    id = id,
     time = times,
     evid = 0L,
     amt = 0,
@@ -210,16 +329,18 @@ make_lsn_events <- function(dose_mg, gfr_mlmin = 130,
     CRCL = gfr_mlmin,
     CP_OXY_NGML = 0,
     CP_FBX_NGML = 0,
-    CP_LSN_NGML = ifelse(times >= 0, lsn_conc(pmax(times, 0), dose_mg), 0)
+    CP_LSN_NGML = lsn_single(times, dose_mg)
   )
-  ev
 }
 
 cohort_lsn <- bind_rows(
-  cbind(make_lsn_events(50),  dose = "LSN 50 mg"),
-  cbind(make_lsn_events(200), dose = "LSN 200 mg"),
-  cbind(make_lsn_events(600), dose = "LSN 600 mg")
+  cbind(make_lsn_events(50,  id = 1L), dose = "LSN 50 mg"),
+  cbind(make_lsn_events(200, id = 2L), dose = "LSN 200 mg"),
+  cbind(make_lsn_events(600, id = 3L), dose = "LSN 600 mg")
 )
+# One subject per dose: with a shared id the three event sets would be solved
+# as a single subject.
+stopifnot(!anyNA(cohort_lsn$CP_LSN_NGML), length(unique(cohort_lsn$id)) == 3)
 
 # Override default p50_lsn to the normouricemic value (Aksenov Table 1: 11000 ng/mL)
 # matching the population that contributed Figure 4 data.
@@ -229,9 +350,11 @@ mod_norm <- mod_typ |>
 sim_lsn <- rxode2::rxSolve(
   mod_norm,
   events = cohort_lsn,
-  keep = c("dose", "CP_LSN_NGML")
+  keep = c("dose", "CP_LSN_NGML"),
+  covsInterpolation = "linear"
 ) |>
   as.data.frame()
+stopifnot(!anyNA(sim_lsn$sUA), !anyNA(sim_lsn$fe))
 
 sim_lsn$dose <- factor(sim_lsn$dose,
                        levels = c("LSN 50 mg", "LSN 200 mg", "LSN 600 mg"))
@@ -254,14 +377,35 @@ p_sua
 p_uua
 ```
 
-The qualitative shape matches Aksenov 2018 Figure 4: a transient peak in fractional excretion that grows with dose, a corresponding nadir in serum UA, and an accelerated cumulative urinary UA. The exact peak heights and positions depend on the lesinurad PK model used to generate `CP_LSN_NGML`; the values shown here are illustrative only because Aksenov 2018 does not publish lesinurad PK parameters.
+```{r single-dose-lsn-summary}
+lsn_summary <- sim_lsn |>
+  group_by(dose) |>
+  summarise(
+    fe_peak     = max(fe),
+    t_fe_peak   = time[which.max(fe)],
+    sUA_nadir   = min(sUA),
+    t_sUA_nadir = time[which.min(sUA)],
+    sUA_change_pct = 100 * (min(sUA) / sUA[time == 0] - 1),
+    .groups = "drop"
+  )
+knitr::kable(lsn_summary, digits = 3, caption = "Typical-subject response to single lesinurad doses.")
+stopifnot(
+  # Fractional excretion and the serum UA fall both grow with dose.
+  all(diff(lsn_summary$fe_peak) > 0),
+  all(diff(lsn_summary$sUA_change_pct) < 0)
+)
+```
+
+The qualitative shape matches Aksenov 2018 Figure 4: a transient peak in fractional excretion that grows with dose, a corresponding nadir in serum UA, and an accelerated cumulative urinary UA. Because the lesinurad profiles are fed-tablet medians, the simulated fractional-excretion peak is later and lower than for the fasted doses that are part of the Figure 4 data.
 
 # Combination XOI + uricosuric (Figure 5 conceptual replication)
 
-Figure 5 of Aksenov 2018 illustrates the trajectory of UA dynamics over a 21-day study where subjects receive febuxostat alone, then febuxostat + lesinurad, then placebo. The block below shows the predicted serum UA when febuxostat alone (40 mg/day, average plasma concentration approximated as a constant 1500 ng/mL based on Bhattaram & Gobburu 2017) is followed by combined febuxostat + lesinurad (lesinurad 400 mg, averaged as approximately 5000 ng/mL across the 24-hour dosing interval).
+Figure 5 of Aksenov 2018 shows Study 105, in which subjects received febuxostat 40 mg once daily for 7 days, then febuxostat 40 mg plus lesinurad 400 mg once daily for 7 days. The block below simulates that sequence followed by 7 days without drug, using the febuxostat and lesinurad 400 mg profiles above superposed over the daily doses. It keeps the default hyperuricemic `p50_fbx` and `p50_lsn`, consistent with the gout-patient febuxostat exposure. Study 105 itself enrolled healthy subjects, so it is a conceptual rather than a quantitative replication.
 
 ```{r combo-fbx-lsn}
-combo_times <- seq(0, 24*21, by = 1)
+combo_times <- seq(0, 24 * 21, by = 0.5)
+fbx_doses   <- (0:13) * 24  # febuxostat days 1-14
+lsn_doses   <- (7:13) * 24  # lesinurad days 8-14; days 15-21 without drug
 combo_ev <- data.frame(
   id = 1L,
   time = combo_times,
@@ -270,12 +414,25 @@ combo_ev <- data.frame(
   cmt = 3L,
   CRCL = 130,
   CP_OXY_NGML = 0,
-  CP_FBX_NGML = ifelse(combo_times <= 24*7, 1500,           # febuxostat days 1-7
-                       ifelse(combo_times <= 24*14, 1500,   # febuxostat + LSN days 8-14
-                              0)),                           # placebo days 15-21
-  CP_LSN_NGML = ifelse(combo_times > 24*7 & combo_times <= 24*14, 5000, 0)
+  CP_FBX_NGML = superpose(combo_times, fbx_doses, fbx_single),
+  CP_LSN_NGML = superpose(combo_times, lsn_doses, lsn_single, dose_mg = 400)
 )
-sim_combo <- rxode2::rxSolve(mod_typ, events = combo_ev) |> as.data.frame()
+stopifnot(!anyNA(combo_ev$CP_FBX_NGML), !anyNA(combo_ev$CP_LSN_NGML))
+sim_combo <- rxode2::rxSolve(mod_typ, events = combo_ev, covsInterpolation = "linear") |> as.data.frame()
+stopifnot(!anyNA(sim_combo$sUA))
+
+day_mean <- function(day) mean(sim_combo$sUA[sim_combo$time >= (day - 1) * 24 & sim_combo$time < day * 24])
+combo_summary <- data.frame(
+  period  = c("Baseline", "Day 7 (febuxostat)", "Day 14 (febuxostat + lesinurad)", "Day 21 (no drug)"),
+  sUA_24h_mean = c(sim_combo$sUA[1], day_mean(7), day_mean(14), day_mean(21))
+) |>
+  mutate(change_pct = 100 * (sUA_24h_mean / sUA_24h_mean[1] - 1))
+knitr::kable(combo_summary, digits = 2, caption = "Typical-subject serum UA, 24-h means.")
+stopifnot(
+  combo_summary$change_pct[2] < 0,
+  combo_summary$change_pct[3] < combo_summary$change_pct[2],
+  abs(combo_summary$change_pct[4]) < abs(combo_summary$change_pct[2])
+)
 ggplot(sim_combo, aes(time / 24, sUA)) + geom_line() +
   geom_vline(xintercept = c(7, 14), linetype = "dashed", colour = "grey50") +
   labs(x = "Time (days)", y = "Serum UA (mg/dL)",
@@ -284,7 +441,7 @@ ggplot(sim_combo, aes(time / 24, sUA)) + geom_line() +
   theme_minimal()
 ```
 
-The model captures the expected pattern: febuxostat alone produces an approximately 50% reduction in serum UA, the addition of lesinurad lowers it further, and serum UA returns toward predose during the placebo wash-out window.
+The model captures the expected pattern: febuxostat alone lowers the 24-h mean serum UA by about 41% by day 7, adding lesinurad lowers it to about 58% below baseline by day 14, and serum UA returns to baseline during the week without drug.
 
 # Comparison against the paper's qualitative checks
 
@@ -295,7 +452,7 @@ The model captures the expected pattern: febuxostat alone produces an approximat
 # Assumptions and deviations
 
 * **Compartment names `serum` and `urine` are paper-named, not canonical.** `checkModelConventions()` flags them. They are retained because the model is endogenous / mechanistic and the canonical `central` / `peripheral1` / `peripheral2` set does not describe a serum-amount-of-UA + cumulative-urinary-UA system. The convention's "endogenous parameters" section explicitly permits paper-named compartments for mechanistic models.
-* **Drug PK parameters are not published in the paper.** Aksenov 2018 estimates two-compartment PK for lesinurad, oxypurinol, and febuxostat per treatment group (Appendix 1, Eq. A1) but does not tabulate the parameter values. The model in this package therefore takes drug plasma concentrations (`CP_OXY_NGML`, `CP_FBX_NGML`, `CP_LSN_NGML`) as time-varying input covariates supplied by the user. To populate them the user can: (a) couple the UA disposition model to an upstream popPK from one of the cited references (Wright et al. 2013 for oxypurinol, Bhattaram & Gobburu 2017 for febuxostat, Fleischmann et al. 2014 / Shen et al. 2015 for lesinurad); or (b) use the steady-state concentration approximations the source paper itself uses (e.g., 10000 ng/mL oxypurinol on 300 mg/day allopurinol per Eq. 13 narrative). The lesinurad PK used to generate `CP_LSN_NGML` for the Figure 4 replication above is illustrative-only and is not derived from a fitted upstream model.
+* **Drug PK parameters are not published in the paper.** Aksenov 2018 estimates two-compartment PK for lesinurad, oxypurinol, and febuxostat per treatment group (Appendix 1, Eq. A1) but does not tabulate the parameter values. The model in this package therefore takes drug plasma concentrations (`CP_OXY_NGML`, `CP_FBX_NGML`, `CP_LSN_NGML`) as time-varying input covariates supplied by the user. To populate them the user can: (a) couple the UA disposition model to an upstream popPK from one of the cited references (Wright et al. 2013 for oxypurinol, Bhattaram & Gobburu 2017 for febuxostat, Fleischmann et al. 2014 / Shen et al. 2015 for lesinurad); or (b) use the steady-state concentration approximations the source paper itself uses (e.g., 10000 ng/mL oxypurinol on 300 mg/day allopurinol per Eq. 13 narrative). The profiles used in this article are described under "Drug exposures supplied to the model": lesinurad from the digitised median profiles of Shen 2015 Fig. 3, and febuxostat from the Hill-McManus 2017 PK scaled to the gout-patient AUC0-24 of Fleischmann 2018. They are typical profiles from other studies, not the per-group PK the paper fitted.
 * **`p50_fbx` and `p50_lsn` defaults are the hyperuricemic / gout-patient values from Aksenov 2018 Table 1.** For normouricemic subjects override `p50_fbx` to 87 ng/mL and `p50_lsn` to 11000 ng/mL via `rxode2::ini()` (see the Figure 4 replication chunk).
 * **`kp0` defaults to 50.5 mg/h, the typical-value estimate at GFR = 130 mL/min from Aksenov 2018 Appendix 2 Table 2.** The source paper documents that population `kp0` interpolates with GFR (Methods, p. 6), but the structural model itself does not embed this dependency; users with renal-impairment subjects should consider overriding `kp0` to a value appropriate for the target GFR (the paper provides Study 120 and Study 104 nonlinear regressions on p. 6 of the source).
 * **Combined-XOI handling.** Aksenov 2018 fits one XOI at a time and does not address combined oxypurinol + febuxostat dosing. The model uses a Bliss-independence form `kp = kp0 * (1 - pin_oxy) * (1 - pin_fbx)` so that surviving fraction stays in [0, 1] when both XOI concentrations are non-zero (off-label scenario); when only one is non-zero the form collapses exactly to Aksenov 2018 Eq. 9.

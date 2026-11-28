@@ -2,6 +2,8 @@
 
 # development version
 
+- PD articles driven by a supplied drug exposure now use sourced profiles and interpolate them linearly. Landersdorfer 2009 gemifloxacin uses the probenecid profile digitised from the paper's Fig. 1C instead of a constant 40 mg/L placeholder, and asserts renal and total CL/F and their probenecid ratios against the paper's NCA. Aksenov 2018 uric acid uses lesinurad profiles digitised from Shen 2015 and a febuxostat profile matched to published gout-patient exposure, instead of hand-written approximations. Its Figure 4 replication no longer solves the three lesinurad doses as one subject. Cordes 2016 isoniazid, Soliman 2025 omeprazole, Dias 2024 quetiapine, Verrest 2024 leishmaniasis (miltefosine) and Liang 2024 osimertinib solve their supplied profiles with `covsInterpolation = "linear"`.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.

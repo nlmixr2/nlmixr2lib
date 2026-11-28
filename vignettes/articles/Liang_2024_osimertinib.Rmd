@@ -216,7 +216,9 @@ ev_md <- data.frame(
   CEFFECT = Cmax_pub * exp(-kel_recon * (tt %% 24)),
   evid = 0L, amt = 0
 )
-s_md <- rxode2::rxSolve(mod, ev_md, returnType = "data.frame")
+# The sawtooth is supplied on a 0.25 h grid and interpolated linearly between
+# rows; rxode2's default would hold each value flat for 0.25 h.
+s_md <- rxode2::rxSolve(mod, ev_md, returnType = "data.frame", covsInterpolation = "linear")
 
 max(abs(s_md$totalT790M - 0.299))
 max(abs(s_md$totalL858R - 0.299))
@@ -287,7 +289,7 @@ ev_w <- data.frame(
   CEFFECT = ifelse(tt_w <= 336, Cmax_pub * exp(-kel_recon * (tt_w %% 24)), 0),
   evid = 0L, amt = 0
 )
-s_w <- rxode2::rxSolve(mod, ev_w, returnType = "data.frame")
+s_w <- rxode2::rxSolve(mod, ev_w, returnType = "data.frame", covsInterpolation = "linear")
 
 post <- s_w[s_w$time >= 336, ]
 # fraction of complex remaining, relative to the value at withdrawal
@@ -342,7 +344,7 @@ driver scaled by the paper's lung-to-plasma partition coefficient
 ```{r figure1-attempt}
 ev_lung <- ev_md
 ev_lung$CEFFECT <- ev_md$CEFFECT * 28.5
-s_lung <- rxode2::rxSolve(mod, ev_lung, returnType = "data.frame")
+s_lung <- rxode2::rxSolve(mod, ev_lung, returnType = "data.frame", covsInterpolation = "linear")
 
 ss_window <- function(d, from = 336) {
   d <- d[d$time >= from, ]
