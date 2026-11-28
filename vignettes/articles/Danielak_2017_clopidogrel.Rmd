@@ -116,10 +116,10 @@ subjects <- tibble(
 
 # Build events: a single 75 mg dose into the depot at t = 0, then dense
 # observation sampling over the 6 h window that the source paper sampled
-# across. Setting cmt = "Cc" on the observation rows is the rxode2 idiom
-# for "give me the model's defined output rows"; the simulation output
-# carries both Cc (clopidogrel) and Cc_h4 (active metabolite) as columns
-# regardless, so a single observation row per time supplies both analytes.
+# across. Observation rows sit on the `central` ODE state with dvid = 1 (the
+# Cc endpoint); the simulation output carries both Cc (clopidogrel) and Cc_h4
+# (active metabolite) as columns regardless, so a single observation row per
+# time supplies both analytes.
 make_subject_events <- function(row) {
   id <- row$id
   cov <- row$CYP2C19_S2_CARRIER
@@ -129,7 +129,7 @@ make_subject_events <- function(row) {
     tibble(id = id, time = 0,        evid = 1L, amt = 75, cmt = "depot",
            CYP2C19_S2_CARRIER = cov, genotype = geno),
     tibble(id = id, time = obs_times, evid = 0L, amt = NA_real_,
-           cmt = "Cc",
+           cmt = "central", dvid = 1L,
            CYP2C19_S2_CARRIER = cov, genotype = geno)
   )
 }

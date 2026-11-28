@@ -157,7 +157,7 @@ make_cohort <- function(cohort, site_arm, id_offset = 0L) {
   # each subsequent dose; coarser between to keep the vignette's render
   # time under 5 minutes. Fine-grain step 0.5 h covers tmax ~ 2-3 h. A
   # single grid is used for both Cc and ttr because rxode2 emits both
-  # output variables on every observation row regardless of cmt label.
+  # output variables on every observation row.
   obs_t <- sort(unique(c(
     seq(0, 24,    by = 0.5),
     seq(24, 96,   by = 4),
@@ -170,7 +170,9 @@ make_cohort <- function(cohort, site_arm, id_offset = 0L) {
 
   obs <- cohort_off |>
     crossing(time = obs_t) |>
-    mutate(amt = 0, evid = 0L, cmt = "Cc", dv = NA_real_)
+    # Observe on the `central` ODE state; dvid = 1 selects the Cc endpoint
+    # (dose rows get dvid = NA from bind_rows()).
+    mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L, dv = NA_real_)
 
   bind_rows(doses, obs) |>
     mutate(INJSITE_ARM = site_arm,

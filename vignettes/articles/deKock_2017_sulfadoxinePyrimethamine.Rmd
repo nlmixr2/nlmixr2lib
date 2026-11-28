@@ -141,10 +141,13 @@ make_cohort <- function(n, wt_med, hgb, preg, tpp_wk, region_mz, region_sd, regi
     dosing |> tidyr::unnest(sulfa) |> dplyr::select(-pyra),
     dosing |> tidyr::unnest(pyra)  |> dplyr::select(-sulfa)
   )
-  # Observation rows: one per output, at each obs time
+  # Observation rows: one per output, at each obs time, on the ODE state the
+  # output is computed from; dvid names the endpoint (1 = Cc from `central`,
+  # 2 = Cc_pyra from `central_pyra`).
   obs_rows <- tidyr::expand_grid(id = ids, time = obs_times_h,
-                                 cmt = c("Cc", "Cc_pyra")) |>
-    dplyr::mutate(amt = 0, evid = 0L)
+                                 cmt = c("central", "central_pyra")) |>
+    dplyr::mutate(amt = 0, evid = 0L,
+                  dvid = match(cmt, c("central", "central_pyra")))
   ev <- dplyr::bind_rows(dose_rows, obs_rows) |>
     dplyr::arrange(id, time, evid)
   ev$WT  <- wt_med

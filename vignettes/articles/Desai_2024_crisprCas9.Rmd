@@ -142,10 +142,11 @@ after administration (Model assumptions, point 2), so the RNA cargo is dosed
 into plasma alongside the vehicle. Total RNA splits 33.3% sgRNA / 66.7% mRNA
 (Methods) and each total-RNA dose has a paired LNP dose given in the Methods.
 
-Observation rows use the **endpoint name** as `cmt` (`"Cc"`, `"TTR"`, ...).
-These models declare a multi-endpoint `predDf`, so rxode2 allocates a
-dedicated slot per endpoint *after* the ODE states; the endpoint names are
-therefore the correct `cmt` values here and no slot renumbering occurs.
+Observation rows sit on the ODE state each endpoint is computed from
+(`lnp_plasma` for `Cc`, `ttr` for `TTR`, ...) and carry a `dvid` naming the
+endpoint. These models declare several endpoints, so a state `cmt` alone would
+not say which one the row belongs to. The endpoints come in the same order in
+the mouse, NHP and human files, so one lookup table serves all three.
 
 ```{r dosing-helper}
 crisprEvents <- function(wtKg, rnaMgKg, lnpMgKg, infusionH, times, obsCmt) {
@@ -164,7 +165,28 @@ crisprEvents <- function(wtKg, rnaMgKg, lnpMgKg, infusionH, times, obsCmt) {
     if (!is.null(ev)) args <- c(list(ev), args)
     ev <- do.call(rxode2::et, args)
   }
-  for (cc in obsCmt) ev <- rxode2::et(ev, times, cmt = cc)
+  addObs(ev, times, obsCmt)
+}
+
+# Endpoint -> ODE state it is computed from, and its dvid (the endpoint's
+# position in the model; the mouse file stops at Cc_mrna, the human at TTR).
+endpointMap <- data.frame(
+  endpoint = c("Cc", "Cc_sgrna", "Cc_mrna", "TTR", "PCSK9", "LDLC"),
+  state    = c("lnp_plasma", "sgrna_plasma", "mrna_plasma", "ttr",
+               "pcsk9_circ", "ldlc"),
+  dvid     = 1:6
+)
+
+# Add observation rows for the named endpoints to `ev` (NULL for none).
+addObs <- function(ev, times, endpoints) {
+  for (ep in endpoints) {
+    st <- endpointMap$state[endpointMap$endpoint == ep]
+    ev <- if (is.null(ev)) rxode2::et(times, cmt = st) else rxode2::et(ev, times, cmt = st)
+  }
+  ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0L,
+                    endpointMap$dvid[match(ev$cmt, endpointMap$state)],
+                    NA_integer_)
   ev
 }
 
@@ -561,8 +583,8 @@ set.seed(20240920)
 nSub <- 200
 
 simMc <- purrr::pmap_dfr(humanDoses, function(rna, lnp, arm) {
-  ev <- crisprEvents(71, rna, lnp, 2, seq(0, 28 * 24, by = 48), "TTR") |>
-    rxode2::et(id = seq_len(nSub))
+  ev1 <- crisprEvents(71, rna, lnp, 2, seq(0, 28 * 24, by = 48), "TTR")
+  ev <- dplyr::bind_rows(lapply(seq_len(nSub), function(i) cbind(id = i, ev1)))
   pars <- data.frame(
     id = seq_len(nSub),
     lic50_ttr = log(0.3) + stats::rnorm(nSub, 0, 0.2)
@@ -607,7 +629,7 @@ Two checks that the extraction behaves as the equations require.
 # 1. With no dose, every PD state must hold exactly at its baseline of 100
 #    and the free LDL-receptor pool must be stationary (k_syn = LDL_tot * k_el).
 baseline <- rxode2::rxSolve(
-  mNhp, rxode2::et(seq(0, 30 * 24, by = 24), cmt = "TTR"),
+  mNhp, addObs(NULL, seq(0, 30 * 24, by = 24), "TTR"),
   returnType = "data.frame", useLinCmt = FALSE
 )
 baselineCheck <- c(

@@ -100,9 +100,14 @@ obs_times  <- sort(unique(c(0, 7, 14, 21, seq(28, 1008, by = 7))))
 
 sim_one <- function(sub) {
   ev <- rxode2::et(amt = 150, time = dose_times, cmt = "depot") |>
-    rxode2::et(obs_times, cmt = "Cc") |>
-    rxode2::et(obs_times, cmt = "cd56bright")
+    rxode2::et(obs_times, cmt = "central") |>
+    rxode2::et(obs_times, cmt = "effect")
   ev_df <- as.data.frame(ev)
+  # Observation rows sit on the ODE state each endpoint is computed from;
+  # dvid names the endpoint (1 = Cc from `central`, 2 = cd56bright from
+  # `effect`).
+  ev_df$dvid <- ifelse(ev_df$evid == 0L,
+                       match(ev_df$cmt, c("central", "effect")), NA_integer_)
   ev_df$id        <- sub$id
   ev_df$WT        <- sub$WT
   ev_df$DOSE_50MG <- sub$DOSE_50MG

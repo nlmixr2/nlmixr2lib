@@ -146,7 +146,8 @@ make_cohort <- function(dose_amt, id_offset = 0L) {
     time = obs_times,
     amt  = 0,
     evid = 0L,
-    cmt  = "Cc",
+    cmt  = "central",
+    dvid = 1L,   # Cc, the first of the model's three endpoints
     dose_mg = dose_amt
   )
   dose <- tibble::tibble(

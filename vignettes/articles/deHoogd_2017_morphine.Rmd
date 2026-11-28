@@ -134,7 +134,8 @@ build_events <- function(cov_df, obs_times, dose_events) {
       amt           = NA_real_,
       rate          = NA_real_,
       evid          = 0L,
-      cmt           = "Cc",
+      cmt           = "central",
+      dvid          = 1L,   # Cc, the first of three endpoints
       WT            = row$WT,
       DIS_OBESE_MORBID = row$DIS_OBESE_MORBID,
       cohort        = as.character(row$cohort),

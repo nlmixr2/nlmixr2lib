@@ -170,7 +170,10 @@ events <- cohorts |>
     row <- .
     et_obj <- rxode2::et() |>
       rxode2::et(amt = dose_umol, time = 0, ii = 12, addl = n_doses - 1L, cmt = "depot") |>
-      rxode2::et(obs_times, cmt = "Cc")
+      rxode2::et(obs_times, cmt = "central")
+    # Observation rows sit on the `central` ODE state; dvid = 1 selects the
+    # Cc (total MPA) endpoint of this four-endpoint model.
+    et_obj$dvid <- ifelse(et_obj$evid == 0L, 1L, NA_integer_)
     et_obj$id         <- row$id
     et_obj$arm        <- row$arm
     et_obj$CRCL       <- row$CRCL
@@ -306,7 +309,10 @@ alb_events <- alb_cohorts |>
     row <- .
     et_obj <- rxode2::et() |>
       rxode2::et(amt = dose_umol, time = 0, ii = 12, addl = n_doses - 1L, cmt = "depot") |>
-      rxode2::et(obs_times, cmt = "Cc")
+      rxode2::et(obs_times, cmt = "central")
+    # Observation rows sit on the `central` ODE state; dvid = 1 selects the
+    # Cc (total MPA) endpoint of this four-endpoint model.
+    et_obj$dvid <- ifelse(et_obj$evid == 0L, 1L, NA_integer_)
     et_obj$id <- row$id; et_obj$arm <- row$arm
     et_obj$CRCL <- row$CRCL; et_obj$ALB <- row$ALB
     et_obj$CONMED_CSA <- row$CONMED_CSA
@@ -379,7 +385,10 @@ crcl_events <- crcl_cohorts |>
     row <- .
     et_obj <- rxode2::et() |>
       rxode2::et(amt = dose_umol, time = 0, ii = 12, addl = n_doses - 1L, cmt = "depot") |>
-      rxode2::et(obs_times, cmt = "Cc")
+      rxode2::et(obs_times, cmt = "central")
+    # Observation rows sit on the `central` ODE state; dvid = 1 selects the
+    # Cc (total MPA) endpoint of this four-endpoint model.
+    et_obj$dvid <- ifelse(et_obj$evid == 0L, 1L, NA_integer_)
     et_obj$id <- row$id; et_obj$arm <- row$arm
     et_obj$CRCL <- row$CRCL; et_obj$ALB <- row$ALB
     et_obj$CONMED_CSA <- row$CONMED_CSA

@@ -163,7 +163,7 @@ events <- cohort |>
       tibble::tibble(time = obs_grid,
                      amt  = 0,
                      evid = 0L,
-                     cmt  = "Cc",
+                     cmt  = "central",
                      dose = df$dose)
     )
   }) |>
@@ -274,7 +274,7 @@ events_sd <- cohort |>
       tibble::tibble(time = seq(0.25, 24, by = 0.25),
                      amt  = 0,
                      evid = 0L,
-                     cmt  = "Cc",
+                     cmt  = "central",
                      dose = df$dose)
     )
   }) |>
