@@ -300,12 +300,13 @@ cohort.
 ```{r table-3}
 table3_times <- c(0, 24, 48, 96, 144, 168, 192, 196, 202, 216)
 n_sim <- length(unique(sim$id))
+stopifnot(!anyNA(sim$prob_ipa))
 
 table3 <- sim |>
   dplyr::filter(time %in% table3_times) |>
   dplyr::group_by(time) |>
   dplyr::summarise(
-    mean_prob_ipa  = mean(prob_ipa, na.rm = TRUE),
+    mean_prob_ipa  = mean(prob_ipa),
     expected_count = round(mean_prob_ipa * n_sim),
     expected_pct   = round(100 * mean_prob_ipa),
     .groups        = "drop"

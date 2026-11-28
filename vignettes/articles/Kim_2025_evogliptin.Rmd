@@ -202,6 +202,9 @@ sim <- rxode2::rxSolve(mod, events = events, keep = c("scenario", "endpoint"))
 
 # rxSolve can silently drop subjects; assert the count survived.
 stopifnot(length(unique(sim$id)) == n_per_arm * nrow(scenarios))
+# Every row, both endpoints, must be finite: a NaN DPP4INH or Cc is a defect,
+# not a row to filter out.
+stopifnot(!anyNA(sim$sim), !anyNA(sim$DPP4INH), !anyNA(sim$Cc))
 
 sim <- as.data.frame(sim) |>
   dplyr::mutate(scenario = factor(scenario, levels = scenarios$scenario))
@@ -264,7 +267,7 @@ second, inline NCA path.
 # endpoint belongs in the NCA -- the DPP4INH rows put percent inhibition in the
 # same `sim` column and would be silently treated as concentrations.
 sim_nca <- sim |>
-  dplyr::filter(endpoint == "Cc", !is.na(sim)) |>
+  dplyr::filter(endpoint == "Cc") |>
   dplyr::transmute(id, time, Cc = sim, scenario)
 
 # Guarantee a time = 0 row per subject; pre-dose Cc = 0 for an oral dose.
@@ -350,7 +353,7 @@ curve_typical <- sim_typical |>
   dplyr::arrange(Cc)
 
 sim |>
-  dplyr::filter(endpoint == "DPP4INH", !is.na(sim), time > 0) |>
+  dplyr::filter(endpoint == "DPP4INH", time > 0) |>
   dplyr::slice_sample(n = 1500) |>
   ggplot(aes(Cc, sim)) +
   geom_point(shape = 1, alpha = 0.35, size = 0.9) +
@@ -454,8 +457,9 @@ exposure_medians <- function(model, seed = 20250813) {
   s <- as.data.frame(rxode2::rxSolve(
     model, events = events, keep = c("scenario", "endpoint")
   ))
+  stopifnot(!anyNA(s$sim))
   nca_in <- s |>
-    dplyr::filter(endpoint == "Cc", !is.na(sim)) |>
+    dplyr::filter(endpoint == "Cc") |>
     dplyr::transmute(id, time, Cc = sim, scenario)
   res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
     PKNCA::PKNCAconc(nca_in, Cc ~ time | scenario + id, concu = "ug/L", timeu = "h"),

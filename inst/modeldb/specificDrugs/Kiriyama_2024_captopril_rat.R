@@ -201,13 +201,22 @@ Kiriyama_2024_captopril_rat <- function() {
 
     # ---- 3. Effect compartments and sigmoid Emax responses ----
     d/dt(effect_bp) <- ke0_bp * (Cc - effect_bp)
-    bp <- e0_bp - emax_bp * effect_bp^hill_bp / (ec50_bp^hill_bp + effect_bp^hill_bp)
+    # max(effect_bp, 0): past washout, integration noise can take effect_bp slightly
+    # negative, where the non-integer power is NaN.
+    effect_bp_pos <- max(effect_bp, 0)
+    bp <- e0_bp - emax_bp * effect_bp_pos^hill_bp / (ec50_bp^hill_bp + effect_bp_pos^hill_bp)
 
     d/dt(effect_hr) <- ke0_hr * (Cc - effect_hr)
-    hr <- e0_hr - emax_hr * effect_hr^hill_hr / (ec50_hr^hill_hr + effect_hr^hill_hr)
+    # max(effect_hr, 0): past washout, integration noise can take effect_hr slightly
+    # negative, where the non-integer power is NaN.
+    effect_hr_pos <- max(effect_hr, 0)
+    hr <- e0_hr - emax_hr * effect_hr_pos^hill_hr / (ec50_hr^hill_hr + effect_hr_pos^hill_hr)
 
     d/dt(effect_qt) <- ke0_qt * (Cc - effect_qt)
-    qt <- e0_qt + emax_qt * effect_qt^hill_qt / (ec50_qt^hill_qt + effect_qt^hill_qt)
+    # max(effect_qt, 0): past washout, integration noise can take effect_qt slightly
+    # negative, where the non-integer power is NaN.
+    effect_qt_pos <- max(effect_qt, 0)
+    qt <- e0_qt + emax_qt * effect_qt_pos^hill_qt / (ec50_qt^hill_qt + effect_qt_pos^hill_qt)
 
     # ---- 4. Observations ----
     Cc ~ add(addSd)

@@ -467,7 +467,10 @@ Jeong_2022_torsemide_pbpk <- function() {
     ec50 <- exp(lec50 + e_hepimp_lec50 * hep_any + e_chf_lec50 * chf_any)
     hill_pd <- hill + e_hepimp_hill * hep_any + e_chf_hill * chf_any
     urine_excr_rate <- kurine * c_kidney * vki * 1000
-    sodium_excr_rate <- e0 + emax * urine_excr_rate^hill_pd / (ec50^hill_pd + urine_excr_rate^hill_pd)
+    # max(urine_excr_rate, 0): past washout, integration noise can take urine_excr_rate slightly
+    # negative, where the non-integer power is NaN.
+    urine_excr_rate_pos <- max(urine_excr_rate, 0)
+    sodium_excr_rate <- e0 + emax * urine_excr_rate_pos^hill_pd / (ec50^hill_pd + urine_excr_rate_pos^hill_pd)
 
     # Observation: Appendix A has no separate plasma compartment; the
     # blood-pool concentration Cbl is the simulated 'plasma (or serum)'

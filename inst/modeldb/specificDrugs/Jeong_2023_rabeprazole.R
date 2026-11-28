@@ -281,7 +281,10 @@ Jeong_2023_rabeprazole <- function() {
     # Jeong 2023 Table 6: E = E0 + (Emax * C^gamma) / (EC50^gamma + C^gamma),
     # with C the plasma rabeprazole concentration. With Cc = 0 this returns the
     # unstimulated baseline pH of E0 = 2.50.
-    gastric_ph <- e0 + emax * Cc^hill / (ec50^hill + Cc^hill)
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer power is NaN.
+    cc_pos <- max(Cc, 0)
+    gastric_ph <- e0 + emax * cc_pos^hill / (ec50^hill + cc_pos^hill)
 
     # ---- 7. Residual error -------------------------------------------------
     Cc         ~ lnorm(expSd)

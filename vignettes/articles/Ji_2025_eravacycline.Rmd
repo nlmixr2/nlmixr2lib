@@ -226,11 +226,10 @@ dose_df <- events |>
   filter(evid == 1L) |>
   select(id, time, amt, regimen)
 
+stopifnot(!anyNA(sim$Cu), !anyNA(sim$Celf))
 conc_cu <- sim |>
-  filter(!is.na(Cu)) |>
   select(id, time, Cu, regimen)
 conc_elf <- sim |>
-  filter(!is.na(Celf)) |>
   select(id, time, Celf, regimen)
 
 intervals <- data.frame(start = 144, end = 168, auclast = TRUE, cmax = TRUE)

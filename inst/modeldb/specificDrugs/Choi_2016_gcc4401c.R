@@ -431,6 +431,10 @@ Choi_2016_gcc4401c <- function() {
     #    the paper found no hysteresis and no improvement from
     #    ligand-receptor association-dissociation models.
     # =====================================================================
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer power is NaN.
+    cc_pos <- max(Cc, 0)
+
     # (a) Coagulation factor X activity (%)
     emax_cfx <- exp(lemax_cfx + etalemax_cfx)
     ec50_cfx <- exp(lec50_cfx + etalec50_cfx)
@@ -438,21 +442,21 @@ Choi_2016_gcc4401c <- function() {
       etalhill_cfx + poc1 * etaiov_hill_cfx_1 + poc2 * etaiov_hill_cfx_2 +
       poc3 * etaiov_hill_cfx_3)
     cfx <- exp(lrbase_cfx) -
-      emax_cfx * Cc^hill_cfx / (ec50_cfx^hill_cfx + Cc^hill_cfx)
+      emax_cfx * cc_pos^hill_cfx / (ec50_cfx^hill_cfx + cc_pos^hill_cfx)
 
     # (b) Factor X chromogenic activity assay (%)
     emax_fxcaa <- exp(lemax_fxcaa + etalemax_fxcaa)
     ec50_fxcaa <- exp(lec50_fxcaa + etalec50_fxcaa)
     hill_fxcaa <- exp(lhill_fxcaa + etalhill_fxcaa)
     fxcaa <- exp(lrbase_fxcaa) -
-      emax_fxcaa * Cc^hill_fxcaa / (ec50_fxcaa^hill_fxcaa + Cc^hill_fxcaa)
+      emax_fxcaa * cc_pos^hill_fxcaa / (ec50_fxcaa^hill_fxcaa + cc_pos^hill_fxcaa)
 
     # (c) Anti-factor Xa activity (IU/mL)
     emax_afx <- exp(lemax_afx + etalemax_afx)
     ec50_afx <- exp(lec50_afx + etalec50_afx)
     hill_afx <- exp(lhill_afx + etalhill_afx)
     afx <- exp(lrbase_afx) +
-      emax_afx * Cc^hill_afx / (ec50_afx^hill_afx + Cc^hill_afx)
+      emax_afx * cc_pos^hill_afx / (ec50_afx^hill_afx + cc_pos^hill_afx)
 
     # (d) Prothrombin time (INR)
     emax_ptinr <- exp(lemax_ptinr + etalemax_ptinr)
@@ -462,7 +466,7 @@ Choi_2016_gcc4401c <- function() {
       poc1 * etaiov_hill_ptinr_1 + poc2 * etaiov_hill_ptinr_2 +
       poc3 * etaiov_hill_ptinr_3)
     ptinr <- exp(lrbase_ptinr) +
-      emax_ptinr * Cc^hill_ptinr / (ec50_ptinr^hill_ptinr + Cc^hill_ptinr)
+      emax_ptinr * cc_pos^hill_ptinr / (ec50_ptinr^hill_ptinr + cc_pos^hill_ptinr)
 
     # (e) Prothrombin time (seconds)
     emax_ptsec <- exp(lemax_ptsec + etalemax_ptsec)
@@ -472,7 +476,7 @@ Choi_2016_gcc4401c <- function() {
       poc1 * etaiov_hill_ptsec_1 + poc2 * etaiov_hill_ptsec_2 +
       poc3 * etaiov_hill_ptsec_3)
     ptsec <- exp(lrbase_ptsec) +
-      emax_ptsec * Cc^hill_ptsec / (ec50_ptsec^hill_ptsec + Cc^hill_ptsec)
+      emax_ptsec * cc_pos^hill_ptsec / (ec50_ptsec^hill_ptsec + cc_pos^hill_ptsec)
 
     # (f) Activated partial thromboplastin time: PROLONGATION (s), because
     #     no baseline aPTT is reported in the paper or its supplement.
@@ -482,7 +486,7 @@ Choi_2016_gcc4401c <- function() {
     hill_aptt <- exp(lhill_aptt + etalhill_aptt +
       poc1 * etaiov_hill_aptt_1 + poc2 * etaiov_hill_aptt_2 +
       poc3 * etaiov_hill_aptt_3)
-    aptt_chg <- emax_aptt * Cc^hill_aptt / (ec50_aptt^hill_aptt + Cc^hill_aptt)
+    aptt_chg <- emax_aptt * cc_pos^hill_aptt / (ec50_aptt^hill_aptt + cc_pos^hill_aptt)
 
     # (g) Antithrombin III activity: CHANGE from baseline, because no
     #     baseline is reported in the paper or its supplement.

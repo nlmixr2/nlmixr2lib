@@ -231,7 +231,10 @@ Grzeskowiak_2023_sugammadex_rocuronium <- function() {
     Cc_roc <- cr1 + crs1
 
     # TOF ratio (%), S2 $ERROR: 100*(1 - (Ce/EC50)^GAM / (1 + (Ce/EC50)^GAM))
-    NMB <- e0 - emax * effect_roc^hill / (ec50^hill + effect_roc^hill)
+    # max(effect_roc, 0): past washout, integration noise can take effect_roc slightly
+    # negative, where the non-integer power is NaN.
+    effect_roc_pos <- max(effect_roc, 0)
+    NMB <- e0 - emax * effect_roc_pos^hill / (ec50^hill + effect_roc_pos^hill)
 
     Cc ~ prop(propSd)
     Cc_roc ~ prop(propSd_roc)

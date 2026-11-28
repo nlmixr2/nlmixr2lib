@@ -193,7 +193,10 @@ Ji_2025_eravacycline <- function() {
     Cc <- central / vc
 
     # Unbound plasma concentration, supplement eq. 1 / 9 (mg/L)
-    Cu <- fucoef * Cc^fupow
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer power is NaN.
+    cc_pos <- max(Cc, 0)
+    Cu <- fucoef * cc_pos^fupow
 
     # Unbound ELF concentration, supplement eq. 12. Observed ELF concentrations
     # are urea-corrected BAL concentrations, taken as unbound (supplement

@@ -2,6 +2,8 @@
 
 # development version
 
+- `Bonifacio_2020_batiraxcept`, `Choi_2016_gcc4401c`, `Cojutti_2026_fosfomycin`, `Grzeskowiak_2023_sugammadex_rocuronium`, `Jeong_2022_torsemide_pbpk`, `Jeong_2023_rabeprazole`, `Ji_2025_eravacycline`, `Kim_2025_evogliptin`, `Kiriyama_2024_captopril_rat`, `Kiriyama_2024_nifedipine_rat` and `Park_2014_triflusal` floor the base of each non-integer power on a decaying quantity at zero (the plasma or effect-site concentration in the Hill terms, Cojutti's prostate and Ji's unbound-concentration power laws, and Jeong 2022's urinary excretion rate). After washout, integration noise could take that base slightly negative, where the power is NaN, so the PD and penetration outputs (`GAS6`, the six Choi coagulation markers, `Cprostate`, `NMB`, `sodium_excr_rate`, `gastric_ph`, `Cu` / `Celf`, `DPP4INH`, `bp` / `hr` / `qt` / `qtc`, `prob_ipa`) went NaN in long simulations. Where the old forms were finite, the simulated values are unchanged.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.

@@ -189,7 +189,10 @@ Cojutti_2026_fosfomycin <- function() {
     # Plasma concentration (mg/L) and the ESM mlxtran prostate link
     # Cp = PR*(Cc^POW) (ug/g)
     Cc <- central / vc
-    Cprostate <- rprostate * Cc^pow_prostate
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer power is NaN.
+    cc_pos <- max(Cc, 0)
+    Cprostate <- rprostate * cc_pos^pow_prostate
 
     Cc ~ add(addSd)
     Cprostate ~ add(addSd_Cprostate)
