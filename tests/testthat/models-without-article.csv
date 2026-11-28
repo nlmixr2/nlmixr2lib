@@ -2,7 +2,6 @@ model,status,reason
 Brekkan_2018_pegfilgrastim,article-pending,Published model with no article; none has ever existed in the repository. Remove this row when one is written.
 igg_kim_2006,article-pending,Published model with no article; none has ever existed in the repository. Remove this row when one is written.
 oncology_sdm_lobo_2002,article-pending,Published model with no article; none has ever existed in the repository. Remove this row when one is written.
-oncology_xenograft_simeoni_2004,article-pending,Published model with no article; none has ever existed in the repository. Remove this row when one is written.
 phenylalanine_charbonneau_2021,article-pending,Published model with no article; none has ever existed in the repository. Remove this row when one is written.
 indirect_1cpt_inhi_kin,template,"Generic indirect-response template (reference 'nlmixr2lib template'): a building block, not a published model, so there is nothing to validate against."
 indirect_1cpt_inhi_kin_CLV,template,"Generic indirect-response template (reference 'nlmixr2lib template'): a building block, not a published model, so there is nothing to validate against."

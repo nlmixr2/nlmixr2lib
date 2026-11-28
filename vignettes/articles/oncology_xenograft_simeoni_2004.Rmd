@@ -1,0 +1,488 @@
+---
+title: "Xenograft tumor growth inhibition (Simeoni 2004)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Xenograft tumor growth inhibition (Simeoni 2004)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r load-model}
+mod <- suppressMessages(rxode2::rxode(readModelDb("oncology_xenograft_simeoni_2004")))
+```
+
+* Citation: `r mod$reference`
+* Description: `r mod$description`
+* Article: <https://doi.org/10.1158/0008-5472.CAN-03-2524>
+
+Simeoni 2004 introduced the tumor growth inhibition (TGI) model that has since
+become the standard preclinical xenograft model. Tumor weight $w$ (g) grows
+exponentially at rate $\lambda_0$ until it reaches $\lambda_1 / \lambda_0$ and
+then linearly at rate $\lambda_1$; a single smooth function with
+$\Psi = 20$ joins the two regimes (Eq. D). The drug moves proliferating cells
+$x_1$ into a chain of three damaged, non-proliferating stages
+$x_2 \ldots x_4$ at the rate $k_2 \, c(t) \, x_1$, and damaged cells pass
+through the chain to death at the first-order rate $k_1$ (Eq. E):
+
+$$
+\frac{dx_1}{dt} = \frac{\lambda_0 x_1}{\left[1 + \left(\frac{\lambda_0}{\lambda_1} w\right)^{\Psi}\right]^{1/\Psi}} - k_2 c(t) x_1, \qquad
+w = x_1 + x_2 + x_3 + x_4 .
+$$
+
+In the model file `cycling_cells` is $x_1$, `damaged_cells1`-`damaged_cells3`
+are $x_2$-$x_4$ and `tumor_vol` is $w$. The model carries no PK: the plasma
+concentration `Cc` (ng/mL) is an input, supplied in the data or by a PK model
+composed upstream, and so is the initial tumor weight `tumor_vol0` ($w_0$, g).
+The shipped parameter values are the paclitaxel experiment 1 estimates of
+Table 2.
+
+# Population
+
+Female athymic Hsd nude (nu/nu) mice, 5-6 weeks old and 20-22 g, carried
+subcutaneous A2780 human ovarian carcinoma xenografts implanted as tumor
+fragments in the left flank (Methods, p. 1094-1095). Paclitaxel 30 mg/kg was
+given as IV bolus doses every 4 days for 3 doses to groups of 8 mice in each of
+two experiments, against vehicle controls. Tumor weight was computed from
+caliper measurements as $\text{length} \cdot \text{width}^2 / 2$ at a density
+of 1 mg/mm^3, so 1 g of tumor corresponds to 1000 mm^3. The model was fitted by
+weighted least squares (WinNonlin 3.1) to the group-mean tumor weights of the
+control and treated arms of both experiments simultaneously, sharing $k_1$ and
+$k_2$ and estimating $\lambda_0$, $\lambda_1$ and $w_0$ per experiment.
+
+The same information is available programmatically via
+`readModelDb("oncology_xenograft_simeoni_2004")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Unperturbed growth, smooth switch | $\Psi = 20$ | Eq. D and text, p. 1095 |
+| Perturbed growth and damage chain | n/a | Eq. E and Fig. 1, p. 1096 |
+| `ldamageTransit` ($k_1$) | `log(0.968)` 1/day | Table 2, p. 1098 |
+| `ldrugSlope` ($k_2$) | `log(6.29e-4)` mL/(ng*day) | Table 2, p. 1098 |
+| `ltumorExpGrowth` ($\lambda_0$, experiment 1) | `log(0.273)` 1/day | Table 2, p. 1098 |
+| `ltumorLinGrowth` ($\lambda_1$, experiment 1) | `log(0.814)` g/day | Table 2, p. 1098 |
+| `tumor_vol0` ($w_0$, input) | 0.055 g (experiment 1) | Table 2, p. 1098 |
+| `propSd_tumor_vol`, `addSd_tumor_vol` | 0.2, 30 g | not in the reference |
+| Paclitaxel PK (input `Cc`) | $V_1$ = 0.81 L/kg, $k_{10}$ = 0.868, $k_{12}$ = 0.0060, $k_{21}$ = 0.0838 1/h | Results, p. 1098 |
+
+# Drug input: closed-form two-compartment PK
+
+Simeoni 2004 fitted the PK of each drug separately (WinNonlin model 7, a
+two-compartment IV bolus model) and used the typical profile as the input
+$c(t)$ of the TGI model. The helper below evaluates that profile in ng/mL for
+any set of bolus times (doses in mg/kg, $V_1$ in L/kg, rate constants in 1/h,
+time in days). It is evaluated on a 0.002-day grid, with an extra point just
+before every dose so that linear interpolation does not smear the jump at the
+dose, and handed to `rxSolve()` as the time-varying `Cc` column.
+
+```{r pk-helper}
+# Concentration (ng/mL) of a two-compartment IV bolus model; superposition over
+# dose_times (days). dose: mg/kg; v1: L/kg; k10, k12, k21: 1/h.
+cc_2cmt <- function(time, dose_times, dose, v1, k10, k12, k21) {
+  k10 <- k10 * 24
+  k12 <- k12 * 24
+  k21 <- k21 * 24
+  s <- k10 + k12 + k21
+  alpha <- (s + sqrt(s^2 - 4 * k10 * k21)) / 2
+  beta <- k10 * k21 / alpha
+  conc <- numeric(length(time))
+  for (td in dose_times) {
+    dt <- time - td
+    on <- dt >= 0
+    conc[on] <- conc[on] + dose / v1 * 1000 *
+      ((alpha - k21) / (alpha - beta) * exp(-alpha * dt[on]) +
+        (k21 - beta) / (alpha - beta) * exp(-beta * dt[on]))
+  }
+  conc
+}
+
+# Simulate one arm: typical tumor weight for initial weight w0 (g) under the
+# bolus regimen dose_times (none for a vehicle control).
+run_arm <- function(model, w0, dose_times, dose, pk, tend) {
+  time <- sort(unique(c(seq(0, tend, by = 0.002), dose_times, dose_times - 1e-6)))
+  conc <- if (length(dose_times) > 0) {
+    do.call(cc_2cmt, c(list(time = time, dose_times = dose_times, dose = dose), pk))
+  } else {
+    numeric(length(time))
+  }
+  events <- data.frame(id = 1L, time = time, evid = 0L, Cc = conc, tumor_vol0 = w0)
+  sim <- rxode2::rxSolve(
+    model, events,
+    covsInterpolation = "linear", returnType = "data.frame",
+    rtol = 1e-8, atol = 1e-10
+  )
+  data.frame(time = sim$time, tumor_vol = sim$tumor_vol, cycling_cells = sim$cycling_cells, Cc = conc)
+}
+
+trapz <- function(x, y) sum(diff(x) * (head(y, -1) + tail(y, -1)) / 2)
+
+pk_paclitaxel <- list(v1 = 0.81, k10 = 0.868, k12 = 0.0060, k21 = 0.0838)
+```
+
+# Figure 7: paclitaxel in two experiments
+
+Experiment 1 uses the shipped values; experiment 2 overrides $\lambda_0$ and
+$\lambda_1$ with its own Table 2 estimates, and each experiment uses its own
+$w_0$ as `tumor_vol0`. The two experiments share $k_1$ and $k_2$.
+
+Table 2's experiment 1 parameter set reproduces the Figure 7 curves labelled
+*exp 1* only when the three doses start on **Day 13**, at a tumor weight of
+about 2 g. The experiment 2 set reproduces the *exp 2* curves when dosing
+starts on **Day 8**. The Methods text and the captions of Table 2 and Figure 7
+state the opposite assignment: experiment 1 from Day 8 and experiment 2 from
+Day 13. Two features of the figure fix the mapping. First, each control line's
+late slope equals its own experiment's $\lambda_1$: the solid *exp 1* control
+rises at about 0.81 g/day and the dashed *exp 2* control at about 0.66 g/day.
+Second, the solid treated line plateaus at about 2 g, the tumor weight at
+Day 13. This article therefore simulates the Day 13 start for experiment 1 and
+the Day 8 start for experiment 2, and the comparison under the caption's
+assignment is shown below for completeness.
+
+```{r figure-7-simulate}
+mod_exp1 <- mod
+mod_exp2 <- suppressMessages(rxode2::ini(mod, ltumorExpGrowth = log(0.311), ltumorLinGrowth = log(0.656)))
+
+arms <- list(
+  "exp 1 control" = run_arm(mod_exp1, 0.055, numeric(0), 30, pk_paclitaxel, 35),
+  "exp 1 treated" = run_arm(mod_exp1, 0.055, c(13, 17, 21), 30, pk_paclitaxel, 35),
+  "exp 2 control" = run_arm(mod_exp2, 0.033, numeric(0), 30, pk_paclitaxel, 35),
+  "exp 2 treated" = run_arm(mod_exp2, 0.033, c(8, 12, 16), 30, pk_paclitaxel, 35)
+)
+sim7 <- bind_rows(arms, .id = "arm")
+
+# Points read by the maintainers from the fitted lines of Figure 7 (g; read to
+# about +/- 0.2 g).
+fig7 <- tibble::tribble(
+  ~arm,            ~time, ~published,
+  "exp 1 control",  13,    1.9,
+  "exp 1 control",  23,    9.8,
+  "exp 1 control",  31,   16.2,
+  "exp 1 treated",  17,    2.5,
+  "exp 1 treated",  21,    2.3,
+  "exp 1 treated",  31,    6.3,
+  "exp 2 control",  17,    5.0,
+  "exp 2 control",  24,    9.0,
+  "exp 2 control",  35,   16.3,
+  "exp 2 treated",  17,    0.6,
+  "exp 2 treated",  35,    9.3
+)
+fig7$simulated <- mapply(
+  function(a, t) approx(arms[[a]]$time, arms[[a]]$tumor_vol, t)$y,
+  fig7$arm, fig7$time
+)
+fig7$pct_diff <- 100 * (fig7$simulated - fig7$published) / fig7$published
+
+fig7 |>
+  dplyr::rename(
+    "Arm" = arm, "Day" = time, "Figure 7 (g)" = published,
+    "Simulated (g)" = simulated, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, caption = "Tumor weight read from Figure 7 vs simulated.")
+
+stopifnot(
+  # A wrong k2, start day or PK unit shifts the treated curves by far more.
+  abs(median(fig7$pct_diff)) < 10,
+  max(abs(fig7$pct_diff)) < 20
+)
+```
+
+```{r figure-7-plot}
+ggplot(sim7, aes(time, tumor_vol, colour = arm, linetype = arm)) +
+  geom_line() +
+  geom_point(data = fig7, aes(time, published), inherit.aes = FALSE, shape = 4, size = 2) +
+  scale_linetype_manual(values = c("solid", "solid", "dashed", "dashed")) +
+  labs(
+    x = "Time since inoculation (days)", y = "Tumor weight (g)",
+    colour = NULL, linetype = NULL,
+    title = "Figure 7 - paclitaxel 30 mg/kg q4d x 3",
+    caption = "Lines: simulation. Crosses: values read from the fitted lines of Simeoni 2004 Figure 7."
+  )
+```
+
+Under the caption's assignment the treated arms do not match the figure: the
+experiment 1 parameters dosed from Day 8 hold the tumor near 0.5 g until
+Day 21, where the solid *exp 1 treated* line is at about 2.3 g, and the
+experiment 2 parameters dosed from Day 13 plateau near 2.3 g on Day 17, where
+the dashed *exp 2 treated* line is at about 0.6 g.
+
+```{r figure-7-caption-mapping}
+caption_exp1 <- run_arm(mod_exp1, 0.055, c(8, 12, 16), 30, pk_paclitaxel, 35)
+caption_exp2 <- run_arm(mod_exp2, 0.033, c(13, 17, 21), 30, pk_paclitaxel, 35)
+w_caption_exp1_d21 <- approx(caption_exp1$time, caption_exp1$tumor_vol, 21)$y
+w_caption_exp2_d17 <- approx(caption_exp2$time, caption_exp2$tumor_vol, 17)$y
+c(exp1_day21 = w_caption_exp1_d21, exp2_day17 = w_caption_exp2_d17)
+stopifnot(
+  abs(w_caption_exp1_d21 / 2.3 - 1) > 0.5,
+  abs(w_caption_exp2_d17 / 0.6 - 1) > 0.5
+)
+```
+
+## Paclitaxel exposure
+
+The grid-interpolated input reproduces the analytic AUC of three doses,
+$3 \cdot \text{Dose} / (V_1 k_{10})$, and the clearance $V_1 k_{10}$ matches
+the approximately 0.7 L/h/kg stated on p. 1098.
+
+```{r paclitaxel-exposure}
+treated <- arms[["exp 1 treated"]]
+auc_grid <- trapz(treated$time, treated$Cc)
+auc_analytic <- 3 * 30 / (0.81 * 0.868 * 24) * 1000 # ng*day/mL
+c(auc_grid = auc_grid, auc_analytic = auc_analytic, cl_L_per_h_per_kg = 0.81 * 0.868)
+stopifnot(abs(auc_grid / auc_analytic - 1) < 0.001)
+```
+
+## Unperturbed growth: closed forms
+
+In a control animal the model must grow as $w_0 e^{\lambda_0 t}$ while $w$ is
+far below the switch weight $\lambda_1/\lambda_0$ (2.98 g for experiment 1) and
+with slope $\lambda_1$ well above it.
+
+```{r unperturbed-closed-form}
+ctl <- arms[["exp 1 control"]]
+early <- ctl[ctl$time <= 6, ]
+rel_err_exp <- max(abs(early$tumor_vol / (0.055 * exp(0.273 * early$time)) - 1))
+late <- ctl[ctl$time >= 25, ]
+slope_late <- unname(coef(lm(tumor_vol ~ time, data = late))[2])
+c(rel_err_exponential = rel_err_exp, slope_late = slope_late, lambda1 = 0.814)
+stopifnot(
+  rel_err_exp < 1e-5,
+  abs(slope_late / 0.814 - 1) < 1e-4
+)
+```
+
+# Figure 11: time efficacy index against AUC (Drug A)
+
+For a treatment given during exponential growth, Eq. F predicts a tumor-growth
+delay, the time efficacy index, of $\text{TEI} = k_2 \cdot AUC / \lambda_0$.
+Simeoni 2004 tested this with Drug A, a Pharmacia candidate given at 60 mg/kg
+IV from Day 9 as qd x 11, bid x 4 or tid x 1, measuring TEI at a tumor weight
+of 4 g. The regression of TEI on cumulative AUC through the origin had a slope
+of 0.0012 mL/ng, against the theoretical $k_2/\lambda_0$ = 0.0011 mL/ng
+(Fig. 11, p. 1099-1100). The simulation below uses the Drug A estimates from
+the fit to all four arms (Table 4, right-hand columns) and its PK
+($V_1$ = 1.96 L/kg, $k_{10}$ = 1.56, $k_{12}$ = 0.552, $k_{21}$ = 0.233 1/h;
+p. 1099).
+
+```{r figure-11}
+mod_drugA <- suppressMessages(rxode2::ini(
+  mod,
+  ldamageTransit = log(0.355), ldrugSlope = log(3.76e-4),
+  ltumorExpGrowth = log(0.355), ltumorLinGrowth = log(0.366)
+))
+pk_drugA <- list(v1 = 1.96, k10 = 1.56, k12 = 0.552, k21 = 0.233)
+regimens <- list(
+  "qd x 11" = 9 + 0:10,
+  "bid x 4" = 9 + (0:7) / 2,
+  "tid x 1" = 9 + (0:2) / 3
+)
+# First time (days) after the last dose at which the tumor weight reaches w.
+time_to_weight <- function(sim, after, w) {
+  s <- sim[sim$time >= after, ]
+  i <- which(s$tumor_vol >= w)[1]
+  approx(s$tumor_vol[c(i - 1, i)], s$time[c(i - 1, i)], w)$y
+}
+t_control <- time_to_weight(run_arm(mod_drugA, 0.009, numeric(0), 60, pk_drugA, 60), 0, 4)
+fig11 <- tibble::tibble(
+  regimen = names(regimens),
+  auc = vapply(regimens, function(d) length(d) * 60 / (1.96 * 1.56 * 24) * 1000, numeric(1)),
+  tei = vapply(
+    regimens,
+    function(d) time_to_weight(run_arm(mod_drugA, 0.009, d, 60, pk_drugA, 60), max(d), 4) - t_control,
+    numeric(1)
+  )
+)
+slope_sim <- sum(fig11$tei * fig11$auc) / sum(fig11$auc^2)
+fig11 |>
+  dplyr::rename("Regimen" = regimen, "Cumulative AUC (ng*day/mL)" = auc, "TEI at 4 g (days)" = tei) |>
+  knitr::kable(digits = 2, caption = "Simulated TEI and cumulative AUC of Drug A.")
+c(slope_simulated = slope_sim, slope_published = 0.0012, slope_theory = 3.76e-4 / 0.355)
+stopifnot(
+  abs(slope_sim / 0.0012 - 1) < 0.15,
+  abs(slope_sim / (3.76e-4 / 0.355) - 1) < 0.15
+)
+```
+
+```{r figure-11-plot}
+ggplot(fig11, aes(auc, tei, label = regimen)) +
+  geom_abline(slope = slope_sim, intercept = 0) +
+  geom_abline(slope = 0.0012, intercept = 0, linetype = "dashed") +
+  geom_point() +
+  geom_text(nudge_y = 0.6) +
+  expand_limits(x = 0, y = 0) +
+  labs(
+    x = "Cumulative AUC (ng*day/mL)", y = "TEI at 4 g (days)",
+    title = "Figure 11 - Drug A",
+    caption = "Solid: regression through the origin on the simulation. Dashed: published slope 0.0012 mL/ng."
+  )
+```
+
+# Threshold concentration and Drug B infusion (Figure 13)
+
+At a constant concentration $C_{ss}$ the tumor is eradicated if
+$C_{ss} > C_T = \lambda_0 / k_2$; otherwise it settles at
+$w_{ss} \approx \lambda_1 / (k_2 C_{ss})$ (p. 1096-1097). From the Drug B bolus
+fit (Table 5: $\lambda_0$ = 0.309 1/day, $k_2$ = 2.89e-4 mL/(ng*day)) the
+paper quotes $C_T$ of about 1100 ng/mL (p. 1099). Holding Drug B at half that
+threshold, the simulated tumor weight converges to the exact steady state of
+Eq. E, $w_{ss} = (\lambda_1/\lambda_0)\left[(\lambda_0/(k_2 C_{ss}))^{\Psi} - 1\right]^{1/\Psi}$,
+which the paper's approximation matches to within $10^{-6}$.
+
+```{r threshold-concentration}
+lambda0_b <- 0.309
+lambda1_b <- 0.796
+k2_b <- 2.89e-4
+ct_b <- lambda0_b / k2_b
+mod_drugB <- suppressMessages(rxode2::ini(
+  mod,
+  ldamageTransit = log(0.517), ldrugSlope = log(k2_b),
+  ltumorExpGrowth = log(lambda0_b), ltumorLinGrowth = log(lambda1_b)
+))
+css <- ct_b / 2
+time_ss <- c(0, 9, seq(9.01, 300, by = 1))
+sim_ss <- rxode2::rxSolve(
+  mod_drugB,
+  data.frame(id = 1L, time = time_ss, evid = 0L, Cc = ifelse(time_ss > 9, css, 0), tumor_vol0 = 0.034),
+  covsInterpolation = "locf", returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12
+)
+w_ss_exact <- lambda1_b / lambda0_b * ((lambda0_b / (k2_b * css))^20 - 1)^(1 / 20)
+w_ss_paper <- lambda1_b / (k2_b * css)
+c(ct = ct_b, w_ss_simulated = tail(sim_ss$tumor_vol, 1), w_ss_exact = w_ss_exact, w_ss_paper = w_ss_paper)
+stopifnot(
+  abs(ct_b / 1100 - 1) < 0.05,
+  abs(tail(sim_ss$tumor_vol, 1) / w_ss_exact - 1) < 1e-6,
+  abs(w_ss_paper / w_ss_exact - 1) < 1e-5
+)
+```
+
+Simeoni 2004 then gave Drug B as a 7-day IV infusion from Day 9 targeting about
+2000 ng/mL; the observed mean steady state was 2085 ng/mL, about twice $C_T$,
+and the tumors started to shrink as predicted (Fig. 13). With the parameters
+of the fit to the infusion experiment (Table 5, infusion column: $k_1$ =
+0.615 1/day, $k_2$ = 2.93e-4 mL/(ng*day), $\lambda_0$ = 0.369 1/day,
+$\lambda_1$ = 0.511 g/day, $w_0$ = 0.016 g) and the concentration held at
+2085 ng/mL during the infusion, the proliferating population collapses and the
+total tumor weight falls from its peak before regrowing after the infusion
+stops. The rise of the concentration to steady state, with a half-life of
+under an hour, is neglected.
+
+```{r figure-13}
+mod_drugB_inf <- suppressMessages(rxode2::ini(
+  mod,
+  ldamageTransit = log(0.615), ldrugSlope = log(2.93e-4),
+  ltumorExpGrowth = log(0.369), ltumorLinGrowth = log(0.511)
+))
+time_inf <- sort(c(seq(0, 30, by = 0.05), 16 + 1e-6))
+sim13 <- rxode2::rxSolve(
+  mod_drugB_inf,
+  data.frame(
+    id = 1L, time = time_inf, evid = 0L,
+    Cc = ifelse(time_inf > 9 & time_inf <= 16, 2085, 0), tumor_vol0 = 0.016
+  ),
+  covsInterpolation = "linear", returnType = "data.frame"
+)
+x1_day9 <- sim13$cycling_cells[sim13$time == 9]
+x1_day16 <- sim13$cycling_cells[sim13$time == 16]
+w_peak <- max(sim13$tumor_vol[sim13$time >= 9 & sim13$time <= 16])
+w_day16 <- sim13$tumor_vol[sim13$time == 16]
+c(ct_infusion_fit = 0.369 / 2.93e-4, x1_day9 = x1_day9, x1_day16 = x1_day16, w_peak = w_peak, w_day16 = w_day16)
+stopifnot(
+  2085 > 0.369 / 2.93e-4,
+  x1_day16 < 0.25 * x1_day9,
+  w_day16 < 0.8 * w_peak
+)
+
+sim13 |>
+  select(time, "total (tumor_vol)" = tumor_vol, "proliferating (cycling_cells)" = cycling_cells) |>
+  pivot_longer(-time) |>
+  ggplot(aes(time, value, colour = name)) +
+  annotate("rect", xmin = 9, xmax = 16, ymin = -Inf, ymax = Inf, alpha = 0.1) +
+  geom_line() +
+  labs(
+    x = "Time since inoculation (days)", y = "Tumor weight (g)", colour = NULL,
+    title = "Figure 13 - Drug B 7-day infusion at 2085 ng/mL (shaded)"
+  )
+```
+
+# Changing the number of damage stages
+
+The paper uses three damage stages and notes that more stages make the
+distribution of time to death more bell-shaped, with mean $n / k_1$ (Fig. 2).
+`updateOncologyXenograftSimeoni2004()` rebuilds the chain with any number of
+stages. Rebuilding with three stages must reproduce the shipped model.
+
+```{r update-ncmt}
+mod_3 <- suppressMessages(updateOncologyXenograftSimeoni2004(mod, ncmt = 3))
+mod_5 <- suppressMessages(updateOncologyXenograftSimeoni2004(mod, ncmt = 5))
+time_n <- seq(0, 30, by = 0.25)
+ev_n <- data.frame(
+  id = 1L, time = time_n, evid = 0L,
+  Cc = ifelse(time_n >= 10 & time_n < 12, 5000, 0), tumor_vol0 = 0.055
+)
+sim_ref <- rxode2::rxSolve(mod, ev_n, returnType = "data.frame", rtol = 1e-10, atol = 1e-12)
+sim_3 <- rxode2::rxSolve(mod_3, ev_n, returnType = "data.frame", rtol = 1e-10, atol = 1e-12)
+sim_5 <- rxode2::rxSolve(mod_5, ev_n, returnType = "data.frame", rtol = 1e-10, atol = 1e-12)
+max_rel_diff_3 <- max(abs(sim_3$tumor_vol / sim_ref$tumor_vol - 1))
+max_rel_diff_3
+stopifnot(max_rel_diff_3 < 1e-6)
+
+bind_rows(
+  data.frame(time = time_n, tumor_vol = sim_ref$tumor_vol, stages = "3 (shipped)"),
+  data.frame(time = time_n, tumor_vol = sim_5$tumor_vol, stages = "5")
+) |>
+  ggplot(aes(time, tumor_vol, colour = stages)) +
+  geom_line() +
+  labs(
+    x = "Time since inoculation (days)", y = "Tumor weight (g)", colour = "Damage stages",
+    title = "Damaged cells take longer to die with more stages (mean n / k1)"
+  )
+```
+
+# Assumptions and deviations
+
+- **Experiment labels in Figure 7.** The Methods (p. 1095) and the captions of
+  Table 2 and Figure 7 put the first paclitaxel dose of experiment 1 on Day 8
+  and of experiment 2 on Day 13. The Table 2 parameter sets reproduce the
+  figure's fitted curves only with the opposite assignment, as shown above, so
+  this article doses experiment 1 from Day 13 and experiment 2 from Day 8. The
+  shipped values are the Table 2 experiment 1 column either way.
+- **Paclitaxel peak concentration.** The printed PK ($V_1$ = 0.81 L/kg) gives
+  a peak of 37 ug/mL after 30 mg/kg, whereas the text (p. 1098) quotes maximal
+  concentrations of about 110 ug/mL. The printed $V_1$ is used because it
+  matches the stated clearance of about 0.7 L/h/kg ($V_1 k_{10}$) and
+  reproduces the treated curves of Figure 7; a three-fold smaller $V_1$ at the
+  same $k_{10}$ would triple the AUC and the growth delay.
+- **Initial tumor weight is an input.** Simeoni 2004 estimated $w_0$ with the
+  other parameters; the model takes it from the data as `tumor_vol0`, and this
+  article supplies the published estimates. The name keeps `vol` although the
+  quantity is a weight in g; at the paper's density of 1 mg/mm^3, 1 g equals
+  1000 mm^3.
+- **Residual error.** Simeoni 2004 fitted group means by weighted least
+  squares (uniform, 1/y or 1/y^2 weights chosen per data set) and reports no
+  residual-error model. The shipped `propSd_tumor_vol = 0.2` and
+  `addSd_tumor_vol = 30` are not from the paper; with tumor weight in g, an
+  additive SD of 30 g exceeds every tumor weight in the paper, so simulate
+  with residual error only after replacing it. All simulations here are
+  typical-value predictions without residual error, and the model has no
+  between-animal variability.
+- **Parameter bounds.** The lower and upper bounds in `ini()` are not from the
+  paper.
+- **Other drugs.** Drug A (Table 4) and Drug B (Table 5) values are applied
+  with `ini()` overrides for the secondary-parameter checks; the model file
+  ships only the paclitaxel values. Figure 7 and Figure 13 points were read
+  from the published figures by the maintainers; no observed data are
+  published.
+- **Errata.** No correction notice for Simeoni 2004 was found on the Cancer
+  Research article page as of 2026-11-28.

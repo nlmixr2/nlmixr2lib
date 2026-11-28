@@ -2,6 +2,8 @@
 
 # development version
 
+- `oncology_xenograft_simeoni_2004` (Simeoni 2004 xenograft tumor growth inhibition, [doi:10.1158/0008-5472.CAN-03-2524](https://doi.org/10.1158/0008-5472.CAN-03-2524)) is brought to the current model standards (full reference, units, population, covariate and compartment metadata, a table and page citation on every value) and has a validation article reproducing Figures 7, 11 and 13; the equations and values are unchanged.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.
