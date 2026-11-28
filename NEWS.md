@@ -2,6 +2,8 @@
 
 # development version
 
+- Bring `oncology_sdm_lobo_2002` (Lobo 2002 methotrexate transit-compartment cell kill, [doi:10.1208/ps040442](https://doi.org/10.1208/ps040442)) up to the current model standards and give it its first article. The model file gains the corrected citation (AAPS PharmSci 4(4):E42), the in vitro population and `dosing` metadata, compartment metadata checked against the paper, and a table and page citation on every `ini()` value; equations and values are unchanged. The article reproduces Figure 4 for the Ehrlich ascites (packaged) and sarcoma 180 (`ini()` override) cell lines.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.

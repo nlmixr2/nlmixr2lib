@@ -1,0 +1,339 @@
+---
+title: "Methotrexate cell killing in vitro (Lobo 2002)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Methotrexate cell killing in vitro (Lobo 2002)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("oncology_sdm_lobo_2002"))$reference`
+* Description: `r rxode2::rxode(readModelDb("oncology_sdm_lobo_2002"))$description`
+* Article: <https://doi.org/10.1208/ps040442> (open access in PubMed Central,
+  PMC2751331)
+
+`oncology_sdm_lobo_2002` is a pharmacodynamic building block: it has no
+pharmacokinetics of its own. The drug concentration `Cc` and the starting
+cell number `tumor_vol0` are inputs (the model's `depends` field), so the
+model can be driven by a measured concentration profile, as here, or
+appended to a PK model that supplies `Cc`.
+
+# Population
+
+Lobo and Balthasar exposed two murine cancer cell lines in culture, Ehrlich
+ascites cells and sarcoma 180 cells, to methotrexate (MTX) for 24 hours at
+0.19, 2.0, 14.0 or 140.0 ug/mL, then washed the drug out (Methods, pages
+2-3). Cells (1000 Ehrlich ascites or 500 sarcoma 180 cells per well of a
+96-well plate) were allowed to attach for 48 hours before MTX was added;
+4 wells were used per concentration and viable cells were counted by MTT
+assay for up to 24 days. The transit compartment model was fitted in ADAPT II
+to the mean cell number of the 4 wells, all concentrations of one cell line
+simultaneously. There are no between-well random effects.
+
+The packaged model carries the Ehrlich ascites parameter set (Table 2). The
+sarcoma 180 parameter set (Table 3) is reproduced below by overriding the
+`ini()` values.
+
+The same information is available programmatically via
+`readModelDb("oncology_sdm_lobo_2002")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in
+`inst/modeldb/therapeuticArea/oncology/oncology_sdm_lobo_2002.R`.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lkng` (net growth rate kng, 1/h) | log(0.02) | Table 2 (page 9), transit compartment; Results page 7 |
+| `ltau` (mean transit time tau, h) | log(34.1) | Table 2 (page 9), transit compartment; Results page 7 |
+| `lec50` (EC50, ug/mL) | log(0.1) | Table 2 (page 9), transit compartment; Results page 7 |
+| `kmax` (maximum cell-kill rate Kmax, 1/h) | 0.29 | Table 2 (page 9), transit compartment; Results page 7 |
+| `propSd_tumor_vol`, `addSd_tumor_vol` | 0.3, 50 | Not in the paper (ADAPT II variance model not reported); placeholders |
+| `d/dt(tumor_vol) = kng*tumor_vol - transit4*tumor_vol` | n/a | page 3, dC/dt = kng*C - K4*C |
+| `d/dt(transit1..4)` chain with `drugEffectTumorVol = kmax*Cc/(ec50 + Cc)` | n/a | page 3, dK1/dt = (K - K1)/tau ... dK4/dt = (K3 - K4)/tau; K = Kmax*M/(EC50 + M) |
+| Sarcoma 180 override: kng, tau, Kmax, EC50 | 0.035, 30.0, 0.34, 0.32 | Table 3 (page 9) |
+
+# Digitised Figure 4
+
+Figure 4 of the paper (page 6) shows the observed mean cell numbers and the
+transit compartment model fits for both cell lines. The figure is vector
+graphics, so the published model curves and the observed means were read
+from the drawing commands of the PDF page and converted to hours and cells
+using the axis tick marks; they are not hand-digitised estimates. The file
+holds every vertex of each published model curve and the centre of each
+plotted symbol.
+
+```{r load-data}
+fig4 <- utils::read.csv(file.path("data", "oncology_sdm_lobo_2002_fig4.csv"))
+conc_levels <- c(0, 0.19, 2, 14, 140)
+conc_labels <- c("no MTX", "0.19 ug/mL", "2 ug/mL", "14 ug/mL", "140 ug/mL")
+fig4$conc_f <- factor(fig4$conc, levels = conc_levels, labels = conc_labels)
+pub_curve <- filter(fig4, source == "published model")
+obs <- filter(fig4, source == "observed mean")
+
+# Every published curve of a cell line starts at the same cell number, the
+# value at the moment MTX was added. It is the model's tumor_vol0 input.
+c0 <- pub_curve |>
+  filter(time == 0) |>
+  group_by(cell_line) |>
+  summarise(c0 = unique(cells), .groups = "drop")
+c0
+stopifnot(nrow(c0) == 2)
+```
+
+# Simulation
+
+MTX exposure is a 24-hour step: `Cc` equals the bath concentration from 0 to
+24 hours and is zero after the wash-out. It is supplied as a time-varying
+input column with last-observation-carried-forward interpolation, so the
+step falls exactly at 24 hours. The model has no random effects, so one
+subject per concentration gives the typical (and only) prediction. The
+residual error is not used: the comparison is on the `tumor_vol` state.
+
+```{r simulate}
+mod <- readModelDb("oncology_sdm_lobo_2002")
+
+# One subject per MTX concentration; Cc steps to zero at the 24-h wash-out.
+make_events <- function(c0, tmax) {
+  grid <- sort(unique(c(seq(0, tmax, by = 0.5), 24)))
+  ev <- expand.grid(time = grid, conc = conc_levels)
+  ev$id <- match(ev$conc, conc_levels)
+  ev$evid <- 0
+  ev$Cc <- ifelse(ev$time < 24, ev$conc, 0)
+  ev$tumor_vol0 <- c0
+  ev[order(ev$id, ev$time), c("id", "time", "evid", "conc", "Cc", "tumor_vol0")]
+}
+
+# A model with no omega warns that every subject is identical; that is the
+# intent here, so only that warning is muffled.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+
+solve_typical <- function(model, events) {
+  withCallingHandlers(
+    as.data.frame(rxSolve(model, events,
+      keep = "conc", covsInterpolation = "locf",
+      returnType = "data.frame"
+    )),
+    warning = muffle_no_omega
+  )
+}
+
+mod_sarcoma <- mod |>
+  ini(lkng = log(0.035), ltau = log(30.0), kmax = 0.34, lec50 = log(0.32))
+
+sim <- bind_rows(
+  solve_typical(mod, make_events(c0$c0[c0$cell_line == "Ehrlich ascites"], 420)) |>
+    mutate(cell_line = "Ehrlich ascites"),
+  solve_typical(mod_sarcoma, make_events(c0$c0[c0$cell_line == "Sarcoma 180"], 270)) |>
+    mutate(cell_line = "Sarcoma 180")
+) |>
+  mutate(conc_f = factor(conc, levels = conc_levels, labels = conc_labels))
+```
+
+# Replicate Figure 4
+
+Solid lines are the packaged model; dashed lines are the published fits;
+points are the observed means. Each simulated curve is drawn over the time
+span of the corresponding published curve (the authors stopped counting once
+a well exceeded the upper limit of the standard curve).
+
+```{r figure4, fig.height = 7}
+spans <- pub_curve |>
+  group_by(cell_line, conc) |>
+  summarise(tend = max(time), .groups = "drop")
+sim_plot <- sim |>
+  inner_join(spans, by = c("cell_line", "conc")) |>
+  filter(time <= tend)
+
+ggplot() +
+  geom_line(data = sim_plot, aes(time, tumor_vol, colour = conc_f), linewidth = 0.8) +
+  geom_line(data = pub_curve, aes(time, cells, colour = conc_f), linetype = "dashed") +
+  geom_point(data = obs, aes(time, cells, colour = conc_f), size = 2) +
+  facet_wrap(~cell_line, ncol = 1, scales = "free") +
+  scale_colour_viridis_d(end = 0.9) +
+  labs(
+    x = "Time since start of the 24-h MTX exposure (h)",
+    y = "Viable cells per well",
+    colour = "MTX",
+    caption = "Replicates Lobo 2002 Figure 4.\nSolid: packaged model; dashed: published fit; points: observed means."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# Quantitative comparison with the published fits
+
+Every vertex of each published curve is compared with the packaged model at
+the same time. The simulation is deterministic, so these numbers do not
+depend on a random seed.
+
+```{r compare}
+compare <- pub_curve |>
+  rowwise() |>
+  mutate(sim = {
+    s <- sim[sim$cell_line == cell_line & sim$conc == conc, ]
+    stats::approx(s$time, s$tumor_vol, xout = time)$y
+  }) |>
+  ungroup() |>
+  mutate(pct_diff = 100 * (sim - cells) / cells)
+
+compare_summary <- compare |>
+  group_by(cell_line, conc_f) |>
+  summarise(
+    n_points = n(),
+    median_pct_diff = round(median(pct_diff), 1),
+    p90_abs_pct_diff = round(quantile(abs(pct_diff), 0.9), 1),
+    .groups = "drop"
+  )
+knitr::kable(compare_summary, caption = "Packaged model vs published Figure 4 curves (% difference).")
+
+stopifnot(
+  # Structural: a mis-transcribed rate constant or a wrong exposure window
+  # shifts a whole curve by far more than this.
+  all(abs(compare_summary$median_pct_diff) < 15),
+  # Envelope across the whole curve, including the published spline's own
+  # wiggle (see the untreated arms below).
+  all(compare_summary$p90_abs_pct_diff < 25)
+)
+```
+
+The treated Ehrlich ascites arms sit about 12% below the published curves.
+That is the reporting precision of Table 2, not a transcription error: kng is
+reported as 0.02 (one significant figure) and Kmax as 0.29, and the
+cumulative cell kill is proportional to Kmax times the exposure time while
+the regrowth is exponential in kng. The untreated arms differ by up to about
+11% even though they are pure exponentials, because the published lines are
+smoothed through few points rather than drawn from a fine grid.
+
+```{r rounding}
+# kng = 0.0204 h-1 still rounds to the published 0.02 h-1.
+sim_kng <- solve_typical(
+  mod |> ini(lkng = log(0.0204)),
+  make_events(c0$c0[c0$cell_line == "Ehrlich ascites"], 420)
+)
+compare_kng <- pub_curve |>
+  filter(cell_line == "Ehrlich ascites") |>
+  rowwise() |>
+  mutate(sim = {
+    s <- sim_kng[sim_kng$conc == conc, ]
+    stats::approx(s$time, s$tumor_vol, xout = time)$y
+  }) |>
+  ungroup() |>
+  mutate(pct_diff = 100 * (sim - cells) / cells) |>
+  group_by(conc_f) |>
+  summarise(median_pct_diff = round(median(pct_diff), 1), .groups = "drop")
+knitr::kable(compare_kng, caption = "Ehrlich ascites with kng = 0.0204 1/h (rounds to the published 0.02).")
+stopifnot(all(abs(compare_kng$median_pct_diff) < 6))
+```
+
+# Peak and nadir timing
+
+```{r timing}
+features <- function(time, cells, tend) {
+  keep <- time <= tend
+  time <- time[keep]
+  cells <- cells[keep]
+  early <- time <= 150
+  late <- time >= 24
+  data.frame(
+    t_peak = time[early][which.max(cells[early])],
+    peak = max(cells[early]),
+    t_nadir = time[late][which.min(cells[late])],
+    nadir = min(cells[late])
+  )
+}
+treated <- spans |> filter(conc >= 2)
+timing <- bind_rows(lapply(seq_len(nrow(treated)), function(i) {
+  cl <- treated$cell_line[i]
+  cc <- treated$conc[i]
+  p <- pub_curve[pub_curve$cell_line == cl & pub_curve$conc == cc, ]
+  s <- sim[sim$cell_line == cl & sim$conc == cc, ]
+  fp <- features(p$time, p$cells, treated$tend[i])
+  fs <- features(s$time, s$tumor_vol, treated$tend[i])
+  data.frame(
+    cell_line = cl, conc = cc,
+    t_peak_pub = round(fp$t_peak, 1), t_peak_sim = fs$t_peak,
+    peak_pct_diff = round(100 * (fs$peak - fp$peak) / fp$peak, 1),
+    t_nadir_pub = round(fp$t_nadir, 1), t_nadir_sim = fs$t_nadir,
+    nadir_pct_diff = round(100 * (fs$nadir - fp$nadir) / fp$nadir, 1)
+  )
+}))
+knitr::kable(timing, caption = "Peak (first 150 h) and nadir (after 24 h) of the treated arms.")
+
+stopifnot(
+  all(abs(timing$t_peak_sim - timing$t_peak_pub) < 10),
+  all(abs(timing$peak_pct_diff) < 10),
+  all(abs(timing$t_nadir_sim - timing$t_nadir_pub) < 12),
+  # Discussion (page 8): the transit model predicted nadir cell counts
+  # 100 to 200 hours after MTX removal (removal at 24 h).
+  all(timing$t_nadir_sim - 24 >= 100 & timing$t_nadir_sim - 24 <= 200)
+)
+```
+
+# Statements in the text
+
+```{r text-claims}
+# Results, page 7: doubling times 34.6 h (Ehrlich ascites) and 19.8 h
+# (sarcoma 180), estimated from kng.
+doubling <- c(
+  ehrlich = log(2) / exp(rxode2::rxode(mod)$theta[["lkng"]]),
+  sarcoma = log(2) / 0.035
+)
+round(doubling, 2)
+
+# Results and Discussion: immediately after the 24-h exposure, treated and
+# untreated cell numbers did not differ.
+ratio_24 <- sim |>
+  filter(time == 24) |>
+  group_by(cell_line) |>
+  mutate(ratio_to_untreated = tumor_vol / tumor_vol[conc == 0]) |>
+  ungroup() |>
+  filter(conc > 0) |>
+  select(cell_line, conc, ratio_to_untreated)
+knitr::kable(ratio_24, digits = 3, caption = "Cell number at 24 h relative to the untreated arm.")
+
+stopifnot(
+  abs(doubling[["ehrlich"]] - 34.6) < 0.1,
+  abs(doubling[["sarcoma"]] - 19.8) < 0.1,
+  all(ratio_24$ratio_to_untreated > 0.97)
+)
+```
+
+# Assumptions and deviations
+
+* The packaged model is the Ehrlich ascites fit (Table 2). Sarcoma 180
+  (Table 3) is not a separate model file; it is reproduced here by
+  overriding the four structural parameters.
+* The starting cell numbers (`tumor_vol0` = 2789 Ehrlich ascites cells and
+  1214 sarcoma 180 cells) are the common starting value of the published
+  curves in Figure 4. The paper reports the seeding density (1000 or 500
+  cells) 48 hours before MTX, not the cell number at the start of exposure.
+* The residual-error parameters `propSd_tumor_vol` and `addSd_tumor_vol` are
+  not from the paper, which fitted mean cell numbers in ADAPT II without
+  reporting the variance model. They do not affect any result on this page.
+* The observed means are those plotted in Figure 4 (every 48 hours). The
+  Methods list a denser counting schedule (days 1, 3, 5, ...); only the
+  plotted points are reproduced here.
+* NCA does not apply: the model has no drug amounts or concentrations of its
+  own, and its output is a cell number.
+
+# Errata
+
+No published erratum was found for this article. The reference previously
+carried by the model file gave the pages as 212-222; PubMed and the article
+itself give AAPS PharmSci 2002;4(4):E42 (article 42).
