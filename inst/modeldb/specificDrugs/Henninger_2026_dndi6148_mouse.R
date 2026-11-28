@@ -241,7 +241,10 @@ Henninger_2026_dndi6148_mouse <- function() {
     # concentration (Results 3.2.3, "directly linked to the free skin target
     # site concentration").
     fCskin <- Cskin * fu
-    kkill  <- emax * fCskin^hill / (ec50^hill + fCskin^hill)
+    # Past washout, integration noise can take fCskin slightly negative,
+    # where the non-integer Hill power is NaN.
+    fCskin_pos <- max(fCskin, 0)
+    kkill  <- emax * fCskin_pos^hill / (ec50^hill + fCskin_pos^hill)
 
     d/dt(parasites) <- -kkill * parasites
     parasites(0)    <-  rbase_parasites

@@ -321,8 +321,11 @@ Chen_2016_deoxypodophyllotoxin_dog_pbpk <- function() {
     cu_liver <- fu * (c_liver / kb_liver) * 1000 / mw
     cl_m2 <- vmax1_m2 * cu_liver / (km1_m2 + cu_liver) +
       vmax2_m2 * cu_liver / (km2_m2 + cu_liver)
-    cl_m7 <- (vmax_m7 / 1000) * cu_liver^hill_m7 /
-      (km_m7^hill_m7 + cu_liver^hill_m7)
+    # Past washout, integration noise can take cu_liver slightly negative,
+    # where the non-integer Hill power is NaN.
+    cu_liver_pos <- max(cu_liver, 0)
+    cl_m7 <- (vmax_m7 / 1000) * cu_liver_pos^hill_m7 /
+      (km_m7^hill_m7 + cu_liver_pos^hill_m7)
     rate_metabolism <- pbsf * (cl_m2 + cl_m7) * mw / 1000
 
     # ----------------------------------------------------------------

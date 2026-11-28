@@ -2,6 +2,8 @@
 
 # development version
 
+- `Chen_2016_deoxypodophyllotoxin_dog_pbpk`, `_monkey_pbpk`, `_mouse_pbpk`, `_rat_pbpk` and `_human_pbpk`, `Ogungbenro_2019_simvastatin`, `Gulave_2025_morphine_pbpk`, `Henninger_2026_dndi6148_mouse` and `_human`, and `Thorsted_2019_endotoxin` floor the base of their non-integer Hill powers at zero (the unbound liver concentration of the CYP-mediated clearance, the HMSV amount, the unbound plasma concentration of the Kp,uu,BBB function, the free skin concentration of the kill rate, and the endotoxin concentration and its moderator EC50). After washout, integration noise could take these slightly negative, where the power is NaN, and rxode2 builds that stop at a non-finite state then failed the subject. Where the old forms were finite, the simulated values are unchanged. The Chen 2016, Gulave 2025, Henninger 2026 and Ogungbenro 2019 articles now assert that their simulations have no missing concentrations instead of filtering them out before NCA.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.

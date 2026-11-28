@@ -567,8 +567,8 @@ each unit system gets its own PKNCA run.
 
 ```{r pknca-helper}
 dpt_nca <- function(sim, concu, timeu, doseu, tmax) {
+  stopifnot(!anyNA(sim$Cc))
   conc_df <- sim |>
-    dplyr::filter(!is.na(Cc)) |>
     # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
     dplyr::group_by(id, treatment) |>
     dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>

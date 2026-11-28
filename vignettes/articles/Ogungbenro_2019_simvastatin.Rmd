@@ -357,13 +357,13 @@ and dose group from the individual predictions.
 
 ```{r pknca}
 sim_nca <- sim |>
-  filter(!is.na(Cc)) |>
   mutate(conc = case_when(
     analyte == "Cc" ~ Cc, analyte == "Cc_acid" ~ Cc_acid,
     analyte == "Cc_hmsv" ~ Cc_hmsv, analyte == "Cc_hmsva" ~ Cc_hmsva,
     analyte == "Cc_dhsv" ~ Cc_dhsv
   )) |>
   select(id, time, conc, treatment, analyte, genotype)
+stopifnot(!anyNA(sim_nca$conc))
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, conc ~ time | treatment + analyte + id)
 dose_df <- events |>

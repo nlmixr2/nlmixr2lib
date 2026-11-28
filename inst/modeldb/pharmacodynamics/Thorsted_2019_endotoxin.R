@@ -250,7 +250,11 @@ Thorsted_2019_endotoxin <- function() {
     cp_etx <- central / vc
     ec50_tnf <- moderator3
     tol <- emax_tol * cp_etx / (ec50_tol + cp_etx)
-    eff_tnf <- emax_tnf * cp_etx^hill_tnf / (ec50_tnf^hill_tnf + cp_etx^hill_tnf)
+    # Past washout, integration noise can take cp_etx slightly negative,
+    # where the non-integer Hill power is NaN; ec50_tnf gets the same guard.
+    cp_etx_pos <- max(cp_etx, 0)
+    ec50_tnf_pos <- max(ec50_tnf, 0)
+    eff_tnf <- emax_tnf * cp_etx_pos^hill_tnf / (ec50_tnf_pos^hill_tnf + cp_etx_pos^hill_tnf)
     eff_il6 <- slope_tnf * (tnf / rbase_tnf - 1) + slope_etx * cp_etx
 
     d/dt(central) <- -vmax * (central / vc) / (km + central / vc)

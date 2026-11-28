@@ -199,7 +199,10 @@ Gulave_2025_morphine_pbpk <- function() {
     # Kp,uu at the BCSFB is not reported for morphine and is set equal to
     # Kp,uu,BBB; the CSF chain is downstream of brain ECF.
     Cu_plasma <- fu_plasma * (central / vc)
-    kpuu_ecf <- kpuu_max / (1 + (Cu_plasma / c50_kpuu)^hill_kpuu)
+    # Past washout, integration noise can take Cu_plasma slightly negative,
+    # where the non-integer Hill power is NaN.
+    cu_ratio_pos <- max(Cu_plasma / c50_kpuu, 0)
+    kpuu_ecf <- kpuu_max / (1 + cu_ratio_pos^hill_kpuu)
     kpuu_lv <- kpuu_ecf
     kpuu_cm <- kpuu_ecf
 

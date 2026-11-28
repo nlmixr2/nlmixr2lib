@@ -306,8 +306,8 @@ stopifnot(
 ```{r pknca-mouse}
 # Convert ug/L to ug/mL so the AUC matches the published h*ug/mL units. The
 # column stays named Cc per nlmixr2lib convention.
+stopifnot(!anyNA(sim_mouse$Cc))
 nca_mouse <- sim_mouse |>
-  filter(!is.na(Cc)) |>
   transmute(id, time, Cc = Cc / 1000, treatment)
 
 nca_mouse <- bind_rows(
@@ -512,8 +512,8 @@ stopifnot(
 # PKNCA validation - human plasma
 
 ```{r pknca-human}
+stopifnot(!anyNA(sim_human$Cc))
 nca_human <- sim_human |>
-  filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
 
 nca_human <- bind_rows(

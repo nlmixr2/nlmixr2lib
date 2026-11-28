@@ -278,8 +278,8 @@ sim3 <- rxSolve(mod_typ, ev3, returnType = "data.frame", keep = "INH_PGP_RATIO")
 
 conc3 <- sim3 |>
   select(id, treatment, time, ecf = Cbrain_ecf, plasma_u = Ccu) |>
-  pivot_longer(c(ecf, plasma_u), names_to = "matrix", values_to = "conc") |>
-  filter(!is.na(conc))
+  pivot_longer(c(ecf, plasma_u), names_to = "matrix", values_to = "conc")
+stopifnot(!anyNA(conc3$conc))
 dose3 <- arms |>
   select(id, treatment, dose_mg) |>
   expand_grid(matrix = c("ecf", "plasma_u")) |>
@@ -355,9 +355,10 @@ pop_pars <- expand_grid(arm = fig2_arms$arm, sub = etas$sub) |>
   left_join(etas, by = "sub") |>
   left_join(select(fig2_arms, arm, INH_PGP_RATIO), by = "arm") |>
   mutate(id = row_number())
-sim2 <- suppressWarnings(rxSolve(mod_typ, regimen_events(10, ids = pop_pars$id),
+sim2 <- rxSolve(mod_typ, regimen_events(10, ids = pop_pars$id),
   params = select(pop_pars, id, etalcl, etalvc, INH_PGP_RATIO),
-  returnType = "data.frame", cores = 1L))
+  returnType = "data.frame", cores = 1L)
+stopifnot(!anyNA(sim2$Cbrain_ecf))
 auc2 <- sim2 |>
   group_by(id) |>
   summarise(auc = trap_auc(time, Cbrain_ecf), .groups = "drop") |>

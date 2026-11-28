@@ -260,8 +260,11 @@ Ogungbenro_2019_simvastatin <- function() {
     d/dt(central) <- frel * ka_slow * depot + (1 - frel) * ka_fast * depot2 - kel * central
     Cc <- central / vc
     d/dt(central_acid) <- kmet_acid * Cc - kel_acid * central_acid
+    # Past washout, integration noise can take central_hmsv slightly
+    # negative, where the non-integer Hill power is NaN.
+    central_hmsv_pos <- max(central_hmsv, 0)
     d/dt(central_hmsv) <- kmet_hmsv * Cc -
-      vmax_hmsv * central_hmsv^hill_hmsv / (km_hmsv^hill_hmsv + central_hmsv^hill_hmsv)
+      vmax_hmsv * central_hmsv_pos^hill_hmsv / (km_hmsv^hill_hmsv + central_hmsv_pos^hill_hmsv)
     d/dt(central_hmsva) <- kmet_hmsva * central_acid + kmet_hmsva_hmsv * central_hmsv -
       kel_hmsva * central_hmsva
     d/dt(central_dhsv) <- kmet_dhsv * Cc - kel_dhsv * central_dhsv
