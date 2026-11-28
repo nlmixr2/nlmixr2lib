@@ -70,19 +70,19 @@ n_per_arm <- 50L
 
 make_cohort <- function(n, amt_mg, age, wt, cohort, id_offset = 0L) {
   ids <- id_offset + seq_len(n)
-  # Dose row targets the PK ODE state 'central' (linCmt-managed).
-  # Observation rows target the PK observable 'Cc'; because this
-  # multi-output model has 14 declared observables spanning ODE
-  # states plus algebraic outputs (Cc, nb0, nb1, nb2), using an
-  # observable name on obs rows is what rxode2's DV mapping accepts
-  # here. Every declared observable (Cc, nbRT, sacInacc, ..., nb2)
-  # is returned regardless of which cmt an individual row points at.
+  # Dose and observation rows target the PK state 'central'
+  # (linCmt-managed). This multi-output model has 14 declared
+  # observables spanning ODE states plus algebraic outputs (Cc, nb0,
+  # nb1, nb2), so observation rows also carry `dvid = 1L` (the Cc
+  # endpoint) to select an endpoint. Every declared observable (Cc,
+  # nbRT, sacInacc, ..., nb2) is returned regardless of which endpoint
+  # an individual row selects.
   obs_times <- c(0, 2, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 360, 480)
   dosing <- tibble(id = ids, time = 0, amt = amt_mg, evid = 1L,
                    cmt = "central", dur = 15,
                    AGE = age, WT = wt, cohort = cohort)
   obs <- tidyr::crossing(id = ids, time = obs_times) |>
-    dplyr::mutate(amt = 0, evid = 0L, cmt = "Cc", dur = 0,
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L, dur = 0,
                   AGE = age, WT = wt, cohort = cohort)
   dplyr::bind_rows(dosing, obs) |>
     dplyr::arrange(id, time, dplyr::desc(evid))

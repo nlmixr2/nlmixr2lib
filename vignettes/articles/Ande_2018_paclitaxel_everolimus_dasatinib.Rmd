@@ -102,11 +102,24 @@ obs_dense  <- seq(0, 96, by = 0.5)
 obs_sparse <- seq(96, 504, by = 6)
 obs_grid   <- sort(unique(c(obs_dense, obs_sparse)))
 
-events_tx <-
-  rxode2::et(amt = 675.42, rate = 225.14, cmt = "central", time = 0) |>
-  rxode2::et(obs_grid, cmt = "Cc") |>
-  rxode2::et(obs_grid, cmt = "caspase3Act") |>
-  rxode2::et(obs_grid, cmt = "tumorCells")
+# One observation row per output and time. Each row sits on the ODE state
+# its output is computed from, and `dvid` selects the endpoint, which a
+# three-endpoint model requires: 1 = Cc (central), 2 = caspase3Act (transit5),
+# 3 = tumorCells (tumor).
+obs_rows <- function(times) {
+  data.frame(
+    time = rep(times, times = 3L), amt = NA_real_, rate = NA_real_, evid = 0L,
+    cmt  = rep(c("central", "transit5", "tumor"), each = length(times)),
+    dvid = rep(1:3, each = length(times))
+  )
+}
+
+events_tx <- dplyr::bind_rows(
+  data.frame(time = 0, amt = 675.42, rate = 225.14, evid = 1L,
+             cmt = "central", dvid = NA_integer_),
+  obs_rows(obs_grid)
+) |>
+  dplyr::arrange(time, dplyr::desc(evid), dvid)
 
 sim_tx <- as.data.frame(rxode2::rxSolve(mod_typical, events_tx)) |>
   dplyr::mutate(arm = "Treatment (PAC + EVE + DAS)")
@@ -117,10 +130,8 @@ delta-caspase stays zero, so the cell-count trajectory follows the
 unperturbed Simeoni growth law.
 
 ```{r simulate-control}
-events_ctrl <-
-  rxode2::et(obs_grid, cmt = "Cc") |>
-  rxode2::et(obs_grid, cmt = "caspase3Act") |>
-  rxode2::et(obs_grid, cmt = "tumorCells")
+events_ctrl <- obs_rows(obs_grid) |>
+  dplyr::arrange(time, dvid)
 
 sim_ctrl <- as.data.frame(rxode2::rxSolve(mod_typical, events_ctrl)) |>
   dplyr::mutate(arm = "Control (no drug)")
@@ -224,8 +235,8 @@ PK / control comparison would be encoded).
 
 ```{r pknca}
 # rxSolve emits one row per (time, output) for a multi-output model;
-# filter to a single output's CMT virtual-slot so PKNCAconc() sees
-# unique (id, time) rows.
+# filter to a single output's CMT virtual slot (9 = the Cc endpoint) so
+# PKNCAconc() sees unique (id, time) rows.
 pk_nca_data <- sim_tx |>
   dplyr::filter(time >= 0, time <= 96, CMT == 9L) |>
   dplyr::transmute(id = 1L, time = time, conc = Cc, arm = arm)

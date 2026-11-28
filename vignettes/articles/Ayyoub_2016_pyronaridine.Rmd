@@ -192,7 +192,7 @@ build_events <- function(subjects, dose_times, obs_times) {
       dplyr::select(subjects, id, cohort, WT, AGE, FORM_GRANULE),
       by = "id"
     ) |>
-    dplyr::mutate(evid = 0L, amt = 0, cmt = "Cc")
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "central")
   dplyr::bind_rows(dose_rows, obs_rows) |>
     dplyr::arrange(id, time, dplyr::desc(evid))
 }

@@ -114,7 +114,7 @@ build_events <- function(subject_covs, tau = 12, ndoses_oral = 6L,
                             seq(0, obs_end, by = 1))))
   obs_rows <- subject_covs |>
     tidyr::crossing(time = obs_grid) |>
-    dplyr::transmute(id, time, amt = 0, cmt = "Cc", evid = 0L)
+    dplyr::transmute(id, time, amt = 0, cmt = "central", dvid = 1L, evid = 0L)
   dplyr::bind_rows(iv_dose, oral_dose, obs_rows) |>
     dplyr::left_join(subject_covs, by = "id") |>
     dplyr::arrange(id, time, dplyr::desc(evid))

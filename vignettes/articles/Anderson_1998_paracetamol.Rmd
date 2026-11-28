@@ -96,14 +96,18 @@ dose_rows <- per_subject |>
   transmute(id, time = 0, amt = dose_mg, cmt = "depot",
             evid = 1L, ii = NA_real_, addl = NA_integer_, WT)
 
+# Observation rows sit on the ODE state each output is computed from; with two
+# declared endpoints, `dvid` selects the endpoint (1 = Cc on `central`,
+# 2 = Ccsf on `brain_csf`). The output CMT column carries the endpoint slot:
+# 4 for Cc, 5 for Ccsf.
 obs_cc <- per_subject |>
   tidyr::crossing(time = obs_grid) |>
-  transmute(id, time, amt = NA_real_, cmt = "Cc",
+  transmute(id, time, amt = NA_real_, cmt = "central", dvid = 1L,
             evid = 0L, ii = NA_real_, addl = NA_integer_, WT)
 
 obs_csf <- per_subject |>
   tidyr::crossing(time = obs_grid) |>
-  transmute(id, time, amt = NA_real_, cmt = "Ccsf",
+  transmute(id, time, amt = NA_real_, cmt = "brain_csf", dvid = 2L,
             evid = 0L, ii = NA_real_, addl = NA_integer_, WT)
 
 events <- bind_rows(dose_rows, obs_cc, obs_csf) |>

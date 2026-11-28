@@ -142,9 +142,9 @@ make_arm <- function(arm, rosuvastatin, ezetimibe, id_offset) {
     }
   )
   obs <- dplyr::bind_rows(
-    tidyr::expand_grid(id = ids, time = pk_times)  |> dplyr::mutate(cmt = "Cc_rosuvastatin"),
-    tidyr::expand_grid(id = ids, time = pk_times)  |> dplyr::mutate(cmt = "Cc_ezetimibe"),
-    tidyr::expand_grid(id = ids, time = ldl_times) |> dplyr::mutate(cmt = "ldl")
+    tidyr::expand_grid(id = ids, time = pk_times)  |> dplyr::mutate(cmt = "central_rosuvastatin", dvid = 1L),
+    tidyr::expand_grid(id = ids, time = pk_times)  |> dplyr::mutate(cmt = "central_ezetimibe",    dvid = 2L),
+    tidyr::expand_grid(id = ids, time = ldl_times) |> dplyr::mutate(cmt = "ldl",                  dvid = 3L)
   ) |>
     dplyr::mutate(amt = NA_real_, evid = 0L)
   dplyr::bind_rows(doses, obs) |>
@@ -166,13 +166,13 @@ stopifnot(
 )
 ```
 
-The observation rows above set `cmt` to an **endpoint** name (`Cc_rosuvastatin`,
-`Cc_ezetimibe`, `ldl`) rather than to an ODE state. That is required here: with
-three declared endpoints rxode2 rejects `cmt = "<ODE state>"` and rejects
-`dvid`-only rows, and asks the observation to name which endpoint it belongs to.
-Because each of these names is a declared endpoint (it appears on the left of a
-`~` residual line), rxode2 already owns a compartment slot for it and nothing is
-injected or renumbered. The guard chunk after the simulation proves that.
+The observation rows above set `cmt` to the ODE state each endpoint is computed
+from (`central_rosuvastatin`, `central_ezetimibe`, `ldl`) and `dvid` to the
+endpoint's position in the model (1 = `Cc_rosuvastatin`, 2 = `Cc_ezetimibe`,
+3 = `ldl`). With three declared endpoints rxode2 rejects an observation on an
+ODE state that carries no `dvid`, because the row must say which endpoint it
+belongs to. The guard chunk after the simulation shows that the ODE states keep
+their compartment slots.
 
 # Simulation
 
@@ -198,8 +198,7 @@ stopifnot(!anyNA(sim$endpoint), setequal(unique(sim$endpoint), ui$predDf$var))
 ```
 
 ```{r slot-guard}
-# Proof that naming endpoints on the observation rows did NOT renumber the ODE
-# compartment slots. `ui$predDf` shows the two purely-algebraic observables
+# Proof that the ODE compartment slots are not renumbered. `ui$predDf` shows the two purely-algebraic observables
 # taking slots 9 and 10 -- ABOVE all 8 declared states -- while `ldl`, which is
 # itself an ODE state, keeps its own slot 8. Nothing was inserted among the
 # states, so no state reference shifted.
@@ -282,11 +281,21 @@ the protocol puts the meals, then that bile release raises the 5-6 h
 concentrations.
 
 ```{r ehc-gate-timing}
+# Ezetimibe-only typical-value design: observations on the ODE state
+# `central_ezetimibe` with `dvid = 2L` (the Cc_ezetimibe endpoint).
+# rxode2::et() drops a `dvid` argument, so it is set on the data frame.
+eze_events <- function(obs_times) {
+  ev <- rxode2::et(amt = 10, cmt = "depot_ezetimibe", time = dose_times) |>
+    rxode2::et(obs_times, cmt = "central_ezetimibe") |>
+    as.data.frame()
+  ev$dvid <- ifelse(ev$evid == 0L, 2L, NA_integer_)
+  ev
+}
+
 eze_grid <- seq(144, 169, by = 0.05)
 eze_typ <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
-  rxode2::et(amt = 10, cmt = "depot_ezetimibe", time = dose_times) |>
-    rxode2::et(eze_grid, cmt = "Cc_ezetimibe"),
+  eze_events(eze_grid),
   useLinCmt = FALSE, addDosing = FALSE, omega = NA, returnType = "data.frame"
 ) |>
   dplyr::filter(!is.na(Cc_ezetimibe)) |>
@@ -306,8 +315,7 @@ range(eze_typ$tad[eze_typ$gbe == 1])
 ```{r ehc-lift}
 eze_no_ehc <- rxode2::rxSolve(
   rxode2::zeroRe(rxode2::ini(rxode2::rxode(mod), lkehc_ezetimibe = log(1e-8))),
-  rxode2::et(amt = 10, cmt = "depot_ezetimibe", time = dose_times) |>
-    rxode2::et(eze_grid, cmt = "Cc_ezetimibe"),
+  eze_events(eze_grid),
   useLinCmt = FALSE, addDosing = FALSE, omega = NA, returnType = "data.frame"
 ) |>
   dplyr::filter(!is.na(Cc_ezetimibe)) |>
@@ -569,8 +577,7 @@ are deterministic rather than a cohort draw.
 auc_traps <- function(m, lo, hi) {
   d <- rxode2::rxSolve(
     rxode2::zeroRe(m),
-    rxode2::et(amt = 10, cmt = "depot_ezetimibe", time = dose_times) |>
-      rxode2::et(seq(144, 216, by = 0.05), cmt = "Cc_ezetimibe"),
+    eze_events(seq(144, 216, by = 0.05)),
     useLinCmt = FALSE, addDosing = FALSE, omega = NA, returnType = "data.frame"
   ) |>
     dplyr::filter(!is.na(Cc_ezetimibe), time >= lo, time <= hi)

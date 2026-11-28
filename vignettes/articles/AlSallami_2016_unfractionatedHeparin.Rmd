@@ -168,35 +168,38 @@ obs_times <- sort(unique(c(
   seq(0.75, 2.50, by = 0.25)
 )))
 
-# Two observation rows per time point: one for Cc and one for aPTT. The
-# cmt column names the algebraic observable so rxode2 emits both endpoints
-# as columns in the simulation output regardless.
+# Two observation rows per time point: one for Cc and one for aPTT. Both
+# observables are computed from the ODE state `central`, so both rows sit on
+# it and `dvid` selects the endpoint (1 = Cc, 2 = aPTT); rxode2 emits both
+# endpoints as columns in the simulation output regardless.
 obs_cc <- cohort |>
   tidyr::crossing(time = obs_times) |>
   mutate(
     amt  = 0,
     evid = 0L,
-    cmt  = "Cc",
+    cmt  = "central",
+    dvid = 1L,
     rate = 0,
     treatment = "single_bolus_91IUkg"
   ) |>
-  select(id, time, amt, evid, cmt, rate, WT, FFM, treatment)
+  select(id, time, amt, evid, cmt, dvid, rate, WT, FFM, treatment)
 
 obs_aptt <- cohort |>
   tidyr::crossing(time = obs_times) |>
   mutate(
     amt  = 0,
     evid = 0L,
-    cmt  = "aPTT",
+    cmt  = "central",
+    dvid = 2L,
     rate = 0,
     treatment = "single_bolus_91IUkg"
   ) |>
-  select(id, time, amt, evid, cmt, rate, WT, FFM, treatment)
+  select(id, time, amt, evid, cmt, dvid, rate, WT, FFM, treatment)
 
 events <- bind_rows(doses, obs_cc, obs_aptt) |>
-  arrange(id, time, desc(evid), cmt)
+  arrange(id, time, desc(evid), dvid)
 
-stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt", "dvid")])))
 ```
 
 # Simulation

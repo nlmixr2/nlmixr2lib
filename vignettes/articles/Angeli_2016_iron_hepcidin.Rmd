@@ -127,16 +127,18 @@ mod          <- mod_fn()
 mod_typical  <- rxode2::zeroRe(mod)
 
 # Build an observation-only event table (endogenous model, no doses). For
-# multi-output models rxode2 requires cmt to be set on each observation row;
-# the value just has to name a defined compartment because all outputs are
-# returned in separate columns regardless.
+# multi-output models rxode2 requires each observation row to select an
+# endpoint: the rows sit on the ODE state `iron` with `dvid = 1L` (the Iron
+# endpoint, Iron <- iron). All outputs are returned in separate columns
+# regardless.
 make_events <- function(cov_row, times = seq(0, 29, by = 0.25)) {
   ev <- data.frame(
     id   = cov_row$id,
     time = times,
     amt  = 0,
     evid = 0L,
-    cmt  = "Iron"
+    cmt  = "iron",
+    dvid = 1L
   )
   for (cov in c("CONMED_BIRTHCONTROL","BMI","HGB","SCORE_HIGHAM","FERRITIN_BL","HT","DLOSS")) {
     ev[[cov]] <- cov_row[[cov]]
@@ -323,7 +325,8 @@ times_vpc <- seq(0, 29, by = 0.5)
 ev_cohort <- expand.grid(id = seq_len(n_sub), time = times_vpc)
 ev_cohort$amt  <- 0
 ev_cohort$evid <- 0L
-ev_cohort$cmt  <- "Iron"
+ev_cohort$cmt  <- "iron"
+ev_cohort$dvid <- 1L
 for (cov in c("CONMED_BIRTHCONTROL","BMI","HGB","SCORE_HIGHAM","FERRITIN_BL","HT","DLOSS")) {
   ev_cohort[[cov]] <- typical[[cov]]
 }

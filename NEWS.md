@@ -2,6 +2,8 @@
 
 # development version
 
+- Event tables in 29 articles whose names start with A now put observation rows on the ODE state an output is computed from (`cmt = "central"` for `Cc <- central / vc`), not on the output's name (`Cc`, `Ccsf`, `aPTT`, `Iron`, ...) or a numeric endpoint slot. Where the model declares two or more endpoints, the rows carry a `dvid` that selects the endpoint they used before. The rendered tables and figures are unchanged. No model file changed.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.
