@@ -395,14 +395,16 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
 
     # =========================================================================
     # 10. Sigmoid Emax inhibition of virion production (Wang 2018 Eq 10).
-    # Emax is fixed at 1 (maximum inhibition = 100 percent). The minimum
-    # of effect is 0 to avoid negative-base power issues; the effect
-    # compartment never goes negative for non-negative dosing histories.
+    # Emax is fixed at 1 (maximum inhibition = 100 percent). The effect
+    # concentrations are floored at 0: past washout, integration noise can
+    # take them slightly negative, where the non-integer Hill power is NaN.
     # =========================================================================
-    e_dcv <- (effect^gamma_dcv) /
-             ((effect^gamma_dcv) + (ic50_dcv^gamma_dcv))
-    e_asv <- (effect_asv^gamma_asv) /
-             ((effect_asv^gamma_asv) + (ic50_asv^gamma_asv))
+    effect_pos     <- max(effect, 0)
+    effect_asv_pos <- max(effect_asv, 0)
+    e_dcv <- (effect_pos^gamma_dcv) /
+             ((effect_pos^gamma_dcv) + (ic50_dcv^gamma_dcv))
+    e_asv <- (effect_asv_pos^gamma_asv) /
+             ((effect_asv_pos^gamma_asv) + (ic50_asv^gamma_asv))
 
     # =========================================================================
     # 11. Combination efficacy (Wang 2018 Eq 13, Bliss-additive form):

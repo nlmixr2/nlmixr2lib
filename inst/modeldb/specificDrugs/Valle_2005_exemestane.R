@@ -158,7 +158,10 @@ Valle_2005_exemestane <- function() {
 
     # E1S indirect-response equation. E1S starts at its endogenous steady-state
     # baseline rbase = ks/kout and returns there as exemestane is cleared.
-    inh         <- Cc_pgml^hill / (ic50^hill + Cc_pgml^hill)
+    # max(Cc_pgml, 0): past washout, integration noise can take the
+    # concentration slightly negative, where the non-integer Hill power is NaN.
+    cc_pgml_pos <- max(Cc_pgml, 0)
+    inh         <- cc_pgml_pos^hill / (ic50^hill + cc_pgml_pos^hill)
     d/dt(e1s)   <- kin * (1 - inh) - kout * e1s
     e1s(0)      <- rbase
 

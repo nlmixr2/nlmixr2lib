@@ -307,8 +307,11 @@ Jeong_2024_levocetirizine <- function() {
     ic50_flare <- exp(lic50_flare)
     hill_flare <- exp(lhill_flare)
 
-    inh_wheal <- imax_wheal * Cc^hill_wheal / (ic50_wheal^hill_wheal + Cc^hill_wheal)
-    inh_flare <- imax_flare * Cc^hill_flare / (ic50_flare^hill_flare + Cc^hill_flare)
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer Hill powers are NaN.
+    cc_pos <- max(Cc, 0)
+    inh_wheal <- imax_wheal * cc_pos^hill_wheal / (ic50_wheal^hill_wheal + cc_pos^hill_wheal)
+    inh_flare <- imax_flare * cc_pos^hill_flare / (ic50_flare^hill_flare + cc_pos^hill_flare)
 
     d/dt(wheal) <- kin_wheal * (1 - inh_wheal) - kout_wheal * wheal
     d/dt(flare) <- kin_flare * (1 - inh_flare) - kout_flare * flare

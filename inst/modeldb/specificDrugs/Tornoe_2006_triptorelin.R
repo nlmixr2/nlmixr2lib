@@ -241,9 +241,15 @@ Tornoe_2006_triptorelin <- function() {
     # convert to ng/mL (the paper's reporting unit for triptorelin and
     # the unit of EC50, Te_base, base_trip).
     cp_trip <- central / vc * 1000                # triptorelin Cp (ng/mL)
-    h1      <- emax * cp_trip^gamma / (ec50^gamma + cp_trip^gamma)
-    h3      <- lmax * lh^kappa / (l50^kappa + lh^kappa)
-    h4      <- (testosterone / tbasei)^lambda
+    # The bases of the non-integer powers below are floored at 0: past
+    # washout, integration noise can take a decayed state slightly
+    # negative, where the power is NaN. All three exponents are positive.
+    cp_trip_pos <- max(cp_trip, 0)
+    lh_pos      <- max(lh, 0)
+    te_rel_pos  <- max(testosterone / tbasei, 0)
+    h1      <- emax * cp_trip_pos^gamma / (ec50^gamma + cp_trip_pos^gamma)
+    h3      <- lmax * lh_pos^kappa / (l50^kappa + lh_pos^kappa)
+    h4      <- te_rel_pos^lambda
     h5_f    <- 1 / feedback
     h6_f    <- 1 / feedback
 

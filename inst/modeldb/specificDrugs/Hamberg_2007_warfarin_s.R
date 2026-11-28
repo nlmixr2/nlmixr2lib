@@ -233,7 +233,10 @@ Hamberg_2007_warfarin_s <- function() {
 
     # ---- S-warfarin central concentration drives inhibitory Emax on coagulation-factor synthesis ----
     Cc          <- central / vc
-    inhibition  <- emax * Cc^hill / (ec50^hill + Cc^hill)
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer Hill power is NaN.
+    cc_pos      <- max(Cc, 0)
+    inhibition  <- emax * cc_pos^hill / (ec50^hill + cc_pos^hill)
 
     # ---- Two parallel transit-compartment chains (Appendix Eq 8) ----
     # "Long" chain: 6 compartments, MTT1 = 11.6 h per compartment (paper formula ktr1 = 1/MTT1);
@@ -267,8 +270,12 @@ Hamberg_2007_warfarin_s <- function() {
     #   log(INR_ij) = log(BASE_i + INRMAX * (1 - A6 * A7)^lambda) + eps_INR.
     # At baseline both chain endpoints are 1, giving 1 - A6*A7 = 0 and INR = BASE; under full
     # inhibition both end-compartments drift to 0 and INR -> BASE + INRMAX.
+    # max(anticoag_frac, 0): at and after washout both chain ends return to
+    # 1, and integration noise can take 1 - A6 * A7 slightly negative, where
+    # the non-integer power lambda is NaN.
     anticoag_frac <- 1 - coag_s6 * coag_l1
-    INR <- INR_BASE + inrmax * anticoag_frac^lambda
+    anticoag_frac_pos <- max(anticoag_frac, 0)
+    INR <- INR_BASE + inrmax * anticoag_frac_pos^lambda
 
     # ---- Residual error ----
     Cc  ~ prop(propSd)

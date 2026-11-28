@@ -198,7 +198,10 @@ Mohamed_2019_upadacitinib_tnfir <- function() {
     emax <- exp(lemax) * (CRP / 13.4)^e_crp_emax * (1 + e_early_emax * early)
     ec50 <- exp(lec50)
     hill <- exp(lhill)
-    drug <- 1 + emax * Cc^hill / (ec50^hill + Cc^hill)
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer Hill power is NaN.
+    cc_pos <- max(Cc, 0)
+    drug <- 1 + emax * cc_pos^hill / (ec50^hill + cc_pos^hill)
 
     # ---- Transition rates (1/day in the source, / 24 for 1/h) --------------
     lambda01 <- exp(llambda01) / 24 * drug

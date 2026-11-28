@@ -2,6 +2,8 @@
 
 # development version
 
+- `Chae_2012_metformin`, `Chotsiri_2019_piperaquine`, `Hamberg_2007_warfarin_s`, `Jeong_2024_levocetirizine`, `Mohamed_2019_upadacitinib_tnfir`, `RodriguezFernandez_2024_warfarin`, `Tornoe_2006_triptorelin`, `Valle_2005_exemestane`, `Wang_2018_daclatasvir_asunaprevir` and `Yang_2024_naloxone_morphine` floor the base of each non-integer power on a decaying state at zero (the drug or effect-site concentration in the Hill terms, plus Hamberg's INR anticoagulation fraction `1 - A6 * A7` and Tornoe's LH and relative-testosterone feedback terms). After washout, integration noise could take that base slightly negative, where the power is NaN, so rxode2 builds that stop at a non-finite state failed the subject. Where the old forms were finite, the simulated values are unchanged. Two years after the last dose, liblsoda can still fail `Chae_2012_metformin` (Hill exponent 0.55, whose slope at zero is infinite) and some `Jeong_2024_levocetirizine` subjects.
+
 - Add Steichert 2025 enalaprilat and the angiotensin II / angiotensin I ratio ([doi:10.3390/pharmaceutics17101345](https://doi.org/10.3390/pharmaceutics17101345)) -- healthy adults (PK/PD) and ACE-inhibitor-naive children with heart failure (PD).
 
 - Add Yao 2025 simnotrelvir, alone and with ritonavir ([doi:10.1128/aac.00614-25](https://doi.org/10.1128/aac.00614-25)) -- healthy Chinese adults (phase Ia) and, in the final model, adults with mild-to-moderate COVID-19.

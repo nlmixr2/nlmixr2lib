@@ -299,9 +299,13 @@ Yang_2024_naloxone_morphine <- function() {
     # published results. See the vignette Assumptions and deviations
     # section, which notes that the Table S6 footnote calling C50 "the
     # concentration causing 50% effect" does not hold under this form.
+    # max(NRATIO, 0): past washout, integration noise can take the naloxone
+    # effect-site concentration slightly negative, where the non-integer
+    # power is NaN.
+    nratio_pos <- max(effect_naloxone / ec50_naloxone, 0)
     d/dt(RL_op) <- kon * effect * (1 - RL_op) *
-      (1 - (effect_naloxone / ec50_naloxone)^hill_naloxone /
-        (1 + effect_naloxone / ec50_naloxone)^hill_naloxone) -
+      (1 - nratio_pos^hill_naloxone /
+        (1 + nratio_pos)^hill_naloxone) -
       koff * RL_op
 
     # ---- Outputs

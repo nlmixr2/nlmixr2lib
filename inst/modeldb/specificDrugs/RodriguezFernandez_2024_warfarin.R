@@ -312,7 +312,10 @@ RodriguezFernandez_2024_warfarin <- function() {
     Cc <- central / vc
 
     # ---- 5. Inhibitory sigmoid Imax on clotting-factor synthesis ---------
-    inhibition <- imax * Cc^hill / (ec50^hill + Cc^hill)
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer Hill power is NaN.
+    cc_pos <- max(Cc, 0)
+    inhibition <- imax * cc_pos^hill / (ec50^hill + cc_pos^hill)
 
     # ---- 6. Two parallel transit chains, three compartments each ---------
     # "two transit compartment chains with three compartments each to account

@@ -461,7 +461,10 @@ Chotsiri_2019_piperaquine <- function() {
     # forward simulation, so it is not encoded here -- see vignette Errata.
     hill   <- exp(lhill)
     ic50   <- exp(lic50)
-    pqeff  <- 1 - emax * Cc^hill / (ic50^hill + Cc^hill)
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer Hill power is NaN.
+    cc_pos <- max(Cc, 0)
+    pqeff  <- 1 - emax * cc_pos^hill / (ic50^hill + cc_pos^hill)
     dhaeff <- 1 - CONMED_DHA
     hazard <- exp(lbase) * pqeff * dhaeff
 

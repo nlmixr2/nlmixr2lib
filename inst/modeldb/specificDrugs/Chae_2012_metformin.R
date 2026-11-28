@@ -107,7 +107,10 @@ Chae_2012_metformin <- function() {
     # third transit compartment M3 is the observed percent-effect output. M1/M2/M3
     # map to canonical transit1/transit2/transit3 compartment names per
     # compartment-names.md (the paper writes the chain as M1, M2, M3).
-    DR <- (emax * Cc^hill) / (ec50^hill + Cc^hill)
+    # max(Cc, 0): past washout, integration noise can take Cc slightly
+    # negative, where the non-integer Hill power is NaN.
+    cc_pos <- max(Cc, 0)
+    DR <- (emax * cc_pos^hill) / (ec50^hill + cc_pos^hill)
     d/dt(transit1) <- (DR       - transit1) / tau
     d/dt(transit2) <- (transit1 - transit2) / tau
     d/dt(transit3) <- (transit2 - transit3) / tau
