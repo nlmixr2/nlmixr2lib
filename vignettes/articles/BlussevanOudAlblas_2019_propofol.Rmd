@@ -186,11 +186,11 @@ bolus_events <- function(dose_mg, times) {
   rbind(
     data.frame(
       id = 1L, time = 0, amt = dose_mg, rate = 0,
-      evid = 1L, cmt = "central"
+      evid = 1L, cmt = "central", dvid = NA_integer_
     ),
     data.frame(
       id = 1L, time = times, amt = NA_real_, rate = NA_real_,
-      evid = 0L, cmt = "Cc"
+      evid = 0L, cmt = "central", dvid = 1L
     )
   )
 }
@@ -415,13 +415,13 @@ maint_rate <- 6 / 60 * wt_median # 6 mg/kg/h, mid-range of the 2-10 protocol
 infusion_row <- function(id, start, stop, rate) {
   data.frame(
     id = id, time = start, amt = rate * (stop - start), rate = rate,
-    evid = 1L, cmt = "central"
+    evid = 1L, cmt = "central", dvid = NA_integer_
   )
 }
 bolus_row <- function(id, at, dose_mgkg, wt) {
   data.frame(
     id = id, time = at, amt = dose_mgkg * wt, rate = dose_mgkg * wt / bolus_min,
-    evid = 1L, cmt = "central"
+    evid = 1L, cmt = "central", dvid = NA_integer_
   )
 }
 
@@ -437,7 +437,7 @@ timeline_ev <- rbind(
   infusion_row(1L, t_reind + bolus_min, t_end, maint_rate), # maintenance resumed
   data.frame(
     id = 1L, time = obs_times, amt = NA_real_, rate = NA_real_,
-    evid = 0L, cmt = "Cc"
+    evid = 0L, cmt = "central", dvid = 1L
   )
 )
 ```
@@ -578,7 +578,7 @@ cohort_dose_rows <- do.call(rbind, lapply(seq_len(n_sub), function(i) {
 cohort_obs_rows <- do.call(rbind, lapply(seq_len(n_sub), function(i) {
   data.frame(
     id = i, time = cohort_obs_times, amt = NA_real_, rate = NA_real_,
-    evid = 0L, cmt = "Cc"
+    evid = 0L, cmt = "central", dvid = 1L
   )
 }))
 
@@ -694,11 +694,11 @@ nca_ev <- do.call(rbind, lapply(seq_along(nca_doses), function(i) {
   rbind(
     data.frame(
       id = i, time = 0, amt = nca_doses[i], rate = 0,
-      evid = 1L, cmt = "central"
+      evid = 1L, cmt = "central", dvid = NA_integer_
     ),
     data.frame(
       id = i, time = nca_times, amt = NA_real_, rate = NA_real_,
-      evid = 0L, cmt = "Cc"
+      evid = 0L, cmt = "central", dvid = 1L
     )
   )
 }))
@@ -912,10 +912,10 @@ against 1.72 L/min for a 70 kg standardised (morbidly) obese adolescent and
   because rxode2's automatic ODE-to-linCmt conversion corrupts the `dvid`
   mapping of a multi-endpoint model.
 
-* **Observation rows carry `cmt = "Cc"`.** With two declared endpoints, rxode2
-  requires observation records to name a declared *endpoint*, not an ODE state.
-  This is the documented exception to the usual rule of pointing `cmt` at the
-  ODE state; the solve still returns every model variable, including `BIS`,
+* **Observation rows carry `cmt = "central"` and `dvid = 1L`.** With two
+  declared endpoints, every observation record must say which endpoint it
+  belongs to; the rows name the ODE state `central` and select `Cc` with
+  `dvid`. The solve still returns every model variable, including `BIS`,
   `cAAI` and the effect-site compartments, as columns.
 
 * **No published NCA to compare against.** The article reports no

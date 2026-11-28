@@ -213,8 +213,12 @@ build_events <- function(arm_row, id) {
   } else {
     et <- rxode2::et(amt = arm_row$umol, cmt = arm_row$depot, time = 0)
   }
-  et <- et |> rxode2::et(obs_times, cmt = "Cc")
+  # Three declared endpoints (Cc, Cc_unbound, PI): observation rows name the
+  # ODE state `central` and select Cc with dvid = 1. et() does not carry dvid,
+  # so it is set on the data-frame form.
+  et <- et |> rxode2::et(obs_times, cmt = "central")
   ev_df <- as.data.frame(et)
+  ev_df$dvid <- ifelse(ev_df$evid == 0, 1L, NA_integer_)
   ev_df$id  <- id
   ev_df$arm <- arm_row$arm
   ev_df

@@ -194,12 +194,11 @@ variability), so their tolerances are tight on purpose: each is exact up to
 solver error and any failure means a transcription bug.
 
 ```{r helpers}
-# Two endpoints are DECLARED in this model (Cc and CD34), so rxode2 requires
-# observation rows to name the OBSERVABLE rather than the backing ODE state.
-# This is the documented exception to the usual "cmt = the d/dt() state name"
-# rule, which applies to single-endpoint models with algebraic observables;
-# here `cmt = "central"` / `cmt = "circ"` errors with
-# "'dvid'->'cmt' ... on a undefined compartment" under both useLinCmt settings.
+# Two endpoints are DECLARED in this model (Cc and CD34), so every observation
+# row must say which endpoint it belongs to: it names the backing ODE state
+# (`central` for Cc, `circ` for CD34) and selects the endpoint with `dvid`
+# (1 = Cc, 2 = CD34). The ODE state alone, without `dvid`, errors with
+# "'dvid'->'cmt' ... on a undefined compartment".
 build_events <- function(subjects, days, dose_times = NULL,
                          pk_times = NULL, pd_times = NULL) {
   parts <- list()
@@ -211,12 +210,12 @@ build_events <- function(subjects, days, dose_times = NULL,
   if (!is.null(pk_times)) {
     parts$pk <- subjects |>
       tidyr::crossing(time = pk_times) |>
-      dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "Cc")
+      dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "central", dvid = 1L)
   }
   if (!is.null(pd_times)) {
     parts$pd <- subjects |>
       tidyr::crossing(time = pd_times) |>
-      dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "CD34")
+      dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "circ", dvid = 2L)
   }
   dplyr::bind_rows(parts) |>
     dplyr::arrange(.data$id, .data$time, dplyr::desc(.data$evid))
@@ -792,11 +791,10 @@ peak_by_arm |>
 * **`DOSE_LY2510924_MGD` is the assigned dose level**, not the amount on the
   current dosing record. For a regimen with a changing daily dose, the column
   must be updated per record, and `CL/F` changes with it.
-* **Observation rows name the observable.** This model declares two endpoints,
-  so rxode2 requires `cmt = "Cc"` and `cmt = "CD34"` on observation records;
-  naming the backing ODE states (`central`, `circ`) errors under both
-  `useLinCmt` settings. The usual nlmixr2lib guidance to name the ODE state
-  applies to single-endpoint models and does not hold here.
+* **Observation rows name the ODE state plus `dvid`.** This model declares two
+  endpoints, so each observation record names the backing ODE state
+  (`central`, `circ`) and selects its endpoint with `dvid` (1 = `Cc`,
+  2 = `CD34`); the ODE state without `dvid` errors.
 * **No published NCA table exists for this paper.** The noncompartmental
   analysis it refers to was published separately (Galsky et al., Clin Cancer
   Res 2014;20:3581-8) and was not available, so the NCA section validates the

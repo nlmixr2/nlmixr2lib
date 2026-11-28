@@ -178,7 +178,17 @@ steady-state hold is not appropriate -- see Validation 2 for the placebo
 lifestyle dynamics.)
 
 ```{r initial-conditions}
-ev_ic <- rxode2::et(time = c(0, 0.001), cmt = "Cglc")   # essentially t = 0
+# Five declared endpoints: observation rows name the ODE state `glucose` (from
+# which Cglc is computed) and select Cglc with dvid = 1. et() does not carry
+# dvid, so obs_dvid() sets it on the data-frame form. All five endpoints come
+# back as columns on every row.
+obs_dvid <- function(ev) {
+  ev <- as.data.frame(ev)
+  ev$dvid <- ifelse(ev$evid == 0, 1L, NA_integer_)
+  ev
+}
+
+ev_ic <- obs_dvid(rxode2::et(time = c(0, 0.001), cmt = "glucose"))   # essentially t = 0
 ev_ic$FPG <- typical_FPG_mmol
 
 sim_ic <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_ic) |>
@@ -205,7 +215,7 @@ drop in fasting plasma glucose followed by slow recovery towards baseline
 that Bosch 2024 describes in Section 3.1 and Figure S9.
 
 ```{r placebo-fpg}
-ev_pl <- rxode2::et(time = seq(0, 24 * 60, by = 6), cmt = "Cglc")  # 60 days, every 6 h
+ev_pl <- obs_dvid(rxode2::et(time = seq(0, 24 * 60, by = 6), cmt = "glucose"))  # 60 days, every 6 h
 ev_pl$FPG <- typical_FPG_mmol
 
 sim_pl <- rxode2::rxSolve(mod %>% rxode2::zeroRe(), events = ev_pl) |>
@@ -258,12 +268,14 @@ obs_times_h       <- mmtt_time_h + seq(-1, 4, by = 0.1)
 ev_cota <- rxode2::et(time = 24 * seq(0, n_days_pretreat),
                       amt = dose_pmol_200ug, cmt = "depot") |>
   rxode2::et(time = mmtt_time_h, amt = mmtt_amt_mmol, cmt = "glucose_gut") |>
-  rxode2::et(time = obs_times_h, cmt = "Cglc")
+  rxode2::et(time = obs_times_h, cmt = "glucose") |>
+  obs_dvid()
 ev_cota$FPG <- typical_FPG_mmol
 
 ev_pl_mmtt <- rxode2::et(time = mmtt_time_h, amt = mmtt_amt_mmol,
                          cmt = "glucose_gut") |>
-  rxode2::et(time = obs_times_h, cmt = "Cglc")
+  rxode2::et(time = obs_times_h, cmt = "glucose") |>
+  obs_dvid()
 ev_pl_mmtt$FPG <- typical_FPG_mmol
 
 sim_cota <- rxode2::rxSolve(mod %>% rxode2::zeroRe(), events = ev_cota) |>
@@ -342,7 +354,8 @@ simulate_avg_glucose <- function(model, dose_ug) {
   ev <- rxode2::et(ev, time = meal_times,
                    amt = meal_amt_mmol, cmt = "glucose_gut")
   ev <- rxode2::et(ev, time = seq(24 * (n_days - 1), 24 * n_days, by = 1),
-                   cmt = "Cglc")
+                   cmt = "glucose") |>
+    obs_dvid()
   ev$FPG <- typical_FPG_mmol
   s <- rxode2::rxSolve(rxode2::zeroRe(model), events = ev) |>
     as.data.frame()

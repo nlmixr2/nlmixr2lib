@@ -142,7 +142,11 @@ ev_ss <- data.frame(
   time     = seq(0, 48, by = 1),
   evid     = 0L,
   amt      = 0,
-  cmt      = "Cglc",
+  # Five declared endpoints: observation rows name the ODE state the glucose
+  # endpoint is computed from and select Cglc with dvid = 1. All five
+  # endpoints come back as columns on every row.
+  cmt      = "glc_central",
+  dvid     = 1L,
   DIS_DIAB = 0L,
   WT       = 70
 )
@@ -188,8 +192,9 @@ dose_mmol    <- mmol_glucose * Fb    # effective dose entering the dose compartm
 
 ev_meal <- rxode2::et(id = 1:2) |>
   rxode2::et(amt = dose_mmol, cmt = "glc_dose", time = 0) |>
-  rxode2::et(seq(0, 5, by = 0.05), cmt = "Cglc") |>
+  rxode2::et(seq(0, 5, by = 0.05), cmt = "glc_central") |>
   as.data.frame() |>
+  dplyr::mutate(dvid = ifelse(evid == 0, 1L, NA_integer_)) |>
   dplyr::mutate(
     DIS_DIAB = ifelse(id == 1, 0L, 1L),
     WT       = 70,
@@ -280,8 +285,9 @@ ev_lira <- rxode2::et(id = 1) |>
   rxode2::et(amt = lira_pmol, cmt = "lira_depot", time = 144) |>
   # Test meal on day 8 (after ~ steady-state)
   rxode2::et(amt = dose_mmol, cmt = "glc_dose", time = 168) |>
-  rxode2::et(seq(168, 173, by = 0.05), cmt = "Cglc") |>
+  rxode2::et(seq(168, 173, by = 0.05), cmt = "glc_central") |>
   as.data.frame() |>
+  dplyr::mutate(dvid = ifelse(evid == 0, 1L, NA_integer_)) |>
   dplyr::mutate(DIS_DIAB = 1L, WT = 70)
 
 sim_lira <- rxode2::rxSolve(
@@ -299,8 +305,9 @@ sim_lira <- rxode2::rxSolve(
 # with no drug prior to the meal).
 ev_nodrug <- rxode2::et(id = 1) |>
   rxode2::et(amt = dose_mmol, cmt = "glc_dose", time = 168) |>
-  rxode2::et(seq(168, 173, by = 0.05), cmt = "Cglc") |>
+  rxode2::et(seq(168, 173, by = 0.05), cmt = "glc_central") |>
   as.data.frame() |>
+  dplyr::mutate(dvid = ifelse(evid == 0, 1L, NA_integer_)) |>
   dplyr::mutate(DIS_DIAB = 1L, WT = 70)
 
 sim_nodrug <- rxode2::rxSolve(
